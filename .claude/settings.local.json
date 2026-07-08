@@ -300,7 +300,8 @@
       "mcp__claude-in-chrome__computer",
       "mcp__claude-in-chrome__get_page_text",
       "Skill(artifact-design)",
-      "Skill(artifact-design:*)"
+      "Skill(artifact-design:*)",
+      "Bash(rm .git/index.lock && git add -A && git commit -m \"feat\\(design\\): Fase 4 bolge 2 — /portal over pa golfdata-kanon *)"
     ]
   }
 }

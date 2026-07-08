@@ -11,9 +11,9 @@
  * Server-vennlige (ingen state). Tokens fra globals.css — ingen hardkodet hex.
  */
 
+import { Eyebrow } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { ChevronRight, type LucideIcon } from "lucide-react";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export function MeSub({
   eyebrow,
@@ -32,7 +32,7 @@ export function MeSub({
     // px-1 her + px-4 i PortalShell-main = fasitens 20px side-padding på mobil
     <div className="mx-auto w-full max-w-[460px] px-1 pb-8 pt-3 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
       <div className="mb-[18px]">
-        <AthleticEyebrow>{eyebrow}</AthleticEyebrow>
+        <Eyebrow as="span">{eyebrow}</Eyebrow>
         <h1 className="mt-2 font-display text-[26px] font-bold leading-[1.04] tracking-[-0.025em] text-foreground md:text-[30px]">
           {title}
           {italic && (
@@ -56,7 +56,7 @@ export function SetGroup({ label, children }: { label?: string; children: React.
     <div className="mb-[22px]">
       {label && (
         <div className="mb-2 mt-1 flex items-baseline justify-between pt-2">
-          <AthleticEyebrow>{label}</AthleticEyebrow>
+          <Eyebrow as="span">{label}</Eyebrow>
         </div>
       )}
       <div className="overflow-hidden rounded-2xl border border-border bg-card">{children}</div>

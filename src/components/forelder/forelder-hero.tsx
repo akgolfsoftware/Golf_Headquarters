@@ -3,9 +3,9 @@
  * Matcher PlayerHQ Oversikt-mønsteret (avatar venstre + Familjen Grotesk + Familjen Grotesk italic).
  */
 
+import { Eyebrow, Avatar } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { Camera } from "lucide-react";
-import { AthleticAvatar, AthleticEyebrow } from "@/components/athletic";
 import type { ReactNode } from "react";
 
 export function ForelderHero({
@@ -29,7 +29,7 @@ export function ForelderHero({
 }) {
   return (
     <section>
-      <AthleticEyebrow>{eyebrow}</AthleticEyebrow>
+      <Eyebrow as="span">{eyebrow}</Eyebrow>
       <div className="mt-4 flex flex-wrap items-center gap-4">
         {avatarInitials || avatarUrl ? (
           <Link
@@ -37,11 +37,10 @@ export function ForelderHero({
             aria-label="Endre profilbilde"
             className="group relative inline-block"
           >
-            <AthleticAvatar
+            <Avatar
               src={avatarUrl ?? undefined}
-              initials={avatarInitials ?? "??"}
+              name={avatarInitials ?? "??"}
               size="xl"
-              borderColor="white"
               className="shadow-[0_8px_24px_rgba(0,88,64,0.18)] transition group-hover:shadow-[0_8px_32px_rgba(0,88,64,0.28)]"
             />
             <span

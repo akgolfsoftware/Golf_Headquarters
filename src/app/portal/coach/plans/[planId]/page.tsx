@@ -6,12 +6,12 @@
  * Matcher fasit B5 · Planer (Detalj-fane).
  */
 
+import { Tag } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, Target, TrendingUp } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AthleticBadge } from "@/components/athletic/badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import {
   aggregateByArea,
@@ -184,7 +184,7 @@ export default async function CoachPlanDetalj({
         </p>
         {plan.isActive && (
           <div className="mt-2">
-            <AthleticBadge variant="ok">AKTIV</AthleticBadge>
+            <Tag variant="up">AKTIV</Tag>
           </div>
         )}
       </div>

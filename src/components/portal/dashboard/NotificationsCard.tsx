@@ -1,9 +1,9 @@
 "use client";
 
+import { Card } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { Bell, MessageCircle, CalendarCheck, Trophy, AlertTriangle, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AthleticCard } from "@/components/athletic";
 import type { NotificationItem } from "@/app/portal/actions";
 
 const ICON_MAP: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
@@ -36,8 +36,8 @@ type NotificationsCardProps = {
 
 export function NotificationsCard({ count, notifications, className }: NotificationsCardProps) {
   return (
-    <AthleticCard
-      label={count > 0 ? `Varsler · ${count} ulest${count === 1 ? "" : "e"}` : "Varsler"}
+    <Card
+      eyebrow={count > 0 ? `Varsler · ${count} ulest${count === 1 ? "" : "e"}` : "Varsler"}
       action={
         <Link href="/portal/varsler" className="font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-primary hover:opacity-80">
           Se alle →
@@ -82,6 +82,6 @@ export function NotificationsCard({ count, notifications, className }: Notificat
           })}
         </ul>
       )}
-    </AthleticCard>
+    </Card>
   );
 }

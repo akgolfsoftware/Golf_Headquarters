@@ -9,14 +9,13 @@
  * Eierskap: findFirst({ id, studentId: user.id }) — andre spilleres økter → 404.
  */
 
+import { Eyebrow, Tag } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Clock, MessageSquare, Play, Target } from "lucide-react";
 import { v2SessionStartHref } from "@/lib/portal/session-hrefs";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
-import { AthleticBadge } from "@/components/athletic/badge";
 
 export const dynamic = "force-dynamic";
 
@@ -57,9 +56,9 @@ export default async function OktDetaljPage({ params }: { params: Promise<{ id: 
     }
   }
   const chip =
-    okt.status === "COMPLETED" ? { variant: "ok" as const, label: "Fullført" }
-    : okt.status === "IN_PROGRESS" ? { variant: "lime" as const, label: "Pågår" }
-    : okt.status === "CANCELLED" ? { variant: "urgent" as const, label: "Avlyst" }
+    okt.status === "COMPLETED" ? { variant: "up" as const, label: "Fullført" }
+    : okt.status === "IN_PROGRESS" ? { variant: "live" as const, label: "Pågår" }
+    : okt.status === "CANCELLED" ? { variant: "down" as const, label: "Avlyst" }
     : { variant: "neutral" as const, label: "Planlagt" };
 
   return (
@@ -71,7 +70,7 @@ export default async function OktDetaljPage({ params }: { params: Promise<{ id: 
 
       <div className="flex items-start justify-between gap-3">
         <div>
-          <AthleticEyebrow>{fmtDato(okt.startTime)}</AthleticEyebrow>
+          <Eyebrow as="span">{fmtDato(okt.startTime)}</Eyebrow>
           <h1 className="mt-2 font-display text-[26px] font-bold leading-[1.04] tracking-[-0.025em] text-foreground md:text-[30px]">
             {okt.title}
           </h1>
@@ -80,7 +79,7 @@ export default async function OktDetaljPage({ params }: { params: Promise<{ id: 
             {fmtTid(okt.startTime)}–{fmtTid(okt.endTime)} · {varighet} min
           </p>
         </div>
-        <AthleticBadge variant={chip.variant}>{chip.label}</AthleticBadge>
+        <Tag variant={chip.variant}>{chip.label}</Tag>
       </div>
 
       {coachBrief && (
@@ -98,7 +97,7 @@ export default async function OktDetaljPage({ params }: { params: Promise<{ id: 
 
       <section className="mt-5 max-w-[680px]">
         <div className="mb-2 flex items-baseline justify-between">
-          <AthleticEyebrow>Innhold · {okt.drills.length} {okt.drills.length === 1 ? "drill" : "drills"}</AthleticEyebrow>
+          <Eyebrow as="span">Innhold · {okt.drills.length} {okt.drills.length === 1 ? "drill" : "drills"}</Eyebrow>
         </div>
         {okt.drills.length === 0 ? (
           <p className="py-4 text-sm text-muted-foreground">Ingen drills lagt inn ennå.</p>

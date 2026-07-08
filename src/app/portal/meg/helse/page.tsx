@@ -17,14 +17,14 @@
  * Server component. Auth-guard beholdt (requirePortalUser).
  */
 
+import { Tag } from "@/components/athletic/golfdata";
 import { Activity, BatteryMedium, CircleCheck, Moon, Stethoscope } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { hentFysScore } from "@/lib/fys-data";
 import { hentBelastning } from "@/lib/health/belastning";
 import { MeSub, SetGroup, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
-import { AthleticBadge } from "@/components/athletic/badge";
-import { KpiCard } from "@/components/athletic/kpi";
+import { KpiTile } from "@/components/athletic/golfdata";
 import { HelseForm } from "./helse-form";
 
 function formatDatoKort(d: Date): string {
@@ -102,23 +102,23 @@ export default async function HelsePage() {
     >
       <div className="mb-[22px] grid grid-cols-3 gap-3">
         {/* FYS-score: testbatteri → stall-relativ samlet form (Anders' formel 2026-06-22). */}
-        <KpiCard
+        <KpiTile
           label="FYS-score"
           value={fys.harTester && fys.score != null ? String(fys.score) : "—"}
-          trend={{
-            value: fys.harTester ? `${fys.antallTester}/5 tester` : "Ingen FYS-tester",
-            tone: "neutral",
-          }}
+          deltaSuffix={fys.harTester ? `${fys.antallTester}/5 tester` : "Ingen FYS-tester"}
+          size="md"
         />
-        <KpiCard
+        <KpiTile
           label="Hvilepuls"
           value={siste?.restingHr != null ? String(siste.restingHr) : "—"}
           unit={siste?.restingHr != null ? "bpm" : undefined}
+          size="md"
         />
-        <KpiCard
+        <KpiTile
           label="Søvn"
           value={siste?.sleepHours != null ? formatTimer(siste.sleepHours) : "—"}
           unit={siste?.sleepHours != null ? "t" : undefined}
+          size="md"
         />
       </div>
 
@@ -163,14 +163,14 @@ export default async function HelsePage() {
             icon={Stethoscope}
             title="Aktiv skade"
             meta={`Siden ${formatDatoKort(aktivSkade.startAt)}`}
-            right={<AthleticBadge variant="warn">Aktiv</AthleticBadge>}
+            right={<Tag variant="outline" style={{ color: "var(--warning)", borderColor: "var(--warning-border)" }}>Aktiv</Tag>}
           />
         ) : (
           <SetRow
             icon={CircleCheck}
             title="Ingen aktive skader"
             meta={siste ? `Sist logget ${formatDatoKort(siste.date)}` : "Ingen logger ennå"}
-            right={<AthleticBadge variant="ok">Frisk</AthleticBadge>}
+            right={<Tag variant="up">Frisk</Tag>}
           />
         )}
         {tidligereSkader > 0 && (

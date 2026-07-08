@@ -1,11 +1,10 @@
 "use client";
 
+import { Eyebrow, Sparkline } from "@/components/athletic/golfdata";
 import { useState } from "react";
 import Image from "next/image";
 import { X, TrendingUp, Activity, Clock, Flag, ArrowLeft, ZoomIn } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
-import { Sparkline } from "@/components/athletic/sparkline";
 
 /* ─────────────────────────────────────────────────────────────────────────
    Hull-analyse — TOP-DOWN på ekte foto. Illustrativt kart, men sonene fylles
@@ -158,7 +157,7 @@ export function HoleAnalysis({
           <div className="absolute inset-x-0 bottom-0 rounded-t-2xl border-t border-border bg-card p-4 shadow-deck">
             <div className="mb-4 flex items-start justify-between gap-4">
               <div>
-                <AthleticEyebrow>{open.sub}</AthleticEyebrow>
+                <Eyebrow as="span">{open.sub}</Eyebrow>
                 <h3 className="mt-0.5 font-display text-base font-bold tracking-tight text-foreground">{open.label}</h3>
               </div>
               <button type="button" onClick={() => setOpenId(null)} aria-label="Lukk" className="inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary">
@@ -178,7 +177,7 @@ export function HoleAnalysis({
                 </div>
               </div>
               {open.trend.length >= 2 ? (
-                <Sparkline values={open.trend} width={96} height={32} color={open.trend[open.trend.length - 1] >= open.trend[0] ? "hsl(var(--success))" : "hsl(var(--destructive))"} />
+                <Sparkline data={open.trend} width={96} height={32} color={open.trend[open.trend.length - 1] >= open.trend[0] ? "hsl(var(--success))" : "hsl(var(--destructive))"} />
               ) : (
                 <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">for få data</span>
               )}

@@ -15,6 +15,7 @@
  * (kun lucide-ikoner). Tall sendes inn via props — aldri hardkodet i UI.
  */
 
+import { Tag } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -26,7 +27,6 @@ import {
   User as UserIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AthleticBadge } from "@/components/athletic";
 
 // ── Props-typer ───────────────────────────────────────────────────
 // NB: Strukturelt kompatible med src/lib/portal-booking/hub-data.ts slik at
@@ -222,7 +222,7 @@ function CreditsCard({
     <section className="rounded-2xl border border-border bg-card p-5">
       <div className="flex items-center justify-between gap-3">
         <Eyebrow>Mine credits</Eyebrow>
-        <AthleticBadge variant="primary">{tierLabel(credits.tier)}</AthleticBadge>
+        <Tag variant="signal">{tierLabel(credits.tier)}</Tag>
       </div>
 
       <div className="mt-3 flex items-baseline gap-2">
@@ -311,10 +311,10 @@ function UpcomingCard({
                       {b.serviceName}
                     </span>
                     {b.status === "PENDING" && (
-                      <AthleticBadge variant="warn">Avventer</AthleticBadge>
+                      <Tag variant="outline" style={{ color: "var(--warning)", borderColor: "var(--warning-border)" }}>Avventer</Tag>
                     )}
                     {b.fromCredits && b.status === "CONFIRMED" && (
-                      <AthleticBadge variant="lime">Credit</AthleticBadge>
+                      <Tag variant="signal">Credit</Tag>
                     )}
                   </div>
                   <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 font-mono text-[10.5px] tracking-[0.02em] text-muted-foreground">
@@ -461,9 +461,9 @@ function PastBookingsCard({ past }: { past: HubBooking[] }) {
                       {b.serviceName}
                     </span>
                     {cancelled ? (
-                      <AthleticBadge variant="warn">Avbestilt</AthleticBadge>
+                      <Tag variant="outline" style={{ color: "var(--warning)", borderColor: "var(--warning-border)" }}>Avbestilt</Tag>
                     ) : (
-                      <AthleticBadge variant="ok">Gjennomført</AthleticBadge>
+                      <Tag variant="up">Gjennomført</Tag>
                     )}
                   </div>
                   <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 font-mono text-[10.5px] tracking-[0.02em] text-muted-foreground">

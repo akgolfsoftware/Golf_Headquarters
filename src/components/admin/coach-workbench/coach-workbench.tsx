@@ -19,6 +19,7 @@
  * hex, ingen emoji (kun lucide). Data-tett spacing.
  */
 
+import { Avatar } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import {
   AlertTriangle,
@@ -44,7 +45,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { PlanStatus } from "@/generated/prisma/client";
-import { AthleticAvatar } from "@/components/athletic";
 import { cn } from "@/lib/utils";
 
 type Tone = "fys" | "tek" | "slag" | "spill" | "turn";
@@ -776,7 +776,6 @@ export function CoachWorkbench(props: CoachWorkbenchProps) {
   const {
     playerId,
     playerName,
-    playerInitials,
     playerAvatarUrl,
     playerMeta,
   } = props;
@@ -785,7 +784,7 @@ export function CoachWorkbench(props: CoachWorkbenchProps) {
     <div className="mx-auto max-w-[1440px]">
       {/* Spiller-context-bar */}
       <div className="mb-4 flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3">
-        <AthleticAvatar src={playerAvatarUrl} initials={playerInitials} size="sm" alt={playerName} />
+        <Avatar src={playerAvatarUrl ?? undefined} name={playerName} size="md" />
         <div className="min-w-0">
           <div className="truncate font-display text-xl font-bold leading-tight tracking-[-0.02em] text-foreground">
             {playerName}

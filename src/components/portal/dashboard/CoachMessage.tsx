@@ -1,8 +1,8 @@
 "use client";
 
+import { Card } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { MessageSquare, User } from "lucide-react";
-import { AthleticCard } from "@/components/athletic";
 import type { CoachMessageItem } from "@/app/portal/actions";
 
 function formatDate(d: Date): string {
@@ -16,8 +16,8 @@ type CoachMessageProps = {
 
 export function CoachMessage({ message, className }: CoachMessageProps) {
   return (
-    <AthleticCard
-      label="Fra coach"
+    <Card
+      eyebrow="Fra coach"
       action={
         <Link href="/portal/coach/melding" className="font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-primary hover:opacity-80">
           Meldinger →
@@ -56,6 +56,6 @@ export function CoachMessage({ message, className }: CoachMessageProps) {
           </Link>
         </div>
       )}
-    </AthleticCard>
+    </Card>
   );
 }

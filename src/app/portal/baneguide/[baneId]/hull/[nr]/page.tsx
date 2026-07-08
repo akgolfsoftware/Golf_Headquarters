@@ -3,14 +3,14 @@
  * Signaturskjerm: satellitt + din spredning + KPI fra dispersion-motoren + innsikt.
  * Segment Utslag/Innspill/Putt via ?type=. Lyst tema.
  */
+import { Eyebrow } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft, Lightbulb } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getHoleDetail } from "@/lib/baneguide/queries";
 import { CourseMap } from "@/components/baneguide/course-map";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
-import { KpiCard } from "@/components/athletic/kpi";
+import { KpiTile } from "@/components/athletic/golfdata";
 import type { ShotType } from "@/generated/prisma/client";
 
 export const dynamic = "force-dynamic";
@@ -58,7 +58,7 @@ export default async function HoleDetailPage({
       </Link>
 
       <div className="mt-3">
-        <AthleticEyebrow tone="lime">Baneguide · {bane.navn}</AthleticEyebrow>
+        <Eyebrow as="span" tone="signal">Baneguide · {bane.navn}</Eyebrow>
         <h1 className="mt-1.5 font-display text-3xl font-bold tracking-[-0.02em] text-foreground">
           Hull {hole.holeNumber}
         </h1>
@@ -100,10 +100,10 @@ export default async function HoleDetailPage({
       {stats ? (
         <>
           <div className="mt-4 grid grid-cols-2 gap-3">
-            <KpiCard label="σ side" value={fmt(stats.std.lateral)} unit="m" />
-            <KpiCard label="σ lengde" value={fmt(stats.std.distance)} unit="m" />
-            <KpiCard label="Bias" value={`${signed(stats.bias.lateral)}`} unit={`m ${stats.bias.side === "høyre" ? "H" : stats.bias.side === "venstre" ? "V" : ""}`.trim()} />
-            <KpiCard label="N slag" value={stats.n} />
+            <KpiTile label="σ side" value={fmt(stats.std.lateral)} unit="m" size="md" />
+            <KpiTile label="σ lengde" value={fmt(stats.std.distance)} unit="m" size="md" />
+            <KpiTile label="Bias" value={`${signed(stats.bias.lateral)}`} unit={`m ${stats.bias.side === "høyre" ? "H" : stats.bias.side === "venstre" ? "V" : ""}`.trim()} size="md" />
+            <KpiTile label="N slag" value={stats.n} size="md" />
           </div>
 
           {stats.bias.side !== "rett" && (

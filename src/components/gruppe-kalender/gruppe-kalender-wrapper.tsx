@@ -4,13 +4,15 @@ import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): golfdata mangler AK-periode-årsgantt (gap meldt) — YearPlanGantt beholdes til DS får en
 import { YearPlanGantt } from "@/components/athletic/calendars/year-plan-gantt";
-import { MonthGrid } from "@/components/athletic/calendars/month-grid";
-import { WeekGrid } from "@/components/athletic/calendars/week-grid";
-import { byggArsfaser, byggManedceller, byggUkehendelser } from "@/lib/gruppe-kalender/bygg-visninger";
+import { MaanedKalender, TidsGrid } from "@/components/athletic/golfdata";
+import { byggArsfaser, byggManedsdager, byggUkeblokker } from "@/lib/gruppe-kalender/bygg-visninger";
 import type { GruppeKalenderData } from "@/lib/gruppe-kalender/types";
 
 type Visning = "ar" | "maned" | "uke";
+
+const UKEDAGER = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
 
 const MAANEDSNAVN = [
   "Januar", "Februar", "Mars", "April", "Mai", "Juni",
@@ -92,24 +94,41 @@ export function GruppeKalenderWrapper({ data }: { data: GruppeKalenderData }) {
       )}
 
       {visning === "maned" && (
-        <MonthGrid
-          year={year}
-          month={month}
-          monthName={`${MAANEDSNAVN[month - 1]} ${year}`}
-          cells={byggManedceller(data.faste, data.perioder, year, month)}
-        />
+        <div className="space-y-2">
+          <p className="font-mono text-[11px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+            {MAANEDSNAVN[month - 1]} {year}
+          </p>
+          <MaanedKalender
+            year={year}
+            month={month - 1}
+            modus="piller"
+            days={byggManedsdager(data.faste, year, month)}
+          />
+        </div>
       )}
 
       {visning === "uke" && (
-        <WeekGrid
-          weekStart={weekStart}
-          events={byggUkehendelser(data.faste)}
-          todayIndex={
-            weekStart <= idag && idag.getTime() < weekStart.getTime() + 7 * 24 * 60 * 60 * 1000
-              ? (idag.getDay() + 6) % 7
-              : undefined
-          }
-        />
+        <TidsGrid fraTime={7} tilTime={21}>
+          {UKEDAGER.map((navn, dagIndex) => {
+            const dagDato = new Date(weekStart.getTime() + dagIndex * 24 * 60 * 60 * 1000);
+            const erIdag =
+              weekStart <= idag &&
+              idag.getTime() < weekStart.getTime() + 7 * 24 * 60 * 60 * 1000 &&
+              (idag.getDay() + 6) % 7 === dagIndex;
+            return (
+              <TidsGrid.Kolonne key={dagIndex} id={`dag-${dagIndex}`} header={`${navn} ${dagDato.getDate()}`} idag={erIdag}>
+                {byggUkeblokker(data.faste)
+                  .filter((b) => b.dag === dagIndex)
+                  .map((b) => (
+                    <TidsGrid.Blokk key={b.id} fra={b.fra} til={b.til}>
+                      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.04em]">{b.tid}</span>
+                      <span className="block truncate text-[12px] font-medium">{b.tittel}</span>
+                    </TidsGrid.Blokk>
+                  ))}
+              </TidsGrid.Kolonne>
+            );
+          })}
+        </TidsGrid>
       )}
     </div>
   );

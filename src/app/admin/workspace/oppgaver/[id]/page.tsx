@@ -8,6 +8,7 @@
  * Bruker sample-data — erstattes med OppgaveCache når Notion-sync er på plass.
  */
 
+import { Button } from "@/components/athletic/golfdata";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
@@ -22,7 +23,6 @@ import {
 } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { AthleticButton } from "@/components/athletic";
 import {
   ProjectPill,
   SourceBadge,
@@ -96,9 +96,9 @@ export default async function TaskDetaljPage({
           Tilbake til oppgaver
         </Link>
         <div className="flex items-center gap-2">
-          <AthleticButton variant="ghost-light" size="sm">
+          <Button variant="ghost" size="sm">
             <ExternalLink className="h-3.5 w-3.5" /> Åpne i Notion
-          </AthleticButton>
+          </Button>
           <button
             type="button"
             className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground"
@@ -252,9 +252,9 @@ export default async function TaskDetaljPage({
                 placeholder="Skriv en kommentar …"
                 className="flex-1 resize-none bg-transparent text-[13px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
               />
-              <AthleticButton variant="lime" size="sm" className="self-end">
+              <Button variant="signal" size="sm" className="self-end">
                 Send
-              </AthleticButton>
+              </Button>
             </div>
           </section>
         </div>
@@ -459,13 +459,13 @@ function NoAccessFallback() {
         </p>
         <div className="mt-6 flex justify-center gap-2">
           <Link href="/admin/workspace/oppgaver">
-            <AthleticButton variant="ghost-light" size="sm">
+            <Button variant="ghost" size="sm">
               Tilbake til oppgaver
-            </AthleticButton>
+            </Button>
           </Link>
-          <AthleticButton variant="lime" size="sm">
+          <Button variant="signal" size="sm">
             Be om tilgang
-          </AthleticButton>
+          </Button>
         </div>
       </div>
     </div>

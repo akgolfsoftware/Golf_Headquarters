@@ -9,10 +9,10 @@
  * footer med tildelt-avatar-stack + frist + arrow.
  */
 
+import { Eyebrow, Button } from "@/components/athletic/golfdata";
 import { Plus, Search, ExternalLink, ArrowRight } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { AthleticButton, AthleticEyebrow } from "@/components/athletic";
 import {
   AvatarStack,
   VisibilityIcon,
@@ -62,7 +62,7 @@ export default async function WorkspaceProsjekterPage({
       <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-secondary/40 to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <AthleticEyebrow>AgencyOS · Workspace · Prosjekter</AthleticEyebrow>
+            <Eyebrow as="span">AgencyOS · Workspace · Prosjekter</Eyebrow>
             <h1 className="font-display mt-2 text-3xl font-bold leading-tight tracking-[-0.02em] md:text-4xl">
               Prosjekter
             </h1>
@@ -71,12 +71,12 @@ export default async function WorkspaceProsjekterPage({
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <AthleticButton variant="ghost-light" size="sm">
+            <Button variant="ghost" size="sm">
               <ExternalLink className="h-3.5 w-3.5" /> Notion
-            </AthleticButton>
-            <AthleticButton variant="lime" size="sm">
+            </Button>
+            <Button variant="signal" size="sm">
               <Plus className="h-3.5 w-3.5" /> Nytt prosjekt
-            </AthleticButton>
+            </Button>
           </div>
         </div>
       </header>
@@ -297,9 +297,9 @@ function EmptyProjects() {
             prosjekt manuelt.
           </p>
         </div>
-        <AthleticButton variant="lime" size="sm">
+        <Button variant="signal" size="sm">
           <Plus className="h-3.5 w-3.5" /> Nytt prosjekt
-        </AthleticButton>
+        </Button>
       </div>
     </div>
   );

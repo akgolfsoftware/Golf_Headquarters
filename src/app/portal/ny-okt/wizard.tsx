@@ -10,10 +10,10 @@
  * No backend yet — client-side state only.
  */
 
+import { Eyebrow } from "@/components/athletic/golfdata";
 import { useState } from "react";
 import { ArrowLeft, Plus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import Link from "next/link";
 
 // ── Data ──────────────────────────────────────────────────────────────────────
@@ -240,7 +240,7 @@ export function NyOktWizard() {
         {/* Summary strip */}
         <div className="grid grid-cols-3 divide-x divide-border rounded-xl border border-border bg-card">
           <div className="flex flex-col items-center py-4">
-            <AthleticEyebrow>Varighet</AthleticEyebrow>
+            <Eyebrow as="span">Varighet</Eyebrow>
             <span className="font-mono mt-1 text-2xl font-bold text-foreground">
               {mins}
               <span className="ml-0.5 text-sm font-normal text-muted-foreground">
@@ -249,13 +249,13 @@ export function NyOktWizard() {
             </span>
           </div>
           <div className="flex flex-col items-center py-4">
-            <AthleticEyebrow>Drills</AthleticEyebrow>
+            <Eyebrow as="span">Drills</Eyebrow>
             <span className="font-mono mt-1 text-2xl font-bold text-foreground">
               {drills.length}
             </span>
           </div>
           <div className="flex flex-col items-center py-4">
-            <AthleticEyebrow>Fokus</AthleticEyebrow>
+            <Eyebrow as="span">Fokus</Eyebrow>
             <span className="font-mono mt-1 text-2xl font-bold text-foreground">
               {focus}
             </span>
@@ -264,7 +264,7 @@ export function NyOktWizard() {
 
         {/* Drill list */}
         <div>
-          <AthleticEyebrow className="mb-2 block">Drills i økt</AthleticEyebrow>
+          <Eyebrow as="span" className="mb-2 block">Drills i økt</Eyebrow>
           <div className="divide-y divide-border rounded-xl border border-border bg-card px-4">
             {drills.map((drill) => (
               <DrillRow
@@ -345,7 +345,7 @@ export function NyOktWizard() {
 
       {/* Template grid */}
       <div>
-        <AthleticEyebrow className="mb-3 block">Maler</AthleticEyebrow>
+        <Eyebrow as="span" className="mb-3 block">Maler</Eyebrow>
         <div className="grid grid-cols-2 gap-3">
           {TEMPLATES.map((t) => (
             <TemplateCard

@@ -12,6 +12,7 @@
  * ingen emoji (kun lucide). Server component — "nå"-logikk utledes fra `now`-prop.
  */
 
+import { Sparkline } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import {
   Activity,
@@ -38,7 +39,6 @@ import {
   ZapOff,
   type LucideIcon,
 } from "lucide-react";
-import { Sparkline } from "@/components/athletic";
 import { cn } from "@/lib/utils";
 
 export type BriefAxis = "fys" | "tek" | "slag" | "spill" | "turn";
@@ -626,7 +626,7 @@ function KpiRow({ kpis }: { kpis: BriefKpi[] }) {
             <div className="pointer-events-none absolute bottom-3.5 right-3.5 h-6 w-20 opacity-60">
               {k.spark.type === "line" ? (
                 <Sparkline
-                  values={k.spark.values}
+                  data={k.spark.values}
                   width={80}
                   height={24}
                   color="hsl(var(--primary))"

@@ -13,6 +13,7 @@
  * Server-render. Ingen hardkodet hex, ingen emoji (kun lucide). DS-tokens.
  */
 
+import { Sparkline } from "@/components/athletic/golfdata";
 import {
   ArrowUpRight,
   CalendarPlus,
@@ -23,7 +24,6 @@ import {
   Send,
 } from "lucide-react";
 import Link from "next/link";
-import { Sparkline } from "@/components/athletic";
 import { cn } from "@/lib/utils";
 
 export type PyrAxis = "fys" | "tek" | "slag" | "spill" | "turn";
@@ -172,7 +172,7 @@ function KpiSection({ kpi, sgSparkline }: { kpi: SpillerDetaljOversiktProps["kpi
           {sgSparkline.length >= 2 && (
             <div className="pointer-events-none absolute bottom-2 right-2 h-5 w-12 opacity-50">
               <Sparkline
-                values={sgSparkline}
+                data={sgSparkline}
                 width={48}
                 height={20}
                 color={

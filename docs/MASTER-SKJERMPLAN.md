@@ -300,7 +300,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Talent-hub | `/portal/talent` | – | --- | ✓ | ~ | ~ | ~ |
+| Talent-hub | `/portal/talent` | ~ | --- | ✓ | ~ | ~ | ~ |
 | · Min plan | `/portal/talent/min-plan` | – | --- | ✓ | ~ | ~ | ~ |
 | · Mitt nivå | `/portal/talent/mitt-niva` | – | --- | ✓ | ~ | ~ | ~ |
 | · Roadmap | `/portal/talent/roadmap` | – | --- | ✓ | ~ | ~ | ~ |
@@ -738,6 +738,39 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 Full kronologisk byggehistorikk flyttet til [`docs/arkiv/master-skjermplan-endringslogg.md`](arkiv/master-skjermplan-endringslogg.md)
 2026-07-06 — denne fila var 822 linjer og loggen drukna den faktiske statustabellen. Siste hendelser:
+
+- 8. juli (opprydding Fase 4, bølge 4 — marketing + forelder, branch `opprydding/token-konvergens`):
+  **SISTE bølge — hele appen har nå 3 gamle athletic-importer igjen, alle PulseDot på marketing
+  (venter på gap #1 StatusDot).** `Pyramid` portet fra DS (data/) → golfdata/. Migrert:
+  forelder/barn PyramidProgress → Pyramid (apex→base-kanon, andel av økter, verifisert m/ ærlig
+  tomstate); forelder/okonomi + kommando KpiStrip/KpiCard → KpiTile-grid (verifisert visuelt);
+  404/500 for marketing + forelder → Eyebrow + display-h1 + golfdata Button. Gap-register
+  bølge 4: #11 (PulseDot ×3 venter på #1). tsc + eslint + hex-gate + build grønt, 342/342
+  tester, Playwright-diff mot baseline uendret. Fase 4 er dermed KOMPLETT sånær som gap-fyllet —
+  neste er gap-fyll-prompten til Claude Design og så Fase 5 (slett gammelt bibliotek + rydd
+  globals.css).
+
+- 8. juli (opprydding Fase 4, bølge 3 — /admin, branch `opprydding/token-konvergens`):
+  **/admin er tom for gammel-athletic-importer.** `SegmentedTabs` portet fra DS (forms/) →
+  golfdata/. Migrert: plan-detalj-fanene (`/admin/spillere/[id]/plan/[planId]`) TabBar →
+  SegmentedTabs m/ tynn URL-synk-wrapper (plan-tabs.tsx); Uka-skjermen KpiRing → RingGauge
+  (verifisert visuelt, kapasitetsring); varsler-loading gammel Skeleton → ui/skeleton;
+  404/500-sidene AthleticHero → Eyebrow + display-h1 + golfdata Button. Gap-register bølge 3:
+  ingen nye komponent-gap, 2 observasjoner (#9 SegmentedTabs mangler count-variant, #10
+  onChange-typekollisjon løst med Omit i porten). tsc + eslint + hex-gate + build grønt,
+  342/342 tester, Playwright-diff mot baseline uendret.
+
+- 8. juli (opprydding Fase 4, bølge 2 — /portal, branch `opprydding/token-konvergens`):
+  **/portal er tom for gammel-athletic-importer.** Nye porter fra Claude Design-prosjektet
+  (DesignSync): `PercentileBar`, `NivaStige`, `Stepper` → golfdata/. Talent-hub rekomponert
+  fra håndrullet SVG til golfdata: MasteryRing→RingGauge, PercentileGauge→PercentileBar,
+  StreakTracker→Heatmap, LevelLadder→NivaStige, JourneyMap→Stepper (plan sa KategoriStige —
+  semantisk feil mapping, dokumentert i gap-registeret #6), GoalProgress-gradient (utokenisert
+  #8EBF00) → golfdata Progress. 404/500-sidene rekomponert fra AthleticHero til Eyebrow +
+  display-h1 + golfdata Button. KpiCard→KpiTile (baneguide hull-detalj + meg/helse).
+  Design-hake /portal/talent – → ~. Gap-register bølge 2: ingen nye komponent-gap, 3
+  observasjoner (#6–8). Visuelt verifisert med TALENT-flagg + seedet testdata (screentest).
+  tsc + eslint + hex-gate (2 filer forbedret, baseline låst) + build grønt, 342/342 tester.
 
 - 8. juli (opprydding Fase 4, bølge 1 — src/components → golfdata, branch `opprydding/token-konvergens`):
   **Delte komponenter over på golfdata-kanon.** Nye porter fra det levende Claude Design-prosjektet

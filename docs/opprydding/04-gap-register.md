@@ -21,10 +21,28 @@ Ikke fem nye komponenter — **to nye + tre utvidelser**. Speil før du finner o
 | 5 | Warn-variant på Tag | gul/oransje status | UTVID `Tag`: `warn`-variant via `--warning`-token (finnes i v14). Triviell. | UTVID | ÅPEN |
 
 ## Bølge 2 — /portal
-(Claude Code appender nye gap her)
+Ingen NYE komponent-gap — alt skjermene trengte fantes i DS-prosjektet (PercentileBar,
+NivaStige og Stepper er nå portet til golfdata/). Tre observasjoner til protokollen:
+
+| # | Observasjon | Vurdering | Status |
+|---|---|---|---|
+| 6 | Plan-mappingen «JourneyMap→KategoriStige» passer ikke semantisk: JourneyMap er en 5-stegs reise-strip (Klubb→Tour), KategoriStige er A–K-tabellen med TidsPyramide-avhengighet og full kategoridata siden ikke har. Brukte DS `Stepper` (semantisk riktig, portet). KategoriStige hører til når ekte A–K-data kobles post-BETA. | AVVIK FRA PLAN, dokumentert | LUKKET |
+| 7 | `Card.title`-typen i lokal port kolliderer med HTML-attributtet `title` (string) — ReactNode-titler avvises av TS. Bør fikses i porten (Omit<"title"> fra HTMLAttributes). | PORT-BUG (lokal, ikke DS) | ÅPEN |
+| 8 | `src/lib/portal-hjem/hjem-data.ts` er død kode (null konsumenter) med gammel-athletic-typeimport — kandidat for sletting i Fase 5, blokkerer ellers slettingen av gamle `pyramid-progress`. | DØD KODE | ÅPEN |
 
 ## Bølge 3 — /admin
-(Claude Code appender nye gap her)
+
+Ingen NYE komponent-gap — `SegmentedTabs` portet fra DS (forms/). To observasjoner:
+
+| # | Observasjon | Vurdering | Status |
+|---|---|---|---|
+| 9 | `SegmentedTabs` har ikke count/badge-støtte (gamle TabBar viste antall per fane). Løst med antall i label-teksten («Drills (12)») — vurder om DS skal få en count-variant. | UTVID (valgfri) | ÅPEN |
+| 10 | Samme typekollisjon som #7 i SegmentedTabs-porten (`onChange` mot HTMLAttributes) — løst med Omit i porten her; #7 (Card.title) står fortsatt. | PORT-MØNSTER | LUKKET her |
 
 ## Bølge 4 — marketing + forelder
-(Claude Code appender nye gap her)
+
+Ingen NYE komponent-gap — `Pyramid` portet fra DS (data/). Én statusføring:
+
+| # | Observasjon | Vurdering | Status |
+|---|---|---|---|
+| 11 | De 3 siste gamle importene i hele appen er `PulseDot` på marketing (anlegg/junior/playerhq) — venter på gap #1 (StatusDot). Når StatusDot er i DS og portet, lukkes disse og gamle athletic kan slettes (Fase 5). | VENTER PÅ #1 | ÅPEN |

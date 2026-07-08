@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/athletic/golfdata";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -12,7 +13,6 @@ import {
 import type { Tier } from "@/generated/prisma/client";
 import type { UserPreferences } from "@/lib/preferences";
 import { oppdaterProfil, oppdaterPreferences } from "./actions";
-import { AthleticButton } from "@/components/athletic/button";
 
 type ProfilInitial = {
   name: string;
@@ -257,9 +257,9 @@ export function ProfilForm({ initial, prefs, parents }: Props) {
           )}
 
           <div className="flex items-center gap-4">
-            <AthleticButton type="submit" variant="primary" disabled={pending}>
+            <Button type="submit" variant="primary" disabled={pending}>
               {pending ? "Lagrer…" : "Lagre profil"}
-            </AthleticButton>
+            </Button>
             {lagret && (
               <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
                 <Check className="h-3 w-3" strokeWidth={1.5} />

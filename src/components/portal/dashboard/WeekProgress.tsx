@@ -1,7 +1,7 @@
 "use client";
 
+import { Card } from "@/components/athletic/golfdata";
 import { cn } from "@/lib/utils";
-import { AthleticCard } from "@/components/athletic";
 import type { WeekPlanProgress } from "@/app/portal/actions";
 
 const AXES = [
@@ -37,7 +37,7 @@ export function WeekProgress({ progress, weekNumber, className }: WeekProgressPr
   const pct = progress.plannedMin > 0 ? Math.round((progress.completedMin / progress.plannedMin) * 100) : 0;
 
   return (
-    <AthleticCard label={`Uke ${weekNumber} · progresjon`} className={className}>
+    <Card eyebrow={`Uke ${weekNumber} · progresjon`} className={className}>
       <div className="space-y-5">
         {/* Total bar */}
         <div>
@@ -86,6 +86,6 @@ export function WeekProgress({ progress, weekNumber, className }: WeekProgressPr
           })}
         </div>
       </div>
-    </AthleticCard>
+    </Card>
   );
 }

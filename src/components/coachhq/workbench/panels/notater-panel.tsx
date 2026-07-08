@@ -16,12 +16,10 @@
  * referanse, men er ikke koblet til en route ennå).
  */
 
+import { Button, Card, Tag } from "@/components/athletic/golfdata";
 import { useMemo, useState } from "react";
-import { FileText, Lock, Pencil, Plus, Search, Tag } from "lucide-react";
+import { FileText, Lock, Pencil, Plus, Search, Tag as TagIcon } from "lucide-react";
 
-import { AthleticButton } from "@/components/athletic/button";
-import { AthleticCard } from "@/components/athletic/card";
-import { AthleticBadge } from "@/components/athletic/badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Input } from "@/components/ui/input";
 
@@ -130,16 +128,16 @@ function NotatKort({ notat, onRediger }: NotatKortProps) {
 
       {notat.tags.length > 0 && (
         <div className="mt-2 flex flex-wrap items-center gap-1.5">
-          <Tag
+          <TagIcon
             size={12}
             strokeWidth={1.75}
             className="text-muted-foreground"
             aria-hidden
           />
           {notat.tags.map((tag) => (
-            <AthleticBadge key={tag} variant="neutral">
+            <Tag key={tag} variant="neutral">
               {tag}
-            </AthleticBadge>
+            </Tag>
           ))}
         </div>
       )}
@@ -165,19 +163,19 @@ export function NotaterPanel({
   const harNotater = notater.length > 0;
 
   return (
-    <AthleticCard
-      label="Coach-notater (privat)"
+    <Card
+      eyebrow="Coach-notater (privat)"
       action={
         harNotater && onNyNotat ? (
-          <AthleticButton
-            variant="lime"
+          <Button
+            variant="signal"
             size="sm"
             onClick={onNyNotat}
             type="button"
           >
             <Plus size={14} strokeWidth={2} />
             Ny notat
-          </AthleticButton>
+          </Button>
         ) : undefined
       }
     >
@@ -227,19 +225,19 @@ export function NotaterPanel({
           description="Skriv din første notat om denne spilleren."
           action={
             onNyNotat ? (
-              <AthleticButton
-                variant="lime"
+              <Button
+                variant="signal"
                 size="sm"
                 onClick={onNyNotat}
                 type="button"
               >
                 <Plus size={14} strokeWidth={2} />
                 Skriv første notat
-              </AthleticButton>
+              </Button>
             ) : undefined
           }
         />
       )}
-    </AthleticCard>
+    </Card>
   );
 }

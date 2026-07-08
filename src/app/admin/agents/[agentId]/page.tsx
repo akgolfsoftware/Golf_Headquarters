@@ -1,6 +1,7 @@
 // Detalj-side per agent. Viser konfigurasjon, siste kjøringer (fra
 // AgentRun) og lar coach gi tommel opp/ned-feedback per kjøring.
 
+import { Tag } from "@/components/athletic/golfdata";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Bot, Sparkles } from "lucide-react";
@@ -8,7 +9,6 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { DetailShell } from "@/components/shared/detail-shell";
 import { KPICard } from "@/components/ui/kpi-card";
-import { AthleticBadge } from "@/components/athletic/badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { FeedbackForm } from "./feedback-form";
 import { ApprovalActions } from "@/app/admin/approvals/approval-actions";
@@ -110,10 +110,10 @@ const AGENT_KONFIG: Record<string, AgentKonfig> = {
 
 const STATUS_VARIANT: Record<
   AgentKonfig["status"],
-  "ok" | "lime" | "neutral"
+  "up" | "live" | "neutral"
 > = {
-  aktiv: "ok",
-  beta: "lime",
+  aktiv: "up",
+  beta: "live",
   planlagt: "neutral",
 };
 
@@ -219,9 +219,9 @@ export default async function AgentDetaljPage({
       title={konfig.navn}
       subtitle={konfig.beskrivelse}
       statusPill={
-        <AthleticBadge variant={STATUS_VARIANT[konfig.status]}>
+        <Tag variant={STATUS_VARIANT[konfig.status]}>
           {konfig.status}
-        </AthleticBadge>
+        </Tag>
       }
       kpiRow={
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">

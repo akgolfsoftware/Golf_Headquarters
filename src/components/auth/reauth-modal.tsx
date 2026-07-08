@@ -1,10 +1,10 @@
 "use client";
 
+import { Button } from "@/components/athletic/golfdata";
 import { useEffect, useState } from "react";
 import { KeyRound, Loader2, ShieldAlert } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Modal } from "@/components/shared/modal";
-import { AthleticButton } from "@/components/athletic/button";
 
 type ReauthModalProps = {
   /**
@@ -188,15 +188,15 @@ export function ReauthModal({
         )}
 
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <AthleticButton
+          <Button
             type="button"
-            variant="ghost-light"
+            variant="ghost"
             onClick={onClose}
             disabled={pending}
           >
             Avbryt
-          </AthleticButton>
-          <AthleticButton
+          </Button>
+          <Button
             type="submit"
             variant="primary"
             disabled={pending || !email || password.length < 1}
@@ -213,7 +213,7 @@ export function ReauthModal({
             ) : (
               bekreftTekst
             )}
-          </AthleticButton>
+          </Button>
         </div>
       </form>
     </Modal>

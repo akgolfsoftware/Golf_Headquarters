@@ -8,9 +8,9 @@
  * for innlogget bruker og returnerer URL-en vi redirecter til.
  */
 
+import { Button } from "@/components/athletic/golfdata";
 import { useState } from "react";
 import { Loader2, ExternalLink, AlertTriangle } from "lucide-react";
-import { AthleticButton } from "@/components/athletic";
 
 export function AapneStripePortal() {
   const [loading, setLoading] = useState(false);
@@ -38,9 +38,9 @@ export function AapneStripePortal() {
 
   return (
     <div className="space-y-3">
-      <AthleticButton
+      <Button
         type="button"
-        variant="lime"
+        variant="signal"
         size="lg"
         className="w-full"
         onClick={handleClick}
@@ -57,7 +57,7 @@ export function AapneStripePortal() {
             Administrer kort i Stripe
           </span>
         )}
-      </AthleticButton>
+      </Button>
 
       {error ? (
         <div

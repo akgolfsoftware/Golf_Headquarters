@@ -22,6 +22,7 @@
  * Server component. Auth-guard beholdt (requirePortalUser).
  */
 
+import { Tag } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { Download, Flag, Globe, Lock, MapPin, Monitor, Moon, Radar, Ruler, Shield, ShieldCheck, Smartphone, Sparkles, Watch } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -29,7 +30,6 @@ import { lesPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
 import { MeSub, SetGroup, SetLinkRow, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
 import { Toggle } from "@/components/portal/meg/toggle";
-import { AthleticBadge } from "@/components/athletic/badge";
 import { buttonClasses } from "@/components/ui/button";
 import { VarslerToggles } from "./varsler-toggles";
 
@@ -61,9 +61,9 @@ export default async function InnstillingerPage() {
           title="TrackMan"
           meta={tmTilkoblet ? `Tilkoblet · ${tmCount} økter` : "Ingen økter importert ennå"}
           right={
-            <AthleticBadge variant={tmTilkoblet ? "ok" : "neutral"}>
+            <Tag variant={tmTilkoblet ? "up" : "neutral"}>
               {tmTilkoblet ? "På" : "Av"}
-            </AthleticBadge>
+            </Tag>
           }
         />
         <SetRow
@@ -84,9 +84,9 @@ export default async function InnstillingerPage() {
           title="Golfbox"
           meta="Runder & handicap"
           right={
-            <AthleticBadge variant={golfboxTilkoblet ? "ok" : "neutral"}>
+            <Tag variant={golfboxTilkoblet ? "up" : "neutral"}>
               {golfboxTilkoblet ? "På" : "Av"}
-            </AthleticBadge>
+            </Tag>
           }
         />
       </SetGroup>
@@ -134,7 +134,7 @@ export default async function InnstillingerPage() {
           icon={Shield}
           title="BankID"
           meta="Identitetsbekreftelse"
-          right={<AthleticBadge variant="neutral">Ikke verifisert</AthleticBadge>}
+          right={<Tag variant="neutral">Ikke verifisert</Tag>}
         />
         <SetRow
           icon={Smartphone}

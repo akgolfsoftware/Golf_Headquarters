@@ -1,6 +1,6 @@
+import { Eyebrow } from "@/components/athletic/golfdata";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 type OverviewShellProps = {
   eyebrow: string;
@@ -54,7 +54,7 @@ export function OverviewShell({
             </div>
           )}
           <div className="space-y-2">
-            <AthleticEyebrow>{eyebrow}</AthleticEyebrow>
+            <Eyebrow as="span">{eyebrow}</Eyebrow>
             <h1 className="font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
               {title}
             </h1>

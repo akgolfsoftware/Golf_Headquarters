@@ -12,14 +12,14 @@
  * Ingen demo-drills — tom plan gir ærlig tom-tilstand.
  */
 
+import { Eyebrow } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Sparkles } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AthleticEyebrow } from "@/components/athletic";
-import { TabBar } from "@/components/athletic/tab-bar";
+import { PlanTabs } from "./plan-tabs";
 import { SG_BUCKETS, type PyramidArea } from "@/components/teknisk-plan/constants";
 import type { OppgaveDraft } from "@/components/teknisk-plan/oppgave-modal";
 import { PlanToolbar } from "./plan-toolbar";
@@ -201,9 +201,9 @@ export default async function SpillerPlanDetaljPage({
       <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <AthleticEyebrow>
+            <Eyebrow as="span">
               Coach · {spiller.name} · Utviklingsplan
-            </AthleticEyebrow>
+            </Eyebrow>
             <h1 className="font-display mt-2 text-3xl font-bold leading-tight tracking-tight md:text-4xl">
               {plan.navn.split(" ").slice(0, -1).join(" ")}{" "}
               <em
@@ -248,11 +248,11 @@ export default async function SpillerPlanDetaljPage({
       </header>
 
       {/* Tab-bar */}
-      <TabBar
+      <PlanTabs
         tabs={[
           { id: "oversikt", label: "Oversikt" },
           { id: "periodisering", label: "Periodisering" },
-          { id: "drills", label: "Drills", count: drillsTotal },
+          { id: "drills", label: `Drills (${drillsTotal})` },
           { id: "hit-rate", label: "Hit-rate" },
           { id: "effekt", label: "Effekt" },
         ]}

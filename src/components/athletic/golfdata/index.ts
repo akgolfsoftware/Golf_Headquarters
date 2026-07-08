@@ -53,6 +53,14 @@ export { VisningsVelger, type VisningsVelgerProps, type KalenderVisning } from "
 
 // Domene-familien (portert D1, 2026-07-06)
 export { Tag, CountBadge, type TagProps, type TagVariant, type TagSize, type CountBadgeProps } from "./Tag";
+export { Avatar, AvatarGroup, type AvatarProps, type AvatarGroupProps, type AvatarSize } from "./Avatar";
+export { FilterPills, type FilterPillsProps, type FilterItem } from "./FilterPills";
+export { MaanedKalender, type MaanedKalenderProps, type MaanedDag, type MaanedOkt, type MaanedAkse, type MaanedFlytt } from "./MaanedKalender";
+export { PercentileBar, type PercentileBarProps } from "./PercentileBar";
+export { NivaStige, type NivaStigeProps } from "./NivaStige";
+export { Stepper, type StepperProps, type StepItem } from "./Stepper";
+export { SegmentedTabs, type SegmentedTabsProps, type SegmentedTabOption } from "./SegmentedTabs";
+export { Pyramid, type PyramidProps, type PyramidAxis } from "./Pyramid";
 export { OektKort, type OektKortProps, type OektAxis, type OektState } from "./OektKort";
 export { AKFormelChip, type AKFormelChipProps } from "./AKFormelChip";
 export { LiveStatus, type LiveStatusProps } from "./LiveStatus";

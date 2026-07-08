@@ -11,10 +11,10 @@
  * data-loaderen — ingen tall dikter denne komponenten opp.
  */
 
+import { Avatar } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { CalendarClock, CalendarPlus, FileText, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AthleticAvatar } from "@/components/athletic";
 import type { InboxContextData, ContextKpi } from "./inbox-screen";
 
 const kpiToneClass: Record<ContextKpi["tone"], string> = {
@@ -32,13 +32,7 @@ export function InboxContext({ data }: { data: InboxContextData }) {
 
       {/* Spillerhode */}
       <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
-        <AthleticAvatar
-          src={data.avatarUrl ?? undefined}
-          initials={data.initials}
-          size="md"
-          borderColor="card"
-          className="h-11 w-11 border-0 shadow-none"
-        />
+        <Avatar src={data.avatarUrl ?? undefined} name={data.name} size="md" />
         <div className="min-w-0">
           <div className="truncate font-display text-[15px] font-bold leading-tight tracking-[-0.015em] text-foreground">
             {data.name}

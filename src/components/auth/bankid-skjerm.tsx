@@ -20,10 +20,10 @@
  * Ingen DB/auth her — kun presentasjon. Tekst/lenker styres via props.
  */
 
+import { Eyebrow } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export type BankIdSkjermProps = {
   /** Mono-caps eyebrow over tittelen. */
@@ -82,7 +82,7 @@ export function BankIdSkjerm({
             BankID
           </span>
 
-          <AthleticEyebrow>{eyebrow}</AthleticEyebrow>
+          <Eyebrow as="span">{eyebrow}</Eyebrow>
 
           <h1 className="mt-3 font-display text-[30px] font-bold leading-[1.05] tracking-[-0.025em] text-foreground [text-wrap:balance]">
             {titlePrefix}

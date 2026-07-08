@@ -11,8 +11,25 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { PresenceDot, type PresenceState } from "@/components/athletic/presence-dot";
-import { StatusPill, type StatusTone } from "@/components/athletic/status-pill";
+import { Tag, type TagVariant } from "@/components/athletic/golfdata";
+
+/** Panelets status-vokabular (uendret for kallere) — oversettes til Tag-varianter. */
+export type StatusTone = "active" | "behind" | "inactive" | "guide" | "alert" | "warn";
+
+const TONE_TIL_TAG: Record<StatusTone, TagVariant> = {
+  active: "up",
+  behind: "down",
+  inactive: "neutral",
+  guide: "signal",
+  alert: "down",
+  warn: "outline",
+};
+const TONE_STIL: Partial<Record<StatusTone, React.CSSProperties>> = {
+  // Tag mangler warn-variant (DS-gap meldt) — warning-tokens via style.
+  warn: { color: "var(--warning)", borderColor: "var(--warning-border)" },
+};
 
 const AXES = [
   { key: "fys", label: "FYS", cls: "bg-pyr-fys" },
@@ -71,7 +88,7 @@ export function PlayerDetailPanel({
             <div className="font-display text-lg font-bold leading-tight tracking-[-0.015em] text-foreground">{player.name}</div>
             <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">{player.meta}</div>
             <div className="mt-2 flex flex-wrap gap-1.5">
-              {player.status.map((s, i) => <StatusPill key={i} tone={s.tone}>{s.label}</StatusPill>)}
+              {player.status.map((s, i) => <Tag key={i} variant={TONE_TIL_TAG[s.tone]} style={TONE_STIL[s.tone]}>{s.label}</Tag>)}
             </div>
           </div>
           <button type="button" onClick={onClose} aria-label="Lukk" className="inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary">

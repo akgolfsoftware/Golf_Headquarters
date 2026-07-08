@@ -12,10 +12,10 @@
  * Rent presentasjonelt + props-drevet: ingen Prisma/DB/Supabase/auth.
  */
 
+import { Eyebrow } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { CheckCircle } from "lucide-react";
 import { AkGolfLogo } from "@/components/shared/ak-golf-logo";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export type LoggetUtSkjermProps = {
   /** Lenke bak logoen — vanligvis marketing-forsiden. */
@@ -51,9 +51,9 @@ export function LoggetUtSkjerm({
             <CheckCircle className="h-11 w-11" strokeWidth={1.5} aria-hidden />
           </div>
 
-          <AthleticEyebrow tone="lime">
+          <Eyebrow as="span" tone="signal">
             AK GOLF · TAKK FOR DENNE GANG
-          </AthleticEyebrow>
+          </Eyebrow>
           <h1 className="mt-4 font-display text-2xl font-semibold leading-tight tracking-tight text-foreground sm:text-3xl">
             Vi <em className="font-normal italic text-primary">ses</em> snart
           </h1>

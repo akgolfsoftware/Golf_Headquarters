@@ -11,6 +11,7 @@
  * Ekte Prisma. Tomstate per kolonne. Ingen hardkodet hex, ingen emoji.
  */
 
+import { Eyebrow } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import {
   AlertCircle,
@@ -28,7 +29,6 @@ import {
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AthleticEyebrow } from "@/components/athletic";
 import { cn } from "@/lib/utils";
 
 type Status = "risk" | "watch" | "check" | "ok";
@@ -175,7 +175,7 @@ export default async function OppfolgingsKo() {
       {/* Hero */}
       <header className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <AthleticEyebrow>AGENCYOS · OPPFØLGINGSKØ</AthleticEyebrow>
+          <Eyebrow as="span">AGENCYOS · OPPFØLGINGSKØ</Eyebrow>
           <h1 className="mt-1.5 font-display text-3xl font-bold leading-tight tracking-tight md:text-[34px]">
             Hvem trenger en{" "}
             <em className="font-display font-normal italic text-primary">

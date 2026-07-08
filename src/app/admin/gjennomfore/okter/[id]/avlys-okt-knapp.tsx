@@ -17,7 +17,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { AthleticButton } from "@/components/athletic";
+import { Button as GdButton } from "@/components/athletic/golfdata";
 import { kansellerBooking } from "./actions";
 
 export function AvlysOktKnapp({
@@ -53,14 +53,14 @@ export function AvlysOktKnapp({
 
   return (
     <>
-      <AthleticButton
-        variant="ghost-light"
+      <GdButton
+        variant="ghost"
         size={triggerSize}
         className={`text-destructive ${fullWidth ? "w-full" : ""} ${triggerClassName ?? ""}`}
         onClick={() => setOpen(true)}
       >
         Avlys
-      </AthleticButton>
+      </GdButton>
 
       <Dialog open={open} onOpenChange={(o) => (pending ? undefined : setOpen(o))}>
         <DialogContent size="sm">

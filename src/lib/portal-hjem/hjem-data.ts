@@ -14,6 +14,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { v2SessionStartHref } from "@/lib/portal/session-hrefs";
 import { getWeekProgress } from "@/components/portal/workbench/get-week-progress";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import type { PyramidRow } from "@/components/athletic";
 
 type PyramidArea = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";

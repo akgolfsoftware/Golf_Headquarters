@@ -3,7 +3,7 @@
  * Drop-in erstatning for PageHeader. Samme props.
  */
 
-import { AthleticEyebrow } from "@/components/athletic";
+import { Eyebrow } from "@/components/athletic/golfdata";
 import type { ReactNode } from "react";
 
 export function PlayerHero({
@@ -27,7 +27,7 @@ export function PlayerHero({
       className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
     >
       <div>
-        {eyebrow ? <AthleticEyebrow>{eyebrow}</AthleticEyebrow> : null}
+        {eyebrow ? <Eyebrow as="span">{eyebrow}</Eyebrow> : null}
         <h1 className="font-display mt-1.5 text-3xl font-bold leading-tight tracking-tight md:text-4xl">
           {titleLead ? `${titleLead} ` : ""}
           <em

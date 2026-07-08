@@ -3,12 +3,11 @@
  * Lyst tema. Baner med geometri + baner spilleren har spilt. Ekte data;
  * tom-tilstand når ingen baner. Skall eies av portal-layoutet.
  */
+import { Eyebrow, Tag } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { MapPin, ChevronRight } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getBaneLibrary } from "@/lib/baneguide/queries";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
-import { AthleticBadge } from "@/components/athletic/badge";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +17,7 @@ export default async function BaneguidePage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
-      <AthleticEyebrow>Baneguide</AthleticEyebrow>
+      <Eyebrow as="span">Baneguide</Eyebrow>
       <h1 className="mt-1.5 font-display text-3xl font-bold tracking-[-0.02em] text-foreground">
         Banene dine
       </h1>
@@ -47,9 +46,9 @@ export default async function BaneguidePage() {
                 </div>
                 <div className="flex shrink-0 flex-col items-end gap-1.5">
                   {b.hasGeometry ? (
-                    <AthleticBadge variant="lime">{b.holesMapped} hull</AthleticBadge>
+                    <Tag variant="signal">{b.holesMapped} hull</Tag>
                   ) : (
-                    <AthleticBadge variant="neutral">Kommer</AthleticBadge>
+                    <Tag variant="neutral">Kommer</Tag>
                   )}
                   <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                     {b.playerRounds} runder

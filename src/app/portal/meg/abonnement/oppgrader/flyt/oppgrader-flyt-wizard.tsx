@@ -10,6 +10,7 @@
  * Kun DS-token-klasser. Ingen emoji (lucide). Pris: 299 kr/mnd.
  */
 
+import { Button } from "@/components/athletic/golfdata";
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -26,7 +27,6 @@ import {
   Loader2,
   type LucideIcon,
 } from "lucide-react";
-import { AthleticButton } from "@/components/athletic";
 
 const FORDELER: { icon: LucideIcon; tittel: string; meta: string }[] = [
   { icon: Sparkles, tittel: "AI-coach 24/7", meta: "Svar tilpasset dine TrackMan-data" },
@@ -168,9 +168,9 @@ export function OppgraderFlytWizard() {
 
       {/* Bekreft */}
       <div className="mt-6 space-y-3">
-        <AthleticButton
+        <Button
           type="button"
-          variant="lime"
+          variant="signal"
           size="lg"
           className="w-full"
           onClick={handleBekreft}
@@ -187,7 +187,7 @@ export function OppgraderFlytWizard() {
               <ArrowRight className="h-4 w-4" strokeWidth={2.2} aria-hidden />
             </>
           )}
-        </AthleticButton>
+        </Button>
         <p className="flex items-center justify-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
           <Lock className="h-3 w-3 text-primary" strokeWidth={2} aria-hidden />
           Sikker betaling · Stripe

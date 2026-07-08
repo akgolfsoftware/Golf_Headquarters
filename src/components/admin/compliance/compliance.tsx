@@ -16,6 +16,7 @@
  * ingen Prisma/DB. Alle tall kommer inn via props (ComplianceData).
  */
 
+import { Sparkline } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -29,7 +30,6 @@ import {
   Plus,
   X,
 } from "lucide-react";
-import { Sparkline } from "@/components/athletic/sparkline";
 import { cn } from "@/lib/utils";
 
 // ── Typer (selvstendige — ingen lib-import) ───────────────────────
@@ -556,7 +556,7 @@ function StallSparkline({ values, band }: { values: number[]; band: ComplianceBa
   }
   return (
     <Sparkline
-      values={values.map((v) => v * 100)}
+      data={values.map((v) => v * 100)}
       width={64}
       height={22}
       color={color}

@@ -9,6 +9,7 @@
 //
 // State er lokalt for nå. Persistens til DB kommer i senere sprint.
 
+import { Button } from "@/components/athletic/golfdata";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Bot,
@@ -18,7 +19,6 @@ import {
   Send,
   Sparkles,
 } from "lucide-react";
-import { AthleticButton } from "@/components/athletic/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { sendCaddieMelding } from "./actions";
@@ -270,7 +270,7 @@ export function CoachCaddieChat({
               disabled={loading}
               className="flex-1 resize-none text-sm"
             />
-            <AthleticButton
+            <Button
               type="submit"
               variant="primary"
               size="md"
@@ -279,7 +279,7 @@ export function CoachCaddieChat({
             >
               <Send className="h-4 w-4" strokeWidth={1.75} />
               <span>Send</span>
-            </AthleticButton>
+            </Button>
           </form>
         </>
       )}

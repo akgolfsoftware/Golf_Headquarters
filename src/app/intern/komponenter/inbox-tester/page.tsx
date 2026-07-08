@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { FilterPillBar, type FilterPill } from "@/components/athletic/filter-pill-bar";
 import {
   InboxRow,
@@ -8,6 +9,7 @@ import {
   InboxExpand,
   type InboxItem,
 } from "@/components/admin/inbox/inbox-kit";
+// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import {
   TestMatrix,
   LegendStrip,

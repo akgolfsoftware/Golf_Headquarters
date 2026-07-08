@@ -1,13 +1,12 @@
 "use client";
 
+import { Tag, Button } from "@/components/athletic/golfdata";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, Check, Lock, Mail, User } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { UserRole, Tier } from "@/generated/prisma/client";
-import { AthleticButton } from "@/components/athletic/button";
-import { AthleticBadge } from "@/components/athletic/badge";
 
 type RoleOption = { value: UserRole; label: string };
 const ROLES: RoleOption[] = [
@@ -147,12 +146,12 @@ export function SignupForm({
                 }`}
               >
                 {p.featured && (
-                  <AthleticBadge
-                    variant="lime"
+                  <Tag
+                    variant="signal"
                     className="absolute -top-2 right-4"
                   >
                     Mest populær
-                  </AthleticBadge>
+                  </Tag>
                 )}
                 <div className="flex items-baseline justify-between gap-2">
                   <div className="font-display text-sm font-semibold">{p.name}</div>
@@ -161,9 +160,9 @@ export function SignupForm({
                   </div>
                 </div>
                 {p.trialHint && (
-                  <AthleticBadge variant="lime" className="mt-2">
+                  <Tag variant="signal" className="mt-2">
                     {p.trialHint}
-                  </AthleticBadge>
+                  </Tag>
                 )}
                 <div className="mt-1 text-[12px] leading-snug text-muted-foreground">
                   {p.desc}
@@ -292,7 +291,7 @@ export function SignupForm({
         </div>
       )}
 
-      <AthleticButton
+      <Button
         type="submit"
         variant="primary"
         size="lg"
@@ -308,7 +307,7 @@ export function SignupForm({
             <ArrowRight className="h-4 w-4" strokeWidth={2} aria-hidden />
           </>
         )}
-      </AthleticButton>
+      </Button>
 
       <p className="pt-2 text-center">
         <span className="font-mono text-xs text-muted-foreground">

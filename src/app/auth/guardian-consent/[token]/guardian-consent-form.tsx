@@ -1,9 +1,9 @@
 "use client";
 
+import { Tag } from "@/components/athletic/golfdata";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
-import { AthleticBadge } from "@/components/athletic/badge";
 import { confirmGuardianConsent } from "./actions";
 
 type Props = {
@@ -142,7 +142,7 @@ export function GuardianConsentForm({
           role="alert"
           className="mt-4 flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3"
         >
-          <AthleticBadge variant="urgent">Feil</AthleticBadge>
+          <Tag variant="down">Feil</Tag>
           <span className="text-sm text-destructive">{error}</span>
         </div>
       ) : null}

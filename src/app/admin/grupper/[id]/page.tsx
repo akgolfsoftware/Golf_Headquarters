@@ -10,6 +10,7 @@
  * Tokens-only, 8pt-grid, Lucide stroke 1.75.
  */
 
+import { Tag } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -23,7 +24,6 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { DetailShell } from "@/components/shared/detail-shell";
 import { KPICard } from "@/components/ui/kpi-card";
-import { AthleticBadge } from "@/components/athletic/badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { avatarBg } from "@/lib/avatar-colors";
 import {
@@ -181,7 +181,7 @@ export default async function GruppeDetalj({
         </em>
       }
       subtitle={`${gruppe._count.members} medlemmer · Snitt-HCP ${snittHcpVerdi} · ${gruppe._count.schedules} planlagte samlinger · Coach ${gruppe.coach?.name ?? "ikke satt"}`}
-      statusPill={<AthleticBadge variant="primary">{typeLabel(gruppe.level).toUpperCase()}</AthleticBadge>}
+      statusPill={<Tag variant="signal">{typeLabel(gruppe.level).toUpperCase()}</Tag>}
       actions={
         <>
           <Link

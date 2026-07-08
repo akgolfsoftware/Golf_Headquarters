@@ -11,6 +11,7 @@
  * signert, kvittering = betalt osv.); ellers ingen chip. Tomstate når lista
  * er tom. Server component, auth-guard beholdt.
  */
+import { Tag } from "@/components/athletic/golfdata";
 import {
   ChevronRight,
   FileBadge,
@@ -24,7 +25,6 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { MeSub } from "@/components/portal/meg/meg-sub";
-import { AthleticBadge } from "@/components/athletic/badge";
 
 // Document.kind er fri streng (CONTRACT | GUIDE | RECEIPT | OTHER i bruk i dag;
 // CONSENT/PRIVACY/GDPR/LICENSE støttes for fremtidige dokumenttyper).
@@ -50,13 +50,13 @@ const KIND_LABEL: Record<string, string> = {
 };
 
 // Status-chip kun der dokumenttypen impliserer status (ingen status-felt i modellen).
-const KIND_CHIP: Record<string, { tekst: string; variant: "ok" | "lime" | "neutral" }> = {
-  CONTRACT: { tekst: "Signert", variant: "ok" },
-  CONSENT: { tekst: "Godkjent", variant: "ok" },
-  RECEIPT: { tekst: "Betalt", variant: "ok" },
-  LICENSE: { tekst: "Gyldig", variant: "ok" },
-  PRIVACY: { tekst: "Aktiv", variant: "ok" },
-  GDPR: { tekst: "Aktiv", variant: "ok" },
+const KIND_CHIP: Record<string, { tekst: string; variant: "up" | "live" | "neutral" }> = {
+  CONTRACT: { tekst: "Signert", variant: "up" },
+  CONSENT: { tekst: "Godkjent", variant: "up" },
+  RECEIPT: { tekst: "Betalt", variant: "up" },
+  LICENSE: { tekst: "Gyldig", variant: "up" },
+  PRIVACY: { tekst: "Aktiv", variant: "up" },
+  GDPR: { tekst: "Aktiv", variant: "up" },
 };
 
 function formatDato(d: Date): string {
@@ -111,9 +111,9 @@ export default async function DokumenterPage() {
                   </span>
                 </span>
                 {chip && (
-                  <AthleticBadge variant={chip.variant} className="shrink-0">
+                  <Tag variant={chip.variant} className="shrink-0">
                     {chip.tekst}
-                  </AthleticBadge>
+                  </Tag>
                 )}
                 <ChevronRight
                   className="h-[18px] w-[18px] shrink-0 text-muted-foreground"

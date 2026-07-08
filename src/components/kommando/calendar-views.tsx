@@ -1,34 +1,44 @@
 "use client";
 
-// Kalender-visning for Kommando. Tar ferdig-bygde celler/hendelser fra serveren
+// Kalender-visning for Kommando. Tar ferdig-bygde dager/blokker fra serveren
 // og veksler mellom måned (alle hendelser) og uke (tidssatte bookinger).
+// Golfdata-kalenderfamilien (MaanedKalender piller-modus + TidsGrid).
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import {
-  MonthGrid,
-  WeekGrid,
-  type MonthDayCell,
-  type WeekEvent,
-} from "@/components/athletic/calendars";
+import { MaanedKalender, TidsGrid, type MaanedDag } from "@/components/athletic/golfdata";
+
+/** Én tidssatt booking i ukevisningen. */
+export type UkeBlokk = {
+  id: string;
+  /** 0=man .. 6=søn. */
+  dag: number;
+  /** Desimaltimer. */
+  fra: number;
+  til: number;
+  tittel: string;
+  tid: string;
+};
 
 type View = "month" | "week";
+
+const UKEDAGER = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
 
 export function CalendarViews({
   year,
   month,
-  monthName,
-  monthCells,
+  monthDays,
   weekStart,
-  weekEvents,
+  weekBlocks,
   todayIndex,
 }: {
   year: number;
+  /** 1-indeksert (1=januar). */
   month: number;
   monthName: string;
-  monthCells: MonthDayCell[];
+  monthDays: MaanedDag[];
   weekStart: Date;
-  weekEvents: WeekEvent[];
+  weekBlocks: UkeBlokk[];
   todayIndex?: number;
 }) {
   const [view, setView] = useState<View>("month");
@@ -54,10 +64,31 @@ export function CalendarViews({
       </div>
 
       {view === "month" ? (
-        <MonthGrid year={year} month={month} monthName={monthName} cells={monthCells} />
+        <MaanedKalender year={year} month={month - 1} modus="piller" days={monthDays} />
       ) : (
         <>
-          <WeekGrid weekStart={weekStart} events={weekEvents} todayIndex={todayIndex} />
+          <TidsGrid fraTime={7} tilTime={21}>
+            {UKEDAGER.map((navn, dagIndex) => {
+              const dagDato = new Date(weekStart.getTime() + dagIndex * 24 * 60 * 60 * 1000);
+              return (
+                <TidsGrid.Kolonne
+                  key={dagIndex}
+                  id={`dag-${dagIndex}`}
+                  header={`${navn} ${dagDato.getDate()}`}
+                  idag={todayIndex === dagIndex}
+                >
+                  {weekBlocks
+                    .filter((b) => b.dag === dagIndex)
+                    .map((b) => (
+                      <TidsGrid.Blokk key={b.id} fra={b.fra} til={b.til}>
+                        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.04em]">{b.tid}</span>
+                        <span className="block truncate text-[12px] font-medium">{b.tittel}</span>
+                      </TidsGrid.Blokk>
+                    ))}
+                </TidsGrid.Kolonne>
+              );
+            })}
+          </TidsGrid>
           <p className="mt-3 font-mono text-[11px] text-muted-foreground">
             Uke-visningen viser tidssatte bookinger. Oppgaver med frist vises i måneds-visningen.
           </p>

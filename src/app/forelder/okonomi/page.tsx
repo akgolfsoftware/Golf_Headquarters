@@ -10,6 +10,7 @@
  * DS-tokens + athletic-primitiver. Ingen hex, ingen emoji (kun lucide).
  */
 
+import { Tag } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import {
   AlertTriangle,
@@ -24,7 +25,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
 import { ForelderHero } from "@/components/forelder/forelder-hero";
-import { AthleticBadge, KpiCard, KpiStrip } from "@/components/athletic";
+import { KpiTile } from "@/components/athletic/golfdata";
 import type {
   PaymentStatus,
   SubscriptionStatus,
@@ -186,8 +187,8 @@ export default async function ForelderOkonomi() {
       )}
 
       {/* KPI */}
-      <KpiStrip cols={3} className="gap-3">
-        <KpiCard
+      <div className="grid gap-3 sm:grid-cols-3">
+        <KpiTile
           label="Utestående"
           value={
             utestaaendeOre > 0
@@ -199,7 +200,7 @@ export default async function ForelderOkonomi() {
           unit="kr"
           size="md"
         />
-        <KpiCard
+        <KpiTile
           label="Betalt totalt"
           value={new Intl.NumberFormat("nb-NO").format(
             Math.round(betaltOre / 100),
@@ -207,8 +208,8 @@ export default async function ForelderOkonomi() {
           unit="kr"
           size="md"
         />
-        <KpiCard label="Pakker" value={aktivePakker} unit="aktive" size="md" />
-      </KpiStrip>
+        <KpiTile label="Pakker" value={aktivePakker} unit="aktive" size="md" />
+      </div>
 
       {/* Abonnement per barn */}
       <section className="overflow-hidden rounded-xl border border-border bg-card">
@@ -366,13 +367,14 @@ function AbonnementRad({
           </div>
         </div>
         {st ? (
-          <AthleticBadge
-            variant={st.variant === "ok" ? "ok" : st.variant === "warn" ? "warn" : "neutral"}
+          <Tag
+            variant={st.variant === "ok" ? "up" : st.variant === "warn" ? "outline" : "neutral"}
+            style={st.variant === "warn" ? { color: "var(--warning)", borderColor: "var(--warning-border)" } : undefined}
           >
             {st.tekst}
-          </AthleticBadge>
+          </Tag>
         ) : (
-          <AthleticBadge variant="neutral">Ingen</AthleticBadge>
+          <Tag variant="neutral">Ingen</Tag>
         )}
       </div>
 

@@ -4,11 +4,12 @@
 // (AI-agenter, I dag, Oppgaver). Ekte tall fra DB; ingen dummy. Kalender og
 // prosjekter er ærlige plassholdere til Etappe 2.
 
+import { Tag } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
 import { prisma } from "@/lib/prisma";
-import { KpiStrip, KpiCard, AthleticBadge } from "@/components/athletic";
+import { KpiTile } from "@/components/athletic/golfdata";
 import { cn } from "@/lib/utils";
 import { KOMMANDO_MODELS } from "@/lib/kommando/models";
 import { kommandoModelReady } from "@/lib/kommando/providers";
@@ -55,16 +56,16 @@ export default async function KommandoDashboard() {
   const teamStatusLabel =
     latestRun?.status === "done" ? "Ferdig" : latestRun?.status === "failed" ? "Feilet" : "Kjører";
   const teamStatusVariant =
-    latestRun?.status === "done" ? "ok" : latestRun?.status === "failed" ? "urgent" : "lime";
+    latestRun?.status === "done" ? "up" : latestRun?.status === "failed" ? "down" : "live";
 
   return (
     <div className="space-y-5">
-      <KpiStrip cols={4}>
-        <KpiCard label="Modeller" value={KOMMANDO_MODELS.length} />
-        <KpiCard label="Åpne oppgaver" value={openCount} />
-        <KpiCard label="AI-kjøringer" value={aiRuns} />
-        <KpiCard label="Prosjekter" value={projectsCount} />
-      </KpiStrip>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <KpiTile label="Modeller" value={KOMMANDO_MODELS.length} size="md" />
+        <KpiTile label="Åpne oppgaver" value={openCount} size="md" />
+        <KpiTile label="AI-kjøringer" value={aiRuns} size="md" />
+        <KpiTile label="Prosjekter" value={projectsCount} size="md" />
+      </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
         {/* AI-agenter */}
@@ -135,7 +136,7 @@ export default async function KommandoDashboard() {
                 <li key={t.id} className="flex items-center gap-3 text-sm">
                   <span className="w-10 flex-none font-mono text-[10px] text-muted-foreground">FRIST</span>
                   <span className="flex-1 truncate text-foreground">{t.title}</span>
-                  {t.priority === "haster" && <AthleticBadge variant="warn">Haster</AthleticBadge>}
+                  {t.priority === "haster" && <Tag variant="outline" style={{ color: "var(--warning)", borderColor: "var(--warning-border)" }}>Haster</Tag>}
                 </li>
               ))}
             </ul>
@@ -157,7 +158,7 @@ export default async function KommandoDashboard() {
             <div>
               <div className="mb-2 flex items-center justify-between gap-2">
                 <span className="truncate text-sm text-foreground">{latestRun.title}</span>
-                <AthleticBadge variant={teamStatusVariant}>{teamStatusLabel}</AthleticBadge>
+                <Tag variant={teamStatusVariant}>{teamStatusLabel}</Tag>
               </div>
               <div className="h-1.5 overflow-hidden rounded bg-secondary">
                 <div className="h-full bg-accent" style={{ width: `${teamPct}%` }} />
@@ -195,7 +196,7 @@ export default async function KommandoDashboard() {
                 <li key={t.id} className="flex items-center gap-3 text-sm text-foreground">
                   <span className="h-1.5 w-1.5 flex-none rounded-full bg-muted-foreground/40" />
                   <span className="flex-1">{t.title}</span>
-                  {t.priority === "haster" && <AthleticBadge variant="warn">Haster</AthleticBadge>}
+                  {t.priority === "haster" && <Tag variant="outline" style={{ color: "var(--warning)", borderColor: "var(--warning-border)" }}>Haster</Tag>}
                 </li>
               ))}
             </ul>

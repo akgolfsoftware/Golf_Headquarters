@@ -10,10 +10,10 @@
  * pyr-fargedot — det støtter ikke primitivene.
  */
 
+import { Eyebrow } from "@/components/athletic/golfdata";
 import { useState } from "react";
 import Link from "next/link";
 import { ChevronRight, Search } from "lucide-react";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export type KatalogRad = {
   id: string;
@@ -54,7 +54,7 @@ export function TesterKatalog({ grupper }: { grupper: KatalogGruppe[] }) {
   return (
     <div>
       <div className="mb-2 mt-1 flex items-baseline justify-between pt-2">
-        <AthleticEyebrow>Katalog</AthleticEyebrow>
+        <Eyebrow as="span">Katalog</Eyebrow>
         <span className="font-mono text-xs text-muted-foreground">{totalt} tester</span>
       </div>
 
@@ -81,7 +81,7 @@ export function TesterKatalog({ grupper }: { grupper: KatalogGruppe[] }) {
           <div className="mb-2 flex items-baseline justify-between">
             <span className="inline-flex items-center gap-2">
               <span className={`h-2 w-2 shrink-0 rounded-full ${DOT[g.axis]}`} aria-hidden />
-              <AthleticEyebrow>{g.label}</AthleticEyebrow>
+              <Eyebrow as="span">{g.label}</Eyebrow>
             </span>
             <span className="font-mono text-xs text-muted-foreground">{g.rows.length}</span>
           </div>

@@ -1,9 +1,8 @@
+import { Eyebrow, Tag } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
-import { AthleticBadge } from "@/components/athletic/badge";
 
 type OverviewCardProps = {
   href: string;
@@ -36,6 +35,17 @@ type OverviewCardProps = {
  *   badge={{ label: "3 nye", variant: "lime" }}
  * />
  */
+// Oversetter kortets gamle badge-vokabular til golfdata Tag-varianter.
+// (warn får warning-tokens via style — Tag mangler warn-variant, DS-gap meldt.)
+const BADGE_TIL_TAG = {
+  primary: "signal",
+  lime: "signal",
+  neutral: "neutral",
+  warn: "outline",
+  urgent: "down",
+  ok: "up",
+} as const;
+
 export function OverviewCard({
   href,
   icon: IconComponent,
@@ -66,7 +76,12 @@ export function OverviewCard({
         </div>
         <div className="flex items-center gap-2">
           {badge && (
-            <AthleticBadge variant={badge.variant}>{badge.label}</AthleticBadge>
+            <Tag
+              variant={BADGE_TIL_TAG[badge.variant ?? "primary"]}
+              style={badge.variant === "warn" ? { color: "var(--warning)", borderColor: "var(--warning-border)" } : undefined}
+            >
+              {badge.label}
+            </Tag>
           )}
           <ArrowUpRight
             size={16}
@@ -78,7 +93,7 @@ export function OverviewCard({
       </div>
 
       <div className="space-y-1.5">
-        <AthleticEyebrow>{eyebrow}</AthleticEyebrow>
+        <Eyebrow as="span">{eyebrow}</Eyebrow>
         <h3 className="font-display text-xl font-semibold leading-tight">
           {title}
         </h3>

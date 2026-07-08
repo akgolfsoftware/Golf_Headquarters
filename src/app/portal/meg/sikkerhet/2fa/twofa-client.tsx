@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/athletic/golfdata";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -14,7 +15,6 @@ import {
   Trash2,
 } from "lucide-react";
 import { useToast } from "@/components/shared/toast-provider";
-import { AthleticButton } from "@/components/athletic/button";
 import { ReauthModal } from "@/components/auth/reauth-modal";
 import { createClient } from "@/lib/supabase/client";
 
@@ -352,7 +352,7 @@ export function TwoFaClient() {
           )}
 
           <div className="mt-6 flex justify-end">
-            <AthleticButton
+            <Button
               type="button"
               variant="primary"
               onClick={tilSteg2}
@@ -369,7 +369,7 @@ export function TwoFaClient() {
                   <ChevronRight className="h-4 w-4" strokeWidth={1.75} />
                 </>
               )}
-            </AthleticButton>
+            </Button>
           </div>
         </Kort>
       )}
@@ -440,7 +440,7 @@ export function TwoFaClient() {
               >
                 Tilbake
               </button>
-              <AthleticButton
+              <Button
                 type="button"
                 variant="primary"
                 onClick={bekreftKode}
@@ -457,7 +457,7 @@ export function TwoFaClient() {
                     <ChevronRight className="h-4 w-4" strokeWidth={1.75} />
                   </>
                 )}
-              </AthleticButton>
+              </Button>
             </div>
           </div>
         </Kort>
@@ -535,7 +535,7 @@ export function TwoFaClient() {
           )}
 
           <div className="mt-6 flex justify-end">
-            <AthleticButton
+            <Button
               type="button"
               variant="primary"
               onClick={fullfor}
@@ -543,7 +543,7 @@ export function TwoFaClient() {
             >
               <ShieldCheck className="h-4 w-4" strokeWidth={1.75} />
               Fullfør og aktiver
-            </AthleticButton>
+            </Button>
           </div>
         </Kort>
       )}

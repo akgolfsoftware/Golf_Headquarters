@@ -11,6 +11,7 @@
  * Refaktorert til DetailShell-mønster (plan Del 7).
  */
 
+import { Tag } from "@/components/athletic/golfdata";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Building2, MapPin } from "lucide-react";
@@ -20,7 +21,6 @@ import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { DetailShell } from "@/components/shared/detail-shell";
 import { KPICard } from "@/components/ui/kpi-card";
-import { AthleticBadge } from "@/components/athletic/badge";
 import { AnleggDetailView } from "./anlegg-detail-view";
 
 type Params = Promise<{ id: string }>;
@@ -156,11 +156,11 @@ export default async function AnleggDetailPage({
       subtitle={location.address ?? undefined}
       statusPill={
         opptattNaa > 0 ? (
-          <AthleticBadge variant="warn">
+          <Tag variant="outline" style={{ color: "var(--warning)", borderColor: "var(--warning-border)" }}>
             {opptattNaa} OPPTATT
-          </AthleticBadge>
+          </Tag>
         ) : (
-          <AthleticBadge variant="ok">{ledigNaa} LEDIG</AthleticBadge>
+          <Tag variant="up">{ledigNaa} LEDIG</Tag>
         )
       }
       actions={

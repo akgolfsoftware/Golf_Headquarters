@@ -19,12 +19,12 @@
  * logout og all state er uendret.
  */
 
+import { Eyebrow } from "@/components/athletic/golfdata";
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { Check, Clock, Mail } from "lucide-react";
 import { resendGuardianInvitation } from "@/app/auth/onboarding/actions";
 import { logout } from "@/lib/auth/logout";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 type Props = {
   spillerNavn: string;
@@ -109,7 +109,7 @@ export function SamtykkeVenterKlient({ spillerNavn, invitasjonEmail }: Props) {
 
         {/* STATUS-kort — tre rader med check/klokke (fasit) */}
         <div className="mb-4 rounded-2xl border border-border bg-secondary/40 p-[18px] text-left">
-          <AthleticEyebrow>STATUS</AthleticEyebrow>
+          <Eyebrow as="span">STATUS</Eyebrow>
           <div className="mt-2.5">
             {statusRader.map((rad) => (
               <div key={rad.label} className="flex items-center gap-2.5 py-[7px]">

@@ -6,11 +6,11 @@
  * → RundeNyForm (bane/dato, live to-par-accentkort, hull-grid UT/INN, lagre).
  * Lagringslogikk uendret (logRoundManual via formen).
  */
+import { Eyebrow } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import { RundeNyForm } from "@/components/portal/runde-ny/runde-ny-form";
 
 export default async function NyRundePage() {
@@ -31,7 +31,7 @@ export default async function NyRundePage() {
       </Link>
 
       <div className="max-w-[760px]">
-        <AthleticEyebrow>Analysere · Runder · Ny</AthleticEyebrow>
+        <Eyebrow as="span">Analysere · Runder · Ny</Eyebrow>
         <h1 className="mt-2 font-display text-[26px] font-bold leading-[1.04] tracking-[-0.025em] text-foreground md:text-[30px]">
           Loggfør <em className="font-normal italic text-primary">runde.</em>
         </h1>

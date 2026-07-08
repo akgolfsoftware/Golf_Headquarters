@@ -328,7 +328,6 @@ export default async function CoachPage() {
             coachInitials={coach.initials}
             coachAvatarUrl={coach.avatarUrl}
             meName={meName}
-            meInitials={meInitials}
             initialMessages={messages}
             onSend={async (body) => {
               "use server";

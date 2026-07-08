@@ -10,6 +10,7 @@
  * Krever ADMIN-rolle (samme som /admin/audit-log).
  */
 
+import { Tag } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -28,7 +29,6 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { DetailShell } from "@/components/shared/detail-shell";
-import { AthleticBadge } from "@/components/athletic/badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { CopyButton } from "@/components/shared/copy-button";
 
@@ -66,14 +66,14 @@ const TYPE_PILL: Record<EvtType, string> = {
 
 const TYPE_BADGE_VARIANT: Record<
   EvtType,
-  "ok" | "primary" | "urgent" | "neutral" | "lime"
+  "up" | "signal" | "down" | "neutral" | "live"
 > = {
-  create: "ok",
-  update: "primary",
-  delete: "urgent",
+  create: "up",
+  update: "signal",
+  delete: "down",
   auth: "neutral",
-  agent: "lime",
-  "auth-fail": "urgent",
+  agent: "live",
+  "auth-fail": "down",
 };
 
 function TypeIcon({ type }: { type: EvtType }) {
@@ -207,9 +207,9 @@ export default async function AuditLogDetailPage({
           : "System"
       }${event.target ? ` · ${event.target}` : ""}`}
       statusPill={
-        <AthleticBadge variant={TYPE_BADGE_VARIANT[type]}>
+        <Tag variant={TYPE_BADGE_VARIANT[type]}>
           {TYPE_LABEL[type]}
-        </AthleticBadge>
+        </Tag>
       }
       actions={
         <>

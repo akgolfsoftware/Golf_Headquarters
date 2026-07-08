@@ -8,6 +8,7 @@
  * Lagring går via server action fra parent.
  */
 
+import { Avatar } from "@/components/athletic/golfdata";
 import { useState, useTransition } from "react";
 import type { User } from "@/generated/prisma/client";
 import { useRef } from "react";
@@ -23,7 +24,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { uploadAvatar } from "@/lib/storage/avatar";
-import { AthleticAvatar } from "@/components/athletic/avatar";
 
 type ProfileUpdateInput = {
   name: string;
@@ -59,12 +59,6 @@ function parseHcp(hcp: string): number | null {
   return Number.isNaN(n) ? null : n;
 }
 
-function initialerFraNavn(navn: string): string {
-  const deler = navn.trim().split(/\s+/).filter(Boolean);
-  if (deler.length === 0) return "—";
-  if (deler.length === 1) return deler[0].slice(0, 2).toUpperCase();
-  return (deler[0][0] + deler[deler.length - 1][0]).toUpperCase();
-}
 
 export function ProfileForm({ user, onSubmit }: ProfileFormProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -148,12 +142,7 @@ export function ProfileForm({ user, onSubmit }: ProfileFormProps) {
       <form onSubmit={handleSubmit} className="space-y-4 p-4">
         {/* Avatar-opplasting */}
         <div className="flex items-center gap-4">
-          <AthleticAvatar
-            src={avatarUrl}
-            initials={initialerFraNavn(name)}
-            borderColor="card"
-            className="h-[72px] w-[72px] border-0 text-2xl shadow-none"
-          />
+          <Avatar src={avatarUrl ?? undefined} name={name} size="xl" />
           <input
             ref={fileInputRef}
             type="file"

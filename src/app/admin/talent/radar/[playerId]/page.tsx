@@ -8,6 +8,7 @@
  * Roller: ADMIN, COACH.
  */
 
+import { Tag } from "@/components/athletic/golfdata";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Target, TrendingUp } from "lucide-react";
@@ -16,7 +17,6 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { DetailShell } from "@/components/shared/detail-shell";
 import { KPICard } from "@/components/ui/kpi-card";
-import { AthleticBadge } from "@/components/athletic/badge";
 import {
   RadarChart,
   AXIS_KEYS,
@@ -95,10 +95,10 @@ export default async function TalentRadarSpiller({
       title={`Radar for ${tracking.user.name}`}
       subtitle={`${peers.length} andre spillere på ${tracking.niva}-nivå brukes som referanse.`}
       statusPill={
-        <AthleticBadge variant="primary">
+        <Tag variant="signal">
           {tracking.niva}
           {tracking.region ? ` · ${tracking.region}` : ""}
-        </AthleticBadge>
+        </Tag>
       }
       actions={
         <Link
