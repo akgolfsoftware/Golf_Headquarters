@@ -8,6 +8,7 @@
  * å fjerne. Toggle for privat vs. synlig for spiller.
  */
 
+import { Tag, Button } from "@/components/athletic/golfdata";
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Trash2, X } from "lucide-react";
@@ -16,10 +17,6 @@ import { Modal } from "@/components/shared/modal";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticButton } from "@/components/athletic/button";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticBadge } from "@/components/athletic/badge";
 
 import {
   opprettCoachNotat,
@@ -199,9 +196,9 @@ export function NyNotatModal({
       footer={
         <>
           {erRedigering && (
-            <AthleticButton
+            <Button
               type="button"
-              variant="ghost-light"
+              variant="ghost"
               size="sm"
               onClick={handleSlett}
               disabled={pending}
@@ -209,21 +206,21 @@ export function NyNotatModal({
             >
               <Trash2 size={14} strokeWidth={1.75} />
               Slett
-            </AthleticButton>
+            </Button>
           )}
-          <AthleticButton
+          <Button
             type="button"
-            variant="ghost-light"
+            variant="ghost"
             size="sm"
             onClick={onClose}
             disabled={pending}
           >
             Avbryt
-          </AthleticButton>
-          <AthleticButton
+          </Button>
+          <Button
             type="submit"
             form="ny-notat-form"
-            variant="lime"
+            variant="signal"
             size="sm"
             disabled={pending}
           >
@@ -231,7 +228,7 @@ export function NyNotatModal({
               <Loader2 size={14} strokeWidth={2} className="animate-spin" />
             )}
             {erRedigering ? "Lagre endringer" : "Lagre notat"}
-          </AthleticButton>
+          </Button>
         </>
       }
     >
@@ -275,7 +272,7 @@ export function NyNotatModal({
                   key={tag}
                   className="inline-flex items-center gap-1"
                 >
-                  <AthleticBadge variant="neutral">{tag}</AthleticBadge>
+                  <Tag variant="neutral">{tag}</Tag>
                   <button
                     type="button"
                     onClick={() => fjernTag(tag)}

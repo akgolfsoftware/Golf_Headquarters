@@ -1,3 +1,4 @@
+import { Tag } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ListChecks, Users } from "lucide-react";
@@ -6,8 +7,6 @@ import { prisma } from "@/lib/prisma";
 import { EmptyState } from "@/components/shared/empty-state";
 import { DetailShell } from "@/components/shared/detail-shell";
 import { KPICard } from "@/components/ui";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticBadge } from "@/components/athletic";
 import { TournamentForm } from "../tournament-form";
 import { ResultForm } from "./result-form";
 import { UnmergeBanner } from "./unmerge-banner";
@@ -97,7 +96,7 @@ export default async function TurneringDetalj({
       }
       subtitle={`${periodStr}${tournament.course ? ` · ${tournament.course.name}` : ""} · ${tournament.format}`}
       statusPill={
-        <AthleticBadge variant="neutral">{tournament.format}</AthleticBadge>
+        <Tag variant="neutral">{tournament.format}</Tag>
       }
       actions={
         <>

@@ -10,6 +10,7 @@
  * athletic-primitiver. Ingen hex, ingen emoji (kun lucide). Norsk bokmål.
  */
 
+import { Tag } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import {
   Bell,
@@ -25,8 +26,6 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { ForelderHero } from "@/components/forelder/forelder-hero";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticBadge } from "@/components/athletic";
 
 export const dynamic = "force-dynamic";
 
@@ -145,7 +144,7 @@ export default async function ForelderInnstillinger() {
                     {b.relationship}
                   </div>
                 </div>
-                <AthleticBadge variant="ok">Koblet</AthleticBadge>
+                <Tag variant="up">Koblet</Tag>
               </li>
             ))}
           </ul>
@@ -169,7 +168,7 @@ export default async function ForelderInnstillinger() {
             />
             Varsler
           </h2>
-          <AthleticBadge variant="neutral">På e-post</AthleticBadge>
+          <Tag variant="neutral">På e-post</Tag>
         </div>
         <ul className="divide-y divide-border">
           {VARSEL_TYPER.map((v) => (

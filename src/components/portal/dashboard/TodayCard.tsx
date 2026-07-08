@@ -1,11 +1,10 @@
 "use client";
 
+import { Card } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { Play, Clock, Target, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticCard } from "@/components/athletic";
 import type { TodaySession } from "@/app/portal/actions";
 
 const PYRAMIDE_LABEL: Record<string, string> = {
@@ -44,7 +43,7 @@ export type TodayCardProps = {
 export function TodayCard({ session, className }: TodayCardProps) {
   if (!session) {
     return (
-      <AthleticCard label="Dagens økt" className={cn("h-full", className)}>
+      <Card eyebrow="Dagens økt" className={cn("h-full", className)}>
         <div className="flex h-full flex-col items-center justify-center gap-4 py-8 text-center">
           <div className="grid h-12 w-12 place-items-center rounded-full bg-muted">
             <Calendar className="text-muted-foreground" size={24} strokeWidth={1.5} />
@@ -57,7 +56,7 @@ export function TodayCard({ session, className }: TodayCardProps) {
             <Button variant="secondary" size="sm">Planlegg økt</Button>
           </Link>
         </div>
-      </AthleticCard>
+      </Card>
     );
   }
 

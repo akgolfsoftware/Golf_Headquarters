@@ -10,6 +10,7 @@
  * DS-tokens + athletic-primitiver. Ingen hex, ingen emoji (kun lucide).
  */
 
+import { Tag } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import {
   AlertTriangle,
@@ -25,7 +26,7 @@ import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
 import { ForelderHero } from "@/components/forelder/forelder-hero";
 // eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticBadge, KpiCard, KpiStrip } from "@/components/athletic";
+import { KpiCard, KpiStrip } from "@/components/athletic";
 import type {
   PaymentStatus,
   SubscriptionStatus,
@@ -367,13 +368,14 @@ function AbonnementRad({
           </div>
         </div>
         {st ? (
-          <AthleticBadge
-            variant={st.variant === "ok" ? "ok" : st.variant === "warn" ? "warn" : "neutral"}
+          <Tag
+            variant={st.variant === "ok" ? "up" : st.variant === "warn" ? "outline" : "neutral"}
+            style={st.variant === "warn" ? { color: "var(--warning)", borderColor: "var(--warning-border)" } : undefined}
           >
             {st.tekst}
-          </AthleticBadge>
+          </Tag>
         ) : (
-          <AthleticBadge variant="neutral">Ingen</AthleticBadge>
+          <Tag variant="neutral">Ingen</Tag>
         )}
       </div>
 

@@ -2,14 +2,13 @@
  * PlayerHQ Banekart-oversikt (/portal/baneguide/[baneId]) — skjerm 2 (fase 5).
  * Hele banen på satellitt + hull-liste med spillerens slag-antall per hull.
  */
+import { Eyebrow } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getBaneOverview } from "@/lib/baneguide/queries";
 import { CourseMap, type CourseMapHole } from "@/components/baneguide/course-map";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +34,7 @@ export default async function BaneOverviewPage({
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
-      <AthleticEyebrow>{bane.navn}</AthleticEyebrow>
+      <Eyebrow as="span">{bane.navn}</Eyebrow>
       <h1 className="mt-1.5 font-display text-3xl font-bold tracking-[-0.02em] text-foreground">Banekart</h1>
       <p className="mt-1.5 text-sm text-muted-foreground">
         {holes.length} hull kartlagt{parSum > 0 ? ` · par ${parSum}` : ""}

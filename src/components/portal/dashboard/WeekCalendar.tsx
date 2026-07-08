@@ -1,9 +1,8 @@
 "use client";
 
+import { Card } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticCard } from "@/components/athletic";
 import type { WeekDay } from "@/app/portal/actions";
 
 const PYRAMID_DOT: Record<string, string> = {
@@ -21,8 +20,8 @@ export type WeekCalendarProps = {
 
 export function WeekCalendar({ days, className }: WeekCalendarProps) {
   return (
-    <AthleticCard
-      label="Ukeoversikt"
+    <Card
+      eyebrow="Ukeoversikt"
       action={
         <Link href="/portal/planlegge" className="font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-primary hover:opacity-80">
           Åpne Workbench →
@@ -105,6 +104,6 @@ export function WeekCalendar({ days, className }: WeekCalendarProps) {
           </p>
         </div>
       )}
-    </AthleticCard>
+    </Card>
   );
 }

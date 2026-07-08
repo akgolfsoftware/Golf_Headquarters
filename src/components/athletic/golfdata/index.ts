@@ -53,6 +53,7 @@ export { VisningsVelger, type VisningsVelgerProps, type KalenderVisning } from "
 
 // Domene-familien (portert D1, 2026-07-06)
 export { Tag, CountBadge, type TagProps, type TagVariant, type TagSize, type CountBadgeProps } from "./Tag";
+export { Avatar, AvatarGroup, type AvatarProps, type AvatarGroupProps, type AvatarSize } from "./Avatar";
 export { OektKort, type OektKortProps, type OektAxis, type OektState } from "./OektKort";
 export { AKFormelChip, type AKFormelChipProps } from "./AKFormelChip";
 export { LiveStatus, type LiveStatusProps } from "./LiveStatus";

@@ -8,6 +8,7 @@
  * Oppdateres når nye komponenter eller tokens legges til.
  */
 
+import { Eyebrow, Tag, Button } from "@/components/athletic/golfdata";
 import {
   Calendar,
   CheckCircle,
@@ -18,12 +19,6 @@ import {
   Target,
   Trophy,
 } from "lucide-react";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticBadge } from "@/components/athletic/badge";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticButton } from "@/components/athletic/button";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import {
   Breadcrumb,
   Checkbox,
@@ -57,7 +52,7 @@ export default function DesignSystemPage() {
       <div className="mx-auto max-w-6xl px-6 space-y-16">
         {/* Header */}
         <header className="space-y-2 border-b border-border pb-8">
-          <AthleticEyebrow>INTERN · DOKUMENTASJON</AthleticEyebrow>
+          <Eyebrow as="span">INTERN · DOKUMENTASJON</Eyebrow>
           <h1 className="font-display text-4xl font-bold leading-tight md:text-5xl">
             AK Golf HQ <em className="italic">Designsystem v2</em>
           </h1>
@@ -109,7 +104,7 @@ export default function DesignSystemPage() {
             <p className="text-base">Body · 16px Inter — hovedfont for brødtekst og UI.</p>
             <p className="text-sm text-muted-foreground">Small · 14px muted</p>
             <p className="font-mono text-sm tabular-nums">Mono · 14px JetBrains 12 345.67</p>
-            <AthleticEyebrow>Eyebrow · 10px mono uppercase</AthleticEyebrow>
+            <Eyebrow as="span">Eyebrow · 10px mono uppercase</Eyebrow>
           </div>
         </section>
 
@@ -117,12 +112,12 @@ export default function DesignSystemPage() {
         <section className="space-y-6">
           <h2 className="font-display text-2xl font-bold">Buttons</h2>
           <div className="flex flex-wrap gap-2 rounded-2xl border border-border bg-card p-6">
-            <AthleticButton variant="lime">Lime CTA</AthleticButton>
-            <AthleticButton variant="primary">Primary</AthleticButton>
-            <AthleticButton variant="ghost-light">Ghost light</AthleticButton>
-            <AthleticButton variant="ghost-dark">Ghost dark</AthleticButton>
-            <AthleticButton size="sm">Small</AthleticButton>
-            <AthleticButton size="lg">Large</AthleticButton>
+            <Button variant="signal">Lime CTA</Button>
+            <Button variant="primary">Primary</Button>
+            <Button variant="ghost">Ghost light</Button>
+            <Button variant="ghost">Ghost dark</Button>
+            <Button variant="signal" size="sm">Small</Button>
+            <Button variant="signal" size="lg">Large</Button>
           </div>
         </section>
 
@@ -130,12 +125,12 @@ export default function DesignSystemPage() {
         <section className="space-y-6">
           <h2 className="font-display text-2xl font-bold">Badges</h2>
           <div className="flex flex-wrap gap-2 rounded-2xl border border-border bg-card p-6">
-            <AthleticBadge variant="primary">Primary</AthleticBadge>
-            <AthleticBadge variant="lime">Lime</AthleticBadge>
-            <AthleticBadge variant="neutral">Neutral</AthleticBadge>
-            <AthleticBadge variant="ok">OK</AthleticBadge>
-            <AthleticBadge variant="warn">Warn</AthleticBadge>
-            <AthleticBadge variant="urgent">Urgent</AthleticBadge>
+            <Tag variant="signal">Primary</Tag>
+            <Tag variant="signal">Lime</Tag>
+            <Tag variant="neutral">Neutral</Tag>
+            <Tag variant="up">OK</Tag>
+            <Tag variant="outline" style={{ color: "var(--warning)", borderColor: "var(--warning-border)" }}>Warn</Tag>
+            <Tag variant="down">Urgent</Tag>
           </div>
         </section>
 
@@ -290,9 +285,9 @@ export default function DesignSystemPage() {
             title="Ingen øvelser ennå"
             description="Bygg din første økt for å se den her."
             action={
-              <AthleticButton variant="primary">
+              <Button variant="primary">
                 <Plus size={14} aria-hidden /> Ny øvelse
-              </AthleticButton>
+              </Button>
             }
           />
         </section>
@@ -329,9 +324,9 @@ export default function DesignSystemPage() {
               title={<>Bygg <em>planer</em></>}
               subtitle="Eksempel på dashboard-hub som brukes på alle 12 toppnivå-ruter."
               actions={
-                <AthleticButton variant="primary">
+                <Button variant="primary">
                   <Plus size={14} aria-hidden /> Ny plan
-                </AthleticButton>
+                </Button>
               }
             >
               <OverviewCard

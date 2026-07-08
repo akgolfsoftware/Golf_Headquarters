@@ -1,11 +1,8 @@
 "use client";
 
+import { Avatar, Card } from "@/components/athletic/golfdata";
 import { useState, useTransition } from "react";
 import { CheckCheck } from "lucide-react";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticCard } from "@/components/athletic/card";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticAvatar } from "@/components/athletic/avatar";
 import { MessageInput } from "./MessageInput";
 import type { CoachMessageItem } from "@/app/portal/coach/actions";
 
@@ -14,7 +11,6 @@ type MessageThreadProps = {
   coachInitials: string;
   coachAvatarUrl?: string | null;
   meName: string;
-  meInitials: string;
   initialMessages: CoachMessageItem[];
   onSend: (body: string) => Promise<void>;
 };
@@ -24,7 +20,6 @@ export function MessageThread({
   coachInitials,
   coachAvatarUrl,
   meName,
-  meInitials,
   initialMessages,
   onSend,
 }: MessageThreadProps) {
@@ -50,7 +45,7 @@ export function MessageThread({
   }
 
   return (
-    <AthleticCard label="Meldinger" className="flex flex-col">
+    <Card eyebrow="Meldinger" className="flex flex-col">
       <div className="scrollbar-none -mx-4 -my-4 flex-1 space-y-3 overflow-y-auto p-4 md:-mx-6 md:-my-6 md:p-6">
         {messages.length === 0 ? (
           <EmptyState coachName={coachName} />
@@ -67,7 +62,6 @@ export function MessageThread({
                   coachInitials={coachInitials}
                   coachAvatarUrl={coachAvatarUrl}
                   meName={meName}
-                  meInitials={meInitials}
                 />
               </div>
             );
@@ -86,7 +80,7 @@ export function MessageThread({
           <span>Svartid typisk innen 4 timer</span>
         </p>
       </div>
-    </AthleticCard>
+    </Card>
   );
 }
 
@@ -122,14 +116,12 @@ function Bubble({
   coachInitials,
   coachAvatarUrl,
   meName,
-  meInitials,
 }: {
   msg: CoachMessageItem;
   coachName: string;
   coachInitials: string;
   coachAvatarUrl?: string | null;
   meName: string;
-  meInitials: string;
 }) {
   const isMe = msg.role === "me";
   const time = new Date(msg.ts).toLocaleTimeString("nb-NO", {
@@ -142,7 +134,7 @@ function Bubble({
       {!isMe && (
         <div className="shrink-0">
           {coachAvatarUrl ? (
-            <AthleticAvatar src={coachAvatarUrl} alt={coachName} initials={coachInitials} size="sm" />
+            <Avatar src={coachAvatarUrl} name={coachName} size="md" />
           ) : (
             <div className="grid h-10 w-10 place-items-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
               {coachInitials}
@@ -172,7 +164,7 @@ function Bubble({
       </div>
       {isMe && (
         <div className="shrink-0">
-          <AthleticAvatar alt={meName} initials={meInitials} size="sm" />
+          <Avatar name={meName} size="md" />
         </div>
       )}
     </div>

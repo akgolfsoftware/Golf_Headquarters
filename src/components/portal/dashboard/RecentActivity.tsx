@@ -1,10 +1,9 @@
 "use client";
 
+import { Card } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { Dumbbell } from "lucide-react";
 import { cn } from "@/lib/utils";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticCard } from "@/components/athletic";
 import type { RecentActivityItem } from "@/app/portal/actions";
 
 function timeAgo(d: Date): string {
@@ -28,8 +27,8 @@ type RecentActivityProps = {
 
 export function RecentActivity({ items, className }: RecentActivityProps) {
   return (
-    <AthleticCard
-      label="Siste aktivitet"
+    <Card
+      eyebrow="Siste aktivitet"
       action={
         <Link href="/portal/analysere" className="font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-primary hover:opacity-80">
           Se alt →
@@ -71,6 +70,6 @@ export function RecentActivity({ items, className }: RecentActivityProps) {
           ))}
         </ul>
       )}
-    </AthleticCard>
+    </Card>
   );
 }

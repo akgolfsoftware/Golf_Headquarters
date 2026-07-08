@@ -12,14 +12,13 @@
  * Ingen demo-drills — tom plan gir ærlig tom-tilstand.
  */
 
+import { Eyebrow } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Sparkles } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticEyebrow } from "@/components/athletic";
 // eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { TabBar } from "@/components/athletic/tab-bar";
 import { SG_BUCKETS, type PyramidArea } from "@/components/teknisk-plan/constants";
@@ -203,9 +202,9 @@ export default async function SpillerPlanDetaljPage({
       <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <AthleticEyebrow>
+            <Eyebrow as="span">
               Coach · {spiller.name} · Utviklingsplan
-            </AthleticEyebrow>
+            </Eyebrow>
             <h1 className="font-display mt-2 text-3xl font-bold leading-tight tracking-tight md:text-4xl">
               {plan.navn.split(" ").slice(0, -1).join(" ")}{" "}
               <em

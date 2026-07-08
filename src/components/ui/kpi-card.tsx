@@ -1,6 +1,5 @@
+import { Eyebrow } from "@/components/athletic/golfdata";
 import { cn } from "@/lib/utils";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 type KPICardProps = {
   eyebrow: string;
@@ -56,13 +55,13 @@ export function KPICard({
     >
       <div className="flex items-start justify-between gap-2">
         <div className="space-y-1.5">
-          <AthleticEyebrow
+          <Eyebrow as="span"
             className={cn(
               variant === "hero" && "text-primary-foreground/80",
             )}
           >
             {eyebrow}
-          </AthleticEyebrow>
+          </Eyebrow>
         </div>
         {icon && (
           <div

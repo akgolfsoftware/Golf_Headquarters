@@ -9,7 +9,6 @@ import Link from "next/link";
 import { Dumbbell, Plus } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { Eyebrow, Tag } from "@/components/athletic/golfdata";
 import { ExerciseCardActions } from "@/components/portal/exercise-card-actions";
 import { EmptyState } from "@/components/shared/empty-state";

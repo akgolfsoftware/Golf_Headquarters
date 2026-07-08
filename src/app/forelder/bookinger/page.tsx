@@ -9,12 +9,11 @@
  * DS-tokens + athletic-primitiver. Ingen hex, ingen emoji (kun lucide).
  */
 
+import { Eyebrow } from "@/components/athletic/golfdata";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentBarnForForelder } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticEyebrow } from "@/components/athletic";
 import type { BookingStatus } from "@/generated/prisma/client";
 
 export const dynamic = "force-dynamic";
@@ -346,9 +345,9 @@ function IngenBarn() {
       <p className="mt-1.5 font-sans text-[13.5px] leading-[1.5] text-muted-foreground">
         Be spilleren sende en invitasjon, eller kontakt coachen din.
       </p>
-      <AthleticEyebrow className="mt-5 inline-block text-muted-foreground/70">
+      <Eyebrow as="span" className="mt-5 inline-block text-muted-foreground/70">
         Lesemodus
-      </AthleticEyebrow>
+      </Eyebrow>
     </div>
   );
 }

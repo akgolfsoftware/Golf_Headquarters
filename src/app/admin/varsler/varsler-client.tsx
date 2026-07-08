@@ -1,13 +1,10 @@
 "use client";
 
+import { Eyebrow, Avatar } from "@/components/athletic/golfdata";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Activity, ArrowRight, Bell, Check, Sparkles, X } from "lucide-react";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticAvatar } from "@/components/athletic/avatar";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
 import type { VarslerData } from "@/lib/admin/load-varsler";
@@ -16,7 +13,7 @@ import { avvisPlanAction, godtaPlanAction, markerVarselLest } from "./actions";
 function GroupHeader({ label, count }: { label: string; count: number }) {
   return (
     <div className="flex items-center gap-2">
-      <AthleticEyebrow>{label}</AthleticEyebrow>
+      <Eyebrow as="span">{label}</Eyebrow>
       <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-muted px-1.5 font-mono text-[10px] font-bold text-muted-foreground">
         {count}
       </span>
@@ -62,7 +59,7 @@ export function VarslerClient({ data }: { data: VarslerData }) {
           <ul className="mt-3 divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
             {planActions.map((a) => (
               <li key={a.id} className="flex items-start gap-3 px-4 py-3">
-                <AthleticAvatar initials={a.initials} size="sm" status="none" />
+                <Avatar name={a.playerName} size="md" />
                 <div className="min-w-0 flex-1">
                   <p className="text-[13px] font-semibold leading-tight text-foreground">
                     {a.playerName}
@@ -118,7 +115,7 @@ export function VarslerClient({ data }: { data: VarslerData }) {
           <ul className="mt-3 divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
             {signals.map((s) => (
               <li key={s.id} className="flex items-center gap-3 px-4 py-2.5">
-                <AthleticAvatar initials={s.initials} size="sm" status="none" />
+                <Avatar name={s.playerName} size="md" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[13px] font-semibold leading-tight text-foreground">
                     {s.playerName}

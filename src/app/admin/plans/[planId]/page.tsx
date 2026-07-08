@@ -1,3 +1,4 @@
+import { Tag } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -17,8 +18,6 @@ import {
 import { EmptyState } from "@/components/shared/empty-state";
 import { DetailShell } from "@/components/shared/detail-shell";
 import { KPICard } from "@/components/ui";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticBadge } from "@/components/athletic";
 import { PlanActions } from "./plan-actions";
 import { DraggableSessions, type DraggableSession } from "./draggable-sessions";
 import { RejectedBanner } from "./rejected-banner";
@@ -191,14 +190,19 @@ export default async function AdminPlanDetalj({
 
   const planTittel = plan.name.trim() || "Treningsplan";
 
+  // Tag mangler warn-variant (DS-gap meldt) — outline + warning-tokens til DS får en.
   const statusVariant =
     plan.status === "ACTIVE"
-      ? "ok"
+      ? "up"
       : plan.status === "REJECTED"
-        ? "urgent"
+        ? "down"
         : plan.status === "PENDING_PLAYER"
-          ? "warn"
+          ? "outline"
           : "neutral";
+  const statusStyle =
+    plan.status === "PENDING_PLAYER"
+      ? { color: "var(--warning)", borderColor: "var(--warning-border)" }
+      : undefined;
 
   return (
     <DetailShell
@@ -210,9 +214,9 @@ export default async function AdminPlanDetalj({
       title={<><em className="text-primary italic">{planTittel}</em></>}
       subtitle={`${plan.user.name}${plan.user.hcp != null ? ` · HCP ${plan.user.hcp}` : ""} · ${periodeFra} – ${periodeTil} · ${totalt} økter`}
       statusPill={
-        <AthleticBadge variant={statusVariant}>
+        <Tag variant={statusVariant} style={statusStyle}>
           {plan.status}
-        </AthleticBadge>
+        </Tag>
       }
       actions={
         <PlanActions

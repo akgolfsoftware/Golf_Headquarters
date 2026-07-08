@@ -13,6 +13,7 @@
  * Ingen hardkodet hex, ingen emoji (kun lucide-react).
  */
 
+import { Eyebrow } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import {
   Activity,
@@ -33,8 +34,6 @@ import { prisma } from "@/lib/prisma";
 import { PrintButton } from "@/components/shared/print-button";
 import { EksportTrigger } from "@/components/shared/eksport-trigger";
 import { AgentStrip } from "@/components/coachhq/agent-strip";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticEyebrow } from "@/components/athletic";
 import { cn } from "@/lib/utils";
 import {
   getBriefData,
@@ -158,7 +157,7 @@ export default async function DagligBrief() {
       {/* Hero */}
       <header className="mb-5 flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <AthleticEyebrow>{`${eyebrowDato} · UKE ${ukeNr}`}</AthleticEyebrow>
+          <Eyebrow as="span">{`${eyebrowDato} · UKE ${ukeNr}`}</Eyebrow>
           <h1 className="mt-1.5 font-display text-3xl font-bold leading-tight tracking-tight md:text-[34px]">
             {idag
               .toLocaleDateString("nb-NO", {

@@ -15,10 +15,9 @@
  * sesjonsdata). Mobil-først; samme markup skalerer til desktop-kolonnen.
  */
 
+import { Eyebrow } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { Activity, ArrowRight } from "lucide-react";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 // ── Datatyper ────────────────────────────────────────────────────────────
 
@@ -46,7 +45,7 @@ export function Trackman({ data }: { data: TrackmanData }) {
     <div className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-8">
       {/* Sidetittel */}
       <header className="mb-5">
-        <AthleticEyebrow>{data.eyebrow}</AthleticEyebrow>
+        <Eyebrow as="span">{data.eyebrow}</Eyebrow>
         <h1 className="font-display mt-1 text-[26px] font-bold italic leading-[1.1] tracking-[-0.015em] text-foreground sm:text-[30px]">
           Range-analyse per kølle
         </h1>

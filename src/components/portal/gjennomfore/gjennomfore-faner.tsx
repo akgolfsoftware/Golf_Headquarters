@@ -11,7 +11,6 @@
 
 import Link from "next/link";
 import { Play, ArrowRight, Pencil, Check } from "lucide-react";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { Button, Card, Eyebrow } from "@/components/athletic/golfdata";
 import type { GjennomforeData, GjennomforeOkt } from "@/lib/portal-gjennomfore/gjennomfore-data";
 

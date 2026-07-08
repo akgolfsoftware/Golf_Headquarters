@@ -15,13 +15,12 @@
  * Slag-registrering (B3): scorecard-blokken lenker til ./slag (SlagWizard +
  * UpGame-import) — kun for rundens eier. Detaljsiden forblir ren visning.
  */
+import { Eyebrow } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { ArrowLeft, Pencil } from "lucide-react";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import { cn } from "@/lib/utils";
 
 /** Birdie/par/bogey/dobbel+ — fasitens scorecard-farger (kun DS-tokens). */
@@ -178,9 +177,9 @@ export default async function RundeDetalj({
 
       {/* Header — eyebrow + score-headline */}
       <div>
-        <AthleticEyebrow>
+        <Eyebrow as="span">
           {runde.course.name} · {datoTekst}
-        </AthleticEyebrow>
+        </Eyebrow>
         <h1 className="mt-2 font-display text-[26px] font-bold leading-[1.04] tracking-[-0.025em] text-foreground md:text-[30px]">
           {runde.score} <em className="font-normal italic text-primary">{tilParH1}</em>
         </h1>
@@ -253,7 +252,7 @@ export default async function RundeDetalj({
 
       {/* Strokes Gained */}
       <div className="mb-3 mt-7 flex items-baseline justify-between">
-        <AthleticEyebrow>Strokes Gained</AthleticEyebrow>
+        <Eyebrow as="span">Strokes Gained</Eyebrow>
       </div>
       <div className="max-w-[520px] rounded-2xl border border-border bg-card p-[18px]">
         <SgRad navn="Off the tee" verdi={runde.sgOtt} />

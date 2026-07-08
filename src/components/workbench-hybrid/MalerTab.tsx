@@ -6,7 +6,6 @@ import { Sprout, Target, Trophy } from "lucide-react";
 import type { LPhase } from "@/generated/prisma/client";
 import type { WorkbenchPlanTemplate } from "@/lib/workbench/load-workbench";
 import { FONT, WB } from "./theme";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { Card, Tag } from "@/components/athletic/golfdata";
 
 type MalFilter = "alle" | "naerspill" | "putting" | "utslag" | "turnering" | "full";

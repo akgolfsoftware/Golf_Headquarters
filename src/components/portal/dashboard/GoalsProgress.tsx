@@ -1,9 +1,8 @@
 "use client";
 
+import { Card } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { Target, Plus } from "lucide-react";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticCard } from "@/components/athletic";
 import type { GoalItem } from "@/app/portal/actions";
 
 const AXIS_BAR_COLOR: Record<string, string> = {
@@ -24,8 +23,8 @@ type GoalsProgressProps = {
 
 export function GoalsProgress({ goals, className }: GoalsProgressProps) {
   return (
-    <AthleticCard
-      label="Aktive mål"
+    <Card
+      eyebrow="Aktive mål"
       action={
         <Link href="/portal/mal" className="font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-primary hover:opacity-80">
           Alle mål →
@@ -89,6 +88,6 @@ export function GoalsProgress({ goals, className }: GoalsProgressProps) {
           ))}
         </div>
       )}
-    </AthleticCard>
+    </Card>
   );
 }

@@ -1,13 +1,12 @@
 "use client";
 
+import { Tag } from "@/components/athletic/golfdata";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { safeRedirectPath } from "@/lib/security/safe-redirect-client";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticBadge } from "@/components/athletic/badge";
 
 /**
  * LoginForm — hybrid design (2026-06-17).
@@ -167,7 +166,7 @@ export function LoginForm() {
       <div role="alert" aria-live="polite" aria-atomic="true" id={errorId}>
         {error && (
           <div className="mb-4 flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3">
-            <AthleticBadge variant="urgent">Feil</AthleticBadge>
+            <Tag variant="down">Feil</Tag>
             <span className="text-sm text-destructive">{error}</span>
           </div>
         )}

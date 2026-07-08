@@ -3,14 +3,13 @@
  * Signaturskjerm: satellitt + din spredning + KPI fra dispersion-motoren + innsikt.
  * Segment Utslag/Innspill/Putt via ?type=. Lyst tema.
  */
+import { Eyebrow } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft, Lightbulb } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getHoleDetail } from "@/lib/baneguide/queries";
 import { CourseMap } from "@/components/baneguide/course-map";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 // eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { KpiCard } from "@/components/athletic/kpi";
 import type { ShotType } from "@/generated/prisma/client";
@@ -60,7 +59,7 @@ export default async function HoleDetailPage({
       </Link>
 
       <div className="mt-3">
-        <AthleticEyebrow tone="lime">Baneguide · {bane.navn}</AthleticEyebrow>
+        <Eyebrow as="span" tone="signal">Baneguide · {bane.navn}</Eyebrow>
         <h1 className="mt-1.5 font-display text-3xl font-bold tracking-[-0.02em] text-foreground">
           Hull {hole.holeNumber}
         </h1>

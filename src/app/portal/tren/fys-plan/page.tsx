@@ -12,7 +12,6 @@ import Link from "next/link";
 import { Dumbbell, ChevronRight } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { Card, Eyebrow } from "@/components/athletic/golfdata";
 import { cn } from "@/lib/utils";
 import { NyPlanKnapp } from "./ny-plan-knapp";

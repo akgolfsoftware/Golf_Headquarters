@@ -8,6 +8,7 @@
  * Roller: COACH, ADMIN.
  */
 
+import { Tag } from "@/components/athletic/golfdata";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
@@ -24,8 +25,6 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { DetailShell } from "@/components/shared/detail-shell";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticBadge } from "@/components/athletic/badge";
 import { lagreNotater, loggMilepael } from "./actions";
 
 type RadarKey = "fysisk" | "teknikk" | "taktikk" | "mental" | "motivasjon";
@@ -120,7 +119,7 @@ export default async function TalentProfil({
         </>
       }
       subtitle={`I talent-program siden ${inkludertFra}`}
-      statusPill={<AthleticBadge variant="primary">{t.niva.toUpperCase()}</AthleticBadge>}
+      statusPill={<Tag variant="signal">{t.niva.toUpperCase()}</Tag>}
     >
 
       {/* Hero-card */}

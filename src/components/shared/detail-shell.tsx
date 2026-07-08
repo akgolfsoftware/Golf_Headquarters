@@ -28,7 +28,7 @@ type DetailShellProps = {
  *   backHref="/portal/tren/fys-plan"
  *   title="Vinter 2026 · grunntrening"
  *   subtitle="Spesialisering · 12 økter planlagt"
- *   statusPill={<AthleticBadge variant="ok">AKTIV</AthleticBadge>}
+ *   statusPill={<Tag variant="up">AKTIV</Tag>}
  *   kpiRow={<KPICardsRow />}
  *   tabs={<TabsBar />}
  * >

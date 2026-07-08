@@ -1,9 +1,8 @@
+import { Eyebrow } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { MapPin, User, CalendarDays, CreditCard, UserCheck, ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export const metadata: Metadata = {
   title: "Book økt | AK Golf",
@@ -110,7 +109,7 @@ export default async function BookingLanding({
     <div className="px-4 sm:px-6 py-12 sm:py-16">
       <div className="mx-auto max-w-5xl">
         <header className="text-center">
-          <AthleticEyebrow tone="lime">Booking</AthleticEyebrow>
+          <Eyebrow as="span" tone="signal">Booking</Eyebrow>
           <h1 className="mt-4 font-display text-3xl font-semibold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl">
             <em className="font-normal italic text-primary">Book</em> en økt
           </h1>
@@ -413,7 +412,7 @@ function BookingPaused() {
     <div className="px-6 py-16 sm:py-20">
       <div className="mx-auto max-w-5xl">
         <div className="text-center">
-          <AthleticEyebrow tone="lime">Booking</AthleticEyebrow>
+          <Eyebrow as="span" tone="signal">Booking</Eyebrow>
           <h1 className="mt-4 font-display text-3xl font-semibold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl">
             <em className="font-normal italic text-primary">Book</em> en økt
           </h1>
@@ -468,7 +467,7 @@ function SlikFungererDet() {
   return (
     <section className="mt-16 border-t border-border pt-16">
       <div className="text-center">
-        <AthleticEyebrow tone="lime">Enkelt og trygt</AthleticEyebrow>
+        <Eyebrow as="span" tone="signal">Enkelt og trygt</Eyebrow>
         <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight sm:text-3xl">
           Slik fungerer det
         </h2>
@@ -483,7 +482,7 @@ function SlikFungererDet() {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <AthleticEyebrow>Steg {s.nr}</AthleticEyebrow>
+                  <Eyebrow as="span">Steg {s.nr}</Eyebrow>
                 </div>
                 <h3 className="mt-1 font-display text-lg font-semibold tracking-tight">
                   {s.tittel}

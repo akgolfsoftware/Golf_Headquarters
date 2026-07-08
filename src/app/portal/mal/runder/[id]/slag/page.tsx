@@ -10,13 +10,12 @@
  * Skrive-tilgang håndheves i actions (assertRoundOwner) — kun rundens eier.
  */
 
+import { Eyebrow } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 import { SlagWizard } from "../slag-wizard";
 import { UpGameImportModal } from "../upgame-import-modal";
 
@@ -75,9 +74,9 @@ export default async function SlagRegistreringPage({
 
       <div className="flex items-end justify-between gap-3">
         <div>
-          <AthleticEyebrow>
+          <Eyebrow as="span">
             {runde.course.name} · {datoTekst}
-          </AthleticEyebrow>
+          </Eyebrow>
           <h1 className="mt-2 font-display text-[26px] font-bold leading-[1.04] tracking-[-0.025em] text-foreground md:text-[30px]">
             Slag-for-slag
           </h1>

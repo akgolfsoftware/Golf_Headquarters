@@ -10,11 +10,10 @@
  * demo-data, ikke plan.positions[].tasks).
  */
 
+import { Button } from "@/components/athletic/golfdata";
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { Edit, Copy } from "lucide-react";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticButton } from "@/components/athletic";
 import { useToast } from "@/components/shared/toast-provider";
 import { publiserTekniskPlan, dupliserTekniskPlan } from "./plan-actions";
 
@@ -60,21 +59,21 @@ export function PlanToolbar({ planId, drillsHref, isPublished }: PlanToolbarProp
   return (
     <div className="flex flex-wrap gap-2">
       <Link href={drillsHref}>
-        <AthleticButton variant="ghost-light" size="sm">
+        <Button variant="ghost" size="sm">
           <Edit className="h-3.5 w-3.5" /> Rediger
-        </AthleticButton>
+        </Button>
       </Link>
-      <AthleticButton
-        variant="ghost-light"
+      <Button
+        variant="ghost"
         size="sm"
         onClick={handleDuplicate}
         disabled={duplicating}
       >
         <Copy className="h-3.5 w-3.5" /> {duplicating ? "Dupliserer…" : "Dupliser"}
-      </AthleticButton>
-      <AthleticButton variant="lime" size="sm" onClick={handlePublish} disabled={pending}>
+      </Button>
+      <Button variant="signal" size="sm" onClick={handlePublish} disabled={pending}>
         {pending ? "Publiserer…" : isPublished ? "Publisert" : "Publiser"}
-      </AthleticButton>
+      </Button>
     </div>
   );
 }

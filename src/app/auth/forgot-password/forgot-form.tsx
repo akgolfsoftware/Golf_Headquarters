@@ -1,11 +1,10 @@
 "use client";
 
+import { Tag } from "@/components/athletic/golfdata";
 import { useState } from "react";
 import Link from "next/link";
 import { CheckCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticBadge } from "@/components/athletic/badge";
 
 /**
  * ForgotForm — hybrid design (2026-06-17).
@@ -115,7 +114,7 @@ export function ForgotForm() {
             role="alert"
             className="mb-4 flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3"
           >
-            <AthleticBadge variant="urgent">Feil</AthleticBadge>
+            <Tag variant="down">Feil</Tag>
             <span className="text-sm text-destructive">{error}</span>
           </div>
         )}

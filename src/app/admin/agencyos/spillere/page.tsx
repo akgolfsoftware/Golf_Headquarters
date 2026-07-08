@@ -2,14 +2,13 @@
 // pakke og betaling. Speiler stallen-table-vokabularet (Bloomberg-tetthet,
 // mono-caps eyebrows, DS-tokens). Server component + ekte Prisma.
 
+import { Sparkline } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { ChevronRight, Search, Users } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
 import { EmptyState } from "@/components/shared/empty-state";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { Sparkline } from "@/components/athletic/sparkline";
 
 export const dynamic = "force-dynamic";
 
@@ -244,7 +243,7 @@ export default async function SpillereTabPage({
                       <Td>
                         {r.sgTrend.length >= 2 ? (
                           <Sparkline
-                            values={r.sgTrend}
+                            data={r.sgTrend}
                             width={72}
                             height={24}
                             color={
@@ -330,7 +329,7 @@ export default async function SpillereTabPage({
                     </div>
                     {r.sgTrend.length >= 2 && (
                       <Sparkline
-                        values={r.sgTrend}
+                        data={r.sgTrend}
                         width={56}
                         height={20}
                         color={

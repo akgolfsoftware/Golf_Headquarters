@@ -1,8 +1,7 @@
 "use client";
 
+import { Card } from "@/components/athletic/golfdata";
 import { Clock, Dumbbell, CalendarCheck, Flag } from "lucide-react";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticCard } from "@/components/athletic";
 import type { StatsSnapshot } from "@/app/portal/actions";
 
 export type KpiGridProps = {
@@ -26,7 +25,7 @@ export function KpiGrid({ stats, className }: KpiGridProps) {
   ];
 
   return (
-    <AthleticCard label="Dagens tall" className={className}>
+    <Card eyebrow="Dagens tall" className={className}>
       <div className="grid grid-cols-2 gap-3">
         {items.map((item) => {
           const Icon = item.icon;
@@ -46,6 +45,6 @@ export function KpiGrid({ stats, className }: KpiGridProps) {
           );
         })}
       </div>
-    </AthleticCard>
+    </Card>
   );
 }

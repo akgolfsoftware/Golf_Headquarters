@@ -1,9 +1,8 @@
+import { Eyebrow } from "@/components/athletic/golfdata";
 import type { Metadata } from "next";
 import { Bell } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticEyebrow } from "@/components/athletic";
 import { loadVarsler } from "@/lib/admin/load-varsler";
 import { VarslerClient } from "./varsler-client";
 
@@ -29,7 +28,7 @@ export default async function VarslerPage() {
           <Bell className="h-6 w-6" strokeWidth={1.75} />
         </span>
         <div>
-          <AthleticEyebrow>AGENCYOS · VARSLER</AthleticEyebrow>
+          <Eyebrow as="span">AGENCYOS · VARSLER</Eyebrow>
           <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
             Varsler
           </h1>

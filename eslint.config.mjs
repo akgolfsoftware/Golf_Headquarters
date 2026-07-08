@@ -44,12 +44,9 @@ const eslintConfig = defineConfig([
         {
           patterns: [
             {
-              group: [
-                "@/components/athletic",
-                "@/components/athletic/**",
-                "!@/components/athletic/golfdata",
-                "!@/components/athletic/golfdata/**",
-              ],
+              // NB: gitignore-style group-negasjon ("!…/golfdata") virker IKKE når
+              // forelder-mappen er ekskludert — derfor regex med lookahead i stedet.
+              regex: "^@/components/athletic($|/(?!golfdata($|/)))",
               message:
                 "Bruk golfdata-komponent eller ui-primitiv. Gammelt athletic er avviklet.",
             },

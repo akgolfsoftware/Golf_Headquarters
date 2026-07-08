@@ -9,6 +9,7 @@
  * Klikk utvider inline: NÅ / FORRIGE / forsøk + historikk-sparkline + verdikt-note.
  */
 
+import { Sparkline } from "@/components/athletic/golfdata";
 import { useMemo, useState } from "react";
 import {
   ChevronRight,
@@ -17,8 +18,6 @@ import {
   TrendingUp,
   type LucideIcon,
 } from "lucide-react";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { Sparkline } from "@/components/athletic";
 import { cn } from "@/lib/utils";
 import type { Axis, TestRow, Verdict } from "@/lib/portal-tester/tester-data";
 
@@ -216,7 +215,7 @@ function Row({ row }: { row: TestRow }) {
                     Trend
                   </p>
                   <Sparkline
-                    values={row.history}
+                    data={row.history}
                     color={AXIS_LINE[row.axis]}
                     width={120}
                     height={36}

@@ -15,12 +15,11 @@
  * page.tsx), ikke demo-data. Hver rad har en ekte taskId + ferdig OppgaveDraft.
  */
 
+import { Button } from "@/components/athletic/golfdata";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Plus, Sparkles, GripVertical, Pencil, Trash2 } from "lucide-react";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticButton } from "@/components/athletic";
 import { useToast } from "@/components/shared/toast-provider";
 import {
   OppgaveModal,
@@ -257,13 +256,13 @@ export function DrillsPanel({ planId, defaultTarget, drills }: DrillsPanelProps)
         ))}
         <div className="ml-auto flex gap-2">
           <Link href="/portal/ai/foresla-drill">
-            <AthleticButton variant="ghost-light" size="sm">
+            <Button variant="ghost" size="sm">
               <Sparkles className="h-3.5 w-3.5" /> AI-foreslå
-            </AthleticButton>
+            </Button>
           </Link>
-          <AthleticButton variant="lime" size="sm" onClick={openCreate}>
+          <Button variant="signal" size="sm" onClick={openCreate}>
             <Plus className="h-3.5 w-3.5" /> Legg til drill
-          </AthleticButton>
+          </Button>
         </div>
       </div>
 
@@ -293,9 +292,9 @@ export function DrillsPanel({ planId, defaultTarget, drills }: DrillsPanelProps)
             </p>
             {drills.length === 0 ? (
               <div className="mt-4 flex justify-center">
-                <AthleticButton variant="lime" size="sm" onClick={openCreate}>
+                <Button variant="signal" size="sm" onClick={openCreate}>
                   <Plus className="h-3.5 w-3.5" /> Legg til drill
-                </AthleticButton>
+                </Button>
               </div>
             ) : null}
           </div>

@@ -17,14 +17,13 @@
  * Server component. Auth-guard beholdt (requirePortalUser).
  */
 
+import { Tag } from "@/components/athletic/golfdata";
 import { Activity, BatteryMedium, CircleCheck, Moon, Stethoscope } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { hentFysScore } from "@/lib/fys-data";
 import { hentBelastning } from "@/lib/health/belastning";
 import { MeSub, SetGroup, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticBadge } from "@/components/athletic/badge";
 // eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { KpiCard } from "@/components/athletic/kpi";
 import { HelseForm } from "./helse-form";
@@ -165,14 +164,14 @@ export default async function HelsePage() {
             icon={Stethoscope}
             title="Aktiv skade"
             meta={`Siden ${formatDatoKort(aktivSkade.startAt)}`}
-            right={<AthleticBadge variant="warn">Aktiv</AthleticBadge>}
+            right={<Tag variant="outline" style={{ color: "var(--warning)", borderColor: "var(--warning-border)" }}>Aktiv</Tag>}
           />
         ) : (
           <SetRow
             icon={CircleCheck}
             title="Ingen aktive skader"
             meta={siste ? `Sist logget ${formatDatoKort(siste.date)}` : "Ingen logger ennå"}
-            right={<AthleticBadge variant="ok">Frisk</AthleticBadge>}
+            right={<Tag variant="up">Frisk</Tag>}
           />
         )}
         {tidligereSkader > 0 && (

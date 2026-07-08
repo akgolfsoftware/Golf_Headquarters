@@ -2,12 +2,11 @@
 // Viser siste morgenbrief, ventende bekreftelser, og siste logg. Funksjonell
 // v1 — den polerte fler-skjerm-versjonen bygges etter Anders kjører Claude
 // Design-promptene (lagret i Google Drive inbox/meg-assistent-design-prompter.md).
+import { Eyebrow, Tag } from "@/components/athletic/golfdata";
 import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { adminSubject } from "@/lib/meg/access";
 import { hentBriefer, hentVentende, hentNylige } from "@/lib/meg/read";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticEyebrow, AthleticBadge } from "@/components/athletic";
 
 export const dynamic = "force-dynamic";
 
@@ -39,7 +38,7 @@ export default async function MegDashboard() {
   return (
     <div className="space-y-8">
       <header className="space-y-1">
-        <AthleticEyebrow>Meg</AthleticEyebrow>
+        <Eyebrow as="span">Meg</Eyebrow>
         <h1 className="font-display text-3xl font-semibold tracking-tight">
           Hei, {user.name?.split(" ")[0] ?? "Anders"}
         </h1>
@@ -51,7 +50,7 @@ export default async function MegDashboard() {
 
       {/* Siste brief */}
       <section className="space-y-3">
-        <AthleticEyebrow>Siste brief</AthleticEyebrow>
+        <Eyebrow as="span">Siste brief</Eyebrow>
         {sisteMorgenbrief ? (
           <article className="rounded-xl border border-border bg-card p-5">
             <div className="mb-2 flex items-center justify-between">
@@ -76,8 +75,8 @@ export default async function MegDashboard() {
       {/* Ventende bekreftelser */}
       <section className="space-y-3">
         <div className="flex items-center gap-2">
-          <AthleticEyebrow>Venter på BEKREFT</AthleticEyebrow>
-          {ventende.length > 0 && <AthleticBadge variant="urgent">{ventende.length}</AthleticBadge>}
+          <Eyebrow as="span">Venter på BEKREFT</Eyebrow>
+          {ventende.length > 0 && <Tag variant="down">{ventende.length}</Tag>}
         </div>
         {ventende.length ? (
           <ul className="space-y-2">
@@ -98,12 +97,12 @@ export default async function MegDashboard() {
 
       {/* Siste logg */}
       <section className="space-y-3">
-        <AthleticEyebrow>Siste logg</AthleticEyebrow>
+        <Eyebrow as="span">Siste logg</Eyebrow>
         {logg.length ? (
           <ul className="divide-y divide-border rounded-xl border border-border bg-card">
             {logg.map((r) => (
               <li key={r.id} className="flex items-start gap-3 p-3">
-                <AthleticBadge variant="neutral">{r.kind}</AthleticBadge>
+                <Tag variant="neutral">{r.kind}</Tag>
                 <span className="flex-1 text-sm">{r.text}</span>
                 <span className="font-mono text-xs text-muted-foreground">{dato(r.created_at)}</span>
               </li>

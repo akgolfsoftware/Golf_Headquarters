@@ -17,8 +17,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticButton } from "@/components/athletic";
+import { Button as GdButton } from "@/components/athletic/golfdata";
 import { kansellerBooking } from "./actions";
 
 export function AvlysOktKnapp({
@@ -54,14 +53,14 @@ export function AvlysOktKnapp({
 
   return (
     <>
-      <AthleticButton
-        variant="ghost-light"
+      <GdButton
+        variant="ghost"
         size={triggerSize}
         className={`text-destructive ${fullWidth ? "w-full" : ""} ${triggerClassName ?? ""}`}
         onClick={() => setOpen(true)}
       >
         Avlys
-      </AthleticButton>
+      </GdButton>
 
       <Dialog open={open} onOpenChange={(o) => (pending ? undefined : setOpen(o))}>
         <DialogContent size="sm">

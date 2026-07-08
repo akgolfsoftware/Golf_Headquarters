@@ -13,6 +13,7 @@
  * Nedenfor hybrid-kortet: STATUS, HVA SOM INNGÅR, HANDLINGER, FAKTURAER.
  */
 
+import { Tag } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import {
   AlertTriangle,
@@ -28,8 +29,6 @@ import {
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
 import { MeSub, SetGroup, SetLinkRow, SetRow } from "@/components/portal/meg/meg-sub";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticBadge } from "@/components/athletic/badge";
 
 export const dynamic = "force-dynamic";
 
@@ -382,7 +381,7 @@ export default async function AbonnementPage({
               icon={Receipt}
               title={f.description ?? "Betaling"}
               meta={`${formatDato(f.paidAt) ?? "—"} · ${(f.amountOre / 100).toLocaleString("nb-NO")} kr`}
-              right={<AthleticBadge variant="ok">Betalt</AthleticBadge>}
+              right={<Tag variant="up">Betalt</Tag>}
             />
           ))}
           <SetLinkRow href="/portal/meg/dokumenter" icon={FileText} title="Alle dokumenter" />

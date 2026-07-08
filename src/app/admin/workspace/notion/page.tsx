@@ -11,11 +11,10 @@
  * I prod: state hentes fra NotionConnection-tabellen (per ADMIN-user).
  */
 
+import { Eyebrow, Button } from "@/components/athletic/golfdata";
 import { ExternalLink, Lock, Plus, RefreshCw, Sparkles } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticButton, AthleticEyebrow } from "@/components/athletic";
 import { SourceBadge, WorkspaceTabs, VisibilityPill } from "@/components/workspace/primitives";
 import { ensureNotionConnection } from "@/lib/notion/bootstrap";
 import { getNotionConnectionForUser } from "@/lib/notion/client";
@@ -59,7 +58,7 @@ export default async function WorkspaceNotionPage({
   return (
     <div className="space-y-6">
       <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
-        <AthleticEyebrow>AgencyOS · Workspace · Notion</AthleticEyebrow>
+        <Eyebrow as="span">AgencyOS · Workspace · Notion</Eyebrow>
         <h1 className="font-display mt-2 text-3xl font-bold leading-tight tracking-tight md:text-4xl">
           Notion-{" "}
           <em
@@ -362,9 +361,9 @@ function ConnectedState({
         </div>
         <div className="flex gap-2">
           <form action="/api/notion/sync" method="post">
-            <AthleticButton variant="ghost-light" size="sm" type="submit">
+            <Button variant="ghost" size="sm" type="submit">
               <RefreshCw className="h-3.5 w-3.5" /> Synk nå
-            </AthleticButton>
+            </Button>
           </form>
         </div>
       </div>
@@ -375,9 +374,9 @@ function ConnectedState({
           <div className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
             SYNKEDE DATABASER · {databases.length}
           </div>
-          <AthleticButton variant="ghost-light" size="sm" disabled>
+          <Button variant="ghost" size="sm" disabled>
             <Plus className="h-3.5 w-3.5" /> Legg til database (v1.2)
-          </AthleticButton>
+          </Button>
         </header>
         <div className="overflow-hidden rounded-2xl border border-border bg-card">
           {databases.length === 0 ? (

@@ -15,10 +15,9 @@
  * DS-tokens + athletic/eyebrow + lucide. Ingen hardkodet hex, ingen emoji.
  */
 
+import { Eyebrow } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { Bell, ChevronRight, type LucideIcon } from "lucide-react";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 /** Én foresatt/verge koblet til spilleren (vises når lista ikke er tom). */
 export type ForeldreBarn = {
@@ -102,7 +101,7 @@ export function ForeldreInfo({ data = {} }: { data?: ForeldreInfoData }) {
     <div className="mx-auto w-full max-w-[640px] px-1 pt-8 pb-12 sm:px-8">
       {/* 1–3. Topptekst: eyebrow + tittel + subtittel/kontekst */}
       <header>
-        <AthleticEyebrow>{eyebrow}</AthleticEyebrow>
+        <Eyebrow as="span">{eyebrow}</Eyebrow>
         <h1 className="mt-3 font-display text-[26px] font-bold leading-[1.05] tracking-[-0.02em] text-foreground">
           {tittel}
         </h1>

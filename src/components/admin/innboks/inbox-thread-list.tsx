@@ -10,11 +10,10 @@
  * ?thread= slik at server re-henter samtale + kontekst.
  */
 
+import { Avatar } from "@/components/athletic/golfdata";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticAvatar } from "@/components/athletic";
 import type { InboxThread, ThreadDot } from "./inbox-screen";
 
 type FilterKey = "alle" | "ulest" | "spillere" | "foresatte";
@@ -145,13 +144,7 @@ export function InboxThreadList({
                 />
 
                 {/* Avatar */}
-                <AthleticAvatar
-                  src={t.avatarUrl ?? undefined}
-                  initials={t.initials}
-                  size="sm"
-                  borderColor="card"
-                  className="h-8 w-8 border-0 shadow-none"
-                />
+                <Avatar src={t.avatarUrl ?? undefined} name={t.name} size="sm" />
 
                 {/* Navn + tid + snippet */}
                 <div className="flex min-w-0 flex-col leading-tight">

@@ -12,10 +12,7 @@ import Link from "next/link";
 import { Trophy, ChevronRight, LayoutTemplate } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { Button, Card, Eyebrow } from "@/components/athletic/golfdata";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticBadge } from "@/components/athletic/badge";
+import { Button, Card, Eyebrow, Tag } from "@/components/athletic/golfdata";
 
 export const dynamic = "force-dynamic";
 
@@ -87,7 +84,7 @@ export default async function TurneringerPage() {
                       {t.dato} · {t.kategori}
                     </span>
                   </span>
-                  <AthleticBadge variant="ok">{t.bekreftet ? "Bekreftet" : "Påmeldt"}</AthleticBadge>
+                  <Tag variant="up">{t.bekreftet ? "Bekreftet" : "Påmeldt"}</Tag>
                   <ChevronRight className="h-[18px] w-[18px] shrink-0 text-muted-foreground/60" strokeWidth={2} aria-hidden />
                 </div>
               </Card>

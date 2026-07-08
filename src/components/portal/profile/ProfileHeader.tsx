@@ -3,26 +3,17 @@
 /**
  * ProfileHeader — avatar, navn, handicap og klubb for PlayerHQ-profilen.
  *
- * Bruker AthleticAvatar + DS-tokens. Meta-linja bygges av ekte felter
+ * Bruker golfdata Avatar + DS-tokens. Meta-linja bygges av ekte felter
  * (HCP · hjemmeklubb · e-post) og vises i mono/uppercase-eyebrow-stil.
  */
 
+import { Eyebrow, Avatar } from "@/components/athletic/golfdata";
 import type { User } from "@/generated/prisma/client";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticAvatar } from "@/components/athletic/avatar";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticEyebrow } from "@/components/athletic/eyebrow";
 
 export type ProfileHeaderProps = {
   user: Pick<User, "name" | "email" | "avatarUrl" | "hcp" | "homeClub">;
 };
 
-function initialer(navn: string): string {
-  const deler = navn.trim().split(/\s+/).filter(Boolean);
-  if (deler.length === 0) return "—";
-  if (deler.length === 1) return deler[0].slice(0, 2).toUpperCase();
-  return (deler[0][0] + deler[deler.length - 1][0]).toUpperCase();
-}
 
 function hcpTekst(hcp: number | null): string {
   if (hcp == null) return "—";
@@ -37,14 +28,9 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
 
   return (
     <header className="flex items-center gap-4">
-      <AthleticAvatar
-        src={user.avatarUrl}
-        initials={initialer(user.name)}
-        borderColor="card"
-        className="h-[72px] w-[72px] border-0 text-2xl shadow-none"
-      />
+      <Avatar src={user.avatarUrl ?? undefined} name={user.name} size="xl" />
       <div className="min-w-0">
-        <AthleticEyebrow>{metaDeler.join(" · ").toUpperCase()}</AthleticEyebrow>
+        <Eyebrow as="span">{metaDeler.join(" · ").toUpperCase()}</Eyebrow>
         <h1 className="mt-2 truncate font-display text-3xl font-bold leading-tight tracking-tight text-foreground">
           {user.name}
         </h1>

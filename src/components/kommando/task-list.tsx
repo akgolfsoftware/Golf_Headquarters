@@ -4,11 +4,10 @@
 // går via server actions som revaliderer siden. Oppgaver kan knyttes til et
 // prosjekt og få en frist (frist vises i kalenderen).
 
+import { Tag } from "@/components/athletic/golfdata";
 import { useState, useTransition } from "react";
 import { Plus, Trash2, Check, FolderOpen, CalendarClock } from "lucide-react";
 import { cn } from "@/lib/utils";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticBadge } from "@/components/athletic";
 import {
   createKommandoTask,
   toggleKommandoTask,
@@ -163,7 +162,7 @@ export function TaskList({
                     </div>
                   )}
                 </div>
-                {task.priority === "haster" && !done && <AthleticBadge variant="warn">Haster</AthleticBadge>}
+                {task.priority === "haster" && !done && <Tag variant="outline" style={{ color: "var(--warning)", borderColor: "var(--warning-border)" }}>Haster</Tag>}
                 <button
                   type="button"
                   aria-label="Slett"

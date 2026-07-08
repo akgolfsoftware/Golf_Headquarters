@@ -32,7 +32,6 @@
 
 import Link from "next/link";
 import { CalendarDays, Plus } from "lucide-react";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { Button, Card, Eyebrow } from "@/components/athletic/golfdata";
 
 // ────────────────────────────────────────────────────────────────────────────

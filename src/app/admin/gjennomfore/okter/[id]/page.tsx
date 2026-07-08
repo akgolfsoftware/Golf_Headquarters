@@ -8,6 +8,7 @@
  * Sticky CTA-bar nederst på mobile.
  */
 
+import { Tag, Button } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Pause, ChevronsRight, GripVertical, Star } from "lucide-react";
@@ -15,10 +16,6 @@ import { Pause, ChevronsRight, GripVertical, Star } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { calculateAge } from "@/lib/auth/minor";
 import { prisma } from "@/lib/prisma";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticButton } from "@/components/athletic";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
-import { AthleticBadge } from "@/components/athletic/badge";
 import { buttonClasses } from "@/components/ui/button";
 import { DetailShell } from "@/components/shared/detail-shell";
 import { AvlysOktKnapp } from "./avlys-okt-knapp";
@@ -107,8 +104,13 @@ export default async function OktDetaljPage({
     .map((w: string) => w[0]?.toUpperCase() ?? "")
     .join("");
 
-  const statusBadgeVariant: "warn" | "lime" | "neutral" =
-    status === "OM 2 TIMER" ? "warn" : status === "AKTIV NÅ" ? "lime" : "neutral";
+  // Tag mangler warn-variant (DS-gap meldt) — outline + warning-tokens til DS får en.
+  const statusBadgeVariant: "outline" | "live" | "neutral" =
+    status === "OM 2 TIMER" ? "outline" : status === "AKTIV NÅ" ? "live" : "neutral";
+  const statusBadgeStyle =
+    status === "OM 2 TIMER"
+      ? { color: "var(--warning)", borderColor: "var(--warning-border)" }
+      : undefined;
 
   // Spiller-meta fra ekte kilder (dateOfBirth + WagrSnapshot). «—» når mangler.
   const alder = calculateAge(spiller.dateOfBirth);
@@ -150,7 +152,7 @@ export default async function OktDetaljPage({
         title={heroTitle}
         subtitle={`${dateLabel} · ${startTime}–${endTime} · ${facility?.name ?? "Studio"} · ${durationMin} min · TrackMan Bridge`}
         statusPill={
-          <AthleticBadge variant={statusBadgeVariant}>{status}</AthleticBadge>
+          <Tag variant={statusBadgeVariant} style={statusBadgeStyle}>{status}</Tag>
         }
         actions={
           <div className="hidden flex-wrap gap-2 md:flex">
@@ -176,9 +178,9 @@ export default async function OktDetaljPage({
             ) : (
               <>
                 {/* Eksporter: ingen eksport-generator for økt-detalj finnes. */}
-                <AthleticButton variant="ghost-light" size="sm" disabled>
+                <Button variant="ghost" size="sm" disabled>
                   Eksporter
-                </AthleticButton>
+                </Button>
                 {/* Skriv oppfølging: coach-oppsummering/feedback bor i live-
                     konsollens summary. Lenker dit hvis økten er koblet til en
                     TrainingSessionV2 — ellers deaktivert (ingen økt å skrive på). */}
@@ -190,9 +192,9 @@ export default async function OktDetaljPage({
                     Skriv oppfølging
                   </Link>
                 ) : (
-                  <AthleticButton variant="lime" size="sm" disabled>
+                  <Button variant="signal" size="sm" disabled>
                     Skriv oppfølging
-                  </AthleticButton>
+                  </Button>
                 )}
               </>
             )}
@@ -321,9 +323,9 @@ export default async function OktDetaljPage({
                 </p>
               </div>
               <div className="pt-2">
-                <AthleticButton variant="lime" size="sm">
+                <Button variant="signal" size="sm">
                   Bok neste økt → onsdag 04.06
-                </AthleticButton>
+                </Button>
               </div>
             </section>
           ) : null}
@@ -407,9 +409,9 @@ export default async function OktDetaljPage({
             </Link>
           ) : (
             // Ingen koblet økt — ingenting å skrive oppfølging på ennå.
-            <AthleticButton variant="lime" size="md" className="w-full" disabled>
+            <Button variant="signal" size="md" className="w-full" disabled>
               Skriv oppfølging
-            </AthleticButton>
+            </Button>
           )}
         </div>
       </div>

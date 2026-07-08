@@ -38,7 +38,6 @@ import {
   AgTableToolbar,
   agBtnClass,
 } from "@/components/admin/agencyos/ui";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import { SpillerTilstandKort } from "@/components/athletic/golfdata";
 
 /** Status-heuristikken → kortets form-tilstand (kontraktens fire ord). */
