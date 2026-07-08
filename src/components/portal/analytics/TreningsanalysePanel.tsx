@@ -6,12 +6,16 @@
  * SAMMENLIGN segmenter mot hverandre. Bygget mot analyse-fasiten
  * (ui_kits/playerhq/phq-analyse via DesignSync): alt i Card m/ eyebrow+tittel,
  * periode som SegmentedTabs, sammenligningsrader i «etikett · stolpe · verdi»-idiom.
- * Komponert fra golfdata (Card · SegmentedTabs · FilterPills · KpiTile).
+ * Interaksjonsmønstre verifisert mot Mobbin-referanser (The Outsiders, Hevy,
+ * Fitbit, adidas Running): KPI-delta vs forrige periode, kolonnehoder + prosent-
+ * kolonne i sammenligningen, nullstill-affordance når filtre er aktive.
+ * Komponert fra golfdata (Card · SegmentedTabs · FilterPills · KpiTile) + ui/Button.
  */
 
 import { useMemo, useState } from "react";
 import type {
   TreningsanalyseData,
+  OktLogg,
   AkseKey,
   KatKey,
   OmradeKey,
@@ -25,6 +29,7 @@ import {
   Tag,
   type FilterItem,
 } from "@/components/athletic/golfdata";
+import { Button } from "@/components/ui/button";
 
 type DimKey = "axis" | "kat" | "venue" | "type";
 
@@ -54,18 +59,40 @@ const DIM: { key: DimKey; label: string; verdier: { v: string; l: string }[] }[]
   { key: "type", label: "Type", verdier: TYPE },
 ];
 
-/** Sammenligningsrad — analyse-fasitens «etikett · stolpe · verdi»-idiom (SGRow). */
+/**
+ * Sammenligningsrad — «etikett · stolpe · % · verdi»-idiomet fra analyse-fasiten,
+ * med egen prosentkolonne slik sonetabellene i referansene gjør (Perc. · Duration).
+ */
 function SammenlignRad({ label, timer, andel, antall }: { label: string; timer: number; andel: number; antall: number }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "9px 0" }}>
-      <span style={{ width: 118, flex: "none", fontSize: 13, color: "var(--text-2)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+      <span style={{ width: 110, flex: "none", fontSize: 13, color: "var(--text-2)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
         {label}
       </span>
       <div style={{ flex: 1, height: 6, borderRadius: 9999, background: "var(--track)", overflow: "hidden" }}>
         <div style={{ width: `${Math.max(3, andel)}%`, height: "100%", background: "var(--signal)", borderRadius: 9999 }} />
       </div>
-      <span style={{ width: 96, flex: "none", textAlign: "right", fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--text-muted)", fontVariantNumeric: "tabular-nums" }}>
+      <span style={{ width: 40, flex: "none", textAlign: "right", fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--text-2)", fontVariantNumeric: "tabular-nums" }}>
+        {Math.round(andel)}%
+      </span>
+      <span style={{ width: 88, flex: "none", textAlign: "right", fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--text-muted)", fontVariantNumeric: "tabular-nums" }}>
         {timer.toFixed(1)} t · {antall}
+      </span>
+    </div>
+  );
+}
+
+/** Kolonnehoder over sammenligningsradene (mønster: sonetabellenes «Perc. · Days»). */
+function SammenlignHode() {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 12, paddingBottom: 4, borderBottom: "1px solid var(--border)" }}>
+      <span style={{ width: 110, flex: "none" }} />
+      <span style={{ flex: 1 }} />
+      <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground" style={{ width: 40, flex: "none", textAlign: "right" }}>
+        %
+      </span>
+      <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground" style={{ width: 88, flex: "none", textAlign: "right" }}>
+        Timer · Økter
       </span>
     </div>
   );
@@ -79,21 +106,44 @@ export function TreningsanalysePanel({ trening }: { trening: TreningsanalyseData
   const [type, setType] = useState<TypeKey[]>([]);
   const [splitBy, setSplitBy] = useState<DimKey>("venue");
 
+  const matcherFiltre = useMemo(
+    () => (o: OktLogg) =>
+      (akse.length === 0 || akse.includes(o.axis)) &&
+      (kat.length === 0 || kat.includes(o.kat)) &&
+      (venue.length === 0 || venue.includes(o.venue)) &&
+      (type.length === 0 || type.includes(o.type)),
+    [akse, kat, venue, type],
+  );
+
   const filtrert = useMemo(
-    () =>
-      trening.okter.filter(
-        (o) =>
-          o.d <= periode &&
-          (akse.length === 0 || akse.includes(o.axis)) &&
-          (kat.length === 0 || kat.includes(o.kat)) &&
-          (venue.length === 0 || venue.includes(o.venue)) &&
-          (type.length === 0 || type.includes(o.type)),
-      ),
-    [trening.okter, periode, akse, kat, venue, type],
+    () => trening.okter.filter((o) => o.d <= periode && matcherFiltre(o)),
+    [trening.okter, periode, matcherFiltre],
   );
 
   const timer = filtrert.reduce((s, o) => s + o.t, 0);
   const antall = filtrert.length;
+
+  // Forrige periode (samme lengde, samme filtre) — grunnlag for KPI-delta.
+  // «Sesong» har ingen forrige periode å måle mot.
+  const forrige = useMemo(() => {
+    if (periode >= 999) return null;
+    const okter = trening.okter.filter((o) => o.d > periode && o.d <= periode * 2 && matcherFiltre(o));
+    return { timer: okter.reduce((s, o) => s + o.t, 0), antall: okter.length };
+  }, [trening.okter, periode, matcherFiltre]);
+
+  const delta = (naa: number, foer: number, desimaler = 0): string | undefined => {
+    const d = naa - foer;
+    if (d === 0) return undefined;
+    return `${d > 0 ? "+" : "−"}${Math.abs(d).toFixed(desimaler).replace(".", ",")}`;
+  };
+
+  const harFiltre = akse.length + kat.length + venue.length + type.length > 0;
+  const nullstill = () => {
+    setAkse([]);
+    setKat([]);
+    setVenue([]);
+    setType([]);
+  };
 
   const sammenlign = useMemo(() => {
     const dim = DIM.find((d) => d.key === splitBy)!;
@@ -120,11 +170,27 @@ export function TreningsanalysePanel({ trening }: { trening: TreningsanalyseData
         options={PERIODE.map((p) => ({ value: String(p.value), label: p.label }))}
       />
 
-      {/* Filtre — i kort */}
-      <Card eyebrow="Filtre" title="Avgrens utvalget" compact>
+      {/* Filtre — i kort, med nullstill-affordance når noe er aktivt */}
+      <Card
+        eyebrow="Filtre"
+        title="Avgrens utvalget"
+        compact
+        action={
+          harFiltre ? (
+            <Button variant="ghost-light" size="sm" onClick={nullstill}>
+              Nullstill
+            </Button>
+          ) : undefined
+        }
+      >
         <div className="flex flex-col gap-3">
           <FilterRad label="Akse">
-            <FilterPills filters={items(AKSE)} value={akse} multi onChange={(v) => setAkse((v as AkseKey[]) ?? [])} />
+            <FilterPills
+              filters={AKSE.map((x) => ({ value: x.v, label: x.l, axis: x.v }))}
+              value={akse}
+              multi
+              onChange={(v) => setAkse((v as AkseKey[]) ?? [])}
+            />
           </FilterRad>
           <FilterRad label="Kategori">
             <FilterPills filters={items(KAT)} value={kat} multi onChange={(v) => setKat((v as KatKey[]) ?? [])} />
@@ -138,11 +204,24 @@ export function TreningsanalysePanel({ trening }: { trening: TreningsanalyseData
         </div>
       </Card>
 
-      {/* Nøkkeltall for utvalget — i kort */}
+      {/* Nøkkeltall for utvalget — med delta mot forrige periode (samme filtre) */}
       <Card eyebrow="Utvalget" title="Volum">
         <div className="grid grid-cols-3 gap-3">
-          <KpiTile label="Økter" value={antall} size="lg" />
-          <KpiTile label="Timer" value={timer.toFixed(1)} unit="t" size="lg" />
+          <KpiTile
+            label="Økter"
+            value={antall}
+            size="lg"
+            delta={forrige ? delta(antall, forrige.antall) : undefined}
+            deltaSuffix={forrige && delta(antall, forrige.antall) ? `vs forrige ${periode} d` : undefined}
+          />
+          <KpiTile
+            label="Timer"
+            value={timer.toFixed(1)}
+            unit="t"
+            size="lg"
+            delta={forrige ? delta(timer, forrige.timer, 1) : undefined}
+            deltaSuffix={forrige && delta(timer, forrige.timer, 1) ? `vs forrige ${periode} d` : undefined}
+          />
           <KpiTile label="Snitt/økt" value={antall > 0 ? (timer / antall).toFixed(1) : "—"} unit="t" size="lg" />
         </div>
       </Card>
@@ -162,6 +241,7 @@ export function TreningsanalysePanel({ trening }: { trening: TreningsanalyseData
       >
         {sammenlign.length > 0 ? (
           <div className="flex flex-col">
+            <SammenlignHode />
             {sammenlign.map((r) => (
               <SammenlignRad key={r.label} label={r.label} timer={r.timer} andel={r.andel} antall={r.antall} />
             ))}
