@@ -38,7 +38,7 @@ import {
   AgTableToolbar,
   agBtnClass,
 } from "@/components/admin/agencyos/ui";
-import { SpillerTilstandKort, SpillerKort } from "@/components/athletic/golfdata";
+import { SpillerTilstandKort } from "@/components/athletic/golfdata";
 
 /** Status-heuristikken → kortets form-tilstand (kontraktens fire ord). */
 const TILSTAND: Record<SpillerRad["status"], "god" | "varsel" | "risiko"> = {
@@ -385,37 +385,6 @@ export function SpillereTabell({
               </li>
             ))}
           </ul>
-        </div>
-
-        {/* Ny design: SpillerKort grid (komponert fra ZIP design system / golfdata)
-            Bruker SpillerKort for roster-tiles med avatar, tags, 3 KPI.
-            Matcher fasit visual: kort, interaktiv, data-bound.
-            Fable 5 prose i kommentar for style. */}
-        <div className="mt-6 px-4">
-          <div className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-            Roster cards (new design from ZIP)
-          </div>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.slice(0, 6).map((p) => (
-              <SpillerKort
-                key={p.id}
-                name={p.name}
-                hcp={p.hcp ?? undefined}
-                kategori="A"
-                tier="PRO"
-                sg={p.sgVal ?? "2.8"}
-                sgDelta="+0.4"
-                runder={12}
-                adherence={86}
-                onClick={() => router.push(`/admin/spillere/${p.id}`)}
-              />
-            ))}
-          </div>
-          {filtered.length > 6 && (
-            <div className="mt-2 text-[11px] text-muted-foreground">
-              + {filtered.length - 6} flere (vis alle i full roster).
-            </div>
-          )}
         </div>
       </div>
     </AgPage>

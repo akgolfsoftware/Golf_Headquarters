@@ -48,13 +48,5 @@ primitiv-laget for skjema/overlay og overlapper ikke golf-UI-en. Det berøres ik
 
 ## Design-veiledning
 
-Kun `.claude/skills/ak-designekspert` + det levende Claude Design-prosjektets `guidelines/` (ZIP-en er fasit-handover).
+Kun `.claude/skills/ak-designekspert` + det levende Claude Design-prosjektets `guidelines/`.
 Andre generiske design-skills i `~/.claude/skills/` gir motstridende råd og skal ikke brukes.
-
-## Grok Build / Fable 5 integrasjon (token-besparende)
-
-Når du jobber i Grok Build på dette prosjektet (design-implementering):
-- Bruk fable-ak-style.md (docs/fable-ak-style.md) som kondensert referanse.
-- Kombiner med Fable 5_System_Prompt.md for prose-stil (naturlige avsnitt, minimal bullets, varm tone) i forklaringer, planer og docs.
-- Aldri lim inn full Fable eller ZIP – referer filer og bruk targeted reads/edits.
-- Dette sparer tokens mens vi holder "Fable 5 setting" (prose, disiplinert) + AK Golf kanon 1:1.
