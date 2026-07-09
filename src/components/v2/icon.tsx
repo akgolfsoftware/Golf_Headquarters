@@ -1,0 +1,108 @@
+import type { CSSProperties } from "react";
+import {
+  Activity, TriangleAlert, ArrowRight, ArrowUpRight, ArrowLeft, ArrowDown,
+  BadgeCheck, BarChart3, Calendar, Camera, Check, ChevronDown, ChevronLeft,
+  ChevronRight, ChevronUp, Clock, Copy, Dumbbell, Eye, FileText, Fingerprint,
+  Flame, GripVertical, CircleHelp, Image as ImageIcon, Info, Mail, Menu,
+  MessageCircle, Minus, Play, Plus, Repeat, RotateCw, Search, Shield, Sparkles,
+  Star, Target, User, Users, X, ZoomIn, TrendingUp, TrendingDown, Home, Settings,
+  Bell, LogOut, Pencil, Trash2, Download, Upload, Filter, MoreHorizontal,
+  MoreVertical, ExternalLink, MapPin, Phone, Video, CircleCheck, CircleX, Circle,
+  Trophy, Flag, List, LayoutGrid, Sun, Moon, CalendarPlus, Crosshair,
+  type LucideIcon,
+} from "lucide-react";
+
+/**
+ * AK Golf HQ v2 — ikon-wrapper (retning C). Speiler mockupenes `DS.Icon`-API:
+ * kebab-case navn + `size`/`style`. Eneste ikon-kilde er Lucide (aldri emoji).
+ * Nytt ikonbehov → legg navnet til i MAP her, aldri hardkod en Lucide-import
+ * i en skjerm-/komponentfil. Ukjent navn faller trygt tilbake til «circle-help».
+ */
+const MAP: Record<string, LucideIcon> = {
+  "activity": Activity,
+  "alert-triangle": TriangleAlert,
+  "triangle-alert": TriangleAlert,
+  "arrow-right": ArrowRight,
+  "arrow-up-right": ArrowUpRight,
+  "arrow-left": ArrowLeft,
+  "arrow-down": ArrowDown,
+  "badge-check": BadgeCheck,
+  "bar-chart": BarChart3,
+  "calendar": Calendar,
+  "camera": Camera,
+  "check": Check,
+  "chevron-down": ChevronDown,
+  "chevron-left": ChevronLeft,
+  "chevron-right": ChevronRight,
+  "chevron-up": ChevronUp,
+  "clock": Clock,
+  "copy": Copy,
+  "dumbbell": Dumbbell,
+  "eye": Eye,
+  "file-text": FileText,
+  "fingerprint": Fingerprint,
+  "flame": Flame,
+  "grip-vertical": GripVertical,
+  "help-circle": CircleHelp,
+  "image": ImageIcon,
+  "info": Info,
+  "mail": Mail,
+  "menu": Menu,
+  "message-circle": MessageCircle,
+  "minus": Minus,
+  "play": Play,
+  "plus": Plus,
+  "repeat": Repeat,
+  "rotate-cw": RotateCw,
+  "search": Search,
+  "shield": Shield,
+  "sparkles": Sparkles,
+  "star": Star,
+  "target": Target,
+  "user": User,
+  "users": Users,
+  "x": X,
+  "zoom-in": ZoomIn,
+  "trending-up": TrendingUp,
+  "trending-down": TrendingDown,
+  "home": Home,
+  "settings": Settings,
+  "bell": Bell,
+  "log-out": LogOut,
+  "pencil": Pencil,
+  "trash": Trash2,
+  "trash-2": Trash2,
+  "download": Download,
+  "upload": Upload,
+  "filter": Filter,
+  "more-horizontal": MoreHorizontal,
+  "more-vertical": MoreVertical,
+  "external-link": ExternalLink,
+  "map-pin": MapPin,
+  "phone": Phone,
+  "video": Video,
+  "check-circle": CircleCheck,
+  "x-circle": CircleX,
+  "circle": Circle,
+  "trophy": Trophy,
+  "flag": Flag,
+  "list": List,
+  "grid": LayoutGrid,
+  "sun": Sun,
+  "moon": Moon,
+  "calendar-plus": CalendarPlus,
+  "crosshair": Crosshair,
+};
+
+export interface IconProps {
+  name: string;
+  size?: number;
+  style?: CSSProperties;
+  className?: string;
+  strokeWidth?: number;
+}
+
+export function Icon({ name, size = 16, style, className, strokeWidth = 1.75 }: IconProps) {
+  const Cmp = MAP[name] ?? CircleHelp;
+  return <Cmp size={size} strokeWidth={strokeWidth} style={style} className={className} aria-hidden />;
+}
