@@ -34,15 +34,15 @@ import { useToast } from "@/components/shared/toast-provider";
 import {
   exportBriefReport,
   type ExportBriefInput,
-} from "@/app/admin/brief/actions";
+} from "@/app/admin/(legacy)/brief/actions";
 import {
   exportAnalyticsReport,
   type ExportAnalyticsInput,
-} from "@/app/admin/analytics/actions";
+} from "@/app/admin/(legacy)/analytics/actions";
 import {
   exportTournamentsReport,
   type ExportTournamentsInput,
-} from "@/app/admin/tournaments/actions";
+} from "@/app/admin/(legacy)/tournaments/actions";
 
 // ------------------------------------------------------------------
 // Typer

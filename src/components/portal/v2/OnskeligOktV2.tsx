@@ -17,7 +17,7 @@
 
 import { useState, useTransition, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { sendOnskeligOkt } from "@/app/portal/onskeligokt/actions";
+import { sendOnskeligOkt } from "@/app/portal/(legacy)/onskeligokt/actions";
 import {
   T,
   Caps,

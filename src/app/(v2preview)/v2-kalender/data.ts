@@ -13,7 +13,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea, PracticeType } from "@/generated/prisma/client";
 import { translateMiljo } from "@/lib/portal/translate-taxonomy";
-import { lesPeriodeType } from "@/app/admin/kalender/lib/periode-helpers";
+import { lesPeriodeType } from "@/app/admin/(legacy)/kalender/lib/periode-helpers";
 import type { PeriodeType } from "@/generated/prisma/client";
 import type { AkseKey } from "@/lib/v2/tokens";
 

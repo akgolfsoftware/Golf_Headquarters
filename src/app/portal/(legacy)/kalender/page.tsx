@@ -20,7 +20,7 @@ import { CalendarDays } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { lesPeriodeType } from "@/app/admin/kalender/lib/periode-helpers";
+import { lesPeriodeType } from "@/app/admin/(legacy)/kalender/lib/periode-helpers";
 
 export const dynamic = "force-dynamic";
 

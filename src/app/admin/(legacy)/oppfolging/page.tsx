@@ -6,7 +6,7 @@
  * `queue/page.tsx` for å unngå duplisert logikk.
  */
 
-import QueuePage from "@/app/admin/queue/page";
+import QueuePage from "@/app/admin/(legacy)/queue/page";
 
 export const dynamic = "force-dynamic";
 

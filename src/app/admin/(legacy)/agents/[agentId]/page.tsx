@@ -11,7 +11,7 @@ import { DetailShell } from "@/components/shared/detail-shell";
 import { KPICard } from "@/components/ui/kpi-card";
 import { EmptyState } from "@/components/shared/empty-state";
 import { FeedbackForm } from "./feedback-form";
-import { ApprovalActions } from "@/app/admin/approvals/approval-actions";
+import { ApprovalActions } from "@/app/admin/(legacy)/approvals/approval-actions";
 import { AgentRunPanel } from "./agent-run-panel";
 
 type AgentKonfig = {

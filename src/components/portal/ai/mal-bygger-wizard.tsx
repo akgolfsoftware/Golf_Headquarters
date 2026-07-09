@@ -21,7 +21,7 @@ import {
   Target,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { lagreMalForslag, type MalForslagInput } from "@/app/portal/ai/mal-bygger/actions";
+import { lagreMalForslag, type MalForslagInput } from "@/app/portal/(legacy)/ai/mal-bygger/actions";
 
 type Horizon = "SESONG" | "KVARTAL" | "MANED";
 type Focus = "RESULTAT" | "PROSESS" | "BALANSERT";

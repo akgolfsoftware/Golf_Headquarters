@@ -5,7 +5,7 @@ import { Plus, Trash2 } from "lucide-react";
 import type { LPhase } from "@/generated/prisma/client";
 import { PERIODE_TYPER } from "@/lib/taxonomy";
 import { PeriodeConstraintBadges } from "@/components/portal/periode-constraint-badges";
-import { opprettPeriode, slettPeriode } from "@/app/portal/tren/aarsplan/periode/actions";
+import { opprettPeriode, slettPeriode } from "@/app/portal/(legacy)/tren/aarsplan/periode/actions";
 
 // ---------------------------------------------------------------------------
 // Types

@@ -7,8 +7,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { computeDelta, type PlanContext } from "@/lib/agents/plan-action-executor";
 import { AgAvatar, AgChip, AgPage, AgPageHead } from "@/components/admin/agencyos/ui";
-import { ApprovalActions } from "@/app/admin/approvals/approval-actions";
-import { BatchApproveButton } from "@/app/admin/approvals/batch-approve-button";
+import { ApprovalActions } from "@/app/admin/(legacy)/approvals/approval-actions";
+import { BatchApproveButton } from "@/app/admin/(legacy)/approvals/batch-approve-button";
 import { LOW_RISK_ACTION_TYPES } from "@/lib/training/skills";
 
 const ACTION_LABEL: Record<string, string> = {

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { Tag } from "lucide-react";
-import { tagClubsPracticed } from "@/app/portal/tren/[sessionId]/club-tagging-actions";
+import { tagClubsPracticed } from "@/app/portal/(legacy)/tren/[sessionId]/club-tagging-actions";
 import type { TrackManEnvironment } from "@/generated/prisma/client";
 import { ENVIRONMENT_OPTIONS } from "@/lib/sg-hub/environment-labels";
 

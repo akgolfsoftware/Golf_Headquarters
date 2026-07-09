@@ -18,7 +18,7 @@ import {
   Check,
   Play,
 } from "lucide-react";
-import { createCustomExercise } from "@/app/portal/tren/ovelser/actions";
+import { createCustomExercise } from "@/app/portal/(legacy)/tren/ovelser/actions";
 
 const MUSKELGRUPPER = ["Glutes", "Hamstrings", "Core", "Skulder", "Rygg", "Bein", "Biceps", "Triceps", "Bryst"];
 const FASILITETER = ["GYM", "Vektstang", "Trapbar", "Medisinball", "Løpebane", "Strikk", "Hjemme", "Bane"];

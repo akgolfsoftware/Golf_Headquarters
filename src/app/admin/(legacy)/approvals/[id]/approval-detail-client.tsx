@@ -17,7 +17,7 @@ import {
   requestMoreInfo,
 } from "../actions";
 import { avatarBg } from "@/lib/avatar-colors";
-import type { ApprovalDetail } from "@/app/admin/godkjenninger/[id]/page";
+import type { ApprovalDetail } from "@/app/admin/(legacy)/godkjenninger/[id]/page";
 
 type DialogMode = "none" | "decline" | "info" | "approve";
 

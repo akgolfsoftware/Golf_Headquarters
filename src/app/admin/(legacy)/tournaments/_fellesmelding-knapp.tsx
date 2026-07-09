@@ -13,7 +13,7 @@
 
 import { useState, useTransition } from "react";
 import { Send, Users } from "lucide-react";
-import { sendTournamentFellesmelding } from "@/app/admin/tournaments/actions";
+import { sendTournamentFellesmelding } from "@/app/admin/(legacy)/tournaments/actions";
 
 import { agBtnClass } from "@/components/admin/agencyos/ui";
 import {

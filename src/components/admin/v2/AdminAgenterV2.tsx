@@ -37,7 +37,7 @@ import {
   Icon,
   T,
 } from "@/components/v2";
-import { triggerAgentManually } from "@/app/admin/agents/actions";
+import { triggerAgentManually } from "@/app/admin/(legacy)/agents/actions";
 
 // ── Datakontrakt (mappes fra Prisma i ruten) ────────────────────
 export type AgentStatusKey = "aktiv" | "feil" | "ingen-data";

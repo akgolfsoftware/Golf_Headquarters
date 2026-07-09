@@ -24,12 +24,12 @@ import {
   User2,
   X,
 } from "lucide-react";
-import { shareRound } from "@/app/portal/mal/runder/[id]/actions";
+import { shareRound } from "@/app/portal/(legacy)/mal/runder/[id]/actions";
 import type {
   ShareFormat,
   ShareRoundInput,
   ShareVisibility,
-} from "@/app/portal/mal/runder/[id]/actions";
+} from "@/app/portal/(legacy)/mal/runder/[id]/actions";
 
 type Inkluder = ShareRoundInput["inkluder"];
 

@@ -48,7 +48,7 @@ import {
   bekreftAllePending,
   avvisAllePending,
   markerAlleConfirmedSomCompleted,
-} from "@/app/admin/bookinger/actions";
+} from "@/app/admin/(legacy)/bookinger/actions";
 
 // ── Datakontrakt (mappes fra Prisma i ruten) ────────────────────
 export type BookingStatusKey = "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED";

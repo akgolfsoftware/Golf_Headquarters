@@ -24,7 +24,7 @@ import { SynkButton } from "./availability-actions";
 import { SlotForm } from "./slot-form";
 import { AvailabilityWeekGrid } from "./availability-week-grid";
 import { AvailabilityYearGantt, type YearWindow } from "./availability-year-gantt";
-import { CalendarSyncSection } from "@/app/admin/settings/calendar/calendar-sync-section";
+import { CalendarSyncSection } from "@/app/admin/(legacy)/settings/calendar/calendar-sync-section";
 
 const REP_TEKST: Record<number, string> = {
   2: "annenhver uke",

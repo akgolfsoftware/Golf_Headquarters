@@ -14,7 +14,7 @@ import {
   getMessages,
   getUpcomingSessions,
   getCoachNotes,
-} from "@/app/portal/coach/actions";
+} from "@/app/portal/(legacy)/coach/actions";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { CoachHubV2, type CoachHubData } from "@/components/portal/v2/CoachHubV2";
 

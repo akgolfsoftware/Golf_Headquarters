@@ -10,8 +10,6 @@ import { ProfileMenu } from "@/components/shared/profile-menu";
 import { ViewModeToggle } from "@/components/shared/view-mode-toggle";
 import { ensurePortalPlayerViewMode } from "@/lib/view-mode";
 import { NotificationBell } from "@/components/shared/notification-bell";
-import { ToastProvider } from "@/components/shared/toast-provider";
-import { CmdPalette } from "@/components/shared/cmd-palette";
 import { GuardianConsentBanner } from "./guardian-consent-banner";
 
 export async function PortalShell({
@@ -48,7 +46,6 @@ export async function PortalShell({
     : null;
 
   return (
-    <ToastProvider>
     <div className="flex min-h-screen min-h-dvh bg-background">
       <a
         href="#portal-main"
@@ -113,8 +110,6 @@ export async function PortalShell({
       <PortalGlobalSearchModal
         canSwitchToCoach={user.role === "ADMIN" || user.role === "COACH"}
       />
-      <CmdPalette />
     </div>
-    </ToastProvider>
   );
 }

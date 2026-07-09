@@ -33,7 +33,7 @@ import {
   updateTaskBasics,
   deleteTask,
   type TaskInput,
-} from "@/app/portal/tren/teknisk-plan/actions";
+} from "@/app/portal/(legacy)/tren/teknisk-plan/actions";
 
 /** Pyramide-aksene — kategori-chip-settet. Speiler PositionTask.pyramide. */
 const CATEGORIES: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];

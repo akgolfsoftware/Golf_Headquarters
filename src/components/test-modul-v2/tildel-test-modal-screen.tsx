@@ -13,7 +13,7 @@ import "../planlegge-v2/styles.css";
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { PlanleggeSprite } from "../planlegge-v2/icons";
-import { tildelTest } from "@/app/admin/tester/tildel/[spillerId]/actions";
+import { tildelTest } from "@/app/admin/(legacy)/tester/tildel/[spillerId]/actions";
 
 type TestItem = {
   id: string;

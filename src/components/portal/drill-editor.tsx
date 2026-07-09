@@ -18,7 +18,7 @@ import {
   type FysTreningstype,
   type DrillParameters,
 } from "@/lib/taxonomy";
-import { opprettOvelse, oppdaterOvelse, type OvelseInput } from "@/app/portal/coach/ovelser/actions";
+import { opprettOvelse, oppdaterOvelse, type OvelseInput } from "@/app/portal/(legacy)/coach/ovelser/actions";
 
 const PYR_ORDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 const LPHASE_ORDER: LPhase[] = ["GRUNN", "SPESIAL", "TURNERING"];

@@ -36,14 +36,14 @@ import {
 import {
   createSpiller,
   type OpprettSpillerInput,
-} from "@/app/admin/spillere/ny/actions";
+} from "@/app/admin/(legacy)/spillere/ny/actions";
 import {
   SPILLER_KATEGORIER,
   SPILLER_TIERS,
   ALL_PROGRAMS,
   type SpillerKategori,
   type SpillerTier,
-} from "@/app/admin/spillere/ny/constants";
+} from "@/app/admin/(legacy)/spillere/ny/constants";
 import type { PlayerProgram } from "@/generated/prisma/client";
 
 const PROGRAM_LABEL: Record<PlayerProgram, string> = {

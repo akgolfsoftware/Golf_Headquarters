@@ -5,8 +5,8 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { computeDelta, type PlanContext } from "@/lib/agents/plan-action-executor";
-import { ApprovalDetailClient } from "@/app/admin/approvals/[id]/approval-detail-client";
-import { ApprovalNotFound } from "@/app/admin/approvals/[id]/approval-detail-client";
+import { ApprovalDetailClient } from "@/app/admin/(legacy)/approvals/[id]/approval-detail-client";
+import { ApprovalNotFound } from "@/app/admin/(legacy)/approvals/[id]/approval-detail-client";
 
 export const dynamic = "force-dynamic";
 
