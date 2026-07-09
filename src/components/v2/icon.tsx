@@ -9,7 +9,7 @@ import {
   Bell, LogOut, Pencil, Trash2, Download, Upload, Filter, MoreHorizontal,
   MoreVertical, ExternalLink, MapPin, Phone, Video, CircleCheck, CircleX, Circle,
   Trophy, Flag, List, LayoutGrid, Sun, Moon, CalendarPlus, Crosshair,
-  CreditCard, Layers, Send, CircleDot,
+  CreditCard, Layers, Send, CircleDot, Lock,
   type LucideIcon,
 } from "lucide-react";
 
@@ -57,6 +57,7 @@ const MAP: Record<string, LucideIcon> = {
   "rotate-cw": RotateCw,
   "search": Search,
   "shield": Shield,
+  "lock": Lock,
   "sparkles": Sparkles,
   "star": Star,
   "target": Target,

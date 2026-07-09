@@ -11,7 +11,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { useState } from "react";
 import { T } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
-import { CTAPill } from "./core";
+import { CTAPill, Caps } from "./core";
 
 /* Delte felt-stiler */
 const FELT: CSSProperties = {
@@ -52,6 +52,31 @@ export function Inndata({ label = "Navn", value, defaultValue = "Øyvind Rohjan"
         />
         {suffix && <span style={{ position: "absolute", right: 13, top: "50%", transform: "translateY(-50%)", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{suffix}</span>}
       </div>
+    </div>
+  );
+}
+
+/* ── ProfilFelt — skrivebeskyttet visningsfelt (label + statisk boks) ──
+   Auth/profil-idiomet fra ui_kits/v2/auth-profil.jsx (lokal `Felt`). Viser en
+   verdi i en panel-boks; tom verdi → placeholder i mut. Ikke et inndatafelt —
+   redigering skjer på /portal/meg/profil. */
+export interface ProfilFeltProps {
+  label?: ReactNode;
+  value?: ReactNode;
+  placeholder?: ReactNode;
+  trailing?: ReactNode;
+  hint?: ReactNode;
+  mono?: boolean;
+}
+export function ProfilFelt({ label, value, placeholder, trailing, hint, mono }: ProfilFeltProps) {
+  return (
+    <div>
+      <Caps size={9} style={{ marginBottom: 7 }}>{label}</Caps>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, height: 44, padding: "0 14px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.borderS}` }}>
+        <span style={{ flex: 1, fontFamily: mono ? T.mono : T.ui, fontSize: 13.5, fontWeight: 500, color: value ? T.fg : T.mut, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{value || placeholder}</span>
+        {trailing}
+      </div>
+      {hint && <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.55, margin: "7px 2px 0" }}>{hint}</p>}
     </div>
   );
 }

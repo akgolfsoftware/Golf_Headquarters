@@ -38,6 +38,14 @@ export const AGENCYOS_NAV: V2NavItem[] = [
   { id: "live", label: "Live", icon: "activity", href: "/admin/agencyos/live" },
 ];
 
+/** Foreldre-navigasjon (lese-først oversikt). Fire enkle seksjoner. */
+export const FORELDER_NAV: V2NavItem[] = [
+  { id: "oversikt", label: "Oversikt", icon: "home", href: "/forelder" },
+  { id: "barn", label: "Barn", icon: "users", href: "/forelder/barn" },
+  { id: "okonomi", label: "Økonomi", icon: "credit-card", href: "/forelder/okonomi" },
+  { id: "coach", label: "Meldinger", icon: "message-circle", href: "/forelder/coach" },
+];
+
 export interface V2ShellProps {
   /** Aktiv nav-id (matcher V2NavItem.id). */
   aktiv?: string;
