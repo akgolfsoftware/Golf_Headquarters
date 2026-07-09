@@ -11,7 +11,8 @@ import {
   Trophy, Flag, List, LayoutGrid, Sun, Moon, CalendarPlus, Crosshair,
   CreditCard, Layers, Send, CircleDot, Lock, Monitor, ShieldCheck,
   BatteryMedium, Stethoscope,
-  Bug, Lightbulb, Heart, History, Sprout,
+  Bug, Lightbulb, Heart, History, Sprout, Bot,
+  Building2, Plug,
   type LucideIcon,
 } from "lucide-react";
 
@@ -109,6 +110,9 @@ const MAP: Record<string, LucideIcon> = {
   "heart": Heart,
   "history": History,
   "sprout": Sprout,
+  "bot": Bot,
+  "building-2": Building2,
+  "plug": Plug,
 };
 
 export interface IconProps {
