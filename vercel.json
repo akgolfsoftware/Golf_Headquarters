@@ -132,6 +132,10 @@
     {
       "path": "/api/cron/24-7-booking-alerts",
       "schedule": "*/20 * * * *"
+    },
+    {
+      "path": "/api/cron/plan-effectiveness-agent",
+      "schedule": "0 20 * * 0"
     }
   ]
 }

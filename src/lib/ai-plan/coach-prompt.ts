@@ -14,6 +14,7 @@ import type {
 } from "./context";
 import { kontekstSomBrukerMelding } from "./context";
 import type { LiveSessionKind } from "@/lib/agents/live-coach-agent";
+import { formatFewShotBlock, loadFewShotExamples } from "@/lib/ai-coach/few-shot";
 
 export type SystemPromptInput = {
   /** Hvem prompten er rettet til. Styrer tone og rolle. */
@@ -200,6 +201,10 @@ export function bygLiveCoachSystemPrompt(
   const sessionKindLabel =
     live.sessionKind === "plan-session" ? "treningsplan-økt" : "økt v2";
 
+  const fewShot = formatFewShotBlock(
+    loadFewShotExamples("live-coach-dialog.jsonl", 2),
+  );
+
   return `Du er AI Golf Coach — Anders Kristiansens digitale stemme under en AKTIV treningsøkt.
 
 KONTEKST-REGLER:
@@ -226,7 +231,7 @@ Aktive treningsplaner:
 ${planLinjer}
 
 Siste 5 runder:
-${rundeLinjer}`;
+${rundeLinjer}${fewShot}`;
 }
 
 /**

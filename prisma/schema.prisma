@@ -440,6 +440,9 @@ model User {
   videosAsPlayer SessionVideo[] @relation("VideoPlayer")
   videosAsCoach  SessionVideo[] @relation("VideoCoach")
 
+  // Spiller-opplastede swing-videoer (F3 scaffold)
+  playerSwingVideos PlayerSwingVideo[]
+
   // Drill-challenges (M14)
   ownedChallenges         DrillChallenge[]       @relation("ChallengeOwner")
   challengeParticipations ChallengeParticipant[]
@@ -1826,6 +1829,46 @@ model SessionVideo {
   @@index([playerId, createdAt])
   @@index([coachId, createdAt])
   @@map("session_videos")
+}
+
+// Spiller-sentrisk swing-video (F3). Skill fra coach-sentrisk SessionVideo.
+model PlayerSwingVideo {
+  id              String   @id @default(cuid())
+  userId          String
+  liveSessionId   String?
+  liveSessionKind String? // plan-session | session-v2
+  videoUrl        String
+  storagePath     String?
+  drillId         String?
+  // PROCESSING | READY | FAILED
+  status          String   @default("PROCESSING")
+  consentVerified Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  analysis SwingAnalysis?
+
+  @@index([userId, createdAt])
+  @@map("player_swing_videos")
+}
+
+// Asynkron swing-analyse knyttet til PlayerSwingVideo (F3 scaffold).
+model SwingAnalysis {
+  id             String   @id @default(cuid())
+  videoId        String   @unique
+  // PENDING | PROCESSING | COMPLETE | FAILED
+  status         String   @default("PENDING")
+  positions      Json?
+  trackManShotId String?
+  summary        String?
+  confidence     Float?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  video PlayerSwingVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@map("swing_analyses")
 }
 
 // In-app varsler. Brukes for booking-bekreftelser, plan-godkjenninger,
