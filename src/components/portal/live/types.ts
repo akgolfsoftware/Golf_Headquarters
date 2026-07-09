@@ -1,4 +1,40 @@
 import type { PyramidArea, SessionStatusV2 } from "@/generated/prisma/client";
+import type { LiveSessionKind } from "@/lib/agents/live-coach-agent";
+
+/** Én melding i live-coach-panelet (user/assistant kun i UI). */
+export type LiveCoachChatRow = {
+  role: "user" | "assistant";
+  content: string;
+};
+
+export type LiveCoachPanelData = {
+  sessionId: string;
+  kind: LiveSessionKind;
+  tier: "GRATIS" | "PRO";
+  userId: string;
+  fornavn: string;
+  initialer: string;
+  initialMessages: LiveCoachChatRow[];
+};
+
+/** Filtrerer CoachingSession.messages til chat-rader for panelet. */
+export function filterLiveCoachMessages(raw: unknown): LiveCoachChatRow[] {
+  if (!Array.isArray(raw)) return [];
+  const out: LiveCoachChatRow[] = [];
+  for (const row of raw) {
+    if (!row || typeof row !== "object") continue;
+    const role = (row as { role?: string }).role;
+    const content = (row as { content?: string }).content;
+    if (
+      (role === "user" || role === "assistant") &&
+      typeof content === "string" &&
+      content.trim()
+    ) {
+      out.push({ role, content });
+    }
+  }
+  return out;
+}
 
 /** Status for TrainingSessionV2-basert live-økt. */
 export type LiveV2Status = SessionStatusV2;
