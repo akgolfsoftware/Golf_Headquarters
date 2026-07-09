@@ -10,6 +10,8 @@ import {
   StopCircle,
   X,
 } from "lucide-react";
+import { LiveCoachPanel } from "@/components/portal/live/LiveCoachPanel";
+import type { LiveCoachPanelData } from "@/components/portal/live/types";
 
 type Club = { id: string; name: string };
 
@@ -17,6 +19,7 @@ type Props = {
   sessionId: string;
   facilityLabel: string;
   defaultClubs: Club[];
+  coachPanel: LiveCoachPanelData;
 };
 
 /**
@@ -26,7 +29,7 @@ type Props = {
  *
  * Logging gjøres in-memory inntil en TODO: server-action sender shots til DB.
  */
-export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
+export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel }: Props) {
   const [counts, setCounts] = useState<Record<string, number>>(
     Object.fromEntries(defaultClubs.map((c) => [c.id, 0])),
   );
@@ -290,6 +293,8 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
           Tap-data lagres når økten avsluttes.
         </p>
       </div>
+
+      <LiveCoachPanel data={coachPanel} />
     </div>
   );
 }

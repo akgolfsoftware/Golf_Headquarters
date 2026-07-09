@@ -14,3 +14,4 @@ export { SessionSummary } from "./SessionSummary";
 export { LiveBrief } from "./LiveBrief";
 export { PlanSessionBrief } from "./PlanSessionBrief";
 export { LiveActive } from "./LiveActive";
+export { LiveCoachPanel } from "./LiveCoachPanel";

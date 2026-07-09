@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { filterLiveCoachMessages, type LiveCoachPanelData } from "@/components/portal/live/types";
 import { TapperShell } from "./tapper-shell";
 
 const DEFAULT_CLUBS = [
@@ -40,11 +41,30 @@ export default async function LiveTapperPage({
     redirect("/portal/planlegge/workbench");
   }
 
+  const thread = await prisma.coachingSession.findUnique({
+    where: { userId_liveSessionId: { userId: user.id, liveSessionId: sessionId } },
+    select: { messages: true },
+  });
+  const fornavn = user.name?.split(" ")[0] ?? "deg";
+  const initialer = user.name
+    ? user.name.split(" ").map((d) => d[0]).slice(0, 2).join("").toUpperCase()
+    : "DU";
+  const coachPanel: LiveCoachPanelData = {
+    sessionId,
+    kind: "plan-session",
+    tier: user.tier === "GRATIS" ? "GRATIS" : "PRO",
+    userId: user.id,
+    fornavn,
+    initialer,
+    initialMessages: filterLiveCoachMessages(thread?.messages),
+  };
+
   return (
     <TapperShell
       sessionId={session.id}
       facilityLabel={session.plan.name}
       defaultClubs={DEFAULT_CLUBS}
+      coachPanel={coachPanel}
     />
   );
 }

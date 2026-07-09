@@ -3,10 +3,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
-import type { LiveV2Drill, LiveV2Session, DrillRepState } from "./types";
+import type { LiveV2Drill, LiveV2Session, DrillRepState, LiveCoachPanelData } from "./types";
 import { plannedVolumText } from "./types";
 import { DrillLogger } from "./DrillLogger";
 import { SessionTimer } from "./SessionTimer";
+import { LiveCoachPanel } from "./LiveCoachPanel";
 import { completeDrill, completeSession, startSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
 
 type DrillStatus = "done" | "active" | "queued";
@@ -206,7 +207,7 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
 
 // ── LiveActive — hoved-komponent ─────────────────────────────────────────────
 
-export function LiveActive({ data }: { data: LiveV2Session }) {
+export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPanel: LiveCoachPanelData }) {
   const router = useRouter();
   const [drills, setDrills] = useState<DrillState[]>(() => buildInitialDrills(data));
   const [paused, setPaused] = useState(false);
@@ -515,6 +516,8 @@ export function LiveActive({ data }: { data: LiveV2Session }) {
 
         <div className="h-4" />
       </main>
+
+      <LiveCoachPanel data={coachPanel} activeDrillId={active?.id ?? null} />
     </div>
   );
 }
