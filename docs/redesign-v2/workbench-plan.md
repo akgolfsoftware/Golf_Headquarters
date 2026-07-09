@@ -151,6 +151,34 @@ kit, sett×reps-steppere, ACWR live, CS-kobling) + phq-fysisk.jsx (spiller-speil
   (styrke → klubbhastighet-mål) · WANG-regelen (mandag etter turnering = alltid FYS)
   respekteres i DnD-varslene.
 
+## 12. Utviklingsplan-merge (Anders 9. juli: «skal nok merges med teknisk utviklingsplan»)
+
+**Funn — «utviklingsplan» er i dag TO adskilte ting i koden:**
+1. **Talent-utviklingsplanen** (`/portal/talent/min-plan`, coach: `/admin/talent/*`):
+   bygget på `TalentTracking` (schema:548) — aldersnivå U10–Senior, radar-akser
+   fysisk/teknikk/taktikk/mental/motivasjon (1–10), og **milepæler som løs JSON-blob**
+   (`milepaeler Json?` — kun tittel/dato/beskrivelse, ingen status/krav/kobling).
+2. **Teknisk utviklingsplan** (`/admin/spillere/[id]/plan`, `/portal/tren/teknisk-plan`):
+   `TechnicalPlan` → `TechnicalPlanPosition` (P1–P10/MORAD) → PositionTask m/ rep-mål i
+   3 hastigheter, L-fase, CS-nivå, TrackMan-mål, AI-forslag m/ coach-godkjenning, audit,
+   Plan A/B-varianter. Sterk, strukturert modell.
+
+**Beslutning (anbefalt): merge til ÉN Utviklingsplan** per spiller med spor:
+- **Teknisk** (P1–P10 — TechnicalPlan-modellen beholdes som ryggrad, den er sterkest)
+- **Fysisk** (CS-stigen + FysOkt-mål — kobles fra §11)
+- **Taktisk/Mental** (talent-radarens akser blir vurderingsspor m/ Radar-komponenten)
+- **Milepæler på tvers** — talent-JSON-blobben erstattes av strukturerte milepæler
+  (MilepaelKort/KravRad-komponentene finnes allerede i v2-utviklingsplan).
+`TalentTracking` beholder program-metadata (nivå/klubb/region); milepæl-JSON migreres.
+
+**Gjennomføring i to steg (så datalag-regelen ikke brytes):**
+1. **Presentasjons-merge (fase 5/6 nå):** ÉN Utviklingsplan-skjerm (spiller + coach-speil)
+   som samler begge kilder — P-skinnen øverst, spor under, milepæler fra begge. Ingen
+   skjemaendring.
+2. **Datamodell-merge (egen backend-jobb, etter godkjenning):** strukturert
+   Milestone-modell erstatter JSON-blobben; additivt per gotcha-regelen
+   (CREATE TABLE IF NOT EXISTS via tsx, aldri migrate dev/db push).
+
 ## Leveranseplan
 
 1. Mockups desktop+mobil: coach-Workbench (år→uke→dag→økt-zoomen) + spiller-speilet — retning C, v2-biblioteket + de nye komponentene over.
