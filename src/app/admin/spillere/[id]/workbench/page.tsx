@@ -1,0 +1,73 @@
+/**
+ * AgencyOS — Coach-Workbench (/admin/spillere/[id]/workbench), v2-design
+ * (retning C).
+ *
+ * Auth + dataloader gjenbrukt 1:1 fra den forrige (legacy) siden:
+ * requirePortalUser (ADMIN/COACH) + roster fra Prisma + loadWorkbenchContext,
+ * inkl. ukeoffset via ?uke=. Spiller-id kommer fra ruten (params.id) —
+ * notFound() hvis spilleren eller workbench-konteksten ikke finnes.
+ *
+ * Server component.
+ */
+
+import { notFound } from "next/navigation";
+
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
+import { loadWorkbenchContext } from "@/lib/workbench/load-context";
+import { parseWeekOffset } from "@/lib/workbench/session-move-math";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import {
+  CoachWorkbenchMount,
+  type CoachRosterPlayer,
+} from "@/components/admin/v2/CoachWorkbenchMount";
+
+export const dynamic = "force-dynamic";
+
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ uke?: string }>;
+};
+
+export default async function CoachWorkbenchPage({ params, searchParams }: Props) {
+  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const coachName = user.name ?? "Anders Kristiansen";
+  const { id } = await params;
+  const weekOffset = parseWeekOffset((await searchParams).uke);
+
+  const spiller = await prisma.user.findUnique({
+    where: { id },
+    select: { name: true },
+  });
+  if (!spiller) notFound();
+
+  const ctx = await loadWorkbenchContext(id, weekOffset);
+  if (ctx === null) notFound();
+
+  const rosterRows = await prisma.user
+    .findMany({
+      where: { role: "PLAYER", deletedAt: null },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+      take: 400,
+    })
+    .catch(() => []);
+  const players: CoachRosterPlayer[] = rosterRows.map((p) => ({
+    id: p.id,
+    navn: p.name ?? "Uten navn",
+  }));
+
+  return (
+    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={coachName}>
+      <CoachWorkbenchMount
+        players={players}
+        currentPlayerId={id}
+        playerName={spiller.name ?? "Uten navn"}
+        coachName={coachName}
+        data={ctx.data}
+        insights={ctx.insights ?? null}
+        planStatus={ctx.planStatus ?? null}
+      />
+    </V2Shell>
+  );
+}
