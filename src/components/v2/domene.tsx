@@ -7,7 +7,7 @@
    Port av ui_kits/v2/v2-domene.jsx → produksjons-TSX (diff-null).
    Alle props har demo-data som default → alt kan rendres rett i galleriet. */
 
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import type { AkseKey } from "@/lib/v2/tokens";
 import {
   T,
@@ -536,6 +536,87 @@ export function LiveBar({
       {deltakere != null && <MetaBit icon="users"><span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums" }}>{deltakere}</span></MetaBit>}
       <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums", flex: "none" }}>{tid}</span>
       <span onClick={onClick}><CTAPill icon="play">{cta}</CTAPill></span>
+    </div>
+  );
+}
+
+/* ── VideoKort — coach-video m/ thumbnail-fallback + play-overlay ─────
+   Presentasjonelt kort for PlayerHQ «Coach-videoer». Kontrakt fra
+   golfdata/PlayerVideoCard (title, tag, notes, coach, dato) utvidet med
+   thumbnailUrl + varighet. Bilde som ikke lastes faller GRASIØST til
+   forest-gradient (aldri brutt-bilde-ikon). Klikk/pending/feil eies av
+   skjermen (signert URL hentes der) — kortet er rent presentasjonelt. */
+export interface VideoKortProps {
+  title: string;
+  coach: string;
+  tag?: string | null;
+  dato: string;
+  varighet?: string | null;
+  thumbnailUrl?: string | null;
+  onClick?: () => void;
+  pending?: boolean;
+  error?: string | null;
+}
+export function VideoKort({
+  title, coach, tag, dato, varighet, thumbnailUrl, onClick, pending = false, error = null,
+}: VideoKortProps) {
+  const [bildeFeilet, setBildeFeilet] = useState(false);
+  const visBilde = Boolean(thumbnailUrl) && !bildeFeilet;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={pending}
+        className="v2-kort-h"
+        style={{
+          appearance: "none", textAlign: "left", cursor: pending ? "default" : "pointer",
+          background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard,
+          padding: 0, overflow: "hidden", display: "flex", flexDirection: "column",
+          minWidth: 0, opacity: pending ? 0.6 : 1, transition: `transform 180ms ${T.ease}, border-color 180ms ${T.ease}`,
+        }}
+      >
+        {/* Media — fallback-gradient ligger alltid i bunn; bildet legges over */}
+        <span style={{ position: "relative", display: "block", aspectRatio: "16 / 9", background: `linear-gradient(150deg, ${T.forest}, ${T.bg})` }}>
+          {visBilde && (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={thumbnailUrl as string}
+              alt=""
+              onError={() => setBildeFeilet(true)}
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            />
+          )}
+          {/* Play-knapp midtstilt */}
+          <span style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 46, height: 46, borderRadius: 9999, background: T.lime, boxShadow: `0 6px 18px color-mix(in srgb,${T.bg} 55%,transparent)` }}>
+              <Icon name="play" size={20} style={{ color: T.onLime }} />
+            </span>
+          </span>
+          {/* Varighet-badge */}
+          {varighet && (
+            <span style={{ position: "absolute", right: 8, bottom: 8, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.fg, background: `color-mix(in srgb,${T.bg} 70%,transparent)`, borderRadius: 6, padding: "3px 7px", fontVariantNumeric: "tabular-nums" }}>
+              {varighet}
+            </span>
+          )}
+        </span>
+        {/* Tekst */}
+        <span style={{ display: "flex", flexDirection: "column", gap: 8, padding: "12px 14px 14px" }}>
+          <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, lineHeight: 1.25, color: T.fg }}>{title}</span>
+          <span style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px 12px" }}>
+            <MetaBit icon="user">{coach}</MetaBit>
+            {tag && (
+              <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 5, padding: "2px 7px" }}>{tag}</span>
+            )}
+            <MetaBit icon="calendar">{dato}</MetaBit>
+          </span>
+        </span>
+      </button>
+      {error && (
+        <span role="alert" style={{ fontFamily: T.ui, fontSize: 12, color: T.down, background: `color-mix(in srgb,${T.down} 10%,transparent)`, border: `1px solid color-mix(in srgb,${T.down} 30%,transparent)`, borderRadius: 10, padding: "6px 10px" }}>
+          {error}
+        </span>
+      )}
     </div>
   );
 }
