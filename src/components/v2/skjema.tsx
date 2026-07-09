@@ -217,6 +217,47 @@ export function RadioGruppe({
   );
 }
 
+/* ── ValgKort — rikt enkeltvalg-kort (radio-dot + tittel + tag + beskrivelse) ──
+   Fyller gapet mot RadioGruppe (som kun har label+sub, ingen tag/beskrivelse på
+   egen linje). Brukes der hvert valg trenger en full setning + en meta-tag
+   (varighet, sted-suffiks o.l.). Valgt = lime kant + fylt dot. Aldri sperrende. */
+export interface ValgKortProps {
+  tittel: ReactNode;
+  tittelSuffix?: ReactNode;
+  tag?: ReactNode;
+  tagTone?: "noytral" | "warn";
+  sub?: ReactNode;
+  valgt?: boolean;
+  onClick?: () => void;
+}
+export function ValgKort({ tittel, tittelSuffix, tag, tagTone = "noytral", sub, valgt, onClick }: ValgKortProps) {
+  const tagC = tagTone === "warn" ? T.warn : T.fg2;
+  return (
+    <div
+      onClick={onClick}
+      className="v2-press v2-focus"
+      role="radio"
+      aria-checked={!!valgt}
+      tabIndex={0}
+      style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "13px 15px", borderRadius: 13, background: valgt ? T.panel3 : T.panel2, border: `1px solid ${valgt ? T.lime : T.border}`, cursor: "pointer" }}
+    >
+      <span style={{ marginTop: 2, width: 18, height: 18, borderRadius: 9999, border: `2px solid ${valgt ? T.lime : T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+        {valgt && <span style={{ width: 8, height: 8, borderRadius: 9999, background: T.lime }} />}
+      </span>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+            {tittel}
+            {tittelSuffix && <span style={{ fontWeight: 400, color: T.mut, marginLeft: 7, fontSize: 12 }}>{tittelSuffix}</span>}
+          </span>
+          {tag && <span style={{ flex: "none", fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: tagC, background: `color-mix(in srgb, ${tagC} 13%, transparent)`, borderRadius: 9999, padding: "3px 9px", whiteSpace: "nowrap" }}>{tag}</span>}
+        </div>
+        {sub && <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.55, marginTop: 5 }}>{sub}</div>}
+      </div>
+    </div>
+  );
+}
+
 /* ── Glider — slider m/ lime fylling + mono-verdi ─────── */
 export interface GliderProps {
   label?: ReactNode;
