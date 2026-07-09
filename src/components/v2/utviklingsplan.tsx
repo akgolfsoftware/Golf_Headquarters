@@ -288,6 +288,106 @@ export function UtviklingsplanOversikt({
   );
 }
 
+/* ── TalentProfil — TalentTracking-speil (radar + nivå + milepæler) ──
+   GAP: mockupen v2-utviklingsplan.jsx hadde INGEN talent-visning. Bygget for
+   merge-skjermen (talent + teknisk → én flate). Fem akser 1–10
+   (fysisk/teknikk/taktikk/mental/motivasjon), fargenøytralt lime-fyll —
+   speiler TalentTracking. Ærlig tom-tilstand håndteres av skjermen. */
+export interface TalentAkse {
+  akse: string;
+  verdi: number;
+}
+export interface TalentMilepael {
+  tittel: string;
+  dato?: string | null;
+  beskrivelse?: string | null;
+}
+function TalentRadarSvg({ data, max = 10, size = 220 }: { data: TalentAkse[]; max?: number; size?: number }) {
+  const cx = size / 2, cy = size / 2 + 2, R = size / 2 - 30;
+  const n = data.length || 1;
+  const pt = (i: number, v: number): [number, number] => {
+    const a = -Math.PI / 2 + (i / n) * Math.PI * 2, r = (Math.max(0, Math.min(max, v)) / max) * R;
+    return [cx + Math.cos(a) * r, cy + Math.sin(a) * r];
+  };
+  const poly = (vals: number[]): string => vals.map((v, i) => pt(i, v).map((c) => c.toFixed(1)).join(",")).join(" ");
+  return (
+    <svg viewBox={`0 0 ${size} ${size}`} style={{ width: "100%", maxWidth: size, height: "auto", display: "block", margin: "0 auto" }} role="img" aria-label="Talentprofil per akse">
+      {[1 / 3, 2 / 3, 1].map((f, ri) => (
+        <polygon key={ri} points={poly(data.map(() => max * f))} fill="none" stroke={T.border} strokeWidth="1" />
+      ))}
+      {data.map((d, i) => {
+        const [ex, ey] = pt(i, max);
+        const [lx, ly] = pt(i, max * 1.24);
+        return (
+          <g key={d.akse}>
+            <line x1={cx} y1={cy} x2={ex} y2={ey} stroke={T.border} strokeWidth="1" />
+            <text x={lx} y={ly + 3} textAnchor="middle" style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, fill: T.fg2 }}>{d.akse}</text>
+          </g>
+        );
+      })}
+      <polygon points={poly(data.map((d) => d.verdi))} fill={`color-mix(in srgb, ${T.lime} 14%, transparent)`} stroke={T.lime} strokeWidth="1.8" strokeLinejoin="round" />
+      {data.map((d, i) => {
+        const [px, py] = pt(i, d.verdi);
+        return <circle key={i} cx={px} cy={py} r="3" fill={T.lime} stroke={T.panel} strokeWidth="1.5" />;
+      })}
+    </svg>
+  );
+}
+export interface TalentProfilProps {
+  niva?: string;
+  klubb?: string | null;
+  region?: string | null;
+  radar?: TalentAkse[];
+  milepaeler?: TalentMilepael[];
+  maxVerdi?: number;
+}
+export function TalentProfil({ niva, klubb, region, radar = [], milepaeler = [], maxVerdi = 10 }: TalentProfilProps) {
+  const meta = [klubb, region].filter(Boolean).join(" · ");
+  const harRadar = radar.some((r) => r.verdi > 0);
+  return (
+    <Kort eyebrow="Talentprofil" action={niva ? <StatusPill tone="info">{niva}</StatusPill> : undefined}>
+      {meta && <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, display: "block", marginBottom: harRadar ? 4 : 0 }}>{meta}</span>}
+      {harRadar ? (
+        <>
+          <TalentRadarSvg data={radar} max={maxVerdi} />
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 16px", marginTop: 12 }}>
+            {radar.map((r) => (
+              <div key={r.akse} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.mut, width: 30, flex: "none" }}>{r.akse}</span>
+                <span style={{ flex: 1, height: 5, borderRadius: 9999, background: T.track, overflow: "hidden" }}>
+                  <span style={{ display: "block", width: Math.min(100, (r.verdi / maxVerdi) * 100) + "%", height: "100%", background: T.lime, opacity: 0.9 }} />
+                </span>
+                <span style={{ fontFamily: T.mono, fontSize: 10.5, fontWeight: 700, color: T.fg2, fontVariantNumeric: "tabular-nums", width: 32, textAlign: "right", flex: "none" }}>{r.verdi}<span style={{ color: T.mut }}>/{maxVerdi}</span></span>
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, display: "block" }}>Ingen talentvurdering registrert ennå.</span>
+      )}
+      {milepaeler.length > 0 && (
+        <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${T.border}` }}>
+          <Caps size={8.5}>Milepæler</Caps>
+          <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 10 }}>
+            {milepaeler.map((m, i) => (
+              <div key={i} style={{ display: "flex", gap: 10 }}>
+                <span style={{ width: 7, height: 7, borderRadius: 9999, background: T.lime, flex: "none", marginTop: 5 }} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
+                    <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>{m.tittel}</span>
+                    {m.dato && <span style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>{m.dato}</span>}
+                  </div>
+                  {m.beskrivelse && <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.55, margin: "3px 0 0" }}>{m.beskrivelse}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </Kort>
+  );
+}
+
 /* ── CoachGodkjenning — PlanSuggestion-rad ──────────────
    AI Caddie foreslår (NEW_TASK/ARCHIVE_TASK/RE_PRIORITIZE/ADJUST_GOAL…),
    coach velger: Godkjenn / Juster / Avvis. Anbefaling — aldri sperre. */

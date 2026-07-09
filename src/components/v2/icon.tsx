@@ -9,7 +9,7 @@ import {
   Bell, LogOut, Pencil, Trash2, Download, Upload, Filter, MoreHorizontal,
   MoreVertical, ExternalLink, MapPin, Phone, Video, CircleCheck, CircleX, Circle,
   Trophy, Flag, List, LayoutGrid, Sun, Moon, CalendarPlus, Crosshair,
-  CreditCard,
+  CreditCard, Layers, Send, CircleDot,
   type LucideIcon,
 } from "lucide-react";
 
@@ -94,6 +94,9 @@ const MAP: Record<string, LucideIcon> = {
   "calendar-plus": CalendarPlus,
   "crosshair": Crosshair,
   "credit-card": CreditCard,
+  "layers": Layers,
+  "send": Send,
+  "circle-dot": CircleDot,
 };
 
 export interface IconProps {

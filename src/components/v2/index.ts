@@ -15,6 +15,7 @@ export * from "./struktur";
 export * from "./spesialviz";
 export * from "./utviklingsplan";
 export * from "./fysisk";
+export * from "./wb-composer";
 
 // wb-mobil: eksplisitt re-eksport pga Ark/ArkProps-kollisjon med overlays.
 export {
