@@ -31,6 +31,20 @@ strukturert endrings-backlog. v2-antallet skjermer er IKKE en blokker for lanser
   intern pulje du inviterer manuelt kan det vente. Sett i gang SPF/DKIM parallelt.
 **Milepæl M0: BETA LIVE i dag** for en kjent pulje på vercel-URL, feedback-kanal på plass.
 
+### RØYKTEST 10. juli — BESTÅTT (begge sider lanseringsklare)
+Testet mot kjørende app, ekte innlogging spiller (`screentest`) + coach (`coachtest`):
+- **Spiller:** Hjem/Plan/Gjør/Analysere/Meg/Mål/Booking/Teknisk-plan — alle 200, innhold, 0 feil.
+- **Coach:** Cockpit/Spillere/Workbench/Kalender/Bookinger/Varsler/Tester/Grupper — alle 200, 0 feil.
+- **Ingen kritiske blokkere.** «unsafe-eval»-konsollfeil = dev-artefakt (borte i prod).
+
+### HURTIG-FIKS-BACKLOG (ikke-blokkere — fiks før eller rett etter lansering)
+1. **[DU-beslutning]** Post-login lander alle på `/portal` (coach må klikke til `/admin`).
+   Bevisst i dag (coach kan òg være spiller). Skal coach/admin rutes rett til `/admin/agencyos`?
+   → hvis ja, 5-min fiks i `login-form.tsx` (mønsteret finnes i `samtykke-venter/page.tsx`).
+2. **[JEG]** Kosmetisk konsoll-pageerror på cockpit (`AdminHubRedirect` performance.measure
+   negativ timestamp, `src/app/admin/page.tsx`) — ufarlig, ryddes.
+3. `/portal/gjennomfore` + `/admin/kalender`+`/admin/grupper` tynne (tom-tilstand/mock) — verifiser tilsiktet.
+
 ### DEL 2 — Strukturert endringsplan (etter lansering)
 - **Feedback-backlog:** all beta-tilbakemelding samles ett sted (Notion/issues), trieres
   ukentlig i tre bøtter: (a) hurtig-fiks (samme dag), (b) v2-bølge (planlagt), (c) senere/vurder.
