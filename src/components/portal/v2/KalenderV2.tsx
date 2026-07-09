@@ -11,6 +11,7 @@
  * komponenten rendrer bare den indre innholds-stacken.
  */
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   T,
@@ -45,6 +46,7 @@ const LIME_KANT = `color-mix(in srgb,${T.lime} 25%,transparent)`;
 
 /* ── Dag — tidslinje ──────────────────────────────────── */
 function Dag({ dag }: { dag: KalenderData["dag"] }) {
+  const router = useRouter();
   return (
     <Kort eyebrow={dag.label} action={<Caps size={9}>{dag.totalLabel}</Caps>}>
       {dag.okter.length === 0 ? (
@@ -63,11 +65,13 @@ function Dag({ dag }: { dag: KalenderData["dag"] }) {
                   {timeOkter.map((okt) => (
                     <div
                       key={okt.id}
+                      onClick={() => router.push(`/portal/gjennomfore/${okt.id}`)}
                       style={{
                         display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", borderRadius: 12,
                         background: okt.naa ? `${T.tint}, ${T.panel3}` : T.panel3,
                         border: `1px solid ${okt.naa ? LIME_KANT : T.border}`,
                         opacity: okt.done ? 0.62 : 1,
+                        cursor: "pointer",
                       }}
                     >
                       <span style={{ width: 3, alignSelf: "stretch", borderRadius: 2, background: T.ax[okt.a], flex: "none" }} />
@@ -94,6 +98,7 @@ function Dag({ dag }: { dag: KalenderData["dag"] }) {
 
 /* ── Uke — kolonnegrid (desktop) / liste (mobil) ──────── */
 function Uke({ uke, mobile }: { uke: KalenderData["uke"]; mobile: boolean }) {
+  const router = useRouter();
   if (mobile) {
     const medOkter = uke.dager.filter((d) => d.okter.length > 0);
     if (medOkter.length === 0) {
@@ -110,6 +115,7 @@ function Uke({ uke, mobile }: { uke: KalenderData["uke"]; mobile: boolean }) {
             {d.okter.map((o, j) => (
               <Rad
                 key={o.id}
+                onClick={() => router.push(`/portal/gjennomfore/${o.id}`)}
                 leading={<span style={{ width: 42, flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: o.naa ? T.lime : T.mut }}>{o.kl}</span>}
                 title={o.title}
                 meta={<AkseChip a={o.a} />}
@@ -137,7 +143,11 @@ function Uke({ uke, mobile }: { uke: KalenderData["uke"]; mobile: boolean }) {
           >
             <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: d.isToday ? T.lime : T.mut, textAlign: "center" }}>{d.d}</span>
             {d.okter.map((o) => (
-              <div key={o.id} style={{ padding: "8px 9px", borderRadius: 10, background: T.panel3, border: `1px solid ${o.naa ? LIME_KANT : T.border}`, opacity: o.done ? 0.55 : 1 }}>
+              <div
+                key={o.id}
+                onClick={() => router.push(`/portal/gjennomfore/${o.id}`)}
+                style={{ padding: "8px 9px", borderRadius: 10, background: T.panel3, border: `1px solid ${o.naa ? LIME_KANT : T.border}`, opacity: o.done ? 0.55 : 1, cursor: "pointer" }}
+              >
                 <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
                   <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[o.a], flex: "none" }} />
                   <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2 }}>{o.kl}</span>

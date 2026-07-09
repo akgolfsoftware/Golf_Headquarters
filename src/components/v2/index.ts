@@ -5,6 +5,7 @@
 // `WbArk`/`WbArkProps` slik at ingen komponent skjules stille.
 
 export * from "./core";
+export * from "./hjelp";
 export * from "./compliance-viz";
 export * from "./datavis";
 export * from "./domene";

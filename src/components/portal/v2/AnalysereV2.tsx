@@ -39,6 +39,7 @@ import {
   TomTilstand,
   AkseChip,
   Icon,
+  HjelpTips,
   type StatusTone,
 } from "@/components/v2";
 
@@ -120,6 +121,7 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
               sub={`snitt per runde · ${sgStatus.runder} runder · ${sgStatus.baseline}`}
               size={mobile ? 48 : 56}
               action={form ? <StatusPill tone={form.tone}>{form.l}</StatusPill> : undefined}
+              hjelp="sgTotal"
             />
             {harTrend && (
               <div style={{ marginTop: 10 }}>
@@ -132,7 +134,7 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
         )}
       </Kort>
 
-      <Kort eyebrow="Hvor du vinner slag">
+      <Kort eyebrow="Hvor du vinner slag" action={<HjelpTips k="sgOmrade" />}>
         {sgStatus.kategorier.length > 0 ? (
           <>
             {sgStatus.kategorier.map((k, i) => (
@@ -510,11 +512,11 @@ function TabTester({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
 /* ── Skjermen ──────────────────────────────────────────────────────── */
 
 const TABS = [
+  { id: "trening", l: "Trening" },
+  { id: "tester", l: "Tester" },
+  { id: "trackman", l: "TrackMan" },
   { id: "sg", l: "SG" },
   { id: "statistikk", l: "Statistikk" },
-  { id: "trening", l: "Trening" },
-  { id: "trackman", l: "TrackMan" },
-  { id: "tester", l: "Tester" },
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
 const ER_TAB = (v: string | null): v is TabId => !!v && TABS.some((t) => t.id === v);
@@ -529,7 +531,7 @@ export function AnalysereV2({
   header?: (mobile: boolean) => ReactNode;
 }) {
   const mobile = useMobile();
-  const [tab, setTab] = useState<TabId>("sg");
+  const [tab, setTab] = useState<TabId>("trening");
 
   // URL-tab-state (?tab=) — leses ved mount, oppdateres uten full navigasjon.
   useEffect(() => {

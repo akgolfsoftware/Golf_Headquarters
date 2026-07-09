@@ -15,6 +15,8 @@
  * tilstand er alle utledet fra ekte Prisma-data i loaderen.
  */
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   Caps,
@@ -109,6 +111,7 @@ function SpillerRadEnkel({
 }
 
 function SpillerSammendrag({ s }: { s: StallV2Player }) {
+  const router = useRouter();
   const harTrend = s.sgTrend.length >= 2;
   const lo = harTrend ? Math.min(...s.sgTrend) : 0;
   const hi = harTrend ? Math.max(...s.sgTrend) : 0;
@@ -169,8 +172,12 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
       </div>
 
       <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
-        <CTAPill icon="arrow-right">Åpne Workbench</CTAPill>
-        <CTAPill ghost>Se profil</CTAPill>
+        <span onClick={() => router.push(`/admin/spillere/${s.id}/workbench`)} style={{ display: "inline-flex" }}>
+          <CTAPill icon="arrow-right">Åpne Workbench</CTAPill>
+        </span>
+        <span onClick={() => router.push(`/admin/spillere/${s.id}`)} style={{ display: "inline-flex" }}>
+          <CTAPill ghost>Se profil</CTAPill>
+        </span>
       </div>
     </Kort>
   );
@@ -238,7 +245,9 @@ export function StallV2({ data }: { data: StallV2Data }) {
         </div>
       </div>
       <div className="hidden md:inline-flex">
-        <CTAPill ghost icon="user-plus">Ny spiller</CTAPill>
+        <Link href="/admin/spillere/ny" style={{ textDecoration: "none" }}>
+          <CTAPill ghost icon="user-plus">Ny spiller</CTAPill>
+        </Link>
       </div>
     </div>
   );

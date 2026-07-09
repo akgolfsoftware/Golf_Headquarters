@@ -10,6 +10,8 @@
  * komponenten rendrer bare den indre innholds-stacken.
  */
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { DashboardData } from "@/app/portal/actions";
 import {
@@ -77,6 +79,7 @@ function useMobile(): boolean {
 
 export function HjemV2({ data }: { data: DashboardData }) {
   const mobile = useMobile();
+  const router = useRouter();
   const { user, greeting, weekNumber, today, todayAll, week, kpiStats, weekProgress, trainingHeatmap, coachMessage } = data;
 
   // SG-form (kpiStats — snitt SG total siste 10 runder + per-runde-trend)
@@ -154,14 +157,14 @@ export function HjemV2({ data }: { data: DashboardData }) {
             <Tittel mobile={mobile} em={`${user.fornavn}.`}>{greeting},</Tittel>
           </div>
         </div>
-        {today && (
-          <div className="hidden md:block">
+        <div className="hidden md:block">
+          <Link href={today ? today.href : "/portal/gjennomfore"} style={{ textDecoration: "none" }}>
             <CTAPill icon="play">Start dagens økt</CTAPill>
-          </div>
-        )}
+          </Link>
+        </div>
       </div>
 
-      <DagStripe days={stripeDager} value={aktivDag} />
+      <DagStripe days={stripeDager} value={aktivDag} onChange={() => router.push("/portal/kalender")} />
 
       {/* SG-form + dagens fokus */}
       <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap }}>
@@ -174,6 +177,7 @@ export function HjemV2({ data }: { data: DashboardData }) {
             sub="snitt per runde · siste 10 runder"
             size={mobile ? 44 : 52}
             action={form ? <StatusPill tone={form.tone}>{form.l}</StatusPill> : undefined}
+            hjelp="sgTotal"
           />
           {tr.length >= 2 && (
             <div style={{ marginTop: 8 }}>
@@ -230,8 +234,8 @@ export function HjemV2({ data }: { data: DashboardData }) {
 
       {/* KPI-rad */}
       <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: T.gap }}>
-        <KpiFlis label="Streak" value={String(streak)} />
-        <KpiFlis label="Uke-gjennomføring" value={ukePct} />
+        <KpiFlis label="Streak" value={String(streak)} hjelp="streak" />
+        <KpiFlis label="Uke-gjennomføring" value={ukePct} hjelp="planEtterlevelse" />
         <div className="hidden md:block">
           <Kort eyebrow="Trening · 12 uker">
             <div style={{ marginTop: 4 }}>

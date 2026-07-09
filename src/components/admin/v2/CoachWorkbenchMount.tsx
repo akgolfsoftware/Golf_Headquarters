@@ -16,7 +16,7 @@
 import { useRouter, usePathname } from "next/navigation";
 import { Caps, Kort, TomTilstand, AvatarInit, Velger } from "@/components/v2";
 import { T } from "@/lib/v2/tokens";
-import { WorkbenchV2 } from "@/components/portal/v2/WorkbenchV2";
+import { WorkbenchV2, type WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import type { WorkbenchInsights } from "@/lib/workbench/types";
 import type { PlanStatus } from "@/generated/prisma/client";
@@ -38,6 +38,8 @@ export interface CoachWorkbenchMountProps {
   data?: WorkbenchData;
   insights?: WorkbenchInsights | null;
   planStatus?: PlanStatus | null;
+  /** Skrivesiden, bundet til aktiv spiller (coachAddWorkbenchSession m.fl.). */
+  actions?: WorkbenchV2Actions;
 }
 
 /**
@@ -73,6 +75,7 @@ export function CoachWorkbenchMount({
   data,
   insights,
   planStatus,
+  actions,
 }: CoachWorkbenchMountProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -164,6 +167,7 @@ export function CoachWorkbenchMount({
         playerName={playerName}
         coachName={coachName}
         planStatus={planStatus ?? null}
+        actions={actions}
       />
     </div>
   );

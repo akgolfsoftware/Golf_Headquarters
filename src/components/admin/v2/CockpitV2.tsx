@@ -23,10 +23,12 @@ import {
   AvatarInit,
   SevChip,
   AkseChip,
+  AKSE_NAVN,
   TallHero,
   InnsiktChip,
   TomTilstand,
   CTAPill,
+  HjelpTips,
   type SevKey,
 } from "@/components/v2";
 import { T, type AkseKey } from "@/lib/v2/tokens";
@@ -101,7 +103,7 @@ export function CockpitV2({ data }: { data: CockpitData }) {
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
         <StatusPill tone="down">Live</StatusPill>
         <span style={{ flex: 1, minWidth: 0, fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-          {aktiv.axisLabel} · {aktiv.title} — {aktiv.playerName}
+          {AKSE_NAVN[aktiv.axisLabel as AkseKey] || aktiv.axisLabel} · {aktiv.title} — {aktiv.playerName}
         </span>
         <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
           {klokke}
@@ -127,7 +129,7 @@ export function CockpitV2({ data }: { data: CockpitData }) {
       <KpiFlis label="Aktive spillere" value={data.activePlayersCount} {...aktiveDelta} />
       <KpiFlis label="Økter i dag" value={okterIdag} />
       <KpiFlis label="Trenger deg nå" value={trengerDeg} varsle={trengerDeg > 0} />
-      <KpiFlis label="Stall-SG snitt" value={data.stallSgKpi} />
+      <KpiFlis label="Stall-SG snitt" value={data.stallSgKpi} hjelp="sgTotal" />
     </div>
   );
 
@@ -176,7 +178,7 @@ export function CockpitV2({ data }: { data: CockpitData }) {
         data.timeline.map((s, i) => {
           const isNaa = data.now >= s.startMin && data.now < s.startMin + s.durMin;
           const sted = s.meta.find((m) => m.icon === "map-pin")?.text;
-          const sub = [s.axisLabel, s.title, sted].filter(Boolean).join(" · ");
+          const sub = [AKSE_NAVN[s.axisLabel as AkseKey] || s.axisLabel, s.title, sted].filter(Boolean).join(" · ");
           return (
             <Rad
               key={s.id}
@@ -210,7 +212,13 @@ export function CockpitV2({ data }: { data: CockpitData }) {
         value={data.stallSgKpi}
         accent={data.stallSgKpi.startsWith("+")}
         size={44}
-        sub={`Plan-etterlevelse ${data.planAdherenceKpi}`}
+        sub={
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+            {`Plan-etterlevelse ${data.planAdherenceKpi}`}
+            <HjelpTips k="planEtterlevelse" size={11} />
+          </span>
+        }
+        hjelp="sgTotal"
       />
     </Kort>
   );

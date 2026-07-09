@@ -12,7 +12,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { Fragment, useState } from "react";
 import { T, fmtSg, type AkseKey } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
-import { Kort, TallHero, Caps, TomTilstand, CTAPill, AkseChip, InnsiktChip, DeltaChip, AvatarInit } from "./core";
+import { Kort, TallHero, Caps, TomTilstand, CTAPill, AkseChip, InnsiktChip, DeltaChip, AvatarInit, AKSE_NAVN } from "./core";
 
 /* ── Delte hjelpere ───────────────────────────────────── */
 const kd = (v: number | null | undefined, d = 1): string =>
@@ -897,7 +897,7 @@ export function Pyramide({ data = PY_DEMO, max = 100, showValues = true }: Pyram
         const planPct = d.plan != null ? Math.max(0, Math.min(100, (d.plan / max) * 100)) : null;
         return (
           <div key={d.akse} style={{ display: "flex", alignItems: "center", gap: 11 }}>
-            <span style={{ width: 44, flex: "none", ...mono(10, T.fg2), letterSpacing: "0.08em" }}>{d.akse}</span>
+            <span style={{ width: 72, flex: "none", fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg2 }}>{AKSE_NAVN[d.akse as AkseKey] || d.akse}</span>
             <div style={{ flex: 1, position: "relative", height: 9, borderRadius: 9999, background: T.track }}>
               <div style={{ width: `${pct}%`, height: "100%", borderRadius: 9999, background: T.ax[d.akse as AkseKey] || T.mut, opacity: 0.85 }} />
               {planPct != null && <span title={`Plan ${d.plan}`} style={{ position: "absolute", top: -3, left: `calc(${planPct}% - 1px)`, width: 2, height: 15, background: T.fg, borderRadius: 1 }} />}

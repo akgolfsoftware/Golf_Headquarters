@@ -13,6 +13,7 @@
 import { Fragment } from "react";
 import { T, Caps, StatusPill, Kort, CTAPill, InnsiktChip } from "./core";
 import { Icon } from "@/components/v2/icon";
+import { HjelpTips } from "@/components/v2/hjelp";
 
 /* P1.0–P10.0 (MORAD-kanon, src/lib/taxonomy.ts P_POSISJONER) */
 const P_NAVN: Record<string, string> = {
@@ -218,11 +219,21 @@ export interface LaeringsTrappProps {
   trinn?: TrappTrinn[];
   aktiv?: number;
   tittel?: string;
+  hjelp?: boolean;
 }
-export function LaeringsTrapp({ trinn = DEMO_TRAPP, aktiv = 3, tittel = "Læringstrapp — hvor bevegelsen sitter nå" }: LaeringsTrappProps) {
+export function LaeringsTrapp({ trinn = DEMO_TRAPP, aktiv = 3, tittel = "Læringstrapp — hvor bevegelsen sitter nå", hjelp }: LaeringsTrappProps) {
   const H0 = 34, dH = 20;
   return (
-    <Kort eyebrow={tittel} pad="16px 18px">
+    <Kort
+      eyebrow={tittel}
+      pad="16px 18px"
+      action={hjelp ? (
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+          <HjelpTips k="lFase" />
+          <HjelpTips k="csNivaa" />
+        </span>
+      ) : undefined}
+    >
       <div style={{ display: "flex", alignItems: "flex-end", gap: 7, marginTop: 4 }}>
         {trinn.map((t, i) => {
           const done = i < aktiv, on = i === aktiv;

@@ -16,7 +16,15 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { loadWorkbenchContext } from "@/lib/workbench/load-context";
 import { parseWeekOffset } from "@/lib/workbench/session-move-math";
+import { publishWorkbenchPlan } from "@/lib/workbench/publish-actions";
+import {
+  coachAddWorkbenchSession,
+  coachMoveWorkbenchSession,
+  coachRemoveWorkbenchSession,
+  coachDuplicateWeek,
+} from "@/lib/workbench/session-actions";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import type { WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
 import {
   CoachWorkbenchMount,
   type CoachRosterPlayer,
@@ -57,6 +65,14 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
     navn: p.name ?? "Uten navn",
   }));
 
+  const actions: WorkbenchV2Actions = {
+    addSession: coachAddWorkbenchSession.bind(null, id),
+    moveSession: coachMoveWorkbenchSession.bind(null, id),
+    removeSession: coachRemoveWorkbenchSession.bind(null, id),
+    publish: publishWorkbenchPlan.bind(null, id),
+    duplicateWeek: coachDuplicateWeek.bind(null, id),
+  };
+
   return (
     <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={coachName}>
       <CoachWorkbenchMount
@@ -67,6 +83,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
         data={ctx.data}
         insights={ctx.insights ?? null}
         planStatus={ctx.planStatus ?? null}
+        actions={actions}
       />
     </V2Shell>
   );

@@ -99,6 +99,7 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
           reps={okt.repsTotalt}
           delta=""
           sub="Beregnet fra loggede sett — mates inn i ACWR og ukevolum"
+          hjelp
         />
       )}
 

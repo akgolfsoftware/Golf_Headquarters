@@ -8,35 +8,43 @@
  *
  * Ærlighet (prosjekt-regel): kun v2-komponenter fra "@/components/v2"; ingen
  * ad-hoc UI; ingen oppdiktede tall. Felter uten kilde i datamodellen (ACWR- og
- * SG-trendgrafer, AI-genererte forslag, numerisk «plan-kvalitet»-score) er IKKE
- * fabrikert — de vises som ærlig tom-tilstand eller er utelatt (se gaps i
- * leveransen). Skrivesiden (DnD/publiser/AI-generering) er ikke koblet i denne
- * forhåndsvisningen: kontrollene er synlige (1:1 med mockup) men utfører ingen
- * mutasjon her.
+ * SG-trendgrafer, numerisk «plan-kvalitet»-score) er IKKE fabrikert — de vises
+ * som ærlig tom-tilstand eller er utelatt (se gaps i leveransen). Skrivesiden
+ * (ny/flytt/slett økt, publiser, Caddie-forslag, dupliser uke) er koblet via
+ * `actions`-prop (WorkbenchV2Sheets.tsx) — siden binder spiller- eller
+ * coach-server-actions og sender ned; uten `actions` (forhåndsvisning) er
+ * knappene skjult, aldri døde.
  *
  * V2Shell (montert i (v2preview)/v2-workbench/page.tsx) eier chrome-en.
  */
 
 import { useMemo, useState } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
   T,
   Caps,
   Kort,
-  CTAPill,
+  Knapp,
   PillVelger,
-  AkseChip,
+  AKSE_NAVN,
   StatusPill,
   TomTilstand,
   FordelingRad,
   InnsiktChip,
   Icon,
+  HjelpTips,
 } from "@/components/v2";
 import { PalettSok } from "@/components/v2/wb-composer";
+import { NyOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput } from "./WorkbenchV2Sheets";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import type { WorkbenchInsights } from "@/lib/workbench/types";
 import type { WeekEvent } from "@/lib/workbench/week-types";
 import type { PlanStatus } from "@/generated/prisma/client";
+import { fmtVarighet, fmtTimer, toKl } from "@/lib/workbench/v2-format";
+import { WEEK_OFFSET_MIN, WEEK_OFFSET_MAX } from "@/lib/workbench/session-move-math";
+
+export type { WorkbenchV2Actions } from "./WorkbenchV2Sheets";
 
 /* ── Konstanter ────────────────────────────────────────── */
 const DOW7 = ["MAN", "TIR", "ONS", "TOR", "FRE", "LØR", "SØN"];
@@ -57,24 +65,11 @@ export interface WorkbenchV2Props {
   playerName: string;
   coachName?: string;
   planStatus?: PlanStatus | null;
+  /** Skrivesiden — utelatt (forhåndsvisning) skjuler alle muterende knapper. */
+  actions?: WorkbenchV2Actions;
 }
 
 /* ── Rene hjelpere ─────────────────────────────────────── */
-
-/** «1,5 t» (≥60 min) eller «45 min». */
-function fmtVarighet(min: number): string {
-  if (min >= 60) return `${(min / 60).toFixed(1).replace(".", ",")} t`;
-  return `${min} min`;
-}
-
-/** «1,5 t» fra timetall. */
-function fmtTimer(t: number): string {
-  return `${t.toFixed(1).replace(".", ",")} t`;
-}
-
-function toKl(h: number, m = 0): string {
-  return `${h}:${String(m).padStart(2, "0")}`;
-}
 
 /** Planstatus → menneskelig etikett + tone. */
 function statusLabel(s: PlanStatus | null | undefined): { l: string; tone: "info" | "up" | "down" | "lime" | "warn" } {
@@ -118,7 +113,7 @@ function TLBlokk({ o, valgt, onVelg }: { o: WeekEvent; valgt: boolean; onVelg: (
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-        <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.03em", color: `color-mix(in srgb, ${col} 55%, ${T.fg})`, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{o.eb} · {toKl(o.h, o.m)}</span>
+        <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.03em", color: `color-mix(in srgb, ${col} 55%, ${T.fg})`, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{AKSE_NAVN[ak] || o.eb} · {toKl(o.h, o.m)}</span>
         {done && <Icon name="check" size={9} style={{ color: T.up, marginLeft: "auto", flex: "none" }} />}
         {avvik && <Icon name="alert-triangle" size={9} style={{ color: T.down, marginLeft: "auto", flex: "none" }} />}
       </div>
@@ -251,7 +246,14 @@ function BalSeksjon({ label, right, children }: { label: string; right?: React.R
   );
 }
 
-function WBBalanse({ data, valgtOkt, weekNumber }: { data: WorkbenchData; valgtOkt: WeekEvent | null; weekNumber: number }) {
+function WBBalanse({ data, valgtOkt, weekNumber, actions, weekOffset, onEndret }: {
+  data: WorkbenchData;
+  valgtOkt: WeekEvent | null;
+  weekNumber: number;
+  actions?: WorkbenchV2Actions;
+  weekOffset: number;
+  onEndret: () => void;
+}) {
   const axis = data.axisHours ?? [];
   const totalT = axis.reduce((a, x) => a + x.hours, 0);
   const fokus = data.fokus;
@@ -289,13 +291,7 @@ function WBBalanse({ data, valgtOkt, weekNumber }: { data: WorkbenchData; valgtO
 
       <BalSeksjon label="Valgt økt">
         {valgtOkt ? (
-          <Kort tint pad="13px 14px">
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <AkseChip a={valgtOkt.eb as AkseKey} />
-            </div>
-            <div style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg, marginTop: 9 }}>{valgtOkt.ttl}</div>
-            <div style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 4 }}>{toKl(valgtOkt.h, valgtOkt.m)} · {fmtVarighet(valgtOkt.durMin)}{valgtOkt.meta.filter(([ic]) => ic === "map-pin").map(([, t]) => ` · ${t}`).join("")}</div>
-          </Kort>
+          <ValgtOktSeksjon okt={valgtOkt} actions={actions} weekOffset={weekOffset} onEndret={onEndret} />
         ) : <TomTilstand icon="target" title="Ingen økt valgt" sub="Trykk en økt i tidslinja." />}
       </BalSeksjon>
 
@@ -362,7 +358,7 @@ function DagNivaa({ dag, valgt, onVelg }: { dag: DagKol | null; valgt: string | 
             <div key={o.id ?? j} onClick={() => o.id && onVelg(o.id)} style={{ padding: "9px 11px", borderRadius: 10, background: T.panel2, border: `1px solid ${sel ? T.lime : T.border}`, borderLeft: `3px solid ${col}`, cursor: "pointer" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2 }}>{toKl(o.h, o.m)}</span>
-                <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: `color-mix(in srgb, ${col} 55%, ${T.fg})` }}>{o.eb}</span>
+                <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: `color-mix(in srgb, ${col} 55%, ${T.fg})` }}>{AKSE_NAVN[ak] || o.eb}</span>
                 <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{fmtVarighet(o.durMin)}</span>
               </div>
               <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, marginTop: 5 }}>{o.ttl}</div>
@@ -412,12 +408,21 @@ function MiniToggle({ options, value, onChange }: { options: [string, string][];
 }
 
 /* ── Selve Workbench ───────────────────────────────────── */
-export function WorkbenchV2({ data, insights, role, playerName, planStatus }: WorkbenchV2Props) {
+export function WorkbenchV2({ data, insights, role, playerName, planStatus, actions }: WorkbenchV2Props) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [rolle, setRolle] = useState<Role>(role);
   const [nivaa, setNivaa] = useState("uke");
   const [tab, setTab] = useState("maler");
   const [sok, setSok] = useState("");
   const [verktoy, setVerktoy] = useState<"alle" | "fys">("alle");
+  const [nyOktApen, setNyOktApen] = useState(false);
+  const [melding, setMelding] = useState<{ tone: "up" | "down" | "info"; tekst: string } | null>(null);
+  const [pubLoading, setPubLoading] = useState(false);
+  const [suggestLoading, setSuggestLoading] = useState(false);
+  const [dupLoading, setDupLoading] = useState(false);
 
   const dager = useMemo(() => (data ? byggDager(data) : []), [data]);
   const alleEvents = useMemo(() => dager.flatMap((d) => d.events).filter((e) => e.id), [dager]);
@@ -425,10 +430,79 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus }: Wo
   const valgtOkt = useMemo(() => alleEvents.find((e) => e.id === valgtId) ?? alleEvents[0] ?? null, [alleEvents, valgtId]);
 
   const weekNumber = data?.summary?.weekNumber ?? 0;
+  const weekOffset = data?.weekOffset ?? 0;
   const st = statusLabel(planStatus);
   const adher = data?.adherencePct;
   const canon = data?.canonChip;
   const aktivDag = dager.find((d) => d.today) ?? dager.find((d) => d.events.length > 0) ?? null;
+
+  const goToWeek = (delta: number) => {
+    const target = Math.max(WEEK_OFFSET_MIN, Math.min(WEEK_OFFSET_MAX, weekOffset + delta));
+    if (target === weekOffset) return;
+    const params = new URLSearchParams(searchParams.toString());
+    if (target === 0) params.delete("uke");
+    else params.set("uke", String(target));
+    const qs = params.toString();
+    router.push(qs ? `${pathname}?${qs}` : pathname);
+  };
+
+  const handlePublish = async () => {
+    if (!actions || pubLoading) return;
+    setPubLoading(true);
+    setMelding(null);
+    const res = await actions.publish();
+    setPubLoading(false);
+    if (res.ok) {
+      setMelding({ tone: "up", tekst: "Planen er sendt til godkjenning." });
+      router.refresh();
+    } else {
+      setMelding({ tone: "down", tekst: res.error ?? "Kunne ikke publisere planen." });
+    }
+  };
+
+  const handleSuggest = async () => {
+    if (!actions?.suggestWeek || suggestLoading) return;
+    setSuggestLoading(true);
+    setMelding(null);
+    const res = await actions.suggestWeek(weekNumber);
+    setSuggestLoading(false);
+    setMelding({
+      tone: res.ok ? "info" : "down",
+      tekst: res.message ?? (res.ok ? "Forslag lagt inn." : "Kunne ikke foreslå uke."),
+    });
+  };
+
+  const handleDuplicate = async () => {
+    if (!actions?.duplicateWeek || dupLoading) return;
+    setDupLoading(true);
+    setMelding(null);
+    const res = await actions.duplicateWeek(weekOffset);
+    setDupLoading(false);
+    if (res.ok) {
+      setMelding({ tone: "up", tekst: `${res.count ?? 0} økter kopiert fra forrige uke.` });
+      router.refresh();
+    } else {
+      setMelding({ tone: "down", tekst: res.error ?? "Forrige uke har ingen økter." });
+    }
+  };
+
+  const handleCreateSession = async (input: NyOktInput): Promise<{ ok: boolean; error?: string }> => {
+    if (!actions) return { ok: false, error: "Ikke tilgjengelig." };
+    const res = await actions.addSession({
+      dayIndex: input.dayIndex,
+      title: input.title,
+      durMin: input.durMin,
+      area: input.akse,
+      hour: input.hour,
+      minute: input.minute,
+      weekOffset,
+    });
+    if (res.ok) {
+      setNyOktApen(false);
+      router.refresh();
+    }
+    return res;
+  };
 
   if (!data) {
     return (
@@ -454,16 +528,36 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus }: Wo
         <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "6px 14px", borderRadius: 12, background: `color-mix(in srgb, ${canon ? T.warn : T.up} 6%, transparent)`, border: `1px solid color-mix(in srgb, ${canon ? T.warn : T.up} 32%, transparent)`, flex: "none" }}>
           <span style={{ fontFamily: T.mono, fontSize: 26, fontWeight: 700, color: T.fg, lineHeight: 0.9, fontVariantNumeric: "tabular-nums", flex: "none" }}>{adher != null ? `${adher}%` : "–"}</span>
           <div style={{ flex: "none", maxWidth: 150 }}>
-            <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, display: "block", whiteSpace: "nowrap" }}>Plan-etterlevelse</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+              <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap" }}>Plan-etterlevelse</span>
+              <HjelpTips k="planEtterlevelse" size={11} />
+            </span>
             <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: canon ? T.warn : T.up, display: "block", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{canon ?? "Ingen avvik"}</span>
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>
-          <button style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, height: 38, padding: "0 14px", borderRadius: 10, background: T.panel3, border: `1px solid ${T.borderS}`, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}><Icon name="plus" size={14} />Ny økt</button>
-          <button title="AI-forslag for uka" style={{ appearance: "none", cursor: "pointer", width: 38, height: 38, borderRadius: 10, background: T.panel3, border: `1px solid ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}><Icon name="sparkles" size={15} style={{ color: T.lime }} /></button>
-          <CTAPill icon="send">Publiser</CTAPill>
+          {actions && (
+            <button onClick={() => setNyOktApen(true)} style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, height: 38, padding: "0 14px", borderRadius: 10, background: T.panel3, border: `1px solid ${T.borderS}`, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}><Icon name="plus" size={14} />Ny økt</button>
+          )}
+          {actions?.suggestWeek && (
+            <button onClick={handleSuggest} disabled={suggestLoading} title="AI-forslag for uka" style={{ appearance: "none", cursor: suggestLoading ? "default" : "pointer", width: 38, height: 38, borderRadius: 10, background: T.panel3, border: `1px solid ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: suggestLoading ? 0.5 : 1 }}><Icon name="sparkles" size={15} style={{ color: T.lime }} /></button>
+          )}
+          {actions && (
+            <Knapp icon="send" onClick={handlePublish} disabled={pubLoading}>{pubLoading ? "Publiserer…" : "Publiser"}</Knapp>
+          )}
         </div>
       </div>
+
+      {/* MELDING — resultat av siste handling (publiser/foreslå/gjenta) */}
+      {melding && (
+        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 12, background: `color-mix(in srgb, ${melding.tone === "down" ? T.down : melding.tone === "up" ? T.up : T.info} 9%, ${T.panel})`, border: `1px solid color-mix(in srgb, ${melding.tone === "down" ? T.down : melding.tone === "up" ? T.up : T.info} 30%, transparent)` }}>
+          <Icon name={melding.tone === "down" ? "alert-triangle" : melding.tone === "up" ? "check" : "info"} size={14} style={{ color: melding.tone === "down" ? T.down : melding.tone === "up" ? T.up : T.info, flex: "none" }} />
+          <span style={{ flex: 1, fontFamily: T.ui, fontSize: 12.5, color: T.fg }}>{melding.tekst}</span>
+          <button type="button" onClick={() => setMelding(null)} style={{ appearance: "none", cursor: "pointer", background: "transparent", border: "none", color: T.mut, display: "inline-flex", flex: "none", padding: 0 }}>
+            <Icon name="x" size={13} />
+          </button>
+        </div>
+      )}
 
       {/* BRØDSMULE + insight-linje */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
@@ -476,10 +570,22 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus }: Wo
               {i < arr.length - 1 && <Icon name="chevron-right" size={13} style={{ color: T.mut }} />}
             </span>
           ))}
+          <div style={{ display: "flex", alignItems: "center", gap: 2, marginLeft: 4 }}>
+            <button type="button" onClick={() => goToWeek(-1)} disabled={weekOffset <= WEEK_OFFSET_MIN} title="Forrige uke" style={{ appearance: "none", cursor: weekOffset <= WEEK_OFFSET_MIN ? "default" : "pointer", width: 26, height: 26, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset <= WEEK_OFFSET_MIN ? 0.4 : 1 }}>
+              <Icon name="chevron-left" size={13} style={{ color: T.fg2 }} />
+            </button>
+            <button type="button" onClick={() => goToWeek(1)} disabled={weekOffset >= WEEK_OFFSET_MAX} title="Neste uke" style={{ appearance: "none", cursor: weekOffset >= WEEK_OFFSET_MAX ? "default" : "pointer", width: 26, height: 26, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset >= WEEK_OFFSET_MAX ? 0.4 : 1 }}>
+              <Icon name="chevron-right" size={13} style={{ color: T.fg2 }} />
+            </button>
+          </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <CTAPill icon="sparkles">Foreslå uke</CTAPill>
-          <CTAPill icon="repeat" ghost>Gjenta forrige uke</CTAPill>
+          {actions?.suggestWeek && (
+            <Knapp icon="sparkles" onClick={handleSuggest} disabled={suggestLoading}>{suggestLoading ? "Foreslår…" : "Foreslå uke"}</Knapp>
+          )}
+          {actions?.duplicateWeek && (
+            <Knapp icon="repeat" ghost onClick={handleDuplicate} disabled={dupLoading}>{dupLoading ? "Kopierer…" : "Gjenta forrige uke"}</Knapp>
+          )}
         </div>
       </div>
 
@@ -493,8 +599,23 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus }: Wo
           {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
           {nivaa === "maned" && <Kort><TomTilstand icon="calendar" title="Månedsvisning" sub="Bruk Uke for tidslinje eller Årsplan for sesongperiodene — månedsaggregat er ikke koblet ennå." /></Kort>}
         </div>
-        <WBBalanse data={data} valgtOkt={valgtOkt} weekNumber={weekNumber} />
+        <WBBalanse
+          data={data}
+          valgtOkt={valgtOkt}
+          weekNumber={weekNumber}
+          actions={actions}
+          weekOffset={weekOffset}
+          onEndret={() => router.refresh()}
+        />
       </div>
+
+      {nyOktApen && actions && (
+        <NyOktArk
+          defaultDayIndex={aktivDag ? dager.indexOf(aktivDag) : 0}
+          onLukk={() => setNyOktApen(false)}
+          onOpprett={handleCreateSession}
+        />
+      )}
     </div>
   );
 }
