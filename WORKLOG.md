@@ -5,6 +5,92 @@
 
 ---
 
+## 2026-07-10 — Live Coach-økt: AI Golf Coach under aktiv trening (feature/live-coach-session)
+
+**Branch:** `feature/live-coach-session` (utgrenet fra `redesign/v2` — inneholder ikke `main`s historikk,
+merges/PR-es ikke i denne økta).
+
+### Hva ble bygget (Fase A–D, fire agent-faser i samme branch)
+
+**Fase A — agent + datamodell.** `src/lib/agents/live-coach-agent.ts`: kjøres når en spiller starter en
+live treningsøkt (plan-session eller session-v2). Finner/oppretter en økt-bundet `CoachingSession`
+(kind `LIVE`) og sender en varm, idempotent velkomstmelding fra AI Golf Coach (statisk fallback hvis
+AI er avslått). Skjema utvidet med `CoachingSession.liveSessionId`/`liveSessionKind` (migrert kirurgisk,
+se avvik under). Commit `4dd61f7d`.
+
+**Fase B — chat under økta.** `src/lib/ai/live-coach-context.ts` (sentral Prisma-henter for
+spillerprofil + økt/drill-kontekst), `src/lib/ai/agents/live-coach-chat.ts` (ikke-strømmende
+chat-agent), `bygLiveCoachSystemPrompt()` i `src/lib/ai-plan/coach-prompt.ts` (ny `mottaker:
+"spiller-live"`-variant — kort tone, fornavn, "AKTIV treningsøkt"-markør, aktiv drill/L-fase/CS-nivå,
+ETT coaching-spørsmål per svar), og den strømmende ruten `src/app/api/live/coach-chat/route.ts`
+(POST+GET, tier-gating, rate-limiting, eierskaps-/status-verifisering, `CoachingSession`-persistering).
+Commit `6195c012`.
+
+**Fase C — video + UI.** `src/components/portal/live/LiveCoachPanel.tsx` + `useLiveCoachVideoUpload.ts`
+i fullscreen live-økt-skjermen, og en `swing-video-analyst`-agent-stub for live-opplastede svinger.
+Commits `fe5215dc`, `5300ac07` (pluss en liten opprettingscommit `ee7bed63` for manglende typer).
+
+**Fase D (denne økta) — tester, full verifisering, worklog.**
+- 🆕 `src/lib/__tests__/agents/live-coach-agent.test.ts` — idempotent-velkomst (tråd med
+  assistant-melding → skip, ingen `update`/`create`, men `runAgent` logger fortsatt kjøringen; tråd
+  UTEN assistant-melding → fortsetter forbi idempotens-sjekken) + `triggerLiveSessionAgent` forwarder
+  `userId`/`sessionId`/`kind` korrekt til `runLiveCoachAgent` og svelger feil (fire-and-forget).
+- 🆕 `src/lib/__tests__/ai/live-coach-prompt.test.ts` — `bygLiveCoachSystemPrompt()` inneholder
+  `sessionTitle`, spillerens fornavn, "AKTIV treningsøkt"-markøren, aktiv drill/driller-igjen,
+  coach-notat (+fallback), og riktig norsk etikett for plan-session vs. session-v2.
+- `src/lib/ai/agents/index.ts` (barrel) eksporterer IKKE `live-coach-chat.ts` — sjekket eksplisitt
+  (D3), ingen endring nødvendig i `agents-index.test.ts`.
+- `package.json` — `"test"`-scriptet fikk `--experimental-test-module-mocks` (Node 24-flagg).
+  Repoet hadde ingen tidligere presedens for å mocke Prisma/interne moduler i tester; brukte Node
+  sin innebygde `t.mock.module()` for å unngå ekte DB-/Anthropic-kall.
+
+### Migrasjonsavvik (repo-gotcha, ikke ny — bekreftet i denne økta)
+
+Fase A brukte **kirurgisk `db execute`** (`scripts/migrate-coaching-session-live-2026-07-09.ts`) i
+stedet for `prisma migrate dev`/`db push`, per `.claude/rules/gotchas.md`: `migrate dev` feiler på en
+gammel migrasjon under shadow-DB-replay, og `db push` ville krevd `--accept-data-loss` pga.
+pre-eksisterende skjema-drift (`datagolf_sync_state`). `npx prisma validate` er grønn i denne økta.
+
+### Testfelle: modul-cache-fallgruve i node:test
+
+Node re-evaluerer ikke et allerede lastet ES-modul ved senere `import()`-kall — en konsument
+(f.eks. `triggers.ts`) som allerede er lastet i prosessen plukker IKKE opp en SENERE
+`t.mock.module()`-kall for sine avhengigheter. Løsning brukt her: kun ÉN fersk `import()` per
+modul-under-test per testfil, med mutérbar mock-tilstand (lukkede variabler) for å dekke flere
+scenarioer i samme test. Verdt å huske for fremtidige agent-tester i dette repoet.
+
+### Status: tester og build
+
+- `npm test`: **359/359 grønne** (0 feil), inkl. de 2 nye testfilene.
+- `npx prisma validate`: grønn.
+- `npx tsc --noEmit`: **0 feil**.
+- `npm run build`: grønn, `/api/live/coach-chat` inkludert som dynamisk rute.
+
+### UAT — verifisert vs. gjenstår
+
+**Verifisert (headless/automatisk denne økta):**
+- `/api/live/coach-chat` svarer `401 {"error":"unauthenticated"}` på både GET og POST uten sesjon
+  (curl mot lokal dev-server, port 3000, deretter stoppet).
+- Ruten er inkludert i produksjonsbuilden.
+- Enhetstest-dekning for idempotent velkomst, trigger-videreformidling og prompt-innhold (se over).
+
+**Gjenstår — krever manuell UAT i nettleser (innlogget spiller-sesjon):**
+- Faktisk velkomstmelding genereres og vises når en spiller starter en live-økt (Fase A, full
+  AI-sti — ikke dekket av enhetstest siden det krever hele Prisma-grafen: spillerprofil, aktiv plan,
+  siste runder, coach-oppslag).
+- Chat-svar fra AI Golf Coach under en aktiv økt (Fase B — strømmende respons, tier-gating for
+  GRATIS-brukere, rate-limiting i praksis).
+- Video-opplasting i `LiveCoachPanel` og `swing-video-analyst`-stubbens respons (Fase C).
+- GRATIS-tier-gate (402/redirect) verifisert kun som kodesti (`isAiEnabled`/tier-sjekk i route.ts),
+  ikke klikket gjennom med en faktisk GRATIS-bruker.
+
+### Commits (denne fasen)
+
+- `test: live-coach agent and prompt coverage`
+- `docs: update WORKLOG for live-coach-session` (denne commiten)
+
+---
+
 ## 2026-06-12 — UX-arkitektur: full kartlegging + konsolideringsanalyse (docs/ux-arkitektur)
 
 **Branch:** `docs/ux-arkitektur` · Ingen kodeendringer — kun dokumentasjon.
