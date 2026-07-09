@@ -15,7 +15,7 @@
  * komponenten rendrer bare den indre innholds-stacken.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import type { MinGolfData } from "@/lib/min-golf/load-min-golf";
 import type { AnalyticsWorkbenchData } from "@/app/portal/analysere/actions";
 import type { AkseKey } from "@/lib/v2/tokens";
@@ -519,7 +519,15 @@ const TABS = [
 type TabId = (typeof TABS)[number]["id"];
 const ER_TAB = (v: string | null): v is TabId => !!v && TABS.some((t) => t.id === v);
 
-export function AnalysereV2({ data }: { data: AnalysereData }) {
+export function AnalysereV2({
+  data,
+  header,
+}: {
+  data: AnalysereData;
+  /** Overstyr default «Din analyse»-hodet (brukes av AgencyOS coach-speilet).
+   *  Render-prop får `mobile` så tittelen forblir responsiv. */
+  header?: (mobile: boolean) => ReactNode;
+}) {
   const mobile = useMobile();
   const [tab, setTab] = useState<TabId>("sg");
 
@@ -543,14 +551,18 @@ export function AnalysereV2({ data }: { data: AnalysereData }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div>
-          <Caps>{eyebrow}</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em="analyse">Din</Tittel>
+      {header ? (
+        header(mobile)
+      ) : (
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <div>
+            <Caps>{eyebrow}</Caps>
+            <div style={{ marginTop: 10 }}>
+              <Tittel mobile={mobile} em="analyse">Din</Tittel>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <PillTabs tabs={TABS.map((t) => ({ id: t.id, l: t.l }))} value={tab} onChange={velgTab} />
 
