@@ -4,7 +4,7 @@
 >
 > Status: **ÅPEN** (trenger beslutning) · **PARKERT** (bevisst, ikke rør uoppfordret) · **LØST** (avklart — ikke flagg på nytt).
 >
-> **Sist oppdatert:** 2026-06-15. Råmateriale: tidligere `PLATFORM.md` §14 (arkivert) + kodeverifisering 2026-06-14.
+> **Sist oppdatert:** 2026-07-10. Råmateriale: tidligere `PLATFORM.md` §14 (arkivert) + kodeverifisering 2026-06-14 / agent-pipeline 2026-07-10.
 
 ---
 
@@ -19,7 +19,7 @@ Disse kan en agent IKKE løse selv — de er produkt-/metodikkvalg.
 | ~~A1c~~ ✅ | CS-navn | **Club Speed** | «Confidence Score»-feil rettet i DATA-MODEL.md. |
 | ~~A1e~~ ✅ | LIFE-koder: nøkler | **Wiki-nøkler: SELV/SOS/EMO/KAR/RES** | `taxonomy.ts` rettet fra kodens gamle 5 (RESILIENS/FOKUS/…). |
 | ~~A2~~ ✅ | **CBAC-modell.** | LØST 2026-06-23 (D1.4) — **behold dagens 10 capabilities** (ikke bygg ut til 43). | Finanshull + anlegg + team/org nå gated på capability. |
-| A3 | **Agent-systemets dybde.** `acceptPlanAction` (`src/lib/agents/actions.ts`) bytter kun status, gjør ingen faktisk planendring. Ingen coach-godkjenningsinnboks. | `src/lib/agents/` (6 deterministiske) + `src/lib/ai/agents/` (6 LLM) | Skal `acceptPlanAction` faktisk endre planen? Bygges coach-innboks/turnering-agent? |
+| ~~A3~~ ✅ | **Agent-systemets dybde.** | LØST 2026-07-10 — `acceptAndApplyPlanAction` + `plan-action-executor` endrer plan ved godkjenning; `/admin/godkjenninger` med batch; coach-scoped `coachId`; varsling via `varsleVedPlanAction`. | — |
 | A4 | **13 invarianter.** Nevnt som konsept, finnes ikke som navngitt liste i kode/wiki. | — | Skal de skrives ned, eller utledes fra valideringsregler + junior-vern? |
 | A5 | **Forretningstall** (3 MNOK 2026 / 4 MNOK 2027 / AI Coach $10M ARR). | Kun i global CLAUDE.md — ikke i kode/regnskap | Bekreft eller korriger. |
 

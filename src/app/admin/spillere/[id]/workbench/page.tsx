@@ -75,6 +75,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
         subjectPlayerId={id}
         planId={ctx.planId}
         planStatus={ctx.planStatus}
+        agentFeed={ctx.agentFeed}
       />
     </Suspense>
   );

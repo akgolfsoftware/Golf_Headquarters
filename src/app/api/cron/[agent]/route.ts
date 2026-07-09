@@ -36,6 +36,7 @@ import { runBookingConflictMonitor } from "@/lib/agents/booking-conflict-monitor
 import { runAiCodeReviewer } from "@/lib/agents/ai-code-reviewer";
 import { runDemandPredictor } from "@/lib/agents/demand-predictor";
 import { runProactiveBookingAlerts } from "@/lib/agents/booking-alerts-proactive";
+import { runPlanEffectivenessAgent } from "@/lib/agents/plan-effectiveness-agent";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -79,6 +80,7 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "ai-code-reviewer": runAiCodeReviewer,
   "demand-predictor": runDemandPredictor,
   "24-7-booking-alerts": runProactiveBookingAlerts,
+  "plan-effectiveness-agent": runPlanEffectivenessAgent,
 };
 
 export async function GET(

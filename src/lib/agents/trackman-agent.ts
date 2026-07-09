@@ -1,8 +1,10 @@
 // trackman-agent: kjøres etter TrackManSession.create. Parser rawJson,
 // skriver Signal og evt. INTENSITY_ADJUST PlanAction ved lav smash-trend.
 
+import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
+import { mapSgBandToFault } from "@/lib/training/skills/morad-fault";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { varsleVedPlanAction } from "./notify-plan-action";
 
@@ -27,6 +29,7 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
 
     const perKolle = new Map<string, number[]>();
     const smashValues: number[] = [];
+    const faceToPathValues: number[] = [];
 
     for (const rad of rader) {
       if (typeof rad !== "object" || rad === null) continue;
@@ -35,6 +38,12 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
       const distanseStr =
         r.Distance ?? r.distance ?? r.Carry ?? r.carry ?? null;
       const smashStr = r["Smash Factor"] ?? r.smashFactor ?? r.Smash ?? null;
+      const ftpStr =
+        r["Face To Path"] ??
+        r.faceToPath ??
+        r["Face to Path"] ??
+        r.FaceToPath ??
+        null;
       if (klubb && distanseStr) {
         const distanse = Number(distanseStr);
         if (!Number.isNaN(distanse)) {
@@ -45,10 +54,20 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
         const smash = Number(smashStr);
         if (!Number.isNaN(smash)) smashValues.push(smash);
       }
+      if (ftpStr) {
+        const ftp = Number(ftpStr);
+        if (!Number.isNaN(ftp)) faceToPathValues.push(ftp);
+      }
     }
 
     const computedAt = new Date();
-    const signaler = Array.from(perKolle.entries()).map(([klubb, distanser]) => ({
+    const signaler: Array<{
+      userId: string;
+      kind: string;
+      value: number;
+      payload: Prisma.InputJsonValue;
+      computedAt: Date;
+    }> = Array.from(perKolle.entries()).map(([klubb, distanser]) => ({
       userId,
       kind: "CLUB_AVG",
       value: distanser.reduce((s, d) => s + d, 0) / distanser.length,
@@ -59,6 +78,30 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
       },
       computedAt,
     }));
+
+    if (faceToPathValues.length >= 3) {
+      const snittFtp =
+        faceToPathValues.reduce((a, b) => a + b, 0) / faceToPathValues.length;
+      const moradFaultId =
+        Math.abs(snittFtp) > 4
+          ? snittFtp > 0
+            ? "face_open"
+            : "over_the_top"
+          : mapSgBandToFault("OTT");
+      if (moradFaultId) {
+        signaler.push({
+          userId,
+          kind: "TRACKMAN_FACE_TO_PATH",
+          value: snittFtp,
+          payload: {
+            sessionId: sisteSesjon.id,
+            moradFaultId,
+            antallSlag: faceToPathValues.length,
+          },
+          computedAt,
+        });
+      }
+    }
 
     if (signaler.length > 0) {
       await prisma.signal.createMany({ data: signaler });

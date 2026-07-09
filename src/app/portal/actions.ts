@@ -12,6 +12,10 @@ import { prisma } from "@/lib/prisma";
 import type { PyramidArea, PracticeType, SessionStatusV2 } from "@/generated/prisma/client";
 import { translateMiljo } from "@/lib/portal/translate-taxonomy";
 import { v2DbSessionHref } from "@/lib/portal/session-hrefs";
+import {
+  hentOptimalOktHint,
+  type OptimalSessionHint,
+} from "@/lib/portal/optimal-session";
 
 // ── Types ─────────────────────────────────────────────────────────
 
@@ -705,6 +709,7 @@ export type DashboardData = {
   nextTournament: NextTournament | null;
   weekProgress: WeekPlanProgress;
   trainingHeatmap: TrainingHeatmap;
+  optimalSession: OptimalSessionHint | null;
 };
 
 export async function getDashboardData(userId: string): Promise<DashboardData> {
@@ -713,7 +718,7 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
     select: { id: true, name: true, avatarUrl: true, hcp: true, tier: true },
   });
 
-  const [todayAll, week, recentActivity, goals, { count: unreadCount, notifications }, coachMessage, stats, kpiStats, nextTournament, weekProgress, trainingHeatmap] =
+  const [todayAll, week, recentActivity, goals, { count: unreadCount, notifications }, coachMessage, stats, kpiStats, nextTournament, weekProgress, trainingHeatmap, optimalSession] =
     await Promise.all([
       getAllTodaysSessions(userId),
       getWeekOverview(userId),
@@ -726,6 +731,7 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
       getNextTournament(userId),
       getWeekPlanProgress(userId),
       getTrainingHeatmap(userId),
+      hentOptimalOktHint(userId),
     ]);
 
   return {
@@ -745,5 +751,6 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
     nextTournament,
     weekProgress,
     trainingHeatmap,
+    optimalSession: todayAll.length === 0 ? optimalSession : null,
   };
 }

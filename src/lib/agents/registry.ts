@@ -38,6 +38,20 @@ export const AGENT_REGISTRY: AgentRegistryEntry[] = [
     kategori: "llm",
   },
   {
+    slug: "treningsdata-ekspert",
+    navn: "Treningsdata-ekspert",
+    trigger: "Etter test/round (manuell)",
+    beskrivelse: "Korrelasjon treningsvolum vs SG — flagger negativ effekt.",
+    kategori: "llm",
+  },
+  {
+    slug: "plan-effectiveness-agent",
+    navn: "Plan-effectiveness",
+    trigger: "Cron søndag 20:00",
+    beskrivelse: "Flagger planer med lav completion eller negativ SG-effekt.",
+    kategori: "coach",
+  },
+  {
     slug: "plan-watcher",
     navn: "Plan Watcher",
     trigger: "Cron mandag 06:00",
@@ -115,6 +129,13 @@ export const AGENT_REGISTRY: AgentRegistryEntry[] = [
     navn: "Live Coach Agent",
     trigger: "Ved start live økt",
     beskrivelse: "Oppretter økt-bundet AI-tråd og sender velkomst til spiller.",
+    kategori: "llm",
+  },
+  {
+    slug: "swing-video-analyst",
+    navn: "Video-analytiker (stub)",
+    trigger: "Ved video-opplasting i live-økt",
+    beskrivelse: "Bekrefter mottak av swing-video i LIVE-tråden. Ingen bildeanalyse ennå.",
     kategori: "llm",
   },
 ];

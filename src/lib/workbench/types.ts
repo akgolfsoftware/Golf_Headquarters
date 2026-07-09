@@ -1,6 +1,7 @@
 import type { PlanStatus } from "@/generated/prisma/client";
 import type { TekniskPlanWorkbenchContext } from "@/lib/teknisk-plan/types";
 import type { WorkbenchData } from "./load-workbench";
+import type { WorkbenchAgentFeed } from "./agent-feed";
 
 export type WorkbenchRole = "player" | "coach";
 
@@ -20,4 +21,5 @@ export type WorkbenchContext = {
   planId: string | null;
   planStatus: PlanStatus | null;
   tekniskPlan: TekniskPlanWorkbenchContext | null;
+  agentFeed: WorkbenchAgentFeed | null;
 };

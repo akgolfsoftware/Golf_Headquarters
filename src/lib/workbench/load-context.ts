@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { loadTekniskPlanContext } from "@/lib/teknisk-plan/load-context";
 import { loadWorkbenchData } from "./load-workbench";
 import { buildWorkbenchInsights } from "./insights";
+import { loadWorkbenchAgentFeed } from "./agent-feed";
 import type { WorkbenchContext } from "./types";
 
 /** Én loader for Workbench — data + innsikt + plan-status. */
@@ -14,7 +15,7 @@ export async function loadWorkbenchContext(
   const data = await loadWorkbenchData(userId, weekOffset);
   if (data === null) return null;
 
-  const [insights, activePlan, tekniskPlan] = await Promise.all([
+  const [insights, activePlan, tekniskPlan, agentFeed] = await Promise.all([
     buildWorkbenchInsights(userId, data),
     prisma.trainingPlan.findFirst({
       where: { userId },
@@ -22,6 +23,7 @@ export async function loadWorkbenchContext(
       select: { id: true, status: true },
     }),
     loadTekniskPlanContext(userId),
+    loadWorkbenchAgentFeed(userId),
   ]);
 
   const hasWeekSessions = (data.weekDays?.some((d) => d.events.length > 0) ?? false);
@@ -33,5 +35,6 @@ export async function loadWorkbenchContext(
     planId: activePlan?.id ?? null,
     planStatus: activePlan?.status ?? null,
     tekniskPlan,
+    agentFeed,
   };
 }

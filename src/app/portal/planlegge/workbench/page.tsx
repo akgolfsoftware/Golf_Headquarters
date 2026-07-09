@@ -49,6 +49,7 @@ export default async function WorkbenchPage({
         subjectPlayerId={user.id}
         planId={ctx?.planId ?? null}
         planStatus={ctx?.planStatus ?? null}
+        agentFeed={ctx?.agentFeed ?? null}
       />
     </Suspense>
   );

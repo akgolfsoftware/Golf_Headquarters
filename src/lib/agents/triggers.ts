@@ -12,6 +12,7 @@ import { prisma } from "@/lib/prisma";
 import { runTurneringAgent } from "./turnering-agent";
 import { runPlanRevisionAgent } from "./plan-revision-actions";
 import { runLiveCoachAgent, type LiveSessionKind } from "./live-coach-agent";
+import { runTreningsdataEkspert } from "./treningsdata-ekspert";
 
 export async function triggerRoundAgent(userId: string): Promise<void> {
   try {
@@ -28,6 +29,7 @@ export async function triggerRoundAgent(userId: string): Promise<void> {
       });
     }
     await runAchievementAgent(userId);
+    await runTreningsdataEkspert(userId);
   } catch (err) {
     console.error("[trigger] round-agent feilet", err);
   }
@@ -37,6 +39,7 @@ export async function triggerTestAgent(userId: string): Promise<void> {
   try {
     await runTestAgent(userId);
     await runAchievementAgent(userId);
+    await runTreningsdataEkspert(userId);
   } catch (err) {
     console.error("[trigger] test-agent feilet", err);
   }
