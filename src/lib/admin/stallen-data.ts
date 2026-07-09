@@ -27,6 +27,8 @@ export type StallenRow = {
   name: string;
   /** Initialer for avatar-fallback. */
   initials: string;
+  /** Handicap formatert (+1,2 / 2,1 / —). */
+  hcp: string;
   avatarUrl: string | null;
   /** Mono sub-linje under navn (homeClub · status e.l.). */
   sub: string;
@@ -95,6 +97,13 @@ function initials(name: string | null | undefined): string {
   if (parts.length === 0) return "—";
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+/** Handicap → visningsstreng: +1,2 (plusshcp) / 2,1 / — (mangler). */
+function fmtHcp(v: number | null): string {
+  if (v == null) return "—";
+  if (v <= 0) return `+${Math.abs(v).toFixed(1).replace(".", ",")}`;
+  return v.toFixed(1).replace(".", ",");
 }
 
 /** Forkortet visningsnavn: "Øyvind Rohjan" → "Øyvind R." */
@@ -212,6 +221,7 @@ export async function loadStallen(
     select: {
       id: true,
       name: true,
+      hcp: true,
       avatarUrl: true,
       homeClub: true,
       userStatus: true,
@@ -348,6 +358,7 @@ export async function loadStallen(
       id: p.id,
       name: shortName(p.name),
       initials: initials(p.name),
+      hcp: fmtHcp(p.hcp),
       avatarUrl: p.avatarUrl,
       sub,
       group,

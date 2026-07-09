@@ -122,6 +122,19 @@ export function AkseChip({ a }: AkseChipProps) {
   return <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 5, padding: "3px 7px" }}><span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[a] || T.mut }} />{a}</span>;
 }
 
+export interface MikroMetaProps {
+  icon: string;
+  children?: ReactNode;
+}
+/* Liten mono-meta: ikon + tekst (sted, serie/gjentakelse osv.). */
+export function MikroMeta({ icon, children }: MikroMetaProps) {
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.mut }}>
+      <Icon name={icon} size={10} style={{ color: T.mut }} />{children}
+    </span>
+  );
+}
+
 /* ── Flater ───────────────────────────────────────────── */
 /* Dybdesystem (kvalitetsplan §12): innvendig topp-highlight + myk stor skygge —
    kortene skal føles lagdelt på mørk flate, aldri flate rektangler. */
