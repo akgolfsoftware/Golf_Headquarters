@@ -76,3 +76,30 @@ C. Steg 1–5 på biblioteket (tilstander/dataliv/robusthet/mobil-motparter).
 D. Steg 6–10 (finish + vakter + golden masters).
 
 Verifisering: hver runde leveres som før/etter-bilder + dommer-score per skjerm.
+
+## ÆRLIG STATUS 10. juli (svar på «er alt 10/10 nå?»): NEI — her er gapet
+
+**Komponentene (126):** komplette, render-verifisert 0 feil, følger tokens/ordbok/logo.
+MEN kvalitetsplanens nivå 1 er IKKE kjørt på dem: mangler tilstander (hover/fokus/tom/
+laster/feil), dataliv (count-up/draw-in — kun grafen har fått §11), robusthet (stress-test
+lange navn/ekstreme tall/40-lister), mobil-motparter, kontrast/a11y-bevis, konsistens-vakt.
+Ærlig nivå nå: ~8/10, ikke 10/10.
+
+**Wireframe per skjerm:** dommer kjørt på 20 fase-5-skjermer (snitt 8,5), 6 strukturbrudd
+rettet. MEN wireframe-aksen (§ nivå 0) er ikke systematisk verifisert på ALLE skjermer,
+og bølge 1/1b-skjermene er ikke re-dommert etter §11–12-løftet. Ikke bevist 10/10 overalt.
+
+## NESTE STEG (etter wb-forenkle) — rekkefølge til ekte 10/10
+
+1. **Wireframe-audit av ALT** (nivå 0): dommer m/ egen wireframe-akse på alle skjermer +
+   komponentgalleriene → fikslista → rett → re-dommer til struktur-akse ≥9 overalt. (Først —
+   struktur før polish, Anders' regel.)
+2. **Komponent-kvalitetspass** (nivå 1): tilstander + dataliv + robusthet på alle 126 i ett
+   tilstands-/stress-galleri; mobil-motparter der de mangler. Dommer per familie ≥9.
+3. **Art direction-pass** (nivå 2, §13/16) skjerm for skjerm → dommer-rubrikk ≥9 per skjerm.
+4. **Konsistens-vakt + golden masters** (§8/§10): skript nekter rå hex/feil størrelser/lime-
+   på-data; fryste galleri-bilder = fase 6-fasit.
+5. **Anders' fase 5-godkjenning** → **fase 6: bygging i appen** bølge for bølge (Vercel-
+   preview, full skjermbilde-diff mot golden master, «?»-hjelp + ordbok håndhevet).
+Leveres som før/etter + dommer-score per runde. Ingenting kalles 10/10 før dommer-aksen
+beviser det.
