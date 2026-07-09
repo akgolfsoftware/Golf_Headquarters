@@ -40,14 +40,24 @@ gjøre designet til en fungerende app i 10/10-kvalitet — uten å miste noe.
 
 ## D. Parallelle spor (egne jobber, ikke blokkerende for B)
 
-- **AI-golf-coach:** bygg agent-ekspertene (SG · TrackMan · treningsdata-mot-tester/turnering)
-  på appens agent-OS per `ai-coach-arkitektur.md`, fase F2 (tekstdata) → F3 (video-MVP).
-  MORAD-kunnskap fra Toshiba indekseres når disken kobles til.
-- **Additive datamodell-tillegg** (per gotcha-regelen, CREATE TABLE IF NOT EXISTS):
-  utviklingsplan-merge (strukturerte milepæler), fysisk-logging (tonnasje/volum),
-  gamification-tabeller om nødvendig. Aldri migrate dev/db push.
-- **Fysisk treningsplan** (workbench-plan §11): SettRepsLogger/tonnasje/intervall-soner i
-  Workbench-byggingen (bølge 2).
+- **AI-golf-coach — UTSATT (Anders 10. juli):** bygges IKKE nå. Venter til appen er LANSERT
+  og beta-testing med ekte brukere er i gang. Arkitekturen (`ai-coach-arkitektur.md`) ligger
+  klar; F2 (tekstdata-agenter) → F3 (video-MVP) startes post-lansering. MORAD fra Toshiba
+  indekseres da. Rasjonale: få appen ut og lær av ekte bruk før AI-laget bygges.
+## D2. MED I LANSERINGEN (Anders 10. juli — ikke utsatt, del av bygget)
+
+- **Utviklingsplan-merge** (workbench-plan §12): samle talent-planen (TalentTracking-radar +
+  milepæler) og teknisk plan (P1–P10) til ÉN Utviklingsplan-skjerm (spiller + coach-speil).
+  Presentasjons-merge i bølge 1/2; strukturert Milestone-datamodell additivt
+  (CREATE TABLE IF NOT EXISTS via tsx, aldri migrate dev/db push).
+- **Fysisk logging** (workbench-plan §11): SettRepsLogger (vekt×reps m/ spøkelsesverdi),
+  TonnasjeHero (total kg + volum), IntervallBlokk (serier×tid×pulssone) — bygges inn i
+  Workbench (bølge 2). Fysisk plan velges → økter dras til kalender → hver øvelse logges →
+  økt-total belastning/volum → mates til ACWR. Fysiske øvelser i øvelsesbanken (bølge 4).
+- Additive datamodell-tillegg for disse to: `FysOkt`/`FysOvelseRad` finnes; Milestone-modell
+  + logging-felter legges til additivt.
+
+**Kun AI-coach (D) er utsatt.** Utviklingsplan-merge + fysisk logging er MED før lansering.
 
 ## E. Utrulling
 
@@ -56,6 +66,7 @@ gammelt/nytt uttrykk sameksisterer i noen uker. Hver bølge Anders-godkjent før
 
 ## Rekkefølge / anbefaling
 
-A (forberedelse) → B1 (PlayerHQ) som første synlige verdi → B2 (Workbench) → resten.
-AI-coach (D) startes parallelt med B1. Golden masters + konsistens-vakt (A2–A3) gjøres
-straks etter godkjenning så byggingen har fasit fra første skjerm.
+A (forberedelse) → B1 (PlayerHQ) som første synlige verdi → B2 (Workbench) → resten →
+**lansering + beta-testing med ekte brukere** → DA startes AI-coach (D). Golden masters +
+konsistens-vakt (A2–A3) gjøres straks etter godkjenning så byggingen har fasit fra første skjerm.
+Fokus fram til lansering: få en solid, ekte app ut som tour- og amatørspillere kan teste.
