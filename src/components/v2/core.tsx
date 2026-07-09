@@ -289,6 +289,30 @@ export function CTAPill({ icon, children, ghost }: CTAPillProps) {
   );
 }
 
+export interface KnappProps {
+  icon?: string;
+  children?: ReactNode;
+  ghost?: boolean;
+  full?: boolean;
+  disabled?: boolean;
+  onClick?: () => void;
+}
+/* Interaktiv CTA-pille (ekte <button>): onClick + full-bredde + disabled.
+   CTAPill er den statiske varianten; Knapp brukes i flerstegs-flyter. */
+export function Knapp({ icon, children, ghost, full, disabled, onClick }: KnappProps) {
+  return (
+    <button
+      type="button"
+      className="v2-press v2-focus"
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
+      style={{ appearance: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: ghost ? T.fg : T.onLime, background: ghost ? T.panel3 : T.lime, border: ghost ? `1px solid ${T.borderS}` : "1px solid transparent", borderRadius: 9999, padding: "10px 18px", cursor: disabled ? "default" : "pointer", opacity: disabled ? 0.4 : 1, width: full ? "100%" : "auto" }}
+    >
+      {icon && <Icon name={icon} size={14} />}{children}
+    </button>
+  );
+}
+
 /* ── Rader/lister ─────────────────────────────────────── */
 export interface AvatarInitProps {
   navn: string;
