@@ -99,6 +99,58 @@ Nye mobil-komponenter (flate-skille-regelen): ZoomBrødsmule (kompakt), UkeListe
 dag m/ sveip), FlyttTilArk (DnD-erstatter), TapperV2 (tommel-soner), HullFørerArk
 (konkurranseføring), PreviewArk (økt-preview som bunn-ark), MålStripe (kollapser til chip).
 
+## 9. Hjelpesystemet «?» (Anders 9. juli — brukervennlighet for nye brukere)
+
+- **Hver funksjon/verdi som ikke er selvforklarende får et diskret «?»** (HjelpPopover-
+  komponenten, finnes i v2-struktur): 14 px sirkel i muted, hover/trykk → kort popover
+  med 1–3 setninger i KLARSPRÅK. Eksempler: SG («Strokes Gained — hvor mange slag du
+  vinner eller taper mot referansenivået, per kategori»), ACWR, CS-nivå, L-fase,
+  P-milepæl, AK-formelen, adherence.
+- Regler: forklaringen bruker ordboken, aldri sirkeldefinisjon; maks 3 setninger; alltid
+  et eksempel med tall der det passer; «Lær mer»-lenke kun når en dypere side finnes.
+- Førstegangsbrukere: første besøk på en skjerm viser 2–3 «?» med svak puls én gang —
+  aldri tvungen omvisning.
+- Innholdet vedlikeholdes ETT sted: `docs/redesign-v2/hjelpetekster.md` (bygges under
+  fase 6) — samme tekst i mockup og app.
+
+## 10. ORDBOK-REGELEN (LÅST — Anders 9. juli)
+
+**Under design OG bygging skal ordboken (`skills/ak-terminologi/ordbok.md` i design-
+prosjektet) alltid brukes. ALDRI finn opp egne ord og uttrykk.** Gjelder all UI-tekst,
+hjelpetekster, chips, tomtilstander og varsler. Kjente ankere: Nærspill (aldri «kort
+spill») · Situasjon (aldri «Arena») · P1–P10/MORAD · brutto score · anbefaling (aldri
+sperre/brudd-språk) · «økt» (aldri «øving»). Ved tvil: slå opp i ordboken eller spør
+Anders — aldri gjett. Terminologi-lint (kvalitetsplan §8) håndhever forbudsordene.
+
+## 11. Fysisk treningsplan — verdensledende (Anders 9. juli)
+
+Datagrunnlag som finnes: `FysOkt`/`FysOvelseRad` (skjema), fysisk.html-modulen (AgencyOS-
+kit, sett×reps-steppere, ACWR live, CS-kobling) + phq-fysisk.jsx (spiller-speil). Løftet:
+
+- **Fysisk plan som kilde i Workbench:** i verktøy-sporet velges «Fysisk treningsplan» →
+  planens økter (styrke/rotasjon/mobilitet/kondisjon) vises som brikker → **dras rett inn
+  på dager i kalenderen** (samme DnD v2 som golf-øktene, samme kapasitets-/ACWR-varsling).
+- **Øvelsesbanken utvides med fysiske øvelser:** samme bank som driller (OvelsesbankModal),
+  ny type FYSISK med felter: muskelgruppe/bevegelse, utstyr, video, standard sett×reps,
+  CS-kobling. Coach og spiller kan legge til.
+- **Styrkeøkt-struktur:** Oppvarming → Hoveddel → (Avslutning). HVER øvelse — også
+  oppvarming — logges manuelt med **vekt × reps per sett** (stepper, 44 px, forrige økt
+  som spøkelsesverdi «sist: 60 kg × 8»). Økta regner live: **total belastning (tonnasje,
+  kg løftet) + volum (sett × reps)** — vises som count-up-hero når økta avsluttes, og
+  mates inn i ACWR/ukevolum.
+- **Kondisjonsøkt-struktur:** Oppvarming (varighet + sone) → **Hovedaktivitet: X serier ×
+  Y minutter i puls Z / pulssone S1–S5** (m/ pause-definisjon) → Nedtrapping. Bygges med
+  intervall-blokker som kan dupliseres/dras. Logging: faktisk puls per intervall (manuell
+  føring; felt for snitt/makspuls), økt-total = tid i sone.
+- **Nye v2-komponenter:** SettRepsLogger (vekt×reps m/ spøkelsesverdi), TonnasjeHero,
+  IntervallBlokk (serier×tid×sone), PulsSoneVelger (S1–S5-bånd), FysOktKort (brikke til
+  DnD m/ type-ikon), MuskelgruppeChip.
+- **Verdensledende-listen** (det som skiller oss): forrige-verdier overalt (aldri huske
+  selv) · auto-progresjon-forslag («+2,5 kg neste gang» som anbefaling) · belastning
+  kobles til golf (ACWR på tvers av golf+fys — finnes i fysisk-modulen) · CS-koblingen
+  (styrke → klubbhastighet-mål) · WANG-regelen (mandag etter turnering = alltid FYS)
+  respekteres i DnD-varslene.
+
 ## Leveranseplan
 
 1. Mockups desktop+mobil: coach-Workbench (år→uke→dag→økt-zoomen) + spiller-speilet — retning C, v2-biblioteket + de nye komponentene over.
