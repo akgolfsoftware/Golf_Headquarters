@@ -33,9 +33,11 @@ import {
   InnsiktChip,
   Icon,
   HjelpTips,
+  ZoomBrodsmule,
 } from "@/components/v2";
 import { PalettSok } from "@/components/v2/wb-composer";
 import { NyOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput } from "./WorkbenchV2Sheets";
+import { WBTidslinjeMobil, AarNivaaMobil, MobilFold } from "./WorkbenchV2Mobil";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import type { WorkbenchInsights } from "@/lib/workbench/types";
@@ -48,7 +50,7 @@ export type { WorkbenchV2Actions } from "./WorkbenchV2Sheets";
 
 /* ── Konstanter ────────────────────────────────────────── */
 const DOW7 = ["MAN", "TIR", "ONS", "TOR", "FRE", "LØR", "SØN"];
-const MANEDER = [
+export const MANEDER = [
   "januar", "februar", "mars", "april", "mai", "juni",
   "juli", "august", "september", "oktober", "november", "desember",
 ];
@@ -179,13 +181,13 @@ function PalettBrikke({ tittel, akse, sub }: { tittel: string; akse?: AkseKey; s
   );
 }
 
-const LPHASE_LABEL: Record<string, string> = {
+export const LPHASE_LABEL: Record<string, string> = {
   GRUNN: "Grunnperiode",
   SPESIAL: "Spesialisering",
   TURNERING: "Turneringsperiode",
 };
 
-function WBBibliotek({ data, tab, setTab, sok, setSok }: {
+export function WBBibliotek({ data, tab, setTab, sok, setSok }: {
   data: WorkbenchData;
   tab: string; setTab: (t: string) => void;
   sok: string; setSok: (s: string) => void;
@@ -246,7 +248,7 @@ function BalSeksjon({ label, right, children }: { label: string; right?: React.R
   );
 }
 
-function WBBalanse({ data, valgtOkt, weekNumber, actions, weekOffset, onEndret }: {
+export function WBBalanse({ data, valgtOkt, weekNumber, actions, weekOffset, onEndret }: {
   data: WorkbenchData;
   valgtOkt: WeekEvent | null;
   weekNumber: number;
@@ -343,7 +345,7 @@ function AarNivaa({ data }: { data: WorkbenchData }) {
 }
 
 /* ── Dag-nivå (agenda for valgt/i-dag) ─────────────────── */
-function DagNivaa({ dag, valgt, onVelg }: { dag: DagKol | null; valgt: string | null; onVelg: (id: string) => void }) {
+export function DagNivaa({ dag, valgt, onVelg }: { dag: DagKol | null; valgt: string | null; onVelg: (id: string) => void }) {
   if (!dag || dag.events.length === 0) {
     return <Kort><TomTilstand icon="calendar" title="Ingen økter" sub="Ingen planlagte økter denne dagen." /></Kort>;
   }
@@ -371,7 +373,7 @@ function DagNivaa({ dag, valgt, onVelg }: { dag: DagKol | null; valgt: string | 
 }
 
 /* ── Dag-kolonne-modell ────────────────────────────────── */
-type DagKol = { dow: string; dato: string; today: boolean; events: WeekEvent[] };
+export type DagKol = { dow: string; dato: string; today: boolean; events: WeekEvent[] };
 
 function byggDager(data: WorkbenchData): DagKol[] {
   const monday = data.weekStartISO ? new Date(data.weekStartISO) : new Date();
@@ -423,6 +425,7 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus, acti
   const [pubLoading, setPubLoading] = useState(false);
   const [suggestLoading, setSuggestLoading] = useState(false);
   const [dupLoading, setDupLoading] = useState(false);
+  const [merApen, setMerApen] = useState(false);
 
   const dager = useMemo(() => (data ? byggDager(data) : []), [data]);
   const alleEvents = useMemo(() => dager.flatMap((d) => d.events).filter((e) => e.id), [dager]);
@@ -515,8 +518,8 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus, acti
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap, position: "relative" }}>
-      {/* TOPP-BAR */}
-      <div style={{ display: "flex", alignItems: "flex-end", gap: 16, flexWrap: "wrap", paddingBottom: 14, borderBottom: `1px solid ${T.border}` }}>
+      {/* TOPP-BAR — desktop (md+): uendret */}
+      <div className="hidden md:flex" style={{ alignItems: "flex-end", gap: 16, flexWrap: "wrap", paddingBottom: 14, borderBottom: `1px solid ${T.border}` }}>
         <div style={{ minWidth: 0 }}>
           <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: T.mut, display: "block" }}>Workbench</span>
           <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, letterSpacing: "-0.02em", margin: "3px 0 6px" }}>{playerName}</div>
@@ -548,6 +551,63 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus, acti
         </div>
       </div>
 
+      {/* TOPP-BAR — mobil (<md): to kompakte rader + «Mer» for Rolle/Verktøy/AI/Gjenta */}
+      <div className="md:hidden" style={{ display: "flex", flexDirection: "column", gap: 10, paddingBottom: 14, borderBottom: `1px solid ${T.border}` }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: T.mut, display: "block" }}>Workbench</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 3, minWidth: 0 }}>
+              <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg, letterSpacing: "-0.02em", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{playerName}</span>
+              <StatusPill tone={st.tone}>{st.l}</StatusPill>
+            </div>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", borderRadius: 10, background: `color-mix(in srgb, ${canon ? T.warn : T.up} 8%, transparent)`, border: `1px solid color-mix(in srgb, ${canon ? T.warn : T.up} 32%, transparent)`, flex: "none" }}>
+            <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{adher != null ? `${adher}%` : "–"}</span>
+            <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap" }}>etterlevelse</span>
+          </div>
+        </div>
+
+        <div style={{ overflowX: "auto", paddingBottom: 1 }}>
+          <PillVelger options={[{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Økt" }]} value={nivaa} onChange={setNivaa} />
+        </div>
+
+        <div style={{ display: "flex", gap: 8 }}>
+          {actions && (
+            <div style={{ flex: 1 }}>
+              <Knapp icon="plus" ghost full onClick={() => setNyOktApen(true)}>Ny økt</Knapp>
+            </div>
+          )}
+          {actions && (
+            <div style={{ flex: 1 }}>
+              <Knapp icon="send" full onClick={handlePublish} disabled={pubLoading}>{pubLoading ? "Publiserer…" : "Publiser"}</Knapp>
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={() => setMerApen((v) => !v)}
+            title="Mer"
+            style={{ appearance: "none", cursor: "pointer", width: 44, height: 44, flex: "none", borderRadius: 12, background: merApen ? T.panel2 : T.panel3, border: `1px solid ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+          >
+            <Icon name="more-horizontal" size={17} style={{ color: T.fg2 }} />
+          </button>
+        </div>
+
+        {merApen && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12, borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
+            <Felt label="Rolle"><MiniToggle options={[["coach", "Coach"], ["player", "Spiller"]]} value={rolle} onChange={(v) => setRolle(v as Role)} /></Felt>
+            <Felt label="Verktøy"><MiniToggle options={[["alle", "Alle"], ["fys", "Fysisk"]]} value={verktoy} onChange={(v) => setVerktoy(v as "alle" | "fys")} /></Felt>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {actions?.suggestWeek && (
+                <Knapp icon="sparkles" ghost onClick={handleSuggest} disabled={suggestLoading}>{suggestLoading ? "Foreslår…" : "Foreslå uke"}</Knapp>
+              )}
+              {actions?.duplicateWeek && (
+                <Knapp icon="repeat" ghost onClick={handleDuplicate} disabled={dupLoading}>{dupLoading ? "Kopierer…" : "Gjenta forrige uke"}</Knapp>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* MELDING — resultat av siste handling (publiser/foreslå/gjenta) */}
       {melding && (
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 12, background: `color-mix(in srgb, ${melding.tone === "down" ? T.down : melding.tone === "up" ? T.up : T.info} 9%, ${T.panel})`, border: `1px solid color-mix(in srgb, ${melding.tone === "down" ? T.down : melding.tone === "up" ? T.up : T.info} 30%, transparent)` }}>
@@ -559,8 +619,8 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus, acti
         </div>
       )}
 
-      {/* BRØDSMULE + insight-linje */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+      {/* BRØDSMULE + insight-linje — desktop (md+): uendret */}
+      <div className="hidden md:flex" style={{ alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           {[["ar", `Sesong ${new Date().getFullYear()}`, "circle"], ["maned", MANEDER[new Date().getMonth()][0].toUpperCase() + MANEDER[new Date().getMonth()].slice(1), "circle-dot"], ["uke", `Uke ${weekNumber}`, "calendar"]].map(([v, l, ic], i, arr) => (
             <span key={v} style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
@@ -589,8 +649,26 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus, acti
         </div>
       </div>
 
-      {/* TRE KOLONNER */}
-      <div className="grid grid-cols-1 lg:grid-cols-[206px_1fr_302px]" style={{ gap: T.gap, alignItems: "start" }}>
+      {/* BRØDSMULE — mobil (<md): kompakt sti (wb-mobil ZoomBrodsmule) + uke-nav */}
+      <div className="md:hidden" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <ZoomBrodsmule
+            sti={[`Sesong ${new Date().getFullYear()}`, MANEDER[new Date().getMonth()][0].toUpperCase() + MANEDER[new Date().getMonth()].slice(1), `Uke ${weekNumber}`]}
+            onHopp={(i) => setNivaa((["ar", "maned", "uke"] as const)[i])}
+          />
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 4, flex: "none" }}>
+          <button type="button" onClick={() => goToWeek(-1)} disabled={weekOffset <= WEEK_OFFSET_MIN} title="Forrige uke" style={{ appearance: "none", cursor: weekOffset <= WEEK_OFFSET_MIN ? "default" : "pointer", width: 36, height: 36, borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset <= WEEK_OFFSET_MIN ? 0.4 : 1 }}>
+            <Icon name="chevron-left" size={14} style={{ color: T.fg2 }} />
+          </button>
+          <button type="button" onClick={() => goToWeek(1)} disabled={weekOffset >= WEEK_OFFSET_MAX} title="Neste uke" style={{ appearance: "none", cursor: weekOffset >= WEEK_OFFSET_MAX ? "default" : "pointer", width: 36, height: 36, borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset >= WEEK_OFFSET_MAX ? 0.4 : 1 }}>
+            <Icon name="chevron-right" size={14} style={{ color: T.fg2 }} />
+          </button>
+        </div>
+      </div>
+
+      {/* TRE KOLONNER — desktop (md+): uendret (grid-cols-1 md→lg, 3-kol fra lg) */}
+      <div className="hidden md:grid md:grid-cols-1 lg:grid-cols-[206px_1fr_302px]" style={{ gap: T.gap, alignItems: "start" }}>
         <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} />
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
           {insights?.line && <InnsiktChip>{insights.line}</InnsiktChip>}
@@ -607,6 +685,29 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus, acti
           weekOffset={weekOffset}
           onEndret={() => router.refresh()}
         />
+      </div>
+
+      {/* Mobil (<md): tidslinje/agenda først, Bibliotek + Balanse som utfellbare seksjoner under — ikke side-kolonner */}
+      <div className="md:hidden" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        {insights?.line && <InnsiktChip>{insights.line}</InnsiktChip>}
+        {nivaa === "uke" && <WBTidslinjeMobil dager={dager} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
+        {nivaa === "ar" && <AarNivaaMobil data={data} />}
+        {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
+        {nivaa === "maned" && <Kort><TomTilstand icon="calendar" title="Månedsvisning" sub="Bruk Uke for tidslinje eller Årsplan for sesongperiodene — månedsaggregat er ikke koblet ennå." /></Kort>}
+
+        <MobilFold tittel="Bibliotek" ikon="layers">
+          <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} />
+        </MobilFold>
+        <MobilFold tittel="Balanse" ikon="activity">
+          <WBBalanse
+            data={data}
+            valgtOkt={valgtOkt}
+            weekNumber={weekNumber}
+            actions={actions}
+            weekOffset={weekOffset}
+            onEndret={() => router.refresh()}
+          />
+        </MobilFold>
       </div>
 
       {nyOktApen && actions && (

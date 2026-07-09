@@ -166,18 +166,85 @@ function Uke({ uke, mobile }: { uke: KalenderData["uke"]; mobile: boolean }) {
   );
 }
 
-/* ── Måned — rutenett m/ akseprikker ──────────────────── */
+/* ── Måned — rutenett (desktop) / uke-liste + dag-velger (mobil) ── */
 function Maaned({ maaned, mobile }: { maaned: KalenderData["maaned"]; mobile: boolean }) {
   const dager = ["M", "T", "O", "T", "F", "L", "S"];
+  const [valgtDag, setValgtDag] = useState<number | null>(maaned.today);
+
+  // Rutenett-cellene delt inn i uke-rader (mandag først) — brukes av begge visninger.
+  const celler: (number | null)[] = [
+    ...Array.from({ length: maaned.ledendeTomme }, () => null),
+    ...Array.from({ length: maaned.daysInMonth }, (_, i) => i + 1),
+  ];
+  while (celler.length % 7 !== 0) celler.push(null);
+  const uker: (number | null)[][] = [];
+  for (let i = 0; i < celler.length; i += 7) uker.push(celler.slice(i, i + 7));
+
+  if (mobile) {
+    const valgtAkser = valgtDag != null ? maaned.perDag[valgtDag] : undefined;
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <Kort eyebrow={maaned.label} action={<Caps size={9}>{maaned.totalLabel}</Caps>}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4, marginTop: 4 }}>
+            {dager.map((d, i) => (
+              <span key={i} style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.mut, textAlign: "center", textTransform: "uppercase", paddingBottom: 4 }}>{d}</span>
+            ))}
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {uker.map((uke, ui) => (
+              <div key={ui} style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4 }}>
+                {uke.map((dag, di) => {
+                  if (dag == null) return <span key={di} />;
+                  const okter = maaned.perDag[dag];
+                  const idag = dag === maaned.today;
+                  const valgt = dag === valgtDag;
+                  return (
+                    <button
+                      key={di}
+                      type="button"
+                      onClick={() => setValgtDag(dag)}
+                      aria-pressed={valgt}
+                      style={{
+                        appearance: "none", cursor: "pointer", aspectRatio: "1", borderRadius: 10,
+                        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3,
+                        background: idag ? T.lime : valgt ? T.panel2 : okter ? T.panel3 : "transparent",
+                        border: `1px solid ${idag ? "transparent" : valgt ? T.borderS : T.border}`,
+                      }}
+                    >
+                      <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: idag ? T.onLime : okter ? T.fg : T.mut }}>{dag}</span>
+                      <span style={{ height: 5, display: "flex", gap: 2 }}>
+                        {(okter ?? []).slice(0, 3).map((a, j) => (
+                          <span key={j} style={{ width: 4, height: 4, borderRadius: 9999, background: idag ? T.onLime : T.ax[a] }} />
+                        ))}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </Kort>
+        <Kort eyebrow={valgtDag != null ? `Dag ${valgtDag}` : "Velg en dag"}>
+          {valgtAkser && valgtAkser.length > 0 ? (
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {valgtAkser.map((a, i) => <AkseChip key={i} a={a} />)}
+            </div>
+          ) : (
+            <TomTilstand icon="calendar" title="Ingen økter" sub="Ingen treningsøkter registrert denne dagen." />
+          )}
+        </Kort>
+      </div>
+    );
+  }
+
   return (
     <Kort eyebrow={maaned.label} action={<Caps size={9}>{maaned.totalLabel}</Caps>}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: mobile ? 4 : 6, marginTop: 4 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 6, marginTop: 4 }}>
         {dager.map((d, i) => (
           <span key={i} style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, textAlign: "center", textTransform: "uppercase", paddingBottom: 4 }}>{d}</span>
         ))}
-        {Array.from({ length: maaned.ledendeTomme }, (_, i) => <span key={`tom-${i}`} />)}
-        {Array.from({ length: maaned.daysInMonth }, (_, i) => {
-          const dag = i + 1;
+        {celler.map((dag, i) => {
+          if (dag == null) return <span key={`tom-${i}`} />;
           const okter = maaned.perDag[dag];
           const idag = dag === maaned.today;
           return (
@@ -189,7 +256,7 @@ function Maaned({ maaned, mobile }: { maaned: KalenderData["maaned"]; mobile: bo
                 border: `1px solid ${idag ? "transparent" : T.border}`,
               }}
             >
-              <span style={{ fontFamily: T.mono, fontSize: mobile ? 11 : 12, fontWeight: 700, color: idag ? T.onLime : okter ? T.fg : T.mut }}>{dag}</span>
+              <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: idag ? T.onLime : okter ? T.fg : T.mut }}>{dag}</span>
               <span style={{ height: 6, display: "flex", gap: 2 }}>
                 {(okter ?? []).slice(0, 3).map((a, j) => (
                   <span key={j} style={{ width: 5, height: 5, borderRadius: 9999, background: idag ? T.onLime : T.ax[a] }} />
