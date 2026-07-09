@@ -10,6 +10,7 @@ import { runAchievementAgent } from "./achievement-agent";
 import { prisma } from "@/lib/prisma";
 import { runTurneringAgent } from "./turnering-agent";
 import { runPlanRevisionAgent } from "./plan-revision-actions";
+import { runLiveCoachAgent, type LiveSessionKind } from "./live-coach-agent";
 
 export async function triggerRoundAgent(userId: string): Promise<void> {
   try {
@@ -60,5 +61,17 @@ export async function triggerTurneringAgent(): Promise<void> {
     await runTurneringAgent();
   } catch (err) {
     console.error("[trigger] turnering-agent feilet", err);
+  }
+}
+
+export async function triggerLiveSessionAgent(opts: {
+  userId: string;
+  sessionId: string;
+  kind: LiveSessionKind;
+}): Promise<void> {
+  try {
+    await runLiveCoachAgent(opts);
+  } catch (err) {
+    console.error("[trigger] live-coach-agent feilet", err);
   }
 }

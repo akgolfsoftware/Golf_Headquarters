@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
+import { triggerLiveSessionAgent } from "@/lib/agents/triggers";
 
 /** Starter plan-økt fra brief (PLANNED → ACTIVE) og sender til tapper. */
 export async function startPlanSession(sessionId: string): Promise<void> {
@@ -43,6 +44,7 @@ export async function startPlanSession(sessionId: string): Promise<void> {
         } as unknown as Prisma.InputJsonValue,
       },
     });
+    void triggerLiveSessionAgent({ userId: user.id, sessionId, kind: "plan-session" });
   }
 
   revalidatePath("/portal/planlegge/workbench");

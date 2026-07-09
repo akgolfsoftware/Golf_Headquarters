@@ -1580,14 +1580,19 @@ model CoachingSession {
   coachId   String
   // messages: array av { role: "user" | "assistant" | "coach" | "system", content: string, ts: ISO }
   messages  Json     @default("[]")
-  kind      String   @default("AI") // "AI" | "DIRECT"
+  kind      String   @default("AI") // "AI" | "DIRECT" | "LIVE"
+  // Økt-binding for kind="LIVE" — kobler tråden til en konkret live treningsøkt.
+  liveSessionId   String?
+  liveSessionKind String? // "plan-session" | "session-v2"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   user  User @relation("PlayerCoachingSessions", fields: [userId], references: [id], onDelete: Cascade)
   coach User @relation("CoachCoachingSessions", fields: [coachId], references: [id], onDelete: Cascade)
 
+  @@unique([userId, liveSessionId])
   @@index([userId, updatedAt])
+  @@index([liveSessionId])
   @@map("coaching_sessions")
 }
 

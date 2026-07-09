@@ -72,6 +72,11 @@ const AGENT_INFO: Record<string, { navn: string; trigger: string; beskrivelse: s
     trigger: "Manuell (velg spiller)",
     beskrivelse: "Foreslår uke-for-uke periodisering (Bompa) frem mot en valgt turnering for en spiller. Kjøres fra agent-detaljene.",
   },
+  "live-coach-agent": {
+    navn: "Live Coach Agent",
+    trigger: "Ved start live økt",
+    beskrivelse: "Varsles når spiller starter økt. Oppretter økt-bundet AI-tråd og sender velkomst.",
+  },
 };
 
 export default async function AgentsAdmin() {
