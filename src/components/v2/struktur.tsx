@@ -7,6 +7,7 @@
    Tokens: T (@/lib/v2/tokens). Primitiver: "./core". Ikon: @/components/v2/icon. */
 
 import type { CSSProperties, ReactNode } from "react";
+import { useState } from "react";
 import { T, type AkseKey } from "@/lib/v2/tokens";
 import { Caps, PillVelger, AvatarInit, AkseChip } from "./core";
 import { Icon } from "@/components/v2/icon";
@@ -105,17 +106,33 @@ export function Trekkspill({ items = [
   { t: "Hvordan beregnes SG?", c: "" },
   { t: "Hva betyr A–K-tallene?", c: "" },
 ] }: TrekkspillProps) {
+  // Interaktiv: én åpen seksjon. Startverdi = første item merket open (mockup-troskap).
+  const [aapen, setAapen] = useState<number | null>(() => {
+    const i = items.findIndex((x) => x.open);
+    return i >= 0 ? i : null;
+  });
   return (
     <div style={{ background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard, padding: "2px 20px" }}>
-      {items.map((x, i) => (
-        <div key={i} style={{ borderBottom: i === items.length - 1 ? "none" : `1px solid ${T.border}` }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "14px 0", cursor: "pointer" }}>
-            <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{x.t}</span>
-            <Icon name={x.open ? "chevron-up" : "chevron-down"} size={15} style={{ color: x.open ? T.lime : T.mut, flex: "none" }} />
+      {items.map((x, i) => {
+        const er = aapen === i;
+        const svarId = `trekkspill-svar-${i}`;
+        return (
+          <div key={i} style={{ borderBottom: i === items.length - 1 ? "none" : `1px solid ${T.border}` }}>
+            <button
+              type="button"
+              onClick={() => setAapen(er ? null : i)}
+              aria-expanded={er}
+              aria-controls={x.c ? svarId : undefined}
+              className="v2-focus"
+              style={{ appearance: "none", cursor: "pointer", width: "100%", textAlign: "left", background: "transparent", border: "none", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "14px 0" }}
+            >
+              <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{x.t}</span>
+              <Icon name={er ? "chevron-up" : "chevron-down"} size={15} style={{ color: er ? T.lime : T.mut, flex: "none" }} />
+            </button>
+            {er && x.c && <p id={svarId} style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "-4px 0 14px" }}>{x.c}</p>}
           </div>
-          {x.open && x.c && <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "-4px 0 14px" }}>{x.c}</p>}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

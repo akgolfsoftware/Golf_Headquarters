@@ -430,3 +430,111 @@ export function Veiviser({
     </div>
   );
 }
+
+/* ── NpsSkala — 0–10 anbefalingsskala m/ segment-farge ────
+   Kritiker (0–6) → down · Passiv (7–8) → warn · Ambassadør (9–10) → lime.
+   Kontrollert: value + onChange. Ny primitiv (NPS fantes ikke i biblioteket),
+   jf. Anders' mandat: skreddersy komponent for dataene, aldri ad-hoc i skjermfil. */
+export type NpsSegment = "kritiker" | "passiv" | "ambassador";
+export function npsSegment(v: number): NpsSegment {
+  if (v <= 6) return "kritiker";
+  if (v <= 8) return "passiv";
+  return "ambassador";
+}
+const NPS_SEG: Record<NpsSegment, { c: string; l: string }> = {
+  kritiker: { c: T.down, l: "Kritiker" },
+  passiv: { c: T.warn, l: "Passiv" },
+  ambassador: { c: T.lime, l: "Ambassadør" },
+};
+export interface NpsSkalaProps {
+  value: number;
+  onChange: (v: number) => void;
+}
+export function NpsSkala({ value, onChange }: NpsSkalaProps) {
+  const seg = npsSegment(value);
+  const segC = NPS_SEG[seg].c;
+  const kant: CSSProperties = { fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut };
+  return (
+    <div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(11, 1fr)", gap: 5 }}>
+        {Array.from({ length: 11 }, (_, v) => {
+          const on = v === value;
+          const c = NPS_SEG[npsSegment(v)].c;
+          const iSeg = npsSegment(v) === seg;
+          return (
+            <button
+              key={v}
+              type="button"
+              onClick={() => onChange(v)}
+              aria-label={`${v} av 10`}
+              aria-pressed={on}
+              className="v2-focus"
+              style={{
+                appearance: "none", cursor: "pointer",
+                height: 38, borderRadius: 10, padding: 0,
+                fontFamily: T.mono, fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums",
+                background: on ? c : iSeg ? `color-mix(in srgb, ${c} 12%, transparent)` : T.panel2,
+                border: `1px solid ${on ? "transparent" : iSeg ? `color-mix(in srgb, ${c} 32%, transparent)` : T.borderS}`,
+                color: on ? T.onLime : T.fg,
+                transition: "background 140ms, border-color 140ms",
+              }}
+            >
+              {v}
+            </button>
+          );
+        })}
+      </div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: 11 }}>
+        <span style={kant}>Ikke sannsynlig</span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: segC, background: `color-mix(in srgb, ${segC} 12%, transparent)`, borderRadius: 9999, padding: "3px 9px", whiteSpace: "nowrap" }}>
+          <span style={{ width: 5, height: 5, borderRadius: 9999, background: segC }} />
+          {value} · {NPS_SEG[seg].l}
+        </span>
+        <span style={kant}>Svært sannsynlig</span>
+      </div>
+    </div>
+  );
+}
+
+/* ── IkonChipVelger — enkeltvalg ikon-chips (gjensidig utelukkende) ────
+   Aktiv = lime-pille. Generisk over id-unionen så skjermen beholder sin type. */
+export interface IkonChipValg<T extends string = string> {
+  id: T;
+  navn: string;
+  ikon: string;
+}
+export interface IkonChipVelgerProps<T extends string = string> {
+  valg: IkonChipValg<T>[];
+  value: T;
+  onChange: (id: T) => void;
+}
+export function IkonChipVelger<T extends string = string>({ valg, value, onChange }: IkonChipVelgerProps<T>) {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+      {valg.map((o) => {
+        const on = o.id === value;
+        return (
+          <button
+            key={o.id}
+            type="button"
+            onClick={() => onChange(o.id)}
+            aria-pressed={on}
+            className="v2-press v2-focus"
+            style={{
+              appearance: "none", cursor: "pointer",
+              display: "inline-flex", alignItems: "center", gap: 7,
+              padding: "9px 15px", borderRadius: 9999,
+              fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+              background: on ? T.lime : T.panel2,
+              border: `1px solid ${on ? "transparent" : T.borderS}`,
+              color: on ? T.onLime : T.fg,
+            }}
+          >
+            <Icon name={o.ikon} size={14} style={{ color: on ? T.onLime : T.fg2 }} />
+            {o.navn}
+          </button>
+        );
+      })}
+    </div>
+  );
+}

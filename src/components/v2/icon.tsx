@@ -9,7 +9,9 @@ import {
   Bell, LogOut, Pencil, Trash2, Download, Upload, Filter, MoreHorizontal,
   MoreVertical, ExternalLink, MapPin, Phone, Video, CircleCheck, CircleX, Circle,
   Trophy, Flag, List, LayoutGrid, Sun, Moon, CalendarPlus, Crosshair,
-  CreditCard, Layers, Send, CircleDot, Lock,
+  CreditCard, Layers, Send, CircleDot, Lock, Monitor, ShieldCheck,
+  BatteryMedium, Stethoscope,
+  Bug, Lightbulb, Heart, History,
   type LucideIcon,
 } from "lucide-react";
 
@@ -98,6 +100,14 @@ const MAP: Record<string, LucideIcon> = {
   "layers": Layers,
   "send": Send,
   "circle-dot": CircleDot,
+  "monitor": Monitor,
+  "shield-check": ShieldCheck,
+  "battery-medium": BatteryMedium,
+  "stethoscope": Stethoscope,
+  "bug": Bug,
+  "lightbulb": Lightbulb,
+  "heart": Heart,
+  "history": History,
 };
 
 export interface IconProps {
