@@ -126,7 +126,7 @@ export interface SkjelettProps {
   tall?: boolean;
 }
 export function Skjelett({ linjer = 3, tall = true }: SkjelettProps) {
-  /* shimmer-highlight (#222522 i mockup) uttrykt via T for konsistens-vakten */
+  /* shimmer-highlight uttrykt via T for konsistens-vakten */
   const shim: CSSProperties = {
     background: `linear-gradient(90deg, ${T.panel2} 25%, color-mix(in srgb, ${T.fg} 7%, ${T.panel2}) 50%, ${T.panel2} 75%)`,
     backgroundSize: "200% 100%", animation: "v2shim 1.4s ease infinite", borderRadius: 6,

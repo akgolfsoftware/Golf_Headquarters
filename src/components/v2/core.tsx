@@ -428,7 +428,7 @@ export function NivaSkala({ pct, stops = ["CS90", "CS100", "CS110", "CS120"] }: 
   const grown = useMount();
   return (
     <div>
-      <div style={{ position: "relative", height: 8, borderRadius: 9999, background: `linear-gradient(90deg, #26332B 0%, ${T.forest} 45%, #6E9A4E 75%, ${T.lime} 100%)` }}>
+      <div style={{ position: "relative", height: 8, borderRadius: 9999, background: T.nivaGrad }}>
         <span style={{ position: "absolute", left: (grown ? pct : 0) + "%", top: -4, width: 16, height: 16, borderRadius: 9999, background: T.lime, border: `2px solid ${T.panel}`, transform: "translateX(-8px)", transition: `left 500ms ${EASE}` }} />
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8 }}>
@@ -579,7 +579,7 @@ export interface BunnNavProps {
 }
 export function BunnNav({ aktiv }: BunnNavProps) {
   return (
-    <div style={{ flex: "none", display: "flex", justifyContent: "space-around", padding: "8px 8px 16px", borderTop: `1px solid ${T.border}`, background: "color-mix(in srgb,#0D0E0D 82%,transparent)", backdropFilter: "blur(10px)" }}>
+    <div style={{ flex: "none", display: "flex", justifyContent: "space-around", padding: "8px 8px 16px", borderTop: `1px solid ${T.border}`, background: `color-mix(in srgb,${T.bg} 82%,transparent)`, backdropFilter: "blur(10px)" }}>
       {NAV.map((n) => {
         const on = aktiv === n.id;
         return (

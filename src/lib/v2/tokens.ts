@@ -12,6 +12,9 @@ export const T = {
   panel2: "#131513",
   panel3: "#1B1D1B",
   tint: "linear-gradient(140deg, rgba(0,88,64,0.38) 0%, rgba(21,23,21,0) 55%)",
+  // Benchmark-/nivåskala (kald→varm): mørk grønn → forest → oliven → lime. Egne
+  // gradient-stopp uten enkelttoken; innkapslet her så komponentfilene forblir hex-frie.
+  nivaGrad: "linear-gradient(90deg, #26332B 0%, #005840 45%, #6E9A4E 75%, #D1F843 100%)",
   // Streker
   border: "rgba(255,255,255,0.08)",
   borderS: "rgba(255,255,255,0.14)",
