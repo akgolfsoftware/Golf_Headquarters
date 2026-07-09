@@ -41,6 +41,33 @@ Gjelder BÅDE komponentbiblioteket (126 stk) og skjermene (bølge 1+ ). Nivå 1 
 18. **Referanse-side-ved-side.** Hver skjerm rendres ved siden av nærmeste Mobbin-/Anders-
     referanse i dommer-runden — «ser vår ut som deres klasse?» er spørsmålet.
 
+## Nivå 0 — WIREFRAME-DISIPLIN (Anders 10. juli: «forbedre wireframing»)
+
+Kommer FØR all visuell polish. En skjerm får ikke visuell dom før wireframen står.
+Wireframe = struktur/proporsjon/informasjonsrekkefølge, ikke farger. Sjekkliste per skjerm:
+
+- **Ingenting klippes.** Hvert element ligger innenfor sin container; ingen tekst/chip/knapp
+  kuttes av panelkant. Grids bruker `minmax()`/`auto-fit` og `min-width:0` på barn — aldri
+  faste bredder som overflower. Test: skjermbilde i full høyde, søk etter avkuttede kanter.
+- **Én ramme.** En skjerm-komponent returnerer INNHOLD, aldri sin egen app-ramme/sidebar —
+  ramma settes ett sted (Skjerm). Dobbel chrome = wireframe-feil, ikke stilfeil.
+- **Kolonnebalanse.** Side-om-side-kort/paneler har bevisst høyderelasjon (align-items:start
+  eller lik høyde) — aldri én kort halv-tom mens nabo er full.
+- **Ingen død luft.** Innhold fyller høyden det får, eller sentreres bevisst. Stor tom
+  bunnflate = layouten er ikke ferdig tenkt.
+- **Overlays overlapper ikke innhold.** Popover/tooltip/meny plasseres så de ikke dekker
+  naboceller; i demo-tilstand forankres de under/ved siden av, ikke oppå.
+- **Lesesrekkefølge tegnes med én pil.** Viktigst øverst-venstre → detalj → handling. Én
+  hero per skjerm (§13). Grupper som hører sammen står sammen; luft skiller grupper.
+- **Proporsjon.** Kolonnebredder følger informasjonsvekten (liste bredere enn metadata),
+  ikke tilfeldige fraksjoner. Faste soner (44px mål, kolonnebredder) er bevisste.
+- **Responsiv wireframe.** Mobil er egen struktur (flate-skillet), ikke desktop-gridet
+  stablet — verifiseres som egen wireframe.
+
+**Håndheving:** dommer-rubrikken (§17) får «wireframe/struktur» som EGEN akse, og en skjerm
+med klipping/dobbel-ramme/overlapp scores maks 5 på den aksen uansett hvor pen den er.
+Wireframe-aksen må stå ≥9 før visuell finpuss teller.
+
 ## Rekkefølge
 
 A. Steg 11+12+14 i v2-core (fundamentet — arves av ALT) → re-render bølge 1+1b.
