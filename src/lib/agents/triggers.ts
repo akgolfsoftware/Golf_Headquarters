@@ -13,6 +13,7 @@ import { runTurneringAgent } from "./turnering-agent";
 import { runPlanRevisionAgent } from "./plan-revision-actions";
 import { runLiveCoachAgent, type LiveSessionKind } from "./live-coach-agent";
 import { runTreningsdataEkspert } from "./treningsdata-ekspert";
+import { runSwingVideoAnalyst } from "./swing-video-analyst";
 
 export async function triggerRoundAgent(userId: string): Promise<void> {
   try {
@@ -78,5 +79,18 @@ export async function triggerLiveSessionAgent(opts: {
     await runLiveCoachAgent(opts);
   } catch (err) {
     console.error("[trigger] live-coach-agent feilet", err);
+  }
+}
+
+export async function triggerSwingVideoAnalyst(opts: {
+  userId: string;
+  sessionId: string;
+  videoUrl: string;
+  drillId?: string;
+}): Promise<void> {
+  try {
+    await runSwingVideoAnalyst(opts);
+  } catch (err) {
+    console.error("[trigger] swing-video-analyst feilet", err);
   }
 }
