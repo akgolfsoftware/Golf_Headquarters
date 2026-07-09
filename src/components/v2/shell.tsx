@@ -32,10 +32,8 @@ export const PLAYERHQ_NAV: V2NavItem[] = [
 /** AgencyOS-navigasjon (coach). Cockpit + kjernehubene. */
 export const AGENCYOS_NAV: V2NavItem[] = [
   { id: "cockpit", label: "Cockpit", icon: "home", href: "/admin/agencyos" },
-  { id: "spillere", label: "Stall", icon: "users", href: "/admin/agencyos/spillere" },
-  { id: "uka", label: "Uka", icon: "calendar", href: "/admin/agencyos/uka" },
+  { id: "spillere", label: "Stall", icon: "users", href: "/admin/spillere" },
   { id: "okonomi", label: "Økonomi", icon: "bar-chart", href: "/admin/agencyos/okonomi" },
-  { id: "live", label: "Live", icon: "activity", href: "/admin/agencyos/live" },
 ];
 
 /** Foreldre-navigasjon (lese-først oversikt). Fire enkle seksjoner. */
