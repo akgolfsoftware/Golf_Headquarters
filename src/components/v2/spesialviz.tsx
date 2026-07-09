@@ -273,6 +273,68 @@ export function Radar({ data = RD_DEMO, sammenlign = null, max = 100, size = 240
   );
 }
 
+/* ── RadarProfil — generisk pentagon-radar m/ ord-akser (talent 1–10) ──
+   Søster til Radar (som er låst til pyramidens AkseKey/FYS…TURN). Denne tar
+   frie tekst-akser + valgfri max, for domener som talent-radaren
+   (Fysisk/Teknikk/Taktikk/Mental/Motivasjon). null-verdi tegnes som 0 i
+   polygonet (uvurdert), men skal vises «—» i tabellen ved siden av. */
+export interface RadarProfilAkse {
+  label: string;
+  verdi: number | null;
+}
+export interface RadarProfilProps {
+  akser: RadarProfilAkse[];
+  /** Sammenlignings-serie (peer-snitt) justert 1:1 mot `akser`. */
+  sammenlign?: (number | null)[] | null;
+  max?: number;
+  size?: number;
+}
+export function RadarProfil({ akser, sammenlign = null, max = 10, size = 300 }: RadarProfilProps) {
+  const cx = size / 2, cy = size / 2, R = size / 2 - 54;
+  const n = akser.length;
+  const dir = (i: number): [number, number] => {
+    const a = -Math.PI / 2 + (i / n) * Math.PI * 2;
+    return [Math.cos(a), Math.sin(a)];
+  };
+  const pt = (i: number, v: number): [number, number] => {
+    const [dx, dy] = dir(i);
+    const r = (Math.max(0, Math.min(max, v)) / max) * R;
+    return [cx + dx * r, cy + dy * r];
+  };
+  const poly = (vals: number[]): string =>
+    vals.map((v, i) => pt(i, v).map((c) => c.toFixed(1)).join(",")).join(" ");
+  const egen = akser.map((a) => a.verdi ?? 0);
+  const peer = sammenlign ? akser.map((_, i) => sammenlign[i] ?? 0) : null;
+  return (
+    <svg viewBox={`0 0 ${size} ${size}`} style={{ width: "100%", maxWidth: size, height: "auto", display: "block" }} role="img" aria-label="Talentprofil per akse">
+      {[1 / 3, 2 / 3, 1].map((f, ri) => (
+        <polygon key={ri} points={poly(akser.map(() => max * f))} fill="none" stroke={T.border} strokeWidth="1" />
+      ))}
+      {akser.map((a, i) => {
+        const [ex, ey] = pt(i, max);
+        const [dx, dy] = dir(i);
+        const lx = cx + dx * (R + 20), ly = cy + dy * (R + 20);
+        const anchor = Math.abs(dx) < 0.35 ? "middle" : dx > 0 ? "start" : "end";
+        return (
+          <g key={a.label}>
+            <line x1={cx} y1={cy} x2={ex} y2={ey} stroke={T.border} strokeWidth="1" />
+            <text x={lx} y={ly + 3} textAnchor={anchor} style={svgTekst(9, T.fg2, 700)}>{a.label}</text>
+          </g>
+        );
+      })}
+      {peer && (
+        <polygon points={poly(peer)} fill="none" stroke={T.fg2} strokeWidth="1.3" strokeDasharray="4 3" opacity="0.7" />
+      )}
+      <polygon points={poly(egen)} fill={`color-mix(in srgb, ${T.lime} 14%, transparent)`} stroke={T.lime} strokeWidth="1.8" strokeLinejoin="round" />
+      {akser.map((a, i) => {
+        if (a.verdi == null) return null;
+        const [px, py] = pt(i, a.verdi);
+        return <circle key={a.label} cx={px} cy={py} r="3" fill={T.lime} stroke={T.panel} strokeWidth="1.5" />;
+      })}
+    </svg>
+  );
+}
+
 /* ── StatStrip — horisontal KPI-remse m/ skillelinjer ─── */
 export interface StatStripItem {
   l: string;
