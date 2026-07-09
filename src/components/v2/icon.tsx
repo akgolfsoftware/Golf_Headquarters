@@ -12,7 +12,7 @@ import {
   CreditCard, Layers, Send, CircleDot, Lock, Monitor, ShieldCheck,
   BatteryMedium, Stethoscope,
   Bug, Lightbulb, Heart, History, Sprout, Bot,
-  Building2, Plug,
+  Building2, Plug, MailCheck,
   type LucideIcon,
 } from "lucide-react";
 
@@ -51,6 +51,7 @@ const MAP: Record<string, LucideIcon> = {
   "image": ImageIcon,
   "info": Info,
   "mail": Mail,
+  "mail-check": MailCheck,
   "menu": Menu,
   "message-circle": MessageCircle,
   "minus": Minus,
