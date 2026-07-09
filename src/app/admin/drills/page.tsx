@@ -16,13 +16,22 @@
  */
 
 import Link from "next/link";
+import { Suspense } from "react";
 import { Plus, Volleyball } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import {
+  buildDrillListWhere,
+  drillListHref,
+  hasActiveBarFilters,
+  parseDrillListFilters,
+  type DrillListSearchParams,
+} from "@/lib/admin-drills/drill-list-filter";
 import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 import { AgPage, AgPageHead, agBtnClass } from "@/components/admin/agencyos/ui";
 import type { Prisma } from "@/generated/prisma/client";
+import { DrillFilterBar } from "./drill-filter-bar";
 
 export const dynamic = "force-dynamic";
 
@@ -100,18 +109,21 @@ function drillMeta(d: DrillRad): string {
 export default async function DrillBibliotekPage({
   searchParams,
 }: {
-  searchParams: Promise<{ kat?: string }>;
+  searchParams: Promise<DrillListSearchParams>;
 }) {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const sp = await searchParams;
   const aktiv =
     KATEGORIER.find((k) => k.param === (sp.kat ?? "alle")) ?? KATEGORIER[0];
+  const filterInitial = parseDrillListFilters(sp);
+  const where = buildDrillListWhere(sp, aktiv.where);
+  const filtreAktive = hasActiveBarFilters(sp);
 
   const [total, iKategori, drills] = await Promise.all([
     prisma.exerciseDefinition.count(),
-    prisma.exerciseDefinition.count({ where: aktiv.where ?? undefined }),
+    prisma.exerciseDefinition.count({ where }),
     prisma.exerciseDefinition.findMany({
-      where: aktiv.where ?? undefined,
+      where,
       orderBy: { name: "asc" },
       select: {
         id: true,
@@ -140,13 +152,23 @@ export default async function DrillBibliotekPage({
         }
       />
 
+      <Suspense
+        fallback={
+          <div className="mb-4 h-[72px] animate-pulse rounded-2xl border border-border bg-card" />
+        }
+      >
+        <div className="mb-4">
+          <DrillFilterBar initial={filterInitial} />
+        </div>
+      </Suspense>
+
       {/* Seg-kontroll (fasit .seg) — interaktiv via ?kat= */}
       <div className="mb-4 overflow-x-auto pb-1">
         <div className="inline-flex gap-[2px] rounded-lg bg-secondary p-[3px] whitespace-nowrap">
         {KATEGORIER.map((k) => (
           <Link
             key={k.param}
-            href={k.param === "alle" ? "/admin/drills" : `/admin/drills?kat=${k.param}`}
+            href={drillListHref(sp, { kat: k.param === "alle" ? undefined : k.param })}
             className={cn(
               "inline-flex h-[26px] items-center rounded-md px-[11px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] transition-colors",
               k.param === aktiv.param
@@ -163,7 +185,9 @@ export default async function DrillBibliotekPage({
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
         {drills.length === 0 && (
           <div className="rounded-xl border border-border bg-card px-[18px] py-10 text-center text-sm text-muted-foreground lg:col-span-3">
-            Ingen drills i denne kategorien ennå.
+            {filtreAktive
+              ? "Ingen drills matcher filtrene."
+              : "Ingen drills i denne kategorien ennå."}
           </div>
         )}
         {drills.map((d) => {
@@ -195,7 +219,9 @@ export default async function DrillBibliotekPage({
 
       {iKategori > VIS_MAKS && (
         <p className="mt-4 font-mono text-[10px] text-muted-foreground">
-          Viser {VIS_MAKS} av {iKategori} i kategorien «{aktiv.label}».
+          Viser {VIS_MAKS} av {iKategori}
+          {filtreAktive ? " med valgte filtre" : ` i kategorien «${aktiv.label}»`}.
+          {total !== iKategori && ` (${total} totalt i biblioteket.)`}
         </p>
       )}
     </AgPage>

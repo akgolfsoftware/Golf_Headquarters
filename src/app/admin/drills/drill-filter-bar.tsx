@@ -103,7 +103,11 @@ export function DrillFilterBar({ initial }: { initial: InitialFilters }) {
 
   function reset() {
     setQ("");
-    startTransition(() => router.push("/admin/drills"));
+    const params = new URLSearchParams();
+    const kat = sp?.get("kat");
+    if (kat && kat !== "alle") params.set("kat", kat);
+    const qs = params.toString();
+    startTransition(() => router.push(qs ? `/admin/drills?${qs}` : "/admin/drills"));
   }
 
   const filterAktive =
