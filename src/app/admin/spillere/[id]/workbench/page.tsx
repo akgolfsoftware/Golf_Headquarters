@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
+import { canCoachAccessPlayer } from "@/lib/sg-hub/coach-access";
 import { WorkbenchHybrid, type RosterPlayer } from "@/components/workbench-hybrid";
 import { loadWorkbenchContext } from "@/lib/workbench/load-context";
 import { parseWeekOffset } from "@/lib/workbench/session-move-math";
@@ -34,6 +35,9 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
 
   const { id } = await params;
   const weekOffset = parseWeekOffset((await searchParams).uke);
+
+  const hasAccess = await canCoachAccessPlayer(me.id, id, me.role);
+  if (!hasAccess) notFound();
 
   const ctx = await loadWorkbenchContext(id, weekOffset);
   if (ctx === null) notFound();

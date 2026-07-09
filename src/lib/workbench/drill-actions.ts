@@ -16,6 +16,8 @@ import type { PyramidArea, RepType, SkillArea } from "@/generated/prisma/client"
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel";
+import { syncV2DrillsForPlanSession } from "@/lib/workbench/v2-sync";
+import { canCoachAccessPlayer } from "@/lib/sg-hub/coach-access";
 
 // Rep-type + volum + område per drill (bølge 2/3). Validering client-strenger → enum/int.
 const REP_TYPES = ["SVINGER_UTEN_BALL", "BALLER_SLATT", "TID", "SETT_REPS"] as const;
@@ -199,6 +201,14 @@ async function sessionForAccess(sessionId: string) {
   if (!isCoach && session.plan.userId !== user.id) {
     return { ok: false as const, error: "Ingen tilgang" };
   }
+  if (isCoach && user.role === "COACH") {
+    const allowed = await canCoachAccessPlayer(
+      user.id,
+      session.plan.userId,
+      user.role,
+    );
+    if (!allowed) return { ok: false as const, error: "Ingen tilgang til denne spilleren" };
+  }
   return { ok: true as const, playerId: session.plan.userId, isCoach };
 }
 
@@ -243,9 +253,9 @@ export async function createSessionDrill(input: {
   akFormel?: AkFormelInput;
   volum?: DrillVolumInput;
 }): Promise<{ ok: boolean; drill?: WbDrill; error?: string }> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const access = await sessionForAccess(input.sessionId);
   if (!access.ok) return { ok: false, error: access.error };
+  if (!access.isCoach) return { ok: false, error: "Kun coach kan redigere drills" };
 
   const exercise = await prisma.exerciseDefinition.findUnique({
     where: { id: input.exerciseId },
@@ -273,6 +283,7 @@ export async function createSessionDrill(input: {
     },
     select: DRILL_SELECT,
   });
+  await syncV2DrillsForPlanSession(input.sessionId);
   revalidatePath("/admin/spillere/" + access.playerId + "/workbench");
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true, drill: toWbDrill(created) };
@@ -291,12 +302,14 @@ export async function updateSessionDrill(
     volum?: DrillVolumInput;
   },
 ): Promise<{ ok: boolean; drill?: WbDrill; error?: string }> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const drill = await prisma.sessionDrill.findUnique({
     where: { id: drillId },
     select: { id: true, session: { select: { id: true, plan: { select: { userId: true } } } } },
   });
   if (!drill) return { ok: false, error: "Drill ikke funnet" };
+  const access = await sessionForAccess(drill.session.id);
+  if (!access.ok) return { ok: false, error: access.error };
+  if (!access.isCoach) return { ok: false, error: "Kun coach kan redigere drills" };
 
   const updated = await prisma.sessionDrill.update({
     where: { id: drillId },
@@ -311,6 +324,7 @@ export async function updateSessionDrill(
     },
     select: DRILL_SELECT,
   });
+  await syncV2DrillsForPlanSession(drill.session.id);
   revalidatePath("/admin/spillere/" + drill.session.plan.userId + "/workbench");
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true, drill: toWbDrill(updated) };
@@ -325,9 +339,9 @@ export async function updateAllDrillsInSession(
   sessionId: string,
   patch: { akFormel?: AkFormelInput; volum?: DrillVolumInput },
 ): Promise<{ ok: boolean; drills?: WbDrill[]; error?: string }> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const access = await sessionForAccess(sessionId);
   if (!access.ok) return { ok: false, error: access.error };
+  if (!access.isCoach) return { ok: false, error: "Kun coach kan redigere drills" };
 
   const data = {
     ...(patch.akFormel ? drillAkData(patch.akFormel) : {}),
@@ -341,6 +355,7 @@ export async function updateAllDrillsInSession(
     orderBy: { orderIndex: "asc" },
     select: DRILL_SELECT,
   });
+  await syncV2DrillsForPlanSession(sessionId);
   revalidatePath("/admin/spillere/" + access.playerId + "/workbench");
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true, drills: rows.map(toWbDrill) };
@@ -348,13 +363,19 @@ export async function updateAllDrillsInSession(
 
 /** Slett en drill (coach). */
 export async function deleteSessionDrill(drillId: string): Promise<{ ok: boolean; error?: string }> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const drill = await prisma.sessionDrill.findUnique({
     where: { id: drillId },
-    select: { id: true, session: { select: { plan: { select: { userId: true } } } } },
+    select: {
+      id: true,
+      session: { select: { id: true, plan: { select: { userId: true } } } },
+    },
   });
   if (!drill) return { ok: false, error: "Drill ikke funnet" };
+  const access = await sessionForAccess(drill.session.id);
+  if (!access.ok) return { ok: false, error: access.error };
+  if (!access.isCoach) return { ok: false, error: "Kun coach kan redigere drills" };
   await prisma.sessionDrill.delete({ where: { id: drillId } });
+  await syncV2DrillsForPlanSession(drill.session.id);
   revalidatePath("/admin/spillere/" + drill.session.plan.userId + "/workbench");
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true };

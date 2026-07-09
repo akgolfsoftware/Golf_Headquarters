@@ -23,6 +23,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { drillAccessWhere, getMyCoachIds } from "@/lib/portal-drills/drill-access";
 import type {
   DrillFasilitet,
   PyramidArea,
@@ -109,20 +110,6 @@ function buildMeta(d: {
 }
 
 /**
- * Hent coach-IDer spilleren er enrollert under (aktive enrolleringer).
- * Returnerer tom liste hvis spilleren ikke har noen aktiv coach.
- */
-async function getMyCoachIds(userId: string): Promise<string[]> {
-  const enrollments = await prisma.playerEnrollment.findMany({
-    where: { userId, endedAt: null, coachId: { not: null } },
-    select: { coachId: true },
-  });
-  return enrollments
-    .map((e) => e.coachId)
-    .filter((id): id is string => id !== null);
-}
-
-/**
  * Alle drills spilleren har tilgang til, sortert akse → navn.
  * Inkluderer SYSTEM + relevante COACH + egne PLAYER-drills.
  * Tom database gir tom liste (UI viser ærlig tom-tilstand).
@@ -131,30 +118,7 @@ export async function getDrillLibrary(userId: string): Promise<DrillCard[]> {
   const coachIds = await getMyCoachIds(userId);
 
   const rows = await prisma.exerciseDefinition.findMany({
-    where: {
-      OR: [
-        // Alle system-drills er alltid synlige.
-        { source: "SYSTEM" },
-        // Coach-drills: enten delt med alle coachens spillere,
-        // eller privat men coachen er spillerens coach.
-        ...(coachIds.length > 0
-          ? [
-              {
-                source: "COACH" as const,
-                visibility: "COACH_PLAYERS" as const,
-                createdBy: { in: coachIds },
-              },
-              {
-                source: "COACH" as const,
-                visibility: "PRIVATE" as const,
-                createdBy: { in: coachIds },
-              },
-            ]
-          : []),
-        // Spillerens egne drills.
-        { source: "PLAYER", createdBy: userId },
-      ],
-    },
+    where: drillAccessWhere(userId, coachIds),
     orderBy: [{ pyramidArea: "asc" }, { name: "asc" }],
     select: {
       id: true,

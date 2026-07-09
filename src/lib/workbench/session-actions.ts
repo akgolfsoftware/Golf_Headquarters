@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { dateForDayIndex, executeSessionMove, weekRefDate } from "@/lib/workbench/session-move";
 import { deleteV2ForPlanSession, upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
 import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel";
+import { ensureCoachForPlayer } from "@/lib/workbench/coach-player-access";
 
 const PYRAMID_AREAS = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
 export type WbPyramidArea = (typeof PYRAMID_AREAS)[number];
@@ -17,11 +18,6 @@ export type WbPyramidArea = (typeof PYRAMID_AREAS)[number];
 function revalidateWorkbench(playerId: string) {
   revalidatePath("/portal/planlegge/workbench");
   revalidatePath(`/admin/spillere/${playerId}/workbench`);
-}
-
-async function ensureCoach() {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
-  return user;
 }
 
 async function sessionForPlayer(sessionId: string, _playerId: string) {
@@ -42,12 +38,13 @@ export async function coachMoveWorkbenchSession(
   dayIndex: number,
   weekOffset = 0,
 ): Promise<{ ok: boolean; error?: string }> {
-  const coach = await ensureCoach();
+  const access = await ensureCoachForPlayer(playerId);
+  if (!access.ok) return { ok: false, error: access.error };
   const result = await executeSessionMove(prisma, {
     sessionId,
     playerId,
     dayIndex,
-    coachId: coach.id,
+    coachId: access.coachId,
     refDate: weekRefDate(weekOffset),
   });
   if (!result.ok) return result;
@@ -69,7 +66,8 @@ export async function coachAddWorkbenchSession(
     akFormel?: AkFormelInput;
   },
 ): Promise<{ ok: boolean; sessionId?: string; error?: string }> {
-  const coach = await ensureCoach();
+  const access = await ensureCoachForPlayer(playerId);
+  if (!access.ok) return { ok: false, error: access.error };
   if (input.dayIndex < 0 || input.dayIndex > 6) return { ok: false, error: "Ugyldig dag" };
   const area = PYRAMID_AREAS.includes(input.area) ? input.area : "TEK";
 
@@ -86,7 +84,7 @@ export async function coachAddWorkbenchSession(
         startDate: new Date(),
         status: "ACTIVE",
         isActive: true,
-        createdById: coach.id,
+        createdById: access.coachId,
       },
       select: { id: true },
     });
@@ -128,7 +126,7 @@ export async function coachAddWorkbenchSession(
     scheduledAt: created.scheduledAt,
     durationMin: created.durationMin,
     pyramidArea: created.pyramidArea,
-    coachId: coach.id,
+    coachId: access.coachId,
     miljo: ak.miljo,
   });
 
@@ -140,7 +138,8 @@ export async function coachRemoveWorkbenchSession(
   playerId: string,
   sessionId: string,
 ): Promise<{ ok: boolean; error?: string }> {
-  await ensureCoach();
+  const access = await ensureCoachForPlayer(playerId);
+  if (!access.ok) return { ok: false, error: access.error };
   const session = await sessionForPlayer(sessionId, playerId);
   if (!session || session.plan.userId !== playerId) {
     return { ok: false, error: "Økt ikke funnet" };
@@ -160,7 +159,8 @@ export async function coachDuplicateWeek(
   playerId: string,
   targetWeekOffset = 0,
 ): Promise<{ ok: boolean; count?: number; error?: string }> {
-  const coach = await ensureCoach();
+  const access = await ensureCoachForPlayer(playerId);
+  if (!access.ok) return { ok: false, error: access.error };
   const targetMonday = weekRefDate(targetWeekOffset);
   const sourceMonday = new Date(targetMonday);
   sourceMonday.setDate(sourceMonday.getDate() - 7);
@@ -255,7 +255,7 @@ export async function coachDuplicateWeek(
       scheduledAt: created.scheduledAt,
       durationMin: created.durationMin,
       pyramidArea: created.pyramidArea,
-      coachId: coach.id,
+      coachId: access.coachId,
       miljo: created.miljo,
     });
     count++;

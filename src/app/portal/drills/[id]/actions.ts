@@ -13,6 +13,7 @@
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { canUserAccessDrill } from "@/lib/portal-drills/drill-access";
 import { akTilNgfKategori, hentSpillerAkKategori } from "@/lib/domain/spiller-kategori";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -37,6 +38,10 @@ export async function registrerMestringsOkt(
   kommentar: string | null,
 ): Promise<ActionResult<{ mestret: boolean }>> {
   const user = await requirePortalUser({ allow: ["PLAYER", "PARENT"] });
+
+  if (!(await canUserAccessDrill(user.id, drillId))) {
+    return { ok: false, error: "Ingen tilgang til denne drillen" };
+  }
 
   const drill = await prisma.exerciseDefinition.findUnique({
     where: { id: drillId },
@@ -109,6 +114,10 @@ export async function rateDrill(
   kommentar: string | null,
 ): Promise<ActionResult> {
   const user = await requirePortalUser({ allow: ["PLAYER", "PARENT"] });
+
+  if (!(await canUserAccessDrill(user.id, drillId))) {
+    return { ok: false, error: "Ingen tilgang til denne drillen" };
+  }
 
   const drill = await prisma.exerciseDefinition.findUnique({
     where: { id: drillId },

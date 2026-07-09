@@ -6,6 +6,7 @@ import { Prisma } from "@/generated/prisma/client";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { propagerGruppeplanEtterEndring } from "@/lib/gruppe/propager-gruppeplan";
 
 type ActionResult = { ok: true } | { ok: false; feil: string };
 
@@ -59,6 +60,7 @@ export async function leggTilGruppemedlem(
   });
 
   revalidatePath(`/admin/grupper/${groupId}`);
+  await propagerGruppeplanEtterEndring(groupId).catch(() => undefined);
   return { ok: true };
 }
 
@@ -90,6 +92,77 @@ export async function fjernGruppemedlem(
     target: `Group:${groupId}/User:${userId}`,
   });
 
+  revalidatePath(`/admin/grupper/${groupId}`);
+  return { ok: true };
+}
+
+export type GroupScheduleInput = {
+  title: string;
+  startAt: string;
+  endAt: string;
+  location?: string | null;
+  description?: string | null;
+  recurring?: "WEEKLY" | "NONE" | null;
+};
+
+/** Opprett eller oppdater fast ukentlig gruppetid + propagér til medlemmer. */
+export async function lagreGroupSchedule(
+  groupId: string,
+  input: GroupScheduleInput,
+  scheduleId?: string,
+): Promise<ActionResult & { scheduleId?: string }> {
+  const coach = await krevCoach();
+  if (!coach) return { ok: false, feil: "Ikke tilgang." };
+
+  const title = input.title.trim().slice(0, 120);
+  if (!title) return { ok: false, feil: "Tittel mangler." };
+  const startAt = new Date(input.startAt);
+  const endAt = new Date(input.endAt);
+  if (Number.isNaN(startAt.getTime()) || Number.isNaN(endAt.getTime())) {
+    return { ok: false, feil: "Ugyldig tidspunkt." };
+  }
+  if (endAt <= startAt) return { ok: false, feil: "Slutt må være etter start." };
+
+  const data = {
+    groupId,
+    title,
+    startAt,
+    endAt,
+    location: input.location?.trim() || null,
+    description: input.description?.trim() || null,
+    recurring: input.recurring ?? "WEEKLY",
+  };
+
+  const row = scheduleId
+    ? await prisma.groupSchedule.update({ where: { id: scheduleId }, data })
+    : await prisma.groupSchedule.create({ data });
+
+  await propagerGruppeplanEtterEndring(groupId);
+  revalidatePath(`/admin/grupper/${groupId}`);
+  revalidatePath(`/admin/grupper/${groupId}/timeplan`);
+  return { ok: true, scheduleId: row.id };
+}
+
+/** Slett gruppetid og fjern propagerte plan-økter ved neste synk. */
+export async function slettGroupSchedule(
+  groupId: string,
+  scheduleId: string,
+): Promise<ActionResult> {
+  const coach = await krevCoach();
+  if (!coach) return { ok: false, feil: "Ikke tilgang." };
+
+  await prisma.groupSchedule.delete({ where: { id: scheduleId, groupId } });
+  await propagerGruppeplanEtterEndring(groupId);
+  revalidatePath(`/admin/grupper/${groupId}`);
+  revalidatePath(`/admin/grupper/${groupId}/timeplan`);
+  return { ok: true };
+}
+
+/** Manuell re-synk av gruppeplan til alle medlemmer. */
+export async function synkGruppeplanTilMedlemmer(groupId: string): Promise<ActionResult> {
+  const coach = await krevCoach();
+  if (!coach) return { ok: false, feil: "Ikke tilgang." };
+  await propagerGruppeplanEtterEndring(groupId);
   revalidatePath(`/admin/grupper/${groupId}`);
   return { ok: true };
 }

@@ -154,6 +154,8 @@ export async function createDrill(
       data: {
         ...toPrismaData(parsed.data),
         createdBy: user.id,
+        source: "COACH",
+        visibility: "COACH_PLAYERS",
       },
     });
     await audit({
@@ -256,6 +258,8 @@ export async function duplicateDrill(
             ? Prisma.JsonNull
             : (original.parametersJson as Prisma.InputJsonValue),
         createdBy: user.id,
+        source: "COACH",
+        visibility: "COACH_PLAYERS",
       },
     });
     await audit({

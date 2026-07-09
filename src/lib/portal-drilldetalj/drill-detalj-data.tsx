@@ -12,6 +12,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { canUserAccessDrill } from "@/lib/portal-drills/drill-access";
 import type { AkKategori } from "@/lib/domain/ak-kategori";
 import { akTilNgfKategori, hentSpillerAkKategori } from "@/lib/domain/spiller-kategori";
 import {
@@ -163,6 +164,9 @@ export async function loadDrillDetalj(
   id: string,
   user: { id: string; hcp: number | null },
 ): Promise<DrillDetaljData | null> {
+  const hasAccess = await canUserAccessDrill(user.id, id);
+  if (!hasAccess) return null;
+
   const akKategori = await hentSpillerAkKategori(user.id, { hcp: user.hcp });
 
   const drill = await prisma.exerciseDefinition.findUnique({

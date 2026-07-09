@@ -25,12 +25,14 @@ interface Template {
   drills: Drill[];
 }
 
-interface Drill {
+export interface Drill {
   id: string;
   name: string;
   meta: string;
   cat: string;
 }
+
+export type NyOktPreloadedDrill = Drill;
 
 const TEMPLATES: Template[] = [
   {
@@ -164,9 +166,15 @@ function DrillRow({ drill, onRemove }: DrillRowProps) {
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export function NyOktWizard() {
+export function NyOktWizard({
+  preloadedDrill = null,
+}: {
+  preloadedDrill?: NyOktPreloadedDrill | null;
+}) {
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
-  const [drills, setDrills] = useState<Drill[]>([]);
+  const [drills, setDrills] = useState<Drill[]>(() =>
+    preloadedDrill ? [preloadedDrill] : [],
+  );
   const [saved, setSaved] = useState(false);
 
   const isBuilding = drills.length > 0;

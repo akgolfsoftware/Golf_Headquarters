@@ -109,6 +109,7 @@ export async function getGjennomforeData(userId: string): Promise<GjennomforeDat
           status: true,
           practiceType: true,
           miljo: true,
+          generertFraId: true,
           completedSummary: true,
           drills: {
             select: { id: true, name: true },
@@ -256,9 +257,17 @@ export async function getGjennomforeData(userId: string): Promise<GjennomforeDat
     };
   };
 
+  // V2 speiler plan-økter via generertFraId — vis kun V2-raden (live-spor), ikke begge.
+  const mirroredPlanIds = new Set(
+    okterRaw
+      .map((o) => o.generertFraId)
+      .filter((id): id is string => typeof id === "string" && id.length > 0),
+  );
+  const planOkterUtenSpeil = planOkterRaw.filter((o) => !mirroredPlanIds.has(o.id));
+
   const okter: GjennomforeOkt[] = [
     ...okterRaw.map((o) => ({ at: o.startTime.getTime(), okt: mapOkt(o) })),
-    ...planOkterRaw.map((o) => ({
+    ...planOkterUtenSpeil.map((o) => ({
       at: o.scheduledAt.getTime(),
       okt: mapPlanOkt(o),
     })),

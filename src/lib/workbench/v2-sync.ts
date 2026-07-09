@@ -2,6 +2,7 @@ import "server-only";
 
 import type { PyramidArea, MMiljo } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { mapSessionDrillToV2Drill } from "@/lib/workbench/v2-drill-map";
 
 const GENERERT_FRA = "WORKBENCH_PLAN";
 
@@ -12,6 +13,36 @@ const PYR_TO_PRACTICE: Record<PyramidArea, "BLOKK" | "RANDOM" | "KONKURRANSE" | 
   SPILL: "SPILL_TEST",
   TURN: "KONKURRANSE",
 };
+
+const SESSION_DRILL_SELECT = {
+  orderIndex: true,
+  reps: true,
+  sets: true,
+  repsSets: true,
+  csTarget: true,
+  notes: true,
+  lFase: true,
+  miljo: true,
+  csNivaa: true,
+  prPress: true,
+  pPosisjoner: true,
+  repType: true,
+  repAntall: true,
+  repMinutter: true,
+  repSett: true,
+  repReps: true,
+  pyramidArea: true,
+  skillArea: true,
+  exercise: {
+    select: {
+      name: true,
+      description: true,
+      durationMin: true,
+      pyramidArea: true,
+      skillArea: true,
+    },
+  },
+} as const;
 
 /** Finn coachId for V2-økt: gruppe.coachId → plan.createdById → første coach. */
 export async function resolveCoachIdForPlayer(
@@ -39,6 +70,48 @@ export async function resolveCoachIdForPlayer(
     orderBy: { createdAt: "asc" },
   });
   return coach?.id ?? playerId;
+}
+
+/**
+ * Speiler SessionDrill-rader til TrainingDrillV2 for en WORKBENCH_PLAN-koblet V2-økt.
+ * Erstatter kun når V2-status er PLANNED (bevarer DrillLogV2 under live/gjennomført økt).
+ */
+export async function syncV2DrillsForPlanSession(planSessionId: string): Promise<void> {
+  const v2 = await prisma.trainingSessionV2.findFirst({
+    where: { generertFra: GENERERT_FRA, generertFraId: planSessionId },
+    select: { id: true, status: true },
+  });
+  if (!v2 || v2.status !== "PLANNED") return;
+
+  const session = await prisma.trainingPlanSession.findUnique({
+    where: { id: planSessionId },
+    select: {
+      durationMin: true,
+      pyramidArea: true,
+      drills: { orderBy: { orderIndex: "asc" }, select: SESSION_DRILL_SELECT },
+    },
+  });
+  if (!session) return;
+
+  const drillCount = session.drills.length;
+  const mapped = session.drills.map((d) =>
+    mapSessionDrillToV2Drill(d, {
+      sessionDurationMin: session.durationMin,
+      drillCount,
+      sessionPyramid: session.pyramidArea,
+    }),
+  );
+
+  await prisma.$transaction([
+    prisma.trainingDrillV2.deleteMany({ where: { sessionId: v2.id } }),
+    ...(mapped.length > 0
+      ? [
+          prisma.trainingDrillV2.createMany({
+            data: mapped.map((row) => ({ sessionId: v2.id, ...row })),
+          }),
+        ]
+      : []),
+  ]);
 }
 
 /** Opprett eller oppdater TrainingSessionV2 koblet til TrainingPlanSession. */
@@ -82,6 +155,8 @@ export async function upsertV2ForPlanSession(input: {
   } else {
     await prisma.trainingSessionV2.create({ data });
   }
+
+  await syncV2DrillsForPlanSession(input.planSessionId);
 }
 
 /** Slett V2-økt koblet til plan-økt. */
