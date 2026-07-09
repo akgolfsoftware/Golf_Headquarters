@@ -376,8 +376,9 @@ model User {
   coachCoachingSessions  CoachingSession[] @relation("CoachCoachingSessions")
 
   // Agent-relasjoner
-  signals     Signal[]
-  planActions PlanAction[]
+  signals              Signal[]
+  planActions          PlanAction[]
+  coachedPlanActions   PlanAction[] @relation("PlanActionCoach")
 
   // Goals/achievements/sosiale (Fase 1.14)
   goals        Goal[]
@@ -1437,6 +1438,7 @@ model Signal {
 model PlanAction {
   id         String   @id @default(cuid())
   userId     String
+  coachId    String?
   planId     String?
   // Type: PYRAMID_ADJUST | SESSION_ADD | SESSION_REMOVE | INTENSITY_ADJUST
   //       | TAPER_ENGAGE | WITHDRAW | DRILL_SUGGEST | TEST_SCHEDULE
@@ -1449,10 +1451,12 @@ model PlanAction {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  user User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  plan TrainingPlan? @relation(fields: [planId], references: [id], onDelete: SetNull)
+  user  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  coach User?         @relation("PlanActionCoach", fields: [coachId], references: [id], onDelete: SetNull)
+  plan  TrainingPlan? @relation(fields: [planId], references: [id], onDelete: SetNull)
 
   @@index([userId, status, createdAt])
+  @@index([coachId, status, createdAt])
   @@map("plan_actions")
 }
 

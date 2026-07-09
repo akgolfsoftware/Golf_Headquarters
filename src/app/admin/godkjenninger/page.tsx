@@ -6,10 +6,10 @@ import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { computeDelta, type PlanContext } from "@/lib/agents/plan-action-executor";
-import { AgAvatar, AgChip, AgPage, AgPageHead } from "@/components/admin/agencyos/ui";
-import { ApprovalActions } from "@/app/admin/approvals/approval-actions";
-import { BatchApproveButton } from "@/app/admin/approvals/batch-approve-button";
+import { AgPage, AgPageHead } from "@/components/admin/agencyos/ui";
+import { erExecutablePlanAction } from "@/lib/agents/coach-action-types";
 import { LOW_RISK_ACTION_TYPES } from "@/lib/training/skills";
+import { GodkjenningerInbox, type GodkjenningRad } from "./godkjenninger-inbox";
 
 const ACTION_LABEL: Record<string, string> = {
   PYRAMID_ADJUST: "Juster pyramide",
@@ -60,12 +60,6 @@ const suggestionSchema = z
   })
   .passthrough()
   .nullable();
-
-function initials(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
 
 function nårTekst(d: Date): string {
   const dager = Math.floor((Date.now() - d.getTime()) / (1000 * 60 * 60 * 24));
@@ -144,10 +138,13 @@ async function buildDiffPreview(
 }
 
 export default async function Godkjenninger() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   const actions = await prisma.planAction.findMany({
-    where: { status: "PENDING" },
+    where: {
+      status: "PENDING",
+      OR: [{ coachId: user.id }, { coachId: null }],
+    },
     include: {
       user: { select: { id: true, name: true } },
       plan: { select: { id: true, name: true } },
@@ -155,12 +152,14 @@ export default async function Godkjenninger() {
     orderBy: { createdAt: "desc" },
   });
 
-  const lowRiskCount = actions.filter((a) =>
+  const executable = actions.filter((a) => erExecutablePlanAction(a.actionType));
+
+  const lowRiskCount = executable.filter((a) =>
     LOW_RISK_ACTION_TYPES.has(a.actionType),
   ).length;
 
-  const rows = await Promise.all(
-    actions.map(async (a) => {
+  const rows: GodkjenningRad[] = await Promise.all(
+    executable.map(async (a) => {
       const parsed = suggestionSchema.safeParse(a.suggestion);
       const sugg = parsed.success ? parsed.data : null;
       const diffPreview = await buildDiffPreview(
@@ -204,56 +203,7 @@ export default async function Godkjenninger() {
         italic="på deg."
         lead="Plan-endringer fra agenter. Godkjenn eller avvis — endringer skrives til planen ved godkjenning."
       />
-      {lowRiskCount > 0 && (
-        <div className="mb-4 max-w-[820px]">
-          <BatchApproveButton count={lowRiskCount} />
-        </div>
-      )}
-      <div className="flex max-w-[820px] flex-col gap-[10px]">
-        {rows.length === 0 && (
-          <div className="rounded-xl border border-border bg-card px-[18px] py-10 text-center text-sm text-muted-foreground">
-            Ingenting venter på deg — alt er behandlet.
-          </div>
-        )}
-        {rows.map((m) => (
-          <div
-            key={m.id}
-            className="rounded-xl border border-border bg-card p-4"
-            style={m.urgent ? { borderLeft: "3px solid hsl(var(--accent))" } : undefined}
-          >
-            <div className="grid grid-cols-[40px_1fr] items-start gap-[14px]">
-              <AgAvatar initials={initials(m.who)} size={40} tone={m.urgent ? "pri" : "neu"} />
-              <div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-[15px] font-bold tracking-[-0.01em] text-foreground">
-                    {m.title}
-                  </span>
-                  {m.urgent && <AgChip tone="lime">Haster</AgChip>}
-                  {m.lowRisk && <AgChip tone="neu">Lav risiko</AgChip>}
-                </div>
-                <div className="mb-[6px] mt-[2px] font-mono text-[10px] text-muted-foreground">
-                  {m.who} · {m.when} · {m.actionType}
-                </div>
-                {m.detail && (
-                  <div className="text-[13px] leading-normal text-foreground">{m.detail}</div>
-                )}
-                {m.signalKind && (
-                  <div className="mt-2 font-mono text-[10px] text-muted-foreground">
-                    Signal: {m.signalKind}
-                    {m.signalValue != null ? ` = ${m.signalValue}` : ""}
-                  </div>
-                )}
-                {m.diffPreview && (
-                  <div className="mt-2 rounded-md border border-border bg-secondary/40 px-3 py-2 font-mono text-[11px] text-foreground">
-                    Diff: {m.diffPreview}
-                  </div>
-                )}
-                <ApprovalActions actionId={m.id} playerId={m.playerId} detailHref={`/admin/godkjenninger/${m.id}`} />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      <GodkjenningerInbox rows={rows} lowRiskCount={lowRiskCount} />
     </AgPage>
   );
 }

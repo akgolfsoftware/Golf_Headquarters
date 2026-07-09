@@ -8,7 +8,9 @@ import {
   SG_TO_PYRAMID,
   SG_TO_SKILL,
 } from "@/lib/training/skills";
+import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { runAgent, type AgentResult } from "./agent-runner";
+import { varsleVedPlanAction } from "./notify-plan-action";
 
 export const AGENT_NAME = "round-agent";
 
@@ -53,13 +55,32 @@ export async function runRoundAgent(userId: string): Promise<AgentResult> {
       ARG: sg.arg ?? 0,
       PUTT: sg.putt ?? 0,
     };
-    const weakness = runWeaknessSkill({ sgSnitt, pyramidSessions: [] });
+    const plan = await prisma.trainingPlan.findFirst({
+      where: { userId, isActive: true },
+      select: { id: true },
+    });
+
+    const ukeSiden = new Date();
+    ukeSiden.setDate(ukeSiden.getDate() - 7);
+    const pyramidSessions = plan
+      ? (
+          await prisma.trainingPlanSession.findMany({
+            where: {
+              planId: plan.id,
+              status: "COMPLETED",
+              scheduledAt: { gte: ukeSiden },
+            },
+            select: { pyramidArea: true, durationMin: true },
+          })
+        ).map((s) => ({
+          pyramidArea: s.pyramidArea,
+          durationMin: s.durationMin,
+        }))
+      : [];
+
+    const weakness = runWeaknessSkill({ sgSnitt, pyramidSessions });
 
     if (weakness.sgValue < SG_TERSKEL) {
-      const plan = await prisma.trainingPlan.findFirst({
-        where: { userId, isActive: true },
-        select: { id: true },
-      });
       const eksisterende = await prisma.planAction.findFirst({
         where: {
           userId,
@@ -68,16 +89,19 @@ export async function runRoundAgent(userId: string): Promise<AgentResult> {
         },
       });
       if (!eksisterende) {
-        await prisma.planAction.create({
+        const coachId = await resolveCoachIdForPlayer(userId);
+        const forklaring = weakness.anbefaling;
+        const created = await prisma.planAction.create({
           data: {
             userId,
+            coachId,
             planId: plan?.id ?? null,
             actionType: "FOCUS_CHANGE",
             agentName: AGENT_NAME,
             suggestion: {
               skillArea: SG_TO_SKILL[weakness.primarySgArea],
               pyramidArea: SG_TO_PYRAMID[weakness.primarySgArea],
-              forklaring: weakness.anbefaling,
+              forklaring,
               signalSnapshot: {
                 kind: `SG_${weakness.primarySgArea}`,
                 value: weakness.sgValue,
@@ -86,6 +110,14 @@ export async function runRoundAgent(userId: string): Promise<AgentResult> {
           },
         });
         planActionsWritten++;
+        await varsleVedPlanAction({
+          userId,
+          agentName: AGENT_NAME,
+          actionType: "FOCUS_CHANGE",
+          forklaring,
+          planActionId: created.id,
+          sgValue: weakness.sgValue,
+        });
       }
     }
 

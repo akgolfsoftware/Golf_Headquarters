@@ -1,0 +1,63 @@
+{
+  "description": "L-faser - Motorisk progresjon innen TEK-delen av pyramiden. Fra MasterBrain (Clean Master System + Grunnmur).",
+  "version": "2026-06-13",
+  "source": "AK_Golf_HQ_Master_System_Clean.md + AK_Golf_Platform_Evidensbasert_Grunnmur.md",
+  "phases": [
+    {
+      "code": "L-KROPP",
+      "name": "Kropp",
+      "description": "Kun kropp, ingen armer/kølle. Fokus på bevegelseskvalitet, vektfordeling, rotasjon.",
+      "sg_vekt": "Lav",
+      "cs": "Lav (CS20-40)",
+      "environment": "M0-M1",
+      "percent_tek": "60-80%+",
+      "when": "Tidlig, ustabil teknikk. Høy prioritet TEK."
+    },
+    {
+      "code": "L-ARM",
+      "name": "Arm",
+      "description": "Armer uten kølle. Fokus på arm- og håndposisjon, grep, arm-sving.",
+      "sg_vekt": "Lav",
+      "cs": "Lav-Medium",
+      "environment": "M1-M2",
+      "percent_tek": "50-70%",
+      "when": "Etter kropp, før kølle."
+    },
+    {
+      "code": "L-KØLLE",
+      "name": "Kølle",
+      "description": "Med kølle, uten ball. Fokus på klubbe-følelse, path, face control.",
+      "sg_vekt": "Medium",
+      "cs": "Medium (CS50-70)",
+      "environment": "M2-M3",
+      "percent_tek": "40-60%",
+      "when": "Før ball, bygge kontakt."
+    },
+    {
+      "code": "L-BALL",
+      "name": "Ball",
+      "description": "Med ball + økende Club Speed (50-100%). Fokus på konsistens + kontakt, lav hastighet.",
+      "sg_vekt": "Høy",
+      "cs": "Medium-Høy (CS60-80)",
+      "environment": "M3-M4",
+      "percent_tek": "30-50%",
+      "when": "SG relevant, men fortsatt teknikk-fokus."
+    },
+    {
+      "code": "L-AUTO",
+      "name": "Auto",
+      "description": "Automatikk + miljø + variasjon. Fokus på overføring til bane, press, random.",
+      "sg_vekt": "Høy",
+      "cs": "Høy (CS80-100)",
+      "environment": "M4-M5",
+      "percent_tek": "20-40%",
+      "when": "Automatisert, mer SPILL/TURN."
+    }
+  ],
+  "rules": {
+    "override": "L-fase er høyest prioriterte overstyring i calculateDistribution(). Tidlig L-fase = mer TEK, lav CS/PR, mindre SPILL.",
+    "progression": "Bygg fra KROPP til AUTO per område (TEE, INN, etc.).",
+    "SG": "SG nesten ignoreres i KROPP/ARM/KØLLE. Relevant fra L-BALL, sterk i L-AUTO."
+  },
+  "notes": "Se Clean Master System for full integrasjon i plan-motor. Brukes til å bestemme TEK-andel, CS, PR i økter."
+}

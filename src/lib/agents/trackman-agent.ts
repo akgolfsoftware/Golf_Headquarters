@@ -2,7 +2,9 @@
 // skriver Signal og evt. INTENSITY_ADJUST PlanAction ved lav smash-trend.
 
 import { prisma } from "@/lib/prisma";
+import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { runAgent, type AgentResult } from "./agent-runner";
+import { varsleVedPlanAction } from "./notify-plan-action";
 
 export const AGENT_NAME = "trackman-agent";
 
@@ -80,15 +82,18 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
           },
         });
         if (!eksisterende) {
-          await prisma.planAction.create({
+          const coachId = await resolveCoachIdForPlayer(userId);
+          const forklaring = `Smash factor snitt ${snitt.toFixed(2)} — reduser CS og fokuser treffkvalitet.`;
+          const created = await prisma.planAction.create({
             data: {
               userId,
+              coachId,
               planId: plan?.id ?? null,
               actionType: "INTENSITY_ADJUST",
               agentName: AGENT_NAME,
               suggestion: {
                 csTarget: 60,
-                forklaring: `Smash factor snitt ${snitt.toFixed(2)} — reduser CS og fokuser treffkvalitet.`,
+                forklaring,
                 signalSnapshot: {
                   kind: "TRACKMAN_METRIC",
                   value: snitt,
@@ -98,6 +103,13 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
             },
           });
           planActionsWritten++;
+          await varsleVedPlanAction({
+            userId,
+            agentName: AGENT_NAME,
+            actionType: "INTENSITY_ADJUST",
+            forklaring,
+            planActionId: created.id,
+          });
         }
       }
     }

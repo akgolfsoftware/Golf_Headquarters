@@ -3,6 +3,7 @@
 // for enkelhet. Hvis de blir treige kan de flyttes til Inngest/Trigger.dev.
 
 import { runRoundAgent } from "./round-agent";
+import { runSgAnalyseEkspert } from "./sg-analyse-ekspert";
 import { runTestAgent } from "./test-agent";
 import { runTrackManAgent } from "./trackman-agent";
 import { runPeriodiseringsAgent } from "./periodiserings-agent";
@@ -15,6 +16,7 @@ import { runLiveCoachAgent, type LiveSessionKind } from "./live-coach-agent";
 export async function triggerRoundAgent(userId: string): Promise<void> {
   try {
     await runRoundAgent(userId);
+    await runSgAnalyseEkspert(userId);
     const plan = await prisma.trainingPlan.findFirst({
       where: { userId, isActive: true },
       select: { id: true },

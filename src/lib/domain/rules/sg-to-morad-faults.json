@@ -1,0 +1,6 @@
+{
+  "ott": ["over_the_top", "casting", "insufficient_shoulder_turn", "flat_shoulder_plane", "early_extension"],
+  "app": ["incorrect_elbow_position", "angle_loss_backswing", "poor_spine_alignment", "left_elbow_stall", "improper_weight_transfer"],
+  "arg": ["poor_spine_alignment", "casting"],
+  "putt": []
+}
