@@ -4069,6 +4069,7 @@ model FysOkt {
   dag              Ukedag?
   sortOrder        Int
   estimertMinutter Int?
+  type             String? // styrke | rotasjon | mobilitet | kondisjon (v2 fysisk-logging)
 
   uke   FysUke         @relation(fields: [ukeId], references: [id], onDelete: Cascade)
   rader FysOvelseRad[]
@@ -4097,6 +4098,14 @@ model FysOvelseRad {
   loggBelastningKg Float?
   loggRir          Int?
   notat            String?
+
+  // v2 fysisk-logging (additivt): ekte per-sett-logg + intervall/puls for kondisjon.
+  // Tonnasje/volum beregnes fra loggSettData, lagres ikke.
+  loggSettData      Json? // [{ vekt: number, reps: number }] per sett
+  intervallSerier   Int?
+  intervallMinutter Int?
+  pulssone          String? // S1–S5
+  pause             String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
