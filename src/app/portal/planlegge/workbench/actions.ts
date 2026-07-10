@@ -13,6 +13,7 @@ import { z } from "zod";
 import { dateForDayIndex, executeSessionMove, weekRefDate } from "@/lib/workbench/session-move";
 import { deleteV2ForPlanSession, upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
 import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel";
+import { duplicateWeekCore } from "@/lib/workbench/duplicate-week";
 
 // ============================================================================
 // PERIODE
@@ -522,4 +523,14 @@ export async function removeWorkbenchSession(
   await prisma.trainingPlanSession.delete({ where: { id: sessionId } });
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true };
+}
+
+/** «Gjenta forrige uke» for spilleren selv — samme kjerne som coach-varianten. */
+export async function duplicateWorkbenchWeek(
+  targetWeekOffset = 0,
+): Promise<{ ok: boolean; count?: number; error?: string }> {
+  const user = await requirePortalUser();
+  const result = await duplicateWeekCore(user.id, targetWeekOffset);
+  if (result.ok) revalidatePath("/portal/planlegge/workbench");
+  return result;
 }

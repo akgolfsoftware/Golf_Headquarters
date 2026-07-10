@@ -16,7 +16,7 @@ import { parseWeekOffset } from "@/lib/workbench/session-move-math";
 import { publishWorkbenchPlan } from "@/lib/workbench/publish-actions";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { WorkbenchV2, type WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
-import { addWorkbenchSession, moveWorkbenchSession, removeWorkbenchSession } from "./actions";
+import { addWorkbenchSession, moveWorkbenchSession, removeWorkbenchSession, duplicateWorkbenchWeek } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +37,7 @@ export default async function V2WorkbenchPreviewPage({ searchParams }: Props) {
     moveSession: moveWorkbenchSession,
     removeSession: removeWorkbenchSession,
     publish: publishWorkbenchPlan,
+    duplicateWeek: duplicateWorkbenchWeek,
   };
 
   return (
