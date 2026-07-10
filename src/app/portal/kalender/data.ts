@@ -102,6 +102,13 @@ export type PeriodeBaand = {
   tone: "ok" | "naa" | null;
 };
 
+export type AarTurnering = {
+  navn: string;
+  uke: number;       // ISO-ukenummer i året (for tidslinje-posisjon)
+  datoLabel: string; // "12. aug"
+  prio: "A" | "B" | "C"; // fra TournamentEntry.priority (MAJOR/NORMAL/LOCAL)
+};
+
 export type KalenderData = {
   spillerNavn: string;
   avatarUrl: string | null;
@@ -134,6 +141,9 @@ export type KalenderData = {
     subtitle: string;         // "Sesong 2026" (+ neste turnering)
     aktivPeriodeLabel: string | null;
     perioder: PeriodeBaand[];
+    /** Alle kjente turneringer i året (fra TournamentEntry) — vist på tidslinjen
+     *  også når sesongplanen (periodBlocks) mangler helt. */
+    turneringer: AarTurnering[];
     kpis: {
       ukerTil: string;        // uker til neste turnering, "–" om ingen
       turneringerIgjen: number;
@@ -297,6 +307,20 @@ export async function hentKalenderData(
     : "–";
   const nesteNavn = neste?.e.tournament?.name ?? neste?.e.manualName ?? null;
 
+  // Alle kjente turneringer i året (fortid + fremtid) — for tidslinjen i Aar-
+  // visningen, uavhengig av om sesongplanen (periodBlocks) finnes.
+  const PRIORITY_TIL_PRIO: Record<string, "A" | "B" | "C"> = { MAJOR: "A", NORMAL: "B", LOCAL: "C" };
+  const aarTurneringer: AarTurnering[] = turneringer
+    .map((e) => ({ e, dato: e.tournament?.startDate ?? e.manualDate }))
+    .filter((x): x is { e: (typeof turneringer)[number]; dato: Date } => !!x.dato)
+    .sort((a, b) => a.dato.getTime() - b.dato.getTime())
+    .map(({ e, dato }) => ({
+      navn: e.tournament?.name ?? e.manualName ?? "Turnering",
+      uke: ukenummer(dato),
+      datoLabel: `${dato.getDate()}. ${MND_KORT[dato.getMonth()]}`,
+      prio: PRIORITY_TIL_PRIO[e.priority] ?? "B",
+    }));
+
   // Treningstimer i år (fullførte økter)
   const fullforteMin = okter
     .filter((s) => s.status === "COMPLETED")
@@ -342,6 +366,7 @@ export async function hentKalenderData(
       subtitle,
       aktivPeriodeLabel,
       perioder,
+      turneringer: aarTurneringer,
       kpis: { ukerTil, turneringerIgjen: framtidige.length, treningstimer, gjennomforing },
     },
   };

@@ -1,0 +1,9 @@
+/* MAL — kopier til <segment>/loading.tsx og velg riktig variant
+   ("liste" | "kort" | "dashboard" — se src/components/v2/feil-laste.tsx).
+   Server Component er OK (ingen "use client" nødvendig). */
+
+import { V2Laster } from "@/components/v2/feil-laste";
+
+export default function Loading() {
+  return <V2Laster variant="kort" />;
+}

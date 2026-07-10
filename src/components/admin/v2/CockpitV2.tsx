@@ -127,10 +127,13 @@ export function CockpitV2({ data, innboks }: { data: CockpitData; innboks?: Innb
       : {};
   const kpi = (
     <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
-      <KpiFlis label="Aktive spillere" value={data.activePlayersCount} {...aktiveDelta} />
-      <KpiFlis label="Økter i dag" value={okterIdag} />
-      <KpiFlis label="Trenger deg nå" value={trengerDeg} varsle={trengerDeg > 0} />
-      <KpiFlis label="Stall-SG snitt" value={data.stallSgKpi} hjelp="sgTotal" />
+      {/* instant: dataene er ferdig hentet server-side før første maling — en
+          tell-opp-fra-0-animasjon her viser bare en falsk mellomverdi i ~600ms
+          før den ekte verdien vises, aldri en reell lasting. */}
+      <KpiFlis label="Aktive spillere" value={data.activePlayersCount} instant {...aktiveDelta} />
+      <KpiFlis label="Økter i dag" value={okterIdag} instant />
+      <KpiFlis label="Trenger deg nå" value={trengerDeg} varsle={trengerDeg > 0} instant />
+      <KpiFlis label="Stall-SG snitt" value={data.stallSgKpi} hjelp="sgTotal" instant />
     </div>
   );
 

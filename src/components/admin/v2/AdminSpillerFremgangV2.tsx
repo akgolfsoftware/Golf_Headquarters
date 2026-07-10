@@ -25,6 +25,7 @@ import {
   FordelingRad,
   InnsiktChip,
   TomTilstand,
+  TilbakeLenke,
 } from "@/components/v2";
 
 // ── Datakontrakt (mappes fra den ekte loaderen i ruten) ─────────
@@ -61,6 +62,8 @@ export interface FremgangV2Korrelasjon {
 }
 export interface FremgangV2Data {
   navn: string;
+  /** Spillerens bruker-id — for tilbake-lenke til profilen. */
+  spillerId: string;
   uker: number;
   harRunder: boolean;
   /** Områder med minst ett SG-datapunkt. */
@@ -135,7 +138,7 @@ function OmradeTrend({ o }: { o: FremgangV2Omrade }) {
 }
 
 export function AdminSpillerFremgangV2({ data }: { data: FremgangV2Data }) {
-  const { navn, uker, harRunder, omrader, volumUker, volumOmrader, volumTotal, korrelasjon } = data;
+  const { navn, spillerId, uker, harRunder, omrader, volumUker, volumOmrader, volumTotal, korrelasjon } = data;
 
   // Navn med kursiv lime-aksent på etternavn (v2-tittelidiom).
   const deler = navn.trim().split(" ");
@@ -149,15 +152,18 @@ export function AdminSpillerFremgangV2({ data }: { data: FremgangV2Data }) {
 
   // ── Hode ────────────────────────────────────────────────────────
   const hode = (
-    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-      <div>
-        <Caps>AgencyOS · Fremgang</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em={em}>{em ? `${fornavn} ` : navn}</Tittel>
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <TilbakeLenke href={`/admin/spillere/${spillerId}`}>Tilbake til {navn}</TilbakeLenke>
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
+        <div>
+          <Caps>AgencyOS · Fremgang</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em={em}>{em ? `${fornavn} ` : navn}</Tittel>
+          </div>
         </div>
-      </div>
-      <div className="hidden md:block">
-        <Caps size={9}>{periode}</Caps>
+        <div className="hidden md:block">
+          <Caps size={9}>{periode}</Caps>
+        </div>
       </div>
     </div>
   );

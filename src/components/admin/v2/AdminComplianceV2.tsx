@@ -34,6 +34,7 @@ import {
   PillVelger,
   Icon,
   UkeStripe,
+  HjelpTips,
   etterlevFarge,
   type EtterlevBand,
   T,
@@ -175,7 +176,10 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
 
           {/* Uke-strip (8 uker) */}
           <div style={{ marginTop: 20 }}>
-            <Caps size={9}>Uke for uke · fullføring</Caps>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+              <Caps size={9}>Uke for uke · fullføring</Caps>
+              <HjelpTips k="planEtterlevelse" size={11} />
+            </span>
             <div style={{ marginTop: 12 }}>
               <UkeStripe uker={panel.weeks} />
             </div>

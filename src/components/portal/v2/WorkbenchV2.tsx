@@ -58,6 +58,14 @@ const HOUR_H = 44;
 const START_TIME = 7;
 const END_TIME = 21;
 
+/** eb (AkseKey, stor bokstav) → ax (Axis, liten bokstav) for optimistiske temp-events. */
+const AKSE_TO_AXIS: Record<AkseKey, WeekEvent["ax"]> = {
+  FYS: "fys", TEK: "tek", SLAG: "slag", SPILL: "spill", TURN: "turn",
+};
+/** Optimistisk temp-id-prefiks — brukes til å style pending-tilstand og luke ut ved rollback. */
+const OPTIMISTIC_PREFIX = "optimistic-";
+const erOptimistisk = (id?: string) => !!id && id.startsWith(OPTIMISTIC_PREFIX);
+
 type Role = "coach" | "player";
 
 export interface WorkbenchV2Props {
@@ -96,17 +104,19 @@ function TLBlokk({ o, valgt, onVelg }: { o: WeekEvent; valgt: boolean; onVelg: (
   const col = T.ax[ak] || T.mut;
   const done = o.compliance === "pa-plan";
   const avvik = o.compliance === "avvik" || o.compliance === "ikke-gjennomfort";
+  const pending = erOptimistisk(o.id);
   const ramme = avvik ? T.down : valgt ? T.lime : T.border;
   const top = Math.max(0, (start - START_TIME) * HOUR_H + 2);
   return (
     <div
-      onClick={() => o.id && onVelg(o.id)}
+      onClick={() => o.id && !pending && onVelg(o.id)}
       style={{
         position: "absolute", top, left: 3, right: 3, height: Math.max(18, h - 4),
-        borderRadius: 8, padding: kompakt ? "2px 7px" : "5px 8px", cursor: "pointer", overflow: "hidden",
+        borderRadius: 8, padding: kompakt ? "2px 7px" : "5px 8px", cursor: pending ? "default" : "pointer", overflow: "hidden",
         background: `color-mix(in srgb, ${col} 15%, ${T.panel3})`,
-        border: `1px solid ${ramme}`,
+        border: `1px ${pending ? "dashed" : "solid"} ${ramme}`,
         borderLeft: `3px solid ${col}`,
+        opacity: pending ? 0.6 : 1,
         boxShadow: avvik
           ? `0 0 0 1px color-mix(in srgb, ${T.down} 25%, transparent)`
           : valgt
@@ -358,8 +368,9 @@ export function DagNivaa({ dag, valgt, onVelg }: { dag: DagKol | null; valgt: st
           const ak = o.eb as AkseKey;
           const col = T.ax[ak] || T.mut;
           const sel = !!o.id && valgt === o.id;
+          const pending = erOptimistisk(o.id);
           return (
-            <div key={o.id ?? j} onClick={() => o.id && onVelg(o.id)} style={{ padding: "9px 11px", borderRadius: 10, background: T.panel2, border: `1px solid ${sel ? T.lime : T.border}`, borderLeft: `3px solid ${col}`, cursor: "pointer" }}>
+            <div key={o.id ?? j} onClick={() => o.id && !pending && onVelg(o.id)} style={{ padding: "9px 11px", borderRadius: 10, background: T.panel2, border: `1px ${pending ? "dashed" : "solid"} ${sel ? T.lime : T.border}`, borderLeft: `3px solid ${col}`, cursor: pending ? "default" : "pointer", opacity: pending ? 0.6 : 1 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2 }}>{toKl(o.h, o.m)}</span>
                 <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: `color-mix(in srgb, ${col} 55%, ${T.fg})` }}>{AKSE_NAVN[ak] || o.eb}</span>
@@ -422,8 +433,53 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   const [dupLoading, setDupLoading] = useState(false);
   const [merApen, setMerApen] = useState(false);
 
-  const dager = useMemo(() => (data ? byggDager(data) : []), [data]);
-  const alleEvents = useMemo(() => dager.flatMap((d) => d.events).filter((e) => e.id), [dager]);
+  // Optimistisk UI: flytt/ny økt vises i tidslinja UMIDDELBART (før serveren har
+  // svart), rulles tilbake ved feil. ALDRI for sletting (destruktivt — se
+  // ValgtOktSeksjon.slett i WorkbenchV2Sheets.tsx, forblir synkron med bekreftelse).
+  const [pendingMoves, setPendingMoves] = useState<{ key: string; sessionId: string; toDayIndex: number }[]>([]);
+  const [pendingAdds, setPendingAdds] = useState<{ key: string; dayIndex: number; event: WeekEvent }[]>([]);
+  // Publiser-status vises som «Til godkjenning» med det samme — ekte planStatus
+  // kommer med router.refresh(); effekten under nullstiller når den ankommer.
+  const [optimisticStatus, setOptimisticStatus] = useState<PlanStatus | null>(null);
+
+  const baseDager = useMemo(() => (data ? byggDager(data) : []), [data]);
+  const dager = useMemo(() => {
+    if (pendingMoves.length === 0 && pendingAdds.length === 0) return baseDager;
+    const next = baseDager.map((d) => ({ ...d, events: [...d.events] }));
+    for (const mv of pendingMoves) {
+      for (const day of next) {
+        const idx = day.events.findIndex((e) => e.id === mv.sessionId);
+        if (idx !== -1) {
+          const [ev] = day.events.splice(idx, 1);
+          next[mv.toDayIndex]?.events.push(ev);
+          break;
+        }
+      }
+    }
+    for (const add of pendingAdds) {
+      next[add.dayIndex]?.events.push(add.event);
+    }
+    return next;
+  }, [baseDager, pendingMoves, pendingAdds]);
+  // Pending (optimistiske) økter er IKKE valgbare — de har ingen ekte id ennå,
+  // så «Valgt økt»-panelet (flytt/slett) ville feilet på dem. Vises kun i tidslinja.
+  const alleEvents = useMemo(() => dager.flatMap((d) => d.events).filter((e) => e.id && !erOptimistisk(e.id)), [dager]);
+
+  // Ekte serverdata har landet (router.refresh() etter en vellykket mutasjon) —
+  // de optimistiske overleggene har gjort jobben sin og lukes. Reset skjer
+  // under render (React-sanksjonert «adjust state when props change»-mønster),
+  // ikke i effekt — unngår kaskade-render.
+  const [forrigeData, setForrigeData] = useState(data);
+  if (forrigeData !== data) {
+    setForrigeData(data);
+    setPendingMoves([]);
+    setPendingAdds([]);
+  }
+  const [forrigePlanStatus, setForrigePlanStatus] = useState(planStatus);
+  if (forrigePlanStatus !== planStatus) {
+    setForrigePlanStatus(planStatus);
+    setOptimisticStatus(null);
+  }
   const [valgtId, setValgtIdState] = useState<string | null>(searchParams.get("okt"));
   const valgtOkt = useMemo(() => alleEvents.find((e) => e.id === valgtId) ?? alleEvents[0] ?? null, [alleEvents, valgtId]);
 
@@ -451,7 +507,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
 
   const weekNumber = data?.summary?.weekNumber ?? 0;
   const weekOffset = data?.weekOffset ?? 0;
-  const st = statusLabel(planStatus);
+  const st = statusLabel(optimisticStatus ?? planStatus);
   const adher = data?.adherencePct;
   // Ekte avvik-tall for uka (lib/workbench/compliance.ts sin oktCompliance,
   // beregnet server-side per økt): «avvik» = aktivt avbrutt/hoppet over/kansellert,
@@ -479,12 +535,14 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     if (!actions || pubLoading) return;
     setPubLoading(true);
     setMelding(null);
+    setOptimisticStatus("PENDING_PLAYER"); // status-pillen hopper til «Til godkjenning» med det samme
     const res = await actions.publish();
     setPubLoading(false);
     if (res.ok) {
       setMelding({ tone: "up", tekst: "Planen er sendt til godkjenning." });
       router.refresh();
     } else {
+      setOptimisticStatus(null);
       setMelding({ tone: "down", tekst: res.error ?? "Kunne ikke publisere planen." });
     }
   };
@@ -522,6 +580,22 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
 
   const handleCreateSession = async (input: NyOktInput): Promise<{ ok: boolean; error?: string }> => {
     if (!actions) return { ok: false, error: "Ikke tilgjengelig." };
+    // Vis økta i tidslinja umiddelbart (dempet/stiplet, se erOptimistisk) —
+    // fjernes ved feil, erstattes av ekte data når router.refresh() lander.
+    const addKey = `${OPTIMISTIC_PREFIX}${crypto.randomUUID()}`;
+    const tempEvent: WeekEvent = {
+      id: addKey,
+      source: "plan",
+      status: "PLANNED",
+      h: input.hour,
+      m: input.minute,
+      durMin: input.durMin,
+      ax: AKSE_TO_AXIS[input.akse],
+      eb: input.akse,
+      ttl: input.title,
+      meta: [],
+    };
+    setPendingAdds((prev) => [...prev, { key: addKey, dayIndex: input.dayIndex, event: tempEvent }]);
     const res = await actions.addSession({
       dayIndex: input.dayIndex,
       title: input.title,
@@ -535,9 +609,30 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
       setNyOktApen(false);
       setNyOktPrefill(null);
       router.refresh();
+    } else {
+      setPendingAdds((prev) => prev.filter((p) => p.key !== addKey));
     }
     return res;
   };
+
+  // moveSession-wrapper: flytter økta til ny dag i tidslinja med det samme
+  // (ValgtOktSeksjon i WorkbenchV2Sheets.tsx kaller denne via actions-proppen),
+  // ruller tilbake overlegget hvis serveren avviser flyttingen.
+  const optimisticMoveSession = async (
+    sessionId: string,
+    dayIndex: number,
+    weekOffsetArg?: number,
+  ): Promise<{ ok: boolean; error?: string }> => {
+    if (!actions) return { ok: false, error: "Ikke tilgjengelig." };
+    const moveKey = `${sessionId}:${Date.now()}`;
+    setPendingMoves((prev) => [...prev, { key: moveKey, sessionId, toDayIndex: dayIndex }]);
+    const res = await actions.moveSession(sessionId, dayIndex, weekOffsetArg);
+    if (!res.ok) {
+      setPendingMoves((prev) => prev.filter((p) => p.key !== moveKey));
+    }
+    return res;
+  };
+  const balanseActions = actions ? { ...actions, moveSession: optimisticMoveSession } : actions;
 
   if (!data) {
     return (
@@ -710,7 +805,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           data={data}
           valgtOkt={valgtOkt}
           weekNumber={weekNumber}
-          actions={actions}
+          actions={balanseActions}
           weekOffset={weekOffset}
           onEndret={() => router.refresh()}
         />
@@ -732,7 +827,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
             data={data}
             valgtOkt={valgtOkt}
             weekNumber={weekNumber}
-            actions={actions}
+            actions={balanseActions}
             weekOffset={weekOffset}
             onEndret={() => router.refresh()}
           />

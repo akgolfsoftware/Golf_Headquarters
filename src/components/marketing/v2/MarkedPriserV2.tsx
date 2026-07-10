@@ -13,6 +13,7 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { T } from "@/lib/v2/tokens";
 import { Caps, Kort, LogoAK, StatusPill } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
@@ -81,8 +82,14 @@ function MFot({ mobile }: { mobile: boolean }) {
         <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>AK Golf Group AS · Fredrikstad</span>
       </span>
       <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-        {["Coaching", "PlayerHQ", "Priser", "Book tid", "Personvern"].map((l) => (
-          <span key={l} style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, cursor: "pointer" }}>{l}</span>
+        {[
+          { l: "Coaching", href: "/coaching" },
+          { l: "PlayerHQ", href: "/playerhq" },
+          { l: "Priser", href: "/priser" },
+          { l: "Book tid", href: "/booking" },
+          { l: "Personvern", href: "/personvern" },
+        ].map((f) => (
+          <Link key={f.l} href={f.href} style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, textDecoration: "none" }}>{f.l}</Link>
         ))}
       </div>
     </div>

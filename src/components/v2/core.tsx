@@ -9,6 +9,7 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { T, fmtSg, type AkseKey } from "@/lib/v2/tokens";
 import { useCountUp, useMount, EASE, reduced } from "@/lib/v2/hooks";
 import { Icon } from "@/components/v2/icon";
@@ -246,16 +247,41 @@ export interface PillTabsProps {
   value: string;
   onChange?: (id: string) => void;
 }
-/* aktiv = lime-pille */
+/* aktiv = lime-pille. Overflyt-hint: høyrekant-fade (mask) + liten chevron når
+   fanene ikke får plass (scrollWidth > clientWidth) — signaliserer at det finnes
+   flere faner å scrolle til. */
 export function PillTabs({ tabs, value, onChange }: PillTabsProps) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [overflow, setOverflow] = useState(false);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const sjekk = () => setOverflow(el.scrollWidth > el.clientWidth + 1);
+    sjekk();
+    const ro = new ResizeObserver(sjekk);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [tabs.length]);
+
+  const mask = overflow ? "linear-gradient(to right, black 0%, black calc(100% - 26px), transparent 100%)" : undefined;
+
   return (
-    <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 2 }}>
-      {tabs.map((t) => {
-        const on = value === t.id;
-        return (
-          <button key={t.id} className="v2-press v2-focus" onClick={() => onChange && onChange(t.id)} style={{ appearance: "none", cursor: "pointer", fontFamily: T.ui, fontSize: 13, fontWeight: 600, padding: "8px 15px", borderRadius: 9999, color: on ? T.onLime : T.fg2, background: on ? T.lime : T.panel2, border: `1px solid ${on ? "transparent" : T.border}`, whiteSpace: "nowrap" }}>{t.l}</button>
-        );
-      })}
+    <div style={{ position: "relative" }}>
+      <div
+        ref={scrollerRef}
+        style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 2, maskImage: mask, WebkitMaskImage: mask }}
+      >
+        {tabs.map((t) => {
+          const on = value === t.id;
+          return (
+            <button key={t.id} className="v2-press v2-focus" onClick={() => onChange && onChange(t.id)} style={{ appearance: "none", cursor: "pointer", fontFamily: T.ui, fontSize: 13, fontWeight: 600, padding: "8px 15px", borderRadius: 9999, color: on ? T.onLime : T.fg2, background: on ? T.lime : T.panel2, border: `1px solid ${on ? "transparent" : T.border}`, whiteSpace: "nowrap" }}>{t.l}</button>
+          );
+        })}
+      </div>
+      {overflow && (
+        <Icon name="chevron-right" size={12} style={{ position: "absolute", right: 0, top: "50%", transform: "translateY(calc(-50% - 1px))", color: T.mut, pointerEvents: "none" }} />
+      )}
     </div>
   );
 }
@@ -316,6 +342,22 @@ export function CTAPill({ icon, children, ghost, full }: CTAPillProps) {
     <span className="v2-press v2-focus" tabIndex={0} role="button" style={{ display: "inline-flex", alignItems: "center", justifyContent: full ? "center" : undefined, gap: 8, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: ghost ? T.fg : T.onLime, background: ghost ? T.panel3 : T.lime, border: ghost ? `1px solid ${T.borderS}` : "none", borderRadius: 9999, padding: "9px 16px", cursor: "pointer", width: full ? "100%" : undefined }}>
       {icon && <Icon name={icon} size={14} />}{children}
     </span>
+  );
+}
+
+export interface TilbakeLenkeProps {
+  /** Målrute (f.eks. tilbake til spillerprofilen eller spillerlisten). */
+  href: string;
+  children?: ReactNode;
+}
+/* Delt tilbake-navigasjon for sub-navigasjonsklynger (f.eks. spiller-360°:
+   profil→analyse→plan→fremgang→tester). Ett mønster overalt: CTAPill ghost
+   + arrow-left. Bruk denne i stedet for ad-hoc lenker med chevron-left. */
+export function TilbakeLenke({ href, children }: TilbakeLenkeProps) {
+  return (
+    <Link href={href} style={{ textDecoration: "none" }}>
+      <CTAPill ghost icon="arrow-left">{children}</CTAPill>
+    </Link>
   );
 }
 

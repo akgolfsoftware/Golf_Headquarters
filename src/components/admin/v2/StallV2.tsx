@@ -31,6 +31,7 @@ import {
   FilterChips,
   CTAPill,
   TomTilstand,
+  Icon,
   T,
   type SevKey,
 } from "@/components/v2";
@@ -59,6 +60,8 @@ export interface StallV2Player {
   adherence: StallV2Adherence[];
   /** Aggregert etterlevelse denne uka. null = ingen planlagte økter. */
   adhPct: number | null;
+  /** Aldri logget inn — bulk-importert plassholderprofil uten aktivitet ennå. */
+  venter: boolean;
 }
 export interface StallV2Data {
   total: number;
@@ -184,7 +187,11 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
 export function StallV2({ data }: { data: StallV2Data }) {
   const [grp, setGrp] = useState<string[]>([]);
   const [sta, setSta] = useState<string[]>([]);
-  const [valgtId, setValgtId] = useState<string | null>(data.spillere[0]?.id ?? null);
+  const [venterApen, setVenterApen] = useState(false);
+  // Standard: velg første AKTIVE profil, ikke en tom «venter»-plassholder.
+  const [valgtId, setValgtId] = useState<string | null>(
+    data.spillere.find((p) => !p.venter)?.id ?? data.spillere[0]?.id ?? null,
+  );
 
   const toggle = (arr: string[], set: (v: string[]) => void) => (x: string) =>
     set(arr.indexOf(x) !== -1 ? arr.filter((y) => y !== x) : arr.concat(x));
@@ -194,7 +201,16 @@ export function StallV2({ data }: { data: StallV2Data }) {
     const sOk = sta.length === 0 || sta.indexOf(p.trenger ? "Trenger deg" : "I rute") !== -1;
     return gOk && sOk;
   });
-  const valgt = filtered.find((p) => p.id === valgtId) ?? filtered[0] ?? null;
+  // Aktive/komplette profiler først — aldri-aktiverte bulk-import-rader
+  // grupperes bak en egen, kollapsbar «Venter på innlogging»-seksjon.
+  const aktiveRader = filtered.filter((p) => !p.venter);
+  const venterRader = filtered.filter((p) => p.venter);
+  const valgt =
+    aktiveRader.find((p) => p.id === valgtId) ??
+    aktiveRader[0] ??
+    filtered.find((p) => p.id === valgtId) ??
+    filtered[0] ??
+    null;
 
   const filterRad = (
     label: string,
@@ -215,22 +231,45 @@ export function StallV2({ data }: { data: StallV2Data }) {
     </div>
   );
 
-  const liste =
+  const aktivListe =
     filtered.length === 0 ? (
       <Kort>
         <TomTilstand icon="users" title="Ingen spillere her" sub="Ingen spillere passer filteret akkurat nå." />
       </Kort>
-    ) : (
+    ) : aktiveRader.length === 0 ? null : (
       <Kort pad="4px 20px">
-        {filtered.map((x, i) => (
+        {aktiveRader.map((x, i) => (
           <SpillerRadEnkel
             key={x.id}
             s={x}
             valgt={valgt?.id === x.id}
             onClick={() => setValgtId(x.id)}
-            last={i === filtered.length - 1}
+            last={i === aktiveRader.length - 1}
           />
         ))}
+      </Kort>
+    );
+
+  const venterSeksjon =
+    venterRader.length === 0 ? null : (
+      <Kort pad="4px 20px">
+        <Rad
+          onClick={() => setVenterApen((v) => !v)}
+          title={`Venter på innlogging (${venterRader.length})`}
+          sub="Bulk-importert, ingen aktivitet ennå"
+          trailing={<Icon name={venterApen ? "chevron-up" : "chevron-down"} size={14} style={{ color: T.mut }} />}
+          last={!venterApen}
+        />
+        {venterApen &&
+          venterRader.map((x, i) => (
+            <SpillerRadEnkel
+              key={x.id}
+              s={x}
+              valgt={valgt?.id === x.id}
+              onClick={() => setValgtId(x.id)}
+              last={i === venterRader.length - 1}
+            />
+          ))}
       </Kort>
     );
 
@@ -266,7 +305,10 @@ export function StallV2({ data }: { data: StallV2Data }) {
       {hode}
       {filtre}
       <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
-        {liste}
+        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+          {aktivListe}
+          {venterSeksjon}
+        </div>
         {valgt && <SpillerSammendrag s={valgt} />}
       </div>
     </div>

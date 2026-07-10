@@ -185,7 +185,12 @@ export function TonnasjeHero({ tonnasje = 4320, sett = 24, reps = 186, delta = "
         <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{reps} <span style={{ color: T.mut, fontWeight: 400 }}>reps</span></span>
         <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{kg(tonnasje / (sett || 1) / 10)} <span style={{ color: T.mut, fontWeight: 400 }}>tonn/10 sett</span></span>
       </div>
-      {sub && <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, display: "block", marginTop: 12 }}>{sub}</span>}
+      {sub && (
+        <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, display: "flex", alignItems: "center", gap: 5, marginTop: 12 }}>
+          {sub}
+          {sub.includes("ACWR") && <HjelpTips k="acwr" size={11} />}
+        </span>
+      )}
     </Kort>
   );
 }

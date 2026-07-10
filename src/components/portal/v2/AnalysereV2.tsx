@@ -20,6 +20,7 @@ import type { MinGolfData } from "@/lib/min-golf/load-min-golf";
 import type { AnalyticsWorkbenchData } from "@/app/portal/analysere/actions";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { PyramidArea } from "@/generated/prisma/client";
+import { useMount, EASE } from "@/lib/v2/hooks";
 import {
   T,
   fmtSg,
@@ -91,6 +92,24 @@ function fmtSg2(v: number): string {
 function tilPar(score: number, par: number): string {
   const d = score - par;
   return `(${d > 0 ? "+" : d < 0 ? "−" : ""}${Math.abs(d)})`;
+}
+
+/** Lett oppgang/crossfade på fane-innhold ved fane-bytte — `key={tab}` i
+ *  kallstedet tvinger remount så useMount() (reduced-motion-trygg) starter på
+ *  nytt hver gang. Ingen animasjonsbibliotek, bare CSS-transition. */
+function FaneInnhold({ children }: { children: ReactNode }) {
+  const grown = useMount();
+  return (
+    <div
+      style={{
+        opacity: grown ? 1 : 0,
+        transform: grown ? "translateY(0)" : "translateY(6px)",
+        transition: `opacity 220ms ${EASE}, transform 220ms ${EASE}`,
+      }}
+    >
+      {children}
+    </div>
+  );
 }
 
 /** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser/kolonner). */
@@ -296,22 +315,43 @@ function TabTrening({ data, mobile }: { data: AnalysereData; mobile: boolean }) 
   const synlig = training.byAxis.filter((b) => aktive.indexOf(b.axis) !== -1);
   const maxMin = Math.max(1, ...synlig.map((b) => b.minutes));
 
+  // Sekundært innsiktskort under filteret (desktop) — mest trente akse totalt
+  // siste 30 dager. Rene tall som allerede ligger i training.byAxis, ingen ny
+  // datakilde; unngår tom flate uten å duplisere fordelings-listen til høyre.
+  const totalMin = training.byAxis.reduce((s, b) => s + b.minutes, 0);
+  const mestTrent = totalMin > 0 ? training.byAxis.slice().sort((a, b) => b.minutes - a.minutes)[0] : null;
+
   const filtre = (
-    <Kort
-      eyebrow="Filtre · akser i fordelingen"
-      action={
-        <button
-          className="v2-press v2-focus"
-          onClick={() => setAktive(ALLE_AKSER)}
-          style={{ appearance: "none", cursor: "pointer", background: "none", border: "none", padding: 0, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.lime }}
-        >
-          NULLSTILL
-        </button>
-      }
-    >
-      <Caps size={9} style={{ marginBottom: 7 }}>Akse</Caps>
-      <FilterChips items={ALLE_AKSER} active={aktive} axis onToggle={toggle} />
-    </Kort>
+    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <Kort
+        eyebrow="Filtre · akser i fordelingen"
+        action={
+          <button
+            className="v2-press v2-focus"
+            onClick={() => setAktive(ALLE_AKSER)}
+            style={{ appearance: "none", cursor: "pointer", background: "none", border: "none", padding: 0, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.lime }}
+          >
+            NULLSTILL
+          </button>
+        }
+      >
+        <Caps size={9} style={{ marginBottom: 7 }}>Akse</Caps>
+        <FilterChips items={ALLE_AKSER} active={aktive} axis onToggle={toggle} />
+      </Kort>
+      {!mobile && mestTrent && (
+        <Kort eyebrow="Mest trent · siste 30 dager">
+          <AkseChip a={mestTrent.axis as AkseKey} />
+          <div style={{ marginTop: 12 }}>
+            <TallHero
+              value={Math.round((mestTrent.minutes / totalMin) * 100)}
+              unit="% av volumet"
+              sub={`${mestTrent.minutes} min · ${mestTrent.sessions} økter`}
+              size={38}
+            />
+          </div>
+        </Kort>
+      )}
+    </div>
   );
 
   const resultat = (
@@ -507,6 +547,23 @@ function TabTester({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
     );
   }
 
+  // Delta mot forrige registrering av SAMME test (ulike testtyper har ulik
+  // skala — sammenligning på tvers ville villede). Ingen tidligere treff →
+  // «Første måling», aldri fabrikkert delta.
+  const desimaler = nyeste!.score % 1 === 0 ? 0 : 1;
+  const forrige = tests.slice(1).find((t) => t.name === nyeste!.name) ?? null;
+  let heroDelta: string | undefined;
+  let heroDir: "up" | "down" | undefined;
+  let heroSub: string;
+  if (forrige) {
+    const diff = nyeste!.score - forrige.score;
+    heroDelta = `${diff > 0 ? "+" : diff < 0 ? "−" : ""}${komma(Math.abs(diff), desimaler)}`;
+    heroDir = diff < 0 ? "down" : "up";
+    heroSub = `vs. forrige · Tatt ${kortDato(nyeste!.takenAt)}`;
+  } else {
+    heroSub = `Første måling · Tatt ${kortDato(nyeste!.takenAt)}`;
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-[2fr_3fr]" style={{ gap: T.gap, alignItems: "start" }}>
       <Kort tint>
@@ -517,10 +574,12 @@ function TabTester({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
         <div style={{ marginTop: 12 }}>
           <TallHero
             label={nyeste!.name}
-            value={komma(nyeste!.score, nyeste!.score % 1 === 0 ? 0 : 1)}
+            value={komma(nyeste!.score, desimaler)}
+            delta={heroDelta}
+            dir={heroDir}
             size={mobile ? 44 : 48}
             accent
-            sub={`Tatt ${kortDato(nyeste!.takenAt)}`}
+            sub={heroSub}
           />
         </div>
       </Kort>
@@ -607,11 +666,13 @@ export function AnalysereV2({
 
       <PillTabs tabs={TABS.map((t) => ({ id: t.id, l: t.l }))} value={tab} onChange={velgTab} />
 
-      {tab === "sg" && <TabSG data={data} mobile={mobile} />}
-      {tab === "statistikk" && <TabStatistikk data={data} />}
-      {tab === "trening" && <TabTrening data={data} mobile={mobile} />}
-      {tab === "trackman" && <TabTrackman data={data} mobile={mobile} />}
-      {tab === "tester" && <TabTester data={data} mobile={mobile} />}
+      <FaneInnhold key={tab}>
+        {tab === "sg" && <TabSG data={data} mobile={mobile} />}
+        {tab === "statistikk" && <TabStatistikk data={data} />}
+        {tab === "trening" && <TabTrening data={data} mobile={mobile} />}
+        {tab === "trackman" && <TabTrackman data={data} mobile={mobile} />}
+        {tab === "tester" && <TabTester data={data} mobile={mobile} />}
+      </FaneInnhold>
     </div>
   );
 }

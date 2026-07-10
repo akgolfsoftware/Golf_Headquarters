@@ -87,8 +87,12 @@ export function HjemV2({ data }: { data: DashboardData }) {
   // SG-form (kpiStats — snitt SG total siste 10 runder). Badgen under er eneste
   // retningssignal her (10-runders trend) — en egen per-runde-delta ble fjernet
   // fordi den kunne peke motsatt vei av badgen og se ut som en motsigelse.
+  // Sparklinjen viser IKKE rå per-runde-SG (siste punkt spriker da fra
+  // snitt-headlinen) — den viser et rullende snitt av samme runder, så siste
+  // punkt alltid lander nøyaktig på sgVerdi. Konsistens > pynt.
   const tr = kpiStats.sgTrend;
   const sgVerdi = kpiStats.sgTotal != null ? fmtSg(kpiStats.sgTotal) : "–";
+  const sgSerie = rullendeSnitt(tr);
 
   let form: { l: string; tone: StatusTone } | null = null;
   if (tr.length >= 2) {
@@ -160,7 +164,7 @@ export function HjemV2({ data }: { data: DashboardData }) {
 
       <DagStripe days={stripeDager} value={aktivDag} onChange={() => router.push("/portal/kalender")} />
 
-      {/* SG-form + dagens fokus */}
+      {/* SG-form + dagens plan */}
       <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
         <Kort tint>
           <TallHero
@@ -173,12 +177,16 @@ export function HjemV2({ data }: { data: DashboardData }) {
           />
           {tr.length >= 2 && (
             <div style={{ marginTop: 8 }}>
-              <Trend series={tr} height={72} />
+              <Trend series={sgSerie} height={72} />
             </div>
           )}
         </Kort>
 
-        <Kort eyebrow="Dagens fokus">
+        {/* Dagens plan — dagens første/pågående økt vist med detalj øverst
+            (tidligere eget «Dagens fokus»-kort viste samme økt igjen rett
+            under; slått sammen til ett kort, se gap). Resten av dagens
+            økter (om flere) listes kompakt under. */}
+        <Kort eyebrow="Dagens plan" action={todayAll.length > 0 ? <Caps size={9}>{todayAll.length} økter</Caps> : undefined}>
           {today ? (
             <>
               <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, lineHeight: 1.3 }}>{today.title}</div>
@@ -189,40 +197,36 @@ export function HjemV2({ data }: { data: DashboardData }) {
                 <AkseChip a={today.pyramidArea} />
                 {fokusStatus && <StatusPill tone={fokusStatus.tone}>{fokusStatus.l}</StatusPill>}
               </div>
+              {todayAll.length > 1 && (
+                <div style={{ marginTop: 14 }}>
+                  {todayAll.slice(1).map((o, i, arr) => {
+                    const naa = o.status === "IN_PROGRESS";
+                    const sub = [o.sted, varighet(o.durationMin)].filter(Boolean).join(" · ");
+                    return (
+                      <Rad
+                        key={o.id}
+                        leading={
+                          <span style={{ width: 44, flex: "none", fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: naa ? T.lime : T.mut }}>
+                            {toMin(o.startTime)}
+                          </span>
+                        }
+                        title={o.title}
+                        sub={sub}
+                        meta={<AkseChip a={o.pyramidArea} />}
+                        naa={naa}
+                        trailing={null}
+                        last={i === arr.length - 1}
+                      />
+                    );
+                  })}
+                </div>
+              )}
             </>
           ) : (
-            <TomTilstand icon="target" title="Ingen økt i dag" sub="Planlegg dagens fokus i Plan." />
+            <TomTilstand icon="calendar" title="Ingen økt i dag" sub="Nyt hviledagen — eller legg til en økt i Plan." />
           )}
         </Kort>
       </div>
-
-      {/* Dagens plan */}
-      <Kort eyebrow="Dagens plan" action={<Caps size={9}>{todayAll.length} økter</Caps>}>
-        {todayAll.length > 0 ? (
-          todayAll.map((o, i) => {
-            const naa = o.status === "IN_PROGRESS";
-            const sub = [o.sted, varighet(o.durationMin)].filter(Boolean).join(" · ");
-            return (
-              <Rad
-                key={o.id}
-                leading={
-                  <span style={{ width: 44, flex: "none", fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: naa ? T.lime : T.mut }}>
-                    {toMin(o.startTime)}
-                  </span>
-                }
-                title={o.title}
-                sub={sub}
-                meta={<AkseChip a={o.pyramidArea} />}
-                naa={naa}
-                trailing={null}
-                last={i === todayAll.length - 1}
-              />
-            );
-          })
-        ) : (
-          <TomTilstand icon="calendar" title="Ingen økter i dag" sub="Nyt hviledagen — eller legg til en økt i Plan." />
-        )}
-      </Kort>
 
       {/* Mobil-CTA — «Start dagens økt» fullbredde under dagens økt-kort (desktop har den i hodet). */}
       <div className="md:hidden">
@@ -267,6 +271,16 @@ export function HjemV2({ data }: { data: DashboardData }) {
       )}
     </div>
   );
+}
+
+/** Kumulativt rullende snitt, eldst→nyest. Siste element == snittet av hele
+ *  serien — matcher alltid hero-headlinen (samme runder, samme formel). */
+function rullendeSnitt(vals: number[]): number[] {
+  let sum = 0;
+  return vals.map((v, i) => {
+    sum += v;
+    return Math.round((sum / (i + 1)) * 10) / 10;
+  });
 }
 
 /** Uker på rad (nyeste→eldste) med minst én treningsøkt. Avledet av heatmap-verdiene. */

@@ -93,6 +93,15 @@ const NIVAER = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
 const TYPER = ["Alle", "Drill", "Øvelse", "Test", "Fysisk"];
 const AKSER: AkseKey[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
+/** Ikon per akse — brukt i media-fallback når øvelsen mangler bilde/video. */
+const AKSE_IKON: Record<AkseKey, string> = {
+  FYS: "dumbbell",
+  TEK: "target",
+  SLAG: "circle-dot",
+  SPILL: "flag",
+  TURN: "trophy",
+};
+
 /* ── Rene avledninger fra ekte felter ───────────────────────────────── */
 
 type DrillType = "Drill" | "Øvelse" | "Test" | "Fysisk";
@@ -232,11 +241,15 @@ function ChipGruppe({
 /** Hero: ekte bilde hvis satt, ellers video-play-plassholder, ellers ikon-plassholder. */
 function HeroBilde({ o, h = 118, stor }: { o: DrillDetail; h?: number; stor?: boolean }) {
   const spenn = nivaSpenn(o);
+  const harMedia = !!o.imageUrl || !!o.videoUrl;
+  const akseFarge = T.ax[o.axis] ?? T.mut;
   return (
     <div
       style={{
         height: h,
-        background: `linear-gradient(140deg, ${T.panel3}, ${T.bg})`,
+        background: harMedia
+          ? `linear-gradient(140deg, ${T.panel3}, ${T.bg})`
+          : `linear-gradient(140deg, color-mix(in srgb, ${akseFarge} 22%, transparent), color-mix(in srgb, ${akseFarge} 5%, transparent) 65%, ${T.bg})`,
         boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
         position: "relative",
         display: "flex",
@@ -269,7 +282,9 @@ function HeroBilde({ o, h = 118, stor }: { o: DrillDetail; h?: number; stor?: bo
           <Icon name="play" size={stor ? 20 : 14} style={{ color: T.lime }} />
         </span>
       ) : (
-        <Icon name="image" size={stor ? 28 : 20} style={{ color: "rgba(238,240,236,0.30)" }} />
+        // Ingen bilde/video ennå: aksefarget flate + aksens ikon i stedet for
+        // ett identisk grått plassholder-ikon for alle øvelser i banken.
+        <Icon name={AKSE_IKON[o.axis]} size={stor ? 30 : 22} style={{ color: akseFarge, opacity: 0.85 }} />
       )}
       <span style={{ position: "absolute", top: 10, left: 12 }}>
         <span
