@@ -78,10 +78,14 @@ export default async function SlagRegistreringPage({
             {runde.course.name} · {datoTekst}
           </Eyebrow>
           <h1 className="mt-2 font-display text-[26px] font-bold leading-[1.04] tracking-[-0.025em] text-foreground md:text-[30px]">
-            Slag-for-slag
+            Avansert redigering
           </h1>
           <p className="mt-1.5 text-sm text-muted-foreground">
-            Registrer hvert slag manuelt, eller importer fra UpGame.
+            Rediger enkeltslag på en lagret runde, eller importer fra UpGame. Ny føring gjøres{" "}
+            <Link href="/portal/runde/logg" className="font-semibold text-primary hover:opacity-80">
+              slag for slag
+            </Link>{" "}
+            — raskere og alltid komplett kjede.
           </p>
         </div>
         <UpGameImportModal roundId={id} />

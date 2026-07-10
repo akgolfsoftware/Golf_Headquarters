@@ -45,6 +45,7 @@ export type RunderV2Data = {
 /** Kanoniske ruter (funksjons-hrefs kan ikke sendes server→klient). */
 const RUTE_NY = "/portal/mal/runder/ny";
 const RUTE_LIVE = "/portal/runde/live";
+const RUTE_SLAG = "/portal/runde/logg";
 const ruteDetalj = (id: string) => `/portal/mal/runder/${id}`;
 
 /* ── Rene hjelpere (norsk bokmål, brutto score) ────────────────────── */
@@ -132,8 +133,11 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
           <Link href={RUTE_LIVE} style={{ textDecoration: "none" }}>
             <CTAPill icon="flag">Start live-føring</CTAPill>
           </Link>
+          <Link href={RUTE_SLAG} style={{ textDecoration: "none" }}>
+            <Knapp ghost icon="pencil">Før slag for slag</Knapp>
+          </Link>
           <Link href={RUTE_NY} style={{ textDecoration: "none" }}>
-            <Knapp ghost icon="plus">Loggfør runde</Knapp>
+            <Knapp ghost icon="plus">Hurtig score</Knapp>
           </Link>
         </div>
       </div>
@@ -160,12 +164,15 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
       ) : (
         <>
           {/* Mobil-CTA (desktop har knappene i hodet) */}
-          <div className="flex md:hidden" style={{ gap: 8 }}>
-            <Link href={RUTE_LIVE} style={{ textDecoration: "none", flex: 1, display: "flex" }}>
+          <div className="flex md:hidden" style={{ gap: 8, flexWrap: "wrap" }}>
+            <Link href={RUTE_LIVE} style={{ textDecoration: "none", flex: "1 1 100%", display: "flex" }}>
               <CTAPill icon="flag">Start live-føring</CTAPill>
             </Link>
+            <Link href={RUTE_SLAG} style={{ textDecoration: "none" }}>
+              <Knapp ghost icon="pencil">Slag for slag</Knapp>
+            </Link>
             <Link href={RUTE_NY} style={{ textDecoration: "none" }}>
-              <Knapp ghost icon="plus">Loggfør</Knapp>
+              <Knapp ghost icon="plus">Hurtig score</Knapp>
             </Link>
           </div>
 

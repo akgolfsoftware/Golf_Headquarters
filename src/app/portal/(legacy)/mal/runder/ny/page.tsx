@@ -36,6 +36,16 @@ export default async function NyRundePage() {
           Loggfør <em className="font-normal italic text-primary">runde.</em>
         </h1>
 
+        <div className="mt-3 rounded-lg border border-border bg-secondary/40 px-4 py-3">
+          <p className="text-sm text-muted-foreground">
+            Vil du ha full Strokes Gained?{" "}
+            <Link href="/portal/runde/logg" className="font-semibold text-primary hover:opacity-80">
+              Før runden slag for slag
+            </Link>{" "}
+            — da ser du nøyaktig hvor slagene ble tjent og tapt.
+          </p>
+        </div>
+
         <RundeNyForm courses={courses} />
       </div>
     </div>
