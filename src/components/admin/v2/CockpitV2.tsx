@@ -138,7 +138,13 @@ export function CockpitV2({ data, innboks }: { data: CockpitData; innboks?: Innb
   const koen = (
     <Kort
       eyebrow="Trenger deg nå"
-      action={data.focus.length > 0 ? <Caps size={9} color={T.down}>{pl(data.focus.length, "sak", "saker")}</Caps> : undefined}
+      action={
+        data.focus.length > 0 ? (
+          <Link href="/admin/innboks" style={{ textDecoration: "none" }}>
+            <Caps size={9} color={T.down}>{pl(data.focus.length, "sak", "saker")}</Caps>
+          </Link>
+        ) : undefined
+      }
     >
       {data.focus.length === 0 ? (
         <TomTilstand icon="check-circle" title="Ingen saker nå" sub="Ingen spillere trenger deg akkurat nå." />

@@ -16,6 +16,7 @@
  */
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import {
   T,
   Caps,
@@ -29,7 +30,7 @@ import {
   TomTilstand,
   Icon,
 } from "@/components/v2";
-import { hentSlotVindu } from "@/app/portal/booking/actions";
+import { hentSlotVindu, opprettBooking } from "@/app/portal/booking/actions";
 import type { SlotVindu } from "@/lib/portal-booking/slot-vindu";
 
 /* ── Datakontrakt (props) ──────────────────────────────────────────── */
@@ -489,13 +490,15 @@ function StegTid({ tjeneste, coachNavn, laster, ledigeIso, valgtIso, setValgtIso
 
 /* ── Steg 4 · Bekreft ──────────────────────────────────────────────── */
 
-function StegBekreft({ tjeneste, coachNavn, dato, tid, credits, onBook, mobile }: {
+function StegBekreft({ tjeneste, coachNavn, dato, tid, credits, onBook, laster, feil, mobile }: {
   tjeneste: BookingTjeneste;
   coachNavn: string;
   dato: string | null;
   tid: string | null;
   credits: BookingCredits;
   onBook: () => void;
+  laster: boolean;
+  feil: string | null;
   mobile: boolean;
 }) {
   const pakke = tjeneste.betalesMedCredit;
@@ -528,9 +531,24 @@ function StegBekreft({ tjeneste, coachNavn, dato, tid, credits, onBook, mobile }
             </span>
           </div>
         </Kort>
-        <Knapp icon="check" full onClick={onBook} disabled={!klar}>Book time</Knapp>
+        {feil && feil !== "KREVER_BETALING" && (
+          <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, background: `color-mix(in srgb,${T.down} 10%,transparent)`, border: `1px solid ${T.down}` }}>
+            <Icon name="alert-triangle" size={13} style={{ color: T.down, flex: "none", marginTop: 1 }} />
+            <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5 }}>{feil}</span>
+          </div>
+        )}
+        {feil === "KREVER_BETALING" && (
+          <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
+            <Icon name="credit-card" size={13} style={{ color: T.warn, flex: "none", marginTop: 1 }} />
+            <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5 }}>
+              Booking krever coaching-pakke eller betaling — kontakt coach, eller{" "}
+              <Link href="/portal/meg/abonnement" style={{ color: T.lime, fontWeight: 600 }}>se abonnement →</Link>
+            </span>
+          </div>
+        )}
+        <Knapp icon="check" full onClick={onBook} disabled={!klar || laster}>{laster ? "Booker …" : "Book time"}</Knapp>
         <p style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, textAlign: "center", margin: 0, lineHeight: 1.5 }}>
-          Gratis avbestilling inntil 24 timer før. Coach bekrefter vanligvis innen 1 time.
+          Gratis avbestilling inntil 24 timer før. Bekreftes umiddelbart når du har coaching-pakke med ledige timer.
         </p>
       </div>
     </div>
@@ -539,11 +557,12 @@ function StegBekreft({ tjeneste, coachNavn, dato, tid, credits, onBook, mobile }
 
 /* ── Kvittering ────────────────────────────────────────────────────── */
 
-function Kvittering({ tjeneste, coachNavn, dato, tid, mobile }: {
+function Kvittering({ tjeneste, coachNavn, dato, tid, bookingId, mobile }: {
   tjeneste: BookingTjeneste;
   coachNavn: string;
   dato: string | null;
   tid: string | null;
+  bookingId: string;
   mobile: boolean;
 }) {
   const sluttTid = tid ? sluttKl(tid, tjeneste.varighetMin) : null;
@@ -554,14 +573,15 @@ function Kvittering({ tjeneste, coachNavn, dato, tid, mobile }: {
           <Icon name="check" size={26} style={{ color: T.onLime }} />
         </span>
         <div>
-          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: mobile ? 22 : 26, color: T.fg, letterSpacing: "-0.02em" }}>Timen er sendt til bekreftelse</div>
+          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: mobile ? 22 : 26, color: T.fg, letterSpacing: "-0.02em" }}>Timen er booket</div>
           <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.6 }}>
             {tjeneste.navn} med {coachNavn}<br />
             {dato && tid && <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: T.fg }}>{formatDato(dato)} · {tid}–{sluttTid}</span>}
             {tjeneste.stedNavn && <> · {tjeneste.stedNavn}</>}
           </p>
         </div>
-        <StatusPill tone="warn">Venter på coach</StatusPill>
+        <StatusPill tone="up">Bekreftet</StatusPill>
+        <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>Booking-id {bookingId.slice(0, 8)}</span>
       </div>
     </Kort>
   );
@@ -578,6 +598,11 @@ export function BookingV2({ data }: { data: BookingV2Data }) {
   const [valgtCoach, setValgtCoach] = useState("");
   const [valgtIso, setValgtIso] = useState<string | null>(null);
   const [valgtTid, setValgtTid] = useState<string | null>(null);
+
+  // Booking-innsending — ekte server-action, ingen simulert bekreftelse.
+  const [bookLaster, setBookLaster] = useState(false);
+  const [bookFeil, setBookFeil] = useState<string | null>(null);
+  const [bookingId, setBookingId] = useState<string | null>(null);
 
   // Slot-vindu per tjeneste (cache klientside). Init med server-vinduet.
   const [vinduCache, setVinduCache] = useState<Record<string, SlotVindu>>({ [data.vindu.tjenesteId]: data.vindu });
@@ -646,8 +671,28 @@ export function BookingV2({ data }: { data: BookingV2Data }) {
     return null;
   };
 
-  const kvittert = steg === 5;
+  const kvittert = steg === 5 && !!bookingId;
   const nesteSperret = (steg === 3 && (!valgtIso || !valgtTid)) || (steg === 2 && !valgtCoach);
+
+  /** Faktisk booking-innsending — ingen simulert kvittering. */
+  async function handleBook() {
+    if (!tjeneste || !valgtCoach || !valgtIso || !valgtTid || bookLaster) return;
+    setBookLaster(true);
+    setBookFeil(null);
+    const res = await opprettBooking({
+      serviceTypeId: tjeneste.id,
+      coachId: valgtCoach,
+      datoIso: valgtIso,
+      kl: valgtTid,
+    });
+    setBookLaster(false);
+    if (res.ok) {
+      setBookingId(res.bookingId);
+      setSteg(5);
+    } else {
+      setBookFeil(res.grunn);
+    }
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
@@ -671,8 +716,8 @@ export function BookingV2({ data }: { data: BookingV2Data }) {
           {steg === 1 && <StegType tjenester={tjenester} credits={credits} valgt={valgtType} setValgt={setValgtType} mobile={mobile} />}
           {steg === 2 && <StegCoach coacher={vinduCoacher} fraPris={fraPris} nesteLedig={nesteLedig} valgt={valgtCoach} setValgt={setValgtCoach} mobile={mobile} />}
           {steg === 3 && <StegTid tjeneste={tjeneste} coachNavn={coachNavn} laster={laster} ledigeIso={ledigeIso} valgtIso={valgtIso} setValgtIso={setValgtIso} tider={tider} valgtTid={valgtTid} setValgtTid={setValgtTid} visMnd={vis.mnd} visAar={vis.aar} setVis={setVis} credits={credits} mobile={mobile} />}
-          {steg === 4 && <StegBekreft tjeneste={tjeneste} coachNavn={coachNavn} dato={valgtIso} tid={valgtTid} credits={credits} onBook={() => setSteg(5)} mobile={mobile} />}
-          {kvittert && <Kvittering tjeneste={tjeneste} coachNavn={coachNavn} dato={valgtIso} tid={valgtTid} mobile={mobile} />}
+          {steg === 4 && <StegBekreft tjeneste={tjeneste} coachNavn={coachNavn} dato={valgtIso} tid={valgtTid} credits={credits} onBook={handleBook} laster={bookLaster} feil={bookFeil} mobile={mobile} />}
+          {kvittert && bookingId && <Kvittering tjeneste={tjeneste} coachNavn={coachNavn} dato={valgtIso} tid={valgtTid} bookingId={bookingId} mobile={mobile} />}
         </>
       )}
 

@@ -17,12 +17,10 @@
  */
 
 import Link from "next/link";
-import { toast } from "sonner";
 import {
   Caps,
   Tittel,
   Kort,
-  Knapp,
   Icon,
   T,
 } from "@/components/v2";
@@ -174,40 +172,24 @@ export function AdminReportsV2({ data }: { data: ReportsV2Data }) {
   ];
 
   const hode = (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "flex-end",
-        justifyContent: "space-between",
-        gap: 14,
-        flexWrap: "wrap",
-      }}
-    >
-      <div>
-        <Caps>System · Rapporter</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="rapporter.">Seks</Tittel>
-        </div>
-        <span
-          style={{
-            fontFamily: T.ui,
-            fontSize: 13,
-            color: T.fg2,
-            display: "block",
-            marginTop: 8,
-            maxWidth: 460,
-          }}
-        >
-          Generer rapporter for spillere, foreldre, klubb eller forbund. Eksport til
-          PDF og CSV.
-        </span>
+    <div>
+      <Caps>System · Rapporter</Caps>
+      <div style={{ marginTop: 10 }}>
+        <Tittel em="rapporter.">Seks</Tittel>
       </div>
-      <Knapp
-        icon="plus"
-        onClick={() => toast.info("Nye rapporter genereres automatisk")}
+      <span
+        style={{
+          fontFamily: T.ui,
+          fontSize: 13,
+          color: T.fg2,
+          display: "block",
+          marginTop: 8,
+          maxWidth: 460,
+        }}
       >
-        Ny rapport
-      </Knapp>
+        Generer rapporter for spillere, foreldre, klubb eller forbund. Eksport til
+        PDF og CSV.
+      </span>
     </div>
   );
 
