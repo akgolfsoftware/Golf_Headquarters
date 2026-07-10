@@ -552,7 +552,7 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus, acti
       </div>
 
       {/* TOPP-BAR — mobil (<md): to kompakte rader + «Mer» for Rolle/Verktøy/AI/Gjenta */}
-      <div className="md:hidden" style={{ display: "flex", flexDirection: "column", gap: 10, paddingBottom: 14, borderBottom: `1px solid ${T.border}` }}>
+      <div className="flex md:hidden" style={{ flexDirection: "column", gap: 10, paddingBottom: 14, borderBottom: `1px solid ${T.border}` }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <div style={{ minWidth: 0, flex: 1 }}>
             <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: T.mut, display: "block" }}>Workbench</span>
@@ -650,7 +650,7 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus, acti
       </div>
 
       {/* BRØDSMULE — mobil (<md): kompakt sti (wb-mobil ZoomBrodsmule) + uke-nav */}
-      <div className="md:hidden" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div className="flex md:hidden" style={{ alignItems: "center", gap: 8 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <ZoomBrodsmule
             sti={[`Sesong ${new Date().getFullYear()}`, MANEDER[new Date().getMonth()][0].toUpperCase() + MANEDER[new Date().getMonth()].slice(1), `Uke ${weekNumber}`]}
@@ -688,7 +688,7 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus, acti
       </div>
 
       {/* Mobil (<md): tidslinje/agenda først, Bibliotek + Balanse som utfellbare seksjoner under — ikke side-kolonner */}
-      <div className="md:hidden" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div className="flex md:hidden" style={{ flexDirection: "column", gap: T.gap }}>
         {insights?.line && <InnsiktChip>{insights.line}</InnsiktChip>}
         {nivaa === "uke" && <WBTidslinjeMobil dager={dager} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
         {nivaa === "ar" && <AarNivaaMobil data={data} />}

@@ -100,8 +100,7 @@ function Dag({ dag }: { dag: KalenderData["dag"] }) {
 function Uke({ uke, mobile }: { uke: KalenderData["uke"]; mobile: boolean }) {
   const router = useRouter();
   if (mobile) {
-    const medOkter = uke.dager.filter((d) => d.okter.length > 0);
-    if (medOkter.length === 0) {
+    if (uke.dager.length === 0) {
       return (
         <Kort>
           <TomTilstand icon="calendar" title="Ingen økter denne uka" sub="Uka er åpen — be om en økt eller nyt hvilen." />
@@ -110,22 +109,28 @@ function Uke({ uke, mobile }: { uke: KalenderData["uke"]; mobile: boolean }) {
     }
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-        {medOkter.map((d) => (
-          <Kort key={d.d} eyebrow={d.d}>
-            {d.okter.map((o, j) => (
-              <Rad
-                key={o.id}
-                onClick={() => router.push(`/portal/gjennomfore/${o.id}`)}
-                leading={<span style={{ width: 42, flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: o.naa ? T.lime : T.mut }}>{o.kl}</span>}
-                title={o.title}
-                meta={<AkseChip a={o.a} />}
-                naa={o.naa}
-                trailing={null}
-                last={j === d.okter.length - 1}
-              />
-            ))}
-          </Kort>
-        ))}
+        {uke.dager.map((d) =>
+          d.okter.length > 0 ? (
+            <Kort key={d.d} eyebrow={d.d}>
+              {d.okter.map((o, j) => (
+                <Rad
+                  key={o.id}
+                  onClick={() => router.push(`/portal/gjennomfore/${o.id}`)}
+                  leading={<span style={{ width: 42, flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: o.naa ? T.lime : T.mut }}>{o.kl}</span>}
+                  title={o.title}
+                  meta={<AkseChip a={o.a} />}
+                  naa={o.naa}
+                  trailing={null}
+                  last={j === d.okter.length - 1}
+                />
+              ))}
+            </Kort>
+          ) : (
+            <Kort key={d.d} eyebrow={d.d}>
+              <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut }}>Hvile</span>
+            </Kort>
+          ),
+        )}
       </div>
     );
   }

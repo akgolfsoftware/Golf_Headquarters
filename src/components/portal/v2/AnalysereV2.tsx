@@ -253,7 +253,10 @@ const ALLE_AKSER: AkseKey[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
 function TabTrening({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
   const { training } = data.workbench;
-  const [aktive, setAktive] = useState<string[]>(training.byAxis.map((b) => b.axis));
+  // Alle akser forhåndsvalgt (ikke bare aksene med registrerte minutter) — så
+  // fordelingskortet viser en fylt graf ved første besøk i stedet for
+  // tom-tilstand, selv når enkelte akser ennå ikke har treningsdata.
+  const [aktive, setAktive] = useState<string[]>(ALLE_AKSER);
 
   const toggle = (x: string) => setAktive((p) => (p.indexOf(x) !== -1 ? p.filter((y) => y !== x) : [...p, x]));
   const synlig = training.byAxis.filter((b) => aktive.indexOf(b.axis) !== -1);
@@ -265,7 +268,7 @@ function TabTrening({ data, mobile }: { data: AnalysereData; mobile: boolean }) 
       action={
         <button
           className="v2-press v2-focus"
-          onClick={() => setAktive(training.byAxis.map((b) => b.axis))}
+          onClick={() => setAktive(ALLE_AKSER)}
           style={{ appearance: "none", cursor: "pointer", background: "none", border: "none", padding: 0, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.lime }}
         >
           NULLSTILL
@@ -309,8 +312,10 @@ function TabTrening({ data, mobile }: { data: AnalysereData; mobile: boolean }) 
                 />
               ))}
           </>
-        ) : (
+        ) : aktive.length === 0 ? (
           <TomTilstand icon="activity" title="Ingen akser valgt" sub="Slå på minst én akse i filteret." />
+        ) : (
+          <TomTilstand icon="activity" title="Ingen treningsdata ennå" sub="Fordelingen fylles når treningsøkter er logget med øvelser." />
         )}
       </Kort>
 

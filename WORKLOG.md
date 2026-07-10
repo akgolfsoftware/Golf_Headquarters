@@ -5,6 +5,90 @@
 
 ---
 
+## 2026-07-10 — N10: Kvalitetsport — dommer-scores per skjerm + fikser (redesign/v2, worktree akgolf-hq-v2natt)
+
+**Branch:** `redesign/v2` (worktree `/Users/anderskristiansen/Developer/akgolf-hq-v2natt`) ·
+oppfølging av N9. En design-dommer scoret 23 skjermer (desktop+mobil der relevant) på skala 1–10;
+lavest-skårende skjermer fikk kirurgiske fikser i samme økt.
+
+### Dommer-scores (1–10)
+
+| Skjerm | Desktop | Mobil |
+|---|---|---|
+| Portal-hjem (spiller) | 5 | – |
+| Trening-fane | 4 | – |
+| SG-fane | 9 | – |
+| Workbench | 1 | – |
+| Kalender | 9 | 7 |
+| AgencyOS cockpit | 7.5 | – |
+| Spillere/stall | 6.5 | – |
+| Uka | 8.5 | – |
+| Økonomi | 7.5 | – |
+| Innboks e-post | 5.5 | – |
+| Auth/login | 8.6 | 5 |
+| Forside | 8.7 | 7.4 |
+| Booking | 5 | 5 |
+| Meg | 5 | 5 |
+| Drills | 5 | 4 |
+| Stats | 8.5 | 8.3 |
+
+**Snittscore: 6.35** (23 målinger). Svakest: Workbench desktop (1), Trening-fane og Drills-mobil (4).
+Sterkest: Kalender desktop og SG-fane (9).
+
+### Fikser denne økten
+Rettet i `src/app/portal/planlegge/workbench/actions.ts`, `.../workbench/page.tsx`,
+`src/components/portal/v2/WorkbenchV2.tsx`, `HjemV2.tsx`, `AnalysereV2.tsx`, `KalenderV2.tsx`:
+
+1. **Workbench — ugyldig server-referanse:** `page.tsx` sendte en inline arrow
+   (`(weekNumber) => generateWeekWithCaddie("", weekNumber)`) som `suggestWeek`-prop til en Client
+   Component. En closure definert i en Server Component er ikke en gyldig server-referanse. Lagt
+   til egen eksportert `suggestWeekWithCaddie(weekNumber)` i `actions.ts` og koblet den direkte.
+2. **Workbench — mobil-rader falt ut av layout:** tre `<div className="md:hidden" style={{ display: "flex", ... }}>` hadde `display` i `style`-objektet, som Tailwinds `md:hidden`-klasse (også en
+   `display`-verdi) ikke reverserer konsekvent på tvers av bruddpunkt. Flyttet `flex` inn i
+   `className` (`className="flex md:hidden"`) så CSS-kaskaden får riktig display-verdi ved alle
+   bredder.
+3. **Hjem — motstridende SG-signal:** fjernet egen per-runde SG-delta/pil ved siden av
+   10-rundersform-badgen — de to kunne peke motsatt vei og se ut som en selvmotsigelse. Badgen er
+   nå eneste retningssignal på SG-kortet.
+4. **Analysere/Trening-fane — falsk tom-tilstand:** akse-filteret forhåndsvalgte kun akser med
+   registrerte minutter, så nye brukere så et tomt fordelingskort ved første besøk selv om andre
+   akser fantes. Forhåndsvelger nå alle fem akser (`ALLE_AKSER`) og skiller «ingen akser valgt»
+   fra «ingen treningsdata ennå» som to distinkte tomtilstander.
+5. **Kalender mobil — hviledager forsvant:** ukevisningen filtrerte bort dager uten økter
+   (`medOkter`), så en uke med treningsfri midt i uka hoppet rett fra tirsdag til torsdag uten
+   forklaring. Viser nå alle dager i uka; dager uten økter får et «Hvile»-kort i stedet for å
+   utelates.
+
+### Verifikasjon (N10)
+- `npx prisma validate` — OK
+- `npx tsc --noEmit` — 0 feil
+- `node scripts/check-no-hex.mjs` — OK, ingen nye rå hex
+- `npm run build` — grønn, ingen feil/advarsler i build-loggen
+
+---
+
+## 2026-07-10 — N9: Ferdigstill v2-porting — stats-hale + AgencyOS-gap (redesign/v2, worktree akgolf-hq-v2natt)
+
+**Branch:** `redesign/v2` (worktree `/Users/anderskristiansen/Developer/akgolf-hq-v2natt`) ·
+7 commits fra `6adb179c` til `c4367b97`, oppfølging av N1–N8-natten.
+
+### Hva ble bygget
+1. `a9c6116e` — stats legacy-adapter + port av `stats/leaderboards`, `stats/regions`,
+   `stats/aargang`, `stats/2026` til v2.
+2. `5da7a568` — port av `stats/tour` og `stats/turneringer/[slug]` + `.../statistikk` til v2.
+3. `5bad0a92` — port av `stats/spillere/[slug]` og hele `stats/pga`-familien til v2.
+4. `bd3a7d3b` — port av `stats/sammenlign-spillere` og `stats/sg-sammenlign` til v2.
+5. `4706cd9d` — port av `stats/quiz` og `stats/wrapped` til v2 + 2 regresjonsfikser.
+6. `c4367b97` — lukket gjenværende gap: AgencyOS `uka`/`live`/`caddie`, levende auth-flyter,
+   stats' tunge haler via token-adapteren; fjernet utrangerte legacy AgencyOS-caddie/live-filer.
+
+### Gap lukket
+Alle markedsside-stats-ruter (leaderboards, regions, årgang, pga-familien, sammenlign, quiz,
+wrapped, tour, turneringer) og AgencyOS' `uka`/`live`/`caddie` er nå på ekte v2-adresser — ingen
+gjenværende `(legacy)`-drop-off for disse flatene.
+
+---
+
 ## 2026-07-09/10 — Natt: v2-redesign bygget inn i appen (redesign/v2, worktree akgolf-hq-v2natt)
 
 **Branch:** `redesign/v2` (worktree `/Users/anderskristiansen/Developer/akgolf-hq-v2natt`, main-repo

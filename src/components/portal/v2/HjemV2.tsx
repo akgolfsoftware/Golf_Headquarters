@@ -82,19 +82,11 @@ export function HjemV2({ data }: { data: DashboardData }) {
   const router = useRouter();
   const { user, greeting, weekNumber, today, todayAll, week, kpiStats, weekProgress, trainingHeatmap, coachMessage } = data;
 
-  // SG-form (kpiStats — snitt SG total siste 10 runder + per-runde-trend)
+  // SG-form (kpiStats — snitt SG total siste 10 runder). Badgen under er eneste
+  // retningssignal her (10-runders trend) — en egen per-runde-delta ble fjernet
+  // fordi den kunne peke motsatt vei av badgen og se ut som en motsigelse.
   const tr = kpiStats.sgTrend;
   const sgVerdi = kpiStats.sgTotal != null ? fmtSg(kpiStats.sgTotal) : "–";
-
-  let sgDelta: string | undefined;
-  let sgDir: "up" | "down" | undefined;
-  if (tr.length >= 2) {
-    const d = Math.round((tr[tr.length - 1] - tr[tr.length - 2]) * 10) / 10;
-    if (Math.abs(d) >= 0.1) {
-      sgDelta = fmtSg(d);
-      sgDir = d > 0 ? "up" : "down";
-    }
-  }
 
   let form: { l: string; tone: StatusTone } | null = null;
   if (tr.length >= 2) {
@@ -167,13 +159,11 @@ export function HjemV2({ data }: { data: DashboardData }) {
       <DagStripe days={stripeDager} value={aktivDag} onChange={() => router.push("/portal/kalender")} />
 
       {/* SG-form + dagens fokus */}
-      <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
         <Kort tint>
           <TallHero
             label="Strokes Gained · form"
             value={sgVerdi}
-            delta={sgDelta}
-            dir={sgDir}
             sub="snitt per runde · siste 10 runder"
             size={mobile ? 44 : 52}
             action={form ? <StatusPill tone={form.tone}>{form.l}</StatusPill> : undefined}
