@@ -16,8 +16,8 @@ export function SpillerSok({ name, label, suggested, currentSlug }: SpillerSokPr
   return (
     <div
       style={{
-        background: "#FFFFFF",
-        border: "1px solid #E5E3DD",
+        background: "var(--paper)",
+        border: "1px solid var(--color-line)",
         borderRadius: 16,
         padding: 24,
       }}
@@ -42,7 +42,7 @@ export function SpillerSok({ name, label, suggested, currentSlug }: SpillerSokPr
         placeholder="Søk etter navn eller slug…"
         style={{
           width: "100%",
-          border: "1px solid #E5E3DD",
+          border: "1px solid var(--color-line)",
           borderRadius: 10,
           padding: "10px 14px",
           fontSize: 14,
@@ -60,7 +60,7 @@ export function SpillerSok({ name, label, suggested, currentSlug }: SpillerSokPr
           fontSize: 9,
           letterSpacing: "0.14em",
           textTransform: "uppercase",
-          color: "#C4C0B8",
+          color: "var(--color-ink-disabled)",
           margin: "16px 0 10px",
         }}
       >

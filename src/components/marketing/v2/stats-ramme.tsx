@@ -44,52 +44,54 @@ export { useMobile };
 const STATS_LEGACY_VARS = {
   colorScheme: "dark",
   // 1) shadcn-trippel (HSL-triple, konsumeres via hsl(var(--x)))
-  "--background": "120 3.7% 5.3%", // T.bg #0D0E0D
-  "--foreground": "90 11.8% 93.3%", // T.fg #EEF0EC
-  "--card": "120 4.5% 8.6%", // T.panel #151715
+  "--background": "120 3.7% 5.3%", // T.bg
+  "--foreground": "90 11.8% 93.3%", // T.fg
+  "--card": "120 4.5% 8.6%", // T.panel
   "--card-foreground": "90 11.8% 93.3%",
   "--popover": "120 4.5% 8.6%",
   "--popover-foreground": "90 11.8% 93.3%",
-  "--primary": "72.9 92.8% 61.8%", // T.lime #D1F843
-  "--primary-foreground": "120 3.7% 5.3%", // T.onLime #0D0E0D
+  "--primary": "72.9 92.8% 61.8%", // T.lime
+  "--primary-foreground": "120 3.7% 5.3%", // T.onLime
   "--accent": "72.9 92.8% 61.8%",
   "--accent-foreground": "120 3.7% 5.3%",
-  "--secondary": "120 5% 7.8%", // T.panel2 #131513
+  "--secondary": "120 5% 7.8%", // T.panel2
   "--secondary-foreground": "90 11.8% 93.3%",
   "--muted": "120 5% 7.8%",
-  "--muted-foreground": "90 3.4% 65.1%", // T.fg2 #A6A9A3
-  "--destructive": "14.2 85.6% 59.2%", // T.down #F0683E
+  "--muted-foreground": "90 3.4% 65.1%", // T.fg2
+  "--destructive": "14.2 85.6% 59.2%", // T.down
   "--destructive-foreground": "0 0% 100%",
-  "--warning": "41.9 78.9% 57.3%", // T.warn #E8B43C
+  "--warning": "41.9 78.9% 57.3%", // T.warn
   "--warning-foreground": "120 3.7% 5.3%",
   "--border": "0 0% 100% / 0.08", // T.border
   "--input": "0 0% 100% / 0.08",
   "--ring": "72.9 92.8% 61.8%",
   // 3) DS-semantiske aliaser (rå verdier — det Tailwind-utilities faktisk bruker)
-  "--bg": "#0D0E0D", // T.bg
-  "--surface": "#151715", // T.panel
-  "--surface-2": "#131513", // T.panel2
-  "--surface-hover": "#1B1D1B", // T.panel3
-  "--border-strong": "rgba(255, 255, 255, 0.14)", // T.borderS
-  "--text": "#EEF0EC", // T.fg
-  "--text-2": "#A6A9A3", // T.fg2
-  "--text-muted": "#797C76", // T.mut
-  "--text-faint": "#797C76", // T.mut
-  "--signal": "#D1F843", // T.lime
-  "--on-signal": "#0D0E0D", // T.onLime
-  "--on-signal-fill": "#0D0E0D", // T.onLime
-  "--track": "rgba(255, 255, 255, 0.08)", // T.track
+  "--bg": T.bg,
+  "--surface": T.panel,
+  "--surface-2": T.panel2,
+  "--surface-hover": T.panel3,
+  "--border-strong": T.borderS,
+  "--text": T.fg,
+  "--text-2": T.fg2,
+  "--text-muted": T.mut,
+  "--text-faint": T.mut,
+  "--signal": T.lime,
+  "--on-signal": T.onLime,
+  "--on-signal-fill": T.onLime,
+  "--track": T.track,
   // 2) Stats-lokalt navnerom (rå verdier, konsumeres via var(--s-x))
-  "--s-bg": "#0D0E0D",
-  "--s-fg": "#EEF0EC",
-  "--s-card": "#151715",
-  "--s-primary": "#D1F843",
-  "--s-primary-fg": "#0D0E0D",
-  "--s-secondary": "#131513",
-  "--s-accent": "#D1F843",
-  "--s-accent-fg": "#0D0E0D",
-  "--s-muted": "#131513",
-  "--s-muted-fg": "#A6A9A3",
+  "--s-bg": T.bg,
+  "--s-fg": T.fg,
+  "--s-card": T.panel,
+  "--s-primary": T.lime,
+  "--s-primary-fg": T.onLime,
+  "--s-secondary": T.panel2,
+  "--s-accent": T.lime,
+  "--s-accent-fg": T.onLime,
+  "--s-muted": T.panel2,
+  "--s-muted-fg": T.fg2,
+  "--s-tier-college-bg": T.tierCollegeBg,
+  "--s-tier-college-fg": T.forest,
   "--s-border": "rgba(255, 255, 255, 0.08)",
   "--s-border-strong": "rgba(255, 255, 255, 0.14)",
   "--s-shadow-sm": "0 1px 2px rgba(0, 0, 0, 0.28)",

@@ -1,18 +1,16 @@
 "use client";
 
 /**
- * Glemt passord — v2 (retning C «Presis», mørk-først). Rekomponert visuelt fra
- * mockup-idiomene i LoginV2 (AuthRamme/BrandPanel/Felt/Knapp/Lenke) — samme
- * mørke split-layout, IKKE V2Shell. Montert offentlig i
- * (v2preview)/v2-forgot-password/page.tsx (ingen auth-guard, ingen dataloader).
+ * Glemt passord — v2 (retning C «Presis», mørk-først). Komponert i samme
+ * idiom-familie som LoginV2 (AuthRamme/BrandPanel/Felt/Knapp/Lenke) — mørk
+ * split-layout, IKKE V2Shell. Montert på /auth/forgot-password (bytter ut
+ * gamle ForgotForm 2026-07-10).
  *
- * Dette er en VISUELL v2-variant for godkjenning. Den EKTE reset-logikken
- * (Supabase `auth.resetPasswordForEmail` + `redirectTo /auth/reset-password`)
- * bor i src/app/auth/forgot-password/forgot-form.tsx og dupliseres bevisst IKKE
- * her — skjemaet vises med ekte felt og ekte to-stegs-flyt (skjema → bekreftelse),
- * men innsendingen er nøytralisert (meldt som gap) slik at auth/token-flyten
- * forblir én kilde. To-stegs-visningen (`sent`) er ren UI-state for godkjenning;
- * ingen e-post sendes fra denne flaten.
+ * Ekte reset-logikk (Supabase `auth.resetPasswordForEmail` +
+ * `redirectTo /auth/reset-password`, feiloversettelse) er portert 1:1 fra
+ * src/app/auth/forgot-password/forgot-form.tsx — samme auth-semantikk, ny
+ * visuell innpakning. To-stegs-flyten (skjema → bekreftelse) er bevart
+ * eksakt. Gammel forgot-form.tsx står urørt som fallback.
  *
  * Kun v2-primitiver fra "@/components/v2" (LogoAK, Caps, Icon). Auth-idiomene
  * (BrandPanel/Felt/Knapp/Lenke) er lokale her, 1:1 med LoginV2 — meldt som gap
@@ -24,6 +22,16 @@ import { useState, type ReactNode, type CSSProperties } from "react";
 import Link from "next/link";
 import { T } from "@/lib/v2/tokens";
 import { LogoAK, Caps, Icon } from "@/components/v2";
+import { createClient } from "@/lib/supabase/client";
+
+/** Samme feiloversettelse som gamle forgot-form.tsx — én kilde til auth-tekst. */
+function oversettResetFeil(msg: string): string {
+  if (msg.includes("you can only request this after"))
+    return "Vent et lite øyeblikk før du ber om en ny lenke.";
+  if (msg.includes("Unable to validate email address"))
+    return "Sjekk at e-postadressen er riktig skrevet.";
+  return msg;
+}
 
 /* ── Lokale auth-byggeklosser (1:1 med LoginV2) ────────────────────── */
 
@@ -98,12 +106,14 @@ function Knapp({
   icon,
   variant = "primary",
   type = "button",
+  disabled,
   onClick,
 }: {
   children: ReactNode;
   icon?: ReactNode;
   variant?: "primary" | "ghost";
   type?: "button" | "submit";
+  disabled?: boolean;
   onClick?: () => void;
 }) {
   const v: CSSProperties =
@@ -114,10 +124,13 @@ function Knapp({
     <button
       type={type}
       onClick={onClick}
+      disabled={disabled}
+      aria-busy={disabled || undefined}
       className="v2-press v2-focus"
       style={{
         appearance: "none",
-        cursor: "pointer",
+        cursor: disabled ? "default" : "pointer",
+        opacity: disabled ? 0.6 : 1,
         width: "100%",
         height: 44,
         borderRadius: 12,
@@ -233,13 +246,25 @@ function BrandPanel() {
 /* ── Kortene (steg 1 = skjema, steg 2 = bekreftelse) ───────────────── */
 
 function ForgotKort() {
+  const supabase = createClient();
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [feil, setFeil] = useState<string | null>(null);
 
-  // Nøytralisert innsending: viser bekreftelses-steget for godkjenning uten å
-  // gjøre et Supabase-kall. Ekte reset bor i auth/forgot-password/forgot-form.tsx.
-  function visBekreftelse(e: React.FormEvent) {
+  async function send(e: React.FormEvent) {
     e.preventDefault();
+    setFeil(null);
+    setPending(true);
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const { error: err } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${origin}/auth/reset-password`,
+    });
+    setPending(false);
+    if (err) {
+      setFeil(oversettResetFeil(err.message));
+      return;
+    }
     setSent(true);
   }
 
@@ -353,7 +378,7 @@ function ForgotKort() {
             </p>
           </div>
 
-          <form onSubmit={visBekreftelse} style={kortStil}>
+          <form onSubmit={send} style={kortStil}>
             <Felt
               label="E-post"
               type="email"
@@ -363,8 +388,32 @@ function ForgotKort() {
               autoComplete="email"
               trailing={<Icon name="mail" size={14} style={{ color: T.mut }} />}
             />
-            <Knapp variant="primary" type="submit" icon={<Icon name="send" size={15} style={{ color: T.onLime }} />}>
-              Send tilbakestillingslenke
+            {feil && (
+              <div
+                role="alert"
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 9,
+                  padding: "11px 13px",
+                  borderRadius: 12,
+                  background: T.panel2,
+                  border: `1px solid ${T.borderS}`,
+                }}
+              >
+                <Icon name="triangle-alert" size={14} style={{ color: T.down, marginTop: 1, flex: "none" }} />
+                <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 500, color: T.down }}>
+                  {feil}
+                </span>
+              </div>
+            )}
+            <Knapp
+              variant="primary"
+              type="submit"
+              disabled={pending}
+              icon={<Icon name="send" size={15} style={{ color: T.onLime }} />}
+            >
+              {pending ? "Sender…" : "Send tilbakestillingslenke"}
             </Knapp>
           </form>
 

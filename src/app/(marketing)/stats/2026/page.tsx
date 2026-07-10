@@ -14,6 +14,7 @@ import { CountUp } from "@/components/stats/count-up";
 import { StatsInitialAvatar } from "@/components/stats/stats-initial-avatar";
 import { SesongStickyNav } from "./sesong-sticky-nav";
 import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
+import { T } from "@/lib/v2/tokens";
 
 export const revalidate = 86400;
 
@@ -171,8 +172,8 @@ const HOVEDHISTORIER = [
 const MILEPAELE_FARGER: Record<string, string> = {
   vinst: "var(--s-primary)",
   rekord: "var(--s-accent)",
-  topp10: "#2EA66B",
-  "pro-debut": "#7B61FF",
+  topp10: T.milepael.topp10,
+  "pro-debut": T.milepael.proDebut,
 };
 
 export default async function Sesong2026Page() {

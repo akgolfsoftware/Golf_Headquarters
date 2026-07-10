@@ -713,7 +713,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
                 fontSize: 10,
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                color: "var(--s-primary, #005840)",
+                color: "var(--s-primary)",
                 fontWeight: 600,
                 whiteSpace: "nowrap",
               }}

@@ -64,7 +64,7 @@
   background: var(--primary);
   color: var(--accent);
 }
-.stats-btn-primary:hover { background: #003D2C; }
+.stats-btn-primary:hover { background: var(--forest-deep); }
 .stats-btn-outline {
   background: transparent;
   border-color: var(--accent);
@@ -372,7 +372,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #F1EEE5, #E5E3DD);
+  background: linear-gradient(135deg, var(--sand), var(--color-line));
   display: grid;
   place-items: center;
   font-family: var(--font-mono);
@@ -405,10 +405,10 @@
 
 /* ─── Putt Explorer Teaser ─── */
 .putt-teaser {
-  background: linear-gradient(135deg, #0A1F17 0%, #005840 100%);
+  background: linear-gradient(135deg, var(--ink) 0%, var(--forest) 100%);
   border-radius: 20px;
   padding: 48px;
-  color: #FAFAF7;
+  color: var(--cream);
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 48px;
@@ -421,7 +421,7 @@
   font-size: 40px;
   line-height: 1.05;
   font-weight: 600;
-  color: #FAFAF7;
+  color: var(--cream);
   margin: 16px 0 0;
   text-wrap: balance;
 }
@@ -492,7 +492,7 @@
 /* ─── Mersalg band ─── */
 .pga-mersalg {
   background: var(--primary);
-  color: #FAFAF7;
+  color: var(--cream);
   border-radius: 24px;
   padding: 56px;
   display: grid;
@@ -507,7 +507,7 @@
   font-size: 48px;
   line-height: 1.0;
   font-weight: 600;
-  color: #FAFAF7;
+  color: var(--cream);
   margin: 18px 0 0;
   text-wrap: balance;
 }
@@ -551,7 +551,7 @@
   letter-spacing: 0.06em;
   color: var(--accent);
 }
-.mersalg-price strong { color: #FAFAF7; font-weight: 500; }
+.mersalg-price strong { color: var(--cream); font-weight: 500; }
 @media (max-width: 768px) {
   .pga-mersalg { grid-template-columns: 1fr; gap: 32px; padding: 36px; border-radius: 20px; }
   .pga-mersalg h2 { font-size: 32px; }
@@ -596,7 +596,7 @@
   width: 10px;
   height: 10px;
   border-radius: 5px;
-  background: #FAFAF7;
+  background: var(--cream);
   border: 2px solid var(--accent);
   top: 50%;
   transform: translate(-50%, -50%);

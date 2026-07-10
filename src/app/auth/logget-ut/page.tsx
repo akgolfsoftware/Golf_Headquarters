@@ -1,20 +1,17 @@
 /**
- * Auth · Logget ut (/auth/logget-ut) — v10-design.
+ * Auth · Logget ut (/auth/logget-ut) — v2-redesign (2026-07-10).
  *
- * Rendrer <LoggetUtSkjerm> (v10-fasit fra [historisk fasit, fjernet 2026-07-03] _screens/
- * au-loggetut.png) som selvstendig sentrert kort på cream-bakgrunn, INGEN
- * app-sidebar.
+ * Rendrer <LoggetUtV2> (retning C «Presis») som selvstendig sentrert kort på
+ * mørk auth-flate, INGEN app-sidebar. Erstatter gamle <LoggetUtSkjerm>
+ * (v10-design) — se src/components/portal/v2/LoggetUtV2.tsx.
  *
  * Rent presentasjonelt — ingen Prisma/DB/auth/loader. Komponenten rendres med
- * de ekte lenkene for denne ruten; ingen liksom-data.
- *
- * Bolk (3. juni): byttet fra hand-bygget duplikat til v10-komponenten
- * <LoggetUtSkjerm> for å eliminere design-drift (knappehøyde, font-størrelse,
- * bakgrunn, footer-divider).
+ * de ekte lenkene for denne ruten; ingen liksom-data. Gamle
+ * src/components/auth/logget-ut.tsx står urørt som fallback.
  */
 
 import type { Metadata } from "next";
-import { LoggetUtSkjerm } from "@/components/auth/logget-ut";
+import { LoggetUtV2 } from "@/components/portal/v2/LoggetUtV2";
 
 export const metadata: Metadata = {
   title: "Logget ut · AK Golf",
@@ -23,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function LoggetUtPage() {
   return (
-    <LoggetUtSkjerm
+    <LoggetUtV2
       hjemHref="/"
       loggInnHref="/auth/login"
       marketingHref="/"

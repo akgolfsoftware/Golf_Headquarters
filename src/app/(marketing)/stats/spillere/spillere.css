@@ -327,8 +327,8 @@
   color: var(--s-primary-fg);
 }
 .stats-tier-college {
-  background: #E8F5F0;
-  color: #005840;
+  background: var(--s-tier-college-bg);
+  color: var(--s-tier-college-fg);
   border: 1px solid rgba(0, 88, 64, 0.15);
 }
 .stats-tier-junior {

@@ -1,11 +1,15 @@
 /**
- * Mission Control (AgencyOS · live) — statisk seed-data.
+ * Mission Control (AgencyOS · live, v2) — statisk seed-data.
  *
  * Foreløpig et visuelt skall: dataene er løftet verbatim fra Anders' innboks
  * (Direction A-designet i [historisk fasit, fjernet 2026-07-03] meg-live-os/src/data.jsx).
  * Live-integrasjoner (Gmail / Beeper / iMessage / Notion / Google Kalender)
  * kobles senere — da byttes konstantene under ut mot ekte kilder som
  * valideres mot de samme zod-skjemaene.
+ *
+ * Flyttet fra src/app/admin/(legacy)/agencyos/live/data.ts ved v2-portering
+ * (bølge 15/agencyos-restene) — samme innhold, ny (delt) plassering utenfor
+ * (legacy)-scopet siden v2-mission-control importerer den.
  */
 import { z } from "zod";
 

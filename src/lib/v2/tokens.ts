@@ -36,6 +36,27 @@ export const T = {
   // Tee-markørfarger (ekte fysiske teefarger, ikke merkevare-tokens — innkapslet
   // her så komponent-/skjermfilene forblir hex-frie)
   tee: { hvit: "#F5F5F5", gul: "#FFD600", rod: "#E53935" } as const,
+  // Milepæl-badgefarger (stats/2026-sesongoversikt — ikke merkevare-tokens,
+  // innkapslet her så page.tsx forblir hex-fri)
+  milepael: { topp10: "#2EA66B", proDebut: "#7B61FF" } as const,
+  // Ekstra sammenligningsfarge for putt-explorer-stolpediagram (4. serie,
+  // ikke merkevare-token — innkapslet her så explorer.tsx forblir hex-fri)
+  chartFaint: "#B8B5AC",
+  // Lys mint-bakgrunn for "college"-tier-badge på stats/spillere (fg = forest)
+  tierCollegeBg: "#E8F5F0",
+  // Bakgrunnsgradienter + tekstfarger for stats-wrapped-slide/-player (delt
+  // Spotify Wrapped-stil delekort). Faste merkevarefarger uavhengig av tema
+  // (kortet er en eksporterbar/delbar grafikk) — innkapslet her så
+  // komponentfilene forblir hex-frie. accentColor/dot-farger gjenbruker
+  // T.forest/T.lime over.
+  wrapped: {
+    bgForest: "linear-gradient(160deg, #005840 0%, #003D2C 100%)",
+    bgForestDark: "linear-gradient(160deg, #002A1A 0%, #001510 100%)",
+    bgLime: "linear-gradient(160deg, #D1F843 0%, #B8E020 100%)",
+    bgOffwhite: "linear-gradient(160deg, #FAFAF7 0%, #F1EEE5 100%)",
+    textOnDark: "#F7F7F4",
+    textOnLight: "#101613",
+  } as const,
   // Typografi
   disp: '"Familjen Grotesk",Inter,system-ui,sans-serif',
   ui: "Inter,system-ui,sans-serif",

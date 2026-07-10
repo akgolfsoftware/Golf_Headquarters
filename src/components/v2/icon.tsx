@@ -13,6 +13,9 @@ import {
   BatteryMedium, Stethoscope,
   Bug, Lightbulb, Heart, History, Sprout, Bot,
   Building2, Plug, MailCheck, Archive,
+  Reply, MessageSquare, CheckCheck, BookOpen, Globe, CornerUpLeft,
+  RefreshCw, GitCompare, AlertOctagon, GitPullRequest, Loader2, LineChart,
+  Cog, ArrowUp,
   type LucideIcon,
 } from "lucide-react";
 
@@ -115,6 +118,20 @@ const MAP: Record<string, LucideIcon> = {
   "building-2": Building2,
   "plug": Plug,
   "archive": Archive,
+  "reply": Reply,
+  "message-square": MessageSquare,
+  "check-check": CheckCheck,
+  "book-open": BookOpen,
+  "globe": Globe,
+  "corner-up-left": CornerUpLeft,
+  "refresh-cw": RefreshCw,
+  "git-compare": GitCompare,
+  "alert-octagon": AlertOctagon,
+  "git-pull-request": GitPullRequest,
+  "loader": Loader2,
+  "line-chart": LineChart,
+  "cog": Cog,
+  "arrow-up": ArrowUp,
 };
 
 export interface IconProps {
