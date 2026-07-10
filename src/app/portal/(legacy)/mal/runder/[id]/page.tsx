@@ -246,13 +246,17 @@ export default async function RundeDetalj({
             <NiHull label="UT · 1–9" fra={1} hull={hull} />
             <NiHull label="INN · 10–18" fra={10} hull={hull} />
             {visKjedeStatus && (
-              <div className="flex items-center gap-2 rounded-lg border border-border bg-secondary/40 px-3 py-2">
+              <Link
+                href={`/portal/mal/runder/${id}/fullfor`}
+                className="flex items-center gap-2 rounded-lg border border-border bg-secondary/40 px-3 py-2 transition-colors hover:border-primary"
+              >
                 <span className="h-2 w-2 shrink-0 rounded-full bg-warning" aria-hidden />
                 <p className="font-mono text-[11px] text-muted-foreground">
                   SG venter på slag-kjeden: {antallKomplette} av {runde.holeScores.length} hull
-                  komplette. Registrer slagene per hull for full Strokes Gained.
+                  komplette. <span className="font-bold text-primary">Fullfør kjeden</span> for
+                  full Strokes Gained.
                 </p>
-              </div>
+              </Link>
             )}
             {erEier && (
               <Link

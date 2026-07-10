@@ -6,6 +6,9 @@ import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { notifyMany } from "@/lib/notifications";
 import { beregnSgFraShots, beregnGranulaerSgFraShots } from "@/lib/runde-logg/shots-til-sg";
+import { hullSchema } from "@/lib/runde-logg/schema";
+import { byggShotRader } from "@/lib/runde-logg/bygg-shot-rader";
+import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
 import { ShotLie, ShotType, WindDir } from "@/generated/prisma/client";
 
 export type ShareVisibility = "privat" | "coach" | "offentlig";
@@ -309,4 +312,70 @@ export async function importUpGameHoleScores(
   await recomputeRoundSg(roundId);
   revalidatePath(`/portal/mal/runder/${roundId}`);
   return { ok: true, antallHull: parsed.data.length };
+}
+
+/**
+ * «Fullfør kjeden»: spilleren fører slag-kjeden for ETT hull på en runde som
+ * har HoleScore uten slag (import/hurtig score). Kjeden må stemme med
+ * scorekortet — slag + straffer == strokes — ellers avvises den (ærlighet:
+ * vi lagrer aldri en kjede som motsier scoren). Hullets ev. gamle Shot-rader
+ * erstattes, putts/fairway/gir re-avledes fra kjeden, og runde-SG regnes om
+ * (blir 'beregnet' først når ALLE hull har komplett kjede).
+ */
+export async function lagreHullKjede(
+  roundId: string,
+  hull: unknown,
+): Promise<{ ok: boolean; error?: string; sgTotal?: number | null }> {
+  const user = await requireConsentingUser();
+  await assertRoundOwner(roundId, user.id);
+
+  const parsed = hullSchema.safeParse(hull);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig slag-kjede" };
+  }
+  const data = parsed.data;
+
+  if (data.slag.at(-1)?.resultat.iHull !== true) {
+    return { ok: false, error: "Kjeden må avsluttes med at ballen går i hull" };
+  }
+
+  const holeScore = await prisma.holeScore.findUnique({
+    where: { roundId_holeNumber: { roundId, holeNumber: data.holeNumber } },
+  });
+  if (!holeScore) {
+    return { ok: false, error: "Hullet finnes ikke på scorekortet for denne runden" };
+  }
+
+  const straffer = data.slag.filter((s) => s.straffe).length;
+  const kjedeStrokes = data.slag.length + straffer;
+  if (kjedeStrokes !== holeScore.strokes) {
+    return {
+      ok: false,
+      error: `Kjeden har ${data.slag.length} slag + ${straffer} straffer (${kjedeStrokes}), men scorekortet sier ${holeScore.strokes} — rett kjeden eller scoren først`,
+    };
+  }
+
+  // Scorekortets par er sannheten (klientens par kan avvike).
+  const hullMedPar = { ...data, par: holeScore.par };
+  const derivert = deriverRundeScore([hullMedPar]).hullScores[0];
+
+  await prisma.$transaction(async (tx) => {
+    await tx.shot.deleteMany({ where: { roundId, holeNumber: data.holeNumber } });
+    await tx.shot.createMany({
+      data: byggShotRader(hullMedPar).map((rad) => ({ ...rad, roundId })),
+    });
+    await tx.holeScore.update({
+      where: { roundId_holeNumber: { roundId, holeNumber: data.holeNumber } },
+      data: { putts: derivert.putts, fairway: derivert.fairway, gir: derivert.gir },
+    });
+  });
+
+  await recomputeRoundSg(roundId);
+  revalidatePath(`/portal/mal/runder/${roundId}`);
+
+  const round = await prisma.round.findUnique({
+    where: { id: roundId },
+    select: { sgTotal: true },
+  });
+  return { ok: true, sgTotal: round?.sgTotal ?? null };
 }
