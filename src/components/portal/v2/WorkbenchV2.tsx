@@ -166,18 +166,18 @@ function WBTidslinje({ dager, valgt, onVelg }: { dager: DagKol[]; valgt: string 
 }
 
 /* ── Bibliotek (venstre) ───────────────────────────────── */
-function PalettBrikke({ tittel, akse, sub }: { tittel: string; akse?: AkseKey; sub: string }) {
+function PalettBrikke({ tittel, akse, sub, onClick }: { tittel: string; akse?: AkseKey; sub: string; onClick?: () => void }) {
   return (
-    <div style={{ padding: "8px 9px", borderRadius: 10, background: T.panel2, border: `1px dashed ${T.borderS}`, cursor: "grab", minWidth: 0 }}>
+    <button type="button" onClick={onClick} style={{ appearance: "none", textAlign: "left", width: "100%", padding: "8px 9px", borderRadius: 10, background: T.panel2, border: `1px dashed ${T.borderS}`, cursor: onClick ? "pointer" : "default", minWidth: 0 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
         {akse && <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[akse] || T.mut, flex: "none" }} />}
         <span style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg, flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{tittel}</span>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
         <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{sub}</span>
-        <Icon name="grip-vertical" size={10} style={{ color: T.mut, marginLeft: "auto", flex: "none" }} />
+        {onClick && <Icon name="plus" size={10} style={{ color: T.mut, marginLeft: "auto", flex: "none" }} />}
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -187,10 +187,12 @@ export const LPHASE_LABEL: Record<string, string> = {
   TURNERING: "Turneringsperiode",
 };
 
-export function WBBibliotek({ data, tab, setTab, sok, setSok }: {
+export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt }: {
   data: WorkbenchData;
   tab: string; setTab: (t: string) => void;
   sok: string; setSok: (s: string) => void;
+  /** Ett-klikks «legg til»: åpner Ny økt-arket forhåndsutfylt fra brikken. */
+  onVelgOkt?: (item: { title: string; durMin: number; akse?: AkseKey }) => void;
 }) {
   const treff = (txt: string) => !sok || txt.toLowerCase().includes(sok.toLowerCase());
   const maler = (data.planTemplates ?? []).filter((m) => treff(m.name));
@@ -202,7 +204,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok }: {
       </div>
       <PalettSok value={sok} onChange={setSok} placeholder="Søk…" />
       <div style={{ display: "flex", gap: 4 }}>
-        {[["maler", "Maler"], ["okter", "Økter"], ["driller", "Driller"]].map(([id, l]) => (
+        {[["maler", "Maler"], ["okter", "Økter"]].map(([id, l]) => (
           <button key={id} onClick={() => setTab(id)} style={{ appearance: "none", cursor: "pointer", flex: 1, fontFamily: T.mono, fontSize: 9, fontWeight: 700, padding: "6px 0", borderRadius: 8, border: `1px solid ${tab === id ? "transparent" : T.border}`, background: tab === id ? T.lime : T.panel2, color: tab === id ? T.onLime : T.fg2, textTransform: "uppercase", letterSpacing: "0.04em" }}>{l}</button>
         ))}
       </div>
@@ -214,24 +216,24 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok }: {
           </div>
           {maler.length ? maler.map((m) => (
             <div key={m.id} style={{ padding: "11px 12px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-                <span style={{ flex: 1, minWidth: 0, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{m.name}</span>
-                <Icon name="arrow-right" size={13} style={{ color: T.mut, flex: "none" }} />
-              </div>
+              <span style={{ display: "block", minWidth: 0, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{m.name}</span>
               <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, display: "block", marginTop: 3 }}>{m.sessionCount} økter · {LPHASE_LABEL[m.lPhase] ?? m.lPhase} · {m.varighetUker} uker</span>
             </div>
           )) : <TomTilstand icon="search" title="Ingen mal" sub={sok ? "Prøv et annet søk." : "Ingen godkjente planmaler ennå."} />}
         </div>
-      ) : tab === "okter" ? (
+      ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {okter.length ? okter.map((b) => (
-            <PalettBrikke key={b.pid} tittel={b.title} akse={b.cat as AkseKey} sub={fmtVarighet(b.dur)} />
+            <PalettBrikke
+              key={b.pid}
+              tittel={b.title}
+              akse={b.cat as AkseKey}
+              sub={fmtVarighet(b.dur)}
+              onClick={onVelgOkt ? () => onVelgOkt({ title: b.title, durMin: b.dur, akse: b.cat as AkseKey }) : undefined}
+            />
           )) : <TomTilstand icon="search" title="Ingen treff" sub={sok ? "Prøv et annet søk." : "Ingen standardøkter i biblioteket ennå."} />}
         </div>
-      ) : (
-        <TomTilstand icon="layers" title="Ingen driller" sub="Drill-bibliotek er ikke koblet ennå." />
       )}
-      <button style={{ appearance: "none", cursor: "pointer", width: "100%", marginTop: 2, padding: "10px 0", borderRadius: 10, background: "transparent", border: `1px dashed ${T.borderS}`, fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.fg2, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6 }}><Icon name="plus" size={13} />Tom plan</button>
     </div>
   );
 }
@@ -398,29 +400,17 @@ function Felt({ label, children }: { label: string; children: React.ReactNode })
     </div>
   );
 }
-function MiniToggle({ options, value, onChange }: { options: [string, string][]; value: string; onChange: (v: string) => void }) {
-  return (
-    <div style={{ display: "flex", gap: 2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 9999, padding: 3, height: 34, alignItems: "center" }}>
-      {options.map(([v, l]) => {
-        const on = value === v;
-        return <button key={v} onClick={() => onChange(v)} style={{ appearance: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", padding: "0 11px", height: 26, borderRadius: 9999, border: "none", color: on ? T.onLime : T.fg2, background: on ? T.lime : "transparent", whiteSpace: "nowrap" }}>{l}</button>;
-      })}
-    </div>
-  );
-}
-
 /* ── Selve Workbench ───────────────────────────────────── */
-export function WorkbenchV2({ data, insights, role, playerName, planStatus, actions }: WorkbenchV2Props) {
+export function WorkbenchV2({ data, insights, playerName, planStatus, actions }: WorkbenchV2Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [rolle, setRolle] = useState<Role>(role);
   const [nivaa, setNivaa] = useState("uke");
   const [tab, setTab] = useState("maler");
   const [sok, setSok] = useState("");
-  const [verktoy, setVerktoy] = useState<"alle" | "fys">("alle");
   const [nyOktApen, setNyOktApen] = useState(false);
+  const [nyOktPrefill, setNyOktPrefill] = useState<{ title: string; durMin: number; akse?: AkseKey } | null>(null);
   const [melding, setMelding] = useState<{ tone: "up" | "down" | "info"; tekst: string } | null>(null);
   const [pubLoading, setPubLoading] = useState(false);
   const [suggestLoading, setSuggestLoading] = useState(false);
@@ -489,6 +479,11 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus, acti
     }
   };
 
+  const velgFraBibliotek = (item: { title: string; durMin: number; akse?: AkseKey }) => {
+    setNyOktPrefill(item);
+    setNyOktApen(true);
+  };
+
   const handleCreateSession = async (input: NyOktInput): Promise<{ ok: boolean; error?: string }> => {
     if (!actions) return { ok: false, error: "Ikke tilgjengelig." };
     const res = await actions.addSession({
@@ -502,6 +497,7 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus, acti
     });
     if (res.ok) {
       setNyOktApen(false);
+      setNyOktPrefill(null);
       router.refresh();
     }
     return res;
@@ -525,9 +521,7 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus, acti
           <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, letterSpacing: "-0.02em", margin: "3px 0 6px" }}>{playerName}</div>
           <StatusPill tone={st.tone}>{st.l}</StatusPill>
         </div>
-        <Felt label="Rolle"><MiniToggle options={[["coach", "Coach"], ["player", "Spiller"]]} value={rolle} onChange={(v) => setRolle(v as Role)} /></Felt>
         <Felt label="Zoom"><PillVelger options={[{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Økt" }]} value={nivaa} onChange={setNivaa} /></Felt>
-        <Felt label="Verktøy"><MiniToggle options={[["alle", "Alle"], ["fys", "Fysisk"]]} value={verktoy} onChange={(v) => setVerktoy(v as "alle" | "fys")} /></Felt>
         <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "6px 14px", borderRadius: 12, background: `color-mix(in srgb, ${canon ? T.warn : T.up} 6%, transparent)`, border: `1px solid color-mix(in srgb, ${canon ? T.warn : T.up} 32%, transparent)`, flex: "none" }}>
           <span style={{ fontFamily: T.mono, fontSize: 26, fontWeight: 700, color: T.fg, lineHeight: 0.9, fontVariantNumeric: "tabular-nums", flex: "none" }}>{adher != null ? `${adher}%` : "–"}</span>
           <div style={{ flex: "none", maxWidth: 150 }}>
@@ -551,7 +545,7 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus, acti
         </div>
       </div>
 
-      {/* TOPP-BAR — mobil (<md): to kompakte rader + «Mer» for Rolle/Verktøy/AI/Gjenta */}
+      {/* TOPP-BAR — mobil (<md): to kompakte rader + «Mer» for Foreslå/Gjenta */}
       <div className="flex md:hidden" style={{ flexDirection: "column", gap: 10, paddingBottom: 14, borderBottom: `1px solid ${T.border}` }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <div style={{ minWidth: 0, flex: 1 }}>
@@ -582,28 +576,26 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus, acti
               <Knapp icon="send" full onClick={handlePublish} disabled={pubLoading}>{pubLoading ? "Publiserer…" : "Publiser"}</Knapp>
             </div>
           )}
-          <button
-            type="button"
-            onClick={() => setMerApen((v) => !v)}
-            title="Mer"
-            style={{ appearance: "none", cursor: "pointer", width: 44, height: 44, flex: "none", borderRadius: 12, background: merApen ? T.panel2 : T.panel3, border: `1px solid ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
-          >
-            <Icon name="more-horizontal" size={17} style={{ color: T.fg2 }} />
-          </button>
+          {(actions?.suggestWeek || actions?.duplicateWeek) && (
+            <button
+              type="button"
+              onClick={() => setMerApen((v) => !v)}
+              title="Mer"
+              style={{ appearance: "none", cursor: "pointer", width: 44, height: 44, flex: "none", borderRadius: 12, background: merApen ? T.panel2 : T.panel3, border: `1px solid ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+            >
+              <Icon name="more-horizontal" size={17} style={{ color: T.fg2 }} />
+            </button>
+          )}
         </div>
 
         {merApen && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12, borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
-            <Felt label="Rolle"><MiniToggle options={[["coach", "Coach"], ["player", "Spiller"]]} value={rolle} onChange={(v) => setRolle(v as Role)} /></Felt>
-            <Felt label="Verktøy"><MiniToggle options={[["alle", "Alle"], ["fys", "Fysisk"]]} value={verktoy} onChange={(v) => setVerktoy(v as "alle" | "fys")} /></Felt>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {actions?.suggestWeek && (
-                <Knapp icon="sparkles" ghost onClick={handleSuggest} disabled={suggestLoading}>{suggestLoading ? "Foreslår…" : "Foreslå uke"}</Knapp>
-              )}
-              {actions?.duplicateWeek && (
-                <Knapp icon="repeat" ghost onClick={handleDuplicate} disabled={dupLoading}>{dupLoading ? "Kopierer…" : "Gjenta forrige uke"}</Knapp>
-              )}
-            </div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", padding: 12, borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
+            {actions?.suggestWeek && (
+              <Knapp icon="sparkles" ghost onClick={handleSuggest} disabled={suggestLoading}>{suggestLoading ? "Foreslår…" : "Foreslå uke"}</Knapp>
+            )}
+            {actions?.duplicateWeek && (
+              <Knapp icon="repeat" ghost onClick={handleDuplicate} disabled={dupLoading}>{dupLoading ? "Kopierer…" : "Gjenta forrige uke"}</Knapp>
+            )}
           </div>
         )}
       </div>
@@ -669,7 +661,7 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus, acti
 
       {/* TRE KOLONNER — desktop (md+): uendret (grid-cols-1 md→lg, 3-kol fra lg) */}
       <div className="hidden md:grid md:grid-cols-1 lg:grid-cols-[206px_1fr_302px]" style={{ gap: T.gap, alignItems: "start" }}>
-        <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} />
+        <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} />
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
           {insights?.line && <InnsiktChip>{insights.line}</InnsiktChip>}
           {nivaa === "uke" && <WBTidslinje dager={dager} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
@@ -696,7 +688,7 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus, acti
         {nivaa === "maned" && <Kort><TomTilstand icon="calendar" title="Månedsvisning" sub="Bruk Uke for tidslinje eller Årsplan for sesongperiodene — månedsaggregat er ikke koblet ennå." /></Kort>}
 
         <MobilFold tittel="Bibliotek" ikon="layers">
-          <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} />
+          <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} />
         </MobilFold>
         <MobilFold tittel="Balanse" ikon="activity">
           <WBBalanse
@@ -713,7 +705,10 @@ export function WorkbenchV2({ data, insights, role, playerName, planStatus, acti
       {nyOktApen && actions && (
         <NyOktArk
           defaultDayIndex={aktivDag ? dager.indexOf(aktivDag) : 0}
-          onLukk={() => setNyOktApen(false)}
+          defaultTitle={nyOktPrefill?.title}
+          defaultAkse={nyOktPrefill?.akse}
+          defaultDurMin={nyOktPrefill?.durMin}
+          onLukk={() => { setNyOktApen(false); setNyOktPrefill(null); }}
           onOpprett={handleCreateSession}
         />
       )}
