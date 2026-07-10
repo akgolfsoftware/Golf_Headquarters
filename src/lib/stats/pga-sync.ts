@@ -195,7 +195,7 @@ export async function getPgaTourAverage(
 
 /**
  * Broadie-tall fra "Every Shot Counts" (2014) + PGA Tour ShotLink-aggregat.
- * top10AvgSunkPct er estimert fra Fringetech/DECADE-data for elite putters.
+ * top10AvgSunkPct er estimert fra offentlige elite-putting-aggregater.
  * proximityNext er gjennomsnittlig avstand til hull etter misset (estimert).
  */
 const BROADIE_PUTT_DATA: Array<{

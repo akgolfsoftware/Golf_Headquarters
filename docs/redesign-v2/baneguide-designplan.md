@@ -93,6 +93,45 @@ Jobben: plotte en hel runde på under 3 minutter, med tommel, ute på banen elle
   til SlagWizard; lagring feiler → toast + punktet forblir «ulagret»-markert (ring).
 - SlagWizard får samme kartsteg innebygd (samme komponent, `ShotPlotter`).
 
+## Skjerm 5 · Gameplan-modus (forberedelse før runde) — NYTT (Anders 10. juli)
+
+Jobben: spilleren FORBEREDER en runde — henter inn banekunnskap og legger en plan per hull
+basert på SIN EGEN spredning, før første slag slås. (UpGames «Plan Round» + presisjonsstrategi-
+metodikken — se terminologi/rettigheter under.)
+
+- **Navn:** Anders foreslo «Innspill»; det kolliderer med Innspill-fanen (approach-slag) på
+  hull-detaljen og vil forvirre. ANBEFALT: **«Gameplan»** (alternativ: «Forberedelse»).
+  Anders avgjør — resten av designet er likt uansett navn.
+- **Inngang:** knapp «Lag gameplan» på banekart-oversikten (skjerm 1) + på rundens
+  forberedelsesflate. Egen fullskjerms-flyt (samme familie som plotte-modus).
+- **Hull-for-hull-walkthrough:** samme kart-oppsett som hull-detalj (rotert, full-bleed),
+  men i PLANLEGGINGS-modus:
+  1. **Køllevalg for utslag:** chips med spillerens køller som HAR spredningsdata
+     (TrackMan-range eller plottede slag); valgt kølle tegner spillerens 80 %-ellipse
+     på kartet fra tee.
+  2. **Siktepunkt:** dra siktepunktet — ellipsen følger; fareoverlegg (vann/bunker/OB fra
+     OSM-geometrien) farges når ellipsen overlapper. Enkel tekstlinje: «X % av ellipsen
+     i straff» (beregnes av dispersjonsmotoren — ekte tall, ellers vises ikke linjen).
+  3. **Notat per hull:** kort fritekst («Aldri venstre. Legg opp kort for bunkeren.»).
+  4. Neste hull → samme mønster; fremdrift «HULL 7 AV 18» øverst.
+- **Sammendrag til slutt:** hull-liste med valgt kølle + sikte + notat — spillerens
+  gameplan, tilgjengelig fra baneguiden og rundens brief. (Datamodell: additiv
+  `GameplanHull`-tabell — eget migrasjonsscript når skjermen bygges.)
+- **Uten spredningsdata:** ærlig modus — kun banekunnskap (lengder, farer, notater),
+  med forklaring «Plott slag eller importer TrackMan for siktehjelp».
+- **Coach-deling** (senere fase): coach ser/kommenterer spillerens gameplan.
+- Accent-jobben i modusen: siktepunktet.
+
+### Terminologi og rettigheter (UFRAVIKELIG)
+
+- Ordet **«DECADE» brukes ALDRI** — ikke i UI, marketing, app-tekster, hjelpetekster,
+  SoMe eller synlige kodekommentarer. Internt kanon-navn for metodikken:
+  **«Presisjonsstrategi»** (Masterbrain CANON).
+- Alt innhold i modusen skrives fra AK-metodikkens egne dokumenter og VÅR dispersjonsmotor —
+  aldri fra DECADE-materiale (kurs, tekster, yardage books). Matematiske prinsipper
+  (sikt så ellipsen minimerer straff) er frie; formuleringene og materialet deres er ikke.
+- Full vurdering og sjekkliste: `docs/juridisk/presisjonsstrategi-rettigheter.md`.
+
 ## Skjerm 4 · Biblioteket `/portal/baneguide` (finnes — kun justering)
 
 Beholdes som i dag (allerede retning C). Én endring: radene lenkes hele (ekte `<a>`,
@@ -120,8 +159,10 @@ Touch-mål ≥ 44 px overalt; BunnNav skjules i plotte-modus (fullskjerm-gruppe,
 ## Leveranse-rekkefølge
 
 1. **Mockups i Claude Design** (`ui_kits/v2/baneguide-oversikt.jsx`, `baneguide-hull.jsx`,
-   `baneguide-plott.jsx`) — mobil + desktop per skjerm → Anders godkjenner/justerer.
-2. Bygg C3 (skjerm 1+2 i v2, atomisk flytt+slett av legacy-treet) → C4 (ellipse) → C5 (plotting).
+   `baneguide-plott.jsx`, `baneguide-gameplan.jsx`) — mobil + desktop per skjerm →
+   Anders godkjenner/justerer.
+2. Bygg C3 (skjerm 1+2 i v2, atomisk flytt+slett av legacy-treet) → C4 (ellipse) →
+   C5 (plotting) → C7 (gameplan-modus + GameplanHull-modell).
 3. Bane-import (C2, ~10 Østfold-baner) kjøres parallelt — uavhengig av design.
 
 ## Ikke i denne runden (bevisst)

@@ -283,4 +283,16 @@ AK Golf Academy bruker en 5-trinns trenings-pyramide:
 - DataGolf-fasiter auto-oppdateres **mandager 08:00** via cron-jobb.
 - Benchmark-sync kjøres via den generiske cron-ruten `/api/cron/[agent]` med agent-verdien `benchmark-sync`. Implementasjon i `src/lib/admin/benchmark-sync.ts`.
 - Nye benchmarks må godkjennes av coach på `/admin/tester/benchmarks` før de tas i bruk.
-- Push til `main`-branch deployer **ikke** produksjon automatisk — bruk `vercel deploy --prod`.
+- Push til `main`-branch deployer produksjon **automatisk** (git-integrasjonen koblet til ny GitHub-konto 10. juli 2026). Kjør ALDRI `vercel deploy --prod` manuelt — det omgår git-historikken og har overskrevet prod med feil branch.
+
+
+---
+
+## Presisjonsstrategi (strategimetodikken) — navne- og rettighetsregel
+
+- Ordet **«DECADE» brukes ALDRI** i produktet: ikke i UI, hjelpetekster, marketing,
+  app-store-tekster, SoMe eller kodekommentarer som kan nå kunder.
+- Metodikken heter **«Presisjonsstrategi»** (Masterbrain CANON) i alt internt og eksternt.
+- Alt strategiinnhold skrives fra AK-metodikkens egne dokumenter og plattformens egen
+  dispersjonsmotor — aldri fra DECADE-materiale (kurs, tekster, yardage books).
+- Full vurdering og sjekkliste: `docs/juridisk/presisjonsstrategi-rettigheter.md`.
