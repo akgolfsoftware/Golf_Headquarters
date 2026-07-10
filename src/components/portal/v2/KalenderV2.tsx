@@ -27,7 +27,7 @@ import {
   TomTilstand,
   Icon,
 } from "@/components/v2";
-import type { KalenderData } from "@/app/(v2preview)/v2-kalender/data";
+import type { KalenderData } from "@/app/portal/kalender/data";
 
 /** true på klient etter mount når viewport < 768px (styrer kun layout-tetthet). */
 function useMobile(): boolean {

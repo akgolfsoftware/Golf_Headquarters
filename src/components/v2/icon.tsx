@@ -12,7 +12,7 @@ import {
   CreditCard, Layers, Send, CircleDot, Lock, Monitor, ShieldCheck,
   BatteryMedium, Stethoscope,
   Bug, Lightbulb, Heart, History, Sprout, Bot,
-  Building2, Plug, MailCheck,
+  Building2, Plug, MailCheck, Archive,
   type LucideIcon,
 } from "lucide-react";
 
@@ -114,6 +114,7 @@ const MAP: Record<string, LucideIcon> = {
   "bot": Bot,
   "building-2": Building2,
   "plug": Plug,
+  "archive": Archive,
 };
 
 export interface IconProps {

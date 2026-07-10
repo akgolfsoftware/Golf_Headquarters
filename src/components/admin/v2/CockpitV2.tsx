@@ -36,6 +36,7 @@ import type {
   CockpitData,
   CockpitFocusPlayer,
 } from "@/components/admin/cockpit/agency-cockpit";
+import type { InnboksSammendrag } from "@/lib/innboks/data";
 
 /* signal.tone → SevChip-kategori (klarspråk, aldri sperre-språk) */
 const SEV_MAP: Record<CockpitFocusPlayer["signal"]["tone"], SevKey> = {
@@ -68,7 +69,7 @@ function useLiveKlokke(startMin: number | null, nowMin: number): string {
   return `${String(mm).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
 }
 
-export function CockpitV2({ data }: { data: CockpitData }) {
+export function CockpitV2({ data, innboks }: { data: CockpitData; innboks?: InnboksSammendrag }) {
   const router = useRouter();
 
   // ── Aktiv økt (live) ────────────────────────────────────────────
@@ -166,6 +167,34 @@ export function CockpitV2({ data }: { data: CockpitData }) {
     </Kort>
   );
 
+  // ── Innboks (post@akgolf.no) — kompakt: antall nye + siste 3 ────
+  const innboksModul = innboks ? (
+    <Link href="/admin/innboks-epost" style={{ textDecoration: "none" }}>
+      <Kort
+        hover
+        eyebrow="Innboks"
+        action={innboks.antallNye > 0 ? <Caps size={9} color={T.warn}>{pl(innboks.antallNye, "ny", "nye")}</Caps> : undefined}
+      >
+        {innboks.siste.length === 0 ? (
+          <TomTilstand icon="mail" title="Ingen e-poster" sub="Innboksen er tom." />
+        ) : (
+          innboks.siste.map((e, i) => (
+            <Rad
+              key={e.id}
+              leading={<AvatarInit navn={e.fraNavn ?? e.fraEpost} size={30} />}
+              title={e.fraNavn ?? e.fraEpost}
+              sub={e.emne}
+              meta={
+                <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>{e.mottattAt}</span>
+              }
+              last={i === innboks.siste.length - 1}
+            />
+          ))
+        )}
+      </Kort>
+    </Link>
+  ) : null;
+
   // ── Dagens timer ────────────────────────────────────────────────
   const timer = (
     <Kort
@@ -240,6 +269,7 @@ export function CockpitV2({ data }: { data: CockpitData }) {
       {live}
       {kpi}
       {koen}
+      {innboksModul}
       <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: T.gap }}>
         {timer}
         {stalluka}

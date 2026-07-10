@@ -29,7 +29,7 @@ import {
   TomTilstand,
   Icon,
 } from "@/components/v2";
-import { hentSlotVindu } from "@/app/(v2preview)/v2-booking/actions";
+import { hentSlotVindu } from "@/app/portal/booking/actions";
 import type { SlotVindu } from "@/lib/portal-booking/slot-vindu";
 
 /* ── Datakontrakt (props) ──────────────────────────────────────────── */

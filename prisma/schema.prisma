@@ -4383,3 +4383,25 @@ model InvariantOverride {
   @@index([planId])
   @@map("invariant_overrides")
 }
+
+// AgencyOS e-post-innboks (2026-07-10) — post@akgolf.no inn på cockpit-
+// forsiden. Agent drafter svar automatisk ved inntak; Anders godkjenner og
+// sender manuelt (aldri auto-send). Isolert (ingen @relation) per gotcha —
+// additiv via db execute.
+model InnboksEpost {
+  id               String    @id @default(cuid())
+  fraEpost         String
+  fraNavn          String?
+  emne             String
+  brodtekst        String    @db.Text
+  mottattAt        DateTime  @default(now())
+  // "NY" | "UTKAST_KLART" | "SENDT" | "ARKIVERT"
+  status           String    @default("NY")
+  utkastSvar       String?   @db.Text
+  utkastGenerertAt DateTime?
+  sendtAt          DateTime?
+  sendtAv          String?
+
+  @@index([status, mottattAt])
+  @@map("innboks_epost")
+}

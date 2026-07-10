@@ -30,7 +30,7 @@ import {
   Icon,
 } from "@/components/v2";
 import { type AkseKey } from "@/lib/v2/tokens";
-import type { KalenderData, KalOkt, SerieMenyData } from "@/app/(v2preview)/v2-agency-kalender/data";
+import type { KalenderData, KalOkt, SerieMenyData } from "@/app/admin/kalender/data";
 
 /** true på klient etter mount når viewport < 768px (styrer kun layout-tetthet). */
 function useMobile(): boolean {

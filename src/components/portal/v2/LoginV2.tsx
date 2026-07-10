@@ -3,15 +3,14 @@
 /**
  * Login — v2 (retning C «Presis», mørk-først). Komponert 1:1 fra
  * ui_kits/v2/auth-profil.jsx → funksjonen Login (+ AuthRamme, BrandPanel,
- * LoginKort, Felt, GoogleG, EllerSkille, Lenke). Montert offentlig i
+ * LoginKort, Felt, GoogleG, EllerSkille, Lenke). Montert på /auth/login
+ * (bytter ut gamle LoginForm 2026-07-10) og offentlig i
  * (v2preview)/v2-login/page.tsx (ingen auth-guard, ingen dataloader).
  *
- * Dette er en VISUELL v2-variant for godkjenning. Den EKTE innloggings-logikken
- * (Supabase signInWithPassword / OAuth) bor i src/app/auth/login/login-form.tsx
- * og dupliseres bevisst IKKE her — skjemaet vises med ekte felt, ekte
- * passord-veksling og ekte navigasjon til /auth/signup, /auth/forgot-password
- * og /auth/bankid. «Logg inn»/Google-innsending er bevisst nøytralisert (meldt
- * som gap) slik at auth-flyten forblir én kilde.
+ * Ekte innloggings-logikk (Supabase signInWithPassword + Google OAuth,
+ * feiloversettelse, safeRedirectPath m/ ?next=) er portert 1:1 fra
+ * src/app/auth/login/login-form.tsx — samme auth-semantikk, ny visuell
+ * innpakning. Gammel login-form.tsx står urørt som fallback.
  *
  * Kun v2-primitiver fra "@/components/v2" (LogoAK, Caps, Icon). Auth-idiomene
  * (AuthRamme/BrandPanel/Felt/GoogleG/EllerSkille/Lenke/Knapp) er lokale her,
@@ -21,10 +20,22 @@
  * for split/stablet, ekte dark-scope.
  */
 
-import { useState, type ReactNode, type CSSProperties } from "react";
+import { Suspense, useState, type ReactNode, type CSSProperties } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { T } from "@/lib/v2/tokens";
 import { LogoAK, Caps, Icon } from "@/components/v2";
+import { createClient } from "@/lib/supabase/client";
+import { safeRedirectPath } from "@/lib/security/safe-redirect-client";
+
+/** Samme feiloversettelse som gamle login-form.tsx — én kilde til auth-tekst. */
+function oversettAuthFeil(msg: string): string {
+  if (msg.includes("Invalid login credentials"))
+    return "Feil e-post eller passord.";
+  if (msg.includes("Email not confirmed"))
+    return "E-posten er ikke bekreftet. Sjekk innboksen din.";
+  return msg;
+}
 
 /* ── Lokale auth-byggeklosser (1:1 med mockup) ─────────────────────── */
 
@@ -38,6 +49,7 @@ function Felt({
   autoComplete,
   trailing,
   mono,
+  required,
 }: {
   label: string;
   type?: string;
@@ -47,6 +59,7 @@ function Felt({
   autoComplete?: string;
   trailing?: ReactNode;
   mono?: boolean;
+  required?: boolean;
 }) {
   const id = `v2login-${label.toLowerCase().replace(/[^a-z]/g, "")}`;
   return (
@@ -75,6 +88,7 @@ function Felt({
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           autoComplete={autoComplete}
+          required={required}
           style={{
             flex: 1,
             minWidth: 0,
@@ -101,12 +115,16 @@ function Knapp({
   variant = "primary",
   type = "button",
   onClick,
+  disabled,
+  ariaBusy,
 }: {
   children: ReactNode;
   icon?: ReactNode;
   variant?: "primary" | "ghost";
   type?: "button" | "submit";
   onClick?: () => void;
+  disabled?: boolean;
+  ariaBusy?: boolean;
 }) {
   const v: CSSProperties =
     variant === "primary"
@@ -116,10 +134,12 @@ function Knapp({
     <button
       type={type}
       onClick={onClick}
+      disabled={disabled}
+      aria-busy={ariaBusy || undefined}
       className="v2-press v2-focus"
       style={{
         appearance: "none",
-        cursor: "pointer",
+        cursor: disabled ? "default" : "pointer",
         width: "100%",
         height: 44,
         borderRadius: 12,
@@ -130,6 +150,7 @@ function Knapp({
         fontFamily: T.ui,
         fontSize: 13.5,
         fontWeight: 600,
+        opacity: disabled ? 0.6 : 1,
         ...v,
       }}
     >
@@ -280,18 +301,80 @@ function BrandPanel() {
 /* ── Login-kortet ──────────────────────────────────────────────────── */
 
 function LoginKort() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const supabase = createClient();
   const [email, setEmail] = useState("");
   const [passord, setPassord] = useState("");
   const [visPassord, setVisPassord] = useState(false);
+  const [feil, setFeil] = useState<string | null>(null);
+  const [laster, setLaster] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setFeil(null);
+    setLaster(true);
+    const { error: authErr } = await supabase.auth.signInWithPassword({
+      email,
+      password: passord,
+    });
+    setLaster(false);
+    if (authErr) {
+      setFeil(oversettAuthFeil(authErr.message));
+      return;
+    }
+    const next = safeRedirectPath(searchParams.get("next"), "/auth/etter-innlogging");
+    router.push(next);
+    router.refresh();
+  }
+
+  async function loggInnGoogle() {
+    setFeil(null);
+    setLaster(true);
+    const next = safeRedirectPath(searchParams.get("next"), "/auth/etter-innlogging");
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const { error: authErr } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${origin}/api/auth/oauth-callback?next=${encodeURIComponent(next)}`,
+      },
+    });
+    if (authErr) {
+      setLaster(false);
+      setFeil(oversettAuthFeil(authErr.message));
+    }
+    // Ingen videre handling — Supabase redirecter til Google.
+  }
+
+  const feilId = "v2login-feil";
 
   return (
     <div style={{ width: "100%", maxWidth: 400, display: "flex", flexDirection: "column", gap: 14 }}>
-      {/* Mobil-logo (BrandPanel er skjult under md) */}
+      {/* Mobil-logo (BrandPanel er skjult under md) — subtil ambient forest-glød */}
       <div
         className="md:hidden"
-        style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 18, padding: "6px 0 6px" }}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 18,
+          padding: "6px 0 6px",
+          position: "relative",
+        }}
       >
-        <LogoAK size={46} />
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            inset: "-24px -60px auto",
+            height: 140,
+            background: "radial-gradient(closest-side, rgba(0,88,64,0.35), transparent 72%)",
+            pointerEvents: "none",
+          }}
+        />
+        <div style={{ position: "relative" }}>
+          <LogoAK size={46} />
+        </div>
       </div>
 
       <div style={{ marginBottom: 4 }}>
@@ -313,7 +396,9 @@ function LoginKort() {
       </div>
 
       <form
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={handleSubmit}
+        noValidate
+        aria-describedby={feil ? feilId : undefined}
         style={{
           background: T.panel,
           border: `1px solid ${T.border}`,
@@ -332,6 +417,7 @@ function LoginKort() {
           onChange={setEmail}
           placeholder="oyvind@akgolf.no"
           autoComplete="email"
+          required
           trailing={<Icon name="mail" size={14} style={{ color: T.mut }} />}
         />
         <Felt
@@ -341,6 +427,7 @@ function LoginKort() {
           onChange={setPassord}
           placeholder="••••••••"
           autoComplete="current-password"
+          required
           mono
           trailing={
             <button
@@ -362,11 +449,34 @@ function LoginKort() {
             </button>
           }
         />
-        <Knapp variant="primary" type="submit">
-          Logg inn
+
+        <div role="alert" aria-live="polite" aria-atomic="true" id={feilId}>
+          {feil && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 8,
+                borderRadius: 10,
+                border: `1px solid color-mix(in srgb,${T.down} 35%,transparent)`,
+                background: `color-mix(in srgb,${T.down} 12%,transparent)`,
+                padding: "9px 12px",
+                fontFamily: T.ui,
+                fontSize: 12.5,
+                color: T.fg,
+                lineHeight: 1.4,
+              }}
+            >
+              {feil}
+            </div>
+          )}
+        </div>
+
+        <Knapp variant="primary" type="submit" disabled={laster} ariaBusy={laster}>
+          {laster ? "Logger inn…" : "Logg inn"}
         </Knapp>
         <EllerSkille />
-        <Knapp variant="ghost" icon={<GoogleG />}>
+        <Knapp variant="ghost" icon={<GoogleG />} onClick={loggInnGoogle} disabled={laster} ariaBusy={laster}>
           Fortsett med Google
         </Knapp>
         <Link href="/auth/bankid" style={{ textDecoration: "none" }}>
@@ -424,7 +534,9 @@ export function LoginV2() {
           background: `radial-gradient(700px 420px at 60% -12%, rgba(0,88,64,0.14), transparent 62%), ${T.bg}`,
         }}
       >
-        <LoginKort />
+        <Suspense fallback={<div style={{ width: "100%", maxWidth: 400, height: 420 }} aria-hidden />}>
+          <LoginKort />
+        </Suspense>
       </div>
     </div>
   );
