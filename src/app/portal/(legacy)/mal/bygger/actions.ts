@@ -15,6 +15,8 @@
 
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+// NB: ingen type-re-eksporter her — Turbopack feiler på ikke-funksjons-
+// eksporter i "use server"-filer. Typene importeres fra @/lib/plan-builder.
 import {
   hentByggerKontekstCore,
   anbefalMalCore,
@@ -23,22 +25,11 @@ import {
   sendTilGodkjenningCore,
   type ByggerMaltype,
   type ByggerKontekst,
-  type MalAnbefaling,
   type AnbefalingerResultat,
   type GenerertForslag,
   type LagrePlanInput,
   type LagrePlanResultat,
 } from "@/lib/plan-builder";
-
-export type {
-  ByggerMaltype,
-  ByggerKontekst,
-  MalAnbefaling,
-  AnbefalingerResultat,
-  GenerertForslag,
-  LagrePlanInput,
-  LagrePlanResultat,
-};
 
 export async function hentByggerKontekst(): Promise<ByggerKontekst> {
   const user = await requirePortalUser({ allow: ["PLAYER", "PARENT"] });
