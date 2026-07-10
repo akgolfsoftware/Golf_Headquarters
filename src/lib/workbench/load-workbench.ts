@@ -429,8 +429,8 @@ export async function loadWorkbenchData(
   // «I dag» markeres kun når vi faktisk ser på inneværende uke. -1 = ingen.
   const todayDow = offset === 0 ? (now.getDay() + 6) % 7 : -1;
 
-  // ── A · WeekView: header + dag-kolonner med blokker ──────────────
-  const weekHead = Array.from({ length: 5 }, (_, i) => {
+  // ── A · WeekView: header + dag-kolonner med blokker (alle 7 dager) ──
+  const weekHead = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(weekStart);
     d.setDate(d.getDate() + i);
     return {
@@ -441,7 +441,7 @@ export async function loadWorkbenchData(
     };
   });
 
-  const weekDays: WeekDay[] = Array.from({ length: 5 }, (_, i) => {
+  const weekDays: WeekDay[] = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(weekStart);
     d.setDate(d.getDate() + i);
     const isToday = i === todayDow;
@@ -458,8 +458,8 @@ export async function loadWorkbenchData(
     };
   });
 
-  // ── B · Tidslinje: 5 dag-seksjoner ──────────────────────────────
-  const dirBDays: DirBDayData[] = Array.from({ length: 5 }, (_, i) => {
+  // ── B · Tidslinje: dag-seksjoner (alle 7 dager) ──────────────────
+  const dirBDays: DirBDayData[] = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(weekStart);
     d.setDate(d.getDate() + i);
     const isToday = i === todayDow;
