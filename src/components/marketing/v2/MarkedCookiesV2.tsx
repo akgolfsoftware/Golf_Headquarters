@@ -71,9 +71,6 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
     >
       <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
         <LogoAK size={24} />
-        <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, letterSpacing: "-0.02em", color: T.fg }}>
-          AK Golf
-        </span>
       </Link>
       {!mobile && (
         <div style={{ display: "flex", alignItems: "center", gap: 26 }}>
