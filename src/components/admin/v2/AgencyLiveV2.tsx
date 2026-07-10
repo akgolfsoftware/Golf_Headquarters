@@ -560,7 +560,7 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
               <span style={{ display: "block", height: "100%", borderRadius: 9999, width: `${NOTION.progress}%`, background: `linear-gradient(90deg, ${T.forest}, ${T.lime})` }} />
             </div>
             <div style={{ marginTop: 7, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut }}>{NOTION.progress}% fullført</div>
-            <div className="grid grid-cols-5" style={{ gap: 8, marginTop: 16 }}>
+            <div className="grid grid-cols-2 sm:grid-cols-5" style={{ gap: 8, marginTop: 16 }}>
               {NOTION.columns.map((c) => (
                 <div key={c.name} style={{ borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 6px", textAlign: "center" }}>
                   <b style={{ display: "block", fontFamily: T.mono, fontSize: 18, fontWeight: 700, color: T.fg }}>{c.count}</b>

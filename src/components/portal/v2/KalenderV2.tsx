@@ -66,6 +66,9 @@ function Dag({ dag }: { dag: KalenderData["dag"] }) {
                     <div
                       key={okt.id}
                       onClick={() => router.push(`/portal/gjennomfore/${okt.id}`)}
+                      className="v2-press v2-focus"
+                      tabIndex={0}
+                      role="button"
                       style={{
                         display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", borderRadius: 12,
                         background: okt.naa ? `${T.tint}, ${T.panel3}` : T.panel3,
@@ -76,7 +79,7 @@ function Dag({ dag }: { dag: KalenderData["dag"] }) {
                     >
                       <span style={{ width: 3, alignSelf: "stretch", borderRadius: 2, background: T.ax[okt.a], flex: "none" }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{okt.title}</div>
+                        <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{okt.title}</div>
                         <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>
                           {okt.kl}–{okt.slutt}{okt.sted ? ` · ${okt.sted}` : ""}
                         </div>
@@ -117,7 +120,7 @@ function Uke({ uke, mobile }: { uke: KalenderData["uke"]; mobile: boolean }) {
                   key={o.id}
                   onClick={() => router.push(`/portal/gjennomfore/${o.id}`)}
                   leading={<span style={{ width: 42, flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: o.naa ? T.lime : T.mut }}>{o.kl}</span>}
-                  title={o.title}
+                  title={<span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", whiteSpace: "normal" }}>{o.title}</span>}
                   meta={<AkseChip a={o.a} />}
                   naa={o.naa}
                   trailing={null}
@@ -151,6 +154,9 @@ function Uke({ uke, mobile }: { uke: KalenderData["uke"]; mobile: boolean }) {
               <div
                 key={o.id}
                 onClick={() => router.push(`/portal/gjennomfore/${o.id}`)}
+                className="v2-press v2-focus"
+                tabIndex={0}
+                role="button"
                 style={{ padding: "8px 9px", borderRadius: 10, background: T.panel3, border: `1px solid ${o.naa ? LIME_KANT : T.border}`, opacity: o.done ? 0.55 : 1, cursor: "pointer" }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
@@ -207,6 +213,7 @@ function Maaned({ maaned, mobile }: { maaned: KalenderData["maaned"]; mobile: bo
                     <button
                       key={di}
                       type="button"
+                      className="v2-press v2-focus"
                       onClick={() => setValgtDag(dag)}
                       aria-pressed={valgt}
                       style={{
@@ -295,7 +302,7 @@ function Aar({ aar, mobile }: { aar: KalenderData["aar"]; mobile: boolean }) {
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <Kort tint eyebrow={aar.subtitle} action={aar.aktivPeriodeLabel ? <StatusPill>{aar.aktivPeriodeLabel}</StatusPill> : undefined}>
         {aar.perioder.length === 0 ? (
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.6, margin: 0 }}>Ingen periodeblokker i sesongplanen ennå — turneringer vises i tallene under.</p>
+          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: 0 }}>Ingen periodeblokker i sesongplanen ennå — turneringer vises i tallene under.</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 4 }}>
             {aar.perioder.map((p, i) => (
@@ -314,9 +321,9 @@ function Aar({ aar, mobile }: { aar: KalenderData["aar"]; mobile: boolean }) {
         )}
       </Kort>
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4,1fr)", gap: T.gap }}>
-        <KpiFlis label="Uker til turnering" value={aar.kpis.ukerTil} tint />
+        <KpiFlis label="Uker til turnering" value={aar.kpis.ukerTil === "–" ? "–" : `${aar.kpis.ukerTil} uker`} tint />
         <KpiFlis label="Turneringer igjen" value={String(aar.kpis.turneringerIgjen)} />
-        <KpiFlis label="Treningstimer i år" value={String(aar.kpis.treningstimer)} />
+        <KpiFlis label="Treningstimer i år" value={`${aar.kpis.treningstimer} t`} />
         {!mobile && <KpiFlis label="Gjennomføring" value={aar.kpis.gjennomforing ?? "–"} />}
       </div>
     </div>

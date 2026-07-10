@@ -181,7 +181,7 @@ export function PlanV2({ data }: { data: DashboardData }) {
                               {toMin(o.startTime)}
                             </span>
                           }
-                          title={o.title}
+                          title={<span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", whiteSpace: "normal" }}>{o.title}</span>}
                           sub={varighet(varMin)}
                           meta={<AkseChip a={o.pyramidArea as AkseKey} />}
                           naa={naa}

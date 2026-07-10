@@ -26,7 +26,7 @@ function sgForm(data: AnalysereData): { l: string; tone: StatusTone } | null {
   const tp = data.minGolf.sgStatus.trendPunkter;
   if (tp.length < 2) return null;
   const d = tp[tp.length - 1].sg - tp[0].sg;
-  if (d > 0.05) return { l: "Stigende", tone: "lime" };
+  if (d > 0.05) return { l: "Stigende", tone: "up" };
   if (d < -0.05) return { l: "Synkende", tone: "down" };
   return { l: "Stabil", tone: "info" };
 }

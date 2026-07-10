@@ -168,7 +168,7 @@ function WBTidslinje({ dager, valgt, onVelg }: { dager: DagKol[]; valgt: string 
 /* ── Bibliotek (venstre) ───────────────────────────────── */
 function PalettBrikke({ tittel, akse, sub, onClick }: { tittel: string; akse?: AkseKey; sub: string; onClick?: () => void }) {
   return (
-    <button type="button" onClick={onClick} style={{ appearance: "none", textAlign: "left", width: "100%", padding: "8px 9px", borderRadius: 10, background: T.panel2, border: `1px dashed ${T.borderS}`, cursor: onClick ? "pointer" : "default", minWidth: 0 }}>
+    <button type="button" onClick={onClick} className="v2-press v2-focus" style={{ appearance: "none", textAlign: "left", width: "100%", padding: "8px 9px", borderRadius: 10, background: T.panel2, border: `1px dashed ${T.borderS}`, cursor: onClick ? "pointer" : "default", minWidth: 0 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
         {akse && <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[akse] || T.mut, flex: "none" }} />}
         <span style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg, flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{tittel}</span>
@@ -205,7 +205,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt }: {
       <PalettSok value={sok} onChange={setSok} placeholder="Søk…" />
       <div style={{ display: "flex", gap: 4 }}>
         {[["maler", "Maler"], ["okter", "Økter"]].map(([id, l]) => (
-          <button key={id} onClick={() => setTab(id)} style={{ appearance: "none", cursor: "pointer", flex: 1, fontFamily: T.mono, fontSize: 9, fontWeight: 700, padding: "6px 0", borderRadius: 8, border: `1px solid ${tab === id ? "transparent" : T.border}`, background: tab === id ? T.lime : T.panel2, color: tab === id ? T.onLime : T.fg2, textTransform: "uppercase", letterSpacing: "0.04em" }}>{l}</button>
+          <button key={id} type="button" onClick={() => setTab(id)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", flex: 1, fontFamily: T.mono, fontSize: 9, fontWeight: 700, padding: "6px 0", borderRadius: 8, border: `1px solid ${tab === id ? "transparent" : T.border}`, background: tab === id ? T.lime : T.panel2, color: tab === id ? T.onLime : T.fg2, textTransform: "uppercase", letterSpacing: "0.04em" }}>{l}</button>
         ))}
       </div>
       {tab === "maler" ? (
@@ -562,10 +562,10 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>
           {actions && (
-            <button onClick={() => setNyOktApen(true)} style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, height: 38, padding: "0 14px", borderRadius: 10, background: T.panel3, border: `1px solid ${T.borderS}`, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}><Icon name="plus" size={14} />Ny økt</button>
+            <button type="button" onClick={() => setNyOktApen(true)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, height: 38, padding: "0 14px", borderRadius: 10, background: T.panel3, border: `1px solid ${T.borderS}`, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}><Icon name="plus" size={14} />Ny økt</button>
           )}
           {actions?.suggestWeek && (
-            <button onClick={handleSuggest} disabled={suggestLoading} title="AI-forslag for uka" style={{ appearance: "none", cursor: suggestLoading ? "default" : "pointer", width: 38, height: 38, borderRadius: 10, background: T.panel3, border: `1px solid ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: suggestLoading ? 0.5 : 1 }}><Icon name="sparkles" size={15} style={{ color: T.lime }} /></button>
+            <button type="button" onClick={handleSuggest} disabled={suggestLoading} title="AI-forslag for uka" className="v2-press v2-focus" style={{ appearance: "none", cursor: suggestLoading ? "default" : "pointer", width: 38, height: 38, borderRadius: 10, background: T.panel3, border: `1px solid ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: suggestLoading ? 0.5 : 1 }}><Icon name="sparkles" size={15} style={{ color: T.lime }} /></button>
           )}
           {actions && (
             <Knapp icon="send" onClick={handlePublish} disabled={pubLoading}>{pubLoading ? "Publiserer…" : "Publiser"}</Knapp>
@@ -609,6 +609,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
               type="button"
               onClick={() => setMerApen((v) => !v)}
               title="Mer"
+              className="v2-press v2-focus"
               style={{ appearance: "none", cursor: "pointer", width: 44, height: 44, flex: "none", borderRadius: 12, background: merApen ? T.panel2 : T.panel3, border: `1px solid ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
             >
               <Icon name="more-horizontal" size={17} style={{ color: T.fg2 }} />
@@ -633,7 +634,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 12, background: `color-mix(in srgb, ${melding.tone === "down" ? T.down : melding.tone === "up" ? T.up : T.info} 9%, ${T.panel})`, border: `1px solid color-mix(in srgb, ${melding.tone === "down" ? T.down : melding.tone === "up" ? T.up : T.info} 30%, transparent)` }}>
           <Icon name={melding.tone === "down" ? "alert-triangle" : melding.tone === "up" ? "check" : "info"} size={14} style={{ color: melding.tone === "down" ? T.down : melding.tone === "up" ? T.up : T.info, flex: "none" }} />
           <span style={{ flex: 1, fontFamily: T.ui, fontSize: 12.5, color: T.fg }}>{melding.tekst}</span>
-          <button type="button" onClick={() => setMelding(null)} style={{ appearance: "none", cursor: "pointer", background: "transparent", border: "none", color: T.mut, display: "inline-flex", flex: "none", padding: 0 }}>
+          <button type="button" onClick={() => setMelding(null)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", background: "transparent", border: "none", color: T.mut, display: "inline-flex", flex: "none", padding: 0 }}>
             <Icon name="x" size={13} />
           </button>
         </div>
@@ -644,17 +645,17 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           {[["ar", `Sesong ${new Date().getFullYear()}`, "circle"], ["maned", MANEDER[new Date().getMonth()][0].toUpperCase() + MANEDER[new Date().getMonth()].slice(1), "circle-dot"], ["uke", `Uke ${weekNumber}`, "calendar"]].map(([v, l, ic], i, arr) => (
             <span key={v} style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-              <button onClick={() => setNivaa(v)} style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, padding: "6px 11px", borderRadius: 9999, border: `1px solid ${nivaa === v ? `color-mix(in srgb, ${T.lime} 30%, transparent)` : "transparent"}`, background: nivaa === v ? `color-mix(in srgb, ${T.lime} 7%, transparent)` : "transparent", fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: nivaa === v ? T.fg : T.fg2 }}>
+              <button type="button" onClick={() => setNivaa(v)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, padding: "6px 11px", borderRadius: 9999, border: `1px solid ${nivaa === v ? `color-mix(in srgb, ${T.lime} 30%, transparent)` : "transparent"}`, background: nivaa === v ? `color-mix(in srgb, ${T.lime} 7%, transparent)` : "transparent", fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: nivaa === v ? T.fg : T.fg2 }}>
                 <Icon name={ic} size={13} style={{ color: nivaa === v ? T.lime : T.mut }} />{l}
               </button>
               {i < arr.length - 1 && <Icon name="chevron-right" size={13} style={{ color: T.mut }} />}
             </span>
           ))}
           <div style={{ display: "flex", alignItems: "center", gap: 2, marginLeft: 4 }}>
-            <button type="button" onClick={() => goToWeek(-1)} disabled={weekOffset <= WEEK_OFFSET_MIN} title="Forrige uke" style={{ appearance: "none", cursor: weekOffset <= WEEK_OFFSET_MIN ? "default" : "pointer", width: 26, height: 26, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset <= WEEK_OFFSET_MIN ? 0.4 : 1 }}>
+            <button type="button" onClick={() => goToWeek(-1)} disabled={weekOffset <= WEEK_OFFSET_MIN} title="Forrige uke" className="v2-press v2-focus" style={{ appearance: "none", cursor: weekOffset <= WEEK_OFFSET_MIN ? "default" : "pointer", width: 26, height: 26, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset <= WEEK_OFFSET_MIN ? 0.4 : 1 }}>
               <Icon name="chevron-left" size={13} style={{ color: T.fg2 }} />
             </button>
-            <button type="button" onClick={() => goToWeek(1)} disabled={weekOffset >= WEEK_OFFSET_MAX} title="Neste uke" style={{ appearance: "none", cursor: weekOffset >= WEEK_OFFSET_MAX ? "default" : "pointer", width: 26, height: 26, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset >= WEEK_OFFSET_MAX ? 0.4 : 1 }}>
+            <button type="button" onClick={() => goToWeek(1)} disabled={weekOffset >= WEEK_OFFSET_MAX} title="Neste uke" className="v2-press v2-focus" style={{ appearance: "none", cursor: weekOffset >= WEEK_OFFSET_MAX ? "default" : "pointer", width: 26, height: 26, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset >= WEEK_OFFSET_MAX ? 0.4 : 1 }}>
               <Icon name="chevron-right" size={13} style={{ color: T.fg2 }} />
             </button>
           </div>
@@ -678,10 +679,10 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 4, flex: "none" }}>
-          <button type="button" onClick={() => goToWeek(-1)} disabled={weekOffset <= WEEK_OFFSET_MIN} title="Forrige uke" style={{ appearance: "none", cursor: weekOffset <= WEEK_OFFSET_MIN ? "default" : "pointer", width: 36, height: 36, borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset <= WEEK_OFFSET_MIN ? 0.4 : 1 }}>
+          <button type="button" onClick={() => goToWeek(-1)} disabled={weekOffset <= WEEK_OFFSET_MIN} title="Forrige uke" className="v2-press v2-focus" style={{ appearance: "none", cursor: weekOffset <= WEEK_OFFSET_MIN ? "default" : "pointer", width: 36, height: 36, borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset <= WEEK_OFFSET_MIN ? 0.4 : 1 }}>
             <Icon name="chevron-left" size={14} style={{ color: T.fg2 }} />
           </button>
-          <button type="button" onClick={() => goToWeek(1)} disabled={weekOffset >= WEEK_OFFSET_MAX} title="Neste uke" style={{ appearance: "none", cursor: weekOffset >= WEEK_OFFSET_MAX ? "default" : "pointer", width: 36, height: 36, borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset >= WEEK_OFFSET_MAX ? 0.4 : 1 }}>
+          <button type="button" onClick={() => goToWeek(1)} disabled={weekOffset >= WEEK_OFFSET_MAX} title="Neste uke" className="v2-press v2-focus" style={{ appearance: "none", cursor: weekOffset >= WEEK_OFFSET_MAX ? "default" : "pointer", width: 36, height: 36, borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset >= WEEK_OFFSET_MAX ? 0.4 : 1 }}>
             <Icon name="chevron-right" size={14} style={{ color: T.fg2 }} />
           </button>
         </div>

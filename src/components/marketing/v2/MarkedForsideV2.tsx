@@ -175,7 +175,7 @@ function MRamme({ mobile, aktiv, children }: { mobile: boolean; aktiv: string; c
 /* ── Tekst- og CTA-primitiver (marketing-skala) ────────── */
 function Eyebrow({ children }: { children: ReactNode }) {
   return (
-    <Caps size={11} color={T.lime} style={{ marginBottom: 18 }}>
+    <Caps size={11} style={{ marginBottom: 18 }}>
       {children}
     </Caps>
   );

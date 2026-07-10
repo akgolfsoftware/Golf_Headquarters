@@ -327,7 +327,7 @@ export function AdminNySpillerV2() {
                     <Inndata label={null} type="email" value={foreldreEpost} onChange={setForeldreEpost} placeholder="ola@eksempel.no" />
                   </SkjemaFelt>
                   <SkjemaFelt label="Foreldre-telefon (valgfri)" hjelp={undefined} feil={fieldErrors.foreldreTelefon}>
-                    <Inndata label={null} value={foreldreTelefon} onChange={setForeldreTelefon} placeholder="+47 900 00 000" />
+                    <Inndata label={null} type="tel" value={foreldreTelefon} onChange={setForeldreTelefon} placeholder="+47 900 00 000" />
                   </SkjemaFelt>
                 </div>
               </Kort>

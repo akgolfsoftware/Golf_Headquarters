@@ -111,7 +111,7 @@ function ikonForTjeneste(t: BookingTjeneste): string {
 function prisTekst(t: BookingTjeneste, credits: BookingCredits): string {
   if (t.betalesMedCredit) {
     return credits.canUseCredits
-      ? `${credits.creditsRemaining} av ${credits.monthlyCredits} igjen`
+      ? `${credits.creditsRemaining} av ${credits.monthlyCredits} timer igjen`
       : "Med coaching-pakke";
   }
   return `fra ${NOK.format(Math.round(t.prisOre / 100))} kr`;
@@ -157,7 +157,7 @@ function StegIndikator({ steg, onVelg, mobile }: { steg: number; onVelg: (n: num
             <button
               type="button"
               onClick={() => onVelg(s.n)}
-              className="v2-focus"
+              className="v2-press v2-focus"
               style={{ appearance: "none", background: "none", border: "none", padding: 0, display: "flex", alignItems: "center", gap: 7, cursor: "pointer", flex: "none" }}
             >
               <span style={{ width: 22, height: 22, borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, background: aktiv ? T.lime : ferdig ? "rgba(209,248,67,0.12)" : T.panel2, color: aktiv ? T.onLime : ferdig ? T.lime : T.mut, border: `1px solid ${aktiv ? "transparent" : ferdig ? "rgba(209,248,67,0.25)" : T.border}` }}>
@@ -200,7 +200,7 @@ function StegType({ tjenester, credits, valgt, setValgt, mobile }: {
               key={x.id}
               type="button"
               onClick={() => setValgt(x.id)}
-              className="v2-focus"
+              className="v2-press v2-focus"
               style={{ appearance: "none", textAlign: "left", background: er ? `${T.tint}, ${T.panel}` : T.panel, border: `1px solid ${er ? "rgba(209,248,67,0.35)" : T.border}`, borderRadius: T.rCard, padding: "18px 20px", cursor: "pointer", position: "relative", display: "flex", flexDirection: "column", gap: 12 }}
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -277,7 +277,7 @@ function StegCoach({ coacher, fraPris, nesteLedig, valgt, setValgt, mobile }: {
             key={c.id}
             type="button"
             onClick={() => setValgt(c.id)}
-            className="v2-focus"
+            className="v2-press v2-focus"
             style={{ appearance: "none", textAlign: "left", background: er ? `${T.tint}, ${T.panel}` : T.panel, border: `1px solid ${er ? "rgba(209,248,67,0.35)" : T.border}`, borderRadius: T.rCard, padding: "22px 24px", cursor: "pointer" }}
           >
             <div style={{ display: "flex", alignItems: mobile ? "flex-start" : "center", gap: 18, flexDirection: mobile ? "column" : "row" }}>
@@ -330,8 +330,8 @@ function MiniKalender({ ledigeIso, valgtIso, setValgtIso, visMnd, visAar, setVis
           {MANED[visMnd]} <span style={{ color: T.mut, fontWeight: 500 }}>{visAar}</span>
         </span>
         <span style={{ display: "flex", gap: 4 }}>
-          <button type="button" onClick={() => setVis(visMnd === 0 ? 11 : visMnd - 1, visMnd === 0 ? visAar - 1 : visAar)} className="v2-focus" style={{ appearance: "none", width: 26, height: 26, borderRadius: 8, background: "none", border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><Icon name="chevron-left" size={13} style={{ color: T.mut }} /></button>
-          <button type="button" onClick={() => setVis(visMnd === 11 ? 0 : visMnd + 1, visMnd === 11 ? visAar + 1 : visAar)} className="v2-focus" style={{ appearance: "none", width: 26, height: 26, borderRadius: 8, background: "none", border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><Icon name="chevron-right" size={13} style={{ color: T.fg2 }} /></button>
+          <button type="button" onClick={() => setVis(visMnd === 0 ? 11 : visMnd - 1, visMnd === 0 ? visAar - 1 : visAar)} className="v2-press v2-focus" style={{ appearance: "none", width: 26, height: 26, borderRadius: 8, background: "none", border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><Icon name="chevron-left" size={13} style={{ color: T.mut }} /></button>
+          <button type="button" onClick={() => setVis(visMnd === 11 ? 0 : visMnd + 1, visMnd === 11 ? visAar + 1 : visAar)} className="v2-press v2-focus" style={{ appearance: "none", width: 26, height: 26, borderRadius: 8, background: "none", border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><Icon name="chevron-right" size={13} style={{ color: T.fg2 }} /></button>
         </span>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 2 }}>
@@ -354,7 +354,7 @@ function MiniKalender({ ledigeIso, valgtIso, setValgtIso, visMnd, visAar, setVis
               type="button"
               onClick={() => ledig && setValgtIso(iso)}
               disabled={!ledig}
-              className={ledig ? "v2-focus" : undefined}
+              className={ledig ? "v2-press v2-focus" : undefined}
               style={{ appearance: "none", height: celle, borderRadius: 10, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, fontFamily: T.mono, fontSize: 12, fontWeight: valgt ? 700 : 500, cursor: ledig ? "pointer" : "default", background: valgt ? T.fg : ledig ? T.panel3 : "transparent", color: valgt ? T.bg : passert ? "rgba(255,255,255,0.18)" : ledig ? T.fg : T.mut, border: iDagCelle && !valgt ? `1px solid ${T.borderS}` : "1px solid transparent" }}
             >
               {n}
@@ -392,7 +392,7 @@ function TidKolonne({ dato, tider, valgt, setValgt }: {
                 key={kl}
                 type="button"
                 onClick={() => setValgt(kl)}
-                className="v2-focus"
+                className="v2-press v2-focus"
                 style={{ appearance: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, padding: "10px 0", borderRadius: 10, cursor: "pointer", background: er ? T.lime : T.panel2, color: er ? T.onLime : T.fg, border: `1px solid ${er ? "transparent" : T.border}` }}
               >
                 {kl}{er && <Icon name="check" size={12} />}
@@ -722,7 +722,25 @@ export function BookingV2({ data }: { data: BookingV2Data }) {
       )}
 
       {!kvittert && tjeneste && (
-        <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            gap: 10,
+            ...(mobile
+              ? {
+                  position: "sticky",
+                  bottom: "calc(70px + env(safe-area-inset-bottom))",
+                  margin: "0 -16px",
+                  padding: "10px 16px",
+                  background: `color-mix(in srgb,${T.bg} 88%,transparent)`,
+                  backdropFilter: "blur(10px)",
+                  borderTop: `1px solid ${T.border}`,
+                  zIndex: 30,
+                }
+              : {}),
+          }}
+        >
           <Knapp ghost icon="arrow-left" onClick={() => setSteg(Math.max(1, steg - 1))} disabled={steg === 1}>Tilbake</Knapp>
           {steg < 4 && <Knapp icon="arrow-right" onClick={() => setSteg(steg + 1)} disabled={nesteSperret}>Neste</Knapp>}
         </div>
