@@ -14,12 +14,13 @@
  * ISR: 900 sek (15 min). Full Server Component — ingen "use client".
  */
 
-import "../../stats.css";
+import "@/app/(marketing)/(mlegacy)/stats/stats.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft, ExternalLink, MapPin, Trophy, ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const revalidate = 900;
 
@@ -143,6 +144,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
     t.tour === "champ";
 
   return (
+    <StatsLegacyShell aktiv="turneringer">
     <div
       style={{
         background: "var(--s-bg)",
@@ -1189,6 +1191,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
         </div>
       </section>
     </div>
+    </StatsLegacyShell>
   );
 }
 

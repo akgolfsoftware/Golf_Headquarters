@@ -23,11 +23,17 @@ export { useMobile };
 
 /**
  * STATS_LEGACY_VARS — adapter for porterte (mlegacy) stats-komponenter
- * (StatsHistogram, StatsNorgeskart, pga-kategori-page m.fl.). De er skrevet
- * mot to gamle (lyse) CSS-variabel-navnerom: globale tokens (--primary,
- * --border, ...) konsumert via hsl(var(--x)), og et stats-lokalt --s-*-
- * navnerom konsumert som rå var(--s-x). Verdiene under er 1:1 konvertert
- * fra v2 sine mørke T-tokens (src/lib/v2/tokens.ts).
+ * (StatsHistogram, StatsNorgeskart, pga-kategori-page m.fl.). De konsumerer
+ * farge via TRE navnerom, alle overstyrt her til v2 sine mørke T-tokens
+ * (src/lib/v2/tokens.ts):
+ *   1) shadcn-trippel (--primary, --border, ...) via hsl(var(--x))
+ *   2) stats-lokalt --s-* (--s-primary, --s-card, ...) via rå var(--s-x)
+ *   3) DS-semantiske aliaser (--bg, --surface, --signal, --text, ...) — dette
+ *      er navnerommet Tailwind-utilities (bg-card, text-primary,
+ *      text-muted-foreground) faktisk går via (@theme inline i globals.css
+ *      peker f.eks. --color-card på var(--surface), IKKE var(--card)) — sider
+ *      som porteres med rene Tailwind-klasser (f.eks. turneringer/[slug]/
+ *      statistikk) trenger derfor denne tredje gruppen, ikke bare (1)+(2).
  *
  * Satt som INLINE style (ikke en CSS-klasse) med vilje: en klasse-selector
  * (.stats-v2-scope) har samme spesifisitet som legacy sine :root-regler, så
@@ -37,7 +43,7 @@ export { useMobile };
  */
 const STATS_LEGACY_VARS = {
   colorScheme: "dark",
-  // Globale tokens (HSL-triple, konsumeres via hsl(var(--x)))
+  // 1) shadcn-trippel (HSL-triple, konsumeres via hsl(var(--x)))
   "--background": "120 3.7% 5.3%", // T.bg #0D0E0D
   "--foreground": "90 11.8% 93.3%", // T.fg #EEF0EC
   "--card": "120 4.5% 8.6%", // T.panel #151715
@@ -59,7 +65,21 @@ const STATS_LEGACY_VARS = {
   "--border": "0 0% 100% / 0.08", // T.border
   "--input": "0 0% 100% / 0.08",
   "--ring": "72.9 92.8% 61.8%",
-  // Stats-lokalt navnerom (rå verdier, konsumeres via var(--s-x))
+  // 3) DS-semantiske aliaser (rå verdier — det Tailwind-utilities faktisk bruker)
+  "--bg": "#0D0E0D", // T.bg
+  "--surface": "#151715", // T.panel
+  "--surface-2": "#131513", // T.panel2
+  "--surface-hover": "#1B1D1B", // T.panel3
+  "--border-strong": "rgba(255, 255, 255, 0.14)", // T.borderS
+  "--text": "#EEF0EC", // T.fg
+  "--text-2": "#A6A9A3", // T.fg2
+  "--text-muted": "#797C76", // T.mut
+  "--text-faint": "#797C76", // T.mut
+  "--signal": "#D1F843", // T.lime
+  "--on-signal": "#0D0E0D", // T.onLime
+  "--on-signal-fill": "#0D0E0D", // T.onLime
+  "--track": "rgba(255, 255, 255, 0.08)", // T.track
+  // 2) Stats-lokalt navnerom (rå verdier, konsumeres via var(--s-x))
   "--s-bg": "#0D0E0D",
   "--s-fg": "#EEF0EC",
   "--s-card": "#151715",

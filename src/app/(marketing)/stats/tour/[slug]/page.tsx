@@ -4,7 +4,7 @@
  * Slugs: srixon | olyo | garmin-ngc | ostlandstour
  */
 
-import "../../stats.css";
+import "@/app/(marketing)/(mlegacy)/stats/stats.css";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -16,6 +16,7 @@ import { StatsBtn } from "@/components/stats/btn";
 import { StatsHorisontalBar } from "@/components/stats/stats-horisontal-bar";
 import { StatsSesongVelger } from "@/components/stats/stats-sesong-velger";
 import { StatsIcon } from "@/components/stats/icon";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 const TOUR_CONFIG = {
   srixon: {
@@ -246,6 +247,7 @@ export default async function TourDeepDive({
     : Array.from({ length: 2026 - tourConfig.startAar + 1 }, (_, i) => tourConfig.startAar + i);
 
   return (
+    <StatsLegacyShell>
     <div>
       {/* ── HERO ── */}
       <section className="stats-hero compact">
@@ -870,5 +872,6 @@ export default async function TourDeepDive({
         </Reveal>
       </section>
     </div>
+    </StatsLegacyShell>
   );
 }
