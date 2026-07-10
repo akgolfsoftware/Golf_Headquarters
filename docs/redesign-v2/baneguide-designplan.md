@@ -122,6 +122,29 @@ metodikken — se terminologi/rettigheter under.)
 - **Coach-deling** (senere fase): coach ser/kommenterer spillerens gameplan.
 - Accent-jobben i modusen: siktepunktet.
 
+### Soner: bra og dårlig å misse (Anders 10. juli — INTERAKTIVT krav)
+
+Spredningsverktøyet er interaktivt: **tapp/dra siktet → ellipsen følger → live-andel
+i soner regnes om** (verifisert i interaktiv prototype, baneguide-gameplan-interaktiv.jsx).
+
+Tre måter soner settes:
+1. **Auto fra kartdata:** vann/bunker/OB fra OSM-geometrien er røde fra start (merkes «AUTO»).
+2. **Spilleren maler:** verktøylinje med tre moduser — Flytt sikte · **Bra å misse** (grønn) ·
+   **Aldri hit** (rød). Tapp på kartet legger en sone (r ≈ 25 m); «Tøm soner» fjerner egne
+   (aldri auto-sonene). MVP = sirkelsoner; polygon-pensel er senere utvidelse.
+3. **Coach-modus (senere fase):** coachen maler soner for spilleren og låser dem som
+   anbefaling — aldri sperre (invariant-regelen).
+
+Live-utregningen: 240 deterministiske samplepunkter i 80 %-ellipsen klassifiseres mot
+sonene → «X % av ellipsen i rød sone · Y % i bra miss». Ellipsen skifter til rød kant
+når rød-andel > 10 %. Neste steg: **«Optimaliser sikte»**-knapp — appen prøver
+sikte-kandidater langs korridoren og foreslår det med lavest rød-andel (ren geometri,
+ingen AI nødvendig).
+
+Datamodell (additiv, når C7 bygges): `GameplanSone { id, baneId, holeNumber, userId,
+satAvCoachId?, type: 'BRA'|'ALDRI', senterX/Y (GPS), radiusM }` + `GameplanHull { ...,
+siktepunktX/Y, kolle, notat }`.
+
 ### Terminologi og rettigheter (UFRAVIKELIG)
 
 - Ordet **«DECADE» brukes ALDRI** — ikke i UI, marketing, app-tekster, hjelpetekster,
