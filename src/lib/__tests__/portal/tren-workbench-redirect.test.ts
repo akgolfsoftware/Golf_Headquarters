@@ -13,9 +13,16 @@ describe("workbenchRedirectForTrenPath", () => {
       "/portal/planlegge/workbench?tab=tek",
     );
     assert.equal(
-      workbenchRedirectForTrenPath("/portal/tren/turneringer"),
+      workbenchRedirectForTrenPath("/portal/tren/turneringer/gammel-lenke"),
       "/portal/planlegge/workbench?tab=seson",
     );
+  });
+
+  it("keeps the v2 base routes for tester and turneringer (ferdigbygde skjermer)", () => {
+    assert.equal(workbenchRedirectForTrenPath("/portal/tren/tester"), null);
+    assert.equal(workbenchRedirectForTrenPath("/portal/tren/tester/"), null);
+    assert.equal(workbenchRedirectForTrenPath("/portal/tren/turneringer"), null);
+    assert.equal(workbenchRedirectForTrenPath("/portal/tren/turneringer/"), null);
   });
 
   it("keeps live session routes (cuid)", () => {

@@ -38,14 +38,16 @@ export default async function V2ForelderSamtykkePreviewPage() {
     select: { type: true, status: true, createdAt: true },
   });
 
-  // Alle påkrevde samtykker aktive på alle barn (uendret regel fra ekte skjerm).
+  // Alle påkrevde samtykker aktive på alle barn. GDPR-personvern vinner:
+  // manglende/udefinert samtykke-pref regnes som IKKE gitt (samme semantikk
+  // som ForelderSamtykkeV2 sin `prefs[key] ?? false`), ikke som aktiv.
   const requiredKeys = ["dataDeling", "fotoBruk", "thirdParty"];
   const alleAktive =
     relasjoner.length > 0 &&
     relasjoner.every((r) => {
       const prefs =
         (r.child.preferences as Record<string, boolean> | null) ?? {};
-      return requiredKeys.every((k) => prefs[k] !== false);
+      return requiredKeys.every((k) => prefs[k] === true);
     });
 
   const barnNavn =

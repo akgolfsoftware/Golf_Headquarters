@@ -28,7 +28,7 @@ export default async function V2OnskeligOktPreviewPage() {
     .filter((id): id is string => id !== null);
   const coacher = await prisma.user.findMany({
     where: { id: { in: coachIds }, deletedAt: null },
-    select: { id: true, name: true },
+    select: { id: true, name: true, email: true },
     orderBy: { name: "asc" },
   });
 

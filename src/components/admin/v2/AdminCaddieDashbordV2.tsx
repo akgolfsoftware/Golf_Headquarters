@@ -16,6 +16,7 @@
  */
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Caps, Tittel, Kort, Rad, StatusPill, Knapp, TomTilstand, Icon, T, type StatusTone } from "@/components/v2";
 import type {
   AuditRow,
@@ -71,6 +72,7 @@ function FotRegel({ children }: { children: React.ReactNode }) {
 
 // ── SEKSJON 1 — UTKAST → GODKJENNING ────────────────────────────
 function DraftPanelV2({ draft }: { draft: CoAgentDraft }) {
+  const router = useRouter();
   if (!draft) {
     return (
       <Kort>
@@ -78,6 +80,10 @@ function DraftPanelV2({ draft }: { draft: CoAgentDraft }) {
       </Kort>
     );
   }
+  // Godkjenn/rediger/avvis skjer på den ekte godkjenning-detaljsiden (samme
+  // PlanAction, samme actions som /admin/godkjenninger) — aldri auto-send
+  // herfra.
+  const godkjennHref = `/admin/godkjenninger/${draft.id}`;
   return (
     <Kort>
       <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1.4fr_1fr]" style={{ gap: 18 }}>
@@ -178,9 +184,9 @@ function DraftPanelV2({ draft }: { draft: CoAgentDraft }) {
             </div>
           )}
 
-          <Knapp icon="check" full>Godkjenn og send</Knapp>
-          <Knapp icon="pencil" ghost full>Rediger først</Knapp>
-          <Knapp icon="x" ghost full>Avvis</Knapp>
+          <Knapp icon="check" full onClick={() => router.push(godkjennHref)}>Godkjenn og send</Knapp>
+          <Knapp icon="pencil" ghost full onClick={() => router.push(godkjennHref)}>Rediger først</Knapp>
+          <Knapp icon="x" ghost full onClick={() => router.push(godkjennHref)}>Avvis</Knapp>
         </div>
       </div>
 

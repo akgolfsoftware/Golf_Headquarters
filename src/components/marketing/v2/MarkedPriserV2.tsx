@@ -55,7 +55,7 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: mobile ? "16px 22px" : "20px 64px", borderBottom: `1px solid ${T.border}`, position: "relative" }}>
       <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
         <LogoAK size={24} />
-        <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, letterSpacing: "-0.02em", color: T.fg }}>AK Golf</span>
+
       </span>
       {!mobile && (
         <div style={{ display: "flex", alignItems: "center", gap: 26 }}>
