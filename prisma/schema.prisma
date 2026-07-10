@@ -4427,3 +4427,22 @@ model InnboksEpost {
   @@index([status, mottattAt])
   @@map("innboks_epost")
 }
+
+// Beta-tilbakemelding + support-henvendelser (2026-07-10) — spor F6. Fanger
+// opp det som i dag ble kastet på gulvet (kun tekst-lengde i audit-log).
+// Isolert (ingen @relation) per gotcha — additiv via db execute.
+model AppFeedback {
+  id        String   @id @default(cuid())
+  userId    String
+  // "bug" | "forslag" | "ros" | "sporsmal" | "SUPPORT"
+  type      String
+  tekst     String   @db.Text
+  // Hvilken skjerm/flate tilbakemeldingen kom fra (route eller lesbar kilde).
+  side      String?
+  // "NY" | "SETT"
+  status    String   @default("NY")
+  createdAt DateTime @default(now())
+
+  @@index([status, createdAt])
+  @@map("app_feedback")
+}

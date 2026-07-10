@@ -72,7 +72,7 @@ export default async function V2BookingPreviewPage() {
   };
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
+    <V2Shell nav={PLAYERHQ_NAV} navn={user.name}>
       <BookingV2 data={data} />
     </V2Shell>
   );

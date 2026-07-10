@@ -1,6 +1,7 @@
 // Resend-klient for transactional e-post.
 
 import { Resend } from "resend";
+import { emailLayout, primaryButton } from "@/lib/email/templates/shared";
 
 let _klient: Resend | null = null;
 
@@ -39,35 +40,28 @@ export async function sendVelkomstEpost(input: LeadEpostInput): Promise<void> {
 function bygVelkomstHtml(navn: string, source: string): string {
   const intro =
     source === "guide-download"
-      ? "<p>Tusen takk for at du lastet ned AK Golf Pyramide-guiden. Den ligger vedlagt nederst i denne e-posten.</p>"
-      : "<p>Tusen takk for at du meldte deg på nyhetsbrevet vårt.</p>";
+      ? "Tusen takk for at du lastet ned AK Golf Pyramide-guiden. Den ligger vedlagt nederst i denne e-posten."
+      : "Tusen takk for at du meldte deg på nyhetsbrevet vårt.";
 
-  return `<!doctype html>
-<html lang="nb">
-<head><meta charset="UTF-8"></head>
-<body style="font-family: system-ui, sans-serif; max-width: 580px; margin: 32px auto; color: #0A1F17;">
-  <h1 style="font-size: 28px; font-weight: 600; margin: 0 0 12px;">Hei ${navn} —</h1>
-  ${intro}
-  <p>I løpet av de neste 14 dagene får du noen e-poster med konkrete tips:</p>
-  <ul style="line-height: 1.8;">
-    <li>Hvordan pyramide-systemet bygger balansert utvikling</li>
-    <li>Strokes Gained — slik leser du tallene dine</li>
-    <li>Hvordan AI-coachen vår fungerer</li>
-    <li>Slik bygger du den første treningsplanen din</li>
-  </ul>
-  <p style="margin-top: 24px;">Vil du komme i gang nå? Lag konto gratis:</p>
-  <p>
-    <a
-      href="https://akgolf.no/auth/signup"
-      style="display: inline-block; padding: 12px 24px; background: #005840; color: #D1F843; text-decoration: none; border-radius: 6px; font-weight: 600;"
-    >
-      Start prøveperioden →
-    </a>
-  </p>
-  <p style="margin-top: 32px; color: #5E5C57; font-size: 12px;">
-    Du kan melde deg av når som helst —
-    <a href="https://akgolf.no/avmeld" style="color: #5E5C57;">avmeld her</a>.
-  </p>
-</body>
-</html>`;
+  const body = `
+    <p style="margin:0 0 16px 0;">${intro}</p>
+    <p style="margin:0 0 8px 0;">I løpet av de neste 14 dagene får du noen e-poster med konkrete tips:</p>
+    <ul style="margin:0 0 24px 0;padding-left:20px;line-height:1.8;">
+      <li>Hvordan pyramide-systemet bygger balansert utvikling</li>
+      <li>Strokes Gained — slik leser du tallene dine</li>
+      <li>Hvordan AI-coachen vår fungerer</li>
+      <li>Slik bygger du den første treningsplanen din</li>
+    </ul>
+    <p style="margin:0 0 8px 0;">Vil du komme i gang nå? Lag konto gratis:</p>
+    <p style="margin:0 0 24px 0;">${primaryButton("Start prøveperioden →", "https://akgolf.no/auth/signup")}</p>
+    <p style="margin:0;font-size:12px;color:#5E5C57;">
+      Du kan melde deg av når som helst — <a href="https://akgolf.no/avmeld" style="color:#5E5C57;">avmeld her</a>.
+    </p>
+  `;
+
+  return emailLayout({
+    preheader: intro,
+    heading: `Hei ${navn} —`,
+    body,
+  });
 }

@@ -106,6 +106,7 @@ export type KalenderData = {
   spillerNavn: string;
   avatarUrl: string | null;
   ukeLabel: string;  // "Uke 26 · 23.–29. juni"
+  visningsDatoISO: string; // "YYYY-MM-DD" — datoen kalenderen er sentrert på (styrer dag/uke/måned/år-navigasjon)
 
   dag: {
     label: string;       // "Onsdag 25. juni"
@@ -142,19 +143,31 @@ export type KalenderData = {
   };
 };
 
+function isoDato(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 // ── Loader ────────────────────────────────────────────────────────────────────
 export async function hentKalenderData(
   spillerId: string,
   spillerNavn: string,
   avatarUrl: string | null,
+  refDato?: Date,
 ): Promise<KalenderData> {
-  const naa = new Date();
-  const aar = naa.getFullYear();
+  // echteNaa = det faktiske klokkeslettet nå — styrer status (NÅ-badge/fullført-hake),
+  // dagens-markering og «opp til nå»-KPI-er. visningsDato = dagen kalenderen er
+  // sentrert på (styrt av ?dato=-navigasjon), brukes til å velge hvilken
+  // dag/uke/måned/år Dag/Uke/Maaned/Aar viser. De to skal ALDRI blandes —
+  // ellers får en fortid/framtid-visning feil NÅ/fullført-status.
+  const echteNaa = new Date();
+  const visningsDato = refDato ?? echteNaa;
+  const aar = visningsDato.getFullYear();
   const aarStart = new Date(aar, 0, 1);
   const aarSlutt = new Date(aar, 11, 31, 23, 59, 59, 999);
-  const dagStart = startOfDay(naa);
-  const ukeStart = startOfWeek(naa);
-  const mndIdx = naa.getMonth();
+  const dagStart = startOfDay(visningsDato);
+  const ukeStart = startOfWeek(visningsDato);
+  const echteDagStart = startOfDay(echteNaa);
+  const mndIdx = visningsDato.getMonth();
 
   const [okter, sesongplan, turneringer] = await Promise.all([
     prisma.trainingSessionV2.findMany({
@@ -179,17 +192,27 @@ export async function hentKalenderData(
     }),
   ]);
 
-  const tilOkt = (s: (typeof okter)[number]): KalenderOkt => ({
-    id: s.id,
-    kl: toHHMM(s.startTime),
-    slutt: toHHMM(s.endTime),
-    startTime: s.startTime.getHours(),
-    title: s.title,
-    sted: s.miljo ? translateMiljo(s.miljo) : null,
-    a: PRACTICE_TO_PYRAMID[s.practiceType] ?? "TEK",
-    naa: s.status === "IN_PROGRESS",
-    done: s.status === "COMPLETED",
-  });
+  const tilOkt = (s: (typeof okter)[number]): KalenderOkt => {
+    // NÅ-badge krever at det faktiske klokkeslettet er inni øktens tidsvindu —
+    // ikke bare at status er IN_PROGRESS (ellers vises en glemt/aldri fullført
+    // økt som «Nå» på alle dager, også i fortiden).
+    const paagaarNaa = s.startTime.getTime() <= echteNaa.getTime() && echteNaa.getTime() <= s.endTime.getTime();
+    // En IN_PROGRESS-økt hvis tidsvindu allerede er passert regnes som fullført
+    // i visningen — spilleren rakk aldri å trykke «Fullfør økt», men treningen
+    // skjedde (loggført i Analysere → Trening) og skal ha haken, ikke stå uten status.
+    const alleredePassert = s.endTime.getTime() < echteNaa.getTime();
+    return {
+      id: s.id,
+      kl: toHHMM(s.startTime),
+      slutt: toHHMM(s.endTime),
+      startTime: s.startTime.getHours(),
+      title: s.title,
+      sted: s.miljo ? translateMiljo(s.miljo) : null,
+      a: PRACTICE_TO_PYRAMID[s.practiceType] ?? "TEK",
+      naa: s.status === "IN_PROGRESS" && paagaarNaa,
+      done: s.status === "COMPLETED" || (s.status === "IN_PROGRESS" && alleredePassert),
+    };
+  };
 
   // ── Dag ──────────────────────────────────────────────
   const dagStartMs = dagStart.getTime();
@@ -205,7 +228,7 @@ export async function hentKalenderData(
     const s = okter.find((x) => x.id === o.id)!;
     return sum + Math.max(0, Math.round((s.endTime.getTime() - s.startTime.getTime()) / 60_000));
   }, 0);
-  const dagLabel = `${UKEDAG_LANG[(naa.getDay() + 6) % 7]} ${naa.getDate()}. ${MND_LANG[mndIdx]}`;
+  const dagLabel = `${UKEDAG_LANG[(visningsDato.getDay() + 6) % 7]} ${visningsDato.getDate()}. ${MND_LANG[mndIdx]}`;
   const dagTotal = dagOkter.length ? `${dagOkter.length} ${dagOkter.length === 1 ? "økt" : "økter"} · ${timerTekst(dagMin)}` : "Ingen økter";
 
   // ── Uke ──────────────────────────────────────────────
@@ -220,7 +243,7 @@ export async function hentKalenderData(
     return {
       d: `${UKEDAG_KORT[i]} ${d.getDate()}`,
       dayNum: d.getDate(),
-      isToday: startOfDay(d).getTime() === dagStartMs,
+      isToday: startOfDay(d).getTime() === echteDagStart.getTime(),
       okter: dagsOkter,
     };
   });
@@ -245,10 +268,10 @@ export async function hentKalenderData(
     const type = lesPeriodeType(blokk);
     const start = blokk.startDate, slutt = blokk.endDate;
     const total = slutt.getTime() - start.getTime();
-    const forlopt = naa.getTime() - start.getTime();
+    const forlopt = echteNaa.getTime() - start.getTime();
     const pct = total > 0 ? Math.min(100, Math.max(0, Math.round((forlopt / total) * 100))) : 0;
-    const aktiv = naa >= start && naa <= slutt;
-    const forbi = naa > slutt;
+    const aktiv = echteNaa >= start && echteNaa <= slutt;
+    const forbi = echteNaa > slutt;
     return {
       navn: blokk.focus?.trim() || PERIODE_NAVN[type],
       mnd: `${MND_KORT[start.getMonth()]}–${MND_KORT[slutt.getMonth()]}`,
@@ -257,19 +280,20 @@ export async function hentKalenderData(
       tone: aktiv ? "naa" : forbi ? "ok" : null,
     };
   });
-  const aktivPeriode = (sesongplan?.periodBlocks ?? []).find((b) => naa >= b.startDate && naa <= b.endDate);
+  const aktivPeriode = (sesongplan?.periodBlocks ?? []).find((b) => echteNaa >= b.startDate && echteNaa <= b.endDate);
   const aktivPeriodeLabel = aktivPeriode
     ? (aktivPeriode.focus?.trim() || PERIODE_NAVN[lesPeriodeType(aktivPeriode)])
     : null;
 
-  // Framtidige turneringer (sortert), for KPIer + subtitle
+  // Framtidige turneringer (sortert), for KPIer + subtitle — regnet fra ekte
+  // dags-dato, ikke fra den navigerte visningsdatoen.
   const framtidige = turneringer
     .map((e) => ({ e, dato: e.tournament?.startDate ?? e.manualDate }))
-    .filter((x): x is { e: (typeof turneringer)[number]; dato: Date } => !!x.dato && x.dato >= dagStart)
+    .filter((x): x is { e: (typeof turneringer)[number]; dato: Date } => !!x.dato && x.dato >= echteDagStart)
     .sort((a, b) => a.dato.getTime() - b.dato.getTime());
   const neste = framtidige[0];
   const ukerTil = neste
-    ? String(Math.max(0, Math.ceil((neste.dato.getTime() - naa.getTime()) / 604_800_000)))
+    ? String(Math.max(0, Math.ceil((neste.dato.getTime() - echteNaa.getTime()) / 604_800_000)))
     : "–";
   const nesteNavn = neste?.e.tournament?.name ?? neste?.e.manualName ?? null;
 
@@ -280,23 +304,29 @@ export async function hentKalenderData(
   const treningstimer = Math.round(fullforteMin / 60);
 
   // Gjennomføring: fullførte / forfalte (start <= nå, ikke avlyst) i år
-  const forfalte = okter.filter((s) => s.startTime <= naa && s.status !== "CANCELLED");
+  const forfalte = okter.filter((s) => s.startTime <= echteNaa && s.status !== "CANCELLED");
   const fullforteAntall = forfalte.filter((s) => s.status === "COMPLETED").length;
   const gjennomforing = forfalte.length > 0 ? `${Math.round((fullforteAntall / forfalte.length) * 100)} %` : null;
 
   const harAarData = perioder.length > 0 || turneringer.length > 0;
   const subtitle = nesteNavn ? `Sesong ${aar} · mot ${nesteNavn}` : `Sesong ${aar}`;
 
-  // Uke-label «Uke 26 · 23.–29. juni»
+  // Uke-label «Uke 26 · 23.–29. juni» — ukenummeret til den VISTE uka, ikke ekte i dag.
   const ukeSlutt = new Date(ukeStart);
   ukeSlutt.setDate(ukeSlutt.getDate() + 6);
   const sammeMnd = ukeStart.getMonth() === ukeSlutt.getMonth();
-  const ukeLabel = `Uke ${ukenummer(naa)} · ${ukeStart.getDate()}.${sammeMnd ? "" : " " + MND_LANG[ukeStart.getMonth()]}–${ukeSlutt.getDate()}. ${MND_LANG[ukeSlutt.getMonth()]}`;
+  const ukeLabel = `Uke ${ukenummer(ukeStart)} · ${ukeStart.getDate()}.${sammeMnd ? "" : " " + MND_LANG[ukeStart.getMonth()]}–${ukeSlutt.getDate()}. ${MND_LANG[ukeSlutt.getMonth()]}`;
+
+  // «I dag»-markøren i måned-rutenettet skal kun vises når den viste måneden
+  // faktisk er ekte inneværende måned — ellers viser et hopp til f.eks. forrige
+  // måned feilaktig dagens datotall som uthevet i en helt annen måned.
+  const mndErEkteInneverende = mndIdx === echteNaa.getMonth() && aar === echteNaa.getFullYear();
 
   return {
     spillerNavn,
     avatarUrl,
     ukeLabel,
+    visningsDatoISO: isoDato(visningsDato),
     dag: { label: dagLabel, totalLabel: dagTotal, fraTime, tilTime, okter: dagOkter },
     uke: { dager: ukeDager },
     maaned: {
@@ -304,7 +334,7 @@ export async function hentKalenderData(
       totalLabel: mndTotal,
       daysInMonth,
       ledendeTomme,
-      today: naa.getDate(),
+      today: mndErEkteInneverende ? echteNaa.getDate() : null,
       perDag,
     },
     aar: {

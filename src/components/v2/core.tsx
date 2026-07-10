@@ -214,9 +214,14 @@ export interface KpiFlisProps {
   tint?: boolean;
   varsle?: boolean;
   hjelp?: HjelpNokkel;
+  /** Dropp tell-opp-fra-0-animasjonen. Bruk for absolutte tall der 0 aldri er en
+   *  reell mellomverdi (f.eks. golf-brutto­score) — ellers vises en umulig verdi
+   *  i overgangen (0 → mål) i de første rammene etter montering. */
+  instant?: boolean;
 }
-export function KpiFlis({ label, value, delta, dir, tint, varsle, hjelp }: KpiFlisProps) {
-  const shown = useCountUp(value);
+export function KpiFlis({ label, value, delta, dir, tint, varsle, hjelp, instant }: KpiFlisProps) {
+  const animert = useCountUp(value);
+  const shown = instant ? String(value) : animert;
   return (
     <Kort tint={tint || varsle}>
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -303,10 +308,12 @@ export interface CTAPillProps {
   icon?: string;
   children?: ReactNode;
   ghost?: boolean;
+  /** Strekker pillen til full bredde av forelder (f.eks. mobil-CTA under et kort). */
+  full?: boolean;
 }
-export function CTAPill({ icon, children, ghost }: CTAPillProps) {
+export function CTAPill({ icon, children, ghost, full }: CTAPillProps) {
   return (
-    <span className="v2-press v2-focus" tabIndex={0} role="button" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: ghost ? T.fg : T.onLime, background: ghost ? T.panel3 : T.lime, border: ghost ? `1px solid ${T.borderS}` : "none", borderRadius: 9999, padding: "9px 16px", cursor: "pointer" }}>
+    <span className="v2-press v2-focus" tabIndex={0} role="button" style={{ display: "inline-flex", alignItems: "center", justifyContent: full ? "center" : undefined, gap: 8, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: ghost ? T.fg : T.onLime, background: ghost ? T.panel3 : T.lime, border: ghost ? `1px solid ${T.borderS}` : "none", borderRadius: 9999, padding: "9px 16px", cursor: "pointer", width: full ? "100%" : undefined }}>
       {icon && <Icon name={icon} size={14} />}{children}
     </span>
   );

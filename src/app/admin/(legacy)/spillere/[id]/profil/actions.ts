@@ -10,6 +10,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
+import { emailLayout, primaryButton } from "@/lib/email/templates/shared";
 import type { ParentLinkRelation } from "@/generated/prisma/client";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no";
@@ -88,23 +89,17 @@ export async function inviterForelderForSpiller(input: {
 }
 
 function bygInviteHtml(input: { navn: string; rel: string; lenke: string }): string {
-  return `<!doctype html>
-<html lang="nb">
-<head><meta charset="UTF-8"></head>
-<body style="font-family: system-ui, sans-serif; max-width: 580px; margin: 32px auto; color: #0A1F17;">
-  <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 12px;">Hei —</h1>
-  <p>Du er invitert som <strong>${input.rel}</strong> til ${input.navn} i AK Golf-portalen.</p>
-  <p>Klikk lenken under for å registrere deg og få tilgang til ${input.navn} sin treningsprofil:</p>
-  <p style="margin: 24px 0;">
-    <a href="${input.lenke}"
-       style="display: inline-block; padding: 12px 24px; background: #005840; color: #D1F843; text-decoration: none; border-radius: 6px; font-weight: 600;">
-      Godta invitasjon
-    </a>
-  </p>
-  <p style="color: #5E5C57; font-size: 13px;">Lenken er gyldig i 7 dager.</p>
-  <p style="margin-top: 32px; color: #5E5C57; font-size: 12px;">
-    AK Golf Group · Du mottar denne fordi en coach oppga e-posten din i AK Golf-portalen.
-  </p>
-</body>
-</html>`;
+  const body = `
+    <p style="margin:0 0 16px 0;">Du er invitert som <strong>${input.rel}</strong> til ${input.navn} i AK Golf-portalen.</p>
+    <p style="margin:0 0 24px 0;">Klikk lenken under for å registrere deg og få tilgang til ${input.navn} sin treningsprofil:</p>
+    <p style="margin:0 0 8px 0;">${primaryButton("Godta invitasjon", input.lenke)}</p>
+    <p style="margin:0 0 24px 0;font-size:13px;color:#5E5C57;">Lenken er gyldig i 7 dager.</p>
+    <p style="margin:0;font-size:12px;color:#5E5C57;">Du mottar denne fordi en coach oppga e-posten din i AK Golf-portalen.</p>
+  `;
+
+  return emailLayout({
+    preheader: `Du er invitert som ${input.rel} til ${input.navn} i AK Golf-portalen.`,
+    heading: "Hei —",
+    body,
+  });
 }

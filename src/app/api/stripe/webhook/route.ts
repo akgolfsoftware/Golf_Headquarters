@@ -266,7 +266,7 @@ export async function POST(req: Request) {
         // ALT ANNET i bakgrunnen (etter 200 OK til Stripe):
         //   - recordCheckoutSession (6 DB-queries, opp til 15 sek)
         //   - subscription-sync (Stripe API-kall)
-        //   - sendBookingConfirmation (Resend, 1-3 sek)
+        //   - sendBookingConfirmationV2 (Resend, 1-3 sek)
         //   - pushBookingToCalendar (Google API, 2-5 sek per kalender)
         //   - notifyCoach (in-app + e-post til coach, B4)
         after(async () => {
@@ -291,10 +291,10 @@ export async function POST(req: Request) {
 
           if (bookingId && session.payment_status === "paid") {
             try {
-              const { sendBookingConfirmation } = await import(
-                "@/lib/email/booking-emails"
+              const { sendBookingConfirmationV2 } = await import(
+                "@/lib/email/send-booking-email"
               );
-              await sendBookingConfirmation(bookingId);
+              await sendBookingConfirmationV2(bookingId);
             } catch (err) {
               console.error(
                 "[stripe-webhook] booking-confirmation-email failed",

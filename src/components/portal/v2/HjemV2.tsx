@@ -32,6 +32,7 @@ import {
   InnsiktChip,
   DagStripe,
   TomTilstand,
+  Icon,
   type StatusTone,
   type StripeDag,
 } from "@/components/v2";
@@ -223,6 +224,25 @@ export function HjemV2({ data }: { data: DashboardData }) {
         )}
       </Kort>
 
+      {/* Mobil-CTA — «Start dagens økt» fullbredde under dagens økt-kort (desktop har den i hodet). */}
+      <div className="md:hidden">
+        <Link href={today ? today.href : "/portal/gjennomfore"} style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="play" full>Start dagens økt</CTAPill>
+        </Link>
+      </div>
+
+      {/* Book coachtime — inngang til booking (ingen egen plass i hovednav) */}
+      <Kort>
+        <Link href="/portal/booking" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+          <Rad
+            leading={<Icon name="calendar-plus" size={16} style={{ color: T.mut }} />}
+            title="Book coachtime"
+            sub="Velg tjeneste, coach og tid"
+            last
+          />
+        </Link>
+      </Kort>
+
       {/* Workbench-inngang — samme ene trykkpunkt som Plan-fanen */}
       <WorkbenchInngang />
 
@@ -230,7 +250,7 @@ export function HjemV2({ data }: { data: DashboardData }) {
       <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: T.gap }}>
         <KpiFlis label="Streak" value={`${streak} uker`} hjelp="streak" />
         <KpiFlis label="Uke-gjennomføring" value={ukePct} hjelp="planEtterlevelse" />
-        <div className="hidden md:block">
+        <div className="col-span-2 md:col-span-1">
           <Kort eyebrow="Trening · 12 uker">
             <div style={{ marginTop: 4 }}>
               <Prikker n={hmVals.length * hmCols} cols={hmCols} hits={hmHits} />
