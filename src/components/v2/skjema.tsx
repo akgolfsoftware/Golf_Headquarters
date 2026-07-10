@@ -13,6 +13,21 @@ import { T } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
 import { CTAPill, Caps } from "./core";
 
+/* Responsive skjema-stiler injiseres én gang (samme idiom som core.tsx ensureStyles) —
+   inline-styles kan ikke bære media queries. NPS-skalaen brytes i to rader (0–5 / 6–10)
+   med ≥44px trykkmål på smale skjermer; desktop beholder én rad à 11. */
+function ensureSkjemaStyles(): void {
+  if (typeof document === "undefined" || document.getElementById("v2-skjema-style")) return;
+  const el = document.createElement("style");
+  el.id = "v2-skjema-style";
+  el.textContent =
+    `.v2-nps-grid{display:grid;grid-template-columns:repeat(11,1fr);gap:5px;}` +
+    `.v2-nps-knapp{height:38px;}` +
+    `@media (max-width:767px){.v2-nps-grid{grid-template-columns:repeat(6,1fr);gap:8px;}.v2-nps-knapp{height:44px;}}`;
+  document.head.appendChild(el);
+}
+if (typeof document !== "undefined") ensureSkjemaStyles();
+
 /* Delte felt-stiler */
 const FELT: CSSProperties = {
   width: "100%", boxSizing: "border-box", appearance: "none",
@@ -497,7 +512,7 @@ export function NpsSkala({ value, onChange }: NpsSkalaProps) {
   const kant: CSSProperties = { fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut };
   return (
     <div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(11, 1fr)", gap: 5 }}>
+      <div className="v2-nps-grid">
         {Array.from({ length: 11 }, (_, v) => {
           const on = v === value;
           const c = NPS_SEG[npsSegment(v)].c;
@@ -509,10 +524,10 @@ export function NpsSkala({ value, onChange }: NpsSkalaProps) {
               onClick={() => onChange(v)}
               aria-label={`${v} av 10`}
               aria-pressed={on}
-              className="v2-focus"
+              className="v2-focus v2-nps-knapp"
               style={{
                 appearance: "none", cursor: "pointer",
-                height: 38, borderRadius: 10, padding: 0,
+                borderRadius: 10, padding: 0,
                 fontFamily: T.mono, fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums",
                 background: on ? c : iSeg ? `color-mix(in srgb, ${c} 12%, transparent)` : T.panel2,
                 border: `1px solid ${on ? "transparent" : iSeg ? `color-mix(in srgb, ${c} 32%, transparent)` : T.borderS}`,
