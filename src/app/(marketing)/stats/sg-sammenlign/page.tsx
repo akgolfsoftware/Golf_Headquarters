@@ -13,7 +13,8 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { Reveal } from "@/components/stats/reveal";
 import { MiniRadar } from "@/components/stats/mini-radar";
-import "../stats.css";
+import "@/app/(marketing)/(mlegacy)/stats/stats.css";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const revalidate = 3600;
 
@@ -37,6 +38,7 @@ export default async function SgSammenlignLanding() {
     : "/auth/signup?next=/stats/sg-sammenlign/start";
 
   return (
+    <StatsLegacyShell>
     <div className="bg-background text-foreground">
 
       {/* ── HERO ────────────────────────────────────────────────────── */}
@@ -604,5 +606,6 @@ export default async function SgSammenlignLanding() {
         </div>
       </section>
     </div>
+    </StatsLegacyShell>
   );
 }
