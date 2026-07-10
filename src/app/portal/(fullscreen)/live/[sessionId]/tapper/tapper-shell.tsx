@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ChevronDown,
   Clock,
@@ -10,6 +10,7 @@ import {
   StopCircle,
   X,
 } from "lucide-react";
+import { saveTapperCounts } from "./actions";
 
 type Club = { id: string; name: string };
 
@@ -17,19 +18,23 @@ type Props = {
   sessionId: string;
   facilityLabel: string;
   defaultClubs: Club[];
+  /** Tidligere lagrede tellinger (session_ball_logs) — gjenopptak etter refresh. */
+  initialCounts?: Record<string, number>;
 };
 
 /**
  * Tapper-shell — fullscreen mørk modus med ett stort tap-felt.
  * Mobile-first: tap-knapp 120px høyde, store tap-targets, minimal UI.
- * Designet etter wireframe/design-package/project/screens/02-live-tapper.html
  *
- * Logging gjøres in-memory inntil en TODO: server-action sender shots til DB.
+ * Tellingene persisteres til session_ball_logs: debounced ~5 s etter siste
+ * tap, ved pause, og før navigering ut (avslutt/lukk).
  */
-export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
-  const [counts, setCounts] = useState<Record<string, number>>(
-    Object.fromEntries(defaultClubs.map((c) => [c.id, 0])),
-  );
+export function TapperShell({ sessionId, facilityLabel, defaultClubs, initialCounts }: Props) {
+  const router = useRouter();
+  const [counts, setCounts] = useState<Record<string, number>>(() => ({
+    ...Object.fromEntries(defaultClubs.map((c) => [c.id, 0])),
+    ...(initialCounts ?? {}),
+  }));
   const [activeClubId, setActiveClubId] = useState<string>(
     defaultClubs[0]?.id ?? "",
   );
@@ -37,11 +42,47 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
   const [startedAt] = useState(() => new Date());
   const [now, setNow] = useState(() => new Date());
   const [showClubPicker, setShowClubPicker] = useState(false);
+  const [lagreFeil, setLagreFeil] = useState(false);
 
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 30_000);
     return () => clearInterval(t);
   }, []);
+
+  // ── Persistering: debounce + flush ──────────────────────────────
+  const countsRef = useRef(counts);
+  countsRef.current = counts;
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  async function lagre(): Promise<boolean> {
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = null;
+    const payload = Object.entries(countsRef.current).map(([club, count]) => ({ club, count }));
+    try {
+      const res = await saveTapperCounts(sessionId, payload);
+      setLagreFeil(!res.ok);
+      return res.ok;
+    } catch {
+      setLagreFeil(true);
+      return false;
+    }
+  }
+
+  function planleggLagring() {
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => void lagre(), 5_000);
+  }
+
+  useEffect(() => {
+    return () => {
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+    };
+  }, []);
+
+  async function avslutt() {
+    await lagre();
+    router.push(`/portal/live/${sessionId}`);
+  }
 
   function handleTap() {
     if (paused) return;
@@ -49,6 +90,7 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
       ...prev,
       [activeClubId]: (prev[activeClubId] ?? 0) + 1,
     }));
+    planleggLagring();
     // Haptic feedback hvis tilgjengelig
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
       try {
@@ -78,7 +120,7 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
       setEndProgress(pct);
       if (pct >= 1) {
         cancelEndPress();
-        window.location.href = `/portal/live/${sessionId}`;
+        void avslutt();
       }
     }, 30);
   }
@@ -100,13 +142,6 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
         }}
       />
 
-      {/* Pre-BETA banner */}
-      <div className="absolute inset-x-0 top-14 z-20 border-b border-amber-500/40 bg-amber-500/10 px-4 py-2 text-center sm:px-6">
-        <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-amber-300">
-          PRE-BETA · Tap-data lagres ikke ennå — kun for prøving
-        </p>
-      </div>
-
       {/* Topbar */}
       <div className="relative z-10 flex items-center gap-2 border-b border-white/5 px-4 sm:px-6">
         <div className="flex items-center gap-2">
@@ -121,13 +156,14 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
         <div className="flex-1 truncate text-center font-sans text-[13px] text-white/60">
           {facilityLabel}
         </div>
-        <Link
-          href={`/portal/live/${sessionId}`}
+        <button
+          type="button"
+          onClick={() => void avslutt()}
           aria-label="Lukk tapper"
           className="grid h-10 w-10 place-items-center rounded-full border border-white/20 text-white transition-colors hover:bg-white/10"
         >
           <X className="h-4 w-4" strokeWidth={1.75} />
-        </Link>
+        </button>
       </div>
 
       {/* Tap zone */}
@@ -225,7 +261,12 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
         </button>
         <button
           type="button"
-          onClick={() => setPaused((p) => !p)}
+          onClick={() => {
+            setPaused((p) => {
+              if (!p) void lagre();
+              return !p;
+            });
+          }}
           aria-label={paused ? "Fortsett" : "Pause"}
           className="grid h-14 w-14 place-items-center rounded-full border border-white/20 bg-white/[0.04] text-white transition-colors hover:bg-white/10"
         >
@@ -271,23 +312,27 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs }: Props) {
         <div className="mt-2 flex gap-2 sm:hidden">
           <button
             type="button"
-            onClick={() => setPaused((p) => !p)}
+            onClick={() => {
+              setPaused((p) => {
+                if (!p) void lagre();
+                return !p;
+              });
+            }}
             className="min-h-[56px] flex-1 rounded-2xl border border-white/20 bg-white/[0.04] font-sans text-[14px] font-medium text-white transition-colors hover:bg-white/10"
           >
             {paused ? "Fortsett" : "Pause"}
           </button>
-          <Link
-            href={`/portal/live/${sessionId}`}
-            className="min-h-[56px] flex-1 rounded-2xl border border-white/20 bg-white/[0.04] text-center font-sans text-[14px] font-medium leading-[56px] text-white transition-colors hover:bg-white/10"
+          <button
+            type="button"
+            onClick={() => void avslutt()}
+            className="min-h-[56px] flex-1 rounded-2xl border border-white/20 bg-white/[0.04] text-center font-sans text-[14px] font-medium text-white transition-colors hover:bg-white/10"
           >
             Avslutt
-          </Link>
+          </button>
         </div>
 
         <p className="mt-2 text-center font-mono text-[11px] text-white/40">
-          {/* TODO: persister tap-data via server-action mot DB
-              (per-økt ball-logg per kølle). Foreløpig in-memory. */}
-          Tap-data lagres når økten avsluttes.
+          {lagreFeil ? "Kunne ikke lagre — prøver igjen ved neste tap." : "Lagres automatisk."}
         </p>
       </div>
     </div>

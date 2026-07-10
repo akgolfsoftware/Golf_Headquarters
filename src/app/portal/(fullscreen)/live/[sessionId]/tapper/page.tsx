@@ -40,11 +40,19 @@ export default async function LiveTapperPage({
     redirect("/portal/planlegge/workbench");
   }
 
+  // Gjenopptak: tidligere lagrede tellinger for økten (session_ball_logs).
+  const lagrede = await prisma.sessionBallLog.findMany({
+    where: { planSessionId: session.id },
+    select: { club: true, count: true },
+  });
+  const initialCounts = Object.fromEntries(lagrede.map((r) => [r.club, r.count]));
+
   return (
     <TapperShell
       sessionId={session.id}
       facilityLabel={session.plan.name}
       defaultClubs={DEFAULT_CLUBS}
+      initialCounts={initialCounts}
     />
   );
 }
