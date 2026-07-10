@@ -25,6 +25,7 @@ import { CountUp } from "@/components/stats/count-up";
 import { SparkBars } from "@/components/stats/spark-bars";
 import { StatsBtn } from "@/components/stats/btn";
 import { PuttPreview, type PuttRow } from "@/components/stats/putt-preview";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 // ─── ISR ────────────────────────────────────────────────────────────────────
 export const revalidate = 3600;
@@ -208,6 +209,7 @@ export default async function PgaStatsHub() {
   const topSgValue = sgRows[0]?.value ?? 2.34;
 
   return (
+    <StatsLegacyShell>
     <div className="pga-page bg-background text-foreground">
 
       {/* ─── HERO ─────────────────────────────────────────────────────── */}
@@ -660,6 +662,7 @@ export default async function PgaStatsHub() {
       </div>
 
     </div>
+    </StatsLegacyShell>
   );
 }
 
