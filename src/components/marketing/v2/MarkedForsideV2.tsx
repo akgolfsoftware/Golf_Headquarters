@@ -59,7 +59,7 @@ function useMobile(): boolean {
 
 /* ── Ramme: toppnav + innhold + footer ─────────────────── */
 const MNAV: { id: string; l: string; href: string }[] = [
-  { id: "hjem", l: "Hjem", href: "/v2-marked" },
+  { id: "hjem", l: "Hjem", href: "/" },
   { id: "coaching", l: "Coaching", href: "/coaching" },
   { id: "playerhq", l: "PlayerHQ", href: "/playerhq" },
   { id: "priser", l: "Priser", href: "/priser" },
@@ -78,7 +78,7 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
         position: "relative",
       }}
     >
-      <Link href="/v2-marked" style={{ display: "inline-flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
+      <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
         <LogoAK size={24} />
         <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, letterSpacing: "-0.02em", color: T.fg }}>
           AK Golf

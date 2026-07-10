@@ -59,7 +59,7 @@ export default async function BloggDetaljPage({ params }: Props) {
   try {
     const mod = (await import(
       /* webpackMode: "eager" */
-      `../../../../../../content/blogg/${slug}.mdx`
+      `../../../../../../../content/blogg/${slug}.mdx`
     )) as { default: React.ComponentType };
     MDXContent = mod.default;
   } catch {
