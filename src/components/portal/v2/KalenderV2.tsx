@@ -13,6 +13,7 @@
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState, type CSSProperties } from "react";
+import Link from "next/link";
 import {
   T,
   Caps,
@@ -26,6 +27,7 @@ import {
   KpiFlis,
   TomTilstand,
   Icon,
+  Periodeplan,
 } from "@/components/v2";
 import type { KalenderData } from "@/app/portal/kalender/data";
 
@@ -339,11 +341,21 @@ function Aar({ aar, mobile }: { aar: KalenderData["aar"]; mobile: boolean }) {
       </Kort>
     );
   }
+  const ingenPeriodeplan = aar.perioder.length === 0;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <Kort tint eyebrow={aar.subtitle} action={aar.aktivPeriodeLabel ? <StatusPill>{aar.aktivPeriodeLabel}</StatusPill> : undefined}>
-        {aar.perioder.length === 0 ? (
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: 0 }}>Ingen periodeblokker i sesongplanen ennå — turneringer vises i tallene under.</p>
+        {ingenPeriodeplan ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
+              {aar.turneringer.length > 0
+                ? "Ingen periodeblokker i sesongplanen ennå — turneringene under er hentet fra påmeldingene dine."
+                : "Ingen periodeblokker i sesongplanen ennå — turneringer vises i tallene under."}
+            </p>
+            <Link href="/portal/planlegge/workbench" style={{ textDecoration: "none", width: "fit-content" }}>
+              <CTAPill ghost icon="calendar">Lag sesongplan i Workbench</CTAPill>
+            </Link>
+          </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 4 }}>
             {aar.perioder.map((p, i) => (
@@ -361,6 +373,16 @@ function Aar({ aar, mobile }: { aar: KalenderData["aar"]; mobile: boolean }) {
           </div>
         )}
       </Kort>
+      {ingenPeriodeplan && aar.turneringer.length > 0 && (
+        <Kort eyebrow="Sesongens turneringer">
+          <Periodeplan faser={[]} turneringer={aar.turneringer.map((t) => ({ navn: t.navn, uke: t.uke, prio: t.prio }))} />
+          <div style={{ display: "flex", flexDirection: "column", marginTop: 16 }}>
+            {aar.turneringer.map((t, i) => (
+              <Rad key={i} title={t.navn} sub={t.datoLabel} last={i === aar.turneringer.length - 1} />
+            ))}
+          </div>
+        </Kort>
+      )}
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4,1fr)", gap: T.gap }}>
         <KpiFlis label="Uker til turnering" value={aar.kpis.ukerTil === "–" ? "–" : `${aar.kpis.ukerTil} uker`} tint />
         <KpiFlis label="Turneringer igjen" value={String(aar.kpis.turneringerIgjen)} />
