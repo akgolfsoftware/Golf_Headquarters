@@ -1,16 +1,25 @@
-// Sprint 3 — AI-foreslå uke (3 varianter: konservativ/standard/aggressiv).
-// Bruker Vercel AI Gateway med generateObject for strukturert JSON-output.
+// AI-foreslå uke (3 varianter: konservativ/standard/aggressiv).
+// Bruker @ai-sdk/anthropic direkte (ANTHROPIC_API_KEY) med generateObject for
+// strukturert JSON-output. IKKE @ai-sdk/gateway — free tier har ikke modell-
+// tilgang, så gateway ville alltid truffet stubben i prod (jf. gotchas.md).
 //
-// Faller tilbake til hardkodet stub hvis AI_GATEWAY_API_KEY ikke er satt
+// Faller tilbake til hardkodet stub hvis ANTHROPIC_API_KEY ikke er satt
 // eller hvis AI-kallet feiler — så UI-en aldri henger på AI.
 
 import { generateObject } from "ai";
-import { gateway } from "@ai-sdk/gateway";
+import { createAnthropic } from "@ai-sdk/anthropic";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { kategoriFraHcp } from "@/lib/ai-plan/context";
+import { hentPlayerSignals } from "@/lib/plan-engine/load-signals";
+import {
+  STANDARD_PYRAMIDE,
+  STANDARD_OKT_ANTALL,
+} from "@/lib/plan-engine/standard-fordeling";
+import { SG_FOKUS_LABEL } from "@/lib/workbench/fokus";
 
-// Modell-id via AI Gateway. Haiku er billig + raskt for korte plan-forslag.
-const WEEK_SUGGEST_MODEL = "anthropic/claude-haiku-4.5" as const;
+// Haiku er billig + raskt for korte plan-forslag (gyldig id mot api.anthropic.com).
+const WEEK_SUGGEST_MODEL = "claude-haiku-4-5-20251001" as const;
 
 const PyramidArea = z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]);
 
@@ -21,7 +30,7 @@ const SessionSchema = z.object({
   durationMin: z.number().int().min(15).max(360),
 });
 
-const VariantSchema = z.object({
+export const VariantSchema = z.object({
   variant: z.enum(["konservativ", "standard", "aggressiv"]),
   totalSessions: z.number().int().min(3).max(10),
   focusBlend: z.string().min(5).max(120),
@@ -155,7 +164,28 @@ async function loadPlayerContext(userId: string, weekStart: Date): Promise<Playe
   };
 }
 
-function buildPrompt(ctx: PlayerContext, weekStart: Date): string {
+/**
+ * Standardplan-anker: spillerens kategori (HCP-basert — låst valg inntil
+ * drill-retag er avgjort) gir pyramidefordeling + øktantall fra
+ * standard-fordeling.ts, så variantene ankres i AK-metodikken i stedet for
+ * å flyte fritt.
+ */
+async function standardAnker(userId: string, aktivFase: string | null): Promise<string[]> {
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { hcp: true } });
+  const kategori = kategoriFraHcp(user?.hcp ?? null);
+  if (!kategori) return [];
+  const pyr = STANDARD_PYRAMIDE[kategori];
+  const fase = (aktivFase ?? "GRUNN") as keyof (typeof STANDARD_OKT_ANTALL)[typeof kategori];
+  const okter = STANDARD_OKT_ANTALL[kategori][fase] ?? STANDARD_OKT_ANTALL[kategori].GRUNN;
+  return [
+    `Standardplan-anker for spillerens nivå (kategori ${kategori}): ` +
+      `FYS ${pyr.FYS} % · TEK ${pyr.TEK} % · SLAG ${pyr.SLAG} % · SPILL ${pyr.SPILL} % · TURN ${pyr.TURN} %, ` +
+      `normalt ${okter} økter/uke. «standard»-varianten skal ligge nær dette; ` +
+      `«konservativ» litt under, «aggressiv» litt over.`,
+  ];
+}
+
+function buildPrompt(ctx: PlayerContext, weekStart: Date, ekstra: string[]): string {
   const lines: string[] = [];
   lines.push(`Spiller: ${ctx.name}`);
   lines.push(`Uke som starter: ${weekStart.toISOString().slice(0, 10)} (mandag)`);
@@ -172,6 +202,7 @@ function buildPrompt(ctx: PlayerContext, weekStart: Date): string {
     lines.push("SG-svakheter: ingen tydelige svakheter registrert");
   }
   lines.push(`Treningsbelastning siste 14 dager: ${ctx.recentLoadDays ?? 0} fullførte økter`);
+  lines.push(...ekstra);
   lines.push("");
   lines.push(
     "Lag tre varianter (konservativ, standard, aggressiv) for kommende uke.",
@@ -188,30 +219,64 @@ function buildPrompt(ctx: PlayerContext, weekStart: Date): string {
   lines.push(
     "focusBlend er en kort tekst med prosent-fordeling (eksempel: 'TEK 40 % · SLAG 30 % · SPILL 30 %').",
   );
+  lines.push(
+    "Titler i norsk klarspråk uten fagkoder. Skriv «nærspill», aldri «kort spill». Minst én putting-økt per uke.",
+  );
   return lines.join("\n");
 }
 
+/** Anthropic-provider med /v1-normalisert baseURL (env-en mangler /v1 — gotcha). */
+function anthropicProvider() {
+  const base = process.env.ANTHROPIC_BASE_URL;
+  return createAnthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY,
+    ...(base ? { baseURL: base.endsWith("/v1") ? base : `${base.replace(/\/$/, "")}/v1` } : {}),
+  });
+}
+
 /**
- * Generer 3 uke-varianter for spilleren via Vercel AI Gateway.
+ * Generer 3 uke-varianter for spilleren via Anthropic direkte.
  *
- * Eksempel-prompt sendes som user-message; system-prompten beskriver rolle.
- * Output valideres mot zod-schema. Faller tilbake til stub ved feil.
+ * Prompten ankres i spillerens standardplan (nivå × fase) + signalene fra
+ * plan-engine (fokus, etterlevelse, periode). Output valideres mot zod-schema.
+ * Faller tilbake til stub ved feil eller manglende nøkkel.
  */
 export async function generateWeekSuggestions(
   userId: string,
   weekStart: Date,
 ): Promise<{ suggestions: WeekSuggestion[]; usedAi: boolean }> {
-  // Sjekk om AI Gateway er konfigurert.
-  if (!process.env.AI_GATEWAY_API_KEY) {
+  if (!process.env.ANTHROPIC_API_KEY) {
     return { suggestions: fallbackSuggestions(), usedAi: false };
   }
 
   try {
-    const ctx = await loadPlayerContext(userId, weekStart);
-    const userPrompt = buildPrompt(ctx, weekStart);
+    const [ctx, signaler] = await Promise.all([
+      loadPlayerContext(userId, weekStart),
+      hentPlayerSignals(userId, weekStart),
+    ]);
+
+    const ekstra: string[] = [];
+    if (signaler.fokus) {
+      const kilde = signaler.fokus.kilde === "coach" ? "coachens periodefokus" : "svakeste SG-område";
+      const label = signaler.fokus.kategori
+        ? SG_FOKUS_LABEL[signaler.fokus.kategori]
+        : signaler.fokus.label;
+      ekstra.push(`Fokusområde (${kilde}): ${label} — vekt dette i alle varianter.`);
+    }
+    if (signaler.aktivFase) {
+      ekstra.push(`Aktiv treningsperiode: ${signaler.aktivFase}.`);
+    }
+    if (signaler.adherencePct != null && signaler.adherencePct < 75) {
+      ekstra.push(
+        `Plan-etterlevelse siste 4 uker: ${signaler.adherencePct} % — gjør variantene overkommelige (heller færre økter som blir gjennomført).`,
+      );
+    }
+    ekstra.push(...(await standardAnker(userId, signaler.aktivFase)));
+
+    const userPrompt = buildPrompt(ctx, weekStart, ekstra);
 
     const { object } = await generateObject({
-      model: gateway.languageModel(WEEK_SUGGEST_MODEL),
+      model: anthropicProvider()(WEEK_SUGGEST_MODEL),
       schema: SuggestionsSchema,
       system:
         "Du er AK Golf sin AI-coach. Du lager pragmatiske, gjennomførbare treningsuker for golfspillere. Du svarer alltid på norsk bokmål og bruker korte, konkrete økt-titler.",

@@ -10,7 +10,8 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
-import { dateForDayIndex, executeSessionMove, weekRefDate } from "@/lib/workbench/session-move";
+import { dateForDayIndex, executeSessionMove, mondayOf, weekRefDate } from "@/lib/workbench/session-move";
+import { generateWeekSuggestions, VariantSchema, type WeekSuggestion } from "@/lib/ai-plan/week-suggest";
 import { deleteV2ForPlanSession, upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
 import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel";
 import { duplicateWeekCore } from "@/lib/workbench/duplicate-week";
@@ -169,30 +170,111 @@ export async function moveSessionAction(
 }
 
 // ============================================================================
-// AI — Caddie (Sprint 6: stub-impl med toast-fallback)
+// AI — Foreslå uke (3 varianter) + bruk forslag
 // ============================================================================
 
-export async function generateWeekWithCaddie(periodId: string, weekNumber: number) {
-  await requirePortalUser();
-  // TODO: ekte Anthropic API-kall når ANTHROPIC_API_KEY er konfigurert
-  // For nå returnerer vi en stub-respons
-  void periodId;
-  void weekNumber;
-  return {
-    ok: true,
-    message:
-      "Caddie-integrasjon kommer post-launch. Krever ANTHROPIC_API_KEY i prod-miljø.",
-  };
+/**
+ * WorkbenchV2Actions.suggestWeek: generer 3 ukevarianter (konservativ/standard/
+ * aggressiv) for spilleren. Ekte AI-kall når ANTHROPIC_API_KEY er satt, ellers
+ * ærlig standardforslag (usedAi: false) — UI-en henger aldri på AI.
+ * Egen server action i stedet for en inline arrow i page.tsx — en closure
+ * definert i en Server Component er ikke en gyldig server-referanse.
+ */
+export async function suggestWeekWithCaddie(weekOffset?: number): Promise<{
+  ok: boolean;
+  suggestions?: WeekSuggestion[];
+  usedAi?: boolean;
+  message?: string;
+}> {
+  const user = await requirePortalUser();
+  try {
+    const weekStart = mondayOf(weekRefDate(weekOffset ?? 0));
+    const { suggestions, usedAi } = await generateWeekSuggestions(user.id, weekStart);
+    return { ok: true, suggestions, usedAi };
+  } catch (e) {
+    console.error("[workbench] suggestWeekWithCaddie feilet", e);
+    return { ok: false, message: "Kunne ikke lage ukeforslag akkurat nå." };
+  }
 }
 
 /**
- * WorkbenchV2Actions.suggestWeek-signatur (kun weekNumber). Egen server
- * action i stedet for en inline arrow i page.tsx — en closure definert i
- * en Server Component er ikke en gyldig server-referanse og kan ikke
- * sendes til en Client Component.
+ * Legg en valgt forslag-variant inn i spillerens uke som ekte økter.
+ * Varianten zod-valideres på server-grensen (den har rundtur via klienten).
+ * GRATIS-tier kan se forslag, men ikke lagre (samme regel som plan-byggeren).
+ * Anbefaling, aldri sperre: eksisterende økter røres ikke — forslaget legges til.
  */
-export async function suggestWeekWithCaddie(weekNumber: number) {
-  return generateWeekWithCaddie("", weekNumber);
+export async function applySuggestedWeek(
+  variant: unknown,
+  weekOffset?: number,
+): Promise<{ ok: boolean; count?: number; error?: string }> {
+  const user = await requirePortalUser();
+  if (user.tier === "GRATIS") {
+    return {
+      ok: false,
+      error: "Oppgrader til PRO for å lagre ukeforslag i planen din.",
+    };
+  }
+
+  const parsed = VariantSchema.safeParse(variant);
+  if (!parsed.success) {
+    return { ok: false, error: "Ugyldig forslag — prøv å generere på nytt." };
+  }
+
+  // Heng øktene på spillerens nyeste/aktive plan (samme som addWorkbenchSession).
+  let plan = await prisma.trainingPlan.findFirst({
+    where: { userId: user.id },
+    orderBy: [{ isActive: "desc" }, { updatedAt: "desc" }],
+    select: { id: true },
+  });
+  if (!plan) {
+    plan = await prisma.trainingPlan.create({
+      data: {
+        userId: user.id,
+        name: "Min plan",
+        startDate: new Date(),
+        status: "ACTIVE",
+        isActive: true,
+      },
+      select: { id: true },
+    });
+  }
+
+  // Klokkeslett: første økt per dag 09:00, deretter stables etter varighet
+  // (samme idiom som scheduleTemplateWeek).
+  const minuttPerDag = new Map<number, number>();
+  const ref = weekRefDate(weekOffset ?? 0);
+  let count = 0;
+
+  for (const okt of [...parsed.data.sessions].sort((a, b) => a.day - b.day)) {
+    const cursor = minuttPerDag.get(okt.day) ?? 9 * 60;
+    minuttPerDag.set(okt.day, cursor + okt.durationMin);
+
+    const created = await prisma.trainingPlanSession.create({
+      data: {
+        planId: plan.id,
+        title: okt.title.slice(0, 120),
+        scheduledAt: dateForDayIndex(okt.day, Math.floor(cursor / 60), cursor % 60, ref),
+        durationMin: okt.durationMin,
+        pyramidArea: okt.pyramidArea,
+        status: "PLANNED",
+      },
+      select: { id: true, title: true, scheduledAt: true, durationMin: true, pyramidArea: true },
+    });
+
+    await upsertV2ForPlanSession({
+      planSessionId: created.id,
+      playerId: user.id,
+      title: created.title,
+      scheduledAt: created.scheduledAt,
+      durationMin: created.durationMin,
+      pyramidArea: created.pyramidArea,
+      miljo: null,
+    });
+    count++;
+  }
+
+  revalidatePath("/portal/planlegge/workbench");
+  return { ok: true, count };
 }
 
 // ============================================================================

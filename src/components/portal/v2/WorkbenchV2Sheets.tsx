@@ -19,6 +19,7 @@ import type { ReactNode, CSSProperties } from "react";
 import { T, Icon, Kort, Knapp, AkseChip } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WeekEvent } from "@/lib/workbench/week-types";
+import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
 import type { PlanStatus } from "@/generated/prisma/client";
 import { fmtVarighet, toKl } from "@/lib/workbench/v2-format";
 import { resolvePlanSessionLiveHref } from "@/lib/workbench/session-actions";
@@ -51,8 +52,18 @@ export interface WorkbenchV2Actions {
   ) => Promise<{ ok: boolean; error?: string }>;
   removeSession: (sessionId: string) => Promise<{ ok: boolean; error?: string }>;
   publish: () => Promise<{ ok: boolean; error?: string; status?: PlanStatus }>;
-  /** Kun spiller-rolle (Caddie-stub). Utelatt → knappen skjules. */
-  suggestWeek?: (weekNumber: number) => Promise<{ ok: boolean; message?: string }>;
+  /** Kun spiller-rolle. Utelatt → knappen skjules. */
+  suggestWeek?: (weekOffset?: number) => Promise<{
+    ok: boolean;
+    suggestions?: WeekSuggestion[];
+    usedAi?: boolean;
+    message?: string;
+  }>;
+  /** Legg en valgt forslag-variant inn i uka. Kreves for ForslagArk. */
+  applySuggestion?: (
+    variant: WeekSuggestion,
+    weekOffset?: number,
+  ) => Promise<{ ok: boolean; count?: number; error?: string }>;
   /** Kun coach-rolle. Utelatt → knappen skjules. */
   duplicateWeek?: (weekOffset?: number) => Promise<{ ok: boolean; count?: number; error?: string }>;
 }
@@ -277,6 +288,137 @@ export function NyOktArk({ defaultDayIndex, defaultTitle, defaultAkse, defaultDu
             </Knapp>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Ukeforslag — 3 variantkort (konservativ/standard/aggressiv) ──
+   AI-forslag er alltid en anbefaling spilleren aktivt tar i bruk — aldri
+   auto-lagt inn. usedAi=false vises ærlig som standardforslag uten AI. */
+const VARIANT_LABEL: Record<WeekSuggestion["variant"], string> = {
+  konservativ: "Konservativ",
+  standard: "Standard",
+  aggressiv: "Aggressiv",
+};
+
+export interface ForslagArkProps {
+  suggestions: WeekSuggestion[];
+  usedAi: boolean;
+  onLukk: () => void;
+  /** Kalles med valgt variant; parent kaller applySuggestion + refresh. */
+  onBruk: (variant: WeekSuggestion) => Promise<{ ok: boolean; count?: number; error?: string }>;
+}
+
+export function ForslagArk({ suggestions, usedAi, onLukk, onBruk }: ForslagArkProps) {
+  const [brukes, setBrukes] = useState<string | null>(null);
+  const [feil, setFeil] = useState<string | null>(null);
+
+  const bruk = async (variant: WeekSuggestion) => {
+    if (brukes) return;
+    setBrukes(variant.variant);
+    setFeil(null);
+    const res = await onBruk(variant);
+    setBrukes(null);
+    if (!res.ok) setFeil(res.error ?? "Kunne ikke legge inn forslaget.");
+  };
+
+  return (
+    <div
+      style={{
+        position: "fixed", inset: 0, zIndex: 70, display: "flex",
+        alignItems: "center", justifyContent: "center", padding: 16,
+      }}
+    >
+      <div
+        onClick={brukes ? undefined : onLukk}
+        style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }}
+      />
+      <div
+        style={{
+          position: "relative", width: "min(760px, 100%)", maxHeight: "88vh", overflowY: "auto",
+          background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px",
+          boxShadow: "0 24px 60px rgba(0,0,0,0.5)",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+          <div>
+            <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>
+              Forslag til uka
+            </h2>
+            <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, display: "block", marginTop: 4 }}>
+              {usedAi
+                ? "Tre varianter basert på nivået ditt, fokusområdet og planen din. Velg den som passer uka."
+                : "Standardforslag (uten AI) — tre varianter du kan bruke som utgangspunkt."}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={onLukk}
+            disabled={brukes != null}
+            style={{
+              appearance: "none", cursor: "pointer", width: 28, height: 28, borderRadius: 8,
+              background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex",
+              alignItems: "center", justifyContent: "center", flex: "none",
+            }}
+          >
+            <Icon name="x" size={14} style={{ color: T.fg2 }} />
+          </button>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))",
+            gap: 12,
+            marginTop: 16,
+          }}
+        >
+          {suggestions.map((s) => (
+            <Kort key={s.variant} style={{ padding: 14, display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14, color: T.fg }}>
+                  {VARIANT_LABEL[s.variant]}
+                </span>
+                <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut }}>
+                  {s.totalSessions} økter
+                </span>
+              </div>
+              <span style={{ fontFamily: T.mono, fontSize: 10, color: T.fg2 }}>{s.focusBlend}</span>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {s.sessions.map((okt, i) => (
+                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, color: T.mut, width: 26, flex: "none" }}>
+                      {DAGER[okt.day] ?? ""}
+                    </span>
+                    <AkseChip a={okt.pyramidArea} />
+                    <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.fg, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {okt.title}
+                    </span>
+                    <span style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut, flex: "none" }}>
+                      {fmtVarighet(okt.durationMin)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ marginTop: "auto" }}>
+                <Knapp
+                  icon="plus"
+                  onClick={() => bruk(s)}
+                  disabled={brukes != null}
+                >
+                  {brukes === s.variant ? "Legger inn…" : "Bruk forslag"}
+                </Knapp>
+              </div>
+            </Kort>
+          ))}
+        </div>
+
+        {feil && (
+          <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down, display: "block", marginTop: 12 }}>
+            {feil}
+          </span>
+        )}
       </div>
     </div>
   );
