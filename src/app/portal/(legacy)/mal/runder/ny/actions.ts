@@ -52,6 +52,8 @@ export async function logRoundManual(input: LogRoundManualInput) {
       sgArg: input.sgArg ?? null,
       sgPutt: input.sgPutt ?? null,
       sgTotal,
+      // Håndtastet SG skal aldri overskrives av autoberegning (recomputeRoundSg)
+      sgSource: sgTotal != null ? "manual" : null,
     },
   });
 

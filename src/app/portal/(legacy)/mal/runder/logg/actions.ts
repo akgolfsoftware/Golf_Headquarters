@@ -187,6 +187,7 @@ export async function lagreLoggetRunde(
         sgPutt15_25: granulaer.sgPutt15_25,
         sgPutt25_40: granulaer.sgPutt25_40,
         sgPutt40plus: granulaer.sgPutt40plus,
+        sgSource: "beregnet",
         notes: runde.notes ?? null,
       },
       select: { id: true },

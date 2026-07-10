@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { notifyMany } from "@/lib/notifications";
+import { beregnSgFraShots } from "@/lib/runde-logg/shots-til-sg";
 import { ShotLie, ShotType, WindDir } from "@/generated/prisma/client";
 
 export type ShareVisibility = "privat" | "coach" | "offentlig";
@@ -95,6 +96,63 @@ async function assertRoundOwner(roundId: string, userId: string) {
   return round;
 }
 
+/**
+ * SG-autoberegning fra slag-kjeden (kalles etter hver slag-endring).
+ * Presedens: sgSource='manual' (håndtastet) overskrives ALDRI. Komplett kjede
+ * → skriv sg* + 'beregnet'; ufullstendig kjede der tallene var 'beregnet' →
+ * nullstill (stale tall er verre enn ingen). Feil svelges — slag-lagringen
+ * skal aldri velte på beregningen.
+ */
+async function recomputeRoundSg(roundId: string): Promise<void> {
+  try {
+    const round = await prisma.round.findUnique({
+      where: { id: roundId },
+      select: { sgSource: true },
+    });
+    if (!round || round.sgSource === "manual") return;
+
+    const [shots, holeScores] = await Promise.all([
+      prisma.shot.findMany({
+        where: { roundId },
+        select: {
+          holeNumber: true,
+          holePar: true,
+          shotNumber: true,
+          lie: true,
+          distanceToPin: true,
+          isPenalty: true,
+        },
+      }),
+      prisma.holeScore.findMany({
+        where: { roundId },
+        select: { holeNumber: true, strokes: true },
+      }),
+    ]);
+
+    const sg = beregnSgFraShots(shots, holeScores);
+    if (sg) {
+      await prisma.round.update({
+        where: { id: roundId },
+        data: {
+          sgTotal: sg.total,
+          sgOtt: sg.ott,
+          sgApp: sg.app,
+          sgArg: sg.arg,
+          sgPutt: sg.putt,
+          sgSource: "beregnet",
+        },
+      });
+    } else if (round.sgSource === "beregnet") {
+      await prisma.round.update({
+        where: { id: roundId },
+        data: { sgTotal: null, sgOtt: null, sgApp: null, sgArg: null, sgPutt: null, sgSource: null },
+      });
+    }
+  } catch (e) {
+    console.error("recomputeRoundSg feilet:", e);
+  }
+}
+
 export async function saveShot(roundId: string, input: ShotInput) {
   const user = await requireConsentingUser();
   await assertRoundOwner(roundId, user.id);
@@ -142,6 +200,7 @@ export async function saveShot(roundId: string, input: ShotInput) {
     },
   });
 
+  await recomputeRoundSg(roundId);
   revalidatePath(`/portal/mal/runder/${roundId}`);
 }
 
@@ -150,6 +209,7 @@ export async function deleteShot(roundId: string, shotId: string) {
   await assertRoundOwner(roundId, user.id);
 
   await prisma.shot.delete({ where: { id: shotId } });
+  await recomputeRoundSg(roundId);
   revalidatePath(`/portal/mal/runder/${roundId}`);
 }
 
@@ -181,5 +241,6 @@ export async function importUpGameShots(
     });
   }
 
+  await recomputeRoundSg(roundId);
   revalidatePath(`/portal/mal/runder/${roundId}`);
 }
