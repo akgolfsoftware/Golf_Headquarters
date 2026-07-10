@@ -39,7 +39,7 @@ export default async function V2CoachMeldingPreviewPage() {
     );
   }
 
-  const [coacher, sesjoner] = await Promise.all([
+  const [coacher, sesjoner, aktivEnrollering] = await Promise.all([
     prisma.user.findMany({
       where: { role: "COACH" },
       select: { id: true, name: true },
@@ -50,6 +50,11 @@ export default async function V2CoachMeldingPreviewPage() {
       include: { coach: { select: { name: true } } },
       orderBy: { updatedAt: "desc" },
       take: 20,
+    }),
+    prisma.playerEnrollment.findFirst({
+      where: { userId: user.id, endedAt: null, coachId: { not: null } },
+      include: { coach: { select: { name: true } } },
+      orderBy: { enrolledAt: "desc" },
     }),
   ]);
 
@@ -94,9 +99,14 @@ export default async function V2CoachMeldingPreviewPage() {
       }
     : null;
 
+  // Hovedcoach: aktiv enrollering vinner (spillerens faktiske coach) — deretter
+  // nyeste eksisterende DIRECT-tråd (sesjoner er sortert nyeste først) — kun som
+  // siste utvei brukes første coach i den globale coach-lista.
+  const hovedcoachNavn = aktivEnrollering?.coach?.name ?? sesjoner[0]?.coach.name ?? coacher[0]?.name ?? null;
+
   const data: CoachMeldingerData = {
     gratis: false,
-    hovedcoach: coacher[0] ? { navn: coacher[0].name } : null,
+    hovedcoach: hovedcoachNavn ? { navn: hovedcoachNavn } : null,
     traader,
     valgt,
   };

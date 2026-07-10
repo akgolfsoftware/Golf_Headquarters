@@ -78,6 +78,36 @@ const PYRAMID_LABELS: Record<PyramidArea, string> = {
   TURN: "Turnering",
 };
 
+// Norsk etikett per Goal-type (enum-verdier er rå strenger i schema, se Goal-modellen).
+const GOAL_TYPE_LABELS: Record<string, string> = {
+  HCP_TARGET: "HCP-mål",
+  ROUNDS_PER_MONTH: "Runder per måned",
+  SG_AREA: "SG-område",
+  FREE_TEXT: "Fritekst",
+};
+
+function goalTypeLabel(type: string): string {
+  return GOAL_TYPE_LABELS[type] ?? type;
+}
+
+/**
+ * Ekte fremdrift kun for HCP_TARGET (reise fra HCP 54 → målverdi, samme
+ * beregning som portal/mal/page.tsx sin beregnFremdrift). Andre goal-typer
+ * har ingen currentValue i modellen — DROPP baren for dem heller enn å
+ * hardkode en falsk prosent.
+ */
+function hcpFremdriftPct(
+  goal: { type: string; targetValue: number | null },
+  hcp: number | null,
+): number | null {
+  if (goal.type !== "HCP_TARGET" || goal.targetValue == null || hcp == null)
+    return null;
+  const start = 54;
+  const range = Math.max(0.1, start - goal.targetValue);
+  const reise = Math.max(0, start - hcp);
+  return Math.min(100, Math.round((reise / range) * 100));
+}
+
 export default async function BarnProfil({
   params,
   searchParams,
@@ -300,36 +330,47 @@ export default async function BarnProfil({
             Sesongmål · fremdrift
           </h2>
           <div className="mt-4 space-y-4">
-            {barn.goals.slice(0, 5).map((g) => (
-              <div key={g.id}>
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <div className="text-sm font-semibold text-foreground">
-                      {g.title}
+            {barn.goals.slice(0, 5).map((g) => {
+              const pct = hcpFremdriftPct(g, barn.hcp);
+              const frist = g.targetDate ? NB_DATO.format(g.targetDate) : null;
+              return (
+                <div key={g.id}>
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="text-sm font-semibold text-foreground">
+                        {g.title}
+                      </div>
+                      <div className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
+                        {goalTypeLabel(g.type)}
+                        {g.targetValue != null ? ` · mål ${g.targetValue}` : ""}
+                        {frist ? ` · frist ${frist}` : ""}
+                      </div>
                     </div>
-                    <div className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.10em] text-muted-foreground">
-                      {g.type}
-                      {g.targetValue != null ? ` · mål ${g.targetValue}` : ""}
-                    </div>
+                    <Flag
+                      className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground"
+                      strokeWidth={1.5}
+                      aria-hidden="true"
+                    />
                   </div>
-                  <Flag
-                    className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground"
-                    strokeWidth={1.5}
-                    aria-hidden="true"
-                  />
+                  {/* Fremdrifts-bar kun når vi har en ekte, kalkulerbar verdi
+                      (HCP_TARGET mot barnets faktiske HCP). Andre goal-typer
+                      mangler currentValue i modellen — vises som mål + frist
+                      over, uten en oppdiktet bar. */}
+                  {pct != null && (
+                    <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+                      <div
+                        className="h-full rounded-full"
+                        style={{
+                          width: `${pct}%`,
+                          background:
+                            "linear-gradient(90deg,var(--primary),var(--accent))",
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
-                {/* Fremdrifts-bar — placeholder (ingen currentValue i modellen) */}
-                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
-                  <div
-                    className="h-full rounded-full"
-                    style={{
-                      width: "40%",
-                      background: "linear-gradient(90deg,var(--primary),var(--accent))",
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

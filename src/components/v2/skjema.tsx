@@ -97,9 +97,20 @@ export function ProfilFelt({ label, value, placeholder, trailing, hint, mono }: 
 }
 
 /* ── Velger — select m/ chevron ───────────────────────── */
+/* Valgfri id-basert options-variant ({value,label}[]) i tillegg til det
+   opprinnelige string[]-formatet (bakoverkompatibel — verdi og label er da
+   samme streng). Bruk id-varianten når valgene kan ha like visningsnavn
+   (f.eks. to coacher med samme navn) — matching skjer alltid på value/id,
+   aldri på label/navn. */
+/* Eget navn (ikke `VelgerOption`) — den identifikatoren er allerede tatt av
+   PillVelgers {v,l}-form i ./core; barrel-eksporten ville ellers kollidert. */
+export interface VelgerIdValg {
+  value: string;
+  label: ReactNode;
+}
 export interface VelgerProps {
   label?: ReactNode;
-  options?: string[];
+  options?: (string | VelgerIdValg)[];
   value?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
@@ -107,6 +118,7 @@ export interface VelgerProps {
 export function Velger({ label = "Treningsområde", options = ["Nærspill", "Tee-slag", "Innspill 100–150 m", "Putting"], value, defaultValue = "Nærspill", onChange }: VelgerProps) {
   const [v, setV] = useState(defaultValue);
   const val = value !== undefined ? value : v;
+  const norm: VelgerIdValg[] = options.map((o) => (typeof o === "string" ? { value: o, label: o } : o));
   return (
     <div>
       {label && <Etikett>{label}</Etikett>}
@@ -116,7 +128,7 @@ export function Velger({ label = "Treningsområde", options = ["Nærspill", "Tee
           onChange={(e) => { setV(e.target.value); onChange?.(e.target.value); }}
           style={{ ...FELT, paddingRight: 38, cursor: "pointer" }}
         >
-          {options.map((o) => <option key={o} value={o} style={{ background: T.panel3, color: T.fg }}>{o}</option>)}
+          {norm.map((o) => <option key={o.value} value={o.value} style={{ background: T.panel3, color: T.fg }}>{o.label}</option>)}
         </select>
         <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none", display: "inline-flex" }}><Icon name="chevron-down" size={14} style={{ color: T.mut }} /></span>
       </div>
