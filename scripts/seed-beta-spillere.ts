@@ -50,6 +50,8 @@ const SPILLERE: BetaSpiller[] = [
   { email: "marius.nesset@akgolf.no", name: "Marius Nesset" },
   { email: "oskar.hammer@akgolf.no", name: "Oskar Hammer" },
   { email: "karl.braathen@akgolf.no", name: "Karl Ludvig Braathen" },
+  { email: "filip.svendsen@akgolf.no", name: "Filip Svendsen" },
+  { email: "elias.fosback@akgolf.no", name: "Elias Fosback" },
 ];
 
 /** Opprett (eller hent + resett passord på) Supabase Auth-bruker og returner auth-id. */
