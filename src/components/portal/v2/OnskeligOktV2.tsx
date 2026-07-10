@@ -35,7 +35,7 @@ import {
 
 /* ── Datakontrakt (samme som ekte side leverer) ────────────────────── */
 export interface OnskeligOktV2Data {
-  coacher: { id: string; name: string }[];
+  coacher: { id: string; name: string; email?: string }[];
   coachName: string;
 }
 
@@ -146,14 +146,22 @@ export function OnskeligOktV2({ data }: { data: OnskeligOktV2Data }) {
         </p>
       </div>
 
-      {/* 00 · COACH — kun hvis flere coacher å velge mellom */}
+      {/* 00 · COACH — kun hvis flere coacher å velge mellom. Matcher alltid på
+          id (aldri navn) — to coacher kan hete det samme (f.eks. to «Anders
+          Kristiansen»); duplikatnavn får e-post-hint i label for å skille dem. */}
       {coacher.length > 1 && (
         <Seksjon num="00 · COACH" tittel="Hvem skal ta økten?">
           <Velger
             label={null}
-            options={["Ingen preferanse", ...coacher.map((c) => c.name)]}
-            defaultValue={coacher.find((c) => c.id === coachId)?.name ?? "Ingen preferanse"}
-            onChange={(navn) => setCoachId(coacher.find((c) => c.name === navn)?.id ?? "")}
+            options={[
+              { value: "", label: "Ingen preferanse" },
+              ...coacher.map((c) => {
+                const duplikatNavn = coacher.filter((x) => x.name === c.name).length > 1;
+                return { value: c.id, label: duplikatNavn && c.email ? `${c.name} (${c.email})` : c.name };
+              }),
+            ]}
+            value={coachId}
+            onChange={setCoachId}
           />
         </Seksjon>
       )}

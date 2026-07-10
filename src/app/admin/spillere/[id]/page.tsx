@@ -327,7 +327,7 @@ export default async function SpillerProfilPage({
     { label: "Ny økt", icon: "calendar-plus", href: wb },
     { label: "Ny treningsplan", icon: "list", href: wb },
     { label: "Send melding", icon: "message-circle", href: "/admin/innboks" },
-    { label: "Book Pro-time", icon: "clock", href: "/admin/bookinger" },
+    { label: "Book Pro-time", icon: "clock", href: "/admin/bookinger/ny" },
     { label: "Meld på turnering", icon: "trophy", href: "/admin/tournaments" },
   ];
 

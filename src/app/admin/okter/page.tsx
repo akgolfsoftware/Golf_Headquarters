@@ -112,12 +112,14 @@ export default async function V2AdminOkterPage() {
   // ── KPI-tall (identisk avledning som den ekte skjermen) ─────────
   const total = sessions.length;
   const gjennomfort = sessions.filter((s) => s.status === "COMPLETED").length;
-  const planlagt = sessions.filter((s) => s.status === "PLANNED").length;
   const kansellert = sessions.filter(
     (s) => s.status === "CANCELLED" || s.status === "SKIPPED",
   ).length;
   const forfalt = sessions.filter(
     (s) => s.status === "PLANNED" && new Date(s.scheduledAt) < now,
+  ).length;
+  const planlagt = sessions.filter(
+    (s) => s.status === "PLANNED" && new Date(s.scheduledAt) >= now,
   ).length;
   const liveNa = sessions.filter((s) => s.status === "ACTIVE").length;
 
