@@ -406,7 +406,12 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [nivaa, setNivaa] = useState("uke");
+  // Zoom + valgt økt bor i URL-en (?zoom= / ?okt=) så visningen overlever
+  // router.refresh() etter endringer, remount og deling av lenke.
+  const zoomParam = searchParams.get("zoom");
+  const [nivaa, setNivaaState] = useState(
+    zoomParam === "ar" || zoomParam === "maned" || zoomParam === "dag" ? zoomParam : "uke",
+  );
   const [tab, setTab] = useState("maler");
   const [sok, setSok] = useState("");
   const [nyOktApen, setNyOktApen] = useState(false);
@@ -419,8 +424,30 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
 
   const dager = useMemo(() => (data ? byggDager(data) : []), [data]);
   const alleEvents = useMemo(() => dager.flatMap((d) => d.events).filter((e) => e.id), [dager]);
-  const [valgtId, setValgtId] = useState<string | null>(null);
+  const [valgtId, setValgtIdState] = useState<string | null>(searchParams.get("okt"));
   const valgtOkt = useMemo(() => alleEvents.find((e) => e.id === valgtId) ?? alleEvents[0] ?? null, [alleEvents, valgtId]);
+
+  // Skriv zoom/valg til URL med replace (skal ikke forurense historikken).
+  const oppdaterUrl = (mut: (p: URLSearchParams) => void) => {
+    const params = new URLSearchParams(searchParams.toString());
+    mut(params);
+    const qs = params.toString();
+    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+  };
+  const setNivaa = (v: string) => {
+    setNivaaState(v);
+    oppdaterUrl((p) => {
+      if (v === "uke") p.delete("zoom");
+      else p.set("zoom", v);
+    });
+  };
+  const setValgtId = (id: string | null) => {
+    setValgtIdState(id);
+    oppdaterUrl((p) => {
+      if (id) p.set("okt", id);
+      else p.delete("okt");
+    });
+  };
 
   const weekNumber = data?.summary?.weekNumber ?? 0;
   const weekOffset = data?.weekOffset ?? 0;
@@ -435,6 +462,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     const params = new URLSearchParams(searchParams.toString());
     if (target === 0) params.delete("uke");
     else params.set("uke", String(target));
+    params.delete("okt"); // valgt økt er uke-spesifikk
     const qs = params.toString();
     router.push(qs ? `${pathname}?${qs}` : pathname);
   };
