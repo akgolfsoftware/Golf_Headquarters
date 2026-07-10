@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {
   mergeWeekSessions,
   type V2WeekSessionInput,
-  type WeekSessionRow,
+  type PlanWeekSessionInput,
 } from "@/lib/workbench/merge-week-sessions";
 
 function mkV2(id: string, generertFraId: string | null): V2WeekSessionInput {
@@ -23,7 +23,7 @@ function mkV2(id: string, generertFraId: string | null): V2WeekSessionInput {
 
 describe("mergeWeekSessions", () => {
   it("includes all 9 V2 rows when V1 is empty and all V2 have generertFraId", () => {
-    const v1: WeekSessionRow[] = [];
+    const v1: PlanWeekSessionInput[] = [];
     const v2Rows = Array.from({ length: 9 }, (_, i) => mkV2(`v2-${i}`, `plan-session-${i}`));
     const merged = mergeWeekSessions(v1, v2Rows);
     assert.equal(merged.length, 9);
@@ -35,7 +35,7 @@ describe("mergeWeekSessions", () => {
 
   it("dedupes V2 when generertFraId matches an existing V1 id", () => {
     const v1Id = "v1-session-id";
-    const v1: WeekSessionRow[] = [
+    const v1: PlanWeekSessionInput[] = [
       {
         id: v1Id,
         scheduledAt: new Date("2026-06-25T09:00:00"),
@@ -56,7 +56,7 @@ describe("mergeWeekSessions", () => {
 
   it("keeps V2 when its own id happens to equal a V1 id but generertFraId points elsewhere", () => {
     const sharedId = "shared-id";
-    const v1: WeekSessionRow[] = [
+    const v1: PlanWeekSessionInput[] = [
       {
         id: sharedId,
         scheduledAt: new Date("2026-06-25T09:00:00"),
@@ -76,7 +76,7 @@ describe("mergeWeekSessions", () => {
   });
 
   it("merges V1 and non-overlapping V2 sorted by scheduledAt", () => {
-    const v1: WeekSessionRow[] = [
+    const v1: PlanWeekSessionInput[] = [
       {
         id: "v1-a",
         scheduledAt: new Date("2026-06-26T14:00:00"),

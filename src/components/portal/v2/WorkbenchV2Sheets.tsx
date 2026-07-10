@@ -13,12 +13,16 @@
  */
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import type { ReactNode, CSSProperties } from "react";
 import { T, Icon, Kort, Knapp, AkseChip } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WeekEvent } from "@/lib/workbench/week-types";
 import type { PlanStatus } from "@/generated/prisma/client";
 import { fmtVarighet, toKl } from "@/lib/workbench/v2-format";
+import { resolvePlanSessionLiveHref } from "@/lib/workbench/session-actions";
+import { planSessionStartHref, v2SessionStartHref, type V2OktUiStatus } from "@/lib/portal/session-hrefs";
 
 const DAGER = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
 const AKSER: { v: AkseKey; l: string }[] = [
@@ -287,11 +291,29 @@ export interface ValgtOktSeksjonProps {
   onEndret: () => void;
 }
 export function ValgtOktSeksjon({ okt, actions, weekOffset, onEndret }: ValgtOktSeksjonProps) {
+  const router = useRouter();
   const [flyttApen, setFlyttApen] = useState(false);
   const [flyttLoading, setFlyttLoading] = useState(false);
   const [bekreftSlett, setBekreftSlett] = useState(false);
   const [sletterLoading, setSletterLoading] = useState(false);
+  const [startLoading, setStartLoading] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
+
+  // Kilde styrer handlingene: flytt/slett-actions slår opp TrainingPlanSession
+  // og ville feilet på en v2-id; v2-økter lenkes rett til live-flyten i stedet.
+  const erPlan = (okt.source ?? "plan") === "plan";
+  const status = okt.status ?? "PLANNED";
+  const ferdig = status === "COMPLETED" || status === "ABANDONED" || status === "SKIPPED" || status === "CANCELLED";
+
+  const startOkt = async () => {
+    if (!okt.id || startLoading) return;
+    setStartLoading(true);
+    setFeil(null);
+    const res = await resolvePlanSessionLiveHref(okt.id);
+    setStartLoading(false);
+    if (res.ok && res.href) router.push(res.href);
+    else setFeil(res.error ?? "Kunne ikke starte økten.");
+  };
 
   const flytt = async (dayIndex: number) => {
     if (!actions || !okt.id) return;
@@ -329,15 +351,40 @@ export function ValgtOktSeksjon({ okt, actions, weekOffset, onEndret }: ValgtOkt
         {okt.meta.filter(([ic]) => ic === "map-pin").map(([, t]) => ` · ${t}`).join("")}
       </div>
 
-      {actions && okt.id && (
+      {okt.id && (
         <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+          {/* Exit til gjennomføring: Start (plan, via live-flyt) / Se økt (ferdig eller v2) */}
+          {erPlan ? (
+            ferdig ? (
+              <Link href={planSessionStartHref(okt.id, status as Parameters<typeof planSessionStartHref>[1])} style={{ textDecoration: "none", display: "block" }}>
+                <Knapp ghost icon="eye" full>Se økt</Knapp>
+              </Link>
+            ) : (
+              <Knapp icon="play" full disabled={startLoading} onClick={startOkt}>
+                {startLoading ? "Åpner…" : status === "ACTIVE" || status === "PAUSED" ? "Fortsett økt" : "Start økt"}
+              </Knapp>
+            )
+          ) : (
+            <Link
+              href={v2SessionStartHref(okt.id, (status === "COMPLETED" ? "done" : status === "ACTIVE" ? "now" : "upcoming") satisfies V2OktUiStatus)}
+              style={{ textDecoration: "none", display: "block" }}
+            >
+              <Knapp ghost icon={ferdig ? "eye" : "play"} full>{ferdig ? "Se økt" : "Åpne økt"}</Knapp>
+            </Link>
+          )}
+        </div>
+      )}
+
+      {okt.id && feil && <span style={{ fontFamily: T.ui, fontSize: 11, color: T.down, display: "block", marginTop: 8 }}>{feil}</span>}
+
+      {actions && okt.id && erPlan && (
+        <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 8 }}>
           {flyttApen && (
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               <DagPillRow value={-1} onChange={flytt} disabled={flyttLoading} />
               <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>Velg ny dag — klokkeslettet beholdes</span>
             </div>
           )}
-          {feil && <span style={{ fontFamily: T.ui, fontSize: 11, color: T.down }}>{feil}</span>}
           {!bekreftSlett ? (
             <div style={{ display: "flex", gap: 8 }}>
               <div style={{ flex: 1 }}>

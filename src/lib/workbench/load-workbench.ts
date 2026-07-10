@@ -33,6 +33,7 @@ import {
   mergeWeekSessions,
   type V2WeekSessionInput,
   type WeekSessionRow,
+  type PlanWeekSessionInput,
 } from "@/lib/workbench/merge-week-sessions";
 import type {
   Axis,
@@ -422,7 +423,7 @@ export async function loadWorkbenchData(
   }
 
   const mergedSessions = mergeWeekSessions(
-    weekSessions as WeekSessionRow[],
+    weekSessions as PlanWeekSessionInput[],
     v2WeekSessions as V2WeekSessionInput[],
   );
 
@@ -697,6 +698,8 @@ function sessionToWeekEvent(s: WeekSessionRow, now: Date): WeekEvent {
   if (loc) meta.push(["map-pin", loc]);
   return {
     id: s.id,
+    source: s.source,
+    status: s.status,
     h: start.getHours(),
     m: start.getMinutes(),
     durMin: s.durationMin,

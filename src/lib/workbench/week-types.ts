@@ -7,8 +7,12 @@ import type { OktCompliance } from "./compliance";
 export type Axis = "fys" | "tek" | "slag" | "spill" | "turn";
 
 export type WeekEvent = {
-  /** DB-id (TrainingPlanSession) når eventen kommer fra ekte data. */
+  /** DB-id (TrainingPlanSession eller TrainingSessionV2) når eventen kommer fra ekte data. */
   id?: string;
+  /** Kilde-tabell — "plan" kan flyttes/slettes/startes; "v2" er egen live-økt. */
+  source?: "plan" | "v2";
+  /** SessionStatus (V1-vokabular) — styrer Start/Se økt i valgt-panelet. */
+  status?: string;
   h: number;
   m?: number;
   durMin: number;
