@@ -44,6 +44,7 @@ export type RunderV2Data = {
 
 /** Kanoniske ruter (funksjons-hrefs kan ikke sendes server→klient). */
 const RUTE_NY = "/portal/mal/runder/ny";
+const RUTE_LIVE = "/portal/runde/live";
 const ruteDetalj = (id: string) => `/portal/mal/runder/${id}`;
 
 /* ── Rene hjelpere (norsk bokmål, brutto score) ────────────────────── */
@@ -127,9 +128,12 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
             <Tittel mobile={mobile} em="runder">{fornavn ? `${fornavn}s` : "Dine"}</Tittel>
           </div>
         </div>
-        <div className="hidden md:block">
+        <div className="hidden md:flex" style={{ gap: 8 }}>
+          <Link href={RUTE_LIVE} style={{ textDecoration: "none" }}>
+            <CTAPill icon="flag">Start live-føring</CTAPill>
+          </Link>
           <Link href={RUTE_NY} style={{ textDecoration: "none" }}>
-            <CTAPill icon="plus">Loggfør runde</CTAPill>
+            <Knapp ghost icon="plus">Loggfør runde</Knapp>
           </Link>
         </div>
       </div>
@@ -142,8 +146,11 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
             sub="Loggfør din første 18-hulls runde, eller importer historikken fra GolfBox."
           />
           <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "center", marginTop: 4 }}>
+            <Link href={RUTE_LIVE} style={{ textDecoration: "none" }}>
+              <CTAPill icon="flag">Start live-føring</CTAPill>
+            </Link>
             <Link href={RUTE_NY} style={{ textDecoration: "none" }}>
-              <CTAPill icon="plus">Loggfør runde</CTAPill>
+              <Knapp ghost icon="plus">Loggfør runde</Knapp>
             </Link>
             <Link href={RUTE_NY} style={{ textDecoration: "none" }}>
               <Knapp ghost icon="download">Importer fra GolfBox</Knapp>
@@ -152,6 +159,16 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
         </Kort>
       ) : (
         <>
+          {/* Mobil-CTA (desktop har knappene i hodet) */}
+          <div className="flex md:hidden" style={{ gap: 8 }}>
+            <Link href={RUTE_LIVE} style={{ textDecoration: "none", flex: 1, display: "flex" }}>
+              <CTAPill icon="flag">Start live-føring</CTAPill>
+            </Link>
+            <Link href={RUTE_NY} style={{ textDecoration: "none" }}>
+              <Knapp ghost icon="plus">Loggfør</Knapp>
+            </Link>
+          </div>
+
           {/* KPI-strip */}
           <div className="grid grid-cols-3" style={{ gap: T.gap }}>
             <KpiFlis label="Snittscore · brutto" value={snittScore} />
