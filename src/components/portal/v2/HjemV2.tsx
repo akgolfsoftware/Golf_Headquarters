@@ -228,7 +228,7 @@ export function HjemV2({ data }: { data: DashboardData }) {
 
       {/* KPI-rad */}
       <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: T.gap }}>
-        <KpiFlis label="Streak" value={String(streak)} hjelp="streak" />
+        <KpiFlis label="Streak" value={`${streak} uker`} hjelp="streak" />
         <KpiFlis label="Uke-gjennomføring" value={ukePct} hjelp="planEtterlevelse" />
         <div className="hidden md:block">
           <Kort eyebrow="Trening · 12 uker">

@@ -21,6 +21,7 @@ import {
   TekstOmraade,
   Knapp,
   TomTilstand,
+  Icon,
   type StatusTone,
 } from "@/components/v2";
 import { T } from "@/lib/v2/tokens";
@@ -96,22 +97,24 @@ export function InnboksEpostV2({ epost }: { epost: InnboksEpostVm[] }) {
 
 function EpostDetalj({ epost }: { epost: InnboksEpostVm }) {
   const [tekst, setTekst] = useState(epost.utkastSvar ?? "");
-  const [isPending, startTransition] = useTransition();
-  const [melding, setMelding] = useState<string | null>(null);
+  const [sender, startSend] = useTransition();
+  const [arkiverer, startArkiver] = useTransition();
+  const isPending = sender || arkiverer;
+  const [melding, setMelding] = useState<{ tekst: string; ok: boolean } | null>(null);
   const status = STATUS_LABEL[epost.status];
   const erArkivert = epost.status === "ARKIVERT";
   const erSendt = epost.status === "SENDT";
 
   function handleSend() {
     setMelding(null);
-    startTransition(async () => {
+    startSend(async () => {
       const res = await sendGodkjentSvar(epost.id, tekst);
-      setMelding(res.melding);
+      setMelding({ tekst: res.melding, ok: res.sendtReelt });
     });
   }
 
   function handleArkiver() {
-    startTransition(async () => {
+    startArkiver(async () => {
       await arkiverEpost(epost.id);
     });
   }
@@ -142,14 +145,27 @@ function EpostDetalj({ epost }: { epost: InnboksEpostVm }) {
           placeholder="Skriv svaret her…"
         />
         {melding && (
-          <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 10 }}>{melding}</div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              fontFamily: T.ui,
+              fontSize: 12,
+              color: melding.ok ? T.up : T.warn,
+              marginTop: 10,
+            }}
+          >
+            <Icon name={melding.ok ? "check-circle" : "alert-triangle"} size={13} style={{ color: melding.ok ? T.up : T.warn, flex: "none" }} />
+            {melding.tekst}
+          </div>
         )}
         <div style={{ display: "flex", gap: 10, marginTop: 16, flexWrap: "wrap" }}>
           <Knapp icon="send" onClick={handleSend} disabled={isPending || erSendt || erArkivert || !tekst.trim()}>
-            Godkjenn og send
+            {sender ? "Sender…" : "Godkjenn og send"}
           </Knapp>
           <Knapp icon="archive" ghost onClick={handleArkiver} disabled={isPending || erArkivert}>
-            Arkiver
+            {arkiverer ? "Arkiverer…" : "Arkiver"}
           </Knapp>
         </div>
       </Kort>

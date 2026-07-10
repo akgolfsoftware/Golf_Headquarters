@@ -25,6 +25,7 @@ import {
   Caps,
   Tittel,
   CTAPill,
+  Knapp,
   Kort,
   AkseChip,
   PillTabs,
@@ -722,6 +723,9 @@ function FilterTopp({
 
 /* ── Skjerm ──────────────────────────────────────────────────────────── */
 
+/** Kort per side i «Vis flere»-paginering. */
+const SIDE_STORRELSE = 48;
+
 export function OvelsesbankV2({ data }: { data: DrillDetail[] }) {
   const mobile = useMobile();
   const [type, setType] = useState("Alle");
@@ -730,6 +734,7 @@ export function OvelsesbankV2({ data }: { data: DrillDetail[] }) {
   const [niva, setNiva] = useState<string | null>(null);
   const [sok, setSok] = useState("");
   const [valgt, setValgt] = useState<string | null>(null);
+  const [visAntall, setVisAntall] = useState(SIDE_STORRELSE);
 
   const toggleAkse = (a: string) =>
     setAkser((p) => (p.indexOf(a) !== -1 ? p.filter((x) => x !== a) : [...p, a]));
@@ -745,6 +750,19 @@ export function OvelsesbankV2({ data }: { data: DrillDetail[] }) {
       (!niva || dekkerNiva(o, niva)) &&
       (!sok || o.title.toLowerCase().indexOf(sok.toLowerCase()) !== -1),
   );
+
+  // Filtrering nullstiller paginering til første side — render-tid synk
+  // (Reacts anbefalte mønster, samme teknikk som synketVinduId i BookingV2),
+  // ikke useEffect.
+  const filterNokkel = `${type}|${akser.join(",")}|${kats.join(",")}|${niva}|${sok}`;
+  const [synketFilterNokkel, setSynketFilterNokkel] = useState(filterNokkel);
+  if (filterNokkel !== synketFilterNokkel) {
+    setSynketFilterNokkel(filterNokkel);
+    setVisAntall(SIDE_STORRELSE);
+  }
+
+  const synligeTreff = treff.slice(0, visAntall);
+  const flereSkjult = treff.length > visAntall;
 
   // Velg første treff automatisk på desktop (ikke på mobil — der er lista primær).
   const gjeldendeValgt = valgt ?? (!mobile && treff.length > 0 ? treff[0].id : null);
@@ -773,33 +791,42 @@ export function OvelsesbankV2({ data }: { data: DrillDetail[] }) {
   );
 
   const grid = (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: mobile ? "1fr" : "repeat(auto-fill, minmax(228px, 1fr))",
-        gap: T.gap,
-      }}
-    >
-      {treff.map((o) => (
-        <OvelseKort key={o.id} o={o} on={gjeldendeValgt === o.id} onClick={() => setValgt(o.id)} />
-      ))}
-      {treff.length === 0 && (
-        <div style={{ gridColumn: "1 / -1" }}>
-          <Kort>
-            {tomBank ? (
-              <TomTilstand
-                icon="book-open"
-                title="Ingen øvelser ennå"
-                sub="Øvelsesbanken er tom. Coachen din legger inn øvelser, eller du kan lage dine egne."
-              />
-            ) : (
-              <TomTilstand
-                icon="search"
-                title="Ingen treff"
-                sub="Ingen øvelser matcher filtrene — juster type, akse eller nivå."
-              />
-            )}
-          </Kort>
+    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: mobile ? "1fr" : "repeat(auto-fill, minmax(228px, 1fr))",
+          gap: T.gap,
+        }}
+      >
+        {synligeTreff.map((o) => (
+          <OvelseKort key={o.id} o={o} on={gjeldendeValgt === o.id} onClick={() => setValgt(o.id)} />
+        ))}
+        {treff.length === 0 && (
+          <div style={{ gridColumn: "1 / -1" }}>
+            <Kort>
+              {tomBank ? (
+                <TomTilstand
+                  icon="book-open"
+                  title="Ingen øvelser ennå"
+                  sub="Øvelsesbanken er tom. Coachen din legger inn øvelser, eller du kan lage dine egne."
+                />
+              ) : (
+                <TomTilstand
+                  icon="search"
+                  title="Ingen treff"
+                  sub="Ingen øvelser matcher filtrene — juster type, akse eller nivå."
+                />
+              )}
+            </Kort>
+          </div>
+        )}
+      </div>
+      {flereSkjult && (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Knapp icon="chevron-down" ghost onClick={() => setVisAntall((v) => v + SIDE_STORRELSE)}>
+            Vis flere ({treff.length - visAntall} til)
+          </Knapp>
         </div>
       )}
     </div>

@@ -170,7 +170,7 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
         ].map((c, i) => (
           <Kort key={c.l} tint={i === 2} style={mobile && i === 2 ? { gridColumn: "1 / -1" } : undefined}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <Icon name={c.ic} size={17} style={{ color: T.lime }} />
+              <Icon name={c.ic} size={17} style={{ color: i === 2 ? T.lime : T.fg2 }} />
             </div>
             <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg, marginTop: 14 }}>{c.l}</div>
             <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 4 }}>{c.s}</div>
@@ -431,7 +431,7 @@ function TabTrackman({ data, mobile }: { data: AnalysereData; mobile: boolean })
             })}
           </div>
         ) : (
-          <div style={{ marginTop: 12, fontFamily: T.ui, fontSize: 12, color: T.mut }}>Ingen parametere valgt — slå på i filteret over.</div>
+          <div style={{ marginTop: 12, fontFamily: T.ui, fontSize: 12, color: T.fg2 }}>Ingen parametere valgt — slå på i filteret over.</div>
         )}
       </Kort>
 

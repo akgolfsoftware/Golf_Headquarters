@@ -229,8 +229,9 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
                   fontSize: 9,
                   fontWeight: 700,
                   letterSpacing: "0.08em",
-                  color: T.onLime,
-                  background: T.lime,
+                  color: T.fg2,
+                  background: T.panel2,
+                  border: `1px solid ${T.border}`,
                   borderRadius: 5,
                   padding: "3px 6px",
                 }}

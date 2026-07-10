@@ -12,7 +12,7 @@
  */
 
 import Link from "next/link";
-import { Caps, Tittel, Kort, Rad, KpiFlis, CTAPill, T } from "@/components/v2";
+import { Caps, Tittel, Kort, KpiFlis, CTAPill, T } from "@/components/v2";
 
 export interface UkaBookingV2 {
   id: string;
@@ -67,18 +67,25 @@ function DagKort({ d }: { d: UkaDagV2 }) {
       ) : (
         <div>
           {d.bookinger.map((b, i) => (
-            <Rad
+            <div
               key={b.id}
-              last={i === d.bookinger.length - 1}
-              title={b.navn}
-              sub={b.tjeneste}
-              meta={
-                <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, whiteSpace: "nowrap" }}>
+              style={{
+                padding: "9px 0",
+                borderBottom: i === d.bookinger.length - 1 ? "none" : `1px solid ${T.border}`,
+              }}
+            >
+              <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                {b.navn}
+              </div>
+              <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 6, marginTop: 2 }}>
+                <span style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {b.tjeneste}
+                </span>
+                <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, whiteSpace: "nowrap", flexShrink: 0 }}>
                   {b.time} · {b.durMin} min
                 </span>
-              }
-              trailing={null}
-            />
+              </div>
+            </div>
           ))}
         </div>
       )}
@@ -95,7 +102,7 @@ export function AdminUkaV2({ data }: { data: AdminUkaV2Data }) {
           <div style={{ marginTop: 10 }}>
             <Tittel em={data.periodeLabel}>Uka</Tittel>
           </div>
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, marginTop: 8 }}>
+          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, marginTop: 8 }}>
             Caddie balanserer kapasitet, reise og familie-tid.
           </p>
         </div>
@@ -105,10 +112,10 @@ export function AdminUkaV2({ data }: { data: AdminUkaV2Data }) {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
-        <KpiFlis label="Timer totalt" value={data.timerTotalt} />
+        <KpiFlis label="Timer totalt" value={`${data.timerTotalt} t`} />
         <KpiFlis label="Bookinger" value={data.antallBookinger} />
         <KpiFlis label="Unike spillere" value={data.unikeSpillere} />
-        <KpiFlis label="Kapasitet" value={data.kapasitetPct} delta={`${data.kapasitetMaal} t mål`} dir={data.kapasitetPct >= 70 ? "up" : undefined} />
+        <KpiFlis label="Kapasitet" value={`${data.kapasitetPct} %`} delta={`${data.kapasitetMaal} t mål`} dir={data.kapasitetPct >= 70 ? "up" : undefined} />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7" style={{ gap: 8 }}>

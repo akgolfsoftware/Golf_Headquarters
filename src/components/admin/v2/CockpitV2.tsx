@@ -157,7 +157,7 @@ export function CockpitV2({ data, innboks }: { data: CockpitData; innboks?: Innb
               key={p.id}
               onClick={href ? () => router.push(href) : undefined}
               leading={<AvatarInit navn={p.name} size={30} />}
-              title={p.name}
+              title={<span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", whiteSpace: "normal" }}>{p.name}</span>}
               sub={sub}
               meta={
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
@@ -223,7 +223,7 @@ export function CockpitV2({ data, innboks }: { data: CockpitData; innboks?: Innb
                   {s.time}
                 </span>
               }
-              title={s.playerName}
+              title={<span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", whiteSpace: "normal" }}>{s.playerName}</span>}
               sub={sub}
               meta={<AkseChip a={s.axisLabel as AkseKey} />}
               naa={isNaa}

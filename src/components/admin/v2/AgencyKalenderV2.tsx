@@ -123,8 +123,11 @@ function OktBlokk({ okt, onSerieClick }: { okt: KalOkt; onSerieClick?: (okt: Kal
    ingen mutasjonsflate for GroupSchedule ennå (kun opprett/dupliser, se
    src/app/admin/(legacy)/grupper/[id]/actions.ts) — «Endre denne»/«Endre alle
    fremtidige»/«Avslutt serien» er derfor FJERNET (aldri døde knapper). Eneste
-   ekte handling: lenke til gruppens timeplan (view + dupliser, finnes). ── */
-function SerieMeny({ okt, onClose }: { okt: KalOkt; onClose: () => void }) {
+   ekte handling: lenke til gruppens timeplan (view + dupliser, finnes).
+   På <md presenteres den som fast bunn-ark (edge-to-edge, r20 kun øverst) —
+   samme mønster som AdminHandlingssenterV2s mobilArk; på ≥md forblir den et
+   sentrert flytende panel. ── */
+function SerieMeny({ okt, onClose, mobile }: { okt: KalOkt; onClose: () => void; mobile?: boolean }) {
   const scheduleId = okt.id.startsWith("serie-") ? okt.id.slice("serie-".length) : null;
   const timeplanHref = okt.href && scheduleId ? `${okt.href}/timeplan?focus=${scheduleId}` : okt.href;
   return (
@@ -133,11 +136,32 @@ function SerieMeny({ okt, onClose }: { okt: KalOkt; onClose: () => void }) {
       aria-modal="true"
       aria-label="Gjentakende økt"
       onClick={onClose}
-      style={{ position: "fixed", inset: 0, zIndex: 60, background: `color-mix(in srgb, ${T.bg} 62%, transparent)`, backdropFilter: "blur(2px)", display: "flex", alignItems: "flex-end", justifyContent: "center", padding: 12 }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 60,
+        background: `color-mix(in srgb, ${T.bg} 62%, transparent)`,
+        backdropFilter: "blur(2px)",
+        display: "flex",
+        alignItems: "flex-end",
+        justifyContent: mobile ? "flex-start" : "center",
+        padding: mobile ? 0 : 12,
+      }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        style={{ background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 18, padding: "14px 16px 18px", width: "100%", maxWidth: 380, marginBottom: 6 }}
+        style={
+          mobile
+            ? {
+                background: T.panel3,
+                borderTop: `1px solid ${T.borderS}`,
+                borderRadius: "20px 20px 0 0",
+                padding: "14px 16px calc(18px + env(safe-area-inset-bottom))",
+                width: "100%",
+                boxShadow: "0 -24px 60px rgba(0,0,0,0.5)",
+              }
+            : { background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 18, padding: "14px 16px 18px", width: "100%", maxWidth: 380, marginBottom: 6 }
+        }
       >
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
           <Caps size={8.5}>Gjentakende økt</Caps>
@@ -281,7 +305,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
         )}
         {serieHint}
         {innsikt}
-        {valgtSerieOkt && <SerieMeny okt={valgtSerieOkt} onClose={() => setValgtSerieOkt(null)} />}
+        {valgtSerieOkt && <SerieMeny okt={valgtSerieOkt} onClose={() => setValgtSerieOkt(null)} mobile />}
       </div>
     );
   }
