@@ -4,6 +4,16 @@ Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekk
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
 Designkanon: `.claude/rules/design-system-regel.md` (v13/golfdata).
 
+### Serwist/PWA — webpack-pluginen kjører ALDRI under Turbopack (oppdaget 2026-07-10)
+- `withSerwistInit` fra `@serwist/next` genererer sw.js kun via en webpack-hook. Next 16 bygger
+  med Turbopack → hooken kjører aldri → `/sw.js` fantes aldri i prod (404 på hver sidelasting,
+  push-varsler døde). `SERWIST_SUPPRESS_TURBOPACK_WARNING=1` i build-scriptet skjulte advarselen.
+- **Løsning (i bruk):** configurator-modus — `serwist build serwist.config.mjs` kjøres ETTER
+  `next build` (se `package.json` build-script). Configen bruker `serwist()` fra
+  `@serwist/next/config` og MÅ være `.mjs` (CLI-en laster den med ren `import()`, og repoet er CJS).
+- Rekkefølgen er kritisk: precache-manifestet globber `.next/`-output, så serwist-steget må stå sist.
+- Ikke precache hele `public/` (19 MB bilder) — tunge mapper står i `globIgnores` i configen.
+
 ### AI Caddie — modell-tilgang + AI SDK-feller (oppdaget 2026-06-23)
 - **Vercel AI Gateway free-tier gir IKKE modell-tilgang** («Free tier users do not have access to this model»). Caddie-chat bruker derfor `@ai-sdk/anthropic` direkte (`ANTHROPIC_API_KEY`), ikke `@ai-sdk/gateway`.
 - **`ANTHROPIC_BASE_URL` i miljøet mangler `/v1`** (`https://api.anthropic.com`). Raw `@anthropic-ai/sdk` legger til `/v1/` selv, men `@ai-sdk/anthropic` bruker verdien som-den-er → `/messages` → 404 «Not Found». Løsning: normaliser baseURL i ruten (`createAnthropic({ baseURL: …endsWith("/v1") ? … : …+"/v1" })`). Ikke endre env-verdien — andre agenter bruker den.
