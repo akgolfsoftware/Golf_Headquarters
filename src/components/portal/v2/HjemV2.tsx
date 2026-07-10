@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { DashboardData } from "@/app/portal/actions";
+import { WorkbenchInngang } from "./WorkbenchInngang";
 import {
   T,
   fmtSg,
@@ -221,6 +222,9 @@ export function HjemV2({ data }: { data: DashboardData }) {
           <TomTilstand icon="calendar" title="Ingen økter i dag" sub="Nyt hviledagen — eller legg til en økt i Plan." />
         )}
       </Kort>
+
+      {/* Workbench-inngang — samme ene trykkpunkt som Plan-fanen */}
+      <WorkbenchInngang />
 
       {/* KPI-rad */}
       <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: T.gap }}>

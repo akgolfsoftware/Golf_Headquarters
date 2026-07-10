@@ -32,10 +32,10 @@ import {
   InnsiktChip,
   DagStripe,
   TomTilstand,
-  Icon,
   type StripeDag,
 } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
+import { WorkbenchInngang, WORKBENCH_HREF } from "./WorkbenchInngang";
 
 /* ── Rene hjelpere (norsk bokmål, brutto tall) ─────────────────────── */
 
@@ -47,7 +47,6 @@ const MANEDER = [
 /** Aksene i pyramide-rekkefølge (fasten fra bunn til topp). */
 const AKSER: AkseKey[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
-const WORKBENCH_HREF = "/portal/planlegge/workbench";
 
 /** «23.–29. juni» (samme måned) eller «29. juni – 5. juli» (over månedsskifte). */
 function periodeLinje(week: DashboardData["week"]): string {
@@ -99,41 +98,6 @@ function useMobile(): boolean {
     return () => mq.removeEventListener("change", oppdater);
   }, []);
   return m;
-}
-
-/* ── Workbench-inngang (låst: ett trykkpunkt) ──────────────────────── */
-
-function WorkbenchInngang() {
-  return (
-    <Link href={WORKBENCH_HREF} style={{ textDecoration: "none" }}>
-      <Kort eyebrow="Planlegging" hover>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "2px 0" }}>
-          <span
-            style={{
-              width: 38,
-              height: 38,
-              borderRadius: 12,
-              flex: "none",
-              background: `color-mix(in srgb, ${T.lime} 10%, transparent)`,
-              border: `1px solid ${T.border}`,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Icon name="calendar" size={17} style={{ color: T.lime }} />
-          </span>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>Åpne Workbench</div>
-            <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>
-              All planlegging skjer der — dra, slipp, be om endring
-            </div>
-          </div>
-          <Icon name="arrow-right" size={16} style={{ color: T.mut, flex: "none" }} />
-        </div>
-      </Kort>
-    </Link>
-  );
 }
 
 /* ── Skjerm ────────────────────────────────────────────────────────── */
@@ -261,9 +225,11 @@ export function PlanV2({ data }: { data: DashboardData }) {
                 )}
               </Kort>
 
-              <InnsiktChip cta="Åpne Workbench">
-                Vil du endre planen? Dra og slipp i Workbench — coachen din ser forslaget med en gang.
-              </InnsiktChip>
+              <Link href={WORKBENCH_HREF} style={{ textDecoration: "none", display: "block" }}>
+                <InnsiktChip cta="Åpne Workbench">
+                  Vil du endre planen? Dra og slipp i Workbench — coachen din ser forslaget med en gang.
+                </InnsiktChip>
+              </Link>
 
               <WorkbenchInngang />
             </div>
