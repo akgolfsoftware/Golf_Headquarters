@@ -1195,6 +1195,8 @@ model Round {
   sgPutt40plus Float?
   // 'manual' = håndtastet (overskrives ALDRI av beregning) | 'beregnet' = fra slag-kjeden
   sgSource     String?
+  // 'turnering' | 'trening' — null = ukjent (eksisterende runder forblir umerket)
+  roundType    String?
   notes        String?
   createdAt    DateTime @default(now())
 

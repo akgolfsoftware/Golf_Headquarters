@@ -44,14 +44,20 @@ const resultatSchema = z.discriminatedUnion("iHull", [
   }),
 ]);
 
-const slagSchema = z.object({
-  resultat: resultatSchema,
-  kolle: z.string().max(40).optional(),
-  vind: z.enum(["STILLE", "MEDVIND", "MOTVIND", "VENSTRE", "HOYRE"]).optional(),
-  mental: z.number().int().min(1).max(5).optional(),
-  straffe: z.boolean().optional(),
-  notat: z.string().max(500).optional(),
-});
+const slagSchema = z
+  .object({
+    resultat: resultatSchema,
+    kolle: z.string().max(40).optional(),
+    vind: z.enum(["STILLE", "MEDVIND", "MOTVIND", "VENSTRE", "HOYRE"]).optional(),
+    mental: z.number().int().min(1).max(5).optional(),
+    straffe: z.boolean().optional(),
+    notat: z.string().max(500).optional(),
+  })
+  // Straffe på hole-out-slaget ville blitt stille ignorert av hullTilSgShots
+  // (som returnerer ved iHull før straffen leses) — avvis eksplisitt.
+  .refine((s) => !(s.resultat.iHull && s.straffe), {
+    message: "Straffe kan ikke settes på slaget som går i hull — før straffen på slaget den skjedde",
+  });
 
 const hullSchema = z.object({
   holeNumber: z.number().int().min(1).max(18),
@@ -74,6 +80,8 @@ const rundeSchema = z.object({
       { message: "Duplikate hullnummer" },
     ),
   notes: z.string().max(2000).optional(),
+  /** Turnering eller trening — null/utelatt = ukjent (ærlig for gamle runder). */
+  roundType: z.enum(["turnering", "trening"]).optional(),
 });
 
 export type LagreLoggetRundeInput = z.input<typeof rundeSchema>;
@@ -188,6 +196,7 @@ export async function lagreLoggetRunde(
         sgPutt25_40: granulaer.sgPutt25_40,
         sgPutt40plus: granulaer.sgPutt40plus,
         sgSource: "beregnet",
+        roundType: runde.roundType ?? null,
         notes: runde.notes ?? null,
       },
       select: { id: true },
@@ -224,16 +233,24 @@ export async function lagreLoggetRunde(
 
 /**
  * Henter hull-oppsettet for en bane (par + lengde per hull) til oppstarts-
- * steget i live-føringen. Baner uten hulldata → tom liste (UI lar spilleren
- * sette par manuelt).
+ * steget i live-føringen. Tar CourseDefinition-id (det rundene bruker) og
+ * resolver til Bane via courseDefinition.baneId — hull-geometrien bor på
+ * CourseHole under Bane. Baner uten kobling/hulldata → tom liste (UI lar
+ * spilleren sette par manuelt).
  */
 export async function hentBaneHull(
   courseId: string,
 ): Promise<Array<{ holeNumber: number; par: number | null; lengdeMeter: number | null }>> {
   await requireConsentingUser();
 
+  const course = await prisma.courseDefinition.findUnique({
+    where: { id: courseId },
+    select: { baneId: true },
+  });
+  if (!course?.baneId) return [];
+
   const hull = await prisma.courseHole.findMany({
-    where: { baneId: courseId },
+    where: { baneId: course.baneId },
     orderBy: { holeNumber: "asc" },
     select: { holeNumber: true, par: true, lengthMeter: true },
   });

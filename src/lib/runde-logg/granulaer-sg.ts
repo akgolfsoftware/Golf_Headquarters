@@ -60,27 +60,19 @@ function velgBucket(shot: SgShotMedMeta, bunkerStart: boolean): BucketKey | null
   }
 }
 
+/** SgShot m/ meta + startunderlag — delt input for logg- og DB-representasjonen. */
+export type GranulaerInput = SgShotMedMeta & { bunkerStart: boolean };
+
 /**
- * Beregner granulære SG-buckets for runden.
- * Trenger hull-lista for å vite startunderlag per slag (bunker-avgjørelsen).
+ * Delt bucket-akkumulator: summerer uavrundet per-slag-SG i buckets og
+ * avrunder til slutt. Brukes av både beregnGranulaerSg (logg-representasjon)
+ * og beregnGranulaerSgFraShots (lagrede Shot-rader, shots-til-sg.ts).
  */
-export function beregnGranulaerSg(
-  hull: ReadonlyArray<LoggetHull>,
-  shots: ReadonlyArray<SgShotMedMeta>,
-): GranulaerSg {
+export function akkumulerGranulaerSg(shots: ReadonlyArray<GranulaerInput>): GranulaerSg {
   const sum = new Map<BucketKey, number>();
 
   for (const shot of shots) {
-    // Startunderlag for slaget = resultat-lie fra forrige slag på hullet
-    // (slagIndex 0 starter på tee → aldri bunker).
-    const h = hull.find((x) => x.holeNumber === shot.holeNumber);
-    let bunkerStart = false;
-    if (h && shot.slagIndex > 0) {
-      const forrige = h.slag[shot.slagIndex - 1];
-      bunkerStart = !forrige.resultat.iHull && forrige.resultat.lie === "BUNKER";
-    }
-
-    const bucket = velgBucket(shot, bunkerStart);
+    const bucket = velgBucket(shot, shot.bunkerStart);
     if (!bucket) continue;
     sum.set(bucket, (sum.get(bucket) ?? 0) + beregnSgPerSlag(shot));
   }
@@ -108,4 +100,26 @@ export function beregnGranulaerSg(
     sgPutt25_40: hent("sgPutt25_40"),
     sgPutt40plus: hent("sgPutt40plus"),
   };
+}
+
+/**
+ * Beregner granulære SG-buckets for runden (logg-representasjonen).
+ * Trenger hull-lista for å vite startunderlag per slag (bunker-avgjørelsen).
+ */
+export function beregnGranulaerSg(
+  hull: ReadonlyArray<LoggetHull>,
+  shots: ReadonlyArray<SgShotMedMeta>,
+): GranulaerSg {
+  const input: GranulaerInput[] = shots.map((shot) => {
+    // Startunderlag for slaget = resultat-lie fra forrige slag på hullet
+    // (slagIndex 0 starter på tee → aldri bunker).
+    const h = hull.find((x) => x.holeNumber === shot.holeNumber);
+    let bunkerStart = false;
+    if (h && shot.slagIndex > 0) {
+      const forrige = h.slag[shot.slagIndex - 1];
+      bunkerStart = !forrige.resultat.iHull && forrige.resultat.lie === "BUNKER";
+    }
+    return { ...shot, bunkerStart };
+  });
+  return akkumulerGranulaerSg(input);
 }
