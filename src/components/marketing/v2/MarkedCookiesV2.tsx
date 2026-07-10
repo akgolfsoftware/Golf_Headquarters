@@ -11,8 +11,9 @@
 
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
+import { MMobilMeny } from "./marked-ramme";
 import { T } from "@/lib/v2/tokens";
-import { Icon, LogoAK, Caps } from "@/components/v2";
+import { LogoAK, Caps } from "@/components/v2";
 
 function useMobile(): boolean {
   const [mobile, setMobile] = useState(false);
@@ -102,7 +103,7 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
             Logg inn
           </Link>
         )}
-        {mobile ? <Icon name="menu" size={20} style={{ color: T.fg }} /> : <MCta small href="/auth/signup">Kom i gang gratis</MCta>}
+        {mobile ? <MMobilMeny aktiv={aktiv} /> : <MCta small href="/auth/signup">Kom i gang gratis</MCta>}
       </span>
     </div>
   );

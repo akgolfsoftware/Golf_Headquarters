@@ -105,6 +105,46 @@
       ],
       "port": 3947,
       "autoPort": false
+    },
+    {
+      "name": "next-dev-3915",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "PORT=3915 npm run dev"
+      ],
+      "port": 3915,
+      "autoPort": false
+    },
+    {
+      "name": "next-dev-3916",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "PORT=3916 npm run dev"
+      ],
+      "port": 3916,
+      "autoPort": false
+    },
+    {
+      "name": "polish-review-3918",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "PORT=3918 npm run dev"
+      ],
+      "port": 3918,
+      "autoPort": false
+    },
+    {
+      "name": "polish-review-attach",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "PORT=3916 npm run dev"
+      ],
+      "port": 3916,
+      "autoPort": false
     }
   ]
 }

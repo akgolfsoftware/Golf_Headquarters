@@ -20,6 +20,7 @@
 
 import { useEffect, useState, type ReactNode, type CSSProperties } from "react";
 import Link from "next/link";
+import { MMobilMeny } from "./marked-ramme";
 import { T } from "@/lib/v2/tokens";
 import {
   Icon,
@@ -112,7 +113,7 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
           </Link>
         )}
         {mobile ? (
-          <Icon name="menu" size={20} style={{ color: T.fg }} />
+          <MMobilMeny aktiv={aktiv} />
         ) : (
           <MCta small href="/auth/signup">
             Kom i gang gratis
