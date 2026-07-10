@@ -1193,6 +1193,8 @@ model Round {
   sgPutt15_25  Float?
   sgPutt25_40  Float?
   sgPutt40plus Float?
+  // 'manual' = håndtastet (overskrives ALDRI av beregning) | 'beregnet' = fra slag-kjeden
+  sgSource     String?
   notes        String?
   createdAt    DateTime @default(now())
 
@@ -1255,11 +1257,14 @@ model Shot {
   notes         String?
   createdAt     DateTime @default(now())
 
-  // For shot-map og runde-statistikk
+  // For shot-map og runde-statistikk (GPS: X=lng, Y=lat — lib/baneguide/shot-coords.ts)
   startX        Float?
   startY        Float?
   endX          Float?
   endY          Float?
+  // Valgfri siktelinje (UpGame-mønsteret): dispersjon måles mot intensjon når satt
+  targetX       Float?
+  targetY       Float?
   mentalScore   Int?     @db.SmallInt // 1-5
 
   round Round @relation(fields: [roundId], references: [id], onDelete: Cascade)
@@ -1267,6 +1272,21 @@ model Shot {
   @@unique([roundId, holeNumber, shotNumber])
   @@index([roundId, holeNumber])
   @@map("shots")
+}
+
+// Persistert live-tapper: baller per kølle per plan-økt (skrives debounced fra
+// tapper-flaten). Plain planSessionId uten @relation — additivt og isolert,
+// samme mønster som trainingSessionV2Id på Booking.
+model SessionBallLog {
+  id            String   @id @default(cuid())
+  planSessionId String
+  club          String
+  count         Int      @default(0)
+  updatedAt     DateTime @default(now()) @updatedAt
+
+  @@unique([planSessionId, club])
+  @@index([planSessionId])
+  @@map("session_ball_logs")
 }
 
 model HoleScore {
