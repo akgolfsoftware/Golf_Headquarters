@@ -21,6 +21,102 @@ import { MRamme, Eyebrow, HeroT, SeksT, Lede, Seksjon, useMobile } from "./marke
 
 export { useMobile };
 
+/**
+ * STATS_LEGACY_VARS — adapter for porterte (mlegacy) stats-komponenter
+ * (StatsHistogram, StatsNorgeskart, pga-kategori-page m.fl.). De er skrevet
+ * mot to gamle (lyse) CSS-variabel-navnerom: globale tokens (--primary,
+ * --border, ...) konsumert via hsl(var(--x)), og et stats-lokalt --s-*-
+ * navnerom konsumert som rå var(--s-x). Verdiene under er 1:1 konvertert
+ * fra v2 sine mørke T-tokens (src/lib/v2/tokens.ts).
+ *
+ * Satt som INLINE style (ikke en CSS-klasse) med vilje: en klasse-selector
+ * (.stats-v2-scope) har samme spesifisitet som legacy sine :root-regler, så
+ * hvem som vinner ville avhengt av CSS-chunk-rekkefølge — som Next.js ikke
+ * garanterer på tvers av rute-spesifikke CSS-imports. Inline style vinner
+ * alltid, uansett import-rekkefølge.
+ */
+const STATS_LEGACY_VARS = {
+  colorScheme: "dark",
+  // Globale tokens (HSL-triple, konsumeres via hsl(var(--x)))
+  "--background": "120 3.7% 5.3%", // T.bg #0D0E0D
+  "--foreground": "90 11.8% 93.3%", // T.fg #EEF0EC
+  "--card": "120 4.5% 8.6%", // T.panel #151715
+  "--card-foreground": "90 11.8% 93.3%",
+  "--popover": "120 4.5% 8.6%",
+  "--popover-foreground": "90 11.8% 93.3%",
+  "--primary": "72.9 92.8% 61.8%", // T.lime #D1F843
+  "--primary-foreground": "120 3.7% 5.3%", // T.onLime #0D0E0D
+  "--accent": "72.9 92.8% 61.8%",
+  "--accent-foreground": "120 3.7% 5.3%",
+  "--secondary": "120 5% 7.8%", // T.panel2 #131513
+  "--secondary-foreground": "90 11.8% 93.3%",
+  "--muted": "120 5% 7.8%",
+  "--muted-foreground": "90 3.4% 65.1%", // T.fg2 #A6A9A3
+  "--destructive": "14.2 85.6% 59.2%", // T.down #F0683E
+  "--destructive-foreground": "0 0% 100%",
+  "--warning": "41.9 78.9% 57.3%", // T.warn #E8B43C
+  "--warning-foreground": "120 3.7% 5.3%",
+  "--border": "0 0% 100% / 0.08", // T.border
+  "--input": "0 0% 100% / 0.08",
+  "--ring": "72.9 92.8% 61.8%",
+  // Stats-lokalt navnerom (rå verdier, konsumeres via var(--s-x))
+  "--s-bg": "#0D0E0D",
+  "--s-fg": "#EEF0EC",
+  "--s-card": "#151715",
+  "--s-primary": "#D1F843",
+  "--s-primary-fg": "#0D0E0D",
+  "--s-secondary": "#131513",
+  "--s-accent": "#D1F843",
+  "--s-accent-fg": "#0D0E0D",
+  "--s-muted": "#131513",
+  "--s-muted-fg": "#A6A9A3",
+  "--s-border": "rgba(255, 255, 255, 0.08)",
+  "--s-border-strong": "rgba(255, 255, 255, 0.14)",
+  "--s-shadow-sm": "0 1px 2px rgba(0, 0, 0, 0.28)",
+  "--s-shadow-md": "0 2px 8px rgba(0, 0, 0, 0.36), 0 1px 2px rgba(0, 0, 0, 0.28)",
+  "--s-shadow-lg": "0 12px 32px rgba(0, 0, 0, 0.44), 0 2px 6px rgba(0, 0, 0, 0.3)",
+  "--s-shadow-hover": "0 8px 24px rgba(209, 248, 67, 0.16)",
+  // --s-r-* (radius) er geometri, ikke tema — uendret fra kilden
+  "--s-r-sm": "8px",
+  "--s-r-md": "12px",
+  "--s-r-lg": "16px",
+  "--s-r-xl": "20px",
+  "--s-r-2xl": "24px",
+  background: "var(--s-bg)",
+  color: "var(--s-fg)",
+} as CSSProperties;
+
+/**
+ * StatsLegacyScope — se STATS_LEGACY_VARS. Bruk rundt children som
+ * gjenbruker mlegacy-komponenter — ikke rundt rene v2-primitiver (de er
+ * allerede hex-frie via T).
+ */
+export function StatsLegacyScope({ children, style }: { children: ReactNode; style?: CSSProperties }) {
+  return (
+    <div style={{ ...STATS_LEGACY_VARS, ...style }}>
+      {children}
+    </div>
+  );
+}
+
+/**
+ * StatsLegacyShell — chrome for porterte mlegacy-stats-sider som beholder
+ * server-fetching i page.tsx. page.tsx forblir en async Server Component;
+ * den rendrede (server-side) JSX-en sendes inn som children hit (lovlig i
+ * RSC — server-rendret markup kan sendes som children til en Client
+ * Component). Denne komponenten eier kun mobile-deteksjon + StatsRamme +
+ * StatsLegacyScope, så porting av en side blir: wrap return-JSX + fiks
+ * CSS-importstien.
+ */
+export function StatsLegacyShell({ aktiv, children }: { aktiv?: StatsFamilie; children: ReactNode }) {
+  const mobile = useMobile();
+  return (
+    <StatsRamme mobile={mobile} aktiv={aktiv}>
+      <StatsLegacyScope>{children}</StatsLegacyScope>
+    </StatsRamme>
+  );
+}
+
 /* ── Familienav ───────────────────────────────────────── */
 export type StatsFamilie = "spillere" | "turneringer" | "klubber" | "baner" | "leaderboards" | "verktoy";
 

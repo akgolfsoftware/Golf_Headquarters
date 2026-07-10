@@ -3,7 +3,7 @@
  * Visuell tidslinje 2000-2012, klikk → /stats/aargang/[aar]
  */
 
-import "../stats.css";
+import "@/app/(marketing)/(mlegacy)/stats/stats.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
@@ -11,6 +11,7 @@ import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { Reveal } from "@/components/stats/reveal";
 import { StatsBtn } from "@/components/stats/btn";
 import { CountUp } from "@/components/stats/count-up";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const revalidate = 3600;
 
@@ -71,6 +72,7 @@ export default async function AargangIndexPage() {
   const totalSpillere = kohorter.reduce((s, k) => s + k.spillere, 0);
 
   return (
+    <StatsLegacyShell>
     <div>
       {/* ── HERO ── */}
       <section className="stats-hero compact">
@@ -241,5 +243,6 @@ export default async function AargangIndexPage() {
         </Reveal>
       </div>
     </div>
+    </StatsLegacyShell>
   );
 }

@@ -6,13 +6,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import "../../stats/stats.css";
+import "@/app/(marketing)/(mlegacy)/stats/stats.css";
 import "./sesong.css";
 import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { Reveal } from "@/components/stats/reveal";
 import { CountUp } from "@/components/stats/count-up";
 import { StatsInitialAvatar } from "@/components/stats/stats-initial-avatar";
 import { SesongStickyNav } from "./sesong-sticky-nav";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const revalidate = 86400;
 
@@ -178,6 +179,7 @@ export default async function Sesong2026Page() {
   const data = await getSesongData();
 
   return (
+    <StatsLegacyShell>
     <main className="stats-sesong-wrap">
 
       {/* Hero */}
@@ -480,5 +482,6 @@ export default async function Sesong2026Page() {
       </section>
 
     </main>
+    </StatsLegacyShell>
   );
 }

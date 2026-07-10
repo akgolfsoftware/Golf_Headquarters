@@ -13,7 +13,7 @@
  *   8. Mersalg-bånd
  */
 
-import "../stats.css";
+import "@/app/(marketing)/(mlegacy)/stats/stats.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
@@ -22,6 +22,7 @@ import { Reveal } from "@/components/stats/reveal";
 import { StatsBtn } from "@/components/stats/btn";
 import { StatsLeaderboardCard } from "@/components/stats/stats-leaderboard-card";
 import { LeaderboardsSearchBox, LeaderboardsKategoriStrip } from "./leaderboards-client";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const revalidate = 3600;
 
@@ -289,6 +290,7 @@ export default async function LeaderboardsPage() {
   const data = await hentLeaderboardData();
 
   return (
+    <StatsLegacyShell aktiv="leaderboards">
     <div>
       {/* ── 1. HERO ── */}
       <section className="stats-hero compact">
@@ -787,5 +789,6 @@ export default async function LeaderboardsPage() {
         </Reveal>
       </div>
     </div>
+    </StatsLegacyShell>
   );
 }

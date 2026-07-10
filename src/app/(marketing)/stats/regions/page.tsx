@@ -3,7 +3,7 @@
  * Pixel-perfect port av design-brief 25-regions.md
  */
 
-import "../stats.css";
+import "@/app/(marketing)/(mlegacy)/stats/stats.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
@@ -13,6 +13,7 @@ import { CountUp } from "@/components/stats/count-up";
 import { StatsBtn } from "@/components/stats/btn";
 import { StatsNorgeskartWrapper } from "./norgeskart-wrapper";
 import { RegionCards } from "./region-cards";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const revalidate = 3600;
 
@@ -93,6 +94,7 @@ export default async function RegionsPage() {
   }));
 
   return (
+    <StatsLegacyShell>
     <div>
       {/* ── HERO ── */}
       <section className="stats-hero">
@@ -230,5 +232,6 @@ export default async function RegionsPage() {
         </Reveal>
       </div>
     </div>
+    </StatsLegacyShell>
   );
 }

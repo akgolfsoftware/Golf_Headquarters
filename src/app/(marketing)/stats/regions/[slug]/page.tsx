@@ -3,7 +3,7 @@
  * Design-brief 25-regions.md
  */
 
-import "../../stats.css";
+import "@/app/(marketing)/(mlegacy)/stats/stats.css";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -15,6 +15,7 @@ import { StatsBtn } from "@/components/stats/btn";
 import { StatsIcon } from "@/components/stats/icon";
 import { REGIONER, regionForSlug } from "@/lib/stats/klubb-til-region";
 import type { RegionSlug } from "@/lib/stats/klubb-til-region";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const revalidate = 3600;
 
@@ -297,6 +298,7 @@ export default async function RegionDetalj({
     .catch(() => []);
 
   return (
+    <StatsLegacyShell>
     <div>
       {/* ── HERO ── */}
       <section className="stats-hero compact">
@@ -872,5 +874,6 @@ export default async function RegionDetalj({
         </Reveal>
       </section>
     </div>
+    </StatsLegacyShell>
   );
 }
