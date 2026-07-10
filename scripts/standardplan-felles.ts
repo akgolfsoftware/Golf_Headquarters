@@ -30,7 +30,8 @@ export const DrillValgSchema = z.object({
   exerciseId: z.string().min(1),
   sets: z.number().int().min(1).max(20).optional(),
   reps: z.number().int().min(1).max(200).optional(),
-  csTarget: z.number().min(30).max(110).optional(),
+  // CANON v3.5: CS-skalaen går 20–100 (nybegynner-drills har mål ned mot 22).
+  csTarget: z.number().min(20).max(110).optional(),
   notes: z.string().max(200).optional(),
 });
 
