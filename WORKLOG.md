@@ -5,6 +5,69 @@
 
 ---
 
+## 2026-07-09/10 — Natt: v2-redesign bygget inn i appen (redesign/v2, worktree akgolf-hq-v2natt)
+
+**Branch:** `redesign/v2` (worktree `/Users/anderskristiansen/Developer/akgolf-hq-v2natt`, main-repo
+aldri rørt) · 8 commits (N1–N8), fra `9d76fe23` til `b64a1cbb`.
+
+### N1–N8 — hva ble bygget
+
+1. **N1** `d08be1c7` — route-group-split (gammel UI → `(legacy)`) + PlayerHQ-kjerne (Hjem, Plan,
+   Gjør, Analysere, Meg) byttet til v2 på ekte adresser (`/portal/...`).
+2. **N2** `c4244346` — PlayerHQ-satellitter byttet til ekte ruter + nye ruter for datagolf,
+   fysisk, utviklingsplan.
+3. **N3** `900f487b` — AgencyOS byttet til ekte ruter (cockpit, stall, spillerdetalj, drift,
+   talent, forretning).
+4. **N4** `f1dd8186` — aktiverte CTA-er, Workbench-handlinger, hjelpesystem, tab-rekkefølge,
+   sentence-case på akse-chips.
+5. **N5** `b358362d` — mobilpass: agenda-visninger for Workbench/kalendere, kort-lister i stedet
+   for tabeller (375px, ingen horisontal scroll).
+6. **N6** `197a88ad` — markedssidene i v2: split, kjerneskjermer, innholdssider, juridisk, kataloger.
+7. **N7** `1b866e85` — offentlig stats-seksjon i v2: delt stats-skall + familie-bytter.
+8. **N8** `b64a1cbb` (denne økten) — natt-forsegling: PWA-ikoner (nye app-ikonsett), levende
+   v2-login koblet til ekte auth, AgencyOS e-post-innboks (`/admin/innboks-epost` + `lib/innboks/`
+   + `api/inbox/inbound` + additiv `innboks_epost`-tabell via `scripts/migrate-innboks-epost-2026-07-10.ts`),
+   og full fjerning av `(v2preview)/`-mappen (109 skjermer) nå som alt er koblet på ekte adresser.
+
+### Verifikasjon (N8, kjørt i worktree)
+- `npx prisma validate` — OK
+- `npx prisma generate` — OK (Prisma 7.8.0)
+- `npx tsc --noEmit` — 0 feil
+- `node scripts/check-no-hex.mjs` — OK etter at `src/app/manifest.ts` sitt web-manifest-krav om
+  literal hex (kan ikke referere CSS-variabler; verdien speiler `--v2-bg`) ble dokumentert med
+  kommentar og lagt i baseline (`--update`)
+- `npm run build` — grønn, 277 statiske/dynamiske ruter generert
+- `npm test` — 342/342 grønne (59 suiter), ingen relatert til natt-endringene feilet
+- Røyktest på port 3901: `/`, `/coaching`, `/priser`, `/stats`, `/stats/spillere`, `/auth/login` → 200.
+  `/portal`, `/admin/agencyos`, `/forelder` → 307 til `/auth/login` (korrekt, ikke innlogget).
+  Dev-logg uten runtime-feil eller advarsler.
+
+### Commits, push, deploy
+- Commit `b64a1cbb feat(v2): night finish — PWA icons, live v2 login, AgencyOS email inbox, remove v2preview`
+- Push: `git push -u origin redesign/v2` — ny branch på GitHub
+- Deploy: `vercel deploy --yes --scope akgolfgroup-netizens-projects` fra worktreet (kopierte
+  `.vercel/project.json` fra hovedrepoet siden worktreet manglet prosjekt-lenke) →
+  **Preview:** https://akgolf-f66ow5ws5-akgolfgroup-netizens-projects.vercel.app (READY)
+
+### Gap / hoppet over (ikke natt-blokkerende)
+- Noen `V2*.tsx`-komponenter (`LoginV2`, `HjemV2`, `GjorV2`, `AnalysereV2`, `PlanV2`, `MegV2`,
+  `MegAbonnementV2`, `SignupV2`) har doc-kommentarer øverst som fortsatt viser til den nå slettede
+  `(v2preview)/v2-*`-stien. Ikke funksjonelt (ingen kode-referanser, kun kommentartekst) — ikke
+  rettet nå (kirurgisk-endring-prinsippet: utenfor denne oppgavens scope), men bør ryddes neste
+  gang noen av de filene røres.
+- `docs/MASTER-SKJERMPLAN.md` sine 6 haker for de nylig ekte-koblede skjermene (auth-bølge,
+  markedssider, stats, mobilpass) er ikke oppdatert i denne økten — gjenstår som eget steg.
+
+### Gjenstående manuell UAT (Anders)
+- Logg inn i live v2-login på preview-URL-en og bekreft full auth-flyt (innlogging → PlayerHQ/AgencyOS/Forelder).
+- Test AgencyOS e-post-innboks med en ekte innkommende e-post (webhook `/api/inbox/inbound`) —
+  ikke testet med ekte leverandør i denne økten, kun kode-/skjemaverifisert.
+- Visuell sjekk av PWA-ikonene på faktisk telefon (hjemskjerm-installasjon), inkl. maskable-varianter.
+- Klikk gjennom markedssider + stats-seksjonen på mobil for å bekrefte at N5/N6/N7-mobilpasset
+  henger sammen visuelt (kun automatisert røyktest kjørt, ikke visuell gjennomgang).
+
+---
+
 ## 2026-06-12 — UX-arkitektur: full kartlegging + konsolideringsanalyse (docs/ux-arkitektur)
 
 **Branch:** `docs/ux-arkitektur` · Ingen kodeendringer — kun dokumentasjon.
