@@ -4,7 +4,7 @@
  */
 
 import "@/app/(marketing)/(mlegacy)/stats/stats.css";
-import "@/app/(marketing)/(mlegacy)/stats/pga/_shared/kategori.css";
+import "@/app/(marketing)/stats/pga/_shared/kategori.css";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";

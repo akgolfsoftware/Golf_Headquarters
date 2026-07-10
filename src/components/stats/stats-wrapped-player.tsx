@@ -114,7 +114,7 @@ export function StatsWrappedPlayer({ slides, delLenke }: StatsWrappedPlayerProps
               background: i < current
                 ? (isDark ? "rgba(250,250,247,0.9)" : "rgba(10,31,23,0.7)")
                 : i === current
-                ? (isDark ? "hsl(var(--accent))" : "hsl(var(--primary))")
+                ? (isDark ? "#D1F843" : "#005840")
                 : (isDark ? "rgba(250,250,247,0.3)" : "rgba(10,31,23,0.2)"),
               border: "none",
               cursor: "pointer",
@@ -219,7 +219,7 @@ export function StatsWrappedPlayer({ slides, delLenke }: StatsWrappedPlayerProps
             background: "rgba(255,255,255,0.15)",
             border: "none",
             cursor: "pointer",
-            color: isDark ? "hsl(var(--background))" : "hsl(var(--foreground))",
+            color: uiColor,
             fontFamily: "var(--font-mono)",
             fontSize: 13,
             padding: "8px 16px",
@@ -241,7 +241,7 @@ export function StatsWrappedPlayer({ slides, delLenke }: StatsWrappedPlayerProps
             background: "rgba(255,255,255,0.15)",
             border: "none",
             cursor: "pointer",
-            color: isDark ? "hsl(var(--background))" : "hsl(var(--foreground))",
+            color: uiColor,
             fontFamily: "var(--font-mono)",
             fontSize: 13,
             padding: "8px 16px",
