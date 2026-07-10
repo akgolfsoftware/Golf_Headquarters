@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { notifyMany } from "@/lib/notifications";
@@ -239,34 +240,73 @@ export async function deleteShot(roundId: string, shotId: string) {
   revalidatePath(`/portal/mal/runder/${roundId}`);
 }
 
-export async function importUpGameShots(
+/**
+ * UpGame/ekstern aggregat-import: PER-HULL-tall (score/putter/FIR/GIR) er
+ * det CSV-en faktisk inneholder — det skrives som HoleScore (sannheten).
+ * Slag FABRIKKERES ALDRI fra aggregater (historisk gjorde denne importen det,
+ * med avstandsløse «Driver»-rader som aldri kunne gi SG). SG kommer først når
+ * spilleren fullfører slag-kjeden hull for hull.
+ */
+const importertHullSchema = z.object({
+  holeNumber: z.number().int().min(1).max(18),
+  par: z.number().int().min(3).max(6),
+  strokes: z.number().int().min(1).max(25),
+  putts: z.number().int().min(0).max(10).nullable(),
+  fairway: z.boolean().nullable(),
+  gir: z.boolean().nullable(),
+});
+const importertHullListe = z
+  .array(importertHullSchema)
+  .min(1)
+  .max(18)
+  .refine((h) => new Set(h.map((x) => x.holeNumber)).size === h.length, {
+    message: "Duplikate hullnummer",
+  });
+
+export type ImportertHull = z.infer<typeof importertHullSchema>;
+
+export async function importUpGameHoleScores(
   roundId: string,
-  shots: ShotInput[],
-) {
+  hull: unknown,
+): Promise<{ ok: boolean; antallHull?: number; error?: string }> {
   const user = await requireConsentingUser();
   await assertRoundOwner(roundId, user.id);
 
-  // Slett eksisterende slag og erstatt med importerte
-  await prisma.shot.deleteMany({ where: { roundId } });
-  if (shots.length > 0) {
-    await prisma.shot.createMany({
-      data: shots.map((s) => ({
-        roundId,
-        holeNumber: s.holeNumber,
-        holePar: s.holePar,
-        shotNumber: s.shotNumber,
-        club: s.club ?? null,
-        lie: s.lie,
-        distanceToPin: s.distanceToPin ?? null,
-        distanceHit: s.distanceHit ?? null,
-        windDir: s.windDir ?? null,
-        shotType: s.shotType,
-        isPenalty: s.isPenalty ?? false,
-        notes: s.notes ?? null,
-      })),
-    });
+  const parsed = importertHullListe.safeParse(hull);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig import-data" };
   }
+
+  await prisma.$transaction(async (tx) => {
+    for (const h of parsed.data) {
+      await tx.holeScore.upsert({
+        where: { roundId_holeNumber: { roundId, holeNumber: h.holeNumber } },
+        create: {
+          roundId,
+          holeNumber: h.holeNumber,
+          par: h.par,
+          strokes: h.strokes,
+          putts: h.putts,
+          fairway: h.fairway,
+          gir: h.gir,
+        },
+        update: { par: h.par, strokes: h.strokes, putts: h.putts, fairway: h.fairway, gir: h.gir },
+      });
+    }
+    // Rydd bort ev. tidligere FABRIKKERTE slag på de importerte hullene —
+    // aggregat-import kjenner ikke slagene, og stale rader ville gitt falsk kjede.
+    await tx.shot.deleteMany({
+      where: { roundId, holeNumber: { in: parsed.data.map((h) => h.holeNumber) } },
+    });
+    // Rundens totalscore = summen av alle hullscorene som nå finnes.
+    const alle = await tx.holeScore.findMany({ where: { roundId }, select: { strokes: true } });
+    await tx.round.update({
+      where: { id: roundId },
+      data: { score: alle.reduce((sum, x) => sum + x.strokes, 0) },
+    });
+  });
 
   await recomputeRoundSg(roundId);
   revalidatePath(`/portal/mal/runder/${roundId}`);
+  return { ok: true, antallHull: parsed.data.length };
 }

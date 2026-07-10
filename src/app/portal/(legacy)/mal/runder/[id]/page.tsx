@@ -133,6 +133,7 @@ export default async function RundeDetalj({
     include: {
       course: true,
       shots: { orderBy: [{ holeNumber: "asc" }, { shotNumber: "asc" }] },
+      holeScores: { orderBy: { holeNumber: "asc" } },
     },
   });
 
@@ -149,15 +150,36 @@ export default async function RundeDetalj({
     year: "numeric",
   });
 
-  // Hull-for-hull fra Shot-modellen: score per hull = antall registrerte slag.
+  // Hull-for-hull: HoleScore er sannheten (skrives av slag-føring OG import);
+  // fall tilbake til slag-avledet score for eldre runder uten HoleScore-rader.
   const hull = new Map<number, HullScore>();
-  for (const s of runde.shots) {
-    const e = hull.get(s.holeNumber);
-    if (e) e.score += 1;
-    else hull.set(s.holeNumber, { par: s.holePar, score: 1 });
+  for (const h of runde.holeScores) {
+    hull.set(h.holeNumber, { par: h.par, score: h.strokes });
+  }
+  if (hull.size === 0) {
+    for (const s of runde.shots) {
+      const e = hull.get(s.holeNumber);
+      if (e) e.score += 1;
+      else hull.set(s.holeNumber, { par: s.holePar, score: 1 });
+    }
   }
   const harHullData = hull.size > 0;
   const erEier = runde.userId === user.id;
+
+  // Kjede-status for SG: per scoret hull — er slag-kjeden komplett?
+  // (samme regel som shots-til-sg: slag + straffer == strokes, alle avstander satt)
+  const kjedeStatus = runde.holeScores.map((h) => {
+    const slag = runde.shots.filter((s) => s.holeNumber === h.holeNumber);
+    const straffer = slag.filter((s) => s.isPenalty).length;
+    const komplett =
+      slag.length > 0 &&
+      slag.length + straffer === h.strokes &&
+      slag.every((s) => s.distanceToPin != null && s.distanceToPin > 0);
+    return { holeNumber: h.holeNumber, komplett };
+  });
+  const antallKomplette = kjedeStatus.filter((k) => k.komplett).length;
+  const visKjedeStatus =
+    erEier && runde.holeScores.length > 0 && runde.sgSource !== "beregnet" && runde.sgSource !== "manual";
 
   const sgTotal = runde.sgTotal;
   const sgTotalTekst =
@@ -223,6 +245,15 @@ export default async function RundeDetalj({
           <div className="space-y-3">
             <NiHull label="UT · 1–9" fra={1} hull={hull} />
             <NiHull label="INN · 10–18" fra={10} hull={hull} />
+            {visKjedeStatus && (
+              <div className="flex items-center gap-2 rounded-lg border border-border bg-secondary/40 px-3 py-2">
+                <span className="h-2 w-2 shrink-0 rounded-full bg-warning" aria-hidden />
+                <p className="font-mono text-[11px] text-muted-foreground">
+                  SG venter på slag-kjeden: {antallKomplette} av {runde.holeScores.length} hull
+                  komplette. Registrer slagene per hull for full Strokes Gained.
+                </p>
+              </div>
+            )}
             {erEier && (
               <Link
                 href={`/portal/mal/runder/${id}/slag`}
