@@ -114,7 +114,7 @@ function SgRad({ navn, verdi }: { navn: string; verdi: number | null }) {
           verdi == null ? "text-muted-foreground" : pos ? "text-success" : "text-destructive",
         )}
       >
-        {verdi == null ? "—" : `${pos ? "+" : "−"}${Math.abs(verdi).toFixed(2)}`}
+        {verdi == null ? "—" : `${pos ? "+" : "−"}${Math.abs(verdi).toFixed(2).replace(".", ",")}`}
       </span>
     </div>
   );
@@ -178,7 +178,13 @@ export default async function RundeDetalj({
   if (!runde) notFound();
   if (runde.userId !== user.id && user.role !== "ADMIN" && user.role !== "COACH") notFound();
 
-  const par = runde.course.par;
+  // Delvis runde (færre hull på scorekortet): mål mot par for de SPILTE
+  // hullene — «8 slag mot par 72» ville vært løgn for en 2-hulls runde.
+  const antallSpilteHull = runde.holeScores.length > 0 ? runde.holeScores.length : 18;
+  const par =
+    runde.holeScores.length > 0
+      ? runde.holeScores.reduce((sum, h) => sum + h.par, 0)
+      : runde.course.par;
   const diff = runde.score - par;
   const tilParH1 = diff === 0 ? "even par." : `${tilParTekst(diff)}.`;
 
@@ -269,7 +275,7 @@ export default async function RundeDetalj({
             {runde.score} slag
           </div>
           <div className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-muted-foreground">
-            Par {par} · 18 hull
+            Par {par} · {antallSpilteHull} hull
           </div>
         </div>
         <div className="text-right">
