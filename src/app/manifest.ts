@@ -2,14 +2,16 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "AK Golf",
-    short_name: "AK Golf",
+    name: "AK Golf HQ",
+    short_name: "AK Golf HQ",
     description: "Coaching · plan · fremgang i én app for golf",
     start_url: "/portal",
     display: "standalone",
     orientation: "portrait",
-    background_color: "hsl(var(--background))",
-    theme_color: "hsl(var(--primary))",
+    // Web manifest krever literal hex (kan ikke referere CSS-variabler) —
+    // verdien speiler --v2-bg i src/styles/v2/tokens.css.
+    background_color: "#0D0E0D",
+    theme_color: "#0D0E0D",
     lang: "nb",
     categories: ["sports", "lifestyle", "productivity"],
     icons: [

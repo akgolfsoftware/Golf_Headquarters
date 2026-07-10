@@ -15,6 +15,7 @@ import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { Reveal } from "@/components/stats/reveal";
 import { StatsBtn } from "@/components/stats/btn";
 import { SpillerTabell } from "./spiller-tabell";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const revalidate = 3600;
 
@@ -105,6 +106,7 @@ export default async function PGASpillerbasePage() {
   const totalDisplay = total > 0 ? total : 1299;
 
   return (
+    <StatsLegacyShell>
     <div className="spillere-page pga-page bg-background text-foreground">
       {/* ── Hero ── */}
       <section className="spillere-hero">
@@ -183,6 +185,7 @@ export default async function PGASpillerbasePage() {
         </Reveal>
       </div>
     </div>
+    </StatsLegacyShell>
   );
 }
 

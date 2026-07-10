@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, Loader2, X } from "lucide-react";
-import { opprettOktPaaTid } from "@/app/admin/calendar/actions";
+import { opprettOktPaaTid } from "@/app/admin/(legacy)/calendar/actions";
 
 export type SpillerOption = {
   id: string;

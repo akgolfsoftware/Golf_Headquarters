@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { setSgHubMode } from "@/app/portal/mal/sg-hub/mode-action";
+import { setSgHubMode } from "@/app/portal/(legacy)/mal/sg-hub/mode-action";
 
 type Props = {
   current: "simple" | "advanced";

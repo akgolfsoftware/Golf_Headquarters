@@ -6,7 +6,7 @@ import { Save } from "lucide-react";
 import {
   createTemplate,
   type TemplateCreateInput,
-} from "@/app/admin/plan-templates/actions";
+} from "@/app/admin/(legacy)/plan-templates/actions";
 import {
   ANBEFALT_FORDELING_PER_KATEGORI,
   FASE_ALLE,

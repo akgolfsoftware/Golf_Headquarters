@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   const url = req.nextUrl;
   const code = url.searchParams.get("code");
   // safeRedirectPath avviser absolutte URLer og protocol-relative paths
-  const next = safeRedirectPath(url.searchParams.get("next"), "/portal");
+  const next = safeRedirectPath(url.searchParams.get("next"), "/auth/etter-innlogging");
 
   if (!code) {
     return NextResponse.redirect(new URL("/auth/login?error=no-code", url.origin));

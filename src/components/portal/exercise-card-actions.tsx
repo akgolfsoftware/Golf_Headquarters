@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Pencil, Trash2 } from "lucide-react";
 import { useTransition } from "react";
-import { slettOvelse } from "@/app/portal/coach/ovelser/actions";
+import { slettOvelse } from "@/app/portal/(legacy)/coach/ovelser/actions";
 
 export function ExerciseCardActions({ id }: { id: string }) {
   const [isPending, startTransition] = useTransition();

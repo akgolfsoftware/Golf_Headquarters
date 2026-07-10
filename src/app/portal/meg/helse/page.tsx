@@ -1,44 +1,30 @@
 /**
- * Helse — /portal/meg/helse, portet FRA fersk Claude Design-fasit:
- *   (historisk juni-fasit, fjernet fra repo) playerhq-app/ph-screens.jsx
- *   (HelseScreen, linje 710–734) via MeSub/SetGroup/SetRow-primitivene.
+ * v2 — PlayerHQ Meg · Helse (retning C). V2Shell leverer chrome-en
+ * (IkonRail/BunnNav), MegHelseV2 rendrer stacken.
  *
- * Element-liste (fasit, topp → bunn):
- *   1. MeSub-header: MEG · HELSE + "Helse & readiness." + lead
- *   2. 3-KPI-grid: FYS-score (stall-relativ testbatteri-form 0–100, Anders' formel 2026-06-22;
- *      «—» hvis spilleren mangler FYS-tester) · Hvilepuls bpm · Søvn t (EKTE siste HealthEntry)
- *   3. DENNE UKA: Søvn (ekte snitt siste 7 døgn) · Belastning · HRV
- *      («—» der data/formel mangler — aldri liksom-tall)
- *   4. SKADE & STATUS: ekte Leave-data (isInjury); «Ingen aktive skader» ellers
- *   5. Accent-kort (lime venstrekant): plassholder-disclaimer fra fasiten
- *   6. Primary-knapp «Logg søvn / status» → åpner eksisterende logg-form
- *      (HelseForm, samme lagre-action som før)
- *
- * Server component. Auth-guard beholdt (requirePortalUser).
+ * Auth + dataloader er 1:1 med den tidligere /portal/meg/helse-siden: siste 14
+ * dagers HealthEntry, aktiv/tidligere Leave (isInjury), FYS-score og belastning.
+ * Datoer formateres her (nb-NO) så klientkomponenten forblir serialiserbar.
  */
 
-import { Tag } from "@/components/athletic/golfdata";
-import { Activity, BatteryMedium, CircleCheck, Moon, Stethoscope } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { hentFysScore } from "@/lib/fys-data";
 import { hentBelastning } from "@/lib/health/belastning";
-import { MeSub, SetGroup, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
-import { KpiTile } from "@/components/athletic/golfdata";
-import { HelseForm } from "./helse-form";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { MegHelseV2, type MegHelseData } from "@/components/portal/v2/MegHelseV2";
+import { lagreHelseEntry } from "./actions";
+
+export const dynamic = "force-dynamic";
 
 function formatDatoKort(d: Date): string {
   return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short" });
 }
 
-function formatTimer(t: number): string {
-  return t.toFixed(1).replace(".", ",");
-}
-
 export default async function HelsePage() {
   const user = await requirePortalUser();
 
-  // Siste 14 dagers logg, nyest først.
+  // Siste 14 dagers logg, nyest først (identisk med tidligere /portal/meg/helse).
   const since = new Date();
   since.setUTCHours(0, 0, 0, 0);
   since.setUTCDate(since.getUTCDate() - 13);
@@ -71,14 +57,6 @@ export default async function HelsePage() {
 
   const siste = entries[0];
   const iDagIso = new Date().toISOString().slice(0, 10);
-  const initial = {
-    date: iDagIso,
-    restingHr: siste?.restingHr ?? null,
-    hrv: siste?.hrv ?? null,
-    sleepHours: siste?.sleepHours ?? null,
-    weightKg: siste?.weightKg ?? null,
-    notes: siste?.notes ?? null,
-  };
 
   // Ekte søvn-snitt siste 7 døgn (kun logger med sleepHours).
   const ukeGrense = new Date();
@@ -93,107 +71,31 @@ export default async function HelsePage() {
       ? sovnUke.reduce((sum, e) => sum + e.sleepHours, 0) / sovnUke.length
       : null;
 
+  const data: MegHelseData = {
+    fys: { harTester: fys.harTester, score: fys.score, antallTester: fys.antallTester },
+    siste: siste
+      ? { restingHr: siste.restingHr, hrv: siste.hrv, sleepHours: siste.sleepHours }
+      : null,
+    sovn: { snitt: sovnSnitt, antall: sovnUke.length },
+    belastning: { harData: belastning.harData, prosentAvNormalt: belastning.prosentAvNormalt },
+    skade: {
+      aktivSiden: aktivSkade ? formatDatoKort(aktivSkade.startAt) : null,
+      tidligere: tidligereSkader,
+      sistLogget: siste ? formatDatoKort(siste.date) : null,
+    },
+    initial: {
+      date: iDagIso,
+      restingHr: siste?.restingHr ?? null,
+      hrv: siste?.hrv ?? null,
+      sleepHours: siste?.sleepHours ?? null,
+      weightKg: siste?.weightKg ?? null,
+      notes: siste?.notes ?? null,
+    },
+  };
+
   return (
-    <MeSub
-      eyebrow="MEG · HELSE"
-      title="Helse &"
-      italic="readiness."
-      lead="Søvn, puls, HRV, belastning og FYS-form — alt fra dine egne ekte logger og tester."
-    >
-      <div className="mb-[22px] grid grid-cols-3 gap-3">
-        {/* FYS-score: testbatteri → stall-relativ samlet form (Anders' formel 2026-06-22). */}
-        <KpiTile
-          label="FYS-score"
-          value={fys.harTester && fys.score != null ? String(fys.score) : "—"}
-          deltaSuffix={fys.harTester ? `${fys.antallTester}/5 tester` : "Ingen FYS-tester"}
-          size="md"
-        />
-        <KpiTile
-          label="Hvilepuls"
-          value={siste?.restingHr != null ? String(siste.restingHr) : "—"}
-          unit={siste?.restingHr != null ? "bpm" : undefined}
-          size="md"
-        />
-        <KpiTile
-          label="Søvn"
-          value={siste?.sleepHours != null ? formatTimer(siste.sleepHours) : "—"}
-          unit={siste?.sleepHours != null ? "t" : undefined}
-          size="md"
-        />
-      </div>
-
-      <SetGroup label="DENNE UKA">
-        <SetRow
-          icon={Moon}
-          title="Søvn"
-          meta={
-            sovnSnitt != null
-              ? `Snitt siste 7 døgn · ${sovnUke.length} logger`
-              : "Ingen søvn-logger siste 7 døgn"
-          }
-          right={<SetVal>{sovnSnitt != null ? `${formatTimer(sovnSnitt)} t` : "—"}</SetVal>}
-        />
-        <SetRow
-          icon={Activity}
-          title="Belastning"
-          meta={
-            belastning.harData
-              ? "Siste uke vs 4-ukers snitt (trening + runder)"
-              : "For lite trenings-historikk siste 4 uker"
-          }
-          right={
-            <SetVal>
-              {belastning.prosentAvNormalt != null
-                ? `${belastning.prosentAvNormalt}%`
-                : "—"}
-            </SetVal>
-          }
-        />
-        <SetRow
-          icon={BatteryMedium}
-          title="HRV"
-          meta={siste?.hrv != null ? "Restitusjon (RMSSD, ms)" : "Restitusjon · logg HRV i skjemaet"}
-          right={<SetVal>{siste?.hrv != null ? `${siste.hrv} ms` : "—"}</SetVal>}
-        />
-      </SetGroup>
-
-      <SetGroup label="SKADE & STATUS">
-        {aktivSkade ? (
-          <SetRow
-            icon={Stethoscope}
-            title="Aktiv skade"
-            meta={`Siden ${formatDatoKort(aktivSkade.startAt)}`}
-            right={<Tag variant="warn">Aktiv</Tag>}
-          />
-        ) : (
-          <SetRow
-            icon={CircleCheck}
-            title="Ingen aktive skader"
-            meta={siste ? `Sist logget ${formatDatoKort(siste.date)}` : "Ingen logger ennå"}
-            right={<Tag variant="up">Frisk</Tag>}
-          />
-        )}
-        {tidligereSkader > 0 && (
-          <SetRow
-            icon={Stethoscope}
-            title="Skadehistorikk"
-            meta="Tidligere skadeperioder"
-            right={<SetVal>{tidligereSkader}</SetVal>}
-          />
-        )}
-      </SetGroup>
-
-      <div className="rounded-xl border border-border border-l-[3px] border-l-accent bg-card px-4 py-3.5 text-[13px] leading-[1.55] text-muted-foreground">
-        <b className="font-semibold text-foreground">FYS-score</b> er din samlede testbatteri-form
-        (0–100, relativt til stallen). <b className="font-semibold text-foreground">Belastning</b> viser
-        siste ukes trening + runder som prosent av ditt eget 4-ukers snitt (100 % = som vanlig).{" "}
-        <b className="font-semibold text-foreground">HRV</b> (RMSSD i ms) logger du selv ved siden av
-        hvilepuls — en wearable-sync kan fylle samme felt senere.
-      </div>
-
-      <div className="mt-4">
-        <HelseForm initial={initial} />
-      </div>
-    </MeSub>
+    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+      <MegHelseV2 data={data} lagre={lagreHelseEntry} />
+    </V2Shell>
   );
 }

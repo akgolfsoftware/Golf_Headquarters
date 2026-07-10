@@ -345,7 +345,7 @@
 }
 .profil-trend-table tbody td.num { text-align: right; }
 .profil-trend-table tbody td.positive { color: var(--s-primary); }
-.profil-trend-table tbody td.negative { color: #A32D2D; }
+.profil-trend-table tbody td.negative { color: var(--axis-turn); }
 .profil-trend-table tbody td.muted { color: var(--s-muted-fg); }
 
 /* ─── Sammenlign-tab ─── */

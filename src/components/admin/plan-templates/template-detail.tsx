@@ -20,7 +20,7 @@ import {
   archiveTemplate,
   duplicateTemplate,
   unarchiveTemplate,
-} from "@/app/admin/plan-templates/actions";
+} from "@/app/admin/(legacy)/plan-templates/actions";
 import {
   DAG_LABEL,
   ENV_LABEL,

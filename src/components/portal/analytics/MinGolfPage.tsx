@@ -20,7 +20,6 @@ import { cn } from "@/lib/utils";
 import type { AnalyticsWorkbenchData } from "@/app/portal/analysere/actions";
 import type { MinGolfData } from "@/lib/min-golf/load-min-golf";
 import { fmtSg } from "@/lib/min-golf/format";
-// eslint-disable-next-line no-restricted-imports -- TODO(opprydding): migrer til golfdata (Fase 3/4)
 import {
   DiagnoseKort,
   GappingChart,

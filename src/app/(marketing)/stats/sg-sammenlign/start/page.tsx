@@ -10,7 +10,8 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { startSammenligning } from "../actions";
 import { SgStartSkjema, type RefSpiller } from "./skjema";
-import "../../stats.css";
+import "@/app/(marketing)/(mlegacy)/stats/stats.css";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const dynamic = "force-dynamic";
 
@@ -52,6 +53,7 @@ export default async function SgStartPage({ searchParams }: Props) {
   const { feil } = await searchParams;
 
   return (
+    <StatsLegacyShell>
     <div className="bg-background text-foreground">
       {/* Top breadcrumb bar */}
       <div
@@ -121,5 +123,6 @@ export default async function SgStartPage({ searchParams }: Props) {
         )}
       </section>
     </div>
+    </StatsLegacyShell>
   );
 }

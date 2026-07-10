@@ -11,6 +11,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft, TrendingDown, Trophy, Users, Flag } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const revalidate = 900;
 
@@ -109,6 +110,7 @@ export default async function TurneringStatistikk({ params }: Props) {
   const norskDelta = feltMedian != null && norskMedian != null ? norskMedian - feltMedian : null;
 
   return (
+    <StatsLegacyShell aktiv="turneringer">
     <div className="mx-auto max-w-3xl px-4 py-8 sm:py-12">
       {/* Breadcrumb */}
       <Link
@@ -202,6 +204,7 @@ export default async function TurneringStatistikk({ params }: Props) {
         </>
       )}
     </div>
+    </StatsLegacyShell>
   );
 }
 

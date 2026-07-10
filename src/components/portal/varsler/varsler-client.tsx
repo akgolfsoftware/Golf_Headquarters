@@ -36,7 +36,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { markNotificationsRead } from "@/app/portal/varsler/actions";
+import { markNotificationsRead } from "@/app/portal/(legacy)/varsler/actions";
 
 export type VarselItem = {
   id: string;

@@ -1,28 +1,26 @@
 /**
- * AgencyOS — Treningsplaner (/admin/plans).
+ * v2-forhåndsvisning — AgencyOS Treningsplaner (retning C). Egen top-level
+ * route-group (v2preview) som IKKE arver AdminShell — kun root-layout — så
+ * V2Shell leverer all chrome (IkonRail/BunnNav) i mørk v2-scope.
  *
- * Port av fasit `agencyos-app/screens-ops.jsx` → TrainingPlansScreen (mørkt
- * tema, desktop 1280): PageHead («PLANLEGGE · TRENINGSPLANER» / «{N} planer
- * i drift.» / lead + «Maler» + «Ny plan») og kanban med tre faser
- * Utkast / Aktiv / Fullført. Kort = plan-navn + mono «{spiller} · {meta}».
+ * Auth + dataloader gjenbrukt 1:1 fra den ekte siden
+ * (src/app/admin/plans/page.tsx): samme requirePortalUser-guard (ADMIN/COACH),
+ * samme TrainingPlan-spørring, samme template-placeholder-filter, samme
+ * fase-bucketing og meta-tekster, og samme Workbench-mål for «Ny plan».
  *
- * Fasit-beslutning: «Ny plan» peker til WORKBENCH for valgt/første spiller
- * (designet fjerner wizarden) — /admin/plans/new består som rute, men lenkes
- * ikke herfra. Fasitens drag-and-drop mellom faser er ikke portet (statisk
- * server-render); statusflyt skjer i Workbench/plan-detalj.
- *
- * Datakilde: prisma.trainingPlan m/ user, status, økter og uke-spenn.
- * Template-plasseholder-brukerens FYS-malplaner («Template Placeholder»)
- * filtreres bort — de er infrastruktur for plan-maler, ikke stall-planer.
+ * Server component.
  */
-
-import Link from "next/link";
-import { Copy, Plus } from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { ukenummer } from "@/lib/uke-helpers";
-import { AgPage, AgPageHead, agBtnClass } from "@/components/admin/agencyos/ui";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import {
+  AdminPlansV2,
+  type AdminPlansData,
+  type AdminPlanKort,
+  type PlanFase,
+} from "@/components/admin/v2/AdminPlansV2";
 
 export const dynamic = "force-dynamic";
 
@@ -30,30 +28,9 @@ export const dynamic = "force-dynamic";
 const TEMPLATE_PLACEHOLDER_USER_ID = "template-placeholder";
 
 const TALLORD = [
-  "Null",
-  "Én",
-  "To",
-  "Tre",
-  "Fire",
-  "Fem",
-  "Seks",
-  "Sju",
-  "Åtte",
-  "Ni",
-  "Ti",
-  "Elleve",
-  "Tolv",
+  "Null", "Én", "To", "Tre", "Fire", "Fem", "Seks", "Sju", "Åtte", "Ni",
+  "Ti", "Elleve", "Tolv",
 ];
-
-type Fase = "utkast" | "aktiv" | "fullfort";
-
-type PlanKort = {
-  id: string;
-  name: string;
-  who: string;
-  meta: string;
-  lime: boolean;
-};
 
 function kortDato(d: Date): string {
   return d
@@ -61,8 +38,8 @@ function kortDato(d: Date): string {
     .replace(/\.$/, "");
 }
 
-export default async function TreningsplanerPage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+export default async function V2AdminPlansPreviewPage() {
+  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
   const now = new Date();
   const dagStart = new Date(now);
@@ -101,7 +78,7 @@ export default async function TreningsplanerPage() {
   ]);
 
   // Fase-bucketing: Fullført = arkivert/utløpt · Aktiv = i drift · Utkast = resten.
-  const fase = (p: (typeof plans)[number]): Fase => {
+  const fase = (p: (typeof plans)[number]): PlanFase => {
     if (p.status === "ARCHIVED" || (p.endDate && p.endDate.getTime() < now.getTime())) {
       return "fullfort";
     }
@@ -109,7 +86,7 @@ export default async function TreningsplanerPage() {
     return "utkast";
   };
 
-  const tilKort = (p: (typeof plans)[number]): PlanKort => {
+  const tilKort = (p: (typeof plans)[number]): AdminPlanKort => {
     const total = p.sessions.length;
     const ferdig = p.sessions.filter((s) => s.status === "COMPLETED").length;
     const pct = total > 0 ? Math.round((ferdig / total) * 100) : 0;
@@ -137,21 +114,10 @@ export default async function TreningsplanerPage() {
                   ? `${total} økter · fra uke ${ukeFra}`
                   : `Utkast · fra uke ${ukeFra}`;
     }
-    return { id: p.id, name: p.name, who: p.user.name, meta, lime: false };
+    return { id: p.id, navn: p.name, spiller: p.user.name, meta, fase: fase(p) };
   };
 
-  const kolonner: { lbl: string; dot: string; plans: PlanKort[] }[] = [
-    { lbl: "Utkast", dot: "bg-muted-foreground", plans: [] },
-    { lbl: "Aktiv", dot: "bg-success", plans: [] },
-    { lbl: "Fullført", dot: "bg-muted-foreground", plans: [] },
-  ];
-  for (const p of plans) {
-    const f = fase(p);
-    const idx = f === "utkast" ? 0 : f === "aktiv" ? 1 : 2;
-    kolonner[idx].plans.push(tilKort(p));
-  }
-  // Fasit fremhever toppen av Aktiv-kolonnen med lime venstre-kant.
-  if (kolonner[1].plans.length > 0) kolonner[1].plans[0].lime = true;
+  const kort = plans.map(tilKort);
 
   // Workbench-mål: dagens økt → første aktive spillerplan → første plan.
   const aktivSpillerPlan = plans.find(
@@ -167,63 +133,19 @@ export default async function TreningsplanerPage() {
   const tittel =
     antall < TALLORD.length ? `${TALLORD[antall]} planer` : `${antall} planer`;
 
-  return (
-    <AgPage>
-      <AgPageHead
-        eyebrow="Planlegge · Treningsplaner"
-        title={tittel}
-        italic="i drift."
-        lead="Dra planer mellom faser. Aktive planer driver spillernes daglige program."
-        actions={
-          <>
-            <Link href="/admin/plan-templates" className={agBtnClass("ghost")}>
-              <Copy size={16} strokeWidth={1.5} /> Maler
-            </Link>
-            <Link href={nyPlanHref} className={agBtnClass("primary")}>
-              <Plus size={16} strokeWidth={1.5} /> Ny plan
-            </Link>
-          </>
-        }
-      />
+  const data: AdminPlansData = {
+    tittel,
+    antall,
+    utkast: kort.filter((k) => k.fase === "utkast").length,
+    aktive: kort.filter((k) => k.fase === "aktiv").length,
+    fullfort: kort.filter((k) => k.fase === "fullfort").length,
+    nyPlanHref,
+    kort,
+  };
 
-      <div className="grid items-start gap-3 lg:grid-cols-3">
-        {kolonner.map((col) => (
-          <div key={col.lbl} className="rounded-xl border border-border bg-background p-3">
-            <div className="flex items-center gap-2 px-1 pb-3 pt-1">
-              <span className={`h-2 w-2 rounded-full ${col.dot}`} />
-              <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-foreground">
-                {col.lbl}
-              </span>
-              <span className="ml-auto font-mono text-[10px] text-muted-foreground">
-                {col.plans.length}
-              </span>
-            </div>
-            <div className="flex flex-col gap-2">
-              {col.plans.length === 0 && (
-                <div className="rounded-xl border border-dashed border-border px-3 py-6 text-center font-mono text-[10px] text-muted-foreground">
-                  Ingen planer her
-                </div>
-              )}
-              {col.plans.map((p) => (
-                <Link
-                  key={p.id}
-                  href={`/admin/plans/${p.id}`}
-                  className={`block rounded-xl border border-border bg-card p-[13px] text-left transition-colors hover:border-primary ${
-                    p.lime ? "border-l-[3px] border-l-accent" : ""
-                  }`}
-                >
-                  <div className="text-[13.5px] font-semibold leading-[1.25] tracking-[-0.01em] text-foreground">
-                    {p.name}
-                  </div>
-                  <div className="mt-[5px] font-mono text-[10px] leading-none text-muted-foreground">
-                    {p.who} · {p.meta}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </AgPage>
+  return (
+    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <AdminPlansV2 data={data} />
+    </V2Shell>
   );
 }

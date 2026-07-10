@@ -258,7 +258,7 @@ export function SgStartSkjema({
                 display: "flex",
                 alignItems: "center",
                 gap: 10,
-                background: "#FFFFFF",
+                background: "var(--paper)",
                 border: "1.5px solid var(--s-border)",
                 borderRadius: 12,
                 padding: "12px 16px",
@@ -307,7 +307,7 @@ export function SgStartSkjema({
                   top: "100%",
                   left: 0,
                   right: 0,
-                  background: "#FFFFFF",
+                  background: "var(--paper)",
                   border: "1px solid var(--s-border)",
                   borderRadius: 10,
                   boxShadow: "0 8px 24px rgba(10,31,23,0.1)",
@@ -418,7 +418,7 @@ export function SgStartSkjema({
                     alignItems: "center",
                     gap: 10,
                     padding: "12px 14px",
-                    background: selected ? "hsl(var(--primary))" : "#FFFFFF",
+                    background: selected ? "hsl(var(--primary))" : "var(--paper)",
                     border: selected
                       ? "1.5px solid var(--forest)"
                       : "1.5px solid var(--s-border)",
@@ -616,7 +616,7 @@ export function SgStartSkjema({
           {modus === "FRA_SNITT" && (
             <div
               style={{
-                background: "#FFFFFF",
+                background: "var(--paper)",
                 border: "1px solid var(--s-border)",
                 borderRadius: 16,
                 padding: "40px 48px",
@@ -809,7 +809,7 @@ export function SgStartSkjema({
           {modus === "MANUELL_SG" && (
             <div
               style={{
-                background: "#FFFFFF",
+                background: "var(--paper)",
                 border: "1px solid var(--s-border)",
                 borderRadius: 16,
                 padding: "40px 48px",
@@ -835,7 +835,7 @@ export function SgStartSkjema({
                   <div
                     key={f.key}
                     style={{
-                      borderBottom: "1px solid #F1EEE5",
+                      borderBottom: "1px solid var(--sand)",
                       paddingBottom: 16,
                     }}
                   >

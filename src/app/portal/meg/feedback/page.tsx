@@ -1,35 +1,34 @@
+/**
+ * v2 — PlayerHQ Meg · Feedback (retning C). V2Shell leverer chrome-en
+ * (IkonRail/BunnNav, aktiv «meg»), MegFeedbackV2 rendrer innholds-stacken.
+ *
+ * Auth + loader gjenbruker den ekte /portal/meg/feedback-siden: requirePortalUser
+ * for tilgang, searchParams.takk for kvittering. Feedback-innsending går via den
+ * EKTE server-action submitFeedback (inne i komponenten). Ingen fabrikerte verdier.
+ */
+
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
-import { AppFeedbackForm } from "./app-feedback-form";
-import { FeedbackHistorikk } from "./feedback-historikk";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { MegFeedbackV2, type MegFeedbackData } from "@/components/portal/v2/MegFeedbackV2";
+
+export const dynamic = "force-dynamic";
 
 export default async function FeedbackPage({
   searchParams,
 }: {
   searchParams: Promise<{ takk?: string }>;
 }) {
-  await requirePortalUser();
+  const user = await requirePortalUser();
+  if (user.role === "PARENT") redirect("/forelder");
+  if (user.role === "GUEST") redirect("/admin/kalender");
+
   const sp = await searchParams;
+  const data: MegFeedbackData = { takk: sp?.takk === "1" };
 
   return (
-    <div className="mx-auto w-full max-w-[640px] space-y-8 px-4 pb-20 sm:px-6 md:space-y-12 md:pb-0">
-      <PageHeader
-        eyebrow="Tilbakemelding · 30 sek"
-        titleLead="Hva synes du om"
-        titleItalic="PlayerHQ"
-        titleTrail="?"
-        sub="Vi leser hver eneste tilbakemelding. Bug, forslag eller bare ros — alt teller."
-      />
-
-      {sp?.takk === "1" && (
-        <div className="rounded-md border border-primary/30 bg-primary/10 px-4 py-2 text-sm text-foreground">
-          Takk for tilbakemeldingen. Du gjør PlayerHQ bedre.
-        </div>
-      )}
-
-      <AppFeedbackForm />
-
-      <FeedbackHistorikk />
-    </div>
+    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <MegFeedbackV2 data={data} />
+    </V2Shell>
   );
 }

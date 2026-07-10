@@ -37,7 +37,7 @@ export function LoginForm() {
       setError(oversettAuthFeil(authErr.message));
       return;
     }
-    const next = safeRedirectPath(searchParams.get("next"), "/portal");
+    const next = safeRedirectPath(searchParams.get("next"), "/auth/etter-innlogging");
     router.push(next);
     router.refresh();
   }
@@ -45,7 +45,7 @@ export function LoginForm() {
   async function loggInnGoogle() {
     setError(null);
     setLoading(true);
-    const next = safeRedirectPath(searchParams.get("next"), "/portal");
+    const next = safeRedirectPath(searchParams.get("next"), "/auth/etter-innlogging");
     const origin = typeof window !== "undefined" ? window.location.origin : "";
     const { error: authErr } = await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -65,7 +65,7 @@ export function LoginForm() {
   async function loggInnApple() {
     setError(null);
     setLoading(true);
-    const next = safeRedirectPath(searchParams.get("next"), "/portal");
+    const next = safeRedirectPath(searchParams.get("next"), "/auth/etter-innlogging");
     const origin = typeof window !== "undefined" ? window.location.origin : "";
     const { error: authErr } = await supabase.auth.signInWithOAuth({
       provider: "apple",

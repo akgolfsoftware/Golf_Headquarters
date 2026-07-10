@@ -1,30 +1,29 @@
 /**
- * AgencyOS — Spiller-onboarding (multi-stegs wizard).
+ * v2-preview: AgencyOS Ny spiller (retning C). Egen top-level route-group
+ * (v2preview) som IKKE arver AdminShell — kun root-layout — så V2Shell
+ * leverer all chrome (IkonRail/BunnNav) i mørk v2-scope.
  *
- * Server-component som mounter klient-wizard. Wizarden gjør all UX,
- * server action createSpiller utfører persisten i ../ny/actions.ts.
+ * Auth følger den ekte /admin/spillere/ny-flaten: samme requirePortalUser-
+ * guard (ADMIN/COACH). Skjermen er et opprett-skjema uten data-loader (den
+ * ekte siden har heller ingen loader), så ingen eksempel-spiller hentes —
+ * ærlig tom-tilstand er selve skjemaet. Submit bruker den EKTE server
+ * action `createSpiller` og router til den nye spillerens profil.
+ *
+ * Server component.
  */
 
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
-
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { SpillerOnboardingWizard } from "./wizard";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { AdminNySpillerV2 } from "@/components/admin/v2/AdminNySpillerV2";
 
-export default async function NySpillerWizardPage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+export const dynamic = "force-dynamic";
+
+export default async function V2SpillerNyPage() {
+  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
   return (
-    <div className="space-y-6">
-      <Link
-        href="/admin/spillere"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.75} />
-        Stallen
-      </Link>
-
-      <SpillerOnboardingWizard />
-    </div>
+    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <AdminNySpillerV2 />
+    </V2Shell>
   );
 }

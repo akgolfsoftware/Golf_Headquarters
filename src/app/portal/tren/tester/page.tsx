@@ -1,185 +1,156 @@
 /**
- * PlayerHQ · Trening · Tester (/portal/tren/tester)
+ * v2-forhåndsvisning — PlayerHQ Tester (retning C). Egen top-level route-group
+ * (v2preview) som IKKE arver PortalShell — kun root-layout. V2Shell leverer
+ * chrome-en (IkonRail/BunnNav), TesterV2 rendrer innholds-stacken.
  *
- * Hybrid-design (2026-06-17): editorial header + filter-chips + 2-kolonne
- * kortgrid (TesterKatalogGrid). Beholder:
- *   - «Tildelt deg» seksjon (TestAssignment OPEN)
- *   - «Siste resultater» seksjon (5 siste TestResult)
- * Kortgridet erstatter den gamle TesterKatalog-listen.
+ * Auth + dataloader gjenbrukt fra den ekte siden (src/app/portal/tren/tester):
+ *   - loadTesterScreen  → scorekort-seksjoner, dekning, fremgang, innsikt
+ *   - TestAssignment    → «Tildelt deg»
+ *   - TestResult (logg) → «Resultater over tid» (Historikk-fanen)
  *
- * Server component. Auth-guard via requirePortalUser.
+ * All mapping til TesterV2Data skjer her (serverside) så klientkomponenten er
+ * ren presentasjon. Ingen fabrikkerte tall — mangler i schemaet vises ærlig.
  */
 
-import Link from "next/link";
-import { Crosshair, Dumbbell, Flag, Target, Trophy } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-import type { PyramidArea } from "@/generated/prisma/client";
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { loadTesterScreen } from "@/lib/portal-tester/tester-data";
-import { MeSub, SetGroup, SetRow, SetVal } from "@/components/portal/meg/meg-sub";
-import { TesterKatalogGrid, type KatalogKort } from "./tester-katalog-grid";
-import { parseForScoring } from "@/lib/portal-tester/test-scoring";
-import { TestUkeKommende } from "@/components/portal/tester/test-uke-kommende";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { TesterV2, type TesterV2Data, type EndringVerdi } from "@/components/portal/v2/TesterV2";
 
 export const dynamic = "force-dynamic";
 
-const OMRADE_IKON: Record<PyramidArea, LucideIcon> = {
-  FYS: Dumbbell,
-  TEK: Crosshair,
-  SLAG: Target,
-  SPILL: Flag,
-  TURN: Trophy,
-};
+const MND_KORT = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
 
 /** Norsk tall-format: maks 2 desimaler, komma som desimalskille. */
 function fmtNum(n: number): string {
-  return (Math.round(n * 100) / 100).toLocaleString("nb-NO", {
-    maximumFractionDigits: 2,
-  });
+  return (Math.round(n * 100) / 100).toLocaleString("nb-NO", { maximumFractionDigits: 2 });
 }
 
-function fmtDato(d: Date): string {
-  return d.toLocaleDateString("nb-NO", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
+function dateLabel(d: Date): string {
+  return `${d.getDate()}. ${MND_KORT[d.getMonth()]}`;
 }
 
-/** Første setning av scoringRule som kort rad-meta. */
-function kortRegel(rule: string): string {
-  const s = rule.trim();
-  const i = s.indexOf(". ");
-  return i === -1 ? s : s.slice(0, i + 1);
+/** Heuristikk (speiler tester-data.tsx): tid/avvik/spredning = lavere er bedre. */
+function deriveLowerIsBetter(scoringRule: string): boolean {
+  const t = scoringRule.toLowerCase();
+  return /(spredning|avvik|sekund|\bsek\b|\bs\b|\btid\b|dispersion|spread|deviation|sideavvik|laser)/.test(t);
 }
 
-export default async function TesterPage() {
-  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+/** Endring mellom to målinger → fortegns-tekst + tone (mennesket avgjør). */
+function endringAv(current: number, previous: number, lowerIsBetter: boolean): EndringVerdi {
+  const raw = current - previous;
+  const improved = lowerIsBetter ? raw < 0 : raw > 0;
+  const worsened = lowerIsBetter ? raw > 0 : raw < 0;
+  const sign = raw > 0 ? "+" : raw < 0 ? "−" : "±";
+  return {
+    text: `${sign}${fmtNum(Math.abs(raw))}`,
+    tone: improved ? "pos" : worsened ? "neg" : "flat",
+  };
+}
 
-  const [screen, siste, tildelinger] = await Promise.all([
-    loadTesterScreen({
-      id: user.id,
-      name: user.name,
-      hcp: user.hcp,
-      tier: user.tier,
-    }),
-    prisma.testResult.findMany({
-      where: { userId: user.id },
-      orderBy: { takenAt: "desc" },
-      take: 5,
-      select: {
-        id: true,
-        score: true,
-        takenAt: true,
-        test: { select: { name: true, pyramidArea: true, protocol: true } },
-      },
-    }),
+export default async function V2TesterPreviewPage() {
+  const user = await requirePortalUser();
+  if (user.role === "PARENT") redirect("/forelder");
+  if (user.role === "GUEST") redirect("/admin/kalender");
+
+  const [screen, tildelinger, resultater] = await Promise.all([
+    loadTesterScreen({ id: user.id, name: user.name, hcp: user.hcp, tier: user.tier }),
     prisma.testAssignment.findMany({
       where: { playerId: user.id, status: "OPEN" },
-      orderBy: { createdAt: "desc" },
-      take: 10,
+      orderBy: [{ dueDate: "asc" }, { createdAt: "desc" }],
+      take: 6,
       select: {
         id: true,
         dueDate: true,
-        test: { select: { id: true, name: true, pyramidArea: true } },
+        note: true,
+        test: { select: { name: true } },
         coach: { select: { name: true } },
+      },
+    }),
+    // Kronologisk logg for Historikk-fanen. asc → beregn endring per test, snu til desc.
+    prisma.testResult.findMany({
+      where: { userId: user.id },
+      orderBy: { takenAt: "asc" },
+      select: {
+        score: true,
+        takenAt: true,
+        test: { select: { name: true, scoringRule: true } },
       },
     }),
   ]);
 
-  /** ID-set for tildelte tester — for å merke kort i grid. */
-  const tildeltIds = new Set(tildelinger.map((a) => a.test.id));
-
-  /** Bygg kortliste fra screen.groups — alle tester i spillerens univers. */
-  const kortliste: KatalogKort[] = screen.groups.flatMap((g) =>
-    g.rows.map((r) => ({
-      id: r.id,
-      name: r.name,
-      axis: g.axis,
-      meta: kortRegel(r.rule),
-      attempts: r.attempts,
-      latestDate: r.latestDate,
-      href: r.href,
-      tildelt: tildeltIds.has(r.id),
+  // ── Scorekort-seksjoner: kun tester med minst ett resultat ────────
+  const seksjoner: TesterV2Data["seksjoner"] = screen.groups
+    .map((g) => ({
+      label: g.label,
+      rader: g.rows
+        .filter((r) => r.attempts > 0)
+        .map((r) => ({
+          test: r.name,
+          res: r.latest,
+          forrige: r.history.length >= 2 ? fmtNum(r.history[r.history.length - 2]) : null,
+          endring: r.delta ? { text: r.delta.text, tone: r.delta.tone } : null,
+        })),
     }))
-  );
+    .filter((s) => s.rader.length > 0);
+
+  // ── Fremgang: tester som ble bedre / har to+ målinger ─────────────
+  const alleRader = screen.groups.flatMap((g) => g.rows.filter((r) => r.attempts > 0));
+  const medEndring = alleRader.filter((r) => r.delta != null);
+  const improvedCount = medEndring.filter((r) => r.delta!.tone === "pos").length;
+
+  // ── Innsikt: mest forbedrede test (reell endring fra history) ─────
+  let innsikt: string | null = null;
+  let bestGain = 0;
+  for (const r of alleRader) {
+    if (r.delta?.tone !== "pos" || r.history.length < 2) continue;
+    const prev = r.history[r.history.length - 2];
+    const last = r.history[r.history.length - 1];
+    const gain = Math.abs(last - prev);
+    if (gain > bestGain) {
+      bestGain = gain;
+      innsikt = `${r.name} gikk fra ${fmtNum(prev)} til ${fmtNum(last)} siden forrige måling — den sterkeste fremgangen din.`;
+    }
+  }
+
+  // ── Tildelt deg ───────────────────────────────────────────────────
+  const kommende = tildelinger.map((a) => ({
+    d: a.dueDate ? dateLabel(a.dueDate) : "—",
+    navn: a.test.name,
+    sub: a.note ? `${a.coach.name} · ${a.note}` : a.coach.name,
+  }));
+
+  // ── Historikk: kronologisk logg, nyeste først, med per-test-endring ─
+  const forrigePerTest = new Map<string, number>();
+  const logg = resultater.map((r) => {
+    const forrige = forrigePerTest.get(r.test.name);
+    const endring =
+      forrige != null ? endringAv(r.score, forrige, deriveLowerIsBetter(r.test.scoringRule)) : null;
+    forrigePerTest.set(r.test.name, r.score);
+    return { d: dateLabel(r.takenAt), navn: r.test.name, poeng: fmtNum(r.score), endring };
+  });
+  const historikk = logg.reverse().slice(0, 12);
+
+  const data: TesterV2Data = {
+    playerName: screen.playerName,
+    hcp: screen.hcp,
+    totalTests: screen.totalTests,
+    testedCount: screen.testedCount,
+    totalAttempts: screen.totalAttempts,
+    lastResultLabel: screen.lastResultLabel,
+    seksjoner,
+    improvedCount,
+    withDeltaCount: medEndring.length,
+    kommende,
+    historikk,
+    innsikt,
+  };
 
   return (
-    <MeSub
-      eyebrow="TREN · TESTER"
-      title="Test"
-      italic="katalog"
-      lead="NGF- og Team Norway-protokoller for hele pyramiden. Finn en test, gjennomfør og følg fremgangen din over tid."
-    >
-      {/* Aktiveres når TestWeek-modell er på plass */}
-      <TestUkeKommende countdown={null} tester={[]} />
-
-      {/* Tildelt deg */}
-      {tildelinger.length > 0 && (
-        <SetGroup label="TILDELT DEG">
-          {tildelinger.map((a) => (
-            <Link
-              key={a.id}
-              href={`/portal/tren/tester/${a.test.id}`}
-              className="flex items-center gap-3.5 border-b border-border px-[18px] py-[15px] transition-colors last:border-b-0 hover:bg-secondary/40"
-            >
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary">
-                {(() => {
-                  const Ikon = OMRADE_IKON[a.test.pyramidArea];
-                  return (
-                    <Ikon
-                      className="h-4 w-4 text-foreground"
-                      strokeWidth={1.5}
-                      aria-hidden
-                    />
-                  );
-                })()}
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-[14px] font-semibold text-foreground">
-                  {a.test.name}
-                </span>
-                <span className="mt-0.5 block truncate font-mono text-[11px] text-muted-foreground">
-                  {a.coach.name}
-                  {a.dueDate ? ` · frist ${fmtDato(a.dueDate)}` : ""}
-                </span>
-              </span>
-              <SetVal>Start</SetVal>
-            </Link>
-          ))}
-        </SetGroup>
-      )}
-
-      {/* Siste resultater */}
-      <SetGroup label="SISTE RESULTATER">
-        {siste.length === 0 ? (
-          <p className="px-[18px] py-6 text-center text-sm text-muted-foreground">
-            Ingen testresultater ennå. Velg en test i katalogen og kom i gang.
-          </p>
-        ) : (
-          siste.map((r) => {
-            const enhet = parseForScoring(r.test.protocol).unit;
-            return (
-              <SetRow
-                key={r.id}
-                icon={OMRADE_IKON[r.test.pyramidArea]}
-                title={r.test.name}
-                meta={fmtDato(r.takenAt)}
-                right={
-                  <SetVal>
-                    {fmtNum(r.score)}
-                    {enhet ? ` ${enhet}` : ""}
-                  </SetVal>
-                }
-              />
-            );
-          })
-        )}
-      </SetGroup>
-
-      {/* Kortgrid med filter-chips — erstatter gammel TesterKatalog-liste */}
-      <TesterKatalogGrid kort={kortliste} />
-    </MeSub>
+    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TesterV2 data={data} />
+    </V2Shell>
   );
 }

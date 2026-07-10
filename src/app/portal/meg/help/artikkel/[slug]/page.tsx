@@ -11,6 +11,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { HJELP_ARTIKLER } from "../../data";
 import { DelKnapp } from "./del-knapp";
 import { ArtikkelFeedback } from "./feedback";
 
@@ -55,7 +56,52 @@ export default async function ArtikkelPage({
   await requirePortalUser();
   const { slug } = await params;
   const a = ARTIKLER[slug];
-  if (!a) notFound();
+
+  // Fallback for artikler som finnes i help-hub-lista (data.ts) men ennå ikke har
+  // fått fullt redaksjonelt innhold her — unngår dødlenke fra MegHelpV2/kategori-sidene.
+  // Ærlig tomrom: ingen fabrikkert brødtekst, kun metadata som faktisk finnes.
+  if (!a) {
+    const meta = HJELP_ARTIKLER.find((x) => x.slug === slug);
+    if (!meta) notFound();
+    return (
+      <div className="mx-auto max-w-[720px] space-y-6 px-4 sm:px-6">
+        <Link
+          href="/portal/meg/help"
+          className="inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
+          Hjelp-hub
+        </Link>
+        <header className="space-y-2">
+          <span className="font-mono text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+            {meta.kategori} · Artikkel · {meta.lesetid} min lesetid
+          </span>
+          <h1 className="font-display text-4xl font-semibold leading-tight tracking-tight">
+            {meta.tittel}
+          </h1>
+        </header>
+        <p className="text-base leading-relaxed text-foreground/90">
+          Denne artikkelen er ikke skrevet ferdig ennå. Ta kontakt med coach-teamet, så hjelper de deg
+          direkte i mellomtiden.
+        </p>
+        <section className="flex flex-wrap gap-2">
+          <Link
+            href="/portal/coach/melding/ny"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          >
+            <MessageSquare className="h-3.5 w-3.5" strokeWidth={2} />
+            Send melding til coach
+          </Link>
+          <Link
+            href="/portal/meg/help"
+            className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-2.5 text-sm font-semibold text-foreground hover:bg-secondary/40"
+          >
+            Tilbake til hjelp-hub
+          </Link>
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto grid max-w-[1240px] gap-12 px-4 sm:px-6 lg:grid-cols-[1fr_220px]">

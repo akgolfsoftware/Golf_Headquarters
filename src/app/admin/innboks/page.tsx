@@ -1,193 +1,27 @@
 /**
- * AgencyOS Innboks (/admin/innboks) — master-detalj med samtale.
+ * v2-preview: AgencyOS Triage / Innboks (retning C). Egen top-level route-group
+ * (v2preview) som IKKE arver AdminShell — kun root-layout — så V2Shell leverer
+ * all chrome (IkonRail/BunnNav) i mørk v2-scope.
  *
- * Tidligere viste denne kun en liste (InnboksListe) og leste aldri ?thread=,
- * så coachen kunne ikke åpne eller svare på en melding. Nå er innboksen den
- * kanoniske meldingsflaten: liste (venstre) + samtale (senter) + kontekst (høyre),
- * via SplitInboxShell. Coachen kan lese og svare (sendMelding) + få AI-utkast.
+ * Auth + data er identisk med cockpit-ruten: samme requirePortalUser-guard
+ * (ADMIN/COACH) og samme loadDailyBrief-loader (køen gjenbrukes, grupperes).
  *
- * /admin/messages 301-redirectes hit (next.config), så alle eldre meldings-lenker
- * lander på denne fungerende flaten. Komponentene gjenbrukes fra messages/_components.
- *
- * Server component. Auth-guard via requirePortalUser (ADMIN/COACH).
+ * Server component.
  */
 
-import Link from "next/link";
-import { Inbox } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
-import { EmptyState } from "@/components/shared/empty-state";
-import { SplitInboxShell } from "@/components/admin/split-inbox-shell";
-import { MessagesInbox } from "../messages/_components/messages-inbox";
-import { Conversation } from "../messages/_components/conversation";
-import { ContextPanel } from "../messages/_components/context-panel";
+import { loadDailyBrief } from "@/lib/agencyos/daily-brief-data";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { TriageV2 } from "@/components/admin/v2/TriageV2";
 
 export const dynamic = "force-dynamic";
 
-type ChatMelding = { role?: string; content?: string; ts?: string };
-type Search = { thread?: string; filter?: string };
-
-function initialer(navn: string): string {
-  return navn
-    .split(/\s+/)
-    .map((d) => d[0] ?? "")
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-}
-
-export default async function InnboksPage({
-  searchParams,
-}: {
-  searchParams: Promise<Search>;
-}) {
-  const me = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
-  const params = await searchParams;
-  const aktivtFilter = (params.filter ?? "alle") as "alle" | "ulest" | "merkede";
-
-  const alleTråder = await prisma.coachingSession.findMany({
-    include: {
-      user: {
-        select: { id: true, name: true, email: true, tier: true, createdAt: true },
-      },
-      coach: { select: { id: true, name: true } },
-    },
-    orderBy: { updatedAt: "desc" },
-    take: 100,
-  });
-
-  // Kun DIRECT-tråder (coach↔spiller/foresatt) i innboksen — AI-samtaler vises på elev-siden.
-  const tråder = alleTråder.filter((t) => t.kind === "DIRECT");
-
-  const beriket = tråder.map((t) => {
-    const meldinger = Array.isArray(t.messages)
-      ? (t.messages as ChatMelding[])
-      : [];
-    const siste = meldinger[meldinger.length - 1];
-    const sistFraSpiller = siste?.role === "user";
-    return {
-      id: t.id,
-      userId: t.user.id,
-      userName: t.user.name,
-      userInitials: initialer(t.user.name),
-      userTier: t.user.tier as string,
-      preview: siste?.content ?? "Ingen meldinger ennå",
-      sisteRolle: siste?.role ?? null,
-      tidspunkt: t.updatedAt,
-      meldingerAntall: meldinger.length,
-      ulest: sistFraSpiller,
-      fromMe: siste?.role === "coach",
-    };
-  });
-
-  const antallUlest = beriket.filter((t) => t.ulest).length;
-  const antallTotal = beriket.length;
-  const filtrerte =
-    aktivtFilter === "ulest" ? beriket.filter((t) => t.ulest) : beriket;
-
-  const aktivId = params.thread ?? filtrerte[0]?.id ?? null;
-  const aktivTråd = aktivId
-    ? alleTråder.find((t) => t.id === aktivId)
-    : null;
-  const aktivMeldinger: ChatMelding[] = aktivTråd
-    ? Array.isArray(aktivTråd.messages)
-      ? (aktivTråd.messages as ChatMelding[])
-      : []
-    : [];
-
-  const aktivSpiller = aktivTråd?.user ?? null;
-  const aktivSpillerHcp = aktivSpiller
-    ? await prisma.user.findUnique({
-        where: { id: aktivSpiller.id },
-        select: { hcp: true, homeClub: true },
-      })
-    : null;
-
+export default async function V2TriagePage() {
+  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const data = await loadDailyBrief({ id: user.id, name: user.name });
   return (
-    <div className="space-y-6">
-      <PageHeader
-        eyebrow="AgencyOS · Meldinger"
-        titleLead="Min"
-        titleItalic="innboks"
-        sub={
-          antallTotal > 0
-            ? `${antallTotal} ${antallTotal === 1 ? "samtale" : "samtaler"}${antallUlest > 0 ? ` · ${antallUlest} ${antallUlest === 1 ? "ulest" : "uleste"}` : ""}`
-            : "Ingen samtaler ennå"
-        }
-      />
-
-      {antallTotal === 0 ? (
-        <EmptyState
-          icon={Inbox}
-          titleItalic="Tomt"
-          titleTrail="i innboksen"
-          sub="Når spillere eller foreldre sender meldinger, dukker de opp her. Du kan også starte en tråd fra en elev-profil."
-          cta={
-            <Link
-              href="/admin/spillere"
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-            >
-              Til spillerlisten
-            </Link>
-          }
-        />
-      ) : (
-        <SplitInboxShell
-          activeKey={aktivTråd && aktivSpiller ? aktivTråd.id : null}
-          backHref="/admin/innboks"
-          left={
-            <MessagesInbox
-              tråder={filtrerte}
-              aktivId={aktivId}
-              aktivtFilter={aktivtFilter}
-              antallAlle={beriket.length}
-              antallUlest={antallUlest}
-            />
-          }
-          center={
-            aktivTråd && aktivSpiller ? (
-              <Conversation
-                threadId={aktivTråd.id}
-                spillerNavn={aktivSpiller.name}
-                spillerInitialer={initialer(aktivSpiller.name)}
-                spillerId={aktivSpiller.id}
-                spillerTier={aktivSpiller.tier as string}
-                meldinger={aktivMeldinger}
-                meId={me.id}
-                meName={me.name}
-                meInitialer={initialer(me.name)}
-              />
-            ) : (
-              <div className="flex items-center justify-center border-l border-border bg-background">
-                <p className="text-sm text-muted-foreground">
-                  Velg en samtale fra listen
-                </p>
-              </div>
-            )
-          }
-          right={
-            aktivTråd && aktivSpiller ? (
-              <ContextPanel
-                spiller={{
-                  id: aktivSpiller.id,
-                  navn: aktivSpiller.name,
-                  initialer: initialer(aktivSpiller.name),
-                  tier: aktivSpiller.tier as string,
-                  hcp: aktivSpillerHcp?.hcp ?? null,
-                  homeClub: aktivSpillerHcp?.homeClub ?? null,
-                  medlemsSiden: aktivSpiller.createdAt,
-                }}
-                meldingerAntall={aktivMeldinger.length}
-                sistOppdatert={aktivTråd.updatedAt}
-              />
-            ) : (
-              <div className="border-l border-border bg-secondary/40" />
-            )
-          }
-        />
-      )}
-    </div>
+    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TriageV2 data={data} />
+    </V2Shell>
   );
 }

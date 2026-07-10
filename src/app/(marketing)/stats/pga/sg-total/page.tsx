@@ -12,6 +12,7 @@ import type { Metadata } from "next";
 import { getPgaTopN, getPgaTourAverage } from "@/lib/stats/pga-sync";
 import { PgaKategoriDetaljPage } from "@/components/stats/pga-kategori-page";
 import type { RelatertKategori } from "@/components/stats/pga-kategori-page";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const revalidate = 3600;
 
@@ -52,6 +53,7 @@ export default async function SgTotalPage() {
   }));
 
   return (
+    <StatsLegacyShell>
     <div className="pga-page bg-background text-foreground">
       <PgaKategoriDetaljPage
         config={{
@@ -86,5 +88,6 @@ export default async function SgTotalPage() {
         antallSpillere={snittData.count}
       />
     </div>
+    </StatsLegacyShell>
   );
 }

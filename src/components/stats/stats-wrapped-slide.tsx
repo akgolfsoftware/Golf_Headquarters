@@ -6,6 +6,7 @@
  */
 
 import { CountUp } from "./count-up";
+import { T } from "@/lib/v2/tokens";
 
 export type SlideType =
   | "intro"
@@ -110,22 +111,30 @@ export type WrappedSlideData =
   | SammenligningSlide
   | AvslutningSlide;
 
+// Fargene under er BEVISST hardkodet, ikke tema-tokens: hvert "wrapped"-kort
+// har sin egen faste fargeidentitet (photo-card-estetikk) uavhengig av
+// lys/mørk app-tema. De erstatter tidligere hsl(var(--background))/
+// hsl(var(--foreground)) — som i praksis alltid resolvet til disse samme
+// verdiene i det (lys-only) legacy-appen, men som ville blitt INVERTERT
+// under v2s mørke adapter-scope (der --background/--foreground er byttet om).
+// Selve hex-verdiene bor i T.wrapped (src/lib/v2/tokens.ts) så denne fila
+// forblir hex-fri.
 const BG_STYLES: Record<string, React.CSSProperties> = {
   forest: {
-    background: "linear-gradient(160deg, #005840 0%, #003D2C 100%)",
-    color: "hsl(var(--background))",
+    background: T.wrapped.bgForest,
+    color: T.wrapped.textOnDark,
   },
   "forest-dark": {
-    background: "linear-gradient(160deg, #002A1A 0%, #001510 100%)",
-    color: "hsl(var(--background))",
+    background: T.wrapped.bgForestDark,
+    color: T.wrapped.textOnDark,
   },
   lime: {
-    background: "linear-gradient(160deg, #D1F843 0%, #B8E020 100%)",
-    color: "hsl(var(--foreground))",
+    background: T.wrapped.bgLime,
+    color: T.wrapped.textOnLight,
   },
   offwhite: {
-    background: "linear-gradient(160deg, #FAFAF7 0%, #F1EEE5 100%)",
-    color: "hsl(var(--foreground))",
+    background: T.wrapped.bgOffwhite,
+    color: T.wrapped.textOnLight,
   },
 };
 
@@ -137,7 +146,7 @@ interface StatsWrappedSlideProps {
 
 export function StatsWrappedSlide({ slide, isActive, delLenke }: StatsWrappedSlideProps) {
   const bgStyle = BG_STYLES[slide.bgVariant] ?? BG_STYLES.forest;
-  const accentColor = slide.bgVariant === "lime" ? "hsl(var(--primary))" : "hsl(var(--accent))";
+  const accentColor = slide.bgVariant === "lime" ? T.forest : T.lime;
   const mutedColor =
     slide.bgVariant === "lime"
       ? "rgba(10,31,23,0.6)"
@@ -449,7 +458,7 @@ function SlideSammenligning({ slide, accentColor, mutedColor }: { slide: Sammenl
         width: 96, height: 96,
         borderRadius: "50%",
         background: accentColor,
-        color: slide.bgVariant === "lime" ? "hsl(var(--primary))" : "hsl(var(--foreground))",
+        color: slide.bgVariant === "lime" ? T.forest : T.wrapped.textOnLight,
         display: "grid",
         placeItems: "center",
         fontFamily: "var(--font-mono)",
@@ -499,7 +508,7 @@ function SlideAvslutning({ slide, accentColor, mutedColor, delLenke }: { slide: 
             padding: "14px 28px",
             borderRadius: 999,
             background: accentColor,
-            color: slide.bgVariant === "lime" ? "hsl(var(--primary))" : "hsl(var(--foreground))",
+            color: slide.bgVariant === "lime" ? T.forest : T.wrapped.textOnLight,
             fontWeight: 600,
             fontSize: 15,
             fontFamily: "inherit",

@@ -1,23 +1,22 @@
 /**
- * PlayerHQ Coach Videoer (/portal/coach/videoer) — hybrid-design 2026-06-17.
+ * v2-forhåndsvisning — PlayerHQ Coach-videoer (retning C). Egen top-level
+ * route-group (v2preview) som IKKE arver PortalShell — kun root-layout.
+ * V2Shell leverer chrome-en (IkonRail/BunnNav), CoachVideoerV2 innholds-stacken.
  *
- * Videokort med forest-gradient header, lime play-ikon, mono-meta.
- * Matcher fasit B5 · Innhold (Videoer-fane). Data-henting uendret.
+ * Auth + dataloader gjenbruker den ekte /portal/coach/videoer-siden 1:1:
+ * requirePortalUser (PLAYER/COACH/ADMIN) + prisma.sessionVideo (status READY,
+ * spillerens egne, nyeste først).
  */
 
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { Eyebrow } from "@/components/athletic/golfdata";
-import { PlayerVideoCard } from "./player-video-card";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { CoachVideoerV2, type CoachVideoerData } from "@/components/portal/v2/CoachVideoerV2";
 
 export const dynamic = "force-dynamic";
 
-export default async function VideoerPage() {
-  const user = await requirePortalUser({
-    allow: ["PLAYER", "COACH", "ADMIN"],
-  });
+export default async function V2CoachVideoerPreviewPage() {
+  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
 
   const videos = await prisma.sessionVideo.findMany({
     where: { playerId: user.id, status: "READY" },
@@ -25,73 +24,21 @@ export default async function VideoerPage() {
     orderBy: { createdAt: "desc" },
   });
 
+  const data: CoachVideoerData = {
+    videoer: videos.map((v) => ({
+      id: v.id,
+      title: v.title,
+      tag: v.tag,
+      thumbnailUrl: v.thumbnailUrl,
+      durationSec: v.durationSec,
+      createdAt: v.createdAt,
+      coachName: v.coach.name,
+    })),
+  };
+
   return (
-    <div className="golfdata-scope mx-auto w-full max-w-[460px] px-4 pb-8 pt-3 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
-
-      {/* Tilbake */}
-      <div className="mb-3">
-        <Link
-          href="/portal/coach"
-          className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Coach
-        </Link>
-      </div>
-
-      {/* Header */}
-      <div className="mb-4">
-        <Eyebrow tone="default" className="mb-2.5 block">
-          Coach · Videoer
-        </Eyebrow>
-        <h1 className="font-display text-[29px] font-bold leading-[1.05] tracking-[-0.035em] text-foreground">
-          Videoer fra
-          <em className="font-medium italic text-primary"> Anders</em>
-        </h1>
-      </div>
-
-      {/* Liste */}
-      {videos.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border bg-card p-8 text-center">
-          {/* Forest-gradient placeholder — tomt state */}
-          <div
-            className="relative mx-auto mb-4 flex h-[60px] w-[60px] items-center justify-center rounded-xl"
-            style={{ background: "linear-gradient(150deg,#2f5a2c,#0a2417)" }}
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden
-            >
-              <polygon points="5 3 19 12 5 21 5 3" fill="#D1F843" />
-            </svg>
-          </div>
-          <p className="font-display text-[15px] font-semibold text-foreground">
-            Ingen videoer ennå
-          </p>
-          <p className="mt-1 text-[13px] text-muted-foreground">
-            Coachen din kan dele swing-analyser, drill-demo og kamp-feedback her.
-          </p>
-        </div>
-      ) : (
-        <div className="px-3 md:px-0">
-          <ul className="flex flex-col gap-2.5">
-            {videos.map((v) => (
-              <PlayerVideoCard
-                key={v.id}
-                id={v.id}
-                title={v.title}
-                tag={v.tag}
-                notes={v.notes}
-                createdAt={v.createdAt}
-                coachName={v.coach.name}
-              />
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <CoachVideoerV2 data={data} />
+    </V2Shell>
   );
 }

@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowUpRight, Loader2, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { sendMelding } from "@/app/admin/messages/actions";
+import { sendMelding } from "@/app/admin/(legacy)/messages/actions";
 import type { InboxMessage } from "./inbox-screen";
 
 export function InboxConversation({

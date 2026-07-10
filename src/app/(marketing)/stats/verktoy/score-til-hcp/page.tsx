@@ -1,14 +1,8 @@
 /**
- * /stats/verktoy/score-til-hcp
- *
- * Input: snittscore slider → output: estimert HCP + kontekst.
- * Bruker hcpFromAvgScore() fra sg-estimator.ts.
- * Client component (interaktiv slider).
+ * /stats/verktoy/score-til-hcp — v2. Swap av (mlegacy)-motparten.
  */
-
-import "../../stats.css";
 import type { Metadata } from "next";
-import { ScoreTilHcpClient } from "./client";
+import { ScoreTilHcpV2 } from "@/components/marketing/v2/MarkedStatsVerktoyV2";
 
 export const revalidate = 86400;
 
@@ -25,5 +19,5 @@ export const metadata: Metadata = {
 };
 
 export default function ScoreTilHcpPage() {
-  return <ScoreTilHcpClient />;
+  return <ScoreTilHcpV2 />;
 }

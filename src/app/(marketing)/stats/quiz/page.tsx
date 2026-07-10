@@ -4,9 +4,10 @@
  */
 
 import type { Metadata } from "next";
-import "../../stats/stats.css";
+import "@/app/(marketing)/(mlegacy)/stats/stats.css";
 import "./quiz.css";
 import { QuizShell } from "./quiz-shell";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const metadata: Metadata = {
   title: "Golf-statistikk quiz | AK Golf Stats",
@@ -20,8 +21,10 @@ export const metadata: Metadata = {
 
 export default function QuizPage() {
   return (
+    <StatsLegacyShell>
     <main className="stats-quiz-wrap">
       <QuizShell />
     </main>
+    </StatsLegacyShell>
   );
 }

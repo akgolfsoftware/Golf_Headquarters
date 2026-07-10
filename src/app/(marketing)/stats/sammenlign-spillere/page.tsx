@@ -15,7 +15,8 @@ import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { Reveal } from "@/components/stats/reveal";
 import { SammenlignResultat } from "./resultat";
 import { SpillerSok } from "./spiller-sok";
-import "../stats.css";
+import "@/app/(marketing)/(mlegacy)/stats/stats.css";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const dynamic = "force-dynamic";
 
@@ -78,6 +79,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
   });
 
   return (
+    <StatsLegacyShell>
     <div className="bg-background text-foreground">
 
       {/* ── HERO ─────────────────────────────────────────────────── */}
@@ -432,6 +434,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
         </section>
       )}
     </div>
+    </StatsLegacyShell>
   );
 }
 

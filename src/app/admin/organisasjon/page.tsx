@@ -1,148 +1,121 @@
 /**
- * /admin/organisasjon — AgencyOS Admin hub
- * Design: hubs-coach.jsx (CoachAdmin)
+ * v2-preview: AgencyOS Organisasjon (retning C). Egen top-level route-group
+ * (v2preview) som IKKE arver AdminShell — kun root-layout — så V2Shell leverer
+ * all chrome (IkonRail/BunnNav) i mørk v2-scope.
+ *
+ * Auth + data samler de ekte organisasjons-flatene (/admin/organisasjon,
+ * /admin/settings, /admin/klubb/innstillinger): samme requirePortalUser-guard
+ * (ADMIN/COACH) og ekte Prisma-loader (location + facilities, ClubSettings-
+ * singelton, ADMIN/COACH-brukere med gruppene sine). Mapper til AdminOrgV2Data
+ * med ærlige tomrom — «—» der et felt mangler, aldri fabrikerte tall.
+ *
+ * Server component.
  */
 
-import {
-  Bot,
-  Building,
-  Mail,
-  Plug,
-  Settings,
-  Shield,
-  User,
-  Users,
-} from "lucide-react";
-import { requireCapability } from "@/lib/auth/requireCapability";
-import { Capability } from "@/lib/auth/cbac";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import {
-  HubFrame,
-  HubHeader,
-  HubStatSep,
-  HubCard,
-  HubPill,
-} from "@/components/hubs";
-import { InnstillingerButton } from "./organisasjon-actions";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { AdminOrgV2, type AdminOrgV2Data } from "@/components/admin/v2/AdminOrgV2";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Organisasjon · AgencyOS (v2)" };
 
-export default async function OrganisasjonPage() {
-  await requireCapability(Capability.MANAGE_USERS);
+const TOM = "—";
 
-  // Ekte tellinger fra DB. Aldri fabrikerte tall.
-  const [coachCount, adminCount] = await Promise.all([
-    prisma.user.count({ where: { role: "COACH", deletedAt: null } }),
-    prisma.user.count({ where: { role: "ADMIN", deletedAt: null } }),
+/** Ærlige tilgangs-etiketter (samme som /admin/settings — ingen persistert av/på). */
+const TILGANGSRADER = [
+  "Spillere ser egen data",
+  "Foreldre-tilgang (junior)",
+  "Coacher ser hele stallen",
+  "WAGR-synk automatisk",
+  "Faktura synlig for spiller",
+];
+
+/** Snarveier til organisasjonens undersider — ekte ruter, ingen fabrikerte tall. */
+const HANDLINGER: AdminOrgV2Data["handlinger"] = [
+  { icon: "plug", tittel: "Integrasjoner", sub: "Se status og koble tjenester", href: "/admin/integrasjoner" },
+  { icon: "bot", tittel: "AI-agenter", sub: "Caddie · Plan-bygger · Drill-foreslår", href: "/admin/agents" },
+  { icon: "mail", tittel: "E-postmaler", sub: "Velkomst · Faktura · Booking · Reminder", href: "/admin/email-templates" },
+  { icon: "shield", tittel: "Audit-log", sub: "Sikkerhetshendelser og systemspor", href: "/admin/audit-log" },
+  { icon: "settings", tittel: "Innstillinger", sub: "Varsler · Personvern · Språk · Branding", href: "/admin/settings" },
+  { icon: "user", tittel: "Min profil", sub: "Konto, rolle og kontaktinfo", href: "/admin/profile" },
+];
+
+export default async function V2AdminOrgPage() {
+  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+
+  const [locations, settingsRow, teamBrukere] = await Promise.all([
+    prisma.location.findMany({
+      select: {
+        id: true,
+        name: true,
+        address: true,
+        active: true,
+        _count: { select: { facilities: true } },
+      },
+      orderBy: { name: "asc" },
+    }),
+    prisma.clubSettings.findFirst(),
+    prisma.user.findMany({
+      where: { role: { in: ["ADMIN", "COACH"] }, deletedAt: null },
+      select: {
+        id: true,
+        name: true,
+        role: true,
+        coachedGroups: { select: { members: { select: { userId: true } } } },
+      },
+      orderBy: [{ role: "asc" }, { name: "asc" }],
+    }),
   ]);
 
-  return (
-    <HubFrame>
-      <HubHeader
-        eyebrow="AGENCYOS · HEAD COACH"
-        title="Organisasjon"
-        sub="Klubb, team, integrasjoner og innstillinger."
-        actions={
-          <InnstillingerButton />
-        }
-        stats={
-          <>
-            <span>
-              <strong>{coachCount}</strong> coacher · <strong>{adminCount}</strong> admin
-            </span>
-            <HubStatSep />
-            <span>
-              <strong>—</strong> integrasjoner
-            </span>
-          </>
-        }
-      />
+  // ── Klubb-info fra ClubSettings-singelton (tomt felt → «—») ────
+  const klubbInfo: AdminOrgV2Data["klubbInfo"] = {
+    navn: settingsRow?.clubName || TOM,
+    orgNr: settingsRow?.orgNr || TOM,
+    dagligLeder: settingsRow?.dagligLeder || TOM,
+    epost: settingsRow?.epost || TOM,
+    telefon: settingsRow?.telefon || TOM,
+    adresse: settingsRow?.adresse || TOM,
+  };
 
-      <section className="hub-grid">
-        <HubCard
-          href="/admin/klubb/innstillinger"
-          icon={Building}
-          eyebrow="01 · IDENTITET"
-          title="Klubb-info"
-          data="—"
-          sub="Ikke registrert ennå"
-          cta="Rediger →"
-        />
-        <HubCard
-          href="/admin/team"
-          icon={Users}
-          eyebrow="02 · TEAM"
-          title="Team"
-          data={`${coachCount} coacher · ${adminCount} admin`}
-          sub="Administrer roller og tilganger"
-          cta="Administrer →"
-        />
-        <HubCard
-          href="/admin/integrasjoner"
-          icon={Plug}
-          eyebrow="03 · KOBLINGER"
-          title="Integrasjoner"
-          data="—"
-          sub="Se status og koble tjenester"
-          cta="Koble →"
-        />
-        <HubCard
-          href="/admin/settings"
-          icon={Settings}
-          eyebrow="04 · KONFIG"
-          title="Innstillinger"
-          data="Sist endret 22. mai"
-          sub="Varsler · Personvern · Språk · Branding"
-          cta="Åpne →"
-        />
-        <HubCard
-          href="/admin/agents"
-          icon={Bot}
-          eyebrow="05 · AGENTER"
-          title="AI-agenter"
-          data="3 aktive"
-          sub="Caddie · Plan-bygger · Drill-foreslår"
-          statusPill={
-            <HubPill kind="accent" dot="d-pulse">
-              3 LIVE
-            </HubPill>
-          }
-          cta="Konfigurer →"
-        />
-        <HubCard
-          href="/admin/email-templates"
-          icon={Mail}
-          eyebrow="06 · MAL"
-          title="E-postmaler"
-          data="12 maler"
-          sub="Velkomst · Faktura · Booking · Reminder"
-          cta="Bla →"
-        />
-        <HubCard
-          href="/admin/audit-log"
-          icon={Shield}
-          eyebrow="07 · SIKKERHET"
-          title="Audit-log"
-          data="Siste hendelse 04:12"
-          sub="24. mai · API-key rotert (auto)"
-          statusPill={
-            <HubPill kind="ok" dot="d-ok">
-              REN
-            </HubPill>
-          }
-          cta="Se aktivitet →"
-        />
-        <HubCard
-          href="/admin/profile"
-          icon={User}
-          eyebrow="08 · MEG"
-          title="Min profil"
-          data="Anders K. · Head Coach"
-          sub="Tilgjengelig · pro@akgolf.no"
-          statusPill={<HubPill kind="tier">HEAD</HubPill>}
-          cta="Rediger →"
-        />
-      </section>
-    </HubFrame>
+  const klubber = locations.map((l) => ({
+    id: l.id,
+    navn: l.name,
+    adresse: l.address,
+    aktiv: l.active,
+    fasiliteter: l._count.facilities,
+  }));
+
+  const team = teamBrukere.map((c) => {
+    const unike = new Set<string>();
+    for (const g of c.coachedGroups) for (const m of g.members) unike.add(m.userId);
+    return {
+      id: c.id,
+      navn: c.name,
+      rolle: c.role === "ADMIN" ? "Head coach" : "Coach",
+      spillere: unike.size,
+      eier: c.role === "ADMIN",
+    };
+  });
+
+  const totalFasiliteter = klubber.reduce((sum, k) => sum + k.fasiliteter, 0);
+  const coacher = teamBrukere.filter((c) => c.role === "COACH").length;
+  const admin = teamBrukere.filter((c) => c.role === "ADMIN").length;
+
+  const data: AdminOrgV2Data = {
+    klubbInfo,
+    redigerHref: "/admin/klubb/innstillinger",
+    kpis: { klubber: klubber.length, fasiliteter: totalFasiliteter, coacher, admin },
+    klubber,
+    team,
+    handlinger: HANDLINGER,
+    tilgangRader: TILGANGSRADER,
+    tilgangHref: "/admin/settings/tilgang",
+  };
+
+  return (
+    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <AdminOrgV2 data={data} />
+    </V2Shell>
   );
 }

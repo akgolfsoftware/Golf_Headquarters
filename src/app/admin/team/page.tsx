@@ -1,25 +1,28 @@
 /**
- * AgencyOS — Team
+ * v2-preview: AgencyOS Team (retning C). Egen top-level route-group
+ * (v2preview) som IKKE arver AdminShell — kun root-layout — så V2Shell
+ * leverer all chrome (IkonRail/BunnNav) i mørk v2-scope.
  *
- * Card-grid med 2 kolonner (mobile 1), avatar i sirkel, rolle-tags,
- * 3-felts stats (Spillere/Tilgj./Sert.), handlinger nederst.
+ * Auth + data følger den ekte /admin/team-flaten: coach-/admin-roster med
+ * antall grupper og tidsvinduer, samt total spillerfordeling. Auth via
+ * requirePortalUser (ADMIN/COACH). Ingen fabrikerte tall — kun Prisma.
+ *
+ * Server component.
  */
 
-import Link from "next/link";
-import { Mail, Search, UserPlus, Users } from "lucide-react";
-import { requireCapability } from "@/lib/auth/requireCapability";
-import { Capability } from "@/lib/auth/cbac";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
-import { EmptyState } from "@/components/shared/empty-state";
-import type { UserGetPayload } from "@/generated/prisma/models/User";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import {
+  AdminTeamV2,
+  type AdminTeamV2Data,
+  type AdminTeamV2Member,
+} from "@/components/admin/v2/AdminTeamV2";
 
-type TeamMember = UserGetPayload<{
-  include: { _count: { select: { coachedGroups: true; coachAvailability: true } } };
-}>;
+export const dynamic = "force-dynamic";
 
-export default async function TeamAdmin() {
-  await requireCapability(Capability.MANAGE_USERS);
+export default async function V2AdminTeamPage() {
+  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
   const team = await prisma.user.findMany({
     where: { role: { in: ["COACH", "ADMIN"] } },
@@ -29,269 +32,38 @@ export default async function TeamAdmin() {
     orderBy: [{ role: "asc" }, { name: "asc" }],
   });
 
-  // Tellinger for KPI
+  const totalSpillere = await prisma.user.count({ where: { role: "PLAYER" } });
+
   const totalCount = team.length;
   const adminCount = team.filter((u) => u.role === "ADMIN").length;
   const coachCount = team.filter((u) => u.role === "COACH").length;
-
-  // Spillerfordeling — totalt antall PLAYER-spillere som referanse-tall.
-  // I et fremtidig coach-spiller-mapping ville vi delt opp per coach.
-  const totalSpillere = await prisma.user.count({ where: { role: "PLAYER" } });
   const snittSpillere =
-    totalCount > 0 ? (totalSpillere / totalCount).toFixed(1).replace(".", ",") : "—";
+    totalCount > 0
+      ? (totalSpillere / totalCount).toFixed(1).replace(".", ",")
+      : "—";
+
+  const medlemmer: AdminTeamV2Member[] = team.map((u) => ({
+    id: u.id,
+    navn: u.name ?? "Uten navn",
+    epost: u.email,
+    rolle: u.role === "ADMIN" ? "ADMIN" : "COACH",
+    grupper: u._count.coachedGroups,
+    tidsvinduer: u._count.coachAvailability,
+  }));
+
+  const data: AdminTeamV2Data = {
+    medlemmer,
+    totalCount,
+    adminCount,
+    coachCount,
+    totalSpillere,
+    snittSpillere,
+    inviterHref: "/admin/team/inviter",
+  };
 
   return (
-    <div className="space-y-6">
-      <PageHeader
-        eyebrow={`AgencyOS · /admin/team`}
-        titleLead={`${totalCount}`}
-        titleItalic="coacher"
-        titleTrail={`· ${totalSpillere} spillere fordelt`}
-        sub={`AK Golf Group · Snitt ${snittSpillere} spillere per coach.`}
-        actions={
-          <Link
-            href="/admin/team/inviter"
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            <UserPlus size={14} strokeWidth={1.75} />
-            Inviter coach
-          </Link>
-        }
-      />
-
-      {/* KPI-strip */}
-      <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
-        <Kpi
-          accent
-          label="Aktive coacher"
-          value={String(totalCount)}
-          sub={`${adminCount} admin · ${coachCount} coach`}
-        />
-        <Kpi
-          label="Spillere fordelt"
-          value={String(totalSpillere)}
-          sub={`snitt ${snittSpillere} / coach`}
-        />
-        <Kpi
-          label="Roller"
-          value={String(adminCount)}
-          unit={`/ ${totalCount}`}
-          sub="Admin-tilgang"
-        />
-        <Kpi
-          label="Coacher"
-          value={String(coachCount)}
-          sub="Med spiller-tilgang"
-        />
-      </div>
-
-      {/* Søk */}
-      <form className="flex flex-wrap items-center gap-2">
-        <label className="flex flex-1 min-w-[260px] items-center gap-2 rounded-full border border-input bg-card px-4 py-2 text-[13px] text-muted-foreground">
-          <Search size={14} strokeWidth={1.75} />
-          <input
-            type="search"
-            name="q"
-            placeholder="Søk etter teammedlem..."
-            readOnly
-            className="flex-1 bg-transparent outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
-          />
-        </label>
-      </form>
-
-      {/* Body */}
-      {team.length === 0 ? (
-        <EmptyState
-          icon={Users}
-          titleItalic="Bare deg"
-          titleTrail="så langt"
-          sub="Inviter din første coach — de får en e-post med oppsett-link og kan logge inn umiddelbart."
-          cta={
-            <Link
-              href="/admin/team/inviter"
-              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-            >
-              <UserPlus size={16} strokeWidth={1.75} />
-              Inviter coach
-            </Link>
-          }
-        />
-      ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {team.map((u) => (
-            <CoachCard key={u.id} member={u} />
-          ))}
-        </div>
-      )}
-
-      <p className="text-[12px] text-muted-foreground">
-        Inviterte coacher får en e-post med innloggingslink. Authentisering går
-        via Supabase Auth ved første innlogging.
-      </p>
-    </div>
+    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <AdminTeamV2 data={data} />
+    </V2Shell>
   );
-}
-
-// ----------------- Komponenter -----------------
-
-function CoachCard({ member }: { member: TeamMember }) {
-  const isAdmin = member.role === "ADMIN";
-  const roleLabel = isAdmin ? "Admin" : "Coach";
-  const subRole = isAdmin ? "Administrator" : "Coach";
-
-  return (
-    <article className="group flex flex-col items-center gap-4 rounded-2xl border border-border bg-card p-6 text-center transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-lg">
-      <div
-        className="grid h-24 w-24 place-items-center rounded-full font-display text-[32px] font-bold text-white"
-        style={{ background: avatarBg(member.name) }}
-      >
-        {initials(member.name)}
-      </div>
-      <div>
-        <div className="font-display text-lg font-semibold leading-tight">
-          {member.name}
-        </div>
-        <div className="mt-0.5 text-[13px] text-muted-foreground">{subRole}</div>
-      </div>
-      <div className="flex flex-wrap justify-center gap-1.5">
-        <span
-          className={`rounded-sm px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.04em] ${
-            isAdmin
-              ? "bg-primary/15 text-primary"
-              : "bg-secondary text-muted-foreground"
-          }`}
-        >
-          {roleLabel}
-        </span>
-      </div>
-      <div className="grid w-full grid-cols-3 gap-2 border-y border-border py-4">
-        <Stat label="Grupper" value={String(member._count.coachedGroups)} />
-        <Stat
-          label="Tidsvinduer"
-          value={String(member._count.coachAvailability)}
-        />
-        <Stat label="E-post" value={shortEmail(member.email)} small />
-      </div>
-      <div className="flex w-full gap-1.5">
-        <a
-          href={`mailto:${member.email}`}
-          className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md bg-primary px-4 py-1.5 text-[12px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
-        >
-          <Mail size={13} strokeWidth={1.75} />
-          Send e-post
-        </a>
-      </div>
-    </article>
-  );
-}
-
-function Stat({
-  label,
-  value,
-  small,
-}: {
-  label: string;
-  value: string;
-  small?: boolean;
-}) {
-  return (
-    <div className="flex flex-col gap-0.5">
-      <span className="font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground">
-        {label}
-      </span>
-      <span
-        className={`font-mono font-semibold tabular-nums text-foreground ${small ? "text-[11px]" : "text-lg"}`}
-      >
-        {value}
-      </span>
-    </div>
-  );
-}
-
-function Kpi({
-  label,
-  value,
-  unit,
-  sub,
-  accent,
-}: {
-  label: string;
-  value: string;
-  unit?: string;
-  sub?: string;
-  accent?: boolean;
-}) {
-  return (
-    <div
-      className={`flex flex-col gap-1.5 rounded-lg border p-4 ${
-        accent
-          ? "border-transparent bg-gradient-to-br from-foreground to-foreground/90 text-white"
-          : "border-border bg-card"
-      }`}
-    >
-      <div
-        className={`font-mono text-[10px] font-semibold uppercase tracking-[0.06em] ${
-          accent ? "text-lime/70" : "text-muted-foreground"
-        }`}
-      >
-        {label}
-      </div>
-      <div
-        className={`font-mono text-[28px] font-semibold leading-none tabular-nums ${
-          accent ? "text-white" : "text-foreground"
-        }`}
-      >
-        {value}
-        {unit && (
-          <span
-            className={`ml-1 text-[13px] font-medium ${
-              accent ? "text-[rgba(245,244,238,0.5)]" : "text-muted-foreground"
-            }`}
-          >
-            {unit}
-          </span>
-        )}
-      </div>
-      {sub && (
-        <div
-          className={`font-mono text-[11px] ${
-            accent ? "text-[rgba(245,244,238,0.7)]" : "text-muted-foreground"
-          }`}
-        >
-          {sub}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ----------------- Helpers -----------------
-
-function initials(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 0) return "?";
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
-
-// Deterministisk avatar-gradient per navn-hash.
-// Refererer til CSS-tokens definert i src/app/globals.css (--gradient-avatar-1..8).
-function avatarBg(name: string): string {
-  const palette = [
-    "var(--gradient-avatar-1)",
-    "var(--gradient-avatar-3)",
-    "var(--gradient-avatar-7)",
-    "var(--gradient-avatar-5)",
-    "var(--gradient-avatar-6)",
-  ];
-  let h = 0;
-  for (let i = 0; i < name.length; i++) {
-    h = (h * 31 + name.charCodeAt(i)) >>> 0;
-  }
-  return palette[h % palette.length];
-}
-
-function shortEmail(email: string): string {
-  const local = email.split("@")[0] ?? email;
-  return local.length > 12 ? `${local.slice(0, 11)}…` : local;
 }

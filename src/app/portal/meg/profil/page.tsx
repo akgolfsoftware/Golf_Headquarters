@@ -1,52 +1,63 @@
 /**
- * PlayerHQ · Meg · Rediger profil (/portal/meg/profil) — portet FRA fersk
- * Claude Design-fasit: ph-screens.jsx (ProfilScreen) via MeSub-skallet.
+ * v2 — PlayerHQ Min profil (retning C). V2Shell leverer chrome-en
+ * (IkonRail/BunnNav), MinProfilV2 rendrer innholds-stacken.
  *
- * Avatar 72px + «Bytt bilde» (ekte opplasting via lib/storage/avatar) →
- * skjema-grid (1 kol mobil / 2 kol md) → «Lagre endringer» + «Avbryt».
- * EKTE Prisma-data: navn/e-post/telefon/hcp/hjemmeklubb fra User, gruppe via
- * GroupMember-relasjonen (coach-styrt, read-only). Dominant hånd finnes ikke
- * i Prisma User — vises som tomt placeholder-felt (lagres ikke).
- *
- * Server component. Auth-guard via requirePortalUser. Lagring gjenbruker
- * oppdaterProfil-server-action (../actions.ts).
+ * Auth + dataloader gjenbruker den ekte /portal/meg-profilkilden: hentProfil
+ * for navn/avatar/HCP/klubb/fødselsår, og User-samtykkefeltene (GDPR art. 8)
+ * for foreldresamtykke-raden. Ingen fabrikkerte felter.
  */
 
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { hentProfil } from "@/app/portal/meg/actions";
 import { prisma } from "@/lib/prisma";
-import { MeSub } from "@/components/portal/meg/meg-sub";
-import { ProfilRedigerForm } from "./profil-rediger-form";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { MinProfilV2, type MinProfilData } from "@/components/portal/v2/MinProfilV2";
 
 export const dynamic = "force-dynamic";
 
 export default async function ProfilPage() {
   const user = await requirePortalUser();
+  if (user.role === "PARENT") redirect("/forelder");
+  if (user.role === "GUEST") redirect("/admin/kalender");
 
-  // Gruppe er en relasjon (GroupMember → Group), ikke et User-felt.
-  const medlemskap = await prisma.groupMember.findFirst({
-    where: { userId: user.id },
-    orderBy: { joinedAt: "asc" },
-    select: { group: { select: { name: true } } },
+  const profil = await hentProfil();
+
+  // Foreldresamtykke — reelle felter på User (ikke i ProfileData).
+  const consent = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: {
+      requiresGuardianConsent: true,
+      guardianConsentGivenAt: true,
+      guardianConsentByUserId: true,
+    },
   });
+  const guardian = consent?.guardianConsentByUserId
+    ? await prisma.user.findUnique({
+        where: { id: consent.guardianConsentByUserId },
+        select: { name: true },
+      })
+    : null;
+
+  const fodselsaar = profil.user.dateOfBirth ? new Date(profil.user.dateOfBirth).getFullYear() : null;
+
+  const data: MinProfilData = {
+    navn: profil.user.name,
+    avatarUrl: profil.user.avatarUrl,
+    epost: profil.user.email,
+    hcp: profil.user.hcp,
+    homeClub: profil.user.homeClub,
+    fodselsaar,
+    samtykke: {
+      kreves: consent?.requiresGuardianConsent ?? false,
+      godkjentISO: consent?.guardianConsentGivenAt ? consent.guardianConsentGivenAt.toISOString() : null,
+      godkjentAvNavn: guardian?.name ?? null,
+    },
+  };
 
   return (
-    <MeSub
-      eyebrow="MEG · PROFIL"
-      title="Rediger"
-      italic="profil."
-      lead="Dette ser coachen din og vises på topplister."
-    >
-      <ProfilRedigerForm
-        initial={{
-          name: user.name,
-          email: user.email,
-          phone: user.phone ?? "",
-          hcp: user.hcp,
-          homeClub: user.homeClub ?? "",
-          gruppe: medlemskap?.group.name ?? "",
-          avatarUrl: user.avatarUrl,
-        }}
-      />
-    </MeSub>
+    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={data.navn} avatarUrl={data.avatarUrl}>
+      <MinProfilV2 data={data} />
+    </V2Shell>
   );
 }

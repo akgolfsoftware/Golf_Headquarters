@@ -1,146 +1,39 @@
 /**
- * AgencyOS — Rapporter (SYSTEM · RAPPORTER), /admin/reports.
+ * v2-preview: AgencyOS Rapporter (retning C). Egen top-level route-group
+ * (v2preview) som IKKE arver PortalShell/AdminShell — kun root-layout — så
+ * V2Shell leverer all chrome (IkonRail/BunnNav) i mørk v2-scope.
  *
- * Port av fasit `agencyos-app/screens-analyze.jsx` → ReportsScreen (mørkt
- * tema, desktop 1280): PageHead («Seks rapporter.» + «Ny rapport») og
- * 3-kolonners grid av rapport-tiles (ikon + navn + CTA + meta).
+ * Auth + data er identisk med den ekte /admin/reports-siden: samme
+ * requirePortalUser-guard (ADMIN/COACH) og samme Prisma-counts (aktive
+ * spillere + fullførte økter + sesongår).
  *
- * Datakilder: tile-lista er fasit-statisk, men telleverdiene i meta er ekte
- * (prisma-counts: spillere, fullførte økter, sesongår). CSV-tilene peker på
- * de EKTE eksport-endepunktene /api/admin/reports/[type] («Generer →»);
- * rapporter uten generator lenker til riktig analyse-flate («Åpne →») —
- * aldri liksom-generering.
+ * Server component.
  */
-
-import Link from "next/link";
-import {
-  Banknote,
-  CalendarCheck,
-  TrendingUp,
-  Trophy,
-  User,
-  Users,
-  type LucideIcon,
-} from "lucide-react";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AgPage, AgPageHead, agBtnClass } from "@/components/admin/agencyos/ui";
-import { NyRapportButton } from "./reports-actions";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { AdminReportsV2 } from "@/components/admin/v2/AdminReportsV2";
 
 export const dynamic = "force-dynamic";
 
-type Tile = {
-  icon: LucideIcon;
-  navn: string;
-  meta: string;
-  cta: string;
-  href: string;
-  /** true = CSV-endepunkt (vanlig <a>), false = intern flate (<Link>). */
-  nedlasting: boolean;
-};
-
-export default async function RapporterPage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+export default async function V2AdminReportsPage() {
+  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
   const [spillere, okter] = await Promise.all([
     prisma.user.count({ where: { role: "PLAYER", deletedAt: null } }),
     prisma.trainingPlanSession.count({ where: { status: "COMPLETED" } }),
   ]);
 
-  const sesong = new Date().getFullYear();
-
-  const tiles: Tile[] = [
-    {
-      icon: User,
-      navn: "Spiller-rapport",
-      meta: `PDF · ${spillere} spillere`,
-      cta: "Generer →",
-      href: "/api/admin/reports/spillere.csv",
-      nedlasting: true,
-    },
-    {
-      icon: Users,
-      navn: "Gruppe-rapport",
-      meta: "Lag-snitt + utvikling",
-      cta: "Åpne →",
-      href: "/admin/lag-snitt",
-      nedlasting: false,
-    },
-    {
-      icon: TrendingUp,
-      navn: "Utviklingsrapport",
-      meta: "Kvartalsvis · stall",
-      cta: "Åpne →",
-      href: "/admin/analyse",
-      nedlasting: false,
-    },
-    {
-      icon: Banknote,
-      navn: "Omsetning & MRR",
-      meta: "Faktura-oversikt",
-      cta: "Generer →",
-      href: "/api/admin/reports/abonnement.csv",
-      nedlasting: true,
-    },
-    {
-      icon: CalendarCheck,
-      navn: "Aktivitetslogg",
-      meta: `${okter} økter + oppmøte`,
-      cta: "Generer →",
-      href: "/api/admin/reports/okter.csv",
-      nedlasting: true,
-    },
-    {
-      icon: Trophy,
-      navn: "Turneringsresultater",
-      meta: `Sesong ${sesong}`,
-      cta: "Åpne →",
-      href: "/admin/tournaments",
-      nedlasting: false,
-    },
-  ];
-
-  const tileClass =
-    "flex flex-col gap-[10px] rounded-xl border border-border bg-card p-4 text-left transition-[border-color,box-shadow] hover:border-primary hover:shadow-sm";
+  const data = {
+    spillere,
+    okter,
+    sesong: new Date().getFullYear(),
+  };
 
   return (
-    <AgPage>
-      <AgPageHead
-        eyebrow="System · Rapporter"
-        title="Seks"
-        italic="rapporter."
-        lead="Generer rapporter for spillere, foreldre, klubb eller forbund. Eksport til PDF."
-        actions={<NyRapportButton className={agBtnClass("primary")} />}
-      />
-
-      <div className="grid grid-cols-3 gap-3">
-        {tiles.map((t) => {
-          const Ikon = t.icon;
-          const innhold = (
-            <>
-              <span className="inline-flex h-[38px] w-[38px] items-center justify-center rounded-[10px] bg-secondary text-primary">
-                <Ikon size={20} strokeWidth={1.5} />
-              </span>
-              <span className="font-display text-base font-bold leading-[1.2] tracking-[-0.015em] text-foreground">
-                {t.navn}
-              </span>
-              <span className="mt-auto font-mono text-[10px] leading-none text-muted-foreground">
-                <b className="font-bold text-primary">{t.cta}</b> {t.meta}
-              </span>
-            </>
-          );
-          return t.nedlasting ? (
-            <a key={t.navn} href={t.href} className={tileClass}>
-              {innhold}
-            </a>
-          ) : (
-            <Link key={t.navn} href={t.href} className={tileClass}>
-              {innhold}
-            </Link>
-          );
-        })}
-      </div>
-    </AgPage>
+    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <AdminReportsV2 data={data} />
+    </V2Shell>
   );
 }

@@ -37,7 +37,7 @@ import {
   importTrackManCsv,
   importTrackManHtml,
   type TrackManEnvironment,
-} from "@/app/portal/mal/trackman/actions";
+} from "@/app/portal/(legacy)/mal/trackman/actions";
 import { ENVIRONMENT_OPTIONS } from "@/lib/sg-hub/environment-labels";
 import { parseTrackManCsv, type TrackManShot } from "@/lib/trackman/parse-csv";
 import { useToast } from "@/components/shared/toast-provider";

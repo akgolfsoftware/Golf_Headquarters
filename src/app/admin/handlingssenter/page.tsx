@@ -1,18 +1,29 @@
 /**
- * /admin/handlingssenter — AgencyOS Handlingssenter
+ * v2-preview: AgencyOS Handlingssenter (retning C). Egen top-level route-group
+ * (v2preview) som IKKE arver AdminShell — kun root-layout — så V2Shell leverer
+ * all chrome (IkonRail/BunnNav) i mørk v2-scope.
  *
- * Hybrid terminal design: Kanban / Tabell / Liste view-toggle + detail panel.
- * Data fra OppgaveCache (Notion-sync). Statisk layout m/ klient-side
- * interaksjon overlatt til HandlingsenterClient.
+ * Auth + data følger den ekte /admin/handlingssenter-flaten: samme
+ * requirePortalUser-guard (ADMIN/COACH) og samme OppgaveCache-loader/mapping
+ * (Notion-sync). Ærlig tom tilstand når cachen er tom — ingen demo-data.
+ *
+ * Server component.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { HandlingssenterClient, type OppgaveRad } from "./handlingssenter-client";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import {
+  AdminHandlingssenterV2,
+  type AdminHandlingssenterData,
+  type HandlingRad,
+  type HandlingKol,
+  type HandlingPri,
+} from "@/components/admin/v2/AdminHandlingssenterV2";
 
 export const dynamic = "force-dynamic";
 
-const KOLONNE_MAP: Record<string, OppgaveRad["col"]> = {
+const KOLONNE_MAP: Record<string, HandlingKol> = {
   "Å gjøre": "todo",
   Todo: "todo",
   TODO: "todo",
@@ -29,7 +40,7 @@ const KOLONNE_MAP: Record<string, OppgaveRad["col"]> = {
   BLOKKERT: "backlog",
 };
 
-const PRIORITET_MAP: Record<string, OppgaveRad["priKey"]> = {
+const PRIORITET_MAP: Record<string, HandlingPri> = {
   Haster: "high",
   Høy: "high",
   High: "high",
@@ -42,27 +53,22 @@ const PRIORITET_MAP: Record<string, OppgaveRad["priKey"]> = {
   LOW: "low",
 };
 
-function kolOf(status: string | null): OppgaveRad["col"] {
+function kolOf(status: string | null): HandlingKol {
   if (!status) return "todo";
   return KOLONNE_MAP[status] ?? "todo";
 }
-
-function priOf(prio: string | null): OppgaveRad["priKey"] {
+function priOf(prio: string | null): HandlingPri {
   if (!prio) return "mid";
   return PRIORITET_MAP[prio] ?? "mid";
 }
-
-function priLabel(k: OppgaveRad["priKey"]): string {
+function priLabel(k: HandlingPri): string {
   return k === "high" ? "Haster" : k === "mid" ? "Normal" : "Lav";
 }
-
-function statusLabel(col: OppgaveRad["col"]): string {
-  return (
-    { todo: "Å gjøre", doing: "Pågår", done: "Ferdig", backlog: "Kø" }[col] ??
-    "Kø"
-  );
+function statusLabel(col: HandlingKol): string {
+  return { todo: "Å gjøre", doing: "Pågår", done: "Ferdig", backlog: "Kø" }[col] ?? "Kø";
 }
 
+const MND = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
 function fmtDue(d: Date | null): string {
   if (!d) return "—";
   const now = new Date();
@@ -72,11 +78,11 @@ function fmtDue(d: Date | null): string {
   const tDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
   if (tDay.getTime() === today.getTime()) return "i dag";
   if (tDay.getTime() === tomorrow.getTime()) return "i morgen";
-  return `${d.getDate()}. ${["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"][d.getMonth()]}`;
+  return `${d.getDate()}. ${MND[d.getMonth()]}`;
 }
 
-export default async function HandlingssenterPage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+export default async function V2HandlingssenterPage() {
+  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
   const raw = await prisma.oppgaveCache
     .findMany({
@@ -85,55 +91,37 @@ export default async function HandlingssenterPage() {
     })
     .catch(() => []);
 
-  // Map til OppgaveRad — én rad per oppgave.
-  const oppgaver: OppgaveRad[] = raw.map((o) => {
+  const oppgaver: HandlingRad[] = raw.map((o) => {
     const col = kolOf(o.status);
     const priKey = priOf(o.prioritet);
     const tildelt = o.tildeltNavn[0] ?? null;
-    const initials = tildelt
-      ? tildelt
-          .split(/\s+/)
-          .filter(Boolean)
-          .map((w: string) => w[0])
-          .join("")
-          .slice(0, 2)
-          .toUpperCase()
-      : "AK";
 
-    // Tag avledet fra selskap-array (første selskap) eller «PLAN» som fallback.
     const selskapRå = o.selskap[0] ?? null;
     const tag =
-      selskapRå
-        ?.split(/[\s\-/]+/)
-        .slice(-1)[0]
-        ?.toUpperCase()
-        .slice(0, 4) ?? "PLAN";
+      selskapRå?.split(/[\s\-/]+/).slice(-1)[0]?.toUpperCase().slice(0, 4) ?? "PLAN";
 
     return {
       id: o.id,
-      title: o.tittel,
-      player: tildelt ?? "Alle",
-      av: initials,
-      pri: priLabel(priKey),
+      tittel: o.tittel,
+      spiller: tildelt ?? "Alle",
       priKey,
+      priLabel: priLabel(priKey),
       tag,
       due: fmtDue(o.forfaller),
-      status: statusLabel(col),
+      statusLabel: statusLabel(col),
       col,
       desc: o.notater ?? o.lenke ?? "Ingen beskrivelse.",
     };
   });
 
-  const openCount = oppgaver.filter((o) => o.col !== "done").length;
-  const doneToday = oppgaver.filter((o) => o.col === "done").length;
+  const today = new Date();
+  const dato = `${today.getDate()}. ${["januar", "februar", "mars", "april", "mai", "juni", "juli", "august", "september", "oktober", "november", "desember"][today.getMonth()]}`;
 
-  // Ekte OppgaveCache-data. Når Notion ikke er koblet til / cachen er tom,
-  // viser klienten en ærlig tom tilstand («Ingen oppgaver») — ingen demo-data.
+  const data: AdminHandlingssenterData = { dato, oppgaver };
+
   return (
-    <HandlingssenterClient
-      oppgaver={oppgaver}
-      openCount={openCount}
-      doneToday={doneToday}
-    />
+    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <AdminHandlingssenterV2 data={data} />
+    </V2Shell>
   );
 }

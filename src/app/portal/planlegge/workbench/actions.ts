@@ -184,6 +184,16 @@ export async function generateWeekWithCaddie(periodId: string, weekNumber: numbe
   };
 }
 
+/**
+ * WorkbenchV2Actions.suggestWeek-signatur (kun weekNumber). Egen server
+ * action i stedet for en inline arrow i page.tsx — en closure definert i
+ * en Server Component er ikke en gyldig server-referanse og kan ikke
+ * sendes til en Client Component.
+ */
+export async function suggestWeekWithCaddie(weekNumber: number) {
+  return generateWeekWithCaddie("", weekNumber);
+}
+
 // ============================================================================
 // TRENINGSPLAN (TrainingPlan)
 // ============================================================================

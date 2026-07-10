@@ -9,7 +9,13 @@ Legende: **[JEG]** = jeg koder autonomt · **[DU]** = kun Anders (DNS/paneler/be
 
 ---
 
-## VALGT STRATEGI (Anders 10. juli): LANSER BETA I DAG på dagens app → rull v2 inn løpende
+## ⚠ OPPHEVET (Anders 9. juli, senere samme dag): «lanser i dag på gammelt design»
+> Anders valgte i stedet **BYGG HELE v2 INN I APPEN FØR LANSERING** (AskUserQuestion).
+> Ingen beta før alle ~43 skjermfamilier er på v2. Appen ER røyktestet lanseringsklar,
+> men brukerne skal møte det NYE designet fra start. Aktiv plan: `byggeplan.md` + fase 6
+> (Workflow-orkestrering). Seksjonen under er historikk — IKKE gjeldende strategi.
+
+## HISTORIKK — tidligere strategi: LANSER BETA I DAG på dagens app → rull v2 inn løpende
 
 Appen kjører allerede (`akgolf-hq.vercel.app`) med ~400 bygde ruter (gammelt design). Vi
 lanserer beta på DEN i dag, og ruller v2-designet inn bølge for bølge etterpå, styrt av en
