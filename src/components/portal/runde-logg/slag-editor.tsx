@@ -78,7 +78,9 @@ export function SlagEditor({
         ? "TEE"
         : startAvstand <= 30
           ? "ARG"
-          : "APP";
+          : startAvstand > 150
+            ? "LANGT"
+            : "APP";
 
   const startTekst =
     startLie === "TEE"

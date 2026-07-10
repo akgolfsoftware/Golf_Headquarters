@@ -8,7 +8,7 @@
 
 import { T, Icon } from "@/components/v2";
 
-export type AvstandKontekst = "TEE" | "APP" | "ARG" | "GREEN";
+export type AvstandKontekst = "TEE" | "LANGT" | "APP" | "ARG" | "GREEN";
 
 const fot = (m: number) => Math.round(m * 3.28084);
 const komma = (n: number) => String(n).replace(".", ",");
@@ -24,6 +24,8 @@ function chipsFor(kontekst: AvstandKontekst, hullLengde?: number): number[] {
   }
   if (kontekst === "GREEN") return [1, 1.5, 3, 5, 8, 12];
   if (kontekst === "ARG") return [2, 5, 10, 15];
+  // Lang startposisjon (par 5-layup o.l.): typiske gjenværende avstander.
+  if (kontekst === "LANGT") return [50, 70, 90, 110, 130];
   return [5, 10, 15, 20, 30];
 }
 
