@@ -16,7 +16,6 @@
  */
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   Caps,
@@ -111,7 +110,6 @@ function SpillerRadEnkel({
 }
 
 function SpillerSammendrag({ s }: { s: StallV2Player }) {
-  const router = useRouter();
   const harTrend = s.sgTrend.length >= 2;
   const lo = harTrend ? Math.min(...s.sgTrend) : 0;
   const hi = harTrend ? Math.max(...s.sgTrend) : 0;
@@ -172,12 +170,12 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
       </div>
 
       <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
-        <span onClick={() => router.push(`/admin/spillere/${s.id}/workbench`)} style={{ display: "inline-flex" }}>
+        <Link href={`/admin/spillere/${s.id}/workbench`} style={{ display: "inline-flex", textDecoration: "none" }}>
           <CTAPill icon="arrow-right">Åpne Workbench</CTAPill>
-        </span>
-        <span onClick={() => router.push(`/admin/spillere/${s.id}`)} style={{ display: "inline-flex" }}>
+        </Link>
+        <Link href={`/admin/spillere/${s.id}`} style={{ display: "inline-flex", textDecoration: "none" }}>
           <CTAPill ghost>Se profil</CTAPill>
-        </span>
+        </Link>
       </div>
     </Kort>
   );

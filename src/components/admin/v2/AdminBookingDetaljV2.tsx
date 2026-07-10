@@ -54,6 +54,7 @@ function DetaljRad({
       leading={<Icon name={icon} size={15} style={{ color: T.mut }} />}
       title={value}
       sub={label}
+      trailing={null}
       last={last}
     />
   );
