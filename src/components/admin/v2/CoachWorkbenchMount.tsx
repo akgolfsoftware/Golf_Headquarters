@@ -8,12 +8,13 @@
  *
  * Ærlighet (prosjekt-regel): kun v2-komponenter fra "@/components/v2"; ingen
  * ad-hoc UI-komponenter (kun layout-divs, som i de andre v2-mountene). EKTE
- * roster fra Prisma — ingen fabrikerte spillere. Velger navigerer via
- * ?spiller=<id> og serveren laster den valgte spillerens EKTE plandata på nytt.
+ * roster fra Prisma — ingen fabrikerte spillere. Velger navigerer til
+ * /admin/spillere/<id>/workbench (spiller-id i path-segmentet, ?uke= bevares)
+ * og serveren laster den valgte spillerens EKTE plandata på nytt.
  * Ingen roster → ærlig tom-tilstand.
  */
 
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Caps, Kort, TomTilstand, AvatarInit, Velger } from "@/components/v2";
 import { T } from "@/lib/v2/tokens";
 import { WorkbenchV2, type WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
@@ -29,7 +30,7 @@ export interface CoachRosterPlayer {
 export interface CoachWorkbenchMountProps {
   /** Full roster (EKTE spillere) for velgeren. */
   players: CoachRosterPlayer[];
-  /** Aktiv spiller-id (fra ?spiller=, ellers første i roster). Null = tom stall. */
+  /** Aktiv spiller-id (fra rutens params.id). Null = tom stall. */
   currentPlayerId: string | null;
   /** Navnet på aktiv spiller (for topp-bar i WorkbenchV2). */
   playerName: string;
@@ -78,7 +79,7 @@ export function CoachWorkbenchMount({
   actions,
 }: CoachWorkbenchMountProps) {
   const router = useRouter();
-  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   if (players.length === 0 || currentPlayerId === null) {
     return (
@@ -101,7 +102,9 @@ export function CoachWorkbenchMount({
   const bytt = (label: string) => {
     const id = labelTilId.get(label);
     if (id && id !== currentPlayerId) {
-      router.push(`${pathname}?spiller=${id}`);
+      const uke = searchParams.get("uke");
+      const query = uke ? `?uke=${encodeURIComponent(uke)}` : "";
+      router.push(`/admin/spillere/${id}/workbench${query}`);
     }
   };
 
