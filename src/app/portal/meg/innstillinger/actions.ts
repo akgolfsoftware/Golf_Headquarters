@@ -6,6 +6,7 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { assertNotAwaitingConsent } from "@/lib/auth/requireConsentingUser";
 import { audit } from "@/lib/audit";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
+import { emailLayout } from "@/lib/email/templates/shared";
 import { prisma } from "@/lib/prisma";
 import type { DrillFasilitet } from "@/generated/prisma/client";
 
@@ -148,12 +149,16 @@ export async function exportUserData(): Promise<{
           from: FRA_EPOST,
           to: user.email,
           subject: "Dine data er eksportert — AK Golf",
-          html: `<p>Hei ${user.name ?? "der"},</p>
-            <p>Du har lastet ned en komplett eksport av dine data fra AK Golf HQ.</p>
-            <p>Eksporten inkluderer: profil, runder, økter, mål, betalinger, varsler, helse-loggføringer, utstyr, meldinger.</p>
-            <p>Tidspunkt: ${new Date().toLocaleString("nb-NO")}</p>
-            <p>Hvis dette ikke var deg, kontakt oss umiddelbart på post@akgolf.no.</p>
-            <p>Mvh,<br/>AK Golf Group</p>`,
+          html: emailLayout({
+            preheader: "Du har lastet ned en komplett eksport av dine data fra AK Golf HQ.",
+            heading: `Hei ${user.name ?? "der"},`,
+            body: `
+              <p style="margin:0 0 16px 0;">Du har lastet ned en komplett eksport av dine data fra AK Golf HQ.</p>
+              <p style="margin:0 0 16px 0;">Eksporten inkluderer: profil, runder, økter, mål, betalinger, varsler, helse-loggføringer, utstyr, meldinger.</p>
+              <p style="margin:0 0 16px 0;">Tidspunkt: ${new Date().toLocaleString("nb-NO")}</p>
+              <p style="margin:0;">Hvis dette ikke var deg, kontakt oss umiddelbart på post@akgolf.no.</p>
+            `,
+          }),
         });
       }
     } catch (err) {
@@ -206,29 +211,38 @@ export async function deleteUserAccount(
           from: FRA_EPOST,
           to: user.email,
           subject: "Konto markert for sletting — AK Golf",
-          html: `<p>Hei ${user.name ?? "der"},</p>
-            <p>Vi har mottatt din forespørsel om kontosletting.</p>
-            <p><strong>Hva skjer nå:</strong></p>
-            <ul>
-              <li>Kontoen din er deaktivert umiddelbart</li>
-              <li>Alle dine data slettes permanent etter <strong>30 dager</strong></li>
-              <li>I 30-dagers-vinduet kan du angre ved å kontakte oss på post@akgolf.no</li>
-            </ul>
-            <p>Mvh,<br/>AK Golf Group</p>`,
+          html: emailLayout({
+            preheader: "Vi har mottatt din forespørsel om kontosletting.",
+            heading: `Hei ${user.name ?? "der"},`,
+            body: `
+              <p style="margin:0 0 16px 0;">Vi har mottatt din forespørsel om kontosletting.</p>
+              <p style="margin:0 0 8px 0;"><strong>Hva skjer nå:</strong></p>
+              <ul style="margin:0;padding-left:20px;line-height:1.8;">
+                <li>Kontoen din er deaktivert umiddelbart</li>
+                <li>Alle dine data slettes permanent etter <strong>30 dager</strong></li>
+                <li>I 30-dagers-vinduet kan du angre ved å kontakte oss på post@akgolf.no</li>
+              </ul>
+            `,
+          }),
         });
       }
       await klient.emails.send({
         from: FRA_EPOST,
         to: SUPPORT_EPOST,
         subject: `Konto markert for sletting — ${user.email}`,
-        html: `<p>Bruker har slettet seg selv via portal.</p>
-          <ul>
-            <li>Navn: ${user.name ?? "–"}</li>
-            <li>E-post: ${user.email}</li>
-            <li>ID: ${user.id}</li>
-            <li>Soft-delete: ${new Date().toISOString()}</li>
-            <li>Permanent slett: ${new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()}</li>
-          </ul>`,
+        html: emailLayout({
+          preheader: "Bruker har slettet seg selv via portal.",
+          heading: "Bruker har slettet seg selv via portal",
+          body: `
+            <ul style="margin:0;padding-left:20px;line-height:1.8;">
+              <li>Navn: ${user.name ?? "–"}</li>
+              <li>E-post: ${user.email}</li>
+              <li>ID: ${user.id}</li>
+              <li>Soft-delete: ${new Date().toISOString()}</li>
+              <li>Permanent slett: ${new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()}</li>
+            </ul>
+          `,
+        }),
       });
     } catch (err) {
       console.error("[gdpr-sletting] e-post feilet", err);

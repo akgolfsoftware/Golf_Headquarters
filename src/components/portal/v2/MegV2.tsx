@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { Tier } from "@/generated/prisma/client";
 import type { GoalItem } from "@/app/portal/actions";
+import { logout } from "@/lib/auth/logout";
 import {
   T,
   fmtSg,
@@ -120,6 +121,7 @@ export function MegV2({ data }: { data: MegData }) {
 
   const konto: KontoRad[] = [
     { ic: "user", l: "Profil og innstillinger", sub: "Navn, HCP, klubb", href: "/portal/meg/profil" },
+    { ic: "calendar-plus", l: "Book coachtime", sub: "Velg tjeneste, coach og tid", href: "/portal/booking" },
     { ic: "credit-card", l: "Abonnement", sub: tierSub(tier), href: "/portal/meg/abonnement" },
     { ic: "bell", l: "Varsler", sub: "Push og e-post", href: "/portal/meg/innstillinger" },
     { ic: "shield", l: "Personvern og samtykke", href: "/portal/meg/innstillinger" },
@@ -192,10 +194,29 @@ export function MegV2({ data }: { data: MegData }) {
               leading={<Icon name={k.ic} size={16} style={{ color: T.mut }} />}
               title={k.l}
               sub={k.sub}
-              last={i === konto.length - 1}
             />
           </Link>
         ))}
+        <form action={logout}>
+          <button
+            type="submit"
+            style={{
+              all: "unset",
+              boxSizing: "border-box",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              width: "100%",
+              padding: "11px 0",
+            }}
+          >
+            <Icon name="log-out" size={16} style={{ color: T.down }} />
+            <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.down }}>
+              Logg ut
+            </span>
+          </button>
+        </form>
       </Kort>
     </div>
   );

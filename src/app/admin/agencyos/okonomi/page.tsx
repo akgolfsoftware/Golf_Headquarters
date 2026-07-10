@@ -13,6 +13,7 @@
  * Server component.
  */
 
+import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
@@ -22,6 +23,31 @@ import {
   type AdminOkonomiV2Betaling,
   type BetalingStatusKey,
 } from "@/components/admin/v2/AdminOkonomiV2";
+
+// Payment.metadata er ustrukturert JSON fra to historiske importer
+// (WooCommerce/akgolf.no og Acuity Scheduling) — begge felt er valgfrie
+// og valideres tolerant, aldri `as unknown as`.
+const PaymentMetadataSchema = z
+  .object({ customer_name: z.string().optional(), source: z.string().optional() })
+  .partial();
+
+/**
+ * Ekte betalernavn når `userId` mangler (importerte betalinger uten
+ * kontokobling): WooCommerce-metadata har `customer_name` direkte; Acuity-
+ * importen bærer navnet i `description` («<id> - Navn - ...»). Ingen treff →
+ * ærlig «Ukjent» (aldri fabrikert).
+ */
+function betalerNavn(brukerNavn: string | null, metadata: unknown, description: string | null): string {
+  if (brukerNavn) return brukerNavn;
+  const parsed = PaymentMetadataSchema.safeParse(metadata);
+  const meta = parsed.success ? parsed.data : {};
+  if (meta.customer_name) return meta.customer_name;
+  if (meta.source === "Acuity Scheduling" && description) {
+    const m = description.match(/^\d+\s*-\s*([^-]+)-/);
+    if (m) return m[1].trim();
+  }
+  return "Ukjent";
+}
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Økonomi · AgencyOS (v2)" };
@@ -89,12 +115,12 @@ export default async function V2AdminOkonomiPage() {
 
   const betalinger: AdminOkonomiV2Betaling[] = sisteFakturaer.map((p) => ({
     id: p.id,
-    navn: p.user?.name ?? "Ukjent",
+    navn: betalerNavn(p.user?.name ?? null, p.metadata, p.description),
     beskrivelse: p.description ?? null,
     type: p.type,
     belopKr: ore(p.amountOre),
     refundertKr: ore(p.amountRefundedOre),
-    dato: (p.paidAt ?? p.createdAt).toLocaleDateString("nb-NO", { day: "numeric", month: "short" }),
+    dato: (p.paidAt ?? p.createdAt).toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" }),
     status: p.status as BetalingStatusKey,
   }));
 

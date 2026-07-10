@@ -11,6 +11,7 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadDailyBrief } from "@/lib/agencyos/daily-brief-data";
+import { loadAppFeedback } from "@/lib/admin/load-app-feedback";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { TriageV2 } from "@/components/admin/v2/TriageV2";
 
@@ -18,10 +19,13 @@ export const dynamic = "force-dynamic";
 
 export default async function V2TriagePage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
-  const data = await loadDailyBrief({ id: user.id, name: user.name });
+  const [data, feedback] = await Promise.all([
+    loadDailyBrief({ id: user.id, name: user.name }),
+    loadAppFeedback(),
+  ]);
   return (
     <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TriageV2 data={data} />
+      <TriageV2 data={data} feedback={feedback} />
     </V2Shell>
   );
 }

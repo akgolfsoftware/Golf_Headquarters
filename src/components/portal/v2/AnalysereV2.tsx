@@ -40,8 +40,13 @@ import {
   AkseChip,
   Icon,
   HjelpTips,
+  Skjelett,
   type StatusTone,
 } from "@/components/v2";
+
+/** Laveste tenkelige brutto 18-hulls golfscore — under dette er tallet en datafeil,
+ *  ikke en ekte runde. Brukt til å vise lasteskjelett i stedet for umulige score-tall. */
+const MIN_MULIG_BRUTTOSCORE = 55;
 
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
 
@@ -63,9 +68,24 @@ const SG_NAVN: Record<"OTT" | "APP" | "ARG" | "PUTT", string> = {
 function kortDato(d: Date): string {
   return `${d.getDate()}. ${MND[d.getMonth()]}`;
 }
+/** Beskrivende øktnavn for TrackMan-listen — «source» er en maskinelt satt
+ *  opprinnelses-tag («csv-import»/«html-import»/«api»), aldri et øktnavn, så
+ *  bruk aldri den rått. Faller tilbake til dato, kølle kun hvis ekte (alle
+ *  slag i økten delte samme kølle) — ingen gjettet kølle/sted. */
+function trackManOktNavn(s: { recordedAt: Date; primaryClub: string | null }): string {
+  return s.primaryClub
+    ? `TrackMan-økt · ${kortDato(s.recordedAt)} · ${s.primaryClub}`
+    : `TrackMan-økt · ${kortDato(s.recordedAt)}`;
+}
 /** Tall → norsk komma-desimal. */
 function komma(n: number, desimaler = 1): string {
   return n.toFixed(desimaler).replace(".", ",");
+}
+/** SG-verdi med to desimaler («−0,03» / «+0,12») — fmtSg sin 1-desimal avrunder
+ *  små forskjeller mellom SG-områdene til «−0,0» på alle fire, som skjuler rangeringen. */
+function fmtSg2(v: number): string {
+  const sign = v > 0 ? "+" : v < 0 ? "−" : "";
+  return `${sign}${Math.abs(v).toFixed(2).replace(".", ",")}`;
 }
 /** Score relativt par: 71 mot 72 → «(−1)», 72 → «(0)». */
 function tilPar(score: number, par: number): string {
@@ -118,7 +138,7 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
               value={sgStatus.verdi}
               delta={sgDelta}
               dir={sgDir}
-              sub={`snitt per runde · ${sgStatus.runder} runder · ${sgStatus.baseline}`}
+              sub={`snitt per runde · siste 10 runder · ${sgStatus.baseline}`}
               size={mobile ? 48 : 56}
               action={form ? <StatusPill tone={form.tone}>{form.l}</StatusPill> : undefined}
               hjelp="sgTotal"
@@ -144,7 +164,7 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
                 label={SG_NAVN[k.akse]}
                 signal
                 pct={(Math.abs(k.sg) / maxAbs) * 100}
-                value={fmtSg(k.sg)}
+                value={fmtSg2(k.sg)}
                 neg={k.sg < 0}
                 last={i === sgStatus.kategorier.length - 1}
               />
@@ -187,11 +207,25 @@ function TabStatistikk({ data }: { data: AnalysereData }) {
   const { rounds } = data.workbench;
   const { tigerFive } = data.minGolf.runder;
 
+  // Umulig brutto-score (< 55) er en datafeil, ikke en ekte runde — vis
+  // lasteskjelett fremfor å rendre tallet. Ellers: ingen tell-opp-fra-0-animasjon
+  // (instant), siden en golfscore aldri reelt passerer gjennom 0 → mål.
+  const avgUmulig = rounds.avgScore != null && rounds.avgScore < MIN_MULIG_BRUTTOSCORE;
+  const besteUmulig = rounds.bestScore != null && rounds.bestScore < MIN_MULIG_BRUTTOSCORE;
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: T.gap }}>
-        <KpiFlis label="Snittscore · brutto" value={rounds.avgScore != null ? komma(rounds.avgScore) : "–"} />
-        <KpiFlis label="Beste runde" value={rounds.bestScore != null ? String(rounds.bestScore) : "–"} />
+        {avgUmulig ? (
+          <Skjelett linjer={0} />
+        ) : (
+          <KpiFlis label="Snittscore · brutto" value={rounds.avgScore != null ? komma(rounds.avgScore) : "–"} instant />
+        )}
+        {besteUmulig ? (
+          <Skjelett linjer={0} />
+        ) : (
+          <KpiFlis label="Beste runde" value={rounds.bestScore != null ? String(rounds.bestScore) : "–"} instant />
+        )}
         <KpiFlis label="Runder i sesong" value={String(rounds.totalRounds)} tint />
       </div>
 
@@ -447,7 +481,7 @@ function TabTrackman({ data, mobile }: { data: AnalysereData; mobile: boolean })
             <Rad
               key={s.id}
               leading={<span style={{ width: 46, flex: "none", fontFamily: T.mono, fontSize: 10, color: T.mut }}>{kortDato(s.recordedAt)}</span>}
-              title={s.source}
+              title={trackManOktNavn(s)}
               meta={<span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg }}>{s.shotCount} slag</span>}
               trailing={null}
               last={i === arr.length - 1}

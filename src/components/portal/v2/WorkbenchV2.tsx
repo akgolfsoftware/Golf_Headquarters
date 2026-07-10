@@ -453,7 +453,15 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   const weekOffset = data?.weekOffset ?? 0;
   const st = statusLabel(planStatus);
   const adher = data?.adherencePct;
-  const canon = data?.canonChip;
+  // Ekte avvik-tall for uka (lib/workbench/compliance.ts sin oktCompliance,
+  // beregnet server-side per økt): «avvik» = aktivt avbrutt/hoppet over/kansellert,
+  // «ikke-gjennomfort» = forfalt uten registrert gjennomføring. CANON-fasechipen
+  // (data.canonChip) svarer på et annet spørsmål (pyramide-balanse i perioden) og
+  // er nesten alltid null uten en aktiv sesongplan-periode — bruk den ALDRI som
+  // stedfortreder for compliance-avvik.
+  const avvikOkter = alleEvents.filter((e) => e.compliance === "avvik" || e.compliance === "ikke-gjennomfort").length;
+  const harAvvik = avvikOkter > 0;
+  const avvikTekst = harAvvik ? `${avvikOkter} avvik denne uka` : "Ingen avvik";
   const aktivDag = dager.find((d) => d.today) ?? dager.find((d) => d.events.length > 0) ?? null;
 
   const goToWeek = (delta: number) => {
@@ -550,14 +558,14 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           <StatusPill tone={st.tone}>{st.l}</StatusPill>
         </div>
         <Felt label="Zoom"><PillVelger options={[{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Økt" }]} value={nivaa} onChange={setNivaa} /></Felt>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "6px 14px", borderRadius: 12, background: `color-mix(in srgb, ${canon ? T.warn : T.up} 6%, transparent)`, border: `1px solid color-mix(in srgb, ${canon ? T.warn : T.up} 32%, transparent)`, flex: "none" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "6px 14px", borderRadius: 12, background: `color-mix(in srgb, ${harAvvik ? T.warn : T.up} 6%, transparent)`, border: `1px solid color-mix(in srgb, ${harAvvik ? T.warn : T.up} 32%, transparent)`, flex: "none" }}>
           <span style={{ fontFamily: T.mono, fontSize: 26, fontWeight: 700, color: T.fg, lineHeight: 0.9, fontVariantNumeric: "tabular-nums", flex: "none" }}>{adher != null ? `${adher}%` : "–"}</span>
           <div style={{ flex: "none", maxWidth: 150 }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
               <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap" }}>Plan-etterlevelse</span>
               <HjelpTips k="planEtterlevelse" size={11} />
             </span>
-            <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: canon ? T.warn : T.up, display: "block", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{canon ?? "Ingen avvik"}</span>
+            <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: harAvvik ? T.warn : T.up, display: "block", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{avvikTekst}</span>
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>
@@ -583,7 +591,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
               <StatusPill tone={st.tone}>{st.l}</StatusPill>
             </div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", borderRadius: 10, background: `color-mix(in srgb, ${canon ? T.warn : T.up} 8%, transparent)`, border: `1px solid color-mix(in srgb, ${canon ? T.warn : T.up} 32%, transparent)`, flex: "none" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", borderRadius: 10, background: `color-mix(in srgb, ${harAvvik ? T.warn : T.up} 8%, transparent)`, border: `1px solid color-mix(in srgb, ${harAvvik ? T.warn : T.up} 32%, transparent)`, flex: "none" }}>
             <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{adher != null ? `${adher}%` : "–"}</span>
             <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap" }}>etterlevelse</span>
           </div>

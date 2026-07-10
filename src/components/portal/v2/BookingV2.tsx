@@ -306,6 +306,19 @@ function StegCoach({ coacher, fraPris, nesteLedig, valgt, setValgt, mobile }: {
 
 /* ── Steg 3 · Dato + tid ───────────────────────────────────────────── */
 
+/**
+ * Kalenderdag-nøkkel («YYYY-MM-DD») i Europe/Oslo — der øktene faktisk skjer.
+ * Server-ISO fra beregnSlotVindu er server-lokal midnatt (UTC på Vercel, Oslo
+ * i dev); klientens `new Date(år, mnd, dag).toISOString()` er klient-lokal.
+ * De to instant-strengene matcher ALDRI på tvers av tidssoner (rotårsaken til
+ * at alle dager viste «Ingen ledige tider» i prod for norske brukere) —
+ * sammenlign derfor alltid på Oslo-kalenderdag, aldri på rå ISO.
+ */
+const OSLO_DAG_FMT = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo", year: "numeric", month: "2-digit", day: "2-digit" });
+function osloDagKey(d: Date): string {
+  return OSLO_DAG_FMT.format(d); // sv-SE gir «YYYY-MM-DD»
+}
+
 function MiniKalender({ ledigeIso, valgtIso, setValgtIso, visMnd, visAar, setVis, mobile }: {
   ledigeIso: Set<string>;
   valgtIso: string | null;
@@ -321,7 +334,11 @@ function MiniKalender({ ledigeIso, valgtIso, setValgtIso, visMnd, visAar, setVis
   const forste = new Date(visAar, visMnd, 1);
   const blanke = (forste.getDay() + 6) % 7; // man-start
   const antDager = new Date(visAar, visMnd + 1, 0).getDate();
-  const isoForDag = (n: number) => new Date(visAar, visMnd, n).toISOString();
+  // Oslo-dagnøkkel → serverens originale ISO-streng, så valgt verdi alltid er
+  // nøyaktig den strengen serveren sendte (innsendingskontrakten uendret).
+  const isoVedDag = new Map<string, string>();
+  for (const iso of ledigeIso) isoVedDag.set(osloDagKey(new Date(iso)), iso);
+  const dagKey = (n: number) => `${visAar}-${String(visMnd + 1).padStart(2, "0")}-${String(n).padStart(2, "0")}`;
 
   return (
     <div>
@@ -341,18 +358,18 @@ function MiniKalender({ ledigeIso, valgtIso, setValgtIso, visMnd, visAar, setVis
         {Array.from({ length: blanke }, (_, i) => <span key={`b${i}`} />)}
         {Array.from({ length: antDager }, (_, i) => {
           const n = i + 1;
-          const iso = isoForDag(n);
+          const iso = isoVedDag.get(dagKey(n)) ?? null;
           const denne = new Date(visAar, visMnd, n);
           denne.setHours(0, 0, 0, 0);
-          const ledig = ledigeIso.has(iso);
-          const valgt = valgtIso === iso;
+          const ledig = iso !== null;
+          const valgt = iso !== null && valgtIso === iso;
           const iDagCelle = denne.getTime() === iDag.getTime();
           const passert = denne.getTime() < iDag.getTime();
           return (
             <button
               key={n}
               type="button"
-              onClick={() => ledig && setValgtIso(iso)}
+              onClick={() => iso !== null && setValgtIso(iso)}
               disabled={!ledig}
               className={ledig ? "v2-press v2-focus" : undefined}
               style={{ appearance: "none", height: celle, borderRadius: 10, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, fontFamily: T.mono, fontSize: 12, fontWeight: valgt ? 700 : 500, cursor: ledig ? "pointer" : "default", background: valgt ? T.fg : ledig ? T.panel3 : "transparent", color: valgt ? T.bg : passert ? "rgba(255,255,255,0.18)" : ledig ? T.fg : T.mut, border: iDagCelle && !valgt ? `1px solid ${T.borderS}` : "1px solid transparent" }}

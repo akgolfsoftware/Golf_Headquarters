@@ -13,6 +13,7 @@
  * Anbefaling, aldri sperre: du bestemmer alltid selv.
  */
 
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -23,6 +24,7 @@ import {
   AvatarInit,
   SevChip,
   CTAPill,
+  Knapp,
   InnsiktChip,
   TomTilstand,
   type SevKey,
@@ -32,6 +34,8 @@ import type {
   CockpitData,
   CockpitFocusPlayer,
 } from "@/components/admin/cockpit/agency-cockpit";
+import type { AppFeedbackRad, AppFeedbackType } from "@/lib/admin/load-app-feedback";
+import { markerAppFeedbackSett } from "@/app/admin/innboks/actions";
 
 const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
 
@@ -100,6 +104,76 @@ function byggGrupper(data: CockpitData): Gruppe[] {
   return alle.filter((g) => g.saker.length > 0);
 }
 
+const FEEDBACK_TYPE_INFO: Record<AppFeedbackType, { navn: string; ikon: string }> = {
+  bug: { navn: "Bug", ikon: "bug" },
+  forslag: { navn: "Forslag", ikon: "lightbulb" },
+  ros: { navn: "Ros", ikon: "heart" },
+  sporsmal: { navn: "Spørsmål", ikon: "help-circle" },
+  SUPPORT: { navn: "Support", ikon: "message-square" },
+};
+
+/** Tilbakemeldinger + support-henvendelser fra AppFeedback — nyeste først. */
+function TilbakemeldingerKort({ rader }: { rader: AppFeedbackRad[] }) {
+  const router = useRouter();
+  const [sett, setSett] = useState<Set<string>>(new Set());
+  const [pending, startTransition] = useTransition();
+
+  const antallNye = rader.filter((r) => r.status === "NY" && !sett.has(r.id)).length;
+
+  return (
+    <Kort
+      eyebrow="Tilbakemeldinger"
+      action={antallNye > 0 ? <Caps size={9} color={T.warn}>{pl(antallNye, "ny", "nye")}</Caps> : undefined}
+    >
+      {rader.length === 0 ? (
+        <TomTilstand icon="message-square" title="Ingen tilbakemeldinger" sub="Ingen spillere har sendt inn noe ennå." />
+      ) : (
+        rader.map((r, i) => {
+          const erNy = r.status === "NY" && !sett.has(r.id);
+          const info = FEEDBACK_TYPE_INFO[r.type] ?? FEEDBACK_TYPE_INFO.sporsmal;
+          return (
+            <Rad
+              key={r.id}
+              leading={<AvatarInit navn={r.spillerNavn} size={30} />}
+              title={r.spillerNavn}
+              sub={r.tekst}
+              meta={
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                  <span
+                    className="hidden md:inline-flex"
+                    style={{ alignItems: "center", gap: 4, fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.mut }}
+                  >
+                    {info.navn} · {r.when}
+                  </span>
+                  <Caps size={9} color={erNy ? T.warn : T.mut}>{erNy ? "Ny" : "Sett"}</Caps>
+                  {erNy && (
+                    <Knapp
+                      icon="check"
+                      ghost
+                      disabled={pending}
+                      onClick={() =>
+                        startTransition(async () => {
+                          setSett((prev) => new Set(prev).add(r.id));
+                          await markerAppFeedbackSett(r.id);
+                          router.refresh();
+                        })
+                      }
+                    >
+                      Sett
+                    </Knapp>
+                  )}
+                </span>
+              }
+              trailing={null}
+              last={i === rader.length - 1}
+            />
+          );
+        })
+      )}
+    </Kort>
+  );
+}
+
 function TriageGruppe({ g, onOpen }: { g: Gruppe; onOpen: (href: string) => void }) {
   return (
     <Kort eyebrow={g.label} action={<SevChip s={g.sev} />}>
@@ -134,7 +208,7 @@ function TriageGruppe({ g, onOpen }: { g: Gruppe; onOpen: (href: string) => void
   );
 }
 
-export function TriageV2({ data }: { data: CockpitData }) {
+export function TriageV2({ data, feedback = [] }: { data: CockpitData; feedback?: AppFeedbackRad[] }) {
   const router = useRouter();
   const grupper = byggGrupper(data);
 
@@ -182,6 +256,7 @@ export function TriageV2({ data }: { data: CockpitData }) {
             sub="Ingen saker trenger deg akkurat nå."
           />
         </Kort>
+        <TilbakemeldingerKort rader={feedback} />
       </div>
     );
   }
@@ -200,6 +275,7 @@ export function TriageV2({ data }: { data: CockpitData }) {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
           {innsikt}
+          <TilbakemeldingerKort rader={feedback} />
         </div>
       </div>
     </div>

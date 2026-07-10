@@ -11,8 +11,8 @@
  * komponenten rendrer bare den indre innholds-stacken.
  */
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useState, type CSSProperties } from "react";
 import {
   T,
   Caps,
@@ -43,6 +43,47 @@ function useMobile(): boolean {
 }
 
 const LIME_KANT = `color-mix(in srgb,${T.lime} 25%,transparent)`;
+
+// ── Periode-navigasjon (forrige/neste/i dag) — deles av alle fire visninger ──
+function parseVisningsDato(iso: string): Date {
+  const [aar, mnd, dag] = iso.split("-").map(Number);
+  return new Date(aar, mnd - 1, dag);
+}
+function tilIso(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+const NAV_KNAPP_STIL: CSSProperties = {
+  appearance: "none", cursor: "pointer", width: 26, height: 26, borderRadius: 8,
+  background: T.panel2, border: `1px solid ${T.border}`,
+  display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none",
+};
+
+function PeriodeNav({ tittel, onForrige, onNeste, onIdag }: { tittel: string; onForrige: () => void; onNeste: () => void; onIdag: () => void }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
+      <button type="button" onClick={onForrige} aria-label="Forrige periode" className="v2-press v2-focus" style={NAV_KNAPP_STIL}>
+        <Icon name="chevron-left" size={13} style={{ color: T.fg2 }} />
+      </button>
+      <Caps>{tittel}</Caps>
+      <button type="button" onClick={onNeste} aria-label="Neste periode" className="v2-press v2-focus" style={NAV_KNAPP_STIL}>
+        <Icon name="chevron-right" size={13} style={{ color: T.fg2 }} />
+      </button>
+      <button
+        type="button"
+        onClick={onIdag}
+        className="v2-press v2-focus"
+        style={{
+          appearance: "none", cursor: "pointer", marginLeft: 2, padding: "4px 10px", borderRadius: 9999,
+          background: "transparent", border: `1px solid ${T.border}`,
+          fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut,
+        }}
+      >
+        I dag
+      </button>
+    </div>
+  );
+}
 
 /* ── Dag — tidslinje ──────────────────────────────────── */
 function Dag({ dag }: { dag: KalenderData["dag"] }) {
@@ -334,12 +375,41 @@ function Aar({ aar, mobile }: { aar: KalenderData["aar"]; mobile: boolean }) {
 export function KalenderV2({ data }: { data: KalenderData }) {
   const mobile = useMobile();
   const [vis, setVis] = useState("uke");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Datoen kalenderen er sentrert på — kommer fra loaderen (default i dag,
+  // eller ?dato= hvis navigert). All forrige/neste/i dag-navigasjon regner
+  // seg videre fra denne, aldri fra en egen klient-side "i dag".
+  const visDato = parseVisningsDato(data.visningsDatoISO);
+
+  function gaTilDato(nyDato: Date) {
+    const params = new URLSearchParams(searchParams.toString());
+    const iso = tilIso(nyDato);
+    if (iso === tilIso(new Date())) params.delete("dato");
+    else params.set("dato", iso);
+    const qs = params.toString();
+    router.push(qs ? `${pathname}?${qs}` : pathname);
+  }
+  const gaDag = (delta: number) => { const d = new Date(visDato); d.setDate(d.getDate() + delta); gaTilDato(d); };
+  const gaUke = (delta: number) => { const d = new Date(visDato); d.setDate(d.getDate() + delta * 7); gaTilDato(d); };
+  const gaManed = (delta: number) => gaTilDato(new Date(visDato.getFullYear(), visDato.getMonth() + delta, 1));
+  const gaAar = (delta: number) => gaTilDato(new Date(visDato.getFullYear() + delta, visDato.getMonth(), 1));
+  const gaIdag = () => gaTilDato(new Date());
+
+  const periodeNav = {
+    dag: { tittel: data.dag.label, forrige: () => gaDag(-1), neste: () => gaDag(1) },
+    uke: { tittel: data.ukeLabel, forrige: () => gaUke(-1), neste: () => gaUke(1) },
+    maaned: { tittel: data.maaned.label, forrige: () => gaManed(-1), neste: () => gaManed(1) },
+    aar: { tittel: String(visDato.getFullYear()), forrige: () => gaAar(-1), neste: () => gaAar(1) },
+  }[vis as "dag" | "uke" | "maaned" | "aar"];
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
-          <Caps>{data.ukeLabel}</Caps>
+          <PeriodeNav tittel={periodeNav.tittel} onForrige={periodeNav.forrige} onNeste={periodeNav.neste} onIdag={gaIdag} />
           <div style={{ marginTop: 10 }}>
             <Tittel mobile={mobile} em="kalender">Din</Tittel>
           </div>

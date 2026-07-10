@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { audit } from "@/lib/audit";
 import { nonEmpty } from "@/lib/validation/schemas";
+import { prisma } from "@/lib/prisma";
 
 const FeedbackSchema = z.object({
   nps: z.number().int().min(0, "NPS må være minst 0").max(10, "NPS kan være maks 10"),
@@ -23,6 +24,15 @@ type Input = {
 export async function submitFeedback(input: Input): Promise<void> {
   FeedbackSchema.parse(input);
   const user = await requireConsentingUser();
+
+  await prisma.appFeedback.create({
+    data: {
+      userId: user.id,
+      type: input.type,
+      tekst: input.tekst,
+      side: "portal/meg/feedback",
+    },
+  });
 
   await audit({
     actorId: input.anonym ? "anonym" : user.id,
