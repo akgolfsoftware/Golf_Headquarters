@@ -33,6 +33,9 @@ export const T = {
   info: "#5AA9F0",
   // Akse-farger (pyramiden, uendret kanon)
   ax: { FYS: "#3DBE78", TEK: "#E8B43C", SLAG: "#5AA9F0", SPILL: "#D1F843", TURN: "#F0683E" } as const,
+  // Tee-markørfarger (ekte fysiske teefarger, ikke merkevare-tokens — innkapslet
+  // her så komponent-/skjermfilene forblir hex-frie)
+  tee: { hvit: "#F5F5F5", gul: "#FFD600", rod: "#E53935" } as const,
   // Typografi
   disp: '"Familjen Grotesk",Inter,system-ui,sans-serif',
   ui: "Inter,system-ui,sans-serif",

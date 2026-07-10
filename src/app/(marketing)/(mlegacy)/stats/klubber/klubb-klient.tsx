@@ -7,7 +7,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { Reveal } from "@/components/stats/reveal";
-import type { SEED_KLUBBER } from "./page";
+import type { SEED_KLUBBER } from "@/app/(marketing)/stats/klubber/page";
 
 type Klubb = (typeof SEED_KLUBBER)[number];
 
