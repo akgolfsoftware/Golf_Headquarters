@@ -120,6 +120,44 @@ function SgRad({ navn, verdi }: { navn: string; verdi: number | null }) {
   );
 }
 
+/**
+ * Granulær SG-gruppe (buckets fra taksonomien). null ⇒ «— ingen slag»,
+ * aldri fabrikkert verdi. Putting vises i fot (lagres i meter — kanon).
+ */
+function BucketKort({
+  tittel,
+  rader,
+}: {
+  tittel: string;
+  rader: Array<[string, number | null]>;
+}) {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-4">
+      <div className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+        {tittel}
+      </div>
+      {rader.map(([navn, verdi]) => (
+        <div key={navn} className="flex items-center justify-between py-1">
+          <span className="font-mono text-[11px] text-muted-foreground">{navn}</span>
+          {verdi == null ? (
+            <span className="font-mono text-[11px] text-muted-foreground/60">— ingen slag</span>
+          ) : (
+            <span
+              className={cn(
+                "font-mono text-xs font-semibold",
+                verdi >= 0 ? "text-success" : "text-destructive",
+              )}
+            >
+              {verdi >= 0 ? "+" : "−"}
+              {Math.abs(verdi).toFixed(2).replace(".", ",")}
+            </span>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default async function RundeDetalj({
   params,
 }: {
@@ -180,6 +218,20 @@ export default async function RundeDetalj({
   const antallKomplette = kjedeStatus.filter((k) => k.komplett).length;
   const visKjedeStatus =
     erEier && runde.holeScores.length > 0 && runde.sgSource !== "beregnet" && runde.sgSource !== "manual";
+
+  // Største lekkasje blant hovedkategoriene (kun negative — ellers ingen linje).
+  const kategorier: Array<[string, number | null]> = [
+    ["tee-slagene", runde.sgOtt],
+    ["innspillene", runde.sgApp],
+    ["nærspillet", runde.sgArg],
+    ["puttingen", runde.sgPutt],
+  ];
+  const verste = kategorier
+    .filter((k): k is [string, number] => k[1] != null && k[1] < 0)
+    .sort((a, b) => a[1] - b[1])[0];
+  const storsteLekkasje = verste
+    ? { navn: verste[0], tekst: `−${Math.abs(verste[1]).toFixed(1).replace(".", ",")}` }
+    : null;
 
   const sgTotal = runde.sgTotal;
   const sgTotalTekst =
@@ -285,16 +337,90 @@ export default async function RundeDetalj({
         )}
       </div>
 
-      {/* Strokes Gained */}
+      {/* Strokes Gained — hvor slagene ble tjent og tapt */}
       <div className="mb-3 mt-7 flex items-baseline justify-between">
         <Eyebrow as="span">Strokes Gained</Eyebrow>
+        {runde.sgSource === "beregnet" && (
+          <span className="rounded-full bg-success/10 px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.06em] text-success">
+            Beregnet fra slag-kjeden
+          </span>
+        )}
+        {runde.sgSource === "manual" && (
+          <span className="rounded-full bg-secondary px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
+            Manuelt ført
+          </span>
+        )}
       </div>
-      <div className="max-w-[520px] rounded-2xl border border-border bg-card p-[18px]">
-        <SgRad navn="Off the tee" verdi={runde.sgOtt} />
-        <SgRad navn="Approach" verdi={runde.sgApp} />
-        <SgRad navn="Around green" verdi={runde.sgArg} />
-        <SgRad navn="Putting" verdi={runde.sgPutt} />
-      </div>
+      {runde.sgTotal == null ? (
+        <div className="max-w-[520px] rounded-2xl border border-border bg-card p-[18px]">
+          <p className="text-sm text-muted-foreground">
+            Strokes Gained krever slag-for-slag-kjeden — vi gjetter aldri.
+          </p>
+          {erEier && (
+            <Link
+              href={
+                runde.holeScores.length > 0
+                  ? `/portal/mal/runder/${id}/fullfor`
+                  : "/portal/runde/logg"
+              }
+              className="mt-3 inline-flex h-10 items-center justify-center rounded-full border border-primary px-4 font-mono text-[12px] font-bold uppercase tracking-[0.06em] text-primary transition-colors hover:bg-primary/5"
+            >
+              {runde.holeScores.length > 0 ? "Fullfør kjeden" : "Før slag for slag"}
+            </Link>
+          )}
+        </div>
+      ) : (
+        <>
+          <div className="max-w-[520px] rounded-2xl border border-border bg-card p-[18px]">
+            <SgRad navn="Tee-slag" verdi={runde.sgOtt} />
+            <SgRad navn="Innspill" verdi={runde.sgApp} />
+            <SgRad navn="Nærspill" verdi={runde.sgArg} />
+            <SgRad navn="Putting" verdi={runde.sgPutt} />
+            {storsteLekkasje && (
+              <p className="mt-2 border-t border-border pt-3 text-xs text-muted-foreground">
+                Største lekkasje:{" "}
+                <span className="font-semibold text-destructive">
+                  {storsteLekkasje.navn} ({storsteLekkasje.tekst})
+                </span>
+              </p>
+            )}
+          </div>
+
+          {/* Granulære buckets — kun der det finnes slag */}
+          <div className="mt-3 grid max-w-[520px] gap-3 sm:grid-cols-2">
+            <BucketKort
+              tittel="Tee og innspill — per avstand"
+              rader={[
+                ["Tee-slag", runde.sgTee],
+                ["200 m+", runde.sgApp200],
+                ["150–200 m", runde.sgApp150],
+                ["100–150 m", runde.sgApp100],
+                ["50–100 m", runde.sgApp50],
+              ]}
+            />
+            <BucketKort
+              tittel="Nærspill"
+              rader={[
+                ["Chip (≤12 m)", runde.sgChip],
+                ["Pitch", runde.sgPitch],
+                ["Bunker", runde.sgBunker],
+              ]}
+            />
+            <BucketKort
+              tittel="Putting — per lengde (ft)"
+              rader={[
+                ["0–3 ft", runde.sgPutt0_3],
+                ["3–5 ft", runde.sgPutt3_5],
+                ["5–10 ft", runde.sgPutt5_10],
+                ["10–15 ft", runde.sgPutt10_15],
+                ["15–25 ft", runde.sgPutt15_25],
+                ["25–40 ft", runde.sgPutt25_40],
+                ["40 ft+", runde.sgPutt40plus],
+              ]}
+            />
+          </div>
+        </>
+      )}
 
       {/* Knapperad */}
       <div className="mt-4 flex max-w-[520px] gap-2.5">
