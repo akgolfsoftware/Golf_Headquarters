@@ -16,6 +16,7 @@
 import { useActionState, useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
+import { MMobilMeny } from "./marked-ramme";
 import { T } from "@/lib/v2/tokens";
 import { Icon, LogoAK, Caps, Kort } from "@/components/v2";
 import { Inndata, Velger, TekstOmraade } from "@/components/v2/skjema";
@@ -100,7 +101,7 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
           </Link>
         )}
         {mobile ? (
-          <Icon name="menu" size={20} style={{ color: T.fg }} />
+          <MMobilMeny aktiv={aktiv} />
         ) : (
           <MCta small href="/auth/signup">
             Kom i gang gratis

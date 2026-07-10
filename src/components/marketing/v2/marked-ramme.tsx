@@ -47,6 +47,96 @@ const MNAV: { id: string; l: string; href: string }[] = [
   { id: "priser", l: "Priser", href: "/priser" },
 ];
 
+/**
+ * Ekte mobilmeny (hamburger → fullskjerms-panel). Erstatter det tidligere rene
+ * pynte-ikonet: åpner nav-lenkene + Logg inn + Kom i gang gratis. Låser
+ * body-scroll mens åpen, lukker ved lenkeklikk (navigasjon).
+ */
+export function MMobilMeny({ aktiv }: { aktiv: string }) {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+  return (
+    <>
+      <button
+        type="button"
+        aria-label="Åpne meny"
+        aria-expanded={open}
+        onClick={() => setOpen(true)}
+        className="v2-press v2-focus"
+        style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 40, height: 40, background: "transparent", border: "none", cursor: "pointer", borderRadius: 10, padding: 0 }}
+      >
+        <Icon name="menu" size={20} style={{ color: T.fg }} />
+      </button>
+      {open && (
+        <div
+          className="dark"
+          style={{ position: "fixed", inset: 0, zIndex: 80, background: `color-mix(in srgb, ${T.bg} 96%, transparent)`, backdropFilter: "blur(14px)", display: "flex", flexDirection: "column", padding: "16px 22px calc(24px + env(safe-area-inset-bottom))", colorScheme: "dark" }}
+        >
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <LogoAK size={24} />
+            <button
+              type="button"
+              aria-label="Lukk meny"
+              onClick={() => setOpen(false)}
+              className="v2-press v2-focus"
+              style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 40, height: 40, background: "transparent", border: "none", cursor: "pointer", borderRadius: 10, padding: 0 }}
+            >
+              <Icon name="x" size={20} style={{ color: T.fg }} />
+            </button>
+          </div>
+          <nav aria-label="Meny" style={{ display: "flex", flexDirection: "column", marginTop: 26 }}>
+            {MNAV.map((n) => (
+              <Link
+                key={n.id}
+                href={n.href}
+                onClick={() => setOpen(false)}
+                className="v2-press"
+                style={{
+                  fontFamily: T.disp,
+                  fontSize: 26,
+                  fontWeight: 700,
+                  letterSpacing: "-0.02em",
+                  color: aktiv === n.id ? T.lime : T.fg,
+                  textDecoration: "none",
+                  padding: "13px 0",
+                  borderBottom: `1px solid ${T.border}`,
+                }}
+              >
+                {n.l}
+              </Link>
+            ))}
+          </nav>
+          <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: 10 }}>
+            <Link
+              href="/auth/login"
+              onClick={() => setOpen(false)}
+              className="v2-press"
+              style={{ display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.ui, fontSize: 15, fontWeight: 600, color: T.fg, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 9999, padding: "14px 28px", textDecoration: "none" }}
+            >
+              Logg inn
+            </Link>
+            <Link
+              href="/auth/signup"
+              onClick={() => setOpen(false)}
+              className="v2-press"
+              style={{ display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.ui, fontSize: 15, fontWeight: 600, color: T.onLime, background: T.lime, borderRadius: 9999, padding: "14px 28px", textDecoration: "none" }}
+            >
+              Kom i gang gratis
+            </Link>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 export function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
   return (
     <div
@@ -94,7 +184,7 @@ export function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
           </Link>
         )}
         {mobile ? (
-          <Icon name="menu" size={20} style={{ color: T.fg }} />
+          <MMobilMeny aktiv={aktiv} />
         ) : (
           <MCta small href="/auth/signup">
             Kom i gang gratis

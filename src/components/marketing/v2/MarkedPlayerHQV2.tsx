@@ -13,6 +13,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { T, type AkseKey } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
+import { MMobilMeny } from "./marked-ramme";
 import {
   Caps,
   FordelingRad,
@@ -72,7 +73,7 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
       )}
       <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
         {!mobile && <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg2, cursor: "pointer" }}>Logg inn</span>}
-        {mobile ? <Icon name="menu" size={20} style={{ color: T.fg }} /> : <MCta small>Kom i gang gratis</MCta>}
+        {mobile ? <MMobilMeny aktiv={aktiv} /> : <MCta small>Kom i gang gratis</MCta>}
       </span>
     </div>
   );

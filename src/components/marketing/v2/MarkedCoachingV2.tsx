@@ -14,6 +14,7 @@
 import { useEffect, useState, type ReactNode, type CSSProperties } from "react";
 import { T } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
+import { MMobilMeny } from "./marked-ramme";
 import { Kort, Caps, StatusPill, AvatarInit, LogoAK } from "@/components/v2";
 
 /* ── Marketing-skala (litt større type, mer luft — samme palett) ── */
@@ -64,7 +65,7 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
       )}
       <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
         {!mobile && <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg2, cursor: "pointer" }}>Logg inn</span>}
-        {mobile ? <Icon name="menu" size={20} style={{ color: T.fg }} /> : <MCta small>Kom i gang gratis</MCta>}
+        {mobile ? <MMobilMeny aktiv={aktiv} /> : <MCta small>Kom i gang gratis</MCta>}
       </span>
     </div>
   );
