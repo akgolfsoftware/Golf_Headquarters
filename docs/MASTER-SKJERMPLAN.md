@@ -746,6 +746,18 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 Full kronologisk byggehistorikk flyttet til [`docs/arkiv/master-skjermplan-endringslogg.md`](arkiv/master-skjermplan-endringslogg.md)
 2026-07-06 — denne fila var 822 linjer og loggen drukna den faktiske statustabellen. Siste hendelser:
 
+- 11. juli (Bølge B — AgencyOS-detaljskjermer til v2, branch `claude/bolge-b-agencyos`):
+  **12 skjermer rebygget på v2:** agencyos/spillere (stall-tabell, ny MiniSpark-primitiv),
+  agent-detalj, gruppe-detalj + timeplan, admin plan-detalj (4 faner), spiller-plan-detalj
+  coach-context (5 faner), turnering-detalj, økt-detalj (coach-context), oppfølgingskø
+  (kanban) + oppfølging-alias, daglig AI-brief, coach-varsler (ny master-skjermplan-rad),
+  workspace Notion-sync + prosjekter. Admin error/not-found golfdata fjernet. Alle rike
+  interaktive delkomponenter (drag-and-drop, wizard-modaler, agent-kjøring-paneler) er
+  tailwind-only og gjenbrukt uendret — kun golfdata-chrome byttet til v2. Etter denne
+  bølgen finnes kun **1 gjenværende golfdata-referanse i hele /admin**
+  (`spillere/spillere-tabell.tsx` — utenfor denne bølgens scope, egen oppfølging).
+  tsc 0 feil, fullt bygg grønt (inkl. sw.js-steget).
+
 - 11. juli (Bølge A — PlayerHQ-detaljskjermer til v2, branch `claude/blissful-gates-763ac3`):
   **ALLE /portal-sider er nå golfdata-frie.** Rebygget på v2: utfordring-detalj, runde-detalj
   (Scorekort + SgKategorier), slag-registrering, loggfør runde, TrackMan-hub + sesjonsdetalj,
