@@ -169,12 +169,15 @@ export async function getTrainingStats(
   period: "7d" | "30d" | "90d" | "1y" | "all" = "30d",
 ): Promise<TrainingStats> {
   const from = startOfPeriod(period);
+  // Øvre grense = nå: planlagte fremtidige økter er ikke gjennomført trening
+  // og skal aldri telle i volum eller «Siste økter».
+  const naa = new Date();
 
   const [sessions, drills] = await Promise.all([
     prisma.trainingSessionV2.findMany({
       where: {
         studentId: userId,
-        ...(from && { startTime: { gte: from } }),
+        startTime: { ...(from ? { gte: from } : {}), lte: naa },
       },
       select: {
         id: true,

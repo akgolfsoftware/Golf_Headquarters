@@ -253,7 +253,7 @@ export function RundeLoggKlient({ modus, baner }: RundeLoggKlientProps) {
                     fontFamily: T.ui,
                     fontSize: 12,
                     fontWeight: 700,
-                    color: "#0D0E0D",
+                    color: T.onLime,
                   }}
                 >
                   Fortsett
