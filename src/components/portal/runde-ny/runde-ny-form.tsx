@@ -24,33 +24,12 @@ import { useRouter } from "next/navigation";
 import { Calendar, Check, Minus, Plus, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { logRoundManual } from "@/app/portal/mal/runder/ny/actions";
+import { parTemplate } from "@/lib/portal-runder/par-template";
 
 type Course = { id: string; name: string; par: number };
 
-const HOLES = 18;
 const MIN_SCORE = 1;
 const MAX_SCORE = 12;
-
-/**
- * Nøytral par-fordeling for 18 hull utledet fra banens totale par.
- * Banedata har ikke per-hull-par, så dette er kun et startpunkt spilleren
- * justerer — ikke fabrikkerte banetall presentert som ekte data.
- */
-function parTemplate(coursePar: number): number[] {
-  // Modellen mangler per-hull-par. Bruk fasitens realistiske 18-hulls miks
-  // (3/4/5, sum 71) og juster siste hull(ene) mot banens totalpar — aldri flat.
-  const MIKS = [4, 3, 5, 4, 4, 3, 4, 5, 4, 4, 4, 3, 5, 4, 4, 5, 3, 4]; // 71
-  const holes = MIKS.slice();
-  let diff = coursePar - 71;
-  for (let i = HOLES - 1; i >= 0 && diff !== 0; i--) {
-    const justert = holes[i] + Math.sign(diff);
-    if (justert >= 3 && justert <= 5) {
-      holes[i] = justert;
-      diff -= Math.sign(diff);
-    }
-  }
-  return holes;
-}
 
 /** Birdie/par/bogey/dobbel+ — fasitens fargekoding (kun tekstfarge). */
 function scoreTextClass(diff: number): string {

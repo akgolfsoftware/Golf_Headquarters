@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
+import { parTemplate } from "@/lib/portal-runder/par-template";
 
 export type LogRoundManualInput = {
   courseId: string;
@@ -30,7 +31,10 @@ export type LogRoundManualInput = {
 
 /**
  * logRoundManual — registrerer en manuell runde (uten GolfBox-import).
- * Lager en Round-rad med score og valgfrie statistikk-felter.
+ * Lager en Round-rad + HoleScore per hull (samme deterministiske par-mal
+ * som skjemaet viser — banen mangler ekte per-hull-par) i samme transaksjon.
+ * HoleScore er det «Fullfør kjeden» leter etter — uten den kan en
+ * hurtig-registrert runde aldri tilbys full Strokes Gained i etterkant.
  */
 export async function logRoundManual(input: LogRoundManualInput) {
   const user = await requireConsentingUser();
@@ -40,21 +44,48 @@ export async function logRoundManual(input: LogRoundManualInput) {
     ? sgValues.reduce<number>((sum, v) => sum + (v ?? 0), 0)
     : null;
 
-  await prisma.round.create({
-    data: {
-      userId: user.id,
-      courseId: input.courseId,
-      playedAt: new Date(input.playedAt),
-      score: input.score,
-      notes: input.notes ?? null,
-      sgOtt: input.sgOtt ?? null,
-      sgApp: input.sgApp ?? null,
-      sgArg: input.sgArg ?? null,
-      sgPutt: input.sgPutt ?? null,
-      sgTotal,
-      // Håndtastet SG skal aldri overskrives av autoberegning (recomputeRoundSg)
-      sgSource: sgTotal != null ? "manual" : null,
-    },
+  const course = await prisma.courseDefinition.findUnique({
+    where: { id: input.courseId },
+    select: { par: true },
+  });
+  if (!course) throw new Error("Banen finnes ikke");
+
+  const pars = parTemplate(course.par);
+  const holeScores = (input.holeScores ?? [])
+    .slice(0, pars.length)
+    .map((strokes, i) => ({
+      holeNumber: i + 1,
+      par: pars[i],
+      strokes,
+      putts: null,
+      fairway: null,
+      gir: null,
+    }));
+
+  await prisma.$transaction(async (tx) => {
+    const round = await tx.round.create({
+      data: {
+        userId: user.id,
+        courseId: input.courseId,
+        playedAt: new Date(input.playedAt),
+        score: input.score,
+        notes: input.notes ?? null,
+        sgOtt: input.sgOtt ?? null,
+        sgApp: input.sgApp ?? null,
+        sgArg: input.sgArg ?? null,
+        sgPutt: input.sgPutt ?? null,
+        sgTotal,
+        // Håndtastet SG skal aldri overskrives av autoberegning (recomputeRoundSg)
+        sgSource: sgTotal != null ? "manual" : null,
+      },
+      select: { id: true },
+    });
+
+    if (holeScores.length > 0) {
+      await tx.holeScore.createMany({
+        data: holeScores.map((h) => ({ ...h, roundId: round.id })),
+      });
+    }
   });
 
   revalidatePath("/portal/mal/runder");
