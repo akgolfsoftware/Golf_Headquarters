@@ -10,6 +10,7 @@ import {
   Calendar,
   MessageSquare,
   Activity,
+  CircleDot,
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -43,6 +44,14 @@ const L_PHASE_LABEL = {
   SPESIAL:   "Spesialiseringsperiode",
   TURNERING: "Turneringsperiode",
 } as const;
+
+/** Samme kølle-id/navn-par som tapper-siden (session_ball_logs.club). */
+const TAPPER_KOLLE_NAVN: Record<string, string> = {
+  driver: "Driver",
+  "iron-7": "7-jern",
+  wedge: "Wedge",
+  putter: "Putter",
+};
 
 export default async function SessionDetalj({
   params,
@@ -147,6 +156,15 @@ export default async function SessionDetalj({
   });
 
   const erFullfort = session.status === "COMPLETED" && session.log != null;
+
+  // Ballantall tappet på range (session_ball_logs) — kun rader med count > 0.
+  const ballLogs = (
+    await prisma.sessionBallLog.findMany({
+      where: { planSessionId: session.id, count: { gt: 0 } },
+      orderBy: { count: "desc" },
+    })
+  ).map((b) => ({ club: TAPPER_KOLLE_NAVN[b.club] ?? b.club, count: b.count }));
+  const ballTotalt = ballLogs.reduce((sum, b) => sum + b.count, 0);
 
   // KPI-beregning hvis fullført
   let kpiData: {
@@ -283,6 +301,28 @@ export default async function SessionDetalj({
               value={kpiData.sgEffekt}
               sub="estimat for økten"
             />
+          </div>
+        </section>
+      )}
+
+      {/* Ball tappet på range — auto-telt fra live-tapperen (session_ball_logs) */}
+      {ballLogs.length > 0 && (
+        <section className="rounded-xl border border-border bg-card p-6">
+          <div className="mb-4 flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
+            <CircleDot className="h-3 w-3" strokeWidth={1.75} />
+            Ball tappet på range · {ballTotalt} totalt
+          </div>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {ballLogs.map((b) => (
+              <div key={b.club}>
+                <div className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+                  {b.club}
+                </div>
+                <div className="mt-1 font-mono text-[24px] font-medium leading-tight -tracking-[0.01em] tabular-nums">
+                  {b.count}
+                </div>
+              </div>
+            ))}
           </div>
         </section>
       )}
