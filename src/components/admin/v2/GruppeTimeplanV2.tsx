@@ -7,7 +7,7 @@
  * inputs, styles med T-tokens) — samme kontrakt som legacy.
  */
 
-import { Caps, Kort, StatusPill, MikroMeta, TomTilstand } from "@/components/v2";
+import { Caps, Kort, Knapp, StatusPill, MikroMeta, TomTilstand } from "@/components/v2";
 import { T } from "@/lib/v2/tokens";
 
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
@@ -108,7 +108,7 @@ function TimeplanSeksjon({
                 <div style={{ minWidth: 0 }}>
                   <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
                     <span style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, color: T.fg }}>{s.title}</span>
-                    {fast && s.recurring && <StatusPill tone="lime">{s.recurring === "WEEKLY" ? "UKENTLIG" : s.recurring}</StatusPill>}
+                    {fast && s.recurring && <StatusPill tone="info">{s.recurring === "WEEKLY" ? "UKENTLIG" : s.recurring}</StatusPill>}
                   </div>
                   <p style={{ fontFamily: T.mono, fontSize: 10.5, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut, margin: "6px 0 0" }}>
                     {storForbokstav(NB_WEEKDAY.format(new Date(s.startAt)))} · {NB_TIME.format(new Date(s.startAt))}–
@@ -130,23 +130,9 @@ function TimeplanSeksjon({
                   style={{ display: "flex", alignItems: "flex-end", gap: 6 }}
                 >
                   <input type="datetime-local" name="newStart" required defaultValue={defaultNewStart} style={{ ...inputStyle, width: 180 }} />
-                  <button
-                    type="submit"
-                    style={{
-                      height: 36,
-                      padding: "0 12px",
-                      borderRadius: 8,
-                      border: "none",
-                      background: T.panel2,
-                      color: T.fg,
-                      fontFamily: T.ui,
-                      fontSize: 11.5,
-                      fontWeight: 600,
-                      cursor: "pointer",
-                    }}
-                  >
+                  <Knapp type="submit" ghost>
                     Dupliser
-                  </button>
+                  </Knapp>
                 </form>
               </div>
             </div>
@@ -192,23 +178,7 @@ export function GruppeTimeplanV2({
           </select>
           <input type="number" name="maxParticipants" placeholder="Antall deltagere (max)" style={inputStyle} />
           <div style={{ gridColumn: "1 / -1" }}>
-            <button
-              type="submit"
-              style={{
-                height: 36,
-                padding: "0 18px",
-                borderRadius: 9999,
-                border: "none",
-                background: T.lime,
-                color: T.onLime,
-                fontFamily: T.ui,
-                fontSize: 12.5,
-                fontWeight: 700,
-                cursor: "pointer",
-              }}
-            >
-              Opprett
-            </button>
+            <Knapp type="submit">Opprett</Knapp>
           </div>
         </form>
       </Kort>

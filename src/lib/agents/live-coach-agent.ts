@@ -13,7 +13,7 @@ import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "@/lib/ai/client
 import { notify } from "@/lib/notifications";
 import { aggregateSg } from "@/lib/sg";
 import { runAgent, type AgentResult } from "./agent-runner";
-import type { Prisma } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 
 export const AGENT_NAME = "live-coach-agent";
 
@@ -258,16 +258,48 @@ export async function runLiveCoachAgent(opts: {
         },
       });
     } else {
-      thread = await prisma.coachingSession.create({
-        data: {
-          userId,
-          coachId,
-          kind: "LIVE",
-          liveSessionId: sessionId,
-          liveSessionKind: kind,
-          messages: [nyMelding] as unknown as Prisma.InputJsonValue,
-        },
-      });
+      try {
+        thread = await prisma.coachingSession.create({
+          data: {
+            userId,
+            coachId,
+            kind: "LIVE",
+            liveSessionId: sessionId,
+            liveSessionKind: kind,
+            messages: [nyMelding] as unknown as Prisma.InputJsonValue,
+          },
+        });
+      } catch (err) {
+        // Race: to samtidige kall så begge `eksisterende = null` og forsøkte
+        // create() samtidig (dobbelttrykk/retry på samme økt). Unik-constrainten
+        // userId_liveSessionId fanger dette som P2002 — den andre kjøringen
+        // vant. Les raden på nytt: create() setter alltid messages:[nyMelding]
+        // med role "assistant", så vinnerraden har garantert velkomsten
+        // allerede. Vi hopper ut idempotent i stedet for å la feilen boble opp.
+        if (!(err instanceof Prisma.PrismaClientKnownRequestError) || err.code !== "P2002") {
+          throw err;
+        }
+        const vinnerRad = await prisma.coachingSession.findUnique({
+          where: { userId_liveSessionId: { userId, liveSessionId: sessionId } },
+        });
+        if (!vinnerRad) throw err;
+        const vinnerMeldinger = lesMeldinger(vinnerRad.messages);
+        if (vinnerMeldinger.some((m) => m.role === "assistant")) {
+          return {
+            signalsWritten: 0,
+            planActionsWritten: 0,
+            output: { threadId: vinnerRad.id, welcomeSent: false },
+          };
+        }
+        // Defensivt (bør ikke inntreffe i praksis): raden fantes uten velkomst
+        // ennå — legg til vår melding i stedet for å tape den.
+        thread = await prisma.coachingSession.update({
+          where: { id: vinnerRad.id },
+          data: {
+            messages: [...vinnerMeldinger, nyMelding] as unknown as Prisma.InputJsonValue,
+          },
+        });
+      }
     }
 
     const liveUrl = `/portal/live/${sessionId}`;

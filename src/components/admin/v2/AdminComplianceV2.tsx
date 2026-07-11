@@ -18,6 +18,8 @@
  */
 
 import { usePathname, useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { sendMeldingTilSpiller } from "@/app/admin/(legacy)/messages/actions";
 import {
   Caps,
   Tittel,
@@ -33,6 +35,7 @@ import {
   TomTilstand,
   PillVelger,
   Icon,
+  Knapp,
   UkeStripe,
   HjelpTips,
   etterlevFarge,
@@ -84,6 +87,45 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
     if (studentId) q.set("studentId", studentId);
     router.push(`${pathname}?${q.toString()}`);
   };
+
+  // ── Send melding direkte fra stall-raden (prefylt kontekst) ────
+  const [meldingTil, setMeldingTil] = useState<string | null>(null);
+  const [meldingTekst, setMeldingTekst] = useState("");
+  const [meldingFeil, setMeldingFeil] = useState<string | null>(null);
+  const [sendtTil, setSendtTil] = useState<string | null>(null);
+  const [sender, startSending] = useTransition();
+
+  function apneMelding(s: StallRow) {
+    setMeldingFeil(null);
+    setSendtTil(null);
+    if (meldingTil === s.playerId) {
+      setMeldingTil(null);
+      return;
+    }
+    setMeldingTil(s.playerId);
+    setMeldingTekst(
+      s.staleDays != null && s.staleDays >= 7
+        ? `Hei ${s.playerName.split(" ")[0]}, jeg ser du ikke har logget økt på ${s.staleDays} dager — alt i orden?`
+        : s.planned > 0 && s.pct < 60
+          ? `Hei ${s.playerName.split(" ")[0]}, jeg ser du ligger litt bak planen (${s.done}/${s.planned} økter) — trenger du en hånd?`
+          : `Hei ${s.playerName.split(" ")[0]}, `,
+    );
+  }
+
+  function sendStallMelding(playerId: string) {
+    const tekst = meldingTekst.trim();
+    if (!tekst) return;
+    startSending(async () => {
+      const res = await sendMeldingTilSpiller(playerId, tekst);
+      if (res.ok) {
+        setMeldingTil(null);
+        setMeldingTekst("");
+        setSendtTil(playerId);
+      } else {
+        setMeldingFeil(res.error ?? "Kunne ikke sende melding");
+      }
+    });
+  }
 
   // ── Hode + periodevelger ──────────────────────────────────────
   const hode = (
@@ -262,6 +304,85 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
       .filter(Boolean)
       .join(" · ");
     const velg = () => gaaTil(curKode, s.playerId);
+    const meldingApen = meldingTil === s.playerId;
+
+    const meldingKnapp = (
+      <span
+        role="button"
+        tabIndex={0}
+        aria-label={`Send melding til ${s.playerName}`}
+        onClick={(e) => {
+          e.stopPropagation();
+          apneMelding(s);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.stopPropagation();
+            e.preventDefault();
+            apneMelding(s);
+          }
+        }}
+        className="v2-focus"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 28,
+          height: 28,
+          borderRadius: 8,
+          flex: "none",
+          cursor: "pointer",
+          background: meldingApen ? T.panel3 : "transparent",
+          border: `1px solid ${meldingApen ? T.border : "transparent"}`,
+        }}
+      >
+        <Icon name="message-circle" size={14} style={{ color: sendtTil === s.playerId ? T.up : T.mut }} />
+      </span>
+    );
+
+    const meldingsboks = meldingApen && (
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          padding: "10px 12px",
+          margin: "0 -10px 4px",
+          borderRadius: 10,
+          background: T.panel2,
+          border: `1px solid ${T.border}`,
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
+        }}
+      >
+        <textarea
+          autoFocus
+          value={meldingTekst}
+          onChange={(e) => setMeldingTekst(e.target.value)}
+          rows={2}
+          maxLength={4000}
+          style={{
+            width: "100%",
+            resize: "vertical",
+            fontFamily: T.ui,
+            fontSize: 13,
+            color: T.fg,
+            background: T.panel,
+            border: `1px solid ${T.border}`,
+            borderRadius: 8,
+            padding: "8px 10px",
+          }}
+        />
+        {meldingFeil && (
+          <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.down }}>{meldingFeil}</span>
+        )}
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+          <Knapp ghost onClick={() => setMeldingTil(null)}>Avbryt</Knapp>
+          <Knapp icon="send" onClick={() => sendStallMelding(s.playerId)} disabled={sender || !meldingTekst.trim()}>
+            Send
+          </Knapp>
+        </div>
+      </div>
+    );
 
     return (
       <div key={s.playerId}>
@@ -275,7 +396,7 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
             padding: "11px 10px",
             margin: "0 -10px",
             borderRadius: 10,
-            borderBottom: last ? "none" : `1px solid ${T.border}`,
+            borderBottom: last && !meldingApen ? "none" : `1px solid ${T.border}`,
             cursor: "pointer",
           }}
         >
@@ -293,8 +414,10 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
           <span style={{ width: 80, flex: "none", textAlign: "right", fontFamily: T.mono, fontSize: 10.5, fontWeight: 600, color: LOGG_FARGE[s.lastLogBand], fontVariantNumeric: "tabular-nums" }}>
             {s.lastLog}
           </span>
+          {meldingKnapp}
           <span style={{ width: 2, height: 22, borderRadius: 2, background: valgt ? T.lime : "transparent", flex: "none" }} />
         </div>
+        <div className="hidden md:block" style={{ margin: meldingApen ? "8px -10px 0" : 0 }}>{meldingsboks}</div>
 
         {/* Mobil: kort-rad (sparkline droppet, sist-logget under navn) */}
         <div className="md:hidden">
@@ -304,13 +427,17 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
             title={s.playerName}
             sub={`${s.planned > 0 ? `${s.done}/${s.planned} økter` : "Ingen plan"} · ${s.lastLog}`}
             meta={
-              <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: s.planned > 0 ? pctFarge : T.mut, fontVariantNumeric: "tabular-nums" }}>
-                {s.planned > 0 ? `${s.pct} %` : "—"}
+              <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: s.planned > 0 ? pctFarge : T.mut, fontVariantNumeric: "tabular-nums" }}>
+                  {s.planned > 0 ? `${s.pct} %` : "—"}
+                </span>
+                {meldingKnapp}
               </span>
             }
             trailing={valgt ? <span style={{ width: 2, height: 20, borderRadius: 2, background: T.lime, flex: "none" }} /> : undefined}
-            last={last}
+            last={last && !meldingApen}
           />
+          <div style={{ margin: meldingApen ? "8px 0 4px" : 0 }}>{meldingsboks}</div>
         </div>
       </div>
     );

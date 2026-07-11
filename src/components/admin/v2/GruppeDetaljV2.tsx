@@ -110,7 +110,7 @@ export function GruppeDetaljV2({
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <Caps>AgencyOS · Grupper</Caps>
-            <StatusPill tone="lime">{data.type.toUpperCase()}</StatusPill>
+            <StatusPill tone="info">{data.type.toUpperCase()}</StatusPill>
           </div>
           <div style={{ marginTop: 10 }}>
             <Tittel em={data.navn}>{""}</Tittel>
@@ -245,7 +245,7 @@ export function GruppeDetaljV2({
                         {m.schoolYear && ` · ${m.schoolYear}`}
                       </div>
                     </div>
-                    {m.erPro && <StatusPill tone="lime">PRO</StatusPill>}
+                    {m.erPro && <StatusPill tone="info">PRO</StatusPill>}
                   </Link>
                   <A.FjernMedlemButton groupId={data.id} userId={m.userId} navn={m.navn} />
                 </div>
