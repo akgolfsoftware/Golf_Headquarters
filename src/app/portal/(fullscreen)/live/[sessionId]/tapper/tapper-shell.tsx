@@ -13,6 +13,7 @@ import {
 import { LiveCoachPanel } from "@/components/portal/live/LiveCoachPanel";
 import type { LiveCoachPanelData } from "@/components/portal/live/types";
 import { saveTapperCounts } from "./actions";
+import { leggIKo, tomKo } from "@/lib/offline-queue/tapper-queue";
 
 type Club = { id: string; name: string };
 
@@ -45,7 +46,7 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
   const [startedAt] = useState(() => new Date());
   const [now, setNow] = useState(() => new Date());
   const [showClubPicker, setShowClubPicker] = useState(false);
-  const [lagreFeil, setLagreFeil] = useState(false);
+  const [lagreStatus, setLagreStatus] = useState<"ok" | "kolagt" | "gitt-opp">("ok");
 
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 30_000);
@@ -63,12 +64,16 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
     const payload = Object.entries(countsRef.current).map(([club, count]) => ({ club, count }));
     try {
       const res = await saveTapperCounts(sessionId, payload);
-      setLagreFeil(!res.ok);
-      return res.ok;
+      if (res.ok) {
+        setLagreStatus("ok");
+        return true;
+      }
     } catch {
-      setLagreFeil(true);
-      return false;
+      /* nettverksfeil — køes lokalt under, ikke bare et in-memory flagg */
     }
+    await leggIKo(sessionId, payload);
+    setLagreStatus("kolagt");
+    return false;
   }
 
   function planleggLagring() {
@@ -81,6 +86,17 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
       if (saveTimer.current) clearTimeout(saveTimer.current);
     };
   }, []);
+
+  // Nettet kommer tilbake — prøv å tømme den lokale køen for denne økten.
+  useEffect(() => {
+    async function synk() {
+      const resultat = await tomKo(sessionId, saveTapperCounts);
+      if (resultat === "synket") setLagreStatus("ok");
+      else if (resultat === "gitt-opp") setLagreStatus("gitt-opp");
+    }
+    window.addEventListener("online", synk);
+    return () => window.removeEventListener("online", synk);
+  }, [sessionId]);
 
   async function avslutt() {
     await lagre();
@@ -335,7 +351,11 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
         </div>
 
         <p className="mt-2 text-center font-mono text-[11px] text-white/40">
-          {lagreFeil ? "Kunne ikke lagre — prøver igjen ved neste tap." : "Lagres automatisk."}
+          {lagreStatus === "gitt-opp"
+            ? "Kunne ikke synke etter flere forsøk — sjekk nettet ditt."
+            : lagreStatus === "kolagt"
+              ? "Lagret lokalt — synker automatisk når nettet er tilbake."
+              : "Lagres automatisk."}
         </p>
       </div>
 
