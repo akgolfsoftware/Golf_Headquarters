@@ -17,20 +17,16 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Button as GdButton } from "@/components/athletic/golfdata";
+import { T } from "@/lib/v2/tokens";
 import { kansellerBooking } from "./actions";
 
 export function AvlysOktKnapp({
   bookingId,
   spillerNavn,
-  triggerClassName,
-  triggerSize = "sm",
   fullWidth = false,
 }: {
   bookingId: string;
   spillerNavn: string;
-  triggerClassName?: string;
-  triggerSize?: "sm" | "md" | "lg";
   fullWidth?: boolean;
 }) {
   const router = useRouter();
@@ -53,14 +49,27 @@ export function AvlysOktKnapp({
 
   return (
     <>
-      <GdButton
-        variant="ghost"
-        size={triggerSize}
-        className={`text-destructive ${fullWidth ? "w-full" : ""} ${triggerClassName ?? ""}`}
+      <button
+        type="button"
         onClick={() => setOpen(true)}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: fullWidth ? "100%" : "auto",
+          padding: "10px 18px",
+          borderRadius: 9999,
+          border: `1px solid ${T.border}`,
+          background: T.panel3,
+          color: T.down,
+          fontFamily: T.ui,
+          fontSize: 12.5,
+          fontWeight: 600,
+          cursor: "pointer",
+        }}
       >
         Avlys
-      </GdButton>
+      </button>
 
       <Dialog open={open} onOpenChange={(o) => (pending ? undefined : setOpen(o))}>
         <DialogContent size="sm">

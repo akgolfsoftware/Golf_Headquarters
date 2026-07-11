@@ -4,7 +4,7 @@
 // Kaller server-action startOkt → kobler Booking til en TrainingSessionV2 og
 // navigerer til live-konsollens brief (/admin/live/[sessionId]/brief).
 
-import { Button } from "@/components/athletic/golfdata";
+import { Knapp } from "@/components/v2";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
@@ -13,12 +13,10 @@ import { startOkt } from "./actions";
 export function StartOktKnapp({
   bookingId,
   label,
-  size = "sm",
   fullWidth = false,
 }: {
   bookingId: string;
   label: string;
-  size?: "sm" | "md" | "lg";
   fullWidth?: boolean;
 }) {
   const router = useRouter();
@@ -39,15 +37,9 @@ export function StartOktKnapp({
 
   return (
     <div className={fullWidth ? "flex-1" : undefined}>
-      <Button
-        variant="signal"
-        size={size}
-        className={fullWidth ? "w-full" : undefined}
-        onClick={handleClick}
-        disabled={pending}
-      >
+      <Knapp full={fullWidth} onClick={handleClick} disabled={pending}>
         {pending ? "Starter…" : label}
-      </Button>
+      </Knapp>
       {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
     </div>
   );
