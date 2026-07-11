@@ -84,6 +84,16 @@ const RAW = {
     forklaring:
       "Tidsrommet innenfor en gruppeøkt som er satt av til at spilleren trener selvstendig, uten direkte styring fra coach.",
   },
+  spredningSigma: {
+    tittel: "σ (spredning)",
+    forklaring:
+      "Standardavvik — hvor mye slagene dine varierer rundt snittet, målt i meter. σ side er variasjon til høyre/venstre, σ lengde er variasjon i lengde. Lavere tall betyr jevnere slag.",
+  },
+  skjevhetBias: {
+    tittel: "Bias (skjevhet)",
+    forklaring:
+      "Den gjennomsnittlige miss-retningen din på dette hullet — for eksempel 4 m høyre. Brukes til å justere siktepunktet: misser du systematisk høyre, sikt lenger mot venstre.",
+  },
   dispersjon: {
     tittel: "Slag-dispersion",
     forklaring:
