@@ -498,7 +498,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Audit-log | `/admin/audit-log` | – | --- | ✓ | ~ | ~ | ~ |
 | · Audit-detalj | `/admin/audit-log/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | AI-agenter | `/admin/agents` | – | --- | ✓ | ~ | ~ | ~ |
-| · Agent-detalj | `/admin/agents/[agentId]` | – | --- | ✓ | ~ | ~ | ~ |
+| · Agent-detalj | `/admin/agents/[agentId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | E-postmaler | `/admin/email-templates` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger e-postmal | `/admin/email-templates/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
 | Profil | `/admin/profile` | – | --- | ✓ | ~ | ~ | ~ |
