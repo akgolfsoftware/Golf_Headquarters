@@ -6,6 +6,7 @@
 
 export * from "./core";
 export * from "./feil-laste";
+export * from "./pyramide-syklus";
 export * from "./hjelp";
 export * from "./compliance-viz";
 export * from "./datavis";
