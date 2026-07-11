@@ -136,10 +136,10 @@ export async function rescheduleBooking(
       return { ok: false, error: "Ny tid må være minst 1 time fram i tid." };
     }
 
-    // Bruk samme coach-id som original — vi vet ikke hvem som var koblet, så
-    // fall tilbake til en tom streng (availability-check ignorerer ekstern
-    // kalender i så fall, men DB-konflikt blir fortsatt fanget).
-    const coachId = "";
+    // Bruk ekte coach-id fra bookingen (denormalisert på Booking-modellen).
+    // Tom streng kun hvis bookingen aldri hadde en coach tilknyttet — da er
+    // det ingen kalender å sjekke mot uansett, DB-konflikt fanges fortsatt.
+    const coachId = booking.coachId ?? "";
     const slotOk = await isSlotStillAvailable(
       booking.serviceTypeId,
       newStartAt,
