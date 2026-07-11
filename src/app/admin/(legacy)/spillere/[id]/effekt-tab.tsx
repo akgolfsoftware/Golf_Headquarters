@@ -15,7 +15,7 @@ import {
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
-import { rateEffectiveness } from "@/app/admin/(legacy)/plans/[planId]/actions";
+import { rateEffectiveness } from "@/app/admin/plans/[planId]/actions";
 
 export type EffektRad = {
   id: string;

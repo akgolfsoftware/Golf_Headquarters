@@ -341,15 +341,16 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 |---|---|---|---|---|---|---|---|
 | **Cockpit (hjem)** ★ | `/admin/agencyos` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v13 scope + components (full)
 | · Uka (kanban) | `/admin/agencyos/uka` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Complete v13 (golfdata scope + cards) |
-| · Spillere (snarvei) | `/admin/agencyos/spillere` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
+| · Spillere (snarvei) | `/admin/agencyos/spillere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Økonomi | `/admin/agencyos/okonomi` | – | --- | ✓ | ~ | ~ | ~ |
 | · Caddie (AI-chat) | `/admin/agencyos/caddie` | – | ✓✓– | ✓ | ~ | – | ✓ |
 | · Caddie-aktivitet | `/admin/agencyos/caddie/aktivitet` | – | --- | ✓ | ~ | ~ | ~ |
 | Admin-rot (gml. hjem) | `/admin` | – | --- | ✓ | ~ | ~ | ✓ |
-| Daglig AI-brief | `/admin/brief` | – | --- | ✓ | ✓ | ~ | ~ |
+| Daglig AI-brief | `/admin/brief` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| Varsler (agent-forslag/signaler/meldinger) | `/admin/varsler` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | Coaching-board | `/admin/board` | – | --- | ✓ | ~ | ~ | ~ |
-| Oppfølging | `/admin/oppfolging` | – | --- | ✓ | ~ | ~ | ~ |
-| Oppgave-kø | `/admin/queue` | – | --- | ✓ | ~ | ~ | ~ |
+| Oppfølging (alias → queue) | `/admin/oppfolging` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| Oppfølgingskø (kanban) | `/admin/queue` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | **Innboks** ★ | `/admin/innboks` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | Meldinger (alt. → redirect) | `/admin/messages` | – | --- | ✓ | ✓ | – | ✓ |
 | Kommunikasjon-hub | `/admin/kommunikasjon` | – | --- | ✓ | ~ | ~ | ~ |
@@ -363,8 +364,8 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Tildelt meg | `/admin/workspace/tildelt-meg` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Oppgaver | `/admin/workspace/oppgaver` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Oppgave-detalj | `/admin/workspace/oppgaver/[id]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Prosjekter | `/admin/workspace/prosjekter` | – | --- | ✓ | ~ | ~ | ~ |
-| · Notion-sync | `/admin/workspace/notion` | – | --- | ✓ | ~ | ~ | ~ |
+| · Prosjekter | `/admin/workspace/prosjekter` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| · Notion-sync | `/admin/workspace/notion` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 
 ### Stall (spillere, grupper, talent)
 
@@ -377,13 +378,14 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · **Analyse (coach-dybde)** = golfdata elite-visning (v13, bølge 1 2026-07-04) ★ | `/admin/spillere/[id]/analyse` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Profil | `/admin/spillere/[id]/profil` | – | --- | ✓ | ~ | ~ | ~ |
 | · **Workbench (coach-i-spiller)** ★ | `/admin/spillere/[id]/workbench` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
-| · Plan-detalj | `/admin/spillere/[id]/plan/[planId]` | – | --- | ✓ | ~ | ~ | ~ |
+| · Plan-detalj | `/admin/spillere/[id]/plan/[planId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Fremgang (trening vs SG) † | `/admin/spillere/[id]/fremgang` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
 | · Tester | `/admin/spillere/[id]/tester` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
 | · Tildel test | `/admin/spillere/[id]/tildel-test` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger | `/admin/spillere/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
 | Grupper | `/admin/grupper` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| · Gruppe-detalj (+ VG-trinn filter/badge, 2026-07-07) | `/admin/grupper/[id]` | – | --- | ✓ | ~ | ~ | ~ |
+| · Gruppe-detalj (+ VG-trinn filter/badge, 2026-07-07) | `/admin/grupper/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| · Gruppe-timeplan (faste/kommende/tidligere + dupliser) | `/admin/grupper/[id]/timeplan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · **WANG Toppidrett — åpen treningsplan** (offentlig, ingen innlogging) | `/team-wang` | ~ | --- | ✓ | ~ | ✓ | † |
 | · **GFGK Junior — åpen treningsplan** (offentlig, 4 gruppefaner: Mini/Basis/Utvikling/Elite) | `/gfgk-junior` | ~ | --- | ✓ | ~ | ✓ | † |
 | Talent-hub | `/admin/talent` | – | --- | ✓ | ~ | ~ | ~ |
@@ -405,7 +407,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Plan-sentral (hub) | `/admin/planlegge` | – | --- | ✓ | ~ | ✓ | ✓ | Real prisma lookup for first player + redirect to workbench. Full auth. 
 | Planer (alle) | `/admin/plans` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Ny plan (Plan-bygger) | `/admin/plans/new` | – | –✓– | ✓ | ~ | ✓ | ~ |
-| · Plan-detalj | `/admin/plans/[planId]` | – | --- | ✓ | ~ | ~ | ✓ |
+| · Plan-detalj | `/admin/plans/[planId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Maler (alt. → redirect) | `/admin/plans/templates` | – | --- | ✓ | ✓ | – | ✓ |
 | · Ny mal (alt. → redirect) | `/admin/plans/templates/ny` | – | --- | ✓ | ✓ | – | ✓ |
 | · Rediger mal (alt. → redirect) | `/admin/plans/templates/[id]/rediger` | – | --- | ✓ | ✓ | – | ✓ |
@@ -420,7 +422,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Teknisk plan | `/admin/teknisk-plan` | – | --- | ✓ | ~ | ~ | ~ |
 | · Per spiller | `/admin/teknisk-plan/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
 | **Turneringer** ★ | `/admin/tournaments` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
-| · Turnering-detalj | `/admin/tournaments/[id]` | – | ✓✓– | ✓ | ~ | ~ | ~ |
+| · Turnering-detalj | `/admin/tournaments/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Ny turnering | `/admin/tournaments/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | · Dubletter (rydd) | `/admin/tournaments/dubletter` | – | --- | ✓ | ~ | ~ | ~ |
 | Økter | `/admin/okter` | – | --- | ✓ | ~ | ~ | ~ |
@@ -432,7 +434,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Daglig drift (hub) | `/admin/gjennomfore` | ✓ | --- | ✓ | ~ | ~ | ~ | v13 composed (golfdata Button/Card/Eyebrow + scope)
-| · Økt-detalj | `/admin/gjennomfore/okter/[id]` | – | --- | ✓ | ~ | ~ | ~ |
+| · Økt-detalj | `/admin/gjennomfore/okter/[id]` | ✓ | ✓✓– | ✓ | ~ | ✓ | † |
 | Kalender | `/admin/kalender` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v13 golfdata (TidsGrid/Periodeplan + scope)
 | · Uke (redirect) | `/admin/kalender/uke` → `/admin/kalender` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Måned | `/admin/kalender/maned` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
@@ -498,7 +500,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Audit-log | `/admin/audit-log` | – | --- | ✓ | ~ | ~ | ~ |
 | · Audit-detalj | `/admin/audit-log/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | AI-agenter | `/admin/agents` | – | --- | ✓ | ~ | ~ | ~ |
-| · Agent-detalj | `/admin/agents/[agentId]` | – | --- | ✓ | ~ | ~ | ~ |
+| · Agent-detalj | `/admin/agents/[agentId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | E-postmaler | `/admin/email-templates` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger e-postmal | `/admin/email-templates/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
 | Profil | `/admin/profile` | – | --- | ✓ | ~ | ~ | ~ |
@@ -743,6 +745,18 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 Full kronologisk byggehistorikk flyttet til [`docs/arkiv/master-skjermplan-endringslogg.md`](arkiv/master-skjermplan-endringslogg.md)
 2026-07-06 — denne fila var 822 linjer og loggen drukna den faktiske statustabellen. Siste hendelser:
+
+- 11. juli (Bølge B — AgencyOS-detaljskjermer til v2, branch `claude/bolge-b-agencyos`):
+  **12 skjermer rebygget på v2:** agencyos/spillere (stall-tabell, ny MiniSpark-primitiv),
+  agent-detalj, gruppe-detalj + timeplan, admin plan-detalj (4 faner), spiller-plan-detalj
+  coach-context (5 faner), turnering-detalj, økt-detalj (coach-context), oppfølgingskø
+  (kanban) + oppfølging-alias, daglig AI-brief, coach-varsler (ny master-skjermplan-rad),
+  workspace Notion-sync + prosjekter. Admin error/not-found golfdata fjernet. Alle rike
+  interaktive delkomponenter (drag-and-drop, wizard-modaler, agent-kjøring-paneler) er
+  tailwind-only og gjenbrukt uendret — kun golfdata-chrome byttet til v2. Etter denne
+  bølgen finnes kun **1 gjenværende golfdata-referanse i hele /admin**
+  (`spillere/spillere-tabell.tsx` — utenfor denne bølgens scope, egen oppfølging).
+  tsc 0 feil, fullt bygg grønt (inkl. sw.js-steget).
 
 - 11. juli (Bølge A — PlayerHQ-detaljskjermer til v2, branch `claude/blissful-gates-763ac3`):
   **ALLE /portal-sider er nå golfdata-frie.** Rebygget på v2: utfordring-detalj, runde-detalj

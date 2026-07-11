@@ -131,7 +131,7 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner, groupId, grou
       try {
         if (isGroup && groupId) {
           // For gruppe: opprett GroupSchedule med antall deltagere
-          const { opprettGruppeTrening } = await import("@/app/admin/(legacy)/grupper/[id]/actions");
+          const { opprettGruppeTrening } = await import("@/app/admin/grupper/[id]/actions");
           const varighetMin = valgtTjeneste.durationMin;
           const endAt = new Date(startAt.getTime() + varighetMin * 60000);
           await opprettGruppeTrening(groupId, {

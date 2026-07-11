@@ -38,7 +38,7 @@ import {
   opprettExerciseDefinition,
   type LeggTilOktInput,
   type DrillInput,
-} from "@/app/admin/(legacy)/plans/[planId]/actions";
+} from "@/app/admin/plans/[planId]/actions";
 import { createAdHocSession } from "@/app/portal/(legacy)/ny-okt/actions";
 
 type DrillValg = {

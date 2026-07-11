@@ -109,6 +109,11 @@ const RAW = {
     forklaring:
       "Målinger fra TrackMan-radaren, som ballhastighet, lengde og spredning per kølle. Importeres fra CSV- eller HTML-eksport og brukes til å følge kølleavstander og stabilitet over tid.",
   },
+  turneringPrioritet: {
+    tittel: "Prioritet",
+    forklaring:
+      "Rangerer hvem som får plass hvis turneringen har begrenset antall startplasser. Høyere prioritet betyr større sjanse for å bli tatt inn ved overtegning.",
+  },
   utfordringScore: {
     tittel: "Score i utfordringer",
     forklaring:
