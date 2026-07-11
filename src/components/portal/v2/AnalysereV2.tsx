@@ -313,7 +313,9 @@ function TabTrening({ data, mobile }: { data: AnalysereData; mobile: boolean }) 
 
   const toggle = (x: string) => setAktive((p) => (p.indexOf(x) !== -1 ? p.filter((y) => y !== x) : [...p, x]));
   const synlig = training.byAxis.filter((b) => aktive.indexOf(b.axis) !== -1);
-  const maxMin = Math.max(1, ...synlig.map((b) => b.minutes));
+  // Ekte andel av total tid (summerer til 100 %) — kortet heter «andel av
+  // tiden», så prosenten må aldri normaliseres mot største akse.
+  const synligTotalMin = Math.max(1, synlig.reduce((sum, b) => sum + b.minutes, 0));
 
   // Sekundært innsiktskort under filteret (desktop) — mest trente akse totalt
   // siste 30 dager. Rene tall som allerede ligger i training.byAxis, ingen ny
@@ -379,7 +381,7 @@ function TabTrening({ data, mobile }: { data: AnalysereData; mobile: boolean }) 
                   key={b.axis}
                   code={b.axis}
                   label={SG_ETIKETT(b.axis)}
-                  pct={(b.minutes / maxMin) * 100}
+                  pct={(b.minutes / synligTotalMin) * 100}
                   value={`${b.minutes} min · ${b.sessions}`}
                   kol2
                   last={i === arr.length - 1}
