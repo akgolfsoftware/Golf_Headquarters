@@ -750,6 +750,17 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   byttet `booking/actions.ts` til det DB-drevne systemet, og slettet det nå døde
   `send-booking-email.ts` + `templates/`-mappa. tsc + build + 400/400 tester grønt.
 
+- 11. juli (booking-konsolidering, fase 2–3): **fase 2 (rydd legacy vs v2-duplikater) trengte
+  ingen kode** — grep + git-historikk viste at kun index-sidene (`/portal/booking`,
+  `/admin/bookinger`) er byttet til v2; alle undersider (`/portal/booking/ny`, `[bookingId]`,
+  `coach/[coachId]`, `anlegg/[anleggId]`, `bekreftet`, `/admin/bookinger/ny`) er fortsatt
+  fungerende legacy-kode uten v2-erstatning, og aktivt lenket til fra global søk, coach-sider,
+  spiller-detalj og «Mine bookinger». Ikke reelle duplikater — å omdirigere dem ville brukket
+  ekte flyter. **Fase 3 (hente trener-katalog + anlegg-detalj fra `akgolf-booking`) utsatt av
+  Anders** til normal bølge-rekkefølge i v2-migreringen — begge skjermene mangler godkjent v2-design
+  (Design-kolonne «–» over), og bygging ville brutt den låste regelen om at nye, store flater
+  venter på godkjent mockup. Ingen kode endret i denne runden.
+
 - 11. juli (QA-runde, komplett gjennomgang desktop+mobil): **KRITISK shell-bug funnet og fikset** —
   `BunnNavLenker` (mobil-bunn-nav) i `src/components/v2/shell.tsx` satte `display: "flex"` som
   inline style, som alltid vant over Tailwind-klassen `md:hidden`. Konsekvens: bunn-navigasjonen
