@@ -1197,6 +1197,10 @@ model Round {
   sgPutt15_25  Float?
   sgPutt25_40  Float?
   sgPutt40plus Float?
+  // 'manual' = håndtastet (overskrives ALDRI av beregning) | 'beregnet' = fra slag-kjeden
+  sgSource     String?
+  // 'turnering' | 'trening' — null = ukjent (eksisterende runder forblir umerket)
+  roundType    String?
   notes        String?
   createdAt    DateTime @default(now())
 
@@ -1259,11 +1263,14 @@ model Shot {
   notes         String?
   createdAt     DateTime @default(now())
 
-  // For shot-map og runde-statistikk
+  // For shot-map og runde-statistikk (GPS: X=lng, Y=lat — lib/baneguide/shot-coords.ts)
   startX        Float?
   startY        Float?
   endX          Float?
   endY          Float?
+  // Valgfri siktelinje (UpGame-mønsteret): dispersjon måles mot intensjon når satt
+  targetX       Float?
+  targetY       Float?
   mentalScore   Int?     @db.SmallInt // 1-5
 
   round Round @relation(fields: [roundId], references: [id], onDelete: Cascade)
@@ -1271,6 +1278,21 @@ model Shot {
   @@unique([roundId, holeNumber, shotNumber])
   @@index([roundId, holeNumber])
   @@map("shots")
+}
+
+// Persistert live-tapper: baller per kølle per plan-økt (skrives debounced fra
+// tapper-flaten). Plain planSessionId uten @relation — additivt og isolert,
+// samme mønster som trainingSessionV2Id på Booking.
+model SessionBallLog {
+  id            String   @id @default(cuid())
+  planSessionId String
+  club          String
+  count         Int      @default(0)
+  updatedAt     DateTime @default(now()) @updatedAt
+
+  @@unique([planSessionId, club])
+  @@index([planSessionId])
+  @@map("session_ball_logs")
 }
 
 model HoleScore {
@@ -4434,4 +4456,45 @@ model InvariantOverride {
   @@index([sessionId])
   @@index([planId])
   @@map("invariant_overrides")
+}
+
+// AgencyOS e-post-innboks (2026-07-10) — post@akgolf.no inn på cockpit-
+// forsiden. Agent drafter svar automatisk ved inntak; Anders godkjenner og
+// sender manuelt (aldri auto-send). Isolert (ingen @relation) per gotcha —
+// additiv via db execute.
+model InnboksEpost {
+  id               String    @id @default(cuid())
+  fraEpost         String
+  fraNavn          String?
+  emne             String
+  brodtekst        String    @db.Text
+  mottattAt        DateTime  @default(now())
+  // "NY" | "UTKAST_KLART" | "SENDT" | "ARKIVERT"
+  status           String    @default("NY")
+  utkastSvar       String?   @db.Text
+  utkastGenerertAt DateTime?
+  sendtAt          DateTime?
+  sendtAv          String?
+
+  @@index([status, mottattAt])
+  @@map("innboks_epost")
+}
+
+// Beta-tilbakemelding + support-henvendelser (2026-07-10) — spor F6. Fanger
+// opp det som i dag ble kastet på gulvet (kun tekst-lengde i audit-log).
+// Isolert (ingen @relation) per gotcha — additiv via db execute.
+model AppFeedback {
+  id        String   @id @default(cuid())
+  userId    String
+  // "bug" | "forslag" | "ros" | "sporsmal" | "SUPPORT"
+  type      String
+  tekst     String   @db.Text
+  // Hvilken skjerm/flate tilbakemeldingen kom fra (route eller lesbar kilde).
+  side      String?
+  // "NY" | "SETT"
+  status    String   @default("NY")
+  createdAt DateTime @default(now())
+
+  @@index([status, createdAt])
+  @@map("app_feedback")
 }

@@ -1,26 +1,31 @@
 /**
- * /admin/teknisk-plan — Oversikt over tekniske planer per spiller
+ * v2-forhåndsvisning — AgencyOS Teknisk-plan (oversikt, retning C). Egen
+ * top-level route-group (v2preview) som IKKE arver AdminShell — kun
+ * root-layout — så V2Shell leverer all chrome (IkonRail/BunnNav) i mørk v2-scope.
  *
- * Viser alle PLAYER-brukere med status for teknisk plan,
- * samt maler som kan brukes som utgangspunkt.
+ * Auth + datakontrakt gjenbrukt 1:1 fra den ekte siden
+ * (src/app/admin/teknisk-plan/page.tsx): samme requirePortalUser-guard
+ * (COACH/ADMIN) og samme to Prisma-spørringer (PLAYER-brukere med aktiv plan +
+ * TEK-økter, og godkjente PlanTemplate-maler). Aggregatene per spiller regnes
+ * ut her (server) så komponenten forblir ren visning. Ærlig tomt når ingen data.
+ *
+ * Server component.
  */
-import Link from "next/link";
-import { ChevronRight, ClipboardList, Settings2 } from "lucide-react";
+
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
-import { EmptyState } from "@/components/shared/empty-state";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import {
-  NyTekniskPlanMalButton,
-  SeAllePlanMalerLink,
-  BrukMalLink,
-} from "./teknisk-plan-actions";
+  AdminTekniskPlanV2,
+  type AdminTekniskPlanData,
+} from "@/components/admin/v2/AdminTekniskPlanV2";
 
 export const dynamic = "force-dynamic";
 
-export default async function TekniskPlanOversikt() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+export default async function V2AdminTekniskPlanPreviewPage() {
+  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
+  // Samme loader-kontrakt som den ekte /admin/teknisk-plan-oversikten.
   const [spillere, maler] = await Promise.all([
     prisma.user.findMany({
       where: { role: "PLAYER" },
@@ -51,182 +56,37 @@ export default async function TekniskPlanOversikt() {
     prisma.planTemplate.findMany({
       where: { approved: true },
       orderBy: { createdAt: "desc" },
+      select: { id: true, name: true, description: true, varighetUker: true },
     }),
   ]);
 
+  const data: AdminTekniskPlanData = {
+    spillere: spillere.map((s) => {
+      const aktivPlan = s.trainingPlans[0] ?? null;
+      const tekOkter = aktivPlan?.sessions ?? [];
+      return {
+        id: s.id,
+        navn: s.name,
+        hcp: s.hcp,
+        homeClub: s.homeClub,
+        avatarUrl: s.avatarUrl,
+        planNavn: aktivPlan?.name ?? null,
+        tekTotalt: tekOkter.length,
+        tekFullfort: tekOkter.filter((o) => o.status === "COMPLETED").length,
+        tekTidMin: tekOkter.reduce((sum, o) => sum + o.durationMin, 0),
+      };
+    }),
+    maler: maler.map((m) => ({
+      id: m.id,
+      navn: m.name,
+      beskrivelse: m.description,
+      varighetUker: m.varighetUker,
+    })),
+  };
+
   return (
-    <div className="space-y-8">
-      <PageHeader
-        eyebrow="Verktøy"
-        titleItalic="Teknisk Plan"
-        sub={`${spillere.length} spillere · ${maler.length} maler tilgjengelig`}
-        actions={<NyTekniskPlanMalButton />}
-      />
-
-      {/* Aktive planer per spiller */}
-      <section>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Aktive planer per spiller · {spillere.length} spillere
-          </h2>
-        </div>
-
-        {spillere.length === 0 ? (
-          <EmptyState
-            icon={ClipboardList}
-            titleItalic="Ingen spillere"
-            titleTrail="registrert"
-            sub="Opprett spillere under Elever for å komme i gang."
-          />
-        ) : (
-          <div className="overflow-hidden rounded-lg border border-border bg-card">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-secondary text-left font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                  <th className="px-6 py-4 font-medium">Spiller</th>
-                  <th className="px-4 py-4 font-medium">Aktiv plan</th>
-                  <th className="px-4 py-4 text-right font-medium">TEK-økter</th>
-                  <th className="px-4 py-4 text-right font-medium">TEK fullført</th>
-                  <th className="px-6 py-4 font-medium">Handling</th>
-                </tr>
-              </thead>
-              <tbody>
-                {spillere.map((s) => {
-                  const aktivPlan = s.trainingPlans[0] ?? null;
-                  const tekOkter = aktivPlan?.sessions ?? [];
-                  const tekTotalt = tekOkter.length;
-                  const tekFullfort = tekOkter.filter(
-                    (o) => o.status === "COMPLETED"
-                  ).length;
-                  const tekTid = tekOkter.reduce(
-                    (sum, o) => sum + o.durationMin,
-                    0
-                  );
-
-                  return (
-                    <tr
-                      key={s.id}
-                      className="border-b border-border last:border-b-0 hover:bg-secondary/40"
-                    >
-                      <td className="px-6 py-4">
-                        <div className="text-[13px] font-semibold leading-tight text-foreground">
-                          {s.name}
-                        </div>
-                        <div className="mt-1 font-mono text-[11px] text-muted-foreground">
-                          HCP {s.hcp?.toFixed(1).replace(".", ",") ?? "—"}
-                          {s.homeClub ? ` · ${s.homeClub}` : ""}
-                        </div>
-                      </td>
-                      <td className="px-4 py-4">
-                        {aktivPlan ? (
-                          <div>
-                            <Link
-                              href={`/admin/plans/${aktivPlan.id}`}
-                              className="text-[12px] font-medium text-foreground hover:text-primary"
-                            >
-                              {aktivPlan.name}
-                            </Link>
-                            <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">
-                              {aktivPlan.status}
-                            </div>
-                          </div>
-                        ) : (
-                          <span className="text-[12px] text-muted-foreground">
-                            Ingen aktiv plan
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-4 py-4 text-right">
-                        <div className="font-mono text-[13px] tabular-nums text-foreground">
-                          {tekTotalt}
-                        </div>
-                        <div className="font-mono text-[10px] text-muted-foreground">
-                          {(tekTid / 60).toFixed(1).replace(".", ",")} t
-                        </div>
-                      </td>
-                      <td className="px-4 py-4 text-right">
-                        <div
-                          className={`font-mono text-[13px] tabular-nums ${
-                            tekTotalt > 0 && tekFullfort / tekTotalt >= 0.75
-                              ? "text-primary"
-                              : "text-foreground"
-                          }`}
-                        >
-                          {tekTotalt > 0
-                            ? `${Math.round((tekFullfort / tekTotalt) * 100)}%`
-                            : "—"}
-                        </div>
-                        <div className="font-mono text-[10px] text-muted-foreground">
-                          {tekFullfort}/{tekTotalt}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <Link
-                          href={`/admin/teknisk-plan/${s.id}`}
-                          className="inline-flex items-center gap-1 text-[12px] font-medium text-primary hover:underline"
-                        >
-                          Teknisk plan
-                          <ChevronRight size={12} strokeWidth={1.5} />
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
-
-      {/* Maler */}
-      <section>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Maler · {maler.length}
-          </h2>
-          <SeAllePlanMalerLink />
-        </div>
-
-        {maler.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border bg-card/40 p-8 text-center">
-            <div className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-full bg-secondary text-muted-foreground">
-              <Settings2 size={20} strokeWidth={1.5} />
-            </div>
-            <p className="text-[13px] text-muted-foreground">
-              Ingen plan-maler ennå.
-            </p>
-            <NyTekniskPlanMalButton className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground transition-opacity hover:opacity-90" />
-          </div>
-        ) : (
-          <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {maler.map((m) => (
-              <li
-                key={m.id}
-                className="rounded-lg border border-border bg-card p-6"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <div className="text-[14px] font-semibold text-foreground">
-                      {m.name}
-                    </div>
-                    {m.description && (
-                      <p className="mt-1 text-[12px] text-muted-foreground">
-                        {m.description}
-                      </p>
-                    )}
-                    <div className="mt-2 font-mono text-[10px] text-muted-foreground">
-                      {m.varighetUker} uker
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <BrukMalLink />
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-    </div>
+    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <AdminTekniskPlanV2 data={data} />
+    </V2Shell>
   );
 }

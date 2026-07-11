@@ -33,6 +33,7 @@ import {
   mergeWeekSessions,
   type V2WeekSessionInput,
   type WeekSessionRow,
+  type PlanWeekSessionInput,
 } from "@/lib/workbench/merge-week-sessions";
 import type {
   Axis,
@@ -422,15 +423,15 @@ export async function loadWorkbenchData(
   }
 
   const mergedSessions = mergeWeekSessions(
-    weekSessions as WeekSessionRow[],
+    weekSessions as PlanWeekSessionInput[],
     v2WeekSessions as V2WeekSessionInput[],
   );
 
   // «I dag» markeres kun når vi faktisk ser på inneværende uke. -1 = ingen.
   const todayDow = offset === 0 ? (now.getDay() + 6) % 7 : -1;
 
-  // ── A · WeekView: header + dag-kolonner med blokker ──────────────
-  const weekHead = Array.from({ length: 5 }, (_, i) => {
+  // ── A · WeekView: header + dag-kolonner med blokker (alle 7 dager) ──
+  const weekHead = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(weekStart);
     d.setDate(d.getDate() + i);
     return {
@@ -441,7 +442,7 @@ export async function loadWorkbenchData(
     };
   });
 
-  const weekDays: WeekDay[] = Array.from({ length: 5 }, (_, i) => {
+  const weekDays: WeekDay[] = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(weekStart);
     d.setDate(d.getDate() + i);
     const isToday = i === todayDow;
@@ -458,8 +459,8 @@ export async function loadWorkbenchData(
     };
   });
 
-  // ── B · Tidslinje: 5 dag-seksjoner ──────────────────────────────
-  const dirBDays: DirBDayData[] = Array.from({ length: 5 }, (_, i) => {
+  // ── B · Tidslinje: dag-seksjoner (alle 7 dager) ──────────────────
+  const dirBDays: DirBDayData[] = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(weekStart);
     d.setDate(d.getDate() + i);
     const isToday = i === todayDow;
@@ -697,6 +698,8 @@ function sessionToWeekEvent(s: WeekSessionRow, now: Date): WeekEvent {
   if (loc) meta.push(["map-pin", loc]);
   return {
     id: s.id,
+    source: s.source,
+    status: s.status,
     h: start.getHours(),
     m: start.getMinutes(),
     durMin: s.durationMin,

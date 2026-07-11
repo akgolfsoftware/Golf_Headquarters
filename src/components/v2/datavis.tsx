@@ -12,7 +12,9 @@ import type { CSSProperties, ReactNode } from "react";
 import { Fragment, useState } from "react";
 import { T, fmtSg, type AkseKey } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
-import { Kort, TallHero, Caps, TomTilstand, CTAPill, AkseChip, InnsiktChip, DeltaChip, AvatarInit } from "./core";
+import { Kort, TallHero, Caps, TomTilstand, CTAPill, AkseChip, InnsiktChip, DeltaChip, AvatarInit, AKSE_NAVN, Rad } from "./core";
+import { HjelpTips } from "./hjelp";
+import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
 
 /* ── Delte hjelpere ───────────────────────────────────── */
 const kd = (v: number | null | undefined, d = 1): string =>
@@ -190,13 +192,64 @@ const DT_ROWS: DataTabellRow[] = [
   { navn: "Øyvind Rohjan", runder: 14, sg: 1.2 }, { navn: "Emma Berg", runder: 11, sg: 0.4 },
   { navn: "Jonas Lie", runder: 9, sg: -0.6 }, { navn: "Sara Holm", runder: 12, sg: -1.1 },
 ];
+/* Én cellevisning delt av tabell + mobil-kort: tall alltid komma-desimal
+   (aldri rå JS-float/punktum). Delta → fmtSg; øvrige numeriske → nb-NO m/
+   tusenskille + komma; tomt → «—». */
+function dtCelle(c: DataTabellColumn, v: DataTabellRow[string]): { vis: ReactNode; farge: string } {
+  const farge = c.delta && typeof v === "number" ? (v > 0 ? T.up : v < 0 ? T.down : T.fg2) : T.fg;
+  let vis: ReactNode;
+  if (v == null) vis = "—";
+  else if (c.delta && typeof v === "number") vis = fmtSg(v);
+  else if (typeof v === "number") vis = v.toLocaleString("nb-NO", { maximumFractionDigits: 2 });
+  else vis = v;
+  return { vis, farge };
+}
+
+/* Mobil-kort-modus: første kolonne blir Rad-tittel, resten stables som
+   mono-meta til høyre (label + verdi) — samme datakontrakt som tabellen. */
+function DataTabellKort({ columns, rows }: { columns: DataTabellColumn[]; rows: DataTabellRow[] }) {
+  const [titelKol, ...restKol] = columns;
+  return (
+    <div>
+      {rows.map((row, ri) => {
+        const { vis: tittel } = dtCelle(titelKol, row[titelKol.key]);
+        return (
+          <Rad
+            key={ri}
+            title={tittel}
+            meta={
+              restKol.length > 0 ? (
+                <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3 }}>
+                  {restKol.map((c) => {
+                    const { vis, farge } = dtCelle(c, row[c.key]);
+                    return (
+                      <span key={c.key} style={{ display: "inline-flex", alignItems: "baseline", gap: 6 }}>
+                        <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut }}>{c.label}</span>
+                        <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: farge, fontVariantNumeric: "tabular-nums" }}>{vis}</span>
+                      </span>
+                    );
+                  })}
+                </span>
+              ) : undefined
+            }
+            trailing={null}
+            last={ri === rows.length - 1}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 export interface DataTabellProps {
   columns?: DataTabellColumn[];
   rows?: DataTabellRow[];
   sortKey?: string;
   sortDir?: "asc" | "desc";
+  /** Slår på delt mobil-kort-modus (< md) i stedet for sidescrollende tabell. */
+  mobilKort?: boolean;
 }
-export function DataTabell({ columns = DT_COLS, rows = DT_ROWS, sortKey = "sg", sortDir = "desc" }: DataTabellProps) {
+export function DataTabell({ columns = DT_COLS, rows = DT_ROWS, sortKey = "sg", sortDir = "desc", mobilKort }: DataTabellProps) {
   const [sort, setSort] = useState<{ key: string; dir: "asc" | "desc" }>({ key: sortKey, dir: sortDir });
   if (!rows.length) return <TomTilstand icon="list" title="Ingen rader" sub="Tabellen fylles når det finnes data å vise." />;
   const sorted = [...rows].sort((a, b) => {
@@ -205,7 +258,7 @@ export function DataTabell({ columns = DT_COLS, rows = DT_ROWS, sortKey = "sg", 
     return sort.dir === "desc" ? -c : c;
   });
   const th: CSSProperties = { padding: "7px 10px", textAlign: "left", fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut, borderBottom: `1px solid ${T.borderS}`, whiteSpace: "nowrap" };
-  return (
+  const tabell = (
     <table style={{ width: "100%", borderCollapse: "collapse" }}>
       <thead><tr>
         {columns.map((c) => (
@@ -219,17 +272,9 @@ export function DataTabell({ columns = DT_COLS, rows = DT_ROWS, sortKey = "sg", 
         {sorted.map((row, ri) => (
           <tr key={ri}>
             {columns.map((c) => {
-              const v = row[c.key];
-              const col = c.delta && typeof v === "number" ? (v > 0 ? T.up : v < 0 ? T.down : T.fg2) : T.fg;
-              /* Tall alltid komma-desimal (aldri rå JS-float/punktum). Delta → fmtSg;
-                 øvrige numeriske → nb-NO m/ tusenskille + komma; tomt → «—». */
-              let vis: ReactNode;
-              if (v == null) vis = "—";
-              else if (c.delta && typeof v === "number") vis = fmtSg(v);
-              else if (typeof v === "number") vis = v.toLocaleString("nb-NO", { maximumFractionDigits: 2 });
-              else vis = v;
+              const { vis, farge } = dtCelle(c, row[c.key]);
               return (
-                <td key={c.key} style={{ padding: "9px 10px", textAlign: c.align || "left", borderBottom: ri === sorted.length - 1 ? "none" : `1px solid ${T.border}`, fontFamily: c.mono || c.delta ? T.mono : T.ui, fontSize: c.mono || c.delta ? 12.5 : 13, fontWeight: c.delta ? 700 : c.mono ? 600 : 500, color: col, fontVariantNumeric: "tabular-nums" }}>
+                <td key={c.key} style={{ padding: "9px 10px", textAlign: c.align || "left", borderBottom: ri === sorted.length - 1 ? "none" : `1px solid ${T.border}`, fontFamily: c.mono || c.delta ? T.mono : T.ui, fontSize: c.mono || c.delta ? 12.5 : 13, fontWeight: c.delta ? 700 : c.mono ? 600 : 500, color: farge, fontVariantNumeric: "tabular-nums" }}>
                   {vis}
                 </td>
               );
@@ -238,6 +283,13 @@ export function DataTabell({ columns = DT_COLS, rows = DT_ROWS, sortKey = "sg", 
         ))}
       </tbody>
     </table>
+  );
+  if (!mobilKort) return tabell;
+  return (
+    <>
+      <div className="hidden md:block">{tabell}</div>
+      <div className="md:hidden"><DataTabellKort columns={columns} rows={sorted} /></div>
+    </>
   );
 }
 
@@ -274,13 +326,23 @@ export interface SgKategorierProps {
   kategorier?: SgKategori[];
   baseline?: string;
   fagkoder?: boolean;
+  hjelp?: HjelpNokkel;
 }
-export function SgKategorier({ kategorier = SGK_DEMO, baseline = "Broadie scratch", fagkoder = false }: SgKategorierProps) {
+export function SgKategorier({ kategorier = SGK_DEMO, baseline = "Broadie scratch", fagkoder = false, hjelp }: SgKategorierProps) {
   const max = Math.max(0.5, ...kategorier.map((k) => Math.abs(k.sg)));
   const verst = kategorier.reduce((wi, k, i, a) => (k.sg < a[wi].sg ? i : wi), 0);
   return (
     <Kort>
-      {eyebrowRow("SG per kategori", `mot ${baseline}`)}
+      {eyebrowRow(
+        hjelp ? (
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            SG per kategori <HjelpTips k={hjelp} size={11} />
+          </span>
+        ) : (
+          "SG per kategori"
+        ),
+        `mot ${baseline}`,
+      )}
       {kategorier.map((k, i) => {
         const gain = k.sg >= 0, w = (Math.abs(k.sg) / max) * 50;
         return (
@@ -357,7 +419,8 @@ export interface ScorekortHull {
 export interface ScorekortSammendrag {
   score: number;
   par: number;
-  sg: number;
+  /** SG total for runden — null når SG ikke er beregnet (vises som «—»). */
+  sg: number | null;
 }
 const SK_DEMO: ScorekortHull[] = [4, 4, 3, 5, 4, 4, 3, 4, 5, 4, 3, 4, 5, 4, 4, 3, 5, 4].map((par, i) => ({
   nr: i + 1, par,
@@ -369,18 +432,26 @@ export interface ScorekortProps {
   hull?: ScorekortHull[];
   sammendrag?: ScorekortSammendrag | null;
   baseline?: string;
+  hjelp?: HjelpNokkel;
 }
-export function Scorekort({ hull = SK_DEMO, sammendrag = null, baseline = "Broadie scratch" }: ScorekortProps) {
-  if (!hull.length) return <Kort eyebrow="Scorekort"><TomTilstand icon="flag" title="Ingen runder ennå" sub="Logg en runde for å se hull-for-hull med Strokes Gained." /></Kort>;
+export function Scorekort({ hull = SK_DEMO, sammendrag = null, baseline = "Broadie scratch", hjelp }: ScorekortProps) {
+  const eyebrow = hjelp ? (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+      Scorekort <HjelpTips k={hjelp} size={11} />
+    </span>
+  ) : (
+    "Scorekort"
+  );
+  if (!hull.length) return <Kort eyebrow={eyebrow}><TomTilstand icon="flag" title="Ingen runder ennå" sub="Logg en runde for å se hull-for-hull med Strokes Gained." /></Kort>;
   const score = sammendrag ? sammendrag.score : hull.reduce((s, h) => s + h.score, 0);
   const par = sammendrag ? sammendrag.par : hull.reduce((s, h) => s + h.par, 0);
   const sg = sammendrag ? sammendrag.sg : hull.reduce((s, h) => s + (h.sg || 0), 0);
   const rel = score - par;
   return (
-    <Kort eyebrow="Scorekort" action={<span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>mot {baseline}</span>}>
+    <Kort eyebrow={eyebrow} action={<span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>mot {baseline}</span>}>
       <div style={{ display: "flex", gap: 28, alignItems: "baseline", marginBottom: 14 }}>
         <span style={{ ...mono(34), lineHeight: 1 }}>{score} <span style={{ fontSize: 14, color: skFarge(rel > 1 ? 2 : rel) }}>{rel === 0 ? "E" : rel > 0 ? `+${rel}` : rel}</span></span>
-        <span style={{ ...mono(20, sg >= 0 ? T.up : T.down) }}>{fmtSg(sg)} <span style={{ fontSize: 10, color: T.mut }}>SG</span></span>
+        <span style={{ ...mono(20, sg == null ? T.mut : sg >= 0 ? T.up : T.down) }}>{sg == null ? "—" : fmtSg(sg)} <span style={{ fontSize: 10, color: T.mut }}>SG</span></span>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(9, 1fr)", gap: 4 }}>
         {hull.map((h) => {
@@ -897,7 +968,7 @@ export function Pyramide({ data = PY_DEMO, max = 100, showValues = true }: Pyram
         const planPct = d.plan != null ? Math.max(0, Math.min(100, (d.plan / max) * 100)) : null;
         return (
           <div key={d.akse} style={{ display: "flex", alignItems: "center", gap: 11 }}>
-            <span style={{ width: 44, flex: "none", ...mono(10, T.fg2), letterSpacing: "0.08em" }}>{d.akse}</span>
+            <span style={{ width: 72, flex: "none", fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg2 }}>{AKSE_NAVN[d.akse as AkseKey] || d.akse}</span>
             <div style={{ flex: 1, position: "relative", height: 9, borderRadius: 9999, background: T.track }}>
               <div style={{ width: `${pct}%`, height: "100%", borderRadius: 9999, background: T.ax[d.akse as AkseKey] || T.mut, opacity: 0.85 }} />
               {planPct != null && <span title={`Plan ${d.plan}`} style={{ position: "absolute", top: -3, left: `calc(${planPct}% - 1px)`, width: 2, height: 15, background: T.fg, borderRadius: 1 }} />}

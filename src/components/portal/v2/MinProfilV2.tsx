@@ -15,20 +15,25 @@
  * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   T,
   Tittel,
   CTAPill,
+  Knapp,
   Kort,
   StatusPill,
   AvatarFoto,
   Rad,
   ProfilFelt,
+  Inndata,
   TomTilstand,
   Icon,
   type StatusTone,
 } from "@/components/v2";
+import { oppdaterProfil } from "@/app/portal/meg/actions";
+import { uploadAvatar } from "@/lib/storage/avatar";
 
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
@@ -87,7 +92,71 @@ function RadIkon({ name }: { name: string }) {
 
 export function MinProfilV2({ data }: { data: MinProfilData }) {
   const mobile = useMobile();
-  const { navn, avatarUrl, epost, hcp, homeClub, fodselsaar, samtykke } = data;
+  const router = useRouter();
+  const { navn, epost, hcp, homeClub, fodselsaar, samtykke } = data;
+
+  /* Redigerbare felter (minimum-scope: navn/HCP/klubb — samme actions som
+     den ekte oppdaterProfil-flyten på /portal/meg). Fødselsår krever full
+     dateOfBirth å redigere trygt og forblir skrivebeskyttet (ærlighet). */
+  const [navnFelt, setNavnFelt] = useState(navn);
+  const [hcpFelt, setHcpFelt] = useState(hcpTekst(hcp));
+  const [klubbFelt, setKlubbFelt] = useState(homeClub ?? "");
+  const [lagrer, startLagring] = useTransition();
+  const [feil, setFeil] = useState<string | null>(null);
+  const [lagret, setLagret] = useState(false);
+
+  /* Avatar-opplasting — ekte uploadAvatar-action (Supabase Storage). Egen
+     transition/pending-state så «Bytt bilde» ikke låser «Lagre endringer». */
+  const [avatarUrl, setAvatarUrl] = useState(data.avatarUrl);
+  const [avatarLagrer, startAvatarLagring] = useTransition();
+  const [avatarFeil, setAvatarFeil] = useState<string | null>(null);
+  const filInputRef = useRef<HTMLInputElement>(null);
+
+  function velgBilde(e: React.ChangeEvent<HTMLInputElement>) {
+    const fil = e.target.files?.[0];
+    if (!fil) return;
+    setAvatarFeil(null);
+    const formData = new FormData();
+    formData.append("file", fil);
+    startAvatarLagring(async () => {
+      try {
+        const res = await uploadAvatar(formData);
+        setAvatarUrl(res.url);
+        router.refresh();
+      } catch (err) {
+        setAvatarFeil(err instanceof Error ? err.message : "Opplasting feilet.");
+      } finally {
+        if (filInputRef.current) filInputRef.current.value = "";
+      }
+    });
+  }
+
+  function lagreEndringer() {
+    setFeil(null);
+    setLagret(false);
+    const trimmetHcp = hcpFelt.trim();
+    let hcpTall: number | null = null;
+    if (trimmetHcp !== "") {
+      hcpTall = Number(trimmetHcp.replace(",", "."));
+      if (Number.isNaN(hcpTall)) {
+        setFeil("Handicap må være et tall, f.eks. 4,2.");
+        return;
+      }
+    }
+    const fulltNavn = navnFelt.trim();
+    if (!fulltNavn) {
+      setFeil("Navn kan ikke være tomt.");
+      return;
+    }
+    startLagring(async () => {
+      try {
+        await oppdaterProfil({ name: fulltNavn, hcp: hcpTall, homeClub: klubbFelt.trim() });
+        setLagret(true);
+      } catch {
+        setFeil("Kunne ikke lagre. Prøv igjen.");
+      }
+    });
+  }
 
   /* Statuspiller — kun reelle felter (Kategori A–K finnes ikke i data). */
   const piller: { l: string; tone: StatusTone }[] = [];
@@ -138,19 +207,41 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
             </div>
           )}
         </div>
-        <CTAPill ghost icon="camera">Bytt bilde</CTAPill>
+        <label htmlFor="min-profil-avatar-input" style={{ cursor: avatarLagrer ? "default" : "pointer" }}>
+          <CTAPill ghost icon={avatarLagrer ? "loader" : "camera"}>
+            {avatarLagrer ? "Laster opp …" : "Bytt bilde"}
+          </CTAPill>
+        </label>
+        <input
+          ref={filInputRef}
+          id="min-profil-avatar-input"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          onChange={velgBilde}
+          disabled={avatarLagrer}
+          style={{ display: "none" }}
+        />
       </div>
+      {avatarFeil && (
+        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.down, margin: "12px 0 0" }}>{avatarFeil}</p>
+      )}
     </Kort>
   );
 
   const felter = (
     <Kort eyebrow="Profil" pad="18px 20px" style={{ gap: 14 }}>
-      <ProfilFelt label="Fullt navn" value={navn} placeholder="Ikke satt" />
+      <Inndata label="Fullt navn" value={navnFelt} onChange={setNavnFelt} placeholder="Ikke satt" />
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 14 }}>
-        <ProfilFelt label="Handicap" value={hcpTekst(hcp)} placeholder="Ikke satt" mono trailing={<Icon name="target" size={14} style={{ color: T.mut }} />} />
-        <ProfilFelt label="Fødselsår" value={fodselsaar != null ? String(fodselsaar) : ""} placeholder="Ikke satt" mono />
+        <Inndata label="Handicap" value={hcpFelt} onChange={setHcpFelt} placeholder="Ikke satt" mono />
+        <ProfilFelt label="Fødselsår" value={fodselsaar != null ? String(fodselsaar) : ""} placeholder="Ikke satt" mono hint="Endres ikke her — kontakt coach for å rette fødselsår." />
       </div>
-      <ProfilFelt label="Klubb" value={homeClub ?? ""} placeholder="Ikke satt" />
+      <Inndata label="Klubb" value={klubbFelt} onChange={setKlubbFelt} placeholder="Ikke satt" />
+      {feil && (
+        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.down, margin: 0 }}>{feil}</p>
+      )}
+      {lagret && !feil && (
+        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.up, margin: 0 }}>Lagret.</p>
+      )}
     </Kort>
   );
 
@@ -181,7 +272,11 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
         <Tittel mobile={mobile} em="profil">Min</Tittel>
-        {!mobile && <CTAPill icon="check">Lagre endringer</CTAPill>}
+        {!mobile && (
+          <Knapp icon={lagrer ? "loader" : "check"} disabled={lagrer} onClick={lagreEndringer}>
+            {lagrer ? "Lagrer …" : "Lagre endringer"}
+          </Knapp>
+        )}
       </div>
 
       {topp}
@@ -191,7 +286,9 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
           {wagr}
           {felter}
           {koblinger}
-          <CTAPill icon="check">Lagre endringer</CTAPill>
+          <Knapp icon={lagrer ? "loader" : "check"} full disabled={lagrer} onClick={lagreEndringer}>
+            {lagrer ? "Lagrer …" : "Lagre endringer"}
+          </Knapp>
         </>
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "1.35fr 1fr", gap: T.gap, alignItems: "start" }}>

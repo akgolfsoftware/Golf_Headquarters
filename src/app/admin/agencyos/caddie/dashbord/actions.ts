@@ -1,5 +1,11 @@
 "use server";
 
+/**
+ * AgencyOS · Caddie · Dashbord (v2) — server actions.
+ * Flyttet fra src/app/admin/(legacy)/agencyos/caddie/dashbord/actions.ts ved
+ * v2-portering — samme logikk, revalidatePath peker på den nye v2-ruten.
+ */
+
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";

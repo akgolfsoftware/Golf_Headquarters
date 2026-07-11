@@ -130,7 +130,7 @@ export function UtviklingsplanV2({ data }: { data: UtviklingsplanData }) {
           </Kort>
         )}
         {plan && plan.laeringsAktiv != null ? (
-          <LaeringsTrapp aktiv={plan.laeringsAktiv} />
+          <LaeringsTrapp aktiv={plan.laeringsAktiv} hjelp />
         ) : (
           <Kort eyebrow="Læringstrapp">
             <TomTilstand

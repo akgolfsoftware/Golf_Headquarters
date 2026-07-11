@@ -7,6 +7,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { StatsWrappedSlide, type WrappedSlideData } from "./stats-wrapped-slide";
+import { T } from "@/lib/v2/tokens";
 
 interface StatsWrappedPlayerProps {
   slides: WrappedSlideData[];
@@ -66,10 +67,10 @@ export function StatsWrappedPlayer({ slides, delLenke }: StatsWrappedPlayerProps
   const slide = slides[current];
   const bgVariant = slide?.bgVariant ?? "forest";
   const bgStyles: Record<string, string> = {
-    forest: "linear-gradient(160deg, #005840 0%, #003D2C 100%)",
-    "forest-dark": "linear-gradient(160deg, #002A1A 0%, #001510 100%)",
-    lime: "linear-gradient(160deg, #D1F843 0%, #B8E020 100%)",
-    offwhite: "linear-gradient(160deg, #FAFAF7 0%, #F1EEE5 100%)",
+    forest: T.wrapped.bgForest,
+    "forest-dark": T.wrapped.bgForestDark,
+    lime: T.wrapped.bgLime,
+    offwhite: T.wrapped.bgOffwhite,
   };
   const isDark = bgVariant === "forest" || bgVariant === "forest-dark";
   const uiColor = isDark ? "rgba(250,250,247,0.8)" : "rgba(10,31,23,0.6)";
@@ -114,7 +115,7 @@ export function StatsWrappedPlayer({ slides, delLenke }: StatsWrappedPlayerProps
               background: i < current
                 ? (isDark ? "rgba(250,250,247,0.9)" : "rgba(10,31,23,0.7)")
                 : i === current
-                ? (isDark ? "hsl(var(--accent))" : "hsl(var(--primary))")
+                ? (isDark ? T.lime : T.forest)
                 : (isDark ? "rgba(250,250,247,0.3)" : "rgba(10,31,23,0.2)"),
               border: "none",
               cursor: "pointer",
@@ -219,7 +220,7 @@ export function StatsWrappedPlayer({ slides, delLenke }: StatsWrappedPlayerProps
             background: "rgba(255,255,255,0.15)",
             border: "none",
             cursor: "pointer",
-            color: isDark ? "hsl(var(--background))" : "hsl(var(--foreground))",
+            color: uiColor,
             fontFamily: "var(--font-mono)",
             fontSize: 13,
             padding: "8px 16px",
@@ -241,7 +242,7 @@ export function StatsWrappedPlayer({ slides, delLenke }: StatsWrappedPlayerProps
             background: "rgba(255,255,255,0.15)",
             border: "none",
             cursor: "pointer",
-            color: isDark ? "hsl(var(--background))" : "hsl(var(--foreground))",
+            color: uiColor,
             fontFamily: "var(--font-mono)",
             fontSize: 13,
             padding: "8px 16px",

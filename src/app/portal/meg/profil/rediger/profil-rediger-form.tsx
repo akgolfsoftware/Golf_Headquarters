@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import {
   Camera,
@@ -11,6 +12,7 @@ import {
   RefreshCw,
   Save,
 } from "lucide-react";
+import { uploadAvatar } from "@/lib/storage/avatar";
 import { updateProfile } from "./actions";
 
 type Initial = {
@@ -55,6 +57,31 @@ export function ProfilRedigerForm({ initial }: { initial: Initial }) {
   const [homeClub, setHomeClub] = useState(initial.homeClub);
   const [ambition, setAmbition] = useState(initial.ambition);
 
+  // Avatar-opplasting — egen transition/pending så «Bytt bilde» ikke låser lagre-baren.
+  const [avatarUrl, setAvatarUrl] = useState(initial.avatarUrl);
+  const [avatarPending, startAvatarTransition] = useTransition();
+  const [avatarError, setAvatarError] = useState<string | null>(null);
+  const filInput = useRef<HTMLInputElement>(null);
+
+  function velgBilde(e: React.ChangeEvent<HTMLInputElement>) {
+    const fil = e.target.files?.[0];
+    if (!fil) return;
+    setAvatarError(null);
+    const formData = new FormData();
+    formData.append("file", fil);
+    startAvatarTransition(async () => {
+      try {
+        const res = await uploadAvatar(formData);
+        setAvatarUrl(res.url);
+        router.refresh();
+      } catch (err) {
+        setAvatarError(err instanceof Error ? err.message : "Opplasting feilet.");
+      } finally {
+        if (filInput.current) filInput.current.value = "";
+      }
+    });
+  }
+
   const dirty =
     fornavn !== initFornavn ||
     etternavn !== initEtternavn ||
@@ -93,9 +120,9 @@ export function ProfilRedigerForm({ initial }: { initial: Initial }) {
       <div className="flex items-center gap-3.5 rounded-[14px] border border-border bg-card p-4">
         <div className="relative shrink-0">
           <span className="grid h-16 w-16 place-items-center overflow-hidden rounded-full border-2 border-accent bg-primary text-accent">
-            {initial.avatarUrl ? (
+            {avatarUrl ? (
               <Image
-                src={initial.avatarUrl}
+                src={avatarUrl}
                 alt={`${fornavn} ${etternavn}`.trim() || "Profilbilde"}
                 width={64}
                 height={64}
@@ -108,13 +135,26 @@ export function ProfilRedigerForm({ initial }: { initial: Initial }) {
               </span>
             )}
           </span>
-          <button
-            type="button"
+          <label
+            htmlFor="profil-rediger-avatar-input"
             aria-label="Bytt profilbilde"
-            className="absolute -bottom-0.5 -right-0.5 grid h-7 w-7 place-items-center rounded-full border-2 border-card bg-accent text-primary transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="absolute -bottom-0.5 -right-0.5 grid h-7 w-7 cursor-pointer place-items-center rounded-full border-2 border-card bg-accent text-primary transition-opacity hover:opacity-90 has-[:disabled]:cursor-default has-[:disabled]:opacity-60"
           >
-            <Camera className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden />
-          </button>
+            {avatarPending ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.75} aria-hidden />
+            ) : (
+              <Camera className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden />
+            )}
+            <input
+              ref={filInput}
+              id="profil-rediger-avatar-input"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={velgBilde}
+              disabled={avatarPending}
+              className="sr-only"
+            />
+          </label>
         </div>
         <div className="min-w-0">
           <h2 className="truncate font-display text-lg font-bold leading-tight tracking-[-0.015em] text-foreground">
@@ -127,6 +167,11 @@ export function ProfilRedigerForm({ initial }: { initial: Initial }) {
           </div>
         </div>
       </div>
+      {avatarError && (
+        <div className="rounded-[12px] border border-destructive/40 bg-destructive/10 px-4 py-2.5 text-[13px] text-destructive">
+          {avatarError}
+        </div>
+      )}
 
       {/* Personalia */}
       <Section title="Personalia" aux="Navn">
@@ -169,7 +214,11 @@ export function ProfilRedigerForm({ initial }: { initial: Initial }) {
               disabled
             />
             <span className="mt-1 block font-mono text-[9px] tracking-[0.02em] text-muted-foreground/70">
-              Endres via innlogging-/kontoinnstillinger.
+              Endres under{" "}
+              <Link href="/portal/meg/sikkerhet" className="underline hover:text-foreground">
+                Sikkerhet
+              </Link>
+              .
             </span>
           </Felt>
           <Felt label="Telefon">

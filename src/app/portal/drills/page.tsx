@@ -1,49 +1,31 @@
 /**
- * /portal/drills — PlayerHQ Drill-galleri (hybrid design 2026-06-17).
+ * v2-forhåndsvisning — PlayerHQ Øvelsesbank (retning C). Egen top-level
+ * route-group (v2preview) som IKKE arver PortalShell — kun root-layout.
+ * V2Shell leverer chrome-en (IkonRail/BunnNav), OvelsesbankV2 rendrer
+ * galleri + detaljpanel.
  *
- * Server component: henter drills via getDrillLibrary (Prisma), mapper til
- * DrillCard-shape og sender til <DrillGallery> (klientkomponent).
- *
- * Layout: 2-kol grid med forest-gradient thumbnail, filter-pills (Alle/FYS/TEK/SLAG/SPILL/TURN),
- * vanskelighetsgrad-badge. Klikk → /portal/drills/[id].
- *
- * Beholder all eksisterende data-henting fra getDrillLibrary. Tom database → tom liste.
+ * Auth + dataloader gjenbrukt fra portalen: requirePortalUser +
+ * getDrillLibraryRich (samme tilgangs-filter som /portal/drills).
  */
 
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import {
-  getDrillLibrary,
-  type DrillCard as LoaderDrillCard,
-} from "@/lib/portal-drills/drills-data";
-import {
-  DrillGallery,
-  type DrillCard,
-} from "@/components/portal/drills/drill-gallery";
+import { getDrillLibraryRich } from "@/lib/portal-drills/drills-data";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { OvelsesbankV2 } from "@/components/portal/v2/OvelsesbankV2";
 
 export const dynamic = "force-dynamic";
 
-/** Oversetter loaderens DrillCard → DrillGallery DrillCard. */
-function mapDrills(rows: LoaderDrillCard[]): DrillCard[] {
-  return rows.map((d) => ({
-    id: d.id,
-    axis: d.axis,
-    axisLabel: d.axisLabel,
-    title: d.title,
-    meta: d.meta,
-    difficulty: d.difficulty,
-    fasilitet: d.fasilitet as string[],
-    chsLink: d.chsLink,
-  }));
-}
-
-export default async function DrillGalleryPage() {
+export default async function V2OvelsesbankPreviewPage() {
   const user = await requirePortalUser();
+  if (user.role === "PARENT") redirect("/forelder");
+  if (user.role === "GUEST") redirect("/admin/kalender");
 
-  const drills = await getDrillLibrary(user.id);
+  const data = await getDrillLibraryRich(user.id);
 
   return (
-    <div className="py-4">
-      <DrillGallery drills={mapDrills(drills)} />
-    </div>
+    <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <OvelsesbankV2 data={data} />
+    </V2Shell>
   );
 }

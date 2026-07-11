@@ -1,22 +1,16 @@
 /**
- * PlayerHQ · Foresatte (/portal/meg/foreldre)
+ * v2 — PlayerHQ Meg · Foresatte (retning C). V2Shell leverer chrome-en
+ * (IkonRail/BunnNav), MegForeldreV2 rendrer innholds-stacken.
  *
- * Viser spillerens egne foresatte/verger koblet via parentRelation-tabellen.
- * Tom-tilstand (stiplet kort) når ingen foresatte er koblet — aldri dummy-data.
- *
- * Server component. Auth-guard via requirePortalUser({ allow: ["PLAYER"] }).
- * PortalShell (layout) eier sidebar/topbar/bunn-nav — denne siden rendrer kun
- * innholdet.
- *
- * mapForeldreData oversetter Prisma parentRelation-rader til ForeldreInfoData.
+ * Auth + dataloader gjenbruker den ekte /portal/meg/foreldre-siden: samme
+ * requirePortalUser-guard og samme parentRelation-spørring/mapping (ekte data).
  */
 
+import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import {
-  ForeldreInfo,
-  type ForeldreInfoData,
-} from "@/components/portal/meg/foreldre-info";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { MegForeldreV2, type MegForeldreData } from "@/components/portal/v2/MegForeldreV2";
 
 export const dynamic = "force-dynamic";
 
@@ -28,16 +22,21 @@ function relasjonLabel(r: string): string {
   return r;
 }
 
-type ParentLink = {
-  id: string;
-  relationship: string;
-  parent: { id: string; name: string | null; email: string };
-};
+export default async function ForeldrePage() {
+  const user = await requirePortalUser();
+  if (user.role === "PARENT") redirect("/forelder");
+  if (user.role === "GUEST") redirect("/admin/kalender");
 
-/** Oversetter ekte parentRelation-rader → v10 ForeldreInfoData. Tom liste → tom-tilstand. */
-function mapForeldreData(links: ParentLink[]): ForeldreInfoData {
-  return {
-    barn: links.map((rel) => ({
+  const parentLinks = await prisma.parentRelation.findMany({
+    where: { childId: user.id },
+    include: {
+      parent: { select: { id: true, name: true, email: true } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const data: MegForeldreData = {
+    foresatte: parentLinks.map((rel) => ({
       id: rel.id,
       navn: rel.parent.name ?? rel.parent.email,
       relasjon: relasjonLabel(rel.relationship),
@@ -45,20 +44,10 @@ function mapForeldreData(links: ParentLink[]): ForeldreInfoData {
       href: "/portal/meg/foreldre",
     })),
   };
-}
 
-export default async function ForeldrePage() {
-  const user = await requirePortalUser({ allow: ["PLAYER"] });
-
-  const parentLinks = await prisma.parentRelation.findMany({
-    where: { childId: user.id },
-    include: {
-      parent: {
-        select: { id: true, name: true, email: true },
-      },
-    },
-    orderBy: { createdAt: "desc" },
-  });
-
-  return <ForeldreInfo data={mapForeldreData(parentLinks)} />;
+  return (
+    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? "Øyvind Rohjan"} avatarUrl={user.avatarUrl}>
+      <MegForeldreV2 data={data} />
+    </V2Shell>
+  );
 }

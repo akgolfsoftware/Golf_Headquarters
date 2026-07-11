@@ -1,16 +1,18 @@
 /**
- * PlayerHQ Hull-detalj (/portal/baneguide/[baneId]/hull/[nr]) — skjerm 3 (fase 5).
- * Signaturskjerm: satellitt + din spredning + KPI fra dispersion-motoren + innsikt.
- * Segment Utslag/Innspill/Putt via ?type=. Lyst tema.
+ * PlayerHQ Hull-detalj — v2. Signaturskjerm: satellitt + din spredning + KPI
+ * fra dispersion-motoren + innsikt. Segment Utslag/Innspill/Putt via ?type=
+ * (server-side lenke-pills). CourseMap (mapbox) gjenbrukes som den er.
+ * «?»-regelen: σ forklares via spredningSigma, bias via skjevhetBias.
  */
-import { Eyebrow } from "@/components/athletic/golfdata";
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeft, Lightbulb } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getHoleDetail } from "@/lib/baneguide/queries";
 import { CourseMap } from "@/components/baneguide/course-map";
-import { KpiTile } from "@/components/athletic/golfdata";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { T } from "@/lib/v2/tokens";
+import { Caps, Tittel, Kort, KpiFlis, MikroMeta, TomTilstand } from "@/components/v2";
 import type { ShotType } from "@/generated/prisma/client";
 
 export const dynamic = "force-dynamic";
@@ -21,8 +23,8 @@ const SEGMENTS: { key: string; label: string; type: ShotType }[] = [
   { key: "putt", label: "Putt", type: "PUTT" },
 ];
 
-const fmt = (n: number, d = 1) => n.toFixed(d);
-const signed = (n: number) => (n >= 0 ? "+" : "") + n.toFixed(1);
+const fmt = (n: number, d = 1) => n.toFixed(d).replace(".", ",");
+const signed = (n: number) => (n >= 0 ? "+" : "") + n.toFixed(1).replace(".", ",");
 
 export default async function HoleDetailPage({
   params,
@@ -49,84 +51,118 @@ export default async function HoleDetailPage({
         : null;
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-6">
-      <Link
-        href={`/portal/baneguide/${bane.id}`}
-        className="inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground hover:text-foreground"
-      >
-        <ChevronLeft className="h-4 w-4" strokeWidth={1.5} /> Banekart
-      </Link>
+    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <Link
+          href={`/portal/baneguide/${bane.id}`}
+          style={{ textDecoration: "none", alignSelf: "flex-start" }}
+        >
+          <MikroMeta icon="arrow-left">Banekart</MikroMeta>
+        </Link>
 
-      <div className="mt-3">
-        <Eyebrow as="span" tone="signal">Baneguide · {bane.navn}</Eyebrow>
-        <h1 className="mt-1.5 font-display text-3xl font-bold tracking-[-0.02em] text-foreground">
-          Hull {hole.holeNumber}
-        </h1>
-        <p className="mt-1.5 text-sm text-muted-foreground">
-          {hole.par ? `par ${hole.par}` : "par –"}
-          {hole.lengthMeter ? ` · ${hole.lengthMeter} m` : ""}
-        </p>
-      </div>
-
-      {center && (
-        <CourseMap
-          center={center}
-          zoom={16.5}
-          geojson={bane.geojson as unknown as GeoJSON.FeatureCollection}
-          holes={tee ? [{ holeNumber: hole.holeNumber, par: hole.par, teeLat: hole.teeLat, teeLng: hole.teeLng, greenLat: hole.greenLat, greenLng: hole.greenLng }] : []}
-          shotPoints={landings}
-          aimLine={tee && green ? { tee, green } : null}
-          className="mt-4 h-[320px] w-full overflow-hidden rounded-xl border border-border"
-        />
-      )}
-
-      <div className="mt-4 flex gap-1.5">
-        {SEGMENTS.map((s) => {
-          const active = s.key === segment.key;
-          return (
-            <Link
-              key={s.key}
-              href={`/portal/baneguide/${bane.id}/hull/${hole.holeNumber}?type=${s.key}`}
-              className={`flex-1 rounded-full py-2 text-center font-mono text-[11px] font-bold uppercase tracking-[0.08em] ${
-                active ? "bg-accent text-primary" : "bg-secondary text-muted-foreground"
-              }`}
-            >
-              {s.label}
-            </Link>
-          );
-        })}
-      </div>
-
-      {stats ? (
-        <>
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            <KpiTile label="σ side" value={fmt(stats.std.lateral)} unit="m" size="md" />
-            <KpiTile label="σ lengde" value={fmt(stats.std.distance)} unit="m" size="md" />
-            <KpiTile label="Bias" value={`${signed(stats.bias.lateral)}`} unit={`m ${stats.bias.side === "høyre" ? "H" : stats.bias.side === "venstre" ? "V" : ""}`.trim()} size="md" />
-            <KpiTile label="N slag" value={stats.n} size="md" />
+        <div>
+          <Caps>Baneguide · {bane.navn}</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em={`hull ${hole.holeNumber}`} />
           </div>
-
-          {stats.bias.side !== "rett" && (
-            <div className="mt-4 rounded-xl bg-primary p-4">
-              <div className="flex items-center gap-2 text-accent">
-                <Lightbulb className="h-4 w-4" strokeWidth={1.5} />
-                <span className="font-mono text-[10px] font-bold uppercase tracking-[0.12em]">Innsikt</span>
-              </div>
-              <p className="mt-2 text-sm leading-relaxed text-primary-foreground">
-                Du misser{" "}
-                <em className="font-display font-normal italic text-accent">
-                  {fmt(Math.abs(stats.bias.lateral))} m {stats.bias.side}
-                </em>{" "}
-                i snitt på dette hullet. Sikt mot {stats.bias.side === "høyre" ? "venstre" : "høyre"} halvdel av fairwayen.
-              </p>
-            </div>
-          )}
-        </>
-      ) : (
-        <div className="mt-4 rounded-lg border border-border bg-card p-6 text-center text-sm text-muted-foreground">
-          Ingen {segment.label.toLowerCase()} plottet på dette hullet ennå. Plott slag for å se spredningen din.
+          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
+            {hole.par ? `Par ${hole.par}` : "Par –"}
+            {hole.lengthMeter ? ` · ${hole.lengthMeter} m` : ""}
+          </p>
         </div>
-      )}
-    </div>
+
+        {center && (
+          <CourseMap
+            center={center}
+            zoom={16.5}
+            geojson={bane.geojson as unknown as GeoJSON.FeatureCollection}
+            holes={
+              tee
+                ? [
+                    {
+                      holeNumber: hole.holeNumber,
+                      par: hole.par,
+                      teeLat: hole.teeLat,
+                      teeLng: hole.teeLng,
+                      greenLat: hole.greenLat,
+                      greenLng: hole.greenLng,
+                    },
+                  ]
+                : []
+            }
+            shotPoints={landings}
+            aimLine={tee && green ? { tee, green } : null}
+            className="h-[320px] w-full overflow-hidden rounded-xl border border-border"
+          />
+        )}
+
+        {/* Segment-pills (server-side lenker, speiler PillVelger-idiomet) */}
+        <div style={{ display: "flex", gap: 6 }}>
+          {SEGMENTS.map((s) => {
+            const active = s.key === segment.key;
+            return (
+              <Link
+                key={s.key}
+                href={`/portal/baneguide/${bane.id}/hull/${hole.holeNumber}?type=${s.key}`}
+                style={{
+                  flex: 1,
+                  textAlign: "center",
+                  textDecoration: "none",
+                  fontFamily: T.mono,
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  padding: "9px 0",
+                  borderRadius: 9999,
+                  color: active ? T.onLime : T.mut,
+                  background: active ? T.lime : T.panel2,
+                  border: `1px solid ${active ? "transparent" : T.border}`,
+                }}
+              >
+                {s.label}
+              </Link>
+            );
+          })}
+        </div>
+
+        {stats ? (
+          <>
+            <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+              <KpiFlis label="σ side" value={`${fmt(stats.std.lateral)} m`} hjelp="spredningSigma" />
+              <KpiFlis label="σ lengde" value={`${fmt(stats.std.distance)} m`} hjelp="spredningSigma" />
+              <KpiFlis
+                label="Bias"
+                value={`${signed(stats.bias.lateral)} m${stats.bias.side === "høyre" ? " H" : stats.bias.side === "venstre" ? " V" : ""}`}
+                hjelp="skjevhetBias"
+              />
+              <KpiFlis label="Antall slag" value={String(stats.n)} />
+            </div>
+
+            {stats.bias.side !== "rett" && (
+              <Kort tint>
+                <MikroMeta icon="lightbulb">Innsikt</MikroMeta>
+                <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.6, margin: "10px 0 0" }}>
+                  Du misser{" "}
+                  <em style={{ fontFamily: T.disp, fontStyle: "italic", color: T.lime }}>
+                    {fmt(Math.abs(stats.bias.lateral))} m {stats.bias.side}
+                  </em>{" "}
+                  i snitt på dette hullet. Sikt mot{" "}
+                  {stats.bias.side === "høyre" ? "venstre" : "høyre"} halvdel av fairwayen.
+                </p>
+              </Kort>
+            )}
+          </>
+        ) : (
+          <Kort>
+            <TomTilstand
+              icon="crosshair"
+              title={`Ingen ${segment.label.toLowerCase()} plottet ennå`}
+              sub="Plott slag på dette hullet for å se spredningen din."
+            />
+          </Kort>
+        )}
+      </div>
+    </V2Shell>
   );
 }

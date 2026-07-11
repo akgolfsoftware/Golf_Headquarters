@@ -1,12 +1,8 @@
 /**
- * /stats/verktoy/avstand
- *
- * Yards ↔ meter konverter med kontekst for golfspenninger.
+ * /stats/verktoy/avstand — v2. Swap av (mlegacy)/stats/verktoy/avstand/page.tsx.
  */
-
-import "../../stats.css";
 import type { Metadata } from "next";
-import { AvstandClient } from "./client";
+import { AvstandV2 } from "@/components/marketing/v2/MarkedStatsVerktoyV2";
 
 export const revalidate = 86400;
 
@@ -17,5 +13,5 @@ export const metadata: Metadata = {
 };
 
 export default function AvstandPage() {
-  return <AvstandClient />;
+  return <AvstandV2 />;
 }

@@ -138,9 +138,9 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Årsplan | `/portal/tren/aarsplan` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | · Rediger periode | `/portal/tren/aarsplan/periode/[id]/rediger` | ~ | --- | ✓ | ✓ | ✓ | ~ |
 | · Ny periode | `/portal/tren/aarsplan/periode/ny` | ~ | --- | ✓ | ✓ | ✓ | ~ |
-| Teknisk plan (liste) | `/portal/tren/teknisk-plan` | – | --- | ✓ | ~ | ~ | ✓ |
+| Teknisk plan (liste) | `/portal/tren/teknisk-plan` | UTGÅTT | --- | → | ✓ | – | ✓ | <!-- redirect til Workbench (next.config) — død listeside slettet 2026-07-11 -->
 | · Teknisk plan detalj | `/portal/tren/teknisk-plan/[planId]` | – | --- | ✓ | ~ | ~ | ✓ |
-| Fys-plan (liste) | `/portal/tren/fys-plan` | – | --- | ✓ | ~ | ~ | ✓ |
+| Fys-plan (liste) | `/portal/tren/fys-plan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Fys-plan detalj/bygger | `/portal/tren/fys-plan/[planId]` | – | --- | ✓ | ~ | ~ | ✓ |
 | Drills (bibliotek) | `/portal/drills` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | · Drill-detalj | `/portal/drills/[id]` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
@@ -154,7 +154,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Ny turnering | `/portal/tren/turneringer/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | Utfordringer | `/portal/utfordringer` | ~ | --- | ✓ | ~ | ~ | ~ |
 | · Ny utfordring (wizard) | `/portal/utfordringer/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| · Utfordring-detalj | `/portal/utfordringer/[id]` | ~ | --- | ✓ | ~ | ~ | ~ |
+| · Utfordring-detalj | `/portal/utfordringer/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | AI: mål-bygger | `/portal/ai/mal-bygger` | – | --- | ✓ | ~ | ~ | ~ |
 | AI: foreslå drill | `/portal/ai/foresla-drill` | – | --- | ✓ | ~ | ~ | ~ |
 | AI: foreslå turnering | `/portal/ai/foresla-turnering` | – | --- | ✓ | ~ | ~ | ~ |
@@ -205,16 +205,21 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Coach: kølle | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Coach: utstyr | `/portal/mal/sg-hub/coach/[spillerId]/equipment` | – | --- | ✓ | ~ | ~ | ~ |
 | Runder (liste) | `/portal/mal/runder` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
-| · Runde-detalj ★ | `/portal/mal/runder/[id]` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| · Runde-detalj ★ | `/portal/mal/runder/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Slag-for-slag (visning) | `/portal/mal/runder/[id]/shot-by-shot` | – | --- | ✓ | ~ | ~ | ~ |
-| · Slag-registrering (wizard + UpGame) | `/portal/mal/runder/[id]/slag` | – | ✓-- | ✓ | ✓ | ✓ | ✓ |
-| · Logg ny runde ★ | `/portal/mal/runder/ny` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
-| · Live slag-føring (runde-logg) ★ | `/portal/(fullscreen)/runde-logg` | – | --- | – | – | ~ | ~ |
-| TrackMan (liste) | `/portal/mal/trackman` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
-| · TrackMan-sesjon | `/portal/mal/trackman/[id]` | – | ✓✓– | ✓ | ~ | ~ | ~ |
+| · Avansert slag-redigering (legacy wizard + UpGame-import) | `/portal/mal/runder/[id]/slag` | ✓ | ✓-- | ✓ | ✓ | ✓ | † |
+| · Fullfør kjeden (import/hurtig → slag-kjede per hull) ★ | `/portal/mal/runder/[id]/fullfor` | ~ | --- | ✓ | ✓ | ✓ | ~ | <!-- fra main, v13/golfdata — gjenstår v2-port -->
+| · Logg ny runde (hurtig score) ★ | `/portal/mal/runder/ny` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| · Live slag-for-slag-føring ★ | `/portal/runde/live` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
+| · Etterregistrering slag for slag ★ | `/portal/runde/logg` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
+| TrackMan (liste) | `/portal/mal/trackman` | ✓ | ✓✓– | ✓ | ~ | ✓ | † |
+| · TrackMan-sesjon | `/portal/mal/trackman/[id]` | ✓ | ✓✓– | ✓ | ~ | ~ | † |
 | · TrackMan (alt. adresse) | `/portal/trackman/[sessionId]` | – | ✓✓– | ✓ | ~ | ~ | ~ |
+| Baneguide (baneliste) | `/portal/baneguide` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| · Banekart-oversikt | `/portal/baneguide/[baneId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| · Hull-detalj (dispersion) | `/portal/baneguide/[baneId]/hull/[nr]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | Tester (oversikt) ★ | `/portal/tren/tester` | – | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
-| · Test-detalj ★ | `/portal/tren/tester/[testId]` | – | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| · Test-detalj ★ | `/portal/tren/tester/[testId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Test-gjennomføring (scorekort) ★ | `/portal/tren/tester/[testId]/gjennomfor` | – | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
 | · Test-katalog (NGF) | `/portal/tren/tester/katalog` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ny test | `/portal/tren/tester/ny` | – | --- | ✓ | ~ | ~ | ~ |
@@ -300,7 +305,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Talent-hub | `/portal/talent` | ~ | --- | ✓ | ~ | ~ | ~ |
+| Talent-hub | `/portal/talent` | ✓ | ✓✓– | ✓ | ~ | ~ | † |
 | · Min plan | `/portal/talent/min-plan` | – | --- | ✓ | ~ | ~ | ~ |
 | · Mitt nivå | `/portal/talent/mitt-niva` | – | --- | ✓ | ~ | ~ | ~ |
 | · Roadmap | `/portal/talent/roadmap` | – | --- | ✓ | ~ | ~ | ~ |
@@ -738,6 +743,32 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 Full kronologisk byggehistorikk flyttet til [`docs/arkiv/master-skjermplan-endringslogg.md`](arkiv/master-skjermplan-endringslogg.md)
 2026-07-06 — denne fila var 822 linjer og loggen drukna den faktiske statustabellen. Siste hendelser:
+
+- 11. juli (Bølge A — PlayerHQ-detaljskjermer til v2, branch `claude/blissful-gates-763ac3`):
+  **ALLE /portal-sider er nå golfdata-frie.** Rebygget på v2: utfordring-detalj, runde-detalj
+  (Scorekort + SgKategorier), slag-registrering, loggfør runde, TrackMan-hub + sesjonsdetalj,
+  baneguide banekart + hull-detalj (dispersion), test-detalj, FYS-plan-hub, talent-hub. Døde
+  sider slettet (teknisk-plan-lista var redirect-skygget; tester-katalog×2 + scorekort
+  foreldreløse). Siste golfdata-referanser fjernet fra ny-okt-wizard, coach-plan-detalj,
+  6 meg-skjemafiler og error/not-found. NY LÅST REGEL: «?»-forklaringer (HjelpTips) på alle
+  tall/faguttrykk — 6 nye hjelpetekster (trackman, dispersjon, spredningSigma, skjevhetBias,
+  talentVurdering, utfordringScore). Knapp fikk submit-støtte; wrench i ikon-kartet.
+  tsc 0 feil, fullt bygg grønt. Etter merge med main (SG slag-for-slag-pakken, se rad under):
+  runde-detalj-v2 fikk main sine SG-buckets/kjede-status/sgSource-badges portert inn; nye
+  hovedskjermer `/portal/runde/live` + `/portal/runde/logg` (main, v13/golfdata) står på
+  bølge B/C-lista for v2-port. Gjenstår i bølge A-halen: shot-by-shot (rå tailwind),
+  talent-undersider, ny-okt/coach-plans full v2-omkomponering, `/fullfor` v2-port.
+- 10. juli (kveld) — **SG slag-for-slag-pakken (steg 1–7) levert og prod-verifisert.** Nye skjermer:
+  `/portal/runde/live` (live-føring: kjede-UI, I HULL, lie-/avstands-chips, kladd m/ crash-recovery,
+  hull-oversikt m/ delvis lagring, live SG-panel), `/portal/runde/logg` (etterregistrering m/ dato),
+  `/portal/mal/runder/[id]/fullfor` (fullfør kjeden per hull — mismatch-blokkering, SG låses opp på
+  alle/alle). Mockups godkjent i Claude Design (`ui_kits/v2/runde-logg*.jsx`) FØR bygging; ordbok-vasket.
+  UpGame-import skriver nå HoleScore (aldri fabrikkerte slag); rundedetalj fikk SG-fordeling
+  (kanon-etiketter, granulære buckets, kilde-badge, ærlig tomtilstand m/ CTA) + ærlig delvis-runde-
+  header. Verifisert: prod-e2e (import, live 2 hull m/ straffe+bunker, reload-recovery, delvis
+  lagring, fullfør kjeden 2/3→ærlig null→3/3 beregnet), divergensvakt motor==DB==UI som unit-test
+  (pipeline.test.ts), 375px-sveip uten overflow. Gamle `/portal/mal/runder/[id]/slag` er nå
+  «Avansert redigering» (legacy).
 
 - 8. juli (opprydding Fase 4, bølge 4 — marketing + forelder, branch `opprydding/token-konvergens`):
   **SISTE bølge — hele appen har nå 3 gamle athletic-importer igjen, alle PulseDot på marketing

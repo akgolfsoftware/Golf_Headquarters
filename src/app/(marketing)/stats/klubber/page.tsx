@@ -1,21 +1,12 @@
 /**
- * /stats/klubber — Klubbdatabase (design 22)
- * Pixel-perfect port av design-handoff-stats-2026-05-25 pages-d.jsx + data.js
- *
- * Data: aggregerer PublicPlayer.bio + seed-klubber.
- * ISR 1 time.
+ * /stats/klubber — Klubbdatabase (v2, retning C)
+ * Swap av (mlegacy)/stats/klubber/page.tsx → v2-utseende. Data-lag
+ * (SEED_KLUBBER + hentKlubbStats) er 1:1 videreført fra legacy-siden; kun
+ * presentasjonen er byttet til StatsRamme + StatsKlubberV2.
  */
-
-import "./klubber.css";
-import "../stats.css";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { StatsEyebrow } from "@/components/stats/eyebrow";
-import { Reveal } from "@/components/stats/reveal";
-import { CountUp } from "@/components/stats/count-up";
-import { StatsBtn } from "@/components/stats/btn";
-import { KlubbdatabaseKlient } from "./klubb-klient";
+import { StatsKlubberV2 } from "@/components/marketing/v2/StatsKlubberV2";
 
 export const revalidate = 3600;
 
@@ -32,7 +23,7 @@ export const metadata: Metadata = {
 };
 
 // ---------------------------------------------------------------------------
-// Seed-data
+// Seed-data (1:1 videreført fra (mlegacy)/stats/klubber/page.tsx)
 // ---------------------------------------------------------------------------
 
 export const SEED_KLUBBER = [
@@ -58,156 +49,19 @@ async function hentKlubbStats() {
     prisma.tournament.count({ where: { mergedIntoId: null } }),
   ]);
 
-  return {
-    totalKlubber: SEED_KLUBBER.length,
-    totalSpillere,
-    totalTurneringer,
-  };
+  return { totalSpillere, totalTurneringer };
 }
 
-// ---------------------------------------------------------------------------
-// Page
 // ---------------------------------------------------------------------------
 
 export default async function KlubbdatabasePage() {
   const stats = await hentKlubbStats();
 
-  // Featured cards: flest spillere, mest turneringer, mest pro-talent
-  const flestSpillere = [...SEED_KLUBBER].sort((a, b) => b.spillere - a.spillere)[0];
-  const mestTurneringer = [...SEED_KLUBBER].sort((a, b) => b.turneringer - a.turneringer)[0];
-  const mestPro = [...SEED_KLUBBER].sort((a, b) => b.pro + b.college - (a.pro + a.college))[0];
-
   return (
-    <div className="klubber-page bg-background text-foreground">
-      {/* ── Hero ── */}
-      <section className="klubber-hero">
-        <Reveal>
-          <Link href="/stats" className="breadcrumb">
-            ← AK Golf Stats
-          </Link>
-          <StatsEyebrow>AK Golf Stats · Klubber</StatsEyebrow>
-          <h1>
-            Alle <em className="italic-accent">norske</em> golfklubber.
-          </h1>
-          <p className="klubber-hero-sub">
-            Spillere, pro-talent, juniorprogram og turneringshistorikk for alle
-            norske golfklubber i databasen vår.
-          </p>
-        </Reveal>
-      </section>
-
-      {/* ── KPI Strip ── */}
-      <Reveal>
-        <div className="klubber-kpi-strip">
-          <div className="klubber-kpi">
-            <div className="klubber-kpi-eyebrow">Klubber</div>
-            <div className="klubber-kpi-value">
-              <CountUp value={stats.totalKlubber} />
-            </div>
-            <div className="klubber-kpi-sub">i databasen</div>
-          </div>
-          <div className="klubber-kpi">
-            <div className="klubber-kpi-eyebrow">Spillere</div>
-            <div className="klubber-kpi-value">
-              <CountUp value={stats.totalSpillere} />
-            </div>
-            <div className="klubber-kpi-sub">registrert</div>
-          </div>
-          <div className="klubber-kpi">
-            <div className="klubber-kpi-eyebrow">Turneringer</div>
-            <div className="klubber-kpi-value">
-              <CountUp value={stats.totalTurneringer} />
-            </div>
-            <div className="klubber-kpi-sub">registrert</div>
-          </div>
-        </div>
-      </Reveal>
-
-      {/* ── Featured cards ── */}
-      <section className="klubber-section klubber-section-divider">
-        <Reveal>
-          <div className="klubber-section-head">
-            <div>
-              <StatsEyebrow>Fremhevet</StatsEyebrow>
-              <h2>
-                Tre <em className="italic-accent">ledende</em> klubber.
-              </h2>
-            </div>
-          </div>
-        </Reveal>
-        <Reveal delay={60}>
-          <div className="klubber-featured-grid">
-            {[
-              {
-                k: flestSpillere,
-                label: "Flest spillere",
-                val: flestSpillere.spillere,
-                sub: "registrerte spillere",
-              },
-              {
-                k: mestTurneringer,
-                label: "Mest turneringer",
-                val: mestTurneringer.turneringer,
-                sub: "turneringer arrangert",
-              },
-              {
-                k: mestPro,
-                label: "Mest pro-talent",
-                val: mestPro.pro + mestPro.college,
-                sub: "pro + college-commits",
-              },
-            ].map(({ k, label, val, sub }) => (
-              <Link
-                key={k.slug}
-                href={`/stats/klubber/${k.slug}`}
-                style={{ textDecoration: "none" }}
-              >
-                <div className="klubber-featured-card">
-                  <div className="eyebrow">{label.toUpperCase()}</div>
-                  <div className="big">{val}</div>
-                  <h3>{k.navn}</h3>
-                  <div className="sub">
-                    {k.kommune} · {k.region} · {sub}
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </Reveal>
-
-        {/* Søk + grid (klient) */}
-        <KlubbdatabaseKlient klubber={SEED_KLUBBER} />
-      </section>
-
-      {/* ── Mersalg ── */}
-      <div className="klubber-mersalg">
-        <Reveal>
-          <StatsEyebrow tone="lime">PlayerHQ</StatsEyebrow>
-          <h2>
-            Spill for{" "}
-            <em className="italic-accent" style={{ color: "var(--accent)" }}>
-              din klubb
-            </em>
-            .
-          </h2>
-          <p>
-            Logg runder og se din klubbs statistikk i sanntid. Sammenlign deg
-            med andre spillere på banen din.
-          </p>
-          <div className="klubber-mersalg-ctas">
-            <Link href="/auth/signup">
-              <StatsBtn variant="outline" icon="ArrowRight">
-                Start gratis
-              </StatsBtn>
-            </Link>
-            <Link href="/stats">
-              <StatsBtn variant="ghost" icon="ArrowRight">
-                Utforsk stats
-              </StatsBtn>
-            </Link>
-          </div>
-        </Reveal>
-      </div>
-    </div>
+    <StatsKlubberV2
+      klubber={SEED_KLUBBER}
+      totalSpillere={stats.totalSpillere}
+      totalTurneringer={stats.totalTurneringer}
+    />
   );
 }

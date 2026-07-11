@@ -1,13 +1,7 @@
-import {
-  SkeletonHero,
-  SkeletonCard,
-} from "@/components/shared/loading-skeleton";
+/* v2-skjelett for /portal/meg og undersider — kort-variant (meg-sidene). */
 
-export default function MegLoading() {
-  return (
-    <div className="space-y-6">
-      <SkeletonHero />
-      <SkeletonCard height="h-96" />
-    </div>
-  );
+import { V2Laster } from "@/components/v2/feil-laste";
+
+export default function Loading() {
+  return <V2Laster variant="kort" />;
 }

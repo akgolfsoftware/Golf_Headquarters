@@ -1,17 +1,19 @@
 /**
- * Auth · BankID (/auth/bankid) — fersk Claude Design-fasit (juni 2026).
+ * Auth · BankID (/auth/bankid) — v2-redesign (2026-07-10).
  *
- * Rendrer <BankIdSkjerm> (ph-auth.jsx → ABankID, start-fasen som visuelt
- * skall) som selvstendig sentrert kort på cream-bakgrunn.
- * Placeholder: BankID-pålogging kommer post-beta.
+ * Rendrer <BankIDV2> (retning C «Presis») som selvstendig sentrert kort på
+ * mørk auth-flate. Erstatter gamle <BankIdSkjerm> — se
+ * src/components/portal/v2/BankIDV2.tsx. Placeholder: BankID-pålogging
+ * kommer post-beta, CTA peker tilbake til vanlig login (samme funksjon).
  *
  * Ren presentasjon — INGEN data-loader finnes eller trengs (statisk skjerm).
- * Komponenten rendres med sine defaults. Auth-layout (auth/layout.tsx) eier
- * rammen; dette er en offentlig auth-skjerm uten egen guard (som søsken-rutene).
+ * Auth-layout (auth/layout.tsx) eier rammen; dette er en offentlig
+ * auth-skjerm uten egen guard (som søsken-rutene). Gamle
+ * src/components/auth/bankid-skjerm.tsx står urørt som fallback.
  */
 
 import type { Metadata } from "next";
-import { BankIdSkjerm } from "@/components/auth/bankid-skjerm";
+import { BankIDV2 } from "@/components/portal/v2/BankIDV2";
 
 export const metadata: Metadata = {
   title: "BankID-pålogging · AK Golf",
@@ -20,5 +22,5 @@ export const metadata: Metadata = {
 };
 
 export default function BankIDPage() {
-  return <BankIdSkjerm />;
+  return <BankIDV2 />;
 }

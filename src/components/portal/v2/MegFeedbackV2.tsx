@@ -17,6 +17,7 @@
  */
 
 import { useEffect, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { submitFeedback } from "@/app/portal/meg/feedback/actions";
 import {
   T,
@@ -88,17 +89,27 @@ function Markor({ tekst, farge }: { tekst: string; farge: string }) {
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function MegFeedbackV2({ data }: { data: MegFeedbackData }) {
+  const router = useRouter();
   const mobile = useMobile();
   const [nps, setNps] = useState(9);
   const [type, setType] = useState<FeedbackType>("forslag");
   const [tekst, setTekst] = useState("");
   const [anonym, setAnonym] = useState(false);
   const [pending, startTransition] = useTransition();
+  const [feil, setFeil] = useState(false);
 
   function send() {
     // submitFeedback validerer med zod og redirecter til kanonisk rute ved suksess.
+    // Fanger feil (f.eks. utløpt sesjon) i stedet for å la den forsvinne stille —
+    // uten dette klikker brukeren på nytt uten synlig respons (oppfattes som en
+    // innloggings-løkke når sesjonen faktisk er utløpt bak kulissene).
+    setFeil(false);
     startTransition(async () => {
-      await submitFeedback({ nps, type, tekst: tekst.trim(), anonym });
+      try {
+        await submitFeedback({ nps, type, tekst: tekst.trim(), anonym });
+      } catch {
+        setFeil(true);
+      }
     });
   }
 
@@ -125,6 +136,28 @@ export function MegFeedbackV2({ data }: { data: MegFeedbackData }) {
             <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>
               Takk for tilbakemeldingen. Du gjør PlayerHQ bedre.
             </span>
+          </div>
+        </Kort>
+      )}
+
+      {/* Feil ved innsending — f.eks. utløpt sesjon. Ærlig feilmelding, aldri stille svikt.
+          Ingen `tint` (den er forest/lime-merkevarefarget for suksess) — nøytralt kort,
+          fargesignalet bæres av StatusPill tone="down". */}
+      {feil && (
+        <Kort>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 11, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+              <StatusPill tone="down">Kunne ikke sende</StatusPill>
+              <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>
+                Noe gikk galt. Prøv igjen, eller logg inn på nytt hvis du ble logget ut.
+              </span>
+            </div>
+            <Knapp
+              icon="arrow-right"
+              onClick={() => router.push("/auth/login?next=%2Fportal%2Fmeg%2Ffeedback")}
+            >
+              Logg inn på nytt
+            </Knapp>
           </div>
         </Kort>
       )}

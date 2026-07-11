@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "SERWIST_SUPPRESS_TURBOPACK_WARNING=1 prisma generate && SERWIST_SUPPRESS_TURBOPACK_WARNING=1 next build",
+    "build": "prisma generate && next build && serwist build serwist.config.mjs",
     "start": "next start",
     "lint": "eslint",
     "check:hex": "node scripts/check-no-hex.mjs",
@@ -81,6 +81,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
     "@playwright/test": "^1.59.1",
+    "@serwist/cli": "^9.5.11",
     "@tailwindcss/postcss": "^4",
     "@types/dompurify": "^3.0.5",
     "@types/mapbox-gl": "^3.4.1",
@@ -90,6 +91,7 @@
     "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "esbuild": "^0.27.7",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "husky": "^9.1.7",

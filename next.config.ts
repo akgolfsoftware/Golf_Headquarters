@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import withSerwistInit from "@serwist/next";
 import createMDX from "@next/mdx";
 
 const withMDX = createMDX({
@@ -157,14 +156,7 @@ const nextConfig: NextConfig = {
   },
 };
 
-// PWA service worker via Serwist. Genererer /sw.js fra src/app/sw.ts.
-// Disabled i dev for å unngå caching-overraskelser ved HMR.
-const withSerwist = withSerwistInit({
-  swSrc: "src/app/sw.ts",
-  swDest: "public/sw.js",
-  cacheOnNavigation: true,
-  reloadOnOnline: true,
-  disable: process.env.NODE_ENV === "development",
-});
-
-export default withSerwist(withMDX(nextConfig));
+// PWA service worker (/sw.js) bygges av `serwist build serwist.config.mjs`
+// etter `next build` (se package.json). Webpack-pluginen fra @serwist/next
+// kjører aldri under Turbopack og er derfor fjernet herfra.
+export default withMDX(nextConfig);

@@ -35,7 +35,7 @@ const AXIS_TO_CAT: Record<Axis, Cat> = {
   turn: "TURN",
 };
 
-// WorkbenchData.weekDays er MAN..FRE (5). Fasit-uka har 7 nøkler.
+// WorkbenchData.weekDays er MAN..SØN (7). Fasit-uka har 7 nøkler.
 const WEEK_KEYS: WeekKey[] = ["man", "tir", "ons", "tor", "fre", "lor", "son"];
 
 function pad2(n: number): string {

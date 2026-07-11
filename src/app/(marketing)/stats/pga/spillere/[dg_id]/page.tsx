@@ -18,6 +18,7 @@ import { FlagGlyph } from "@/components/stats/flag-glyph";
 import type { FlagCode } from "@/components/stats/flag-glyph";
 import { StatsBigRadar } from "@/components/stats/stats-big-radar";
 import { StatsBtn } from "@/components/stats/btn";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const revalidate = 3600;
 
@@ -219,6 +220,7 @@ export default async function SpillerProfilPage({
   const maxSgAbs = Math.max(...sgCats.map((c) => Math.abs(c.val)), 0.1);
 
   return (
+    <StatsLegacyShell>
     <div className="spillere-page pga-page bg-background text-foreground">
       {/* ── Hero ── */}
       <section className="spillere-hero">
@@ -511,5 +513,6 @@ export default async function SpillerProfilPage({
         </Reveal>
       </div>
     </div>
+    </StatsLegacyShell>
   );
 }

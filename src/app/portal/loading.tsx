@@ -1,16 +1,9 @@
-import {
-  SkeletonHero,
-  SkeletonKpi,
-  SkeletonCard,
-} from "@/components/shared/loading-skeleton";
+/* Fallback-skjelett for /portal og underruter uten egen loading.tsx
+   (Next.js nærmeste-ancestor-mønster). Dashboard-variant matcher
+   spiller-oversikten på /portal. */
 
-export default function PortalLoading() {
-  return (
-    <div className="mx-auto max-w-7xl space-y-6">
-      <SkeletonHero />
-      <SkeletonKpi count={4} />
-      <SkeletonCard />
-      <SkeletonCard />
-    </div>
-  );
+import { V2Laster } from "@/components/v2/feil-laste";
+
+export default function Loading() {
+  return <V2Laster variant="dashboard" />;
 }

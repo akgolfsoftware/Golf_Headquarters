@@ -3,17 +3,19 @@
 /**
  * Signup — v2 (retning C «Presis», mørk-først). Komponert i samme idiom-familie
  * som LoginV2 (AuthRamme/BrandPanel/Felt/Knapp/GoogleG/EllerSkille/Lenke) — mørk
- * split-layout, IKKE V2Shell. Montert offentlig i (v2preview)/v2-signup/page.tsx
- * (ingen auth-guard, ingen dataloader — signup er en inngang, ikke datadrevet).
+ * split-layout, IKKE V2Shell. Montert på /auth/signup (bytter ut gamle
+ * SignupForm 2026-07-10).
  *
- * Dette er en VISUELL v2-variant for godkjenning. Den EKTE registreringslogikken
- * (Supabase auth.signUp med rolle/pakke/metadata + GDPR-samtykke + navigasjon til
- * /auth/check-email · /auth/onboarding) bor i src/app/auth/signup/signup-form.tsx
- * og dupliseres bevisst IKKE her — skjemaet vises med ekte felt, ekte passord-
- * veksling og ekte navigasjon til /auth/login og vilkår/personvern. GDPR-samtykke-
- * avkryssingen er beholdt visuelt (intent bevart). «Opprett konto»/Google-
- * innsending er bevisst nøytralisert (meldt som gap) slik at auth-flyten forblir
- * én kilde. ?epost=-prefill fra booking-broen speiles via prop `defaultEmail`.
+ * Ekte registreringslogikk (Supabase auth.signUp med rolle/pakke/metadata,
+ * passord-validering, GDPR-samtykke, navigasjon til /auth/check-email eller
+ * /auth/onboarding, ?subscribe=-videreføring) er portert 1:1 fra
+ * src/app/auth/signup/signup-form.tsx — samme auth-semantikk, ny visuell
+ * innpakning. Utvidet med pakkevalg (PakkeVelger) og rolle-toggle (RolleVelger)
+ * som fantes i den gamle formen men ikke i første v2-mockup. Google-knappen
+ * bruker samme signInWithOAuth-mekanisme som LoginV2 (Supabase skiller ikke
+ * signup/login for OAuth — kontoen opprettes automatisk av
+ * /api/auth/oauth-callback). Gammel signup-form.tsx står urørt som fallback.
+ * ?epost=-prefill fra booking-broen speiles via prop `defaultEmail`.
  *
  * Kun v2-primitiver fra "@/components/v2" (LogoAK, Caps, Icon) + T fra
  * "@/lib/v2/tokens". Auth-idiomene er lokale her (1:1 med LoginV2) — meldt som gap
@@ -24,8 +26,75 @@
 
 import { useState, type ReactNode, type CSSProperties } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { T } from "@/lib/v2/tokens";
 import { LogoAK, Caps, Icon } from "@/components/v2";
+import { createClient } from "@/lib/supabase/client";
+import { UserRole, Tier } from "@/generated/prisma/client";
+
+/* ── Pakke- og rolle-data (1:1 med gamle signup-form.tsx) ──────────── */
+
+type RoleOption = { value: UserRole; label: string };
+const ROLLER: RoleOption[] = [
+  { value: "PLAYER", label: "Spiller" },
+  { value: "PARENT", label: "Foresatt" },
+];
+
+type PackageValue = "PERFORMANCE_PRO" | "PERFORMANCE" | "PLAYERHQ_ONLY";
+type PackageOption = {
+  value: PackageValue;
+  name: string;
+  price: string;
+  trialHint?: string;
+  desc: string;
+  monthlyCredits: number;
+  featured?: boolean;
+};
+const PAKKER: PackageOption[] = [
+  {
+    value: "PERFORMANCE_PRO",
+    name: "Performance Pro",
+    price: "2 220 kr/mnd",
+    desc: "4 coaching-økter i måneden · PlayerHQ inkludert",
+    monthlyCredits: 4,
+    featured: true,
+  },
+  {
+    value: "PERFORMANCE",
+    name: "Performance",
+    price: "1 200 kr/mnd",
+    desc: "2 coaching-økter i måneden · PlayerHQ inkludert",
+    monthlyCredits: 2,
+  },
+  {
+    value: "PLAYERHQ_ONLY",
+    name: "PlayerHQ",
+    price: "299 kr/mnd",
+    trialHint: "1. måned gratis",
+    desc: "App-tilgang: tracking, AI-coach, treningsplaner",
+    monthlyCredits: 0,
+  },
+];
+
+/** Samme feiloversettelse som gamle signup-form.tsx — én kilde til auth-tekst. */
+function oversettAuthFeil(msg: string): string {
+  if (msg.includes("already registered") || msg.includes("already exists"))
+    return "En konto med denne e-posten finnes allerede.";
+  if (msg.includes("Password should be at least"))
+    return "Passordet er for kort. Minst 8 tegn.";
+  if (msg.includes("rate limit"))
+    return "For mange forsøk. Prøv igjen om litt.";
+  return msg;
+}
+
+/** Samme Google-feiloversettelse som LoginV2 — OAuth deler feilrom med innlogging. */
+function oversettGoogleFeil(msg: string): string {
+  if (msg.includes("Invalid login credentials"))
+    return "Feil e-post eller passord.";
+  if (msg.includes("Email not confirmed"))
+    return "E-posten er ikke bekreftet. Sjekk innboksen din.";
+  return msg;
+}
 
 /* ── Lokale auth-byggeklosser (1:1 med LoginV2) ────────────────────── */
 
@@ -101,12 +170,14 @@ function Knapp({
   icon,
   variant = "primary",
   type = "button",
+  disabled,
   onClick,
 }: {
   children: ReactNode;
   icon?: ReactNode;
   variant?: "primary" | "ghost";
   type?: "button" | "submit";
+  disabled?: boolean;
   onClick?: () => void;
 }) {
   const v: CSSProperties =
@@ -117,10 +188,13 @@ function Knapp({
     <button
       type={type}
       onClick={onClick}
+      disabled={disabled}
+      aria-busy={disabled || undefined}
       className="v2-press v2-focus"
       style={{
         appearance: "none",
-        cursor: "pointer",
+        cursor: disabled ? "default" : "pointer",
+        opacity: disabled ? 0.6 : 1,
         width: "100%",
         height: 44,
         borderRadius: 12,
@@ -252,6 +326,171 @@ function Samtykke({ checked, onToggle }: { checked: boolean; onToggle: () => voi
   );
 }
 
+/** Feilboks — 1:1 idiom med ResetPasswordV2/GuardianConsentV2. */
+function Feilboks({ children }: { children: ReactNode }) {
+  return (
+    <div
+      role="alert"
+      style={{
+        display: "flex",
+        alignItems: "flex-start",
+        gap: 9,
+        padding: "11px 13px",
+        borderRadius: 12,
+        background: T.panel2,
+        border: `1px solid ${T.borderS}`,
+      }}
+    >
+      <Icon name="triangle-alert" size={14} style={{ color: T.down, marginTop: 1, flex: "none" }} />
+      <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 500, color: T.down }}>
+        {children}
+      </span>
+    </div>
+  );
+}
+
+/** Pakkevalg — vertikal liste av trykkbare kort (radio-oppførsel), 1:1 intent med gamle signup-form.tsx. */
+function PakkeVelger({
+  value,
+  onChange,
+}: {
+  value: PackageValue;
+  onChange: (v: PackageValue) => void;
+}) {
+  return (
+    <div>
+      <Caps size={9} style={{ marginBottom: 8 }}>
+        Velg medlemskap
+      </Caps>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {PAKKER.map((p) => {
+          const aktiv = p.value === value;
+          return (
+            <button
+              key={p.value}
+              type="button"
+              role="radio"
+              aria-checked={aktiv}
+              onClick={() => onChange(p.value)}
+              className="v2-focus"
+              style={{
+                appearance: "none",
+                cursor: "pointer",
+                textAlign: "left",
+                width: "100%",
+                position: "relative",
+                display: "flex",
+                flexDirection: "column",
+                gap: 4,
+                padding: 14,
+                borderRadius: 12,
+                background: aktiv ? T.panel3 : T.panel2,
+                border: `1px solid ${aktiv ? T.lime : T.border}`,
+                transition: `background ${T.dur}ms ${T.ease}, border-color ${T.dur}ms ${T.ease}`,
+              }}
+            >
+              {p.featured && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: -9,
+                    right: 14,
+                    borderRadius: 9999,
+                    padding: "2px 9px",
+                    background: T.lime,
+                    fontFamily: T.mono,
+                    fontSize: 8.5,
+                    fontWeight: 800,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    color: T.onLime,
+                  }}
+                >
+                  Mest populær
+                </span>
+              )}
+              <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
+                <span style={{ fontFamily: T.disp, fontSize: 14, fontWeight: 600, color: T.fg }}>
+                  {p.name}
+                </span>
+                <span style={{ fontFamily: T.mono, fontSize: 11.5, fontWeight: 700, color: T.lime }}>
+                  {p.price}
+                </span>
+              </div>
+              {p.trialHint && (
+                <span
+                  style={{
+                    alignSelf: "flex-start",
+                    borderRadius: 9999,
+                    padding: "2px 8px",
+                    background: "rgba(209,248,67,0.12)",
+                    fontFamily: T.mono,
+                    fontSize: 9,
+                    fontWeight: 700,
+                    color: T.lime,
+                  }}
+                >
+                  {p.trialHint}
+                </span>
+              )}
+              <span style={{ fontFamily: T.ui, fontSize: 12, lineHeight: 1.4, color: T.fg2 }}>
+                {p.desc}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/** Rolle-toggle — «Spiller»/«Foresatt», 1:1 intent med gamle signup-form.tsx. */
+function RolleVelger({
+  value,
+  onChange,
+}: {
+  value: UserRole;
+  onChange: (v: UserRole) => void;
+}) {
+  return (
+    <div>
+      <Caps size={9} style={{ marginBottom: 8 }}>
+        Jeg er
+      </Caps>
+      <div style={{ display: "flex", gap: 8 }}>
+        {ROLLER.map((r) => {
+          const aktiv = r.value === value;
+          return (
+            <button
+              key={r.value}
+              type="button"
+              aria-pressed={aktiv}
+              onClick={() => onChange(r.value)}
+              className="v2-focus"
+              style={{
+                appearance: "none",
+                cursor: "pointer",
+                flex: 1,
+                height: 40,
+                borderRadius: 10,
+                fontFamily: T.ui,
+                fontSize: 13,
+                fontWeight: aktiv ? 600 : 500,
+                background: aktiv ? T.panel3 : T.panel2,
+                border: `1px solid ${aktiv ? T.lime : T.border}`,
+                color: aktiv ? T.lime : T.fg2,
+                transition: `background ${T.dur}ms ${T.ease}, border-color ${T.dur}ms ${T.ease}`,
+              }}
+            >
+              {r.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /** Venstre brand-panel (Neon/Cosmos-idiomet). Skjult under md (stablet mobil). */
 function BrandPanel() {
   return (
@@ -326,13 +565,103 @@ function BrandPanel() {
 
 /* ── Signup-kortet ─────────────────────────────────────────────────── */
 
-function SignupKort({ defaultEmail }: { defaultEmail?: string }) {
+function SignupKort({
+  defaultEmail,
+  subscribe,
+}: {
+  defaultEmail?: string;
+  subscribe?: string;
+}) {
+  const router = useRouter();
+  const supabase = createClient();
+  const [pkg, setPkg] = useState<PackageValue>("PERFORMANCE_PRO");
+  const [rolle, setRolle] = useState<UserRole>("PLAYER");
   const [fornavn, setFornavn] = useState("");
   const [etternavn, setEtternavn] = useState("");
   const [email, setEmail] = useState(defaultEmail ?? "");
   const [passord, setPassord] = useState("");
+  const [bekreft, setBekreft] = useState("");
   const [visPassord, setVisPassord] = useState(false);
+  const [visBekreft, setVisBekreft] = useState(false);
   const [samtykke, setSamtykke] = useState(false);
+  const [feil, setFeil] = useState<string | null>(null);
+  const [laster, setLaster] = useState(false);
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setFeil(null);
+
+    if (passord.length < 8) {
+      setFeil("Passordet må være minst 8 tegn.");
+      return;
+    }
+    if (passord !== bekreft) {
+      setFeil("Passordene er ikke like.");
+      return;
+    }
+    if (!samtykke) {
+      setFeil("Du må godta vilkårene for å fortsette.");
+      return;
+    }
+
+    setLaster(true);
+    const valgt = PAKKER.find((p) => p.value === pkg)!;
+    const { data, error: err } = await supabase.auth.signUp({
+      email,
+      password: passord,
+      options: {
+        data: {
+          role: rolle,
+          tier: "PRO" satisfies Tier,
+          package: valgt.value,
+          monthlyCredits: valgt.monthlyCredits,
+          firstName: fornavn,
+          lastName: etternavn,
+        },
+      },
+    });
+    setLaster(false);
+
+    if (err) {
+      setFeil(oversettAuthFeil(err.message));
+      return;
+    }
+
+    // Hvis Supabase returnerer en aktiv session betyr det at "Confirm email"
+    // er AV — brukeren er allerede innlogget. Ellers (vanlig case) må de
+    // bekrefte e-posten først. Bær subscribe-intent videre.
+    const onbUrl = subscribe
+      ? `/auth/onboarding?subscribe=${encodeURIComponent(subscribe)}`
+      : "/auth/onboarding";
+    if (data.session) {
+      router.push(onbUrl);
+      router.refresh();
+    } else {
+      router.push(
+        subscribe ? `/auth/check-email?subscribe=${encodeURIComponent(subscribe)}` : "/auth/check-email",
+      );
+    }
+  }
+
+  async function fortsettMedGoogle() {
+    setFeil(null);
+    setLaster(true);
+    const next = subscribe
+      ? `/auth/onboarding?subscribe=${encodeURIComponent(subscribe)}`
+      : "/auth/onboarding";
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const { error: err } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${origin}/api/auth/oauth-callback?next=${encodeURIComponent(next)}`,
+      },
+    });
+    if (err) {
+      setLaster(false);
+      setFeil(oversettGoogleFeil(err.message));
+    }
+    // Ingen videre handling — Supabase redirecter til Google.
+  }
 
   return (
     <div style={{ width: "100%", maxWidth: 400, display: "flex", flexDirection: "column", gap: 14 }}>
@@ -363,7 +692,7 @@ function SignupKort({ defaultEmail }: { defaultEmail?: string }) {
       </div>
 
       <form
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={onSubmit}
         style={{
           background: T.panel,
           border: `1px solid ${T.border}`,
@@ -375,6 +704,7 @@ function SignupKort({ defaultEmail }: { defaultEmail?: string }) {
           boxShadow: "inset 0 1px 0 rgba(255,255,255,0.045), 0 12px 32px rgba(0,0,0,0.35)",
         }}
       >
+        <PakkeVelger value={pkg} onChange={setPkg} />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <Felt
             label="Fornavn"
@@ -400,40 +730,79 @@ function SignupKort({ defaultEmail }: { defaultEmail?: string }) {
           autoComplete="email"
           trailing={<Icon name="mail" size={14} style={{ color: T.mut }} />}
         />
-        <Felt
-          label="Passord"
-          type={visPassord ? "text" : "password"}
-          value={passord}
-          onChange={setPassord}
-          placeholder="Minst 8 tegn"
-          autoComplete="new-password"
-          mono
-          trailing={
-            <button
-              type="button"
-              onClick={() => setVisPassord((v) => !v)}
-              aria-label={visPassord ? "Skjul passord" : "Vis passord"}
-              aria-pressed={visPassord}
-              className="v2-focus"
-              style={{
-                appearance: "none",
-                background: "transparent",
-                border: "none",
-                padding: 0,
-                cursor: "pointer",
-                display: "inline-flex",
-              }}
-            >
-              <Icon name="eye" size={14} style={{ color: T.mut }} />
-            </button>
-          }
-        />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <Felt
+            label="Passord"
+            type={visPassord ? "text" : "password"}
+            value={passord}
+            onChange={setPassord}
+            placeholder="Minst 8 tegn"
+            autoComplete="new-password"
+            mono
+            trailing={
+              <button
+                type="button"
+                onClick={() => setVisPassord((v) => !v)}
+                aria-label={visPassord ? "Skjul passord" : "Vis passord"}
+                aria-pressed={visPassord}
+                className="v2-focus"
+                style={{
+                  appearance: "none",
+                  background: "transparent",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                  display: "inline-flex",
+                }}
+              >
+                <Icon name="eye" size={14} style={{ color: T.mut }} />
+              </button>
+            }
+          />
+          <Felt
+            label="Bekreft passord"
+            type={visBekreft ? "text" : "password"}
+            value={bekreft}
+            onChange={setBekreft}
+            placeholder="Gjenta passordet"
+            autoComplete="new-password"
+            mono
+            trailing={
+              <button
+                type="button"
+                onClick={() => setVisBekreft((v) => !v)}
+                aria-label={visBekreft ? "Skjul passord" : "Vis passord"}
+                aria-pressed={visBekreft}
+                className="v2-focus"
+                style={{
+                  appearance: "none",
+                  background: "transparent",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                  display: "inline-flex",
+                }}
+              >
+                <Icon name="eye" size={14} style={{ color: T.mut }} />
+              </button>
+            }
+          />
+        </div>
+        <RolleVelger value={rolle} onChange={setRolle} />
         <Samtykke checked={samtykke} onToggle={() => setSamtykke((s) => !s)} />
-        <Knapp variant="primary" type="submit" icon={<Icon name="arrow-right" size={16} style={{ color: T.onLime }} />}>
-          Opprett konto
+
+        {feil && <Feilboks>{feil}</Feilboks>}
+
+        <Knapp
+          variant="primary"
+          type="submit"
+          disabled={laster}
+          icon={<Icon name="arrow-right" size={16} style={{ color: T.onLime }} />}
+        >
+          {laster ? "Oppretter…" : "Opprett konto"}
         </Knapp>
         <EllerSkille />
-        <Knapp variant="ghost" icon={<GoogleG />}>
+        <Knapp variant="ghost" icon={<GoogleG />} disabled={laster} onClick={fortsettMedGoogle}>
           Fortsett med Google
         </Knapp>
       </form>
@@ -457,7 +826,10 @@ function SignupKort({ defaultEmail }: { defaultEmail?: string }) {
 
 /* ── Offentlig signup-flate (dark-scope, fluid AuthRamme) ──────────── */
 
-export function SignupV2({ defaultEmail }: { defaultEmail?: string } = {}) {
+export function SignupV2({
+  defaultEmail,
+  subscribe,
+}: { defaultEmail?: string; subscribe?: string } = {}) {
   return (
     <div
       className="dark"
@@ -482,7 +854,7 @@ export function SignupV2({ defaultEmail }: { defaultEmail?: string } = {}) {
           background: `radial-gradient(700px 420px at 60% -12%, rgba(0,88,64,0.14), transparent 62%), ${T.bg}`,
         }}
       >
-        <SignupKort defaultEmail={defaultEmail} />
+        <SignupKort defaultEmail={defaultEmail} subscribe={subscribe} />
       </div>
     </div>
   );

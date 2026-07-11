@@ -11,7 +11,7 @@
  * placeholder, lagres ikke. «Bytt bilde» bruker ekte uploadAvatar-action.
  */
 
-import { Avatar } from "@/components/athletic/golfdata";
+import { AvatarFoto } from "@/components/v2";
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -148,7 +148,7 @@ export function ProfilRedigerForm({ initial }: { initial: Initial }) {
     <div>
       {/* Avatar 72px + Bytt bilde (fasit: secondary med camera-ikon) */}
       <div className="mb-[22px] flex items-center gap-4">
-        <Avatar src={avatarUrl ?? undefined} name={[fornavn, etternavn].filter(Boolean).join(" ") || initialer} size="xl" />
+        <AvatarFoto src={avatarUrl ?? null} navn={[fornavn, etternavn].filter(Boolean).join(" ") || initialer} size={72} />
         <input
           ref={filInput}
           type="file"

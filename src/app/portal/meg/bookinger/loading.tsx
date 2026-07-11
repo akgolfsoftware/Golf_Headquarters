@@ -1,15 +1,7 @@
-import {
-  SkeletonCard,
-  SkeletonHero,
-} from "@/components/shared/loading-skeleton";
+/* v2-skjelett for /portal/meg/bookinger — liste over bookinger. */
+
+import { V2Laster } from "@/components/v2/feil-laste";
 
 export default function Loading() {
-  return (
-    <div className="space-y-6 p-8">
-      <SkeletonHero />
-      <SkeletonCard />
-      <SkeletonCard />
-      <SkeletonCard />
-    </div>
-  );
+  return <V2Laster variant="liste" />;
 }

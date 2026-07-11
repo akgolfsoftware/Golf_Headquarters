@@ -1,13 +1,8 @@
 /**
- * /stats/verktoy/whs-kalkulator
- *
- * Bruker legger inn opptil 20 runder (score + slope + CR).
- * Beregner WHS-handicap: 8 beste score differentials av siste 20.
+ * /stats/verktoy/whs-kalkulator — v2. Swap av (mlegacy)-motparten.
  */
-
-import "../../stats.css";
 import type { Metadata } from "next";
-import { WhsKalkulatorClient } from "./client";
+import { WhsKalkulatorV2 } from "@/components/marketing/v2/MarkedStatsVerktoyV2";
 
 export const revalidate = 86400;
 
@@ -18,5 +13,5 @@ export const metadata: Metadata = {
 };
 
 export default function WhsKalkulatorPage() {
-  return <WhsKalkulatorClient />;
+  return <WhsKalkulatorV2 />;
 }

@@ -2,166 +2,15 @@
 
 import { useState, useRef, useTransition } from "react";
 import { Upload, X, AlertTriangle, CheckCircle } from "lucide-react";
-import { importUpGameShots } from "./actions";
-import type { ShotInput } from "./actions";
-
-// Kolonne-mapping: prøver kjente norske og engelske navn
-const KOLONNE_MAP = {
-  hullNr: ["hull", "hole", "hullnr", "nr", "hole_number", "hullnummer"],
-  par: ["par"],
-  score: ["score", "slag", "strokes", "total"],
-  fir: ["fir", "fairway", "fairway_i_reg", "fairway i regulasjon"],
-  gir: ["gir", "green", "green_i_reg", "green i regulasjon"],
-  putts: ["putter", "putts", "putt"],
-  forstePutt: ["første_putt", "forste_putt", "first_putt", "puttavstand", "avstand_til_hull"],
-  straff: ["straff", "penalty", "penalties", "straffslag"],
-  bunker: ["bunker", "sand"],
-  sandSave: ["sand_save", "sandredd", "berget_fra_bunker"],
-  scrambling: ["scrambling"],
-  kjørelengde: ["kjørelengde", "kjøre", "driving_distance", "lengde", "drive_length"],
-} as const;
-
-type KolonneNøkkel = keyof typeof KOLONNE_MAP;
-
-function detekterKolonne(headers: string[], nøkkel: KolonneNøkkel): string | null {
-  const kandidater = KOLONNE_MAP[nøkkel] as readonly string[];
-  const normaliser = (s: string) => s.toLowerCase().replace(/[^a-zæøå0-9]/g, "_");
-  return (
-    headers.find((h) => kandidater.includes(normaliser(h))) ?? null
-  );
-}
-
-type ParsetRad = Record<string, string>;
-
-function parseCSV(tekst: string): { headers: string[]; rader: ParsetRad[] } {
-  const linjer = tekst
-    .replace(/\r\n/g, "\n")
-    .replace(/\r/g, "\n")
-    .split("\n")
-    .filter((l) => l.trim());
-
-  if (linjer.length < 2) return { headers: [], rader: [] };
-
-  const sep = linjer[0].includes(";") ? ";" : ",";
-  const headers = linjer[0].split(sep).map((h) => h.trim().replace(/^"|"$/g, ""));
-  const rader = linjer.slice(1).map((l) => {
-    const verdier = l.split(sep).map((v) => v.trim().replace(/^"|"$/g, ""));
-    const rad: ParsetRad = {};
-    headers.forEach((h, i) => { rad[h] = verdier[i] ?? ""; });
-    return rad;
-  });
-
-  return { headers, rader };
-}
-
-function parseBool(v: string | undefined): boolean | null {
-  if (!v) return null;
-  const n = v.toLowerCase().trim();
-  if (["ja", "j", "1", "yes", "y", "true", "x"].includes(n)) return true;
-  if (["nei", "n", "0", "no", "false", "-", ""].includes(n)) return false;
-  return null;
-}
-
-function konverterRaderTilShots(
-  rader: ParsetRad[],
-  headers: string[],
-  kolMapping: Record<KolonneNøkkel, string | null>,
-): { shots: ShotInput[]; advarsel: string | null } {
-  const shots: ShotInput[] = [];
-  const advarsel: string[] = [];
-
-  for (const rad of rader) {
-    const hullNrKol = kolMapping.hullNr;
-    const parKol = kolMapping.par;
-    const scoreKol = kolMapping.score;
-    const puttsKol = kolMapping.putts;
-
-    if (!hullNrKol) { advarsel.push("Mangler hull-nummer kolonne"); break; }
-
-    const hullNr = parseInt(rad[hullNrKol] ?? "");
-    if (isNaN(hullNr) || hullNr < 1 || hullNr > 18) continue;
-
-    const par = parKol ? parseInt(rad[parKol] ?? "") : 4;
-    const score = scoreKol ? parseInt(rad[scoreKol] ?? "") : NaN;
-    const putts = puttsKol ? parseInt(rad[puttsKol] ?? "") : 2;
-    const fir = kolMapping.fir ? parseBool(rad[kolMapping.fir]) : null;
-    const straff = kolMapping.straff ? parseInt(rad[kolMapping.straff] ?? "0") || 0 : 0;
-    const kjørelengde = kolMapping.kjørelengde ? parseFloat(rad[kolMapping.kjørelengde] ?? "") : null;
-
-    if (isNaN(score)) { advarsel.push(`Hull ${hullNr}: mangler score`); continue; }
-
-    const effektivPar = isNaN(par) ? 4 : par;
-    const effektivPutts = isNaN(putts) ? 2 : putts;
-
-    // Rekonstruer slag fra aggregatdata:
-    // 1. Tee-slag (DRIVE for par 4/5, APPROACH for par 3)
-    // 2. Approach-slag (score - putts - 1 approach-slag)
-    // 3. Putt-slag
-
-    let slagNr = 1;
-
-    // Tee-slag
-    if (effektivPar >= 4) {
-      shots.push({
-        holeNumber: hullNr,
-        holePar: effektivPar,
-        shotNumber: slagNr++,
-        club: "Driver",
-        lie: "TEE",
-        distanceToPin: kjørelengde && !isNaN(kjørelengde) ? Math.round(kjørelengde) : undefined,
-        distanceHit: kjørelengde && !isNaN(kjørelengde) ? Math.round(kjørelengde) : undefined,
-        shotType: "DRIVE",
-        lie_etter: fir === true ? "FAIRWAY" : fir === false ? "ROUGH" : "FAIRWAY",
-      } as ShotInput & { lie_etter: string });
-    } else {
-      shots.push({
-        holeNumber: hullNr,
-        holePar: effektivPar,
-        shotNumber: slagNr++,
-        lie: "TEE",
-        shotType: "APPROACH",
-      });
-    }
-
-    // Mellom-slag (approach/chip)
-    const mellomSlag = score - effektivPutts - (effektivPar >= 4 ? 1 : 1);
-    for (let i = 0; i < Math.max(0, mellomSlag); i++) {
-      shots.push({
-        holeNumber: hullNr,
-        holePar: effektivPar,
-        shotNumber: slagNr++,
-        lie: i === mellomSlag - 1 ? "FAIRWAY" : "FAIRWAY",
-        shotType: mellomSlag > 1 && i < mellomSlag - 1 ? "APPROACH" : "CHIP",
-      });
-    }
-
-    // Putter
-    for (let i = 0; i < Math.max(0, effektivPutts); i++) {
-      shots.push({
-        holeNumber: hullNr,
-        holePar: effektivPar,
-        shotNumber: slagNr++,
-        lie: "GREEN",
-        shotType: "PUTT",
-      });
-    }
-
-    // Straffslag
-    if (straff > 0) {
-      shots.push({
-        holeNumber: hullNr,
-        holePar: effektivPar,
-        shotNumber: slagNr++,
-        lie: "FAIRWAY",
-        shotType: "DROP",
-        isPenalty: true,
-        notes: `${straff} straffslag fra UpGame`,
-      });
-    }
-  }
-
-  return { shots, advarsel: advarsel.length > 0 ? advarsel.join("; ") : null };
-}
+import { importUpGameHoleScores } from "./actions";
+import {
+  KOLONNE_MAP,
+  type KolonneNøkkel,
+  type ParsetRad,
+  detekterKolonne,
+  parseCSV,
+  konverterRaderTilHoleScores,
+} from "@/lib/runde-logg/upgame-parse";
 
 export function UpGameImportModal({ roundId }: { roundId: string }) {
   const [åpen, setÅpen] = useState(false);
@@ -209,8 +58,8 @@ export function UpGameImportModal({ roundId }: { roundId: string }) {
   }
 
   function importer() {
-    const { shots, advarsel: a } = konverterRaderTilShots(rader, headers, kolMapping);
-    if (shots.length === 0) {
+    const { hull, advarsel: a } = konverterRaderTilHoleScores(rader, kolMapping);
+    if (hull.length === 0) {
       setAdvarsel("Ingen gyldige hull funnet i CSV-filen. Sjekk at hull-nummer-kolonnen er riktig kartlagt.");
       return;
     }
@@ -218,8 +67,9 @@ export function UpGameImportModal({ roundId }: { roundId: string }) {
 
     startTransition(async () => {
       try {
-        await importUpGameShots(roundId, shots);
-        setSteg("ferdig");
+        const res = await importUpGameHoleScores(roundId, hull);
+        if (res.ok) setSteg("ferdig");
+        else setAdvarsel(res.error ?? "Import feilet. Prøv igjen.");
       } catch {
         setAdvarsel("Import feilet. Prøv igjen.");
       }
@@ -378,7 +228,8 @@ export function UpGameImportModal({ roundId }: { roundId: string }) {
                   <div>
                     <p className="font-display text-lg font-semibold text-foreground">Import fullført</p>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      Slagene er lagt inn. Lukk for å se statistikken.
+                      Score, putter og FIR/GIR per hull er lagt inn. Strokes Gained krever
+                      slag-for-slag-kjede — fullfør kjeden fra rundesiden når du vil ha SG.
                     </p>
                   </div>
                   {advarsel && (

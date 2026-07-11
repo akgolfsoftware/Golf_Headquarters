@@ -36,14 +36,14 @@ import {
 import {
   createSpiller,
   type OpprettSpillerInput,
-} from "@/app/admin/spillere/ny/actions";
+} from "@/app/admin/(legacy)/spillere/ny/actions";
 import {
   SPILLER_KATEGORIER,
   SPILLER_TIERS,
   ALL_PROGRAMS,
   type SpillerKategori,
   type SpillerTier,
-} from "@/app/admin/spillere/ny/constants";
+} from "@/app/admin/(legacy)/spillere/ny/constants";
 import type { PlayerProgram } from "@/generated/prisma/client";
 
 const PROGRAM_LABEL: Record<PlayerProgram, string> = {
@@ -327,7 +327,7 @@ export function AdminNySpillerV2() {
                     <Inndata label={null} type="email" value={foreldreEpost} onChange={setForeldreEpost} placeholder="ola@eksempel.no" />
                   </SkjemaFelt>
                   <SkjemaFelt label="Foreldre-telefon (valgfri)" hjelp={undefined} feil={fieldErrors.foreldreTelefon}>
-                    <Inndata label={null} value={foreldreTelefon} onChange={setForeldreTelefon} placeholder="+47 900 00 000" />
+                    <Inndata label={null} type="tel" value={foreldreTelefon} onChange={setForeldreTelefon} placeholder="+47 900 00 000" />
                   </SkjemaFelt>
                 </div>
               </Kort>

@@ -1,12 +1,8 @@
 /**
- * /stats/verktoy/sg-estimator
- *
- * Input: snittscore slider → output: SG-fordeling per kategori + radar.
+ * /stats/verktoy/sg-estimator — v2. Swap av (mlegacy)-motparten.
  */
-
-import "../../stats.css";
 import type { Metadata } from "next";
-import { SgEstimatorClient } from "./client";
+import { SgEstimatorV2 } from "@/components/marketing/v2/MarkedStatsVerktoyV2";
 
 export const revalidate = 86400;
 
@@ -17,5 +13,5 @@ export const metadata: Metadata = {
 };
 
 export default function SgEstimatorPage() {
-  return <SgEstimatorClient />;
+  return <SgEstimatorV2 />;
 }

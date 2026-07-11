@@ -10,7 +10,7 @@
 
 import "./profil.css";
 import "../spillere.css";
-import "../../../stats/stats.css";
+import "@/app/(marketing)/(mlegacy)/stats/stats.css";
 
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -20,6 +20,7 @@ import { prisma } from "@/lib/prisma";
 import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { StatsInitialAvatar } from "@/components/stats/stats-initial-avatar";
 import { StatsTrendGraf } from "@/components/stats/stats-trend-graf";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const revalidate = 3600;
 
@@ -395,6 +396,7 @@ export default async function SpillerProfilPage({
   }
 
   return (
+    <StatsLegacyShell aktiv="spillere">
     <div className="bg-background text-foreground">
       {/* BREADCRUMB */}
       <div className="border-b border-border" style={{ background: "var(--s-secondary)" }}>
@@ -886,5 +888,6 @@ export default async function SpillerProfilPage({
         </div>
       </div>
     </div>
+    </StatsLegacyShell>
   );
 }

@@ -12,9 +12,8 @@
  * V2Shell (montert i ruten) eier chrome-en.
  */
 
-import Link from "next/link";
 import { AnalysereV2, type AnalysereData } from "@/components/portal/v2/AnalysereV2";
-import { Caps, Tittel, StatusPill, Icon, T, type StatusTone } from "@/components/v2";
+import { Caps, Tittel, StatusPill, TilbakeLenke, type StatusTone } from "@/components/v2";
 
 /** Norsk eieform: «Rohjan» → «Rohjans», «Alex» → «Alex'». Holder navnet helt. */
 function eieform(navn: string): string {
@@ -26,7 +25,7 @@ function sgForm(data: AnalysereData): { l: string; tone: StatusTone } | null {
   const tp = data.minGolf.sgStatus.trendPunkter;
   if (tp.length < 2) return null;
   const d = tp[tp.length - 1].sg - tp[0].sg;
-  if (d > 0.05) return { l: "Stigende", tone: "lime" };
+  if (d > 0.05) return { l: "Stigende", tone: "up" };
   if (d < -0.05) return { l: "Synkende", tone: "down" };
   return { l: "Stabil", tone: "info" };
 }
@@ -52,26 +51,7 @@ export function AdminSpillerAnalyseV2({ navn, spillerId, data }: AdminSpillerAna
       data={data}
       header={(mobile) => (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <Link
-            href={`/admin/spillere/${spillerId}`}
-            className="v2-press v2-focus"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              width: "fit-content",
-              fontFamily: T.mono,
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: T.mut,
-              textDecoration: "none",
-            }}
-          >
-            <Icon name="chevron-left" size={13} style={{ color: T.mut }} />
-            Tilbake til {navn}
-          </Link>
+          <TilbakeLenke href={`/admin/spillere/${spillerId}`}>Tilbake til {navn}</TilbakeLenke>
           <div
             style={{
               display: "flex",

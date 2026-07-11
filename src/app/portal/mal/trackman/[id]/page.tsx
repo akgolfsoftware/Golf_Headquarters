@@ -1,19 +1,26 @@
 /**
- * PlayerHQ · Mål · TrackMan-økt-detalj
- *
- * Migrert til produksjonsdesign med PageHeader (italic Familjen Grotesk),
- * semantiske tokens og 8pt-grid. EmptyState når per-kølle-stats mangler.
+ * PlayerHQ TrackMan-økt-detalj — v2. Dispersion-plot og stabilitets-seksjon
+ * (tailwind) gjenbrukes som de er; ramme, header og per-kølle-listen er v2.
+ * «?»-regelen: dispersion forklares via hjelpetekst-nøkkelen dispersjon.
  */
 
 import Link from "next/link";
-import { ArrowLeft, Wrench } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
-import { EmptyState } from "@/components/shared/empty-state";
 import { FEATURES } from "@/lib/features";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { T } from "@/lib/v2/tokens";
+import {
+  Caps,
+  Tittel,
+  Kort,
+  Rad,
+  MikroMeta,
+  TomTilstand,
+  HjelpTips,
+} from "@/components/v2";
 import { DispersionPlot } from "./dispersion-plot";
 import { StabilitetSeksjon, beregnStabilitet } from "./stability-seksjon";
 
@@ -75,70 +82,71 @@ export default async function TrackManDetalj({
   });
 
   return (
-    <div className="mx-auto max-w-[1240px] space-y-8 px-4 sm:px-6">
-      <Link
-        href="/portal/mal/trackman"
-        className="inline-flex min-h-11 items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Alle TrackMan-økter
-      </Link>
+    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <Link href="/portal/mal/trackman" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
+          <MikroMeta icon="arrow-left">Alle TrackMan-økter</MikroMeta>
+        </Link>
 
-      <PageHeader
-        eyebrow={`PlayerHQ · TrackMan · ${sesjon.source}`}
-        titleLead="Økt"
-        titleItalic={datoTekst}
-        sub={`${sesjon.shotCount} slag registrert.`}
-      />
-
-      <section className="rounded-lg border border-border bg-card p-6">
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Slag-dispersion
-        </span>
-        <div className="mt-4">
-          <DispersionPlot rader={rader} />
+        <div>
+          <Caps>PlayerHQ · TrackMan · {sesjon.source}</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em={datoTekst}>Økt</Tittel>
+          </div>
+          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
+            {sesjon.shotCount} slag registrert.
+          </p>
         </div>
-      </section>
 
-      <section className="rounded-lg border border-border bg-card p-6">
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Per kølle (snitt-distanse)
-        </span>
-        {klubbStats.length === 0 ? (
-          <div className="mt-4">
-            <EmptyState
-              icon={Wrench}
-              titleItalic="Beregner"
-              titleTrail="per kølle"
+        {/* Slag-dispersion */}
+        <Kort
+          eyebrow={
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              Slag-dispersion <HjelpTips k="dispersjon" size={11} />
+            </span>
+          }
+        >
+          <DispersionPlot rader={rader} />
+        </Kort>
+
+        {/* Per kølle */}
+        <Kort eyebrow="Per kølle (snitt-distanse)">
+          {klubbStats.length === 0 ? (
+            <TomTilstand
+              icon="wrench"
+              title="Beregner per kølle"
               sub="Per-kølle-statistikk beregnes når trackman-agenten kjører. Trigges automatisk ved CSV-import."
             />
-          </div>
-        ) : (
-          <ul className="mt-4 divide-y divide-border">
-            {klubbStats.map((s) => (
-              <li
-                key={s.klubb}
-                className="flex items-center justify-between py-4 text-sm"
-              >
-                <div>
-                  <span className="font-medium text-foreground">{s.klubb}</span>
-                  <span className="ml-4 font-mono text-[10px] text-muted-foreground">
-                    {s.antallSlag} slag
-                  </span>
-                </div>
-                <span className="font-display text-lg font-semibold tabular-nums">
-                  {s.snittDistanse.toFixed(0)} m
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+          ) : (
+            <div>
+              {klubbStats.map((s, i) => (
+                <Rad
+                  key={s.klubb}
+                  last={i === klubbStats.length - 1}
+                  title={s.klubb}
+                  sub={`${s.antallSlag} slag`}
+                  trailing={
+                    <span
+                      style={{
+                        fontFamily: T.mono,
+                        fontSize: 16,
+                        fontWeight: 700,
+                        color: T.fg,
+                        fontVariantNumeric: "tabular-nums",
+                      }}
+                    >
+                      {s.snittDistanse.toFixed(0)} m
+                    </span>
+                  }
+                />
+              ))}
+            </div>
+          )}
+        </Kort>
 
-      {/* Stabilitet-analyse (vises kun hvis sessions har shots-data) */}
-      {stabilitetData.klubber.length > 0 && (
-        <StabilitetSeksjon data={stabilitetData} />
-      )}
-    </div>
+        {/* Stabilitet-analyse (vises kun hvis sessions har shots-data) */}
+        {stabilitetData.klubber.length > 0 && <StabilitetSeksjon data={stabilitetData} />}
+      </div>
+    </V2Shell>
   );
 }

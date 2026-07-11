@@ -23,7 +23,8 @@ import { sammenlignMedReferanse } from "@/lib/stats/sg-estimator";
 import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { Reveal } from "@/components/stats/reveal";
 import { StatsBigRadar } from "@/components/stats/stats-big-radar";
-import "../../../stats.css";
+import "@/app/(marketing)/(mlegacy)/stats/stats.css";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const dynamic = "force-dynamic";
 
@@ -142,6 +143,7 @@ export default async function SgResultatPage({ params }: Props) {
     : null;
 
   return (
+    <StatsLegacyShell>
     <div className="bg-background text-foreground">
 
       {/* ── BREADCRUMB ────────────────────────────────────────────── */}
@@ -916,5 +918,6 @@ export default async function SgResultatPage({ params }: Props) {
         </Link>
       </div>
     </div>
+    </StatsLegacyShell>
   );
 }

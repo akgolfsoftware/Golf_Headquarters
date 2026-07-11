@@ -1,21 +1,17 @@
 /**
- * PlayerHQ · Slag-registrering (/portal/mal/runder/[id]/slag)
- *
- * RE-ETABLERT 2026-06-12 (review-funn B3): SlagWizard + UpGameImportModal
- * mistet eneste render-sted i fasit-omskrivingen av runde-detaljsiden —
- * ingen flyt kunne produsere Shot-data lenger. Detaljsiden er bevisst ren
- * visning (fasit-paritet); registreringsverktøyet bor nå på denne undersiden
- * og nås fra scorecard-blokken der.
- *
- * Skrive-tilgang håndheves i actions (assertRoundOwner) — kun rundens eier.
+ * PlayerHQ Slag-registrering — v2-ramme rundt SlagWizard + UpGameImportModal
+ * (verktøyene er shadcn/tailwind og gjenbrukes som de er; kun sidens hode og
+ * chrome er v2). Skrive-tilgang håndheves i actions (assertRoundOwner) —
+ * kun rundens eier.
  */
 
-import { Eyebrow } from "@/components/athletic/golfdata";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { Caps, Tittel, MikroMeta } from "@/components/v2";
+import { T } from "@/lib/v2/tokens";
 import { SlagWizard } from "../slag-wizard";
 import { UpGameImportModal } from "../upgame-import-modal";
 
@@ -63,33 +59,36 @@ export default async function SlagRegistreringPage({
   }));
 
   return (
-    <div className="mx-auto w-full max-w-[460px] px-1 pb-8 pt-3 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
-      <Link
-        href={`/portal/mal/runder/${id}`}
-        className="mb-2 inline-flex h-11 items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" strokeWidth={1.5} aria-hidden />
-        Tilbake til runden
-      </Link>
+    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+        <Link
+          href={`/portal/mal/runder/${id}`}
+          style={{ textDecoration: "none", alignSelf: "flex-start" }}
+        >
+          <MikroMeta icon="arrow-left">Tilbake til runden</MikroMeta>
+        </Link>
 
-      <div className="flex items-end justify-between gap-3">
-        <div>
-          <Eyebrow as="span">
-            {runde.course.name} · {datoTekst}
-          </Eyebrow>
-          <h1 className="mt-2 font-display text-[26px] font-bold leading-[1.04] tracking-[-0.025em] text-foreground md:text-[30px]">
-            Slag-for-slag
-          </h1>
-          <p className="mt-1.5 text-sm text-muted-foreground">
-            Registrer hvert slag manuelt, eller importer fra UpGame.
-          </p>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <div>
+            <Caps>
+              {runde.course.name} · {datoTekst}
+            </Caps>
+            <div style={{ marginTop: 10 }}>
+              <Tittel em="redigering.">Avansert</Tittel>
+            </div>
+            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0", lineHeight: 1.6 }}>
+              Rediger enkeltslag på en lagret runde, eller importer fra UpGame. Ny føring gjøres{" "}
+              <Link href="/portal/runde/logg" style={{ color: T.lime, fontWeight: 600, textDecoration: "none" }}>
+                slag for slag
+              </Link>{" "}
+              — raskere og alltid komplett kjede.
+            </p>
+          </div>
+          <UpGameImportModal roundId={id} />
         </div>
-        <UpGameImportModal roundId={id} />
-      </div>
 
-      <div className="mt-5">
         <SlagWizard roundId={id} eksisterendeSlag={serialiserteSlag} />
       </div>
-    </div>
+    </V2Shell>
   );
 }

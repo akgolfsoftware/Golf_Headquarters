@@ -88,7 +88,7 @@
   height: 10px;
   border-radius: 50%;
   background: var(--s-primary);
-  border: 2px solid var(--s-bg, #FAFAF7);
+  border: 2px solid var(--s-bg);
   flex-shrink: 0;
 }
 .stats-sesong-tidslinje-dato {

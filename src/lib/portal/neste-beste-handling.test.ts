@@ -1,0 +1,78 @@
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
+import { nesteBesteHandling } from "./neste-beste-handling";
+
+const TOM_DAG = { harPlanTilGodkjenning: false, dagensOkt: null, ukenHarOkter: false };
+
+describe("nesteBesteHandling", () => {
+  it("plan til godkjenning vinner over alt annet", () => {
+    const r = nesteBesteHandling({
+      harPlanTilGodkjenning: true,
+      dagensOkt: { href: "/portal/gjennomfore/x", title: "Økt", status: "PLANNED" },
+      ukenHarOkter: true,
+    });
+    assert.equal(r.regel, "plan-godkjenning");
+    assert.equal(r.href, "/portal/planlegge/workbench");
+  });
+
+  it("dagens PLANNED-økt gir Start-CTA til øktens href", () => {
+    const r = nesteBesteHandling({
+      ...TOM_DAG,
+      dagensOkt: { href: "/portal/gjennomfore/abc", title: "Nærspill", status: "PLANNED" },
+      ukenHarOkter: true,
+    });
+    assert.equal(r.regel, "start-okt");
+    assert.equal(r.href, "/portal/gjennomfore/abc");
+  });
+
+  it("dagens IN_PROGRESS-økt gir også Start-CTA (fortsett økten)", () => {
+    const r = nesteBesteHandling({
+      ...TOM_DAG,
+      dagensOkt: { href: "/portal/gjennomfore/abc", title: "Nærspill", status: "IN_PROGRESS" },
+      ukenHarOkter: true,
+    });
+    assert.equal(r.regel, "start-okt");
+  });
+
+  it("dagens COMPLETED-økt teller ikke som «kommende» — faller videre til neste regel", () => {
+    const r = nesteBesteHandling({
+      harPlanTilGodkjenning: false,
+      dagensOkt: { href: "/portal/gjennomfore/abc", title: "Nærspill", status: "COMPLETED" },
+      ukenHarOkter: false,
+    });
+    assert.equal(r.regel, "planlegg-uke");
+  });
+
+  it("dagens SKIPPED/CANCELLED-økt teller ikke som «kommende»", () => {
+    for (const status of ["SKIPPED", "CANCELLED"] as const) {
+      const r = nesteBesteHandling({
+        harPlanTilGodkjenning: false,
+        dagensOkt: { href: "/portal/gjennomfore/x", title: "Økt", status },
+        ukenHarOkter: true,
+      });
+      assert.equal(r.regel, "fallback", `status=${status}`);
+    }
+  });
+
+  it("tom ukeplan uten dagens økt gir Planlegg uka", () => {
+    const r = nesteBesteHandling(TOM_DAG);
+    assert.equal(r.regel, "planlegg-uke");
+    assert.equal(r.href, "/portal/planlegge/workbench");
+  });
+
+  it("ingen dagens økt men uken har andre økter → fallback (hviledag, ikke tom uke)", () => {
+    const r = nesteBesteHandling({ harPlanTilGodkjenning: false, dagensOkt: null, ukenHarOkter: true });
+    assert.equal(r.regel, "fallback");
+    assert.equal(r.href, "/portal/gjennomfore");
+  });
+
+  it("prioritet: plan-godkjenning > start-økt > planlegg-uke > fallback", () => {
+    // Alle fire betingelser samtidig sanne bortsett fra plan → sjekk nest-høyeste vinner
+    const kunOktOgUke = nesteBesteHandling({
+      harPlanTilGodkjenning: false,
+      dagensOkt: { href: "/x", title: "y", status: "PLANNED" },
+      ukenHarOkter: false,
+    });
+    assert.equal(kunOktOgUke.regel, "start-okt");
+  });
+});

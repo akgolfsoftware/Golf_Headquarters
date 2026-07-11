@@ -1,5 +1,5 @@
 // Tiger Five — de fem vanligste score-dreperne for amatørspillere.
-// Definert i AK Golf CANON v3.5 / DECADE Golf-metodikk (Scott Fawcett).
+// Definert i AK Golf CANON v3.5 (presisjonsstrategi-metodikken).
 // Kalkulatoren leses fra Shot-data for én eller flere runder.
 //
 // Tiger Five:

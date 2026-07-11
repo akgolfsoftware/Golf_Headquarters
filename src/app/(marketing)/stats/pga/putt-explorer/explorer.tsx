@@ -9,6 +9,7 @@
 
 import { useState, useMemo } from "react";
 import { CountUp } from "@/components/stats/count-up";
+import { T } from "@/lib/v2/tokens";
 
 export interface PuttDistanceRow {
   distanceMeters: number;
@@ -65,7 +66,7 @@ export function PuttExplorer({ data }: Props) {
     { label: "PGA Tour-snitt", pct: row.tourAvgSunkPct, color: "var(--primary)" },
     { label: "Topp 10 putters", pct: row.top10AvgSunkPct ?? Math.round(row.tourAvgSunkPct * 1.1), color: "var(--accent)" },
     { label: "Amatør HCP 0", pct: hcp0, color: "var(--muted-foreground)" },
-    { label: "Amatør HCP 10", pct: hcp10, color: "#B8B5AC" },
+    { label: "Amatør HCP 10", pct: hcp10, color: T.chartFaint },
   ];
 
   return (

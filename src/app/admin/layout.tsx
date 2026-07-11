@@ -1,6 +1,9 @@
-import { AdminShell } from "@/components/admin/admin-shell";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 
+// TOPP-layout for /admin — kun auth-guarden, INGEN visuell chrome. page.tsx
+// (rot) er en ren redirect til /admin/agencyos og trenger ingen chrome.
+// Alle andre admin-sider ligger i (legacy) og får AdminShell-chromen via
+// src/app/admin/(legacy)/layout.tsx.
 export default async function AdminLayout({
   children,
 }: {
@@ -10,5 +13,5 @@ export default async function AdminLayout({
   // eller til /portal hvis innlogget med feil rolle (PLAYER/PARENT).
   await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
-  return <AdminShell>{children}</AdminShell>;
+  return <>{children}</>;
 }

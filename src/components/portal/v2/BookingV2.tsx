@@ -16,6 +16,7 @@
  */
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import {
   T,
   Caps,
@@ -29,7 +30,7 @@ import {
   TomTilstand,
   Icon,
 } from "@/components/v2";
-import { hentSlotVindu } from "@/app/(v2preview)/v2-booking/actions";
+import { hentSlotVindu, opprettBooking } from "@/app/portal/booking/actions";
 import type { SlotVindu } from "@/lib/portal-booking/slot-vindu";
 
 /* ── Datakontrakt (props) ──────────────────────────────────────────── */
@@ -110,7 +111,7 @@ function ikonForTjeneste(t: BookingTjeneste): string {
 function prisTekst(t: BookingTjeneste, credits: BookingCredits): string {
   if (t.betalesMedCredit) {
     return credits.canUseCredits
-      ? `${credits.creditsRemaining} av ${credits.monthlyCredits} igjen`
+      ? `${credits.creditsRemaining} av ${credits.monthlyCredits} timer igjen`
       : "Med coaching-pakke";
   }
   return `fra ${NOK.format(Math.round(t.prisOre / 100))} kr`;
@@ -156,7 +157,7 @@ function StegIndikator({ steg, onVelg, mobile }: { steg: number; onVelg: (n: num
             <button
               type="button"
               onClick={() => onVelg(s.n)}
-              className="v2-focus"
+              className="v2-press v2-focus"
               style={{ appearance: "none", background: "none", border: "none", padding: 0, display: "flex", alignItems: "center", gap: 7, cursor: "pointer", flex: "none" }}
             >
               <span style={{ width: 22, height: 22, borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, background: aktiv ? T.lime : ferdig ? "rgba(209,248,67,0.12)" : T.panel2, color: aktiv ? T.onLime : ferdig ? T.lime : T.mut, border: `1px solid ${aktiv ? "transparent" : ferdig ? "rgba(209,248,67,0.25)" : T.border}` }}>
@@ -199,7 +200,7 @@ function StegType({ tjenester, credits, valgt, setValgt, mobile }: {
               key={x.id}
               type="button"
               onClick={() => setValgt(x.id)}
-              className="v2-focus"
+              className="v2-press v2-focus"
               style={{ appearance: "none", textAlign: "left", background: er ? `${T.tint}, ${T.panel}` : T.panel, border: `1px solid ${er ? "rgba(209,248,67,0.35)" : T.border}`, borderRadius: T.rCard, padding: "18px 20px", cursor: "pointer", position: "relative", display: "flex", flexDirection: "column", gap: 12 }}
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -276,7 +277,7 @@ function StegCoach({ coacher, fraPris, nesteLedig, valgt, setValgt, mobile }: {
             key={c.id}
             type="button"
             onClick={() => setValgt(c.id)}
-            className="v2-focus"
+            className="v2-press v2-focus"
             style={{ appearance: "none", textAlign: "left", background: er ? `${T.tint}, ${T.panel}` : T.panel, border: `1px solid ${er ? "rgba(209,248,67,0.35)" : T.border}`, borderRadius: T.rCard, padding: "22px 24px", cursor: "pointer" }}
           >
             <div style={{ display: "flex", alignItems: mobile ? "flex-start" : "center", gap: 18, flexDirection: mobile ? "column" : "row" }}>
@@ -305,6 +306,19 @@ function StegCoach({ coacher, fraPris, nesteLedig, valgt, setValgt, mobile }: {
 
 /* ── Steg 3 · Dato + tid ───────────────────────────────────────────── */
 
+/**
+ * Kalenderdag-nøkkel («YYYY-MM-DD») i Europe/Oslo — der øktene faktisk skjer.
+ * Server-ISO fra beregnSlotVindu er server-lokal midnatt (UTC på Vercel, Oslo
+ * i dev); klientens `new Date(år, mnd, dag).toISOString()` er klient-lokal.
+ * De to instant-strengene matcher ALDRI på tvers av tidssoner (rotårsaken til
+ * at alle dager viste «Ingen ledige tider» i prod for norske brukere) —
+ * sammenlign derfor alltid på Oslo-kalenderdag, aldri på rå ISO.
+ */
+const OSLO_DAG_FMT = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo", year: "numeric", month: "2-digit", day: "2-digit" });
+function osloDagKey(d: Date): string {
+  return OSLO_DAG_FMT.format(d); // sv-SE gir «YYYY-MM-DD»
+}
+
 function MiniKalender({ ledigeIso, valgtIso, setValgtIso, visMnd, visAar, setVis, mobile }: {
   ledigeIso: Set<string>;
   valgtIso: string | null;
@@ -320,7 +334,11 @@ function MiniKalender({ ledigeIso, valgtIso, setValgtIso, visMnd, visAar, setVis
   const forste = new Date(visAar, visMnd, 1);
   const blanke = (forste.getDay() + 6) % 7; // man-start
   const antDager = new Date(visAar, visMnd + 1, 0).getDate();
-  const isoForDag = (n: number) => new Date(visAar, visMnd, n).toISOString();
+  // Oslo-dagnøkkel → serverens originale ISO-streng, så valgt verdi alltid er
+  // nøyaktig den strengen serveren sendte (innsendingskontrakten uendret).
+  const isoVedDag = new Map<string, string>();
+  for (const iso of ledigeIso) isoVedDag.set(osloDagKey(new Date(iso)), iso);
+  const dagKey = (n: number) => `${visAar}-${String(visMnd + 1).padStart(2, "0")}-${String(n).padStart(2, "0")}`;
 
   return (
     <div>
@@ -329,8 +347,8 @@ function MiniKalender({ ledigeIso, valgtIso, setValgtIso, visMnd, visAar, setVis
           {MANED[visMnd]} <span style={{ color: T.mut, fontWeight: 500 }}>{visAar}</span>
         </span>
         <span style={{ display: "flex", gap: 4 }}>
-          <button type="button" onClick={() => setVis(visMnd === 0 ? 11 : visMnd - 1, visMnd === 0 ? visAar - 1 : visAar)} className="v2-focus" style={{ appearance: "none", width: 26, height: 26, borderRadius: 8, background: "none", border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><Icon name="chevron-left" size={13} style={{ color: T.mut }} /></button>
-          <button type="button" onClick={() => setVis(visMnd === 11 ? 0 : visMnd + 1, visMnd === 11 ? visAar + 1 : visAar)} className="v2-focus" style={{ appearance: "none", width: 26, height: 26, borderRadius: 8, background: "none", border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><Icon name="chevron-right" size={13} style={{ color: T.fg2 }} /></button>
+          <button type="button" onClick={() => setVis(visMnd === 0 ? 11 : visMnd - 1, visMnd === 0 ? visAar - 1 : visAar)} className="v2-press v2-focus" style={{ appearance: "none", width: 26, height: 26, borderRadius: 8, background: "none", border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><Icon name="chevron-left" size={13} style={{ color: T.mut }} /></button>
+          <button type="button" onClick={() => setVis(visMnd === 11 ? 0 : visMnd + 1, visMnd === 11 ? visAar + 1 : visAar)} className="v2-press v2-focus" style={{ appearance: "none", width: 26, height: 26, borderRadius: 8, background: "none", border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><Icon name="chevron-right" size={13} style={{ color: T.fg2 }} /></button>
         </span>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 2 }}>
@@ -340,20 +358,20 @@ function MiniKalender({ ledigeIso, valgtIso, setValgtIso, visMnd, visAar, setVis
         {Array.from({ length: blanke }, (_, i) => <span key={`b${i}`} />)}
         {Array.from({ length: antDager }, (_, i) => {
           const n = i + 1;
-          const iso = isoForDag(n);
+          const iso = isoVedDag.get(dagKey(n)) ?? null;
           const denne = new Date(visAar, visMnd, n);
           denne.setHours(0, 0, 0, 0);
-          const ledig = ledigeIso.has(iso);
-          const valgt = valgtIso === iso;
+          const ledig = iso !== null;
+          const valgt = iso !== null && valgtIso === iso;
           const iDagCelle = denne.getTime() === iDag.getTime();
           const passert = denne.getTime() < iDag.getTime();
           return (
             <button
               key={n}
               type="button"
-              onClick={() => ledig && setValgtIso(iso)}
+              onClick={() => iso !== null && setValgtIso(iso)}
               disabled={!ledig}
-              className={ledig ? "v2-focus" : undefined}
+              className={ledig ? "v2-press v2-focus" : undefined}
               style={{ appearance: "none", height: celle, borderRadius: 10, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, fontFamily: T.mono, fontSize: 12, fontWeight: valgt ? 700 : 500, cursor: ledig ? "pointer" : "default", background: valgt ? T.fg : ledig ? T.panel3 : "transparent", color: valgt ? T.bg : passert ? "rgba(255,255,255,0.18)" : ledig ? T.fg : T.mut, border: iDagCelle && !valgt ? `1px solid ${T.borderS}` : "1px solid transparent" }}
             >
               {n}
@@ -391,7 +409,7 @@ function TidKolonne({ dato, tider, valgt, setValgt }: {
                 key={kl}
                 type="button"
                 onClick={() => setValgt(kl)}
-                className="v2-focus"
+                className="v2-press v2-focus"
                 style={{ appearance: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, padding: "10px 0", borderRadius: 10, cursor: "pointer", background: er ? T.lime : T.panel2, color: er ? T.onLime : T.fg, border: `1px solid ${er ? "transparent" : T.border}` }}
               >
                 {kl}{er && <Icon name="check" size={12} />}
@@ -489,13 +507,15 @@ function StegTid({ tjeneste, coachNavn, laster, ledigeIso, valgtIso, setValgtIso
 
 /* ── Steg 4 · Bekreft ──────────────────────────────────────────────── */
 
-function StegBekreft({ tjeneste, coachNavn, dato, tid, credits, onBook, mobile }: {
+function StegBekreft({ tjeneste, coachNavn, dato, tid, credits, onBook, laster, feil, mobile }: {
   tjeneste: BookingTjeneste;
   coachNavn: string;
   dato: string | null;
   tid: string | null;
   credits: BookingCredits;
   onBook: () => void;
+  laster: boolean;
+  feil: string | null;
   mobile: boolean;
 }) {
   const pakke = tjeneste.betalesMedCredit;
@@ -528,9 +548,24 @@ function StegBekreft({ tjeneste, coachNavn, dato, tid, credits, onBook, mobile }
             </span>
           </div>
         </Kort>
-        <Knapp icon="check" full onClick={onBook} disabled={!klar}>Book time</Knapp>
+        {feil && feil !== "KREVER_BETALING" && (
+          <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, background: `color-mix(in srgb,${T.down} 10%,transparent)`, border: `1px solid ${T.down}` }}>
+            <Icon name="alert-triangle" size={13} style={{ color: T.down, flex: "none", marginTop: 1 }} />
+            <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5 }}>{feil}</span>
+          </div>
+        )}
+        {feil === "KREVER_BETALING" && (
+          <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
+            <Icon name="credit-card" size={13} style={{ color: T.warn, flex: "none", marginTop: 1 }} />
+            <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5 }}>
+              Booking krever coaching-pakke eller betaling — kontakt coach, eller{" "}
+              <Link href="/portal/meg/abonnement" style={{ color: T.lime, fontWeight: 600 }}>se abonnement →</Link>
+            </span>
+          </div>
+        )}
+        <Knapp icon="check" full onClick={onBook} disabled={!klar || laster}>{laster ? "Booker …" : "Book time"}</Knapp>
         <p style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, textAlign: "center", margin: 0, lineHeight: 1.5 }}>
-          Gratis avbestilling inntil 24 timer før. Coach bekrefter vanligvis innen 1 time.
+          Gratis avbestilling inntil 24 timer før. Bekreftes umiddelbart når du har coaching-pakke med ledige timer.
         </p>
       </div>
     </div>
@@ -539,11 +574,12 @@ function StegBekreft({ tjeneste, coachNavn, dato, tid, credits, onBook, mobile }
 
 /* ── Kvittering ────────────────────────────────────────────────────── */
 
-function Kvittering({ tjeneste, coachNavn, dato, tid, mobile }: {
+function Kvittering({ tjeneste, coachNavn, dato, tid, bookingId, mobile }: {
   tjeneste: BookingTjeneste;
   coachNavn: string;
   dato: string | null;
   tid: string | null;
+  bookingId: string;
   mobile: boolean;
 }) {
   const sluttTid = tid ? sluttKl(tid, tjeneste.varighetMin) : null;
@@ -554,14 +590,15 @@ function Kvittering({ tjeneste, coachNavn, dato, tid, mobile }: {
           <Icon name="check" size={26} style={{ color: T.onLime }} />
         </span>
         <div>
-          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: mobile ? 22 : 26, color: T.fg, letterSpacing: "-0.02em" }}>Timen er sendt til bekreftelse</div>
+          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: mobile ? 22 : 26, color: T.fg, letterSpacing: "-0.02em" }}>Timen er booket</div>
           <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.6 }}>
             {tjeneste.navn} med {coachNavn}<br />
             {dato && tid && <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: T.fg }}>{formatDato(dato)} · {tid}–{sluttTid}</span>}
             {tjeneste.stedNavn && <> · {tjeneste.stedNavn}</>}
           </p>
         </div>
-        <StatusPill tone="warn">Venter på coach</StatusPill>
+        <StatusPill tone="up">Bekreftet</StatusPill>
+        <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>Booking-id {bookingId.slice(0, 8)}</span>
       </div>
     </Kort>
   );
@@ -578,6 +615,11 @@ export function BookingV2({ data }: { data: BookingV2Data }) {
   const [valgtCoach, setValgtCoach] = useState("");
   const [valgtIso, setValgtIso] = useState<string | null>(null);
   const [valgtTid, setValgtTid] = useState<string | null>(null);
+
+  // Booking-innsending — ekte server-action, ingen simulert bekreftelse.
+  const [bookLaster, setBookLaster] = useState(false);
+  const [bookFeil, setBookFeil] = useState<string | null>(null);
+  const [bookingId, setBookingId] = useState<string | null>(null);
 
   // Slot-vindu per tjeneste (cache klientside). Init med server-vinduet.
   const [vinduCache, setVinduCache] = useState<Record<string, SlotVindu>>({ [data.vindu.tjenesteId]: data.vindu });
@@ -646,8 +688,28 @@ export function BookingV2({ data }: { data: BookingV2Data }) {
     return null;
   };
 
-  const kvittert = steg === 5;
+  const kvittert = steg === 5 && !!bookingId;
   const nesteSperret = (steg === 3 && (!valgtIso || !valgtTid)) || (steg === 2 && !valgtCoach);
+
+  /** Faktisk booking-innsending — ingen simulert kvittering. */
+  async function handleBook() {
+    if (!tjeneste || !valgtCoach || !valgtIso || !valgtTid || bookLaster) return;
+    setBookLaster(true);
+    setBookFeil(null);
+    const res = await opprettBooking({
+      serviceTypeId: tjeneste.id,
+      coachId: valgtCoach,
+      datoIso: valgtIso,
+      kl: valgtTid,
+    });
+    setBookLaster(false);
+    if (res.ok) {
+      setBookingId(res.bookingId);
+      setSteg(5);
+    } else {
+      setBookFeil(res.grunn);
+    }
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
@@ -671,13 +733,31 @@ export function BookingV2({ data }: { data: BookingV2Data }) {
           {steg === 1 && <StegType tjenester={tjenester} credits={credits} valgt={valgtType} setValgt={setValgtType} mobile={mobile} />}
           {steg === 2 && <StegCoach coacher={vinduCoacher} fraPris={fraPris} nesteLedig={nesteLedig} valgt={valgtCoach} setValgt={setValgtCoach} mobile={mobile} />}
           {steg === 3 && <StegTid tjeneste={tjeneste} coachNavn={coachNavn} laster={laster} ledigeIso={ledigeIso} valgtIso={valgtIso} setValgtIso={setValgtIso} tider={tider} valgtTid={valgtTid} setValgtTid={setValgtTid} visMnd={vis.mnd} visAar={vis.aar} setVis={setVis} credits={credits} mobile={mobile} />}
-          {steg === 4 && <StegBekreft tjeneste={tjeneste} coachNavn={coachNavn} dato={valgtIso} tid={valgtTid} credits={credits} onBook={() => setSteg(5)} mobile={mobile} />}
-          {kvittert && <Kvittering tjeneste={tjeneste} coachNavn={coachNavn} dato={valgtIso} tid={valgtTid} mobile={mobile} />}
+          {steg === 4 && <StegBekreft tjeneste={tjeneste} coachNavn={coachNavn} dato={valgtIso} tid={valgtTid} credits={credits} onBook={handleBook} laster={bookLaster} feil={bookFeil} mobile={mobile} />}
+          {kvittert && bookingId && <Kvittering tjeneste={tjeneste} coachNavn={coachNavn} dato={valgtIso} tid={valgtTid} bookingId={bookingId} mobile={mobile} />}
         </>
       )}
 
       {!kvittert && tjeneste && (
-        <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            gap: 10,
+            ...(mobile
+              ? {
+                  position: "sticky",
+                  bottom: "calc(70px + env(safe-area-inset-bottom))",
+                  margin: "0 -16px",
+                  padding: "10px 16px",
+                  background: `color-mix(in srgb,${T.bg} 88%,transparent)`,
+                  backdropFilter: "blur(10px)",
+                  borderTop: `1px solid ${T.border}`,
+                  zIndex: 30,
+                }
+              : {}),
+          }}
+        >
           <Knapp ghost icon="arrow-left" onClick={() => setSteg(Math.max(1, steg - 1))} disabled={steg === 1}>Tilbake</Knapp>
           {steg < 4 && <Knapp icon="arrow-right" onClick={() => setSteg(steg + 1)} disabled={nesteSperret}>Neste</Knapp>}
         </div>

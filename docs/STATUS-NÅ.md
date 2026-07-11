@@ -2,7 +2,7 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-07-06 (deploy-rutine avklart, akgolf.no-domenefunn, kodehelse re-verifisert: 313/313 tester)
+**Sist oppdatert:** 2026-07-10 (v2 MERGET til main + live i prod · Workbench-flytpakke + stats-pakke levert · baneguide-design pågår — full funksjons-/planliste: `docs/funksjoner-og-plan-2026-07-10.md`)
 
 ## Levende kilder (én av hver rolle — start her)
 
@@ -22,7 +22,7 @@ Historiske bygg-spor (SKJERM-STATUS, SKJERM-BYGGEPLAN, BYGGELOGG-FLAGG, KONFLIKT
 Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. Kjernen (PlayerHQ + AgencyOS) er bygget og i stor grad portet fra designfasiten. **Den er IKKE klar for betalende/ekte brukere ennå** — 1 av 8 opprinnelige P0-punkter avklart denne økten (deploy-rutine), 6 gjenstår (se nederst), pluss et nytt funn (akgolf.no peker ikke til appen). Betaling starter etter plan **1. august** (flyttet fra 1. juli av Anders 2026-06-24). Booking går midlertidig via **Acuity** (`akgolfgroup.as.me`) til den innebygde HQ-bookingen lanseres.
 
 ## Ferdig / solid (verifisert)
-- **Deployet live:** prod på `akgolf-hq.vercel.app`. (NB: push til `main` deployer IKKE automatisk — kjør `vercel deploy --prod`.)
+- **Deployet live:** prod på `akgolf-hq.vercel.app`. Push til `main` deployer AUTOMATISK (git-integrasjon fikset 10/7) — kjør ALDRI `vercel deploy --prod` manuelt.
 - **PlayerHQ – 5 hovedskjermer:** mobil-paritet 0 avvik mot fasit (Hjem, Planlegge, Gjennomføre, Analysere, Meg).
 - **PlayerHQ – datatilkobling:** 8 prioriterte skjermer koblet til ekte Prisma-data (SG-Hub, Runder, TrackMan, Statistikk, Booking-hub+ny, Drills, Workbench-sheets, Live-summary).
 - **Workbench (lanserings-hub):** 7 hub-faner (tek/seson/maler/std/gantt/uke/okt), Maler «Bruk» → TrainingPlanSession+V2, publiser DRAFT→PENDING_PLAYER, SeasonPlan+TournamentEntry+TrainingSessionV2 i uke/Gantt, GroupSchedule i innsikt, `/portal/tren/*` redirects, turnerings-fellesmelding → GroupMember. Design-gate 0 udokumenterte avvik. **230/230** tester + tsc + build grønt.

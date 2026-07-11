@@ -1,37 +1,21 @@
 /**
- * FYS-plan — hub-side (PlayerHQ).
+ * PlayerHQ FYS-plan-hub — v2. Liste over fysiske treningsplaner med
+ * fremdrift (uke i planen / totale uker). Prisma-spørring uendret
+ * (FysiskPlan → uker → okter).
  *
- * Hybrid design: editorial lys header (eyebrow + display-tittel) → terminal
- * datakort nedenfor. FYS-resultatformel er IKKE låst — plassholder-tekst brukes
- * overalt. Ingen hardkodede referanseverdier.
- *
- * Prisma-spørring: FysiskPlan → uker → okter (uendret fra tidligere).
+ * FYS-resultatformelen er IKKE låst — FYS-score-seksjonen er et ærlig
+ * plassholder-kort uten fabrikkerte tall (jf. låst beslutning).
  */
 
-import Link from "next/link";
-import { Dumbbell, ChevronRight } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { Card, Eyebrow } from "@/components/athletic/golfdata";
-import { cn } from "@/lib/utils";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { T } from "@/lib/v2/tokens";
+import { Caps, Tittel, Kort, MikroMeta, TomTilstand } from "@/components/v2";
 import { NyPlanKnapp } from "./ny-plan-knapp";
+import { FysPlanKort, type FysPlanKortData } from "./fys-plan-kort";
 
 export const dynamic = "force-dynamic";
-
-type PlanStatus = "ACTIVE" | "DRAFT" | "ARCHIVED";
-
-interface EnrichedPlan {
-  id: string;
-  navn: string;
-  status: PlanStatus;
-  startDato: Date;
-  sluttDato: Date | null;
-  ukerCount: number;
-  okterCount: number;
-  /** Fremgang: antall fullførte uker / totale uker (0–100) */
-  pct: number;
-  currentWeek: number;
-}
 
 type RawFysPlan = {
   id: string;
@@ -43,31 +27,18 @@ type RawFysPlan = {
 };
 
 // Modulnivå-helper: Date.now() kan ikke kalles i render-body (react-hooks/purity).
-function enrichPlaner(planer: RawFysPlan[]): EnrichedPlan[] {
+function enrichPlaner(planer: RawFysPlan[]): FysPlanKortData[] {
   const now = Date.now();
   return planer.map((p) => {
     const ukerCount = p.uker.length;
     const okterCount = p.uker.reduce((s, u) => s + u.okter.length, 0);
-    // Beregn hvilken uke vi er i basert på startdato
     const start = p.startDato.getTime();
     const weeksElapsed = Math.max(0, Math.floor((now - start) / (7 * 24 * 60 * 60 * 1000)));
     const currentWeek = Math.min(weeksElapsed + 1, ukerCount);
-    const pct = ukerCount > 0 ? Math.round((currentWeek / ukerCount) * 100) : 0;
-
-    const status: PlanStatus =
+    const pct = ukerCount > 0 ? Math.min(100, Math.round((currentWeek / ukerCount) * 100)) : 0;
+    const status: FysPlanKortData["status"] =
       p.status === "ACTIVE" ? "ACTIVE" : p.status === "ARCHIVED" ? "ARCHIVED" : "DRAFT";
-
-    return {
-      id: p.id,
-      navn: p.navn,
-      status,
-      startDato: p.startDato,
-      sluttDato: p.sluttDato,
-      ukerCount,
-      okterCount,
-      pct: Math.min(100, pct),
-      currentWeek,
-    };
+    return { id: p.id, navn: p.navn, status, ukerCount, okterCount, pct, currentWeek };
   });
 }
 
@@ -88,220 +59,69 @@ export default async function FysPlanListePage() {
   });
 
   const enriched = enrichPlaner(planer);
-
   const aktive = enriched.filter((p) => p.status !== "ARCHIVED");
   const arkiverte = enriched.filter((p) => p.status === "ARCHIVED");
   const harNoen = enriched.length > 0;
 
   return (
-    <div className="golfdata-scope mx-auto max-w-[430px] space-y-6 px-4 pb-24 md:pb-8">
-      {/* ── Editorial hero ── */}
-      <header className="flex items-start justify-between gap-4 pt-1">
-        <div>
-          <Eyebrow>Tren · Fysisk plan</Eyebrow>
-          <h1 className="font-display mt-1.5 text-[26px] font-bold leading-tight tracking-[-0.025em] text-foreground">
-            FYS<em className="font-medium italic text-primary">-plan</em>
-          </h1>
-          <p className="mt-1 text-[13px] text-muted-foreground">
-            Plassholderverdier · formelen ikke låst
-          </p>
-        </div>
-        <NyPlanKnapp variant="header" />
-      </header>
-
-      {/* ── Mastery rings — FYS-score per område (plassholder) ── */}
-      <Card as="section">
-        <Eyebrow className="mb-3 block">FYS-score per område · plassholder</Eyebrow>
-        <div className="flex justify-around">
-          <MasteryRing label="Styrke" pct={62} color="var(--forest)" />
-          <MasteryRing label="Mobilitet" pct={78} color="#B8852A" />
-          <MasteryRing label="Uthold." pct={55} color="#2563EB" />
-          <MasteryRing label="Spenst" pct={70} color="var(--lime)" />
-        </div>
-      </Card>
-
-      {/* ── Aktive planer ── */}
-      {aktive.length > 0 && (
-        <section className="space-y-3">
-          <Eyebrow>Aktive · {aktive.length}</Eyebrow>
-          <div className="space-y-3">
-            {aktive.map((p, i) => (
-              <PlanCard key={p.id} plan={p} featured={i === 0 && p.status === "ACTIVE"} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ── Arkiverte planer ── */}
-      {arkiverte.length > 0 && (
-        <section className="space-y-3">
-          <Eyebrow>Arkiverte · {arkiverte.length}</Eyebrow>
-          <div className="space-y-3">
-            {arkiverte.map((p) => (
-              <PlanCard key={p.id} plan={p} featured={false} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ── Tom tilstand ── */}
-      {!harNoen && (
-        <div className="mt-10 flex flex-col items-center gap-4 text-center">
-          <div className="grid h-12 w-12 place-items-center rounded-full bg-secondary text-muted-foreground">
-            <Dumbbell size={22} strokeWidth={1.5} aria-hidden />
-          </div>
+    <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        {/* Hode */}
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
           <div>
-            <p className="font-display text-[16px] font-bold text-foreground">
-              Ingen aktiv plan
-            </p>
-            <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground max-w-[26ch] mx-auto">
-              Lag din første fysiske treningsplan for å begynne å logge styrke- og kondisjonsøkter.
-            </p>
+            <Caps>Tren · Fysisk plan</Caps>
+            <div style={{ marginTop: 10 }}>
+              <Tittel em="-plan">FYS</Tittel>
+            </div>
           </div>
-          <NyPlanKnapp variant="empty-state" />
+          <NyPlanKnapp variant="header" />
         </div>
-      )}
-    </div>
-  );
-}
 
-// ── Delkomponenter ────────────────────────────────────────────────
+        {/* FYS-score — ærlig plassholder til formelen er låst */}
+        <Kort pad="14px 18px">
+          <MikroMeta icon="info">
+            FYS-score per område kommer — resultatformelen er ikke låst ennå.
+          </MikroMeta>
+        </Kort>
 
-function MasteryRing({
-  label,
-  pct,
-  color,
-}: {
-  label: string;
-  pct: number;
-  color: string;
-}) {
-  const C = 175; // stroke circumference (2πr, r=28 i 72×72 viewBox)
-  const dash = C * (1 - pct / 100);
+        {/* Aktive planer */}
+        {aktive.length > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <Caps>Aktive ({aktive.length})</Caps>
+            <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: T.gap }}>
+              {aktive.map((p) => (
+                <FysPlanKort key={p.id} plan={p} />
+              ))}
+            </div>
+          </div>
+        )}
 
-  return (
-    <div className="flex flex-col items-center gap-1.5">
-      <svg viewBox="0 0 72 72" className="h-16 w-16">
-        {/* Bakgrunnsring */}
-        <circle
-          cx="36"
-          cy="36"
-          r="28"
-          fill="none"
-          stroke="hsl(var(--secondary))"
-          strokeWidth="9"
-        />
-        {/* Fremdriftsring */}
-        <circle
-          cx="36"
-          cy="36"
-          r="28"
-          fill="none"
-          stroke={color}
-          strokeWidth="9"
-          strokeLinecap="round"
-          strokeDasharray={C}
-          strokeDashoffset={dash}
-          transform="rotate(-90 36 36)"
-        />
-        {/* Plassholder-tall */}
-        <text
-          x="36"
-          y="40"
-          textAnchor="middle"
-          fontFamily="'JetBrains Mono', monospace"
-          fontSize="12"
-          fontWeight="700"
-          fill="hsl(var(--muted-foreground))"
-        >
-          —
-        </text>
-      </svg>
-      <span className="font-mono text-[8px] font-semibold uppercase tracking-[0.04em] text-muted-foreground text-center">
-        {label}
-      </span>
-    </div>
-  );
-}
+        {/* Arkiverte planer */}
+        {arkiverte.length > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <Caps>Arkiverte ({arkiverte.length})</Caps>
+            <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: T.gap }}>
+              {arkiverte.map((p) => (
+                <FysPlanKort key={p.id} plan={p} />
+              ))}
+            </div>
+          </div>
+        )}
 
-const STATUS_CFG: Record<PlanStatus, { label: string; cls: string }> = {
-  ACTIVE: {
-    label: "Aktiv",
-    cls: "bg-[rgba(0,88,64,0.1)] text-primary",
-  },
-  DRAFT: {
-    label: "Utkast",
-    cls: "bg-secondary text-muted-foreground",
-  },
-  ARCHIVED: {
-    label: "Arkivert",
-    cls: "bg-secondary text-muted-foreground",
-  },
-};
-
-function PlanCard({
-  plan,
-  featured,
-}: {
-  plan: EnrichedPlan;
-  featured: boolean;
-}) {
-  const s = STATUS_CFG[plan.status];
-
-  return (
-    <Link href={`/portal/tren/fys-plan/${plan.id}`} className="block">
-     <Card interactive compact className={cn(featured && "border-l-[3px] border-l-primary")}>
-      {/* Topplinje: tittel + status-badge */}
-      <div className="flex items-center justify-between gap-3 mb-2">
-        <p className="text-[14px] font-semibold text-foreground leading-tight">
-          {plan.navn}
-        </p>
-        <span
-          className={cn(
-            "shrink-0 rounded-full px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.04em]",
-            s.cls,
-          )}
-        >
-          {s.label}
-        </span>
+        {/* Tom tilstand */}
+        {!harNoen && (
+          <Kort>
+            <TomTilstand
+              icon="dumbbell"
+              title="Ingen aktiv plan"
+              sub="Lag din første fysiske treningsplan for å begynne å logge styrke- og kondisjonsøkter."
+            />
+            <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
+              <NyPlanKnapp variant="empty-state" />
+            </div>
+          </Kort>
+        )}
       </div>
-
-      {/* Meta */}
-      <p className="font-mono text-[10.5px] text-muted-foreground mb-3">
-        {plan.ukerCount} uker · {plan.okterCount} økter
-      </p>
-
-      {/* Fremdriftslinje */}
-      <div
-        className="h-[7px] overflow-hidden rounded-full bg-secondary border border-border"
-        role="progressbar"
-        aria-valuenow={plan.pct}
-        aria-valuemin={0}
-        aria-valuemax={100}
-      >
-        <div
-          className="h-full rounded-full"
-          style={{
-            width: `${Math.max(2, plan.pct)}%`,
-            background:
-              "linear-gradient(90deg, var(--forest), var(--lime-deep))",
-          }}
-        />
-      </div>
-      <div className="mt-1.5 flex items-center justify-between">
-        <span className="text-[12px] text-muted-foreground">
-          {plan.pct} % fullført
-          {plan.ukerCount > 0
-            ? ` · uke ${plan.currentWeek} av ${plan.ukerCount}`
-            : ""}
-        </span>
-        <ChevronRight
-          className="h-4 w-4 text-muted-foreground"
-          strokeWidth={1.5}
-          aria-hidden
-        />
-      </div>
-     </Card>
-    </Link>
+    </V2Shell>
   );
 }

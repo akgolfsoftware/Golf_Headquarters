@@ -1,28 +1,23 @@
 /**
- * PlayerHQ · Be om økt
+ * v2-forhåndsvisning — PlayerHQ Be om økt (retning C). Egen top-level route-group
+ * (v2preview) som IKKE arver PortalShell — kun root-layout. V2Shell leverer
+ * chrome-en (IkonRail/BunnNav), OnskeligOktV2 rendrer skjema-stacken.
  *
- * Hybrid design (2026-06-17). Header bruker back-button + display h1 + subtitle.
- * Datakilde: User (coacher fra DB).
+ * Auth + dataloader gjenbrukt 1:1 fra den ekte siden
+ * (src/app/portal/onskeligokt/page.tsx): coach-lista utledes av hvem som faktisk
+ * tilbyr coaching (serviceType.coachUserId), ikke role=COACH.
  */
 
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { OnskeligOktForm } from "./form";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { OnskeligOktV2 } from "@/components/portal/v2/OnskeligOktV2";
 
-type Search = { sent?: string };
+export const dynamic = "force-dynamic";
 
-export default async function OnskeligOktPage({
-  searchParams,
-}: {
-  searchParams: Promise<Search>;
-}) {
-  await requirePortalUser();
-  const params = await searchParams;
+export default async function V2OnskeligOktPreviewPage() {
+  const user = await requirePortalUser();
 
-  // Coacher = de som faktisk tilbyr coaching-tjenester (serviceType.coachUserId).
-  // Rolle-feltet alene duger ikke: coaching gjøres av ADMIN-brukere, ikke role=COACH.
   const coachLinks = await prisma.serviceType.findMany({
     where: { coachUserId: { not: null } },
     select: { coachUserId: true },
@@ -33,42 +28,15 @@ export default async function OnskeligOktPage({
     .filter((id): id is string => id !== null);
   const coacher = await prisma.user.findMany({
     where: { id: { in: coachIds }, deletedAt: null },
-    select: { id: true, name: true },
+    select: { id: true, name: true, email: true },
     orderBy: { name: "asc" },
   });
 
-  const standardCoach = coacher[0] ?? null;
-  const coachName = standardCoach?.name ?? "coachen";
+  const coachName = coacher[0]?.name ?? "coachen";
 
   return (
-    <div className="min-h-screen bg-background pb-20 text-foreground md:pb-0">
-      <div className="mx-auto max-w-[820px] px-4 py-6 sm:px-6 sm:py-8">
-        {/* Hybrid header */}
-        <div className="mb-8">
-          <Link
-            href="/portal/gjennomfore"
-            className="mb-6 inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" aria-hidden />
-            Tilbake
-          </Link>
-          <h1 className="font-display text-[32px] font-semibold leading-[1.1] tracking-[-0.015em] text-foreground sm:text-[36px]">
-            Be om{" "}
-            <em className="font-normal italic text-primary">økt</em>
-          </h1>
-          <p className="mt-2 text-[15px] leading-relaxed text-muted-foreground">
-            {coachName} svarer innen 24 timer.
-          </p>
-        </div>
-
-        {params.sent === "1" && (
-          <div className="mb-6 rounded-md border border-primary/30 bg-primary/10 px-4 py-2 text-sm text-foreground">
-            Forespørsel sendt. Du får varsel når coachen har satt opp en tid.
-          </div>
-        )}
-
-        <OnskeligOktForm coacher={coacher} />
-      </div>
-    </div>
+    <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+      <OnskeligOktV2 data={{ coacher, coachName }} />
+    </V2Shell>
   );
 }

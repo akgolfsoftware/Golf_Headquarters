@@ -8,15 +8,16 @@
  *
  * Ærlighet (prosjekt-regel): kun v2-komponenter fra "@/components/v2"; ingen
  * ad-hoc UI-komponenter (kun layout-divs, som i de andre v2-mountene). EKTE
- * roster fra Prisma — ingen fabrikerte spillere. Velger navigerer via
- * ?spiller=<id> og serveren laster den valgte spillerens EKTE plandata på nytt.
+ * roster fra Prisma — ingen fabrikerte spillere. Velger navigerer til
+ * /admin/spillere/<id>/workbench (spiller-id i path-segmentet, ?uke= bevares)
+ * og serveren laster den valgte spillerens EKTE plandata på nytt.
  * Ingen roster → ærlig tom-tilstand.
  */
 
-import { useRouter, usePathname } from "next/navigation";
-import { Caps, Kort, TomTilstand, AvatarInit, Velger } from "@/components/v2";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Caps, Kort, TomTilstand, AvatarInit, Velger, TilbakeLenke } from "@/components/v2";
 import { T } from "@/lib/v2/tokens";
-import { WorkbenchV2 } from "@/components/portal/v2/WorkbenchV2";
+import { WorkbenchV2, type WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import type { WorkbenchInsights } from "@/lib/workbench/types";
 import type { PlanStatus } from "@/generated/prisma/client";
@@ -29,7 +30,7 @@ export interface CoachRosterPlayer {
 export interface CoachWorkbenchMountProps {
   /** Full roster (EKTE spillere) for velgeren. */
   players: CoachRosterPlayer[];
-  /** Aktiv spiller-id (fra ?spiller=, ellers første i roster). Null = tom stall. */
+  /** Aktiv spiller-id (fra rutens params.id). Null = tom stall. */
   currentPlayerId: string | null;
   /** Navnet på aktiv spiller (for topp-bar i WorkbenchV2). */
   playerName: string;
@@ -38,6 +39,8 @@ export interface CoachWorkbenchMountProps {
   data?: WorkbenchData;
   insights?: WorkbenchInsights | null;
   planStatus?: PlanStatus | null;
+  /** Skrivesiden, bundet til aktiv spiller (coachAddWorkbenchSession m.fl.). */
+  actions?: WorkbenchV2Actions;
 }
 
 /**
@@ -73,9 +76,10 @@ export function CoachWorkbenchMount({
   data,
   insights,
   planStatus,
+  actions,
 }: CoachWorkbenchMountProps) {
   const router = useRouter();
-  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   if (players.length === 0 || currentPlayerId === null) {
     return (
@@ -98,12 +102,15 @@ export function CoachWorkbenchMount({
   const bytt = (label: string) => {
     const id = labelTilId.get(label);
     if (id && id !== currentPlayerId) {
-      router.push(`${pathname}?spiller=${id}`);
+      const uke = searchParams.get("uke");
+      const query = uke ? `?uke=${encodeURIComponent(uke)}` : "";
+      router.push(`/admin/spillere/${id}/workbench${query}`);
     }
   };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <TilbakeLenke href={`/admin/spillere/${currentPlayerId}`}>Tilbake til {playerName}</TilbakeLenke>
       {/* Coach-kontekstbar: hvem planlegger + spiller-velger (roster) */}
       <Kort pad="12px 16px">
         <div
@@ -164,6 +171,7 @@ export function CoachWorkbenchMount({
         playerName={playerName}
         coachName={coachName}
         planStatus={planStatus ?? null}
+        actions={actions}
       />
     </div>
   );

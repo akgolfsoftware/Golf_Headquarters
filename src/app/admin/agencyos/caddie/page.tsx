@@ -1,23 +1,22 @@
 /**
- * AgencyOS · Caddie (/admin/agencyos/caddie) — Fase 1: direkte chat.
- *
- * Anders' personlige AI-assistent. Rendrer <CaddieChat> koblet til chat-ruten
- * (Claude Sonnet 4.6 via Gateway, les/skriv-verktøy + godkjenning). Samtalen
- * hentes/opprettes via getOrCreateActiveConversation så historikk overlever.
- *
- * ADMIN-only (Anders' beslutning «bare deg»). Co-agent-dashbordet (utkast/fleet/
- * audit) kobles på i Fase 2 — komponenten caddie.tsx beholdes til da.
+ * AgencyOS · Caddie · Samtale (v2) — direkte chat med Anders' personlige
+ * AI-assistent. V2-port av src/app/admin/(legacy)/agencyos/caddie/page.tsx.
+ * Samme auth (ADMIN-only, «bare deg») og samme samtale-henting
+ * (getOrCreateActiveConversation) — kun rekomponert med v2-biblioteket.
  *
  * Server component.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { CaddieChat } from "@/components/admin/caddie/caddie-chat";
 import { getOrCreateActiveConversation } from "@/lib/caddie/conversation";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { CaddieSubNavV2 } from "@/components/admin/v2/caddie/caddie-subnav-v2";
+import { CaddieChatV2 } from "@/components/admin/v2/caddie/caddie-chat-v2";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Caddie · AgencyOS (v2)" };
 
-export default async function CaddieTabPage({
+export default async function V2CaddieSamtalePage({
   searchParams,
 }: {
   searchParams: Promise<{ seed?: string }>;
@@ -26,5 +25,12 @@ export default async function CaddieTabPage({
   const { seed } = await searchParams;
   const conversation = await getOrCreateActiveConversation(user.id);
 
-  return <CaddieChat conversationId={conversation.id} initialSeed={seed} />;
+  return (
+    <V2Shell nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <CaddieSubNavV2 />
+      <div style={{ flex: 1, minHeight: 0, display: "flex" }}>
+        <CaddieChatV2 conversationId={conversation.id} initialSeed={seed} />
+      </div>
+    </V2Shell>
+  );
 }

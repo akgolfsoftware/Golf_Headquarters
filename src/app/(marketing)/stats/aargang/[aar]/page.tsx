@@ -3,7 +3,8 @@
  * Pixel-perfect port of design-handoff-stats-2026-05-25/project/js/pages-c.jsx#ArgangKohort
  */
 
-import "../../stats.css";
+import "@/app/(marketing)/(mlegacy)/stats/stats.css";
+import "@/app/(marketing)/stats/pga/_shared/kategori.css";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -16,6 +17,7 @@ import { StatsHistogram } from "@/components/stats/stats-histogram";
 import { StatsHorisontalBar } from "@/components/stats/stats-horisontal-bar";
 import { StatsKohortLinjegraf } from "@/components/stats/stats-kohort-linjegraf";
 import { StatsIcon } from "@/components/stats/icon";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const revalidate = 3600;
 
@@ -283,6 +285,7 @@ export default async function AargangDetalj({
   ];
 
   return (
+    <StatsLegacyShell>
     <div>
       {/* ── HERO ── */}
       <section className="stats-hero compact">
@@ -842,5 +845,6 @@ export default async function AargangDetalj({
         </Reveal>
       </section>
     </div>
+    </StatsLegacyShell>
   );
 }

@@ -163,7 +163,11 @@ export async function loadMinGolf(
     prisma.user.findUnique({ where: { id: userId }, select: { hcp: true } }),
   ]);
 
-  const agg = aggregateSg(runder);
+  // SG-status skal vise SAMME vindu som Hjem (getKpiStats: siste 10 runder) — «runder»
+  // hentes med take:20 for Tiger Five/hull-historikk, men SG-snittet aggregeres kun
+  // over de 10 nyeste så tallet og «X runder»-etiketten stemmer overens på tvers av skjermer.
+  const SG_VINDU = 10;
+  const agg = aggregateSg(runder.slice(0, SG_VINDU));
 
   // ---- Nivå (A–K fra snittscore inneværende sesong; fallback: alle runder) ----
   const iAar = runder.filter(

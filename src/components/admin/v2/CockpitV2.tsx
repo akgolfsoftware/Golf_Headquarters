@@ -23,10 +23,12 @@ import {
   AvatarInit,
   SevChip,
   AkseChip,
+  AKSE_NAVN,
   TallHero,
   InnsiktChip,
   TomTilstand,
   CTAPill,
+  HjelpTips,
   type SevKey,
 } from "@/components/v2";
 import { T, type AkseKey } from "@/lib/v2/tokens";
@@ -34,6 +36,7 @@ import type {
   CockpitData,
   CockpitFocusPlayer,
 } from "@/components/admin/cockpit/agency-cockpit";
+import type { InnboksSammendrag } from "@/lib/innboks/data";
 
 /* signal.tone → SevChip-kategori (klarspråk, aldri sperre-språk) */
 const SEV_MAP: Record<CockpitFocusPlayer["signal"]["tone"], SevKey> = {
@@ -66,7 +69,7 @@ function useLiveKlokke(startMin: number | null, nowMin: number): string {
   return `${String(mm).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
 }
 
-export function CockpitV2({ data }: { data: CockpitData }) {
+export function CockpitV2({ data, innboks }: { data: CockpitData; innboks?: InnboksSammendrag }) {
   const router = useRouter();
 
   // ── Aktiv økt (live) ────────────────────────────────────────────
@@ -101,7 +104,7 @@ export function CockpitV2({ data }: { data: CockpitData }) {
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
         <StatusPill tone="down">Live</StatusPill>
         <span style={{ flex: 1, minWidth: 0, fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-          {aktiv.axisLabel} · {aktiv.title} — {aktiv.playerName}
+          {AKSE_NAVN[aktiv.axisLabel as AkseKey] || aktiv.axisLabel} · {aktiv.title} — {aktiv.playerName}
         </span>
         <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
           {klokke}
@@ -124,10 +127,13 @@ export function CockpitV2({ data }: { data: CockpitData }) {
       : {};
   const kpi = (
     <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
-      <KpiFlis label="Aktive spillere" value={data.activePlayersCount} {...aktiveDelta} />
-      <KpiFlis label="Økter i dag" value={okterIdag} />
-      <KpiFlis label="Trenger deg nå" value={trengerDeg} varsle={trengerDeg > 0} />
-      <KpiFlis label="Stall-SG snitt" value={data.stallSgKpi} />
+      {/* instant: dataene er ferdig hentet server-side før første maling — en
+          tell-opp-fra-0-animasjon her viser bare en falsk mellomverdi i ~600ms
+          før den ekte verdien vises, aldri en reell lasting. */}
+      <KpiFlis label="Aktive spillere" value={data.activePlayersCount} instant {...aktiveDelta} />
+      <KpiFlis label="Økter i dag" value={okterIdag} instant />
+      <KpiFlis label="Trenger deg nå" value={trengerDeg} varsle={trengerDeg > 0} instant />
+      <KpiFlis label="Stall-SG snitt" value={data.stallSgKpi} hjelp="sgTotal" instant />
     </div>
   );
 
@@ -135,7 +141,13 @@ export function CockpitV2({ data }: { data: CockpitData }) {
   const koen = (
     <Kort
       eyebrow="Trenger deg nå"
-      action={data.focus.length > 0 ? <Caps size={9} color={T.down}>{pl(data.focus.length, "sak", "saker")}</Caps> : undefined}
+      action={
+        data.focus.length > 0 ? (
+          <Link href="/admin/innboks" style={{ textDecoration: "none" }}>
+            <Caps size={9} color={T.down}>{pl(data.focus.length, "sak", "saker")}</Caps>
+          </Link>
+        ) : undefined
+      }
     >
       {data.focus.length === 0 ? (
         <TomTilstand icon="check-circle" title="Ingen saker nå" sub="Ingen spillere trenger deg akkurat nå." />
@@ -148,7 +160,7 @@ export function CockpitV2({ data }: { data: CockpitData }) {
               key={p.id}
               onClick={href ? () => router.push(href) : undefined}
               leading={<AvatarInit navn={p.name} size={30} />}
-              title={p.name}
+              title={<span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", whiteSpace: "normal" }}>{p.name}</span>}
               sub={sub}
               meta={
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
@@ -164,6 +176,34 @@ export function CockpitV2({ data }: { data: CockpitData }) {
     </Kort>
   );
 
+  // ── Innboks (post@akgolf.no) — kompakt: antall nye + siste 3 ────
+  const innboksModul = innboks ? (
+    <Link href="/admin/innboks-epost" style={{ textDecoration: "none" }}>
+      <Kort
+        hover
+        eyebrow="Innboks"
+        action={innboks.antallNye > 0 ? <Caps size={9} color={T.warn}>{pl(innboks.antallNye, "ny", "nye")}</Caps> : undefined}
+      >
+        {innboks.siste.length === 0 ? (
+          <TomTilstand icon="mail" title="Ingen e-poster" sub="Innboksen er tom." />
+        ) : (
+          innboks.siste.map((e, i) => (
+            <Rad
+              key={e.id}
+              leading={<AvatarInit navn={e.fraNavn ?? e.fraEpost} size={30} />}
+              title={e.fraNavn ?? e.fraEpost}
+              sub={e.emne}
+              meta={
+                <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>{e.mottattAt}</span>
+              }
+              last={i === innboks.siste.length - 1}
+            />
+          ))
+        )}
+      </Kort>
+    </Link>
+  ) : null;
+
   // ── Dagens timer ────────────────────────────────────────────────
   const timer = (
     <Kort
@@ -176,7 +216,7 @@ export function CockpitV2({ data }: { data: CockpitData }) {
         data.timeline.map((s, i) => {
           const isNaa = data.now >= s.startMin && data.now < s.startMin + s.durMin;
           const sted = s.meta.find((m) => m.icon === "map-pin")?.text;
-          const sub = [s.axisLabel, s.title, sted].filter(Boolean).join(" · ");
+          const sub = [AKSE_NAVN[s.axisLabel as AkseKey] || s.axisLabel, s.title, sted].filter(Boolean).join(" · ");
           return (
             <Rad
               key={s.id}
@@ -186,7 +226,7 @@ export function CockpitV2({ data }: { data: CockpitData }) {
                   {s.time}
                 </span>
               }
-              title={s.playerName}
+              title={<span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", whiteSpace: "normal" }}>{s.playerName}</span>}
               sub={sub}
               meta={<AkseChip a={s.axisLabel as AkseKey} />}
               naa={isNaa}
@@ -210,7 +250,13 @@ export function CockpitV2({ data }: { data: CockpitData }) {
         value={data.stallSgKpi}
         accent={data.stallSgKpi.startsWith("+")}
         size={44}
-        sub={`Plan-etterlevelse ${data.planAdherenceKpi}`}
+        sub={
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+            {`Plan-etterlevelse ${data.planAdherenceKpi}`}
+            <HjelpTips k="planEtterlevelse" size={11} />
+          </span>
+        }
+        hjelp="sgTotal"
       />
     </Kort>
   );
@@ -232,6 +278,7 @@ export function CockpitV2({ data }: { data: CockpitData }) {
       {live}
       {kpi}
       {koen}
+      {innboksModul}
       <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: T.gap }}>
         {timer}
         {stalluka}

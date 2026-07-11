@@ -16,7 +16,7 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { markNotificationsRead } from "@/app/portal/varsler/actions";
+import { markNotificationsRead } from "@/app/portal/(legacy)/varsler/actions";
 import {
   T,
   Caps,

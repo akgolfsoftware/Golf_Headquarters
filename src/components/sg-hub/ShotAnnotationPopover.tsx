@@ -32,7 +32,7 @@ import {
   addAnnotation,
   deleteAnnotation,
   editAnnotation,
-} from "@/app/portal/mal/sg-hub/[club]/annotations/actions";
+} from "@/app/portal/(legacy)/mal/sg-hub/[club]/annotations/actions";
 import { safeUrl } from "@/lib/security/safe-url";
 
 export type ShotAnnotationRow = {

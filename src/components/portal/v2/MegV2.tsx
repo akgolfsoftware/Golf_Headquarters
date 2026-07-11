@@ -17,6 +17,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { Tier } from "@/generated/prisma/client";
 import type { GoalItem } from "@/app/portal/actions";
+import { logout } from "@/lib/auth/logout";
+import { useCountUp } from "@/lib/v2/hooks";
 import {
   T,
   fmtSg,
@@ -62,10 +64,6 @@ function snittTekst(v: number | null): string {
   return v.toLocaleString("nb-NO", { maximumFractionDigits: 1 });
 }
 
-function kategoriLabel(k: GoalItem["category"]): string {
-  return k === "OUTCOME" ? "Resultatmål" : "Prosessmål";
-}
-
 function tierSub(tier: Tier): string {
   // ELITE er dødt enum — behandles som gratis. Kun to nivåer: gratis / 299 kr/mnd.
   return tier === "PRO" ? "PlayerHQ Pro · 299 kr/mnd" : "PlayerHQ Gratis";
@@ -90,6 +88,27 @@ function useMobile(): boolean {
     return () => mq.removeEventListener("change", oppdater);
   }, []);
   return m;
+}
+
+/** «Sesongen i tall»-verdi med tell-opp (0 → mål ved mount), reduced-motion-trygg
+ *  via useCountUp. Egen komponent fordi hooket ikke kan kalles inne i .map(). */
+function SesongTallVerdi({ value }: { value: string }) {
+  const shown = useCountUp(value);
+  return (
+    <span
+      style={{
+        fontFamily: T.mono,
+        fontSize: 26,
+        fontWeight: 700,
+        color: T.fg,
+        display: "block",
+        marginTop: 8,
+        fontVariantNumeric: "tabular-nums",
+      }}
+    >
+      {shown}
+    </span>
+  );
 }
 
 /* ── Konto-rader (ekte adresser) ───────────────────────────────────── */
@@ -120,6 +139,7 @@ export function MegV2({ data }: { data: MegData }) {
 
   const konto: KontoRad[] = [
     { ic: "user", l: "Profil og innstillinger", sub: "Navn, HCP, klubb", href: "/portal/meg/profil" },
+    { ic: "calendar-plus", l: "Book coachtime", sub: "Velg tjeneste, coach og tid", href: "/portal/booking" },
     { ic: "credit-card", l: "Abonnement", sub: tierSub(tier), href: "/portal/meg/abonnement" },
     { ic: "bell", l: "Varsler", sub: "Push og e-post", href: "/portal/meg/innstillinger" },
     { ic: "shield", l: "Personvern og samtykke", href: "/portal/meg/innstillinger" },
@@ -146,7 +166,7 @@ export function MegV2({ data }: { data: MegData }) {
               </div>
               <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 13 }}>
                 {goals.map((g) => (
-                  <ProgresjonsBar key={g.id} variant="bar" value={g.progress} max={100} label={kategoriLabel(g.category)} />
+                  <ProgresjonsBar key={g.id} variant="bar" value={g.progress} max={100} label={g.title} />
                 ))}
               </div>
             </>
@@ -166,19 +186,7 @@ export function MegV2({ data }: { data: MegData }) {
           {tall.map((t) => (
             <div key={t.l}>
               <Caps size={9}>{t.l}</Caps>
-              <span
-                style={{
-                  fontFamily: T.mono,
-                  fontSize: 26,
-                  fontWeight: 700,
-                  color: T.fg,
-                  display: "block",
-                  marginTop: 8,
-                  fontVariantNumeric: "tabular-nums",
-                }}
-              >
-                {t.v}
-              </span>
+              <SesongTallVerdi value={t.v} />
             </div>
           ))}
         </div>
@@ -192,10 +200,29 @@ export function MegV2({ data }: { data: MegData }) {
               leading={<Icon name={k.ic} size={16} style={{ color: T.mut }} />}
               title={k.l}
               sub={k.sub}
-              last={i === konto.length - 1}
             />
           </Link>
         ))}
+        <form action={logout}>
+          <button
+            type="submit"
+            style={{
+              all: "unset",
+              boxSizing: "border-box",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              width: "100%",
+              padding: "11px 0",
+            }}
+          >
+            <Icon name="log-out" size={16} style={{ color: T.down }} />
+            <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.down }}>
+              Logg ut
+            </span>
+          </button>
+        </form>
       </Kort>
     </div>
   );

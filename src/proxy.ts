@@ -47,8 +47,12 @@ function buildCsp(nonce: string): string {
     "img-src 'self' blob: data: https://eljkjqvggsmnbbszzbpj.supabase.co",
     // next/font serverer fonter fra self
     "font-src 'self'",
-    // Fetch / WebSocket: Supabase Realtime, Stripe API, Vercel
-    "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://vitals.vercel-insights.com",
+    // Fetch / WebSocket: Supabase Realtime, Stripe API, Vercel, Mapbox
+    // (baneguide-kartet henter stil/tiles/sprites via fetch — offisiell
+    // Mapbox GL JS-CSP: api + events + *.tiles.mapbox.com)
+    "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://vitals.vercel-insights.com https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com",
+    // Mapbox GL kjører web workers fra blob:
+    "worker-src 'self' blob:",
     // Stripe embedded UI + same-origin iframes
     "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
     // Klikkaperting-vern: tillat iframe kun fra samme domene

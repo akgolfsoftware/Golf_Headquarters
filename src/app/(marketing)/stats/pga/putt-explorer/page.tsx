@@ -24,6 +24,7 @@ import { StatsEyebrow } from "@/components/stats/eyebrow";
 import { Reveal } from "@/components/stats/reveal";
 import { StatsHeatmap } from "@/components/stats/stats-heatmap";
 import { PuttExplorer } from "./explorer";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const revalidate = 3600;
 
@@ -95,6 +96,7 @@ export default async function PuttExplorerPage() {
         ];
 
   return (
+    <StatsLegacyShell>
     <div className="pga-page bg-background text-foreground">
       {/* ── Hero ── */}
       <section className="putt-hero">
@@ -285,5 +287,6 @@ export default async function PuttExplorerPage() {
         </Reveal>
       </section>
     </div>
+    </StatsLegacyShell>
   );
 }

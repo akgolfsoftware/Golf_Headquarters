@@ -33,7 +33,9 @@ export const PLAYERHQ_NAV: V2NavItem[] = [
 export const AGENCYOS_NAV: V2NavItem[] = [
   { id: "cockpit", label: "Cockpit", icon: "home", href: "/admin/agencyos" },
   { id: "spillere", label: "Stall", icon: "users", href: "/admin/spillere" },
+  { id: "uka", label: "Uka", icon: "calendar", href: "/admin/agencyos/uka" },
   { id: "okonomi", label: "Økonomi", icon: "bar-chart", href: "/admin/agencyos/okonomi" },
+  { id: "live", label: "Live", icon: "activity", href: "/admin/agencyos/live" },
 ];
 
 /** Foreldre-navigasjon (lese-først oversikt). Fire enkle seksjoner. */
@@ -92,8 +94,8 @@ function IkonRailNav({ aktiv, nav, navn, avatarUrl }: Required<Pick<V2ShellProps
 function BunnNavLenker({ aktiv, nav }: { aktiv?: string; nav: V2NavItem[] }) {
   return (
     <nav
-      className="md:hidden"
-      style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, display: "flex", justifyContent: "space-around", padding: "8px 8px 16px", borderTop: `1px solid ${T.border}`, background: `color-mix(in srgb,${T.bg} 82%,transparent)`, backdropFilter: "blur(10px)" }}
+      className="flex md:hidden"
+      style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, justifyContent: "space-around", padding: "8px 8px calc(16px + env(safe-area-inset-bottom))", borderTop: `1px solid ${T.border}`, background: `color-mix(in srgb,${T.bg} 82%,transparent)`, backdropFilter: "blur(10px)" }}
       aria-label="Hovedmeny"
     >
       {nav.map((n) => {

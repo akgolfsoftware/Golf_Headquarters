@@ -1,15 +1,30 @@
 /**
- * AgencyOS — Godkjenninger (INNBOKS · GODKJENNINGER)
+ * v2-preview: AgencyOS Godkjenninger (retning C). Egen top-level route-group
+ * (v2preview) som IKKE arver AdminShell — kun root-layout — så V2Shell leverer
+ * all chrome (IkonRail/BunnNav) i mørk v2-scope.
+ *
+ * Auth + data følger den ekte /admin/godkjenninger-flaten: samme
+ * requirePortalUser-guard (ADMIN/COACH) og samme Prisma-loader (PENDING
+ * PlanAction + zod-validert suggestion + buildDiffPreview). Mapper til
+ * AdminGodkjenningerV2Data (ærlige tomrom, ingen fabrikerte tall).
+ *
+ * Server component.
  */
 
 import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { computeDelta, type PlanContext } from "@/lib/agents/plan-action-executor";
-import { AgPage, AgPageHead } from "@/components/admin/agencyos/ui";
-import { erExecutablePlanAction } from "@/lib/agents/coach-action-types";
 import { LOW_RISK_ACTION_TYPES } from "@/lib/training/skills";
-import { GodkjenningerInbox, type GodkjenningRad } from "./godkjenninger-inbox";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import {
+  AdminGodkjenningerV2,
+  type AdminGodkjenningerV2Data,
+  type AdminGodkjenningV2Row,
+} from "@/components/admin/v2/AdminGodkjenningerV2";
+
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Godkjenninger · AgencyOS (v2)" };
 
 const ACTION_LABEL: Record<string, string> = {
   PYRAMID_ADJUST: "Juster pyramide",
@@ -137,8 +152,8 @@ async function buildDiffPreview(
   }
 }
 
-export default async function Godkjenninger() {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+export default async function V2AdminGodkjenningerPage() {
+  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
   const actions = await prisma.planAction.findMany({
     where: {
@@ -152,14 +167,12 @@ export default async function Godkjenninger() {
     orderBy: { createdAt: "desc" },
   });
 
-  const executable = actions.filter((a) => erExecutablePlanAction(a.actionType));
-
-  const lowRiskCount = executable.filter((a) =>
+  const lowRiskCount = actions.filter((a) =>
     LOW_RISK_ACTION_TYPES.has(a.actionType),
   ).length;
 
-  const rows: GodkjenningRad[] = await Promise.all(
-    executable.map(async (a) => {
+  const rows: AdminGodkjenningV2Row[] = await Promise.all(
+    actions.map(async (a) => {
       const parsed = suggestionSchema.safeParse(a.suggestion);
       const sugg = parsed.success ? parsed.data : null;
       const diffPreview = await buildDiffPreview(
@@ -172,7 +185,7 @@ export default async function Godkjenninger() {
         id: a.id,
         actionType: a.actionType,
         playerId: a.user.id,
-        who: a.user.name,
+        who: a.user.name ?? "Spiller",
         title:
           sugg?.title ??
           sugg?.tittel ??
@@ -195,15 +208,11 @@ export default async function Godkjenninger() {
     }),
   );
 
+  const data: AdminGodkjenningerV2Data = { rows, lowRiskCount };
+
   return (
-    <AgPage>
-      <AgPageHead
-        eyebrow="Innboks · Godkjenninger"
-        title={`${rows.length} venter`}
-        italic="på deg."
-        lead="Plan-endringer fra agenter. Godkjenn eller avvis — endringer skrives til planen ved godkjenning."
-      />
-      <GodkjenningerInbox rows={rows} lowRiskCount={lowRiskCount} />
-    </AgPage>
+    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <AdminGodkjenningerV2 data={data} />
+    </V2Shell>
   );
 }

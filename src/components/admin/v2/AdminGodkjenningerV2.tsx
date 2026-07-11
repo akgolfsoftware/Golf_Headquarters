@@ -40,7 +40,7 @@ import {
   T,
 } from "@/components/v2";
 import { acceptPlanAction, rejectPlanAction } from "@/lib/agents/actions";
-import { batchApproveLowRisk } from "@/app/admin/approvals/actions";
+import { batchApproveLowRisk } from "@/app/admin/(legacy)/approvals/actions";
 
 // ── Datakontrakt (mappes fra Prisma i ruten) ────────────────────
 export interface AdminGodkjenningV2Row {

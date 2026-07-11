@@ -2,16 +2,15 @@
 
 /**
  * Sett nytt passord — v2 (retning C «Presis», mørk-først). Komponert 1:1 med
- * LoginV2 sitt auth-idiom (AuthRamme/BrandPanel/Felt/Knapp/Lenke). Montert
- * offentlig i (v2preview)/v2-reset-password/page.tsx (ingen auth-guard, ingen
- * dataloader — brukeren lander her via tilbakestillingslenken i e-posten).
+ * LoginV2 sitt auth-idiom (AuthRamme/BrandPanel/Felt/Knapp/Lenke). Montert på
+ * /auth/reset-password (bytter ut gamle ResetForm 2026-07-10) — brukeren
+ * lander her via tilbakestillingslenken i e-posten.
  *
- * Dette er en VISUELL v2-variant for godkjenning. Den EKTE reset-logikken
- * (Supabase auth.updateUser + redirect til /portal) bor i
- * src/app/auth/reset-password/reset-form.tsx og dupliseres bevisst IKKE her.
- * Klient-valideringen (min. 8 tegn + passordene like) er bevart EKSAKT som i
- * reset-form.tsx; kun selve Supabase-kallet + router.push er nøytralisert
- * (meldt som gap) slik at auth-flyten forblir én kilde.
+ * Ekte reset-logikk (Supabase auth.updateUser + redirect til /portal,
+ * feiloversettelse) er portert 1:1 fra src/app/auth/reset-password/reset-form.tsx
+ * — samme auth-semantikk, ny visuell innpakning. Klient-valideringen (min. 8
+ * tegn + passordene like) er bevart EKSAKT. Gammel reset-form.tsx står urørt
+ * som fallback.
  *
  * Kun v2-primitiver fra "@/components/v2" (LogoAK, Caps, Icon) + T-tokens.
  * Auth-idiomene (BrandPanel/Felt/Knapp/Lenke) er lokale her, 1:1 med LoginV2 —
@@ -21,8 +20,19 @@
 
 import { useState, type ReactNode, type CSSProperties } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { T } from "@/lib/v2/tokens";
 import { LogoAK, Caps, Icon } from "@/components/v2";
+import { createClient } from "@/lib/supabase/client";
+
+/** Samme feiloversettelse som gamle reset-form.tsx — én kilde til auth-tekst. */
+function oversettPassordFeil(msg: string): string {
+  if (msg.includes("should be different from the old password"))
+    return "Velg et annet passord enn det du hadde fra før.";
+  if (msg.includes("Auth session missing"))
+    return "Lenken er brukt eller utløpt. Be om en ny tilbakestillingslenke fra «Glemt passordet?».";
+  return msg;
+}
 
 /* ── Lokale auth-byggeklosser (1:1 med LoginV2) ────────────────────── */
 
@@ -263,14 +273,17 @@ function BrandPanel() {
 /* ── Reset-kortet ──────────────────────────────────────────────────── */
 
 function ResetKort() {
+  const router = useRouter();
+  const supabase = createClient();
   // Klient-validering bevart EKSAKT fra reset-form.tsx (lengde + likhet).
   const [passord, setPassord] = useState("");
   const [bekreft, setBekreft] = useState("");
   const [visPassord, setVisPassord] = useState(false);
   const [visBekreft, setVisBekreft] = useState(false);
+  const [pending, setPending] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
 
-  function lagre(e: React.FormEvent) {
+  async function lagre(e: React.FormEvent) {
     e.preventDefault();
     if (passord.length < 8) {
       setFeil("Passordet må være minst 8 tegn.");
@@ -281,9 +294,15 @@ function ResetKort() {
       return;
     }
     setFeil(null);
-    // Ekte lagring (supabase.auth.updateUser + router.push("/portal")) bor i
-    // src/app/auth/reset-password/reset-form.tsx. Denne v2-flaten er visuell —
-    // selve Supabase-kallet er bevisst nøytralisert (meldt som gap).
+    setPending(true);
+    const { error: err } = await supabase.auth.updateUser({ password: passord });
+    setPending(false);
+    if (err) {
+      setFeil(oversettPassordFeil(err.message));
+      return;
+    }
+    router.push("/portal");
+    router.refresh();
   }
 
   return (
@@ -368,8 +387,8 @@ function ResetKort() {
           </div>
         )}
 
-        <Knapp variant="primary" type="submit">
-          Lagre nytt passord
+        <Knapp variant="primary" type="submit" disabled={pending}>
+          {pending ? "Lagrer…" : "Lagre nytt passord"}
         </Knapp>
       </form>
 

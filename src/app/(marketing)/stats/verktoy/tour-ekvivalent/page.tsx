@@ -1,12 +1,8 @@
 /**
- * /stats/verktoy/tour-ekvivalent
- *
- * Input: score + slope + CR → output: Tour-ekvivalent score.
+ * /stats/verktoy/tour-ekvivalent — v2. Swap av (mlegacy)-motparten.
  */
-
-import "../../stats.css";
 import type { Metadata } from "next";
-import { TourEkvivalentClient } from "./client";
+import { TourEkvivalentV2 } from "@/components/marketing/v2/MarkedStatsVerktoyV2";
 
 export const revalidate = 86400;
 
@@ -17,5 +13,5 @@ export const metadata: Metadata = {
 };
 
 export default function TourEkvivalentPage() {
-  return <TourEkvivalentClient />;
+  return <TourEkvivalentV2 />;
 }

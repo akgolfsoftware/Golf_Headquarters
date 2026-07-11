@@ -12,6 +12,7 @@ import { lesPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
 import { isMinor } from "@/lib/auth/minor";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
+import { emailLayout, primaryButton } from "@/lib/email/templates/shared";
 import { logError } from "@/lib/error-tracking";
 import { phone, email, optStr } from "@/lib/validation/schemas";
 
@@ -363,12 +364,16 @@ export async function setDateOfBirthAndCheckMinor(input: {
           from: FRA_EPOST,
           to: input.guardianEmail,
           subject: `${user.name} ber om foreldresamtykke — AK Golf`,
-          html: `<p>Hei,</p>
-            <p><strong>${user.name}</strong> ønsker å bruke AK Golf-plattformen, men er under 16 år og trenger foreldresamtykke iht. GDPR art. 8.</p>
-            <p>Klikk lenken under for å se hva samtykket innebærer og bekrefte (tar 2 minutter):</p>
-            <p><a href="${consentUrl}" style="display:inline-block;padding:12px 24px;background:#005840;color:#D1F843;border-radius:24px;text-decoration:none;font-weight:600;">Bekreft samtykke</a></p>
-            <p style="color:#5E5C57;font-size:13px;">Lenken er gyldig i 30 dager.</p>
-            <p>Mvh,<br/>AK Golf Group</p>`,
+          html: emailLayout({
+            preheader: `${user.name} ønsker å bruke AK Golf-plattformen og trenger foreldresamtykke.`,
+            heading: "Hei,",
+            body: `
+              <p style="margin:0 0 16px 0;"><strong>${user.name}</strong> ønsker å bruke AK Golf-plattformen, men er under 16 år og trenger foreldresamtykke iht. GDPR art. 8.</p>
+              <p style="margin:0 0 24px 0;">Klikk lenken under for å se hva samtykket innebærer og bekrefte (tar 2 minutter):</p>
+              <p style="margin:0 0 8px 0;">${primaryButton("Bekreft samtykke", consentUrl)}</p>
+              <p style="margin:0;font-size:13px;color:#5E5C57;">Lenken er gyldig i 30 dager.</p>
+            `,
+          }),
         });
 
         invitationSent = true;

@@ -6,24 +6,14 @@
  * satellitt og markerer tee → green per hull. Dispersion-lag legges på
  * senere (fase 3-5) via `shots`-prop.
  *
- * TODO(design-tokens): kart-paletten under bør formaliseres som CSS-tokens
- * og godkjennes av Anders. Mapbox tegner på <canvas> og kan ikke lese
- * CSS-variabler, så fargene må være statiske her. Avledet fra pyramidColors.
+ * Farger: lib/baneguide/map-colors.ts — det dokumenterte canvas-unntaket
+ * fra ingen-rå-hex-regelen.
  */
 
 import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { pyramidColors } from "@/lib/design-tokens";
-
-const MAP_COLORS = {
-  green: "#7BC47F", // putting-green — lys for kontrast mot satellitt
-  fairway: pyramidColors.fys, // forest
-  bunker: pyramidColors.tek, // sand/ochre
-  water: pyramidColors.slag, // blå
-  tee: pyramidColors.spill, // lime
-  holeLine: pyramidColors.spill, // lime
-} as const;
+import { MAP_COLORS, DISPERSION_COLORS } from "@/lib/baneguide/map-colors";
 
 export type CourseMapHole = {
   holeNumber: number;
@@ -160,8 +150,8 @@ export function CourseMap({ center, geojson, holes = [], zoom = 15.5, className,
           source: "shots",
           paint: {
             "circle-radius": 5,
-            "circle-color": pyramidColors.spill,
-            "circle-stroke-color": "#06140E",
+            "circle-color": DISPERSION_COLORS.shotPoint,
+            "circle-stroke-color": DISPERSION_COLORS.shotPointStroke,
             "circle-stroke-width": 1,
           },
         });
@@ -194,7 +184,7 @@ export function CourseMap({ center, geojson, holes = [], zoom = 15.5, className,
         .ak-hole-marker {
           display: flex; align-items: center; justify-content: center;
           width: 24px; height: 24px; border-radius: 9999px;
-          background: ${pyramidColors.spill}; color: ${pyramidColors.fys};
+          background: ${MAP_COLORS.tee}; color: ${MAP_COLORS.fairway};
           font-family: var(--font-mono, monospace); font-size: 12px; font-weight: 700;
           border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.4); cursor: pointer;
         }

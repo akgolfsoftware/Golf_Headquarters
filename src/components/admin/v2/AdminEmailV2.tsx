@@ -46,7 +46,7 @@ import {
   createTemplate,
   updateTemplate,
   deleteTemplate,
-} from "@/app/admin/email-templates/actions";
+} from "@/app/admin/(legacy)/email-templates/actions";
 
 // ── Datakontrakt (mappes fra Prisma i ruten) ────────────────────
 export interface AdminEmailV2Template {

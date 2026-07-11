@@ -7,9 +7,11 @@
  * (../(v2preview)/v2-agency-kalender/data.ts).
  *
  * Coach-uke med alle spillere: 1-til-1-økter og gruppe-økter fra Booking, pluss
- * GJENTAKENDE SERIER fra GroupSchedule (WEEKLY) merket med SerieMerke. SerieMeny
- * («denne / alle fremtidige», Apple-idiom) bindes til en ekte serie — selve
- * redigeringen er delvis (struktur vises, handlingene er ikke koblet ennå).
+ * GJENTAKENDE SERIER fra GroupSchedule (WEEKLY) merket med SerieMerke. Klikk på
+ * en serie-merket økt åpner SerieMeny som panel — GroupSchedule har ingen
+ * mutasjonsflate ennå (kun opprett/dupliser), så «endre denne/alle fremtidige»
+ * er en ærlig «kommer»-tekst, ikke døde knapper. Eneste ekte handling derfra:
+ * lenke til gruppens timeplan.
  *
  * Kun v2-komponenter fra "@/components/v2" + skjerm-lokale komposisjoner på
  * T.*-tokens (samme mønster som CockpitV2/KalenderV2). Ingen rå hex.
@@ -30,7 +32,7 @@ import {
   Icon,
 } from "@/components/v2";
 import { type AkseKey } from "@/lib/v2/tokens";
-import type { KalenderData, KalOkt, SerieMenyData } from "@/app/(v2preview)/v2-agency-kalender/data";
+import type { KalenderData, KalOkt } from "@/app/admin/kalender/data";
 
 /** true på klient etter mount når viewport < 768px (styrer kun layout-tetthet). */
 function useMobile(): boolean {
@@ -64,8 +66,10 @@ function SerieMerke({ tekst }: { tekst: string }) {
   return <MikroMeta icon="repeat">{tekst}</MikroMeta>;
 }
 
-/* ── OktBlokk — én økt i uke-grid/dag-liste ── */
-function OktBlokk({ okt }: { okt: KalOkt }) {
+/* ── OktBlokk — én økt i uke-grid/dag-liste. Serie-økter åpner SerieMeny
+   (klikk setter state hos forelder) i stedet for å navigere bort — vanlige
+   økter beholder Link-navigasjon til booking/gruppe. ── */
+function OktBlokk({ okt, onSerieClick }: { okt: KalOkt; onSerieClick?: (okt: KalOkt) => void }) {
   const erSerie = Boolean(okt.serie);
   const kant = okt.naa ? NAA_KANT : erSerie ? SERIE_KANT : T.border;
   const inner = (
@@ -79,7 +83,7 @@ function OktBlokk({ okt }: { okt: KalOkt }) {
         display: "flex",
         flexDirection: "column",
         gap: 4,
-        cursor: okt.href ? "pointer" : "default",
+        cursor: okt.href || erSerie ? "pointer" : "default",
         minWidth: 0,
       }}
     >
@@ -94,6 +98,18 @@ function OktBlokk({ okt }: { okt: KalOkt }) {
       {okt.serie && <SerieMerke tekst={okt.serie} />}
     </div>
   );
+  if (erSerie) {
+    return (
+      <button
+        type="button"
+        onClick={() => onSerieClick?.(okt)}
+        className="v2-focus"
+        style={{ appearance: "none", background: "none", border: "none", padding: 0, textAlign: "left", width: "100%", cursor: "pointer" }}
+      >
+        {inner}
+      </button>
+    );
+  }
   return okt.href ? (
     <Link href={okt.href} style={{ textDecoration: "none" }}>
       {inner}
@@ -103,37 +119,82 @@ function OktBlokk({ okt }: { okt: KalOkt }) {
   );
 }
 
-/* ── SerieMeny — «Endre denne / alle fremtidige» (Apple-idiom) ── */
-function SerieMeny({ serie, full }: { serie: SerieMenyData; full?: boolean }) {
-  const valg = [
-    { ikon: "calendar", l: "Endre bare denne økta", farge: T.fg },
-    { ikon: "repeat", l: "Endre alle fremtidige", farge: T.fg },
-    { ikon: "circle-slash", l: "Avslutt serien", farge: T.down },
-  ];
+/* ── SerieMeny — panel/ark for én valgt serie-økt. Ærlig tilstand: appen har
+   ingen mutasjonsflate for GroupSchedule ennå (kun opprett/dupliser, se
+   src/app/admin/(legacy)/grupper/[id]/actions.ts) — «Endre denne»/«Endre alle
+   fremtidige»/«Avslutt serien» er derfor FJERNET (aldri døde knapper). Eneste
+   ekte handling: lenke til gruppens timeplan (view + dupliser, finnes).
+   På <md presenteres den som fast bunn-ark (edge-to-edge, r20 kun øverst) —
+   samme mønster som AdminHandlingssenterV2s mobilArk; på ≥md forblir den et
+   sentrert flytende panel. ── */
+function SerieMeny({ okt, onClose, mobile }: { okt: KalOkt; onClose: () => void; mobile?: boolean }) {
+  const scheduleId = okt.id.startsWith("serie-") ? okt.id.slice("serie-".length) : null;
+  const timeplanHref = okt.href && scheduleId ? `${okt.href}/timeplan?focus=${scheduleId}` : okt.href;
   return (
-    <div style={{ background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 14, padding: "12px 14px", width: full ? "100%" : 240 }}>
-      <Caps size={8.5}>Gjentakende økt</Caps>
-      <div style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, margin: "6px 0 2px" }}>
-        {serie.navn} · {serie.dagTid}
-      </div>
-      {serie.starterLabel && (
-        <div style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, color: T.mut, marginBottom: 2 }}>{serie.starterLabel}</div>
-      )}
-      {valg.map((x, i) => (
-        <div
-          key={i}
-          style={{ display: "flex", alignItems: "center", gap: 9, padding: "9px 0", borderBottom: i < valg.length - 1 ? `1px solid ${T.border}` : "none", cursor: "pointer" }}
-        >
-          <Icon name={x.ikon} size={13} style={{ color: x.farge }} />
-          <span style={{ fontFamily: T.ui, fontSize: 12.5, color: x.farge }}>{x.l}</span>
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Gjentakende økt"
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 60,
+        background: `color-mix(in srgb, ${T.bg} 62%, transparent)`,
+        backdropFilter: "blur(2px)",
+        display: "flex",
+        alignItems: "flex-end",
+        justifyContent: mobile ? "flex-start" : "center",
+        padding: mobile ? 0 : 12,
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={
+          mobile
+            ? {
+                background: T.panel3,
+                borderTop: `1px solid ${T.borderS}`,
+                borderRadius: "20px 20px 0 0",
+                padding: "14px 16px calc(18px + env(safe-area-inset-bottom))",
+                width: "100%",
+                boxShadow: "0 -24px 60px rgba(0,0,0,0.5)",
+              }
+            : { background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 18, padding: "14px 16px 18px", width: "100%", maxWidth: 380, marginBottom: 6 }
+        }
+      >
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
+          <Caps size={8.5}>Gjentakende økt</Caps>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Lukk"
+            className="v2-focus"
+            style={{ appearance: "none", cursor: "pointer", background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: 9999, width: 26, height: 26, display: "inline-flex", alignItems: "center", justifyContent: "center", color: T.fg2, flex: "none" }}
+          >
+            <Icon name="x" size={13} />
+          </button>
         </div>
-      ))}
+        <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 700, color: T.fg, margin: "6px 0 2px" }}>{okt.navn}</div>
+        <div style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut }}>{okt.serie} {okt.kl}</div>
+        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.55, margin: "12px 0 0" }}>
+          Å endre bare denne økta eller alle fremtidige er ikke støttet ennå — kommer.
+        </p>
+        {timeplanHref && (
+          <Link href={timeplanHref} style={{ textDecoration: "none" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12, padding: "9px 0", borderTop: `1px solid ${T.border}` }}>
+              <Icon name="calendar" size={13} style={{ color: T.fg }} />
+              <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}>Se i gruppens timeplan</span>
+            </div>
+          </Link>
+        )}
+      </div>
     </div>
   );
 }
 
 /* ── Dag-kolonne (desktop grid-celle) ── */
-function DagKolonne({ dag }: { dag: KalenderData["dager"][number] }) {
+function DagKolonne({ dag, onSerieClick }: { dag: KalenderData["dager"][number]; onSerieClick: (okt: KalOkt) => void }) {
   return (
     <div style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: 8 }}>
       <div style={{ display: "flex", alignItems: "baseline", gap: 6, padding: "2px 2px 6px", borderBottom: `1px solid ${dag.idag ? T.borderS : T.border}` }}>
@@ -144,7 +205,7 @@ function DagKolonne({ dag }: { dag: KalenderData["dager"][number] }) {
       {dag.okter.length === 0 ? (
         <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, padding: "8px 2px" }}>Ingen økter</span>
       ) : (
-        dag.okter.map((o) => <OktBlokk key={o.id} okt={o} />)
+        dag.okter.map((o) => <OktBlokk key={o.id} okt={o} onSerieClick={onSerieClick} />)
       )}
     </div>
   );
@@ -153,6 +214,9 @@ function DagKolonne({ dag }: { dag: KalenderData["dager"][number] }) {
 export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   const mobile = useMobile();
   const [visning, setVisning] = useState("uke");
+  // Hvilken serie-økt (om noen) er valgt — styrer SerieMeny-panelet (kun ekte
+  // klikk på en merket serie-blokk åpner det, aldri statisk synlig).
+  const [valgtSerieOkt, setValgtSerieOkt] = useState<KalOkt | null>(null);
 
   // Nav-piler (ekte uke-navigasjon via ?uke=).
   const pil = (href: string, ikon: string, label: string) => (
@@ -204,17 +268,12 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     </div>
   );
 
-  // Serie-hint + meny (ekte serie, delvis redigering).
-  const serieSeksjon = data.serieMeny ? (
-    <div>
-      <Caps size={9} style={{ margin: "0 2px 8px" }}>
-        {data.serieOkterAntall > 0
-          ? "Trykk på en merket, gjentakende økt åpner denne menyen"
-          : "Gjentakende serie · menyen åpnes når du trykker på en serie-økt"}
-      </Caps>
-      <SerieMeny serie={data.serieMeny} full={mobile} />
-    </div>
-  ) : null;
+  // Serie-hint: kun når det faktisk finnes en klikkbar serie-økt denne uka —
+  // uker uten forekomster dekkes allerede av innsikt-teksten under (data.ts).
+  const serieHint =
+    data.serieOkterAntall > 0 ? (
+      <Caps size={9} style={{ margin: "0 2px" }}>Trykk på en merket, gjentakende økt for detaljer</Caps>
+    ) : null;
 
   const innsikt = data.innsikt ? (
     <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
@@ -238,14 +297,15 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
             <Kort key={i} eyebrow={`${d.dag} ${d.dato}${d.idag ? " · i dag" : ""}`}>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {d.okter.map((o) => (
-                  <OktBlokk key={o.id} okt={o} />
+                  <OktBlokk key={o.id} okt={o} onSerieClick={setValgtSerieOkt} />
                 ))}
               </div>
             </Kort>
           ))
         )}
-        {serieSeksjon}
+        {serieHint}
         {innsikt}
+        {valgtSerieOkt && <SerieMeny okt={valgtSerieOkt} onClose={() => setValgtSerieOkt(null)} mobile />}
       </div>
     );
   }
@@ -256,7 +316,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     kropp = (
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 10 }}>
         {data.dager.map((d, i) => (
-          <DagKolonne key={i} dag={d} />
+          <DagKolonne key={i} dag={d} onSerieClick={setValgtSerieOkt} />
         ))}
       </div>
     );
@@ -269,7 +329,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {valgt.okter.map((o) => (
-              <OktBlokk key={o.id} okt={o} />
+              <OktBlokk key={o.id} okt={o} onSerieClick={setValgtSerieOkt} />
             ))}
           </div>
         )}
@@ -288,8 +348,9 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
       {kropp}
-      {visning === "uke" && serieSeksjon}
+      {visning === "uke" && serieHint}
       {innsikt}
+      {valgtSerieOkt && <SerieMeny okt={valgtSerieOkt} onClose={() => setValgtSerieOkt(null)} />}
     </div>
   );
 }

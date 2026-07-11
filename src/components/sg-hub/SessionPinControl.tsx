@@ -5,7 +5,7 @@ import { Pin, PinOff } from "lucide-react";
 import {
   pinSession,
   unpinSession,
-} from "@/app/portal/mal/sg-hub/best-vs-now/actions";
+} from "@/app/portal/(legacy)/mal/sg-hub/best-vs-now/actions";
 
 type Props = {
   currentSessionId: string;

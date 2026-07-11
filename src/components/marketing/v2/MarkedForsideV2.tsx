@@ -20,6 +20,7 @@
 
 import { useEffect, useState, type ReactNode, type CSSProperties } from "react";
 import Link from "next/link";
+import { MMobilMeny } from "./marked-ramme";
 import { T } from "@/lib/v2/tokens";
 import {
   Icon,
@@ -59,7 +60,7 @@ function useMobile(): boolean {
 
 /* ── Ramme: toppnav + innhold + footer ─────────────────── */
 const MNAV: { id: string; l: string; href: string }[] = [
-  { id: "hjem", l: "Hjem", href: "/v2-marked" },
+  { id: "hjem", l: "Hjem", href: "/" },
   { id: "coaching", l: "Coaching", href: "/coaching" },
   { id: "playerhq", l: "PlayerHQ", href: "/playerhq" },
   { id: "priser", l: "Priser", href: "/priser" },
@@ -78,11 +79,8 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
         position: "relative",
       }}
     >
-      <Link href="/v2-marked" style={{ display: "inline-flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
+      <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
         <LogoAK size={24} />
-        <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, letterSpacing: "-0.02em", color: T.fg }}>
-          AK Golf
-        </span>
       </Link>
       {!mobile && (
         <div style={{ display: "flex", alignItems: "center", gap: 26 }}>
@@ -115,7 +113,7 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
           </Link>
         )}
         {mobile ? (
-          <Icon name="menu" size={20} style={{ color: T.fg }} />
+          <MMobilMeny aktiv={aktiv} />
         ) : (
           <MCta small href="/auth/signup">
             Kom i gang gratis
@@ -144,10 +142,16 @@ function MFot({ mobile }: { mobile: boolean }) {
         <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>AK Golf Group AS · Fredrikstad</span>
       </span>
       <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-        {["Coaching", "PlayerHQ", "Priser", "Book tid", "Personvern"].map((l) => (
-          <span key={l} style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, cursor: "pointer" }}>
-            {l}
-          </span>
+        {[
+          { l: "Coaching", href: "/coaching" },
+          { l: "PlayerHQ", href: "/playerhq" },
+          { l: "Priser", href: "/priser" },
+          { l: "Book tid", href: "/booking" },
+          { l: "Personvern", href: "/personvern" },
+        ].map((f) => (
+          <Link key={f.l} href={f.href} style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, textDecoration: "none" }}>
+            {f.l}
+          </Link>
         ))}
       </div>
     </div>
@@ -178,7 +182,7 @@ function MRamme({ mobile, aktiv, children }: { mobile: boolean; aktiv: string; c
 /* ── Tekst- og CTA-primitiver (marketing-skala) ────────── */
 function Eyebrow({ children }: { children: ReactNode }) {
   return (
-    <Caps size={11} color={T.lime} style={{ marginBottom: 18 }}>
+    <Caps size={11} style={{ marginBottom: 18 }}>
       {children}
     </Caps>
   );

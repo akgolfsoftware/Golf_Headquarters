@@ -1,14 +1,17 @@
 /**
- * PlayerHQ Banekart-oversikt (/portal/baneguide/[baneId]) — skjerm 2 (fase 5).
- * Hele banen på satellitt + hull-liste med spillerens slag-antall per hull.
+ * PlayerHQ Banekart-oversikt — v2. Hele banen på satellitt (CourseMap,
+ * mapbox — gjenbrukes som den er) + hull-liste med spillerens slag-antall.
+ * Dataloader (getBaneOverview) uendret.
  */
-import { Eyebrow } from "@/components/athletic/golfdata";
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronRight } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getBaneOverview } from "@/lib/baneguide/queries";
 import { CourseMap, type CourseMapHole } from "@/components/baneguide/course-map";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { T } from "@/lib/v2/tokens";
+import { Caps, Tittel, Kort, Rad } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -33,44 +36,63 @@ export default async function BaneOverviewPage({
   }));
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-6">
-      <Eyebrow as="span">{bane.navn}</Eyebrow>
-      <h1 className="mt-1.5 font-display text-3xl font-bold tracking-[-0.02em] text-foreground">Banekart</h1>
-      <p className="mt-1.5 text-sm text-muted-foreground">
-        {holes.length} hull kartlagt{parSum > 0 ? ` · par ${parSum}` : ""}
-      </p>
+    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div>
+          <Caps>Baneguide · {bane.navn}</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel>Banekart</Tittel>
+          </div>
+          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
+            {holes.length} hull kartlagt{parSum > 0 ? ` · par ${parSum}` : ""}
+          </p>
+        </div>
 
-      {bane.latitude != null && bane.longitude != null && (
-        <CourseMap
-          center={{ lat: bane.latitude, lng: bane.longitude }}
-          geojson={bane.geojson as unknown as GeoJSON.FeatureCollection}
-          holes={mapHoles}
-          className="mt-4 h-[340px] w-full overflow-hidden rounded-xl border border-border"
-        />
-      )}
+        {bane.latitude != null && bane.longitude != null && (
+          <CourseMap
+            center={{ lat: bane.latitude, lng: bane.longitude }}
+            geojson={bane.geojson as unknown as GeoJSON.FeatureCollection}
+            holes={mapHoles}
+            className="h-[340px] w-full overflow-hidden rounded-xl border border-border"
+          />
+        )}
 
-      <ul className="mt-5 divide-y divide-border overflow-hidden rounded-lg border border-border bg-card">
-        {holes.map((h) => (
-          <li key={h.id}>
+        <Kort pad="6px 18px">
+          {holes.map((h, i) => (
             <Link
+              key={h.id}
               href={`/portal/baneguide/${bane.id}/hull/${h.holeNumber}`}
-              className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-secondary/50"
+              style={{ textDecoration: "none", display: "block" }}
             >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary font-mono text-xs font-bold text-primary">
-                {h.holeNumber}
-              </span>
-              <div className="flex-1 font-mono text-xs text-muted-foreground">
-                {h.par ? `par ${h.par}` : "par –"}
-                {h.lengthMeter ? ` · ${h.lengthMeter} m` : ""}
-              </div>
-              <span className="font-mono text-xs text-muted-foreground">
-                {h.shotCount > 0 ? `${h.shotCount} slag` : "ingen slag"}
-              </span>
-              <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.5} />
+              <Rad
+                last={i === holes.length - 1}
+                leading={
+                  <span
+                    style={{
+                      display: "grid",
+                      placeItems: "center",
+                      width: 32,
+                      height: 32,
+                      borderRadius: 9999,
+                      background: T.panel2,
+                      border: `1px solid ${T.border}`,
+                      fontFamily: T.mono,
+                      fontSize: 12,
+                      fontWeight: 700,
+                      color: T.fg,
+                      fontVariantNumeric: "tabular-nums",
+                    }}
+                  >
+                    {h.holeNumber}
+                  </span>
+                }
+                title={`${h.par ? `Par ${h.par}` : "Par –"}${h.lengthMeter ? ` · ${h.lengthMeter} m` : ""}`}
+                sub={h.shotCount > 0 ? `${h.shotCount} slag plottet` : "ingen slag plottet"}
+              />
             </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+          ))}
+        </Kort>
+      </div>
+    </V2Shell>
   );
 }

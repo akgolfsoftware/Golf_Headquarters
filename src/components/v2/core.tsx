@@ -9,9 +9,12 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { T, fmtSg, type AkseKey } from "@/lib/v2/tokens";
 import { useCountUp, useMount, EASE, reduced } from "@/lib/v2/hooks";
 import { Icon } from "@/components/v2/icon";
+import { HjelpTips } from "@/components/v2/hjelp";
+import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
 
 /* Re-eksport av grunnstein-primitivene så søster-familier kan importere fra "./core"
    (samme overflate som mockupens window.V2). */
@@ -115,12 +118,15 @@ export function SevChip({ s }: SevChipProps) {
   return <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: m.c, background: `color-mix(in srgb,${m.c} 12%,transparent)`, borderRadius: 5, padding: "3px 7px", whiteSpace: "nowrap" }}>{m.l}</span>;
 }
 
+/* Aksenavn i klarspråk — display only, datanøklene (FYS/TEK/SLAG/SPILL/TURN) er uendret. */
+export const AKSE_NAVN: Record<AkseKey, string> = { FYS: "Fysisk", TEK: "Teknikk", SLAG: "Slag", SPILL: "Spill", TURN: "Turnering" };
+
 export interface AkseChipProps {
   a: AkseKey;
 }
-/* FYS/TEK/SLAG/SPILL/TURN m/ kategorifarge-prikk */
+/* Fysisk/Teknikk/Slag/Spill/Turnering m/ kategorifarge-prikk (sentence-case, ingen uppercase) */
 export function AkseChip({ a }: AkseChipProps) {
-  return <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 5, padding: "3px 7px" }}><span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[a] || T.mut }} />{a}</span>;
+  return <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 5, padding: "3px 7px" }}><span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[a] || T.mut }} />{AKSE_NAVN[a] || a}</span>;
 }
 
 export interface MikroMetaProps {
@@ -173,12 +179,25 @@ export interface TallHeroProps {
   size?: number;
   accent?: boolean;
   action?: ReactNode;
+  hjelp?: HjelpNokkel;
 }
-export function TallHero({ label, value, unit, delta, dir, sub, size = 56, accent, action }: TallHeroProps) {
+export function TallHero({ label, value, unit, delta, dir, sub, size = 56, accent, action, hjelp }: TallHeroProps) {
   const shown = useCountUp(value);
   return (
     <div>
-      {(label || action) && <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>{label ? <Caps>{label}</Caps> : <span />}{action}</div>}
+      {(label || action) && (
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          {label ? (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              <Caps>{label}</Caps>
+              {hjelp && <HjelpTips k={hjelp} />}
+            </span>
+          ) : (
+            <span />
+          )}
+          {action}
+        </div>
+      )}
       <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginTop: label ? 14 : 0 }}>
         <span style={{ fontFamily: T.mono, fontSize: size, fontWeight: 700, color: accent ? T.lime : T.fg, lineHeight: 0.9, letterSpacing: "-0.03em", fontVariantNumeric: "tabular-nums" }}>{shown}</span>
         {unit && <span style={{ fontFamily: T.mono, fontSize: Math.round(size * 0.3), color: T.mut }}>{unit}</span>}
@@ -195,12 +214,21 @@ export interface KpiFlisProps {
   dir?: "up" | "down";
   tint?: boolean;
   varsle?: boolean;
+  hjelp?: HjelpNokkel;
+  /** Dropp tell-opp-fra-0-animasjonen. Bruk for absolutte tall der 0 aldri er en
+   *  reell mellomverdi (f.eks. golf-brutto­score) — ellers vises en umulig verdi
+   *  i overgangen (0 → mål) i de første rammene etter montering. */
+  instant?: boolean;
 }
-export function KpiFlis({ label, value, delta, dir, tint, varsle }: KpiFlisProps) {
-  const shown = useCountUp(value);
+export function KpiFlis({ label, value, delta, dir, tint, varsle, hjelp, instant }: KpiFlisProps) {
+  const animert = useCountUp(value);
+  const shown = instant ? String(value) : animert;
   return (
     <Kort tint={tint || varsle}>
-      <Caps size={9}>{label}</Caps>
+      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <Caps size={9}>{label}</Caps>
+        {hjelp && <HjelpTips k={hjelp} size={11} />}
+      </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 12 }}>
         <span style={{ fontFamily: T.mono, fontSize: 38, fontWeight: 700, color: T.fg, lineHeight: 0.9, fontVariantNumeric: "tabular-nums" }}>{shown}</span>
         {delta && <DeltaChip v={delta} dir={dir} />}
@@ -219,16 +247,41 @@ export interface PillTabsProps {
   value: string;
   onChange?: (id: string) => void;
 }
-/* aktiv = lime-pille */
+/* aktiv = lime-pille. Overflyt-hint: høyrekant-fade (mask) + liten chevron når
+   fanene ikke får plass (scrollWidth > clientWidth) — signaliserer at det finnes
+   flere faner å scrolle til. */
 export function PillTabs({ tabs, value, onChange }: PillTabsProps) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [overflow, setOverflow] = useState(false);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const sjekk = () => setOverflow(el.scrollWidth > el.clientWidth + 1);
+    sjekk();
+    const ro = new ResizeObserver(sjekk);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [tabs.length]);
+
+  const mask = overflow ? "linear-gradient(to right, black 0%, black calc(100% - 26px), transparent 100%)" : undefined;
+
   return (
-    <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 2 }}>
-      {tabs.map((t) => {
-        const on = value === t.id;
-        return (
-          <button key={t.id} className="v2-press v2-focus" onClick={() => onChange && onChange(t.id)} style={{ appearance: "none", cursor: "pointer", fontFamily: T.ui, fontSize: 13, fontWeight: 600, padding: "8px 15px", borderRadius: 9999, color: on ? T.onLime : T.fg2, background: on ? T.lime : T.panel2, border: `1px solid ${on ? "transparent" : T.border}`, whiteSpace: "nowrap" }}>{t.l}</button>
-        );
-      })}
+    <div style={{ position: "relative" }}>
+      <div
+        ref={scrollerRef}
+        style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 2, maskImage: mask, WebkitMaskImage: mask }}
+      >
+        {tabs.map((t) => {
+          const on = value === t.id;
+          return (
+            <button key={t.id} className="v2-press v2-focus" onClick={() => onChange && onChange(t.id)} style={{ appearance: "none", cursor: "pointer", fontFamily: T.ui, fontSize: 13, fontWeight: 600, padding: "8px 15px", borderRadius: 9999, color: on ? T.onLime : T.fg2, background: on ? T.lime : T.panel2, border: `1px solid ${on ? "transparent" : T.border}`, whiteSpace: "nowrap" }}>{t.l}</button>
+          );
+        })}
+      </div>
+      {overflow && (
+        <Icon name="chevron-right" size={12} style={{ position: "absolute", right: 0, top: "50%", transform: "translateY(calc(-50% - 1px))", color: T.mut, pointerEvents: "none" }} />
+      )}
     </div>
   );
 }
@@ -260,7 +313,7 @@ export interface FilterChipsProps {
   onToggle?: (x: string) => void;
   axis?: boolean;
 }
-/* multi-filter m/ check */
+/* multi-filter m/ check. axis=true → x er en AkseKey-datanøkkel (matching/onToggle uendret), vises som Fysisk/Teknikk/… */
 export function FilterChips({ items, active = [], onToggle, axis }: FilterChipsProps) {
   return (
     <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
@@ -270,7 +323,7 @@ export function FilterChips({ items, active = [], onToggle, axis }: FilterChipsP
           <button key={i} className="v2-press v2-focus" onClick={() => onToggle && onToggle(x)} style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, height: 30, padding: "0 12px", borderRadius: 9999, background: on ? T.fg : T.panel2, border: `1px solid ${on ? T.fg : T.borderS}`, color: on ? T.bg : T.fg, fontFamily: T.ui, fontSize: 12.5, fontWeight: on ? 600 : 500 }}>
             {on && <Icon name="check" size={12} />}
             {axis && T.ax[x as AkseKey] && <span style={{ width: 7, height: 7, borderRadius: 9999, background: T.ax[x as AkseKey] }} />}
-            {x}
+            {axis ? AKSE_NAVN[x as AkseKey] || x : x}
           </button>
         );
       })}
@@ -281,12 +334,30 @@ export interface CTAPillProps {
   icon?: string;
   children?: ReactNode;
   ghost?: boolean;
+  /** Strekker pillen til full bredde av forelder (f.eks. mobil-CTA under et kort). */
+  full?: boolean;
 }
-export function CTAPill({ icon, children, ghost }: CTAPillProps) {
+export function CTAPill({ icon, children, ghost, full }: CTAPillProps) {
   return (
-    <span className="v2-press v2-focus" tabIndex={0} role="button" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: ghost ? T.fg : T.onLime, background: ghost ? T.panel3 : T.lime, border: ghost ? `1px solid ${T.borderS}` : "none", borderRadius: 9999, padding: "9px 16px", cursor: "pointer" }}>
+    <span className="v2-press v2-focus" tabIndex={0} role="button" style={{ display: "inline-flex", alignItems: "center", justifyContent: full ? "center" : undefined, gap: 8, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: ghost ? T.fg : T.onLime, background: ghost ? T.panel3 : T.lime, border: ghost ? `1px solid ${T.borderS}` : "none", borderRadius: 9999, padding: "9px 16px", cursor: "pointer", width: full ? "100%" : undefined }}>
       {icon && <Icon name={icon} size={14} />}{children}
     </span>
+  );
+}
+
+export interface TilbakeLenkeProps {
+  /** Målrute (f.eks. tilbake til spillerprofilen eller spillerlisten). */
+  href: string;
+  children?: ReactNode;
+}
+/* Delt tilbake-navigasjon for sub-navigasjonsklynger (f.eks. spiller-360°:
+   profil→analyse→plan→fremgang→tester). Ett mønster overalt: CTAPill ghost
+   + arrow-left. Bruk denne i stedet for ad-hoc lenker med chevron-left. */
+export function TilbakeLenke({ href, children }: TilbakeLenkeProps) {
+  return (
+    <Link href={href} style={{ textDecoration: "none" }}>
+      <CTAPill ghost icon="arrow-left">{children}</CTAPill>
+    </Link>
   );
 }
 
@@ -297,13 +368,15 @@ export interface KnappProps {
   full?: boolean;
   disabled?: boolean;
   onClick?: () => void;
+  /** "submit" for skjema-knapper — default "button". */
+  type?: "button" | "submit";
 }
 /* Interaktiv CTA-pille (ekte <button>): onClick + full-bredde + disabled.
    CTAPill er den statiske varianten; Knapp brukes i flerstegs-flyter. */
-export function Knapp({ icon, children, ghost, full, disabled, onClick }: KnappProps) {
+export function Knapp({ icon, children, ghost, full, disabled, onClick, type = "button" }: KnappProps) {
   return (
     <button
-      type="button"
+      type={type}
       className="v2-press v2-focus"
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
@@ -431,7 +504,7 @@ export function AkseBar({ a, v, m, max = 60, enhet = "t", last }: AkseBarProps) 
   const grown = useMount();
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 11, padding: "9px 0", borderBottom: last ? "none" : `1px solid ${T.border}` }}>
-      <span style={{ width: 42, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.fg2, flex: "none" }}>{a}</span>
+      <span style={{ width: 64, fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg2, flex: "none", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{AKSE_NAVN[a] || a}</span>
       <div style={{ flex: 1, height: 7, borderRadius: 9999, background: T.track, position: "relative" }}>
         <div style={{ width: (grown ? Math.min(100, (v / max) * 100) : 0) + "%", height: "100%", background: T.ax[a] || T.lime, opacity: 0.85, borderRadius: 9999, transition: `width 500ms ${EASE}` }} />
         <span style={{ position: "absolute", left: Math.min(100, (m / max) * 100) + "%", top: -3, width: 2, height: 13, background: T.fg, borderRadius: 1 }} />

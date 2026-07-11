@@ -4,37 +4,44 @@
  * Verge-samtykke — v2 (retning C «Presis», mørk-først). Komponert i v2-idiomet
  * fra auth-rammen (AuthRamme/BrandPanel/Felt/Avkryssing/Knapp), 1:1 med
  * LoginV2s mønster — IKKE V2Shell (uinnlogget verge har ingen app-navigasjon).
- * Montert offentlig i (v2preview)/v2-guardian-consent/page.tsx.
+ * Montert på /auth/guardian-consent/[token] (bytter ut gamle Expired/Success/
+ * GuardianConsentForm-oppsettet 2026-07-10). GDPR art. 8 (P17).
  *
- * Dette er en VISUELL v2-variant for godkjenning. Den EKTE samtykke-logikken
- * (Prisma-token-oppslag i src/app/auth/guardian-consent/[token]/page.tsx +
- * server-action `confirmGuardianConsent` i .../actions.ts) dupliseres bevisst
- * IKKE her. Token-flyten bevares presist som datakontrakt: komponenten tar de
- * SAMME propene som den ekte GuardianConsentForm (token/playerName/playerEmail/
- * guardianEmail/playerAge) og kjører den SAMME klient-valideringen (fullt navn
- * påkrevd + begge samtykke-hakene påkrevd). Selve innsendingen (server-action +
- * router.push til /auth/login?guardian_consent_given=1) er nøytralisert og meldt
- * som gap, slik at GDPR-samtykke-flyten forblir én kilde på ekte /auth-rute.
+ * Ekte samtykke-logikk er portert 1:1 fra
+ * src/app/auth/guardian-consent/[token]/page.tsx + guardian-consent-form.tsx:
+ * Prisma-token-oppslaget (utløpt/allerede-akseptert/gyldig) SKJER FORTSATT på
+ * page.tsx (server-komponent, kan ikke flyttes til klient) og styrer hvilken
+ * `state` som sendes hit som prop. Klient-valideringen (fullt navn påkrevd +
+ * begge samtykke-hakene påkrevd) og selve innsendingen (server-action
+ * `confirmGuardianConsent` + router.push til
+ * /auth/login?guardian_consent_given=1) er portert eksakt. Info-seksjonen
+ * («Hva betyr dette samtykket?») er bevart 1:1 fra page.tsx.
  *
  * Kun v2-primitiver fra "@/components/v2" (LogoAK, Caps, Icon) + T-tokens.
  * Auth-idiomene er lokale her (1:1 med LoginV2) — meldt som gap for opprykk til
  * src/components/v2/auth.tsx. Ingen rå hex (kun T.* + rgba). Norsk æøå.
  */
 
-import { useState, type ReactNode, type CSSProperties } from "react";
+import { useState, useTransition, type ReactNode, type CSSProperties } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { T } from "@/lib/v2/tokens";
 import { LogoAK, Caps, Icon } from "@/components/v2";
+import { confirmGuardianConsent } from "@/app/auth/guardian-consent/[token]/actions";
 
-/* ── Props (datakontrakt 1:1 med ekte GuardianConsentForm) ─────────── */
+/* ── Props (datakontrakt 1:1 med ekte page.tsx/GuardianConsentForm) ─── */
 
-export type GuardianConsentV2Props = {
-  token: string;
-  playerName: string;
-  playerEmail: string;
-  guardianEmail: string;
-  playerAge: number | null;
-};
+export type GuardianConsentV2Props =
+  | {
+      state: "form";
+      token: string;
+      playerName: string;
+      playerAge: number | null;
+      playerEmail: string;
+      guardianEmail: string;
+    }
+  | { state: "expired"; playerName: string; playerAge: number | null; email: string }
+  | { state: "success"; playerName: string; playerAge: number | null };
 
 /* ── Lokale auth-byggeklosser (1:1 med LoginV2) ────────────────────── */
 
@@ -313,14 +320,210 @@ function BrandPanel() {
   );
 }
 
+/** Feilboks — 1:1 idiom med ForgotPasswordV2/ResetPasswordV2. */
+function Feilboks({ children }: { children: ReactNode }) {
+  return (
+    <div
+      role="alert"
+      style={{
+        display: "flex",
+        alignItems: "flex-start",
+        gap: 9,
+        padding: "11px 14px",
+        borderRadius: 12,
+        background: "rgba(240,104,62,0.10)",
+        border: `1px solid rgba(240,104,62,0.30)`,
+      }}
+    >
+      <Icon name="triangle-alert" size={15} style={{ color: T.down, flex: "none", marginTop: 1 }} />
+      <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.down }}>{children}</span>
+    </div>
+  );
+}
+
+/** Felles hode — 1:1 med page.tsx sitt <header>, vises i alle tre tilstander (form/expired/success). */
+function Hode({ playerName, playerAge }: { playerName: string; playerAge: number | null }) {
+  return (
+    <div style={{ width: "100%", maxWidth: 440, display: "flex", flexDirection: "column", gap: 14 }}>
+      {/* Mobil-logo (BrandPanel skjult under md) */}
+      <div className="md:hidden" style={{ display: "flex", justifyContent: "center", padding: "6px 0 2px" }}>
+        <LogoAK size={44} />
+      </div>
+      <div style={{ textAlign: "center" }}>
+        <span
+          aria-hidden
+          style={{
+            display: "inline-flex",
+            width: 52,
+            height: 52,
+            borderRadius: 16,
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 14,
+            background: "rgba(0,88,64,0.22)",
+            border: `1px solid ${T.borderS}`,
+          }}
+        >
+          <Icon name="shield" size={26} style={{ color: T.lime }} />
+        </span>
+        <Caps size={9} color={T.mut} style={{ marginBottom: 8, textAlign: "center" }}>
+          AK Golf · Foreldresamtykke
+        </Caps>
+        <h1 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 28, letterSpacing: "-0.03em", color: T.fg, margin: 0 }}>
+          Bekreft <em style={{ fontStyle: "italic", color: T.lime }}>samtykke</em>
+        </h1>
+        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "8px 0 0", lineHeight: 1.5 }}>
+          For at <strong style={{ color: T.fg, fontWeight: 600 }}>{playerName}</strong>
+          {playerAge !== null ? ` (${playerAge} år)` : ""} skal kunne bruke AK Golf.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/** Info-seksjon «Hva betyr dette samtykket?» — bevart 1:1 fra page.tsx, vises i alle tre tilstander. */
+function InfoSeksjon() {
+  return (
+    <div
+      style={{
+        width: "100%",
+        maxWidth: 440,
+        borderRadius: T.rCard,
+        background: T.panel,
+        border: `1px solid ${T.border}`,
+        padding: 22,
+      }}
+    >
+      <h2 style={{ fontFamily: T.disp, fontSize: 14.5, fontWeight: 600, color: T.fg, margin: "0 0 10px" }}>
+        Hva betyr dette samtykket?
+      </h2>
+      <ul style={{ display: "flex", flexDirection: "column", gap: 9, margin: 0, padding: 0, listStyle: "none" }}>
+        <li style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.5 }}>
+          <strong style={{ color: T.fg, fontWeight: 600 }}>GDPR artikkel 8:</strong> Norske barn
+          under 16 år trenger foreldresamtykke før de kan dele persondata med en tjeneste.
+        </li>
+        <li style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.5 }}>
+          <strong style={{ color: T.fg, fontWeight: 600 }}>Du kan trekke samtykket</strong> når
+          som helst ved å kontakte oss på{" "}
+          <a href="mailto:post@akgolf.no" style={{ color: T.lime, fontWeight: 600, textDecoration: "underline", textUnderlineOffset: 2 }}>
+            post@akgolf.no
+          </a>
+          .
+        </li>
+        <li style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.5 }}>
+          <strong style={{ color: T.fg, fontWeight: 600 }}>Du får tilgang</strong> til en
+          foreldreportal som lar deg følge barnets utvikling, fakturaer og kommunikasjon med coach.
+        </li>
+      </ul>
+      <p style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, margin: "14px 0 0" }}>
+        Mer info i <Lenke href="/personvern">personvernerklæringen</Lenke> og{" "}
+        <Lenke href="/vilkar">vilkårene</Lenke>.
+      </p>
+    </div>
+  );
+}
+
+/** Utløpt invitasjon — 1:1 med gamle ExpiredCard. */
+function ExpiredKort({ email }: { email: string }) {
+  return (
+    <div
+      style={{
+        width: "100%",
+        maxWidth: 440,
+        textAlign: "center",
+        borderRadius: T.rCard,
+        background: "rgba(232,180,60,0.10)",
+        border: `1px solid rgba(232,180,60,0.30)`,
+        padding: 26,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 4,
+      }}
+    >
+      <Icon name="triangle-alert" size={30} style={{ color: T.warn, marginBottom: 6 }} />
+      <h2 style={{ fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg, margin: 0 }}>
+        Invitasjonen er utløpt
+      </h2>
+      <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.55, margin: "6px 0 0" }}>
+        Lenken er ikke lenger gyldig. Be spilleren sende deg en ny invitasjon til{" "}
+        <strong style={{ color: T.fg, fontWeight: 600 }}>{email}</strong>.
+      </p>
+    </div>
+  );
+}
+
+/** Samtykke allerede gitt — 1:1 med gamle SuccessCard. */
+function SuccessKort({ playerName }: { playerName: string }) {
+  return (
+    <div
+      style={{
+        width: "100%",
+        maxWidth: 440,
+        textAlign: "center",
+        borderRadius: T.rCard,
+        background: "rgba(79,208,138,0.10)",
+        border: `1px solid rgba(79,208,138,0.30)`,
+        padding: 26,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 4,
+      }}
+    >
+      <Icon name="check" size={30} style={{ color: T.up, marginBottom: 6 }} />
+      <h2 style={{ fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg, margin: 0 }}>
+        Samtykke allerede gitt
+      </h2>
+      <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.55, margin: "6px 0 0" }}>
+        Du har allerede bekreftet samtykke for{" "}
+        <strong style={{ color: T.fg, fontWeight: 600 }}>{playerName}</strong>.
+      </p>
+      <div style={{ width: "100%", marginTop: 14 }}>
+        <Link
+          href="/forelder"
+          className="v2-press v2-focus"
+          style={{
+            appearance: "none",
+            textDecoration: "none",
+            width: "100%",
+            height: 44,
+            borderRadius: 12,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 9,
+            fontFamily: T.ui,
+            fontSize: 13.5,
+            fontWeight: 600,
+            background: T.lime,
+            color: T.onLime,
+          }}
+        >
+          Gå til foreldreportal
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 /* ── Samtykke-kortet ───────────────────────────────────────────────── */
 
 function ConsentKort({
+  token,
   playerName,
   playerEmail,
   guardianEmail,
   playerAge,
-}: Omit<GuardianConsentV2Props, "token">) {
+}: {
+  token: string;
+  playerName: string;
+  playerEmail: string;
+  guardianEmail: string;
+  playerAge: number | null;
+}) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [navn, setNavn] = useState("");
   const [databehandling, setDatabehandling] = useState(false);
   const [vilkar, setVilkar] = useState(false);
@@ -328,8 +531,7 @@ function ConsentKort({
 
   const kanSende = navn.trim().length > 0 && databehandling && vilkar;
 
-  // Klient-validering 1:1 med ekte GuardianConsentForm. Server-action +
-  // router.push er bevisst nøytralisert (gap) — ekte flyt bor på /auth-ruten.
+  // Klient-validering + innsending 1:1 med ekte GuardianConsentForm.
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setFeil(null);
@@ -341,7 +543,14 @@ function ConsentKort({
       setFeil("Du må samtykke til begge punktene for å fortsette.");
       return;
     }
-    // Visuell variant: ingen server-innsending her.
+    startTransition(async () => {
+      const result = await confirmGuardianConsent({ token, guardianName: navn.trim() });
+      if (!result.ok) {
+        setFeil(result.error ?? "Noe gikk galt. Prøv igjen.");
+        return;
+      }
+      router.push("/auth/login?guardian_consent_given=1");
+    });
   }
 
   return (
@@ -354,51 +563,6 @@ function ConsentKort({
         gap: 14,
       }}
     >
-      {/* Mobil-logo (BrandPanel skjult under md) */}
-      <div
-        className="md:hidden"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          padding: "6px 0 2px",
-        }}
-      >
-        <LogoAK size={44} />
-      </div>
-
-      <div style={{ marginBottom: 2 }}>
-        <Caps size={9} color={T.mut} style={{ marginBottom: 8 }}>
-          AK Golf · Foreldresamtykke
-        </Caps>
-        <h1
-          style={{
-            fontFamily: T.disp,
-            fontWeight: 700,
-            fontSize: 28,
-            letterSpacing: "-0.03em",
-            color: T.fg,
-            margin: 0,
-          }}
-        >
-          Bekreft{" "}
-          <em style={{ fontStyle: "italic", color: T.lime }}>samtykke</em>
-        </h1>
-        <p
-          style={{
-            fontFamily: T.ui,
-            fontSize: 12.5,
-            color: T.mut,
-            margin: "8px 0 0",
-            lineHeight: 1.5,
-          }}
-        >
-          For at{" "}
-          <strong style={{ color: T.fg, fontWeight: 600 }}>{playerName}</strong>
-          {playerAge !== null ? ` (${playerAge} år)` : ""} skal kunne bruke AK
-          Golf.
-        </p>
-      </div>
-
       <form
         onSubmit={onSubmit}
         style={{
@@ -499,38 +663,20 @@ function ConsentKort({
         </div>
 
         {/* Feil */}
-        {feil ? (
-          <div
-            role="alert"
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: 9,
-              padding: "11px 14px",
-              borderRadius: 12,
-              background: "rgba(240,104,62,0.10)",
-              border: `1px solid rgba(240,104,62,0.30)`,
-            }}
-          >
-            <Icon name="triangle-alert" size={15} style={{ color: T.down, flex: "none", marginTop: 1 }} />
-            <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.down }}>
-              {feil}
-            </span>
-          </div>
-        ) : null}
+        {feil ? <Feilboks>{feil}</Feilboks> : null}
 
         <Knapp
           type="submit"
-          disabled={!kanSende}
+          disabled={!kanSende || isPending}
           icon={
             <Icon
               name="check"
               size={16}
-              style={{ color: kanSende ? T.onLime : T.mut }}
+              style={{ color: kanSende && !isPending ? T.onLime : T.mut }}
             />
           }
         >
-          Bekreft samtykke
+          {isPending ? "Lagrer samtykke…" : "Bekreft samtykke"}
         </Knapp>
 
         <p
@@ -564,12 +710,7 @@ function ConsentKort({
 
 /* ── Offentlig samtykke-flate (dark-scope, fluid AuthRamme) ────────── */
 
-export function GuardianConsentV2({
-  playerName,
-  playerEmail,
-  guardianEmail,
-  playerAge,
-}: GuardianConsentV2Props) {
+export function GuardianConsentV2(props: GuardianConsentV2Props) {
   return (
     <div
       className="dark"
@@ -588,18 +729,29 @@ export function GuardianConsentV2({
           flex: 1,
           minWidth: 0,
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
+          gap: 22,
           padding: "48px 22px",
           background: `radial-gradient(700px 420px at 60% -12%, rgba(0,88,64,0.14), transparent 62%), ${T.bg}`,
         }}
       >
-        <ConsentKort
-          playerName={playerName}
-          playerEmail={playerEmail}
-          guardianEmail={guardianEmail}
-          playerAge={playerAge}
-        />
+        <Hode playerName={props.playerName} playerAge={props.playerAge} />
+        {props.state === "expired" ? (
+          <ExpiredKort email={props.email} />
+        ) : props.state === "success" ? (
+          <SuccessKort playerName={props.playerName} />
+        ) : (
+          <ConsentKort
+            token={props.token}
+            playerName={props.playerName}
+            playerEmail={props.playerEmail}
+            guardianEmail={props.guardianEmail}
+            playerAge={props.playerAge}
+          />
+        )}
+        <InfoSeksjon />
       </div>
     </div>
   );

@@ -1,20 +1,32 @@
-// AgencyOS · Agent-team — flere AI-er sekvensielt på én oppgave (merget inn fra
-// kommandosenteret). ADMIN-only; gjenbruker AgentTeam-komponenten.
+/**
+ * v2-preview: AgencyOS Agent-team (retning C). Egen top-level route-group
+ * (v2preview) som IKKE arver AdminShell — kun root-layout — så V2Shell leverer
+ * all chrome (IkonRail/BunnNav) i mørk v2-scope.
+ *
+ * Auth + data følger den ekte /admin/agent-team-flaten: samme Prisma-loader
+ * (KommandoProject aktive + KommandoAgentRun siste 10 + KommandoAgentStep),
+ * scopet til innlogget bruker. Auth-guarden er hevet til requirePortalUser
+ * (ADMIN/COACH) for v2-preview-linja (den ekte skjermen er ADMIN-only via
+ * canAccessMissionControl — se «gaps» i leveransen).
+ *
+ * Server component.
+ */
 
-import { redirect } from "next/navigation";
-import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import {
-  AgentTeam,
-  type AgentTeamRunView,
+  AdminAgentTeamV2,
+  type AdminAgentTeamV2Data,
   type AgentTeamStepView,
-} from "@/components/kommando/agent-team";
+  type AgentTeamRunView,
+} from "@/components/admin/v2/AdminAgentTeamV2";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Agent-team · AgencyOS (v2)" };
 
-export default async function AdminAgentTeamPage() {
-  const user = await canAccessMissionControl();
-  if (!user) redirect("/admin");
+export default async function V2AdminAgentTeamPage() {
+  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
   const [projects, runs] = await Promise.all([
     prisma.kommandoProject.findMany({
@@ -54,13 +66,11 @@ export default async function AdminAgentTeamPage() {
     steps: stepsByRun.get(r.id) ?? [],
   }));
 
+  const data: AdminAgentTeamV2Data = { projects, pastRuns };
+
   return (
-    <div className="mx-auto max-w-3xl">
-      <h1 className="mb-1 font-display text-2xl font-bold tracking-[-0.02em] text-foreground">Agent-team</h1>
-      <p className="mb-5 text-sm text-muted-foreground">
-        Flere AI-er jobber sekvensielt på én oppgave. Output fra ett steg mates inn i neste.
-      </p>
-      <AgentTeam projects={projects} pastRuns={pastRuns} />
-    </div>
+    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <AdminAgentTeamV2 data={data} />
+    </V2Shell>
   );
 }

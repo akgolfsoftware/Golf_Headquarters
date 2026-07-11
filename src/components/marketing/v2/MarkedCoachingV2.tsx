@@ -12,8 +12,10 @@
  * pris avtales i samtalen (299 kr/mnd-kanon uberørt).
  */
 import { useEffect, useState, type ReactNode, type CSSProperties } from "react";
+import Link from "next/link";
 import { T } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
+import { MMobilMeny } from "./marked-ramme";
 import { Kort, Caps, StatusPill, AvatarInit, LogoAK } from "@/components/v2";
 
 /* ── Marketing-skala (litt større type, mer luft — samme palett) ── */
@@ -53,7 +55,7 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: mobile ? "16px 22px" : "20px 64px", borderBottom: `1px solid ${T.border}`, position: "relative" }}>
       <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
         <LogoAK size={24} />
-        <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, letterSpacing: "-0.02em", color: T.fg }}>AK Golf</span>
+
       </span>
       {!mobile && (
         <div style={{ display: "flex", alignItems: "center", gap: 26 }}>
@@ -64,7 +66,7 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
       )}
       <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
         {!mobile && <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg2, cursor: "pointer" }}>Logg inn</span>}
-        {mobile ? <Icon name="menu" size={20} style={{ color: T.fg }} /> : <MCta small>Kom i gang gratis</MCta>}
+        {mobile ? <MMobilMeny aktiv={aktiv} /> : <MCta small>Kom i gang gratis</MCta>}
       </span>
     </div>
   );
@@ -77,8 +79,14 @@ function MFot({ mobile }: { mobile: boolean }) {
         <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>AK Golf Group AS · Fredrikstad</span>
       </span>
       <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-        {["Coaching", "PlayerHQ", "Priser", "Book tid", "Personvern"].map((l) => (
-          <span key={l} style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, cursor: "pointer" }}>{l}</span>
+        {[
+          { l: "Coaching", href: "/coaching" },
+          { l: "PlayerHQ", href: "/playerhq" },
+          { l: "Priser", href: "/priser" },
+          { l: "Book tid", href: "/booking" },
+          { l: "Personvern", href: "/personvern" },
+        ].map((f) => (
+          <Link key={f.l} href={f.href} style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, textDecoration: "none" }}>{f.l}</Link>
         ))}
       </div>
     </div>

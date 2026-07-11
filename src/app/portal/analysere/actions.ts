@@ -116,7 +116,14 @@ export type TrackManClub = {
 
 export type TrackManData = {
   clubs: TrackManClub[];
-  sessions: { id: string; recordedAt: Date; shotCount: number; source: string }[];
+  sessions: {
+    id: string;
+    recordedAt: Date;
+    shotCount: number;
+    source: string;
+    /** Kølle brukt i økten, kun satt hvis ALLE slag i økten har samme kølle (ekte data, ikke gjettet). */
+    primaryClub: string | null;
+  }[];
 };
 
 export type GoalListItem = {
@@ -162,12 +169,15 @@ export async function getTrainingStats(
   period: "7d" | "30d" | "90d" | "1y" | "all" = "30d",
 ): Promise<TrainingStats> {
   const from = startOfPeriod(period);
+  // Øvre grense = nå: planlagte fremtidige økter er ikke gjennomført trening
+  // og skal aldri telle i volum eller «Siste økter».
+  const naa = new Date();
 
   const [sessions, drills] = await Promise.all([
     prisma.trainingSessionV2.findMany({
       where: {
         studentId: userId,
-        ...(from && { startTime: { gte: from } }),
+        startTime: { ...(from ? { gte: from } : {}), lte: naa },
       },
       select: {
         id: true,
@@ -471,12 +481,16 @@ export async function getTrackManData(
 
   return {
     clubs,
-    sessions: sessions.map((s) => ({
-      id: s.id,
-      recordedAt: s.recordedAt,
-      shotCount: s.shotCount,
-      source: s.source,
-    })),
+    sessions: sessions.map((s) => {
+      const kolleSet = new Set(s.shots.map((sh) => sh.club).filter((c): c is string => !!c));
+      return {
+        id: s.id,
+        recordedAt: s.recordedAt,
+        shotCount: s.shotCount,
+        source: s.source,
+        primaryClub: kolleSet.size === 1 ? [...kolleSet][0] : null,
+      };
+    }),
   };
 }
 

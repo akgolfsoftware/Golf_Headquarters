@@ -1,14 +1,7 @@
-import {
-  SkeletonHero,
-  SkeletonCard,
-} from "@/components/shared/loading-skeleton";
+/* v2-skjelett for /portal/kalender (liste over økter/avtaler). */
 
-export default function KalenderLoading() {
-  return (
-    <div className="space-y-6">
-      <SkeletonHero />
-      <SkeletonCard height="h-12" />
-      <SkeletonCard height="h-[480px]" />
-    </div>
-  );
+import { V2Laster } from "@/components/v2/feil-laste";
+
+export default function Loading() {
+  return <V2Laster variant="liste" />;
 }

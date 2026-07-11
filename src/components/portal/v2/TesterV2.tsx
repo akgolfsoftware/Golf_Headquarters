@@ -131,8 +131,8 @@ function EndringCelle({ endring }: { endring: EndringVerdi | null }) {
   return <DeltaChip v={endring.text} dir={endring.tone === "neg" ? "down" : "up"} />;
 }
 
-/** Scorekort-tabellen: rader = tester, kolonner = Resultat/Mål/Forrige/Endring/Nivå. */
-function TestTabell({ seksjoner, mobile }: { seksjoner: TesterSeksjon[]; mobile: boolean }) {
+/** Scorekort-tabellen (md+): rader = tester, kolonner = Resultat/Mål/Forrige/Endring/Nivå. */
+function TestTabell({ seksjoner }: { seksjoner: TesterSeksjon[] }) {
   const th = {
     textAlign: "right" as const,
     padding: "4px 0 8px 10px",
@@ -146,7 +146,7 @@ function TestTabell({ seksjoner, mobile }: { seksjoner: TesterSeksjon[]; mobile:
   };
   return (
     <div style={{ overflowX: "auto" }}>
-      <table style={{ width: "100%", borderCollapse: "collapse", minWidth: mobile ? 520 : 0 }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 480 }}>
         <thead>
           <tr>
             <th style={{ ...th, textAlign: "left", padding: "4px 0 8px" }}>Test</th>
@@ -183,6 +183,51 @@ function TestTabell({ seksjoner, mobile }: { seksjoner: TesterSeksjon[]; mobile:
   );
 }
 
+/** Scorekort-liste (< md): samme datakontrakt som tabellen, kort-rad per test
+    (Mål/Nivå er alltid «—»-plassholdere ennå og utelates derfor på mobil). */
+function TestListeMobil({ seksjoner }: { seksjoner: TesterSeksjon[] }) {
+  return (
+    <div>
+      {seksjoner.map((sek, si) => (
+        <div key={sek.label}>
+          <div style={{ padding: si === 0 ? "0 0 8px" : "14px 0 8px", borderTop: si === 0 ? "none" : `1px solid ${T.border}` }}>
+            <Caps size={9} color={T.fg2}>{sek.label}</Caps>
+          </div>
+          {sek.rader.map((r, i) => (
+            <Rad
+              key={i}
+              title={r.test}
+              sub={r.forrige != null ? `Forrige ${r.forrige}` : undefined}
+              meta={
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontFamily: T.mono, fontSize: 13.5, fontWeight: 700, color: r.res == null ? T.mut : T.fg, fontVariantNumeric: "tabular-nums" }}>{r.res ?? "—"}</span>
+                  <EndringCelle endring={r.endring} />
+                </span>
+              }
+              trailing={null}
+              last={i === sek.rader.length - 1}
+            />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Testresultater: md+ = tabell, < md = kort-liste (delt datakontrakt). */
+function TestResultater({ seksjoner }: { seksjoner: TesterSeksjon[] }) {
+  return (
+    <>
+      <div className="hidden md:block">
+        <TestTabell seksjoner={seksjoner} />
+      </div>
+      <div className="md:hidden">
+        <TestListeMobil seksjoner={seksjoner} />
+      </div>
+    </>
+  );
+}
+
 /* ── Faner ─────────────────────────────────────────────────────────── */
 
 function TabScorekort({ data, mobile }: { data: TesterV2Data; mobile: boolean }) {
@@ -196,7 +241,7 @@ function TabScorekort({ data, mobile }: { data: TesterV2Data; mobile: boolean })
     >
       {harResultat ? (
         <>
-          <TestTabell seksjoner={data.seksjoner} mobile={mobile} />
+          <TestResultater seksjoner={data.seksjoner} />
           {/* Footer: ærlig dekning — ingen fabrikkert totalscore (FYS-formelen avventer). */}
           <div style={{ borderTop: `2px solid ${T.borderS}`, marginTop: 4, paddingTop: 14 }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>

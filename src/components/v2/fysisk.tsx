@@ -10,6 +10,7 @@
 import { useEffect, useRef, useState } from "react";
 import { T } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
+import { HjelpTips } from "@/components/v2/hjelp";
 import { Kort, Caps, DeltaChip } from "./core";
 
 /* Lokal tall-formatter: komma-desimal, mono i bruksstedet */
@@ -157,8 +158,9 @@ export interface TonnasjeHeroProps {
   delta?: string;
   dir?: "up" | "down";
   sub?: string;
+  hjelp?: boolean;
 }
-export function TonnasjeHero({ tonnasje = 4320, sett = 24, reps = 186, delta = "+8 %", dir = "up", sub = "Mates inn i ACWR og ukevolum" }: TonnasjeHeroProps) {
+export function TonnasjeHero({ tonnasje = 4320, sett = 24, reps = 186, delta = "+8 %", dir = "up", sub = "Mates inn i ACWR og ukevolum", hjelp }: TonnasjeHeroProps) {
   const [vist, setVist] = useState(0);
   const raf = useRef<number>(0);
   useEffect(() => {
@@ -172,7 +174,7 @@ export function TonnasjeHero({ tonnasje = 4320, sett = 24, reps = 186, delta = "
     return () => cancelAnimationFrame(raf.current);
   }, [tonnasje]);
   return (
-    <Kort tint eyebrow="Økt fullført — total belastning">
+    <Kort tint eyebrow="Økt fullført — total belastning" action={hjelp ? <HjelpTips k="tonnasje" /> : undefined}>
       <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
         <span style={{ fontFamily: T.mono, fontSize: 56, fontWeight: 700, color: T.lime, lineHeight: 0.9, letterSpacing: "-0.03em", fontVariantNumeric: "tabular-nums" }}>{vist.toLocaleString("nb-NO")}</span>
         <span style={{ fontFamily: T.mono, fontSize: 16, color: T.mut }}>kg løftet</span>
@@ -183,7 +185,12 @@ export function TonnasjeHero({ tonnasje = 4320, sett = 24, reps = 186, delta = "
         <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{reps} <span style={{ color: T.mut, fontWeight: 400 }}>reps</span></span>
         <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{kg(tonnasje / (sett || 1) / 10)} <span style={{ color: T.mut, fontWeight: 400 }}>tonn/10 sett</span></span>
       </div>
-      {sub && <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, display: "block", marginTop: 12 }}>{sub}</span>}
+      {sub && (
+        <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, display: "flex", alignItems: "center", gap: 5, marginTop: 12 }}>
+          {sub}
+          {sub.includes("ACWR") && <HjelpTips k="acwr" size={11} />}
+        </span>
+      )}
     </Kort>
   );
 }

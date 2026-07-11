@@ -1,24 +1,24 @@
 /**
- * AgencyOS · AgencyOS — Caddie-aktivitet
+ * AgencyOS · Caddie · Aktivitet (v2). V2-port av
+ * src/app/admin/(legacy)/agencyos/caddie/aktivitet/page.tsx — sentral
+ * oversikt over AI-Caddie sin aktivitet i akademiet. Samme datalogikk 1:1
+ * (Notification type="caddie", AgentRun-feil siste 7 dager). Ingen
+ * demo-fallback: tom DB gir ærlig tom tilstand, query-feil flagges som feil.
  *
- * Sentral oversikt over AI-Caddie sin aktivitet i akademiet. Tidslinje med
- * hendelser (forslag, analyser, eskaleringer, flagg), KPI-strip, mest aktive
- * spillere, fordeling av drill-typer og AI-feil siste 7 dager.
- *
- * Designet er migrert fra `public/design/batch4/coachhq-caddie-aktivitet.html`.
- * Henter data fra Notification (type: "caddie"). Ingen demo-fallback: tom DB
- * gir ærlig tom tilstand, og en query-feil flagges som feil — ikke skjules.
+ * Server component.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { CaddieAktivitetClient } from "./aktivitet-client";
-import type { CaddieEvent, AiError } from "./aktivitet-client";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { CaddieSubNavV2 } from "@/components/admin/v2/caddie/caddie-subnav-v2";
+import { AdminCaddieAktivitetV2, type AiError, type CaddieEvent } from "@/components/admin/v2/AdminCaddieAktivitetV2";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Caddie · Aktivitet · AgencyOS (v2)" };
 
-export default async function CaddieAktivitetPage() {
-  await requirePortalUser({ allow: ["ADMIN"] });
+export default async function V2CaddieAktivitetPage() {
+  const user = await requirePortalUser({ allow: ["ADMIN"] });
 
   const nowMs = new Date().getTime();
   let events: ReadonlyArray<CaddieEvent> = [];
@@ -30,9 +30,7 @@ export default async function CaddieAktivitetPage() {
       where: { type: { startsWith: "caddie" } },
       orderBy: { createdAt: "desc" },
       take: 60,
-      include: {
-        user: { select: { name: true } },
-      },
+      include: { user: { select: { name: true } } },
     });
 
     events = raw.map((n, i) => ({
@@ -49,11 +47,9 @@ export default async function CaddieAktivitetPage() {
       followUp: null,
     }));
   } catch {
-    // Surface som feil — ikke skjul bak demo-data.
     loadError = true;
   }
 
-  // Ekte AI-feil siste 7 dager fra AgentRun (status ERROR).
   if (!loadError) {
     const syvDager = new Date(nowMs - 7 * 24 * 60 * 60 * 1000);
     try {
@@ -74,18 +70,14 @@ export default async function CaddieAktivitetPage() {
   }
 
   return (
-    <CaddieAktivitetClient
-      events={events}
-      nowMs={nowMs}
-      loadError={loadError}
-      aiErrors={aiErrors}
-    />
+    <V2Shell nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <CaddieSubNavV2 />
+      <AdminCaddieAktivitetV2 events={events} nowMs={nowMs} loadError={loadError} aiErrors={aiErrors} />
+    </V2Shell>
   );
 }
 
-function mapNotificationToCaddieType(
-  type: string,
-): CaddieEvent["type"] {
+function mapNotificationToCaddieType(type: string): CaddieEvent["type"] {
   if (type.includes("escalat")) return "escalate";
   if (type.includes("flag")) return "flagged";
   if (type.includes("analyz")) return "analyzed";

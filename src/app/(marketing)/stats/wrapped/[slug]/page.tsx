@@ -7,9 +7,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import "../../../stats/stats.css";
+import "@/app/(marketing)/(mlegacy)/stats/stats.css";
 import { StatsWrappedPlayer } from "@/components/stats/stats-wrapped-player";
 import type { WrappedSlideData } from "@/components/stats/stats-wrapped-slide";
+import { StatsLegacyShell } from "@/components/marketing/v2/stats-ramme";
 
 export const revalidate = 86400;
 
@@ -196,10 +197,16 @@ export default async function WrappedPage({ params }: Props) {
   ];
 
   return (
+    <StatsLegacyShell>
     <main
       style={{
         minHeight: "100svh",
-        background: "hsl(var(--foreground))",
+        // Legacy brukte hsl(var(--foreground)) for et alltid-mørkt scenebakgrunn
+        // (i lys modus er --foreground nesten svart). I v2-scopet er --foreground
+        // lys tekstfarge (riktig for Tailwind-utilities ellers på siden), så det
+        // uttrykket ville gitt hvit bakgrunn her — bruk var(--bg) (alltid mørk i
+        // v2) for å bevare den tiltenkte mørke helskjerm-scenen.
+        background: "var(--bg)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -209,5 +216,6 @@ export default async function WrappedPage({ params }: Props) {
     >
       <StatsWrappedPlayer slides={slides} delLenke={delLenke} />
     </main>
+    </StatsLegacyShell>
   );
 }

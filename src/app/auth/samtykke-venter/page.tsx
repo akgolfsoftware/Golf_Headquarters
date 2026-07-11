@@ -4,17 +4,20 @@
  * Brukeren havner her via requirePortalUser-gaten når
  * requiresGuardianConsent=true && guardianConsentGivenAt=null.
  *
- * Viser:
+ * Viser (v2-redesign 2026-07-10, <SamtykkeVenterV2>):
  * - Forklaring på situasjonen
  * - Resend-invitasjon-skjema
  * - Logg ut-link
+ *
+ * Server-loaderen (getCurrentUserRaw + prisma-oppslag) er uendret. Gamle
+ * ./samtykke-venter-klient.tsx står urørt som fallback.
  */
 
 import { getCurrentUserRaw } from "@/lib/auth/getCurrentUser";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { isAwaitingGuardianConsent } from "@/lib/auth/minor";
-import { SamtykkeVenterKlient } from "./samtykke-venter-klient";
+import { SamtykkeVenterV2 } from "@/components/portal/v2/SamtykkeVenterV2";
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +49,7 @@ export default async function SamtykkeVenterPage() {
   });
 
   return (
-    <SamtykkeVenterKlient
+    <SamtykkeVenterV2
       spillerNavn={user.name ?? ""}
       invitasjonEmail={sisteInvitasjon?.email ?? null}
     />

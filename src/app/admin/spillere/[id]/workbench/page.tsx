@@ -1,16 +1,34 @@
 /**
- * /admin/spillere/[id]/workbench — Coach-Workbench.
+ * AgencyOS — Coach-Workbench (/admin/spillere/[id]/workbench), v2-design
+ * (retning C).
  *
- * Full paritet mobil + desktop: delt WorkbenchHybrid i coach-modus.
+ * Auth + dataloader gjenbrukt 1:1 fra den forrige (legacy) siden:
+ * requirePortalUser (ADMIN/COACH) + roster fra Prisma + loadWorkbenchContext,
+ * inkl. ukeoffset via ?uke=. Spiller-id kommer fra ruten (params.id) —
+ * notFound() hvis spilleren eller workbench-konteksten ikke finnes.
+ *
+ * Server component.
  */
 
-import { Suspense } from "react";
-import { notFound, redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { notFound } from "next/navigation";
+
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { WorkbenchHybrid, type RosterPlayer } from "@/components/workbench-hybrid";
 import { loadWorkbenchContext } from "@/lib/workbench/load-context";
 import { parseWeekOffset } from "@/lib/workbench/session-move-math";
+import { publishWorkbenchPlan } from "@/lib/workbench/publish-actions";
+import {
+  coachAddWorkbenchSession,
+  coachMoveWorkbenchSession,
+  coachRemoveWorkbenchSession,
+  coachDuplicateWeek,
+} from "@/lib/workbench/session-actions";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import type { WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
+import {
+  CoachWorkbenchMount,
+  type CoachRosterPlayer,
+} from "@/components/admin/v2/CoachWorkbenchMount";
 
 export const dynamic = "force-dynamic";
 
@@ -19,33 +37,20 @@ type Props = {
   searchParams: Promise<{ uke?: string }>;
 };
 
-function initialsOf(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "—";
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
-
 export default async function CoachWorkbenchPage({ params, searchParams }: Props) {
-  const me = await getCurrentUser();
-  if (!me || (me.role !== "ADMIN" && me.role !== "COACH")) {
-    redirect("/auth/login");
-  }
-
+  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const coachName = user.name ?? "Anders Kristiansen";
   const { id } = await params;
   const weekOffset = parseWeekOffset((await searchParams).uke);
-
-  const ctx = await loadWorkbenchContext(id, weekOffset);
-  if (ctx === null) notFound();
-  const data = ctx.data;
 
   const spiller = await prisma.user.findUnique({
     where: { id },
     select: { name: true },
   });
-  const fornavn = spiller?.name?.split(/\s+/)[0] ?? "spilleren";
-  const fulltNavn = spiller?.name ?? fornavn;
-  const initialer = initialsOf(fulltNavn);
+  if (!spiller) notFound();
+
+  const ctx = await loadWorkbenchContext(id, weekOffset);
+  if (ctx === null) notFound();
 
   const rosterRows = await prisma.user
     .findMany({
@@ -55,28 +60,31 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
       take: 400,
     })
     .catch(() => []);
-  const roster: RosterPlayer[] = rosterRows.map((p) => {
-    const navn = p.name ?? "Uten navn";
-    return { id: p.id, name: navn, initials: initialsOf(navn) };
-  });
+  const players: CoachRosterPlayer[] = rosterRows.map((p) => ({
+    id: p.id,
+    navn: p.name ?? "Uten navn",
+  }));
+
+  const actions: WorkbenchV2Actions = {
+    addSession: coachAddWorkbenchSession.bind(null, id),
+    moveSession: coachMoveWorkbenchSession.bind(null, id),
+    removeSession: coachRemoveWorkbenchSession.bind(null, id),
+    publish: publishWorkbenchPlan.bind(null, id),
+    duplicateWeek: coachDuplicateWeek.bind(null, id),
+  };
 
   return (
-    <Suspense fallback={null}>
-      <WorkbenchHybrid
-        role="coach"
-        data={data}
-        insightsLine={ctx.insights.line}
-        tekniskPlan={ctx.tekniskPlan}
+    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={coachName}>
+      <CoachWorkbenchMount
+        players={players}
         currentPlayerId={id}
-        playerName={fulltNavn}
-        initials={initialer}
-        coachName={me.name ?? "Anders Kristiansen"}
-        players={roster}
-        subjectPlayerId={id}
-        planId={ctx.planId}
-        planStatus={ctx.planStatus}
-        agentFeed={ctx.agentFeed}
+        playerName={spiller.name ?? "Uten navn"}
+        coachName={coachName}
+        data={ctx.data}
+        insights={ctx.insights ?? null}
+        planStatus={ctx.planStatus ?? null}
+        actions={actions}
       />
-    </Suspense>
+    </V2Shell>
   );
 }

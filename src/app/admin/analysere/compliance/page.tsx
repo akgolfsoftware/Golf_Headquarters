@@ -1,23 +1,20 @@
 /**
- * /admin/analysere/compliance — Compliance-sporing (stall-analyse plan vs reps).
- * Synlig underside av Innsikt-hub-en. (Lå tidligere feilaktig på /admin/analyse
- * som er en legacy-rute redirected til /admin/analysere — redesign 2026-06-01.)
+ * v2-preview: AgencyOS Compliance (retning C). Egen top-level route-group
+ * (v2preview) som IKKE arver AdminShell — kun root-layout — så V2Shell
+ * leverer all chrome (IkonRail/BunnNav) i mørk v2-scope.
  *
- * Rendrer v10-fasit <Compliance> (fra ag-compliance) med EKTE data fra
- * loadComplianceData (Prisma). mapComplianceData oversetter loaderens
- * ComplianceData → v10-komponentens ComplianceData. Tom-tilstander bevares
- * (panel/drillSession = null, tomme lister) — aldri liksom-tall.
+ * Auth + data følger den ekte /admin/analysere/compliance-flaten: samme
+ * requirePortalUser-guard (ADMIN/COACH), samme loadComplianceData-loader og
+ * samme ?periode / ?studentId-kontrakt. AdminComplianceV2 rendrer ComplianceData
+ * direkte — ingen mapping, ingen fabrikerte tall.
+ *
+ * Server component.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import {
-  Compliance,
-  type ComplianceData as V10ComplianceData,
-} from "@/components/admin/compliance/compliance";
-import {
-  loadComplianceData,
-  type ComplianceData as LoaderComplianceData,
-} from "@/lib/admin-compliance/compliance-data";
+import { loadComplianceData } from "@/lib/admin-compliance/compliance-data";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { AdminComplianceV2 } from "@/components/admin/v2/AdminComplianceV2";
 
 export const dynamic = "force-dynamic";
 
@@ -25,75 +22,19 @@ type SearchParams = Promise<{ periode?: string; studentId?: string }>;
 
 function windowDaysFra(periode: string | undefined): { days: number; label: string } {
   switch (periode) {
-    case "7d": return { days: 7, label: "Siste 7 dager" };
-    case "90d": return { days: 90, label: "Siste 90 dager" };
-    case "365d": return { days: 365, label: "Siste 365 dager" };
-    default: return { days: 30, label: "Siste 30 dager" };
+    case "7d":
+      return { days: 7, label: "Siste 7 dager" };
+    case "90d":
+      return { days: 90, label: "Siste 90 dager" };
+    case "365d":
+      return { days: 365, label: "Siste 365 dager" };
+    default:
+      return { days: 30, label: "Siste 30 dager" };
   }
 }
 
-/** Oversetter loaderens ComplianceData → v10 ComplianceData. Tom-tilstand bevares. */
-function mapComplianceData(d: LoaderComplianceData): V10ComplianceData {
-  return {
-    periodLabel: d.periodLabel,
-    windowDays: d.windowDays,
-    panel: d.panel
-      ? {
-          playerId: d.panel.playerId,
-          playerName: d.panel.playerName,
-          totalPlanned: d.panel.totalPlanned,
-          totalDone: d.panel.totalDone,
-          pct: d.panel.pct,
-          band: d.panel.band,
-          axes: d.panel.axes,
-          weeks: d.panel.weeks,
-          diagnosis: d.panel.diagnosis,
-        }
-      : null,
-    players: d.players,
-    selectedPlayerId: d.selectedPlayerId,
-    stall: d.stall.map((s) => ({
-      playerId: s.playerId,
-      playerName: s.playerName,
-      initials: s.initials,
-      hcp: s.hcp,
-      homeClub: s.homeClub,
-      planned: s.planned,
-      done: s.done,
-      pct: s.pct,
-      band: s.band,
-      lastLog: s.lastLog,
-      lastLogBand: s.lastLogBand,
-      spark: s.spark,
-      staleDays: s.staleDays,
-    })),
-    cohortAvg: d.cohortAvg,
-    cohortMedian: d.cohortMedian,
-    staleCount: d.staleCount,
-    drillSession: d.drillSession
-      ? {
-          sessionId: d.drillSession.sessionId,
-          title: d.drillSession.title,
-          playerName: d.drillSession.playerName,
-          dateLabel: d.drillSession.dateLabel,
-          durationMin: d.drillSession.durationMin,
-          plannedCount: d.drillSession.plannedCount,
-          doneCount: d.drillSession.doneCount,
-          drills: d.drillSession.drills.map((dr) => ({
-            id: dr.id,
-            name: dr.name,
-            axis: dr.axis,
-            axisLabel: dr.axisLabel,
-            planned: dr.planned,
-            done: dr.done,
-          })),
-        }
-      : null,
-  };
-}
-
-export default async function CompliancePage({ searchParams }: { searchParams: SearchParams }) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+export default async function V2AdminCompliancePage({ searchParams }: { searchParams: SearchParams }) {
+  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const params = await searchParams;
   const { days, label } = windowDaysFra(params.periode);
 
@@ -103,5 +44,9 @@ export default async function CompliancePage({ searchParams }: { searchParams: S
     selectedPlayerId: params.studentId,
   });
 
-  return <Compliance data={mapComplianceData(data)} />;
+  return (
+    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <AdminComplianceV2 data={data} />
+    </V2Shell>
+  );
 }

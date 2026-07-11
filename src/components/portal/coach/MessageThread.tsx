@@ -4,7 +4,7 @@ import { Avatar, Card } from "@/components/athletic/golfdata";
 import { useState, useTransition } from "react";
 import { CheckCheck } from "lucide-react";
 import { MessageInput } from "./MessageInput";
-import type { CoachMessageItem } from "@/app/portal/coach/actions";
+import type { CoachMessageItem } from "@/app/portal/(legacy)/coach/actions";
 
 type MessageThreadProps = {
   coachName: string;

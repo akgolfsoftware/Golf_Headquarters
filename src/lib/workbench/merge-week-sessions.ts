@@ -10,7 +10,13 @@ export type WeekSessionRow = {
   environment: "RANGE" | "BANE" | "STUDIO" | "HJEM" | "SIMULATOR" | "GYM" | null;
   status: SessionStatus;
   _count: { drills: number };
+  /** Hvilken tabell raden kommer fra — styrer hvilke handlinger som er gyldige
+   *  (flytt/slett virker kun på TrainingPlanSession; v2-id-er er egne cuid-er). */
+  source: "plan" | "v2";
 };
+
+/** V1-rader slik loaderen henter dem (uten source — mergeren stempler "plan"). */
+export type PlanWeekSessionInput = Omit<WeekSessionRow, "source">;
 
 export type V2WeekSessionInput = {
   id: string;
@@ -55,6 +61,7 @@ function v2ToWeekRow(v: V2WeekSessionInput): WeekSessionRow {
     environment: null,
     status: V2_STATUS_TO_V1[v.status],
     _count: { drills: v.drills.length },
+    source: "v2",
   };
 }
 
@@ -64,14 +71,15 @@ function v2ToWeekRow(v: V2WeekSessionInput): WeekSessionRow {
  * V1-økt den speiler går via `generertFraId`, så dedup MÅ sjekke det feltet, ikke `id`.
  */
 export function mergeWeekSessions(
-  v1Sessions: WeekSessionRow[],
+  v1Sessions: PlanWeekSessionInput[],
   v2Sessions: V2WeekSessionInput[],
 ): WeekSessionRow[] {
   const v1Ids = new Set(v1Sessions.map((s) => s.id));
+  const v1Rows: WeekSessionRow[] = v1Sessions.map((s) => ({ ...s, source: "plan" }));
   const v2Rows = v2Sessions
     .filter((v) => !(v.generertFraId && v1Ids.has(v.generertFraId)))
     .map(v2ToWeekRow);
-  return [...v1Sessions, ...v2Rows].sort(
+  return [...v1Rows, ...v2Rows].sort(
     (a, b) => a.scheduledAt.getTime() - b.scheduledAt.getTime(),
   );
 }
