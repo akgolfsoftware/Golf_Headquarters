@@ -84,6 +84,11 @@ const RAW = {
     forklaring:
       "Tidsrommet innenfor en gruppeøkt som er satt av til at spilleren trener selvstendig, uten direkte styring fra coach.",
   },
+  utfordringScore: {
+    tittel: "Score i utfordringer",
+    forklaring:
+      "Resultatet ditt i denne utfordringen, målt slik eieren har definert øvelsen — for eksempel antall treff eller poeng. Høyere score er alltid bedre, og resultatlisten rangeres etter beste score.",
+  },
 } as const satisfies Record<string, HjelpTekst>;
 
 export type HjelpNokkel = keyof typeof RAW;
