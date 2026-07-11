@@ -15,7 +15,7 @@ import {
   Building2, Plug, MailCheck, Archive,
   Reply, MessageSquare, CheckCheck, BookOpen, Globe, CornerUpLeft,
   RefreshCw, GitCompare, AlertOctagon, GitPullRequest, Loader2, LineChart,
-  Cog, ArrowUp,
+  Cog, ArrowUp, Wrench,
   type LucideIcon,
 } from "lucide-react";
 
@@ -94,6 +94,7 @@ const MAP: Record<string, LucideIcon> = {
   "x-circle": CircleX,
   "circle": Circle,
   "trophy": Trophy,
+  "wrench": Wrench,
   "flag": Flag,
   "list": List,
   "grid": LayoutGrid,

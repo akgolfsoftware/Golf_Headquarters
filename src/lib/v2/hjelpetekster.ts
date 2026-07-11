@@ -84,6 +84,16 @@ const RAW = {
     forklaring:
       "Tidsrommet innenfor en gruppeøkt som er satt av til at spilleren trener selvstendig, uten direkte styring fra coach.",
   },
+  dispersjon: {
+    tittel: "Slag-dispersion",
+    forklaring:
+      "Spredningen av slagene dine, vist som et punktkart der hvert punkt er ett slag. Et tett mønster betyr stabilt treff — et spredt mønster viser hvor mye slaget varierer i lengde og side.",
+  },
+  trackman: {
+    tittel: "TrackMan-data",
+    forklaring:
+      "Målinger fra TrackMan-radaren, som ballhastighet, lengde og spredning per kølle. Importeres fra CSV- eller HTML-eksport og brukes til å følge kølleavstander og stabilitet over tid.",
+  },
   utfordringScore: {
     tittel: "Score i utfordringer",
     forklaring:
