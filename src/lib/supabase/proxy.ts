@@ -46,7 +46,15 @@ export async function updateSession(request: NextRequest, nonce?: string) {
 
   // VIKTIG: getUser() — ikke getSession() — i middleware.
   // getSession() leser fra cookies uten å validere mot Supabase Auth.
-  await supabase.auth.getUser();
+  // En utløpt/ugyldig refresh-token (f.eks. etter passord-reset) kan kaste
+  // AuthApiError her i stedet for å returnere et error-objekt — fang den så
+  // brukeren faller tilbake til "ikke innlogget" og redirectes til login av
+  // route-guarden, i stedet for at siden krasjer med en generisk feil.
+  try {
+    await supabase.auth.getUser();
+  } catch (err) {
+    console.error("[proxy] Supabase getUser() feilet — behandler som ikke innlogget", err);
+  }
 
   return supabaseResponse;
 }
