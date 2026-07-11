@@ -13,6 +13,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getOktDetaljData } from "@/lib/portal-okt/okt-detalj-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { OktV2 } from "@/components/portal/v2/OktV2";
+import { settDrillPyramide } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -30,7 +31,7 @@ export default async function OktDetaljPage({
 
   return (
     <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <OktV2 data={data} />
+      <OktV2 data={data} onSettPyramide={settDrillPyramide} />
     </V2Shell>
   );
 }

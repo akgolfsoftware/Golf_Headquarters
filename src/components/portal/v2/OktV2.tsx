@@ -12,6 +12,7 @@
 
 import { useEffect, useState } from "react";
 import type { OktDetaljData, OktDrill } from "@/lib/portal-okt/okt-detalj-data";
+import type { AkseKey } from "@/lib/v2/tokens";
 import {
   T,
   Caps,
@@ -20,11 +21,18 @@ import {
   Kort,
   Rad,
   AkseChip,
+  PyramideSyklusChip,
   StatusPill,
   InnsiktChip,
   TomTilstand,
   Icon,
 } from "@/components/v2";
+
+/** Skrive-handling for per-drill pyramide (fra siden). Utelatt → skrivebeskyttet. */
+export type SettDrillPyramide = (
+  drillId: string,
+  pyramide: AkseKey,
+) => Promise<{ ok: boolean; error?: string }>;
 
 /** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
 function useMobile(): boolean {
@@ -65,7 +73,7 @@ function DrillPrikk({ status }: { status: OktDrill["status"] }) {
   );
 }
 
-export function OktV2({ data }: { data: OktDetaljData }) {
+export function OktV2({ data, onSettPyramide }: { data: OktDetaljData; onSettPyramide?: SettDrillPyramide }) {
   const mobile = useMobile();
 
   // Tom-tilstand: ingen økt funnet for testbrukeren (ærlig, aldri liksom-økt).
@@ -124,9 +132,15 @@ export function OktV2({ data }: { data: OktDetaljData }) {
                   title={o.navn}
                   sub={o.beskrivelse ?? undefined}
                   meta={
-                    o.volum ? (
-                      <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, whiteSpace: "nowrap" }}>{o.volum}</span>
-                    ) : undefined
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                      <PyramideSyklusChip
+                        verdi={o.pyramide}
+                        onEndre={onSettPyramide ? (neste) => onSettPyramide(o.id, neste) : undefined}
+                      />
+                      {o.volum && (
+                        <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, whiteSpace: "nowrap" }}>{o.volum}</span>
+                      )}
+                    </span>
                   }
                   naa={o.status === "naa"}
                   trailing={null}
