@@ -44,7 +44,7 @@ export async function approveRequestDetailed(
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   const action = await prisma.planAction.findUnique({
-    where: { id: actionId },
+    where: { id: actionId, ...coachScopeWhere(user.id) },
   });
   if (!action) throw new Error("not-found");
   if (action.status !== "PENDING") {
@@ -137,7 +137,7 @@ export async function declineRequestDetailed(actionId: string, reason: string) {
   }
 
   const action = await prisma.planAction.findUnique({
-    where: { id: actionId },
+    where: { id: actionId, ...coachScopeWhere(user.id) },
   });
   if (!action) throw new Error("not-found");
 
@@ -168,7 +168,7 @@ export async function requestMoreInfo(actionId: string, question: string) {
   }
 
   const action = await prisma.planAction.findUnique({
-    where: { id: actionId },
+    where: { id: actionId, ...coachScopeWhere(user.id) },
   });
   if (!action) throw new Error("not-found");
 
