@@ -50,6 +50,21 @@ er nå et **overgangs-lag**, ikke målbildet:
 | Designe v2 | I Claude Design-prosjektet under `ui_kits/v2/`, per plan |
 | Farge/spacing/type i v2 | AK-fargene beholdes; alt annet defineres i `tokens/v2/` |
 
+## Prioritet (Anders 2026-07-11): fullfør v2 på ALLE skjermer
+
+Retning C er valgt og fase 6 pågår. Gjeldende prioritet er å få hver gjenværende
+golfdata-skjerm over på v2, bølge for bølge (Bølge A = PlayerHQ-detaljskjermer,
+B = AgencyOS-detaljskjermer, C = auth, D = halen). Én skjerm per commit;
+master-skjermplanens haker oppdateres i samme commit.
+
+## «?»-forklaringer (LÅST regel, Anders 2026-07-11)
+
+Ingen v2-skjerm er ferdig uten `HjelpTips` («?»-ikonet, `src/components/v2/hjelp.tsx`) på
+**alle tall og faguttrykk** brukeren kan lure på (SG, ACWR, CS-nivå, L-fase, TrackMan-tall,
+HCP, WAGR osv.). All forklaringstekst bor i `src/lib/v2/hjelpetekster.ts` — aldri ad-hoc
+tekst i skjermfiler. Mangler en nøkkel: legg den til i tekstbanken (klarspråk, norsk bokmål,
+ordboken gjelder — «nærspill», aldri «kort spill»). Gjelder både nybygg og ombygging.
+
 ## Design-veiledning
 
 `.claude/skills/ak-designekspert` + referansebildene og Mobbin-prinsippene i
