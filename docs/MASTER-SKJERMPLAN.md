@@ -208,7 +208,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Runde-detalj ★ | `/portal/mal/runder/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Slag-for-slag (visning) | `/portal/mal/runder/[id]/shot-by-shot` | – | --- | ✓ | ~ | ~ | ~ |
 | · Slag-registrering (wizard + UpGame) | `/portal/mal/runder/[id]/slag` | ✓ | ✓-- | ✓ | ✓ | ✓ | † |
-| · Logg ny runde ★ | `/portal/mal/runder/ny` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| · Logg ny runde ★ | `/portal/mal/runder/ny` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Live slag-føring (runde-logg) ★ | `/portal/(fullscreen)/runde-logg` | – | --- | – | – | ~ | ~ |
 | TrackMan (liste) | `/portal/mal/trackman` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | · TrackMan-sesjon | `/portal/mal/trackman/[id]` | – | ✓✓– | ✓ | ~ | ~ | ~ |

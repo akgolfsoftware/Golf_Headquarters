@@ -23,7 +23,7 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Calendar, Check, Minus, Plus, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { logRoundManual } from "@/app/portal/(legacy)/mal/runder/ny/actions";
+import { logRoundManual } from "@/app/portal/mal/runder/ny/actions";
 
 type Course = { id: string; name: string; par: number };
 
