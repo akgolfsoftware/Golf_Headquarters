@@ -11,6 +11,7 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { T, type AkseKey } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
 import {
@@ -74,7 +75,7 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
       )}
       <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
         {!mobile && <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg2, cursor: "pointer" }}>Logg inn</span>}
-        {mobile ? <Icon name="menu" size={20} style={{ color: T.fg }} /> : <MCta small>Kom i gang gratis</MCta>}
+        {mobile ? <Icon name="menu" size={20} style={{ color: T.fg }} /> : <MCta small href="/auth/signup">Kom i gang gratis</MCta>}
       </span>
     </div>
   );
@@ -127,12 +128,11 @@ function SeksT({ mobile, children, em }: { mobile: boolean; children: ReactNode;
 function Lede({ children, style }: { children: ReactNode; style?: CSSProperties }) {
   return <p style={{ fontFamily: T.ui, fontSize: M.lede, color: T.fg2, lineHeight: 1.65, margin: 0, maxWidth: 560, ...style }}>{children}</p>;
 }
-function MCta({ children, ghost, small, icon }: { children: ReactNode; ghost?: boolean; small?: boolean; icon?: string }) {
-  return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontWeight: 600, fontSize: small ? 13 : 15, color: ghost ? T.fg : T.onLime, background: ghost ? T.panel3 : T.lime, border: ghost ? `1px solid ${T.borderS}` : "none", borderRadius: 9999, padding: small ? "9px 18px" : "14px 28px", cursor: "pointer", whiteSpace: "nowrap" }}>
-      {children}{icon && <Icon name={icon} size={small ? 13 : 15} />}
-    </span>
-  );
+function MCta({ children, ghost, small, icon, href }: { children: ReactNode; ghost?: boolean; small?: boolean; icon?: string; href?: string }) {
+  const style: CSSProperties = { display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontWeight: 600, fontSize: small ? 13 : 15, color: ghost ? T.fg : T.onLime, background: ghost ? T.panel3 : T.lime, border: ghost ? `1px solid ${T.borderS}` : "none", borderRadius: 9999, padding: small ? "9px 18px" : "14px 28px", cursor: "pointer", whiteSpace: "nowrap", textDecoration: "none" };
+  const inner = <>{children}{icon && <Icon name={icon} size={small ? 13 : 15} />}</>;
+  if (href) return <Link href={href} style={style}>{inner}</Link>;
+  return <span style={style}>{inner}</span>;
 }
 function Seksjon({ mobile, children, style }: { mobile: boolean; children: ReactNode; style?: CSSProperties }) {
   return <div style={{ paddingTop: mobile ? M.padMY : M.padDY, paddingBottom: mobile ? M.padMY : M.padDY, paddingLeft: mobile ? M.padMX : M.padDX, paddingRight: mobile ? M.padMX : M.padDX, ...style }}><div style={{ maxWidth: M.maxw, margin: "0 auto" }}>{children}</div></div>;
@@ -261,7 +261,7 @@ export function MarkedPlayerHQV2() {
           <Eyebrow>PlayerHQ</Eyebrow>
           <HeroT mobile={mobile} em="målt og planlagt">Din golf,</HeroT>
           <Lede style={{ margin: "22px auto 0" }}>Appen forteller deg hva du taper mest på og hva du skal trene. Ikke gjetting, ikke generiske råd.</Lede>
-          <div style={{ marginTop: 28 }}><MCta>Prøv gratis i én måned</MCta></div>
+          <div style={{ marginTop: 28 }}><MCta href="/auth/signup">Prøv gratis i én måned</MCta></div>
         </div>
       </Seksjon>
       {/* Feature-seksjoner m/ telefon-mockups */}
@@ -283,8 +283,8 @@ export function MarkedPlayerHQV2() {
           <SeksT mobile={mobile} em="fremgangen">Følg</SeksT>
           <p style={{ fontFamily: T.ui, fontSize: 14, color: T.fg2, margin: "12px 0 0" }}>Gratis i én måned. Deretter 299 kr per måned, eller inkludert i coaching-pakke.</p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 22, flexWrap: "wrap" }}>
-            <MCta>Prøv gratis i én måned</MCta>
-            <MCta ghost icon="arrow-right">Se priser</MCta>
+            <MCta href="/auth/signup">Prøv gratis i én måned</MCta>
+            <MCta ghost icon="arrow-right" href="/priser">Se priser</MCta>
           </div>
         </div>
       </Seksjon>

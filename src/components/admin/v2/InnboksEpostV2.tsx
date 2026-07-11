@@ -11,6 +11,7 @@
  */
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   Caps,
   Tittel,
@@ -98,6 +99,7 @@ function EpostDetalj({ epost }: { epost: InnboksEpostVm }) {
   const [tekst, setTekst] = useState(epost.utkastSvar ?? "");
   const [isPending, startTransition] = useTransition();
   const [melding, setMelding] = useState<string | null>(null);
+  const router = useRouter();
   const status = STATUS_LABEL[epost.status];
   const erArkivert = epost.status === "ARKIVERT";
   const erSendt = epost.status === "SENDT";
@@ -105,14 +107,25 @@ function EpostDetalj({ epost }: { epost: InnboksEpostVm }) {
   function handleSend() {
     setMelding(null);
     startTransition(async () => {
-      const res = await sendGodkjentSvar(epost.id, tekst);
-      setMelding(res.melding);
+      try {
+        const res = await sendGodkjentSvar(epost.id, tekst);
+        setMelding(res.melding);
+        if (res.sendtReelt) router.refresh();
+      } catch {
+        setMelding("Noe gikk galt. Svaret er ikke sendt — prøv igjen.");
+      }
     });
   }
 
   function handleArkiver() {
+    setMelding(null);
     startTransition(async () => {
-      await arkiverEpost(epost.id);
+      try {
+        await arkiverEpost(epost.id);
+        router.refresh();
+      } catch {
+        setMelding("Kunne ikke arkivere — prøv igjen.");
+      }
     });
   }
 
