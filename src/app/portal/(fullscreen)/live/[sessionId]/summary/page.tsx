@@ -10,6 +10,8 @@ import { loadLiveSession } from "@/app/portal/(fullscreen)/live/[sessionId]/acti
 import { LiveSessionShell, SessionSummary } from "@/components/portal/live";
 import type { LiveV2Summary } from "@/components/portal/live";
 import type { PyramidArea } from "@/generated/prisma/client";
+import { loadNesteOkt } from "@/lib/portal/load-neste-okt";
+import { nesteOktTekst } from "@/lib/portal/neste-okt-tekst";
 
 export default async function LiveSummaryPage({
   params,
@@ -76,9 +78,13 @@ export default async function LiveSummaryPage({
     pyramidSummary,
   };
 
+  const naa = new Date();
+  const { okt, href } = await loadNesteOkt(user.id, naa);
+  const nesteOkt = nesteOktTekst(okt, href, naa);
+
   return (
     <LiveSessionShell title={data.title} subtitle="Oppsummering" closeHref="/portal/planlegge">
-      <SessionSummary data={summaryData} />
+      <SessionSummary data={summaryData} nesteOkt={nesteOkt} />
     </LiveSessionShell>
   );
 }

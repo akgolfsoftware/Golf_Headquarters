@@ -1,9 +1,11 @@
-import { CheckCircle2, Clock, Dumbbell, Target, TrendingUp } from "lucide-react";
+import { CheckCircle2, Clock, Dumbbell, Target, TrendingUp, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import type { LiveV2Summary } from "./types";
 
 export type SessionSummaryProps = {
   data: LiveV2Summary;
+  /** Summary-kjeding (flytpakke 2, 2.7) — neste økt på tvers av begge spor. */
+  nesteOkt?: { tekst: string; href: string };
 };
 
 const AXIS_LABEL: Record<string, string> = {
@@ -28,7 +30,7 @@ function fmtMSS(totalSec: number): string {
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
-export function SessionSummary({ data }: SessionSummaryProps) {
+export function SessionSummary({ data, nesteOkt }: SessionSummaryProps) {
   const firstName = data.studentName?.split(" ")[0] ?? "spiller";
   const completionPct =
     data.drills.length > 0 ? Math.round((data.drillsCompleted / data.drills.length) * 100) : 0;
@@ -172,6 +174,17 @@ export function SessionSummary({ data }: SessionSummaryProps) {
       >
         Gå til treningsplanen
       </Link>
+
+      {/* Summary-kjeding — hva skjer videre */}
+      {nesteOkt && (
+        <Link
+          href={nesteOkt.href}
+          className="flex items-center justify-between gap-3 rounded-2xl border border-background/10 bg-background/5 px-4 py-3.5 transition-colors active:bg-background/10"
+        >
+          <span className="text-sm font-medium text-background/85">{nesteOkt.tekst}</span>
+          <ArrowRight className="h-4 w-4 shrink-0 text-background/50" strokeWidth={2} aria-hidden />
+        </Link>
+      )}
     </div>
   );
 }
