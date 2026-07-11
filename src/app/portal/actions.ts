@@ -16,7 +16,7 @@ import {
   hentOptimalOktHint,
   type OptimalSessionHint,
 } from "@/lib/portal/optimal-session";
-import { nesteBesteHandling } from "@/lib/portal/neste-beste-handling";
+import { nesteBesteHandling, finnDagensAktiveOkt } from "@/lib/portal/neste-beste-handling";
 
 // ── Types ─────────────────────────────────────────────────────────
 
@@ -745,10 +745,12 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
         .then((p) => p != null),
     ]);
 
+  const dagensAktiveOkt = finnDagensAktiveOkt(todayAll);
+
   const nesteHandling = nesteBesteHandling({
     harPlanTilGodkjenning,
-    dagensOkt: todayAll[0]
-      ? { href: todayAll[0].href, title: todayAll[0].title, status: todayAll[0].status }
+    dagensOkt: dagensAktiveOkt
+      ? { href: dagensAktiveOkt.href, title: dagensAktiveOkt.title, status: dagensAktiveOkt.status }
       : null,
     ukenHarOkter: week.some((d) => d.sessions.length > 0),
   });

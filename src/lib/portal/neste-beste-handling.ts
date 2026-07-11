@@ -68,3 +68,17 @@ export function nesteBesteHandling(input: NesteHandlingInput): NesteHandling {
     regel: "fallback",
   };
 }
+
+/**
+ * Plukker dagens FØRSTE ØKT SOM IKKE ER UNNAGJORT — ikke bare todayAll[0].
+ * En spiller kan ha flere økter samme dag (f.eks. morgen FYS fullført,
+ * ettermiddag TEK fortsatt planlagt); todayAll[0] ville da plukket den
+ * fullførte morgenøkten og latt ettermiddagsøkten forsvinne fra
+ * «neste beste handling». Listen forventes sortert stigende på starttid
+ * (samme rekkefølge som getAllTodaysSessions).
+ */
+export function finnDagensAktiveOkt<T extends { status: string }>(todayAll: T[]): T | null {
+  return (
+    todayAll.find((s) => s.status !== "COMPLETED" && s.status !== "CANCELLED" && s.status !== "SKIPPED") ?? null
+  );
+}

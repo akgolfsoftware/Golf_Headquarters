@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { nesteBesteHandling } from "./neste-beste-handling";
+import { nesteBesteHandling, finnDagensAktiveOkt } from "./neste-beste-handling";
 
 const TOM_DAG = { harPlanTilGodkjenning: false, dagensOkt: null, ukenHarOkter: false };
 
@@ -74,5 +74,36 @@ describe("nesteBesteHandling", () => {
       ukenHarOkter: false,
     });
     assert.equal(kunOktOgUke.regel, "start-okt");
+  });
+});
+
+describe("finnDagensAktiveOkt", () => {
+  it("morgenøkt fullført, ettermiddagsøkt fortsatt planlagt → plukker ettermiddagsøkten", () => {
+    const r = finnDagensAktiveOkt([
+      { id: "morgen", status: "COMPLETED" },
+      { id: "ettermiddag", status: "PLANNED" },
+    ]);
+    assert.equal(r?.id, "ettermiddag");
+  });
+
+  it("alle økter i dag ferdig/avlyst → null (ingen aktiv)", () => {
+    const r = finnDagensAktiveOkt([
+      { id: "a", status: "COMPLETED" },
+      { id: "b", status: "CANCELLED" },
+      { id: "c", status: "SKIPPED" },
+    ]);
+    assert.equal(r, null);
+  });
+
+  it("tom liste → null", () => {
+    assert.equal(finnDagensAktiveOkt([]), null);
+  });
+
+  it("første økt allerede aktiv → plukkes uendret", () => {
+    const r = finnDagensAktiveOkt([
+      { id: "a", status: "IN_PROGRESS" },
+      { id: "b", status: "PLANNED" },
+    ]);
+    assert.equal(r?.id, "a");
   });
 });
