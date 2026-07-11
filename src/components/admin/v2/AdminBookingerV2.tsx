@@ -106,6 +106,16 @@ function useMobile(): boolean {
 /** Inline bekreft/avvis for én PENDING-booking (server-actions + optimistisk dimming). */
 function BekreftAvvis({ id, full }: { id: string; full?: boolean }) {
   const [pending, start] = useTransition();
+  const [feil, setFeil] = useState(false);
+  const kjor = (fn: (id: string) => Promise<unknown>) =>
+    start(async () => {
+      setFeil(false);
+      try {
+        await fn(id);
+      } catch {
+        setFeil(true);
+      }
+    });
   return (
     <div
       style={{
@@ -116,12 +126,13 @@ function BekreftAvvis({ id, full }: { id: string; full?: boolean }) {
         opacity: pending ? 0.5 : 1,
       }}
     >
-      <Knapp icon="check" full={full} disabled={pending} onClick={() => start(() => void bekreftBooking(id))}>
+      <Knapp icon="check" full={full} disabled={pending} onClick={() => kjor(bekreftBooking)}>
         Bekreft
       </Knapp>
-      <Knapp ghost full={full} disabled={pending} onClick={() => start(() => void avvisBooking(id))}>
+      <Knapp ghost full={full} disabled={pending} onClick={() => kjor(avvisBooking)}>
         Avvis
       </Knapp>
+      {feil && <span style={{ fontFamily: T.ui, fontSize: 11, color: T.down, alignSelf: "center" }}>Feilet — prøv igjen</span>}
     </div>
   );
 }
@@ -129,24 +140,35 @@ function BekreftAvvis({ id, full }: { id: string; full?: boolean }) {
 /** Massehandlinger over hele PENDING/CONFIRMED-køen. */
 function Massehandlinger({ pending, confirmed }: { pending: number; confirmed: number }) {
   const [busy, start] = useTransition();
+  const [feil, setFeil] = useState(false);
+  const kjor = (fn: () => Promise<unknown>) =>
+    start(async () => {
+      setFeil(false);
+      try {
+        await fn();
+      } catch {
+        setFeil(true);
+      }
+    });
   if (pending === 0 && confirmed === 0) return null;
   return (
-    <div style={{ display: "flex", gap: 8, flexWrap: "wrap", opacity: busy ? 0.5 : 1 }}>
+    <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", opacity: busy ? 0.5 : 1 }}>
       {pending > 0 && (
-        <Knapp icon="check-circle" ghost disabled={busy} onClick={() => start(() => void bekreftAllePending())}>
+        <Knapp icon="check-circle" ghost disabled={busy} onClick={() => kjor(bekreftAllePending)}>
           Bekreft alle ({pending})
         </Knapp>
       )}
       {pending > 0 && (
-        <Knapp icon="x-circle" ghost disabled={busy} onClick={() => start(() => void avvisAllePending())}>
+        <Knapp icon="x-circle" ghost disabled={busy} onClick={() => kjor(avvisAllePending)}>
           Avvis alle
         </Knapp>
       )}
       {confirmed > 0 && (
-        <Knapp icon="flag" ghost disabled={busy} onClick={() => start(() => void markerAlleConfirmedSomCompleted())}>
+        <Knapp icon="flag" ghost disabled={busy} onClick={() => kjor(markerAlleConfirmedSomCompleted)}>
           Marker fullført ({confirmed})
         </Knapp>
       )}
+      {feil && <span style={{ fontFamily: T.ui, fontSize: 11, color: T.down }}>Feilet — prøv igjen</span>}
     </div>
   );
 }
