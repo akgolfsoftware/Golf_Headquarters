@@ -32,7 +32,7 @@ const eslintConfig = defineConfig([
   },
   // Opprydding Fase 2 (docs/opprydding/03-opprydding-plan.md): gammelt athletic
   // er avviklet — kun golfdata/ er gjeldende kanon. Legacy-filer bærer
-  // eslint-disable-next-line med TODO(opprydding) til de migreres (Fase 3/4);
+  // eslint-disable-kommentarer med TODO(opprydding) til de migreres (Fase 3/4);
   // ingen NYE importer slipper gjennom. src/components/athletic/** er unntatt
   // (bibliotekets interne kryssimporter — hele mappen slettes i Fase 5).
   {
