@@ -19,9 +19,10 @@ import {
   Trophy,
   Users,
   X,
+  Zap,
 } from "lucide-react";
 
-type ItemKategori = "Sider" | "Spillere" | "Drills" | "Mål" | "Turneringer";
+type ItemKategori = "Handlinger" | "Sider" | "Spillere" | "Drills" | "Mål" | "Turneringer";
 
 type PaletteItem = {
   id: string;
@@ -32,6 +33,11 @@ type PaletteItem = {
 };
 
 const ITEMS: ReadonlyArray<PaletteItem> = [
+  // Hurtighandlinger — direkte til den vanligste NESTE handlingen,
+  // ikke bare navigasjon til en liste (flytpakke 2, punkt 2.4).
+  { id: "h-okt", kategori: "Handlinger", label: "Start dagens økt", href: "/portal/gjennomfore" },
+  { id: "h-runde", kategori: "Handlinger", label: "Registrer runde", hint: "hurtig", href: "/portal/mal/runder/ny" },
+  { id: "h-slag", kategori: "Handlinger", label: "Før runde slag for slag", hint: "full SG", href: "/portal/runde/live" },
   // Bred navigasjon – oppdatert for full plattformdekning
   { id: "p-1", kategori: "Sider", label: "Hjem", href: "/portal" },
   { id: "p-wb", kategori: "Sider", label: "Planlegge (Workbench)", href: "/portal/planlegge/workbench" },
@@ -55,6 +61,7 @@ const ITEMS: ReadonlyArray<PaletteItem> = [
 ];
 
 const KATEGORI_IKON: Record<ItemKategori, typeof FileText> = {
+  Handlinger: Zap,
   Sider: FileText,
   Spillere: Users,
   Drills: Target,
