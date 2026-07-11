@@ -737,6 +737,19 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 11. juli (QA-runde, komplett gjennomgang desktop+mobil): **KRITISK shell-bug funnet og fikset** —
+  `BunnNavLenker` (mobil-bunn-nav) i `src/components/v2/shell.tsx` satte `display: "flex"` som
+  inline style, som alltid vant over Tailwind-klassen `md:hidden`. Konsekvens: bunn-navigasjonen
+  vises feilaktig på ALLE v2-skjermer ved desktop-bredde (≥768px) og overlapper/stjeler klikk fra
+  sideinnhold som strekker seg mot bunnen av viewporten (bekreftet reprodusert 2/2 ganger på
+  Plan-bygger steg 2→3 — klikk på «Neste» traff bunn-nav-lenken til Meg i stedet). Fiks: fjernet
+  inline `display`, lagt `flex` som base-klasse (`className="flex md:hidden"`). Bekreftet fikset
+  visuelt og funksjonelt (steg 2→3 fungerer nå korrekt) — påvirket sannsynligvis alle v2-skjermer
+  på desktop før fiksen. Mobil (375px) var aldri rammet. Samme QA-runde bekreftet: F1.0-F1.5
+  (onboarding→planmotor) fungerer ende-til-ende i ekte nettleserflyt, F2 (volum-linje) fanget en
+  ekte datafeil i malen «B Grunn-fase Standard» (nærspill/putting-økter tagget SLAG i stedet for
+  SPILL — bør rettes), F3 (masseredigering) koblet og enhetstestet.
+
 Full kronologisk byggehistorikk flyttet til [`docs/arkiv/master-skjermplan-endringslogg.md`](arkiv/master-skjermplan-endringslogg.md)
 2026-07-06 — denne fila var 822 linjer og loggen drukna den faktiske statustabellen. Siste hendelser:
 
