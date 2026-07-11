@@ -30,7 +30,7 @@ import {
   resumePlan,
   endPlan,
 } from "./actions";
-import { dupliserPlan } from "../actions";
+import { dupliserPlan } from "@/app/admin/(legacy)/plans/actions";
 import type { PlanStatus, Tier } from "@/generated/prisma/client";
 import {
   AssignPlanToPlayerModal,

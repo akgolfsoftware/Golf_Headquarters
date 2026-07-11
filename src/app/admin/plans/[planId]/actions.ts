@@ -13,7 +13,7 @@ import type {
   SessionEnvironment,
   LPhase,
 } from "@/generated/prisma/client";
-import type { PlanTemplatePayload } from "../template-payload";
+import type { PlanTemplatePayload } from "@/app/admin/(legacy)/plans/template-payload";
 
 type OktData = {
   title: string;
