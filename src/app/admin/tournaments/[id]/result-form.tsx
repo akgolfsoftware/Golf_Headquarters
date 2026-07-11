@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { addResult, deleteResult } from "../actions";
+import { addResult, deleteResult } from "@/app/admin/(legacy)/tournaments/actions";
 
 type Player = { id: string; name: string };
 

@@ -421,7 +421,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Teknisk plan | `/admin/teknisk-plan` | – | --- | ✓ | ~ | ~ | ~ |
 | · Per spiller | `/admin/teknisk-plan/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
 | **Turneringer** ★ | `/admin/tournaments` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
-| · Turnering-detalj | `/admin/tournaments/[id]` | – | ✓✓– | ✓ | ~ | ~ | ~ |
+| · Turnering-detalj | `/admin/tournaments/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Ny turnering | `/admin/tournaments/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | · Dubletter (rydd) | `/admin/tournaments/dubletter` | – | --- | ✓ | ~ | ~ | ~ |
 | Økter | `/admin/okter` | – | --- | ✓ | ~ | ~ | ~ |

@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Link2Off, Loader2 } from "lucide-react";
-import { unmergeTurnering } from "../actions";
+import { unmergeTurnering } from "@/app/admin/(legacy)/tournaments/actions";
 
 type Props = {
   sourceId: string;
