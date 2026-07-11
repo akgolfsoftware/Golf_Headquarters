@@ -5,8 +5,6 @@
  * Fetch + save analytics data for the logged-in player.
  */
 
-import { revalidatePath } from "next/cache";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import type {
   PyramidArea,
@@ -567,94 +565,4 @@ export async function loadAnalyticsWorkbenchData(
   ]);
 
   return { training, rounds, tournaments, tests, trackman, goals, courses, sgBreakdown };
-}
-
-// ── Save round stats ────────────────────────────────────────────────────────
-
-export type RoundShotInput = {
-  holeNumber: number;
-  shotNumber: number;
-  club?: string;
-  lie: ShotLie;
-  distanceToPin?: number;
-  distanceHit?: number;
-  windDir?: WindDir;
-  shotType: ShotType;
-  mentalScore?: number;
-  notes?: string;
-};
-
-export type RoundHoleInput = {
-  holeNumber: number;
-  par: number;
-  strokes: number;
-  putts?: number;
-  fairway?: boolean;
-  gir?: boolean;
-};
-
-export async function saveRoundStats(
-  input: {
-    courseId: string;
-    playedAt: Date | string;
-    score: number;
-    holes: RoundHoleInput[];
-    shots: RoundShotInput[];
-    notes?: string;
-  },
-): Promise<{ success: boolean; roundId?: string; error?: string }> {
-  try {
-    const user = await requirePortalUser();
-    const userId = user.id;
-    const playedAt = typeof input.playedAt === "string" ? new Date(input.playedAt) : input.playedAt;
-
-    const round = await prisma.round.create({
-      data: {
-        userId,
-        courseId: input.courseId,
-        playedAt,
-        score: input.score,
-        notes: input.notes,
-      },
-    });
-
-    if (input.holes.length) {
-      await prisma.holeScore.createMany({
-        data: input.holes.map((h) => ({
-          roundId: round.id,
-          holeNumber: h.holeNumber,
-          par: h.par,
-          strokes: h.strokes,
-          putts: h.putts,
-          fairway: h.fairway,
-          gir: h.gir,
-        })),
-      });
-    }
-
-    if (input.shots.length) {
-      await prisma.shot.createMany({
-        data: input.shots.map((s) => ({
-          roundId: round.id,
-          holeNumber: s.holeNumber,
-          holePar: input.holes.find((h) => h.holeNumber === s.holeNumber)?.par ?? 4,
-          shotNumber: s.shotNumber,
-          club: s.club,
-          lie: s.lie,
-          distanceToPin: s.distanceToPin,
-          distanceHit: s.distanceHit,
-          windDir: s.windDir,
-          shotType: s.shotType,
-          mentalScore: s.mentalScore,
-          notes: s.notes,
-        })),
-      });
-    }
-
-    revalidatePath("/portal/analysere");
-    return { success: true, roundId: round.id };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Ukjent feil";
-    return { success: false, error: message };
-  }
 }
