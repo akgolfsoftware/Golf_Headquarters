@@ -12,6 +12,7 @@ import { prisma } from "@/lib/prisma";
 import type { PyramidArea, PracticeType, SessionStatusV2 } from "@/generated/prisma/client";
 import { translateMiljo } from "@/lib/portal/translate-taxonomy";
 import { v2DbSessionHref } from "@/lib/portal/session-hrefs";
+import { nesteBesteHandling } from "@/lib/portal/neste-beste-handling";
 
 // ── Types ─────────────────────────────────────────────────────────
 
@@ -104,6 +105,12 @@ export type WeekPlanProgress = {
   completedMin: number;
   plannedByAxis: Record<PyramidArea, number>;
   completedByAxis: Record<PyramidArea, number>;
+};
+
+export type NesteHandlingData = {
+  tekst: string;
+  href: string;
+  ikon: string;
 };
 
 export type StatsSnapshot = {
@@ -705,6 +712,7 @@ export type DashboardData = {
   nextTournament: NextTournament | null;
   weekProgress: WeekPlanProgress;
   trainingHeatmap: TrainingHeatmap;
+  nesteHandling: NesteHandlingData;
 };
 
 export async function getDashboardData(userId: string): Promise<DashboardData> {
@@ -713,7 +721,7 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
     select: { id: true, name: true, avatarUrl: true, hcp: true, tier: true },
   });
 
-  const [todayAll, week, recentActivity, goals, { count: unreadCount, notifications }, coachMessage, stats, kpiStats, nextTournament, weekProgress, trainingHeatmap] =
+  const [todayAll, week, recentActivity, goals, { count: unreadCount, notifications }, coachMessage, stats, kpiStats, nextTournament, weekProgress, trainingHeatmap, harPlanTilGodkjenning] =
     await Promise.all([
       getAllTodaysSessions(userId),
       getWeekOverview(userId),
@@ -726,7 +734,18 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
       getNextTournament(userId),
       getWeekPlanProgress(userId),
       getTrainingHeatmap(userId),
+      prisma.trainingPlan
+        .findFirst({ where: { userId, status: "PENDING_PLAYER" }, select: { id: true } })
+        .then((p) => p != null),
     ]);
+
+  const nesteHandling = nesteBesteHandling({
+    harPlanTilGodkjenning,
+    dagensOkt: todayAll[0]
+      ? { href: todayAll[0].href, title: todayAll[0].title, status: todayAll[0].status }
+      : null,
+    ukenHarOkter: week.some((d) => d.sessions.length > 0),
+  });
 
   return {
     user: { id: user.id, name: user.name, fornavn: fornavn(user.name), initialer: initialer(user.name), avatarUrl: user.avatarUrl, hcp: user.hcp, tier: user.tier === "GRATIS" ? "GRATIS" : "PRO" },
@@ -745,5 +764,6 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
     nextTournament,
     weekProgress,
     trainingHeatmap,
+    nesteHandling,
   };
 }

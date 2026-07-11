@@ -82,7 +82,7 @@ function useMobile(): boolean {
 export function HjemV2({ data }: { data: DashboardData }) {
   const mobile = useMobile();
   const router = useRouter();
-  const { user, greeting, weekNumber, today, todayAll, week, kpiStats, weekProgress, trainingHeatmap, coachMessage } = data;
+  const { user, greeting, weekNumber, today, todayAll, week, kpiStats, weekProgress, trainingHeatmap, coachMessage, nesteHandling } = data;
 
   // SG-form (kpiStats — snitt SG total siste 10 runder). Badgen under er eneste
   // retningssignal her (10-runders trend) — en egen per-runde-delta ble fjernet
@@ -156,8 +156,8 @@ export function HjemV2({ data }: { data: DashboardData }) {
           </div>
         </div>
         <div className="hidden md:block">
-          <Link href={today ? today.href : "/portal/gjennomfore"} style={{ textDecoration: "none" }}>
-            <CTAPill icon="play">Start dagens økt</CTAPill>
+          <Link href={nesteHandling.href} style={{ textDecoration: "none" }}>
+            <CTAPill icon={nesteHandling.ikon}>{nesteHandling.tekst}</CTAPill>
           </Link>
         </div>
       </div>
@@ -230,8 +230,8 @@ export function HjemV2({ data }: { data: DashboardData }) {
 
       {/* Mobil-CTA — «Start dagens økt» fullbredde under dagens økt-kort (desktop har den i hodet). */}
       <div className="md:hidden">
-        <Link href={today ? today.href : "/portal/gjennomfore"} style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill icon="play" full>Start dagens økt</CTAPill>
+        <Link href={nesteHandling.href} style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon={nesteHandling.ikon} full>{nesteHandling.tekst}</CTAPill>
         </Link>
       </div>
 
