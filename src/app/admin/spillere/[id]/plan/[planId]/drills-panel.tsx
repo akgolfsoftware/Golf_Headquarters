@@ -15,11 +15,11 @@
  * page.tsx), ikke demo-data. Hver rad har en ekte taskId + ferdig OppgaveDraft.
  */
 
-import { Button } from "@/components/athletic/golfdata";
+import { Knapp } from "@/components/v2";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Plus, Sparkles, GripVertical, Pencil, Trash2 } from "lucide-react";
+import { GripVertical, Pencil, Trash2 } from "lucide-react";
 import { useToast } from "@/components/shared/toast-provider";
 import {
   OppgaveModal,
@@ -256,13 +256,13 @@ export function DrillsPanel({ planId, defaultTarget, drills }: DrillsPanelProps)
         ))}
         <div className="ml-auto flex gap-2">
           <Link href="/portal/ai/foresla-drill">
-            <Button variant="ghost" size="sm">
-              <Sparkles className="h-3.5 w-3.5" /> AI-foreslå
-            </Button>
+            <Knapp ghost icon="sparkles">
+              AI-foreslå
+            </Knapp>
           </Link>
-          <Button variant="signal" size="sm" onClick={openCreate}>
-            <Plus className="h-3.5 w-3.5" /> Legg til drill
-          </Button>
+          <Knapp icon="plus" onClick={openCreate}>
+            Legg til drill
+          </Knapp>
         </div>
       </div>
 
@@ -292,9 +292,9 @@ export function DrillsPanel({ planId, defaultTarget, drills }: DrillsPanelProps)
             </p>
             {drills.length === 0 ? (
               <div className="mt-4 flex justify-center">
-                <Button variant="signal" size="sm" onClick={openCreate}>
-                  <Plus className="h-3.5 w-3.5" /> Legg til drill
-                </Button>
+                <Knapp icon="plus" onClick={openCreate}>
+                  Legg til drill
+                </Knapp>
               </div>
             ) : null}
           </div>

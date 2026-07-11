@@ -10,10 +10,9 @@
  * demo-data, ikke plan.positions[].tasks).
  */
 
-import { Button } from "@/components/athletic/golfdata";
+import { Knapp } from "@/components/v2";
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { Edit, Copy } from "lucide-react";
 import { useToast } from "@/components/shared/toast-provider";
 import { publiserTekniskPlan, dupliserTekniskPlan } from "./plan-actions";
 
@@ -58,22 +57,17 @@ export function PlanToolbar({ planId, drillsHref, isPublished }: PlanToolbarProp
 
   return (
     <div className="flex flex-wrap gap-2">
-      <Link href={drillsHref}>
-        <Button variant="ghost" size="sm">
-          <Edit className="h-3.5 w-3.5" /> Rediger
-        </Button>
+      <Link href={drillsHref} style={{ textDecoration: "none" }}>
+        <Knapp ghost icon="pencil">
+          Rediger
+        </Knapp>
       </Link>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={handleDuplicate}
-        disabled={duplicating}
-      >
-        <Copy className="h-3.5 w-3.5" /> {duplicating ? "Dupliserer…" : "Dupliser"}
-      </Button>
-      <Button variant="signal" size="sm" onClick={handlePublish} disabled={pending}>
+      <Knapp ghost icon="copy" onClick={handleDuplicate} disabled={duplicating}>
+        {duplicating ? "Dupliserer…" : "Dupliser"}
+      </Knapp>
+      <Knapp onClick={handlePublish} disabled={pending}>
         {pending ? "Publiserer…" : isPublished ? "Publisert" : "Publiser"}
-      </Button>
+      </Knapp>
     </div>
   );
 }
