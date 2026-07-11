@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { lesPreferences } from "@/lib/preferences";
+import { lesRaaPreferences } from "@/lib/preferences";
 import { OnboardingShell } from "@/components/onboarding/onboarding-shell";
 import { CoachWizard } from "./coach-wizard";
 
@@ -18,7 +18,7 @@ export default async function CoachOnboardingPage() {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   // Hvis allerede ferdig — send rett til Coach HQ
-  const prefs = lesPreferences(user);
+  const prefs = lesRaaPreferences(user);
   const coachOnboarding =
     typeof (prefs as Record<string, unknown>).coachOnboarding === "object" &&
     (prefs as Record<string, unknown>).coachOnboarding !== null

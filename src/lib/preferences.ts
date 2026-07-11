@@ -40,6 +40,22 @@ function boolPref(val: unknown, defaultVal: boolean): boolean {
   return typeof val === "boolean" ? val : defaultVal;
 }
 
+/**
+ * Rå merge-grunnlag for User.preferences — bevarer ukjente nøkler
+ * (onboarding, trening, m.fl.) som `lesPreferences` ikke kjenner til.
+ *
+ * `lesPreferences` returnerer et FRISKT objekt med kun de kjente feltene —
+ * riktig for lesing, men brukt som skrive-grunnlag sletter det stille alt
+ * annet i blob-en (bl.a. onboarding-data ved enhver innstillings-lagring).
+ * All skriving til User.preferences MÅ bruke denne som base, ikke
+ * lesPreferences().
+ */
+export function lesRaaPreferences(user: Pick<User, "preferences">): Record<string, unknown> {
+  const raw = user.preferences;
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  return { ...(raw as Record<string, unknown>) };
+}
+
 export function lesPreferences(user: Pick<User, "preferences">): UserPreferences {
   const raw = user.preferences;
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) {

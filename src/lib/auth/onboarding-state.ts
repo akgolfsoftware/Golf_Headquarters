@@ -8,7 +8,7 @@
  * Auto-complete hvis siste steg er fullført.
  */
 
-import { lesPreferences } from "@/lib/preferences";
+import { lesRaaPreferences } from "@/lib/preferences";
 import type { Prisma } from "@/generated/prisma/client";
 
 export const SPILLER_TOTAL_STEPS = 7;
@@ -25,7 +25,7 @@ export type OnboardingStepState = {
 export function getOnboardingState(
   user: { preferences?: Prisma.JsonValue | null; role: string },
 ): OnboardingStepState {
-  const prefs = lesPreferences({ preferences: user.preferences ?? null });
+  const prefs = lesRaaPreferences({ preferences: user.preferences ?? null });
   const onboarding =
     typeof (prefs as Record<string, unknown>).onboarding === "object" &&
     (prefs as Record<string, unknown>).onboarding !== null

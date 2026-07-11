@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 // venter på samtykke. getCurrentUser ville redirecte til venterommet og gjort
 // disse stegene umulige å fullføre. Onboarding er flyten FØR samtykke er gitt.
 import { getCurrentUserRaw as getCurrentUser } from "@/lib/auth/getCurrentUser";
-import { lesPreferences } from "@/lib/preferences";
+import { lesRaaPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
 import { isMinor } from "@/lib/auth/minor";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
@@ -106,7 +106,7 @@ export async function saveSpillerOnboardingStep(
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
-  const prefs = lesPreferences(user);
+  const prefs = lesRaaPreferences(user);
   const currentOnboarding =
     typeof (prefs as Record<string, unknown>).onboarding === "object" &&
     (prefs as Record<string, unknown>).onboarding !== null
@@ -146,7 +146,7 @@ export async function markStepComplete(stepNumber: number): Promise<void> {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
-  const prefs = lesPreferences(user);
+  const prefs = lesRaaPreferences(user);
   const existing =
     typeof (prefs as Record<string, unknown>).onboarding === "object" &&
     (prefs as Record<string, unknown>).onboarding !== null
@@ -183,7 +183,7 @@ export async function completeOnboarding(subscribe?: string): Promise<void> {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
-  const prefs = lesPreferences(user);
+  const prefs = lesRaaPreferences(user);
   const existing =
     typeof (prefs as Record<string, unknown>).onboarding === "object" &&
     (prefs as Record<string, unknown>).onboarding !== null
@@ -225,7 +225,7 @@ export async function saveForelderOnboardingStep(
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
-  const prefs = lesPreferences(user);
+  const prefs = lesRaaPreferences(user);
   const existing =
     typeof (prefs as Record<string, unknown>).forelderOnboarding === "object" &&
     (prefs as Record<string, unknown>).forelderOnboarding !== null
@@ -255,7 +255,7 @@ export async function completeForelderOnboarding(): Promise<void> {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
-  const prefs = lesPreferences(user);
+  const prefs = lesRaaPreferences(user);
   const existing =
     typeof (prefs as Record<string, unknown>).forelderOnboarding === "object" &&
     (prefs as Record<string, unknown>).forelderOnboarding !== null

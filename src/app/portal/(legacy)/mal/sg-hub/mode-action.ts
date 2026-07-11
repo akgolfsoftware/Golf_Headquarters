@@ -3,12 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
-import { lesPreferences } from "@/lib/preferences";
+import { lesRaaPreferences } from "@/lib/preferences";
 
 export async function setSgHubMode(mode: "simple" | "advanced") {
   const user = await requireConsentingUser();
 
-  const existing = lesPreferences(user);
+  const existing = lesRaaPreferences(user);
 
   await prisma.user.update({
     where: { id: user.id },

@@ -4,7 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
-import { lesPreferences } from "@/lib/preferences";
+import { lesRaaPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
 import { phone, optStr } from "@/lib/validation/schemas";
 
@@ -45,7 +45,7 @@ export async function saveCoachOnboardingStep(
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
-  const prefs = lesPreferences(user);
+  const prefs = lesRaaPreferences(user);
   const current =
     typeof (prefs as Record<string, unknown>).coachOnboarding === "object" &&
     (prefs as Record<string, unknown>).coachOnboarding !== null
@@ -84,7 +84,7 @@ export async function markCoachStepComplete(stepNumber: number): Promise<void> {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
-  const prefs = lesPreferences(user);
+  const prefs = lesRaaPreferences(user);
   const existing =
     typeof (prefs as Record<string, unknown>).coachOnboarding === "object" &&
     (prefs as Record<string, unknown>).coachOnboarding !== null
@@ -121,7 +121,7 @@ export async function completeCoachOnboarding(): Promise<void> {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
-  const prefs = lesPreferences(user);
+  const prefs = lesRaaPreferences(user);
   const existing =
     typeof (prefs as Record<string, unknown>).coachOnboarding === "object" &&
     (prefs as Record<string, unknown>).coachOnboarding !== null
@@ -158,7 +158,7 @@ export async function isCoachOnboardingComplete(): Promise<boolean> {
   const user = await getCurrentUser();
   if (!user) return false;
 
-  const prefs = lesPreferences(user);
+  const prefs = lesRaaPreferences(user);
   const existing =
     typeof (prefs as Record<string, unknown>).coachOnboarding === "object" &&
     (prefs as Record<string, unknown>).coachOnboarding !== null
