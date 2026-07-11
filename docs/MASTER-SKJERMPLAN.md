@@ -348,8 +348,8 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Admin-rot (gml. hjem) | `/admin` | – | --- | ✓ | ~ | ~ | ✓ |
 | Daglig AI-brief | `/admin/brief` | – | --- | ✓ | ✓ | ~ | ~ |
 | Coaching-board | `/admin/board` | – | --- | ✓ | ~ | ~ | ~ |
-| Oppfølging | `/admin/oppfolging` | – | --- | ✓ | ~ | ~ | ~ |
-| Oppgave-kø | `/admin/queue` | – | --- | ✓ | ~ | ~ | ~ |
+| Oppfølging (alias → queue) | `/admin/oppfolging` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| Oppfølgingskø (kanban) | `/admin/queue` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | **Innboks** ★ | `/admin/innboks` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | Meldinger (alt. → redirect) | `/admin/messages` | – | --- | ✓ | ✓ | – | ✓ |
 | Kommunikasjon-hub | `/admin/kommunikasjon` | – | --- | ✓ | ~ | ~ | ~ |
