@@ -40,8 +40,10 @@ const M = {
   seksD: 30,
   seksM: 24,
   lede: 16.5,
-  padD: "96px 64px",
-  padM: "56px 22px",
+  padDY: 96,
+  padDX: 64,
+  padMY: 56,
+  padMX: 22,
   maxw: 1040,
 };
 
@@ -291,7 +293,7 @@ function MCta({
 
 function Seksjon({ mobile, children, style }: { mobile: boolean; children: ReactNode; style?: CSSProperties }) {
   return (
-    <div style={{ padding: mobile ? M.padM : M.padD, ...style }}>
+    <div style={{ paddingTop: mobile ? M.padMY : M.padDY, paddingBottom: mobile ? M.padMY : M.padDY, paddingLeft: mobile ? M.padMX : M.padDX, paddingRight: mobile ? M.padMX : M.padDX, ...style }}>
       <div style={{ maxWidth: M.maxw, margin: "0 auto" }}>{children}</div>
     </div>
   );

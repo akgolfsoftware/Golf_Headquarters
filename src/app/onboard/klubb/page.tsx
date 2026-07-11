@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { lesPreferences } from "@/lib/preferences";
+import { lesRaaPreferences } from "@/lib/preferences";
 import { OnboardingShell } from "@/components/onboarding/onboarding-shell";
 import { KlubbWizard } from "./klubb-wizard";
 
@@ -18,7 +18,7 @@ export default async function KlubbOnboardingPage() {
   // Kun ADMIN kan onboarde klubb (en klubb signerer opp via en hovedkontakt).
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
-  const prefs = lesPreferences(user);
+  const prefs = lesRaaPreferences(user);
   const klubbOnboarding =
     typeof (prefs as Record<string, unknown>).klubbOnboarding === "object" &&
     (prefs as Record<string, unknown>).klubbOnboarding !== null

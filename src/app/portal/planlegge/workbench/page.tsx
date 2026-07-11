@@ -16,7 +16,7 @@ import { parseWeekOffset } from "@/lib/workbench/session-move-math";
 import { publishWorkbenchPlan } from "@/lib/workbench/publish-actions";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { WorkbenchV2, type WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
-import { addWorkbenchSession, moveWorkbenchSession, removeWorkbenchSession, duplicateWorkbenchWeek } from "./actions";
+import { addWorkbenchSession, moveWorkbenchSession, removeWorkbenchSession, duplicateWorkbenchWeek, suggestWeekWithCaddie, applySuggestedWeek } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -30,14 +30,16 @@ export default async function V2WorkbenchPreviewPage({ searchParams }: Props) {
   const weekOffset = parseWeekOffset((await searchParams).uke);
   const ctx = await loadWorkbenchContext(user.id, weekOffset);
 
-  // Merk: suggestWeekWithCaddie (AI-forslag) er bevisst IKKE bundet — stubben
-  // toaster bare «kommer post-launch». Bind den igjen når Anthropic-kallet er ekte.
   const actions: WorkbenchV2Actions = {
     addSession: addWorkbenchSession,
     moveSession: moveWorkbenchSession,
     removeSession: removeWorkbenchSession,
     publish: publishWorkbenchPlan,
     duplicateWeek: duplicateWorkbenchWeek,
+    // AI-ukeforslag: ekte Anthropic-kall når nøkkel finnes, ellers ærlig
+    // standardforslag (usedAi: false-badge i ForslagArk). Aldri auto-lagt inn.
+    suggestWeek: suggestWeekWithCaddie,
+    applySuggestion: applySuggestedWeek,
   };
 
   return (

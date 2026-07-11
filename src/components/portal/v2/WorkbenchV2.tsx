@@ -36,7 +36,8 @@ import {
   ZoomBrodsmule,
 } from "@/components/v2";
 import { PalettSok } from "@/components/v2/wb-composer";
-import { NyOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput } from "./WorkbenchV2Sheets";
+import { ForslagArk, NyOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput } from "./WorkbenchV2Sheets";
+import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
 import { WBTidslinjeMobil, AarNivaaMobil, MobilFold } from "./WorkbenchV2Mobil";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
@@ -430,6 +431,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   const [melding, setMelding] = useState<{ tone: "up" | "down" | "info"; tekst: string } | null>(null);
   const [pubLoading, setPubLoading] = useState(false);
   const [suggestLoading, setSuggestLoading] = useState(false);
+  const [forslag, setForslag] = useState<{ suggestions: WeekSuggestion[]; usedAi: boolean } | null>(null);
   const [dupLoading, setDupLoading] = useState(false);
   const [merApen, setMerApen] = useState(false);
 
@@ -551,12 +553,26 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     if (!actions?.suggestWeek || suggestLoading) return;
     setSuggestLoading(true);
     setMelding(null);
-    const res = await actions.suggestWeek(weekNumber);
+    const res = await actions.suggestWeek(weekOffset);
     setSuggestLoading(false);
-    setMelding({
-      tone: res.ok ? "info" : "down",
-      tekst: res.message ?? (res.ok ? "Forslag lagt inn." : "Kunne ikke foreslå uke."),
-    });
+    if (res.ok && res.suggestions && res.suggestions.length > 0) {
+      setForslag({ suggestions: res.suggestions, usedAi: res.usedAi ?? false });
+    } else {
+      setMelding({ tone: "down", tekst: res.message ?? "Kunne ikke foreslå uke." });
+    }
+  };
+
+  const handleBrukForslag = async (variant: WeekSuggestion) => {
+    if (!actions?.applySuggestion) {
+      return { ok: false, error: "Lagring er ikke tilgjengelig her." };
+    }
+    const res = await actions.applySuggestion(variant, weekOffset);
+    if (res.ok) {
+      setForslag(null);
+      setMelding({ tone: "up", tekst: `${res.count ?? 0} økter lagt inn i uka.` });
+      router.refresh();
+    }
+    return res;
   };
 
   const handleDuplicate = async () => {
@@ -833,6 +849,15 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           />
         </MobilFold>
       </div>
+
+      {forslag && (
+        <ForslagArk
+          suggestions={forslag.suggestions}
+          usedAi={forslag.usedAi}
+          onLukk={() => setForslag(null)}
+          onBruk={handleBrukForslag}
+        />
+      )}
 
       {nyOktApen && actions && (
         <NyOktArk

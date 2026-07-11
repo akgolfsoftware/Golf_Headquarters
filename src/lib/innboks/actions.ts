@@ -123,14 +123,21 @@ export async function sendGodkjentSvar(
     melding = "Sending krever Resend-oppsett — svaret er lagret.";
   }
 
+  // Marker kun som SENDT når e-posten faktisk gikk ut. Feiler sendingen, behold
+  // utkastet som UTKAST_KLART så coachen kan prøve igjen (knappen forblir aktiv).
   await prisma.innboksEpost.update({
     where: { id: epostId },
-    data: {
-      status: "SENDT",
-      utkastSvar: redigertSvar,
-      sendtAt: new Date(),
-      sendtAv: user.id,
-    },
+    data: sendtReelt
+      ? {
+          status: "SENDT",
+          utkastSvar: redigertSvar,
+          sendtAt: new Date(),
+          sendtAv: user.id,
+        }
+      : {
+          status: "UTKAST_KLART",
+          utkastSvar: redigertSvar,
+        },
   });
 
   await audit({

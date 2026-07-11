@@ -231,6 +231,12 @@ export function PlanV2({ data }: { data: DashboardData }) {
                 </InnsiktChip>
               </Link>
 
+              <Link href="/portal/planlegge/bygger" style={{ textDecoration: "none", display: "block" }}>
+                <InnsiktChip cta="Bygg en plan">
+                  Trenger du en hel plan? Plan-byggeren lager et forslag ut fra nivået ditt og målet ditt — du godkjenner alt.
+                </InnsiktChip>
+              </Link>
+
               <WorkbenchInngang />
             </div>
           </div>

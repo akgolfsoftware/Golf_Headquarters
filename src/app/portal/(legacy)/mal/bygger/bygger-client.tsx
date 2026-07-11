@@ -35,12 +35,14 @@ import {
   genererPlanForslag,
   lagrePlan,
   sendTilGodkjenning,
-  type AnbefalingerResultat,
-  type ByggerKontekst,
-  type ByggerMaltype,
-  type GenerertForslag,
-  type MalAnbefaling,
 } from "./actions";
+import type {
+  AnbefalingerResultat,
+  ByggerKontekst,
+  ByggerMaltype,
+  GenerertForslag,
+  MalAnbefaling,
+} from "@/lib/plan-builder";
 import type {
   PlanForslag,
   PlanForslagOkt,

@@ -883,11 +883,13 @@ export function WorkbenchHybrid({
   }, [state.publishPending, isCoach, resolvedPlayerId, router]);
 
   const [templateApplying, setTemplateApplying] = useState(false);
+  const [templateJustering, setTemplateJustering] = useState<string | null>(null);
 
   const handleUseTemplate = useCallback(
     (template: WorkbenchPlanTemplate) => {
       if (templateApplying) return;
       setTemplateApplying(true);
+      setTemplateJustering(null);
       const promise =
         isCoach && currentPlayerId
           ? coachApplyWorkbenchTemplate(currentPlayerId, template.id)
@@ -899,6 +901,9 @@ export function WorkbenchHybrid({
           if (res?.ok && res.sessions && res.sessions.length > 0) {
             dispatch({ type: "applyTemplateSessions", sessions: res.sessions });
             setHubTabWithUrl("uke");
+            if (res.justeringer && res.justeringer.length > 0) {
+              setTemplateJustering(`${res.sessions.length} økter lagt inn. ${res.justeringer[0]}`);
+            }
             router.refresh();
           } else {
             setHubTabWithUrl("gantt");
@@ -1248,6 +1253,31 @@ export function WorkbenchHybrid({
             height: 820,
           }}
         >
+          {templateJustering && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 12,
+                padding: "8px 16px",
+                background: WB.okSoft,
+                borderBottom: `1px solid ${WB.panelBorder}`,
+                fontFamily: FONT.sans,
+                fontSize: 12.5,
+                color: WB.text,
+              }}
+            >
+              <span>{templateJustering}</span>
+              <button
+                type="button"
+                onClick={() => setTemplateJustering(null)}
+                style={{ appearance: "none", cursor: "pointer", background: "none", border: "none", color: WB.muted, fontSize: 12 }}
+              >
+                Lukk
+              </button>
+            </div>
+          )}
           <Topbar
             level={effectiveLevel}
             highlightZoom={hubTab !== "okt"}

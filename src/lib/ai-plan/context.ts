@@ -14,6 +14,7 @@ import type {
   SkillArea,
 } from "@/generated/prisma/client";
 import { hentTreningsVolum, type UkeVolum } from "../training/volum";
+import { lesTreningPreferanser } from "@/lib/onboarding/trening-preferanser";
 import {
   beregnKorrelasjon,
   type KorrelasjonsResultat,
@@ -117,6 +118,8 @@ export type SpillerKontekst = {
   } | null;
   /** Aktiv periodiseringsfase fra SeasonPlan + PeriodBlock (eller null). */
   aktivLPhase: LPhase | null;
+  /** Treningspreferanser fra onboarding (økter/uke, foretrukne dager). Null = ikke oppgitt. */
+  treningPreferanser: { okterPerUke: number; foretrukneDagerNr: number[] } | null;
   aktiveMal: {
     type: string;
     tittel: string;
@@ -409,6 +412,7 @@ export async function byggSpillerKontekst(
       ambition: true,
       homeClub: true,
       tilgjengeligeFasiliteter: true,
+      preferences: true,
     },
   });
   if (!user) throw new Error(`Bruker ${userId} finnes ikke.`);
@@ -553,6 +557,10 @@ export async function byggSpillerKontekst(
     forrigeEffektivitet,
     treningsVolum,
     korrelasjon,
+    treningPreferanser: (() => {
+      const p = lesTreningPreferanser(user.preferences);
+      return p ? { okterPerUke: p.okterPerUke, foretrukneDagerNr: p.dager } : null;
+    })(),
   };
 }
 

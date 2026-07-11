@@ -14,9 +14,9 @@ import { stripeKlient } from "@/lib/stripe";
 import { audit } from "@/lib/audit";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import {
-  sendBookingCancelledV2,
-  sendBookingRescheduledV2,
-} from "@/lib/email/send-booking-email";
+  sendBookingCancellation,
+  sendBookingRescheduled,
+} from "@/lib/email/booking-emails";
 
 const TIMER_MS = 60 * 60 * 1000;
 const AVBESTILLINGS_VINDU_MS = 24 * TIMER_MS;
@@ -90,7 +90,7 @@ export async function cancelBooking(bookingId: string): Promise<ActionResult> {
     });
 
     try {
-      await sendBookingCancelledV2(bookingId, { refundIssued });
+      await sendBookingCancellation(bookingId, { refundIssued });
     } catch (err) {
       // Ikke fail action hvis kun e-post feiler — bookingen er allerede kansellert.
       console.error("[cancelBooking] e-post feilet", err);
@@ -136,10 +136,10 @@ export async function rescheduleBooking(
       return { ok: false, error: "Ny tid må være minst 1 time fram i tid." };
     }
 
-    // Bruk samme coach-id som original — vi vet ikke hvem som var koblet, så
-    // fall tilbake til en tom streng (availability-check ignorerer ekstern
-    // kalender i så fall, men DB-konflikt blir fortsatt fanget).
-    const coachId = "";
+    // Bruk ekte coach-id fra bookingen (denormalisert på Booking-modellen).
+    // Tom streng kun hvis bookingen aldri hadde en coach tilknyttet — da er
+    // det ingen kalender å sjekke mot uansett, DB-konflikt fanges fortsatt.
+    const coachId = booking.coachId ?? "";
     const slotOk = await isSlotStillAvailable(
       booking.serviceTypeId,
       newStartAt,
@@ -173,7 +173,7 @@ export async function rescheduleBooking(
     });
 
     try {
-      await sendBookingRescheduledV2(bookingId, oldStartAt);
+      await sendBookingRescheduled(bookingId, oldStartAt);
     } catch (err) {
       console.error("[rescheduleBooking] e-post feilet", err);
     }

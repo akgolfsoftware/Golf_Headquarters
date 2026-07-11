@@ -165,10 +165,8 @@ export async function createCreditBooking(
   // Best-effort: send bekreftelses-e-post (samme mal som drop-in,
   // men priceFormatted/paymentRef varierer basert på subscriptionId)
   try {
-    const { sendBookingConfirmationV2 } = await import(
-      "@/lib/email/send-booking-email"
-    );
-    await sendBookingConfirmationV2(result.id);
+    const { sendBookingConfirmation } = await import("@/lib/email/booking-emails");
+    await sendBookingConfirmation(result.id);
   } catch (err) {
     console.error("[credit-booking] confirmation-email failed", err);
   }

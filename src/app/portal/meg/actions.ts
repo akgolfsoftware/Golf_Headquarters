@@ -11,7 +11,7 @@ import { redirect } from "next/navigation";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { lesPreferences, type UserPreferences } from "@/lib/preferences";
+import { lesPreferences, lesRaaPreferences, type UserPreferences } from "@/lib/preferences";
 import type { ProfileData } from "@/components/portal/profile/ProfileShell";
 
 export async function hentProfil(): Promise<ProfileData> {
@@ -83,12 +83,15 @@ export async function oppdaterPreferences(input: Partial<UserPreferences>) {
   const user = await requireConsentingUser();
 
   const eksisterende = lesPreferences(user);
-  const oppdatert: UserPreferences = {
+  const oppdatertKjente: UserPreferences = {
     notif: { ...eksisterende.notif, ...(input.notif ?? {}) },
     spraak: input.spraak ?? eksisterende.spraak,
     sgHubMode: input.sgHubMode ?? eksisterende.sgHubMode,
     enhet: input.enhet ?? eksisterende.enhet,
   };
+  // Rå-merge bevarer ukjente nøkler (onboarding, trening) — kun de kjente
+  // feltene over skal faktisk endres av denne handlingen.
+  const oppdatert = { ...lesRaaPreferences(user), ...oppdatertKjente };
 
   await prisma.user.update({
     where: { id: user.id },

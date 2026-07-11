@@ -176,7 +176,7 @@ function DetaljInnhold({
   );
 }
 
-export function AdminHandlingssenterV2({ data }: { data: AdminHandlingssenterData }) {
+export function AdminHandlingssenterV2({ data, meg }: { data: AdminHandlingssenterData; meg?: string | null }) {
   const [filter, setFilter] = useState<Filter>("alle");
   const [ferdigSett, setFerdigSett] = useState<ReadonlySet<string>>(() => new Set());
   const [valgtId, setValgtId] = useState<string | null>(data.oppgaver[0]?.id ?? null);
@@ -197,13 +197,13 @@ export function AdminHandlingssenterV2({ data }: { data: AdminHandlingssenterDat
   const filterCounts: Record<Filter, number> = {
     alle: data.oppgaver.length,
     haster: data.oppgaver.filter((o) => o.priKey === "high").length,
-    mine: data.oppgaver.filter((o) => o.spiller === "Alle").length,
+    mine: meg ? data.oppgaver.filter((o) => o.spiller === meg).length : 0,
     ferdig: data.oppgaver.filter((o) => erFerdig(o)).length,
   };
 
   const filtrert = data.oppgaver.filter((o) => {
     if (filter === "haster") return o.priKey === "high";
-    if (filter === "mine") return o.spiller === "Alle";
+    if (filter === "mine") return meg ? o.spiller === meg : false;
     if (filter === "ferdig") return erFerdig(o);
     return true;
   });

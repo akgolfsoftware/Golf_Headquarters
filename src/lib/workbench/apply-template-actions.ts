@@ -13,6 +13,8 @@ import {
   scheduleTemplateWeek,
   type ScheduledTemplateSession,
 } from "@/lib/workbench/map-template-week";
+import { hentPlayerSignals } from "@/lib/plan-engine/load-signals";
+import { adaptTemplateWeek } from "@/lib/plan-engine/adapt-template";
 
 const PYRAMID_AREAS = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
 
@@ -65,11 +67,12 @@ async function applyTemplateCore(
   playerId: string,
   coachId: string | null,
   weekNr = 1,
-): Promise<{ ok: boolean; sessions?: AppliedTemplateSession[]; error?: string }> {
+): Promise<{ ok: boolean; sessions?: AppliedTemplateSession[]; error?: string; justeringer?: string[] }> {
   const template = await prisma.planTemplate.findUnique({
     where: { id: templateId },
     select: {
       id: true,
+      lPhase: true,
       sessions: {
         where: { ukeNr: weekNr },
         orderBy: [{ dagNr: "asc" }, { title: "asc" }],
@@ -77,6 +80,8 @@ async function applyTemplateCore(
           title: true,
           varighetMin: true,
           pyramidArea: true,
+          skillArea: true,
+          environment: true,
           ukeNr: true,
           dagNr: true,
         },
@@ -89,7 +94,22 @@ async function applyTemplateCore(
     return { ok: false, error: "Malen har ingen økter for denne uka" };
   }
 
-  const scheduled = scheduleTemplateWeek(template.sessions, weekNr);
+  // Tilpasningsmotoren: legger øktene på spillerens foretrukne dager, tar
+  // hensyn til fasiliteter/etterlevelse/turnering — alltid anbefaling,
+  // aldri sperre. Feiler signalinnhentingen (f.eks. i test/script-kontekst
+  // uten full DB-oppsett), faller vi tilbake til malen uendret.
+  let justeringer: string[] = [];
+  let tilpassetOkter = template.sessions;
+  try {
+    const signaler = await hentPlayerSignals(playerId);
+    const tilpasset = adaptTemplateWeek(template.sessions, template.lPhase, signaler);
+    tilpassetOkter = tilpasset.okter;
+    justeringer = tilpasset.justeringer;
+  } catch (error) {
+    console.error("[workbench] tilpasning av mal feilet, bruker mal uendret", error);
+  }
+
+  const scheduled = scheduleTemplateWeek(tilpassetOkter, weekNr);
   if (scheduled.length === 0) return { ok: false, error: "Ingen gyldige økter i malen" };
 
   const plan = await ensurePlanForPlayer(playerId, coachId ?? undefined);
@@ -139,14 +159,14 @@ async function applyTemplateCore(
   });
 
   revalidateWorkbench(playerId);
-  return { ok: true, sessions: created };
+  return { ok: true, sessions: created, justeringer };
 }
 
 /** Spiller bruker mal på egen plan. */
 export async function applyWorkbenchTemplate(
   templateId: string,
   weekNr = 1,
-): Promise<{ ok: boolean; sessions?: AppliedTemplateSession[]; error?: string }> {
+): Promise<{ ok: boolean; sessions?: AppliedTemplateSession[]; error?: string; justeringer?: string[] }> {
   const user = await requirePortalUser();
   return applyTemplateCore(templateId, user.id, null, weekNr);
 }
@@ -156,7 +176,7 @@ export async function coachApplyWorkbenchTemplate(
   playerId: string,
   templateId: string,
   weekNr = 1,
-): Promise<{ ok: boolean; sessions?: AppliedTemplateSession[]; error?: string }> {
+): Promise<{ ok: boolean; sessions?: AppliedTemplateSession[]; error?: string; justeringer?: string[] }> {
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   return applyTemplateCore(templateId, playerId, coach.id, weekNr);
 }

@@ -19,6 +19,8 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   Check,
+  Clock,
+  Copy,
   Plus,
   Save,
   Search,
@@ -34,7 +36,9 @@ import type {
 } from "@/generated/prisma/client";
 import {
   addTemplateSession,
+  copyTemplateWeek,
   deleteTemplateSession,
+  setWeekDuration,
   updateTemplate,
   updateTemplateSession,
   type SessionInput,
@@ -53,6 +57,8 @@ import {
   type DisciplinFordeling,
   type DrillEntry,
 } from "./shared";
+import { VolumSammendrag, UkeVolumChip } from "./volum-linje";
+import { beregnTemplateVolum } from "@/lib/plan-templates/beregn-volum";
 
 export type DrillOption = {
   id: string;
@@ -158,6 +164,11 @@ export function TemplateEditor({
 
   const sessions = template.sessions;
 
+  const volum = useMemo(
+    () => beregnTemplateVolum(sessions, varighetUker, fordeling),
+    [sessions, varighetUker, fordeling],
+  );
+
   const filtererteDrills = useMemo(() => {
     if (!drillSok.trim()) return drillOptions;
     const q = drillSok.toLowerCase();
@@ -208,6 +219,48 @@ export function TemplateEditor({
 
   function findSession(ukeNr: number, dagNr: number): EditorSession | undefined {
     return sessions.find((s) => s.ukeNr === ukeNr && s.dagNr === dagNr);
+  }
+
+  function onSetWeekDuration(ukeNr: number) {
+    const nyVarighet = prompt(`Ny varighet (minutter) for alle økter i uke ${ukeNr}:`);
+    if (!nyVarighet) return;
+    const parsed = parseInt(nyVarighet, 10);
+    if (!Number.isFinite(parsed)) return;
+    startTransition(async () => {
+      const res = await setWeekDuration(template.id, ukeNr, parsed);
+      if (res.ok) {
+        router.refresh();
+      } else {
+        alert(res.error);
+      }
+    });
+  }
+
+  function onCopyWeek(fraUke: number) {
+    const tilUkeStr = prompt(`Kopier uke ${fraUke} til uke (1–${varighetUker}):`);
+    if (!tilUkeStr) return;
+    const tilUke = parseInt(tilUkeStr, 10);
+    if (!Number.isFinite(tilUke) || tilUke < 1 || tilUke > varighetUker) {
+      alert("Ugyldig uke.");
+      return;
+    }
+    startTransition(async () => {
+      const forsokKopi = async (overskriv: boolean) => {
+        const res = await copyTemplateWeek(template.id, fraUke, tilUke, overskriv);
+        if (!res.ok) {
+          alert(res.error);
+          return;
+        }
+        if (res.data.status === "konflikt") {
+          if (confirm(`Uke ${tilUke} har ${res.data.antallIMaal} økter fra før. Erstatte dem?`)) {
+            await forsokKopi(true);
+          }
+          return;
+        }
+        router.refresh();
+      };
+      await forsokKopi(false);
+    });
   }
 
   return (
@@ -282,7 +335,7 @@ export function TemplateEditor({
           <div className="overflow-x-auto">
             <div className="min-w-[640px]">
               {/* Dag-header */}
-              <div className="grid grid-cols-[60px_repeat(7,1fr)] gap-1 pb-1">
+              <div className="grid grid-cols-[72px_repeat(7,1fr)] gap-1 pb-1">
                 <div />
                 {DAG_LABEL.map((d) => (
                   <div
@@ -297,10 +350,31 @@ export function TemplateEditor({
               {Array.from({ length: varighetUker }, (_, i) => i + 1).map((uke) => (
                 <div
                   key={uke}
-                  className="mt-1 grid grid-cols-[60px_repeat(7,1fr)] gap-1"
+                  className="mt-1 grid grid-cols-[72px_repeat(7,1fr)] gap-1"
                 >
-                  <div className="flex items-center justify-center rounded-md bg-secondary/60 font-mono text-xs font-semibold">
-                    {uke}
+                  <div className="flex flex-col items-center justify-center gap-0.5 rounded-md bg-secondary/60 py-1 font-mono text-xs font-semibold">
+                    <span>{uke}</span>
+                    <UkeVolumChip minutter={volum.minPerUke[uke - 1] ?? 0} />
+                    <div className="mt-0.5 flex gap-0.5">
+                      <button
+                        type="button"
+                        onClick={() => onSetWeekDuration(uke)}
+                        disabled={isPending}
+                        title="Sett varighet for hele uka"
+                        className="flex h-5 w-5 items-center justify-center rounded text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-50"
+                      >
+                        <Clock className="h-3 w-3" strokeWidth={1.75} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onCopyWeek(uke)}
+                        disabled={isPending}
+                        title="Kopier uka til …"
+                        className="flex h-5 w-5 items-center justify-center rounded text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-50"
+                      >
+                        <Copy className="h-3 w-3" strokeWidth={1.75} />
+                      </button>
+                    </div>
                   </div>
                   {[1, 2, 3, 4, 5, 6, 7].map((dag) => {
                     const s = findSession(uke, dag);
@@ -443,6 +517,13 @@ export function TemplateEditor({
                 ))}
               </div>
             </div>
+
+            <VolumSammendrag
+              sessions={sessions}
+              varighetUker={varighetUker}
+              fordeling={fordeling}
+              fordelingSum={fordelingSum}
+            />
 
             <label className="flex items-center gap-2 text-xs">
               <input

@@ -121,7 +121,7 @@ export default async function V2HandlingssenterPage() {
 
   return (
     <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <AdminHandlingssenterV2 data={data} />
+      <AdminHandlingssenterV2 data={data} meg={user.name} />
     </V2Shell>
   );
 }

@@ -91,6 +91,28 @@ scenarioer i samme test. Verdt å huske for fremtidige agent-tester i dette repo
 
 ---
 
+## 2026-07-10 — Mobil-review-funn AVKREFTET: HjemV2-kortrad skjules ikke bak bunn-nav (redesign/v2)
+
+**Funn (fra mobil-review):** Streak/Uke-gjennomføring-kortraden nederst i
+`src/components/portal/v2/HjemV2.tsx` kunne angivelig skjules bak den faste bunn-navigasjonen
+(`BunnNavLenker` i `src/components/v2/shell.tsx`) på 375px.
+
+**Verifisert i ekte nettleser (Playwright, headless Chromium):** dev-server fra denne worktreen,
+innlogget som `screentest@akgolf.test`, viewport 375×812, scrollet helt ned på `/portal`.
+Målt på piksel:
+
+- Bunn-nav (fixed) starter på y=741,5, høyde 70,5px.
+- Streak/Uke-gjennomføring-kortene slutter på y=642 → **99px klaring**.
+- Siste element (coach-InnsiktChip «Les mer») slutter på y=705 → **36px klaring**.
+- Strukturelt trygt: innholdswrapperen i `V2Shell` har `pb-24` (96px) > nav-høyden (70,5px),
+  så det er alltid klaring uansett scrollposisjon. Ingen fiks nødvendig, ingen kodeendring gjort.
+
+**Sannsynlig kilde til feilfunnet:** cookie-banneret («Vi bruker informasjonskapsler») ligger
+over nederste del av siden til det lukkes — i skjermbilder med banneret åpent dekkes nettopp
+Streak-kortraden. Det er normal, midlertidig oppførsel, ikke en layout-feil.
+
+---
+
 ## 2026-07-10 — N10: Kvalitetsport — dommer-scores per skjerm + fikser (redesign/v2, worktree akgolf-hq-v2natt)
 
 **Branch:** `redesign/v2` (worktree `/Users/anderskristiansen/Developer/akgolf-hq-v2natt`) ·

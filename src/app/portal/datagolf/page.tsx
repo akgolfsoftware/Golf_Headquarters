@@ -24,7 +24,7 @@ export default async function V2DataGolfPreviewPage() {
 
   return (
     <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <DataGolfV2 data={data} />
+      <DataGolfV2 data={data} spillerNavn={user.name ?? undefined} />
     </V2Shell>
   );
 }

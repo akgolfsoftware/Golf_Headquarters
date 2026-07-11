@@ -34,7 +34,7 @@ import {
   MikroMeta,
 } from "@/components/v2";
 
-export type DataGolfProps = { data: DataGolfData };
+export type DataGolfProps = { data: DataGolfData; spillerNavn?: string };
 
 /* ── Rene hjelpere ─────────────────────────────────────────────────── */
 
@@ -189,7 +189,8 @@ function DGGruppe({ k, refNavn, max, last }: { k: DataGolfKategori; refNavn: str
 
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
-export function DataGolfV2({ data }: DataGolfProps) {
+export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
+  const navn = spillerNavn?.trim() || "Deg";
   const mobile = useMobile();
   const [periode, setPeriode] = useState("alle");
 
@@ -197,7 +198,7 @@ export function DataGolfV2({ data }: DataGolfProps) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <div>
-          <Caps>DataGolf · PGA Tour-baseline · Øyvind Rohjan</Caps>
+          <Caps>DataGolf · PGA Tour-baseline · {navn}</Caps>
           <div style={{ marginTop: 10 }}>
             <Tittel mobile={mobile} em="touren">Deg mot</Tittel>
           </div>
@@ -306,7 +307,7 @@ export function DataGolfV2({ data }: DataGolfProps) {
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
-          <Caps>DataGolf · PGA Tour-baseline · Øyvind Rohjan</Caps>
+          <Caps>DataGolf · PGA Tour-baseline · {navn}</Caps>
           <div style={{ marginTop: 10 }}>
             <Tittel mobile={mobile} em="touren">Deg mot</Tittel>
           </div>

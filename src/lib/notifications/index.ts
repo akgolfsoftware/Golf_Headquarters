@@ -109,11 +109,9 @@ async function routeEmailByTrigger(
   input: NotifyInput,
 ): Promise<void> {
   if (triggerKey === "booking-confirmed") {
-    const { sendBookingConfirmationV2 } = await import(
-      "@/lib/email/send-booking-email"
-    );
+    const { sendBookingConfirmation } = await import("@/lib/email/booking-emails");
     const bookingId = input.data?.bookingId as string | undefined;
-    if (bookingId) await sendBookingConfirmationV2(bookingId);
+    if (bookingId) await sendBookingConfirmation(bookingId);
     return;
   }
 

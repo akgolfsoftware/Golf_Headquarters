@@ -135,6 +135,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 |---|---|---|---|---|---|---|---|
 | Planlegge (= Workbench mobil) ★ | `/portal/planlegge` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Complete v13 (golfdata scope + OektKort etc)
 | **Workbench (planlegging)** ★ | `/portal/planlegge/workbench` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| · Plan-bygger (v2 wizard) | `/portal/planlegge/bygger` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2 2026-07-10: 5-stegs wizard per godkjent mockup (phq-plan-bygger); deler kjerner med legacy mal/bygger via lib/plan-builder
 | Årsplan | `/portal/tren/aarsplan` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | · Rediger periode | `/portal/tren/aarsplan/periode/[id]/rediger` | ~ | --- | ✓ | ✓ | ✓ | ~ |
 | · Ny periode | `/portal/tren/aarsplan/periode/ny` | ~ | --- | ✓ | ✓ | ✓ | ~ |
@@ -415,7 +416,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Plan-maler (alt.) | `/admin/plan-templates` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Plan-mal detalj | `/admin/plan-templates/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ny plan-mal | `/admin/plan-templates/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| · Rediger plan-mal | `/admin/plan-templates/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
+| · Rediger plan-mal | `/admin/plan-templates/[id]/rediger` | – | --- | ✓ | ~ | ✓ | ✓ | 2026-07-11: volum-linje (timer/uke + reell pyramidefordeling vs. glidere) + masseredigering (sett varighet for hele uka, kopier uke→uke m/ konflikt-bekreftelse) — src/lib/plan-templates/
 | Drills (bibliotek) | `/admin/drills` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
 | · Drill-detalj | `/admin/drills/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger drill | `/admin/drills/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
@@ -527,7 +528,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Tilbakestill passord | `/auth/reset-password` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Sjekk e-post | `/auth/check-email` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | BankID ★ | `/auth/bankid` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
-| Onboarding (spiller, 8 steg) | `/auth/onboarding` | – | ✓✓– | ~ | ~ | – | ✓ |
+| Onboarding (spiller, 8 steg) | `/auth/onboarding` | – | ✓✓– | ~ | ✓ | ✓ | ✓ | 2026-07-11: fikset lesPreferences-lekkasje (data ble slettet av enhver innstillings-lagring); steg-3-svar (fasiliteter/dager/mål) lagres nå og feeder FacilityPrefs+Goal+plan-engine.
 | Onboarding (forelder) | `/auth/onboarding/forelder` | – | --- | ✓ | ~ | ~ | ~ |
 | Foreldresamtykke (token) | `/auth/guardian-consent/[token]` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Samtykke venter | `/auth/samtykke-venter` | ✓ | --- | ✓ | ~ | ~ | ~ |
@@ -742,6 +743,43 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 11. juli (booking-konsolidering, fase 1.1–1.3): **sikkerhetshull i ombooking tettet** —
+  `rescheduleBooking` i `booking/actions.ts` hardkodet `coachId = ""`, som gjorde at Google
+  Kalender-kollisjonssjekken alltid «feilet åpent» (fant ingen tilkobling → sa ledig). Bruker nå
+  ekte `booking.coachId`. Verifisert mot en midlertidig testkobling i dev-DB (ryddet opp etterpå).
+  24-timers påminnelse (`src/lib/agents/booking-reminders.ts`) viste seg å allerede være fullt
+  bygget og koblet på cron — ingenting å gjøre der. Slått sammen de to parallelle
+  booking-e-postsystemene til ett: `booking/actions.ts` (marketing/gjeste-avbestilling og
+  -ombooking) brukte hardkodede React-maler (`send-booking-email.ts`), mens resten av appen
+  allerede brukte de DB-drevne `EmailTemplate`-radene (`booking-emails.ts`, redigerbare av Anders
+  uten kode-endring). Lagt til to nye maler i databasen (`booking-avbestilt`, `booking-flyttet`),
+  byttet `booking/actions.ts` til det DB-drevne systemet, og slettet det nå døde
+  `send-booking-email.ts` + `templates/`-mappa. tsc + build + 400/400 tester grønt.
+
+- 11. juli (booking-konsolidering, fase 2–3): **fase 2 (rydd legacy vs v2-duplikater) trengte
+  ingen kode** — grep + git-historikk viste at kun index-sidene (`/portal/booking`,
+  `/admin/bookinger`) er byttet til v2; alle undersider (`/portal/booking/ny`, `[bookingId]`,
+  `coach/[coachId]`, `anlegg/[anleggId]`, `bekreftet`, `/admin/bookinger/ny`) er fortsatt
+  fungerende legacy-kode uten v2-erstatning, og aktivt lenket til fra global søk, coach-sider,
+  spiller-detalj og «Mine bookinger». Ikke reelle duplikater — å omdirigere dem ville brukket
+  ekte flyter. **Fase 3 (hente trener-katalog + anlegg-detalj fra `akgolf-booking`) utsatt av
+  Anders** til normal bølge-rekkefølge i v2-migreringen — begge skjermene mangler godkjent v2-design
+  (Design-kolonne «–» over), og bygging ville brutt den låste regelen om at nye, store flater
+  venter på godkjent mockup. Ingen kode endret i denne runden.
+
+- 11. juli (QA-runde, komplett gjennomgang desktop+mobil): **KRITISK shell-bug funnet og fikset** —
+  `BunnNavLenker` (mobil-bunn-nav) i `src/components/v2/shell.tsx` satte `display: "flex"` som
+  inline style, som alltid vant over Tailwind-klassen `md:hidden`. Konsekvens: bunn-navigasjonen
+  vises feilaktig på ALLE v2-skjermer ved desktop-bredde (≥768px) og overlapper/stjeler klikk fra
+  sideinnhold som strekker seg mot bunnen av viewporten (bekreftet reprodusert 2/2 ganger på
+  Plan-bygger steg 2→3 — klikk på «Neste» traff bunn-nav-lenken til Meg i stedet). Fiks: fjernet
+  inline `display`, lagt `flex` som base-klasse (`className="flex md:hidden"`). Bekreftet fikset
+  visuelt og funksjonelt (steg 2→3 fungerer nå korrekt) — påvirket sannsynligvis alle v2-skjermer
+  på desktop før fiksen. Mobil (375px) var aldri rammet. Samme QA-runde bekreftet: F1.0-F1.5
+  (onboarding→planmotor) fungerer ende-til-ende i ekte nettleserflyt, F2 (volum-linje) fanget en
+  ekte datafeil i malen «B Grunn-fase Standard» (nærspill/putting-økter tagget SLAG i stedet for
+  SPILL — bør rettes), F3 (masseredigering) koblet og enhetstestet.
 
 Full kronologisk byggehistorikk flyttet til [`docs/arkiv/master-skjermplan-endringslogg.md`](arkiv/master-skjermplan-endringslogg.md)
 2026-07-06 — denne fila var 822 linjer og loggen drukna den faktiske statustabellen. Siste hendelser:

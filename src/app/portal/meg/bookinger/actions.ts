@@ -265,10 +265,8 @@ export async function rescheduleBooking(input: {
 
   // Send oppdaterings-e-post (best-effort)
   try {
-    const { sendBookingConfirmationV2 } = await import(
-      "@/lib/email/send-booking-email"
-    );
-    await sendBookingConfirmationV2(booking.id);
+    const { sendBookingConfirmation } = await import("@/lib/email/booking-emails");
+    await sendBookingConfirmation(booking.id);
   } catch (err) {
     console.error("[reschedule] confirmation-email failed", err);
   }

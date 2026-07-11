@@ -4,7 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
-import { lesPreferences } from "@/lib/preferences";
+import { lesRaaPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
 import { email, optStr } from "@/lib/validation/schemas";
 
@@ -62,7 +62,7 @@ export async function saveKlubbOnboardingStep(
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
-  const prefs = lesPreferences(user);
+  const prefs = lesRaaPreferences(user);
   const current =
     typeof (prefs as Record<string, unknown>).klubbOnboarding === "object" &&
     (prefs as Record<string, unknown>).klubbOnboarding !== null
@@ -98,7 +98,7 @@ export async function markKlubbStepComplete(stepNumber: number): Promise<void> {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
-  const prefs = lesPreferences(user);
+  const prefs = lesRaaPreferences(user);
   const existing =
     typeof (prefs as Record<string, unknown>).klubbOnboarding === "object" &&
     (prefs as Record<string, unknown>).klubbOnboarding !== null
@@ -135,7 +135,7 @@ export async function completeKlubbOnboarding(): Promise<void> {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
-  const prefs = lesPreferences(user);
+  const prefs = lesRaaPreferences(user);
   const existing =
     typeof (prefs as Record<string, unknown>).klubbOnboarding === "object" &&
     (prefs as Record<string, unknown>).klubbOnboarding !== null
