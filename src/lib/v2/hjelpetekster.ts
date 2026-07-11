@@ -84,6 +84,11 @@ const RAW = {
     forklaring:
       "Tidsrommet innenfor en gruppeøkt som er satt av til at spilleren trener selvstendig, uten direkte styring fra coach.",
   },
+  talentVurdering: {
+    tittel: "Talent-vurdering",
+    forklaring:
+      "Coachens vurdering av deg på en skala fra 1 til 10 per område (teknikk, fysisk, motivasjon), vist som prosent av full skala. Oppdateres av coach — ikke beregnet automatisk.",
+  },
   spredningSigma: {
     tittel: "σ (spredning)",
     forklaring:
