@@ -156,7 +156,10 @@ export default async function V2AdminGodkjenningerPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
   const actions = await prisma.planAction.findMany({
-    where: { status: "PENDING" },
+    where: {
+      status: "PENDING",
+      OR: [{ coachId: user.id }, { coachId: null }],
+    },
     include: {
       user: { select: { id: true, name: true } },
       plan: { select: { id: true, name: true } },

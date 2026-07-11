@@ -80,6 +80,8 @@ import {
 } from "@/lib/workbench/session-actions";
 import type { WorkbenchPlanTemplate } from "@/lib/workbench/load-workbench";
 import { InsightsStripe } from "./InsightsStripe";
+import { SignalFeedPanel } from "./SignalFeedPanel";
+import type { WorkbenchAgentFeed } from "@/lib/workbench/agent-feed";
 import { EmptyPlanState } from "./EmptyPlanState";
 import {
   HubTabRail,
@@ -537,6 +539,8 @@ export type WorkbenchHybridProps = {
   planStatus?: PlanStatus | null;
   /** Bruker-id for planen som redigeres (spiller selv eller coach-valgt spiller). */
   subjectPlayerId?: string;
+  /** Siste signaler + ventende PlanAction (coach kan godkjenne inline). */
+  agentFeed?: WorkbenchAgentFeed | null;
 };
 
 export function WorkbenchHybrid({
@@ -552,6 +556,7 @@ export function WorkbenchHybrid({
   planId,
   planStatus = null,
   subjectPlayerId,
+  agentFeed = null,
 }: WorkbenchHybridProps): ReactElement {
   const resolvedPlayerId = currentPlayerId ?? subjectPlayerId;
   const isCoach = role === "coach";
@@ -1286,6 +1291,7 @@ export function WorkbenchHybrid({
             <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
               {!showPlanningTab && hubTab !== "okt" && (
                 <>
+                  <SignalFeedPanel feed={agentFeed} coachMode={isCoach} />
                   <InsightsStripe line={combinedInsights} />
                   {kpiStrip}
                   {validering && (
@@ -1372,6 +1378,7 @@ export function WorkbenchHybrid({
         )}
         {!showPlanningTab && hubTab !== "okt" && (
           <>
+            <SignalFeedPanel feed={agentFeed} coachMode={isCoach} />
             <InsightsStripe line={combinedInsights} />
             {kpiStrip}
           </>

@@ -10,6 +10,8 @@ import {
   StopCircle,
   X,
 } from "lucide-react";
+import { LiveCoachPanel } from "@/components/portal/live/LiveCoachPanel";
+import type { LiveCoachPanelData } from "@/components/portal/live/types";
 import { saveTapperCounts } from "./actions";
 
 type Club = { id: string; name: string };
@@ -18,6 +20,7 @@ type Props = {
   sessionId: string;
   facilityLabel: string;
   defaultClubs: Club[];
+  coachPanel: LiveCoachPanelData;
   /** Tidligere lagrede tellinger (session_ball_logs) — gjenopptak etter refresh. */
   initialCounts?: Record<string, number>;
 };
@@ -29,7 +32,7 @@ type Props = {
  * Tellingene persisteres til session_ball_logs: debounced ~5 s etter siste
  * tap, ved pause, og før navigering ut (avslutt/lukk).
  */
-export function TapperShell({ sessionId, facilityLabel, defaultClubs, initialCounts }: Props) {
+export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel, initialCounts }: Props) {
   const router = useRouter();
   const [counts, setCounts] = useState<Record<string, number>>(() => ({
     ...Object.fromEntries(defaultClubs.map((c) => [c.id, 0])),
@@ -335,6 +338,8 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, initialCou
           {lagreFeil ? "Kunne ikke lagre — prøver igjen ved neste tap." : "Lagres automatisk."}
         </p>
       </div>
+
+      <LiveCoachPanel data={coachPanel} />
     </div>
   );
 }

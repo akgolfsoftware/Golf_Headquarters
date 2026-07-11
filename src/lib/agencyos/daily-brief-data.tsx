@@ -139,6 +139,7 @@ export async function loadDailyBrief(coach: {
     stallSgAgg,
     planScheduledCount,
     planCompletedCount,
+    latestDailyBriefRun,
   ] = await Promise.all([
     prisma.booking.findMany({
       where: { startAt: { gte: dagStart, lt: dagSlutt }, status: { in: ["CONFIRMED", "PENDING"] } },
@@ -206,6 +207,11 @@ export async function loadDailyBrief(coach: {
     prisma.trainingPlanSession.count({
       where: { scheduledAt: { gte: tretti, lte: now }, status: "COMPLETED" },
     }),
+    prisma.agentRun.findFirst({
+      where: { agentName: "daily-brief", status: "OK" },
+      orderBy: { createdAt: "desc" },
+      select: { output: true, createdAt: true },
+    }),
   ]);
 
   // STALL-SG + PLAN-ETTERLEVELSE → KPI-strenger (null/0 → «—», ingen fabrikering).
@@ -226,13 +232,23 @@ export async function loadDailyBrief(coach: {
     (b) => minutesSinceMidnight(b.startAt) <= nowMin && minutesSinceMidnight(b.endAt) > nowMin,
   );
   const nesteBk = dagensBookinger.find((b) => minutesSinceMidnight(b.startAt) > nowMin);
-  const aiContext = aktivBk
-    ? `${firstName(aktivBk.user?.name)} er i økt nå.`
-    : nesteBk
-      ? `neste økt ${hhmm(nesteBk.startAt)} med ${firstName(nesteBk.user?.name)}.`
-      : dagensBookinger.length === 0
-        ? "ingen økter i dag — rom for planlegging."
-        : "alle dagens økter er fullført.";
+  const coachBriefFromRun = (() => {
+    const out = latestDailyBriefRun?.output;
+    if (!out || typeof out !== "object" || !("briefs" in out)) return null;
+    const briefs = (out as { briefs?: Array<{ coachId: string; brief: string }> }).briefs;
+    const mine = briefs?.find((b) => b.coachId === coach.id);
+    return mine?.brief?.trim() || null;
+  })();
+
+  const aiContext =
+    coachBriefFromRun ??
+    (aktivBk
+      ? `${firstName(aktivBk.user?.name)} er i økt nå.`
+      : nesteBk
+        ? `neste økt ${hhmm(nesteBk.startAt)} med ${firstName(nesteBk.user?.name)}.`
+        : dagensBookinger.length === 0
+          ? "ingen økter i dag — rom for planlegging."
+          : "alle dagens økter er fullført.");
 
   // ── COL 1: timeline ────────────────────────────────────
   const timeline: CockpitTimelineSession[] = dagensBookinger.map((b, i) => {
@@ -469,6 +485,7 @@ export async function loadDailyBrief(coach: {
     greeting: greetingFor(now.getHours()),
     coachFirstName: firstName(coach.name),
     aiContext,
+    aiBrief: coachBriefFromRun,
     liveLabel: `${DAGER[now.getDay()].toUpperCase()} ${now.getDate()} ${MND_KORT[now.getMonth()].toUpperCase()} · ${hhmm(now)}`,
     timelineDateLabel: `${DAGER_KORT[now.getDay()]} ${now.getDate()} ${MND_KORT[now.getMonth()].toUpperCase()} · ${dagensBookinger.length} ${oktOrd}`,
     now: nowMin,

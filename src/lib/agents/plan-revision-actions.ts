@@ -10,6 +10,8 @@ import type {
   PlanRevisionTrigger,
 } from "@/lib/ai/agents/plan-revision";
 import { foreslaPlanRevisjon } from "@/lib/ai/agents/plan-revision";
+import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
+import { varsleVedPlanAction } from "./notify-plan-action";
 
 const PYRAMIDE_TIL_ACTION: Record<
   PlanRevisionEndring["pyramideAkser"][number],
@@ -92,14 +94,30 @@ export async function persistRevisionForslag(
     });
     if (dup) continue;
 
-    await prisma.planAction.create({
+    const coachId = await resolveCoachIdForPlayer(forslag.spillerId);
+    const created = await prisma.planAction.create({
       data: {
         userId: forslag.spillerId,
+        coachId,
         planId: forslag.planId,
         actionType,
         agentName: "plan-revision",
         suggestion,
       },
+    });
+    const forklaring =
+      typeof suggestion === "object" &&
+      suggestion !== null &&
+      "forklaring" in suggestion &&
+      typeof (suggestion as { forklaring?: unknown }).forklaring === "string"
+        ? (suggestion as { forklaring: string }).forklaring
+        : actionType;
+    await varsleVedPlanAction({
+      userId: forslag.spillerId,
+      agentName: "plan-revision",
+      actionType,
+      forklaring,
+      planActionId: created.id,
     });
     written++;
   }

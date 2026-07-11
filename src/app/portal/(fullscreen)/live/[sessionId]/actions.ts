@@ -13,6 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
 import type { PyramidArea, SessionStatusV2 } from "@/generated/prisma/client";
 import type { LiveV2Drill, LiveV2DrillLog, LiveV2Session } from "@/components/portal/live";
+import { triggerLiveSessionAgent } from "@/lib/agents/triggers";
 
 export type StartSessionResult =
   | { state: "active" }
@@ -248,7 +249,7 @@ export async function findOngoingSession(userId: string): Promise<{
 
 /** Starter økta (PLANNED → IN_PROGRESS). */
 export async function startSession(sessionId: string): Promise<StartSessionResult> {
-  const { session } = await verifyAccess(sessionId);
+  const { user, session } = await verifyAccess(sessionId);
 
   switch (session.status) {
     case "PLANNED":
@@ -256,6 +257,7 @@ export async function startSession(sessionId: string): Promise<StartSessionResul
         where: { id: sessionId },
         data: { status: "IN_PROGRESS" },
       });
+      void triggerLiveSessionAgent({ userId: user.id, sessionId, kind: "session-v2" });
       revalidatePath(`/portal/live/${sessionId}`);
       return { state: "active" };
     case "IN_PROGRESS":

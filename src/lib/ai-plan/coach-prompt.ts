@@ -13,10 +13,12 @@ import type {
   SpillerKontekst,
 } from "./context";
 import { kontekstSomBrukerMelding } from "./context";
+import type { LiveSessionKind } from "@/lib/agents/live-coach-agent";
+import { formatFewShotBlock, loadFewShotExamples } from "@/lib/ai-coach/few-shot";
 
 export type SystemPromptInput = {
   /** Hvem prompten er rettet til. Styrer tone og rolle. */
-  mottaker: "spiller" | "coach";
+  mottaker: "spiller" | "coach" | "spiller-live";
   /** Navn på spilleren (enten den som chater, eller den som analyseres). */
   spillerNavn: string;
   hcp: number | null;
@@ -37,8 +39,9 @@ export type SystemPromptInput = {
   sisteTester?: Array<{ dato: string; navn: string; score: number }>;
 };
 
-export function bygCoachSystemPrompt(input: SystemPromptInput): string {
-  const profil = [
+/** Bygger spillerprofil-blokken. Delt mellom alle mottaker-varianter. */
+function byggProfilLinjer(input: SystemPromptInput): string {
+  return [
     `Spiller: ${input.spillerNavn}`,
     input.hcp != null
       ? `HCP: ${input.hcp.toFixed(1).replace(".", ",")}`
@@ -50,29 +53,39 @@ export function bygCoachSystemPrompt(input: SystemPromptInput): string {
   ]
     .filter(Boolean)
     .join("\n");
+}
 
-  const planLinjer =
-    input.aktivePlaner.length > 0
-      ? input.aktivePlaner
-          .map((p) => `- ${p.navn}${p.meta ? ` ${p.meta}` : ""}`)
-          .join("\n")
-      : "Ingen aktive treningsplaner.";
+/** Bygger linjer for aktive treningsplaner. Delt mellom alle mottaker-varianter. */
+function byggPlanLinjer(aktivePlaner: SystemPromptInput["aktivePlaner"]): string {
+  return aktivePlaner.length > 0
+    ? aktivePlaner
+        .map((p) => `- ${p.navn}${p.meta ? ` ${p.meta}` : ""}`)
+        .join("\n")
+    : "Ingen aktive treningsplaner.";
+}
 
-  const rundeLinjer =
-    input.sisteRunder.length > 0
-      ? input.sisteRunder
-          .slice(0, 5)
-          .map((r) => {
-            const sg =
-              r.sgTotal != null
-                ? `SG ${r.sgTotal >= 0 ? "+" : ""}${r.sgTotal.toFixed(1)}`
-                : "";
-            return `- ${r.dato} · ${r.bane} · ${r.score}${
-              sg ? " · " + sg : ""
-            }`;
-          })
-          .join("\n")
-      : "Ingen registrerte runder enda.";
+/** Bygger linjer for siste runder (maks 5). Delt mellom alle mottaker-varianter. */
+function byggRundeLinjer(sisteRunder: SystemPromptInput["sisteRunder"]): string {
+  return sisteRunder.length > 0
+    ? sisteRunder
+        .slice(0, 5)
+        .map((r) => {
+          const sg =
+            r.sgTotal != null
+              ? `SG ${r.sgTotal >= 0 ? "+" : ""}${r.sgTotal.toFixed(1)}`
+              : "";
+          return `- ${r.dato} · ${r.bane} · ${r.score}${
+            sg ? " · " + sg : ""
+          }`;
+        })
+        .join("\n")
+    : "Ingen registrerte runder enda.";
+}
+
+export function bygCoachSystemPrompt(input: SystemPromptInput): string {
+  const profil = byggProfilLinjer(input);
+  const planLinjer = byggPlanLinjer(input.aktivePlaner);
+  const rundeLinjer = byggRundeLinjer(input.sisteRunder);
 
   const testLinjer =
     input.sisteTester && input.sisteTester.length > 0
@@ -137,6 +150,88 @@ Retningslinjer:
 - Når coach spør om analyse: pek på tendenser i SG-tallene
 - Si tydelig hvis du mangler data for å svare presist
 - Aldri foreslå at coachen "snakker med spilleren" uten konkret innhold`;
+}
+
+/** Kontekst om den aktive live-økta — injiseres i system-prompten sammen med spillerprofilen. */
+export type LiveCoachKontext = {
+  sessionKind: LiveSessionKind;
+  sessionId: string;
+  sessionTitle: string;
+  coachBrief?: string | null;
+  activeDrill?: {
+    name: string;
+    lFase?: string | null;
+    csNivaa?: string | null;
+    pyramidArea?: string | null;
+    pPosisjoner?: string[];
+  } | null;
+  drillsRemaining: number;
+};
+
+/**
+ * Bygger system-prompten for AI Golf Coach under en AKTIV treningsøkt.
+ * Kortere, mer direkte tone enn den ordinære spiller-varianten — spilleren
+ * står midt i økta, ikke i en generell coaching-samtale.
+ */
+export function bygLiveCoachSystemPrompt(
+  base: SystemPromptInput,
+  live: LiveCoachKontext,
+): string {
+  const profil = byggProfilLinjer(base);
+  const planLinjer = byggPlanLinjer(base.aktivePlaner);
+  const rundeLinjer = byggRundeLinjer(base.sisteRunder);
+  const fornavn = base.spillerNavn.split(" ")[0] || base.spillerNavn;
+
+  const drillLinjer = live.activeDrill
+    ? [
+        `Aktiv drill: ${live.activeDrill.name}`,
+        live.activeDrill.lFase ? `L-fase: ${live.activeDrill.lFase}` : null,
+        live.activeDrill.csNivaa ? `CS-nivå: ${live.activeDrill.csNivaa}` : null,
+        live.activeDrill.pyramidArea
+          ? `Pyramideområde: ${live.activeDrill.pyramidArea}`
+          : null,
+        live.activeDrill.pPosisjoner && live.activeDrill.pPosisjoner.length > 0
+          ? `P-posisjoner: ${live.activeDrill.pPosisjoner.join(", ")}`
+          : null,
+      ]
+        .filter(Boolean)
+        .join("\n")
+    : "Ingen aktiv drill valgt akkurat nå.";
+
+  const sessionKindLabel =
+    live.sessionKind === "plan-session" ? "treningsplan-økt" : "økt v2";
+
+  const fewShot = formatFewShotBlock(
+    loadFewShotExamples("live-coach-dialog.jsonl", 2),
+  );
+
+  return `Du er AI Golf Coach — Anders Kristiansens digitale stemme under en AKTIV treningsøkt.
+
+KONTEKST-REGLER:
+- ${fornavn} trener AKKURAT NÅ — dette er ikke en generell samtale, det skjer midt i økta.
+- Svar kort: maks 80 ord med mindre spilleren ber om mer.
+- Bruk fornavnet ${fornavn}, ikke fullt navn.
+- Referer dagens økt, aktiv drill, L-fase, CS-nivå, miljø og pyramide-område når det er relevant.
+- Still ETT godt coaching-spørsmål per svar.
+- Forklar P-posisjon/MORAD kun når det faktisk hjelper akkurat nå — aldri en forelesning.
+- Aldri emoji. Aldri "Bra jobba!". Aldri utropstegn.
+- Du anbefaler — du sperrer aldri trening.
+- Hvis det ikke er lastet opp video ennå: be spilleren laste opp, ikke gjett på svingen.
+
+Dagens økt: ${live.sessionTitle} (${sessionKindLabel})
+${live.coachBrief ? `Coach-notat til denne økta: ${live.coachBrief}` : "Ingen coach-notat på denne økta."}
+Driller igjen: ${live.drillsRemaining}
+
+${drillLinjer}
+
+Spillerprofil:
+${profil}
+
+Aktive treningsplaner:
+${planLinjer}
+
+Siste 5 runder:
+${rundeLinjer}${fewShot}`;
 }
 
 /**

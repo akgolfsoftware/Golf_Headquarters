@@ -1,0 +1,54 @@
+{
+  "description": "AK Golf Pyramide - 5 akser for treningsfordeling. Fra MasterBrain (Evidensbasert Grunnmur + Clean Master System). Brukes i calculateDistribution og plan-motor.",
+  "version": "2026-06-13",
+  "source": "AK_Golf_Platform_Evidensbasert_Grunnmur.md + AK_Golf_HQ_Master_System_Clean.md",
+  "axes": [
+    {
+      "code": "FYS",
+      "name": "Fysisk",
+      "description": "Fundament: styrke, mobilitet, kondisjon, balanse. Base for alt.",
+      "color": "--pyr-fys",
+      "default_percent": 20,
+      "priority": 1
+    },
+    {
+      "code": "TEK",
+      "name": "Teknikk",
+      "description": "Bevegelse og posisjoner (P1.0-P10.0, MORAD). Chunking og motorisk læring.",
+      "color": "--pyr-tek",
+      "default_percent": 30,
+      "priority": 2
+    },
+    {
+      "code": "SLAG",
+      "name": "Slag",
+      "description": "Kvalitet på slag (Tee, Approach, Nærspill, Putting). Kontakt og ballbane.",
+      "color": "--pyr-slag",
+      "default_percent": 25,
+      "priority": 3
+    },
+    {
+      "code": "SPILL",
+      "name": "Spill",
+      "description": "Banespill, strategi, beslutninger, risikostyring (DECADE).",
+      "color": "--pyr-spill",
+      "default_percent": 15,
+      "priority": 4
+    },
+    {
+      "code": "TURN",
+      "name": "Turnering",
+      "description": "Konkurranseforberedelse, mental, press, simulering.",
+      "color": "--pyr-turn",
+      "default_percent": 10,
+      "priority": 5
+    }
+  ],
+  "rules": {
+    "sum": 100,
+    "L-fase_influence": "Tidlig L-fase (KROPP/ARM/KØLLE) øker TEK/FYS andel kraftig, reduserer SPILL/TURN.",
+    "period_influence": "GRUNN: mer FYS/TEK. SPES: mer SLAG. TURN: mer SPILL/TURN.",
+    "A-K_influence": "Høyere A-K (bedre spillere): mindre FYS/TEK, mer SPILL/TURN."
+  },
+  "notes": "Brukes i calculateDistribution() med overstyringer. Se Clean Master System for calculateDistribution-rekkefølge."
+}

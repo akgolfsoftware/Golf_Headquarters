@@ -35,4 +35,9 @@ export const SG_TO_PYRAMID: Record<SgCategory, PyramidArea> = {
   PUTT: "SLAG",
 };
 
-export const LOW_RISK_ACTION_TYPES = new Set(["DRILL_SWAP", "REST_DAY_ADD"]);
+export const LOW_RISK_ACTION_TYPES = new Set([
+  "DRILL_SWAP",
+  "REST_DAY_ADD",
+  "INTENSITY_ADJUST",
+  "TRAINING_GAP",
+]);

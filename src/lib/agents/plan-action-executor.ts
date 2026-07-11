@@ -14,6 +14,11 @@ import {
   SG_TO_PYRAMID,
   SG_TO_SKILL,
 } from "@/lib/training/skills";
+import {
+  allocationForPeriod,
+  isPeriodType,
+} from "@/lib/training/period-allocation";
+import { validateExecutorDelta } from "@/lib/training/invariants";
 
 const pyramidAdjustSchema = z.object({
   omrade: z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]),
@@ -604,11 +609,19 @@ export async function applyExecutorDelta(
     }
 
     if (delta.planMeta?.periodNote) {
+      const periodNote = delta.planMeta.periodNote;
+      const update: {
+        aiPrompt: string;
+        targetAllocation?: Record<string, number>;
+      } = {
+        aiPrompt: `period:${periodNote}`,
+      };
+      if (isPeriodType(periodNote)) {
+        update.targetAllocation = allocationForPeriod(periodNote);
+      }
       await tx.trainingPlan.update({
         where: { id: ctx.planId },
-        data: {
-          aiPrompt: `period:${delta.planMeta.periodNote}`,
-        },
+        data: update,
       });
     }
   });
@@ -670,6 +683,11 @@ export async function executePlanAction(actionId: string): Promise<ExecuteResult
   });
   if (!guard.tillatt) {
     throw new Error(guard.avslagGrunn ?? "junior-guard");
+  }
+
+  const inv = validateExecutorDelta(delta, ctx);
+  if (!inv.ok) {
+    throw new Error(inv.reason ?? "executor-invariant");
   }
 
   const result = await applyExecutorDelta(delta, ctx);

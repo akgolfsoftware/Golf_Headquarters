@@ -1,0 +1,3850 @@
+{
+  "metadata": {
+    "version": "2.0",
+    "total_chunks": 1081,
+    "extraction_method": "pattern_matching_with_context"
+  },
+  "categories": {
+    "macs_concepts": {
+      "description": "Mac Malaska's kjernekonspter",
+      "terms": [
+        "three lines",
+        "control the radius",
+        "overtaking rates",
+        "pattern recognition",
+        "human brain"
+      ]
+    },
+    "p_system": {
+      "description": "P-System (Svingposisjoner P1-P10)",
+      "terms": [
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P5",
+        "P6",
+        "P7",
+        "P8",
+        "P9",
+        "P10"
+      ]
+    },
+    "pressure_points": {
+      "description": "Pressure Points (Trykkpunkter i grepet)",
+      "terms": [
+        "pressure points",
+        "#2 pressure point / PP2"
+      ]
+    },
+    "anatomy_positions": {
+      "description": "Anatomiske posisjoner og tilts",
+      "terms": [
+        "neck tilt",
+        "spine tilt",
+        "shoulder tilt",
+        "hip rotation",
+        "shoulder turn",
+        "knee flexion",
+        "right shoulder blade",
+        "clavicle",
+        "center of gravity / COG"
+      ]
+    },
+    "wrist_conditions": {
+      "description": "Håndleddsposisjoner",
+      "terms": [
+        "flat left wrist",
+        "wrist hinge",
+        "re-cock"
+      ]
+    },
+    "arm_positions": {
+      "description": "Arm- og albueposisjoner",
+      "terms": [
+        "left arm",
+        "right arm",
+        "right elbow",
+        "left elbow",
+        "arm plane",
+        "left arm club shaft",
+        "right angles"
+      ]
+    },
+    "movement_concepts": {
+      "description": "Bevegelseskonsepter",
+      "terms": [
+        "weight transfer",
+        "linear",
+        "rotation",
+        "pivot",
+        "free turn",
+        "coil",
+        "lag",
+        "release",
+        "flip"
+      ]
+    },
+    "video_analysis": {
+      "description": "Videoanalyse-terminologi",
+      "terms": [
+        "caddy view",
+        "face on",
+        "down the line",
+        "baseline",
+        "vertical"
+      ]
+    },
+    "ball_flight": {
+      "description": "Ballflyvning og impact",
+      "terms": [
+        "face angle",
+        "angle of attack",
+        "leading edge",
+        "bounce",
+        "toe",
+        "heel"
+      ]
+    },
+    "faults": {
+      "description": "Vanlige feil",
+      "terms": [
+        "over the top",
+        "casting",
+        "slide",
+        "reverse pivot",
+        "getting stuck",
+        "thin",
+        "fat",
+        "shank"
+      ]
+    },
+    "short_game": {
+      "description": "Short game terminologi",
+      "terms": [
+        "chip",
+        "pitch",
+        "bunker shot",
+        "flop shot",
+        "hands down"
+      ]
+    },
+    "references": {
+      "description": "Referanser (spillere og litteratur)",
+      "terms": [
+        "Homer Kelly / Golfing Machine",
+        "Hogan",
+        "Trevino",
+        "Seve",
+        "Nicklaus"
+      ]
+    }
+  },
+  "terms": {
+    "three lines": {
+      "term": "three lines",
+      "category": "macs_concepts",
+      "category_name": "Mac Malaska's kjernekonspter",
+      "norwegian_explanation": "Mac's konsept om tre horisontale linjer (skulder, hofte, kne) som skal forholde seg til hverandre i finish. Line one = skulderlinje, Line two = hoftelinje, Line three = knelinje.",
+      "frequency": 38,
+      "macs_quotes": [
+        {
+          "quote": "Further around. Yeah, okay. You've got the hips and the legs straightened out as well. That's right, yeah. Have I got a tip? Yeah. Another one. Line one. Here's line one. Line two. Line one's right here. Line two is outside. There's line two. And line three, the head is outside of line two.",
+          "matched_term": "Line one",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...'ve got the hips and the legs straightened out as well. That's right, yeah. Have I got a tip? Yeah. Another one. Line one. Here's line one. Line two. Line one's right here. Line two is outside. There's line two. And line three, the head is outside of line two.",
+          "matched_term": "Line one",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Get that? Yeah, And the actual shot, the momentum might... Bring you around. Bring you around more, yeah. This is line one here. Mm-hmm. Line two's gotta be outside line one. And then line three's gotta... Here's line three. Three. There's none existing.",
+          "matched_term": "line one",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "And there looks like. All right. Yeah. Need the mirror work. Yeah, yeah. All right. You're nice. There. Yeah. And if you do it, you change all the three lines. Mm-hmm. Like that, you change all the three lines. Mm-hmm. Gotta keep it like that. See, it's that. Yeah. It takes a drive or you come on it.",
+          "matched_term": "three lines",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": ".... All right, go to the foul till we finish. Go. Go. Go. Go. Go. Go. Go. Go. Go. Oh, you Seve boy. All right, come here, look. Go ahead, Drew. See the three lines? Now the reason why his line three is outside more of the middle, you can see it here, if you look at it.",
+          "matched_term": "three lines",
+          "session": "October 2014 Practice 3"
+        }
+      ],
+      "source_sessions": [
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "three lines",
+        "line one",
+        "line two",
+        "line three"
+      ]
+    },
+    "control the radius": {
+      "term": "control the radius",
+      "category": "macs_concepts",
+      "category_name": "Mac Malaska's kjernekonspter",
+      "norwegian_explanation": "Å kontrollere avstanden fra skulder til klubbhode gjennom svingen. Kritisk for konsistent kontakt - 'hit the little ball first, then the big ball'.",
+      "frequency": 14,
+      "macs_quotes": [
+        {
+          "quote": "...e of the three most important, let's say three to five important verifications you have here is with the number one rule in short game is you have to control the radius of the club.",
+          "matched_term": "control the radius",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "It doesn't matter everything else. If that doesn't work, you're dead. What does that mean, control the radius? Contact. Hit the little ball first and the big ball right. Hit the little ball first. So the question is, that's it.",
+          "matched_term": "control the radius",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Yeah. And Seve do all the stuff. Seve. Seve does. And you vary it a lot. Depending on shots and stuff. When you grab it shorter, it's easier to control the radius. It's just shorter distance. It's easier to control. Now, the second thing is I can get farther away like this or I can move this up to here.",
+          "matched_term": "control the radius",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "... away, farther away, farther away, it starts, and then all these things start changing. So when you stand closer to this ball, it's so much easier to control the radius of the club here. Who would you say today's best short game? Well, Romford is,, it looks great. I don't know his stats, but it looks pretty good.",
+          "matched_term": "control the radius",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...how you control the club head path, then I've got to control the club face alignment, then I've got to control the angle of descent, then I've got to control the radius of the club, and that's just to get to impact. Then you've got to impact and the ball's on the face, then you've got to control the path and the face...",
+          "matched_term": "control the radius",
+          "session": "April 2016 Practice 1 C"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2016 Practice 1 C",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "control the radius",
+        "controlling the radius"
+      ]
+    },
+    "overtaking rates": {
+      "term": "overtaking rates",
+      "category": "macs_concepts",
+      "category_name": "Mac Malaska's kjernekonspter",
+      "norwegian_explanation": "Hastigheten ulike kroppsdeler roterer i forhold til hverandre. Armene kan 'overtake' kroppen eller omvendt.",
+      "frequency": 28,
+      "macs_quotes": [
+        {
+          "quote": "...ok like right angles to the baseline So Anders right we're almost absolutely Okay, you stop it, Tell them I went to China had these kids two kids the overtaking right there like this the worst I've ever seen anybody Got all the kids do this absolutely perfect 11 years old perfect short game perfect there they...",
+          "matched_term": "overtaking",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "So everything you're setting up to the ball here is to control that one principle. And then also, second principle is control and overtaking rates. Same thing, full shots. You've got to hit the little ball first. So with the short game, there's three things that some of you guys haven't heard t...",
+          "matched_term": "overtaking rate",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Ben was explaining his elbows, has a tendency to stay back. If you're gonna draw the ball, one way of drawing the ball, the elbow stays back, the overtaking array kicks in like this. So the butt of the club backs up a little more to get the closure of the club base.",
+          "matched_term": "overtaking",
+          "session": "April 2016 Practice 1 C"
+        },
+        {
+          "quote": "If I want to play 30 yard hooks, I can stand here and stand this tall and play 30 yard hooks. Like this. Or pull shots. Going like this. The overtaking rate kicks in. There's two overtaking rates. One is club head to the hands. Club head to the hands. I'll play the 30 yard hooks and stand up taller.",
+          "matched_term": "overtaking rate",
+          "session": "April 2016 Practice 1 C"
+        },
+        {
+          "quote": "...ks, I can stand here and stand this tall and play 30 yard hooks. Like this. Or pull shots. Going like this. The overtaking rate kicks in. There's two overtaking rates. One is club head to the hands. Club head to the hands. I'll play the 30 yard hooks and stand up taller. If your arms are higher off the ground.",
+          "matched_term": "overtaking rate",
+          "session": "April 2016 Practice 1 C"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2016 Practice 1 C",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3"
+      ],
+      "patterns_used": [
+        "overtaking rate",
+        "overtaking"
+      ]
+    },
+    "pattern recognition": {
+      "term": "pattern recognition",
+      "category": "macs_concepts",
+      "category_name": "Mac Malaska's kjernekonspter",
+      "norwegian_explanation": "Mac's tilnærming til videoanalyse - identifisere visuelle mønstre og sammenligne med referansebilder.",
+      "frequency": 1,
+      "macs_quotes": [
+        {
+          "quote": "Okay, when you look at this picture, between the two of us here, give me anything that looks different when you compare the two. This is called pattern recognition. Tell me anything that looks different. Anything. That's where the head. Head. There. Okay, the head. The head. Yeah. head position.",
+          "matched_term": "pattern recognition",
+          "session": "April 2012 Lecture 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "pattern recognition"
+      ]
+    },
+    "human brain": {
+      "term": "human brain",
+      "category": "macs_concepts",
+      "category_name": "Mac Malaska's kjernekonspter",
+      "norwegian_explanation": "Mac's filosofi om at hjernen gjør tilpasningene - ikke instruktøren. 'Jack Nicklaus is not the greatest golfer, the human brain is.'",
+      "frequency": 6,
+      "macs_quotes": [
+        {
+          "quote": "So his club is perfect. But Pete, he's always,, he's like,, this way. So, but what it goes to show you, it's not Peter Cowan, it's the human brain because it's making all the adjustments. Yeah. The human brain. Jack Nicholson's not the greatest golfer, it's the human brain that's the greatest go...",
+          "matched_term": "human brain",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "... Peter Cowan, it's the human brain because it's making all the adjustments. Yeah. The human brain. Jack Nicholson's not the greatest golfer, it's the human brain that's the greatest golfer. But, okay. Ooh. Good. Good chance. Now, just a little bit too much. It should be a little bit more rotated.",
+          "matched_term": "human brain",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...p the plane, get a little weight transfer, and go on like this. You don't need to be going this way in the big outside look. Can you be good at that? Human brain says, this is good setting. So, as a teacher, you gotta be careful not to be criticized by the players. They still get the job done.",
+          "matched_term": "Human brain",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "The time frame is just minimum, not points or seconds. Jack Nicklaus is not the greatest graphic. The human brain is the greatest graphic. Because the human brain can get it if the stuff unconsciously. The point is just to show you there's a sequencing that's goi...",
+          "matched_term": "human brain",
+          "session": "April 2011 Practice 2"
+        },
+        {
+          "quote": "...he time frame is just minimum, not points or seconds. Jack Nicklaus is not the greatest graphic. The human brain is the greatest graphic. Because the human brain can get it if the stuff unconsciously. The point is just to show you there's a sequencing that's going on here.",
+          "matched_term": "human brain",
+          "session": "April 2011 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "October 2014 Practice 3",
+        "April 2011 Practice 2"
+      ],
+      "patterns_used": [
+        "human brain"
+      ]
+    },
+    "P1": {
+      "term": "P1",
+      "category": "p_system",
+      "category_name": "P-System (Svingposisjoner P1-P10)",
+      "norwegian_explanation": "Address/setup. Startposisjon med klubben bak ballen.",
+      "frequency": 188,
+      "macs_quotes": [
+        {
+          "quote": "Perfect. The reason is because, watch, everything's parallel to the line. It's easier just to just drop it. Great decision. Now watch P1 to P2. Watch where the ball of the club went. Is he moving? Alright, he went. Tell him what I said. Hold on.",
+          "matched_term": "P1",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Seven. Alright, tell him what we said. What we did. So you, you, you increase the line here, you take the hands further outside. Going out, P1 to P2. That far. So, some guys do that in the backspin on the first one. They do it in the inside out.",
+          "matched_term": "P1",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "They do it in the inside out. Now, when he goes out like that, and he's already flexing the elbow, that's what gets the power. If you go P1 to P2, keep it on a straight line. Now go right and flex it up like this. So, you're ready? Yeah, I'm ready.",
+          "matched_term": "P1",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "All right,. You're gonna win it. Ready, guys? Yep. All right, very good. Come on, pull back. Good job. Hey. Where's the chocolate? Oh. Good. Good. P1, P1. Let's just anyway do it. Try to come back on the same line as up. Yeah. Let's go. Let's go. Close stops as well as open starts.",
+          "matched_term": "P1",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "The club shaft and the line. I'm not saying you're right or wrong, but those are the two things I see different. So it doesn't look that bad. Now, P1 to P2, now let's watch it in motion. Let's see if you hinge it. Okay, look how wide that is. Because why? Your elbow's in flex mode. Right.",
+          "matched_term": "P1",
+          "session": "April 2012 Lecture 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\bP1\\b",
+        "\\bp1\\b"
+      ]
+    },
+    "P2": {
+      "term": "P2",
+      "category": "p_system",
+      "category_name": "P-System (Svingposisjoner P1-P10)",
+      "norwegian_explanation": "Takeaway. Klubbskaftet parallelt med bakken, håndleddene ikke hinget ennå.",
+      "frequency": 388,
+      "macs_quotes": [
+        {
+          "quote": "So it's got to pronate, and it's got to plantar flex. It doesn't just go, it doesn't supplement it out. Alright, so... Just go to P2, go in your files when you're finished, strain your left leg out to finish. Yeah, got it. Just concentrate on just doing that alone.",
+          "matched_term": "P2",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "Good. Good. Good. Good. Good. Good. Good. Good. Good. Good. Good. Good. Okay. Okay. All right. Do it again. The shaft's a little bit inside at P2. Make sure you feel the club head has a sharper angle on the shaft. Last one. Three, two, one. Move it. Yeah. Take it outside. Good. Good shot.",
+          "matched_term": "P2",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "Ready? 3, 2, 1, go. That was better. That looks like it was a tiny bit outside. What happens is when the club head goes outside of the P2, P3, the left arm is not in enough. So you've got a driver there. You've got to make sure that driver gets in.",
+          "matched_term": "P2",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "Perfect. The reason is because, watch, everything's parallel to the line. It's easier just to just drop it. Great decision. Now watch P1 to P2. Watch where the ball of the club went. Is he moving? Alright, he went. Tell him what I said. Hold on.",
+          "matched_term": "P2",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Seven. Alright, tell him what we said. What we did. So you, you, you increase the line here, you take the hands further outside. Going out, P1 to P2. That far. So, some guys do that in the backspin on the first one. They do it in the inside out. Now, when he goes out like that, and he's already fl...",
+          "matched_term": "P2",
+          "session": "October 2014 Practice 3"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\bP2\\b",
+        "\\bp2\\b"
+      ]
+    },
+    "P3": {
+      "term": "P3",
+      "category": "p_system",
+      "category_name": "P-System (Svingposisjoner P1-P10)",
+      "norwegian_explanation": "Venstre arm parallelt med bakken i backswing.",
+      "frequency": 240,
+      "macs_quotes": [
+        {
+          "quote": "Ready? 3, 2, 1, go. That was better. That looks like it was a tiny bit outside. What happens is when the club head goes outside of the P2, P3, the left arm is not in enough. So you've got a driver there. You've got to make sure that driver gets in.",
+          "matched_term": "P3",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "Okay. Okay. Do you have a wedge? Where's your wedge? In my back. Anyway. When you take out your when you take out your wedge you're going to P3, P9. Left arm's in. 20 degrees. You're over here. Right arm,. These are not powerful. Wait. Wait.",
+          "matched_term": "P3",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "It's a little bit higher. I'm not sure how you see it. Oh, the one picture we have of you is Sgt. Batson. The picture is fuzzy. P3 looks good. P3 looks good. Head medium line. Go up the line. Head, look at it. Watch this. Head medium line. Look where it is right here at P4.",
+          "matched_term": "P3",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "Right away, go like this and start tilting like this. That's the first thing. Second thing, the left arm's not in enough at P3. Up at P4, what?",
+          "matched_term": "P3",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "It'll take me going all the way back, I'm gonna go back to P2. Now I hit the top button, slow motion again. Okay, look up, P2, I'm off to P3. I wanna go slow motion back down to P2. So I just. Slow motion. I hit it three times, and now it's going slow motion.",
+          "matched_term": "P3",
+          "session": "April 2012 Lecture 2"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\bP3\\b",
+        "\\bp3\\b"
+      ]
+    },
+    "P4": {
+      "term": "P4",
+      "category": "p_system",
+      "category_name": "P-System (Svingposisjoner P1-P10)",
+      "norwegian_explanation": "Toppen av backswing. Full skulderrotasjon, maksimal coil.",
+      "frequency": 328,
+      "macs_quotes": [
+        {
+          "quote": "...h it all right good thank you here we go anders name more towards us okay ready here we go start again start again just address don't move okay go to p4 stop all right come all the way through come to the end okay ready and just put the club behind your head all right good jump in there peter trying t...",
+          "matched_term": "p4",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...ust a little bit more okay good one more inch to your left to your right everybody's lined up perfect enough okay ready here we go all right go up to p4 go go to the finish go hold your finish get your tilts your neck toes put your club behind your ears all right come look get some of the fly people i...",
+          "matched_term": "p4",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...er ask somebody to try and keep you bent if the arm was straightening too early? Well, yeah, you have to get the sequence order. Right. 90 degrees at P4, right elbow flexion 90 degrees at P5, 55 degrees at P6. So if you saw somebody too early straightening, you would recommend they hold that angle a b...",
+          "matched_term": "P4",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "Just hit this 100 yards, go. Okay, good. Hold on. Wait too long, go, go up. Now, watch, your center of gravity's are lined up properly at P4. Hips are 35, 40 degrees, shoulders are at 90, so you got all that. You got your shoulder turned, shoulder plank, neck tilt, all that stuff's in ther...",
+          "matched_term": "P4",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "...ders are turned 90 degrees back, look how much higher my right shoulder is to that line right in the center compared to where my left shoulder was in P4. You guys see that or no? No. The dark line is where my right shoulder is now but my left shoulder is at the line below that. What? I don't know.",
+          "matched_term": "P4",
+          "session": "April 2012 Lecture 2"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\bP4\\b",
+        "\\bp4\\b"
+      ]
+    },
+    "P5": {
+      "term": "P5",
+      "category": "p_system",
+      "category_name": "P-System (Svingposisjoner P1-P10)",
+      "norwegian_explanation": "Venstre arm parallelt med bakken i downswing. Transition komplett.",
+      "frequency": 298,
+      "macs_quotes": [
+        {
+          "quote": "...nt if the arm was straightening too early? Well, yeah, you have to get the sequence order. Right. 90 degrees at P4, right elbow flexion 90 degrees at P5, 55 degrees at P6. So if you saw somebody too early straightening, you would recommend they hold that angle a bit longer? Yeah, they have to train it...",
+          "matched_term": "P5",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "Could you just advance it, just push it one time so it doesn't show up? Okay. Now, watch the left knee now. Okay, stop at P5. Bring it back up. Bring your chair closer to your normal back. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay.",
+          "matched_term": "P5",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "It brings it more out, okay. So we know that as a rule, you don't bring your left arm up parallel to the line in P5. You don't bring it up parallel, because what does that do with the shaft through the humerus? It's too high.",
+          "matched_term": "P5",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "Now look as it comes down here towards the bow. His arms are going off over there. See, they're too far inside. You'll see it here at P5, the little left arm. When you're at P5, when you're at your left arm, let's say 30 degrees here, the guy usually goes out 20 to 30 degrees straight ...",
+          "matched_term": "P5",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "And that was, this is the three leg line that's left arm's and left shoulder. P3 left arm parallel ground, P4 shaft parallel, P5 with the left arm parallel ground. You're going to be 90 degrees off the ground. You're going to be 90 degrees off P3.",
+          "matched_term": "P5",
+          "session": "April 2012 Lecture 2"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\bP5\\b",
+        "\\bp5\\b"
+      ]
+    },
+    "P6": {
+      "term": "P6",
+      "category": "p_system",
+      "category_name": "P-System (Svingposisjoner P1-P10)",
+      "norwegian_explanation": "Delivery position. Høyre albue ved høyre hofte, shaft på linje med høyre underarm. Kritisk posisjon før impact.",
+      "frequency": 400,
+      "macs_quotes": [
+        {
+          "quote": "...ve you heard Torino? All you did you watch hogan practice once and always tried to do Watch the picture Go to impact watch it then Go back go back to p6. Okay, hit the center button then super slow See how the hands keep going left through the pivot and the club still look like right angles to the bas...",
+          "matched_term": "p6",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "It's not that hard. Put your right arm up. You're going to stop. All you're doing is going through impact here. You're at P6, P7. Now I just turn my shoulder and my right arm is stuck. Stop. Stop. Now pivot. Just go in. Now see, you're moving your arm and you're passing bec...",
+          "matched_term": "P6",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "... I'm going to hit that right there, I can't get it there. I have to keep rotating, get off my right side, keep rotating to bring that up the wall. So P6, it's 90 degrees to the shoulder. That's right. And then it goes 45 there. Would you keep this moving? So it's like a thrust.",
+          "matched_term": "P6",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "...straightening too early? Well, yeah, you have to get the sequence order. Right. 90 degrees at P4, right elbow flexion 90 degrees at P5, 55 degrees at P6. So if you saw somebody too early straightening, you would recommend they hold that angle a bit longer? Yeah, they have to train it.",
+          "matched_term": "P6",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "You have to know what the numbers are left after the chest at certain points during the swing. Then have elbow flexion. Yeah. Thank you. This is P6? Yeah. Yeah. Right on it. I've got a picture. Yeah. Okay. Wow. First time he's ever been there. Now at P6 your elbow is a little bit too bent there.",
+          "matched_term": "P6",
+          "session": "August 2016 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\bP6\\b",
+        "\\bp6\\b"
+      ]
+    },
+    "P7": {
+      "term": "P7",
+      "category": "p_system",
+      "category_name": "P-System (Svingposisjoner P1-P10)",
+      "norwegian_explanation": "Impact. Klubben treffer ballen.",
+      "frequency": 170,
+      "macs_quotes": [
+        {
+          "quote": "It's not that hard. Put your right arm up. You're going to stop. All you're doing is going through impact here. You're at P6, P7. Now I just turn my shoulder and my right arm is stuck. Stop. Stop. Now pivot. Just go in. Now see, you're moving your arm and you're passing because...",
+          "matched_term": "P7",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "...o go bring this arm to here, I just keep rotating, rotating, rotating. That's your head back. Mac, at what point is your arm 45 degrees to the chest? P7.5? At what point is it 44? It depends on how much your shoulders are rotating. But you're at P7 here like this, here.",
+          "matched_term": "P7",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "...c, at what point is your arm 45 degrees to the chest? P7.5? At what point is it 44? It depends on how much your shoulders are rotating. But you're at P7 here like this, here. If I stand up, look at it, that's 45 degrees. I'm at P7. That's 45 degrees.",
+          "matched_term": "P7",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "...t 44? It depends on how much your shoulders are rotating. But you're at P7 here like this, here. If I stand up, look at it, that's 45 degrees. I'm at P7. That's 45 degrees.",
+          "matched_term": "P7",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "OK, good. One more time. Left elbow, come over here. You're good. It... It can do this one. A short little shot where he goes P7-and-a-half, his left elbow hits me here. That's all. It's just a short little shot. If it was a little bit farther, it would hit me over here.",
+          "matched_term": "P7",
+          "session": "October 2014 Practice 3"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\bP7\\b",
+        "\\bp7\\b"
+      ]
+    },
+    "P8": {
+      "term": "P8",
+      "category": "p_system",
+      "category_name": "P-System (Svingposisjoner P1-P10)",
+      "norwegian_explanation": "Høyre arm parallelt med bakken etter impact.",
+      "frequency": 84,
+      "macs_quotes": [
+        {
+          "quote": "OK. Straight on. Ready? Three, two, one, go. Up above. All right. One more time. Go a little faster with your wrist. Left wrist bending P6, P7, P8. Oh, I got it. Oh, that's a good one. That's a good one. That's a good one. That's a good one. That's a good one. That's a good one.",
+          "matched_term": "P8",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Huh? We haven't got film. Yeah, we haven't got film. We haven't got film. Okay. All right, ready. And make sure the wrist, P6, P7, P8, straight up. Ready to go? Can I have it open? Yeah, you can have it open. You have a left. I'm going to slide with that. Yeah. Okay. All right.",
+          "matched_term": "P8",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "All right, three. Just bend the left elbow. You're going to hit it for the right. Okay. Bend the left elbow a little bit more. P7, P8. Okay. Send it again and then choke down the club a little bit more. Three, two, one, go. And, then knock the started. A bit lower at the finish.",
+          "matched_term": "P8",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Watch this. Head medium line. Look where it is right here at P4. It doesn't change. Check it out. Look how locked it is. Now just at P8, just starting to move ahead and forward. I think we're going to go, Matt. Got it? Okay. Let me shut it down. .",
+          "matched_term": "P8",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "Stop at P7. The butt of the club is gone from over here. What's that I'm saying? Yeah. Butt of the club was right here. It went up. Now go P8. Keep going. Keep going. Keep going. Shaft keep going. Keep going. Keep going. Keep going. Right there.",
+          "matched_term": "P8",
+          "session": "April 2012 Lecture 2"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\bP8\\b",
+        "\\bp8\\b"
+      ]
+    },
+    "P9": {
+      "term": "P9",
+      "category": "p_system",
+      "category_name": "P-System (Svingposisjoner P1-P10)",
+      "norwegian_explanation": "Begge armer strukket i follow-through.",
+      "frequency": 140,
+      "macs_quotes": [
+        {
+          "quote": "Okay. Okay. Do you have a wedge? Where's your wedge? In my back. Anyway. When you take out your when you take out your wedge you're going to P3, P9. Left arm's in. 20 degrees. You're over here. Right arm,. These are not powerful. Wait. Wait.",
+          "matched_term": "P9",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "...ip, left leg is straightening, very good pictures, head is down, the head is down, the head is up, that's good. All right? Go ahead and take me up to P9,, take me back to P6 again. Okay, so there I am at P6, okay, go to P7. Here's P7, bottom of the club, over to PA. Go on, right there, okay.",
+          "matched_term": "P9",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "Say what? I'm having the one picture of Seve in front of me. Amazing. So let's bring this up to P8. This is a shaft parallel. Bring this up to P9. Right heel, right side. Okay, got it. Very good. Right heel is staying down. Body is tilted sideways. Keep going over.",
+          "matched_term": "P9",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "Go up to P8. You guys see the wrists? See how the wrists are just going, and they're just staying right here. You go all the way up to P9. All right.",
+          "matched_term": "P9",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "What we're going to do here is show how, hold that for a second. We're going to come into impact and I'm going to go all the way over to here to P9, right arm parallel to ground. With the right arm, because I come right here like this. Here's my toe stance line right here. Right. Okay.",
+          "matched_term": "P9",
+          "session": "August 2016 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "April 2012 Practice 4",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\bP9\\b",
+        "\\bp9\\b"
+      ]
+    },
+    "P10": {
+      "term": "P10",
+      "category": "p_system",
+      "category_name": "P-System (Svingposisjoner P1-P10)",
+      "norwegian_explanation": "Finish. Full rotasjon, balansert sluttposisjon.",
+      "frequency": 8,
+      "macs_quotes": [
+        {
+          "quote": "All the message is where you're going to be at the pommel. This is where you're going to be at the P7, P8, P9, P10. All that stuff's being fired at sequence, And then he goes like this, also goes, that's what Scotty, his pictures will show.",
+          "matched_term": "P10",
+          "session": ""
+        },
+        {
+          "quote": "P8.0, the right elbow is going to be 0 degrees. P9.0, the right elbow is going to be not at 0 degrees. And then P10.0, if you go down to the finish, what's the right elbow's got? Depends where your hands are. 70 to 90. Yeah.",
+          "matched_term": "P10",
+          "session": "April 2012 Lecture 9"
+        },
+        {
+          "quote": "This is at P1. P4 is the same as P5. P6 is the same as P7. So, P7 is the same as P8. P9 is the same as P10. P11 is the same as P11. P12 is the same as P13. P14 is the same as P14. So, that's at P1. P4, that would look like this. Here's the head.",
+          "matched_term": "P10",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "That means the shaft is always tracing the baseline. Now you have to have, when you get up here at P4, this is at P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22, P23, P24, P25, P26, P27, P28, P30, P31, P32, P34, P35, P36, P37, P38, P40, P41, P42, P45...",
+          "matched_term": "P10",
+          "session": "April 2012 Lecture 2"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2012 Lecture 9",
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "\\bP10\\b",
+        "\\bp10\\b"
+      ]
+    },
+    "pressure points": {
+      "term": "pressure points",
+      "category": "pressure_points",
+      "category_name": "Pressure Points (Trykkpunkter i grepet)",
+      "norwegian_explanation": "Fire spesifikke punkter i hendene hvor kraft overføres til klubben. Grunnleggende for kontroll og power.",
+      "frequency": 172,
+      "macs_quotes": [
+        {
+          "quote": "... goes inside your left heel, you rotate now, it'll pull that off. If your left foot's open 45 degrees, you slide here and you rotate, you'll keep the pressure points apart. But even if your left foot's open, but if you slide the hips too far, now you rotate out, that'll pull that off. So there's like a couple.",
+          "matched_term": "pressure points",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "If that releases, now I have no tension in my back or my shoulder. Here I've got, feel it? So you've got to release that all the way up, get the pressure points in here, right here. This is up. Now if I want to go bring this arm to here, I just keep rotating, rotating, rotating. That's your head back.",
+          "matched_term": "pressure points",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "... longer okay now I do like this anyway eight minutes two three two five in For the top four five five bang Try it again. Get your pelvis up, Keep the pressure points. Keep the left leg straight. Just concentrate on your left leg. Go. Left leg straight. Okay, better. Where's the ball going? Ready? Again.",
+          "matched_term": "pressure points",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "For me, I play so much sports, throwing balls and stuff. Yeah, the right arm. It's not just getting the pressure point, but then you've got to control that flexion. That's how to get down. So you can't be up too high, and you go this way. That's why I bring it down.",
+          "matched_term": "pressure point",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "He was such a good player. Okay, so here we go. Here we go. I have to do it again. Okay, here we go. Coming out, get the pressure points. Deep. So you have two different contrasts here. Look where I'm... . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .",
+          "matched_term": "pressure points",
+          "session": "April 2012 Lecture 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "",
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "pressure points?"
+      ]
+    },
+    "#2 pressure point / PP2": {
+      "term": "#2 pressure point / PP2",
+      "category": "pressure_points",
+      "category_name": "Pressure Points (Trykkpunkter i grepet)",
+      "norwegian_explanation": "De tre siste fingrene på venstre hånd. Hovedgrepet som holder klubben.",
+      "frequency": 2,
+      "macs_quotes": [
+        {
+          "quote": "...ext one is, here, the, you lose the pressure points in the grip. You get up to the top of the swing, you go like this, da, da, da, da. They lose the, last three fingers of the left hand, they go like this. And then, you see, they lose the pressure points on the right hand.",
+          "matched_term": "last three fingers",
+          "session": "April 2012 Lecture 9"
+        }
+      ],
+      "source_sessions": [
+        "April 2012 Lecture 9"
+      ],
+      "patterns_used": [
+        "#2\\s*(?:pp|pressure point)",
+        "pp\\s*#?2",
+        "second pressure point",
+        "last three fingers"
+      ]
+    },
+    "neck tilt": {
+      "term": "neck tilt",
+      "category": "anatomy_positions",
+      "category_name": "Anatomiske posisjoner og tilts",
+      "norwegian_explanation": "Hodets/nakkens vinkel i forhold til skuldrene. Skal tilte mot høyre ved address og gjennom impact for høyrehendte.",
+      "frequency": 43,
+      "macs_quotes": [
+        {
+          "quote": "Hips are 35, 40 degrees, shoulders are at 90, so you got all that. You got your shoulder turned, shoulder plank, neck tilt, all that stuff's in there. Now you're going to get in the downswing. Just get that left knee. Back swing is fine now. Okay, ready? 3, 2, 1, go.",
+          "matched_term": "neck tilt",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "This looks a little bit more right-ish. Ooh, not a good combo here. Here's the combo. This is this way, and the head tilts this way. Neck tilts, looks like it's left, spine's tilted right. Look where my head is in relation here. See, who's on this one? Azar. Oh yeah, yeah, looks like it.",
+          "matched_term": "Neck tilt",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": ".... Look where my head is in relation here. See, who's on this one? Azar. Oh yeah, yeah, looks like it. Azar went, looks this way. Imagine you get your neck tilts left, you're trying to get the high turn. You go back over here, you see your spine will go like this.",
+          "matched_term": "neck tilt",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "...u get your neck tilts left, you're trying to get the high turn. You go back over here, you see your spine will go like this. But you're trying to go, neck tilts this way, the club's coming like this. The more you get your neck tilt, look at that ankle descent. Put your head back, roll, roll, roll over here l...",
+          "matched_term": "neck tilt",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "...ack over here, you see your spine will go like this. But you're trying to go, neck tilts this way, the club's coming like this. The more you get your neck tilt, look at that ankle descent. Put your head back, roll, roll, roll over here like this, look how that... How do you go... Your head won't allow you.",
+          "matched_term": "neck tilt",
+          "session": "April 2012 Lecture 2"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "April 2011 Lecture 5",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "neck tilt"
+      ]
+    },
+    "spine tilt": {
+      "term": "spine tilt",
+      "category": "anatomy_positions",
+      "category_name": "Anatomiske posisjoner og tilts",
+      "norwegian_explanation": "Vinkelen på ryggsøylen. Må opprettholdes gjennom svingen for konsistent kontakt.",
+      "frequency": 10,
+      "macs_quotes": [
+        {
+          "quote": "If I'm here, if I'm here, here, the ball is teed up this high. Look at my, how much my spine angle changed. You put it over here, if the ball is up there, you don't put the club down here and go that way.",
+          "matched_term": "spine angle",
+          "session": "April 2016 Practice 1 C"
+        },
+        {
+          "quote": "...u design, how far out does that line go? What determines that, Scott? The club you're using? The length of the club. Length of your spine, maybe? The spine angle, right. Now, if I do this, now I'm going to go like this. P1 to P2, this goes here. Now look where the two planes are.",
+          "matched_term": "spine angle",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "...then he just has to get the shoulder plane, the elbow position and the elbow flexion and get this stuff lined up halfway decent. Is it square to your spine angle at address, the club face? Say it again. Is the club face square to your spine angle at address? P2, or this? Well, no, one guy stands more upright.",
+          "matched_term": "spine angle",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "So, he's looking at the face. Yeah. So, he's looking at the face. Yeah. So, he's looking at the face. Yeah. Is the club face square to your spine angle at address? P2, or this? Well, no, one guy stands more upright. Some guys bend more at the waist. Let me come over here, watch for a second.",
+          "matched_term": "spine angle",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "That's a 40 degree inclination. 20 and 20. I went to the top of my swim and I looked like this. If I kept the same spine angle. I'm going to go like this. So if I kept the same spine angle, how would I be in the closet? Like this. Okay.",
+          "matched_term": "spine angle",
+          "session": "April 2011 Lecture 5"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Lecture 5",
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "spine tilt",
+        "spine angle"
+      ]
+    },
+    "shoulder tilt": {
+      "term": "shoulder tilt",
+      "category": "anatomy_positions",
+      "category_name": "Anatomiske posisjoner og tilts",
+      "norwegian_explanation": "Skuldrenes vinkel - skal være tiltet ved impact med venstre skulder høyere enn høyre.",
+      "frequency": 113,
+      "macs_quotes": [
+        {
+          "quote": "Okay. You got it? Yeah. Then when your shoulder plane is down over here like this, depending how much tilt you have, sometimes you're going to have this more tilted, not quite 45 degrees. Yeah, sure.",
+          "matched_term": "shoulder plane",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "Get the pelvis up. Not real fast. Okay, good. Excellent. Good job. Okay. So you've got this 45 degree angle. You've got to keep your shoulder plane down. Yeah. Okay. So you've got this 45 degree angle. Okay. So you've got this 45 degree angle. Yeah. So you've got this 45 degree angle. Yeah.",
+          "matched_term": "shoulder plane",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "...Now, I like this view from 45 degrees because you can see the hips are turning here at P4. You can see what the knees are doing. You can see what the shoulder planes are doing. Okay. Mark, have you softened your hand position a little bit since last time? Say it again.",
+          "matched_term": "shoulder plane",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "Remember, this backstroke so far is looking pretty good. But look, if you go from the left knee to upward and the hip rotation just the shoulder plane's gotta get down and the chin's gotta get down. Now you've got your hands a little bit higher because your right arm pressure points are being lost.",
+          "matched_term": "shoulder plane",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "I've changed the flow of your inner ear. Now you've changed all the equilibriums. Now you've changed the shoulder plane. If I come up like this, I come out of the shot. If I hold my leg, come down your legs, I'm with the ball. Watch.",
+          "matched_term": "shoulder plane",
+          "session": "April 2012 Lecture 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "April 2016 Lecture 6",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "shoulder tilt",
+        "shoulder plane"
+      ]
+    },
+    "hip rotation": {
+      "term": "hip rotation",
+      "category": "anatomy_positions",
+      "category_name": "Anatomiske posisjoner og tilts",
+      "norwegian_explanation": "Hofterotasjon. Ca 45° i backswing, åpner 30-45° ved impact.",
+      "frequency": 18,
+      "macs_quotes": [
+        {
+          "quote": "...ou stayed a little bit more over the ears this way? No, no. Or, possibly. When you can trust it, that you can go at it, as hard as you want, and your hip rotation keeps moving around, around, and around. Right. And then, as fast as you can, get up at the finish. Go. Alright, last one. And, more as you go.",
+          "matched_term": "hip rotation",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "It looks like I'm just... Remember, this backstroke so far is looking pretty good. But look, if you go from the left knee to upward and the hip rotation just the shoulder plane's gotta get down and the chin's gotta get down. Now you've got your hands a little bit higher because your right arm pressure...",
+          "matched_term": "hip rotation",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "That's still acceptable. That's outside the hip, it's still acceptable if you can still keep it, if you're flexible enough to keep the hip turns. But we haven't defined what shot he's hitting. No. You see? Now if he's going to hit more of a knockdown like this, going like this, here that way,...",
+          "matched_term": "hip turn",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "Definitely more down the line. Let's go a little bit more in from there. A little bit more in. A little bit more in that way. Just do it by your hip rotation. No. Just turn your hips, just turn your shoulder. Okay, one more. Go. Go. Go. Go. Go. Go. Go. Go. Go. Go. Go. Go. Go. Go. Go. Go. Go. Go.",
+          "matched_term": "hip rotation",
+          "session": "October 2014 Practice 4"
+        },
+        {
+          "quote": "It's on your hips? Yeah, you need to rotate your hips to make sure the line stays more towards the center. So you have to start increasing the hip rotation. Because you see, what you have to do is what moves the medium? That's the question. We can try this science, guys. We've got to explain this stuff.",
+          "matched_term": "hip rotation",
+          "session": "April 2012 Practice 4"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "hip rotation",
+        "hips? rotate",
+        "hip turn"
+      ]
+    },
+    "shoulder turn": {
+      "term": "shoulder turn",
+      "category": "anatomy_positions",
+      "category_name": "Anatomiske posisjoner og tilts",
+      "norwegian_explanation": "Skulderrotasjon. Ca 90° i backswing for full coil.",
+      "frequency": 23,
+      "macs_quotes": [
+        {
+          "quote": "Now, watch, your center of gravity's are lined up properly at P4. Hips are 35, 40 degrees, shoulders are at 90, so you got all that. You got your shoulder turned, shoulder plank, neck tilt, all that stuff's in there. Now you're going to get in the downswing. Just get that left knee. Back swing is fine now.",
+          "matched_term": "shoulder turn",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "Okay. All right. So what I like about this is that you can picture it a little bit private. You can see the amount of shoulder turn. You can see this right shoulder blade. You can see the flat left wrist, the left arm club shaft, and the pressure points of the grip.",
+          "matched_term": "shoulder turn",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "...the difference between the two left knees? Mine came a little bit more out this way. Okay. Now I look like I'm really good at knockdowns here. , your shoulder turn looks pretty good there. I look a lot more left than you do.",
+          "matched_term": "shoulder turn",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "Just watch the hip rotation, 35 degrees or so, and the transfer. See how the knee is sliding behind the hip there? Yeah. Absolutely. . Watch the shoulder turn now. Watch. And then the center gravity. Ready? Three, two, one. . Right in the middle. Just right in the center. .",
+          "matched_term": "shoulder turn",
+          "session": "October 2014 Practice 1"
+        },
+        {
+          "quote": ". All right, so, boy, check the grip. Grip looks fine. Check the hip rotation and the center gravity. . I'm going to lift the head and the shoulder turn. I'm going to lift the head and see what the head is doing. Are you ready? . Yeah. . . . . . . . . . . . . . . . . . . . . .",
+          "matched_term": "shoulder turn",
+          "session": "October 2014 Practice 1"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "shoulder turn",
+        "shoulders? rotate"
+      ]
+    },
+    "knee flexion": {
+      "term": "knee flexion",
+      "category": "anatomy_positions",
+      "category_name": "Anatomiske posisjoner og tilts",
+      "norwegian_explanation": "Knebøy. Venstre kne bøyd gjennom impact for rotasjon, høyre kne driver mot ball.",
+      "frequency": 278,
+      "macs_quotes": [
+        {
+          "quote": "Sometimes the hips get out in front too much. Here, you don't just transfer your weight and go linear. Now here's the other thing. This left knee is really crucial. You get over here and you start transferring your weight like this, that leg stays flexed all the way through here like this.",
+          "matched_term": "left knee",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Seve would start thinning a bunch of bunker shots. And the reason was he was coming up too much. See, you can't, that left knee. And also, this left knee, when it's bent, if you do the rotational element, you turn, you transfer, maybe no turn of the back swing, but you do the ...",
+          "matched_term": "left knee",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...wing, but you do the linear here and then you rotate. Watch this. Here, I'm going to rotate this way. I rotate and I can square my hips up because my left knee is going to be bent. Here, like this. So this is really, you got to,, you got to just, pins back right, simple shot, two or three small tears, front,...",
+          "matched_term": "left knee",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "So a guy has to know the different variations. Here's the other one. Now, if I take, so we cover the left foot, we cover the left knee, cover the weight transfers. Let's say your right foot's pronated in here like this. Gary Player would get in the bunker this way.",
+          "matched_term": "left knee",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "... here like this, here, then that shuts down the rotation. Your eyes got to come. He's got to get the middle joint between the knee. And you want your right knee a little bit behind the right knee. That means, then that forces you. That means your pelvis is in. That's what we're talking about. Stay bent.",
+          "matched_term": "right knee",
+          "session": "August 2016 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2016 Lecture 6",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "knee flexion",
+        "left knee",
+        "right knee"
+      ]
+    },
+    "right shoulder blade": {
+      "term": "right shoulder blade",
+      "category": "anatomy_positions",
+      "category_name": "Anatomiske posisjoner og tilts",
+      "norwegian_explanation": "Høyre skulderblad. Skal bevege seg ned og rundt i downswing, ikke ut mot ballen.",
+      "frequency": 23,
+      "macs_quotes": [
+        {
+          "quote": "I'm going to tee it up. More to the right. Just this one. Some of you come, you'll see this, more inside. Just flatten your shoulder blades. Tilt to the right and take it inside 30 degrees. So you don't have to get out there and flip this. It'll go automatic.",
+          "matched_term": "shoulder blade",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "...e able to stand there and just pull that trigger and get that. Know exactly what caused it. Okay. Here, one more. Tilt to the right, flatten out your shoulder blade, then go left. Now,, sometimes you can hit a shot like that. You don't have to carry it that far. You can just go right. Okay. Last one.",
+          "matched_term": "shoulder blade",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "All right. So what I like about this is that you can picture it a little bit private. You can see the amount of shoulder turn. You can see this right shoulder blade. You can see the flat left wrist, the left arm club shaft, and the pressure points of the grip. And then what the left knee is doing and then how qui...",
+          "matched_term": "right shoulder blade",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "So from P4 to P5, if my elbow stays here, the clavicle will stay back. It won't change. This moves here, that moves the clavicle forward, and the shoulder blade comes back out. By the way, I forgot to tell this to you guys. All you do in the back, don't turn the left shoulder.",
+          "matched_term": "shoulder blade",
+          "session": "October 2014 Practice 1"
+        },
+        {
+          "quote": "That's crucial too. So that goes down. Put your hand on Ron's right clavicle. And your left hand's on his shoulder blade. Now watch. Now set up in a dress. Put your shoulders forward. And you can, now he's got his right scapula is neutral.",
+          "matched_term": "shoulder blade",
+          "session": "October 2014 Practice 1"
+        }
+      ],
+      "source_sessions": [
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "right shoulder blade",
+        "shoulder blade"
+      ]
+    },
+    "clavicle": {
+      "term": "clavicle",
+      "category": "anatomy_positions",
+      "category_name": "Anatomiske posisjoner og tilts",
+      "norwegian_explanation": "Kragebenet. Brukes som visuell referanse for skulderrotasjon og tilt.",
+      "frequency": 56,
+      "macs_quotes": [
+        {
+          "quote": "Back a little bit more. Yeah. Yeah. Yeah. Yeah. I think it could be back a little bit more. But see, he's okay. , his right shoulder clavicle gets up. Yeah. But yours is down. But it has not rotated to the right that way. This way. It's not rotating. That's how you control the three lines.",
+          "matched_term": "clavicle",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "No. You don't want it to be too open. It looks good. What was it? Here. The pitaboy. Yeah. The right clavicle is too high. It looks like you have your neck here. It doesn't go down. Goddamn. I got one thing wrong. You got it. You got it. You got it.",
+          "matched_term": "clavicle",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": ".... I got one thing wrong. You got it. You got it. You got it. You got it. You got it. You got it. You got it. You got it. You got it. You got it. Left clavicle, or what do you say? What? What? What? Well. All right. Ooh, Nigel boy. All right. Okay, what about Johnny? He looks a little bit forward.",
+          "matched_term": "clavicle",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": ".... Rinse it. Rinse it. Rinse it. Good. And now you just have to get the shoulder plane just right. Head down. Keep going. Right on the money. Just the clavicle, just up a little bit. Good. That's it. You can see the clavicle up just a little bit. And that looks very good.",
+          "matched_term": "clavicle",
+          "session": "October 2014 Practice 4"
+        },
+        {
+          "quote": "Then there's a point they start squaring up and the 5th or so. So the elbow releases the shoulders a little bit more. P4, watch it. P4, the clavicle. Put your head on my shoulder, right hand on the clavicle, right. As I go up to the top, look over here, this clavicle is back now.",
+          "matched_term": "clavicle",
+          "session": "October 2014 Practice 1"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "clavicle",
+        "collarbone"
+      ]
+    },
+    "center of gravity / COG": {
+      "term": "center of gravity / COG",
+      "category": "anatomy_positions",
+      "category_name": "Anatomiske posisjoner og tilts",
+      "norwegian_explanation": "Kroppens tyngdepunkt. Skal være sentrert eller lett mot venstre ved impact.",
+      "frequency": 118,
+      "macs_quotes": [
+        {
+          "quote": "We're going to look at the studio. That foot, let's roll like this. If the foot's not straight enough, even though your hip COG goes inside your left heel, you rotate now, it'll pull that off. If your left foot's open 45 degrees, you slide here and you rotate, you'll keep the ...",
+          "matched_term": "COG",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Just concentrate on just doing that alone. Just hit this 100 yards, go. Okay, good. Hold on. Wait too long, go, go up. Now, watch, your center of gravity's are lined up properly at P4. Hips are 35, 40 degrees, shoulders are at 90, so you got all that. You got your shoulder turned, shoulder plank, neck ...",
+          "matched_term": "center of gravity",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "All right, okay. You need a swimsuit? All right, that's enough. This happened the other day. Elmer, won't this first. It's a card? The cog is everywhere. Say it again? The cog. Oh, he didn't see it... Oh, it... He-he-he-he-he! Just turn it on and out of your way. olin lol lol ...",
+          "matched_term": "cog",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Okay. Look at this picture here. See how you are here? Yeah. Okay. Yeah, that's good. So, all you're doing is trying to get your center of gravity lined up here and straight off. Okay. So, the stack and tilt, guys, well, what does stack mean? Well, you're stacking up the center of gravity.",
+          "matched_term": "center of gravity",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "...t your center of gravity lined up here and straight off. Okay. So, the stack and tilt, guys, well, what does stack mean? Well, you're stacking up the center of gravity. All right. All right. Put you on the spot. Are we at Mara the first one to say that you have to turn around and fix center, yes or no? No. Watch.",
+          "matched_term": "center of gravity",
+          "session": "April 2012 Lecture 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "center of gravity",
+        "\\bCOG\\b",
+        "centre of gravity"
+      ]
+    },
+    "flat left wrist": {
+      "term": "flat left wrist",
+      "category": "wrist_conditions",
+      "category_name": "Håndleddsposisjoner",
+      "norwegian_explanation": "Venstre håndledd i nøytral/flat posisjon ved impact. Ideell posisjon for kompresjon.",
+      "frequency": 22,
+      "macs_quotes": [
+        {
+          "quote": "...this is that you can picture it a little bit private. You can see the amount of shoulder turn. You can see this right shoulder blade. You can see the flat left wrist, the left arm club shaft, and the pressure points of the grip. And then what the left knee is doing and then how quickly that left knee separates and...",
+          "matched_term": "flat left wrist",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "We can still see that. So the arm plane is fine. So that part is okay. Maybe just a little bit. You got flat left wrist. Looks really good. Everything else looks very nice except for one thing. What is it? Short plane. Yeah, tell them.",
+          "matched_term": "flat left wrist",
+          "session": "April 2012 Lecture 9"
+        },
+        {
+          "quote": "Yeah. This part of the club is too flat. So let's keep going. I think I tried to. This looks very good also. Very good. Flat left wrist. You always look for this pressure right in here like this. Right. Left knee. Okay, now see what I did there? Yeah, the club is on the baseline prett...",
+          "matched_term": "Flat left wrist",
+          "session": "April 2012 Lecture 9"
+        },
+        {
+          "quote": "OK. Right there. Right here. I could say it right there. OK. Noisely flexion this. Push that like that. Flat. Watch this. I keep moving. That's flat left wrist. Got this pressure point, 45 degrees elbow position, elbow flexion, pressure points. The pelvic goes down. I'm looking right through here.",
+          "matched_term": "flat left wrist",
+          "session": "April 2012 Lecture 9"
+        },
+        {
+          "quote": "...e'll shut off, cut off some driver, and put this down here, then you can see they can turn their shoulders at right angles to the spine, and have the flat left wrist, position number one, 90 degrees at the top of the swing, and then they'll never start having that just right.",
+          "matched_term": "flat left wrist",
+          "session": "April 2012 Lecture 9"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "April 2012 Lecture 9",
+        "April 2011 Lecture 5",
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "flat left wrist",
+        "left wrist flat"
+      ]
+    },
+    "wrist hinge": {
+      "term": "wrist hinge",
+      "category": "wrist_conditions",
+      "category_name": "Håndleddsposisjoner",
+      "norwegian_explanation": "Bøyning av håndleddene i backswing som skaper vinkel mellom arm og klubb (lag).",
+      "frequency": 75,
+      "macs_quotes": [
+        {
+          "quote": "So we've covered somewhat with the wrist. But here's what people do with a strong grip. When the strong grip gets strong, now they start cocking the wrist more. And the club has too much distance to travel. Watch. If I go with my right elbow, I can go right here like this.",
+          "matched_term": "cocking the wrist",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...ng to have a neutral grip where watch, I can go like this. I can just take my right wrist and dorsiflex it right here and just like that. This is not cocking the wrist. That's cocking the wrist. So, Sevier hit a lot of these shots. He just do a little dorsiflexion this way.",
+          "matched_term": "cocking the wrist",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...f you watch here his shafts parallel, the left arm. This here in the left of the arm and we'll just watch from the elbow. That's the cuc Llama. He is cocking the wrist and he's flexing his elbow. Watch the left elbow. The left elbow. parallel to the fat line. And now do it again.",
+          "matched_term": "cocking the wrist",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "To get that club going left. Quicker, quicker. Wrist right-hand, wrist going quicker. Uncock. Elbow, elbow, left elbow. And uncock the wrist. This club is... Part of the wrist, that's all part of the wrist. The elbow, what's the other one? Rotation. Rotation elbow.",
+          "matched_term": "cock the wrist",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...ht or wrong, but those are the two things I see different. So it doesn't look that bad. Now, P1 to P2, now let's watch it in motion. Let's see if you hinge it. Okay, look how wide that is. Because why? Your elbow's in flex mode. Right. But there's a very good webbing right here. I like it.",
+          "matched_term": "hinge",
+          "session": "April 2012 Lecture 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "wrist hinge",
+        "hinge",
+        "cock(?:ing)? the wrist"
+      ]
+    },
+    "re-cock": {
+      "term": "re-cock",
+      "category": "wrist_conditions",
+      "category_name": "Håndleddsposisjoner",
+      "norwegian_explanation": "Å bøye håndleddene på nytt i follow-through. Klubben skal 're-cocke' etter impact.",
+      "frequency": 49,
+      "macs_quotes": [
+        {
+          "quote": "... then down the line loop and then he double hit it. You go in this rough here like this and you go here like this and you come through impact and you re-cock your wrist right into the path of the ball. You ever seen that? Never. You ever seen anybody double hit? I watched a TV program in China where somebo...",
+          "matched_term": "re-cock",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": ".... So, you're going to freeze this here, this has to come over here, and don't get this, it's got to come up, you've got to get it to come up. , start re-cocking it, guys are going this way, it's got to be flipped up. Okay. Okay. Let's see if we can see the angle. Okay. Yeah, there's a little bit of a gap.",
+          "matched_term": "re-cock",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "Now, and then look how that club of the club gets more off the ground, coming like this, pulling up, then you're recocking. So you're keeping the same club head path as you rotate all the way around, coming over here like this, then the club will get recocked.",
+          "matched_term": "recock",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "Go. All right. One more time. Hang on. Three, two, one, go. Good. All right. Go. Keep your wrist marked, P7 to P8, uncock and then re-cock. See how I bent over four times to pick up this thing? why I missed it? I missed it. I missed it. Why? Because it's two inches shorter. Whoosh.",
+          "matched_term": "re-cock",
+          "session": "October 2014 Practice 4"
+        },
+        {
+          "quote": "Oh, Casper looked. Trevino, those guys, real quick, watch. Just watch the left on pressure. Left arm pressure points maintained and then the recocking and then the knees together. Now we just do one more. Casper are the girls. that song came into origin, Here Comes the Sun? They were out there fo...",
+          "matched_term": "recock",
+          "session": "April 2012 Practice 4"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "October 2014 Practice 3",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "re-?cock"
+      ]
+    },
+    "left arm": {
+      "term": "left arm",
+      "category": "arm_positions",
+      "category_name": "Arm- og albueposisjoner",
+      "norwegian_explanation": "Venstre arm skal være relativt rett gjennom backswing og ved impact. Radius-kontroll.",
+      "frequency": 306,
+      "macs_quotes": [
+        {
+          "quote": "Ready? 3, 2, 1, go. That was better. That looks like it was a tiny bit outside. What happens is when the club head goes outside of the P2, P3, the left arm is not in enough. So you've got a driver there. You've got to make sure that driver gets in. The elbow has to be a little more straighter.",
+          "matched_term": "left arm",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "If I go here, look how my shoulders, look how they're opening. They're opening up here very nicely. If I keep this back, then, listen, then the left arm stays 45 degrees to the chest. This is too bent. Then you've got to... However you time it. Well, yeah. Okay.",
+          "matched_term": "left arm",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "Okay. Do you have a wedge? Where's your wedge? In my back. Anyway. When you take out your when you take out your wedge you're going to P3, P9. Left arm's in. 20 degrees. You're over here. Right arm,. These are not powerful. Wait. Wait.",
+          "matched_term": "Left arm",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "Oh. That feels really, really tough. I know. What's wrong with it? Transferred my weight. Transferred my weight. I don't need to. Left arm and the shaft are in line too much. You've got two months golf machine going on. Bend the elbow. You're not bent at all.",
+          "matched_term": "Left arm",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "So you're going to go like this. Yeah, very good. Now if you watch here his shafts parallel, the left arm. This here in the left of the arm and we'll just watch from the elbow. That's the cuc Llama. He is cocking the wrist and he's flexing his elbow.",
+          "matched_term": "left arm",
+          "session": "October 2014 Practice 3"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "April 2016 Practice 1 C",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2016 Lecture 6",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "left arm"
+      ]
+    },
+    "right arm": {
+      "term": "right arm",
+      "category": "arm_positions",
+      "category_name": "Arm- og albueposisjoner",
+      "norwegian_explanation": "Høyre arm bøyes i backswing, strekkes gjennom impact. Driver power i downswing.",
+      "frequency": 140,
+      "macs_quotes": [
+        {
+          "quote": "Everybody do it one more time. Right here. Right. So, go ahead and hit the three-wood. Right. And then you're going to finish with your right arm. Your right leg goes here. And your hips are going to be finishing left over here. Everybody, three, two, one, go. Yeah.",
+          "matched_term": "right arm",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "Very, very dangerous. Okay, ready? Okay. So,, you saw Andrew's good ball. Adios. All right, so you're going to get your right arm here at 45 degrees. And your hips and shoulders are going to be square to this line. Stop your right arm right here. At 45 degrees.",
+          "matched_term": "right arm",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "...our hips and shoulders are going to be square to this line. Stop your right arm right here. At 45 degrees. Put this right here. Just go on your false right arm. Stop your right there. Cut your wrist. That's it. Stop it right there. Right arm, perfect this way. Stop the arm. Okay. You brought it.",
+          "matched_term": "right arm",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "Your shoulder kept moving too far. If you go here, bring your shoulder, stop it right here. And relax right here. If you guys do this, take your right arm. It's not that hard. Put your right arm up. You're going to stop. All you're doing is going through impact here. You're at P6, P7.",
+          "matched_term": "right arm",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "...If you go here, bring your shoulder, stop it right here. And relax right here. If you guys do this, take your right arm. It's not that hard. Put your right arm up. You're going to stop. All you're doing is going through impact here. You're at P6, P7. Now I just turn my shoulder and my right arm is stuck.",
+          "matched_term": "right arm",
+          "session": "August 2016 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "April 2016 Lecture 6",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "right arm"
+      ]
+    },
+    "right elbow": {
+      "term": "right elbow",
+      "category": "arm_positions",
+      "category_name": "Arm- og albueposisjoner",
+      "norwegian_explanation": "Høyre albue. Skal være nær kroppen i downswing, peke ned, ikke ut.",
+      "frequency": 135,
+      "macs_quotes": [
+        {
+          "quote": "You're going right up the plane by moving the elbow. I'm not rotating. Just going over here. Look, I could flex my right elbow on the backswing, straighten it down, bend my elbow like this, and no body rotation. Just up and down. I think that's what's, that was very simple.",
+          "matched_term": "right elbow",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "When the strong grip gets strong, now they start cocking the wrist more. And the club has too much distance to travel. Watch. If I go with my right elbow, I can go right here like this. I can still take the shaft up parallel to the ground. And I do the weight transfer. Very easy.",
+          "matched_term": "right elbow",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "That's right. And then it goes 45 there. Would you keep this moving? So it's like a thrust. When you're at P6, you're right elbow is 55 degrees. And that impact, if 5 degrees, it changes to 50 degrees. The flexion. Does it feel like a thrust to you? Yeah, of course.",
+          "matched_term": "right elbow",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "...sk somebody to try and keep you bent if the arm was straightening too early? Well, yeah, you have to get the sequence order. Right. 90 degrees at P4, right elbow flexion 90 degrees at P5, 55 degrees at P6. So if you saw somebody too early straightening, you would recommend they hold that angle a bit longer? Ye...",
+          "matched_term": "right elbow",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "3, 2, 1, go. Turn, turn, turn. Looks Yeah, it looked good to me. It felt straighter. Thank you. The key here is you have to straighten out your right elbow fast enough. I'll show you how. You have to come through here. This has to be straight here, then boom, and up.",
+          "matched_term": "right elbow",
+          "session": "August 2016 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2016 Lecture 6",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "right elbow"
+      ]
+    },
+    "left elbow": {
+      "term": "left elbow",
+      "category": "arm_positions",
+      "category_name": "Arm- og albueposisjoner",
+      "norwegian_explanation": "Venstre albue. Skal forbli relativt rett, bøyes først i follow-through.",
+      "frequency": 117,
+      "macs_quotes": [
+        {
+          "quote": "...ike this, just simple like this, but he wouldn't use his wrist. He'd just use his, bend the elbow like this, little weight transfer, and then use his left elbow on the follow through. Very simple, just right up the plane, get a little weight transfer, and go on like this.",
+          "matched_term": "left elbow",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "The club's a little bit more vertical here again. Here, I'm just going to bend my elbow, straighten my elbow, flex the left elbow. And it's just like this. And Seve,, going over here. It was just amazing how shots always, always track, always, always track in the club.",
+          "matched_term": "left elbow",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Just my wrist. I found by just flexing the elbow up this way, no wrist, then transfer the weight. Then use the left elbow to follow through. Now, do the players today go, do they go bend their elbow more this way? Because what you're doing here, you're just coming throug...",
+          "matched_term": "left elbow",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "I can do this, I can hit a nine iron here. I'm just going to flex my elbow. I'm going to flex my elbow. Flex my left elbow like this. I didn't use any body, I didn't use any of my body, any of my wrist. I can hit 99% of all my shots like this. That's deadly.",
+          "matched_term": "left elbow",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Yeah. Yeah. Yeah. Yeah. Yeah. Yeah. Yeah. Seven on. Yeah, seven on. Yeah. Yeah. Thank you. All right, let's try to do it like this. Just bend your left elbow without using any of your wrists. Let's get the balls a little higher off the ground. Oh. If I feel the heebie-jeebies coming on, I go straight into ...",
+          "matched_term": "left elbow",
+          "session": "October 2014 Practice 3"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "left elbow"
+      ]
+    },
+    "arm plane": {
+      "term": "arm plane",
+      "category": "arm_positions",
+      "category_name": "Arm- og albueposisjoner",
+      "norwegian_explanation": "Planet armene svinger på. Skal matche eller være under skulderplanet.",
+      "frequency": 25,
+      "macs_quotes": [
+        {
+          "quote": "Are your hands a little bit lower since last time? Yeah, this is. Yeah. You picked up on that, eh? Matt knows it. We're going to talk about arm planes. A little bit different about the arm planes. Hands are up. Arm planes go up. We're more vertical. Other advantages we have. We're closer to body.",
+          "matched_term": "arm plane",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "on the phone. A couple hours. You get the club here like this. If I start to lower my arm plane here like this where it goes inside the vertical, the toe there, the shoulder of the club is off the ground. The toe of the club is off the ground.",
+          "matched_term": "arm plane",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "You will bring that up. Get it? It'll bring that up. Okay, set it again. And the reason why it brings it up is because your arm plane will come out a little bit. As your arm plane comes out, your wrist uncovers. That's what raises it up to that same level.",
+          "matched_term": "arm plane",
+          "session": "October 2014 Practice 4"
+        },
+        {
+          "quote": "Didn't know that, did you? Pete never told me. I'm going to tell you about it. All right, ready? Hold on. Ready? Go. All right, good. Arm plane looks better now. Take a full practice swing. Take those shafts out. Now, let's see you do this without the shafts. Take a picture again.",
+          "matched_term": "Arm plane",
+          "session": "October 2014 Practice 4"
+        },
+        {
+          "quote": "No, no, no. Put the club on the other side where the tee is. Okay. Go. Now, hit the tee. Do the same thing again. Go. All right, arm plane went like this. Arm plane's up here like this again. Try to maintain the same angle. All right. All right. All right. All right. All right.",
+          "matched_term": "arm plane",
+          "session": "October 2014 Practice 4"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "April 2012 Lecture 9",
+        "April 2015 Practice 1",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "arm plane"
+      ]
+    },
+    "left arm club shaft": {
+      "term": "left arm club shaft",
+      "category": "arm_positions",
+      "category_name": "Arm- og albueposisjoner",
+      "norwegian_explanation": "Linjen/vinkelen mellom venstre arm og klubbskaft. Viktig referanse for lag og release.",
+      "frequency": 20,
+      "macs_quotes": [
+        {
+          "quote": "Oh. That feels really, really tough. I know. What's wrong with it? Transferred my weight. Transferred my weight. I don't need to. Left arm and the shaft are in line too much. You've got two months golf machine going on. Bend the elbow. You're not bent at all.",
+          "matched_term": "Left arm and the shaft",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "You can see the amount of shoulder turn. You can see this right shoulder blade. You can see the flat left wrist, the left arm club shaft, and the pressure points of the grip. And then what the left knee is doing and then how quickly that left knee separates and goes this way.",
+          "matched_term": "left arm club shaft",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "Right here, I would, oh, very good. Shoulders are turned to 90 degrees, left arm club shaft's still 90 degrees, the head medium line looks fine, This angle right here, the spine, this is a really crucial angle here like this.",
+          "matched_term": "left arm club shaft",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "Now, when the line's a little bit more back, to the right. Right. To the right. Increase your leg more on the downswing. My? Your leg, left arm club shaft like this. Okay. Okay, ready? Go upstairs. Turn, turn, turn, turn, turn, turn, turn, turn, turn, left elbow straighter.",
+          "matched_term": "left arm club shaft",
+          "session": "April 2012 Practice 4"
+        },
+        {
+          "quote": "Okay, go up. Okay, good. Turn your hips and turn them. Start again. Start over. Make sure you get a big turn. , your arm, your left arm hit the shaft. Hit the shaft. Feel like you're trying to go inside. Good. One more time. You're going to go up to the top, stop, turn off that, and take one step.",
+          "matched_term": "left arm hit the shaft",
+          "session": "April 2011 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "left arm club shaft",
+        "left arm.{1,10}shaft"
+      ]
+    },
+    "right angles": {
+      "term": "right angles",
+      "category": "arm_positions",
+      "category_name": "Arm- og albueposisjoner",
+      "norwegian_explanation": "90-graders vinkel. Refererer ofte til forholdet mellom arm og klubb ved ulike posisjoner.",
+      "frequency": 92,
+      "macs_quotes": [
+        {
+          "quote": "Okay, hit the center button then super slow See how the hands keep going left through the pivot and the club still look like right angles to the baseline So Anders right we're almost absolutely Okay, you stop it, Tell them I went to China had these kids two kids the overtaking right the...",
+          "matched_term": "right angles",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Stop. Stop. Now pivot. Just go in. Now see, you're moving your arm and you're passing because your right shoulder did not stop your right angle. That was it. Here is the line. Here is that right angle. I'm going to get my right arm 45 degrees to there. You're going to go like this.",
+          "matched_term": "right angle",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "...see, you're moving your arm and you're passing because your right shoulder did not stop your right angle. That was it. Here is the line. Here is that right angle. I'm going to get my right arm 45 degrees to there. You're going to go like this. That's it. 45 degrees. I'm going to go like this.",
+          "matched_term": "right angle",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "That's it. See? That's it. You have to fully release the foot up there. Now for you to get the better arm at the right angles here, you have to keep rotating your hips. And then you put your head back like this. See your hips wind up over here like this? Yeah, it's like a ro...",
+          "matched_term": "right angles",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "If you get too tight, you can't get there. That's why that foot's got to open up. So all we do is this. Watch. We've got your hips and shoulders right angles to the baseline. Right arm 45 degrees. But for me to put my knees together, knees square, hips square, I've got to get up on my right foot like this....",
+          "matched_term": "right angles",
+          "session": "August 2016 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "right angles?"
+      ]
+    },
+    "weight transfer": {
+      "term": "weight transfer",
+      "category": "movement_concepts",
+      "category_name": "Bevegelseskonsepter",
+      "norwegian_explanation": "Forflytning av kroppsvekt fra høyre til venstre i downswing. Fundamentalt for power.",
+      "frequency": 221,
+      "macs_quotes": [
+        {
+          "quote": "...he club right up the plane, just like this, just simple like this, but he wouldn't use his wrist. He'd just use his, bend the elbow like this, little weight transfer, and then use his left elbow on the follow through. Very simple, just right up the plane, get a little weight transfer, and go on like this.",
+          "matched_term": "weight transfer",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...nd the elbow like this, little weight transfer, and then use his left elbow on the follow through. Very simple, just right up the plane, get a little weight transfer, and go on like this. You don't need to be going this way in the big outside look. Can you be good at that? Human brain says, this is good setting.",
+          "matched_term": "weight transfer",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...Now, Seve would line up square on this here like this, and he'd get his hands down like here, just the elbow flexion, just like this, and this little weight transfer, that way. Now, one of the rules on short game is opening the left foot. Because a lot of shots, there's two shots you're gonna hit with short game.",
+          "matched_term": "weight transfer",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "So here's eight-iron. I still got my weight a couple inches left. I'm still transferring my weight this way. And I'm doing the same weight transfer, exactly the same. Exactly the same. All Boy,, as heavy as it was. It's so simple. Straight linear like this. All That was a little bit too hard.",
+          "matched_term": "weight transfer",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...you got to just, pins back right, simple shot, two or three small tears, front, middle, back. Just take a little head out here like this, do a little weight transfer, a little rotation here like this. It's so easy to control the distances. Now, if I grab the club up here, now the rules change.",
+          "matched_term": "weight transfer",
+          "session": "October 2014 Practice 3"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2012 Practice 4",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "weight transfer",
+        "weight shift",
+        "transfer(?:ring)? (?:the |your )?weight"
+      ]
+    },
+    "linear": {
+      "term": "linear",
+      "category": "movement_concepts",
+      "category_name": "Bevegelseskonsepter",
+      "norwegian_explanation": "Rett/lineær bevegelse mot målet. Brukes spesielt i short game som alternativ til rotasjon.",
+      "frequency": 61,
+      "macs_quotes": [
+        {
+          "quote": "Now, one of the rules on short game is opening the left foot. Because a lot of shots, there's two shots you're gonna hit with short game. One is linear, just straight linear this way. No rotation. The other one, you can take it back here, you can turn, turn, then turn and rotate through the shot.",
+          "matched_term": "linear",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "... of the rules on short game is opening the left foot. Because a lot of shots, there's two shots you're gonna hit with short game. One is linear, just straight linear this way. No rotation. The other one, you can take it back here, you can turn, turn, then turn and rotate through the shot.",
+          "matched_term": "straight linear",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "So you have to find out what system that you like doing. But here, I'll go all the way across here. This is straight linear. Left foot's open. Now watch. I'm 50-50, and now I'm moving my weight a couple inches left here to dress.",
+          "matched_term": "linear",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "And then the moment the club goes back, I'm transferring again a couple more inches. Like this. All Now the question is, it's straight linear. As a rule, if your nerves are good, you want to stay linear. You just want to, you don't need to use too much.",
+          "matched_term": "linear",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "And I'm doing the same weight transfer, exactly the same. Exactly the same. All Boy,, as heavy as it was. It's so simple. Straight linear like this. All That was a little bit too hard. All Same thing again when you have a basic,, 80 yards of the grain here. Go out here like this.",
+          "matched_term": "linear",
+          "session": "October 2014 Practice 3"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "October 2014 Practice 3",
+        "April 2012 Practice 4",
+        "April 2015 Practice 2"
+      ],
+      "patterns_used": [
+        "\\blinear\\b",
+        "straight linear"
+      ]
+    },
+    "rotation": {
+      "term": "rotation",
+      "category": "movement_concepts",
+      "category_name": "Bevegelseskonsepter",
+      "norwegian_explanation": "Rotasjonsbevegelse av kroppen. Hovedkilden til power i full swing.",
+      "frequency": 138,
+      "macs_quotes": [
+        {
+          "quote": "This looks good. Let's go here. Now, what if this one has to change one thing? What? Rotation, multiple. Rotation. Yeah. Arrow. Next one. Go up. Sorry, what is it? It's more rotated to the right. It's too much. No, no, no. No, no, no.",
+          "matched_term": "Rotation",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Because a lot of shots, there's two shots you're gonna hit with short game. One is linear, just straight linear this way. No rotation. The other one, you can take it back here, you can turn, turn, then turn and rotate through the shot.",
+          "matched_term": "rotation",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...other one, you can take it back here, you can turn, turn, then turn and rotate through the shot. When do you do linear, Andrews? And when do you do a rotation? Just basic. You rub, then you move more distance.",
+          "matched_term": "rotation",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "You can do that. Some people feel, especially the guys, who do the eevee-jeevees, that it's a lot easier for them to come here and do the rotation this way. Somehow they feel more relaxed. Next guy just wants to go like this. So you have to find out what system that you like doing.",
+          "matched_term": "rotation",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "As a rule, if your nerves are good, you want to stay linear. You just want to, you don't need to use too much. If I go rotation here like this, I don't need that much energy. So you got to be able to, every shot, this is a sandwich.",
+          "matched_term": "rotation",
+          "session": "October 2014 Practice 3"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\brotation\\b",
+        "rotational"
+      ]
+    },
+    "pivot": {
+      "term": "pivot",
+      "category": "movement_concepts",
+      "category_name": "Bevegelseskonsepter",
+      "norwegian_explanation": "Dreiebevegelse rundt ryggsøylen. Core-bevegelsen i svingen.",
+      "frequency": 72,
+      "macs_quotes": [
+        {
+          "quote": "...e picture Go to impact watch it then Go back go back to p6. Okay, hit the center button then super slow See how the hands keep going left through the pivot and the club still look like right angles to the baseline So Anders right we're almost absolutely Okay, you stop it, Tell them I went to China had th...",
+          "matched_term": "pivot",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Good. Good. Good. Good. Good. Good. Good. Good. Good. Good. Good. Good. Good. Good. Good. Good. Good. Good. Good. Good. Good. Good. Good. Okay. Pivot, Let's do it. You want your place. Yeah. Good. Good. Yeah. Yeah. Yeah. Okay. Good. Good. Good. Good. Good. Good. Good. Good. It did work.",
+          "matched_term": "Pivot",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "All you're doing is going through impact here. You're at P6, P7. Now I just turn my shoulder and my right arm is stuck. Stop. Stop. Now pivot. Just go in. Now see, you're moving your arm and you're passing because your right shoulder did not stop your right angle. That was it.",
+          "matched_term": "pivot",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "...standing up square and a This is easy to do if you go like this. You're going to get a square, square, your wrist goes, your elbow goes, and then the pivot goes. Let me jump in. Yeah. The square with the shaft up. Yeah. Yeah. The more it gets here, it's easier to go across. Okay. Hold on. Three.",
+          "matched_term": "pivot",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "First thing is, if you go like this, guys, if you go too much this way, down the line here like this, start going to reverse pivot. Center grabby center, going that way. That's the first thing. What's the second thing? Starts going that way.",
+          "matched_term": "pivot",
+          "session": "April 2012 Lecture 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\bpivot\\b"
+      ]
+    },
+    "free turn": {
+      "term": "free turn",
+      "category": "movement_concepts",
+      "category_name": "Bevegelseskonsepter",
+      "norwegian_explanation": "Uhindret rotasjon i begge retninger. Fra Homer Kelly's 'The Golfing Machine'.",
+      "frequency": 3,
+      "macs_quotes": [
+        {
+          "quote": "Stationary post. Turn around and fix center. But that Kelly book, the 14th component, come back and look at it. Now you've got the book. A free turn in both directions and a weight shift in both directions. So, if you've got your head centered and you have a free turn and a weight shift in that di...",
+          "matched_term": "free turn",
+          "session": "April 2012 Lecture 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "free turn"
+      ]
+    },
+    "coil": {
+      "term": "coil",
+      "category": "movement_concepts",
+      "category_name": "Bevegelseskonsepter",
+      "norwegian_explanation": "Spenningen mellom overkropp og underkropp i backswing. Skuldrene roterer mer enn hoftene.",
+      "frequency": 3,
+      "macs_quotes": [
+        {
+          "quote": "You get that? Totally. Okay. So why do the teachers say don't turn? Why? I'm asking why. Because they say you coil more. Sorry, I said coil more. No, you coil less. Yeah. So it's all mish-mash. A couple years ago, last year, a laborer came up with a golf guide tha...",
+          "matched_term": "coil",
+          "session": "April 2011 Lecture 5"
+        }
+      ],
+      "source_sessions": [
+        "April 2011 Lecture 5"
+      ],
+      "patterns_used": [
+        "\\bcoil\\b"
+      ]
+    },
+    "lag": {
+      "term": "lag",
+      "category": "movement_concepts",
+      "category_name": "Bevegelseskonsepter",
+      "norwegian_explanation": "Vinkelen mellom venstre arm og klubbskaft som holdes i downswing. Skaper power.",
+      "frequency": 24,
+      "macs_quotes": [
+        {
+          "quote": "Yeah. Did the clubhead come down or was it a little bit out of height? It's a little bit out, wasn't it? We were just talking. It's just the lag. It just needs that. It's a little bit out, wasn't it? Yeah. It's a little bit out, wasn't it? Yeah. All right. Let's see here.",
+          "matched_term": "lag",
+          "session": "April 2011 Practice 2"
+        },
+        {
+          "quote": "Today I want the shoulders to be a little bit more open. Just a little bit, I'm going to increase the lag, otherwise I'll get it out. Yes. Okay. But it's that little one inch of the butt like that, right? This is where you get the postures versus the orig...",
+          "matched_term": "lag",
+          "session": "April 2011 Practice 2"
+        },
+        {
+          "quote": "That's it. Drop it. All right. All right. You're ready. Okay. All right. Okay. One. One. One. You got to, as this club falls back, if you don't lag it enough, you'll come here and come down too steep, you'll get to the top. Just as this falls, just wait for a blip for you for a moment and let it ...",
+          "matched_term": "lag",
+          "session": "April 2011 Practice 2"
+        },
+        {
+          "quote": "If my elbow stays too far. If I go over here. And I lose my leg too early. The elbow stays more back. If you get over here. The function of lagging the club here. Is this elbow has to come over. It has to come back in and get back in front. I'm really struggling. It feels like toe pain.",
+          "matched_term": "lagging",
+          "session": "April 2016 Practice 1 C"
+        },
+        {
+          "quote": "There's 12 overtaking ranks. The top of the swing, you're trying to make sure that the club head doesn't overtake the hands. But the club head is lagging behind the hands. Then the arms at the top of the swing are lagging behind the body. Then your shoulders are lagging behind the hips.",
+          "matched_term": "lagging",
+          "session": "April 2012 Lecture 9"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "",
+        "April 2012 Lecture 9",
+        "April 2011 Lecture 5",
+        "April 2015 Practice 2"
+      ],
+      "patterns_used": [
+        "\\blag\\b",
+        "lagging"
+      ]
+    },
+    "release": {
+      "term": "release",
+      "category": "movement_concepts",
+      "category_name": "Bevegelseskonsepter",
+      "norwegian_explanation": "Frigjøring av lag-vinkelen ved impact. Klubbhodet akselererer gjennom ballen.",
+      "frequency": 227,
+      "macs_quotes": [
+        {
+          "quote": "See? Now I'm going to get my left shoulder to the angle position with my right arm. That's it. See? That's it. You have to fully release the foot up there. Now for you to get the better arm at the right angles here, you have to keep rotating your hips.",
+          "matched_term": "release",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "If that releases, now I have no tension in my back or my shoulder. Here I've got, feel it? So you've got to release that all the way up, get the pressure points in here, right here. This is up. Now if I want to go bring this arm to here, I just keep rotating, rotat...",
+          "matched_term": "release",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "If he goes too much here and comes down to the revision, it'll hit 5 inches behind it. So you got to get this more left, then release it with the forward 3 and 2 arm. And then you're going to get this more forward. And then you're going to get it just the angle of descent just right...",
+          "matched_term": "release",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...o get this butt of the club to keep rising upward on the arc. This one. You've got that height going this way. Where guys get over here they'll start releasing it. Now one guy wants to hook it. He wants to come over here. You'll see him flip his hands over. He flips his hands over.",
+          "matched_term": "releasing",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "... I'm going to get over here, and I'm going to go like that. So when you have the 45 degree angle, is that going to help me to get my... delay my hand release over here, or is it going to release it more that way? It will delay it. What? It will delay it. So the more I have...",
+          "matched_term": "release",
+          "session": "April 2012 Lecture 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2016 Lecture 6",
+        "April 2012 Practice 4",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\brelease\\b",
+        "releasing"
+      ]
+    },
+    "flip": {
+      "term": "flip",
+      "category": "movement_concepts",
+      "category_name": "Bevegelseskonsepter",
+      "norwegian_explanation": "Uønsket tidlig release hvor håndleddene kollapser før impact. Tap av kompresjon.",
+      "frequency": 39,
+      "macs_quotes": [
+        {
+          "quote": "Just flatten your shoulder blades. Tilt to the right and take it inside 30 degrees. So you don't have to get out there and flip this. It'll go automatic. The more you go over here, the more you go inside. Now when you come to impact, here's the key. I'm lined up over here.",
+          "matched_term": "flip",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "It's a lot of things. Ball position, ball position. Last one. 3, 2, 1, go. Oh, good sound. Okay. Let's look at your left. Let's flip this over. Where's the left? Okay. Oh, this is... Very good. White transfer was just right. Yep. Yeah. Okay. Okay. Okay. Okay. Okay. Okay. Okay.",
+          "matched_term": "flip",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Where guys get over here they'll start releasing it. Now one guy wants to hook it. He wants to come over here. You'll see him flip his hands over. He flips his hands over. Will that change this height? What? Yes or no? Tell him. It will or it won't. Yes. It will change.",
+          "matched_term": "flip",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "...to keep moving forward to the inside of my right heel. It's got to keep moving forward, whether you're not changing your original line, if you're not flipping your original, not changing anything, you're going like that. Now, and then look how that club of the club gets more off the ground, coming like this...",
+          "matched_term": "flipping",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "...en guys start getting eebie-jeebies the body starts going like this. Here. This. That. Go. Whee. Grab him. Get him right off this. Hands are going to flip. He's with feet. He's got to touch him. The pulse is going to take over. Alright. Go. Now. Go ahead. Hit that. I'll have to hang on. Hang on.",
+          "matched_term": "flip",
+          "session": "August 2016 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "",
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "\\bflip\\b",
+        "flipping"
+      ]
+    },
+    "caddy view": {
+      "term": "caddy view",
+      "category": "video_analysis",
+      "category_name": "Videoanalyse-terminologi",
+      "norwegian_explanation": "Kameravinkel fra rett bak golferen, ned target line. Viser path og face.",
+      "frequency": 6,
+      "macs_quotes": [
+        {
+          "quote": "Right. So... Now, remember, we haven't defined what's the right trajectory here. Now, it'll be interesting when we watch it from the caddy view to see what the head is doing. Now, if I can, I'm gonna do this right now. I'm gonna go right to the caddy view. Where are we here? Caddy view.",
+          "matched_term": "caddy view",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "...interesting when we watch it from the caddy view to see what the head is doing. Now, if I can, I'm gonna do this right now. I'm gonna go right to the caddy view. Where are we here? Caddy view. He was back. You passed it, mate. You've gone past it, mate. Where'd I go? Go back. I can't see.",
+          "matched_term": "caddy view",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "...hand trajectory path, and the right arm going just like this? Look at my right shoulder. That way. Wow. So, now you take the same swing here from the caddy view. Then you measure his shoulder plane coming out. And he's supposed to be at a certain height. He's supposed to be at a certain angle.",
+          "matched_term": "caddy view",
+          "session": "April 2016 Lecture 6"
+        },
+        {
+          "quote": "1,001, 1,002, 1,003, go. Alright, last one. Ready? 1,001, 1,002, 1,003, go. Okay, where's Doc? Then we're going to film you guys from the caddy view and then one from a 45 degree angle.",
+          "matched_term": "caddy view",
+          "session": "April 2016 Practice 1 C"
+        },
+        {
+          "quote": "I saw that one., it's still better than the real... It's very good. It's not. It's better than... So let's take one picture from the caddy view. Moses Hull. I'll get you guys in this. All right, we'll take this stuff out. We'll take this box here out. This is good.",
+          "matched_term": "caddy view",
+          "session": "April 2011 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "April 2016 Lecture 6",
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "caddy view"
+      ]
+    },
+    "face on": {
+      "term": "face on",
+      "category": "video_analysis",
+      "category_name": "Videoanalyse-terminologi",
+      "norwegian_explanation": "Kameravinkel fra siden, ser golferens ansikt. Viser tilt og vektfordeling.",
+      "frequency": 6,
+      "macs_quotes": [
+        {
+          "quote": "Back, back, back. Now at least you have the ball up in the air. Now if you see the ball up like this, come through here and just tweak it. Put the face on the... Put the loft on the face. Put your hands back. Keep your head back. Keep your shoulders back. Go. Got it. Exact same thing.",
+          "matched_term": "face on",
+          "session": "October 2014 Practice 4"
+        },
+        {
+          "quote": "He was pulling the ball left, left, left, left. The problem was when he was set up in a draft like this, by lowering the face one left. He was just keeping it there. What you have to do is get the leading edge, get the heel and toe on the ground. Now the face is square.",
+          "matched_term": "face on",
+          "session": "April 2015 Practice 2"
+        },
+        {
+          "quote": "I thought this was the until point except you were swinging the left ear. Oh, so than. looks like this in the body's pictures face on down the face and the rest but and the rest yeah very good here right here that's gonna be around the baseline if I watch this I straight this out ju...",
+          "matched_term": "face on",
+          "session": "April 2012 Lecture 9"
+        },
+        {
+          "quote": "We'll have a go on this one. We'll... Yeah, go for it, guys. Wait, wait, wait. Ready? Three, two, one, go. Nice. Ooh, got it. Got it. One more face on for Richard, because I've just got Richard's card. That's all right. What loft's that? Is that a three iron? Look at the cloth. See how lofty it is.",
+          "matched_term": "face on",
+          "session": ""
+        },
+        {
+          "quote": "...el the difference? Did you get that? All right, come look. Last one, Phil. I don't know. ... But here's the big biggest value of this is you hold the face on the ball. So there's more control or would you get more speed? It's a bit of a stroke. See? All right, so you got the compression on that one.",
+          "matched_term": "face on",
+          "session": "August 2016 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "April 2015 Practice 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "face on",
+        "face-on"
+      ]
+    },
+    "down the line": {
+      "term": "down the line",
+      "category": "video_analysis",
+      "category_name": "Videoanalyse-terminologi",
+      "norwegian_explanation": "Kameravinkel fra bak, langs target line. Viser svingplan og path.",
+      "frequency": 94,
+      "macs_quotes": [
+        {
+          "quote": "... that different guys Hubert Greene would go here line it up aim left at the target like this take it outside with his wrist and come down here and go down the line like this so he would go that way I don't like that shot because I don't mind taking the club out of the way and going this way.",
+          "matched_term": "down the line",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...ind taking the club out of the way and going this way. I don't mind taking the club back on the inside but I do mind as well. Double hit on it. Going down the line. Double hit on it. The club head and the path of the ball. So you have to time that you have to come here and go left underneath the ball. T.C.",
+          "matched_term": "down the line",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...e in Bunker Shot, big country club, 18 tall, he had to get up and down, and the 72nd hole was the tight end. Watch the Bunker Shot. Bunker Shot, look down the line, you see him go, hey! He goes, you see this go like this. Perfect. The reason is because, watch, everything's parallel to the line.",
+          "matched_term": "down the line",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Now go right and flex it up like this. So, you're ready? Yeah, I'm ready. Okay, let's take one picture going down the line.",
+          "matched_term": "down the line",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "No,, do it. One picture here, then one down the line. One down the line. Let's,, and,, vertical, yeah. Okay. Okay. Just over the camera. All right, now. So, what now? I'll take a seat. Yeah.",
+          "matched_term": "down the line",
+          "session": "October 2014 Practice 3"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2016 Lecture 6",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "down the line"
+      ]
+    },
+    "baseline": {
+      "term": "baseline",
+      "category": "video_analysis",
+      "category_name": "Videoanalyse-terminologi",
+      "norwegian_explanation": "Referanselinje på bakken, vanligvis target line eller stance line.",
+      "frequency": 159,
+      "macs_quotes": [
+        {
+          "quote": "Okay, hit the center button then super slow See how the hands keep going left through the pivot and the club still look like right angles to the baseline So Anders right we're almost absolutely Okay, you stop it, Tell them I went to China had these kids two kids the overtaking right there like this the...",
+          "matched_term": "baseline",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Now when you come to impact, here's the key. I'm lined up over here. This part comes in 30 degrees inside. It's coming 30 degrees into the baseline. Then what you do is you go inside back this way. You don't keep going off that way. Come over here like this. That's what guarantees the curve.",
+          "matched_term": "baseline",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "That's why that foot's got to open up. So all we do is this. Watch. We've got your hips and shoulders right angles to the baseline. Right arm 45 degrees. But for me to put my knees together, knees square, hips square, I've got to get up on my right foot like this.",
+          "matched_term": "baseline",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "...ground parallel to the ground, it'll be at 45 degrees. So it's crossed up. Yeah. So it's at the top of the pegs. So you've got this 45 degrees to the baseline, to your toe standpoint. Yeah. And then 45 degrees to your chest. Chest, yeah. Okay. You got it? Yeah.",
+          "matched_term": "baseline",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "...'re going to have this more tilted, not quite 45 degrees. Yeah, sure. But you've got to get these two 45 degree angles, right arm's 45 degrees to the baseline. Yeah. And then 45 degrees to your chest. Okay, 45. It won't move anymore. No. I got it. 45 won't move. Yeah, okay.",
+          "matched_term": "baseline",
+          "session": "August 2016 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2016 Lecture 6",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "\\bbaseline\\b"
+      ]
+    },
+    "vertical": {
+      "term": "vertical",
+      "category": "video_analysis",
+      "category_name": "Videoanalyse-terminologi",
+      "norwegian_explanation": "Loddrett linje brukt som referanse for klubbposisjon og kroppsholdning.",
+      "frequency": 147,
+      "macs_quotes": [
+        {
+          "quote": "Yeah. Yeah. And I'm going to have to do it. I'm going to have to do it. And I'm going to have to do it. The more the shaft is vertical, the lighter your grip pressure will be to control the club on the plate. The more it gets farther away, the heavier the grip pressure you have to do...",
+          "matched_term": "vertical",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...latter leading edge comes up moves this back brings it up again so when you go to hit certain shots you can choke down on the club get the shaft more vertical like here and and there's a click to the south now Hubert Greene did this stuff and then Hubert Greene went like this Hubert Greene take this up go o...",
+          "matched_term": "vertical",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": ".... This is a nine. A Seve chip from four-iron all the way up to the sandwich here. Now, again, look at here, I'm choking. The club's a little bit more vertical here again. Here, I'm just going to bend my elbow, straighten my elbow, flex the left elbow. And it's just like this. And Seve,, going over here.",
+          "matched_term": "vertical",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Do you ever chip with a four, five, six-arm roll? Rarely? Rarely. Right, rarely. Yep. Okay, so when you get this shaft more vertical, more up like this, you can hit this shot coming out of the rough here that we call this scoopy-doo, just like this. You can just use your wrist.",
+          "matched_term": "vertical",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "If you stand closer to the ball, it's so easy to control everything. The more you stand closer, the shaft gets more vertical. Get farther away, farther away, farther away, it starts, and then all these things start changing. So when you stand closer to this ball, it's so mu...",
+          "matched_term": "vertical",
+          "session": "October 2014 Practice 3"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\bvertical\\b"
+      ]
+    },
+    "face angle": {
+      "term": "face angle",
+      "category": "ball_flight",
+      "category_name": "Ballflyvning og impact",
+      "norwegian_explanation": "Retningen klubbface peker ved impact. Primær faktor for ballens startretning.",
+      "frequency": 33,
+      "macs_quotes": [
+        {
+          "quote": "Like over here. The ball's coming. Yeah. So you set up. Yeah. Add address, add a neck, and then try and swing to hit the middle of the club face. It's funny. Watch. Arnold Palmer did this. Arnold lined up. Arnold had it like this. Then he moved it in the face.",
+          "matched_term": "club face",
+          "session": "April 2016 Practice 1 C"
+        },
+        {
+          "quote": "You're going to feel like you're cutting across it. Now guys, when you fade the ball, you don't have to open the club face. You certainly know, you can just keep the club face square, and if you've got any motion coming across this ball like this, that puts the cut spin t...",
+          "matched_term": "club face",
+          "session": "April 2012 Lecture 9"
+        },
+        {
+          "quote": "I have to explain that too. I've got to explain how you control the club head path, then I've got to control the club face alignment, then I've got to control the angle of descent, then I've got to control the radius of the club, and that's just to get to impact.",
+          "matched_term": "club face",
+          "session": "April 2016 Practice 1 C"
+        },
+        {
+          "quote": "...ur hands and the putter keeps going, that's first of all a sign of every terrible putter. It looks like that. You're adding loft, you're changing the face angle of the putt. Also, the putter head is traveling faster than your arms. Your arm has stopped and the putter's kept going.",
+          "matched_term": "face angle",
+          "session": ""
+        },
+        {
+          "quote": "I believe the top hand should be a little bit stronger. What this does is promote the closing of the face. This allows us to square up the club face and forces us to follow down the target line, otherwise we'll pull it. This gives the putter head a little more time to square up and impact.",
+          "matched_term": "club face",
+          "session": ""
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "",
+        "April 2011 Practice 2",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "April 2011 Lecture 5",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "face angle",
+        "club ?face"
+      ]
+    },
+    "angle of attack": {
+      "term": "angle of attack",
+      "category": "ball_flight",
+      "category_name": "Ballflyvning og impact",
+      "norwegian_explanation": "Vertikal vinkel klubben treffer ballen. Negativ = ned på ballen (jern), positiv = opp (driver).",
+      "frequency": 4,
+      "macs_quotes": [
+        {
+          "quote": "Right foot down. Feels pretty good. Oh my god. 210, 250, 218. Right foot 100% flat. Just strictly arm speed. Would you say your attack angle was up? Of course. Were you trying to do that? No. I'll come down then at P6 then you start to back it up.",
+          "matched_term": "attack angle",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "Go there, why? Tell the camera. It's getting the angle of attack a bit steeper. The angle of ascent and the backswing. Because you're trying to get this angle of ascent up here like this, then when you come down, A...",
+          "matched_term": "angle of attack",
+          "session": "April 2011 Practice 2"
+        },
+        {
+          "quote": "They refer to it their own way. They break their wrist immediately going back causing a much steeper angle of attack into the ball when they go through. They break their wrist going back. Now the club is way up here and my arm has barely moved.",
+          "matched_term": "angle of attack",
+          "session": ""
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "August 2016 Practice 2"
+      ],
+      "patterns_used": [
+        "angle of attack",
+        "attack angle"
+      ]
+    },
+    "leading edge": {
+      "term": "leading edge",
+      "category": "ball_flight",
+      "category_name": "Ballflyvning og impact",
+      "norwegian_explanation": "Fremkanten på klubbface. Skal treffe ballen først på jern.",
+      "frequency": 34,
+      "macs_quotes": [
+        {
+          "quote": "This is it. This is the one. This is the one. This is the one. this now there's your bounce you can get underneath it this gets flatter leading edge comes up moves this back brings it up again so when you go to hit certain shots you can choke down on the club get the shaft more vertical like here ...",
+          "matched_term": "leading edge",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...he toe there, the shoulder of the club is off the ground. The toe of the club is off the ground. Now watch. We've got a problem here because even the leading edge is coming up. But if I open the face now, now it's fine. Here. So the more I go like here, if I hit this ball right now, this ball will go perfectly ...",
+          "matched_term": "leading edge",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "It was me. Ready? No. Go. Now, he's got the spine shifting backwards like this. Now, if he shifts too early and comes up, he'll hit too hard. The leading edge will hit too low on the ball. Right there, yeah. So, he's got to get it. Time that just right. That's where his weight transfer's got to get more lef...",
+          "matched_term": "leading edge",
+          "session": "October 2014 Practice 4"
+        },
+        {
+          "quote": "Take that ball, just drop it down. Anyway, I don't care where it goes. Watch. For me to get this ball up in the air, look at this. Look where the leading edge is in relation to the equator. I got a little bit, so I got to come here and go, and then tweak down like this. Okay, here we go, watch. Alright.",
+          "matched_term": "leading edge",
+          "session": "October 2014 Practice 4"
+        },
+        {
+          "quote": "...t game, this is a very good way to learn the angles with the seven on a six on a five on a four on a two on a. Okay, one more. Yep. Now, wherever the leading edge is, that's where the ball is going. That's where the hole is going. Okay, ready? Go. Alright, last one. Okay. Three, two, one. Wonderful. Wonderful.",
+          "matched_term": "leading edge",
+          "session": "April 2015 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "",
+        "October 2014 Practice 3",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "leading edge"
+      ]
+    },
+    "bounce": {
+      "term": "bounce",
+      "category": "ball_flight",
+      "category_name": "Ballflyvning og impact",
+      "norwegian_explanation": "Vinkelen på undersiden av wedgen. Hindrer klubben fra å grave seg ned.",
+      "frequency": 57,
+      "macs_quotes": [
+        {
+          "quote": "You're like, oh, this is the one. This is it. This is the one. This is the one. This is the one. this now there's your bounce you can get underneath it this gets flatter leading edge comes up moves this back brings it up again so when you go to hit certain shots you can chok...",
+          "matched_term": "bounce",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "That's right. And it's like always coming out. But I've always been taught higher. You've got to rotate. You've got to bounce. Use the bounce and all that stuff. But, and then you see. You have to minimize the energy. Chauvet. Yes. Indian player.",
+          "matched_term": "bounce",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "So scary. After you hit it, go straight up like this. You're gonna catch it. Why don't we do this? And go. Come. Good master. Get up there, bounce it off the face, and go right back with your right hand, not left hand. 3, 2, 1, go. Tell him what he has to do. You're gonna catch it with the...",
+          "matched_term": "bounce",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "No. 3, 2, 1, go. Wrong hand. Right. Right. He's gonna get over there. Yeah, he's gonna get over there. Get it over here, and bounce it back over there. I'll lower it, and catch it with the right hand. Let's go 40. 3, 2, 1, go. Go. Oh! So bad. That's a disaster.",
+          "matched_term": "bounce",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "The more you open this up, the quicker this knee is, the knee is restricting the backstroke, it'll open up quicker on the bounce. So at beat four, is that acceptable to have the knee,, you look at yours, yours is just barely outside the hip.",
+          "matched_term": "bounce",
+          "session": "April 2012 Lecture 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\bbounce\\b"
+      ]
+    },
+    "toe": {
+      "term": "toe",
+      "category": "ball_flight",
+      "category_name": "Ballflyvning og impact",
+      "norwegian_explanation": "Ytterste del av klubbhodet. Treff her = svakere, ofte høyre-kurve.",
+      "frequency": 7,
+      "macs_quotes": [
+        {
+          "quote": "If I start to lower my arm plane here like this where it goes inside the vertical, the toe there, the shoulder of the club is off the ground. The toe of the club is off the ground. Now watch. We've got a problem here because even the leading edge is coming up. But if I open the face now, now it's fine. Here.",
+          "matched_term": "toe of the club",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "And go up another inch. Very good. Now this one's going to be inside the right. All Now come up. If he goes P1, P2... I want to watch the toe of the club. Comes up to P2. You watch. You come back here. One second. I put this inside my left heel. There's my grip here like this.",
+          "matched_term": "toe of the club",
+          "session": "October 2014 Practice 1"
+        },
+        {
+          "quote": "That's it? Okay. Lower it down. You gotta lower the bottom of the club below your knees. There you go. Okay, put it right on the toe of the club, on the toe. Not the heel. Wee. You get it? Yep. Alright, go back again. We got a fart in here. This guy pulls this one off.",
+          "matched_term": "toe of the club",
+          "session": ""
+        },
+        {
+          "quote": "Too open. You have to speed up P6, P7, P8. how you speed it up? Go like this. Just bend that left wrist. Like that. Get on the toe of the club. Just bend it and got it. And then loosen the pressure point. Just have some fun, Ray. Go like this. Watch. Just pull it like this.",
+          "matched_term": "toe of the club",
+          "session": ""
+        },
+        {
+          "quote": "Remember, that's the shaft plane. The shaft, until it gets more upright, look where the bounce is. The bounce is just on the toe of the club. So that's why when you get a nasty little lie, you're not here like this, this is up, you've got the club right on the toe here.",
+          "matched_term": "toe of the club",
+          "session": ""
+        }
+      ],
+      "source_sessions": [
+        "",
+        "October 2014 Practice 1",
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "toe of the club",
+        "club toe"
+      ]
+    },
+    "heel": {
+      "term": "heel",
+      "category": "ball_flight",
+      "category_name": "Ballflyvning og impact",
+      "norwegian_explanation": "Innerste del av klubbhodet, nærmest skaftet.",
+      "frequency": 1,
+      "macs_quotes": [
+        {
+          "quote": "You got 7 on? I think I'm practicing here. Go ahead and set up. Alright. Now what you're going to do here is, you have a distance from that same heel of the club to the butt. I said that distance is 4'2\". You're going to come into impact. You're going to lower your knee flex with 5 degrees.",
+          "matched_term": "heel of the club",
+          "session": "April 2015 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2015 Practice 2"
+      ],
+      "patterns_used": [
+        "heel of the club",
+        "club heel"
+      ]
+    },
+    "over the top": {
+      "term": "over the top",
+      "category": "faults",
+      "category_name": "Vanlige feil",
+      "norwegian_explanation": "Klubben kommer for bratt og utenifra i downswing. Vanligste amatørfeil, gir pulls og slices.",
+      "frequency": 42,
+      "macs_quotes": [
+        {
+          "quote": "...more off the ground, coming like this, pulling up, then you're recocking. So you're keeping the same club head path as you rotate all the way around, coming over here like this, then the club will get recocked. This is the extension you see right now, right? And then the other thing is, look how the head, if t...",
+          "matched_term": "coming over",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "...much that way, you've got to make that left shoulder open, but the arms have to speed up to do that. You've got all these guys trying this yesterday, coming over here like this. You don't go like this, put my head down, and then you're going to have to go like this. You've got to go like this.",
+          "matched_term": "coming over",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "I keep going. Look at this, it's going to exit. I'll do what you're doing. You're coming over here and you're exiting over here. You're going. You're going. You're going. You're going. It's going. Tell me you're ready. Go. I see the ball.",
+          "matched_term": "coming over",
+          "session": "October 2014 Practice 4"
+        },
+        {
+          "quote": "I'm like... I don't like that. That's not what I'm thinking. I don't like going to the box. But you just have to feel in the right form. You're coming over here like this, here. And you get looking like, I'm coming through this uncomfortably. Look up here, there's a good angle here. Turn the camera on.",
+          "matched_term": "coming over",
+          "session": "October 2014 Practice 4"
+        },
+        {
+          "quote": "Now go. Get through the block. Keep the pressure going. Go, go, go. Nice. Nice. Think about this. If you're coming over here, and this is above your head, and this is above your right forearm, you're just pivoting. Look how easy it is.",
+          "matched_term": "coming over",
+          "session": "October 2014 Practice 4"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "October 2014 Practice 3",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "over the top",
+        "over-the-top",
+        "coming over"
+      ]
+    },
+    "casting": {
+      "term": "casting",
+      "category": "faults",
+      "category_name": "Vanlige feil",
+      "norwegian_explanation": "For tidlig release av håndleddsvinkelen. Tap av lag og power.",
+      "frequency": 1,
+      "macs_quotes": [
+        {
+          "quote": "...pleasing much Member defender, he's probably not that young. He's not a good receiver for the short jogos. Okay. He's just in theγ Standing suggested casting him. Ready. Yeah. It's not that deep right there. I think he's two years back. One, two, three, four, five, six, seven, nine, ten feet just like he i...",
+          "matched_term": "casting",
+          "session": "April 2015 Practice 1"
+        }
+      ],
+      "source_sessions": [
+        "April 2015 Practice 1"
+      ],
+      "patterns_used": [
+        "\\bcasting\\b"
+      ]
+    },
+    "slide": {
+      "term": "slide",
+      "category": "faults",
+      "category_name": "Vanlige feil",
+      "norwegian_explanation": "For mye lateral bevegelse mot målet uten rotasjon. Blokkerer release.",
+      "frequency": 18,
+      "macs_quotes": [
+        {
+          "quote": "...t straight enough, even though your hip COG goes inside your left heel, you rotate now, it'll pull that off. If your left foot's open 45 degrees, you slide here and you rotate, you'll keep the pressure points apart. But even if your left foot's open, but if you slide the hips too far, now you rotate out,...",
+          "matched_term": "slide",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...your left foot's open 45 degrees, you slide here and you rotate, you'll keep the pressure points apart. But even if your left foot's open, but if you slide the hips too far, now you rotate out, that'll pull that off. So there's like a couple. And look at all the guys set up with their feet straight, most...",
+          "matched_term": "slide",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "You have to do it right here. Just push your pelvis forward like this. Yeah. Yeah, you're pushing it. You're going to move your arm. And you slide back. And as you come up, get your wrist to go. When you're down here with impact, now, yeah, bring it up. But don't rotate. Just straight up.",
+          "matched_term": "slide",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "And make sure the wrist, P6, P7, P8, straight up. Ready to go? Can I have it open? Yeah, you can have it open. You have a left. I'm going to slide with that. Yeah. Okay. All right. Ready? Three, two, one, go. All right. Go faster. Square the face. Faster. You've got to go fast.",
+          "matched_term": "slide",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Watch how the right knee is behind the right hip. Just watch the hip rotation, 35 degrees or so, and the transfer. See how the knee is sliding behind the hip there? Yeah. Absolutely. . Watch the shoulder turn now. Watch. And then the center gravity. Ready? Three, two, one. .",
+          "matched_term": "sliding",
+          "session": "October 2014 Practice 1"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2015 Practice 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\bslide\\b",
+        "sliding"
+      ]
+    },
+    "reverse pivot": {
+      "term": "reverse pivot",
+      "category": "faults",
+      "category_name": "Vanlige feil",
+      "norwegian_explanation": "Feil vektfordeling - vekt på venstre i backswing, høyre i downswing.",
+      "frequency": 10,
+      "macs_quotes": [
+        {
+          "quote": "First thing is, if you go like this, guys, if you go too much this way, down the line here like this, start going to reverse pivot. Center grabby center, going that way. That's the first thing. What's the second thing? Starts going that way.",
+          "matched_term": "reverse pivot",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "So left arm not in, reverse pivot and shoulder. Yeah, shoulder plant goes too far. So that's what you gotta be aware of. It's 30 degrees with all clubs? What? 30 degrees in.",
+          "matched_term": "reverse pivot",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "You did it too early. Garcia looks like that. Picture it. So, do it again. Keep it straight. Now see how it goes. A good way to reverse pivot. Now, that's why you have to control the right amount of elbow flexion. Go and control all this so the shoulders don't turn too much and don't turn t...",
+          "matched_term": "reverse pivot",
+          "session": "October 2014 Practice 1"
+        },
+        {
+          "quote": "Two, your left arm's not going to be in enough, But there's a third factor. When you take the club down the line, it'll start going to reverse pivot. You sit here by the bench, and you start going down that way. You start going like this, So that's where sometimes you see guys move off it.",
+          "matched_term": "reverse pivot",
+          "session": "April 2012 Lecture 9"
+        },
+        {
+          "quote": "The standing one. The standing one. The standing one. The standing one. So if you go to P2, those three factors to the backswing, you can go on to reverse pivot, one. What's the type of thing? Left on flat end P2, or P3. What's the third thing? G's, maybe. And the back.",
+          "matched_term": "reverse pivot",
+          "session": "April 2012 Lecture 9"
+        }
+      ],
+      "source_sessions": [
+        "April 2011 Lecture 5",
+        "October 2014 Practice 1",
+        "April 2012 Lecture 9",
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "reverse pivot"
+      ]
+    },
+    "getting stuck": {
+      "term": "getting stuck",
+      "category": "faults",
+      "category_name": "Vanlige feil",
+      "norwegian_explanation": "Klubben havner for langt bak kroppen i downswing. Fører til blocks og hooks.",
+      "frequency": 18,
+      "macs_quotes": [
+        {
+          "quote": "You're going to stop. All you're doing is going through impact here. You're at P6, P7. Now I just turn my shoulder and my right arm is stuck. Stop. Stop. Now pivot. Just go in. Now see, you're moving your arm and you're passing because your right shoulder did not stop your right angle.",
+          "matched_term": "stuck",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "Because you kept that. I always do this cockish wrist. Straight. I feel like I had so much more room on the way down. When I get so stuck. Very good. Do it wrong? You get behind it. You get behind it. Guys can still be here. But at the downswing you'll see them go this way.",
+          "matched_term": "stuck",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "Because what happens is they go like this. They're at the top. Left shoulder goes up. And the arm goes back. Flare's a little. And then gets stuck behind the ribcage. Just one little, tiny little shaft like this. Yep. So just go to the top. Just go to the top here.",
+          "matched_term": "stuck",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "How does he understand I've мне got your nignowsذ Gulf cam to me. Yes. going forward. Yes, that's more forward. It's the same thing, being stuck coming from the inside. I was looking at some recent shots of Adam Scott, he's changed his posture an awful his face is down and he's all rounded.",
+          "matched_term": "stuck",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "...houlder, watch, it has to just keep turning back like that. That'll bring it back a little bit. So listen when you are ready. Okay. Too close, you're stuck. Ready? Go! 1,001, 1,002, 1,003, go. Pretty small balls. Are we running out of balls here? No, the girls are bringing them in.",
+          "matched_term": "stuck",
+          "session": "April 2012 Practice 4"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "",
+        "April 2011 Practice 2",
+        "August 2016 Practice 2",
+        "October 2014 Practice 3",
+        "April 2012 Practice 4",
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "getting stuck",
+        "stuck"
+      ]
+    },
+    "thin": {
+      "term": "thin",
+      "category": "faults",
+      "category_name": "Vanlige feil",
+      "norwegian_explanation": "Treffer ballen for høyt på klubbface. Lav, svak ball.",
+      "frequency": 27,
+      "macs_quotes": [
+        {
+          "quote": "Let's look at Nigel. Bring him close. All right, good. Let's do a little bit more. Okay. The next five guys, go out. If he's so thin now, he can do what? Just like that? Just like that. Okay. All right, good. So, I think, you do a little bit more. Yeah. Yeah. All right.",
+          "matched_term": "thin",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "..., start coming up, you bring the radius, then the hands have to get down to make the compensation. So that's really, really crucial. Seve would start thinning a bunch of bunker shots. And the reason was he was coming up too much. See, you can't, that left knee.",
+          "matched_term": "thinning",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Here's the other thing. How about the guy just stands right here with the high handicapper and he goes like this? Oh, I hit it a little bit too thin. Watch this. Do it again. A little. Oh, shucks. I get one more chance. Just a little picky high handicapper.",
+          "matched_term": "thin",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "But that left knee flex. Seve short cam went bad because the left knee starts straightening too early. You hit bunker shots out of bunkers? Thin lines? You just straighten your leg a little earlier and it brings your radius up a little bit. Just straighten your leg. P5 straight and out.",
+          "matched_term": "Thin",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "Just straighten your leg. P5 straight and out. You go like this. That's how those back come up. So you're a little bit thin. About 60 yard bunker shots. Did you hear what I said? Tell me. Straighten up your left leg to bring your radius up. It'll bring it up.",
+          "matched_term": "thin",
+          "session": "August 2016 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "August 2016 Practice 2",
+        "October 2014 Practice 3",
+        "April 2015 Practice 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\bthin\\b",
+        "thinning"
+      ]
+    },
+    "fat": {
+      "term": "fat",
+      "category": "faults",
+      "category_name": "Vanlige feil",
+      "norwegian_explanation": "Treffer bakken før ballen. Kort slag med dårlig kontakt.",
+      "frequency": 20,
+      "macs_quotes": [
+        {
+          "quote": "That's the cuc Llama. He is cocking the wrist and he's flexing his elbow. Watch the left elbow. The left elbow. parallel to the fat line. And now do it again. Here, then he just opens up a little bit, the angle is the same. You don't want to get that thing in there too far.",
+          "matched_term": "fat",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "... which fit into this world here are using the X-x Yes. Really? Good. Yes. I want to have a teal up here. Here, I think. This is like a teal. I took a fat divot, so it's a lot higher. I'm going to do any shot you want. Let's see if I can get some fire in the line. So if you look at the line, it's 95% .",
+          "matched_term": "fat",
+          "session": "October 2014 Practice 1"
+        },
+        {
+          "quote": "I don't know how much they're going to be in the same boat. All right, here we go. We're in the wrong business. Alright, ready? Big fat grenade divot. Get up at the finish. Three, two, one, go. Alright, the got to make it. Alright, here we go. Big fat grenade divot.",
+          "matched_term": "fat",
+          "session": "April 2015 Practice 2"
+        },
+        {
+          "quote": "Okay, ready? Three, two, one, pull the trigger. Go. Okay, one more. Get the wrist more uncocked, P7, P8. You want to do that? Take the big fat divot. Now, as deep as the divot is, it'll slow the club head speed down to zero. Ready, three, two, one, go. Okay. There's so much magic in this.",
+          "matched_term": "fat",
+          "session": "April 2015 Practice 2"
+        },
+        {
+          "quote": "There's a girl that works for the Spanish company. So I said, what's that thing on the ground? And she said, it's a car. She's got a big fat hickey. I said, what's that on the ground? Right? And the boss comes in and says, hey, what is that? I said, a monkey got me.",
+          "matched_term": "fat",
+          "session": "April 2015 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "",
+        "October 2014 Practice 1",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2015 Practice 2"
+      ],
+      "patterns_used": [
+        "\\bfat\\b"
+      ]
+    },
+    "shank": {
+      "term": "shank",
+      "category": "faults",
+      "category_name": "Vanlige feil",
+      "norwegian_explanation": "Treffer ballen på hosel (der skaftet møter hodet). Ball skyter skarpt til høyre.",
+      "frequency": 11,
+      "macs_quotes": [
+        {
+          "quote": "The guy said, have you ever shanked it? I said, I've never shanked it. I said, I said, I'm going to shank it. He said, did you shank it? I said, yeah. He said, did you shank it? I said, I didn't. He said, oh my gosh, I've always really shanked it.",
+          "matched_term": "shank",
+          "session": "April 2016 Practice 1 C"
+        },
+        {
+          "quote": "... you ever shanked it? I said, I've never shanked it. I said, I said, I'm going to shank it. He said, did you shank it? I said, yeah. He said, did you shank it? I said, I didn't. He said, oh my gosh, I've always really shanked it. I said, then I just started shanking it.",
+          "matched_term": "shank",
+          "session": "April 2016 Practice 1 C"
+        },
+        {
+          "quote": "So I get over, I chip it. I get over here. I give it up and down. Next hole I got a wedge from 70 yards out. I'm thinking about the shank. I hit it fat. I hit it halfway to the green. Two holes later, I got another 80 yard shot. Hit it halfway to the green. That was a little wet.",
+          "matched_term": "shank",
+          "session": "April 2016 Practice 1 C"
+        },
+        {
+          "quote": "What? Okay. I think this one's off. This is why you have to get the height based on the individual and the placement of the shank. Okay. So we're looking at P2 for this camera, aren't we? What? P2 line for this camera. Yeah. Yeah. Yeah. And… . Are you ready? Okay. All right.",
+          "matched_term": "shank",
+          "session": "April 2011 Practice 2"
+        },
+        {
+          "quote": "He's not going through it like this. I'm bringing the club all the way up to here now. You got to get over here like this. He's raising a shank and getting me into a Go Daddy. Okay. Go ahead. Loose.",
+          "matched_term": "shank",
+          "session": ""
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "",
+        "August 2016 Practice 2",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2"
+      ],
+      "patterns_used": [
+        "\\bshank\\b"
+      ]
+    },
+    "chip": {
+      "term": "chip",
+      "category": "short_game",
+      "category_name": "Short game terminologi",
+      "norwegian_explanation": "Kort slag rundt greenen med lav bane og mye rull. Minimal håndleddsbevegelse.",
+      "frequency": 110,
+      "macs_quotes": [
+        {
+          "quote": "I don't think he does. No, but that picture of this, like, the ball is here. Yeah. He's. And it's like. Oh, yeah, yeah, yeah. But, that counts chipping. You have the shot. Yeah. You have to be careful. Yeah. Yeah. Yeah. Yeah. Yeah. Yeah. Yeah. Yeah. Yeah. Yeah. Let me tell ya something.",
+          "matched_term": "chipping",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Right, yeah. You do that with a short game? Yeah, yeah. Wow. That's why my short game is like. What? That's why I always don't aim right, chipping. Yeah, yeah. That's why I'm fit to swing. Hey, hey, hey, listen.",
+          "matched_term": "chipping",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "You can still get away with it. But consistency is better if you start choking down on the club. Somebody give me a six-iron. This is a nine. A Seve chip from four-iron all the way up to the sandwich here. Now, again, look at here, I'm choking. The club's a little bit more vertical here again.",
+          "matched_term": "chip",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "You get over like as such, line this over here, here, then just putt it. Do you ever chip with a four, five, six-arm roll? Rarely? Rarely. Right, rarely. Yep. Okay, so when you get this shaft more vertical, more up like this, you can hit t...",
+          "matched_term": "chip",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Have you played Augusta yet? Anybody play Augusta? Anybody been around there and watch those guys? Wow, wow, wow. You got chip shots of that back pin over there. And you're right here and you're going just like this. You sit there and watch it.",
+          "matched_term": "chip",
+          "session": "October 2014 Practice 3"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "",
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\bchip\\b",
+        "chipping"
+      ]
+    },
+    "pitch": {
+      "term": "pitch",
+      "category": "short_game",
+      "category_name": "Short game terminologi",
+      "norwegian_explanation": "Høyere kort slag som lander mykt med mindre rull.",
+      "frequency": 26,
+      "macs_quotes": [
+        {
+          "quote": "And he's got square hooks coming out of the rough. So he's on an attack mode with alofted clubs, with wedges, sand wedges, out wedges. Pitching weds, sand wedge, out wedges. Then you've got the drive. Then he's got the long distance. Jesus, if there's 16 par fours, I'd wet back with them.",
+          "matched_term": "Pitching",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "par force per round and you're gonna hit five wedges per round that's 25 wedges you've got 25 wedges you're gonna be hitting L-wedge, sand wedge, pitching wedge how many bridges are you supposed to make? how many are you supposed to make? go ahead give me a number.",
+          "matched_term": "pitching",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "That one's a little bit higher. His leg's a little bit up. A little bit. What? Yeah, it was great. We did it at night. It was pitch dark, and the flash was kicking out. That's giving far, that is. . . . . . . . . . . . . . . And it's really hard. . . .",
+          "matched_term": "pitch",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": ".... Nice and slow. See, I'm trying to hit that ball first. A little bit here. Now, hit this one about 20 yards. Alright, and you're gonna hit more of a pitch and run shot. So move the ball backwards down. Alright? Try to hit a little more forward press. Make a grip a little bit stronger.",
+          "matched_term": "pitch",
+          "session": "April 2015 Practice 2"
+        },
+        {
+          "quote": "We have about an eight-iron here. What is this? A seven-iron? No, no. Six-iron. Nine-iron? Yeah, nine-iron. Okay. Take this one now. Just hit a pitch and run shot here. With the nine-iron. How far, mate? Ten feet into the red. Into the driving range. Just ten feet into the red.",
+          "matched_term": "pitch",
+          "session": "April 2015 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "April 2011 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "\\bpitch\\b",
+        "pitching"
+      ]
+    },
+    "bunker shot": {
+      "term": "bunker shot",
+      "category": "short_game",
+      "category_name": "Short game terminologi",
+      "norwegian_explanation": "Slag fra sandbunker. Klubben treffer sanden før ballen.",
+      "frequency": 57,
+      "macs_quotes": [
+        {
+          "quote": "Right, and he didn't like the way yeah, he said I don't like my daughter's playing. She played for 10 months She beat me and the other pro Sit bunker shots out of bunkers. I got the shaft over here. She's out of the bunker She's cool. They did straight up.",
+          "matched_term": "bunker shot",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...ou bring the radius, then the hands have to get down to make the compensation. So that's really, really crucial. Seve would start thinning a bunch of bunker shots. And the reason was he was coming up too much. See, you can't, that left knee. And also, this left knee, when it's bent, if you do the rotational el...",
+          "matched_term": "bunker shot",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "See, this goes this way. If that goes this way, that's easier to get this. If you look at Curtis Strange in Bunker Shot, big country club, 18 tall, he had to get up and down, and the 72nd hole was the tight end. Watch the Bunker Shot.",
+          "matched_term": "Bunker Shot",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...k at Curtis Strange in Bunker Shot, big country club, 18 tall, he had to get up and down, and the 72nd hole was the tight end. Watch the Bunker Shot. Bunker Shot, look down the line, you see him go, hey! He goes, you see this go like this. Perfect. The reason is because, watch, everything's parallel to the lin...",
+          "matched_term": "Bunker Shot",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...e somebody has the elbow issue problem, they'll go like this. Look at, I hit my elbow in here. Go here like this, and it collides and goes like this. Bunker shot? Yeah, bunker shot.",
+          "matched_term": "Bunker shot",
+          "session": "October 2014 Practice 3"
+        }
+      ],
+      "source_sessions": [
+        "October 2014 Practice 3",
+        "",
+        "April 2015 Practice 2",
+        "August 2016 Practice 2"
+      ],
+      "patterns_used": [
+        "bunker shot",
+        "sand shot"
+      ]
+    },
+    "flop shot": {
+      "term": "flop shot",
+      "category": "short_game",
+      "category_name": "Short game terminologi",
+      "norwegian_explanation": "Høyt, mykt slag over hindringer. Åpen klubbface, full swing.",
+      "frequency": 6,
+      "macs_quotes": [
+        {
+          "quote": "...t Dave Pelz and I really worked on is this basic easy chip shot because this is the most critical element of our short game. Not the lob shot and the flop shot and all those fun shots which we'll get into. But getting this shot inside our three foot circle that we've spent so much time on now with our putter...",
+          "matched_term": "flop shot",
+          "session": ""
+        },
+        {
+          "quote": "in the rough like this, we cannot use that method of driving the club into the ground. We'll go right underneath it. So again using the same type of flop shot lob shot principles we level out our weight so that the The bottom of the arc is shallow around the ball.",
+          "matched_term": "flop shot",
+          "session": ""
+        },
+        {
+          "quote": "We're not trying to catch the ball first. There's too much grass there. So we're playing like a little mini flop shot, even though the face is square and we're trying to get it to release. You can see the ball is further back in my stance and I just drive the club be...",
+          "matched_term": "flop shot",
+          "session": ""
+        },
+        {
+          "quote": "The flop shot is a fun shot to hit. If you're having to use it a lot, you're probably not scoring very well, but it's still a fun shot to hit, a fun shot to practi...",
+          "matched_term": "flop shot",
+          "session": ""
+        },
+        {
+          "quote": "But it's the same technique, the same energy. And it's important to realize how far behind the ball we're entering the ground. So the flop shot is a fun shot to try. And what we're doing is we're using altitude, we're using trajectory to get the ball to come in dead onto the greens.",
+          "matched_term": "flop shot",
+          "session": ""
+        }
+      ],
+      "source_sessions": [
+        ""
+      ],
+      "patterns_used": [
+        "flop shot"
+      ]
+    },
+    "hands down": {
+      "term": "hands down",
+      "category": "short_game",
+      "category_name": "Short game terminologi",
+      "norwegian_explanation": "Grep nederst på klubben for bedre radiuskontroll. Ben Crenshaw's tip til Mac.",
+      "frequency": 17,
+      "macs_quotes": [
+        {
+          "quote": "...ade me look like I was a child, an absolute child, He was so good, All right. So I asked him. He gave me one tip on short game. What was it? Put your hands down on the club. Get your right hand at the steel shaft. Get it down. I went, wow, that's interesting. I've never heard that before. That was it. Right.",
+          "matched_term": "hands down",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "But the question, is there a simpler way to do it? Now, Seve would line up square on this here like this, and he'd get his hands down like here, just the elbow flexion, just like this, and this little weight transfer, that way. Now, one of the rules on short game is opening the left...",
+          "matched_term": "hands down",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "It went straight back. It did go in this way. That was a hard thing to figure that out, how that worked, to finally match to P2. If I had my hands down here, hit P2, put my hands up over here, hit P2, the butt of the club still went on a straight line. Usually when guys hit their hands up really high...",
+          "matched_term": "hands down",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "... no vivid on here now is the grip pressure low what is the grip pressure low when you hit those shots when you are releasing it yeah you can put your hands down here put the club up here like this you're still releasing that to a straight line but a lot of teachers where I got it wrong is I tried to get it I ...",
+          "matched_term": "hands down",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Everything's in a straight line. Out of the club to the leading edge, straight line. And grab it. Just a little weight transfer. Put your hands down lower. Like that. Like that over there. Just a little weight transfer. There you go. Go. And release it to a straight line. Boom. Nice. Right here.",
+          "matched_term": "hands down",
+          "session": "April 2015 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "hands? down"
+      ]
+    },
+    "Homer Kelly / Golfing Machine": {
+      "term": "Homer Kelly / Golfing Machine",
+      "category": "references",
+      "category_name": "Referanser (spillere og litteratur)",
+      "norwegian_explanation": "Forfatter av 'The Golfing Machine' (1969). Grunnlaget for MORAD-systemet.",
+      "frequency": 10,
+      "macs_quotes": [
+        {
+          "quote": "Stationary post. Turn around and fix center. But that Kelly book, the 14th component, come back and look at it. Now you've got the book. A free turn in both directions and a weight shift in both directions.",
+          "matched_term": "Kelly book",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "Go. One more time. Go. Go. You ever hear of a guy named Lon Hinkle? You should see him, Lon Hinkle. Lon Hinkle, for lining us up. And this is what Homer Kelly did to me the first time I saw him. Made me set up, put my right forearm on playing just like this. Just like that.",
+          "matched_term": "Homer Kelly",
+          "session": "October 2014 Practice 4"
+        },
+        {
+          "quote": "Then you back it up. Here. Look, look, look, look right there. Look at the ball. Two balls. That's good for me. By the way, when I saw Homer Kelly the first time, he put my right forearm on plane and put the ball opposite my left shoulder. You've heard me say this before.",
+          "matched_term": "Homer Kelly",
+          "session": "October 2014 Practice 4"
+        },
+        {
+          "quote": "If I go here, this is right on the plane. If I go over here, it looks like it's inside. In the golf machine, Homer Kelly discussed this. Under club head line of flight, plane line equivalent. Got it. Ten. Got it. Our research is an extension of Kelly's book.",
+          "matched_term": "Homer Kelly",
+          "session": "April 2016 Practice 1 C"
+        },
+        {
+          "quote": "3, 2, 1, go. Get your wrist uncogged. Okay, good. I'm going to look at that. That's going to look different. Hey, check this out. Homer Kelly said... Is this on? No, no, no. Homer Kelly said that you want to swing the club down a straight line on a bench. Well, I've done that.",
+          "matched_term": "Homer Kelly",
+          "session": "October 2014 Practice 4"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "October 2014 Practice 1",
+        "April 2015 Practice 1",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "Homer Kelly",
+        "Golfing Machine",
+        "TGM",
+        "Kelly book"
+      ]
+    },
+    "Hogan": {
+      "term": "Hogan",
+      "category": "references",
+      "category_name": "Referanser (spillere og litteratur)",
+      "norwegian_explanation": "Ben Hogan - legendarisk golfer. Mac refererer ofte til hans teknikk og pivot.",
+      "frequency": 94,
+      "macs_quotes": [
+        {
+          "quote": "...en eventually watch and it comes up parallel around there's what Holman and Trevino look like Now Torino have you heard Torino? All you did you watch hogan practice once and always tried to do Watch the picture Go to impact watch it then Go back go back to p6.",
+          "matched_term": "hogan",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "... because the shoulder right shoulder keeps moving up and down So two guys in the history of golf did that three guys Who were they Trevino Casper and Hogan? Very good And Christianson It's time to do that We just some shots You do that all the shots of something No, no, no.",
+          "matched_term": "Hogan",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Harvey Penick and then Johnny Rivolta. Anybody ever hear that name? Yeah. Little boy. Johnny Rivolta. Johnny Rivolta. Was it the short game, Even Hogan said that he learned about Johnny Rivolta because Johnny Rivolta depended on the shot.",
+          "matched_term": "Hogan",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Now, sit. Hip, hip, hip, sit. Good. Yeah. So, he went around a little bit more. You got to sit something a little higher. There's a little Hogan-esque to finish this. See your pictures. Ready? Three, two, one, go. Yeah, very good. Nice up. See, that pelvis is up.",
+          "matched_term": "Hogan",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "There's a curve, guys, that goes like this. I talked about this yesterday. Is that you go on YouTube and bring up the Ben Hogan lesson that he did with Sammy Snead. And you'll see this curve. And Hogan going like that. All right. So that's a curve.",
+          "matched_term": "Hogan",
+          "session": "April 2012 Lecture 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "",
+        "April 2011 Practice 2",
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\bHogan\\b",
+        "Ben Hogan"
+      ]
+    },
+    "Trevino": {
+      "term": "Trevino",
+      "category": "references",
+      "category_name": "Referanser (spillere og litteratur)",
+      "norwegian_explanation": "Lee Trevino - kjent for unik flat swing og fade. Eksempel på vellykket alternativ teknikk.",
+      "frequency": 60,
+      "macs_quotes": [
+        {
+          "quote": "It's take a stand back And then eventually watch and it comes up parallel around there's what Holman and Trevino look like Now Torino have you heard Torino? All you did you watch hogan practice once and always tried to do Watch the picture Go to impact watch it ...",
+          "matched_term": "Trevino",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...The hands have room because the shoulder right shoulder keeps moving up and down So two guys in the history of golf did that three guys Who were they Trevino Casper and Hogan? Very good And Christianson It's time to do that We just some shots You do that all the shots of something No, no, no.",
+          "matched_term": "Trevino",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "They could hit others. Yeah the other guys who could hit the high shot Those guys could hit those shots Nicklaus couldn't hit Trevino shots Trevino couldn't hit Nicklaus shots Why is that? Let Sam Sneezy foot It's just the mechanics were different Right? Mechanics were different But...",
+          "matched_term": "Trevino",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "What Seve would do. No, let me throw this back. Huber Green would use his wrist and go that way. Lee Trevino would do the same thing. He wouldn't use his wrist. He'd just use his arm. Trevino would just use his arms like this. Shane.",
+          "matched_term": "Trevino",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...the club in like that, you have to feel like you're taking the club outside. I didn't cock my wrist a bit, but I just lifted my arms out. That's what Trevino did. Trevino went like this. Trevino hit the sand wedge as he goes like this. No wrist action. No nothing. Just go.",
+          "matched_term": "Trevino",
+          "session": "August 2016 Practice 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "",
+        "August 2016 Practice 2",
+        "October 2014 Practice 3",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "Trevino",
+        "Lee Trevino"
+      ]
+    },
+    "Seve": {
+      "term": "Seve",
+      "category": "references",
+      "category_name": "Referanser (spillere og litteratur)",
+      "norwegian_explanation": "Seve Ballesteros - Mac's primære referanse for kreativt short game og feel.",
+      "frequency": 196,
+      "macs_quotes": [
+        {
+          "quote": "Yeah. Now watch Andrews. Come here. You want to do it? I'll take a picture of you, kid. If that's okay. Seve? He sent me a picture of Seve. Oh my God. Do you remember that when he sent it? Yeah. Yeah. Yeah. Yeah. Yeah. Yeah. Yeah. Yeah. Yeah. Yeah. Yeah.",
+          "matched_term": "Seve",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Stay right there. Three. All right, go to the top. Stop. All right, go to the foul till we finish. Go. Go. Go. Go. Go. Go. Go. Go. Go. Oh, you Seve boy. All right, come here, look. Go ahead, Drew. See the three lines? Now the reason why his line three is outside more of the middle, you can see it...",
+          "matched_term": "Seve",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "Anyway, so what did I do the next day when I came to the golf course after a crunch shot? What did I do? You looked down. No. I looked at Seve. I looked at Seve. And Seve? He's handing down at the bottom. I went to Huber Green. Where is it? Down. Down at the bottom.",
+          "matched_term": "Seve",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "..., so what did I do the next day when I came to the golf course after a crunch shot? What did I do? You looked down. No. I looked at Seve. I looked at Seve. And Seve? He's handing down at the bottom. I went to Huber Green. Where is it? Down. Down at the bottom. I went to like maybe ten guys.",
+          "matched_term": "Seve",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": "...did I do the next day when I came to the golf course after a crunch shot? What did I do? You looked down. No. I looked at Seve. I looked at Seve. And Seve? He's handing down at the bottom. I went to Huber Green. Where is it? Down. Down at the bottom. I went to like maybe ten guys.",
+          "matched_term": "Seve",
+          "session": "October 2014 Practice 3"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "",
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "October 2014 Practice 3",
+        "April 2011 Lecture 5",
+        "April 2012 Practice 4",
+        "April 2015 Practice 1",
+        "April 2015 Practice 2",
+        "April 2012 Lecture 2",
+        "October 2014 Practice 4"
+      ],
+      "patterns_used": [
+        "\\bSeve\\b",
+        "Ballesteros"
+      ]
+    },
+    "Nicklaus": {
+      "term": "Nicklaus",
+      "category": "references",
+      "category_name": "Referanser (spillere og litteratur)",
+      "norwegian_explanation": "Jack Nicklaus - eksempel på klassisk teknikk med høy ball flight.",
+      "frequency": 30,
+      "macs_quotes": [
+        {
+          "quote": "They could hit others. Yeah the other guys who could hit the high shot Those guys could hit those shots Nicklaus couldn't hit Trevino shots Trevino couldn't hit Nicklaus shots Why is that? Let Sam Sneezy foot It's just the mechanics were different Right? Mechani...",
+          "matched_term": "Nicklaus",
+          "session": "October 2014 Practice 3"
+        },
+        {
+          "quote": ".... Every shot, right arm. Right arm thrust. That's why Comer Kelly called it number one power accumulator. Where I had gone wrong, I was swinging like Nicklaus coming up, and my elbow was too high. For me, I play so much sports, throwing balls and stuff. Yeah, the right arm.",
+          "matched_term": "Nicklaus",
+          "session": "August 2016 Practice 2"
+        },
+        {
+          "quote": "... those old timers, Bobby Jones, Byron Nelson, Sam Snead, Ben Hogan, Arnold Palmer, Lee Trevino, Billy Casper, just go right all the way through. Jack Nicklaus, everybody's left heel came off of him. Every single player. There's not a single player today who plays a left heel.",
+          "matched_term": "Nicklaus",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "...t all those old timers, Bobby Jones, Byron Nelson, Sam Snead, Ben Hogan, Arnold Palmer, Lee Trevino, Billy Casper, just go right all the way through. Jack Nicklaus, everybody's left heel came off of him. Every single player. There's not a single player today who plays a left heel.",
+          "matched_term": "Jack Nicklaus",
+          "session": "April 2012 Lecture 2"
+        },
+        {
+          "quote": "... the loopholes the subtleties that go on that we know you guys know you guys have played the game longer. The question is when you get how do you get Nicklaus to take the 8-arm to go into the wedge like Trevino? Well, he's got to change the grip make it stronger. Got to move it all back in the stance.",
+          "matched_term": "Nicklaus",
+          "session": "April 2012 Lecture 2"
+        }
+      ],
+      "source_sessions": [
+        "April 2016 Practice 1 C",
+        "April 2011 Practice 2",
+        "",
+        "October 2014 Practice 1",
+        "August 2016 Practice 2",
+        "April 2012 Lecture 9",
+        "October 2014 Practice 3",
+        "April 2012 Practice 4",
+        "April 2012 Lecture 2"
+      ],
+      "patterns_used": [
+        "Nicklaus",
+        "Jack Nicklaus"
+      ]
+    }
+  },
+  "frequency_ranking": [
+    [
+      "P6",
+      400
+    ],
+    [
+      "P2",
+      388
+    ],
+    [
+      "P4",
+      328
+    ],
+    [
+      "left arm",
+      306
+    ],
+    [
+      "P5",
+      298
+    ],
+    [
+      "knee flexion",
+      278
+    ],
+    [
+      "P3",
+      240
+    ],
+    [
+      "release",
+      227
+    ],
+    [
+      "weight transfer",
+      221
+    ],
+    [
+      "Seve",
+      196
+    ],
+    [
+      "P1",
+      188
+    ],
+    [
+      "pressure points",
+      172
+    ],
+    [
+      "P7",
+      170
+    ],
+    [
+      "baseline",
+      159
+    ],
+    [
+      "vertical",
+      147
+    ],
+    [
+      "P9",
+      140
+    ],
+    [
+      "right arm",
+      140
+    ],
+    [
+      "rotation",
+      138
+    ],
+    [
+      "right elbow",
+      135
+    ],
+    [
+      "center of gravity / COG",
+      118
+    ],
+    [
+      "left elbow",
+      117
+    ],
+    [
+      "shoulder tilt",
+      113
+    ],
+    [
+      "chip",
+      110
+    ],
+    [
+      "down the line",
+      94
+    ],
+    [
+      "Hogan",
+      94
+    ],
+    [
+      "right angles",
+      92
+    ],
+    [
+      "P8",
+      84
+    ],
+    [
+      "wrist hinge",
+      75
+    ],
+    [
+      "pivot",
+      72
+    ],
+    [
+      "linear",
+      61
+    ],
+    [
+      "Trevino",
+      60
+    ],
+    [
+      "bounce",
+      57
+    ],
+    [
+      "bunker shot",
+      57
+    ],
+    [
+      "clavicle",
+      56
+    ],
+    [
+      "re-cock",
+      49
+    ],
+    [
+      "neck tilt",
+      43
+    ],
+    [
+      "over the top",
+      42
+    ],
+    [
+      "flip",
+      39
+    ],
+    [
+      "three lines",
+      38
+    ],
+    [
+      "leading edge",
+      34
+    ],
+    [
+      "face angle",
+      33
+    ],
+    [
+      "Nicklaus",
+      30
+    ],
+    [
+      "overtaking rates",
+      28
+    ],
+    [
+      "thin",
+      27
+    ],
+    [
+      "pitch",
+      26
+    ],
+    [
+      "arm plane",
+      25
+    ],
+    [
+      "lag",
+      24
+    ],
+    [
+      "shoulder turn",
+      23
+    ],
+    [
+      "right shoulder blade",
+      23
+    ],
+    [
+      "flat left wrist",
+      22
+    ],
+    [
+      "left arm club shaft",
+      20
+    ],
+    [
+      "fat",
+      20
+    ],
+    [
+      "hip rotation",
+      18
+    ],
+    [
+      "slide",
+      18
+    ],
+    [
+      "getting stuck",
+      18
+    ],
+    [
+      "hands down",
+      17
+    ],
+    [
+      "control the radius",
+      14
+    ],
+    [
+      "shank",
+      11
+    ],
+    [
+      "spine tilt",
+      10
+    ],
+    [
+      "reverse pivot",
+      10
+    ],
+    [
+      "Homer Kelly / Golfing Machine",
+      10
+    ],
+    [
+      "P10",
+      8
+    ],
+    [
+      "toe",
+      7
+    ],
+    [
+      "human brain",
+      6
+    ],
+    [
+      "caddy view",
+      6
+    ],
+    [
+      "face on",
+      6
+    ],
+    [
+      "flop shot",
+      6
+    ],
+    [
+      "angle of attack",
+      4
+    ],
+    [
+      "free turn",
+      3
+    ],
+    [
+      "coil",
+      3
+    ],
+    [
+      "#2 pressure point / PP2",
+      2
+    ],
+    [
+      "pattern recognition",
+      1
+    ],
+    [
+      "heel",
+      1
+    ],
+    [
+      "casting",
+      1
+    ]
+  ]
+}

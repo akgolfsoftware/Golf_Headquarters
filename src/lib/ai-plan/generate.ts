@@ -22,6 +22,41 @@ import {
   validerPlanForslag,
   type PlanForslag,
 } from "./schema";
+import { selectKnowledgeFiles } from "@/lib/ai-coach/rag-select";
+import { formatFewShotBlock, loadFewShotExamples } from "@/lib/ai-coach/few-shot";
+import type { SpillerKontekst } from "./context";
+
+const SG_KIND_TO_AREA: Record<string, string> = {
+  SG_OTT: "OTT",
+  SG_APP: "APP",
+  SG_ARG: "ARG",
+  SG_PUTT: "PUTT",
+};
+
+function deriveSgArea(ctx: SpillerKontekst): string | undefined {
+  let worst: { kind: string; value: number } | null = null;
+  for (const s of ctx.signaler) {
+    const area = SG_KIND_TO_AREA[s.kind];
+    if (!area || s.value == null) continue;
+    if (!worst || s.value < worst.value) {
+      worst = { kind: s.kind, value: s.value };
+    }
+  }
+  return worst ? SG_KIND_TO_AREA[worst.kind] : undefined;
+}
+
+function byggSystemPromptMedKunnskap(ctx: SpillerKontekst): string {
+  const sgArea = deriveSgArea(ctx);
+  const chunks = selectKnowledgeFiles({ sgArea });
+  const fewShot = formatFewShotBlock(
+    loadFewShotExamples("live-coach-dialog.jsonl", 2),
+  );
+  const kunnskap =
+    chunks.length > 0
+      ? `\n\n<kunnskap>\n${chunks.join("\n\n")}\n</kunnskap>`
+      : "";
+  return `${AI_COACH_SYSTEM_PROMPT}${kunnskap}${fewShot}`;
+}
 
 export const AI_PLAN_MODEL = "claude-sonnet-4-5-20250514";
 
@@ -92,12 +127,14 @@ export async function genererPlan(
     forrigeForslag,
   );
 
+  const systemPrompt = byggSystemPromptMedKunnskap(ctx);
+
   // 3) Kall Anthropic med tool_use for tvunget JSON
   const klient = anthropicKlient();
   const respons = await klient.messages.create({
     model: AI_PLAN_MODEL,
     max_tokens: 8192,
-    system: AI_COACH_SYSTEM_PROMPT,
+    system: systemPrompt,
     tools: [
       {
         name: "lever_planforslag",
@@ -135,7 +172,7 @@ export async function genererPlan(
       userId,
       coachId,
       prompt: brukerPrompt,
-      systemPrompt: AI_COACH_SYSTEM_PROMPT,
+      systemPrompt,
       contextJson: { ...ctx, _templateId: template?.templateId ?? null } as object,
       responseJson: forslag as object,
       model: AI_PLAN_MODEL,

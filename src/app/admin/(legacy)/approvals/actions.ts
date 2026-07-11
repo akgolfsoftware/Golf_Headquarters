@@ -71,11 +71,47 @@ export async function approveRequestDetailed(
   redirect("/admin/godkjenninger");
 }
 
+function coachScopeWhere(coachId: string) {
+  return {
+    OR: [{ coachId }, { coachId: null }],
+  };
+}
+
+export async function batchApproveSelected(ids: string[]) {
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return { godkjent: 0, feilet: 0, coachId: user.id };
+  }
+
+  const pending = await prisma.planAction.findMany({
+    where: {
+      id: { in: ids },
+      status: "PENDING",
+      ...coachScopeWhere(user.id),
+    },
+    orderBy: { createdAt: "asc" },
+  });
+
+  let godkjent = 0;
+  let feilet = 0;
+  for (const action of pending) {
+    try {
+      await acceptAndApplyPlanAction(action.id);
+      godkjent++;
+    } catch {
+      feilet++;
+    }
+  }
+
+  revalidatePath("/admin/godkjenninger");
+  return { godkjent, feilet, coachId: user.id };
+}
+
 export async function batchApproveLowRisk() {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   const pending = await prisma.planAction.findMany({
-    where: { status: "PENDING" },
+    where: { status: "PENDING", ...coachScopeWhere(user.id) },
     orderBy: { createdAt: "asc" },
   });
 

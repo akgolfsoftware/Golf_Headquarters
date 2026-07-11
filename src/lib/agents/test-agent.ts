@@ -2,7 +2,9 @@
 // skriver Signal og evt. PlanAction ved >15 % forbedring eller >10 % tilbakegang.
 
 import { prisma } from "@/lib/prisma";
+import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { runAgent, type AgentResult } from "./agent-runner";
+import { varsleVedPlanAction } from "./notify-plan-action";
 
 export const AGENT_NAME = "test-agent";
 
@@ -69,9 +71,15 @@ export async function runTestAgent(userId: string): Promise<AgentResult> {
           },
         });
         if (!eksisterende) {
-          await prisma.planAction.create({
+          const coachId = await resolveCoachIdForPlayer(userId);
+          const forklaring =
+            relativ >= FORBEDRING_TERSKEL
+              ? `${siste.test.name} forbedret ${Math.round(relativ * 100)} % — vurder å flytte fokus.`
+              : `${siste.test.name} tilbake ${Math.round(Math.abs(relativ) * 100)} % — øk TEK-volum.`;
+          const created = await prisma.planAction.create({
             data: {
               userId,
+              coachId,
               planId: plan?.id ?? null,
               actionType,
               agentName: AGENT_NAME,
@@ -80,10 +88,7 @@ export async function runTestAgent(userId: string): Promise<AgentResult> {
                 testNavn: siste.test.name,
                 trend: relativ,
                 omrade: relativ <= TILBAKE_TERSKEL ? "TEK" : "SLAG",
-                forklaring:
-                  relativ >= FORBEDRING_TERSKEL
-                    ? `${siste.test.name} forbedret ${Math.round(relativ * 100)} % — vurder å flytte fokus.`
-                    : `${siste.test.name} tilbake ${Math.round(Math.abs(relativ) * 100)} % — øk TEK-volum.`,
+                forklaring,
                 signalSnapshot: {
                   kind: "TEST_DELTA",
                   value: delta,
@@ -93,6 +98,13 @@ export async function runTestAgent(userId: string): Promise<AgentResult> {
             },
           });
           planActionsWritten++;
+          await varsleVedPlanAction({
+            userId,
+            agentName: AGENT_NAME,
+            actionType,
+            forklaring,
+            planActionId: created.id,
+          });
         }
       }
     }

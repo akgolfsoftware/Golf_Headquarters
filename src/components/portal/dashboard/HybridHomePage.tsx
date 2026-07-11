@@ -251,7 +251,7 @@ export type HybridHomePageProps = { data: DashboardData };
 
 export function HybridHomePage({ data }: HybridHomePageProps) {
   const router = useRouter();
-  const { user, greeting, today, todayAll, week, coachMessage, kpiStats, recentActivity, weekProgress, weekNumber, goals, trainingHeatmap } = data;
+  const { user, greeting, today, todayAll, week, coachMessage, kpiStats, recentActivity, weekProgress, weekNumber, goals, trainingHeatmap, optimalSession } = data;
 
   const now = new Date();
   const dateEyebrow = `${capitalise(formatWeekDay(now))} · ${formatTime(now)}`;
@@ -341,6 +341,24 @@ export function HybridHomePage({ data }: HybridHomePageProps) {
 
       {today ? (
         <NesteOktCard session={today} />
+      ) : optimalSession ? (
+        <Card>
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-primary">
+            Dagens optimale økt
+          </p>
+          <p className="mt-2 font-display text-[20px] font-semibold tracking-tight text-foreground">
+            {optimalSession.title}
+          </p>
+          <p className="mt-1.5 text-[14px] leading-relaxed text-muted-foreground">
+            {optimalSession.rationale}
+          </p>
+          <Link
+            href="/portal/planlegge"
+            className="mt-3 inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-primary hover:opacity-80"
+          >
+            Legg inn i plan <ArrowRight size={12} aria-hidden />
+          </Link>
+        </Card>
       ) : (
         <Card>
           <div className="flex items-center gap-3">

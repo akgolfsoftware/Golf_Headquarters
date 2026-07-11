@@ -115,6 +115,8 @@ export type CockpitData = {
   coachFirstName: string;
   /** AI-kontekstlinje (reservert, vises ikke i hybrid-layout). */
   aiContext: string;
+  /** Siste daily-brief fra AgentRun (coach-spesifikk). */
+  aiBrief: string | null;
   /** Mono-klokke, f.eks. "ONSDAG 28 MAI · 11:24". */
   liveLabel: string;
   /** Timeline-header, f.eks. "ONS 28 MAI · 4 ØKTER". */
@@ -479,6 +481,11 @@ function CockpitTopbar({ data }: { data: CockpitData }) {
             ? `${data.requestsCount} forespørsler venter`
             : "ingen forespørsler"}
         </div>
+        {data.aiBrief ? (
+          <p className="mt-2 max-w-2xl text-[13px] leading-snug text-foreground/80 line-clamp-2">
+            {data.aiBrief}
+          </p>
+        ) : null}
       </div>
       <div className="ml-auto flex items-center gap-[10px]">
         <div className="flex w-[230px] items-center gap-2 rounded-[14px] border border-border bg-card px-3 py-[9px] text-muted-foreground">

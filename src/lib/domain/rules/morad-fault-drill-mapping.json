@@ -1,0 +1,365 @@
+{
+  "faults": {
+    "over_the_top": {
+      "name": "Over-the-Top Move",
+      "description": "Shoulders open before hips, causing outside-to-in swing path",
+      "symptoms": [
+        "Pull shots left of intended flight line",
+        "Loss of power",
+        "Inconsistent contact",
+        "Slice spin on ball"
+      ],
+      "detection": {
+        "position": "P5.0",
+        "indicators": {
+          "shoulder_rotation": {"operator": "<", "value": 20, "description": "Shoulders too open too early"},
+          "hip_rotation": {"operator": ">", "value": 20, "description": "Hips lagging behind shoulders"}
+        }
+      },
+      "correction": "Hips must open the shoulders from P4.1 to P5.0. Focus on lower body leading the downswing.",
+      "drills": ["three_momentum_transfer", "hip_lead_drill"]
+    },
+    "left_elbow_stall": {
+      "name": "Left Elbow Stall",
+      "description": "Left elbow stops or stalls at start of downswing instead of adducting toward body median line",
+      "symptoms": [
+        "Loss of arm speed",
+        "Poor lag retention",
+        "Overtaking rates take control"
+      ],
+      "detection": {
+        "positions": ["P5.0", "P6.0"],
+        "indicators": {
+          "left_elbow_distance_from_body": {"operator": ">", "value": 8, "description": "Left elbow too far from body"}
+        }
+      },
+      "correction": "Move entire left arm (not just elbow) up the address baseline. Activate humeral-scapula to move arm independently of body.",
+      "drills": ["left_elbow_adduction", "humeral_scapula_activation"]
+    },
+    "incorrect_elbow_position": {
+      "name": "Incorrect Elbow Position at Impact",
+      "description": "Left elbow in Position #2 instead of Position #1 at impact",
+      "symptoms": [
+        "Loss of compression",
+        "Inconsistent ball striking",
+        "Reduced distance"
+      ],
+      "detection": {
+        "position": "P7.0",
+        "indicators": {
+          "left_elbow_position": {"operator": "!=", "value": 1, "description": "Left elbow not in Position #1"}
+        }
+      },
+      "correction": "Focus on adduction location, not just position. Practice knock-down shots to feel proper elbow path.",
+      "drills": ["knock_down_shot", "left_elbow_adduction"]
+    },
+    "poor_spine_alignment": {
+      "name": "Poor Spine Alignment at Address",
+      "description": "Upper spine tilted too far right at setup",
+      "symptoms": [
+        "Low trajectory shots",
+        "Pull shots from spine being pulled forward",
+        "Inconsistent trajectory control"
+      ],
+      "detection": {
+        "position": "P1.0",
+        "indicators": {
+          "spine_tilt": {"operator": ">", "value": 5, "description": "Spine tilted right instead of slightly left"}
+        }
+      },
+      "correction": "Upper torso should have slight tilt LEFT (~5°). Outside of right knee to right shoulder should form straight line.",
+      "drills": ["spine_alignment_setup"]
+    },
+    "angle_loss_backswing": {
+      "name": "Loss of Right Arm/Clubshaft Angle",
+      "description": "The 110° angle between right arm and clubshaft changes from P2.0 to P4.0",
+      "symptoms": [
+        "Clubshaft wobbles at top of backswing",
+        "Inconsistent downswing",
+        "Loss of control"
+      ],
+      "detection": {
+        "positions": ["P3.0", "P4.0"],
+        "indicators": {
+          "right_arm_clubshaft_angle": {"operator": "!=", "tolerance": 10, "value": 110, "description": "Right arm to clubshaft angle changed"}
+        }
+      },
+      "correction": "Maintain 110° angle throughout backswing. Focus on left elbow flexion and keeping connection between arms and body.",
+      "drills": ["right_arm_angle_maintenance"]
+    },
+    "improper_weight_transfer": {
+      "name": "Improper Weight Transfer",
+      "description": "Weight not transferring properly through the three momentum transfers",
+      "symptoms": [
+        "Loss of power",
+        "Poor ball compression",
+        "Inconsistent contact"
+      ],
+      "detection": {
+        "positions": ["P5.0", "P6.0", "P7.0"],
+        "indicators": {
+          "hip_slide": {"operator": "<", "value": 4, "description": "Insufficient hip slide toward target"},
+          "weight_distribution_left": {"operator": "<", "value": 70, "description": "Weight not transferred to left side"}
+        }
+      },
+      "correction": "Practice timing all three transfers: clubhead mass, body weight (Hip COG), and arms mass up address baseline.",
+      "drills": ["three_momentum_transfer"]
+    },
+    "early_extension": {
+      "name": "Early Extension",
+      "description": "Hips thrust toward ball before impact instead of rotating",
+      "symptoms": [
+        "Loss of posture",
+        "Thin/topped shots",
+        "Inconsistent ball flight"
+      ],
+      "detection": {
+        "positions": ["P6.0", "P7.0"],
+        "indicators": {
+          "hip_slide": {"operator": ">", "value": 6, "description": "Too much hip slide toward ball"},
+          "hip_rotation": {"operator": "<", "value": 30, "description": "Insufficient hip rotation"}
+        }
+      },
+      "correction": "Maintain posture through impact. Feel like chest stays down toward the ball longer. Hips rotate, not thrust.",
+      "drills": ["hip_rotation_drill", "posture_maintenance"]
+    },
+    "casting": {
+      "name": "Casting/Early Release",
+      "description": "Wrist angle released too early in downswing",
+      "symptoms": [
+        "Loss of lag",
+        "Weak impact",
+        "Loss of distance"
+      ],
+      "detection": {
+        "positions": ["P5.0", "P6.0"],
+        "indicators": {
+          "l_arm_to_clubshaft": {"operator": ">", "value": 60, "description": "Wrist angle released too early at P5.0"},
+          "wrist_release_early": true
+        }
+      },
+      "correction": "Maintain wrist hinge longer in the downswing. Feel like you're pulling the grip down toward the ball. Let centrifugal force release the wrists.",
+      "drills": ["lag_retention_drill", "pump_drill"]
+    },
+    "insufficient_shoulder_turn": {
+      "name": "Insufficient Shoulder Turn",
+      "description": "Shoulders don't rotate enough in backswing",
+      "symptoms": [
+        "Short backswing",
+        "Loss of power",
+        "Armsy swing"
+      ],
+      "detection": {
+        "position": "P4.0",
+        "indicators": {
+          "shoulder_rotation": {"operator": "<", "value": 80, "description": "Shoulder rotation less than 80° at top"}
+        }
+      },
+      "correction": "Focus on rotating shoulders 90° in backswing while maintaining hip resistance. Feel the coil between upper and lower body.",
+      "drills": ["shoulder_turn_drill", "x_factor_drill"]
+    },
+    "flat_shoulder_plane": {
+      "name": "Flat Shoulder Plane",
+      "description": "Shoulders rotating too flat/horizontally instead of tilted",
+      "symptoms": [
+        "Over-the-top tendency",
+        "Loss of depth",
+        "Inconsistent path"
+      ],
+      "detection": {
+        "positions": ["P3.0", "P4.0"],
+        "indicators": {
+          "shoulder_tilt": {"operator": "<", "value": 30, "description": "Shoulders too horizontal"}
+        }
+      },
+      "correction": "Left shoulder should work down toward the ball in backswing, not just around. Maintain spine angle.",
+      "drills": ["spine_alignment_setup", "shoulder_tilt_drill"]
+    }
+  },
+  "drills": {
+    "left_elbow_adduction": {
+      "name": "Left Elbow Adduction Drill",
+      "purpose": "Improve left elbow position and location in downswing",
+      "setup": [
+        "Set up more bent over from waist and knees",
+        "Stance width: 12 inches",
+        "Ball position: N-0"
+      ],
+      "execution": [
+        "Lower clubhead to ground by lowering hands",
+        "Keep left elbow straight",
+        "Cock wrists immediately from P1.1 to P2.0",
+        "Only go to P3.0 maximum",
+        "Adduct left elbow back toward ball",
+        "Keep wrists cocked throughout",
+        "Transfer weight 4-6 inches to N-0 ball position"
+      ],
+      "feel": "Dramatic difference in left elbow position (#1 instead of #2). Compression on the ball.",
+      "reference": "Seve Ballesteros (master of knock-down shots)",
+      "duration_minutes": 15,
+      "reps": 20
+    },
+    "three_momentum_transfer": {
+      "name": "Three Momentum Transfer Timing Drill",
+      "purpose": "Coordinate the three critical mass/weight transfers",
+      "setup": [
+        "Normal stance",
+        "Focus on timing, not power"
+      ],
+      "execution": [
+        "At P3.0, begin moving left elbow up address baseline",
+        "Note: Clubhead is still moving toward target",
+        "Time hip COG movement with elbow movement",
+        "Coordinate all three transfers to peak at impact"
+      ],
+      "feel": "Smooth acceleration through impact. All body parts working together.",
+      "reference": "Ben Hogan's weight transfer mechanics",
+      "duration_minutes": 20,
+      "reps": 30,
+      "key_insight": "If the golf club is moving towards the target from P3.0 to P4.0, you can start to move your left elbow early in the backswing up the address baseline while the clubhead (lagging) is still moving towards the target."
+    },
+    "spine_alignment_setup": {
+      "name": "Spine Alignment Setup Drill",
+      "purpose": "Establish correct upper body tilt at address",
+      "setup": [
+        "Stand at address position",
+        "Use mirror or video for feedback"
+      ],
+      "execution": [
+        "Align outside of right knee to right shoulder in straight line",
+        "Feel upper torso tilted slightly LEFT (~5°)",
+        "Check Lines #1, #2, #3 relationship (lumbar, thoracic, cervical)",
+        "Maintain this 5° tilt through P6.0 and into follow-through"
+      ],
+      "checkpoints": [
+        "Do NOT set up with upper spine tilted right",
+        "Avoid punch shot setup for full shots",
+        "Look for reverse C curvature at finish (P9.0)"
+      ],
+      "result": "Higher trajectory on longer club shots",
+      "duration_minutes": 10,
+      "reps": 10
+    },
+    "right_arm_angle_maintenance": {
+      "name": "Right Arm/Clubshaft Angle Maintenance Drill",
+      "purpose": "Maintain 110° angle from P2.0 to P4.0",
+      "setup": [
+        "Set up normally",
+        "Use video feedback if possible"
+      ],
+      "execution": [
+        "Take club to P2.0 (club parallel, toe up)",
+        "Check: 110° between right arm and clubshaft",
+        "Continue to P4.0 maintaining exact same angle",
+        "If clubshaft wobbles at top, angle has changed"
+      ],
+      "feel": "No change in right arm/clubshaft angle. Solid, controlled top of backswing.",
+      "duration_minutes": 15,
+      "reps": 20
+    },
+    "humeral_scapula_activation": {
+      "name": "Humeral-Scapula Activation Drill",
+      "purpose": "Learn to move arm independently of body pivot",
+      "setup": [
+        "No club needed initially",
+        "Stand in address position"
+      ],
+      "execution": [
+        "Extend left arm in front with no elbow flexion",
+        "Move arm laterally left, then right",
+        "Notice: Shoulder joint (humeral-scapula) performs this",
+        "Now at address position, practice moving entire left arm up baseline",
+        "Body pivots, but arm moves independently forward"
+      ],
+      "key": "Do NOT deactivate shoulder joint in downswing. Move entire arm (not just elbow) as fast as possible back in front of body. This is what creates arm SPEED.",
+      "duration_minutes": 10,
+      "reps": 15
+    },
+    "knock_down_shot": {
+      "name": "Knock-Down Shot Practice (Seve Style)",
+      "purpose": "Master elbow adduction and compression",
+      "setup": [
+        "Slightly bent over stance",
+        "12-inch stance width",
+        "Ball position: N-0"
+      ],
+      "execution": [
+        "Make abbreviated backswing (P3.0 max)",
+        "Focus on adducting left elbow toward ball",
+        "Keep wrists cocked",
+        "Transfer weight through impact",
+        "Feel compression on ball",
+        "Short follow-through"
+      ],
+      "learn": "Proper elbow position (#1), Correct adduction location, Ball compression feel, Trajectory control",
+      "duration_minutes": 20,
+      "reps": 30
+    },
+    "hip_lead_drill": {
+      "name": "Hip Lead Drill",
+      "purpose": "Train hips to initiate downswing",
+      "setup": [
+        "Normal stance",
+        "Can use alignment stick across hips"
+      ],
+      "execution": [
+        "Make backswing to P4.0",
+        "Pause at top",
+        "Initiate downswing ONLY with hip rotation",
+        "Feel shoulders lag behind hips",
+        "Complete swing with proper sequence"
+      ],
+      "feel": "Hips clear first, pulling shoulders and arms through. Power from ground up.",
+      "duration_minutes": 15,
+      "reps": 20
+    },
+    "lag_retention_drill": {
+      "name": "Lag Retention Drill",
+      "purpose": "Maintain wrist angle longer in downswing",
+      "setup": [
+        "Normal stance",
+        "7-iron or less"
+      ],
+      "execution": [
+        "Make backswing to P4.0",
+        "In downswing, feel like hands drop straight down",
+        "Maintain 90° wrist angle as long as possible",
+        "Let centrifugal force release the club",
+        "Do NOT consciously flip wrists"
+      ],
+      "feel": "Hands lead clubhead into impact. Compression on the ball.",
+      "duration_minutes": 20,
+      "reps": 25
+    },
+    "pump_drill": {
+      "name": "Pump Drill",
+      "purpose": "Feel proper downswing sequence and lag",
+      "setup": [
+        "Normal stance",
+        "Any iron"
+      ],
+      "execution": [
+        "Make backswing to P4.0",
+        "Start downswing to P5.0",
+        "Stop and return to P4.0",
+        "Repeat 3 times",
+        "On fourth pump, complete the swing"
+      ],
+      "feel": "Groove the feeling of proper sequencing. Maintain lag through the pumps.",
+      "duration_minutes": 15,
+      "reps": 10
+    }
+  },
+  "fault_to_drill_quick_reference": {
+    "over_the_top": ["three_momentum_transfer", "hip_lead_drill"],
+    "left_elbow_stall": ["left_elbow_adduction", "humeral_scapula_activation"],
+    "incorrect_elbow_position": ["knock_down_shot", "left_elbow_adduction"],
+    "poor_spine_alignment": ["spine_alignment_setup"],
+    "angle_loss_backswing": ["right_arm_angle_maintenance"],
+    "improper_weight_transfer": ["three_momentum_transfer"],
+    "early_extension": ["hip_lead_drill", "spine_alignment_setup"],
+    "casting": ["lag_retention_drill", "pump_drill"],
+    "insufficient_shoulder_turn": ["three_momentum_transfer"],
+    "flat_shoulder_plane": ["spine_alignment_setup"]
+  }
+}
