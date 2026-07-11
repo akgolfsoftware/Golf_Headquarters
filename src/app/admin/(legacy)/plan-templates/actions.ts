@@ -13,6 +13,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import type { Prisma } from "@/generated/prisma/client";
+import { planleggUkeKopi, planleggUkeVarighet, type UkeOkt } from "@/lib/plan-templates/uke-verktoy";
 
 export type ActionResult<T> =
   | { ok: true; data: T }
@@ -438,4 +439,127 @@ export async function deleteTemplateSession(
 
   revalidate(existing.templateId);
   return ok({ sessionId });
+}
+
+// --- Uke-verktøy (masseredigering) -------------------------------------------
+
+function tilUkeOkt(s: {
+  id: string;
+  ukeNr: number;
+  dagNr: number;
+  title: string;
+  varighetMin: number;
+  pyramidArea: string;
+  skillArea: string | null;
+  environment: string;
+  drillsJson: unknown;
+  focus: string | null;
+  notes: string | null;
+}): UkeOkt {
+  return s;
+}
+
+/** Sett samme varighet på alle økter i én uke av malen. Endrer ingen andre felt. */
+export async function setWeekDuration(
+  templateId: string,
+  ukeNr: number,
+  varighetMin: number
+): Promise<ActionResult<{ antall: number }>> {
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const parsedVarighet = z.number().int().min(5).max(480).safeParse(varighetMin);
+  if (!parsedVarighet.success) {
+    return err("Ugyldig varighet: " + parsedVarighet.error.issues.map((i) => i.message).join(", "));
+  }
+
+  const ukeOkter = await prisma.planTemplateSession.findMany({
+    where: { templateId, ukeNr },
+    select: { id: true, ukeNr: true, dagNr: true, title: true, varighetMin: true, pyramidArea: true, skillArea: true, environment: true, drillsJson: true, focus: true, notes: true },
+  });
+  const plan = planleggUkeVarighet(ukeOkter.map(tilUkeOkt));
+  if (plan.status === "tom-uke") return err(`Uke ${ukeNr} har ingen økter`);
+
+  await prisma.planTemplateSession.updateMany({
+    where: { id: { in: plan.oktIder } },
+    data: { varighetMin: parsedVarighet.data },
+  });
+
+  await audit({
+    actorId: user.id,
+    action: "plan_template.week.set-duration",
+    target: templateId,
+    metadata: { ukeNr, varighetMin: parsedVarighet.data, antall: plan.oktIder.length },
+  });
+
+  revalidate(templateId);
+  return ok({ antall: plan.oktIder.length });
+}
+
+/**
+ * Kopier alle økter fra én uke til en annen. Uten `overskriv` returneres
+ * `{status:"konflikt"}` hvis mål-uka ikke er tom — UI bygger bekreftelse
+ * og kaller på nytt med overskriv=true.
+ */
+export async function copyTemplateWeek(
+  templateId: string,
+  fraUke: number,
+  tilUke: number,
+  overskriv = false
+): Promise<ActionResult<{ status: "konflikt"; antallIMaal: number } | { status: "kopiert"; antall: number }>> {
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  if (fraUke === tilUke) return err("Kilde- og mål-uke kan ikke være den samme");
+
+  const select = {
+    id: true,
+    ukeNr: true,
+    dagNr: true,
+    title: true,
+    varighetMin: true,
+    pyramidArea: true,
+    skillArea: true,
+    environment: true,
+    drillsJson: true,
+    focus: true,
+    notes: true,
+  } as const;
+
+  const [kildeOkter, maalOkter] = await Promise.all([
+    prisma.planTemplateSession.findMany({ where: { templateId, ukeNr: fraUke }, select }),
+    prisma.planTemplateSession.findMany({ where: { templateId, ukeNr: tilUke }, select }),
+  ]);
+
+  const plan = planleggUkeKopi(kildeOkter.map(tilUkeOkt), tilUke, maalOkter.map(tilUkeOkt), overskriv);
+
+  if (plan.status === "tom-kilde") return err(`Uke ${fraUke} har ingen økter å kopiere`);
+  if (plan.status === "konflikt") return ok({ status: "konflikt", antallIMaal: plan.antallIMaal });
+
+  await prisma.$transaction([
+    ...(plan.slettIds.length > 0
+      ? [prisma.planTemplateSession.deleteMany({ where: { id: { in: plan.slettIds } } })]
+      : []),
+    prisma.planTemplateSession.createMany({
+      data: plan.nyeRader.map((r) => ({
+        templateId,
+        ukeNr: r.ukeNr,
+        dagNr: r.dagNr,
+        title: r.title,
+        varighetMin: r.varighetMin,
+        pyramidArea: r.pyramidArea as Prisma.PlanTemplateSessionCreateManyInput["pyramidArea"],
+        skillArea: r.skillArea as Prisma.PlanTemplateSessionCreateManyInput["skillArea"],
+        environment: r.environment as Prisma.PlanTemplateSessionCreateManyInput["environment"],
+        drillsJson: r.drillsJson as Prisma.InputJsonValue,
+        focus: r.focus,
+        notes: r.notes,
+      })),
+    }),
+  ]);
+
+  await audit({
+    actorId: user.id,
+    action: "plan_template.week.copy",
+    target: templateId,
+    metadata: { fraUke, tilUke, overskriv, antall: plan.nyeRader.length },
+  });
+
+  revalidate(templateId);
+  return ok({ status: "kopiert", antall: plan.nyeRader.length });
 }
