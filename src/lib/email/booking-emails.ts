@@ -140,43 +140,27 @@ export async function sendBookingReminder(bookingId: string) {
   await sendBooking("oekt-paaminnelse", bookingId);
 }
 
-export async function sendBookingCancellation(bookingId: string) {
-  // Bruker booking-bekreftelse-mal med endret subject — kunne vært egen mal.
-  // For nå: enkel hard-kodet melding fra hovedtemplate.
-  const booking = await prisma.booking.findUnique({
-    where: { id: bookingId },
-    include: {
-      user: { select: { name: true, email: true } },
-      serviceType: true,
-    },
+export async function sendBookingCancellation(
+  bookingId: string,
+  extra: { refundIssued?: boolean; isCreditBooking?: boolean } = {},
+) {
+  const refundLine = extra.isCreditBooking
+    ? "Credit-en er ført tilbake til abonnementet ditt."
+    : extra.refundIssued
+      ? "Refusjon er behandlet og kommer på samme kort innen 3–10 virkedager."
+      : "Avbestilt etter avbestillingsfristen — ingen refusjon.";
+  await sendBooking("booking-avbestilt", bookingId, { refundLine });
+}
+
+/**
+ * Sendes når en booking flyttes til ny tid. `oldStartAt` er tidspunktet
+ * booking-en hadde FØR flyttingen — booking-raden i DB er allerede
+ * oppdatert til den nye tiden når denne kalles, så date/time i
+ * standard-variablene fra sendBooking() viser automatisk den nye tiden.
+ */
+export async function sendBookingRescheduled(bookingId: string, oldStartAt: Date) {
+  await sendBooking("booking-flyttet", bookingId, {
+    oldDate: formatDato(oldStartAt),
+    oldTime: formatTid(oldStartAt),
   });
-  if (!booking) return;
-
-  const epost = booking.user?.email ?? booking.guestEmail;
-  if (!epost) return;
-
-  const navn = booking.user?.name ?? booking.guestName ?? "der";
-
-  try {
-    const klient = resendKlient();
-    await klient.emails.send({
-      from: FRA_EPOST,
-      to: epost,
-      subject: `Avbestilt: ${booking.serviceType.name}`,
-      html: tilHtml(
-        `Hei ${navn},
-
-Vi har avbestilt booking-en din for **${booking.serviceType.name}** ${formatDato(booking.startAt)} kl ${formatTid(booking.startAt)}.
-
-Refusjon er behandlet og kommer på samme kort innen 3–10 virkedager.
-
-Ta gjerne kontakt hvis du vil booke ny tid.
-
-Hilsen
-AK Golf`,
-      ),
-    });
-  } catch (err) {
-    console.error("[booking-email] cancellation failed", err);
-  }
 }

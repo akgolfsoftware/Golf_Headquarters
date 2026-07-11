@@ -737,6 +737,19 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 11. juli (booking-konsolidering, fase 1.1–1.3): **sikkerhetshull i ombooking tettet** —
+  `rescheduleBooking` i `booking/actions.ts` hardkodet `coachId = ""`, som gjorde at Google
+  Kalender-kollisjonssjekken alltid «feilet åpent» (fant ingen tilkobling → sa ledig). Bruker nå
+  ekte `booking.coachId`. Verifisert mot en midlertidig testkobling i dev-DB (ryddet opp etterpå).
+  24-timers påminnelse (`src/lib/agents/booking-reminders.ts`) viste seg å allerede være fullt
+  bygget og koblet på cron — ingenting å gjøre der. Slått sammen de to parallelle
+  booking-e-postsystemene til ett: `booking/actions.ts` (marketing/gjeste-avbestilling og
+  -ombooking) brukte hardkodede React-maler (`send-booking-email.ts`), mens resten av appen
+  allerede brukte de DB-drevne `EmailTemplate`-radene (`booking-emails.ts`, redigerbare av Anders
+  uten kode-endring). Lagt til to nye maler i databasen (`booking-avbestilt`, `booking-flyttet`),
+  byttet `booking/actions.ts` til det DB-drevne systemet, og slettet det nå døde
+  `send-booking-email.ts` + `templates/`-mappa. tsc + build + 400/400 tester grønt.
+
 - 11. juli (QA-runde, komplett gjennomgang desktop+mobil): **KRITISK shell-bug funnet og fikset** —
   `BunnNavLenker` (mobil-bunn-nav) i `src/components/v2/shell.tsx` satte `display: "flex"` som
   inline style, som alltid vant over Tailwind-klassen `md:hidden`. Konsekvens: bunn-navigasjonen
