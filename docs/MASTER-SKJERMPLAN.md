@@ -82,8 +82,8 @@ Skjermer som er implementert i kode men IKKE ferdig gjennom design-porting-gaten
 | PlayerHQ Analysere | SG-Hub sub-sider (equipment/yardage/strategy/conditions/benchmark), Slag-for-slag, TrackMan-sesjon-detalj, Statistikk sub-sider | `Shot`, `HoleScore`, `BrukerSgInput`, `SgInsight`, `ClubMetricTrend`, `TrackManSession`, `TrackManShot` |
 | PlayerHQ Gjennomføre | Ny økt (handlingsvalg), Ønsket økt, Økt-detalj, Kalender, Feiring | `TrainingSessionV2`, `SessionParticipant`, `TrainingPlanSessionLog` |
 | PlayerHQ Booking | Booking-detalj, Ny booking bekreft, Coach-profil (booking), Anlegg-detalj | `Booking`, `CoachingSession`, `ServiceType`, `Facility`, `Payment` |
-| AgencyOS Stall | Spiller-profil, Ny spiller, Tildel test (skjema), Gruppe-detalj | `User`, `Group`, `GroupMember`, `TestAssignment`, `TalentTracking` |
-| AgencyOS Planlegge | Plan-detalj, Plan-mal detalj, Drill-detalj, Teknisk plan, Ny turnering | `TrainingPlan`, `PlanTemplate`, `PlanEffectiveness`, `TechnicalPlan`, `Tournament` |
+| AgencyOS Stall | Spiller-profil, Ny spiller, Tildel test (skjema) | `User`, `Group`, `GroupMember`, `TestAssignment`, `TalentTracking` |
+| AgencyOS Planlegge | Plan-mal detalj, Drill-detalj, Teknisk plan, Ny turnering | `TrainingPlan`, `PlanTemplate`, `PlanEffectiveness`, `TechnicalPlan`, `Tournament` |
 
 ### Prioritet 2 — Coach-seksjonen (PlayerHQ) — hele seksjonen mangler design
 
@@ -105,8 +105,8 @@ Spillerens kontakt med coachen er implementert i kode men har **Design=– på s
 |---|---|---|
 | Innsikt | Innsikt-hub, Runder, Tilstander, Analytics | `SgInsight`, `Signal`, `Round`, `HealthEntry` |
 | Admin/org | Team, AI-agenter, E-postmaler, Audit-log, Klubb-innstillinger | `ApiKey`, `AuditLog`, `AgentRun`, `EmailTemplate` |
-| Gjennomføre | Daglig drift-hub, Økt-detalj, Ny booking, TrackMan på tvers | `TrainingSessionV2`, `TrackManSession` |
-| Workspace | Workspace-hub, Prosjekter, Notion-sync | `OppgaveCache`, `ProsjektCache`, `NotionConnection` |
+| Gjennomføre | Daglig drift-hub, Ny booking, TrackMan på tvers | `TrainingSessionV2`, `TrackManSession` |
+| Workspace | Workspace-hub | `OppgaveCache`, `ProsjektCache`, `NotionConnection` |
 
 ### Prioritet 4 — Booking-flyt (selvstendig)
 

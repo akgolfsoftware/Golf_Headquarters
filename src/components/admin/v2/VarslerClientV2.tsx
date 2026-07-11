@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { VarslerData } from "@/lib/admin/load-varsler";
 import { avvisPlanAction, godtaPlanAction, markerVarselLest } from "@/app/admin/varsler/actions";
-import { T, Caps, Kort, Rad, Knapp, AvatarInit, TomTilstand, MikroMeta } from "@/components/v2";
+import { T, Caps, Kort, Rad, Knapp, AvatarInit, TomTilstand, MikroMeta, HjelpTips } from "@/components/v2";
 
 export function VarslerClientV2({ data }: { data: VarslerData }) {
   const router = useRouter();
@@ -72,7 +72,10 @@ export function VarslerClientV2({ data }: { data: VarslerData }) {
 
       {/* Signaler */}
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <Caps>Signaler ({signals.length})</Caps>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <Caps>Signaler ({signals.length})</Caps>
+          <HjelpTips k="signalVerdi" size={11} />
+        </div>
         {signals.length === 0 ? (
           <Kort>
             <TomTilstand icon="activity" title="Ingen ferske signaler" sub="Ingen signaler er beregnet for stallen siste 14 dager." />

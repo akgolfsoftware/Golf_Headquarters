@@ -23,6 +23,7 @@ import {
   StatusPill,
   TomTilstand,
   MiniSpark,
+  HjelpTips,
 } from "@/components/v2";
 
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
@@ -84,8 +85,9 @@ export function SpillereListeV2({ data }: { data: SpillereListeV2Data }) {
         <div style={{ marginTop: 10 }}>
           <Tittel em="spillere">Mine</Tittel>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
-          {rader.length} totalt. Caddie holder hver spillerside oppdatert etter hver økt.
+        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0", display: "flex", alignItems: "center", gap: 6 }}>
+          {rader.length} totalt. Caddie holder hver spillerside oppdatert etter hver økt. SG i listen
+          <HjelpTips k="sgTotal" size={11} />
         </p>
       </div>
 

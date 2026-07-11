@@ -130,8 +130,8 @@ export function GruppeDetaljV2({
 
       {/* KPI-rad */}
       <div className="grid grid-cols-2 sm:grid-cols-4" style={{ gap: T.gap }}>
-        <KpiFlis label="Medlemmer" value={String(data.antallMedlemmer)} delta={`${data.antallHjelpetrenere} hjelpetrener`} />
-        <KpiFlis label="Snitt-HCP" value={data.snittHcp} />
+        <KpiFlis label="Medlemmer" value={String(data.antallMedlemmer)} delta={`${data.antallHjelpetrenere} hjelpecoach`} />
+        <KpiFlis label="Snitt-HCP" value={data.snittHcp} hjelp="hcp" />
         <KpiFlis label="Runder · 90 d" value={String(data.totalRunder)} />
         <KpiFlis label="PRO-andel" value={`${data.proAndel}%`} />
       </div>
@@ -241,7 +241,7 @@ export function GruppeDetaljV2({
                         {m.navn}
                       </div>
                       <div style={{ fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut, marginTop: 2 }}>
-                        {m.homeClub ?? "Klubb ukjent"} · {m.erHjelpetrener ? "Hjelpetrener" : "Spiller"}
+                        {m.homeClub ?? "Klubb ukjent"} · {m.erHjelpetrener ? "Hjelpecoach" : "Spiller"}
                         {m.schoolYear && ` · ${m.schoolYear}`}
                       </div>
                     </div>

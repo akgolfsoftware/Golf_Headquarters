@@ -119,6 +119,11 @@ const RAW = {
     forklaring:
       "Resultatet ditt i denne utfordringen, målt slik eieren har definert øvelsen — for eksempel antall treff eller poeng. Høyere score er alltid bedre, og resultatlisten rangeres etter beste score.",
   },
+  signalVerdi: {
+    tittel: "Signal-verdi",
+    forklaring:
+      "Et automatisk beregnet tall for spilleren, som SG totalt, HCP-trend eller streak — typen står i teksten rett over tallet. Signalet varsler deg om noe har endret seg, det er ikke en dom i seg selv.",
+  },
 } as const satisfies Record<string, HjelpTekst>;
 
 export type HjelpNokkel = keyof typeof RAW;
