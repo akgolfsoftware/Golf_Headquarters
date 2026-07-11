@@ -10,7 +10,7 @@
  * Kun DS-token-klasser. Ingen emoji (lucide). Pris: 299 kr/mnd.
  */
 
-import { Button } from "@/components/athletic/golfdata";
+import { Knapp } from "@/components/v2";
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -168,14 +168,7 @@ export function OppgraderFlytWizard() {
 
       {/* Bekreft */}
       <div className="mt-6 space-y-3">
-        <Button
-          type="button"
-          variant="signal"
-          size="lg"
-          className="w-full"
-          onClick={handleBekreft}
-          disabled={loading}
-        >
+        <Knapp full onClick={handleBekreft} disabled={loading}>
           {loading ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} aria-hidden />
@@ -187,7 +180,7 @@ export function OppgraderFlytWizard() {
               <ArrowRight className="h-4 w-4" strokeWidth={2.2} aria-hidden />
             </>
           )}
-        </Button>
+        </Knapp>
         <p className="flex items-center justify-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
           <Lock className="h-3 w-3 text-primary" strokeWidth={2} aria-hidden />
           Sikker betaling · Stripe

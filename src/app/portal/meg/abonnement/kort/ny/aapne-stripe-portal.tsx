@@ -8,7 +8,7 @@
  * for innlogget bruker og returnerer URL-en vi redirecter til.
  */
 
-import { Button } from "@/components/athletic/golfdata";
+import { Knapp } from "@/components/v2";
 import { useState } from "react";
 import { Loader2, ExternalLink, AlertTriangle } from "lucide-react";
 
@@ -38,14 +38,7 @@ export function AapneStripePortal() {
 
   return (
     <div className="space-y-3">
-      <Button
-        type="button"
-        variant="signal"
-        size="lg"
-        className="w-full"
-        onClick={handleClick}
-        disabled={loading}
-      >
+      <Knapp full onClick={handleClick} disabled={loading}>
         {loading ? (
           <span className="inline-flex items-center gap-2">
             <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} aria-hidden />
@@ -57,7 +50,7 @@ export function AapneStripePortal() {
             Administrer kort i Stripe
           </span>
         )}
-      </Button>
+      </Knapp>
 
       {error ? (
         <div
