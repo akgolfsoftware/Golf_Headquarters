@@ -71,7 +71,9 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
     } catch {
       /* nettverksfeil — køes lokalt under, ikke bare et in-memory flagg */
     }
-    await leggIKo(sessionId, payload);
+    // IndexedDB kan i sjeldne tilfeller kaste synkront (f.eks. lukket
+    // forbindelse) — skal aldri hindre avslutt() sin navigering.
+    await leggIKo(sessionId, payload).catch(() => {});
     setLagreStatus("kolagt");
     return false;
   }
@@ -87,13 +89,16 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
     };
   }, []);
 
-  // Nettet kommer tilbake — prøv å tømme den lokale køen for denne økten.
+  // Tøm evt. kølagt telling fra en tidligere økt: ved mount (siden kan lastes
+  // på nytt mens nettet allerede er tilbake, uten at "online" noensinne fyres)
+  // og hver gang nettet kommer tilbake mens siden er åpen.
   useEffect(() => {
     async function synk() {
       const resultat = await tomKo(sessionId, saveTapperCounts);
       if (resultat === "synket") setLagreStatus("ok");
       else if (resultat === "gitt-opp") setLagreStatus("gitt-opp");
     }
+    void synk();
     window.addEventListener("online", synk);
     return () => window.removeEventListener("online", synk);
   }, [sessionId]);

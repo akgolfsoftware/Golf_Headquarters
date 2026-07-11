@@ -11,6 +11,19 @@ describe("parTemplate", () => {
     }
   });
 
+  it("summerer riktig også for ekstreme baner utenfor 68-76 (54-90)", () => {
+    for (const par of [54, 57, 58, 86, 90]) {
+      const holes = parTemplate(par);
+      assert.equal(holes.length, 18);
+      assert.equal(
+        holes.reduce((a, b) => a + b, 0),
+        par,
+        `par ${par} ga feil sum`,
+      );
+      for (const h of holes) assert.ok(h >= 3 && h <= 5);
+    }
+  });
+
   it("alle hull er innenfor 3–5 (aldri flat)", () => {
     for (const par of [68, 71, 76]) {
       for (const h of parTemplate(par)) {

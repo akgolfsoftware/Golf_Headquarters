@@ -17,11 +17,19 @@ export function parTemplate(coursePar: number): number[] {
   const MIKS = [4, 3, 5, 4, 4, 3, 4, 5, 4, 4, 4, 3, 5, 4, 4, 5, 3, 4];
   const holes = MIKS.slice();
   let diff = coursePar - MIKS.reduce((a, b) => a + b, 0);
-  for (let i = HOLES - 1; i >= 0 && diff !== 0; i--) {
-    const justert = holes[i] + Math.sign(diff);
-    if (justert >= 3 && justert <= 5) {
-      holes[i] = justert;
-      diff -= Math.sign(diff);
+  // Flere runder over hullene — én runde justerer maks ±14 (par-template.test.ts
+  // avdekket at énrunde-varianten ga feil sum for baner langt fra 68-76).
+  // Justeringskapasiteten stopper naturlig når alle hull står på 3 eller 5.
+  let endretIForrigeRunde = true;
+  while (diff !== 0 && endretIForrigeRunde) {
+    endretIForrigeRunde = false;
+    for (let i = HOLES - 1; i >= 0 && diff !== 0; i--) {
+      const justert = holes[i] + Math.sign(diff);
+      if (justert >= 3 && justert <= 5) {
+        holes[i] = justert;
+        diff -= Math.sign(diff);
+        endretIForrigeRunde = true;
+      }
     }
   }
   return holes;

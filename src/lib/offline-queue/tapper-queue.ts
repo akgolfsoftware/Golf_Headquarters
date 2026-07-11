@@ -39,10 +39,16 @@ async function medButikk<T>(
   const db = await apneDb();
   if (!db) return null;
   return new Promise((resolve) => {
-    const tx = db.transaction(BUTIKK, modus);
-    const req = gjor(tx.objectStore(BUTIKK));
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => resolve(null);
+    try {
+      const tx = db.transaction(BUTIKK, modus);
+      const req = gjor(tx.objectStore(BUTIKK));
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => resolve(null);
+    } catch {
+      // db.transaction() kan kaste synkront (f.eks. lukket forbindelse) —
+      // skal aldri velte kalleren, bare gjøre køen utilgjengelig denne gangen.
+      resolve(null);
+    }
   });
 }
 
