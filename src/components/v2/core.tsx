@@ -368,13 +368,15 @@ export interface KnappProps {
   full?: boolean;
   disabled?: boolean;
   onClick?: () => void;
+  /** "submit" for skjema-knapper — default "button". */
+  type?: "button" | "submit";
 }
 /* Interaktiv CTA-pille (ekte <button>): onClick + full-bredde + disabled.
    CTAPill er den statiske varianten; Knapp brukes i flerstegs-flyter. */
-export function Knapp({ icon, children, ghost, full, disabled, onClick }: KnappProps) {
+export function Knapp({ icon, children, ghost, full, disabled, onClick, type = "button" }: KnappProps) {
   return (
     <button
-      type="button"
+      type={type}
       className="v2-press v2-focus"
       onClick={disabled ? undefined : onClick}
       disabled={disabled}

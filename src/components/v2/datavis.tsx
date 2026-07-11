@@ -13,6 +13,8 @@ import { Fragment, useState } from "react";
 import { T, fmtSg, type AkseKey } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
 import { Kort, TallHero, Caps, TomTilstand, CTAPill, AkseChip, InnsiktChip, DeltaChip, AvatarInit, AKSE_NAVN, Rad } from "./core";
+import { HjelpTips } from "./hjelp";
+import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
 
 /* ── Delte hjelpere ───────────────────────────────────── */
 const kd = (v: number | null | undefined, d = 1): string =>
@@ -324,13 +326,23 @@ export interface SgKategorierProps {
   kategorier?: SgKategori[];
   baseline?: string;
   fagkoder?: boolean;
+  hjelp?: HjelpNokkel;
 }
-export function SgKategorier({ kategorier = SGK_DEMO, baseline = "Broadie scratch", fagkoder = false }: SgKategorierProps) {
+export function SgKategorier({ kategorier = SGK_DEMO, baseline = "Broadie scratch", fagkoder = false, hjelp }: SgKategorierProps) {
   const max = Math.max(0.5, ...kategorier.map((k) => Math.abs(k.sg)));
   const verst = kategorier.reduce((wi, k, i, a) => (k.sg < a[wi].sg ? i : wi), 0);
   return (
     <Kort>
-      {eyebrowRow("SG per kategori", `mot ${baseline}`)}
+      {eyebrowRow(
+        hjelp ? (
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            SG per kategori <HjelpTips k={hjelp} size={11} />
+          </span>
+        ) : (
+          "SG per kategori"
+        ),
+        `mot ${baseline}`,
+      )}
       {kategorier.map((k, i) => {
         const gain = k.sg >= 0, w = (Math.abs(k.sg) / max) * 50;
         return (
@@ -407,7 +419,8 @@ export interface ScorekortHull {
 export interface ScorekortSammendrag {
   score: number;
   par: number;
-  sg: number;
+  /** SG total for runden — null når SG ikke er beregnet (vises som «—»). */
+  sg: number | null;
 }
 const SK_DEMO: ScorekortHull[] = [4, 4, 3, 5, 4, 4, 3, 4, 5, 4, 3, 4, 5, 4, 4, 3, 5, 4].map((par, i) => ({
   nr: i + 1, par,
@@ -419,18 +432,26 @@ export interface ScorekortProps {
   hull?: ScorekortHull[];
   sammendrag?: ScorekortSammendrag | null;
   baseline?: string;
+  hjelp?: HjelpNokkel;
 }
-export function Scorekort({ hull = SK_DEMO, sammendrag = null, baseline = "Broadie scratch" }: ScorekortProps) {
-  if (!hull.length) return <Kort eyebrow="Scorekort"><TomTilstand icon="flag" title="Ingen runder ennå" sub="Logg en runde for å se hull-for-hull med Strokes Gained." /></Kort>;
+export function Scorekort({ hull = SK_DEMO, sammendrag = null, baseline = "Broadie scratch", hjelp }: ScorekortProps) {
+  const eyebrow = hjelp ? (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+      Scorekort <HjelpTips k={hjelp} size={11} />
+    </span>
+  ) : (
+    "Scorekort"
+  );
+  if (!hull.length) return <Kort eyebrow={eyebrow}><TomTilstand icon="flag" title="Ingen runder ennå" sub="Logg en runde for å se hull-for-hull med Strokes Gained." /></Kort>;
   const score = sammendrag ? sammendrag.score : hull.reduce((s, h) => s + h.score, 0);
   const par = sammendrag ? sammendrag.par : hull.reduce((s, h) => s + h.par, 0);
   const sg = sammendrag ? sammendrag.sg : hull.reduce((s, h) => s + (h.sg || 0), 0);
   const rel = score - par;
   return (
-    <Kort eyebrow="Scorekort" action={<span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>mot {baseline}</span>}>
+    <Kort eyebrow={eyebrow} action={<span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>mot {baseline}</span>}>
       <div style={{ display: "flex", gap: 28, alignItems: "baseline", marginBottom: 14 }}>
         <span style={{ ...mono(34), lineHeight: 1 }}>{score} <span style={{ fontSize: 14, color: skFarge(rel > 1 ? 2 : rel) }}>{rel === 0 ? "E" : rel > 0 ? `+${rel}` : rel}</span></span>
-        <span style={{ ...mono(20, sg >= 0 ? T.up : T.down) }}>{fmtSg(sg)} <span style={{ fontSize: 10, color: T.mut }}>SG</span></span>
+        <span style={{ ...mono(20, sg == null ? T.mut : sg >= 0 ? T.up : T.down) }}>{sg == null ? "—" : fmtSg(sg)} <span style={{ fontSize: 10, color: T.mut }}>SG</span></span>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(9, 1fr)", gap: 4 }}>
         {hull.map((h) => {

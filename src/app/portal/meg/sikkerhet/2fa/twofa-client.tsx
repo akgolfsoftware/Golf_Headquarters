@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/athletic/golfdata";
+import { Knapp } from "@/components/v2";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -352,12 +352,7 @@ export function TwoFaClient() {
           )}
 
           <div className="mt-6 flex justify-end">
-            <Button
-              type="button"
-              variant="primary"
-              onClick={tilSteg2}
-              disabled={pending}
-            >
+            <Knapp onClick={tilSteg2} disabled={pending}>
               {pending ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.75} />
@@ -369,7 +364,7 @@ export function TwoFaClient() {
                   <ChevronRight className="h-4 w-4" strokeWidth={1.75} />
                 </>
               )}
-            </Button>
+            </Knapp>
           </div>
         </Kort>
       )}
@@ -440,12 +435,7 @@ export function TwoFaClient() {
               >
                 Tilbake
               </button>
-              <Button
-                type="button"
-                variant="primary"
-                onClick={bekreftKode}
-                disabled={pending || kode.length !== 6}
-              >
+              <Knapp onClick={bekreftKode} disabled={pending || kode.length !== 6}>
                 {pending ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.75} />
@@ -457,7 +447,7 @@ export function TwoFaClient() {
                     <ChevronRight className="h-4 w-4" strokeWidth={1.75} />
                   </>
                 )}
-              </Button>
+              </Knapp>
             </div>
           </div>
         </Kort>
@@ -535,15 +525,10 @@ export function TwoFaClient() {
           )}
 
           <div className="mt-6 flex justify-end">
-            <Button
-              type="button"
-              variant="primary"
-              onClick={fullfor}
-              disabled={!lagret}
-            >
+            <Knapp onClick={fullfor} disabled={!lagret}>
               <ShieldCheck className="h-4 w-4" strokeWidth={1.75} />
               Fullfør og aktiver
-            </Button>
+            </Knapp>
           </div>
         </Kort>
       )}

@@ -84,6 +84,36 @@ const RAW = {
     forklaring:
       "Tidsrommet innenfor en gruppeøkt som er satt av til at spilleren trener selvstendig, uten direkte styring fra coach.",
   },
+  talentVurdering: {
+    tittel: "Talent-vurdering",
+    forklaring:
+      "Coachens vurdering av deg på en skala fra 1 til 10 per område (teknikk, fysisk, motivasjon), vist som prosent av full skala. Oppdateres av coach — ikke beregnet automatisk.",
+  },
+  spredningSigma: {
+    tittel: "σ (spredning)",
+    forklaring:
+      "Standardavvik — hvor mye slagene dine varierer rundt snittet, målt i meter. σ side er variasjon til høyre/venstre, σ lengde er variasjon i lengde. Lavere tall betyr jevnere slag.",
+  },
+  skjevhetBias: {
+    tittel: "Bias (skjevhet)",
+    forklaring:
+      "Den gjennomsnittlige miss-retningen din på dette hullet — for eksempel 4 m høyre. Brukes til å justere siktepunktet: misser du systematisk høyre, sikt lenger mot venstre.",
+  },
+  dispersjon: {
+    tittel: "Slag-dispersion",
+    forklaring:
+      "Spredningen av slagene dine, vist som et punktkart der hvert punkt er ett slag. Et tett mønster betyr stabilt treff — et spredt mønster viser hvor mye slaget varierer i lengde og side.",
+  },
+  trackman: {
+    tittel: "TrackMan-data",
+    forklaring:
+      "Målinger fra TrackMan-radaren, som ballhastighet, lengde og spredning per kølle. Importeres fra CSV- eller HTML-eksport og brukes til å følge kølleavstander og stabilitet over tid.",
+  },
+  utfordringScore: {
+    tittel: "Score i utfordringer",
+    forklaring:
+      "Resultatet ditt i denne utfordringen, målt slik eieren har definert øvelsen — for eksempel antall treff eller poeng. Høyere score er alltid bedre, og resultatlisten rangeres etter beste score.",
+  },
 } as const satisfies Record<string, HjelpTekst>;
 
 export type HjelpNokkel = keyof typeof RAW;

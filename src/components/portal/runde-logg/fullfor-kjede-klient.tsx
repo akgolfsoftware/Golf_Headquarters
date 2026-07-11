@@ -11,7 +11,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { lagreHullKjede } from "@/app/portal/(legacy)/mal/runder/[id]/actions";
+import { lagreHullKjede } from "@/app/portal/mal/runder/[id]/actions";
 import type { HvileLie, LoggetHull, LoggetSlag } from "@/lib/runde-logg/types";
 import { T, fmtSg, Caps, Kort, Icon } from "@/components/v2";
 import { SlagEditor } from "./slag-editor";

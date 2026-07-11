@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/athletic/golfdata";
+import { Knapp } from "@/components/v2";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -257,9 +257,9 @@ export function ProfilForm({ initial, prefs, parents }: Props) {
           )}
 
           <div className="flex items-center gap-4">
-            <Button type="submit" variant="primary" disabled={pending}>
+            <Knapp type="submit" disabled={pending}>
               {pending ? "Lagrer…" : "Lagre profil"}
-            </Button>
+            </Knapp>
             {lagret && (
               <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.10em] text-primary">
                 <Check className="h-3 w-3" strokeWidth={1.5} />

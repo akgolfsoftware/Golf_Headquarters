@@ -6,7 +6,6 @@
  * Matcher fasit B5 · Planer (Detalj-fane).
  */
 
-import { Tag } from "@/components/athletic/golfdata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, Target, TrendingUp } from "lucide-react";
@@ -184,7 +183,7 @@ export default async function CoachPlanDetalj({
         </p>
         {plan.isActive && (
           <div className="mt-2">
-            <Tag variant="up">AKTIV</Tag>
+            <span className="inline-flex items-center rounded-full bg-success/10 px-2.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.06em] text-success">Aktiv</span>
           </div>
         )}
       </div>

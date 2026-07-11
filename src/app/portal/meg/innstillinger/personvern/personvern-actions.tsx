@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/athletic/golfdata";
+import { Knapp } from "@/components/v2";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Download, Trash2 } from "lucide-react";
@@ -51,15 +51,10 @@ function ExportAction() {
 
   return (
     <div className="mt-4 flex flex-wrap items-center gap-2">
-      <Button
-        variant="signal"
-        size="md"
-        onClick={onExport}
-        disabled={isPending}
-      >
+      <Knapp onClick={onExport} disabled={isPending}>
         <Download className="h-4 w-4" />
         {isPending ? "Genererer…" : "Last ned mine data"}
-      </Button>
+      </Knapp>
       {status ? (
         <span
           className={`inline-flex items-center gap-1 font-mono text-[11px] tracking-[0.06em] ${
@@ -98,15 +93,10 @@ function DeleteAction() {
   if (!showConfirm) {
     return (
       <div className="mt-4">
-        <Button
-          variant="ghost"
-          size="md"
-          onClick={() => setShowConfirm(true)}
-          className="!border-destructive/40 !text-destructive hover:!bg-destructive/10"
-        >
+        <Knapp ghost onClick={() => setShowConfirm(true)}>
           <Trash2 className="h-4 w-4" />
           Slett kontoen min
-        </Button>
+        </Knapp>
       </div>
     );
   }
