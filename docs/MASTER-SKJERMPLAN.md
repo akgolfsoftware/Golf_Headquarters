@@ -205,7 +205,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Coach: kølle | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Coach: utstyr | `/portal/mal/sg-hub/coach/[spillerId]/equipment` | – | --- | ✓ | ~ | ~ | ~ |
 | Runder (liste) | `/portal/mal/runder` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
-| · Runde-detalj ★ | `/portal/mal/runder/[id]` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| · Runde-detalj ★ | `/portal/mal/runder/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Slag-for-slag (visning) | `/portal/mal/runder/[id]/shot-by-shot` | – | --- | ✓ | ~ | ~ | ~ |
 | · Slag-registrering (wizard + UpGame) | `/portal/mal/runder/[id]/slag` | – | ✓-- | ✓ | ✓ | ✓ | ✓ |
 | · Logg ny runde ★ | `/portal/mal/runder/ny` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
