@@ -742,6 +742,18 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 Full kronologisk byggehistorikk flyttet til [`docs/arkiv/master-skjermplan-endringslogg.md`](arkiv/master-skjermplan-endringslogg.md)
 2026-07-06 — denne fila var 822 linjer og loggen drukna den faktiske statustabellen. Siste hendelser:
 
+- 11. juli (Bølge A — PlayerHQ-detaljskjermer til v2, branch `claude/blissful-gates-763ac3`):
+  **ALLE /portal-sider er nå golfdata-frie.** Rebygget på v2: utfordring-detalj, runde-detalj
+  (Scorekort + SgKategorier), slag-registrering, loggfør runde, TrackMan-hub + sesjonsdetalj,
+  baneguide banekart + hull-detalj (dispersion), test-detalj, FYS-plan-hub, talent-hub. Døde
+  sider slettet (teknisk-plan-lista var redirect-skygget; tester-katalog×2 + scorekort
+  foreldreløse). Siste golfdata-referanser fjernet fra ny-okt-wizard, coach-plan-detalj,
+  6 meg-skjemafiler og error/not-found. NY LÅST REGEL: «?»-forklaringer (HjelpTips) på alle
+  tall/faguttrykk — 6 nye hjelpetekster (trackman, dispersjon, spredningSigma, skjevhetBias,
+  talentVurdering, utfordringScore). Knapp fikk submit-støtte; wrench i ikon-kartet.
+  tsc 0 feil, fullt bygg grønt. Gjenstår i bølge A-halen: shot-by-shot (rå tailwind),
+  talent-undersider, ny-okt/coach-plans full v2-omkomponering (golfdata-frie, legacy-chrome).
+
 - 8. juli (opprydding Fase 4, bølge 4 — marketing + forelder, branch `opprydding/token-konvergens`):
   **SISTE bølge — hele appen har nå 3 gamle athletic-importer igjen, alle PulseDot på marketing
   (venter på gap #1 StatusDot).** `Pyramid` portet fra DS (data/) → golfdata/. Migrert:
