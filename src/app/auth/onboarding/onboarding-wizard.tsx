@@ -190,6 +190,12 @@ export function OnboardingWizard({
       playingYears: playingYears ? parseInt(playingYears, 10) : undefined,
       sessionFrequency,
       seasonGoals,
+      profiltype,
+      konkurranseNivaa,
+      fasiliteter,
+      traningsdager,
+      tidPaaDagen,
+      drivkraft,
       selectedCoach,
       selectedTier,
       acceptedTerms,
@@ -271,11 +277,15 @@ export function OnboardingWizard({
     });
   }
 
-  // Steg 7 er suksess-skjerm — redirect til portal (eller checkout-resume)
+  // Steg 7 er suksess-skjerm — redirect til portal (eller checkout-resume).
+  // Lagrer buildData() først slik at acceptedTerms/acceptedPrivacy og alle
+  // steg-3-feltene (fasiliteter, treningsdager osv.) er persistert før
+  // completeOnboarding trigger side-effektene (FacilityPrefs, mål, m.m.).
   function fullfor() {
     setError(null);
     startTransition(async () => {
       try {
+        await saveSpillerOnboardingStep(buildData());
         await completeOnboarding(subscribe);
       } catch {
         router.push(ferdigMaal);

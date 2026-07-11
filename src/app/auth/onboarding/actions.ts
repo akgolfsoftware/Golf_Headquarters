@@ -14,6 +14,7 @@ import { isMinor } from "@/lib/auth/minor";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { logError } from "@/lib/error-tracking";
 import { phone, email, optStr } from "@/lib/validation/schemas";
+import { byggTreningPreferanser, fasiliteterTilFacilityPrefs, sesongmaalTilTittel } from "@/lib/onboarding/trening-preferanser";
 
 const SaveOnboardingProfileSchema = z.object({
   phone: phone.nullable().optional(),
@@ -42,13 +43,19 @@ export type SpillerOnboardingData = {
   // Steg 2 — Om deg
   name?: string;
   phone?: string;
-  // Steg 3 — Golf-erfaring
+  // Steg 3 — Golf-erfaring + profil + fasiliteter + preferanser
   hcp?: number;
   homeClub?: string;
   playingYears?: number;
   sessionFrequency?: number;
   playTournaments?: string;
   seasonGoals?: string[];
+  profiltype?: string;
+  konkurranseNivaa?: string;
+  fasiliteter?: string[];
+  traningsdager?: string[];
+  tidPaaDagen?: string;
+  drivkraft?: string[];
   // Steg 5 — Coach + abonnement
   selectedCoach?: string;
   selectedTier?: string;
@@ -179,6 +186,57 @@ export async function markStepComplete(stepNumber: number): Promise<void> {
 // Fullfør onboarding
 // ──────────────────────────────────────────────────────────────────────────────
 
+/**
+ * Side-effekter som gjør steg-3-svarene faktisk nyttige for planmotoren.
+ * Kjøres én gang fra completeOnboarding — hver i egen try/catch (logget,
+ * ikke kastet) slik at en feilet side-effekt ALDRI blokkerer onboarding.
+ */
+async function fullforOnboardingSideEffekter(
+  userId: string,
+  onboarding: Record<string, unknown>,
+): Promise<void> {
+  // 1) FacilityPrefs — create-only. Beskytter senere Workbench-redigering
+  // og gjør re-onboarding trygt (rører aldri en eksisterende rad).
+  try {
+    const fasiliteter = Array.isArray(onboarding.fasiliteter)
+      ? (onboarding.fasiliteter as unknown[]).filter((f): f is string => typeof f === "string")
+      : [];
+    if (fasiliteter.length > 0) {
+      const finnes = await prisma.facilityPrefs.findUnique({ where: { userId }, select: { id: true } });
+      if (!finnes) {
+        await prisma.facilityPrefs.create({
+          data: { userId, ...fasiliteterTilFacilityPrefs(fasiliteter) },
+        });
+      }
+    }
+  } catch (error) {
+    await logError({ context: "onboarding.complete.facility-prefs", error, userId });
+  }
+
+  // 2) Goal-rader fra sesongmål — idempotent (kun titler brukeren ikke har fra før).
+  try {
+    const seasonGoals = Array.isArray(onboarding.seasonGoals)
+      ? (onboarding.seasonGoals as unknown[]).filter((g): g is string => typeof g === "string")
+      : [];
+    if (seasonGoals.length > 0) {
+      const titler = seasonGoals.map(sesongmaalTilTittel);
+      const finnesFraFor = await prisma.goal.findMany({
+        where: { userId, title: { in: titler } },
+        select: { title: true },
+      });
+      const finnesSet = new Set(finnesFraFor.map((g) => g.title));
+      const nye = titler.filter((t) => !finnesSet.has(t));
+      if (nye.length > 0) {
+        await prisma.goal.createMany({
+          data: nye.map((title) => ({ userId, type: "FREE_TEXT", title })),
+        });
+      }
+    }
+  } catch (error) {
+    await logError({ context: "onboarding.complete.goals", error, userId });
+  }
+}
+
 export async function completeOnboarding(subscribe?: string): Promise<void> {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
@@ -193,6 +251,17 @@ export async function completeOnboarding(subscribe?: string): Promise<void> {
         >)
       : {};
 
+  const treningPrefs = byggTreningPreferanser({
+    sessionFrequency: typeof existing.sessionFrequency === "number" ? existing.sessionFrequency : undefined,
+    traningsdager: Array.isArray(existing.traningsdager)
+      ? (existing.traningsdager as unknown[]).filter((d): d is string => typeof d === "string")
+      : undefined,
+    tidPaaDagen: typeof existing.tidPaaDagen === "string" ? existing.tidPaaDagen : undefined,
+    drivkraft: Array.isArray(existing.drivkraft)
+      ? (existing.drivkraft as unknown[]).filter((d): d is string => typeof d === "string")
+      : undefined,
+  });
+
   const updatedPrefs = {
     ...(prefs as Record<string, unknown>),
     onboarding: {
@@ -200,12 +269,16 @@ export async function completeOnboarding(subscribe?: string): Promise<void> {
       completedAt: new Date().toISOString(),
       stepCompleted: 7,
     },
+    // Re-onboarding overskriver — nyeste svar vinner.
+    trening: treningPrefs,
   };
 
   await prisma.user.update({
     where: { id: user.id },
     data: { preferences: updatedPrefs },
   });
+
+  await fullforOnboardingSideEffekter(user.id, existing);
 
   revalidatePath("/portal");
   // Gjenoppta valgt checkout hvis besøkende startet med en abonnement-intent.
