@@ -343,6 +343,7 @@ export function LiveOktV2({ data }: { data: LiveV2Session | null }) {
   const [isCompleting, setIsCompleting] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showLogger, setShowLogger] = useState(false);
+  const [lagringsfeil, setLagringsfeil] = useState(false);
 
   const sessionId = data?.sessionId ?? null;
   const activeIdx = useMemo(() => drills.findIndex((d) => d.status === "active"), [drills]);
@@ -414,6 +415,7 @@ export function LiveOktV2({ data }: { data: LiveV2Session | null }) {
     setIsCompleting(true);
     vibrate(40);
 
+    setLagringsfeil(false);
     try {
       await completeDrill({
         sessionId,
@@ -425,12 +427,22 @@ export function LiveOktV2({ data }: { data: LiveV2Session | null }) {
         repsHit: active.repsHit,
         successRate: active.repsTotal > 0 ? Math.round((active.repsHit / active.repsTotal) * 100) : 0,
       });
+
+      // Er dette siste øvelse, fullfør økta FØR vi markerer done lokalt — så et
+      // feilet completeSession heller ikke etterlater «fullført» i UI.
+      if (activeIdx === drills.length - 1) {
+        await completeSession(sessionId, totalSec + drillSec);
+      }
     } catch (err) {
-      console.error("[LiveOktV2] completeDrill feilet", err);
-    } finally {
+      // Ikke marker øvelsen som fullført og ikke avslutt økta ved feil — behold
+      // repsene så spilleren kan prøve igjen i stedet for stille datatap.
+      console.error("[LiveOktV2] lagring feilet", err);
+      setLagringsfeil(true);
       setIsCompleting(false);
+      return;
     }
 
+    setIsCompleting(false);
     setDrills((prev) =>
       prev.map((d, i) => {
         if (d.id === active.id) return { ...d, status: "done" as const };
@@ -441,10 +453,6 @@ export function LiveOktV2({ data }: { data: LiveV2Session | null }) {
     setDrillSec(0);
     setShowLogger(false);
     vibrate([60, 40]);
-
-    if (activeIdx === drills.length - 1) {
-      await completeSession(sessionId, totalSec + drillSec);
-    }
   }, [active, activeIdx, sessionId, drills.length, isCompleting, totalSec, drillSec]);
 
   const completedCount = drills.filter((d) => d.status === "done").length;
@@ -546,6 +554,11 @@ export function LiveOktV2({ data }: { data: LiveV2Session | null }) {
           <Knapp full icon="check" disabled={isCompleting} onClick={handleCompleteDrill}>
             {activeIdx === drills.length - 1 ? "Fullfør økt" : "Fullfør øvelse"}
           </Knapp>
+          {lagringsfeil && (
+            <p style={{ fontFamily: T.ui, fontSize: 12, color: T.down, textAlign: "center", marginTop: 8 }}>
+              Kunne ikke lagre — sjekk nettet og prøv igjen. Repetisjonene er beholdt.
+            </p>
+          )}
         </main>
       </Scope>
     );
@@ -643,9 +656,16 @@ export function LiveOktV2({ data }: { data: LiveV2Session | null }) {
 
         {/* Sticky fullfør-knapp */}
         {active && !allDone && (
-          <Knapp full icon="check" disabled={isCompleting} onClick={handleCompleteDrill}>
-            {activeIdx === drills.length - 1 ? "Fullfør økt" : "Fullfør øvelse"}
-          </Knapp>
+          <>
+            <Knapp full icon="check" disabled={isCompleting} onClick={handleCompleteDrill}>
+              {activeIdx === drills.length - 1 ? "Fullfør økt" : "Fullfør øvelse"}
+            </Knapp>
+            {lagringsfeil && (
+              <p style={{ fontFamily: T.ui, fontSize: 12, color: T.down, textAlign: "center", marginTop: 8 }}>
+                Kunne ikke lagre — sjekk nettet og prøv igjen. Repetisjonene er beholdt.
+              </p>
+            )}
+          </>
         )}
       </main>
     </Scope>
