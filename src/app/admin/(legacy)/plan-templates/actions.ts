@@ -54,13 +54,23 @@ const EnvironmentEnum = z.enum([
   "GYM",
 ]);
 
-const DisciplinFordelingSchema = z.object({
-  FYS: z.number().min(0).max(1),
-  TEK: z.number().min(0).max(1),
-  SLAG: z.number().min(0).max(1),
-  SPILL: z.number().min(0).max(1),
-  TURN: z.number().min(0).max(1),
-});
+const DisciplinFordelingSchema = z
+  .object({
+    FYS: z.number().min(0).max(1),
+    TEK: z.number().min(0).max(1),
+    SLAG: z.number().min(0).max(1),
+    SPILL: z.number().min(0).max(1),
+    TURN: z.number().min(0).max(1),
+  })
+  // Klient-editoren validerer sum=100% med en alert(), men det er ingen
+  // server-sperre mot å omgå det (script/API-kall) — dekket her.
+  .refine(
+    (f) => {
+      const sum = f.FYS + f.TEK + f.SLAG + f.SPILL + f.TURN;
+      return sum >= 0.99 && sum <= 1.01;
+    },
+    { message: "Discipline-fordelingen må summere til 100%" },
+  );
 
 const DrillEntrySchema = z.object({
   exerciseId: z.string().min(1),

@@ -409,7 +409,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Plan-maler (alt.) | `/admin/plan-templates` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Plan-mal detalj | `/admin/plan-templates/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ny plan-mal | `/admin/plan-templates/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| · Rediger plan-mal | `/admin/plan-templates/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
+| · Rediger plan-mal | `/admin/plan-templates/[id]/rediger` | – | --- | ✓ | ~ | ✓ | ~ | 2026-07-11: volum-linje (timer/uke + reell pyramidefordeling vs. glidere, varsel ved avvik >10pp eller sum≠100%) — src/lib/plan-templates/beregn-volum.ts
 | Drills (bibliotek) | `/admin/drills` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
 | · Drill-detalj | `/admin/drills/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger drill | `/admin/drills/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |

@@ -53,6 +53,8 @@ import {
   type DisciplinFordeling,
   type DrillEntry,
 } from "./shared";
+import { VolumSammendrag, UkeVolumChip } from "./volum-linje";
+import { beregnTemplateVolum } from "@/lib/plan-templates/beregn-volum";
 
 export type DrillOption = {
   id: string;
@@ -157,6 +159,11 @@ export function TemplateEditor({
   }, [fordeling]);
 
   const sessions = template.sessions;
+
+  const volum = useMemo(
+    () => beregnTemplateVolum(sessions, varighetUker, fordeling),
+    [sessions, varighetUker, fordeling],
+  );
 
   const filtererteDrills = useMemo(() => {
     if (!drillSok.trim()) return drillOptions;
@@ -299,8 +306,9 @@ export function TemplateEditor({
                   key={uke}
                   className="mt-1 grid grid-cols-[60px_repeat(7,1fr)] gap-1"
                 >
-                  <div className="flex items-center justify-center rounded-md bg-secondary/60 font-mono text-xs font-semibold">
-                    {uke}
+                  <div className="flex flex-col items-center justify-center rounded-md bg-secondary/60 font-mono text-xs font-semibold">
+                    <span>{uke}</span>
+                    <UkeVolumChip minutter={volum.minPerUke[uke - 1] ?? 0} />
                   </div>
                   {[1, 2, 3, 4, 5, 6, 7].map((dag) => {
                     const s = findSession(uke, dag);
@@ -443,6 +451,13 @@ export function TemplateEditor({
                 ))}
               </div>
             </div>
+
+            <VolumSammendrag
+              sessions={sessions}
+              varighetUker={varighetUker}
+              fordeling={fordeling}
+              fordelingSum={fordelingSum}
+            />
 
             <label className="flex items-center gap-2 text-xs">
               <input
