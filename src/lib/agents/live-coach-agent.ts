@@ -7,6 +7,7 @@
 // hvorfor Telegram normalt brukes; bevisst unntak for live-start).
 
 import "server-only";
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "@/lib/ai/client";
 import { notify } from "@/lib/notifications";
@@ -18,11 +19,21 @@ export const AGENT_NAME = "live-coach-agent";
 
 export type LiveSessionKind = "plan-session" | "session-v2";
 
-type MeldingRad = {
-  role: "user" | "assistant" | "coach" | "system";
-  content: string;
-  ts: string;
-};
+const meldingRadSchema = z.object({
+  role: z.enum(["user", "assistant", "coach", "system"]),
+  content: z.string(),
+  ts: z.string(),
+});
+type MeldingRad = z.infer<typeof meldingRadSchema>;
+
+/** Leser messages-JSON-blobben trygt — ugyldige/korrupte rader filtreres bort i stedet for å telle som gyldige. */
+function lesMeldinger(raw: Prisma.JsonValue | null | undefined): MeldingRad[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.flatMap((rad) => {
+    const parsed = meldingRadSchema.safeParse(rad);
+    return parsed.success ? [parsed.data] : [];
+  });
+}
 
 type OktInfo = {
   title: string;
@@ -174,9 +185,7 @@ export async function runLiveCoachAgent(opts: {
       where: { userId_liveSessionId: { userId, liveSessionId: sessionId } },
     });
     if (eksisterende) {
-      const meldinger = Array.isArray(eksisterende.messages)
-        ? (eksisterende.messages as unknown as MeldingRad[])
-        : [];
+      const meldinger = lesMeldinger(eksisterende.messages);
       const harVelkomst = meldinger.some((m) => m.role === "assistant");
       if (harVelkomst) {
         return {
@@ -241,9 +250,7 @@ export async function runLiveCoachAgent(opts: {
 
     let thread;
     if (eksisterende) {
-      const meldinger = Array.isArray(eksisterende.messages)
-        ? (eksisterende.messages as unknown as MeldingRad[])
-        : [];
+      const meldinger = lesMeldinger(eksisterende.messages);
       thread = await prisma.coachingSession.update({
         where: { id: eksisterende.id },
         data: {

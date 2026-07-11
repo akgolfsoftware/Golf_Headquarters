@@ -2,16 +2,12 @@
 
 import { prisma } from "@/lib/prisma";
 import { beregnKorrelasjon } from "@/lib/training/korrelasjon";
-import { aggregateSg } from "@/lib/sg";
-import type { SgCategory } from "@/generated/prisma/client";
 import { SG_TO_SKILL } from "@/lib/training/skills";
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { varsleVedPlanAction } from "./notify-plan-action";
 
 export const AGENT_NAME = "treningsdata-ekspert";
-
-const OMRAADER: SgCategory[] = ["OTT", "APP", "ARG", "PUTT"];
 
 export async function runTreningsdataEkspert(
   userId: string,
@@ -37,18 +33,6 @@ export async function runTreningsdataEkspert(
     if (!negativ) {
       return { signalsWritten: 0, planActionsWritten: 0 };
     }
-
-    const sg = aggregateSg(runder);
-    const sgSnitt = {
-      OTT: sg.ott ?? 0,
-      APP: sg.app ?? 0,
-      ARG: sg.arg ?? 0,
-      PUTT: sg.putt ?? 0,
-    };
-    const primary = OMRAADER.reduce(
-      (best, cur) => (sgSnitt[cur] < sgSnitt[best] ? cur : best),
-      negativ.sgArea,
-    );
 
     const eksisterende = await prisma.planAction.findFirst({
       where: {
@@ -76,7 +60,7 @@ export async function runTreningsdataEkspert(
         actionType: "FOCUS_CHANGE",
         agentName: AGENT_NAME,
         suggestion: {
-          skillArea: SG_TO_SKILL[primary],
+          skillArea: SG_TO_SKILL[negativ.sgArea],
           forklaring,
           signalSnapshot: {
             kind: "KORRELASJON",
