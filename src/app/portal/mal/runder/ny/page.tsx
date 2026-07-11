@@ -11,13 +11,20 @@ import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { Caps, Tittel, MikroMeta, Kort } from "@/components/v2";
 import { T } from "@/lib/v2/tokens";
 import { RundeNyForm } from "@/components/portal/runde-ny/runde-ny-form";
+import { sisteSpilteBaneId } from "@/lib/portal/siste-spilte-bane";
+import { medForst } from "@/lib/portal/baneliste-med-prefill";
 
 export default async function NyRundePage() {
   const user = await requirePortalUser();
-  const courses = await prisma.courseDefinition.findMany({
-    orderBy: { name: "asc" },
-    select: { id: true, name: true, par: true },
-  });
+  const [alleCourses, sisteBaneId] = await Promise.all([
+    prisma.courseDefinition.findMany({
+      orderBy: { name: "asc" },
+      select: { id: true, name: true, par: true },
+    }),
+    sisteSpilteBaneId(user.id),
+  ]);
+  // Prefill (flytpakke 2, 2.5): sist spilte bane foreslås øverst.
+  const courses = medForst(alleCourses, sisteBaneId);
 
   return (
     <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
