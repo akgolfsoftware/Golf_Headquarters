@@ -74,10 +74,14 @@ export default async function SlagRegistreringPage({
               {runde.course.name} · {datoTekst}
             </Caps>
             <div style={{ marginTop: 10 }}>
-              <Tittel em="slag.">Slag for</Tittel>
+              <Tittel em="redigering.">Avansert</Tittel>
             </div>
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
-              Registrer hvert slag manuelt, eller importer fra UpGame.
+            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0", lineHeight: 1.6 }}>
+              Rediger enkeltslag på en lagret runde, eller importer fra UpGame. Ny føring gjøres{" "}
+              <Link href="/portal/runde/logg" style={{ color: T.lime, fontWeight: 600, textDecoration: "none" }}>
+                slag for slag
+              </Link>{" "}
+              — raskere og alltid komplett kjede.
             </p>
           </div>
           <UpGameImportModal roundId={id} />

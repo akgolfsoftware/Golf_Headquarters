@@ -7,6 +7,7 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
+import { emailLayout } from "@/lib/email/templates/shared";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no";
 
@@ -132,10 +133,6 @@ async function sendBooking(
   }
 }
 
-export async function sendBookingConfirmation(bookingId: string) {
-  await sendBooking("booking-bekreftelse", bookingId);
-}
-
 export async function sendBookingReminder(bookingId: string) {
   await sendBooking("oekt-paaminnelse", bookingId);
 }
@@ -163,18 +160,16 @@ export async function sendBookingCancellation(bookingId: string) {
       from: FRA_EPOST,
       to: epost,
       subject: `Avbestilt: ${booking.serviceType.name}`,
-      html: tilHtml(
-        `Hei ${navn},
-
-Vi har avbestilt booking-en din for **${booking.serviceType.name}** ${formatDato(booking.startAt)} kl ${formatTid(booking.startAt)}.
-
-Refusjon er behandlet og kommer på samme kort innen 3–10 virkedager.
-
-Ta gjerne kontakt hvis du vil booke ny tid.
-
-Hilsen
-AK Golf`,
-      ),
+      html: emailLayout({
+        preheader: `Booking-en din for ${booking.serviceType.name} er avbestilt.`,
+        heading: "Bookingen din er avbestilt",
+        body: `
+          <p style="margin:0 0 16px 0;">Hei ${navn},</p>
+          <p style="margin:0 0 16px 0;">Vi har avbestilt booking-en din for <strong>${booking.serviceType.name}</strong> ${formatDato(booking.startAt)} kl ${formatTid(booking.startAt)}.</p>
+          <p style="margin:0 0 16px 0;">Refusjon er behandlet og kommer på samme kort innen 3–10 virkedager.</p>
+          <p style="margin:0;">Ta gjerne kontakt hvis du vil booke ny tid.</p>
+        `,
+      }),
     });
   } catch (err) {
     console.error("[booking-email] cancellation failed", err);

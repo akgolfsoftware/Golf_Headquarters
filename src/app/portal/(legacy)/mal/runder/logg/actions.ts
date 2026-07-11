@@ -18,47 +18,13 @@ import { beregnSg } from "@/lib/domain/sg";
 import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
 import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
 import { beregnGranulaerSg } from "@/lib/runde-logg/granulaer-sg";
-import type { LoggetHull, LoggetSlag } from "@/lib/runde-logg/types";
-import type { ShotLie, ShotType, WindDir } from "@/generated/prisma/enums";
+import { hullSchema } from "@/lib/runde-logg/schema";
+import { byggShotRader } from "@/lib/runde-logg/bygg-shot-rader";
 
 // ---------------------------------------------------------------------------
-// Validering (JSON-blob-regelen: alt fra klienten zod-valideres)
+// Validering (JSON-blob-regelen: alt fra klienten zod-valideres).
+// Delte schemas (slag/hull) bor i lib/runde-logg/schema.ts.
 // ---------------------------------------------------------------------------
-
-const hvileLieSchema = z.enum([
-  "FAIRWAY",
-  "SEMI_ROUGH",
-  "ROUGH",
-  "DEEP_ROUGH",
-  "BUNKER",
-  "GREEN",
-  "TREES",
-]);
-
-const resultatSchema = z.discriminatedUnion("iHull", [
-  z.object({ iHull: z.literal(true) }),
-  z.object({
-    iHull: z.literal(false),
-    lie: hvileLieSchema,
-    avstandTilHull: z.number().min(0.1).max(700),
-  }),
-]);
-
-const slagSchema = z.object({
-  resultat: resultatSchema,
-  kolle: z.string().max(40).optional(),
-  vind: z.enum(["STILLE", "MEDVIND", "MOTVIND", "VENSTRE", "HOYRE"]).optional(),
-  mental: z.number().int().min(1).max(5).optional(),
-  straffe: z.boolean().optional(),
-  notat: z.string().max(500).optional(),
-});
-
-const hullSchema = z.object({
-  holeNumber: z.number().int().min(1).max(18),
-  par: z.number().int().min(3).max(6),
-  lengdeMeter: z.number().min(40).max(700),
-  slag: z.array(slagSchema).min(1).max(25),
-});
 
 const rundeSchema = z.object({
   courseId: z.string().min(1),
@@ -74,70 +40,11 @@ const rundeSchema = z.object({
       { message: "Duplikate hullnummer" },
     ),
   notes: z.string().max(2000).optional(),
+  /** Turnering eller trening — null/utelatt = ukjent (ærlig for gamle runder). */
+  roundType: z.enum(["turnering", "trening"]).optional(),
 });
 
 export type LagreLoggetRundeInput = z.input<typeof rundeSchema>;
-
-// ---------------------------------------------------------------------------
-// Shot-rad-avledning (DB-representasjon per svingt slag)
-// ---------------------------------------------------------------------------
-
-/** Deterministisk ShotType fra kontekst — dokumentert konvensjon, ikke gjettverk. */
-function utledShotType(
-  erForsteSlag: boolean,
-  par: number,
-  startLie: ShotLie,
-  startAvstand: number,
-): ShotType {
-  if (startLie === "GREEN") return "PUTT";
-  if (erForsteSlag && par >= 4) return "DRIVE";
-  if (startLie === "TREES") return "RECOVERY";
-  if (startLie === "BUNKER" && startAvstand <= 30) return "BUNKER";
-  if (startAvstand <= 12) return "CHIP";
-  if (startAvstand <= 30) return "PITCH";
-  return "APPROACH";
-}
-
-type ShotRad = {
-  holeNumber: number;
-  holePar: number;
-  shotNumber: number;
-  club: string | null;
-  lie: ShotLie;
-  distanceToPin: number;
-  windDir: WindDir | null;
-  shotType: ShotType;
-  isPenalty: boolean;
-  mentalScore: number | null;
-  notes: string | null;
-};
-
-/** Bygger Shot-radene for ett hull (posisjonskjedet gir startposisjon per slag). */
-function byggShotRader(hull: LoggetHull): ShotRad[] {
-  let startLie: ShotLie = "TEE";
-  let startAvstand = hull.lengdeMeter;
-
-  return hull.slag.map((slag: LoggetSlag, i) => {
-    const rad: ShotRad = {
-      holeNumber: hull.holeNumber,
-      holePar: hull.par,
-      shotNumber: i + 1,
-      club: slag.kolle ?? null,
-      lie: startLie,
-      distanceToPin: startAvstand,
-      windDir: slag.vind ?? null,
-      shotType: utledShotType(i === 0, hull.par, startLie, startAvstand),
-      isPenalty: slag.straffe === true,
-      mentalScore: slag.mental ?? null,
-      notes: slag.notat ?? null,
-    };
-    if (!slag.resultat.iHull) {
-      startLie = slag.resultat.lie;
-      startAvstand = slag.resultat.avstandTilHull;
-    }
-    return rad;
-  });
-}
 
 // ---------------------------------------------------------------------------
 // Hoved-action
@@ -188,6 +95,7 @@ export async function lagreLoggetRunde(
         sgPutt25_40: granulaer.sgPutt25_40,
         sgPutt40plus: granulaer.sgPutt40plus,
         sgSource: "beregnet",
+        roundType: runde.roundType ?? null,
         notes: runde.notes ?? null,
       },
       select: { id: true },
@@ -224,16 +132,24 @@ export async function lagreLoggetRunde(
 
 /**
  * Henter hull-oppsettet for en bane (par + lengde per hull) til oppstarts-
- * steget i live-føringen. Baner uten hulldata → tom liste (UI lar spilleren
- * sette par manuelt).
+ * steget i live-føringen. Tar CourseDefinition-id (det rundene bruker) og
+ * resolver til Bane via courseDefinition.baneId — hull-geometrien bor på
+ * CourseHole under Bane. Baner uten kobling/hulldata → tom liste (UI lar
+ * spilleren sette par manuelt).
  */
 export async function hentBaneHull(
   courseId: string,
 ): Promise<Array<{ holeNumber: number; par: number | null; lengdeMeter: number | null }>> {
   await requireConsentingUser();
 
+  const course = await prisma.courseDefinition.findUnique({
+    where: { id: courseId },
+    select: { baneId: true },
+  });
+  if (!course?.baneId) return [];
+
   const hull = await prisma.courseHole.findMany({
-    where: { baneId: courseId },
+    where: { baneId: course.baneId },
     orderBy: { holeNumber: "asc" },
     select: { holeNumber: true, par: true, lengthMeter: true },
   });

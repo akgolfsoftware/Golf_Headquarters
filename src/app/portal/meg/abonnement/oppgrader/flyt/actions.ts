@@ -1,7 +1,6 @@
 "use server";
 
 import { z } from "zod";
-import { redirect } from "next/navigation";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { audit } from "@/lib/audit";
 
@@ -15,18 +14,31 @@ type Input = {
   plan: "monthly" | "yearly";
 };
 
-export async function requestProUpgrade(input: Input): Promise<void> {
+export type RequestProUpgradeResult = {
+  ok: false;
+  message: string;
+};
+
+/**
+ * Betaling for PRO er ikke åpnet ennå. Vi logger interessen i audit-loggen
+ * (til oppfølging) og returnerer en ærlig melding — ALDRI en falsk
+ * suksess-tilstand. Ingen abonnement opprettes her.
+ */
+export async function requestProUpgrade(
+  input: Input,
+): Promise<RequestProUpgradeResult> {
   RequestProUpgradeSchema.parse(input);
   const user = await requireConsentingUser();
 
-  // I produksjon: opprett Stripe checkout-session og redirect dit.
-  // Foreløpig: logg forespørsel og redirect tilbake til abonnement med ok-state.
   await audit({
     actorId: user.id,
-    action: "pro.upgrade_requested",
+    action: "pro.upgrade_interest_logged",
     target: user.id,
     metadata: { plan: input.plan },
   });
 
-  redirect("/portal/meg/abonnement?ok=1");
+  return {
+    ok: false,
+    message: "Betaling åpner 1. august — du står på listen.",
+  };
 }

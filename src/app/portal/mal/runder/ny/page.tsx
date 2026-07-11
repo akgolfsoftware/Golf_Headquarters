@@ -8,7 +8,8 @@ import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { Caps, Tittel, MikroMeta } from "@/components/v2";
+import { Caps, Tittel, MikroMeta, Kort } from "@/components/v2";
+import { T } from "@/lib/v2/tokens";
 import { RundeNyForm } from "@/components/portal/runde-ny/runde-ny-form";
 
 export default async function NyRundePage() {
@@ -31,6 +32,17 @@ export default async function NyRundePage() {
             <Tittel em="runde.">Loggfør</Tittel>
           </div>
         </div>
+
+        {/* Full SG krever slag-for-slag-føring — pek dit (port fra main 2026-07-11) */}
+        <Kort pad="12px 18px">
+          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.6 }}>
+            Vil du ha full Strokes Gained?{" "}
+            <Link href="/portal/runde/logg" style={{ color: T.lime, fontWeight: 600, textDecoration: "none" }}>
+              Før runden slag for slag
+            </Link>{" "}
+            — da ser du nøyaktig hvor slagene ble tjent og tapt.
+          </p>
+        </Kort>
 
         <div style={{ maxWidth: 760 }}>
           <RundeNyForm courses={courses} />

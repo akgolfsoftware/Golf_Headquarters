@@ -55,6 +55,9 @@ export type StallenRow = {
   adhPct: number | null;
   status: StatusKind;
   statusLabel: string;
+  /** Aldri logget inn (lastLoginAt mangler) — bulk-importert plassholderprofil
+   *  uten egen aktivitet ennå, skal grupperes bak «Venter på innlogging». */
+  neverLoggedIn: boolean;
 };
 
 export type StallenData = {
@@ -376,6 +379,7 @@ export async function loadStallen(
       adhPct,
       status,
       statusLabel,
+      neverLoggedIn: days == null,
     };
   });
 

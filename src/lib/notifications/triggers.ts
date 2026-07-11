@@ -40,7 +40,7 @@ export const TRIGGERS = {
     label: "Velkomst (ved registrering)",
     category: "spiller",
     channels: ["email"],
-    emailSlug: "velkomst",
+    emailSlug: "velkomst-gratis",
     priority: "normal",
   },
   BOOKING_CONFIRMED: {

@@ -1,20 +1,7 @@
-import {
-  SkeletonHero,
-  SkeletonKpi,
-  SkeletonCard,
-  SkeletonList,
-} from "@/components/shared/loading-skeleton";
+/* v2-skjelett for /portal/analysere (Analysere/TrackMan/Runder/SG-fanene). */
 
-export default function AnalyticsLoading() {
-  return (
-    <div className="space-y-6 p-6">
-      <SkeletonHero />
-      <SkeletonKpi count={4} />
-      <div className="grid gap-6 md:grid-cols-2">
-        <SkeletonCard height="h-64" />
-        <SkeletonCard height="h-64" />
-      </div>
-      <SkeletonList rows={5} />
-    </div>
-  );
+import { V2Laster } from "@/components/v2/feil-laste";
+
+export default function Loading() {
+  return <V2Laster variant="dashboard" />;
 }

@@ -15,7 +15,7 @@
  */
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { Caps, Kort, TomTilstand, AvatarInit, Velger } from "@/components/v2";
+import { Caps, Kort, TomTilstand, AvatarInit, Velger, TilbakeLenke } from "@/components/v2";
 import { T } from "@/lib/v2/tokens";
 import { WorkbenchV2, type WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
@@ -110,6 +110,7 @@ export function CoachWorkbenchMount({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <TilbakeLenke href={`/admin/spillere/${currentPlayerId}`}>Tilbake til {playerName}</TilbakeLenke>
       {/* Coach-kontekstbar: hvem planlegger + spiller-velger (roster) */}
       <Kort pad="12px 16px">
         <div

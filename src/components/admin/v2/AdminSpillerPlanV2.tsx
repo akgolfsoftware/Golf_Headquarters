@@ -29,6 +29,7 @@ import {
   KpiFlis,
   StatusPill,
   CTAPill,
+  TilbakeLenke,
   Knapp,
   InnsiktChip,
   TomTilstand,
@@ -103,9 +104,7 @@ export function AdminSpillerPlanV2({ data }: { data: AdminSpillerPlanData }) {
         </div>
       </div>
       <div className="hidden md:inline-flex" style={{ gap: 8 }}>
-        <Link href={`/admin/spillere/${spiller.id}`} style={{ textDecoration: "none" }}>
-          <CTAPill ghost icon="arrow-left">Tilbake til {spiller.navn.split(" ")[0]}</CTAPill>
-        </Link>
+        <TilbakeLenke href={`/admin/spillere/${spiller.id}`}>Tilbake til {spiller.navn}</TilbakeLenke>
         <Link href={workbenchHref} style={{ textDecoration: "none" }}>
           <CTAPill icon="plus">Lag plan</CTAPill>
         </Link>

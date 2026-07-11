@@ -143,6 +143,7 @@ export default async function SpillerFremgangPage({
 
   const data: FremgangV2Data = {
     navn: spiller.name,
+    spillerId: spiller.id,
     uker: UKER,
     harRunder: runder.length > 0,
     omrader,

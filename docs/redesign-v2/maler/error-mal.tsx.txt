@@ -1,0 +1,22 @@
+"use client";
+
+/* MAL — kopier til <segment>/error.tsx og fyll ut TILBAKEHREF (+ evt. TITTEL).
+   Tynn: logger error.digest, rendrer V2Feil. Aldri legg egen feil-UI her —
+   endringer i visuelt uttrykk gjøres i src/components/v2/feil-laste.tsx. */
+
+import { useEffect } from "react";
+import { V2Feil } from "@/components/v2/feil-laste";
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    console.error("[v2/error]", error.digest, error);
+  }, [error]);
+
+  return <V2Feil reset={reset} tilbakeHref="TILBAKEHREF" />;
+}

@@ -116,7 +116,14 @@ export type TrackManClub = {
 
 export type TrackManData = {
   clubs: TrackManClub[];
-  sessions: { id: string; recordedAt: Date; shotCount: number; source: string }[];
+  sessions: {
+    id: string;
+    recordedAt: Date;
+    shotCount: number;
+    source: string;
+    /** Kølle brukt i økten, kun satt hvis ALLE slag i økten har samme kølle (ekte data, ikke gjettet). */
+    primaryClub: string | null;
+  }[];
 };
 
 export type GoalListItem = {
@@ -471,12 +478,16 @@ export async function getTrackManData(
 
   return {
     clubs,
-    sessions: sessions.map((s) => ({
-      id: s.id,
-      recordedAt: s.recordedAt,
-      shotCount: s.shotCount,
-      source: s.source,
-    })),
+    sessions: sessions.map((s) => {
+      const kolleSet = new Set(s.shots.map((sh) => sh.club).filter((c): c is string => !!c));
+      return {
+        id: s.id,
+        recordedAt: s.recordedAt,
+        shotCount: s.shotCount,
+        source: s.source,
+        primaryClub: kolleSet.size === 1 ? [...kolleSet][0] : null,
+      };
+    }),
   };
 }
 
