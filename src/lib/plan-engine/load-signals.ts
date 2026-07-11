@@ -9,6 +9,7 @@ import { kategoriFraFritekst, SG_FOKUS_LABEL, type WorkbenchFokus } from "@/lib/
 import { beregnSgGap } from "@/lib/workbench/sg-gap";
 import { adherencePct } from "@/lib/workbench/compliance";
 import { findActivePeriod } from "@/lib/workbench/period-lookup";
+import { lesTreningPreferanser } from "@/lib/onboarding/trening-preferanser";
 import type { PlayerSignals } from "./adapt-template";
 
 const ADHERENCE_VINDU_DAGER = 28;
@@ -16,7 +17,7 @@ const ADHERENCE_VINDU_DAGER = 28;
 export async function hentPlayerSignals(userId: string, now = new Date()): Promise<PlayerSignals> {
   const vinduStart = new Date(now.getTime() - ADHERENCE_VINDU_DAGER * 86_400_000);
 
-  const [seasonPlan, fasiliteter, okter, nesteTurnering] = await Promise.all([
+  const [seasonPlan, fasiliteter, okter, nesteTurnering, user] = await Promise.all([
     prisma.seasonPlan.findFirst({
       where: { userId },
       include: { periodBlocks: { orderBy: { startDate: "asc" } } },
@@ -40,7 +41,10 @@ export async function hentPlayerSignals(userId: string, now = new Date()): Promi
         tournament: { select: { startDate: true } },
       },
     }),
+    prisma.user.findUnique({ where: { id: userId }, select: { preferences: true } }),
   ]);
+
+  const treningPrefs = lesTreningPreferanser(user?.preferences ?? null);
 
   // Fokus: coachens eksplisitte periode-fokus vinner; ellers beregnet SG-gap
   // (samme prioritering som load-workbench.ts).
@@ -79,5 +83,7 @@ export async function hentPlayerSignals(userId: string, now = new Date()): Promi
         }
       : null,
     dagerTilTurnering,
+    okterPerUke: treningPrefs?.okterPerUke ?? null,
+    foretrukneDager: treningPrefs && treningPrefs.dager.length > 0 ? treningPrefs.dager : null,
   };
 }

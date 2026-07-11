@@ -47,6 +47,10 @@ export interface PlayerSignals {
   fasiliteter: FasilitetTilgang | null;
   /** Dager til neste påmeldte turnering. Null = ingen kommende. */
   dagerTilTurnering: number | null;
+  /** Spillerens ønskede antall økter/uke fra onboarding. Kutter aldri økter — kun informativt (brukes i AI-prompt). */
+  okterPerUke: number | null;
+  /** Foretrukne treningsdager (dagNr 1–7, man=1) fra onboarding. Null/tom/alle 7 = ingen preferanse. */
+  foretrukneDager: number[] | null;
 }
 
 export interface AdaptertUke {
@@ -84,13 +88,69 @@ function rundNed15(min: number): number {
   return Math.max(15, Math.round((min / 15)) * 15);
 }
 
+const DAG_KORT: string[] = ["", "man", "tir", "ons", "tor", "fre", "lør", "søn"];
+
+/**
+ * Flytt økter til spillerens foretrukne treningsdager — ren dag-flytting,
+ * verken dropper eller legger til økter. Grupperer per uke (preferansen
+ * gjelder ukentlig), no-op for uker der øktene allerede ligger på
+ * foretrukne dager.
+ *
+ * n = antall økter i uka, k = antall foretrukne dager (P, sortert stigende):
+ * - n=1:        midterste foretrukne dag.
+ * - 2≤n≤k:      jevn spredning inkl. endepunktene (distinkte dager garantert).
+ * - n>k:        balansert fylling, maks ⌈n/k⌉ økter per dag.
+ */
+function flyttOktTilForetrukneDager(
+  okter: MalOkt[],
+  foretrukneDager: number[] | null,
+): { okter: MalOkt[]; justering: string | null } {
+  if (!foretrukneDager || foretrukneDager.length === 0 || foretrukneDager.length >= 7) {
+    return { okter, justering: null };
+  }
+  const P = [...new Set(foretrukneDager)].sort((a, b) => a - b);
+  const k = P.length;
+
+  const ukeGrupper = new Map<number, MalOkt[]>();
+  for (const o of okter) {
+    if (!ukeGrupper.has(o.ukeNr)) ukeGrupper.set(o.ukeNr, []);
+    ukeGrupper.get(o.ukeNr)!.push(o);
+  }
+
+  let noeFlyttet = false;
+  const resultat: MalOkt[] = [];
+
+  for (const [, ukeOkter] of [...ukeGrupper.entries()].sort((a, b) => a[0] - b[0])) {
+    if (ukeOkter.every((o) => P.includes(o.dagNr))) {
+      resultat.push(...ukeOkter);
+      continue;
+    }
+    const sortert = [...ukeOkter].sort((a, b) => a.dagNr - b.dagNr || a.title.localeCompare(b.title, "nb"));
+    const n = sortert.length;
+    sortert.forEach((okt, i) => {
+      const idx = n === 1 ? Math.floor(k / 2) : n <= k ? Math.round((i * (k - 1)) / (n - 1)) : Math.floor((i * k) / n);
+      resultat.push({ ...okt, dagNr: P[idx] });
+    });
+    noeFlyttet = true;
+  }
+
+  if (!noeFlyttet) return { okter, justering: null };
+
+  const dagNavn = P.map((d) => DAG_KORT[d]).join(", ");
+  return {
+    okter: resultat,
+    justering: `Øktene er lagt på dagene du foretrekker (${dagNavn}).`,
+  };
+}
+
 /**
  * Tilpass én mal-uke til spilleren. Reglene (i rekkefølge):
  * 1. Fasilitetsfilter — dropp økter spilleren ikke har anlegg til.
  * 2. Taper — ≤7 dager til turnering: 25 % kortere økter, FYS-økter droppes.
  * 3. Compliance — lav etterlevelse: færre/kortere økter så uka blir overkommelig.
  * 4. Fokus-vridning — inntil 2 tekniske/slag-økter vris mot fokusområdet.
- * 5. CANON-avvik — mal-fase ≠ spillerens aktive fase: kun rådgivende merknad.
+ * 5. Dag-flytting — legg øktene på spillerens foretrukne treningsdager.
+ * 6. CANON-avvik — mal-fase ≠ spillerens aktive fase: kun rådgivende merknad.
  */
 export function adaptTemplateWeek(
   malOkter: MalOkt[],
@@ -171,7 +231,12 @@ export function adaptTemplateWeek(
     }
   }
 
-  // 5. CANON-avvik: mal-fase vs spillerens aktive fase — kun rådgivende, aldri sperre.
+  // 5. Dag-flytting: legg øktene på spillerens foretrukne treningsdager.
+  const { okter: flyttet, justering: dagJustering } = flyttOktTilForetrukneDager(okter, signaler.foretrukneDager);
+  okter = flyttet;
+  if (dagJustering) justeringer.push(dagJustering);
+
+  // 6. CANON-avvik: mal-fase vs spillerens aktive fase — kun rådgivende, aldri sperre.
   if (signaler.aktivFase && signaler.aktivFase !== malFase) {
     const retninger = CANON_PERIOD_ADJUSTMENT[signaler.aktivFase];
     const opp = (Object.keys(retninger) as PyramidArea[]).filter((a) => retninger[a] === "opp");

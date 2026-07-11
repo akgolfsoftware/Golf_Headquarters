@@ -29,6 +29,8 @@ const INGEN_SIGNALER: PlayerSignals = {
   adherencePct: null,
   fasiliteter: null,
   dagerTilTurnering: null,
+  okterPerUke: null,
+  foretrukneDager: null,
 };
 
 function mkOkt(over: Partial<MalOkt> = {}): MalOkt {
@@ -134,6 +136,87 @@ describe("adaptTemplateWeek", () => {
     assert.equal(res.okter.length, 3);
     assert.equal(res.justeringer.length, 1);
     assert.match(res.justeringer[0], /Turnering/);
+  });
+
+  describe("dag-flytting (foretrukneDager)", () => {
+    it("no-op når ingen preferanse er satt", () => {
+      const res = adaptTemplateWeek(standardUke(), "GRUNN", { ...INGEN_SIGNALER, foretrukneDager: null });
+      assert.deepEqual(res.okter.map((o) => o.dagNr), [1, 2, 4, 5]);
+      assert.deepEqual(res.justeringer, []);
+    });
+
+    it("no-op når alle 7 dager er «foretrukket» (ingen reell preferanse)", () => {
+      const res = adaptTemplateWeek(standardUke(), "GRUNN", {
+        ...INGEN_SIGNALER,
+        foretrukneDager: [1, 2, 3, 4, 5, 6, 7],
+      });
+      assert.deepEqual(res.okter.map((o) => o.dagNr), [1, 2, 4, 5]);
+      assert.deepEqual(res.justeringer, []);
+    });
+
+    it("no-op når øktene allerede ligger på foretrukne dager", () => {
+      const res = adaptTemplateWeek(standardUke(), "GRUNN", {
+        ...INGEN_SIGNALER,
+        foretrukneDager: [1, 2, 4, 5, 6],
+      });
+      assert.deepEqual(res.okter.map((o) => o.dagNr).sort(), [1, 2, 4, 5]);
+      assert.deepEqual(res.justeringer, []);
+    });
+
+    it("n=1: legges på midterste foretrukne dag", () => {
+      const enOkt = [mkOkt({ dagNr: 3, ukeNr: 1 })];
+      const res = adaptTemplateWeek(enOkt, "GRUNN", { ...INGEN_SIGNALER, foretrukneDager: [1, 4, 6, 7] });
+      // k=4 → floor(4/2)=2 → P[2]=6
+      assert.equal(res.okter[0].dagNr, 6);
+      assert.equal(res.justeringer.length, 1);
+      assert.match(res.justeringer[0], /man, tor, lør, søn/);
+    });
+
+    it("2≤n≤k: jevn spredning inkl. endepunktene, distinkte dager", () => {
+      // standardUke ligger på dagNr [1,2,4,5] — foretrukneDager utelater dag 1,
+      // så øktene IKKE allerede matcher (tvinger frem en reell flytting).
+      const res = adaptTemplateWeek(standardUke(), "GRUNN", {
+        ...INGEN_SIGNALER,
+        foretrukneDager: [2, 3, 4, 5, 6],
+      });
+      const dager = res.okter.map((o) => o.dagNr);
+      assert.equal(new Set(dager).size, 4, "alle dager skal være distinkte");
+      assert.equal(dager[0], 2, "første økt på første foretrukne dag");
+      assert.equal(dager[dager.length - 1], 6, "siste økt på siste foretrukne dag");
+      assert.match(res.justeringer.at(-1)!, /foretrekker/);
+    });
+
+    it("n>k: balansert fylling, maks ⌈n/k⌉ økter per dag", () => {
+      const seksOkter = [1, 2, 3, 4, 5, 6].map((dagNr) => mkOkt({ dagNr, ukeNr: 1, title: `Økt ${dagNr}` }));
+      const res = adaptTemplateWeek(seksOkter, "GRUNN", { ...INGEN_SIGNALER, foretrukneDager: [1, 4] });
+      const dager = res.okter.map((o) => o.dagNr);
+      assert.ok(dager.every((d) => d === 1 || d === 4));
+      const perDag = new Map<number, number>();
+      for (const d of dager) perDag.set(d, (perDag.get(d) ?? 0) + 1);
+      for (const antall of perDag.values()) assert.ok(antall <= 3, "maks ⌈6/2⌉=3 per dag");
+    });
+
+    it("okterPerUke kutter aldri økter — kun informativt", () => {
+      const res = adaptTemplateWeek(standardUke(), "GRUNN", {
+        ...INGEN_SIGNALER,
+        okterPerUke: 2,
+        foretrukneDager: [1, 3],
+      });
+      assert.equal(res.okter.length, 4, "alle 4 økter beholdes selv om okterPerUke=2");
+    });
+
+    it("respekterer ukeNr-grupper uavhengig (flytter hver uke for seg)", () => {
+      const toUker = [
+        mkOkt({ ukeNr: 1, dagNr: 2, title: "Uke1-økt" }),
+        mkOkt({ ukeNr: 2, dagNr: 3, title: "Uke2-økt" }),
+      ];
+      const res = adaptTemplateWeek(toUker, "GRUNN", { ...INGEN_SIGNALER, foretrukneDager: [1, 5] });
+      const uke1 = res.okter.find((o) => o.ukeNr === 1)!;
+      const uke2 = res.okter.find((o) => o.ukeNr === 2)!;
+      // n=1, k=2 → floor(k/2)=1 → P[1]=5 (samme regel appliseres uavhengig per uke).
+      assert.equal(uke1.dagNr, 5);
+      assert.equal(uke2.dagNr, 5);
+    });
   });
 });
 

@@ -21,6 +21,9 @@ import { SG_FOKUS_LABEL } from "@/lib/workbench/fokus";
 // Haiku er billig + raskt for korte plan-forslag (gyldig id mot api.anthropic.com).
 const WEEK_SUGGEST_MODEL = "claude-haiku-4-5-20251001" as const;
 
+// dagNr 1–7 (man=1) → norsk kortnavn, for prompt-tekst.
+const UKEDAG_NAVN = ["man", "tir", "ons", "tor", "fre", "lør", "søn"];
+
 const PyramidArea = z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]);
 
 const SessionSchema = z.object({
@@ -270,6 +273,13 @@ export async function generateWeekSuggestions(
       ekstra.push(
         `Plan-etterlevelse siste 4 uker: ${signaler.adherencePct} % — gjør variantene overkommelige (heller færre økter som blir gjennomført).`,
       );
+    }
+    if (signaler.okterPerUke != null) {
+      ekstra.push(`Spilleren ønsker ~${signaler.okterPerUke} økter/uke (fra onboarding).`);
+    }
+    if (signaler.foretrukneDager && signaler.foretrukneDager.length > 0) {
+      const navn = signaler.foretrukneDager.map((d) => UKEDAG_NAVN[d - 1]).join(", ");
+      ekstra.push(`Foretrukne treningsdager: ${navn}.`);
     }
     ekstra.push(...(await standardAnker(userId, signaler.aktivFase)));
 
