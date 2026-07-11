@@ -409,6 +409,35 @@ export function SgTrendKort({ punkter = SGT_DEMO, hendelser = SGT_HEND, baseline
   );
 }
 
+/* ── MiniSpark — inline trend-linje for tabellrader/lister ── */
+export interface MiniSparkProps {
+  /** Eldste → nyeste. */
+  verdier: number[];
+  width?: number;
+  height?: number;
+}
+/* Fargen dømmes av retningen (siste vs første) — opp = T.up, ned = T.down,
+   ALDRI lime (jf. dataviz-regelen: lime er kun hero-aksent). */
+export function MiniSpark({ verdier, width = 64, height = 22 }: MiniSparkProps) {
+  if (verdier.length < 2) {
+    return <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, whiteSpace: "nowrap" }}>for få data</span>;
+  }
+  const lo = Math.min(...verdier), hi = Math.max(...verdier);
+  const span = hi - lo || 1;
+  const pad = 2;
+  const x = (i: number) => pad + (i / (verdier.length - 1)) * (width - pad * 2);
+  const y = (v: number) => pad + (1 - (v - lo) / span) * (height - pad * 2);
+  const d = verdier.map((v, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+  const opp = verdier[verdier.length - 1] >= verdier[0];
+  const c = opp ? T.up : T.down;
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="img" aria-label={opp ? "Stigende trend" : "Fallende trend"}>
+      <path d={d} fill="none" stroke={c} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={x(verdier.length - 1)} cy={y(verdier[verdier.length - 1])} r={2.2} fill={c} />
+    </svg>
+  );
+}
+
 /* ── Scorekort — 18 hull m/ birdie/bogey-farger + SG per hull ── */
 export interface ScorekortHull {
   nr: number;
