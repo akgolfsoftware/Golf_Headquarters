@@ -6,9 +6,12 @@
  * antall PLAYER-brukere for stallen. «Sist synket» = nyeste snapshotAt.
  * Ingen oppdiktede tall — tomme tilstander vises ærlig.
  *
- * Bevisste avvik fra fasit (mangler backend, rapportert i porting-retur):
- *  - «Synk nå» har ingen automatisk synk-action ennå (import skjer manuelt via
- *    importerWagrSpiller i ./actions.ts) — knappen rendres uten handler.
+ * «Synk nå» trigger wagr-sync-agenten (src/lib/agents/wagr-sync.ts) via
+ * synkWagrNaa i ./actions.ts: kobler umatchede snapshots til spillere på navn,
+ * og henter ferske rankinger når ekstern kilde er avklart (til da er manuell
+ * import via importerWagrSpiller fortsatt primærvei).
+ *
+ * Bevisst avvik fra fasit (rapportert i porting-retur):
  *  - Fasit har én rad «Trenger bekreftelse»; WagrSnapshot mangler felt for
  *    match-konfidens, så alle koblede rader vises som «Sikker match».
  *

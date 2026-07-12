@@ -756,6 +756,15 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 12. juli (WAGR-synk): **«Synk nå» på `/admin/talent/wagr-import` har fått ekte backend** — ny
+  agent `src/lib/agents/wagr-sync.ts` (registrert i cron-ruten + vercel.json, onsdager 06:15 UTC)
+  som kobler umatchede WagrSnapshot-rader til spillere på entydig navnetreff og lagrer snapshots
+  idempotent (`oppdaterSnapshots`, moveDelta bare ved rank-endring). Knappen kaller samme kjøring
+  via server action `synkWagrNaa` med ærlig toast-status. Ekstern henting fra wagr.com er BEVISST
+  sperret (`hentEksterneProfiler` → null) til Anders har avklart datakilde — ingen åpen API finnes,
+  scraping-lovlighet uavklart; manuell import er fortsatt primærvei. NGF-kategori-mappingen er
+  flyttet til delt `src/lib/wagr/ngf-kategori.ts`.
+
 - 11. juli (booking-konsolidering, fase 1.1–1.3): **sikkerhetshull i ombooking tettet** —
   `rescheduleBooking` i `booking/actions.ts` hardkodet `coachId = ""`, som gjorde at Google
   Kalender-kollisjonssjekken alltid «feilet åpent» (fant ingen tilkobling → sa ledig). Bruker nå

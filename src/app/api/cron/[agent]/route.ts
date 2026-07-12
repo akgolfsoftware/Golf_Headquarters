@@ -43,6 +43,7 @@ import { runAiCodeReviewer } from "@/lib/agents/ai-code-reviewer";
 import { runDemandPredictor } from "@/lib/agents/demand-predictor";
 import { runProactiveBookingAlerts } from "@/lib/agents/booking-alerts-proactive";
 import { runPlanEffectivenessAgent } from "@/lib/agents/plan-effectiveness-agent";
+import { runWagrSync } from "@/lib/agents/wagr-sync";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -93,6 +94,9 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "demand-predictor": runDemandPredictor,
   "24-7-booking-alerts": runProactiveBookingAlerts,
   "plan-effectiveness-agent": runPlanEffectivenessAgent,
+  // WAGR-rankinger for koblede spillere (onsdager — WAGR publiserer onsdag).
+  // Ekstern henting er sperret til datakilden er avklart; se wagr-sync.ts.
+  "wagr-sync": runWagrSync,
 };
 
 export async function GET(
