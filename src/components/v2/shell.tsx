@@ -73,8 +73,8 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
     items: [
       { id: "grupper", label: "Grupper", icon: "users", href: "/admin/grupper" },
       { id: "spillere-ny", label: "Ny spiller", icon: "plus", href: "/admin/spillere/ny" },
-      { id: "talent", label: "Talent", icon: "star", href: "/admin/talent" },
-      { id: "talent-radar", label: "Talent-radar", icon: "crosshair", href: "/admin/talent/radar" },
+      { id: "talent-radar", label: "Talent-radar", icon: "star", href: "/admin/talent/radar" },
+      { id: "talent-sammenligning", label: "Talent-sammenligning", icon: "crosshair", href: "/admin/talent/sammenligning" },
     ],
   },
   {
