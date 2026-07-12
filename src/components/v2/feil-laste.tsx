@@ -118,7 +118,271 @@ function DashboardSkel() {
   );
 }
 
-export type V2LasterVariant = "liste" | "kort" | "dashboard";
+/* ── Skjerm-speilede skeletons (P4, masterplan Del 3c) ──
+   Hver variant speiler MÅLSKJERMENS faktiske layout — samme hode, KPI-grid,
+   panelstruktur og kolonnedeling som V2-komponenten den venter på. Aldri
+   generiske firkanter: endres målskjermens layout, oppdater varianten her. */
+
+/** Sidehode: (avatar) + caps-linje + tittel-linje, ev. CTA-pill til høyre. */
+function HodeSkel({ avatar = false, cta = false, ingress = false }: { avatar?: boolean; cta?: boolean; ingress?: boolean }) {
+  return (
+    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+        {avatar && <SkelBlock w={46} h={46} r={9999} />}
+        <div>
+          <SkelBlock w={140} h={9} r={4} />
+          <SkelBlock w={220} h={26} style={{ marginTop: 12 }} />
+          {ingress && <SkelBlock w={300} h={11} style={{ marginTop: 12 }} />}
+        </div>
+      </div>
+      {cta && (
+        <div className="hidden md:block">
+          <SkelBlock w={128} h={36} r={9999} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** KPI-rad — samme responsive grid-klasser som målskjermens KpiFlis-rad. */
+function KpiRadSkel({ antall = 4, cls = "grid grid-cols-2 lg:grid-cols-4" }: { antall?: number; cls?: string }) {
+  return (
+    <div className={cls} style={{ gap: T.gap }}>
+      {Array.from({ length: antall }).map((_, i) => (
+        <div key={i} style={PANEL_STYLE}>
+          <SkelBlock w={64} h={9} r={4} />
+          <SkelBlock w="70%" h={30} style={{ marginTop: 12 }} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Én Rad-silhuett: leading (avatar/klokkeslett/status-dott) + to linjer + chip. */
+function RadSkel({ leading = "avatar", last = false }: { leading?: "avatar" | "tid" | "dott"; last?: boolean }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 0", borderBottom: last ? "none" : `1px solid ${T.border}` }}>
+      {leading === "tid" ? (
+        <SkelBlock w={44} h={11} r={4} />
+      ) : (
+        <SkelBlock w={leading === "dott" ? 26 : 30} h={leading === "dott" ? 26 : 30} r={9999} />
+      )}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
+        <SkelBlock w="60%" h={12} />
+        <SkelBlock w="35%" h={10} />
+      </div>
+      <SkelBlock w={44} h={18} r={9999} />
+    </div>
+  );
+}
+
+/** Kort med eyebrow + n Rad-silhuetter (Kort/Rad-mønsteret i core.tsx). */
+function RadPanelSkel({ rader = 4, leading = "avatar" as "avatar" | "tid" | "dott" }) {
+  return (
+    <div style={PANEL_STYLE}>
+      <SkelBlock w={96} h={9} r={4} style={{ marginBottom: 10 }} />
+      {Array.from({ length: rader }).map((_, i) => (
+        <RadSkel key={i} leading={leading} last={i === rader - 1} />
+      ))}
+    </div>
+  );
+}
+
+/** Filterrad: caps-etikett + chips (FilterChips-mønsteret). */
+function FilterSkel() {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+      <SkelBlock w={48} h={9} r={4} />
+      <SkelBlock w={72} h={26} r={9999} />
+      <SkelBlock w={84} h={26} r={9999} />
+      <SkelBlock w={64} h={26} r={9999} />
+    </div>
+  );
+}
+
+/** TallHero-kort: eyebrow + hero-tall + underlinje, ev. trendgraf. */
+function HeroPanelSkel({ trend = false }: { trend?: boolean }) {
+  return (
+    <div style={PANEL_STYLE}>
+      <SkelBlock w={140} h={9} r={4} />
+      <SkelBlock w={150} h={44} style={{ marginTop: 14 }} />
+      <SkelBlock w={180} h={10} style={{ marginTop: 10 }} />
+      {trend && <SkelBlock h={72} r={12} style={{ marginTop: 14 }} />}
+    </div>
+  );
+}
+
+/** /admin/agencyos — CockpitV2: hode m/avatar · 4 KPI · kø · innboks · (timer | stall-uka). */
+function CockpitSkel() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <HodeSkel avatar />
+      <KpiRadSkel />
+      <RadPanelSkel rader={3} />
+      <RadPanelSkel rader={3} />
+      <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: T.gap }}>
+        <RadPanelSkel rader={4} leading="tid" />
+        <HeroPanelSkel />
+      </div>
+    </div>
+  );
+}
+
+/** /admin/bookinger — AdminBookingerV2: hode m/CTA · 4 KPI · filter · (liste | heatmap). */
+function BookingerSkel() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <HodeSkel cta />
+      <KpiRadSkel />
+      <FilterSkel />
+      <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
+        <RadPanelSkel rader={6} />
+        <div style={PANEL_STYLE}>
+          <SkelBlock w={140} h={9} r={4} style={{ marginBottom: 16 }} />
+          <SkelBlock h={220} r={12} />
+          <SkelBlock w="55%" h={10} style={{ marginTop: 12 }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** /admin/spillere — StallV2: hode m/CTA · 3 filterrader · (spillerliste | spillersammendrag). */
+function StallSkel() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <HodeSkel cta />
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <FilterSkel />
+        <FilterSkel />
+        <FilterSkel />
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
+        <RadPanelSkel rader={7} />
+        <div style={PANEL_STYLE}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <SkelBlock w={44} h={44} r={9999} />
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
+              <SkelBlock w="50%" h={14} />
+              <SkelBlock w="70%" h={10} />
+            </div>
+          </div>
+          <SkelBlock w={150} h={44} style={{ marginTop: 16 }} />
+          <SkelBlock h={64} r={12} style={{ marginTop: 12 }} />
+          <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 10 }}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <SkelBlock key={i} h={10} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** /admin/godkjenninger — AdminGodkjenningerV2: hode m/ingress · filter · seksjoner per spiller med sak-kort. */
+function GodkjenningerSkel() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <HodeSkel ingress cta />
+      <FilterSkel />
+      {Array.from({ length: 2 }).map((_, s) => (
+        <div key={s} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
+            <SkelBlock w={26} h={26} r={9999} />
+            <SkelBlock w={120} h={12} />
+          </div>
+          {Array.from({ length: 2 }).map((_, k) => (
+            <div key={k} style={PANEL_STYLE}>
+              <SkelBlock w="70%" h={13} />
+              <SkelBlock w="45%" h={10} style={{ marginTop: 8 }} />
+              <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+                <SkelBlock w={96} h={32} r={9999} />
+                <SkelBlock w={80} h={32} r={9999} />
+              </div>
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** /portal — HjemV2: hode m/avatar+CTA · dagstripe · (SG-hero+trend | dagens plan) · snarveier · KPI-rad. */
+function HjemSkel() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <HodeSkel avatar cta />
+      <div style={{ display: "flex", gap: 8 }}>
+        {Array.from({ length: 7 }).map((_, i) => (
+          <SkelBlock key={i} h={54} r={12} style={{ flex: 1, width: "auto" }} />
+        ))}
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
+        <HeroPanelSkel trend />
+        <div style={PANEL_STYLE}>
+          <SkelBlock w={90} h={9} r={4} />
+          <SkelBlock w="70%" h={16} style={{ marginTop: 14 }} />
+          <SkelBlock w="90%" h={10} style={{ marginTop: 10 }} />
+          <SkelBlock w="60%" h={10} style={{ marginTop: 6 }} />
+          <div style={{ display: "flex", gap: 6, marginTop: 12 }}>
+            <SkelBlock w={56} h={20} r={9999} />
+            <SkelBlock w={72} h={20} r={9999} />
+          </div>
+        </div>
+      </div>
+      <div style={{ ...PANEL_STYLE, padding: "8px 20px" }}>
+        <RadSkel leading="dott" />
+        <RadSkel leading="dott" last />
+      </div>
+      <KpiRadSkel antall={3} cls="grid grid-cols-2 md:grid-cols-3" />
+    </div>
+  );
+}
+
+/** /portal/gjennomfore — GjorV2: hode · runde-kort · KPI-rad · øvelser · (neste økt | avslutt-flyt). */
+function GjorSkel() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <HodeSkel />
+      <div style={PANEL_STYLE}>
+        <SkelBlock w={60} h={9} r={4} />
+        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", marginTop: 12 }}>
+          <div style={{ flex: 1, minWidth: 180 }}>
+            <SkelBlock w="45%" h={14} />
+            <SkelBlock w="75%" h={10} style={{ marginTop: 8 }} />
+          </div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <SkelBlock w={150} h={36} r={9999} />
+            <SkelBlock w={130} h={36} r={9999} />
+          </div>
+        </div>
+      </div>
+      <KpiRadSkel antall={3} cls="grid grid-cols-2 md:grid-cols-3" />
+      <RadPanelSkel rader={4} leading="dott" />
+      <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap }}>
+        <HeroPanelSkel />
+        <div style={PANEL_STYLE}>
+          <SkelBlock w={110} h={9} r={4} />
+          <SkelBlock w="90%" h={10} style={{ marginTop: 12 }} />
+          <SkelBlock w="70%" h={10} style={{ marginTop: 6 }} />
+          <SkelBlock w={140} h={36} r={9999} style={{ marginTop: 12 }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export type V2LasterVariant =
+  | "liste"
+  | "kort"
+  | "dashboard"
+  | "cockpit"
+  | "bookinger"
+  | "stall"
+  | "godkjenninger"
+  | "hjem"
+  | "gjor";
 export interface V2LasterProps {
   variant?: V2LasterVariant;
 }
@@ -134,7 +398,15 @@ export interface V2LasterProps {
 export function V2Laster({ variant = "kort" }: V2LasterProps) {
   ensurePulsStyle();
   const inner =
-    variant === "liste" ? <ListeSkel /> : variant === "dashboard" ? <DashboardSkel /> : <KortSkel />;
+    variant === "liste" ? <ListeSkel />
+    : variant === "dashboard" ? <DashboardSkel />
+    : variant === "cockpit" ? <CockpitSkel />
+    : variant === "bookinger" ? <BookingerSkel />
+    : variant === "stall" ? <StallSkel />
+    : variant === "godkjenninger" ? <GodkjenningerSkel />
+    : variant === "hjem" ? <HjemSkel />
+    : variant === "gjor" ? <GjorSkel />
+    : <KortSkel />;
   return (
     <div
       className="dark"
