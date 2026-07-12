@@ -212,6 +212,12 @@
 > diff-modal m/ endret-rad + belastning→republisert; testdata ryddet og
 > plan resatt. FELLE (2. gang): dev-server med gammel Prisma-klient etter
 > generate — restart kreves; ført i gotchas-kunnskapen.
+> 2026-07-13 (natt) · WB5 LEVERT — øktas driller i inspektøren (fasit G4):
+> valgt økt-panelet viser drill-lista i rekkefølge (navn + dose + nivå),
+> live-oppdatert når driller legges til fra biblioteket (refetch-dep
+> fikset); redigering skjer i økt-popupen (8c.7-komponisten). Dermed er
+> ALLE WB-pakkene (WB1–WB5) + hele Del 8c levert. Neste per plan Del 9:
+> Å-bølge-rester + Bølge 2 (motoren: A1 godkjenningskø, C1 ukesyklus).
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag

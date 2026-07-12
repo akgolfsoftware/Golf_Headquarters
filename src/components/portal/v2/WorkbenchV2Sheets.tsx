@@ -539,6 +539,23 @@ export function ValgtOktSeksjon({ okt, dag, actions, weekOffset, onEndret }: Val
     }
   };
 
+  // WB5 (fasit G4): øktas driller i inspektøren — navn + dose i rekkefølge.
+  const [oktDrills, setOktDrills] = useState<{ navn: string; minutter: number | null; sett: number | null; reps: number | null; nivaa: string }[] | null>(null);
+  useEffect(() => {
+    let aktiv = true;
+    if (!okt.id || !erPlanKilde(okt)) {
+      // Asynkront (mikrotask) — regelen forbyr synkron setState i effekt-kropp.
+      Promise.resolve().then(() => { if (aktiv) setOktDrills(null); });
+      return () => { aktiv = false; };
+    }
+    hentOktKomponist(okt.id).then((res) => {
+      if (aktiv) setOktDrills(res.ok ? (res.drills ?? []) : null);
+    });
+    return () => { aktiv = false; };
+    // dep på hele okt-objektet: refetch etter router.refresh (nye objekter),
+    // ellers vises ikke driller lagt til via biblioteket før ny økt velges.
+  }, [okt]);
+
   const [dupliserer, setDupliserer] = useState(false);
   const dupliser = async () => {
     if (!actions?.duplicateSession || !okt.id || dupliserer) return;
@@ -672,6 +689,24 @@ export function ValgtOktSeksjon({ okt, dag, actions, weekOffset, onEndret }: Val
       )}
 
       {okt.id && feil && <span style={{ fontFamily: T.ui, fontSize: 11, color: T.down, display: "block", marginTop: 8 }}>{feil}</span>}
+
+      {oktDrills && oktDrills.length > 0 && (
+        <div style={{ marginTop: 10 }} data-wb-inspektordrills>
+          <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>Driller ({oktDrills.length})</span>
+          <div style={{ display: "flex", flexDirection: "column", gap: 4, marginTop: 6 }}>
+            {oktDrills.map((d, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 9px", borderRadius: 9, background: T.panel2, border: `1px solid ${T.border}` }}>
+                <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, flex: "none" }}>{i + 1}</span>
+                <span style={{ flex: 1, minWidth: 0, fontFamily: T.ui, fontSize: 11.5, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.navn}</span>
+                <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut, flex: "none" }}>
+                  {[d.minutter != null ? `${d.minutter} min` : null, d.sett != null && d.reps != null ? `${d.sett}×${d.reps}` : null, d.nivaa === "uten" ? "uten ball" : d.nivaa === "lav" ? "lav fart" : null].filter(Boolean).join(" · ") || "—"}
+                </span>
+              </div>
+            ))}
+          </div>
+          <span style={{ display: "block", marginTop: 5, fontFamily: T.mono, fontSize: 8, color: T.mut }}>Rediger driller: trykk økten i tidslinja.</span>
+        </div>
+      )}
 
       {actions && okt.id && erPlan && (
         <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 8 }}>
