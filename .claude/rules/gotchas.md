@@ -53,3 +53,16 @@ riktig i dag, men er flaks — ny kode skal bruke `-foreground`-parene (`bg-prim
 - **Løsning:**
 - **Lært:** <dato>
 -->
+
+### Shell-cwd i verktøyøkter setter seg fast (oppdaget 2026-07-12)
+En `cd` i en sammensatt kommando kan bli hengende som arbeidskatalog for SENERE
+kommandoer i økta. Konsekvens sett i praksis: `.env.local` ble «kopiert til
+rot» men havnet i `src/app/admin/`, og en `launch.json` ble skrevet til
+`src/app/admin/.claude/`. Regel: bruk absolutte stier, og verifiser med `pwd`
+før filoperasjoner mot rot.
+
+### Ytelse: Vercel-region MÅ matche Supabase-region (oppdaget 2026-07-12)
+Supabase ligger i eu-west-1 (Irland). Uten `"regions"` i vercel.json kjørte
+funksjonene i default iad1 (USA) — hver Prisma-spørring krysset Atlanteren og
+sider med mange spørringer fikk TTFB på 0,5–1,1 s. Fix: `"regions": ["dub1"]`
+i vercel.json. Ikke fjern denne uten å flytte databasen samtidig.
