@@ -155,17 +155,39 @@ async function buildDiffPreview(
 export default async function V2AdminGodkjenningerPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
-  const actions = await prisma.planAction.findMany({
-    where: {
-      status: "PENDING",
-      OR: [{ coachId: user.id }, { coachId: null }],
-    },
-    include: {
-      user: { select: { id: true, name: true } },
-      plan: { select: { id: true, name: true } },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+  // A1: ÉN kø — fire kilder (PlanAction + CaddieDraft + SessionRequest;
+  // e-postutkast bor i innboks-epost-flaten med egen godkjenning der).
+  const [actions, caddieDrafts, sessionRequests] = await Promise.all([
+    prisma.planAction.findMany({
+      where: {
+        status: "PENDING",
+        OR: [{ coachId: user.id }, { coachId: null }],
+      },
+      include: {
+        user: { select: { id: true, name: true } },
+        plan: { select: { id: true, name: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.caddieDraft.findMany({
+      where: { status: "PENDING" },
+      orderBy: { createdAt: "desc" },
+      take: 30,
+      select: { id: true, userId: true, previewText: true, toolName: true, createdAt: true },
+    }),
+    prisma.sessionRequest.findMany({
+      where: { status: "PENDING", OR: [{ coachId: user.id }, { coachId: null }] },
+      orderBy: { createdAt: "desc" },
+      take: 30,
+      select: { id: true, userId: true, reason: true, preferredDate: true, preferredTime: true, createdAt: true, user: { select: { name: true } } },
+    }).catch(() => []),
+  ]);
+  const caddieBrukere = new Map(
+    (await prisma.user.findMany({
+      where: { id: { in: caddieDrafts.map((d) => d.userId) } },
+      select: { id: true, name: true },
+    })).map((u) => [u.id, u.name] as const),
+  );
 
   const lowRiskCount = actions.filter((a) =>
     LOW_RISK_ACTION_TYPES.has(a.actionType),
@@ -208,7 +230,42 @@ export default async function V2AdminGodkjenningerPage() {
     }),
   );
 
-  const data: AdminGodkjenningerV2Data = { rows, lowRiskCount };
+  // A1: caddie- og forespørsel-rader inn i samme kø (kilde-chip skiller).
+  const caddieRows: AdminGodkjenningV2Row[] = caddieDrafts.map((d) => ({
+    id: d.id,
+    actionType: "CADDIE_DRAFT",
+    playerId: d.userId,
+    who: caddieBrukere.get(d.userId) ?? "Spiller",
+    title: `Caddie-utkast · ${d.toolName}`,
+    detail: d.previewText.slice(0, 200),
+    signalKind: null,
+    signalValue: null,
+    diffPreview: null,
+    when: nårTekst(d.createdAt),
+    urgent: false,
+    lowRisk: false,
+    kilde: "caddie" as const,
+    eksternHref: "/admin/agencyos/caddie/dashbord",
+  }));
+  const requestRows: AdminGodkjenningV2Row[] = sessionRequests.map((r) => ({
+    id: r.id,
+    actionType: "SESSION_REQUEST",
+    playerId: r.userId,
+    who: r.user?.name ?? "Spiller",
+    title: "Økt-forespørsel",
+    detail: [r.reason, r.preferredDate ? r.preferredDate.toLocaleDateString("nb-NO") : null, r.preferredTime].filter(Boolean).join(" · ") || "Uten detaljer",
+    signalKind: null,
+    signalValue: null,
+    diffPreview: null,
+    when: nårTekst(r.createdAt),
+    urgent: false,
+    lowRisk: false,
+    kilde: "forespørsel" as const,
+    eksternHref: "/admin/foresporsler",
+  }));
+  const alleRows = [...rows.map((r) => ({ ...r, kilde: "agent" as const })), ...caddieRows, ...requestRows];
+
+  const data: AdminGodkjenningerV2Data = { rows: alleRows, lowRiskCount };
 
   return (
     <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>

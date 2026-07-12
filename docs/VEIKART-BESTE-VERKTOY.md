@@ -226,6 +226,17 @@
 > per spiller). Verifisert live: 1 gruppeperiode → 18 spillere fikk den
 > (DB-bekreftet 18 kopier) → alt ryddet (kopier + 19 tomme sesongplaner +
 > gruppeblokk). Gruppe-årsplan → individuelle planer er nå ÉN økt-flyt.
+> 2026-07-13 (natt) · A1 LEVERT (Bølge 2-start) — ÉN godkjenningskø:
+> /admin/godkjenninger samler nå PlanAction (agent-forslag) + CaddieDraft
+> (AI-utkast) + SessionRequest (økt-forespørsler) i samme kø med
+> kilde-merking og riktige handlinger per kilde: agent = godkjenn/avvis
+> inline; forespørsel = godkjenn (markerSomPlanlagt)/avslå; caddie = avvis
+> inline + detaljer i caddie-dashbordet (verktøy-eksekvering bor der).
+> E-postutkast beholder egen godkjenning i innboks-epost (bevisst valg —
+> sendingen trenger e-postkonteksten). Coach-scope på agent+forespørsel.
+> Røyk-testet i kjørende app. Gjenstår i Bølge 2: C1 ukesyklus, W2.2b
+> periode-rulling, B1 kapasitets-økonomi, B2 churn-radar + notify-buggen
+> i live-coach-agenten (egen sjekk).
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag

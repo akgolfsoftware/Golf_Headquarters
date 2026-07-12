@@ -40,6 +40,8 @@ import {
   T,
 } from "@/components/v2";
 import { acceptPlanAction, rejectPlanAction } from "@/lib/agents/actions";
+import { avvisProaktivtForslag } from "@/app/admin/agencyos/caddie/dashbord/actions";
+import { avslaaForespørsel, markerSomPlanlagt } from "@/app/admin/(legacy)/foresporsler/actions";
 import { batchApproveLowRisk } from "@/app/admin/(legacy)/approvals/actions";
 
 // ── Datakontrakt (mappes fra Prisma i ruten) ────────────────────
@@ -56,6 +58,10 @@ export interface AdminGodkjenningV2Row {
   when: string;
   urgent: boolean;
   lowRisk: boolean;
+  /** A1: kilde-chip — "agent" (PlanAction) | "caddie" | "forespørsel". */
+  kilde?: "agent" | "caddie" | "forespørsel";
+  /** A1: kilder uten inline godkjenn-action lenker til sin flate. */
+  eksternHref?: string | null;
 }
 export interface AdminGodkjenningerV2Data {
   rows: AdminGodkjenningV2Row[];
@@ -101,19 +107,32 @@ function SakHandlinger({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: bo
   const router = useRouter();
   const [pending, start] = useTransition();
 
-  const godkjenn = () => start(async () => { await acceptPlanAction(row.id); router.refresh(); });
-  const avvis = () => start(async () => { await rejectPlanAction(row.id); router.refresh(); });
+  const erAgent = (row.kilde ?? "agent") === "agent";
+  const kanGodkjenneInline = erAgent || row.kilde === "forespørsel";
+  const godkjenn = () => start(async () => {
+    if (erAgent) await acceptPlanAction(row.id);
+    else if (row.kilde === "forespørsel") await markerSomPlanlagt(row.id);
+    router.refresh();
+  });
+  const avvis = () => start(async () => {
+    if (erAgent) await rejectPlanAction(row.id);
+    else if (row.kilde === "caddie") await avvisProaktivtForslag(row.id);
+    else if (row.kilde === "forespørsel") await avslaaForespørsel(row.id);
+    router.refresh();
+  });
 
-  const detaljer = `/admin/godkjenninger/${row.id}`;
+  const detaljer = erAgent ? `/admin/godkjenninger/${row.id}` : (row.eksternHref ?? "/admin/godkjenninger");
   const profil = `/admin/spillere/${row.playerId}`;
 
   if (mobile) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 14, opacity: pending ? 0.5 : 1 }}>
         <div style={{ display: "flex", gap: 8 }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <Knapp icon="check" full disabled={pending} onClick={godkjenn}>Godkjenn</Knapp>
-          </div>
+          {kanGodkjenneInline && (
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <Knapp icon="check" full disabled={pending} onClick={godkjenn}>Godkjenn</Knapp>
+            </div>
+          )}
           <div style={{ flex: 1, minWidth: 0 }}>
             <Knapp icon="x" ghost full disabled={pending} onClick={avvis}>Avvis</Knapp>
           </div>
@@ -132,7 +151,7 @@ function SakHandlinger({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: bo
 
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14, opacity: pending ? 0.5 : 1 }}>
-      <Knapp icon="check" disabled={pending} onClick={godkjenn}>Godkjenn</Knapp>
+      {kanGodkjenneInline && <Knapp icon="check" disabled={pending} onClick={godkjenn}>Godkjenn</Knapp>}
       <Knapp icon="x" ghost disabled={pending} onClick={avvis}>Avvis</Knapp>
       <Link href={detaljer} style={{ textDecoration: "none" }}>
         <Knapp icon="file-text" ghost>Detaljer</Knapp>
