@@ -1,16 +1,8 @@
-import {
-  SkeletonHero,
-  SkeletonKpi,
-  SkeletonCard,
-} from "@/components/shared/loading-skeleton";
+/* P4: portal-legacy deler nå v2-skeletonen (V2Laster) — samme mørke
+   pulse-paneler som resten av appen, ikke gamle grå firkanter. */
+
+import { V2Laster } from "@/components/v2/feil-laste";
 
 export default function PortalLoading() {
-  return (
-    <div className="mx-auto max-w-7xl space-y-6">
-      <SkeletonHero />
-      <SkeletonKpi count={4} />
-      <SkeletonCard />
-      <SkeletonCard />
-    </div>
-  );
+  return <V2Laster variant="dashboard" />;
 }
