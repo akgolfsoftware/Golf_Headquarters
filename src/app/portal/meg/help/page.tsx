@@ -12,6 +12,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MegHelpV2, type MegHelpData } from "@/components/portal/v2/MegHelpV2";
 import { HJELP_FAQ, HJELP_KATEGORIER, HJELP_ARTIKLER } from "./data";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +29,7 @@ export default async function HelpPage() {
 
   return (
     <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <MegHelpV2 data={data} />
     </V2Shell>
   );

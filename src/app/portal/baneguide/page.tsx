@@ -11,6 +11,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getBaneLibrary } from "@/lib/baneguide/queries";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { BaneguideV2 } from "@/components/portal/v2/BaneguideV2";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,7 @@ export default async function V2BaneguidePreviewPage() {
 
   return (
     <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
       <BaneguideV2 data={data} />
     </V2Shell>
   );

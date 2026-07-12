@@ -12,6 +12,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { UtfordringerV2, type UtfordringKortData } from "@/components/portal/v2/UtfordringerV2";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -53,6 +54,7 @@ export default async function V2UtfordringerPreviewPage() {
 
   return (
     <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <UtfordringerV2 data={data} />
     </V2Shell>
   );

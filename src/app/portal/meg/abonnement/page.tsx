@@ -14,6 +14,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MegAbonnementV2, type MegAbonnementData } from "@/components/portal/v2/MegAbonnementV2";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -72,6 +73,7 @@ export default async function AbonnementPage({
 
   return (
     <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <MegAbonnementV2 data={data} />
     </V2Shell>
   );

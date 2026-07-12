@@ -15,6 +15,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { TilbakeLenke } from "@/components/v2";
 import {
   AdminGjennomforeV2,
   type AdminGjennomforeData,
@@ -108,6 +109,7 @@ export default async function V2AdminGjennomforePage() {
 
   return (
     <V2Shell aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TilbakeLenke href="/admin/planlegge">Planlegge</TilbakeLenke>
       <AdminGjennomforeV2 data={data} />
     </V2Shell>
   );

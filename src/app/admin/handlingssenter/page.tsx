@@ -13,6 +13,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { TilbakeLenke } from "@/components/v2";
 import {
   AdminHandlingssenterV2,
   type AdminHandlingssenterData,
@@ -121,6 +122,7 @@ export default async function V2HandlingssenterPage() {
 
   return (
     <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TilbakeLenke href="/admin/innboks">Innboks</TilbakeLenke>
       <AdminHandlingssenterV2 data={data} meg={user.name} />
     </V2Shell>
   );

@@ -14,6 +14,7 @@ import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { CoachMeldingerV2, type CoachMeldingerData } from "@/components/portal/v2/CoachMeldingerV2";
 import type { Melding } from "@/components/v2";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +35,7 @@ export default async function V2CoachMeldingPreviewPage() {
     const data: CoachMeldingerData = { gratis: true, hovedcoach: null, traader: [], valgt: null };
     return (
       <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
+        <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
         <CoachMeldingerV2 data={data} />
       </V2Shell>
     );
@@ -113,6 +115,7 @@ export default async function V2CoachMeldingPreviewPage() {
 
   return (
     <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
+      <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
       <CoachMeldingerV2 data={data} />
     </V2Shell>
   );

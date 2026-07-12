@@ -22,6 +22,7 @@ import {
 } from "@/components/admin/v2/AdminOkterV2";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { SessionStatus, PyramidArea } from "@/generated/prisma/enums";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -178,6 +179,7 @@ export default async function V2AdminOkterPage() {
 
   return (
     <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TilbakeLenke href="/admin/planlegge">Planlegge</TilbakeLenke>
       <AdminOkterV2 data={data} />
     </V2Shell>
   );

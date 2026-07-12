@@ -11,6 +11,7 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MegFeedbackV2, type MegFeedbackData } from "@/components/portal/v2/MegFeedbackV2";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +29,7 @@ export default async function FeedbackPage({
 
   return (
     <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <MegFeedbackV2 data={data} />
     </V2Shell>
   );

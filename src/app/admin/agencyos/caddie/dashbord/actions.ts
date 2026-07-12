@@ -8,8 +8,11 @@
 
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
 import { runCaddieProactive } from "@/lib/agents/caddie-proactive";
+import {
+  avvisCaddieDraft,
+  godkjennOgUtforCaddieDraft,
+} from "@/lib/caddie/draft-godkjenning";
 
 /** Kjør den proaktive Caddie-agenten nå (manuell trigger). ADMIN-only. */
 export async function kjorCaddieProaktiv() {
@@ -22,10 +25,19 @@ export async function kjorCaddieProaktiv() {
 /** Avvis et proaktivt forslag (PENDING → REJECTED). ADMIN-only. */
 export async function avvisProaktivtForslag(draftId: string) {
   const user = await requirePortalUser({ allow: ["ADMIN"] });
-  await prisma.caddieDraft.updateMany({
-    where: { id: draftId, userId: user.id, status: "PENDING" },
-    data: { status: "REJECTED", resolvedAt: new Date() },
-  });
+  const res = await avvisCaddieDraft(draftId, user.id);
   revalidatePath("/admin/agencyos/caddie/dashbord");
-  return { ok: true };
+  revalidatePath("/admin/godkjenninger");
+  return { ok: res.ok };
+}
+
+/** A2: Godkjenn og UTFØR et Caddie-utkast fra A1-køen. Utførelsen
+ *  re-validerer mot nå-tilstand (spiller finnes, faktura fortsatt ubetalt,
+ *  time ikke dobbeltbooket). ADMIN-only. */
+export async function godkjennCaddieDraft(draftId: string) {
+  const user = await requirePortalUser({ allow: ["ADMIN"] });
+  const res = await godkjennOgUtforCaddieDraft(draftId, user.id);
+  revalidatePath("/admin/agencyos/caddie/dashbord");
+  revalidatePath("/admin/godkjenninger");
+  return res;
 }

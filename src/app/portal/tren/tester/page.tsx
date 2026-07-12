@@ -18,6 +18,7 @@ import { prisma } from "@/lib/prisma";
 import { loadTesterScreen } from "@/lib/portal-tester/tester-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TesterV2, type TesterV2Data, type EndringVerdi } from "@/components/portal/v2/TesterV2";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -150,6 +151,7 @@ export default async function V2TesterPreviewPage() {
 
   return (
     <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
       <TesterV2 data={data} />
     </V2Shell>
   );

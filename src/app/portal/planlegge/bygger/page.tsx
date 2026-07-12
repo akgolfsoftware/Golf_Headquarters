@@ -11,6 +11,7 @@ import { hentByggerKontekstCore } from "@/lib/plan-builder";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { PlanByggerV2 } from "@/components/portal/v2/PlanByggerV2";
 import { anbefalMalV2, genererPlanForslagV2, lagrePlanV2 } from "./actions";
+import { TilbakeLenke } from "@/components/v2";
 
 export const metadata = { title: "Plan-bygger — PlayerHQ" };
 
@@ -22,6 +23,7 @@ export default async function PlanByggerPage() {
 
   return (
     <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name}>
+      <TilbakeLenke href="/portal/planlegge">Plan</TilbakeLenke>
       <PlanByggerV2
         kontekst={kontekst}
         actions={{

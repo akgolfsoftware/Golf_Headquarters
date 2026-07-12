@@ -13,6 +13,7 @@ import { hentProfil } from "@/app/portal/meg/actions";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MinProfilV2, type MinProfilData } from "@/components/portal/v2/MinProfilV2";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -57,6 +58,7 @@ export default async function ProfilPage() {
 
   return (
     <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={data.navn} avatarUrl={data.avatarUrl}>
+      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <MinProfilV2 data={data} />
     </V2Shell>
   );

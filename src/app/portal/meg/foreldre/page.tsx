@@ -11,6 +11,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MegForeldreV2, type MegForeldreData } from "@/components/portal/v2/MegForeldreV2";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +48,7 @@ export default async function ForeldrePage() {
 
   return (
     <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? "Øyvind Rohjan"} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <MegForeldreV2 data={data} />
     </V2Shell>
   );

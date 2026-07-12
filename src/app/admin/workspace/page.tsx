@@ -22,6 +22,7 @@ import {
   type WorkspacePrio,
 } from "@/components/admin/v2/AdminWorkspaceV2";
 import type { CompanyKind } from "@/components/workspace/primitives";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Workspace · AgencyOS (v2)" };
@@ -84,6 +85,7 @@ export default async function V2AdminWorkspacePage() {
 
   return (
     <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
       <AdminWorkspaceV2 data={data} />
     </V2Shell>
   );

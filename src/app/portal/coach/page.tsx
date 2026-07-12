@@ -9,7 +9,7 @@
 
 import Link from "next/link";
 import { erCoachetSpiller } from "@/lib/auth/coached";
-import { Kort, TomTilstand, Knapp } from "@/components/v2";
+import { Kort, TomTilstand, Knapp, TilbakeLenke } from "@/components/v2";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import {
@@ -33,6 +33,7 @@ export default async function V2CoachPreviewPage() {
   if (!(await erCoachetSpiller(user.id))) {
     return (
       <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+        <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
         <Kort tint>
           <TomTilstand
             icon="users"
@@ -74,6 +75,7 @@ export default async function V2CoachPreviewPage() {
 
   return (
     <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl ?? undefined}>
+      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <CoachHubV2 data={data} />
     </V2Shell>
   );

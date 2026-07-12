@@ -25,6 +25,7 @@ import {
   type PlanMalFordeling,
 } from "@/components/admin/v2/AdminPlanMalerV2";
 import type { AkseKey } from "@/lib/v2/tokens";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -79,6 +80,7 @@ export default async function V2AdminPlanMalerPreviewPage() {
 
   return (
     <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TilbakeLenke href="/admin/planlegge">Planlegge</TilbakeLenke>
       <AdminPlanMalerV2 data={data} />
     </V2Shell>
   );

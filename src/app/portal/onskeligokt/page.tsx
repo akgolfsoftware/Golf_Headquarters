@@ -12,6 +12,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { OnskeligOktV2 } from "@/components/portal/v2/OnskeligOktV2";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +37,7 @@ export default async function V2OnskeligOktPreviewPage() {
 
   return (
     <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/gjennomfore">Gjør</TilbakeLenke>
       <OnskeligOktV2 data={{ coacher, coachName }} />
     </V2Shell>
   );

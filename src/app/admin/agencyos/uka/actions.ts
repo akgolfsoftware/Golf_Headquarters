@@ -31,7 +31,7 @@ export async function flyttBookingTilDag(
   });
   if (!booking) return { ok: false, error: "Booking ikke funnet." };
   if (booking.status === "COMPLETED" || booking.status === "CANCELLED") {
-    return { ok: false, error: "Fullførte/kansellerte bookinger kan ikke flyttes." };
+    return { ok: false, error: "Denne bookingen er fullført eller kansellert — opprett en ny booking i stedet." };
   }
 
   const ren = /^(\d{4})-(\d{2})-(\d{2})$/.exec(parsed.data.targetDayISO);
