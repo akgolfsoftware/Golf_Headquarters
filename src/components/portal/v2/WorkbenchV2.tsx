@@ -163,12 +163,14 @@ function TLBlokk({ o, valgt, onVelg, dragbar }: { o: WeekEvent; valgt: boolean; 
  *  Med `onDropMove`/`onDropAdd` (kun når skrivesiden finnes) er kolonnene
  *  drop-soner: dra en økt-blokk til ny dag, eller en bibliotek-brikke inn
  *  på et klokkeslett (Y-posisjon → time, snappet til hel/halv). */
-function WBTidslinje({ dager, valgt, onVelg, onDropMove, onDropAdd }: {
+function WBTidslinje({ dager, valgt, onVelg, onDropMove, onDropAdd, onTomKlikk }: {
   dager: DagKol[];
   valgt: string | null;
   onVelg: (id: string) => void;
   onDropMove?: (sessionId: string, dayIndex: number) => void;
   onDropAdd?: (item: { title: string; durMin: number; akse?: AkseKey }, dayIndex: number, hour: number, minute: number) => void;
+  /** I1: trykk på tom flate i en dag-kolonne → Ny økt med dag+tid prefylt. */
+  onTomKlikk?: (dayIndex: number, hour: number, minute: number) => void;
 }) {
   const [dropDag, setDropDag] = useState<number | null>(null);
   const timer: number[] = [];
@@ -215,6 +217,13 @@ function WBTidslinje({ dager, valgt, onVelg, onDropMove, onDropAdd }: {
               data-wb-dag={i}
               onDragOver={droppbar ? (e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; if (dropDag !== i) setDropDag(i); } : undefined}
               onDragLeave={droppbar ? () => setDropDag((v) => (v === i ? null : v)) : undefined}
+              onClick={onTomKlikk ? (e) => {
+                if (e.target !== e.currentTarget) return; // kun tom flate, ikke økt-blokker
+                const y = e.clientY - e.currentTarget.getBoundingClientRect().top;
+                const raa = START_TIME + y / HOUR_H;
+                const snappet = Math.max(START_TIME, Math.min(END_TIME - 1, Math.round(raa * 2) / 2));
+                onTomKlikk(i, Math.floor(snappet), snappet % 1 === 0.5 ? 30 : 0);
+              } : undefined}
               onDrop={droppbar ? (e) => {
                 e.preventDefault();
                 setDropDag(null);
@@ -585,6 +594,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   const [sok, setSok] = useState("");
   const [nyOktApen, setNyOktApen] = useState(false);
   const [nyOktPrefill, setNyOktPrefill] = useState<{ title: string; durMin: number; akse?: AkseKey } | null>(null);
+  // I1: trykk på tom luke i tidslinja → Ny økt med dag + klokkeslett prefylt.
+  const [nyOktSted, setNyOktSted] = useState<{ dayIndex: number; tid: string } | null>(null);
   const [melding, setMelding] = useState<{ tone: "up" | "down" | "info"; tekst: string } | null>(null);
   const [pubLoading, setPubLoading] = useState(false);
   const [suggestLoading, setSuggestLoading] = useState(false);
@@ -835,6 +846,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     if (res.ok) {
       setNyOktApen(false);
       setNyOktPrefill(null);
+      setNyOktSted(null);
       router.refresh();
     } else {
       setPendingAdds((prev) => prev.filter((p) => p.key !== addKey));
@@ -1030,6 +1042,10 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
               onVelg={setValgtId}
               onDropMove={actions ? handleDropMove : undefined}
               onDropAdd={actions ? handleDropAdd : undefined}
+              onTomKlikk={actions ? (dayIndex, hour, minute) => {
+                setNyOktSted({ dayIndex, tid: `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}` });
+                setNyOktApen(true);
+              } : undefined}
             />
           )}
           {nivaa === "ar" && <AarNivaa data={data} />}
@@ -1080,11 +1096,12 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
 
       {nyOktApen && actions && (
         <NyOktArk
-          defaultDayIndex={aktivDag ? dager.indexOf(aktivDag) : 0}
+          defaultDayIndex={nyOktSted?.dayIndex ?? (aktivDag ? dager.indexOf(aktivDag) : 0)}
+          defaultTid={nyOktSted?.tid}
           defaultTitle={nyOktPrefill?.title}
           defaultAkse={nyOktPrefill?.akse}
           defaultDurMin={nyOktPrefill?.durMin}
-          onLukk={() => { setNyOktApen(false); setNyOktPrefill(null); }}
+          onLukk={() => { setNyOktApen(false); setNyOktPrefill(null); setNyOktSted(null); }}
           onOpprett={handleCreateSession}
         />
       )}

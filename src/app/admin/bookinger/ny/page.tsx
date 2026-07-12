@@ -15,10 +15,10 @@ import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 
 export const dynamic = "force-dynamic";
 
-export default async function NyBookingPage({ searchParams }: { searchParams: Promise<{ groupId?: string }> }) {
+export default async function NyBookingPage({ searchParams }: { searchParams: Promise<{ groupId?: string; start?: string }> }) {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
-  const { groupId } = await searchParams;
+  const { groupId, start } = await searchParams;
 
   const [spillere, tjenester, lokasjoner, gruppe] = await Promise.all([
     prisma.user.findMany({
@@ -61,6 +61,7 @@ export default async function NyBookingPage({ searchParams }: { searchParams: Pr
         tjenester={tjenester}
         lokasjoner={lokasjoner}
         groupId={groupId}
+        defaultStart={start}
         group={gruppe ? { id: gruppe.id, name: gruppe.name, maxParticipants: gruppe.maxParticipants } : null}
       />
     </V2Shell>

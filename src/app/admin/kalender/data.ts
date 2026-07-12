@@ -37,6 +37,8 @@ export interface KalOkt {
 export interface KalDag {
   dag: string;
   dato: string;
+  /** Lokal dato (YYYY-MM-DD) — grunnlag for trykk-på-tom-luke → ny booking (I1). */
+  datoISO: string;
   idag: boolean;
   okter: KalOkt[];
 }
@@ -119,9 +121,11 @@ export async function hentAgencyKalenderData(ukeParam?: string): Promise<Kalende
         href: e.href,
         naa: e.kind === "live",
       }));
+    const pad = (n: number) => String(n).padStart(2, "0");
     return {
       dag: DAG_KORT[i],
       dato: `${d.date}.`,
+      datoISO: `${dato.getFullYear()}-${pad(dato.getMonth() + 1)}-${pad(dato.getDate())}`,
       idag: d.isToday,
       okter,
     };

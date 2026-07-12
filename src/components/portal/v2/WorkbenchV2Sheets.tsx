@@ -155,6 +155,8 @@ export interface NyOktInput {
 }
 export interface NyOktArkProps {
   defaultDayIndex: number;
+  /** «HH:MM» fra trykk på tom luke i tidslinja (I1). */
+  defaultTid?: string;
   /** Forhåndsutfylling fra bibliotek-brikke (ett-klikks «legg til»). */
   defaultTitle?: string;
   defaultAkse?: AkseKey;
@@ -162,11 +164,11 @@ export interface NyOktArkProps {
   onLukk: () => void;
   onOpprett: (input: NyOktInput) => Promise<{ ok: boolean; error?: string }>;
 }
-export function NyOktArk({ defaultDayIndex, defaultTitle, defaultAkse, defaultDurMin, onLukk, onOpprett }: NyOktArkProps) {
+export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAkse, defaultDurMin, onLukk, onOpprett }: NyOktArkProps) {
   const [title, setTitle] = useState(defaultTitle ?? "");
   const [dayIndex, setDayIndex] = useState(defaultDayIndex);
   const [akse, setAkse] = useState<AkseKey>(defaultAkse ?? "TEK");
-  const [tid, setTid] = useState("09:00");
+  const [tid, setTid] = useState(defaultTid ?? "09:00");
   const [durMin, setDurMin] = useState(defaultDurMin ?? 60);
   const [lagrer, setLagrer] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);

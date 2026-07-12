@@ -43,6 +43,8 @@ export type NyBookingWizardProps = {
   lokasjoner: Lokasjon[];
   groupId?: string;
   group?: { id: string; name: string; maxParticipants: number | null } | null;
+  /** ISO-tidspunkt fra trykk på tom kalenderluke (I1) — prefyller Dato & tid. */
+  defaultStart?: string;
 };
 
 const STEG = [
@@ -63,7 +65,7 @@ function formatKr(ore: number): string {
   return new Intl.NumberFormat("nb-NO").format(Math.round(ore / 100));
 }
 
-export function NyBookingWizard({ spillere, tjenester, lokasjoner, groupId, group }: NyBookingWizardProps) {
+export function NyBookingWizard({ spillere, tjenester, lokasjoner, groupId, group, defaultStart }: NyBookingWizardProps) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
@@ -72,8 +74,14 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner, groupId, grou
   const [tjenesteId, setTjenesteId] = useState<string | null>(null);
   const [lokasjonId, setLokasjonId] = useState<string | null>(null);
   const [fasilitetId, setFasilitetId] = useState<string | null>(null);
-  const [dato, setDato] = useState("");
-  const [tid, setTid] = useState("");
+  // I1: trykk på tom luke i kalenderen sender ?start=ISO → prefylt dato/tid.
+  const start = defaultStart ? new Date(defaultStart) : null;
+  const gyldigStart = start && !Number.isNaN(start.getTime());
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const [dato, setDato] = useState(
+    gyldigStart ? `${start.getFullYear()}-${pad(start.getMonth() + 1)}-${pad(start.getDate())}` : "",
+  );
+  const [tid, setTid] = useState(gyldigStart ? `${pad(start.getHours())}:${pad(start.getMinutes())}` : "");
   const [notat, setNotat] = useState("");
   const [sok, setSok] = useState("");
   const [feil, setFeil] = useState<string | null>(null);

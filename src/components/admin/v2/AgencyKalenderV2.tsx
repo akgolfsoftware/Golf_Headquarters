@@ -208,6 +208,17 @@ function DagKolonne({ dag, onSerieClick }: { dag: KalenderData["dager"][number];
       ) : (
         dag.okter.map((o) => <OktBlokk key={o.id} okt={o} onSerieClick={onSerieClick} />)
       )}
+      {/* I1: trykk på tom luke → ny booking med dagen forhåndsutfylt (09:00). */}
+      <Link
+        href={`/admin/bookinger/ny?start=${dag.datoISO}T09:00`}
+        aria-label={`Ny booking ${dag.dag} ${dag.dato}`}
+        className="v2-press v2-focus"
+        style={{ flex: 1, minHeight: 44, borderRadius: 10, border: `1px dashed transparent`, display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", color: "transparent" }}
+        onMouseEnter={(e) => { e.currentTarget.style.borderColor = T.borderS; e.currentTarget.style.color = T.mut; }}
+        onMouseLeave={(e) => { e.currentTarget.style.borderColor = "transparent"; e.currentTarget.style.color = "transparent"; }}
+      >
+        <Icon name="plus" size={14} />
+      </Link>
     </div>
   );
 }
