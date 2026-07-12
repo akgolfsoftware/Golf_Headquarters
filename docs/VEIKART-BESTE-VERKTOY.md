@@ -182,6 +182,17 @@
 > init-fallback) vises nå til venstre for navnet i hilsenen på PlayerHQ-
 > hjem OG AgencyOS-cockpit (mobil har ingen rail — avataren manglet helt).
 > Cockpit-loaderen fikk coachAvatarUrl. Skjermbilde-verifisert på mobil.
+> 2026-07-13 (natt) · 8c.7 LEVERT — full økt-komponist i popupen (Anders'
+> skjermbilde-funn: «for tynn»): Rediger økt har nå AK-formel-chips som
+> SYKLER (L-fase L-Kropp→…→L-Auto→av · Miljø M0→…→M5→av) + DRILLER-seksjon:
+> søk i øvelsesbanken (930 stk, aksefiltrert) ELLER «Lag egen drill» som
+> lagres i banken (source COACH/PLAYER); per drill: minutter, sett, reps og
+> intensitet som sykler «uten ball · lav fart · vanlig» (mappet til repType/
+> PRPress-kanon). Lagring: SessionUpdateSchema utvidet (lFase/miljo/drills
+> replace-semantikk, egen-øvelse-opprettelse i samme kall). Race fikset:
+> hent-svar kan aldri overskrive brukerens trykk (komponist-lås til lastet).
+> DB-verifisert: L_ARM + M0 + 4 driller (bank + egen) skrevet og lest
+> tilbake. Testdata + testøvelser ryddet. Gjenstår i 8c: 8c.6 sidemeny-gap.
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag
