@@ -20,6 +20,7 @@ import {
   KpiFlis,
   Kort,
   Rad,
+  AvatarFoto,
   AvatarInit,
   SevChip,
   AkseChip,
@@ -82,10 +83,14 @@ export function CockpitV2({ data, innboks }: { data: CockpitData; innboks?: Innb
   // ── Hode ────────────────────────────────────────────────────────
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-      <div>
-        <Caps>{data.dayLabel} · AgencyOS</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em={`${data.coachFirstName}.`}>{data.greeting},</Tittel>
+      <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+        {/* 8c.8: profilbilde ved hilsenen (samme grep som PlayerHQ-hjem). */}
+        <AvatarFoto src={data.coachAvatarUrl ?? undefined} navn={data.coachFirstName} size={46} ring />
+        <div>
+          <Caps>{data.dayLabel} · AgencyOS</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em={`${data.coachFirstName}.`}>{data.greeting},</Tittel>
+          </div>
         </div>
       </div>
       {data.liveSessionsCount > 0 && (

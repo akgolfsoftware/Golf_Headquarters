@@ -178,6 +178,10 @@
 > popup → sykle → lagre → ny tittel på tidslinja; testdata ryddet.
 > Gjenstår i 8c: 8c.7 økt-komponist (drills i popupen), 8c.6 sidemeny-gap,
 > 8c.8 avatar i hilsen (+ 8c.9 mobil løpende).
+> 2026-07-13 (natt) · 8c.8 LEVERT: profilbildet (AvatarFoto m/ ring og
+> init-fallback) vises nå til venstre for navnet i hilsenen på PlayerHQ-
+> hjem OG AgencyOS-cockpit (mobil har ingen rail — avataren manglet helt).
+> Cockpit-loaderen fikk coachAvatarUrl. Skjermbilde-verifisert på mobil.
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag

@@ -113,6 +113,8 @@ export type CockpitData = {
   /** Tid-på-døgnet-hilsen, f.eks. "God formiddag" — brukes ikke i cockpit-tittel, beholdes for bakoverkompatibilitet. */
   greeting: string;
   coachFirstName: string;
+  /** 8c.8: profilbilde ved hilsenen (null = init-avatar). */
+  coachAvatarUrl?: string | null;
   /** AI-kontekstlinje (reservert, vises ikke i hybrid-layout). */
   aiContext: string;
   /** Siste daily-brief fra AgentRun (coach-spesifikk). */

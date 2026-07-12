@@ -20,7 +20,7 @@ export const dynamic = "force-dynamic";
 export default async function V2CockpitPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const [data, innboks] = await Promise.all([
-    loadDailyBrief({ id: user.id, name: user.name }),
+    loadDailyBrief({ id: user.id, name: user.name, avatarUrl: user.avatarUrl }),
     loadInnboksSammendrag(),
   ]);
   return (

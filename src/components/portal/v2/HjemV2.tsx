@@ -18,6 +18,7 @@ import { WorkbenchInngang } from "./WorkbenchInngang";
 import {
   T,
   fmtSg,
+  AvatarFoto,
   Caps,
   Tittel,
   CTAPill,
@@ -149,10 +150,15 @@ export function HjemV2({ data }: { data: DashboardData }) {
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Hode */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div>
-          <Caps>{datoLinje(weekNumber)}</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em={`${user.fornavn}.`}>{greeting},</Tittel>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          {/* 8c.8 (Anders): profilbildet til venstre for navnet i hilsenen —
+              mobil har ingen rail, så avataren manglet helt der. */}
+          <AvatarFoto src={user.avatarUrl ?? undefined} navn={user.name ?? user.fornavn} size={46} ring />
+          <div>
+            <Caps>{datoLinje(weekNumber)}</Caps>
+            <div style={{ marginTop: 10 }}>
+              <Tittel mobile={mobile} em={`${user.fornavn}.`}>{greeting},</Tittel>
+            </div>
           </div>
         </div>
         <div className="hidden md:block">

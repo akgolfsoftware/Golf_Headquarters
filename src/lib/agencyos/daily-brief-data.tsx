@@ -108,6 +108,7 @@ function relTid(d: Date | null, now: Date): string {
 export async function loadDailyBrief(coach: {
   id: string;
   name: string | null;
+  avatarUrl?: string | null;
 }): Promise<CockpitData> {
   const now = new Date();
   const nowMin = minutesSinceMidnight(now);
@@ -485,6 +486,7 @@ export async function loadDailyBrief(coach: {
   return {
     greeting: greetingFor(now.getHours()),
     coachFirstName: firstName(coach.name),
+    coachAvatarUrl: coach.avatarUrl ?? null,
     aiContext,
     aiBrief: coachBriefFromRun,
     liveLabel: `${DAGER[now.getDay()].toUpperCase()} ${now.getDate()} ${MND_KORT[now.getMonth()].toUpperCase()} · ${hhmm(now)}`,
