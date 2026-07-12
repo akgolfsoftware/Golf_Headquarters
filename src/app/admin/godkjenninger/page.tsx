@@ -17,6 +17,7 @@ import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 import { prisma } from "@/lib/prisma";
 import { computeDelta, type PlanContext } from "@/lib/agents/plan-action-executor";
 import { LOW_RISK_ACTION_TYPES } from "@/lib/training/skills";
+import { koTelling } from "@/lib/admin/ko-telling";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import {
   AdminGodkjenningerV2,
@@ -145,7 +146,7 @@ export default async function V2AdminGodkjenningerPage() {
 
   // A1: ÉN kø — fire kilder (PlanAction + CaddieDraft + SessionRequest;
   // e-postutkast bor i innboks-epost-flaten med egen godkjenning der).
-  const [actions, caddieDrafts, sessionRequests] = await Promise.all([
+  const [actions, caddieDrafts, sessionRequests, ko] = await Promise.all([
     prisma.planAction.findMany({
       where: {
         status: "PENDING",
@@ -169,6 +170,8 @@ export default async function V2AdminGodkjenningerPage() {
       take: 30,
       select: { id: true, userId: true, reason: true, preferredDate: true, preferredTime: true, createdAt: true, user: { select: { name: true } } },
     }).catch(() => []),
+    // FUNN 4: kanonisk kø-telling — samme tall i hodet som på innboks/varsler.
+    koTelling(user.id),
   ]);
   const caddieBrukere = new Map(
     (await prisma.user.findMany({
@@ -252,7 +255,7 @@ export default async function V2AdminGodkjenningerPage() {
   }));
   const alleRows = [...rows.map((r) => ({ ...r, kilde: "agent" as const })), ...caddieRows, ...requestRows];
 
-  const data: AdminGodkjenningerV2Data = { rows: alleRows, lowRiskCount };
+  const data: AdminGodkjenningerV2Data = { rows: alleRows, lowRiskCount, totalt: ko.totalt };
 
   return (
     <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>

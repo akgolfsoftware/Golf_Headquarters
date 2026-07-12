@@ -390,6 +390,10 @@ function TabTrening({ data, mobile }: { data: AnalysereData; mobile: boolean }) 
           </>
         ) : aktive.length === 0 ? (
           <TomTilstand icon="activity" title="Ingen akser valgt" sub="Slå på minst én akse i filteret." />
+        ) : training.sessions > 0 ? (
+          /* Ærlig tomtilstand: KPI-en over teller økter/timer fra en annen kilde
+             enn per-akse-fordelingen — si det som det er, ikke «ingen data». */
+          <TomTilstand icon="activity" title="Øktene mangler områdefordeling ennå" sub="Øktene dine er logget, men uten fordeling per akse. Fordelingen fylles når økter logges med øvelser per område." />
         ) : (
           <TomTilstand icon="activity" title="Ingen treningsdata ennå" sub="Fordelingen fylles når treningsøkter er logget med øvelser." />
         )}
@@ -415,9 +419,11 @@ function TabTrening({ data, mobile }: { data: AnalysereData; mobile: boolean }) 
   );
 
   return mobile ? (
+    /* Mobil: filterpanelet ØVERST (før innholdet) — samme rekkefølge som
+       desktop (venstre/topp), aldri filtre gjemt under lange lister. */
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {resultat}
       {filtre}
+      {resultat}
     </div>
   ) : (
     <div className="grid" style={{ gridTemplateColumns: "2fr 3fr", gap: T.gap, alignItems: "start" }}>

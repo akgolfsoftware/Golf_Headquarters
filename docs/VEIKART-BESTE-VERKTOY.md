@@ -99,6 +99,19 @@
 > Kun ekte data — ærlige tomtilstander. FUNN: player_swing_videos-tabellen
 > mangler i DB (schema-drift-klasse #3) — swing-video-spørringen venter på
 > kirurgisk migrering (Anders-ja). Playwright: alle 7 faner verifisert.
+> 2026-07-13 (natt) · DESIGN-FIKS-SERIE 2 LEVERT (audit-funn 1/2/4/9) —
+> (1) varsler: lime-flommen borte (per-rad Godta er ghost), mobilrader i
+> to etasjer uten trunkerte navn, 44px touch-mål; (2) godkjenninger:
+> gruppert per spiller + paginert (10 + «Vis flere»), knapphierarki
+> lime/ghost/tekstlenke, identiske saker deduplisert med ×N-badge —
+> siden ned fra ~15 000px til ~5 100px; (4) ÉN kanonisk kø-telling
+> (lib/admin/ko-telling.ts) brukt av innboks-banner, godkjenninger-hodet
+> og varsler — tallsprikene borte, innboks-banneret lenker til
+> godkjenninger (ikke seg selv); (9) analysere: filtre øverst på mobil,
+> FilterChips i mørk kanon-stil (delt komponent — løfter ~14 skjermer),
+> ærlig tomtilstandstekst. Alt screenshot-verifisert på 1440+390, ingen
+> h-scroll. + W4.4-småfunn: WAGR «Synk nå»-toasten løy om automatikk —
+> nå ærlig tekst; ekte WAGR-synk flagget som egen sak.
 > 2026-07-13 (natt) · B3 (kjernen) LEVERT — lead-løypa: daglig cron fanger
 > gjennomførte gjeste-bookinger (prøvetime uten konto, 14-dagers vindu)
 > → Lead-pipelinen (source provetime-booking, dedup på e-post, hopper

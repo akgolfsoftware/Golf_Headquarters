@@ -313,14 +313,16 @@ export interface FilterChipsProps {
   onToggle?: (x: string) => void;
   axis?: boolean;
 }
-/* multi-filter m/ check. axis=true → x er en AkseKey-datanøkkel (matching/onToggle uendret), vises som Fysisk/Teknikk/… */
+/* multi-filter m/ check. axis=true → x er en AkseKey-datanøkkel (matching/onToggle uendret), vises som Fysisk/Teknikk/…
+   Mørk chip-stil (audit 2026-07-12): umarkert = T.panel3 + border (som badges/chips ellers
+   i appen), valgt = lime m/ T.onLime — aldri lyse piller på mørk flate. */
 export function FilterChips({ items, active = [], onToggle, axis }: FilterChipsProps) {
   return (
     <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
       {items.map((x, i) => {
         const on = active.indexOf(x) !== -1;
         return (
-          <button key={i} className="v2-press v2-focus" onClick={() => onToggle && onToggle(x)} style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, height: 30, padding: "0 12px", borderRadius: 9999, background: on ? T.fg : T.panel2, border: `1px solid ${on ? T.fg : T.borderS}`, color: on ? T.bg : T.fg, fontFamily: T.ui, fontSize: 12.5, fontWeight: on ? 600 : 500 }}>
+          <button key={i} className="v2-press v2-focus" onClick={() => onToggle && onToggle(x)} style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, height: 30, padding: "0 12px", borderRadius: 9999, background: on ? T.lime : T.panel3, border: `1px solid ${on ? "transparent" : T.borderS}`, color: on ? T.onLime : T.fg, fontFamily: T.ui, fontSize: 12.5, fontWeight: on ? 600 : 500 }}>
             {on && <Icon name="check" size={12} />}
             {axis && T.ax[x as AkseKey] && <span style={{ width: 7, height: 7, borderRadius: 9999, background: T.ax[x as AkseKey] }} />}
             {axis ? AKSE_NAVN[x as AkseKey] || x : x}
@@ -370,17 +372,19 @@ export interface KnappProps {
   onClick?: () => void;
   /** "submit" for skjema-knapper — default "button". */
   type?: "button" | "submit";
+  /** Stil-overstyring (f.eks. minHeight: 44 for touch-mål). */
+  style?: CSSProperties;
 }
 /* Interaktiv CTA-pille (ekte <button>): onClick + full-bredde + disabled.
    CTAPill er den statiske varianten; Knapp brukes i flerstegs-flyter. */
-export function Knapp({ icon, children, ghost, full, disabled, onClick, type = "button" }: KnappProps) {
+export function Knapp({ icon, children, ghost, full, disabled, onClick, type = "button", style }: KnappProps) {
   return (
     <button
       type={type}
       className="v2-press v2-focus"
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
-      style={{ appearance: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: ghost ? T.fg : T.onLime, background: ghost ? T.panel3 : T.lime, border: ghost ? `1px solid ${T.borderS}` : "1px solid transparent", borderRadius: 9999, padding: "10px 18px", cursor: disabled ? "default" : "pointer", opacity: disabled ? 0.4 : 1, width: full ? "100%" : "auto" }}
+      style={{ appearance: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: ghost ? T.fg : T.onLime, background: ghost ? T.panel3 : T.lime, border: ghost ? `1px solid ${T.borderS}` : "1px solid transparent", borderRadius: 9999, padding: "10px 18px", cursor: disabled ? "default" : "pointer", opacity: disabled ? 0.4 : 1, width: full ? "100%" : "auto", ...style }}
     >
       {icon && <Icon name={icon} size={14} />}{children}
     </button>

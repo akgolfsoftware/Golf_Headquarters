@@ -9,7 +9,11 @@ export function SynkNaaButton() {
     <button
       type="button"
       className={agBtnClass("primary")}
-      onClick={() => toast.info("WAGR-synk kjøres automatisk natt til mandag")}
+      onClick={() =>
+        // Ærlig tekst: ingen automatisk WAGR-jobb finnes (verifisert 2026-07-13
+        // — ingen cron/agent). Automatikken er egen backlog-sak.
+        toast.info("Automatisk WAGR-synk er ikke koblet ennå — import skjer manuelt via CSV")
+      }
     >
       <RefreshCw size={16} aria-hidden /> Synk nå
     </button>

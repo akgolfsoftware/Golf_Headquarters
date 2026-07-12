@@ -13,6 +13,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
+import { koTelling, type KoTelling } from "@/lib/admin/ko-telling";
 
 export type VarselPlanAction = {
   id: string;
@@ -46,6 +47,8 @@ export type VarslerData = {
   signals: VarselSignal[];
   notifications: VarselNotification[];
   counts: { actions: number; signals: number; notifications: number };
+  /** Kanonisk kø-telling (delt med innboks-banner og godkjenninger-hodet). */
+  ko: KoTelling;
 };
 
 
@@ -95,7 +98,7 @@ export async function loadVarsler(coachUserId: string): Promise<VarslerData> {
   const now = new Date();
   const signalCutoff = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
 
-  const [planActions, signalsRaw, notifications] = await Promise.all([
+  const [planActions, signalsRaw, notifications, ko] = await Promise.all([
     prisma.planAction.findMany({
       where: { status: "PENDING" },
       select: {
@@ -130,6 +133,7 @@ export async function loadVarsler(coachUserId: string): Promise<VarslerData> {
       orderBy: { createdAt: "desc" },
       take: 30,
     }),
+    koTelling(coachUserId),
   ]);
 
   const signals = [...signalsRaw]
@@ -167,5 +171,6 @@ export async function loadVarsler(coachUserId: string): Promise<VarslerData> {
       signals: signals.length,
       notifications: notifications.length,
     },
+    ko,
   };
 }

@@ -21,7 +21,9 @@ export const metadata: Metadata = {
 export default async function VarslerPage() {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const data = await loadVarsler(user.id);
-  const total = data.counts.actions + data.counts.notifications;
+  // Kanonisk kø-telling (koTelling) + coachens egne uleste meldinger — samme
+  // handlings-tall som innboks-banneret og godkjenninger-hodet.
+  const total = data.ko.planActions + data.counts.notifications;
 
   return (
     <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>

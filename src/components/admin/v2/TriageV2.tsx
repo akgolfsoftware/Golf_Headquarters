@@ -35,6 +35,7 @@ import type {
   CockpitFocusPlayer,
 } from "@/components/admin/cockpit/agency-cockpit";
 import type { AppFeedbackRad, AppFeedbackType } from "@/lib/admin/load-app-feedback";
+import type { KoTelling } from "@/lib/admin/ko-telling";
 import { markerAppFeedbackSett } from "@/app/admin/innboks/actions";
 
 const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
@@ -208,12 +209,14 @@ function TriageGruppe({ g, onOpen }: { g: Gruppe; onOpen: (href: string) => void
   );
 }
 
-export function TriageV2({ data, feedback = [] }: { data: CockpitData; feedback?: AppFeedbackRad[] }) {
+export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedback?: AppFeedbackRad[]; ko?: KoTelling }) {
   const router = useRouter();
   const grupper = byggGrupper(data);
 
   const totalSaker = grupper.reduce((n, g) => n + g.saker.length, 0);
   const avvikCount = grupper.find((g) => g.key === "avvik")?.saker.length ?? 0;
+  // Kanonisk kø-telling (samme tall som godkjenninger-hodet og varsler-siden).
+  const godkjenningsKo = ko?.totalt ?? 0;
 
   // ── Hode ────────────────────────────────────────────────────────
   const hode = (
@@ -233,15 +236,21 @@ export function TriageV2({ data, feedback = [] }: { data: CockpitData; feedback?
   );
 
   // ── AI-innsikt (ærlig, avledet av reelle tall — ingen oppdiktet plan) ──
+  // Banneret bærer kanonisk godkjenningskø-tall og lenker til godkjenninger
+  // (aldri til innboksen selv — vi er allerede her).
   const innsiktTekst =
-    totalSaker > 0
-      ? `${pl(totalSaker, "sak venter", "saker venter")} på deg${
+    godkjenningsKo > 0
+      ? `${pl(godkjenningsKo, "sak venter", "saker venter")} på godkjenning${
           avvikCount > 0 ? ` — ${pl(avvikCount, "avvik", "avvik")} bør ses først.` : "."
         }`
-      : "Innboksen er tom — ingenting venter på deg akkurat nå.";
+      : totalSaker > 0
+        ? `${pl(totalSaker, "sak venter", "saker venter")} på deg${
+            avvikCount > 0 ? ` — ${pl(avvikCount, "avvik", "avvik")} bør ses først.` : "."
+          }`
+        : "Innboksen er tom — ingenting venter på deg akkurat nå.";
   const innsikt = (
-    <Link href="/admin/innboks" style={{ textDecoration: "none" }}>
-      <InnsiktChip cta="Åpne innboks">{innsiktTekst}</InnsiktChip>
+    <Link href="/admin/godkjenninger" style={{ textDecoration: "none" }}>
+      <InnsiktChip cta="Åpne godkjenninger">{innsiktTekst}</InnsiktChip>
     </Link>
   );
 
@@ -249,6 +258,7 @@ export function TriageV2({ data, feedback = [] }: { data: CockpitData; feedback?
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {hode}
+        {godkjenningsKo > 0 && innsikt}
         <Kort>
           <TomTilstand
             icon="inbox"
