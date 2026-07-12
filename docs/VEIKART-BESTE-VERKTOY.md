@@ -99,6 +99,14 @@
 > Kun ekte data — ærlige tomtilstander. FUNN: player_swing_videos-tabellen
 > mangler i DB (schema-drift-klasse #3) — swing-video-spørringen venter på
 > kirurgisk migrering (Anders-ja). Playwright: alle 7 faner verifisert.
+> 2026-07-13 (natt) · C5b LEVERT — én-trykks gjennomført/avvik i Gjør-
+> flaten: «Gjort» og «Hopp over»-knapper rett på neste økt-kortet og hver
+> rad i «Resten av dagen» (begge økt-kildene: plan + v2, speilet holdes i
+> synk). Hopp over → coachen varsles i klarspråk («verdt et blikk om det
+> gjentar seg») — aldri sperre, aldri skjema. Verifisert i app: ett trykk
+> → ALT FULLFØRT · 1/1 · økta under «Fullført i dag»; testdata tilbake-
+> stilt. Spiller-loopen (C5) er med dette komplett: push ved publisering,
+> én-trykks status, ukesoppsummering.
 > 2026-07-13 (natt) · B5 LEVERT — månedsrapport per selskap: ny agent
 > maanedsrapport (cron natt til 1.) bygger forrige måneds nøkkeltall per
 > lokasjon (GFGK/WANG/Mulligan/Miklagard = selskaps-dimensjonen) + totalt:

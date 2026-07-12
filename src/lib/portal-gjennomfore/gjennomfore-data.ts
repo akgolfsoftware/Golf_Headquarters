@@ -59,6 +59,8 @@ export type GjennomforeOkt = {
   varighet: number;
   /** Pyramide-område — brukes for border-farge på rad-visning */
   pyramidArea: PyramidArea;
+  /** C5b: hvilken modell økten bor i — styrer markerOktStatus-actionen. */
+  kilde: "v2" | "plan";
 };
 
 export type GjennomforeData = {
@@ -204,6 +206,7 @@ export async function getGjennomforeData(userId: string): Promise<GjennomforeDat
       trengerLogg,
       varighet,
       pyramidArea: pyramid,
+      kilde: "v2",
     };
   };
 
@@ -253,6 +256,7 @@ export async function getGjennomforeData(userId: string): Promise<GjennomforeDat
       trengerLogg,
       varighet,
       pyramidArea: o.pyramidArea as PyramidArea,
+      kilde: "plan",
     };
   };
 

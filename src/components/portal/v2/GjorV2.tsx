@@ -18,7 +18,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, useTransition, type ReactNode } from "react";
+import { markerOktStatus } from "@/lib/portal-gjennomfore/okt-status-actions";
 import type { GjennomforeData } from "@/lib/portal-gjennomfore/gjennomfore-data";
 import {
   T,
@@ -58,10 +59,54 @@ function useMobile(): boolean {
 
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
+function HurtigStatus({
+  o,
+  oppdaterer,
+  onMarker,
+}: {
+  o: { id: string; kilde: "v2" | "plan" };
+  oppdaterer: boolean;
+  onMarker: (o: { id: string; kilde: "v2" | "plan" }, status: "COMPLETED" | "SKIPPED") => void;
+}) {
+  return (
+    <span style={{ display: "inline-flex", gap: 6 }} onClick={(e) => e.stopPropagation()}>
+      <button
+        type="button"
+        className="v2-press v2-focus"
+        disabled={oppdaterer}
+        onClick={() => onMarker(o, "COMPLETED")}
+        title="Marker som gjennomført"
+        style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 9999, padding: "7px 12px", cursor: "pointer", minHeight: 32 }}
+      >
+        <Icon name="check" size={12} />
+        Gjort
+      </button>
+      <button
+        type="button"
+        className="v2-press v2-focus"
+        disabled={oppdaterer}
+        onClick={() => onMarker(o, "SKIPPED")}
+        title="Hopp over økten — coachen ser det i klarspråk"
+        style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.mut, background: "transparent", border: `1px solid ${T.border}`, borderRadius: 9999, padding: "7px 12px", cursor: "pointer", minHeight: 32 }}
+      >
+        Hopp over
+      </button>
+    </span>
+  );
+}
+
 export function GjorV2({ data }: { data: GjennomforeData }) {
   const mobile = useMobile();
   const router = useRouter();
   const { datoTekst, antall, totalMin, nesteOkt, resteAvDagen, fullfortIdag } = data;
+  // C5b: én-trykks gjennomført/hopp over — direkte fra lista, uten skjema.
+  const [oppdaterer, startOppdatering] = useTransition();
+  const marker = (o: { id: string; kilde: "v2" | "plan" }, status: "COMPLETED" | "SKIPPED") =>
+    startOppdatering(async () => {
+      await markerOktStatus({ id: o.id, kilde: o.kilde, status });
+      router.refresh();
+    });
+
 
   const live = nesteOkt?.status === "now";
 
@@ -187,9 +232,12 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
                     accent
                     sub={`${nesteOkt.sted} · ${nesteOkt.coachNavn}`}
                   />
-                  <Link href={nesteOkt.href} style={{ textDecoration: "none" }}>
-                    <CTAPill icon="play">{live ? "Fortsett økt" : "Start økt"}</CTAPill>
-                  </Link>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                    <Link href={nesteOkt.href} style={{ textDecoration: "none" }}>
+                      <CTAPill icon="play">{live ? "Fortsett økt" : "Start økt"}</CTAPill>
+                    </Link>
+                    <HurtigStatus o={nesteOkt} oppdaterer={oppdaterer} onMarker={marker} />
+                  </span>
                 </div>
                 <div style={{ display: "flex", gap: 6, marginTop: 12 }}>
                   <AkseChip a={nesteOkt.pyramidArea} />
@@ -225,7 +273,12 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
                   }
                   title={o.tittel}
                   sub={o.meta}
-                  meta={<AkseChip a={o.pyramidArea} />}
+                  meta={
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                      <AkseChip a={o.pyramidArea} />
+                      <HurtigStatus o={o} oppdaterer={oppdaterer} onMarker={marker} />
+                    </span>
+                  }
                   onClick={() => router.push(o.href)}
                   last={i === resteAvDagen.length - 1}
                 />
