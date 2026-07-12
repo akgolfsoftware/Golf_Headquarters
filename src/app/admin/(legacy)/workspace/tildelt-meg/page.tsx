@@ -90,7 +90,7 @@ export default async function WorkspaceTildeltMegPage() {
         icon: CheckSquare,
         title: t.title,
         meta: t.due,
-        href: "/admin/workspace/oppgaver",
+        href: "/admin/handlingssenter",
       })),
   ].slice(0, 7);
 

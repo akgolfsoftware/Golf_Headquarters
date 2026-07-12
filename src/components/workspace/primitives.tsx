@@ -486,7 +486,7 @@ export function WorkspaceTabs({
 }) {
   const tabs = [
     { id: "uke", label: "Min uke", href: "/admin/workspace" },
-    { id: "oppgaver", label: "Oppgaver", href: "/admin/workspace/oppgaver" },
+    { id: "oppgaver", label: "Oppgaver", href: "/admin/handlingssenter" },
     { id: "prosjekter", label: "Prosjekter", href: "/admin/workspace/prosjekter" },
     { id: "tildelt", label: "Tildelt meg", href: "/admin/workspace/tildelt-meg" },
     { id: "notion", label: "Notion", href: "/admin/workspace/notion" },
