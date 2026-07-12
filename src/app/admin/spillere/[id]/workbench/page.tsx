@@ -18,6 +18,7 @@ import { prisma } from "@/lib/prisma";
 import { loadWorkbenchContext } from "@/lib/workbench/load-context";
 import { parseWeekOffset } from "@/lib/workbench/session-move-math";
 import { publishWorkbenchPlan } from "@/lib/workbench/publish-actions";
+import { coachApplyWorkbenchTemplate } from "@/lib/workbench/apply-template-actions";
 import {
   coachAddWorkbenchSession,
   coachMoveWorkbenchSession,
@@ -72,6 +73,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
     addSession: coachAddWorkbenchSession.bind(null, id),
     moveSession: coachMoveWorkbenchSession.bind(null, id),
     updateSession: coachUpdateWorkbenchSession.bind(null, id),
+    applyTemplate: coachApplyWorkbenchTemplate.bind(null, id),
     removeSession: coachRemoveWorkbenchSession.bind(null, id),
     publish: publishWorkbenchPlan.bind(null, id),
     duplicateWeek: coachDuplicateWeek.bind(null, id),

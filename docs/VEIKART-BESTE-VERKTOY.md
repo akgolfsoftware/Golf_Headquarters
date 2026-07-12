@@ -60,6 +60,15 @@
 > klosser ved hver navigering): loading.tsx rendres UTEN V2Shell (shellen bor
 > i page) — V2Laster bærer nå selv hele den mørke chromen (bakgrunn + vignett
 > + rail-silhuett, 1680-container). Målt i app: lastebakgrunn rgb(13,14,13).
+> 2026-07-12 (kveld) · G7 LEVERT — første fasit-ombygging av Workbench:
+> Coldstart-løypa 1:1 fra workbench-coldstart.jsx («Ingen plan for {fornavn}
+> ennå» → mal-velger m/ ekte godkjente maler + neste-turnering-kontekst +
+> «Legg inn første uke» + AI-forslag der det finnes). Kun sanne elementer —
+> mål/horisont/dager-chipsene fra fasit aktiveres når motoren tar imot dem.
+> Samtidig fasit-fiks: mal-kortene i biblioteket var DØDE — nå «Bruk · legg
+> inn uke 1» (ny applyTemplate i actions-kontrakten, coach + spiller).
+> Verifisert live: coldstart → velg mal → 5 økter inn i tidslinja → ryddet.
+> Anders gjør komplett Workbench/AgencyOS-review etter denne.
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag

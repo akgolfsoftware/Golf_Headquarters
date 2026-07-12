@@ -80,6 +80,8 @@ export interface WorkbenchV2Actions {
   ) => Promise<{ ok: boolean; count?: number; error?: string }>;
   /** Kun coach-rolle. Utelatt → knappen skjules. */
   duplicateWeek?: (weekOffset?: number) => Promise<{ ok: boolean; count?: number; error?: string }>;
+  /** G7/fasit: legg inn mal-uke 1 fra en godkjent planmal (coldstart + bibliotek). */
+  applyTemplate?: (templateId: string) => Promise<{ ok: boolean; error?: string }>;
 }
 
 /* ── Delt dag-pille-rad (7 dager, Man–Søn) ─────────────── */

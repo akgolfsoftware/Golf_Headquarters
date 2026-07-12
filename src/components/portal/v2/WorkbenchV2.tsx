@@ -37,6 +37,7 @@ import {
 } from "@/components/v2";
 import { PalettSok } from "@/components/v2/wb-composer";
 import { ForslagArk, NyOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput } from "./WorkbenchV2Sheets";
+import { WorkbenchColdstart } from "./WorkbenchColdstart";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
 import { WBTidslinjeMobil, AarNivaaMobil, MobilFold } from "./WorkbenchV2Mobil";
 import type { AkseKey } from "@/lib/v2/tokens";
@@ -297,12 +298,14 @@ export const LPHASE_LABEL: Record<string, string> = {
   TURNERING: "Turneringsperiode",
 };
 
-export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt }: {
+export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukMal }: {
   data: WorkbenchData;
   tab: string; setTab: (t: string) => void;
   sok: string; setSok: (s: string) => void;
   /** Ett-klikks «legg til»: åpner Ny økt-arket forhåndsutfylt fra brikken. */
   onVelgOkt?: (item: { title: string; durMin: number; akse?: AkseKey }) => void;
+  /** Fasit-fiks: mal-kortene var døde — «Bruk» legger inn mal-uke 1. */
+  onBrukMal?: (templateId: string) => void;
 }) {
   const treff = (txt: string) => !sok || txt.toLowerCase().includes(sok.toLowerCase());
   const maler = (data.planTemplates ?? []).filter((m) => treff(m.name));
@@ -328,6 +331,16 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt }: {
             <div key={m.id} style={{ padding: "11px 12px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
               <span style={{ display: "block", minWidth: 0, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{m.name}</span>
               <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, display: "block", marginTop: 3 }}>{m.sessionCount} økter · {LPHASE_LABEL[m.lPhase] ?? m.lPhase} · {m.varighetUker} uker</span>
+              {onBrukMal && (
+                <button
+                  type="button"
+                  onClick={() => onBrukMal(m.id)}
+                  className="v2-press v2-focus"
+                  style={{ appearance: "none", cursor: "pointer", marginTop: 8, width: "100%", padding: "6px 0", borderRadius: 8, border: `1px solid ${T.borderS}`, background: T.panel3, color: T.fg2, fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}
+                >
+                  Bruk · legg inn uke 1
+                </button>
+              )}
             </div>
           )) : <TomTilstand icon="search" title="Ingen mal" sub={sok ? "Prøv et annet søk." : "Ingen godkjente planmaler ennå."} />}
         </div>
@@ -762,6 +775,19 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     setNyOktApen(true);
   };
 
+  // Fasit-fiks: mal-kortene i biblioteket legger inn mal-uke 1 (var døde).
+  const brukMalFraBibliotek = async (templateId: string) => {
+    if (!actions?.applyTemplate) return;
+    setMelding(null);
+    const res = await actions.applyTemplate(templateId);
+    if (res.ok) {
+      setMelding({ tone: "up", tekst: "Mal-uke 1 lagt inn — juster øktene på tidslinja." });
+      router.refresh();
+    } else {
+      setMelding({ tone: "down", tekst: res.error ?? "Kunne ikke bruke malen." });
+    }
+  };
+
   // Dra en økt-blokk til en annen dag-kolonne → samme optimistiske flytting
   // som Flytt-knappen i Valgt økt-panelet.
   const handleDropMove = async (sessionId: string, dayIndex: number) => {
@@ -878,6 +904,46 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <Caps>Workbench</Caps>
         <Kort><TomTilstand icon="calendar" title="Ingen plandata" sub="Fant ingen treningsplan for spilleren." /></Kort>
+      </div>
+    );
+  }
+
+  // G7 · Coldstart (fasit): helt tom plan (ingen økter i uka, ingen timer,
+  // ingen sesongplan) → guidet start i stedet for tomt grid. Aldri blindgate.
+  const heltTom =
+    alleEvents.length === 0 &&
+    (data.axisHours ?? []).every((x) => x.hours === 0) &&
+    (data.seasonBlocks ?? []).length === 0 &&
+    pendingAdds.length === 0;
+  if (heltTom && actions) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <Caps>Workbench · {playerName}</Caps>
+        {melding && (
+          <Kort pad="10px 14px"><span style={{ fontFamily: T.ui, fontSize: 12.5, color: melding.tone === "down" ? T.down : T.fg }}>{melding.tekst}</span></Kort>
+        )}
+        <WorkbenchColdstart
+          data={data}
+          playerName={playerName}
+          onBrukMal={actions.applyTemplate ? async (templateId) => {
+            const res = await actions.applyTemplate!(templateId);
+            if (res.ok) {
+              setMelding({ tone: "up", tekst: "Første uke er lagt inn fra malen — juster den på tidslinja." });
+              router.refresh();
+            }
+            return res;
+          } : undefined}
+          onForeslaaUke={actions.suggestWeek ? handleSuggest : undefined}
+          foreslarUke={suggestLoading}
+        />
+        {forslag && (
+          <ForslagArk
+            suggestions={forslag.suggestions}
+            usedAi={forslag.usedAi}
+            onLukk={() => setForslag(null)}
+            onBruk={handleBrukForslag}
+          />
+        )}
       </div>
     );
   }
@@ -1032,7 +1098,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
 
       {/* TRE KOLONNER — desktop (md+): uendret (grid-cols-1 md→lg, 3-kol fra lg) */}
       <div className="hidden md:grid md:grid-cols-1 lg:grid-cols-[206px_1fr_302px]" style={{ gap: T.gap, alignItems: "start" }}>
-        <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} />
+        <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} />
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
           {insights?.line && <InnsiktChip>{insights.line}</InnsiktChip>}
           {nivaa === "uke" && (
@@ -1071,7 +1137,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         {nivaa === "maned" && <MndNivaa data={data} onVelgDato={velgDatoFraMnd} />}
 
         <MobilFold tittel="Bibliotek" ikon="layers">
-          <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} />
+          <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} />
         </MobilFold>
         <MobilFold tittel="Balanse" ikon="activity">
           <WBBalanse
