@@ -99,6 +99,14 @@
 > Kun ekte data — ærlige tomtilstander. FUNN: player_swing_videos-tabellen
 > mangler i DB (schema-drift-klasse #3) — swing-video-spørringen venter på
 > kirurgisk migrering (Anders-ja). Playwright: alle 7 faner verifisert.
+> 2026-07-13 (natt) · C3+C4 LEVERT — test/runde → plan med SYNLIG drill-
+> pakke: round-agent (SG-svakhet) og test-agent (testtrend) forhånds-
+> beregner nå konkret drill-pakke (drill-selection-skillen) og legger den
+> i forslags-payloaden — coachen ser drillnavnene i A1-køen FØR god-
+> kjenning, og executor bruker akkurat de drillene ved apply (payload-
+> pakke vinner; tom pakke faller tilbake til executor-oppslaget som før).
+> Verifisert mot ekte øvelsesbank: pakke → kø-payload → delta 1:1;
+> executor-enhetstestene 7/7 grønne.
 > 2026-07-12 (kveld) · WB2 LEVERT (fasit G5): «Spilleren nå»-innsiktsblokk
 > øverst i Workbench-inspektøren (høyre kolonne) — fokus (coach/SG-gap),
 > plan-etterlevelse m/ terskel-farget stripe + HjelpTips, neste turnering

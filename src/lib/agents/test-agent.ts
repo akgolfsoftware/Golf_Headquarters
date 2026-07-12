@@ -2,6 +2,7 @@
 // skriver Signal og evt. PlanAction ved >15 % forbedring eller >10 % tilbakegang.
 
 import { prisma } from "@/lib/prisma";
+import { resolveDrillPakke } from "./plan-action-executor";
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { varsleVedPlanAction } from "./notify-plan-action";
@@ -72,10 +73,19 @@ export async function runTestAgent(userId: string): Promise<AgentResult> {
         });
         if (!eksisterende) {
           const coachId = await resolveCoachIdForPlayer(userId);
+          // C4: forhåndsberegn drill-pakken så coachen ser den i køen.
+          const drillPakke = await resolveDrillPakke(
+            null,
+            relativ <= TILBAKE_TERSKEL ? "TEK" : "SLAG",
+          );
           const forklaring =
             relativ >= FORBEDRING_TERSKEL
               ? `${siste.test.name} forbedret ${Math.round(relativ * 100)} % — vurder å flytte fokus.`
               : `${siste.test.name} tilbake ${Math.round(Math.abs(relativ) * 100)} % — øk TEK-volum.`;
+          const forklaringMedDriller =
+            drillPakke.length > 0
+              ? `${forklaring} Foreslåtte driller: ${drillPakke.map((d) => d.navn).join(", ")}.`
+              : forklaring;
           const created = await prisma.planAction.create({
             data: {
               userId,
@@ -84,11 +94,12 @@ export async function runTestAgent(userId: string): Promise<AgentResult> {
               actionType,
               agentName: AGENT_NAME,
               suggestion: {
+                drillPakke,
                 testId,
                 testNavn: siste.test.name,
                 trend: relativ,
                 omrade: relativ <= TILBAKE_TERSKEL ? "TEK" : "SLAG",
-                forklaring,
+                forklaring: forklaringMedDriller,
                 signalSnapshot: {
                   kind: "TEST_DELTA",
                   value: delta,

@@ -29,7 +29,12 @@ const churnMessageSchema = z.object({
   }),
 });
 
+const drillPakkeSchema = z
+  .array(z.object({ id: z.string(), navn: z.string().optional() }))
+  .optional();
+
 const pyramidAdjustSchema = z.object({
+  drillPakke: drillPakkeSchema,
   omrade: z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]),
   omradeNavn: z.string().optional(),
   faktiskProsent: z.number().optional(),
@@ -52,6 +57,7 @@ const drillSwapSchema = z.object({
 });
 
 const focusChangeSchema = z.object({
+  drillPakke: drillPakkeSchema,
   skillArea: z.enum([
     "TEE_TOTAL",
     "TILNAERMING",
@@ -194,7 +200,7 @@ export function computeDelta(
             skillArea: null,
             durationMin: 60,
             scheduledAt: slot,
-            drillExerciseIds: [],
+            drillExerciseIds: (s.drillPakke ?? []).map((d) => d.id),
           },
         ],
         sessionsToRemove: [],
@@ -237,7 +243,7 @@ export function computeDelta(
             skillArea: s.skillArea,
             durationMin: 60,
             scheduledAt: slot,
-            drillExerciseIds: [],
+            drillExerciseIds: (s.drillPakke ?? []).map((d) => d.id),
           },
         ],
         sessionsToRemove: [],
@@ -510,6 +516,22 @@ export function actionErTekniskEndring(
     default:
       return false;
   }
+}
+
+/** C3/C4: drill-pakke MED navn — agentene legger den i suggestion så
+ *  coachen ser konkrete driller i køen FØR godkjenning. */
+export async function resolveDrillPakke(
+  skillArea: SkillArea | null,
+  pyramidArea: PyramidArea,
+): Promise<Array<{ id: string; navn: string }>> {
+  const ids = await resolveDrillsForSession(skillArea, pyramidArea);
+  if (ids.length === 0) return [];
+  const drills = await prisma.exerciseDefinition.findMany({
+    where: { id: { in: ids } },
+    select: { id: true, name: true },
+  });
+  const navnAv = new Map(drills.map((d) => [d.id, d.name]));
+  return ids.map((id) => ({ id, navn: navnAv.get(id) ?? id }));
 }
 
 async function resolveDrillsForSession(

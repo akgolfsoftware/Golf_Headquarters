@@ -2,6 +2,7 @@
 // skriver Signal og evt. PlanAction ved tydelig svakhet.
 
 import { prisma } from "@/lib/prisma";
+import { resolveDrillPakke } from "./plan-action-executor";
 import { aggregateSg } from "@/lib/sg";
 import {
   runWeaknessSkill,
@@ -90,7 +91,15 @@ export async function runRoundAgent(userId: string): Promise<AgentResult> {
       });
       if (!eksisterende) {
         const coachId = await resolveCoachIdForPlayer(userId);
-        const forklaring = weakness.anbefaling;
+        // C3: forhåndsberegn drill-pakken så coachen ser den i køen.
+        const drillPakke = await resolveDrillPakke(
+          SG_TO_SKILL[weakness.primarySgArea],
+          SG_TO_PYRAMID[weakness.primarySgArea],
+        );
+        const forklaring =
+          drillPakke.length > 0
+            ? `${weakness.anbefaling} Foreslåtte driller: ${drillPakke.map((d) => d.navn).join(", ")}.`
+            : weakness.anbefaling;
         const created = await prisma.planAction.create({
           data: {
             userId,
@@ -99,6 +108,7 @@ export async function runRoundAgent(userId: string): Promise<AgentResult> {
             actionType: "FOCUS_CHANGE",
             agentName: AGENT_NAME,
             suggestion: {
+              drillPakke,
               skillArea: SG_TO_SKILL[weakness.primarySgArea],
               pyramidArea: SG_TO_PYRAMID[weakness.primarySgArea],
               forklaring,
