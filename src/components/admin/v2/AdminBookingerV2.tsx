@@ -71,6 +71,8 @@ export interface AdminBookingerV2Data {
     kapasitetPct: number;
     foresporsler: number;
     ledigeLuker: number;
+    // B1: ukas bookingverdi i kroner — null når brukeren mangler VIEW_FINANCE.
+    ukesVerdiKr: number | null;
   };
   heat: {
     timer: string[]; // rad-etiketter (klokketimer)
@@ -252,6 +254,9 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
   const kpi = (
     <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
       <KpiFlis label="Bookinger uke" value={data.kpis.bookinger} />
+      {data.kpis.ukesVerdiKr !== null ? (
+        <KpiFlis label="Ukesverdi" value={`${data.kpis.ukesVerdiKr.toLocaleString("nb-NO")} kr`} />
+      ) : null}
       <KpiFlis label="Kapasitet brukt" value={`${data.kpis.kapasitetPct} %`} />
       <KpiFlis label="Forespørsler" value={data.kpis.foresporsler} varsle={data.kpis.foresporsler > 0} />
       <KpiFlis label="Ledige luker" value={data.kpis.ledigeLuker} />

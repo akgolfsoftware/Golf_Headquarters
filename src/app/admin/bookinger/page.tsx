@@ -12,6 +12,7 @@
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { can, Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { AdminBookingerV2, type AdminBookingerV2Data, type AdminBookingV2Row } from "@/components/admin/v2/AdminBookingerV2";
@@ -50,6 +51,7 @@ function kolonneFor(getDay: number): number {
 
 export default async function V2AdminBookingerPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const kanSeFinans = can(user.role, Capability.VIEW_FINANCE);
 
   const ukeStart = mandagFor(new Date());
   const ukeSlutt = new Date(ukeStart);
@@ -103,6 +105,14 @@ export default async function V2AdminBookingerPage() {
   const kapasitetPct = totaltSlots ? Math.round((brukteSlots / totaltSlots) * 100) : 0;
   const ledigeLuker = Math.max(0, totaltSlots - brukteSlots);
 
+  // B1: kapasitet som PENGER — ukas bookingverdi i kroner (priceOre er låst
+  // ved booking; credit-bookinger = 0 og telles ærlig som 0 kr).
+  const ukesVerdiKr = Math.round(
+    bookinger
+      .filter((b) => b.status !== "CANCELLED")
+      .reduce((sum, b) => sum + b.priceOre, 0) / 100,
+  );
+
   const ventendeBookinger = bookinger.filter((b) => b.status === "PENDING").length;
   const foresporsler = ventendeBookinger + ventendeForesporsler;
   const lokasjon = facilities[0]?.location.name ?? "Alle anlegg";
@@ -126,7 +136,7 @@ export default async function V2AdminBookingerPage() {
     ukeNr,
     lokasjon,
     nyHref: "/admin/bookinger/ny",
-    kpis: { bookinger: bookinger.length, kapasitetPct, foresporsler, ledigeLuker },
+    kpis: { bookinger: bookinger.length, kapasitetPct, foresporsler, ledigeLuker, ukesVerdiKr: kanSeFinans ? ukesVerdiKr : null },
     heat: { timer: TIMER, dager: DAG_KOLONNER, verdier },
     anlegg: facilities.map((f) => f.name),
     bookinger: rader,

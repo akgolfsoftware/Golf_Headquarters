@@ -10,6 +10,8 @@
  *   - MRR: aktive PRO-abonnement × 299 kr (kanonisk formel, jf. /admin/agencyos/okonomi)
  */
 
+import { can, Capability } from "@/lib/auth/cbac";
+import type { UserRole } from "@/generated/prisma/client";
 import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
@@ -109,6 +111,7 @@ export async function loadDailyBrief(coach: {
   id: string;
   name: string | null;
   avatarUrl?: string | null;
+  role?: UserRole;
 }): Promise<CockpitData> {
   const now = new Date();
   const nowMin = minutesSinceMidnight(now);
@@ -429,6 +432,12 @@ export async function loadDailyBrief(coach: {
       .filter(Boolean)
       .join(" · ") || "ingen i dag";
 
+  // B1: dagens bookingverdi i kroner — kun for brukere med VIEW_FINANCE.
+  const dagensVerdiKr =
+    coach.role && can(coach.role, Capability.VIEW_FINANCE)
+      ? Math.round(dagensBookinger.reduce((sum, b) => sum + b.priceOre, 0) / 100)
+      : null;
+
   const mrrKr = proAboCount * PRO_PRIS_KR;
   const mrr = kpiMoney(mrrKr);
   const nyeMrrKr = nyeProAbo30d * PRO_PRIS_KR;
@@ -487,6 +496,7 @@ export async function loadDailyBrief(coach: {
     greeting: greetingFor(now.getHours()),
     coachFirstName: firstName(coach.name),
     coachAvatarUrl: coach.avatarUrl ?? null,
+    dagensVerdiKr,
     aiContext,
     aiBrief: coachBriefFromRun,
     liveLabel: `${DAGER[now.getDay()].toUpperCase()} ${now.getDate()} ${MND_KORT[now.getMonth()].toUpperCase()} · ${hhmm(now)}`,

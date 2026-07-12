@@ -110,6 +110,8 @@ export type CockpitKpi = {
 };
 
 export type CockpitData = {
+  /** B1: dagens bookingverdi i kroner — null uten VIEW_FINANCE. */
+  dagensVerdiKr?: number | null;
   /** Tid-på-døgnet-hilsen, f.eks. "God formiddag" — brukes ikke i cockpit-tittel, beholdes for bakoverkompatibilitet. */
   greeting: string;
   coachFirstName: string;

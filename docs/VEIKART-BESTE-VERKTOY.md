@@ -237,6 +237,12 @@
 > Røyk-testet i kjørende app. Gjenstår i Bølge 2: C1 ukesyklus, W2.2b
 > periode-rulling, B1 kapasitets-økonomi, B2 churn-radar + notify-buggen
 > i live-coach-agenten (egen sjekk).
+> 2026-07-13 (natt) · B1 LEVERT — kapasitet som PENGER: ukas bookingverdi
+> i kroner som egen KPI-flis på Bookinger & kapasitet (sum priceOre,
+> avlyste ekskludert) + dagens bookingverdi som kroner-chip på cockpitens
+> «Økter i dag»-flis. Begge gated på VIEW_FINANCE (CBAC) — coach uten
+> finans-capability ser ingen kroner. Verifisert i app: flis + chip synlig
+> som admin, tall avstemt mot DB (6 bookinger, 0 kr — testdata er gratis).
 > 2026-07-13 (natt) · C1+W2.2b LEVERT — automatisk ukesyklus: ny agent
 > weekly-plan-proposals (cron søn 18:00) genererer ukeforslag for NESTE
 > uke per coachet spiller m/ aktiv plan → PlanAction WEEKLY_PROPOSAL i
