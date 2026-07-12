@@ -4,6 +4,7 @@
  * Delt Workbench-persistering — spiller + coach (redigerer spillerens plan).
  */
 
+import { executeSessionUpdate, type SessionUpdateInput } from "@/lib/workbench/session-update";
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -135,6 +136,23 @@ export async function coachAddWorkbenchSession(
 
   revalidateWorkbench(playerId);
   return { ok: true, sessionId: created.id };
+}
+
+export async function coachUpdateWorkbenchSession(
+  playerId: string,
+  sessionId: string,
+  patch: SessionUpdateInput,
+): Promise<{ ok: boolean; error?: string }> {
+  const coach = await ensureCoach();
+  const result = await executeSessionUpdate(prisma, {
+    sessionId,
+    playerId,
+    patch,
+    coachId: coach.id,
+  });
+  if (!result.ok) return result;
+  revalidateWorkbench(playerId);
+  return { ok: true };
 }
 
 export async function coachRemoveWorkbenchSession(

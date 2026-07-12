@@ -5,6 +5,7 @@
  * Persisterer perioder, samlinger, fasiliteter og plan-varianter.
  */
 
+import { executeSessionUpdate, type SessionUpdateInput } from "@/lib/workbench/session-update";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -507,6 +508,21 @@ export async function moveWorkbenchSession(
     playerId: user.id,
     dayIndex,
     refDate: weekRefDate(weekOffset),
+  });
+  if (!result.ok) return result;
+  revalidatePath("/portal/planlegge/workbench");
+  return { ok: true };
+}
+
+export async function updateWorkbenchSession(
+  sessionId: string,
+  patch: SessionUpdateInput,
+): Promise<{ ok: boolean; error?: string }> {
+  const user = await requirePortalUser();
+  const result = await executeSessionUpdate(prisma, {
+    sessionId,
+    playerId: user.id,
+    patch,
   });
   if (!result.ok) return result;
   revalidatePath("/portal/planlegge/workbench");

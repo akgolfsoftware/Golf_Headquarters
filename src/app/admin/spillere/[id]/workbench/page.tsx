@@ -21,6 +21,7 @@ import { publishWorkbenchPlan } from "@/lib/workbench/publish-actions";
 import {
   coachAddWorkbenchSession,
   coachMoveWorkbenchSession,
+  coachUpdateWorkbenchSession,
   coachRemoveWorkbenchSession,
   coachDuplicateWeek,
 } from "@/lib/workbench/session-actions";
@@ -70,6 +71,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
   const actions: WorkbenchV2Actions = {
     addSession: coachAddWorkbenchSession.bind(null, id),
     moveSession: coachMoveWorkbenchSession.bind(null, id),
+    updateSession: coachUpdateWorkbenchSession.bind(null, id),
     removeSession: coachRemoveWorkbenchSession.bind(null, id),
     publish: publishWorkbenchPlan.bind(null, id),
     duplicateWeek: coachDuplicateWeek.bind(null, id),

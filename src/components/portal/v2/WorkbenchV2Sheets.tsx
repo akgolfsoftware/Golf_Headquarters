@@ -26,6 +26,15 @@ import { resolvePlanSessionLiveHref } from "@/lib/workbench/session-actions";
 import { planSessionStartHref, v2SessionStartHref, type V2OktUiStatus } from "@/lib/portal/session-hrefs";
 
 const DAGER = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
+
+/** I6-hjelpere: samme kilde-/ferdig-logikk som ValgtOktSeksjon bruker ellers. */
+function erPlanKilde(okt: WeekEvent): boolean {
+  return (okt.source ?? "plan") === "plan";
+}
+function erFerdig(okt: WeekEvent): boolean {
+  const st = okt.status ?? "PLANNED";
+  return st === "COMPLETED" || st === "ABANDONED" || st === "SKIPPED" || st === "CANCELLED";
+}
 const AKSER: { v: AkseKey; l: string }[] = [
   { v: "FYS", l: "Fysisk" },
   { v: "TEK", l: "Teknikk" },
@@ -51,6 +60,11 @@ export interface WorkbenchV2Actions {
     weekOffset?: number,
   ) => Promise<{ ok: boolean; error?: string }>;
   removeSession: (sessionId: string) => Promise<{ ok: boolean; error?: string }>;
+  /** I6: inline-redigering av valgt økt (tittel/akse/tid/varighet). */
+  updateSession?: (
+    sessionId: string,
+    patch: { title?: string; pyramidArea?: AkseKey; hour?: number; minute?: number; durationMin?: number },
+  ) => Promise<{ ok: boolean; error?: string }>;
   publish: () => Promise<{ ok: boolean; error?: string; status?: PlanStatus }>;
   /** Kun spiller-rolle. Utelatt → knappen skjules. */
   suggestWeek?: (weekOffset?: number) => Promise<{
@@ -438,6 +452,27 @@ export function ValgtOktSeksjon({ okt, actions, weekOffset, onEndret }: ValgtOkt
   const router = useRouter();
   const [flyttApen, setFlyttApen] = useState(false);
   const [flyttLoading, setFlyttLoading] = useState(false);
+  // I6: inline-redigering — hvilket felt er i redigeringsmodus.
+  const [rediger, setRediger] = useState<null | "tittel" | "akse" | "tid">(null);
+  const [tittelUtkast, setTittelUtkast] = useState(okt.ttl);
+  const [tidUtkast, setTidUtkast] = useState(toKl(okt.h, okt.m));
+  const [durUtkast, setDurUtkast] = useState(okt.durMin);
+  const [lagrerFelt, setLagrerFelt] = useState(false);
+  const kanRedigere = !!actions?.updateSession && !!okt.id && erPlanKilde(okt) && !erFerdig(okt);
+
+  const lagreFelt = async (patch: Parameters<NonNullable<WorkbenchV2Actions["updateSession"]>>[1]) => {
+    if (!actions?.updateSession || !okt.id || lagrerFelt) return;
+    setLagrerFelt(true);
+    setFeil(null);
+    const res = await actions.updateSession(okt.id, patch);
+    setLagrerFelt(false);
+    if (res.ok) {
+      setRediger(null);
+      onEndret();
+    } else {
+      setFeil(res.error ?? "Kunne ikke lagre endringen.");
+    }
+  };
   const [bekreftSlett, setBekreftSlett] = useState(false);
   const [sletterLoading, setSletterLoading] = useState(false);
   const [startLoading, setStartLoading] = useState(false);
@@ -486,14 +521,89 @@ export function ValgtOktSeksjon({ okt, actions, weekOffset, onEndret }: ValgtOkt
 
   return (
     <Kort tint pad="13px 14px">
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <AkseChip a={okt.eb as AkseKey} />
+      <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+        {kanRedigere ? (
+          <button
+            type="button"
+            onClick={() => setRediger(rediger === "akse" ? null : "akse")}
+            title="Trykk for å endre område"
+            className="v2-press v2-focus"
+            style={{ appearance: "none", background: "transparent", border: 0, padding: 0, cursor: "pointer", display: "inline-flex" }}
+          >
+            <AkseChip a={okt.eb as AkseKey} />
+          </button>
+        ) : (
+          <AkseChip a={okt.eb as AkseKey} />
+        )}
       </div>
-      <div style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg, marginTop: 9 }}>{okt.ttl}</div>
-      <div style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 4 }}>
-        {toKl(okt.h, okt.m)} · {fmtVarighet(okt.durMin)}
-        {okt.meta.filter(([ic]) => ic === "map-pin").map(([, t]) => ` · ${t}`).join("")}
-      </div>
+      {rediger === "akse" && (
+        <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 8 }}>
+          {AKSER.map((a) => (
+            <button
+              key={a.v}
+              type="button"
+              disabled={lagrerFelt}
+              onClick={() => lagreFelt({ pyramidArea: a.v })}
+              style={{
+                appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6,
+                padding: "6px 10px", borderRadius: 9999,
+                border: `1px solid ${okt.eb === a.v ? "transparent" : T.border}`,
+                background: okt.eb === a.v ? T.lime : T.panel2, color: okt.eb === a.v ? T.onLime : T.fg2,
+                fontFamily: T.ui, fontSize: 11, fontWeight: 600, opacity: lagrerFelt ? 0.5 : 1,
+              }}
+            >
+              <span style={{ width: 6, height: 6, borderRadius: 9999, background: okt.eb === a.v ? T.onLime : T.ax[a.v] }} />
+              {a.l}
+            </button>
+          ))}
+        </div>
+      )}
+      {rediger === "tittel" ? (
+        <div style={{ display: "flex", gap: 6, marginTop: 9 }}>
+          <input
+            autoFocus
+            value={tittelUtkast}
+            maxLength={120}
+            disabled={lagrerFelt}
+            onChange={(e) => setTittelUtkast(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") lagreFelt({ title: tittelUtkast.trim() || okt.ttl }); if (e.key === "Escape") setRediger(null); }}
+            style={{ ...inputStyle, fontFamily: T.disp, fontSize: 15, fontWeight: 700 }}
+          />
+          <Knapp icon="check" disabled={lagrerFelt} onClick={() => lagreFelt({ title: tittelUtkast.trim() || okt.ttl })}>{""}</Knapp>
+        </div>
+      ) : (
+        <div
+          onClick={kanRedigere ? () => { setTittelUtkast(okt.ttl); setRediger("tittel"); } : undefined}
+          title={kanRedigere ? "Trykk for å endre tittel" : undefined}
+          style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg, marginTop: 9, cursor: kanRedigere ? "text" : "default" }}
+        >
+          {okt.ttl}
+        </div>
+      )}
+      {rediger === "tid" ? (
+        <div style={{ display: "flex", gap: 6, alignItems: "center", marginTop: 6 }}>
+          <input type="time" value={tidUtkast} disabled={lagrerFelt} onChange={(e) => setTidUtkast(e.target.value)} style={{ ...inputStyle, width: 110 }} />
+          <input type="number" min={5} max={480} step={5} value={durUtkast} disabled={lagrerFelt} onChange={(e) => setDurUtkast(Math.max(5, Math.min(480, Number(e.target.value) || okt.durMin)))} style={{ ...inputStyle, width: 84 }} />
+          <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>min</span>
+          <Knapp
+            icon="check"
+            disabled={lagrerFelt}
+            onClick={() => {
+              const [h, m] = tidUtkast.split(":").map(Number);
+              lagreFelt({ hour: Math.max(0, Math.min(23, h || 0)), minute: Math.max(0, Math.min(59, m || 0)), durationMin: durUtkast });
+            }}
+          >{""}</Knapp>
+        </div>
+      ) : (
+        <div
+          onClick={kanRedigere ? () => { setTidUtkast(toKl(okt.h, okt.m)); setDurUtkast(okt.durMin); setRediger("tid"); } : undefined}
+          title={kanRedigere ? "Trykk for å endre tid og varighet" : undefined}
+          style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 4, cursor: kanRedigere ? "pointer" : "default" }}
+        >
+          {toKl(okt.h, okt.m)} · {fmtVarighet(okt.durMin)}
+          {okt.meta.filter(([ic]) => ic === "map-pin").map(([, t]) => ` · ${t}`).join("")}
+        </div>
+      )}
 
       {okt.id && (
         <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
