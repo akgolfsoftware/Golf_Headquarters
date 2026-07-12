@@ -134,6 +134,21 @@
 > utvidet (motor-verdier for nye typer er FORELØPIGE — FERIE=0 økter).
 > 470/470 tester grønne. Neste: 8c.2 årsplan-canvas (dra periode inn m/
 > live dato-boble + øktbudsjett-popup).
+> 2026-07-13 (natt) · 8c.2 LEVERT — ÅRSPLAN-CANVASET (Anders' kjernebestilling):
+> AarNivaa erstattet med full 52-ukers tidslinje (WorkbenchAarsplan) —
+> periodeblokker m/ typefarge + øktbudsjett-etikett («4/uke»), turnerings-
+> markører, nå-linje. Biblioteket har Perioder-palett (alle 7 typer) i
+> årsplan-zoom; dra inn → DATO-BOBLE følger markøren live (verifisert:
+> «26. mai» ved 40 % av året) → slipp → popup m/ sluttdato (smart default
+> per type), fokus, ukevolum (timer) og ØKTBUDSJETT-steppere per pyramide-
+> område → Bekreft. Trykk blokk → rediger; Slett m/ bekreft-steg. Server:
+> periode-core (opprett/oppdater/slett m/ eierskaps-guard; SeasonPlan
+> auto-opprettes) + spiller- og coach-actions (I0-gated). Coldstart
+> blokkerer ikke lenger års-først-flyten (zoom=ar vinner + egen lenke);
+> loaderens tom-guard slapp ikke gjennom seasonBlocks — fikset. Playwright
+> ende-til-ende: dra→boble→popup→blokk→rediger→slett→0 rester. FUNN
+> (pre-eksisterende, egen sak): duplisert React-key i Workbench-lister.
+> Neste: 8c.3 tidslinje-strip på uke/måned + gruppe-workbench-rute.
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag

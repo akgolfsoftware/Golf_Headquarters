@@ -66,6 +66,9 @@ export interface WorkbenchV2Actions {
     patch: { title?: string; pyramidArea?: AkseKey; hour?: number; minute?: number; durationMin?: number },
   ) => Promise<{ ok: boolean; error?: string }>;
   publish: () => Promise<{ ok: boolean; error?: string; status?: PlanStatus }>;
+  /** 8c.2: årsplan-canvaset — opprett/oppdater og slett periodeblokker. */
+  lagrePeriode?: (input: import("@/lib/workbench/perioder").PeriodeInput, periodeId?: string) => Promise<{ ok: boolean; periodeId?: string; error?: string }>;
+  slettPeriode?: (periodeId: string) => Promise<{ ok: boolean; error?: string }>;
   /** Kun spiller-rolle. Utelatt → knappen skjules. */
   suggestWeek?: (weekOffset?: number) => Promise<{
     ok: boolean;

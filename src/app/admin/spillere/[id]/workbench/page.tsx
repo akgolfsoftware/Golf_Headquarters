@@ -25,6 +25,8 @@ import {
   coachUpdateWorkbenchSession,
   coachRemoveWorkbenchSession,
   coachDuplicateWeek,
+  coachLagrePeriode,
+  coachSlettPeriode,
 } from "@/lib/workbench/session-actions";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import type { WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
@@ -77,6 +79,8 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
     removeSession: coachRemoveWorkbenchSession.bind(null, id),
     publish: publishWorkbenchPlan.bind(null, id),
     duplicateWeek: coachDuplicateWeek.bind(null, id),
+    lagrePeriode: coachLagrePeriode.bind(null, id),
+    slettPeriode: coachSlettPeriode.bind(null, id),
   };
 
   return (

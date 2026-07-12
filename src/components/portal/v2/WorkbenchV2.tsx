@@ -38,8 +38,9 @@ import {
 import { PalettSok } from "@/components/v2/wb-composer";
 import { ForslagArk, NyOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput } from "./WorkbenchV2Sheets";
 import { WorkbenchColdstart } from "./WorkbenchColdstart";
+import { WorkbenchAarsplan, PeriodePalett } from "./WorkbenchAarsplan";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
-import { WBTidslinjeMobil, AarNivaaMobil, MobilFold } from "./WorkbenchV2Mobil";
+import { WBTidslinjeMobil, MobilFold } from "./WorkbenchV2Mobil";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import { LPHASE_LABEL as LPHASE_LABEL_KANON } from "@/lib/labels/taxonomy";
@@ -102,7 +103,9 @@ const DND_MIME = "application/x-akgolf-wb";
 type DndPayload =
   | { kind: "move"; sessionId: string }
   | { kind: "add"; title: string; durMin: number; akse?: AkseKey }
-  | { kind: "mal"; templateId: string; name: string; sessionCount: number; varighetUker: number };
+  | { kind: "mal"; templateId: string; name: string; sessionCount: number; varighetUker: number }
+  // 8c.2: periode-brikker (PeriodePalett) — håndteres KUN av årsplan-canvaset.
+  | { kind: "periode"; lPhase: string };
 
 function lesDndPayload(e: React.DragEvent): DndPayload | null {
   try {
@@ -303,7 +306,7 @@ function PalettBrikke({ tittel, akse, durMin, sub, onClick }: { tittel: string; 
 // som Record<string,string> for eksisterende oppslag med løse strenger.
 export const LPHASE_LABEL: Record<string, string> = LPHASE_LABEL_KANON;
 
-export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukMal }: {
+export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukMal, visPerioder }: {
   data: WorkbenchData;
   tab: string; setTab: (t: string) => void;
   sok: string; setSok: (s: string) => void;
@@ -311,6 +314,8 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
   onVelgOkt?: (item: { title: string; durMin: number; akse?: AkseKey }) => void;
   /** Fasit-fiks: mal-kortene var døde — «Bruk» legger inn mal-uke 1. */
   onBrukMal?: (templateId: string) => void;
+  /** 8c.2: vis dragbare periode-brikker (årsplan-zoom). */
+  visPerioder?: boolean;
 }) {
   const treff = (txt: string) => !sok || txt.toLowerCase().includes(sok.toLowerCase());
   const maler = (data.planTemplates ?? []).filter((m) => treff(m.name));
@@ -326,6 +331,11 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
           <button key={id} type="button" onClick={() => setTab(id)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", flex: 1, fontFamily: T.mono, fontSize: 9, fontWeight: 700, padding: "6px 0", borderRadius: 8, border: `1px solid ${tab === id ? "transparent" : T.border}`, background: tab === id ? T.lime : T.panel2, color: tab === id ? T.onLime : T.fg2, textTransform: "uppercase", letterSpacing: "0.04em" }}>{l}</button>
         ))}
       </div>
+      {visPerioder && (
+        <div style={{ marginBottom: 4 }}>
+          <PeriodePalett />
+        </div>
+      )}
       {tab === "maler" ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 2 }}>
@@ -525,34 +535,6 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
 }
 
 /* ── Årsplan-nivå (seasonBlocks) ───────────────────────── */
-function AarNivaa({ data }: { data: WorkbenchData }) {
-  const now = useState(() => Date.now())[0];
-  const blocks = data.seasonBlocks ?? [];
-  if (blocks.length === 0) {
-    return <Kort><TomTilstand icon="calendar" title="Ingen sesongplan" sub="Ingen periodeblokker lagt inn for året ennå." /></Kort>;
-  }
-  return (
-    <Kort eyebrow="Sesongperioder">
-      <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 4 }}>
-        {blocks.map((b) => {
-          const start = new Date(b.startDate);
-          const end = new Date(b.endDate);
-          const naa = start.getTime() <= now && now <= end.getTime();
-          return (
-            <div key={b.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 10px", margin: "0 -4px", borderRadius: 10, background: naa ? `color-mix(in srgb, ${T.lime} 5%, transparent)` : "transparent" }}>
-              <span style={{ width: 150, flex: "none" }}>
-                <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: naa ? T.fg : T.fg2, display: "block" }}>{LPHASE_LABEL[b.lPhase] ?? b.lPhase}</span>
-                <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>{start.getDate()}. {MANEDER[start.getMonth()].slice(0, 3)}–{end.getDate()}. {MANEDER[end.getMonth()].slice(0, 3)}</span>
-              </span>
-              <span style={{ flex: 1, fontFamily: T.ui, fontSize: 11.5, color: T.mut, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{b.focus ?? ""}</span>
-              {naa && <StatusPill>Nå</StatusPill>}
-            </div>
-          );
-        })}
-      </div>
-    </Kort>
-  );
-}
 
 /* ── Måned-nivå (kalendergrid med økt-prikker per dag) ─── */
 function MndNivaa({ data, onVelgDato }: { data: WorkbenchData; onVelgDato: (dato: Date) => void }) {
@@ -1016,7 +998,9 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     (data.axisHours ?? []).every((x) => x.hours === 0) &&
     (data.seasonBlocks ?? []).length === 0 &&
     pendingAdds.length === 0;
-  if (heltTom && actions) {
+  // 8c.2: eksplisitt årsplan-zoom vinner over coldstart — Anders' års-først-
+  // flyt: legg periodiseringen FØR første økt/mal (coldstart lenker hit).
+  if (heltTom && actions && nivaa !== "ar") {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <Caps>Workbench · {playerName}</Caps>
@@ -1036,6 +1020,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           } : undefined}
           onForeslaaUke={actions.suggestWeek ? handleSuggest : undefined}
           foreslarUke={suggestLoading}
+          onAarsplan={actions.lagrePeriode ? () => setNivaa("ar") : undefined}
         />
         {forslag && (
           <ForslagArk
@@ -1199,7 +1184,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
 
       {/* TRE KOLONNER — desktop (md+): uendret (grid-cols-1 md→lg, 3-kol fra lg) */}
       <div className="hidden md:grid md:grid-cols-1 lg:grid-cols-[206px_1fr_302px]" style={{ gap: T.gap, alignItems: "start" }}>
-        <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} />
+        <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} />
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
           {insights?.line && <InnsiktChip>{insights.line}</InnsiktChip>}
           {nivaa === "uke" && (
@@ -1217,7 +1202,13 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
             />
           )}
           {nivaa === "uke" && <WBBelastning data={data} />}
-          {nivaa === "ar" && <AarNivaa data={data} />}
+          {nivaa === "ar" && (
+            <WorkbenchAarsplan
+              data={data}
+              handlers={actions?.lagrePeriode && actions?.slettPeriode ? { lagre: actions.lagrePeriode, slett: actions.slettPeriode } : undefined}
+              onEndret={() => router.refresh()}
+            />
+          )}
           {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
           {nivaa === "maned" && <MndNivaa data={data} onVelgDato={velgDatoFraMnd} />}
         </div>
@@ -1237,12 +1228,18 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         {insights?.line && <InnsiktChip>{insights.line}</InnsiktChip>}
         {nivaa === "uke" && <WBTidslinjeMobil dager={dager} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
         {nivaa === "uke" && <WBBelastning data={data} />}
-        {nivaa === "ar" && <AarNivaaMobil data={data} />}
+        {nivaa === "ar" && (
+          <WorkbenchAarsplan
+            data={data}
+            handlers={actions?.lagrePeriode && actions?.slettPeriode ? { lagre: actions.lagrePeriode, slett: actions.slettPeriode } : undefined}
+            onEndret={() => router.refresh()}
+          />
+        )}
         {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
         {nivaa === "maned" && <MndNivaa data={data} onVelgDato={velgDatoFraMnd} />}
 
         <MobilFold tittel="Bibliotek" ikon="layers">
-          <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} />
+          <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} />
         </MobilFold>
         <MobilFold tittel="Balanse" ikon="activity">
           <WBBalanse

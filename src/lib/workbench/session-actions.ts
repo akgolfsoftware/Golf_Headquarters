@@ -12,6 +12,8 @@ import { dateForDayIndex, executeSessionMove, weekRefDate } from "@/lib/workbenc
 import { deleteV2ForPlanSession, upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
 import { duplicateWeekCore } from "@/lib/workbench/duplicate-week";
 import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel";
+import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore } from "@/lib/workbench/periode-core";
+import { erCoachetSpiller } from "@/lib/auth/coached";
 
 const PYRAMID_AREAS = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
 export type WbPyramidArea = (typeof PYRAMID_AREAS)[number];
@@ -222,4 +224,33 @@ export async function resolvePlanSessionLiveHref(
 
   revalidateWorkbench(ownerId);
   return { ok: true, href: `/portal/live/${sessionId}/brief` };
+}
+// ============================================================================
+// PERIODER (8c.2 — årsplan-canvaset, coach-variant)
+// ============================================================================
+
+export async function coachLagrePeriode(
+  playerId: string,
+  input: unknown,
+  periodeId?: string,
+): Promise<{ ok: boolean; periodeId?: string; error?: string }> {
+  await ensureCoach();
+  // I0: coach kan kun planlegge for coachede spillere.
+  if (!(await erCoachetSpiller(playerId))) return { ok: false, error: "Ingen tilgang" };
+  const result = periodeId
+    ? await oppdaterPeriodeCore(playerId, periodeId, input)
+    : await opprettPeriodeCore(playerId, input);
+  if (result.ok) revalidateWorkbench(playerId);
+  return result;
+}
+
+export async function coachSlettPeriode(
+  playerId: string,
+  periodeId: string,
+): Promise<{ ok: boolean; error?: string }> {
+  await ensureCoach();
+  if (!(await erCoachetSpiller(playerId))) return { ok: false, error: "Ingen tilgang" };
+  const result = await slettPeriodeCore(playerId, periodeId);
+  if (result.ok) revalidateWorkbench(playerId);
+  return result;
 }

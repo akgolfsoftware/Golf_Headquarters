@@ -23,6 +23,7 @@ export function WorkbenchColdstart({
   onBrukMal,
   onForeslaaUke,
   foreslarUke,
+  onAarsplan,
 }: {
   data: WorkbenchData;
   playerName: string;
@@ -31,6 +32,8 @@ export function WorkbenchColdstart({
   /** AI-ukeforslag (spillerflaten). Uten = skjul primær-CTA. */
   onForeslaaUke?: () => void;
   foreslarUke?: boolean;
+  /** 8c.2: års-først-flyten — hopp til årsplan-canvaset og legg periodiseringen først. */
+  onAarsplan?: () => void;
 }) {
   const [valgtMal, setValgtMal] = useState<string | null>(null);
   const [brukerMal, setBrukerMal] = useState(false);
@@ -131,6 +134,18 @@ export function WorkbenchColdstart({
             >
               <Icon name="sparkles" size={14} style={{ color: T.lime }} />
               {foreslarUke ? "Foreslår…" : "Eller: la AI-Caddie foreslå uka"}
+            </button>
+          )}
+
+          {onAarsplan && (
+            <button
+              type="button"
+              onClick={onAarsplan}
+              className="v2-press v2-focus"
+              style={{ appearance: "none", height: 36, borderRadius: 10, background: "transparent", border: `1px dashed ${T.borderS}`, color: T.fg2, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+            >
+              <Icon name="calendar-range" size={14} style={{ color: T.lime }} />
+              Eller: legg årsplanen først — perioder, testuker og ferie
             </button>
           )}
 

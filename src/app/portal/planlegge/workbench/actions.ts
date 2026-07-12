@@ -16,6 +16,7 @@ import { generateWeekSuggestions, VariantSchema, type WeekSuggestion } from "@/l
 import { deleteV2ForPlanSession, upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
 import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel";
 import { duplicateWeekCore } from "@/lib/workbench/duplicate-week";
+import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore } from "@/lib/workbench/periode-core";
 
 // ============================================================================
 // PERIODE
@@ -629,6 +630,31 @@ export async function duplicateWorkbenchWeek(
 ): Promise<{ ok: boolean; count?: number; error?: string }> {
   const user = await requirePortalUser();
   const result = await duplicateWeekCore(user.id, targetWeekOffset);
+  if (result.ok) revalidatePath("/portal/planlegge/workbench");
+  return result;
+}
+
+// ============================================================================
+// PERIODER (8c.2 — årsplan-canvaset)
+// ============================================================================
+
+export async function lagreWorkbenchPeriode(
+  input: unknown,
+  periodeId?: string,
+): Promise<{ ok: boolean; periodeId?: string; error?: string }> {
+  const user = await requirePortalUser();
+  const result = periodeId
+    ? await oppdaterPeriodeCore(user.id, periodeId, input)
+    : await opprettPeriodeCore(user.id, input);
+  if (result.ok) revalidatePath("/portal/planlegge/workbench");
+  return result;
+}
+
+export async function slettWorkbenchPeriode(
+  periodeId: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const user = await requirePortalUser();
+  const result = await slettPeriodeCore(user.id, periodeId);
   if (result.ok) revalidatePath("/portal/planlegge/workbench");
   return result;
 }

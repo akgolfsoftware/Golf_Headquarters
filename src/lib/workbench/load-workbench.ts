@@ -26,6 +26,7 @@ import type { LPhase, PyramidArea, SkillArea } from "@/generated/prisma/client";
 import { PYR_REKKEFOLGE } from "@/lib/pyramide";
 import { adherencePct, oktCompliance } from "@/lib/workbench/compliance";
 import { kategoriFraFritekst, SG_FOKUS_LABEL, type WorkbenchFokus } from "@/lib/workbench/fokus";
+import { parseSessionBudget } from "@/lib/workbench/perioder";
 import { beregnSgGap } from "@/lib/workbench/sg-gap";
 import { findActivePeriod } from "@/lib/workbench/period-lookup";
 import { canonDeviationChip } from "@/lib/workbench/canon-period-adjustment";
@@ -127,6 +128,10 @@ export type WorkbenchData = {
     startDate: string;
     endDate: string;
     focus?: string | null;
+    weeklyVolMin?: number | null;
+    weeklyVolMax?: number | null;
+    /** Øktbudsjett per pyramideområde (8c.1, zod-validert). */
+    budsjett?: import("@/lib/workbench/perioder").SessionBudget | null;
   }[];
   /** Turneringer med konkret dato for kalender/Gantt (ikke bare «om N dg»). */
   tournamentCalendar?: {
@@ -443,7 +448,10 @@ export async function loadWorkbenchData(
     v2WeekSessions.length === 0 &&
     last30Sessions.length === 0 &&
     goals.length === 0 &&
-    entries.length === 0
+    entries.length === 0 &&
+    // 8c.2: en spiller MED årsplan-perioder er ikke «helt tom» — årsplan-
+    // canvaset trenger seasonBlocks (års-først-flyten starter her).
+    (seasonPlan?.periodBlocks.length ?? 0) === 0
   ) {
     return {
       summary: { weekNumber: isoWeek(weekStart), sessionCount: 0, plannedHours: 0 },
@@ -739,6 +747,9 @@ export async function loadWorkbenchData(
           startDate: b.startDate.toISOString(),
           endDate: b.endDate.toISOString(),
           focus: b.focus,
+          weeklyVolMin: b.weeklyVolMin,
+          weeklyVolMax: b.weeklyVolMax,
+          budsjett: parseSessionBudget(b.weeklySessionBudget),
         }))
       : undefined;
 

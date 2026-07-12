@@ -36,3 +36,19 @@ export function budsjettSum(b: SessionBudget | null): number {
   if (!b) return 0;
   return Object.values(b).reduce((a, v) => a + (v ?? 0), 0);
 }
+
+/** 8c.2 — input-kontrakt for opprett/oppdater periode (delt server/klient). */
+export const PeriodeInputSchema = z
+  .object({
+    lPhase: z.enum(["GRUNN", "SPESIAL", "TURNERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING"]),
+    /** YYYY-MM-DD (lokal dag). */
+    startDato: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    sluttDato: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    fokus: z.string().trim().max(200).optional(),
+    ukevolumMin: z.number().int().min(0).max(3000).nullish(),
+    ukevolumMax: z.number().int().min(0).max(3000).nullish(),
+    budsjett: SessionBudgetSchema.nullish(),
+  })
+  .refine((v) => v.sluttDato >= v.startDato, { message: "Sluttdato må være etter startdato" });
+
+export type PeriodeInput = z.infer<typeof PeriodeInputSchema>;
