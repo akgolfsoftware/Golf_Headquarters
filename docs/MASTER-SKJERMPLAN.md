@@ -756,6 +756,17 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 12. juli (WAGR-synk, del 2): **ekstern henting fra wagr.com er PÅ** — Anders godkjente skånsom
+  ukentlig henting (alternativ 1). `hentEksterneProfiler` i `wagr-sync.ts` leser profilsidenes
+  server-rendrede `__NEXT_DATA__`-JSON (validert med zod), sekvensielt med 700 ms pause og
+  identifiserende User-Agent. Slugs som ikke finnes lenger (`ikkeFunnet`), spillere som har gått
+  ut av amatørrankingen (`blittProff` — metadata.isPro settes, siste amatørtall bevares) og
+  nettverksfeil (`feilet`) rapporteres i output/toast i stedet for å stoppe kjøringen; demo-slugs
+  hoppes over; `country` røres ikke (wagr.com gir landsnavn, ikke ISO-kode). Verifisert med ekte
+  kjøring: 3 rankinger oppdatert (Stout, Kuvaas, Aase), 4 proffer markert, 0 feil. Datafiks:
+  Kuvaas-slugen manglet tall-suffiks i basen — rettet til `kristoffer-kuvaas-35131` (verifisert
+  mot wagr.com-søket). Mjaaseth/Herstad/Tegner er reelt ute av rankingen (302 + null søketreff).
+
 - 12. juli (WAGR-synk): **«Synk nå» på `/admin/talent/wagr-import` har fått ekte backend** — ny
   agent `src/lib/agents/wagr-sync.ts` (registrert i cron-ruten + vercel.json, onsdager 06:15 UTC)
   som kobler umatchede WagrSnapshot-rader til spillere på entydig navnetreff og lagrer snapshots

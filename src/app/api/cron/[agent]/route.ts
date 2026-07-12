@@ -94,8 +94,7 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "demand-predictor": runDemandPredictor,
   "24-7-booking-alerts": runProactiveBookingAlerts,
   "plan-effectiveness-agent": runPlanEffectivenessAgent,
-  // WAGR-rankinger for koblede spillere (onsdager — WAGR publiserer onsdag).
-  // Ekstern henting er sperret til datakilden er avklart; se wagr-sync.ts.
+  // WAGR-rankinger fra wagr.com (onsdager — WAGR publiserer onsdag).
   "wagr-sync": runWagrSync,
 };
 

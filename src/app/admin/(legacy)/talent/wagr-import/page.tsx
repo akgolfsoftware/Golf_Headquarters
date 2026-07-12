@@ -7,9 +7,10 @@
  * Ingen oppdiktede tall — tomme tilstander vises ærlig.
  *
  * «Synk nå» trigger wagr-sync-agenten (src/lib/agents/wagr-sync.ts) via
- * synkWagrNaa i ./actions.ts: kobler umatchede snapshots til spillere på navn,
- * og henter ferske rankinger når ekstern kilde er avklart (til da er manuell
- * import via importerWagrSpiller fortsatt primærvei).
+ * synkWagrNaa i ./actions.ts: henter ferske rankinger fra wagr.com for alle
+ * ekte slugs (godkjent av Anders 2026-07-12) og kobler umatchede snapshots
+ * til spillere på navn. Manuell import via importerWagrSpiller består for
+ * å legge til NYE spillere.
  *
  * Bevisst avvik fra fasit (rapportert i porting-retur):
  *  - Fasit har én rad «Trenger bekreftelse»; WagrSnapshot mangler felt for

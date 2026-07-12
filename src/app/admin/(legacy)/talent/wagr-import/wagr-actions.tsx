@@ -23,26 +23,36 @@ export function SynkNaaButton() {
           }
 
           const { resultat } = res;
-          const deler: string[] = [];
-          if (resultat.oppdatert > 0) {
-            deler.push(`${resultat.oppdatert} rankinger oppdatert`);
-          }
+          const antallForsokt =
+            resultat.hentet +
+            resultat.ikkeFunnet.length +
+            resultat.blittProff.length +
+            resultat.feilet.length;
+          const deler: string[] = [
+            `${resultat.oppdatert} av ${antallForsokt} rankinger oppdatert fra wagr.com`,
+          ];
           deler.push(
             resultat.nyKoblet > 0
               ? `${resultat.nyKoblet} nye spillere koblet`
               : "ingen nye spillere å koble",
           );
+          toast.success(`Synk fullført: ${deler.join(", ")}.`);
 
-          if (resultat.kilde === "ikke-konfigurert") {
-            // Ærlig status: ekstern henting fra wagr.com venter på at Anders
-            // avklarer datakilden — CSV/skjema-import er fortsatt hovedveien.
-            toast.info(
-              `Synk kjørt: ${deler.join(", ")}. Henting fra wagr.com venter på kildeavklaring — manuell import er fortsatt hovedveien.`,
+          if (resultat.feilet.length > 0) {
+            toast.error(
+              `Klarte ikke hente ${resultat.feilet.length} spillere (${resultat.feilet.join(", ")}) — prøv igjen senere.`,
             );
-          } else {
-            toast.success(`Synk fullført: ${deler.join(", ")}.`);
           }
-
+          if (resultat.blittProff.length > 0) {
+            toast.info(
+              `Ute av amatørrankingen (blitt proff): ${resultat.blittProff.join(", ")} — siste amatørtall beholdes.`,
+            );
+          }
+          if (resultat.ikkeFunnet.length > 0) {
+            toast.warning(
+              `Finnes ikke lenger på wagr.com: ${resultat.ikkeFunnet.join(", ")}.`,
+            );
+          }
           if (resultat.tvetydige.length > 0) {
             toast.warning(
               `Flere spillere deler navn (${resultat.tvetydige.join(", ")}) — koble disse manuelt.`,
