@@ -17,12 +17,17 @@ import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { loadSpillerDetaljOversikt } from "@/lib/admin-spiller/spiller-detalj-data";
+import { loadSpillerDashboardEkstra } from "@/lib/admin-spiller/spiller-dashboard-data";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import {
-  AdminSpillerProfilV2,
   type AdminSpillerProfilV2Data,
   type SpillerProfilHendelse,
 } from "@/components/admin/v2/AdminSpillerProfilV2";
+import {
+  SpillerDashboardV2,
+  type SpillerDashboardV2Data,
+  type DashRadItem,
+} from "@/components/admin/v2/SpillerDashboardV2";
 import type { AkseKey } from "@/lib/v2/tokens";
 
 export const dynamic = "force-dynamic";
@@ -139,9 +144,10 @@ export default async function SpillerProfilPage({
   ukeStart.setHours(0, 0, 0, 0);
   ukeStart.setDate(ukeStart.getDate() - ((ukeStart.getDay() + 6) % 7));
 
-  const [oversikt, rounds, tests, aktivPlan, pendingAction, entries, ukeOkter] =
+  const [oversikt, ekstra, rounds, tests, aktivPlan, pendingAction, entries, ukeOkter] =
     await Promise.all([
       loadSpillerDetaljOversikt(player.id),
+      loadSpillerDashboardEkstra(player.id),
       prisma.round.findMany({
         where: { userId: player.id },
         orderBy: { playedAt: "desc" },
@@ -354,9 +360,273 @@ export default async function SpillerProfilPage({
     melding,
   };
 
+  // ── Spiller-dashboard (100 %): fanene ut over Oversikt ─────
+  // Fasit: ui_kits/agencyos/spiller-dashboard.jsx (Claude Design). Kun ekte
+  // data — tomme lister gir ærlige tomtilstander i komponenten.
+  const kr = (ore: number) => `${Math.round(ore / 100).toLocaleString("nb-NO")} kr`;
+  const dagerTil = (d: Date) => Math.max(0, Math.ceil((d.getTime() - now.getTime()) / 86_400_000));
+  const LPHASE_NAVN: Record<string, string> = { GRUNN: "GRUNN", SPESIAL: "SPES", TURNERING: "TURN" };
+  const PLANSTATUS_NAVN: Record<string, string> = { DRAFT: "Utkast", ACTIVE: "Aktiv", COMPLETED: "Fullført", ARCHIVED: "Arkivert" };
+
+  const heroBadges: SpillerDashboardV2Data["heroBadges"] = [];
+  if (flagg) heroBadges.push({ label: flagg.chip, tone: flagg.tone === "down" ? "down" : "warn" });
+  if (ekstra.samtykke.paakrevd)
+    heroBadges.push(
+      ekstra.samtykke.gittAt
+        ? { label: "Samtykke gitt", tone: "lime" }
+        : { label: "Samtykke mangler", tone: "warn" },
+    );
+  const aktivSkade = ekstra.leaves.find((l) => l.isInjury && !l.returnedAt && (!l.endAt || l.endAt >= now));
+  if (aktivSkade) heroBadges.push({ label: "Skadet · rehab", tone: "down" });
+
+  const dash: SpillerDashboardV2Data = {
+    profil: data,
+    heroBadges,
+    heroMeta: [eyebrow, meta].filter(Boolean).join(" · "),
+    kpi: [
+      { label: "HCP", verdi: fmtHcp(player.hcp), hjelp: "hcp" },
+      {
+        label: "SG-trend",
+        verdi: oversikt.kpi.sgTrendLabel,
+        tone: oversikt.kpi.sgTrend != null ? (oversikt.kpi.sgTrend >= 0 ? "lime" : "down") : undefined,
+        hjelp: "sgTotal",
+      },
+      { label: "Etterlevelse", verdi: planTotal > 0 ? `${planPct} %` : "—" },
+      { label: "WAGR", verdi: ekstra.wagr ? String(ekstra.wagr.rank) : "—", hjelp: "wagr" },
+      {
+        label: "Neste turnering",
+        verdi: nesteTurnering ? `${dagerTil(nesteTurnering.date)} dg` : "—",
+        tone: nesteTurnering && dagerTil(nesteTurnering.date) <= 21 ? "warn" : undefined,
+      },
+      {
+        label: "Timer igjen",
+        verdi: ekstra.abonnement && ekstra.abonnement.monthlyCredits > 0
+          ? `${ekstra.abonnement.creditsRemaining}/${ekstra.abonnement.monthlyCredits}`
+          : "—",
+      },
+      { label: "Økter uke", verdi: `${oversikt.kpi.okter.value}` },
+    ],
+    wbHref: wb,
+    analyseHref: `/admin/spillere/${player.id}/analyse`,
+
+    utvikling: {
+      fysTester: ekstra.fysTester.map((t) => ({
+        venstre: datoKort(t.takenAt),
+        tittel: t.navn,
+        hoyre: fmtTestScore(t.score),
+      })),
+      maal: ekstra.maal.map((m) => ({
+        venstre: m.category === "PROCESS" ? "Prosess" : "Resultat",
+        tittel: m.title,
+        sub: [
+          m.targetValue != null ? `mål ${fmtTestScore(m.targetValue)}` : null,
+          m.targetDate ? `frist ${datoKort(m.targetDate)}` : null,
+        ].filter(Boolean).join(" · ") || undefined,
+      })),
+      trackman: ekstra.trackman.map((s) => ({
+        venstre: datoKort(s.recordedAt),
+        tittel: `${s.shotCount} slag`,
+        sub: s.environment ?? undefined,
+      })),
+      fremgangHref: `/admin/spillere/${player.id}/fremgang`,
+      testerHref: `/admin/spillere/${player.id}/tester`,
+    },
+
+    plan: {
+      sesong: ekstra.sesong
+        ? {
+            tittel: ekstra.sesong.name ?? `Sesong ${ekstra.sesong.year}`,
+            perioder: ekstra.sesong.perioder.map((per) => ({
+              navn: LPHASE_NAVN[per.lPhase] ?? per.lPhase,
+              datoer: `${datoKort(per.startDate)} – ${datoKort(per.endDate)}${
+                per.weeklyVolMin != null && per.weeklyVolMax != null
+                  ? ` · ${Math.round(per.weeklyVolMin / 60)}–${Math.round(per.weeklyVolMax / 60)} t/uke`
+                  : ""
+              }`,
+              fokus: per.focus ?? "",
+              aktiv: per.startDate <= now && per.endDate >= now,
+            })),
+          }
+        : null,
+      teknisk: ekstra.teknisk
+        ? [
+            { k: "Plan", v: ekstra.teknisk.navn },
+            { k: "Status", v: PLANSTATUS_NAVN[ekstra.teknisk.status] ?? ekstra.teknisk.status },
+            {
+              k: "Periode",
+              v: `${datoKort(ekstra.teknisk.startDato)}${ekstra.teknisk.sluttDato ? ` – ${datoKort(ekstra.teknisk.sluttDato)}` : " →"}`,
+            },
+          ]
+        : null,
+      fysisk: ekstra.fysisk
+        ? [
+            { k: "Plan", v: ekstra.fysisk.navn },
+            { k: "Status", v: PLANSTATUS_NAVN[ekstra.fysisk.status] ?? ekstra.fysisk.status },
+            { k: "Start", v: datoKort(ekstra.fysisk.startDato) },
+          ]
+        : null,
+      planHref: `/admin/spillere/${player.id}/plan`,
+    },
+
+    helse: {
+      sparklines: (() => {
+        if (!ekstra.helse.length) return [];
+        const ut: SpillerDashboardV2Data["helse"]["sparklines"] = [];
+        const sovn = ekstra.helse.filter((h) => h.sleepHours != null).map((h) => h.sleepHours as number);
+        const puls = ekstra.helse.filter((h) => h.restingHr != null).map((h) => h.restingHr as number);
+        const hrv = ekstra.helse.filter((h) => h.hrv != null).map((h) => h.hrv as number);
+        if (sovn.length >= 2)
+          ut.push({ label: "Søvn", naa: `${sovn[sovn.length - 1].toFixed(1).replace(".", ",")} t`, serie: sovn });
+        if (puls.length >= 2)
+          ut.push({ label: "Hvilepuls", naa: `${puls[puls.length - 1]} bpm`, serie: puls.map((v) => -v) });
+        if (hrv.length >= 2)
+          ut.push({ label: "HRV", naa: `${hrv[hrv.length - 1]} ms`, serie: hrv });
+        return ut;
+      })(),
+      skader: ekstra.leaves.map((l) => ({
+        tittel: l.description ?? (l.isInjury ? "Skade" : `Permisjon (${l.reason})`),
+        sub: `${datoKort(l.startAt)}${l.endAt ? ` – ${datoKort(l.endAt)}` : " → pågår"}${l.returnedAt ? ` · tilbake ${datoKort(l.returnedAt)}` : ""}`,
+        aktiv: !l.returnedAt && (!l.endAt || l.endAt >= now),
+      })),
+    },
+
+    turnering: {
+      kommende: entries
+        .map((e) => ({
+          name: e.tournament?.name ?? e.manualName,
+          date: e.tournament?.startDate ?? e.manualDate,
+        }))
+        .filter((e): e is { name: string; date: Date } => Boolean(e.name && e.date && e.date >= now))
+        .sort((a, b) => a.date.getTime() - b.date.getTime())
+        .slice(0, 5)
+        .map((e) => ({
+          venstre: `${dagerTil(e.date)} dg`,
+          tittel: e.name,
+          sub: datoKort(e.date),
+          hoyre: "PÅMELDT",
+          hoyreTone: "lime" as const,
+        })),
+      resultater: ekstra.turneringsResultater.map((r) => ({
+        venstre: r.position != null ? `${r.position}.` : "—",
+        tittel: r.navn,
+        sub: r.dato ? datoKort(r.dato) : undefined,
+        hoyre: r.score != null ? String(r.score) : undefined,
+      })),
+      wagr: ekstra.wagr
+        ? {
+            rank: String(ekstra.wagr.rank),
+            endring:
+              ekstra.wagr.moveDelta != null
+                ? ekstra.wagr.moveDelta > 0
+                  ? `▲ ${ekstra.wagr.moveDelta} siden forrige uke`
+                  : ekstra.wagr.moveDelta < 0
+                    ? `▼ ${Math.abs(ekstra.wagr.moveDelta)} siden forrige uke`
+                    : "uendret"
+                : null,
+            ptsAvg: ekstra.wagr.ptsAvg.toFixed(2).replace(".", ","),
+          }
+        : null,
+    },
+
+    logg: {
+      varsler: ekstra.varsler.map((v) => ({
+        venstre: naarLabel(v.createdAt, now),
+        tittel: v.title,
+        sub: v.body ?? undefined,
+      })),
+      notater: ekstra.notater.map((n) => ({
+        tittel: n.title ?? (n.tags[0] ?? "Notat"),
+        tekst: n.content,
+        dato: datoKort(n.createdAt),
+      })),
+      videoer: ekstra.videoer.map((v) => ({
+        venstre: datoKort(v.createdAt),
+        tittel: v.title,
+        sub: v.kilde === "coach" ? "Coaching-video" : "Spiller-opplasting",
+      })),
+      dokumenter: ekstra.dokumenter.map((d) => ({
+        venstre: datoKort(d.createdAt),
+        tittel: d.title,
+        sub: d.kind,
+      })),
+      caddie:
+        ekstra.caddie.antall > 0
+          ? {
+              tekst: ekstra.caddie.sisteTittel ?? "Samtale uten tittel",
+              sub: `${ekstra.caddie.sisteAt ? naarLabel(ekstra.caddie.sisteAt, now) : ""} · ${ekstra.caddie.antall} samtaler totalt`,
+            }
+          : null,
+    },
+
+    admin: {
+      personalia: [
+        { k: "Født", v: player.dateOfBirth ? `${datoKort(player.dateOfBirth)} ${player.dateOfBirth.getFullYear()}${alderAar != null ? ` · ${alderAar} år` : ""}` : "—" },
+        { k: "Medlem", v: `Siden ${player.createdAt.getFullYear()}` },
+        { k: "Gruppe", v: player.groupMemberships.map((m) => m.group.name).join(", ") || "—" },
+        { k: "Ambisjon", v: player.ambition ?? "—" },
+      ],
+      foresatte: ekstra.foresatte.map((f) => ({
+        venstre: f.relasjon,
+        tittel: f.navn,
+        sub: [f.epost, f.telefon].filter(Boolean).join(" · ") || undefined,
+        hoyre: f.approved ? "Godkjent" : "Venter",
+        hoyreTone: f.approved ? ("lime" as const) : ("warn" as const),
+      })),
+      samtykke: {
+        vis: ekstra.samtykke.paakrevd,
+        tekst: ekstra.samtykke.gittAt
+          ? `Foreldresamtykke gitt · ${datoKort(ekstra.samtykke.gittAt)} ${ekstra.samtykke.gittAt.getFullYear()}`
+          : "Foreldresamtykke mangler — datainnsamling er sperret",
+        ok: Boolean(ekstra.samtykke.gittAt),
+      },
+      okonomi: [
+        { k: "Nivå", v: ekstra.abonnement?.tier ?? "—" },
+        { k: "Status", v: ekstra.abonnement?.status ?? "—" },
+        ...(ekstra.abonnement && ekstra.abonnement.monthlyCredits > 0
+          ? [{ k: "Timer", v: `${ekstra.abonnement.creditsRemaining} av ${ekstra.abonnement.monthlyCredits} igjen denne perioden` }]
+          : []),
+        ...(ekstra.abonnement?.currentPeriodEnd
+          ? [{ k: "Fornyes", v: datoKort(ekstra.abonnement.currentPeriodEnd) }]
+          : []),
+      ],
+      betalinger: ekstra.betalinger.map((b) => ({
+        venstre: datoKort(b.createdAt),
+        tittel: b.type,
+        hoyre: kr(b.amountOre),
+        hoyreTone: b.status === "SUCCEEDED" ? undefined : ("warn" as const),
+        sub: b.status !== "SUCCEEDED" ? b.status : undefined,
+      })),
+      bookinger: [
+        ...ekstra.bookingerKommende.map((b) => ({
+          venstre: datoKort(b.startAt),
+          tittel: b.tjeneste,
+          sub: `${hhmm(b.startAt)}–${hhmm(b.endAt)} · ${b.sted}`,
+          hoyre: b.status,
+          hoyreTone: "lime" as const,
+        })),
+        ...ekstra.bookingerSiste.map((b) => ({
+          venstre: datoKort(b.startAt),
+          tittel: b.tjeneste,
+          hoyre: b.status,
+          hoyreTone: "mut" as const,
+        })),
+      ] satisfies DashRadItem[],
+      utstyr: ekstra.utstyr
+        ? ([
+            { k: "Driver", v: ekstra.utstyr.driver ?? "—" },
+            { k: "Jern", v: ekstra.utstyr.irons ?? "—" },
+            { k: "Wedger", v: ekstra.utstyr.wedges ?? "—" },
+            { k: "Putter", v: ekstra.utstyr.putter ?? "—" },
+            { k: "Ball", v: ekstra.utstyr.ball ?? "—" },
+          ])
+        : null,
+      redigerHref: `/admin/spillere/${player.id}/rediger`,
+    },
+  };
+
   return (
     <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <AdminSpillerProfilV2 data={data} />
+      <SpillerDashboardV2 data={dash} />
     </V2Shell>
   );
 }

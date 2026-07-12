@@ -104,7 +104,7 @@ const TABELL_KOLONNER: DataTabellColumn[] = [
   { key: "sg", label: "SG", delta: true, align: "right", sortable: true },
 ];
 
-export function AdminSpillerProfilV2({ data }: { data: AdminSpillerProfilV2Data }) {
+export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSpillerProfilV2Data; variant?: "full" | "seksjoner" }) {
   const router = useRouter();
 
   // ── Hero ───────────────────────────────────────────────────
@@ -252,10 +252,13 @@ export function AdminSpillerProfilV2({ data }: { data: AdminSpillerProfilV2Data 
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      <div>
-        <TilbakeLenke href="/admin/spillere">Alle spillere</TilbakeLenke>
-      </div>
-      {hero}
+      {/* «seksjoner»: dashboardet (SpillerDashboardV2) eier tilbake-lenke + hero. */}
+      {variant === "full" && (
+        <div>
+          <TilbakeLenke href="/admin/spillere">Alle spillere</TilbakeLenke>
+        </div>
+      )}
+      {variant === "full" && hero}
       <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
           {flagg}

@@ -85,6 +85,20 @@
 > knapp til bekreftelses-popup («Slett økt · tittel · dag · tid»).
 > Playwright-verifisert ende-til-ende (dra→popup→bekreft→økt lagret/slettet);
 > testdata ryddet til coldstart (0 rester). Anders' komplette review er neste.
+> 2026-07-12 (kveld) · SPILLER-DASHBOARD LEVERT (Anders: «100 % av all
+> spillerinformasjon på én skjerm»): designet FØRST i Claude Design
+> (ui_kits/agencyos/spiller-dashboard.{jsx,html,data.js} — render-verifisert),
+> deretter portet til /admin/spillere/[id]: hero m/ badges (triage/samtykke/
+> skade) + KPI-strip (HCP·SG·etterlevelse·WAGR·turnering·timer·økter, HjelpTips)
+> + 7 faner: Oversikt (eksisterende 360) · Utvikling (mål/FYS-tester/TrackMan)
+> · Plan (sesongperioder/trening/teknisk/fysisk) · Helse (søvn/puls/HRV-
+> sparklines + skade/perm) · Turnering (påmeldinger/resultater/WAGR) · Logg
+> (varsler/notater/caddie/video/dokumenter) · Administrasjon (personalia/
+> foresatte+samtykke/økonomi/betalinger/bookinger/utstyr/GDPR). Ny aggregert
+> loader spiller-dashboard-data.ts (24 parallelle select-minimerte spørringer).
+> Kun ekte data — ærlige tomtilstander. FUNN: player_swing_videos-tabellen
+> mangler i DB (schema-drift-klasse #3) — swing-video-spørringen venter på
+> kirurgisk migrering (Anders-ja). Playwright: alle 7 faner verifisert.
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag
