@@ -816,6 +816,9 @@ model TrainingPlan {
   // DRAFT → PENDING_PLAYER → ACCEPTED → ACTIVE → ARCHIVED.
   // REJECTED hvis spiller ber om endring (se playerComment).
   status        PlanStatus @default(DRAFT)
+  // WB4: snapshot av øktene ved forrige publisering (diff-grunnlag).
+  // JSON — zod-valideres ved lesing (publish-actions).
+  publishedSnapshot Json?
   // Kommentar fra spiller ved REJECTED.
   playerComment String?
   // Coach-id (User med role=COACH) hvis plan opprettet av coach. Ikke FK i v1

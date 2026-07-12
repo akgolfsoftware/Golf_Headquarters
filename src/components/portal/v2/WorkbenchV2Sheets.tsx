@@ -81,6 +81,8 @@ export interface WorkbenchV2Actions {
     patch: import("@/lib/workbench/session-update").SessionUpdateInput,
   ) => Promise<{ ok: boolean; error?: string }>;
   publish: () => Promise<{ ok: boolean; error?: string; status?: PlanStatus }>;
+  /** WB4: diff mot forrige publisering — vises i bekreft-modalen før publish. */
+  publishDiff?: () => Promise<{ ok: boolean; diff?: import("@/lib/workbench/publish-actions").PubliserDiff; error?: string }>;
   /** 8c.6: coach-notat i inspektøren (kun coach — bind-es bare i admin-siden). */
   coachNotat?: {
     hent: () => Promise<{ ok: boolean; notater?: { id: string; content: string; createdAt: string }[] }>;

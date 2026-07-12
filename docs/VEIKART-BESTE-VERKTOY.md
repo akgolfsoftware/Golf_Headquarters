@@ -202,6 +202,16 @@
 > nytt notat). Playwright: fane + filter + drill-til-økt-melding +
 > notat lagret/vist; testdata ryddet. HELE Anders' natt-bestilling
 > (beta-runde + 8c.1–8c.8) er dermed levert og i prod.
+> 2026-07-13 (natt) · WB4 LEVERT — publiser-diff (fasit G2): publisering
+> lagrer snapshot av ukens+fremtidens økter (publishedSnapshot JSONB på
+> training_plans, kirurgisk kolonne, zod ved lesing); neste publisering
+> viser diff-modal FØR utsending: lagt til (grønn) / fjernet (rød) /
+> endret (gul, felt-for-felt) + belastnings-linje (timer før → nå).
+> Første publisering får egen klartekst. Diff utilgjengelig → publiser
+> direkte (aldri sperre). Verifisert full syklus: pub→snapshot(5)→endring→
+> diff-modal m/ endret-rad + belastning→republisert; testdata ryddet og
+> plan resatt. FELLE (2. gang): dev-server med gammel Prisma-klient etter
+> generate — restart kreves; ført i gotchas-kunnskapen.
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag

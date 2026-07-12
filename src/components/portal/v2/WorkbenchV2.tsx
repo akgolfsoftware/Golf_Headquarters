@@ -960,8 +960,25 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     router.push(qs ? `${pathname}?${qs}` : pathname);
   };
 
+  // WB4: diff-modal før publisering (lagt til / fjernet / endret + timer).
+  const [pubDiff, setPubDiff] = useState<import("@/lib/workbench/publish-actions").PubliserDiff | null>(null);
   const handlePublish = async () => {
     if (!actions || pubLoading) return;
+    if (actions.publishDiff && !pubDiff) {
+      setPubLoading(true);
+      const d = await actions.publishDiff();
+      setPubLoading(false);
+      if (d.ok && d.diff) {
+        setPubDiff(d.diff);
+        return; // modalen tar over — Bekreft kaller handlePublishBekreft
+      }
+      // Diff utilgjengelig → publiser direkte (aldri sperre).
+    }
+    await handlePublishBekreft();
+  };
+  const handlePublishBekreft = async () => {
+    if (!actions || pubLoading) return;
+    setPubDiff(null);
     setPubLoading(true);
     setMelding(null);
     setOptimisticStatus("PENDING_PLAYER"); // status-pillen hopper til «Til godkjenning» med det samme
@@ -1450,6 +1467,54 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           />
         </MobilFold>
       </div>
+
+      {pubDiff && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+          <div onClick={() => setPubDiff(null)} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
+          <div role="dialog" aria-label="Bekreft publisering" style={{ position: "relative", width: "min(440px, 100%)", maxHeight: "85vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <Icon name="send" size={16} style={{ color: T.lime }} />
+              <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>Publiser plan</h2>
+            </div>
+            {pubDiff.forsteGang ? (
+              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, margin: "12px 0 0", lineHeight: 1.55 }}>
+                Første publisering — hele planen sendes til spilleren for godkjenning.
+              </p>
+            ) : (
+              <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }} data-wb-pubdiff>
+                {pubDiff.lagtTil.length > 0 && (
+                  <div>
+                    <Caps size={8.5}>Lagt til ({pubDiff.lagtTil.length})</Caps>
+                    {pubDiff.lagtTil.map((r, i) => <div key={i} style={{ fontFamily: T.ui, fontSize: 12, color: T.up, marginTop: 3 }}>+ {r.title} · {r.nar}</div>)}
+                  </div>
+                )}
+                {pubDiff.fjernet.length > 0 && (
+                  <div>
+                    <Caps size={8.5}>Fjernet ({pubDiff.fjernet.length})</Caps>
+                    {pubDiff.fjernet.map((r, i) => <div key={i} style={{ fontFamily: T.ui, fontSize: 12, color: T.down, marginTop: 3 }}>− {r.title} · {r.nar}</div>)}
+                  </div>
+                )}
+                {pubDiff.endret.length > 0 && (
+                  <div>
+                    <Caps size={8.5}>Endret ({pubDiff.endret.length})</Caps>
+                    {pubDiff.endret.map((r, i) => <div key={i} style={{ fontFamily: T.ui, fontSize: 12, color: T.warn, marginTop: 3 }}>~ {r.title} — {r.hva}</div>)}
+                  </div>
+                )}
+                {pubDiff.lagtTil.length === 0 && pubDiff.fjernet.length === 0 && pubDiff.endret.length === 0 && (
+                  <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>Ingen endringer siden forrige publisering.</span>
+                )}
+                <div style={{ fontFamily: T.mono, fontSize: 10, color: T.fg2, paddingTop: 8, borderTop: `1px solid ${T.border}` }}>
+                  Belastning: {fmtTimer(pubDiff.minutterFor / 60)} → <span style={{ fontWeight: 700, color: pubDiff.minutterNa > pubDiff.minutterFor ? T.warn : T.fg }}>{fmtTimer(pubDiff.minutterNa / 60)}</span> planlagt fremover
+                </div>
+              </div>
+            )}
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
+              <Knapp ghost onClick={() => setPubDiff(null)} disabled={pubLoading}>Avbryt</Knapp>
+              <Knapp icon="send" onClick={handlePublishBekreft} disabled={pubLoading}>{pubLoading ? "Publiserer…" : "Bekreft og publiser"}</Knapp>
+            </div>
+          </div>
+        </div>
+      )}
 
       {redigerOkt && actions && (
         <RedigerOktArk

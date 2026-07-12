@@ -13,7 +13,7 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadWorkbenchContext } from "@/lib/workbench/load-context";
 import { parseWeekOffset } from "@/lib/workbench/session-move-math";
-import { publishWorkbenchPlan } from "@/lib/workbench/publish-actions";
+import { publishWorkbenchPlan, hentPubliserDiff } from "@/lib/workbench/publish-actions";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { WorkbenchV2, type WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
 import { applyWorkbenchTemplate } from "@/lib/workbench/apply-template-actions";
@@ -38,6 +38,7 @@ export default async function V2WorkbenchPreviewPage({ searchParams }: Props) {
     applyTemplate: applyWorkbenchTemplate,
     removeSession: removeWorkbenchSession,
     publish: publishWorkbenchPlan,
+    publishDiff: hentPubliserDiff,
     duplicateWeek: duplicateWorkbenchWeek,
     // AI-ukeforslag: ekte Anthropic-kall når nøkkel finnes, ellers ærlig
     // standardforslag (usedAi: false-badge i ForslagArk). Aldri auto-lagt inn.
