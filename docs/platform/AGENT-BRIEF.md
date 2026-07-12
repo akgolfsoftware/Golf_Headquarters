@@ -1,5 +1,9 @@
 # AK Golf HQ — Agent Brief
 
+> **Nordstjernen:** [`NORDSTJERNE.md`](NORDSTJERNE.md) — hva appen SKAL være
+> (fire ansikter, de to loopene, planleggings-pyramiden, tilgangsskillet,
+> interaksjons- og sikkerhetsprinsippene). Les den før du bygger noe nytt.
+
 ## Hva dette er
 
 AK Golf HQ er en monorepo-plattform som samler fire produkter under ett Next.js-prosjekt: en marketing-site, en booking-flyt, **PlayerHQ** (spillerportal) og **AgencyOS** (coach-admin). Plattformen betjener Anders Kristiansen (coach/eier) og spillerne hans på tvers av AK Golf Academy, WANG Toppidrett og GFGK. Det som skiller den fra generiske coaching-apper er det integrerte Strokes Gained-analysesystemet, teknisk utviklingsplan med TrackMan-kobling og AI-basert planlegging via Workbench.

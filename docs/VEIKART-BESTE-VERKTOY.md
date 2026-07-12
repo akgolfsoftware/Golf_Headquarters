@@ -1,0 +1,83 @@
+# Veikart: det mest komplette og effektive coaching- og businessverktøyet
+
+> STATUS-LOGG (oppdateres per leverte pakke — samme commit):
+> 2026-07-12 · Plan godkjent (se ~/.claude/plans/warm-coalescing-octopus.md):
+> W0 nordstjerne → R1 rydding → P ytelse → I0–I8 interaksjon → Å1–Å6
+> årsplanlegger → motor → GDPR-port → marketing. Ingen pakker levert ennå.
+
+Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
+(`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag
+og HVA som løfter AK Golf HQ fra «komplett app» til «verktøyet som driver
+akademiet av seg selv». Mål-anker: 500K USD/år fra apper og coachingsystemer.
+
+## Prinsippet
+
+En skjerm er bare verdifull hvis den enten (a) gjør en spiller bedre, (b) gjør
+en time mer lønnsom, eller (c) sparer coachen for tid. Alt annet er støy.
+Verktøyet vinner når de to loopene under går RUNDT uten at coachen må dytte:
+
+- **Coaching-loopen:** Mål → Plan → Gjennomføre → Måle → Justere → (tilbake til Plan)
+- **Business-loopen:** Lead → Prøvetime → Pakke → Fornyelse/oppsalg → Henvisning
+
+I dag finnes nesten alle DELENE (skjermene), men loopene har hull der et
+menneske må huske å gjøre noe. Hullene er lista under.
+
+## 1 · Coaching-motoren (spilleren blir bedre — beviselig)
+
+| # | Forbedring | Hvorfor det flytter nåla |
+|---|---|---|
+| C1 | **Ukesyklusen lukkes automatisk:** søndag kveld lager motoren neste ukes plan-forslag per spiller (forrige ukes etterlevelse + SG-gap + periodeplan + turneringer) → coach godkjenner hele stallen fra ÉN kø mandag morgen | Dette ER produktet. I dag finnes ukeforslag i Workbench per spiller — men coachen må åpne hver enkelt. 30 spillere × 5 min blir til 15 min totalt |
+| C2 | **Live-økt-flyten (P1) til v2** — brief → aktiv → oppsummering, og oppsummeringen SKRIVER tilbake: observasjoner → spillerprofil, tekniske funn → teknisk plan, neste fokus → neste ukes plan | Økta er der coaching skjer. I dag er flyten gammel og oppsummeringen dør i et notat |
+| C3 | **Test → plan-kobling:** når en test registreres, foreslår motoren konkret plan-justering («CS-nivå opp → øk SLAG-andel») som ett-klikks godkjenning | Tester samles i dag men endrer ingenting automatisk |
+| C4 | **Runde → plan-kobling:** SG-fall over 3 runder → agent-forslag i godkjenningskøen med drill-pakke fra biblioteket (930 drills er en gullgruve som i dag krever manuelt oppslag) | Datagrunnlaget finnes (SG per runde, drill-tagging) — koblingen mangler |
+| C5 | **Spiller-siden av loopen strammes:** push når plan publiseres, én-trykks «gjennomført/avvik» etter økt, og ukesoppsummering til spilleren («du traff 80 % av planen, SG +0,3») | Etterlevelses-tallene coachen ser er bare så gode som spillerens registrering |
+
+## 2 · Business-motoren (mer inntekt per time)
+
+| # | Forbedring | Hvorfor |
+|---|---|---|
+| B1 | **Kapasitets-økonomi på cockpiten:** «2136 ledige luker» er dagens mest verdifulle uutnyttede tall. Vis det som penger: ledig tid × timepris = tapt omsetning denne uka, og HVILKE luker som bør fylles først | Fra «kalender» til «inntektsmaskin». Tallet finnes allerede i bookinger-KPI-ene |
+| B2 | **Churn-radar:** «skylder»-flagget (B2-jobben) + inaktivitet + fallende etterlevelse = rødt kort i cockpiten FØR spilleren slutter, med ferdig utkast til melding | Å beholde en spiller er 5× billigere enn å skaffe en ny. Alle tre signalene finnes — de er bare ikke koblet til én varsling |
+| B3 | **Lead-løypa inn i verktøyet:** booking-forespørsler fra akgolf.no → prøvetime → automatisk oppfølging etter prøvetimen («pakke-tilbud» med ett klikk) → pakke. I dag stopper løypa etter booking | Dette er veien fra 56 spillere til 100 uten mer admin |
+| B4 | **Automatisk purring:** utestående faktura → to påminnelser → varsle coach først når mennesket trengs. «Følg opp»-knappen peker i dag på innboksen — gjør jobben ferdig | Penger som ligger og venter på manuelt arbeid |
+| B5 | **Månedsrapport per selskap:** AK Academy / WANG / GFGK / Mulligan — timer levert, inntekt, belegg, spillere i fremgang — auto-generert den 1. | Styringstall for hele gruppen uten regneark-kvelder |
+
+## 3 · AI-laget (agentene blir ansatte, ikke leketøy)
+
+| # | Forbedring | Hvorfor |
+|---|---|---|
+| A1 | **Én godkjenningskø for ALT** agentene foreslår (plan-endringer, drill-forslag, e-postutkast, purringer, ukeplaner) — i dag er dette spredt på godkjenninger/varsler/drills-forslag/innboks-epost/caddie-dashbord | Fem køer sjekkes aldri; én kø sjekkes hver morgen. Dette er den største enkelt-effektiviseringen for deg |
+| A2 | **Caddie får skrivetilgang med godkjenning:** «flytt Sofies økt til torsdag og gi henne beskjed» → utkast → godkjenn | Fra chat til handling |
+| A3 | **Live mission control kobles til ekte kilder eller fjernes** — i dag er den statisk demo (ærlighetsbrudd på sikt) | Alt i appen skal være sant |
+
+## 4 · Effektivitets-regler (gjelder HVER skjerm — dette er «10/10-følelsen»)
+
+1. **Handle der du ser:** ethvert varsel/rad har handlingen inline (svar, godkjenn,
+   book, flytt) — aldri «gå til en annen side for å gjøre noe med dette».
+2. **Aldri blindgate:** ingen skjerm uten neste steg. Tom tilstand sier alltid
+   hva du kan gjøre («Ingen økter — dra inn fra biblioteket»).
+3. **Tall → hvorfor → hva nå:** hvert nøkkeltall kan trykkes og svarer på
+   «hvorfor er det sånn» og «hva gjør jeg med det». (HjelpTips-regelen dekker
+   «hva betyr det» — dette er neste nivå.)
+4. **Alt som gjøres ofte har hurtigtast/kommando:** Cmd+K finnes — utvid til
+   handlinger («book Sofie tirsdag 10»), ikke bare navigasjon.
+5. **Null døde knapper:** wagr-import «Synk nå» og availability «Synk» kobles
+   eller fjernes. En død knapp koster mer tillit enn en manglende funksjon.
+6. **Mobil = handling, desktop = analyse:** cockpit/innboks/godkjenninger
+   perfekte på mobil (du står på rangen); analyse-flatene optimaliseres desktop.
+
+## Prioritert rekkefølge (effekt ÷ innsats)
+
+1. **A1 Én godkjenningskø** — samler fem flater, sparer deg mest tid per dag
+2. **C1 Automatisk ukesyklus** — kjerneverdien i produktet, motoren finnes
+3. **B1 Kapasitets-økonomi** — tallene finnes, bare vis dem som penger
+4. **B2 Churn-radar** — alle signalene finnes etter dagens B2-jobb
+5. **C2 Live-økt-flyt v2** — P1 i porteringslista uansett
+6. **B4 Automatisk purring** — liten jobb, direkte penger
+7. **C3+C4 Test/runde → plan-kobling** — gjør datainnsamlingen meningsfull
+8. **B3 Lead-løypa** — vekstmotoren
+9. **C5 Spiller-loopen** — datakvalitet inn
+10. **B5 Månedsrapport** + A2/A3 + regel-gjennomgang per skjerm (4.1–4.6)
+
+> Vedlikehold: når et punkt leveres — oppdater status her, i
+> MASTER-SKJERMPLAN.md og AGENCYOS-INVENTAR.md i samme commit.
