@@ -26,6 +26,8 @@ import {
   coachRemoveWorkbenchSession,
   coachDuplicateWeek,
   coachDuplicateSession,
+  coachHentNotater,
+  coachLagreNotat,
   coachLagrePeriode,
   coachSlettPeriode,
 } from "@/lib/workbench/session-actions";
@@ -87,6 +89,10 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
     publish: publishWorkbenchPlan.bind(null, id),
     duplicateWeek: coachDuplicateWeek.bind(null, id),
     duplicateSession: coachDuplicateSession.bind(null, id),
+    coachNotat: {
+      hent: coachHentNotater.bind(null, id),
+      lagre: coachLagreNotat.bind(null, id),
+    },
     lagrePeriode: coachLagrePeriode.bind(null, id),
     slettPeriode: coachSlettPeriode.bind(null, id),
   };

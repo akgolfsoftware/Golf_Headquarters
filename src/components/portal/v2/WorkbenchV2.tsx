@@ -44,6 +44,7 @@ import { WBTidslinjeMobil, MobilFold } from "./WorkbenchV2Mobil";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import { LPHASE_LABEL as LPHASE_LABEL_KANON, LPHASE_FARGE as LPHASE_FARGE_KANON } from "@/lib/labels/taxonomy";
+import { sokOvelser, hentOktKomponist } from "@/lib/workbench/ovelse-sok";
 import type { WorkbenchInsights } from "@/lib/workbench/types";
 import type { WeekEvent } from "@/lib/workbench/week-types";
 import type { PlanStatus } from "@/generated/prisma/client";
@@ -306,7 +307,7 @@ function PalettBrikke({ tittel, akse, durMin, sub, onClick }: { tittel: string; 
 // som Record<string,string> for eksisterende oppslag med løse strenger.
 export const LPHASE_LABEL: Record<string, string> = LPHASE_LABEL_KANON;
 
-export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukMal, visPerioder }: {
+export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukMal, visPerioder, onLeggDrillIValgt }: {
   data: WorkbenchData;
   tab: string; setTab: (t: string) => void;
   sok: string; setSok: (s: string) => void;
@@ -316,10 +317,24 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
   onBrukMal?: (templateId: string) => void;
   /** 8c.2: vis dragbare periode-brikker (årsplan-zoom). */
   visPerioder?: boolean;
+  /** 8c.6: Driller-fanen — klikk legger drillen i VALGT økt. Uten = lesevisning. */
+  onLeggDrillIValgt?: (drill: { exerciseId: string; navn: string }) => Promise<{ ok: boolean; error?: string }>;
 }) {
   const treff = (txt: string) => !sok || txt.toLowerCase().includes(sok.toLowerCase());
+  // 8c.6 (fasit Palette): aksefilter-chips over listene.
+  const [akseFilter, setAkseFilter] = useState<AkseKey | null>(null);
   const maler = (data.planTemplates ?? []).filter((m) => treff(m.name));
-  const okter = (data.paletteItems ?? []).filter((b) => treff(b.title));
+  const okter = (data.paletteItems ?? []).filter((b) => treff(b.title) && (!akseFilter || b.cat === akseFilter));
+  // Driller-fanen: øvelsesbanken via server-søk (debounced).
+  const [driller, setDriller] = useState<{ id: string; name: string; pyramidArea: string }[]>([]);
+  const [drillMelding, setDrillMelding] = useState<string | null>(null);
+  useEffect(() => {
+    if (tab !== "driller") return;
+    const t = window.setTimeout(() => {
+      sokOvelser(sok, akseFilter ?? undefined).then(setDriller).catch(() => setDriller([]));
+    }, sok ? 250 : 0);
+    return () => window.clearTimeout(t);
+  }, [tab, sok, akseFilter]);
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10, minWidth: 0 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -327,13 +342,25 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
       </div>
       <PalettSok value={sok} onChange={setSok} placeholder="Søk…" />
       <div style={{ display: "flex", gap: 4 }}>
-        {[["maler", "Maler"], ["okter", "Økter"]].map(([id, l]) => (
+        {[["maler", "Maler"], ["okter", "Økter"], ["driller", "Driller"]].map(([id, l]) => (
           <button key={id} type="button" onClick={() => setTab(id)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", flex: 1, fontFamily: T.mono, fontSize: 9, fontWeight: 700, padding: "6px 0", borderRadius: 8, border: `1px solid ${tab === id ? "transparent" : T.border}`, background: tab === id ? T.lime : T.panel2, color: tab === id ? T.onLime : T.fg2, textTransform: "uppercase", letterSpacing: "0.04em" }}>{l}</button>
         ))}
       </div>
       {visPerioder && (
         <div style={{ marginBottom: 4 }}>
           <PeriodePalett />
+        </div>
+      )}
+      {tab !== "maler" && (
+        <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }} data-wb-aksefilter>
+          {([null, "FYS", "TEK", "SLAG", "SPILL", "TURN"] as (AkseKey | null)[]).map((f) => {
+            const on = akseFilter === f;
+            return (
+              <button key={f ?? "alle"} type="button" onClick={() => setAkseFilter(f)} className="v2-press" style={{ appearance: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 8, fontWeight: 700, padding: "4px 8px", borderRadius: 9999, border: `1px solid ${on ? "transparent" : T.border}`, background: on ? (f ? T.ax[f] : T.lime) : T.panel2, color: on ? T.onLime : T.mut, letterSpacing: "0.04em" }}>
+                {f ?? "ALLE"}
+              </button>
+            );
+          })}
         </div>
       )}
       {tab === "maler" ? (
@@ -379,6 +406,34 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
               onClick={onVelgOkt ? () => onVelgOkt({ title: b.title, durMin: b.dur, akse: b.cat as AkseKey }) : undefined}
             />
           )) : <TomTilstand icon="search" title="Ingen treff" sub={sok ? "Prøv et annet søk." : "Ingen standardøkter i biblioteket ennå."} />}
+        </div>
+      )}
+      {tab === "driller" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }} data-wb-drillerfane>
+          <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>
+            {onLeggDrillIValgt ? "Trykk en drill for å legge den i valgt økt." : "Øvelsesbanken (lesevisning)."}
+          </span>
+          {drillMelding && <InnsiktChip>{drillMelding}</InnsiktChip>}
+          {driller.length ? driller.map((d) => (
+            <button
+              key={d.id}
+              type="button"
+              className="v2-press v2-focus"
+              disabled={!onLeggDrillIValgt}
+              onClick={onLeggDrillIValgt ? async () => {
+                const res = await onLeggDrillIValgt({ exerciseId: d.id, navn: d.name });
+                setDrillMelding(res.ok ? `«${d.name}» lagt i valgt økt.` : res.error ?? "Kunne ikke legge til.");
+                window.setTimeout(() => setDrillMelding(null), 3500);
+              } : undefined}
+              style={{ appearance: "none", textAlign: "left", padding: "8px 10px", borderRadius: 10, background: T.panel2, border: `1px dashed ${T.borderS}`, cursor: onLeggDrillIValgt ? "pointer" : "default" }}
+            >
+              <span style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[d.pyramidArea as AkseKey] ?? T.mut, flex: "none" }} />
+                <span style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg, flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.name}</span>
+                {onLeggDrillIValgt && <Icon name="plus" size={10} style={{ color: T.mut, flex: "none" }} />}
+              </span>
+            </button>
+          )) : <TomTilstand icon="dumbbell" title="Ingen driller" sub={sok ? "Prøv et annet søk." : "Søk eller filtrer på område."} />}
         </div>
       )}
     </div>
@@ -441,6 +496,52 @@ export function WBBelastning({ data }: { data: WorkbenchData }) {
         )}
       </div>
     </Kort>
+  );
+}
+
+/* ── 8c.6: coach-notat i inspektøren (fasit Inspector; kun coach) ── */
+function KoachNotatSeksjon({ coachNotat }: { coachNotat: NonNullable<WorkbenchV2Actions["coachNotat"]> }) {
+  const [notater, setNotater] = useState<{ id: string; content: string; createdAt: string }[]>([]);
+  const [tekst, setTekst] = useState("");
+  const [lagrer, setLagrer] = useState(false);
+  useEffect(() => {
+    let aktiv = true;
+    coachNotat.hent().then((res) => { if (aktiv && res.ok) setNotater(res.notater ?? []); });
+    return () => { aktiv = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const lagre = async () => {
+    if (!tekst.trim() || lagrer) return;
+    setLagrer(true);
+    const res = await coachNotat.lagre(tekst);
+    setLagrer(false);
+    if (res.ok) {
+      setTekst("");
+      const ny = await coachNotat.hent();
+      if (ny.ok) setNotater(ny.notater ?? []);
+    }
+  };
+  return (
+    <BalSeksjon label="Coach-notat · privat">
+      <div style={{ display: "flex", flexDirection: "column", gap: 7 }} data-wb-coachnotat>
+        {notater.map((n) => (
+          <div key={n.id} style={{ padding: "8px 10px", borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}` }}>
+            <p style={{ margin: 0, fontFamily: T.ui, fontSize: 11.5, color: T.fg, lineHeight: 1.45 }}>{n.content}</p>
+            <span style={{ fontFamily: T.mono, fontSize: 8, color: T.mut }}>{new Date(n.createdAt).toLocaleDateString("nb-NO", { day: "numeric", month: "short" })}</span>
+          </div>
+        ))}
+        <textarea
+          value={tekst}
+          onChange={(e) => setTekst(e.target.value)}
+          placeholder="Nytt notat — kun synlig for deg…"
+          rows={2}
+          style={{ width: "100%", resize: "vertical", background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 10, padding: "8px 10px", color: T.fg, fontFamily: T.ui, fontSize: 12, outline: "none" }}
+        />
+        <Knapp ghost icon="file-text" full disabled={!tekst.trim() || lagrer} onClick={lagre}>
+          {lagrer ? "Lagrer…" : "Lagre notat"}
+        </Knapp>
+      </div>
+    </BalSeksjon>
   );
 }
 
@@ -510,6 +611,8 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
           )}
         </div>
       </BalSeksjon>
+
+      {actions?.coachNotat && <KoachNotatSeksjon coachNotat={actions.coachNotat} />}
 
       <BalSeksjon label="Valgt økt">
         {valgtOkt ? (
@@ -791,6 +894,23 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   };
   const redigerOkt = redigerOktId ? alleEvents.find((e) => e.id === redigerOktId) ?? null : null;
   const redigerDag = redigerOkt ? dager.findIndex((d) => d.events.some((e) => e.id === redigerOkt.id)) : -1;
+
+  // 8c.6: Driller-fanen — klikk legger drillen i VALGT økt (append via
+  // hentOktKomponist → updateSession replace-liste).
+  const leggDrillIValgt = async (drill: { exerciseId: string; navn: string }): Promise<{ ok: boolean; error?: string }> => {
+    if (!actions?.updateSession) return { ok: false, error: "Ingen skrivetilgang." };
+    if (!valgtOkt?.id || (valgtOkt.source ?? "plan") !== "plan") return { ok: false, error: "Velg en plan-økt i tidslinja først." };
+    const naa = await hentOktKomponist(valgtOkt.id);
+    if (!naa.ok) return { ok: false, error: "Fikk ikke lastet økten." };
+    const res = await actions.updateSession(valgtOkt.id, {
+      drills: [
+        ...(naa.drills ?? []).map((d) => ({ exerciseId: d.exerciseId, minutter: d.minutter, sett: d.sett, reps: d.reps, nivaa: d.nivaa })),
+        { exerciseId: drill.exerciseId, minutter: null, sett: null, reps: null, nivaa: "vanlig" as const },
+      ],
+    });
+    if (res.ok) router.refresh();
+    return res;
+  };
 
   // Skriv zoom/valg til URL med replace (skal ikke forurense historikken).
   const oppdaterUrl = (mut: (p: URLSearchParams) => void) => {
@@ -1236,7 +1356,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
 
       {/* TRE KOLONNER — desktop (md+): uendret (grid-cols-1 md→lg, 3-kol fra lg) */}
       <div className="hidden md:grid md:grid-cols-1 lg:grid-cols-[206px_1fr_302px]" style={{ gap: T.gap, alignItems: "start" }}>
-        <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} />
+        <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} />
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
           {dupliserMelding && <InnsiktChip>{dupliserMelding}</InnsiktChip>}
           {insights?.line && <InnsiktChip>{insights.line}</InnsiktChip>}
@@ -1316,7 +1436,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         {nivaa === "maned" && <MndNivaa data={data} onVelgDato={velgDatoFraMnd} />}
 
         <MobilFold tittel="Bibliotek" ikon="layers">
-          <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} />
+          <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} />
         </MobilFold>
         <MobilFold tittel="Balanse" ikon="activity">
           <WBBalanse

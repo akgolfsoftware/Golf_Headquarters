@@ -81,6 +81,11 @@ export interface WorkbenchV2Actions {
     patch: import("@/lib/workbench/session-update").SessionUpdateInput,
   ) => Promise<{ ok: boolean; error?: string }>;
   publish: () => Promise<{ ok: boolean; error?: string; status?: PlanStatus }>;
+  /** 8c.6: coach-notat i inspektøren (kun coach — bind-es bare i admin-siden). */
+  coachNotat?: {
+    hent: () => Promise<{ ok: boolean; notater?: { id: string; content: string; createdAt: string }[] }>;
+    lagre: (tekst: string) => Promise<{ ok: boolean; error?: string }>;
+  };
   /** 8c.4: Cmd+D — dupliser økt til neste dag samme tid (Notion-stil). */
   duplicateSession?: (sessionId: string) => Promise<{ ok: boolean; sessionId?: string; error?: string }>;
   /** 8c.2: årsplan-canvaset — opprett/oppdater og slett periodeblokker. */

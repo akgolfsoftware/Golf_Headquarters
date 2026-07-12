@@ -266,3 +266,34 @@ export async function coachDuplicateSession(
   if (result.ok) revalidateWorkbench(playerId);
   return result;
 }
+
+// ============================================================================
+// COACH-NOTAT (8c.6 — inspektøren; kun coach, spiller ser aldri private notater)
+// ============================================================================
+
+export async function coachHentNotater(
+  playerId: string,
+): Promise<{ ok: boolean; notater?: { id: string; content: string; createdAt: string }[] }> {
+  await ensureCoach();
+  if (!(await erCoachetSpiller(playerId))) return { ok: false };
+  const rader = await prisma.coachNote.findMany({
+    where: { playerId },
+    orderBy: { createdAt: "desc" },
+    take: 3,
+    select: { id: true, content: true, createdAt: true },
+  });
+  return { ok: true, notater: rader.map((n) => ({ id: n.id, content: n.content, createdAt: n.createdAt.toISOString() })) };
+}
+
+export async function coachLagreNotat(
+  playerId: string,
+  tekst: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const coach = await ensureCoach();
+  if (!(await erCoachetSpiller(playerId))) return { ok: false, error: "Ingen tilgang" };
+  const content = tekst.trim().slice(0, 2000);
+  if (!content) return { ok: false, error: "Tomt notat" };
+  await prisma.coachNote.create({ data: { coachId: coach.id, playerId, content, isPrivate: true } });
+  revalidateWorkbench(playerId);
+  return { ok: true };
+}
