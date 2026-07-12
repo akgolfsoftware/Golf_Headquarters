@@ -512,6 +512,11 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Kobling-detalj | `/admin/godkjenn-portal/koblinger/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Review | `/admin/godkjenn-portal/review` | – | --- | ✓ | ~ | ~ | ~ |
 
+> **2026-07-12 — felles chrome:** ALLE legacy-sidene under `/admin/(legacy)/` rendres nå i
+> V2Shell (samme rail + Mer-meny + full bredde som de porterte sidene) — gamle AdminShell
+> (sidebar/topbar med scope-velger og gamle demo-navn) er koblet ut av layouten. Innholdet
+> deres rekomponeres fortsatt bølgevis per `plans/legacy-portering-prioritet.md`.
+
 > Merknad: Flere AgencyOS-funksjoner finnes på to adresser samtidig (f.eks. `/admin/finance` og `/admin/okonomi`, `/admin/kalender` og `/admin/calendar`, `/admin/innboks` og `/admin/messages`, `/admin/godkjenninger` og `/admin/approvals`, `/admin/plans/templates` og `/admin/plan-templates`). Det er dobbeltarbeid som bør ryddes — se «Veien til 100%».
 
 ---

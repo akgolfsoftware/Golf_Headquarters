@@ -14,7 +14,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { T } from "@/lib/v2/tokens";
 import { Icon } from "./icon";
 import { LogoAK, AvatarFoto } from "./core";
@@ -304,6 +304,36 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
   const merGrupper = mer ?? (erAgency ? AGENCYOS_MER : undefined);
   const maksBredde = erAgency ? 1680 : T.maxw;
 
+  // Uten eksplisitt aktiv-prop (legacy-sidene): utled fra URL-en — lengste
+  // href-prefiks-match over hovednav + Mer-gruppene. Treff i en Mer-gruppe
+  // lyser opp den logiske hovedseksjonen i railen (drills → Planlegge osv.).
+  const pathname = usePathname();
+  const autoAktiv = useMemo(() => {
+    if (aktiv) return aktiv;
+    const gruppeTilSeksjon: Record<string, string> = {
+      Kommunikasjon: "innboks",
+      Stall: "spillere",
+      Planlegging: "planlegge",
+      Innsikt: "innsikt",
+      Drift: "cockpit",
+    };
+    let best: { id: string; href: string } | undefined;
+    for (const it of nav) {
+      if (pathname === it.href || pathname.startsWith(it.href + "/")) {
+        if (!best || it.href.length > best.href.length) best = it;
+      }
+    }
+    for (const g of merGrupper ?? []) {
+      for (const it of g.items) {
+        if (pathname === it.href || pathname.startsWith(it.href + "/")) {
+          const seksjon = gruppeTilSeksjon[g.label] ?? it.id;
+          if (!best || it.href.length > best.href.length) best = { id: seksjon, href: it.href };
+        }
+      }
+    }
+    return best?.id;
+  }, [aktiv, nav, merGrupper, pathname]);
+
   return (
     <div
       className="dark"
@@ -316,13 +346,13 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
         display: "flex",
       }}
     >
-      <IkonRailNav aktiv={aktiv} nav={nav} mer={merGrupper} navn={navn} avatarUrl={avatarUrl} />
+      <IkonRailNav aktiv={autoAktiv} nav={nav} mer={merGrupper} navn={navn} avatarUrl={avatarUrl} />
       <div className="px-4 md:px-8 pt-6 pb-24 md:pb-9" style={{ flex: 1, minWidth: 0 }}>
         <div style={{ maxWidth: maksBredde, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
           {children}
         </div>
       </div>
-      <BunnNavLenker aktiv={aktiv} nav={nav} mer={merGrupper} />
+      <BunnNavLenker aktiv={autoAktiv} nav={nav} mer={merGrupper} />
     </div>
   );
 }
