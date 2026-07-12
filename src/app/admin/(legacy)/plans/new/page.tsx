@@ -1,32 +1,10 @@
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { PlanBuilderClient } from "./plan-builder-client";
+import { redirect } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-
-export default async function NyPlanPage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
-
-  const [spillere, grupper] = await Promise.all([
-    prisma.user.findMany({
-      where: { role: "PLAYER" },
-      select: { id: true, name: true, hcp: true },
-      orderBy: { name: "asc" },
-    }),
-    prisma.group.findMany({
-      select: {
-        id: true,
-        name: true,
-        _count: { select: { members: true } },
-      },
-      orderBy: { name: "asc" },
-    }),
-  ]);
-
-  return (
-    <PlanBuilderClient
-      spillere={spillere}
-      grupper={grupper.map((g) => ({ id: g.id, name: g.name, memberCount: g._count.members }))}
-    />
-  );
+/**
+ * /admin/plans/new → /admin/planlegge (B7, 2026-07-12).
+ * Plan-oppretting skjer i Workbench (låst beslutning: Planlegge er ETT
+ * trykkpunkt dit). Den gamle PlanBuilder-flaten var ikke lenket fra /plans.
+ */
+export default function PlansNewRedirect(): never {
+  redirect("/admin/planlegge");
 }
