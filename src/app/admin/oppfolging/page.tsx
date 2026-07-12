@@ -1,13 +1,10 @@
+import { redirect } from "next/navigation";
+
 /**
- * /admin/oppfolging — alias-rute til /admin/queue (Oppfølgingskø).
- *
- * Bølge D: designet i `05-oppfolgingsko.html` bruker URL-en
- * `/admin/oppfolging`. Vi re-eksporterer eksisterende
- * `queue/page.tsx` for å unngå duplisert logikk.
+ * /admin/oppfolging → /admin/queue (Oppfølgingskø).
+ * Var re-eksport av queue/page.tsx (to URL-er for samme flate) — ren redirect
+ * per duplikat-oppryddingen i docs/AGENCYOS-INVENTAR.md (B1, 2026-07-12).
  */
-
-import QueuePage from "@/app/admin/queue/page";
-
-export const dynamic = "force-dynamic";
-
-export default QueuePage;
+export default function OppfolgingRedirect(): never {
+  redirect("/admin/queue");
+}
