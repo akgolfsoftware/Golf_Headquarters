@@ -47,6 +47,15 @@
 > 2026-07-13 · R2 LEVERT (hoveddel): 215 dobbelt-verifisert døde filer slettet
 > (knip + grep + kaskade; spesialfiler/generated ekskludert). tsc, lint,
 > 470 tester, full build OG røyk-test av 5 hovedflater grønt etterpå.
+> 2026-07-12 (kveld) · RETNINGSKORRIGERING fra Anders: Workbench-fasiten er
+> agencyos-kitets workbench-familie (rikere generasjon enn v2/wb.jsx dagens
+> skjerm bygde på). Fasit ekstrahert til docs/redesign-v2/fasit-agencyos-
+> workbench/ (17 filer); full gap-analyse G1–G10 i docs/redesign-v2/
+> workbench-fasit-analyse-2026-07-12.md — kontekst-paneler (ACWR/belastning),
+> publiser-diff, redigerbar årsplan, økt-drills, composer, coldstart,
+> stall-tidslinje (=Å2!), triage, nav-grupper. AKUTT-BUGFIX samtidig:
+> Mer-panelet ble liggende åpent over innhold etter navigering («trykk →
+> feil skjerm») — lukker nå ved rutebytte, solid bakgrunn, z-løft.
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag

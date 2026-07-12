@@ -161,17 +161,23 @@ function MerPanel({ grupper, onClose, mobil }: { grupper: V2NavGruppe[]; onClose
     window.addEventListener("keydown", esc);
     return () => window.removeEventListener("keydown", esc);
   }, [onClose]);
+  // BUGFIX (sett i prod 12. juli): panelet ble liggende åpent over innholdet
+  // etter navigering (klikk traff «feil skjerm»). Lukk ved ETHVERT rutebytte.
+  const [apnetPa] = useState(pathname);
+  useEffect(() => {
+    if (pathname !== apnetPa) onClose();
+  }, [pathname, apnetPa, onClose]);
 
   return (
     <>
-      <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(0,0,0,0.45)" }} aria-hidden />
+      <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 90, background: "rgba(0,0,0,0.55)" }} aria-hidden />
       <div
         role="menu"
         aria-label="Mer"
         style={
           mobil
-            ? { position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 61, maxHeight: "72vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.border}`, borderRadius: "18px 18px 0 0", padding: "14px 16px calc(20px + env(safe-area-inset-bottom))", boxShadow: "0 -18px 48px rgba(0,0,0,0.5)" }
-            : { position: "fixed", left: 68, top: 12, bottom: 12, zIndex: 61, width: 560, maxWidth: "calc(100vw - 84px)", overflowY: "auto", background: T.panel, border: `1px solid ${T.border}`, borderRadius: 16, padding: "18px 20px", boxShadow: "0 24px 64px rgba(0,0,0,0.55)" }
+            ? { position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 91, maxHeight: "72vh", overflowY: "auto", background: T.panel, opacity: 1, border: `1px solid ${T.border}`, borderRadius: "18px 18px 0 0", padding: "14px 16px calc(20px + env(safe-area-inset-bottom))", boxShadow: "0 -18px 48px rgba(0,0,0,0.5)" }
+            : { position: "fixed", left: 68, top: 12, bottom: 12, zIndex: 91, width: 560, maxWidth: "calc(100vw - 84px)", overflowY: "auto", background: T.panel, opacity: 1, border: `1px solid ${T.border}`, borderRadius: 16, padding: "18px 20px", boxShadow: "0 24px 64px rgba(0,0,0,0.55)" }
         }
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
