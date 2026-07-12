@@ -12,6 +12,7 @@
 
 import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
@@ -42,7 +43,8 @@ export default async function OppfolgingsKoPage() {
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   const players = await prisma.user.findMany({
-    where: { role: "PLAYER" },
+    // I0: kun coachede spillere — selvbetjente (PLATFORM_ONLY) er usynlige i AgencyOS.
+    where: coachedPlayerWhere(),
     include: {
       trainingPlans: { where: { isActive: true }, select: { id: true } },
       signals: { where: { kind: "SG_TOTAL" }, orderBy: { computedAt: "desc" }, take: 1 },

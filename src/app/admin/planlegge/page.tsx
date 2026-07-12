@@ -14,6 +14,7 @@
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import {
@@ -28,7 +29,8 @@ export default async function V2AdminPlanleggePreviewPage() {
 
   // Samme spillerkontrakt som den ekte redirecten.
   const spillere = await prisma.user.findMany({
-    where: { role: "PLAYER", deletedAt: null },
+    // I0: kun coachede spillere — selvbetjente (PLATFORM_ONLY) er usynlige i AgencyOS.
+    where: { AND: [coachedPlayerWhere(), { deletedAt: null }] },
     orderBy: { name: "asc" },
     select: { id: true, name: true },
   });
