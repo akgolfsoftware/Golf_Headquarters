@@ -388,6 +388,53 @@ function BalSeksjon({ label, right, children }: { label: string; right?: React.R
   );
 }
 
+/* ── WB3 (fasit G1): belastningsstripe under canvas ─────────────
+   Ærlig konsekvens-visning av uka coachen bygger: planlagte timer i
+   visningsuka mot kronisk ukesnitt (28 d / 4) + ACWR-kvote med fasit-
+   terskler (>1,4 rød · >1,2 gul) + nedtelling til neste turnering.
+   Rendres kun når det finnes belastningsdata — aldri pynte-tomrom. */
+export function WBBelastning({ data }: { data: WorkbenchData }) {
+  const b = data.belastning;
+  if (!b) return null;
+  const ukeT = data.summary ? data.summary.plannedHours : Math.round((b.akuttMin / 60) * 10) / 10;
+  const snittT = Math.round((b.kroniskSnittMin / 60) * 10) / 10;
+  const acwrTone = b.acwr == null ? T.mut : b.acwr > 1.4 ? T.down : b.acwr > 1.2 ? T.warn : T.up;
+  const turnering = data.tournaments?.[0];
+  return (
+    <Kort pad="11px 16px">
+      <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, flex: "none" }}>
+          <Icon name="activity" size={13} style={{ color: T.fg2 }} />
+          <Caps size={8.5}>Belastning</Caps>
+        </span>
+        <span style={{ fontFamily: T.mono, fontSize: 11, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+          Denne uka <span style={{ fontWeight: 700 }}>{fmtTimer(ukeT)}</span>
+          <span style={{ color: T.mut }}> · snitt 4 uker {fmtTimer(snittT)}</span>
+        </span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 5, flex: "none" }}>
+          <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", padding: "3px 8px", borderRadius: 9999, color: acwrTone, background: `color-mix(in srgb, ${acwrTone} 12%, transparent)`, border: `1px solid color-mix(in srgb, ${acwrTone} 35%, transparent)` }}>
+            ACWR {b.acwr != null ? b.acwr.toFixed(2).replace(".", ",") : "—"}
+          </span>
+          <HjelpTips k="acwr" size={11} />
+        </span>
+        {b.acwr != null && b.acwr > 1.2 && (
+          <span style={{ fontFamily: T.ui, fontSize: 11, color: acwrTone }}>
+            {b.acwr > 1.4 ? "Kraftig belastningsøkning — vurder å lette uka." : "Belastningen øker raskt — følg med."}
+          </span>
+        )}
+        <span style={{ flex: 1 }} />
+        {turnering && (
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6, flex: "none" }}>
+            <Icon name="trophy" size={12} style={{ color: turnering.soon ? T.warn : T.mut }} />
+            <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, color: turnering.soon ? T.warn : T.fg2 }}>{turnering.td}</span>
+            <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, maxWidth: 180, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{turnering.tn}</span>
+          </span>
+        )}
+      </div>
+    </Kort>
+  );
+}
+
 export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekOffset, onEndret }: {
   data: WorkbenchData;
   valgtOkt: WeekEvent | null;
@@ -1170,6 +1217,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
               onDropMal={actions?.applyTemplate ? setMalBekreft : undefined}
             />
           )}
+          {nivaa === "uke" && <WBBelastning data={data} />}
           {nivaa === "ar" && <AarNivaa data={data} />}
           {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
           {nivaa === "maned" && <MndNivaa data={data} onVelgDato={velgDatoFraMnd} />}
@@ -1189,6 +1237,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
       <div className="flex md:hidden" style={{ flexDirection: "column", gap: T.gap }}>
         {insights?.line && <InnsiktChip>{insights.line}</InnsiktChip>}
         {nivaa === "uke" && <WBTidslinjeMobil dager={dager} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
+        {nivaa === "uke" && <WBBelastning data={data} />}
         {nivaa === "ar" && <AarNivaaMobil data={data} />}
         {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
         {nivaa === "maned" && <MndNivaa data={data} onVelgDato={velgDatoFraMnd} />}

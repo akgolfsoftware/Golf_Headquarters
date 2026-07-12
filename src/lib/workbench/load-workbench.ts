@@ -109,6 +109,10 @@ export type WorkbenchData = {
   adherencePct?: number | null;
   /** Aktivt fokus: coachens PeriodBlock.focus, ellers beregnet SG-gap. Null = ingen kilde. */
   fokus?: WorkbenchFokus | null;
+  /** WB3 (fasit G1): planlagt belastning — akutt (siste 7 d) mot kronisk
+   *  ukesnitt (siste 28 d / 4). acwr = akutt/kronisk; null når kronisk = 0
+   *  (for lite historikk til ærlig kvote). Terskler i UI: >1,4 rød · >1,2 gul. */
+  belastning?: { akuttMin: number; kroniskSnittMin: number; acwr: number | null } | null;
   /** Ukevolum-mål fra spillerens aktive PeriodBlock (min/max minutter). Null-felt = ikke satt. */
   volTarget?: { min: number | null; max: number | null };
   /** Periodetype for spillerens aktive PeriodBlock akkurat nå — brukes til malanbefaling. */
@@ -267,7 +271,7 @@ export async function loadWorkbenchData(
     }),
     prisma.trainingPlanSession.findMany({
       where: { plan: { userId }, scheduledAt: { gte: tretti, lt: now } },
-      select: { pyramidArea: true, durationMin: true },
+      select: { pyramidArea: true, durationMin: true, scheduledAt: true },
     }),
     prisma.goal.findMany({
       where: { userId, status: "ACTIVE" },
@@ -583,6 +587,29 @@ export async function loadWorkbenchData(
     minByArea.set(s.pyramidArea, (minByArea.get(s.pyramidArea) ?? 0) + s.durationMin);
   }
   const total30 = last30Sessions.reduce((a, s) => a + s.durationMin, 0);
+
+  // ── WB3: belastning — akutt (7 d) mot kronisk ukesnitt (28 d / 4) ──
+  // Planlagt belastning (alle økter med scheduledAt i vinduet, uavhengig av
+  // status — det er den PLANLAGTE lasten coachen styrer på canvaset).
+  const syvDgSiden = new Date(now);
+  syvDgSiden.setDate(syvDgSiden.getDate() - 7);
+  const tjueatteDgSiden = new Date(now);
+  tjueatteDgSiden.setDate(tjueatteDgSiden.getDate() - 28);
+  const akuttMin = last30Sessions
+    .filter((s) => s.scheduledAt >= syvDgSiden)
+    .reduce((a, s) => a + s.durationMin, 0);
+  const kroniskMin = last30Sessions
+    .filter((s) => s.scheduledAt >= tjueatteDgSiden)
+    .reduce((a, s) => a + s.durationMin, 0);
+  const kroniskSnittMin = Math.round(kroniskMin / 4);
+  const belastning =
+    kroniskMin > 0 || akuttMin > 0
+      ? {
+          akuttMin,
+          kroniskSnittMin,
+          acwr: kroniskSnittMin > 0 ? Math.round((akuttMin / kroniskSnittMin) * 100) / 100 : null,
+        }
+      : null;
   const pctOfTotal30 = (area: PyramidArea): number => {
     const mins = minByArea.get(area) ?? 0;
     return total30 > 0 ? Math.round((mins / total30) * 100) : 0;
@@ -743,6 +770,7 @@ export async function loadWorkbenchData(
     summary,
     adherencePct: weekAdherencePct,
     fokus,
+    belastning,
     volTarget,
     seasonBlocks,
     activePeriodLPhase: activePeriodBlock?.lPhase ?? null,
