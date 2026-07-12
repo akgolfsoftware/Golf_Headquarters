@@ -36,7 +36,7 @@ import {
   ZoomBrodsmule,
 } from "@/components/v2";
 import { PalettSok } from "@/components/v2/wb-composer";
-import { ForslagArk, NyOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput } from "./WorkbenchV2Sheets";
+import { ForslagArk, NyOktArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput } from "./WorkbenchV2Sheets";
 import { WorkbenchColdstart } from "./WorkbenchColdstart";
 import { WorkbenchAarsplan, PeriodePalett, WBPeriodeStrip } from "./WorkbenchAarsplan";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
@@ -779,6 +779,19 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     return () => window.removeEventListener("keydown", handler);
   }, [actions, valgtOkt, router]);
 
+  // 8c.5: universell økt-popup — trykk en økt i hvilken som helst visning →
+  // popup med alt redigerbart (Anders: «alt skal være trykkbart»).
+  const [redigerOktId, setRedigerOktId] = useState<string | null>(null);
+  const velgOgAapne = (id: string) => {
+    setValgtId(id);
+    const okt = alleEvents.find((e) => e.id === id);
+    const redigerbar = !!actions?.updateSession && okt && (okt.source ?? "plan") === "plan" &&
+      !["COMPLETED", "ABANDONED", "SKIPPED", "CANCELLED"].includes(okt.status ?? "PLANNED");
+    if (redigerbar) setRedigerOktId(id);
+  };
+  const redigerOkt = redigerOktId ? alleEvents.find((e) => e.id === redigerOktId) ?? null : null;
+  const redigerDag = redigerOkt ? dager.findIndex((d) => d.events.some((e) => e.id === redigerOkt.id)) : -1;
+
   // Skriv zoom/valg til URL med replace (skal ikke forurense historikken).
   const oppdaterUrl = (mut: (p: URLSearchParams) => void) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -1248,7 +1261,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
             <WBTidslinje
               dager={dager}
               valgt={valgtOkt?.id ?? null}
-              onVelg={setValgtId}
+              onVelg={velgOgAapne}
               onDropMove={actions ? handleDropMove : undefined}
               onDropAdd={actions ? handleDropAdd : undefined}
               onTomKlikk={actions ? (dayIndex, hour, minute) => {
@@ -1266,7 +1279,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
               onEndret={() => router.refresh()}
             />
           )}
-          {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
+          {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
           {nivaa === "maned" && <MndNivaa data={data} onVelgDato={velgDatoFraMnd} />}
         </div>
         <WBBalanse
@@ -1290,7 +1303,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
             onTilAarsplan={() => setNivaa("ar")}
           />
         )}
-        {nivaa === "uke" && <WBTidslinjeMobil dager={dager} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
+        {nivaa === "uke" && <WBTidslinjeMobil dager={dager} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
         {nivaa === "uke" && <WBBelastning data={data} />}
         {nivaa === "ar" && (
           <WorkbenchAarsplan
@@ -1299,7 +1312,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
             onEndret={() => router.refresh()}
           />
         )}
-        {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
+        {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
         {nivaa === "maned" && <MndNivaa data={data} onVelgDato={velgDatoFraMnd} />}
 
         <MobilFold tittel="Bibliotek" ikon="layers">
@@ -1317,6 +1330,17 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           />
         </MobilFold>
       </div>
+
+      {redigerOkt && actions && (
+        <RedigerOktArk
+          okt={redigerOkt}
+          dag={redigerDag}
+          weekOffset={weekOffset}
+          actions={actions}
+          onLukk={() => setRedigerOktId(null)}
+          onEndret={() => router.refresh()}
+        />
+      )}
 
       {malBekreft && (
         <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>

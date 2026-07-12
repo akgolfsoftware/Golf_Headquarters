@@ -708,3 +708,112 @@ export function ValgtOktSeksjon({ okt, dag, actions, weekOffset, onEndret }: Val
     </Kort>
   );
 }
+
+/* ── 8c.5: universell økt-popup — trykk en økt HVOR SOM HELST ─
+   Alt redigerbart der og da: tittel, dag, tid, varighet — og pyramide-
+   chippen SYKLER (Fysisk → Teknikk → Slag → Spill → Turnering) ved trykk
+   (Anders: «trykk på pyramide, så switcher den bare»). Lagre = updateSession
+   (+ moveSession ved dagbytte). Samme overlay-språk som Ny økt. */
+export function RedigerOktArk({ okt, dag, weekOffset, actions, onLukk, onEndret }: {
+  okt: WeekEvent;
+  dag: number;
+  weekOffset: number;
+  actions: WorkbenchV2Actions;
+  onLukk: () => void;
+  onEndret: () => void;
+}) {
+  const [title, setTitle] = useState(okt.ttl);
+  const [dayIndex, setDayIndex] = useState(dag);
+  const [tid, setTid] = useState(toKl(okt.h, okt.m));
+  const [durMin, setDurMin] = useState(okt.durMin);
+  const [akse, setAkse] = useState<AkseKey>((okt.ax?.toUpperCase() as AkseKey) ?? "TEK");
+  const [lagrer, setLagrer] = useState(false);
+  const [feil, setFeil] = useState<string | null>(null);
+
+  const sykleAkse = () => {
+    const i = AKSER.findIndex((a) => a.v === akse);
+    setAkse(AKSER[(i + 1) % AKSER.length].v);
+  };
+  const akseLabel = AKSER.find((a) => a.v === akse)?.l ?? akse;
+
+  const lagre = async () => {
+    if (!okt.id || !actions.updateSession || lagrer) return;
+    setLagrer(true);
+    setFeil(null);
+    const [hStr, mStr] = tid.split(":");
+    const res = await actions.updateSession(okt.id, {
+      title: title.trim() || okt.ttl,
+      pyramidArea: akse,
+      hour: Math.max(0, Math.min(23, Number(hStr) || 0)),
+      minute: Math.max(0, Math.min(59, Number(mStr) || 0)),
+      durationMin: Math.max(5, Math.min(480, durMin)),
+    });
+    if (res.ok && dayIndex !== dag) {
+      const flytt = await actions.moveSession(okt.id, dayIndex, weekOffset);
+      if (!flytt.ok) {
+        setLagrer(false);
+        setFeil(flytt.error ?? "Endringene ble lagret, men flytting feilet.");
+        return;
+      }
+    }
+    setLagrer(false);
+    if (res.ok) {
+      onLukk();
+      onEndret();
+    } else {
+      setFeil(res.error ?? "Kunne ikke lagre endringene.");
+    }
+  };
+
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+      <div onClick={lagrer ? undefined : onLukk} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
+      <div role="dialog" aria-label="Rediger økt" style={{ position: "relative", width: "min(420px, 100%)", maxHeight: "88vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>Rediger økt</h2>
+          <button onClick={onLukk} className="v2-press" aria-label="Lukk" style={{ background: T.panel3, border: `1px solid ${T.border}`, borderRadius: 9, color: T.mut, cursor: "pointer", padding: 6, display: "inline-flex" }}>
+            <Icon name="x" size={14} />
+          </button>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 14 }}>
+          <Felt label="Tittel">
+            <input value={title} onChange={(e) => setTitle(e.target.value)} style={inputStyle} />
+          </Felt>
+          <Felt label="Dag">
+            <DagPillRow value={dayIndex} onChange={setDayIndex} disabled={lagrer} />
+          </Felt>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            <Felt label="Klokkeslett">
+              <input type="time" value={tid} onChange={(e) => setTid(e.target.value)} style={inputStyle} />
+            </Felt>
+            <Felt label="Varighet (min)">
+              <input type="number" min={5} max={480} step={5} value={durMin} onChange={(e) => setDurMin(Number(e.target.value) || 60)} style={inputStyle} />
+            </Felt>
+          </div>
+          <Felt label="Område — trykk for å bytte">
+            <button
+              type="button"
+              onClick={sykleAkse}
+              className="v2-press v2-focus"
+              data-wb-syklechip
+              aria-label={`Pyramideområde: ${akseLabel}. Trykk for neste.`}
+              style={{ appearance: "none", display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", padding: "9px 14px", borderRadius: 9999, background: `color-mix(in srgb, ${T.ax[akse]} 14%, ${T.panel2})`, border: `1px solid color-mix(in srgb, ${T.ax[akse]} 55%, transparent)`, cursor: "pointer", transition: "all 140ms" }}
+            >
+              <span style={{ width: 8, height: 8, borderRadius: 9999, background: T.ax[akse] }} />
+              <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 700, color: T.fg }}>{akseLabel}</span>
+              <Icon name="refresh-cw" size={12} style={{ color: T.mut }} />
+            </button>
+          </Felt>
+        </div>
+
+        {feil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down, display: "block", marginTop: 10 }}>{feil}</span>}
+
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
+          <Knapp ghost onClick={onLukk} disabled={lagrer}>Avbryt</Knapp>
+          <Knapp icon="check" onClick={lagre} disabled={lagrer}>{lagrer ? "Lagrer…" : "Lagre"}</Knapp>
+        </div>
+      </div>
+    </div>
+  );
+}

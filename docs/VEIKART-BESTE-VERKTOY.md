@@ -168,6 +168,16 @@
 > Skrivefelt-guard (Cmd+D i input rører ikke økter). Spiller- og coach-
 > action (I0-gated). Playwright: 5→6 økter ved Cmd+D, knapp verifisert,
 > testdata ryddet (DB: 0 rester). Neste: 8c.5 universell økt-popup.
+> 2026-07-13 (natt) · 8c.5 LEVERT — universell økt-popup («alt skal være
+> trykkbart»): trykk en økt i uke-tidslinja, dag-agendaen eller mobil-
+> agendaen → popup med ALT redigerbart der og da: tittel, dag (piller),
+> klokkeslett, varighet — og pyramide-chippen SYKLER Fysisk→Teknikk→Slag→
+> Spill→Turnering ved hvert trykk (verifisert: Fysisk → 2 trykk → Slag) →
+> Lagre (updateSession + moveSession ved dagbytte). Popup kun for
+> redigerbare plan-økter; gjennomførte velges uten popup. Playwright:
+> popup → sykle → lagre → ny tittel på tidslinja; testdata ryddet.
+> Gjenstår i 8c: 8c.7 økt-komponist (drills i popupen), 8c.6 sidemeny-gap,
+> 8c.8 avatar i hilsen (+ 8c.9 mobil løpende).
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag
