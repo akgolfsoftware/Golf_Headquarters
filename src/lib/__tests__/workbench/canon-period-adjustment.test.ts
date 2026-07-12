@@ -6,13 +6,19 @@ import {
 } from "@/lib/workbench/canon-period-adjustment";
 
 describe("CANON_PERIOD_ADJUSTMENT", () => {
-  it("har 9 implementerte invarianter", () => {
-    // Regresjonsvakt: 3 LPhase-nøkler, hver med 5 PyramidArea-retninger.
+  it("dekker alle 7 periodetyper med 5 PyramidArea-retninger hver", () => {
+    // Regresjonsvakt (8c.1): 7 LPhase-nøkler; de 4 nye typene er "lik" over
+    // hele linja til CANON sier noe annet.
     const faser = Object.keys(CANON_PERIOD_ADJUSTMENT);
-    assert.equal(faser.length, 3);
+    assert.equal(faser.length, 7);
     for (const fase of faser) {
       const retninger = CANON_PERIOD_ADJUSTMENT[fase as keyof typeof CANON_PERIOD_ADJUSTMENT];
       assert.equal(Object.keys(retninger).length, 5);
+    }
+    for (const nyFase of ["TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING"] as const) {
+      for (const retning of Object.values(CANON_PERIOD_ADJUSTMENT[nyFase])) {
+        assert.equal(retning, "lik");
+      }
     }
   });
 

@@ -12,7 +12,7 @@ const OvelseInputSchema = z.object({
   description: z.string().nullable().default(null),
   videoUrl: z.string().nullable().default(null),
   pyramidArea: z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]),
-  lPhase: z.enum(["GRUNN", "SPESIAL", "TURNERING"]).nullable().default(null),
+  lPhase: z.enum(["GRUNN", "SPESIAL", "TURNERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING"]).nullable().default(null),
   defaultRepsSets: z.string().nullable().default(null),
   csMin: z.number().int().min(0).max(100).nullable().default(null),
   csMax: z.number().int().min(0).max(100).nullable().default(null),

@@ -28,8 +28,12 @@ const LPHASE_META: Record<LPhase, { label: string; color: string }> = {
   GRUNN: { label: "Grunnperiode", color: "bg-emerald-600" },
   SPESIAL: { label: "Spesialiseringsperiode", color: "bg-teal-600" },
   TURNERING: { label: "Turneringsperiode", color: "bg-amber-500" },
+  TESTUKE: { label: "Testuke", color: "bg-sky-600" },
+  FERIE: { label: "Ferie", color: "bg-zinc-500" },
+  TRENINGSSAMLING: { label: "Treningssamling", color: "bg-blue-600" },
+  HELDAGSSAMLING: { label: "Heldagssamling", color: "bg-lime-600" },
 };
-const LPHASE_ORDER: LPhase[] = ["GRUNN", "SPESIAL", "TURNERING"];
+const LPHASE_ORDER: LPhase[] = ["GRUNN", "SPESIAL", "TURNERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING"];
 
 export type PeriodeFormInitial = {
   lPhase: LPhase;

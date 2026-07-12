@@ -28,19 +28,20 @@ export const STANDARD_PYRAMIDE: Record<NgfKategori, PyramideFordeling> = {
 };
 
 // Typiske antall økter per uke per kategori × LPhase.
+// 8c.1: TESTUKE=turneringstall, FERIE=0, SAMLINGER=grunn/1 — foreløpige verdier (Anders justerer).
 export const STANDARD_OKT_ANTALL: Record<NgfKategori, Record<LPhase, number>> = {
-  A: { GRUNN: 6, SPESIAL: 6, TURNERING: 5 },
-  B: { GRUNN: 6, SPESIAL: 6, TURNERING: 5 },
-  C: { GRUNN: 5, SPESIAL: 6, TURNERING: 5 },
-  D: { GRUNN: 5, SPESIAL: 5, TURNERING: 4 },
-  E: { GRUNN: 5, SPESIAL: 5, TURNERING: 4 },
-  F: { GRUNN: 4, SPESIAL: 5, TURNERING: 4 },
-  G: { GRUNN: 4, SPESIAL: 4, TURNERING: 3 },
-  H: { GRUNN: 4, SPESIAL: 4, TURNERING: 3 },
-  I: { GRUNN: 3, SPESIAL: 4, TURNERING: 3 },
-  J: { GRUNN: 3, SPESIAL: 3, TURNERING: 2 },
-  K: { GRUNN: 3, SPESIAL: 3, TURNERING: 2 },
-  L: { GRUNN: 2, SPESIAL: 3, TURNERING: 2 },
+  A: { GRUNN: 6, SPESIAL: 6, TURNERING: 5, TESTUKE: 5, FERIE: 0, TRENINGSSAMLING: 6, HELDAGSSAMLING: 1 },
+  B: { GRUNN: 6, SPESIAL: 6, TURNERING: 5, TESTUKE: 5, FERIE: 0, TRENINGSSAMLING: 6, HELDAGSSAMLING: 1 },
+  C: { GRUNN: 5, SPESIAL: 6, TURNERING: 5, TESTUKE: 5, FERIE: 0, TRENINGSSAMLING: 5, HELDAGSSAMLING: 1 },
+  D: { GRUNN: 5, SPESIAL: 5, TURNERING: 4, TESTUKE: 4, FERIE: 0, TRENINGSSAMLING: 5, HELDAGSSAMLING: 1 },
+  E: { GRUNN: 5, SPESIAL: 5, TURNERING: 4, TESTUKE: 4, FERIE: 0, TRENINGSSAMLING: 5, HELDAGSSAMLING: 1 },
+  F: { GRUNN: 4, SPESIAL: 5, TURNERING: 4, TESTUKE: 4, FERIE: 0, TRENINGSSAMLING: 4, HELDAGSSAMLING: 1 },
+  G: { GRUNN: 4, SPESIAL: 4, TURNERING: 3, TESTUKE: 3, FERIE: 0, TRENINGSSAMLING: 4, HELDAGSSAMLING: 1 },
+  H: { GRUNN: 4, SPESIAL: 4, TURNERING: 3, TESTUKE: 3, FERIE: 0, TRENINGSSAMLING: 4, HELDAGSSAMLING: 1 },
+  I: { GRUNN: 3, SPESIAL: 4, TURNERING: 3, TESTUKE: 3, FERIE: 0, TRENINGSSAMLING: 3, HELDAGSSAMLING: 1 },
+  J: { GRUNN: 3, SPESIAL: 3, TURNERING: 2, TESTUKE: 2, FERIE: 0, TRENINGSSAMLING: 3, HELDAGSSAMLING: 1 },
+  K: { GRUNN: 3, SPESIAL: 3, TURNERING: 2, TESTUKE: 2, FERIE: 0, TRENINGSSAMLING: 3, HELDAGSSAMLING: 1 },
+  L: { GRUNN: 2, SPESIAL: 3, TURNERING: 2, TESTUKE: 2, FERIE: 0, TRENINGSSAMLING: 2, HELDAGSSAMLING: 1 },
 };
 
 // Typisk øktlengde (minutter) per kategori — elite trener lengre økter.
@@ -55,6 +56,10 @@ export const FASE_BESKRIVELSE: Record<LPhase, string> = {
   GRUNN: "Grunnperiode: fysisk og teknisk fundament, høyt volum, lav intensitet.",
   SPESIAL: "Spesialiseringsperiode: rettet mot spillerens svakeste SG-område, stigende intensitet.",
   TURNERING: "Turneringsperiode: redusert volum, skarp prestasjonsfokus, spill og strategitrening.",
+  TESTUKE: "Testuke: kontrollpunkt — testbatteri som måler fremgangen, lavt øvrig volum.",
+  FERIE: "Ferie: fri fra organisert trening — restitusjon.",
+  TRENINGSSAMLING: "Treningssamling: flere dager med høy treningstetthet.",
+  HELDAGSSAMLING: "Heldagssamling: én hel dag med trening, tester eller banespill.",
 };
 
 export type UkeType = "BYGG" | "TOPP" | "DELOAD";

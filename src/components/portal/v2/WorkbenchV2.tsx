@@ -42,6 +42,7 @@ import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
 import { WBTidslinjeMobil, AarNivaaMobil, MobilFold } from "./WorkbenchV2Mobil";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
+import { LPHASE_LABEL as LPHASE_LABEL_KANON } from "@/lib/labels/taxonomy";
 import type { WorkbenchInsights } from "@/lib/workbench/types";
 import type { WeekEvent } from "@/lib/workbench/week-types";
 import type { PlanStatus } from "@/generated/prisma/client";
@@ -298,11 +299,9 @@ function PalettBrikke({ tittel, akse, durMin, sub, onClick }: { tittel: string; 
   );
 }
 
-export const LPHASE_LABEL: Record<string, string> = {
-  GRUNN: "Grunnperiode",
-  SPESIAL: "Spesialisering",
-  TURNERING: "Turneringsperiode",
-};
+// Kanon-kilden er taxonomy (alle 7 periodetyper etter 8c.1) — re-eksporteres
+// som Record<string,string> for eksisterende oppslag med løse strenger.
+export const LPHASE_LABEL: Record<string, string> = LPHASE_LABEL_KANON;
 
 export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukMal }: {
   data: WorkbenchData;

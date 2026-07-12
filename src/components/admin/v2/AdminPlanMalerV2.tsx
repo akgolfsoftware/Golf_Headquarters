@@ -68,11 +68,19 @@ const FASE_IKON: Record<LPhase, string> = {
   GRUNN: "sprout",
   SPESIAL: "target",
   TURNERING: "trophy",
+  TESTUKE: "badge-check",
+  FERIE: "sun",
+  TRENINGSSAMLING: "users",
+  HELDAGSSAMLING: "clock",
 };
 const FASE_LABEL: Record<LPhase, string> = {
   GRUNN: "Grunnfase",
   SPESIAL: "Spesialfase",
   TURNERING: "Turneringsfase",
+  TESTUKE: "Testuke",
+  FERIE: "Ferie",
+  TRENINGSSAMLING: "Treningssamling",
+  HELDAGSSAMLING: "Heldagssamling",
 };
 const FASE_FILTRE = ["Grunnfase", "Spesialfase", "Turneringsfase"] as const;
 

@@ -2,7 +2,7 @@
 
 import { useMemo, useState, type ReactElement } from "react";
 import Link from "next/link";
-import { Sprout, Target, Trophy } from "lucide-react";
+import { BadgeCheck, Clock, Sprout, Sun, Target, Trophy, Users } from "lucide-react";
 import type { LPhase } from "@/generated/prisma/client";
 import type { WorkbenchPlanTemplate } from "@/lib/workbench/load-workbench";
 import { FONT, WB } from "./theme";
@@ -14,12 +14,20 @@ const FASE_IKON = {
   GRUNN: Sprout,
   SPESIAL: Target,
   TURNERING: Trophy,
+  TESTUKE: BadgeCheck,
+  FERIE: Sun,
+  TRENINGSSAMLING: Users,
+  HELDAGSSAMLING: Clock,
 } as const;
 
 const FASE_LABEL = {
   GRUNN: "Grunnfase",
   SPESIAL: "Spesialfase",
   TURNERING: "Turneringsfase",
+  TESTUKE: "Testuke",
+  FERIE: "Ferie",
+  TRENINGSSAMLING: "Treningssamling",
+  HELDAGSSAMLING: "Heldagssamling",
 } as const;
 
 type MalerTabProps = {

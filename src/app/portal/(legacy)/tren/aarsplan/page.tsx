@@ -32,12 +32,20 @@ const LPHASE_TIL_AKSE: Record<LPhase, PyramideAkse> = {
   GRUNN: "FYS",
   SPESIAL: "TEK",
   TURNERING: "TURN",
+  TESTUKE: "SLAG",
+  FERIE: "FYS",
+  TRENINGSSAMLING: "SPILL",
+  HELDAGSSAMLING: "SPILL",
 };
 
 const LPHASE_NAVN: Record<LPhase, string> = {
   GRUNN: "Grunnperiode",
   SPESIAL: "Spesialisering",
   TURNERING: "Turneringsperiode",
+  TESTUKE: "Testuke",
+  FERIE: "Ferie",
+  TRENINGSSAMLING: "Treningssamling",
+  HELDAGSSAMLING: "Heldagssamling",
 };
 
 /** Måned 1–12 fra Date (lokal). */

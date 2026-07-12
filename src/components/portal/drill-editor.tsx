@@ -21,7 +21,7 @@ import {
 import { opprettOvelse, oppdaterOvelse, type OvelseInput } from "@/app/portal/(legacy)/coach/ovelser/actions";
 
 const PYR_ORDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
-const LPHASE_ORDER: LPhase[] = ["GRUNN", "SPESIAL", "TURNERING"];
+const LPHASE_ORDER: LPhase[] = ["GRUNN", "SPESIAL", "TURNERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING"];
 
 const PYR_BG: Record<PyramidArea, string> = {
   FYS: "border-pyr-fys bg-pyr-fys/15 text-pyr-fys",

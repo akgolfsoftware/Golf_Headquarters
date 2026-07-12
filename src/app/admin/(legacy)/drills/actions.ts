@@ -30,7 +30,7 @@ const PyramidAreaEnum = z.enum([
   PyramidArea.TURN,
 ]);
 
-const LPhaseEnum = z.enum([LPhase.GRUNN, LPhase.SPESIAL, LPhase.TURNERING]);
+const LPhaseEnum = z.enum([LPhase.GRUNN, LPhase.SPESIAL, LPhase.TURNERING, LPhase.TESTUKE, LPhase.FERIE, LPhase.TRENINGSSAMLING, LPhase.HELDAGSSAMLING]);
 
 const SkillAreaEnum = z.enum([
   SkillArea.TEE_TOTAL,

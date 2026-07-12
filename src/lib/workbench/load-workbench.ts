@@ -48,7 +48,7 @@ import type {
 export type WorkbenchPlanTemplate = {
   id: string;
   name: string;
-  lPhase: "GRUNN" | "SPESIAL" | "TURNERING";
+  lPhase: LPhase;
   varighetUker: number;
   usageCount: number;
   sessionCount: number;
@@ -119,10 +119,11 @@ export type WorkbenchData = {
   activePeriodLPhase?: LPhase | null;
   /** CANON-avvikstekst for aktiv periode (anbefaling, ikke sperre) — null når alt stemmer. */
   canonChip?: string | null;
-  /** Sesong-perioder fra SeasonPlan.periodBlocks (Gantt/Årsplan). */
+  /** Sesong-perioder fra SeasonPlan.periodBlocks (Gantt/Årsplan).
+   *  lPhase dekker alle 7 periodetypene etter 8c.1. */
   seasonBlocks?: {
     id: string;
-    lPhase: "GRUNN" | "SPESIAL" | "TURNERING";
+    lPhase: LPhase;
     startDate: string;
     endDate: string;
     focus?: string | null;

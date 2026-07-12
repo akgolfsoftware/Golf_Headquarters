@@ -26,6 +26,12 @@ export const CANON_PERIOD_ADJUSTMENT: Record<LPhase, Record<PyramidArea, CanonRe
   GRUNN: { FYS: "opp", TEK: "opp", SLAG: "lik", SPILL: "ned", TURN: "ned" },
   SPESIAL: { FYS: "lik", TEK: "lik", SLAG: "opp", SPILL: "lik", TURN: "ned" },
   TURNERING: { FYS: "ned", TEK: "ned", SLAG: "lik", SPILL: "opp", TURN: "opp" },
+  // 8c.1 — nye periodetyper: CANON sier ingenting om disse ennå → alt "lik"
+  // (ingen pyramide-justering; anbefaling, aldri sperre).
+  TESTUKE: { FYS: "lik", TEK: "lik", SLAG: "lik", SPILL: "lik", TURN: "lik" },
+  FERIE: { FYS: "lik", TEK: "lik", SLAG: "lik", SPILL: "lik", TURN: "lik" },
+  TRENINGSSAMLING: { FYS: "lik", TEK: "lik", SLAG: "lik", SPILL: "lik", TURN: "lik" },
+  HELDAGSSAMLING: { FYS: "lik", TEK: "lik", SLAG: "lik", SPILL: "lik", TURN: "lik" },
 };
 
 const RETNING_LABEL: Record<CanonRetning, string> = {

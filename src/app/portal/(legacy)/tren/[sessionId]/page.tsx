@@ -40,9 +40,13 @@ const PYR_PILL: Record<PyramidArea, string> = {
 };
 
 const L_PHASE_LABEL = {
-  GRUNN:     "Grunnperiode",
-  SPESIAL:   "Spesialiseringsperiode",
-  TURNERING: "Turneringsperiode",
+  GRUNN:           "Grunnperiode",
+  SPESIAL:         "Spesialiseringsperiode",
+  TURNERING:       "Turneringsperiode",
+  TESTUKE:         "Testuke",
+  FERIE:           "Ferie",
+  TRENINGSSAMLING: "Treningssamling",
+  HELDAGSSAMLING:  "Heldagssamling",
 } as const;
 
 /** Samme kølle-id/navn-par som tapper-siden (session_ball_logs.club). */

@@ -78,6 +78,11 @@ enum LPhase {
   GRUNN
   SPESIAL
   TURNERING
+  // 8c.1 (Anders 2026-07-12): fire nye periodetyper på årsplan-tidslinja.
+  TESTUKE
+  FERIE
+  TRENINGSSAMLING
+  HELDAGSSAMLING
 }
 
 enum SkillArea {
@@ -2290,18 +2295,43 @@ model SeasonPlan {
 model PeriodBlock {
   id           String   @id @default(cuid())
   seasonPlanId String
-  lPhase       LPhase // GRUNN|SPESIAL|TURNERING
+  lPhase       LPhase // GRUNN|SPESIAL|TURNERING|TESTUKE|FERIE|TRENINGSSAMLING|HELDAGSSAMLING
   startDate    DateTime
   endDate      DateTime
   focus        String? // fri tekst, f.eks. "Putting + kort spill"
   weeklyVolMin Int? // min minutter per uke
   weeklyVolMax Int? // max minutter per uke
+  // 8c.1: øktbudsjett per pyramideområde per uke ({"FYS":4,"TEK":2,...}).
+  // JSON — zod-valideres ved lesing (lib/workbench/perioder.ts).
+  weeklySessionBudget Json?
   notes        String?
 
   seasonPlan SeasonPlan @relation(fields: [seasonPlanId], references: [id], onDelete: Cascade)
 
   @@index([seasonPlanId])
   @@map("period_blocks")
+}
+
+// 8c.1 (Anders 2026-07-12): gruppens EGEN årsplan — samme tidslinje-UI som
+// spillerens, lagret på gruppenivå. Spillerne beholder individuelle planer.
+// Plain groupId (FK håndheves i DB-DDL; ingen @relation for å holde
+// endringen isolert — jf. gotcha-regelen for additive tabeller).
+model GroupPeriodBlock {
+  id                  String   @id @default(cuid())
+  groupId             String
+  lPhase              LPhase
+  startDate           DateTime
+  endDate             DateTime
+  focus               String?
+  weeklyVolMin        Int?
+  weeklyVolMax        Int?
+  weeklySessionBudget Json?
+  notes               String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([groupId, startDate])
+  @@map("group_period_blocks")
 }
 
 model TournamentEntry {

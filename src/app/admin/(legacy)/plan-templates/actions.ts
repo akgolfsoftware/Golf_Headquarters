@@ -36,7 +36,7 @@ const KategoriEnum = z.enum([
   "L",
 ]);
 
-const LPhaseEnum = z.enum(["GRUNN", "SPESIAL", "TURNERING"]);
+const LPhaseEnum = z.enum(["GRUNN", "SPESIAL", "TURNERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING"]);
 
 const PyramidAreaEnum = z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]);
 const SkillAreaEnum = z.enum([

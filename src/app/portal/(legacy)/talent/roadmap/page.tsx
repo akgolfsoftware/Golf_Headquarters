@@ -48,6 +48,10 @@ const LPHASE_NAVN: Record<LPhase, string> = {
   GRUNN: "Grunnperiode",
   SPESIAL: "Spesialisering",
   TURNERING: "Turneringsperiode",
+  TESTUKE: "Testuke",
+  FERIE: "Ferie",
+  TRENINGSSAMLING: "Treningssamling",
+  HELDAGSSAMLING: "Heldagssamling",
 };
 
 const MND_KORT = [

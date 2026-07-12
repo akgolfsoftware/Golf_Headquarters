@@ -175,7 +175,8 @@ export function mapSeasonPhases(data: WorkbenchData | undefined): SeasonPhase[] 
     const endM = end.getMonth();
     const months = Math.max(1, (end.getFullYear() - start.getFullYear()) * 12 + endM - startM + 1);
     const span = `${MND_SHORT_CAP[startM]}–${MND_SHORT_CAP[endM]}`;
-    const type = LPHASE_TO_TYPE[b.lPhase];
+    // 8c.1: nye periodetyper mangler i hybrid-lagets LPHASE_TO_TYPE — fall tilbake til GRUNN-visning.
+    const type = (LPHASE_TO_TYPE as Record<string, (typeof LPHASE_TO_TYPE)[keyof typeof LPHASE_TO_TYPE]>)[b.lPhase] ?? "GRUNN";
     const weekly: Record<Cat, number> = { FYS: 2, TEK: 3, SLAG: 2, SPILL: 1, TURN: 0 };
     if (type === "TURNERING") weekly.TURN = 2;
     if (type === "GRUNN") {

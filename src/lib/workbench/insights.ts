@@ -9,6 +9,10 @@ const PHASE_LABEL: Record<LPhase, string> = {
   GRUNN: "Grunnperiode",
   SPESIAL: "Spesialiseringsperiode",
   TURNERING: "Turneringsperiode",
+  TESTUKE: "Testuke",
+  FERIE: "Ferie",
+  TRENINGSSAMLING: "Treningssamling",
+  HELDAGSSAMLING: "Heldagssamling",
 };
 
 function fmtMin(min: number): string {

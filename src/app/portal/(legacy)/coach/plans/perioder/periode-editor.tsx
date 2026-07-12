@@ -38,9 +38,13 @@ const LPHASE_META: Record<LPhase, { label: string; color: string; desc: string }
   GRUNN:     { label: "Grunnperiode",           color: "bg-emerald-600", desc: "Fysisk og teknisk grunnlag" },
   SPESIAL:   { label: "Spesialiseringsperiode", color: "bg-teal-600",   desc: "Spesialisert trening" },
   TURNERING: { label: "Turneringsperiode",      color: "bg-amber-500",  desc: "Kampforberedelse og prestasjon" },
+  TESTUKE:         { label: "Testuke",         color: "bg-sky-600",    desc: "Kontrollpunkt — tester" },
+  FERIE:           { label: "Ferie",           color: "bg-zinc-500",   desc: "Fri fra organisert trening" },
+  TRENINGSSAMLING: { label: "Treningssamling", color: "bg-blue-600",   desc: "Flere dager med høy tetthet" },
+  HELDAGSSAMLING:  { label: "Heldagssamling",  color: "bg-lime-600",   desc: "Én hel treningsdag" },
 };
 
-const LPHASE_ORDER: LPhase[] = ["GRUNN", "SPESIAL", "TURNERING"];
+const LPHASE_ORDER: LPhase[] = ["GRUNN", "SPESIAL", "TURNERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Des"];
 
 // ---------------------------------------------------------------------------

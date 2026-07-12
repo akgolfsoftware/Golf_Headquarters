@@ -230,6 +230,40 @@ export const PERIODE_TYPER: Record<LPhase, PeriodeConstraints> = {
     lFaserTillatt: ["L_AUTO"],
     turneringsLaas: true,
   },
+  // 8c.1 — nye periodetyper. Foreløpige constraints (Anders justerer):
+  // anbefalinger, aldri sperrer.
+  TESTUKE: {
+    csMax: 100,
+    maxVolumMin: 480,
+    maxOkterUke: 5,
+    minHviledager: 1,
+    lFaserTillatt: ["L_BALL", "L_AUTO"],
+    turneringsLaas: false,
+  },
+  FERIE: {
+    csMax: 100,
+    maxVolumMin: 0,
+    maxOkterUke: 0,
+    minHviledager: 7,
+    lFaserTillatt: [],
+    turneringsLaas: false,
+  },
+  TRENINGSSAMLING: {
+    csMax: 90,
+    maxVolumMin: null,
+    maxOkterUke: null,
+    minHviledager: 0,
+    lFaserTillatt: ["L_KROPP", "L_ARM", "L_KOLLE", "L_BALL", "L_AUTO"],
+    turneringsLaas: false,
+  },
+  HELDAGSSAMLING: {
+    csMax: 90,
+    maxVolumMin: null,
+    maxOkterUke: null,
+    minHviledager: 0,
+    lFaserTillatt: ["L_KROPP", "L_ARM", "L_KOLLE", "L_BALL", "L_AUTO"],
+    turneringsLaas: false,
+  },
 };
 
 // ---------------------------------------------------------------------------

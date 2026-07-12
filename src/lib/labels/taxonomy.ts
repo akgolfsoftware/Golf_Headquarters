@@ -35,15 +35,34 @@ export const ENVIRONMENT_LABEL: Record<SessionEnvironment, string> = {
 };
 
 export const LPHASE_LABEL: Record<LPhase, string> = {
-  GRUNN:     "Grunnperiode",
-  SPESIAL:   "Spesialiseringsperiode",
-  TURNERING: "Turneringsperiode",
+  GRUNN:           "Grunnperiode",
+  SPESIAL:         "Spesialiseringsperiode",
+  TURNERING:       "Turneringsperiode",
+  TESTUKE:         "Testuke",
+  FERIE:           "Ferie",
+  TRENINGSSAMLING: "Treningssamling",
+  HELDAGSSAMLING:  "Heldagssamling",
 };
 
 export const LPHASE_BESKRIVELSE: Record<LPhase, string> = {
-  GRUNN:     "Fysisk og teknisk grunnlag — basiskapasitet",
-  SPESIAL:   "Spesialisert trening mot sesongens krav",
-  TURNERING: "Kampforberedelse og prestasjon under press",
+  GRUNN:           "Fysisk og teknisk grunnlag — basiskapasitet",
+  SPESIAL:         "Spesialisert trening mot sesongens krav",
+  TURNERING:       "Kampforberedelse og prestasjon under press",
+  TESTUKE:         "Kontrollpunkt — tester som måler fremgangen",
+  FERIE:           "Fri fra organisert trening — restitusjon",
+  TRENINGSSAMLING: "Samling over flere dager med høy treningstetthet",
+  HELDAGSSAMLING:  "Én hel dag med trening, tester eller banespill",
+};
+
+/** Periodefarger på årsplan-tidslinja (8c.1-kanon, tema-følsomme CSS-vars). */
+export const LPHASE_FARGE: Record<LPhase, string> = {
+  GRUNN:           "var(--v2-ax-fys)",
+  SPESIAL:         "var(--v2-ax-tek)",
+  TURNERING:       "var(--v2-ax-turn)",
+  TESTUKE:         "var(--v2-info)",
+  FERIE:           "var(--v2-mut)",
+  TRENINGSSAMLING: "var(--v2-ax-slag)",
+  HELDAGSSAMLING:  "var(--v2-lime)",
 };
 
 export const PYRAMIDE_REKKEFOLGE: PyramidArea[] = [

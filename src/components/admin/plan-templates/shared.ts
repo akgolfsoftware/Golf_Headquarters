@@ -45,12 +45,16 @@ export const KATEGORI_ALLE: NgfKategori[] = [
 // Primær-rad i 5x3-grid — Anders sin hovedakse
 export const KATEGORI_PRIMARY: NgfKategori[] = ["B", "E", "H", "K", "L"];
 
-export const FASE_ALLE: LPhase[] = ["GRUNN", "SPESIAL", "TURNERING"];
+export const FASE_ALLE: LPhase[] = ["GRUNN", "SPESIAL", "TURNERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING"];
 
 export const FASE_LABEL: Record<LPhase, string> = {
   GRUNN: "Grunn",
   SPESIAL: "Spesial",
   TURNERING: "Turnering",
+  TESTUKE: "Testuke",
+  FERIE: "Ferie",
+  TRENINGSSAMLING: "Samling",
+  HELDAGSSAMLING: "Heldagssamling",
 };
 
 export const KATEGORI_LABEL: Record<NgfKategori, string> = {
