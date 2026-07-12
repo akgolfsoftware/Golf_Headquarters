@@ -21,6 +21,7 @@ import {
   type AgentTeamStepView,
   type AgentTeamRunView,
 } from "@/components/admin/v2/AdminAgentTeamV2";
+import { ProjectList, type KommandoProjectView } from "@/components/kommando/project-list";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Agent-team · AgencyOS (v2)" };
@@ -28,11 +29,22 @@ export const metadata = { title: "Agent-team · AgencyOS (v2)" };
 export default async function V2AdminAgentTeamPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
-  const [projects, runs] = await Promise.all([
+  // Alle prosjekter (også arkiverte) + task-teller: prosjektstyringen bor nå
+  // HER — /admin/prosjekter er redirect hit (B4, 2026-07-12).
+  const [projects, alleProsjekter, taskCounts, runs] = await Promise.all([
     prisma.kommandoProject.findMany({
       where: { userId: user.id, status: "active" },
       orderBy: { createdAt: "desc" },
       select: { id: true, name: true },
+    }),
+    prisma.kommandoProject.findMany({
+      where: { userId: user.id },
+      orderBy: [{ status: "asc" }, { createdAt: "desc" }],
+    }),
+    prisma.kommandoTask.groupBy({
+      by: ["projectId"],
+      where: { userId: user.id, projectId: { not: null } },
+      _count: { _all: true },
     }),
     prisma.kommandoAgentRun.findMany({
       where: { userId: user.id },
@@ -40,6 +52,14 @@ export default async function V2AdminAgentTeamPage() {
       take: 10,
     }),
   ]);
+
+  const countByProject = new Map(taskCounts.map((c) => [c.projectId, c._count._all]));
+  const prosjektVisning: KommandoProjectView[] = alleProsjekter.map((p) => ({
+    id: p.id,
+    name: p.name,
+    status: p.status,
+    taskCount: countByProject.get(p.id) ?? 0,
+  }));
 
   const projectName = new Map(projects.map((p) => [p.id, p.name]));
 
@@ -71,6 +91,7 @@ export default async function V2AdminAgentTeamPage() {
   return (
     <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <AdminAgentTeamV2 data={data} />
+      <ProjectList initialProjects={prosjektVisning} />
     </V2Shell>
   );
 }
