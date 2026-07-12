@@ -237,6 +237,16 @@
 > Røyk-testet i kjørende app. Gjenstår i Bølge 2: C1 ukesyklus, W2.2b
 > periode-rulling, B1 kapasitets-økonomi, B2 churn-radar + notify-buggen
 > i live-coach-agenten (egen sjekk).
+> 2026-07-13 (natt) · C1+W2.2b LEVERT — automatisk ukesyklus: ny agent
+> weekly-plan-proposals (cron søn 18:00) genererer ukeforslag for NESTE
+> uke per coachet spiller m/ aktiv plan → PlanAction WEEKLY_PROPOSAL i
+> A1-køen (executor utvidet: hel ukepakke opprettes ved godkjenning —
+> ALDRI auto-lagring). W2.2b innebygd: aktiv PeriodBlock + øktbudsjettet
+> (8c.1) styrer variantvalget — budsjettet ER oppskriften. Idempotens
+> (ett PENDING forslag per spiller), try/catch per spiller, coachedPlayer-
+> Where-scope. Verifisert live: 12 spillere → 12 forslag → idempotens-
+> kjøring 0 nye → ryddet. AI-fallback til ærlig standardforslag når
+> API-kreditt mangler (kjent — Anders fyller på for ekte AI-forslag).
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag

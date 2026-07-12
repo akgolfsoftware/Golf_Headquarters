@@ -64,6 +64,18 @@ const sessionAddSchema = z.object({
   scheduledAt: z.string().datetime().optional(),
 });
 
+// C1: ukepakke — flere økter i én godkjenning (ukesyklus-agenten).
+const weeklyProposalSchema = z.object({
+  tittel: z.string().optional(),
+  forklaring: z.string().optional(),
+  sessions: z.array(z.object({
+    title: z.string(),
+    pyramidArea: z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]),
+    durationMin: z.number().int().min(5).max(480),
+    scheduledAt: z.string(),
+  })).min(1).max(14),
+});
+
 const sessionRemoveSchema = z.object({
   sessionId: z.string(),
 });
@@ -257,6 +269,24 @@ export function computeDelta(
         sessionsToRemove: [],
         sessionsToModify: [],
         summary: `Legger til økt: ${s.title}`,
+      };
+    }
+    // C1 (Bølge 2): hel ukepakke fra ukesyklus-agenten — flere økter i én
+    // godkjenning. Aldri auto-lagring: eksekveres KUN via accept i køen.
+    case "WEEKLY_PROPOSAL": {
+      const s = weeklyProposalSchema.parse(suggestion);
+      return {
+        sessionsToAdd: s.sessions.map((o) => ({
+          title: o.title,
+          pyramidArea: o.pyramidArea,
+          skillArea: null,
+          durationMin: o.durationMin,
+          scheduledAt: new Date(o.scheduledAt),
+          drillExerciseIds: [],
+        })),
+        sessionsToRemove: [],
+        sessionsToModify: [],
+        summary: `Ukeforslag: ${s.sessions.length} økter (${s.tittel ?? "neste uke"})`,
       };
     }
     case "SESSION_REMOVE": {

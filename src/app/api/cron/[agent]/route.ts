@@ -3,6 +3,7 @@
 
 import { NextResponse } from "next/server";
 import { runPlanWatcher } from "@/lib/agents/plan-watcher";
+import { runWeeklyPlanProposals } from "@/lib/agents/weekly-plan-proposals";
 import { runBookingReminders } from "@/lib/agents/booking-reminders";
 import { runCleanupRecordings } from "@/lib/agents/cleanup-recordings";
 import { runRefreshCalendarWatches } from "@/lib/agents/refresh-calendar-watches";
@@ -43,6 +44,7 @@ export const maxDuration = 300;
 
 const AGENTS: Record<string, () => Promise<unknown>> = {
   "plan-watcher": runPlanWatcher,
+  "weekly-plan-proposals": runWeeklyPlanProposals,
   "booking-reminders": runBookingReminders,
   "cleanup-recordings": runCleanupRecordings,
   "refresh-calendar-watches": runRefreshCalendarWatches,
