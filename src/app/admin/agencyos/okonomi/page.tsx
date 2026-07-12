@@ -136,7 +136,7 @@ export default async function V2AdminOkonomiPage() {
     serie,
     betalinger,
     stripeHref: "https://dashboard.stripe.com",
-    oppfolgHref: "/admin/okonomi",
+    oppfolgHref: "/admin/innboks",
   };
 
   return (

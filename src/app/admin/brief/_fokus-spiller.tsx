@@ -93,14 +93,14 @@ function SpillerKort({
 
       <div className="flex flex-wrap items-center gap-1.5">
         <Link
-          href={`/admin/booking/ny?player=${spiller.id}`}
+          href="/admin/bookinger/ny"
           className={agBtnClass("primary", "sm")}
         >
           <Calendar size={12} strokeWidth={1.75} />
           Book økt
         </Link>
         <Link
-          href={`/admin/messages?player=${spiller.id}`}
+          href="/admin/innboks"
           className={agBtnClass("ghost", "sm")}
         >
           <MessageSquare size={12} strokeWidth={1.75} />

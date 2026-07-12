@@ -402,7 +402,7 @@ export function AiPlanPanel({ playerId, playerName, onClose }: AiPlanPanelProps)
               Lukk
             </button>
             {status === "ok" && (
-              <Link href="/admin/approvals" style={btnPrimary}>
+              <Link href="/admin/godkjenninger" style={btnPrimary}>
                 Se godkjenningskø <ExternalLink size={12} strokeWidth={2} />
               </Link>
             )}

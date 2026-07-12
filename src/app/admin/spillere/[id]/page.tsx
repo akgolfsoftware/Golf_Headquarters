@@ -310,7 +310,7 @@ export default async function SpillerProfilPage({
         when: naarLabel(pendingAction.createdAt, now),
         type: "Godkjenning",
         tekst: sugg?.forklaring ?? sugg?.tittel ?? sugg?.title ?? "Forslag venter på godkjenning.",
-        href: "/admin/approvals",
+        href: "/admin/godkjenninger",
         pending: true,
       }
     : oversikt.comms[0]

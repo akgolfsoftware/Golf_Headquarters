@@ -265,7 +265,7 @@ export default async function DagligBrief() {
             {data.ventendeGodkjenninger > 0 && (
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut }}>{data.ventendeGodkjenninger} forslag venter totalt</span>
-                <Link href="/admin/approvals" style={{ fontFamily: T.ui, fontSize: 12, color: T.lime, fontWeight: 600, textDecoration: "none" }}>
+                <Link href="/admin/godkjenninger" style={{ fontFamily: T.ui, fontSize: 12, color: T.lime, fontWeight: 600, textDecoration: "none" }}>
                   Åpne godkjenningskø →
                 </Link>
               </div>

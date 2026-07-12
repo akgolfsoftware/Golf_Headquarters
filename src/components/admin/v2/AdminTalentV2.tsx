@@ -265,7 +265,7 @@ export function AdminTalentV2({ data }: { data: AdminTalentData }) {
       </div>
 
       <div style={{ marginTop: 14, borderTop: `1px solid ${T.border}`, paddingTop: 12 }}>
-        <Link href={`/admin/talent/radar/${valgt.id}`} style={{ textDecoration: "none", fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.lime }}>
+        <Link href="/admin/talent/radar" style={{ textDecoration: "none", fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.lime }}>
           Åpne full radar →
         </Link>
       </div>
