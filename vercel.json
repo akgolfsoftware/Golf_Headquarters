@@ -137,5 +137,8 @@
       "path": "/api/cron/plan-effectiveness-agent",
       "schedule": "0 20 * * 0"
     }
+  ],
+  "regions": [
+    "dub1"
   ]
 }
