@@ -124,6 +124,16 @@
 > (skjermbilder begge moduser — lys = sollys-modus på banen). Autolagring
 > («Uferdig runde funnet» → Fortsett/Forkast) bekreftet visuelt.
 > Coach kan IKKE føre for spiller (notert som senere sak — ikke blocker).
+> 2026-07-12 (natt) · 8c.1 LEVERT — periodetype-grunnmuren: LPhase utvidet
+> med TESTUKE/FERIE/TRENINGSSAMLING/HELDAGSSAMLING (enum i DB + schema),
+> period_blocks fikk weeklySessionBudget JSONB (øktbudsjett per pyramide-
+> område, zod-validert i lib/workbench/perioder.ts), NY tabell
+> group_period_blocks (gruppens EGEN årsplan — Anders: gruppen har egen
+> plan, spillerne beholder individuelle). Label/farge-kanon for alle 7
+> typene i lib/labels/taxonomy.ts; 13 filer med hardkodede fase-unioner
+> utvidet (motor-verdier for nye typer er FORELØPIGE — FERIE=0 økter).
+> 470/470 tester grønne. Neste: 8c.2 årsplan-canvas (dra periode inn m/
+> live dato-boble + øktbudsjett-popup).
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag
