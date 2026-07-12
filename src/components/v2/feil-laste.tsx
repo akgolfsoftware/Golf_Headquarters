@@ -125,10 +125,31 @@ export interface V2LasterProps {
 
 /** Skeleton i v2-design. Rendres i en tynn loading.tsx (Server Component OK —
  *  se docs/redesign-v2/maler/loading-mal.tsx.txt). Tre varianter dekker
- *  liste-, kort- og dashboard-skjermer; pulserende paneler i T.panel2. */
+ *  liste-, kort- og dashboard-skjermer; pulserende paneler i T.panel2.
+ *
+ *  VIKTIG (bugfix 2026-07-12, sett i prod): loading.tsx rendres UTEN sidens
+ *  V2Shell (shellen bor i page, ikke layout) — skeletonen bærer derfor selv
+ *  hele den mørke chromen (bakgrunn + rail-silhuett), ellers vises mørke
+ *  klosser på hvit flate ved hver navigering. */
 export function V2Laster({ variant = "kort" }: V2LasterProps) {
   ensurePulsStyle();
-  if (variant === "liste") return <ListeSkel />;
-  if (variant === "dashboard") return <DashboardSkel />;
-  return <KortSkel />;
+  const inner =
+    variant === "liste" ? <ListeSkel /> : variant === "dashboard" ? <DashboardSkel /> : <KortSkel />;
+  return (
+    <div
+      className="dark"
+      style={{
+        minHeight: "100vh",
+        background: `radial-gradient(1100px 460px at 24% -8%, rgba(0,88,64,0.16), transparent 62%), ${T.bg}`,
+        colorScheme: "dark",
+        display: "flex",
+      }}
+    >
+      {/* Rail-silhuett — matcher V2Shell-railen så overgangen er sømløs. */}
+      <div className="hidden md:block" style={{ width: 60, flex: "none", borderRight: `1px solid ${T.border}` }} />
+      <div className="px-4 md:px-8 pt-6 pb-24 md:pb-9" style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ maxWidth: 1680, margin: "0 auto" }}>{inner}</div>
+      </div>
+    </div>
+  );
 }

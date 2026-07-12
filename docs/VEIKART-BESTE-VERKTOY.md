@@ -56,6 +56,10 @@
 > stall-tidslinje (=Å2!), triage, nav-grupper. AKUTT-BUGFIX samtidig:
 > Mer-panelet ble liggende åpent over innhold etter navigering («trykk →
 > feil skjerm») — lukker nå ved rutebytte, solid bakgrunn, z-løft.
+> 2026-07-12 (kveld) · P4-BUGFIX #2 (Anders' skjermbilde: hvit side m/ mørke
+> klosser ved hver navigering): loading.tsx rendres UTEN V2Shell (shellen bor
+> i page) — V2Laster bærer nå selv hele den mørke chromen (bakgrunn + vignett
+> + rail-silhuett, 1680-container). Målt i app: lastebakgrunn rgb(13,14,13).
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag
