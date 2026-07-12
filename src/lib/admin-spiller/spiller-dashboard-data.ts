@@ -235,10 +235,12 @@ export async function loadSpillerDashboardEkstra(playerId: string): Promise<Spil
       take: 3,
       select: { title: true, createdAt: true },
     }),
-    // PlayerSwingVideo: tabellen player_swing_videos finnes i schema men IKKE
-    // i databasen (schema-drift-klassen, jf. plan_actions.coachId). Spørringen
-    // legges til når den kirurgiske migreringen er kjørt (venter på Anders).
-    Promise.resolve([] as { createdAt: Date }[]),
+    prisma.playerSwingVideo.findMany({
+      where: { userId: playerId, status: "READY" },
+      orderBy: { createdAt: "desc" },
+      take: 3,
+      select: { createdAt: true },
+    }),
     prisma.document.findMany({
       where: { userId: playerId },
       orderBy: { createdAt: "desc" },
