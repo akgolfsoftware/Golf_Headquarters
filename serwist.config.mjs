@@ -13,7 +13,6 @@ export default serwist({
   // (StaleWhileRevalidate for bilder via defaultCache i src/app/sw.ts).
   globIgnores: [
     "public/images/**",
-    "public/design-handover/**",
     "public/splash/**",
     "public/team-gfgk/**",
   ],

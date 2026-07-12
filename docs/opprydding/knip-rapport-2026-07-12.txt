@@ -1,0 +1,1877 @@
+◇ injected env (49) from .env.local // tip: ◈ encrypted .env [www.dotenvx.com]
+Unused files (471)
+content/blogg/banedata-baerum-gk.mdx                                  
+content/blogg/norske-17-aringer-og-putt.mdx                           
+content/blogg/norske-college-golfers-2026.mdx                         
+content/blogg/pga-sg-total-hovland.mdx                                
+content/blogg/sg-approach-er-alt.mdx                                  
+prisma/migrate-spillere-from-notion.ts                                
+prisma/scripts/map-fasilitet-krav.ts                                  
+prisma/scripts/seed-ngf-test-protocols.ts                             
+prisma/scripts/set-fasilitet-krav.ts                                  
+prisma/seed-drills-expansion.ts                                       
+prisma/seed-drills.ts                                                 
+prisma/seed-gfgk-facilities.ts                                        
+scripts/_seed-wagr-koblinger.ts                                       
+scripts/add-players-2026-05-13.ts                                     
+scripts/agency-shot.mjs                                               
+scripts/agencyos-shot.mjs                                             
+scripts/app-shot.mjs                                                  
+scripts/arkiv/fix-group-schedules-maxparticipants-2026-07-08.ts       
+scripts/arkiv/generate-standardplan-drafts-2026-07.ts                 
+scripts/arkiv/import-standardplan-drafts.ts                           
+scripts/arkiv/migrate-akformel-fields-2026-06-30.ts                   
+scripts/arkiv/migrate-app-feedback-2026-07-10.ts                      
+scripts/arkiv/migrate-caddie-tables-2026-06-23.ts                     
+scripts/arkiv/migrate-coaching-session-live-2026-07-09.ts             
+scripts/arkiv/migrate-drill-akformel-2026-06-30.ts                    
+scripts/arkiv/migrate-fys-logging-2026-07-09.ts                       
+scripts/arkiv/migrate-innboks-epost-2026-07-10.ts                     
+scripts/arkiv/migrate-kommando-agent-team-2026-06-27.ts               
+scripts/arkiv/migrate-kommando-projects-2026-06-25.ts                 
+scripts/arkiv/migrate-kommando-tables-2026-06-25.ts                   
+scripts/arkiv/migrate-plan-action-coach-id-2026-07-12.ts              
+scripts/arkiv/migrate-repdrill-2026-07-04.ts                          
+scripts/arkiv/migrate-round-type-2026-07-10.ts                        
+scripts/arkiv/migrate-stats-sg-tapper-2026-07-10.ts                   
+scripts/audit-portal-links.ts                                         
+scripts/audit-portal-stubs.ts                                         
+scripts/audit-rls.ts                                                  
+scripts/audit-stripe.ts                                               
+scripts/auth-shot.mjs                                                 
+scripts/batch-import-gfgk-2026.ts                                     
+scripts/bootstrap-turneringer.ts                                      
+scripts/check-services.ts                                             
+scripts/cleanup-tournaments.ts                                        
+scripts/create-coursehole-table.ts                                    
+scripts/create-storage-buckets.ts                                     
+scripts/create-wang-treningsplanlegger-tables-2026-07-07.ts           
+scripts/dedupe-player-names.ts                                        
+scripts/dedupe-tournament-data.ts                                     
+scripts/design-kanon-qa.ts                                            
+scripts/design-zip-qa.ts                                              
+scripts/dump-standardplan-katalog.ts                                  
+scripts/extract-routes.ts                                             
+scripts/fasit-shot.mjs                                                
+scripts/fix-demo-oyvind.ts                                            
+scripts/gapfyll-shot.mjs                                              
+scripts/generate-icons.mjs                                            
+scripts/generate-pwa-splash.mjs                                       
+scripts/import-bane-osm.ts                                            
+scripts/import-beta-users.ts                                          
+scripts/import-clippd-college.ts                                      
+scripts/import-from-notion.ts                                         
+scripts/import-norske-turneringer.ts                                  
+scripts/import-players.ts                                             
+scripts/import-tournaments.ts                                         
+scripts/meg-index-vaults.ts                                           
+scripts/meg-kalender-diagnose.ts                                      
+scripts/meg-sjekk.ts                                                  
+scripts/opprydding-baseline-shot.mjs                                  
+scripts/opprydding-codemod-fase3.mjs                                  
+scripts/ordbok-json.ts                                                
+scripts/probe-screentest-data.ts                                      
+scripts/public-shot.mjs                                               
+scripts/reimport-stripe.ts                                            
+scripts/render-dispersion-demo.ts                                     
+scripts/render-onsoy-svg.ts                                           
+scripts/render-shot-plot-demo.ts                                      
+scripts/reset-auth-passwords.ts                                       
+scripts/review-name-variants.ts                                       
+scripts/route-shot.mjs                                                
+scripts/run-benchmark-sync.ts                                         
+scripts/scrape-golfstat-ncaa.ts                                       
+scripts/scrape-wagr-rounds.ts                                         
+scripts/seed-akgolf-demo.ts                                           
+scripts/seed-anders-skarpnord.ts                                      
+scripts/seed-anders-spiller.ts                                        
+scripts/seed-baner.ts                                                 
+scripts/seed-beta-credits.ts                                          
+scripts/seed-beta-spillere.ts                                         
+scripts/seed-fys-testdata.ts                                          
+scripts/seed-natt-brukere-auth-bolge.ts                               
+scripts/seed-natt-brukere.ts                                          
+scripts/seed-physical-exercises.ts                                    
+scripts/seed-physical-templates.ts                                    
+scripts/seed-plan-templates.ts                                        
+scripts/seed-screentest-coach.ts                                      
+scripts/seed-screentest-komplett.ts                                   
+scripts/seed-screentest-parent.ts                                     
+scripts/seed-screentest.ts                                            
+scripts/seed-stall-detalj.ts                                          
+scripts/seed-test-definitions.ts                                      
+scripts/seed-wagr-benchmark.ts                                        
+scripts/shot-forside.mjs                                              
+scripts/shot-gated2.mjs                                               
+scripts/shot-rest.mjs                                                 
+scripts/shot-screens.mjs                                              
+scripts/sjekk-oyvind-drills.ts                                        
+scripts/standardplan-felles.ts                                        
+scripts/verify-agent-loop.ts                                          
+scripts/verify-godkjenninger-ui.ts                                    
+scripts/verify-live-session.ts                                        
+scripts/workbench-gate-evidence.mjs                                   
+scripts/workbench-locked-evidence.ts                                  
+scripts/workbench-move-evidence.ts                                    
+scripts/workbench-plan-status.ts                                      
+scripts/workbench-publish-evidence.ts                                 
+scripts/workbench-publish-prep.ts                                     
+scripts/workbench-session-at.ts                                       
+serwist.config.mjs                                                    
+src/app/(marketing)/(mlegacy)/blogg/blogg-liste.tsx                   
+src/app/(marketing)/(mlegacy)/booking/actions.ts                      
+src/app/(marketing)/stats/pga/drive-distance/explorer.tsx             
+src/app/(marketing)/stats/pga/fairway-pct/explorer.tsx                
+src/app/(marketing)/stats/pga/gir-pct/explorer.tsx                    
+src/app/(marketing)/stats/pga/putts-per-round/explorer.tsx            
+src/app/(marketing)/stats/pga/scoring-avg/explorer.tsx                
+src/app/(marketing)/stats/pga/sg-total/explorer.tsx                   
+src/app/(marketing)/stats/sg-sammenlign/resultat/[id]/result-view.tsx 
+src/app/(marketing)/stats/tour/[slug]/tour-client.tsx                 
+src/app/admin/(legacy)/agents/manual-trigger.tsx                      
+src/app/admin/(legacy)/analyse/actions.ts                             
+src/app/admin/(legacy)/analysere/_hub-actions.tsx                     
+src/app/admin/(legacy)/approvals/batch-approve-button.tsx             
+src/app/admin/(legacy)/board/actions.ts                               
+src/app/admin/(legacy)/bookinger/bekreft-avvis.tsx                    
+src/app/admin/(legacy)/bookinger/eksporter-knapp.tsx                  
+src/app/admin/(legacy)/bookinger/map-bookinger-data.ts                
+src/app/admin/(legacy)/email-templates/template-form.tsx              
+src/app/admin/(legacy)/gjennomfore/gjennomfore-actions.tsx            
+src/app/admin/(legacy)/grupper/grupper-actions.tsx                    
+src/app/admin/(legacy)/handlingssenter/handlingssenter-client.tsx     
+src/app/admin/(legacy)/innboks/actions.ts                             
+src/app/admin/(legacy)/kalender/actions/analyse.ts                    
+src/app/admin/(legacy)/kalender/actions/ankere.ts                     
+src/app/admin/(legacy)/kalender/actions/maler.ts                      
+src/app/admin/(legacy)/kalender/actions/sessions.ts                   
+src/app/admin/(legacy)/messages/_components/context-panel.tsx         
+src/app/admin/(legacy)/messages/_components/conversation.tsx          
+src/app/admin/(legacy)/messages/_components/messages-inbox.tsx        
+src/app/admin/(legacy)/organisasjon/organisasjon-actions.tsx          
+src/app/admin/(legacy)/plans/_plan-card-menu.tsx                      
+src/app/admin/(legacy)/plans/_quick-plan-modal.tsx                    
+src/app/admin/(legacy)/plans/new/actions.ts                           
+src/app/admin/(legacy)/plans/new/ai-panel.tsx                         
+src/app/admin/(legacy)/plans/new/plan-builder-client.tsx              
+src/app/admin/(legacy)/plans/new/wizard.tsx                           
+src/app/admin/(legacy)/plans/templates/[id]/rediger/actions.ts        
+src/app/admin/(legacy)/plans/templates/[id]/rediger/rediger-client.tsx
+src/app/admin/(legacy)/recording/transcribe-retry-button.tsx          
+src/app/admin/(legacy)/reports/reports-actions.tsx                    
+src/app/admin/(legacy)/runder/runder-actions.tsx                      
+src/app/admin/(legacy)/spillere/[id]/actions.ts                       
+src/app/admin/(legacy)/spillere/[id]/effekt-tab.tsx                   
+src/app/admin/(legacy)/spillere/[id]/enrollment-actions.ts            
+src/app/admin/(legacy)/spillere/[id]/enrollment-panel.tsx             
+src/app/admin/(legacy)/spillere/[id]/map-spiller-detalj.ts            
+src/app/admin/(legacy)/spillere/ny/wizard.tsx                         
+src/app/admin/(legacy)/spillere/spiller-liste-map.ts                  
+src/app/admin/(legacy)/spillere/spillere-tabell.tsx                   
+src/app/admin/(legacy)/talent/discovery/legg-til-form.tsx             
+src/app/admin/(legacy)/talent/wagr-import/import-form.tsx             
+src/app/admin/(legacy)/teknisk-plan/teknisk-plan-actions.tsx          
+src/app/admin/(legacy)/tester/map-tester-oversikt.ts                  
+src/app/admin/(legacy)/workspace/placeholder.tsx                      
+src/app/admin/(legacy)/workspace/workspace-actions.tsx                
+src/app/auth/forgot-password/forgot-form.tsx                          
+src/app/auth/guardian-consent/[token]/guardian-consent-form.tsx       
+src/app/auth/login/login-form.tsx                                     
+src/app/auth/reset-password/reset-form.tsx                            
+src/app/auth/samtykke-venter/samtykke-venter-klient.tsx               
+src/app/auth/signup/signup-form.tsx                                   
+src/app/forelder/samtykke/data-actions.tsx                            
+src/app/forelder/samtykke/samtykke-form.tsx                           
+src/app/portal/(fullscreen)/live/[sessionId]/active/actions.ts        
+src/app/portal/(fullscreen)/live/[sessionId]/summary/actions.ts       
+src/app/portal/(legacy)/coach/ai/chat-toolbar.tsx                     
+src/app/portal/(legacy)/coach/ai/chat.tsx                             
+src/app/portal/(legacy)/coach/melding/actions.ts                      
+src/app/portal/(legacy)/coach/melding/form.tsx                        
+src/app/portal/(legacy)/coach/videoer/player-video-card.tsx           
+src/app/portal/(legacy)/drills/[id]/actions.ts                        
+src/app/portal/(legacy)/drills/[id]/drill-client.tsx                  
+src/app/portal/(legacy)/drills/[id]/mestrings-logg-client.tsx         
+src/app/portal/(legacy)/drills/actions.ts                             
+src/app/portal/(legacy)/mal/ny-goal-modal.tsx                         
+src/app/portal/(legacy)/mal/runder/[id]/shot-by-shot/share-button.tsx 
+src/app/portal/(legacy)/mal/runder/actions.ts                         
+src/app/portal/(legacy)/mal/runder/eksporter-modal.tsx                
+src/app/portal/(legacy)/onskeligokt/form.tsx                          
+src/app/portal/(legacy)/page-actions.ts                               
+src/app/portal/(legacy)/reach/reach-privacy-client.tsx                
+src/app/portal/(legacy)/statistikk/statistikk-v10-data.ts             
+src/app/portal/(legacy)/tren/aarsplan/aarsplan-interaktiv.tsx         
+src/app/portal/(legacy)/tren/aarsplan/actions.ts                      
+src/app/portal/(legacy)/tren/aarsplan/bulk-kobl-button.tsx            
+src/app/portal/(legacy)/tren/fys-plan/actions.ts                      
+src/app/portal/(legacy)/tren/kalender/actions.ts                      
+src/app/portal/(legacy)/tren/kalender/kalender-interaktiv.tsx         
+src/app/portal/(legacy)/tren/ovelser/_components/legg-til-knapp.tsx   
+src/app/portal/(legacy)/tren/ovelser/actions.ts                       
+src/app/portal/(legacy)/tren/tester/actions.ts                        
+src/app/portal/(legacy)/tren/turneringer/[id]/actions.ts              
+src/app/portal/(legacy)/tren/turneringer/[id]/turnering-client.tsx    
+src/app/portal/(legacy)/tren/turneringer/turneringer-interaktiv.tsx   
+src/app/portal/(legacy)/varsler/map-varsler-data.ts                   
+src/app/portal/(legacy)/varsler/VarslerMarkerKnapp.tsx                
+src/app/portal/meg/abonnement/oppgrader/flyt/actions.ts               
+src/app/portal/meg/abonnement/upgrade-button.tsx                      
+src/app/portal/meg/feedback/app-feedback-form.tsx                     
+src/app/portal/meg/feedback/feedback-historikk.tsx                    
+src/app/portal/meg/foreldre/action-buttons.tsx                        
+src/app/portal/meg/foreldre/actions.ts                                
+src/app/portal/meg/foreldre/invite-parent-modal.tsx                   
+src/app/portal/meg/help/faq-accordion.tsx                             
+src/app/portal/meg/helse/helse-form.tsx                               
+src/app/portal/meg/innstillinger/varsler-toggles.tsx                  
+src/app/portal/meg/meg-hybrid.tsx                                     
+src/app/portal/meg/profil-form.tsx                                    
+src/app/portal/meg/profil/profil-rediger-form.tsx                     
+src/app/portal/meg/utstyrsbag/utstyrsbag-form.tsx                     
+src/app/portal/meg/utstyrsbag/utstyrsbag-view.tsx                     
+src/app/portal/planlegge/actions.ts                                   
+src/app/sw.ts                                                         
+src/components/admin/agencyos/daily-brief.tsx                         
+src/components/admin/ai-plan-forslag-button.tsx                       
+src/components/admin/bookinger/bookinger-view.tsx                     
+src/components/admin/bookinger/bookinger.tsx                          
+src/components/admin/caddie/_caddie-actions.tsx                       
+src/components/admin/caddie/caddie-approval-modal.tsx                 
+src/components/admin/caddie/caddie-chat.tsx                           
+src/components/admin/caddie/caddie-message.tsx                        
+src/components/admin/caddie/caddie-tool-call.tsx                      
+src/components/admin/caddie/caddie.tsx                                
+src/components/admin/caddie/co-agent.tsx                              
+src/components/admin/coach-workbench/coach-workbench.tsx              
+src/components/admin/compliance/compliance.tsx                        
+src/components/admin/inbox/inbox-kit.tsx                              
+src/components/admin/innboks/inbox-context.tsx                        
+src/components/admin/innboks/inbox-conversation.tsx                   
+src/components/admin/innboks/inbox-empty.tsx                          
+src/components/admin/innboks/inbox-screen.tsx                         
+src/components/admin/innboks/inbox-thread-list.tsx                    
+src/components/admin/quick-add-session-modal.tsx                      
+src/components/admin/search-trigger-button.tsx                        
+src/components/admin/spiller-detalj/_action-bar.tsx                   
+src/components/admin/spiller-detalj/spiller-detalj.tsx                
+src/components/admin/spillere/spiller-liste.tsx                       
+src/components/admin/split-inbox-shell.tsx                            
+src/components/admin/tester/nivaa-badge.tsx                           
+src/components/admin/tester/test-uke-trigger.tsx                      
+src/components/admin/tester/tester-matrix.tsx                         
+src/components/admin/tester/tester-oversikt.tsx                       
+src/components/admin/v2/AdminOrgV2.tsx                                
+src/components/athletic/pulse-dot.tsx                                 
+src/components/auth/ak-logo.tsx                                       
+src/components/auth/bankid-skjerm.tsx                                 
+src/components/auth/logget-ut.tsx                                     
+src/components/auth/onboarding.tsx                                    
+src/components/coachhq/analytics-heatmap.tsx                          
+src/components/coachhq/plan-card-mini.tsx                             
+src/components/coachhq/workbench/actions.ts                           
+src/components/coachhq/workbench/caddie-chat.tsx                      
+src/components/coachhq/workbench/key-metrics.tsx                      
+src/components/coachhq/workbench/notater-actions.ts                   
+src/components/coachhq/workbench/ny-notat-modal.tsx                   
+src/components/coachhq/workbench/panels/notater-panel.tsx             
+src/components/coachhq/workbench/shell.tsx                            
+src/components/coachhq/workbench/spiller-hero.tsx                     
+src/components/coachhq/workbench/tabs.tsx                             
+src/components/coachhq/workbench/top-bar.tsx                          
+src/components/forelder/forelder-hero.tsx                             
+src/components/forelder/hjem-terminal.tsx                             
+src/components/forelder/sidebar.tsx                                   
+src/components/fremgang/SgSparkline.tsx                               
+src/components/fremgang/TreningsvolumBar.tsx                          
+src/components/hubs/hub-card.tsx                                      
+src/components/hubs/hub-frame.tsx                                     
+src/components/hubs/hub-header.tsx                                    
+src/components/hubs/hub-visuals.tsx                                   
+src/components/hubs/index.ts                                          
+src/components/marketing/booking-anbefaling.tsx                       
+src/components/marketing/marketing-sections.tsx                       
+src/components/marketing/playerhq-mockup.tsx                          
+src/components/marketing/sg-console.tsx                               
+src/components/marketing/subscribe-button.tsx                         
+src/components/onboarding/progress-bar.tsx                            
+src/components/planlegge-v2/hero-tabs.tsx                             
+src/components/portal/abonnement/abonnement.tsx                       
+src/components/portal/add-exercise-sheet.tsx                          
+src/components/portal/agent-pipeline.tsx                              
+src/components/portal/analytics/HybridAnalysePage.tsx                 
+src/components/portal/analytics/MinGolfPage.tsx                       
+src/components/portal/booking/booking-hub-hybrid.tsx                  
+src/components/portal/booking/booking-hub.tsx                         
+src/components/portal/coach/MessageInput.tsx                          
+src/components/portal/coach/MessageThread.tsx                         
+src/components/portal/dashboard/CoachMessage.tsx                      
+src/components/portal/dashboard/DashboardShell.tsx                    
+src/components/portal/dashboard/GoalsProgress.tsx                     
+src/components/portal/dashboard/HybridHomePage.tsx                    
+src/components/portal/dashboard/KpiGrid.tsx                           
+src/components/portal/dashboard/NotificationsCard.tsx                 
+src/components/portal/dashboard/QuickLinks.tsx                        
+src/components/portal/dashboard/RecentActivity.tsx                    
+src/components/portal/dashboard/TodayCard.tsx                         
+src/components/portal/dashboard/TournamentCountdown.tsx               
+src/components/portal/dashboard/WeekCalendar.tsx                      
+src/components/portal/dashboard/WeekProgress.tsx                      
+src/components/portal/drill-detalj/drill-detalj.tsx                   
+src/components/portal/drill-detalj/media-veksler.tsx                  
+src/components/portal/drills/drill-gallery.tsx                        
+src/components/portal/drills/drill-library.tsx                        
+src/components/portal/exercise-card-actions.tsx                       
+src/components/portal/exercise-card.tsx                               
+src/components/portal/gjennomfore/gjennomfore-faner.tsx               
+src/components/portal/live-okt/types.ts                               
+src/components/portal/meg/foreldre-info.tsx                           
+src/components/portal/meg/innstillinger.tsx                           
+src/components/portal/meg/meg-sub.tsx                                 
+src/components/portal/meg/toggle.tsx                                  
+src/components/portal/runder/runde-liste.tsx                          
+src/components/portal/statistikk/statistikk.tsx                       
+src/components/portal/stats/stats-tabs.tsx                            
+src/components/portal/tester-liste.tsx                                
+src/components/portal/tester/test-uke-kommende.tsx                    
+src/components/portal/tester/tester-list.tsx                          
+src/components/portal/tester/tester-liste.tsx                         
+src/components/portal/tester/tester-screen.tsx                        
+src/components/portal/trackman/trackman.tsx                           
+src/components/portal/turnering-detalj/forberedelse-checklist.tsx     
+src/components/portal/v2/LiveOktV2.tsx                                
+src/components/portal/v2/OnboardingV2.tsx                             
+src/components/portal/varsler/varsler-client.tsx                      
+src/components/portal/varsler/varsler.tsx                             
+src/components/portal/workbench/ai-insights-row.tsx                   
+src/components/portal/workbench/get-week-progress.ts                  
+src/components/portal/workbench/live-bar.tsx                          
+src/components/portal/workbench/player-workbench.tsx                  
+src/components/portal/workbench/section-header.tsx                    
+src/components/portal/workbench/SessionCard.tsx                       
+src/components/portal/workbench/StandardSessionItem.tsx               
+src/components/portal/workbench/types.ts                              
+src/components/portal/workbench/week-progress-card.tsx                
+src/components/portal/workbench/workbench-portal.css                  
+src/components/portal/workbench/WorkbenchCalendar.tsx                 
+src/components/portal/workbench/WorkbenchInspector.tsx                
+src/components/portal/workbench/WorkbenchSidebar.tsx                  
+src/components/portal/workbench/WorkbenchStatusbar.tsx                
+src/components/portal/workbench/WorkbenchTopbar.tsx                   
+src/components/shared/calendar/AarsplanView.tsx                       
+src/components/shared/calendar/CalendarShell.tsx                      
+src/components/shared/calendar/DayView.tsx                            
+src/components/shared/calendar/FysDrillEditor.tsx                     
+src/components/shared/calendar/GolfDrillEditor.tsx                    
+src/components/shared/calendar/KalenderRoot.tsx                       
+src/components/shared/calendar/MonthView.tsx                          
+src/components/shared/calendar/PlanSidebar.tsx                        
+src/components/shared/calendar/PraksistypeBadge.tsx                   
+src/components/shared/calendar/PyramideBar.tsx                        
+src/components/shared/calendar/SessionCard.tsx                        
+src/components/shared/calendar/SmartDateInput.tsx                     
+src/components/shared/calendar/TurneringMarker.tsx                    
+src/components/shared/calendar/WeekView.tsx                           
+src/components/shared/copy-button.tsx                                 
+src/components/shared/del-runde-modal.tsx                             
+src/components/shared/page-header.tsx                                 
+src/components/shared/profil-rediger-modal.tsx                        
+src/components/shared/user-menu.tsx                                   
+src/components/shared/ViewModeContext.tsx                             
+src/components/stats/stats-spiller-rad.tsx                            
+src/components/stats/stats-tabs.tsx                                   
+src/components/talent/talent.css                                      
+src/components/teknisk-plan/plan-card.tsx                             
+src/components/test-modul-v2/coach-spiller-tester-tab-screen.tsx      
+src/components/test-modul-v2/coach-tester-stall-screen.tsx            
+src/components/test-modul-v2/tester-dashboard-screen.tsx              
+src/components/turneringer/mersalg-banner.tsx                         
+src/components/turneringer/norske-denne-uka-widget.tsx                
+src/components/workbench-hybrid/AiPlanPanel.tsx                       
+src/components/workbench-hybrid/ArsplanView.tsx                       
+src/components/workbench-hybrid/ArView.tsx                            
+src/components/workbench-hybrid/build-seed.ts                         
+src/components/workbench-hybrid/CanonValidering.tsx                   
+src/components/workbench-hybrid/CoachSkillWizard.tsx                  
+src/components/workbench-hybrid/DagView.tsx                           
+src/components/workbench-hybrid/DimPickerModal.tsx                    
+src/components/workbench-hybrid/DrillProgram.tsx                      
+src/components/workbench-hybrid/EmptyPlanState.tsx                    
+src/components/workbench-hybrid/helpers.ts                            
+src/components/workbench-hybrid/HubTabRail.tsx                        
+src/components/workbench-hybrid/index.ts                              
+src/components/workbench-hybrid/InsightsStripe.tsx                    
+src/components/workbench-hybrid/Inspector.tsx                         
+src/components/workbench-hybrid/KpiDetailModal.tsx                    
+src/components/workbench-hybrid/KpiStrip.tsx                          
+src/components/workbench-hybrid/MalerTab.tsx                          
+src/components/workbench-hybrid/ManedView.tsx                         
+src/components/workbench-hybrid/MobileInspectorSheet.tsx              
+src/components/workbench-hybrid/MobilePaletteSheet.tsx                
+src/components/workbench-hybrid/MobileStatusbar.tsx                   
+src/components/workbench-hybrid/MobileTopbar.tsx                      
+src/components/workbench-hybrid/OktDetailTab.tsx                      
+src/components/workbench-hybrid/OktplanOverlay.tsx                    
+src/components/workbench-hybrid/OvelsesbankModal.tsx                  
+src/components/workbench-hybrid/PaletteSidebar.tsx                    
+src/components/workbench-hybrid/RecurrenceEditor.tsx                  
+src/components/workbench-hybrid/SesongmalTab.tsx                      
+src/components/workbench-hybrid/SignalFeedPanel.tsx                   
+src/components/workbench-hybrid/Statusbar.tsx                         
+src/components/workbench-hybrid/StdTab.tsx                            
+src/components/workbench-hybrid/taxonomy.ts                           
+src/components/workbench-hybrid/TekniskPlanTab.tsx                    
+src/components/workbench-hybrid/Topbar.tsx                            
+src/components/workbench-hybrid/UkeView.tsx                           
+src/components/workbench-hybrid/use-media-query.ts                    
+src/components/workbench-hybrid/WorkbenchHybrid.tsx                   
+src/lib/admin-hub-data.ts                                             
+src/lib/admin-workbench/workbench-data.tsx                            
+src/lib/admin/bookinger-data.ts                                       
+src/lib/admin/drift-data.ts                                           
+src/lib/admin/innboks-data.tsx                                        
+src/lib/admin/kalender-uke-data.ts                                    
+src/lib/admin/tester-matrix-data.ts                                   
+src/lib/admin/tester-matrix-format.ts                                 
+src/lib/admin/tester-matrix-types.ts                                  
+src/lib/agents/coach-action-types.ts                                  
+src/lib/agents/registry.ts                                            
+src/lib/ai-plan/json-schemas.ts                                       
+src/lib/ai-plan/tournament-prep.ts                                    
+src/lib/ai/agents/live-coach-chat.ts                                  
+src/lib/ai/get-workbench-insights.ts                                  
+src/lib/all-routes.ts                                                 
+src/lib/analytics.ts                                                  
+src/lib/booking/availability-merge.ts                                 
+src/lib/canon/actions.ts                                              
+src/lib/canon/klarsprak.ts                                            
+src/lib/canon/valider-plan.ts                                         
+src/lib/dashboard-data.ts                                             
+src/lib/domain/rules/index.ts                                         
+src/lib/intelligence/client.ts                                        
+src/lib/leave/actions.ts                                              
+src/lib/meg/memory-compress.ts                                        
+src/lib/notifications/index.ts                                        
+src/lib/notifications/triggers.ts                                     
+src/lib/notify-analysis-ready.ts                                      
+src/lib/portal-analyse/treningsanalyse-data.ts                        
+src/lib/portal-analysere/analysere-data.ts                            
+src/lib/portal-meg/profil-data.ts                                     
+src/lib/portal-planlegge/planlegge-data.ts                            
+src/lib/portal-sghub/sg-waterfall-data.ts                             
+src/lib/portal-stats/overview-data.ts                                 
+src/lib/portal-trackman/session-analysis.ts                           
+src/lib/portal-workbench/player-workbench-data.tsx                    
+src/lib/portal/training/session-generator.ts                          
+src/lib/push.ts                                                       
+src/lib/sg-benchmarks.ts                                              
+src/lib/tiger-five.ts                                                 
+src/lib/training/labels.ts                                            
+src/lib/workbench/apply-template-actions.ts                           
+src/lib/workbench/coach-skill-actions.ts                              
+src/lib/workbench/drill-actions.ts                                    
+src/styles/v2/tokens.css                                              
+Unused dependencies (8)
+@ai-sdk/gateway  package.json:31:6
+@prisma/client   package.json:42:6
+@serwist/next    package.json:44:6
+@vercel/blob     package.json:51:6
+fast-uri         package.json:58:6
+pg               package.json:66:6
+rrule            package.json:73:6
+serwist          package.json:74:6
+Unused devDependencies (4)
+@types/dompurify  package.json:86:6
+@types/mapbox-gl  package.json:87:6
+@types/pg         package.json:91:6
+node-html-parser  package.json:99:6
+Unlisted dependencies (2)
+@dnd-kit/utilities   src/app/admin/plans/[planId]/draggable-sessions.tsx:23:21
+google-auth-library  src/lib/google-calendar.ts:17:30                         
+Unused exports (628)
+MANUELLE_AGENTER                            src/app/admin/(legacy)/agents/actions.ts:35:14                        
+exportAnalyticsInputSchema                  src/app/admin/(legacy)/analytics/actions.ts:18:14                     
+FacilityForm                      function  src/app/admin/(legacy)/anlegg/location-form.tsx:178:17                
+batchApproveSelected              function  src/app/admin/(legacy)/approvals/actions.ts:80:23                     
+exportBriefInputSchema                      src/app/admin/(legacy)/brief/actions.ts:19:14                         
+opprettOktPaaTid                  function  src/app/admin/(legacy)/calendar/actions.ts:31:23                      
+moveSession                       function  src/app/admin/(legacy)/calendar/actions.ts:133:23                     
+cancelSession                     function  src/app/admin/(legacy)/calendar/actions.ts:188:23                     
+TIL_LPHASE                                  src/app/admin/(legacy)/kalender/lib/periode-helpers.ts:8:14           
+FRA_NOTES_PREFIKS                           src/app/admin/(legacy)/kalender/lib/periode-helpers.ts:18:14          
+leggTilPeriodeMarkor              function  src/app/admin/(legacy)/kalender/lib/periode-helpers.ts:20:17          
+sendMelding                       function  src/app/admin/(legacy)/messages/actions.ts:46:23                      
+togglePlanActive                  function  src/app/admin/(legacy)/plans/actions.ts:28:23                         
+createPlan                        function  src/app/admin/(legacy)/plans/actions.ts:91:23                         
+deletePlan                        function  src/app/admin/(legacy)/plans/actions.ts:108:23                        
+importerWagrSpiller               function  src/app/admin/(legacy)/talent/wagr-import/actions.ts:56:23            
+exportTournamentsInputSchema                src/app/admin/(legacy)/tournaments/actions.ts:267:14                  
+ny_turnering_schema                         src/app/admin/(legacy)/tournaments/ny/actions.ts:24:14                
+markPlanCompleted                 function  src/app/admin/plans/[planId]/actions.ts:299:23                        
+rateEffectiveness                 function  src/app/admin/plans/[planId]/actions.ts:352:23                        
+cancelSession                     function  src/app/admin/plans/[planId]/actions.ts:410:23                        
+saveOnboardingProfile             function  src/app/auth/onboarding/actions.ts:86:23                              
+beOmDataeksport                   function  src/app/forelder/samtykke/actions.ts:76:23                            
+isCoachOnboardingComplete         function  src/app/onboard/coach/actions.ts:157:23                               
+findOngoingSession                function  src/app/portal/(fullscreen)/live/[sessionId]/actions.ts:231:23        
+logDrillReps                      function  src/app/portal/(fullscreen)/live/[sessionId]/actions.ts:275:23        
+sendMessage                       function  src/app/portal/(legacy)/coach/actions.ts:164:23                       
+getPlanChangeRequests             function  src/app/portal/(legacy)/coach/actions.ts:208:23                       
+createPlanChangeRequest           function  src/app/portal/(legacy)/coach/actions.ts:262:23                       
+uploadMessageAttachment           function  src/app/portal/(legacy)/coach/melding/ny/actions.ts:51:23             
+slettOvelse                       function  src/app/portal/(legacy)/coach/ovelser/actions.ts:75:23                
+createGoal                        function  src/app/portal/(legacy)/mal/goals-actions.ts:30:23                    
+slettGoal                         function  src/app/portal/(legacy)/mal/goals-actions.ts:64:23                    
+reorderPositions                  function  src/app/portal/(legacy)/tren/teknisk-plan/actions.ts:278:23           
+reorderTasks                      function  src/app/portal/(legacy)/tren/teknisk-plan/actions.ts:302:23           
+logReps                           function  src/app/portal/(legacy)/tren/teknisk-plan/actions.ts:331:23           
+leggTilTurnering                  function  src/app/portal/(legacy)/tren/turneringer/actions.ts:29:23             
+oppdaterTournamentEntry           function  src/app/portal/(legacy)/tren/turneringer/actions.ts:78:23             
+koblTilArsplan                    function  src/app/portal/(legacy)/tren/turneringer/actions.ts:171:23            
+bulkKoblTurneringerTilArsplan     function  src/app/portal/(legacy)/tren/turneringer/actions.ts:203:23            
+slettTournamentEntry              function  src/app/portal/(legacy)/tren/turneringer/actions.ts:367:23            
+opprettUtfordring                 function  src/app/portal/(legacy)/utfordringer/actions.ts:30:23                 
+deleteNotifications               function  src/app/portal/(legacy)/varsler/actions.ts:34:23                      
+getTodaysSession                  function  src/app/portal/actions.ts:193:23                                      
+getWeekOverview                   function  src/app/portal/actions.ts:231:23                                      
+getRecentActivity                 function  src/app/portal/actions.ts:280:23                                      
+getUnreadNotifications            function  src/app/portal/actions.ts:371:23                                      
+getLatestCoachMessage             function  src/app/portal/actions.ts:401:23                                      
+getStatsSnapshot                  function  src/app/portal/actions.ts:437:23                                      
+getNextTournament                 function  src/app/portal/actions.ts:473:23                                      
+getWeekPlanProgress               function  src/app/portal/actions.ts:526:23                                      
+getKpiStats                       function  src/app/portal/actions.ts:581:23                                      
+getTrainingHeatmap                function  src/app/portal/actions.ts:636:23                                      
+getAllTodaysSessions              function  src/app/portal/actions.ts:668:23                                      
+getTrainingStats                  function  src/app/portal/analysere/actions.ts:165:23                            
+getRoundStats                     function  src/app/portal/analysere/actions.ts:255:23                            
+getRoundDetail                    function  src/app/portal/analysere/actions.ts:296:23                            
+getTournamentResults              function  src/app/portal/analysere/actions.ts:341:23                            
+getTestResults                    function  src/app/portal/analysere/actions.ts:383:23                            
+getTrackManData                   function  src/app/portal/analysere/actions.ts:411:23                            
+getGoals                          function  src/app/portal/analysere/actions.ts:497:23                            
+shareRound                        function  src/app/portal/mal/runder/[id]/actions.ts:37:23                       
+logout                            function  src/app/portal/meg/actions.ts:105:23                                  
+requestDataExport                 function  src/app/portal/meg/innstillinger/actions.ts:269:23                    
+requestAccountDeletion            function  src/app/portal/meg/innstillinger/actions.ts:280:23                    
+createPeriod                      function  src/app/portal/planlegge/workbench/actions.ts:23:23                   
+createTrainingCamp                function  src/app/portal/planlegge/workbench/actions.ts:68:23                   
+listTrainingCamps                 function  src/app/portal/planlegge/workbench/actions.ts:96:23                   
+setActivePlanVariant              function  src/app/portal/planlegge/workbench/actions.ts:108:23                  
+listUserPlans                     function  src/app/portal/planlegge/workbench/actions.ts:130:23                  
+listPlanSessions                  function  src/app/portal/planlegge/workbench/actions.ts:143:23                  
+moveSessionAction                 function  src/app/portal/planlegge/workbench/actions.ts:153:23                  
+createTrainingPlan                function  src/app/portal/planlegge/workbench/actions.ts:294:23                  
+listTrainingPlans                 function  src/app/portal/planlegge/workbench/actions.ts:330:23                  
+createTrainingPlanSession         function  src/app/portal/planlegge/workbench/actions.ts:364:23                  
+saveFacilities                    function  src/app/portal/planlegge/workbench/actions.ts:442:23                  
+loadFacilities                    function  src/app/portal/planlegge/workbench/actions.ts:453:23                  
+oppdaterOkt                                 src/components/admin/add-session-wizard.tsx:729:10                    
+AgStatusDot                       function  src/components/admin/agencyos/ui.tsx:260:17                           
+AgSpark                           function  src/components/admin/agencyos/ui.tsx:287:17                           
+AgTableToolbar                    function  src/components/admin/agencyos/ui.tsx:320:17                           
+AgFilterChip                      function  src/components/admin/agencyos/ui.tsx:328:17                           
+AgSeg                             function  src/components/admin/agencyos/ui.tsx:340:17                           
+AgSectionHead                     function  src/components/admin/agencyos/ui.tsx:365:17                           
+AgMobileRow                       function  src/components/admin/agencyos/ui.tsx:401:17                           
+CreditBar                         function  src/components/admin/bookings/booking-form-kit.tsx:9:17               
+AutocompleteInput                 function  src/components/admin/bookings/booking-form-kit.tsx:37:17              
+avatarToneClass                             src/components/admin/cockpit/_cockpit-interactive.tsx:125:14          
+ColShell                          function  src/components/admin/cockpit/_cockpit-interactive.tsx:160:17          
+FilterChip                        function  src/components/admin/cockpit/_cockpit-interactive.tsx:195:17          
+InboxColumn                       function  src/components/admin/cockpit/_cockpit-interactive.tsx:239:17          
+FocusColumn                       function  src/components/admin/cockpit/_cockpit-interactive.tsx:676:17          
+AgencyCockpit                     function  src/components/admin/cockpit/agency-cockpit.tsx:508:17                
+WeekCalendar                      function  src/components/admin/kalender/week-calendar.tsx:370:17                
+KATEGORI_PRIMARY                            src/components/admin/plan-templates/shared.ts:46:14                   
+splitTitle                        function  src/components/admin/plan-templates/shared.ts:183:17                  
+PanelKpiIcons                               src/components/admin/player/player-detail-panel.tsx:204:14            
+SpillerDetaljOversikt             function  src/components/admin/spiller-detalj/spiller-detalj-oversikt.tsx:506:17
+AgendaRow                         function  src/components/athletic/golfdata/AgendaRow.tsx:39:17                  
+AiTipCard                         function  src/components/athletic/golfdata/AiTipCard.tsx:22:17                  
+TipMetric                         function  src/components/athletic/golfdata/AiTipCard.tsx:98:17                  
+AKFormelChip                      function  src/components/athletic/golfdata/AKFormelChip.tsx:27:17               
+AvatarGroup                       function  src/components/athletic/golfdata/Avatar.tsx:60:17                     
+DataTable                         function  src/components/athletic/golfdata/DataTable.tsx:39:17                  
+DayStrip                          function  src/components/athletic/golfdata/DayStrip.tsx:58:17                   
+DiagnoseKort                      function  src/components/athletic/golfdata/DiagnoseKort.tsx:79:17               
+FilterPills                       function  src/components/athletic/golfdata/FilterPills.tsx:31:17                
+GappingChart                      function  src/components/athletic/golfdata/GappingChart.tsx:27:17               
+Heatmap                           function  src/components/athletic/golfdata/Heatmap.tsx:36:17                    
+ICON_NAMES                                  src/components/athletic/golfdata/Icon.tsx:158:14                      
+HeroTall                                    src/components/athletic/golfdata/index.ts:11:10                       
+DeltaIndikator                              src/components/athletic/golfdata/index.ts:12:10                       
+Skeleton                                    src/components/athletic/golfdata/index.ts:13:10                       
+SkeletonRow                                 src/components/athletic/golfdata/index.ts:13:20                       
+Icon                                        src/components/athletic/golfdata/index.ts:14:10                       
+ICON_NAMES                                  src/components/athletic/golfdata/index.ts:14:16                       
+DataPreview                                 src/components/athletic/golfdata/index.ts:20:10                       
+nearestIndex                                src/components/athletic/golfdata/index.ts:20:23                       
+DataTable                                   src/components/athletic/golfdata/index.ts:23:10                       
+RingGauge                                   src/components/athletic/golfdata/index.ts:24:10                       
+Progress                                    src/components/athletic/golfdata/index.ts:25:10                       
+AiTipCard                                   src/components/athletic/golfdata/index.ts:26:10                       
+TipMetric                                   src/components/athletic/golfdata/index.ts:26:21                       
+Heatmap                                     src/components/athletic/golfdata/index.ts:27:10                       
+DiagnoseKort                                src/components/athletic/golfdata/index.ts:30:10                       
+GappingChart                                src/components/athletic/golfdata/index.ts:31:10                       
+KategoriKravKort                            src/components/athletic/golfdata/index.ts:32:10                       
+LaunchWindowKort                            src/components/athletic/golfdata/index.ts:33:10                       
+NesteFokusKort                              src/components/athletic/golfdata/index.ts:34:10                       
+PuttModellKort                              src/components/athletic/golfdata/index.ts:35:10                       
+Scorekort                                   src/components/athletic/golfdata/index.ts:36:10                       
+SgKategoriBar                               src/components/athletic/golfdata/index.ts:37:10                       
+SgTotalKort                                 src/components/athletic/golfdata/index.ts:38:10                       
+SgTrend                                     src/components/athletic/golfdata/index.ts:39:10                       
+SlagLekkasjeKart                            src/components/athletic/golfdata/index.ts:40:10                       
+SpillerTilstandKort                         src/components/athletic/golfdata/index.ts:41:10                       
+StrikeSmashKort                             src/components/athletic/golfdata/index.ts:42:10                       
+TigerFiveKort                               src/components/athletic/golfdata/index.ts:43:10                       
+UkeKalender                                 src/components/athletic/golfdata/index.ts:46:10                       
+Tidslinje                                   src/components/athletic/golfdata/index.ts:48:10                       
+Periodeplan                                 src/components/athletic/golfdata/index.ts:49:10                       
+DayStrip                                    src/components/athletic/golfdata/index.ts:50:10                       
+AgendaRow                                   src/components/athletic/golfdata/index.ts:51:10                       
+VisningsVelger                              src/components/athletic/golfdata/index.ts:52:10                       
+CountBadge                                  src/components/athletic/golfdata/index.ts:55:15                       
+AvatarGroup                                 src/components/athletic/golfdata/index.ts:56:18                       
+FilterPills                                 src/components/athletic/golfdata/index.ts:57:10                       
+PercentileBar                               src/components/athletic/golfdata/index.ts:59:10                       
+NivaStige                                   src/components/athletic/golfdata/index.ts:60:10                       
+Stepper                                     src/components/athletic/golfdata/index.ts:61:10                       
+SegmentedTabs                               src/components/athletic/golfdata/index.ts:62:10                       
+Pyramid                                     src/components/athletic/golfdata/index.ts:63:10                       
+ListRow                                     src/components/athletic/golfdata/index.ts:66:10                       
+OektKort                                    src/components/athletic/golfdata/index.ts:67:10                       
+AKFormelChip                                src/components/athletic/golfdata/index.ts:68:10                       
+LiveStatus                                  src/components/athletic/golfdata/index.ts:69:10                       
+LFaseBadge                                  src/components/athletic/golfdata/index.ts:70:10                       
+KategoriKravKort                  function  src/components/athletic/golfdata/KategoriKravKort.tsx:30:17           
+LaunchWindowKort                  function  src/components/athletic/golfdata/LaunchWindowKort.tsx:62:17           
+LFaseBadge                        function  src/components/athletic/golfdata/LFaseBadge.tsx:27:17                 
+ListRow                           function  src/components/athletic/golfdata/ListRow.tsx:30:17                    
+LiveStatus                        function  src/components/athletic/golfdata/LiveStatus.tsx:27:17                 
+NesteFokusKort                    function  src/components/athletic/golfdata/NesteFokusKort.tsx:53:17             
+NivaStige                         function  src/components/athletic/golfdata/NivaStige.tsx:26:17                  
+OektKort                          function  src/components/athletic/golfdata/OektKort.tsx:44:17                   
+PercentileBar                     function  src/components/athletic/golfdata/PercentileBar.tsx:37:17              
+Periodeplan                       function  src/components/athletic/golfdata/Periodeplan.tsx:46:17                
+Progress                          function  src/components/athletic/golfdata/Progress.tsx:37:17                   
+PuttModellKort                    function  src/components/athletic/golfdata/PuttModellKort.tsx:30:17             
+Pyramid                           function  src/components/athletic/golfdata/Pyramid.tsx:67:17                    
+RingGauge                         function  src/components/athletic/golfdata/RingGauge.tsx:47:17                  
+Scorekort                         function  src/components/athletic/golfdata/Scorekort.tsx:32:17                  
+SegmentedTabs                     function  src/components/athletic/golfdata/SegmentedTabs.tsx:27:17              
+SgKategoriBar                     function  src/components/athletic/golfdata/SgKategoriBar.tsx:39:17              
+SgTotalKort                       function  src/components/athletic/golfdata/SgTotalKort.tsx:41:17                
+SgTrend                           function  src/components/athletic/golfdata/SgTrend.tsx:31:17                    
+SkeletonRow                       function  src/components/athletic/golfdata/Skeleton.tsx:34:17                   
+SlagLekkasjeKart                  function  src/components/athletic/golfdata/SlagLekkasjeKart.tsx:56:17           
+SpillerTilstandKort               function  src/components/athletic/golfdata/SpillerTilstandKort.tsx:37:17        
+Stepper                           function  src/components/athletic/golfdata/Stepper.tsx:22:17                    
+StrikeSmashKort                   function  src/components/athletic/golfdata/StrikeSmashKort.tsx:45:17            
+CountBadge                        function  src/components/athletic/golfdata/Tag.tsx:61:17                        
+Tidslinje                                   src/components/athletic/golfdata/Tidslinje.tsx:328:14                 
+TigerFiveKort                     function  src/components/athletic/golfdata/TigerFiveKort.tsx:31:17              
+UkeKalender                       function  src/components/athletic/golfdata/UkeKalender.tsx:104:17               
+VisningsVelger                    function  src/components/athletic/golfdata/VisningsVelger.tsx:36:17             
+StepOnboardingIndicator           function  src/components/forelder/minor-gate.tsx:8:17                           
+FysPlanCard                                 src/components/fys-plan/index.ts:8:10                                 
+OktKort                                     src/components/fys-plan/index.ts:10:10                                
+OvelseTabell                                src/components/fys-plan/index.ts:11:10                                
+OvelseTabell                      function  src/components/fys-plan/ovelse-tabell.tsx:34:17                       
+FysPlanCard                       function  src/components/fys-plan/plan-card.tsx:27:17                           
+M                                           src/components/marketing/v2/marked-ramme.tsx:18:14                    
+MNav                              function  src/components/marketing/v2/marked-ramme.tsx:140:17                   
+MFot                              function  src/components/marketing/v2/marked-ramme.tsx:198:17                   
+StatsLegacyScope                  function  src/components/marketing/v2/stats-ramme.tsx:116:17                    
+StatsSubnav                       function  src/components/marketing/v2/stats-ramme.tsx:154:17                    
+StatsSeksjon                      function  src/components/marketing/v2/stats-ramme.tsx:385:17                    
+I                                 function  src/components/planlegge-v2/icons.tsx:206:17                          
+SessionTimer                                src/components/portal/live/index.ts:10:10                             
+RepCounter                                  src/components/portal/live/index.ts:11:10                             
+DrillLogger                                 src/components/portal/live/index.ts:12:10                             
+LiveCoachPanel                              src/components/portal/live/index.ts:17:10                             
+ProfileShell                      function  src/components/portal/profile/ProfileShell.tsx:59:17                  
+WBBibliotek                       function  src/components/portal/v2/WorkbenchV2.tsx:291:17                       
+WBBalanse                         function  src/components/portal/v2/WorkbenchV2.tsx:355:17                       
+DagPillRow                        function  src/components/portal/v2/WorkbenchV2Sheets.tsx:72:17                  
+svarPaInvitasjon                  function  src/components/portal/workbench/invite-actions.ts:92:23               
+fjernSpiller                      function  src/components/portal/workbench/invite-actions.ts:127:23              
+getDelteOkterDenneUka             function  src/components/portal/workbench/invite-actions.ts:154:23              
+CONSENT_KEY                                 src/components/shared/cookie-banner.tsx:205:10                        
+CONSENT_NECESSARY                           src/components/shared/cookie-banner.tsx:205:36                        
+FullScreenTemplate                function  src/components/shared/fullscreen-template.tsx:23:17                   
+DetailShell                                 src/components/shared/index.ts:10:10                                  
+FullScreenTemplate                          src/components/shared/index.ts:11:10                                  
+Modal                                       src/components/shared/index.ts:12:10                                  
+Sheet                                       src/components/shared/index.ts:13:10                                  
+ToastProvider                               src/components/shared/index.ts:14:10                                  
+useToast                                    src/components/shared/index.ts:14:25                                  
+HelpCircle                                  src/components/shared/profile-menu.tsx:188:10                         
+Sheet                             function  src/components/shared/sheet.tsx:42:17                                 
+useToast                          function  src/components/shared/toast.tsx:23:17                                 
+ToastProvider                     function  src/components/shared/toast.tsx:55:17                                 
+SparkLine                         function  src/components/stats/spark-bars.tsx:55:17                             
+SideCard                          function  src/components/teknisk-plan/sidebar.tsx:11:17                         
+DialogClose                       function  src/components/ui/dialog.tsx:239:17                                   
+DropdownMenu                                src/components/ui/dropdown-menu.tsx:36:14                             
+DropdownMenuTrigger                         src/components/ui/dropdown-menu.tsx:37:14                             
+DropdownMenuContent               function  src/components/ui/dropdown-menu.tsx:41:17                             
+DropdownMenuItem                  function  src/components/ui/dropdown-menu.tsx:64:17                             
+DropdownMenuCheckboxItem          function  src/components/ui/dropdown-menu.tsx:98:17                             
+DropdownMenuLabel                 function  src/components/ui/dropdown-menu.tsx:129:17                            
+DropdownMenuSeparator             function  src/components/ui/dropdown-menu.tsx:145:17                            
+DropdownMenuShortcut              function  src/components/ui/dropdown-menu.tsx:159:17                            
+Icon                              function  src/components/ui/icon.tsx:26:17                                      
+Button                                      src/components/ui/index.ts:13:10                                      
+buttonClasses                               src/components/ui/index.ts:13:18                                      
+SkeletonText                                src/components/ui/index.ts:21:20                                      
+Icon                                        src/components/ui/index.ts:22:10                                      
+Dialog                                      src/components/ui/index.ts:35:3                                       
+DialogContent                               src/components/ui/index.ts:36:3                                       
+DialogHeader                                src/components/ui/index.ts:37:3                                       
+DialogTitle                                 src/components/ui/index.ts:38:3                                       
+DialogDescription                           src/components/ui/index.ts:39:3                                       
+DialogBody                                  src/components/ui/index.ts:40:3                                       
+DialogFooter                                src/components/ui/index.ts:41:3                                       
+DialogClose                                 src/components/ui/index.ts:42:3                                       
+Sheet                                       src/components/ui/index.ts:45:3                                       
+SheetContent                                src/components/ui/index.ts:46:3                                       
+SheetHeader                                 src/components/ui/index.ts:47:3                                       
+SheetTitle                                  src/components/ui/index.ts:48:3                                       
+SheetDescription                            src/components/ui/index.ts:49:3                                       
+SheetFooter                                 src/components/ui/index.ts:50:3                                       
+SheetClose                                  src/components/ui/index.ts:51:3                                       
+Popover                                     src/components/ui/index.ts:53:10                                      
+PopoverTrigger                              src/components/ui/index.ts:53:19                                      
+PopoverContent                              src/components/ui/index.ts:53:35                                      
+DropdownMenu                                src/components/ui/index.ts:55:3                                       
+DropdownMenuTrigger                         src/components/ui/index.ts:56:3                                       
+DropdownMenuContent                         src/components/ui/index.ts:57:3                                       
+DropdownMenuItem                            src/components/ui/index.ts:58:3                                       
+DropdownMenuCheckboxItem                    src/components/ui/index.ts:59:3                                       
+DropdownMenuLabel                           src/components/ui/index.ts:60:3                                       
+DropdownMenuSeparator                       src/components/ui/index.ts:61:3                                       
+DropdownMenuShortcut                        src/components/ui/index.ts:62:3                                       
+ToastProvider                               src/components/ui/index.ts:64:10                                      
+useToast                                    src/components/ui/index.ts:64:25                                      
+SheetDescription                  function  src/components/ui/sheet.tsx:195:17                                    
+SheetFooter                       function  src/components/ui/sheet.tsx:213:17                                    
+SheetClose                        function  src/components/ui/sheet.tsx:234:17                                    
+SkeletonText                      function  src/components/ui/skeleton.tsx:18:17                                  
+ToastProvider                               src/components/ui/toast.ts:15:10                                      
+useToast                                    src/components/ui/toast.ts:15:25                                      
+useCountUp                                  src/components/v2/core.tsx:22:10                                      
+useMount                                    src/components/v2/core.tsx:22:22                                      
+PROFIL                                      src/components/v2/core.tsx:62:14                                      
+AmbientBakgrunn                   function  src/components/v2/core.tsx:415:17                                     
+NAV                                         src/components/v2/core.tsx:652:14                                     
+IkonRail                          function  src/components/v2/core.tsx:664:17                                     
+Sidebar                                     src/components/v2/core.tsx:687:14                                     
+BunnNav                           function  src/components/v2/core.tsx:691:17                                     
+Skjerm                            function  src/components/v2/core.tsx:711:17                                     
+SgTotal                           function  src/components/v2/datavis.tsx:306:17                                  
+SgTrendKort                       function  src/components/v2/datavis.tsx:381:17                                  
+MiniSpark                         function  src/components/v2/datavis.tsx:421:17                                  
+TigerFive                         function  src/components/v2/datavis.tsx:521:17                                  
+PuttModell                        function  src/components/v2/datavis.tsx:555:17                                  
+Gapping                           function  src/components/v2/datavis.tsx:594:17                                  
+LaunchWindow                      function  src/components/v2/datavis.tsx:648:17                                  
+StrikeSmash                       function  src/components/v2/datavis.tsx:705:17                                  
+SlagLekkasje                      function  src/components/v2/datavis.tsx:765:17                                  
+Diagnose                          function  src/components/v2/datavis.tsx:821:17                                  
+NesteFokus                        function  src/components/v2/datavis.tsx:876:17                                  
+KategoriKrav                      function  src/components/v2/datavis.tsx:917:17                                  
+SpillerTilstand                   function  src/components/v2/datavis.tsx:952:17                                  
+PercentilBar                      function  src/components/v2/datavis.tsx:1024:17                                 
+OktKort                           function  src/components/v2/domene.tsx:63:17                                    
+BookingKort                       function  src/components/v2/domene.tsx:99:17                                    
+KvitteringKort                    function  src/components/v2/domene.tsx:136:17                                   
+DeltakerListe                     function  src/components/v2/domene.tsx:237:17                                   
+TestResultatKort                  function  src/components/v2/domene.tsx:275:17                                   
+TurneringNedtelling               function  src/components/v2/domene.tsx:300:17                                   
+FakturaRad                        function  src/components/v2/domene.tsx:336:17                                   
+SamtykkeKort                      function  src/components/v2/domene.tsx:366:17                                   
+SpillerKort                       function  src/components/v2/domene.tsx:405:17                                   
+FokusSpillerBlokk                 function  src/components/v2/domene.tsx:442:17                                   
+AnbefalingsKort                   function  src/components/v2/domene.tsx:489:17                                   
+LiveBar                           function  src/components/v2/domene.tsx:526:17                                   
+AKFormelChip                      function  src/components/v2/domene2.tsx:70:17                                   
+DiffKort                          function  src/components/v2/domene2.tsx:118:17                                  
+FleksMerke                        function  src/components/v2/domene2.tsx:142:17                                  
+LiveStatus                        function  src/components/v2/domene2.tsx:159:17                                  
+OppgaveKort                       function  src/components/v2/domene2.tsx:224:17                                  
+SGSplittKort                      function  src/components/v2/domene2.tsx:258:17                                  
+VelvaereKort                      function  src/components/v2/domene2.tsx:294:17                                  
+TidsVelger                        function  src/components/v2/domene2.tsx:331:17                                  
+BarnProgresjonKort                function  src/components/v2/domene2.tsx:378:17                                  
+SONER                                       src/components/v2/fysisk.tsx:36:14                                    
+MuskelgruppeChip                  function  src/components/v2/fysisk.tsx:50:17                                    
+AutoProgresjon                    function  src/components/v2/fysisk.tsx:316:17                                   
+WbArk                                       src/components/v2/index.ts:27:10                                      
+FlyttTilArk                                 src/components/v2/index.ts:29:3                                       
+PreviewArk                                  src/components/v2/index.ts:30:3                                       
+Ring                                        src/components/v2/index.ts:31:3                                       
+MaalStripe                                  src/components/v2/index.ts:32:3                                       
+SerieVelger                                 src/components/v2/index.ts:33:3                                       
+EgentreningVindu                            src/components/v2/index.ts:34:3                                       
+UkeGrid                           function  src/components/v2/kalender.tsx:48:17                                  
+TidsGrid                          function  src/components/v2/kalender.tsx:103:17                                 
+Tidslinje                         function  src/components/v2/kalender.tsx:176:17                                 
+MndKalender                       function  src/components/v2/kalender.tsx:289:17                                 
+AgendaRad                         function  src/components/v2/kalender.tsx:369:17                                 
+VisningsVelger                    function  src/components/v2/kalender.tsx:403:17                                 
+Modal                             function  src/components/v2/overlays.tsx:62:17                                  
+Ark                               function  src/components/v2/overlays.tsx:95:17                                  
+Skuff                             function  src/components/v2/overlays.tsx:133:17                                 
+Popover                           function  src/components/v2/overlays.tsx:177:17                                 
+Verktoytips                       function  src/components/v2/overlays.tsx:210:17                                 
+Toast                             function  src/components/v2/overlays.tsx:234:17                                 
+Banner                            function  src/components/v2/overlays.tsx:258:17                                 
+KommandoPalett                    function  src/components/v2/overlays.tsx:287:17                                 
+AGENCYOS_MER                                src/components/v2/shell.tsx:59:14                                     
+Avkryssing                        function  src/components/v2/skjema.tsx:194:17                                   
+RadioGruppe                       function  src/components/v2/skjema.tsx:220:17                                   
+Stegteller                        function  src/components/v2/skjema.tsx:346:17                                   
+DatoVelger                        function  src/components/v2/skjema.tsx:375:17                                   
+KodeInput                         function  src/components/v2/skjema.tsx:414:17                                   
+CompareChart                      function  src/components/v2/spesialviz.tsx:51:17                                
+HullStripe                        function  src/components/v2/spesialviz.tsx:103:17                               
+LengdeAvvik                       function  src/components/v2/spesialviz.tsx:148:17                               
+LoadChart                         function  src/components/v2/spesialviz.tsx:191:17                               
+DispersionPlot                    function  src/components/v2/spesialviz.tsx:385:17                               
+TrajectoryPlot                    function  src/components/v2/spesialviz.tsx:447:17                               
+KolleStatKort                     function  src/components/v2/spesialviz.tsx:500:17                               
+TrackmanSammendrag                function  src/components/v2/spesialviz.tsx:537:17                               
+KategoriFjell                     function  src/components/v2/spesialviz.tsx:577:17                               
+KategoriStige                     function  src/components/v2/spesialviz.tsx:628:17                               
+FeaturedCard                      function  src/components/v2/spesialviz.tsx:694:17                               
+FAB                               function  src/components/v2/struktur.tsx:20:17                                  
+SpillerGruppeVeksler              function  src/components/v2/struktur.tsx:41:17                                  
+Paginering                        function  src/components/v2/struktur.tsx:81:17                                  
+KanbanKolonne                     function  src/components/v2/struktur.tsx:174:17                                 
+HjelpPopover                      function  src/components/v2/struktur.tsx:207:17                                 
+DataForhaandsvisning              function  src/components/v2/struktur.tsx:258:17                                 
+TemaVeksler                       function  src/components/v2/struktur.tsx:283:17                                 
+SporChip                          function  src/components/v2/utviklingsplan.tsx:35:17                            
+PRail                             function  src/components/v2/utviklingsplan.tsx:63:17                            
+KravRad                           function  src/components/v2/utviklingsplan.tsx:117:17                           
+Ark                               function  src/components/v2/wb-mobil.tsx:24:17                                  
+FlyttTilArk                       function  src/components/v2/wb-mobil.tsx:83:17                                  
+PreviewArk                        function  src/components/v2/wb-mobil.tsx:162:17                                 
+Ring                              function  src/components/v2/wb-mobil.tsx:220:17                                 
+MaalStripe                        function  src/components/v2/wb-mobil.tsx:246:17                                 
+SerieVelger                       function  src/components/v2/wb-mobil.tsx:301:17                                 
+EgentreningVindu                  function  src/components/v2/wb-mobil.tsx:353:17                                 
+mapWarningBanner                  function  src/components/workbench-hybrid/map-data.ts:76:17                     
+mapGoals                          function  src/components/workbench-hybrid/map-data.ts:89:17                     
+mapWeekHead                       function  src/components/workbench-hybrid/map-data.ts:190:17                    
+mapPalette                        function  src/components/workbench-hybrid/map-data.ts:207:17                    
+sortPaletteByFokus                function  src/components/workbench-hybrid/map-data.ts:232:17                    
+mapGroupInsightLine               function  src/components/workbench-hybrid/map-data.ts:243:17                    
+CAT_COLORS                                  src/components/workbench-hybrid/theme.ts:12:14                        
+CAT_SOFT                                    src/components/workbench-hybrid/theme.ts:21:14                        
+CAT_TEXT                                    src/components/workbench-hybrid/theme.ts:30:14                        
+TOUR_TYPES                                  src/components/workbench-hybrid/theme.ts:41:14                        
+WB                                          src/components/workbench-hybrid/theme.ts:48:14                        
+COMPLIANCE_COLORS                           src/components/workbench-hybrid/theme.ts:88:14                        
+FONT                                        src/components/workbench-hybrid/theme.ts:94:14                        
+PrioDot                           function  src/components/workspace/primitives.tsx:103:17                        
+ProjectPill                       function  src/components/workspace/primitives.tsx:138:17                        
+TaskCheck                         function  src/components/workspace/primitives.tsx:166:17                        
+DueDate                           function  src/components/workspace/primitives.tsx:264:17                        
+WorkspaceKpi                      function  src/components/workspace/primitives.tsx:290:17                        
+StatusPill                        function  src/components/workspace/primitives.tsx:337:17                        
+TaskRow                           function  src/components/workspace/primitives.tsx:373:17                        
+WorkspaceHero                     function  src/components/workspace/primitives.tsx:414:17                        
+syncAnchorsSchema                           src/lib/admin/benchmark-sync-schema.ts:17:14                          
+benchmarksSyncSchema                        src/lib/admin/benchmark-sync-schema.ts:24:14                          
+benchmarksPendingSchema                     src/lib/admin/benchmark-sync-schema.ts:38:14                          
+prioritySchema                              src/lib/agencyos/live-data.ts:18:14                                   
+emailSchema                                 src/lib/agencyos/live-data.ts:21:14                                   
+messageChannelSchema                        src/lib/agencyos/live-data.ts:34:14                                   
+messageSchema                               src/lib/agencyos/live-data.ts:37:14                                   
+taskSchema                                  src/lib/agencyos/live-data.ts:50:14                                   
+eventAxisSchema                             src/lib/agencyos/live-data.ts:60:14                                   
+eventSchema                                 src/lib/agencyos/live-data.ts:63:14                                   
+notionSchema                                src/lib/agencyos/live-data.ts:76:14                                   
+moduleSchema                                src/lib/agencyos/live-data.ts:85:14                                   
+dagensTreSchema                             src/lib/agencyos/live-data.ts:94:14                                   
+AGENT_NAME                                  src/lib/agents/achievement-agent.ts:8:14                              
+AGENT_NAME                                  src/lib/agents/ai-code-reviewer.ts:5:14                               
+AGENT_NAME                                  src/lib/agents/availability-24-7-monitor.ts:5:14                      
+AGENT_NAME                                  src/lib/agents/availability-gap-filler.ts:5:14                        
+AGENT_NAME                                  src/lib/agents/booking-alerts-proactive.ts:5:14                       
+AGENT_NAME                                  src/lib/agents/booking-conflict-monitor.ts:5:14                       
+AGENT_NAME                                  src/lib/agents/booking-optimizer.ts:5:14                              
+AGENT_NAME                                  src/lib/agents/calendar-sync.ts:16:14                                 
+AGENT_NAME                                  src/lib/agents/cleanup-recordings.ts:14:14                            
+AGENT_NAME                                  src/lib/agents/daily-brief-agent.ts:12:14                             
+AGENT_NAME                                  src/lib/agents/demand-predictor.ts:5:14                               
+AGENT_NAME                                  src/lib/agents/drill-forslag-agent.ts:16:14                           
+AGENT_NAME                                  src/lib/agents/live-coach-agent.ts:18:14                              
+AGENT_NAME                                  src/lib/agents/peaking-agent.ts:13:14                                 
+AGENT_NAME                                  src/lib/agents/periodiserings-agent.ts:8:14                           
+applyExecutorDelta                function  src/lib/agents/plan-action-executor.ts:505:23                         
+AGENT_NAME                                  src/lib/agents/plan-effectiveness-agent.ts:8:14                       
+persistRevisionForslag            function  src/lib/agents/plan-revision-actions.ts:78:23                         
+AGENT_NAME                                  src/lib/agents/plan-revisjon-agent.ts:13:14                           
+AGENT_NAME                                  src/lib/agents/plan-watcher.ts:10:14                                  
+AGENT_NAME                                  src/lib/agents/refresh-calendar-watches.ts:16:14                      
+AGENT_NAME                                  src/lib/agents/round-agent.ts:15:14                                   
+AGENT_NAME                                  src/lib/agents/sg-analyse-ekspert.ts:11:14                            
+AGENT_NAME                                  src/lib/agents/swing-video-analyst.ts:8:14                            
+AGENT_NAME                                  src/lib/agents/trackman-agent.ts:11:14                                
+AGENT_NAME                                  src/lib/agents/training-gap.ts:18:14                                  
+AGENT_NAME                                  src/lib/agents/treningsdata-ekspert.ts:10:14                          
+AGENT_NAME                                  src/lib/agents/turnering-agent.ts:8:14                                
+getLatestEffectiveness            function  src/lib/ai-plan/effectiveness.ts:229:23                               
+AI_PLAN_MODEL                               src/lib/ai-plan/generate.ts:61:14                                     
+execGetSpiller                              src/lib/ai/tools/index.ts:16:3                                        
+execGetRunder                               src/lib/ai/tools/index.ts:18:3                                        
+execGetSgData                               src/lib/ai/tools/index.ts:20:3                                        
+execGetTreningsplan                         src/lib/ai/tools/index.ts:22:3                                        
+SPILLER_TOTAL_STEPS                         src/lib/auth/onboarding-state.ts:14:14                                
+FORELDER_TOTAL_STEPS                        src/lib/auth/onboarding-state.ts:15:14                                
+AVATAR_GRADIENTS                            src/lib/avatar-colors.ts:5:14                                         
+haversine                         function  src/lib/baneguide/dispersion.ts:51:17                                 
+bearing                           function  src/lib/baneguide/dispersion.ts:61:17                                 
+shotsToPoints                     function  src/lib/baneguide/dispersion.ts:167:17                                
+trackmanToPoints                  function  src/lib/baneguide/dispersion.ts:181:17                                
+coordsToShotXY                    function  src/lib/baneguide/shot-coords.ts:36:17                                
+formaterDato                      function  src/lib/blogg/posts.ts:131:17                                         
+ALL_TOOL_NAMES                              src/lib/caddie/tools/index.ts:17:14                                   
+AnalyseResultatSchema                       src/lib/coaching-analysis.ts:29:14                                    
+getNorwegianPlayers               function  src/lib/datagolf/client.ts:90:23                                      
+getTournamentField                function  src/lib/datagolf/client.ts:143:23                                     
+colors                                      src/lib/design-tokens.ts:10:14                                        
+spacing                                     src/lib/design-tokens.ts:76:14                                        
+radius                                      src/lib/design-tokens.ts:95:14                                        
+motion                                      src/lib/design-tokens.ts:107:14                                       
+fonts                                       src/lib/design-tokens.ts:122:14                                       
+typography                                  src/lib/design-tokens.ts:131:14                                       
+chartPalette                                src/lib/design-tokens.ts:148:14                                       
+KROPPSVEKT_RELATIV                          src/lib/domain/fys-score.ts:30:14                                     
+hentSesongSnittscore              function  src/lib/domain/spiller-kategori.ts:50:23                              
+sendBookingRescheduled            function  src/lib/email/booking-emails.ts:161:23                                
+formatDato                        function  src/lib/email/templates/shared.ts:9:17                                
+formatTid                         function  src/lib/email/templates/shared.ts:18:17                               
+formatPris                        function  src/lib/email/templates/shared.ts:25:17                               
+tryLog                            function  src/lib/error-tracking.ts:183:23                                      
+PRO_KAMPANJE_INFO                           src/lib/feature-flags.ts:68:14                                        
+isFeatureOn                       function  src/lib/features.ts:19:17                                             
+hentForelderOversikt              function  src/lib/forelder.ts:114:23                                            
+getEncryptionKey                  function  src/lib/google-calendar.ts:53:17                                      
+generateEncryptionKey             function  src/lib/google-calendar.ts:609:17                                     
+getSgBenchmarks                   function  src/lib/intelligence/benchmark-provider.ts:60:23                      
+benchmarksAvailable               function  src/lib/intelligence/benchmark-provider.ts:81:23                      
+getPlayerBenchmarkGaps            function  src/lib/intelligence/benchmark-provider.ts:96:23                      
+PRESSURE_LABEL                              src/lib/labels/taxonomy.ts:80:14                                      
+PRESSURE_BESKRIVELSE                        src/lib/labels/taxonomy.ts:88:14                                      
+PRESSURE_REKKEFOLGE                         src/lib/labels/taxonomy.ts:96:14                                      
+RPC_INTERNAL_ERROR                          src/lib/mcp/jsonrpc.ts:36:14                                          
+ME_KINDS                                    src/lib/meg/classify-schema.ts:6:14                                   
+classifyMessage                   function  src/lib/meg/classify.ts:74:23                                         
+EMBEDDING_DIM                               src/lib/meg/embeddings.ts:4:14                                        
+embed                             function  src/lib/meg/embeddings.ts:16:23                                       
+isOllamaEnabled                   function  src/lib/meg/ollama.ts:8:17                                            
+loggTool                                    src/lib/meg/tools.ts:17:14                                            
+hentNyligeTool                              src/lib/meg/tools.ts:43:14                                            
+sokMinneTool                                src/lib/meg/tools.ts:61:14                                            
+notionSokTool                               src/lib/meg/tools.ts:79:14                                            
+notionLesSideTool                           src/lib/meg/tools.ts:94:14                                            
+notionOppgaverTool                          src/lib/meg/tools.ts:104:14                                           
+notionOpprettOppgaveTool                    src/lib/meg/tools.ts:116:14                                           
+notionFullforOppgaveTool                    src/lib/meg/tools.ts:131:14                                           
+notionProsjekterTool                        src/lib/meg/tools.ts:146:14                                           
+notionOpprettProsjektTool                   src/lib/meg/tools.ts:158:14                                           
+helseHentTool                               src/lib/meg/tools.ts:175:14                                           
+gmailSokTool                                src/lib/meg/tools.ts:195:14                                           
+gmailLesTraadTool                           src/lib/meg/tools.ts:210:14                                           
+gmailLagUtkastTool                          src/lib/meg/tools.ts:220:14                                           
+kalenderAgendaTool                          src/lib/meg/tools.ts:238:14                                           
+diskSokTool                                 src/lib/meg/tools.ts:254:14                                           
+diskLesFilTool                              src/lib/meg/tools.ts:267:14                                           
+diskOpprettTool                             src/lib/meg/tools.ts:277:14                                           
+stripeSaldoTool                             src/lib/meg/tools.ts:294:14                                           
+stripeBetalingerTool                        src/lib/meg/tools.ts:300:14                                           
+stripeAbonnementerTool                      src/lib/meg/tools.ts:313:14                                           
+stripeFakturaerTool                         src/lib/meg/tools.ts:323:14                                           
+stripeKundeSokTool                          src/lib/meg/tools.ts:333:14                                           
+DYBDE_GRENSER                               src/lib/min-golf/dybde.ts:13:14                                       
+fmtHeltall                        function  src/lib/min-golf/format.ts:19:17                                      
+AK_BANDS                                    src/lib/min-golf/load-min-golf.ts:405:10                              
+markRead                          function  src/lib/notifications.ts:84:23                                        
+notionKlient                      function  src/lib/notion.ts:9:17                                                
+NOTION_PLAYER_DB_ID                         src/lib/notion.ts:19:14                                               
+getNameVariants                   function  src/lib/notion/queries.ts:26:17                                       
+UKEDAG_TIL_DAGNR                            src/lib/onboarding/trening-preferanser.ts:12:14                       
+FASILITET_TIL_PREFS                         src/lib/onboarding/trening-preferanser.ts:38:14                       
+TID_PAA_DAGEN                               src/lib/onboarding/trening-preferanser.ts:82:14                       
+TreningPreferanserSchema                    src/lib/onboarding/trening-preferanser.ts:84:14                       
+PlanForslagSchema                           src/lib/plan-builder/index.ts:151:14                                  
+STANDARD_VARIGHET_MIN                       src/lib/plan-engine/standard-fordeling.ts:47:14                       
+FASE_BESKRIVELSE                            src/lib/plan-engine/standard-fordeling.ts:54:14                       
+AXIS_ORDER                                  src/lib/portal-ai/ai-data.ts:13:14                                    
+parseLiveSnapshot                 function  src/lib/portal-live/data.ts:39:17                                     
+parsePlannedReps                  function  src/lib/portal-live/data.ts:50:17                                     
+findOngoingSession                function  src/lib/portal-live/data.ts:166:23                                    
+formatDateEyebrow                 function  src/lib/portal-live/format.ts:18:17                                   
+fmtMSS                            function  src/lib/portal-live/format.ts:35:17                                   
+hentEksempelOktId                 function  src/lib/portal-okt/okt-detalj-data.ts:141:23                          
+AXIS_LABEL                                  src/lib/portal-tester/tester-data.tsx:28:14                           
+PYRAMIDE                                    src/lib/portal/training/ak-taxonomy.ts:37:3                           
+L_FASER                                     src/lib/portal/training/ak-taxonomy.ts:38:3                           
+CS_NIVAER                                   src/lib/portal/training/ak-taxonomy.ts:39:3                           
+TRENINGSOMRADER                             src/lib/portal/training/ak-taxonomy.ts:40:3                           
+M_MILJO                                     src/lib/portal/training/ak-taxonomy.ts:41:3                           
+PR_PRESS                                    src/lib/portal/training/ak-taxonomy.ts:42:3                           
+TEMPLATE_FOCUS_TYPER                        src/lib/portal/training/ak-taxonomy.ts:56:14                          
+PERIODE_FARGER                              src/lib/portal/training/ak-taxonomy.ts:92:14                          
+PERIODE_LABELS                              src/lib/portal/training/ak-taxonomy.ts:100:14                         
+PRAKSISTYPER                                src/lib/portal/training/ak-taxonomy.ts:113:14                         
+getPraksistypeKort                function  src/lib/portal/training/ak-taxonomy.ts:125:17                         
+LFASE_ANBEFALT_CS                           src/lib/portal/training/ak-taxonomy.ts:133:14                         
+PyramidAreaSchema                           src/lib/portal/training/ak-taxonomy.ts:145:14                         
+PracticeTypeSchema                          src/lib/portal/training/ak-taxonomy.ts:153:14                         
+LFaseSchema                                 src/lib/portal/training/ak-taxonomy.ts:154:14                         
+CSNivaaSchema                               src/lib/portal/training/ak-taxonomy.ts:155:14                         
+MMiljoSchema                                src/lib/portal/training/ak-taxonomy.ts:156:14                         
+PRPressSchema                               src/lib/portal/training/ak-taxonomy.ts:157:14                         
+TemplateFocusSchema                         src/lib/portal/training/ak-taxonomy.ts:158:14                         
+parse                                       src/lib/portal/training/date-parser.ts:303:10                         
+getPeriodeConstraints             function  src/lib/portal/training/periode-constraints.ts:107:17                 
+validateSessionConstraints        function  src/lib/portal/training/periode-constraints.ts:164:17                 
+translateLFase                    function  src/lib/portal/translate-taxonomy.ts:73:17                            
+translateCSNivaa                  function  src/lib/portal/translate-taxonomy.ts:77:17                            
+translatePRPress                  function  src/lib/portal/translate-taxonomy.ts:81:17                            
+translatePraksistype              function  src/lib/portal/translate-taxonomy.ts:85:17                            
+translatePyramide                 function  src/lib/portal/translate-taxonomy.ts:89:17                            
+translateTaxonomyCode             function  src/lib/portal/translate-taxonomy.ts:97:17                            
+lerp                           C            src/lib/putt-core.ts:30:14                                            
+pct                            C            src/lib/putt-core.ts:33:14                                            
+PYR_BG_KLASSE                               src/lib/pyramide.ts:53:14                                             
+utledShotType                     function  src/lib/runde-logg/bygg-shot-rader.ts:11:17                           
+lesKladd                          function  src/lib/runde-logg/draft.ts:68:17                                     
+hvileLieSchema                              src/lib/runde-logg/schema.ts:9:14                                     
+resultatSchema                              src/lib/runde-logg/schema.ts:19:14                                    
+slagSchema                                  src/lib/runde-logg/schema.ts:28:14                                    
+shotsTilSgShotsMedMeta            function  src/lib/runde-logg/shots-til-sg.ts:68:17                              
+GJGT_NATION_ISO                             src/lib/scrapers/gjgt.ts:24:14                                        
+LANG_NO                                     src/lib/scrapers/golfbox.ts:23:14                                     
+LANG_EN                                     src/lib/scrapers/golfbox.ts:24:14                                     
+parseGolfBox                      function  src/lib/scrapers/golfbox.ts:40:17                                     
+getCustomer                       function  src/lib/scrapers/golfbox.ts:88:23                                     
+parseGolfBoxDate                  function  src/lib/scrapers/golfbox.ts:132:17                                    
+normalizePlayerName               function  src/lib/scrapers/player-resolve.ts:26:17                              
+cleanDisplayName                  function  src/lib/scrapers/player-resolve.ts:44:17                              
+baseSlugDashed                    function  src/lib/scrapers/player-resolve.ts:104:17                             
+aggregateClubTrendsForUser        function  src/lib/sg-hub/club-trend-aggregator.ts:55:23                         
+headwindComponent                 function  src/lib/sg-hub/conditions-adjust.ts:27:17                             
+adjustDistance                    function  src/lib/sg-hub/conditions-adjust.ts:36:17                             
+getClubTrend                      function  src/lib/sg-hub/drift-detection.ts:88:23                               
+categorizeClub                    function  src/lib/sg-hub/equipment-fit.ts:75:17                                 
+formatMOne                        function  src/lib/sg-hub/format.ts:19:17                                        
+generateInsights                  function  src/lib/sg-hub/insight-engine/index.ts:570:23                         
+bucketForDistance                 function  src/lib/sg-hub/same-distance-strategy.ts:33:17                        
+clubSortKey                       function  src/lib/sg-hub/yardage-calc.ts:31:17                                  
+classifyClub                      function  src/lib/sg-hub/yardage-calc.ts:36:17                                  
+carryFactor                       function  src/lib/sg-hub/yardage-calc.ts:47:17                                  
+klubbTilRegion                    function  src/lib/stats/klubb-til-region.ts:85:17                               
+BROADIE_HCP_TABLE                           src/lib/stats/sg-estimator.ts:33:14                                   
+hentTurneringBySlug               function  src/lib/stats/turnering-queries.ts:245:23                             
+deleteAvatar                      function  src/lib/storage/avatar.ts:71:23                                       
+PUBLIC_BUCKETS                              src/lib/storage/buckets.ts:30:14                                      
+getPublicUrl                      function  src/lib/storage/supabase-storage.ts:141:17                            
+streakAntall                      function  src/lib/streak.ts:23:17                                               
+isFysDrill                        function  src/lib/taxonomy.ts:22:17                                             
+DRILL_MAL_KATEGORIER                        src/lib/taxonomy.ts:181:14                                            
+SPILLERKATEGORIER                           src/lib/taxonomy.ts:239:14                                            
+TEMPLATE_FOCUS                              src/lib/taxonomy.ts:253:14                                            
+getOmraaderForFokus               function  src/lib/taxonomy.ts:263:17                                            
+LIFE_KODER                                  src/lib/taxonomy.ts:274:14                                            
+FysParametersSchema                         src/lib/taxonomy.ts:286:14                                            
+GolfParametersSchema                        src/lib/taxonomy.ts:301:14                                            
+drillCandidateSchema                        src/lib/training/skills/drill-selection.ts:4:14                       
+drillSelectionInputSchema                   src/lib/training/skills/drill-selection.ts:23:14                      
+juniorGuardInputSchema                      src/lib/training/skills/junior-guard.ts:3:14                          
+periodTypeSchema                            src/lib/training/skills/periodization.ts:3:14                         
+periodizationInputSchema                    src/lib/training/skills/periodization.ts:11:14                        
+progressionInputSchema                      src/lib/training/skills/progression.ts:18:14                          
+pyramidInputSchema                          src/lib/training/skills/pyramid.ts:10:14                              
+weaknessInputSchema                         src/lib/training/skills/weakness.ts:6:14                              
+startOfMonth                      function  src/lib/uke-helpers.ts:37:17                                          
+endOfMonth                        function  src/lib/uke-helpers.ts:43:17                                          
+dagNavnKort                       function  src/lib/uke-helpers.ts:68:17                                          
+dagNavnLang                       function  src/lib/uke-helpers.ts:75:17                                          
+formatPeriode                     function  src/lib/uke-helpers.ts:81:17                                          
+cuid                                        src/lib/validation/schemas.ts:8:14                                    
+getViewMode                       function  src/lib/view-mode.ts:12:23                                            
+markWebhookResolved               function  src/lib/webhook-retry.ts:66:23                                        
+markWebhookDead                   function  src/lib/webhook-retry.ts:79:23                                        
+listPendingWebhookFailures        function  src/lib/webhook-retry.ts:89:23                                        
+templateSessionsToWeekState       function  src/lib/workbench/map-template-week.ts:91:17                          
+computeMoveTarget                           src/lib/workbench/session-move.ts:16:10                               
+dayIndexFromScheduledAt                     src/lib/workbench/session-move.ts:16:46                               
+expectNoConsoleErrors             function  tests/e2e/_helpers.ts:29:17                                           
+screenshotOnFailure               function  tests/e2e/_helpers.ts:59:23                                           
+isOkOrRedirect                    function  tests/e2e/_helpers.ts:73:17                                           
+Unused exported types (755)
+PuttDistanceRow                       interface  src/app/(marketing)/stats/pga/putt-explorer/explorer.tsx:14:18         
+SpillerRad                            type       src/app/(marketing)/stats/pga/spillere/spiller-tabell.tsx:14:13        
+SaveTemplateInput                     type       src/app/admin/(legacy)/email-templates/[id]/rediger/actions.ts:25:13   
+TemplateForEditor                     type       …pp/admin/(legacy)/email-templates/[id]/rediger/editor-client.tsx:21:13
+ClubInput                             type       src/app/admin/(legacy)/klubb/innstillinger/actions.ts:56:13            
+ClubSettingsInput                     type       src/app/admin/(legacy)/klubb/innstillinger/actions.ts:57:13            
+KlubbSettingsInput                    type       src/app/admin/(legacy)/klubb/innstillinger/actions.ts:58:13            
+ClubFacility                          type       …dmin/(legacy)/klubb/innstillinger/klubb-innstillinger-client.tsx:26:13
+SendMeldingResult                     type       src/app/admin/(legacy)/messages/actions.ts:37:13                       
+CreatePlanInput                       type       src/app/admin/(legacy)/plans/actions.ts:84:13                          
+PlanTemplateSession                   type       src/app/admin/(legacy)/plans/template-payload.ts:24:13                 
+PlanTemplateDrill                     type       src/app/admin/(legacy)/plans/template-payload.ts:34:13                 
+SpillerKategori                       type       src/app/admin/(legacy)/spillere/ny/actions.ts:31:15                    
+SpillerTier                           type       src/app/admin/(legacy)/spillere/ny/actions.ts:31:32                    
+NyTurneringInput                      type       src/app/admin/(legacy)/tournaments/ny/actions.ts:64:13                 
+AkseKort                              type       src/app/admin/kalender/data.ts:22:13                                   
+KalDag                                interface  src/app/admin/kalender/data.ts:37:18                                   
+SerieMenyData                         interface  src/app/admin/kalender/data.ts:44:18                                   
+PlanChangeRequestItem                 type       src/app/portal/(legacy)/coach/actions.ts:31:13                         
+SendMessageInput                      type       src/app/portal/(legacy)/coach/actions.ts:162:13                        
+CreatePlanChangeRequestInput          type       src/app/portal/(legacy)/coach/actions.ts:260:13                        
+SvarPaSporsmalInput                   type       src/app/portal/(legacy)/coach/sporsmal/actions.ts:15:13                
+AdHocDrill                            type       src/app/portal/(legacy)/ny-okt/actions.ts:15:13                        
+PeriodeFormInitial                    type       src/app/portal/(legacy)/tren/aarsplan/periode/periode-form.tsx:34:13   
+LogTestInput                          type       src/app/portal/(legacy)/tren/tester/ny/actions.ts:32:13                
+OpprettCustomTestInput                type       src/app/portal/(legacy)/tren/tester/ny/egen/actions.ts:48:13           
+TurnPriority                          type       src/app/portal/(legacy)/tren/turneringer/actions.ts:27:13              
+UtfordringInput                       type       src/app/portal/(legacy)/utfordringer/actions.ts:15:13                  
+OpprettCustomChallengeInput           type       src/app/portal/(legacy)/utfordringer/ny/actions.ts:36:13               
+TodaySession                          type       src/app/portal/actions.ts:23:13                                        
+WeekDay                               type       src/app/portal/actions.ts:38:13                                        
+RecentActivityItem                    type       src/app/portal/actions.ts:54:13                                        
+NotificationItem                      type       src/app/portal/actions.ts:76:13                                        
+CoachMessageItem                      type       src/app/portal/actions.ts:86:13                                        
+NextTournament                        type       src/app/portal/actions.ts:97:13                                        
+WeekPlanProgress                      type       src/app/portal/actions.ts:107:13                                       
+NesteHandlingData                     type       src/app/portal/actions.ts:114:13                                       
+StatsSnapshot                         type       src/app/portal/actions.ts:120:13                                       
+KpiStats                              type       src/app/portal/actions.ts:566:13                                       
+TrainingHeatmap                       type       src/app/portal/actions.ts:629:13                                       
+TrainingStats                         type       src/app/portal/analysere/actions.ts:34:13                              
+RoundListItem                         type       src/app/portal/analysere/actions.ts:49:13                              
+RoundDetail                           type       src/app/portal/analysere/actions.ts:59:13                              
+RoundStats                            type       src/app/portal/analysere/actions.ts:83:13                              
+TournamentListItem                    type       src/app/portal/analysere/actions.ts:90:13                              
+TestListItem                          type       src/app/portal/analysere/actions.ts:99:13                              
+TrackManClub                          type       src/app/portal/analysere/actions.ts:107:13                             
+TrackManData                          type       src/app/portal/analysere/actions.ts:115:13                             
+GoalListItem                          type       src/app/portal/analysere/actions.ts:127:13                             
+CourseOption                          type       src/app/portal/analysere/actions.ts:136:13                             
+SgBreakdown                           type       src/app/portal/analysere/actions.ts:142:13                             
+HoleRow                               type       src/app/portal/analysere/hull/HullTabs.tsx:14:13                       
+KalenderOkt                           type       src/app/portal/kalender/data.ts:85:13                                  
+PeriodeBaand                          type       src/app/portal/kalender/data.ts:97:13                                  
+AarTurnering                          type       src/app/portal/kalender/data.ts:105:13                                 
+ShareVisibility                       type       src/app/portal/mal/runder/[id]/actions.ts:14:13                        
+ShareFormat                           type       src/app/portal/mal/runder/[id]/actions.ts:15:13                        
+ShareRoundInput                       type       src/app/portal/mal/runder/[id]/actions.ts:17:13                        
+ImportertHull                         type       src/app/portal/mal/runder/[id]/actions.ts:269:13                       
+TournamentResult                      interface  src/app/team-gfgk/data.ts:18:18                                        
+CourseRank                            interface  src/app/team-gfgk/data.ts:37:18                                        
+CaddieRole                            type       src/components/admin/caddie/types.ts:9:13                              
+CaddieMessagePart                     type       src/components/admin/caddie/types.ts:25:13                             
+CaddieConversation                    type       src/components/admin/caddie/types.ts:37:13                             
+CockpitAvatarTone                     type       src/components/admin/cockpit/agency-cockpit.tsx:29:15                  
+CockpitIconName                       type       src/components/admin/cockpit/agency-cockpit.tsx:29:34                  
+MonthEventKind                        type       src/components/admin/kalender/month-calendar.tsx:29:13                 
+WeekEventKind                         type       src/components/admin/kalender/week-calendar.tsx:37:13                  
+WeekDayHeader                         type       src/components/admin/kalender/week-calendar.tsx:56:13                  
+StatusTone                            type       src/components/admin/player/player-detail-panel.tsx:18:13              
+SpillerDetaljOversiktConfig           type       src/components/admin/spiller-detalj/spiller-detalj-oversikt.tsx:71:13  
+ComparePlayer                         type       src/components/admin/talent/sammenligning.tsx:38:13                    
+LucideIcon                            type       src/components/admin/talent/sammenligning.tsx:654:15                   
+CoachRole                             type       src/components/admin/team/team-kit.tsx:9:13                            
+PeriodeKind                           type       src/components/admin/team/team-kit.tsx:10:13                           
+AnalyseV2Dist                         interface  src/components/admin/v2/AdminAnalyseV2.tsx:49:18                       
+AnalyseV2Gruppe                       interface  src/components/admin/v2/AdminAnalyseV2.tsx:59:18                       
+BookingStatusKey                      type       src/components/admin/v2/AdminBookingerV2.tsx:54:13                     
+GjennomforeSnarvei                    interface  src/components/admin/v2/AdminGjennomforeV2.tsx:65:18                   
+PlanleggeSpiller                      interface  src/components/admin/v2/AdminPlanleggeV2.tsx:38:18                     
+PlanMalRad                            interface  src/components/admin/v2/AdminPlanMalerV2.tsx:49:18                     
+AdminRunderV2Beste                    interface  src/components/admin/v2/AdminRunderV2.tsx:57:18                        
+FremgangV2VolumUke                    interface  src/components/admin/v2/AdminSpillerFremgangV2.tsx:46:18               
+FremgangV2VolumOmrade                 interface  src/components/admin/v2/AdminSpillerFremgangV2.tsx:50:18               
+FremgangV2Korrelasjon                 interface  src/components/admin/v2/AdminSpillerFremgangV2.tsx:56:18               
+SpillerPlanRad                        interface  src/components/admin/v2/AdminSpillerPlanV2.tsx:43:18                   
+SpillerProfilFlagg                    interface  src/components/admin/v2/AdminSpillerProfilV2.tsx:44:18                 
+SpillerProfilPyrRad                   interface  src/components/admin/v2/AdminSpillerProfilV2.tsx:51:18                 
+SpillerProfilPlan                     interface  src/components/admin/v2/AdminSpillerProfilV2.tsx:63:18                 
+SpillerProfilHandling                 interface  src/components/admin/v2/AdminSpillerProfilV2.tsx:69:18                 
+SpillerProfilMelding                  interface  src/components/admin/v2/AdminSpillerProfilV2.tsx:74:18                 
+TalentKandidat                        interface  src/components/admin/v2/AdminTalentDiscoveryV2.tsx:44:18               
+TalentRadarAkse                       interface  src/components/admin/v2/AdminTalentRadarV2.tsx:36:18                   
+TekniskPlanSpillerRad                 interface  src/components/admin/v2/AdminTekniskPlanV2.tsx:44:18                   
+TekniskPlanMal                        interface  src/components/admin/v2/AdminTekniskPlanV2.tsx:59:18                   
+AdminTesterV2Kpi                      interface  src/components/admin/v2/AdminTesterV2.tsx:47:18                        
+UkaBookingV2                          interface  src/components/admin/v2/AdminUkaV2.tsx:17:18                           
+WorkspaceStatus                       type       src/components/admin/v2/AdminWorkspaceV2.tsx:50:13                     
+WorkspaceProjectStatus                type       src/components/admin/v2/AdminWorkspaceV2.tsx:66:13                     
+SamlingRad                            type       src/components/admin/v2/GruppeDetaljV2.tsx:30:13                       
+MedlemRad                             type       src/components/admin/v2/GruppeDetaljV2.tsx:39:13                       
+TimeplanRad                           type       src/components/admin/v2/GruppeTimeplanV2.tsx:15:13                     
+StallV2Adherence                      interface  src/components/admin/v2/StallV2.tsx:41:18                              
+YearMilestone                         type       src/components/athletic/calendars/year-plan-gantt.tsx:12:13            
+AgendaAkFormel                        type       src/components/athletic/golfdata/AgendaRow.tsx:16:13                   
+AgendaRowProps                        type       src/components/athletic/golfdata/AgendaRow.tsx:23:13                   
+AiTipCardProps                        type       src/components/athletic/golfdata/AiTipCard.tsx:12:13                   
+AKFormelChipProps                     type       src/components/athletic/golfdata/AKFormelChip.tsx:12:13                
+AvatarSize                            type       src/components/athletic/golfdata/Avatar.tsx:14:13                      
+AvatarGroupProps                      type       src/components/athletic/golfdata/Avatar.tsx:54:13                      
+ButtonVariant                         type       src/components/athletic/golfdata/Button.tsx:12:13                      
+ButtonSize                            type       src/components/athletic/golfdata/Button.tsx:13:13                      
+TableColumn                           type       src/components/athletic/golfdata/DataTable.tsx:14:13                   
+DataTableProps                        type       src/components/athletic/golfdata/DataTable.tsx:25:13                   
+DayStripDay                           type       src/components/athletic/golfdata/DayStrip.tsx:15:13                    
+DayStripProps                         type       src/components/athletic/golfdata/DayStrip.tsx:29:13                    
+DiagnoseBevis                         type       src/components/athletic/golfdata/DiagnoseKort.tsx:9:13                 
+DiagnoseResept                        type       src/components/athletic/golfdata/DiagnoseKort.tsx:18:13                
+DiagnoseKortProps                     type       src/components/athletic/golfdata/DiagnoseKort.tsx:27:13                
+FilterItem                            type       src/components/athletic/golfdata/FilterPills.tsx:14:13                 
+FilterPillsProps                      type       src/components/athletic/golfdata/FilterPills.tsx:22:13                 
+Kolle                                 type       src/components/athletic/golfdata/GappingChart.tsx:10:13                
+GappingChartProps                     type       src/components/athletic/golfdata/GappingChart.tsx:18:13                
+HeatmapProps                          type       src/components/athletic/golfdata/Heatmap.tsx:16:13                     
+HeroTallProps                         type       src/components/athletic/golfdata/index.ts:11:25                        
+DeltaIndikatorProps                   type       src/components/athletic/golfdata/index.ts:12:31                        
+SkeletonProps                         type       src/components/athletic/golfdata/index.ts:13:38                        
+SkeletonRowProps                      type       src/components/athletic/golfdata/index.ts:13:58                        
+SkeletonVariant                       type       src/components/athletic/golfdata/index.ts:13:81                        
+IconProps                             type       src/components/athletic/golfdata/index.ts:14:33                        
+ButtonProps                           type       src/components/athletic/golfdata/index.ts:17:23                        
+ButtonVariant                         type       src/components/athletic/golfdata/index.ts:17:41                        
+ButtonSize                            type       src/components/athletic/golfdata/index.ts:17:61                        
+CardProps                             type       src/components/athletic/golfdata/index.ts:18:21                        
+EyebrowProps                          type       src/components/athletic/golfdata/index.ts:19:24                        
+DataPreviewProps                      type       src/components/athletic/golfdata/index.ts:20:42                        
+DataPreviewRow                        type       src/components/athletic/golfdata/index.ts:20:65                        
+SparklineProps                        type       src/components/athletic/golfdata/index.ts:21:26                        
+KpiTileProps                          type       src/components/athletic/golfdata/index.ts:22:24                        
+TableColumn                           type       src/components/athletic/golfdata/index.ts:23:26                        
+DataTableProps                        type       src/components/athletic/golfdata/index.ts:23:44                        
+RingGaugeProps                        type       src/components/athletic/golfdata/index.ts:24:26                        
+RingGaugeZone                         type       src/components/athletic/golfdata/index.ts:24:47                        
+ProgressProps                         type       src/components/athletic/golfdata/index.ts:25:25                        
+ProgressVariant                       type       src/components/athletic/golfdata/index.ts:25:45                        
+AiTipCardProps                        type       src/components/athletic/golfdata/index.ts:26:37                        
+HeatmapProps                          type       src/components/athletic/golfdata/index.ts:27:24                        
+DiagnoseKortProps                     type       src/components/athletic/golfdata/index.ts:30:29                        
+DiagnoseBevis                         type       src/components/athletic/golfdata/index.ts:30:53                        
+DiagnoseResept                        type       src/components/athletic/golfdata/index.ts:30:73                        
+GappingChartProps                     type       src/components/athletic/golfdata/index.ts:31:29                        
+Kolle                                 type       src/components/athletic/golfdata/index.ts:31:53                        
+KategoriKravKortProps                 type       src/components/athletic/golfdata/index.ts:32:33                        
+Kravrad                               type       src/components/athletic/golfdata/index.ts:32:61                        
+LaunchWindowKortProps                 type       src/components/athletic/golfdata/index.ts:33:33                        
+LaunchSkudd                           type       src/components/athletic/golfdata/index.ts:33:61                        
+LaunchVindu                           type       src/components/athletic/golfdata/index.ts:33:79                        
+NesteFokusKortProps                   type       src/components/athletic/golfdata/index.ts:34:31                        
+PuttModellKortProps                   type       src/components/athletic/golfdata/index.ts:35:31                        
+PuttBand                              type       src/components/athletic/golfdata/index.ts:35:57                        
+ScorekortProps                        type       src/components/athletic/golfdata/index.ts:36:26                        
+Hull                                  type       src/components/athletic/golfdata/index.ts:36:47                        
+Scoresammendrag                       type       src/components/athletic/golfdata/index.ts:36:58                        
+SgKategoriBarProps                    type       src/components/athletic/golfdata/index.ts:37:30                        
+SgKategori                            type       src/components/athletic/golfdata/index.ts:37:55                        
+SgTotalKortProps                      type       src/components/athletic/golfdata/index.ts:38:28                        
+SgTrendProps                          type       src/components/athletic/golfdata/index.ts:39:24                        
+SgPunkt                               type       src/components/athletic/golfdata/index.ts:39:43                        
+SgHendelse                            type       src/components/athletic/golfdata/index.ts:39:57                        
+SlagLekkasjeKartProps                 type       src/components/athletic/golfdata/index.ts:40:33                        
+LekkasjeBaand                         type       src/components/athletic/golfdata/index.ts:40:61                        
+SpillerTilstandKortProps              type       src/components/athletic/golfdata/index.ts:41:36                        
+StrikeSmashKortProps                  type       src/components/athletic/golfdata/index.ts:42:32                        
+StrikeSone                            type       src/components/athletic/golfdata/index.ts:42:59                        
+TigerFiveKortProps                    type       src/components/athletic/golfdata/index.ts:43:30                        
+TigerFiveMetrikk                      type       src/components/athletic/golfdata/index.ts:43:55                        
+UkeKalenderProps                      type       src/components/athletic/golfdata/index.ts:46:28                        
+UkeDag                                type       src/components/athletic/golfdata/index.ts:46:51                        
+UkeSession                            type       src/components/athletic/golfdata/index.ts:46:64                        
+Compliance                            type       src/components/athletic/golfdata/index.ts:46:81                        
+UkeAkse                               type       src/components/athletic/golfdata/index.ts:46:98                        
+TidsGridProps                         type       src/components/athletic/golfdata/index.ts:47:25                        
+TidsGridKolonneProps                  type       src/components/athletic/golfdata/index.ts:47:45                        
+TidsGridBlokkProps                    type       src/components/athletic/golfdata/index.ts:47:72                        
+TidsGridFlytt                         type       src/components/athletic/golfdata/index.ts:47:97                        
+TidsGridAkse                          type       src/components/athletic/golfdata/index.ts:47:117                       
+TidslinjeProps                        type       src/components/athletic/golfdata/index.ts:48:26                        
+TidslinjeBaneProps                    type       src/components/athletic/golfdata/index.ts:48:47                        
+TidslinjeBarProps                     type       src/components/athletic/golfdata/index.ts:48:72                        
+TidslinjePunktProps                   type       src/components/athletic/golfdata/index.ts:48:96                        
+TidslinjeFlytt                        type       src/components/athletic/golfdata/index.ts:48:122                       
+TidslinjeAkse                         type       src/components/athletic/golfdata/index.ts:48:143                       
+PeriodeplanProps                      type       src/components/athletic/golfdata/index.ts:49:28                        
+Phase                                 type       src/components/athletic/golfdata/index.ts:49:51                        
+Tournament                            type       src/components/athletic/golfdata/index.ts:49:63                        
+LFase                                 type       src/components/athletic/golfdata/index.ts:49:80                        
+DayStripProps                         type       src/components/athletic/golfdata/index.ts:50:25                        
+DayStripDay                           type       src/components/athletic/golfdata/index.ts:50:45                        
+AgendaRowProps                        type       src/components/athletic/golfdata/index.ts:51:26                        
+AgendaAkFormel                        type       src/components/athletic/golfdata/index.ts:51:47                        
+VisningsVelgerProps                   type       src/components/athletic/golfdata/index.ts:52:31                        
+KalenderVisning                       type       src/components/athletic/golfdata/index.ts:52:57                        
+TagProps                              type       src/components/athletic/golfdata/index.ts:55:32                        
+TagSize                               type       src/components/athletic/golfdata/index.ts:55:64                        
+CountBadgeProps                       type       src/components/athletic/golfdata/index.ts:55:78                        
+AvatarProps                           type       src/components/athletic/golfdata/index.ts:56:36                        
+AvatarGroupProps                      type       src/components/athletic/golfdata/index.ts:56:54                        
+AvatarSize                            type       src/components/athletic/golfdata/index.ts:56:77                        
+FilterPillsProps                      type       src/components/athletic/golfdata/index.ts:57:28                        
+FilterItem                            type       src/components/athletic/golfdata/index.ts:57:51                        
+MaanedKalenderProps                   type       src/components/athletic/golfdata/index.ts:58:31                        
+MaanedOkt                             type       src/components/athletic/golfdata/index.ts:58:73                        
+MaanedAkse                            type       src/components/athletic/golfdata/index.ts:58:89                        
+MaanedFlytt                           type       src/components/athletic/golfdata/index.ts:58:106                       
+PercentileBarProps                    type       src/components/athletic/golfdata/index.ts:59:30                        
+NivaStigeProps                        type       src/components/athletic/golfdata/index.ts:60:26                        
+StepperProps                          type       src/components/athletic/golfdata/index.ts:61:24                        
+StepItem                              type       src/components/athletic/golfdata/index.ts:61:43                        
+SegmentedTabsProps                    type       src/components/athletic/golfdata/index.ts:62:30                        
+SegmentedTabOption                    type       src/components/athletic/golfdata/index.ts:62:55                        
+PyramidProps                          type       src/components/athletic/golfdata/index.ts:63:24                        
+PyramidAxis                           type       src/components/athletic/golfdata/index.ts:63:43                        
+StatusDotProps                        type       src/components/athletic/golfdata/index.ts:64:26                        
+StatusTone                            type       src/components/athletic/golfdata/index.ts:64:47                        
+AkseFordelingsBarProps                type       src/components/athletic/golfdata/index.ts:65:34                        
+ListRowProps                          type       src/components/athletic/golfdata/index.ts:66:24                        
+OektKortProps                         type       src/components/athletic/golfdata/index.ts:67:25                        
+OektAxis                              type       src/components/athletic/golfdata/index.ts:67:45                        
+OektState                             type       src/components/athletic/golfdata/index.ts:67:60                        
+AKFormelChipProps                     type       src/components/athletic/golfdata/index.ts:68:29                        
+LiveStatusProps                       type       src/components/athletic/golfdata/index.ts:69:27                        
+LFaseBadgeProps                       type       src/components/athletic/golfdata/index.ts:70:27                        
+LFaseBadgeFase                        type       src/components/athletic/golfdata/index.ts:70:58                        
+Kravrad                               type       src/components/athletic/golfdata/KategoriKravKort.tsx:9:13             
+KategoriKravKortProps                 type       src/components/athletic/golfdata/KategoriKravKort.tsx:18:13            
+LaunchSkudd                           type       src/components/athletic/golfdata/LaunchWindowKort.tsx:10:13            
+LaunchVindu                           type       src/components/athletic/golfdata/LaunchWindowKort.tsx:17:13            
+LaunchWindowKortProps                 type       src/components/athletic/golfdata/LaunchWindowKort.tsx:24:13            
+LFase                                 type       src/components/athletic/golfdata/LFaseBadge.tsx:11:13                  
+LFaseBadgeProps                       type       src/components/athletic/golfdata/LFaseBadge.tsx:13:13                  
+ListRowProps                          type       src/components/athletic/golfdata/ListRow.tsx:13:13                     
+LiveStatusProps                       type       src/components/athletic/golfdata/LiveStatus.tsx:11:13                  
+MaanedAkse                            type       src/components/athletic/golfdata/MaanedKalender.tsx:23:13              
+MaanedFlytt                           type       src/components/athletic/golfdata/MaanedKalender.tsx:49:13              
+NesteFokusKortProps                   type       src/components/athletic/golfdata/NesteFokusKort.tsx:14:13              
+NivaStigeProps                        type       src/components/athletic/golfdata/NivaStige.tsx:11:13                   
+OektAxis                              type       src/components/athletic/golfdata/OektKort.tsx:13:13                    
+OektState                             type       src/components/athletic/golfdata/OektKort.tsx:14:13                    
+OektKortProps                         type       src/components/athletic/golfdata/OektKort.tsx:16:13                    
+PercentileBarProps                    type       src/components/athletic/golfdata/PercentileBar.tsx:25:13               
+LFase                                 type       src/components/athletic/golfdata/Periodeplan.tsx:16:13                 
+Phase                                 type       src/components/athletic/golfdata/Periodeplan.tsx:18:13                 
+Tournament                            type       src/components/athletic/golfdata/Periodeplan.tsx:20:13                 
+PeriodeplanProps                      type       src/components/athletic/golfdata/Periodeplan.tsx:22:13                 
+ProgressVariant                       type       src/components/athletic/golfdata/Progress.tsx:17:13                    
+ProgressProps                         type       src/components/athletic/golfdata/Progress.tsx:19:13                    
+PuttBand                              type       src/components/athletic/golfdata/PuttModellKort.tsx:10:13              
+PuttModellKortProps                   type       src/components/athletic/golfdata/PuttModellKort.tsx:19:13              
+PyramidAxis                           type       src/components/athletic/golfdata/Pyramid.tsx:36:13                     
+PyramidProps                          type       src/components/athletic/golfdata/Pyramid.tsx:45:13                     
+RingGaugeZone                         type       src/components/athletic/golfdata/RingGauge.tsx:15:13                   
+RingGaugeProps                        type       src/components/athletic/golfdata/RingGauge.tsx:17:13                   
+Hull                                  type       src/components/athletic/golfdata/Scorekort.tsx:9:13                    
+Scoresammendrag                       type       src/components/athletic/golfdata/Scorekort.tsx:17:13                   
+ScorekortProps                        type       src/components/athletic/golfdata/Scorekort.tsx:19:13                   
+SegmentedTabOption                    type       src/components/athletic/golfdata/SegmentedTabs.tsx:14:13               
+SegmentedTabsProps                    type       src/components/athletic/golfdata/SegmentedTabs.tsx:18:13               
+SgKategori                            type       src/components/athletic/golfdata/SgKategoriBar.tsx:14:13               
+SgKategoriBarProps                    type       src/components/athletic/golfdata/SgKategoriBar.tsx:21:13               
+SgTotalKortProps                      type       src/components/athletic/golfdata/SgTotalKort.tsx:12:13                 
+SgPunkt                               type       src/components/athletic/golfdata/SgTrend.tsx:10:13                     
+SgHendelse                            type       src/components/athletic/golfdata/SgTrend.tsx:12:13                     
+SgTrendProps                          type       src/components/athletic/golfdata/SgTrend.tsx:21:13                     
+SkeletonVariant                       type       src/components/athletic/golfdata/Skeleton.tsx:8:13                     
+SkeletonRowProps                      type       src/components/athletic/golfdata/Skeleton.tsx:29:13                    
+LekkasjeBaand                         type       src/components/athletic/golfdata/SlagLekkasjeKart.tsx:10:13            
+SlagLekkasjeKartProps                 type       src/components/athletic/golfdata/SlagLekkasjeKart.tsx:21:13            
+SpillerTilstandKortProps              type       src/components/athletic/golfdata/SpillerTilstandKort.tsx:10:13         
+StatusTone                            type       src/components/athletic/golfdata/StatusDot.tsx:12:13                   
+StepItem                              type       src/components/athletic/golfdata/Stepper.tsx:13:13                     
+StepperProps                          type       src/components/athletic/golfdata/Stepper.tsx:15:13                     
+StrikeSone                            type       src/components/athletic/golfdata/StrikeSmashKort.tsx:9:13              
+StrikeSmashKortProps                  type       src/components/athletic/golfdata/StrikeSmashKort.tsx:16:13             
+TagSize                               type       src/components/athletic/golfdata/Tag.tsx:13:13                         
+CountBadgeProps                       type       src/components/athletic/golfdata/Tag.tsx:54:13                         
+TidsGridAkse                          type       src/components/athletic/golfdata/TidsGrid.tsx:18:13                    
+TidsGridFlytt                         type       src/components/athletic/golfdata/TidsGrid.tsx:20:13                    
+TidsGridKolonneProps                  type       src/components/athletic/golfdata/TidsGrid.tsx:50:13                    
+TidsGridBlokkProps                    type       src/components/athletic/golfdata/TidsGrid.tsx:63:13                    
+TidslinjeAkse                         type       src/components/athletic/golfdata/Tidslinje.tsx:17:13                   
+TidslinjeFlytt                        type       src/components/athletic/golfdata/Tidslinje.tsx:19:13                   
+TidslinjeProps                        type       src/components/athletic/golfdata/Tidslinje.tsx:21:13                   
+TidslinjeBaneProps                    type       src/components/athletic/golfdata/Tidslinje.tsx:41:13                   
+TidslinjeBarProps                     type       src/components/athletic/golfdata/Tidslinje.tsx:50:13                   
+TidslinjePunktProps                   type       src/components/athletic/golfdata/Tidslinje.tsx:65:13                   
+TigerFiveMetrikk                      type       src/components/athletic/golfdata/TigerFiveKort.tsx:10:13               
+TigerFiveKortProps                    type       src/components/athletic/golfdata/TigerFiveKort.tsx:22:13               
+Compliance                            type       src/components/athletic/golfdata/UkeKalender.tsx:14:13                 
+UkeAkse                               type       src/components/athletic/golfdata/UkeKalender.tsx:15:13                 
+UkeSession                            type       src/components/athletic/golfdata/UkeKalender.tsx:17:13                 
+UkeDag                                type       src/components/athletic/golfdata/UkeKalender.tsx:29:13                 
+UkeKalenderProps                      type       src/components/athletic/golfdata/UkeKalender.tsx:35:13                 
+KalenderVisning                       type       src/components/athletic/golfdata/VisningsVelger.tsx:15:13              
+VisningsVelgerProps                   type       src/components/athletic/golfdata/VisningsVelger.tsx:17:13              
+EnrollPlayer                          type       src/components/coachhq/tournament-enroll-modal.tsx:23:13               
+EnrollExisting                        type       src/components/coachhq/tournament-enroll-modal.tsx:30:13               
+ApprovalKind                          type       src/components/forelder/approval-card.tsx:6:13                         
+ReceiptState                          type       src/components/forelder/parent-comm.tsx:88:13                          
+FysPlanCardProps                      type       src/components/fys-plan/index.ts:8:28                                  
+OvelseRadData                         type       src/components/fys-plan/index.ts:11:29                                 
+OvelseTabellProps                     type       src/components/fys-plan/index.ts:11:49                                 
+FysPlanSidebarProps                   type       src/components/fys-plan/index.ts:12:31                                 
+OvelseRadData                         type       src/components/fys-plan/ovelse-tabell.tsx:8:13                         
+OvelseTabellProps                     type       src/components/fys-plan/ovelse-tabell.tsx:23:13                        
+FysPlanCardProps                      type       src/components/fys-plan/plan-card.tsx:6:13                             
+AnleggHighlight                       type       src/components/marketing/v2/MarkedAnleggDetaljV2.tsx:12:13             
+Sammenligning                         interface  src/components/marketing/v2/MarkedStatsMinProgresjonV2.tsx:21:18       
+SgInput                               interface  src/components/marketing/v2/MarkedStatsMinProgresjonV2.tsx:29:18       
+EntrySpiller                          type       src/components/marketing/v2/MarkedTurneringDetaljV2.tsx:14:13          
+StatsDetaljKpi                        interface  src/components/marketing/v2/stats-ramme.tsx:316:18                     
+StatsDetaljTabell                     interface  src/components/marketing/v2/stats-ramme.tsx:322:18                     
+BaneDetaljFakta                       interface  src/components/marketing/v2/StatsBaneDetaljV2.tsx:16:18                
+BaneTee                               interface  src/components/marketing/v2/StatsBaneDetaljV2.tsx:20:18                
+BaneScoreBucket                       interface  src/components/marketing/v2/StatsBaneDetaljV2.tsx:28:18                
+BaneLeaderboardRad                    interface  src/components/marketing/v2/StatsBaneDetaljV2.tsx:32:18                
+KlubbRad                              interface  src/components/marketing/v2/StatsKlubberV2.tsx:17:18                   
+NorskeSpillerRad                      type       src/components/marketing/v2/StatsNorskeV2.tsx:15:13                    
+StatsUkaResultat                      interface  src/components/marketing/v2/StatsUkaV2.tsx:16:18                       
+StatsUkaKommende                      interface  src/components/marketing/v2/StatsUkaV2.tsx:26:18                       
+TournamentStatusTone                  type       src/components/portal/ai/foresla-turnering-screen.tsx:15:13            
+DrillAxis                             type       src/components/portal/drills/drill-detalj.tsx:33:13                    
+DrillParam                            type       src/components/portal/drills/drill-detalj.tsx:35:13                    
+DrillMetaChip                         type       src/components/portal/drills/drill-detalj.tsx:37:13                    
+LiveV2Status                          type       src/components/portal/live/types.ts:40:13                              
+ProfileShellProps                     type       src/components/portal/profile/ProfileShell.tsx:43:13                   
+SgDisiplin                            type       src/components/portal/sg-hub/sg-hub.tsx:46:13                          
+SgKpi                                 type       src/components/portal/sg-hub/sg-hub.tsx:60:13                          
+SgVerktoy                             type       src/components/portal/sg-hub/sg-hub.tsx:67:13                          
+SgGapDrill                            type       src/components/portal/sg-hub/sg-hub.tsx:117:13                         
+HubShortcut                           type       src/components/portal/statistikk/statistikk-hybrid.tsx:40:13           
+SgGap                                 type       src/components/portal/statistikk/statistikk-hybrid.tsx:48:13           
+BookingCoach                          type       src/components/portal/v2/BookingV2.tsx:50:13                           
+BookingCredits                        type       src/components/portal/v2/BookingV2.tsx:58:13                           
+MeldingTraad                          type       src/components/portal/v2/CoachMeldingerV2.tsx:35:13                    
+CoachOvelseItem                       type       src/components/portal/v2/CoachOvelserV2.tsx:41:13                      
+CoachPlanRad                          type       src/components/portal/v2/CoachPlanerV2.tsx:41:13                       
+CoachVideoItem                        type       src/components/portal/v2/CoachVideoerV2.tsx:23:13                      
+FakturaStatus                         type       src/components/portal/v2/ForelderFakturaerV2.tsx:38:13                 
+ForelderInnstillingerBarn             interface  src/components/portal/v2/ForelderInnstillingerV2.tsx:35:18             
+OkonomiAbonnement                     interface  src/components/portal/v2/ForelderOkonomiV2.tsx:41:18                   
+OkonomiBetaling                       interface  src/components/portal/v2/ForelderOkonomiV2.tsx:51:18                   
+SamtykkeBarn                          type       src/components/portal/v2/ForelderSamtykkeV2.tsx:36:13                  
+ForelderVarsel                        type       src/components/portal/v2/ForelderVarslerV2.tsx:32:13                   
+MegAbonnementFaktura                  type       src/components/portal/v2/MegAbonnementV2.tsx:30:13                     
+DokumentRad                           type       src/components/portal/v2/MegDokumenterV2.tsx:36:13                     
+ForesattRad                           type       src/components/portal/v2/MegForeldreV2.tsx:36:13                       
+HjelpFaq                              type       src/components/portal/v2/MegHelpV2.tsx:38:13                           
+HjelpKategori                         type       src/components/portal/v2/MegHelpV2.tsx:39:13                           
+HjelpArtikkel                         type       src/components/portal/v2/MegHelpV2.tsx:46:13                           
+PlanByggerV2Actions                   interface  src/components/portal/v2/PlanByggerV2.tsx:40:18                        
+GranulaerSgData                       type       src/components/portal/v2/RundeDetaljV2.tsx:36:13                       
+TesterRad                             type       src/components/portal/v2/TesterV2.tsx:43:13                            
+TesterSeksjon                         type       src/components/portal/v2/TesterV2.tsx:52:13                            
+TurneringRad                          type       src/components/portal/v2/TurneringerV2.tsx:33:13                       
+DeltakerRad                           type       src/components/portal/v2/UtfordringDetaljV2.tsx:39:13                  
+SvarPaInvitasjonInput                 type       src/components/portal/workbench/invite-actions.ts:83:13                
+SvarPaInvitasjonResult                type       src/components/portal/workbench/invite-actions.ts:88:13                
+FjernSpillerInput                     type       src/components/portal/workbench/invite-actions.ts:119:13               
+FjernSpillerResult                    type       src/components/portal/workbench/invite-actions.ts:123:13               
+ParticipantItem                       type       src/components/portal/workbench/participants-list.tsx:19:13            
+ShotAnnotationRow                     type       src/components/sg-hub/ShotAnnotationPopover.tsx:38:13                  
+NotificationItem                      type       src/components/shared/notification-bell.tsx:8:13                       
+SidebarBrandVariant                   type       src/components/shared/sidebar-brand.tsx:21:13                          
+KategoriConfig                        interface  src/components/stats/pga-kategori-page.tsx:45:18                       
+HorisontalBarItem                     interface  src/components/stats/stats-horisontal-bar.tsx:10:18                    
+KohortLinjeSerie                      interface  src/components/stats/stats-kohort-linjegraf.tsx:10:18                  
+LeaderboardRow                        interface  src/components/stats/stats-leaderboard-card.tsx:21:18                  
+SlideType                             type       src/components/stats/stats-wrapped-slide.tsx:11:13                     
+IntroSlide                            interface  src/components/stats/stats-wrapped-slide.tsx:28:18                     
+RundeSlide                            interface  src/components/stats/stats-wrapped-slide.tsx:34:18                     
+SnittSlide                            interface  src/components/stats/stats-wrapped-slide.tsx:41:18                     
+BesteSlide                            interface  src/components/stats/stats-wrapped-slide.tsx:48:18                     
+KlubberSlide                          interface  src/components/stats/stats-wrapped-slide.tsx:57:18                     
+UtviklingSlide                        interface  src/components/stats/stats-wrapped-slide.tsx:65:18                     
+StreakSlide                           interface  src/components/stats/stats-wrapped-slide.tsx:72:18                     
+RankingSlide                          interface  src/components/stats/stats-wrapped-slide.tsx:78:18                     
+SammenligningSlide                    interface  src/components/stats/stats-wrapped-slide.tsx:87:18                     
+AvslutningSlide                       interface  src/components/stats/stats-wrapped-slide.tsx:95:18                     
+RepProgress                           interface  src/components/teknisk-plan/task-card.tsx:4:18                         
+ButtonProps                           type       src/components/ui/index.ts:14:15                                       
+ButtonVariant                         type       src/components/ui/index.ts:14:28                                       
+ButtonSize                            type       src/components/ui/index.ts:14:43                                       
+UkeStripeUke                          interface  src/components/v2/compliance-viz.tsx:20:18                             
+Tab                                   interface  src/components/v2/core.tsx:241:18                                      
+VelgerOption                          interface  src/components/v2/core.tsx:288:18                                      
+NavItem                               interface  src/components/v2/core.tsx:647:18                                      
+IkonRailProps                         interface  src/components/v2/core.tsx:657:18                                      
+BunnNavProps                          interface  src/components/v2/core.tsx:688:18                                      
+SkjermProps                           interface  src/components/v2/core.tsx:705:18                                      
+RingZone                              interface  src/components/v2/datavis.tsx:42:18                                    
+ProgresjonsBarVariant                 type       src/components/v2/datavis.tsx:84:13                                    
+SgTotalProps                          interface  src/components/v2/datavis.tsx:297:18                                   
+SgTrendPunkt                          interface  src/components/v2/datavis.tsx:366:18                                   
+SgTrendHendelse                       interface  src/components/v2/datavis.tsx:369:18                                   
+SgTrendKortProps                      interface  src/components/v2/datavis.tsx:375:18                                   
+MiniSparkProps                        interface  src/components/v2/datavis.tsx:413:18                                   
+ScorekortSammendrag                   interface  src/components/v2/datavis.tsx:448:18                                   
+TigerFiveMetrikk                      interface  src/components/v2/datavis.tsx:502:18                                   
+TigerFiveProps                        interface  src/components/v2/datavis.tsx:518:18                                   
+PuttBaand                             interface  src/components/v2/datavis.tsx:541:18                                   
+PuttModellProps                       interface  src/components/v2/datavis.tsx:551:18                                   
+GapKolle                              interface  src/components/v2/datavis.tsx:579:18                                   
+GapVarsel                             type       src/components/v2/datavis.tsx:584:13                                   
+GappingProps                          interface  src/components/v2/datavis.tsx:590:18                                   
+LaunchSkudd                           interface  src/components/v2/datavis.tsx:623:18                                   
+LaunchVindu                           interface  src/components/v2/datavis.tsx:627:18                                   
+LaunchWindowProps                     interface  src/components/v2/datavis.tsx:639:18                                   
+StrikeSone                            interface  src/components/v2/datavis.tsx:689:18                                   
+StrikeSmashProps                      interface  src/components/v2/datavis.tsx:698:18                                   
+SlagBaand                             interface  src/components/v2/datavis.tsx:744:18                                   
+SlagLekkasjeProps                     interface  src/components/v2/datavis.tsx:757:18                                   
+DiagnoseBevisDel                      interface  src/components/v2/datavis.tsx:798:18                                   
+DiagnoseBevis                         interface  src/components/v2/datavis.tsx:802:18                                   
+DiagnoseResept                        interface  src/components/v2/datavis.tsx:807:18                                   
+DiagnoseProps                         interface  src/components/v2/datavis.tsx:814:18                                   
+NesteFokusProps                       interface  src/components/v2/datavis.tsx:867:18                                   
+KategoriKravRad                       interface  src/components/v2/datavis.tsx:898:18                                   
+KategoriKravProps                     interface  src/components/v2/datavis.tsx:911:18                                   
+SpillerTilstandTone                   type       src/components/v2/datavis.tsx:941:13                                   
+SpillerTilstandProps                  interface  src/components/v2/datavis.tsx:943:18                                   
+PyramideData                          interface  src/components/v2/datavis.tsx:977:18                                   
+PercentilBarProps                     interface  src/components/v2/datavis.tsx:1018:18                                  
+OktKortProps                          interface  src/components/v2/domene.tsx:52:18                                     
+BookingStatus                         type       src/components/v2/domene.tsx:90:13                                     
+BookingKortProps                      interface  src/components/v2/domene.tsx:91:18                                     
+KvitteringLinje                       interface  src/components/v2/domene.tsx:123:18                                    
+KvitteringKortProps                   interface  src/components/v2/domene.tsx:127:18                                    
+Deltaker                              interface  src/components/v2/domene.tsx:227:18                                    
+DeltakerListeProps                    interface  src/components/v2/domene.tsx:233:18                                    
+TestResultatKortProps                 interface  src/components/v2/domene.tsx:263:18                                    
+TurneringNedtellingProps              interface  src/components/v2/domene.tsx:293:18                                    
+FakturaStatus                         type       src/components/v2/domene.tsx:325:13                                    
+FakturaRadProps                       interface  src/components/v2/domene.tsx:326:18                                    
+SamtykkeStatus                        type       src/components/v2/domene.tsx:359:13                                    
+SamtykkeKortProps                     interface  src/components/v2/domene.tsx:360:18                                    
+SpillerKortProps                      interface  src/components/v2/domene.tsx:394:18                                    
+FokusTall                             interface  src/components/v2/domene.tsx:431:18                                    
+FokusSpillerBlokkProps                interface  src/components/v2/domene.tsx:435:18                                    
+AnbefalingsKortProps                  interface  src/components/v2/domene.tsx:472:18                                    
+LiveBarProps                          interface  src/components/v2/domene.tsx:519:18                                    
+AKFormel                              interface  src/components/v2/domene2.tsx:59:18                                    
+AKFormelChipProps                     interface  src/components/v2/domene2.tsx:66:18                                    
+DiffKortProps                         interface  src/components/v2/domene2.tsx:109:18                                   
+FleksMerkeProps                       interface  src/components/v2/domene2.tsx:138:18                                   
+LiveTone                              type       src/components/v2/domene2.tsx:153:13                                   
+LiveStatusProps                       interface  src/components/v2/domene2.tsx:154:18                                   
+OppgaveKortProps                      interface  src/components/v2/domene2.tsx:216:18                                   
+SGKategori                            interface  src/components/v2/domene2.tsx:250:18                                   
+SGSplittKortProps                     interface  src/components/v2/domene2.tsx:254:18                                   
+VelvaereVerdier                       interface  src/components/v2/domene2.tsx:284:18                                   
+VelvaereKortProps                     interface  src/components/v2/domene2.tsx:289:18                                   
+TidsVelgerProps                       interface  src/components/v2/domene2.tsx:325:18                                   
+BarnTall                              interface  src/components/v2/domene2.tsx:366:18                                   
+BarnProgresjonKortProps               interface  src/components/v2/domene2.tsx:370:18                                   
+V2LasterVariant                       type       src/components/v2/feil-laste.tsx:121:13                                
+Sone                                  interface  src/components/v2/fysisk.tsx:30:18                                     
+MuskelgruppeChipProps                 interface  src/components/v2/fysisk.tsx:47:18                                     
+AutoProgresjonProps                   interface  src/components/v2/fysisk.tsx:310:18                                    
+WbArkProps                            type       src/components/v2/index.ts:37:15                                       
+ZoomBrodsmuleProps                    type       src/components/v2/index.ts:38:3                                        
+DagValg                               type       src/components/v2/index.ts:39:3                                        
+FlyttTilArkProps                      type       src/components/v2/index.ts:40:3                                        
+FormelChip                            type       src/components/v2/index.ts:41:3                                        
+PreviewOvelse                         type       src/components/v2/index.ts:42:3                                        
+PreviewArkProps                       type       src/components/v2/index.ts:43:3                                        
+RingProps                             type       src/components/v2/index.ts:44:3                                        
+ProsessMal                            type       src/components/v2/index.ts:45:3                                        
+MaalStripeProps                       type       src/components/v2/index.ts:46:3                                        
+SerieVelgerProps                      type       src/components/v2/index.ts:47:3                                        
+EgentreningVinduProps                 type       src/components/v2/index.ts:48:3                                        
+IconProps                             type       src/components/v2/index.ts:52:15                                       
+ComplianceKey                         type       src/components/v2/kalender.tsx:21:13                                   
+UkeSession                            interface  src/components/v2/kalender.tsx:22:18                                   
+UkeDag                                interface  src/components/v2/kalender.tsx:28:18                                   
+UkeGridProps                          interface  src/components/v2/kalender.tsx:44:18                                   
+TidsBlokk                             interface  src/components/v2/kalender.tsx:78:18                                   
+TidsKolonne                           interface  src/components/v2/kalender.tsx:85:18                                   
+TidsGridProps                         interface  src/components/v2/kalender.tsx:95:18                                   
+TidslinjeVariant                      type       src/components/v2/kalender.tsx:143:13                                  
+TidslinjeBar                          interface  src/components/v2/kalender.tsx:144:18                                  
+TidslinjePunkt                        interface  src/components/v2/kalender.tsx:150:18                                  
+TidslinjeBane                         interface  src/components/v2/kalender.tsx:155:18                                  
+TidslinjeTick                         interface  src/components/v2/kalender.tsx:160:18                                  
+TidslinjeProps                        interface  src/components/v2/kalender.tsx:169:18                                  
+PrioKey                               type       src/components/v2/kalender.tsx:211:13                                  
+Fase                                  interface  src/components/v2/kalender.tsx:212:18                                  
+Turnering                             interface  src/components/v2/kalender.tsx:217:18                                  
+MndDag                                interface  src/components/v2/kalender.tsx:271:18                                  
+MndKalenderProps                      interface  src/components/v2/kalender.tsx:282:18                                  
+AgendaState                           type       src/components/v2/kalender.tsx:359:13                                  
+AgendaRadProps                        interface  src/components/v2/kalender.tsx:360:18                                  
+VisningsVelgerProps                   interface  src/components/v2/kalender.tsx:394:18                                  
+ModalProps                            interface  src/components/v2/overlays.tsx:54:18                                   
+ArkItem                               interface  src/components/v2/overlays.tsx:85:18                                   
+ArkProps                              interface  src/components/v2/overlays.tsx:90:18                                   
+SkuffRow                              interface  src/components/v2/overlays.tsx:121:18                                  
+SkuffProps                            interface  src/components/v2/overlays.tsx:125:18                                  
+PopoverItem                           interface  src/components/v2/overlays.tsx:166:18                                  
+PopoverProps                          interface  src/components/v2/overlays.tsx:171:18                                  
+VerktoytipsProps                      interface  src/components/v2/overlays.tsx:203:18                                  
+ToastProps                            interface  src/components/v2/overlays.tsx:226:18                                  
+BannerTone                            type       src/components/v2/overlays.tsx:251:13                                  
+BannerProps                           interface  src/components/v2/overlays.tsx:252:18                                  
+KommandoItem                          interface  src/components/v2/overlays.tsx:271:18                                  
+KommandoGruppe                        interface  src/components/v2/overlays.tsx:277:18                                  
+KommandoPalettProps                   interface  src/components/v2/overlays.tsx:281:18                                  
+SamtaleRolle                          type       src/components/v2/samtale.tsx:70:13                                    
+V2NavGruppe                           interface  src/components/v2/shell.tsx:30:18                                      
+VelgerIdValg                          interface  src/components/v2/skjema.tsx:107:18                                    
+AvkryssingProps                       interface  src/components/v2/skjema.tsx:188:18                                    
+RadioOption                           interface  src/components/v2/skjema.tsx:208:18                                    
+RadioGruppeProps                      interface  src/components/v2/skjema.tsx:213:18                                    
+StegtellerProps                       interface  src/components/v2/skjema.tsx:329:18                                    
+DatoDag                               interface  src/components/v2/skjema.tsx:363:18                                    
+DatoVelgerProps                       interface  src/components/v2/skjema.tsx:367:18                                    
+KodeInputProps                        interface  src/components/v2/skjema.tsx:407:18                                    
+CompareSerie                          interface  src/components/v2/spesialviz.tsx:34:18                                 
+CompareChartProps                     interface  src/components/v2/spesialviz.tsx:43:18                                 
+HullData                              interface  src/components/v2/spesialviz.tsx:91:18                                 
+HullStripeProps                       interface  src/components/v2/spesialviz.tsx:99:18                                 
+KolleAvvik                            interface  src/components/v2/spesialviz.tsx:135:18                                
+LengdeAvvikProps                      interface  src/components/v2/spesialviz.tsx:143:18                                
+UkeLoad                               interface  src/components/v2/spesialviz.tsx:177:18                                
+LoadChartProps                        interface  src/components/v2/spesialviz.tsx:185:18                                
+RadarProfilAkse                       interface  src/components/v2/spesialviz.tsx:281:18                                
+StatStripItem                         interface  src/components/v2/spesialviz.tsx:339:18                                
+Skudd                                 interface  src/components/v2/spesialviz.tsx:370:18                                
+DispersionPlotProps                   interface  src/components/v2/spesialviz.tsx:379:18                                
+Bane                                  interface  src/components/v2/spesialviz.tsx:433:18                                
+TrajectoryPlotProps                   interface  src/components/v2/spesialviz.tsx:442:18                                
+KolleStatKortProps                    interface  src/components/v2/spesialviz.tsx:491:18                                
+TrackmanKpi                           interface  src/components/v2/spesialviz.tsx:521:18                                
+TrackmanSammendragProps               interface  src/components/v2/spesialviz.tsx:530:18                                
+KategoriFjellProps                    interface  src/components/v2/spesialviz.tsx:571:18                                
+KategoriTrinn                         interface  src/components/v2/spesialviz.tsx:613:18                                
+KategoriStigeProps                    interface  src/components/v2/spesialviz.tsx:624:18                                
+TidAkse                               interface  src/components/v2/spesialviz.tsx:647:18                                
+FeaturedCardProps                     interface  src/components/v2/spesialviz.tsx:684:18                                
+FABProps                              interface  src/components/v2/struktur.tsx:16:18                                   
+SpillerGruppeVekslerProps             interface  src/components/v2/struktur.tsx:35:18                                   
+PagineringProps                       interface  src/components/v2/struktur.tsx:62:18                                   
+TrekkspillItem                        interface  src/components/v2/struktur.tsx:96:18                                   
+KanbanKort                            interface  src/components/v2/struktur.tsx:165:18                                  
+KanbanKolonneProps                    interface  src/components/v2/struktur.tsx:170:18                                  
+HjelpPopoverProps                     interface  src/components/v2/struktur.tsx:202:18                                  
+ValideringsTone                       type       src/components/v2/struktur.tsx:222:13                                  
+DataForhaandsvisningProps             interface  src/components/v2/struktur.tsx:251:18                                  
+TemaVekslerProps                      interface  src/components/v2/struktur.tsx:279:18                                  
+SporChipProps                         interface  src/components/v2/utviklingsplan.tsx:32:18                             
+PosStatus                             type       src/components/v2/utviklingsplan.tsx:41:13                             
+TaskStatus                            type       src/components/v2/utviklingsplan.tsx:42:13                             
+PRailProps                            interface  src/components/v2/utviklingsplan.tsx:58:18                             
+KravRadProps                          interface  src/components/v2/utviklingsplan.tsx:104:18                            
+TrappTrinn                            interface  src/components/v2/utviklingsplan.tsx:206:18                            
+ArkProps                              interface  src/components/v2/wb-mobil.tsx:18:18                                   
+DagValg                               interface  src/components/v2/wb-mobil.tsx:69:18                                   
+FlyttTilArkProps                      interface  src/components/v2/wb-mobil.tsx:75:18                                   
+FormelChip                            interface  src/components/v2/wb-mobil.tsx:142:18                                  
+PreviewOvelse                         interface  src/components/v2/wb-mobil.tsx:146:18                                  
+PreviewArkProps                       interface  src/components/v2/wb-mobil.tsx:150:18                                  
+RingProps                             interface  src/components/v2/wb-mobil.tsx:215:18                                  
+ProsessMal                            interface  src/components/v2/wb-mobil.tsx:236:18                                  
+MaalStripeProps                       interface  src/components/v2/wb-mobil.tsx:240:18                                  
+SerieVelgerProps                      interface  src/components/v2/wb-mobil.tsx:295:18                                  
+EgentreningVinduProps                 interface  src/components/v2/wb-mobil.tsx:344:18                                  
+RecurFreq                             type       src/components/workbench-hybrid/types.ts:10:13                         
+RecurEnd                              type       src/components/workbench-hybrid/types.ts:11:13                         
+Recur                                 type       src/components/workbench-hybrid/types.ts:12:13                         
+ZoomLevel                             type       src/components/workbench-hybrid/types.ts:74:13                         
+WorkbenchRole                         type       src/components/workbench-hybrid/types.ts:76:13                         
+WbSamling                             type       src/components/workbench-hybrid/types.ts:100:13                        
+WorkspaceTask                         type       src/components/workspace/primitives.tsx:358:13                         
+QuizChoice                            interface  src/data/quiz-questions.ts:6:18                                        
+DraftSource                           type       src/lib/admin-caddie/co-agent-data.tsx:43:13                           
+DraftRow                              type       src/lib/admin-caddie/co-agent-data.tsx:51:13                           
+AuditActor                            type       src/lib/admin-caddie/co-agent-data.tsx:76:13                           
+AuditOutcome                          type       src/lib/admin-caddie/co-agent-data.tsx:77:13                           
+CompareMetric                         type       src/lib/admin-compare/multi-compare-data.ts:20:13                      
+ComparePlayer                         type       src/lib/admin-compare/multi-compare-data.ts:38:13                      
+CohortRow                             type       src/lib/admin-compare/multi-compare-data.ts:51:13                      
+RegionRow                             type       src/lib/admin-compare/multi-compare-data.ts:63:13                      
+ComplianceBand                        type       src/lib/admin-compliance/compliance-data.ts:24:13                      
+AxisBar                               type       src/lib/admin-compliance/compliance-data.ts:90:13                      
+WeekBar                               type       src/lib/admin-compliance/compliance-data.ts:101:13                     
+PlayerPanel                           type       src/lib/admin-compliance/compliance-data.ts:111:13                     
+DrillRow                              type       src/lib/admin-compliance/compliance-data.ts:145:13                     
+DrillSession                          type       src/lib/admin-compliance/compliance-data.ts:157:13                     
+BenchmarksPending                     type       src/lib/admin/benchmark-sync-schema.ts:46:13                           
+TestSyncStatus                        type       src/lib/admin/benchmark-sync.ts:53:13                                  
+TestSyncResult                        type       src/lib/admin/benchmark-sync.ts:61:13                                  
+VarselPlanAction                      type       src/lib/admin/load-varsler.ts:16:13                                    
+VarselSignal                          type       src/lib/admin/load-varsler.ts:26:13                                    
+VarselNotification                    type       src/lib/admin/load-varsler.ts:35:13                                    
+OmradeProfil                          type       src/lib/admin/spiller-tester-data.ts:23:13                             
+GroupBucket                           type       src/lib/admin/stallen-data.ts:17:13                                    
+TierKind                              type       src/lib/admin/stallen-data.ts:18:13                                    
+SgTone                                type       src/lib/admin/stallen-data.ts:19:13                                    
+AxisAdh                               type       src/lib/admin/stallen-data.ts:23:13                                    
+StallenRow                            type       src/lib/admin/stallen-data.ts:25:13                                    
+StallenSort                           type       src/lib/admin/stallen-data.ts:83:13                                    
+SortDir                               type       src/lib/admin/stallen-data.ts:93:13                                    
+MessageChannel                        type       src/lib/agencyos/live-data.ts:35:13                                    
+EventAxis                             type       src/lib/agencyos/live-data.ts:61:13                                    
+AgentFn                               type       src/lib/agents/agent-runner.ts:12:13                                   
+PlanSessionSnapshot                   type       src/lib/agents/plan-action-executor.ts:90:13                           
+DrillKatalogEntry                     type       src/lib/ai-plan/context.ts:30:13                                       
+FasilitetsGrenser                     type       src/lib/ai-plan/context.ts:47:13                                       
+TemplateSession                       type       src/lib/ai-plan/context.ts:61:13                                       
+ForrigeEffektivitet                   type       src/lib/ai-plan/context.ts:82:13                                       
+PlanForslagDrill                      type       src/lib/ai-plan/schema.ts:70:13                                        
+CaddieMessage                 Agents  type       src/lib/ai/agents/caddie.ts:49:13                                      
+ToolCallLog                   Agents  type       src/lib/ai/agents/caddie.ts:66:13                                      
+CaddieMessage                 Agents  type       src/lib/ai/agents/index.ts:7:15                                        
+ChatCaddieOpts                Agents  type       src/lib/ai/agents/index.ts:7:30                                        
+ChatCaddieResult              Agents  type       src/lib/ai/agents/index.ts:7:46                                        
+ToolCallLog                   Agents  type       src/lib/ai/agents/index.ts:7:64                                        
+ChatCaddieMedSpillerOpts      Agents  type       src/lib/ai/agents/index.ts:10:15                                       
+DailyBriefMetrics             Agents  type       src/lib/ai/agents/index.ts:13:15                                       
+DailyBriefResult              Agents  type       src/lib/ai/agents/index.ts:13:34                                       
+PlanRevisionTrigger           Agents  type       src/lib/ai/agents/index.ts:17:3                                        
+PlanRevisionEndring           Agents  type       src/lib/ai/agents/index.ts:18:3                                        
+PlanRevisionForslag           Agents  type       src/lib/ai/agents/index.ts:19:3                                        
+InaktivSpillerForslag         Agents  type       src/lib/ai/agents/index.ts:26:15                                       
+SgTrend                       Agents  type       src/lib/ai/agents/index.ts:30:3                                        
+SgKategoriKode                Agents  type       src/lib/ai/agents/index.ts:31:3                                        
+SgKategoriTolkning            Agents  type       src/lib/ai/agents/index.ts:32:3                                        
+SgInterpretationResult        Agents  type       src/lib/ai/agents/index.ts:33:3                                        
+BompaFase                     Agents  type       src/lib/ai/agents/index.ts:41:3                                        
+VolumNivaa                    Agents  type       src/lib/ai/agents/index.ts:42:3                                        
+IntensitetNivaa               Agents  type       src/lib/ai/agents/index.ts:43:3                                        
+PyramidFokus                  Agents  type       src/lib/ai/agents/index.ts:44:3                                        
+FaseUke                       Agents  type       src/lib/ai/agents/index.ts:45:3                                        
+PeakingPlanResult             Agents  type       src/lib/ai/agents/index.ts:46:3                                        
+SgKategoriTolkning            Agents  type       src/lib/ai/agents/sg-interpretation.ts:32:13                           
+RundeOut                              type       src/lib/ai/tools/get-runder.ts:33:13                                   
+PlanOut                               type       src/lib/ai/tools/get-treningsplan.ts:33:13                             
+DispersionEllipse                     type       src/lib/baneguide/dispersion.ts:21:13                                  
+BaneOverview                          type       src/lib/baneguide/queries.ts:42:13                                     
+HoleDetail                            type       src/lib/baneguide/queries.ts:66:13                                     
+CaddieToolName                        type       src/lib/caddie/tools/index.ts:19:13                                    
+ToolSuccessResponse                   type       src/lib/caddie/types.ts:11:13                                          
+ToolResult                            type       src/lib/caddie/types.ts:16:13                                          
+ApprovalProposal                      type       src/lib/caddie/types.ts:66:13                                          
+Alvorlighet                           type       src/lib/canon/invarianter.ts:25:13                                     
+DGScheduleResponse                    type       src/lib/datagolf/client.ts:63:13                                       
+DGPreTournamentRow                    type       src/lib/datagolf/client.ts:131:13                                      
+DGPreTournamentResponse               type       src/lib/datagolf/client.ts:138:13                                      
+DGSkillRatingsResponse                type       src/lib/datagolf/client.ts:177:13                                      
+PyramidArea                           type       src/lib/design-tokens.ts:70:13                                         
+CsTrend                               type       src/lib/domain/cs-progression.ts:24:13                                 
+CsVarsel                              type       src/lib/domain/cs-progression.ts:26:13                                 
+PyramidKategori                       type       src/lib/domain/pyramid-weighting.ts:16:13                              
+ErrorSeverity                         type       src/lib/error-tracking.ts:90:13                                        
+FeatureName                           type       src/lib/features.ts:17:13                                              
+ForelderBarn                          type       src/lib/forelder.ts:45:13                                              
+KommendeOkt                           type       src/lib/forelder.ts:53:13                                              
+KommendeBooking                       type       src/lib/forelder.ts:61:13                                              
+ForelderFaktura                       type       src/lib/forelder.ts:71:13                                              
+ForelderAktivitet                     type       src/lib/forelder.ts:80:13                                              
+ForelderOversikt                      type       src/lib/forelder.ts:89:13                                              
+ClassifyEngine                        type       src/lib/meg/classify.ts:18:13                                          
+NotificationType                      type       src/lib/notifications.ts:14:13                                         
+UkeType                               type       src/lib/plan-engine/standard-fordeling.ts:60:13                        
+FakturaType                           type       src/lib/portal-abonnement/abonnement-data.ts:13:13                     
+FakturaRad                            type       src/lib/portal-abonnement/abonnement-data.ts:15:13                     
+HubCredits                            type       src/lib/portal-booking/hub-data.ts:19:13                               
+HubBooking                            type       src/lib/portal-booking/hub-data.ts:31:13                               
+HubCoach                              type       src/lib/portal-booking/hub-data.ts:43:13                               
+SlotTid                               type       src/lib/portal-booking/slot-vindu.ts:15:13                             
+SlotDag                               type       src/lib/portal-booking/slot-vindu.ts:16:13                             
+Axis                                  type       src/lib/portal-drilldetalj/drill-detalj-data.tsx:30:13                 
+ParamRow                              type       src/lib/portal-drilldetalj/drill-detalj-data.tsx:66:13                 
+DrillStep                             type       src/lib/portal-drilldetalj/drill-detalj-data.tsx:69:13                 
+DrillMedia                            type       src/lib/portal-drilldetalj/drill-detalj-data.tsx:72:13                 
+DrillAxis                             type       src/lib/portal-drills/drills-data.ts:39:13                             
+DrillDifficulty                       type       src/lib/portal-drills/drills-data.ts:40:13                             
+FysType                               type       src/lib/portal-fysisk/fysisk-data.ts:20:13                             
+FysSettRad                            interface  src/lib/portal-fysisk/fysisk-data.ts:28:18                             
+FysStyrkeOvelse                       interface  src/lib/portal-fysisk/fysisk-data.ts:32:18                             
+FysIntervall                          interface  src/lib/portal-fysisk/fysisk-data.ts:42:18                             
+FysOktBrikke                          interface  src/lib/portal-fysisk/fysisk-data.ts:50:18                             
+FysiskOktData                         interface  src/lib/portal-fysisk/fysisk-data.ts:57:18                             
+GjennomforeOkt                        type       src/lib/portal-gjennomfore/gjennomfore-data.ts:39:13                   
+LiveAxis                              type       src/lib/portal-live/types.ts:15:13                                     
+LiveStatus                            type       src/lib/portal-live/types.ts:17:13                                     
+LiveSnapshotDrill                     type       src/lib/portal-live/types.ts:20:13                                     
+DrillLog                              type       src/lib/portal-live/types.ts:102:13                                    
+PyramidArea                           type       src/lib/portal-okt/okt-detalj-data.ts:16:13                            
+OktUiStatus                           type       src/lib/portal-okt/okt-detalj-data.ts:17:13                            
+DrillStatus                           type       src/lib/portal-okt/okt-detalj-data.ts:18:13                            
+StatusTone                            type       src/lib/portal-okt/okt-detalj-data.ts:19:13                            
+OppsettRad                            type       src/lib/portal-okt/okt-detalj-data.ts:32:13                            
+DataGolfKode                          type       src/lib/portal-stats/datagolf-data.ts:23:13                            
+ScorekortFeltType                     type       src/lib/portal-tester/protocol.ts:25:13                                
+Axis                                  type       src/lib/portal-tester/tester-data.tsx:18:13                            
+Verdict                               type       src/lib/portal-tester/tester-data.tsx:37:13                            
+TestRow                               type       src/lib/portal-tester/tester-data.tsx:39:13                            
+AxisGroup                             type       src/lib/portal-tester/tester-data.tsx:62:13                            
+PlannedTest                           type       src/lib/portal-tester/tester-data.tsx:70:13                            
+TurneringStatus                       type       src/lib/portal-turnering/turnering-detalj-data.ts:83:13                
+EntryState                            type       src/lib/portal-turnering/turnering-detalj-data.ts:104:13               
+HistoricResult                        type       src/lib/portal-turnering/turnering-detalj-data.ts:128:13               
+Treningsomrade                        type       src/lib/portal/training/ak-taxonomy.ts:44:15                           
+TemplateFocusKode                     type       src/lib/portal/training/ak-taxonomy.ts:50:13                           
+PeriodeFarge                          type       src/lib/portal/training/ak-taxonomy.ts:86:13                           
+PraksistypeKort                       type       src/lib/portal/training/ak-taxonomy.ts:123:13                          
+Periode                               type       src/lib/portal/training/periode-constraints.ts:27:13                   
+BruddBeskrivelse                      type       src/lib/portal/training/periode-constraints.ts:41:13                   
+ValideringsResultat                   type       src/lib/portal/training/periode-constraints.ts:46:13                   
+SlagResultat                          type       src/lib/runde-logg/types.ts:31:13                                      
+LoggetRunde                           type       src/lib/runde-logg/types.ts:59:13                                      
+GolfBoxCustomer                       type       src/lib/scrapers/golfbox.ts:81:13                                      
+DriftMetric                           type       src/lib/sg-hub/drift-detection.ts:11:13                                
+DriftTrendPoint                       type       src/lib/sg-hub/drift-detection.ts:13:13                                
+MetricTarget                          type       src/lib/sg-hub/equipment-fit.ts:18:13                                  
+FitMetric                             type       src/lib/sg-hub/equipment-fit.ts:23:13                                  
+FatiguePoint                          type       src/lib/sg-hub/fatigue.ts:11:13                                        
+SessionMetricKey                      type       src/lib/sg-hub/session-diff.ts:6:13                                    
+SmashPoint                            type       src/lib/sg-hub/smash-curve.ts:3:13                                     
+StrikePoint                           type       src/lib/sg-hub/strike-pattern.ts:5:13                                  
+TempoPoint                            type       src/lib/sg-hub/tempo.ts:14:13                                          
+ClubFamily                            type       src/lib/sg-hub/yardage-calc.ts:6:13                                    
+SgCategoryKey                         type       src/lib/sg-scatter/compute.ts:10:13                                    
+ScatterPoint                          type       src/lib/sg-scatter/compute.ts:26:13                                    
+BroadieRow                            type       src/lib/stats/sg-estimator.ts:23:13                                    
+TurneringsDetalj                      type       src/lib/stats/turnering-queries.ts:30:13                               
+Muskelgruppe                          type       src/lib/taxonomy.ts:61:13                                              
+KondisjonSone                         type       src/lib/taxonomy.ts:71:13                                              
+LFaseKode                             type       src/lib/taxonomy.ts:126:13                                             
+PPosisjonsKode                        type       src/lib/taxonomy.ts:143:13                                             
+PressKode                             type       src/lib/taxonomy.ts:175:13                                             
+FysParameters                         type       src/lib/taxonomy.ts:299:13                                             
+GolfParameters                        type       src/lib/taxonomy.ts:309:13                                             
+TrackManAggregatedSession             type       src/lib/trackman/parse-csv.ts:29:13                                    
+TrackManShotMetrics                   type       src/lib/trackman/parse-html-report.ts:1:13                             
+TrackManClubGroup                     type       src/lib/trackman/parse-html-report.ts:14:13                            
+WeekType                              type       src/lib/training/skills/periodization.ts:22:13                         
+PyramidGap                            type       src/lib/training/skills/pyramid.ts:23:13                               
+WebhookSource                         type       src/lib/webhook-retry.ts:15:13                                         
+WorkbenchAgentSignal                  type       src/lib/workbench/agent-feed.ts:8:13                                   
+WorkbenchAgentPlanAction              type       src/lib/workbench/agent-feed.ts:15:13                                  
+WorkbenchPlanTemplate                 type       src/lib/workbench/load-workbench.ts:48:13                              
+WorkbenchGroupSlot                    type       src/lib/workbench/load-workbench.ts:59:13                              
+WorkbenchPaletteItem                  type       src/lib/workbench/load-workbench.ts:69:13                              
+WorkbenchRole                         type       src/lib/workbench/types.ts:6:13                                        
+Duplicate exports (1)
+IkonRail|Sidebar  src/components/v2/core.tsx

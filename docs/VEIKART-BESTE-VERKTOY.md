@@ -3,7 +3,11 @@
 > STATUS-LOGG (oppdateres per leverte pakke — samme commit):
 > 2026-07-12 · Plan godkjent (se ~/.claude/plans/warm-coalescing-octopus.md):
 > W0 nordstjerne → R1 rydding → P ytelse → I0–I8 interaksjon → Å1–Å6
-> årsplanlegger → motor → GDPR-port → marketing. Ingen pakker levert ennå.
+> årsplanlegger → motor → GDPR-port → marketing.
+> 2026-07-12 · W0 LEVERT (NORDSTJERNE.md + pekere). R1 LEVERT (død chrome
+> slettet, eslint-direktiv-buggen fikset — lint 100 % ren for første gang,
+> public/design-handover fjernet (−4,4 MB), 18 engangs-scripts arkivert,
+> knip-rapport: 353 ubrukte src-filer → R2-grunnlag i docs/opprydding/).
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag
