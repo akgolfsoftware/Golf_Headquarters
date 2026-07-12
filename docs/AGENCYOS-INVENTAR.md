@@ -20,11 +20,11 @@ funksjon med FÆRRE sider. Status: **v2** = ny chrome + v2-komponert innhold ·
 | `/admin/agencyos/uka` | Uke-kanban over bookinger per dag | Ser ukas belegg, oppretter booking | v2 |
 | `/admin/agencyos/live` | Live «mission control» | Ser skallet — **statisk demo-data, ingen ekte integrasjon** | v2/stub |
 | `/admin/brief` | Daglig AI-brief | Leser morgenbrief, følger agent-anbefalinger, booker/melder direkte | v2 |
-| `/admin/handlingssenter` | Oppgave-kanban (Notion-synk `OppgaveCache`) | Ser/åpner oppgaver i kanban/tabell/liste + detaljpanel | v2 · **duplikat, se B3** |
+| `/admin/handlingssenter` | **Oppgavesenteret** (Notion-synk `OppgaveCache`) | Ser/åpner oppgaver, hastegrad-gruppert + detaljpanel | v2 ★ (workspace/oppgaver redirecter hit — B3 utført) |
 | `/admin/queue` | **Oppfølgingskø** — hvem trenger samtale | Kanban risiko/følg med/sjekk inn/løst med hurtighandlinger | v2 ★ |
-| `/admin/oppfolging` | Alias for queue (re-eksport av samme side) | Samme som queue | alias → gjør til redirect |
+| `/admin/oppfolging` | Gammel adresse | — | redirect → queue (B1 utført) |
 | `/admin/varsler` | Varselsenter — agent-forslag, signaler, uleste | Leser og kvitterer varsler | v2 |
-| `/admin/mer` | Mobil «Mer»-lenkeliste (gammel chrome-rest) | Navigerer | legacy → slett (Mer-menyen i railen erstatter) |
+| `/admin/mer` | Gammel adresse | — | redirect → cockpit (B7 utført) |
 | `/admin/hjelp` | Hjelpesenter | Leser statisk hjelpeinnhold | legacy/stub |
 | `/admin/profile` | Egen coach-profil | Redigerer profil | legacy |
 
@@ -56,7 +56,7 @@ funksjon med FÆRRE sider. Status: **v2** = ny chrome + v2-komponert innhold ·
 | `/admin/spillere/[id]/tester` | Spillerens testhistorikk | Ser resultater/delta | v2 |
 | `/admin/spillere/[id]/profil`, `/rediger`, `/tildel-test` | Personalia / rediger / test-tildeling | Skjemaer | legacy |
 | `/admin/grupper` (+`[id]`, `[id]/timeplan`) | Grupper m/ medlemmer, plan, timeplan | Oppretter gruppe, redigerer timeplan, dupliserer uker | v2 |
-| `/admin/talent` | Talent-terminal (radar + persentil + H2H) | Sammenligner talenter | legacy · **overlapp, se B5** |
+| `/admin/talent` | Gammel adresse | — | redirect → talent/radar (B5 utført) |
 | `/admin/talent/radar` | **Talent-radar** — rank, trend, pyramide per talent | Følger utviklingen | v2 ★ |
 | `/admin/talent/discovery` | Scout-feed (spillere utenfor talent-sporet) | Legger til i talent-tracking | legacy |
 | `/admin/talent/sammenligning` | Inntil 4 spillere side om side | Sammenligner | legacy |
@@ -69,14 +69,14 @@ funksjon med FÆRRE sider. Status: **v2** = ny chrome + v2-komponert innhold ·
 |---|---|---|---|
 | `/admin/planlegge` | **Planlegge-inngangen** — spillervelger → Workbench | Velger spiller å planlegge for | v2 ★ |
 | `/admin/plans` (+`[planId]`) | Alle treningsplaner (kanban utkast/aktiv/fullført) | Ser planer, åpner detalj | v2 |
-| `/admin/plans/new` | Gammel plan-bygger | — | legacy · vurder sletting (Workbench er kanon) |
+| `/admin/plans/new` | Gammel adresse | — | redirect → planlegge (B7 utført) |
 | `/admin/plan-templates` | **Plan-maler** (36 godkjente maler m/ bruk/effekt) | Åpner/lager maler | v2 |
 | `/admin/plan-templates/ny`, `[id]`, `[id]/rediger`, `[id]/effectiveness` | Mal-CRUD + effektmåling (volum-linje, masseredigering) | Bygger/justerer maler | legacy-innhold |
 | `/admin/drills` (+`ny`, `[id]`, `[id]/rediger`, `/forslag`) | **Drill-bibliotek** (930 drills) + AI-forslag-kø | Filtrerer, lager, godkjenner AI-drills | legacy-innhold |
 | `/admin/teknisk-plan` (+`[spillerId]`) | Tekniske planer per L-fase (P1–P10) | Ser/lager tekniske mål | legacy |
 | `/admin/okter` | Ukas planlagte økter på tvers av stallen | Ser belastning | legacy · **overlapp, se B6** |
 | `/admin/tournaments` (+`ny`, `[id]`, `dubletter`) | Turneringer stallen er påmeldt | Fellesmelding per turnering, rydder dubletter | hub v2-aktig, resten legacy |
-| `/admin/coach-workbench` | Prototype | — | **slett** (planlegge/workbench er kanon) |
+| `/admin/coach-workbench` | Gammel adresse | — | redirect → planlegge (B7 utført) |
 | `/admin/plans/templates/*` | Gamle mal-adresser | — | redirects (behold) |
 
 ### Gjennomføre
@@ -99,14 +99,14 @@ funksjon med FÆRRE sider. Status: **v2** = ny chrome + v2-komponert innhold ·
 | Rute | Hva den er | Hva du gjør der | Status |
 |---|---|---|---|
 | `/admin/analyse` | **Stall-analyse** — KPI + pyramidefordeling + per gruppe | Ser stallen samlet, klikker til lag-snitt | v2 ★ |
-| `/admin/analysere` | Innsikt-hub (lenke-kort) | Navigerer | legacy · vurder sletting (nav-en dekker) |
+| `/admin/analysere` | Gammel adresse | — | redirect → analyse (B7 utført) |
 | `/admin/analysere/compliance` | Plan-etterlevelse på tvers | Ser hvem som følger plan | v2 |
 | `/admin/lag-snitt` | Pyramide-fordeling per gruppe (full flate) | Sammenligner grupper | legacy |
 | `/admin/tester` (+`benchmarks`, `foreslatte`, `tildel/*`) | Test-senteret + NGF-fasiter + forslag + tildeling | Registrerer, godkjenner, tildeler | blandet |
 | `/admin/reports` | Rapporter (6 typer, CSV) | Genererer/laster ned | v2 |
 | `/admin/runder` | Alle runder på tvers | Søker, åpner | v2 |
 | `/admin/risiko` | Belastnings-/risikokart for stallen | Ser hvem som er i faresonen | legacy |
-| `/admin/tilstander` | Design-katalog av økt-tilstander | **Ingenting — statisk demo** | stub · slett eller flytt til docs |
+| `/admin/tilstander` | Gammel adresse | — | redirect → gjennomfore (B7 utført) |
 | `/admin/stats/overview`, `/stats/moderering` | Offentlig-stats-admin (eget domene) | Modererer public stats | legacy/stub |
 
 ### Drift og system
@@ -120,7 +120,7 @@ funksjon med FÆRRE sider. Status: **v2** = ny chrome + v2-komponert innhold ·
 | `/admin/agenter`, `/admin/ai`, `/admin/agent-team`, `/admin/prosjekter` | Kommando-senterets AI-verktøy (flermodell-chat, kode-økter, team-runs, KommandoProject) | Kjører AI-arbeid (ADMIN) | legacy · **duplikat, se B4** |
 | `/admin/settings` (+`api`, `calendar`, `security`, `tilgang`) | Innstillinger (org/team/tilgang/API/kalender/2FA) | Konfigurerer | legacy |
 | `/admin/team` (+`inviter`) | Coach-teamet | Inviterer coacher | legacy |
-| `/admin/organisasjon` | Org-hub (lenke-kort) | Navigerer | legacy · vurder sletting |
+| `/admin/organisasjon` | Gammel adresse | — | redirect → settings (B7 utført) |
 | `/admin/klubb/innstillinger` | Klubb-oppsett per lokasjon | Redigerer klubber | legacy |
 | `/admin/integrasjoner` | Integrasjonsstatus (Google/Stripe/Notion/…) | Kobler til | legacy |
 | `/admin/audit-log` | Siste 50 hendelser | Ser logg | legacy |
@@ -139,26 +139,22 @@ kalender-aliasene · innboks-aliasene (messages/kommunikasjon) · stall/board→
    → Gjør `/admin/oppfolging` til ren redirect. Null funksjonstap. *(triviell)*
 2. **B2 · spillere vs agencyos/spillere** — ✅ UTFØRT 2026-07-12: pakke/betaling +
    «Abonnent/Skylder»-filter flyttet inn i StallV2; cockpit-varianten er redirect.
-3. **B3 · handlingssenter vs workspace/oppgaver** — to flater over samme
-   OppgaveCache (Notion). → Velg `/admin/handlingssenter` som kanonisk (har
-   detaljpanel + 3 visninger), la workspace/oppgaver redirecte; flytt
-   «ny oppgave» og kalender-visningen over først. *(middels)*
-4. **B4 · prosjekter vs workspace/prosjekter** — KommandoProject (AI) vs
-   ProsjektCache (Notion) — to «Prosjekter» i samme app. → Samle under
-   workspace/prosjekter med kilde-fane; verifiser agent-team-avhengigheten
-   først. *(middels)*
-5. **B5 · talent vs talent/radar** — begge viser radar per talent.
-   → talent/radar er kanonisk; flytt H2H-panelet fra talent inn dit, redirect.
-   *(liten)*
+3. **B3 · handlingssenter vs workspace/oppgaver** — ✅ UTFØRT 2026-07-12.
+   Redirect uten funksjonstap: «ny oppgave» var toast begge steder, og
+   kalendervisningen fordelte oppgaver etter listeindeks, ikke dato.
+4. **B4 · prosjekter vs workspace/prosjekter** — ✅ UTFØRT 2026-07-12.
+   ProjectList (opprett/arkiver/slett) montert på agent-team; /admin/prosjekter
+   redirecter dit. workspace/prosjekter (Notion) er «Prosjekter».
+5. **B5 · talent vs talent/radar** — ✅ UTFØRT 2026-07-12. Radar er kanonisk
+   (peer-sammenligning dekker H2H bedre); talent/sammenligning i Mer-menyen.
 6. **B6 · okter vs kalender/uka** — økt-belastning vs bookinger er ulike data,
    men tre uke-flater er én for mye. → Gjør «Økter» til en visnings-fane i
    kalenderen på sikt. *(større, ta ved v2-port av okter)*
-7. **Hubber som nav-en har overflødiggjort:** `/admin/analysere` (hub),
-   `/admin/organisasjon` (hub), `/admin/mer` (mobil-rest), `/admin/plans/new`
-   (Workbench er kanon), `/admin/tilstander` (statisk katalog),
-   `/admin/coach-workbench` (prototype). → Redirect/slett alle seks. *(triviell)*
+7. **B7 · seks overflødige flater** — ✅ UTFØRT 2026-07-12: alle redirecter
+   (analysere→analyse, organisasjon→settings, mer→cockpit, plans/new→planlegge,
+   tilstander→gjennomfore, coach-workbench→planlegge).
 
-**Netto effekt når B1–B7 er gjort:** ~14 færre reelle flater, null tapt funksjon,
+**Status: B1–B5 + B7 UTFØRT (kun B6 gjenstår, tas ved v2-port av okter). Netto effekt:** ~14 færre reelle flater, null tapt funksjon,
 og hver funksjon har ÉN adresse. Døde knapper som må kobles eller fjernes:
 wagr-import «Synk nå», availability «Synk».
 
