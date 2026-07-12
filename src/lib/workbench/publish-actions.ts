@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { sendPush } from "@/lib/push/send";
 import type { PlanStatus } from "@/generated/prisma/client";
 
 const PUBLISHABLE: PlanStatus[] = ["DRAFT", "REJECTED"];
@@ -177,6 +178,13 @@ export async function publishWorkbenchPlan(
         body: `Planen «${plan.name}» er sendt til deg. Åpne Workbench for å godkjenne.`,
         link: "/portal/planlegge/workbench",
       },
+    });
+    // C5: push til spillerens enheter — best-effort (stille av uten VAPID/abonnement).
+    await sendPush(plan.userId, {
+      title: "Ny treningsplan fra coachen din",
+      body: `«${plan.name}» er klar — åpne Workbench for å se og godkjenne.`,
+      link: "/portal/planlegge/workbench",
+      tag: "plan-publisert",
     });
   } catch (err) {
     console.error("[workbench] Kunne ikke opprette plan-varsel", err);

@@ -99,6 +99,16 @@
 > Kun ekte data — ærlige tomtilstander. FUNN: player_swing_videos-tabellen
 > mangler i DB (schema-drift-klasse #3) — swing-video-spørringen venter på
 > kirurgisk migrering (Anders-ja). Playwright: alle 7 faner verifisert.
+> 2026-07-13 (natt) · C5 (backend-del) LEVERT — spiller-loopen: (1) plan-
+> publisering sender nå web-push til spillerens enheter i tillegg til
+> in-app-varselet (best-effort, stille av uten VAPID/abonnement);
+> (2) ny agent ukesoppsummering (cron søn 19:00): «X av Y økter gjennom-
+> ført (Z min)» + neste-uke-peker som varsel+push til spillere med aktiv
+> plan — samtykke-gatet (mindreårig uten foreldresamtykke får ingenting),
+> idempotent (3-dagers vindu), aldri tomme 0-av-0-meldinger. Verifisert:
+> 12 spillere → 7 sendt/5 hoppet → idempotens 0 → ryddet. Én-trykks
+> gjennomført/avvik i Gjør-flaten kommer som egen UI-del (C5b) etter
+> design-audit-fiksene (kolliderende flate).
 > 2026-07-13 (natt) · B4 LEVERT — betalings-purring: daglig cron (07:00)
 > med trapp 3/10/17 dager på utestående betalinger (PENDING/FAILED med
 > koblet bruker): maks 2 auto-e-poster (EmailTemplate «betalings-purring»,
