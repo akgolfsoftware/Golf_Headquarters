@@ -26,6 +26,7 @@ import {
   Tittel,
   PillVelger,
   CTAPill,
+  Knapp,
   Kort,
   StatusPill,
   TomTilstand,
@@ -260,9 +261,16 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
           {pil(data.nav.neste, "chevron-right", "Neste uke")}
         </div>
         {!mobile && (
-          <Link href="/admin/coach-workbench" style={{ textDecoration: "none" }}>
-            <CTAPill icon="plus">Ny økt</CTAPill>
-          </Link>
+          <>
+            <Link href="/admin/bookinger/ny" style={{ textDecoration: "none" }}>
+              <Knapp icon="calendar-check" ghost>Ny booking</Knapp>
+            </Link>
+            {/* Planlegge er ETT trykkpunkt til Workbench (låst beslutning) —
+                ikke prototypen /admin/coach-workbench. */}
+            <Link href="/admin/planlegge" style={{ textDecoration: "none" }}>
+              <CTAPill icon="plus">Ny økt</CTAPill>
+            </Link>
+          </>
         )}
       </div>
     </div>

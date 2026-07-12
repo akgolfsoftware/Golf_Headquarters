@@ -1,19 +1,22 @@
 /**
- * /admin/bookinger/ny — Manuell oppretting av booking for coach/admin.
+ * /admin/bookinger/ny — Manuell oppretting av booking for coach/admin (v2).
  *
- * Server-shell: auth-guard + ekte Prisma-data (spillere, aktive tjenester,
- * lokasjoner med fasiliteter). 5-stegs flyt rendres av NyBookingWizard (client)
- * som wirer mot eksisterende server-action createSessionFromCalendar.
+ * Portet fra (legacy) 2026-07-12: samme auth-guard, dataloading og
+ * NyBookingWizard (5-stegs klient-wizard mot createSessionFromCalendar) —
+ * nå i V2Shell (AgencyOS-chrome, aktiv=bookinger) i stedet for legacy-layout.
+ * Wizarden bruker semantiske tokens (foreground/muted/primary) og rendrer
+ * riktig i mørk v2-scope.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { NyBookingWizard } from "@/components/admin/bookinger/ny-booking-wizard";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 
 export const dynamic = "force-dynamic";
 
 export default async function NyBookingPage({ searchParams }: { searchParams: Promise<{ groupId?: string }> }) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   const { groupId } = await searchParams;
 
@@ -47,17 +50,19 @@ export default async function NyBookingPage({ searchParams }: { searchParams: Pr
   ]);
 
   return (
-    <NyBookingWizard
-      spillere={spillere.map((s) => ({
-        id: s.id,
-        name: s.name ?? "Uten navn",
-        email: s.email,
-        homeClub: s.homeClub,
-      }))}
-      tjenester={tjenester}
-      lokasjoner={lokasjoner}
-      groupId={groupId}
-      group={gruppe ? { id: gruppe.id, name: gruppe.name, maxParticipants: gruppe.maxParticipants } : null}
-    />
+    <V2Shell aktiv="bookinger" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <NyBookingWizard
+        spillere={spillere.map((s) => ({
+          id: s.id,
+          name: s.name ?? "Uten navn",
+          email: s.email,
+          homeClub: s.homeClub,
+        }))}
+        tjenester={tjenester}
+        lokasjoner={lokasjoner}
+        groupId={groupId}
+        group={gruppe ? { id: gruppe.id, name: gruppe.name, maxParticipants: gruppe.maxParticipants } : null}
+      />
+    </V2Shell>
   );
 }
