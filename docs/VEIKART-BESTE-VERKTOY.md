@@ -193,6 +193,15 @@
 > hent-svar kan aldri overskrive brukerens trykk (komponist-lås til lastet).
 > DB-verifisert: L_ARM + M0 + 4 driller (bank + egen) skrevet og lest
 > tilbake. Testdata + testøvelser ryddet. Gjenstår i 8c: 8c.6 sidemeny-gap.
+> 2026-07-13 (natt) · 8c.6 LEVERT — sidemeny-finishen (fasit workbench-
+> zones); DEL 8c ER KOMPLETT: VENSTRE bibliotek fikk «Driller»-fane
+> (øvelsesbanken, server-søkt + aksefiltrert; TRYKK på drill → legges i
+> VALGT økt via komponist-append) og aksefilter-chips (Alle/FYS/TEK/SLAG/
+> SPILL/TURN) på Økter+Driller. HØYRE inspektør fikk Coach-notat-seksjon
+> (CoachNote, privat, kun coach — bind-es kun i admin-siden; siste 3 +
+> nytt notat). Playwright: fane + filter + drill-til-økt-melding +
+> notat lagret/vist; testdata ryddet. HELE Anders' natt-bestilling
+> (beta-runde + 8c.1–8c.8) er dermed levert og i prod.
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag
