@@ -48,7 +48,7 @@ import {
   T,
 } from "@/components/v2";
 import { acceptPlanAction, rejectPlanAction } from "@/lib/agents/actions";
-import { avvisProaktivtForslag } from "@/app/admin/agencyos/caddie/dashbord/actions";
+import { avvisProaktivtForslag, godkjennCaddieDraft } from "@/app/admin/agencyos/caddie/dashbord/actions";
 import { avslaaForespørsel, markerSomPlanlagt } from "@/app/admin/(legacy)/foresporsler/actions";
 import { batchApproveLowRisk } from "@/app/admin/(legacy)/approvals/actions";
 
@@ -145,10 +145,12 @@ function SakHandlinger({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: bo
   const [pending, start] = useTransition();
 
   const erAgent = (row.kilde ?? "agent") === "agent";
-  const kanGodkjenneInline = erAgent || row.kilde === "forespørsel";
+  // A2: caddie-utkast godkjennes (og UTFØRES med re-validering) rett fra køen.
+  const kanGodkjenneInline = erAgent || row.kilde === "forespørsel" || row.kilde === "caddie";
   const godkjenn = () => start(async () => {
     if (erAgent) await acceptPlanAction(row.id);
     else if (row.kilde === "forespørsel") await markerSomPlanlagt(row.id);
+    else if (row.kilde === "caddie") await godkjennCaddieDraft(row.id);
     router.refresh();
   });
   const avvis = () => start(async () => {

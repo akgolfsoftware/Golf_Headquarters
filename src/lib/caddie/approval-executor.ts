@@ -25,10 +25,13 @@ const bookingSchema = z.object({
   notes: z.string().optional(),
 });
 
+// subject/body er valgfrie: chat-UI-et sender kun tool-callens input
+// ({ invoiceId }), mens forslags-previewen bærer ferdig tekst. Mangler de,
+// regenereres teksten fra fakturaens NÅ-tilstand ved utførelse.
 const invoiceReminderSchema = z.object({
   invoiceId: z.string().min(1),
-  subject: z.string().min(1),
-  body: z.string().min(1),
+  subject: z.string().min(1).optional(),
+  body: z.string().min(1).optional(),
 });
 
 const playerNoteSchema = z.object({
@@ -40,6 +43,14 @@ const planAdjustmentSchema = z.object({
   playerId: z.string().min(1),
   change: z.string().min(1).max(2000),
   reason: z.string().max(1000).optional(),
+});
+
+// Proaktiv Caddie (Fase 3): oppfølging av inaktiv spiller.
+const reengageSchema = z.object({
+  spillerId: z.string().min(1),
+  spillerName: z.string().optional(),
+  dagerInaktiv: z.number().optional(),
+  foreslattMelding: z.string().min(1).max(5000),
 });
 
 // ---------- Resultat-type ----------
@@ -160,19 +171,51 @@ export async function executeApprovedTool(
       const input = parseOrThrow(invoiceReminderSchema, toolInput, toolName);
       const invoice = await prisma.payment.findUnique({
         where: { id: input.invoiceId },
-        select: { id: true, userId: true },
+        select: {
+          id: true,
+          userId: true,
+          status: true,
+          amountOre: true,
+          currency: true,
+          description: true,
+          user: { select: { name: true } },
+        },
       });
       if (!invoice) throw new Error(`Faktura med id=${input.invoiceId} finnes ikke`);
       if (!invoice.userId) {
         throw new Error(`Faktura ${input.invoiceId} mangler bruker-kobling`);
       }
 
+      // Re-validering mot nå-tilstand: er fakturaen gjort opp siden forslaget
+      // ble laget, skal det ikke purres.
+      if (invoice.status === "SUCCEEDED" || invoice.status === "REFUNDED") {
+        return {
+          status: "skipped",
+          details: { invoiceId: invoice.id, invoiceStatus: invoice.status },
+          summary: "Fakturaen er allerede gjort opp — ingen purring sendt.",
+        };
+      }
+
+      // Regenerer purretekst fra nå-tilstand hvis forslaget ikke bar den med.
+      const navn = invoice.user?.name ?? "kunde";
+      const beloep = (invoice.amountOre / 100).toFixed(2);
+      const valuta = invoice.currency.toUpperCase();
+      const subject =
+        input.subject ?? `Påminnelse: utestående faktura (${beloep} ${valuta})`;
+      const body =
+        input.body ??
+        `Hei ${navn},\n\n` +
+          `Vi vil minne om at faktura på ${beloep} ${valuta} fortsatt står som ubetalt.\n\n` +
+          (invoice.description ? `Gjelder: ${invoice.description}\n\n` : "") +
+          `Vennligst gjør opp ved første anledning. Ta kontakt om du har spørsmål.\n\n` +
+          `Med vennlig hilsen\nAK Golf Academy`;
+
       const notification = await prisma.notification.create({
         data: {
           userId: invoice.userId,
           type: "INVOICE_REMINDER",
-          title: input.subject,
-          body: input.body,
+          title: subject,
+          body,
           link: `/playerhq/fakturaer/${invoice.id}`,
         },
       });
@@ -236,6 +279,40 @@ export async function executeApprovedTool(
         status: "adjustment-queued",
         details: { notificationId: notification.id, adminUserId },
         summary: `Plan-justering lagret som intent · id: ${notification.id}`,
+      };
+    }
+
+    case "reengageInactivePlayer": {
+      const input = parseOrThrow(reengageSchema, toolInput, toolName);
+      // Re-validering mot nå-tilstand: spilleren må fortsatt finnes og ikke
+      // være slettet.
+      const player = await prisma.user.findUnique({
+        where: { id: input.spillerId },
+        select: { id: true, deletedAt: true },
+      });
+      if (!player) throw new Error(`Spiller med id=${input.spillerId} finnes ikke`);
+      if (player.deletedAt) {
+        return {
+          status: "skipped",
+          details: { playerId: player.id },
+          summary: "Spilleren er slettet — ingen oppfølging sendt.",
+        };
+      }
+
+      // Samme mønster som draftPlayerMessage: in-app-melding, ikke e-post.
+      const notification = await prisma.notification.create({
+        data: {
+          userId: input.spillerId,
+          type: "MESSAGE",
+          title: "Hilsen fra coachen din",
+          body: input.foreslattMelding,
+        },
+      });
+
+      return {
+        status: "queued",
+        details: { notificationId: notification.id, recipientId: input.spillerId },
+        summary: `Oppfølging sendt til spilleren · id: ${notification.id}`,
       };
     }
 
