@@ -99,6 +99,17 @@
 > Kun ekte data — ærlige tomtilstander. FUNN: player_swing_videos-tabellen
 > mangler i DB (schema-drift-klasse #3) — swing-video-spørringen venter på
 > kirurgisk migrering (Anders-ja). Playwright: alle 7 faner verifisert.
+> 2026-07-13 (natt) · B4 LEVERT — betalings-purring: daglig cron (07:00)
+> med trapp 3/10/17 dager på utestående betalinger (PENDING/FAILED med
+> koblet bruker): maks 2 auto-e-poster (EmailTemplate «betalings-purring»,
+> auto-opprettet og redigerbar i admin), deretter PAYMENT_FOLLOWUP-sak i
+> A1-køen — menneske tar over (godkjenning = kvittering, ingen system-
+> endring). VERN: aktiveringsdato 2026-07-13 — den historiske betalings-
+> importen (mai, 282 FAILED uten brukerkobling) purres ALDRI; mindreårige
+> purres via godkjent foresatt, aldri direkte — mangler foresatt-epost går
+> saken rett til kø. Sporing i Payment.metadata (idempotent trapp).
+> Verifisert e2e: 3 trinn + idempotens + import-vern + kø-godkjenning,
+> 0 rester.
 > 2026-07-13 (natt) · C3+C4 LEVERT — test/runde → plan med SYNLIG drill-
 > pakke: round-agent (SG-svakhet) og test-agent (testtrend) forhånds-
 > beregner nå konkret drill-pakke (drill-selection-skillen) og legger den

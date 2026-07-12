@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { runPlanWatcher } from "@/lib/agents/plan-watcher";
 import { runWeeklyPlanProposals } from "@/lib/agents/weekly-plan-proposals";
 import { runChurnRadar } from "@/lib/agents/churn-radar";
+import { runBetalingsPurring } from "@/lib/agents/betalings-purring";
 import { runBookingReminders } from "@/lib/agents/booking-reminders";
 import { runCleanupRecordings } from "@/lib/agents/cleanup-recordings";
 import { runRefreshCalendarWatches } from "@/lib/agents/refresh-calendar-watches";
@@ -47,6 +48,7 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "plan-watcher": runPlanWatcher,
   "weekly-plan-proposals": runWeeklyPlanProposals,
   "churn-radar": runChurnRadar,
+  "betalings-purring": () => runBetalingsPurring(),
   "booking-reminders": runBookingReminders,
   "cleanup-recordings": runCleanupRecordings,
   "refresh-calendar-watches": runRefreshCalendarWatches,

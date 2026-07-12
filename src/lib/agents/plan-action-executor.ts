@@ -713,6 +713,18 @@ export async function executePlanAction(actionId: string): Promise<ExecuteResult
     };
   }
 
+  // B4: PAYMENT_FOLLOWUP er en kvittering på MANUELL oppfølging — godkjenning
+  // betyr «saken er håndtert av et menneske»; ingen systemendring gjøres.
+  if (action.actionType === "PAYMENT_FOLLOWUP") {
+    return {
+      applied: true,
+      summary: "Utestående betaling fulgt opp manuelt",
+      sessionsAdded: 0,
+      sessionsRemoved: 0,
+      sessionsModified: 0,
+    };
+  }
+
   // B2: CHURN_MESSAGE er en melding, ikke en plan-endring — sendes her,
   // KUN ved godkjenning. Samtykke re-valideres mot nå-tilstand.
   if (action.actionType === "CHURN_MESSAGE") {

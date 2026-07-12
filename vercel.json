@@ -144,6 +144,10 @@
     {
       "path": "/api/cron/churn-radar",
       "schedule": "0 6 * * 1"
+    },
+    {
+      "path": "/api/cron/betalings-purring",
+      "schedule": "0 5 * * *"
     }
   ],
   "regions": [
