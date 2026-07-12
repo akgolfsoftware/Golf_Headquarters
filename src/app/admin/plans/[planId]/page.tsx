@@ -8,6 +8,7 @@
  * DetailShell/KPICard/Tag/tab-nav er byttet til v2-chrome.
  */
 
+import { coachedPlayerWhere } from "@/lib/auth/coached";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CalendarClock, BookOpen } from "lucide-react";
@@ -77,13 +78,13 @@ export default async function AdminPlanDetalj({
   });
 
   const spillere = await prisma.user.findMany({
-    where: { role: "PLAYER" },
+    where: coachedPlayerWhere(),
     select: { id: true, name: true, hcp: true, homeClub: true },
     orderBy: { name: "asc" },
   });
 
   const spillereMedPlaner = await prisma.user.findMany({
-    where: { role: "PLAYER" },
+    where: coachedPlayerWhere(),
     select: {
       id: true,
       name: true,

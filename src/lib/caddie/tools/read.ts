@@ -2,6 +2,7 @@
 // Spør Prisma og returnerer strukturerte data.
 // Feil håndteres med try/catch og returneres som ToolErrorResponse.
 
+import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { tool } from "ai";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
@@ -32,7 +33,7 @@ export const READ_TOOLS = {
       try {
         const players = await prisma.user.findMany({
           where: {
-            role: "PLAYER",
+            ...coachedPlayerWhere(),
             OR: [
               { name: { contains: query, mode: "insensitive" } },
               { email: { contains: query, mode: "insensitive" } },

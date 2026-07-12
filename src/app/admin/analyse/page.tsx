@@ -11,6 +11,7 @@
  * Server component.
  */
 
+import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
@@ -65,7 +66,7 @@ async function loadStallAnalyse(): Promise<AnalyseV2Data> {
     pyramideRaw,
     grupper,
   ] = await Promise.all([
-    prisma.user.count({ where: { role: "PLAYER", deletedAt: null } }),
+    prisma.user.count({ where: { AND: [coachedPlayerWhere(), { deletedAt: null }] } }),
     prisma.trainingPlanSession.aggregate({
       _sum: { durationMin: true },
       where: { status: "COMPLETED", scheduledAt: { gte: d30, lte: naa }, ...spillerOkter },

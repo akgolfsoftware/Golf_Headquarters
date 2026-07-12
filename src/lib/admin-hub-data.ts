@@ -1,5 +1,6 @@
 // Samlet data-fetch for /admin hub-dashboard.
 
+import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import type { User } from "@/generated/prisma/client";
 
@@ -66,7 +67,7 @@ export async function getAdminHubData(user: User): Promise<AdminHubData> {
     ubesvarteMeldinger,
     ventendeGodkjenninger,
   ] = await Promise.all([
-    prisma.user.count({ where: { role: "PLAYER", lastLoginAt: { gte: tretti } } }),
+    prisma.user.count({ where: { AND: [coachedPlayerWhere(), { lastLoginAt: { gte: tretti } }] } }),
     prisma.booking.findMany({
       where: { startAt: { gte: dagensStart, lt: dagensSlutt } },
       include: {
@@ -77,7 +78,7 @@ export async function getAdminHubData(user: User): Promise<AdminHubData> {
       orderBy: { startAt: "asc" },
     }),
     prisma.user.findMany({
-      where: { role: "PLAYER" },
+      where: coachedPlayerWhere(),
       select: {
         id: true,
         name: true,

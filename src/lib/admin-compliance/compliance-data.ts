@@ -15,6 +15,7 @@
  * Mangler ekte tall → tom/utledet state. ALDRI falske tall.
  */
 
+import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea } from "@/generated/prisma/client";
 
@@ -292,7 +293,7 @@ export async function loadComplianceData(opts: {
 
   // Alle PLAYER-spillere
   const players = await prisma.user.findMany({
-    where: { role: "PLAYER", deletedAt: null },
+    where: { AND: [coachedPlayerWhere(), { deletedAt: null }] },
     select: { id: true, name: true, hcp: true, homeClub: true },
     orderBy: { name: "asc" },
   });

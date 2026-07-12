@@ -10,6 +10,7 @@
  *   - MRR: aktive PRO-abonnement × 299 kr (kanonisk formel, jf. /admin/agencyos/okonomi)
  */
 
+import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import type {
@@ -151,8 +152,8 @@ export async function loadDailyBrief(coach: {
         facility: { select: { name: true } },
       },
     }),
-    prisma.user.count({ where: { role: "PLAYER", lastLoginAt: { gte: tretti } } }),
-    prisma.user.count({ where: { role: "PLAYER", createdAt: { gte: tretti } } }),
+    prisma.user.count({ where: { AND: [coachedPlayerWhere(), { lastLoginAt: { gte: tretti } }] } }),
+    prisma.user.count({ where: { AND: [coachedPlayerWhere(), { createdAt: { gte: tretti } }] } }),
     prisma.notification.findMany({
       where: { userId: coach.id },
       orderBy: { createdAt: "desc" },
@@ -177,7 +178,7 @@ export async function loadDailyBrief(coach: {
     // Fokus: spillere med REELL inaktivitet (har logget inn før, men falt av).
     // Brukere uten lastLoginAt er stubs/aldri-aktiverte — støy, ikke frafall.
     prisma.user.findMany({
-      where: { role: "PLAYER", lastLoginAt: { lt: femDager } },
+      where: { AND: [coachedPlayerWhere(), { lastLoginAt: { lt: femDager } }] },
       select: { id: true, name: true, homeClub: true, lastLoginAt: true },
       orderBy: { lastLoginAt: "asc" },
       take: 4,

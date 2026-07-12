@@ -10,6 +10,7 @@
  * Server component.
  */
 
+import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -43,8 +44,9 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
   const { id } = await params;
   const weekOffset = parseWeekOffset((await searchParams).uke);
 
-  const spiller = await prisma.user.findUnique({
-    where: { id },
+  // I0: selvbetjent spiller kan ikke åpnes i coach-workbench (porten).
+  const spiller = await prisma.user.findFirst({
+    where: { AND: [coachedPlayerWhere(), { id }] },
     select: { name: true },
   });
   if (!spiller) notFound();
@@ -54,7 +56,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
 
   const rosterRows = await prisma.user
     .findMany({
-      where: { role: "PLAYER", deletedAt: null },
+      where: { AND: [coachedPlayerWhere(), { deletedAt: null }] }, // I0: kun coachede spillere (PLATFORM_ONLY er usynlig i AgencyOS).
       select: { id: true, name: true },
       orderBy: { name: "asc" },
       take: 400,

@@ -12,6 +12,15 @@
 > iad1 (USA) — flyttet til dub1. Varme TTFB offentlige sider: 0,5–1,1 s →
 > 0,17–0,39 s; innloggede flater (10+ queries/side) sparer ~90 ms per query.
 > P2–P5 (query-diett, caching, skeletons, bundle) gjenstår.
+> 2026-07-12 · I0 LEVERT (del 1+2): tilgangsskillet selvbetjent/coachet
+> håndheves nå av lib/auth/coached.ts i 19 flater (cockpit, planlegge, queue,
+> workbench-roster, planer, teknisk plan, analyse, discovery, turneringer,
+> reports, team, hub, compliance, sammenligning, agent-kjøring, Caddie-AI-
+> lesing, motor-agent) + detalj-guards (spiller-360/analyse/workbench →
+> notFound) + sendMessage-gate + oppsalgs-CTA på /portal/coach for
+> selvbetjente. Unntak dokumentert: booking-wizard + gruppe-innmelding
+> (lead-/opplåsingsflyt). Gjenstår i I0: Playwright-negativtest med seedet
+> PLATFORM_ONLY-bruker.
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag

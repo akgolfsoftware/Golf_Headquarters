@@ -7,6 +7,9 @@
  * getCoachProfile + getMessages + getUpcomingSessions + getCoachNotes.
  */
 
+import Link from "next/link";
+import { erCoachetSpiller } from "@/lib/auth/coached";
+import { Kort, TomTilstand, Knapp } from "@/components/v2";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import {
@@ -24,6 +27,27 @@ export default async function V2CoachPreviewPage() {
   const user = await requirePortalUser();
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
+
+  // I0 (LÅST regel): selvbetjent spiller (kun abonnement) har ingen
+  // coachrelasjon — vis oppsalgs-flate i stedet for coach-hubben (aldri blindgate).
+  if (!(await erCoachetSpiller(user.id))) {
+    return (
+      <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+        <Kort tint>
+          <TomTilstand
+            icon="users"
+            title="Coach følger med her — når du er med i AK Golf Academy"
+            sub="Med en coaching-pakke (Performance eller Performance Pro) eller plass i en AK-gruppe får du egen coach, ukeplaner laget for deg og direkte meldinger her."
+          />
+          <div style={{ display: "flex", justifyContent: "center", marginTop: 14 }}>
+            <Link href="/portal/booking" style={{ textDecoration: "none" }}>
+              <Knapp icon="calendar-check">Book en prøvetime</Knapp>
+            </Link>
+          </div>
+        </Kort>
+      </V2Shell>
+    );
+  }
 
   const coach = await getCoachProfile();
 

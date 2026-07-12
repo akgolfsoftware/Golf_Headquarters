@@ -12,6 +12,7 @@
  * Server component.
  */
 
+import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
@@ -27,7 +28,7 @@ export default async function V2AdminTalentDiscoveryPage() {
 
   const alle = await prisma.user.findMany({
     where: {
-      role: "PLAYER",
+      ...coachedPlayerWhere(),
       talentTracking: { is: null },
     },
     select: {

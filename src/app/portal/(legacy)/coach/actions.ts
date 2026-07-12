@@ -1,5 +1,6 @@
 "use server";
 
+import { erCoachetSpiller } from "@/lib/auth/coached";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import type { Prisma } from "@/generated/prisma/client";
@@ -165,6 +166,10 @@ export async function sendMessage(input: SendMessageInput): Promise<void> {
   const parsed = SendMessageSchema.parse(input);
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
+
+  // I0 (LÅST regel): selvbetjente (PLATFORM_ONLY uten gruppe) har ingen
+  // coachrelasjon — kan ikke sende meldinger til coach.
+  if (!(await erCoachetSpiller(user.id))) throw new Error("ikke-coachet");
 
   const coach = await prisma.user.findFirst({
     where: { id: parsed.coachId, role: { in: ["COACH", "ADMIN"] }, deletedAt: null },

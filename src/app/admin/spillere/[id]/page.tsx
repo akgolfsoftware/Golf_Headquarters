@@ -10,6 +10,7 @@
  * Server component.
  */
 
+import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 
@@ -114,8 +115,9 @@ export default async function SpillerProfilPage({
   const { id } = await params;
   const now = new Date();
 
-  const player = await prisma.user.findUnique({
-    where: { id },
+  // I0: direkte-URL til en selvbetjent spiller gir notFound (porten).
+  const player = await prisma.user.findFirst({
+    where: { AND: [coachedPlayerWhere(), { id }] },
     select: {
       id: true,
       name: true,

@@ -10,6 +10,7 @@
 //      opprett PlanAction (TRAINING_GAP) hvis det ikke allerede finnes en
 //      PENDING for samme bruker + område.
 
+import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { hentTreningsVolum } from "@/lib/training/volum";
 import type { SgCategory } from "@/generated/prisma/client";
@@ -33,7 +34,7 @@ const OMRAADE_LABEL: Record<SgCategory, string> = {
 export async function runTrainingGap(): Promise<AgentResult> {
   return runAgent(AGENT_NAME, null, async () => {
     const spillere = await prisma.user.findMany({
-      where: { role: "PLAYER" },
+      where: coachedPlayerWhere(),
       select: { id: true },
     });
 
