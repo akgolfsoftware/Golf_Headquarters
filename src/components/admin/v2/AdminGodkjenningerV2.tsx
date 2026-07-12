@@ -24,6 +24,7 @@
  */
 
 import { Fragment, useEffect, useMemo, useState, useTransition } from "react";
+import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -182,7 +183,7 @@ function SakKort({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: boolean 
           </div>
 
           <div style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", color: T.mut, marginTop: 4 }}>
-            {row.who} · {row.when} · {row.actionType}
+            {row.who} · {row.when} · {handlingstypeLabel(row.actionType)}
           </div>
 
           {row.detail && (

@@ -99,6 +99,24 @@
 > Kun ekte data — ærlige tomtilstander. FUNN: player_swing_videos-tabellen
 > mangler i DB (schema-drift-klasse #3) — swing-video-spørringen venter på
 > kirurgisk migrering (Anders-ja). Playwright: alle 7 faner verifisert.
+> 2026-07-13 (natt) · DESIGN-AUDIT + FIKS-SERIE 1 LEVERT — full audit av
+> 17 skjermer × 2 viewports (mørk modus, Playwright-screenshots med
+> piksel-målinger) ga 10 prioriterte funn. Fikset i denne serien:
+> (3) KpiFlis/TallHero/DeltaChip kan nå wrappe — h-scroll på økonomi/Uka-
+> mobil borte; (5) ÉN kanonisk norsk ordbok for handlingstyper
+> (lib/labels/handlingstyper.ts) — «AVAILABILITY_SUGGEST»-rå-tekst borte
+> fra godkjenninger/varsler/caddie; (6) stallen åpner «Venter på inn-
+> logging» automatisk når alle spillere ligger der (tom hovedkolonne
+> borte); (7) bookinger: kapasitet = andel timeluker med booking (5 %
+> i stedet for alltid-0 %), synlige heatmap-celler, banner bruker samme
+> forespørsels-tall som KPI-en; (8) /admin/uka redirecter til kanonisk
+> adresse + mørk 404 for hele /admin (hvit blits borte); (10) én lime-
+> primær per skjerm i Gjør/Coach-fanen («Avslutt og send» ghost til økta
+> er i gang). GJENSTÅR fra auditen: varsler-lime-flom (#1), godkjenninger-
+> gruppering (#2), analysere-flyt (#9), kanonisk kø-telling (#4) —
+> delegert som egen jobb. NB: auditen flagget «PlayerHQ Pro»-tekst på
+> /portal/meg — abonnement har ikke tier-navn (forretningsregel) — meldes
+> Anders.
 > 2026-07-13 (natt) · C5 (backend-del) LEVERT — spiller-loopen: (1) plan-
 > publisering sender nå web-push til spillerens enheter i tillegg til
 > in-app-varselet (best-effort, stille av uten VAPID/abonnement);

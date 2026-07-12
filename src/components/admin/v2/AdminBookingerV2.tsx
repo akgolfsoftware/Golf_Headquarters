@@ -349,7 +349,9 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
   const innsiktTekst =
     antallPending > 0
       ? `${pl(antallPending, "forespørsel venter", "forespørsler venter")} på svar — bekreft eller avvis dem samlet.`
-      : `Ingen ubehandlede forespørsler. Kapasitet brukt ${data.kpis.kapasitetPct} % denne uka.`;
+      : data.kpis.foresporsler > 0
+        ? `${pl(data.kpis.foresporsler, "forespørsel venter", "forespørsler venter")} i køen — åpne Forespørsler.`
+        : `Ingen ubehandlede forespørsler. Kapasitet brukt ${data.kpis.kapasitetPct} % denne uka.`;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>

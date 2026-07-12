@@ -94,12 +94,18 @@ export default async function V2AdminBookingerPage() {
     counts[timeIdx][dagIdx]++;
   }
 
-  // VarmeKart forventer 0..1-verdier per celle.
-  const verdier = counts.map((row) => row.map((c) => Math.min(1, c / samletKapasitet)));
+  // VarmeKart forventer 0..1-verdier per celle — celler med booking løftes til
+  // minst 0.35 så de faktisk er synlige (c/anleggskapasitet ble nær usynlig).
+  const verdier = counts.map((row) =>
+    row.map((c) => (c === 0 ? 0 : Math.max(0.35, Math.min(1, c / samletKapasitet)))),
+  );
 
-  const totaltSlots = TIMER.length * 7 * samletKapasitet;
+  // Kapasitet fra coach-perspektivet: andel av ukas timeluker (17 timer × 7
+  // dager) med minst én booking. Anleggskapasiteten i nevneren ga alltid
+  // «0 %» ved siden av en full bookingliste (audit-funn 7).
+  const totaltSlots = TIMER.length * 7;
   const brukteSlots = counts.reduce(
-    (sum, row) => sum + row.reduce((a, c) => a + Math.min(c, samletKapasitet), 0),
+    (sum, row) => sum + row.reduce((a, c) => a + (c > 0 ? 1 : 0), 0),
     0,
   );
   const kapasitetPct = totaltSlots ? Math.round((brukteSlots / totaltSlots) * 100) : 0;

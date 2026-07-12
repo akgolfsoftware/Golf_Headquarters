@@ -12,6 +12,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 
 export type VarselPlanAction = {
   id: string;
@@ -47,18 +48,6 @@ export type VarslerData = {
   counts: { actions: number; signals: number; notifications: number };
 };
 
-const ACTION_LABELS: Record<string, string> = {
-  PYRAMID_ADJUST: "Juster pyramide",
-  SESSION_ADD: "Legg til økt",
-  SESSION_REMOVE: "Fjern økt",
-  INTENSITY_ADJUST: "Juster intensitet",
-  TAPER_ENGAGE: "Start nedtrapping",
-  WITHDRAW: "Trekk fra turnering",
-  DRILL_SUGGEST: "Foreslå drill",
-  TEST_SCHEDULE: "Planlegg test",
-  PEER_COMPARE: "Sammenlign med likesinnede",
-  RECOVERY_ADD: "Legg til restitusjon",
-};
 
 const SIGNAL_LABELS: Record<string, string> = {
   SG_TOTAL: "SG totalt",
@@ -160,7 +149,7 @@ export async function loadVarsler(coachUserId: string): Promise<VarslerData> {
       id: a.id,
       playerName: a.user?.name ?? "Ukjent spiller",
       initials: initialer(a.user?.name ?? null),
-      actionLabel: ACTION_LABELS[a.actionType] ?? a.actionType,
+      actionLabel: handlingstypeLabel(a.actionType),
       agentName: a.agentName,
       summary: lesSummary(a.suggestion),
       when: tidSiden(a.createdAt, now),

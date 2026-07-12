@@ -164,7 +164,9 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
               )}
 
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16 }}>
-                <Snarvei href="/portal/coach/melding" icon="send">Send melding</Snarvei>
+                {/* Én lime-primær per skjerm — meldings-CTAen i tråd-panelet er
+                    primærhandlingen; denne snarveien er sekundær (audit-funn 10). */}
+                <Snarvei href="/portal/coach/melding" icon="send" ghost>Send melding</Snarvei>
                 <Snarvei href={`/portal/coach/${coach.id}`} icon="user" ghost>Se profil</Snarvei>
                 <Snarvei href="/portal/booking" icon="calendar" ghost>Booking</Snarvei>
               </div>

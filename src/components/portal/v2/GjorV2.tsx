@@ -112,7 +112,7 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             <Link href="/portal/runde/live" style={{ textDecoration: "none" }}>
-              <CTAPill icon="flag">Før runde slag for slag</CTAPill>
+              <CTAPill ghost={nesteOkt != null} icon="flag">Før runde slag for slag</CTAPill>
             </Link>
             <Link href="/portal/runde/logg" style={{ textDecoration: "none" }}>
               <CTAPill ghost icon="list">Logg tidligere runde</CTAPill>
@@ -205,7 +205,7 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
                 </p>
                 <div style={{ marginTop: 12 }}>
                   <Link href={`${nesteOkt.href}?logg=1`} style={{ textDecoration: "none" }}>
-                    <CTAPill icon="send">Avslutt og send</CTAPill>
+                    <CTAPill ghost={!live} icon="send">Avslutt og send</CTAPill>
                   </Link>
                 </div>
               </Kort>

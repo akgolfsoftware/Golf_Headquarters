@@ -12,6 +12,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 import { z } from "zod";
 
 // ── Typer ───────────────────────────────────────────────────────
@@ -226,18 +227,6 @@ const suggestionSchema = z
   })
   .passthrough();
 
-const ACTION_TYPE_LABEL: Record<string, string> = {
-  PYRAMID_ADJUST: "Pyramide-justering",
-  SESSION_ADD: "Legg til økt",
-  SESSION_REMOVE: "Fjern økt",
-  INTENSITY_ADJUST: "Intensitets-justering",
-  TAPER_ENGAGE: "Taper-fase",
-  WITHDRAW: "Trekk fra plan",
-  DRILL_SUGGEST: "Drill-forslag",
-  TEST_SCHEDULE: "Planlegg test",
-  PEER_COMPARE: "Peer-sammenligning",
-  RECOVERY_ADD: "Legg til restitusjon",
-};
 
 const SOURCE_ICONS: DraftSource["icon"][] = ["file-text", "layers", "line-chart", "calendar"];
 
@@ -294,7 +283,7 @@ export async function loadCoAgent(coach: {
     const s = parsed.success ? parsed.data : {};
     const meta = agentMeta(pa.agentName);
     const playerName = pa.user?.name ?? "spiller";
-    const typeLabel = ACTION_TYPE_LABEL[pa.actionType] ?? pa.actionType;
+    const typeLabel = handlingstypeLabel(pa.actionType);
 
     const sources: DraftSource[] = (s.sources ?? []).slice(0, 4).map((src, i) => ({
       id: `src-${i}`,
@@ -485,7 +474,7 @@ export async function loadCoAgent(coach: {
         actorMeta: "AGENT · UTKAST",
         what: (
           <>
-            Foreslo {(ACTION_TYPE_LABEL[a.actionType] ?? a.actionType).toLowerCase()} for{" "}
+            Foreslo {handlingstypeLabel(a.actionType).toLowerCase()} for{" "}
             <span className="font-bold">{a.user?.name ?? "spiller"}</span>
           </>
         ),

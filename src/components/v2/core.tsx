@@ -88,7 +88,7 @@ export interface DeltaChipProps {
 }
 export function DeltaChip({ v, dir }: DeltaChipProps) {
   const c = dir === "down" ? T.down : T.up;
-  return <span style={{ display: "inline-flex", alignItems: "center", gap: 3, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: c, background: `color-mix(in srgb,${c} 13%,transparent)`, borderRadius: 5, padding: "3px 6px" }}><Icon name={dir === "down" ? "trending-down" : "trending-up"} size={10} />{v}</span>;
+  return <span style={{ display: "inline-flex", alignItems: "center", gap: 3, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: c, background: `color-mix(in srgb,${c} 13%,transparent)`, borderRadius: 5, padding: "3px 6px", whiteSpace: "nowrap" }}><Icon name={dir === "down" ? "trending-down" : "trending-up"} size={10} />{v}</span>;
 }
 
 export type StatusTone = "lime" | "up" | "warn" | "down" | "info";
@@ -198,7 +198,7 @@ export function TallHero({ label, value, unit, delta, dir, sub, size = 56, accen
           {action}
         </div>
       )}
-      <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginTop: label ? 14 : 0 }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginTop: label ? 14 : 0, flexWrap: "wrap", minWidth: 0 }}>
         <span style={{ fontFamily: T.mono, fontSize: size, fontWeight: 700, color: accent ? T.lime : T.fg, lineHeight: 0.9, letterSpacing: "-0.03em", fontVariantNumeric: "tabular-nums" }}>{shown}</span>
         {unit && <span style={{ fontFamily: T.mono, fontSize: Math.round(size * 0.3), color: T.mut }}>{unit}</span>}
         {delta && <DeltaChip v={delta} dir={dir} />}
@@ -229,7 +229,7 @@ export function KpiFlis({ label, value, delta, dir, tint, varsle, hjelp, instant
         <Caps size={9}>{label}</Caps>
         {hjelp && <HjelpTips k={hjelp} size={11} />}
       </div>
-      <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 12 }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 12, flexWrap: "wrap", minWidth: 0 }}>
         <span style={{ fontFamily: T.mono, fontSize: 38, fontWeight: 700, color: T.fg, lineHeight: 0.9, fontVariantNumeric: "tabular-nums" }}>{shown}</span>
         {delta && <DeltaChip v={delta} dir={dir} />}
       </div>

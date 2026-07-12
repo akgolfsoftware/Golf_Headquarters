@@ -13,6 +13,7 @@
 
 import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 import { prisma } from "@/lib/prisma";
 import { computeDelta, type PlanContext } from "@/lib/agents/plan-action-executor";
 import { LOW_RISK_ACTION_TYPES } from "@/lib/training/skills";
@@ -26,28 +27,6 @@ import {
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Godkjenninger · AgencyOS (v2)" };
 
-const ACTION_LABEL: Record<string, string> = {
-  PYRAMID_ADJUST: "Juster pyramide",
-  TRAINING_GAP: "Treningsgap",
-  SESSION_ADD: "Legg til økt",
-  SESSION_REMOVE: "Fjern økt",
-  SESSION_SWAP: "Bytte økt",
-  INTENSITY_ADJUST: "Juster intensitet",
-  FOCUS_CHANGE: "Endre fokus",
-  PERIOD_SWITCH: "Bytt periode",
-  DRILL_SWAP: "Bytt drill",
-  REST_DAY_ADD: "Hviledag",
-  TAPER_ENGAGE: "Start taper",
-  WITHDRAW: "Trekk fra",
-  DRILL_SUGGEST: "Drill-forslag",
-  TEST_SCHEDULE: "Planlegg test",
-  PEER_COMPARE: "Sammenlign",
-  RECOVERY_ADD: "Legg til hvile",
-  ESCALATION: "Eskalering",
-  DELOAD: "Pauseuke",
-  TOURNAMENT_ENTRY: "Turneringspåmelding",
-  PLAN_CHANGE: "Plan-endring",
-};
 
 function erHaster(actionType: string): boolean {
   return (
@@ -220,8 +199,7 @@ export default async function V2AdminGodkjenningerPage() {
         title:
           sugg?.title ??
           sugg?.tittel ??
-          ACTION_LABEL[a.actionType] ??
-          a.actionType,
+          handlingstypeLabel(a.actionType),
         detail:
           sugg?.forklaring ??
           sugg?.detail ??

@@ -196,7 +196,10 @@ export function StallV2({ data }: { data: StallV2Data }) {
   const [grp, setGrp] = useState<string[]>([]);
   const [sta, setSta] = useState<string[]>([]);
   const [bet, setBet] = useState<string[]>([]);
-  const [venterApen, setVenterApen] = useState(false);
+  // Audit-funn 6: når ALLE spillere venter på innlogging må seksjonen starte
+  // åpen — ellers er coachens hovedliste en tom, svart kolonne.
+  const alleVenter = data.spillere.length > 0 && data.spillere.every((p) => p.venter);
+  const [venterApen, setVenterApen] = useState(alleVenter);
   // Standard: velg første AKTIVE profil, ikke en tom «venter»-plassholder.
   const [valgtId, setValgtId] = useState<string | null>(
     data.spillere.find((p) => !p.venter)?.id ?? data.spillere[0]?.id ?? null,
