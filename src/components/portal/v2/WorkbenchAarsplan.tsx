@@ -441,3 +441,59 @@ function stepperStil(disabled: boolean): React.CSSProperties {
     opacity: disabled ? 0.5 : 1,
   };
 }
+
+/* ── 8c.3: kompakt periodestrip (uke-/måned-zoom) ─────────────
+   Mini-årshjul over canvaset: periodene som fargede segmenter, nå-markør
+   og markering av visningsvinduet. Klikk → årsplan-zoom. Vises kun når
+   spilleren faktisk har perioder (aldri pynte-tomrom). */
+export function WBPeriodeStrip({ data, vindu, onTilAarsplan }: {
+  data: WorkbenchData;
+  /** Synlig vindu som markeres på stripen (f.eks. uka eller måneden). */
+  vindu?: { fra: Date; til: Date };
+  onTilAarsplan?: () => void;
+}) {
+  const blocks = data.seasonBlocks ?? [];
+  if (blocks.length === 0) return null;
+  const year = (data.weekStartISO ? new Date(data.weekStartISO) : new Date()).getFullYear();
+  const totDager = dagerIAaret(year);
+  const pct = (d: Date) => (Math.max(0, Math.min(totDager - 1, dagIAaret(d, year))) / totDager) * 100;
+  const naaPct = pct(new Date());
+  const aktiv = blocks.find((b) => {
+    const s = new Date(b.startDate);
+    const e = new Date(b.endDate);
+    const naa = new Date();
+    return s <= naa && naa <= e;
+  });
+
+  return (
+    <button
+      type="button"
+      onClick={onTilAarsplan}
+      className="v2-press v2-focus"
+      title="Åpne årsplanen"
+      data-wb-periodestrip
+      style={{ appearance: "none", display: "block", width: "100%", background: T.panel, border: `1px solid ${T.border}`, borderRadius: 12, padding: "9px 14px", cursor: onTilAarsplan ? "pointer" : "default", textAlign: "left" }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
+        <Icon name="calendar-range" size={12} style={{ color: T.fg2 }} />
+        <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>Periodisering</span>
+        {aktiv && (
+          <span style={{ fontFamily: T.ui, fontSize: 11, color: T.fg2 }}>
+            Nå: <span style={{ fontWeight: 700, color: T.fg }}>{LPHASE_LABEL[aktiv.lPhase]}</span>
+            {aktiv.focus ? ` · ${aktiv.focus}` : ""}
+          </span>
+        )}
+        <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>årsplan →</span>
+      </div>
+      <div style={{ position: "relative", height: 10, borderRadius: 9999, background: T.track, overflow: "hidden" }}>
+        {blocks.map((b) => (
+          <span key={b.id} style={{ position: "absolute", left: `${pct(new Date(b.startDate))}%`, width: `${Math.max(0.6, pct(new Date(b.endDate)) - pct(new Date(b.startDate)))}%`, top: 0, bottom: 0, background: LPHASE_FARGE[b.lPhase] ?? T.mut, opacity: 0.85 }} />
+        ))}
+        {vindu && (
+          <span style={{ position: "absolute", left: `${pct(vindu.fra)}%`, width: `${Math.max(0.8, pct(vindu.til) - pct(vindu.fra))}%`, top: 0, bottom: 0, border: `1.5px solid ${T.fg}`, borderRadius: 4, boxSizing: "border-box" }} />
+        )}
+        <span style={{ position: "absolute", left: `${naaPct}%`, top: -1, bottom: -1, width: 2, background: T.lime }} />
+      </div>
+    </button>
+  );
+}

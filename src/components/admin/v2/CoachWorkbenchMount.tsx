@@ -28,6 +28,8 @@ export interface CoachRosterPlayer {
 }
 
 export interface CoachWorkbenchMountProps {
+  /** 8c.3: gruppevelger — valg navigerer til gruppens egen workbench/årsplan. */
+  groups?: { id: string; name: string }[];
   /** Full roster (EKTE spillere) for velgeren. */
   players: CoachRosterPlayer[];
   /** Aktiv spiller-id (fra rutens params.id). Null = tom stall. */
@@ -70,6 +72,7 @@ function byggValg(players: CoachRosterPlayer[]): {
 
 export function CoachWorkbenchMount({
   players,
+  groups,
   currentPlayerId,
   playerName,
   coachName,
@@ -148,6 +151,19 @@ export function CoachWorkbenchMount({
               onChange={bytt}
             />
           </div>
+          {groups && groups.length > 0 && (
+            <div style={{ minWidth: 180, flex: "0 1 220px" }}>
+              <Velger
+                label="Gruppe"
+                options={["Velg gruppe…", ...groups.map((g) => g.name)]}
+                value="Velg gruppe…"
+                onChange={(navn) => {
+                  const g = groups.find((x) => x.name === navn);
+                  if (g) router.push(`/admin/grupper/${g.id}/workbench`);
+                }}
+              />
+            </div>
+          )}
           <span
             style={{
               fontFamily: T.mono,

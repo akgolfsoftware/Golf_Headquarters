@@ -71,6 +71,12 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
     navn: p.name ?? "Uten navn",
   }));
 
+  // 8c.3: gruppevelger — gruppens egen workbench/årsplan.
+  const grupper = await prisma.group.findMany({
+    select: { id: true, name: true },
+    orderBy: { name: "asc" },
+  });
+
   const actions: WorkbenchV2Actions = {
     addSession: coachAddWorkbenchSession.bind(null, id),
     moveSession: coachMoveWorkbenchSession.bind(null, id),
@@ -87,6 +93,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
     <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={coachName}>
       <CoachWorkbenchMount
         players={players}
+        groups={grupper}
         currentPlayerId={id}
         playerName={spiller.name ?? "Uten navn"}
         coachName={coachName}

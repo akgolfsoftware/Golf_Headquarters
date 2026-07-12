@@ -38,12 +38,12 @@ import {
 import { PalettSok } from "@/components/v2/wb-composer";
 import { ForslagArk, NyOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput } from "./WorkbenchV2Sheets";
 import { WorkbenchColdstart } from "./WorkbenchColdstart";
-import { WorkbenchAarsplan, PeriodePalett } from "./WorkbenchAarsplan";
+import { WorkbenchAarsplan, PeriodePalett, WBPeriodeStrip } from "./WorkbenchAarsplan";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
 import { WBTidslinjeMobil, MobilFold } from "./WorkbenchV2Mobil";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
-import { LPHASE_LABEL as LPHASE_LABEL_KANON } from "@/lib/labels/taxonomy";
+import { LPHASE_LABEL as LPHASE_LABEL_KANON, LPHASE_FARGE as LPHASE_FARGE_KANON } from "@/lib/labels/taxonomy";
 import type { WorkbenchInsights } from "@/lib/workbench/types";
 import type { WeekEvent } from "@/lib/workbench/week-types";
 import type { PlanStatus } from "@/generated/prisma/client";
@@ -553,6 +553,17 @@ function MndNivaa({ data, onVelgDato }: { data: WorkbenchData; onVelgDato: (dato
   const nokkel = (d: Date) =>
     `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   const iDag = nokkel(now);
+  // 8c.3 (fasit workbench-maaned): turneringer som markører + periodefarge.
+  const turneringPaaDag = new Map<string, string>();
+  for (const t of data.tournamentCalendar ?? []) {
+    turneringPaaDag.set(nokkel(new Date(t.startDate)), t.title);
+  }
+  const periodeFarge = (d: Date): string | null => {
+    for (const b of data.seasonBlocks ?? []) {
+      if (new Date(b.startDate) <= d && d <= new Date(b.endDate)) return LPHASE_FARGE_KANON[b.lPhase] ?? null;
+    }
+    return null;
+  };
   const totalOkter = (data.monthDays ?? []).reduce((a, d) => a + d.count, 0);
 
   return (
@@ -568,6 +579,8 @@ function MndNivaa({ data, onVelgDato }: { data: WorkbenchData; onVelgDato: (dato
           const c = innhold.get(nokkel(dato));
           const erIDag = nokkel(dato) === iDag;
           const totMin = c ? c.axes.reduce((a, x) => a + x.min, 0) : 0;
+          const turnering = turneringPaaDag.get(nokkel(dato));
+          const pFarge = periodeFarge(dato);
           return (
             <button
               key={i}
@@ -580,9 +593,13 @@ function MndNivaa({ data, onVelgDato }: { data: WorkbenchData; onVelgDato: (dato
                 borderRadius: 10, textAlign: "left", display: "flex", flexDirection: "column", gap: 5,
                 background: erIDag ? `color-mix(in srgb, ${T.lime} 7%, ${T.panel2})` : T.panel2,
                 border: `1px solid ${erIDag ? `color-mix(in srgb, ${T.lime} 40%, transparent)` : T.border}`,
+                borderBottom: pFarge ? `2px solid color-mix(in srgb, ${pFarge} 70%, transparent)` : undefined,
               }}
             >
-              <span style={{ fontFamily: T.disp, fontSize: 13, fontWeight: 700, color: erIDag ? T.lime : c ? T.fg : T.mut }}>{dagNr}</span>
+              <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <span style={{ fontFamily: T.disp, fontSize: 13, fontWeight: 700, color: erIDag ? T.lime : c ? T.fg : T.mut }}>{dagNr}</span>
+                {turnering && <Icon name="trophy" size={10} style={{ color: T.warn }} aria-label={turnering} />}
+              </span>
               {c ? (
                 <>
                   <span style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
@@ -1187,6 +1204,23 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} />
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
           {insights?.line && <InnsiktChip>{insights.line}</InnsiktChip>}
+          {nivaa === "uke" && data.weekStartISO && (
+            <WBPeriodeStrip
+              data={data}
+              vindu={{ fra: new Date(data.weekStartISO), til: new Date(new Date(data.weekStartISO).getTime() + 6 * 86_400_000) }}
+              onTilAarsplan={() => setNivaa("ar")}
+            />
+          )}
+          {nivaa === "maned" && data.weekStartISO && (
+            <WBPeriodeStrip
+              data={data}
+              vindu={{
+                fra: new Date(new Date(data.weekStartISO).getFullYear(), new Date(data.weekStartISO).getMonth(), 1),
+                til: new Date(new Date(data.weekStartISO).getFullYear(), new Date(data.weekStartISO).getMonth() + 1, 0),
+              }}
+              onTilAarsplan={() => setNivaa("ar")}
+            />
+          )}
           {nivaa === "uke" && (
             <WBTidslinje
               dager={dager}
@@ -1226,6 +1260,13 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
       {/* Mobil (<md): tidslinje/agenda først, Bibliotek + Balanse som utfellbare seksjoner under — ikke side-kolonner */}
       <div className="flex md:hidden" style={{ flexDirection: "column", gap: T.gap }}>
         {insights?.line && <InnsiktChip>{insights.line}</InnsiktChip>}
+        {nivaa === "uke" && data.weekStartISO && (
+          <WBPeriodeStrip
+            data={data}
+            vindu={{ fra: new Date(data.weekStartISO), til: new Date(new Date(data.weekStartISO).getTime() + 6 * 86_400_000) }}
+            onTilAarsplan={() => setNivaa("ar")}
+          />
+        )}
         {nivaa === "uke" && <WBTidslinjeMobil dager={dager} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
         {nivaa === "uke" && <WBBelastning data={data} />}
         {nivaa === "ar" && (

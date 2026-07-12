@@ -149,6 +149,16 @@
 > ende-til-ende: dra→boble→popup→blokk→rediger→slett→0 rester. FUNN
 > (pre-eksisterende, egen sak): duplisert React-key i Workbench-lister.
 > Neste: 8c.3 tidslinje-strip på uke/måned + gruppe-workbench-rute.
+> 2026-07-13 (natt) · 8c.3 LEVERT: (a) WBPeriodeStrip — mini-årshjul med
+> periodefarger, nå-markør og visningsvindu på UKE- og MÅNED-zoom (desktop
+> + mobil); klikk → årsplan. (b) Månedsgriden fikk turneringsmarkører
+> (trophy på dato) + periodefarget dagkant (fasit workbench-maaned).
+> (c) GRUPPE-WORKBENCH: ny rute /admin/grupper/[id]/workbench — gruppens
+> EGEN årsplan på samme canvas (group_period_blocks, bind-te coach-actions)
+> + faste gruppetider under; gruppevelger-dropdown i coach-workbench-toppen
+> navigerer dit. Playwright: dropdown m/ ekte grupper → gruppe-canvas →
+> TESTUKE dratt inn → lagret → ryddet; strip verifisert på begge zoom +
+> klikk-til-årsplan; 0 testrester. Neste: 8c.4 Cmd+D-duplisering.
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag
