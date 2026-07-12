@@ -140,6 +140,10 @@
     {
       "path": "/api/cron/weekly-plan-proposals",
       "schedule": "0 18 * * 0"
+    },
+    {
+      "path": "/api/cron/churn-radar",
+      "schedule": "0 6 * * 1"
     }
   ],
   "regions": [

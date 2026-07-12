@@ -90,6 +90,15 @@ async function buildDiffPreview(
   userId: string,
   planId: string | null,
 ): Promise<string | null> {
+  // B2: churn-melding er ikke en plan-endring — forhåndsvis meldingsutkastet.
+  if (actionType === "CHURN_MESSAGE") {
+    const m = z
+      .object({ melding: z.object({ subject: z.string(), body: z.string() }) })
+      .safeParse(suggestion);
+    return m.success
+      ? `Sender melding: «${m.data.melding.subject}» — ${m.data.melding.body.slice(0, 120)}…`
+      : null;
+  }
   try {
     const plan =
       planId != null

@@ -20,6 +20,15 @@ import {
 } from "@/lib/training/period-allocation";
 import { validateExecutorDelta } from "@/lib/training/invariants";
 
+const churnMessageSchema = z.object({
+  tittel: z.string().optional(),
+  forklaring: z.string().optional(),
+  melding: z.object({
+    subject: z.string().min(1),
+    body: z.string().min(1),
+  }),
+});
+
 const pyramidAdjustSchema = z.object({
   omrade: z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]),
   omradeNavn: z.string().optional(),
@@ -676,6 +685,64 @@ export async function executePlanAction(actionId: string): Promise<ExecuteResult
     return {
       applied: false,
       summary: "Allerede behandlet",
+      sessionsAdded: 0,
+      sessionsRemoved: 0,
+      sessionsModified: 0,
+    };
+  }
+
+  // B2: CHURN_MESSAGE er en melding, ikke en plan-endring — sendes her,
+  // KUN ved godkjenning. Samtykke re-valideres mot nå-tilstand.
+  if (action.actionType === "CHURN_MESSAGE") {
+    const s = churnMessageSchema.parse(action.suggestion);
+    const mottaker = await prisma.user.findUnique({
+      where: { id: action.userId },
+      select: {
+        id: true,
+        requiresGuardianConsent: true,
+        guardianConsentGivenAt: true,
+      },
+    });
+    if (!mottaker) throw new Error("bruker-mangler");
+    if (mottaker.requiresGuardianConsent && !mottaker.guardianConsentGivenAt) {
+      throw new Error("samtykke-mangler");
+    }
+    const coachId =
+      action.coachId ??
+      (
+        await prisma.user.findFirst({
+          where: { role: "ADMIN", deletedAt: null },
+          select: { id: true },
+        })
+      )?.id;
+    if (!coachId) throw new Error("coach-mangler");
+
+    const tråd = await prisma.coachingSession.create({
+      data: {
+        userId: action.userId,
+        coachId,
+        kind: "DIRECT",
+        messages: [
+          {
+            role: "coach",
+            content: `**${s.melding.subject}**\n\n${s.melding.body}`,
+            ts: new Date().toISOString(),
+          },
+        ],
+      },
+    });
+    await prisma.notification.create({
+      data: {
+        userId: action.userId,
+        type: "coach_message",
+        title: "Ny melding fra coachen din",
+        body: s.melding.subject.slice(0, 280),
+        link: `/portal/coach/melding/${tråd.id}`,
+      },
+    });
+    return {
+      applied: true,
+      summary: `Melding sendt: ${s.melding.subject}`,
       sessionsAdded: 0,
       sessionsRemoved: 0,
       sessionsModified: 0,

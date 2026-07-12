@@ -237,6 +237,16 @@
 > Røyk-testet i kjørende app. Gjenstår i Bølge 2: C1 ukesyklus, W2.2b
 > periode-rulling, B1 kapasitets-økonomi, B2 churn-radar + notify-buggen
 > i live-coach-agenten (egen sjekk).
+> 2026-07-13 (natt) · B2 LEVERT — churn-radar: ny agent (cron man 06:00)
+> fanger coachede spillere med ≥14 dager uten innlogging (stallens
+> inaktiv-terskel; kun userStatus AKTIV — skadet/permisjon purres ikke,
+> aldri-innlogget plassholdere hoppes over) → Signal CHURN_ALERT +
+> PlanAction CHURN_MESSAGE med ferdig meldingsutkast i A1-køen. Sending
+> skjer KUN ved godkjenning (executor oppretter DIRECT-meldingstråd +
+> notifikasjon; samtykke re-valideres ved godkjenning — mindreårig uten
+> foreldresamtykke blokkeres begge steder). Dedup 14 d per spiller.
+> Verifisert live: 6 kandidater → 6 varsler → dedup 0 nye → godkjenning
+> → tråd+varsel opprettet → alt ryddet (0 rester).
 > 2026-07-13 (natt) · B1 LEVERT — kapasitet som PENGER: ukas bookingverdi
 > i kroner som egen KPI-flis på Bookinger & kapasitet (sum priceOre,
 > avlyste ekskludert) + dagens bookingverdi som kroner-chip på cockpitens
