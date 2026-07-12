@@ -14,7 +14,7 @@ import { ensureNotionConnection } from "@/lib/notion/bootstrap";
 import { getNotionConnectionForUser } from "@/lib/notion/client";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
-import { Caps, Tittel, Kort, Rad, CTAPill, StatusPill, MikroMeta, Icon } from "@/components/v2";
+import { Caps, Tittel, Kort, Rad, CTAPill, StatusPill, MikroMeta, Icon, TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -41,6 +41,7 @@ export default async function WorkspaceNotionPage({
 
   return (
     <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/admin/workspace">Workspace</TilbakeLenke>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>

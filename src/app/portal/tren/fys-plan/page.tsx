@@ -11,7 +11,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
-import { Caps, Tittel, Kort, MikroMeta, TomTilstand } from "@/components/v2";
+import { Caps, Tittel, Kort, MikroMeta, TomTilstand, TilbakeLenke } from "@/components/v2";
 import { NyPlanKnapp } from "./ny-plan-knapp";
 import { FysPlanKort, type FysPlanKortData } from "./fys-plan-kort";
 
@@ -65,6 +65,7 @@ export default async function FysPlanListePage() {
 
   return (
     <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/tren">Tren</TilbakeLenke>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {/* Hode */}
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>

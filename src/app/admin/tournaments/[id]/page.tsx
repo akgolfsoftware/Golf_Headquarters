@@ -12,7 +12,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
-import { Caps, Tittel, Kort, Rad, KpiFlis, StatusPill, TomTilstand, AvatarInit, HjelpTips } from "@/components/v2";
+import { Caps, Tittel, Kort, Rad, KpiFlis, StatusPill, TomTilstand, AvatarInit, HjelpTips, TilbakeLenke } from "@/components/v2";
 import { TournamentForm } from "@/app/admin/(legacy)/tournaments/tournament-form";
 import { ResultForm } from "./result-form";
 import { UnmergeBanner } from "./unmerge-banner";
@@ -78,6 +78,7 @@ export default async function TurneringDetalj({
 
   return (
     <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/admin/tournaments">Turneringer</TilbakeLenke>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <Link href="/admin/tournaments" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
           <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>← Turneringer</span>

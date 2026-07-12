@@ -18,8 +18,7 @@ import {
   Rad,
   CTAPill,
   TomTilstand,
-  HjelpTips,
-} from "@/components/v2";
+  HjelpTips, TilbakeLenke } from "@/components/v2";
 import { TrackmanImportModal } from "@/components/shared/trackman-import-modal";
 import { CsvImportModal } from "./csv-import-modal";
 import { HtmlImportModal } from "./html-import-modal";
@@ -95,6 +94,7 @@ export default async function TrackManListePage() {
   if (okter.length === 0) {
     return (
       <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/mal">Mål</TilbakeLenke>
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
           {hode}
           <Kort>

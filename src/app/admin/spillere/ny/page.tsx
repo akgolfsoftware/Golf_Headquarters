@@ -12,6 +12,7 @@
  * Server component.
  */
 
+import { TilbakeLenke } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { AdminNySpillerV2 } from "@/components/admin/v2/AdminNySpillerV2";
@@ -23,6 +24,7 @@ export default async function V2SpillerNyPage() {
 
   return (
     <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TilbakeLenke href="/admin/spillere">Stall</TilbakeLenke>
       <AdminNySpillerV2 />
     </V2Shell>
   );

@@ -7,6 +7,7 @@
  * Datoer formateres her (nb-NO) så klientkomponenten forblir serialiserbar.
  */
 
+import { TilbakeLenke } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { hentFysScore } from "@/lib/fys-data";
@@ -95,6 +96,7 @@ export default async function HelsePage() {
 
   return (
     <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <MegHelseV2 data={data} lagre={lagreHelseEntry} />
     </V2Shell>
   );

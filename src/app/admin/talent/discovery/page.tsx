@@ -12,6 +12,7 @@
  * Server component.
  */
 
+import { TilbakeLenke } from "@/components/v2";
 import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -59,6 +60,7 @@ export default async function V2AdminTalentDiscoveryPage() {
 
   return (
     <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TilbakeLenke href="/admin/talent/radar">Talent-radar</TilbakeLenke>
       <AdminTalentDiscoveryV2 data={data} />
     </V2Shell>
   );

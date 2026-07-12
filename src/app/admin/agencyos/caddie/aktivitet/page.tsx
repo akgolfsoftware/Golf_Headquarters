@@ -8,6 +8,7 @@
  * Server component.
  */
 
+import { TilbakeLenke } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
@@ -71,6 +72,7 @@ export default async function V2CaddieAktivitetPage() {
 
   return (
     <V2Shell nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TilbakeLenke href="/admin/agencyos/caddie">Caddie</TilbakeLenke>
       <CaddieSubNavV2 />
       <AdminCaddieAktivitetV2 events={events} nowMs={nowMs} loadError={loadError} aiErrors={aiErrors} />
     </V2Shell>

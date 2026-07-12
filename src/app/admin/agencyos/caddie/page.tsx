@@ -7,6 +7,7 @@
  * Server component.
  */
 
+import { TilbakeLenke } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getOrCreateActiveConversation } from "@/lib/caddie/conversation";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
@@ -27,6 +28,7 @@ export default async function V2CaddieSamtalePage({
 
   return (
     <V2Shell nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
       <CaddieSubNavV2 />
       <div style={{ flex: 1, minHeight: 0, display: "flex" }}>
         <CaddieChatV2 conversationId={conversation.id} initialSeed={seed} />

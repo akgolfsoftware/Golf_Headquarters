@@ -7,6 +7,7 @@
  * coachens egne + åpne (utildelte) spørsmål, nyeste først, med spillernavn.
  */
 
+import { TilbakeLenke } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
@@ -53,6 +54,7 @@ export default async function V2CoachSporsmalPreviewPage() {
 
   return (
     <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
+      <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
       <CoachQAV2 data={{ sporsmal }} />
     </V2Shell>
   );

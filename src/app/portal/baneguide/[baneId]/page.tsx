@@ -11,7 +11,7 @@ import { getBaneOverview } from "@/lib/baneguide/queries";
 import { CourseMap, type CourseMapHole } from "@/components/baneguide/course-map";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
-import { Caps, Tittel, Kort, Rad } from "@/components/v2";
+import { Caps, Tittel, Kort, Rad, TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +37,7 @@ export default async function BaneOverviewPage({
 
   return (
     <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/baneguide">Baneguide</TilbakeLenke>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <div>
           <Caps>Baneguide · {bane.navn}</Caps>

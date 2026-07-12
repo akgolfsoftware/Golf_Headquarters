@@ -26,8 +26,7 @@ import {
   MikroMeta,
   TomTilstand,
   AkseChip,
-  HjelpTips,
-} from "@/components/v2";
+  HjelpTips, TilbakeLenke } from "@/components/v2";
 
 /** Grupper forsøk på label → steg-liste. */
 function grupperSteg(
@@ -96,6 +95,7 @@ export default async function TestDetaljSpillerPage({
 
   return (
     <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/tren/tester">Tester</TilbakeLenke>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {lagret && (
           <Kort tint pad="14px 18px">

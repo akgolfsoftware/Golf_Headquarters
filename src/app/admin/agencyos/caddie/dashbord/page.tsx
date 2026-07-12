@@ -8,6 +8,7 @@
  * Server component.
  */
 
+import { TilbakeLenke } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { loadCoAgent } from "@/lib/admin-caddie/co-agent-data";
@@ -43,6 +44,7 @@ export default async function V2CaddieDashbordPage() {
 
   return (
     <V2Shell nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TilbakeLenke href="/admin/agencyos/caddie">Caddie</TilbakeLenke>
       <CaddieSubNavV2 />
       <AdminCaddieProaktivV2 forslag={forslag} />
       <AdminCaddieDashbordV2 {...props} />

@@ -12,7 +12,7 @@ import { SAMPLE_PEOPLE, type SampleProject } from "@/components/workspace/sample
 import { getProjectsForUser } from "@/lib/notion/queries";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
-import { Caps, Tittel, Kort, CTAPill, StatusPill, TomTilstand, Icon } from "@/components/v2";
+import { Caps, Tittel, Kort, CTAPill, StatusPill, TomTilstand, Icon, TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -51,6 +51,7 @@ export default async function WorkspaceProsjekterPage({
 
   return (
     <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/admin/workspace">Workspace</TilbakeLenke>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
           <div>

@@ -7,6 +7,7 @@
  * Server component (klientlogikken bor i AgencyLiveV2).
  */
 
+import { TilbakeLenke } from "@/components/v2";
 import type { Metadata } from "next";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
@@ -20,6 +21,7 @@ export default async function V2LivePage() {
 
   return (
     <V2Shell aktiv="live" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
       <AgencyLiveV2 coachFirstName={coachFirstName} />
     </V2Shell>
   );
