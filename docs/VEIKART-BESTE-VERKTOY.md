@@ -159,6 +159,15 @@
 > navigerer dit. Playwright: dropdown m/ ekte grupper → gruppe-canvas →
 > TESTUKE dratt inn → lagret → ryddet; strip verifisert på begge zoom +
 > klikk-til-årsplan; 0 testrester. Neste: 8c.4 Cmd+D-duplisering.
+> 2026-07-13 (natt) · 8c.4 LEVERT — Cmd+D-duplisering (Notion-stil):
+> Cmd/Ctrl+D på valgt økt lager DIREKTE kopi neste dag samme tid, med alle
+> drills og AK-formel-felter (duplicate-session-kjerne etter duplicate-
+> week-mønsteret; v2-speil synkes). Toast «Økt duplisert til neste dag —
+> dra den dit du vil»; kopien er dragbar → D-D-D + dra fordeler styrke-
+> økta utover måneden. + «Dupliser»-knapp i valgt økt-panelet (mobil/mus).
+> Skrivefelt-guard (Cmd+D i input rører ikke økter). Spiller- og coach-
+> action (I0-gated). Playwright: 5→6 økter ved Cmd+D, knapp verifisert,
+> testdata ryddet (DB: 0 rester). Neste: 8c.5 universell økt-popup.
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag

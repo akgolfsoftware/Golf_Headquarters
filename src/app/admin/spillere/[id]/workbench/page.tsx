@@ -25,6 +25,7 @@ import {
   coachUpdateWorkbenchSession,
   coachRemoveWorkbenchSession,
   coachDuplicateWeek,
+  coachDuplicateSession,
   coachLagrePeriode,
   coachSlettPeriode,
 } from "@/lib/workbench/session-actions";
@@ -85,6 +86,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
     removeSession: coachRemoveWorkbenchSession.bind(null, id),
     publish: publishWorkbenchPlan.bind(null, id),
     duplicateWeek: coachDuplicateWeek.bind(null, id),
+    duplicateSession: coachDuplicateSession.bind(null, id),
     lagrePeriode: coachLagrePeriode.bind(null, id),
     slettPeriode: coachSlettPeriode.bind(null, id),
   };

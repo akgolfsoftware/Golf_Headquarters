@@ -14,6 +14,7 @@ import { duplicateWeekCore } from "@/lib/workbench/duplicate-week";
 import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel";
 import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore } from "@/lib/workbench/periode-core";
 import { erCoachetSpiller } from "@/lib/auth/coached";
+import { duplicateSessionCore } from "@/lib/workbench/duplicate-session";
 
 const PYRAMID_AREAS = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
 export type WbPyramidArea = (typeof PYRAMID_AREAS)[number];
@@ -251,6 +252,17 @@ export async function coachSlettPeriode(
   await ensureCoach();
   if (!(await erCoachetSpiller(playerId))) return { ok: false, error: "Ingen tilgang" };
   const result = await slettPeriodeCore(playerId, periodeId);
+  if (result.ok) revalidateWorkbench(playerId);
+  return result;
+}
+
+export async function coachDuplicateSession(
+  playerId: string,
+  sessionId: string,
+): Promise<{ ok: boolean; sessionId?: string; error?: string }> {
+  const coach = await ensureCoach();
+  if (!(await erCoachetSpiller(playerId))) return { ok: false, error: "Ingen tilgang" };
+  const result = await duplicateSessionCore(playerId, sessionId, coach.id);
   if (result.ok) revalidateWorkbench(playerId);
   return result;
 }

@@ -66,6 +66,8 @@ export interface WorkbenchV2Actions {
     patch: { title?: string; pyramidArea?: AkseKey; hour?: number; minute?: number; durationMin?: number },
   ) => Promise<{ ok: boolean; error?: string }>;
   publish: () => Promise<{ ok: boolean; error?: string; status?: PlanStatus }>;
+  /** 8c.4: Cmd+D — dupliser økt til neste dag samme tid (Notion-stil). */
+  duplicateSession?: (sessionId: string) => Promise<{ ok: boolean; sessionId?: string; error?: string }>;
   /** 8c.2: årsplan-canvaset — opprett/oppdater og slett periodeblokker. */
   lagrePeriode?: (input: import("@/lib/workbench/perioder").PeriodeInput, periodeId?: string) => Promise<{ ok: boolean; periodeId?: string; error?: string }>;
   slettPeriode?: (periodeId: string) => Promise<{ ok: boolean; error?: string }>;
@@ -515,6 +517,17 @@ export function ValgtOktSeksjon({ okt, dag, actions, weekOffset, onEndret }: Val
     }
   };
 
+  const [dupliserer, setDupliserer] = useState(false);
+  const dupliser = async () => {
+    if (!actions?.duplicateSession || !okt.id || dupliserer) return;
+    setDupliserer(true);
+    setFeil(null);
+    const res = await actions.duplicateSession(okt.id);
+    setDupliserer(false);
+    if (res.ok) onEndret();
+    else setFeil(res.error ?? "Kunne ikke duplisere økten.");
+  };
+
   const slett = async () => {
     if (!actions || !okt.id) return;
     setSletterLoading(true);
@@ -652,6 +665,13 @@ export function ValgtOktSeksjon({ okt, dag, actions, weekOffset, onEndret }: Val
                 {flyttApen ? "Lukk" : "Flytt"}
               </Knapp>
             </div>
+            {actions?.duplicateSession && !ferdig && (
+              <div style={{ flex: 1 }}>
+                <Knapp ghost icon="copy" full disabled={dupliserer} onClick={dupliser}>
+                  {dupliserer ? "Kopierer…" : "Dupliser"}
+                </Knapp>
+              </div>
+            )}
             <div style={{ flex: 1 }}>
               <Knapp ghost icon="trash-2" full onClick={() => setBekreftSlett(true)}>
                 Slett

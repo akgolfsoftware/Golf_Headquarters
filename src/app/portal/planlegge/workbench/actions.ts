@@ -17,6 +17,7 @@ import { deleteV2ForPlanSession, upsertV2ForPlanSession } from "@/lib/workbench/
 import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel";
 import { duplicateWeekCore } from "@/lib/workbench/duplicate-week";
 import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore } from "@/lib/workbench/periode-core";
+import { duplicateSessionCore } from "@/lib/workbench/duplicate-session";
 
 // ============================================================================
 // PERIODE
@@ -655,6 +656,15 @@ export async function slettWorkbenchPeriode(
 ): Promise<{ ok: boolean; error?: string }> {
   const user = await requirePortalUser();
   const result = await slettPeriodeCore(user.id, periodeId);
+  if (result.ok) revalidatePath("/portal/planlegge/workbench");
+  return result;
+}
+
+export async function duplicateWorkbenchSession(
+  sessionId: string,
+): Promise<{ ok: boolean; sessionId?: string; error?: string }> {
+  const user = await requirePortalUser();
+  const result = await duplicateSessionCore(user.id, sessionId);
   if (result.ok) revalidatePath("/portal/planlegge/workbench");
   return result;
 }

@@ -18,7 +18,7 @@
  * V2Shell (montert i (v2preview)/v2-workbench/page.tsx) eier chrome-en.
  */
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
   T,
@@ -757,6 +757,28 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     [dager, valgtOkt],
   );
 
+  // 8c.4: Cmd/Ctrl+D dupliserer valgt økt direkte (Notion-stil) — kopien
+  // legges neste dag samme tid og er dragbar («fordel utover måneden»).
+  const [dupliserMelding, setDupliserMelding] = useState<string | null>(null);
+  useEffect(() => {
+    if (!actions?.duplicateSession) return;
+    const handler = async (e: KeyboardEvent) => {
+      if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== "d") return;
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+      if (!valgtOkt?.id || (valgtOkt.source ?? "plan") !== "plan") return;
+      e.preventDefault();
+      const res = await actions.duplicateSession!(valgtOkt.id);
+      if (res.ok) {
+        setDupliserMelding("Økt duplisert til neste dag — dra den dit du vil.");
+        window.setTimeout(() => setDupliserMelding(null), 4000);
+        router.refresh();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [actions, valgtOkt, router]);
+
   // Skriv zoom/valg til URL med replace (skal ikke forurense historikken).
   const oppdaterUrl = (mut: (p: URLSearchParams) => void) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -1203,6 +1225,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
       <div className="hidden md:grid md:grid-cols-1 lg:grid-cols-[206px_1fr_302px]" style={{ gap: T.gap, alignItems: "start" }}>
         <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} />
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
+          {dupliserMelding && <InnsiktChip>{dupliserMelding}</InnsiktChip>}
           {insights?.line && <InnsiktChip>{insights.line}</InnsiktChip>}
           {nivaa === "uke" && data.weekStartISO && (
             <WBPeriodeStrip

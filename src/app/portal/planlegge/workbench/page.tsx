@@ -17,7 +17,7 @@ import { publishWorkbenchPlan } from "@/lib/workbench/publish-actions";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { WorkbenchV2, type WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
 import { applyWorkbenchTemplate } from "@/lib/workbench/apply-template-actions";
-import { addWorkbenchSession, moveWorkbenchSession, updateWorkbenchSession, removeWorkbenchSession, duplicateWorkbenchWeek, suggestWeekWithCaddie, applySuggestedWeek, lagreWorkbenchPeriode, slettWorkbenchPeriode } from "./actions";
+import { addWorkbenchSession, moveWorkbenchSession, updateWorkbenchSession, removeWorkbenchSession, duplicateWorkbenchWeek, suggestWeekWithCaddie, applySuggestedWeek, lagreWorkbenchPeriode, slettWorkbenchPeriode, duplicateWorkbenchSession } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -43,6 +43,7 @@ export default async function V2WorkbenchPreviewPage({ searchParams }: Props) {
     // standardforslag (usedAi: false-badge i ForslagArk). Aldri auto-lagt inn.
     suggestWeek: suggestWeekWithCaddie,
     applySuggestion: applySuggestedWeek,
+    duplicateSession: duplicateWorkbenchSession,
     lagrePeriode: lagreWorkbenchPeriode,
     slettPeriode: slettWorkbenchPeriode,
   };
