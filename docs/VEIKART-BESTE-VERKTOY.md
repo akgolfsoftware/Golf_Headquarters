@@ -44,6 +44,9 @@
 > unåbar fra lista). Verifisert live hele kjeden (0-spillere-gruppe → ærlig
 > «0 økter for 0 spillere»). VENTER TIL SLUTT (Anders): I2 Google · I3
 > hendelser · I4 Stripe · Å1/Å2-tabell. NESTE: I8-revisjon + R2-rydding.
+> 2026-07-13 · R2 LEVERT (hoveddel): 215 dobbelt-verifisert døde filer slettet
+> (knip + grep + kaskade; spesialfiler/generated ekskludert). tsc, lint,
+> 470 tester, full build OG røyk-test av 5 hovedflater grønt etterpå.
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag
