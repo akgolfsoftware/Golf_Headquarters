@@ -46,7 +46,7 @@ funksjon med FÆRRE sider. Status: **v2** = ny chrome + v2-komponert innhold ·
 | Rute | Hva den er | Hva du gjør der | Status |
 |---|---|---|---|
 | `/admin/spillere` | **Stall-lista** — alle spillere m/ HCP, SG, status-heuristikk | Søker, filtrerer, åpner spiller; `?view=tavle` | v2 ★ |
-| `/admin/agencyos/spillere` | Cockpit-variant av stall-lista | Unikt: **pakke/betaling-kolonner + «skylder»-filter** | v2 · **duplikat, se B2** |
+| `/admin/agencyos/spillere` | Gammel adresse | — | redirect → spillere (B2 utført 2026-07-12) |
 | `/admin/spillere/ny` | Ny spiller-wizard | Oppretter spiller | legacy-innhold |
 | `/admin/spillere/[id]` | **Spiller 360°** | Ser alt om spilleren, hurtighandlinger (melding/plan/økt) | v2 ★ |
 | `/admin/spillere/[id]/analyse` | Dyp analyse (SG-lekkasje, diagnose) | Utforsker årsaksfunn | v2 ★ |
@@ -137,9 +137,8 @@ kalender-aliasene · innboks-aliasene (messages/kommunikasjon) · stall/board→
 
 1. **B1 · queue vs oppfolging** — samme side på to URL-er (re-eksport).
    → Gjør `/admin/oppfolging` til ren redirect. Null funksjonstap. *(triviell)*
-2. **B2 · spillere vs agencyos/spillere** — to stall-lister.
-   → Flytt pakke/betaling-kolonnene og «skylder/abonnent»-filteret inn i
-   `/admin/spillere`, gjør cockpit-varianten til redirect. *(liten)*
+2. **B2 · spillere vs agencyos/spillere** — ✅ UTFØRT 2026-07-12: pakke/betaling +
+   «Abonnent/Skylder»-filter flyttet inn i StallV2; cockpit-varianten er redirect.
 3. **B3 · handlingssenter vs workspace/oppgaver** — to flater over samme
    OppgaveCache (Notion). → Velg `/admin/handlingssenter` som kanonisk (har
    detaljpanel + 3 visninger), la workspace/oppgaver redirecte; flytt

@@ -7,7 +7,7 @@ const TABS = [
   { href: "/admin/agencyos", label: "I dag" },
   { href: "/admin/agencyos/live", label: "Live" },
   { href: "/admin/agencyos/uka", label: "Uka" },
-  { href: "/admin/agencyos/spillere", label: "Spillere" },
+  { href: "/admin/spillere", label: "Spillere" },
   { href: "/admin/agencyos/okonomi", label: "Økonomi", adminOnly: true },
   { href: "/admin/agencyos/caddie", label: "Caddie", adminOnly: true },
 ];

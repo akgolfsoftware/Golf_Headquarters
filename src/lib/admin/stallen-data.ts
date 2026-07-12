@@ -58,6 +58,12 @@ export type StallenRow = {
   /** Aldri logget inn (lastLoginAt mangler) — bulk-importert plassholderprofil
    *  uten egen aktivitet ennå, skal grupperes bak «Venter på innlogging». */
   neverLoggedIn: boolean;
+  /** Abonnements-pakke (Subscription.tier, «Drop-in» uten abonnement) —
+   *  flyttet inn fra den tidligere cockpit-spillerlista (B2, 2026-07-12). */
+  pakke: string;
+  pakkeAktiv: boolean;
+  /** Minst én FAILED betaling — «skylder»-flagget fra cockpit-lista. */
+  skylder: boolean;
 };
 
 export type StallenData = {
@@ -257,6 +263,9 @@ export async function loadStallen(
         select: { id: true },
         take: 1,
       },
+      // Pakke + «skylder» (B2): abonnement og feilede betalinger.
+      subscription: { select: { tier: true, status: true } },
+      _count: { select: { payments: { where: { status: "FAILED" } } } },
       // Treningsplan-økter for uke (adherence + økter) og 30 d (timer).
       trainingPlans: {
         select: {
@@ -380,6 +389,9 @@ export async function loadStallen(
       status,
       statusLabel,
       neverLoggedIn: days == null,
+      pakke: p.subscription?.tier ?? "Drop-in",
+      pakkeAktiv: p.subscription?.status === "ACTIVE",
+      skylder: p._count.payments > 0,
     };
   });
 

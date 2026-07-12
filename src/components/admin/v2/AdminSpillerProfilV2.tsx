@@ -253,7 +253,7 @@ export function AdminSpillerProfilV2({ data }: { data: AdminSpillerProfilV2Data 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <div>
-        <TilbakeLenke href="/admin/agencyos/spillere">Alle spillere</TilbakeLenke>
+        <TilbakeLenke href="/admin/spillere">Alle spillere</TilbakeLenke>
       </div>
       {hero}
       <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr]" style={{ gap: T.gap, alignItems: "start" }}>

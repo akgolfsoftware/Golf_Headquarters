@@ -62,6 +62,11 @@ export interface StallV2Player {
   adhPct: number | null;
   /** Aldri logget inn — bulk-importert plassholderprofil uten aktivitet ennå. */
   venter: boolean;
+  /** Abonnements-pakke («Drop-in» uten abonnement) — fra cockpit-lista (B2). */
+  pakke: string;
+  pakkeAktiv: boolean;
+  /** Minst én feilet betaling. */
+  skylder: boolean;
 }
 export interface StallV2Data {
   total: number;
@@ -71,6 +76,7 @@ export interface StallV2Data {
 }
 
 const STATUS_FILTRE = ["Trenger deg", "I rute"] as const;
+const BETALING_FILTRE = ["Abonnent", "Skylder"] as const;
 
 function SpillerRadEnkel({
   s,
@@ -126,7 +132,9 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
           <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, color: T.fg }}>{s.navn}</div>
           <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>
             Hcp{" "}
-            <span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums" }}>{s.hcp}</span> · {s.gruppe}
+            <span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums" }}>{s.hcp}</span> · {s.gruppe} ·{" "}
+            <span style={{ color: s.pakkeAktiv ? T.fg2 : T.mut }}>{s.pakke}</span>
+            {s.skylder && <span style={{ color: T.down, fontWeight: 600 }}> · skylder</span>}
           </div>
         </div>
       </div>
@@ -187,6 +195,7 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
 export function StallV2({ data }: { data: StallV2Data }) {
   const [grp, setGrp] = useState<string[]>([]);
   const [sta, setSta] = useState<string[]>([]);
+  const [bet, setBet] = useState<string[]>([]);
   const [venterApen, setVenterApen] = useState(false);
   // Standard: velg første AKTIVE profil, ikke en tom «venter»-plassholder.
   const [valgtId, setValgtId] = useState<string | null>(
@@ -199,7 +208,11 @@ export function StallV2({ data }: { data: StallV2Data }) {
   const filtered = data.spillere.filter((p) => {
     const gOk = grp.length === 0 || grp.indexOf(p.gruppe) !== -1;
     const sOk = sta.length === 0 || sta.indexOf(p.trenger ? "Trenger deg" : "I rute") !== -1;
-    return gOk && sOk;
+    const bOk =
+      bet.length === 0 ||
+      (bet.indexOf("Abonnent") !== -1 && p.pakkeAktiv) ||
+      (bet.indexOf("Skylder") !== -1 && p.skylder);
+    return gOk && sOk && bOk;
   });
   // Aktive/komplette profiler først — aldri-aktiverte bulk-import-rader
   // grupperes bak en egen, kollapsbar «Venter på innlogging»-seksjon.
@@ -228,6 +241,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       {data.grupper.length > 0 && filterRad("Gruppe", data.grupper, grp, toggle(grp, setGrp))}
       {filterRad("Status", STATUS_FILTRE, sta, toggle(sta, setSta))}
+      {filterRad("Betaling", BETALING_FILTRE, bet, toggle(bet, setBet))}
     </div>
   );
 

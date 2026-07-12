@@ -64,6 +64,9 @@ export default async function V2StallPage() {
       adherence: r.adherence.map((a) => ({ akse: AKSE_MAP[a.axis], pct: a.pct })),
       adhPct: r.adhPct,
       venter: r.neverLoggedIn,
+      pakke: r.pakke,
+      pakkeAktiv: r.pakkeAktiv,
+      skylder: r.skylder,
     };
   });
 
