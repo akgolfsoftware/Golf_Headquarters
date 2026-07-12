@@ -340,7 +340,9 @@ function TabTrening({ data, mobile }: { data: AnalysereData; mobile: boolean }) 
         <Caps size={9} style={{ marginBottom: 7 }}>Akse</Caps>
         <FilterChips items={ALLE_AKSER} active={aktive} axis onToggle={toggle} />
       </Kort>
-      {!mobile && mestTrent && (
+      {/* Vises på ALLE flater — mobil skal ha samme data som desktop
+          (Anders 2026-07-13: all data/historikk/filtre på begge). */}
+      {mestTrent && (
         <Kort eyebrow="Mest trent · siste 30 dager">
           <AkseChip a={mestTrent.axis as AkseKey} />
           <div style={{ marginTop: 12 }}>
