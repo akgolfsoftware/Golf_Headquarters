@@ -16,11 +16,19 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Caps, Tittel, Kort, KpiFlis, CTAPill, Icon, T } from "@/components/v2";
+import { Caps, Tittel, Kort, KpiFlis, CTAPill, Icon, T, HurtigOpprett, foreslaTid } from "@/components/v2";
 import { flyttBookingTilDag } from "@/app/admin/agencyos/uka/actions";
 
 // I5: samme DnD-payload-mønster som Workbench-tidslinja.
 const DND_MIME = "application/x-akgolf-uka";
+
+/** d.key er full toISOString() — normaliser til lokal «YYYY-MM-DD» for hurtigvelgeren. */
+function tilISODato(key: string): string {
+  const dt = new Date(key);
+  if (Number.isNaN(dt.getTime())) return key.slice(0, 10);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`;
+}
 
 export interface UkaBookingV2 {
   id: string;
@@ -51,7 +59,7 @@ export interface AdminUkaV2Data {
   dager: UkaDagV2[];
 }
 
-function DagKort({ d, onFlytt, flytterId }: { d: UkaDagV2; onFlytt: (bookingId: string, targetDayISO: string) => void; flytterId: string | null }) {
+function DagKort({ d, onFlytt, flytterId, onTomLuke }: { d: UkaDagV2; onFlytt: (bookingId: string, targetDayISO: string) => void; flytterId: string | null; onTomLuke: (datoISO: string, kl: string) => void }) {
   const [over, setOver] = useState(false);
   return (
     <div
@@ -83,9 +91,20 @@ function DagKort({ d, onFlytt, flytterId }: { d: UkaDagV2; onFlytt: (bookingId: 
         </div>
       </div>
       {d.bookinger.length === 0 ? (
-        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 100 }}>
+        /* I1: trykk på tom dag-luke → hurtigvelger (Ny booking / Ny økt).
+           Helg er en anbefaling («beskyttet»), aldri en sperre — luken er
+           trykkbar der også. */
+        <button
+          type="button"
+          onClick={() => onTomLuke(d.key, "09:00")}
+          aria-label={`Ny booking eller økt ${d.langNavn}`}
+          className="v2-press v2-focus"
+          style={{ appearance: "none", cursor: "pointer", background: "none", border: `1px dashed transparent`, borderRadius: 10, flex: 1, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 100, padding: 0 }}
+          onMouseEnter={(e) => { e.currentTarget.style.borderColor = T.borderS; }}
+          onMouseLeave={(e) => { e.currentTarget.style.borderColor = "transparent"; }}
+        >
           <Caps size={9}>{d.erHelg ? "— beskyttet —" : "— ledig —"}</Caps>
-        </div>
+        </button>
       ) : (
         <div>
           {d.bookinger.map((b, i) => (
@@ -117,6 +136,21 @@ function DagKort({ d, onFlytt, flytterId }: { d: UkaDagV2; onFlytt: (bookingId: 
               </div>
             </div>
           ))}
+          {/* I1: tom luke under dagens bookinger → hurtigvelger med tid etter siste booking. */}
+          <button
+            type="button"
+            onClick={() => {
+              const siste = d.bookinger[d.bookinger.length - 1];
+              onTomLuke(d.key, foreslaTid(siste.time, siste.durMin));
+            }}
+            aria-label={`Ny booking eller økt ${d.langNavn}`}
+            className="v2-press v2-focus"
+            style={{ appearance: "none", cursor: "pointer", background: "none", border: `1px dashed transparent`, borderRadius: 10, width: "100%", minHeight: 36, display: "flex", alignItems: "center", justifyContent: "center", color: "transparent", padding: 0, marginTop: 4 }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = T.borderS; e.currentTarget.style.color = T.mut; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = "transparent"; e.currentTarget.style.color = "transparent"; }}
+          >
+            <Icon name="plus" size={13} />
+          </button>
         </div>
       )}
     </Kort>
@@ -128,6 +162,8 @@ export function AdminUkaV2({ data }: { data: AdminUkaV2Data }) {
   const router = useRouter();
   const [flytterId, setFlytterId] = useState<string | null>(null);
   const [feil, setFeil] = useState<string | null>(null);
+  // I1: trykk på tom luke → hurtigvelger (Ny booking / Ny økt) med dag/tid fra luken.
+  const [tomLuke, setTomLuke] = useState<{ dato: string; kl: string } | null>(null);
 
   const onFlytt = async (bookingId: string, targetDayISO: string) => {
     if (flytterId) return;
@@ -171,9 +207,11 @@ export function AdminUkaV2({ data }: { data: AdminUkaV2Data }) {
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7" style={{ gap: 8 }}>
         {data.dager.map((d) => (
-          <DagKort key={d.key} d={d} onFlytt={onFlytt} flytterId={flytterId} />
+          <DagKort key={d.key} d={d} onFlytt={onFlytt} flytterId={flytterId} onTomLuke={(dato, kl) => setTomLuke({ dato: tilISODato(dato), kl })} />
         ))}
       </div>
+
+      {tomLuke && <HurtigOpprett dato={tomLuke.dato} klokkeslett={tomLuke.kl} onLukk={() => setTomLuke(null)} />}
 
       <Kort>
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
