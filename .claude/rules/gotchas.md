@@ -66,3 +66,10 @@ Supabase ligger i eu-west-1 (Irland). Uten `"regions"` i vercel.json kjørte
 funksjonene i default iad1 (USA) — hver Prisma-spørring krysset Atlanteren og
 sider med mange spørringer fikk TTFB på 0,5–1,1 s. Fix: `"regions": ["dub1"]`
 i vercel.json. Ikke fjern denne uten å flytte databasen samtidig.
+
+### Dev-server med foreldet Prisma-klient etter `prisma generate` (truffet 2×, 2026-07-13)
+Kjører `npx prisma generate` (nytt felt/enum) mens `next dev` står oppe →
+server-actions feiler stille med PrismaClientValidationError («Unknown
+argument»)/gamle typer, selv om tsx-scripts mot samme kode virker. Turbopack
+plukker ikke opp ny generert klient. Regel: RESTART dev-serveren etter hver
+`prisma generate` før Playwright-verifisering.
