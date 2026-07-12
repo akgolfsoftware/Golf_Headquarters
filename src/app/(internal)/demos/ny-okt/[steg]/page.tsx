@@ -247,8 +247,8 @@ function Step1() {
       <div
         className="flex items-center gap-2.5 rounded-lg border px-4 py-2 text-[13px]"
         style={{
-          background: "rgba(209,248,67,0.16)",
-          borderColor: "rgba(209,248,67,0.4)",
+          background: "color-mix(in srgb, var(--v2-lime) 16%, transparent)",
+          borderColor: "color-mix(in srgb, var(--v2-lime) 40%, transparent)",
         }}
       >
         <Shield
@@ -316,7 +316,7 @@ function Chip({
 }) {
   const toneBg: Record<string, string> = {
     tek: "rgba(0,88,64,0.12)",
-    slag: "rgba(209,248,67,0.25)",
+    slag: "color-mix(in srgb, var(--v2-lime) 25%, transparent)",
     spill: "rgba(184,133,42,0.15)",
   };
   const toneColor: Record<string, string> = {
@@ -805,7 +805,7 @@ function ExerciseLine({
       className={`flex items-center gap-4 px-6 py-4 ${
         last ? "" : "border-b border-[var(--line-soft,#EFEDE6)]"
       }`}
-      style={added ? { background: "rgba(209,248,67,0.06)" } : undefined}
+      style={added ? { background: "color-mix(in srgb, var(--v2-lime) 6%, transparent)" } : undefined}
     >
       <GripVertical
         className="h-4 w-4 flex-shrink-0 cursor-grab text-muted-foreground"
@@ -815,7 +815,7 @@ function ExerciseLine({
         className="rounded-sm px-2 py-0.5 font-mono text-[10px] font-semibold leading-none"
         style={
           added
-            ? { background: "rgba(209,248,67,0.32)", color: "#5C6B0E" }
+            ? { background: "color-mix(in srgb, var(--v2-lime) 32%, transparent)", color: "#5C6B0E" }
             : { background: "rgba(0,88,64,0.12)", color: "hsl(var(--primary))" }
         }
       >

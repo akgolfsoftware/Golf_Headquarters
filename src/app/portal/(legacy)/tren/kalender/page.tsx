@@ -44,7 +44,7 @@ const PYR_BADGE: Record<PyramidArea, BadgeInfo> = {
   FYS:   { badge: "Fysisk",    bg: "rgba(0,88,64,.1)",     fg: "var(--pyr-fys, #005840)" },
   TEK:   { badge: "Teknisk",   bg: "rgba(184,133,42,.12)", fg: "var(--pyr-tek, #B8852A)" },
   SLAG:  { badge: "Slag",      bg: "rgba(37,99,235,.1)",   fg: "var(--info, #2563EB)" },
-  SPILL: { badge: "Spill",     bg: "rgba(209,248,67,.25)", fg: "var(--forest, #005840)" },
+  SPILL: { badge: "Spill",     bg: "color-mix(in srgb, var(--v2-lime) 25%, transparent)", fg: "var(--forest, #005840)" },
   TURN:  { badge: "Turnering", bg: "rgba(163,45,45,.1)",   fg: "var(--pyr-turn, #A32D2D)" },
 };
 
@@ -380,7 +380,7 @@ export default async function UkekalenderPage({
                     "flex items-center gap-[11px] rounded-[14px] border bg-card px-[13px] py-[11px] " +
                     (rad.erIdag ? "border-l-2 border-primary/30 border-l-primary" : "border-border")
                   }
-                  style={rad.erIdag ? { background: "rgba(209,248,67,.05)" } : undefined}
+                  style={rad.erIdag ? { background: "color-mix(in srgb, var(--v2-lime) 5%, transparent)" } : undefined}
                 >
                   <div
                     className="flex h-9 w-9 shrink-0 flex-col items-center justify-center rounded-[8px]"
@@ -400,7 +400,7 @@ export default async function UkekalenderPage({
                   <span
                     className="shrink-0 rounded-full px-[8px] py-[3px] font-mono text-[9px] font-bold"
                     style={{
-                      background: rad.erIdag ? "rgba(209,248,67,.2)" : rad.badge.bg,
+                      background: rad.erIdag ? "color-mix(in srgb, var(--v2-lime) 20%, transparent)" : rad.badge.bg,
                       color: rad.erIdag ? "var(--forest, #005840)" : rad.badge.fg,
                     }}
                   >

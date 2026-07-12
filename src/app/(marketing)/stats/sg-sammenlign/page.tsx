@@ -489,7 +489,7 @@ export default async function SgSammenlignLanding() {
             <div
               style={{
                 background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(209,248,67,0.25)",
+                border: "1px solid color-mix(in srgb, var(--v2-lime) 25%, transparent)",
                 borderRadius: 16,
                 padding: 28,
               }}

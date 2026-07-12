@@ -423,7 +423,7 @@ function PakkeVelger({
                     alignSelf: "flex-start",
                     borderRadius: 9999,
                     padding: "2px 8px",
-                    background: "rgba(209,248,67,0.12)",
+                    background: "color-mix(in srgb, var(--v2-lime) 12%, transparent)",
                     fontFamily: T.mono,
                     fontSize: 9,
                     fontWeight: 700,
@@ -502,7 +502,7 @@ function BrandPanel() {
         position: "relative",
         overflow: "hidden",
         borderRight: `1px solid ${T.border}`,
-        background: `radial-gradient(560px 460px at 28% 24%, rgba(0,88,64,0.55), transparent 68%), radial-gradient(420px 380px at 82% 88%, rgba(209,248,67,0.07), transparent 60%), ${T.bg}`,
+        background: `radial-gradient(560px 460px at 28% 24%, rgba(0,88,64,0.55), transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--v2-lime) 7%, transparent), transparent 60%), ${T.bg}`,
         flexDirection: "column",
         padding: "34px 40px 44px",
       }}
@@ -524,7 +524,7 @@ function BrandPanel() {
             strokeWidth="1"
           />
         ))}
-        <circle cx="260" cy="330" r="3.5" fill="rgba(209,248,67,0.5)" />
+        <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--v2-lime) 50%, transparent)" />
       </svg>
       <div style={{ position: "relative" }}>
         <LogoAK size={30} />

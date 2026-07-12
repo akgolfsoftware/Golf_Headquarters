@@ -46,7 +46,7 @@ export default function PlanByggerDemo() {
           className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-4"
           style={{
             backgroundImage:
-              "linear-gradient(135deg, rgba(0,88,64,0.06) 0%, rgba(209,248,67,0.10) 100%)",
+              "linear-gradient(135deg, rgba(0,88,64,0.06) 0%, color-mix(in srgb, var(--v2-lime) 10%, transparent) 100%)",
           }}
         >
           <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--brand-primary,#005840)] font-mono text-[11px] font-bold text-[var(--brand-accent,#D1F843)]">
@@ -155,7 +155,7 @@ export default function PlanByggerDemo() {
               label="banespill"
               value={30}
               historyPct={14}
-              historyBg="rgba(209,248,67,0.40)"
+              historyBg="color-mix(in srgb, var(--v2-lime) 40%, transparent)"
               historyLabel="Faktisk siste 4 u: 14 %"
             />
             <SliderBlock

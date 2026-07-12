@@ -135,8 +135,8 @@ export default async function AvbestillPage() {
         className="grid items-center gap-2 rounded-xl border p-4"
         style={{
           gridTemplateColumns: "36px 1fr auto",
-          borderColor: "rgba(209,248,67,0.55)",
-          background: "linear-gradient(140deg, rgba(209,248,67,0.20), rgba(209,248,67,0.08))",
+          borderColor: "color-mix(in srgb, var(--v2-lime) 55%, transparent)",
+          background: "linear-gradient(140deg, color-mix(in srgb, var(--v2-lime) 20%, transparent), color-mix(in srgb, var(--v2-lime) 8%, transparent))",
         }}
       >
         <span

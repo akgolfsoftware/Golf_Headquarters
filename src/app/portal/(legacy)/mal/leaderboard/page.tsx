@@ -266,7 +266,7 @@ function YourRank({
         className="pointer-events-none absolute right-0 top-0 h-full w-56"
         style={{
           background:
-            "radial-gradient(circle at 80% 50%, rgba(209,248,67,0.18), transparent 60%)",
+            "radial-gradient(circle at 80% 50%, color-mix(in srgb, var(--v2-lime) 18%, transparent), transparent 60%)",
         }}
       />
       <div className="relative z-10 font-mono text-3xl sm:text-5xl md:text-6xl font-medium leading-none tracking-tight text-accent">

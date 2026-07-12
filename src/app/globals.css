@@ -718,3 +718,67 @@ em.editorial {
 @media (prefers-reduced-motion: reduce) {
   .marquee { animation: none; }
 }
+
+/* ============================================================
+ * v2-TEMA (DS2, 2026-07-12) — dobbel skala for v2-flatene.
+ * Kilde: lib/v2/tokens.ts leser var(--v2-*) — komponentene røres ikke.
+ * Mørk = default (LYSNET vs original retning C: paneler opp, kontrast opp
+ * — «for mørk i sol»-fiksen). Lys = cream/hvit med forest som aksent;
+ * regel: aldri lime som tekst/aksent på lys flate (lime → forest i lys).
+ * Veksles via data-v2-tema på <html> (cookie ak-v2-tema, satt før paint
+ * av inline-script i rot-layout + veksleren i V2Shell).
+ * ============================================================ */
+:root {
+  --v2-bg: #131513;
+  --v2-panel: #1c1f1c;
+  --v2-panel2: #191c19;
+  --v2-panel3: #232623;
+  --v2-tint: linear-gradient(140deg, rgba(0, 88, 64, 0.38) 0%, rgba(28, 31, 28, 0) 55%);
+  --v2-niva-grad: linear-gradient(90deg, #26332b 0%, #005840 45%, #6e9a4e 75%, #d1f843 100%);
+  --v2-vignett: rgba(0, 88, 64, 0.16);
+  --v2-border: rgba(255, 255, 255, 0.11);
+  --v2-border-s: rgba(255, 255, 255, 0.19);
+  --v2-track: rgba(255, 255, 255, 0.11);
+  --v2-fg: #f3f5f1;
+  --v2-fg2: #b4b7b0;
+  --v2-mut: #8b8e87;
+  --v2-forest: #005840;
+  --v2-lime: #d1f843;
+  --v2-on-lime: #0d0e0d;
+  --v2-up: #4fd08a;
+  --v2-down: #f0683e;
+  --v2-warn: #e8b43c;
+  --v2-info: #5aa9f0;
+  --v2-ax-fys: #3dbe78;
+  --v2-ax-tek: #e8b43c;
+  --v2-ax-slag: #5aa9f0;
+  --v2-ax-spill: #d1f843;
+  --v2-ax-turn: #f0683e;
+}
+html[data-v2-tema="light"] {
+  --v2-bg: #f2f1ea;
+  --v2-panel: #ffffff;
+  --v2-panel2: #f7f6f0;
+  --v2-panel3: #ecebe2;
+  --v2-tint: linear-gradient(140deg, rgba(0, 88, 64, 0.10) 0%, rgba(255, 255, 255, 0) 55%);
+  --v2-niva-grad: linear-gradient(90deg, #c9d4cc 0%, #005840 45%, #6e9a4e 75%, #a8ca20 100%);
+  --v2-vignett: rgba(0, 88, 64, 0.07);
+  --v2-border: rgba(16, 22, 19, 0.10);
+  --v2-border-s: rgba(16, 22, 19, 0.19);
+  --v2-track: rgba(16, 22, 19, 0.10);
+  --v2-fg: #171b18;
+  --v2-fg2: #4a4f4a;
+  --v2-mut: #62675f; /* AA også rett på cream-bg (5.1:1) */
+  --v2-forest: #005840;
+  --v2-lime: #005840; /* lys modus: aksenten ER forest — aldri lime-på-lys */
+  --v2-on-lime: #ffffff;
+  --v2-up: #1e8a50;
+  --v2-down: #c04a1e;
+  --v2-warn: #96690a;
+  --v2-info: #1f6cb0;
+  --v2-ax-fys: #1e8a50;
+  --v2-ax-tek: #96690a;
+  --v2-ax-slag: #1f6cb0;
+  --v2-ax-spill: #647f00;
+  --v2-ax-turn: #c04a1e;
+}

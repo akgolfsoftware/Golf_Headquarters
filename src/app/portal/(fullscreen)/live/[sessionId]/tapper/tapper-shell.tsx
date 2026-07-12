@@ -162,7 +162,7 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
         className="pointer-events-none absolute left-1/2 top-[38%] h-[900px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{
           background:
-            "radial-gradient(circle, rgba(209,248,67,0.05) 0%, rgba(209,248,67,0) 60%)",
+            "radial-gradient(circle, color-mix(in srgb, var(--v2-lime) 5%, transparent) 0%, rgba(209,248,67,0) 60%)",
         }}
       />
 
@@ -195,7 +195,7 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
         <button
           type="button"
           onClick={() => setShowClubPicker((v) => !v)}
-          className="inline-flex items-center gap-2 rounded-full border-2 border-accent bg-[rgba(209,248,67,0.08)] px-6 py-2.5 font-sans text-[14px] font-semibold text-white transition-colors hover:bg-[rgba(209,248,67,0.14)]"
+          className="inline-flex items-center gap-2 rounded-full border-2 border-accent bg-[color-mix(in srgb, var(--v2-lime) 8%, transparent)] px-6 py-2.5 font-sans text-[14px] font-semibold text-white transition-colors hover:bg-[color-mix(in srgb, var(--v2-lime) 14%, transparent)]"
         >
           <span className="text-accent">▲</span>
           <span className="font-semibold text-[15px]">
@@ -234,7 +234,7 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
           style={{
             fontSize: "clamp(120px, 28vw, 220px)",
             letterSpacing: "-0.06em",
-            textShadow: "0 0 40px rgba(209,248,67,0.32)",
+            textShadow: "0 0 40px color-mix(in srgb, var(--v2-lime) 32%, transparent)",
           }}
         >
           {activeCount}
@@ -315,7 +315,7 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
           style={{
             background: "linear-gradient(180deg, #D1F843 0%, #C2EE2F 100%)",
             boxShadow:
-              "0 0 0 1px rgba(209,248,67,0.5), 0 18px 40px rgba(209,248,67,0.22)",
+              "0 0 0 1px color-mix(in srgb, var(--v2-lime) 50%, transparent), 0 18px 40px color-mix(in srgb, var(--v2-lime) 22%, transparent)",
           }}
         >
           <span

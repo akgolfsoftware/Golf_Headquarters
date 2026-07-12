@@ -68,13 +68,13 @@ export function PRail({ posisjoner = DEMO_RAIL, kompakt = false, onVelg }: PRail
         const size = kompakt ? 26 : 34;
         return (
           <Fragment key={x.p}>
-            {i > 0 && <span style={{ flex: 1, minWidth: kompakt ? 8 : 14, height: 2, borderRadius: 2, background: done || on ? "rgba(209,248,67,0.4)" : T.track, marginTop: size / 2 - 1 }} />}
+            {i > 0 && <span style={{ flex: 1, minWidth: kompakt ? 8 : 14, height: 2, borderRadius: 2, background: done || on ? "color-mix(in srgb, var(--v2-lime) 40%, transparent)" : T.track, marginTop: size / 2 - 1 }} />}
             <div onClick={onVelg ? () => onVelg(x.p) : undefined} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 5, flex: "none", cursor: onVelg ? "pointer" : "default", position: "relative" }}>
               {on && !kompakt && <span style={{ position: "absolute", top: -16 }}><Caps size={8} color={T.lime}>Nå</Caps></span>}
               <span style={{ width: size, height: size, borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center",
                 fontFamily: T.mono, fontSize: kompakt ? 8.5 : 10, fontWeight: 700,
-                background: on ? T.lime : done ? "rgba(209,248,67,0.12)" : T.panel2,
-                border: `1px solid ${on ? "transparent" : done ? "rgba(209,248,67,0.35)" : T.border}`,
+                background: on ? T.lime : done ? "color-mix(in srgb, var(--v2-lime) 12%, transparent)" : T.panel2,
+                border: `1px solid ${on ? "transparent" : done ? "color-mix(in srgb, var(--v2-lime) 35%, transparent)" : T.border}`,
                 color: on ? T.onLime : done ? T.lime : T.mut }}>
                 {done ? <Icon name="check" size={kompakt ? 11 : 13} /> : x.p}
               </span>
@@ -244,7 +244,7 @@ export function LaeringsTrapp({ trinn = DEMO_TRAPP, aktiv = 3, tittel = "Læring
                 <span style={{ fontFamily: T.mono, fontSize: 8, color: T.mut, display: "block", marginTop: 2 }}>{t.cs}</span>
               </div>
               <div style={{ height: H0 + i * dH, borderRadius: "10px 10px 4px 4px", position: "relative",
-                background: on ? "rgba(209,248,67,0.14)" : done ? T.panel3 : T.panel2,
+                background: on ? "color-mix(in srgb, var(--v2-lime) 14%, transparent)" : done ? T.panel3 : T.panel2,
                 border: `1px solid ${on ? T.lime : done ? T.borderS : T.border}`,
                 display: "flex", alignItems: "flex-start", justifyContent: "center", paddingTop: 7 }}>
                 {done && <Icon name="check" size={12} style={{ color: T.fg2 }} />}

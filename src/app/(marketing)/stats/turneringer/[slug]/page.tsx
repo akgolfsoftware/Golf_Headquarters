@@ -490,8 +490,8 @@ export default async function StatsTurneringDetalj({ params }: Props) {
                     justifyContent: "space-between",
                     alignItems: "center",
                     padding: "16px 20px",
-                    background: "rgba(209,248,67,0.08)",
-                    border: "1px solid rgba(209,248,67,0.35)",
+                    background: "color-mix(in srgb, var(--v2-lime) 8%, transparent)",
+                    border: "1px solid color-mix(in srgb, var(--v2-lime) 35%, transparent)",
                     borderRadius: "var(--s-r-md)",
                     gap: 16,
                     flexWrap: "wrap",
@@ -758,7 +758,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
                       style={{
                         borderBottom: "1px dashed var(--s-border)",
                         background: erNorsk
-                          ? "rgba(209,248,67,0.10)"
+                          ? "color-mix(in srgb, var(--v2-lime) 10%, transparent)"
                           : "transparent",
                       }}
                     >

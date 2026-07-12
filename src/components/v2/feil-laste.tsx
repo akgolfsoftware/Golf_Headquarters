@@ -140,7 +140,7 @@ export function V2Laster({ variant = "kort" }: V2LasterProps) {
       className="dark"
       style={{
         minHeight: "100vh",
-        background: `radial-gradient(1100px 460px at 24% -8%, rgba(0,88,64,0.16), transparent 62%), ${T.bg}`,
+        background: `radial-gradient(1100px 460px at 24% -8%, var(--v2-vignett), transparent 62%), ${T.bg}`,
         colorScheme: "dark",
         display: "flex",
       }}

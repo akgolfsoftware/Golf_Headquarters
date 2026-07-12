@@ -95,7 +95,7 @@ export function FaseTimeline({ faser }: { faser: Fase[] }) {
             className="bg-card py-2 text-center"
             style={
               f.status === "current"
-                ? { background: "rgba(209,248,67,0.15)" }
+                ? { background: "color-mix(in srgb, var(--v2-lime) 15%, transparent)" }
                 : undefined
             }
           >

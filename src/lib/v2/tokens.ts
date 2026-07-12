@@ -1,38 +1,39 @@
 /**
  * AK Golf HQ v2 — token-speil (retning C «Presis», mørk først).
- * 1:1 med `T`-objektet i mockup-kilden (v2-core.jsx) + fontskala fra
- * src/styles/v2/tokens.css. Komponentene i src/components/v2/ bruker dette
- * for inline styles (raskeste vei til diff-null mot mockup). CSS-variabel-
- * speilet ligger i src/styles/v2/tokens.css. Endres kun ved designbeslutning.
+ * 1:1 med `T`-objektet i mockup-kilden (v2-core.jsx). Komponentene i
+ * src/components/v2/ bruker dette for inline styles. DS2 (2026-07-12):
+ * fargeverdiene bor som --v2-*-variabler i src/app/globals.css med mørk
+ * (default) + lys skala — veksles via data-v2-tema på <html>.
+ * Endres kun ved designbeslutning.
  */
 export const T = {
-  // Flater
-  bg: "#0D0E0D",
-  panel: "#151715",
-  panel2: "#131513",
-  panel3: "#1B1D1B",
-  tint: "linear-gradient(140deg, rgba(0,88,64,0.38) 0%, rgba(21,23,21,0) 55%)",
-  // Benchmark-/nivåskala (kald→varm): mørk grønn → forest → oliven → lime. Egne
-  // gradient-stopp uten enkelttoken; innkapslet her så komponentfilene forblir hex-frie.
-  nivaGrad: "linear-gradient(90deg, #26332B 0%, #005840 45%, #6E9A4E 75%, #D1F843 100%)",
+  // Flater — DS2 (2026-07-12): verdiene bor i globals.css som --v2-* med
+  // mørk (default, lysnet) + lys skala; veksles via data-v2-tema på <html>.
+  bg: "var(--v2-bg)",
+  panel: "var(--v2-panel)",
+  panel2: "var(--v2-panel2)",
+  panel3: "var(--v2-panel3)",
+  tint: "var(--v2-tint)",
+  // Benchmark-/nivåskala (kald→varm): mørk grønn → forest → oliven → lime.
+  nivaGrad: "var(--v2-niva-grad)",
   // Streker
-  border: "rgba(255,255,255,0.08)",
-  borderS: "rgba(255,255,255,0.14)",
-  track: "rgba(255,255,255,0.08)",
+  border: "var(--v2-border)",
+  borderS: "var(--v2-border-s)",
+  track: "var(--v2-track)",
   // Tekst
-  fg: "#EEF0EC",
-  fg2: "#A6A9A3",
-  mut: "#797C76",
-  // Merkevare + signal
-  forest: "#005840",
-  lime: "#D1F843",
-  onLime: "#0D0E0D",
-  up: "#4FD08A",
-  down: "#F0683E",
-  warn: "#E8B43C",
-  info: "#5AA9F0",
-  // Akse-farger (pyramiden, uendret kanon)
-  ax: { FYS: "#3DBE78", TEK: "#E8B43C", SLAG: "#5AA9F0", SPILL: "#D1F843", TURN: "#F0683E" } as const,
+  fg: "var(--v2-fg)",
+  fg2: "var(--v2-fg2)",
+  mut: "var(--v2-mut)",
+  // Merkevare + signal (lys modus: lime-aksenten blir forest — aldri lime-på-lys)
+  forest: "var(--v2-forest)",
+  lime: "var(--v2-lime)",
+  onLime: "var(--v2-on-lime)",
+  up: "var(--v2-up)",
+  down: "var(--v2-down)",
+  warn: "var(--v2-warn)",
+  info: "var(--v2-info)",
+  // Akse-farger (pyramiden, uendret kanon — mørkere varianter i lys modus)
+  ax: { FYS: "var(--v2-ax-fys)", TEK: "var(--v2-ax-tek)", SLAG: "var(--v2-ax-slag)", SPILL: "var(--v2-ax-spill)", TURN: "var(--v2-ax-turn)" } as const,
   // Tee-markørfarger (ekte fysiske teefarger, ikke merkevare-tokens — innkapslet
   // her så komponent-/skjermfilene forblir hex-frie)
   tee: { hvit: "#F5F5F5", gul: "#FFD600", rod: "#E53935" } as const,

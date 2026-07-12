@@ -93,7 +93,7 @@ export default async function AnleggDetaljPage({ params }: Props) {
               "linear-gradient(135deg, var(--forest-deep) 0%, var(--forest) 40%, #1A7D56 80%, #2C7D52 100%)",
           }}
         >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_70%,rgba(209,248,67,0.18),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_70%,color-mix(in srgb, var(--v2-lime) 18%, transparent),transparent_60%)]" />
           <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-black/30 px-4 py-1 font-mono text-[10.5px] font-bold uppercase tracking-[0.12em] text-white/90 backdrop-blur-sm">
             <Building2 className="h-3 w-3" strokeWidth={2} />
             Anlegg

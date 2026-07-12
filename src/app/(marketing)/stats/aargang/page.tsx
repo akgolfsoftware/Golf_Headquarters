@@ -171,7 +171,7 @@ export default async function AargangIndexPage() {
                         fontFamily: "var(--font-mono)",
                         fontSize: 11,
                         letterSpacing: "0.08em",
-                        color: k.aar === 2009 ? "rgba(209,248,67,0.7)" : "var(--s-muted-fg)",
+                        color: k.aar === 2009 ? "color-mix(in srgb, var(--v2-lime) 70%, transparent)" : "var(--s-muted-fg)",
                         background: k.aar === 2009 ? "rgba(255,255,255,0.1)" : "var(--s-secondary)",
                         padding: "3px 8px",
                         borderRadius: 99,
@@ -196,7 +196,7 @@ export default async function AargangIndexPage() {
                         fontSize: 12,
                         fontWeight: 400,
                         marginLeft: 6,
-                        color: k.aar === 2009 ? "rgba(209,248,67,0.7)" : "var(--s-muted-fg)",
+                        color: k.aar === 2009 ? "color-mix(in srgb, var(--v2-lime) 70%, transparent)" : "var(--s-muted-fg)",
                       }}
                     >
                       spillere

@@ -241,9 +241,9 @@ export function PlanByggerV2({ kontekst, actions }: PlanByggerV2Props) {
               const on = maltype === m.id;
               return (
                 <div key={m.id} onClick={() => setMaltype(m.id)} style={{ cursor: "pointer" }}>
-                  <Kort style={{ border: `1px solid ${on ? "rgba(209,248,67,0.45)" : T.border}`, height: "100%" }}>
+                  <Kort style={{ border: `1px solid ${on ? "color-mix(in srgb, var(--v2-lime) 45%, transparent)" : T.border}`, height: "100%" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <span style={{ width: 34, height: 34, borderRadius: 10, flex: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", background: on ? "rgba(209,248,67,0.14)" : T.panel2 }}>
+                      <span style={{ width: 34, height: 34, borderRadius: 10, flex: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", background: on ? "color-mix(in srgb, var(--v2-lime) 14%, transparent)" : T.panel2 }}>
                         <Icon name={m.icon} size={15} style={{ color: on ? T.lime : T.fg2 }} />
                       </span>
                       <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg, flex: 1 }}>{m.t}</span>

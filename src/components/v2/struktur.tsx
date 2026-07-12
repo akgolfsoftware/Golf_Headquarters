@@ -23,7 +23,7 @@ export function FAB({ icon = "plus", label }: FABProps) {
       display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
       height: 52, minWidth: 52, padding: label ? "0 22px" : 0, borderRadius: 9999,
       background: T.lime, color: T.onLime, cursor: "pointer",
-      boxShadow: "0 12px 30px rgba(209,248,67,0.24), 0 4px 12px rgba(0,0,0,0.4)",
+      boxShadow: "0 12px 30px color-mix(in srgb, var(--v2-lime) 24%, transparent), 0 4px 12px rgba(0,0,0,0.4)",
     }}>
       <Icon name={icon} size={20} strokeWidth={2} />
       {label && <span style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 600 }}>{label}</span>}
@@ -262,7 +262,7 @@ export function DataForhaandsvisning({ dato = "24. jun", verdi = "+1,8", enhet =
   return (
     <div style={{ position: "relative", width: w, background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard, padding: "14px 0 6px" }}>
       <svg width={w} height={h} viewBox={`0 0 300 ${h}`} style={{ display: "block" }}>
-        <polygon points={`0,${h} ${linje} 300,${h}`} fill="rgba(209,248,67,0.07)" />
+        <polygon points={`0,${h} ${linje} 300,${h}`} fill="color-mix(in srgb, var(--v2-lime) 7%, transparent)" />
         <polyline points={linje} fill="none" stroke={T.lime} strokeWidth="2" strokeLinejoin="round" />
         <line x1={hx} y1={12} x2={hx} y2={h - 6} stroke={T.borderS} strokeWidth="1" strokeDasharray="3 3" />
         <circle cx={hx} cy={hy} r="5" fill={T.lime} stroke={T.panel} strokeWidth="2.5" />

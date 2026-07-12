@@ -584,7 +584,7 @@ export default async function PgaStatsHub() {
                 <span>
                   <span
                     className="putt-legend-dot"
-                    style={{ background: "rgba(209, 248, 67, 0.25)" }}
+                    style={{ background: "color-mix(in srgb, var(--v2-lime) 25%, transparent)" }}
                   />
                   Amatør hcp 10
                 </span>

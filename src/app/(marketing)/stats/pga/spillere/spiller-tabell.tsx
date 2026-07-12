@@ -146,7 +146,7 @@ export function SpillerTabell({ spillere }: Props) {
                         fontSize: 10,
                         letterSpacing: "0.1em",
                         color: "var(--primary)",
-                        background: "rgba(209,248,67,0.2)",
+                        background: "color-mix(in srgb, var(--v2-lime) 20%, transparent)",
                         padding: "1px 6px",
                         borderRadius: 3,
                         fontWeight: 600,

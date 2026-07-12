@@ -452,7 +452,7 @@ function MetaFelt({ k, v }: { k: string; v: string }) {
 
 function NokkeltallRad({ k, v, last }: { k: string; v: string; last?: boolean }) {
   return (
-    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", padding: "9px 0", borderBottom: last ? "none" : `1px solid rgba(209,248,67,0.1)` }}>
+    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", padding: "9px 0", borderBottom: last ? "none" : `1px solid color-mix(in srgb, var(--v2-lime) 10%, transparent)` }}>
       <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(238,240,236,0.65)" }}>{k}</span>
       <span style={{ fontFamily: T.mono, fontSize: 20, fontWeight: 800, letterSpacing: "-0.01em", color: T.lime }}>{v}</span>
     </div>

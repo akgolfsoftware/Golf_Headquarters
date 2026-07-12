@@ -122,15 +122,25 @@ export default async function RootLayout({
   // med 'nonce-{nonce}' + 'strict-dynamic' godkjenner dem.
   const nonce = (await headers()).get("x-nonce") ?? undefined;
 
-  // nonce er fremdeles tilgjengelig for fremtidig bruk
-  void nonce;
-
   return (
     <html
       lang="nb"
       className={`${inter.variable} ${jetbrainsMono.variable} ${familjenGrotesk.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
+        {/* DS2: v2-tema settes FØR paint fra cookie (ak-v2-tema) — ingen blits.
+            Variablene bor i globals.css; veksleren i V2Shell skriver cookien.
+            nonce kreves — CSP blokkerer inline-script uten. */}
+        {/* suppressHydrationWarning: nettlesere nuller nonce-attributtet i DOM
+            (sikkerhetsmekanisme) → server/klient-avvik som er forventet. */}
+        <script
+          nonce={nonce}
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: `try{if(document.cookie.split("; ").some(function(c){return c==="ak-v2-tema=light"}))document.documentElement.setAttribute("data-v2-tema","light")}catch(e){}`,
+          }}
+        />
         {children}
         <InstallPrompt />
         <SwRegister />

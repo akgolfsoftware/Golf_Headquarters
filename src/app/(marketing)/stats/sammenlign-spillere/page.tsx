@@ -287,7 +287,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
           <div
             style={{
               background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(209,248,67,0.2)",
+              border: "1px solid color-mix(in srgb, var(--v2-lime) 20%, transparent)",
               borderRadius: 14,
               padding: 24,
             }}

@@ -132,7 +132,7 @@ export default function R35BriefDemo() {
           </h1>
           <div className="inline-flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
             <span className="inline-flex items-center gap-1.5 text-primary">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent [box-shadow:0_0_6px_rgba(209,248,67,0.7)]" />LIVE
+              <span className="h-1.5 w-1.5 rounded-full bg-accent [box-shadow:0_0_6px_color-mix(in srgb, var(--v2-lime) 70%, transparent)]" />LIVE
             </span>
             ONSDAG 28 MAI · 11:24
           </div>
@@ -152,7 +152,7 @@ export default function R35BriefDemo() {
                   <div key={i}>
                     {/* NÅ-strek rett før første kommende økt */}
                     {s.status === "upcoming" && sessions.findIndex((x) => x.status === "upcoming") === i && (
-                      <div className="relative my-1 h-0.5 bg-accent [box-shadow:0_0_8px_rgba(209,248,67,0.5)]">
+                      <div className="relative my-1 h-0.5 bg-accent [box-shadow:0_0_8px_color-mix(in srgb, var(--v2-lime) 50%, transparent)]">
                         <span className="absolute -top-1 left-[38px] h-2.5 w-2.5 rounded-full border-2 border-card bg-accent" />
                         <span className="absolute -top-2.5 right-0 rounded-full bg-accent px-2 py-0.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-primary">NÅ · 11:24</span>
                       </div>
@@ -174,7 +174,7 @@ export default function R35BriefDemo() {
                           )}
                           {s.status === "active" && (
                             <span className="ml-auto inline-flex items-center gap-1 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-primary">
-                              <span className="h-[5px] w-[5px] rounded-full bg-accent [box-shadow:0_0_4px_rgba(209,248,67,0.7)]" />PÅGÅR
+                              <span className="h-[5px] w-[5px] rounded-full bg-accent [box-shadow:0_0_4px_color-mix(in srgb, var(--v2-lime) 70%, transparent)]" />PÅGÅR
                             </span>
                           )}
                           <span className={`${s.status === "active" ? "ml-2" : s.status === "upcoming" ? "ml-auto" : "ml-2"} rounded-full px-1.5 py-0.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] ${axis[s.ax].pill}`}>{s.ax}</span>

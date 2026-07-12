@@ -668,7 +668,7 @@ export function IkonRail({ aktiv, navn = "Øyvind Rohjan" }: IkonRailProps) {
       {NAV.map((n) => {
         const on = aktiv === n.id;
         return (
-          <div key={n.id} title={n.l} className="v2-press v2-focus" tabIndex={0} style={{ width: 46, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "8px 0 6px", borderRadius: 12, background: on ? "rgba(209,248,67,0.09)" : "transparent", cursor: "pointer", position: "relative" }}>
+          <div key={n.id} title={n.l} className="v2-press v2-focus" tabIndex={0} style={{ width: 46, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "8px 0 6px", borderRadius: 12, background: on ? "color-mix(in srgb, var(--v2-lime) 9%, transparent)" : "transparent", cursor: "pointer", position: "relative" }}>
             {on && <span style={{ position: "absolute", left: -7, top: 12, bottom: 12, width: 2, borderRadius: 2, background: T.lime }} />}
             <Icon name={n.i} size={18} style={{ color: on ? T.lime : T.mut }} strokeWidth={on ? 2 : 1.5} />
             <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: on ? T.fg : T.mut }}>{n.l}</span>

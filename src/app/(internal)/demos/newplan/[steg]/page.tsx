@@ -422,7 +422,7 @@ function ChoiceCard({
     <div
       className={`relative flex min-h-[260px] flex-col overflow-hidden rounded-xl border-2 p-6 transition-all ${
         highlighted
-          ? "border-accent bg-[linear-gradient(180deg,rgba(209,248,67,0.10),transparent_55%)]"
+          ? "border-accent bg-[linear-gradient(180deg,color-mix(in srgb, var(--v2-lime) 10%, transparent),transparent_55%)]"
           : "border-border bg-card hover:border-primary hover:-translate-y-0.5"
       }`}
     >
@@ -594,7 +594,7 @@ function ExerciseRow({
   const catStyles: Record<CatKind, string> = {
     fys: "bg-[rgba(22,163,74,0.12)] text-success",
     tek: "bg-[var(--brand-primary-soft,rgba(0,88,64,0.08))] text-primary",
-    slag: "bg-[rgba(209,248,67,0.20)] text-[var(--brand-accent-on,#005840)] border border-[rgba(184,200,46,0.4)]",
+    slag: "bg-[color-mix(in srgb, var(--v2-lime) 20%, transparent)] text-[var(--brand-accent-on,#005840)] border border-[rgba(184,200,46,0.4)]",
     spill: "bg-[rgba(244,196,48,0.14)] text-warning",
     turn: "bg-[var(--surface-alt,#F1EEE5)] text-muted-foreground",
   };
@@ -721,7 +721,7 @@ function Steg4() {
         />
       </div>
 
-      <div className="rounded-r-lg border-l-2 border-accent bg-[var(--accent-bg,rgba(209,248,67,0.10))] px-4 py-2.5 font-mono text-[11px] leading-[1.5] text-muted-foreground">
+      <div className="rounded-r-lg border-l-2 border-accent bg-[var(--accent-bg,color-mix(in srgb, var(--v2-lime) 10%, transparent))] px-4 py-2.5 font-mono text-[11px] leading-[1.5] text-muted-foreground">
         Øyvind får 7 dager på seg til å godkjenne. Etter det aktiveres planen automatisk. Du kan
         justere og resende fra plan-detaljsiden når som helst.
       </div>

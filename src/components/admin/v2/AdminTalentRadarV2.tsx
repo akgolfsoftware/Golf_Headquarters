@@ -170,7 +170,7 @@ export function AdminTalentRadarV2({ data }: { data: TalentRadarData }) {
                 padding: "8px 12px 8px 8px",
                 borderRadius: T.rRow,
                 border: `1px solid ${on ? T.lime : T.border}`,
-                background: on ? "rgba(209,248,67,0.08)" : T.panel2,
+                background: on ? "color-mix(in srgb, var(--v2-lime) 8%, transparent)" : T.panel2,
                 cursor: "pointer",
                 textAlign: "left",
                 minWidth: 0,

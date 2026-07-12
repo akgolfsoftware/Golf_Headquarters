@@ -477,7 +477,7 @@ export function Veiviser({
           const done = i < aktiv, on = i === aktiv;
           return (
             <Fragment key={i}>
-              {i > 0 && <span style={{ flex: 1, height: 2, borderRadius: 2, background: done || on ? "rgba(209,248,67,0.45)" : T.track, margin: "0 8px", marginBottom: 20 }} />}
+              {i > 0 && <span style={{ flex: 1, height: 2, borderRadius: 2, background: done || on ? "color-mix(in srgb, var(--v2-lime) 45%, transparent)" : T.track, margin: "0 8px", marginBottom: 20 }} />}
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, flex: "none" }}>
                 <span style={{ width: 28, height: 28, borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 11.5, fontWeight: 700, fontVariantNumeric: "tabular-nums",
                   background: done ? T.lime : on ? "transparent" : T.panel2,

@@ -160,12 +160,12 @@ function StegIndikator({ steg, onVelg, mobile }: { steg: number; onVelg: (n: num
               className="v2-press v2-focus"
               style={{ appearance: "none", background: "none", border: "none", padding: 0, display: "flex", alignItems: "center", gap: 7, cursor: "pointer", flex: "none" }}
             >
-              <span style={{ width: 22, height: 22, borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, background: aktiv ? T.lime : ferdig ? "rgba(209,248,67,0.12)" : T.panel2, color: aktiv ? T.onLime : ferdig ? T.lime : T.mut, border: `1px solid ${aktiv ? "transparent" : ferdig ? "rgba(209,248,67,0.25)" : T.border}` }}>
+              <span style={{ width: 22, height: 22, borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, background: aktiv ? T.lime : ferdig ? "color-mix(in srgb, var(--v2-lime) 12%, transparent)" : T.panel2, color: aktiv ? T.onLime : ferdig ? T.lime : T.mut, border: `1px solid ${aktiv ? "transparent" : ferdig ? "color-mix(in srgb, var(--v2-lime) 25%, transparent)" : T.border}` }}>
                 {ferdig ? <Icon name="check" size={11} /> : s.n}
               </span>
               {(!mobile || aktiv) && <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: aktiv ? T.fg : ferdig ? T.fg2 : T.mut, whiteSpace: "nowrap" }}>{s.l}</span>}
             </button>
-            {i < STEG.length - 1 && <span style={{ flex: 1, maxWidth: mobile ? 18 : 36, height: 1, background: steg > s.n ? "rgba(209,248,67,0.3)" : T.border }} />}
+            {i < STEG.length - 1 && <span style={{ flex: 1, maxWidth: mobile ? 18 : 36, height: 1, background: steg > s.n ? "color-mix(in srgb, var(--v2-lime) 30%, transparent)" : T.border }} />}
           </div>
         );
       })}
@@ -201,7 +201,7 @@ function StegType({ tjenester, credits, valgt, setValgt, mobile }: {
               type="button"
               onClick={() => setValgt(x.id)}
               className="v2-press v2-focus"
-              style={{ appearance: "none", textAlign: "left", background: er ? `${T.tint}, ${T.panel}` : T.panel, border: `1px solid ${er ? "rgba(209,248,67,0.35)" : T.border}`, borderRadius: T.rCard, padding: "18px 20px", cursor: "pointer", position: "relative", display: "flex", flexDirection: "column", gap: 12 }}
+              style={{ appearance: "none", textAlign: "left", background: er ? `${T.tint}, ${T.panel}` : T.panel, border: `1px solid ${er ? "color-mix(in srgb, var(--v2-lime) 35%, transparent)" : T.border}`, borderRadius: T.rCard, padding: "18px 20px", cursor: "pointer", position: "relative", display: "flex", flexDirection: "column", gap: 12 }}
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <span style={{ width: 36, height: 36, borderRadius: 11, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
@@ -278,7 +278,7 @@ function StegCoach({ coacher, fraPris, nesteLedig, valgt, setValgt, mobile }: {
             type="button"
             onClick={() => setValgt(c.id)}
             className="v2-press v2-focus"
-            style={{ appearance: "none", textAlign: "left", background: er ? `${T.tint}, ${T.panel}` : T.panel, border: `1px solid ${er ? "rgba(209,248,67,0.35)" : T.border}`, borderRadius: T.rCard, padding: "22px 24px", cursor: "pointer" }}
+            style={{ appearance: "none", textAlign: "left", background: er ? `${T.tint}, ${T.panel}` : T.panel, border: `1px solid ${er ? "color-mix(in srgb, var(--v2-lime) 35%, transparent)" : T.border}`, borderRadius: T.rCard, padding: "22px 24px", cursor: "pointer" }}
           >
             <div style={{ display: "flex", alignItems: mobile ? "flex-start" : "center", gap: 18, flexDirection: mobile ? "column" : "row" }}>
               <AvatarInit navn={c.navn} size={mobile ? 56 : 64} />
@@ -586,7 +586,7 @@ function Kvittering({ tjeneste, coachNavn, dato, tid, bookingId, mobile }: {
   return (
     <Kort tint pad={mobile ? "28px 20px" : "40px 24px"}>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 14 }}>
-        <span style={{ width: 56, height: 56, borderRadius: 9999, background: T.lime, display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 0 10px rgba(209,248,67,0.10)" }}>
+        <span style={{ width: 56, height: 56, borderRadius: 9999, background: T.lime, display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 0 10px color-mix(in srgb, var(--v2-lime) 10%, transparent)" }}>
           <Icon name="check" size={26} style={{ color: T.onLime }} />
         </span>
         <div>

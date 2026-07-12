@@ -126,7 +126,7 @@ function SvarBoks({ onSend, placeholder }: { onSend: () => void; placeholder?: s
           if (e.key === "Enter") onSend();
         }}
         style={{
-          height: 34, flex: 1, borderRadius: 9, border: `1px solid ${T.lime}`, background: "rgba(209,248,67,0.06)",
+          height: 34, flex: 1, borderRadius: 9, border: `1px solid ${T.lime}`, background: "color-mix(in srgb, var(--v2-lime) 6%, transparent)",
           padding: "0 12px", fontFamily: T.ui, fontSize: 13, color: T.fg, outline: "none",
         }}
       />

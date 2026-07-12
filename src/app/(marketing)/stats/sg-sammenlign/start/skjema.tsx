@@ -467,7 +467,7 @@ export function SgStartSkjema({
                       style={{
                         fontFamily: "var(--font-mono)",
                         fontSize: 11,
-                        color: selected ? "rgba(209,248,67,0.7)" : "hsl(var(--muted-foreground))",
+                        color: selected ? "color-mix(in srgb, var(--v2-lime) 70%, transparent)" : "hsl(var(--muted-foreground))",
                         marginTop: 1,
                       }}
                     >

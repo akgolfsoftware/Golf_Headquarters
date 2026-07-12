@@ -261,7 +261,7 @@ export default async function AvailabilityPage({
                 <span className="flex items-center justify-between">
                   <span className="font-mono text-[13px] font-bold text-foreground">{d}</span>
                   {erIdag(d) && (
-                    <span className="h-[6px] w-[6px] rounded-full bg-accent shadow-[0_0_6px_rgba(209,248,67,0.7)]" />
+                    <span className="h-[6px] w-[6px] rounded-full bg-accent shadow-[0_0_6px_color-mix(in srgb, var(--v2-lime) 70%, transparent)]" />
                   )}
                 </span>
                 {range ? (

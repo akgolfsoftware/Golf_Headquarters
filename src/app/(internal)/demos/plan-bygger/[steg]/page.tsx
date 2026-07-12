@@ -357,7 +357,7 @@ function PlayerPickCard({
     <div
       className={`flex items-center gap-2 rounded-xl bg-card p-4 ${
         selected
-          ? "border-2 border-accent bg-[rgba(209,248,67,0.08)]"
+          ? "border-2 border-accent bg-[color-mix(in srgb, var(--v2-lime) 8%, transparent)]"
           : "border border-border hover:bg-secondary/40"
       } ${dimmed ? "opacity-50" : ""}`}
     >
@@ -789,7 +789,7 @@ function Step4() {
         className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-4"
         style={{
           backgroundImage:
-            "linear-gradient(135deg, rgba(0,88,64,0.06) 0%, rgba(209,248,67,0.10) 100%)",
+            "linear-gradient(135deg, rgba(0,88,64,0.06) 0%, color-mix(in srgb, var(--v2-lime) 10%, transparent) 100%)",
         }}
       >
         <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--brand-primary,#005840)] font-mono text-[11px] font-bold text-[var(--brand-accent,#D1F843)]">
@@ -858,7 +858,7 @@ function Step4() {
             label="slagprogresjon"
             value={35}
             historyPct={24}
-            historyBg="rgba(209,248,67,0.40)"
+            historyBg="color-mix(in srgb, var(--v2-lime) 40%, transparent)"
             historyLabel="Faktisk siste 4 u: 24 % · agent foreslår løft"
           />
           <SliderBlock
@@ -1191,7 +1191,7 @@ function DayCellBlock({ dn, title, meta, kind }: DayCell) {
   const styles: Record<DayKind, { bg: string; border: string }> = {
     fys: { bg: "rgba(22,163,74,0.10)", border: "rgba(22,163,74,0.30)" },
     tek: { bg: "rgba(0,88,64,0.10)", border: "rgba(0,88,64,0.30)" },
-    slag: { bg: "rgba(209,248,67,0.20)", border: "rgba(209,248,67,0.50)" },
+    slag: { bg: "color-mix(in srgb, var(--v2-lime) 20%, transparent)", border: "color-mix(in srgb, var(--v2-lime) 50%, transparent)" },
     spill: { bg: "rgba(184,133,42,0.12)", border: "rgba(184,133,42,0.35)" },
     turn: { bg: "rgba(94,92,87,0.12)", border: "rgba(94,92,87,0.30)" },
   };
@@ -1364,7 +1364,7 @@ function AgentStrip({ label, body }: { label: string; body: React.ReactNode }) {
       className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-4"
       style={{
         backgroundImage:
-          "linear-gradient(135deg, rgba(0,88,64,0.06) 0%, rgba(209,248,67,0.10) 100%)",
+          "linear-gradient(135deg, rgba(0,88,64,0.06) 0%, color-mix(in srgb, var(--v2-lime) 10%, transparent) 100%)",
       }}
     >
       <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--brand-primary,#005840)] font-mono text-[11px] font-bold text-[var(--brand-accent,#D1F843)]">

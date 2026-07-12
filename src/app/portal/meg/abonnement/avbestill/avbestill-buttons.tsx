@@ -25,8 +25,8 @@ export function AvbestillButtons() {
         className="inline-flex items-center justify-center gap-1.5 rounded-full bg-accent px-4 py-2 text-[13.5px] font-semibold text-foreground transition-transform hover:-translate-y-px"
         style={{
           borderColor: "var(--accent)",
-          boxShadow: "0 4px 14px rgba(209,248,67,0.40)",
-          outline: "3px solid rgba(209,248,67,0.30)",
+          boxShadow: "0 4px 14px color-mix(in srgb, var(--v2-lime) 40%, transparent)",
+          outline: "3px solid color-mix(in srgb, var(--v2-lime) 30%, transparent)",
           outlineOffset: "2px",
         }}
       >

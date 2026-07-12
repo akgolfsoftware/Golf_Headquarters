@@ -14,7 +14,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { T } from "@/lib/v2/tokens";
 import { Icon } from "./icon";
 import { LogoAK, AvatarFoto } from "./core";
@@ -136,6 +136,55 @@ export interface V2ShellProps {
   children: ReactNode;
 }
 
+/* ---------- DS2: tema (mørk default, lys for sol) ---------- */
+
+type V2Tema = "dark" | "light";
+
+function lesTema(): V2Tema {
+  if (typeof document === "undefined") return "dark";
+  return document.documentElement.getAttribute("data-v2-tema") === "light" ? "light" : "dark";
+}
+
+function abonnerTema(cb: () => void) {
+  window.addEventListener("ak-v2-tema", cb);
+  return () => window.removeEventListener("ak-v2-tema", cb);
+}
+
+/**
+ * Tema-tilstand for v2-flatene. Sannheten bor på <html data-v2-tema> (satt før
+ * paint av inline-scriptet i rot-layout) + cookie `ak-v2-tema`; hooken speiler
+ * den og synker alle instanser via et vindus-event. SSR-snapshot er alltid
+ * mørk (serveren kjenner ikke cookien her) — React retter ved hydration.
+ */
+function useV2Tema() {
+  const tema = useSyncExternalStore<V2Tema>(abonnerTema, lesTema, () => "dark");
+  const bytt = () => {
+    const neste: V2Tema = lesTema() === "light" ? "dark" : "light";
+    if (neste === "light") document.documentElement.setAttribute("data-v2-tema", "light");
+    else document.documentElement.removeAttribute("data-v2-tema");
+    document.cookie = `ak-v2-tema=${neste};path=/;max-age=31536000;samesite=lax`;
+    window.dispatchEvent(new Event("ak-v2-tema"));
+  };
+  return { tema, bytt };
+}
+
+/** Sol/måne-knapp i railen (desktop). Viser det du BYTTER TIL. */
+function TemaRailKnapp() {
+  const { tema, bytt } = useV2Tema();
+  const tilLys = tema === "dark";
+  return (
+    <button
+      onClick={bytt}
+      title={tilLys ? "Bytt til lys modus" : "Bytt til mørk modus"}
+      className="v2-press v2-focus"
+      style={{ width: 46, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "7px 0 5px", borderRadius: 12, background: "transparent", border: 0, cursor: "pointer", flex: "none", marginBottom: 8 }}
+    >
+      <Icon name={tilLys ? "sun" : "moon"} size={18} style={{ color: T.mut }} strokeWidth={1.5} />
+      <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.mut }}>{tilLys ? "Lys" : "Mørk"}</span>
+    </button>
+  );
+}
+
 /** Ett rail-punkt (desktop). */
 function RailLenke({ item, on }: { item: V2NavItem; on: boolean }) {
   return (
@@ -144,7 +193,7 @@ function RailLenke({ item, on }: { item: V2NavItem; on: boolean }) {
       title={item.label}
       aria-current={on ? "page" : undefined}
       className="v2-press v2-focus"
-      style={{ width: 46, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "7px 0 5px", borderRadius: 12, background: on ? "rgba(209,248,67,0.09)" : "transparent", textDecoration: "none", position: "relative", flex: "none" }}
+      style={{ width: 46, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "7px 0 5px", borderRadius: 12, background: on ? `color-mix(in srgb, ${T.lime} 9%, transparent)` : "transparent", textDecoration: "none", position: "relative", flex: "none" }}
     >
       {on && <span style={{ position: "absolute", left: -7, top: 10, bottom: 10, width: 2, borderRadius: 2, background: T.lime }} />}
       <Icon name={item.icon} size={18} style={{ color: on ? T.lime : T.mut }} strokeWidth={on ? 2 : 1.5} />
@@ -156,6 +205,7 @@ function RailLenke({ item, on }: { item: V2NavItem; on: boolean }) {
 /** «Mer»-panelet — grupperte lenker. Desktop: flytende panel ved railen. */
 function MerPanel({ grupper, onClose, mobil }: { grupper: V2NavGruppe[]; onClose: () => void; mobil?: boolean }) {
   const pathname = usePathname();
+  const { tema, bytt } = useV2Tema();
   useEffect(() => {
     const esc = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", esc);
@@ -182,9 +232,20 @@ function MerPanel({ grupper, onClose, mobil }: { grupper: V2NavGruppe[]; onClose
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
           <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>Alle flater</span>
-          <button onClick={onClose} className="v2-press" aria-label="Lukk" style={{ background: "transparent", border: 0, color: T.mut, cursor: "pointer", padding: 4 }}>
-            <Icon name="x" size={16} />
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            <button
+              onClick={bytt}
+              className="v2-press"
+              aria-label={tema === "dark" ? "Bytt til lys modus" : "Bytt til mørk modus"}
+              style={{ display: "flex", alignItems: "center", gap: 6, background: "transparent", border: `1px solid ${T.border}`, borderRadius: 8, color: T.fg2, cursor: "pointer", padding: "4px 9px" }}
+            >
+              <Icon name={tema === "dark" ? "sun" : "moon"} size={13} />
+              <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>{tema === "dark" ? "Lys" : "Mørk"}</span>
+            </button>
+            <button onClick={onClose} className="v2-press" aria-label="Lukk" style={{ background: "transparent", border: 0, color: T.mut, cursor: "pointer", padding: 4 }}>
+              <Icon name="x" size={16} />
+            </button>
+          </div>
         </div>
         <div style={mobil ? { display: "flex", flexDirection: "column", gap: 14 } : { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px 22px" }}>
           {grupper.map((g) => (
@@ -200,7 +261,7 @@ function MerPanel({ grupper, onClose, mobil }: { grupper: V2NavGruppe[]; onClose
                       onClick={onClose}
                       role="menuitem"
                       className="v2-press v2-focus"
-                      style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 8px", borderRadius: 9, textDecoration: "none", color: on ? T.lime : T.fg, background: on ? "rgba(209,248,67,0.08)" : "transparent" }}
+                      style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 8px", borderRadius: 9, textDecoration: "none", color: on ? T.lime : T.fg, background: on ? `color-mix(in srgb, ${T.lime} 8%, transparent)` : "transparent" }}
                     >
                       <Icon name={it.icon} size={15} style={{ color: on ? T.lime : T.mut, flex: "none" }} />
                       <span style={{ fontSize: 12.5, fontWeight: 500 }}>{it.label}</span>
@@ -241,6 +302,7 @@ function IkonRailNav({ aktiv, nav, mer, navn, avatarUrl }: Required<Pick<V2Shell
         </button>
       )}
       <div style={{ flex: 1, minHeight: 8 }} />
+      <TemaRailKnapp />
       <AvatarFoto src={avatarUrl ?? undefined} navn={navn} size={32} ring />
       {merOpen && mer && <MerPanel grupper={mer} onClose={() => setMerOpen(false)} />}
     </nav>
@@ -340,15 +402,22 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
     return best?.id;
   }, [aktiv, nav, merGrupper, pathname]);
 
+  // DS2: shadcn-scope (.dark/.light) + colorScheme følger v2-temaet, så
+  // skjema-primitiver og scrollbars matcher. SSR er alltid mørk; lys-brukere
+  // rettes ved hydration (suppressHydrationWarning) — v2-fargene er riktige
+  // fra første paint uansett (var(--v2-*) + inline-script i rot-layout).
+  const { tema } = useV2Tema();
+
   return (
     <div
-      className="dark"
+      className={tema}
+      suppressHydrationWarning
       style={{
         minHeight: "100vh",
-        background: `radial-gradient(1100px 460px at 24% -8%, rgba(0,88,64,0.16), transparent 62%), ${T.bg}`,
+        background: `radial-gradient(1100px 460px at 24% -8%, var(--v2-vignett), transparent 62%), ${T.bg}`,
         color: T.fg,
         fontFamily: T.ui,
-        colorScheme: "dark",
+        colorScheme: tema,
         display: "flex",
       }}
     >

@@ -94,6 +94,9 @@ const eslintConfig = defineConfig([
     ".claude/**",
     "public/**",
     "wireframe/**",
+    // Fasit-referanser (ekstraherte Claude Design-eksports) — kun lesestoff,
+    // importeres aldri av appen og skal aldri lintes.
+    "docs/**",
   ]),
 ]);
 

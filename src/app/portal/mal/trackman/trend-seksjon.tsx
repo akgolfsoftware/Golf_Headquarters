@@ -198,7 +198,7 @@ export function TrackManTrendSeksjon({ data }: { data: TrackManTrendData }) {
       <header className="flex items-end justify-between gap-4 border-b border-border px-5 pb-3.5 pt-4">
         <div>
           <span className="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-            <span className="relative h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_6px_rgba(209,248,67,0.6)]" />
+            <span className="relative h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_6px_color-mix(in srgb, var(--v2-lime) 60%, transparent)]" />
             TrackMan · Trend · {sesjoner.length} økter
           </span>
           <h2 className="mt-1 font-display text-[19px] font-bold leading-[1.1] tracking-[-0.015em] text-foreground">
