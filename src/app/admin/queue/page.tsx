@@ -16,28 +16,17 @@ import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
-import { Caps, Tittel, Kort, KpiFlis, StatusPill, MikroMeta, CTAPill, AvatarInit, Icon } from "@/components/v2";
+import { Caps, Tittel, Kort, KpiFlis, MikroMeta, CTAPill } from "@/components/v2";
+import { QueueBoard, type QueueKolonne, type QueueKort, type QueueStatus } from "./_board";
 
-type Status = "risk" | "watch" | "check" | "ok";
-
-type Kort_ = {
-  id: string;
-  navn: string;
-  epost: string;
-  signalTekst: string;
-  signalIkon: string;
-  stats: { k: string; v: string; tone?: "up" | "down" }[];
-  tags: { label: string; tone: "down" | "warn" | "up" }[];
-  siden: string;
-  prioritet: boolean;
-};
+type Status = QueueStatus;
+type Kort_ = QueueKort;
 
 function dagerSiden(d: Date | null): number | null {
   if (!d) return null;
   return Math.floor((Date.now() - d.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-const KOLONNE_DOT: Record<Status, string> = { risk: "#F0683E", watch: "#E8B43C", check: "#D1F843", ok: "#5AA9F0" };
 
 export default async function OppfolgingsKoPage() {
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
@@ -95,8 +84,36 @@ export default async function OppfolgingsKoPage() {
     else check.push(kort);
   }
 
-  // Løste saker — placeholder inntil en CoachingTask-modell finnes.
+  // I5: coachens manuelle overstyringer siste 7 dager (Signal
+  // OPPFOLGING_STATUS — skrevet når et kort dras til en annen kolonne).
+  const sjuDager = new Date();
+  sjuDager.setDate(sjuDager.getDate() - 7);
+  const overstyringer = await prisma.signal.findMany({
+    where: { kind: "OPPFOLGING_STATUS", computedAt: { gte: sjuDager } },
+    orderBy: { computedAt: "desc" },
+    select: { userId: true, payload: true },
+  });
+  const overstyrt = new Map<string, Status>();
+  for (const o of overstyringer) {
+    if (overstyrt.has(o.userId)) continue; // nyeste vinner
+    const st = (o.payload as { status?: string } | null)?.status;
+    if (st === "risk" || st === "watch" || st === "check" || st === "ok") overstyrt.set(o.userId, st);
+  }
+
   const ok: Kort_[] = [];
+  // Flytt overstyrte kort dit coachen la dem (nyeste signal <7d vinner).
+  for (const liste of [risk, watch, check]) {
+    for (let i = liste.length - 1; i >= 0; i--) {
+      const maal = overstyrt.get(liste[i].id);
+      if (!maal) continue;
+      const [kort] = liste.splice(i, 1);
+      kort.tags = [...kort.tags, { label: maal === "ok" ? "kvittert" : "manuelt plassert", tone: "up" }];
+      if (maal === "risk") risk.push(kort);
+      else if (maal === "watch") watch.push(kort);
+      else if (maal === "check") check.push(kort);
+      else ok.push(kort);
+    }
+  }
 
   const kolonner: { status: Status; tittel: string; beskrivelse: string; kort: Kort_[] }[] = [
     { status: "risk", tittel: "Risiko", beskrivelse: "Krever en samtale innen 48 timer.", kort: risk },
@@ -157,107 +174,8 @@ export default async function OppfolgingsKoPage() {
           </div>
         </Kort>
 
-        {/* Board */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4" style={{ gap: T.gap, alignItems: "start" }}>
-          {kolonner.map((col) => (
-            <div key={col.status} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ width: 8, height: 8, borderRadius: 9999, background: KOLONNE_DOT[col.status] }} />
-                <Caps>{col.tittel}</Caps>
-                <span
-                  style={{
-                    marginLeft: "auto",
-                    fontFamily: T.mono,
-                    fontSize: 10,
-                    fontWeight: 700,
-                    color: T.mut,
-                    background: T.panel2,
-                    borderRadius: 9999,
-                    padding: "1px 8px",
-                  }}
-                >
-                  {col.kort.length}
-                </span>
-              </div>
-              <p style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, margin: 0 }}>{col.beskrivelse}</p>
-
-              {col.kort.length === 0 ? (
-                <div
-                  style={{
-                    border: `1px dashed ${T.border}`,
-                    borderRadius: T.rRow,
-                    padding: "28px 12px",
-                    textAlign: "center",
-                    fontFamily: T.ui,
-                    fontSize: 12,
-                    color: T.mut,
-                  }}
-                >
-                  Ingen saker her.
-                </div>
-              ) : (
-                col.kort.map((k) => (
-                  <Kort key={k.id} pad="12px 14px" tint={k.prioritet}>
-                    <Link href={`/admin/spillere/${k.id}`} style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-                      <AvatarInit navn={k.navn} size={34} />
-                      <div style={{ minWidth: 0, flex: 1 }}>
-                        <div style={{ fontFamily: T.disp, fontSize: 13.5, fontWeight: 700, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                          {k.navn}
-                        </div>
-                        <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                          {k.epost}
-                        </div>
-                      </div>
-                    </Link>
-
-                    <div style={{ display: "flex", alignItems: "flex-start", gap: 6, background: T.panel2, borderRadius: 8, padding: "8px 10px", marginTop: 10 }}>
-                      <Icon name={k.signalIkon} size={13} style={{ color: T.mut, marginTop: 1, flexShrink: 0 }} />
-                      <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.fg, lineHeight: 1.4 }}>{k.signalTekst}</span>
-                    </div>
-
-                    {k.stats.length > 0 && (
-                      <div style={{ display: "flex", gap: 16, marginTop: 10 }}>
-                        {k.stats.map((s, i) => (
-                          <div key={i}>
-                            <Caps size={8.5}>{s.k}</Caps>
-                            <div style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, marginTop: 3, color: s.tone === "down" ? T.down : s.tone === "up" ? T.up : T.fg }}>
-                              {s.v}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {k.tags.length > 0 && (
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginTop: 10 }}>
-                        {k.tags.map((t, i) => (
-                          <StatusPill key={i} tone={t.tone}>
-                            {t.label}
-                          </StatusPill>
-                        ))}
-                      </div>
-                    )}
-
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 10, paddingTop: 10, borderTop: `1px solid ${T.border}` }}>
-                      <span style={{ fontFamily: T.mono, fontSize: 9, textTransform: "uppercase", color: T.mut }}>{k.siden}</span>
-                      <div style={{ display: "flex", gap: 4 }}>
-                        <Link href="/admin/innboks" aria-label="Send melding" title="Send melding" style={{ display: "grid", placeItems: "center", width: 26, height: 26, borderRadius: 7, border: `1px solid ${T.border}` }}>
-                          <Icon name="message-square" size={13} style={{ color: T.mut }} />
-                        </Link>
-                        <Link href={`/admin/spillere/${k.id}`} aria-label="Ring / kontakt" title="Ring / kontakt" style={{ display: "grid", placeItems: "center", width: 26, height: 26, borderRadius: 7, border: `1px solid ${T.border}` }}>
-                          <Icon name="phone" size={13} style={{ color: T.mut }} />
-                        </Link>
-                        <Link href="/admin/bookinger/ny" aria-label="Book økt" title="Book økt" style={{ display: "grid", placeItems: "center", width: 26, height: 26, borderRadius: 7, border: `1px solid ${T.border}` }}>
-                          <Icon name="calendar-plus" size={13} style={{ color: T.mut }} />
-                        </Link>
-                      </div>
-                    </div>
-                  </Kort>
-                ))
-              )}
-            </div>
-          ))}
-        </div>
+        {/* Board — I5: kanban med drag-and-drop (klient) */}
+        <QueueBoard kolonner={kolonner as QueueKolonne[]} />
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: `1px solid ${T.border}`, paddingTop: 16 }}>
           <span style={{ fontFamily: T.mono, fontSize: 10.5, textTransform: "uppercase", color: T.mut }}>AgencyOS · Oppfølgingskø</span>
