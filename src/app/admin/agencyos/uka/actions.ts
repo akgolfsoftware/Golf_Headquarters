@@ -12,7 +12,9 @@ import { prisma } from "@/lib/prisma";
 
 const FlyttSchema = z.object({
   bookingId: z.string().min(1),
-  targetDayISO: z.string().datetime(),
+  // Full ISO (uka-kanbanen) eller ren dato YYYY-MM-DD (kalenderen) — ren dato
+  // tolkes som LOKAL dag (aldri UTC-skift over midnatt).
+  targetDayISO: z.union([z.string().datetime(), z.string().regex(/^\d{4}-\d{2}-\d{2}$/)]),
 });
 
 export async function flyttBookingTilDag(
@@ -32,7 +34,10 @@ export async function flyttBookingTilDag(
     return { ok: false, error: "Fullførte/kansellerte bookinger kan ikke flyttes." };
   }
 
-  const maal = new Date(parsed.data.targetDayISO);
+  const ren = /^(\d{4})-(\d{2})-(\d{2})$/.exec(parsed.data.targetDayISO);
+  const maal = ren
+    ? new Date(Number(ren[1]), Number(ren[2]) - 1, Number(ren[3]))
+    : new Date(parsed.data.targetDayISO);
   const nyStart = new Date(maal);
   nyStart.setHours(booking.startAt.getHours(), booking.startAt.getMinutes(), 0, 0);
   const varighetMs = booking.endAt.getTime() - booking.startAt.getTime();

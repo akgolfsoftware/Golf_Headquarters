@@ -19,6 +19,11 @@
  */
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { flyttBookingTilDag } from "@/app/admin/agencyos/uka/actions";
+
+// I5: samme DnD-mønster som uka-kanbanen — dra booking til ny dag.
+const DND_MIME = "application/x-akgolf-kalender";
 import Link from "next/link";
 import {
   T,
@@ -195,9 +200,20 @@ function SerieMeny({ okt, onClose, mobile }: { okt: KalOkt; onClose: () => void;
 }
 
 /* ── Dag-kolonne (desktop grid-celle) ── */
-function DagKolonne({ dag, onSerieClick }: { dag: KalenderData["dager"][number]; onSerieClick: (okt: KalOkt) => void }) {
+function DagKolonne({ dag, onSerieClick, onFlytt, flytterId }: { dag: KalenderData["dager"][number]; onSerieClick: (okt: KalOkt) => void; onFlytt?: (bookingId: string, datoISO: string) => void; flytterId?: string | null }) {
+  const [over, setOver] = useState(false);
   return (
-    <div style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+    <div
+      onDragOver={onFlytt ? (e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; if (!over) setOver(true); } : undefined}
+      onDragLeave={onFlytt ? () => setOver(false) : undefined}
+      onDrop={onFlytt ? (e) => {
+        e.preventDefault();
+        setOver(false);
+        const id = e.dataTransfer.getData(DND_MIME);
+        if (id) onFlytt(id, dag.datoISO);
+      } : undefined}
+      style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: 8, borderRadius: 12, padding: 4, margin: -4, background: over ? `color-mix(in srgb, ${T.lime} 6%, transparent)` : "transparent", outline: over ? `1px dashed color-mix(in srgb, ${T.lime} 45%, transparent)` : "none", outlineOffset: -2, transition: "background 80ms" }}
+    >
       <div style={{ display: "flex", alignItems: "baseline", gap: 6, padding: "2px 2px 6px", borderBottom: `1px solid ${dag.idag ? T.borderS : T.border}` }}>
         <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: dag.idag ? T.fg : T.mut }}>{dag.dag}</span>
         <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: dag.idag ? T.fg : T.fg2, fontVariantNumeric: "tabular-nums" }}>{dag.dato}</span>
@@ -206,7 +222,20 @@ function DagKolonne({ dag, onSerieClick }: { dag: KalenderData["dager"][number];
       {dag.okter.length === 0 ? (
         <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, padding: "8px 2px" }}>Ingen økter</span>
       ) : (
-        dag.okter.map((o) => <OktBlokk key={o.id} okt={o} onSerieClick={onSerieClick} />)
+        dag.okter.map((o) =>
+          onFlytt && !o.serie ? (
+            <div
+              key={o.id}
+              draggable
+              onDragStart={(e) => { e.dataTransfer.setData(DND_MIME, o.id); e.dataTransfer.effectAllowed = "move"; }}
+              style={{ cursor: "grab", opacity: flytterId === o.id ? 0.45 : 1 }}
+            >
+              <OktBlokk okt={o} onSerieClick={onSerieClick} />
+            </div>
+          ) : (
+            <OktBlokk key={o.id} okt={o} onSerieClick={onSerieClick} />
+          ),
+        )
       )}
       {/* I1: trykk på tom luke → ny booking med dagen forhåndsutfylt (09:00). */}
       <Link
@@ -225,7 +254,18 @@ function DagKolonne({ dag, onSerieClick }: { dag: KalenderData["dager"][number];
 
 export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   const mobile = useMobile();
+  const router = useRouter();
   const [visning, setVisning] = useState("uke");
+  const [flytterId, setFlytterId] = useState<string | null>(null);
+
+  // I5: dra en booking-blokk til en annen dag-kolonne.
+  const onFlytt = async (bookingId: string, datoISO: string) => {
+    if (flytterId) return;
+    setFlytterId(bookingId);
+    const res = await flyttBookingTilDag(bookingId, datoISO);
+    setFlytterId(null);
+    if (res.ok) router.refresh();
+  };
   // Hvilken serie-økt (om noen) er valgt — styrer SerieMeny-panelet (kun ekte
   // klikk på en merket serie-blokk åpner det, aldri statisk synlig).
   const [valgtSerieOkt, setValgtSerieOkt] = useState<KalOkt | null>(null);
@@ -335,7 +375,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     kropp = (
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 10 }}>
         {data.dager.map((d, i) => (
-          <DagKolonne key={i} dag={d} onSerieClick={setValgtSerieOkt} />
+          <DagKolonne key={i} dag={d} onSerieClick={setValgtSerieOkt} onFlytt={onFlytt} flytterId={flytterId} />
         ))}
       </div>
     );
