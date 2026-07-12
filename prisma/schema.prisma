@@ -4544,3 +4544,23 @@ model AppFeedback {
   @@index([status, createdAt])
   @@map("app_feedback")
 }
+
+// AgencyOS marketing-flate (2026-07-13) — M1: innholdskalender + post-kø.
+// Én rad per planlagt post (IG/FB/LinkedIn/TikTok). Ingen auto-publisering —
+// status settes manuelt av coach. Isolert (ingen @relation) per gotcha —
+// additiv via db execute (scripts/migrate-marketing-posts-2026-07-13.ts).
+model MarketingPost {
+  id          String   @id @default(cuid())
+  title       String
+  // "IG" | "FB" | "LINKEDIN" | "TIKTOK"
+  channel     String
+  scheduledAt DateTime
+  brief       String?  @db.Text
+  // "UTKAST" | "KLAR" | "PUBLISERT"
+  status      String   @default("UTKAST")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([scheduledAt])
+  @@map("marketing_posts")
+}
