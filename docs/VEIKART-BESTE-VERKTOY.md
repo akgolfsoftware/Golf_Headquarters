@@ -99,6 +99,13 @@
 > Kun ekte data — ærlige tomtilstander. FUNN: player_swing_videos-tabellen
 > mangler i DB (schema-drift-klasse #3) — swing-video-spørringen venter på
 > kirurgisk migrering (Anders-ja). Playwright: alle 7 faner verifisert.
+> 2026-07-12 (kveld) · WB2 LEVERT (fasit G5): «Spilleren nå»-innsiktsblokk
+> øverst i Workbench-inspektøren (høyre kolonne) — fokus (coach/SG-gap),
+> plan-etterlevelse m/ terskel-farget stripe + HjelpTips, neste turnering
+> m/ nedtelling. Kun ekte kilder; rader uten kilde utelates. Samtidig lukket
+> schema-drift #3 (player_swing_videos + swing_analyses opprettet kirurgisk
+> etter Anders-ja; swing-video aktiv i spiller-dashboardets Logg-fane).
+> Neste: WB3 belastningspanel (ACWR-stripe under canvas).
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag

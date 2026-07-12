@@ -409,28 +409,50 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
         <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>uke {weekNumber}</span>
       </div>
 
-      {fokus && (
-        <InnsiktChip>
-          <span style={{ fontWeight: 700 }}>Fokus:</span> {fokus.label}
-          <span style={{ color: T.mut }}> · {fokus.kilde === "coach" ? "satt av coach" : "beregnet fra SG-gap"}</span>
-        </InnsiktChip>
-      )}
-
-      <BalSeksjon label="Neste viktig">
-        {data.tournaments && data.tournaments.length > 0 ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-            {data.tournaments.map((n, i) => (
+      {/* WB2 (fasit G5): samlet spillerinnsikt øverst i inspektøren —
+          fokus + plan-etterlevelse + neste turnering. Kun ekte kilder;
+          rader uten kilde utelates helt. */}
+      <BalSeksjon label="Spilleren nå">
+        <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+          {fokus && (
+            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 11px", borderRadius: 11, background: T.panel2, border: `1px solid ${T.border}` }}>
+              <span style={{ width: 28, height: 28, borderRadius: 8, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}><Icon name="target" size={13} style={{ color: T.lime }} /></span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{fokus.label}</div>
+                <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginTop: 1 }}>Fokus · {fokus.kilde === "coach" ? "satt av coach" : "beregnet fra SG-gap"}</div>
+              </div>
+            </div>
+          )}
+          {data.adherencePct != null && (
+            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 11px", borderRadius: 11, background: T.panel2, border: `1px solid ${T.border}` }}>
+              <span style={{ width: 28, height: 28, borderRadius: 8, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}><Icon name="check-check" size={13} style={{ color: data.adherencePct >= 70 ? T.up : data.adherencePct >= 40 ? T.warn : T.down }} /></span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                  <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>{data.adherencePct} %</span>
+                  <HjelpTips k="planEtterlevelse" size={11} />
+                </div>
+                <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginTop: 1 }}>Plan-etterlevelse denne uka</div>
+              </div>
+              <div style={{ width: 52, height: 5, borderRadius: 9999, background: T.track, overflow: "hidden", flex: "none" }}>
+                <div style={{ width: `${Math.min(100, data.adherencePct)}%`, height: "100%", borderRadius: 9999, background: data.adherencePct >= 70 ? T.up : data.adherencePct >= 40 ? T.warn : T.down }} />
+              </div>
+            </div>
+          )}
+          {data.tournaments && data.tournaments.length > 0 ? (
+            data.tournaments.map((n, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 11px", borderRadius: 11, background: T.panel2, border: `1px solid ${T.border}` }}>
-                <span style={{ width: 28, height: 28, borderRadius: 8, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}><Icon name="trophy" size={13} style={{ color: T.fg2 }} /></span>
+                <span style={{ width: 28, height: 28, borderRadius: 8, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}><Icon name="trophy" size={13} style={{ color: n.soon ? T.warn : T.fg2 }} /></span>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{n.tn}</div>
-                  <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginTop: 1 }}>Turnering</div>
+                  <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginTop: 1 }}>Neste turnering</div>
                 </div>
                 <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: n.soon ? T.warn : T.fg2, flex: "none" }}>{n.td}</span>
               </div>
-            ))}
-          </div>
-        ) : <TomTilstand icon="flag" title="Ingen turnering" sub="Ingen kommende turneringer registrert." />}
+            ))
+          ) : (
+            !fokus && data.adherencePct == null && <TomTilstand icon="flag" title="Ingen innsikt ennå" sub="Fokus, etterlevelse og turneringer vises når planen er i gang." />
+          )}
+        </div>
       </BalSeksjon>
 
       <BalSeksjon label="Valgt økt">
