@@ -26,9 +26,9 @@ function mondayOf(d: Date): Date {
   return x;
 }
 
-function dateForDayIndex(dayIndex: number, hour: number, minute: number): Date {
+function dateForDayIndex(dayIndex: number, hour: number, minute: number, weekOffset = 0): Date {
   const target = mondayOf(new Date());
-  target.setDate(target.getDate() + dayIndex);
+  target.setDate(target.getDate() + dayIndex + weekOffset * 7);
   target.setHours(hour, minute, 0, 0);
   return target;
 }
@@ -67,6 +67,7 @@ async function applyTemplateCore(
   playerId: string,
   coachId: string | null,
   weekNr = 1,
+  weekOffset = 0,
 ): Promise<{ ok: boolean; sessions?: AppliedTemplateSession[]; error?: string; justeringer?: string[] }> {
   const template = await prisma.planTemplate.findUnique({
     where: { id: templateId },
@@ -123,7 +124,7 @@ async function applyTemplateCore(
       data: {
         planId: plan.id,
         title: row.title.slice(0, 120),
-        scheduledAt: dateForDayIndex(row.dayIndex, row.hour, row.minute),
+        scheduledAt: dateForDayIndex(row.dayIndex, row.hour, row.minute, weekOffset),
         durationMin: row.durMin,
         pyramidArea: area,
         status: "PLANNED",
@@ -169,6 +170,76 @@ export async function applyWorkbenchTemplate(
 ): Promise<{ ok: boolean; sessions?: AppliedTemplateSession[]; error?: string; justeringer?: string[] }> {
   const user = await requirePortalUser();
   return applyTemplateCore(templateId, user.id, null, weekNr);
+}
+
+/**
+ * Å3 · Rull ut en mal til en HEL gruppe over flere uker i én operasjon
+ * (planleggings-pyramiden: aldri taste 40 like uker). Mal-uke w legges i
+ * kalenderuke startWeekOffset+(w-1) for hvert medlem. Duplikat-vern per
+ * spiller-uke: har spilleren alt plan-økter i måluka hoppes den over
+ * (rapporteres — anbefaling, aldri overskriving). try/catch per spiller.
+ */
+export async function coachApplyTemplateToGroup(
+  groupId: string,
+  templateId: string,
+  opts: { startWeekOffset?: number; uker?: number } = {},
+): Promise<{
+  ok: boolean;
+  error?: string;
+  spillere?: number;
+  okterOpprettet?: number;
+  hoppet?: { navn: string; uke: number }[];
+}> {
+  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const startWeekOffset = Math.max(0, Math.min(12, Math.trunc(opts.startWeekOffset ?? 0)));
+
+  const [gruppe, mal] = await Promise.all([
+    prisma.group.findUnique({
+      where: { id: groupId },
+      select: { id: true, name: true, members: { select: { user: { select: { id: true, name: true } } } } },
+    }),
+    prisma.planTemplate.findUnique({
+      where: { id: templateId },
+      select: { id: true, varighetUker: true, sessions: { select: { ukeNr: true }, distinct: ["ukeNr"] } },
+    }),
+  ]);
+  if (!gruppe) return { ok: false, error: "Gruppe ikke funnet" };
+  if (!mal) return { ok: false, error: "Mal ikke funnet" };
+  const malUker = mal.sessions.map((x) => x.ukeNr).sort((a, b) => a - b);
+  const uker = Math.max(1, Math.min(opts.uker ?? mal.varighetUker, malUker.length || mal.varighetUker));
+
+  let okterOpprettet = 0;
+  const hoppet: { navn: string; uke: number }[] = [];
+
+  for (const m of gruppe.members) {
+    for (let w = 0; w < uker; w++) {
+      const malUke = malUker[w] ?? w + 1;
+      const offset = startWeekOffset + w;
+      try {
+        // Duplikat-vern: finnes det alt plan-økter i denne kalenderuka?
+        const ukeStart = mondayOf(new Date());
+        ukeStart.setDate(ukeStart.getDate() + offset * 7);
+        const ukeSlutt = new Date(ukeStart);
+        ukeSlutt.setDate(ukeSlutt.getDate() + 7);
+        const eksisterende = await prisma.trainingPlanSession.count({
+          where: { plan: { userId: m.user.id }, scheduledAt: { gte: ukeStart, lt: ukeSlutt } },
+        });
+        if (eksisterende > 0) {
+          hoppet.push({ navn: m.user.name ?? "Ukjent", uke: offset });
+          continue;
+        }
+        const res = await applyTemplateCore(templateId, m.user.id, coach.id, malUke, offset);
+        if (res.ok) okterOpprettet += res.sessions?.length ?? 0;
+        else hoppet.push({ navn: m.user.name ?? "Ukjent", uke: offset });
+      } catch (error) {
+        console.error("[Å3] utrulling feilet for", m.user.id, "uke", offset, error);
+        hoppet.push({ navn: m.user.name ?? "Ukjent", uke: offset });
+      }
+    }
+  }
+
+  revalidatePath(`/admin/grupper/${groupId}`);
+  return { ok: true, spillere: gruppe.members.length, okterOpprettet, hoppet };
 }
 
 /** Coach bruker mal på valgt spiller. */

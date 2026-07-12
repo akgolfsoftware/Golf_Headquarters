@@ -16,6 +16,7 @@
  * vinduet får en ærlig tom-tilstand. Se gaps i retur-JSON.
  */
 
+import Link from "next/link";
 import { useState } from "react";
 import {
   Caps,
@@ -143,6 +144,15 @@ export function GrupperV2({ data }: { data: GrupperData }) {
             <MikroMeta icon="users">{spillere(valgt.antallMedlemmer)}</MikroMeta>
           </div>
         )}
+        {/* I8-funn: gruppe-detaljsiden (timeplan + mal-utrulling) var unåbar herfra. */}
+        <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+          <Link href={`/admin/grupper/${valgt.id}`} style={{ textDecoration: "none" }}>
+            <CTAPill icon="arrow-right">Åpne gruppe</CTAPill>
+          </Link>
+          <Link href={`/admin/grupper/${valgt.id}/timeplan`} style={{ textDecoration: "none" }}>
+            <CTAPill ghost icon="calendar">Timeplan</CTAPill>
+          </Link>
+        </div>
       </Kort>
 
       <Kort

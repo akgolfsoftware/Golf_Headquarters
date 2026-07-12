@@ -95,9 +95,12 @@ function fmtDato(iso: string): string {
 export function GruppeDetaljV2({
   data,
   actions: A,
+  ekstra,
 }: {
   data: GruppeDetaljV2Data;
   actions: GruppeDetaljV2Actions;
+  /** Å3: server-side ekstra-seksjon (Rull ut mal-panelet) rendret etter hodet. */
+  ekstra?: React.ReactNode;
 }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
@@ -127,6 +130,8 @@ export function GruppeDetaljV2({
           <A.LeggTilSpillerButton groupId={data.id} kandidater={data.kandidater} />
         </div>
       </div>
+
+      {ekstra}
 
       {/* KPI-rad */}
       <div className="grid grid-cols-2 sm:grid-cols-4" style={{ gap: T.gap }}>

@@ -13,6 +13,7 @@ import {
   GruppeDetaljV2,
   type GruppeDetaljV2Data,
 } from "@/components/admin/v2/GruppeDetaljV2";
+import { RullUtMalPanel } from "@/components/admin/v2/RullUtMalPanel";
 import {
   StartOktButton,
   LeggTilSpillerButton,
@@ -124,6 +125,14 @@ export default async function GruppeDetaljPage({
   const visteMedlemmer = trinn ? gruppe.members.filter((m) => m.user.schoolYear === trinn) : gruppe.members;
   const trinnValg = [...new Set(gruppe.members.map((m) => m.user.schoolYear).filter((v): v is string => !!v))].sort();
 
+  // Å3: godkjente planmaler for gruppe-utrulling.
+  const maler = await prisma.planTemplate.findMany({
+    where: { approved: true },
+    orderBy: [{ usageCount: "desc" }, { name: "asc" }],
+    take: 24,
+    select: { id: true, name: true, varighetUker: true, _count: { select: { sessions: true } } },
+  });
+
   const data: GruppeDetaljV2Data = {
     id: gruppe.id,
     navn: gruppe.name,
@@ -187,6 +196,13 @@ export default async function GruppeDetaljPage({
     <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <GruppeDetaljV2
         data={data}
+        ekstra={
+          <RullUtMalPanel
+            groupId={data.id}
+            antallMedlemmer={data.antallMedlemmer}
+            maler={maler.map((m) => ({ id: m.id, name: m.name, varighetUker: m.varighetUker, sessionCount: m._count.sessions }))}
+          />
+        }
         actions={{
           StartOktButton,
           LeggTilSpillerButton,
