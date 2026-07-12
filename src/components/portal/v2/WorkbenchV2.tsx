@@ -95,8 +95,24 @@ function statusLabel(s: PlanStatus | null | undefined): { l: string; tone: "info
   }
 }
 
+/* ── Drag-and-drop-payload (tidslinje + bibliotek → dag-kolonne) ── */
+const DND_MIME = "application/x-akgolf-wb";
+type DndPayload =
+  | { kind: "move"; sessionId: string }
+  | { kind: "add"; title: string; durMin: number; akse?: AkseKey };
+
+function lesDndPayload(e: React.DragEvent): DndPayload | null {
+  try {
+    const raw = e.dataTransfer.getData(DND_MIME);
+    if (!raw) return null;
+    return JSON.parse(raw) as DndPayload;
+  } catch {
+    return null;
+  }
+}
+
 /* ── Tidslinje-blokk ───────────────────────────────────── */
-function TLBlokk({ o, valgt, onVelg }: { o: WeekEvent; valgt: boolean; onVelg: (id: string) => void }) {
+function TLBlokk({ o, valgt, onVelg, dragbar }: { o: WeekEvent; valgt: boolean; onVelg: (id: string) => void; dragbar?: boolean }) {
   const start = o.h + (o.m ?? 0) / 60;
   const dur = o.durMin / 60;
   const h = dur * HOUR_H;
@@ -108,12 +124,19 @@ function TLBlokk({ o, valgt, onVelg }: { o: WeekEvent; valgt: boolean; onVelg: (
   const pending = erOptimistisk(o.id);
   const ramme = avvik ? T.down : valgt ? T.lime : T.border;
   const top = Math.max(0, (start - START_TIME) * HOUR_H + 2);
+  const dragId = dragbar && !pending ? o.id : undefined;
   return (
     <div
+      data-wb-okt={o.id ?? undefined}
       onClick={() => o.id && !pending && onVelg(o.id)}
+      draggable={!!dragId}
+      onDragStart={dragId ? (e) => {
+        e.dataTransfer.setData(DND_MIME, JSON.stringify({ kind: "move", sessionId: dragId } satisfies DndPayload));
+        e.dataTransfer.effectAllowed = "move";
+      } : undefined}
       style={{
         position: "absolute", top, left: 3, right: 3, height: Math.max(18, h - 4),
-        borderRadius: 8, padding: kompakt ? "2px 7px" : "5px 8px", cursor: pending ? "default" : "pointer", overflow: "hidden",
+        borderRadius: 8, padding: kompakt ? "2px 7px" : "5px 8px", cursor: pending ? "default" : dragbar ? "grab" : "pointer", overflow: "hidden",
         background: `color-mix(in srgb, ${col} 15%, ${T.panel3})`,
         border: `1px ${pending ? "dashed" : "solid"} ${ramme}`,
         borderLeft: `3px solid ${col}`,
@@ -136,11 +159,32 @@ function TLBlokk({ o, valgt, onVelg }: { o: WeekEvent; valgt: boolean; onVelg: (
   );
 }
 
-/** Ukekalender: 7 dag-kolonner × timelinje, økter absolutt posisjonert. */
-function WBTidslinje({ dager, valgt, onVelg }: { dager: DagKol[]; valgt: string | null; onVelg: (id: string) => void }) {
+/** Ukekalender: 7 dag-kolonner × timelinje, økter absolutt posisjonert.
+ *  Med `onDropMove`/`onDropAdd` (kun når skrivesiden finnes) er kolonnene
+ *  drop-soner: dra en økt-blokk til ny dag, eller en bibliotek-brikke inn
+ *  på et klokkeslett (Y-posisjon → time, snappet til hel/halv). */
+function WBTidslinje({ dager, valgt, onVelg, onDropMove, onDropAdd }: {
+  dager: DagKol[];
+  valgt: string | null;
+  onVelg: (id: string) => void;
+  onDropMove?: (sessionId: string, dayIndex: number) => void;
+  onDropAdd?: (item: { title: string; durMin: number; akse?: AkseKey }, dayIndex: number, hour: number, minute: number) => void;
+}) {
+  const [dropDag, setDropDag] = useState<number | null>(null);
   const timer: number[] = [];
   for (let h = START_TIME; h <= END_TIME; h++) timer.push(h);
   const bodyH = (timer.length - 1) * HOUR_H;
+  const droppbar = !!(onDropMove || onDropAdd);
+
+  /** Y-posisjon i kolonnen → {hour, minute} snappet til nærmeste halvtime. */
+  const tidFraY = (e: React.DragEvent, kolonne: HTMLElement): { hour: number; minute: number } => {
+    const y = e.clientY - kolonne.getBoundingClientRect().top;
+    const raa = START_TIME + y / HOUR_H;
+    const snappet = Math.round(raa * 2) / 2;
+    const klemt = Math.max(START_TIME, Math.min(END_TIME - 1, snappet));
+    return { hour: Math.floor(klemt), minute: klemt % 1 === 0.5 ? 30 : 0 };
+  };
+
   return (
     <Kort pad="0" style={{ overflow: "hidden" }}>
       {/* Dag-header */}
@@ -166,8 +210,41 @@ function WBTidslinje({ dager, valgt, onVelg }: { dager: DagKol[]; valgt: string 
             <span key={h} style={{ position: "absolute", left: 0, right: 0, top: (h - START_TIME) * HOUR_H, height: 1, background: "rgba(255,255,255,0.03)" }} />
           ))}
           {dager.map((d, i) => (
-            <div key={i} style={{ flex: 1, minWidth: 0, position: "relative", borderLeft: `1px solid ${T.border}`, background: d.today ? `color-mix(in srgb, ${T.lime} 3%, transparent)` : "transparent" }}>
-              {d.events.map((o, j) => <TLBlokk key={o.id ?? `${i}-${j}`} o={o} valgt={!!o.id && valgt === o.id} onVelg={onVelg} />)}
+            <div
+              key={i}
+              data-wb-dag={i}
+              onDragOver={droppbar ? (e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; if (dropDag !== i) setDropDag(i); } : undefined}
+              onDragLeave={droppbar ? () => setDropDag((v) => (v === i ? null : v)) : undefined}
+              onDrop={droppbar ? (e) => {
+                e.preventDefault();
+                setDropDag(null);
+                const payload = lesDndPayload(e);
+                if (!payload) return;
+                if (payload.kind === "move" && onDropMove) onDropMove(payload.sessionId, i);
+                if (payload.kind === "add" && onDropAdd) {
+                  const { hour, minute } = tidFraY(e, e.currentTarget);
+                  onDropAdd({ title: payload.title, durMin: payload.durMin, akse: payload.akse }, i, hour, minute);
+                }
+              } : undefined}
+              style={{
+                flex: 1, minWidth: 0, position: "relative", borderLeft: `1px solid ${T.border}`,
+                background: dropDag === i
+                  ? `color-mix(in srgb, ${T.lime} 8%, transparent)`
+                  : d.today ? `color-mix(in srgb, ${T.lime} 3%, transparent)` : "transparent",
+                outline: dropDag === i ? `1px dashed color-mix(in srgb, ${T.lime} 45%, transparent)` : "none",
+                outlineOffset: -2,
+                transition: "background 80ms",
+              }}
+            >
+              {d.events.map((o, j) => (
+                <TLBlokk
+                  key={o.id ?? `${i}-${j}`}
+                  o={o}
+                  valgt={!!o.id && valgt === o.id}
+                  onVelg={onVelg}
+                  dragbar={!!onDropMove && !!o.id && (o.source ?? "plan") === "plan"}
+                />
+              ))}
             </div>
           ))}
         </div>
@@ -177,9 +254,22 @@ function WBTidslinje({ dager, valgt, onVelg }: { dager: DagKol[]; valgt: string 
 }
 
 /* ── Bibliotek (venstre) ───────────────────────────────── */
-function PalettBrikke({ tittel, akse, sub, onClick }: { tittel: string; akse?: AkseKey; sub: string; onClick?: () => void }) {
+function PalettBrikke({ tittel, akse, durMin, sub, onClick }: { tittel: string; akse?: AkseKey; durMin?: number; sub: string; onClick?: () => void }) {
+  // Dragbar når den er klikkbar (skriveside finnes): dras rett inn på et
+  // klokkeslett i uketidslinja i stedet for å gå via Ny økt-arket.
+  const dragbar = !!onClick && durMin != null;
   return (
-    <button type="button" onClick={onClick} className="v2-press v2-focus" style={{ appearance: "none", textAlign: "left", width: "100%", padding: "8px 9px", borderRadius: 10, background: T.panel2, border: `1px dashed ${T.borderS}`, cursor: onClick ? "pointer" : "default", minWidth: 0 }}>
+    <button
+      type="button"
+      onClick={onClick}
+      draggable={dragbar}
+      onDragStart={dragbar ? (e) => {
+        e.dataTransfer.setData(DND_MIME, JSON.stringify({ kind: "add", title: tittel, durMin, akse } satisfies DndPayload));
+        e.dataTransfer.effectAllowed = "copy";
+      } : undefined}
+      className="v2-press v2-focus"
+      style={{ appearance: "none", textAlign: "left", width: "100%", padding: "8px 9px", borderRadius: 10, background: T.panel2, border: `1px dashed ${T.borderS}`, cursor: dragbar ? "grab" : onClick ? "pointer" : "default", minWidth: 0 }}
+    >
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
         {akse && <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[akse] || T.mut, flex: "none" }} />}
         <span style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg, flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{tittel}</span>
@@ -239,6 +329,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt }: {
               key={b.pid}
               tittel={b.title}
               akse={b.cat as AkseKey}
+              durMin={b.dur}
               sub={fmtVarighet(b.dur)}
               onClick={onVelgOkt ? () => onVelgOkt({ title: b.title, durMin: b.dur, akse: b.cat as AkseKey }) : undefined}
             />
@@ -353,6 +444,72 @@ function AarNivaa({ data }: { data: WorkbenchData }) {
           );
         })}
       </div>
+    </Kort>
+  );
+}
+
+/* ── Måned-nivå (kalendergrid med økt-prikker per dag) ─── */
+function MndNivaa({ data, onVelgDato }: { data: WorkbenchData; onVelgDato: (dato: Date) => void }) {
+  const weekStart = data.weekStartISO ? new Date(data.weekStartISO) : new Date();
+  const now = new Date();
+  const ar = weekStart.getFullYear();
+  const mnd = weekStart.getMonth();
+  const forste = new Date(ar, mnd, 1);
+  const dagerIMnd = new Date(ar, mnd + 1, 0).getDate();
+  // Grid starter på mandagen i uka der 1. faller (ISO-uke).
+  const startPad = (forste.getDay() + 6) % 7;
+  const celler = startPad + dagerIMnd;
+  const rader = Math.ceil(celler / 7);
+
+  const innhold = new Map((data.monthDays ?? []).map((d) => [d.dateISO, d]));
+  const nokkel = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const iDag = nokkel(now);
+  const totalOkter = (data.monthDays ?? []).reduce((a, d) => a + d.count, 0);
+
+  return (
+    <Kort eyebrow={`${MANEDER[mnd][0].toUpperCase() + MANEDER[mnd].slice(1)} ${ar}`} action={<Caps size={9}>{totalOkter} økter</Caps>}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4, marginTop: 4 }}>
+        {DOW7.map((d) => (
+          <span key={d} style={{ textAlign: "center", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", color: T.mut, padding: "2px 0 6px" }}>{d}</span>
+        ))}
+        {Array.from({ length: rader * 7 }, (_, i) => {
+          const dagNr = i - startPad + 1;
+          if (dagNr < 1 || dagNr > dagerIMnd) return <span key={i} />;
+          const dato = new Date(ar, mnd, dagNr);
+          const c = innhold.get(nokkel(dato));
+          const erIDag = nokkel(dato) === iDag;
+          const totMin = c ? c.axes.reduce((a, x) => a + x.min, 0) : 0;
+          return (
+            <button
+              key={i}
+              type="button"
+              onClick={() => onVelgDato(dato)}
+              title={c ? `${c.count} økter · ${fmtTimer(totMin / 60)}` : "Ingen økter — trykk for å åpne uka"}
+              className="v2-press v2-focus"
+              style={{
+                appearance: "none", cursor: "pointer", minHeight: 64, padding: "6px 7px",
+                borderRadius: 10, textAlign: "left", display: "flex", flexDirection: "column", gap: 5,
+                background: erIDag ? `color-mix(in srgb, ${T.lime} 7%, ${T.panel2})` : T.panel2,
+                border: `1px solid ${erIDag ? `color-mix(in srgb, ${T.lime} 40%, transparent)` : T.border}`,
+              }}
+            >
+              <span style={{ fontFamily: T.disp, fontSize: 13, fontWeight: 700, color: erIDag ? T.lime : c ? T.fg : T.mut }}>{dagNr}</span>
+              {c ? (
+                <>
+                  <span style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+                    {c.axes.map((x) => (
+                      <span key={x.ax} title={`${AKSE_NAVN[x.ax.toUpperCase() as AkseKey] ?? x.ax} · ${fmtVarighet(x.min)}`} style={{ width: 7, height: 7, borderRadius: 9999, background: T.ax[x.ax.toUpperCase() as AkseKey] ?? T.mut }} />
+                    ))}
+                  </span>
+                  <span style={{ fontFamily: T.mono, fontSize: 8, color: T.mut }}>{c.count} · {fmtVarighet(totMin)}</span>
+                </>
+              ) : null}
+            </button>
+          );
+        })}
+      </div>
+      <span style={{ display: "block", marginTop: 10, fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>Trykk en dag for å åpne uka i tidslinja.</span>
     </Kort>
   );
 }
@@ -594,6 +751,60 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     setNyOktApen(true);
   };
 
+  // Dra en økt-blokk til en annen dag-kolonne → samme optimistiske flytting
+  // som Flytt-knappen i Valgt økt-panelet.
+  const handleDropMove = async (sessionId: string, dayIndex: number) => {
+    const ev = alleEvents.find((e) => e.id === sessionId);
+    if (!ev) return;
+    const fraDag = dager.findIndex((d) => d.events.some((e) => e.id === sessionId));
+    if (fraDag === dayIndex) return;
+    const res = await optimisticMoveSession(sessionId, dayIndex, weekOffset);
+    if (res.ok) router.refresh();
+    else setMelding({ tone: "down", tekst: res.error ?? "Kunne ikke flytte økten." });
+  };
+
+  // Dra en bibliotek-brikke inn på et klokkeslett → opprett direkte (brikken
+  // bærer tittel/varighet/akse — klokkeslettet kommer fra slipp-punktet).
+  const handleDropAdd = async (
+    item: { title: string; durMin: number; akse?: AkseKey },
+    dayIndex: number,
+    hour: number,
+    minute: number,
+  ) => {
+    const res = await handleCreateSession({
+      title: item.title,
+      dayIndex,
+      akse: item.akse ?? "TEK",
+      hour,
+      minute,
+      durMin: item.durMin,
+    });
+    if (!res.ok) setMelding({ tone: "down", tekst: res.error ?? "Kunne ikke legge til økten." });
+  };
+
+  // Måned-cellen → hopp til uka datoen ligger i (uke-zoom).
+  const velgDatoFraMnd = (dato: Date) => {
+    const mandagAv = (d: Date) => {
+      const m = new Date(d);
+      m.setHours(0, 0, 0, 0);
+      m.setDate(m.getDate() - ((m.getDay() + 6) % 7));
+      return m;
+    };
+    const visningsMandag = data?.weekStartISO ? new Date(data.weekStartISO) : mandagAv(new Date());
+    const basisMandag = new Date(visningsMandag);
+    basisMandag.setDate(basisMandag.getDate() - weekOffset * 7);
+    const delta = Math.round((mandagAv(dato).getTime() - basisMandag.getTime()) / (7 * 86_400_000));
+    const target = Math.max(WEEK_OFFSET_MIN, Math.min(WEEK_OFFSET_MAX, delta));
+    const params = new URLSearchParams(searchParams.toString());
+    if (target === 0) params.delete("uke");
+    else params.set("uke", String(target));
+    params.delete("zoom");
+    params.delete("okt");
+    setNivaaState("uke");
+    const qs = params.toString();
+    router.push(qs ? `${pathname}?${qs}` : pathname);
+  };
+
   const handleCreateSession = async (input: NyOktInput): Promise<{ ok: boolean; error?: string }> => {
     if (!actions) return { ok: false, error: "Ikke tilgjengelig." };
     // Vis økta i tidslinja umiddelbart (dempet/stiplet, se erOptimistisk) —
@@ -812,10 +1023,18 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} />
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
           {insights?.line && <InnsiktChip>{insights.line}</InnsiktChip>}
-          {nivaa === "uke" && <WBTidslinje dager={dager} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
+          {nivaa === "uke" && (
+            <WBTidslinje
+              dager={dager}
+              valgt={valgtOkt?.id ?? null}
+              onVelg={setValgtId}
+              onDropMove={actions ? handleDropMove : undefined}
+              onDropAdd={actions ? handleDropAdd : undefined}
+            />
+          )}
           {nivaa === "ar" && <AarNivaa data={data} />}
           {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
-          {nivaa === "maned" && <Kort><TomTilstand icon="calendar" title="Månedsvisning" sub="Bruk Uke for tidslinje eller Årsplan for sesongperiodene — månedsaggregat er ikke koblet ennå." /></Kort>}
+          {nivaa === "maned" && <MndNivaa data={data} onVelgDato={velgDatoFraMnd} />}
         </div>
         <WBBalanse
           data={data}
@@ -833,7 +1052,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         {nivaa === "uke" && <WBTidslinjeMobil dager={dager} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
         {nivaa === "ar" && <AarNivaaMobil data={data} />}
         {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={setValgtId} />}
-        {nivaa === "maned" && <Kort><TomTilstand icon="calendar" title="Månedsvisning" sub="Bruk Uke for tidslinje eller Årsplan for sesongperiodene — månedsaggregat er ikke koblet ennå." /></Kort>}
+        {nivaa === "maned" && <MndNivaa data={data} onVelgDato={velgDatoFraMnd} />}
 
         <MobilFold tittel="Bibliotek" ikon="layers">
           <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} />

@@ -142,6 +142,9 @@ export type WorkbenchData = {
   weekOffset?: number;
   /** Mandag 00:00 (ISO) for uka dataen gjelder — UI utleder datotall + i-dag. */
   weekStartISO?: string;
+  /** Måneden uka ligger i: én rad per dag MED økter (plan + v2, dublett-luket).
+   *  UI-en bygger selve kalendergriden fra weekStartISO — dette er kun innholdet. */
+  monthDays?: { dateISO: string; count: number; axes: { ax: Axis; min: number }[] }[];
 };
 
 // ───────── Konstanter ─────────
@@ -236,6 +239,11 @@ export async function loadWorkbenchData(
   const tretti = new Date(now);
   tretti.setDate(tretti.getDate() - 30);
 
+  // Månedsvinduet følger den NAVIGERTE uka (weekStart), ikke dagens dato —
+  // månedsvisningen skal vise måneden brukeren faktisk ser på.
+  const monthStart = new Date(weekStart.getFullYear(), weekStart.getMonth(), 1);
+  const monthEnd = new Date(weekStart.getFullYear(), weekStart.getMonth() + 1, 1);
+
   const year = now.getFullYear();
 
   const [
@@ -249,6 +257,8 @@ export async function loadWorkbenchData(
     v2WeekSessions,
     groupMemberships,
     planTemplates,
+    monthPlanSessions,
+    monthV2Sessions,
   ] = await Promise.all([
     prisma.trainingPlanSession.findMany({
       where: { plan: { userId }, scheduledAt: { gte: weekStart, lt: weekEnd } },
@@ -364,6 +374,24 @@ export async function loadWorkbenchData(
         },
       },
     }),
+    // Månedsaggregat (månedsvisningen i Workbench-zoomen): kun feltene
+    // dag-cellene trenger. Plan + v2 lukes for dubletter via generertFraId
+    // under, samme regel som mergeWeekSessions.
+    prisma.trainingPlanSession.findMany({
+      where: { plan: { userId }, scheduledAt: { gte: monthStart, lt: monthEnd } },
+      select: { id: true, scheduledAt: true, durationMin: true, pyramidArea: true },
+    }),
+    prisma.trainingSessionV2.findMany({
+      where: { studentId: userId, startTime: { gte: monthStart, lt: monthEnd } },
+      select: {
+        id: true,
+        startTime: true,
+        endTime: true,
+        generertFraId: true,
+        drills: { select: { pyramide: true } },
+        practiceType: true,
+      },
+    }),
   ]);
 
   // Aktiv periode-blokk (dagens dato innenfor start/slutt) → ukevolum-mål + coach-fokus.
@@ -426,6 +454,49 @@ export async function loadWorkbenchData(
     weekSessions as PlanWeekSessionInput[],
     v2WeekSessions as V2WeekSessionInput[],
   );
+
+  // ── Månedsaggregat: plan + v2 (dublett-luket via generertFraId, samme regel
+  // som mergeWeekSessions), gruppert per lokal dato. Akse for v2 utledes som i
+  // v2ToWeekRow (topp-drill-pyramide, ellers practiceType-fallback).
+  const monthPlanIds = new Set(monthPlanSessions.map((s) => s.id));
+  type MndCelle = { count: number; axes: Map<Axis, number> };
+  const mndMap = new Map<string, MndCelle>();
+  const localDateKey = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const leggTilMnd = (dato: Date, ax: Axis, min: number) => {
+    const key = localDateKey(dato);
+    const celle = mndMap.get(key) ?? { count: 0, axes: new Map<Axis, number>() };
+    celle.count += 1;
+    celle.axes.set(ax, (celle.axes.get(ax) ?? 0) + min);
+    mndMap.set(key, celle);
+  };
+  for (const s of monthPlanSessions) {
+    leggTilMnd(s.scheduledAt, PYR_TONE[s.pyramidArea], s.durationMin);
+  }
+  for (const v of monthV2Sessions) {
+    if (v.generertFraId && monthPlanIds.has(v.generertFraId)) continue;
+    const topDrill = v.drills[0]?.pyramide;
+    const area = (
+      topDrill && ["FYS", "TEK", "SLAG", "SPILL", "TURN"].includes(topDrill)
+        ? topDrill
+        : v.practiceType === "KONKURRANSE"
+          ? "TURN"
+          : v.practiceType === "SPILL_TEST"
+            ? "SPILL"
+            : v.practiceType === "RANDOM"
+              ? "SLAG"
+              : "TEK"
+    ) as PyramidArea;
+    const min = Math.max(5, Math.round((v.endTime.getTime() - v.startTime.getTime()) / 60_000));
+    leggTilMnd(v.startTime, PYR_TONE[area], min);
+  }
+  const monthDays = [...mndMap.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([dateISO, c]) => ({
+      dateISO,
+      count: c.count,
+      axes: [...c.axes.entries()].map(([ax, min]) => ({ ax, min })),
+    }));
 
   // «I dag» markeres kun når vi faktisk ser på inneværende uke. -1 = ingen.
   const todayDow = offset === 0 ? (now.getDay() + 6) % 7 : -1;
@@ -683,6 +754,7 @@ export async function loadWorkbenchData(
     usesV2Sessions: v2WeekSessions.length > 0,
     weekOffset: offset,
     weekStartISO,
+    monthDays: monthDays.length > 0 ? monthDays : undefined,
   };
 }
 
