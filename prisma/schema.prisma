@@ -1453,6 +1453,19 @@ model TrackManSession {
 
 // Agent-pipeline (Fase 1.12)
 
+/// B5: arkiverte månedsrapporter (én per kalendermåned). payload er
+/// zod-validert ved lesing (MaanedsrapportSchema i lib/agents/maanedsrapport).
+model MonthlyReport {
+  id        String   @id @default(cuid())
+  year      Int
+  month     Int // 1–12
+  payload   Json
+  createdAt DateTime @default(now())
+
+  @@unique([year, month])
+  @@map("monthly_reports")
+}
+
 model Signal {
   id         String   @id @default(cuid())
   userId     String

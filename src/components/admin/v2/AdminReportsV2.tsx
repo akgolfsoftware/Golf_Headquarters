@@ -16,6 +16,7 @@
  * ligger i bunn av hvert kort så trykkflaten er stor på 375px.
  */
 
+import type { Maanedsrapport } from "@/lib/agents/maanedsrapport";
 import Link from "next/link";
 import {
   Caps,
@@ -33,6 +34,52 @@ export interface ReportsV2Data {
   okter: number;
   /** Inneværende sesongår. */
   sesong: number;
+  /** B5: arkiverte månedsrapporter (nyeste først, maks 12). */
+  maanedsrapporter: Maanedsrapport[];
+  /** VIEW_FINANCE: false = beløp er nullet av loaderen og skjules. */
+  visKroner: boolean;
+}
+
+const MND_NAVN = ["januar", "februar", "mars", "april", "mai", "juni", "juli", "august", "september", "oktober", "november", "desember"];
+
+function kr(ore: number): string {
+  return `${Math.round(ore / 100).toLocaleString("nb-NO")} kr`;
+}
+
+/** B5: én månedsrapport — totalen + per selskap. */
+function MaanedsrapportKort({ r, visKroner }: { r: Maanedsrapport; visKroner: boolean }) {
+  return (
+    <Kort eyebrow={`${MND_NAVN[r.month - 1]} ${r.year}`}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 18, marginTop: 4 }}>
+        <TallPar label="Bookinger" verdi={String(r.totalt.bookinger)} />
+        {visKroner && <TallPar label="Bookingverdi" verdi={kr(r.totalt.bookingVerdiOre)} />}
+        {visKroner && <TallPar label="Innbetalt" verdi={kr(r.totalt.innbetaltOre)} />}
+        <TallPar label="Nye spillere" verdi={String(r.totalt.nyeSpillere)} />
+        <TallPar label="Økter gjennomført" verdi={String(r.totalt.okterGjennomfort)} />
+      </div>
+      {r.perSelskap.length > 0 && (
+        <div style={{ marginTop: 16, borderTop: `1px solid ${T.border}`, paddingTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+          {r.perSelskap.map((sel) => (
+            <div key={sel.navn} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
+              <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>{sel.navn}</span>
+              <span style={{ fontFamily: T.mono, fontSize: 12, color: T.fg, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+                {sel.bookinger} bookinger{visKroner ? ` · ${kr(sel.innbetaltOre)} inn` : ""}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </Kort>
+  );
+}
+
+function TallPar({ label, verdi }: { label: string; verdi: string }) {
+  return (
+    <div>
+      <Caps size={9}>{label}</Caps>
+      <div style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 700, color: T.fg, marginTop: 6, fontVariantNumeric: "tabular-nums" }}>{verdi}</div>
+    </div>
+  );
 }
 
 interface Tile {
@@ -118,7 +165,7 @@ function RapportKort({ t }: { t: Tile }) {
 }
 
 export function AdminReportsV2({ data }: { data: ReportsV2Data }) {
-  const { spillere, okter, sesong } = data;
+  const { spillere, okter, sesong, maanedsrapporter, visKroner } = data;
 
   const tiles: Tile[] = [
     {
@@ -200,6 +247,26 @@ export function AdminReportsV2({ data }: { data: ReportsV2Data }) {
         {tiles.map((t) => (
           <RapportKort key={t.navn} t={t} />
         ))}
+      </div>
+
+      {/* B5: månedsrapport-arkivet (cron 1. i måneden) */}
+      <div>
+        <Caps>Månedsrapporter · per selskap</Caps>
+        {maanedsrapporter.length === 0 ? (
+          <div style={{ marginTop: 12 }}>
+            <Kort>
+              <span style={{ fontFamily: T.ui, fontSize: 13, color: T.mut }}>
+                Første månedsrapport genereres automatisk natt til den 1. — arkivet bygger seg opp her.
+              </span>
+            </Kort>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: T.gap, marginTop: 12 }}>
+            {maanedsrapporter.map((r) => (
+              <MaanedsrapportKort key={`${r.year}-${r.month}`} r={r} visKroner={visKroner} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

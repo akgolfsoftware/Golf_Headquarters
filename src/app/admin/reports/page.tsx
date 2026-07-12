@@ -13,6 +13,8 @@
 import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { can, Capability } from "@/lib/auth/cbac";
+import { parseMaanedsrapport } from "@/lib/agents/maanedsrapport";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { AdminReportsV2 } from "@/components/admin/v2/AdminReportsV2";
 
@@ -21,15 +23,38 @@ export const dynamic = "force-dynamic";
 export default async function V2AdminReportsPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
-  const [spillere, okter] = await Promise.all([
+  const [spillere, okter, rapportRader] = await Promise.all([
     prisma.user.count({ where: { AND: [coachedPlayerWhere(), { deletedAt: null }] } }),
     prisma.trainingPlanSession.count({ where: { status: "COMPLETED" } }),
+    prisma.monthlyReport.findMany({
+      orderBy: [{ year: "desc" }, { month: "desc" }],
+      take: 12,
+      select: { payload: true },
+    }),
   ]);
+
+  // B5: kronetall kun bak VIEW_FINANCE — uten capability sendes rapportene
+  // med nullede beløp (antall/aktivitet vises fortsatt).
+  const kanSeFinans = can(user.role, Capability.VIEW_FINANCE);
+  const maanedsrapporter = rapportRader
+    .map((r) => parseMaanedsrapport(r.payload))
+    .filter((r): r is NonNullable<typeof r> => r != null)
+    .map((r) =>
+      kanSeFinans
+        ? r
+        : {
+            ...r,
+            totalt: { ...r.totalt, bookingVerdiOre: 0, innbetaltOre: 0 },
+            perSelskap: r.perSelskap.map((sel) => ({ ...sel, bookingVerdiOre: 0, innbetaltOre: 0 })),
+          },
+    );
 
   const data = {
     spillere,
     okter,
     sesong: new Date().getFullYear(),
+    maanedsrapporter,
+    visKroner: kanSeFinans,
   };
 
   return (

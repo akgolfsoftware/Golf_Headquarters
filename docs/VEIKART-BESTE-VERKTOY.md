@@ -99,6 +99,15 @@
 > Kun ekte data — ærlige tomtilstander. FUNN: player_swing_videos-tabellen
 > mangler i DB (schema-drift-klasse #3) — swing-video-spørringen venter på
 > kirurgisk migrering (Anders-ja). Playwright: alle 7 faner verifisert.
+> 2026-07-13 (natt) · B5 LEVERT — månedsrapport per selskap: ny agent
+> maanedsrapport (cron natt til 1.) bygger forrige måneds nøkkeltall per
+> lokasjon (GFGK/WANG/Mulligan/Miklagard = selskaps-dimensjonen) + totalt:
+> bookinger, bookingverdi, innbetalt (Payment SUCCEEDED via bookingens
+> lokasjon; ukoblede samles ærlig under «Uten lokasjon»), nye spillere,
+> økter gjennomført. Arkiveres i ny additiv tabell monthly_reports (upsert
+> = idempotent, zod ved lesing); reports-siden viser arkivet (siste 12) —
+> kronetall kun bak VIEW_FINANCE. Verifisert med ekte juni-data: 5 book-
+> inger · 29 400 kr innbetalt · 17 nye spillere · 30 økter, synlig i UI.
 > 2026-07-13 (natt) · DESIGN-AUDIT + FIKS-SERIE 1 LEVERT — full audit av
 > 17 skjermer × 2 viewports (mørk modus, Playwright-screenshots med
 > piksel-målinger) ga 10 prioriterte funn. Fikset i denne serien:
