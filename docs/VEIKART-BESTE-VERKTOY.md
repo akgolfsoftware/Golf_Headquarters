@@ -99,6 +99,13 @@
 > Kun ekte data — ærlige tomtilstander. FUNN: player_swing_videos-tabellen
 > mangler i DB (schema-drift-klasse #3) — swing-video-spørringen venter på
 > kirurgisk migrering (Anders-ja). Playwright: alle 7 faner verifisert.
+> 2026-07-13 (natt) · B3 (kjernen) LEVERT — lead-løypa: daglig cron fanger
+> gjennomførte gjeste-bookinger (prøvetime uten konto, 14-dagers vindu)
+> → Lead-pipelinen (source provetime-booking, dedup på e-post, hopper
+> over gjester som har fått konto) + coach-varsel med ferdig pakketilbud-
+> tekst. INGEN auto-e-post til kunde — mennesket sender (Del 3-regelen).
+> Pipeline-flaten (tellere/kanban) kommer med M1-marketing. Verifisert
+> e2e med syntetisk gjest: lead + varsel + dedup + 0 rester.
 > 2026-07-13 (natt) · C5b LEVERT — én-trykks gjennomført/avvik i Gjør-
 > flaten: «Gjort» og «Hopp over»-knapper rett på neste økt-kortet og hver
 > rad i «Resten av dagen» (begge økt-kildene: plan + v2, speilet holdes i

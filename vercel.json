@@ -156,6 +156,10 @@
     {
       "path": "/api/cron/maanedsrapport",
       "schedule": "0 4 1 * *"
+    },
+    {
+      "path": "/api/cron/lead-oppfolging",
+      "schedule": "0 6 * * *"
     }
   ],
   "regions": [

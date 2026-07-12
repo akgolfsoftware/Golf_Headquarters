@@ -8,6 +8,7 @@ import { runChurnRadar } from "@/lib/agents/churn-radar";
 import { runBetalingsPurring } from "@/lib/agents/betalings-purring";
 import { runUkesoppsummering } from "@/lib/agents/ukesoppsummering";
 import { runMaanedsrapport } from "@/lib/agents/maanedsrapport";
+import { runLeadOppfolging } from "@/lib/agents/lead-oppfolging";
 import { runBookingReminders } from "@/lib/agents/booking-reminders";
 import { runCleanupRecordings } from "@/lib/agents/cleanup-recordings";
 import { runRefreshCalendarWatches } from "@/lib/agents/refresh-calendar-watches";
@@ -53,6 +54,7 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "betalings-purring": () => runBetalingsPurring(),
   ukesoppsummering: runUkesoppsummering,
   maanedsrapport: () => runMaanedsrapport(),
+  "lead-oppfolging": runLeadOppfolging,
   "booking-reminders": runBookingReminders,
   "cleanup-recordings": runCleanupRecordings,
   "refresh-calendar-watches": runRefreshCalendarWatches,
