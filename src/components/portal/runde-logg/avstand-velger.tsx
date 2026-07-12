@@ -94,9 +94,9 @@ export function AvstandVelger({ kontekst, hullLengde, verdi, onVerdi }: AvstandV
                 fontFamily: T.mono,
                 fontSize: 13,
                 fontWeight: 700,
-                background: on ? "rgba(209,248,67,0.12)" : T.panel2,
+                background: on ? "color-mix(in srgb, var(--v2-lime) 12%, transparent)" : T.panel2,
                 color: on ? T.lime : T.fg2,
-                border: `1px solid ${on ? "rgba(209,248,67,0.4)" : T.border}`,
+                border: `1px solid ${on ? "color-mix(in srgb, var(--v2-lime) 40%, transparent)" : T.border}`,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -110,7 +110,7 @@ export function AvstandVelger({ kontekst, hullLengde, verdi, onVerdi }: AvstandV
                     fontFamily: T.mono,
                     fontSize: 8,
                     fontWeight: 600,
-                    color: on ? "rgba(209,248,67,0.7)" : T.mut,
+                    color: on ? "color-mix(in srgb, var(--v2-lime) 70%, transparent)" : T.mut,
                   }}
                 >
                   {fot(c)} ft

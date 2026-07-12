@@ -135,8 +135,8 @@ export function Oppsummering({
             gap: 8,
             padding: "10px 12px",
             borderRadius: 12,
-            background: "rgba(240,104,62,0.08)",
-            border: "1px solid rgba(240,104,62,0.35)",
+            background: "color-mix(in srgb, var(--v2-down) 8%, transparent)",
+            border: "1px solid color-mix(in srgb, var(--v2-down) 35%, transparent)",
           }}
         >
           <Icon name="triangle-alert" size={14} style={{ color: T.down, flex: "none" }} />
@@ -166,7 +166,7 @@ export function Oppsummering({
           justifyContent: "center",
           gap: 8,
           opacity: lagrer ? 0.75 : 1,
-          boxShadow: "0 10px 34px rgba(209,248,67,0.28)",
+          boxShadow: "0 10px 34px color-mix(in srgb, var(--v2-lime) 28%, transparent)",
         }}
       >
         {lagrer

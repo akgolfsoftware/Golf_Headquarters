@@ -113,6 +113,17 @@
 > beregner akutt/kronisk fra eksisterende 30-dagers spørring (kun
 > select-utvidelse med scheduledAt — ingen ny spørring). Vises kun når
 > belastningsdata finnes. Neste: WB4 publiser-diff.
+> 2026-07-12 (natt) · BETA-RUNDE KLAR (banetest i morgen): slag-for-slag-
+> føringen verifisert ende-til-ende på mobil (390px) som spiller — CTA
+> «Før runde slag for slag» lagt på Gjør-siden + Hjem (maks 2 trykk);
+> hele flyten kjørt: bane-valg → 2 hull ført → «Lagre 2 hull» →
+> oppsummering m/ ærlig dekningstekst → lagret i DB med server-beregnet
+> SG (verifisert: score 2, sgTotal +6,12, 2 shots + 2 holeScores) →
+> testrunde slettet (0 rester). Designløft: alle hardkodede signal-farger
+> i runde-logg → tema-variabler; føringen følger nå lys/mørk-veksleren
+> (skjermbilder begge moduser — lys = sollys-modus på banen). Autolagring
+> («Uferdig runde funnet» → Fortsett/Forkast) bekreftet visuelt.
+> Coach kan IKKE føre for spiller (notert som senere sak — ikke blocker).
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag

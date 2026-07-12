@@ -154,7 +154,7 @@ export function FullforKjedeKlient({
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <Kort>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, textAlign: "center", padding: "10px 0" }}>
-            <span style={{ width: 56, height: 56, borderRadius: 9999, background: "rgba(209,248,67,0.12)", border: "1px solid rgba(209,248,67,0.45)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+            <span style={{ width: 56, height: 56, borderRadius: 9999, background: "color-mix(in srgb, var(--v2-lime) 12%, transparent)", border: "1px solid color-mix(in srgb, var(--v2-lime) 45%, transparent)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
               <Icon name="trending-up" size={26} style={{ color: T.lime }} />
             </span>
             <div style={{ fontFamily: T.disp, fontSize: 19, fontWeight: 700, color: T.fg }}>
@@ -252,7 +252,7 @@ export function FullforKjedeKlient({
             )}
 
             {(mismatch || forMange) && (
-              <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 12, background: "rgba(240,104,62,0.08)", border: "1px solid rgba(240,104,62,0.35)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 12, background: "color-mix(in srgb, var(--v2-down) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--v2-down) 35%, transparent)" }}>
                 <Icon name="triangle-alert" size={14} style={{ color: T.down, flex: "none" }} />
                 <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.fg, lineHeight: 1.5 }}>
                   Kjeden har <b>{slag.length} slag + {straffer} straffer</b>, men scorekortet sier{" "}
@@ -274,7 +274,7 @@ export function FullforKjedeKlient({
             )}
 
             {feil && (
-              <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 12, background: "rgba(240,104,62,0.08)", border: "1px solid rgba(240,104,62,0.35)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 12, background: "color-mix(in srgb, var(--v2-down) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--v2-down) 35%, transparent)" }}>
                 <Icon name="triangle-alert" size={14} style={{ color: T.down, flex: "none" }} />
                 <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.fg }}>{feil}</span>
               </div>

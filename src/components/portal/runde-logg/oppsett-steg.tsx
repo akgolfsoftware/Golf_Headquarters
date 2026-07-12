@@ -299,7 +299,7 @@ export function OppsettSteg({ modus, baner, initial, onStart }: OppsettStegProps
           alignItems: "center",
           justifyContent: "center",
           gap: 8,
-          boxShadow: gyldig ? "0 10px 34px rgba(209,248,67,0.28)" : "none",
+          boxShadow: gyldig ? "0 10px 34px color-mix(in srgb, var(--v2-lime) 28%, transparent)" : "none",
         }}
       >
         Til hull {hull[0]?.holeNumber ?? 1}

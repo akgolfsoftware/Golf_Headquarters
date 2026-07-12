@@ -17,10 +17,10 @@ function scoreFor(hull: LoggetHull): number | null {
 function farge(par: number, s: number | null) {
   if (s == null) return { bg: T.panel2, bd: T.border, fg: T.mut };
   const d = s - par;
-  if (d < 0) return { bg: "rgba(79,208,138,0.14)", bd: "rgba(79,208,138,0.45)", fg: T.up };
+  if (d < 0) return { bg: "color-mix(in srgb, var(--v2-up) 14%, transparent)", bd: "color-mix(in srgb, var(--v2-up) 45%, transparent)", fg: T.up };
   if (d === 0) return { bg: T.panel3, bd: T.borderS, fg: T.fg };
-  if (d === 1) return { bg: "rgba(232,180,60,0.12)", bd: "rgba(232,180,60,0.4)", fg: T.warn };
-  return { bg: "rgba(240,104,62,0.12)", bd: "rgba(240,104,62,0.45)", fg: T.down };
+  if (d === 1) return { bg: "color-mix(in srgb, var(--v2-warn) 12%, transparent)", bd: "color-mix(in srgb, var(--v2-warn) 40%, transparent)", fg: T.warn };
+  return { bg: "color-mix(in srgb, var(--v2-down) 12%, transparent)", bd: "color-mix(in srgb, var(--v2-down) 45%, transparent)", fg: T.down };
 }
 
 type HullOversiktProps = {

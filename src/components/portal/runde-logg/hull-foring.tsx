@@ -290,8 +290,8 @@ export function HullForing({
                 width: 52,
                 height: 52,
                 borderRadius: 9999,
-                background: "rgba(79,208,138,0.12)",
-                border: "1px solid rgba(79,208,138,0.4)",
+                background: "color-mix(in srgb, var(--v2-up) 12%, transparent)",
+                border: "1px solid color-mix(in srgb, var(--v2-up) 40%, transparent)",
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -362,7 +362,7 @@ export function HullForing({
               alignItems: "center",
               justifyContent: "center",
               gap: 8,
-              boxShadow: "0 10px 34px rgba(209,248,67,0.28)",
+              boxShadow: "0 10px 34px color-mix(in srgb, var(--v2-lime) 28%, transparent)",
             }}
           >
             {ferdigeFor + 1 >= antallHull ? "Til oppsummering" : `Neste hull`}

@@ -100,6 +100,27 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
         {headerStatus}
       </div>
 
+      {/* BETA-RUNDE: runde-føring skal nås med maks 2 trykk fra åpnet app —
+          alltid synlig her på Gjør, uavhengig av dagens økter. */}
+      <Kort tint eyebrow="Runde">
+        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+          <div style={{ flex: 1, minWidth: 180 }}>
+            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>Spille runde?</div>
+            <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 4 }}>
+              Før slag for slag på banen — SG beregnes automatisk når du lagrer.
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <Link href="/portal/runde/live" style={{ textDecoration: "none" }}>
+              <CTAPill icon="flag">Før runde slag for slag</CTAPill>
+            </Link>
+            <Link href="/portal/runde/logg" style={{ textDecoration: "none" }}>
+              <CTAPill ghost icon="list">Logg tidligere runde</CTAPill>
+            </Link>
+          </div>
+        </div>
+      </Kort>
+
       {antall === 0 ? (
         <Kort>
           <TomTilstand

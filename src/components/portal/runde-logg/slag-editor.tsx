@@ -198,7 +198,7 @@ export function SlagEditor({
           alignItems: "center",
           justifyContent: "center",
           gap: 8,
-          boxShadow: straffe ? "none" : "0 10px 34px rgba(209,248,67,0.28)",
+          boxShadow: straffe ? "none" : "0 10px 34px color-mix(in srgb, var(--v2-lime) 28%, transparent)",
         }}
       >
         <Icon name="flag" size={17} />I HULL
@@ -323,8 +323,8 @@ export function SlagEditor({
           onClick={() => setStraffe((s) => !s)}
           className="v2-press v2-focus"
           style={pill(straffe, {
-            bg: "rgba(240,104,62,0.12)",
-            bd: "rgba(240,104,62,0.4)",
+            bg: "color-mix(in srgb, var(--v2-down) 12%, transparent)",
+            bd: "color-mix(in srgb, var(--v2-down) 40%, transparent)",
             fg: T.down,
           })}
         >

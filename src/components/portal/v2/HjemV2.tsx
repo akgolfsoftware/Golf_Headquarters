@@ -235,8 +235,15 @@ export function HjemV2({ data }: { data: DashboardData }) {
         </Link>
       </div>
 
-      {/* Book coachtime — inngang til booking (ingen egen plass i hovednav) */}
-      <Kort>
+      {/* Runde-føring + booking — faste innganger (runde: maks 2 trykk fra åpnet app) */}
+      <Kort pad="8px 20px">
+        <Link href="/portal/runde/live" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+          <Rad
+            leading={<Icon name="flag" size={16} style={{ color: T.lime }} />}
+            title="Før runde slag for slag"
+            sub="SG beregnes automatisk når du lagrer"
+          />
+        </Link>
         <Link href="/portal/booking" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
           <Rad
             leading={<Icon name="calendar-plus" size={16} style={{ color: T.mut }} />}
