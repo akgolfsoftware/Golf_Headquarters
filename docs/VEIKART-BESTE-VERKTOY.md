@@ -21,6 +21,29 @@
 > selvbetjente. Unntak dokumentert: booking-wizard + gruppe-innmelding
 > (lead-/opplåsingsflyt). Gjenstår i I0: Playwright-negativtest med seedet
 > PLATFORM_ONLY-bruker.
+> 2026-07-12 · I1 LEVERT (kjerne): trykk tom kalenderdag → ny booking med
+> dato/tid prefylt (?start=); tom-klikk i Workbench-tidslinja → Ny økt med
+> dag+klokkeslett fra trykkpunktet. Gjenstår: måned-celler («Ny hendelse» ved I3).
+> 2026-07-12 · I6 LEVERT: valgt økt i Workbench redigeres ved trykk (akse/
+> tittel/tid/varighet); delt executeSessionUpdate m/ v2-speil-synk.
+> 2026-07-13 · I5 FERDIG: ekte drag-and-drop i uka-kanbanen (flyttBookingTilDag),
+> oppfølgingskøen (Signal OPPFOLGING_STATUS 7d — «Løst» er nå EKTE) og
+> kalenderens uke-visning (serie-projeksjoner bevisst ikke dragbare).
+> Handlingssenter-DnD utgår ærlig (flaten er hastegrad-liste, ikke kanban).
+> 2026-07-13 · I7 LEVERT (hoveddel): 62 kandidater → 24 undersider fikk
+> TilbakeLenke til logisk forelder; loop-felle fanget (radar toppflate etter
+> B5). Gjenstår: 10 meg-/legacy-sider (ved rekomponering) + grupper-timeplan.
+> 2026-07-13 · P4 LEVERT (hoveddel): legacy-loading (82 admin + portal) viste
+> gamle grå SkeletonCard-firkanter i mørk chrome — begge bruker nå V2Laster.
+> «Firkantene» fikset; per-skjerm speilende skeletons ved rekomponering.
+> 2026-07-13 · Å3 LEVERT + prod-bug fikset: groups.maxParticipants manglet i
+> databasen (gruppe-detalj kræsjet stille — samme feilklasse som coachId;
+> kolonne inn m/ Anders' ja). «Rull ut mal til gruppa» på gruppe-detalj:
+> mal + uker + startuke → alle medlemmer i én operasjon, duplikat-vern
+> rapporterer hoppede. I8-funn: «Åpne gruppe»/«Timeplan»-CTA (detaljsiden var
+> unåbar fra lista). Verifisert live hele kjeden (0-spillere-gruppe → ærlig
+> «0 økter for 0 spillere»). VENTER TIL SLUTT (Anders): I2 Google · I3
+> hendelser · I4 Stripe · Å1/Å2-tabell. NESTE: I8-revisjon + R2-rydding.
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag
