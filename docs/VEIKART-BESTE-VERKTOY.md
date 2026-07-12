@@ -218,6 +218,14 @@
 > fikset); redigering skjer i økt-popupen (8c.7-komponisten). Dermed er
 > ALLE WB-pakkene (WB1–WB5) + hele Del 8c levert. Neste per plan Del 9:
 > Å-bølge-rester + Bølge 2 (motoren: A1 godkjenningskø, C1 ukesyklus).
+> 2026-07-13 (natt) · Å1-UTRULLING LEVERT (planleggings-pyramidens kjerne):
+> «Rull ut til N spillere»-knapp på gruppe-workbenchen — gruppens perioder
+> kopieres til hvert medlems individuelle SeasonPlan/PeriodBlock i én
+> operasjon (bekreft-popup med antall; duplikat-vern: overlappende periode
+> av samme type hoppes over og rapporteres — aldri overskriving; try/catch
+> per spiller). Verifisert live: 1 gruppeperiode → 18 spillere fikk den
+> (DB-bekreftet 18 kopier) → alt ryddet (kopier + 19 tomme sesongplaner +
+> gruppeblokk). Gruppe-årsplan → individuelle planer er nå ÉN økt-flyt.
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag

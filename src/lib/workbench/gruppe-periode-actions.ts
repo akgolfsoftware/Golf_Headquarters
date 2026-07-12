@@ -60,3 +60,89 @@ export async function coachSlettGruppePeriode(
   revalidatePath(`/admin/grupper/${groupId}/workbench`);
   return { ok: true };
 }
+
+/**
+ * Å1: rull ut gruppens årsplan til medlemmenes individuelle SeasonPlan.
+ * Duplikat-vern: spillere som alt har en overlappende periode av samme
+ * type hoppes over (rapporteres) — aldri overskriving. try/catch per
+ * spiller så én feil ikke stopper resten.
+ */
+export async function coachRullUtGruppeAarsplan(
+  groupId: string,
+): Promise<{ ok: boolean; spillere?: number; perioderLagt?: number; hoppet?: string[]; error?: string }> {
+  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+
+  const [blokker, medlemmer] = await Promise.all([
+    prisma.groupPeriodBlock.findMany({
+      where: { groupId },
+      orderBy: { startDate: "asc" },
+      select: {
+        lPhase: true,
+        startDate: true,
+        endDate: true,
+        focus: true,
+        weeklyVolMin: true,
+        weeklyVolMax: true,
+        weeklySessionBudget: true,
+      },
+    }),
+    prisma.groupMember.findMany({
+      where: { groupId, role: "PLAYER" },
+      select: { userId: true, user: { select: { name: true } } },
+    }),
+  ]);
+  if (blokker.length === 0) return { ok: false, error: "Gruppen har ingen perioder å rulle ut" };
+  if (medlemmer.length === 0) return { ok: false, error: "Gruppen har ingen medlemmer" };
+
+  const hoppet: string[] = [];
+  let perioderLagt = 0;
+  let spillereTruffet = 0;
+
+  for (const m of medlemmer) {
+    try {
+      let laLokalt = 0;
+      for (const b of blokker) {
+        const year = b.startDate.getFullYear();
+        let plan = await prisma.seasonPlan.findFirst({ where: { userId: m.userId, year }, select: { id: true } });
+        if (!plan) {
+          plan = await prisma.seasonPlan.create({
+            data: { userId: m.userId, year, name: `Sesong ${year}`, startDate: new Date(year, 0, 1), endDate: new Date(year, 11, 31) },
+            select: { id: true },
+          });
+        }
+        // Duplikat-vern: samme type med overlappende datoer → hopp.
+        const overlapp = await prisma.periodBlock.findFirst({
+          where: {
+            seasonPlanId: plan.id,
+            lPhase: b.lPhase,
+            startDate: { lte: b.endDate },
+            endDate: { gte: b.startDate },
+          },
+          select: { id: true },
+        });
+        if (overlapp) continue;
+        await prisma.periodBlock.create({
+          data: {
+            seasonPlanId: plan.id,
+            lPhase: b.lPhase,
+            startDate: b.startDate,
+            endDate: b.endDate,
+            focus: b.focus,
+            weeklyVolMin: b.weeklyVolMin,
+            weeklyVolMax: b.weeklyVolMax,
+            weeklySessionBudget: b.weeklySessionBudget ?? undefined,
+          },
+        });
+        laLokalt++;
+      }
+      if (laLokalt > 0) spillereTruffet++;
+      else hoppet.push(m.user.name ?? m.userId);
+      perioderLagt += laLokalt;
+    } catch {
+      hoppet.push(m.user.name ?? m.userId);
+    }
+  }
+
+  revalidatePath(`/admin/grupper/${groupId}/workbench`);
+  return { ok: true, spillere: spillereTruffet, perioderLagt, hoppet };
+}

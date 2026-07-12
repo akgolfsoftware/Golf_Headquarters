@@ -13,7 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { TilbakeLenke, Kort, Caps } from "@/components/v2";
 import { GruppeAarsplanKlient } from "./gruppe-aarsplan-klient";
-import { coachLagreGruppePeriode, coachSlettGruppePeriode } from "@/lib/workbench/gruppe-periode-actions";
+import { coachLagreGruppePeriode, coachSlettGruppePeriode, coachRullUtGruppeAarsplan } from "@/lib/workbench/gruppe-periode-actions";
 import { parseSessionBudget } from "@/lib/workbench/perioder";
 
 export const dynamic = "force-dynamic";
@@ -72,6 +72,7 @@ export default async function GruppeWorkbenchPage({ params }: { params: Promise<
         seasonBlocks={seasonBlocks}
         onLagre={coachLagreGruppePeriode.bind(null, gruppe.id)}
         onSlett={coachSlettGruppePeriode.bind(null, gruppe.id)}
+        onRullUt={coachRullUtGruppeAarsplan.bind(null, gruppe.id)}
       />
       <Kort eyebrow="Faste gruppetider" action={<Link href={`/admin/grupper/${gruppe.id}/timeplan`} style={{ textDecoration: "none" }}><Caps size={9}>Rediger timeplan →</Caps></Link>}>
         {gruppe.schedules.length > 0 ? (
