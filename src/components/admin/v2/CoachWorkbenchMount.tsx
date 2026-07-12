@@ -15,7 +15,7 @@
  */
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { Caps, Kort, TomTilstand, AvatarInit, Velger, TilbakeLenke } from "@/components/v2";
+import { Caps, Kort, TomTilstand, AvatarInit, Velger, TilbakeLenke, type VelgerIdValg } from "@/components/v2";
 import { T } from "@/lib/v2/tokens";
 import { WorkbenchV2, type WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
@@ -46,28 +46,17 @@ export interface CoachWorkbenchMountProps {
 }
 
 /**
- * Bygg unike visnings-etiketter for velgeren (Velger er streng-basert). Ved
- * navnekollisjon disambiguer med et kort id-fragment, og hold en etikett→id-map
- * så navigasjonen forblir id-sikker.
+ * Id-baserte valg for velgeren — verdi og React-key er spiller-id (alltid
+ * unik), aldri visningsnavnet. Ved navnekollisjon disambiguerer etiketten med
+ * de SISTE fire id-tegnene (cuid-er deler prefiks, så starten skiller ikke).
  */
-function byggValg(players: CoachRosterPlayer[]): {
-  options: string[];
-  labelTilId: Map<string, string>;
-  idTilLabel: Map<string, string>;
-} {
-  const brukt = new Map<string, number>();
-  const options: string[] = [];
-  const labelTilId = new Map<string, string>();
-  const idTilLabel = new Map<string, string>();
-  for (const p of players) {
-    const antall = brukt.get(p.navn) ?? 0;
-    brukt.set(p.navn, antall + 1);
-    const label = antall === 0 ? p.navn : `${p.navn} · ${p.id.slice(0, 4)}`;
-    options.push(label);
-    labelTilId.set(label, p.id);
-    idTilLabel.set(p.id, label);
-  }
-  return { options, labelTilId, idTilLabel };
+function byggValg(players: CoachRosterPlayer[]): VelgerIdValg[] {
+  const antallPerNavn = new Map<string, number>();
+  for (const p of players) antallPerNavn.set(p.navn, (antallPerNavn.get(p.navn) ?? 0) + 1);
+  return players.map((p) => ({
+    value: p.id,
+    label: (antallPerNavn.get(p.navn) ?? 0) > 1 ? `${p.navn} · ${p.id.slice(-4)}` : p.navn,
+  }));
 }
 
 export function CoachWorkbenchMount({
@@ -99,11 +88,9 @@ export function CoachWorkbenchMount({
     );
   }
 
-  const { options, labelTilId, idTilLabel } = byggValg(players);
-  const aktivLabel = idTilLabel.get(currentPlayerId) ?? options[0];
+  const options = byggValg(players);
 
-  const bytt = (label: string) => {
-    const id = labelTilId.get(label);
+  const bytt = (id: string) => {
     if (id && id !== currentPlayerId) {
       const uke = searchParams.get("uke");
       const query = uke ? `?uke=${encodeURIComponent(uke)}` : "";
@@ -147,7 +134,7 @@ export function CoachWorkbenchMount({
             <Velger
               label="Planlegger for"
               options={options}
-              value={aktivLabel}
+              value={currentPlayerId}
               onChange={bytt}
             />
           </div>
@@ -155,11 +142,10 @@ export function CoachWorkbenchMount({
             <div style={{ minWidth: 180, flex: "0 1 220px" }}>
               <Velger
                 label="Gruppe"
-                options={["Velg gruppe…", ...groups.map((g) => g.name)]}
-                value="Velg gruppe…"
-                onChange={(navn) => {
-                  const g = groups.find((x) => x.name === navn);
-                  if (g) router.push(`/admin/grupper/${g.id}/workbench`);
+                options={[{ value: "", label: "Velg gruppe…" }, ...groups.map((g) => ({ value: g.id, label: g.name }))]}
+                value=""
+                onChange={(id) => {
+                  if (id) router.push(`/admin/grupper/${id}/workbench`);
                 }}
               />
             </div>
