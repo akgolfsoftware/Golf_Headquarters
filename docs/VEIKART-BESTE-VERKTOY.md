@@ -69,6 +69,22 @@
 > inn uke 1» (ny applyTemplate i actions-kontrakten, coach + spiller).
 > Verifisert live: coldstart → velg mal → 5 økter inn i tidslinja → ryddet.
 > Anders gjør komplett Workbench/AgencyOS-review etter denne.
+> 2026-07-12 (kveld) · DS1+DS2 LEVERT — tema-grunnmuren («for mørk i sol»):
+> dobbel tokenskala i globals.css (--v2-*): mørk default LYSNET (paneler og
+> kontrast opp, alle nøkkelpar målt WCAG AA) + ekte LYS modus (cream/hvit,
+> forest-aksent — aldri lime-på-lys). T-objektet leser CSS-variabler —
+> komponentene urørt. Sol/måne-veksler i railen + Mer-panelet; cookie
+> ak-v2-tema settes før paint via CSP-noncet inline-script (tema består
+> reload uten blits). Designprosjektets tokens/v2/tokens.css synket til
+> samme doble skala (DS1). Playwright-verifisert begge moduser.
+> 2026-07-12 (kveld) · WB1 LEVERT — dra-og-bekreft (Anders-logikken: alt som
+> tilføres/fjernes fra canvas → popup): (a) økt-brikke dras til klokkeslett →
+> Ny økt-popup PREFYLT (tittel/varighet/akse fra brikken, dag/tid fra
+> slippunktet) → Opprett; (b) mal-kort dras til canvas → bekreft-popup
+> (malnavn/økter/varighet) → applyTemplate; (c) sletting løftet fra inline-
+> knapp til bekreftelses-popup («Slett økt · tittel · dag · tid»).
+> Playwright-verifisert ende-til-ende (dra→popup→bekreft→økt lagret/slettet);
+> testdata ryddet til coldstart (0 rester). Anders' komplette review er neste.
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag

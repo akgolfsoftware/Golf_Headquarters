@@ -100,7 +100,8 @@ function statusLabel(s: PlanStatus | null | undefined): { l: string; tone: "info
 const DND_MIME = "application/x-akgolf-wb";
 type DndPayload =
   | { kind: "move"; sessionId: string }
-  | { kind: "add"; title: string; durMin: number; akse?: AkseKey };
+  | { kind: "add"; title: string; durMin: number; akse?: AkseKey }
+  | { kind: "mal"; templateId: string; name: string; sessionCount: number; varighetUker: number };
 
 function lesDndPayload(e: React.DragEvent): DndPayload | null {
   try {
@@ -164,7 +165,7 @@ function TLBlokk({ o, valgt, onVelg, dragbar }: { o: WeekEvent; valgt: boolean; 
  *  Med `onDropMove`/`onDropAdd` (kun når skrivesiden finnes) er kolonnene
  *  drop-soner: dra en økt-blokk til ny dag, eller en bibliotek-brikke inn
  *  på et klokkeslett (Y-posisjon → time, snappet til hel/halv). */
-function WBTidslinje({ dager, valgt, onVelg, onDropMove, onDropAdd, onTomKlikk }: {
+function WBTidslinje({ dager, valgt, onVelg, onDropMove, onDropAdd, onTomKlikk, onDropMal }: {
   dager: DagKol[];
   valgt: string | null;
   onVelg: (id: string) => void;
@@ -172,6 +173,8 @@ function WBTidslinje({ dager, valgt, onVelg, onDropMove, onDropAdd, onTomKlikk }
   onDropAdd?: (item: { title: string; durMin: number; akse?: AkseKey }, dayIndex: number, hour: number, minute: number) => void;
   /** I1: trykk på tom flate i en dag-kolonne → Ny økt med dag+tid prefylt. */
   onTomKlikk?: (dayIndex: number, hour: number, minute: number) => void;
+  /** Dra en MAL til canvas → bekreftelses-popup (Anders-logikken). */
+  onDropMal?: (mal: { templateId: string; name: string; sessionCount: number; varighetUker: number }) => void;
 }) {
   const [dropDag, setDropDag] = useState<number | null>(null);
   const timer: number[] = [];
@@ -234,6 +237,9 @@ function WBTidslinje({ dager, valgt, onVelg, onDropMove, onDropAdd, onTomKlikk }
                 if (payload.kind === "add" && onDropAdd) {
                   const { hour, minute } = tidFraY(e, e.currentTarget);
                   onDropAdd({ title: payload.title, durMin: payload.durMin, akse: payload.akse }, i, hour, minute);
+                }
+                if (payload.kind === "mal" && onDropMal) {
+                  onDropMal({ templateId: payload.templateId, name: payload.name, sessionCount: payload.sessionCount, varighetUker: payload.varighetUker });
                 }
               } : undefined}
               style={{
@@ -328,7 +334,15 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
             <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.mut }}>{data.planTemplates?.length ?? 0}</span>
           </div>
           {maler.length ? maler.map((m) => (
-            <div key={m.id} style={{ padding: "11px 12px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
+            <div
+              key={m.id}
+              draggable={!!onBrukMal}
+              onDragStart={onBrukMal ? (e) => {
+                e.dataTransfer.setData(DND_MIME, JSON.stringify({ kind: "mal", templateId: m.id, name: m.name, sessionCount: m.sessionCount, varighetUker: m.varighetUker } satisfies DndPayload));
+                e.dataTransfer.effectAllowed = "copy";
+              } : undefined}
+              style={{ padding: "11px 12px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}`, cursor: onBrukMal ? "grab" : "default" }}
+            >
               <span style={{ display: "block", minWidth: 0, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{m.name}</span>
               <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, display: "block", marginTop: 3 }}>{m.sessionCount} økter · {LPHASE_LABEL[m.lPhase] ?? m.lPhase} · {m.varighetUker} uker</span>
               {onBrukMal && (
@@ -374,9 +388,11 @@ function BalSeksjon({ label, right, children }: { label: string; right?: React.R
   );
 }
 
-export function WBBalanse({ data, valgtOkt, weekNumber, actions, weekOffset, onEndret }: {
+export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekOffset, onEndret }: {
   data: WorkbenchData;
   valgtOkt: WeekEvent | null;
+  /** Dagindeks (0=man) for valgt økt — brukes i slett-popupen. -1 = ukjent. */
+  valgtDag?: number;
   weekNumber: number;
   actions?: WorkbenchV2Actions;
   weekOffset: number;
@@ -419,7 +435,7 @@ export function WBBalanse({ data, valgtOkt, weekNumber, actions, weekOffset, onE
 
       <BalSeksjon label="Valgt økt">
         {valgtOkt ? (
-          <ValgtOktSeksjon okt={valgtOkt} actions={actions} weekOffset={weekOffset} onEndret={onEndret} />
+          <ValgtOktSeksjon okt={valgtOkt} dag={valgtDag} actions={actions} weekOffset={weekOffset} onEndret={onEndret} />
         ) : <TomTilstand icon="target" title="Ingen økt valgt" sub="Trykk en økt i tidslinja." />}
       </BalSeksjon>
 
@@ -609,6 +625,9 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   const [nyOktPrefill, setNyOktPrefill] = useState<{ title: string; durMin: number; akse?: AkseKey } | null>(null);
   // I1: trykk på tom luke i tidslinja → Ny økt med dag + klokkeslett prefylt.
   const [nyOktSted, setNyOktSted] = useState<{ dayIndex: number; tid: string } | null>(null);
+  // Mal dratt til canvas → bekreftelses-popup (Anders-logikken).
+  const [malBekreft, setMalBekreft] = useState<{ templateId: string; name: string; sessionCount: number; varighetUker: number } | null>(null);
+  const [malLegger, setMalLegger] = useState(false);
   const [melding, setMelding] = useState<{ tone: "up" | "down" | "info"; tekst: string } | null>(null);
   const [pubLoading, setPubLoading] = useState(false);
   const [suggestLoading, setSuggestLoading] = useState(false);
@@ -665,6 +684,11 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   }
   const [valgtId, setValgtIdState] = useState<string | null>(searchParams.get("okt"));
   const valgtOkt = useMemo(() => alleEvents.find((e) => e.id === valgtId) ?? alleEvents[0] ?? null, [alleEvents, valgtId]);
+  // Dagindeksen mistes i alleEvents-flatMap — slås opp for slett-popupen («dag · tid»).
+  const valgtDag = useMemo(
+    () => (valgtOkt ? dager.findIndex((d) => d.events.some((e) => e.id === valgtOkt.id)) : -1),
+    [dager, valgtOkt],
+  );
 
   // Skriv zoom/valg til URL med replace (skal ikke forurense historikken).
   const oppdaterUrl = (mut: (p: URLSearchParams) => void) => {
@@ -775,6 +799,20 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     setNyOktApen(true);
   };
 
+  const bekreftMal = async () => {
+    if (!actions?.applyTemplate || !malBekreft || malLegger) return;
+    setMalLegger(true);
+    const res = await actions.applyTemplate(malBekreft.templateId);
+    setMalLegger(false);
+    setMalBekreft(null);
+    if (res.ok) {
+      setMelding({ tone: "up", tekst: `Mal-uke 1 fra «${malBekreft.name}» lagt inn — juster på tidslinja.` });
+      router.refresh();
+    } else {
+      setMelding({ tone: "down", tekst: res.error ?? "Kunne ikke bruke malen." });
+    }
+  };
+
   // Fasit-fiks: mal-kortene i biblioteket legger inn mal-uke 1 (var døde).
   const brukMalFraBibliotek = async (templateId: string) => {
     if (!actions?.applyTemplate) return;
@@ -800,23 +838,18 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     else setMelding({ tone: "down", tekst: res.error ?? "Kunne ikke flytte økten." });
   };
 
-  // Dra en bibliotek-brikke inn på et klokkeslett → opprett direkte (brikken
-  // bærer tittel/varighet/akse — klokkeslettet kommer fra slipp-punktet).
-  const handleDropAdd = async (
+  // Dra en bibliotek-brikke inn på et klokkeslett → BEKREFTELSES-POPUP
+  // (Anders-logikken: dra til canvas → popup der alt kan justeres, eller bare
+  // bekreft). Arket åpnes forhåndsutfylt med brikken + dag/tid fra slippunktet.
+  const handleDropAdd = (
     item: { title: string; durMin: number; akse?: AkseKey },
     dayIndex: number,
     hour: number,
     minute: number,
   ) => {
-    const res = await handleCreateSession({
-      title: item.title,
-      dayIndex,
-      akse: item.akse ?? "TEK",
-      hour,
-      minute,
-      durMin: item.durMin,
-    });
-    if (!res.ok) setMelding({ tone: "down", tekst: res.error ?? "Kunne ikke legge til økten." });
+    setNyOktPrefill(item);
+    setNyOktSted({ dayIndex, tid: `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}` });
+    setNyOktApen(true);
   };
 
   // Måned-cellen → hopp til uka datoen ligger i (uke-zoom).
@@ -1112,6 +1145,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
                 setNyOktSted({ dayIndex, tid: `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}` });
                 setNyOktApen(true);
               } : undefined}
+              onDropMal={actions?.applyTemplate ? setMalBekreft : undefined}
             />
           )}
           {nivaa === "ar" && <AarNivaa data={data} />}
@@ -1121,6 +1155,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         <WBBalanse
           data={data}
           valgtOkt={valgtOkt}
+          valgtDag={valgtDag}
           weekNumber={weekNumber}
           actions={balanseActions}
           weekOffset={weekOffset}
@@ -1143,6 +1178,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           <WBBalanse
             data={data}
             valgtOkt={valgtOkt}
+          valgtDag={valgtDag}
             weekNumber={weekNumber}
             actions={balanseActions}
             weekOffset={weekOffset}
@@ -1150,6 +1186,29 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           />
         </MobilFold>
       </div>
+
+      {malBekreft && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+          <div onClick={malLegger ? undefined : () => setMalBekreft(null)} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
+          <div style={{ position: "relative", width: "min(400px, 100%)", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <Icon name="layers" size={16} style={{ color: T.lime }} />
+              <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>Legg inn mal</h2>
+            </div>
+            <div style={{ marginTop: 12, padding: "11px 13px", borderRadius: 11, background: T.panel2, border: `1px solid ${T.border}` }}>
+              <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{malBekreft.name}</div>
+              <div style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut, marginTop: 3 }}>{malBekreft.sessionCount} økter · {malBekreft.varighetUker} uker · uke 1 legges i uke {weekNumber}</div>
+            </div>
+            <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, margin: "10px 0 0", lineHeight: 1.5 }}>
+              Øktene legges på {playerName.split(" ")[0]} sine foretrukne dager — alt kan justeres på tidslinja etterpå.
+            </p>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
+              <Knapp ghost onClick={() => setMalBekreft(null)} disabled={malLegger}>Avbryt</Knapp>
+              <Knapp icon="check" onClick={bekreftMal} disabled={malLegger}>{malLegger ? "Legger inn…" : "Bekreft"}</Knapp>
+            </div>
+          </div>
+        </div>
+      )}
 
       {forslag && (
         <ForslagArk

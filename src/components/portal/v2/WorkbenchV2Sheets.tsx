@@ -445,12 +445,14 @@ export function ForslagArk({ suggestions, usedAi, onLukk, onBruk }: ForslagArkPr
 /* ── Valgt økt — flytt/slett-panel (Balanse-kolonnen) ──── */
 export interface ValgtOktSeksjonProps {
   okt: WeekEvent;
+  /** Dagindeks (0=man) for økten — vises i slett-popupen. -1/undefined = utelates. */
+  dag?: number;
   actions?: WorkbenchV2Actions;
   weekOffset: number;
   /** Kalles etter vellykket flytt/sletting — parent kaller router.refresh(). */
   onEndret: () => void;
 }
-export function ValgtOktSeksjon({ okt, actions, weekOffset, onEndret }: ValgtOktSeksjonProps) {
+export function ValgtOktSeksjon({ okt, dag, actions, weekOffset, onEndret }: ValgtOktSeksjonProps) {
   const router = useRouter();
   const [flyttApen, setFlyttApen] = useState(false);
   const [flyttLoading, setFlyttLoading] = useState(false);
@@ -641,33 +643,43 @@ export function ValgtOktSeksjon({ okt, actions, weekOffset, onEndret }: ValgtOkt
               <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>Velg ny dag — klokkeslettet beholdes</span>
             </div>
           )}
-          {!bekreftSlett ? (
-            <div style={{ display: "flex", gap: 8 }}>
-              <div style={{ flex: 1 }}>
-                <Knapp ghost icon="calendar" full disabled={flyttLoading} onClick={() => setFlyttApen((v) => !v)}>
-                  {flyttApen ? "Lukk" : "Flytt"}
-                </Knapp>
-              </div>
-              <div style={{ flex: 1 }}>
-                <Knapp ghost icon="trash-2" full onClick={() => setBekreftSlett(true)}>
-                  Slett
-                </Knapp>
-              </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <div style={{ flex: 1 }}>
+              <Knapp ghost icon="calendar" full disabled={flyttLoading} onClick={() => setFlyttApen((v) => !v)}>
+                {flyttApen ? "Lukk" : "Flytt"}
+              </Knapp>
             </div>
-          ) : (
-            <div style={{ display: "flex", gap: 8 }}>
-              <div style={{ flex: 1 }}>
-                <Knapp icon="trash-2" full disabled={sletterLoading} onClick={slett}>
-                  {sletterLoading ? "Sletter…" : "Bekreft sletting"}
-                </Knapp>
-              </div>
-              <div style={{ flex: 1 }}>
-                <Knapp ghost full disabled={sletterLoading} onClick={() => setBekreftSlett(false)}>
-                  Avbryt
-                </Knapp>
-              </div>
+            <div style={{ flex: 1 }}>
+              <Knapp ghost icon="trash-2" full onClick={() => setBekreftSlett(true)}>
+                Slett
+              </Knapp>
             </div>
-          )}
+          </div>
+        </div>
+      )}
+
+      {/* WB1(c): sletting bekreftes i popup (Anders-logikken: alt som fjernes
+          fra canvas → bekreftelses-popup) — samme mønster som mal-bekreft. */}
+      {bekreftSlett && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+          <div onClick={sletterLoading ? undefined : () => setBekreftSlett(false)} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
+          <div role="alertdialog" aria-label="Bekreft sletting" style={{ position: "relative", width: "min(400px, 100%)", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <Icon name="trash-2" size={16} style={{ color: T.down }} />
+              <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>Slett økt</h2>
+            </div>
+            <div style={{ marginTop: 12, padding: "11px 13px", borderRadius: 11, background: T.panel2, border: `1px solid ${T.border}` }}>
+              <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{okt.ttl}</div>
+              <div style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut, marginTop: 3 }}>{dag != null && dag >= 0 ? `${DAGER[dag]} · ` : ""}{toKl(okt.h, okt.m)} · {okt.durMin} min</div>
+            </div>
+            <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, margin: "10px 0 0", lineHeight: 1.5 }}>
+              Økten fjernes fra planen. Dette kan ikke angres.
+            </p>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
+              <Knapp ghost onClick={() => setBekreftSlett(false)} disabled={sletterLoading}>Avbryt</Knapp>
+              <Knapp icon="trash-2" onClick={slett} disabled={sletterLoading}>{sletterLoading ? "Sletter…" : "Bekreft sletting"}</Knapp>
+            </div>
+          </div>
         </div>
       )}
     </Kort>
