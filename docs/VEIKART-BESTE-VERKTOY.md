@@ -8,6 +8,10 @@
 > slettet, eslint-direktiv-buggen fikset — lint 100 % ren for første gang,
 > public/design-handover fjernet (−4,4 MB), 18 engangs-scripts arkivert,
 > knip-rapport: 353 ubrukte src-filer → R2-grunnlag i docs/opprydding/).
+> 2026-07-12 · P1 LEVERT: rotårsak treghet = DB i eu-west-1, funksjoner i
+> iad1 (USA) — flyttet til dub1. Varme TTFB offentlige sider: 0,5–1,1 s →
+> 0,17–0,39 s; innloggede flater (10+ queries/side) sparer ~90 ms per query.
+> P2–P5 (query-diett, caching, skeletons, bundle) gjenstår.
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
 (`docs/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag
