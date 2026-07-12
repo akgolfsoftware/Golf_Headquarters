@@ -87,7 +87,7 @@ export default async function OktDetaljPage({
     .join(" · ");
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={coach.name} avatarUrl={coach.avatarUrl}>
+    <V2Shell aktiv="kalender" nav={AGENCYOS_NAV} navn={coach.name} avatarUrl={coach.avatarUrl}>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap, paddingBottom: 72 }}>
         <Link href="/admin/gjennomfore" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
           <MikroMeta icon="arrow-left">Gjennomføre · Økter</MikroMeta>

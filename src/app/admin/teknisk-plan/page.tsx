@@ -85,7 +85,7 @@ export default async function V2AdminTekniskPlanPreviewPage() {
   };
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <AdminTekniskPlanV2 data={data} />
     </V2Shell>
   );

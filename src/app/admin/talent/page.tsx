@@ -61,7 +61,7 @@ export default async function V2AdminTalentPage() {
   const data: AdminTalentData = { spillere };
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <AdminTalentV2 data={data} />
     </V2Shell>
   );

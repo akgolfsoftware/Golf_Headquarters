@@ -98,7 +98,7 @@ export default async function V2AdminRunderPage() {
   };
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <AdminRunderV2 data={data} />
     </V2Shell>
   );

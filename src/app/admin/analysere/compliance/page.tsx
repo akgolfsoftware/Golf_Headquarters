@@ -45,7 +45,7 @@ export default async function V2AdminCompliancePage({ searchParams }: { searchPa
   });
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <AdminComplianceV2 data={data} />
     </V2Shell>
   );

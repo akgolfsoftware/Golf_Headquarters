@@ -78,7 +78,7 @@ export default async function AdminBookingDetaljPage({ params }: Props) {
   };
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell aktiv="bookinger" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <AdminBookingDetaljV2 data={data} />
     </V2Shell>
   );

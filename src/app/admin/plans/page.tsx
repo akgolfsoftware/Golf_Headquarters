@@ -144,7 +144,7 @@ export default async function V2AdminPlansPreviewPage() {
   };
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <AdminPlansV2 data={data} />
     </V2Shell>
   );

@@ -104,7 +104,7 @@ export default async function V2GrupperPage() {
   const data: GrupperData = { grupper };
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <GrupperV2 data={data} />
     </V2Shell>
   );

@@ -76,7 +76,7 @@ export default async function TurneringDetalj({
   }
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <Link href="/admin/tournaments" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
           <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>← Turneringer</span>

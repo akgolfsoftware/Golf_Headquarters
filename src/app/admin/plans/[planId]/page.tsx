@@ -169,7 +169,7 @@ export default async function AdminPlanDetalj({
   const planTittel = plan.name.trim() || "Treningsplan";
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={me.name} avatarUrl={me.avatarUrl}>
+    <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={me.name} avatarUrl={me.avatarUrl}>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <Link href="/admin/plans" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
           <MikroMeta icon="arrow-left">Planer</MikroMeta>

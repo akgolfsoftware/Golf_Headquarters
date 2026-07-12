@@ -107,7 +107,7 @@ export default async function V2AdminGjennomforePage() {
   };
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <AdminGjennomforeV2 data={data} />
     </V2Shell>
   );

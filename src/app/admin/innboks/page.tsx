@@ -24,7 +24,7 @@ export default async function V2TriagePage() {
     loadAppFeedback(),
   ]);
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TriageV2 data={data} feedback={feedback} />
     </V2Shell>
   );

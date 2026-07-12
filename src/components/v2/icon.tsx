@@ -16,6 +16,7 @@ import {
   Reply, MessageSquare, CheckCheck, BookOpen, Globe, CornerUpLeft,
   RefreshCw, GitCompare, AlertOctagon, GitPullRequest, Loader2, LineChart,
   Cog, ArrowUp, Wrench,
+  Inbox, CalendarCheck, Columns3,
   type LucideIcon,
 } from "lucide-react";
 
@@ -135,6 +136,9 @@ const MAP: Record<string, LucideIcon> = {
   "line-chart": LineChart,
   "cog": Cog,
   "arrow-up": ArrowUp,
+  "inbox": Inbox,
+  "calendar-check": CalendarCheck,
+  "columns-3": Columns3,
 };
 
 export interface IconProps {

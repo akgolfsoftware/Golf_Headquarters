@@ -24,7 +24,7 @@ export default async function VarslerPage() {
   const total = data.counts.actions + data.counts.notifications;
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <span style={{ display: "grid", placeItems: "center", width: 48, height: 48, borderRadius: 16, background: T.lime }}>

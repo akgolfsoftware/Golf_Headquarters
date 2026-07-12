@@ -211,7 +211,7 @@ export default async function V2AdminGodkjenningerPage() {
   const data: AdminGodkjenningerV2Data = { rows, lowRiskCount };
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <AdminGodkjenningerV2 data={data} />
     </V2Shell>
   );

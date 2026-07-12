@@ -133,7 +133,7 @@ export default async function V2AdminBookingerPage() {
   };
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell aktiv="bookinger" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <AdminBookingerV2 data={data} />
     </V2Shell>
   );
