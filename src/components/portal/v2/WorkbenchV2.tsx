@@ -1330,7 +1330,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, letterSpacing: "-0.02em", margin: "3px 0 6px" }}>{playerName}</div>
           <StatusPill tone={st.tone}>{st.l}</StatusPill>
         </div>
-        <Felt label="Zoom"><PillVelger options={[{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Økt" }]} value={nivaa} onChange={setNivaa} /></Felt>
+        <Felt label="Zoom"><PillVelger options={[{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Dag" }]} value={nivaa} onChange={setNivaa} /></Felt>
         <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "6px 14px", borderRadius: 12, background: `color-mix(in srgb, ${harAvvik ? T.warn : T.up} 6%, transparent)`, border: `1px solid color-mix(in srgb, ${harAvvik ? T.warn : T.up} 32%, transparent)`, flex: "none" }}>
           <span style={{ fontFamily: T.mono, fontSize: 26, fontWeight: 700, color: T.fg, lineHeight: 0.9, fontVariantNumeric: "tabular-nums", flex: "none" }}>{adher != null ? `${adher}%` : "–"}</span>
           <div style={{ flex: "none", maxWidth: 150 }}>
@@ -1371,7 +1371,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         </div>
 
         <div style={{ overflowX: "auto", paddingBottom: 1 }}>
-          <PillVelger options={[{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Økt" }]} value={nivaa} onChange={setNivaa} />
+          <PillVelger options={[{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Dag" }]} value={nivaa} onChange={setNivaa} />
         </div>
 
         <div style={{ display: "flex", gap: 8 }}>
