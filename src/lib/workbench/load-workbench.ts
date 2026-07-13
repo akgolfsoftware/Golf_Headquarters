@@ -36,13 +36,7 @@ import {
   type WeekSessionRow,
   type PlanWeekSessionInput,
 } from "@/lib/workbench/merge-week-sessions";
-import type {
-  Axis,
-  WeekDay,
-  WeekEvent,
-  DirBDayData,
-  DirBRowData,
-} from "@/lib/workbench/week-types";
+import type { Axis, WeekDay, WeekEvent } from "@/lib/workbench/week-types";
 
 // ───────── Eksportert data-form ─────────
 // Hver del er optional: mangler kilde → komponenten bruker v10-demo.
@@ -83,15 +77,6 @@ export type WorkbenchData = {
   weekHead?: { dow: string; date: string; today: boolean; sub: string }[];
   /** Dag-kolonner med posisjonerte økt-blokker (A · WeekView). */
   weekDays?: WeekDay[];
-  /** Vertikal dag-for-dag-agenda (B · Tidslinje). */
-  dirBDays?: DirBDayData[];
-  /** Kanban-kolonner per akse (A + B). */
-  kanbanCols?: {
-    key: Axis;
-    lbl: string;
-    ct: number;
-    cards: { day: string; nm: string; meta: string }[];
-  }[];
   /** Timer per akse denne uka (statusbar + dashboard-pie). */
   axisHours?: { ax: Axis; lbl: string; hours: number }[];
   /** Sidebar: kommende turneringer. */
@@ -162,7 +147,6 @@ export type WorkbenchData = {
 // ───────── Konstanter ─────────
 const DOW = ["MAN", "TIR", "ONS", "TOR", "FRE", "LØR", "SØN"];
 const MND_SHORT = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
-const MND_UPPER = ["JAN", "FEB", "MAR", "APR", "MAI", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DES"];
 
 const PYR_TONE: Record<PyramidArea, Axis> = {
   FYS: "fys",
@@ -205,14 +189,6 @@ function mondayOf(d: Date): Date {
   m.setHours(0, 0, 0, 0);
   m.setDate(m.getDate() - ((m.getDay() + 6) % 7));
   return m;
-}
-
-/** Minutter → kompakt "30 m" / "1 t" / "1 t 30 m". */
-function fmtDur(min: number): string {
-  if (min < 60) return `${min} m`;
-  const h = Math.floor(min / 60);
-  const m = min % 60;
-  return m === 0 ? `${h} t` : `${h} t ${m} m`;
 }
 
 // Felles select for uke-økter — samme felt-sett som de eksisterende loaderne.
@@ -545,42 +521,6 @@ export async function loadWorkbenchData(
     };
   });
 
-  // ── B · Tidslinje: dag-seksjoner (alle 7 dager) ──────────────────
-  const dirBDays: DirBDayData[] = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(weekStart);
-    d.setDate(d.getDate() + i);
-    const isToday = i === todayDow;
-    const daySessions = mergedSessions.filter((s) => (s.scheduledAt.getDay() + 6) % 7 === i);
-    const ct = daySessions.length;
-    const totMin = daySessions.reduce((a, s) => a + s.durationMin, 0);
-    return {
-      dow: DOW[i],
-      dt: String(d.getDate()),
-      mn: MND_UPPER[d.getMonth()],
-      ...(isToday ? { tag: "I DAG", isToday: true } : {}),
-      summary: { ct: String(ct), dur: fmtDur(totMin) },
-      rows: daySessions.map((s) => sessionToDirBRow(s)),
-    };
-  });
-
-  // ── Kanban: 5 akse-kolonner ─────────────────────────────────────
-  const kanbanCols = PYR_REKKEFOLGE.map((area) => {
-    const ax = PYR_TONE[area];
-    const cards = mergedSessions
-      .filter((s) => s.pyramidArea === area)
-      .map((s) => {
-        const dow = DOW[(s.scheduledAt.getDay() + 6) % 7];
-        const metaParts = [fmtDur(s.durationMin)];
-        if (s._count.drills > 0) metaParts.push(`${s._count.drills} drills`);
-        return {
-          day: `${dow} · ${hhmm(s.scheduledAt)}`,
-          nm: s.title,
-          meta: metaParts.join(" · "),
-        };
-      });
-    return { key: ax, lbl: PYR_SHORT[area], ct: cards.length, cards };
-  });
-
   // ── Timer per akse (denne uka) — statusbar + pie ────────────────
   const weekMinByArea = new Map<PyramidArea, number>();
   for (const s of mergedSessions) {
@@ -776,8 +716,6 @@ export async function loadWorkbenchData(
   return {
     weekHead,
     weekDays,
-    dirBDays,
-    kanbanCols,
     axisHours,
     tournaments: tournaments.length > 0 ? tournaments : undefined,
     goals: goalRows.length > 0 ? goalRows : undefined,
@@ -823,22 +761,5 @@ function sessionToWeekEvent(s: WeekSessionRow, now: Date): WeekEvent {
     ttl: s.title,
     meta,
     compliance: oktCompliance(s, now),
-  };
-}
-
-/** TrainingPlanSession → B·Tidslinje-rad. */
-function sessionToDirBRow(s: WeekSessionRow): DirBRowData {
-  const ax = PYR_TONE[s.pyramidArea];
-  const loc = s.environment ? ENV_LABEL[s.environment] ?? null : null;
-  const meta: [string, string][] = [];
-  if (s._count.drills > 0) meta.push(["layers", `${s._count.drills} drills`]);
-  if (loc) meta.push(["map-pin", loc]);
-  return {
-    time: hhmm(s.scheduledAt),
-    ax,
-    axt: PYR_SHORT[s.pyramidArea],
-    ttl: s.title,
-    ...(meta.length > 0 ? { meta } : {}),
-    dur: fmtDur(s.durationMin),
   };
 }

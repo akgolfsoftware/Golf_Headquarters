@@ -307,6 +307,32 @@ function PalettBrikke({ tittel, akse, durMin, sub, onClick }: { tittel: string; 
 // som Record<string,string> for eksisterende oppslag med løse strenger.
 export const LPHASE_LABEL: Record<string, string> = LPHASE_LABEL_KANON;
 
+/** Felles gruppetider denne uka (GroupSchedule) — ble lastet i loaderen uten
+ *  å vises noe sted i V2 (Anders' feilklasse «lastes men kobles ikke»). */
+function WBGruppetider({ slots }: { slots: NonNullable<WorkbenchData["groupSlots"]> }) {
+  if (slots.length === 0) return null;
+  const DAGER_KORT = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
+  return (
+    <Kort pad="10px 12px" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
+      <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut }}>
+        Gruppetider
+      </span>
+      {slots.map((s) => {
+        const start = new Date(s.startAt);
+        const kl = `${String(start.getHours()).padStart(2, "0")}:${String(start.getMinutes()).padStart(2, "0")}`;
+        return (
+          <span key={s.id} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px", borderRadius: 9999, background: T.panel2, border: `1px solid ${T.border}`, fontFamily: T.ui, fontSize: 11.5, color: T.fg2 }}>
+            <Icon name="users" size={11} style={{ color: T.lime }} />
+            {DAGER_KORT[s.dayIndex] ?? ""} {kl} · {s.groupName}
+            {s.location ? ` · ${s.location}` : ""}
+          </span>
+        );
+      })}
+    </Kort>
+  );
+}
+
+
 export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukMal, visPerioder, onLeggDrillIValgt }: {
   data: WorkbenchData;
   tab: string; setTab: (t: string) => void;
@@ -1422,6 +1448,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
               onTilAarsplan={() => setNivaa("ar")}
             />
           )}
+          {nivaa === "uke" && data.groupSlots && <WBGruppetider slots={data.groupSlots} />}
           {nivaa === "uke" && (
             <WBTidslinje
               dager={dager}
@@ -1468,6 +1495,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
             onTilAarsplan={() => setNivaa("ar")}
           />
         )}
+        {nivaa === "uke" && data.groupSlots && <WBGruppetider slots={data.groupSlots} />}
         {nivaa === "uke" && <WBTidslinjeMobil dager={dager} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
         {nivaa === "uke" && <WBBelastning data={data} />}
         {nivaa === "ar" && (
