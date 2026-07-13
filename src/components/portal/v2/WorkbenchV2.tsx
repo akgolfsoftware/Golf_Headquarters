@@ -34,6 +34,7 @@ import {
   Icon,
   HjelpTips,
   ZoomBrodsmule,
+  useCountUp,
 } from "@/components/v2";
 import { PalettSok } from "@/components/v2/wb-composer";
 import { ForslagArk, NyOktArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput, type OktArkDrill } from "./WorkbenchV2Sheets";
@@ -584,6 +585,7 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
   const axis = data.axisHours ?? [];
   const totalT = axis.reduce((a, x) => a + x.hours, 0);
   const fokus = data.fokus;
+  const adherDisp = useCountUp(data.adherencePct ?? 0);
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20, minWidth: 0 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -611,7 +613,7 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
               <span style={{ width: 28, height: 28, borderRadius: 8, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}><Icon name="check-check" size={13} style={{ color: data.adherencePct >= 70 ? T.up : data.adherencePct >= 40 ? T.warn : T.down }} /></span>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                  <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>{data.adherencePct} %</span>
+                  <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>{adherDisp} %</span>
                   <HjelpTips k="planEtterlevelse" size={11} />
                 </div>
                 <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginTop: 1 }}>Plan-etterlevelse denne uka</div>
@@ -749,10 +751,19 @@ function MndNivaa({ data, onVelgDato }: { data: WorkbenchData; onVelgDato: (dato
 }
 
 /* ── Dag-nivå (agenda for valgt/i-dag) ─────────────────── */
-export function DagNivaa({ dag, valgt, onVelg }: { dag: DagKol | null; valgt: string | null; onVelg: (id: string) => void }) {
+export function DagNivaa({ dag, valgt, onVelg, dager, onFlytt }: {
+  dag: DagKol | null;
+  valgt: string | null;
+  onVelg: (id: string) => void;
+  /** Ukas dager — kun for "flytt til dag"-velgeren. Uten = ingen flytt-mulighet (samme touch-vei som knappen selv). */
+  dager?: DagKol[];
+  onFlytt?: (sessionId: string, dayIndex: number) => void;
+}) {
+  const [flyttId, setFlyttId] = useState<string | null>(null);
   if (!dag || dag.events.length === 0) {
     return <Kort><TomTilstand icon="calendar" title="Ingen økter" sub="Ingen planlagte økter denne dagen." /></Kort>;
   }
+  const denneDagIndex = dager?.findIndex((d) => d.dato === dag.dato && d.dow === dag.dow) ?? -1;
   return (
     <Kort eyebrow={`${dag.dow} ${dag.dato} · tidslinje`} action={<Caps size={9}>{dag.events.length} økter</Caps>}>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -761,14 +772,50 @@ export function DagNivaa({ dag, valgt, onVelg }: { dag: DagKol | null; valgt: st
           const col = T.ax[ak] || T.mut;
           const sel = !!o.id && valgt === o.id;
           const pending = erOptimistisk(o.id);
+          const flyttApen = !!o.id && flyttId === o.id;
           return (
-            <div key={o.id ?? j} onClick={() => o.id && !pending && onVelg(o.id)} style={{ padding: "9px 11px", borderRadius: 10, background: T.panel2, border: `1px ${pending ? "dashed" : "solid"} ${sel ? T.lime : T.border}`, borderLeft: `3px solid ${col}`, cursor: pending ? "default" : "pointer", opacity: pending ? 0.6 : 1 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2 }}>{toKl(o.h, o.m)}</span>
-                <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: `color-mix(in srgb, ${col} 55%, ${T.fg})` }}>{AKSE_NAVN[ak] || o.eb}</span>
-                <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{fmtVarighet(o.durMin)}</span>
+            <div key={o.id ?? j} className="v2-fade-in" style={{ padding: "9px 11px", borderRadius: 10, background: T.panel2, border: `1px ${pending ? "dashed" : "solid"} ${sel ? T.lime : T.border}`, borderLeft: `3px solid ${col}`, opacity: pending ? 0.6 : 1 }}>
+              <div onClick={() => o.id && !pending && onVelg(o.id)} style={{ cursor: pending ? "default" : "pointer" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2 }}>{toKl(o.h, o.m)}</span>
+                  <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: `color-mix(in srgb, ${col} 55%, ${T.fg})` }}>{AKSE_NAVN[ak] || o.eb}</span>
+                  <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{fmtVarighet(o.durMin)}</span>
+                </div>
+                <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, marginTop: 5 }}>{o.ttl}</div>
               </div>
-              <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, marginTop: 5 }}>{o.ttl}</div>
+              {onFlytt && dager && !pending && o.id && (
+                <>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setFlyttId(flyttApen ? null : o.id!); }}
+                    className="v2-press v2-focus"
+                    style={{ appearance: "none", cursor: "pointer", marginTop: 8, display: "inline-flex", alignItems: "center", gap: 5, background: "transparent", border: "none", padding: 0, fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.lime }}
+                  >
+                    <Icon name="calendar" size={11} />
+                    {flyttApen ? "Avbryt" : "Flytt til annen dag"}
+                  </button>
+                  {flyttApen && (
+                    <div className="v2-fade-in" style={{ display: "flex", gap: 5, marginTop: 8, flexWrap: "wrap" }}>
+                      {dager.map((d, i) => {
+                        const erDenneDagen = i === denneDagIndex;
+                        return (
+                          <button
+                            key={i}
+                            type="button"
+                            disabled={erDenneDagen}
+                            onClick={(e) => { e.stopPropagation(); setFlyttId(null); onFlytt(o.id!, i); }}
+                            className="v2-press v2-focus"
+                            style={{ appearance: "none", cursor: erDenneDagen ? "default" : "pointer", width: 34, height: 34, borderRadius: 9, background: erDenneDagen ? T.panel3 : T.panel, border: `1px solid ${erDenneDagen ? T.borderS : T.border}`, fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: erDenneDagen ? T.mut : T.fg2, opacity: erDenneDagen ? 0.5 : 1 }}
+                            title={`${d.dow} ${d.dato}`}
+                          >
+                            {d.dow.slice(0, 2)}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           );
         })}
@@ -967,6 +1014,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   const weekOffset = data?.weekOffset ?? 0;
   const st = statusLabel(optimisticStatus ?? planStatus);
   const adher = data?.adherencePct;
+  const adherDisp = useCountUp(adher ?? 0);
   // Ekte avvik-tall for uka (lib/workbench/compliance.ts sin oktCompliance,
   // beregnet server-side per økt): «avvik» = aktivt avbrutt/hoppet over/kansellert,
   // «ikke-gjennomfort» = forfalt uten registrert gjennomføring. CANON-fasechipen
@@ -1292,7 +1340,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         </div>
         <Felt label="Zoom"><PillVelger options={[{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Økt" }]} value={nivaa} onChange={setNivaa} /></Felt>
         <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "6px 14px", borderRadius: 12, background: `color-mix(in srgb, ${harAvvik ? T.warn : T.up} 6%, transparent)`, border: `1px solid color-mix(in srgb, ${harAvvik ? T.warn : T.up} 32%, transparent)`, flex: "none" }}>
-          <span style={{ fontFamily: T.mono, fontSize: 26, fontWeight: 700, color: T.fg, lineHeight: 0.9, fontVariantNumeric: "tabular-nums", flex: "none" }}>{adher != null ? `${adher}%` : "–"}</span>
+          <span style={{ fontFamily: T.mono, fontSize: 26, fontWeight: 700, color: T.fg, lineHeight: 0.9, fontVariantNumeric: "tabular-nums", flex: "none" }}>{adher != null ? `${adherDisp}%` : "–"}</span>
           <div style={{ flex: "none", maxWidth: 150 }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
               <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap" }}>Plan-etterlevelse</span>
@@ -1325,7 +1373,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
             </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", borderRadius: 10, background: `color-mix(in srgb, ${harAvvik ? T.warn : T.up} 8%, transparent)`, border: `1px solid color-mix(in srgb, ${harAvvik ? T.warn : T.up} 32%, transparent)`, flex: "none" }}>
-            <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{adher != null ? `${adher}%` : "–"}</span>
+            <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{adher != null ? `${adherDisp}%` : "–"}</span>
             <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap" }}>etterlevelse</span>
           </div>
         </div>
@@ -1454,29 +1502,33 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           )}
           {nivaa === "uke" && data.groupSlots && <WBGruppetider slots={data.groupSlots} />}
           {nivaa === "uke" && (
-            <WBTidslinje
-              dager={dager}
-              valgt={valgtOkt?.id ?? null}
-              onVelg={velgOgAapne}
-              onDropMove={actions ? handleDropMove : undefined}
-              onDropAdd={actions ? handleDropAdd : undefined}
-              onTomKlikk={actions ? (dayIndex, hour, minute) => {
-                setNyOktSted({ dayIndex, tid: `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}` });
-                setNyOktApen(true);
-              } : undefined}
-              onDropMal={actions?.applyTemplate ? setMalBekreft : undefined}
-            />
+            <div key="uke" className="v2-fade-in">
+              <WBTidslinje
+                dager={dager}
+                valgt={valgtOkt?.id ?? null}
+                onVelg={velgOgAapne}
+                onDropMove={actions ? handleDropMove : undefined}
+                onDropAdd={actions ? handleDropAdd : undefined}
+                onTomKlikk={actions ? (dayIndex, hour, minute) => {
+                  setNyOktSted({ dayIndex, tid: `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}` });
+                  setNyOktApen(true);
+                } : undefined}
+                onDropMal={actions?.applyTemplate ? setMalBekreft : undefined}
+              />
+            </div>
           )}
           {nivaa === "uke" && <WBBelastning data={data} />}
           {nivaa === "ar" && (
-            <WorkbenchAarsplan
-              data={data}
-              handlers={actions?.lagrePeriode && actions?.slettPeriode ? { lagre: actions.lagrePeriode, slett: actions.slettPeriode } : undefined}
-              onEndret={() => router.refresh()}
-            />
+            <div key="ar" className="v2-fade-in">
+              <WorkbenchAarsplan
+                data={data}
+                handlers={actions?.lagrePeriode && actions?.slettPeriode ? { lagre: actions.lagrePeriode, slett: actions.slettPeriode } : undefined}
+                onEndret={() => router.refresh()}
+              />
+            </div>
           )}
-          {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
-          {nivaa === "maned" && <MndNivaa data={data} onVelgDato={velgDatoFraMnd} />}
+          {nivaa === "dag" && <div key="dag" className="v2-fade-in"><DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} dager={dager} onFlytt={actions ? handleDropMove : undefined} /></div>}
+          {nivaa === "maned" && <div key="maned" className="v2-fade-in"><MndNivaa data={data} onVelgDato={velgDatoFraMnd} /></div>}
         </div>
         <WBBalanse
           data={data}
@@ -1500,17 +1552,19 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           />
         )}
         {nivaa === "uke" && data.groupSlots && <WBGruppetider slots={data.groupSlots} />}
-        {nivaa === "uke" && <WBTidslinjeMobil dager={dager} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
+        {nivaa === "uke" && <div key="uke" className="v2-fade-in"><WBTidslinjeMobil dager={dager} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} onFlytt={actions ? handleDropMove : undefined} /></div>}
         {nivaa === "uke" && <WBBelastning data={data} />}
         {nivaa === "ar" && (
-          <WorkbenchAarsplan
-            data={data}
-            handlers={actions?.lagrePeriode && actions?.slettPeriode ? { lagre: actions.lagrePeriode, slett: actions.slettPeriode } : undefined}
-            onEndret={() => router.refresh()}
-          />
+          <div key="ar" className="v2-fade-in">
+            <WorkbenchAarsplan
+              data={data}
+              handlers={actions?.lagrePeriode && actions?.slettPeriode ? { lagre: actions.lagrePeriode, slett: actions.slettPeriode } : undefined}
+              onEndret={() => router.refresh()}
+            />
+          </div>
         )}
-        {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
-        {nivaa === "maned" && <MndNivaa data={data} onVelgDato={velgDatoFraMnd} />}
+        {nivaa === "dag" && <div key="dag" className="v2-fade-in"><DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} dager={dager} onFlytt={actions ? handleDropMove : undefined} /></div>}
+        {nivaa === "maned" && <div key="maned" className="v2-fade-in"><MndNivaa data={data} onVelgDato={velgDatoFraMnd} /></div>}
 
         <MobilFold tittel="Bibliotek" ikon="layers">
           <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} />
@@ -1531,7 +1585,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
       {pubDiff && (
         <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
           <div onClick={() => setPubDiff(null)} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
-          <div role="dialog" aria-label="Bekreft publisering" style={{ position: "relative", width: "min(440px, 100%)", maxHeight: "85vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+          <div role="dialog" aria-label="Bekreft publisering" className="v2-sheet-in" style={{ position: "relative", width: "min(440px, 100%)", maxHeight: "85vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <Icon name="send" size={16} style={{ color: T.lime }} />
               <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>Publiser plan</h2>
@@ -1590,7 +1644,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
       {malBekreft && (
         <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
           <div onClick={malLegger ? undefined : () => setMalBekreft(null)} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
-          <div style={{ position: "relative", width: "min(400px, 100%)", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+          <div role="dialog" aria-label="Legg inn mal" className="v2-sheet-in" style={{ position: "relative", width: "min(400px, 100%)", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <Icon name="layers" size={16} style={{ color: T.lime }} />
               <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>Legg inn mal</h2>
