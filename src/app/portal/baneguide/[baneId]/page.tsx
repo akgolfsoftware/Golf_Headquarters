@@ -8,7 +8,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getBaneOverview } from "@/lib/baneguide/queries";
-import { CourseMap, type CourseMapHole } from "@/components/baneguide/course-map";
+import { CourseMapLazy as CourseMap, type CourseMapHole } from "@/components/baneguide/course-map-lazy";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
 import { Caps, Tittel, Kort, Rad, TilbakeLenke } from "@/components/v2";

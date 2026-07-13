@@ -5,7 +5,7 @@
  * skjerm 2 (/portal/baneguide/[baneId]) er portet.
  */
 import { prisma } from "@/lib/prisma";
-import { CourseMap, type CourseMapHole } from "@/components/baneguide/course-map";
+import { CourseMapLazy as CourseMap, type CourseMapHole } from "@/components/baneguide/course-map-lazy";
 
 export const dynamic = "force-dynamic";
 

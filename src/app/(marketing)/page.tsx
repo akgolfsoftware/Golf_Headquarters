@@ -7,7 +7,10 @@
 
 import { MarkedForsideV2 } from "@/components/marketing/v2/MarkedForsideV2";
 
-export const dynamic = "force-dynamic";
+// Bølge 6 (2026-07-13): forsiden er ren statisk markedsføring uten dataloader —
+// force-dynamic ga en unødvendig serverless-render per besøk. Statisk med
+// time-revalidering er riktig for førsteinntrykket (TTFB fra CDN).
+export const revalidate = 3600;
 
 export default function MarketingHjemPage() {
   return <MarkedForsideV2 />;
