@@ -41,6 +41,60 @@ export function WBTidslinjeMobil({
   );
 }
 
+/* ── ToDagerNivaa — to nabodager side ved side (2026-07-13) ──────
+   Gjenbruker DagNivaa uendret i to kolonner — bevisst IKKE en ny
+   tidsgrid-implementasjon (se plan-notat). Piler flytter dag-paret
+   ett hakk av gangen innenfor uka (7 dager, startIndex 0–5). */
+export function ToDagerNivaa({
+  dager,
+  startIndex,
+  onSkift,
+  valgt,
+  onVelg,
+}: {
+  dager: DagKol[];
+  startIndex: number;
+  onSkift: (i: number) => void;
+  valgt: string | null;
+  onVelg: (id: string) => void;
+}) {
+  const maksStart = Math.max(0, dager.length - 2);
+  const par = [dager[startIndex] ?? null, dager[startIndex + 1] ?? null];
+  const kanForrige = startIndex > 0;
+  const kanNeste = startIndex < maksStart;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <button
+          type="button"
+          onClick={() => onSkift(Math.max(0, startIndex - 1))}
+          disabled={!kanForrige}
+          className="v2-press v2-focus"
+          style={{ appearance: "none", cursor: kanForrige ? "pointer" : "default", width: 32, height: 32, borderRadius: 9, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: kanForrige ? 1 : 0.4, flex: "none" }}
+        >
+          <Icon name="chevron-left" size={13} style={{ color: T.fg2 }} />
+        </button>
+        <span style={{ flex: 1, textAlign: "center", fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut }}>
+          {par[0] ? `${par[0].dow} ${par[0].dato}` : ""}{par[1] ? ` – ${par[1].dow} ${par[1].dato}` : ""}
+        </span>
+        <button
+          type="button"
+          onClick={() => onSkift(Math.min(maksStart, startIndex + 1))}
+          disabled={!kanNeste}
+          className="v2-press v2-focus"
+          style={{ appearance: "none", cursor: kanNeste ? "pointer" : "default", width: 32, height: 32, borderRadius: 9, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: kanNeste ? 1 : 0.4, flex: "none" }}
+        >
+          <Icon name="chevron-right" size={13} style={{ color: T.fg2 }} />
+        </button>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, alignItems: "start" }}>
+        <DagNivaa dag={par[0]} valgt={valgt} onVelg={onVelg} />
+        <DagNivaa dag={par[1]} valgt={valgt} onVelg={onVelg} />
+      </div>
+    </div>
+  );
+}
+
 /* ── MndNivaaMobil — måned som stablet ukeliste (i stedet for 7-kols grid) ──
    Mobil-funn 13/7: MndNivaa sine 64px-celler ble uleselige på 390-flaten.
    Her: én rad per uke (ukenr + 7 tappbare dag-celler m/ akse-prikker og

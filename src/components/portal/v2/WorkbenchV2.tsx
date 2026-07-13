@@ -42,7 +42,7 @@ import { ForslagArk, NyOktArk, NyttMaalArk, RedigerOktArk, ValgtOktSeksjon, type
 import { WorkbenchColdstart } from "./WorkbenchColdstart";
 import { WorkbenchAarsplan, PeriodePalett, WBPeriodeStrip } from "./WorkbenchAarsplan";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
-import { WBTidslinjeMobil, MndNivaaMobil, MobilFold } from "./WorkbenchV2Mobil";
+import { WBTidslinjeMobil, MndNivaaMobil, MobilFold, ToDagerNivaa } from "./WorkbenchV2Mobil";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import { LPHASE_LABEL as LPHASE_LABEL_KANON, LPHASE_FARGE as LPHASE_FARGE_KANON } from "@/lib/labels/taxonomy";
@@ -825,8 +825,12 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   // Zoom + valgt økt bor i URL-en (?zoom= / ?okt=) så visningen overlever
   // router.refresh() etter endringer, remount og deling av lenke.
   const zoomParam = searchParams.get("zoom");
+  // 2dager/liste/kanban (2026-07-13): mobil-only zoom-nivåer, se guard i desktop-render.
+  const MOBIL_NIVAA = ["2dager", "liste", "kanban"] as const;
   const [nivaa, setNivaaState] = useState(
-    zoomParam === "ar" || zoomParam === "maned" || zoomParam === "dag" ? zoomParam : "uke",
+    zoomParam === "ar" || zoomParam === "maned" || zoomParam === "dag" || (zoomParam && (MOBIL_NIVAA as readonly string[]).includes(zoomParam))
+      ? zoomParam
+      : "uke",
   );
   const [tab, setTab] = useState("maler");
   const [sok, setSok] = useState("");
@@ -1010,6 +1014,10 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   const harAvvik = avvikOkter > 0;
   const avvikTekst = harAvvik ? `${avvikOkter} avvik denne uka` : "Ingen avvik";
   const aktivDag = dager.find((d) => d.today) ?? dager.find((d) => d.events.length > 0) ?? null;
+  const aktivDagIndex = aktivDag ? dager.indexOf(aktivDag) : 0;
+  /** Desktop-fallback for de mobil-only zoom-nivåene (se MOBIL_NIVAA over). */
+  const nivaaDesktop = (MOBIL_NIVAA as readonly string[]).includes(nivaa) ? "uke" : nivaa;
+  const [toDagerStart, setToDagerStart] = useState(Math.min(5, Math.max(0, aktivDagIndex)));
 
   const navigateToWeek = (target: number) => {
     const clamped = Math.max(WEEK_OFFSET_MIN, Math.min(WEEK_OFFSET_MAX, target));
@@ -1371,7 +1379,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         </div>
 
         <div style={{ overflowX: "auto", paddingBottom: 1 }}>
-          <PillVelger options={[{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Dag" }]} value={nivaa} onChange={setNivaa} />
+          <PillVelger options={[{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Dag" }, { v: "2dager", l: "2 dager" }]} value={nivaa} onChange={setNivaa} />
         </div>
 
         <div style={{ display: "flex", gap: 8 }}>
@@ -1469,20 +1477,22 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         </div>
       </div>
 
-      {/* TRE KOLONNER — desktop (md+): uendret (grid-cols-1 md→lg, 3-kol fra lg) */}
+      {/* TRE KOLONNER — desktop (md+): uendret (grid-cols-1 md→lg, 3-kol fra lg).
+          2dager/liste/kanban er mobil-only (se MOBIL_NIVAA) — desktop faller
+          tilbake til uke-visningen for disse, aldri en tom flate. */}
       <div className="hidden md:grid md:grid-cols-1 lg:grid-cols-[206px_1fr_302px]" style={{ gap: T.gap, alignItems: "start" }}>
-        <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} />
+        <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaaDesktop === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} />
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
           {dupliserMelding && <InnsiktChip>{dupliserMelding}</InnsiktChip>}
           {insights?.line && <InnsiktChip>{insights.line}</InnsiktChip>}
-          {nivaa === "uke" && data.weekStartISO && (
+          {nivaaDesktop === "uke" && data.weekStartISO && (
             <WBPeriodeStrip
               data={data}
               vindu={{ fra: new Date(data.weekStartISO), til: new Date(new Date(data.weekStartISO).getTime() + 6 * 86_400_000) }}
               onTilAarsplan={() => setNivaa("ar")}
             />
           )}
-          {nivaa === "maned" && data.weekStartISO && (
+          {nivaaDesktop === "maned" && data.weekStartISO && (
             <WBPeriodeStrip
               data={data}
               vindu={{
@@ -1492,8 +1502,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
               onTilAarsplan={() => setNivaa("ar")}
             />
           )}
-          {nivaa === "uke" && data.groupSlots && <WBGruppetider slots={data.groupSlots} />}
-          {nivaa === "uke" && (
+          {nivaaDesktop === "uke" && data.groupSlots && <WBGruppetider slots={data.groupSlots} />}
+          {nivaaDesktop === "uke" && (
             <WBTidslinje
               dager={dager}
               valgt={valgtOkt?.id ?? null}
@@ -1507,16 +1517,16 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
               onDropMal={actions?.applyTemplate ? setMalBekreft : undefined}
             />
           )}
-          {nivaa === "uke" && <WBBelastning data={data} />}
-          {nivaa === "ar" && (
+          {nivaaDesktop === "uke" && <WBBelastning data={data} />}
+          {nivaaDesktop === "ar" && (
             <WorkbenchAarsplan
               data={data}
               handlers={actions?.lagrePeriode && actions?.slettPeriode ? { lagre: actions.lagrePeriode, slett: actions.slettPeriode } : undefined}
               onEndret={() => router.refresh()}
             />
           )}
-          {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
-          {nivaa === "maned" && <MndNivaa data={data} onVelgDato={velgDatoFraMnd} />}
+          {nivaaDesktop === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
+          {nivaaDesktop === "maned" && <MndNivaa data={data} onVelgDato={velgDatoFraMnd} />}
         </div>
         <WBBalanse
           data={data}
@@ -1552,6 +1562,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           />
         )}
         {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
+        {nivaa === "2dager" && <ToDagerNivaa dager={dager} startIndex={toDagerStart} onSkift={setToDagerStart} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
         {nivaa === "maned" && <MndNivaaMobil data={data} onVelgDato={velgDatoFraMnd} />}
 
         <MobilFold tittel="Bibliotek" ikon="layers">
