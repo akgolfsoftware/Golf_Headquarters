@@ -57,7 +57,7 @@ export default async function LiveBriefPage({
     return <PlanSessionBrief data={data} canStart={canStart} blockReason={blockReason} />;
   }
 
-  const result = await loadV2LiveSession(sessionId, user.id, isCoach);
+  const result = await loadV2LiveSession(sessionId);
   if (!result.ok) {
     if (result.reason === "notfound") notFound();
     redirect("/portal/planlegge");

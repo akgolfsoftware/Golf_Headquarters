@@ -21,8 +21,7 @@ export default async function LiveSummaryPage({
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
   const { sessionId } = await params;
 
-  const isCoach = user.role === "COACH" || user.role === "ADMIN";
-  const result = await loadLiveSession(sessionId, user.id, isCoach);
+  const result = await loadLiveSession(sessionId);
   if (!result.ok) {
     if (result.reason === "notfound") notFound();
     redirect("/portal/planlegge");

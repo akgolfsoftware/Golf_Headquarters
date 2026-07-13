@@ -25,7 +25,7 @@ export default async function LiveActivePage({
     redirect("/portal/meg/abonnement");
   }
 
-  const result = await loadLiveSession(sessionId, user.id, isCoach);
+  const result = await loadLiveSession(sessionId);
   if (!result.ok) {
     if (result.reason === "notfound") notFound();
     redirect("/portal/planlegge");

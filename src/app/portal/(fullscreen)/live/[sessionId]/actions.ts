@@ -162,12 +162,16 @@ function mapLog(log: {
   };
 }
 
-/** Henter sesjon + drills + eksisterende logger for live-økt. */
-export async function loadLiveSession(
-  sessionId: string,
-  userId: string,
-  isCoach: boolean,
-): Promise<AccessResult> {
+/** Henter sesjon + drills + eksisterende logger for live-økt.
+ *  Feilfiks 5.1 (2026-07-13): bruker/rolle utledes INTERNT — som eksportert
+ *  server action kunne funksjonen tidligere kalles fra klient med vilkårlig
+ *  userId + isCoach=true og lese enhver økt. */
+export async function loadLiveSession(sessionId: string): Promise<AccessResult> {
+  const user = await requireConsentingUser();
+  const userId = user.id;
+  const isCoach = user.role === "COACH" || user.role === "ADMIN";
+
+
   const session = await prisma.trainingSessionV2.findUnique({
     where: { id: sessionId },
     include: {
