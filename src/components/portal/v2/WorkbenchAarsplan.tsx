@@ -11,7 +11,7 @@
  * Mobil: samme canvas med horisontal scroll + «Ny periode»-knapp (uten drag).
  */
 
-import { useRef, useState } from "react";
+import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { T, Kort, Caps, Icon, Knapp, TomTilstand, StatusPill } from "@/components/v2";
 import { LPHASE_LABEL, LPHASE_FARGE, LPHASE_BESKRIVELSE } from "@/lib/labels/taxonomy";
 import { budsjettSum, type PeriodeInput, type SessionBudget } from "@/lib/workbench/perioder";
@@ -96,6 +96,11 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
 
   const [boble, setBoble] = useState<{ pct: number; tekst: string } | null>(null);
   const [popup, setPopup] = useState<PopupState | null>(null);
+  // Hold-og-dra en plassert blokk venstre/høyre for å flytte hele perioden.
+  // Rent lokalt UI-forskyv til slipp — selve lagringen skjer i popupen
+  // (samme "alt til canvas → bekreft"-regel som resten av årsplanen).
+  const dragRef = useRef<{ id: string; pointerId: number; startX: number; moved: boolean } | null>(null);
+  const [drag, setDrag] = useState<{ id: string; deltaDager: number } | null>(null);
   const [bekreftSlett, setBekreftSlett] = useState(false);
   const [lagrer, setLagrer] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
@@ -117,19 +122,65 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
     setPopup({ lPhase, startDato: tilISO(start), sluttDato: tilISO(slutt), fokus: "", ukevolumMinT: "", ukevolumMaxT: "", budsjett: {} });
   };
 
-  const aapneRedigerPopup = (b: NonNullable<WorkbenchData["seasonBlocks"]>[number]) => {
+  const aapneRedigerPopup = (b: NonNullable<WorkbenchData["seasonBlocks"]>[number], skiftDager = 0) => {
     setFeil(null);
     setBekreftSlett(false);
+    const start = new Date(b.startDate);
+    const slutt = new Date(b.endDate);
+    if (skiftDager !== 0) {
+      start.setDate(start.getDate() + skiftDager);
+      slutt.setDate(slutt.getDate() + skiftDager);
+    }
     setPopup({
       periodeId: b.id,
       lPhase: b.lPhase,
-      startDato: tilISO(new Date(b.startDate)),
-      sluttDato: tilISO(new Date(b.endDate)),
+      startDato: tilISO(start),
+      sluttDato: tilISO(slutt),
       fokus: b.focus ?? "",
       ukevolumMinT: b.weeklyVolMin != null ? String(Math.round((b.weeklyVolMin / 60) * 10) / 10) : "",
       ukevolumMaxT: b.weeklyVolMax != null ? String(Math.round((b.weeklyVolMax / 60) * 10) / 10) : "",
       budsjett: b.budsjett ?? {},
     });
+  };
+
+  // Hold-og-dra en plassert blokk: terskel før det telles som drag (ikke trykk),
+  // live dato-boble mens du drar, popup forhåndsutfylt med nye datoer ved slipp.
+  const PIXEL_TERSKEL = 6;
+  const startBlokkDrag = (e: ReactPointerEvent<HTMLButtonElement>, b: NonNullable<WorkbenchData["seasonBlocks"]>[number]) => {
+    if (!handlers) return;
+    dragRef.current = { id: b.id, pointerId: e.pointerId, startX: e.clientX, moved: false };
+  };
+  const flyttBlokkDrag = (e: ReactPointerEvent<HTMLButtonElement>, b: NonNullable<WorkbenchData["seasonBlocks"]>[number]) => {
+    const st = dragRef.current;
+    if (!st || st.id !== b.id) return;
+    const dx = e.clientX - st.startX;
+    if (!st.moved && Math.abs(dx) > PIXEL_TERSKEL) {
+      st.moved = true;
+      e.currentTarget.setPointerCapture(st.pointerId);
+    }
+    if (!st.moved) return;
+    const rect = banRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const deltaDager = Math.round((dx / rect.width) * totDager);
+    setDrag({ id: b.id, deltaDager });
+    const nyStart = new Date(b.startDate);
+    nyStart.setDate(nyStart.getDate() + deltaDager);
+    setBoble({ pct: ((dagIAaret(nyStart, year)) / totDager) * 100, tekst: datoKort(nyStart) });
+  };
+  const avsluttBlokkDrag = (e: ReactPointerEvent<HTMLButtonElement>, b: NonNullable<WorkbenchData["seasonBlocks"]>[number]) => {
+    const st = dragRef.current;
+    dragRef.current = null;
+    setDrag(null);
+    setBoble(null);
+    if (!st || st.id !== b.id) return;
+    if (st.moved) {
+      const dx = e.clientX - st.startX;
+      const rect = banRef.current?.getBoundingClientRect();
+      const deltaDager = rect ? Math.round((dx / rect.width) * totDager) : 0;
+      if (deltaDager !== 0) aapneRedigerPopup(b, deltaDager);
+    } else {
+      aapneRedigerPopup(b);
+    }
   };
 
   const lagre = async () => {
@@ -239,25 +290,32 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
               const e = Math.min(totDager - 1, dagIAaret(new Date(b.endDate), year));
               const sum = budsjettSum(b.budsjett ?? null);
               const farge = LPHASE_FARGE[b.lPhase] ?? T.mut;
+              const draggesNaa = drag?.id === b.id;
+              const visS = draggesNaa ? s + drag.deltaDager : s;
+              const visE = draggesNaa ? e + drag.deltaDager : e;
               return (
                 <button
                   key={b.id}
                   type="button"
                   data-wb-periode={b.id}
-                  onClick={handlers ? () => aapneRedigerPopup(b) : undefined}
-                  className="v2-press v2-focus"
-                  title={`${LPHASE_LABEL[b.lPhase]} · ${datoKort(new Date(b.startDate))}–${datoKort(new Date(b.endDate))}${b.focus ? ` · ${b.focus}` : ""}`}
+                  onPointerDown={handlers ? (ev) => startBlokkDrag(ev, b) : undefined}
+                  onPointerMove={handlers ? (ev) => flyttBlokkDrag(ev, b) : undefined}
+                  onPointerUp={handlers ? (ev) => avsluttBlokkDrag(ev, b) : undefined}
+                  onPointerCancel={handlers ? (ev) => avsluttBlokkDrag(ev, b) : undefined}
+                  className={`v2-focus ${draggesNaa ? "v2-drag-lift" : "v2-press v2-drag-settle"}`}
+                  title={`${LPHASE_LABEL[b.lPhase]} · ${datoKort(new Date(b.startDate))}–${datoKort(new Date(b.endDate))}${b.focus ? ` · ${b.focus}` : ""}${handlers ? " · hold og dra for å flytte" : ""}`}
                   style={{
                     appearance: "none",
                     position: "absolute",
-                    left: `${(s / totDager) * 100}%`,
-                    width: `${Math.max(0.8, ((e - s + 1) / totDager) * 100)}%`,
+                    left: `${(visS / totDager) * 100}%`,
+                    width: `${Math.max(0.8, ((visE - visS + 1) / totDager) * 100)}%`,
                     top: 8 + lane * 40,
                     height: 34,
                     borderRadius: 9,
                     background: `color-mix(in srgb, ${farge} 20%, ${T.panel})`,
                     border: `1px solid color-mix(in srgb, ${farge} 55%, transparent)`,
-                    cursor: handlers ? "pointer" : "default",
+                    cursor: handlers ? "grab" : "default",
+                    touchAction: handlers ? "none" : undefined,
                     display: "flex",
                     alignItems: "center",
                     gap: 6,
@@ -310,7 +368,7 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
       {popup && (
         <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
           <div onClick={lagrer ? undefined : () => setPopup(null)} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
-          <div role="dialog" aria-label={popup.periodeId ? "Rediger periode" : "Ny periode"} style={{ position: "relative", width: "min(440px, 100%)", maxHeight: "88vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+          <div role="dialog" aria-label={popup.periodeId ? "Rediger periode" : "Ny periode"} className="v2-sheet-in" style={{ position: "relative", width: "min(440px, 100%)", maxHeight: "88vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ width: 10, height: 10, borderRadius: 3, background: LPHASE_FARGE[popup.lPhase] }} />
               <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>
