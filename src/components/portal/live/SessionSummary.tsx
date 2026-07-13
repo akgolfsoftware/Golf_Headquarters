@@ -1,11 +1,14 @@
-import { CheckCircle2, Clock, Dumbbell, Target, TrendingUp, ArrowRight } from "lucide-react";
+import { CheckCircle2, Clock, Dumbbell, Film, Image as ImageIcon, Target, TrendingUp, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import type { LiveV2Summary } from "./types";
+import type { MediaNote } from "@/lib/portal-live/media-notes";
 
 export type SessionSummaryProps = {
   data: LiveV2Summary;
   /** Summary-kjeding (flytpakke 2, 2.7) — neste økt på tvers av begge spor. */
   nesteOkt?: { tekst: string; href: string };
+  /** Bølge 5: bilder/videoer lagt ved under økta. */
+  media?: MediaNote[];
 };
 
 const AXIS_LABEL: Record<string, string> = {
@@ -30,7 +33,7 @@ function fmtMSS(totalSec: number): string {
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
-export function SessionSummary({ data, nesteOkt }: SessionSummaryProps) {
+export function SessionSummary({ data, nesteOkt, media }: SessionSummaryProps) {
   const firstName = data.studentName?.split(" ")[0] ?? "spiller";
   const completionPct =
     data.drills.length > 0 ? Math.round((data.drillsCompleted / data.drills.length) * 100) : 0;
@@ -165,6 +168,66 @@ export function SessionSummary({ data, nesteOkt }: SessionSummaryProps) {
           })}
         </ul>
       </div>
+
+      {/* Media fra økta (Bølge 5) — bilder/videoer lagt ved underveis */}
+      {media && media.length > 0 && (
+        <div className="rounded-2xl border border-background/10 bg-background/5 p-4">
+          <div className="mb-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-background/70">
+            Bilder og video fra økta
+          </div>
+          <ul className="flex flex-col gap-2">
+            {media.map((m, i) => {
+              const drill = m.drillId ? data.drills.find((d) => d.id === m.drillId) : null;
+              return (
+                <li key={i}>
+                  <a
+                    href={m.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-3 rounded-lg border border-background/10 bg-foreground/40 px-4 py-2 transition-colors active:bg-background/10"
+                  >
+                    {m.type === "image" ? (
+                      <ImageIcon className="h-4 w-4 shrink-0 text-accent" strokeWidth={2} aria-hidden />
+                    ) : (
+                      <Film className="h-4 w-4 shrink-0 text-accent" strokeWidth={2} aria-hidden />
+                    )}
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-medium text-background">
+                        {m.type === "image" ? "Bilde" : "Video"}
+                        {drill ? ` · ${drill.name}` : ""}
+                      </span>
+                      {m.comment && (
+                        <span className="block truncate text-xs text-background/60">{m.comment}</span>
+                      )}
+                    </span>
+                    <ArrowRight className="h-4 w-4 shrink-0 text-background/50" strokeWidth={2} aria-hidden />
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
+      {/* Kommentarer per drill (Bølge 5) */}
+      {data.existingLogs.some((l) => l.notes) && (
+        <div className="rounded-2xl border border-background/10 bg-background/5 p-4">
+          <div className="mb-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-background/70">
+            Dine kommentarer
+          </div>
+          <ul className="flex flex-col gap-2">
+            {data.existingLogs.filter((l) => l.notes).map((l) => {
+              const drill = data.drills.find((d) => d.id === l.drillId);
+              return (
+                <li key={l.drillId} className="rounded-lg border border-background/10 bg-foreground/40 px-4 py-2">
+                  <div className="font-mono text-xs font-semibold text-background/50">{drill?.name ?? "Drill"}</div>
+                  <p className="mt-1 text-sm leading-relaxed text-background/85">{l.notes}</p>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
 
       {/* CTA */}
       <Link

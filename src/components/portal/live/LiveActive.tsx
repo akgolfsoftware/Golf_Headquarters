@@ -2,13 +2,16 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check } from "lucide-react";
+import { Check, ImagePlus, Plus } from "lucide-react";
 import type { LiveV2Drill, LiveV2Session, DrillRepState, LiveCoachPanelData } from "./types";
 import { plannedVolumText } from "./types";
 import { DrillLogger } from "./DrillLogger";
 import { SessionTimer } from "./SessionTimer";
 import { LiveCoachPanel } from "./LiveCoachPanel";
-import { completeDrill, completeSession, startSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
+import { useLiveMediaUpload } from "./useLiveMediaUpload";
+import { NyOvelseArk } from "@/components/portal/v2/NyOvelseArk";
+import { TrackmanImportModal } from "@/components/shared/trackman-import-modal";
+import { addDrillToLiveSession, completeDrill, completeSession, startSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
 
 type DrillStatus = "done" | "active" | "queued";
 
@@ -216,9 +219,41 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   const [isCompleting, setIsCompleting] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showDrillLogger, setShowDrillLogger] = useState(false);
+  // Bølge 5: feilsti for drill-lagring (feilfiks 3.1 — aldri stille datatap),
+  // kommentar per drill, media-opplasting og «Ny øvelse i økta».
+  const [lagreFeil, setLagreFeil] = useState<string | null>(null);
+  const [drillNotes, setDrillNotes] = useState<Record<string, string>>({});
+  const [nyOvelseApen, setNyOvelseApen] = useState(false);
+  const [mediaMelding, setMediaMelding] = useState<string | null>(null);
+  const filInputRef = useRef<HTMLInputElement>(null);
 
   const activeIdx = useMemo(() => drills.findIndex((d) => d.status === "active"), [drills]);
   const active = activeIdx >= 0 ? drills[activeIdx] : null;
+
+  const media = useLiveMediaUpload({
+    userId: coachPanel.userId,
+    sessionId: data.sessionId,
+    kind: "session-v2",
+    drillId: active?.id ?? null,
+  });
+
+  // Ny drill lagt til (router.refresh etter addDrillToLiveSession) → flett inn
+  // nye driller uten å røre lokal rep-state for de som alt er i gang.
+  const [forrigeData, setForrigeData] = useState(data);
+  if (forrigeData !== data) {
+    setForrigeData(data);
+    if (data.drills.length !== drills.length) {
+      setDrills((prev) => {
+        const kjent = new Map(prev.map((d) => [d.id, d]));
+        const neste = buildInitialDrills(data).map((d) => kjent.get(d.id) ?? d);
+        if (!neste.some((d) => d.status === "active")) {
+          const forsteVentende = neste.find((d) => d.status === "queued");
+          if (forsteVentende) forsteVentende.status = "active";
+        }
+        return neste;
+      });
+    }
+  }
 
   // Start sesjonen ved mount (idempotent).
   const activatedRef = useRef(false);
@@ -284,8 +319,12 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   const handleCompleteDrill = useCallback(async () => {
     if (!active || isCompleting) return;
     setIsCompleting(true);
+    setLagreFeil(null);
     vibrate(40);
 
+    // Feilfiks 3.1 (2026-07-13): drillen markeres KUN ferdig når serveren har
+    // lagret loggen. Tidligere gikk flyten videre (og økta ble fullført) selv
+    // når completeDrill feilet — repsene forsvant stille.
     try {
       await completeDrill({
         sessionId: data.sessionId,
@@ -297,12 +336,16 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         repsHit: active.repsHit,
         successRate:
           active.repsTotal > 0 ? Math.round((active.repsHit / active.repsTotal) * 100) : 0,
+        notes: drillNotes[active.id]?.trim() || undefined,
       });
     } catch (err) {
       console.error("[LiveActive] completeDrill feilet", err);
-    } finally {
+      setLagreFeil("Fikk ikke lagret repsene — sjekk nettet og prøv igjen. Ingenting er mistet.");
       setIsCompleting(false);
+      vibrate([80, 60, 80]);
+      return;
     }
+    setIsCompleting(false);
 
     setDrills((prev) =>
       prev.map((d, i) => {
@@ -318,7 +361,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
     if (activeIdx === drills.length - 1) {
       await completeSession(data.sessionId, totalSec + drillSec);
     }
-  }, [active, activeIdx, data.sessionId, drills.length, isCompleting, totalSec, drillSec]);
+  }, [active, activeIdx, data.sessionId, drills.length, isCompleting, totalSec, drillSec, drillNotes]);
 
   const handleLogRep = useCallback(() => {
     setShowDrillLogger(true);
@@ -373,6 +416,11 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
           <span className="w-16" />
         </header>
         <main className="flex flex-1 flex-col overflow-y-auto" style={{ minHeight: 0 }}>
+          {lagreFeil && (
+            <div role="alert" className="mx-4 mt-3 rounded-lg border border-destructive/40 bg-destructive/15 px-4 py-2 text-[13px] text-background">
+              {lagreFeil}
+            </div>
+          )}
           <DrillLogger
             drill={active}
             state={activeState}
@@ -381,6 +429,8 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             isLast={activeIdx === drills.length - 1}
             completedCount={completedCount}
             totalCount={drills.length}
+            notes={drillNotes[active.id] ?? ""}
+            onNotesChange={(v) => setDrillNotes((prev) => ({ ...prev, [active.id]: v }))}
           />
         </main>
       </div>
@@ -468,6 +518,64 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
           />
         </div>
 
+        {/* Verktøyrad (Bølge 5): bilde/video · TrackMan-import · ny øvelse */}
+        <div className="mb-[14px] flex flex-wrap items-center gap-2">
+          <input
+            ref={filInputRef}
+            type="file"
+            accept="image/*,video/*"
+            className="hidden"
+            onChange={(e) => {
+              const fil = e.target.files?.[0];
+              e.target.value = "";
+              if (!fil) return;
+              setMediaMelding(null);
+              void media.last(fil).then((res) => {
+                setMediaMelding(
+                  res.ok
+                    ? fil.type.startsWith("image/")
+                      ? "Bildet er lagt ved økten."
+                      : "Videoen er lagt ved økten."
+                    : res.error,
+                );
+              });
+            }}
+          />
+          <button
+            type="button"
+            disabled={media.busy}
+            onClick={() => filInputRef.current?.click()}
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-foreground disabled:opacity-50"
+          >
+            <ImagePlus className="h-[14px] w-[14px]" strokeWidth={2} aria-hidden />
+            {media.busy ? "Laster opp…" : "Bilde/video"}
+          </button>
+          <TrackmanImportModal
+            variant="secondary"
+            label="TrackMan"
+            className="!rounded-full !px-4 !py-2 !font-mono !text-[10.5px] !font-bold !uppercase !tracking-[0.06em]"
+            onAttachImageFallback={async (fil) => {
+              const res = await media.last(fil);
+              if (res.ok) setMediaMelding("Skjermbildet er lagt ved økten som bilde.");
+              return res;
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => setNyOvelseApen(true)}
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-foreground"
+          >
+            <Plus className="h-[14px] w-[14px]" strokeWidth={2} aria-hidden />
+            Ny øvelse
+          </button>
+        </div>
+
+        {(mediaMelding || media.feil || lagreFeil) && (
+          <div className="mb-[14px] rounded-lg border border-border bg-card px-4 py-2 text-[13px] text-foreground">
+            {lagreFeil ?? media.feil ?? mediaMelding}
+          </div>
+        )}
+
         {/* Alle drills ferdige — grønt banner */}
         {allDone && (
           <div
@@ -516,6 +624,24 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
 
         <div className="h-4" />
       </main>
+
+      {/* «Ny øvelse» (Bølge 5): opprett i banken → koble rett inn i økta. */}
+      {nyOvelseApen && (
+        <NyOvelseArk
+          defaultAkse={(active?.pyramide as "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN" | undefined) ?? "TEK"}
+          onLukk={() => setNyOvelseApen(false)}
+          onOpprettet={(ovelse) => {
+            void addDrillToLiveSession({ sessionId: data.sessionId, exerciseId: ovelse.id }).then((res) => {
+              if (res.ok) {
+                setMediaMelding(`«${ovelse.name}» er lagt til i økten.`);
+                router.refresh();
+              } else {
+                setMediaMelding(res.error ?? "Kunne ikke legge øvelsen i økten.");
+              }
+            });
+          }}
+        />
+      )}
 
       <LiveCoachPanel data={coachPanel} activeDrillId={active?.id ?? null} />
     </div>

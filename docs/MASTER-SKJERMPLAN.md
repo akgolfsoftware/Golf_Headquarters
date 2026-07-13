@@ -175,8 +175,8 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Ønsket økt (be coach) | `/portal/onskeligokt` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ønsket økt bekreftet | `/portal/onskeligokt/bekreftet` | – | --- | ✓ | ~ | ~ | ~ |
 | Live-økt: brief † | `/portal/(fullscreen)/live/[sessionId]/brief` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
-| Live-økt: aktiv † | `/portal/(fullscreen)/live/[sessionId]/active` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
-| Live-økt: oppsummering † | `/portal/(fullscreen)/live/[sessionId]/summary` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
+| Live-økt: aktiv † | `/portal/(fullscreen)/live/[sessionId]/active` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: bilde/video-opplasting utenfor AI-panelet, kommentar per drill, TrackMan-import (inkl. skjermbilde→AI-vision m/ forhåndsvisning + bilde-fallback), «Ny øvelse» inn i økta, feilsti ved lagringsfeil (aldri stille datatap) |
+| Live-økt: oppsummering † | `/portal/(fullscreen)/live/[sessionId]/summary` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: viser media + drill-kommentarer; TrackMan-import i etterkant |
 | Live-økt: drill-logger | `/portal/(fullscreen)/live/[sessionId]/logger` | – | ✓✓– | ✓ | ~ | ~ | ✓ |
 | Live-økt: score-tapper | `/portal/(fullscreen)/live/[sessionId]/tapper` | – | ✓✓– | ✓ | ~ | ~ | ✓ |
 | Tren (fullskjerm) | `/portal/(fullscreen)/tren` | – | --- | ✓ | ~ | ~ | ~ |

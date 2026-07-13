@@ -12,6 +12,9 @@ export type DrillLoggerProps = {
   /** Viser fremdrift. */
   completedCount: number;
   totalCount: number;
+  /** Bølge 5: fritekst-kommentar per drill — lagres med drill-loggen. */
+  notes?: string;
+  onNotesChange?: (v: string) => void;
 };
 
 const AXIS_LABEL: Record<string, string> = {
@@ -44,6 +47,8 @@ export function DrillLogger({
   isLast,
   completedCount,
   totalCount,
+  notes,
+  onNotesChange,
 }: DrillLoggerProps) {
   const computedTotal =
     state.repsWithoutBall + state.repsLowSpeed + state.repsAutomatic + state.repsHit;
@@ -152,6 +157,23 @@ export function DrillLogger({
           onChange={(v) => setField("repsHit", v)}
         />
       </div>
+
+      {/* Kommentar (Bølge 5) — lagres med drill-loggen ved Fullfør */}
+      {onNotesChange && (
+        <label className="block">
+          <span className="mb-2 block font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-background/55">
+            Kommentar — valgfri
+          </span>
+          <textarea
+            value={notes ?? ""}
+            onChange={(e) => onNotesChange(e.target.value)}
+            rows={2}
+            maxLength={1000}
+            placeholder="Hvordan kjentes drillen? Hva funket / funket ikke?"
+            className="no-zoom-input w-full resize-none rounded-xl border border-background/15 bg-background/5 px-4 py-3 text-sm leading-relaxed text-background placeholder:text-background/40 focus:outline-none focus:ring-2 focus:ring-accent/50"
+          />
+        </label>
+      )}
 
       {/* Fullfør-knapp */}
       <button

@@ -24,11 +24,13 @@ import {
 import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
+  Camera,
   Check,
   ChevronLeft,
   ChevronRight,
   FileText,
   FileCode,
+  ImagePlus,
   Lock,
   Plug,
   X,
@@ -36,14 +38,16 @@ import {
 import {
   importTrackManCsv,
   importTrackManHtml,
+  importTrackManShots,
   type TrackManEnvironment,
 } from "@/app/portal/mal/trackman/actions";
+import { parseTrackmanScreenshot } from "@/lib/trackman/parse-screenshot";
 import { ENVIRONMENT_OPTIONS } from "@/lib/sg-hub/environment-labels";
 import { parseTrackManCsv, type TrackManShot } from "@/lib/trackman/parse-csv";
 import { useToast } from "@/components/shared/toast-provider";
 
 type Steg = 1 | 2 | 3 | 4;
-type Kilde = "csv" | "html" | "account" | "api";
+type Kilde = "csv" | "html" | "screenshot" | "account" | "api";
 
 type Props = {
   /**
@@ -62,6 +66,12 @@ type Props = {
    * Når tom: bruker server-action default (innlogget user).
    */
   onBehalfOfUserId?: string;
+  /**
+   * Fallback for skjermbilde-kilden (live-økt): når vision-parsingen feiler
+   * eller brukeren heller vil beholde bildet som det er, kalles denne med
+   * originalfilen («Legg ved som bilde i økten»). Uten prop vises ikke valget.
+   */
+  onAttachImageFallback?: (file: File) => Promise<{ ok: boolean; error?: string }>;
 };
 
 const KILDER: Array<{
@@ -86,6 +96,13 @@ const KILDER: Array<{
     ready: true,
   },
   {
+    id: "screenshot",
+    title: "Skjermbilde",
+    desc: "Ta bilde av TrackMan-skjermen — AI leser ut slagene, du godkjenner.",
+    icon: Camera,
+    ready: true,
+  },
+  {
     id: "account",
     title: "TrackMan-konto",
     desc: "Koble til kontoen din og hent automatisk. Kommer snart.",
@@ -106,6 +123,7 @@ export function TrackmanImportModal({
   label = "Importer TrackMan",
   className,
   onBehalfOfUserId,
+  onAttachImageFallback,
 }: Props) {
   const router = useRouter();
   const toast = useToast();
@@ -127,9 +145,16 @@ export function TrackmanImportModal({
   const [csvContent, setCsvContent] = useState("");
   const [htmlContent, setHtmlContent] = useState("");
 
-  // Steg 3 — preview shots (kun CSV)
+  // Steg 3 — preview shots (CSV + skjermbilde)
   const [shots, setShots] = useState<TrackManShot[]>([]);
   const [valgt, setValgt] = useState<Set<number>>(new Set());
+
+  // Skjermbilde-kilden (Bølge 5): original-fil beholdes for «legg ved som
+  // bilde»-fallback; vision-parsing skjer i egen pending-tilstand.
+  const [screenshotFil, setScreenshotFil] = useState<File | null>(null);
+  const [parserBilde, setParserBilde] = useState(false);
+  const [bildeUsikkerhet, setBildeUsikkerhet] = useState<string | null>(null);
+  const [leggerVedBilde, setLeggerVedBilde] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -149,6 +174,10 @@ export function TrackmanImportModal({
     setValgt(new Set());
     setEnvironment("SIMULATOR_INDOOR");
     setFeil(null);
+    setScreenshotFil(null);
+    setParserBilde(false);
+    setBildeUsikkerhet(null);
+    setLeggerVedBilde(false);
   }
 
   function lukk() {
@@ -161,6 +190,39 @@ export function TrackmanImportModal({
     if (!fil) return;
     setFilename(fil.name);
     setFeil(null);
+
+    if (kilde === "screenshot") {
+      setScreenshotFil(fil);
+      setBildeUsikkerhet(null);
+      setShots([]);
+      setValgt(new Set());
+      const mediaType =
+        fil.type === "image/png" || fil.type === "image/webp" ? fil.type : "image/jpeg";
+      setParserBilde(true);
+      try {
+        const buf = await fil.arrayBuffer();
+        let bin = "";
+        const bytes = new Uint8Array(buf);
+        const CHUNK = 0x8000;
+        for (let i = 0; i < bytes.length; i += CHUNK) {
+          bin += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
+        }
+        const res = await parseTrackmanScreenshot({ imageBase64: btoa(bin), mediaType });
+        if (res.ok) {
+          setShots(res.shots);
+          setValgt(new Set(res.shots.map((_, i) => i)));
+          setBildeUsikkerhet(res.usikkerhet);
+        } else {
+          setFeil(res.error);
+        }
+      } catch {
+        setFeil("Klarte ikke å lese bildet. Du kan legge det ved som bilde i stedet.");
+      } finally {
+        setParserBilde(false);
+      }
+      return;
+    }
+
     const tekst = await fil.text();
 
     if (kilde === "csv") {
@@ -207,7 +269,17 @@ export function TrackmanImportModal({
         setFeil("Last opp en HTML-fil først.");
         return;
       }
-      setSteg(kilde === "csv" ? 3 : 4);
+      if (kilde === "screenshot") {
+        if (parserBilde) {
+          setFeil("Vent — leser skjermbildet…");
+          return;
+        }
+        if (shots.length === 0) {
+          setFeil("Last opp et skjermbilde med slagdata først.");
+          return;
+        }
+      }
+      setSteg(kilde === "html" ? 4 : 3);
       return;
     }
     if (steg === 3) {
@@ -222,7 +294,7 @@ export function TrackmanImportModal({
 
   function forrige() {
     setFeil(null);
-    if (steg === 4 && kilde !== "csv") setSteg(2);
+    if (steg === 4 && kilde === "html") setSteg(2);
     else if (steg === 4) setSteg(3);
     else if (steg === 3) setSteg(2);
     else if (steg === 2) setSteg(1);
@@ -248,13 +320,20 @@ export function TrackmanImportModal({
             environment,
             ...(onBehalfOfUserId ? { onBehalfOfUserId } : {}),
           });
+        } else if (kilde === "screenshot") {
+          await importTrackManShots({
+            recordedAt,
+            shots: shots.filter((_, i) => valgt.has(i)),
+            environment,
+            ...(onBehalfOfUserId ? { onBehalfOfUserId } : {}),
+          });
         } else {
           throw new Error("Ikke implementert.");
         }
         toast.success(
-          kilde === "csv"
-            ? `TrackMan-økt importert · ${valgt.size} slag lagret`
-            : "TrackMan-rapport importert",
+          kilde === "html"
+            ? "TrackMan-rapport importert"
+            : `TrackMan-økt importert · ${valgt.size} slag lagret`,
         );
         lukk();
         router.refresh();
@@ -347,6 +426,8 @@ export function TrackmanImportModal({
               filename={filename}
               onFile={handleFile}
               shotsCount={shots.length}
+              parserBilde={parserBilde}
+              bildeUsikkerhet={bildeUsikkerhet}
             />
           )}
           {steg === 3 && (
@@ -363,8 +444,8 @@ export function TrackmanImportModal({
               recordedAt={recordedAt}
               environment={environment}
               filename={filename}
-              valgtCount={kilde === "csv" ? valgt.size : null}
-              totalCount={kilde === "csv" ? shots.length : null}
+              valgtCount={kilde === "html" ? null : valgt.size}
+              totalCount={kilde === "html" ? null : shots.length}
             />
           )}
         </div>
@@ -375,7 +456,35 @@ export function TrackmanImportModal({
             className="mx-6 mb-4 flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
           >
             <AlertTriangle size={14} strokeWidth={1.75} className="mt-0.5" />
-            <span>{feil}</span>
+            <span className="flex-1">{feil}</span>
+          </div>
+        )}
+
+        {/* Fallback (Bølge 5): parse-feil skal ALDRI blokkere flyten — behold
+            skjermbildet som vanlig bilde i økten når konteksten (live) kan det. */}
+        {kilde === "screenshot" && feil && screenshotFil && onAttachImageFallback && (
+          <div className="mx-6 mb-4">
+            <button
+              type="button"
+              disabled={leggerVedBilde}
+              onClick={() => {
+                setLeggerVedBilde(true);
+                void onAttachImageFallback(screenshotFil)
+                  .then((res) => {
+                    if (res.ok) {
+                      toast.success("Skjermbildet er lagt ved økten som bilde.");
+                      lukk();
+                    } else {
+                      setFeil(res.error ?? "Kunne ikke legge ved bildet.");
+                    }
+                  })
+                  .finally(() => setLeggerVedBilde(false));
+              }}
+              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-60"
+            >
+              <ImagePlus size={14} strokeWidth={1.75} />
+              {leggerVedBilde ? "Legger ved…" : "Legg ved som bilde i økten"}
+            </button>
           </div>
         )}
 
@@ -485,6 +594,8 @@ function Steg2({
   filename,
   onFile,
   shotsCount,
+  parserBilde,
+  bildeUsikkerhet,
 }: {
   kilde: Kilde | null;
   recordedAt: string;
@@ -494,14 +605,19 @@ function Steg2({
   filename: string | null;
   onFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
   shotsCount: number;
+  parserBilde?: boolean;
+  bildeUsikkerhet?: string | null;
 }) {
-  const accept = kilde === "csv" ? ".csv,text/csv" : ".html,text/html";
+  const accept =
+    kilde === "csv" ? ".csv,text/csv" : kilde === "screenshot" ? "image/*" : ".html,text/html";
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
         {kilde === "csv"
           ? "Last opp CSV eksportert fra TrackMan-appen. Vi parser hver rad som ett slag."
-          : "Last opp HTML-rapporten fra Multi Group Report."}
+          : kilde === "screenshot"
+            ? "Last opp eller ta et skjermbilde av TrackMan-skjermen. AI leser ut slagene — du ser og godkjenner tallene før noe lagres."
+            : "Last opp HTML-rapporten fra Multi Group Report."}
       </p>
 
       <label className="block">
@@ -551,12 +667,20 @@ function Steg2({
         {filename && (
           <span className="mt-1 block text-xs text-muted-foreground">
             Valgt: {filename}
-            {kilde === "csv" && shotsCount > 0 && (
+            {kilde !== "html" && shotsCount > 0 && (
               <span className="text-foreground">
                 {" "}
-                · {shotsCount} slag parset
+                · {shotsCount} slag {kilde === "screenshot" ? "lest fra bildet" : "parset"}
               </span>
             )}
+            {kilde === "screenshot" && parserBilde && (
+              <span className="text-foreground"> · leser skjermbildet…</span>
+            )}
+          </span>
+        )}
+        {kilde === "screenshot" && bildeUsikkerhet && (
+          <span className="mt-1 block text-xs text-warning">
+            AI-merknad: {bildeUsikkerhet} — kontroller tallene i neste steg.
           </span>
         )}
       </label>

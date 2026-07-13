@@ -161,12 +161,15 @@ function mapLog(log: {
   };
 }
 
-/** Henter sesjon + drills + eksisterende logger for live-økt. */
-export async function loadLiveSession(
-  sessionId: string,
-  userId: string,
-  isCoach: boolean,
-): Promise<AccessResult> {
+/** Henter sesjon + drills + eksisterende logger for live-økt.
+ *  Feilfiks 5.1 (2026-07-13): bruker/rolle utledes INTERNT — som eksportert
+ *  server action kunne funksjonen tidligere kalles fra klient med vilkårlig
+ *  userId + isCoach=true og lese enhver økt. */
+export async function loadLiveSession(sessionId: string): Promise<AccessResult> {
+  const user = await requireConsentingUser();
+  const userId = user.id;
+  const isCoach = user.role === "COACH" || user.role === "ADMIN";
+
   const session = await prisma.trainingSessionV2.findUnique({
     where: { id: sessionId },
     include: {
@@ -329,6 +332,47 @@ async function findExistingLogId(drillId: string, userId: string): Promise<strin
 /** Markerer en drill som fullført ved å logge reps. Alias for logDrillReps. */
 export async function completeDrill(input: CompleteDrillInput): Promise<{ ok: boolean }> {
   return logDrillReps(input);
+}
+
+/** Bølge 5 (2026-07-13): legg en øvelse fra banken inn i en pågående/planlagt
+ *  live-økt — «spiller og coach skal alltid kunne opprette øvelse i en økt».
+ *  Brukes sammen med NyOvelseArk (opprett i banken → koble inn her). */
+export async function addDrillToLiveSession(input: {
+  sessionId: string;
+  exerciseId: string;
+}): Promise<{ ok: boolean; error?: string }> {
+  const { session } = await verifyAccess(input.sessionId);
+  if (session.status !== "PLANNED" && session.status !== "IN_PROGRESS") {
+    return { ok: false, error: "Økten er avsluttet — øvelser kan ikke legges til." };
+  }
+
+  const ovelse = await prisma.exerciseDefinition.findUnique({
+    where: { id: input.exerciseId },
+    select: { id: true, name: true, description: true, pyramidArea: true, durationMin: true, defaultReps: true },
+  });
+  if (!ovelse) return { ok: false, error: "Fant ikke øvelsen i banken." };
+
+  const maxSort = await prisma.trainingDrillV2.aggregate({
+    where: { sessionId: input.sessionId },
+    _max: { sortOrder: true },
+  });
+
+  await prisma.trainingDrillV2.create({
+    data: {
+      sessionId: input.sessionId,
+      exerciseId: ovelse.id,
+      sortOrder: (maxSort._max.sortOrder ?? -1) + 1,
+      name: ovelse.name,
+      description: ovelse.description,
+      durationMinutes: ovelse.durationMin ?? 10,
+      repetitions: ovelse.defaultReps,
+      pyramide: ovelse.pyramidArea,
+    },
+  });
+
+  revalidatePath(`/portal/live/${input.sessionId}`);
+  revalidatePath(`/portal/live/${input.sessionId}/active`);
+  return { ok: true };
 }
 
 /** Fullfører økta: setter COMPLETED, lagrer sammendrag, redirect til summary. */

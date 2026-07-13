@@ -12,6 +12,8 @@ import type { LiveV2Summary } from "@/components/portal/live";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { loadNesteOkt } from "@/lib/portal/load-neste-okt";
 import { nesteOktTekst } from "@/lib/portal/neste-okt-tekst";
+import { lesMediaNotater } from "@/lib/portal-live/media-notes";
+import { TrackmanImportModal } from "@/components/shared/trackman-import-modal";
 
 export default async function LiveSummaryPage({
   params,
@@ -21,8 +23,7 @@ export default async function LiveSummaryPage({
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
   const { sessionId } = await params;
 
-  const isCoach = user.role === "COACH" || user.role === "ADMIN";
-  const result = await loadLiveSession(sessionId, user.id, isCoach);
+  const result = await loadLiveSession(sessionId);
   if (!result.ok) {
     if (result.reason === "notfound") notFound();
     redirect("/portal/planlegge");
@@ -82,9 +83,15 @@ export default async function LiveSummaryPage({
   const { okt, href } = await loadNesteOkt(user.id, naa);
   const nesteOkt = nesteOktTekst(okt, href, naa);
 
+  const media = lesMediaNotater(data.completedSummary as import("@/generated/prisma/client").Prisma.JsonValue);
+
   return (
     <LiveSessionShell title={data.title} subtitle="Oppsummering" closeHref="/portal/planlegge">
-      <SessionSummary data={summaryData} nesteOkt={nesteOkt} />
+      <SessionSummary data={summaryData} nesteOkt={nesteOkt} media={media} />
+      {/* TrackMan-tall fra økta kan importeres i etterkant også (skjermbilde/CSV/HTML). */}
+      <div className="flex justify-center px-4 pb-8">
+        <TrackmanImportModal variant="secondary" label="Importer TrackMan fra økten" />
+      </div>
     </LiveSessionShell>
   );
 }

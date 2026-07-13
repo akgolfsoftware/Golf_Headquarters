@@ -103,6 +103,91 @@ export async function importTrackManCsv(input: TrackManCsvInput) {
   }
 }
 
+export type TrackManShotsInput = {
+  recordedAt: string; // ISO-dato
+  shots: import("@/lib/trackman/parse-csv").TrackManShot[];
+  environment: TrackManEnvironment;
+  /** Kilde-etikett for sporing — default "screenshot-import" (vision-parsede skjermbilder). */
+  source?: string;
+  /** Samme semantikk som TrackManCsvInput.onBehalfOfUserId. */
+  onBehalfOfUserId?: string;
+};
+
+/**
+ * Bølge 5 (2026-07-13): lagre allerede-parsede slag (skjermbilde-import via
+ * Anthropic vision). Nøyaktig samme persistering som CSV-importen — én
+ * TrackManSession + TrackManShot per slag med task-matching, så statistikk
+ * og SG-flyt behandler kildene likt.
+ */
+export async function importTrackManShots(input: TrackManShotsInput) {
+  const user = await requireConsentingUser();
+  const targetUserId = await resolveTargetUserId(user, input.onBehalfOfUserId);
+
+  if (input.shots.length === 0) {
+    throw new Error("Ingen slag å importere.");
+  }
+  const recordedAt = new Date(input.recordedAt);
+
+  const created = await prisma.trackManSession.create({
+    data: {
+      userId: targetUserId,
+      recordedAt,
+      source: input.source ?? "screenshot-import",
+      shotCount: input.shots.length,
+      rawJson: { shots: input.shots } as unknown as import("@/generated/prisma/client").Prisma.JsonObject,
+      environment: input.environment,
+    },
+  });
+
+  for (let i = 0; i < input.shots.length; i++) {
+    const shot = input.shots[i];
+    const club = shot.club?.trim() || "Ukjent";
+    const match = await matchShotToTask(targetUserId, club);
+
+    const clubSpeed = mpsToMph(shot.clubSpeedMps);
+    const ballSpeed = mpsToMph(shot.ballSpeedMps);
+
+    await prisma.trackManShot.create({
+      data: {
+        sessionId: created.id,
+        shotNumber: i + 1,
+        club,
+        clubSpeed,
+        ballSpeed,
+        smashFactor: shot.smashFactor,
+        carryDistance: shot.carryMeters,
+        totalDistance: shot.totalMeters,
+        launchAngle: shot.launchAngleDeg,
+        spinRate: shot.spinRateRpm,
+        side: shot.sideMeters,
+        positionTaskId: match.taskId,
+        matchSource: match.matchSource,
+        matchConfidence: match.matchConfidence,
+        recordedAt,
+      },
+    });
+
+    if (match.taskId) {
+      await updateTmGoalsFromShot(match.taskId, {
+        clubSpeed,
+        ballSpeed,
+        smashFactor: shot.smashFactor,
+        carryDistance: shot.carryMeters,
+        side: shot.sideMeters,
+      });
+    }
+  }
+
+  await triggerTrackManAgent(targetUserId);
+
+  revalidatePath("/portal/mal/trackman");
+  revalidatePath("/portal/planlegge/workbench");
+  if (targetUserId !== user.id) {
+    revalidatePath(`/admin/spillere/${targetUserId}`);
+    revalidatePath(`/admin/spillere/${targetUserId}/workbench`);
+  }
+}
+
 export type TrackManHtmlInput = {
   recordedAt: string; // ISO-dato (kan overstyres av bruker)
   htmlContent: string;

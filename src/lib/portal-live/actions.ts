@@ -169,3 +169,68 @@ export async function saveSessionV2VideoNote(input: SaveVideoNoteInput): Promise
   revalidatePath(`/portal/live/${parsed.data.sessionId}/active`);
   return { ok: true };
 }
+/* ── Bilde-notat (Bølge 5, 2026-07-13) ────────────────────────────────────
+ * Bilder fra live-økta (media-knappen + TrackMan-skjermbilde-fallback)
+ * lagres som imageNotes i samme JSON-felt som videoNotes — men uten
+ * swing-video-analyse (et bilde er ikke en sving). Valgfri kommentar.
+ */
+
+const ImageNoteSchema = z.object({
+  drillId: z.string().nullable(),
+  imageUrl: z.string(),
+  comment: z.string().nullable(),
+  ts: z.string(),
+});
+type ImageNote = z.infer<typeof ImageNoteSchema>;
+
+const SaveImageNoteInput = z.object({
+  sessionId: z.string().min(1),
+  imageUrl: z.string().url(),
+  drillId: z.string().min(1).optional(),
+  comment: z.string().max(1000).optional(),
+});
+export type SaveImageNoteInput = z.infer<typeof SaveImageNoteInput>;
+
+function lesBildeNotater(raw: Prisma.JsonValue | null | undefined): ImageNote[] {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return [];
+  const parsed = z.array(ImageNoteSchema).safeParse((raw as Record<string, unknown>).imageNotes);
+  return parsed.success ? parsed.data : [];
+}
+
+/** Lagrer et bilde-notat for en session-v2-økt (TrainingSessionV2.completedSummary). */
+export async function saveSessionV2ImageNote(input: SaveImageNoteInput): Promise<SaveVideoNoteResult> {
+  const user = await requirePortalUser();
+  const parsed = SaveImageNoteInput.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig input" };
+  }
+
+  const session = await prisma.trainingSessionV2.findUnique({
+    where: { id: parsed.data.sessionId },
+    select: { completedSummary: true, studentId: true, hostId: true, coachId: true },
+  });
+  if (!session) return { ok: false, error: "Økt ikke funnet" };
+  const eier =
+    session.studentId === user.id || session.hostId === user.id || session.coachId === user.id;
+  if (!eier && user.role !== "ADMIN" && user.role !== "COACH") {
+    return { ok: false, error: "Ikke tilgang" };
+  }
+
+  const notat: ImageNote = {
+    drillId: parsed.data.drillId ?? null,
+    imageUrl: parsed.data.imageUrl,
+    comment: parsed.data.comment?.trim() || null,
+    ts: new Date().toISOString(),
+  };
+  const base = jsonBunn(session.completedSummary);
+  const notater = [...lesBildeNotater(session.completedSummary), notat];
+
+  await prisma.trainingSessionV2.update({
+    where: { id: parsed.data.sessionId },
+    data: { completedSummary: { ...base, imageNotes: notater } as unknown as Prisma.InputJsonValue },
+  });
+
+  revalidatePath(`/portal/live/${parsed.data.sessionId}/active`);
+  revalidatePath(`/portal/live/${parsed.data.sessionId}/summary`);
+  return { ok: true };
+}
