@@ -15,7 +15,7 @@ import { useState, type ReactNode } from "react";
 import { T, Kort, Caps, TomTilstand, Icon, AKSE_NAVN } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
 import { DagStripe, type StripeDag } from "@/components/v2/kalender";
-import { DagNivaa, MANEDER, type DagKol } from "./WorkbenchV2";
+import { DagNivaa, OktAgendaRad, MANEDER, type DagKol } from "./WorkbenchV2";
 import { fmtVarighet } from "@/lib/workbench/v2-format";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 
@@ -92,6 +92,37 @@ export function ToDagerNivaa({
         <DagNivaa dag={par[1]} valgt={valgt} onVelg={onVelg} />
       </div>
     </div>
+  );
+}
+
+/* ── ListeNivaaMobil — flat kronologisk agenda for hele uka (2026-07-13) ──
+   Grupperer visningsukas økter per dag (dag-overskrift + OktAgendaRad-rader
+   — samme akse-fargede radstil som DagNivaa, IKKE den nøytrale generiske
+   AgendaRow fra designsystemets kalender.tsx, jf. designregelen om at
+   akse-identitet skal vises via dette mønsteret). */
+export function ListeNivaaMobil({ dager, valgt, onVelg }: { dager: DagKol[]; valgt: string | null; onVelg: (id: string) => void }) {
+  const dagerMedOkter = dager.filter((d) => d.events.length > 0);
+  const totalt = dagerMedOkter.reduce((sum, d) => sum + d.events.length, 0);
+  if (dagerMedOkter.length === 0) {
+    return <Kort><TomTilstand icon="calendar" title="Ingen økter denne uka" sub="Legg til en økt for å se den her." /></Kort>;
+  }
+  return (
+    <Kort eyebrow="Uka · liste" action={<Caps size={9}>{totalt} økter</Caps>}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        {dagerMedOkter.map((d) => (
+          <div key={d.dow + d.dato}>
+            <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: d.today ? T.lime : T.mut, display: "block", marginBottom: 7 }}>
+              {d.dow} {d.dato}{d.today ? " · i dag" : ""}
+            </span>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {d.events.map((o, j) => (
+                <OktAgendaRad key={o.id ?? j} o={o} valgt={valgt} onVelg={onVelg} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </Kort>
   );
 }
 

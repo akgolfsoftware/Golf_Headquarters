@@ -42,7 +42,7 @@ import { ForslagArk, NyOktArk, NyttMaalArk, RedigerOktArk, ValgtOktSeksjon, type
 import { WorkbenchColdstart } from "./WorkbenchColdstart";
 import { WorkbenchAarsplan, PeriodePalett, WBPeriodeStrip } from "./WorkbenchAarsplan";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
-import { WBTidslinjeMobil, MndNivaaMobil, MobilFold, ToDagerNivaa } from "./WorkbenchV2Mobil";
+import { WBTidslinjeMobil, MndNivaaMobil, MobilFold, ToDagerNivaa, ListeNivaaMobil } from "./WorkbenchV2Mobil";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import { LPHASE_LABEL as LPHASE_LABEL_KANON, LPHASE_FARGE as LPHASE_FARGE_KANON } from "@/lib/labels/taxonomy";
@@ -761,6 +761,28 @@ function MndNivaa({ data, onVelgDato }: { data: WorkbenchData; onVelgDato: (dato
   );
 }
 
+/* ── OktAgendaRad — én økt-rad, akse-farget venstrekant ───
+   Utskilt fra DagNivaa (2026-07-13) så Liste-visningen kan gjenbruke
+   nøyaktig samme radstil i stedet for den nøytrale, akse-nøytrale
+   AgendaRow-varianten (designregel: akse-farge vises via dette
+   mønsteret, ikke via generiske AgendaRow-blokker). */
+export function OktAgendaRad({ o, valgt, onVelg }: { o: WeekEvent; valgt: string | null; onVelg: (id: string) => void }) {
+  const ak = o.eb as AkseKey;
+  const col = T.ax[ak] || T.mut;
+  const sel = !!o.id && valgt === o.id;
+  const pending = erOptimistisk(o.id);
+  return (
+    <div onClick={() => o.id && !pending && onVelg(o.id)} style={{ padding: "9px 11px", borderRadius: 10, background: T.panel2, border: `1px ${pending ? "dashed" : "solid"} ${sel ? T.lime : T.border}`, borderLeft: `3px solid ${col}`, cursor: pending ? "default" : "pointer", opacity: pending ? 0.6 : 1 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2 }}>{toKl(o.h, o.m)}</span>
+        <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: `color-mix(in srgb, ${col} 55%, ${T.fg})` }}>{AKSE_NAVN[ak] || o.eb}</span>
+        <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{fmtVarighet(o.durMin)}</span>
+      </div>
+      <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, marginTop: 5 }}>{o.ttl}</div>
+    </div>
+  );
+}
+
 /* ── Dag-nivå (agenda for valgt/i-dag) ─────────────────── */
 export function DagNivaa({ dag, valgt, onVelg }: { dag: DagKol | null; valgt: string | null; onVelg: (id: string) => void }) {
   if (!dag || dag.events.length === 0) {
@@ -769,22 +791,9 @@ export function DagNivaa({ dag, valgt, onVelg }: { dag: DagKol | null; valgt: st
   return (
     <Kort eyebrow={`${dag.dow} ${dag.dato} · tidslinje`} action={<Caps size={9}>{dag.events.length} økter</Caps>}>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {dag.events.map((o, j) => {
-          const ak = o.eb as AkseKey;
-          const col = T.ax[ak] || T.mut;
-          const sel = !!o.id && valgt === o.id;
-          const pending = erOptimistisk(o.id);
-          return (
-            <div key={o.id ?? j} onClick={() => o.id && !pending && onVelg(o.id)} style={{ padding: "9px 11px", borderRadius: 10, background: T.panel2, border: `1px ${pending ? "dashed" : "solid"} ${sel ? T.lime : T.border}`, borderLeft: `3px solid ${col}`, cursor: pending ? "default" : "pointer", opacity: pending ? 0.6 : 1 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2 }}>{toKl(o.h, o.m)}</span>
-                <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: `color-mix(in srgb, ${col} 55%, ${T.fg})` }}>{AKSE_NAVN[ak] || o.eb}</span>
-                <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{fmtVarighet(o.durMin)}</span>
-              </div>
-              <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, marginTop: 5 }}>{o.ttl}</div>
-            </div>
-          );
-        })}
+        {dag.events.map((o, j) => (
+          <OktAgendaRad key={o.id ?? j} o={o} valgt={valgt} onVelg={onVelg} />
+        ))}
       </div>
     </Kort>
   );
@@ -1379,7 +1388,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         </div>
 
         <div style={{ overflowX: "auto", paddingBottom: 1 }}>
-          <PillVelger options={[{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Dag" }, { v: "2dager", l: "2 dager" }]} value={nivaa} onChange={setNivaa} />
+          <PillVelger options={[{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Dag" }, { v: "2dager", l: "2 dager" }, { v: "liste", l: "Liste" }]} value={nivaa} onChange={setNivaa} />
         </div>
 
         <div style={{ display: "flex", gap: 8 }}>
@@ -1563,6 +1572,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         )}
         {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
         {nivaa === "2dager" && <ToDagerNivaa dager={dager} startIndex={toDagerStart} onSkift={setToDagerStart} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
+        {nivaa === "liste" && <ListeNivaaMobil dager={dager} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
         {nivaa === "maned" && <MndNivaaMobil data={data} onVelgDato={velgDatoFraMnd} />}
 
         <MobilFold tittel="Bibliotek" ikon="layers">
