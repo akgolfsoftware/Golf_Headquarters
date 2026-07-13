@@ -36,8 +36,17 @@ wagr-import), tilstander, trackman, videoer, opptak, board, reach, kommunikasjon
 workspace-oppgave-detalj, teknisk-plan-detalj, lag-snitt, foresporsler,
 godkjenninger-detalj, approvals-redirects (kan slettes når godkjenninger-detalj er v2).
 
-## Dobbelt-adresser som skal RYDDES (redirect → slett)
+## Dobbelt-adresser (redirect) — verifisert 2026-07-13: allerede fullstendig ryddet
 
-`/admin/finance`→okonomi · `/admin/calendar`→kalender · `/admin/messages`→innboks ·
-`/admin/approvals`→godkjenninger · `/admin/plans/templates`→plan-templates ·
-`/admin/coach-workbench` (prototype — slett når P1 er ferdig).
+`/admin/finance`→okonomi · `/admin/calendar`(+`/maned`)→kalender · `/admin/messages`→innboks ·
+`/admin/approvals`(+`/[id]`)→godkjenninger · `/admin/plans/templates`(+`/[id]`,`/[id]/rediger`,
+`/[id]/effectiveness`,`/ny`)→plan-templates. Alle rutene (inkl. undersider) er allerede rene
+`permanentRedirect()`-stubs — ingen duplikat-UI er nåbar. **IKKE slett filene i disse mappene**:
+`actions.ts`/`_components/*`/`approval-actions.tsx`/`[id]/approval-detail-client.tsx` i
+`(legacy)/messages`, `(legacy)/approvals` og `(legacy)/calendar` er fortsatt aktivt importert av de
+NYE v2-kanoniske sidene (`AdminComplianceV2.tsx`, `inbox-conversation.tsx`,
+`AdminGodkjenningerV2.tsx`, `admin/agents/[agentId]/page.tsx`, `godkjenninger/[id]/page.tsx`,
+`ny-booking-wizard.tsx`) — de er delt backend-logikk, ikke gammel UI. Å flytte dem ut av
+`(legacy)/`-navnerommet er en ren navnehygiene-refaktor (lav prioritet, egen commit, IKKE en del
+av porterings-bølgene) — ikke gjør det sammen med skjerm-porting for å unngå unødvendig risiko.
+`/admin/coach-workbench` (prototype) slettes fortsatt når Bølge 1 er ferdig.
