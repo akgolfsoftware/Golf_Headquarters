@@ -211,8 +211,8 @@ export function Verktoytips({ tekst = "SG mot CS100-referansen, siste 8 runder",
   return (
     <Ramme w={w} h={h} scrim={false}>
       <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 7 }}>
-        <span style={{ maxWidth: 230, textAlign: "center", fontFamily: T.ui, fontSize: 11.5, color: T.fg, lineHeight: 1.5, background: "rgb(34,37,34)", border: `1px solid ${T.borderS}`, borderRadius: 9, padding: "8px 11px", boxShadow: "0 10px 26px rgba(0,0,0,0.4)" }}>{tekst}</span>
-        <span style={{ width: 9, height: 9, background: "rgb(34,37,34)", borderRight: `1px solid ${T.borderS}`, borderBottom: `1px solid ${T.borderS}`, transform: "rotate(45deg)", marginTop: -12 }} />
+        <span style={{ maxWidth: 230, textAlign: "center", fontFamily: T.ui, fontSize: 11.5, color: T.fg, lineHeight: 1.5, background: "var(--v2-panel3)", border: `1px solid ${T.borderS}`, borderRadius: 9, padding: "8px 11px", boxShadow: "0 10px 26px rgba(0,0,0,0.4)" }}>{tekst}</span>
+        <span style={{ width: 9, height: 9, background: "var(--v2-panel3)", borderRight: `1px solid ${T.borderS}`, borderBottom: `1px solid ${T.borderS}`, transform: "rotate(45deg)", marginTop: -12 }} />
         <span style={{ display: "inline-flex", alignItems: "baseline", gap: 8, background: T.panel2, border: `1px dashed ${T.borderS}`, borderRadius: 10, padding: "7px 13px", marginTop: 4 }}>
           <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2 }}>{trigger}</span>
           <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: T.fg }}>{verdi}</span>
