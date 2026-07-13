@@ -12,7 +12,7 @@
 
 import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { coachedPlayerWhere } from "@/lib/auth/coached";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
@@ -33,7 +33,7 @@ export default async function OppfolgingsKoPage() {
 
   const players = await prisma.user.findMany({
     // I0: kun coachede spillere — selvbetjente (PLATFORM_ONLY) er usynlige i AgencyOS.
-    where: coachedPlayerWhere(),
+    where: coachScopedPlayerWhere(coach),
     include: {
       trainingPlans: { where: { isActive: true }, select: { id: true } },
       signals: { where: { kind: "SG_TOTAL" }, orderBy: { computedAt: "desc" }, take: 1 },
@@ -75,7 +75,7 @@ export default async function OppfolgingsKoPage() {
       signalIkon: sg != null && sg < -0.5 ? "trending-down" : grunner.length >= 2 ? "alert-triangle" : "clock",
       stats,
       tags,
-      siden: p.lastLoginAt ? `flagget ${dagerSiden(p.lastLoginAt) ?? 0} dager siden` : "flagget nylig",
+      siden: p.lastLoginAt ? `sist innlogget ${dagerSiden(p.lastLoginAt) ?? 0} dager siden` : "aldri innlogget",
       prioritet: grunner.length >= 3,
     };
 
@@ -162,7 +162,7 @@ export default async function OppfolgingsKoPage() {
         {/* Aktivitets-stripe */}
         <Kort pad="12px 18px">
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 18 }}>
-            <Caps>Aktivitet · 24 t</Caps>
+            <Caps>Aktivitet · siste 7d</Caps>
             <MikroMeta icon="check-circle">
               Løst <b style={{ color: T.fg }}>{ok.length}</b> saker
             </MikroMeta>

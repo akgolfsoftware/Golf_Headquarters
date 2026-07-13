@@ -11,7 +11,7 @@
  * Server component.
  */
 
-import { coachedPlayerWhere } from "@/lib/auth/coached";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
@@ -41,7 +41,7 @@ function fmtSigned(n: number, decimals = 2): string {
   return `${n < 0 ? "−" : "+"}${s}`;
 }
 
-async function loadStallAnalyse(): Promise<AnalyseV2Data> {
+async function loadStallAnalyse(viewer: { id: string; role: string }): Promise<AnalyseV2Data> {
   const naa = new Date();
   const d7 = new Date(naa.getTime() - 7 * DAG_MS);
   const d14 = new Date(naa.getTime() - 14 * DAG_MS);
@@ -66,7 +66,7 @@ async function loadStallAnalyse(): Promise<AnalyseV2Data> {
     pyramideRaw,
     grupper,
   ] = await Promise.all([
-    prisma.user.count({ where: { AND: [coachedPlayerWhere(), { deletedAt: null }] } }),
+    prisma.user.count({ where: { AND: [coachScopedPlayerWhere(viewer), { deletedAt: null }] } }),
     prisma.trainingPlanSession.aggregate({
       _sum: { durationMin: true },
       where: { status: "COMPLETED", scheduledAt: { gte: d30, lte: naa }, ...spillerOkter },
@@ -238,7 +238,7 @@ async function loadStallAnalyse(): Promise<AnalyseV2Data> {
 
 export default async function V2AdminAnalysePage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
-  const data = await loadStallAnalyse();
+  const data = await loadStallAnalyse(user);
   return (
     <V2Shell aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <AdminAnalyseV2 data={data} />

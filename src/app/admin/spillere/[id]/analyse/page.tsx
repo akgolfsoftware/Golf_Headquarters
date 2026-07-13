@@ -11,7 +11,7 @@
  * Server component.
  */
 
-import { coachedPlayerWhere } from "@/lib/auth/coached";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -33,7 +33,7 @@ export default async function SpillerAnalysePage({
 
   const spiller = await prisma.user.findFirst({
     // I0: selvbetjent spiller → notFound.
-    where: { AND: [coachedPlayerWhere(), { id }] },
+    where: { AND: [coachScopedPlayerWhere(user), { id }] },
     select: { id: true, name: true },
   });
   if (!spiller) notFound();

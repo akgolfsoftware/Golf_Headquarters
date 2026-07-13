@@ -15,6 +15,7 @@
 import { revalidatePath } from "next/cache";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { notify } from "@/lib/notifications";
 
@@ -53,6 +54,11 @@ export async function startOkt(
     });
 
     if (!booking) return { ok: false, error: "Fant ikke økten." };
+
+    // Coach-scoping: kun egne spillere (leads uten bruker har ingen spillerdata).
+    if (booking.userId && !(await harCoachTilgangTilSpiller(coach, booking.userId))) {
+      return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+    }
 
     // 1) Idempotent: er bookingen allerede koblet til en live-økt, returner den.
     if (booking.trainingSessionV2Id) {
@@ -130,11 +136,24 @@ export async function startOkt(
 export async function kansellerBooking(
   id: string,
 ): Promise<{ ok: boolean; error?: string }> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   if (!id) return { ok: false, error: "Mangler økt-id" };
 
   try {
+    // Coach-scoping FØR skriving: kun egne spillere (leads uten bruker er business-flyt).
+    const booking = await prisma.booking.findUnique({
+      where: { id },
+      select: {
+        userId: true,
+        startAt: true,
+      },
+    });
+    if (!booking) return { ok: false, error: "Fant ikke økten." };
+    if (booking.userId && !(await harCoachTilgangTilSpiller(coach, booking.userId))) {
+      return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+    }
+
     // Status-guard: bare aktive økter kan avlyses (ikke allerede avlyste).
     const res = await prisma.booking.updateMany({
       where: { id, status: { in: ["PENDING", "CONFIRMED"] } },
@@ -146,14 +165,7 @@ export async function kansellerBooking(
     }
 
     // Varsle spilleren — best-effort, feiler stille i notify.
-    const booking = await prisma.booking.findUnique({
-      where: { id },
-      select: {
-        userId: true,
-        startAt: true,
-      },
-    });
-    if (booking?.userId) {
+    if (booking.userId) {
       const dato = booking.startAt.toLocaleDateString("nb-NO", {
         weekday: "long",
         day: "numeric",

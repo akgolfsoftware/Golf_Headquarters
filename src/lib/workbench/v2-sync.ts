@@ -63,6 +63,8 @@ export async function upsertV2ForPlanSession(input: {
     select: { id: true },
   });
 
+  // Felles data for create + update. Status settes KUN ved create — en
+  // update skal aldri nullstille COMPLETED/CANCELLED/SKIPPED til PLANNED.
   const data = {
     title: input.title,
     studentId: input.playerId,
@@ -71,7 +73,6 @@ export async function upsertV2ForPlanSession(input: {
     endTime,
     miljo: input.miljo ?? "M2",
     practiceType: PYR_TO_PRACTICE[input.pyramidArea],
-    status: "PLANNED" as const,
     isCoachCreated: coachId !== input.playerId,
     generertFra: GENERERT_FRA,
     generertFraId: input.planSessionId,
@@ -80,7 +81,7 @@ export async function upsertV2ForPlanSession(input: {
   if (existing) {
     await prisma.trainingSessionV2.update({ where: { id: existing.id }, data });
   } else {
-    await prisma.trainingSessionV2.create({ data });
+    await prisma.trainingSessionV2.create({ data: { ...data, status: "PLANNED" } });
   }
 }
 

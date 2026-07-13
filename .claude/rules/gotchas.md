@@ -4,6 +4,31 @@ Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekk
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
 Designkanon: `.claude/rules/design-system-regel.md` (v13/golfdata).
 
+### Stripe-abonnement — knapper i appen MÅ kalle Stripe, aldri bare egen DB (oppdaget 2026-07-13)
+- «Avbestill»-knappen satte kun `Subscription.status = CANCELLED` lokalt — Stripe fortsatte å
+  belaste kortet. Regel: enhver avbestill/endre-knapp kaller Stripe (`subscriptions.update` med
+  `cancel_at_period_end: true`) FØR DB-oppdatering, eller sender brukeren til Billing Portal.
+- Webhooken må mappe Stripe-status `active` + `cancel_at_period_end` → `CANCELLED`, ellers
+  overskriver neste `customer.subscription.updated` den lokale statusen tilbake til ACTIVE.
+
+### Prisma — `?? undefined` kan ALDRI nullstille et felt (oppdaget 2026-07-13)
+- `undefined` i `update()`-data betyr «ikke rør feltet»; `null` nullstiller. Felt som kan tømmes
+  fra UI (budsjett, notater) skal sendes eksplisitt som null — og for `Json?`-felt må det være
+  `Prisma.DbNull` (leses tilbake som JS `null`). Symptomet var «fjern ukebudsjett» som aldri lagret.
+
+### Upsert-speil — status skal KUN settes ved create, aldri ved update (oppdaget 2026-07-13)
+- `upsertV2ForPlanSession` satte `status: "PLANNED"` ubetinget → hver redigering/flytting av en
+  økt nullstilte COMPLETED/CANCELLED tilbake til PLANNED. Regel: i upsert-mønstre der andre
+  kodestier eier status-feltet, hold status utenfor update-grenen.
+
+### Tidssone — Vercel kjører UTC, appen tenker Oslo (oppdaget 2026-07-13)
+- All dato/uke-logikk skal gå via `src/lib/uke-helpers.ts` (Oslo-korrekt siden 2026-07-13) — aldri
+  rå `getDay()`/`setHours(0,0,0,0)` på `new Date()` i sider/komponenter.
+- All `Intl.DateTimeFormat`-formatering MÅ sette `timeZone: "Europe/Oslo"` (mønster:
+  `OSLO_DAG_FMT` i `BookingV2.tsx`) — server (UTC) og klient (Oslo) avviker ellers.
+- IKKE sett `TZ=Europe/Oslo` i Vercel uten datamigrering: databasen lagrer naiv veggklokke i
+  serverens lokale tid, så en TZ-endring forskyver tolkningen av alle eksisterende tidsstempler.
+
 ### Serwist/PWA — webpack-pluginen kjører ALDRI under Turbopack (oppdaget 2026-07-10)
 - `withSerwistInit` fra `@serwist/next` genererer sw.js kun via en webpack-hook. Next 16 bygger
   med Turbopack → hooken kjører aldri → `/sw.js` fantes aldri i prod (404 på hver sidelasting,

@@ -84,7 +84,10 @@ export type GruppeDetaljV2Actions = {
 
 /* ── Rene hjelpere ─────────────────────────────────────────────────── */
 
-const NB_DATE = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+// Alltid Europe/Oslo — der samlingene faktisk skjer. Uten eksplisitt timeZone
+// formaterer serveren (UTC) og klienten (Oslo) ulikt → feil klokkeslett og
+// hydreringsmismatch (samme mønster som OSLO_DAG_FMT i BookingV2).
+const NB_DATE = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
 function fmtDato(iso: string): string {
   return NB_DATE.format(new Date(iso));
@@ -159,7 +162,7 @@ export function GruppeDetaljV2({
                   {fmtDato(data.nesteSamling.startAt)}
                   {data.nesteSamling.location && ` · ${data.nesteSamling.location}`}
                   {data.nesteSamling.recurring && data.nesteSamling.recurring !== "NONE" && ` · ${data.nesteSamling.recurring}`}
-                  {data.nesteSamling.maxParticipants && ` · Max ${data.nesteSamling.maxParticipants} deltagere`}
+                  {data.nesteSamling.maxParticipants != null && ` · Max ${data.nesteSamling.maxParticipants} deltagere`}
                 </p>
                 {data.nesteSamling.description && (
                   <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, marginTop: 8, maxWidth: "60ch" }}>{data.nesteSamling.description}</p>

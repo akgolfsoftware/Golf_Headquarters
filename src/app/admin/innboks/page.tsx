@@ -21,7 +21,7 @@ export const dynamic = "force-dynamic";
 export default async function V2TriagePage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const [data, feedback, ko] = await Promise.all([
-    loadDailyBrief({ id: user.id, name: user.name }),
+    loadDailyBrief({ id: user.id, name: user.name, role: user.role }),
     loadAppFeedback(),
     koTelling(user.id),
   ]);

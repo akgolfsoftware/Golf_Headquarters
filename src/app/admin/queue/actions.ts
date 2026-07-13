@@ -10,7 +10,7 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { erCoachetSpiller } from "@/lib/auth/coached";
+import { erCoachetSpiller, harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 
 const InputSchema = z.object({
@@ -24,11 +24,15 @@ export async function settOppfolgingsstatus(
 ): Promise<{ ok: boolean; error?: string }> {
   const parsed = InputSchema.safeParse({ spillerId, status });
   if (!parsed.success) return { ok: false, error: "Ugyldig status." };
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   // I0-porten gjelder også skriving: aldri oppfølgingsstatus på selvbetjente.
   if (!(await erCoachetSpiller(parsed.data.spillerId))) {
     return { ok: false, error: "Spilleren er ikke i coaching-sporet." };
+  }
+  // Coach-scoping: kun egne spillere (ADMIN = alle coachede).
+  if (!(await harCoachTilgangTilSpiller(coach, parsed.data.spillerId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
   }
 
   await prisma.signal.create({

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { sendVelkomstEpost } from "@/lib/email";
@@ -11,8 +12,17 @@ type RequestBody = {
   email?: string;
   name?: string;
   source?: string;
-  metadata?: Record<string, unknown>;
+  metadata?: unknown;
 };
+
+// Uautentisert endepunkt: metadata må være et flatt objekt med enkle
+// verdityper og begrenset størrelse — aldri vilkårlig JSON rett i databasen.
+const METADATA_MAX_BYTES = 4096;
+const metadataSchema = z
+  .record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()]))
+  .refine((obj) => JSON.stringify(obj).length <= METADATA_MAX_BYTES, {
+    message: "metadata-too-large",
+  });
 
 export async function POST(req: Request) {
   // CSRF-guard: kun requests fra akgolf.no
@@ -39,6 +49,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "invalid-email" }, { status: 400 });
   }
 
+  let metadata: Prisma.InputJsonValue | undefined;
+  if (body.metadata !== undefined) {
+    const parsed = metadataSchema.safeParse(body.metadata);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "invalid-metadata" }, { status: 400 });
+    }
+    metadata = parsed.data;
+  }
+
   // Opprett lead (idempotent på email + source)
   const eksisterende = await prisma.lead.findFirst({
     where: { email, source: body.source ?? null },
@@ -50,9 +69,7 @@ export async function POST(req: Request) {
         email,
         name: body.name?.trim() || null,
         source: body.source ?? null,
-        metadata: body.metadata
-          ? (body.metadata as Prisma.InputJsonValue)
-          : undefined,
+        metadata,
       },
     });
 

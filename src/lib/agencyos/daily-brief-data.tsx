@@ -12,7 +12,7 @@
 
 import { can, Capability } from "@/lib/auth/cbac";
 import type { UserRole } from "@/generated/prisma/client";
-import { coachedPlayerWhere } from "@/lib/auth/coached";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import type {
@@ -111,7 +111,8 @@ export async function loadDailyBrief(coach: {
   id: string;
   name: string | null;
   avatarUrl?: string | null;
-  role?: UserRole;
+  // Kreves for coach-scoping: COACH ser kun egne spillere, ADMIN ser alle coachede.
+  role: UserRole;
 }): Promise<CockpitData> {
   const now = new Date();
   const nowMin = minutesSinceMidnight(now);
@@ -159,8 +160,8 @@ export async function loadDailyBrief(coach: {
         facility: { select: { name: true } },
       },
     }),
-    prisma.user.count({ where: { AND: [coachedPlayerWhere(), { lastLoginAt: { gte: tretti } }] } }),
-    prisma.user.count({ where: { AND: [coachedPlayerWhere(), { createdAt: { gte: tretti } }] } }),
+    prisma.user.count({ where: { AND: [coachScopedPlayerWhere(coach), { lastLoginAt: { gte: tretti } }] } }),
+    prisma.user.count({ where: { AND: [coachScopedPlayerWhere(coach), { createdAt: { gte: tretti } }] } }),
     prisma.notification.findMany({
       where: { userId: coach.id },
       orderBy: { createdAt: "desc" },
@@ -213,7 +214,7 @@ export async function loadDailyBrief(coach: {
     // Fokus: spillere med REELL inaktivitet (har logget inn før, men falt av).
     // Brukere uten lastLoginAt er stubs/aldri-aktiverte — støy, ikke frafall.
     prisma.user.findMany({
-      where: { AND: [coachedPlayerWhere(), { lastLoginAt: { lt: femDager } }] },
+      where: { AND: [coachScopedPlayerWhere(coach), { lastLoginAt: { lt: femDager } }] },
       select: { id: true, name: true, homeClub: true, lastLoginAt: true },
       orderBy: { lastLoginAt: "asc" },
       take: 4,

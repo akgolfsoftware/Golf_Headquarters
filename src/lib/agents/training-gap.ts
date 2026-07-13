@@ -34,6 +34,7 @@ const OMRAADE_LABEL: Record<SgCategory, string> = {
 export async function runTrainingGap(): Promise<AgentResult> {
   return runAgent(AGENT_NAME, null, async () => {
     const spillere = await prisma.user.findMany({
+      // Bevisst coachedPlayerWhere (ikke coach-scopet): batch-agent uten viewer.
       where: coachedPlayerWhere(),
       select: { id: true },
     });

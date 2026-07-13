@@ -12,7 +12,7 @@
  * spiller SG-input vises tomt/«—», aldri en falsk verdi.
  */
 
-import { coachedPlayerWhere } from "@/lib/auth/coached";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 
 export type CompareAxis = "slag" | "tek" | "spill" | "turn" | "fys" | "sg";
@@ -98,7 +98,10 @@ function firstName(name: string): string {
   return name.trim().split(/\s+/)[0] ?? name;
 }
 
-export async function loadMultiCompare(idsRaw: string[]): Promise<MultiCompareData> {
+export async function loadMultiCompare(
+  idsRaw: string[],
+  viewer: { id: string; role: string },
+): Promise<MultiCompareData> {
   const ids = idsRaw
     .map((s) => s.trim())
     .filter(Boolean)
@@ -108,7 +111,7 @@ export async function loadMultiCompare(idsRaw: string[]): Promise<MultiCompareDa
   const selected =
     ids.length > 0
       ? await prisma.user.findMany({
-          where: { AND: [coachedPlayerWhere(), { id: { in: ids } }] },
+          where: { AND: [coachScopedPlayerWhere(viewer), { id: { in: ids } }] },
           select: {
             id: true,
             name: true,
@@ -233,7 +236,7 @@ export async function loadMultiCompare(idsRaw: string[]): Promise<MultiCompareDa
 
   // ── Kohort-rangering (alle PLAYER på siste SG-total) ───────────
   const allPlayers = await prisma.user.findMany({
-    where: { AND: [coachedPlayerWhere(), { deletedAt: null }] },
+    where: { AND: [coachScopedPlayerWhere(viewer), { deletedAt: null }] },
     select: {
       id: true,
       name: true,

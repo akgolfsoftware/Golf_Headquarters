@@ -3,14 +3,21 @@
 // desktop-skjermbilder av AgencyOS-ruter. v2-login-selektorer (type-attributt,
 // ikke #email/#password som gamle app-shot.mjs).
 // Kjør: node scripts/agency-shot.mjs [PATHS_CSV] [OUT] [BASE]
+import { config as loadEnv } from "dotenv";
 import { chromium } from "playwright";
 import { mkdir } from "node:fs/promises";
+
+loadEnv({ path: ".env.local" });
 
 const PATHS_CSV = process.argv[2] || "cockpit:/admin/agencyos";
 const OUT = process.argv[3] || "/tmp/agency-shots";
 const BASE = process.argv[4] || "http://localhost:3000";
 const EMAIL = process.env.SHOT_EMAIL || "coachtest@akgolf.test";
-const PASSWORD = process.env.SHOT_PASSWORD || "Screentest123!";
+const PASSWORD = process.env.SHOT_PASSWORD || process.env.SCREENTEST_PASSWORD;
+if (!PASSWORD) {
+  console.error("SCREENTEST_PASSWORD mangler i .env.local (eller sett SHOT_PASSWORD)");
+  process.exit(1);
+}
 const VP = { width: 1600, height: 950 };
 
 const SCREENS = PATHS_CSV.split(",").map((s) => {
