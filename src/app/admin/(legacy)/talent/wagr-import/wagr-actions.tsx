@@ -25,7 +25,6 @@ export function SynkNaaButton() {
           const { resultat } = res;
           const antallForsokt =
             resultat.hentet +
-            resultat.ikkeFunnet.length +
             resultat.blittProff.length +
             resultat.feilet.length;
           const deler: string[] = [
@@ -45,12 +44,7 @@ export function SynkNaaButton() {
           }
           if (resultat.blittProff.length > 0) {
             toast.info(
-              `Ute av amatørrankingen (blitt proff): ${resultat.blittProff.join(", ")} — siste amatørtall beholdes.`,
-            );
-          }
-          if (resultat.ikkeFunnet.length > 0) {
-            toast.warning(
-              `Finnes ikke lenger på wagr.com: ${resultat.ikkeFunnet.join(", ")}.`,
+              `Blitt proff (ute av WAGR): ${resultat.blittProff.join(", ")} — siste amatørtall beholdes.`,
             );
           }
           if (resultat.tvetydige.length > 0) {
