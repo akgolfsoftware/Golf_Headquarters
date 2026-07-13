@@ -26,6 +26,8 @@
 
 Før noen rører en skjerm: finn raden her, jobb mot den, oppdater hakene i samme commit. En skjerm er ikke ferdig før alle seks haker er grønne (✓). Alt Claude Design har tegnet skal kobles — sjekk «drop-off»-lista.
 
+**Låst regel:** enhver funksjon/skjerm som bygges skal optimaliseres for mobil, iPad OG desktop i SAMME leveranse — uansett produkt. Mobile-first/desktop-first (`.claude/rules/arkitektur.md`, `skjermkomposisjon.md`) styrer kun rekkefølgen man bygger førsteutkastet i, ikke hvilke formater som til slutt skal virke. Hake 2 under er verifikasjonen av dette — ikke en unnskyldning for å utsette det ene formatet til en senere økt.
+
 **De seks hakene:**
 1. **Design** — ser ut som den skal (riktig utseende, riktig oppsett)
 2. **Mob/Desk/iPad** — fungerer fint på tre størrelser. Tre tegn, f.eks. `✓✓–` = mobil og desktop OK, iPad ikke sjekket

@@ -17,8 +17,9 @@ Loopen som ER produktet: **Analyse → Plan (workbench) → Live-økt → Gjenno
 5. Analytikerkjeden for analyseflater: Resultat → Mønster → Årsak → Prioritet → Trening. Anbefaling alltid kvantifisert i slag, alltid med «Planlegg dette».
 6. Progressiv dybde `nybegynner|øvet|elite` avledet av spillernivå (A–K / voksen-modell).
 7. Domenefasit: meter med V/H, bias ≠ spredning, M/PR-badge, SG med fortegn + «slag» + navngitt baseline, datagrunnlag alltid synlig.
-8. Mobile-first PlayerHQ/foreldre (390 px), desktop-first AgencyOS. Begge moduser, alle tilstander, verifisert mot tilstandsgalleriet.
-9. Én skjerm per commit. Fem-punktsloopen per skjerm. Én bølge fullføres før neste starter.
+8. Mobile-first PlayerHQ/foreldre (390 px), desktop-first AgencyOS — det er PRIORITERT REKKEFØLGE for førsteutkastet, ikke en unnskyldning for å utsette det andre formatet. Begge moduser, alle tilstander, verifisert mot tilstandsgalleriet.
+9. **Enhver funksjon som bygges skal optimaliseres for mobil, iPad OG desktop i samme leveranse** — uansett produkt. En skjerm/funksjon er ikke ferdig før alle tre er verifisert (se `docs/MASTER-SKJERMPLAN.md`s «Mob/Desk/iPad»-hake). iPad har ofte ingen egen viewport-jobb (mobil- eller desktop-layouten dekker den), men det skal alltid sjekkes eksplisitt, aldri antas.
+10. Én skjerm per commit. Fem-punktsloopen per skjerm. Én bølge fullføres før neste starter.
 
 ## Flate-kartet (den komplette appen)
 
@@ -129,4 +130,4 @@ Bølge 0+1 kjøres NÅ (ingen blokkere). Intervjusvar → bølge 2 → 3 og 4 (k
 
 ## Verifikasjonsregime
 
-Per skjerm: fem-punktsloopen (type-check/tester · begge moduser mot galleri · 390 px · tastatur · domenesjekk). Per bølge: success-kriteriet over må demonstreres med ekte data før neste bølge starter. Prove green before proceeding — en påbegynt bølge fullføres alltid.
+Per skjerm: fem-punktsloopen (type-check/tester · begge moduser mot galleri · mobil 390 px + iPad 768/1024 px + desktop 1280 px+ · tastatur · domenesjekk). Per bølge: success-kriteriet over må demonstreres med ekte data før neste bølge starter. Prove green before proceeding — en påbegynt bølge fullføres alltid.
