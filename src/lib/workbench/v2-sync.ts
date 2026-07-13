@@ -2,8 +2,11 @@ import "server-only";
 
 import type { PyramidArea, MMiljo } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { GENERERT_FRA, syncDrillsToV2 } from "./v2-drill-mirror";
 
-const GENERERT_FRA = "WORKBENCH_PLAN";
+// Re-eksport: reverse-synkene (okt-status-actions, live-actions) matcher
+// samme streng via denne.
+export { GENERERT_FRA };
 
 const PYR_TO_PRACTICE: Record<PyramidArea, "BLOKK" | "RANDOM" | "KONKURRANSE" | "SPILL_TEST"> = {
   FYS: "BLOKK",
@@ -60,7 +63,7 @@ export async function upsertV2ForPlanSession(input: {
 
   const existing = await prisma.trainingSessionV2.findFirst({
     where: { generertFra: GENERERT_FRA, generertFraId: input.planSessionId },
-    select: { id: true },
+    select: { id: true, status: true },
   });
 
   // Felles data for create + update. Status settes KUN ved create — en
@@ -78,11 +81,52 @@ export async function upsertV2ForPlanSession(input: {
     generertFraId: input.planSessionId,
   };
 
+  let v2Id: string;
   if (existing) {
     await prisma.trainingSessionV2.update({ where: { id: existing.id }, data });
+    v2Id = existing.id;
   } else {
-    await prisma.trainingSessionV2.create({ data: { ...data, status: "PLANNED" } });
+    const opprettet = await prisma.trainingSessionV2.create({
+      data: { ...data, status: "PLANNED" },
+      select: { id: true },
+    });
+    v2Id = opprettet.id;
   }
+
+  // Drill-speiling: kun for PLANNED-økter — en påbegynt/logget økt røres aldri.
+  if (!existing || existing.status === "PLANNED") {
+    await syncDrillsToV2(v2Id, input.planSessionId, input.pyramidArea);
+  }
+}
+
+/**
+ * Synk V2-speilet fra plan-økt-id alene — for mutasjonsflater som ikke har
+ * feltene for hånden (admin/plans, AI-executor, legacy planlegge).
+ */
+export async function syncV2FromPlanSessionId(planSessionId: string): Promise<void> {
+  const s = await prisma.trainingPlanSession.findUnique({
+    where: { id: planSessionId },
+    select: {
+      id: true,
+      title: true,
+      scheduledAt: true,
+      durationMin: true,
+      pyramidArea: true,
+      miljo: true,
+      plan: { select: { userId: true, createdById: true } },
+    },
+  });
+  if (!s) return;
+  await upsertV2ForPlanSession({
+    planSessionId: s.id,
+    playerId: s.plan.userId,
+    title: s.title,
+    scheduledAt: s.scheduledAt,
+    durationMin: s.durationMin,
+    pyramidArea: s.pyramidArea,
+    coachId: s.plan.createdById,
+    miljo: s.miljo,
+  });
 }
 
 /** Slett V2-økt koblet til plan-økt. */

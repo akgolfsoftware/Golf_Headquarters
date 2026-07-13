@@ -19,6 +19,7 @@ import {
   isPeriodType,
 } from "@/lib/training/period-allocation";
 import { validateExecutorDelta } from "@/lib/training/invariants";
+import { deleteV2ForPlanSession, syncV2FromPlanSessionId } from "@/lib/workbench/v2-sync";
 
 const churnMessageSchema = z.object({
   tittel: z.string().optional(),
@@ -570,6 +571,9 @@ export async function applyExecutorDelta(
   let sessionsAdded = 0;
   let sessionsRemoved = 0;
   let sessionsModified = 0;
+  // Samles i transaksjonen, synkes til V2 (live) etter commit.
+  const fjernedeIds: string[] = [];
+  const endredeIds: string[] = [];
 
   await prisma.$transaction(async (tx) => {
     for (const id of delta.sessionsToRemove) {
@@ -578,6 +582,7 @@ export async function applyExecutorDelta(
       });
       if (s) {
         await tx.trainingPlanSession.delete({ where: { id } });
+        fjernedeIds.push(id);
         sessionsRemoved++;
       }
     }
@@ -629,6 +634,7 @@ export async function applyExecutorDelta(
           data: { csTarget: mod.csTarget },
         });
       }
+      endredeIds.push(mod.sessionId);
       sessionsModified++;
     }
 
@@ -666,6 +672,7 @@ export async function applyExecutorDelta(
           },
         });
       }
+      endredeIds.push(session.id);
       sessionsAdded++;
     }
 
@@ -686,6 +693,10 @@ export async function applyExecutorDelta(
       });
     }
   });
+
+  // Synk live-speilene (V2) etter commit — AI-endringer skal nå Gjør-flaten.
+  for (const id of fjernedeIds) await deleteV2ForPlanSession(id);
+  for (const id of endredeIds) await syncV2FromPlanSessionId(id);
 
   return { sessionsAdded, sessionsRemoved, sessionsModified };
 }

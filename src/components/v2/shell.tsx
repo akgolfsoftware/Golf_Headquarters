@@ -465,8 +465,11 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
       {/* Topp-luft inkluderer safe-area: i installert PWA på iPhone dekker
           innholdet statuslinje-området — uten env() kolliderer hilsen/avatar
           med klokka (Anders' mobil-funn 2026-07-13). Desktop: env() = 0. */}
+      {/* Bunn-luft må også regne med safe-area: BunnNavLenker vokser med
+          env(safe-area-inset-bottom), så fast pb-24 (96px) var mindre enn
+          nav-høyden på notch-iPhone → siste innholdselement lå bak nav-en. */}
       <div
-        className="px-4 md:px-8 pb-24 md:pb-9"
+        className="px-4 md:px-8 pb-[calc(96px+env(safe-area-inset-bottom))] md:pb-9"
         style={{ flex: 1, minWidth: 0, paddingTop: "calc(24px + env(safe-area-inset-top))" }}
       >
         <div style={{ maxWidth: maksBredde, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>

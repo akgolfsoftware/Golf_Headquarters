@@ -36,7 +36,7 @@ import {
   ZoomBrodsmule,
 } from "@/components/v2";
 import { PalettSok } from "@/components/v2/wb-composer";
-import { ForslagArk, NyOktArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput } from "./WorkbenchV2Sheets";
+import { ForslagArk, NyOktArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput, type OktArkDrill } from "./WorkbenchV2Sheets";
 import { WorkbenchColdstart } from "./WorkbenchColdstart";
 import { WorkbenchAarsplan, PeriodePalett, WBPeriodeStrip } from "./WorkbenchAarsplan";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
@@ -44,7 +44,7 @@ import { WBTidslinjeMobil, MobilFold } from "./WorkbenchV2Mobil";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import { LPHASE_LABEL as LPHASE_LABEL_KANON, LPHASE_FARGE as LPHASE_FARGE_KANON } from "@/lib/labels/taxonomy";
-import { sokOvelser, hentOktKomponist } from "@/lib/workbench/ovelse-sok";
+import { sokOvelser, hentOktKomponist, hentMalOktDrills } from "@/lib/workbench/ovelse-sok";
 import type { WorkbenchInsights } from "@/lib/workbench/types";
 import type { WeekEvent } from "@/lib/workbench/week-types";
 import type { PlanStatus } from "@/generated/prisma/client";
@@ -307,12 +307,38 @@ function PalettBrikke({ tittel, akse, durMin, sub, onClick }: { tittel: string; 
 // som Record<string,string> for eksisterende oppslag med løse strenger.
 export const LPHASE_LABEL: Record<string, string> = LPHASE_LABEL_KANON;
 
+/** Felles gruppetider denne uka (GroupSchedule) — ble lastet i loaderen uten
+ *  å vises noe sted i V2 (Anders' feilklasse «lastes men kobles ikke»). */
+function WBGruppetider({ slots }: { slots: NonNullable<WorkbenchData["groupSlots"]> }) {
+  if (slots.length === 0) return null;
+  const DAGER_KORT = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
+  return (
+    <Kort pad="10px 12px" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
+      <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut }}>
+        Gruppetider
+      </span>
+      {slots.map((s) => {
+        const start = new Date(s.startAt);
+        const kl = `${String(start.getHours()).padStart(2, "0")}:${String(start.getMinutes()).padStart(2, "0")}`;
+        return (
+          <span key={s.id} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px", borderRadius: 9999, background: T.panel2, border: `1px solid ${T.border}`, fontFamily: T.ui, fontSize: 11.5, color: T.fg2 }}>
+            <Icon name="users" size={11} style={{ color: T.lime }} />
+            {DAGER_KORT[s.dayIndex] ?? ""} {kl} · {s.groupName}
+            {s.location ? ` · ${s.location}` : ""}
+          </span>
+        );
+      })}
+    </Kort>
+  );
+}
+
+
 export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukMal, visPerioder, onLeggDrillIValgt }: {
   data: WorkbenchData;
   tab: string; setTab: (t: string) => void;
   sok: string; setSok: (s: string) => void;
   /** Ett-klikks «legg til»: åpner Ny økt-arket forhåndsutfylt fra brikken. */
-  onVelgOkt?: (item: { title: string; durMin: number; akse?: AkseKey }) => void;
+  onVelgOkt?: (item: { title: string; durMin: number; akse?: AkseKey; templateSessionId?: string }) => void;
   /** Fasit-fiks: mal-kortene var døde — «Bruk» legger inn mal-uke 1. */
   onBrukMal?: (templateId: string) => void;
   /** 8c.2: vis dragbare periode-brikker (årsplan-zoom). */
@@ -403,7 +429,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
               akse={b.cat as AkseKey}
               durMin={b.dur}
               sub={fmtVarighet(b.dur)}
-              onClick={onVelgOkt ? () => onVelgOkt({ title: b.title, durMin: b.dur, akse: b.cat as AkseKey }) : undefined}
+              onClick={onVelgOkt ? () => onVelgOkt({ title: b.title, durMin: b.dur, akse: b.cat as AkseKey, templateSessionId: b.templateSessionId }) : undefined}
             />
           )) : <TomTilstand icon="search" title="Ingen treff" sub={sok ? "Prøv et annet søk." : "Ingen standardøkter i biblioteket ennå."} />}
         </div>
@@ -792,7 +818,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   const [tab, setTab] = useState("maler");
   const [sok, setSok] = useState("");
   const [nyOktApen, setNyOktApen] = useState(false);
-  const [nyOktPrefill, setNyOktPrefill] = useState<{ title: string; durMin: number; akse?: AkseKey } | null>(null);
+  const [nyOktPrefill, setNyOktPrefill] = useState<{ title: string; durMin: number; akse?: AkseKey; drills?: OktArkDrill[] } | null>(null);
   // I1: trykk på tom luke i tidslinja → Ny økt med dag + klokkeslett prefylt.
   const [nyOktSted, setNyOktSted] = useState<{ dayIndex: number; tid: string } | null>(null);
   // Mal dratt til canvas → bekreftelses-popup (Anders-logikken).
@@ -1033,8 +1059,19 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     }
   };
 
-  const velgFraBibliotek = (item: { title: string; durMin: number; akse?: AkseKey }) => {
-    setNyOktPrefill(item);
+  const velgFraBibliotek = async (item: { title: string; durMin: number; akse?: AkseKey; templateSessionId?: string }) => {
+    // Biblioteks-økta skal ta med INNHOLDET (drillene), ikke bare tittelen —
+    // hentes før arket åpnes så alt står ferdig utfylt.
+    let drills: OktArkDrill[] | undefined;
+    if (item.templateSessionId) {
+      try {
+        const res = await hentMalOktDrills(item.templateSessionId);
+        if (res.ok) drills = res.drills;
+      } catch {
+        // Uten drill-data åpner arket likevel — brukeren kan legge til selv.
+      }
+    }
+    setNyOktPrefill({ title: item.title, durMin: item.durMin, akse: item.akse, drills });
     setNyOktApen(true);
   };
 
@@ -1140,6 +1177,23 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
       hour: input.hour,
       minute: input.minute,
       weekOffset,
+      // Felles økt-ark (2026-07-13): AK-formel + driller følger med fra «Ny økt».
+      ...(input.lFase || input.miljo
+        ? { akFormel: { lFase: input.lFase, miljo: input.miljo } }
+        : {}),
+      ...(input.drills.length > 0
+        ? {
+            drills: input.drills.map((d) => ({
+              exerciseId: d.exerciseId,
+              nyNavn: d.exerciseId ? undefined : d.navn,
+              nyPyramidArea: d.exerciseId ? undefined : input.akse,
+              minutter: d.minutter,
+              sett: d.sett,
+              reps: d.reps,
+              nivaa: d.nivaa,
+            })),
+          }
+        : {}),
     });
     if (res.ok) {
       setNyOktApen(false);
@@ -1394,6 +1448,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
               onTilAarsplan={() => setNivaa("ar")}
             />
           )}
+          {nivaa === "uke" && data.groupSlots && <WBGruppetider slots={data.groupSlots} />}
           {nivaa === "uke" && (
             <WBTidslinje
               dager={dager}
@@ -1440,6 +1495,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
             onTilAarsplan={() => setNivaa("ar")}
           />
         )}
+        {nivaa === "uke" && data.groupSlots && <WBGruppetider slots={data.groupSlots} />}
         {nivaa === "uke" && <WBTidslinjeMobil dager={dager} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
         {nivaa === "uke" && <WBBelastning data={data} />}
         {nivaa === "ar" && (
@@ -1566,6 +1622,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           defaultTitle={nyOktPrefill?.title}
           defaultAkse={nyOktPrefill?.akse}
           defaultDurMin={nyOktPrefill?.durMin}
+          defaultDrills={nyOktPrefill?.drills}
           onLukk={() => { setNyOktApen(false); setNyOktPrefill(null); setNyOktSted(null); }}
           onOpprett={handleCreateSession}
         />

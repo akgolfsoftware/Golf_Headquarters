@@ -5,6 +5,7 @@
  * SYSTEM-øvelser + egne (spiller/coach). Zod-lett (kun strenger inn).
  */
 
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 
@@ -74,5 +75,62 @@ export async function hentOktKomponist(sessionId: string): Promise<{
       reps: d.repReps ?? d.reps,
       nivaa: d.repType === "SVINGER_UTEN_BALL" ? ("uten" as const) : d.prPress === "PR1" ? ("lav" as const) : ("vanlig" as const),
     })),
+  };
+}
+
+/** Formen på PlanTemplateSession.drillsJson (zod-regelen for JSON-blobs). */
+const MalDrillsSchema = z
+  .array(
+    z.object({
+      exerciseId: z.string().min(1),
+      sets: z.number().int().nullish(),
+      reps: z.number().int().nullish(),
+      csTarget: z.number().nullish(),
+      notes: z.string().nullish(),
+    }),
+  )
+  .max(20);
+
+/**
+ * Malens driller for «Ny økt»-arket: biblioteks-økter (PlanTemplateSession)
+ * skal ta med innholdet sitt, ikke bare tittelen. Øvelsesnavn slås opp i
+ * banken; rader uten kjent øvelse hoppes over.
+ */
+export async function hentMalOktDrills(templateSessionId: string): Promise<{
+  ok: boolean;
+  drills?: { exerciseId: string; navn: string; minutter: number | null; sett: number | null; reps: number | null; nivaa: "uten" | "lav" | "vanlig" }[];
+}> {
+  await requirePortalUser();
+  const rad = await prisma.planTemplateSession.findUnique({
+    where: { id: templateSessionId },
+    select: { drillsJson: true },
+  });
+  if (!rad) return { ok: false };
+
+  const parsed = MalDrillsSchema.safeParse(rad.drillsJson);
+  if (!parsed.success) return { ok: true, drills: [] };
+
+  const ovelser = await prisma.exerciseDefinition.findMany({
+    where: { id: { in: parsed.data.map((d) => d.exerciseId) } },
+    select: { id: true, name: true, durationMin: true },
+  });
+  const perId = new Map(ovelser.map((o) => [o.id, o]));
+
+  return {
+    ok: true,
+    drills: parsed.data.flatMap((d) => {
+      const ovelse = perId.get(d.exerciseId);
+      if (!ovelse) return [];
+      return [
+        {
+          exerciseId: d.exerciseId,
+          navn: ovelse.name,
+          minutter: ovelse.durationMin ?? null,
+          sett: d.sets ?? null,
+          reps: d.reps ?? null,
+          nivaa: "vanlig" as const,
+        },
+      ];
+    }),
   };
 }

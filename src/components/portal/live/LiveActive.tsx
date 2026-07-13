@@ -62,11 +62,11 @@ function ConfirmOverlay({ show, onConfirm, onCancel }: ConfirmOverlayProps) {
       className="absolute inset-0 z-50 flex items-center justify-center p-5"
       style={{ background: "rgba(10, 31, 23, 0.70)", backdropFilter: "blur(4px)" }}
     >
-      <div className="w-full max-w-[320px] rounded-[20px] bg-card p-6">
-        <div className="font-display text-[18px] font-bold text-foreground">
+      <div className="w-full max-w-[320px] rounded-[20px] border border-background/10 p-6" style={{ background: "#12271E" }}>
+        <div className="font-display text-[18px] font-bold text-background">
           Avslutt økt?
         </div>
-        <p className="mt-2 mb-5 text-[13.5px] leading-[1.55] text-muted-foreground">
+        <p className="mt-2 mb-5 text-[13.5px] leading-[1.55] text-background/60">
           Fremgangen din blir lagret. Du kan fortsette senere.
         </p>
         <div className="flex flex-col gap-2">
@@ -117,50 +117,50 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
     "relative overflow-hidden rounded-[14px] border p-4 transition-all duration-200";
   if (isActive) {
     cardClasses +=
-      " border-accent bg-card shadow-[0_0_0_4px_rgba(209,248,67,0.12)]";
+      " border-accent bg-background/8 shadow-[0_0_0_4px_rgba(209,248,67,0.12)]";
     // lime border for active
   } else if (isDone) {
-    cardClasses += " border-primary/30 bg-primary/4 opacity-90";
+    cardClasses += " border-background/15 bg-background/5 opacity-85";
   } else {
     // queued
-    cardClasses += " border-border bg-secondary/30 opacity-55";
+    cardClasses += " border-background/10 bg-background/4 opacity-55";
   }
 
   return (
     <div className={cardClasses} style={isActive ? { borderColor: "#D1F843" } : undefined}>
       {/* Eyebrow */}
-      <div className="mb-2 flex items-center gap-[6px] font-mono text-[9.5px] font-semibold uppercase tracking-[0.10em] text-primary">
+      <div className="mb-2 flex items-center gap-[6px] font-mono text-[9.5px] font-semibold uppercase tracking-[0.10em] text-background/60">
         <span className="h-[6px] w-[6px] rounded-full bg-accent" aria-hidden />
         {AXIS_LABEL[drill.pyramide] ?? drill.pyramide}
       </div>
 
       {/* Title */}
-      <div className="mb-1 font-display text-[18px] font-bold leading-[1.15] -tracking-[0.02em] text-foreground">
+      <div className="mb-1 font-display text-[18px] font-bold leading-[1.15] -tracking-[0.02em] text-background">
         {drill.name}
       </div>
 
       {/* Planlagt rep-type + volum (bølge 2) — det coachen la inn */}
       {plannedVolumText(drill) && (
-        <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+        <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-background/60">
           Planlagt: {plannedVolumText(drill)}
         </div>
       )}
 
       {/* Fremdrift */}
       <div className="mb-[7px] flex items-center justify-between">
-        <span className="font-mono text-[9.5px] uppercase tracking-[0.06em] text-muted-foreground">
+        <span className="font-mono text-[9.5px] uppercase tracking-[0.06em] text-background/60">
           Fremdrift
         </span>
-        <span className="font-mono text-[12px] font-semibold text-foreground">
+        <span className="font-mono text-[12px] font-semibold text-background">
           {drill.repsTotal}
           {drill.plannedReps > 0 && (
-            <small className="font-normal text-muted-foreground"> / {drill.plannedReps}</small>
+            <small className="font-normal text-background/60"> / {drill.plannedReps}</small>
           )}
         </span>
       </div>
 
       {/* Progress bar — forest→lime gradient */}
-      <div className="h-2 overflow-hidden rounded-full border border-border bg-secondary">
+      <div className="h-2 overflow-hidden rounded-full border border-background/10 bg-background/10">
         <div
           className="h-full rounded-full transition-all duration-700"
           style={{
@@ -177,7 +177,8 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
         <span
           className="font-mono text-[10px] uppercase tracking-[0.06em]"
           style={{
-            color: isActive ? "#005840" : isDone ? "#1A7D56" : "var(--muted-foreground)",
+            // Lys status-tekst på den mørke forest-flata.
+            color: isActive ? "#D1F843" : isDone ? "rgba(247,247,244,0.65)" : "rgba(247,247,244,0.45)",
           }}
         >
           {isActive ? "Pågår" : isDone ? "Fullført" : isQueued ? "Venter" : ""}
@@ -195,7 +196,8 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
         )}
 
         {isDone && (
-          <span className="flex items-center gap-[5px] font-mono text-[10px] font-bold text-success">
+          // Lys suksess-grønn (DS mørk-verdi) — .dark-klassen finnes ikke her.
+          <span className="flex items-center gap-[5px] font-mono text-[10px] font-bold" style={{ color: "#84D2A5" }}>
             <Check className="h-[13px] w-[13px]" strokeWidth={2.5} aria-hidden />
             Fullført
           </span>
@@ -236,15 +238,17 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
     };
   }, [data.sessionId, router]);
 
-  // Timer — total + aktiv drill.
+  // Timer — økt-tid tikker fra start uavhengig av aktiv drill (0-drill-økter
+  // sto tidligere fastfrosset på 00:00); stopper når alt er fullført.
   useEffect(() => {
-    if (paused || !active) return;
+    const ferdig = drills.length > 0 && drills.every((d) => d.status === "done");
+    if (paused || ferdig) return;
     const id = setInterval(() => {
       setTotalSec((t) => t + 1);
       setDrillSec((d) => d + 1);
     }, 1000);
     return () => clearInterval(id);
-  }, [paused, active]);
+  }, [paused, drills]);
 
   // Wake-lock — hold skjermen våken.
   const wakeRef = useRef<WakeLockSentinel | null>(null);
@@ -337,14 +341,11 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   const completedCount = drills.filter((d) => d.status === "done").length;
   const progressPct = drills.length > 0 ? (completedCount / drills.length) * 100 : 0;
 
-  const sessionMeta = [
-    data.title,
+  // Undertittelen skal aldri gjenta tittelen (sto dobbelt ved 0 drills).
+  const sessionMeta =
     drills.length > 0
       ? `${completedCount} / ${drills.length} drills`
-      : undefined,
-  ]
-    .filter(Boolean)
-    .join(" · ");
+      : "Ingen drills i økta";
 
   // Alle drills ferdige — vis ferdigmelding.
   const allDone = completedCount === drills.length && drills.length > 0;
@@ -390,7 +391,12 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   return (
     <div
       className="fixed inset-0 z-50 flex flex-col overflow-hidden"
-      style={{ background: "var(--background)", isolation: "isolate" }}
+      style={{
+        // Samme mørke forest-flate som resten av live-flyten (brief/logger/
+        // oppsummering) — komponenten sto tidligere i lyse shadcn-tokens.
+        background: "radial-gradient(120% 80% at 50% 0%, #0d2218, #0A1F17 70%)",
+        isolation: "isolate",
+      }}
     >
       {/* Confirm-overlay */}
       <ConfirmOverlay
@@ -404,14 +410,14 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
 
       {/* Topbar */}
       <header
-        className="flex flex-shrink-0 items-center justify-between border-b border-border bg-card px-[18px] py-[10px]"
+        className="flex flex-shrink-0 items-center justify-between border-b border-background/10 px-[18px] py-[10px]"
         style={{ paddingTop: "max(env(safe-area-inset-top) + 10px, 54px)" }}
       >
         <div>
-          <div className="font-display text-[16px] font-bold leading-tight -tracking-[0.01em] text-foreground">
+          <div className="font-display text-[16px] font-bold leading-tight -tracking-[0.01em] text-background">
             {data.title}
           </div>
-          <div className="mt-[2px] font-mono text-[9.5px] font-semibold text-muted-foreground">
+          <div className="mt-[2px] font-mono text-[9.5px] font-semibold text-background/60">
             {sessionMeta}
           </div>
         </div>
@@ -427,19 +433,43 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
       {/* Scrollbart innhold */}
       <main className="flex flex-1 flex-col overflow-y-auto px-[14px] py-[14px]" style={{ minHeight: 0 }}>
 
+        {/* Tom-tilstand: økt uten drills — ærlig melding + vei videre, i
+            stedet for «Trykk Logg rep»-copy som pekte på en knapp som ikke
+            fantes. */}
+        {drills.length === 0 && (
+          <div className="mb-[14px] rounded-[14px] border border-dashed border-background/20 p-[18px] text-center">
+            <div className="font-display text-[17px] font-bold text-background">
+              Ingen drills i denne økta
+            </div>
+            <p className="mt-[6px] text-[12.5px] leading-[1.5] text-background/60">
+              Åpne økta i planen og legg til driller («Rediger økt»), så dukker
+              de opp her — eller tren fritt og avslutt når du er ferdig.
+            </p>
+            <button
+              type="button"
+              onClick={() => router.replace("/portal/planlegge/workbench")}
+              className="mt-[14px] rounded-full border-none px-6 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.06em] text-accent-foreground"
+              style={{ background: "#D1F843" }}
+            >
+              Til planen
+            </button>
+          </div>
+        )}
+
         {/* GoalProgress-kort */}
-        <div className="mb-[14px] rounded-[14px] border border-border bg-card p-[14px] shadow-sm">
+        {drills.length > 0 && (
+        <div className="mb-[14px] rounded-[14px] border border-background/10 bg-background/5 p-[14px]">
           <div className="mb-2 flex items-center justify-between">
-            <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+            <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-background/60">
               Fremdrift
             </span>
-            <span className="font-mono text-[13px] font-semibold text-foreground">
+            <span className="font-mono text-[13px] font-semibold text-background">
               {completedCount}
-              <small className="font-normal text-muted-foreground"> / {drills.length} drills</small>
+              <small className="font-normal text-background/60"> / {drills.length} drills</small>
             </span>
           </div>
           {/* progress bar */}
-          <div className="h-[10px] overflow-hidden rounded-full border border-border bg-secondary">
+          <div className="h-[10px] overflow-hidden rounded-full border border-background/10 bg-background/10">
             <div
               className="h-full rounded-full transition-all duration-700"
               style={{
@@ -448,7 +478,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
               }}
             />
           </div>
-          <div className="mt-[7px] text-[12px] text-muted-foreground">
+          <div className="mt-[7px] text-[12px] text-background/60">
             {allDone
               ? "Alle drills fullført — flott innsats!"
               : completedCount > 0
@@ -456,6 +486,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
               : "Trykk «Logg rep» for å begynne"}
           </div>
         </div>
+        )}
 
         {/* Timer */}
         <div className="mb-[14px]">
@@ -464,7 +495,6 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             paused={paused}
             onTogglePause={togglePause}
             label="Økt-tid"
-            variant="light"
           />
         </div>
 

@@ -13,7 +13,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
+import { GENERERT_FRA, resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 
 const InputSchema = z.object({
   id: z.string().min(1),
@@ -47,13 +47,13 @@ export async function markerOktStatus(input: {
     await prisma.trainingPlanSession.update({ where: { id }, data: { status } });
     // Hold v2-speilet i synk (best-effort — speilet kan mangle).
     await prisma.trainingSessionV2.updateMany({
-      where: { generertFra: "plan-session", generertFraId: id },
+      where: { generertFra: GENERERT_FRA, generertFraId: id },
       data: { status },
     });
   } else {
     const okt = await prisma.trainingSessionV2.findFirst({
       where: { id, studentId: user.id },
-      select: { id: true, title: true, status: true },
+      select: { id: true, title: true, status: true, generertFra: true, generertFraId: true },
     });
     if (!okt) return { ok: false, error: "Økten finnes ikke" };
     if (okt.status === "COMPLETED" || okt.status === "SKIPPED") {
@@ -61,6 +61,13 @@ export async function markerOktStatus(input: {
     }
     tittel = okt.title;
     await prisma.trainingSessionV2.update({ where: { id }, data: { status } });
+    // Speil tilbake til plan-økta — etterlevelsen (adherence) leser plan-sida.
+    if (okt.generertFra === GENERERT_FRA && okt.generertFraId) {
+      await prisma.trainingPlanSession.updateMany({
+        where: { id: okt.generertFraId, plan: { userId: user.id } },
+        data: { status },
+      });
+    }
   }
 
   // Avvik → coachen får beskjed i klarspråk (aldri til selvbetjente uten coach).

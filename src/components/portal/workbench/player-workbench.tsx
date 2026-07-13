@@ -485,7 +485,7 @@ export function PlayerWorkbench({ data }: { data: PlayerWorkbenchData }) {
   return (
     <div className="mx-auto flex h-full max-w-[430px] flex-col bg-background">
       {/* TOPBAR */}
-      <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur">
+      <header className="sticky top-0 z-50 border-b border-border bg-background/95 pt-[env(safe-area-inset-top)] backdrop-blur">
         <div className="flex items-center gap-2 px-4 py-3">
           <button
             type="button"
