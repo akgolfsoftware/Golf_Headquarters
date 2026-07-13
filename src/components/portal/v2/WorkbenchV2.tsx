@@ -830,6 +830,9 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   const [forslag, setForslag] = useState<{ suggestions: WeekSuggestion[]; usedAi: boolean } | null>(null);
   const [dupLoading, setDupLoading] = useState(false);
   const [merApen, setMerApen] = useState(false);
+  // Coldstart-utgang: bruker valgte «start med blanke ark» — hopp forbi
+  // guidet-start-skjermen og inn i den tomme tidslinja (Ny økt finnes der).
+  const [manuellStart, setManuellStart] = useState(false);
 
   // Optimistisk UI: flytt/ny økt vises i tidslinja UMIDDELBART (før serveren har
   // svart), rulles tilbake ved feil. ALDRI for sletting (destruktivt — se
@@ -1243,7 +1246,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     pendingAdds.length === 0;
   // 8c.2: eksplisitt årsplan-zoom vinner over coldstart — Anders' års-først-
   // flyt: legg periodiseringen FØR første økt/mal (coldstart lenker hit).
-  if (heltTom && actions && nivaa !== "ar") {
+  if (heltTom && actions && nivaa !== "ar" && !manuellStart) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <Caps>Workbench · {playerName}</Caps>
@@ -1264,6 +1267,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           onForeslaaUke={actions.suggestWeek ? handleSuggest : undefined}
           foreslarUke={suggestLoading}
           onAarsplan={actions.lagrePeriode ? () => setNivaa("ar") : undefined}
+          onManuelt={() => setManuellStart(true)}
         />
         {forslag && (
           <ForslagArk
