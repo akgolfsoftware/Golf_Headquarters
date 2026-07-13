@@ -18,6 +18,9 @@
  */
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { NyOvelseArk } from "./NyOvelseArk";
 import type { DrillDetail } from "@/lib/portal-drills/drills-data";
 import type { AkseKey } from "@/lib/v2/tokens";
 import {
@@ -599,12 +602,12 @@ function DetaljPanel({ o, mobile, onLukk }: { o: DrillDetail; mobile?: boolean; 
         {/* Ekte A–K-tilpasning */}
         <AutoTilpasning o={o} />
 
-        {/* Handlinger (forhåndsvisning) */}
+        {/* Legg i økt → Workbench (der drill-søket i økt-redigering finner
+            øvelsen). Død «Dupliser»-knapp fjernet (ingen handling bak). */}
         <div style={{ display: "flex", gap: 8 }}>
-          <CTAPill icon="plus">Legg i økt</CTAPill>
-          <CTAPill icon="copy" ghost>
-            Dupliser
-          </CTAPill>
+          <Link href="/portal/planlegge/workbench" style={{ textDecoration: "none" }}>
+            <CTAPill icon="plus">Legg i økt</CTAPill>
+          </Link>
         </div>
       </div>
     </Kort>
@@ -742,7 +745,9 @@ function FilterTopp({
 const SIDE_STORRELSE = 48;
 
 export function OvelsesbankV2({ data }: { data: DrillDetail[] }) {
+  const router = useRouter();
   const mobile = useMobile();
+  const [nyApen, setNyApen] = useState(false);
   const [type, setType] = useState("Alle");
   const [akser, setAkser] = useState<string[]>([]);
   const [kats, setKats] = useState<string[]>([]);
@@ -797,11 +802,18 @@ export function OvelsesbankV2({ data }: { data: DrillDetail[] }) {
           </Tittel>
         </div>
       </div>
-      {!mobile && (
+      {/* Bølge 4: knappen var død (ingen onClick) og kun desktop — nå åpner
+          den NyOvelseArk på begge flater. */}
+      <button
+        type="button"
+        onClick={() => setNyApen(true)}
+        className="v2-press v2-focus"
+        style={{ appearance: "none", background: "transparent", border: 0, padding: 0, cursor: "pointer" }}
+      >
         <CTAPill icon="plus" ghost>
           Ny øvelse
         </CTAPill>
-      )}
+      </button>
     </div>
   );
 
@@ -847,10 +859,16 @@ export function OvelsesbankV2({ data }: { data: DrillDetail[] }) {
     </div>
   );
 
+  // Bølge 4: «Ny øvelse»-arket — samme overlegg på begge flater.
+  const nyOvelseArk = nyApen ? (
+    <NyOvelseArk onLukk={() => setNyApen(false)} onOpprettet={() => router.refresh()} />
+  ) : null;
+
   // MOBIL: liste → detalj som fullskjerm-stabel
   if (mobile)
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        {nyOvelseArk}
         {valgtO ? (
           <>
             <div
@@ -889,6 +907,7 @@ export function OvelsesbankV2({ data }: { data: DrillDetail[] }) {
   // DESKTOP: filter-topp → galleri + detaljpanel til høyre
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      {nyOvelseArk}
       {hode}
       <FilterTopp
         type={type}

@@ -973,6 +973,7 @@ model ExerciseDefinition {
 
   createdByUser  User?          @relation("ExerciseCreator", fields: [createdBy], references: [id], onDelete: SetNull)
   sessionDrills  SessionDrill[]
+  drillsV2       TrainingDrillV2[] @relation("DrillV2Exercise")
   coachDirektiver CoachDrillDirectiv[]
   fysOvelseRader FysOvelseRad[]
 
@@ -2808,6 +2809,11 @@ model TrainingDrillV2 {
   id                  String            @id @default(cuid())
   sessionId           String
   session             TrainingSessionV2 @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  // Bølge 4 (2026-07-13): kobling til øvelsesbanken — nullable så eksisterende
+  // fritekst-driller lever videre. SQL kjørt via Supabase MCP (apply_migration
+  // add_exercise_id_to_training_drills_v2), IKKE prisma migrate (se gotchas.md).
+  exerciseId          String?
+  exercise            ExerciseDefinition? @relation("DrillV2Exercise", fields: [exerciseId], references: [id], onDelete: SetNull)
   sortOrder           Int
   name                String
   description         String?
@@ -2849,6 +2855,7 @@ model TrainingDrillV2 {
   logs                DrillLogV2[]
 
   @@index([sessionId])
+  @@index([exerciseId])
   @@map("training_drills_v2")
 }
 

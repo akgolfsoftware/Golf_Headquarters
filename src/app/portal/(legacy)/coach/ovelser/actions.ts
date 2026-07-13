@@ -38,6 +38,11 @@ export async function opprettOvelse(input: OvelseInput) {
       csMax: data.csMax,
       durationMin: data.durationMin,
       parametersJson: data.parametersJson ?? undefined,
+      // Audit 2026-07-05 #4: uten source/visibility falt coach-øvelser til
+      // SYSTEM-default og ble synlige for ALLE spillere. Coach-opprettede
+      // øvelser er COACH-source, synlige for coachens spillere.
+      source: "COACH",
+      visibility: "COACH_PLAYERS",
       createdBy: user.id,
     },
   });

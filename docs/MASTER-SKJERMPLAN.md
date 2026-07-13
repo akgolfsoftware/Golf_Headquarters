@@ -143,7 +143,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Teknisk plan detalj | `/portal/tren/teknisk-plan/[planId]` | – | --- | ✓ | ~ | ~ | ✓ |
 | Fys-plan (liste) | `/portal/tren/fys-plan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Fys-plan detalj/bygger | `/portal/tren/fys-plan/[planId]` | – | --- | ✓ | ~ | ~ | ✓ |
-| Drills (bibliotek) | `/portal/drills` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
+| Drills (bibliotek) | `/portal/drills` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: «Ny øvelse» virker (NyOvelseArk, mobil+desktop); «Legg i økt» → Workbench; død «Dupliser» fjernet; TrainingDrillV2↔bank-FK + plan-driller speiles til live-økta |
 | · Drill-detalj | `/portal/drills/[id]` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | Mål-hub | `/portal/mal` | – | --- | ✓ | ~ | ~ | ✓ | 2026-07-13: CTA heter nå «Legg til målsetning»; samme inngang lagt på Hjem (rad) og i Workbench-Balanse (NyttMaalArk-hurtigskjema → createGoal) |
 | · Mål-bygger (wizard) | `/portal/mal/bygger` | – | --- | ✓ | ~ | ~ | ~ |
