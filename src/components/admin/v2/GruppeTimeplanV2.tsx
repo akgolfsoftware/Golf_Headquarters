@@ -7,6 +7,7 @@
  * inputs, styles med T-tokens) — samme kontrakt som legacy.
  */
 
+import { useState } from "react";
 import { Caps, Kort, Knapp, StatusPill, MikroMeta, TomTilstand } from "@/components/v2";
 import { T } from "@/lib/v2/tokens";
 
@@ -33,9 +34,12 @@ export type GruppeTimeplanV2Data = {
   focusId: string | null;
 };
 
-const NB_WEEKDAY = new Intl.DateTimeFormat("nb-NO", { weekday: "long" });
-const NB_DATE = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "short" });
-const NB_TIME = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit" });
+// Alltid Europe/Oslo — der øktene faktisk skjer. Uten eksplisitt timeZone
+// formaterer serveren (UTC) og klienten (Oslo) ulikt → feil klokkeslett og
+// hydreringsmismatch (samme mønster som OSLO_DAG_FMT i BookingV2).
+const NB_WEEKDAY = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", weekday: "long" });
+const NB_DATE = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "numeric", month: "short" });
+const NB_TIME = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", hour: "2-digit", minute: "2-digit" });
 
 function varighet(startIso: string, endIso: string): string {
   const min = Math.round((new Date(endIso).getTime() - new Date(startIso).getTime()) / 60000);
@@ -115,7 +119,7 @@ function TimeplanSeksjon({
                     {NB_TIME.format(new Date(s.endAt))} · {varighet(s.startAt, s.endAt)}
                     {!fast && ` · ${NB_DATE.format(new Date(s.startAt))}`}
                     {s.location && ` · ${s.location}`}
-                    {s.maxParticipants && ` · Max ${s.maxParticipants} deltagere`}
+                    {s.maxParticipants != null && ` · Max ${s.maxParticipants} deltagere`}
                   </p>
                   {s.description && (
                     <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, marginTop: 8, maxWidth: "60ch" }}>{s.description}</p>
@@ -151,9 +155,10 @@ export function GruppeTimeplanV2({
   onDupliser,
 }: {
   data: GruppeTimeplanV2Data;
-  onOpprett: (fd: FormData) => Promise<void>;
+  onOpprett: (fd: FormData) => Promise<{ ok: true } | { ok: false; feil: string }>;
   onDupliser: (scheduleId: string, newStart: string) => Promise<void>;
 }) {
+  const [opprettFeil, setOpprettFeil] = useState<string | null>(null);
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <div>
@@ -165,7 +170,14 @@ export function GruppeTimeplanV2({
 
       {/* Opprett gruppetrening */}
       <Kort eyebrow="Opprett gruppetrening">
-        <form action={onOpprett} className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 10 }}>
+        <form
+          action={async (fd: FormData) => {
+            const res = await onOpprett(fd);
+            setOpprettFeil(res.ok ? null : res.feil);
+          }}
+          className="grid grid-cols-1 md:grid-cols-2"
+          style={{ gap: 10 }}
+        >
           <input name="title" placeholder="Tittel (f.eks. Gruppetrening)" required style={inputStyle} />
           <input name="description" placeholder="Beskrivelse" style={inputStyle} />
           <input type="date" name="dato" required style={inputStyle} />
@@ -177,8 +189,9 @@ export function GruppeTimeplanV2({
             <option value="WEEKLY">Ukentlig</option>
           </select>
           <input type="number" name="maxParticipants" placeholder="Antall deltagere (max)" style={inputStyle} />
-          <div style={{ gridColumn: "1 / -1" }}>
+          <div style={{ gridColumn: "1 / -1", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
             <Knapp type="submit">Opprett</Knapp>
+            {opprettFeil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down }}>{opprettFeil}</span>}
           </div>
         </form>
       </Kort>

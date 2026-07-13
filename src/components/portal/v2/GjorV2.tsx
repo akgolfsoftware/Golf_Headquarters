@@ -100,12 +100,16 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
   const router = useRouter();
   const { datoTekst, antall, totalMin, nesteOkt, resteAvDagen, fullfortIdag } = data;
   // C5b: én-trykks gjennomført/hopp over — direkte fra lista, uten skjema.
+  // Kun raden som oppdateres disables (id-sporing), ikke alle radene.
   const [oppdaterer, startOppdatering] = useTransition();
-  const marker = (o: { id: string; kilde: "v2" | "plan" }, status: "COMPLETED" | "SKIPPED") =>
+  const [oppdatererId, setOppdatererId] = useState<string | null>(null);
+  const marker = (o: { id: string; kilde: "v2" | "plan" }, status: "COMPLETED" | "SKIPPED") => {
+    setOppdatererId(o.id);
     startOppdatering(async () => {
       await markerOktStatus({ id: o.id, kilde: o.kilde, status });
       router.refresh();
     });
+  };
 
 
   const live = nesteOkt?.status === "now";
@@ -236,7 +240,7 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
                     <Link href={nesteOkt.href} style={{ textDecoration: "none" }}>
                       <CTAPill icon="play">{live ? "Fortsett økt" : "Start økt"}</CTAPill>
                     </Link>
-                    <HurtigStatus o={nesteOkt} oppdaterer={oppdaterer} onMarker={marker} />
+                    <HurtigStatus o={nesteOkt} oppdaterer={oppdaterer && oppdatererId === nesteOkt.id} onMarker={marker} />
                   </span>
                 </div>
                 <div style={{ display: "flex", gap: 6, marginTop: 12 }}>
@@ -276,7 +280,7 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
                   meta={
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
                       <AkseChip a={o.pyramidArea} />
-                      <HurtigStatus o={o} oppdaterer={oppdaterer} onMarker={marker} />
+                      <HurtigStatus o={o} oppdaterer={oppdaterer && oppdatererId === o.id} onMarker={marker} />
                     </span>
                   }
                   onClick={() => router.push(o.href)}
