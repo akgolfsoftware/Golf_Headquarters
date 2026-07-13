@@ -12,7 +12,7 @@
  */
 
 import { useRef, useState } from "react";
-import { T, Kort, Caps, Icon, Knapp, TomTilstand, StatusPill } from "@/components/v2";
+import { T, Kort, Caps, Icon, Knapp, TomTilstand, StatusPill, BunnArk } from "@/components/v2";
 import { LPHASE_LABEL, LPHASE_FARGE, LPHASE_BESKRIVELSE } from "@/lib/labels/taxonomy";
 import { budsjettSum, type PeriodeInput, type SessionBudget } from "@/lib/workbench/perioder";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
@@ -82,11 +82,14 @@ export function PeriodePalett() {
 }
 
 /* ── Selve canvaset ── */
-export function WorkbenchAarsplan({ data, handlers, onEndret }: {
+export function WorkbenchAarsplan({ data, handlers, onEndret, mobil }: {
   data: WorkbenchData;
   /** Uten handlers = lesevisning (ingen drag/redigering). */
   handlers?: AarsplanHandlers;
   onEndret: () => void;
+  /** Mobil (<md): stablet periodeliste i stedet for 860px-canvaset —
+      trykk en periode → samme rediger-popup; «+ Ny periode» erstatter drag. */
+  mobil?: boolean;
 }) {
   const year = (data.weekStartISO ? new Date(data.weekStartISO) : new Date()).getFullYear();
   const totDager = dagerIAaret(year);
@@ -191,6 +194,59 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
         <Caps size={9}>+ Ny periode</Caps>
       </button>
     ) : undefined}>
+      {mobil ? (
+        /* Mobil: stablet, tappbar liste (tidl. død AarNivaaMobil, nå m/ redigering).
+           Ingen horisontal 860px-scroll, ingen drag — trykk gjør jobben. */
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 4 }} data-wb-aarsplan-mobil>
+          {blocks.length === 0 && (
+            <TomTilstand icon="calendar-range" title="Ingen perioder ennå" sub={handlers ? "Bruk + Ny periode for å legge sesongens første periode." : "Årsplanen er ikke lagt ennå."} />
+          )}
+          {[...blocks].sort((x, y) => x.startDate.localeCompare(y.startDate)).map((b) => {
+            const start = new Date(b.startDate);
+            const end = new Date(b.endDate);
+            const naaTid = new Date();
+            const naa = start <= naaTid && naaTid <= end;
+            const farge = LPHASE_FARGE[b.lPhase] ?? T.mut;
+            const sum = budsjettSum(b.budsjett ?? null);
+            return (
+              <button
+                key={b.id}
+                type="button"
+                data-wb-periode={b.id}
+                onClick={handlers ? () => aapneRedigerPopup(b) : undefined}
+                className="v2-press v2-focus"
+                style={{
+                  appearance: "none", textAlign: "left", cursor: handlers ? "pointer" : "default",
+                  padding: "11px 13px", borderRadius: 12, minHeight: 52,
+                  background: naa ? `color-mix(in srgb, ${T.lime} 6%, ${T.panel2})` : T.panel2,
+                  border: `1px solid ${naa ? `color-mix(in srgb, ${T.lime} 35%, transparent)` : T.border}`,
+                  borderLeft: `3px solid ${farge}`,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                  <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>{LPHASE_LABEL[b.lPhase] ?? b.lPhase}</span>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6, flex: "none" }}>
+                    {sum > 0 && <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.fg2 }}>{sum}/uke</span>}
+                    {naa && <StatusPill>Nå</StatusPill>}
+                    {handlers && <Icon name="chevron-right" size={13} style={{ color: T.mut }} />}
+                  </span>
+                </div>
+                <span style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut, display: "block", marginTop: 3 }}>
+                  {datoKort(start)}–{datoKort(end)}
+                </span>
+                {b.focus && (
+                  <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, display: "block", marginTop: 5, lineHeight: 1.4 }}>{b.focus}</span>
+                )}
+              </button>
+            );
+          })}
+          {turneringer.length > 0 && (
+            <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginTop: 2 }}>
+              {turneringer.filter((t) => new Date(t.startDate).getFullYear() === year).length} turneringer i {year} — se Måned-zoom for datoene.
+            </span>
+          )}
+        </div>
+      ) : (
       <div style={{ overflowX: "auto" }} data-wb-aarsplan>
         <div style={{ minWidth: 860, paddingBottom: 4 }}>
           {/* Månedsakse */}
@@ -305,19 +361,24 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
           </div>
         </div>
       </div>
+      )}
 
-      {/* Periode-popup (ny/rediger) — Anders-logikken: alt justerbart, så Bekreft */}
+      {/* Periode-popup (ny/rediger) — Anders-logikken: alt justerbart, så Bekreft.
+          BunnArk: sentrert på desktop, bunn-ark på mobil. */}
       {popup && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-          <div onClick={lagrer ? undefined : () => setPopup(null)} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
-          <div role="dialog" aria-label={popup.periodeId ? "Rediger periode" : "Ny periode"} style={{ position: "relative", width: "min(440px, 100%)", maxHeight: "88vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ width: 10, height: 10, borderRadius: 3, background: LPHASE_FARGE[popup.lPhase] }} />
-              <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>
-                {popup.periodeId ? "Rediger" : "Ny"} · {LPHASE_LABEL[popup.lPhase]}
-              </h2>
-            </div>
-            <p style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, margin: "6px 0 0", lineHeight: 1.5 }}>{LPHASE_BESKRIVELSE[popup.lPhase]}</p>
+        <BunnArk
+          tittel={
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+              <span style={{ width: 10, height: 10, borderRadius: 3, background: LPHASE_FARGE[popup.lPhase], flex: "none" }} />
+              {popup.periodeId ? "Rediger" : "Ny"} · {LPHASE_LABEL[popup.lPhase]}
+            </span>
+          }
+          under={LPHASE_BESKRIVELSE[popup.lPhase]}
+          onLukk={() => setPopup(null)}
+          laast={lagrer}
+          bredde={440}
+        >
+          <div>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 14 }}>
               <label style={{ display: "block" }}>
@@ -399,7 +460,7 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
               </div>
             )}
           </div>
-        </div>
+        </BunnArk>
       )}
 
       {/* Lesevisning-hint når handlers mangler men blokker finnes */}

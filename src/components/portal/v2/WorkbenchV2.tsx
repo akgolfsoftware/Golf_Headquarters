@@ -34,13 +34,15 @@ import {
   Icon,
   HjelpTips,
   ZoomBrodsmule,
+  BunnArk,
 } from "@/components/v2";
+import { useMobile } from "@/lib/v2/hooks";
 import { PalettSok } from "@/components/v2/wb-composer";
 import { ForslagArk, NyOktArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput } from "./WorkbenchV2Sheets";
 import { WorkbenchColdstart } from "./WorkbenchColdstart";
 import { WorkbenchAarsplan, PeriodePalett, WBPeriodeStrip } from "./WorkbenchAarsplan";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
-import { WBTidslinjeMobil, MobilFold } from "./WorkbenchV2Mobil";
+import { WBTidslinjeMobil, MndNivaaMobil, MobilFold } from "./WorkbenchV2Mobil";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import { LPHASE_LABEL as LPHASE_LABEL_KANON, LPHASE_FARGE as LPHASE_FARGE_KANON } from "@/lib/labels/taxonomy";
@@ -470,6 +472,7 @@ export function WBBelastning({ data }: { data: WorkbenchData }) {
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6, flex: "none" }}>
           <Icon name="activity" size={13} style={{ color: T.fg2 }} />
           <Caps size={8.5}>Belastning</Caps>
+          <HjelpTips k="belastning" size={11} />
         </span>
         <span style={{ fontFamily: T.mono, fontSize: 11, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
           Denne uka <span style={{ fontWeight: 700 }}>{fmtTimer(ukeT)}</span>
@@ -545,7 +548,7 @@ function KoachNotatSeksjon({ coachNotat }: { coachNotat: NonNullable<WorkbenchV2
   );
 }
 
-export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekOffset, onEndret }: {
+export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekOffset, onEndret, visValgtOkt = true }: {
   data: WorkbenchData;
   valgtOkt: WeekEvent | null;
   /** Dagindeks (0=man) for valgt økt — brukes i slett-popupen. -1 = ukjent. */
@@ -554,6 +557,8 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
   actions?: WorkbenchV2Actions;
   weekOffset: number;
   onEndret: () => void;
+  /** false på mobil — der vises «Valgt økt» som BunnArk ved trykk i stedet. */
+  visValgtOkt?: boolean;
 }) {
   const axis = data.axisHours ?? [];
   const totalT = axis.reduce((a, x) => a + x.hours, 0);
@@ -614,11 +619,13 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
 
       {actions?.coachNotat && <KoachNotatSeksjon coachNotat={actions.coachNotat} />}
 
-      <BalSeksjon label="Valgt økt">
-        {valgtOkt ? (
-          <ValgtOktSeksjon okt={valgtOkt} dag={valgtDag} actions={actions} weekOffset={weekOffset} onEndret={onEndret} />
-        ) : <TomTilstand icon="target" title="Ingen økt valgt" sub="Trykk en økt i tidslinja." />}
-      </BalSeksjon>
+      {visValgtOkt && (
+        <BalSeksjon label="Valgt økt">
+          {valgtOkt ? (
+            <ValgtOktSeksjon okt={valgtOkt} dag={valgtDag} actions={actions} weekOffset={weekOffset} onEndret={onEndret} />
+          ) : <TomTilstand icon="target" title="Ingen økt valgt" sub="Trykk en økt i tidslinja." />}
+        </BalSeksjon>
+      )}
 
       <BalSeksjon label="Ukens fordeling · timer" right={<span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, color: T.fg2 }}>{fmtTimer(totalT)}</span>}>
         {totalT > 0 ? (
@@ -853,6 +860,21 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     setOptimisticStatus(null);
   }
   const [valgtId, setValgtIdState] = useState<string | null>(searchParams.get("okt"));
+  // Feilfiks 6.5: URL-en er fasit for ?okt=/?zoom= — synk state når parametrene
+  // endres UTENFRA (tilbake/frem-navigasjon, delt lenke i samme fane). Samme
+  // render-synk-mønster som forrigeData over (ingen effekt-kaskade).
+  const oktParam = searchParams.get("okt");
+  const [forrigeOktParam, setForrigeOktParam] = useState(oktParam);
+  if (forrigeOktParam !== oktParam) {
+    setForrigeOktParam(oktParam);
+    setValgtIdState(oktParam);
+  }
+  const normZoom = zoomParam === "ar" || zoomParam === "maned" || zoomParam === "dag" ? zoomParam : "uke";
+  const [forrigeZoomParam, setForrigeZoomParam] = useState(normZoom);
+  if (forrigeZoomParam !== normZoom) {
+    setForrigeZoomParam(normZoom);
+    setNivaaState(normZoom);
+  }
   const valgtOkt = useMemo(() => alleEvents.find((e) => e.id === valgtId) ?? alleEvents[0] ?? null, [alleEvents, valgtId]);
   // Dagindeksen mistes i alleEvents-flatMap — slås opp for slett-popupen («dag · tid»).
   const valgtDag = useMemo(
@@ -885,12 +907,19 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   // 8c.5: universell økt-popup — trykk en økt i hvilken som helst visning →
   // popup med alt redigerbart (Anders: «alt skal være trykkbart»).
   const [redigerOktId, setRedigerOktId] = useState<string | null>(null);
+  // Mobil-funn 13/7: på <md lå «Valgt økt» (Start/Se/flytt/slett) gjemt i en
+  // sammenslått Balanse-fold nederst — trykk på en ikke-redigerbar økt så ut
+  // som ingenting. Nå åpner ALLE økt-trykk et ark på mobil: redigerbare økter
+  // → RedigerOktArk, resten → ValgtOktSeksjon i BunnArk.
+  const mobil = useMobile();
+  const [mobilOktApen, setMobilOktApen] = useState(false);
   const velgOgAapne = (id: string) => {
     setValgtId(id);
     const okt = alleEvents.find((e) => e.id === id);
     const redigerbar = !!actions?.updateSession && okt && (okt.source ?? "plan") === "plan" &&
       !["COMPLETED", "ABANDONED", "SKIPPED", "CANCELLED"].includes(okt.status ?? "PLANNED");
     if (redigerbar) setRedigerOktId(id);
+    else if (mobil) setMobilOktApen(true);
   };
   const redigerOkt = redigerOktId ? alleEvents.find((e) => e.id === redigerOktId) ?? null : null;
   const redigerDag = redigerOkt ? dager.findIndex((d) => d.events.some((e) => e.id === redigerOkt.id)) : -1;
@@ -1447,26 +1476,48 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
             data={data}
             handlers={actions?.lagrePeriode && actions?.slettPeriode ? { lagre: actions.lagrePeriode, slett: actions.slettPeriode } : undefined}
             onEndret={() => router.refresh()}
+            mobil
           />
         )}
         {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
-        {nivaa === "maned" && <MndNivaa data={data} onVelgDato={velgDatoFraMnd} />}
+        {nivaa === "maned" && <MndNivaaMobil data={data} onVelgDato={velgDatoFraMnd} />}
 
         <MobilFold tittel="Bibliotek" ikon="layers">
           <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} />
         </MobilFold>
         <MobilFold tittel="Balanse" ikon="activity">
+          {/* «Valgt økt» vises i BunnArk ved trykk på mobil — ikke her i folden. */}
           <WBBalanse
             data={data}
             valgtOkt={valgtOkt}
-          valgtDag={valgtDag}
+            valgtDag={valgtDag}
             weekNumber={weekNumber}
             actions={balanseActions}
             weekOffset={weekOffset}
             onEndret={() => router.refresh()}
+            visValgtOkt={false}
           />
         </MobilFold>
       </div>
+
+      {/* Mobil: «Valgt økt» som bunn-ark — trykket og handlingene hører sammen. */}
+      {mobil && mobilOktApen && valgtOkt && !redigerOkt && (
+        <BunnArk
+          tittel={valgtOkt.ttl}
+          under={<span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Valgt økt <HjelpTips k="valgtOkt" size={11} /></span>}
+          onLukk={() => setMobilOktApen(false)}
+        >
+          <div style={{ marginTop: 12 }}>
+            <ValgtOktSeksjon
+              okt={valgtOkt}
+              dag={valgtDag}
+              actions={balanseActions}
+              weekOffset={weekOffset}
+              onEndret={() => { setMobilOktApen(false); router.refresh(); }}
+            />
+          </div>
+        </BunnArk>
+      )}
 
       {pubDiff && (
         <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>

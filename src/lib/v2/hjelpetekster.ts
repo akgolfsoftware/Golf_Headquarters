@@ -42,6 +42,22 @@ const RAW = {
     forklaring:
       "Hvor mye av planlagt trening som faktisk ble gjennomført, i prosent. Et lavt tall er ikke et forbud mot noe, bare et signal om at planen og virkeligheten har sklidd fra hverandre.",
   },
+  belastning: {
+    tittel: "Belastning",
+    forklaring:
+      "Summen av planlagt treningstid denne uka, sett opp mot snittet de siste fire ukene. Sammen med ACWR forteller den om du trapper opp i et tempo kroppen rekker å henge med på.",
+  },
+  repKategorier: {
+    tittel: "Rep-kategorier",
+    forklaring:
+      "Repetisjonene i en drill deles i fire: uten ball (ren bevegelse), lav hastighet (kontrollert tempo), automatikk (full fart uten å tenke) og golfballer slått. Fordelingen viser hvor i læringsstigen du faktisk trener.",
+  },
+  valgtOkt: {
+    tittel: "Valgt økt",
+    forklaring:
+      "Økten du sist trykket på. Herfra kan du starte, se, flytte, duplisere eller slette den. Fullførte økter kan bare ses, ikke redigeres.",
+    mobilTips: "Trykk en økt i lista, så åpner handlingene seg i et ark nederst.",
+  },
   tonnasje: {
     tittel: "Tonnasje",
     forklaring:

@@ -16,7 +16,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { ReactNode, CSSProperties } from "react";
-import { T, Icon, Kort, Knapp, AkseChip } from "@/components/v2";
+import { T, Icon, Kort, Knapp, AkseChip, BunnArk } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WeekEvent } from "@/lib/workbench/week-types";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
@@ -228,42 +228,8 @@ export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAks
   };
 
   return (
-    <div
-      style={{
-        position: "fixed", inset: 0, zIndex: 70, display: "flex",
-        alignItems: "center", justifyContent: "center", padding: 16,
-      }}
-    >
-      <div
-        onClick={lagrer ? undefined : onLukk}
-        style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }}
-      />
-      <div
-        style={{
-          position: "relative", width: "min(420px, 100%)", maxHeight: "88vh", overflowY: "auto",
-          background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px",
-          boxShadow: "0 24px 60px rgba(0,0,0,0.5)",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
-          <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>
-            Ny økt
-          </h2>
-          <button
-            type="button"
-            onClick={onLukk}
-            disabled={lagrer}
-            style={{
-              appearance: "none", cursor: "pointer", width: 28, height: 28, borderRadius: 8,
-              background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex",
-              alignItems: "center", justifyContent: "center", flex: "none",
-            }}
-          >
-            <Icon name="x" size={14} style={{ color: T.fg2 }} />
-          </button>
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 16 }}>
+    <BunnArk tittel="Ny økt" onLukk={onLukk} laast={lagrer}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 16 }}>
           <Felt label="Tittel">
             <input
               style={inputStyle}
@@ -322,19 +288,18 @@ export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAks
             </div>
           </Felt>
 
-          {feil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down }}>{feil}</span>}
+        {feil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down }}>{feil}</span>}
 
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 4 }}>
-            <Knapp ghost onClick={onLukk} disabled={lagrer}>
-              Avbryt
-            </Knapp>
-            <Knapp icon="plus" onClick={opprett} disabled={lagrer}>
-              {lagrer ? "Oppretter…" : "Opprett økt"}
-            </Knapp>
-          </div>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 4 }}>
+          <Knapp ghost onClick={onLukk} disabled={lagrer}>
+            Avbryt
+          </Knapp>
+          <Knapp icon="plus" onClick={opprett} disabled={lagrer}>
+            {lagrer ? "Oppretter…" : "Opprett økt"}
+          </Knapp>
         </div>
       </div>
-    </div>
+    </BunnArk>
   );
 }
 
@@ -369,48 +334,15 @@ export function ForslagArk({ suggestions, usedAi, onLukk, onBruk }: ForslagArkPr
   };
 
   return (
-    <div
-      style={{
-        position: "fixed", inset: 0, zIndex: 70, display: "flex",
-        alignItems: "center", justifyContent: "center", padding: 16,
-      }}
+    <BunnArk
+      tittel="Forslag til uka"
+      under={usedAi
+        ? "Tre varianter basert på nivået ditt, fokusområdet og planen din. Velg den som passer uka."
+        : "Standardforslag (uten AI) — tre varianter du kan bruke som utgangspunkt."}
+      onLukk={onLukk}
+      laast={brukes != null}
+      bredde={760}
     >
-      <div
-        onClick={brukes ? undefined : onLukk}
-        style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }}
-      />
-      <div
-        style={{
-          position: "relative", width: "min(760px, 100%)", maxHeight: "88vh", overflowY: "auto",
-          background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px",
-          boxShadow: "0 24px 60px rgba(0,0,0,0.5)",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
-          <div>
-            <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>
-              Forslag til uka
-            </h2>
-            <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, display: "block", marginTop: 4 }}>
-              {usedAi
-                ? "Tre varianter basert på nivået ditt, fokusområdet og planen din. Velg den som passer uka."
-                : "Standardforslag (uten AI) — tre varianter du kan bruke som utgangspunkt."}
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={onLukk}
-            disabled={brukes != null}
-            style={{
-              appearance: "none", cursor: "pointer", width: 28, height: 28, borderRadius: 8,
-              background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex",
-              alignItems: "center", justifyContent: "center", flex: "none",
-            }}
-          >
-            <Icon name="x" size={14} style={{ color: T.fg2 }} />
-          </button>
-        </div>
-
         <div
           style={{
             display: "grid",
@@ -464,8 +396,7 @@ export function ForslagArk({ suggestions, usedAi, onLukk, onBruk }: ForslagArkPr
             {feil}
           </span>
         )}
-      </div>
-    </div>
+    </BunnArk>
   );
 }
 
@@ -877,17 +808,8 @@ export function RedigerOktArk({ okt, dag, weekOffset, actions, onLukk, onEndret 
   };
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-      <div onClick={lagrer ? undefined : onLukk} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
-      <div role="dialog" aria-label="Rediger økt" style={{ position: "relative", width: "min(420px, 100%)", maxHeight: "88vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>Rediger økt</h2>
-          <button onClick={onLukk} className="v2-press" aria-label="Lukk" style={{ background: T.panel3, border: `1px solid ${T.border}`, borderRadius: 9, color: T.mut, cursor: "pointer", padding: 6, display: "inline-flex" }}>
-            <Icon name="x" size={14} />
-          </button>
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 14 }}>
+    <BunnArk tittel="Rediger økt" onLukk={onLukk} laast={lagrer}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 14 }}>
           <Felt label="Tittel">
             <input value={title} onChange={(e) => setTitle(e.target.value)} style={inputStyle} />
           </Felt>
@@ -973,13 +895,12 @@ export function RedigerOktArk({ okt, dag, weekOffset, actions, onLukk, onEndret 
           </Felt>
         </div>
 
-        {feil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down, display: "block", marginTop: 10 }}>{feil}</span>}
+      {feil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down, display: "block", marginTop: 10 }}>{feil}</span>}
 
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
-          <Knapp ghost onClick={onLukk} disabled={lagrer}>Avbryt</Knapp>
-          <Knapp icon="check" onClick={lagre} disabled={lagrer}>{lagrer ? "Lagrer…" : "Lagre"}</Knapp>
-        </div>
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
+        <Knapp ghost onClick={onLukk} disabled={lagrer}>Avbryt</Knapp>
+        <Knapp icon="check" onClick={lagre} disabled={lagrer}>{lagrer ? "Lagrer…" : "Lagre"}</Knapp>
       </div>
-    </div>
+    </BunnArk>
   );
 }

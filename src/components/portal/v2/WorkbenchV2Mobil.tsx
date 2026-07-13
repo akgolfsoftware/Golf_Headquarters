@@ -12,9 +12,11 @@
  */
 
 import { useState, type ReactNode } from "react";
-import { T, Kort, TomTilstand, StatusPill, Icon } from "@/components/v2";
+import { T, Kort, Caps, TomTilstand, Icon, AKSE_NAVN } from "@/components/v2";
+import type { AkseKey } from "@/lib/v2/tokens";
 import { DagStripe, type StripeDag } from "@/components/v2/kalender";
-import { DagNivaa, MANEDER, LPHASE_LABEL, type DagKol } from "./WorkbenchV2";
+import { DagNivaa, MANEDER, type DagKol } from "./WorkbenchV2";
+import { fmtVarighet } from "@/lib/workbench/v2-format";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 
 /* ── WBTidslinjeMobil — dag-velger-pille (M T O T F L S) + agenda ── */
@@ -39,52 +41,93 @@ export function WBTidslinjeMobil({
   );
 }
 
-/* ── AarNivaaMobil — kompakt stablet liste (i stedet for tett rad) ── */
-export function AarNivaaMobil({ data }: { data: WorkbenchData }) {
-  const now = useState(() => Date.now())[0];
-  const blocks = data.seasonBlocks ?? [];
-  if (blocks.length === 0) {
-    return (
-      <Kort>
-        <TomTilstand icon="calendar" title="Ingen sesongplan" sub="Ingen periodeblokker lagt inn for året ennå." />
-      </Kort>
-    );
-  }
+/* ── MndNivaaMobil — måned som stablet ukeliste (i stedet for 7-kols grid) ──
+   Mobil-funn 13/7: MndNivaa sine 64px-celler ble uleselige på 390-flaten.
+   Her: én rad per uke (ukenr + 7 tappbare dag-celler m/ akse-prikker og
+   øktantall). Trykk en dag → samme velgDatoFraMnd som desktop (hopper til
+   uka i tidslinja). Kun ekte data fra data.monthDays — ingen fabrikkerte felt. */
+export function MndNivaaMobil({ data, onVelgDato }: { data: WorkbenchData; onVelgDato: (dato: Date) => void }) {
+  const weekStart = data.weekStartISO ? new Date(data.weekStartISO) : new Date();
+  const ar = weekStart.getFullYear();
+  const mnd = weekStart.getMonth();
+  const forste = new Date(ar, mnd, 1);
+  const dagerIMnd = new Date(ar, mnd + 1, 0).getDate();
+  const startPad = (forste.getDay() + 6) % 7; // grid starter på mandag
+  const rader = Math.ceil((startPad + dagerIMnd) / 7);
+
+  const nokkel = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const innhold = new Map((data.monthDays ?? []).map((d) => [d.dateISO, d]));
+  const iDag = nokkel(new Date());
+  const turneringPaaDag = new Set(
+    (data.tournamentCalendar ?? []).map((t) => nokkel(new Date(t.startDate))),
+  );
+  const totalOkter = (data.monthDays ?? []).reduce((a, d) => a + d.count, 0);
+
+  // ISO-ukenummer for mandagen i hver rad.
+  const isoUke = (d: Date): number => {
+    const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const dow = t.getUTCDay() || 7;
+    t.setUTCDate(t.getUTCDate() + 4 - dow);
+    const nyttar = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+    return Math.ceil(((t.getTime() - nyttar.getTime()) / 86_400_000 + 1) / 7);
+  };
+
   return (
-    <Kort eyebrow="Sesongperioder">
-      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 4 }}>
-        {blocks.map((b) => {
-          const start = new Date(b.startDate);
-          const end = new Date(b.endDate);
-          const naa = start.getTime() <= now && now <= end.getTime();
+    <Kort eyebrow={`${MANEDER[mnd][0].toUpperCase() + MANEDER[mnd].slice(1)} ${ar}`} action={<Caps size={9}>{totalOkter} økter</Caps>}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 4 }}>
+        {Array.from({ length: rader }, (_, rad) => {
+          const mandagNr = rad * 7 - startPad + 1;
+          const mandagDato = new Date(ar, mnd, mandagNr);
           return (
-            <div
-              key={b.id}
-              style={{
-                padding: "10px 12px",
-                borderRadius: 12,
-                background: naa ? `color-mix(in srgb, ${T.lime} 6%, ${T.panel2})` : T.panel2,
-                border: `1px solid ${naa ? "transparent" : T.border}`,
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
-                  {LPHASE_LABEL[b.lPhase] ?? b.lPhase}
-                </span>
-                {naa && <StatusPill>Nå</StatusPill>}
-              </div>
-              <span style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut, display: "block", marginTop: 3 }}>
-                {start.getDate()}. {MANEDER[start.getMonth()].slice(0, 3)}–{end.getDate()}. {MANEDER[end.getMonth()].slice(0, 3)}
+            <div key={rad} style={{ display: "flex", alignItems: "center", gap: 7 }}>
+              <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, width: 24, flex: "none" }}>
+                U{isoUke(mandagDato)}
               </span>
-              {b.focus && (
-                <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, display: "block", marginTop: 6, lineHeight: 1.4 }}>
-                  {b.focus}
-                </span>
-              )}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4, flex: 1, minWidth: 0 }}>
+                {Array.from({ length: 7 }, (_, kol) => {
+                  const dagNr = rad * 7 + kol - startPad + 1;
+                  if (dagNr < 1 || dagNr > dagerIMnd) return <span key={kol} />;
+                  const dato = new Date(ar, mnd, dagNr);
+                  const c = innhold.get(nokkel(dato));
+                  const erIDag = nokkel(dato) === iDag;
+                  const totMin = c ? c.axes.reduce((a, x) => a + x.min, 0) : 0;
+                  return (
+                    <button
+                      key={kol}
+                      type="button"
+                      onClick={() => onVelgDato(dato)}
+                      title={c ? `${c.count} økter · ${fmtVarighet(totMin)}` : "Ingen økter — trykk for å åpne uka"}
+                      className="v2-press v2-focus"
+                      style={{
+                        appearance: "none", cursor: "pointer", minHeight: 46, padding: "4px 2px",
+                        borderRadius: 9, display: "flex", flexDirection: "column", alignItems: "center",
+                        justifyContent: "center", gap: 3,
+                        background: erIDag ? `color-mix(in srgb, ${T.lime} 8%, ${T.panel2})` : T.panel2,
+                        border: `1px solid ${erIDag ? `color-mix(in srgb, ${T.lime} 40%, transparent)` : T.border}`,
+                      }}
+                    >
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 2 }}>
+                        <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: erIDag ? T.lime : c ? T.fg : T.mut, fontVariantNumeric: "tabular-nums" }}>{dagNr}</span>
+                        {turneringPaaDag.has(nokkel(dato)) && <Icon name="trophy" size={8} style={{ color: T.warn }} />}
+                      </span>
+                      <span style={{ display: "flex", gap: 2, minHeight: 5 }}>
+                        {(c?.axes ?? []).slice(0, 4).map((x) => (
+                          <span key={x.ax} title={AKSE_NAVN[x.ax.toUpperCase() as AkseKey] ?? x.ax} style={{ width: 5, height: 5, borderRadius: 9999, background: T.ax[x.ax.toUpperCase() as AkseKey] ?? T.mut }} />
+                        ))}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           );
         })}
+        {totalOkter === 0 && (
+          <TomTilstand icon="calendar" title="Ingen økter denne måneden" sub="Trykk en dag for å åpne uka og legge inn økter." />
+        )}
       </div>
+      <span style={{ display: "block", marginTop: 10, fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>Trykk en dag for å åpne uka i tidslinja.</span>
     </Kort>
   );
 }

@@ -79,6 +79,19 @@ export function useCountUp(value: number | string, dur = 600): string {
   return m.ok ? disp : String(value);
 }
 
+/** true på <md-flaten (maks 767px) — SSR-trygg (false før mount). */
+export function useMobile(): boolean {
+  const [mobil, setMobil] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const oppdater = () => setMobil(mq.matches);
+    oppdater();
+    mq.addEventListener("change", oppdater);
+    return () => mq.removeEventListener("change", oppdater);
+  }, []);
+  return mobil;
+}
+
 /** useMount: true etter to frames (trigger for width/draw-in-transitions). Reduced → true straks. */
 export function useMount(): boolean {
   const [on, setOn] = useState(() => reduced());
