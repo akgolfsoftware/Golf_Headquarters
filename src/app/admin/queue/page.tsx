@@ -75,7 +75,7 @@ export default async function OppfolgingsKoPage() {
       signalIkon: sg != null && sg < -0.5 ? "trending-down" : grunner.length >= 2 ? "alert-triangle" : "clock",
       stats,
       tags,
-      siden: p.lastLoginAt ? `flagget ${dagerSiden(p.lastLoginAt) ?? 0} dager siden` : "flagget nylig",
+      siden: p.lastLoginAt ? `sist innlogget ${dagerSiden(p.lastLoginAt) ?? 0} dager siden` : "aldri innlogget",
       prioritet: grunner.length >= 3,
     };
 
@@ -161,7 +161,7 @@ export default async function OppfolgingsKoPage() {
         {/* Aktivitets-stripe */}
         <Kort pad="12px 18px">
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 18 }}>
-            <Caps>Aktivitet · 24 t</Caps>
+            <Caps>Aktivitet · siste 7d</Caps>
             <MikroMeta icon="check-circle">
               Løst <b style={{ color: T.fg }}>{ok.length}</b> saker
             </MikroMeta>
