@@ -145,7 +145,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Fys-plan detalj/bygger | `/portal/tren/fys-plan/[planId]` | – | --- | ✓ | ~ | ~ | ✓ |
 | Drills (bibliotek) | `/portal/drills` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | · Drill-detalj | `/portal/drills/[id]` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
-| Mål-hub | `/portal/mal` | – | --- | ✓ | ~ | ~ | ✓ |
+| Mål-hub | `/portal/mal` | – | --- | ✓ | ~ | ~ | ✓ | 2026-07-13: CTA heter nå «Legg til målsetning»; samme inngang lagt på Hjem (rad) og i Workbench-Balanse (NyttMaalArk-hurtigskjema → createGoal) |
 | · Mål-bygger (wizard) | `/portal/mal/bygger` | – | --- | ✓ | ~ | ~ | ~ |
 | · Mål-detalj | `/portal/mal/goal/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Milepæler | `/portal/mal/milepaeler` | – | --- | ✓ | ~ | ~ | ~ |

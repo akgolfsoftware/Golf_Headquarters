@@ -98,7 +98,7 @@ export function MalHubV2({ data }: { data: MalHubData }) {
           </div>
         </div>
         <Link href="/portal/mal/bygger" style={{ textDecoration: "none" }}>
-          <CTAPill icon="plus">Nytt mål</CTAPill>
+          <CTAPill icon="plus">Legg til målsetning</CTAPill>
         </Link>
       </div>
 

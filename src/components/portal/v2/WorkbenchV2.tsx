@@ -38,7 +38,7 @@ import {
 } from "@/components/v2";
 import { useMobile } from "@/lib/v2/hooks";
 import { PalettSok } from "@/components/v2/wb-composer";
-import { ForslagArk, NyOktArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput } from "./WorkbenchV2Sheets";
+import { ForslagArk, NyOktArk, NyttMaalArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput } from "./WorkbenchV2Sheets";
 import { WorkbenchColdstart } from "./WorkbenchColdstart";
 import { WorkbenchAarsplan, PeriodePalett, WBPeriodeStrip } from "./WorkbenchAarsplan";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
@@ -548,7 +548,7 @@ function KoachNotatSeksjon({ coachNotat }: { coachNotat: NonNullable<WorkbenchV2
   );
 }
 
-export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekOffset, onEndret, visValgtOkt = true }: {
+export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekOffset, onEndret, visValgtOkt = true, onNyttMaal }: {
   data: WorkbenchData;
   valgtOkt: WeekEvent | null;
   /** Dagindeks (0=man) for valgt økt — brukes i slett-popupen. -1 = ukjent. */
@@ -559,6 +559,8 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
   onEndret: () => void;
   /** false på mobil — der vises «Valgt økt» som BunnArk ved trykk i stedet. */
   visValgtOkt?: boolean;
+  /** Bølge 3: åpner «Legg til målsetning»-arket (kun når actions.createGoal er bundet). */
+  onNyttMaal?: () => void;
 }) {
   const axis = data.axisHours ?? [];
   const totalT = axis.reduce((a, x) => a + x.hours, 0);
@@ -640,6 +642,10 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
           ))
         ) : <TomTilstand icon="activity" title="Ingen økter" sub="Ukens plan er tom." />}
       </BalSeksjon>
+
+      {onNyttMaal && (
+        <Knapp ghost icon="target" full onClick={onNyttMaal}>Legg til målsetning</Knapp>
+      )}
     </div>
   );
 }
@@ -799,6 +805,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   const [tab, setTab] = useState("maler");
   const [sok, setSok] = useState("");
   const [nyOktApen, setNyOktApen] = useState(false);
+  const [nyttMaalApen, setNyttMaalApen] = useState(false);
   const [nyOktPrefill, setNyOktPrefill] = useState<{ title: string; durMin: number; akse?: AkseKey } | null>(null);
   // I1: trykk på tom luke i tidslinja → Ny økt med dag + klokkeslett prefylt.
   const [nyOktSted, setNyOktSted] = useState<{ dayIndex: number; tid: string } | null>(null);
@@ -1456,6 +1463,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           actions={balanseActions}
           weekOffset={weekOffset}
           onEndret={() => router.refresh()}
+          onNyttMaal={actions?.createGoal ? () => setNyttMaalApen(true) : undefined}
         />
       </div>
 
@@ -1496,6 +1504,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
             weekOffset={weekOffset}
             onEndret={() => router.refresh()}
             visValgtOkt={false}
+            onNyttMaal={actions?.createGoal ? () => setNyttMaalApen(true) : undefined}
           />
         </MobilFold>
       </div>
@@ -1607,6 +1616,16 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           usedAi={forslag.usedAi}
           onLukk={() => setForslag(null)}
           onBruk={handleBrukForslag}
+        />
+      )}
+
+      {nyttMaalApen && actions?.createGoal && (
+        <NyttMaalArk
+          onLukk={() => setNyttMaalApen(false)}
+          onOpprett={async (input) => {
+            await actions.createGoal!(input);
+            router.refresh();
+          }}
         />
       )}
 

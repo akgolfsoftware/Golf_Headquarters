@@ -255,6 +255,13 @@ export function HjemV2({ data }: { data: DashboardData }) {
             leading={<Icon name="calendar-plus" size={16} style={{ color: T.mut }} />}
             title="Book coachtime"
             sub="Velg tjeneste, coach og tid"
+          />
+        </Link>
+        <Link href="/portal/mal/bygger" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+          <Rad
+            leading={<Icon name="target" size={16} style={{ color: T.mut }} />}
+            title="Legg til målsetning"
+            sub="Sett et resultat- eller prosessmål"
             last
           />
         </Link>

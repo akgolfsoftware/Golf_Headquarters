@@ -109,6 +109,9 @@ export interface WorkbenchV2Actions {
   duplicateWeek?: (weekOffset?: number) => Promise<{ ok: boolean; count?: number; error?: string }>;
   /** G7/fasit: legg inn mal-uke 1 fra en godkjent planmal (coldstart + bibliotek). */
   applyTemplate?: (templateId: string) => Promise<{ ok: boolean; error?: string }>;
+  /** Bølge 3: «Legg til målsetning» i Balanse — kun spiller-siden binder denne
+      (createGoal oppretter på innlogget bruker; coach-siden utelater → skjult). */
+  createGoal?: (input: { type: string; title: string; targetValue?: number | null; targetDate?: string | null }) => Promise<void>;
 }
 
 /* ── Delt dag-pille-rad (7 dager, Man–Søn) ─────────────── */
@@ -296,6 +299,85 @@ export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAks
           </Knapp>
           <Knapp icon="plus" onClick={opprett} disabled={lagrer}>
             {lagrer ? "Oppretter…" : "Opprett økt"}
+          </Knapp>
+        </div>
+      </div>
+    </BunnArk>
+  );
+}
+
+/* ── Legg til målsetning — lett skjema-ark (Bølge 3) ─────────────
+   Regelen «Mål bor i Oversikt, redigeres i Workbench»: spilleren kan sette
+   et mål direkte herfra uten å forlate planleggingen. Full veiviser
+   (/portal/mal/bygger) lenkes for de som vil ha hele løypa. Kun spiller-
+   rollen — createGoal oppretter målet på innlogget bruker. */
+export function NyttMaalArk({ onLukk, onOpprett }: {
+  onLukk: () => void;
+  /** createGoal-wrapper fra siden — holder Sheets fri for Prisma/actions-import. */
+  onOpprett: (input: { type: string; title: string; targetValue?: number | null; targetDate?: string | null }) => Promise<void>;
+}) {
+  const [tittel, setTittel] = useState("");
+  const [verdi, setVerdi] = useState("");
+  const [dato, setDato] = useState("");
+  const [lagrer, setLagrer] = useState(false);
+  const [feil, setFeil] = useState<string | null>(null);
+
+  const opprett = async () => {
+    if (!tittel.trim() || lagrer) return;
+    setLagrer(true);
+    setFeil(null);
+    try {
+      const tall = parseFloat(verdi.replace(",", "."));
+      await onOpprett({
+        type: "FREE_TEXT",
+        title: tittel.trim(),
+        targetValue: Number.isFinite(tall) ? tall : null,
+        targetDate: dato || null,
+      });
+      onLukk();
+    } catch {
+      setFeil("Kunne ikke lagre målet. Prøv igjen.");
+    } finally {
+      setLagrer(false);
+    }
+  };
+
+  return (
+    <BunnArk tittel="Legg til målsetning" under="Målet vises i Mine mål og på Hjem." onLukk={onLukk} laast={lagrer}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 16 }}>
+        <Felt label="Hva vil du oppnå?">
+          <input
+            style={inputStyle}
+            value={tittel}
+            onChange={(e) => setTittel(e.target.value)}
+            placeholder="F.eks. HCP under 5 før sesongslutt"
+            maxLength={500}
+            autoFocus
+          />
+        </Felt>
+        <div style={{ display: "flex", gap: 10 }}>
+          <div style={{ flex: 1 }}>
+            <Felt label="Målverdi (valgfritt)">
+              <input type="text" inputMode="decimal" style={inputStyle} value={verdi} onChange={(e) => setVerdi(e.target.value)} placeholder="F.eks. 5" disabled={lagrer} />
+            </Felt>
+          </div>
+          <div style={{ flex: 1 }}>
+            <Felt label="Frist (valgfritt)">
+              <input type="date" style={inputStyle} value={dato} onChange={(e) => setDato(e.target.value)} disabled={lagrer} />
+            </Felt>
+          </div>
+        </div>
+
+        {feil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down }}>{feil}</span>}
+
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
+          <Link href="/portal/mal/bygger" style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, textDecoration: "none" }}>
+            Full veiviser →
+          </Link>
+          <span style={{ flex: 1 }} />
+          <Knapp ghost onClick={onLukk} disabled={lagrer}>Avbryt</Knapp>
+          <Knapp icon="target" onClick={opprett} disabled={lagrer || !tittel.trim()}>
+            {lagrer ? "Lagrer…" : "Lagre mål"}
           </Knapp>
         </div>
       </div>
