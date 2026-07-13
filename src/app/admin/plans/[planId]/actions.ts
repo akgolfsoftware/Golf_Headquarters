@@ -14,6 +14,11 @@ import type {
   LPhase,
 } from "@/generated/prisma/client";
 import type { PlanTemplatePayload } from "@/app/admin/(legacy)/plans/template-payload";
+import {
+  GENERERT_FRA,
+  deleteV2ForPlanSession,
+  syncV2FromPlanSessionId,
+} from "@/lib/workbench/v2-sync";
 
 type OktData = {
   title: string;
@@ -80,6 +85,7 @@ export async function flyttOkt(sessionId: string, newScheduledAt: Date) {
     where: { id: sessionId },
     data: { scheduledAt: newScheduledAt },
   });
+  await syncV2FromPlanSessionId(sessionId);
 
   await prisma.auditLog.create({
     data: {
@@ -423,6 +429,11 @@ export async function cancelSession(sessionId: string) {
     where: { id: sessionId },
     data: { status: "CANCELLED" },
   });
+  // Speil avlysningen til spillerens live-økt.
+  await prisma.trainingSessionV2.updateMany({
+    where: { generertFra: GENERERT_FRA, generertFraId: sessionId, status: { in: ["PLANNED", "IN_PROGRESS"] } },
+    data: { status: "CANCELLED" },
+  });
 
   await prisma.auditLog.create({
     data: {
@@ -469,6 +480,18 @@ export async function slettPlan(planId: string) {
   const user = await krevAdmin();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
+
+  // Rydd live-speilene FØR cascade-sletting fjerner plan-øktene (ellers
+  // blir spillerens V2-økter foreldreløse og står igjen i Gjør-lista).
+  const okter = await prisma.trainingPlanSession.findMany({
+    where: { planId },
+    select: { id: true },
+  });
+  if (okter.length > 0) {
+    await prisma.trainingSessionV2.deleteMany({
+      where: { generertFra: GENERERT_FRA, generertFraId: { in: okter.map((s) => s.id) } },
+    });
+  }
 
   await prisma.trainingPlan.delete({ where: { id: planId } });
 
@@ -536,6 +559,7 @@ export async function oppdaterOkt(sessionId: string, data: OktData) {
       rationale: data.rationale ?? null,
     },
   });
+  await syncV2FromPlanSessionId(sessionId);
 
   await prisma.auditLog.create({
     data: {
@@ -651,6 +675,7 @@ export async function slettOkt(sessionId: string) {
   }
 
   await prisma.trainingPlanSession.delete({ where: { id: sessionId } });
+  await deleteV2ForPlanSession(sessionId);
 
   await prisma.auditLog.create({
     data: {
@@ -774,6 +799,7 @@ export async function leggTilOkt(input: LeggTilOktInput) {
       drills: drillsCreate.length ? { create: drillsCreate } : undefined,
     },
   });
+  await syncV2FromPlanSessionId(session.id);
 
   await prisma.auditLog.create({
     data: {

@@ -140,6 +140,36 @@ async function syncDrillsToV2(
   });
 }
 
+/**
+ * Synk V2-speilet fra plan-økt-id alene — for mutasjonsflater som ikke har
+ * feltene for hånden (admin/plans, AI-executor, legacy planlegge).
+ */
+export async function syncV2FromPlanSessionId(planSessionId: string): Promise<void> {
+  const s = await prisma.trainingPlanSession.findUnique({
+    where: { id: planSessionId },
+    select: {
+      id: true,
+      title: true,
+      scheduledAt: true,
+      durationMin: true,
+      pyramidArea: true,
+      miljo: true,
+      plan: { select: { userId: true, createdById: true } },
+    },
+  });
+  if (!s) return;
+  await upsertV2ForPlanSession({
+    planSessionId: s.id,
+    playerId: s.plan.userId,
+    title: s.title,
+    scheduledAt: s.scheduledAt,
+    durationMin: s.durationMin,
+    pyramidArea: s.pyramidArea,
+    coachId: s.plan.createdById,
+    miljo: s.miljo,
+  });
+}
+
 /** Slett V2-økt koblet til plan-økt. */
 export async function deleteV2ForPlanSession(planSessionId: string): Promise<void> {
   await prisma.trainingSessionV2.deleteMany({

@@ -8,6 +8,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { syncV2FromPlanSessionId } from "@/lib/workbench/v2-sync";
 import { z } from "zod";
 import type {
   Axis,
@@ -296,6 +297,7 @@ export async function updateSessionTime(formData: FormData): Promise<{
     where: { id: sessionId },
     data: { scheduledAt: new Date(scheduledAt), durationMin },
   });
+  await syncV2FromPlanSessionId(sessionId);
 
   revalidatePath("/portal/planlegge");
   return { ok: true };
@@ -357,6 +359,7 @@ export async function createSession(formData: FormData): Promise<{
     },
     select: { id: true },
   });
+  await syncV2FromPlanSessionId(session.id);
 
   revalidatePath("/portal/planlegge");
   return { ok: true, sessionId: session.id };
@@ -439,6 +442,7 @@ export async function addStandardSessionToCalendar(formData: FormData): Promise<
     },
     select: { id: true },
   });
+  await syncV2FromPlanSessionId(session.id);
 
   revalidatePath("/portal/planlegge");
   return { ok: true, sessionId: session.id };
