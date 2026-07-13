@@ -6,7 +6,7 @@
 // ikke her. Alle feil kastes som vanlige Error med norsk melding.
 
 import { z } from "zod";
-import { Prisma } from "@/generated/prisma/client";
+import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
 import { prisma } from "@/lib/prisma";
 
 // ---------- Input-skjemaer ----------
@@ -127,24 +127,31 @@ export async function executeApprovedTool(
 
       let booking: { id: string; status: string };
       try {
-        booking = await prisma.booking.create({
-          data: {
-            userId: input.playerId,
-            serviceTypeId: service.id,
-            locationId: location.id,
+        // Kollisjonsvern (A-pakken): sjekk + opprettelse i samme transaksjon.
+        booking = await prisma.$transaction(async (tx) => {
+          await sjekkKollisjon(tx, {
+            coachId: service.coachUserId ?? null,
             startAt: start,
             endAt: end,
-            status: "PENDING",
-            notes: input.notes ?? null,
-            priceOre: service.priceOre,
-            coachId: service.coachUserId ?? null,
-          },
-          select: { id: true, status: true },
+          });
+          return tx.booking.create({
+            data: {
+              userId: input.playerId,
+              serviceTypeId: service.id,
+              locationId: location.id,
+              startAt: start,
+              endAt: end,
+              status: "PENDING",
+              notes: input.notes ?? null,
+              priceOre: service.priceOre,
+              coachId: service.coachUserId ?? null,
+            },
+            select: { id: true, status: true },
+          });
         });
       } catch (e) {
-        // P2002: unique constraint — coachen er allerede booket på dette tidspunktet
-        if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
-          throw new Error("Denne timen er allerede booket for denne coachen. Velg et annet tidspunkt.");
+        if (erKollisjonsfeil(e)) {
+          throw new Error(kollisjonsmelding(e));
         }
         throw e;
       }

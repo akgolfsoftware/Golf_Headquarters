@@ -2,12 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { sjekkKollisjon, erKollisjonsfeil } from "@/lib/booking/kollisjonsvern";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { audit } from "@/lib/audit";
 import { pushBookingToCalendar } from "@/lib/google-calendar";
 import { notify } from "@/lib/notifications";
-import { Prisma } from "@/generated/prisma/client";
 
 export type CreditBookingInput = {
   serviceTypeId: string;
@@ -97,6 +97,13 @@ export async function createCreditBooking(
   // ved race condition (count = 0 betyr at noen andre tok siste credit).
   const result = await prisma
     .$transaction(async (tx) => {
+      // Kollisjonsvern (A-pakken): sjekk INNE i transaksjonen med
+      // advisory-lås — atomisk sammen med credit-trekk og opprettelse.
+      await sjekkKollisjon(tx, {
+        coachId: service.coachUserId,
+        startAt,
+        endAt,
+      });
       const updated = await tx.subscription.updateMany({
         where: { id: subscription.id, creditsRemaining: { gt: 0 } },
         data: { creditsRemaining: { decrement: 1 } },
@@ -132,10 +139,7 @@ export async function createCreditBooking(
     .catch((err: unknown) => {
       // Tap i et samtidighets-race fanges av unique-constraintet (P2002).
       // Transaksjonen rulles tilbake, så crediten blir IKKE trukket.
-      if (
-        err instanceof Prisma.PrismaClientKnownRequestError &&
-        err.code === "P2002"
-      ) {
+      if (erKollisjonsfeil(err)) {
         throw new Error(
           "Tiden ble nettopp tatt av noen andre. Velg en annen tid.",
         );

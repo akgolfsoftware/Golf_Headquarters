@@ -797,9 +797,12 @@ model Booking {
   // Performance: hot path — kalender-queries filtrerer på status + tidsvindu
   // (booking.akgolf.no kalender, kapasitet-graf, admin/bookinger).
   @@index([startAt, status])
-  // S-12: hindrer dobbel-booking på DB-nivå — samme coach, samme startAt, samme tjenestetype.
-  // P2002-feilen i booking actions.ts håndterer dette for brukeren.
-  @@unique([coachId, startAt, serviceTypeId], name: "booking_no_double_slot")
+  // Dobbeltbooking-vern (A-pakken 2026-07-13): EXCLUSION-constraintet
+  // booking_coach_no_overlap i Postgres (btree_gist + tsrange) avviser
+  // OVERLAPPENDE ikke-avlyste bookinger per coach — sterkere enn den gamle
+  // eksakt-likhet-@@unique (droppet). Prisma kan ikke uttrykke EXCLUSION,
+  // så vernet lever i DB + lib/booking/kollisjonsvern.ts (fasilitets-
+  // kapasitet håndteres der med advisory-lås + telling).
   @@map("bookings")
 }
 

@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
 import { revalidatePath } from "next/cache";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
@@ -235,13 +236,29 @@ export async function rescheduleBooking(input: {
     newStart.getTime() + booking.serviceType.durationMin * 60_000,
   );
 
-  await prisma.booking.update({
-    where: { id: booking.id },
-    data: {
-      startAt: newStart,
-      endAt: newEnd,
-    },
-  });
+  try {
+    await prisma.$transaction(async (tx) => {
+      await sjekkKollisjon(tx, {
+        coachId: input.newCoachId ?? booking.coachId,
+        facilityId: booking.facilityId,
+        startAt: newStart,
+        endAt: newEnd,
+        ekskluderBookingId: booking.id,
+      });
+      await tx.booking.update({
+        where: { id: booking.id },
+        data: {
+          startAt: newStart,
+          endAt: newEnd,
+        },
+      });
+    });
+  } catch (e) {
+    if (erKollisjonsfeil(e)) {
+      throw new Error(kollisjonsmelding(e));
+    }
+    throw e;
+  }
 
   // Oppdater Google Calendar-event (push bruker eksisterende googleEventId)
   if (booking.googleEventId) {

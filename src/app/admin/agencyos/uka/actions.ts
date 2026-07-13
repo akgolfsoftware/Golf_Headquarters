@@ -9,6 +9,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
 
 const FlyttSchema = z.object({
   bookingId: z.string().min(1),
@@ -27,7 +28,7 @@ export async function flyttBookingTilDag(
 
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },
-    select: { id: true, startAt: true, endAt: true, status: true },
+    select: { id: true, startAt: true, endAt: true, status: true, coachId: true, facilityId: true },
   });
   if (!booking) return { ok: false, error: "Booking ikke funnet." };
   if (booking.status === "COMPLETED" || booking.status === "CANCELLED") {
@@ -43,10 +44,24 @@ export async function flyttBookingTilDag(
   const varighetMs = booking.endAt.getTime() - booking.startAt.getTime();
   const nyEnd = new Date(nyStart.getTime() + varighetMs);
 
-  await prisma.booking.update({
-    where: { id: booking.id },
-    data: { startAt: nyStart, endAt: nyEnd },
-  });
+  try {
+    await prisma.$transaction(async (tx) => {
+      await sjekkKollisjon(tx, {
+        coachId: booking.coachId,
+        facilityId: booking.facilityId,
+        startAt: nyStart,
+        endAt: nyEnd,
+        ekskluderBookingId: booking.id,
+      });
+      await tx.booking.update({
+        where: { id: booking.id },
+        data: { startAt: nyStart, endAt: nyEnd },
+      });
+    });
+  } catch (e) {
+    if (erKollisjonsfeil(e)) return { ok: false, error: kollisjonsmelding(e) };
+    throw e;
+  }
 
   revalidatePath("/admin/agencyos/uka");
   revalidatePath("/admin/kalender");
