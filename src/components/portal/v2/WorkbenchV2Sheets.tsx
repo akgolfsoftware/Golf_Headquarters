@@ -67,6 +67,10 @@ export interface WorkbenchV2Actions {
     hour: number;
     minute: number;
     weekOffset?: number;
+    /** AK-formel fra økt-arket (renses server-side). */
+    akFormel?: { lFase?: string | null; miljo?: string | null };
+    /** Driller fra økt-arket — samme kontrakt som updateSession (replace). */
+    drills?: import("@/lib/workbench/session-update").OktDrillInput[];
   }) => Promise<{ ok: boolean; sessionId?: string; error?: string }>;
   moveSession: (
     sessionId: string,
@@ -187,7 +191,19 @@ const inputStyle: CSSProperties = {
   outline: "none",
 };
 
-/* ── Ny økt — skjema-ark ────────────────────────────────── */
+/* ── Felles økt-ark — «Ny økt» og «Rediger økt» er LIKE (Anders, 2026-07-13) ──
+   Samme felter i begge moduser: tittel, dag, tid, varighet, pyramide-område,
+   L-fase, miljø og driller (søk i banken + minutter/sett/reps/nivå). */
+
+export type OktArkDrill = {
+  exerciseId?: string;
+  navn: string;
+  minutter: number | null;
+  sett: number | null;
+  reps: number | null;
+  nivaa: "uten" | "lav" | "vanlig";
+};
+
 export interface NyOktInput {
   title: string;
   dayIndex: number;
@@ -195,6 +211,9 @@ export interface NyOktInput {
   hour: number;
   minute: number;
   durMin: number;
+  lFase: string | null;
+  miljo: string | null;
+  drills: OktArkDrill[];
 }
 export interface NyOktArkProps {
   defaultDayIndex: number;
@@ -204,134 +223,231 @@ export interface NyOktArkProps {
   defaultTitle?: string;
   defaultAkse?: AkseKey;
   defaultDurMin?: number;
+  /** Biblioteks-øktas driller — vises og kan justeres før opprettelse. */
+  defaultDrills?: OktArkDrill[];
   onLukk: () => void;
   onOpprett: (input: NyOktInput) => Promise<{ ok: boolean; error?: string }>;
 }
-export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAkse, defaultDurMin, onLukk, onOpprett }: NyOktArkProps) {
-  const [title, setTitle] = useState(defaultTitle ?? "");
-  const [dayIndex, setDayIndex] = useState(defaultDayIndex);
-  const [akse, setAkse] = useState<AkseKey>(defaultAkse ?? "TEK");
-  const [tid, setTid] = useState(defaultTid ?? "09:00");
-  const [durMin, setDurMin] = useState(defaultDurMin ?? 60);
+
+export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAkse, defaultDurMin, defaultDrills, onLukk, onOpprett }: NyOktArkProps) {
+  return (
+    <OktArkSkjema
+      overskrift="Ny økt"
+      submitLabel="Opprett økt"
+      lagrerLabel="Oppretter…"
+      submitIcon="plus"
+      initial={{
+        title: defaultTitle ?? "",
+        dayIndex: defaultDayIndex,
+        tid: defaultTid ?? "09:00",
+        durMin: defaultDurMin ?? 60,
+        akse: defaultAkse ?? "TEK",
+        lFase: null,
+        miljo: null,
+        drills: defaultDrills ?? [],
+      }}
+      tittelPlaceholder="F.eks. Wedge 60–100 m"
+      onLukk={onLukk}
+      onSubmit={(s) =>
+        onOpprett({
+          title: s.title.trim() || "Ny økt",
+          dayIndex: s.dayIndex,
+          akse: s.akse,
+          hour: s.hour,
+          minute: s.minute,
+          durMin: s.durMin,
+          lFase: s.lFase,
+          miljo: s.miljo,
+          drills: s.drills,
+        })
+      }
+    />
+  );
+}
+
+type OktArkState = {
+  title: string;
+  dayIndex: number;
+  tid: string;
+  durMin: number;
+  akse: AkseKey;
+  lFase: string | null;
+  miljo: string | null;
+  drills: OktArkDrill[];
+};
+
+const L_FASER = ["L_KROPP", "L_ARM", "L_KOLLE", "L_BALL", "L_AUTO"] as const;
+const MILJOER = ["M0", "M1", "M2", "M3", "M4", "M5"] as const;
+
+function OktArkSkjema({
+  overskrift,
+  submitLabel,
+  lagrerLabel,
+  submitIcon,
+  initial,
+  tittelPlaceholder,
+  onLukk,
+  onSubmit,
+}: {
+  overskrift: string;
+  submitLabel: string;
+  lagrerLabel: string;
+  submitIcon: "plus" | "check";
+  initial: OktArkState;
+  tittelPlaceholder?: string;
+  onLukk: () => void;
+  onSubmit: (state: OktArkState & { hour: number; minute: number }) => Promise<{ ok: boolean; error?: string }>;
+}) {
+  const [title, setTitle] = useState(initial.title);
+  const [dayIndex, setDayIndex] = useState(initial.dayIndex);
+  const [tid, setTid] = useState(initial.tid);
+  const [durMin, setDurMin] = useState(initial.durMin);
+  const [akse, setAkse] = useState<AkseKey>(initial.akse);
+  const [lFase, setLFase] = useState<string | null>(initial.lFase);
+  const [miljo, setMiljo] = useState<string | null>(initial.miljo);
+  const [drills, setDrills] = useState<OktArkDrill[]>(initial.drills);
+  const [drillSok, setDrillSok] = useState("");
+  const [drillTreff, setDrillTreff] = useState<{ id: string; name: string; pyramidArea: string }[]>([]);
   const [lagrer, setLagrer] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
 
-  const opprett = async () => {
+  useEffect(() => {
+    const q = drillSok.trim();
+    const t = window.setTimeout(() => {
+      if (q.length < 2) { setDrillTreff([]); return; }
+      sokOvelser(q, akse).then(setDrillTreff).catch(() => setDrillTreff([]));
+    }, q.length < 2 ? 0 : 250);
+    return () => window.clearTimeout(t);
+  }, [drillSok, akse]);
+
+  const sykleLFase = () => {
+    const i = lFase ? L_FASER.indexOf(lFase as (typeof L_FASER)[number]) : -1;
+    setLFase(i === L_FASER.length - 1 ? null : L_FASER[i + 1]);
+  };
+  const sykleMiljo = () => {
+    const i = miljo ? MILJOER.indexOf(miljo as (typeof MILJOER)[number]) : -1;
+    setMiljo(i === MILJOER.length - 1 ? null : MILJOER[i + 1]);
+  };
+  const sykleAkse = () => {
+    const i = AKSER.findIndex((a) => a.v === akse);
+    setAkse(AKSER[(i + 1) % AKSER.length].v);
+  };
+  const akseLabel = AKSER.find((a) => a.v === akse)?.l ?? akse;
+
+  const submit = async () => {
+    if (lagrer) return;
     const [hStr, mStr] = tid.split(":");
     const hour = Math.max(0, Math.min(23, Number(hStr) || 0));
     const minute = Math.max(0, Math.min(59, Number(mStr) || 0));
     setLagrer(true);
     setFeil(null);
-    const res = await onOpprett({ title: title.trim() || "Ny økt", dayIndex, akse, hour, minute, durMin });
+    const res = await onSubmit({ title, dayIndex, tid, durMin: Math.max(5, Math.min(480, durMin)), akse, lFase, miljo, drills, hour, minute });
     setLagrer(false);
-    if (!res.ok) setFeil(res.error ?? "Kunne ikke opprette økten.");
+    if (!res.ok) setFeil(res.error ?? "Kunne ikke lagre økten.");
   };
 
   return (
-    <div
-      style={{
-        position: "fixed", inset: 0, zIndex: 70, display: "flex",
-        alignItems: "center", justifyContent: "center", padding: 16,
-      }}
-    >
-      <div
-        onClick={lagrer ? undefined : onLukk}
-        style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }}
-      />
-      <div
-        style={{
-          position: "relative", width: "min(420px, 100%)", maxHeight: "88vh", overflowY: "auto",
-          background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px",
-          boxShadow: "0 24px 60px rgba(0,0,0,0.5)",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
-          <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>
-            Ny økt
-          </h2>
-          <button
-            type="button"
-            onClick={onLukk}
-            disabled={lagrer}
-            style={{
-              appearance: "none", cursor: "pointer", width: 28, height: 28, borderRadius: 8,
-              background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex",
-              alignItems: "center", justifyContent: "center", flex: "none",
-            }}
-          >
-            <Icon name="x" size={14} style={{ color: T.fg2 }} />
+    <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+      <div onClick={lagrer ? undefined : onLukk} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
+      <div role="dialog" aria-label={overskrift} style={{ position: "relative", width: "min(420px, 100%)", maxHeight: "88vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>{overskrift}</h2>
+          <button onClick={onLukk} className="v2-press" aria-label="Lukk" style={{ background: T.panel3, border: `1px solid ${T.border}`, borderRadius: 9, color: T.mut, cursor: "pointer", padding: 6, display: "inline-flex" }}>
+            <Icon name="x" size={14} />
           </button>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 16 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 14 }}>
           <Felt label="Tittel">
-            <input
-              style={inputStyle}
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="F.eks. Wedge 60–100 m"
-              maxLength={120}
-            />
+            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={tittelPlaceholder} maxLength={120} style={inputStyle} />
           </Felt>
           <Felt label="Dag">
             <DagPillRow value={dayIndex} onChange={setDayIndex} disabled={lagrer} />
           </Felt>
-          <div style={{ display: "flex", gap: 10 }}>
-            <div style={{ flex: 1 }}>
-              <Felt label="Klokkeslett">
-                <input type="time" style={inputStyle} value={tid} onChange={(e) => setTid(e.target.value)} disabled={lagrer} />
-              </Felt>
-            </div>
-            <div style={{ flex: 1 }}>
-              <Felt label="Varighet (min)">
-                <input
-                  type="number"
-                  min={5}
-                  max={480}
-                  step={5}
-                  style={inputStyle}
-                  value={durMin}
-                  disabled={lagrer}
-                  onChange={(e) => setDurMin(Math.max(5, Math.min(480, Number(e.target.value) || 60)))}
-                />
-              </Felt>
-            </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            <Felt label="Klokkeslett">
+              <input type="time" value={tid} onChange={(e) => setTid(e.target.value)} style={inputStyle} />
+            </Felt>
+            <Felt label="Varighet (min)">
+              <input type="number" min={5} max={480} step={5} value={durMin} onChange={(e) => setDurMin(Number(e.target.value) || 60)} style={inputStyle} />
+            </Felt>
           </div>
-          <Felt label="Område">
-            <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-              {AKSER.map((a) => {
-                const on = akse === a.v;
-                return (
-                  <button
-                    key={a.v}
-                    type="button"
-                    disabled={lagrer}
-                    onClick={() => setAkse(a.v)}
-                    style={{
-                      appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6,
-                      padding: "7px 11px", borderRadius: 9999, border: `1px solid ${on ? "transparent" : T.border}`,
-                      background: on ? T.lime : T.panel2, color: on ? T.onLime : T.fg2,
-                      fontFamily: T.ui, fontSize: 11.5, fontWeight: 600,
-                    }}
-                  >
-                    <span style={{ width: 6, height: 6, borderRadius: 9999, background: on ? T.onLime : T.ax[a.v] }} />
-                    {a.l}
-                  </button>
-                );
-              })}
-            </div>
+          <Felt label="Område — trykk for å bytte">
+            <button
+              type="button"
+              onClick={sykleAkse}
+              className="v2-press v2-focus"
+              data-wb-syklechip
+              aria-label={`Pyramideområde: ${akseLabel}. Trykk for neste.`}
+              style={{ appearance: "none", display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", padding: "9px 14px", borderRadius: 9999, background: `color-mix(in srgb, ${T.ax[akse]} 14%, ${T.panel2})`, border: `1px solid color-mix(in srgb, ${T.ax[akse]} 55%, transparent)`, cursor: "pointer", transition: "all 140ms" }}
+            >
+              <span style={{ width: 8, height: 8, borderRadius: 9999, background: T.ax[akse] }} />
+              <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 700, color: T.fg }}>{akseLabel}</span>
+              <Icon name="refresh-cw" size={12} style={{ color: T.mut }} />
+            </button>
           </Felt>
 
-          {feil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down }}>{feil}</span>}
-
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 4 }}>
-            <Knapp ghost onClick={onLukk} disabled={lagrer}>
-              Avbryt
-            </Knapp>
-            <Knapp icon="plus" onClick={opprett} disabled={lagrer}>
-              {lagrer ? "Oppretter…" : "Opprett økt"}
-            </Knapp>
+          {/* 8c.7: AK-formel — sykle-chips (valgfritt, aldri sperre) */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            <Felt label="L-fase — trykk for å bytte">
+              <button type="button" onClick={sykleLFase} className="v2-press v2-focus" data-wb-lfasechip data-klar style={chipStil(!!lFase)}>
+                {lFase ? lFase.replace("L_", "L-").replace("KROPP", "Kropp").replace("ARM", "Arm").replace("KOLLE", "Kølle").replace("BALL", "Ball").replace("AUTO", "Auto") : "Ikke satt"}
+                <Icon name="refresh-cw" size={11} style={{ color: T.mut }} />
+              </button>
+            </Felt>
+            <Felt label="Miljø — trykk for å bytte">
+              <button type="button" onClick={sykleMiljo} className="v2-press v2-focus" data-wb-miljochip style={chipStil(!!miljo)}>
+                {miljo ?? "Ikke satt"}
+                <Icon name="refresh-cw" size={11} style={{ color: T.mut }} />
+              </button>
+            </Felt>
           </div>
+
+          {/* 8c.7: driller i økta — fra banken eller egen */}
+          <Felt label={`Driller (${drills.length})`}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+              {drills.map((d, i) => (
+                <div key={i} data-wb-drillrad style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}` }}>
+                  <span style={{ flex: 1, minWidth: 0, fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.navn}</span>
+                  <input type="number" min={1} max={240} placeholder="min" value={d.minutter ?? ""} onChange={(e) => setDrills(drills.map((x, j) => j === i ? { ...x, minutter: e.target.value ? Number(e.target.value) : null } : x))} style={{ ...inputStyle, width: 56, padding: "5px 7px", fontSize: 11 }} aria-label="Minutter" />
+                  <input type="number" min={1} max={50} placeholder="sett" value={d.sett ?? ""} onChange={(e) => setDrills(drills.map((x, j) => j === i ? { ...x, sett: e.target.value ? Number(e.target.value) : null } : x))} style={{ ...inputStyle, width: 50, padding: "5px 7px", fontSize: 11 }} aria-label="Sett" />
+                  <input type="number" min={1} max={500} placeholder="reps" value={d.reps ?? ""} onChange={(e) => setDrills(drills.map((x, j) => j === i ? { ...x, reps: e.target.value ? Number(e.target.value) : null } : x))} style={{ ...inputStyle, width: 54, padding: "5px 7px", fontSize: 11 }} aria-label="Reps" />
+                  <button type="button" onClick={() => setDrills(drills.map((x, j) => j === i ? { ...x, nivaa: x.nivaa === "uten" ? "lav" : x.nivaa === "lav" ? "vanlig" : "uten" } : x))} className="v2-press" title="Intensitet — trykk for å bytte" style={{ appearance: "none", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, padding: "5px 8px", borderRadius: 9999, background: T.panel3, border: `1px solid ${T.borderS}`, color: T.fg2, cursor: "pointer", flex: "none" }}>
+                    {d.nivaa === "uten" ? "uten ball" : d.nivaa === "lav" ? "lav fart" : "vanlig"}
+                  </button>
+                  <button type="button" onClick={() => setDrills(drills.filter((_, j) => j !== i))} className="v2-press" aria-label="Fjern drill" style={{ appearance: "none", background: "transparent", border: 0, color: T.mut, cursor: "pointer", padding: 2, flex: "none" }}>
+                    <Icon name="x" size={13} />
+                  </button>
+                </div>
+              ))}
+              <input
+                value={drillSok}
+                onChange={(e) => setDrillSok(e.target.value)}
+                placeholder="Legg til drill — søk i øvelsesbanken…"
+                style={inputStyle}
+                data-wb-drillsok
+              />
+              {drillSok.trim().length >= 2 && (
+                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                  {drillTreff.map((t) => (
+                    <button key={t.id} type="button" className="v2-press" onClick={() => { setDrills([...drills, { exerciseId: t.id, navn: t.name, minutter: null, sett: null, reps: null, nivaa: "vanlig" }]); setDrillSok(""); }} style={{ appearance: "none", textAlign: "left", padding: "7px 10px", borderRadius: 9, background: T.panel2, border: `1px dashed ${T.borderS}`, color: T.fg, fontFamily: T.ui, fontSize: 12, cursor: "pointer" }}>
+                      + {t.name} <span style={{ color: T.mut, fontFamily: T.mono, fontSize: 9 }}>({t.pyramidArea})</span>
+                    </button>
+                  ))}
+                  <button type="button" className="v2-press" data-wb-egen-drill onClick={() => { setDrills([...drills, { navn: drillSok.trim(), minutter: null, sett: null, reps: null, nivaa: "vanlig" }]); setDrillSok(""); }} style={{ appearance: "none", textAlign: "left", padding: "7px 10px", borderRadius: 9, background: `color-mix(in srgb, ${T.lime} 8%, ${T.panel2})`, border: `1px dashed color-mix(in srgb, ${T.lime} 40%, transparent)`, color: T.fg, fontFamily: T.ui, fontSize: 12, cursor: "pointer" }}>
+                    + Lag egen drill: «{drillSok.trim()}» (lagres i banken)
+                  </button>
+                </div>
+              )}
+            </div>
+          </Felt>
+        </div>
+
+        {feil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down, display: "block", marginTop: 10 }}>{feil}</span>}
+
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
+          <Knapp ghost onClick={onLukk} disabled={lagrer}>Avbryt</Knapp>
+          <Knapp icon={submitIcon} onClick={submit} disabled={lagrer}>{lagrer ? lagrerLabel : submitLabel}</Knapp>
         </div>
       </div>
     </div>
@@ -779,207 +895,79 @@ export function RedigerOktArk({ okt, dag, weekOffset, actions, onLukk, onEndret 
   onLukk: () => void;
   onEndret: () => void;
 }) {
-  const [title, setTitle] = useState(okt.ttl);
-  const [dayIndex, setDayIndex] = useState(dag);
-  const [tid, setTid] = useState(toKl(okt.h, okt.m));
-  const [durMin, setDurMin] = useState(okt.durMin);
-  const [akse, setAkse] = useState<AkseKey>((okt.ax?.toUpperCase() as AkseKey) ?? "TEK");
-  const [lagrer, setLagrer] = useState(false);
-  const [feil, setFeil] = useState<string | null>(null);
-
-  // 8c.7: AK-formel + driller (økt-komponisten). Nåtilstand lastes ved åpning.
-  const [lFase, setLFase] = useState<string | null>(null);
-  const [miljo, setMiljo] = useState<string | null>(null);
-  const [drills, setDrills] = useState<{ exerciseId?: string; navn: string; minutter: number | null; sett: number | null; reps: number | null; nivaa: "uten" | "lav" | "vanlig" }[]>([]);
-  const [drillSok, setDrillSok] = useState("");
-  const [drillTreff, setDrillTreff] = useState<{ id: string; name: string; pyramidArea: string }[]>([]);
-  // komponistKlar: hent-svaret må ALDRI overskrive noe brukeren alt har trykket
-  // på (race ved treg server) — chips/drills er låst til nåtilstanden er inne.
-  const [komponistKlar, setKomponistKlar] = useState(false);
+  // Nåtilstanden (AK-formel + driller) lastes FØR skjemaet vises, så
+  // hent-svaret aldri kan overskrive noe brukeren har trykket på (race-vernet
+  // komponistKlar er dermed unødvendig — skjemaet starter komplett).
+  const [initial, setInitial] = useState<OktArkState | null>(null);
   useEffect(() => {
     if (!okt.id) return;
     let aktiv = true;
     hentOktKomponist(okt.id).then((res) => {
       if (!aktiv) return;
-      if (res.ok) {
-        setLFase(res.lFase ?? null);
-        setMiljo(res.miljo ?? null);
-        setDrills((res.drills ?? []).map((d) => ({ ...d })));
-      }
-      setKomponistKlar(true);
+      setInitial({
+        title: okt.ttl,
+        dayIndex: dag,
+        tid: toKl(okt.h, okt.m),
+        durMin: okt.durMin,
+        akse: (okt.ax?.toUpperCase() as AkseKey) ?? "TEK",
+        lFase: res.ok ? (res.lFase ?? null) : null,
+        miljo: res.ok ? (res.miljo ?? null) : null,
+        drills: res.ok ? (res.drills ?? []).map((d) => ({ ...d })) : [],
+      });
     });
     return () => { aktiv = false; };
-  }, [okt.id]);
-  useEffect(() => {
-    const q = drillSok.trim();
-    const t = window.setTimeout(() => {
-      if (q.length < 2) { setDrillTreff([]); return; }
-      sokOvelser(q, akse).then(setDrillTreff).catch(() => setDrillTreff([]));
-    }, q.length < 2 ? 0 : 250);
-    return () => window.clearTimeout(t);
-  }, [drillSok, akse]);
+  }, [okt, dag]);
 
-  const L_FASER = ["L_KROPP", "L_ARM", "L_KOLLE", "L_BALL", "L_AUTO"] as const;
-  const MILJOER = ["M0", "M1", "M2", "M3", "M4", "M5"] as const;
-  const sykleLFase = () => {
-    const i = lFase ? L_FASER.indexOf(lFase as (typeof L_FASER)[number]) : -1;
-    setLFase(i === L_FASER.length - 1 ? null : L_FASER[i + 1]);
-  };
-  const sykleMiljo = () => {
-    const i = miljo ? MILJOER.indexOf(miljo as (typeof MILJOER)[number]) : -1;
-    setMiljo(i === MILJOER.length - 1 ? null : MILJOER[i + 1]);
-  };
-
-  const sykleAkse = () => {
-    const i = AKSER.findIndex((a) => a.v === akse);
-    setAkse(AKSER[(i + 1) % AKSER.length].v);
-  };
-  const akseLabel = AKSER.find((a) => a.v === akse)?.l ?? akse;
-
-  const lagre = async () => {
-    if (!okt.id || !actions.updateSession || lagrer) return;
-    setLagrer(true);
-    setFeil(null);
-    const [hStr, mStr] = tid.split(":");
-    const res = await actions.updateSession(okt.id, {
-      title: title.trim() || okt.ttl,
-      pyramidArea: akse,
-      hour: Math.max(0, Math.min(23, Number(hStr) || 0)),
-      minute: Math.max(0, Math.min(59, Number(mStr) || 0)),
-      durationMin: Math.max(5, Math.min(480, durMin)),
-      ...(komponistKlar ? { lFase: (lFase ?? null) as never, miljo: (miljo ?? null) as never } : {}),
-      ...(komponistKlar ? {} : { drills: undefined }),
-      drills: !komponistKlar ? undefined : drills.map((d) => ({
-        exerciseId: d.exerciseId,
-        nyNavn: d.exerciseId ? undefined : d.navn,
-        nyPyramidArea: d.exerciseId ? undefined : akse,
-        minutter: d.minutter,
-        sett: d.sett,
-        reps: d.reps,
-        nivaa: d.nivaa,
-      })),
-    });
-    if (res.ok && dayIndex !== dag) {
-      const flytt = await actions.moveSession(okt.id, dayIndex, weekOffset);
-      if (!flytt.ok) {
-        setLagrer(false);
-        setFeil(flytt.error ?? "Endringene ble lagret, men flytting feilet.");
-        return;
-      }
-    }
-    setLagrer(false);
-    if (res.ok) {
-      onLukk();
-      onEndret();
-    } else {
-      setFeil(res.error ?? "Kunne ikke lagre endringene.");
-    }
-  };
-
-  return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-      <div onClick={lagrer ? undefined : onLukk} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
-      <div role="dialog" aria-label="Rediger økt" style={{ position: "relative", width: "min(420px, 100%)", maxHeight: "88vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>Rediger økt</h2>
-          <button onClick={onLukk} className="v2-press" aria-label="Lukk" style={{ background: T.panel3, border: `1px solid ${T.border}`, borderRadius: 9, color: T.mut, cursor: "pointer", padding: 6, display: "inline-flex" }}>
-            <Icon name="x" size={14} />
-          </button>
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 14 }}>
-          <Felt label="Tittel">
-            <input value={title} onChange={(e) => setTitle(e.target.value)} style={inputStyle} />
-          </Felt>
-          <Felt label="Dag">
-            <DagPillRow value={dayIndex} onChange={setDayIndex} disabled={lagrer} />
-          </Felt>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            <Felt label="Klokkeslett">
-              <input type="time" value={tid} onChange={(e) => setTid(e.target.value)} style={inputStyle} />
-            </Felt>
-            <Felt label="Varighet (min)">
-              <input type="number" min={5} max={480} step={5} value={durMin} onChange={(e) => setDurMin(Number(e.target.value) || 60)} style={inputStyle} />
-            </Felt>
-          </div>
-          <Felt label="Område — trykk for å bytte">
-            <button
-              type="button"
-              onClick={sykleAkse}
-              className="v2-press v2-focus"
-              data-wb-syklechip
-              aria-label={`Pyramideområde: ${akseLabel}. Trykk for neste.`}
-              style={{ appearance: "none", display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", padding: "9px 14px", borderRadius: 9999, background: `color-mix(in srgb, ${T.ax[akse]} 14%, ${T.panel2})`, border: `1px solid color-mix(in srgb, ${T.ax[akse]} 55%, transparent)`, cursor: "pointer", transition: "all 140ms" }}
-            >
-              <span style={{ width: 8, height: 8, borderRadius: 9999, background: T.ax[akse] }} />
-              <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 700, color: T.fg }}>{akseLabel}</span>
-              <Icon name="refresh-cw" size={12} style={{ color: T.mut }} />
-            </button>
-          </Felt>
-
-          {/* 8c.7: AK-formel — sykle-chips (valgfritt, aldri sperre) */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            <Felt label="L-fase — trykk for å bytte">
-              <button type="button" onClick={sykleLFase} disabled={!komponistKlar} className="v2-press v2-focus" data-wb-lfasechip data-klar={komponistKlar || undefined} style={{ ...chipStil(!!lFase), opacity: komponistKlar ? 1 : 0.5 }}>
-                {lFase ? lFase.replace("L_", "L-").replace("KROPP", "Kropp").replace("ARM", "Arm").replace("KOLLE", "Kølle").replace("BALL", "Ball").replace("AUTO", "Auto") : "Ikke satt"}
-                <Icon name="refresh-cw" size={11} style={{ color: T.mut }} />
-              </button>
-            </Felt>
-            <Felt label="Miljø — trykk for å bytte">
-              <button type="button" onClick={sykleMiljo} disabled={!komponistKlar} className="v2-press v2-focus" data-wb-miljochip style={{ ...chipStil(!!miljo), opacity: komponistKlar ? 1 : 0.5 }}>
-                {miljo ?? "Ikke satt"}
-                <Icon name="refresh-cw" size={11} style={{ color: T.mut }} />
-              </button>
-            </Felt>
-          </div>
-
-          {/* 8c.7: driller i økta — fra banken eller egen */}
-          <Felt label={`Driller (${drills.length})`}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-              {drills.map((d, i) => (
-                <div key={i} data-wb-drillrad style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}` }}>
-                  <span style={{ flex: 1, minWidth: 0, fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.navn}</span>
-                  <input type="number" min={1} max={240} placeholder="min" value={d.minutter ?? ""} onChange={(e) => setDrills(drills.map((x, j) => j === i ? { ...x, minutter: e.target.value ? Number(e.target.value) : null } : x))} style={{ ...inputStyle, width: 56, padding: "5px 7px", fontSize: 11 }} aria-label="Minutter" />
-                  <input type="number" min={1} max={50} placeholder="sett" value={d.sett ?? ""} onChange={(e) => setDrills(drills.map((x, j) => j === i ? { ...x, sett: e.target.value ? Number(e.target.value) : null } : x))} style={{ ...inputStyle, width: 50, padding: "5px 7px", fontSize: 11 }} aria-label="Sett" />
-                  <input type="number" min={1} max={500} placeholder="reps" value={d.reps ?? ""} onChange={(e) => setDrills(drills.map((x, j) => j === i ? { ...x, reps: e.target.value ? Number(e.target.value) : null } : x))} style={{ ...inputStyle, width: 54, padding: "5px 7px", fontSize: 11 }} aria-label="Reps" />
-                  <button type="button" onClick={() => setDrills(drills.map((x, j) => j === i ? { ...x, nivaa: x.nivaa === "uten" ? "lav" : x.nivaa === "lav" ? "vanlig" : "uten" } : x))} className="v2-press" title="Intensitet — trykk for å bytte" style={{ appearance: "none", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, padding: "5px 8px", borderRadius: 9999, background: T.panel3, border: `1px solid ${T.borderS}`, color: T.fg2, cursor: "pointer", flex: "none" }}>
-                    {d.nivaa === "uten" ? "uten ball" : d.nivaa === "lav" ? "lav fart" : "vanlig"}
-                  </button>
-                  <button type="button" onClick={() => setDrills(drills.filter((_, j) => j !== i))} className="v2-press" aria-label="Fjern drill" style={{ appearance: "none", background: "transparent", border: 0, color: T.mut, cursor: "pointer", padding: 2, flex: "none" }}>
-                    <Icon name="x" size={13} />
-                  </button>
-                </div>
-              ))}
-              <input
-                value={drillSok}
-                onChange={(e) => setDrillSok(e.target.value)}
-                placeholder="Legg til drill — søk i øvelsesbanken…"
-                style={inputStyle}
-                data-wb-drillsok
-              />
-              {drillSok.trim().length >= 2 && (
-                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                  {drillTreff.map((t) => (
-                    <button key={t.id} type="button" className="v2-press" onClick={() => { setDrills([...drills, { exerciseId: t.id, navn: t.name, minutter: null, sett: null, reps: null, nivaa: "vanlig" }]); setDrillSok(""); }} style={{ appearance: "none", textAlign: "left", padding: "7px 10px", borderRadius: 9, background: T.panel2, border: `1px dashed ${T.borderS}`, color: T.fg, fontFamily: T.ui, fontSize: 12, cursor: "pointer" }}>
-                      + {t.name} <span style={{ color: T.mut, fontFamily: T.mono, fontSize: 9 }}>({t.pyramidArea})</span>
-                    </button>
-                  ))}
-                  <button type="button" className="v2-press" data-wb-egen-drill onClick={() => { setDrills([...drills, { navn: drillSok.trim(), minutter: null, sett: null, reps: null, nivaa: "vanlig" }]); setDrillSok(""); }} style={{ appearance: "none", textAlign: "left", padding: "7px 10px", borderRadius: 9, background: `color-mix(in srgb, ${T.lime} 8%, ${T.panel2})`, border: `1px dashed color-mix(in srgb, ${T.lime} 40%, transparent)`, color: T.fg, fontFamily: T.ui, fontSize: 12, cursor: "pointer" }}>
-                    + Lag egen drill: «{drillSok.trim()}» (lagres i banken)
-                  </button>
-                </div>
-              )}
-            </div>
-          </Felt>
-        </div>
-
-        {feil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down, display: "block", marginTop: 10 }}>{feil}</span>}
-
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
-          <Knapp ghost onClick={onLukk} disabled={lagrer}>Avbryt</Knapp>
-          <Knapp icon="check" onClick={lagre} disabled={lagrer}>{lagrer ? "Lagrer…" : "Lagre"}</Knapp>
+  if (!initial) {
+    return (
+      <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+        <div onClick={onLukk} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
+        <div role="dialog" aria-label="Rediger økt" style={{ position: "relative", width: "min(420px, 100%)", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+          <span style={{ fontFamily: T.ui, fontSize: 13, color: T.mut }}>Laster økt …</span>
         </div>
       </div>
-    </div>
+    );
+  }
+
+  return (
+    <OktArkSkjema
+      overskrift="Rediger økt"
+      submitLabel="Lagre"
+      lagrerLabel="Lagrer…"
+      submitIcon="check"
+      initial={initial}
+      onLukk={onLukk}
+      onSubmit={async (s) => {
+        if (!okt.id || !actions.updateSession) return { ok: false, error: "Ingen skrivetilgang." };
+        const res = await actions.updateSession(okt.id, {
+          title: s.title.trim() || okt.ttl,
+          pyramidArea: s.akse,
+          hour: s.hour,
+          minute: s.minute,
+          durationMin: s.durMin,
+          lFase: (s.lFase ?? null) as never,
+          miljo: (s.miljo ?? null) as never,
+          drills: s.drills.map((d) => ({
+            exerciseId: d.exerciseId,
+            nyNavn: d.exerciseId ? undefined : d.navn,
+            nyPyramidArea: d.exerciseId ? undefined : s.akse,
+            minutter: d.minutter,
+            sett: d.sett,
+            reps: d.reps,
+            nivaa: d.nivaa,
+          })),
+        });
+        if (!res.ok) return res;
+        if (s.dayIndex !== dag) {
+          const flytt = await actions.moveSession(okt.id, s.dayIndex, weekOffset);
+          if (!flytt.ok) {
+            return { ok: false, error: flytt.error ?? "Endringene ble lagret, men flytting feilet." };
+          }
+        }
+        onLukk();
+        onEndret();
+        return { ok: true };
+      }}
+    />
   );
 }

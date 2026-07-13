@@ -1140,6 +1140,23 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
       hour: input.hour,
       minute: input.minute,
       weekOffset,
+      // Felles økt-ark (2026-07-13): AK-formel + driller følger med fra «Ny økt».
+      ...(input.lFase || input.miljo
+        ? { akFormel: { lFase: input.lFase, miljo: input.miljo } }
+        : {}),
+      ...(input.drills.length > 0
+        ? {
+            drills: input.drills.map((d) => ({
+              exerciseId: d.exerciseId,
+              nyNavn: d.exerciseId ? undefined : d.navn,
+              nyPyramidArea: d.exerciseId ? undefined : input.akse,
+              minutter: d.minutter,
+              sett: d.sett,
+              reps: d.reps,
+              nivaa: d.nivaa,
+            })),
+          }
+        : {}),
     });
     if (res.ok) {
       setNyOktApen(false);
