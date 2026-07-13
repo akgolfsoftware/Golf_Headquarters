@@ -12,6 +12,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
 import type { Tier } from "@/generated/prisma/client";
 
 const NOK = new Intl.NumberFormat("nb-NO");
@@ -122,7 +123,7 @@ export async function getBookingHubData(userId: string): Promise<BookingHubData>
     renewsAtIso: subscription?.currentPeriodEnd?.toISOString() ?? null,
     canUseCredits:
       !!subscription &&
-      subscription.status === "ACTIVE" &&
+      kanBrukeCredits(subscription) &&
       subscription.monthlyCredits > 0,
   };
 
