@@ -11,6 +11,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { VarslerV2, type VarslerV2Data, type VarslerV2Item } from "@/components/portal/v2/VarslerV2";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -91,6 +92,7 @@ export default async function V2VarslerPreviewPage() {
 
   return (
     <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? undefined}>
+      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <VarslerV2 data={data} />
     </V2Shell>
   );

@@ -17,7 +17,7 @@ import { getBriefData, bygBriefSystemPrompt, bygBriefUserPrompt } from "@/lib/ad
 import { anthropicKlient, COACH_MODEL } from "@/lib/anthropic";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
-import { Caps, Tittel, Kort, KpiFlis, StatusPill, CTAPill, TomTilstand, Icon } from "@/components/v2";
+import { Caps, Tittel, Kort, KpiFlis, StatusPill, CTAPill, TomTilstand, Icon, TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -100,6 +100,7 @@ export default async function DagligBrief() {
 
   return (
     <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={coach.name} avatarUrl={coach.avatarUrl}>
+      <TilbakeLenke href="/admin/innboks">Innboks</TilbakeLenke>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {/* Hode */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>

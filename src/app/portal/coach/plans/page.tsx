@@ -14,6 +14,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { CoachPlanerV2, type CoachPlanerData, type PlanKolonne } from "@/components/portal/v2/CoachPlanerV2";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -70,6 +71,7 @@ export default async function V2CoachPlanerPreviewPage() {
 
   return (
     <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
       <CoachPlanerV2 data={data} />
     </V2Shell>
   );

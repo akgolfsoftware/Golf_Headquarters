@@ -160,6 +160,10 @@
     {
       "path": "/api/cron/lead-oppfolging",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/wagr-sync",
+      "schedule": "15 6 * * 3"
     }
   ],
   "regions": [

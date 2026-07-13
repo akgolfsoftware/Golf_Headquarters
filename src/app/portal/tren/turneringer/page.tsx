@@ -12,6 +12,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TurneringerV2 } from "@/components/portal/v2/TurneringerV2";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -46,6 +47,7 @@ export default async function V2TurneringerPreviewPage() {
 
   return (
     <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
       <TurneringerV2 data={{ rader, aar }} />
     </V2Shell>
   );

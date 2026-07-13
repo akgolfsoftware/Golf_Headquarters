@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { stripeKlient } from "@/lib/stripe";
@@ -109,7 +110,22 @@ export async function createBookingCheckout(
       notes: data.notes?.trim() || null,
     };
 
-    const booking = await prisma.booking.create({ data: bookingData });
+    let booking;
+    try {
+      booking = await prisma.$transaction(async (tx) => {
+        await sjekkKollisjon(tx, {
+          coachId: bookingData.coachId,
+          startAt,
+          endAt,
+        });
+        return tx.booking.create({ data: bookingData });
+      });
+    } catch (e) {
+      if (erKollisjonsfeil(e)) {
+        return { ok: false, error: kollisjonsmelding(e) };
+      }
+      throw e;
+    }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf-hq.vercel.app";
     const stripe = stripeKlient();

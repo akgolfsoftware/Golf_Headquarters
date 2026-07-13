@@ -124,7 +124,7 @@ export async function POST(req: Request) {
     // svarer (uten dette stopper streamText etter første tool-call).
     stopWhen: stepCountIs(5),
     maxRetries: 2,
-    onFinish: async ({ text, usage, toolCalls, toolResults }) => {
+    onFinish: async ({ text, usage, toolCalls, toolResults, steps }) => {
       if (!conversationId) return;
       try {
         await prisma.caddieMessage.create({
@@ -143,6 +143,40 @@ export async function POST(req: Request) {
       } catch (err) {
         // Persistering må aldri ta ned stream-responsen — logg og fortsett.
         console.error("[caddie] kunne ikke persistere assistant-melding", err);
+      }
+
+      // A2: persister hvert write-forslag (needsApproval) som CaddieDraft
+      // (PENDING) slik at det overlever samtalen og dukker opp i A1-køen på
+      // /admin/godkjenninger. toolInput lagres som input+forslag samlet, så
+      // approval-executor har alt den trenger (f.eks. subject/body for
+      // fakturapurring) ved senere utførelse.
+      try {
+        const alleResultater = steps.flatMap((s) => s.toolResults ?? []);
+        for (const r of alleResultater) {
+          const output = r.output as Record<string, unknown> | null | undefined;
+          if (!output || output.needsApproval !== true) continue;
+
+          const finnes = await prisma.caddieDraft.findFirst({
+            where: { toolCallId: r.toolCallId, userId: user.id },
+            select: { id: true },
+          });
+          if (finnes) continue;
+
+          const { needsApproval: _na, type: _t, previewText, ...forslag } = output;
+          await prisma.caddieDraft.create({
+            data: {
+              userId: user.id,
+              conversationId,
+              toolCallId: r.toolCallId,
+              toolName: r.toolName,
+              toolInput: { ...(r.input as Record<string, unknown>), ...forslag } as unknown as object,
+              previewText: typeof previewText === "string" ? previewText : "",
+              status: "PENDING",
+            },
+          });
+        }
+      } catch (err) {
+        console.error("[caddie] kunne ikke persistere utkast", err);
       }
     },
   });

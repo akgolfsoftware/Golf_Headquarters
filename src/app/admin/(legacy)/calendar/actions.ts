@@ -1,7 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { Prisma } from "@/generated/prisma/client";
+import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
+import { pushBookingToCalendar } from "@/lib/google-calendar";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
@@ -82,27 +83,44 @@ export async function opprettOktPaaTid(
 
   let booking: { id: string };
   try {
-    booking = await prisma.booking.create({
-      data: {
-        userId: spiller.id,
-        serviceTypeId: serviceType.id,
-        locationId: location.id,
+    // Kollisjonsvern (A-pakken): coach- og fasilitets-sjekk i samme
+    // transaksjon som opprettelsen — dobbeltbooking er umulig.
+    booking = await prisma.$transaction(async (tx) => {
+      await sjekkKollisjon(tx, {
+        coachId: serviceType.coachUserId ?? null,
         facilityId,
         startAt,
         endAt,
-        status: "CONFIRMED",
-        priceOre: serviceType.priceOre,
-        coachId: serviceType.coachUserId ?? null,
-        notes: data.notater?.trim() || null,
-      },
-      select: { id: true },
+      });
+      return tx.booking.create({
+        data: {
+          userId: spiller.id,
+          serviceTypeId: serviceType.id,
+          locationId: location.id,
+          facilityId,
+          startAt,
+          endAt,
+          status: "CONFIRMED",
+          priceOre: serviceType.priceOre,
+          coachId: serviceType.coachUserId ?? null,
+          notes: data.notater?.trim() || null,
+        },
+        select: { id: true },
+      });
     });
   } catch (e) {
-    // P2002: unique constraint — coachen er allerede booket på dette tidspunktet
-    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
-      throw new Error("Denne timen er allerede booket for denne coachen. Velg et annet tidspunkt.");
+    if (erKollisjonsfeil(e)) {
+      throw new Error(kollisjonsmelding(e));
     }
     throw e;
+  }
+
+  // C8 (booking-trygging): skriv til coachens Google-kalender med én gang —
+  // før hang dette på 15-min-cronen. Best-effort: feil stopper aldri bookingen.
+  try {
+    await pushBookingToCalendar(booking.id);
+  } catch (err) {
+    console.error("[calendar] Google-push feilet for", booking.id, err);
   }
 
   await audit({
@@ -138,7 +156,7 @@ export async function moveSession(
 
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },
-    select: { id: true, startAt: true, endAt: true, status: true },
+    select: { id: true, startAt: true, endAt: true, status: true, coachId: true, facilityId: true },
   });
   if (!booking) return { ok: false, feil: "Booking ikke funnet" };
   if (booking.status === "CANCELLED") {
@@ -153,10 +171,30 @@ export async function moveSession(
   const varighetMs = booking.endAt.getTime() - booking.startAt.getTime();
   const end = new Date(start.getTime() + varighetMs);
 
-  await prisma.booking.update({
-    where: { id: bookingId },
-    data: { startAt: start, endAt: end },
-  });
+  try {
+    await prisma.$transaction(async (tx) => {
+      await sjekkKollisjon(tx, {
+        coachId: booking.coachId,
+        facilityId: booking.facilityId,
+        startAt: start,
+        endAt: end,
+        ekskluderBookingId: bookingId,
+      });
+      await tx.booking.update({
+        where: { id: bookingId },
+        data: { startAt: start, endAt: end },
+      });
+    });
+  } catch (e) {
+    if (erKollisjonsfeil(e)) return { ok: false, feil: kollisjonsmelding(e) };
+    throw e;
+  }
+
+  try {
+    await pushBookingToCalendar(bookingId);
+  } catch (err) {
+    console.error("[calendar] Google-push etter flytting feilet", bookingId, err);
+  }
 
   await audit({
     actorId: aktor.id,

@@ -18,7 +18,9 @@ import { prisma } from "@/lib/prisma";
 import { computeDelta, type PlanContext } from "@/lib/agents/plan-action-executor";
 import { LOW_RISK_ACTION_TYPES } from "@/lib/training/skills";
 import { koTelling } from "@/lib/admin/ko-telling";
+import { caddieDraftTittel } from "@/lib/caddie/draft-labels";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { TilbakeLenke } from "@/components/v2";
 import {
   AdminGodkjenningerV2,
   type AdminGodkjenningerV2Data,
@@ -162,7 +164,7 @@ export default async function V2AdminGodkjenningerPage() {
       where: { status: "PENDING" },
       orderBy: { createdAt: "desc" },
       take: 30,
-      select: { id: true, userId: true, previewText: true, toolName: true, createdAt: true },
+      select: { id: true, userId: true, previewText: true, toolName: true, toolInput: true, createdAt: true },
     }),
     prisma.sessionRequest.findMany({
       where: { status: "PENDING", OR: [{ coachId: user.id }, { coachId: null }] },
@@ -173,9 +175,25 @@ export default async function V2AdminGodkjenningerPage() {
     // FUNN 4: kanonisk kø-telling — samme tall i hodet som på innboks/varsler.
     koTelling(user.id),
   ]);
+  // CaddieDraft.userId er EIEREN (Anders/ADMIN) — spilleren utkastet gjelder
+  // ligger i toolInput (playerId/spillerId). Vis spilleren i køen når den finnes.
+  const draftSpillerId = (toolInput: unknown): string | null => {
+    const inp = toolInput as { playerId?: unknown; spillerId?: unknown } | null;
+    if (typeof inp?.playerId === "string") return inp.playerId;
+    if (typeof inp?.spillerId === "string") return inp.spillerId;
+    return null;
+  };
+  const caddieBrukerIder = [
+    ...new Set(
+      caddieDrafts.flatMap((d) => {
+        const spiller = draftSpillerId(d.toolInput);
+        return spiller ? [d.userId, spiller] : [d.userId];
+      }),
+    ),
+  ];
   const caddieBrukere = new Map(
     (await prisma.user.findMany({
-      where: { id: { in: caddieDrafts.map((d) => d.userId) } },
+      where: { id: { in: caddieBrukerIder } },
       select: { id: true, name: true },
     })).map((u) => [u.id, u.name] as const),
   );
@@ -221,12 +239,14 @@ export default async function V2AdminGodkjenningerPage() {
   );
 
   // A1: caddie- og forespørsel-rader inn i samme kø (kilde-chip skiller).
-  const caddieRows: AdminGodkjenningV2Row[] = caddieDrafts.map((d) => ({
+  const caddieRows: AdminGodkjenningV2Row[] = caddieDrafts.map((d) => {
+    const spillerId = draftSpillerId(d.toolInput) ?? d.userId;
+    return {
     id: d.id,
     actionType: "CADDIE_DRAFT",
-    playerId: d.userId,
-    who: caddieBrukere.get(d.userId) ?? "Spiller",
-    title: `Caddie-utkast · ${d.toolName}`,
+    playerId: spillerId,
+    who: caddieBrukere.get(spillerId) ?? caddieBrukere.get(d.userId) ?? "Spiller",
+    title: caddieDraftTittel(d.toolName),
     detail: d.previewText.slice(0, 200),
     signalKind: null,
     signalValue: null,
@@ -236,7 +256,8 @@ export default async function V2AdminGodkjenningerPage() {
     lowRisk: false,
     kilde: "caddie" as const,
     eksternHref: "/admin/agencyos/caddie/dashbord",
-  }));
+    };
+  });
   const requestRows: AdminGodkjenningV2Row[] = sessionRequests.map((r) => ({
     id: r.id,
     actionType: "SESSION_REQUEST",
@@ -259,6 +280,7 @@ export default async function V2AdminGodkjenningerPage() {
 
   return (
     <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TilbakeLenke href="/admin/innboks">Innboks</TilbakeLenke>
       <AdminGodkjenningerV2 data={data} />
     </V2Shell>
   );

@@ -16,6 +16,7 @@ import { getBookingHubData } from "@/lib/portal-booking/hub-data";
 import { beregnSlotVindu } from "@/lib/portal-booking/slot-vindu";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { BookingV2, type BookingTjeneste, type BookingV2Data } from "@/components/portal/v2/BookingV2";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Book økt · AK Golf (v2)" };
@@ -73,6 +74,7 @@ export default async function V2BookingPreviewPage() {
 
   return (
     <V2Shell nav={PLAYERHQ_NAV} navn={user.name}>
+      <TilbakeLenke href="/portal">Hjem</TilbakeLenke>
       <BookingV2 data={data} />
     </V2Shell>
   );

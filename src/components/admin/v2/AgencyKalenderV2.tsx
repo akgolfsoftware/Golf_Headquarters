@@ -36,6 +36,8 @@ import {
   StatusPill,
   TomTilstand,
   Icon,
+  HurtigOpprett,
+  foreslaTid,
 } from "@/components/v2";
 import { type AkseKey } from "@/lib/v2/tokens";
 import type { KalenderData, KalOkt } from "@/app/admin/kalender/data";
@@ -200,7 +202,7 @@ function SerieMeny({ okt, onClose, mobile }: { okt: KalOkt; onClose: () => void;
 }
 
 /* ── Dag-kolonne (desktop grid-celle) ── */
-function DagKolonne({ dag, onSerieClick, onFlytt, flytterId }: { dag: KalenderData["dager"][number]; onSerieClick: (okt: KalOkt) => void; onFlytt?: (bookingId: string, datoISO: string) => void; flytterId?: string | null }) {
+function DagKolonne({ dag, onSerieClick, onFlytt, flytterId, onTomLuke }: { dag: KalenderData["dager"][number]; onSerieClick: (okt: KalOkt) => void; onFlytt?: (bookingId: string, datoISO: string) => void; flytterId?: string | null; onTomLuke: (datoISO: string, kl: string) => void }) {
   const [over, setOver] = useState(false);
   return (
     <div
@@ -237,17 +239,19 @@ function DagKolonne({ dag, onSerieClick, onFlytt, flytterId }: { dag: KalenderDa
           ),
         )
       )}
-      {/* I1: trykk på tom luke → ny booking med dagen forhåndsutfylt (09:00). */}
-      <Link
-        href={`/admin/bookinger/ny?start=${dag.datoISO}T09:00`}
-        aria-label={`Ny booking ${dag.dag} ${dag.dato}`}
+      {/* I1: trykk på tom luke → hurtigvelger (Ny booking / Ny økt) med tid
+          foreslått etter dagens siste økt (09:00 når dagen er tom). */}
+      <button
+        type="button"
+        onClick={() => onTomLuke(dag.datoISO, foreslaTid(dag.okter[dag.okter.length - 1]?.kl))}
+        aria-label={`Ny booking eller økt ${dag.dag} ${dag.dato}`}
         className="v2-press v2-focus"
-        style={{ flex: 1, minHeight: 44, borderRadius: 10, border: `1px dashed transparent`, display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", color: "transparent" }}
+        style={{ appearance: "none", background: "none", flex: 1, minHeight: 44, borderRadius: 10, border: `1px dashed transparent`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "transparent", padding: 0 }}
         onMouseEnter={(e) => { e.currentTarget.style.borderColor = T.borderS; e.currentTarget.style.color = T.mut; }}
         onMouseLeave={(e) => { e.currentTarget.style.borderColor = "transparent"; e.currentTarget.style.color = "transparent"; }}
       >
         <Icon name="plus" size={14} />
-      </Link>
+      </button>
     </div>
   );
 }
@@ -269,6 +273,9 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   // Hvilken serie-økt (om noen) er valgt — styrer SerieMeny-panelet (kun ekte
   // klikk på en merket serie-blokk åpner det, aldri statisk synlig).
   const [valgtSerieOkt, setValgtSerieOkt] = useState<KalOkt | null>(null);
+  // I1: trykk på tom luke → hurtigvelger (Ny booking / Ny økt) med tid fra luken.
+  const [tomLuke, setTomLuke] = useState<{ dato: string; kl: string } | null>(null);
+  const onTomLuke = (dato: string, kl: string) => setTomLuke({ dato, kl });
 
   // Nav-piler (ekte uke-navigasjon via ?uke=).
   const pil = (href: string, ikon: string, label: string) => (
@@ -375,7 +382,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     kropp = (
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 10 }}>
         {data.dager.map((d, i) => (
-          <DagKolonne key={i} dag={d} onSerieClick={setValgtSerieOkt} onFlytt={onFlytt} flytterId={flytterId} />
+          <DagKolonne key={i} dag={d} onSerieClick={setValgtSerieOkt} onFlytt={onFlytt} flytterId={flytterId} onTomLuke={onTomLuke} />
         ))}
       </div>
     );
@@ -392,6 +399,16 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
             ))}
           </div>
         )}
+        {/* I1: tom luke i dag-visningen → samme hurtigvelger med tid etter siste økt. */}
+        <button
+          type="button"
+          onClick={() => onTomLuke(valgt.datoISO, foreslaTid(valgt.okter[valgt.okter.length - 1]?.kl))}
+          className="v2-press v2-focus"
+          style={{ appearance: "none", cursor: "pointer", marginTop: 10, width: "100%", minHeight: 44, borderRadius: 10, border: `1px dashed ${T.border}`, background: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, color: T.mut, fontFamily: T.ui, fontSize: 12, fontWeight: 600 }}
+        >
+          <Icon name="plus" size={13} />
+          Ny booking eller økt
+        </button>
       </Kort>
     );
   } else {
@@ -410,6 +427,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       {visning === "uke" && serieHint}
       {innsikt}
       {valgtSerieOkt && <SerieMeny okt={valgtSerieOkt} onClose={() => setValgtSerieOkt(null)} />}
+      {tomLuke && <HurtigOpprett dato={tomLuke.dato} klokkeslett={tomLuke.kl} onLukk={() => setTomLuke(null)} />}
     </div>
   );
 }

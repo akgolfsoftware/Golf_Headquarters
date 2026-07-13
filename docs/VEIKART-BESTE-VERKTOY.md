@@ -99,6 +99,32 @@
 > Kun ekte data — ærlige tomtilstander. FUNN: player_swing_videos-tabellen
 > mangler i DB (schema-drift-klasse #3) — swing-video-spørringen venter på
 > kirurgisk migrering (Anders-ja). Playwright: alle 7 faner verifisert.
+> 2026-07-13 · BOOKING-TRYGGING LEVERT (Anders' tre sjekkpunkter før
+> akgolf.no-bytte) — (A) DOBBELTBOOKING UMULIG: Postgres EXCLUSION-vern
+> (btree_gist/tsrange) per coach + fasilitets-kapasitet med advisory-lås
+> i felles lib/booking/kollisjonsvern.ts; alle 7 opprettelses-/flytteveier
+> vernet i transaksjon med klarspråk-melding; gamle eksakt-likhet-indekser
+> droppet (avlyst blokkerer ikke re-booking lenger). Race-testet mot prod:
+> samtidig → én vinner, overlapp/rå insert avvist, kapasitet håndhevet.
+> (B) STRIPE VERIFISERT: live-nøkkel, webhook registrert mot prod (9
+> events), secret satt; NY kortbetaling i spillerportalen for spillere
+> uten pakke (PENDING → Checkout → webhook bekrefter) — kjeden testet mot
+> live Stripe uten betaling. (C) GOOGLE: admin-opprettelse + begge flytte-
+> veier pusher til Google umiddelbart (før: 15-min cron); «Kalender-synk
+> (Google)» inn i Mer-menyen. GJENSTÅR HOS ANDERS: re-koble Google på
+> /admin/settings/calendar (tokens PAUSED siden 23. juni, begge coacher).
+> 2026-07-13 (natt) · WORKFLOW-LEVERANSE (8 subagenter, Anders' bestilling
+> «fortsett resterende plan i workflow og subagents») — SEKS pakker på én
+> økt: (I7) tilbake-lenke på 50 undersider mot logisk forelder; (G1/G3/G4)
+> docs/gdpr/ — datakart mot faktisk skjema, rettighets-status med ærlig
+> gap-liste, personvernerklæring-utkast; (P4) seks hovedflater fikk
+> skjerm-speilede skeletons; (P2) cockpit+stall-loaderne −3 spørringer +
+> select-diett; (I1) tom luke i kalender/Uka → HurtigOpprett med foreslått
+> tid → booking-wizard prefylles; (I5 var alt levert — klarspråk-fiks);
+> (M1) /admin/marketing innholdskalender med marketing_posts-tabell,
+> verifisert i UI; (A2) caddie-forslag persisteres som CaddieDraft og
+> utføres via A1-køen med re-validering — chat-purre-buggen fikset.
+> Alt tsc/lint/build-grønt, committet i 6 pakker.
 > 2026-07-13 (natt) · DESIGN-FIKS-SERIE 2 LEVERT (audit-funn 1/2/4/9) —
 > (1) varsler: lime-flommen borte (per-rad Godta er ghost), mobilrader i
 > to etasjer uten trunkerte navn, 44px touch-mål; (2) godkjenninger:

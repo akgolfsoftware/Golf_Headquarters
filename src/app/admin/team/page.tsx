@@ -14,6 +14,7 @@ import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { TilbakeLenke } from "@/components/v2";
 import {
   AdminTeamV2,
   type AdminTeamV2Data,
@@ -64,6 +65,7 @@ export default async function V2AdminTeamPage() {
 
   return (
     <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
       <AdminTeamV2 data={data} />
     </V2Shell>
   );

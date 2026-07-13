@@ -22,6 +22,7 @@ import {
   type AgentTeamRunView,
 } from "@/components/admin/v2/AdminAgentTeamV2";
 import { ProjectList, type KommandoProjectView } from "@/components/kommando/project-list";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Agent-team · AgencyOS (v2)" };
@@ -90,6 +91,7 @@ export default async function V2AdminAgentTeamPage() {
 
   return (
     <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TilbakeLenke href="/admin/agents">AI-agenter</TilbakeLenke>
       <AdminAgentTeamV2 data={data} />
       <ProjectList initialProjects={prosjektVisning} />
     </V2Shell>

@@ -12,6 +12,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getFysiskData } from "@/lib/portal-fysisk/fysisk-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { FysiskV2 } from "@/components/portal/v2/FysiskV2";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,7 @@ export default async function V2FysiskPreviewPage() {
 
   return (
     <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={data.spillerNavn} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/gjennomfore">Gjør</TilbakeLenke>
       <FysiskV2 data={data} />
     </V2Shell>
   );

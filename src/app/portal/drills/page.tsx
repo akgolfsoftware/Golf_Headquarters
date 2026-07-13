@@ -13,6 +13,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getDrillLibraryRich } from "@/lib/portal-drills/drills-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { OvelsesbankV2 } from "@/components/portal/v2/OvelsesbankV2";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +26,7 @@ export default async function V2OvelsesbankPreviewPage() {
 
   return (
     <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/gjennomfore">Gjør</TilbakeLenke>
       <OvelsesbankV2 data={data} />
     </V2Shell>
   );

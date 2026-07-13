@@ -14,6 +14,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { TilbakeLenke } from "@/components/v2";
 import {
   AdminRunderV2,
   type AdminRunderV2Data,
@@ -99,6 +100,7 @@ export default async function V2AdminRunderPage() {
 
   return (
     <V2Shell aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TilbakeLenke href="/admin/analyse">Innsikt</TilbakeLenke>
       <AdminRunderV2 data={data} />
     </V2Shell>
   );

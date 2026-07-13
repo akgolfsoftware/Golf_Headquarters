@@ -31,6 +31,7 @@ import type {
   TalentMilepael,
 } from "@/components/v2";
 import type { LFase, CSNivaa, TrackStatus, SuggestionType } from "@/generated/prisma/client";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -285,6 +286,7 @@ export default async function V2UtviklingsplanPreviewPage() {
 
   return (
     <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={data.spillerNavn}>
+      <TilbakeLenke href="/portal/planlegge">Plan</TilbakeLenke>
       <UtviklingsplanV2 data={data} />
     </V2Shell>
   );

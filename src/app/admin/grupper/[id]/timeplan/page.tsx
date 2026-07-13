@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { GruppeTimeplanV2, type GruppeTimeplanV2Data } from "@/components/admin/v2/GruppeTimeplanV2";
 import { opprettGruppeTrening, dupliserGruppeTime } from "../actions";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -91,6 +92,7 @@ export default async function GruppeTimeplanPage({
 
   return (
     <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href={`/admin/grupper/${id}`}>Gruppe</TilbakeLenke>
       <GruppeTimeplanV2 data={data} onOpprett={opprettAction} onDupliser={dupliserAction} />
     </V2Shell>
   );

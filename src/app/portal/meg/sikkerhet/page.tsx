@@ -12,6 +12,7 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MegSikkerhetV2, type MegSikkerhetData } from "@/components/portal/v2/MegSikkerhetV2";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +27,7 @@ export default async function SikkerhetPage() {
 
   return (
     <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <MegSikkerhetV2 data={data} />
     </V2Shell>
   );

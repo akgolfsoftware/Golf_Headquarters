@@ -138,20 +138,23 @@ export async function loadDailyBrief(coach: {
     sessionReqs,
     oppgaver,
     inaktiveSpillere,
-    pendingApprovalsCount,
-    hasterApprovalsCount,
-    proAboCount,
-    nyeProAbo30d,
+    planActionGrupper,
+    proAbos,
     stallSgAgg,
-    planScheduledCount,
-    planCompletedCount,
+    planStatusGrupper,
     latestDailyBriefRun,
   ] = await Promise.all([
     prisma.booking.findMany({
       where: { startAt: { gte: dagStart, lt: dagSlutt }, status: { in: ["CONFIRMED", "PENDING"] } },
       orderBy: { startAt: "asc" },
-      include: {
-        user: { select: { id: true, name: true } },
+      select: {
+        id: true,
+        startAt: true,
+        endAt: true,
+        notes: true,
+        priceOre: true,
+        guestName: true,
+        user: { select: { name: true } },
         serviceType: { select: { name: true } },
         location: { select: { name: true } },
         facility: { select: { name: true } },
@@ -163,22 +166,50 @@ export async function loadDailyBrief(coach: {
       where: { userId: coach.id },
       orderBy: { createdAt: "desc" },
       take: 6,
+      select: {
+        id: true,
+        type: true,
+        title: true,
+        body: true,
+        link: true,
+        readAt: true,
+        createdAt: true,
+      },
     }),
     prisma.planAction.findMany({
       where: { status: "PENDING" },
       orderBy: { createdAt: "desc" },
       take: 4,
-      include: { user: { select: { id: true, name: true } } },
+      select: {
+        id: true,
+        actionType: true,
+        suggestion: true,
+        agentName: true,
+        createdAt: true,
+        user: { select: { name: true } },
+      },
     }),
     prisma.sessionRequest.findMany({
       where: { status: "PENDING" },
       orderBy: { createdAt: "desc" },
       take: 4,
-      include: { user: { select: { id: true, name: true } } },
+      select: {
+        id: true,
+        reason: true,
+        createdAt: true,
+        user: { select: { name: true } },
+      },
     }),
     prisma.oppgaveCache.findMany({
       orderBy: [{ forfaller: { sort: "asc", nulls: "last" } }, { notionLastEdited: "desc" }],
       take: 8,
+      select: {
+        id: true,
+        tittel: true,
+        status: true,
+        forfaller: true,
+        notionLastEdited: true,
+      },
     }),
     // Fokus: spillere med REELL inaktivitet (har logget inn før, men falt av).
     // Brukere uten lastLoginAt er stubs/aldri-aktiverte — støy, ikke frafall.
@@ -188,17 +219,17 @@ export async function loadDailyBrief(coach: {
       orderBy: { lastLoginAt: "asc" },
       take: 4,
     }),
-    prisma.planAction.count({ where: { status: "PENDING" } }),
-    prisma.planAction.count({ where: { status: "PENDING", actionType: "ESCALATION" } }),
-    prisma.subscription.count({
-      where: { tier: "PRO", status: { in: ["ACTIVE", "TRIALING", "PAST_DUE"] } },
+    // Én groupBy erstatter to counts: total PENDING + hvor mange som er ESCALATION.
+    prisma.planAction.groupBy({
+      by: ["actionType"],
+      where: { status: "PENDING" },
+      _count: { _all: true },
     }),
-    prisma.subscription.count({
-      where: {
-        tier: "PRO",
-        status: { in: ["ACTIVE", "TRIALING", "PAST_DUE"] },
-        createdAt: { gte: tretti },
-      },
+    // Én spørring erstatter to counts: aktive PRO-abo totalt + nye siste 30 d
+    // (antall abonnement er lite — createdAt-filteret gjøres i minnet).
+    prisma.subscription.findMany({
+      where: { tier: "PRO", status: { in: ["ACTIVE", "TRIALING", "PAST_DUE"] } },
+      select: { createdAt: true },
     }),
     // STALL-SG (Anders 2026-06-22): snitt sgTotal alle runder siste 30 d
     // (samme definisjon som /admin/runder — «ingen falske tall»).
@@ -207,18 +238,28 @@ export async function loadDailyBrief(coach: {
       where: { playedAt: { gte: tretti }, sgTotal: { not: null } },
     }),
     // PLAN-ETTERLEVELSE: planlagte vs fullførte plan-økter siste 30 d (forfalt i vinduet).
-    prisma.trainingPlanSession.count({
+    // Én groupBy på status erstatter to counts.
+    prisma.trainingPlanSession.groupBy({
+      by: ["status"],
       where: { scheduledAt: { gte: tretti, lte: now } },
-    }),
-    prisma.trainingPlanSession.count({
-      where: { scheduledAt: { gte: tretti, lte: now }, status: "COMPLETED" },
+      _count: { _all: true },
     }),
     prisma.agentRun.findFirst({
       where: { agentName: "daily-brief", status: "OK" },
       orderBy: { createdAt: "desc" },
-      select: { output: true, createdAt: true },
+      select: { output: true },
     }),
   ]);
+
+  // Avledede tellere fra de sammenslåtte spørringene (samme verdier som før).
+  const pendingApprovalsCount = planActionGrupper.reduce((sum, g) => sum + g._count._all, 0);
+  const hasterApprovalsCount =
+    planActionGrupper.find((g) => g.actionType === "ESCALATION")?._count._all ?? 0;
+  const proAboCount = proAbos.length;
+  const nyeProAbo30d = proAbos.filter((s) => s.createdAt >= tretti).length;
+  const planScheduledCount = planStatusGrupper.reduce((sum, g) => sum + g._count._all, 0);
+  const planCompletedCount =
+    planStatusGrupper.find((g) => g.status === "COMPLETED")?._count._all ?? 0;
 
   // STALL-SG + PLAN-ETTERLEVELSE → KPI-strenger (null/0 → «—», ingen fabrikering).
   const stallSgAvg = stallSgAgg._avg.sgTotal;

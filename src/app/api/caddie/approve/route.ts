@@ -68,6 +68,7 @@ export async function POST(req: Request) {
       toolName,
       result,
     });
+    await resolveDraft(user.id, toolCallId, "REJECTED");
     return Response.json({ ok: true, status: result.status, summary: result.summary });
   }
 
@@ -84,6 +85,7 @@ export async function POST(req: Request) {
       toolName,
       result,
     });
+    await resolveDraft(user.id, toolCallId, "APPROVED");
     return Response.json({
       ok: true,
       status: exec.status,
@@ -106,6 +108,24 @@ export async function POST(req: Request) {
       { ok: false, error: message, status: result.status },
       { status: 500 },
     );
+  }
+}
+
+// A2: chat-forslag persisteres nå som CaddieDraft (PENDING) i A1-køen.
+// Behandles forslaget i chatten, må draft-raden lukkes så køen holdes i synk.
+async function resolveDraft(
+  userId: string,
+  toolCallId: string,
+  status: "APPROVED" | "REJECTED",
+): Promise<void> {
+  try {
+    await prisma.caddieDraft.updateMany({
+      where: { userId, toolCallId, status: "PENDING" },
+      data: { status, resolvedAt: new Date() },
+    });
+  } catch (err) {
+    // Kø-synk må aldri ta ned API-responsen.
+    console.error("[caddie/approve] kunne ikke lukke CaddieDraft", err);
   }
 }
 

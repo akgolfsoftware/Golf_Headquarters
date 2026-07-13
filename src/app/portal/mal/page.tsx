@@ -13,6 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MalHubV2, type MalHubData, type MalGoalStatus, type MalGoalRad } from "@/components/portal/v2/MalHubV2";
 import type { Goal } from "@/generated/prisma/client";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -107,6 +108,7 @@ export default async function V2MalPreviewPage() {
 
   return (
     <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? undefined}>
+      <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <MalHubV2 data={data} />
     </V2Shell>
   );

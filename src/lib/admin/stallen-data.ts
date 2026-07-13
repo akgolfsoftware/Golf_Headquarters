@@ -247,13 +247,13 @@ export async function loadStallen(
       // SG-trend: foretrekk BrukerSgInput, fall tilbake på Round.
       sgInputs: {
         where: { sgTotal: { not: null } },
-        select: { sgTotal: true, dato: true },
+        select: { sgTotal: true },
         orderBy: { dato: "desc" },
         take: 8,
       },
       rounds: {
         where: { sgTotal: { not: null } },
-        select: { sgTotal: true, playedAt: true },
+        select: { sgTotal: true },
         orderBy: { playedAt: "desc" },
         take: 8,
       },

@@ -17,6 +17,7 @@ import { can, Capability } from "@/lib/auth/cbac";
 import { parseMaanedsrapport } from "@/lib/agents/maanedsrapport";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { AdminReportsV2 } from "@/components/admin/v2/AdminReportsV2";
+import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -59,6 +60,7 @@ export default async function V2AdminReportsPage() {
 
   return (
     <V2Shell aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TilbakeLenke href="/admin/analyse">Innsikt</TilbakeLenke>
       <AdminReportsV2 data={data} />
     </V2Shell>
   );

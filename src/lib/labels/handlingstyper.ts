@@ -32,6 +32,8 @@ export const HANDLINGSTYPE_LABEL: Record<string, string> = {
   CHURN_MESSAGE: "Frafalls-melding",
   PAYMENT_FOLLOWUP: "Betalings-oppfølging",
   AVAILABILITY_SUGGEST: "Ledig tid-forslag",
+  CADDIE_DRAFT: "Caddie-forslag",
+  SESSION_REQUEST: "Økt-forespørsel",
 };
 
 /** Label for en handlingstype — faller ærlig tilbake til «Forslag» i stedet

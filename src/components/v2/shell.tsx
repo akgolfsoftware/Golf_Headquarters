@@ -102,12 +102,14 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
     label: "Drift",
     items: [
       { id: "workspace", label: "Workspace", icon: "layout-dashboard", href: "/admin/workspace" },
+      { id: "marketing", label: "Marketing", icon: "megaphone", href: "/admin/marketing" },
       { id: "caddie", label: "Caddie (AI)", icon: "message-circle", href: "/admin/agencyos/caddie" },
       { id: "agents", label: "AI-agenter", icon: "bot", href: "/admin/agents" },
       { id: "organisasjon", label: "Organisasjon", icon: "building-2", href: "/admin/organisasjon" },
       { id: "team", label: "Team", icon: "users", href: "/admin/team" },
       { id: "email-templates", label: "E-postmaler", icon: "mail-check", href: "/admin/email-templates" },
       { id: "availability", label: "Tilgjengelighet", icon: "clock", href: "/admin/availability" },
+      { id: "kalender-synk", label: "Kalender-synk (Google)", icon: "refresh-cw", href: "/admin/settings/calendar" },
       { id: "services", label: "Tjenester og priser", icon: "credit-card", href: "/admin/services" },
       { id: "settings", label: "Innstillinger", icon: "settings", href: "/admin/settings" },
     ],
@@ -422,7 +424,13 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
       }}
     >
       <IkonRailNav aktiv={autoAktiv} nav={nav} mer={merGrupper} navn={navn} avatarUrl={avatarUrl} />
-      <div className="px-4 md:px-8 pt-6 pb-24 md:pb-9" style={{ flex: 1, minWidth: 0 }}>
+      {/* Topp-luft inkluderer safe-area: i installert PWA på iPhone dekker
+          innholdet statuslinje-området — uten env() kolliderer hilsen/avatar
+          med klokka (Anders' mobil-funn 2026-07-13). Desktop: env() = 0. */}
+      <div
+        className="px-4 md:px-8 pb-24 md:pb-9"
+        style={{ flex: 1, minWidth: 0, paddingTop: "calc(24px + env(safe-area-inset-top))" }}
+      >
         <div style={{ maxWidth: maksBredde, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
           {children}
         </div>
