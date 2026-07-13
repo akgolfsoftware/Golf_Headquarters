@@ -22,7 +22,12 @@ function log(...parts: unknown[]) {
   lines.push(line);
 }
 
-const COACH = { email: "coachtest@akgolf.test", password: "Screentest123!" };
+const SCREENTEST_PASSWORD = process.env.SCREENTEST_PASSWORD ?? "";
+if (!SCREENTEST_PASSWORD) {
+  console.error("SCREENTEST_PASSWORD mangler i .env.local");
+  process.exit(1);
+}
+const COACH = { email: "coachtest@akgolf.test", password: SCREENTEST_PASSWORD };
 
 async function snapshotSessions(planId: string) {
   return prisma.trainingPlanSession.findMany({

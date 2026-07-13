@@ -2,13 +2,21 @@
 // Tar full-page desktop-skjermbilder av 10 nøkkelskjermer: portal (lys — PlayerHQ er alltid lys),
 // admin (lys + mørk via cookie ak-admin-theme), marketing (lys).
 // Kjør: node scripts/opprydding-baseline-shot.mjs [OUT_DIR] [BASE_URL]
+import { config as loadEnv } from "dotenv";
 import { chromium } from "playwright";
 import { mkdir } from "node:fs/promises";
 
+loadEnv({ path: ".env.local" });
+
 const OUT = process.argv[2] || "test-results/baseline";
 const BASE = process.argv[3] || "http://localhost:3411";
-const PLAYER = { email: "screentest@akgolf.test", password: "Screentest123!" };
-const COACH = { email: "coachtest@akgolf.test", password: "Screentest123!" };
+const PASSWORD = process.env.SCREENTEST_PASSWORD;
+if (!PASSWORD) {
+  console.error("SCREENTEST_PASSWORD mangler i .env.local");
+  process.exit(1);
+}
+const PLAYER = { email: "screentest@akgolf.test", password: PASSWORD };
+const COACH = { email: "coachtest@akgolf.test", password: PASSWORD };
 
 const PORTAL = [
   { name: "portal-hjem", path: "/portal" },

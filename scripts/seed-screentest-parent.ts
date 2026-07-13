@@ -30,7 +30,11 @@ const admin = createClient(
 );
 
 const PARENT_EMAIL = "screentest-parent@akgolf.test";
-const PARENT_PASSWORD = "Screentest123!";
+const PARENT_PASSWORD = process.env.SCREENTEST_PASSWORD ?? "";
+if (!PARENT_PASSWORD) {
+  console.error("SCREENTEST_PASSWORD mangler i .env.local");
+  process.exit(1);
+}
 const PARENT_NAME = "Kari Rohjan";
 const CHILD_EMAIL = "screentest@akgolf.test"; // eksisterende test-spiller (Øyvind Rohjan)
 
@@ -96,7 +100,7 @@ async function main() {
   });
   console.log(`Samtykke registrert for ${child.name} (gitt av ${PARENT_NAME}).`);
 
-  console.log(`\n✓ Ferdig. Login: ${PARENT_EMAIL} / ${PARENT_PASSWORD}`);
+  console.log(`\n✓ Ferdig. Login: ${PARENT_EMAIL} (passord = SCREENTEST_PASSWORD i .env.local)`);
   await prisma.$disconnect();
 }
 

@@ -2,7 +2,7 @@
  * Seed en innloggbar test-COACH (ADMIN) for AgencyOS skjerm-paritet —
  * MED komplett demo-stall som matcher Claude Design-fasiten.
  *
- * Login: coachtest@akgolf.test / Screentest123!  (Anders Kristiansen, kanon coach)
+ * Login: coachtest@akgolf.test / SCREENTEST_PASSWORD i .env.local  (Anders Kristiansen, kanon coach)
  *
  * Seeder (idempotent — kan kjøres flere ganger):
  *  - 38 spillere totalt (8 navngitte kanon-spillere + anonyme @stall.akgolf.test)
@@ -35,7 +35,11 @@ const admin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SU
 });
 
 const EMAIL = "coachtest@akgolf.test";
-const PASSWORD = "Screentest123!";
+const PASSWORD = process.env.SCREENTEST_PASSWORD ?? "";
+if (!PASSWORD) {
+  console.error("SCREENTEST_PASSWORD mangler i .env.local");
+  process.exit(1);
+}
 const NAME = "Anders Kristiansen";
 
 const STALL_DOMAIN = "stall.akgolf.test";
@@ -442,7 +446,7 @@ async function main() {
   console.log(`Uleste varsler (coach):   ${unread}  (mål: 3)`);
   console.log(`Øyvind Rohjan user-id:    ${oyvind.id}`);
 
-  console.log(`\n✓ Ferdig. Login: ${EMAIL} / ${PASSWORD}`);
+  console.log(`\n✓ Ferdig. Login: ${EMAIL} (passord = SCREENTEST_PASSWORD i .env.local)`);
   await prisma.$disconnect();
 }
 

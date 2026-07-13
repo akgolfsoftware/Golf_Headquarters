@@ -35,7 +35,11 @@ const admin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SU
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
-const PASSWORD = "Screentest123!";
+const PASSWORD = process.env.SCREENTEST_PASSWORD ?? "";
+if (!PASSWORD) {
+  console.error("SCREENTEST_PASSWORD mangler i .env.local");
+  process.exit(1);
+}
 
 const OYVIND = { email: "screentest@akgolf.test", name: "Øyvind Rohjan" };
 const ANDERS = { email: "coachtest@akgolf.test", name: "Anders Kristiansen" };
@@ -150,9 +154,9 @@ async function main() {
   });
   console.log(`ParentInvitation opprettet — token: ${invitation.token}`);
   console.log(`  → /v2-guardian-consent/${invitation.token}`);
-  console.log(`  → /v2-samtykke-venter (logg inn som ${JUNIOR.email} / ${PASSWORD})`);
+  console.log(`  → /v2-samtykke-venter (logg inn som ${JUNIOR.email})`);
 
-  console.log(`\n✓ Ferdig. Passord for alle nye kontoer: ${PASSWORD}`);
+  console.log(`\n✓ Ferdig. Passord for alle nye kontoer = SCREENTEST_PASSWORD i .env.local`);
   console.log(`  Øyvind (spiller):  ${OYVIND.email}`);
   console.log(`  Anders (admin):    ${ANDERS.email}`);
   console.log(`  Markus (coach):    ${MARKUS.email}`);

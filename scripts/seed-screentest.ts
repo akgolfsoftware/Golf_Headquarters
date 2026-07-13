@@ -26,7 +26,11 @@ const admin = createClient(
 );
 
 const EMAIL = "screentest@akgolf.test";
-const PASSWORD = "Screentest123!";
+const PASSWORD = process.env.SCREENTEST_PASSWORD ?? "";
+if (!PASSWORD) {
+  console.error("SCREENTEST_PASSWORD mangler i .env.local");
+  process.exit(1);
+}
 const NAME = "Øyvind Rohjan";
 
 function addDays(d: Date, n: number): Date {
@@ -326,7 +330,7 @@ async function main() {
     await prisma.shot.createMany({ data: shots });
   }
 
-  console.log(`\n✓ Ferdig. Login: ${EMAIL} / ${PASSWORD}`);
+  console.log(`\n✓ Ferdig. Login: ${EMAIL} (passord = SCREENTEST_PASSWORD i .env.local)`);
   await prisma.$disconnect();
 }
 
