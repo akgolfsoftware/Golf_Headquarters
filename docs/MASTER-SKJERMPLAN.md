@@ -134,7 +134,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Planlegge (= Workbench mobil) ★ | `/portal/planlegge` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Complete v13 (golfdata scope + OektKort etc)
-| **Workbench (planlegging)** ★ | `/portal/planlegge/workbench` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-13: mobil-flyt fikset — økt-trykk åpner BunnArk (Start/Se/flytt/slett), årsplan = tappbar liste (ikke 860px-canvas), måned = ukeliste (MndNivaaMobil), ark er bunn-forankret på mobil. Samme dag (kveld): økt-arket har ekte dato-felt (±52 uker, ikke bare ukedag) + «Ny øvelse»-knapp som bytter arkets innhold (ingen modal-i-modal) |
+| **Workbench (planlegging)** ★ | `/portal/planlegge/workbench` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-13: mobil-flyt fikset — økt-trykk åpner BunnArk (Start/Se/flytt/slett), årsplan = tappbar liste (ikke 860px-canvas), måned = ukeliste (MndNivaaMobil), ark er bunn-forankret på mobil. Samme dag (kveld): økt-arket har ekte dato-felt (±52 uker, ikke bare ukedag) + «Ny øvelse»-knapp som bytter arkets innhold (ingen modal-i-modal). Samme dag (sent): «...»-overflow-meny på økt-detaljen (erstatter knapperad), Dag-pillen relabelt, og tre nye mobil-only zoom-nivåer — 2 dager (ToDagerNivaa), Liste (ListeNivaaMobil, akse-farget agenda gruppert per dag) og Kanban (KanbanNivaaMobil, Planlagt/Pågår/Fullført) |
 | · Plan-bygger (v2 wizard) | `/portal/planlegge/bygger` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2 2026-07-10: 5-stegs wizard per godkjent mockup (phq-plan-bygger); deler kjerner med legacy mal/bygger via lib/plan-builder
 | Årsplan | `/portal/tren/aarsplan` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | · Rediger periode | `/portal/tren/aarsplan/periode/[id]/rediger` | ~ | --- | ✓ | ✓ | ✓ | ~ |
@@ -756,6 +756,22 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
+  Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
+  være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
+  kanban-visning. Levert i 5 bølger: **A** «...»-meny (`ValgtOktSeksjon`) erstatter Flytt/
+  Dupliser/Slett-knapperaden — slett er rødt og atskilt, som i referansebildet. **B** dagvisning
+  fantes alt (`DagNivaa`), kun relabelt «Økt» → «Dag» for konsistens med de nye pillene. **C**
+  «2 dager» — `ToDagerNivaa`, to nabodager side ved side, gjenbruker `DagNivaa` uendret (bevisst
+  ingen ny tidsgrid). **D** «Liste» — `ListeNivaaMobil`, flat kronologisk agenda for hele uka
+  gruppert per dag; ny delt `OktAgendaRad` (utskilt fra `DagNivaa`) holder akse-fargen konsistent
+  med resten av Workbench i stedet for designsystemets nøytrale `AgendaRow`. **E** «Kanban» —
+  `KanbanNivaaMobil`, økter gruppert Planlagt/Pågår/Fullført (avvik vises som prikk på kortet,
+  ikke egen kolonne). Alle tre nye nivåer er mobil-only; desktop faller tilbake til uke-visningen
+  hvis URL-en peker på et av dem. **Flagget til Anders i PR:** Kanban går en litt annen retning
+  enn Handlingssenter-v2 (som droppet kanban/tabell/liste til fordel for én liste) — verdt å
+  bekrefte om han vil beholde den, gruppere på pyramideområde i stedet, eller droppe den.
+  Verifisert: tsc 0 feil, ESLint grønt, ingen datamodell-/loader-endring i noen av bølgene.
 - 13. juli (økt-arket: ekte dato/tid + «Ny øvelse» i arket, samme PR #10/branch): Anders så
   «Ny økt»-arket i previewen og ba om to ting utover det som var levert. **Dato/tid:** «Dag»-
   ukedag-pillene er byttet med et ekte datofelt (`<input type="date">`, ±52 uker) — datamodellen
