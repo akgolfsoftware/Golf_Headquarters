@@ -99,6 +99,20 @@
 > Kun ekte data — ærlige tomtilstander. FUNN: player_swing_videos-tabellen
 > mangler i DB (schema-drift-klasse #3) — swing-video-spørringen venter på
 > kirurgisk migrering (Anders-ja). Playwright: alle 7 faner verifisert.
+> 2026-07-13 · BOOKING-TRYGGING LEVERT (Anders' tre sjekkpunkter før
+> akgolf.no-bytte) — (A) DOBBELTBOOKING UMULIG: Postgres EXCLUSION-vern
+> (btree_gist/tsrange) per coach + fasilitets-kapasitet med advisory-lås
+> i felles lib/booking/kollisjonsvern.ts; alle 7 opprettelses-/flytteveier
+> vernet i transaksjon med klarspråk-melding; gamle eksakt-likhet-indekser
+> droppet (avlyst blokkerer ikke re-booking lenger). Race-testet mot prod:
+> samtidig → én vinner, overlapp/rå insert avvist, kapasitet håndhevet.
+> (B) STRIPE VERIFISERT: live-nøkkel, webhook registrert mot prod (9
+> events), secret satt; NY kortbetaling i spillerportalen for spillere
+> uten pakke (PENDING → Checkout → webhook bekrefter) — kjeden testet mot
+> live Stripe uten betaling. (C) GOOGLE: admin-opprettelse + begge flytte-
+> veier pusher til Google umiddelbart (før: 15-min cron); «Kalender-synk
+> (Google)» inn i Mer-menyen. GJENSTÅR HOS ANDERS: re-koble Google på
+> /admin/settings/calendar (tokens PAUSED siden 23. juni, begge coacher).
 > 2026-07-13 (natt) · WORKFLOW-LEVERANSE (8 subagenter, Anders' bestilling
 > «fortsett resterende plan i workflow og subagents») — SEKS pakker på én
 > økt: (I7) tilbake-lenke på 50 undersider mot logisk forelder; (G1/G3/G4)

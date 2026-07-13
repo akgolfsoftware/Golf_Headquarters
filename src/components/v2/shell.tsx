@@ -109,6 +109,7 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
       { id: "team", label: "Team", icon: "users", href: "/admin/team" },
       { id: "email-templates", label: "E-postmaler", icon: "mail-check", href: "/admin/email-templates" },
       { id: "availability", label: "Tilgjengelighet", icon: "clock", href: "/admin/availability" },
+      { id: "kalender-synk", label: "Kalender-synk (Google)", icon: "refresh-cw", href: "/admin/settings/calendar" },
       { id: "services", label: "Tjenester og priser", icon: "credit-card", href: "/admin/services" },
       { id: "settings", label: "Innstillinger", icon: "settings", href: "/admin/settings" },
     ],
