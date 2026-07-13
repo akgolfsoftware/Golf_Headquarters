@@ -58,6 +58,7 @@ export async function runChurnRadar(): Promise<{
   const dedupGrense = new Date(now.getTime() - DEDUP_DAGER * 86_400_000);
 
   const kandidater = await prisma.user.findMany({
+    // Bevisst coachedPlayerWhere (ikke coach-scopet): batch-agent uten viewer.
     where: {
       AND: [
         coachedPlayerWhere(),

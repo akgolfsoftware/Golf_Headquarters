@@ -63,9 +63,21 @@ All UI-tekst på norsk bokmål med æ, ø, å. Kommentarer kan være engelsk ell
 5. **Aldri lag nye token-filer eller wireframe-mapper.** Unntak (2026-07-09): v2-redesignets tokens — `tokens/v2/` i designprosjektet og porten derfra til `src/styles/` — er godkjent av Anders.
 6. **Feil → `.claude/rules/gotchas.md`.**
 
-## Git-arbeidsflyt — Claude Code håndterer dette
-Anders er ikke utvikler og skal ikke skrive git-kommandoer. Etter hver fullført oppgave: stage, commit
-(Conventional Commits på engelsk), push til main. Ikke spør om bekreftelse på trivielle commits.
+## Git-arbeidsflyt — GODKJENNINGSPORT for main (Anders' beslutning 2026-07-13)
+Anders er ikke utvikler og skal ikke skrive git-kommandoer. Claude håndterer git — men main er portet:
+
+1. **Alt arbeid skjer på gren.** Commit (Conventional Commits på engelsk) og push GRENEN
+   fortløpende etter hver fullført oppgave — ikke spør om bekreftelse på det.
+2. **ALDRI merge eller push til main uten Anders' eksplisitte «ja» i samtalen.** Gjelder også
+   `git push origin HEAD:main`, PR-merge via `gh`, og merge av andre grener inn i main.
+   Main er det som er live i appen — porten er Anders' kontroll på hva som slippes.
+3. **Når en leveranse er klar:** åpne en Pull Request mot main (`gh pr create`) med
+   klarspråk-beskrivelse av hva den gjør for appen + Vercel forhåndsvisnings-lenken, oppsummer
+   for Anders og spør om det skal til main. Først etter «ja»: merge, push, bekreft.
+   **PR-lista ER Anders' port-oversikt** (github.com/akgolfsoftware/Golf_Headquarters/pulls)
+   — alt som venter på godkjenning skal stå der som PR, ingenting venter som løs gren.
+4. **Unntak:** dokument-/regelendringer Anders eksplisitt har bedt om i samtalen kan gå rett til main.
+
 Stopp og spør før destruktive operasjoner: `--force`, `reset --hard`, `rebase main`, sletting av remote branches.
 Etter push: oppsummer på norsk hva som ble gjort.
 

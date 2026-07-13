@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
+import { pushBookingToCalendar } from "@/lib/google-calendar";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
@@ -114,6 +115,14 @@ export async function opprettOktPaaTid(
     throw e;
   }
 
+  // C8 (booking-trygging): skriv til coachens Google-kalender med én gang —
+  // før hang dette på 15-min-cronen. Best-effort: feil stopper aldri bookingen.
+  try {
+    await pushBookingToCalendar(booking.id);
+  } catch (err) {
+    console.error("[calendar] Google-push feilet for", booking.id, err);
+  }
+
   await audit({
     actorId: aktor.id,
     action: "booking.created",
@@ -179,6 +188,12 @@ export async function moveSession(
   } catch (e) {
     if (erKollisjonsfeil(e)) return { ok: false, feil: kollisjonsmelding(e) };
     throw e;
+  }
+
+  try {
+    await pushBookingToCalendar(bookingId);
+  } catch (err) {
+    console.error("[calendar] Google-push etter flytting feilet", bookingId, err);
   }
 
   await audit({

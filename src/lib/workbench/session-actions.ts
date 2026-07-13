@@ -4,7 +4,14 @@
  * Delt Workbench-persistering — spiller + coach (redigerer spillerens plan).
  */
 
-import { executeSessionUpdate, type SessionUpdateInput } from "@/lib/workbench/session-update";
+import {
+  executeSessionUpdate,
+  skrivSessionDrills,
+  OktDrillSchema,
+  type OktDrillInput,
+  type SessionUpdateInput,
+} from "@/lib/workbench/session-update";
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -13,7 +20,7 @@ import { deleteV2ForPlanSession, upsertV2ForPlanSession } from "@/lib/workbench/
 import { duplicateWeekCore } from "@/lib/workbench/duplicate-week";
 import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel";
 import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore } from "@/lib/workbench/periode-core";
-import { erCoachetSpiller } from "@/lib/auth/coached";
+import { erCoachetSpiller, harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { duplicateSessionCore } from "@/lib/workbench/duplicate-session";
 
 const PYRAMID_AREAS = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
@@ -48,6 +55,9 @@ export async function coachMoveWorkbenchSession(
   weekOffset = 0,
 ): Promise<{ ok: boolean; error?: string }> {
   const coach = await ensureCoach();
+  if (!(await harCoachTilgangTilSpiller(coach, playerId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+  }
   const result = await executeSessionMove(prisma, {
     sessionId,
     playerId,
@@ -72,11 +82,19 @@ export async function coachAddWorkbenchSession(
     weekOffset?: number;
     /** AK-formel fra palette-malen / valgt økt (renses server-side). */
     akFormel?: AkFormelInput;
+    /** Driller fra økt-arket — samme kontrakt som updateSession (replace). */
+    drills?: OktDrillInput[];
   },
 ): Promise<{ ok: boolean; sessionId?: string; error?: string }> {
   const coach = await ensureCoach();
+  if (!(await harCoachTilgangTilSpiller(coach, playerId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+  }
   if (input.dayIndex < 0 || input.dayIndex > 6) return { ok: false, error: "Ugyldig dag" };
   const area = PYRAMID_AREAS.includes(input.area) ? input.area : "TEK";
+
+  const drillsParsed = z.array(OktDrillSchema).max(20).optional().safeParse(input.drills);
+  if (!drillsParsed.success) return { ok: false, error: "Ugyldig drill-liste" };
 
   let plan = await prisma.trainingPlan.findFirst({
     where: { userId: playerId },
@@ -126,6 +144,17 @@ export async function coachAddWorkbenchSession(
     },
   });
 
+  // Driller skrives FØR V2-speilingen, så live-økta får dem med seg.
+  if (drillsParsed.data && drillsParsed.data.length > 0) {
+    await skrivSessionDrills(prisma, {
+      sessionId: created.id,
+      drills: drillsParsed.data,
+      fallbackPyramidArea: created.pyramidArea,
+      playerId,
+      coachId: coach.id,
+    });
+  }
+
   await upsertV2ForPlanSession({
     planSessionId: created.id,
     playerId,
@@ -147,6 +176,9 @@ export async function coachUpdateWorkbenchSession(
   patch: SessionUpdateInput,
 ): Promise<{ ok: boolean; error?: string }> {
   const coach = await ensureCoach();
+  if (!(await harCoachTilgangTilSpiller(coach, playerId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+  }
   const result = await executeSessionUpdate(prisma, {
     sessionId,
     playerId,
@@ -162,7 +194,10 @@ export async function coachRemoveWorkbenchSession(
   playerId: string,
   sessionId: string,
 ): Promise<{ ok: boolean; error?: string }> {
-  await ensureCoach();
+  const coach = await ensureCoach();
+  if (!(await harCoachTilgangTilSpiller(coach, playerId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+  }
   const session = await sessionForPlayer(sessionId, playerId);
   if (!session || session.plan.userId !== playerId) {
     return { ok: false, error: "Økt ikke funnet" };
@@ -183,6 +218,9 @@ export async function coachDuplicateWeek(
   targetWeekOffset = 0,
 ): Promise<{ ok: boolean; count?: number; error?: string }> {
   const coach = await ensureCoach();
+  if (!(await harCoachTilgangTilSpiller(coach, playerId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+  }
   const result = await duplicateWeekCore(playerId, targetWeekOffset, coach.id);
   if (result.ok) revalidateWorkbench(playerId);
   return result;
@@ -212,6 +250,9 @@ export async function resolvePlanSessionLiveHref(
   if (isCoach && playerId && ownerId !== playerId) {
     return { ok: false, error: "Økt tilhører ikke valgt spiller" };
   }
+  if (!erEier && !(await harCoachTilgangTilSpiller(user, ownerId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+  }
 
   // Rydd opp hengende økter for spilleren (unngår ACTIVE-lås).
   await prisma.trainingPlanSession.updateMany({
@@ -235,9 +276,12 @@ export async function coachLagrePeriode(
   input: unknown,
   periodeId?: string,
 ): Promise<{ ok: boolean; periodeId?: string; error?: string }> {
-  await ensureCoach();
+  const coach = await ensureCoach();
   // I0: coach kan kun planlegge for coachede spillere.
   if (!(await erCoachetSpiller(playerId))) return { ok: false, error: "Ingen tilgang" };
+  if (!(await harCoachTilgangTilSpiller(coach, playerId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+  }
   const result = periodeId
     ? await oppdaterPeriodeCore(playerId, periodeId, input)
     : await opprettPeriodeCore(playerId, input);
@@ -249,8 +293,11 @@ export async function coachSlettPeriode(
   playerId: string,
   periodeId: string,
 ): Promise<{ ok: boolean; error?: string }> {
-  await ensureCoach();
+  const coach = await ensureCoach();
   if (!(await erCoachetSpiller(playerId))) return { ok: false, error: "Ingen tilgang" };
+  if (!(await harCoachTilgangTilSpiller(coach, playerId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+  }
   const result = await slettPeriodeCore(playerId, periodeId);
   if (result.ok) revalidateWorkbench(playerId);
   return result;
@@ -262,6 +309,9 @@ export async function coachDuplicateSession(
 ): Promise<{ ok: boolean; sessionId?: string; error?: string }> {
   const coach = await ensureCoach();
   if (!(await erCoachetSpiller(playerId))) return { ok: false, error: "Ingen tilgang" };
+  if (!(await harCoachTilgangTilSpiller(coach, playerId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+  }
   const result = await duplicateSessionCore(playerId, sessionId, coach.id);
   if (result.ok) revalidateWorkbench(playerId);
   return result;
@@ -274,8 +324,9 @@ export async function coachDuplicateSession(
 export async function coachHentNotater(
   playerId: string,
 ): Promise<{ ok: boolean; notater?: { id: string; content: string; createdAt: string }[] }> {
-  await ensureCoach();
+  const coach = await ensureCoach();
   if (!(await erCoachetSpiller(playerId))) return { ok: false };
+  if (!(await harCoachTilgangTilSpiller(coach, playerId))) return { ok: false };
   const rader = await prisma.coachNote.findMany({
     where: { playerId },
     orderBy: { createdAt: "desc" },
@@ -291,6 +342,9 @@ export async function coachLagreNotat(
 ): Promise<{ ok: boolean; error?: string }> {
   const coach = await ensureCoach();
   if (!(await erCoachetSpiller(playerId))) return { ok: false, error: "Ingen tilgang" };
+  if (!(await harCoachTilgangTilSpiller(coach, playerId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+  }
   const content = tekst.trim().slice(0, 2000);
   if (!content) return { ok: false, error: "Tomt notat" };
   await prisma.coachNote.create({ data: { coachId: coach.id, playerId, content, isPrivate: true } });

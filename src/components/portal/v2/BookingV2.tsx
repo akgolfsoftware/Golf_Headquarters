@@ -30,7 +30,7 @@ import {
   TomTilstand,
   Icon,
 } from "@/components/v2";
-import { hentSlotVindu, opprettBooking } from "@/app/portal/booking/actions";
+import { hentSlotVindu, opprettBooking, opprettBookingMedKort } from "@/app/portal/booking/actions";
 import type { SlotVindu } from "@/lib/portal-booking/slot-vindu";
 
 /* ── Datakontrakt (props) ──────────────────────────────────────────── */
@@ -507,7 +507,7 @@ function StegTid({ tjeneste, coachNavn, laster, ledigeIso, valgtIso, setValgtIso
 
 /* ── Steg 4 · Bekreft ──────────────────────────────────────────────── */
 
-function StegBekreft({ tjeneste, coachNavn, dato, tid, credits, onBook, laster, feil, mobile }: {
+function StegBekreft({ tjeneste, coachNavn, dato, tid, credits, onBook, onBetalMedKort, laster, feil, mobile }: {
   tjeneste: BookingTjeneste;
   coachNavn: string;
   dato: string | null;
@@ -516,6 +516,7 @@ function StegBekreft({ tjeneste, coachNavn, dato, tid, credits, onBook, laster, 
   onBook: () => void;
   laster: boolean;
   feil: string | null;
+  onBetalMedKort: () => void;
   mobile: boolean;
 }) {
   const pakke = tjeneste.betalesMedCredit;
@@ -555,12 +556,17 @@ function StegBekreft({ tjeneste, coachNavn, dato, tid, credits, onBook, laster, 
           </div>
         )}
         {feil === "KREVER_BETALING" && (
-          <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
-            <Icon name="credit-card" size={13} style={{ color: T.warn, flex: "none", marginTop: 1 }} />
-            <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5 }}>
-              Booking krever coaching-pakke eller betaling — kontakt coach, eller{" "}
-              <Link href="/portal/meg/abonnement" style={{ color: T.lime, fontWeight: 600 }}>se abonnement →</Link>
-            </span>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: "12px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
+            <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+              <Icon name="credit-card" size={13} style={{ color: T.warn, flex: "none", marginTop: 1 }} />
+              <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5 }}>
+                Du har ingen coaching-pakke med ledige timer — betal med kort, eller{" "}
+                <Link href="/portal/meg/abonnement" style={{ color: T.lime, fontWeight: 600 }}>se abonnement →</Link>
+              </span>
+            </div>
+            <Knapp icon="credit-card" full onClick={onBetalMedKort} disabled={laster}>
+              {laster ? "Åpner betaling …" : "Betal med kort"}
+            </Knapp>
           </div>
         )}
         <Knapp icon="check" full onClick={onBook} disabled={!klar || laster}>{laster ? "Booker …" : "Book time"}</Knapp>
@@ -711,6 +717,26 @@ export function BookingV2({ data }: { data: BookingV2Data }) {
     }
   }
 
+  /** B7: kortbetaling for spillere uten pakke — PENDING-booking + Stripe
+   *  Checkout; webhooken bekrefter når betalingen er gjennomført. */
+  async function handleBetalMedKort() {
+    if (!tjeneste || !valgtCoach || !valgtIso || !valgtTid || bookLaster) return;
+    setBookLaster(true);
+    setBookFeil(null);
+    const res = await opprettBookingMedKort({
+      serviceTypeId: tjeneste.id,
+      coachId: valgtCoach,
+      datoIso: valgtIso,
+      kl: valgtTid,
+    });
+    if (res.ok) {
+      window.location.href = res.url;
+      return;
+    }
+    setBookLaster(false);
+    setBookFeil(res.grunn);
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Hode */}
@@ -733,7 +759,7 @@ export function BookingV2({ data }: { data: BookingV2Data }) {
           {steg === 1 && <StegType tjenester={tjenester} credits={credits} valgt={valgtType} setValgt={setValgtType} mobile={mobile} />}
           {steg === 2 && <StegCoach coacher={vinduCoacher} fraPris={fraPris} nesteLedig={nesteLedig} valgt={valgtCoach} setValgt={setValgtCoach} mobile={mobile} />}
           {steg === 3 && <StegTid tjeneste={tjeneste} coachNavn={coachNavn} laster={laster} ledigeIso={ledigeIso} valgtIso={valgtIso} setValgtIso={setValgtIso} tider={tider} valgtTid={valgtTid} setValgtTid={setValgtTid} visMnd={vis.mnd} visAar={vis.aar} setVis={setVis} credits={credits} mobile={mobile} />}
-          {steg === 4 && <StegBekreft tjeneste={tjeneste} coachNavn={coachNavn} dato={valgtIso} tid={valgtTid} credits={credits} onBook={handleBook} laster={bookLaster} feil={bookFeil} mobile={mobile} />}
+          {steg === 4 && <StegBekreft tjeneste={tjeneste} coachNavn={coachNavn} dato={valgtIso} tid={valgtTid} credits={credits} onBook={handleBook} onBetalMedKort={handleBetalMedKort} laster={bookLaster} feil={bookFeil} mobile={mobile} />}
           {kvittert && bookingId && <Kvittering tjeneste={tjeneste} coachNavn={coachNavn} dato={valgtIso} tid={valgtTid} bookingId={bookingId} mobile={mobile} />}
         </>
       )}

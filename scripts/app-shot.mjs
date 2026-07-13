@@ -3,15 +3,22 @@
 //   DEVICE   = mobil | ipad | desktop   (default mobil)
 //   PATHS_CSV= navn:rute,navn:rute,...   (default = 5 hovedskjermer)
 //   OUT_DIR  = default /tmp/akhq-app-shots-<device>
+import { config as loadEnv } from "dotenv";
 import { chromium } from "playwright";
 import { mkdir } from "node:fs/promises";
+
+loadEnv({ path: ".env.local" });
 
 const DEVICE = process.argv[2] || "mobil";
 const PATHS_CSV = process.argv[3] || "home:/portal,planlegge:/portal/planlegge,gjennomfore:/portal/gjennomfore,analysere:/portal/analysere,meg:/portal/meg";
 const OUT = process.argv[4] || `/tmp/akhq-app-shots-${DEVICE}`;
 const BASE = process.argv[5] || "http://localhost:3000";
 const EMAIL = process.env.SHOT_EMAIL || "screentest@akgolf.test";
-const PASSWORD = process.env.SHOT_PASSWORD || "Screentest123!";
+const PASSWORD = process.env.SHOT_PASSWORD || process.env.SCREENTEST_PASSWORD;
+if (!PASSWORD) {
+  console.error("SCREENTEST_PASSWORD mangler i .env.local (eller sett SHOT_PASSWORD)");
+  process.exit(1);
+}
 
 const VIEWPORTS = {
   mobil: { width: 430, height: 932, isMobile: true, hasTouch: true, deviceScaleFactor: 2 },

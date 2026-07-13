@@ -2,8 +2,11 @@ import "server-only";
 
 import type { PyramidArea, MMiljo } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { GENERERT_FRA, syncDrillsToV2 } from "./v2-drill-mirror";
 
-const GENERERT_FRA = "WORKBENCH_PLAN";
+// Re-eksport: reverse-synkene (okt-status-actions, live-actions) matcher
+// samme streng via denne.
+export { GENERERT_FRA };
 
 const PYR_TO_PRACTICE: Record<PyramidArea, "BLOKK" | "RANDOM" | "KONKURRANSE" | "SPILL_TEST"> = {
   FYS: "BLOKK",
@@ -60,9 +63,11 @@ export async function upsertV2ForPlanSession(input: {
 
   const existing = await prisma.trainingSessionV2.findFirst({
     where: { generertFra: GENERERT_FRA, generertFraId: input.planSessionId },
-    select: { id: true },
+    select: { id: true, status: true },
   });
 
+  // Felles data for create + update. Status settes KUN ved create — en
+  // update skal aldri nullstille COMPLETED/CANCELLED/SKIPPED til PLANNED.
   const data = {
     title: input.title,
     studentId: input.playerId,
@@ -71,7 +76,6 @@ export async function upsertV2ForPlanSession(input: {
     endTime,
     miljo: input.miljo ?? "M2",
     practiceType: PYR_TO_PRACTICE[input.pyramidArea],
-    status: "PLANNED" as const,
     isCoachCreated: coachId !== input.playerId,
     generertFra: GENERERT_FRA,
     generertFraId: input.planSessionId,
@@ -82,58 +86,46 @@ export async function upsertV2ForPlanSession(input: {
     await prisma.trainingSessionV2.update({ where: { id: existing.id }, data });
     v2Id = existing.id;
   } else {
-    const created = await prisma.trainingSessionV2.create({ data, select: { id: true } });
-    v2Id = created.id;
+    const opprettet = await prisma.trainingSessionV2.create({
+      data: { ...data, status: "PLANNED" },
+      select: { id: true },
+    });
+    v2Id = opprettet.id;
   }
 
-  await speilDrillerTilV2(input.planSessionId, v2Id);
+  // Drill-speiling: kun for PLANNED-økter — en påbegynt/logget økt røres aldri.
+  if (!existing || existing.status === "PLANNED") {
+    await syncDrillsToV2(v2Id, input.planSessionId, input.pyramidArea);
+  }
 }
 
-/** Bølge 4 (2026-07-13): speil plan-øktas driller (SessionDrill ↔ øvelsesbanken)
- *  inn i V2-økta slik at live-flyten viser drillene med bank-kobling
- *  (TrainingDrillV2.exerciseId). Uten dette hadde plan-genererte V2-økter
- *  ingen driller i live-visningen. Kun for PLANNED-økter — en påbegynt/
- *  fullført økt har drill-logger (DrillLogV2, cascade) som aldri skal slettes
- *  av en plan-redigering. */
-async function speilDrillerTilV2(planSessionId: string, v2Id: string): Promise<void> {
-  const v2 = await prisma.trainingSessionV2.findUnique({
-    where: { id: v2Id },
-    select: { status: true },
+/**
+ * Synk V2-speilet fra plan-økt-id alene — for mutasjonsflater som ikke har
+ * feltene for hånden (admin/plans, AI-executor, legacy planlegge).
+ */
+export async function syncV2FromPlanSessionId(planSessionId: string): Promise<void> {
+  const s = await prisma.trainingPlanSession.findUnique({
+    where: { id: planSessionId },
+    select: {
+      id: true,
+      title: true,
+      scheduledAt: true,
+      durationMin: true,
+      pyramidArea: true,
+      miljo: true,
+      plan: { select: { userId: true, createdById: true } },
+    },
   });
-  if (!v2 || v2.status !== "PLANNED") return;
-
-  const drills = await prisma.sessionDrill.findMany({
-    where: { sessionId: planSessionId },
-    orderBy: { orderIndex: "asc" },
-    include: { exercise: { select: { name: true, description: true, pyramidArea: true } } },
-  });
-
-  await prisma.trainingDrillV2.deleteMany({ where: { sessionId: v2Id } });
-  if (drills.length === 0) return;
-
-  await prisma.trainingDrillV2.createMany({
-    data: drills.map((d, i) => ({
-      sessionId: v2Id,
-      exerciseId: d.exerciseId,
-      sortOrder: i,
-      name: d.exercise.name,
-      description: d.exercise.description,
-      // durationMinutes er påkrevd på TrainingDrillV2 — bruk drillens minutter
-      // når satt, ellers en nøktern standard (10 min).
-      durationMinutes: d.repMinutter ?? 10,
-      repetitions: d.reps,
-      pyramide: d.pyramidArea ?? d.exercise.pyramidArea,
-      lFase: d.lFase,
-      csNivaa: d.csNivaa,
-      miljo: d.miljo,
-      prPress: d.prPress,
-      repType: d.repType,
-      repAntall: d.repAntall,
-      repMinutter: d.repMinutter,
-      repSett: d.repSett,
-      repReps: d.repReps,
-      notes: d.notes,
-    })),
+  if (!s) return;
+  await upsertV2ForPlanSession({
+    planSessionId: s.id,
+    playerId: s.plan.userId,
+    title: s.title,
+    scheduledAt: s.scheduledAt,
+    durationMin: s.durationMin,
+    pyramidArea: s.pyramidArea,
+    coachId: s.plan.createdById,
+    miljo: s.miljo,
   });
 }
 

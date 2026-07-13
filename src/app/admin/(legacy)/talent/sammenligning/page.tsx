@@ -23,7 +23,7 @@ export default async function TalentSammenligningPage({
 }: {
   searchParams: Search;
 }) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const viewer = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   const sp = await searchParams;
   const ids = (sp.ids ?? "")
@@ -31,10 +31,10 @@ export default async function TalentSammenligningPage({
     .map((s) => s.trim())
     .filter(Boolean);
 
-  let data = await loadMultiCompare(ids);
+  let data = await loadMultiCompare(ids, viewer);
   if (data.players.length === 0) {
     const standard = data.cohort.slice(0, 3).map((c) => c.userId);
-    if (standard.length > 0) data = await loadMultiCompare(standard);
+    if (standard.length > 0) data = await loadMultiCompare(standard, viewer);
   }
 
   return (

@@ -775,6 +775,24 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   lenger, analyse-actions IDOR-vernet. Verifikasjon: tsc 0 feil + ESLint grønt lokalt (miljø uten
   DB-secrets), full build grønn i Vercel-preview per bølge. Playwright-e2e gjenstår (krever DB) —
   kjøres i preview før merge.
+- 13. juli (feilretts-runde fra Anders' mobil-skjermbilder + full feilklasse-gjennomgang, 10 steg):
+  **Rotårsak funnet og fikset — live-økter fikk ALDRI drills:** plan→live-speilingen
+  (`upsertV2ForPlanSession`) kopierte aldri SessionDrill → TrainingDrillV2 (`trainingDrillV2.create`
+  fantes ikke i kodebasen). Nå speiles drillene (replace, kun PLANNED-økter), og backfill-script
+  ryddet basen (+4 foreldreløse speil slettet). **Status-synk begge veier:** «Gjort/Hopp over»
+  traff 0 rader pga. feil `generertFra`-streng; live-fullføring skrev aldri tilbake til plan-økta
+  (etterlevelsen lyver ikke lenger). **Alle mutasjonsflater synker nå V2:** /admin/plans (flytt/
+  avlys/oppdater/slett/opprett + plan-sletting), AI-executor og legacy planlegge. **«Ny økt» =
+  «Rediger økt» (Anders' krav):** ett felles økt-ark med L-fase, miljø og full drill-editor i begge;
+  delt drill-skrivehelper for create+update (spiller OG coach); biblioteks-økter tar med drillsJson-
+  innholdet inn i arket. **Gjør-flatens live-avspiller:** mørk forest-flate (var lys shadcn), én
+  tittel, ærlig tom-tilstand ved 0 drills, timer tikker fra start. **Mobil:** bunn-nav-klaring
+  safe-area-bevisst i V2Shell (+3 headere utenfor shellen fikk topp-klaring), coldstart-malkort i
+  1 kolonne uten navn-kutt. **Lastet-men-ikke-koblet:** gruppetider vises nå i Workbench-uka;
+  døde dirBDays/kanbanCols fjernet fra loaderen. Verifisert: tsc+build grønt, drill-speiling
+  DB-testet (idempotent), Playwright mobil 375px — «Ny økt»-arket med alle felter (screenshot),
+  full kjede UI→plan-drills→live-drills, tom-økt-flaten mørk med tikkende timer (screenshot).
+  Utsatt (ærlig): scrollhint-fade på 4 overflow-rader (krever målt-overflow-mønster, v2-runde).
 - 12. juli (WAGR-synk, del 2): **ekstern henting fra wagr.com er PÅ** — Anders godkjente skånsom
   ukentlig henting (alternativ 1). `hentEksterneProfiler` i `wagr-sync.ts` leser profilsidenes
   server-rendrede `__NEXT_DATA__`-JSON (validert med zod), sekvensielt med 700 ms pause og

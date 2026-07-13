@@ -7,7 +7,7 @@
  */
 
 import { dagensStartUTC } from "@/lib/dato";
-import { coachedPlayerWhere } from "@/lib/auth/coached";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -236,7 +236,7 @@ export default async function AgentDetaljPage({
   } else if (agentId === "peaking") {
     const [players, tournaments] = await Promise.all([
       prisma.user.findMany({
-        where: { AND: [coachedPlayerWhere(), { deletedAt: null }] },
+        where: { AND: [coachScopedPlayerWhere(user), { deletedAt: null }] },
         orderBy: { name: "asc" },
         take: 200,
         select: { id: true, name: true },

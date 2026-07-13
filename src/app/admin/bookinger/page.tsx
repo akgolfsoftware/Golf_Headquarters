@@ -119,8 +119,10 @@ export default async function V2AdminBookingerPage() {
       .reduce((sum, b) => sum + b.priceOre, 0) / 100,
   );
 
-  const ventendeBookinger = bookinger.filter((b) => b.status === "PENDING").length;
-  const foresporsler = ventendeBookinger + ventendeForesporsler;
+  // Ærlig KPI: «Forespørsler» = ubehandlede sessionRequests (alle PENDING) —
+  // samme tall som Forespørsler-køen banneren peker på. Ventende bookinger
+  // (kun denne uka) blandes ikke inn; de vises som PENDING i lista under.
+  const foresporsler = ventendeForesporsler;
   const lokasjon = facilities[0]?.location.name ?? "Alle anlegg";
 
   const rader: AdminBookingV2Row[] = bookinger.map((b) => {

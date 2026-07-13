@@ -14,6 +14,7 @@
 import { revalidatePath } from "next/cache";
 import type { PyramidArea, RepType, SkillArea } from "@/generated/prisma/client";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel";
 
@@ -199,6 +200,13 @@ async function sessionForAccess(sessionId: string) {
   if (!isCoach && session.plan.userId !== user.id) {
     return { ok: false as const, error: "Ingen tilgang" };
   }
+  if (
+    isCoach &&
+    session.plan.userId !== user.id &&
+    !(await harCoachTilgangTilSpiller(user, session.plan.userId))
+  ) {
+    return { ok: false as const, error: "Du har ikke tilgang til denne spilleren." };
+  }
   return { ok: true as const, playerId: session.plan.userId, isCoach };
 }
 
@@ -291,12 +299,15 @@ export async function updateSessionDrill(
     volum?: DrillVolumInput;
   },
 ): Promise<{ ok: boolean; drill?: WbDrill; error?: string }> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const drill = await prisma.sessionDrill.findUnique({
     where: { id: drillId },
     select: { id: true, session: { select: { id: true, plan: { select: { userId: true } } } } },
   });
   if (!drill) return { ok: false, error: "Drill ikke funnet" };
+  if (!(await harCoachTilgangTilSpiller(user, drill.session.plan.userId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+  }
 
   const updated = await prisma.sessionDrill.update({
     where: { id: drillId },
@@ -348,12 +359,15 @@ export async function updateAllDrillsInSession(
 
 /** Slett en drill (coach). */
 export async function deleteSessionDrill(drillId: string): Promise<{ ok: boolean; error?: string }> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const drill = await prisma.sessionDrill.findUnique({
     where: { id: drillId },
     select: { id: true, session: { select: { plan: { select: { userId: true } } } } },
   });
   if (!drill) return { ok: false, error: "Drill ikke funnet" };
+  if (!(await harCoachTilgangTilSpiller(user, drill.session.plan.userId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+  }
   await prisma.sessionDrill.delete({ where: { id: drillId } });
   revalidatePath("/admin/spillere/" + drill.session.plan.userId + "/workbench");
   revalidatePath("/portal/planlegge/workbench");

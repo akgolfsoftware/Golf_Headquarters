@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { sendPush } from "@/lib/push/send";
 import type { PlanStatus } from "@/generated/prisma/client";
@@ -78,6 +79,9 @@ export async function hentPubliserDiff(
   const user = await requirePortalUser(
     playerId ? { allow: ["COACH", "ADMIN"] } : { allow: ["PLAYER", "COACH", "ADMIN"] },
   );
+  if (playerId && !(await harCoachTilgangTilSpiller(user, playerId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+  }
   const targetUserId = playerId ?? user.id;
   const plan = await hentPlanOgOkter(targetUserId);
   if (!plan) return { ok: false, error: "Ingen plan" };
@@ -138,6 +142,9 @@ export async function publishWorkbenchPlan(
   const user = await requirePortalUser(
     playerId ? { allow: ["COACH", "ADMIN"] } : { allow: ["PLAYER", "COACH", "ADMIN"] },
   );
+  if (playerId && !(await harCoachTilgangTilSpiller(user, playerId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+  }
 
   const targetUserId = playerId ?? user.id;
   if (!playerId && user.id !== targetUserId) {

@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
 import { CreditMeter } from "@/components/portal/abonnement/credit-meter";
 import { getAvailableSlots } from "@/lib/booking/availability";
 import { DatoVelger } from "./_components/dato-velger";
@@ -54,10 +55,11 @@ export default async function NyBookingPage({ searchParams }: Props) {
     where: { userId: user.id },
   });
 
-  // Ingen aktivt abonnement eller PlayerHQ-only (uten credits) → send til /coaching
+  // Ingen betalt abonnement (aktivt, eller avbestilt med tid igjen av perioden)
+  // eller PlayerHQ-only (uten credits) → send til /coaching
   if (
     !subscription ||
-    subscription.status !== "ACTIVE" ||
+    !kanBrukeCredits(subscription) ||
     subscription.monthlyCredits === 0
   ) {
     redirect("/coaching");

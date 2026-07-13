@@ -59,7 +59,7 @@ export default async function GruppeTimeplanPage({
     focusId: focus ?? null,
   };
 
-  async function opprettAction(formData: FormData) {
+  async function opprettAction(formData: FormData): Promise<{ ok: true } | { ok: false; feil: string }> {
     "use server";
     const title = formData.get("title") as string;
     const description = formData.get("description") as string | null;
@@ -73,7 +73,8 @@ export default async function GruppeTimeplanPage({
     const startAt = new Date(`${dato}T${tid}`);
     const endAt = new Date(startAt.getTime() + varighetMin * 60000);
 
-    await opprettGruppeTrening(groupId, {
+    // Resultatet returneres til klienten så feil (ugyldig dato/tid, DB) vises ved skjemaet.
+    return opprettGruppeTrening(groupId, {
       title,
       description: description || undefined,
       startAt,

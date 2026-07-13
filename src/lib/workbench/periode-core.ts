@@ -6,6 +6,7 @@
  * userId (samme mønster som apply-template-actions/duplicate-week).
  */
 
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { PeriodeInputSchema, type PeriodeInput } from "@/lib/workbench/perioder";
 
@@ -24,7 +25,9 @@ function tilData(input: PeriodeInput) {
     focus: input.fokus || null,
     weeklyVolMin: input.ukevolumMin ?? null,
     weeklyVolMax: input.ukevolumMax ?? null,
-    weeklySessionBudget: budsjett ?? undefined,
+    // Prisma.DbNull nullstiller Json?-feltet ved update (undefined = «ikke rør»).
+    // Leses tilbake som null — parseSessionBudget håndterer det.
+    weeklySessionBudget: budsjett ?? Prisma.DbNull,
   };
 }
 

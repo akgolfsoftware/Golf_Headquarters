@@ -8,6 +8,7 @@
  */
 
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { PeriodeInputSchema } from "@/lib/workbench/perioder";
@@ -34,7 +35,9 @@ export async function coachLagreGruppePeriode(
     focus: v.fokus || null,
     weeklyVolMin: v.ukevolumMin ?? null,
     weeklyVolMax: v.ukevolumMax ?? null,
-    weeklySessionBudget: budsjett ?? undefined,
+    // Prisma.DbNull nullstiller Json?-feltet ved update (undefined = «ikke rør»).
+    // Leses tilbake som null — parseSessionBudget håndterer det.
+    weeklySessionBudget: budsjett ?? Prisma.DbNull,
   };
 
   if (periodeId) {

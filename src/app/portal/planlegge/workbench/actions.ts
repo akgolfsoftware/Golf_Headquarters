@@ -5,7 +5,13 @@
  * Persisterer perioder, samlinger, fasiliteter og plan-varianter.
  */
 
-import { executeSessionUpdate, type SessionUpdateInput } from "@/lib/workbench/session-update";
+import {
+  executeSessionUpdate,
+  skrivSessionDrills,
+  OktDrillSchema,
+  type OktDrillInput,
+  type SessionUpdateInput,
+} from "@/lib/workbench/session-update";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -541,10 +547,15 @@ export async function addWorkbenchSession(input: {
   weekOffset?: number;
   /** AK-formel fra palette-malen / valgt økt (renses server-side). */
   akFormel?: AkFormelInput;
+  /** Driller fra økt-arket — samme kontrakt som updateSession (replace). */
+  drills?: OktDrillInput[];
 }): Promise<{ ok: boolean; sessionId?: string; error?: string }> {
   const user = await requirePortalUser();
   if (input.dayIndex < 0 || input.dayIndex > 6) return { ok: false, error: "Ugyldig dag" };
   const area = PYRAMID_AREAS.includes(input.area) ? input.area : "TEK";
+
+  const drillsParsed = z.array(OktDrillSchema).max(20).optional().safeParse(input.drills);
+  if (!drillsParsed.success) return { ok: false, error: "Ugyldig drill-liste" };
 
   // Heng økta på spillerens nyeste/aktive plan, eller opprett en hvis ingen finnes.
   let plan = await prisma.trainingPlan.findFirst({
@@ -593,6 +604,16 @@ export async function addWorkbenchSession(input: {
       pyramidArea: true,
     },
   });
+
+  // Driller skrives FØR V2-speilingen, så live-økta får dem med seg.
+  if (drillsParsed.data && drillsParsed.data.length > 0) {
+    await skrivSessionDrills(prisma, {
+      sessionId: created.id,
+      drills: drillsParsed.data,
+      fallbackPyramidArea: created.pyramidArea,
+      playerId: user.id,
+    });
+  }
 
   await upsertV2ForPlanSession({
     planSessionId: created.id,

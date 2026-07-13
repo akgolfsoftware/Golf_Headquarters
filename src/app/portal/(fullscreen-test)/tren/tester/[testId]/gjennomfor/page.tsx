@@ -49,7 +49,7 @@ export default async function GjennomforTestPage({
   const { foran, accent } = delTittel(test.name);
 
   return (
-    <div className="mx-auto w-full max-w-[460px] px-4 pb-8 pt-4 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
+    <div className="mx-auto w-full max-w-[460px] px-4 pb-8 pt-[calc(16px+env(safe-area-inset-top))] sm:px-5 md:max-w-[860px] md:px-8 md:pt-6">
       {/* Editorial light header — mono eyebrow + display-tittel m/ forest-kursiv aksent (hybrid) */}
       <div className="flex items-baseline justify-between gap-3">
         <span className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">

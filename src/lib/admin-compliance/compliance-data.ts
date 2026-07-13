@@ -15,7 +15,7 @@
  * Mangler ekte tall → tom/utledet state. ALDRI falske tall.
  */
 
-import { coachedPlayerWhere } from "@/lib/auth/coached";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea } from "@/generated/prisma/client";
 
@@ -278,8 +278,9 @@ export async function loadComplianceData(opts: {
   windowDays: number;
   periodLabel: string;
   selectedPlayerId?: string;
+  viewer: { id: string; role: string };
 }): Promise<ComplianceData> {
-  const { windowDays, periodLabel } = opts;
+  const { windowDays, periodLabel, viewer } = opts;
   const now = new Date();
   const from = new Date(now);
   from.setDate(from.getDate() - windowDays);
@@ -293,7 +294,7 @@ export async function loadComplianceData(opts: {
 
   // Alle PLAYER-spillere
   const players = await prisma.user.findMany({
-    where: { AND: [coachedPlayerWhere(), { deletedAt: null }] },
+    where: { AND: [coachScopedPlayerWhere(viewer), { deletedAt: null }] },
     select: { id: true, name: true, hcp: true, homeClub: true },
     orderBy: { name: "asc" },
   });

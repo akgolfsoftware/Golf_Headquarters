@@ -12,10 +12,23 @@
  * mal-uke 1), og AI-ukeforslag der actions.suggestWeek finnes.
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { T, Kort, Knapp, Icon, TomTilstand } from "@/components/v2";
 import type { WorkbenchData, WorkbenchPlanTemplate } from "@/lib/workbench/load-workbench";
 import { LPHASE_LABEL } from "./WorkbenchV2";
+
+/** Samme mobil-guard som MinProfilV2 m.fl. (default desktop → ikke hydrerings-hopp). */
+function useMobile(): boolean {
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const on = () => setMobile(mq.matches);
+    on();
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+  return mobile;
+}
 
 export function WorkbenchColdstart({
   data,
@@ -35,6 +48,7 @@ export function WorkbenchColdstart({
   /** 8c.2: års-først-flyten — hopp til årsplan-canvaset og legg periodiseringen først. */
   onAarsplan?: () => void;
 }) {
+  const mobile = useMobile();
   const [valgtMal, setValgtMal] = useState<string | null>(null);
   const [brukerMal, setBrukerMal] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
@@ -52,7 +66,7 @@ export function WorkbenchColdstart({
   };
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", padding: "40px 24px" }}>
+    <div style={{ display: "flex", justifyContent: "center", padding: mobile ? "28px 4px" : "40px 24px" }}>
       <div style={{ width: 540, maxWidth: "100%" }}>
         {/* Hode — 1:1 fra fasit: ikon-badge + tittel + undertekst */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 12, marginBottom: 28 }}>
@@ -88,7 +102,8 @@ export function WorkbenchColdstart({
             {maler.length === 0 ? (
               <TomTilstand icon="layers" title="Ingen godkjente maler" sub="Lag en mal under Plan-maler først." />
             ) : (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              // 1 kolonne på mobil — 2-kol med ellipsis kuttet mal-navnene (funn 2026-07-13).
+              <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 8 }}>
                 {maler.slice(0, 6).map((m) => {
                   const on = valgtMal === m.id;
                   return (
@@ -105,7 +120,7 @@ export function WorkbenchColdstart({
                         transition: "all 120ms",
                       }}
                     >
-                      <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: on ? T.lime : T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{m.name}</div>
+                      <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: on ? T.lime : T.fg, lineHeight: 1.35 }}>{m.name}</div>
                       <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 2 }}>
                         {LPHASE_LABEL[m.lPhase] ?? m.lPhase} · {m.sessionCount} økter · {m.varighetUker} uker
                       </div>

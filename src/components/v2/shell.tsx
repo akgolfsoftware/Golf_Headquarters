@@ -117,6 +117,8 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
       { id: "team", label: "Team", icon: "users", href: "/admin/team" },
       { id: "email-templates", label: "E-postmaler", icon: "mail-check", href: "/admin/email-templates" },
       { id: "availability", label: "Tilgjengelighet", icon: "clock", href: "/admin/availability" },
+      { id: "kalender-synk", label: "Kalender-synk (Google)", icon: "refresh-cw", href: "/admin/settings/calendar" },
+      { id: "spiller-profil", label: "Min spillerprofil", icon: "user", href: "/portal" },
       { id: "services", label: "Tjenester og priser", icon: "credit-card", href: "/admin/services" },
       { id: "settings", label: "Innstillinger", icon: "settings", href: "/admin/settings" },
     ],
@@ -178,6 +180,34 @@ function useV2Tema() {
 }
 
 /** Sol/måne-knapp i railen (desktop). Viser det du BYTTER TIL. */
+/** Coach/Spiller-toggle (Anders 2026-07-13): coacher og admin har alt
+ *  tilgang til hele PlayerHQ (canAccessPortalRoute) — dette er den synlige
+ *  veksleren. I AgencyOS vises den alltid (alle der er coach/admin); i
+ *  PlayerHQ vises den kun når ak-coach-cookien finnes (settes ved besøk i
+ *  AgencyOS — spillere får den aldri). Cookien styrer KUN visning av
+ *  lenken; /admin-tilgangen håndheves av serverens guards som før. */
+function ProfilBytteKnapp({ erAgency }: { erAgency: boolean }) {
+  const erCoach = useSyncExternalStore(
+    (cb) => { window.addEventListener("focus", cb); return () => window.removeEventListener("focus", cb); },
+    () => document.cookie.includes("ak-coach=1"),
+    () => false,
+  );
+  if (!erAgency && !erCoach) return null;
+  const href = erAgency ? "/portal" : "/admin/agencyos";
+  const label = erAgency ? "Spiller-profil" : "Coach-profil";
+  return (
+    <Link
+      href={href}
+      title={label}
+      className="v2-press v2-focus"
+      style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 3, textDecoration: "none", color: T.mut, padding: "6px 0", width: "100%" }}
+    >
+      <Icon name={erAgency ? "user" : "clipboard-list"} size={16} />
+      <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.08em" }}>{erAgency ? "SPILLER" : "COACH"}</span>
+    </Link>
+  );
+}
+
 function TemaRailKnapp() {
   const { tema, bytt } = useV2Tema();
   const tilLys = tema === "dark";
@@ -287,7 +317,7 @@ function MerPanel({ grupper, onClose, mobil }: { grupper: V2NavGruppe[]; onClose
 }
 
 /** Smal ikon-rail (desktop) — ett Link-punkt per seksjon, lime-indikator på aktiv. */
-function IkonRailNav({ aktiv, nav, mer, navn, avatarUrl }: Required<Pick<V2ShellProps, "nav" | "navn">> & { aktiv?: string; mer?: V2NavGruppe[]; avatarUrl?: string | null }) {
+function IkonRailNav({ aktiv, nav, mer, navn, avatarUrl, erAgency }: Required<Pick<V2ShellProps, "nav" | "navn">> & { aktiv?: string; mer?: V2NavGruppe[]; avatarUrl?: string | null; erAgency?: boolean }) {
   const [merOpen, setMerOpen] = useState(false);
   return (
     <nav
@@ -311,6 +341,7 @@ function IkonRailNav({ aktiv, nav, mer, navn, avatarUrl }: Required<Pick<V2Shell
         </button>
       )}
       <div style={{ flex: 1, minHeight: 8 }} />
+      <ProfilBytteKnapp erAgency={!!erAgency} />
       <TemaRailKnapp />
       <AvatarFoto src={avatarUrl ?? undefined} navn={navn} size={32} ring />
       {merOpen && mer && <MerPanel grupper={mer} onClose={() => setMerOpen(false)} />}
@@ -417,6 +448,14 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
   // fra første paint uansett (var(--v2-*) + inline-script i rot-layout).
   const { tema } = useV2Tema();
 
+  // Coach-cookie for profil-veksleren: besøk i AgencyOS markerer nettleseren
+  // som coach (kun UI-visning av toggle-lenken i PlayerHQ; guards uendret).
+  useEffect(() => {
+    if (erAgency) {
+      document.cookie = "ak-coach=1; path=/; max-age=31536000; samesite=lax";
+    }
+  }, [erAgency]);
+
   return (
     <div
       className={tema}
@@ -430,12 +469,15 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
         display: "flex",
       }}
     >
-      <IkonRailNav aktiv={autoAktiv} nav={nav} mer={merGrupper} navn={navn} avatarUrl={avatarUrl} />
+      <IkonRailNav aktiv={autoAktiv} nav={nav} mer={merGrupper} navn={navn} avatarUrl={avatarUrl} erAgency={erAgency} />
       {/* Topp-luft inkluderer safe-area: i installert PWA på iPhone dekker
           innholdet statuslinje-området — uten env() kolliderer hilsen/avatar
           med klokka (Anders' mobil-funn 2026-07-13). Desktop: env() = 0. */}
+      {/* Bunn-luft må også regne med safe-area: BunnNavLenker vokser med
+          env(safe-area-inset-bottom), så fast pb-24 (96px) var mindre enn
+          nav-høyden på notch-iPhone → siste innholdselement lå bak nav-en. */}
       <div
-        className="px-4 md:px-8 pb-24 md:pb-9"
+        className="px-4 md:px-8 pb-[calc(96px+env(safe-area-inset-bottom))] md:pb-9"
         style={{ flex: 1, minWidth: 0, paddingTop: "calc(24px + env(safe-area-inset-top))" }}
       >
         <div style={{ maxWidth: maksBredde, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { sjekkKollisjon, erKollisjonsfeil } from "@/lib/booking/kollisjonsvern";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { audit } from "@/lib/audit";
 import { pushBookingToCalendar } from "@/lib/google-calendar";
@@ -45,7 +46,7 @@ export async function createCreditBooking(
   if (!subscription) {
     throw new Error("Du har ikke et aktivt abonnement.");
   }
-  if (subscription.status !== "ACTIVE") {
+  if (!kanBrukeCredits(subscription)) {
     throw new Error("Abonnementet ditt er ikke aktivt.");
   }
   if (subscription.monthlyCredits === 0) {
