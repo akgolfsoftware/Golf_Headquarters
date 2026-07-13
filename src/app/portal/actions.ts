@@ -7,6 +7,7 @@
 
 "use server";
 
+import { dagensStartUTC } from "@/lib/dato";
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea, PracticeType, SessionStatusV2 } from "@/generated/prisma/client";
@@ -478,8 +479,8 @@ export async function getNextTournament(userId: string): Promise<NextTournament 
       userId,
       entryStatus: { in: ["PLANNED", "CONFIRMED"] },
       OR: [
-        { tournamentId: { not: null }, tournament: { startDate: { gte: now } } },
-        { tournamentId: null, manualDate: { gte: now } },
+        { tournamentId: { not: null }, tournament: { startDate: { gte: dagensStartUTC(now) } } },
+        { tournamentId: null, manualDate: { gte: dagensStartUTC(now) } },
       ],
     },
     select: {

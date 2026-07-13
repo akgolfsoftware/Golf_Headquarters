@@ -12,6 +12,7 @@
  *   klienten mellom generering og lagring).
  */
 
+import { dagensStartUTC } from "@/lib/dato";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { genererPlan } from "@/lib/ai-plan/generate";
@@ -199,8 +200,8 @@ export async function hentByggerKontekstCore(user: ByggerBruker): Promise<Bygger
         userId: user.id,
         entryStatus: "PLANNED",
         OR: [
-          { manualDate: { gte: new Date() } },
-          { tournament: { startDate: { gte: new Date() } } },
+          { manualDate: { gte: dagensStartUTC() } },
+          { tournament: { startDate: { gte: dagensStartUTC() } } },
         ],
       },
       orderBy: { createdAt: "desc" },

@@ -4,6 +4,7 @@
  * Selve tilpasningslogikken bor i adapt-template.ts (ren/testbar).
  */
 
+import { dagensStartUTC } from "@/lib/dato";
 import { prisma } from "@/lib/prisma";
 import { kategoriFraFritekst, SG_FOKUS_LABEL, type WorkbenchFokus } from "@/lib/workbench/fokus";
 import { beregnSgGap } from "@/lib/workbench/sg-gap";
@@ -33,7 +34,7 @@ export async function hentPlayerSignals(userId: string, now = new Date()): Promi
     prisma.tournamentEntry.findFirst({
       where: {
         userId,
-        OR: [{ tournament: { startDate: { gte: now } } }, { manualDate: { gte: now } }],
+        OR: [{ tournament: { startDate: { gte: dagensStartUTC(now) } } }, { manualDate: { gte: dagensStartUTC(now) } }],
       },
       orderBy: [{ tournament: { startDate: "asc" } }, { manualDate: "asc" }],
       select: {

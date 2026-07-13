@@ -66,7 +66,7 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
       )}
       <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
         {!mobile && <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg2, cursor: "pointer" }}>Logg inn</span>}
-        {mobile ? <MMobilMeny aktiv={aktiv} /> : <MCta small>Kom i gang gratis</MCta>}
+        {mobile ? <MMobilMeny aktiv={aktiv} /> : <MCta small href="/auth/signup">Kom i gang gratis</MCta>}
       </span>
     </div>
   );
@@ -123,12 +123,11 @@ function SeksT({ mobile, children, em }: { mobile: boolean; children: ReactNode;
 function Lede({ children, style }: { children: ReactNode; style?: CSSProperties }) {
   return <p style={{ fontFamily: T.ui, fontSize: M.lede, color: T.fg2, lineHeight: 1.65, margin: 0, maxWidth: 560, ...style }}>{children}</p>;
 }
-function MCta({ children, ghost, small, icon }: { children: ReactNode; ghost?: boolean; small?: boolean; icon?: string }) {
-  return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontWeight: 600, fontSize: small ? 13 : 15, color: ghost ? T.fg : T.onLime, background: ghost ? T.panel3 : T.lime, border: ghost ? `1px solid ${T.borderS}` : "none", borderRadius: 9999, padding: small ? "9px 18px" : "14px 28px", cursor: "pointer", whiteSpace: "nowrap" }}>
-      {children}{icon && <Icon name={icon} size={small ? 13 : 15} />}
-    </span>
-  );
+function MCta({ children, ghost, small, icon, href }: { children: ReactNode; ghost?: boolean; small?: boolean; icon?: string; href?: string }) {
+  const style: CSSProperties = { display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontWeight: 600, fontSize: small ? 13 : 15, color: ghost ? T.fg : T.onLime, background: ghost ? T.panel3 : T.lime, border: ghost ? `1px solid ${T.borderS}` : "none", borderRadius: 9999, padding: small ? "9px 18px" : "14px 28px", cursor: "pointer", whiteSpace: "nowrap", textDecoration: "none" };
+  const inner = (<>{children}{icon && <Icon name={icon} size={small ? 13 : 15} />}</>);
+  if (href) return <Link href={href} style={style}>{inner}</Link>;
+  return <span style={style}>{inner}</span>;
 }
 function Seksjon({ mobile, children, style }: { mobile: boolean; children: ReactNode; style?: CSSProperties }) {
   return <div style={{ padding: mobile ? M.padM : M.padD, ...style }}><div style={{ maxWidth: M.maxw, margin: "0 auto" }}>{children}</div></div>;
@@ -220,7 +219,7 @@ export function MarkedCoachingV2() {
                 <span style={{ display: "block", fontFamily: T.ui, fontSize: 12.5, color: T.mut, marginTop: 2 }}>Head Coach, AK Golf Academy</span>
               </span>
             </div>
-            <div style={{ marginTop: 26 }}><MCta>Book en samtale</MCta></div>
+            <div style={{ marginTop: 26 }}><MCta href="/booking">Book en samtale</MCta></div>
           </div>
           <Foto navn="Markus Røinås Pedersen" mobile={mobile} src="/images/akademy/coach-observerer.jpg" />
         </div>
@@ -241,7 +240,7 @@ export function MarkedCoachingV2() {
                 {p.pkt.map((x) => <Punkt key={x}>{x}</Punkt>)}
               </div>
               <div style={{ marginTop: 22 }}>
-                <MCta ghost={!p.frem} small>Book en samtale</MCta>
+                <MCta ghost={!p.frem} small href="/booking">Book en samtale</MCta>
               </div>
             </Kort>
           ))}
@@ -259,7 +258,7 @@ export function MarkedCoachingV2() {
               <SeksT mobile={mobile} em="samtale">Start med en</SeksT>
               <p style={{ fontFamily: T.ui, fontSize: 14, color: T.fg2, lineHeight: 1.6, margin: "10px 0 0", maxWidth: 480 }}>Uforpliktende prat om spillet ditt og hva du vil oppnå. Så finner vi opplegget som passer.</p>
             </div>
-            <MCta icon="arrow-right">Book en samtale</MCta>
+            <MCta icon="arrow-right" href="/booking">Book en samtale</MCta>
           </div>
         </Kort>
       </Seksjon>

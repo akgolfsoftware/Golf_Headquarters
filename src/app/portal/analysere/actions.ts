@@ -6,6 +6,8 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
+import { erCoachetSpiller } from "@/lib/auth/coached";
 import type {
   PyramidArea,
   ShotLie,
@@ -162,10 +164,23 @@ export type AnalyticsWorkbenchData = {
 
 // ── Training stats ──────────────────────────────────────────────────────────
 
+
+/* Feilfiks 5.2 (2026-07-13): disse er eksporterte server actions og kunne
+   kalles fra klient med VILKÅRLIG userId (IDOR — les andres treningsdata).
+   Hver eksportert leser krever nå: egen bruker, eller coach/admin mot en
+   coachet spiller (I0-porten). */
+async function krevTilgangTilSpiller(userId: string): Promise<void> {
+  const user = await requireConsentingUser();
+  if (user.id === userId) return;
+  if ((user.role === "COACH" || user.role === "ADMIN") && (await erCoachetSpiller(userId))) return;
+  throw new Error("forbidden");
+}
+
 export async function getTrainingStats(
   userId: string,
   period: "7d" | "30d" | "90d" | "1y" | "all" = "30d",
 ): Promise<TrainingStats> {
+  await krevTilgangTilSpiller(userId);
   const from = startOfPeriod(period);
   // Øvre grense = nå: planlagte fremtidige økter er ikke gjennomført trening
   // og skal aldri telle i volum eller «Siste økter».
@@ -256,6 +271,7 @@ export async function getRoundStats(
   userId: string,
   period: "7d" | "30d" | "90d" | "1y" | "all" = "all",
 ): Promise<RoundStats> {
+  await krevTilgangTilSpiller(userId);
   const from = startOfPeriod(period);
 
   const roundsRaw = await prisma.round.findMany({
@@ -294,6 +310,7 @@ export async function getRoundStats(
 }
 
 export async function getRoundDetail(userId: string, roundId: string): Promise<RoundDetail | null> {
+  await krevTilgangTilSpiller(userId);
   const round = await prisma.round.findFirst({
     where: { id: roundId, userId },
     include: {
@@ -342,6 +359,7 @@ export async function getTournamentResults(
   userId: string,
   period: "7d" | "30d" | "90d" | "1y" | "all" = "all",
 ): Promise<TournamentListItem[]> {
+  await krevTilgangTilSpiller(userId);
   const from = startOfPeriod(period);
 
   const entries = await prisma.tournamentEntry.findMany({
@@ -384,6 +402,7 @@ export async function getTestResults(
   userId: string,
   period: "7d" | "30d" | "90d" | "1y" | "all" = "all",
 ): Promise<TestListItem[]> {
+  await krevTilgangTilSpiller(userId);
   const from = startOfPeriod(period);
 
   const results = await prisma.testResult.findMany({
@@ -412,6 +431,7 @@ export async function getTrackManData(
   userId: string,
   period: "7d" | "30d" | "90d" | "1y" | "all" = "30d",
 ): Promise<TrackManData> {
+  await krevTilgangTilSpiller(userId);
   const from = startOfPeriod(period);
 
   const sessions = await prisma.trackManSession.findMany({
@@ -495,6 +515,7 @@ export async function getTrackManData(
 // ── Goals ───────────────────────────────────────────────────────────────────
 
 export async function getGoals(userId: string): Promise<GoalListItem[]> {
+  await krevTilgangTilSpiller(userId);
   const goals = await prisma.goal.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
@@ -549,6 +570,7 @@ async function getSgBreakdown(userId: string): Promise<SgBreakdown> {
 export async function loadAnalyticsWorkbenchData(
   userId: string,
 ): Promise<AnalyticsWorkbenchData> {
+  await krevTilgangTilSpiller(userId);
   const [training, rounds, tournaments, tests, trackman, goals, courses, sgBreakdown] = await Promise.all([
     getTrainingStats(userId, "30d"),
     getRoundStats(userId, "all"),

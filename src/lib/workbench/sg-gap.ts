@@ -50,27 +50,32 @@ export async function beregnSgGap(
     orderBy: { dato: "desc" },
     select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
   });
+
+  const verdier: Partial<Record<SgKategori, number>> = {};
   if (input) {
-    const verdier: Partial<Record<SgKategori, number>> = {};
     for (const [kategori, felt] of KATEGORI_FELT) {
       const v = input[felt];
       if (v != null) verdier[kategori] = v;
     }
-    return lavesteKategori(verdier);
   }
 
-  const runder = await prisma.round.findMany({
-    where: { userId, OR: harKategoritall },
-    orderBy: { playedAt: "desc" },
-    take: 8,
-    select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
-  });
-  if (runder.length === 0) return null;
-
-  const snitt: Partial<Record<SgKategori, number>> = {};
-  for (const [kategori, felt] of KATEGORI_FELT) {
-    const tall = runder.map((r) => r[felt]).filter((v): v is number => v != null);
-    if (tall.length > 0) snitt[kategori] = tall.reduce((a, b) => a + b, 0) / tall.length;
+  // Feilfiks 4.2 (2026-07-13): en DELVIS SG-input (f.eks. kun putting) skygget
+  // tidligere for hele runde-snittet — fokus landet alltid på den ene innfylte
+  // kategorien. Manglende kategorier fylles nå fra siste 8 runder, så gapet
+  // sammenlignes på tvers av alle fire.
+  if (Object.keys(verdier).length < KATEGORI_FELT.length) {
+    const runder = await prisma.round.findMany({
+      where: { userId, OR: harKategoritall },
+      orderBy: { playedAt: "desc" },
+      take: 8,
+      select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+    });
+    for (const [kategori, felt] of KATEGORI_FELT) {
+      if (verdier[kategori] != null) continue;
+      const tall = runder.map((r) => r[felt]).filter((v): v is number => v != null);
+      if (tall.length > 0) verdier[kategori] = tall.reduce((a, b) => a + b, 0) / tall.length;
+    }
   }
-  return lavesteKategori(snitt);
+
+  return lavesteKategori(verdier);
 }

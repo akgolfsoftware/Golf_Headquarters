@@ -68,7 +68,7 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
       )}
       <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
         {!mobile && <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg2, cursor: "pointer" }}>Logg inn</span>}
-        {mobile ? <MMobilMeny aktiv={aktiv} /> : <MCta small>Kom i gang gratis</MCta>}
+        {mobile ? <MMobilMeny aktiv={aktiv} /> : <MCta small href="/auth/signup">Kom i gang gratis</MCta>}
       </span>
     </div>
   );
@@ -123,12 +123,11 @@ function Lede({ children, style }: { children: ReactNode; style?: CSSProperties 
   return <p style={{ fontFamily: T.ui, fontSize: M.lede, color: T.fg2, lineHeight: 1.65, margin: 0, maxWidth: 560, ...style }}>{children}</p>;
 }
 
-function MCta({ children, ghost, small, icon }: { children: ReactNode; ghost?: boolean; small?: boolean; icon?: string }) {
-  return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontWeight: 600, fontSize: small ? 13 : 15, color: ghost ? T.fg : T.onLime, background: ghost ? T.panel3 : T.lime, border: ghost ? `1px solid ${T.borderS}` : "none", borderRadius: 9999, padding: small ? "9px 18px" : "14px 28px", cursor: "pointer", whiteSpace: "nowrap" }}>
-      {children}{icon && <Icon name={icon} size={small ? 13 : 15} />}
-    </span>
-  );
+function MCta({ children, ghost, small, icon, href }: { children: ReactNode; ghost?: boolean; small?: boolean; icon?: string; href?: string }) {
+  const style: CSSProperties = { display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontWeight: 600, fontSize: small ? 13 : 15, color: ghost ? T.fg : T.onLime, background: ghost ? T.panel3 : T.lime, border: ghost ? `1px solid ${T.borderS}` : "none", borderRadius: 9999, padding: small ? "9px 18px" : "14px 28px", cursor: "pointer", whiteSpace: "nowrap", textDecoration: "none" };
+  const inner = (<>{children}{icon && <Icon name={icon} size={small ? 13 : 15} />}</>);
+  if (href) return <Link href={href} style={style}>{inner}</Link>;
+  return <span style={style}>{inner}</span>;
 }
 
 function Seksjon({ mobile, children, style }: { mobile: boolean; children: ReactNode; style?: CSSProperties }) {
@@ -195,7 +194,7 @@ export function MarkedPriserV2() {
               <Punkt>Coaching-pakke: Performance eller Performance Pro</Punkt>
               <Punkt>Gruppe via AK Golf, som WANG eller klubbtrening</Punkt>
             </div>
-            <div style={{ marginTop: 22 }}><MCta ghost small>Kom i gang gratis</MCta></div>
+            <div style={{ marginTop: 22 }}><MCta ghost small href="/auth/signup">Kom i gang gratis</MCta></div>
           </Kort>
 
           <Kort tint pad="26px 26px 28px" style={{ borderColor: "rgba(209,248,67,0.35)" }}>
@@ -215,7 +214,7 @@ export function MarkedPriserV2() {
               <Punkt>AI-caddie og prioritert støtte</Punkt>
             </div>
             <div style={{ marginTop: 22, display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-              <MCta small>Velg Pro</MCta>
+              <MCta small href="/auth/signup?subscribe=pro">Velg Pro</MCta>
               <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>Eller 2 690 kr/år, to måneder gratis.</span>
             </div>
           </Kort>

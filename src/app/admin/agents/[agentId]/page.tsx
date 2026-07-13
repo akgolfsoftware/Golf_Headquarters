@@ -6,6 +6,7 @@
  * og gjenbrukes som de er.
  */
 
+import { dagensStartUTC } from "@/lib/dato";
 import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -241,7 +242,7 @@ export default async function AgentDetaljPage({
         select: { id: true, name: true },
       }),
       prisma.tournament.findMany({
-        where: { startDate: { gte: new Date() } },
+        where: { startDate: { gte: dagensStartUTC() } },
         orderBy: { startDate: "asc" },
         take: 50,
         select: { id: true, name: true, startDate: true },

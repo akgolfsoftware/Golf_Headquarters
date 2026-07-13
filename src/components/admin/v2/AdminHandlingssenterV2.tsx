@@ -25,6 +25,7 @@
  */
 
 import { useMemo, useState } from "react";
+import { markerOppgaveFullfort } from "@/app/admin/handlingssenter/actions";
 import {
   Caps,
   Tittel,
@@ -34,7 +35,6 @@ import {
   StatusPill,
   KpiFlis,
   PillTabs,
-  CTAPill,
   Knapp,
   TomTilstand,
   InnsiktChip,
@@ -181,6 +181,7 @@ export function AdminHandlingssenterV2({ data, meg }: { data: AdminHandlingssent
   const [ferdigSett, setFerdigSett] = useState<ReadonlySet<string>>(() => new Set());
   const [valgtId, setValgtId] = useState<string | null>(data.oppgaver[0]?.id ?? null);
   const [arkAapen, setArkAapen] = useState(false);
+  const [fullforMelding, setFullforMelding] = useState<string | null>(null);
 
   // Optimistisk lokal «merk fullført»: kilde-raden endres ikke, vi overstyrer
   // status via ferdigSett (samme effekt som originalens lokale mutasjon).
@@ -214,8 +215,22 @@ export function AdminHandlingssenterV2({ data, meg }: { data: AdminHandlingssent
     setValgtId(id);
     setArkAapen(true);
   }
+  // Feilfiks 2.1 (2026-07-13): «Merk fullført» var kun lokal state og forsvant
+  // ved refresh. Nå: optimistisk UI + ekte server-action som skriver statusen
+  // tilbake til Notion (kilden) og cachen; rulles tilbake ved feil.
   function markFullfør(id: string) {
     setFerdigSett((forr) => new Set(forr).add(id));
+    setFullforMelding(null);
+    void markerOppgaveFullfort(id).then((res) => {
+      if (!res.ok) {
+        setFerdigSett((forr) => {
+          const neste = new Set(forr);
+          neste.delete(id);
+          return neste;
+        });
+      }
+      if (res.error) setFullforMelding(res.error);
+    });
   }
 
   // ── Hode ──────────────────────────────────────────────────────
@@ -229,9 +244,9 @@ export function AdminHandlingssenterV2({ data, meg }: { data: AdminHandlingssent
           <Tittel em="senter.">Handlings</Tittel>
         </div>
       </div>
-      <div className="hidden md:inline-flex">
-        <CTAPill icon="plus">Ny oppgave</CTAPill>
-      </div>
+      {/* «Ny oppgave» var en død knapp (ingen mutasjon bak) — oppgavekilden er
+          Notion, så nye oppgaver opprettes der. Knappen er fjernet til en
+          ekte opprett-flyt finnes (ærlighets-regelen: aldri døde knapper). */}
     </div>
   );
 
@@ -357,6 +372,7 @@ export function AdminHandlingssenterV2({ data, meg }: { data: AdminHandlingssent
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
       {kpi}
+      {fullforMelding && <InnsiktChip>{fullforMelding}</InnsiktChip>}
       {filtre}
       <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
         {liste}

@@ -5,6 +5,7 @@
  * Henter og muterer planer, økter, drills, turneringer, mål og justeringer.
  */
 
+import { dagensStartUTC } from "@/lib/dato";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -126,7 +127,7 @@ export async function getWorkbenchData(weekStartInput?: string): Promise<Workben
         where: {
           userId: user.id,
           entryStatus: { in: ["PLANNED", "CONFIRMED"] },
-          OR: [{ tournament: { startDate: { gte: now } } }, { manualDate: { gte: now } }],
+          OR: [{ tournament: { startDate: { gte: dagensStartUTC(now) } } }, { manualDate: { gte: dagensStartUTC(now) } }],
         },
         orderBy: { createdAt: "asc" },
         take: 6,

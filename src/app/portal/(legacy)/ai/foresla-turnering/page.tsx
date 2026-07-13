@@ -5,6 +5,7 @@
  * sannsynligheter.
  */
 
+import { dagensStartUTC } from "@/lib/dato";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import {
@@ -56,7 +57,7 @@ export default async function ForeslaTurneringPage() {
       },
     }),
     prisma.tournament.findMany({
-      where: { startDate: { gte: now } },
+      where: { startDate: { gte: dagensStartUTC(now) } },
       orderBy: { startDate: "asc" },
       select: {
         id: true,
