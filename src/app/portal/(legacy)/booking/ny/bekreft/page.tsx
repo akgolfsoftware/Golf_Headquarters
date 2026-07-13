@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, Coins, Shield } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { BekreftForm } from "./bekreft-form";
 
@@ -24,7 +25,7 @@ export default async function BekreftCreditBookingPage({
   });
   if (
     !subscription ||
-    subscription.status !== "ACTIVE" ||
+    !kanBrukeCredits(subscription) ||
     subscription.monthlyCredits === 0
   ) {
     redirect("/coaching");

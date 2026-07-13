@@ -17,6 +17,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { beregnSlotVindu, type SlotVindu } from "@/lib/portal-booking/slot-vindu";
 import { createCreditBooking } from "@/lib/booking/credit-booking";
+import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
 import { stripeKlient } from "@/lib/stripe";
 import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
 
@@ -44,7 +45,7 @@ export async function opprettBooking(input: OpprettBookingInput): Promise<Oppret
   const subscription = await prisma.subscription.findUnique({ where: { userId: user.id } });
   const harCredits =
     !!subscription &&
-    subscription.status === "ACTIVE" &&
+    kanBrukeCredits(subscription) &&
     subscription.monthlyCredits > 0 &&
     subscription.creditsRemaining > 0;
 

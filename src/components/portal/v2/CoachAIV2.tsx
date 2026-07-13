@@ -78,6 +78,9 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
   const [feil, setFeil] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(data.sessionId);
   const scrollRef = useRef<HTMLDivElement>(null);
+  /** Generasjons-teller: økes ved «Ny samtale» slik at en pågående stream fra
+      en forkastet samtale aldri skriver sessionId/meldinger inn i den nye. */
+  const genRef = useRef(0);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -90,6 +93,7 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
     const tekst = input.trim();
     if (!tekst || sender) return;
 
+    const gen = genRef.current;
     const userMsg: ChatMelding = { role: "user", content: tekst };
     const nyHistorikk = [...meldinger, userMsg];
     setMeldinger([...nyHistorikk, { role: "assistant", content: "" }]);
@@ -110,7 +114,7 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
       }
 
       const nySessionId = res.headers.get("x-session-id");
-      if (nySessionId && nySessionId !== sessionId) setSessionId(nySessionId);
+      if (gen === genRef.current && nySessionId && nySessionId !== sessionId) setSessionId(nySessionId);
 
       const reader = res.body?.getReader();
       if (!reader) throw new Error("Ingen respons-stream");
@@ -120,6 +124,11 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
+        if (gen !== genRef.current) {
+          // Samtalen er forkastet («Ny samtale») — stopp streamen, rør ikke ny state.
+          await reader.cancel();
+          break;
+        }
         acc += decoder.decode(value, { stream: true });
         setMeldinger((m) => {
           const kopi = [...m];
@@ -128,14 +137,17 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
         });
       }
     } catch (err) {
-      setMeldinger((m) => m.slice(0, -1));
-      setFeil(err instanceof Error ? err.message : "Kunne ikke sende melding.");
+      if (gen === genRef.current) {
+        setMeldinger((m) => m.slice(0, -1));
+        setFeil(err instanceof Error ? err.message : "Kunne ikke sende melding.");
+      }
     } finally {
       setSender(false);
     }
   }
 
   function nySamtale() {
+    genRef.current += 1; // forkast ev. pågående stream
     setMeldinger([]);
     setSessionId(null);
     setInput("");
@@ -180,7 +192,7 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
             <AiMerke navn={`AI om ${fornavn}`} sub="Personlig kontekst" />
             <div style={{ display: "flex", gap: 8 }}>
               <Knapp ghost icon="download" onClick={eksporter} disabled={tom}>Eksporter</Knapp>
-              <Knapp ghost icon="plus" onClick={nySamtale}>Ny samtale</Knapp>
+              <Knapp ghost icon="plus" onClick={nySamtale} disabled={sender}>Ny samtale</Knapp>
             </div>
           </div>
 

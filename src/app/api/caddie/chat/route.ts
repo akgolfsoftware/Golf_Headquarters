@@ -10,7 +10,7 @@ import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 import { CADDIE_SYSTEM_PROMPT } from "@/lib/caddie/system-prompt";
-import { CADDIE_TOOLS } from "@/lib/caddie/tools";
+import { buildCaddieTools } from "@/lib/caddie/tools";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -119,7 +119,7 @@ export async function POST(req: Request) {
     model: anthropic(MODEL_ID),
     system: CADDIE_SYSTEM_PROMPT,
     messages: modelMessages,
-    tools: CADDIE_TOOLS,
+    tools: buildCaddieTools(user),
     // La modellen fortsette etter at et lese-verktøy er kjørt, så den faktisk
     // svarer (uten dette stopper streamText etter første tool-call).
     stopWhen: stepCountIs(5),

@@ -6,6 +6,8 @@
 
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { prisma } from "@/lib/prisma";
 import { runPlanRevisjon } from "@/lib/agents/plan-revisjon-agent";
 import { runPeaking } from "@/lib/agents/peaking-agent";
 import type { PlanRevisionForslag, PlanRevisionTrigger } from "@/lib/ai/agents/plan-revision";
@@ -29,10 +31,18 @@ export async function kjorPlanRevisjon(
   planId: string,
   trigger: string,
 ): Promise<PlanRevisjonResultat> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   if (!planId) return { ok: false, melding: "Velg en treningsplan" };
   if (!TRIGGERE.includes(trigger as PlanRevisionTrigger)) {
     return { ok: false, melding: "Ugyldig trigger" };
+  }
+  const plan = await prisma.trainingPlan.findUnique({
+    where: { id: planId },
+    select: { userId: true },
+  });
+  if (!plan) return { ok: false, melding: "Fant ikke planen" };
+  if (!(await harCoachTilgangTilSpiller(coach, plan.userId))) {
+    return { ok: false, melding: "Du har ikke tilgang til denne spilleren." };
   }
   try {
     const forslag = await runPlanRevisjon({
@@ -53,9 +63,12 @@ export async function kjorPeaking(
   spillerId: string,
   tournamentId: string,
 ): Promise<PeakingResultat> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   if (!spillerId || !tournamentId) {
     return { ok: false, melding: "Velg både spiller og turnering" };
+  }
+  if (!(await harCoachTilgangTilSpiller(coach, spillerId))) {
+    return { ok: false, melding: "Du har ikke tilgang til denne spilleren." };
   }
   try {
     const plan = await runPeaking({ spillerId, tournamentId });

@@ -2,18 +2,26 @@
  * Workbench lanserings-bevis: screenshots (430 + 1280) + full flyt-logg.
  * Kjør: node scripts/workbench-gate-evidence.mjs [BASE_URL] [OUT_DIR]
  */
+import { config as loadEnv } from "dotenv";
 import { chromium } from "playwright";
 import { mkdir, writeFile, appendFile } from "node:fs/promises";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
+
+loadEnv({ path: ".env.local" });
 
 const BASE = process.argv[2] || process.env.BASE_URL || "http://localhost:3000";
 const OUT = process.argv[3] || process.env.SCRATCH_WB_GATE || "/tmp/wb-gate";
 const FLOW_LOG = path.join(OUT, "workbench-flow.log");
 const GATE_LOG = path.join(OUT, "wb-gate-run.log");
 
-const PLAYER = { email: "screentest@akgolf.test", password: "Screentest123!" };
-const COACH = { email: "coachtest@akgolf.test", password: "Screentest123!" };
+const PASSWORD = process.env.SCREENTEST_PASSWORD;
+if (!PASSWORD) {
+  console.error("SCREENTEST_PASSWORD mangler i .env.local");
+  process.exit(1);
+}
+const PLAYER = { email: "screentest@akgolf.test", password: PASSWORD };
+const COACH = { email: "coachtest@akgolf.test", password: PASSWORD };
 
 const TABS = ["tek", "seson", "maler", "std", "gantt", "uke", "okt"];
 

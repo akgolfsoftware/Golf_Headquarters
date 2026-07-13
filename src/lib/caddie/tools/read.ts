@@ -2,7 +2,7 @@
 // Spør Prisma og returnerer strukturerte data.
 // Feil håndteres med try/catch og returneres som ToolErrorResponse.
 
-import { coachedPlayerWhere } from "@/lib/auth/coached";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { tool } from "ai";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
@@ -21,7 +21,11 @@ function periodToSince(period: "30d" | "90d" | "season"): Date {
   return new Date(now.getFullYear(), 0, 1);
 }
 
-export const READ_TOOLS = {
+// Bygges per innlogget viewer (coach-scoping: COACH ser kun egne spillere,
+// ADMIN ser alle coachede). Begge inngangene (Caddie-chat og MCP-endepunktet)
+// er i dag ADMIN-gated, så oppførselen er uendret i praksis — men scopingen
+// følger automatisk med hvis COACH-tilgang åpnes senere.
+export const buildReadTools = (viewer: { id: string; role: string }) => ({
   searchPlayers: tool({
     description:
       "Søk etter spillere via navn eller e-post (delvis match). Returnerer id, navn, e-post, HCP og tier.",
@@ -33,7 +37,7 @@ export const READ_TOOLS = {
       try {
         const players = await prisma.user.findMany({
           where: {
-            ...coachedPlayerWhere(),
+            ...coachScopedPlayerWhere(viewer),
             OR: [
               { name: { contains: query, mode: "insensitive" } },
               { email: { contains: query, mode: "insensitive" } },
@@ -505,4 +509,4 @@ export const READ_TOOLS = {
       }
     },
   }),
-} as const;
+}) as const;

@@ -4,6 +4,11 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import {
+  assertCoachTilgangTilSpiller,
+  coachScopedPlayerWhere,
+  harCoachTilgangTilSpiller,
+} from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { notify, notifyMany } from "@/lib/notifications";
 import { computeEffectiveness } from "@/lib/ai-plan/effectiveness";
@@ -75,9 +80,16 @@ export async function flyttOkt(sessionId: string, newScheduledAt: Date) {
 
   const session = await prisma.trainingPlanSession.findUnique({
     where: { id: sessionId },
-    select: { id: true, planId: true, scheduledAt: true, title: true },
+    select: {
+      id: true,
+      planId: true,
+      scheduledAt: true,
+      title: true,
+      plan: { select: { userId: true } },
+    },
   });
   if (!session) throw new Error("not-found");
+  await assertCoachTilgangTilSpiller(user, session.plan.userId);
 
   const oldScheduledAt = session.scheduledAt;
 
@@ -120,6 +132,7 @@ export async function sendTilSpiller(planId: string) {
   const user = await krevCoach();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
+  await assertCoachTilgangTilSpiller(user, plan.userId);
 
   await prisma.trainingPlan.update({
     where: { id: planId },
@@ -147,6 +160,7 @@ export async function godkjennPlan(planId: string) {
   const user = await krevCoach();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
+  await assertCoachTilgangTilSpiller(user, plan.userId);
 
   await prisma.trainingPlan.update({
     where: { id: planId },
@@ -175,6 +189,7 @@ export async function markerSomNyttUtkast(planId: string) {
   const user = await krevCoach();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
+  await assertCoachTilgangTilSpiller(user, plan.userId);
   if (plan.status !== "REJECTED") {
     throw new Error("invalid-status");
   }
@@ -209,6 +224,7 @@ export async function pausePlan(planId: string) {
   const user = await krevCoach();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
+  await assertCoachTilgangTilSpiller(user, plan.userId);
 
   await prisma.trainingPlan.update({
     where: { id: planId },
@@ -235,6 +251,7 @@ export async function resumePlan(planId: string) {
   const user = await krevCoach();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
+  await assertCoachTilgangTilSpiller(user, plan.userId);
 
   await prisma.trainingPlan.update({
     where: { id: planId },
@@ -265,6 +282,7 @@ export async function endPlan(planId: string) {
   const user = await krevCoach();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
+  await assertCoachTilgangTilSpiller(user, plan.userId);
 
   const now = new Date();
   await prisma.trainingPlan.update({
@@ -308,6 +326,9 @@ export async function markPlanCompleted(
   const user = await krevCoach();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) return { ok: false, feil: "Fant ikke planen." };
+  if (!(await harCoachTilgangTilSpiller(user, plan.userId))) {
+    return { ok: false, feil: "Du har ikke tilgang til denne spilleren." };
+  }
   if (plan.status === "ARCHIVED") {
     return { ok: false, feil: "Planen er allerede fullført." };
   }
@@ -368,6 +389,9 @@ export async function rateEffectiveness(input: {
     select: { id: true, userId: true, planId: true },
   });
   if (!eff) return { ok: false, feil: "Fant ikke effektivitets-raden." };
+  if (!(await harCoachTilgangTilSpiller(user, eff.userId))) {
+    return { ok: false, feil: "Du har ikke tilgang til denne spilleren." };
+  }
 
   function validerRating(v: number | null | undefined): number | null {
     if (v === null || v === undefined) return null;
@@ -418,9 +442,16 @@ export async function cancelSession(sessionId: string) {
 
   const session = await prisma.trainingPlanSession.findUnique({
     where: { id: sessionId },
-    select: { id: true, planId: true, title: true, status: true },
+    select: {
+      id: true,
+      planId: true,
+      title: true,
+      status: true,
+      plan: { select: { userId: true } },
+    },
   });
   if (!session) throw new Error("not-found");
+  await assertCoachTilgangTilSpiller(user, session.plan.userId);
   if (session.status === "COMPLETED") {
     throw new Error("cannot-cancel-completed");
   }
@@ -454,6 +485,7 @@ export async function arkiverPlan(planId: string) {
   const user = await krevCoach();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
+  await assertCoachTilgangTilSpiller(user, plan.userId);
 
   await prisma.trainingPlan.update({
     where: { id: planId },
@@ -705,6 +737,7 @@ export async function kopierPlan(
     include: { sessions: { include: { drills: true } } },
   });
   if (!original) throw new Error("not-found");
+  await assertCoachTilgangTilSpiller(user, original.userId);
 
   // Sjekk at mottaker er en eksisterende PLAYER og ikke samme som original
   const mottaker = await prisma.user.findUnique({
@@ -714,6 +747,7 @@ export async function kopierPlan(
   if (!mottaker) throw new Error("recipient-not-found");
   if (mottaker.role !== "PLAYER") throw new Error("recipient-not-player");
   if (mottaker.id === original.userId) throw new Error("same-player");
+  await assertCoachTilgangTilSpiller(user, nyUserId);
 
   const navnEndelig = (nyNavn?.trim() || `Kopi av ${original.name}`).slice(0, 200);
 
@@ -872,6 +906,9 @@ export async function lagreSomMal(
     },
   });
   if (!plan) return { ok: false, feil: "Fant ikke planen." };
+  if (!(await harCoachTilgangTilSpiller(user, plan.userId))) {
+    return { ok: false, feil: "Du har ikke tilgang til denne spilleren." };
+  }
 
   // Beregn antall uker basert på start/end (fall back til siste økt).
   const start = plan.startDate;
@@ -1031,8 +1068,9 @@ export async function assignPlanToPlayers(input: {
 
   const playerIds = Array.from(new Set(data.playerIds));
 
+  // Coach-scoping: kun mottakere coachen har tilgang til (ADMIN = alle coachede).
   const mottakere = await prisma.user.findMany({
-    where: { id: { in: playerIds }, role: "PLAYER" },
+    where: { AND: [{ id: { in: playerIds } }, coachScopedPlayerWhere(user)] },
     select: { id: true, name: true, tier: true },
   });
   if (mottakere.length === 0) {
