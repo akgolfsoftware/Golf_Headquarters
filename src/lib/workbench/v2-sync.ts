@@ -2,9 +2,11 @@ import "server-only";
 
 import type { PyramidArea, MMiljo } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { GENERERT_FRA, syncDrillsToV2 } from "./v2-drill-mirror";
 
-// Eksportert: reverse-synken (okt-status-actions) må matche samme streng.
-export const GENERERT_FRA = "WORKBENCH_PLAN";
+// Re-eksport: reverse-synkene (okt-status-actions, live-actions) matcher
+// samme streng via denne.
+export { GENERERT_FRA };
 
 const PYR_TO_PRACTICE: Record<PyramidArea, "BLOKK" | "RANDOM" | "KONKURRANSE" | "SPILL_TEST"> = {
   FYS: "BLOKK",
@@ -96,48 +98,6 @@ export async function upsertV2ForPlanSession(input: {
   if (!existing || existing.status === "PLANNED") {
     await syncDrillsToV2(v2Id, input.planSessionId, input.pyramidArea);
   }
-}
-
-/**
- * Speil plan-øktas SessionDrill-rader til TrainingDrillV2 (replace-semantikk),
- * så live-avspilleren viser samme driller som planen. Felt-kontrakten er delt
- * (bølge 2 · 2026-07-04); navn/beskrivelse hentes fra øvelsesbanken.
- */
-async function syncDrillsToV2(
-  v2SessionId: string,
-  planSessionId: string,
-  fallbackPyramide: PyramidArea,
-): Promise<void> {
-  const drills = await prisma.sessionDrill.findMany({
-    where: { sessionId: planSessionId },
-    orderBy: { orderIndex: "asc" },
-    include: { exercise: { select: { name: true, description: true, durationMin: true } } },
-  });
-
-  await prisma.trainingDrillV2.deleteMany({ where: { sessionId: v2SessionId } });
-  if (drills.length === 0) return;
-
-  await prisma.trainingDrillV2.createMany({
-    data: drills.map((d, i) => ({
-      sessionId: v2SessionId,
-      sortOrder: d.orderIndex ?? i,
-      name: d.exercise.name,
-      description: d.notes ?? d.exercise.description ?? null,
-      durationMinutes: d.repMinutter ?? d.exercise.durationMin ?? 10,
-      repetitions: d.reps ?? d.repAntall ?? null,
-      pyramide: d.pyramidArea ?? fallbackPyramide,
-      omraade: d.skillArea ?? null,
-      lFase: d.lFase,
-      csNivaa: d.csNivaa,
-      miljo: d.miljo,
-      prPress: d.prPress,
-      repType: d.repType,
-      repAntall: d.repAntall,
-      repMinutter: d.repMinutter,
-      repSett: d.repSett,
-      repReps: d.repReps,
-    })),
-  });
 }
 
 /**
