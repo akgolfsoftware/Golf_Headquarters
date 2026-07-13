@@ -1,13 +1,21 @@
 // Skjermbilder av de skjermene gap-fyll-passet endret — for før/etter-review.
 // Kjør: node scripts/gapfyll-shot.mjs <OUT_DIR> [BASE]
+import { config as loadEnv } from "dotenv";
 import { chromium } from "playwright";
 import { mkdir } from "node:fs/promises";
 
+loadEnv({ path: ".env.local" });
+
 const OUT = process.argv[2];
 const BASE = process.argv[3] || "http://localhost:3411";
-const PLAYER = { email: "screentest@akgolf.test", password: "Screentest123!" };
-const COACH = { email: "coachtest@akgolf.test", password: "Screentest123!" };
-const PARENT = { email: "screentest-parent@akgolf.test", password: "Screentest123!" };
+const PASSWORD = process.env.SCREENTEST_PASSWORD;
+if (!PASSWORD) {
+  console.error("SCREENTEST_PASSWORD mangler i .env.local");
+  process.exit(1);
+}
+const PLAYER = { email: "screentest@akgolf.test", password: PASSWORD };
+const COACH = { email: "coachtest@akgolf.test", password: PASSWORD };
+const PARENT = { email: "screentest-parent@akgolf.test", password: PASSWORD };
 
 async function login(page, u) {
   await page.goto(`${BASE}/auth/login`, { waitUntil: "networkidle" });

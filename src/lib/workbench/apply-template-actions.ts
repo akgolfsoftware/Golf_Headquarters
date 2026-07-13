@@ -7,6 +7,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
 import {
@@ -249,5 +250,8 @@ export async function coachApplyWorkbenchTemplate(
   weekNr = 1,
 ): Promise<{ ok: boolean; sessions?: AppliedTemplateSession[]; error?: string; justeringer?: string[] }> {
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  if (!(await harCoachTilgangTilSpiller(coach, playerId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+  }
   return applyTemplateCore(templateId, playerId, coach.id, weekNr);
 }

@@ -49,3 +49,56 @@ export async function erCoachetSpiller(userId: string): Promise<boolean> {
   });
   return treff != null;
 }
+
+/**
+ * Coach-scoping (Anders 2026-07-13): en COACH ser og redigerer KUN sine egne
+ * spillere — aktiv PlayerEnrollment med coachId = coachen, eller medlemskap i
+ * en gruppe coachen eier (Group.coachId). ADMIN ser alle coachede spillere.
+ *
+ * Bruk denne i AgencyOS-loadere i stedet for `coachedPlayerWhere()` når
+ * innholdet er per-spiller-data; bruk `assertCoachTilgangTilSpiller` i
+ * server-actions som tar en spiller-id.
+ */
+export function coachScopedPlayerWhere(viewer: {
+  id: string;
+  role: string;
+}): Prisma.UserWhereInput {
+  if (viewer.role !== "COACH") return coachedPlayerWhere();
+  return {
+    role: "PLAYER",
+    OR: [
+      {
+        enrollmentsAsPlayer: {
+          some: { endedAt: null, program: { not: "PLATFORM_ONLY" }, coachId: viewer.id },
+        },
+      },
+      { groupMemberships: { some: { group: { coachId: viewer.id } } } },
+    ],
+  };
+}
+
+/**
+ * Har coachen/adminen tilgang til akkurat denne spilleren? Server-actions som
+ * tar en spiller-id MÅ kalle denne før skriving — rolle-sjekk alene er ikke nok
+ * (en coach skal ikke kunne endre en annen coachs spillere via id-parameteren).
+ */
+export async function harCoachTilgangTilSpiller(
+  viewer: { id: string; role: string },
+  playerId: string,
+): Promise<boolean> {
+  const treff = await prisma.user.findFirst({
+    where: { AND: [{ id: playerId }, coachScopedPlayerWhere(viewer)] },
+    select: { id: true },
+  });
+  return treff != null;
+}
+
+/** Som `harCoachTilgangTilSpiller`, men kaster ved manglende tilgang. */
+export async function assertCoachTilgangTilSpiller(
+  viewer: { id: string; role: string },
+  playerId: string,
+): Promise<void> {
+  if (!(await harCoachTilgangTilSpiller(viewer, playerId))) {
+    throw new Error("Du har ikke tilgang til denne spilleren.");
+  }
+}
