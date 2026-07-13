@@ -6,7 +6,13 @@ export const runtime = "nodejs";
 
 function csvEscape(v: string | number | null | undefined): string {
   if (v == null) return "";
-  const s = String(v);
+  let s = String(v);
+  // CSV-injection-vern: fritekst som starter med formel-tegn kan kjøres
+  // som formler i Excel/Sheets — prefiks apostrof for å nøytralisere.
+  // Gjelder kun strenger; ekte tall (f.eks. negative SG-verdier) er trygge.
+  if (typeof v === "string" && /^[=+\-@\t\r]/.test(s)) {
+    s = `'${s}`;
+  }
   if (s.includes(",") || s.includes('"') || s.includes("\n")) {
     return `"${s.replace(/"/g, '""')}"`;
   }
