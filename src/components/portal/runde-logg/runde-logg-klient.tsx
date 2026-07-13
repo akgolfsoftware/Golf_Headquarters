@@ -169,7 +169,16 @@ export function RundeLoggKlient({ modus, baner }: RundeLoggKlientProps) {
 
   return (
     <div style={{ minHeight: "100dvh", background: T.bg }}>
-      <div style={{ maxWidth: 480, margin: "0 auto", padding: "14px 16px 32px" }}>
+      <div
+        style={{
+          maxWidth: 480,
+          margin: "0 auto",
+          paddingTop: "max(14px, env(safe-area-inset-top))",
+          paddingLeft: 16,
+          paddingRight: 16,
+          paddingBottom: "max(32px, env(safe-area-inset-bottom))",
+        }}
+      >
         {/* Topplinje */}
         <div
           style={{
