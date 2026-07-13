@@ -16,7 +16,7 @@ import {
   Reply, MessageSquare, CheckCheck, BookOpen, Globe, CornerUpLeft,
   RefreshCw, GitCompare, AlertOctagon, GitPullRequest, Loader2, LineChart,
   Cog, ArrowUp, Wrench,
-  Inbox, CalendarCheck, Columns3,
+  Inbox, CalendarCheck, Columns3, CirclePlus,
   type LucideIcon,
 } from "lucide-react";
 
@@ -140,6 +140,7 @@ const MAP: Record<string, LucideIcon> = {
   "inbox": Inbox,
   "calendar-check": CalendarCheck,
   "columns-3": Columns3,
+  "plus-circle": CirclePlus,
 };
 
 export interface IconProps {

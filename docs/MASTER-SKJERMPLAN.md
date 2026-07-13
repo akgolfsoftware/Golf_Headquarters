@@ -134,7 +134,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Planlegge (= Workbench mobil) ★ | `/portal/planlegge` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Complete v13 (golfdata scope + OektKort etc)
-| **Workbench (planlegging)** ★ | `/portal/planlegge/workbench` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-13: mobil-flyt fikset — økt-trykk åpner BunnArk (Start/Se/flytt/slett), årsplan = tappbar liste (ikke 860px-canvas), måned = ukeliste (MndNivaaMobil), ark er bunn-forankret på mobil |
+| **Workbench (planlegging)** ★ | `/portal/planlegge/workbench` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-13: mobil-flyt fikset — økt-trykk åpner BunnArk (Start/Se/flytt/slett), årsplan = tappbar liste (ikke 860px-canvas), måned = ukeliste (MndNivaaMobil), ark er bunn-forankret på mobil. Samme dag (kveld): økt-arket har ekte dato-felt (±52 uker, ikke bare ukedag) + «Ny øvelse»-knapp som bytter arkets innhold (ingen modal-i-modal) |
 | · Plan-bygger (v2 wizard) | `/portal/planlegge/bygger` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2 2026-07-10: 5-stegs wizard per godkjent mockup (phq-plan-bygger); deler kjerner med legacy mal/bygger via lib/plan-builder
 | Årsplan | `/portal/tren/aarsplan` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | · Rediger periode | `/portal/tren/aarsplan/periode/[id]/rediger` | ~ | --- | ✓ | ✓ | ✓ | ~ |
@@ -756,6 +756,21 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 13. juli (økt-arket: ekte dato/tid + «Ny øvelse» i arket, samme PR #10/branch): Anders så
+  «Ny økt»-arket i previewen og ba om to ting utover det som var levert. **Dato/tid:** «Dag»-
+  ukedag-pillene er byttet med et ekte datofelt (`<input type="date">`, ±52 uker) — datamodellen
+  (`TrainingPlanSession.scheduledAt`) var alt dato-først, så dette var en ren UI-endring (nye
+  pure helpers `toIsoDateLocal`/`weeksBetweenMondays` i `session-move-math.ts`). Lagres økten i
+  en annen uke enn den man ser på, hopper visningen dit automatisk (aldri stille «forsvinning»).
+  **«Ny øvelse» i arket:** `NyOvelseArk` DRY-refaktorert (feltene utskilt til `OvelseSkjemaFelter`)
+  så «+ Ny øvelse»-knappen ved siden av banksøket bytter INNHOLDET i samme bunn-ark i stedet for
+  å stable et nytt oppå (unngår modal-i-modal-anti-mønsteret) — den nye øvelsen legges rett inn
+  i øktas driller med `exerciseId`. **Notion Calendar/Apple/Google Kalender-review levert** (se
+  plan-notat): sidepanel-med-drillbar-database à la Notion Calendar finnes ikke i design-kanon
+  og er en kompleksitetsøkning mot den gjeldende «retning C: forenkle»-beslutningen — anbefaling
+  dokumentert, IKKE bygget nå (venter på skisse i Claude Design-prosjektet + Anders' godkjenning
+  per design→system→prod-regelen). Verifisert: tsc 0 feil, ESLint grønt, prisma validate OK
+  (ingen skjemaendring).
 - 13. juli (mobil/desktop-forbedringer, PR #10, branch `claude/mobile-desktop-improvements-90kanx`):
   **Anders' 7 problemområder levert i 8 bølger.** (1) Ytelse: middleware gjør nå ETT
   `getUser()`-nettverkskall per navigasjon (var 2×) og auth-lasting er 1 Prisma-query (var 3);

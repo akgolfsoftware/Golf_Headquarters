@@ -68,3 +68,17 @@ export function dayIndexFromScheduledAt(scheduledAt: Date, refDate: Date = new D
   day.setHours(0, 0, 0, 0);
   return Math.round((day.getTime() - mon.getTime()) / 86_400_000);
 }
+
+/** Hele uker mellom mandagen i `a` sin uke og mandagen i `b` sin uke. */
+export function weeksBetweenMondays(a: Date, b: Date): number {
+  return Math.round((mondayOf(a).getTime() - mondayOf(b).getTime()) / (7 * 86_400_000));
+}
+
+/**
+ * ISO-dato (`YYYY-MM-DD`) fra LOKALE datofelter — aldri `.toISOString()`,
+ * som konverterer til UTC og kan skifte kalenderdatoen (se tidssone-gotcha).
+ */
+export function toIsoDateLocal(d: Date): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}

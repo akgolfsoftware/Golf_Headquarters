@@ -13,7 +13,7 @@
  */
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import type { ReactNode, CSSProperties } from "react";
 import { T, Icon, Kort, Knapp, AkseChip, BunnArk } from "@/components/v2";
@@ -24,6 +24,8 @@ import type { PlanStatus } from "@/generated/prisma/client";
 import { fmtVarighet, toKl } from "@/lib/workbench/v2-format";
 import { resolvePlanSessionLiveHref } from "@/lib/workbench/session-actions";
 import { sokOvelser, hentOktKomponist } from "@/lib/workbench/ovelse-sok";
+import { dateForDayIndex, weekRefDate, toIsoDateLocal, weeksBetweenMondays, WEEK_OFFSET_MIN, WEEK_OFFSET_MAX } from "@/lib/workbench/session-move-math";
+import { OvelseSkjemaFelter } from "./NyOvelseArk";
 import { useEffect } from "react";
 import { planSessionStartHref, v2SessionStartHref, type V2OktUiStatus } from "@/lib/portal/session-hrefs";
 
@@ -210,6 +212,9 @@ export type OktArkDrill = {
 export interface NyOktInput {
   title: string;
   dayIndex: number;
+  /** Absolutt uke-offset for datoen brukeren valgte — IKKE nødvendigvis
+      den uka man ser på (se dato-feltet i OktArkSkjema, 2026-07-13). */
+  weekOffset: number;
   akse: AkseKey;
   hour: number;
   minute: number;
@@ -220,6 +225,8 @@ export interface NyOktInput {
 }
 export interface NyOktArkProps {
   defaultDayIndex: number;
+  /** Uka man ser på når arket åpnes — seeder dato-feltet (2026-07-13). */
+  weekOffset: number;
   /** «HH:MM» fra trykk på tom luke i tidslinja (I1). */
   defaultTid?: string;
   /** Forhåndsutfylling fra bibliotek-brikke (ett-klikks «legg til»). */
@@ -232,7 +239,7 @@ export interface NyOktArkProps {
   onOpprett: (input: NyOktInput) => Promise<{ ok: boolean; error?: string }>;
 }
 
-export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAkse, defaultDurMin, defaultDrills, onLukk, onOpprett }: NyOktArkProps) {
+export function NyOktArk({ defaultDayIndex, weekOffset, defaultTid, defaultTitle, defaultAkse, defaultDurMin, defaultDrills, onLukk, onOpprett }: NyOktArkProps) {
   return (
     <OktArkSkjema
       overskrift="Ny økt"
@@ -241,7 +248,7 @@ export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAks
       submitIcon="plus"
       initial={{
         title: defaultTitle ?? "",
-        dayIndex: defaultDayIndex,
+        dato: toIsoDateLocal(dateForDayIndex(defaultDayIndex, 0, 0, weekRefDate(weekOffset))),
         tid: defaultTid ?? "09:00",
         durMin: defaultDurMin ?? 60,
         akse: defaultAkse ?? "TEK",
@@ -255,6 +262,7 @@ export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAks
         onOpprett({
           title: s.title.trim() || "Ny økt",
           dayIndex: s.dayIndex,
+          weekOffset: s.weekOffset,
           akse: s.akse,
           hour: s.hour,
           minute: s.minute,
@@ -270,7 +278,9 @@ export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAks
 
 type OktArkState = {
   title: string;
-  dayIndex: number;
+  /** ISO-dato (`YYYY-MM-DD`, lokal) — erstatter ukedag-piller (2026-07-13).
+      dayIndex/weekOffset avledes fra denne ved lagring (session-move-math). */
+  dato: string;
   tid: string;
   durMin: number;
   akse: AkseKey;
@@ -278,6 +288,14 @@ type OktArkState = {
   miljo: string | null;
   drills: OktArkDrill[];
 };
+
+/** ±52 uker fra i dag — samme grense som WEEK_OFFSET_MIN/MAX i planleggeren. */
+function datoGrenser(): { min: string; max: string } {
+  const now = new Date();
+  const min = new Date(now); min.setDate(min.getDate() + WEEK_OFFSET_MIN * 7);
+  const max = new Date(now); max.setDate(max.getDate() + WEEK_OFFSET_MAX * 7);
+  return { min: toIsoDateLocal(min), max: toIsoDateLocal(max) };
+}
 
 const L_FASER = ["L_KROPP", "L_ARM", "L_KOLLE", "L_BALL", "L_AUTO"] as const;
 const MILJOER = ["M0", "M1", "M2", "M3", "M4", "M5"] as const;
@@ -299,10 +317,10 @@ function OktArkSkjema({
   initial: OktArkState;
   tittelPlaceholder?: string;
   onLukk: () => void;
-  onSubmit: (state: OktArkState & { hour: number; minute: number }) => Promise<{ ok: boolean; error?: string }>;
+  onSubmit: (state: OktArkState & { hour: number; minute: number; dayIndex: number; weekOffset: number }) => Promise<{ ok: boolean; error?: string }>;
 }) {
   const [title, setTitle] = useState(initial.title);
-  const [dayIndex, setDayIndex] = useState(initial.dayIndex);
+  const [dato, setDato] = useState(initial.dato);
   const [tid, setTid] = useState(initial.tid);
   const [durMin, setDurMin] = useState(initial.durMin);
   const [akse, setAkse] = useState<AkseKey>(initial.akse);
@@ -313,6 +331,10 @@ function OktArkSkjema({
   const [drillTreff, setDrillTreff] = useState<{ id: string; name: string; pyramidArea: string }[]>([]);
   const [lagrer, setLagrer] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
+  /** Bytter arkets innhold til «Ny øvelse»-skjemaet — samme BunnArk, aldri
+      modal-i-modal (mesterens-monstre.md forbyr modal-inception). */
+  const [visning, setVisning] = useState<"skjema" | "ny-ovelse">("skjema");
+  const datoGrense = datoGrenser();
 
   useEffect(() => {
     const q = drillSok.trim();
@@ -342,12 +364,32 @@ function OktArkSkjema({
     const [hStr, mStr] = tid.split(":");
     const hour = Math.max(0, Math.min(23, Number(hStr) || 0));
     const minute = Math.max(0, Math.min(59, Number(mStr) || 0));
+    const valgtDato = new Date(`${dato}T00:00:00`);
+    const dayIndex = (valgtDato.getDay() + 6) % 7;
+    const weekOffset = Math.max(WEEK_OFFSET_MIN, Math.min(WEEK_OFFSET_MAX, weeksBetweenMondays(valgtDato, new Date())));
     setLagrer(true);
     setFeil(null);
-    const res = await onSubmit({ title, dayIndex, tid, durMin: Math.max(5, Math.min(480, durMin)), akse, lFase, miljo, drills, hour, minute });
+    const res = await onSubmit({ title, dato, tid, durMin: Math.max(5, Math.min(480, durMin)), akse, lFase, miljo, drills, hour, minute, dayIndex, weekOffset });
     setLagrer(false);
     if (!res.ok) setFeil(res.error ?? "Kunne ikke lagre økten.");
   };
+
+  if (visning === "ny-ovelse") {
+    return (
+      <BunnArk tittel="Ny øvelse" under="Legges i banken og rett inn i denne økta." onLukk={() => setVisning("skjema")} laast={lagrer}>
+        <OvelseSkjemaFelter
+          defaultAkse={akse}
+          onLagrerChange={setLagrer}
+          onAvbryt={() => setVisning("skjema")}
+          lagreLabel="Lagre og legg i økt"
+          onLagret={(ovelse) => {
+            setDrills([...drills, { exerciseId: ovelse.id, navn: ovelse.name, minutter: null, sett: null, reps: null, nivaa: "vanlig" }]);
+            setVisning("skjema");
+          }}
+        />
+      </BunnArk>
+    );
+  }
 
   return (
     <BunnArk tittel={overskrift} onLukk={onLukk} laast={lagrer}>
@@ -355,8 +397,8 @@ function OktArkSkjema({
           <Felt label="Tittel">
             <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={tittelPlaceholder} maxLength={120} style={inputStyle} />
           </Felt>
-          <Felt label="Dag">
-            <DagPillRow value={dayIndex} onChange={setDayIndex} disabled={lagrer} />
+          <Felt label="Dato">
+            <input type="date" value={dato} min={datoGrense.min} max={datoGrense.max} onChange={(e) => setDato(e.target.value)} style={inputStyle} />
           </Felt>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
             <Felt label="Klokkeslett">
@@ -414,13 +456,26 @@ function OktArkSkjema({
                   </button>
                 </div>
               ))}
-              <input
-                value={drillSok}
-                onChange={(e) => setDrillSok(e.target.value)}
-                placeholder="Legg til drill — søk i øvelsesbanken…"
-                style={inputStyle}
-                data-wb-drillsok
-              />
+              <div style={{ display: "flex", gap: 6 }}>
+                <input
+                  value={drillSok}
+                  onChange={(e) => setDrillSok(e.target.value)}
+                  placeholder="Legg til drill — søk i øvelsesbanken…"
+                  style={{ ...inputStyle, flex: 1 }}
+                  data-wb-drillsok
+                />
+                <button
+                  type="button"
+                  onClick={() => setVisning("ny-ovelse")}
+                  className="v2-press v2-focus"
+                  data-wb-ny-ovelse
+                  title="Opprett en helt ny øvelse i banken"
+                  style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, padding: "9px 12px", borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}`, color: T.fg2, fontFamily: T.ui, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap", flex: "none" }}
+                >
+                  <Icon name="plus-circle" size={13} style={{ color: T.mut }} />
+                  Ny øvelse
+                </button>
+              </div>
               {drillSok.trim().length >= 2 && (
                 <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                   {drillTreff.map((t) => (
@@ -933,6 +988,9 @@ export function RedigerOktArk({ okt, dag, weekOffset, actions, onLukk, onEndret 
   onLukk: () => void;
   onEndret: () => void;
 }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   // Nåtilstanden (AK-formel + driller) lastes FØR skjemaet vises, så
   // hent-svaret aldri kan overskrive noe brukeren har trykket på (race-vernet
   // komponistKlar er dermed unødvendig — skjemaet starter komplett).
@@ -944,7 +1002,7 @@ export function RedigerOktArk({ okt, dag, weekOffset, actions, onLukk, onEndret 
       if (!aktiv) return;
       setInitial({
         title: okt.ttl,
-        dayIndex: dag,
+        dato: toIsoDateLocal(dateForDayIndex(dag, 0, 0, weekRefDate(weekOffset))),
         tid: toKl(okt.h, okt.m),
         durMin: okt.durMin,
         akse: (okt.ax?.toUpperCase() as AkseKey) ?? "TEK",
@@ -954,7 +1012,7 @@ export function RedigerOktArk({ okt, dag, weekOffset, actions, onLukk, onEndret 
       });
     });
     return () => { aktiv = false; };
-  }, [okt, dag]);
+  }, [okt, dag, weekOffset]);
 
   if (!initial) {
     return (
@@ -996,14 +1054,26 @@ export function RedigerOktArk({ okt, dag, weekOffset, actions, onLukk, onEndret 
           })),
         });
         if (!res.ok) return res;
-        if (s.dayIndex !== dag) {
-          const flytt = await actions.moveSession(okt.id, s.dayIndex, weekOffset);
+        const flyttetUke = s.weekOffset !== weekOffset;
+        if (s.dayIndex !== dag || flyttetUke) {
+          const flytt = await actions.moveSession(okt.id, s.dayIndex, s.weekOffset);
           if (!flytt.ok) {
             return { ok: false, error: flytt.error ?? "Endringene ble lagret, men flytting feilet." };
           }
         }
         onLukk();
-        onEndret();
+        if (flyttetUke) {
+          // Dato lagt i en annen uke enn den man ser på — hopp dit i stedet for
+          // at økta «forsvinner» stille (interaksjonsregel: endringer skal
+          // reflekteres umiddelbart, se interaksjonsstandarder.md §3).
+          const params = new URLSearchParams(searchParams.toString());
+          if (s.weekOffset === 0) params.delete("uke"); else params.set("uke", String(s.weekOffset));
+          params.delete("okt");
+          const qs = params.toString();
+          router.push(qs ? `${pathname}?${qs}` : pathname);
+        } else {
+          onEndret();
+        }
         return { ok: true };
       }}
     />

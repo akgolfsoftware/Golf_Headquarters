@@ -1011,16 +1011,17 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   const avvikTekst = harAvvik ? `${avvikOkter} avvik denne uka` : "Ingen avvik";
   const aktivDag = dager.find((d) => d.today) ?? dager.find((d) => d.events.length > 0) ?? null;
 
-  const goToWeek = (delta: number) => {
-    const target = Math.max(WEEK_OFFSET_MIN, Math.min(WEEK_OFFSET_MAX, weekOffset + delta));
-    if (target === weekOffset) return;
+  const navigateToWeek = (target: number) => {
+    const clamped = Math.max(WEEK_OFFSET_MIN, Math.min(WEEK_OFFSET_MAX, target));
+    if (clamped === weekOffset) return;
     const params = new URLSearchParams(searchParams.toString());
-    if (target === 0) params.delete("uke");
-    else params.set("uke", String(target));
+    if (clamped === 0) params.delete("uke");
+    else params.set("uke", String(clamped));
     params.delete("okt"); // valgt økt er uke-spesifikk
     const qs = params.toString();
     router.push(qs ? `${pathname}?${qs}` : pathname);
   };
+  const goToWeek = (delta: number) => navigateToWeek(weekOffset + delta);
 
   // WB4: diff-modal før publisering (lagt til / fjernet / endret + timer).
   const [pubDiff, setPubDiff] = useState<import("@/lib/workbench/publish-actions").PubliserDiff | null>(null);
@@ -1190,21 +1191,25 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   const handleCreateSession = async (input: NyOktInput): Promise<{ ok: boolean; error?: string }> => {
     if (!actions) return { ok: false, error: "Ikke tilgjengelig." };
     // Vis økta i tidslinja umiddelbart (dempet/stiplet, se erOptimistisk) —
-    // fjernes ved feil, erstattes av ekte data når router.refresh() lander.
+    // men kun når den faktisk havner i uka man ser på (2026-07-13: «Ny økt»
+    // kan nå lagres i en annen uke via dato-feltet).
     const addKey = `${OPTIMISTIC_PREFIX}${crypto.randomUUID()}`;
-    const tempEvent: WeekEvent = {
-      id: addKey,
-      source: "plan",
-      status: "PLANNED",
-      h: input.hour,
-      m: input.minute,
-      durMin: input.durMin,
-      ax: AKSE_TO_AXIS[input.akse],
-      eb: input.akse,
-      ttl: input.title,
-      meta: [],
-    };
-    setPendingAdds((prev) => [...prev, { key: addKey, dayIndex: input.dayIndex, event: tempEvent }]);
+    const iDenneUka = input.weekOffset === weekOffset;
+    if (iDenneUka) {
+      const tempEvent: WeekEvent = {
+        id: addKey,
+        source: "plan",
+        status: "PLANNED",
+        h: input.hour,
+        m: input.minute,
+        durMin: input.durMin,
+        ax: AKSE_TO_AXIS[input.akse],
+        eb: input.akse,
+        ttl: input.title,
+        meta: [],
+      };
+      setPendingAdds((prev) => [...prev, { key: addKey, dayIndex: input.dayIndex, event: tempEvent }]);
+    }
     const res = await actions.addSession({
       dayIndex: input.dayIndex,
       title: input.title,
@@ -1212,7 +1217,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
       area: input.akse,
       hour: input.hour,
       minute: input.minute,
-      weekOffset,
+      weekOffset: input.weekOffset,
       // Felles økt-ark (2026-07-13): AK-formel + driller følger med fra «Ny økt».
       ...(input.lFase || input.miljo
         ? { akFormel: { lFase: input.lFase, miljo: input.miljo } }
@@ -1235,8 +1240,11 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
       setNyOktApen(false);
       setNyOktPrefill(null);
       setNyOktSted(null);
-      router.refresh();
-    } else {
+      // Kryss-uke: hopp til uka økten faktisk havnet i (interaksjonsregel —
+      // endringer skal reflekteres umiddelbart, ikke forsvinne stille).
+      if (iDenneUka) router.refresh();
+      else navigateToWeek(input.weekOffset);
+    } else if (iDenneUka) {
       setPendingAdds((prev) => prev.filter((p) => p.key !== addKey));
     }
     return res;
@@ -1688,6 +1696,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
       {nyOktApen && actions && (
         <NyOktArk
           defaultDayIndex={nyOktSted?.dayIndex ?? (aktivDag ? dager.indexOf(aktivDag) : 0)}
+          weekOffset={weekOffset}
           defaultTid={nyOktSted?.tid}
           defaultTitle={nyOktPrefill?.title}
           defaultAkse={nyOktPrefill?.akse}
