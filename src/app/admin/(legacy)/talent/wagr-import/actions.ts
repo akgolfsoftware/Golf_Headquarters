@@ -4,22 +4,12 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-
-/**
- * Map WAGR Pts Avg til NGF-kategori (A-L).
- * Kalibrert mot Øyvinds tabell + observerte topp-spillere mai 2026.
- */
-function mapTilNgfKategori(ptsAvg: number): string {
-  if (ptsAvg >= 1500) return "A";
-  if (ptsAvg >= 1100) return "B";
-  if (ptsAvg >= 900) return "C";
-  if (ptsAvg >= 700) return "D";
-  if (ptsAvg >= 400) return "E";
-  if (ptsAvg >= 220) return "F";
-  if (ptsAvg >= 100) return "G";
-  if (ptsAvg >= 50) return "H";
-  return "I";
-}
+import { mapTilNgfKategori } from "@/lib/wagr/ngf-kategori";
+import {
+  AGENT_NAME as WAGR_SYNC_AGENT,
+  runWagrSync,
+  type WagrSyncResultat,
+} from "@/lib/agents/wagr-sync";
 
 /**
  * Ekstrakter slug fra full WAGR-URL.
@@ -149,6 +139,42 @@ export async function importerWagrSpiller(input: ManuellInput): Promise<
     snapshotId: snapshot.id,
     userLinked: userId !== null,
   };
+}
+
+/**
+ * «Synk nå» — trigger wagr-sync-agenten manuelt fra WAGR-import-skjermen.
+ * Samme kjøring som cron-agenten: kobler umatchede snapshots til spillere,
+ * og henter ferske rankinger den dagen ekstern kilde er avklart.
+ */
+export async function synkWagrNaa(): Promise<
+  | { ok: true; resultat: WagrSyncResultat }
+  | { ok: false; feil: string }
+> {
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+
+  try {
+    const resultat = await runWagrSync();
+
+    await prisma.auditLog.create({
+      data: {
+        actorId: user.id,
+        action: "wagr.sync.triggered",
+        target: WAGR_SYNC_AGENT,
+        metadata: { ...resultat },
+      },
+    });
+
+    revalidatePath("/admin/talent/wagr-import");
+    revalidatePath("/admin/talent/wagr-benchmark");
+    revalidatePath("/admin/talent");
+
+    return { ok: true, resultat };
+  } catch (err) {
+    return {
+      ok: false,
+      feil: err instanceof Error ? err.message : "Synk feilet.",
+    };
+  }
 }
 
 /**
