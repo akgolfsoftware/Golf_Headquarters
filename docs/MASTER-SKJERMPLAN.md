@@ -422,10 +422,10 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Rediger drill | `/admin/drills/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
 | Teknisk plan | `/admin/teknisk-plan` | – | --- | ✓ | ~ | ~ | ~ |
 | · Per spiller | `/admin/teknisk-plan/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
-| **Turneringer** ★ | `/admin/tournaments` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
-| · Turnering-detalj | `/admin/tournaments/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Ny turnering | `/admin/tournaments/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| · Dubletter (rydd) | `/admin/tournaments/dubletter` | – | --- | ✓ | ~ | ~ | ~ |
+| **Turneringer** ★ | `/admin/tournaments` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: v2-redesign, hele legacy-mappen portert og slettet
+| · Turnering-detalj | `/admin/tournaments/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: duplikat tilbake-lenke fjernet, nettleser-testet
+| · Ny turnering | `/admin/tournaments/ny` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: v2 5-stegs-veiviser; fant+fikset "use server"-krasj ved innsending
+| · Dubletter (rydd) | `/admin/tournaments/dubletter` | ✓ | ✓–– | ✓ | ~ | ✓ | ~ | 2026-07-13: v2, kun tom-tilstand nettleser-testet (0 dubletter i DB nå)
 | Økter | `/admin/okter` | – | --- | ✓ | ~ | ~ | ~ |
 | Videoer | `/admin/videoer` | – | --- | ✓ | ~ | ~ | ~ |
 | Opptak | `/admin/recording` | – | --- | ✓ | ~ | ~ | ~ |
@@ -755,6 +755,23 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 13. juli (turneringer → v2-redesign): alle 4 turneringsskjermer
+  (`/admin/tournaments`, `[id]`, `ny`, `dubletter`) + 6 delte underkomponenter
+  (tournament-form, result-form, unmerge-banner, fellesmelding-panel,
+  merge-liste, 5-stegs-veiviser) portert fra `.golfdata-scope`-låst legacy til
+  v2-tokens — hele `src/app/admin/(legacy)/tournaments/` slettet. Fant og
+  fikset ekte krasj underveis: `ny_turnering_schema` og
+  `exportTournamentsInputSchema` var eksportert som ikke-async objekter fra
+  en `"use server"`-fil (Next.js 16 forbyr dette) — veiviserens innsending
+  krasjet 100 % av tidene før fiksen. Fant og fikset display-bug: wizard-
+  opprettede turneringer dumpet rå JSON-metadata på skjermen (ingen kode
+  tolket `createdVia:"wizard"`-blob-en) — vises nå som lesbare chips
+  (prioritet/runder/tee/HCP/cut/kapasitet/pris/frist). Fjernet duplikat
+  tilbake-lenke på detaljsiden. Verifisert i nettleser: full veiviser-flyt
+  (5 steg → ekte DB-post → detaljside), lys+mørk × mobil+desktop på liste/
+  detalj/veiviser; dubletter kun tom-tilstand testet (0 kandidater i DB nå).
+  tsc+build grønt. Testturneringen ryddet fra DB etter verifisering.
 
 - 13. juli (feilretts-runde fra Anders' mobil-skjermbilder + full feilklasse-gjennomgang, 10 steg):
   **Rotårsak funnet og fikset — live-økter fikk ALDRI drills:** plan→live-speilingen
