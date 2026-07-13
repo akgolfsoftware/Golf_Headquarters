@@ -692,6 +692,8 @@ export function ValgtOktSeksjon({ okt, dag, actions, weekOffset, onEndret }: Val
   const router = useRouter();
   const [flyttApen, setFlyttApen] = useState(false);
   const [flyttLoading, setFlyttLoading] = useState(false);
+  /** «...»-overflow-meny (2026-07-13) — erstatter Flytt/Dupliser/Slett-knapperaden. */
+  const [menyApen, setMenyApen] = useState(false);
   // I6: inline-redigering — hvilket felt er i redigeringsmodus.
   const [rediger, setRediger] = useState<null | "tittel" | "akse" | "tid">(null);
   const [tittelUtkast, setTittelUtkast] = useState(okt.ttl);
@@ -925,24 +927,65 @@ export function ValgtOktSeksjon({ okt, dag, actions, weekOffset, onEndret }: Val
               <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>Velg ny dag — klokkeslettet beholdes</span>
             </div>
           )}
-          <div style={{ display: "flex", gap: 8 }}>
-            <div style={{ flex: 1 }}>
-              <Knapp ghost icon="calendar" full disabled={flyttLoading} onClick={() => setFlyttApen((v) => !v)}>
-                {flyttApen ? "Lukk" : "Flytt"}
-              </Knapp>
-            </div>
-            {actions?.duplicateSession && !ferdig && (
-              <div style={{ flex: 1 }}>
-                <Knapp ghost icon="copy" full disabled={dupliserer} onClick={dupliser}>
-                  {dupliserer ? "Kopierer…" : "Dupliser"}
-                </Knapp>
-              </div>
+          <div style={{ position: "relative", display: "flex", justifyContent: "flex-end" }}>
+            <button
+              type="button"
+              onClick={() => setMenyApen((v) => !v)}
+              aria-haspopup="menu"
+              aria-expanded={menyApen}
+              aria-label="Flere handlinger"
+              className="v2-press v2-focus"
+              data-wb-okt-meny
+              style={{ appearance: "none", cursor: "pointer", width: 36, height: 36, borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", color: T.fg2 }}
+            >
+              <Icon name="more-vertical" size={16} />
+            </button>
+            {menyApen && (
+              <>
+                <div onClick={() => setMenyApen(false)} style={{ position: "fixed", inset: 0, zIndex: 69 }} />
+                <div
+                  role="menu"
+                  aria-label="Handlinger for økt"
+                  style={{ position: "absolute", right: 0, top: "calc(100% + 6px)", zIndex: 70, width: 210, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 14, padding: 6, boxShadow: "0 16px 40px rgba(0,0,0,0.45)", display: "flex", flexDirection: "column", gap: 2 }}
+                >
+                  <button
+                    type="button"
+                    role="menuitem"
+                    disabled={flyttLoading}
+                    onClick={() => { setMenyApen(false); setFlyttApen((v) => !v); }}
+                    className="v2-press"
+                    style={{ appearance: "none", cursor: "pointer", textAlign: "left", display: "flex", alignItems: "center", gap: 9, padding: "9px 10px", borderRadius: 9, background: "transparent", border: 0, fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.fg }}
+                  >
+                    <Icon name="calendar" size={14} style={{ color: T.mut }} />
+                    {flyttApen ? "Lukk flytt-panel" : "Flytt"}
+                  </button>
+                  {actions?.duplicateSession && !ferdig && (
+                    <button
+                      type="button"
+                      role="menuitem"
+                      disabled={dupliserer}
+                      onClick={() => { setMenyApen(false); dupliser(); }}
+                      className="v2-press"
+                      style={{ appearance: "none", cursor: "pointer", textAlign: "left", display: "flex", alignItems: "center", gap: 9, padding: "9px 10px", borderRadius: 9, background: "transparent", border: 0, fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.fg }}
+                    >
+                      <Icon name="copy" size={14} style={{ color: T.mut }} />
+                      {dupliserer ? "Kopierer…" : "Dupliser"}
+                    </button>
+                  )}
+                  <div style={{ height: 1, background: T.border, margin: "4px 2px" }} />
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => { setMenyApen(false); setBekreftSlett(true); }}
+                    className="v2-press"
+                    style={{ appearance: "none", cursor: "pointer", textAlign: "left", display: "flex", alignItems: "center", gap: 9, padding: "9px 10px", borderRadius: 9, background: "transparent", border: 0, fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.down }}
+                  >
+                    <Icon name="trash-2" size={14} style={{ color: T.down }} />
+                    Slett økt
+                  </button>
+                </div>
+              </>
             )}
-            <div style={{ flex: 1 }}>
-              <Knapp ghost icon="trash-2" full onClick={() => setBekreftSlett(true)}>
-                Slett
-              </Knapp>
-            </div>
           </div>
         </div>
       )}
