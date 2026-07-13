@@ -17,6 +17,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { assertCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import type { Prisma } from "@/generated/prisma/client";
 
 const IdSchema = z.string().min(1, "ID er påkrevd");
@@ -33,6 +34,7 @@ async function ensureCoach(planId: string) {
     select: { id: true, userId: true },
   });
   if (!plan) throw new Error("Plan ikke funnet");
+  await assertCoachTilgangTilSpiller(user, plan.userId);
   return { user, plan };
 }
 

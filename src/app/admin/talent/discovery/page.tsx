@@ -13,7 +13,7 @@
  */
 
 import { TilbakeLenke } from "@/components/v2";
-import { coachedPlayerWhere } from "@/lib/auth/coached";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
@@ -29,7 +29,7 @@ export default async function V2AdminTalentDiscoveryPage() {
 
   const alle = await prisma.user.findMany({
     where: {
-      ...coachedPlayerWhere(),
+      ...coachScopedPlayerWhere(user),
       talentTracking: { is: null },
     },
     select: {

@@ -43,6 +43,7 @@ export default async function V2AdminCompliancePage({ searchParams }: { searchPa
     windowDays: days,
     periodLabel: label,
     selectedPlayerId: params.studentId,
+    viewer: user,
   });
 
   return (

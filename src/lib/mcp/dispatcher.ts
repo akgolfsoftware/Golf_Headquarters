@@ -2,7 +2,7 @@
 // Spec: https://spec.modelcontextprotocol.io/specification/
 
 import type { ZodType } from "zod";
-import { CADDIE_TOOLS } from "@/lib/caddie/tools";
+import { buildCaddieTools, CADDIE_TOOL_SHAPE } from "@/lib/caddie/tools";
 import {
   rpcError,
   rpcSuccess,
@@ -23,15 +23,15 @@ type ToolDescriptor = {
   inputSchema: Record<string, unknown>;
 };
 
-// Bygg `tools/list`-respons fra CADDIE_TOOLS. Cache så vi slipper å konvertere
-// JSON Schema på hver request.
+// Bygg `tools/list`-respons fra CADDIE_TOOL_SHAPE (viewer-uavhengig metadata).
+// Cache så vi slipper å konvertere JSON Schema på hver request.
 let cachedToolList: ToolDescriptor[] | null = null;
 
 function getToolList(): ToolDescriptor[] {
   if (cachedToolList) return cachedToolList;
 
   const list: ToolDescriptor[] = [];
-  for (const [name, def] of Object.entries(CADDIE_TOOLS)) {
+  for (const [name, def] of Object.entries(CADDIE_TOOL_SHAPE)) {
     const description =
       (def as { description?: string }).description ?? `MCP-tool ${name}`;
     const zodSchema = (def as { inputSchema?: unknown }).inputSchema as
@@ -56,13 +56,14 @@ type CallToolParams = {
 async function handleToolsCall(
   id: JsonRpcId,
   params: CallToolParams,
+  viewer: { id: string; role: string },
 ): Promise<JsonRpcResponse> {
   const toolName = typeof params?.name === "string" ? params.name : null;
   if (!toolName) {
     return rpcError(id, RPC_INVALID_PARAMS, "`params.name` mangler eller er ikke en string.");
   }
 
-  const tool = (CADDIE_TOOLS as Record<string, unknown>)[toolName];
+  const tool = (buildCaddieTools(viewer) as Record<string, unknown>)[toolName];
   if (!tool) {
     return rpcError(
       id,
@@ -128,6 +129,7 @@ export async function dispatchMcpMethod(
   method: string,
   params: unknown,
   isNotification: boolean,
+  viewer: { id: string; role: string },
 ): Promise<DispatchResult> {
   // Notifications fra klienten — bare ack, returner ingen body.
   if (isNotification) {
@@ -164,7 +166,7 @@ export async function dispatchMcpMethod(
     }
 
     case "tools/call": {
-      const response = await handleToolsCall(id, (params ?? {}) as CallToolParams);
+      const response = await handleToolsCall(id, (params ?? {}) as CallToolParams, viewer);
       return { kind: "response", response };
     }
 

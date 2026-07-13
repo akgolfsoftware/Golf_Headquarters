@@ -35,6 +35,7 @@ export async function runWeeklyPlanProposals(): Promise<{
   const seksDagerSiden = new Date(Date.now() - 6 * 86_400_000);
 
   // Kun coachede spillere med aktiv plan (I0 + planen som ankerpunkt).
+  // Bevisst coachedPlayerWhere (ikke coach-scopet): batch-agent uten viewer.
   const spillere = await prisma.user.findMany({
     where: {
       AND: [

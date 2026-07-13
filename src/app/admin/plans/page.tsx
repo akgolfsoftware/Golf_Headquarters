@@ -11,7 +11,7 @@
  * Server component.
  */
 
-import { coachedPlayerWhere } from "@/lib/auth/coached";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { ukenummer } from "@/lib/uke-helpers";
@@ -70,7 +70,7 @@ export default async function V2AdminPlansPreviewPage() {
         plan: {
           status: "ACTIVE",
           userId: { not: TEMPLATE_PLACEHOLDER_USER_ID },
-          user: coachedPlayerWhere(),
+          user: coachScopedPlayerWhere(user),
         },
       },
       orderBy: { scheduledAt: "asc" },

@@ -6,7 +6,7 @@
 // Setup: docs/mcp-server-setup.md
 
 import {
-  CADDIE_TOOLS,
+  ALL_TOOL_NAMES,
   READ_TOOL_NAMES,
   WRITE_TOOL_NAMES,
 } from "@/lib/caddie/tools";
@@ -34,7 +34,7 @@ export async function GET() {
     protocol: "mcp/2024-11-05",
     transport: "http+json-rpc",
     auth: "Bearer token (se /admin/settings/api for å generere)",
-    toolCount: Object.keys(CADDIE_TOOLS).length,
+    toolCount: ALL_TOOL_NAMES.length,
     readTools: READ_TOOL_NAMES,
     writeTools: WRITE_TOOL_NAMES,
     docs: "/docs/mcp-server-setup.md",
@@ -87,19 +87,22 @@ export async function POST(req: Request) {
     }
     const responses: JsonRpcResponse[] = [];
     for (const item of body) {
-      const res = await handleSingle(item);
+      const res = await handleSingle(item, auth.user);
       if (res) responses.push(res);
     }
     if (responses.length === 0) return new Response(null, { status: 204 });
     return Response.json(responses);
   }
 
-  const res = await handleSingle(body);
+  const res = await handleSingle(body, auth.user);
   if (!res) return new Response(null, { status: 204 });
   return Response.json(res);
 }
 
-async function handleSingle(raw: unknown): Promise<JsonRpcResponse | null> {
+async function handleSingle(
+  raw: unknown,
+  viewer: { id: string; role: string },
+): Promise<JsonRpcResponse | null> {
   if (!isJsonRpcRequest(raw)) {
     return rpcError(
       null,
@@ -111,7 +114,7 @@ async function handleSingle(raw: unknown): Promise<JsonRpcResponse | null> {
   const id = raw.id ?? null;
   const notification = isNotification(raw);
 
-  const result = await dispatchMcpMethod(id, raw.method, raw.params, notification);
+  const result = await dispatchMcpMethod(id, raw.method, raw.params, notification, viewer);
   if (result.kind === "notification") return null;
   return result.response;
 }

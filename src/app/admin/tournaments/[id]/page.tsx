@@ -5,7 +5,7 @@
  * gjenbrukes uendret.
  */
 
-import { coachedPlayerWhere } from "@/lib/auth/coached";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -43,7 +43,7 @@ export default async function TurneringDetalj({
     }),
     prisma.courseDefinition.findMany({ orderBy: { name: "asc" } }),
     prisma.user.findMany({
-      where: coachedPlayerWhere(),
+      where: coachScopedPlayerWhere(user),
       orderBy: { name: "asc" },
       select: { id: true, name: true, hcp: true, tier: true },
     }),

@@ -10,7 +10,7 @@
  * Server component.
  */
 
-import { coachedPlayerWhere } from "@/lib/auth/coached";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { can, Capability } from "@/lib/auth/cbac";
@@ -24,7 +24,7 @@ export default async function V2AdminReportsPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
   const [spillere, okter, rapportRader] = await Promise.all([
-    prisma.user.count({ where: { AND: [coachedPlayerWhere(), { deletedAt: null }] } }),
+    prisma.user.count({ where: { AND: [coachScopedPlayerWhere(user), { deletedAt: null }] } }),
     prisma.trainingPlanSession.count({ where: { status: "COMPLETED" } }),
     prisma.monthlyReport.findMany({
       orderBy: [{ year: "desc" }, { month: "desc" }],
