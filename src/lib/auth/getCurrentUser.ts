@@ -22,13 +22,28 @@ export const getCurrentUserRaw = cache(async (): Promise<User | null> => {
   } = await supabase.auth.getUser();
   if (!authUser) return null;
 
-  const user = await prisma.user.findUnique({
+  // Én query: bruker + abonnement + gruppetelling i samme rundtur, i stedet
+  // for tre separate queries per request (findUnique + subscription + count).
+  const medTilgang = await prisma.user.findUnique({
     where: { authId: authUser.id },
+    include: {
+      subscription: { select: { monthlyCredits: true, status: true } },
+      _count: { select: { groupMemberships: true } },
+    },
   });
   // GDPR (P20): soft-slettet konto (deletedAt satt) behandles som utlogget —
   // brukeren kan ikke bruke appen i 30-dagers angrevinduet. Gjenoppretting via support.
-  if (user?.deletedAt) return null;
-  if (user) return withEffektivTilgang(user);
+  if (medTilgang?.deletedAt) return null;
+  if (medTilgang) {
+    const { subscription, _count, ...user } = medTilgang;
+    const effektiv = resolveTier({
+      tier: user.tier,
+      createdAt: user.createdAt,
+      subscription,
+      groupMembershipsCount: _count.groupMemberships,
+    });
+    return effektiv === user.tier ? user : { ...user, tier: effektiv };
+  }
 
   // Supabase-bruker finnes, men Prisma-rad mangler — opprett via metadata.
   const ny = await ensureUser(authUser);
@@ -53,6 +68,8 @@ export const getCurrentUser = cache(async (): Promise<User | null> => {
 // PRO = har PlayerHQ-tilgang (gratis ELLER betalt), GRATIS = må betale 299 kr/mnd.
 // Laster coaching-pakke (Subscription) + gruppemedlemskap for å avgjøre gratis-tilgang.
 // /portal/meg/abonnement viser FAKTISK tier ved å lese prisma.user direkte.
+// Brukes nå KUN for ensureUser-stien (førstegangs innlogging) — hovedstien
+// henter alt i én query i getCurrentUserRaw.
 async function withEffektivTilgang(user: User): Promise<User> {
   const [sub, gruppeCount] = await Promise.all([
     prisma.subscription

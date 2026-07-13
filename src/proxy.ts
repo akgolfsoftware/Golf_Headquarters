@@ -3,7 +3,6 @@
 // /portal og /admin mot uautentisert tilgang.
 
 import { NextResponse, type NextRequest } from "next/server";
-import { createServerClient } from "@supabase/ssr";
 import { updateSession } from "@/lib/supabase/proxy";
 import { workbenchRedirectForTrenPath } from "@/lib/portal/tren-workbench-redirect";
 
@@ -106,7 +105,9 @@ export async function proxy(request: NextRequest) {
   // Generer per-request nonce — base64-encodet UUID, kryptografisk tilfeldig.
   // Sendes til updateSession slik at x-nonce-headeren er tilgjengelig i RSCs.
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
-  const response = await updateSession(request, nonce);
+  // updateSession gjør det ENE getUser()-nettverkskallet per request og
+  // returnerer brukeren — ikke kall getUser() igjen her.
+  const { response, user } = await updateSession(request, nonce);
 
   const erBeskyttet =
     path.startsWith("/portal") ||
@@ -114,30 +115,11 @@ export async function proxy(request: NextRequest) {
     path.startsWith("/intern") ||
     path.startsWith("/dev-banekart");
 
-  if (erBeskyttet) {
-    // Sjekk auth-status via samme cookies som updateSession nettopp refresjet.
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll: () => request.cookies.getAll(),
-          setAll: () => {
-            // Ikke nødvendig her — updateSession har allerede skrevet cookies.
-          },
-        },
-      }
-    );
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/auth/login";
-      url.searchParams.set("next", path);
-      return NextResponse.redirect(url);
-    }
+  if (erBeskyttet && !user) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth/login";
+    url.searchParams.set("next", path);
+    return NextResponse.redirect(url);
   }
 
   // Sett CSP på alle HTML-responses (ikke på redirects ovenfor).

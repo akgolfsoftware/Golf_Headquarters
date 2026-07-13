@@ -10,6 +10,7 @@
 import { useState, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Check, Search, X } from "lucide-react";
+import { useTilbake } from "@/components/v2/back-button";
 import { tildelTest } from "./actions";
 
 type Spiller = { id: string; name: string; initials: string; hcp: string };
@@ -69,9 +70,7 @@ export function TildelModal({
 
   const totalCount = allTests.length;
 
-  function handleClose() {
-    router.back();
-  }
+  const handleClose = useTilbake(`/admin/spillere/${spiller.id}/tester`);
 
   function handleSend() {
     setFeil(null);

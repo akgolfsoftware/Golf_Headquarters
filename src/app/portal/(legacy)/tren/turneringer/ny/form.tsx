@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, AlertCircle } from "lucide-react";
+import { useTilbake } from "@/components/v2/back-button";
 import { opprettManuellTurnering } from "../actions";
 
 type TurType = "junior-no" | "amateur-no" | "lokal" | "klubb";
@@ -24,6 +25,7 @@ const FORMAT_LABEL: Record<TurFormat, string> = {
 
 export function NyManuellTurneringForm() {
   const router = useRouter();
+  const tilbake = useTilbake("/portal/tren/turneringer");
   const [isPending, startTransition] = useTransition();
   const [feil, setFeil] = useState<string | null>(null);
 
@@ -182,7 +184,7 @@ export function NyManuellTurneringForm() {
       <div className="flex items-center justify-end gap-2 border-t border-border pt-5">
         <button
           type="button"
-          onClick={() => router.back()}
+          onClick={tilbake}
           className="rounded-full px-5 py-2.5 font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-muted-foreground hover:text-foreground"
         >
           Avbryt

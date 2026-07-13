@@ -6,9 +6,13 @@
 // i x-nonce request-header — lesbar via headers() i Server Components.
 
 import { createServerClient } from "@supabase/ssr";
+import type { User } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
 
-export async function updateSession(request: NextRequest, nonce?: string) {
+export async function updateSession(
+  request: NextRequest,
+  nonce?: string
+): Promise<{ response: NextResponse; user: User | null }> {
   // Bygg request-headers med optional nonce så RSCs kan lese den via headers().
   function buildReqHeaders(): Headers {
     const h = new Headers(request.headers);
@@ -50,11 +54,17 @@ export async function updateSession(request: NextRequest, nonce?: string) {
   // AuthApiError her i stedet for å returnere et error-objekt — fang den så
   // brukeren faller tilbake til "ikke innlogget" og redirectes til login av
   // route-guarden, i stedet for at siden krasjer med en generisk feil.
+  //
+  // Brukeren returneres til src/proxy.ts slik at route-guarden kan gjenbruke
+  // resultatet — getUser() er et nettverkskall mot Supabase Auth, og dette er
+  // det ENESTE stedet det skal skje per request.
+  let user: User | null = null;
   try {
-    await supabase.auth.getUser();
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
   } catch (err) {
     console.error("[proxy] Supabase getUser() feilet — behandler som ikke innlogget", err);
   }
 
-  return supabaseResponse;
+  return { response: supabaseResponse, user };
 }

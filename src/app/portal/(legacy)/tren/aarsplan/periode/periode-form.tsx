@@ -10,6 +10,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Trash2 } from "lucide-react";
+import { useTilbake } from "@/components/v2/back-button";
 import type { LPhase } from "@/generated/prisma/client";
 import { PeriodeConstraintBadges } from "@/components/portal/periode-constraint-badges";
 import { CANON_PERIOD_ADJUSTMENT } from "@/lib/workbench/canon-period-adjustment";
@@ -51,6 +52,7 @@ type Props =
 
 export function PeriodeForm(props: Props) {
   const router = useRouter();
+  const tilbake = useTilbake("/portal/tren/aarsplan");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [warnings, setWarnings] = useState<string[]>([]);
@@ -239,7 +241,7 @@ export function PeriodeForm(props: Props) {
         <div className="ml-auto flex flex-1 justify-end gap-2 sm:flex-initial">
           <button
             type="button"
-            onClick={() => router.back()}
+            onClick={tilbake}
             disabled={pending}
             className="inline-flex min-h-11 items-center rounded-full px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted/40"
           >

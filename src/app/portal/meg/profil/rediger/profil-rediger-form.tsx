@@ -12,6 +12,7 @@ import {
   RefreshCw,
   Save,
 } from "lucide-react";
+import { useTilbake } from "@/components/v2/back-button";
 import { uploadAvatar } from "@/lib/storage/avatar";
 import { updateProfile } from "./actions";
 
@@ -41,6 +42,7 @@ function hcpTekst(hcp: number | null): string {
 
 export function ProfilRedigerForm({ initial }: { initial: Initial }) {
   const router = useRouter();
+  const tilbake = useTilbake("/portal/meg/profil");
   const [pending, startTransition] = useTransition();
   const [savedAt, setSavedAt] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -332,7 +334,7 @@ export function ProfilRedigerForm({ initial }: { initial: Initial }) {
         </span>
         <button
           type="button"
-          onClick={() => router.back()}
+          onClick={tilbake}
           disabled={pending}
           className="inline-flex h-[46px] items-center rounded-[12px] px-4 font-mono text-[11px] font-extrabold uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50"
         >

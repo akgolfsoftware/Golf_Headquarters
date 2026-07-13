@@ -12,6 +12,7 @@
 import "../planlegge-v2/styles.css";
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useTilbake } from "@/components/v2/back-button";
 import { PlanleggeSprite } from "../planlegge-v2/icons";
 import { tildelTest } from "@/app/admin/(legacy)/tester/tildel/[spillerId]/actions";
 
@@ -38,6 +39,7 @@ export function TildelTestModalScreen({
   pyrCounts: Record<string, number>;
 }) {
   const router = useRouter();
+  const tilbake = useTilbake(`/admin/spillere/${playerId}/tester`);
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] =
     useState<(typeof PYRAMID_FILTERS)[number]>("Alle");
@@ -98,7 +100,7 @@ export function TildelTestModalScreen({
               type="button"
               className="modal-close"
               aria-label="Lukk"
-              onClick={() => router.back()}
+              onClick={tilbake}
             >
               <svg fill="none" stroke="currentColor"><use href="#i-x" /></svg>
             </button>
@@ -235,7 +237,7 @@ export function TildelTestModalScreen({
                 {feil}
               </span>
             )}
-            <button type="button" className="btn btn-ghost ghost" onClick={() => router.back()} disabled={pending}>
+            <button type="button" className="btn btn-ghost ghost" onClick={tilbake} disabled={pending}>
               Avbryt
             </button>
             <button

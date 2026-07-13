@@ -1,8 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import type { ReactNode } from "react";
+import { harInternHistorikk } from "@/components/v2/back-button";
 
 /**
  * SplitInboxShell — gjenbrukbar 3-kolonne split-pane primitive for innbokser.
@@ -33,6 +34,7 @@ export function SplitInboxShell({
   backHref?: string;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const hasActive = activeKey !== null;
 
   return (
@@ -61,7 +63,10 @@ export function SplitInboxShell({
             type="button"
             onClick={() => {
               if (backHref) router.push(backHref);
-              else router.back();
+              // Uten historikk (deep-link/kald PWA-start) ville router.back()
+              // gjort ingenting — gå til lista (samme path uten query) i stedet.
+              else if (harInternHistorikk()) router.back();
+              else router.push(pathname);
             }}
             className="inline-flex items-center gap-2 rounded-md px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
           >
