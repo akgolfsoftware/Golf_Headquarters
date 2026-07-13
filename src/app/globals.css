@@ -26,8 +26,12 @@
   /* Brand */
   --primary: 163.6 100% 17.3%;     /* #005840 = DS --signal (forest-700) */
   --primary-foreground: 0 0% 100%; /* #FFFFFF = DS --on-signal (var lime — DS sier hvit på signal i lys) */
-  --accent: 72.9 92.8% 61.8%;      /* #D1F843 = DS --signal-fill (lime-500) */
-  --accent-foreground: 90 5% 7.8%; /* #141513 = DS --on-signal-fill (graphite-0, var forest) */
+  /* Lime-på-lys er forbudt (design-system-regel.md, lib/v2/tokens.ts) —
+     --accent fulgte aldri samme lys/mørk-regel som --primary rett over.
+     Speiler --primary sine lys-verdier (forest/hvit) i stedet for å
+     bruke DS sin fargenavngiving («signal-fill») bokstavelig. */
+  --accent: 163.6 100% 17.3%;      /* #005840 = forest, matcher --primary i lys */
+  --accent-foreground: 0 0% 100%;  /* #FFFFFF = hvit på forest, matcher --primary-foreground */
 
   /* Neutrals */
   --secondary: 60 6.7% 94.1%;      /* #F1F1EF = DS --surface-2 (sand-100) */
@@ -222,8 +226,11 @@
   --success-bg: oklch(0.58 0.15 158 / 0.12);
   --success-border: oklch(0.5 0.13 158 / 0.45);
   --track: rgba(0, 0, 0, 0.08);
-  --signal-fill: var(--lime-500);
-  --on-signal-fill: var(--graphite-0);
+  /* Lime-på-lys er forbudt — --signal-fill fulgte aldri samme lys/mørk-regel
+     som --signal to linjer over (forest i lys, lime i mørk). Retter til
+     samme mønster: forest fill + hvit tekst i lys (mørk-blokken uendret). */
+  --signal-fill: var(--forest-700);
+  --on-signal-fill: #FFFFFF;
   --signal-fill-edge: var(--border-strong);
   --warning-solid: #855100;
   --warning-bg: oklch(0.58 0.15 83 / 0.12);

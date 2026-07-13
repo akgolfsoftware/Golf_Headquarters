@@ -529,7 +529,7 @@ export function Prikker({ n = 84, hits, on = T.lime, cols = 28 }: PrikkerProps) 
   return (
     <div style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: 3 }}>
       {Array.from({ length: n }, (_, i) => (
-        <span key={i} style={{ width: 5, height: 5, borderRadius: 9999, background: seed.indexOf(i) !== -1 ? on : "rgba(255,255,255,0.10)" }} />
+        <span key={i} style={{ width: 5, height: 5, borderRadius: 9999, background: seed.indexOf(i) !== -1 ? on : "var(--v2-track)" }} />
       ))}
     </div>
   );

@@ -322,7 +322,7 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
 
   // ── Kapasitet-heatmap ─────────────────────────────────────────
   const heatmap = (
-    <Kort eyebrow="Kapasitet · timer × dag" action={<Caps size={9} color={T.lime}>Full = lime</Caps>}>
+    <Kort eyebrow="Kapasitet · timer × dag" action={<Caps size={9} color={T.lime}>Full = markert</Caps>}>
       {data.anlegg.length === 0 ? (
         <TomTilstand icon="grid" title="Ingen aktive anlegg" sub="Legg til anlegg for å se kapasitetsbelegg." />
       ) : (
