@@ -3,7 +3,8 @@ import "server-only";
 import type { PyramidArea, MMiljo } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 
-const GENERERT_FRA = "WORKBENCH_PLAN";
+// Eksportert: reverse-synken (okt-status-actions) må matche samme streng.
+export const GENERERT_FRA = "WORKBENCH_PLAN";
 
 const PYR_TO_PRACTICE: Record<PyramidArea, "BLOKK" | "RANDOM" | "KONKURRANSE" | "SPILL_TEST"> = {
   FYS: "BLOKK",
@@ -60,7 +61,7 @@ export async function upsertV2ForPlanSession(input: {
 
   const existing = await prisma.trainingSessionV2.findFirst({
     where: { generertFra: GENERERT_FRA, generertFraId: input.planSessionId },
-    select: { id: true },
+    select: { id: true, status: true },
   });
 
   const data = {
@@ -77,11 +78,66 @@ export async function upsertV2ForPlanSession(input: {
     generertFraId: input.planSessionId,
   };
 
+  let v2Id: string;
   if (existing) {
-    await prisma.trainingSessionV2.update({ where: { id: existing.id }, data });
+    // Ikke nullstill status på en økt spilleren alt har startet/fullført.
+    const { status: _status, ...utenStatus } = data;
+    await prisma.trainingSessionV2.update({
+      where: { id: existing.id },
+      data: existing.status === "PLANNED" ? data : utenStatus,
+    });
+    v2Id = existing.id;
   } else {
-    await prisma.trainingSessionV2.create({ data });
+    const opprettet = await prisma.trainingSessionV2.create({ data, select: { id: true } });
+    v2Id = opprettet.id;
   }
+
+  // Drill-speiling: kun for PLANNED-økter — en påbegynt/logget økt røres aldri.
+  if (!existing || existing.status === "PLANNED") {
+    await syncDrillsToV2(v2Id, input.planSessionId, input.pyramidArea);
+  }
+}
+
+/**
+ * Speil plan-øktas SessionDrill-rader til TrainingDrillV2 (replace-semantikk),
+ * så live-avspilleren viser samme driller som planen. Felt-kontrakten er delt
+ * (bølge 2 · 2026-07-04); navn/beskrivelse hentes fra øvelsesbanken.
+ */
+async function syncDrillsToV2(
+  v2SessionId: string,
+  planSessionId: string,
+  fallbackPyramide: PyramidArea,
+): Promise<void> {
+  const drills = await prisma.sessionDrill.findMany({
+    where: { sessionId: planSessionId },
+    orderBy: { orderIndex: "asc" },
+    include: { exercise: { select: { name: true, description: true, durationMin: true } } },
+  });
+
+  await prisma.trainingDrillV2.deleteMany({ where: { sessionId: v2SessionId } });
+  if (drills.length === 0) return;
+
+  await prisma.trainingDrillV2.createMany({
+    data: drills.map((d, i) => ({
+      sessionId: v2SessionId,
+      sortOrder: d.orderIndex ?? i,
+      name: d.exercise.name,
+      description: d.notes ?? d.exercise.description ?? null,
+      durationMinutes: d.repMinutter ?? d.exercise.durationMin ?? 10,
+      repetitions: d.reps ?? d.repAntall ?? null,
+      pyramide: d.pyramidArea ?? fallbackPyramide,
+      omraade: d.skillArea ?? null,
+      lFase: d.lFase,
+      csNivaa: d.csNivaa,
+      miljo: d.miljo,
+      prPress: d.prPress,
+      repType: d.repType,
+      repAntall: d.repAntall,
+      repMinutter: d.repMinutter,
+      repSett: d.repSett,
+      repReps: d.repReps,
+    })),
+  });
 }
 
 /** Slett V2-økt koblet til plan-økt. */
