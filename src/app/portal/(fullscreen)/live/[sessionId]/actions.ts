@@ -14,6 +14,7 @@ import { Prisma } from "@/generated/prisma/client";
 import type { PyramidArea, SessionStatusV2 } from "@/generated/prisma/client";
 import type { LiveV2Drill, LiveV2DrillLog, LiveV2Session } from "@/components/portal/live";
 import { triggerLiveSessionAgent } from "@/lib/agents/triggers";
+import { GENERERT_FRA } from "@/lib/workbench/v2-sync";
 
 export type StartSessionResult =
   | { state: "active" }
@@ -372,6 +373,15 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
       completedSummary: summary as unknown as Prisma.InputJsonValue,
     },
   });
+
+  // Speil tilbake til plan-økta — etterlevelsen (adherence/compliance) leser
+  // plan-sida, ellers telles ikke live-fullførte økter.
+  if (session.generertFra === GENERERT_FRA && session.generertFraId) {
+    await prisma.trainingPlanSession.updateMany({
+      where: { id: session.generertFraId },
+      data: { status: "COMPLETED" },
+    });
+  }
 
   revalidatePath("/portal/planlegge");
   revalidatePath(`/portal/live/${sessionId}`);
