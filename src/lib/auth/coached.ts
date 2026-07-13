@@ -26,6 +26,10 @@ import { prisma } from "@/lib/prisma";
 export function coachedPlayerWhere(): Prisma.UserWhereInput {
   return {
     role: "PLAYER",
+    // Myk-slettede spillere skal ALDRI vises i AgencyOS (oppdaget 2026-07-13:
+    // demo-opprydding etterlot slettede i «Trenger deg nå») — filteret bor
+    // her i porten så alle flater arver det.
+    deletedAt: null,
     OR: [
       {
         enrollmentsAsPlayer: {
