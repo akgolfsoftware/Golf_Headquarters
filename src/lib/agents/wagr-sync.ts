@@ -6,6 +6,9 @@
 //      identifiserende User-Agent). Profilsidene er server-rendret Next.js;
 //      dataene leses fra __NEXT_DATA__-JSON i HTML-en og valideres med zod.
 //      Demo-slugs (demo-*) finnes ikke på wagr.com og hoppes over.
+//      Domeneregel (Anders, 2026-07-13): borte fra WAGR = blitt proff —
+//      både isPro/position 0 og manglende profil (302/404) behandles likt:
+//      metadata.isPro settes, siste amatørtall bevares.
 //   2. Lokal matching — kobler WagrSnapshot-rader uten userId til aktive
 //      PLAYER-brukere på normalisert fullt navn. Kun entydige treff kobles;
 //      navnekollisjoner rapporteres i output i stedet for å gjettes.
@@ -44,7 +47,6 @@ export type WagrSyncResultat = {
   kilde: "wagr.com";
   hentet: number;
   oppdatert: number;
-  ikkeFunnet: string[];
   blittProff: string[];
   feilet: string[];
   nyKoblet: number;
@@ -94,20 +96,19 @@ function pause(ms: number): Promise<void> {
 }
 
 /**
- * Hent én spillerprofil. Returnerer "ikke-funnet" ved redirect/404 (slug
- * finnes ikke lenger på wagr.com), "proff" når spilleren har gått ut av
- * amatørrankingen, og kaster ved nettverks-/parsefeil.
+ * Hent én spillerprofil. Returnerer "proff" når spilleren har gått ut av
+ * amatørrankingen — enten eksplisitt (isPro/position 0) eller ved at profilen
+ * er borte (redirect/404): borte fra WAGR betyr blitt proff (Anders,
+ * 2026-07-13). Kaster ved nettverks-/parsefeil.
  */
-async function hentProfil(
-  slug: string
-): Promise<WagrProfil | "ikke-funnet" | "proff"> {
+async function hentProfil(slug: string): Promise<WagrProfil | "proff"> {
   const res = await fetch(`https://www.wagr.com/playerprofile/${slug}`, {
     headers: { "User-Agent": USER_AGENT },
     redirect: "manual",
     signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
   });
   if ((res.status >= 300 && res.status < 400) || res.status === 404) {
-    return "ikke-funnet";
+    return "proff";
   }
   if (!res.ok) throw new Error(`wagr.com svarte ${res.status} for ${slug}`);
 
@@ -154,12 +155,10 @@ async function hentProfil(
  */
 async function hentEksterneProfiler(slugs: string[]): Promise<{
   profiler: WagrProfil[];
-  ikkeFunnet: string[];
   blittProff: string[];
   feilet: string[];
 }> {
   const profiler: WagrProfil[] = [];
-  const ikkeFunnet: string[] = [];
   const blittProff: string[] = [];
   const feilet: string[] = [];
 
@@ -167,14 +166,13 @@ async function hentEksterneProfiler(slugs: string[]): Promise<{
     if (i > 0) await pause(PAUSE_MELLOM_KALL_MS);
     try {
       const profil = await hentProfil(slug);
-      if (profil === "ikke-funnet") ikkeFunnet.push(slug);
-      else if (profil === "proff") blittProff.push(slug);
+      if (profil === "proff") blittProff.push(slug);
       else profiler.push(profil);
     } catch {
       feilet.push(slug);
     }
   }
-  return { profiler, ikkeFunnet, blittProff, feilet };
+  return { profiler, blittProff, feilet };
 }
 
 // ---------------------------------------------------------------------------
@@ -317,7 +315,6 @@ export async function runWagrSync(): Promise<WagrSyncResultat> {
     kilde: "wagr.com",
     hentet: 0,
     oppdatert: 0,
-    ikkeFunnet: [],
     blittProff: [],
     feilet: [],
     nyKoblet: 0,
@@ -334,10 +331,8 @@ export async function runWagrSync(): Promise<WagrSyncResultat> {
       .map((s) => s.wagrPlayerSlug)
       .filter((slug) => !slug.startsWith("demo-"));
 
-    const { profiler, ikkeFunnet, blittProff, feilet } =
-      await hentEksterneProfiler(slugs);
+    const { profiler, blittProff, feilet } = await hentEksterneProfiler(slugs);
     resultat.hentet = profiler.length;
-    resultat.ikkeFunnet = ikkeFunnet;
     resultat.blittProff = blittProff;
     resultat.feilet = feilet;
     resultat.oppdatert = await oppdaterSnapshots(profiler);
