@@ -74,6 +74,8 @@ export type WorkbenchPaletteItem = {
   cat: "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
   /** SG-tagging fra PlanTemplateSession.skillArea — brukes til fokus-rangering. */
   skillArea: SkillArea | null;
+  /** Kilde-raden (PlanTemplateSession) — lar «Ny økt» hente malens driller. */
+  templateSessionId: string;
 };
 
 export type WorkbenchData = {
@@ -380,7 +382,7 @@ export async function loadWorkbenchData(
         sessions: {
           take: 8,
           orderBy: [{ ukeNr: "asc" }, { dagNr: "asc" }],
-          select: { title: true, varighetMin: true, pyramidArea: true, skillArea: true },
+          select: { id: true, title: true, varighetMin: true, pyramidArea: true, skillArea: true },
         },
       },
     }),
@@ -731,6 +733,7 @@ export async function loadWorkbenchData(
         dur: s.varighetMin,
         cat: s.pyramidArea,
         skillArea: s.skillArea,
+        templateSessionId: s.id,
       });
       if (paletteItems.length >= 12) break;
     }

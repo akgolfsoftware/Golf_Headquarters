@@ -36,7 +36,7 @@ import {
   ZoomBrodsmule,
 } from "@/components/v2";
 import { PalettSok } from "@/components/v2/wb-composer";
-import { ForslagArk, NyOktArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput } from "./WorkbenchV2Sheets";
+import { ForslagArk, NyOktArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput, type OktArkDrill } from "./WorkbenchV2Sheets";
 import { WorkbenchColdstart } from "./WorkbenchColdstart";
 import { WorkbenchAarsplan, PeriodePalett, WBPeriodeStrip } from "./WorkbenchAarsplan";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
@@ -44,7 +44,7 @@ import { WBTidslinjeMobil, MobilFold } from "./WorkbenchV2Mobil";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import { LPHASE_LABEL as LPHASE_LABEL_KANON, LPHASE_FARGE as LPHASE_FARGE_KANON } from "@/lib/labels/taxonomy";
-import { sokOvelser, hentOktKomponist } from "@/lib/workbench/ovelse-sok";
+import { sokOvelser, hentOktKomponist, hentMalOktDrills } from "@/lib/workbench/ovelse-sok";
 import type { WorkbenchInsights } from "@/lib/workbench/types";
 import type { WeekEvent } from "@/lib/workbench/week-types";
 import type { PlanStatus } from "@/generated/prisma/client";
@@ -312,7 +312,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
   tab: string; setTab: (t: string) => void;
   sok: string; setSok: (s: string) => void;
   /** Ett-klikks «legg til»: åpner Ny økt-arket forhåndsutfylt fra brikken. */
-  onVelgOkt?: (item: { title: string; durMin: number; akse?: AkseKey }) => void;
+  onVelgOkt?: (item: { title: string; durMin: number; akse?: AkseKey; templateSessionId?: string }) => void;
   /** Fasit-fiks: mal-kortene var døde — «Bruk» legger inn mal-uke 1. */
   onBrukMal?: (templateId: string) => void;
   /** 8c.2: vis dragbare periode-brikker (årsplan-zoom). */
@@ -403,7 +403,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
               akse={b.cat as AkseKey}
               durMin={b.dur}
               sub={fmtVarighet(b.dur)}
-              onClick={onVelgOkt ? () => onVelgOkt({ title: b.title, durMin: b.dur, akse: b.cat as AkseKey }) : undefined}
+              onClick={onVelgOkt ? () => onVelgOkt({ title: b.title, durMin: b.dur, akse: b.cat as AkseKey, templateSessionId: b.templateSessionId }) : undefined}
             />
           )) : <TomTilstand icon="search" title="Ingen treff" sub={sok ? "Prøv et annet søk." : "Ingen standardøkter i biblioteket ennå."} />}
         </div>
@@ -792,7 +792,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   const [tab, setTab] = useState("maler");
   const [sok, setSok] = useState("");
   const [nyOktApen, setNyOktApen] = useState(false);
-  const [nyOktPrefill, setNyOktPrefill] = useState<{ title: string; durMin: number; akse?: AkseKey } | null>(null);
+  const [nyOktPrefill, setNyOktPrefill] = useState<{ title: string; durMin: number; akse?: AkseKey; drills?: OktArkDrill[] } | null>(null);
   // I1: trykk på tom luke i tidslinja → Ny økt med dag + klokkeslett prefylt.
   const [nyOktSted, setNyOktSted] = useState<{ dayIndex: number; tid: string } | null>(null);
   // Mal dratt til canvas → bekreftelses-popup (Anders-logikken).
@@ -1033,8 +1033,19 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     }
   };
 
-  const velgFraBibliotek = (item: { title: string; durMin: number; akse?: AkseKey }) => {
-    setNyOktPrefill(item);
+  const velgFraBibliotek = async (item: { title: string; durMin: number; akse?: AkseKey; templateSessionId?: string }) => {
+    // Biblioteks-økta skal ta med INNHOLDET (drillene), ikke bare tittelen —
+    // hentes før arket åpnes så alt står ferdig utfylt.
+    let drills: OktArkDrill[] | undefined;
+    if (item.templateSessionId) {
+      try {
+        const res = await hentMalOktDrills(item.templateSessionId);
+        if (res.ok) drills = res.drills;
+      } catch {
+        // Uten drill-data åpner arket likevel — brukeren kan legge til selv.
+      }
+    }
+    setNyOktPrefill({ title: item.title, durMin: item.durMin, akse: item.akse, drills });
     setNyOktApen(true);
   };
 
@@ -1583,6 +1594,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           defaultTitle={nyOktPrefill?.title}
           defaultAkse={nyOktPrefill?.akse}
           defaultDurMin={nyOktPrefill?.durMin}
+          defaultDrills={nyOktPrefill?.drills}
           onLukk={() => { setNyOktApen(false); setNyOktPrefill(null); setNyOktSted(null); }}
           onOpprett={handleCreateSession}
         />
