@@ -9,6 +9,7 @@ import {
   BarChart3,
   UserCircle,
 } from "lucide-react";
+import { PLAYERHQ_SEKSJONER, type PlayerhqSeksjonId } from "@/lib/nav/playerhq";
 
 type NavItemDef = {
   href: string;
@@ -17,14 +18,21 @@ type NavItemDef = {
   exact: boolean;
 };
 
-// PlayerHQ 5-seksjons IA — forenklet mobil bottom-nav
-const NAV: ReadonlyArray<NavItemDef> = [
-  { href: "/portal", label: "Hjem", icon: Home, exact: true },
-  { href: "/portal/planlegge", label: "Plan", icon: CalendarRange, exact: false },
-  { href: "/portal/gjennomfore", label: "Gjør", icon: Dumbbell, exact: false },
-  { href: "/portal/analysere", label: "Analyse", icon: BarChart3, exact: false },
-  { href: "/portal/meg", label: "Meg", icon: UserCircle, exact: false },
-];
+// PlayerHQ 5-seksjons IA — ruter/etiketter fra delt kilde (lib/nav/playerhq),
+// kun ikonene og exact-flagget er lokale for denne mobile bottom-naven.
+const IKON: Record<PlayerhqSeksjonId, typeof Home> = {
+  hjem: Home,
+  plan: CalendarRange,
+  gjor: Dumbbell,
+  analyse: BarChart3,
+  meg: UserCircle,
+};
+const NAV: ReadonlyArray<NavItemDef> = PLAYERHQ_SEKSJONER.map((s) => ({
+  href: s.href,
+  label: s.label,
+  icon: IKON[s.id],
+  exact: s.id === "hjem",
+}));
 
 function erAktiv(path: string, item: NavItemDef): boolean {
   if (item.exact) return path === item.href;

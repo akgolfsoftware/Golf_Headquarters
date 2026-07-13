@@ -756,6 +756,25 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 13. juli (mobil/desktop-forbedringer, PR #10, branch `claude/mobile-desktop-improvements-90kanx`):
+  **Anders' 7 problemområder levert i 8 bølger.** (1) Ytelse: middleware gjør nå ETT
+  `getUser()`-nettverkskall per navigasjon (var 2×) og auth-lasting er 1 Prisma-query (var 3);
+  rot-`loading.tsx` for `/admin`; lazy mapbox; marketing-forsiden statisk. (2) Workbench-mobil:
+  økt-trykk åpner BunnArk (ny delt bunn-ark-primitiv i `src/components/v2/bunn-ark.tsx`),
+  årsplan = tappbar liste (860px-canvas borte), måned = `MndNivaaMobil`-ukeliste, alle ark
+  bunn-forankret på mobil, `?okt=/?zoom=` overlever tilbake/frem. (3) «Legg til målsetning»
+  på Hjem + Mål-hub + Workbench (NyttMaalArk). (4) Øvelsesbank: `TrainingDrillV2.exerciseId`-FK
+  (Supabase-migrering kjørt), plan-driller speiles til live-økta, «Ny øvelse» virker
+  (NyOvelseArk, begge roller, også inne i live-økt), coach-øvelser ikke lenger synlige for alle
+  (source/visibility-fiks). (5) Live økt: bilde/video-opplasting, kommentar per drill,
+  TrackMan-import inkl. skjermbilde→AI-vision m/ fallback, aldri stille datatap ved lagringsfeil,
+  `loadLiveSession`-IDOR tettet. (6) Safe-area på legacy-header (~77 sider), delt deep-link-trygg
+  BackButton, delt PLAYERHQ_SEKSJONER-navkilde. (7) Feilfiks-plan 11/7 re-verifisert: døde
+  kjøps-CTA-er koblet (signup/checkout/booking), Handlingssenter «Merk fullført» skriver til
+  Notion, turnering-UTC-midnattsfeil fikset 6 steder, delvis SG-input skjevfordeler ikke fokus
+  lenger, analyse-actions IDOR-vernet. Verifikasjon: tsc 0 feil + ESLint grønt lokalt (miljø uten
+  DB-secrets), full build grønn i Vercel-preview per bølge. Playwright-e2e gjenstår (krever DB) —
+  kjøres i preview før merge.
 - 12. juli (WAGR-synk, del 2): **ekstern henting fra wagr.com er PÅ** — Anders godkjente skånsom
   ukentlig henting (alternativ 1). `hentEksterneProfiler` i `wagr-sync.ts` leser profilsidenes
   server-rendrede `__NEXT_DATA__`-JSON (validert med zod), sekvensielt med 700 ms pause og

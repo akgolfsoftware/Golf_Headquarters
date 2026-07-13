@@ -16,6 +16,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { T } from "@/lib/v2/tokens";
+import { PLAYERHQ_SEKSJONER } from "@/lib/nav/playerhq";
 import { Icon } from "./icon";
 import { LogoAK, AvatarFoto } from "./core";
 
@@ -32,14 +33,21 @@ export interface V2NavGruppe {
   items: V2NavItem[];
 }
 
-/** PlayerHQ-navigasjon (5 faste seksjoner). Rutene er dagens kanoniske adresser. */
-export const PLAYERHQ_NAV: V2NavItem[] = [
-  { id: "hjem", label: "Hjem", icon: "home", href: "/portal" },
-  { id: "plan", label: "Plan", icon: "calendar", href: "/portal/planlegge" },
-  { id: "gjor", label: "Gjør", icon: "play", href: "/portal/gjennomfore" },
-  { id: "analyse", label: "Analyse", icon: "bar-chart", href: "/portal/analysere" },
-  { id: "meg", label: "Meg", icon: "user", href: "/portal/meg" },
-];
+/** PlayerHQ-navigasjon (5 faste seksjoner). Ruter/etiketter fra delt kilde
+ *  (lib/nav/playerhq) — kun v2-ikonnavnene er lokale her. */
+const PLAYERHQ_IKON: Record<string, string> = {
+  hjem: "home",
+  plan: "calendar",
+  gjor: "play",
+  analyse: "bar-chart",
+  meg: "user",
+};
+export const PLAYERHQ_NAV: V2NavItem[] = PLAYERHQ_SEKSJONER.map((s) => ({
+  id: s.id,
+  label: s.label,
+  icon: PLAYERHQ_IKON[s.id] ?? "circle",
+  href: s.href,
+}));
 
 /** AgencyOS-navigasjon (coach). Full seksjonsstruktur — alle hovedflater. */
 export const AGENCYOS_NAV: V2NavItem[] = [
