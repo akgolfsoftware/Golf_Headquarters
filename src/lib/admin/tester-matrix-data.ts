@@ -133,12 +133,14 @@ export async function loadTesterMatrix(): Promise<TesterMatrixData> {
 
   // Kolonner = tester som faktisk har minst én måling (ellers blir matrisen tom-støy).
   const columnsRaw = testDefs.filter((t) => testsWithResults.has(t.id));
+  const lowerBetterByTest = new Map<string, boolean>();
   const columns: MatrixColumn[] = columnsRaw.map((t) => {
     const { unit, lowerBetter } = resolveUnitDirection(
       benchmarksByTest.get(t.id),
       t.protocol,
       t.scoringRule,
     );
+    lowerBetterByTest.set(t.id, lowerBetter);
     const measuredCount = players.reduce(
       (acc, p) => acc + (byKey.has(`${p.id}::${t.id}`) ? 1 : 0),
       0,
@@ -177,7 +179,10 @@ export async function loadTesterMatrix(): Promise<TesterMatrixData> {
       const last = hist[hist.length - 1];
       const prev = hist.length >= 2 ? hist[hist.length - 2] : null;
       const delta = prev
-        ? { text: formatDelta(last.score - prev.score), tone: deltaTone(last.score, prev.score) }
+        ? {
+            text: formatDelta(last.score - prev.score),
+            tone: deltaTone(last.score, prev.score, lowerBetterByTest.get(col.testId) ?? false),
+          }
         : null;
       return {
         tone: "measured",
@@ -286,8 +291,9 @@ export async function loadTesterMatrix(): Promise<TesterMatrixData> {
   };
 }
 
-function deltaTone(curr: number, prev: number): DeltaTone {
-  if (curr > prev) return "up";
-  if (curr < prev) return "down";
-  return "flat";
+/** Retningsbevisst tone: "up" betyr alltid forbedring, "down" alltid forverring. */
+function deltaTone(curr: number, prev: number, lowerBetter: boolean): DeltaTone {
+  if (curr === prev) return "flat";
+  const better = lowerBetter ? curr < prev : curr > prev;
+  return better ? "up" : "down";
 }
