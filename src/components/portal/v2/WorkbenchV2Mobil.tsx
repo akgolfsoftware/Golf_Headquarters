@@ -18,6 +18,7 @@ import { DagStripe, type StripeDag } from "@/components/v2/kalender";
 import { DagNivaa, OktAgendaRad, MANEDER, type DagKol } from "./WorkbenchV2";
 import { fmtVarighet } from "@/lib/workbench/v2-format";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
+import type { WeekEvent } from "@/lib/workbench/week-types";
 
 /* ── WBTidslinjeMobil — dag-velger-pille (M T O T F L S) + agenda ── */
 export function WBTidslinjeMobil({
@@ -121,6 +122,72 @@ export function ListeNivaaMobil({ dager, valgt, onVelg }: { dager: DagKol[]; val
             </div>
           </div>
         ))}
+      </div>
+    </Kort>
+  );
+}
+
+/* ── KanbanNivaaMobil — økter gruppert på status (2026-07-13) ──────
+   Planlagt/Pågår/Fullført, samme tre-tone-mønster som designsystemets
+   KanbanKolonne (nøytral/aktiv/ferdig-prikk). Avvik (avlyst/hoppet over)
+   vises som et lite merke på kortet i Fullført — ikke egen kolonne, jf.
+   «avvik er anbefaling, aldri sperre»-prinsippet. Kort gjenbruker
+   OktAgendaRad slik at trykk åpner samme økt-detalj som alle andre
+   visninger. */
+function KanbanKolonneMobil({
+  tittel,
+  tone,
+  events,
+  valgt,
+  onVelg,
+}: {
+  tittel: string;
+  tone: "noytral" | "aktiv" | "ferdig";
+  events: WeekEvent[];
+  valgt: string | null;
+  onVelg: (id: string) => void;
+}) {
+  const dotFarge = tone === "aktiv" ? T.lime : tone === "ferdig" ? T.ax.SPILL : T.mut;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10, minWidth: 240, flex: "none" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "0 2px" }}>
+        <span style={{ width: 8, height: 8, borderRadius: 9999, background: dotFarge, flex: "none" }} />
+        <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.fg }}>{tittel}</span>
+        <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, fontVariantNumeric: "tabular-nums" }}>{events.length}</span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {events.length === 0 ? (
+          <div style={{ padding: "18px 10px", textAlign: "center", border: `1px dashed ${T.border}`, borderRadius: 10, fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>Ingen økter</div>
+        ) : (
+          events.map((o, j) => {
+            const avvik = o.status === "ABANDONED" || o.status === "SKIPPED" || o.status === "CANCELLED";
+            return (
+              <div key={o.id ?? j} style={{ position: "relative" }}>
+                <OktAgendaRad o={o} valgt={valgt} onVelg={onVelg} />
+                {avvik && <span title="Avvik" style={{ position: "absolute", top: 6, right: 6, width: 7, height: 7, borderRadius: 9999, background: T.warn, border: `1px solid ${T.panel2}` }} />}
+              </div>
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function KanbanNivaaMobil({ dager, valgt, onVelg }: { dager: DagKol[]; valgt: string | null; onVelg: (id: string) => void }) {
+  const alle = dager.flatMap((d) => d.events);
+  const planlagt = alle.filter((o) => !o.status || o.status === "PLANNED");
+  const pagar = alle.filter((o) => o.status === "ACTIVE" || o.status === "PAUSED");
+  const fullfort = alle.filter((o) => o.status && o.status !== "PLANNED" && o.status !== "ACTIVE" && o.status !== "PAUSED");
+  if (alle.length === 0) {
+    return <Kort><TomTilstand icon="calendar" title="Ingen økter denne uka" sub="Legg til en økt for å se den her." /></Kort>;
+  }
+  return (
+    <Kort eyebrow="Uka · kanban" action={<Caps size={9}>{alle.length} økter</Caps>}>
+      <div style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 2, marginTop: 4 }}>
+        <KanbanKolonneMobil tittel="Planlagt" tone="noytral" events={planlagt} valgt={valgt} onVelg={onVelg} />
+        <KanbanKolonneMobil tittel="Pågår" tone="aktiv" events={pagar} valgt={valgt} onVelg={onVelg} />
+        <KanbanKolonneMobil tittel="Fullført" tone="ferdig" events={fullfort} valgt={valgt} onVelg={onVelg} />
       </div>
     </Kort>
   );

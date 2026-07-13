@@ -42,7 +42,7 @@ import { ForslagArk, NyOktArk, NyttMaalArk, RedigerOktArk, ValgtOktSeksjon, type
 import { WorkbenchColdstart } from "./WorkbenchColdstart";
 import { WorkbenchAarsplan, PeriodePalett, WBPeriodeStrip } from "./WorkbenchAarsplan";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
-import { WBTidslinjeMobil, MndNivaaMobil, MobilFold, ToDagerNivaa, ListeNivaaMobil } from "./WorkbenchV2Mobil";
+import { WBTidslinjeMobil, MndNivaaMobil, MobilFold, ToDagerNivaa, ListeNivaaMobil, KanbanNivaaMobil } from "./WorkbenchV2Mobil";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import { LPHASE_LABEL as LPHASE_LABEL_KANON, LPHASE_FARGE as LPHASE_FARGE_KANON } from "@/lib/labels/taxonomy";
@@ -1388,7 +1388,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         </div>
 
         <div style={{ overflowX: "auto", paddingBottom: 1 }}>
-          <PillVelger options={[{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Dag" }, { v: "2dager", l: "2 dager" }, { v: "liste", l: "Liste" }]} value={nivaa} onChange={setNivaa} />
+          <PillVelger options={[{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Dag" }, { v: "2dager", l: "2 dager" }, { v: "liste", l: "Liste" }, { v: "kanban", l: "Kanban" }]} value={nivaa} onChange={setNivaa} />
         </div>
 
         <div style={{ display: "flex", gap: 8 }}>
@@ -1573,6 +1573,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         {nivaa === "dag" && <DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
         {nivaa === "2dager" && <ToDagerNivaa dager={dager} startIndex={toDagerStart} onSkift={setToDagerStart} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
         {nivaa === "liste" && <ListeNivaaMobil dager={dager} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
+        {nivaa === "kanban" && <KanbanNivaaMobil dager={dager} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} />}
         {nivaa === "maned" && <MndNivaaMobil data={data} onVelgDato={velgDatoFraMnd} />}
 
         <MobilFold tittel="Bibliotek" ikon="layers">
