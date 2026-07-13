@@ -71,9 +71,11 @@ Anders er ikke utvikler og skal ikke skrive git-kommandoer. Claude håndterer gi
 2. **ALDRI merge eller push til main uten Anders' eksplisitte «ja» i samtalen.** Gjelder også
    `git push origin HEAD:main`, PR-merge via `gh`, og merge av andre grener inn i main.
    Main er det som er live i appen — porten er Anders' kontroll på hva som slippes.
-3. **Når en leveranse er klar:** oppsummer i klarspråk hva som er endret, gi Vercel
-   forhåndsvisnings-lenken for grenen (så Anders kan teste på mobil), og spør om det skal
-   til main. Først etter «ja»: merge, push, bekreft.
+3. **Når en leveranse er klar:** åpne en Pull Request mot main (`gh pr create`) med
+   klarspråk-beskrivelse av hva den gjør for appen + Vercel forhåndsvisnings-lenken, oppsummer
+   for Anders og spør om det skal til main. Først etter «ja»: merge, push, bekreft.
+   **PR-lista ER Anders' port-oversikt** (github.com/akgolfsoftware/Golf_Headquarters/pulls)
+   — alt som venter på godkjenning skal stå der som PR, ingenting venter som løs gren.
 4. **Unntak:** dokument-/regelendringer Anders eksplisitt har bedt om i samtalen kan gå rett til main.
 
 Stopp og spør før destruktive operasjoner: `--force`, `reset --hard`, `rebase main`, sletting av remote branches.
