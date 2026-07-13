@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
 import { cancelPro } from "./actions";
@@ -8,11 +8,18 @@ import { cancelPro } from "./actions";
 export function AvbestillButtons() {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const [feil, setFeil] = useState<string | null>(null);
 
   function avbestill() {
     if (!confirm("Er du helt sikker på at du vil avbestille Pro?")) return;
+    setFeil(null);
     startTransition(async () => {
-      await cancelPro();
+      // Ved suksess redirecter actionen (resultatet blir da undefined);
+      // ved feil kommer { ok: false, error } tilbake og vises under knappene.
+      const resultat = await cancelPro();
+      if (resultat && !resultat.ok) {
+        setFeil(resultat.error ?? "Noe gikk galt. Prøv igjen om litt.");
+      }
     });
   }
 
@@ -41,6 +48,14 @@ export function AvbestillButtons() {
       >
         {pending ? "Avbestiller …" : "Ja, avbestill"}
       </button>
+      {feil && (
+        <p
+          role="alert"
+          className="col-span-2 text-center text-[12.5px] font-medium leading-[1.45] text-destructive"
+        >
+          {feil}
+        </p>
+      )}
     </div>
   );
 }

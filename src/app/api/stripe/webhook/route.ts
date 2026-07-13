@@ -141,11 +141,21 @@ async function syncSubscription(stripeSub: Stripe.Subscription) {
     return;
   }
 
-  const status = mapStripeStatus(stripeSub.status);
+  const stripeStatus = mapStripeStatus(stripeSub.status);
+  // Avbestilt-men-betalt: Stripe rapporterer «active» + cancel_at_period_end
+  // frem til periodeslutt. Appen skal vise CANCELLED (fornyes ikke, kan ikke
+  // avbestilles på nytt) — ellers overskriver denne webhooken CANCELLED-en
+  // cancelPro() nettopp satte. Tier/credits beholdes ut den betalte perioden;
+  // customer.subscription.deleted («canceled») nedgraderer til GRATIS.
+  const status: SubscriptionStatus =
+    stripeStatus === "ACTIVE" && stripeSub.cancel_at_period_end
+      ? "CANCELLED"
+      : stripeStatus;
   const priceId = stripeSub.items.data[0]?.price?.id ?? null;
   // Inaktive abonnement skal alltid være GRATIS-tier uavhengig av pris-ID.
-  const tier = status === "ACTIVE" ? tierForPriceId(priceId) : "GRATIS";
-  const monthlyCredits = status === "ACTIVE" ? creditsForPriceId(priceId) : 0;
+  const tier = stripeStatus === "ACTIVE" ? tierForPriceId(priceId) : "GRATIS";
+  const monthlyCredits =
+    stripeStatus === "ACTIVE" ? creditsForPriceId(priceId) : 0;
   const periodEnd = stripeSub.items.data[0]?.current_period_end;
   const newPeriodEnd = periodEnd ? new Date(periodEnd * 1000) : null;
 
