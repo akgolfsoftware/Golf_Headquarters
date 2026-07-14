@@ -129,5 +129,5 @@ haker grønne: **Design · Mob/Desk/iPad · Adresse · Flyt · Data · Funker**.
 ## Verifikasjon (kjør før hver commit)
 
 ```bash
-npx prisma validate && npx prisma generate && npx tsc --noEmit && npm run build
+npm run verify
 ```
