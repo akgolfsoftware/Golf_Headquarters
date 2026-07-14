@@ -170,6 +170,20 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
         </div>
       </Kort>
 
+      <Kort tint eyebrow="Fysisk">
+        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+          <div style={{ flex: 1, minWidth: 180 }}>
+            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>Egentrening?</div>
+            <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 4 }}>
+              Logg styrke, mobilitet og kondisjon utenfor planlagte økter.
+            </div>
+          </div>
+          <Link href="/portal/fysisk" style={{ textDecoration: "none" }}>
+            <CTAPill ghost icon="dumbbell">Logg fysisk-økt</CTAPill>
+          </Link>
+        </div>
+      </Kort>
+
       {antall === 0 ? (
         <Kort>
           <TomTilstand
