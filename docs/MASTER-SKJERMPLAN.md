@@ -424,8 +424,8 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Ny drill | `/admin/drills/ny` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminDrillNyV2`/`DrillSkjemaFelter`) — felt-settet utvidet til parity med rediger (prerequisites/csTarget/lPhase-primary/csMin-Max), ingen data-tap |
 | · Rediger drill | `/admin/drills/[id]/rediger` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminDrillRedigerV2`/`DrillSkjemaFelter`), samme `updateDrill`-kontrakt |
 | · AI drill-forslag | `/admin/drills/forslag` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminDrillForslagV2`) — Godkjenn/Avvis mot `CaddieDraft`, uendret logikk |
-| Teknisk plan | `/admin/teknisk-plan` | – | --- | ✓ | ~ | ~ | ~ |
-| · Per spiller | `/admin/teknisk-plan/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
+| **Teknisk plan** ★ | `/admin/teknisk-plan` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Allerede v2 — masterplan-raden var stale, rettet 2026-07-14 |
+| · **Per spiller** ★ | `/admin/teknisk-plan/[spillerId]` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTekniskPlanDetaljV2`, AgencyOS Bølge 3.8) — samme datamodell, `HjelpTips` på CS-nivå/L-fase/HCP |
 | **Turneringer** ★ | `/admin/tournaments` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-13: portet til v2 (`AdminTurneringerV2`, AgencyOS Bølge 1.1) — samme datalogikk, ny `Rad`-liste dekker mobil/iPad/desktop uten egne breakpoint-grener. Detalj-siden var alt v2 |
 | · Turnering-detalj | `/admin/tournaments/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Ny turnering | `/admin/tournaments/ny` | – | --- | ✓ | ~ | ~ | ~ |
