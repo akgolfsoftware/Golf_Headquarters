@@ -67,6 +67,9 @@ export interface HitRateGoalDraft {
   inTarget?: boolean;
 }
 
+export const TASK_KATEGORIER = ["TEKNISK", "TAKTISK", "MENTALT", "SOSIALT"] as const;
+export type TaskKategori = (typeof TASK_KATEGORIER)[number];
+
 export interface OppgaveDraft {
   id?: string;
   pNummer: string;
@@ -81,11 +84,16 @@ export interface OppgaveDraft {
   cs?: typeof CS_LEVELS[number];
   m?: typeof M_LEVELS[number];
   pr?: typeof PR_LEVELS[number];
+  kategori?: TaskKategori;
   bildeUrl?: string;
   videoUrl?: string;
   repsMaalDry: number;
   repsMaalLav: number;
   repsMaalFull: number;
+  /** Reps logget så langt — kun satt når vi redigerer en lagret oppgave. */
+  repsGjortDry?: number;
+  repsGjortLav?: number;
+  repsGjortFull?: number;
   tmGoals: TmGoalDraft[];
   hitRateGoals: HitRateGoalDraft[];
   drillIds: string[];
@@ -97,19 +105,77 @@ interface OppgaveModalProps {
   initial: OppgaveDraft;
   onSubmit: (draft: OppgaveDraft) => void | Promise<void>;
   isEditing?: boolean;
+  /** Logg reps direkte på oppgaven — kun tilgjengelig når isEditing. */
+  onLogReps?: (reps: { dry?: number; lav?: number; full?: number }) => Promise<void>;
+  /** Last opp bilde/video — returnerer den nye URL-en. */
+  onUploadMedia?: (file: File, kind: "bilde" | "video") => Promise<string>;
 }
 
 function uid() {
   return Math.random().toString(36).slice(2, 10);
 }
 
-export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing }: OppgaveModalProps) {
+const KATEGORI_LABEL: Record<TaskKategori, string> = {
+  TEKNISK: "Teknisk",
+  TAKTISK: "Taktisk",
+  MENTALT: "Mentalt",
+  SOSIALT: "Sosialt",
+};
+
+export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLogReps, onUploadMedia }: OppgaveModalProps) {
   const [draft, setDraft] = useState<OppgaveDraft>(initial);
   const [submitting, setSubmitting] = useState(false);
+  const [logDraft, setLogDraft] = useState({ dry: 0, lav: 0, full: 0 });
+  const [loggingReps, setLoggingReps] = useState(false);
+  const [uploading, setUploading] = useState<"bilde" | "video" | null>(null);
+  const [mediaError, setMediaError] = useState<string | null>(null);
 
   if (!open) return null;
 
   const totalReps = (draft.repsMaalDry || 0) + (draft.repsMaalLav || 0) + (draft.repsMaalFull || 0);
+
+  function sykleKategori() {
+    setDraft((d) => {
+      const i = d.kategori ? TASK_KATEGORIER.indexOf(d.kategori) : -1;
+      const next = i + 1 >= TASK_KATEGORIER.length ? undefined : TASK_KATEGORIER[i + 1];
+      return { ...d, kategori: next };
+    });
+  }
+
+  async function handleLogReps() {
+    if (!onLogReps || loggingReps) return;
+    const { dry, lav, full } = logDraft;
+    if (dry === 0 && lav === 0 && full === 0) return;
+    setLoggingReps(true);
+    try {
+      await onLogReps({ dry: dry || undefined, lav: lav || undefined, full: full || undefined });
+      setDraft((d) => ({
+        ...d,
+        repsGjortDry: (d.repsGjortDry ?? 0) + dry,
+        repsGjortLav: (d.repsGjortLav ?? 0) + lav,
+        repsGjortFull: (d.repsGjortFull ?? 0) + full,
+      }));
+      setLogDraft({ dry: 0, lav: 0, full: 0 });
+    } finally {
+      setLoggingReps(false);
+    }
+  }
+
+  async function handleMediaPick(e: React.ChangeEvent<HTMLInputElement>, kind: "bilde" | "video") {
+    const fil = e.target.files?.[0];
+    e.target.value = "";
+    if (!fil || !onUploadMedia) return;
+    setMediaError(null);
+    setUploading(kind);
+    try {
+      const url = await onUploadMedia(fil, kind);
+      patch(kind === "bilde" ? { bildeUrl: url } : { videoUrl: url });
+    } catch (err) {
+      setMediaError(err instanceof Error ? err.message : "Opplasting feilet.");
+    } finally {
+      setUploading(null);
+    }
+  }
 
   function patch(p: Partial<OppgaveDraft>) {
     setDraft((d) => ({ ...d, ...p }));
@@ -286,6 +352,24 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing }: Op
 
               <div className="field-stack">
                 <span className="field-label">
+                  Klassifisering{" "}
+                  <span style={{ color: "hsl(var(--muted-foreground))", fontWeight: 500 }}>· valgfritt, eget felt</span>
+                </span>
+                <p className="field-helper">
+                  Teknisk/Taktisk/Mentalt/Sosialt — ved siden av pyramide-området, erstatter det ikke.
+                </p>
+                <button
+                  type="button"
+                  className={`chip ${draft.kategori ? "active" : ""}`}
+                  onClick={sykleKategori}
+                  style={{ alignSelf: "flex-start" }}
+                >
+                  {draft.kategori ? KATEGORI_LABEL[draft.kategori] : "Ikke satt"}
+                </button>
+              </div>
+
+              <div className="field-stack">
+                <span className="field-label">
                   Område{" "}
                   <span style={{ color: "hsl(var(--muted-foreground))", fontWeight: 500 }}>· Strokes Gained</span>
                 </span>
@@ -403,22 +487,62 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing }: Op
                 <span style={{ color: "hsl(var(--muted-foreground))" }}>· valgfritt</span>
               </span>
             </div>
-            <div className="media-grid">
-              <button type="button" className={`media-slot ${draft.videoUrl ? "has-file" : ""}`}>
-                <span className="ic" aria-hidden><Play size={14} /></span>
-                <span className="copy">
-                  <span className="nm">{draft.videoUrl ? draft.videoUrl : "Legg til video"}</span>
-                  <span className="meta">MP4 / MOV · max 200 MB</span>
-                </span>
-              </button>
-              <button type="button" className={`media-slot ${draft.bildeUrl ? "has-file" : ""}`}>
-                <span className="ic" aria-hidden><Camera size={14} /></span>
-                <span className="copy">
-                  <span className="nm">{draft.bildeUrl ? draft.bildeUrl : "Legg til bilde"}</span>
-                  <span className="meta">JPG / PNG · max 5 MB</span>
-                </span>
-              </button>
-            </div>
+            {!isEditing || !onUploadMedia ? (
+              <p className="field-helper">Lagre oppgaven først, så kan du legge til bilde og video.</p>
+            ) : (
+              <div className="media-grid">
+                <label className={`media-slot ${draft.videoUrl ? "has-file" : ""}`}>
+                  <span className="ic" aria-hidden>{uploading === "video" ? <Sparkles size={14} /> : <Play size={14} />}</span>
+                  <span className="copy">
+                    <span className="nm">
+                      {uploading === "video" ? "Laster opp …" : draft.videoUrl ? "Video lagt til" : "Legg til video"}
+                    </span>
+                    <span className="meta">MP4 / MOV · max 50 MB</span>
+                  </span>
+                  <input
+                    type="file"
+                    accept="video/mp4,video/quicktime"
+                    style={{ display: "none" }}
+                    disabled={uploading !== null}
+                    onChange={(e) => handleMediaPick(e, "video")}
+                  />
+                </label>
+                <label className={`media-slot ${draft.bildeUrl ? "has-file" : ""}`}>
+                  <span className="ic" aria-hidden>{uploading === "bilde" ? <Sparkles size={14} /> : <Camera size={14} />}</span>
+                  <span className="copy">
+                    <span className="nm">
+                      {uploading === "bilde" ? "Laster opp …" : draft.bildeUrl ? "Bilde lagt til" : "Legg til bilde"}
+                    </span>
+                    <span className="meta">JPG / PNG / WEBP · max 5 MB</span>
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    style={{ display: "none" }}
+                    disabled={uploading !== null}
+                    onChange={(e) => handleMediaPick(e, "bilde")}
+                  />
+                </label>
+              </div>
+            )}
+            {mediaError && (
+              <p className="field-helper" style={{ color: "hsl(var(--destructive))", marginTop: 8 }}>{mediaError}</p>
+            )}
+            {draft.bildeUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={draft.bildeUrl}
+                alt=""
+                style={{ marginTop: 12, maxHeight: 160, borderRadius: 10, display: "block" }}
+              />
+            )}
+            {draft.videoUrl && (
+              <video
+                src={draft.videoUrl}
+                controls
+                style={{ marginTop: 12, maxHeight: 200, borderRadius: 10, display: "block" }}
+              />
+            )}
           </section>
 
           {/* 5. REP-MÅL */}
@@ -449,6 +573,54 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing }: Op
                 </div>
               ))}
             </div>
+
+            {isEditing && onLogReps && (
+              <div style={{ marginTop: 14, padding: 14, background: "hsl(var(--secondary))", borderRadius: 12 }}>
+                <div className="field-label" style={{ marginBottom: 8 }}>
+                  Logg reps nå{" "}
+                  <span style={{ color: "hsl(var(--muted-foreground))", fontWeight: 500 }}>
+                    · automatisk — teller opp mot oppgaven med én gang
+                  </span>
+                </div>
+                <div className="rep-grid">
+                  {([
+                    { key: "dry" as const, label: "Dry-swing", gjort: draft.repsGjortDry ?? 0, maal: draft.repsMaalDry, klass: "dry" },
+                    { key: "lav" as const, label: "Lav fart", gjort: draft.repsGjortLav ?? 0, maal: draft.repsMaalLav, klass: "lav" },
+                    { key: "full" as const, label: "Fullt", gjort: draft.repsGjortFull ?? 0, maal: draft.repsMaalFull, klass: "full" },
+                  ]).map((r) => (
+                    <div key={r.key} className={`rep-card ${r.klass}`}>
+                      <div className="head">
+                        <span className="dot" />
+                        <span className="nm">{r.label}</span>
+                      </div>
+                      <p className="desc" style={{ margin: "0 0 6px" }}>
+                        {r.gjort.toLocaleString("nb-NO")} / {r.maal.toLocaleString("nb-NO")} gjort
+                      </p>
+                      <input
+                        className="num-input"
+                        type="number"
+                        min={0}
+                        placeholder="0"
+                        value={logDraft[r.key] || ""}
+                        onChange={(e) =>
+                          setLogDraft((d) => ({ ...d, [r.key]: Math.max(0, Number(e.target.value) || 0) }))
+                        }
+                      />
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  className="tp-btn primary"
+                  style={{ marginTop: 10 }}
+                  disabled={loggingReps || (logDraft.dry === 0 && logDraft.lav === 0 && logDraft.full === 0)}
+                  onClick={handleLogReps}
+                >
+                  <Check size={13} aria-hidden />
+                  {loggingReps ? "Logger…" : "Logg reps"}
+                </button>
+              </div>
+            )}
           </section>
 
           {/* 6. TM-MÅL (Mekanisme 6) */}

@@ -13,7 +13,8 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/shared/toast-provider";
 import { TaskCard, type TaskCardProps } from "@/components/teknisk-plan/task-card";
 import { OppgaveModal, type OppgaveDraft } from "@/components/teknisk-plan/oppgave-modal";
-import { updateTaskBasics } from "../actions";
+import { updateTaskBasics, logReps } from "../actions";
+import { uploadTaskMedia } from "@/lib/storage/task-media";
 
 function draftToBasicsPatch(draft: OppgaveDraft) {
   return {
@@ -26,6 +27,7 @@ function draftToBasicsPatch(draft: OppgaveDraft) {
     cs: draft.cs ?? null,
     miljo: draft.m ?? null,
     prPress: draft.pr ?? null,
+    kategori: draft.kategori ?? null,
     repsMaalDry: draft.repsMaalDry,
     repsMaalLav: draft.repsMaalLav,
     repsMaalFull: draft.repsMaalFull,
@@ -75,6 +77,14 @@ export function OppgaveEditLauncher({ taskId, draft, cardProps }: OppgaveEditLau
           initial={{ ...draft, id: taskId }}
           isEditing
           onSubmit={handleSubmit}
+          onLogReps={(reps) => logReps(taskId, reps).then(() => router.refresh())}
+          onUploadMedia={async (file, kind) => {
+            const fd = new FormData();
+            fd.append("file", file);
+            const res = await uploadTaskMedia(taskId, fd, kind);
+            router.refresh();
+            return res.url;
+          }}
         />
       )}
     </>
