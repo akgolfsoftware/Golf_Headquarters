@@ -456,9 +456,9 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | ~~· Fasilitet-detalj~~ | `/admin/facilities/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | ~~Lokasjoner~~ | `/admin/locations` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | TrackMan (på tvers) | `/admin/trackman` | – | --- | ✓ | ~ | ~ | ~ |
-| Live-økt: brief (coach) | `/admin/live/[sessionId]/brief` | – | --- | ✓ | ✓ | ✓ | ✓ |
-| Live-økt: aktiv (coach) | `/admin/live/[sessionId]/active` | – | --- | ✓ | ✓ | ✓ | ✓ |
-| Live-økt: oppsummering (coach) | `/admin/live/[sessionId]/summary` | – | --- | ✓ | ✓ | ✓ | ✓ |
+| **Live-økt: brief (coach)** ★ | `/admin/live/[sessionId]/brief` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`CoachLiveBriefV2`, AgencyOS Bølge 1.3) — samme `sendBriefTilSpiller`-kontrakt |
+| **Live-økt: aktiv (coach)** ★ | `/admin/live/[sessionId]/active` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`CoachLiveActiveV2`) — samme plan-fremdrift-proxy og `sendLiveMelding`-kontrakt, `MicButton` gjenbrukt uendret |
+| **Live-økt: oppsummering (coach)** ★ | `/admin/live/[sessionId]/summary` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`CoachLiveSummaryV2`) — samme `lagreCoachVurdering`-kontrakt |
 | Coach-workbench (prototype) | `/admin/coach-workbench` | – | --- | ✓ | – | ~ | ~ |
 
 ### Innsikt (analyse på tvers)
