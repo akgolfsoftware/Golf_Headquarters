@@ -419,9 +419,11 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Plan-mal detalj | `/admin/plan-templates/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ny plan-mal | `/admin/plan-templates/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger plan-mal | `/admin/plan-templates/[id]/rediger` | – | --- | ✓ | ~ | ✓ | ✓ | 2026-07-11: volum-linje (timer/uke + reell pyramidefordeling vs. glidere) + masseredigering (sett varighet for hele uka, kopier uke→uke m/ konflikt-bekreftelse) — src/lib/plan-templates/
-| Drills (bibliotek) | `/admin/drills` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
-| · Drill-detalj | `/admin/drills/[id]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Rediger drill | `/admin/drills/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
+| **Drills (bibliotek)** ★ | `/admin/drills` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: portet til v2 (`AdminDrillerV2`, AgencyOS Bølge 1.2) — samme kategori/søk-logikk, tile-grid m/ akse-fargede ikoner dekker mobil/iPad/desktop |
+| · Drill-detalj | `/admin/drills/[id]` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminDrillDetaljV2`) — stablede Kort-seksjoner, Rediger/Dupliser/Slett virker |
+| · Ny drill | `/admin/drills/ny` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminDrillNyV2`/`DrillSkjemaFelter`) — felt-settet utvidet til parity med rediger (prerequisites/csTarget/lPhase-primary/csMin-Max), ingen data-tap |
+| · Rediger drill | `/admin/drills/[id]/rediger` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminDrillRedigerV2`/`DrillSkjemaFelter`), samme `updateDrill`-kontrakt |
+| · AI drill-forslag | `/admin/drills/forslag` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminDrillForslagV2`) — Godkjenn/Avvis mot `CaddieDraft`, uendret logikk |
 | Teknisk plan | `/admin/teknisk-plan` | – | --- | ✓ | ~ | ~ | ~ |
 | · Per spiller | `/admin/teknisk-plan/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
 | **Turneringer** ★ | `/admin/tournaments` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-13: portet til v2 (`AdminTurneringerV2`, AgencyOS Bølge 1.1) — samme datalogikk, ny `Rad`-liste dekker mobil/iPad/desktop uten egne breakpoint-grener. Detalj-siden var alt v2 |
@@ -758,6 +760,24 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 14. juli (AgencyOS-gjennomgang, Bølge 1.1–1.2, samme PR #10/branch): Anders ba om komplett
+  gjennomgang av alle AgencyOS-skjermer for mobil/iPad/desktop + porting til v2-design. Kartlagt:
+  81 legacy-sider gjenstår (`plans/legacy-portering-prioritet.md` er fasit-rekkefølgen), Bølge 0
+  (duplikat-redirect-opprydding) var allerede fullstendig ryddet fra før — ingen sletting
+  nødvendig, planen korrigert i stedet. **Bølge 1.1 Turneringer-hub** (`/admin/tournaments`) →
+  v2: `AdminTurneringerV2`, én `Rad`-liste (detalj-siden var alt v2). **Bølge 1.2 Drills-
+  bibliotek** (`/admin/drills` + detalj/ny/rediger/forslag) → v2: hub som tile-grid
+  (`AdminDrillerV2`), detalj som stablede Kort-seksjoner (`AdminDrillDetaljV2`), ett felles
+  27-felts skjema (`DrillSkjemaFelter`) delt mellom Ny/Rediger — felt-settet i «Ny drill» er
+  utvidet til parity med Rediger (prerequisites/csTarget/lPhase-primary/csMin-Max fantes kun i
+  rediger-formen før; nå identisk, ingen data-tap, mindre fremtidig avvik), AI-forslagskøen
+  (`AdminDrillForslagV2`) uendret Godkjenn/Avvis-logikk. Ingen v2-mockup fantes for drill-skjemaet
+  spesifikt («ren komposisjon» — komponert av `skjema.tsx`-primitivene + lokale chip-/tag-velgere,
+  samme idiom som `NyOvelseArk`). Verifisert: tsc 0 feil, ESLint grønt på alle nye/endrede filer;
+  full `npm run build` kan ikke fullføre i denne økten (sandkasse mangler `DIRECT_URL`/live DB —
+  miljøbegrensning, ikke kode-feil; `next build`-kompileringen selv gikk gjennom uten rute-/
+  typefeil, kun data-henting for statisk sitemap feilet mot manglende DB). Neste: Bølge 1.3
+  (Live-økt coach-flyt), 1.4 (Spiller-skjemaer), 1.5 (Plan-mal-redigering).
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
