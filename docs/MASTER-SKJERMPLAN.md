@@ -489,7 +489,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Finans (alt. → redirect) | `/admin/finance` | – | --- | ✓ | ✓ | – | ✓ |
 | Økonomi (MRR/betalinger, redirect) | `/admin/okonomi` | — | — | ✓ | ✓ | – | ✓ | 2026-07-14 sjekket: ren `redirect()` til `/admin/agencyos/okonomi` (kanon-siden, se rad ~348) — sammenslåingen er allerede gjort i kode. Ingenting å portere. |
 | Stats-oversikt | `/admin/stats/overview` | – | --- | ✓ | ~ | ~ | ~ |
-| Stats-moderering | `/admin/stats/moderering` | – | --- | ✓ | ~ | ~ | ~ |
+| **Stats-moderering** ★ | `/admin/stats/moderering` | – | ✓✓✓ | ✓ | ✓ | ~ | ~ | 2026-07-14: v2 (`AdminStatsModereringV2`, AgencyOS Bølge 3.18) — samme skjelett som legacy: INGEN modererings-/GDPR-slett-kø finnes i datamodellen ennå, siden viser ærlige tomme tilstander (0-tall). Fane-bytte er ekte klient-state; Godkjenn/Avvis/Bekreft-slett-knappene har ingen handling — samme som legacy, ikke lagt til ny funksjonalitet i en design-port. |
 
 ### Admin (organisasjon og innstillinger)
 
@@ -878,7 +878,11 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   m/ filter, feature-adoption-bar-chart); `page.tsx` sin aggregeringslogikk er 100 % uendret,
   kun presentasjonslaget er portet. **3.17** Risiko/stall-kart (`AdminRisikoV2`) — samme
   SKADET/permisjon/dager-siden-økt-logikk, 8-kolonners heatmap + oppfølgingsliste; hadde ingen
-  egen rad i master-skjermplanen fra før, lagt til under Innsikt-seksjonen.
+  egen rad i master-skjermplanen fra før, lagt til under Innsikt-seksjonen. **3.18**
+  Stats-moderering (`AdminStatsModereringV2`) — bevisst portet som samme rene UI-skall som
+  legacy: ingen modererings-/GDPR-slett-datamodell finnes ennå, så alle lister/tall er
+  hardkodet tomme i `page.tsx` (som før) og Godkjenn/Avvis/Bekreft-slett-knappene har ingen
+  handling. Ikke en design-mangel — det er ærlig, siden ingen ekte kø finnes å koble til.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
