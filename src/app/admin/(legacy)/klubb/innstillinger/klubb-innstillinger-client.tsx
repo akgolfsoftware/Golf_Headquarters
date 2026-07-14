@@ -517,12 +517,6 @@ function KlubbKort({
           <Pencil size={12} strokeWidth={1.75} />
           Rediger
         </button>
-        <a
-          href={`/admin/klubb/${klubb.id}/rediger`}
-          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-xs font-medium text-muted-foreground hover:border-primary hover:text-primary"
-        >
-          Detaljer
-        </a>
       </div>
     </article>
   );
