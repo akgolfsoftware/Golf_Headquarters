@@ -24,7 +24,6 @@
  */
 
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import {
   Caps,
   Tittel,
@@ -224,11 +223,7 @@ export function AdminTekniskPlanV2({ data }: { data: AdminTekniskPlanData }) {
       : medPlan === 0
         ? "Ingen spillere har en aktiv teknisk plan ennå — sett mål og periodisering i Workbench."
         : `${pl(medPlan, "spiller", "spillere")} med aktiv teknisk plan — juster mål, drills og periodisering samlet i Workbench.`;
-  const innsikt = (
-    <Link href="/admin/planlegge" style={{ textDecoration: "none" }}>
-      <InnsiktChip cta="Planlegg i Workbench">{innsiktTekst}</InnsiktChip>
-    </Link>
-  );
+  const innsikt = <InnsiktChip cta="Planlegg i Workbench" href="/admin/planlegge">{innsiktTekst}</InnsiktChip>;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>

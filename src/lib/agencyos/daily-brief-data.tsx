@@ -215,7 +215,7 @@ export async function loadDailyBrief(coach: {
     // Brukere uten lastLoginAt er stubs/aldri-aktiverte — støy, ikke frafall.
     prisma.user.findMany({
       where: { AND: [coachScopedPlayerWhere(coach), { lastLoginAt: { lt: femDager } }] },
-      select: { id: true, name: true, homeClub: true, lastLoginAt: true },
+      select: { id: true, name: true, homeClub: true, lastLoginAt: true, phone: true },
       orderBy: { lastLoginAt: "asc" },
       take: 4,
     }),
@@ -369,7 +369,11 @@ export async function loadDailyBrief(coach: {
         typeLabel: n.type?.toLowerCase().includes("råd") ? "RÅD" : "MELDING",
         preview: n.body ?? n.title,
         unread: n.readAt == null,
-        href: n.link ?? "/admin/innboks",
+        // I8 lag 2-funn: å falle tilbake til /admin/innboks fikk raden til å
+        // "navigere" til siden den allerede står på — ingen synlig effekt,
+        // men så ut som et virkende trykkpunkt. Uten lenke er raden nå
+        // ærlig ikke-klikkbar (se TriageGruppe: onClick kun når href finnes).
+        href: n.link ?? undefined,
       },
     });
   }
@@ -447,7 +451,12 @@ export async function loadDailyBrief(coach: {
         { text: ". Sjekk inn." },
       ],
       actions: [
-        { label: "Ring", icon: "phone", primary: true, confirm: `Ringer ${firstName(p.name)} …` },
+        // I8 lag 2-funn: "confirm" (inline "Ringer …") vises ingen steder i
+        // v2-UI-et — erstattet med en ekte tel:-lenke. Uten telefonnummer
+        // vises ikke Ring i det hele tatt (skjult, aldri en død knapp).
+        ...(p.phone
+          ? [{ label: "Ring", icon: "phone" as const, primary: true, href: `tel:${p.phone}` }]
+          : []),
         { label: "Melding", icon: "message-square", href: "/admin/innboks" },
         { label: "Profil", icon: "user", href: `/admin/spillere/${p.id}` },
       ],

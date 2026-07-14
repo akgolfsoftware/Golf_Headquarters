@@ -161,11 +161,7 @@ export function AdminPlansV2({ data }: { data: AdminPlansData }) {
       : data.antall > 0
         ? "Ingen aktive planer akkurat nå — publiser et utkast eller bygg videre i Workbench."
         : "Ingen treningsplaner ennå — sett opp den første i Workbench.";
-  const innsikt = (
-    <Link href={data.nyPlanHref} style={{ textDecoration: "none" }}>
-      <InnsiktChip cta="Planlegg i Workbench">{innsiktTekst}</InnsiktChip>
-    </Link>
-  );
+  const innsikt = <InnsiktChip cta="Planlegg i Workbench" href={data.nyPlanHref}>{innsiktTekst}</InnsiktChip>;
 
   const mobilTabs = FASER.map((f) => ({ id: f.id, l: `${f.label} · ${iFase(f.id).length}` }));
 

@@ -163,11 +163,7 @@ export function AdminSpillerPlanV2({ data }: { data: AdminSpillerPlanData }) {
       : aktive === 0
         ? "Ingen aktiv plan akkurat nå — publiser et utkast eller bygg videre i Workbench."
         : `${pl(aktive, "aktiv plan", "aktive planer")} — juster mål, drills og periodisering i Workbench.`;
-  const innsikt = (
-    <Link href={workbenchHref} style={{ textDecoration: "none" }}>
-      <InnsiktChip cta="Planlegg i Workbench">{innsiktTekst}</InnsiktChip>
-    </Link>
-  );
+  const innsikt = <InnsiktChip cta="Planlegg i Workbench" href={workbenchHref}>{innsiktTekst}</InnsiktChip>;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>

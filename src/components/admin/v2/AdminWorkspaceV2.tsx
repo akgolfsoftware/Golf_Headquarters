@@ -418,7 +418,7 @@ export function AdminWorkspaceV2({ data }: { data: AdminWorkspaceV2Data }) {
       {fane === "uke" && ukeView}
       {fane === "oppgaver" && oppgaverView}
       {fane === "prosjekter" && prosjekterView}
-      <InnsiktChip cta="Åpne Notion-sync">{innsiktTekst}</InnsiktChip>
+      <InnsiktChip cta="Åpne Notion-sync" href="/admin/workspace/notion">{innsiktTekst}</InnsiktChip>
     </div>
   );
 }

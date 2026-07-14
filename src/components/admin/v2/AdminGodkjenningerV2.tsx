@@ -395,7 +395,7 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
         </div>
       )}
 
-      <InnsiktChip cta={data.lowRiskCount > 0 ? "Godkjenn lav-risiko" : undefined}>
+      <InnsiktChip>
         {totalt === 0
           ? "Køen er tom. Nye agent-forslag dukker opp her når de kommer."
           : `${pl(totalt, "sak venter", "saker venter")} på behandling` +

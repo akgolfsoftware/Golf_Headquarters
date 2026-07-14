@@ -278,7 +278,7 @@ export function HjemV2({ data }: { data: DashboardData }) {
 
       {/* AI/coach-innsikt */}
       {coachMessage && (
-        <InnsiktChip cta="Les mer">
+        <InnsiktChip cta="Les mer" href={coachMessage.href}>
           {coachMessage.coachName}: {coachMessage.preview}
         </InnsiktChip>
       )}

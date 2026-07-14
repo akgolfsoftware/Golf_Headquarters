@@ -151,7 +151,7 @@ export function OktV2({ data, onSettPyramide }: { data: OktDetaljData; onSettPyr
               <TomTilstand icon="target" title="Ingen øvelser ennå" sub="Coachen legger til øvelser før økta starter." />
             )}
           </Kort>
-          <InnsiktChip cta="Be om endring">
+          <InnsiktChip cta="Be om endring" href="/portal/onskeligokt">
             Passer ikke tida? Coachen din ser forslaget ditt med en gang.
           </InnsiktChip>
         </div>

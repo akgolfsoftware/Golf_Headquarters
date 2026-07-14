@@ -278,11 +278,7 @@ export function CockpitV2({ data, innboks }: { data: CockpitData; innboks?: Innb
     trengerDeg > 0
       ? `${pl(trengerDeg, "spiller trenger", "spillere trenger")} deg nå — planlegg tiltakene samlet i Workbench.`
       : "Ingen åpne saker akkurat nå — bruk roen til å planlegge uka i Workbench.";
-  const innsikt = (
-    <Link href="/admin/planlegge" style={{ textDecoration: "none" }}>
-      <InnsiktChip cta="Planlegg i Workbench">{innsiktTekst}</InnsiktChip>
-    </Link>
-  );
+  const innsikt = <InnsiktChip cta="Planlegg i Workbench" href="/admin/planlegge">{innsiktTekst}</InnsiktChip>;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>

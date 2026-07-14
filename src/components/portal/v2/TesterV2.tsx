@@ -306,7 +306,7 @@ function TabScorekort({ data, mobile }: { data: TesterV2Data; mobile: boolean })
     </Kort>
   );
 
-  const innsikt = data.innsikt ? <InnsiktChip cta="Se øvelsene">{data.innsikt}</InnsiktChip> : null;
+  const innsikt = data.innsikt ? <InnsiktChip cta="Se øvelsene" href="/portal/drills">{data.innsikt}</InnsiktChip> : null;
 
   const sideStack: ReactNode = (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
