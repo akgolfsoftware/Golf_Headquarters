@@ -1061,4 +1061,4 @@ ALLTID uppercase og i rekkefølgen `FYS · TEK · SLAG · SPILL · TURN` (dot-se
 3. Verifiser: `npx tsc --noEmit && npm run build`
 4. Commit: `chore(ordliste): "X" → "Y"`
 
-**Sist oppdatert:** 2026-07-03 — renskrevet fra 1629 til denne versjonen uten terminologitap (SLETTET/DEDUPE-lister i `docs/ordbok-evaluering-2026-07.md`). Synket mot MasterBrain CANON v3.5. Del B var opprinnelig egen fil (`ordliste-ak-golf.md`). Demo-kanon: Øyvind Rohjan.
+**Sist oppdatert:** 2026-07-03 — renskrevet fra 1629 til denne versjonen uten terminologitap (SLETTET/DEDUPE-lister i `docs/arkiv/ordbok-evaluering-2026-07.md`). Synket mot MasterBrain CANON v3.5. Del B var opprinnelig egen fil (`ordliste-ak-golf.md`). Demo-kanon: Øyvind Rohjan.

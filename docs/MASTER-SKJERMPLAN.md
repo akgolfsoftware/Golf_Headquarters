@@ -1012,7 +1012,10 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   avkryssede spillere, samme idiom som Tester · Tildel). Ny hjelpetekst-nøkkel `tourBaseline`
   lagt til `src/lib/v2/hjelpetekster.ts`; nye ikoner `user-plus` i v2-ikonkartet. Verifisert:
   tsc 0 feil, ESLint grønt. Med denne er HELE `plans/legacy-portering-prioritet.md`-lista ferdig
-  portet — ingen gjenstående punkter.
+  portet — ingen gjenstående punkter. **Dokument-rydding (14. juli, samme kveld):** filen er
+  ferdig og arkivert til `plans/arkiv/legacy-portering-prioritet.md` sammen med resten av
+  kveldens dok-opprydding (se `docs/arkiv/README.md`) — historiske referanser til den over i
+  denne loggen er bevart uendret som beskrivelse av hva som var sant da det ble skrevet.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
