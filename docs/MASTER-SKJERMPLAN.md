@@ -386,7 +386,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Tester | `/admin/spillere/[id]/tester` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
 | · Tildel test | `/admin/spillere/[id]/tildel-test` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Allerede bygget som pixel-perfekt design-handover-port (`TildelTestModalScreen`, `test-modul-v2`/`planlegge-v2`-stilarket) — EGEN designlinje, ikke `src/components/v2`-kanon. Fungerer og er responsiv (6 media queries); flagget til Anders: bør denne unifiseres inn i v2-kanon senere, eller stå som egen godkjent modal-stil? |
 | **Rediger** ★ | `/admin/spillere/[id]/rediger` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminSpillerRedigerV2`, AgencyOS Bølge 1.4) — samme `lagreSpiller`/`slettSpiller`-kontrakt (native form-action, ukontrollerte felt) |
-| Grupper | `/admin/grupper` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
+| **Grupper** ★ | `/admin/grupper` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Allerede v2 (`GrupperV2` + `GruppeDetaljV2` på `[id]`) — masterplan-raden var stale, rettet 2026-07-14. Ingen legacy-restflate finnes (`(legacy)/grupper/` finnes ikke i koden). |
 | · Gruppe-detalj (+ VG-trinn filter/badge, 2026-07-07) | `/admin/grupper/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Gruppe-timeplan (faste/kommende/tidligere + dupliser) | `/admin/grupper/[id]/timeplan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · **WANG Toppidrett — åpen treningsplan** (offentlig, ingen innlogging) | `/team-wang` | ~ | --- | ✓ | ~ | ✓ | † |
@@ -449,7 +449,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Ny booking | `/admin/bookinger/ny` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v2 2026-07-12: portet ut av legacy, V2Shell + NyBookingWizard; inngang fra kalender + bookinger |
 | **Anlegg** ★ | `/admin/anlegg` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminAnleggV2`, AgencyOS Bølge 2.2) — samme `createLocation`-kontrakt; `FacilityForm` (rediger/slett fasilitet) var allerede dødt/ubrukt kode i legacy-siden også, IKKE portet (ingen ny funksjon lagt til utover det som faktisk var koblet) |
 | ~~· Anlegg-detalj~~ | `/admin/anlegg/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
-| Tilgjengelighet | `/admin/availability` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
+| Tilgjengelighet | `/admin/availability` | – | –✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-14: IKKE portet i Bølge 2 — 1249 linjer på tvers av 3 distinkte kalendervisninger (måned-grid, drag-basert uke-grid, år-Gantt) + delt Google Calendar-sync-seksjon. Samme størrelsesorden/risiko som plan-mal-editoren — trenger egen mini-plan, ikke en hastig omskriving samme natt. |
 | Kapasitet (redirect) | `/admin/kapasitet` | — | — | ✓ | ✓ | – | ✓ | Slått sammen med `/admin/bookinger` (Anders 2026-06-22) — ren `redirect()`-stubb. Kapasitet-heatmap + CSV-eksport bor i bookinger-dashbordet. Ingenting å portere. |
 | **Tjenester/priser** ★ | `/admin/services` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTjenesterV2`, AgencyOS Bølge 2.1) — samme `createService`/`updateService`/`deleteService`-kontrakt, ny/rediger som delt `BunnArk`-skjema |
 | ~~Fasiliteter (alt.)~~ | `/admin/facilities` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
@@ -495,7 +495,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Organisasjon-hub | `/admin/organisasjon` | – | --- | ✓ | ~ | ~ | ~ |
 | Klubb-innstillinger | `/admin/klubb/innstillinger` | – | --- | ✓ | ~ | ~ | ~ |
 | Integrasjoner | `/admin/integrasjoner` | – | --- | ✓ | ~ | ~ | ~ |
-| Innstillinger | `/admin/settings` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
+| Innstillinger | `/admin/settings` | – | –✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-14: IKKE portet i Bølge 2 — 1727 linjer på tvers av 13 filer (kalender/security/tilgang-underflater). Trenger egen mini-plan mot faktisk tab-struktur, ikke en hastig omskriving samme natt. |
 | · API | `/admin/settings/api` | – | --- | ✓ | ~ | ~ | ~ |
 | · Kalender | `/admin/settings/calendar` | – | --- | ✓ | ~ | ~ | ~ |
 | · Sikkerhet | `/admin/settings/security` | – | --- | ✓ | ~ | ~ | ~ |
@@ -799,9 +799,20 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   kveldsøkt som resten av bølgen ville gått på bekostning av kvalitetsbaren («ferdigstille til
   perfeksjon»). Flagget som eget punkt i tabellen — trenger egen mini-plan mot faktisk
   uke-grid-mønster, ikke en hastig omskriving. Bølge 1 (P1 daglig coach-bruk) er dermed
-  FULLFØRT bortsett fra dette ene, bevisst utsatte unntaket. Neste: Bølge 2 (P2 ukentlig bruk —
-  Innstillinger, Tilgjengelighet, Tjenester/priser, Anlegg, Kapasitet, Stall-oversikt, Økonomi),
-  eller en dedikert plan-økt for mal-detalj/rediger-editoren.
+  FULLFØRT bortsett fra dette ene, bevisst utsatte unntaket. **Bølge 2 (P2 ukentlig bruk)
+  påbegynt samme kveld:** Tjenester og priser (`AdminTjenesterV2`) og Anlegg (`AdminAnleggV2`)
+  portet til v2 — begge samme mønster (liste + delt `BunnArk`-skjema for ny/rediger, uendret
+  server actions). `FacilityForm` i Anlegg var allerede dødt/ubrukt i legacy — ikke portet, ingen
+  ny funksjon lagt til. Tre rader viste seg å alt være v2 (samme stale-rad-mønster som Ny spiller/
+  Plan-maler): Grupper (`GrupperV2`/`GruppeDetaljV2`), samt to rene redirect-stubber (Kapasitet→
+  bookinger, Stall-oversikt→spillere) — rettet i tabellen uten kode-endring. **Tilgjengelighet
+  (1249 linjer, 3 kalendervisninger: måned-grid/drag-uke-grid/år-Gantt + delt Google Calendar-
+  sync) og Innstillinger (1727 linjer, 13 filer: kalender/security/tilgang) er BEVISST IKKE
+  portet** — samme størrelsesorden/risiko-vurdering som mal-editoren i Bølge 1, flagget i tabellen
+  for egen mini-plan. Økonomi-sammenslåingen (full `/admin/okonomi` vs. v2-versjonen på
+  `/admin/agencyos/okonomi`) er heller ikke gjort — krever en bevisst beslutning om hvilken som
+  vinner, ikke en ren port. Gjenstående i Bølge 2: Innstillinger, Tilgjengelighet, Økonomi-
+  sammenslåing — alle tre bør ha egen plan-økt. Deretter Bølge 3 (P3 sjelden/admin).
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
