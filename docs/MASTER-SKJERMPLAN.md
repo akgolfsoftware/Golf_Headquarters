@@ -501,7 +501,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | **Innstillinger (hub)** ★ | `/admin/settings` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminInnstillingerV2`, AgencyOS Bølge 3.32) — samme tre faner (Organisasjon/Team & roller/Tilgang, `?tab=`), samme Prisma-aggregering. **Undersidene** (`/admin/settings/api`, `/calendar`, `/security`, `/tilgang`, ~1500 linjer til sammen) er IKKE portet ennå — egne commits gjenstår, `calendar` deler `CalendarSyncSection` med `/admin/availability` (se den raden). |
 | · API | `/admin/settings/api` | – | --- | ✓ | ~ | ~ | ~ |
 | · Kalender | `/admin/settings/calendar` | – | --- | ✓ | ~ | ~ | ~ |
-| · Sikkerhet | `/admin/settings/security` | – | --- | ✓ | ~ | ~ | ~ |
+| · **Sikkerhet** ★ | `/admin/settings/security` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminInnstillingerSikkerhetV2`, AgencyOS Bølge 3.33) — samme innhold (kontooversikt, 2FA-oppsett via delt `Setup2FA`, passord-lenke, plassholder for aktive økter). |
 | · Tilgang | `/admin/settings/tilgang` | – | --- | ✓ | ~ | ~ | ~ |
 | **Team** ★ | `/admin/team` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Allerede v2 (`AdminTeamV2`) — masterplan-raden var stale, rettet 2026-07-14 |
 | · **Inviter** ★ | `/admin/team/inviter` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminInviterCoachV2`, AgencyOS Bølge 3.2) — samme `inviterCoach`-kontrakt |
@@ -964,7 +964,10 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   `AdminInnstillingerV2` — samme `?tab=`-mønster og Prisma-aggregering (klubber + coacher/unike
   spillere per gruppe). De fire undersidene (`api`, `calendar`, `security`, `tilgang`) er IKKE
   portet i denne commiten — hver har egne skjemaer/modaler og bør tas én om gangen. Verifisert:
-  tsc 0 feil, ESLint grønt.
+  tsc 0 feil, ESLint grønt. **Bølge 3.33**: Innstillinger · Sikkerhet portet til
+  `AdminInnstillingerSikkerhetV2` — samme innhold (kontooversikt, 2FA via delt, uendret
+  `Setup2FA`-klientkomponent, passord-lenke til glemt-passord-flyten, plassholder for aktive
+  økter til auth-audit-logg finnes). Verifisert: tsc 0 feil, ESLint grønt.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
