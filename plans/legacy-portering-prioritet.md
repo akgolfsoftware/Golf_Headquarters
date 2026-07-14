@@ -17,24 +17,35 @@ oppdateres i samme commit (LÅST regel). Ny booking ble portet 2026-07-12.
 
 ## P2 — ukentlig bruk
 
-| Skjerm | Rute |
-|---|---|
-| Innstillinger | `/admin/settings` (+ api/calendar/security/tilgang) |
-| Tilgjengelighet | `/admin/availability` |
-| Tjenester og priser | `/admin/services` |
-| Anlegg | `/admin/anlegg` (+ detalj) |
-| Kapasitet | `/admin/kapasitet` |
-| Grupper-timeplan-verktøy | gruppe-sider er v2; sjekk restflater |
-| Stall-oversikt | `/admin/stall` |
-| Økonomi (full) | `/admin/okonomi` — v2-versjon på `/admin/agencyos/okonomi` finnes; slå sammen |
+Status 2026-07-14 sent kveld: Tjenester og priser (2.1), Anlegg (2.2), Kapasitet (redirect,
+verifisert), Stall-oversikt (redirect, verifisert), Grupper-timeplan (var alt v2, ikke legacy),
+Økonomi (redirect til alt-portert `/admin/agencyos/okonomi`, verifisert) — **alle ferdige eller
+bekreftet ikke-legacy**. Gjenstår KUN to klynger, begge bevisst IKKE portet i kveld:
+
+| Skjerm | Rute | Hvorfor ikke i kveld |
+|---|---|---|
+| Innstillinger | `/admin/settings` (+ `api`/`calendar`/`security`/`tilgang`) | ~1730 linjer fordelt på 5 underskjermer (API-nøkler + modal, Google Calendar-sync m/ egen sync-seksjon, sikkerhet, tilgangsstyring). `settings/calendar/calendar-sync-section.tsx` importeres OGSÅ direkte av `availability/page.tsx` — de to klyngene er koblet, bør planlegges/porteres sammen, ikke separat. |
+| Tilgjengelighet | `/admin/availability` | ~1085 linjer: måned/uke(drag-and-drop)/år(Gantt)-trippel-visning + `slot-form.tsx` (CRUD-modal m/ gjentakelse) + samme `CalendarSyncSection` som over. Drag-and-drop-interaksjonen i uke-grid og avhengigheten til Innstillinger gjør dette til en «ikke-triviell»-oppgave per CLAUDE.md — trenger egen Plan Mode-økt mot faktisk kode, ikke en rushet nattlig port. |
+
+Begge bør tas i SAMME økt (felles `CalendarSyncSection`-beslutning: porte den én gang til v2 og
+gjenbruke, ikke duplisere). Anbefalt neste steg: egen plan-mode-gjennomgang av disse to klyngene
+sammen, ikke en fortsettelse av det bølgevise «én skjerm per commit»-mønsteret som resten av
+listen har fulgt.
 
 ## P3 — sjelden/admin
 
-Audit-log, e-postmal-redigering, integrasjoner, klubb-innstillinger, team/inviter,
-profile, hjelp, stats-moderering, talent-undersider (kohort/region/ressurser/
-wagr-import), tilstander, trackman, videoer, opptak, board, reach, kommunikasjon,
-workspace-oppgave-detalj, teknisk-plan-detalj, lag-snitt, foresporsler,
-godkjenninger-detalj, approvals-redirects (kan slettes når godkjenninger-detalj er v2).
+Status 2026-07-14 sent kveld: **alle listede skjermer er nå portet eller bekreftet ikke-legacy**
+— Audit-log, e-postmal-redigering, integrasjoner, klubb-innstillinger, team/inviter, profile,
+hjelp, stats-moderering, talent-undersider (kohort/region/ressurser/wagr-benchmark/wagr-import),
+tilstander (redirect), trackman, videoer, opptak, board (redirect), reach, kommunikasjon (redirect),
+workspace-oppgave-detalj, teknisk-plan-detalj, lag-snitt, foresporsler, godkjenninger-detalj,
+approvals-redirects, tester-klyngen (hub/fasiter/foreslåtte/tildel), spiller-full-profil,
+turneringer (hub/detalj/ny/dubletter) — se `docs/MASTER-SKJERMPLAN.md` Endringslogg for detaljer
+per skjerm. **Gjenstår i P3:** kun **Talent · Sammenligning** (`/admin/talent/sammenligning`) —
+bevisst IKKE portet, avhenger av delt v10-komponent (`TalentSammenligning`,
+`src/components/admin/talent/`) utenfor golfdata/v13-generasjonen; krever egen beslutning om
+enten å bygge en ny v2-versjon av selve sammenligningskomponenten, eller la den midlertidig
+beholde v10-stil inni en v2-ramme.
 
 ## Dobbelt-adresser (redirect) — verifisert 2026-07-13: allerede fullstendig ryddet
 
