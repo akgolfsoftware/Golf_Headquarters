@@ -429,7 +429,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | **Turneringer** ★ | `/admin/tournaments` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-13: portet til v2 (`AdminTurneringerV2`, AgencyOS Bølge 1.1) — samme datalogikk, ny `Rad`-liste dekker mobil/iPad/desktop uten egne breakpoint-grener. Detalj-siden var alt v2 |
 | · Turnering-detalj | `/admin/tournaments/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Ny turnering | `/admin/tournaments/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| · Dubletter (rydd) | `/admin/tournaments/dubletter` | – | --- | ✓ | ~ | ~ | ~ |
+| · **Dubletter (rydd)** ★ | `/admin/tournaments/dubletter` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTurneringerDubletterV2`, AgencyOS Bølge 3.29) — samme match-algoritme (token-overlap + ±3 dager) og `mergeTurneringer`-kontrakt, uendret. Ikke lenket fra noe v2-skjerm (var heller ikke lenket fra hub-en i legacy) — direkte-URL-only vedlikeholdsverktøy, bevart som sådan. |
 | Økter | `/admin/okter` | – | --- | ✓ | ~ | ~ | ~ |
 | **Videoer** ★ | `/admin/videoer` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminVideoerV2`, AgencyOS Bølge 3.10) — samme `SessionVideo`-modell og `uploadVideo`/`getSignedVideoUrl`/`deleteVideo`-kontrakt fra `@/lib/storage/video` |
 | **Opptak** ★ | `/admin/recording` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminOpptakV2`, AgencyOS Bølge 3.11) — samme `SessionRecording`-modell og `/api/recording/*`-kontrakt; MediaRecorder/chunk-opplasting/Wake Lock/batteri-overvåking/recovery-logikken er uendret (kun JSX-laget re-skinnet) |
@@ -929,7 +929,15 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   navnet `AdminSpillerFullProfilV2`, ingen data gikk tapt. Fant en pre-eksisterende
   fabrikasjon (bevart, ikke fikset — se tabellraden): «Spiller-DNA»-radar/cohort-snitt og
   aktive måls `ProgressRing` er hardkodede plassholdertall i legacy, aldri beregnet fra
-  ekte data. Verifisert: tsc 0 feil, ESLint grønt.
+  ekte data. Verifisert: tsc 0 feil, ESLint grønt. **Bølge 3.29** Turneringer · Dubletter
+  (`/admin/tournaments/dubletter`) → `AdminTurneringerDubletterV2` — samme merge-forslag-
+  algoritme (MANUAL-turneringer matchet mot DATAGOLF/NGF/GJGT via token-overlap + ±3 dager) og
+  samme `mergeTurneringer`-server-action (delt fra `tournaments/actions.ts`, uendret). Ruten er
+  ikke lenket fra noen v2-skjerm — var heller ikke lenket fra hub-en i legacy — bevart som
+  direkte-URL-only vedlikeholdsverktøy. Med dette gjenstår kun «Ny turnering»-wizarden
+  (876 linjer, `wizard.tsx`) i Turneringer-klyngen; bevisst IKKE portet i kveld — for stor/
+  risikofylt til å re-komponere i samme økt som resten (samme vurdering som plan-mal-editoren
+  tidligere), trenger egen dedikert gjennomgang. Verifisert: tsc 0 feil, ESLint grønt.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
