@@ -357,7 +357,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | **Innboks** ★ | `/admin/innboks` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | Meldinger (alt. → redirect) | `/admin/messages` | – | --- | ✓ | ✓ | – | ✓ |
 | Kommunikasjon-hub (redirect) | `/admin/kommunikasjon` | — | — | ✓ | ✓ | – | ✓ | 2026-07-14 sjekket: konsolidert 2026-06-28, ren `permanentRedirect()` til `/admin/innboks` — var kun en 4-fane launcher, ingenting å portere. |
-| Reach | `/admin/reach` | – | --- | ✓ | ~ | ~ | ~ |
+| **Reach (engasjement)** ★ | `/admin/reach` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminReachV2`, AgencyOS Bølge 3.16) — samme `ReachData`-aggregering (uendret i page.tsx), egendefinert SVG-linjegraf + feature-adoption-bar-chart portert med samme tegne-matematikk, kun v2-tokens for farger |
 
 ### Min uke / Workspace
 
@@ -872,6 +872,10 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   **3.15** Profil (`AdminProfilV2`) — samme `oppdaterCoachProfil`-kontrakt, native ukontrollerte
   felt (ekte FormData-action, samme mønster som «Rediger spiller»). «Skjul»-knappen er fortsatt
   en placeholder-toast, ingen ekte deaktiverings-backend (uendret fra legacy, ikke et nytt funn).
+  **3.16** Reach/engasjement (`AdminReachV2`) — lesevisning (KPI-strip, egendefinert SVG-
+  linjegraf for daglig aktivitet, topp-engasjerte/trenger-oppfølging-lister, compliance-tabell
+  m/ filter, feature-adoption-bar-chart); `page.tsx` sin aggregeringslogikk er 100 % uendret,
+  kun presentasjonslaget er portet.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
