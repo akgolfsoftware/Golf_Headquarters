@@ -96,6 +96,7 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
       { id: "reports", label: "Rapporter", icon: "file-text", href: "/admin/reports" },
       { id: "runder", label: "Runder", icon: "flag", href: "/admin/runder" },
       { id: "compliance", label: "Plan-etterlevelse", icon: "shield-check", href: "/admin/analysere/compliance" },
+      { id: "audit-log", label: "Audit-log", icon: "shield", href: "/admin/audit-log" },
     ],
   },
   {
