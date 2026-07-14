@@ -193,6 +193,20 @@ export function InnstillingerV2({ data }: { data: InnstillingerData }) {
     </Seksjon>
   );
 
+  const preferanser = (
+    <Seksjon label="Preferanser">
+      <Link href="/portal/meg/innstillinger/anlegg" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+        <Rad leading={<SeksjonIkon name="map-pin" />} title="Mitt treningsanlegg" sub="Utstyr og fasiliteter du har tilgang til" />
+      </Link>
+      <Link href="/portal/meg/innstillinger/integrasjoner" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+        <Rad leading={<SeksjonIkon name="link-2" />} title="Integrasjoner" sub="TrackMan, Google Kalender og flere" />
+      </Link>
+      <Link href="/portal/meg/innstillinger/sprak" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+        <Rad last leading={<SeksjonIkon name="globe" />} title="Språk og region" sub="Velg hvilket språk appen vises på" />
+      </Link>
+    </Seksjon>
+  );
+
   const varsler = (
     <Seksjon label="Varsler">
       <Rad
@@ -307,11 +321,11 @@ export function InnstillingerV2({ data }: { data: InnstillingerData }) {
       <Tittel mobile={mobile}>Innstillinger</Tittel>
       {mobile ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-          {konto}{varsler}{personvern}{abo}{utseende}{farlig}
+          {konto}{preferanser}{varsler}{personvern}{abo}{utseende}{farlig}
         </div>
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "18px 16px", alignItems: "start" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>{konto}{varsler}{personvern}</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>{konto}{preferanser}{varsler}{personvern}</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>{abo}{utseende}{farlig}</div>
         </div>
       )}

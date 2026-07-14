@@ -5,6 +5,7 @@
 
 import { NextResponse } from "next/server";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { genererPlan } from "@/lib/ai-plan/generate";
 
 export const runtime = "nodejs";
@@ -42,20 +43,33 @@ export async function POST(req: Request) {
     body.prompt?.trim() ||
     "Lag en 4-ukers treningsplan tilpasset spillerens nivå og tilgjengelige fasiliteter.";
 
-  // Generer for alle spillere — kjøres i parallell for å holde total-tid nede.
+  // Tilgangssjekk per spiller — coachen kan ha tilgang til noen, ikke alle,
+  // i en gammel/feil-limt liste. Uautoriserte rapporteres som feil, resten kjøres.
+  const tilgangsResultat = await Promise.all(
+    playerIds.map(async (playerId) => ({
+      playerId,
+      harTilgang: await harCoachTilgangTilSpiller(coach, playerId),
+    })),
+  );
+  const autoriserte = tilgangsResultat.filter((t) => t.harTilgang).map((t) => t.playerId);
+  const uautoriserteFeil = tilgangsResultat
+    .filter((t) => !t.harTilgang)
+    .map((t) => ({ playerId: t.playerId, error: "Du har ikke tilgang til denne spilleren." }));
+
+  // Generer for autoriserte spillere — kjøres i parallell for å holde total-tid nede.
   // Hver generering tar ~5–15 sek; med 20 spillere: ~15–30 sek totalt.
   const resultater = await Promise.allSettled(
-    playerIds.map((playerId) =>
+    autoriserte.map((playerId) =>
       genererPlan({ userId: playerId, coachId: coach.id, brukerPrompt }),
     ),
   );
 
   const ok: { playerId: string; generationId: string; templateId: string | null }[] = [];
-  const feil: { playerId: string; error: string }[] = [];
+  const feil: { playerId: string; error: string }[] = [...uautoriserteFeil];
 
   for (let i = 0; i < resultater.length; i++) {
     const r = resultater[i];
-    const playerId = playerIds[i];
+    const playerId = autoriserte[i];
     if (r.status === "fulfilled") {
       ok.push({
         playerId,

@@ -1,8 +1,11 @@
 /**
  * PlayerHQ Dashboard — server actions for /portal (Oversikt).
  *
- * Alle funksjoner er server-only og tar userId eksplisitt. Brukes av
- * page.tsx og kan gjenbrukes av andre RSC i portalen.
+ * Alle funksjoner tar userId eksplisitt, men verifiserer selv (forsvar-i-
+ * dybden, sikkerhetsgjennomgang 2026-07-14) at kalleren enten ER den
+ * brukeren eller er en coach/admin med bekreftet tilgang — se
+ * assertCanViewPlayerData. Brukes av page.tsx og kan gjenbrukes av andre
+ * RSC i portalen.
  */
 
 "use server";
@@ -10,6 +13,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { PyramidArea, PracticeType, SessionStatusV2 } from "@/generated/prisma/client";
+import { assertCanViewPlayerData } from "@/lib/auth/assert-own-or-coached";
 import { translateMiljo } from "@/lib/portal/translate-taxonomy";
 import { v2DbSessionHref } from "@/lib/portal/session-hrefs";
 import {
@@ -191,6 +195,7 @@ function initialer(name: string): string {
 // ── Today's session ───────────────────────────────────────────────
 
 export async function getTodaysSession(userId: string): Promise<TodaySession | null> {
+  await assertCanViewPlayerData(userId);
   const now = new Date();
   const sessions = await prisma.trainingSessionV2.findMany({
     where: { studentId: userId, startTime: { gte: startOfDay(now), lte: endOfDay(now) } },
@@ -229,6 +234,7 @@ export async function getTodaysSession(userId: string): Promise<TodaySession | n
 // ── Week overview ─────────────────────────────────────────────────
 
 export async function getWeekOverview(userId: string): Promise<WeekDay[]> {
+  await assertCanViewPlayerData(userId);
   const now = new Date();
   const start = startOfWeek(now);
   const end = endOfWeek(now);
@@ -278,6 +284,7 @@ export async function getWeekOverview(userId: string): Promise<WeekDay[]> {
 // ── Recent activity ───────────────────────────────────────────────
 
 export async function getRecentActivity(userId: string, limit = 5): Promise<RecentActivityItem[]> {
+  await assertCanViewPlayerData(userId);
   const logs = await prisma.drillLogV2.findMany({
     where: { loggedBy: userId },
     orderBy: { loggedAt: "desc" },
@@ -330,6 +337,7 @@ export async function getRecentActivity(userId: string, limit = 5): Promise<Rece
 // ── Goals ─────────────────────────────────────────────────────────
 
 export async function getGoals(userId: string, limit = 3): Promise<GoalItem[]> {
+  await assertCanViewPlayerData(userId);
   const goals = await prisma.goal.findMany({
     where: { userId, status: { in: ["ACTIVE", "ACHIEVED"] } },
     orderBy: [{ status: "asc" }, { targetDate: "asc" }, { createdAt: "desc" }],
@@ -372,6 +380,7 @@ export async function getUnreadNotifications(
   userId: string,
   limit = 5,
 ): Promise<{ count: number; notifications: NotificationItem[] }> {
+  await assertCanViewPlayerData(userId);
   const [count, notifications] = await Promise.all([
     prisma.notification.count({ where: { userId, readAt: null } }),
     prisma.notification.findMany({
@@ -399,6 +408,7 @@ export async function getUnreadNotifications(
 // ── Latest coach message ──────────────────────────────────────────
 
 export async function getLatestCoachMessage(userId: string): Promise<CoachMessageItem | null> {
+  await assertCanViewPlayerData(userId);
   // Henter siste coaching-session (DIRECT/AI) med meldinger.
   const session = await prisma.coachingSession.findFirst({
     where: { userId },
@@ -435,6 +445,7 @@ export async function getLatestCoachMessage(userId: string): Promise<CoachMessag
 // ── Stats snapshot ────────────────────────────────────────────────
 
 export async function getStatsSnapshot(userId: string): Promise<StatsSnapshot> {
+  await assertCanViewPlayerData(userId);
   const now = new Date();
   const weekStart = startOfWeek(now);
 
@@ -471,6 +482,7 @@ export async function getStatsSnapshot(userId: string): Promise<StatsSnapshot> {
 // ── Next tournament ───────────────────────────────────────────────
 
 export async function getNextTournament(userId: string): Promise<NextTournament | null> {
+  await assertCanViewPlayerData(userId);
   const now = startOfDay(new Date());
 
   const entries = await prisma.tournamentEntry.findMany({
@@ -524,6 +536,7 @@ export async function getNextTournament(userId: string): Promise<NextTournament 
 // ── Week plan progress (planned vs completed by pyramid axis) ───────
 
 export async function getWeekPlanProgress(userId: string): Promise<WeekPlanProgress> {
+  await assertCanViewPlayerData(userId);
   const now = new Date();
   const weekStart = startOfWeek(now);
   const weekEnd = endOfWeek(now);
@@ -579,6 +592,7 @@ export type KpiStats = {
 };
 
 export async function getKpiStats(userId: string): Promise<KpiStats> {
+  await assertCanViewPlayerData(userId);
   const now = new Date();
   const weekStart = startOfWeek(now);
   const since90 = new Date(now.getTime() - 90 * 86_400_000);
@@ -634,6 +648,7 @@ export type TrainingHeatmap = {
 };
 
 export async function getTrainingHeatmap(userId: string): Promise<TrainingHeatmap> {
+  await assertCanViewPlayerData(userId);
   const now = new Date();
   const weeksBack = 12;
   const rangeStart = startOfWeek(new Date(now.getTime() - (weeksBack - 1) * 7 * 86_400_000));
@@ -666,6 +681,7 @@ export async function getTrainingHeatmap(userId: string): Promise<TrainingHeatma
 // ── All today's sessions (for second-session compact row) ─────────
 
 export async function getAllTodaysSessions(userId: string): Promise<TodaySession[]> {
+  await assertCanViewPlayerData(userId);
   const now = new Date();
   const sessions = await prisma.trainingSessionV2.findMany({
     where: { studentId: userId, startTime: { gte: startOfDay(now), lte: endOfDay(now) } },
@@ -721,6 +737,7 @@ export type DashboardData = {
 };
 
 export async function getDashboardData(userId: string): Promise<DashboardData> {
+  await assertCanViewPlayerData(userId);
   const user = await prisma.user.findUniqueOrThrow({
     where: { id: userId },
     select: { id: true, name: true, avatarUrl: true, hcp: true, tier: true },

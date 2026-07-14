@@ -16,6 +16,7 @@
  */
 
 import { useEffect, useState, type ReactNode } from "react";
+import Link from "next/link";
 import type { MinGolfData } from "@/lib/min-golf/load-min-golf";
 import type { AnalyticsWorkbenchData } from "@/app/portal/analysere/actions";
 import type { AkseKey } from "@/lib/v2/tokens";
@@ -214,6 +215,28 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
             <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg, marginTop: 14 }}>{c.l}</div>
             <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 4 }}>{c.s}</div>
           </Kort>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gridColumn: "1 / -1", gap: T.gap }}>
+        {[
+          { href: "/portal/analysere/hull", ic: "map", l: "Hull-analyse", s: "Hvor taper du slag — hull for hull" },
+          { href: "/portal/datagolf", ic: "trophy", l: "Sammenlign med proffer", s: "Din SG mot DataGolf-baseline" },
+        ].map((c) => (
+          <Link key={c.href} href={c.href} className="v2-press v2-focus" style={{ textDecoration: "none" }}>
+            <Kort>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <span style={{ width: 36, height: 36, borderRadius: 10, background: T.panel3, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+                  <Icon name={c.ic} size={16} style={{ color: T.lime }} />
+                </span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14, color: T.fg }}>{c.l}</div>
+                  <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>{c.s}</div>
+                </div>
+                <Icon name="chevron-right" size={15} style={{ color: T.mut, flex: "none" }} />
+              </div>
+            </Kort>
+          </Link>
         ))}
       </div>
     </div>

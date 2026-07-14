@@ -2,7 +2,9 @@
 
 /**
  * Server actions for /portal/analysere — Analytics Workbench.
- * Fetch + save analytics data for the logged-in player.
+ * Fetch + save analytics data for the logged-in player, or a coach/admin
+ * viewing a player they're authorized for (forsvar-i-dybden,
+ * sikkerhetsgjennomgang 2026-07-14 — se assertCanViewPlayerData).
  */
 
 import { prisma } from "@/lib/prisma";
@@ -12,6 +14,7 @@ import type {
   WindDir,
   ShotType,
 } from "@/generated/prisma/client";
+import { assertCanViewPlayerData } from "@/lib/auth/assert-own-or-coached";
 
 function startOfPeriod(period: "7d" | "30d" | "90d" | "1y" | "all"): Date | null {
   const now = new Date();
@@ -166,6 +169,7 @@ export async function getTrainingStats(
   userId: string,
   period: "7d" | "30d" | "90d" | "1y" | "all" = "30d",
 ): Promise<TrainingStats> {
+  await assertCanViewPlayerData(userId);
   const from = startOfPeriod(period);
   // Øvre grense = nå: planlagte fremtidige økter er ikke gjennomført trening
   // og skal aldri telle i volum eller «Siste økter».
@@ -256,6 +260,7 @@ export async function getRoundStats(
   userId: string,
   period: "7d" | "30d" | "90d" | "1y" | "all" = "all",
 ): Promise<RoundStats> {
+  await assertCanViewPlayerData(userId);
   const from = startOfPeriod(period);
 
   const roundsRaw = await prisma.round.findMany({
@@ -294,6 +299,7 @@ export async function getRoundStats(
 }
 
 export async function getRoundDetail(userId: string, roundId: string): Promise<RoundDetail | null> {
+  await assertCanViewPlayerData(userId);
   const round = await prisma.round.findFirst({
     where: { id: roundId, userId },
     include: {
@@ -342,6 +348,7 @@ export async function getTournamentResults(
   userId: string,
   period: "7d" | "30d" | "90d" | "1y" | "all" = "all",
 ): Promise<TournamentListItem[]> {
+  await assertCanViewPlayerData(userId);
   const from = startOfPeriod(period);
 
   const entries = await prisma.tournamentEntry.findMany({
@@ -384,6 +391,7 @@ export async function getTestResults(
   userId: string,
   period: "7d" | "30d" | "90d" | "1y" | "all" = "all",
 ): Promise<TestListItem[]> {
+  await assertCanViewPlayerData(userId);
   const from = startOfPeriod(period);
 
   const results = await prisma.testResult.findMany({
@@ -412,6 +420,7 @@ export async function getTrackManData(
   userId: string,
   period: "7d" | "30d" | "90d" | "1y" | "all" = "30d",
 ): Promise<TrackManData> {
+  await assertCanViewPlayerData(userId);
   const from = startOfPeriod(period);
 
   const sessions = await prisma.trackManSession.findMany({
@@ -495,6 +504,7 @@ export async function getTrackManData(
 // ── Goals ───────────────────────────────────────────────────────────────────
 
 export async function getGoals(userId: string): Promise<GoalListItem[]> {
+  await assertCanViewPlayerData(userId);
   const goals = await prisma.goal.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
@@ -549,6 +559,7 @@ async function getSgBreakdown(userId: string): Promise<SgBreakdown> {
 export async function loadAnalyticsWorkbenchData(
   userId: string,
 ): Promise<AnalyticsWorkbenchData> {
+  await assertCanViewPlayerData(userId);
   const [training, rounds, tournaments, tests, trackman, goals, courses, sgBreakdown] = await Promise.all([
     getTrainingStats(userId, "30d"),
     getRoundStats(userId, "all"),

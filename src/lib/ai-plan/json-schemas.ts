@@ -6,16 +6,11 @@
 // formatet har drifta.
 
 import { z } from "zod";
+import { PyramidAreaSchema } from "@/lib/portal/training/ak-taxonomy";
+
+export { PyramidAreaSchema };
 
 // ----- PlanTemplate.payload -----
-
-export const PyramidAreaSchema = z.enum([
-  "FYS",
-  "TEK",
-  "SLAG",
-  "SPILL",
-  "TURN",
-]);
 
 export const AllokeringSchema = z.object({
   FYS: z.number(),

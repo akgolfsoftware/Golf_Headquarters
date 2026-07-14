@@ -2,7 +2,8 @@
  * AK Golf HQ — UI primitives + molekyler
  *
  * Atomer: form-elementer, knapper, skeletons, icon-wrapper.
- * Molekyler: KPI, EmptyState, Tabs, Breadcrumb, Progress, Tooltip.
+ * Molekyler: KPI, Tabs, Breadcrumb, Progress, Tooltip. EmptyState bor i
+ * @/components/shared/empty-state (eneste versjon — ikke dupliser her).
  * Overlays: Dialog, Sheet, Popover, DropdownMenu, Toast.
  *
  * Branded komponenter (Hero, FeaturedCard, KpiStrip, PyramidProgress, etc.)
@@ -22,7 +23,6 @@ export { Skeleton, SkeletonText, SkeletonCard } from "./skeleton";
 export { Icon } from "./icon";
 
 // Molekyler
-export { EmptyState } from "./empty-state";
 export { KPICard } from "./kpi-card";
 export { Tabs, TabList, Tab, TabPanel } from "./tabs";
 export { Breadcrumb } from "./breadcrumb";
