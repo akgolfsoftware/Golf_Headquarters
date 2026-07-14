@@ -424,7 +424,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Rediger drill | `/admin/drills/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
 | Teknisk plan | `/admin/teknisk-plan` | – | --- | ✓ | ~ | ~ | ~ |
 | · Per spiller | `/admin/teknisk-plan/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
-| **Turneringer** ★ | `/admin/tournaments` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
+| **Turneringer** ★ | `/admin/tournaments` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-13: portet til v2 (`AdminTurneringerV2`, AgencyOS Bølge 1.1) — samme datalogikk, ny `Rad`-liste dekker mobil/iPad/desktop uten egne breakpoint-grener. Detalj-siden var alt v2 |
 | · Turnering-detalj | `/admin/tournaments/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Ny turnering | `/admin/tournaments/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | · Dubletter (rydd) | `/admin/tournaments/dubletter` | – | --- | ✓ | ~ | ~ | ~ |
