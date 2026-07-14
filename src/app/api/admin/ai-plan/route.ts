@@ -4,6 +4,7 @@
 
 import { NextResponse } from "next/server";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { genererPlan } from "@/lib/ai-plan/generate";
 
 export const runtime = "nodejs";
@@ -29,6 +30,9 @@ export async function POST(req: Request) {
   const playerId = body.playerId?.trim();
   if (!playerId) {
     return NextResponse.json({ error: "playerId mangler." }, { status: 400 });
+  }
+  if (!(await harCoachTilgangTilSpiller(coach, playerId))) {
+    return NextResponse.json({ error: "Du har ikke tilgang til denne spilleren." }, { status: 403 });
   }
 
   const brukerPrompt =
