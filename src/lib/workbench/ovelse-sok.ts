@@ -34,7 +34,7 @@ export async function hentOktKomponist(sessionId: string): Promise<{
   ok: boolean;
   lFase?: string | null;
   miljo?: string | null;
-  drills?: { exerciseId: string; navn: string; minutter: number | null; sett: number | null; reps: number | null; nivaa: "uten" | "lav" | "vanlig" }[];
+  drills?: { exerciseId: string; navn: string; minutter: number | null; sett: number | null; reps: number | null; nivaa: "uten" | "lav" | "vanlig"; positionTaskId?: string; positionTaskTittel?: string }[];
 }> {
   const user = await requirePortalUser();
   const okt = await prisma.trainingPlanSession.findFirst({
@@ -58,6 +58,8 @@ export async function hentOktKomponist(sessionId: string): Promise<{
           repType: true,
           prPress: true,
           exercise: { select: { name: true } },
+          positionTaskId: true,
+          positionTask: { select: { tittel: true } },
         },
       },
     },
@@ -74,6 +76,8 @@ export async function hentOktKomponist(sessionId: string): Promise<{
       sett: d.repSett ?? d.sets,
       reps: d.repReps ?? d.reps,
       nivaa: d.repType === "SVINGER_UTEN_BALL" ? ("uten" as const) : d.prPress === "PR1" ? ("lav" as const) : ("vanlig" as const),
+      positionTaskId: d.positionTaskId ?? undefined,
+      positionTaskTittel: d.positionTask?.tittel ?? undefined,
     })),
   };
 }

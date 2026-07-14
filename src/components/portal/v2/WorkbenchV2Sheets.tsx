@@ -113,6 +113,8 @@ export interface WorkbenchV2Actions {
   duplicateWeek?: (weekOffset?: number) => Promise<{ ok: boolean; count?: number; error?: string }>;
   /** G7/fasit: legg inn mal-uke 1 fra en godkjent planmal (coldstart + bibliotek). */
   applyTemplate?: (templateId: string) => Promise<{ ok: boolean; error?: string }>;
+  /** Runde 2: søk i spillerens tekniske oppgaver for "koble til oppgave"-velgeren på drill-rader. */
+  searchTeknisk?: (query: string) => Promise<{ id: string; tittel: string; pNummer: string }[]>;
 }
 
 /* ── Delt dag-pille-rad (7 dager, Man–Søn) ─────────────── */
@@ -202,6 +204,9 @@ export type OktArkDrill = {
   sett: number | null;
   reps: number | null;
   nivaa: "uten" | "lav" | "vanlig";
+  /** Kobling til teknisk-plan-oppgave — reps logges automatisk mot den ved fullføring. */
+  positionTaskId?: string;
+  positionTaskTittel?: string;
 };
 
 export interface NyOktInput {
@@ -227,15 +232,17 @@ export interface NyOktArkProps {
   defaultDrills?: OktArkDrill[];
   onLukk: () => void;
   onOpprett: (input: NyOktInput) => Promise<{ ok: boolean; error?: string }>;
+  searchTeknisk?: (query: string) => Promise<{ id: string; tittel: string; pNummer: string }[]>;
 }
 
-export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAkse, defaultDurMin, defaultDrills, onLukk, onOpprett }: NyOktArkProps) {
+export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAkse, defaultDurMin, defaultDrills, onLukk, onOpprett, searchTeknisk }: NyOktArkProps) {
   return (
     <OktArkSkjema
       overskrift="Ny økt"
       submitLabel="Opprett økt"
       lagrerLabel="Oppretter…"
       submitIcon="plus"
+      searchTeknisk={searchTeknisk}
       initial={{
         title: defaultTitle ?? "",
         dayIndex: defaultDayIndex,
@@ -288,6 +295,7 @@ function OktArkSkjema({
   tittelPlaceholder,
   onLukk,
   onSubmit,
+  searchTeknisk,
 }: {
   overskrift: string;
   submitLabel: string;
@@ -297,6 +305,7 @@ function OktArkSkjema({
   tittelPlaceholder?: string;
   onLukk: () => void;
   onSubmit: (state: OktArkState & { hour: number; minute: number }) => Promise<{ ok: boolean; error?: string }>;
+  searchTeknisk?: (query: string) => Promise<{ id: string; tittel: string; pNummer: string }[]>;
 }) {
   const [title, setTitle] = useState(initial.title);
   const [dayIndex, setDayIndex] = useState(initial.dayIndex);
@@ -308,6 +317,9 @@ function OktArkSkjema({
   const [drills, setDrills] = useState<OktArkDrill[]>(initial.drills);
   const [drillSok, setDrillSok] = useState("");
   const [drillTreff, setDrillTreff] = useState<{ id: string; name: string; pyramidArea: string }[]>([]);
+  const [oppgaveKobler, setOppgaveKobler] = useState<number | null>(null);
+  const [oppgaveSok, setOppgaveSok] = useState("");
+  const [oppgaveTreff, setOppgaveTreff] = useState<{ id: string; tittel: string; pNummer: string }[]>([]);
   const [lagrer, setLagrer] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
 
@@ -319,6 +331,15 @@ function OktArkSkjema({
     }, q.length < 2 ? 0 : 250);
     return () => window.clearTimeout(t);
   }, [drillSok, akse]);
+
+  useEffect(() => {
+    if (!searchTeknisk || oppgaveKobler === null) return;
+    const q = oppgaveSok.trim();
+    const t = window.setTimeout(() => {
+      searchTeknisk(q).then(setOppgaveTreff).catch(() => setOppgaveTreff([]));
+    }, q.length < 2 ? 0 : 250);
+    return () => window.clearTimeout(t);
+  }, [oppgaveSok, oppgaveKobler, searchTeknisk]);
 
   const sykleLFase = () => {
     const i = lFase ? L_FASER.indexOf(lFase as (typeof L_FASER)[number]) : -1;
@@ -407,17 +428,65 @@ function OktArkSkjema({
           <Felt label={`Driller (${drills.length})`}>
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
               {drills.map((d, i) => (
-                <div key={i} data-wb-drillrad style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}` }}>
-                  <span style={{ flex: 1, minWidth: 0, fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.navn}</span>
-                  <input type="number" min={1} max={240} placeholder="min" value={d.minutter ?? ""} onChange={(e) => setDrills(drills.map((x, j) => j === i ? { ...x, minutter: e.target.value ? Number(e.target.value) : null } : x))} style={{ ...inputStyle, width: 56, padding: "5px 7px", fontSize: 11 }} aria-label="Minutter" />
-                  <input type="number" min={1} max={50} placeholder="sett" value={d.sett ?? ""} onChange={(e) => setDrills(drills.map((x, j) => j === i ? { ...x, sett: e.target.value ? Number(e.target.value) : null } : x))} style={{ ...inputStyle, width: 50, padding: "5px 7px", fontSize: 11 }} aria-label="Sett" />
-                  <input type="number" min={1} max={500} placeholder="reps" value={d.reps ?? ""} onChange={(e) => setDrills(drills.map((x, j) => j === i ? { ...x, reps: e.target.value ? Number(e.target.value) : null } : x))} style={{ ...inputStyle, width: 54, padding: "5px 7px", fontSize: 11 }} aria-label="Reps" />
-                  <button type="button" onClick={() => setDrills(drills.map((x, j) => j === i ? { ...x, nivaa: x.nivaa === "uten" ? "lav" : x.nivaa === "lav" ? "vanlig" : "uten" } : x))} className="v2-press" title="Intensitet — trykk for å bytte" style={{ appearance: "none", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, padding: "5px 8px", borderRadius: 9999, background: T.panel3, border: `1px solid ${T.borderS}`, color: T.fg2, cursor: "pointer", flex: "none" }}>
-                    {d.nivaa === "uten" ? "uten ball" : d.nivaa === "lav" ? "lav fart" : "vanlig"}
-                  </button>
-                  <button type="button" onClick={() => setDrills(drills.filter((_, j) => j !== i))} className="v2-press" aria-label="Fjern drill" style={{ appearance: "none", background: "transparent", border: 0, color: T.mut, cursor: "pointer", padding: 2, flex: "none" }}>
-                    <Icon name="x" size={13} />
-                  </button>
+                <div key={i} style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                  <div data-wb-drillrad style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}` }}>
+                    <span style={{ flex: 1, minWidth: 0, fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.navn}</span>
+                    <input type="number" min={1} max={240} placeholder="min" value={d.minutter ?? ""} onChange={(e) => setDrills(drills.map((x, j) => j === i ? { ...x, minutter: e.target.value ? Number(e.target.value) : null } : x))} style={{ ...inputStyle, width: 56, padding: "5px 7px", fontSize: 11 }} aria-label="Minutter" />
+                    <input type="number" min={1} max={50} placeholder="sett" value={d.sett ?? ""} onChange={(e) => setDrills(drills.map((x, j) => j === i ? { ...x, sett: e.target.value ? Number(e.target.value) : null } : x))} style={{ ...inputStyle, width: 50, padding: "5px 7px", fontSize: 11 }} aria-label="Sett" />
+                    <input type="number" min={1} max={500} placeholder="reps" value={d.reps ?? ""} onChange={(e) => setDrills(drills.map((x, j) => j === i ? { ...x, reps: e.target.value ? Number(e.target.value) : null } : x))} style={{ ...inputStyle, width: 54, padding: "5px 7px", fontSize: 11 }} aria-label="Reps" />
+                    <button type="button" onClick={() => setDrills(drills.map((x, j) => j === i ? { ...x, nivaa: x.nivaa === "uten" ? "lav" : x.nivaa === "lav" ? "vanlig" : "uten" } : x))} className="v2-press" title="Intensitet — trykk for å bytte" style={{ appearance: "none", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, padding: "5px 8px", borderRadius: 9999, background: T.panel3, border: `1px solid ${T.borderS}`, color: T.fg2, cursor: "pointer", flex: "none" }}>
+                      {d.nivaa === "uten" ? "uten ball" : d.nivaa === "lav" ? "lav fart" : "vanlig"}
+                    </button>
+                    <button type="button" onClick={() => setDrills(drills.filter((_, j) => j !== i))} className="v2-press" aria-label="Fjern drill" style={{ appearance: "none", background: "transparent", border: 0, color: T.mut, cursor: "pointer", padding: 2, flex: "none" }}>
+                      <Icon name="x" size={13} />
+                    </button>
+                  </div>
+                  {searchTeknisk && (
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, paddingLeft: 4 }}>
+                      <button
+                        type="button"
+                        className="v2-press"
+                        onClick={() => { setOppgaveKobler(oppgaveKobler === i ? null : i); setOppgaveSok(""); setOppgaveTreff([]); }}
+                        style={{ appearance: "none", display: "inline-flex", alignItems: "center", gap: 4, background: "transparent", border: 0, padding: 0, cursor: "pointer", fontFamily: T.mono, fontSize: 9.5, color: d.positionTaskId ? T.lime : T.mut }}
+                      >
+                        <Icon name="link-2" size={10} />
+                        {d.positionTaskId ? `Koblet: ${d.positionTaskTittel ?? "teknisk oppgave"}` : "Koble til teknisk oppgave"}
+                      </button>
+                      {d.positionTaskId && (
+                        <button type="button" className="v2-press" aria-label="Fjern kobling" onClick={() => setDrills(drills.map((x, j) => j === i ? { ...x, positionTaskId: undefined, positionTaskTittel: undefined } : x))} style={{ appearance: "none", background: "transparent", border: 0, color: T.mut, cursor: "pointer", padding: 0 }}>
+                          <Icon name="x" size={10} />
+                        </button>
+                      )}
+                    </div>
+                  )}
+                  {oppgaveKobler === i && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 4, paddingLeft: 4 }}>
+                      <input
+                        value={oppgaveSok}
+                        onChange={(e) => setOppgaveSok(e.target.value)}
+                        placeholder="Søk i tekniske oppgaver…"
+                        style={{ ...inputStyle, padding: "6px 9px", fontSize: 11 }}
+                        autoFocus
+                      />
+                      {oppgaveTreff.map((t) => (
+                        <button
+                          key={t.id}
+                          type="button"
+                          className="v2-press"
+                          onClick={() => {
+                            setDrills(drills.map((x, j) => j === i ? { ...x, positionTaskId: t.id, positionTaskTittel: t.tittel } : x));
+                            setOppgaveKobler(null);
+                          }}
+                          style={{ appearance: "none", textAlign: "left", padding: "6px 9px", borderRadius: 8, background: T.panel3, border: `1px dashed ${T.borderS}`, color: T.fg, fontFamily: T.ui, fontSize: 11, cursor: "pointer" }}
+                        >
+                          {t.pNummer} · {t.tittel}
+                        </button>
+                      ))}
+                      {oppgaveSok.trim().length >= 2 && oppgaveTreff.length === 0 && (
+                        <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut }}>Ingen treff.</span>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
               <input
@@ -936,6 +1005,7 @@ export function RedigerOktArk({ okt, dag, weekOffset, actions, onLukk, onEndret 
       lagrerLabel="Lagrer…"
       submitIcon="check"
       initial={initial}
+      searchTeknisk={actions.searchTeknisk}
       onLukk={onLukk}
       onSubmit={async (s) => {
         if (!okt.id || !actions.updateSession) return { ok: false, error: "Ingen skrivetilgang." };
@@ -955,6 +1025,7 @@ export function RedigerOktArk({ okt, dag, weekOffset, actions, onLukk, onEndret 
             sett: d.sett,
             reps: d.reps,
             nivaa: d.nivaa,
+            positionTaskId: d.positionTaskId,
           })),
         });
         if (!res.ok) return res;

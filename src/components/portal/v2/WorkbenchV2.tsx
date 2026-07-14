@@ -1191,6 +1191,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
               sett: d.sett,
               reps: d.reps,
               nivaa: d.nivaa,
+              positionTaskId: d.positionTaskId,
             })),
           }
         : {}),
@@ -1625,6 +1626,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           defaultDrills={nyOktPrefill?.drills}
           onLukk={() => { setNyOktApen(false); setNyOktPrefill(null); setNyOktSted(null); }}
           onOpprett={handleCreateSession}
+          searchTeknisk={actions.searchTeknisk}
         />
       )}
     </div>
