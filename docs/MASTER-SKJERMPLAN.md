@@ -351,7 +351,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Admin-rot (gml. hjem) | `/admin` | – | --- | ✓ | ~ | ~ | ✓ |
 | Daglig AI-brief | `/admin/brief` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | Varsler (agent-forslag/signaler/meldinger) | `/admin/varsler` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| Coaching-board | `/admin/board` | – | --- | ✓ | ~ | ~ | ~ |
+| Coaching-board (redirect) | `/admin/board` | — | — | ✓ | ✓ | – | ✓ | Slått sammen med `/admin/elever` til `/admin/spillere?view=tavle` — ren `redirect()`-stubb. Ingenting å portere. |
 | Oppfølging (alias → queue) | `/admin/oppfolging` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | Oppfølgingskø (kanban) | `/admin/queue` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | **Innboks** ★ | `/admin/innboks` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
@@ -494,7 +494,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 |---|---|---|---|---|---|---|---|
 | Organisasjon-hub | `/admin/organisasjon` | – | --- | ✓ | ~ | ~ | ~ |
 | Klubb-innstillinger | `/admin/klubb/innstillinger` | – | --- | ✓ | ~ | ~ | ~ |
-| Integrasjoner | `/admin/integrasjoner` | – | --- | ✓ | ~ | ~ | ~ |
+| **Integrasjoner** ★ | `/admin/integrasjoner` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminIntegrasjonerV2`, AgencyOS Bølge 3.1) — samme statuskilder (Prisma + env-sjekk), ren visning |
 | Innstillinger | `/admin/settings` | – | –✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-14: IKKE portet i Bølge 2 — 1727 linjer på tvers av 13 filer (kalender/security/tilgang-underflater). Trenger egen mini-plan mot faktisk tab-struktur, ikke en hastig omskriving samme natt. |
 | · API | `/admin/settings/api` | – | --- | ✓ | ~ | ~ | ~ |
 | · Kalender | `/admin/settings/calendar` | – | --- | ✓ | ~ | ~ | ~ |
@@ -502,7 +502,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Tilgang | `/admin/settings/tilgang` | – | --- | ✓ | ~ | ~ | ~ |
 | Team | `/admin/team` | – | --- | ✓ | ~ | ~ | ~ |
 | · Inviter | `/admin/team/inviter` | – | --- | ✓ | ~ | ~ | ~ |
-| Audit-log | `/admin/audit-log` | – | --- | ✓ | ~ | ~ | ~ |
+| **Audit-log** ★ | `/admin/audit-log` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminAuditLogV2`, AgencyOS Bølge 3.1) — samme `AuditLog`-datamodell (siste 50, kind/status fra action-prefiks), ren visning |
 | ~~· Audit-detalj~~ | `/admin/audit-log/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | AI-agenter | `/admin/agents` | – | --- | ✓ | ~ | ~ | ~ |
 | · Agent-detalj | `/admin/agents/[agentId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
