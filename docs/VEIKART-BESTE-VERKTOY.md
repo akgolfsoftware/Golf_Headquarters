@@ -1,6 +1,21 @@
 # Veikart: det mest komplette og effektive coaching- og businessverktøyet
 
 > STATUS-LOGG (oppdateres per leverte pakke — samme commit):
+> 2026-07-14 · P2 LEVERT (branch claude/p2-query-diett): undersøkte Stallen,
+> Cockpit, Kalender, Workbench. Tre av fire var allerede batchede/enkelt-
+> spørringer — ingen endring trengtes. Coach-Workbench hadde fire uavhengige
+> sekvensielle DB-kall (spillersjekk, kontekst, roster, grupper) — samlet i
+> ett Promise.all.
+> 2026-07-14 · P3 UNDERSØKT, INGEN ENDRING (samme fire flater): alle fire
+> krever `requirePortalUser` → Supabase-serverklient → `cookies()`, som
+> selv gjør ruten dynamisk i Next.js uansett `export const revalidate` —
+> `force-dynamic` er derfor riktig valg, ikke noe å bytte ut. De eneste
+> reelt delte/sjeldent-endrede dataene på disse sidene (Group-lista i
+> Workbench, GroupSchedule WEEKLY-serier i Kalender) er små nok tabeller
+> (typisk under 20 rader) at `unstable_cache` (ny primitiv, ikke brukt i
+> repoet ennå) ville lagt til kompleksitet og risiko for at en nyopprettet
+> gruppe ikke vises med en gang — for et sparepotensial på noen millisekund.
+> Konklusjon: P3 lukket uten kodeendring — bevisst, ikke glemt.
 > 2026-07-12 · Plan godkjent (se ~/.claude/plans/warm-coalescing-octopus.md):
 > W0 nordstjerne → R1 rydding → P ytelse → I0–I8 interaksjon → Å1–Å6
 > årsplanlegger → motor → GDPR-port → marketing.
