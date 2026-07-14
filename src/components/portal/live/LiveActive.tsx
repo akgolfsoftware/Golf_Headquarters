@@ -320,9 +320,9 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
     vibrate([60, 40]);
 
     if (activeIdx === drills.length - 1) {
-      await completeSession(data.sessionId, totalSec + drillSec);
+      await completeSession(data.sessionId, totalSec);
     }
-  }, [active, activeIdx, data.sessionId, drills.length, isCompleting, totalSec, drillSec]);
+  }, [active, activeIdx, data.sessionId, drills.length, isCompleting, totalSec]);
 
   const handleLogRep = useCallback(() => {
     setShowDrillLogger(true);
@@ -382,6 +382,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             isLast={activeIdx === drills.length - 1}
             completedCount={completedCount}
             totalCount={drills.length}
+            drillSeconds={drillSec}
           />
         </main>
       </div>
