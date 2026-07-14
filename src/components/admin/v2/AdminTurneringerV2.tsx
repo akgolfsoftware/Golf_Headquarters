@@ -95,7 +95,6 @@ export function AdminTurneringerV2({ data }: { data: AdminTurneringerV2Data }) {
             <Rad
               key={r.key}
               last={i === rader.length - 1}
-              onClick={r.href ? undefined : undefined}
               leading={<TurneringIkon />}
               title={<TurneringTittel r={r} />}
               sub={

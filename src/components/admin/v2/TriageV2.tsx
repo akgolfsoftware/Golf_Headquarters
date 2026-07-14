@@ -61,14 +61,17 @@ function byggGrupper(data: CockpitData): Gruppe[] {
   const avvik: Sak[] = data.focus
     .filter((f) => f.signal.tone === "alert" || f.signal.tone === "warn")
     .map((f) => {
-      const primary = f.actions.find((a) => a.primary) ?? f.actions[0];
+      // Knappeteksten MÅ komme fra samme handling som lenken peker til —
+      // ellers viser raden f.eks. "Ring" men trykk går til meldinger
+      // (I8 lag 2-funn: primary/nav valgte forskjellige actions).
       const nav = f.actions.find((a) => a.href);
+      const handling = nav ?? f.actions.find((a) => a.primary) ?? f.actions[0];
       return {
         id: f.id,
         name: f.name,
         text: reasonText(f.reason),
         meta: f.signal.label,
-        handling: primary?.label ?? "Se",
+        handling: handling?.label ?? "Se",
         href: nav?.href,
       };
     });
