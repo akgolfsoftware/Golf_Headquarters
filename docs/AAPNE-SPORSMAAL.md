@@ -4,7 +4,7 @@
 >
 > Status: **ÅPEN** (trenger beslutning) · **PARKERT** (bevisst, ikke rør uoppfordret) · **LØST** (avklart — ikke flagg på nytt).
 >
-> **Sist oppdatert:** 2026-07-10. Råmateriale: tidligere `PLATFORM.md` §14 (arkivert) + kodeverifisering 2026-06-14 / agent-pipeline 2026-07-10.
+> **Sist oppdatert:** 2026-07-14 (D1 lagt til). Råmateriale: tidligere `PLATFORM.md` §14 (arkivert) + kodeverifisering 2026-06-14 / agent-pipeline 2026-07-10.
 
 ---
 
@@ -22,6 +22,7 @@ Disse kan en agent IKKE løse selv — de er produkt-/metodikkvalg.
 | ~~A3~~ ✅ | **Agent-systemets dybde.** | LØST 2026-07-10 — `acceptAndApplyPlanAction` + `plan-action-executor` endrer plan ved godkjenning; `/admin/godkjenninger` med batch; coach-scoped `coachId`; varsling via `varsleVedPlanAction`. | — |
 | A4 | **13 invarianter.** Nevnt som konsept, finnes ikke som navngitt liste i kode/wiki. | — | Skal de skrives ned, eller utledes fra valideringsregler + junior-vern? |
 | A5 | **Forretningstall** (3 MNOK 2026 / 4 MNOK 2027 / AI Coach $10M ARR). | Kun i global CLAUDE.md — ikke i kode/regnskap | Bekreft eller korriger. |
+| D1 | **Live/skjult per skjerm.** 14. juli-revisjon av alle 55 menypunkt fant 11 kandidater som bør skjules (uferdige, f.eks. Økonomi-fanen i AgencyOS-railen, Live/Mission Control, Caddie-AI) og 5 som bør sjekkes raskt før beslutning (f.eks. «Ny spiller»). Full liste lå i en artifact presentert 14. juli — aldri besvart, samtalen gikk videre til strukturopprydding. | Alle 11+5 står fortsatt synlige i menyen i dag. | Anders bekrefter/justerer skjul-listen; agent kobler ut de bekreftede via samme reversible nav-mønster som ble brukt til å koble INN skjermer 14. juli. |
 
 ## B. Bevisst parkert (PARKERT — ikke rør uoppfordret)
 
