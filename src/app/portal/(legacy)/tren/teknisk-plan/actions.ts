@@ -20,10 +20,10 @@ import type {
   TmGoalType,
   TmGoalComparison,
   TmGoalProtocol,
-  RepHastighet,
 } from "@/generated/prisma/client";
 import type { Prisma } from "@/generated/prisma/client";
 import { nonEmpty } from "@/lib/validation/schemas";
+import { applyPositionTaskReps } from "@/lib/teknisk-plan/apply-reps";
 
 const TaskInputSchema = z.object({
   planId: z.string().min(1, "Plan-ID er påkrevd"),
@@ -340,33 +340,7 @@ export async function logReps(
   if (!task) throw new Error("Oppgave ikke funnet");
   const { user } = await ensurePlanAccess(task.position.planId);
 
-  await prisma.positionTask.update({
-    where: { id: taskId },
-    data: {
-      repsGjortDry: { increment: reps.dry ?? 0 },
-      repsGjortLav: { increment: reps.lav ?? 0 },
-      repsGjortFull: { increment: reps.full ?? 0 },
-    },
-  });
-
-  const logRows: { hastighet: RepHastighet; reps: number }[] = (
-    [
-      { hastighet: "DRY", reps: reps.dry ?? 0 },
-      { hastighet: "LAV", reps: reps.lav ?? 0 },
-      { hastighet: "FULL", reps: reps.full ?? 0 },
-    ] as { hastighet: RepHastighet; reps: number }[]
-  ).filter((r) => r.reps > 0);
-
-  if (logRows.length > 0) {
-    await prisma.positionTaskLog.createMany({
-      data: logRows.map((r) => ({
-        taskId,
-        loggedByUserId: user.id,
-        reps: r.reps,
-        hastighet: r.hastighet,
-      })),
-    });
-  }
+  await applyPositionTaskReps(taskId, reps, user.id);
 
   revalidatePath(`/portal/tren/teknisk-plan/${task.position.planId}`);
   return { ok: true };
