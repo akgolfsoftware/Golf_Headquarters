@@ -500,8 +500,8 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Kalender | `/admin/settings/calendar` | – | --- | ✓ | ~ | ~ | ~ |
 | · Sikkerhet | `/admin/settings/security` | – | --- | ✓ | ~ | ~ | ~ |
 | · Tilgang | `/admin/settings/tilgang` | – | --- | ✓ | ~ | ~ | ~ |
-| Team | `/admin/team` | – | --- | ✓ | ~ | ~ | ~ |
-| · Inviter | `/admin/team/inviter` | – | --- | ✓ | ~ | ~ | ~ |
+| **Team** ★ | `/admin/team` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Allerede v2 (`AdminTeamV2`) — masterplan-raden var stale, rettet 2026-07-14 |
+| · **Inviter** ★ | `/admin/team/inviter` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminInviterCoachV2`, AgencyOS Bølge 3.2) — samme `inviterCoach`-kontrakt |
 | **Audit-log** ★ | `/admin/audit-log` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminAuditLogV2`, AgencyOS Bølge 3.1) — samme `AuditLog`-datamodell (siste 50, kind/status fra action-prefiks), ren visning |
 | ~~· Audit-detalj~~ | `/admin/audit-log/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | AI-agenter | `/admin/agents` | – | --- | ✓ | ~ | ~ | ~ |
