@@ -559,7 +559,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Barn (oversikt) | `/forelder/barn` | – | ✓✓– | ✓ | ~ | ~ | ✓ |
 | · Barn-detalj | `/forelder/barn/[childId]` | – | ✓✓– | ✓ | ~ | – | ~ |
 | Bookinger | `/forelder/bookinger` | – | --- | ✓ | ~ | ~ | ~ |
-| Coach | `/forelder/coach` | – | --- | ✓ | ~ | ~ | ~ |
+| Coach | `/forelder/coach` | – | --- | ✓ | ~ | ✓ | † |
 | Fakturaer | `/forelder/fakturaer` | – | --- | ✓ | ~ | ~ | ~ |
 | Økonomi | `/forelder/okonomi` | – | --- | ✓ | ~ | ~ | ~ |
 | Samtykke | `/forelder/samtykke` | – | --- | ✓ | ~ | ~ | ~ |
@@ -763,6 +763,14 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 14. juli (siste mock-side i foreldreportalen fjernet): `/forelder/coach` hadde en hardkodet
+  `DATA`-konstant («coach-dialog kommer Q3 2026») — en toveis forelder↔coach-dialog finnes ikke i
+  datamodellen (`CoachingSession` er spiller↔coach). Erstattet med ekte oppslag: barnets coach
+  (fra kommende/siste booking), siste faktiske melding fra coachen (`Notification` type=«melding»,
+  samme kilde som `coachNote` i `hentForelderUkerapport`), og kontakt-CTA. Ærlig tom-tilstand når
+  ingen barn er koblet eller ingen coach er tildelt ennå — ingen fabrikerte tall eller
+  lanseringsdatoer. Data-haken satt til ✓.
 
 - 14. juli (struktur og navnekonsistens, branch `claude/struktur-navn-opprydding`): **Fiks:**
   Innstillinger-siden (`/portal/meg/innstillinger`) manglet egen inngangsknapp fra Meg-fanen —

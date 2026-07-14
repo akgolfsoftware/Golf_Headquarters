@@ -1,17 +1,18 @@
 "use client";
 
 /**
- * Foreldreportal · Coach (Meldinger) — v2 (retning C «Presis»). Komponert kun av
+ * Foreldreportal · Coach — v2 (retning C «Presis»). Komponert kun av
  * v2-komponenter fra "@/components/v2" (ingen ad-hoc UI, ingen rå hex — kun T.*).
  *
- * Faithful port av src/app/forelder/coach/page.tsx: foreldretilkoblet coach-dialog
- * er IKKE ferdig for beta. Sidens hele funksjon er å sette forventning (dialog
- * kommer Q3 2026), forklare personvern (private coach-notater forblir private),
- * og gi tydelig CTA til support. Ingen meldingsdata fabrikeres — det finnes ingen.
+ * En ekte toveis coach-dialog for foreldre finnes ikke i datamodellen ennå
+ * (CoachingSession er spiller↔coach, ikke forelder↔coach) — så denne skjermen
+ * viser i stedet det vi faktisk har: hvem barnets coach er, siste faktiske
+ * melding coachen har sendt, og en kontakt-CTA. Ingen fabrikerte meldinger
+ * eller lanseringsdatoer.
  *
- * V2Shell (montert i (v2preview)/v2-forelder-coach/page.tsx) eier chrome-en; denne
- * komponenten rendrer bare den indre innholds-stacken. Mobil-først: alt stabler i
- * én kolonne på 375px, CTA går full bredde på mobil.
+ * Server component (src/app/forelder/coach/page.tsx) eier auth + dataoppslag
+ * og gir V2Shell chrome-en; denne komponenten rendrer den indre innholds-
+ * stacken. Mobil-først: alt stabler i én kolonne, CTA går full bredde på mobil.
  */
 
 import { useEffect, useState } from "react";
@@ -25,13 +26,22 @@ import {
   InnsiktChip,
   Knapp,
   Icon,
+  AvatarFoto,
+  TomTilstand,
 } from "@/components/v2";
 
-/** Statisk datakontrakt fra den ekte skjermen — hardkodede beta-verdier, ikke fabrikkert innhold. */
 export interface ForelderCoachData {
-  /** Kvartal dialogen lanseres (den ekte siden sier «Q3 2026»). */
-  lansering: string;
-  /** Support-adresse for spørsmål i mellomtiden. */
+  /** Antall koblede barn — 0 gir ærlig tom-tilstand. */
+  antallBarn: number;
+  childFirstName: string | null;
+  /** Barnets coach, avledet fra kommende/siste booking. Null = ingen coach tildelt ennå. */
+  coachNavn: string | null;
+  coachAvatarUrl: string | null;
+  coachEpost: string | null;
+  nesteBooking: { dato: string; serviceName: string } | null;
+  /** Siste faktiske melding fra coachen (Notification type="melding"). Null = ingen ennå. */
+  sisteMelding: { title: string; body: string | null; dato: string } | null;
+  /** Support-adresse for spørsmål utover coach-kontakt. */
   supportEpost: string;
 }
 
@@ -48,15 +58,43 @@ function useMobile(): boolean {
   return m;
 }
 
+function mailto(epost: string, emne: string): string {
+  return `mailto:${epost}?subject=${encodeURIComponent(emne)}`;
+}
+
 export function ForelderCoachV2({ data }: { data: ForelderCoachData }) {
   const mobile = useMobile();
-  const { lansering, supportEpost } = data;
+  const {
+    antallBarn,
+    coachNavn,
+    coachAvatarUrl,
+    coachEpost,
+    nesteBooking,
+    sisteMelding,
+    supportEpost,
+  } = data;
 
-  const skrivSupport = () => {
-    window.location.href = `mailto:${supportEpost}?subject=${encodeURIComponent(
-      "Spørsmål fra foreldre",
-    )}`;
-  };
+  if (antallBarn === 0) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div>
+          <Caps>Foreldreportal · Coach</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel mobile={mobile} em="coach">
+              Barnets
+            </Tittel>
+          </div>
+        </div>
+        <Kort>
+          <TomTilstand
+            icon="users"
+            title="Ingen barn er koblet ennå"
+            sub="Be spilleren sende en invitasjon, eller kontakt coachen din — så dukker kontaktinfo opp her."
+          />
+        </Kort>
+      </div>
+    );
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
@@ -74,7 +112,7 @@ export function ForelderCoachV2({ data }: { data: ForelderCoachData }) {
           <Caps>Foreldreportal · Coach</Caps>
           <div style={{ marginTop: 10 }}>
             <Tittel mobile={mobile} em="coach">
-              Dialog med
+              Barnets
             </Tittel>
           </div>
           <span
@@ -86,82 +124,100 @@ export function ForelderCoachV2({ data }: { data: ForelderCoachData }) {
               marginTop: 8,
             }}
           >
-            Se meldinger fra coachen og svar direkte. Private notater er ikke
-            synlige her.
+            Kontaktinfo og siste melding fra coachen. Private coach-notater er
+            ikke synlige her.
           </span>
         </div>
-        <StatusPill tone="info">{`Kommer ${lansering}`}</StatusPill>
+        <StatusPill tone="info">Lesemodus</StatusPill>
       </div>
 
-      {/* Kommer snart — forventningssetting + CTA */}
-      <Kort tint>
-        <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-          <span
-            style={{
-              width: 42,
-              height: 42,
-              borderRadius: 12,
-              background: T.panel3,
-              border: `1px solid ${T.border}`,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flex: "none",
-            }}
-          >
-            <Icon name="message-circle" size={20} style={{ color: T.lime }} />
-          </span>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                fontFamily: T.disp,
-                fontWeight: 700,
-                fontSize: mobile ? 17 : 19,
-                letterSpacing: "-0.01em",
-                color: T.fg,
-                lineHeight: 1.3,
-              }}
-            >
-              Coach-dialog kommer {lansering}
+      {/* Coach-kort */}
+      <Kort tint={!!coachNavn}>
+        {coachNavn ? (
+          <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+            <AvatarFoto src={coachAvatarUrl} navn={coachNavn} size={42} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div
+                style={{
+                  fontFamily: T.disp,
+                  fontWeight: 700,
+                  fontSize: mobile ? 17 : 19,
+                  letterSpacing: "-0.01em",
+                  color: T.fg,
+                  lineHeight: 1.3,
+                }}
+              >
+                {coachNavn}
+              </div>
+              <p
+                style={{
+                  fontFamily: T.ui,
+                  fontSize: 13,
+                  color: T.fg2,
+                  lineHeight: 1.6,
+                  margin: "8px 0 16px",
+                }}
+              >
+                {nesteBooking
+                  ? `Neste time: ${nesteBooking.serviceName} · ${nesteBooking.dato}`
+                  : "Ingen kommende time booket akkurat nå."}
+              </p>
+              {coachEpost && (
+                <Knapp
+                  icon="mail"
+                  full={mobile}
+                  onClick={() =>
+                    (window.location.href = mailto(
+                      coachEpost,
+                      "Spørsmål fra foreldre",
+                    ))
+                  }
+                >
+                  Kontakt {coachNavn.split(" ")[0]}
+                </Knapp>
+              )}
             </div>
-            <p
-              style={{
-                fontFamily: T.ui,
-                fontSize: 13,
-                color: T.fg2,
-                lineHeight: 1.6,
-                margin: "8px 0 16px",
-              }}
-            >
-              Du vil snart kunne lese delte meldinger fra coachen og svare
-              direkte. Private coach-notater forblir kun synlige for coach og
-              spiller.
-            </p>
-            <Knapp icon="mail" full={mobile} onClick={skrivSupport}>
-              Kontakt support i mellomtiden
-            </Knapp>
           </div>
-        </div>
+        ) : (
+          <TomTilstand
+            icon="user"
+            title="Ingen coach tilknyttet ennå"
+            sub="Coachen dukker opp her så snart barnet har booket en time."
+          />
+        )}
       </Kort>
 
-      {/* Slik blir det — forhåndsvisning av funksjonen (ingen data, kun forventning) */}
-      <Kort eyebrow="Slik blir det">
-        <Rad
-          leading={<Icon name="message-circle" size={16} style={{ color: T.fg2 }} />}
-          title="Delte meldinger fra coach"
-          sub="Les det coachen deler med deg om barnets utvikling"
-        />
-        <Rad
-          leading={<Icon name="send" size={16} style={{ color: T.fg2 }} />}
-          title="Svar direkte"
-          sub="Still spørsmål og svar coachen fra samme sted"
-        />
-        <Rad
-          leading={<Icon name="lock" size={16} style={{ color: T.fg2 }} />}
-          title="Personvern er ivaretatt"
-          sub="Private coach-notater forblir mellom coach og spiller"
-          last
-        />
+      {/* Siste melding fra coach */}
+      <Kort eyebrow="Siste melding fra coach">
+        {sisteMelding ? (
+          <Rad
+            leading={
+              <Icon name="message-circle" size={16} style={{ color: T.fg2 }} />
+            }
+            title={sisteMelding.title}
+            sub={sisteMelding.body ?? undefined}
+            meta={
+              <span
+                style={{
+                  fontFamily: T.mono,
+                  fontSize: 10.5,
+                  color: T.mut,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {sisteMelding.dato}
+              </span>
+            }
+            trailing={null}
+            last
+          />
+        ) : (
+          <TomTilstand
+            icon="message-circle"
+            title="Ingen meldinger fra coach ennå"
+            sub="Når coachen sender noe, dukker det opp her."
+          />
+        )}
       </Kort>
 
       {/* Personvern-note — stille påminnelse */}
@@ -169,6 +225,29 @@ export function ForelderCoachV2({ data }: { data: ForelderCoachData }) {
         Private coach-notater vises aldri i foreldreportalen. Du ser kun det
         coachen aktivt deler.
       </InnsiktChip>
+
+      {/* Support-fallback */}
+      <Kort eyebrow="Trenger du hjelp?">
+        <Rad
+          leading={<Icon name="help-circle" size={16} style={{ color: T.fg2 }} />}
+          title="Kontakt support"
+          sub={supportEpost}
+          trailing={
+            <Knapp
+              icon="mail"
+              onClick={() =>
+                (window.location.href = mailto(
+                  supportEpost,
+                  "Spørsmål fra foreldre",
+                ))
+              }
+            >
+              Skriv
+            </Knapp>
+          }
+          last
+        />
+      </Kort>
     </div>
   );
 }
