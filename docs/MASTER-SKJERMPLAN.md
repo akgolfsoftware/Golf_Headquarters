@@ -379,7 +379,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · **Ny spiller** ★ | `/admin/spillere/ny` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Allerede v2 (`AdminNySpillerV2`, 4-stegs Veiviser) — masterplan-radene var stale, rettet 2026-07-14 |
 | **Spiller-detalj** ★ | `/admin/spillere/[id]` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
 | · **Analyse (coach-dybde)** = golfdata elite-visning (v13, bølge 1 2026-07-04) ★ | `/admin/spillere/[id]/analyse` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Profil | `/admin/spillere/[id]/profil` | – | --- | ✓ | ~ | ~ | ~ |
+| · **Full profil** ★ | `/admin/spillere/[id]/profil` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminSpillerFullProfilV2`, AgencyOS Bølge 3.28) — samme `inviterForelderForSpiller`-kontrakt (invite-modal → `BunnArk`). NB: annen skjerm enn `/admin/spillere/[id]` (spiller-dashboardet, `AdminSpillerProfilV2`) — like navn, ulike ruter. **Funn (bevart, ikke fikset):** «Spiller-DNA»-radar + cohort-snitt er hardkodede plassholdertall (`dna` faller til `{78,82,74,60,65}`, `cohort` er alltid `{70,68,72,65,70}` — aldri beregnet fra ekte data), og aktive mål sin `ProgressRing` er hardkodet `pct={50}` uansett faktisk fremgang — pre-eksisterende fabrikasjon i legacy, uendret her. |
 | · **Workbench (coach-i-spiller)** ★ | `/admin/spillere/[id]/workbench` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-12: månedsvisning (ekte grid) + drag-and-drop (blokk→dag, bibliotek→klokkeslett) · 2026-07-13: samme mobil-flyt som spiller-Workbench (BunnArk, årsplan-liste, MndNivaaMobil) |
 | · Plan-detalj | `/admin/spillere/[id]/plan/[planId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Fremgang (trening vs SG) † | `/admin/spillere/[id]/fremgang` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
@@ -919,7 +919,17 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   (`AdminWagrImportV2`) — samme `WagrSnapshot`-matchede-spillere-visning + ekte
   `synkWagrNaa`-server-action (uendret, samme toast-oppsummering). Med dette er hele
   Talent-klyngen portet UNNTATT sammenligning (avhenger av delt v10-komponent, se over,
-  krever egen beslutning).
+  krever egen beslutning). **3.28** Spiller · Full profil (`/admin/spillere/[id]/profil`) →
+  `AdminSpillerFullProfilV2` — samme Prisma-modell (personalia, foreldre/`ParentRelation`,
+  aktive mål, skader/permisjoner, coach-vurdering) + samme `inviterForelderForSpiller`-
+  objekt-kontrakt (invite-modalen ble til en `BunnArk`). Navnekollisjon oppdaget og løst
+  underveis: `AdminSpillerProfilV2.tsx` fantes alt fra 13. juli som en HELT ANNEN, aktiv
+  komponent (spiller-dashboardet på `/admin/spillere/[id]`) — Write-verktøyets
+  les-før-skriv-sperre stoppet et utilsiktet overskriv; den nye komponenten fikk i stedet
+  navnet `AdminSpillerFullProfilV2`, ingen data gikk tapt. Fant en pre-eksisterende
+  fabrikasjon (bevart, ikke fikset — se tabellraden): «Spiller-DNA»-radar/cohort-snitt og
+  aktive måls `ProgressRing` er hardkodede plassholdertall i legacy, aldri beregnet fra
+  ekte data. Verifisert: tsc 0 feil, ESLint grønt.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
