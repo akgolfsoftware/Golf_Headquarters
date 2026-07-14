@@ -175,6 +175,7 @@ export function MegV2({ data }: { data: MegData }) {
     { ic: "users", l: "Foresatte", sub: "Registrerte foreldre/verger", href: "/portal/meg/foreldre" },
     { ic: "calendar-plus", l: "Book coachtime", sub: "Velg tjeneste, coach og tid", href: "/portal/booking" },
     { ic: "credit-card", l: "Abonnement", sub: tierSub(tier), href: "/portal/meg/abonnement" },
+    { ic: "settings", l: "Innstillinger", sub: "Varsler, personvern, anlegg, språk", href: "/portal/meg/innstillinger" },
     { ic: "bell", l: "Varsler", sub: "Push og e-post", href: "/portal/meg/innstillinger/varsler" },
     { ic: "shield", l: "Personvern og samtykke", href: "/portal/meg/innstillinger/personvern" },
   ];
