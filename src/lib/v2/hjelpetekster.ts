@@ -140,6 +140,11 @@ const RAW = {
     forklaring:
       "Et automatisk beregnet tall for spilleren, som SG totalt, HCP-trend eller streak — typen står i teksten rett over tallet. Signalet varsler deg om noe har endret seg, det er ikke en dom i seg selv.",
   },
+  tourBaseline: {
+    tittel: "Tour-baseline",
+    forklaring:
+      "PGA Tour-snittet for denne SG-kategorien, satt til 0,0. Et positivt tall betyr at spilleren vinner slag mot Tour-nivå, negativt betyr at spilleren taper slag mot det samme nivået.",
+  },
 } as const satisfies Record<string, HjelpTekst>;
 
 export type HjelpNokkel = keyof typeof RAW;

@@ -399,7 +399,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | **· Kohort** ★ | `/admin/talent/kohort` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTalentKohortV2`, AgencyOS Bølge 3.20) — samme `TalentTracking`-aggregering (snitt-radar 5 akser + 90-dagers progresjon per nivå U10–Senior) |
 | **· Region** ★ | `/admin/talent/region` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTalentRegionV2`, AgencyOS Bølge 3.21) — samme region-aggregering + forenklet Norge-kart-stub (SVG, samme geometri, v2-tokens for farger) |
 | **· Ressurser** ★ | `/admin/talent/ressurser` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTalentRessurserV2`, AgencyOS Bølge 3.22) — samme `TalentRessurs`-modell, filter-chips (kategori/nivå/fokus via URL), ekte FormData `leggTilRessurs`-action (ADMIN) med native ukontrollerte felt |
-| · Sammenligning | `/admin/talent/sammenligning` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
+| · **Sammenligning** ★ | `/admin/talent/sammenligning` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTalentSammenligningV2`, AgencyOS Bølge 3.37, på Anders' eksplisitte ønske) — v10-komponenten `TalentSammenligning` viste seg å være enekonsument (ingen andre skjermer importerte den), så den ble erstattet, ikke bevart ved siden av. **Reell databug fikset, ikke bare re-skinnet:** loaderen (`loadMultiCompare`) har alltid beregnet ekte per-spiller SG-verdier, ekte kohort-`sgTotal` og et utledet verdikt — men `map-compare-data.ts` og v10-komponenten kastet dem bort og viste «—»/tomtilstand UANSETT hvor mye ekte data som fantes. v2-versjonen viser de ekte tallene (best-badge per metrikk, kohort-søyler tegnet mot faktisk verdi på −2,0→+2,0-skalaen, verdikt-setning øverst). «Endre utvalg» var også dødt i legacy (lenket til seg selv uten `?ids=`) — erstattet med en ekte `BunnArk`-spillervelger. Ny hjelpetekst-nøkkel `tourBaseline` lagt til `hjelpetekster.ts`; nye ikoner `user-plus` i v2-ikonkartet. Med dette er HELE `legacy-portering-prioritet.md`-lista ferdig portet. |
 | **· WAGR-benchmark** ★ | `/admin/talent/wagr-benchmark` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminWagrBenchmarkV2`, AgencyOS Bølge 3.23) — samme `WagrSnapshot`-modell (topp 5 globalt + topp 5 norske), samme `slettWagrSnapshot`-server-action (delt fra wagr-import) |
 | **· WAGR-import** ★ | `/admin/talent/wagr-import` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminWagrImportV2`, AgencyOS Bølge 3.24) — samme `WagrSnapshot`-modell + ekte `synkWagrNaa`-server-action (uendret) |
 
@@ -654,7 +654,7 @@ Designeren leverte 44 ferdige skjermbilder. De fleste er nå bygget i forhåndsv
 | `pl-turnering.png` | `/portal/tren/turneringer` | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
 | `fo-barn.png` (forelder ser barn) | `/forelder/barn` | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
 | `ag-caddie.png` (coach AI-chat) | `/admin/agencyos/caddie` | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
-| `ag-compare.png` (sammenlign spillere) | `/admin/talent/sammenligning` | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
+| `ag-compare.png` (sammenlign spillere) | `/admin/talent/sammenligning` | Stale — v2-portet 2026-07-14 (Bølge 3.37) med ekte data (`loadMultiCompare`), ekte adresse, se raden under Talent-seksjonen. |
 | `ag-compliance.png` | `/admin/analysere/compliance` | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
 | `ag-drift.png` (drift/anlegg) | `/admin/anlegg` / drift-sidene | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
 | `ag-kalender.png` | `/admin/kalender` | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
@@ -989,6 +989,30 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   OG hele denne kveldens AgencyOS-gjennomgang ferdig portet, bortsett fra Talent · Sammenligning
   (bevisst utsatt, venter på v10-komponent-beslutning — se `plans/legacy-portering-prioritet.md`).
   Verifisert: tsc 0 feil, ESLint grønt.
+
+  **Bølge 3.37** (Anders ba eksplisitt om denne etter kveldens oppsummering): Talent ·
+  Sammenligning portet til v2 likevel. Undersøkelse viste at v10-komponenten
+  (`TalentSammenligning`, `src/components/admin/talent/sammenligning.tsx`) var enekonsument —
+  ingen andre skjermer importerte den, så «delt v10-komponent på tvers»-bekymringen fra tidligere
+  i kveld var ikke reell; den ble erstattet direkte, ikke bevart ved siden av v2-versjonen.
+  **Reell databug funnet og fikset i samme slag** (ikke bare re-skinnet): `loadMultiCompare`
+  (`src/lib/admin-compare/multi-compare-data.ts`, uendret) har alltid beregnet ekte per-spiller
+  SG-verdier (`metric.values`), ekte kohort-`sgTotal` per spiller og et utledet verdikt-utsagn —
+  men `map-compare-data.ts` (nå slettet) mappet ALDRI disse videre, og v10-komponenten hardkodet
+  «—»/«ingen data»/senterlinje-uten-søyle for hver eneste celle uansett props (den var en pixel-
+  port av en design-fasit som bevisst viste en tom-tilstand, og ingen fasit fantes for den fylte
+  tilstanden). Coachen kunne dermed ALDRI se et faktisk sammenligningstall, uansett hvor mye SG-
+  data spillerne hadde. `AdminTalentSammenligningV2` viser nå de ekte tallene: per-spiller-verdier
+  med best-badge per metrikk (høyest/lavest avhengig av `higherIsBetter`), kohort-søyler tegnet
+  mot faktisk `sgTotal` på en −2,0→+2,0-skala (henger til høyre/venstre fra senterlinjen etter
+  fortegn), og verdikt-setningen som et fremhevet lime-varsel øverst. Pyramide-panelet (tidligere
+  alltid «ingen treningsplaner»-tekst uansett data) viser nå ekte økt-antall per akse per spiller
+  som grupperte søyler. «Endre utvalg»-knappen var også død i legacy (lenket til seg selv uten
+  `?ids=`, ingen faktisk velger) — erstattet med en ekte `BunnArk`-spillervelger (søk + inntil 4
+  avkryssede spillere, samme idiom som Tester · Tildel). Ny hjelpetekst-nøkkel `tourBaseline`
+  lagt til `src/lib/v2/hjelpetekster.ts`; nye ikoner `user-plus` i v2-ikonkartet. Verifisert:
+  tsc 0 feil, ESLint grønt. Med denne er HELE `plans/legacy-portering-prioritet.md`-lista ferdig
+  portet — ingen gjenstående punkter.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/

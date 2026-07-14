@@ -36,11 +36,14 @@ tilstander (redirect), trackman, videoer, opptak, board (redirect), reach, kommu
 workspace-oppgave-detalj, teknisk-plan-detalj, lag-snitt, foresporsler, godkjenninger-detalj,
 approvals-redirects, tester-klyngen (hub/fasiter/foreslåtte/tildel), spiller-full-profil,
 turneringer (hub/detalj/ny/dubletter) — se `docs/MASTER-SKJERMPLAN.md` Endringslogg for detaljer
-per skjerm. **Gjenstår i P3:** kun **Talent · Sammenligning** (`/admin/talent/sammenligning`) —
-bevisst IKKE portet, avhenger av delt v10-komponent (`TalentSammenligning`,
-`src/components/admin/talent/`) utenfor golfdata/v13-generasjonen; krever egen beslutning om
-enten å bygge en ny v2-versjon av selve sammenligningskomponenten, eller la den midlertidig
-beholde v10-stil inni en v2-ramme.
+per skjerm. **Talent · Sammenligning** (`/admin/talent/sammenligning`) portet 2026-07-14 (Bølge
+3.37, på Anders' eksplisitte beskjed) — `TalentSammenligning`-komponenten viste seg å være
+enekonsument, ikke en reell delt v10-komponent, så den ble erstattet direkte. Samtidig fikset:
+loaderen beregnet alltid ekte per-spiller SG-verdier og kohort-tall, men mapperen og v10-
+komponenten kastet dem bort og viste tomtilstand uansett — v2-versjonen viser nå de ekte tallene.
+Se `docs/MASTER-SKJERMPLAN.md` Endringslogg (Bølge 3.37) for full detalj.
+
+**MED DETTE ER HELE LISTEN (P1 + P2 + P3) FERDIG PORTET. Ingen gjenstående punkter.**
 
 ## Dobbelt-adresser (redirect) — verifisert 2026-07-13: allerede fullstendig ryddet
 

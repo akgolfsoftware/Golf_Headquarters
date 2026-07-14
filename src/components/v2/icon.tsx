@@ -17,7 +17,7 @@ import {
   RefreshCw, GitCompare, AlertOctagon, GitPullRequest, Loader2, LineChart,
   Cog, ArrowUp, Wrench,
   Inbox, CalendarCheck, Columns3, CirclePlus,
-  Mic, Pause, Square, BatteryLow, Power, Link2, Save,
+  Mic, Pause, Square, BatteryLow, Power, Link2, Save, UserPlus,
   type LucideIcon,
 } from "lucide-react";
 
@@ -149,6 +149,7 @@ const MAP: Record<string, LucideIcon> = {
   "power": Power,
   "link-2": Link2,
   "save": Save,
+  "user-plus": UserPlus,
 };
 
 export interface IconProps {
