@@ -451,7 +451,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | ~~· Anlegg-detalj~~ | `/admin/anlegg/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | Tilgjengelighet | `/admin/availability` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | Kapasitet | `/admin/kapasitet` | – | --- | ✓ | ~ | ~ | ~ |
-| Tjenester/priser | `/admin/services` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
+| **Tjenester/priser** ★ | `/admin/services` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTjenesterV2`, AgencyOS Bølge 2.1) — samme `createService`/`updateService`/`deleteService`-kontrakt, ny/rediger som delt `BunnArk`-skjema |
 | ~~Fasiliteter (alt.)~~ | `/admin/facilities` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | ~~· Fasilitet-detalj~~ | `/admin/facilities/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | ~~Lokasjoner~~ | `/admin/locations` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
