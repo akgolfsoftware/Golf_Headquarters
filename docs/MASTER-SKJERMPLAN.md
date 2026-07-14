@@ -495,7 +495,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Organisasjon-hub | `/admin/organisasjon` | – | --- | ✓ | ~ | ~ | ~ |
-| Klubb-innstillinger | `/admin/klubb/innstillinger` | – | --- | ✓ | ~ | ~ | ~ |
+| **Klubb-innstillinger** ★ | `/admin/klubb/innstillinger` | – | ✓✓✓ | ✓ | ✓ | ✓ | ~ | 2026-07-14: v2 (`AdminKlubbInnstillingerV2`, AgencyOS Bølge 3.14) — samme `addClub`/`updateClubSettings`/`lagreClubSettings`/`removeClub`-kontrakt, `BunnArk` i stedet for native `<dialog>`. **Funker ikke fullt:** «Detaljer»-lenken på hvert klubbkort peker til `/admin/klubb/[id]/rediger`, en rute som ikke finnes (verifisert, samme i legacy) — bevart uendret, meldt for egen fiks-økt (se også AI Workspace-raden lenger ned med samme type funn). |
 | **Integrasjoner** ★ | `/admin/integrasjoner` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminIntegrasjonerV2`, AgencyOS Bølge 3.1) — samme statuskilder (Prisma + env-sjekk), ren visning |
 | Innstillinger | `/admin/settings` | – | –✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-14: IKKE portet i Bølge 2 — 1727 linjer på tvers av 13 filer (kalender/security/tilgang-underflater). Trenger egen mini-plan mot faktisk tab-struktur, ikke en hastig omskriving samme natt. |
 | · API | `/admin/settings/api` | – | --- | ✓ | ~ | ~ | ~ |
@@ -861,7 +861,14 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   hub, Coach-workbench, Innsikt-hub (`/admin/analysere`), Caddie og en duplikat Tilstander-rad
   er alle bekreftet rene `redirect()`-stubber; og Økonomi-sammenslåingen fra Bølge 2 (flagget som
   uavklart) viste seg allerede løst i kode — `/admin/okonomi` redirecter til den ekte v2-siden
-  `/admin/agencyos/okonomi` (`AdminOkonomiV2`).
+  `/admin/agencyos/okonomi` (`AdminOkonomiV2`). **3.13** AI Workspace (`/admin/ai`) — 3 faner
+  (kode-sesjoner/chat/agenter 24/7), «Apply + log» er nå en ekte server action i stedet for
+  legacy sin inline per-rad-closure. Fant en dødrute (`/admin/ai/run`, kode-sesjon-skjemaets
+  `action=`) som ikke finnes i koden — allerede broken i legacy, bevart uendret og meldt i
+  tabellen, ikke stille fikset. **3.14** Klubb-innstillinger (`AdminKlubbInnstillingerV2`) —
+  multi-club org-innstillinger + klubbkort, to `BunnArk`-skjemaer (org-info, klubb ny/rediger)
+  erstatter native `<dialog>`-elementene; samme funn-mønster som 3.13 — «Detaljer»-lenken på
+  klubbkortet peker til en rute som ikke finnes (`/admin/klubb/[id]/rediger`), bevart uendret.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/

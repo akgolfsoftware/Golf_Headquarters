@@ -17,7 +17,7 @@ import {
   RefreshCw, GitCompare, AlertOctagon, GitPullRequest, Loader2, LineChart,
   Cog, ArrowUp, Wrench,
   Inbox, CalendarCheck, Columns3, CirclePlus,
-  Mic, Pause, Square, BatteryLow,
+  Mic, Pause, Square, BatteryLow, Power,
   type LucideIcon,
 } from "lucide-react";
 
@@ -146,6 +146,7 @@ const MAP: Record<string, LucideIcon> = {
   "pause": Pause,
   "square": Square,
   "battery-low": BatteryLow,
+  "power": Power,
 };
 
 export interface IconProps {
