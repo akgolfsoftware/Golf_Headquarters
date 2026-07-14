@@ -17,7 +17,7 @@ import {
   type YearWindowV2,
   type SlotRadV2,
 } from "@/components/admin/v2/AdminTilgjengelighetV2";
-import { CalendarSyncSection } from "@/app/admin/(legacy)/settings/calendar/calendar-sync-section";
+import { CalendarSyncSectionV2 } from "@/components/admin/v2/AdminInnstillingerKalenderV2";
 
 export const dynamic = "force-dynamic";
 
@@ -146,7 +146,7 @@ export default async function AvailabilityPage({ searchParams }: { searchParams:
         ukeVinduer={ukeVinduer}
         aarsVinduer={aarsVinduer}
         slots={slotRader}
-        calendarSync={<CalendarSyncSection userId={user.id} />}
+        calendarSync={<CalendarSyncSectionV2 userId={user.id} />}
       />
     </V2Shell>
   );

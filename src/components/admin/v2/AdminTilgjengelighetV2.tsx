@@ -12,15 +12,11 @@
  * legacy, kun re-skinnet til v2-tokens. Bekreft-popover og rediger/opprett-
  * skjema bruker `BunnArk` i stedet for native `<dialog>`/fixed-div.
  *
- * MERK (bevisst, ikke en feil): `CalendarSyncSection` (fra `(legacy)/
- * settings/calendar/`) er IKKE portet til v2 ennå — den er en async
- * server-komponent og kan derfor ikke importeres direkte i denne klient-
- * komponenten; `page.tsx` render'er den og sender resultatet inn som
- * `calendarSync`-prop (samme mønster som Next.js krever for server-
- * komponenter inni klient-komponenter). Innholdet vil se visuelt
- * inkonsistent ut inni en ellers v2-skjerm. Tilgjengelighet og Innstillinger
- * deler denne komponenten og bør porte den sammen i én dedikert økt (se
- * `plans/legacy-portering-prioritet.md`), ikke duplisere den her.
+ * `calendarSync`-prop: `page.tsx` render'er `CalendarSyncSectionV2` (v2,
+ * AgencyOS Bølge 3.36, delt med `/admin/settings/calendar`) og sender
+ * resultatet inn som denne proppen — den er en async server-komponent og
+ * kan derfor ikke importeres direkte i denne klient-komponenten (standard
+ * Next.js-mønster for server-komponenter inni klient-komponenter).
  */
 
 import Link from "next/link";

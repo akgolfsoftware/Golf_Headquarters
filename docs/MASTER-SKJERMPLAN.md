@@ -449,7 +449,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Ny booking | `/admin/bookinger/ny` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v2 2026-07-12: portet ut av legacy, V2Shell + NyBookingWizard; inngang fra kalender + bookinger |
 | **Anlegg** ★ | `/admin/anlegg` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminAnleggV2`, AgencyOS Bølge 2.2) — samme `createLocation`-kontrakt; `FacilityForm` (rediger/slett fasilitet) var allerede dødt/ubrukt kode i legacy-siden også, IKKE portet (ingen ny funksjon lagt til utover det som faktisk var koblet) |
 | ~~· Anlegg-detalj~~ | `/admin/anlegg/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
-| **Tilgjengelighet** ★ | `/admin/availability` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTilgjengelighetV2`, AgencyOS Bølge 3.31) — samme tre visninger (måned-grid, drag-basert uke-grid via pointer events, år-Gantt) og samme `addSlot`/`updateSlot`/`deleteSlot`-kontrakt (uendret, inkl. no-dobbeltsted-vernet). Bekreft-popover og rediger/opprett-skjema bruker `BunnArk` i stedet for native `<dialog>`/fixed-div. **Ikke portet:** `CalendarSyncSection`-seksjonen forblir uendret legacy-stil (async server-komponent, sendt inn som `calendarSync`-slot fra `page.tsx`) — vil se visuelt inkonsistent ut til den portes sammen med Innstillinger i en egen økt (se `plans/legacy-portering-prioritet.md`). |
+| **Tilgjengelighet** ★ | `/admin/availability` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTilgjengelighetV2`, AgencyOS Bølge 3.31) — samme tre visninger (måned-grid, drag-basert uke-grid via pointer events, år-Gantt) og samme `addSlot`/`updateSlot`/`deleteSlot`-kontrakt (uendret, inkl. no-dobbeltsted-vernet). Bekreft-popover og rediger/opprett-skjema bruker `BunnArk` i stedet for native `<dialog>`/fixed-div. Google Calendar-seksjonen er `CalendarSyncSectionV2` (Bølge 3.36, sendt inn som `calendarSync`-slot fra `page.tsx`) — nå også v2, delt uendret med `/admin/settings/calendar`. |
 | Kapasitet (redirect) | `/admin/kapasitet` | — | — | ✓ | ✓ | – | ✓ | Slått sammen med `/admin/bookinger` (Anders 2026-06-22) — ren `redirect()`-stubb. Kapasitet-heatmap + CSV-eksport bor i bookinger-dashbordet. Ingenting å portere. |
 | **Tjenester/priser** ★ | `/admin/services` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTjenesterV2`, AgencyOS Bølge 2.1) — samme `createService`/`updateService`/`deleteService`-kontrakt, ny/rediger som delt `BunnArk`-skjema |
 | ~~Fasiliteter (alt.)~~ | `/admin/facilities` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
@@ -500,7 +500,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | **Integrasjoner** ★ | `/admin/integrasjoner` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminIntegrasjonerV2`, AgencyOS Bølge 3.1) — samme statuskilder (Prisma + env-sjekk), ren visning |
 | **Innstillinger (hub)** ★ | `/admin/settings` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminInnstillingerV2`, AgencyOS Bølge 3.32) — samme tre faner (Organisasjon/Team & roller/Tilgang, `?tab=`), samme Prisma-aggregering. Security (3.33), Tilgang (3.34) og API (3.35) er også portet — se egne rader. **Gjenstår:** `calendar` (Google Calendar-sync, deler `CalendarSyncSection` med `/admin/availability`). |
 | · **API** ★ | `/admin/settings/api` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminInnstillingerApiV2`, AgencyOS Bølge 3.35) — samme `ApiKey`-modell og `createApiKey`/`revokeApiKey`-kontrakt, uendret. Opprett-modalen er `BunnArk` (samme to-stegs flyt: skjema → engangsvisning av hemmeligheten). |
-| · Kalender | `/admin/settings/calendar` | – | --- | ✓ | ~ | ~ | ~ |
+| · **Kalender** ★ | `/admin/settings/calendar` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`CalendarSyncSectionV2` + `AdminInnstillingerKalenderKlientV2`, AgencyOS Bølge 3.36) — samme `googleCalendarConnection`/`subscriptions`-modell og samme `oppdaterSubscriptions`/`refreshCalendarList`/`disconnectGoogleCalendar`-kontrakt. `CalendarSyncSectionV2` er en async server-komponent, delt uendret med `/admin/availability` (samme mønster som før, nå begge v2). Med dette er HELE Innstillinger-klyngen (hub/api/calendar/security/tilgang) portet til v2. |
 | · **Sikkerhet** ★ | `/admin/settings/security` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminInnstillingerSikkerhetV2`, AgencyOS Bølge 3.33) — samme innhold (kontooversikt, 2FA-oppsett via delt `Setup2FA`, passord-lenke, plassholder for aktive økter). |
 | · **Tilgang** ★ | `/admin/settings/tilgang` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminInnstillingerTilgangV2`, AgencyOS Bølge 3.34) — samme read-only CBAC-matrise (rolle × capability via `@/lib/auth/cbac`). |
 | **Team** ★ | `/admin/team` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Allerede v2 (`AdminTeamV2`) — masterplan-raden var stale, rettet 2026-07-14 |
@@ -977,7 +977,18 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   stegs flyt: navn+scopes-skjema → engangsvisning av hemmeligheten). Gjenstår i hele
   AgencyOS-gjennomgangen er nå KUN `/admin/settings/calendar` (deler `CalendarSyncSection` med
   Tilgjengelighet) og Talent · Sammenligning (venter på v10-beslutning). Verifisert: tsc 0 feil,
-  ESLint grønt.
+  ESLint grønt. **Bølge 3.36**: `/admin/settings/calendar` portet — `CalendarSyncSectionV2`
+  (async server-komponent, `AdminInnstillingerKalenderV2.tsx`) + klient-delen
+  (`SubscriptionsFormV2`/`DisconnectKnappV2`, `AdminInnstillingerKalenderKlientV2.tsx`, splittet i
+  eget "use client"-fil fordi sync-seksjonen selv må forbli en async server-komponent). Samme
+  `googleCalendarConnection`/`subscriptions`-modell og samme `oppdaterSubscriptions`/
+  `refreshCalendarList`/`disconnectGoogleCalendar`-kontrakt. **`/admin/availability` oppdatert i
+  samme commit** til å bruke `CalendarSyncSectionV2` i stedet for legacy-komponenten — den
+  tidligere flaggede visuelle inkonsistensen (se Bølge 3.31-notatet) er dermed løst, ikke lenger
+  bare dokumentert. Lagt til `save`-ikon i v2-ikonkartet. Med dette er HELE Innstillinger-klyngen
+  OG hele denne kveldens AgencyOS-gjennomgang ferdig portet, bortsett fra Talent · Sammenligning
+  (bevisst utsatt, venter på v10-komponent-beslutning — se `plans/legacy-portering-prioritet.md`).
+  Verifisert: tsc 0 feil, ESLint grønt.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
