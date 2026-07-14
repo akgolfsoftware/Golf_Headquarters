@@ -469,7 +469,9 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Compliance | `/admin/analysere/compliance` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | Stall-analyse | `/admin/analyse` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
 | ~~Analytics~~ | `/admin/analytics` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
-| Lag-snitt | `/admin/lag-snitt` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
+| **Lag-snitt** ★ | `/admin/lag-snitt` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminLagSnittV2`, AgencyOS Bølge 3.4) — samme pyramidefordelings-datamodell, akse-fargede barer |
+| **Forespørsler** ★ | `/admin/foresporsler` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminForesporslerV2`, AgencyOS Bølge 3.4) — samme `SessionRequest`/`markerSomPlanlagt`/`avslaaForespørsel`-kontrakt |
+| Tilstander (redirect) | `/admin/tilstander` | — | — | ✓ | ✓ | – | ✓ | Avviklet 2026-07-12 (B7) — ren `redirect()`-stubb til `/admin/gjennomfore`. Var en statisk designkatalog, ikke en produktflate. Ingenting å portere. |
 | · Fasiter (autosync) | `/admin/tester/benchmarks` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | Tester (på tvers) | `/admin/tester` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | ~~· Test-detalj~~ | `/admin/tester/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
