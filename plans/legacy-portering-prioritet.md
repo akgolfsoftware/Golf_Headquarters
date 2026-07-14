@@ -17,20 +17,23 @@ oppdateres i samme commit (LÅST regel). Ny booking ble portet 2026-07-12.
 
 ## P2 — ukentlig bruk
 
-Status 2026-07-14 sent kveld: Tjenester og priser (2.1), Anlegg (2.2), Kapasitet (redirect,
-verifisert), Stall-oversikt (redirect, verifisert), Grupper-timeplan (var alt v2, ikke legacy),
-Økonomi (redirect til alt-portert `/admin/agencyos/okonomi`, verifisert) — **alle ferdige eller
-bekreftet ikke-legacy**. Gjenstår KUN to klynger, begge bevisst IKKE portet i kveld:
+Status 2026-07-14 natt: Tjenester og priser (2.1), Anlegg (2.2), Kapasitet (redirect, verifisert),
+Stall-oversikt (redirect, verifisert), Grupper-timeplan (var alt v2, ikke legacy), Økonomi
+(redirect til alt-portert `/admin/agencyos/okonomi`, verifisert), **Tilgjengelighet** (Bølge 3.31
+— se under) — **alle ferdige eller bekreftet ikke-legacy**. Gjenstår KUN:
 
-| Skjerm | Rute | Hvorfor ikke i kveld |
+| Skjerm | Rute | Status |
 |---|---|---|
-| Innstillinger | `/admin/settings` (+ `api`/`calendar`/`security`/`tilgang`) | ~1730 linjer fordelt på 5 underskjermer (API-nøkler + modal, Google Calendar-sync m/ egen sync-seksjon, sikkerhet, tilgangsstyring). `settings/calendar/calendar-sync-section.tsx` importeres OGSÅ direkte av `availability/page.tsx` — de to klyngene er koblet, bør planlegges/porteres sammen, ikke separat. |
-| Tilgjengelighet | `/admin/availability` | ~1085 linjer: måned/uke(drag-and-drop)/år(Gantt)-trippel-visning + `slot-form.tsx` (CRUD-modal m/ gjentakelse) + samme `CalendarSyncSection` som over. Drag-and-drop-interaksjonen i uke-grid og avhengigheten til Innstillinger gjør dette til en «ikke-triviell»-oppgave per CLAUDE.md — trenger egen Plan Mode-økt mot faktisk kode, ikke en rushet nattlig port. |
+| Innstillinger | `/admin/settings` (+ `api`/`calendar`/`security`/`tilgang`) | IKKE portet — ~1730 linjer fordelt på 5 underskjermer (API-nøkler + modal, Google Calendar-sync m/ egen sync-seksjon, sikkerhet, tilgangsstyring). |
 
-Begge bør tas i SAMME økt (felles `CalendarSyncSection`-beslutning: porte den én gang til v2 og
-gjenbruke, ikke duplisere). Anbefalt neste steg: egen plan-mode-gjennomgang av disse to klyngene
-sammen, ikke en fortsettelse av det bølgevise «én skjerm per commit»-mønsteret som resten av
-listen har fulgt.
+**Rettelse:** Tilgjengelighet ble likevel portet (Bølge 3.31) — ved nærmere lesing var kalender-
+triplet (måned/uke-drag/år-Gantt) + `slot-form.tsx` ren, isolert UI-logikk uten arkitektur-risiko,
+samme vurdering som snudde på «Ny turnering»-veiviseren. Eneste reelle hinder var at
+`CalendarSyncSection` er en ASYNC SERVER-KOMPONENT og ikke kan importeres direkte i en klient-
+komponent — løst ved at `page.tsx` render'er den og sender den inn som en `calendarSync`-slot-
+prop til klient-komponenten (standard Next.js-mønster). `CalendarSyncSection`-INNHOLDET selv er
+bevisst IKKE re-skinnet til v2 — den porteres sammen med Innstillinger når den økten kommer, ikke
+duplisert. Se `docs/MASTER-SKJERMPLAN.md` Endringslogg (Bølge 3.31) for full detalj.
 
 ## P3 — sjelden/admin
 

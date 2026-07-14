@@ -449,7 +449,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Ny booking | `/admin/bookinger/ny` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v2 2026-07-12: portet ut av legacy, V2Shell + NyBookingWizard; inngang fra kalender + bookinger |
 | **Anlegg** ★ | `/admin/anlegg` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminAnleggV2`, AgencyOS Bølge 2.2) — samme `createLocation`-kontrakt; `FacilityForm` (rediger/slett fasilitet) var allerede dødt/ubrukt kode i legacy-siden også, IKKE portet (ingen ny funksjon lagt til utover det som faktisk var koblet) |
 | ~~· Anlegg-detalj~~ | `/admin/anlegg/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
-| Tilgjengelighet | `/admin/availability` | – | –✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-14: IKKE portet i Bølge 2 — 1249 linjer på tvers av 3 distinkte kalendervisninger (måned-grid, drag-basert uke-grid, år-Gantt) + delt Google Calendar-sync-seksjon. Samme størrelsesorden/risiko som plan-mal-editoren — trenger egen mini-plan, ikke en hastig omskriving samme natt. |
+| **Tilgjengelighet** ★ | `/admin/availability` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTilgjengelighetV2`, AgencyOS Bølge 3.31) — samme tre visninger (måned-grid, drag-basert uke-grid via pointer events, år-Gantt) og samme `addSlot`/`updateSlot`/`deleteSlot`-kontrakt (uendret, inkl. no-dobbeltsted-vernet). Bekreft-popover og rediger/opprett-skjema bruker `BunnArk` i stedet for native `<dialog>`/fixed-div. **Ikke portet:** `CalendarSyncSection`-seksjonen forblir uendret legacy-stil (async server-komponent, sendt inn som `calendarSync`-slot fra `page.tsx`) — vil se visuelt inkonsistent ut til den portes sammen med Innstillinger i en egen økt (se `plans/legacy-portering-prioritet.md`). |
 | Kapasitet (redirect) | `/admin/kapasitet` | — | — | ✓ | ✓ | – | ✓ | Slått sammen med `/admin/bookinger` (Anders 2026-06-22) — ren `redirect()`-stubb. Kapasitet-heatmap + CSV-eksport bor i bookinger-dashbordet. Ingenting å portere. |
 | **Tjenester/priser** ★ | `/admin/services` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTjenesterV2`, AgencyOS Bølge 2.1) — samme `createService`/`updateService`/`deleteService`-kontrakt, ny/rediger som delt `BunnArk`-skjema |
 | ~~Fasiliteter (alt.)~~ | `/admin/facilities` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
@@ -946,7 +946,20 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   eksisterende `Veiviser`-komponentet (samme idiom som «Ny spiller»); chip-velgere (format/tee/
   HCP/viktighet) er en lokal `Pill`, samme mønster som `DrillSkjemaFelter.tsx`. Med dette er hele
   Turneringer-klyngen (hub/detalj/ny/dubletter) portet til v2. Verifisert: tsc 0 feil, ESLint
-  grønt.
+  grønt. **Rettelse/Bølge 3.31** (samme kveld, etter fornyet vurdering — se Bølge 2-notatet
+  over): Tilgjengelighet ble likevel portet i kveld. Ved nærmere lesing var kalender-triplet
+  (måned-grid/drag-uke-grid/år-Gantt) og `slot-form.tsx` ren, isolert UI-logikk uten skjult
+  arkitektur-risiko — samme vurdering som snudde på «Ny turnering»-veiviseren. Eneste reelle
+  hinder var at `CalendarSyncSection` er en ASYNC SERVER-KOMPONENT og derfor ikke kan importeres
+  direkte i en klient-komponent; løst ved at `page.tsx` render'er den og sender resultatet inn
+  som en `calendarSync`-prop (standard Next.js-mønster for server-komponenter inni klient-
+  komponenter). Portet til `AdminTilgjengelighetV2` — samme tre visninger, samme drag-to-create-
+  pointer-event-logikk (uendret), samme `addSlot`/`updateSlot`/`deleteSlot`-kontrakt inkl.
+  no-dobbeltsted-vernet. Bekreft-popover og opprett/rediger-skjema er nå `BunnArk` i stedet for
+  native `<dialog>`/fixed-div. `CalendarSyncSection`-innholdet er bevisst IKKE re-skinnet —
+  forblir legacy-stil til den porteres sammen med Innstillinger (delt komponent, se
+  `plans/legacy-portering-prioritet.md`). Gjenstår i Bølge 2 er dermed kun Innstillinger.
+  Verifisert: tsc 0 feil, ESLint grønt.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
