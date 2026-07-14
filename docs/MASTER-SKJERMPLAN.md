@@ -192,7 +192,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Hull-analyse | `/portal/analysere/hull` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | Statistikk (oversikt) | `/portal/statistikk` | ~ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | · Metrikk-detalj | `/portal/statistikk/[metric]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Sammenlign | `/portal/statistikk/sammenlign` | – | --- | ✓ | ~ | ~ | ~ |
+| ~~· Sammenlign~~ | `/portal/statistikk/sammenlign` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-14) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | · Del runde | `/portal/statistikk/runder/[runId]/del` | – | --- | ✓ | ~ | ~ | ~ |
 | **SG-Hub (Strokes Gained)** ★ | `/portal/mal/sg-hub` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | · Kølle-detalj | `/portal/mal/sg-hub/[club]` | – | --- | ✓ | ~ | ~ | ~ |
@@ -328,7 +328,10 @@ Disse finnes i appen, men er enten eldre kortadresser som peker videre, eller sm
 | Øvelser (alt. → redirect) | `/portal/tren/ovelser` | – | --- | ✓ | ✓ | – | ✓ |
 | · Øvelse-detalj (alt. → redirect) | `/portal/tren/ovelser/[id]` | – | --- | ✓ | ✓ | – | ✓ |
 
-> Merknad: `/portal/stats` og `/portal/analyse` er kortadresser for `/portal/statistikk` og `/portal/analysere`, og `/portal/tren/ovelser` overlapper med `/portal/drills`. Disse bør ryddes til én adresse hver — se «Veien til 100%» (Bolk 4).
+> **Rettet 2026-07-14:** `/portal/stats` og `/portal/analyse` er allerede rene redirects til
+> `/portal/statistikk` og `/portal/analysere` (se «(alt. → redirect)»-merket over) —
+> ingen rydding gjenstår. `/portal/tren/ovelser` er også en redirect (til `/portal/drills`),
+> ikke en ekte overlappende side.
 
 ---
 
@@ -367,7 +370,6 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Workspace-hub | `/admin/workspace` | ~ | --- | ✓ | ~ | ✓ | ✓ | Real tasks via getTasksForUser (Notion fallback + cache) + scoped to coach. Data full. 
 | · Tildelt meg | `/admin/workspace/tildelt-meg` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Oppgaver | `/admin/workspace/oppgaver` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| ~~· Oppgave-detalj~~ | `/admin/workspace/oppgaver/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | · Prosjekter | `/admin/workspace/prosjekter` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Notion-sync | `/admin/workspace/notion` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 
@@ -393,10 +395,8 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · **WANG Toppidrett — åpen treningsplan** (offentlig, ingen innlogging) | `/team-wang` | ~ | --- | ✓ | ~ | ✓ | † |
 | · **GFGK Junior — åpen treningsplan** (offentlig, 4 gruppefaner: Mini/Basis/Utvikling/Elite) | `/gfgk-junior` | ~ | --- | ✓ | ~ | ✓ | † |
 | Talent-hub | `/admin/talent` | – | --- | ✓ | ~ | ~ | ~ |
-| ~~· Talent-detalj~~ | `/admin/talent/[playerId]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | · Discovery | `/admin/talent/discovery` | – | --- | ✓ | ~ | ~ | ~ |
 | · Radar | `/admin/talent/radar` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| ~~· Radar per spiller~~ | `/admin/talent/radar/[playerId]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | · Kohort | `/admin/talent/kohort` | – | --- | ✓ | ~ | ~ | ~ |
 | · Region | `/admin/talent/region` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ressurser | `/admin/talent/ressurser` | – | --- | ✓ | ~ | ~ | ~ |
@@ -447,13 +447,9 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | **Bookinger** ★ | `/admin/bookinger` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v13 (KpiTile, Card, Tag + heatmap retokened)
 | · Ny booking | `/admin/bookinger/ny` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v2 2026-07-12: portet ut av legacy, V2Shell + NyBookingWizard; inngang fra kalender + bookinger |
 | Anlegg | `/admin/anlegg` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| ~~· Anlegg-detalj~~ | `/admin/anlegg/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | Tilgjengelighet | `/admin/availability` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | Kapasitet | `/admin/kapasitet` | – | --- | ✓ | ~ | ~ | ~ |
 | Tjenester/priser | `/admin/services` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| ~~Fasiliteter (alt.)~~ | `/admin/facilities` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
-| ~~· Fasilitet-detalj~~ | `/admin/facilities/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
-| ~~Lokasjoner~~ | `/admin/locations` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | TrackMan (på tvers) | `/admin/trackman` | – | --- | ✓ | ~ | ~ | ~ |
 | Live-økt: brief (coach) | `/admin/live/[sessionId]/brief` | – | --- | ✓ | ✓ | ✓ | ✓ |
 | Live-økt: aktiv (coach) | `/admin/live/[sessionId]/active` | – | --- | ✓ | ✓ | ✓ | ✓ |
@@ -467,11 +463,9 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Innsikt-hub | `/admin/analysere` | ~ | --- | ✓ | ~ | ~ | ~ |
 | · Compliance | `/admin/analysere/compliance` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | Stall-analyse | `/admin/analyse` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
-| ~~Analytics~~ | `/admin/analytics` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | Lag-snitt | `/admin/lag-snitt` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
 | · Fasiter (autosync) | `/admin/tester/benchmarks` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | Tester (på tvers) | `/admin/tester` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
-| ~~· Test-detalj~~ | `/admin/tester/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | · Foreslåtte tester | `/admin/tester/foreslatte` | – | --- | ✓ | ~ | ~ | ~ |
 | · Tildel test | `/admin/tester/tildel/[spillerId]` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
 | Økt-forespørsler | `/admin/foresporsler` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
@@ -491,7 +485,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Organisasjon-hub | `/admin/organisasjon` | – | --- | ✓ | ~ | ~ | ~ |
+| Organisasjon-hub | `/admin/organisasjon` | – | --- | ✓ | ✓ | – | ✓ | 2026-07-14: ren redirect til /admin/settings, bekreftet. Fjernet fra Mer-menyen (var duplikat-menypunkt til samme mål) — siden selv beholdt for gamle lenker. |
 | Klubb-innstillinger | `/admin/klubb/innstillinger` | – | --- | ✓ | ~ | ~ | ~ |
 | Integrasjoner | `/admin/integrasjoner` | – | --- | ✓ | ~ | ~ | ~ |
 | Innstillinger | `/admin/settings` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
@@ -502,7 +496,6 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Team | `/admin/team` | – | --- | ✓ | ~ | ~ | ~ |
 | · Inviter | `/admin/team/inviter` | – | --- | ✓ | ~ | ~ | ~ |
 | Audit-log | `/admin/audit-log` | – | --- | ✓ | ~ | ~ | ~ |
-| ~~· Audit-detalj~~ | `/admin/audit-log/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | AI-agenter | `/admin/agents` | – | --- | ✓ | ~ | ~ | ~ |
 | · Agent-detalj | `/admin/agents/[agentId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | E-postmaler | `/admin/email-templates` | – | --- | ✓ | ~ | ~ | ~ |
@@ -511,24 +504,32 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Profil | `/admin/profile` | – | --- | ✓ | ✓ | ✓ | ~ | nåbar via Mer → Drift → «Min coach-profil»; ekte brukerfelter, ikke v2-komponert ennå |
 | Hjelp | `/admin/hjelp` | – | --- | ✓ | ~ | ~ | ~ |
 | Caddie (alt. adresse) | `/admin/caddie` | – | --- | ✓ | ~ | ~ | ~ |
-| ~~Design-godkjenning~~ | `/admin/godkjenn-portal` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
-| ~~· Koblinger~~ | `/admin/godkjenn-portal/koblinger` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
-| ~~· Kobling-detalj~~ | `/admin/godkjenn-portal/koblinger/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
-| ~~· Review~~ | `/admin/godkjenn-portal/review` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 
 > **2026-07-12 — lenke-revisjon:** alle interne knapper/lenker på 45 admin-sider maskinsjekket
 > (271 unike mål). Fikset: «Book økt»/«Melding» i daglig brief (pekte på død /admin/booking/ny og
 > alias /admin/messages), «Åpne full radar» i Talent (pekte på ubygget radar/[playerId]),
 > «Følg opp» i Økonomi (redirect-loop til seg selv), 3 lenker til /admin/approvals-alias →
-> /admin/godkjenninger. 14 spøkelses-rader i denne planen (ruter som aldri ble bygget) er merket.
-> Fullt skjerm-/funksjonsinventar med duplikat-analyse: `docs/AGENCYOS-INVENTAR.md`.
+> /admin/godkjenninger. Fullt skjerm-/funksjonsinventar med duplikat-analyse: `docs/AGENCYOS-INVENTAR.md`.
+>
+> **2026-07-14 — struktur-opprydding:** de 14 spøkelses-radene fra 12. juli-revisjonen (ruter som
+> aldri ble bygget: workspace/oppgaver/[id], talent/[playerId], talent/radar/[playerId], anlegg/[id],
+> facilities(+[id]), locations, analytics, tester/[id], audit-log/[id], godkjenn-portal + 3 undersider)
+> er slettet fra denne planen — bekreftet døde to ganger nå (12. og 14. juli), ingen grunn til å
+> beholde dem som støy. «Organisasjon»-menypunktet fjernet fra AgencyOS Mer-panelet (dupliserte
+> «Innstillinger», som allerede dekker organisasjon/team/tilgang som faner).
 
 > **2026-07-12 — felles chrome:** ALLE legacy-sidene under `/admin/(legacy)/` rendres nå i
 > V2Shell (samme rail + Mer-meny + full bredde som de porterte sidene) — gamle AdminShell
 > (sidebar/topbar med scope-velger og gamle demo-navn) er koblet ut av layouten. Innholdet
 > deres rekomponeres fortsatt bølgevis per `plans/legacy-portering-prioritet.md`.
 
-> Merknad: Flere AgencyOS-funksjoner finnes på to adresser samtidig (f.eks. `/admin/finance` og `/admin/okonomi`, `/admin/kalender` og `/admin/calendar`, `/admin/innboks` og `/admin/messages`, `/admin/godkjenninger` og `/admin/approvals`, `/admin/plans/templates` og `/admin/plan-templates`). Det er dobbeltarbeid som bør ryddes — se «Veien til 100%».
+> **Rettet 2026-07-14:** denne merknaden advarte tidligere om «dobbeltarbeid» på disse parene.
+> Verifisert i kode: alle er allerede ryddet — den gamle adressen (`/admin/finance`,
+> `/admin/calendar`(+`/maned`), `/admin/messages`, `/admin/approvals`(+`/[id]`),
+> `/admin/plans/templates`(+undersider)) er en ren `permanentRedirect()` til den nye kanoniske
+> adressen (`/admin/okonomi`→`/admin/agencyos/okonomi`, `/admin/kalender`, `/admin/innboks`,
+> `/admin/godkjenninger`, `/admin/plan-templates`). Ingen kode-endring trengtes — bare denne
+> rettelsen. «Veien til 100% — Bolk 4» kan lukkes for disse parene.
 
 ---
 
@@ -736,8 +737,11 @@ De 43 skjermene som er tegnet og bygget i forhåndsvisning (PlayerHQ-hjem, SG-Hu
 **Bolk 3 — Ta i bruk de tegnede komponentene (kan bygges selv).**
 Bygg inn stemme-logging, credit-måler, svakhet-til-drill-bro, sesong-tidslinje, TrackMan-grafene og spiller-sammenligning der de hører hjemme (se drop-off-liste B). Da blir flere skjermer komplette samtidig.
 
-**Bolk 4 — Rydd dobbeltadressene (kan bygges selv).**
-Velg én adresse per funksjon der det finnes to (finance/okonomi, kalender/calendar, innboks/messages, plans-templates/plan-templates, godkjenninger/approvals, agencyos-spillere/spillere, og på spillersiden stats/statistikk, analyse/analysere, drills/ovelser). Behold én, la den andre peke videre. Mindre forvirring, mindre å vedlikeholde.
+**Bolk 4 — Rydd dobbeltadressene.** LUKKET 2026-07-14. Verifisert i kode: alle de nevnte
+parene (finance/okonomi, kalender/calendar, innboks/messages, plans-templates/plan-templates,
+godkjenninger/approvals, agencyos-spillere/spillere, stats/statistikk, analyse/analysere,
+drills/ovelser) har allerede én kanonisk adresse med ren redirect fra den gamle. Ingenting
+gjensto å bygge — bare dokumentasjonen som trengte å bli rettet.
 
 **Bolk 5 — Det som trenger nytt design fra deg (Anders).**
 Disse kan vi ikke bygge riktig før du har godkjent et design:
@@ -759,6 +763,21 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 14. juli (struktur og navnekonsistens, branch `claude/struktur-navn-opprydding`): **Fiks:**
+  Innstillinger-siden (`/portal/meg/innstillinger`) manglet egen inngangsknapp fra Meg-fanen —
+  spilleren kom kun til to av dens undersider (Varsler, Personvern), aldri huben selv. Lagt til
+  i `konto`-arrayet i `MegV2.tsx`. **Fjernet:** «Organisasjon»-menypunktet i AgencyOS Mer-panelet
+  (`shell.tsx`) — pekte på en ren redirect-side (`/admin/organisasjon` → `/admin/settings`) som
+  allerede har sitt eget, riktige menypunkt («Innstillinger»); to lenker til samme mål var bare
+  forvirrende. **Dokumentasjon rettet, ingen kode-endring:** en grundig kode-verifisering viste at
+  «dobbeltadressene» denne planen lenge har advart om (finance/okonomi, kalender/calendar,
+  innboks/messages, godkjenninger/approvals, plans-templates/plan-templates, og på spillersiden
+  stats/statistikk, analyse/analysere, drills/ovelser) ALLEREDE er ryddet i kode — den gamle
+  adressen er en ren `permanentRedirect()`. «Bolk 4» i «Veien til 100%» lukket. De 14
+  spøkelses-radene fra 12. juli-revisjonen slettet (bekreftet døde to ganger), pluss én ny
+  (`/portal/statistikk/sammenlign`, aldri bygget) lagt til og merket. **Navnekonsistens-sjekk:**
+  grep for «CoachHQ» og «kort spill» i synlig UI-tekst — se resultat i samme commit.
 
 - 14. juli (komplett prosjekt-revjuw og opprydding, branch `claude/prosjekt-opprydding`):
   **Sikkerhet:** `ai-plan`-ruta (enkelt + batch) manglet coach-tilgang-sjekk — enhver coach kunne

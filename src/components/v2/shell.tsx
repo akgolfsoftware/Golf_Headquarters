@@ -105,7 +105,6 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
       { id: "marketing", label: "Marketing", icon: "megaphone", href: "/admin/marketing" },
       { id: "caddie", label: "Caddie (AI)", icon: "message-circle", href: "/admin/agencyos/caddie" },
       { id: "agents", label: "AI-agenter", icon: "bot", href: "/admin/agents" },
-      { id: "organisasjon", label: "Organisasjon", icon: "building-2", href: "/admin/organisasjon" },
       { id: "team", label: "Team", icon: "users", href: "/admin/team" },
       { id: "email-templates", label: "E-postmaler", icon: "mail-check", href: "/admin/email-templates" },
       { id: "availability", label: "Tilgjengelighet", icon: "clock", href: "/admin/availability" },
