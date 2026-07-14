@@ -257,6 +257,16 @@ enum PRPress {
   PR5
 }
 
+// Teknisk/Taktisk/Mentalt/Sosialt — eget klassifiseringsfelt på PositionTask
+// (runde 2 · 2026-07-14), ved siden av pyramide-aksen. Anders: "Begge — legg
+// til som eget felt". Nullable — aldri en sperre.
+enum TaskKategori {
+  TEKNISK
+  TAKTISK
+  MENTALT
+  SOSIALT
+}
+
 // Rep-type per drill (bølge 2 · 2026-07-04). Låst av Anders — de fire volumtypene.
 enum RepType {
   SVINGER_UTEN_BALL // antall svinger uten ball
@@ -1009,11 +1019,16 @@ model SessionDrill {
   pPosisjoner String[]
   notes      String?
   orderIndex Int     @default(0)
+  // Kobling til teknisk-plan-oppgave (runde 2 · 2026-07-14) — når satt,
+  // logges reps for denne drillen automatisk mot oppgaven ved fullføring.
+  positionTaskId String?
 
-  session  TrainingPlanSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  exercise ExerciseDefinition  @relation(fields: [exerciseId], references: [id])
+  session      TrainingPlanSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  exercise     ExerciseDefinition  @relation(fields: [exerciseId], references: [id])
+  positionTask PositionTask?       @relation(fields: [positionTaskId], references: [id], onDelete: SetNull)
 
   @@index([sessionId])
+  @@index([positionTaskId])
   @@map("session_drills")
 }
 
@@ -2847,8 +2862,14 @@ model TrainingDrillV2 {
   fysHoldSek          Int?
   notes               String?
   logs                DrillLogV2[]
+  // Kobling til teknisk-plan-oppgave (runde 2 · 2026-07-14, speilet fra
+  // SessionDrill.positionTaskId) — når satt, logges reps automatisk mot
+  // oppgaven når drillen fullføres i en live-økt.
+  positionTaskId      String?
+  positionTask        PositionTask?     @relation(fields: [positionTaskId], references: [id], onDelete: SetNull)
 
   @@index([sessionId])
+  @@index([positionTaskId])
   @@map("training_drills_v2")
 }
 
@@ -3709,6 +3730,7 @@ model PositionTask {
   miljo    MMiljo? // miljø
   prPress  PRPress? // press-nivå
   slagType String? // "fullsving" | "pitch" | "chip" | "putt" | "bunker" (legacy / fri tekst)
+  kategori TaskKategori? // Teknisk/Taktisk/Mentalt/Sosialt — eget felt, erstatter ikke pyramide
 
   // Rep-mål per hastighet
   repsMaalDry  Int @default(0)
@@ -3739,10 +3761,12 @@ model PositionTask {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  position      TechnicalPlanPosition @relation(fields: [positionId], references: [id], onDelete: Cascade)
-  logs          PositionTaskLog[]
-  tmGoals       PositionTaskTmGoal[]
-  trackmanShots TrackManShot[]
+  position       TechnicalPlanPosition @relation(fields: [positionId], references: [id], onDelete: Cascade)
+  logs           PositionTaskLog[]
+  tmGoals        PositionTaskTmGoal[]
+  trackmanShots  TrackManShot[]
+  sessionDrills  SessionDrill[]
+  trainingDrills TrainingDrillV2[]
 
   @@index([positionId, sortOrder])
   @@index([status, trackStatus])

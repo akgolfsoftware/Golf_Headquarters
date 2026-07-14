@@ -20,6 +20,7 @@ export const STORAGE_BUCKETS = {
   REPORTS: "reports", // privat
   PLAYER_SWING_VIDEOS: "player-swing-videos", // privat
   MESSAGE_ATTACHMENTS: "message-attachments", // privat
+  TASK_MEDIA: "task-media",
 } as const;
 
 export type StorageBucket =
@@ -32,6 +33,7 @@ export const PUBLIC_BUCKETS: readonly StorageBucket[] = [
   STORAGE_BUCKETS.COACH_AVATARS,
   STORAGE_BUCKETS.DRILL_THUMBNAILS,
   STORAGE_BUCKETS.CLUB_LOGOS,
+  STORAGE_BUCKETS.TASK_MEDIA,
 ];
 
 // Maksimum filstørrelse per bucket (bytes).
@@ -45,6 +47,7 @@ export const MAX_FILE_SIZES: Record<StorageBucket, number> = {
   [STORAGE_BUCKETS.REPORTS]: 10 * 1024 * 1024, // 10 MB
   [STORAGE_BUCKETS.PLAYER_SWING_VIDEOS]: 50 * 1024 * 1024, // 50 MB (Supabase tier-limit)
   [STORAGE_BUCKETS.MESSAGE_ATTACHMENTS]: 10 * 1024 * 1024, // 10 MB
+  [STORAGE_BUCKETS.TASK_MEDIA]: 50 * 1024 * 1024, // 50 MB (Supabase tier-limit) — video-taket; bilder valideres strengere (5 MB) i uploadTaskMedia
 };
 
 // Tillatte MIME-typer per bucket. Bruker for valider opplasting.
@@ -88,6 +91,13 @@ export const ALLOWED_MIME_TYPES: Record<StorageBucket, readonly string[]> = {
     "audio/mp4",
     "audio/wav",
     "audio/webm",
+  ],
+  [STORAGE_BUCKETS.TASK_MEDIA]: [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "video/mp4",
+    "video/quicktime",
   ],
 };
 
