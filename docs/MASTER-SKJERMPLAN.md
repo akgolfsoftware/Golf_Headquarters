@@ -376,7 +376,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 |---|---|---|---|---|---|---|---|
 | Stall-oversikt | `/admin/stall` | – | --- | ✓ | ~ | ~ | ✓ |
 | **Spillere (alle)** = SpillerTilstandKort-liste (v13 golfdata, bølge 1 2026-07-04) ★ | `/admin/spillere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Complete v13 (SpillerTilstandKort + scope + cards)
-| · Ny spiller | `/admin/spillere/ny` | – | --- | ✓ | ~ | ~ | ~ |
+| · **Ny spiller** ★ | `/admin/spillere/ny` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Allerede v2 (`AdminNySpillerV2`, 4-stegs Veiviser) — masterplan-radene var stale, rettet 2026-07-14 |
 | **Spiller-detalj** ★ | `/admin/spillere/[id]` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
 | · **Analyse (coach-dybde)** = golfdata elite-visning (v13, bølge 1 2026-07-04) ★ | `/admin/spillere/[id]/analyse` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Profil | `/admin/spillere/[id]/profil` | – | --- | ✓ | ~ | ~ | ~ |
@@ -384,8 +384,8 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Plan-detalj | `/admin/spillere/[id]/plan/[planId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Fremgang (trening vs SG) † | `/admin/spillere/[id]/fremgang` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
 | · Tester | `/admin/spillere/[id]/tester` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
-| · Tildel test | `/admin/spillere/[id]/tildel-test` | – | --- | ✓ | ~ | ~ | ~ |
-| · Rediger | `/admin/spillere/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
+| · Tildel test | `/admin/spillere/[id]/tildel-test` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Allerede bygget som pixel-perfekt design-handover-port (`TildelTestModalScreen`, `test-modul-v2`/`planlegge-v2`-stilarket) — EGEN designlinje, ikke `src/components/v2`-kanon. Fungerer og er responsiv (6 media queries); flagget til Anders: bør denne unifiseres inn i v2-kanon senere, eller stå som egen godkjent modal-stil? |
+| **Rediger** ★ | `/admin/spillere/[id]/rediger` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminSpillerRedigerV2`, AgencyOS Bølge 1.4) — samme `lagreSpiller`/`slettSpiller`-kontrakt (native form-action, ukontrollerte felt) |
 | Grupper | `/admin/grupper` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Gruppe-detalj (+ VG-trinn filter/badge, 2026-07-07) | `/admin/grupper/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Gruppe-timeplan (faste/kommende/tidligere + dupliser) | `/admin/grupper/[id]/timeplan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
@@ -760,7 +760,7 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
-- 14. juli (AgencyOS-gjennomgang, Bølge 1.1–1.2, samme PR #10/branch): Anders ba om komplett
+- 14. juli (AgencyOS-gjennomgang, Bølge 1.1–1.4, samme PR #10/branch): Anders ba om komplett
   gjennomgang av alle AgencyOS-skjermer for mobil/iPad/desktop + porting til v2-design. Kartlagt:
   81 legacy-sider gjenstår (`plans/legacy-portering-prioritet.md` er fasit-rekkefølgen), Bølge 0
   (duplikat-redirect-opprydding) var allerede fullstendig ryddet fra før — ingen sletting
@@ -776,8 +776,20 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   samme idiom som `NyOvelseArk`). Verifisert: tsc 0 feil, ESLint grønt på alle nye/endrede filer;
   full `npm run build` kan ikke fullføre i denne økten (sandkasse mangler `DIRECT_URL`/live DB —
   miljøbegrensning, ikke kode-feil; `next build`-kompileringen selv gikk gjennom uten rute-/
-  typefeil, kun data-henting for statisk sitemap feilet mot manglende DB). Neste: Bølge 1.3
-  (Live-økt coach-flyt), 1.4 (Spiller-skjemaer), 1.5 (Plan-mal-redigering).
+  typefeil, kun data-henting for statisk sitemap feilet mot manglende DB). **Bølge 1.3 Live-økt
+  coach-flyt** (`brief`/`active`/`summary`) → v2: `CoachLiveBriefV2`/`CoachLiveActiveV2`/
+  `CoachLiveSummaryV2` — samme `TrainingSessionV2`-datamodell og server actions
+  (sendBriefTilSpiller/sendLiveMelding/lagreCoachVurdering), `MicButton` gjenbrukt uendret.
+  **Bølge 1.4 Spiller-skjemaer**: «Ny spiller» viste seg alt å være ferdig v2
+  (`AdminNySpillerV2`, 4-stegs Veiviser) — masterplan-radene var bare stale, rettet uten
+  kode-endring. «Tildel test» er alt bygget som egen pixel-perfekt design-handover-port
+  (`TildelTestModalScreen`, `test-modul-v2`/`planlegge-v2`-stilarket, IKKE `src/components/v2`-
+  kanon) — fungerer og er responsivt, flagget til Anders om den bør unifiseres senere i stedet
+  for å bli bygget om nå. **Rediger spiller** portet til v2 (`AdminSpillerRedigerV2`) — samme
+  `lagreSpiller`/`slettSpiller`-kontrakt; feltene er bevisst ukontrollerte native inputs (v2-
+  skinnet) siden `lagreSpiller` er en ekte FormData-basert form-action, ikke en objekt-kontrakt.
+  Verifisert: tsc 0 feil, ESLint grønt på alle nye/endrede filer i begge bølger. Neste: Bølge 1.5
+  (Plan-mal-redigering), deretter Bølge 2 (P2 ukentlig bruk).
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
