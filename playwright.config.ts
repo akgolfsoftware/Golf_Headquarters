@@ -9,8 +9,6 @@ export default defineConfig({
   testMatch: ["e2e/*.spec.ts", "tests/e2e/*.spec.ts"],
   testIgnore: [
     "**/node_modules/**",
-    "**/.worktrees/**",
-    "**/.claude/**",
     "**/.next/**",
     "**/.vercel/**",
     "**/_arkiv/**",
