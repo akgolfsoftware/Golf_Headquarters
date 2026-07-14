@@ -46,6 +46,25 @@ dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
 - Prisma 7 + Supabase (Postgres)
 - Tailwind CSS v4 (CSS-first via `@theme` i `globals.css` — INGEN `tailwind.config.ts`)
 - Inter + Familjen Grotesk (display) + JetBrains Mono via `next/font/google`. Inter Tight er deprecated — lastes kun for legacy-flater. Kanon: `.claude/rules/design-system-regel.md`. Lucide React — eneste ikon-bibliotek. npm.
+- Testrammeverk: `node:test` via `tsx --test` (enhetstester i `src/lib/**/*.test.ts`) + Playwright (e2e). vitest/jest er IKKE installert.
+
+## Kommandoer
+```bash
+npm run dev                          # dev-server, http://localhost:3000 (skal starte uten warnings)
+npm run build                        # prisma generate + next build + serwist (PWA service worker)
+npm run lint                         # eslint
+
+npm test                             # alle enhetstester (src/lib/**/*.test.ts)
+npx tsx --conditions=react-server --experimental-test-module-mocks --test src/lib/auth/minor.test.ts   # kjør ÉN testfil
+
+npm run e2e                          # Playwright e2e (e2e/*.spec.ts + tests/e2e/*.spec.ts)
+npx playwright test e2e/auth-guard.spec.ts    # kjør ÉN e2e-fil
+npm run e2e:ui                       # Playwright UI-modus (debug)
+npm run test:all                     # enhetstester + e2e
+
+npm run verify                       # FULL sjekk før commit (prisma validate+generate, tsc --noEmit,
+                                      # eslint --quiet, check-no-hex, build) — se Verifikasjon under
+```
 
 ## Modell og effort
 Standardmodell for dette prosjektet: **Fable 5.** Effort er spaken, ikke modellbytte —
@@ -83,9 +102,10 @@ Etter push: oppsummer på norsk hva som ble gjort.
 
 ## Verifikasjon (kjør før hver commit)
 ```bash
-npx prisma validate && npx prisma generate && npx tsc --noEmit && npm run build
+npm run verify
 ```
-`npm run dev` skal starte uten warnings.
+Tilsvarer: `prisma validate && prisma generate && tsc --noEmit && eslint --quiet src && node scripts/check-no-hex.mjs && npm run build`
+(`check-no-hex.mjs` håndhever at farger kommer fra designtokens, ikke rå hex-verdier). `npm run dev` skal starte uten warnings.
 
 ## Sesjons-minne (hvor var vi sist)
 Native auto memory (Anthropic, på) husker automatisk på denne maskinen. Cross-machine state ligger i

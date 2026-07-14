@@ -14,6 +14,11 @@ eksisterende skjermer inntil v2-bølgene rekomponerer dem.
 | **PlayerHQ** (spillerportal) | `/portal/*` | `src/app/portal/` |
 | **AgencyOS** (admin — het tidligere CoachHQ) | `/admin/*` | `src/app/admin/` |
 
+Denne tabellen dekker ikke hele `src/app/`. Andre top-level mapper i bruk inkluderer bl.a.
+`forelder/`, `onboard/`, `inviter/`, `intern/`, `kommando/`, `meg/`, `team-gfgk/`, `team-wang/`,
+`gfgk-junior/`, `offline/`, `(internal)/` — sjekk filsystemet før du oppretter nye ruter for å
+unngå konflikt med eksisterende mønstre (se også `docs/platform/AGENT-BRIEF.md`).
+
 Alle fire deler: designsystem-tokens i `src/app/globals.css`, komponentbibliotek i
 `src/components/athletic/golfdata/` (v13 — gamle athletic/ er vedlikeholdsmodus),
 auth via Supabase, Prisma-schema mot felles Postgres.
