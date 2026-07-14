@@ -396,7 +396,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Discovery | `/admin/talent/discovery` | – | --- | ✓ | ~ | ~ | ~ |
 | · Radar | `/admin/talent/radar` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | ~~· Radar per spiller~~ | `/admin/talent/radar/[playerId]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
-| · Kohort | `/admin/talent/kohort` | – | --- | ✓ | ~ | ~ | ~ |
+| **· Kohort** ★ | `/admin/talent/kohort` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTalentKohortV2`, AgencyOS Bølge 3.20) — samme `TalentTracking`-aggregering (snitt-radar 5 akser + 90-dagers progresjon per nivå U10–Senior) |
 | · Region | `/admin/talent/region` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ressurser | `/admin/talent/ressurser` | – | --- | ✓ | ~ | ~ | ~ |
 | · Sammenligning | `/admin/talent/sammenligning` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
@@ -888,6 +888,15 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   uendret, `Reveal`/`CountUp` gjenbrukt for scroll-inn-animasjon. Fant en pre-eksisterende bug:
   `hentSisteCommits()` kjører `execSync` mot en hardkodet lokal filsti (Anders' Mac) som aldri
   finnes i Vercel — fanges stille av try/catch (tom liste). Bevart uendret, meldt i tabellen.
+  **3.20** Talent · Kohort (`AdminTalentKohortV2`) — samme `TalentTracking`-aggregering
+  (snitt-radar 5 akser + 90-dagers progresjon per nivå U10–Senior), ren visning. Resten av
+  Talent-klyngen (region/ressurser/sammenligning/wagr-benchmark/wagr-import, ~1200 linjer) er
+  IKKE portet i kveld — sammenligning bruker en delt v10-komponent (`TalentSammenligning`,
+  `src/components/admin/talent/`) som ligger utenfor golfdata/v13-generasjonen; å porte den
+  skjermen alene ville betydd enten å bygge en helt ny v2-versjon av selve
+  sammenligningskomponenten (stor, egen jobb) eller la den beholde utdatert v10-stil inni en
+  v2-ramme (inkonsistent). Resten av klyngen (region/ressurser/wagr-benchmark/wagr-import) er
+  ikke størrelsesvurdert ennå — fortsettes i neste økt.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
