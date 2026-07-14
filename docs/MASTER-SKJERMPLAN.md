@@ -484,6 +484,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Approval-detalj (alt. → redirect) | `/admin/approvals/[id]` | – | --- | ✓ | ✓ | – | ✓ |
 | Rapporter | `/admin/reports` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | Runder (på tvers) | `/admin/runder` | ~ | --- | ✓ | ~ | ~ | ~ |
+| **Risiko (stall-kart)** ★ | `/admin/risiko` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminRisikoV2`, AgencyOS Bølge 3.17) — samme risiko-logikk (SKADET/permisjon/dager-siden-økt), 8-kolonners heatmap + oppfølgingsliste. Manglet egen rad i tabellen fra før, lagt til her. |
 | Skader/sykdom (tilstander, redirect) | `/admin/tilstander` | — | — | ✓ | ✓ | – | ✓ | Duplikat-rad av samme adresse som over (rad ~474) — bekreftet 2026-07-14 samme `redirect()`-stubb. Ingenting å portere. |
 | Finans (alt. → redirect) | `/admin/finance` | – | --- | ✓ | ✓ | – | ✓ |
 | Økonomi (MRR/betalinger, redirect) | `/admin/okonomi` | — | — | ✓ | ✓ | – | ✓ | 2026-07-14 sjekket: ren `redirect()` til `/admin/agencyos/okonomi` (kanon-siden, se rad ~348) — sammenslåingen er allerede gjort i kode. Ingenting å portere. |
@@ -875,7 +876,9 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   **3.16** Reach/engasjement (`AdminReachV2`) — lesevisning (KPI-strip, egendefinert SVG-
   linjegraf for daglig aktivitet, topp-engasjerte/trenger-oppfølging-lister, compliance-tabell
   m/ filter, feature-adoption-bar-chart); `page.tsx` sin aggregeringslogikk er 100 % uendret,
-  kun presentasjonslaget er portet.
+  kun presentasjonslaget er portet. **3.17** Risiko/stall-kart (`AdminRisikoV2`) — samme
+  SKADET/permisjon/dager-siden-økt-logikk, 8-kolonners heatmap + oppfølgingsliste; hadde ingen
+  egen rad i master-skjermplanen fra før, lagt til under Innsikt-seksjonen.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
