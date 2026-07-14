@@ -498,11 +498,11 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Organisasjon-hub | `/admin/organisasjon` | – | --- | ✓ | ~ | ~ | ~ |
 | **Klubb-innstillinger** ★ | `/admin/klubb/innstillinger` | – | ✓✓✓ | ✓ | ✓ | ✓ | ~ | 2026-07-14: v2 (`AdminKlubbInnstillingerV2`, AgencyOS Bølge 3.14) — samme `addClub`/`updateClubSettings`/`lagreClubSettings`/`removeClub`-kontrakt, `BunnArk` i stedet for native `<dialog>`. **Funker ikke fullt:** «Detaljer»-lenken på hvert klubbkort peker til `/admin/klubb/[id]/rediger`, en rute som ikke finnes (verifisert, samme i legacy) — bevart uendret, meldt for egen fiks-økt (se også AI Workspace-raden lenger ned med samme type funn). |
 | **Integrasjoner** ★ | `/admin/integrasjoner` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminIntegrasjonerV2`, AgencyOS Bølge 3.1) — samme statuskilder (Prisma + env-sjekk), ren visning |
-| **Innstillinger (hub)** ★ | `/admin/settings` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminInnstillingerV2`, AgencyOS Bølge 3.32) — samme tre faner (Organisasjon/Team & roller/Tilgang, `?tab=`), samme Prisma-aggregering. **Undersidene** (`/admin/settings/api`, `/calendar`, `/security`, `/tilgang`, ~1500 linjer til sammen) er IKKE portet ennå — egne commits gjenstår, `calendar` deler `CalendarSyncSection` med `/admin/availability` (se den raden). |
+| **Innstillinger (hub)** ★ | `/admin/settings` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminInnstillingerV2`, AgencyOS Bølge 3.32) — samme tre faner (Organisasjon/Team & roller/Tilgang, `?tab=`), samme Prisma-aggregering. Security (3.33) og Tilgang (3.34) er også portet — se egne rader. **Gjenstår:** `api` (API-nøkler + modal) og `calendar` (Google Calendar-sync, deler `CalendarSyncSection` med `/admin/availability`). |
 | · API | `/admin/settings/api` | – | --- | ✓ | ~ | ~ | ~ |
 | · Kalender | `/admin/settings/calendar` | – | --- | ✓ | ~ | ~ | ~ |
 | · **Sikkerhet** ★ | `/admin/settings/security` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminInnstillingerSikkerhetV2`, AgencyOS Bølge 3.33) — samme innhold (kontooversikt, 2FA-oppsett via delt `Setup2FA`, passord-lenke, plassholder for aktive økter). |
-| · Tilgang | `/admin/settings/tilgang` | – | --- | ✓ | ~ | ~ | ~ |
+| · **Tilgang** ★ | `/admin/settings/tilgang` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminInnstillingerTilgangV2`, AgencyOS Bølge 3.34) — samme read-only CBAC-matrise (rolle × capability via `@/lib/auth/cbac`). |
 | **Team** ★ | `/admin/team` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Allerede v2 (`AdminTeamV2`) — masterplan-raden var stale, rettet 2026-07-14 |
 | · **Inviter** ★ | `/admin/team/inviter` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminInviterCoachV2`, AgencyOS Bølge 3.2) — samme `inviterCoach`-kontrakt |
 | **Audit-log** ★ | `/admin/audit-log` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminAuditLogV2`, AgencyOS Bølge 3.1) — samme `AuditLog`-datamodell (siste 50, kind/status fra action-prefiks), ren visning |
@@ -967,7 +967,11 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   tsc 0 feil, ESLint grønt. **Bølge 3.33**: Innstillinger · Sikkerhet portet til
   `AdminInnstillingerSikkerhetV2` — samme innhold (kontooversikt, 2FA via delt, uendret
   `Setup2FA`-klientkomponent, passord-lenke til glemt-passord-flyten, plassholder for aktive
-  økter til auth-audit-logg finnes). Verifisert: tsc 0 feil, ESLint grønt.
+  økter til auth-audit-logg finnes). Verifisert: tsc 0 feil, ESLint grønt. **Bølge 3.34**:
+  Innstillinger · Tilgang portet til `AdminInnstillingerTilgangV2` — samme read-only CBAC-matrise
+  (rolle × capability, `can()`-oppslag uendret). Gjenstår i Innstillinger-klyngen er nå kun `api`
+  (API-nøkler + modal) og `calendar` (Google Calendar-sync, inkl. selve `CalendarSyncSection` som
+  også brukes fra Tilgjengelighet). Verifisert: tsc 0 feil, ESLint grønt.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
