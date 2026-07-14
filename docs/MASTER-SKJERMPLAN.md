@@ -509,6 +509,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | AI-agenter | `/admin/agents` | – | --- | ✓ | ~ | ~ | ~ |
 | · Agent-detalj | `/admin/agents/[agentId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | **Agenter (flermodell-chat)** ★ | `/admin/agenter` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2-innramming (AgencyOS Bølge 3.12) rundt delt `AgentChat` (uendret, delt med `/kommando/agenter`) — Claude/Gemini/Grok/Ollama-chat |
+| **AI Workspace** ★ | `/admin/ai` | – | ✓✓✓ | ✓ | ✓ | ✓ | ~ | 2026-07-14: v2 (`AdminAiV2`, AgencyOS Bølge 3.13) — samme `AgentRun`/`PlanAction`-datamodell, «Apply + log» er nå en ekte server action (var inline-closure i legacy). **Funker ikke fullt:** «Kjør kode-sesjon»-knappen på Kode-sesjoner-fanen poster til `/admin/ai/run`, en rute som ikke finnes noe sted i koden (verifisert, var også broken i legacy) — bevart uendret, dette er en bakenforliggende bug utenfor skopet til en design-port, meldt her for egen fiks-økt. |
 | **E-postmaler** ★ | `/admin/email-templates` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Allerede v2 — masterplan-raden var stale, rettet 2026-07-14 |
 | · **Rediger e-postmal** ★ | `/admin/email-templates/[id]/rediger` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminEpostmalRedigerV2`, AgencyOS Bølge 3.9) — samme `saveTemplate`/`sendTestEmail`/`setAsDefault`/`archiveTemplate`-kontrakt, 2-kolonners editor+live-forhåndsvisning m/ token-substitusjon |
 | Profil | `/admin/profile` | – | --- | ✓ | ~ | ~ | ~ |
