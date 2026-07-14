@@ -398,7 +398,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | ~~· Radar per spiller~~ | `/admin/talent/radar/[playerId]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | **· Kohort** ★ | `/admin/talent/kohort` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTalentKohortV2`, AgencyOS Bølge 3.20) — samme `TalentTracking`-aggregering (snitt-radar 5 akser + 90-dagers progresjon per nivå U10–Senior) |
 | **· Region** ★ | `/admin/talent/region` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTalentRegionV2`, AgencyOS Bølge 3.21) — samme region-aggregering + forenklet Norge-kart-stub (SVG, samme geometri, v2-tokens for farger) |
-| · Ressurser | `/admin/talent/ressurser` | – | --- | ✓ | ~ | ~ | ~ |
+| **· Ressurser** ★ | `/admin/talent/ressurser` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTalentRessurserV2`, AgencyOS Bølge 3.22) — samme `TalentRessurs`-modell, filter-chips (kategori/nivå/fokus via URL), ekte FormData `leggTilRessurs`-action (ADMIN) med native ukontrollerte felt |
 | · Sammenligning | `/admin/talent/sammenligning` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
 | · WAGR-benchmark | `/admin/talent/wagr-benchmark` | – | --- | ✓ | ~ | ~ | ~ |
 | · WAGR-import | `/admin/talent/wagr-import` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
@@ -897,8 +897,10 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   sammenligningskomponenten (stor, egen jobb) eller la den beholde utdatert v10-stil inni en
   v2-ramme (inkonsistent). **3.21** Talent · Region (`AdminTalentRegionV2`) — samme
   region-aggregering (nivå-filter, klubb-topp-3, snitt-radar) + forenklet Norge-kart-stub
-  (SVG, samme geometri/koordinater, kun v2-tokens for farger). Ressurser/wagr-benchmark/
-  wagr-import ikke størrelsesvurdert ennå — fortsettes i neste økt.
+  (SVG, samme geometri/koordinater, kun v2-tokens for farger). **3.22** Talent · Ressurser
+  (`AdminTalentRessurserV2`) — samme `TalentRessurs`-modell, filter-chips (kategori/nivå/fokus
+  via URL), ekte FormData `leggTilRessurs`-action for ADMIN med native ukontrollerte felt.
+  wagr-benchmark/wagr-import ikke størrelsesvurdert ennå — fortsettes i neste økt.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
