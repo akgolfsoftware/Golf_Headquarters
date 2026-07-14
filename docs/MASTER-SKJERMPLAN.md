@@ -479,7 +479,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Tildel test | `/admin/tester/tildel/[spillerId]` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
 | Økt-forespørsler | `/admin/foresporsler` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | Godkjenninger | `/admin/godkjenninger` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| · Godkjenning-detalj | `/admin/godkjenninger/[id]` | – | --- | ✓ | ~ | ~ | ~ |
+| · **Godkjenning-detalj** ★ | `/admin/godkjenninger/[id]` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminGodkjenningDetaljV2`, AgencyOS Bølge 3.6) — samme `PlanAction`/`computeDelta`/`approveRequestDetailed`/`declineRequestDetailed`/`requestMoreInfo`-kontrakt; avslå/info-dialogen er nå `BunnArk`. Erstattet enekonsument `ApprovalDetailClient` fullt ut (verifisert ingen andre importører) |
 | Godkjenninger (alt. → redirect) | `/admin/approvals` | – | --- | ✓ | ✓ | – | ✓ |
 | · Approval-detalj (alt. → redirect) | `/admin/approvals/[id]` | – | --- | ✓ | ✓ | – | ✓ |
 | Rapporter | `/admin/reports` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
