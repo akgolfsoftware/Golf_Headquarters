@@ -22,7 +22,6 @@ import {
 import {
   Breadcrumb,
   Checkbox,
-  EmptyState,
   Input,
   KPICard,
   ProgressBar,
@@ -41,6 +40,7 @@ import {
   Tooltip,
 } from "@/components/ui";
 import { OverviewCard, OverviewShell } from "@/components/shared";
+import { EmptyState } from "@/components/shared/empty-state";
 
 export const metadata = {
   title: "Designsystem · AK Golf HQ (intern)",
@@ -282,9 +282,9 @@ export default function DesignSystemPage() {
           <h2 className="font-display text-2xl font-bold">Empty State</h2>
           <EmptyState
             icon={Dumbbell}
-            title="Ingen øvelser ennå"
-            description="Bygg din første økt for å se den her."
-            action={
+            titleItalic="Ingen øvelser ennå"
+            sub="Bygg din første økt for å se den her."
+            cta={
               <Button variant="primary">
                 <Plus size={14} aria-hidden /> Ny øvelse
               </Button>
