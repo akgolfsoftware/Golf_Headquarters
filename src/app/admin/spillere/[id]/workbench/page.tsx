@@ -53,33 +53,35 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
   const weekOffset = parseWeekOffset((await searchParams).uke);
 
   // I0: selvbetjent spiller kan ikke åpnes i coach-workbench (porten).
-  const spiller = await prisma.user.findFirst({
-    where: { AND: [coachScopedPlayerWhere(user), { id }] },
-    select: { name: true },
-  });
-  if (!spiller) notFound();
-
-  const ctx = await loadWorkbenchContext(id, weekOffset);
-  if (ctx === null) notFound();
-
-  const rosterRows = await prisma.user
-    .findMany({
-      where: { AND: [coachScopedPlayerWhere(user), { deletedAt: null }] }, // I0: kun coachede spillere (PLATFORM_ONLY er usynlig i AgencyOS).
+  // Fire uavhengige oppslag — kjøres parallelt (var fire sekvensielle
+  // round-trips, P2-query-diett 2026-07-14) i stedet for hver sin await.
+  const [spiller, ctx, rosterRows, grupper] = await Promise.all([
+    prisma.user.findFirst({
+      where: { AND: [coachScopedPlayerWhere(user), { id }] },
+      select: { name: true },
+    }),
+    loadWorkbenchContext(id, weekOffset),
+    prisma.user
+      .findMany({
+        where: { AND: [coachScopedPlayerWhere(user), { deletedAt: null }] }, // I0: kun coachede spillere (PLATFORM_ONLY er usynlig i AgencyOS).
+        select: { id: true, name: true },
+        orderBy: { name: "asc" },
+        take: 400,
+      })
+      .catch(() => []),
+    // 8c.3: gruppevelger — gruppens egen workbench/årsplan.
+    prisma.group.findMany({
       select: { id: true, name: true },
       orderBy: { name: "asc" },
-      take: 400,
-    })
-    .catch(() => []);
+    }),
+  ]);
+  if (!spiller) notFound();
+  if (ctx === null) notFound();
+
   const players: CoachRosterPlayer[] = rosterRows.map((p) => ({
     id: p.id,
     navn: p.name ?? "Uten navn",
   }));
-
-  // 8c.3: gruppevelger — gruppens egen workbench/årsplan.
-  const grupper = await prisma.group.findMany({
-    select: { id: true, name: true },
-    orderBy: { name: "asc" },
-  });
 
   const actions: WorkbenchV2Actions = {
     addSession: coachAddWorkbenchSession.bind(null, id),
