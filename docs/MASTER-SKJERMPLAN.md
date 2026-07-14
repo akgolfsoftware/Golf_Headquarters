@@ -415,10 +415,10 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Ny mal (alt. → redirect) | `/admin/plans/templates/ny` | – | --- | ✓ | ✓ | – | ✓ |
 | · Rediger mal (alt. → redirect) | `/admin/plans/templates/[id]/rediger` | – | --- | ✓ | ✓ | – | ✓ |
 | · Mal-effektivitet (alt. → redirect) | `/admin/plans/templates/[id]/effectiveness` | – | --- | ✓ | ✓ | – | ✓ |
-| Plan-maler (alt.) | `/admin/plan-templates` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| · Plan-mal detalj | `/admin/plan-templates/[id]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Ny plan-mal | `/admin/plan-templates/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| · Rediger plan-mal | `/admin/plan-templates/[id]/rediger` | – | --- | ✓ | ~ | ✓ | ✓ | 2026-07-11: volum-linje (timer/uke + reell pyramidefordeling vs. glidere) + masseredigering (sett varighet for hele uka, kopier uke→uke m/ konflikt-bekreftelse) — src/lib/plan-templates/
+| **Plan-maler (alt.)** ★ | `/admin/plan-templates` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Allerede v2 (`AdminPlanMalerV2`) — masterplan-raden var stale, rettet 2026-07-14 |
+| · Plan-mal detalj | `/admin/plan-templates/[id]` | – | --- | ✓ | ~ | ~ | ~ | STOR skjerm (`template-detail.tsx`, 545 linjer) — utsatt til egen bølge, se merknad under Rediger |
+| · **Ny plan-mal** ★ | `/admin/plan-templates/ny` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminPlanMalNyV2`, AgencyOS Bølge 1.5) — samme `createTemplate`-kontrakt, discipline-fordeling som `Glider`-rad |
+| · Rediger plan-mal | `/admin/plan-templates/[id]/rediger` | – | --- | ✓ | ~ | ✓ | ✓ | 2026-07-11: volum-linje (timer/uke + reell pyramidefordeling vs. glidere) + masseredigering (sett varighet for hele uka, kopier uke→uke m/ konflikt-bekreftelse) — src/lib/plan-templates/. **2026-07-14:** IKKE portet i Bølge 1.5 — `template-editor.tsx` er 1046 linjer (uke-grid + drag/drop-lignende drill-plassering + masseredigering), for stor/risikabel å re-komponere trygt samme kveld som resten av bølgen. Trenger egen mini-plan (komponentarkitektur avklares mot faktisk uke-grid-mønster) før bygging — meldt som eget punkt, ikke improvisert. |
 | **Drills (bibliotek)** ★ | `/admin/drills` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: portet til v2 (`AdminDrillerV2`, AgencyOS Bølge 1.2) — samme kategori/søk-logikk, tile-grid m/ akse-fargede ikoner dekker mobil/iPad/desktop |
 | · Drill-detalj | `/admin/drills/[id]` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminDrillDetaljV2`) — stablede Kort-seksjoner, Rediger/Dupliser/Slett virker |
 | · Ny drill | `/admin/drills/ny` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminDrillNyV2`/`DrillSkjemaFelter`) — felt-settet utvidet til parity med rediger (prerequisites/csTarget/lPhase-primary/csMin-Max), ingen data-tap |
@@ -760,7 +760,7 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
-- 14. juli (AgencyOS-gjennomgang, Bølge 1.1–1.4, samme PR #10/branch): Anders ba om komplett
+- 14. juli (AgencyOS-gjennomgang, Bølge 1.1–1.5, samme PR #10/branch): Anders ba om komplett
   gjennomgang av alle AgencyOS-skjermer for mobil/iPad/desktop + porting til v2-design. Kartlagt:
   81 legacy-sider gjenstår (`plans/legacy-portering-prioritet.md` er fasit-rekkefølgen), Bølge 0
   (duplikat-redirect-opprydding) var allerede fullstendig ryddet fra før — ingen sletting
@@ -788,8 +788,20 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   for å bli bygget om nå. **Rediger spiller** portet til v2 (`AdminSpillerRedigerV2`) — samme
   `lagreSpiller`/`slettSpiller`-kontrakt; feltene er bevisst ukontrollerte native inputs (v2-
   skinnet) siden `lagreSpiller` er en ekte FormData-basert form-action, ikke en objekt-kontrakt.
-  Verifisert: tsc 0 feil, ESLint grønt på alle nye/endrede filer i begge bølger. Neste: Bølge 1.5
-  (Plan-mal-redigering), deretter Bølge 2 (P2 ukentlig bruk).
+  Verifisert: tsc 0 feil, ESLint grønt på alle nye/endrede filer i begge bølger. **Bølge 1.5
+  Plan-mal-redigering**: hub (`/admin/plan-templates`) viste seg alt å være v2 (`AdminPlanMalerV2`)
+  — samme stale-rad-mønster som Ny spiller, rettet uten kode-endring. «Ny plan-mal» portet til v2
+  (`AdminPlanMalNyV2`) — samme `createTemplate`-kontrakt, discipline-fordelingen som fem
+  `Glider`-rader i stedet for rå `<input type=range>`. **Mal-detalj og rediger-editoren er BEVISST
+  IKKE portet i kveld**: `template-detail.tsx` (545 linjer) og særlig `template-editor.tsx` (1046
+  linjer — uke-grid, drill-plassering, masseredigering m/ konflikt-bekreftelse fra 11. juli) er
+  mye større og mer risikofylte enn noe annet portet i Bølge 1; å re-komponere dem i samme
+  kveldsøkt som resten av bølgen ville gått på bekostning av kvalitetsbaren («ferdigstille til
+  perfeksjon»). Flagget som eget punkt i tabellen — trenger egen mini-plan mot faktisk
+  uke-grid-mønster, ikke en hastig omskriving. Bølge 1 (P1 daglig coach-bruk) er dermed
+  FULLFØRT bortsett fra dette ene, bevisst utsatte unntaket. Neste: Bølge 2 (P2 ukentlig bruk —
+  Innstillinger, Tilgjengelighet, Tjenester/priser, Anlegg, Kapasitet, Stall-oversikt, Økonomi),
+  eller en dedikert plan-økt for mal-detalj/rediger-editoren.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
