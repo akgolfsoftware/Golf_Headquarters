@@ -488,7 +488,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Skader/sykdom (tilstander, redirect) | `/admin/tilstander` | — | — | ✓ | ✓ | – | ✓ | Duplikat-rad av samme adresse som over (rad ~474) — bekreftet 2026-07-14 samme `redirect()`-stubb. Ingenting å portere. |
 | Finans (alt. → redirect) | `/admin/finance` | – | --- | ✓ | ✓ | – | ✓ |
 | Økonomi (MRR/betalinger, redirect) | `/admin/okonomi` | — | — | ✓ | ✓ | – | ✓ | 2026-07-14 sjekket: ren `redirect()` til `/admin/agencyos/okonomi` (kanon-siden, se rad ~348) — sammenslåingen er allerede gjort i kode. Ingenting å portere. |
-| Stats-oversikt | `/admin/stats/overview` | – | --- | ✓ | ~ | ~ | ~ |
+| **Stats-oversikt** ★ | `/admin/stats/overview` | – | ✓✓✓ | ✓ | ✓ | ✓ | ~ | 2026-07-14: v2 (`AdminStatsOversiktV2`, AgencyOS Bølge 3.19) — samme Prisma-datahenting (uendret), `Reveal`/`CountUp` (delt) gjenbrukt, ekte `sjekkDbHelse`-DB-ping. **Funker ikke fullt:** `hentSisteCommits()` kjører `execSync` mot en hardkodet lokal filsti (Anders' maskin) — finnes aldri i Vercel, fanges av try/catch (tom liste, seksjonen skjules stille). Forhåndseksisterende bug i legacy, bevart uendret, meldt for egen fiks-økt. |
 | **Stats-moderering** ★ | `/admin/stats/moderering` | – | ✓✓✓ | ✓ | ✓ | ~ | ~ | 2026-07-14: v2 (`AdminStatsModereringV2`, AgencyOS Bølge 3.18) — samme skjelett som legacy: INGEN modererings-/GDPR-slett-kø finnes i datamodellen ennå, siden viser ærlige tomme tilstander (0-tall). Fane-bytte er ekte klient-state; Godkjenn/Avvis/Bekreft-slett-knappene har ingen handling — samme som legacy, ikke lagt til ny funksjonalitet i en design-port. |
 
 ### Admin (organisasjon og innstillinger)
@@ -883,6 +883,11 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   legacy: ingen modererings-/GDPR-slett-datamodell finnes ennå, så alle lister/tall er
   hardkodet tomme i `page.tsx` (som før) og Godkjenn/Avvis/Bekreft-slett-knappene har ingen
   handling. Ikke en design-mangel — det er ærlig, siden ingen ekte kø finnes å koble til.
+  **3.19** Stats-oversikt (`AdminStatsOversiktV2`) — admin-dashboard (KPI-strip, database-status,
+  sync-status, modereringskø-forhåndsvisning, git-commits, raske handlinger); datahenting 100 %
+  uendret, `Reveal`/`CountUp` gjenbrukt for scroll-inn-animasjon. Fant en pre-eksisterende bug:
+  `hentSisteCommits()` kjører `execSync` mot en hardkodet lokal filsti (Anders' Mac) som aldri
+  finnes i Vercel — fanges stille av try/catch (tom liste). Bevart uendret, meldt i tabellen.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
