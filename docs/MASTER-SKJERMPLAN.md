@@ -498,7 +498,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Organisasjon-hub | `/admin/organisasjon` | – | --- | ✓ | ~ | ~ | ~ |
 | **Klubb-innstillinger** ★ | `/admin/klubb/innstillinger` | – | ✓✓✓ | ✓ | ✓ | ✓ | ~ | 2026-07-14: v2 (`AdminKlubbInnstillingerV2`, AgencyOS Bølge 3.14) — samme `addClub`/`updateClubSettings`/`lagreClubSettings`/`removeClub`-kontrakt, `BunnArk` i stedet for native `<dialog>`. **Funker ikke fullt:** «Detaljer»-lenken på hvert klubbkort peker til `/admin/klubb/[id]/rediger`, en rute som ikke finnes (verifisert, samme i legacy) — bevart uendret, meldt for egen fiks-økt (se også AI Workspace-raden lenger ned med samme type funn). |
 | **Integrasjoner** ★ | `/admin/integrasjoner` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminIntegrasjonerV2`, AgencyOS Bølge 3.1) — samme statuskilder (Prisma + env-sjekk), ren visning |
-| Innstillinger | `/admin/settings` | – | –✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-14: IKKE portet i Bølge 2 — 1727 linjer på tvers av 13 filer (kalender/security/tilgang-underflater). Trenger egen mini-plan mot faktisk tab-struktur, ikke en hastig omskriving samme natt. |
+| **Innstillinger (hub)** ★ | `/admin/settings` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminInnstillingerV2`, AgencyOS Bølge 3.32) — samme tre faner (Organisasjon/Team & roller/Tilgang, `?tab=`), samme Prisma-aggregering. **Undersidene** (`/admin/settings/api`, `/calendar`, `/security`, `/tilgang`, ~1500 linjer til sammen) er IKKE portet ennå — egne commits gjenstår, `calendar` deler `CalendarSyncSection` med `/admin/availability` (se den raden). |
 | · API | `/admin/settings/api` | – | --- | ✓ | ~ | ~ | ~ |
 | · Kalender | `/admin/settings/calendar` | – | --- | ✓ | ~ | ~ | ~ |
 | · Sikkerhet | `/admin/settings/security` | – | --- | ✓ | ~ | ~ | ~ |
@@ -959,7 +959,12 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   native `<dialog>`/fixed-div. `CalendarSyncSection`-innholdet er bevisst IKKE re-skinnet —
   forblir legacy-stil til den porteres sammen med Innstillinger (delt komponent, se
   `plans/legacy-portering-prioritet.md`). Gjenstår i Bølge 2 er dermed kun Innstillinger.
-  Verifisert: tsc 0 feil, ESLint grønt.
+  Verifisert: tsc 0 feil, ESLint grønt. **Bølge 3.32** (samme kveld): Innstillinger-HUBEN
+  (`/admin/settings`, kun hoved-siden med Organisasjon/Team & roller/Tilgang-fanene) portet til
+  `AdminInnstillingerV2` — samme `?tab=`-mønster og Prisma-aggregering (klubber + coacher/unike
+  spillere per gruppe). De fire undersidene (`api`, `calendar`, `security`, `tilgang`) er IKKE
+  portet i denne commiten — hver har egne skjemaer/modaler og bør tas én om gangen. Verifisert:
+  tsc 0 feil, ESLint grønt.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
