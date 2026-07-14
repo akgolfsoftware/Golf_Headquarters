@@ -110,6 +110,7 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
       { id: "email-templates", label: "E-postmaler", icon: "mail-check", href: "/admin/email-templates" },
       { id: "availability", label: "Tilgjengelighet", icon: "clock", href: "/admin/availability" },
       { id: "kalender-synk", label: "Kalender-synk (Google)", icon: "refresh-cw", href: "/admin/settings/calendar" },
+      { id: "min-profil", label: "Min coach-profil", icon: "id-card", href: "/admin/profile" },
       { id: "spiller-profil", label: "Min spillerprofil", icon: "user", href: "/portal" },
       { id: "services", label: "Tjenester og priser", icon: "credit-card", href: "/admin/services" },
       { id: "settings", label: "Innstillinger", icon: "settings", href: "/admin/settings" },
