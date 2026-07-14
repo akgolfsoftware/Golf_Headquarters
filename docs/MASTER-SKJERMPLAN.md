@@ -431,7 +431,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Ny turnering | `/admin/tournaments/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | · Dubletter (rydd) | `/admin/tournaments/dubletter` | – | --- | ✓ | ~ | ~ | ~ |
 | Økter | `/admin/okter` | – | --- | ✓ | ~ | ~ | ~ |
-| Videoer | `/admin/videoer` | – | --- | ✓ | ~ | ~ | ~ |
+| **Videoer** ★ | `/admin/videoer` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminVideoerV2`, AgencyOS Bølge 3.10) — samme `SessionVideo`-modell og `uploadVideo`/`getSignedVideoUrl`/`deleteVideo`-kontrakt fra `@/lib/storage/video` |
 | Opptak | `/admin/recording` | – | --- | ✓ | ~ | ~ | ~ |
 
 ### Gjennomføre (daglig drift)
@@ -815,6 +815,29 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   `/admin/agencyos/okonomi`) er heller ikke gjort — krever en bevisst beslutning om hvilken som
   vinner, ikke en ren port. Gjenstående i Bølge 2: Innstillinger, Tilgjengelighet, Økonomi-
   sammenslåing — alle tre bør ha egen plan-økt. Deretter Bølge 3 (P3 sjelden/admin).
+- 14. juli (AgencyOS-gjennomgang fortsetter, Bølge 3.1–3.10, samme PR #10/branch): P3-lista
+  (`plans/legacy-portering-prioritet.md`) portet skjerm for skjerm, samme metodikk som Bølge 1–2
+  — én skjerm per commit, `test -f`-kollisjonssjekk før hver commit (se hendelse under),
+  master-skjermplan-rader oppdatert i samme commit som koden (detaljene står på hver rad, ikke
+  gjentatt her): **3.1** Audit-log (`AdminAuditLogV2`) + Integrasjoner (`AdminIntegrasjonerV2`).
+  **3.2** Inviter coach (`AdminInviterCoachV2`). **3.3** Hjelp (`AdminHjelpV2`). **3.4** Lag-snitt
+  (`AdminLagSnittV2`) + Forespørsler (`AdminForesporslerV2`). **3.5** Tildelt meg
+  (`AdminTildeltMegV2`). **3.6** Godkjenning-detalj (`AdminGodkjenningDetaljV2`, erstattet
+  enekonsument `ApprovalDetailClient`). **3.7** TrackMan-oversikt (`AdminTrackmanV2`). **3.8**
+  Teknisk-plan-detalj (`AdminTekniskPlanDetaljV2`). **3.9** E-postmal-rediger
+  (`AdminEpostmalRedigerV2`). **3.10** Videoer (`AdminVideoerV2`) — samme `SessionVideo`-modell
+  og `uploadVideo`/`getSignedVideoUrl`/`deleteVideo`-kontrakt; opplastingsskjemaet bruker bevisst
+  native ukontrollerte inputs (samme mønster som «Rediger spiller») siden `uploadVideo` er en
+  ekte FormData-basert action, ikke en objekt-kontrakt. Flere hub-rader (Team, Coaching-board,
+  Kommunikasjon) viste seg alt å være v2 eller rene redirect-stubber — rettet uten kode-endring,
+  samme stale-rad-mønster som tidligere bølger. **Én build-feil underveis** (commit `f2710ef5`,
+  Lag-snitt-porten): glemte å slette `(legacy)/lag-snitt/page.tsx` → Turbopack rute-kollisjon i
+  Vercel. Fikset i `64397b0e`, verifisert både lokalt (`next build`-kompilering OK) og i faktisk
+  Vercel-deploy (Ready). Ny fast rutine etter dette: eksplisitt `test -f`-sjekk av BÅDE slettet
+  legacy-side og ny v2-side rett etter `git rm`, før staging — kjørt på alle senere porteringer
+  denne kvelden. Verifisert hver skjerm: tsc 0 feil, ESLint grønt. Full `npm run build` kan ikke
+  fullføre i denne sandkassen (mangler `DIRECT_URL`/live DB — miljøbegrensning), men
+  kompilerings-/rute-fasen (der kollisjonsklassen feiler) går gjennom uten feil.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
