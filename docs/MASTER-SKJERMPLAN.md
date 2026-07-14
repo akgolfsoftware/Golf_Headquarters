@@ -512,7 +512,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | **AI Workspace** ★ | `/admin/ai` | – | ✓✓✓ | ✓ | ✓ | ✓ | ~ | 2026-07-14: v2 (`AdminAiV2`, AgencyOS Bølge 3.13) — samme `AgentRun`/`PlanAction`-datamodell, «Apply + log» er nå en ekte server action (var inline-closure i legacy). **Funker ikke fullt:** «Kjør kode-sesjon»-knappen på Kode-sesjoner-fanen poster til `/admin/ai/run`, en rute som ikke finnes noe sted i koden (verifisert, var også broken i legacy) — bevart uendret, dette er en bakenforliggende bug utenfor skopet til en design-port, meldt her for egen fiks-økt. |
 | **E-postmaler** ★ | `/admin/email-templates` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Allerede v2 — masterplan-raden var stale, rettet 2026-07-14 |
 | · **Rediger e-postmal** ★ | `/admin/email-templates/[id]/rediger` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminEpostmalRedigerV2`, AgencyOS Bølge 3.9) — samme `saveTemplate`/`sendTestEmail`/`setAsDefault`/`archiveTemplate`-kontrakt, 2-kolonners editor+live-forhåndsvisning m/ token-substitusjon |
-| Profil | `/admin/profile` | – | --- | ✓ | ~ | ~ | ~ |
+| **Profil** ★ | `/admin/profile` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminProfilV2`, AgencyOS Bølge 3.15) — samme `oppdaterCoachProfil`-kontrakt, native ukontrollerte felt (FormData-action). «Skjul»-knappen er fortsatt en placeholder-toast (ingen reell deaktiverings-backend, uendret fra legacy). |
 | **Hjelp** ★ | `/admin/hjelp` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminHjelpV2`, AgencyOS Bølge 3.3) — samme statiske innhold (kategorier/artikler/kontakt-CTA), lokalt søkefilter uendret |
 | Caddie (alt. adresse, redirect) | `/admin/caddie` | — | — | ✓ | ✓ | – | ✓ | 2026-07-14 sjekket: konsolidert inn i `/admin/agencyos/caddie/dashbord`, ren `permanentRedirect()` — ingenting å portere. |
 | ~~Design-godkjenning~~ | `/admin/godkjenn-portal` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
@@ -869,6 +869,9 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   multi-club org-innstillinger + klubbkort, to `BunnArk`-skjemaer (org-info, klubb ny/rediger)
   erstatter native `<dialog>`-elementene; samme funn-mønster som 3.13 — «Detaljer»-lenken på
   klubbkortet peker til en rute som ikke finnes (`/admin/klubb/[id]/rediger`), bevart uendret.
+  **3.15** Profil (`AdminProfilV2`) — samme `oppdaterCoachProfil`-kontrakt, native ukontrollerte
+  felt (ekte FormData-action, samme mønster som «Rediger spiller»). «Skjul»-knappen er fortsatt
+  en placeholder-toast, ingen ekte deaktiverings-backend (uendret fra legacy, ikke et nytt funn).
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
