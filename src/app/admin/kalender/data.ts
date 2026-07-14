@@ -32,6 +32,8 @@ export interface KalOkt {
   serie?: string | null;
   href?: string;
   naa?: boolean;
+  /** I3: kalenderhendelse (ferie, stengt anlegg, møte) — merkes i OktBlokk. */
+  erHendelse?: boolean;
 }
 
 export interface KalDag {
@@ -164,6 +166,33 @@ export async function hentAgencyKalenderData(ukeParam?: string): Promise<Kalende
       naa: false,
     });
     serieOkterAntall += 1;
+  }
+
+  // 3 · Kalenderhendelser (I3) — vises for alle coacher (delt visning, som
+  // bookinger/serier), plassert på startdagen. Klikk åpner detalj/slett.
+  const ukeSluttForHendelser = new Date(ukeStart);
+  ukeSluttForHendelser.setDate(ukeSluttForHendelser.getDate() + 7);
+  const hendelser = await prisma.calendarEvent.findMany({
+    where: { startAt: { lt: ukeSluttForHendelser }, endAt: { gt: ukeStart } },
+    select: { id: true, title: true, startAt: true, endAt: true },
+    orderBy: { startAt: "asc" },
+  });
+  for (const h of hendelser) {
+    const dayIndex = ukedagIndex(h.startAt);
+    if (dayIndex < 0 || dayIndex > 6) continue;
+    dager[dayIndex].okter.push({
+      id: `hendelse-${h.id}`,
+      kl: hhmm(h.startAt),
+      startMin: h.startAt.getHours() * 60 + h.startAt.getMinutes(),
+      navn: h.title,
+      akse: undefined,
+      sted: null,
+      gruppe: null,
+      serie: null,
+      href: `/admin/kalender/hendelse/${h.id}`,
+      naa: false,
+      erHendelse: true,
+    });
   }
 
   // Sorter hver dag på starttid.

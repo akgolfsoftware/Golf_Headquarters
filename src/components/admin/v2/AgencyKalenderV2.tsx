@@ -102,6 +102,7 @@ function OktBlokk({ okt, onSerieClick }: { okt: KalOkt; onSerieClick?: (okt: Kal
         {okt.gruppe != null && <MikroMeta icon="users">{okt.gruppe}</MikroMeta>}
       </div>
       <span style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{okt.navn}</span>
+      {okt.erHendelse && <MikroMeta icon="x-circle">Hendelse</MikroMeta>}
       {okt.sted && <MikroMeta icon="map-pin">{okt.sted}</MikroMeta>}
       {okt.serie && <SerieMerke tekst={okt.serie} />}
     </div>

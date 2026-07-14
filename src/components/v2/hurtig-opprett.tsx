@@ -6,12 +6,14 @@
  * NyOktArk i WorkbenchV2Sheets (fixed overlay, backdrop-klikk lukker,
  * T.*-tokens, aldri rå hex).
  *
- * To valg:
+ * Tre valg:
  *  - «Ny booking» → /admin/bookinger/ny?start=<dato>T<klokkeslett>
  *    (wizarden leser ?start= og prefyller Dato & tid).
  *  - «Ny økt» → /admin/planlegge (låst beslutning: Planlegge er ETT
  *    trykkpunkt inn i Workbench). Planlegge/Workbench har ingen
  *    ?start=-støtte ennå — lenken bærer derfor ingen param (kjent gap).
+ *  - «Ny hendelse» (I3) → /admin/kalender/hendelse/ny?start=<dato>T<klokkeslett>
+ *    — ferie/stengt anlegg/møte som blokkerer booking i tidsrommet.
  */
 
 import Link from "next/link";
@@ -156,6 +158,12 @@ export function HurtigOpprett({ dato, klokkeslett, onLukk }: HurtigOpprettProps)
             icon="plus"
             tittel="Ny økt"
             sub="Planlegg i Workbench — velg spiller først"
+          />
+          <Valg
+            href={`/admin/kalender/hendelse/ny?start=${dato}T${klokkeslett}`}
+            icon="x-circle"
+            tittel="Ny hendelse"
+            sub="Ferie, stengt anlegg, møte — blokkerer booking"
           />
         </div>
 
