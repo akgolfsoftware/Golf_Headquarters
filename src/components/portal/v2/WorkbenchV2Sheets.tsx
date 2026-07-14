@@ -16,7 +16,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { ReactNode, CSSProperties } from "react";
-import { T, Icon, Kort, Knapp, AkseChip } from "@/components/v2";
+import { T, Icon, Kort, Knapp, AkseChip, HjelpTips } from "@/components/v2";
+import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WeekEvent } from "@/lib/workbench/week-types";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
@@ -158,7 +159,7 @@ export function DagPillRow({
   );
 }
 
-function Felt({ label, children }: { label: string; children: ReactNode }) {
+function Felt({ label, hjelp, children }: { label: string; hjelp?: HjelpNokkel; children: ReactNode }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
       <span
@@ -169,9 +170,13 @@ function Felt({ label, children }: { label: string; children: ReactNode }) {
           letterSpacing: "0.1em",
           textTransform: "uppercase",
           color: T.mut,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 5,
         }}
       >
         {label}
+        {hjelp && <HjelpTips k={hjelp} size={11} />}
       </span>
       {children}
     </div>
@@ -372,7 +377,7 @@ function OktArkSkjema({
               <input type="number" min={5} max={480} step={5} value={durMin} onChange={(e) => setDurMin(Number(e.target.value) || 60)} style={inputStyle} />
             </Felt>
           </div>
-          <Felt label="Område — trykk for å bytte">
+          <Felt label="Område — trykk for å bytte" hjelp="pyramideAkse">
             <button
               type="button"
               onClick={sykleAkse}
@@ -389,13 +394,13 @@ function OktArkSkjema({
 
           {/* 8c.7: AK-formel — sykle-chips (valgfritt, aldri sperre) */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            <Felt label="L-fase — trykk for å bytte">
+            <Felt label="L-fase — trykk for å bytte" hjelp="lFase">
               <button type="button" onClick={sykleLFase} className="v2-press v2-focus" data-wb-lfasechip data-klar style={chipStil(!!lFase)}>
                 {lFase ? lFase.replace("L_", "L-").replace("KROPP", "Kropp").replace("ARM", "Arm").replace("KOLLE", "Kølle").replace("BALL", "Ball").replace("AUTO", "Auto") : "Ikke satt"}
                 <Icon name="refresh-cw" size={11} style={{ color: T.mut }} />
               </button>
             </Felt>
-            <Felt label="Miljø — trykk for å bytte">
+            <Felt label="Miljø — trykk for å bytte" hjelp="miljo">
               <button type="button" onClick={sykleMiljo} className="v2-press v2-focus" data-wb-miljochip style={chipStil(!!miljo)}>
                 {miljo ?? "Ikke satt"}
                 <Icon name="refresh-cw" size={11} style={{ color: T.mut }} />

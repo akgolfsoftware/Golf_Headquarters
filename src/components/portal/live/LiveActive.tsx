@@ -10,6 +10,12 @@ import { SessionTimer } from "./SessionTimer";
 import { LiveCoachPanel } from "./LiveCoachPanel";
 import { completeDrill, completeSession, startSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
 
+// Samme mørke forest-gradient som brief/logger/oppsummering (LiveSessionShell
+// "dark"-variant) — hele live-flyten er bevisst alltid mørk uansett appens
+// lys/mørk-tema (immersivt treningsmodus-fokus), derfor pinnet hex og ikke
+// var(--v2-lime)-typer tokens som ville byttet til forest i lys modus.
+const LIVE_BG_GRADIENT = "radial-gradient(120% 80% at 50% 0%, #0d2218, #0A1F17 70%)";
+
 type DrillStatus = "done" | "active" | "queued";
 
 type DrillState = LiveV2Drill & {
@@ -320,9 +326,9 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
     vibrate([60, 40]);
 
     if (activeIdx === drills.length - 1) {
-      await completeSession(data.sessionId, totalSec + drillSec);
+      await completeSession(data.sessionId, totalSec);
     }
-  }, [active, activeIdx, data.sessionId, drills.length, isCompleting, totalSec, drillSec]);
+  }, [active, activeIdx, data.sessionId, drills.length, isCompleting, totalSec]);
 
   const handleLogRep = useCallback(() => {
     setShowDrillLogger(true);
@@ -354,7 +360,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
     return (
       <div
         className="fixed inset-0 z-50 flex flex-col"
-        style={{ background: "radial-gradient(120% 80% at 50% 0%, #0d2218, #0A1F17 70%)" }}
+        style={{ background: LIVE_BG_GRADIENT }}
       >
         {/* Mini topbar for logger-overlay */}
         <header
@@ -382,6 +388,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             isLast={activeIdx === drills.length - 1}
             completedCount={completedCount}
             totalCount={drills.length}
+            drillSeconds={drillSec}
           />
         </main>
       </div>
@@ -394,7 +401,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
       style={{
         // Samme mørke forest-flate som resten av live-flyten (brief/logger/
         // oppsummering) — komponenten sto tidligere i lyse shadcn-tokens.
-        background: "radial-gradient(120% 80% at 50% 0%, #0d2218, #0A1F17 70%)",
+        background: LIVE_BG_GRADIENT,
         isolation: "isolate",
       }}
     >

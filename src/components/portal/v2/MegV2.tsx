@@ -13,11 +13,13 @@
  * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { Tier } from "@/generated/prisma/client";
 import type { GoalItem } from "@/app/portal/actions";
 import { logout } from "@/lib/auth/logout";
+import { uploadAvatar } from "@/lib/storage/avatar";
 import { useCountUp } from "@/lib/v2/hooks";
 import {
   T,
@@ -119,7 +121,35 @@ type KontoRad = { ic: string; l: string; sub?: string; href: string };
 
 export function MegV2({ data }: { data: MegData }) {
   const mobile = useMobile();
-  const { navn, avatarUrl, hcp, homeClub, tier, goals, sesong } = data;
+  const router = useRouter();
+  const { navn, hcp, homeClub, tier, goals, sesong } = data;
+
+  // Avatar direkte klikkbar her (Anders-krav: bytt bilde skal ikke kreve
+  // omvei via Profil og innstillinger) — samme uploadAvatar-action og
+  // pending/feil-mønster som MinProfilV2.tsx.
+  const [avatarUrl, setAvatarUrl] = useState(data.avatarUrl);
+  const [avatarLagrer, startAvatarLagring] = useTransition();
+  const [avatarFeil, setAvatarFeil] = useState<string | null>(null);
+  const filInputRef = useRef<HTMLInputElement>(null);
+
+  function velgBilde(e: React.ChangeEvent<HTMLInputElement>) {
+    const fil = e.target.files?.[0];
+    if (!fil) return;
+    setAvatarFeil(null);
+    const formData = new FormData();
+    formData.append("file", fil);
+    startAvatarLagring(async () => {
+      try {
+        const res = await uploadAvatar(formData);
+        setAvatarUrl(res.url);
+        router.refresh();
+      } catch (err) {
+        setAvatarFeil(err instanceof Error ? err.message : "Opplasting feilet.");
+      } finally {
+        if (filInputRef.current) filInputRef.current.value = "";
+      }
+    });
+  }
 
   // Meta-linje — ærlig avledet av hcp + klubb (WAGR/kategori finnes ikke i data).
   const metaDeler: string[] = [];
@@ -141,18 +171,44 @@ export function MegV2({ data }: { data: MegData }) {
     { ic: "user", l: "Profil og innstillinger", sub: "Navn, HCP, klubb", href: "/portal/meg/profil" },
     { ic: "calendar-plus", l: "Book coachtime", sub: "Velg tjeneste, coach og tid", href: "/portal/booking" },
     { ic: "credit-card", l: "Abonnement", sub: tierSub(tier), href: "/portal/meg/abonnement" },
-    { ic: "bell", l: "Varsler", sub: "Push og e-post", href: "/portal/meg/innstillinger" },
-    { ic: "shield", l: "Personvern og samtykke", href: "/portal/meg/innstillinger" },
+    { ic: "bell", l: "Varsler", sub: "Push og e-post", href: "/portal/meg/innstillinger/varsler" },
+    { ic: "shield", l: "Personvern og samtykke", href: "/portal/meg/innstillinger/personvern" },
   ];
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode — avatar + navn + meta */}
+      {/* Hode — avatar (direkte klikkbar for å bytte bilde) + navn + meta */}
       <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-        <AvatarFoto src={avatarUrl} navn={navn} size={64} ring />
+        <label
+          htmlFor="meg-avatar-input"
+          aria-label="Bytt profilbilde"
+          style={{ position: "relative", display: "inline-flex", cursor: avatarLagrer ? "default" : "pointer", flex: "none" }}
+        >
+          <AvatarFoto src={avatarUrl} navn={navn} size={64} ring />
+          <span
+            aria-hidden
+            style={{
+              position: "absolute", right: -2, bottom: -2, width: 22, height: 22, borderRadius: 9999,
+              background: T.panel3, border: `1.5px solid ${T.bg}`, display: "inline-flex",
+              alignItems: "center", justifyContent: "center",
+            }}
+          >
+            <Icon name={avatarLagrer ? "loader" : "camera"} size={11} style={{ color: T.fg2 }} />
+          </span>
+        </label>
+        <input
+          ref={filInputRef}
+          id="meg-avatar-input"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          onChange={velgBilde}
+          disabled={avatarLagrer}
+          style={{ display: "none" }}
+        />
         <div>
           <Tittel mobile={mobile}>{navn}</Tittel>
           {metaDeler.length > 0 && <Caps style={{ marginTop: 8 }}>{metaDeler.join(" · ")}</Caps>}
+          {avatarFeil && <Caps style={{ marginTop: 8, color: T.down }}>{avatarFeil}</Caps>}
         </div>
       </div>
 

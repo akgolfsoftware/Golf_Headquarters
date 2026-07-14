@@ -12,7 +12,15 @@ export type DrillLoggerProps = {
   /** Viser fremdrift. */
   completedCount: number;
   totalCount: number;
+  /** Tid brukt på DENNE drillen — nullstilles når neste drill starter (økt-tiden totalt går uavbrutt videre). */
+  drillSeconds: number;
 };
+
+function fmtDrillMSS(totalSec: number): string {
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
 
 const AXIS_LABEL: Record<string, string> = {
   FYS: "Fysisk",
@@ -44,6 +52,7 @@ export function DrillLogger({
   isLast,
   completedCount,
   totalCount,
+  drillSeconds,
 }: DrillLoggerProps) {
   const computedTotal =
     state.repsWithoutBall + state.repsLowSpeed + state.repsAutomatic + state.repsHit;
@@ -93,7 +102,9 @@ export function DrillLogger({
         </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-4 font-mono text-sm font-semibold tabular-nums text-background/65">
-          <span>{drill.durationMinutes} min</span>
+          <span className="text-accent">{fmtDrillMSS(drillSeconds)} på denne drillen</span>
+          <span className="text-background/30">·</span>
+          <span>{drill.durationMinutes} min mål</span>
           <span className="text-background/30">·</span>
           <span>{drill.plannedReps > 0 ? `${drill.plannedReps} reps mål` : "Ingen reps-mål"}</span>
         </div>

@@ -3,6 +3,7 @@ import { AlertTriangle, ExternalLink, ImagePlus } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { EditProfileForm } from "./edit-form";
 import { SkjulProfilButton } from "./profile-actions";
+import { AvatarUpload } from "./avatar-upload";
 
 type Field = { label: string; value: string; mono?: boolean };
 
@@ -86,11 +87,7 @@ export default async function AdminProfilePage() {
 
       <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[320px_1fr]">
         <aside className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 lg:sticky lg:top-6">
-          <div className="relative flex justify-center">
-            <div className="grid h-24 w-24 place-items-center rounded-full bg-primary font-display text-[32px] font-semibold text-primary-foreground">
-              {initials(user.name) || "AK"}
-            </div>
-          </div>
+          <AvatarUpload initialUrl={user.avatarUrl} initials={initials(user.name)} />
           <div className="mt-1 text-center">
             <div className="font-display text-[24px] font-semibold tracking-tight">
               {user.name}

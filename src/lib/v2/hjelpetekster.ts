@@ -52,6 +52,21 @@ const RAW = {
     forklaring:
       "De fem hovedområdene i AK-formelen: FYS (fysikk), TEK (teknikk), SLAG (slagproduksjon), SPILL (spillforståelse) og TURN (turnering). Hver økt tilhører én akse.",
   },
+  skillArea: {
+    tittel: "Ferdighetsområde",
+    forklaring:
+      "Hvilken konkret del av spillet drillen trener på — for eksempel driver, jern, chip eller putting. Mer presist enn pyramide-aksen, som bare sier hvilken av de fem hovedgruppene økta hører til.",
+  },
+  miljo: {
+    tittel: "Miljø",
+    forklaring:
+      "Hvor drillen trenes: Range (rekkevidde uten press), Simulator, Bane eller Turnering. Miljøet sier noe om hvor mye press og virkelighet som er med — range har minst, turnering mest.",
+  },
+  prPress: {
+    tittel: "Press-nivå",
+    forklaring:
+      "Hvor mye press drillen er lagt opp med, fra fri utførelse uten konsekvens til turneringslignende press med resultat som teller. Høyere press trener nervene, ikke bare teknikken.",
+  },
   streak: {
     tittel: "Streak",
     forklaring:
