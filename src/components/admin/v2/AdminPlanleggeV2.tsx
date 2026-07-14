@@ -150,9 +150,7 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
       ? `${pl(utenAktiv, "spiller mangler", "spillere mangler")} en aktiv plan — sett mål og periodisering samlet i Workbench.`
       : "Alle spillere har en aktiv plan — bruk roen til å finjustere mål og drills i Workbench.";
   const innsikt = primaer ? (
-    <Link href={workbenchHref(primaer.id)} style={{ textDecoration: "none" }}>
-      <InnsiktChip cta="Planlegg i Workbench">{innsiktTekst}</InnsiktChip>
-    </Link>
+    <InnsiktChip cta="Planlegg i Workbench" href={workbenchHref(primaer.id)}>{innsiktTekst}</InnsiktChip>
   ) : null;
 
   return (

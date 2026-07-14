@@ -19,6 +19,7 @@
 
 import { useEffect, useState } from "react";
 import type { DataGolfData, DataGolfKategori } from "@/lib/portal-stats/datagolf-data";
+import { WORKBENCH_HREF } from "./WorkbenchInngang";
 import {
   T,
   fmtSg,
@@ -298,7 +299,7 @@ export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
   );
 
   const innsikt = data.storsteGap ? (
-    <InnsiktChip cta="Planlegg dette">
+    <InnsiktChip cta="Planlegg dette" href={WORKBENCH_HREF}>
       Størst avstand til {refNavn} er i {data.storsteGap.name.toLowerCase()} ({sg(-data.storsteGap.gap)} slag) — det er der gapet mot touren lukkes raskest.
     </InnsiktChip>
   ) : null;

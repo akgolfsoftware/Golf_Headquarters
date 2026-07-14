@@ -148,9 +148,6 @@ export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSp
         <Link href={data.flagg.ctaHref} style={{ textDecoration: "none" }}>
           <CTAPill icon="plus">{data.flagg.ctaLabel}</CTAPill>
         </Link>
-        <Link href="/admin/godkjenninger" style={{ textDecoration: "none" }}>
-          <CTAPill ghost>Avvis</CTAPill>
-        </Link>
       </div>
     </Kort>
   );

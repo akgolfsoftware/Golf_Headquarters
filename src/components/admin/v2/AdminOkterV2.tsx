@@ -190,11 +190,9 @@ export function AdminOkterV2({ data }: { data: AdminOkterData }) {
             sub={`Det er ingen treningsøkter i uke ${data.ukenr} (${data.periodeLabel}). Lag en plan i Workbench eller åpne kalenderen.`}
           />
         </Kort>
-        <Link href="/admin/planlegge" style={{ textDecoration: "none" }}>
-          <InnsiktChip cta="Planlegg i Workbench">
-            Uka er åpen — bruk roen til å planlegge økter samlet i Workbench.
-          </InnsiktChip>
-        </Link>
+        <InnsiktChip cta="Planlegg i Workbench" href="/admin/planlegge">
+          Uka er åpen — bruk roen til å planlegge økter samlet i Workbench.
+        </InnsiktChip>
       </div>
     );
   }
@@ -306,11 +304,7 @@ export function AdminOkterV2({ data }: { data: AdminOkterData }) {
     : kpi.forfalt > 0
       ? `${pl(kpi.forfalt, "forfalt økt", "forfalte økter")} denne uka — følg opp og planlegg videre i Workbench.`
       : `${pl(kpi.total, "økt", "økter")} planlagt denne uka — juster uka i Workbench.`;
-  const innsikt = (
-    <Link href="/admin/planlegge" style={{ textDecoration: "none" }}>
-      <InnsiktChip cta="Planlegg i Workbench">{innsiktTekst}</InnsiktChip>
-    </Link>
-  );
+  const innsikt = <InnsiktChip cta="Planlegg i Workbench" href="/admin/planlegge">{innsiktTekst}</InnsiktChip>;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>

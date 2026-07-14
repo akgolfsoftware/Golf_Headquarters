@@ -628,13 +628,28 @@ export function Trend({ series, height = 96, yMin, yMax, baseline = 0, fmt, xLab
 export interface InnsiktChipProps {
   children?: ReactNode;
   cta?: ReactNode;
+  /** Gjør `cta`-teksten til en ekte lenke. Uten denne rendres `cta` som
+   *  vanlig uthevet tekst UTEN pil — ser aldri klikkbar ut uten å være det
+   *  (I8 lag 2-funn: 20+ skjermer viste en lime "cta →" som ikke gjorde noe). */
+  href?: string;
 }
 /* AI-innsikt — stille, aldri ropende */
-export function InnsiktChip({ children, cta }: InnsiktChipProps) {
+export function InnsiktChip({ children, cta, href }: InnsiktChipProps) {
   return (
     <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
       <Icon name="sparkles" size={13} style={{ color: T.lime, flex: "none", marginTop: 1 }} />
-      <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5 }}>{children}{cta && <> <span style={{ color: T.lime, fontWeight: 600 }}>{cta} →</span></>}</span>
+      <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5 }}>
+        {children}
+        {cta && href && (
+          <>
+            {" "}
+            <Link href={href} style={{ color: T.lime, fontWeight: 600, textDecoration: "none" }}>
+              {cta} →
+            </Link>
+          </>
+        )}
+        {cta && !href && <> <span style={{ color: T.fg, fontWeight: 600 }}>{cta}</span></>}
+      </span>
     </div>
   );
 }
