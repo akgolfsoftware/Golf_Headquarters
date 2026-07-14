@@ -13,7 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
 import { Caps, Tittel, Kort, Rad, KpiFlis, StatusPill, TomTilstand, AvatarInit, HjelpTips, TilbakeLenke } from "@/components/v2";
-import { TournamentForm } from "@/app/admin/(legacy)/tournaments/tournament-form";
+import { TournamentForm } from "@/app/admin/tournaments/tournament-form";
 import { ResultForm } from "./result-form";
 import { UnmergeBanner } from "./unmerge-banner";
 import { TournamentEnrollModal, PriorityPill } from "@/components/coachhq/tournament-enroll-modal";
@@ -66,24 +66,36 @@ export default async function TurneringDetalj({
     : null;
   const periodStr = endStr ? `${startStr} – ${endStr}` : startStr;
 
+  type WizardMeta = {
+    createdVia: "wizard";
+    priority?: string;
+    rounds?: number;
+    teeOptions?: string[];
+    hcpAdjust?: string;
+    hasCut?: boolean;
+    maxParticipants?: number;
+    feeOre?: number;
+    registrationDeadline?: string | null;
+    description?: string | null;
+  };
   let tourMeta: { tour?: string; krets?: string; categories?: unknown[] } | null = null;
+  let wizardMeta: WizardMeta | null = null;
   if (tournament.notes) {
     try {
       const parsed = JSON.parse(tournament.notes);
       if (parsed && typeof parsed === "object" && (parsed.tour || parsed.externalId)) tourMeta = parsed;
+      else if (parsed && typeof parsed === "object" && parsed.createdVia === "wizard") wizardMeta = parsed;
     } catch {
       // Ikke JSON — vis som vanlig notat under.
     }
   }
+  const HCP_LABEL: Record<string, string> = { FULL: "Full HCP", P90: "90 % HCP", P75: "75 % HCP", SCRATCH: "Scratch" };
+  const PRIO_LABEL: Record<string, string> = { MAJOR: "Major", NORMAL: "Normal", LOCAL: "Lokal" };
 
   return (
     <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/admin/tournaments">Turneringer</TilbakeLenke>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-        <Link href="/admin/tournaments" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
-          <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>← Turneringer</span>
-        </Link>
-
         {/* Hode */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
           <div>
@@ -150,6 +162,28 @@ export default async function TurneringDetalj({
                 <StatusPill tone="info">
                   {tourMeta.categories.length} kategori{tourMeta.categories.length === 1 ? "" : "er"}
                 </StatusPill>
+              )}
+            </div>
+          ) : wizardMeta ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {wizardMeta.priority && <StatusPill tone="lime">{PRIO_LABEL[wizardMeta.priority] ?? wizardMeta.priority}</StatusPill>}
+                {wizardMeta.rounds != null && <StatusPill tone="info">{wizardMeta.rounds} runde{wizardMeta.rounds === 1 ? "" : "r"}</StatusPill>}
+                {wizardMeta.teeOptions && wizardMeta.teeOptions.length > 0 && <StatusPill tone="info">Tee · {wizardMeta.teeOptions.join(", ")}</StatusPill>}
+                {wizardMeta.hcpAdjust && <StatusPill tone="info">{HCP_LABEL[wizardMeta.hcpAdjust] ?? wizardMeta.hcpAdjust}</StatusPill>}
+                {wizardMeta.hasCut && <StatusPill tone="warn">Cut etter runde 2</StatusPill>}
+                {wizardMeta.maxParticipants != null && <StatusPill tone="info">Maks {wizardMeta.maxParticipants} deltakere</StatusPill>}
+                {wizardMeta.feeOre != null && wizardMeta.feeOre > 0 && (
+                  <StatusPill tone="info">{new Intl.NumberFormat("nb-NO", { style: "currency", currency: "NOK", minimumFractionDigits: 0 }).format(wizardMeta.feeOre / 100)}</StatusPill>
+                )}
+                {wizardMeta.registrationDeadline && (
+                  <StatusPill tone="info">Frist · {new Date(wizardMeta.registrationDeadline).toLocaleDateString("nb-NO", { day: "numeric", month: "short" })}</StatusPill>
+                )}
+              </div>
+              {wizardMeta.description && (
+                <Kort>
+                  <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, whiteSpace: "pre-wrap", margin: 0 }}>{wizardMeta.description}</p>
+                </Kort>
               )}
             </div>
           ) : (

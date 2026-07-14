@@ -21,7 +21,7 @@ const TYPER = ["INTERN", "EKSTERN"] as const;
 const PRIORITETER = ["MAJOR", "NORMAL", "LOCAL"] as const;
 const HCP_VALG = ["FULL", "P90", "P75", "SCRATCH"] as const;
 
-export const ny_turnering_schema = z
+const ny_turnering_schema = z
   .object({
     type: z.enum(TYPER),
     name: z.string().trim().min(2, "Navn er for kort").max(140),

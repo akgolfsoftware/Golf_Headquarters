@@ -42,7 +42,7 @@ import {
 import {
   exportTournamentsReport,
   type ExportTournamentsInput,
-} from "@/app/admin/(legacy)/tournaments/actions";
+} from "@/app/admin/tournaments/actions";
 
 // ------------------------------------------------------------------
 // Typer

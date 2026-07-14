@@ -17,7 +17,7 @@ import {
   meldPaSpillere,
   fjernPamelding,
   oppdaterPrioritet,
-} from "@/app/admin/(legacy)/tournaments/actions";
+} from "@/app/admin/tournaments/actions";
 import { avatarBg, initialsFromName } from "@/lib/avatar-colors";
 
 export type EnrollPlayer = {

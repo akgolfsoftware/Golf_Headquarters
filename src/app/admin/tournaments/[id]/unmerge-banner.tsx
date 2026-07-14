@@ -1,21 +1,22 @@
 "use client";
 
+/**
+ * Vises kun når en turnering er slått sammen (mergedIntoId satt) — v2.
+ * Logikk bevart 1:1 fra legacy unmerge-banner.tsx. Flytter IKKE
+ * påmeldinger/resultater tilbake — det gjør server-actionen klart i teksten.
+ */
+
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Link2Off, Loader2 } from "lucide-react";
-import { unmergeTurnering } from "@/app/admin/(legacy)/tournaments/actions";
+import { T } from "@/components/v2";
+import { Icon } from "@/components/v2/icon";
+import { unmergeTurnering } from "@/app/admin/tournaments/actions";
 
 type Props = {
   sourceId: string;
-  /** Navnet på turneringen denne er slått sammen inn i (mål). */
   targetName: string | null;
 };
 
-/**
- * Vises kun når en turnering er slått sammen (mergedIntoId satt). Lar coachen
- * oppheve sammenslåingen. Flytter IKKE påmeldinger/resultater tilbake — det
- * gjør server-action-en klart i teksten.
- */
 export function UnmergeBanner({ sourceId, targetName }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -41,36 +42,29 @@ export function UnmergeBanner({ sourceId, targetName }: Props) {
   }
 
   return (
-    <div className="rounded-lg border border-warning/40 bg-warning/5 p-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0">
-          <h2 className="font-display text-base font-semibold tracking-tight text-foreground">
+    <div style={{ borderRadius: 14, background: `color-mix(in srgb, ${T.warn} 8%, ${T.panel})`, border: `1px solid color-mix(in srgb, ${T.warn} 35%, transparent)`, padding: 18 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+        <div style={{ minWidth: 0 }}>
+          <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>
             Slått sammen{targetName ? ` inn i «${targetName}»` : ""}
           </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Denne turneringen er markert som dublett og skjules fra
-            hovedlista. Opphev for å vise den som egen turnering igjen.
+          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "5px 0 0" }}>
+            Denne turneringen er markert som dublett og skjules fra hovedlista. Opphev for å vise den som egen turnering igjen.
           </p>
         </div>
         <button
           type="button"
           onClick={opphev}
           disabled={pending}
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-60"
+          className="v2-press v2-focus"
+          style={{ display: "inline-flex", alignItems: "center", gap: 8, flex: "none", appearance: "none", cursor: pending ? "default" : "pointer", borderRadius: 9999, padding: "9px 16px", fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, background: T.panel3, border: `1px solid ${T.borderS}`, opacity: pending ? 0.6 : 1 }}
         >
-          {pending ? (
-            <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.75} />
-          ) : (
-            <Link2Off className="h-4 w-4" strokeWidth={1.75} />
-          )}
+          <Icon name={pending ? "loader" : "corner-up-left"} size={14} />
           Opphev sammenslåing
         </button>
       </div>
       {feil && (
-        <div
-          role="alert"
-          className="mt-3 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
-        >
+        <div role="alert" style={{ marginTop: 12, borderRadius: 11, background: `color-mix(in srgb, ${T.down} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`, padding: "10px 13px", fontFamily: T.ui, fontSize: 12.5, color: T.down }}>
           {feil}
         </div>
       )}

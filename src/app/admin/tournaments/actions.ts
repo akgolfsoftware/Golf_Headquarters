@@ -264,7 +264,7 @@ const tExportPeriodSchema = z.enum([
 ]);
 const tExportSortSchema = z.enum(["dato", "type", "resultat"]);
 
-export const exportTournamentsInputSchema = z.object({
+const exportTournamentsInputSchema = z.object({
   format: tExportFormatSchema,
   type: tExportTypeSchema,
   period: tExportPeriodSchema,
