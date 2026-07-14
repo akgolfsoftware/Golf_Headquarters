@@ -374,7 +374,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Stall-oversikt | `/admin/stall` | – | --- | ✓ | ~ | ~ | ✓ |
+| Stall-oversikt (redirect) | `/admin/stall` | — | — | ✓ | ✓ | – | ✓ | Avviklet 2026-07-06 (Anders) — ren `redirect()`-stubb til `/admin/spillere` (SpillerTilstandKort-liste). Ingen duplikat-UI, ingenting å portere. |
 | **Spillere (alle)** = SpillerTilstandKort-liste (v13 golfdata, bølge 1 2026-07-04) ★ | `/admin/spillere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Complete v13 (SpillerTilstandKort + scope + cards)
 | · **Ny spiller** ★ | `/admin/spillere/ny` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Allerede v2 (`AdminNySpillerV2`, 4-stegs Veiviser) — masterplan-radene var stale, rettet 2026-07-14 |
 | **Spiller-detalj** ★ | `/admin/spillere/[id]` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
@@ -450,7 +450,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | **Anlegg** ★ | `/admin/anlegg` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminAnleggV2`, AgencyOS Bølge 2.2) — samme `createLocation`-kontrakt; `FacilityForm` (rediger/slett fasilitet) var allerede dødt/ubrukt kode i legacy-siden også, IKKE portet (ingen ny funksjon lagt til utover det som faktisk var koblet) |
 | ~~· Anlegg-detalj~~ | `/admin/anlegg/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | Tilgjengelighet | `/admin/availability` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| Kapasitet | `/admin/kapasitet` | – | --- | ✓ | ~ | ~ | ~ |
+| Kapasitet (redirect) | `/admin/kapasitet` | — | — | ✓ | ✓ | – | ✓ | Slått sammen med `/admin/bookinger` (Anders 2026-06-22) — ren `redirect()`-stubb. Kapasitet-heatmap + CSV-eksport bor i bookinger-dashbordet. Ingenting å portere. |
 | **Tjenester/priser** ★ | `/admin/services` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTjenesterV2`, AgencyOS Bølge 2.1) — samme `createService`/`updateService`/`deleteService`-kontrakt, ny/rediger som delt `BunnArk`-skjema |
 | ~~Fasiliteter (alt.)~~ | `/admin/facilities` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | ~~· Fasilitet-detalj~~ | `/admin/facilities/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
