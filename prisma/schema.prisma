@@ -372,6 +372,7 @@ model User {
 
   bookings        Booking[]
   coachedBookings Booking[]        @relation("BookingCoach")
+  calendarEvents  CalendarEvent[]
   parentRelations ParentRelation[] @relation("Child")
   childRelations  ParentRelation[] @relation("Parent")
 
@@ -814,6 +815,28 @@ model Booking {
   // så vernet lever i DB + lib/booking/kollisjonsvern.ts (fasilitets-
   // kapasitet håndteres der med advisory-lås + telling).
   @@map("bookings")
+}
+
+// I3 (Bølge 1 — interaksjonsgrunnmur): kalenderhendelse som blokkerer
+// booking i et tidsrom (ferie, stengt anlegg, møte). coachId=null er
+// reservert for «hele akademiet», men UI-et setter i dag alltid til den
+// innloggede coachen — se src/lib/booking/availability.ts for konflikt-
+// sjekken og src/lib/kalender-hendelse/actions.ts for opprett/slett.
+model CalendarEvent {
+  id        String   @id @default(cuid())
+  coachId   String?
+  title     String
+  startAt   DateTime
+  endAt     DateTime
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  coach User? @relation(fields: [coachId], references: [id], onDelete: Cascade)
+
+  @@index([coachId])
+  @@index([startAt, endAt])
+  @@map("calendar_events")
 }
 
 // ---------- PlayerHQ-modeller (Fase 1.5) ----------

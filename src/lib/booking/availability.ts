@@ -101,6 +101,13 @@ export async function getAvailableSlots(
     select: { startAt: true, endAt: true },
   });
 
+  // I3: kalenderhendelser (ferie, stengt anlegg, møte) som overlapper dagen.
+  // coachId=null blokkerer alle coacher, ellers kun den aktuelle coachen.
+  const hendelser = await prisma.calendarEvent.findMany({
+    where: { startAt: { lt: dayEnd }, endAt: { gt: dayStart } },
+    select: { coachId: true, startAt: true, endAt: true },
+  });
+
   // Hent travle tider fra Google Calendar per coach (parallelt).
   // Hvis en coach ikke har koblet Calendar, returneres tom liste.
   const uniqueCoachIds = Array.from(
@@ -149,8 +156,14 @@ export async function getAvailableSlots(
             cursor.getTime() < b.endAt.getTime() &&
             slotEnd.getTime() > b.startAt.getTime(),
         );
+        const hendelseConflict = hendelser.some(
+          (h) =>
+            (h.coachId === null || h.coachId === av.coach.id) &&
+            cursor.getTime() < h.endAt.getTime() &&
+            slotEnd.getTime() > h.startAt.getTime(),
+        );
         const calendarConflict = kalenderBlokkererSlot(kalender, cursor, slotEnd);
-        const conflict = bookingConflict || calendarConflict;
+        const conflict = bookingConflict || hendelseConflict || calendarConflict;
         if (!conflict) {
           slots.push({
             start: new Date(cursor),
@@ -193,6 +206,17 @@ export async function isSlotStillAvailable(
     },
   });
   if (conflict) return false;
+
+  // I3: kalenderhendelse (ferie, stengt anlegg, møte) for denne coachen
+  // eller hele akademiet (coachId=null) blokkerer slotet.
+  const hendelseConflict = await prisma.calendarEvent.findFirst({
+    where: {
+      OR: [{ coachId }, { coachId: null }],
+      startAt: { lt: endAt },
+      endAt: { gt: startAt },
+    },
+  });
+  if (hendelseConflict) return false;
 
   // Sjekk også Google Calendar. Fail-closed: hvis sjekken ikke kunne utføres
   // (ok:false) blokkeres slotet av kalenderBlokkererSlot.
