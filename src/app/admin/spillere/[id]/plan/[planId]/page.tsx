@@ -14,7 +14,7 @@ import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
 import { Caps, Tittel, Kort, KpiFlis, StatusPill, MikroMeta, TomTilstand } from "@/components/v2";
-import { SG_BUCKETS, type PyramidArea } from "@/components/teknisk-plan/constants";
+import { omraadeToTab, type PyramidArea } from "@/components/teknisk-plan/constants";
 import type { OppgaveDraft } from "@/components/teknisk-plan/oppgave-modal";
 import { PlanToolbar } from "./plan-toolbar";
 import { DrillsPanel, type DrillRow } from "./drills-panel";
@@ -31,13 +31,6 @@ const KATEGORI_TONE: Record<PyramidArea, "info" | "up" | "lime" | "warn"> = {
   SPILL: "warn",
   TURN: "warn",
 };
-
-function omraadeToTab(omraade: string): keyof typeof SG_BUCKETS {
-  for (const tab of Object.keys(SG_BUCKETS) as (keyof typeof SG_BUCKETS)[]) {
-    if ((SG_BUCKETS[tab] as readonly string[]).includes(omraade)) return tab;
-  }
-  return "Tee";
-}
 
 export default async function SpillerPlanDetaljPage({
   params,

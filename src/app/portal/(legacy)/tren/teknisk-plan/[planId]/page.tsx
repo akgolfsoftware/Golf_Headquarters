@@ -16,7 +16,6 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PageHead } from "@/components/teknisk-plan/page-head";
 import { PRow } from "@/components/teknisk-plan/p-row";
-import { TaskCard } from "@/components/teknisk-plan/task-card";
 import {
   PlanSummaryCard,
   TrackmanGoalsCard,
@@ -25,9 +24,11 @@ import {
   type ClubTargetRow,
   type ActivityItem,
 } from "@/components/teknisk-plan/sidebar";
-import { type PyramidArea, P_POSITIONS } from "@/components/teknisk-plan/constants";
+import { type PyramidArea, P_POSITIONS, omraadeToTab } from "@/components/teknisk-plan/constants";
+import type { OppgaveDraft } from "@/components/teknisk-plan/oppgave-modal";
 import "@/components/teknisk-plan/teknisk-plan.css";
 import { OppgaveLauncher, type PositionTarget } from "./oppgave-launcher";
+import { OppgaveEditLauncher } from "./oppgave-edit-launcher";
 
 export const dynamic = "force-dynamic";
 
@@ -244,26 +245,82 @@ export default async function PlanBuilderPage({ params }: PageProps) {
                 highPrio={position.hovedfokus}
                 defaultOpen={idx === 0}
               >
-                {tasks.map((t, i) => (
-                  <TaskCard
-                    key={t.id}
-                    prio={i + 1}
-                    tittel={t.tittel}
-                    pyramide={t.pyramide as PyramidArea}
-                    omraade={t.omraade}
-                    koller={t.koller}
-                    lFase={t.lFase ?? undefined}
-                    cs={t.cs ?? undefined}
-                    m={t.miljo ?? undefined}
-                    pr={t.prPress ?? undefined}
-                    reps={{
-                      dry: { current: t.repsGjortDry, target: t.repsMaalDry },
-                      lav: { current: t.repsGjortLav, target: t.repsMaalLav },
-                      full: { current: t.repsGjortFull, target: t.repsMaalFull },
-                    }}
-                    isNew={isNewThisWeek(t.createdAt)}
-                  />
-                ))}
+                {tasks.map((t, i) => {
+                  const hitRateGoals = t.tmGoals.filter((g) => g.targetType === "HIT_RATE");
+                  const spreadGoals = t.tmGoals.filter((g) => g.targetType !== "HIT_RATE");
+                  const draft: OppgaveDraft = {
+                    id: t.id,
+                    pNummer: position.pNummer,
+                    pName: position.navn,
+                    tittel: t.tittel,
+                    beskrivelse: t.beskrivelse ?? "",
+                    pyramide: t.pyramide as PyramidArea,
+                    omraadeTab: omraadeToTab(t.omraade),
+                    omraade: t.omraade,
+                    koller: t.koller,
+                    lFase: t.lFase ?? undefined,
+                    cs: t.cs ?? undefined,
+                    m: t.miljo ?? undefined,
+                    pr: t.prPress ?? undefined,
+                    bildeUrl: t.bildeUrl ?? undefined,
+                    videoUrl: t.videoUrl ?? undefined,
+                    repsMaalDry: t.repsMaalDry,
+                    repsMaalLav: t.repsMaalLav,
+                    repsMaalFull: t.repsMaalFull,
+                    tmGoals: spreadGoals.map((g) => ({
+                      id: g.id,
+                      metric: g.metric,
+                      klubb: g.klubb,
+                      baselineValue: g.baselineValue,
+                      targetValue: g.targetValue,
+                      targetType: (g.targetType === "SECONDARY" ? "SECONDARY" : g.targetType === "CAUSAL" ? "CAUSAL" : "PRIMARY") as
+                        | "PRIMARY"
+                        | "SECONDARY"
+                        | "CAUSAL",
+                      comparison: g.comparison as "LESS_THAN" | "GREATER_THAN" | "RANGE" | "EQUAL",
+                    })),
+                    hitRateGoals: hitRateGoals.map((g) => ({
+                      id: g.id,
+                      metric: g.metric,
+                      klubb: g.klubb,
+                      protocol: (g.protocol ?? "ROLLING_WINDOW") as OppgaveDraft["hitRateGoals"][number]["protocol"],
+                      corridorMin: g.corridorMin ?? "",
+                      corridorMax: g.corridorMax ?? "",
+                      requiredHits: g.requiredHits ?? "",
+                      windowSize: g.windowSize ?? "",
+                      currentHits: g.currentHits ?? undefined,
+                      currentBatchSize: g.currentBatchSize ?? undefined,
+                      bestHits: g.bestHits ?? undefined,
+                      currentStreak: g.currentStreak ?? undefined,
+                      inTarget: g.inTarget,
+                    })),
+                    drillIds: [],
+                  };
+                  return (
+                    <OppgaveEditLauncher
+                      key={t.id}
+                      taskId={t.id}
+                      draft={draft}
+                      cardProps={{
+                        prio: i + 1,
+                        tittel: t.tittel,
+                        pyramide: t.pyramide as PyramidArea,
+                        omraade: t.omraade,
+                        koller: t.koller,
+                        lFase: t.lFase ?? undefined,
+                        cs: t.cs ?? undefined,
+                        m: t.miljo ?? undefined,
+                        pr: t.prPress ?? undefined,
+                        reps: {
+                          dry: { current: t.repsGjortDry, target: t.repsMaalDry },
+                          lav: { current: t.repsGjortLav, target: t.repsMaalLav },
+                          full: { current: t.repsGjortFull, target: t.repsMaalFull },
+                        },
+                        isNew: isNewThisWeek(t.createdAt),
+                      }}
+                    />
+                  );
+                })}
                 {tasks.length === 0 ? (
                   <OppgaveLauncher
                     planId={plan.id}
