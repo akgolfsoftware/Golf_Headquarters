@@ -508,6 +508,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | ~~· Audit-detalj~~ | `/admin/audit-log/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | AI-agenter | `/admin/agents` | – | --- | ✓ | ~ | ~ | ~ |
 | · Agent-detalj | `/admin/agents/[agentId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| **Agenter (flermodell-chat)** ★ | `/admin/agenter` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2-innramming (AgencyOS Bølge 3.12) rundt delt `AgentChat` (uendret, delt med `/kommando/agenter`) — Claude/Gemini/Grok/Ollama-chat |
 | **E-postmaler** ★ | `/admin/email-templates` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Allerede v2 — masterplan-raden var stale, rettet 2026-07-14 |
 | · **Rediger e-postmal** ★ | `/admin/email-templates/[id]/rediger` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminEpostmalRedigerV2`, AgencyOS Bølge 3.9) — samme `saveTemplate`/`sendTestEmail`/`setAsDefault`/`archiveTemplate`-kontrakt, 2-kolonners editor+live-forhåndsvisning m/ token-substitusjon |
 | Profil | `/admin/profile` | – | --- | ✓ | ~ | ~ | ~ |
@@ -853,6 +854,13 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   denne kvelden. Verifisert hver skjerm: tsc 0 feil, ESLint grønt. Full `npm run build` kan ikke
   fullføre i denne sandkassen (mangler `DIRECT_URL`/live DB — miljøbegrensning), men
   kompilerings-/rute-fasen (der kollisjonsklassen feiler) går gjennom uten feil.
+  **3.12** Agenter (`/admin/agenter`) — tynn v2-innramming rundt delt `AgentChat`
+  (Claude/Gemini/Grok/Ollama flermodell-chat, delt uendret med `/kommando/agenter`). Samtidig
+  ryddet en runde stale rader oppdaget under gjennomgangen (ingen kode-endring): Kommunikasjon-
+  hub, Coach-workbench, Innsikt-hub (`/admin/analysere`), Caddie og en duplikat Tilstander-rad
+  er alle bekreftet rene `redirect()`-stubber; og Økonomi-sammenslåingen fra Bølge 2 (flagget som
+  uavklart) viste seg allerede løst i kode — `/admin/okonomi` redirecter til den ekte v2-siden
+  `/admin/agencyos/okonomi` (`AdminOkonomiV2`).
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
