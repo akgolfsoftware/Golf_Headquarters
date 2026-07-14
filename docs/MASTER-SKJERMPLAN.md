@@ -475,7 +475,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | **· Fasiter (autosync)** ★ | `/admin/tester/benchmarks` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTesterBenchmarksV2`, AgencyOS Bølge 3.25) — samme `TestDefinition`-synk-state (AUTO/FØLGER/REFERANSE), samme `approveBenchmarkPending`/`rejectBenchmarkPending`/`runBenchmarkSyncNow`-kontrakt |
 | **Tester (på tvers)** ★ | `/admin/tester` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Allerede v2 (`AdminTesterV2`, v2preview route-group) — masterplan-raden var stale, rettet 2026-07-14 |
 | ~~· Test-detalj~~ | `/admin/tester/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
-| · Foreslåtte tester | `/admin/tester/foreslatte` | – | --- | ✓ | ~ | ~ | ~ |
+| **· Foreslåtte tester** ★ | `/admin/tester/foreslatte` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTesterForeslatteV2`, AgencyOS Bølge 3.26) — samme `TestDefinition`-filter (isCustom + COACH-visibility + ikke godkjent), samme `godkjennForslag`/`avvisForslag`-kontrakt |
 | · Tildel test | `/admin/tester/tildel/[spillerId]` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
 | Økt-forespørsler | `/admin/foresporsler` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | Godkjenninger | `/admin/godkjenninger` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
@@ -893,8 +893,10 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   **Bølge 3.25** (samme kveld, ny undersøkelse): Tester-klyngen. `/admin/tester` (hub) viste seg
   alt å være v2 (`AdminTesterV2`) — masterplan-raden var stale, rettet uten kode-endring. Fasiter
   (`AdminTesterBenchmarksV2`) portet — samme `TestDefinition`-synk-state, `approveBenchmark
-  Pending`/`rejectBenchmarkPending`/`runBenchmarkSyncNow`-kontrakt uendret. Foreslåtte tester +
-  Tildel test gjenstår i klyngen — fortsettes i neste økt.
+  Pending`/`rejectBenchmarkPending`/`runBenchmarkSyncNow`-kontrakt uendret. Foreslåtte tester
+  (`AdminTesterForeslatteV2`) portet — samme `TestDefinition`-filter (isCustom + COACH-visibility
+  + ikke godkjent), samme `godkjennForslag`/`avvisForslag`-kontrakt. Tildel test gjenstår i
+  klyngen — fortsettes i neste økt.
   Talent-klyngen (region/ressurser/sammenligning/wagr-benchmark/wagr-import, ~1200 linjer) er
   IKKE portet i kveld — sammenligning bruker en delt v10-komponent (`TalentSammenligning`,
   `src/components/admin/talent/`) som ligger utenfor golfdata/v13-generasjonen; å porte den
