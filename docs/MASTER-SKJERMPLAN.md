@@ -509,7 +509,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | E-postmaler | `/admin/email-templates` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger e-postmal | `/admin/email-templates/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
 | Profil | `/admin/profile` | – | --- | ✓ | ~ | ~ | ~ |
-| Hjelp | `/admin/hjelp` | – | --- | ✓ | ~ | ~ | ~ |
+| **Hjelp** ★ | `/admin/hjelp` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminHjelpV2`, AgencyOS Bølge 3.3) — samme statiske innhold (kategorier/artikler/kontakt-CTA), lokalt søkefilter uendret |
 | Caddie (alt. adresse) | `/admin/caddie` | – | --- | ✓ | ~ | ~ | ~ |
 | ~~Design-godkjenning~~ | `/admin/godkjenn-portal` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | ~~· Koblinger~~ | `/admin/godkjenn-portal/koblinger` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
