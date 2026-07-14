@@ -397,7 +397,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Radar | `/admin/talent/radar` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | ~~· Radar per spiller~~ | `/admin/talent/radar/[playerId]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | **· Kohort** ★ | `/admin/talent/kohort` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTalentKohortV2`, AgencyOS Bølge 3.20) — samme `TalentTracking`-aggregering (snitt-radar 5 akser + 90-dagers progresjon per nivå U10–Senior) |
-| · Region | `/admin/talent/region` | – | --- | ✓ | ~ | ~ | ~ |
+| **· Region** ★ | `/admin/talent/region` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTalentRegionV2`, AgencyOS Bølge 3.21) — samme region-aggregering + forenklet Norge-kart-stub (SVG, samme geometri, v2-tokens for farger) |
 | · Ressurser | `/admin/talent/ressurser` | – | --- | ✓ | ~ | ~ | ~ |
 | · Sammenligning | `/admin/talent/sammenligning` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
 | · WAGR-benchmark | `/admin/talent/wagr-benchmark` | – | --- | ✓ | ~ | ~ | ~ |
@@ -895,8 +895,10 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   `src/components/admin/talent/`) som ligger utenfor golfdata/v13-generasjonen; å porte den
   skjermen alene ville betydd enten å bygge en helt ny v2-versjon av selve
   sammenligningskomponenten (stor, egen jobb) eller la den beholde utdatert v10-stil inni en
-  v2-ramme (inkonsistent). Resten av klyngen (region/ressurser/wagr-benchmark/wagr-import) er
-  ikke størrelsesvurdert ennå — fortsettes i neste økt.
+  v2-ramme (inkonsistent). **3.21** Talent · Region (`AdminTalentRegionV2`) — samme
+  region-aggregering (nivå-filter, klubb-topp-3, snitt-radar) + forenklet Norge-kart-stub
+  (SVG, samme geometri/koordinater, kun v2-tokens for farger). Ressurser/wagr-benchmark/
+  wagr-import ikke størrelsesvurdert ennå — fortsettes i neste økt.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
