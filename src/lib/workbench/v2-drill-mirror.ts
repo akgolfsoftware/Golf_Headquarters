@@ -46,6 +46,7 @@ export async function syncDrillsToV2(
       repMinutter: d.repMinutter,
       repSett: d.repSett,
       repReps: d.repReps,
+      positionTaskId: d.positionTaskId,
     })),
   });
 }

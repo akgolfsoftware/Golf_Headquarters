@@ -16,6 +16,14 @@ export const SG_BUCKETS = {
   "Putt (m)": ["Putt 0-3", "Putt 3-5", "Putt 5-10", "Putt 10-15", "Putt 15-25", "Putt 25-40", "Putt 40+"],
 } as const;
 
+/** Finn hvilken SG-hovedfane et lagret sub-område hører til (for å forhåndsvelge fanen i modalen). */
+export function omraadeToTab(omraade: string): keyof typeof SG_BUCKETS {
+  for (const tab of Object.keys(SG_BUCKETS) as (keyof typeof SG_BUCKETS)[]) {
+    if ((SG_BUCKETS[tab] as readonly string[]).includes(omraade)) return tab;
+  }
+  return "Tee";
+}
+
 export const KOLLER = [
   "Alle køller",
   "Driver",

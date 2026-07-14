@@ -32,8 +32,10 @@ import {
   createTask,
   updateTaskBasics,
   deleteTask,
+  logReps,
   type TaskInput,
 } from "@/app/portal/(legacy)/tren/teknisk-plan/actions";
+import { uploadTaskMedia } from "@/lib/storage/task-media";
 
 /** Pyramide-aksene — kategori-chip-settet. Speiler PositionTask.pyramide. */
 const CATEGORIES: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
@@ -137,6 +139,7 @@ function draftToTaskInput(planId: string, draft: OppgaveDraft): TaskInput {
     cs: draft.cs ?? null,
     miljo: draft.m ?? null,
     prPress: draft.pr ?? null,
+    kategori: draft.kategori ?? null,
     repsMaalDry: draft.repsMaalDry,
     repsMaalLav: draft.repsMaalLav,
     repsMaalFull: draft.repsMaalFull,
@@ -157,6 +160,7 @@ function draftToBasicsPatch(draft: OppgaveDraft) {
     cs: draft.cs ?? null,
     miljo: draft.m ?? null,
     prPress: draft.pr ?? null,
+    kategori: draft.kategori ?? null,
     repsMaalDry: draft.repsMaalDry,
     repsMaalLav: draft.repsMaalLav,
     repsMaalFull: draft.repsMaalFull,
@@ -374,6 +378,22 @@ export function DrillsPanel({ planId, defaultTarget, drills }: DrillsPanelProps)
           initial={modal.mode === "edit" ? modal.draft : emptyDraft(defaultTarget)}
           isEditing={modal.mode === "edit"}
           onSubmit={handleSubmit}
+          onLogReps={
+            modal.mode === "edit"
+              ? (reps) => logReps(modal.taskId, reps).then(() => router.refresh())
+              : undefined
+          }
+          onUploadMedia={
+            modal.mode === "edit"
+              ? async (file, kind) => {
+                  const fd = new FormData();
+                  fd.append("file", file);
+                  const res = await uploadTaskMedia(modal.taskId, fd, kind);
+                  router.refresh();
+                  return res.url;
+                }
+              : undefined
+          }
         />
       ) : null}
     </div>

@@ -15,6 +15,7 @@ import type { PyramidArea, SessionStatusV2 } from "@/generated/prisma/client";
 import type { LiveV2Drill, LiveV2DrillLog, LiveV2Session } from "@/components/portal/live";
 import { triggerLiveSessionAgent } from "@/lib/agents/triggers";
 import { GENERERT_FRA } from "@/lib/workbench/v2-sync";
+import { applyPositionTaskReps } from "@/lib/teknisk-plan/apply-reps";
 
 export type StartSessionResult =
   | { state: "active" }
@@ -280,11 +281,20 @@ export async function logDrillReps(input: CompleteDrillInput): Promise<{ ok: boo
     input.successRate ??
     (input.repsTotal > 0 ? Math.round((input.repsHit / input.repsTotal) * 100) : 0);
 
+  // Hent forrige logg (om noen) FØR upsert — trengs for å regne delta til
+  // teknisk-oppgave-automatikken under, siden denne upserten SETTER de nye
+  // totalene (ikke øker dem), mens PositionTask.repsGjort* skal ØKES.
+  const existingLog = await prisma.drillLogV2.findFirst({
+    where: { drillId: input.drillId, loggedBy: user.id },
+    select: { id: true, repsWithoutBall: true, repsLowSpeed: true, repsHit: true },
+    orderBy: { loggedAt: "desc" },
+  });
+
   await prisma.drillLogV2.upsert({
     where: {
       // Prisma støtter ikke unik sammensatt nøkkel uten @unique; vi bruker id-en
       // via drillId + loggedBy lookup i stedet.
-      id: await findExistingLogId(input.drillId, user.id),
+      id: existingLog?.id ?? "__new__",
     },
     create: {
       drillId: input.drillId,
@@ -309,22 +319,34 @@ export async function logDrillReps(input: CompleteDrillInput): Promise<{ ok: boo
     },
   });
 
+  // Runde 2 (2026-07-14): drill koblet til en teknisk oppgave? Logg reps
+  // automatisk mot den — uten ball → dry, lav fart → lav, truffet → fullt.
+  // "Automatikk er viktig. Ingen må gjøre dobbelt arbeid." (Anders)
+  const drill = await prisma.trainingDrillV2.findUnique({
+    where: { id: input.drillId },
+    select: {
+      positionTaskId: true,
+      positionTask: { select: { position: { select: { plan: { select: { userId: true } } } } } },
+    },
+  });
+  if (drill?.positionTaskId && drill.positionTask?.position.plan.userId === user.id) {
+    const dryDelta = Math.max(0, input.repsWithoutBall - (existingLog?.repsWithoutBall ?? 0));
+    const lavDelta = Math.max(0, input.repsLowSpeed - (existingLog?.repsLowSpeed ?? 0));
+    const fullDelta = Math.max(0, input.repsHit - (existingLog?.repsHit ?? 0));
+    if (dryDelta > 0 || lavDelta > 0 || fullDelta > 0) {
+      await applyPositionTaskReps(
+        drill.positionTaskId,
+        { dry: dryDelta || undefined, lav: lavDelta || undefined, full: fullDelta || undefined },
+        user.id,
+        { sessionV2Id: input.sessionId },
+      );
+    }
+  }
+
   revalidatePath(`/portal/live/${input.sessionId}`);
   revalidatePath(`/portal/live/${input.sessionId}/active`);
   revalidatePath(`/portal/live/${input.sessionId}/summary`);
   return { ok: true };
-}
-
-/** Hjelper for å finne eksisterende logg-id ved upsert. */
-async function findExistingLogId(drillId: string, userId: string): Promise<string> {
-  const existing = await prisma.drillLogV2.findFirst({
-    where: { drillId, loggedBy: userId },
-    select: { id: true },
-    orderBy: { loggedAt: "desc" },
-  });
-  // Upsert krever en gyldig where. Hvis ingen logg finnes bruker vi en dummy-id
-  // som garantert ikke finnes, slik at create kjøres.
-  return existing?.id ?? "__new__";
 }
 
 /** Markerer en drill som fullført ved å logge reps. Alias for logDrillReps. */

@@ -22,6 +22,9 @@ export const OktDrillSchema = z.object({
   sett: z.number().int().min(1).max(50).nullish(),
   reps: z.number().int().min(1).max(500).nullish(),
   nivaa: z.enum(["uten", "lav", "vanlig"]).default("vanlig"),
+  /** Kobling til teknisk-plan-oppgave (runde 2 · 2026-07-14) — når satt,
+   * logges reps automatisk mot oppgaven når drillen fullføres i live-økt. */
+  positionTaskId: z.string().min(1).optional(),
 });
 export type OktDrillInput = z.infer<typeof OktDrillSchema>;
 
@@ -149,6 +152,7 @@ export async function skrivSessionDrills(
     repReps: number | null;
     prPress: "PR1" | "PR3" | null;
     orderIndex: number;
+    positionTaskId: string | null;
   }[] = [];
   for (let i = 0; i < input.drills.length; i++) {
     const d = input.drills[i];
@@ -183,6 +187,7 @@ export async function skrivSessionDrills(
       repReps: d.reps ?? null,
       prPress: d.nivaa === "uten" ? null : d.nivaa === "lav" ? "PR1" : "PR3",
       orderIndex: i,
+      positionTaskId: d.positionTaskId ?? null,
     });
   }
   await prisma.sessionDrill.deleteMany({ where: { sessionId: input.sessionId } });

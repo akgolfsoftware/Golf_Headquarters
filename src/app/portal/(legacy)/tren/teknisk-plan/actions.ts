@@ -9,21 +9,21 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
-import { assertNotAwaitingConsent } from "@/lib/auth/requireConsentingUser";
 import type {
   PyramidArea,
   LFase,
   CSNivaa,
   MMiljo,
   PRPress,
+  TaskKategori,
   TmGoalType,
   TmGoalComparison,
   TmGoalProtocol,
-  RepHastighet,
 } from "@/generated/prisma/client";
 import type { Prisma } from "@/generated/prisma/client";
 import { nonEmpty } from "@/lib/validation/schemas";
+import { applyPositionTaskReps } from "@/lib/teknisk-plan/apply-reps";
+import { ensurePlanAccess } from "@/lib/teknisk-plan/ensure-plan-access";
 
 const TaskInputSchema = z.object({
   planId: z.string().min(1, "Plan-ID er påkrevd"),
@@ -82,26 +82,12 @@ export interface TaskInput {
   cs?: CSNivaa | null;
   miljo?: MMiljo | null;
   prPress?: PRPress | null;
+  kategori?: TaskKategori | null;
   repsMaalDry: number;
   repsMaalLav: number;
   repsMaalFull: number;
   tmGoals?: TmGoalInput[];
   hitRateGoals?: HitRateGoalInput[];
-}
-
-async function ensurePlanAccess(planId: string) {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("Ikke innlogget");
-  assertNotAwaitingConsent(user);
-  const plan = await prisma.technicalPlan.findUnique({
-    where: { id: planId },
-    select: { userId: true, opprettetAvId: true },
-  });
-  if (!plan) throw new Error("Plan ikke funnet");
-  const isOwner = plan.userId === user.id || plan.opprettetAvId === user.id;
-  const isCoachOrAdmin = user.role === "COACH" || user.role === "ADMIN";
-  if (!isOwner && !isCoachOrAdmin) throw new Error("Ingen tilgang");
-  return { user, plan };
 }
 
 async function findOrCreatePosition(planId: string, pNummer: string, pName: string) {
@@ -149,6 +135,7 @@ export async function createTask(input: TaskInput) {
       cs: input.cs ?? null,
       miljo: input.miljo ?? null,
       prPress: input.prPress ?? null,
+      kategori: input.kategori ?? null,
       repsMaalDry: input.repsMaalDry,
       repsMaalLav: input.repsMaalLav,
       repsMaalFull: input.repsMaalFull,
@@ -231,6 +218,7 @@ export async function updateTaskBasics(
       cs: patch.cs ?? null,
       miljo: patch.miljo ?? null,
       prPress: patch.prPress ?? null,
+      kategori: patch.kategori ?? null,
       repsMaalDry: patch.repsMaalDry,
       repsMaalLav: patch.repsMaalLav,
       repsMaalFull: patch.repsMaalFull,
@@ -340,33 +328,7 @@ export async function logReps(
   if (!task) throw new Error("Oppgave ikke funnet");
   const { user } = await ensurePlanAccess(task.position.planId);
 
-  await prisma.positionTask.update({
-    where: { id: taskId },
-    data: {
-      repsGjortDry: { increment: reps.dry ?? 0 },
-      repsGjortLav: { increment: reps.lav ?? 0 },
-      repsGjortFull: { increment: reps.full ?? 0 },
-    },
-  });
-
-  const logRows: { hastighet: RepHastighet; reps: number }[] = (
-    [
-      { hastighet: "DRY", reps: reps.dry ?? 0 },
-      { hastighet: "LAV", reps: reps.lav ?? 0 },
-      { hastighet: "FULL", reps: reps.full ?? 0 },
-    ] as { hastighet: RepHastighet; reps: number }[]
-  ).filter((r) => r.reps > 0);
-
-  if (logRows.length > 0) {
-    await prisma.positionTaskLog.createMany({
-      data: logRows.map((r) => ({
-        taskId,
-        loggedByUserId: user.id,
-        reps: r.reps,
-        hastighet: r.hastighet,
-      })),
-    });
-  }
+  await applyPositionTaskReps(taskId, reps, user.id);
 
   revalidatePath(`/portal/tren/teknisk-plan/${task.position.planId}`);
   return { ok: true };

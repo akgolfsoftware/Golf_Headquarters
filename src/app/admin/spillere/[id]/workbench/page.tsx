@@ -31,6 +31,7 @@ import {
   coachLagrePeriode,
   coachSlettPeriode,
 } from "@/lib/workbench/session-actions";
+import { coachSokTekniskOppgaver } from "@/lib/workbench/teknisk-oppgave-sok";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import type { WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
 import {
@@ -96,6 +97,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
     },
     lagrePeriode: coachLagrePeriode.bind(null, id),
     slettPeriode: coachSlettPeriode.bind(null, id),
+    searchTeknisk: coachSokTekniskOppgaver.bind(null, id),
   };
 
   return (
