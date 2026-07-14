@@ -345,7 +345,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | **Cockpit (hjem)** ★ | `/admin/agencyos` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v13 scope + components (full)
 | · Uka (kanban) | `/admin/agencyos/uka` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Complete v13 (golfdata scope + cards) |
 | · Spillere (snarvei) | `/admin/agencyos/spillere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Økonomi | `/admin/agencyos/okonomi` | – | --- | ✓ | ~ | ~ | ~ |
+| **· Økonomi** ★ | `/admin/agencyos/okonomi` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-14 rettet: allerede en fullstendig, ekte v2-side (`AdminOkonomiV2`, V2Shell) — masterplan-raden var stale. Økonomi-sammenslåingen ER gjort i kode: `/admin/okonomi` (legacy) er nå en ren `redirect()` hit, denne siden er kanon (rad rettet, se også rad under). |
 | · Caddie (AI-chat) | `/admin/agencyos/caddie` | – | ✓✓– | ✓ | ~ | – | ✓ |
 | · Caddie-aktivitet | `/admin/agencyos/caddie/aktivitet` | – | --- | ✓ | ~ | ~ | ~ |
 | Admin-rot (gml. hjem) | `/admin` | – | --- | ✓ | ~ | ~ | ✓ |
@@ -356,7 +356,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Oppfølgingskø (kanban) | `/admin/queue` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | **Innboks** ★ | `/admin/innboks` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | Meldinger (alt. → redirect) | `/admin/messages` | – | --- | ✓ | ✓ | – | ✓ |
-| Kommunikasjon-hub | `/admin/kommunikasjon` | – | --- | ✓ | ~ | ~ | ~ |
+| Kommunikasjon-hub (redirect) | `/admin/kommunikasjon` | — | — | ✓ | ✓ | – | ✓ | 2026-07-14 sjekket: konsolidert 2026-06-28, ren `permanentRedirect()` til `/admin/innboks` — var kun en 4-fane launcher, ingenting å portere. |
 | Reach | `/admin/reach` | – | --- | ✓ | ~ | ~ | ~ |
 
 ### Min uke / Workspace
@@ -459,13 +459,13 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | **Live-økt: brief (coach)** ★ | `/admin/live/[sessionId]/brief` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`CoachLiveBriefV2`, AgencyOS Bølge 1.3) — samme `sendBriefTilSpiller`-kontrakt |
 | **Live-økt: aktiv (coach)** ★ | `/admin/live/[sessionId]/active` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`CoachLiveActiveV2`) — samme plan-fremdrift-proxy og `sendLiveMelding`-kontrakt, `MicButton` gjenbrukt uendret |
 | **Live-økt: oppsummering (coach)** ★ | `/admin/live/[sessionId]/summary` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`CoachLiveSummaryV2`) — samme `lagreCoachVurdering`-kontrakt |
-| Coach-workbench (prototype) | `/admin/coach-workbench` | – | --- | ✓ | – | ~ | ~ |
+| Coach-workbench (redirect) | `/admin/coach-workbench` | — | — | ✓ | ✓ | – | ✓ | 2026-07-14 sjekket: prototypen er erstattet (B7, 2026-07-12), ren `redirect()` til `/admin/planlegge` — ingenting å portere. |
 
 ### Innsikt (analyse på tvers)
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Innsikt-hub | `/admin/analysere` | ~ | --- | ✓ | ~ | ~ | ~ |
+| Innsikt-hub (redirect) | `/admin/analysere` | — | — | ✓ | ✓ | – | ✓ | 2026-07-14 sjekket: overflødig lenke-hub (B7, 2026-07-12), ren `redirect()` til `/admin/analyse` — Compliance-undersiden består (egen rad). Ingenting å portere. |
 | · Compliance | `/admin/analysere/compliance` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | Stall-analyse | `/admin/analyse` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
 | ~~Analytics~~ | `/admin/analytics` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
@@ -484,9 +484,9 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Approval-detalj (alt. → redirect) | `/admin/approvals/[id]` | – | --- | ✓ | ✓ | – | ✓ |
 | Rapporter | `/admin/reports` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | Runder (på tvers) | `/admin/runder` | ~ | --- | ✓ | ~ | ~ | ~ |
-| Skader/sykdom (tilstander) | `/admin/tilstander` | – | --- | ✓ | ~ | ~ | ~ |
+| Skader/sykdom (tilstander, redirect) | `/admin/tilstander` | — | — | ✓ | ✓ | – | ✓ | Duplikat-rad av samme adresse som over (rad ~474) — bekreftet 2026-07-14 samme `redirect()`-stubb. Ingenting å portere. |
 | Finans (alt. → redirect) | `/admin/finance` | – | --- | ✓ | ✓ | – | ✓ |
-| **Økonomi (MRR/betalinger)** | `/admin/okonomi` | – | –✓– | ✓ | ~ | ✓ | ~ |
+| Økonomi (MRR/betalinger, redirect) | `/admin/okonomi` | — | — | ✓ | ✓ | – | ✓ | 2026-07-14 sjekket: ren `redirect()` til `/admin/agencyos/okonomi` (kanon-siden, se rad ~348) — sammenslåingen er allerede gjort i kode. Ingenting å portere. |
 | Stats-oversikt | `/admin/stats/overview` | – | --- | ✓ | ~ | ~ | ~ |
 | Stats-moderering | `/admin/stats/moderering` | – | --- | ✓ | ~ | ~ | ~ |
 
@@ -512,7 +512,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · **Rediger e-postmal** ★ | `/admin/email-templates/[id]/rediger` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminEpostmalRedigerV2`, AgencyOS Bølge 3.9) — samme `saveTemplate`/`sendTestEmail`/`setAsDefault`/`archiveTemplate`-kontrakt, 2-kolonners editor+live-forhåndsvisning m/ token-substitusjon |
 | Profil | `/admin/profile` | – | --- | ✓ | ~ | ~ | ~ |
 | **Hjelp** ★ | `/admin/hjelp` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminHjelpV2`, AgencyOS Bølge 3.3) — samme statiske innhold (kategorier/artikler/kontakt-CTA), lokalt søkefilter uendret |
-| Caddie (alt. adresse) | `/admin/caddie` | – | --- | ✓ | ~ | ~ | ~ |
+| Caddie (alt. adresse, redirect) | `/admin/caddie` | — | — | ✓ | ✓ | – | ✓ | 2026-07-14 sjekket: konsolidert inn i `/admin/agencyos/caddie/dashbord`, ren `permanentRedirect()` — ingenting å portere. |
 | ~~Design-godkjenning~~ | `/admin/godkjenn-portal` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | ~~· Koblinger~~ | `/admin/godkjenn-portal/koblinger` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | ~~· Kobling-detalj~~ | `/admin/godkjenn-portal/koblinger/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
@@ -815,6 +815,10 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   `/admin/agencyos/okonomi`) er heller ikke gjort — krever en bevisst beslutning om hvilken som
   vinner, ikke en ren port. Gjenstående i Bølge 2: Innstillinger, Tilgjengelighet, Økonomi-
   sammenslåing — alle tre bør ha egen plan-økt. Deretter Bølge 3 (P3 sjelden/admin).
+  **Rettelse 14. juli:** Økonomi-sammenslåingen over var allerede løst i kode før denne
+  gjennomgangen startet — `/admin/okonomi` er en ren `redirect()` til `/admin/agencyos/okonomi`
+  (kanon-siden, ekte `AdminOkonomiV2`/Prisma-data). Begge rader rettet i tabellen, ingen kode
+  skrevet. Gjenstående i Bølge 2 er dermed kun Innstillinger + Tilgjengelighet.
 - 14. juli (AgencyOS-gjennomgang fortsetter, Bølge 3.1–3.11, samme PR #10/branch): P3-lista
   (`plans/legacy-portering-prioritet.md`) portet skjerm for skjerm, samme metodikk som Bølge 1–2
   — én skjerm per commit, `test -f`-kollisjonssjekk før hver commit (se hendelse under),
