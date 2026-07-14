@@ -476,7 +476,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | **Tester (på tvers)** ★ | `/admin/tester` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Allerede v2 (`AdminTesterV2`, v2preview route-group) — masterplan-raden var stale, rettet 2026-07-14 |
 | ~~· Test-detalj~~ | `/admin/tester/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | **· Foreslåtte tester** ★ | `/admin/tester/foreslatte` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTesterForeslatteV2`, AgencyOS Bølge 3.26) — samme `TestDefinition`-filter (isCustom + COACH-visibility + ikke godkjent), samme `godkjennForslag`/`avvisForslag`-kontrakt |
-| · Tildel test | `/admin/tester/tildel/[spillerId]` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
+| **· Tildel test** ★ | `/admin/tester/tildel/[spillerId]` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTildelTestModalV2`, AgencyOS Bølge 3.27) — samme `tildelTest`-kontrakt, `BunnArk` erstatter en modal med egendefinerte CSS-klasser som IKKE hadde noe matchende stilark (rendret helt ustylet i prod — reell funksjonell forbedring, ikke bare redesign). Spiller-velger-hub (`/admin/tester/tildel`) portet samtidig. |
 | Økt-forespørsler | `/admin/foresporsler` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | Godkjenninger | `/admin/godkjenninger` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · **Godkjenning-detalj** ★ | `/admin/godkjenninger/[id]` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminGodkjenningDetaljV2`, AgencyOS Bølge 3.6) — samme `PlanAction`/`computeDelta`/`approveRequestDetailed`/`declineRequestDetailed`/`requestMoreInfo`-kontrakt; avslå/info-dialogen er nå `BunnArk`. Erstattet enekonsument `ApprovalDetailClient` fullt ut (verifisert ingen andre importører) |
@@ -895,8 +895,14 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   (`AdminTesterBenchmarksV2`) portet — samme `TestDefinition`-synk-state, `approveBenchmark
   Pending`/`rejectBenchmarkPending`/`runBenchmarkSyncNow`-kontrakt uendret. Foreslåtte tester
   (`AdminTesterForeslatteV2`) portet — samme `TestDefinition`-filter (isCustom + COACH-visibility
-  + ikke godkjent), samme `godkjennForslag`/`avvisForslag`-kontrakt. Tildel test gjenstår i
-  klyngen — fortsettes i neste økt.
+  + ikke godkjent), samme `godkjennForslag`/`avvisForslag`-kontrakt. **Tildel test**
+  (`AdminTildelTestModalV2` + spiller-velger-hub) — samme `tildelTest`-kontrakt. Fant at
+  legacy-modalen brukte egendefinerte CSS-klasser (`tester-modal`, `te-pyr-filter` osv.) uten
+  NOE matchende stilark noe sted i kodebasen — skjermen rendret altså helt ustylet i prod.
+  `BunnArk`-porten her er dermed en reell funksjonell forbedring, ikke bare et redesign. Bevart
+  identisk (litt uvanlig) startverdi for søk («putt») og filter («SLAG» i stedet for «Alle»)
+  samt fallback-sample-tester når DB er tom — begge deler var slik i legacy, ikke endret her.
+  Med dette er hele Tester-klyngen (hub/fasiter/foreslåtte/tildel) portet til v2.
   Talent-klyngen (region/ressurser/sammenligning/wagr-benchmark/wagr-import, ~1200 linjer) er
   IKKE portet i kveld — sammenligning bruker en delt v10-komponent (`TalentSammenligning`,
   `src/components/admin/talent/`) som ligger utenfor golfdata/v13-generasjonen; å porte den
