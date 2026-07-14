@@ -21,7 +21,9 @@ import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
 export { T, fmtSg } from "@/lib/v2/tokens";
 export { useCountUp, useMount } from "@/lib/v2/hooks";
 
-/* Interaksjonspolish injiseres én gang: press-scale + fokusring + hover-løft/rad. */
+/* Interaksjonspolish injiseres én gang: press-scale + fokusring + hover-løft/rad.
+   + drag-løft/landing (WB-perioder/økter) og inn-fade (zoom-bytte, ark/popup) —
+   samme 180ms-språk, honorerer redusert bevegelse. */
 function ensureStyles(): void {
   if (typeof document === "undefined" || document.getElementById("v2-core-style")) return;
   const el = document.createElement("style");
@@ -33,7 +35,13 @@ function ensureStyles(): void {
     `.v2-row-h{transition:background 180ms ${EASE};}` +
     `.v2-row-h:hover{background:${T.panel2};}` +
     `.v2-kort-h:hover{transform:translateY(-2px);border-color:${T.borderS};}` +
-    `@media (prefers-reduced-motion: reduce){.v2-press,.v2-press:active,.v2-kort-h:hover{transform:none;}}`;
+    `.v2-drag-lift{transform:scale(1.035);box-shadow:0 10px 28px rgba(0,0,0,0.4);z-index:30;transition:transform 150ms ${EASE},box-shadow 150ms ${EASE};}` +
+    `.v2-drag-settle{transition:left 220ms ${EASE},top 220ms ${EASE},transform 150ms ${EASE},box-shadow 150ms ${EASE};}` +
+    `@keyframes v2FadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}` +
+    `.v2-fade-in{animation:v2FadeIn 200ms ${EASE};}` +
+    `@keyframes v2SheetIn{from{opacity:0;transform:translateY(10px) scale(0.98);}to{opacity:1;transform:translateY(0) scale(1);}}` +
+    `.v2-sheet-in{animation:v2SheetIn 200ms ${EASE};}` +
+    `@media (prefers-reduced-motion: reduce){.v2-press,.v2-press:active,.v2-kort-h:hover,.v2-drag-lift,.v2-drag-settle{transform:none;}.v2-fade-in,.v2-sheet-in{animation:none;}}`;
   document.head.appendChild(el);
 }
 if (typeof document !== "undefined") ensureStyles();

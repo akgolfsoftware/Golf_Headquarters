@@ -375,7 +375,7 @@ function OktArkSkjema({
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
       <div onClick={lagrer ? undefined : onLukk} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
-      <div role="dialog" aria-label={overskrift} style={{ position: "relative", width: "min(420px, 100%)", maxHeight: "88vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+      <div role="dialog" aria-label={overskrift} className="v2-sheet-in" style={{ position: "relative", width: "min(420px, 100%)", maxHeight: "88vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>{overskrift}</h2>
           <button onClick={onLukk} className="v2-press" aria-label="Lukk" style={{ background: T.panel3, border: `1px solid ${T.border}`, borderRadius: 9, color: T.mut, cursor: "pointer", padding: 6, display: "inline-flex" }}>
@@ -570,6 +570,7 @@ export function ForslagArk({ suggestions, usedAi, onLukk, onBruk }: ForslagArkPr
         style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }}
       />
       <div
+        className="v2-sheet-in"
         style={{
           position: "relative", width: "min(760px, 100%)", maxHeight: "88vh", overflowY: "auto",
           background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px",
@@ -933,7 +934,7 @@ export function ValgtOktSeksjon({ okt, dag, actions, weekOffset, onEndret }: Val
       {bekreftSlett && (
         <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
           <div onClick={sletterLoading ? undefined : () => setBekreftSlett(false)} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
-          <div role="alertdialog" aria-label="Bekreft sletting" style={{ position: "relative", width: "min(400px, 100%)", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+          <div role="alertdialog" aria-label="Bekreft sletting" className="v2-sheet-in" style={{ position: "relative", width: "min(400px, 100%)", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <Icon name="trash-2" size={16} style={{ color: T.down }} />
               <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>Slett økt</h2>
@@ -996,7 +997,7 @@ export function RedigerOktArk({ okt, dag, weekOffset, actions, onLukk, onEndret 
     return (
       <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
         <div onClick={onLukk} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
-        <div role="dialog" aria-label="Rediger økt" style={{ position: "relative", width: "min(420px, 100%)", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+        <div role="dialog" aria-label="Rediger økt" className="v2-sheet-in" style={{ position: "relative", width: "min(420px, 100%)", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
           <span style={{ fontFamily: T.ui, fontSize: 13, color: T.mut }}>Laster økt …</span>
         </div>
       </div>

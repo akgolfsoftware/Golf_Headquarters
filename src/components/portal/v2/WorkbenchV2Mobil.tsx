@@ -22,10 +22,13 @@ export function WBTidslinjeMobil({
   dager,
   valgt,
   onVelg,
+  onFlytt,
 }: {
   dager: DagKol[];
   valgt: string | null;
   onVelg: (id: string) => void;
+  /** "Flytt til annen dag"-knapp på hver økt — touch-erstatning for musdrag. Uten = skjult. */
+  onFlytt?: (sessionId: string, dayIndex: number) => void;
 }) {
   const defaultDag = dager.find((d) => d.today) ?? dager.find((d) => d.events.length > 0) ?? dager[0] ?? null;
   const [valgtDato, setValgtDato] = useState<number | null>(defaultDag ? Number(defaultDag.dato) : null);
@@ -34,7 +37,7 @@ export function WBTidslinjeMobil({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       <DagStripe days={stripeDays} value={valgtDato} onChange={(date) => setValgtDato(date)} />
-      <DagNivaa dag={aktivDag ?? null} valgt={valgt} onVelg={onVelg} />
+      <DagNivaa dag={aktivDag ?? null} valgt={valgt} onVelg={onVelg} dager={dager} onFlytt={onFlytt} />
     </div>
   );
 }
