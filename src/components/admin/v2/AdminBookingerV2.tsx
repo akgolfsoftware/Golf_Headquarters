@@ -385,7 +385,7 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
         {heatmap}
       </div>
 
-      <InnsiktChip cta="Åpne kapasitet">{innsiktTekst}</InnsiktChip>
+      <InnsiktChip>{innsiktTekst}</InnsiktChip>
     </div>
   );
 }
