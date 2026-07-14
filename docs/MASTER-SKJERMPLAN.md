@@ -432,7 +432,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Dubletter (rydd) | `/admin/tournaments/dubletter` | – | --- | ✓ | ~ | ~ | ~ |
 | Økter | `/admin/okter` | – | --- | ✓ | ~ | ~ | ~ |
 | **Videoer** ★ | `/admin/videoer` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminVideoerV2`, AgencyOS Bølge 3.10) — samme `SessionVideo`-modell og `uploadVideo`/`getSignedVideoUrl`/`deleteVideo`-kontrakt fra `@/lib/storage/video` |
-| Opptak | `/admin/recording` | – | --- | ✓ | ~ | ~ | ~ |
+| **Opptak** ★ | `/admin/recording` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminOpptakV2`, AgencyOS Bølge 3.11) — samme `SessionRecording`-modell og `/api/recording/*`-kontrakt; MediaRecorder/chunk-opplasting/Wake Lock/batteri-overvåking/recovery-logikken er uendret (kun JSX-laget re-skinnet) |
 
 ### Gjennomføre (daglig drift)
 
@@ -815,7 +815,7 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   `/admin/agencyos/okonomi`) er heller ikke gjort — krever en bevisst beslutning om hvilken som
   vinner, ikke en ren port. Gjenstående i Bølge 2: Innstillinger, Tilgjengelighet, Økonomi-
   sammenslåing — alle tre bør ha egen plan-økt. Deretter Bølge 3 (P3 sjelden/admin).
-- 14. juli (AgencyOS-gjennomgang fortsetter, Bølge 3.1–3.10, samme PR #10/branch): P3-lista
+- 14. juli (AgencyOS-gjennomgang fortsetter, Bølge 3.1–3.11, samme PR #10/branch): P3-lista
   (`plans/legacy-portering-prioritet.md`) portet skjerm for skjerm, samme metodikk som Bølge 1–2
   — én skjerm per commit, `test -f`-kollisjonssjekk før hver commit (se hendelse under),
   master-skjermplan-rader oppdatert i samme commit som koden (detaljene står på hver rad, ikke
@@ -828,7 +828,18 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   (`AdminEpostmalRedigerV2`). **3.10** Videoer (`AdminVideoerV2`) — samme `SessionVideo`-modell
   og `uploadVideo`/`getSignedVideoUrl`/`deleteVideo`-kontrakt; opplastingsskjemaet bruker bevisst
   native ukontrollerte inputs (samme mønster som «Rediger spiller») siden `uploadVideo` er en
-  ekte FormData-basert action, ikke en objekt-kontrakt. Flere hub-rader (Team, Coaching-board,
+  ekte FormData-basert action, ikke en objekt-kontrakt. **3.11** Opptak (`AdminOpptakV2`) —
+  sesjon-opptak-skjermen (943 linjer i legacy: `page.tsx` + `recording-controls.tsx` +
+  `recording-analyze-button.tsx`) er den mest logikk-tunge P3-skjermen så langt (MediaRecorder,
+  30-sek chunk-opplasting til `/api/recording/upload-chunk`, Wake Lock, batteri-overvåking,
+  gjenopprettings-flyt for avbrutte opptak). Vurdert mot de fire allerede utsatte store skjermene
+  (mal-editor/Tilgjengelighet/Innstillinger/Økonomi) — de er multi-view-systemer som krever en
+  arkitekturbeslutning; dette er ÉN skjerm med ÉN client-komponent, så den ble portet i sin
+  helhet: all MediaRecorder-/Wake Lock-/chunk-kø-/gjenopprettingslogikk er kopiert UENDRET
+  (kun JSX-laget er re-skinnet til v2-tokens) for å unngå enhver atferdsregresjon i noe som ikke
+  kan testes i denne sandkassen (krever ekte mikrofon/nettleser-permissions). Lagt til to nye
+  ikoner i v2-ikonkartet (`mic`, `pause`, `square`, `battery-low`) — sanksjonert vei per
+  `icon.tsx` sin egen kommentar, ikke et design-gap. Flere hub-rader (Team, Coaching-board,
   Kommunikasjon) viste seg alt å være v2 eller rene redirect-stubber — rettet uten kode-endring,
   samme stale-rad-mønster som tidligere bølger. **Én build-feil underveis** (commit `f2710ef5`,
   Lag-snitt-porten): glemte å slette `(legacy)/lag-snitt/page.tsx` → Turbopack rute-kollisjon i
