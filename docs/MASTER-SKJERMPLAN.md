@@ -401,7 +401,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | **· Ressurser** ★ | `/admin/talent/ressurser` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTalentRessurserV2`, AgencyOS Bølge 3.22) — samme `TalentRessurs`-modell, filter-chips (kategori/nivå/fokus via URL), ekte FormData `leggTilRessurs`-action (ADMIN) med native ukontrollerte felt |
 | · Sammenligning | `/admin/talent/sammenligning` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
 | **· WAGR-benchmark** ★ | `/admin/talent/wagr-benchmark` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminWagrBenchmarkV2`, AgencyOS Bølge 3.23) — samme `WagrSnapshot`-modell (topp 5 globalt + topp 5 norske), samme `slettWagrSnapshot`-server-action (delt fra wagr-import) |
-| · WAGR-import | `/admin/talent/wagr-import` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
+| **· WAGR-import** ★ | `/admin/talent/wagr-import` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminWagrImportV2`, AgencyOS Bølge 3.24) — samme `WagrSnapshot`-modell + ekte `synkWagrNaa`-server-action (uendret) |
 
 ### Planlegge (lage planer FOR spillerne)
 
@@ -902,7 +902,11 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   via URL), ekte FormData `leggTilRessurs`-action for ADMIN med native ukontrollerte felt.
   **3.23** Talent · WAGR-benchmark (`AdminWagrBenchmarkV2`) — samme `WagrSnapshot`-modell
   (topp 5 globalt + topp 5 norske, NGF-kategori-skala A–I), samme `slettWagrSnapshot`-action
-  (delt fra `wagr-import/actions.ts`, uendret). wagr-import gjenstår — fortsettes i neste økt.
+  (delt fra `wagr-import/actions.ts`, uendret). **3.24** Talent · WAGR-import
+  (`AdminWagrImportV2`) — samme `WagrSnapshot`-matchede-spillere-visning + ekte
+  `synkWagrNaa`-server-action (uendret, samme toast-oppsummering). Med dette er hele
+  Talent-klyngen portet UNNTATT sammenligning (avhenger av delt v10-komponent, se over,
+  krever egen beslutning).
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
