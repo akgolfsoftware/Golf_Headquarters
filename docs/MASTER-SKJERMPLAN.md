@@ -508,8 +508,8 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | ~~· Audit-detalj~~ | `/admin/audit-log/[id]` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-12) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | AI-agenter | `/admin/agents` | – | --- | ✓ | ~ | ~ | ~ |
 | · Agent-detalj | `/admin/agents/[agentId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| E-postmaler | `/admin/email-templates` | – | --- | ✓ | ~ | ~ | ~ |
-| · Rediger e-postmal | `/admin/email-templates/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
+| **E-postmaler** ★ | `/admin/email-templates` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Allerede v2 — masterplan-raden var stale, rettet 2026-07-14 |
+| · **Rediger e-postmal** ★ | `/admin/email-templates/[id]/rediger` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminEpostmalRedigerV2`, AgencyOS Bølge 3.9) — samme `saveTemplate`/`sendTestEmail`/`setAsDefault`/`archiveTemplate`-kontrakt, 2-kolonners editor+live-forhåndsvisning m/ token-substitusjon |
 | Profil | `/admin/profile` | – | --- | ✓ | ~ | ~ | ~ |
 | **Hjelp** ★ | `/admin/hjelp` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminHjelpV2`, AgencyOS Bølge 3.3) — samme statiske innhold (kategorier/artikler/kontakt-CTA), lokalt søkefilter uendret |
 | Caddie (alt. adresse) | `/admin/caddie` | – | --- | ✓ | ~ | ~ | ~ |
