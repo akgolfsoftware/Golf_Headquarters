@@ -428,7 +428,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · **Per spiller** ★ | `/admin/teknisk-plan/[spillerId]` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTekniskPlanDetaljV2`, AgencyOS Bølge 3.8) — samme datamodell, `HjelpTips` på CS-nivå/L-fase/HCP |
 | **Turneringer** ★ | `/admin/tournaments` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-13: portet til v2 (`AdminTurneringerV2`, AgencyOS Bølge 1.1) — samme datalogikk, ny `Rad`-liste dekker mobil/iPad/desktop uten egne breakpoint-grener. Detalj-siden var alt v2 |
 | · Turnering-detalj | `/admin/tournaments/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Ny turnering | `/admin/tournaments/ny` | – | --- | ✓ | ~ | ~ | ~ |
+| · **Ny turnering** ★ | `/admin/tournaments/ny` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTurneringerNyV2`, AgencyOS Bølge 3.30) — samme 5-stegs veiviser (Type → Detaljer → Format → Påmelding → Bekreft), samme steg-validering og `createTournament`-kontrakt (uendret). Steg-navigasjon via `Veiviser`; kort/chips (`ValgKort`, lokal `Pill`) — første flerstegs full-side-veiviser portet fra en 800+-linjers legacy-klient uten forenkling av selve flyten. |
 | · **Dubletter (rydd)** ★ | `/admin/tournaments/dubletter` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminTurneringerDubletterV2`, AgencyOS Bølge 3.29) — samme match-algoritme (token-overlap + ±3 dager) og `mergeTurneringer`-kontrakt, uendret. Ikke lenket fra noe v2-skjerm (var heller ikke lenket fra hub-en i legacy) — direkte-URL-only vedlikeholdsverktøy, bevart som sådan. |
 | Økter | `/admin/okter` | – | --- | ✓ | ~ | ~ | ~ |
 | **Videoer** ★ | `/admin/videoer` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14: v2 (`AdminVideoerV2`, AgencyOS Bølge 3.10) — samme `SessionVideo`-modell og `uploadVideo`/`getSignedVideoUrl`/`deleteVideo`-kontrakt fra `@/lib/storage/video` |
@@ -938,6 +938,15 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   (876 linjer, `wizard.tsx`) i Turneringer-klyngen; bevisst IKKE portet i kveld — for stor/
   risikofylt til å re-komponere i samme økt som resten (samme vurdering som plan-mal-editoren
   tidligere), trenger egen dedikert gjennomgang. Verifisert: tsc 0 feil, ESLint grønt.
+  **Bølge 3.30** (samme kveld, etter fornyet vurdering): «Ny turnering»-veiviseren ble likevel
+  portet — ved nærmere lesing var 876-linjers `wizard.tsx` mest repeterende JSX (5 rett-frem
+  steg), ikke arkitektonisk risikofylt som plan-mal-editorens uke-grid/masseredigering. Portet til
+  `AdminTurneringerNyV2` — samme 5 steg, samme per-steg-validering, samme `createTournament`-
+  kontrakt (uendret, delt fra `tournaments/ny/actions.ts`). Steg-navigasjon bruker det
+  eksisterende `Veiviser`-komponentet (samme idiom som «Ny spiller»); chip-velgere (format/tee/
+  HCP/viktighet) er en lokal `Pill`, samme mønster som `DrillSkjemaFelter.tsx`. Med dette er hele
+  Turneringer-klyngen (hub/detalj/ny/dubletter) portet til v2. Verifisert: tsc 0 feil, ESLint
+  grønt.
 - 13. juli (sent — Workbench-mobil videre à la Google/Notion Calendar, samme PR #10/branch):
   Anders delte skjermbilder av en kalender-mobilapp (omtalt som Notion Calendar, viste seg å
   være Google Kalender) og ba om «...»-overflow-meny på økt-detaljen, samt dag-/2 dager-/liste-/
