@@ -252,6 +252,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Coach-notater | `/portal/coach/notes` | – | --- | ✓ | ~ | ~ | ~ |
 | · Notat-detalj | `/portal/coach/notes/[noteId]` | – | --- | ✓ | ~ | ~ | ~ |
 | Spørsmål til coach (liste løftet D3; [id]-tråd ikke løftet) | `/portal/coach/sporsmal/[id]` | ~ | --- | ✓ | ~ | ~ | ~ |
+| · Nytt spørsmål | `/portal/coach/sporsmal/ny` | ✓ | --- | ✓ | ✓ | ✓ | ✓† |
 | Coach-AI | `/portal/coach/ai` | – | --- | ✓ | ~ | ~ | ~ |
 
 ### Meg (profil og innstillinger)
@@ -763,6 +764,27 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 15. juli (veiviser-porting, femte bølge): **Coach · Nytt spørsmål** (`/portal/coach/sporsmal/ny`)
+  portet til v2 fra Claude Design-kilden (`ui_kits/playerhq/phq-wizards.jsx` → `SporsmalNyView`,
+  delt Veiviser-skall) — spilleren velger tema, skriver tittel + spørsmål, ekte
+  `Question`-modell uendret. «Still spørsmål»-CTA-en i `CoachMeldingerV2` pekte allerede hit, så
+  ingen dead-button-fiks trengtes der. Slettet legacy-duplikatet
+  (`(legacy)/coach/sporsmal/ny`) — rutekollisjon ellers — og fjernet den nå orphanede
+  `stillSporsmal`-funksjonen fra den delte `(legacy)/coach/sporsmal/actions.ts`
+  (`svarPaSporsmal` der er fortsatt i bruk av `[id]`-siden, urørt). **Undersøkt og avvist som
+  utrygge** (design-kilden matcher ikke dagens ekte funksjon 1:1, meldes som gap for Anders):
+  `coach/ovelser/ny` (design = spillerens treningsønske-flyt, kode = coachens DrillEditor —
+  ulik aktør/rolle), `tren/turneringer/ny` (design = meld på eksisterende turnering, kode =
+  manuelt legg til turnering utenfor katalog — ulik handling), `tren/tester/ny` (design mangler
+  resultat-registrering som den ekte 4-stegs wizarden har), `tren/tester/ny/egen` og
+  `utfordringer/ny` (design er 2 steg, ekte kode er 5–6 steg med funksjonalitet — venne-invitasjon,
+  NGF-nivå-mål — som ville gått tapt), `ny-okt` (verifisert «no backend yet» — kun klient-state,
+  ingen ekte Prisma-lagring; å porte ville vært et nytt feature-bygg, ikke en visuell port),
+  `coach/plans/[planId]/ny-okt` (deler `AddSessionWizard` med AgencyOS + foreldre-hub selv
+  fortsatt legacy), `booking/ny` (578 linjer + `/bekreft`-underrute + ekte
+  credits/tilgjengelighets-logikk — for stort for denne bølgen). Verifisert: `tsc --noEmit`,
+  `eslint --quiet src`, full `npm run build` grønt.
 
 - 14. juli (struktur og navnekonsistens, branch `claude/struktur-navn-opprydding`): **Fiks:**
   Innstillinger-siden (`/portal/meg/innstillinger`) manglet egen inngangsknapp fra Meg-fanen —
