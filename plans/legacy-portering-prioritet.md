@@ -42,12 +42,28 @@ commit, master-skjermplanens haker oppdateres i samme commit (LÅST regel).
   Agent-team) — kun `KommandoTask` er foreldreløs nå (Prisma-modell/tabell utgjør en egen,
   separat migreringsjobb, ikke gjort denne runden).
 
+- **`/admin/plan-templates/ny`** — v2 (`AdminPlanMalOpprettV2`), samme `createTemplate`-action.
+  `[id]` (detalj) og `[id]/rediger` (editor) er IKKE med — se korrigert skop i P1 under, de er
+  langt større enn antatt 12. juli.
+
+## ⚠ Korrigert skop (2026-07-15): `/admin/plan-templates/[id]/rediger` er ikke en enkel form
+
+12. juli-planen sa «Volum-linje/masseredigering finnes alt i delt lib — selve siden er det som
+gjenstår», som antydet en liten gjenstående jobb. Da vi faktisk leste koden: `template-editor.tsx`
+er **1046 linjer** — en full drag-and-drop ukekalender-editor (uke×dag-grid, økt-CRUD,
+drill-tildeling, masseredigeringsverktøy for varighet/kopiering via `setWeekDuration`/
+`copyTemplateWeek`). `template-detail.tsx` (les-visning) er 545 linjer. Det finnes i tillegg en
+`[id]/effectiveness`-side (390 linjer) som ALDRI har vært i denne planen. Til sammen ~2000 linjer —
+samme størrelsesorden som selve Workbench, ikke en enkel skjema-variant. Porteres IKKE i denne
+bølgen — egen, dedikert plan-mode-økt anbefales før bygging (godkjenningsport-vurdering: er dette
+"variant av mønster" eller trenger drag-and-drop-uke-grid-mønsteret en ny Claude Design-sjekk?).
+
 ## P1 — daglig coach-bruk (port først)
 
 | Skjerm | Rute | Merknad |
 |---|---|---|
 | Live-økt coach-flyt | `/admin/live/[sessionId]/brief\|active\|summary` | Fortsatt kun `(legacy)/live/**`. Kjernen i gjennomføring med spiller. (Ikke å forveksle med `/admin/agencyos/live` «Mission Control» — egen, allerede v2, skjerm.) |
-| Plan-mal-redigering | `/admin/plan-templates/ny`, `[id]`, `[id]/rediger` | Hub-siden (`/admin/plan-templates`) er allerede v2 — disse tre undersidene er fortsatt kun `(legacy)/plan-templates/**`. Volum-linje/masseredigering finnes alt i delt lib (`src/lib/plan-templates/`) — selve siden er det som gjenstår. |
+| Plan-mal-redigering (resten) | `/admin/plan-templates/[id]`, `[id]/rediger`, `[id]/effectiveness` | `ny` er ferdig portet (se over). Disse tre er store — se «Korrigert skop» over. Egen dedikert økt, ikke rutinemessig én-skjerm-per-commit-jobb. |
 
 ## P2 — ukentlig bruk
 

@@ -419,7 +419,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Mal-effektivitet (alt. → redirect) | `/admin/plans/templates/[id]/effectiveness` | – | --- | ✓ | ✓ | – | ✓ |
 | Plan-maler (alt.) | `/admin/plan-templates` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Plan-mal detalj | `/admin/plan-templates/[id]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Ny plan-mal | `/admin/plan-templates/ny` | – | --- | ✓ | ~ | ~ | ~ |
+| · Ny plan-mal | `/admin/plan-templates/ny` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminPlanMalOpprettV2`) — samme felt-sett/sum-til-100%-validering, `Glider`-komponenten dekker disciplinFordeling-sliderne. Samme `createTemplate`-action. `(legacy)/plan-templates/ny` + `new-template-form.tsx` slettet. |
 | · Rediger plan-mal | `/admin/plan-templates/[id]/rediger` | – | --- | ✓ | ~ | ✓ | ✓ | 2026-07-11: volum-linje (timer/uke + reell pyramidefordeling vs. glidere) + masseredigering (sett varighet for hele uka, kopier uke→uke m/ konflikt-bekreftelse) — src/lib/plan-templates/
 | Drills (bibliotek) | `/admin/drills` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 — samme Prisma-datakilde/kategori-taksonomi (skillArea+FYS) og søk som legacy, kort-visning à la `CoachOvelserV2` (AkseChip/LFaseBadge/Bit). Hele familien (hub/ny/[id]/rediger/forslag) er nå v2, `(legacy)/drills/**` sider slettet (kun actions.ts-filene beholdt, uendret). |
 | · Ny drill | `/admin/drills/ny` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminDrillOpprettV2`) — samme redusert felt-sett og `createDrill`-action som legacy. Manglet egen rad i planen før nå. |
