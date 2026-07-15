@@ -1,5 +1,13 @@
 # Redesign-konsolidering — «redesign færre, tettere skjermer»
 
+> **ARKIVERT 2026-07-15.** Forslaget under (fysisk kollaps av `/portal/mal/*` og `/portal/tren/*`
+> til tab-bar inni `/portal/analysere` og `/portal/planlegge/workbench`) er IKKE gjennomført.
+> Kanon (det levende Claude Design v2-prosjektet) bygger disse som egne, kryss-lenkede
+> rute-familier — se `phq-sg-hub.jsx`/`phq-analysere.jsx`/`phq-mal.jsx`. CLAUDE.md sin «én flate
+> med faner»-regel tolkes som «én sammenhengende IA-seksjon», ikke bokstavelig én URL med
+> tab-bar. Full begrunnelse i skjermplan-riktig-design-planen (plan-mode-økt 15. juli). Dette
+> dokumentet beholdes som historikk, ikke som gjeldende retning.
+
 **Dato:** 2026-07-08 · **Status:** beslutnings-notat, venter på Anders' avklaringer.
 Forankret i [`plans/redesign-plan.md`](redesign-plan.md), [`plans/skjermplan-master.md`](skjermplan-master.md)
 og de låste beslutningene i CLAUDE.md.
