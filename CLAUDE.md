@@ -48,6 +48,17 @@ dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
 - Inter + Familjen Grotesk (display) + JetBrains Mono via `next/font/google`. Inter Tight er deprecated — lastes kun for legacy-flater. Kanon: `.claude/rules/design-system-regel.md`. Lucide React — eneste ikon-bibliotek. npm.
 - Testrammeverk: `node:test` via `tsx --test` (enhetstester i `src/lib/**/*.test.ts`) + Playwright (e2e). vitest/jest er IKKE installert.
 
+## Kjernelogikk og miljø
+- **Domenelogikk** (matte/forretningsregler brukt på tvers av PlayerHQ og AgencyOS) bor i `src/lib/domain/`:
+  `sg.ts` (Strokes Gained, Broadie + Team Norway IUP-kalibrert), `hcp.ts`, `fys-score.ts`, `cs-progression.ts`,
+  `pyramid-weighting.ts`, `ak-kategori.ts`/`spiller-kategori.ts`, `rules/`. Gjenbruk disse — ikke regn ut SG/HCP
+  på nytt i en komponent eller API-rute.
+- **Miljøvariabler** valideres ved oppstart i `src/lib/env.ts`. Kritiske (appen starter ikke uten): Supabase-URL/nøkler,
+  `DATABASE_URL`, `DIRECT_URL`. Se `.env.example` for full liste. `tsx`-scripts utenfor Next-runtime (i `scripts/`)
+  MÅ `import "./_env"` FØR `@/lib/prisma`, ellers feiler DB-tilkoblingen (ESM-importrekkefølge).
+- **API-ruter** (`src/app/api/`) er organisert per domene (`admin/`, `portal/`, `auth/`, `stripe/`, `cron/`, `ai-plan/`,
+  `caddie/`, `mcp/` m.fl.) — speiler produktinndelingen i `arkitektur.md`, ikke REST-ressurser.
+
 ## Kommandoer
 ```bash
 npm run dev                          # dev-server, http://localhost:3000 (skal starte uten warnings)
