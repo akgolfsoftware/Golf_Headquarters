@@ -501,7 +501,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Audit-log | `/admin/audit-log` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminAuditLogV2`) — samme AuditLog-spørring/kind-status-utledning som legacy, KpiFlis+Rad-liste, ærlig tomtilstand. Lagt i Innsikt-mer-gruppen (var uten menylenke). `(legacy)/audit-log` slettet. |
 | AI-agenter | `/admin/agents` | – | --- | ✓ | ~ | ~ | ~ |
 | · Agent-detalj | `/admin/agents/[agentId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| E-postmaler | `/admin/email-templates` | – | --- | ✓ | ~ | ~ | ~ |
+| E-postmaler | `/admin/email-templates` | ✓ | --- | ✓ | ~ | ✓ | ~ | 2026-07-15 dok-verifisering: `AdminEmailV2` — v2preview route-gruppe (V2Shell, ikke AdminShell), ekte `EmailTemplate`-data (aktive først, slug-prefiks-gruppert). Design/Data rettet – → ✓ for å matche faktisk kode. |
 | · Rediger e-postmal | `/admin/email-templates/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
 | Marketing (innholdskalender + post-kø) | `/admin/marketing` | ✓ | --- | ✓ | ✓ | ✓ | ~ | v2 (AdminMarketingV2), ekte MarketingPost-data. M1-grunnmur uten AI-generering/eksterne API-er |
 | Profil | `/admin/profile` | – | --- | ✓ | ✓ | ✓ | ~ | nåbar via Mer → Drift → «Min coach-profil»; ekte brukerfelter, ikke v2-komponert ennå |
