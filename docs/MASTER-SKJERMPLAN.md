@@ -767,6 +767,15 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 15. juli (D1 avklart og utført, branch `claude/d1-skjul-demo-skjermer`): fersk revisjon av alle
+  meny-punkt fant at 14. juli-listen (11+5 kandidater) stort sett var utdatert — Økonomi-fanen,
+  Caddie-AI og «Ny spiller» var alt koblet til ekte data. Kun to skjermer hadde fortsatt et ekte
+  demo-varsel i appen og ble fjernet fra navigasjonen (sidene finnes fortsatt, bare av-lenket):
+  AgencyOS Live/Mission Control (`/admin/agencyos/live`) og PlayerHQ Talent (`/portal/talent` —
+  Meg-fanen peker allerede til den nyere, ekte Utviklingsplan-siden; søkepaletten omdirigert dit).
+  Samtidig lagt til: TrackMan (portet natt til 15. juli) manglet meny-lenke, lagt til under
+  AgencyOS «Mer» → Innsikt. Se `docs/AAPNE-SPORSMAAL.md` C11 for full begrunnelse.
+
 - 15. juli (veiviser-porting, femte bølge): **Coach · Nytt spørsmål** (`/portal/coach/sporsmal/ny`)
   portet til v2 fra Claude Design-kilden (`ui_kits/playerhq/phq-wizards.jsx` → `SporsmalNyView`,
   delt Veiviser-skall) — spilleren velger tema, skriver tittel + spørsmål, ekte
