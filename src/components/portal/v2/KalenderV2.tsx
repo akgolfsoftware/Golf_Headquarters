@@ -444,7 +444,9 @@ export function KalenderV2({ data }: { data: KalenderData }) {
           />
           {!mobile && (
             <span className="hidden md:inline-flex">
-              <CTAPill icon="plus" ghost>Be om økt</CTAPill>
+              <Link href="/portal/onskeligokt" style={{ textDecoration: "none" }}>
+                <CTAPill icon="plus" ghost>Be om økt</CTAPill>
+              </Link>
             </span>
           )}
         </div>

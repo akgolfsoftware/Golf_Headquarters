@@ -187,7 +187,7 @@ export function AdminUkaV2({ data }: { data: AdminUkaV2Data }) {
             Caddie balanserer kapasitet, reise og familie-tid.
           </p>
         </div>
-        <Link href="/admin/kalender" style={{ textDecoration: "none" }}>
+        <Link href="/admin/bookinger/ny" style={{ textDecoration: "none" }}>
           <CTAPill icon="plus">Ny booking</CTAPill>
         </Link>
       </div>
