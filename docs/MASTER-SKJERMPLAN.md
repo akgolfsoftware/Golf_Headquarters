@@ -497,7 +497,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Tilgang | `/admin/settings/tilgang` | – | --- | ✓ | ~ | ~ | ~ |
 | Team | `/admin/team` | – | --- | ✓ | ~ | ~ | ~ |
 | · Inviter | `/admin/team/inviter` | – | --- | ✓ | ~ | ~ | ~ |
-| Audit-log | `/admin/audit-log` | – | --- | ✓ | ~ | ~ | ~ |
+| Audit-log | `/admin/audit-log` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminAuditLogV2`) — samme AuditLog-spørring/kind-status-utledning som legacy, KpiFlis+Rad-liste, ærlig tomtilstand. Lagt i Innsikt-mer-gruppen (var uten menylenke). `(legacy)/audit-log` slettet. |
 | AI-agenter | `/admin/agents` | – | --- | ✓ | ~ | ~ | ~ |
 | · Agent-detalj | `/admin/agents/[agentId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | E-postmaler | `/admin/email-templates` | – | --- | ✓ | ~ | ~ | ~ |
