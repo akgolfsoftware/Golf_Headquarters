@@ -421,9 +421,11 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Plan-mal detalj | `/admin/plan-templates/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Ny plan-mal | `/admin/plan-templates/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger plan-mal | `/admin/plan-templates/[id]/rediger` | – | --- | ✓ | ~ | ✓ | ✓ | 2026-07-11: volum-linje (timer/uke + reell pyramidefordeling vs. glidere) + masseredigering (sett varighet for hele uka, kopier uke→uke m/ konflikt-bekreftelse) — src/lib/plan-templates/
-| Drills (bibliotek) | `/admin/drills` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 — samme Prisma-datakilde/kategori-taksonomi (skillArea+FYS) og søk som legacy, kort-visning à la `CoachOvelserV2` (AkseChip/LFaseBadge/Bit). `(legacy)/drills` hub slettet; `ny`/`[id]`/`[id]/rediger`/`forslag` er fortsatt legacy (egne P1-punkter). |
+| Drills (bibliotek) | `/admin/drills` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 — samme Prisma-datakilde/kategori-taksonomi (skillArea+FYS) og søk som legacy, kort-visning à la `CoachOvelserV2` (AkseChip/LFaseBadge/Bit). Hele familien (hub/ny/[id]/rediger/forslag) er nå v2, `(legacy)/drills/**` sider slettet (kun actions.ts-filene beholdt, uendret). |
+| · Ny drill | `/admin/drills/ny` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminDrillOpprettV2`) — samme redusert felt-sett og `createDrill`-action som legacy. Manglet egen rad i planen før nå. |
 | · Drill-detalj | `/admin/drills/[id]` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminDrillDetaljV2`) — samme loader/actions (dupliser/slett), `videoUrl` fortsatt sanert via `safeUrl()` (S-21) før den når klienten. `(legacy)/drills/[id]` + `drill-detail-actions.tsx` slettet. |
-| · Rediger drill | `/admin/drills/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
+| · Rediger drill | `/admin/drills/[id]/rediger` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminDrillRedigerV2`, alle 27 felt) — samme `updateDrill`-action. Delte pill/tag-biter (`drill-form-bits.tsx`) gjenbrukt fra opprett-skjermen. |
+| · AI drill-forslag | `/admin/drills/forslag` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminDrillForslagV2`) — samme godkjenn/avvis-actions. Fikset en gap: `videoUrl` går nå gjennom `safeUrl()` (S-21), legacy rendret rå DB-URL. Manglet egen rad i planen før nå. |
 | Teknisk plan | `/admin/teknisk-plan` | – | --- | ✓ | ~ | ~ | ~ |
 | · Per spiller | `/admin/teknisk-plan/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
 | **Turneringer** ★ | `/admin/tournaments` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: v2-redesign, hele legacy-mappen portert og slettet

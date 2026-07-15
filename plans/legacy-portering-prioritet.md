@@ -22,8 +22,11 @@ commit, master-skjermplanens haker oppdateres i samme commit (LÅST regel).
 - **`/admin/okonomi` P2-sammenslåingen** — `(legacy)/okonomi` er nå selv bare en
   `permanentRedirect("/admin/agencyos/okonomi")`. Ferdig, ikke en gjenstående jobb.
 - **Grupper-timeplan** — `/admin/grupper`, `[id]`, `[id]/timeplan` er alle v2, ingen restflater.
-- **Drills-bibliotek (kun hub-siden)** — `/admin/drills` er v2 (samme datakilde/kategori/søk-
-  kontrakt som legacy). `ny`/`[id]`/`[id]/rediger`/`forslag` er fortsatt legacy — se P1 under.
+- **Drills-bibliotek, hele familien** — hub, `ny`, `[id]`, `[id]/rediger` (alle 27 felt),
+  `forslag` — alle v2 (`AdminDrillOpprettV2`/`AdminDrillDetaljV2`/`AdminDrillRedigerV2`/
+  `AdminDrillForslagV2`, delte biter i `drill-form-bits.tsx`). Samme CRUD-actions uendret.
+  Fikset to `safeUrl()`-gap i samme slengen (drill-detalj + forslag rendret rå `videoUrl` fra
+  DB). `(legacy)/drills/**` sider slettet, kun `actions.ts`-filene beholdt (gjenbrukt uendret).
 - **Spiller-skjemaer, `rediger` + `tildel-test`** — begge v2 (`AdminRedigerSpillerV2`,
   `AdminTildelTestV2`), samme server actions uendret. `tildel-test` droppet en fabrikert
   demo-tekst («A1 · HCP 4.8 · 12/36 tester») fra legacy til fordel for ekte HCP. Kun `ny` var
@@ -43,7 +46,6 @@ commit, master-skjermplanens haker oppdateres i samme commit (LÅST regel).
 
 | Skjerm | Rute | Merknad |
 |---|---|---|
-| Drills-bibliotek (resten) | `[id]/rediger`, `ny`, `forslag` | Hub (`/admin/drills`) og `[id]`-detalj er v2 (se over) — disse tre gjenstår, fortsatt kun `(legacy)/drills/**`. CRUD-actions (`createDrill`/`updateDrill`/`duplicateDrill`/`deleteDrill`) er ferdig zod-validerte og gjenbrukes uendret. `[id]/rediger` er stor (27 felt) — egen commit. |
 | Live-økt coach-flyt | `/admin/live/[sessionId]/brief\|active\|summary` | Fortsatt kun `(legacy)/live/**`. Kjernen i gjennomføring med spiller. (Ikke å forveksle med `/admin/agencyos/live` «Mission Control» — egen, allerede v2, skjerm.) |
 | Plan-mal-redigering | `/admin/plan-templates/ny`, `[id]`, `[id]/rediger` | Hub-siden (`/admin/plan-templates`) er allerede v2 — disse tre undersidene er fortsatt kun `(legacy)/plan-templates/**`. Volum-linje/masseredigering finnes alt i delt lib (`src/lib/plan-templates/`) — selve siden er det som gjenstår. |
 
