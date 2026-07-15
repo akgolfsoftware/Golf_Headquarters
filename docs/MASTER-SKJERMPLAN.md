@@ -452,7 +452,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Tilgjengelighet | `/admin/availability` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | Kapasitet | `/admin/kapasitet` | – | --- | ✓ | ~ | ~ | ~ |
 | Tjenester/priser | `/admin/services` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| TrackMan (på tvers) | `/admin/trackman` | – | --- | ✓ | ~ | ~ | ~ |
+| TrackMan (på tvers) | `/admin/trackman` | – | --- | ✓ | ✓ | ✓ | ✓ | v2 2026-07-14: portet ut av legacy, komponert av v2-biblioteket (KpiFlis/Rad/FilterChips — samme mønster som Runder/Tester/Team, ingen 1:1-kit finnes for denne cross-player-tabellen); ekte søk+miljø-filter (ikke placeholder-toast); TilbakeLenke → /admin/gjennomfore |
 | Live-økt: brief (coach) | `/admin/live/[sessionId]/brief` | – | --- | ✓ | ✓ | ✓ | ✓ |
 | Live-økt: aktiv (coach) | `/admin/live/[sessionId]/active` | – | --- | ✓ | ✓ | ✓ | ✓ |
 | Live-økt: oppsummering (coach) | `/admin/live/[sessionId]/summary` | – | --- | ✓ | ✓ | ✓ | ✓ |
@@ -765,6 +765,19 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 14. juli (AgencyOS v2-porting, branch `claude/port-trackman-v2`): **TrackMan (på tvers)
+  portet til v2.** `/admin/trackman` flyttet ut av `(legacy)`-gruppen til en egen v2preview-rute
+  (`V2Shell` + ny `AdminTrackmanV2`-komponent). Ingen 1:1 Claude Design-kit finnes for denne
+  cross-player-tabellen — kit-filen `ui_kits/agencyos/trackman-app.jsx` viste seg å være en
+  *per-spiller* sesjon-dybde-visning (dispersion/trajectory-plott for én spiller), en annen skjerm
+  enn coachens tvers-av-stallen-oversikt. Komponert utelukkende av v2-biblioteket, samme
+  «dekket via system»-mønster som Runder/Tester/Team-portene. Datakontrakt bevart 1:1 (ekte
+  `TrackManSession`-spørring, KPI-strip, spiller/HCP/dato/slag/kilde/miljø), men søk og
+  miljø-filter er nå ekte klientfilter (var placeholder-toast i legacy). Verifisert: fant at
+  commits som hevdet å ha portet både TrackMan og Risiko til v2 (`AgencyOS Bølge 3.7`/`3.17`)
+  kun eksisterte på en aldri-merget branch (`origin/claude/mobile-desktop-improvements-90kanx`)
+  — ikke i historikken til main. `/admin/risiko` er fortsatt legacy og gjenstår som egen jobb.
 
 - 14. juli (ren dokument-verifisering — 7 punkter fra intern oppgavelogg sjekket mot faktisk
   kode, ingen kildekode endret): **Rettet (haker var utdatert i forhold til levert kode):**
