@@ -52,7 +52,6 @@ export const AGENCYOS_NAV: V2NavItem[] = [
   { id: "uka", label: "Uka", icon: "columns-3", href: "/admin/agencyos/uka" },
   { id: "innsikt", label: "Innsikt", icon: "bar-chart", href: "/admin/analyse" },
   { id: "okonomi", label: "Økonomi", icon: "credit-card", href: "/admin/agencyos/okonomi" },
-  { id: "live", label: "Live", icon: "activity", href: "/admin/agencyos/live" },
 ];
 
 /** AgencyOS «Mer»-meny — lang hale gruppert. Alt en coach trenger, nåbart. */
@@ -97,6 +96,7 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
       { id: "runder", label: "Runder", icon: "flag", href: "/admin/runder" },
       { id: "compliance", label: "Plan-etterlevelse", icon: "shield-check", href: "/admin/analysere/compliance" },
       { id: "audit-log", label: "Audit-log", icon: "shield", href: "/admin/audit-log" },
+      { id: "trackman", label: "TrackMan", icon: "target", href: "/admin/trackman" },
     ],
   },
   {

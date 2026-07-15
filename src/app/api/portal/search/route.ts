@@ -73,7 +73,7 @@ const ROUTES: Omit<SearchRoute, "id">[] = [
   { label: "Årsplan", description: "Langsiktig plan", href: "/portal/tren/aarsplan" },
   { label: "Min profil", description: "Profil, innstillinger, helse", href: "/portal/meg" },
   { label: "Abonnement", description: "Tier, kreditter, fakturaer", href: "/portal/meg/abonnement" },
-  { label: "Talent", description: "Utviklingsroadmap", href: "/portal/talent" },
+  { label: "Talent", description: "Utviklingsroadmap", href: "/portal/utviklingsplan" },
   { label: "Varsler", description: "Notifikasjoner", href: "/portal/varsler" },
   { label: "Hjelp", description: "FAQ og support", href: "/portal/meg/help" },
 ];

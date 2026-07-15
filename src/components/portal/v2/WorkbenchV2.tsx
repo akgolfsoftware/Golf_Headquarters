@@ -21,6 +21,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  pointerWithin,
+  useDraggable,
+  useDroppable,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+  type DragStartEvent,
+} from "@dnd-kit/core";
+import {
   T,
   Caps,
   Kort,
@@ -100,62 +112,38 @@ function statusLabel(s: PlanStatus | null | undefined): { l: string; tone: "info
   }
 }
 
-/* ── Drag-and-drop-payload (tidslinje + bibliotek → dag-kolonne) ── */
-const DND_MIME = "application/x-akgolf-wb";
-type DndPayload =
-  | { kind: "move"; sessionId: string }
+/* ── dnd-kit: drag-payload (tidslinje + bibliotek → dag-kolonne) ──
+   Native HTML5 DnD (draggable/onDragStart/onDrop) fungerer ikke på touch
+   (iPad/mobil) — dragstart/drop fyrer aldri der. Erstattet med @dnd-kit/core
+   sin PointerSensor (dekker mus OG touch via Pointer Events), 2026-07-14.
+   8c.2: periode-brikker (PeriodePalett) er en EGEN drag-kontekst i
+   WorkbenchAarsplan.tsx — fortsatt native HTML5 DnD, IKKE migrert her (se
+   kommentar i den filen). */
+type WbDragData =
+  | { kind: "move"; sessionId: string; event: WeekEvent }
   | { kind: "add"; title: string; durMin: number; akse?: AkseKey }
-  | { kind: "mal"; templateId: string; name: string; sessionCount: number; varighetUker: number }
-  // 8c.2: periode-brikker (PeriodePalett) — håndteres KUN av årsplan-canvaset.
-  | { kind: "periode"; lPhase: string };
+  | { kind: "mal"; templateId: string; name: string; sessionCount: number; varighetUker: number };
 
-function lesDndPayload(e: React.DragEvent): DndPayload | null {
-  try {
-    const raw = e.dataTransfer.getData(DND_MIME);
-    if (!raw) return null;
-    return JSON.parse(raw) as DndPayload;
-  } catch {
-    return null;
-  }
+/** Pointer-Y (skjermkoordinat ved slipp) → {hour, minute} snappet til nærmeste
+ *  halvtime, relativt til toppen av dag-kolonnen den slippes i. Erstatter
+ *  native `e.clientY` — dnd-kit gir ikke rå pointer-koordinater i onDragEnd,
+ *  men activatorEvent (start-posisjon) + delta (bevegelse) gir samme tall. */
+function tidFraPointerY(pointerY: number, kolonneTop: number): { hour: number; minute: number } {
+  const y = pointerY - kolonneTop;
+  const raa = START_TIME + y / HOUR_H;
+  const snappet = Math.round(raa * 2) / 2;
+  const klemt = Math.max(START_TIME, Math.min(END_TIME - 1, snappet));
+  return { hour: Math.floor(klemt), minute: klemt % 1 === 0.5 ? 30 : 0 };
 }
 
 /* ── Tidslinje-blokk ───────────────────────────────────── */
-function TLBlokk({ o, valgt, onVelg, dragbar }: { o: WeekEvent; valgt: boolean; onVelg: (id: string) => void; dragbar?: boolean }) {
-  const start = o.h + (o.m ?? 0) / 60;
-  const dur = o.durMin / 60;
-  const h = dur * HOUR_H;
-  const kompakt = h < 42;
+/** Felles innhold (økt-boksen OG DragOverlay-spøkelset bruker samme visning). */
+function TLBlokkInnhold({ o, kompakt, h, col }: { o: WeekEvent; kompakt: boolean; h: number; col: string }) {
   const ak = o.eb as AkseKey;
-  const col = T.ax[ak] || T.mut;
   const done = o.compliance === "pa-plan";
   const avvik = o.compliance === "avvik" || o.compliance === "ikke-gjennomfort";
-  const pending = erOptimistisk(o.id);
-  const ramme = avvik ? T.down : valgt ? T.lime : T.border;
-  const top = Math.max(0, (start - START_TIME) * HOUR_H + 2);
-  const dragId = dragbar && !pending ? o.id : undefined;
   return (
-    <div
-      data-wb-okt={o.id ?? undefined}
-      onClick={() => o.id && !pending && onVelg(o.id)}
-      draggable={!!dragId}
-      onDragStart={dragId ? (e) => {
-        e.dataTransfer.setData(DND_MIME, JSON.stringify({ kind: "move", sessionId: dragId } satisfies DndPayload));
-        e.dataTransfer.effectAllowed = "move";
-      } : undefined}
-      style={{
-        position: "absolute", top, left: 3, right: 3, height: Math.max(18, h - 4),
-        borderRadius: 8, padding: kompakt ? "2px 7px" : "5px 8px", cursor: pending ? "default" : dragbar ? "grab" : "pointer", overflow: "hidden",
-        background: `color-mix(in srgb, ${col} 15%, ${T.panel3})`,
-        border: `1px ${pending ? "dashed" : "solid"} ${ramme}`,
-        borderLeft: `3px solid ${col}`,
-        opacity: pending ? 0.6 : 1,
-        boxShadow: avvik
-          ? `0 0 0 1px color-mix(in srgb, ${T.down} 25%, transparent)`
-          : valgt
-            ? `0 0 0 1px color-mix(in srgb, ${T.lime} 35%, transparent)`
-            : "none",
-      }}
-    >
+    <>
       <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
         <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.03em", color: `color-mix(in srgb, ${col} 55%, ${T.fg})`, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{AKSE_NAVN[ak] || o.eb} · {toKl(o.h, o.m)}</span>
         {done && <Icon name="check" size={9} style={{ color: T.up, marginLeft: "auto", flex: "none" }} />}
@@ -163,39 +151,155 @@ function TLBlokk({ o, valgt, onVelg, dragbar }: { o: WeekEvent; valgt: boolean; 
       </div>
       {!kompakt && <div style={{ fontFamily: T.ui, fontSize: 10.5, fontWeight: 600, color: T.fg, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{o.ttl}</div>}
       {!kompakt && h >= 58 && <div style={{ fontFamily: T.mono, fontSize: 8, color: T.mut, marginTop: 2 }}>{toKl(o.h, o.m)} · {fmtVarighet(o.durMin)}</div>}
+    </>
+  );
+}
+
+function TLBlokk({ o, dragKey, valgt, onVelg, dragbar }: { o: WeekEvent; /** Stabil id for dnd-kit — o.id kan mangle (fallback til dag+indeks). */ dragKey: string; valgt: boolean; onVelg: (id: string) => void; dragbar?: boolean }) {
+  const start = o.h + (o.m ?? 0) / 60;
+  const dur = o.durMin / 60;
+  const h = dur * HOUR_H;
+  const kompakt = h < 42;
+  const ak = o.eb as AkseKey;
+  const col = T.ax[ak] || T.mut;
+  const avvik = o.compliance === "avvik" || o.compliance === "ikke-gjennomfort";
+  const pending = erOptimistisk(o.id);
+  const ramme = avvik ? T.down : valgt ? T.lime : T.border;
+  const top = Math.max(0, (start - START_TIME) * HOUR_H + 2);
+  const kanDra = dragbar && !pending && !!o.id;
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: `session:${dragKey}`,
+    data: kanDra ? ({ kind: "move", sessionId: o.id as string, event: o } satisfies WbDragData) : undefined,
+    disabled: !kanDra,
+  });
+  return (
+    <div
+      ref={setNodeRef}
+      data-wb-okt={o.id ?? undefined}
+      onClick={() => o.id && !pending && onVelg(o.id)}
+      {...(kanDra ? attributes : undefined)}
+      {...(kanDra ? listeners : undefined)}
+      style={{
+        position: "absolute", top, left: 3, right: 3, height: Math.max(18, h - 4),
+        borderRadius: 8, padding: kompakt ? "2px 7px" : "5px 8px", cursor: pending ? "default" : dragbar ? "grab" : "pointer", overflow: "hidden",
+        touchAction: kanDra ? "none" : undefined,
+        background: `color-mix(in srgb, ${col} 15%, ${T.panel3})`,
+        border: `1px ${pending ? "dashed" : "solid"} ${ramme}`,
+        borderLeft: `3px solid ${col}`,
+        opacity: isDragging ? 0.35 : pending ? 0.6 : 1,
+        boxShadow: avvik
+          ? `0 0 0 1px color-mix(in srgb, ${T.down} 25%, transparent)`
+          : valgt
+            ? `0 0 0 1px color-mix(in srgb, ${T.lime} 35%, transparent)`
+            : "none",
+      }}
+    >
+      <TLBlokkInnhold o={o} kompakt={kompakt} h={h} col={col} />
+    </div>
+  );
+}
+
+/** DragOverlay-spøkelset som følger pekeren under drag — dnd-kit har ingen
+ *  automatisk «skjermbilde av kilden»-ghost slik native HTML5 DnD hadde, så
+ *  dette gjenskaper samme visuelle tilbakemelding eksplisitt for alle tre
+ *  drag-kildene (økt-blokk / bibliotek-brikke / mal-kort). */
+function WBDragOverlayInnhold({ data }: { data: WbDragData }) {
+  if (data.kind === "move") {
+    const o = data.event;
+    const h = Math.max(40, (o.durMin / 60) * HOUR_H);
+    const kompakt = h < 42;
+    const col = T.ax[o.eb as AkseKey] || T.mut;
+    return (
+      <div style={{ width: 200, borderRadius: 8, padding: kompakt ? "2px 7px" : "5px 8px", background: `color-mix(in srgb, ${col} 15%, ${T.panel3})`, border: `1px solid ${T.borderS}`, borderLeft: `3px solid ${col}`, boxShadow: "0 10px 28px rgba(0,0,0,0.4)", cursor: "grabbing" }}>
+        <TLBlokkInnhold o={o} kompakt={kompakt} h={h} col={col} />
+      </div>
+    );
+  }
+  const akse = data.kind === "add" ? data.akse : undefined;
+  const tittel = data.kind === "add" ? data.title : data.name;
+  const sub = data.kind === "add" ? fmtVarighet(data.durMin) : `${data.sessionCount} økter · ${data.varighetUker} uker`;
+  return (
+    <div style={{ width: 200, display: "flex", flexDirection: "column", gap: 4, padding: "8px 10px", borderRadius: 10, background: T.panel2, border: `1px dashed ${T.borderS}`, boxShadow: "0 10px 28px rgba(0,0,0,0.4)", cursor: "grabbing" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        {akse && <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[akse] || T.mut, flex: "none" }} />}
+        <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{tittel}</span>
+      </div>
+      <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>{sub}</span>
+    </div>
+  );
+}
+
+/** Én dag-kolonne — egen komponent fordi dnd-kit sin `useDroppable` er en
+ *  hook (kan ikke kalles inne i en `.map()`-callback). */
+function WBTidslinjeDagKolonne({ dag, index, valgt, onVelg, droppbar, kanFlytteOkter, onTomKlikk }: {
+  dag: DagKol;
+  index: number;
+  valgt: string | null;
+  onVelg: (id: string) => void;
+  droppbar: boolean;
+  kanFlytteOkter: boolean;
+  onTomKlikk?: (dayIndex: number, hour: number, minute: number) => void;
+}) {
+  const { setNodeRef, isOver } = useDroppable({
+    id: `day-${index}`,
+    disabled: !droppbar,
+  });
+  return (
+    <div
+      ref={setNodeRef}
+      data-wb-dag={index}
+      onClick={onTomKlikk ? (e) => {
+        if (e.target !== e.currentTarget) return; // kun tom flate, ikke økt-blokker
+        const y = e.clientY - e.currentTarget.getBoundingClientRect().top;
+        const raa = START_TIME + y / HOUR_H;
+        const snappet = Math.max(START_TIME, Math.min(END_TIME - 1, Math.round(raa * 2) / 2));
+        onTomKlikk(index, Math.floor(snappet), snappet % 1 === 0.5 ? 30 : 0);
+      } : undefined}
+      style={{
+        flex: 1, minWidth: 0, position: "relative", borderLeft: `1px solid ${T.border}`,
+        background: isOver
+          ? `color-mix(in srgb, ${T.lime} 8%, transparent)`
+          : dag.today ? `color-mix(in srgb, ${T.lime} 3%, transparent)` : "transparent",
+        outline: isOver ? `1px dashed color-mix(in srgb, ${T.lime} 45%, transparent)` : "none",
+        outlineOffset: -2,
+        transition: "background 80ms",
+      }}
+    >
+      {dag.events.map((o, j) => (
+        <TLBlokk
+          key={o.id ?? `${index}-${j}`}
+          dragKey={o.id ?? `${index}-${j}`}
+          o={o}
+          valgt={!!o.id && valgt === o.id}
+          onVelg={onVelg}
+          dragbar={kanFlytteOkter && !!o.id && (o.source ?? "plan") === "plan"}
+        />
+      ))}
     </div>
   );
 }
 
 /** Ukekalender: 7 dag-kolonner × timelinje, økter absolutt posisjonert.
- *  Med `onDropMove`/`onDropAdd` (kun når skrivesiden finnes) er kolonnene
- *  drop-soner: dra en økt-blokk til ny dag, eller en bibliotek-brikke inn
- *  på et klokkeslett (Y-posisjon → time, snappet til hel/halv). */
-function WBTidslinje({ dager, valgt, onVelg, onDropMove, onDropAdd, onTomKlikk, onDropMal }: {
+ *  Med `kanFlytteOkter`/`kanLeggeTil`/`kanBrukeMal` (kun når skrivesiden
+ *  finnes) er kolonnene drop-soner: dra en økt-blokk til ny dag, en
+ *  bibliotek-brikke inn på et klokkeslett (Y-posisjon → time, snappet til
+ *  hel/halv), eller en mal inn (dagen/tiden spiller ingen rolle for mal).
+ *  Selve drop-håndteringen skjer sentralt i WorkbenchV2 sin DndContext —
+ *  denne komponenten markerer bare dra-/slippbare flater. */
+function WBTidslinje({ dager, valgt, onVelg, kanFlytteOkter, kanLeggeTil, kanBrukeMal, onTomKlikk }: {
   dager: DagKol[];
   valgt: string | null;
   onVelg: (id: string) => void;
-  onDropMove?: (sessionId: string, dayIndex: number) => void;
-  onDropAdd?: (item: { title: string; durMin: number; akse?: AkseKey }, dayIndex: number, hour: number, minute: number) => void;
+  kanFlytteOkter?: boolean;
+  kanLeggeTil?: boolean;
+  kanBrukeMal?: boolean;
   /** I1: trykk på tom flate i en dag-kolonne → Ny økt med dag+tid prefylt. */
   onTomKlikk?: (dayIndex: number, hour: number, minute: number) => void;
-  /** Dra en MAL til canvas → bekreftelses-popup (Anders-logikken). */
-  onDropMal?: (mal: { templateId: string; name: string; sessionCount: number; varighetUker: number }) => void;
 }) {
-  const [dropDag, setDropDag] = useState<number | null>(null);
   const timer: number[] = [];
   for (let h = START_TIME; h <= END_TIME; h++) timer.push(h);
   const bodyH = (timer.length - 1) * HOUR_H;
-  const droppbar = !!(onDropMove || onDropAdd);
-
-  /** Y-posisjon i kolonnen → {hour, minute} snappet til nærmeste halvtime. */
-  const tidFraY = (e: React.DragEvent, kolonne: HTMLElement): { hour: number; minute: number } => {
-    const y = e.clientY - kolonne.getBoundingClientRect().top;
-    const raa = START_TIME + y / HOUR_H;
-    const snappet = Math.round(raa * 2) / 2;
-    const klemt = Math.max(START_TIME, Math.min(END_TIME - 1, snappet));
-    return { hour: Math.floor(klemt), minute: klemt % 1 === 0.5 ? 30 : 0 };
-  };
+  const droppbar = !!(kanFlytteOkter || kanLeggeTil || kanBrukeMal);
 
   return (
     <Kort pad="0" style={{ overflow: "hidden" }}>
@@ -222,52 +326,16 @@ function WBTidslinje({ dager, valgt, onVelg, onDropMove, onDropAdd, onTomKlikk, 
             <span key={h} style={{ position: "absolute", left: 0, right: 0, top: (h - START_TIME) * HOUR_H, height: 1, background: "rgba(255,255,255,0.03)" }} />
           ))}
           {dager.map((d, i) => (
-            <div
+            <WBTidslinjeDagKolonne
               key={i}
-              data-wb-dag={i}
-              onDragOver={droppbar ? (e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; if (dropDag !== i) setDropDag(i); } : undefined}
-              onDragLeave={droppbar ? () => setDropDag((v) => (v === i ? null : v)) : undefined}
-              onClick={onTomKlikk ? (e) => {
-                if (e.target !== e.currentTarget) return; // kun tom flate, ikke økt-blokker
-                const y = e.clientY - e.currentTarget.getBoundingClientRect().top;
-                const raa = START_TIME + y / HOUR_H;
-                const snappet = Math.max(START_TIME, Math.min(END_TIME - 1, Math.round(raa * 2) / 2));
-                onTomKlikk(i, Math.floor(snappet), snappet % 1 === 0.5 ? 30 : 0);
-              } : undefined}
-              onDrop={droppbar ? (e) => {
-                e.preventDefault();
-                setDropDag(null);
-                const payload = lesDndPayload(e);
-                if (!payload) return;
-                if (payload.kind === "move" && onDropMove) onDropMove(payload.sessionId, i);
-                if (payload.kind === "add" && onDropAdd) {
-                  const { hour, minute } = tidFraY(e, e.currentTarget);
-                  onDropAdd({ title: payload.title, durMin: payload.durMin, akse: payload.akse }, i, hour, minute);
-                }
-                if (payload.kind === "mal" && onDropMal) {
-                  onDropMal({ templateId: payload.templateId, name: payload.name, sessionCount: payload.sessionCount, varighetUker: payload.varighetUker });
-                }
-              } : undefined}
-              style={{
-                flex: 1, minWidth: 0, position: "relative", borderLeft: `1px solid ${T.border}`,
-                background: dropDag === i
-                  ? `color-mix(in srgb, ${T.lime} 8%, transparent)`
-                  : d.today ? `color-mix(in srgb, ${T.lime} 3%, transparent)` : "transparent",
-                outline: dropDag === i ? `1px dashed color-mix(in srgb, ${T.lime} 45%, transparent)` : "none",
-                outlineOffset: -2,
-                transition: "background 80ms",
-              }}
-            >
-              {d.events.map((o, j) => (
-                <TLBlokk
-                  key={o.id ?? `${i}-${j}`}
-                  o={o}
-                  valgt={!!o.id && valgt === o.id}
-                  onVelg={onVelg}
-                  dragbar={!!onDropMove && !!o.id && (o.source ?? "plan") === "plan"}
-                />
-              ))}
-            </div>
+              dag={d}
+              index={i}
+              valgt={valgt}
+              onVelg={onVelg}
+              droppbar={droppbar}
+              kanFlytteOkter={!!kanFlytteOkter}
+              onTomKlikk={onTomKlikk}
+            />
           ))}
         </div>
       </div>
@@ -276,21 +344,24 @@ function WBTidslinje({ dager, valgt, onVelg, onDropMove, onDropAdd, onTomKlikk, 
 }
 
 /* ── Bibliotek (venstre) ───────────────────────────────── */
-function PalettBrikke({ tittel, akse, durMin, sub, onClick }: { tittel: string; akse?: AkseKey; durMin?: number; sub: string; onClick?: () => void }) {
+function PalettBrikke({ pid, tittel, akse, durMin, sub, onClick }: { pid: string; tittel: string; akse?: AkseKey; durMin?: number; sub: string; onClick?: () => void }) {
   // Dragbar når den er klikkbar (skriveside finnes): dras rett inn på et
   // klokkeslett i uketidslinja i stedet for å gå via Ny økt-arket.
   const dragbar = !!onClick && durMin != null;
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: `add:${pid}`,
+    data: dragbar ? ({ kind: "add", title: tittel, durMin: durMin as number, akse } satisfies WbDragData) : undefined,
+    disabled: !dragbar,
+  });
   return (
     <button
+      ref={setNodeRef}
       type="button"
       onClick={onClick}
-      draggable={dragbar}
-      onDragStart={dragbar ? (e) => {
-        e.dataTransfer.setData(DND_MIME, JSON.stringify({ kind: "add", title: tittel, durMin, akse } satisfies DndPayload));
-        e.dataTransfer.effectAllowed = "copy";
-      } : undefined}
+      {...(dragbar ? attributes : undefined)}
+      {...(dragbar ? listeners : undefined)}
       className="v2-press v2-focus"
-      style={{ appearance: "none", textAlign: "left", width: "100%", padding: "8px 9px", borderRadius: 10, background: T.panel2, border: `1px dashed ${T.borderS}`, cursor: dragbar ? "grab" : onClick ? "pointer" : "default", minWidth: 0 }}
+      style={{ appearance: "none", textAlign: "left", width: "100%", padding: "8px 9px", borderRadius: 10, background: T.panel2, border: `1px dashed ${T.borderS}`, cursor: dragbar ? "grab" : onClick ? "pointer" : "default", minWidth: 0, touchAction: dragbar ? "none" : undefined, opacity: isDragging ? 0.35 : 1 }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
         {akse && <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[akse] || T.mut, flex: "none" }} />}
@@ -307,6 +378,40 @@ function PalettBrikke({ tittel, akse, durMin, sub, onClick }: { tittel: string; 
 // Kanon-kilden er taxonomy (alle 7 periodetyper etter 8c.1) — re-eksporteres
 // som Record<string,string> for eksisterende oppslag med løse strenger.
 export const LPHASE_LABEL: Record<string, string> = LPHASE_LABEL_KANON;
+
+/** Ett mal-kort i Bibliotek — egen komponent fordi dnd-kit sin `useDraggable`
+ *  er en hook (kan ikke kalles inne i en `.map()`-callback). */
+function WBMalKort({ mal, onBrukMal }: {
+  mal: NonNullable<WorkbenchData["planTemplates"]>[number];
+  onBrukMal?: (templateId: string) => void;
+}) {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: `mal:${mal.id}`,
+    data: onBrukMal ? ({ kind: "mal", templateId: mal.id, name: mal.name, sessionCount: mal.sessionCount, varighetUker: mal.varighetUker } satisfies WbDragData) : undefined,
+    disabled: !onBrukMal,
+  });
+  return (
+    <div
+      ref={setNodeRef}
+      {...(onBrukMal ? attributes : undefined)}
+      {...(onBrukMal ? listeners : undefined)}
+      style={{ padding: "11px 12px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}`, cursor: onBrukMal ? "grab" : "default", touchAction: onBrukMal ? "none" : undefined, opacity: isDragging ? 0.35 : 1 }}
+    >
+      <span style={{ display: "block", minWidth: 0, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{mal.name}</span>
+      <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, display: "block", marginTop: 3 }}>{mal.sessionCount} økter · {LPHASE_LABEL[mal.lPhase] ?? mal.lPhase} · {mal.varighetUker} uker</span>
+      {onBrukMal && (
+        <button
+          type="button"
+          onClick={() => onBrukMal(mal.id)}
+          className="v2-press v2-focus"
+          style={{ appearance: "none", cursor: "pointer", marginTop: 8, width: "100%", padding: "6px 0", borderRadius: 8, border: `1px solid ${T.borderS}`, background: T.panel3, color: T.fg2, fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}
+        >
+          Bruk · legg inn uke 1
+        </button>
+      )}
+    </div>
+  );
+}
 
 /** Felles gruppetider denne uka (GroupSchedule) — ble lastet i loaderen uten
  *  å vises noe sted i V2 (Anders' feilklasse «lastes men kobles ikke»). */
@@ -397,28 +502,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
             <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.mut }}>{data.planTemplates?.length ?? 0}</span>
           </div>
           {maler.length ? maler.map((m) => (
-            <div
-              key={m.id}
-              draggable={!!onBrukMal}
-              onDragStart={onBrukMal ? (e) => {
-                e.dataTransfer.setData(DND_MIME, JSON.stringify({ kind: "mal", templateId: m.id, name: m.name, sessionCount: m.sessionCount, varighetUker: m.varighetUker } satisfies DndPayload));
-                e.dataTransfer.effectAllowed = "copy";
-              } : undefined}
-              style={{ padding: "11px 12px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}`, cursor: onBrukMal ? "grab" : "default" }}
-            >
-              <span style={{ display: "block", minWidth: 0, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{m.name}</span>
-              <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, display: "block", marginTop: 3 }}>{m.sessionCount} økter · {LPHASE_LABEL[m.lPhase] ?? m.lPhase} · {m.varighetUker} uker</span>
-              {onBrukMal && (
-                <button
-                  type="button"
-                  onClick={() => onBrukMal(m.id)}
-                  className="v2-press v2-focus"
-                  style={{ appearance: "none", cursor: "pointer", marginTop: 8, width: "100%", padding: "6px 0", borderRadius: 8, border: `1px solid ${T.borderS}`, background: T.panel3, color: T.fg2, fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}
-                >
-                  Bruk · legg inn uke 1
-                </button>
-              )}
-            </div>
+            <WBMalKort key={m.id} mal={m} onBrukMal={onBrukMal} />
           )) : <TomTilstand icon="search" title="Ingen mal" sub={sok ? "Prøv et annet søk." : "Ingen godkjente planmaler ennå."} />}
         </div>
       ) : (
@@ -426,6 +510,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
           {okter.length ? okter.map((b) => (
             <PalettBrikke
               key={b.pid}
+              pid={b.pid}
               tittel={b.title}
               akse={b.cat as AkseKey}
               durMin={b.dur}
@@ -881,6 +966,13 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   // guidet-start-skjermen og inn i den tomme tidslinja (Ny økt finnes der).
   const [manuellStart, setManuellStart] = useState(false);
 
+  // dnd-kit: PointerSensor dekker BÅDE mus og touch (Pointer Events) — samme
+  // sensor for iPad/mobil som desktop, ingen egen touch-håndtering. distance:8
+  // sikrer at et vanlig trykk (under 8px bevegelse) fortsatt gir onClick i
+  // stedet for å bli tolket som et drag (samme mønster som draggable-sessions.tsx).
+  const wbSensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
+  const [activeDrag, setActiveDrag] = useState<WbDragData | null>(null);
+
   // Optimistisk UI: flytt/ny økt vises i tidslinja UMIDDELBART (før serveren har
   // svart), rulles tilbake ved feil. ALDRI for sletting (destruktivt — se
   // ValgtOktSeksjon.slett i WorkbenchV2Sheets.tsx, forblir synkron med bekreftelse).
@@ -1179,6 +1271,37 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     setNyOktApen(true);
   };
 
+  // dnd-kit sentral onDragEnd — WBTidslinje/WBBibliotek markerer bare
+  // dra-/slippbare flater (useDraggable/useDroppable); selve mutasjonen
+  // (samme logikk som de tre native onDrop-grenene hadde) skjer her, siden
+  // handleDropMove/handleDropAdd/setMalBekreft lever i denne komponenten.
+  const handleWbDragStart = (event: DragStartEvent) => {
+    setActiveDrag((event.active.data.current as WbDragData | undefined) ?? null);
+  };
+  const handleWbDragEnd = (event: DragEndEvent) => {
+    setActiveDrag(null);
+    const { active, over } = event;
+    if (!over) return;
+    const dayMatch = /^day-(\d+)$/.exec(String(over.id));
+    if (!dayMatch) return;
+    const dayIndex = Number(dayMatch[1]);
+    const payload = active.data.current as WbDragData | undefined;
+    if (!payload) return;
+    if (payload.kind === "move") {
+      handleDropMove(payload.sessionId, dayIndex);
+    } else if (payload.kind === "add") {
+      // Samme Y→klokkeslett-utregning som native `tidFraY` brukte, men med
+      // pointer-posisjon rekonstruert fra start-event + total bevegelse
+      // (dnd-kit gir ikke rå clientY i onDragEnd).
+      const activatorEvent = event.activatorEvent as PointerEvent | undefined;
+      const pointerY = (activatorEvent?.clientY ?? over.rect.top) + event.delta.y;
+      const { hour, minute } = tidFraPointerY(pointerY, over.rect.top);
+      handleDropAdd({ title: payload.title, durMin: payload.durMin, akse: payload.akse }, dayIndex, hour, minute);
+    } else if (payload.kind === "mal") {
+      setMalBekreft({ templateId: payload.templateId, name: payload.name, sessionCount: payload.sessionCount, varighetUker: payload.varighetUker });
+    }
+  };
+
   // Måned-cellen → hopp til uka datoen ligger i (uke-zoom).
   const velgDatoFraMnd = (dato: Date) => {
     const mandagAv = (d: Date) => {
@@ -1331,6 +1454,13 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
   }
 
   return (
+    <DndContext
+      sensors={wbSensors}
+      collisionDetection={pointerWithin}
+      onDragStart={handleWbDragStart}
+      onDragEnd={handleWbDragEnd}
+      onDragCancel={() => setActiveDrag(null)}
+    >
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap, position: "relative" }}>
       {/* TOPP-BAR — desktop (md+): uendret */}
       <div className="hidden md:flex" style={{ alignItems: "flex-end", gap: 16, flexWrap: "wrap", paddingBottom: 14, borderBottom: `1px solid ${T.border}` }}>
@@ -1508,13 +1638,13 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
                 dager={dager}
                 valgt={valgtOkt?.id ?? null}
                 onVelg={velgOgAapne}
-                onDropMove={actions ? handleDropMove : undefined}
-                onDropAdd={actions ? handleDropAdd : undefined}
+                kanFlytteOkter={!!actions}
+                kanLeggeTil={!!actions}
+                kanBrukeMal={!!actions?.applyTemplate}
                 onTomKlikk={actions ? (dayIndex, hour, minute) => {
                   setNyOktSted({ dayIndex, tid: `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}` });
                   setNyOktApen(true);
                 } : undefined}
-                onDropMal={actions?.applyTemplate ? setMalBekreft : undefined}
               />
             </div>
           )}
@@ -1688,5 +1818,9 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         />
       )}
     </div>
+    <DragOverlay dropAnimation={null}>
+      {activeDrag ? <WBDragOverlayInnhold data={activeDrag} /> : null}
+    </DragOverlay>
+    </DndContext>
   );
 }
