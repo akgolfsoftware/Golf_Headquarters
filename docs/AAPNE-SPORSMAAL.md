@@ -4,7 +4,7 @@
 >
 > Status: **ÅPEN** (trenger beslutning) · **PARKERT** (bevisst, ikke rør uoppfordret) · **LØST** (avklart — ikke flagg på nytt).
 >
-> **Sist oppdatert:** 2026-07-14 (D1 lagt til). Råmateriale: tidligere `PLATFORM.md` §14 (arkivert) + kodeverifisering 2026-06-14 / agent-pipeline 2026-07-10.
+> **Sist oppdatert:** 2026-07-15 (D1 løst og utført, tre nye punkter fra natt-økten lagt til: D2/D3/D4). Råmateriale: tidligere `PLATFORM.md` §14 (arkivert) + kodeverifisering 2026-06-14 / agent-pipeline 2026-07-10.
 
 ---
 
@@ -22,7 +22,7 @@ Disse kan en agent IKKE løse selv — de er produkt-/metodikkvalg.
 | ~~A3~~ ✅ | **Agent-systemets dybde.** | LØST 2026-07-10 — `acceptAndApplyPlanAction` + `plan-action-executor` endrer plan ved godkjenning; `/admin/godkjenninger` med batch; coach-scoped `coachId`; varsling via `varsleVedPlanAction`. | — |
 | A4 | **13 invarianter.** Nevnt som konsept, finnes ikke som navngitt liste i kode/wiki. | — | Skal de skrives ned, eller utledes fra valideringsregler + junior-vern? |
 | A5 | **Forretningstall** (3 MNOK 2026 / 4 MNOK 2027 / AI Coach $10M ARR). | Kun i global CLAUDE.md — ikke i kode/regnskap | Bekreft eller korriger. |
-| D1 | **Live/skjult per skjerm.** 14. juli-revisjon av alle 55 menypunkt fant 11 kandidater som bør skjules (uferdige, f.eks. Økonomi-fanen i AgencyOS-railen, Live/Mission Control, Caddie-AI) og 5 som bør sjekkes raskt før beslutning (f.eks. «Ny spiller»). Full liste lå i en artifact presentert 14. juli — aldri besvart, samtalen gikk videre til strukturopprydding. | Alle 11+5 står fortsatt synlige i menyen i dag. | Anders bekrefter/justerer skjul-listen; agent kobler ut de bekreftede via samme reversible nav-mønster som ble brukt til å koble INN skjermer 14. juli. |
+| D2 | **`/portal/ny-okt` mangler ekte lagring.** Funnet av porting-agent natt til 15. juli — kun midlertidig nettleser-state (`sessionStorage`), ingen Prisma-persistering, til tross for at det er en mye brukt rute for å starte en ny økt. Anders har bekreftet (2026-07-15): bygg ekte lagring. | Klient-state only, ingen backend. | Eget kode-oppdrag: datamodell + server action for reell persistering. Ikke startet, ikke scopet i detalj ennå. |
 
 ## B. Bevisst parkert (PARKERT — ikke rør uoppfordret)
 
@@ -31,7 +31,7 @@ Disse kan en agent IKKE løse selv — de er produkt-/metodikkvalg.
 | B1 | **To live-økt-spor** (`TrainingPlanSession` Spor A vs `TrainingSessionV2` Spor B). | Bevisst sameksistens — se `BUSINESS-RULES.md`. Ikke merge uoppfordret. **Men:** `LiveActive` persisterer reps til `sessionStorage`, ikke DB (reps overlever ikke nettleser-sesjon). Konsolidering/persistering = senere beslutning. |
 | B2 | **Dublett-enums** (`PRPress`/`PressureLevel`, `PracticeType`/`DrillPracticeType`, `SessionStatus`/`SessionStatusV2`). | Teknisk gjeld. Rydd kun ved bevisst beslutning — risiko for migrasjoner. |
 | B3 | **Dødt `ELITE`-enum** i `Tier`. | Beholdes i Prisma, vises ALDRI i UI (se `BUSINESS-RULES.md`). Ikke fjern fra enum uoppfordret (migrasjon). |
-| B4 | **Delvis mock-flater i AgencyOS** (godkjenninger, økonomi, innboks, analytics) + **foreldreportal-datakvalitet**. | Kjent. Datakobling kommer; ikke anta at tallene er ekte før verifisert. |
+| B4 | ~~**Delvis mock-flater i AgencyOS**~~ + ~~**foreldreportal-datakvalitet**~~ | **LØST/oppdatert 2026-07-15.** Godkjenninger/økonomi/innboks/analytics var alt ekte data (verifisert 14. juli). Foreldreportal: 10 av 11 ruter ekte, siste mock (`/forelder/coach`) fikset 15. juli. Ingen gjenstående kjente mock-flater i disse to områdene. |
 
 ## C. Avklart (LØST — ikke flagg på nytt)
 
@@ -47,3 +47,6 @@ Disse kan en agent IKKE løse selv — de er produkt-/metodikkvalg.
 | C8 | SG-kalibrering | Ferdig kalibrert + godkjent 2026-06-10. Se `BUSINESS-RULES.md`. |
 | C9 | A–K-kategorier: antall + grunnlag | **11 nivåer A–K** basert på **snittscore** (ikke HCP). L utgår (dødt enum, vises aldri). Beslutning Anders 2026-06-15. |
 | C10 | P-posisjoner: nummerering | **P7 = Impact** (standard MORAD 10-trinns). `taxonomy.ts` rettet til å matche `teknisk-plan/constants.ts`. Beslutning Anders 2026-06-15. |
+| C11 | D1: Live/skjult per skjerm | **LØST 2026-07-15.** 14. juli-listen (11+5 kandidater) var stort sett utdatert ved ny sjekk — Økonomi, Caddie-AI og «Ny spiller» var alt blitt ekte data. Kun 2 hadde fortsatt et ekte demo-varsel i appen: AgencyOS Live/Mission Control og PlayerHQ Talent. Begge fjernet fra menyen (PR #37). Beslutning Anders 2026-07-15. |
+| C12 | Design vs. kode ved mismatch (porting) | Når et Claude Design-mockup og faktisk kodefunksjon spriker (feil rolle/handling/manglende steg), **er koden fasit** — designet skal rettes til å matche faktisk funksjon, ikke omvendt. Gjelder `coach/ovelser/ny`, `tren/turneringer/ny`, `utfordringer/ny` (funnet natt til 15. juli). Beslutning Anders 2026-07-15. |
+| C13 | `/admin/godkjenn-portal/review` | Bekreftet internt QA-verktøy for utviklingsteamet (side-ved-side live vs. designfil), ikke produkt-UI for sluttbrukere. Merkes 🛠 out-of-scope for design, ingen videre jobb. Beslutning Anders 2026-07-15. |
