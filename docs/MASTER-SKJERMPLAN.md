@@ -422,7 +422,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Ny plan-mal | `/admin/plan-templates/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger plan-mal | `/admin/plan-templates/[id]/rediger` | – | --- | ✓ | ~ | ✓ | ✓ | 2026-07-11: volum-linje (timer/uke + reell pyramidefordeling vs. glidere) + masseredigering (sett varighet for hele uka, kopier uke→uke m/ konflikt-bekreftelse) — src/lib/plan-templates/
 | Drills (bibliotek) | `/admin/drills` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 — samme Prisma-datakilde/kategori-taksonomi (skillArea+FYS) og søk som legacy, kort-visning à la `CoachOvelserV2` (AkseChip/LFaseBadge/Bit). `(legacy)/drills` hub slettet; `ny`/`[id]`/`[id]/rediger`/`forslag` er fortsatt legacy (egne P1-punkter). |
-| · Drill-detalj | `/admin/drills/[id]` | – | --- | ✓ | ~ | ~ | ~ |
+| · Drill-detalj | `/admin/drills/[id]` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminDrillDetaljV2`) — samme loader/actions (dupliser/slett), `videoUrl` fortsatt sanert via `safeUrl()` (S-21) før den når klienten. `(legacy)/drills/[id]` + `drill-detail-actions.tsx` slettet. |
 | · Rediger drill | `/admin/drills/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
 | Teknisk plan | `/admin/teknisk-plan` | – | --- | ✓ | ~ | ~ | ~ |
 | · Per spiller | `/admin/teknisk-plan/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |

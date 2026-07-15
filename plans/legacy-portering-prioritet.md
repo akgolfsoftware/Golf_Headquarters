@@ -43,7 +43,7 @@ commit, master-skjermplanens haker oppdateres i samme commit (LÅST regel).
 
 | Skjerm | Rute | Merknad |
 |---|---|---|
-| Drills-bibliotek (resten) | `[id]`, `[id]/rediger`, `ny`, `forslag` | Hub-siden (`/admin/drills`) er v2 (se over) — disse fire undersidene er fortsatt kun `(legacy)/drills/**`. CRUD-actions (`createDrill`/`updateDrill`/`duplicateDrill`/`deleteDrill`) er ferdig zod-validerte og gjenbrukes uendret. |
+| Drills-bibliotek (resten) | `[id]/rediger`, `ny`, `forslag` | Hub (`/admin/drills`) og `[id]`-detalj er v2 (se over) — disse tre gjenstår, fortsatt kun `(legacy)/drills/**`. CRUD-actions (`createDrill`/`updateDrill`/`duplicateDrill`/`deleteDrill`) er ferdig zod-validerte og gjenbrukes uendret. `[id]/rediger` er stor (27 felt) — egen commit. |
 | Live-økt coach-flyt | `/admin/live/[sessionId]/brief\|active\|summary` | Fortsatt kun `(legacy)/live/**`. Kjernen i gjennomføring med spiller. (Ikke å forveksle med `/admin/agencyos/live` «Mission Control» — egen, allerede v2, skjerm.) |
 | Plan-mal-redigering | `/admin/plan-templates/ny`, `[id]`, `[id]/rediger` | Hub-siden (`/admin/plan-templates`) er allerede v2 — disse tre undersidene er fortsatt kun `(legacy)/plan-templates/**`. Volum-linje/masseredigering finnes alt i delt lib (`src/lib/plan-templates/`) — selve siden er det som gjenstår. |
 
