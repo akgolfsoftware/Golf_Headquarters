@@ -388,8 +388,8 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Plan-detalj | `/admin/spillere/[id]/plan/[planId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-14: drills-panel viser automatisk repslogging + bilde/video fra spillerens live-økter
 | · Fremgang (trening vs SG) † | `/admin/spillere/[id]/fremgang` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
 | · Tester | `/admin/spillere/[id]/tester` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
-| · Tildel test | `/admin/spillere/[id]/tildel-test` | – | --- | ✓ | ~ | ~ | ~ |
-| · Rediger | `/admin/spillere/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
+| · Tildel test | `/admin/spillere/[id]/tildel-test` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminTildelTestV2`) — samme loader/`tildelTest`-action. Droppet fabrikert «A1 · HCP 4.8 · 12/36 tester»-tekst fra legacy (var hardkodet demo, ikke ekte data) — viser nå kun ekte HCP. `(legacy)/spillere/[id]/tildel-test` + `test-modul-v2/` slettet. |
+| · Rediger | `/admin/spillere/[id]/rediger` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminRedigerSpillerV2`) — samme felter/`lagreSpiller`/`slettSpiller`, samme `SlettSpillerKnapp` (shadcn Dialog, v2-unntatt). Fikset en gotcha i samme slengen: historikk-tidspunkt manglet `timeZone: "Europe/Oslo"` i legacy (server kjører UTC) — satt eksplisitt nå. `(legacy)/spillere/[id]/rediger/page.tsx` slettet (actions.ts + slett-knapp beholdt, gjenbrukt uendret). |
 | Grupper | `/admin/grupper` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Gruppe-detalj (+ VG-trinn filter/badge, 2026-07-07) | `/admin/grupper/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Gruppe-timeplan (faste/kommende/tidligere + dupliser) | `/admin/grupper/[id]/timeplan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |

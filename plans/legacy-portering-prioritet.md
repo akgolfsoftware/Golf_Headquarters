@@ -24,6 +24,10 @@ commit, master-skjermplanens haker oppdateres i samme commit (LÅST regel).
 - **Grupper-timeplan** — `/admin/grupper`, `[id]`, `[id]/timeplan` er alle v2, ingen restflater.
 - **Drills-bibliotek (kun hub-siden)** — `/admin/drills` er v2 (samme datakilde/kategori/søk-
   kontrakt som legacy). `ny`/`[id]`/`[id]/rediger`/`forslag` er fortsatt legacy — se P1 under.
+- **Spiller-skjemaer, `rediger` + `tildel-test`** — begge v2 (`AdminRedigerSpillerV2`,
+  `AdminTildelTestV2`), samme server actions uendret. `tildel-test` droppet en fabrikert
+  demo-tekst («A1 · HCP 4.8 · 12/36 tester») fra legacy til fordel for ekte HCP. Kun `ny` var
+  ferdig fra før — nå er hele `/admin/spillere/[id]/**`-skjema-familien v2.
 - **`/kommando` retired (2026-07-15)** — antakelsen om at dette var en "workspace-databakking"-jobb
   var feil: da vi faktisk leste koden, var Agent-team (`KommandoProject`/`Run`/`Step`) allerede v2
   og live på `/admin/agent-team` siden 12. juli — `/admin/prosjekter` + `(legacy)/prosjekter`
@@ -41,7 +45,6 @@ commit, master-skjermplanens haker oppdateres i samme commit (LÅST regel).
 |---|---|---|
 | Drills-bibliotek (resten) | `[id]`, `[id]/rediger`, `ny`, `forslag` | Hub-siden (`/admin/drills`) er v2 (se over) — disse fire undersidene er fortsatt kun `(legacy)/drills/**`. CRUD-actions (`createDrill`/`updateDrill`/`duplicateDrill`/`deleteDrill`) er ferdig zod-validerte og gjenbrukes uendret. |
 | Live-økt coach-flyt | `/admin/live/[sessionId]/brief\|active\|summary` | Fortsatt kun `(legacy)/live/**`. Kjernen i gjennomføring med spiller. (Ikke å forveksle med `/admin/agencyos/live` «Mission Control» — egen, allerede v2, skjerm.) |
-| Spiller-skjemaer (resten) | `/admin/spillere/[id]/rediger`, `[id]/tildel-test` | `ny` er ferdig portet (se over) — disse to gjenstår, fortsatt kun `(legacy)/spillere/**`. |
 | Plan-mal-redigering | `/admin/plan-templates/ny`, `[id]`, `[id]/rediger` | Hub-siden (`/admin/plan-templates`) er allerede v2 — disse tre undersidene er fortsatt kun `(legacy)/plan-templates/**`. Volum-linje/masseredigering finnes alt i delt lib (`src/lib/plan-templates/`) — selve siden er det som gjenstår. |
 
 ## P2 — ukentlig bruk
