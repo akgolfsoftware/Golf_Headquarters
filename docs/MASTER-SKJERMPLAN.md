@@ -134,7 +134,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Planlegge (= Workbench mobil) ★ | `/portal/planlegge` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Complete v13 (golfdata scope + OektKort etc)
-| **Workbench (planlegging)** ★ | `/portal/planlegge/workbench` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| **Workbench (planlegging)** ★ | `/portal/planlegge/workbench` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14 dok-verifisering: samme delte `WorkbenchV2`-komponent som coach-siden — Del 8c (periodetype-grunnmur, årsplan-canvas, periodestrip, Cmd+D-duplisering, universell økt-popup, full økt-komponist, Driller-fane) + WB1–WB5 (belastningsstripe, publiser-diff, øktas driller i inspektøren) er alle levert og koblet til ekte server actions (`lib/workbench/*`). Design rettet – → ✓ for å matche faktisk kode |
 | · Plan-bygger (v2 wizard) | `/portal/planlegge/bygger` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2 2026-07-10: 5-stegs wizard per godkjent mockup (phq-plan-bygger); deler kjerner med legacy mal/bygger via lib/plan-builder
 | Årsplan | `/portal/tren/aarsplan` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | · Rediger periode | `/portal/tren/aarsplan/periode/[id]/rediger` | ~ | --- | ✓ | ✓ | ✓ | ~ |
@@ -294,7 +294,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Booking-hub | `/portal/booking` | – | ✓✓– | ~ | ~ | ✓ | ✓ |
+| Booking-hub | `/portal/booking` | ✓ | ✓✓– | ~ | ~ | ✓ | ✓ | 2026-07-14 dok-verifisering: `BookingV2` fullt token-komponert (stepper, tjenestekort, ekte slot-vindu fra availability-engine). Design rettet – → ✓. Merk: kun HUB-en er v2 — alle undersider (ny/[bookingId]/coach/anlegg/bekreftet) er fortsatt `(legacy)`-ruter, «Booking-flyt komplett i v2» stemmer IKKE ennå, se endringslogg |
 | · Ny booking (wizard) | `/portal/booking/ny` | – | ✓✓– | ~ | ~ | ✓ | ✓ |
 | · Ny booking bekreft | `/portal/booking/ny/bekreft` | – | --- | ✓ | ~ | ~ | ~ |
 | · Booking-detalj | `/portal/booking/[bookingId]` | – | --- | ✓ | ~ | ~ | ~ |
@@ -379,8 +379,8 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 |---|---|---|---|---|---|---|---|
 | Stall-oversikt | `/admin/stall` | – | --- | ✓ | ~ | ~ | ✓ |
 | **Spillere (alle)** = SpillerTilstandKort-liste (v13 golfdata, bølge 1 2026-07-04) ★ | `/admin/spillere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Complete v13 (SpillerTilstandKort + scope + cards)
-| · Ny spiller | `/admin/spillere/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| **Spiller-detalj** ★ | `/admin/spillere/[id]` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
+| · Ny spiller | `/admin/spillere/ny` | ✓ | --- | ✓ | ✓ | ~ | ~ | 2026-07-14 dok-verifisering (funn under legacy-porterings-sjekk): `AdminNySpillerV2` — ekte `createSpiller`-server-action, router til ny spillers profil. Design rettet – → ✓, Flyt ~ → ✓ (skjema uten loader — Data-haken forblir ~, ikke relevant for et opprett-skjema) |
+| **Spiller-detalj** ★ | `/admin/spillere/[id]` | ✓ | ~✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-14 dok-verifisering: «100 % spillerinfo på én skjerm» levert — `SpillerDashboardV2` (7 faner: Oversikt/Utvikling/Plan/Helse/Turnering/Logg/Administrasjon), hero+KPI-strip m/ HjelpTips, én aggregert loader (`spiller-dashboard-data.ts`, 24 select-minimerte spørringer), kun ekte data + ærlige tomtilstander. Design rettet – → ✓ |
 | · **Analyse (coach-dybde)** = golfdata elite-visning (v13, bølge 1 2026-07-04) ★ | `/admin/spillere/[id]/analyse` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Profil | `/admin/spillere/[id]/profil` | – | --- | ✓ | ~ | ~ | ~ |
 | · **Workbench (coach-i-spiller)** ★ | `/admin/spillere/[id]/workbench` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-12: månedsvisning (ekte grid) + drag-and-drop (blokk→dag, bibliotek→klokkeslett) |
@@ -442,6 +442,8 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Kalender | `/admin/kalender` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v13 golfdata (TidsGrid/Periodeplan + scope)
 | · Uke (redirect) | `/admin/kalender/uke` → `/admin/kalender` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Måned | `/admin/kalender/maned` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
+| · Ny hendelse (I3) | `/admin/kalender/hendelse/ny` | ✓ | --- | ✓ | ✓ | ✓ | ✓ | NY RAD 2026-07-14: I3-leveransen — `CalendarEvent` (ferie/stengt anlegg) blokkerer nå ekte booking-konflikt-sjekk; skjema leser `?start=` fra HurtigOpprett, egen v2-side |
+| · Hendelse-detalj/slett (I3) | `/admin/kalender/hendelse/[id]` | ✓ | --- | ✓ | ✓ | ✓ | ✓ | NY RAD 2026-07-14: v2, ekte `CalendarEvent`-oppslag, slett kun for eier/ADMIN (håndhevet i UI + action) |
 | Kalender (alt. → redirect) | `/admin/calendar` | – | --- | ✓ | ✓ | – | ✓ |
 | · Måned (alt. → redirect) | `/admin/calendar/maned` | – | --- | ✓ | ✓ | – | ✓ |
 | **Bookinger** ★ | `/admin/bookinger` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v13 (KpiTile, Card, Tag + heatmap retokened)
@@ -469,7 +471,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Foreslåtte tester | `/admin/tester/foreslatte` | – | --- | ✓ | ~ | ~ | ~ |
 | · Tildel test | `/admin/tester/tildel/[spillerId]` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
 | Økt-forespørsler | `/admin/foresporsler` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| Godkjenninger | `/admin/godkjenninger` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
+| Godkjenninger | `/admin/godkjenninger` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-14 dok-verifisering: `AdminGodkjenningerV2` — én kø samler PlanAction (agent-forslag) + CaddieDraft (AI-utkast) + SessionRequest (økt-forespørsler) = **3 kilder** (e-postutkast beholder bevisst egen godkjenning i `/admin/innboks-epost` — ikke en 4. kilde i denne køen), gruppert per spiller, paginert, screenshot-verifisert 1440+390. Design rettet – → ✓, Mob/Desk/iPad –✓– → ✓✓– |
 | · Godkjenning-detalj | `/admin/godkjenninger/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | Godkjenninger (alt. → redirect) | `/admin/approvals` | – | --- | ✓ | ✓ | – | ✓ |
 | · Approval-detalj (alt. → redirect) | `/admin/approvals/[id]` | – | --- | ✓ | ✓ | – | ✓ |
@@ -776,6 +778,42 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   commits som hevdet å ha portet både TrackMan og Risiko til v2 (`AgencyOS Bølge 3.7`/`3.17`)
   kun eksisterte på en aldri-merget branch (`origin/claude/mobile-desktop-improvements-90kanx`)
   — ikke i historikken til main. `/admin/risiko` er fortsatt legacy og gjenstår som egen jobb.
+
+- 14. juli (ren dokument-verifisering — 7 punkter fra intern oppgavelogg sjekket mot faktisk
+  kode, ingen kildekode endret): **Rettet (haker var utdatert i forhold til levert kode):**
+  Workbench (planlegging) `/portal/planlegge/workbench` Design – → ✓ (samme delte
+  `WorkbenchV2` som coach-siden — Del 8c + WB1–WB5 alle bekreftet levert og koblet til
+  server actions); Spiller-detalj `/admin/spillere/[id]` Design – → ✓ («100 % spillerinfo
+  på én skjerm» — `SpillerDashboardV2`, 7 faner, ekte data); Godkjenninger
+  `/admin/godkjenninger` Design – → ✓ og Mob –✓– → ✓✓– (`AdminGodkjenningerV2`, gruppert
+  per spiller, screenshot-verifisert 1440+390); Booking-hub `/portal/booking` Design – → ✓
+  (`BookingV2`, ekte slot-vindu); Ny spiller `/admin/spillere/ny` Design – → ✓ og Flyt ~ → ✓
+  (`AdminNySpillerV2`, ekte `createSpiller`-action) — funnet under legacy-porterings-sjekken,
+  ikke i den opprinnelige listen. **Nye rader (fantes ikke i planen):**
+  `/admin/kalender/hendelse/ny` og `/admin/kalender/hendelse/[id]` — I3-leveransen
+  (`CalendarEvent` blokkerer ekte bookingkonflikt ved ferie/stengt anlegg), begge v2, ekte
+  data. **Presisert, ikke overvurdert:** «Godkjenninger — fire kilder» stemmer ikke helt —
+  køen slår faktisk sammen **3** kilder (PlanAction/agent-forslag, CaddieDraft/AI-utkast,
+  SessionRequest/økt-forespørsler); e-postutkast er BEVISST holdt utenfor og godkjennes
+  fortsatt separat i `/admin/innboks-epost` (se `docs/VEIKART-BESTE-VERKTOY.md`, A1-leveransen).
+  «Booking-flyt komplett i v2» stemmer IKKE — kun booking-HUB-en (`/portal/booking`) er
+  v2-komponert; alle undersider (`ny`, `[bookingId]`, `coach/[coachId]`, `anlegg/[anleggId]`,
+  `bekreftet`) ligger fortsatt i `src/app/portal/(legacy)/booking/` med gammel design — raden
+  var allerede korrekt (Design «–») og er ikke endret. «Legacy-portering av prioriterte
+  skjermer» er heller IKKE fullført utover Turneringer (allerede ✓ i denne planen fra 13. juli)
+  og den ovennevnte Ny spiller-siden — resten av P1-lista i `plans/legacy-portering-prioritet.md`
+  (Drills-bibliotek, Live-økt coach-flyt, `[id]/rediger`, `[id]/tildel-test`,
+  Plan-mal-redigering) ligger fortsatt urørt i `src/app/admin/(legacy)/`; radene der er
+  allerede korrekte og er ikke endret. **Ikke en radendring (infrastruktur, ikke en skjerm):**
+  Tema-grunnmuren (DS1+DS2 — dobbel lys/mørk-tokenskala + sol/måne-veksler i railen) er
+  bekreftet i `globals.css`/`V2Shell`, men den er delt chrome under ALLE v2-skjermer og har
+  ingen egen rad å rette. I0 (tilgangsskille) og I8 lag 1 (mekanisk lenke-sveip) er bekreftet
+  levert i git-historikken (`git log` — `feat(I3): kalenderhendelser`,
+  `chore(I8 lag 1): mekanisk lenke-sveip`, `test(I0): negativtest`) men er også app-brede
+  fikser uten egen skjerm-rad her; se `docs/VEIKART-BESTE-VERKTOY.md` og `docs/STATUS-NÅ.md`
+  for detaljene. Kilder brukt til denne verifiseringen: faktisk kildekode (page.tsx +
+  komponenter), `git log`, `docs/VEIKART-BESTE-VERKTOY.md` (status-logg), og
+  `plans/legacy-portering-prioritet.md`. tsc/build ikke kjørt (ren dokument-endring).
 
 - 14. juli (struktur og navnekonsistens, branch `claude/struktur-navn-opprydding`): **Fiks:**
   Innstillinger-siden (`/portal/meg/innstillinger`) manglet egen inngangsknapp fra Meg-fanen —
