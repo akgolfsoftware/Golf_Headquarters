@@ -501,6 +501,8 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Audit-log | `/admin/audit-log` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminAuditLogV2`) — samme AuditLog-spørring/kind-status-utledning som legacy, KpiFlis+Rad-liste, ærlig tomtilstand. Lagt i Innsikt-mer-gruppen (var uten menylenke). `(legacy)/audit-log` slettet. |
 | AI-agenter | `/admin/agents` | – | --- | ✓ | ~ | ~ | ~ |
 | · Agent-detalj | `/admin/agents/[agentId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| Agent-team (KommandoAgentRun, sekvensielle AI-kjøringer) | `/admin/agent-team` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Manglet i denne planen — allerede v2 og skutt live 12. juli (`AdminAgentTeamV2`, `/admin/prosjekter` + `(legacy)/prosjekter` redirecter hit). Lagt til 2026-07-15 under /kommando-portering-arbeidet. |
+| Agenter (flermodell-chat: Claude/Gemini/Grok/Ollama) | `/admin/agenter` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-15: portet fra `(legacy)/agenter` — ny v2-UI fra samtale-familien (`AdminAgenterChatV2`, samme mønster som PlayerHQ CoachAIV2), samme `/api/kommando/chat`-backend. `(legacy)/agenter` slettet. Del av /kommando-porteringen (se legacy-portering-prioritet.md). |
 | E-postmaler | `/admin/email-templates` | ✓ | --- | ✓ | ~ | ✓ | ~ | 2026-07-15 dok-verifisering: `AdminEmailV2` — v2preview route-gruppe (V2Shell, ikke AdminShell), ekte `EmailTemplate`-data (aktive først, slug-prefiks-gruppert). Design/Data rettet – → ✓ for å matche faktisk kode. |
 | · Rediger e-postmal | `/admin/email-templates/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
 | Marketing (innholdskalender + post-kø) | `/admin/marketing` | ✓ | --- | ✓ | ✓ | ✓ | ~ | v2 (AdminMarketingV2), ekte MarketingPost-data. M1-grunnmur uten AI-generering/eksterne API-er |
