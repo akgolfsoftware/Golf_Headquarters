@@ -22,12 +22,21 @@ commit, master-skjermplanens haker oppdateres i samme commit (LÅST regel).
 - **`/admin/okonomi` P2-sammenslåingen** — `(legacy)/okonomi` er nå selv bare en
   `permanentRedirect("/admin/agencyos/okonomi")`. Ferdig, ikke en gjenstående jobb.
 - **Grupper-timeplan** — `/admin/grupper`, `[id]`, `[id]/timeplan` er alle v2, ingen restflater.
+- **`/kommando` retired (2026-07-15)** — antakelsen om at dette var en "workspace-databakking"-jobb
+  var feil: da vi faktisk leste koden, var Agent-team (`KommandoProject`/`Run`/`Step`) allerede v2
+  og live på `/admin/agent-team` siden 12. juli — `/admin/prosjekter` + `(legacy)/prosjekter`
+  redirecter dit alt. Det som faktisk manglet var AI-agenter-chatten (kun `(legacy)/agenter`) —
+  portet til v2 på `/admin/agenter` (`AdminAgenterChatV2`, samtale-familien). `KommandoTask`
+  (kommandos EGNE oppgaver — separat fra Notion-oppgavene) er retired: ingenting annet brukte den,
+  Notion/handlingssenteret er kanon. Hele `/kommando`-treet er nå `permanentRedirect`-stubber til
+  sine reelle mål. `KommandoProject`-Prisma-modellen er IKKE rørt (fortsatt i aktiv bruk av
+  Agent-team) — kun `KommandoTask` er foreldreløs nå (Prisma-modell/tabell utgjør en egen,
+  separat migreringsjobb, ikke gjort denne runden).
 
 ## P1 — daglig coach-bruk (port først)
 
 | Skjerm | Rute | Merknad |
 |---|---|---|
-| **`/kommando` → `/admin/workspace`-databakking** ★ NY, FØRST | — | Ekte funksjonalitet (`KommandoTask`/`KommandoProject`/`KommandoAgentRun`/`KommandoAgentStep`), ikke bare et gammelt navn. Se `plans/opprydding-og-ferdigstilling.md` rad 10: `/admin/workspace` skal vinne URL/UI-messig, men `/kommando` sin databakking må porteres inn FØRST (~3t egen jobb) — deretter slettes `/kommando`. Gjør dette FØR noen rører `/kommando`. |
 | Drills-bibliotek | `/admin/drills` (+ `[id]`/rediger/ny/forslag) | Fortsatt kun `(legacy)/drills/**` — ingen ikke-legacy versjon finnes. Lenket fra Mer-menyen. |
 | Live-økt coach-flyt | `/admin/live/[sessionId]/brief\|active\|summary` | Fortsatt kun `(legacy)/live/**`. Kjernen i gjennomføring med spiller. (Ikke å forveksle med `/admin/agencyos/live` «Mission Control» — egen, allerede v2, skjerm.) |
 | Spiller-skjemaer (resten) | `/admin/spillere/[id]/rediger`, `[id]/tildel-test` | `ny` er ferdig portet (se over) — disse to gjenstår, fortsatt kun `(legacy)/spillere/**`. |
