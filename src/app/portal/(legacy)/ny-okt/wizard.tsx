@@ -7,83 +7,46 @@
  * State 2 — BUILDING: summary strip + drill list + save CTAs
  *
  * Ported from PlayerHQ Ny Økt (hybrid).dc.html, route /portal/ny-okt.
- * No backend yet — client-side state only.
+ * Maler og drills er ekte ExerciseDefinition-rader (levert av page.tsx) —
+ * "Lagre og start økt" kaller createAdHocSession og lagrer en ekte
+ * TrainingPlanSession.
  */
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { ArrowLeft, Plus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { createAdHocSession } from "./actions";
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
-interface Template {
+export interface WizardTemplate {
   cat: string;
   name: string;
   meta: string;
-  drills: Drill[];
+  drills: WizardDrill[];
 }
 
-interface Drill {
+export interface WizardDrill {
   id: string;
   name: string;
   meta: string;
   cat: string;
+  durationMin: number;
 }
 
-const TEMPLATES: Template[] = [
-  {
-    cat: "ARG",
-    name: "Wedge-fokus",
-    meta: "3 drills · 45 min",
-    drills: [
-      { id: "arg-1", name: "50m pitch med landingssone", meta: "15 min", cat: "ARG" },
-      { id: "arg-2", name: "Flop fra rough", meta: "15 min", cat: "ARG" },
-      { id: "arg-3", name: "Kloss-bunkers", meta: "15 min", cat: "ARG" },
-    ],
-  },
-  {
-    cat: "OTT",
-    name: "Driver-dag",
-    meta: "2 drills · 30 min",
-    drills: [
-      { id: "ott-1", name: "Svingtempoøvelse", meta: "15 min", cat: "OTT" },
-      { id: "ott-2", name: "Fairway-presisjon", meta: "15 min", cat: "OTT" },
-    ],
-  },
-  {
-    cat: "PUTT",
-    name: "Putting-serie",
-    meta: "2 drills · 40 min",
-    drills: [
-      { id: "putt-1", name: "Kortputt-gate (60 cm)", meta: "20 min", cat: "PUTT" },
-      { id: "putt-2", name: "Lengdeputt 6–12 m", meta: "20 min", cat: "PUTT" },
-    ],
-  },
-  {
-    cat: "MIX",
-    name: "Full økt",
-    meta: "5 drills · 90 min",
-    drills: [
-      { id: "mix-1", name: "Oppvarming — korte slag", meta: "10 min", cat: "MIX" },
-      { id: "mix-2", name: "Driver-presisjon", meta: "20 min", cat: "OTT" },
-      { id: "mix-3", name: "Innspill 100–150 m", meta: "20 min", cat: "APP" },
-      { id: "mix-4", name: "Chip og pitch rundt green", meta: "20 min", cat: "ARG" },
-      { id: "mix-5", name: "Kortputt-serie", meta: "20 min", cat: "PUTT" },
-    ],
-  },
-];
+interface NyOktWizardProps {
+  templates: WizardTemplate[];
+  alleOvelser: WizardDrill[];
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function totalMinutes(drills: Drill[]): number {
-  return drills.reduce((sum, d) => {
-    const match = d.meta.match(/(\d+)\s*min/);
-    return sum + (match ? parseInt(match[1], 10) : 0);
-  }, 0);
+function totalMinutes(drills: WizardDrill[]): number {
+  return drills.reduce((sum, d) => sum + d.durationMin, 0);
 }
 
-function focusLabel(drills: Drill[]): string {
+function focusLabel(drills: WizardDrill[]): string {
   const counts: Record<string, number> = {};
   for (const d of drills) {
     counts[d.cat] = (counts[d.cat] ?? 0) + 1;
@@ -95,7 +58,7 @@ function focusLabel(drills: Drill[]): string {
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 interface TemplateCardProps {
-  template: Template;
+  template: WizardTemplate;
   selected: boolean;
   onSelect: () => void;
 }
@@ -127,7 +90,7 @@ function TemplateCard({ template, selected, onSelect }: TemplateCardProps) {
 }
 
 interface DrillRowProps {
-  drill: Drill;
+  drill: WizardDrill;
   onRemove: () => void;
 }
 
@@ -163,45 +126,75 @@ function DrillRow({ drill, onRemove }: DrillRowProps) {
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export function NyOktWizard() {
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
-  const [drills, setDrills] = useState<Drill[]>([]);
+const FEIL_TEKST: Record<string, string> = {
+  "upgrade-required": "Egendefinerte økter krever Pro. Oppgrader for å lagre.",
+  "no-drills": "Legg til minst én drill før du lagrer.",
+};
+
+export function NyOktWizard({ templates, alleOvelser }: NyOktWizardProps) {
+  const [started, setStarted] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<WizardTemplate | null>(null);
+  const [drills, setDrills] = useState<WizardDrill[]>([]);
   const [saved, setSaved] = useState(false);
+  const [feil, setFeil] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
 
-  const isBuilding = drills.length > 0;
+  const isBuilding = started;
+  const tilgjengeligeOvelser = alleOvelser.filter(
+    (o) => !drills.some((d) => d.id === o.id),
+  );
 
-  function handleSelectTemplate(template: Template) {
+  function handleSelectTemplate(template: WizardTemplate) {
     setSelectedTemplate(template);
     setDrills(template.drills);
+    setStarted(true);
     setSaved(false);
+    setFeil(null);
   }
 
   function handleStartBlank() {
     setSelectedTemplate(null);
-    setDrills([{ id: "blank-1", name: "Ny drill", meta: "20 min", cat: "MIX" }]);
+    setDrills([]);
+    setStarted(true);
     setSaved(false);
+    setFeil(null);
   }
 
   function handleRemoveDrill(id: string) {
     setDrills((prev) => prev.filter((d) => d.id !== id));
   }
 
-  function handleAddDrill() {
-    const newId = `custom-${Date.now()}`;
-    setDrills((prev) => [
-      ...prev,
-      { id: newId, name: "Ny drill", meta: "15 min", cat: "MIX" },
-    ]);
+  function handleAddDrill(exerciseId: string) {
+    const ovelse = alleOvelser.find((o) => o.id === exerciseId);
+    if (!ovelse) return;
+    setDrills((prev) => [...prev, ovelse]);
   }
 
   function handleReset() {
     setSelectedTemplate(null);
     setDrills([]);
+    setStarted(false);
     setSaved(false);
+    setFeil(null);
   }
 
   function handleSaveAndStart() {
-    setSaved(true);
+    setFeil(null);
+    startTransition(async () => {
+      try {
+        await createAdHocSession({
+          title: selectedTemplate ? selectedTemplate.name : "Egen økt",
+          pyramidArea: "SLAG",
+          scheduledAt: new Date().toISOString(),
+          durationMin: totalMinutes(drills),
+          exerciseIds: drills.map((d) => d.id),
+        });
+        setSaved(true);
+      } catch (e) {
+        const melding = e instanceof Error ? e.message : "ukjent";
+        setFeil(FEIL_TEKST[melding] ?? "Kunne ikke lagre økten. Prøv igjen.");
+      }
+    });
   }
 
   const mins = totalMinutes(drills);
@@ -275,15 +268,29 @@ export function NyOktWizard() {
           </div>
         </div>
 
-        {/* Add drill */}
-        <button
-          type="button"
-          onClick={handleAddDrill}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-border py-3 text-sm font-medium text-muted-foreground transition-colors hover:border-primary hover:text-primary"
-        >
-          <Plus size={16} strokeWidth={2} aria-hidden />
-          Legg til drill
-        </button>
+        {/* Add drill — ekte øvelser, ikke lenger tilgjengelig når alt er lagt til */}
+        {tilgjengeligeOvelser.length > 0 && (
+          <label className="flex w-full items-center gap-2 rounded-xl border border-dashed border-border py-3 px-3 text-sm font-medium text-muted-foreground transition-colors focus-within:border-primary">
+            <Plus size={16} strokeWidth={2} aria-hidden />
+            <select
+              defaultValue=""
+              onChange={(e) => {
+                if (e.target.value) handleAddDrill(e.target.value);
+                e.target.value = "";
+              }}
+              className="w-full bg-transparent text-sm outline-none"
+            >
+              <option value="" disabled>
+                Legg til drill …
+              </option>
+              {tilgjengeligeOvelser.map((o) => (
+                <option key={o.id} value={o.id}>
+                  {o.cat} · {o.name} ({o.meta})
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
 
         {/* CTAs */}
         {saved ? (
@@ -295,20 +302,19 @@ export function NyOktWizard() {
             .
           </div>
         ) : (
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="space-y-2">
+            {feil && (
+              <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive">
+                {feil}
+              </p>
+            )}
             <button
               type="button"
               onClick={handleSaveAndStart}
-              className="flex-1 rounded-full bg-accent py-3 text-sm font-bold uppercase tracking-wide text-accent-foreground transition-opacity hover:opacity-90"
+              disabled={pending}
+              className="w-full rounded-full bg-accent py-3 text-sm font-bold uppercase tracking-wide text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
             >
-              Lagre og start økt
-            </button>
-            <button
-              type="button"
-              onClick={handleSaveAndStart}
-              className="flex-1 rounded-full border border-border py-3 text-sm font-semibold text-foreground transition-colors hover:border-primary hover:text-primary"
-            >
-              Lagre som mal
+              {pending ? "Lagrer …" : "Lagre og start økt"}
             </button>
           </div>
         )}
@@ -343,19 +349,21 @@ export function NyOktWizard() {
       </div>
 
       {/* Template grid */}
-      <div>
-        <span className="mb-3 block font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">Maler</span>
-        <div className="grid grid-cols-2 gap-3">
-          {TEMPLATES.map((t) => (
-            <TemplateCard
-              key={t.name}
-              template={t}
-              selected={selectedTemplate?.name === t.name}
-              onSelect={() => handleSelectTemplate(t)}
-            />
-          ))}
+      {templates.length > 0 && (
+        <div>
+          <span className="mb-3 block font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">Maler</span>
+          <div className="grid grid-cols-2 gap-3">
+            {templates.map((t) => (
+              <TemplateCard
+                key={t.name}
+                template={t}
+                selected={selectedTemplate?.name === t.name}
+                onSelect={() => handleSelectTemplate(t)}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Start blank */}
       <button

@@ -168,7 +168,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Økt-detalj (V2-økt fra coach) | `/portal/gjennomfore/[id]` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | Kalender | `/portal/kalender` | ✓ | --- | ✓ | ~ | ~ | ✓ | v13 composed (golfdata calendars + scope)
 | Kalender (alt. adresse) | `/portal/tren/kalender` | – | --- | ✓ | ~ | ~ | ✓ |
-| Ny økt (handlingsvalg) | `/portal/ny-okt` | – | --- | ✓ | ~ | ~ | ✓ |
+| Ny økt (handlingsvalg) | `/portal/ny-okt` | – | --- | ✓ | ✓ | ✓ | ✓ |
 | Logg treningsøkt (volum per SG) † | `/portal/trening/logg` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
 | **Putte-laboratoriet** (3 verktøy) | `/portal/trening/putte-laboratoriet` | – | ✓✓– | ✓ | ✓ | – | ✓ |
 | **Break-tabell** (3 varianter) | `/portal/trening/break-tabell` | – | ✓✓– | ✓ | ✓ | – | ✓ |
@@ -766,6 +766,17 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 15. juli (`/portal/ny-okt` koblet til ekte lagring, branch `claude/ny-okt-ekte-lagring`):
+  wizarden hadde ingen backend — kun `useState` i nettleseren, «Lagre og start økt» gjorde
+  bokstavelig talt ingenting. Fant at server actionen som trengs (`createAdHocSession`)
+  allerede finnes og er produksjonstestet fra coach-siden (`add-session-wizard.tsx`) — koblet
+  spiller-wizarden til den i stedet for å bygge noe nytt. De 4 hardkodede fiktive malene
+  («arg-1», «ott-1» osv.) erstattet med ekte `ExerciseDefinition`-rader (931 øvelser i
+  databasen, godt fordelt på alle kategorier) gruppert per skill-område. «Legg til drill»
+  er nå en ekte nedtrekksmeny med reelle øvelser, ikke en fiktiv placeholder. Fjernet
+  «Lagre som mal»-knappen (var identisk med «Lagre og start» og hadde ingen egen backend —
+  samme klasse fake-CTA-bug som ble ryddet i I8 tidligere i natt).
 
 - 15. juli (veiviser-porting, femte bølge): **Coach · Nytt spørsmål** (`/portal/coach/sporsmal/ny`)
   portet til v2 fra Claude Design-kilden (`ui_kits/playerhq/phq-wizards.jsx` → `SporsmalNyView`,
