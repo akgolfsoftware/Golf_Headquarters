@@ -238,7 +238,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Coach-hub | `/portal/coach` | ~ | --- | ✓ | ~ | ~ | ✓ |
 | · Coach-profil | `/portal/coach/[coachId]` | – | --- | ✓ | ~ | ~ | ~ |
 | Meldinger (innboks) | `/portal/coach/melding` | ~ | --- | ✓ | ~ | ~ | ✓ |
-| · Ny melding | `/portal/coach/melding/ny` | – | --- | ✓ | ~ | ~ | ~ |
+| · Ny melding | `/portal/coach/melding/ny` | ✓ | --- | ✓ | ✓ | ✓ | ✓† |
 | · Meldingstråd | `/portal/coach/melding/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Vedlegg | `/portal/coach/melding/[id]/vedlegg` | – | --- | ✓ | ~ | ~ | ~ |
 | Coach-planer | `/portal/coach/plans` | ~ | --- | ✓ | ~ | ~ | ~ |
@@ -453,7 +453,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Tilgjengelighet | `/admin/availability` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | Kapasitet | `/admin/kapasitet` | – | --- | ✓ | ~ | ~ | ~ |
 | Tjenester/priser | `/admin/services` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| TrackMan (på tvers) | `/admin/trackman` | – | --- | ✓ | ~ | ~ | ~ |
+| TrackMan (på tvers) | `/admin/trackman` | – | --- | ✓ | ✓ | ✓ | ✓ | v2 2026-07-14: portet ut av legacy, komponert av v2-biblioteket (KpiFlis/Rad/FilterChips — samme mønster som Runder/Tester/Team, ingen 1:1-kit finnes for denne cross-player-tabellen); ekte søk+miljø-filter (ikke placeholder-toast); TilbakeLenke → /admin/gjennomfore |
 | Live-økt: brief (coach) | `/admin/live/[sessionId]/brief` | – | --- | ✓ | ✓ | ✓ | ✓ |
 | Live-økt: aktiv (coach) | `/admin/live/[sessionId]/active` | – | --- | ✓ | ✓ | ✓ | ✓ |
 | Live-økt: oppsummering (coach) | `/admin/live/[sessionId]/summary` | – | --- | ✓ | ✓ | ✓ | ✓ |
@@ -498,7 +498,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Tilgang | `/admin/settings/tilgang` | – | --- | ✓ | ~ | ~ | ~ |
 | Team | `/admin/team` | – | --- | ✓ | ~ | ~ | ~ |
 | · Inviter | `/admin/team/inviter` | – | --- | ✓ | ~ | ~ | ~ |
-| Audit-log | `/admin/audit-log` | – | --- | ✓ | ~ | ~ | ~ |
+| Audit-log | `/admin/audit-log` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminAuditLogV2`) — samme AuditLog-spørring/kind-status-utledning som legacy, KpiFlis+Rad-liste, ærlig tomtilstand. Lagt i Innsikt-mer-gruppen (var uten menylenke). `(legacy)/audit-log` slettet. |
 | AI-agenter | `/admin/agents` | – | --- | ✓ | ~ | ~ | ~ |
 | · Agent-detalj | `/admin/agents/[agentId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | E-postmaler | `/admin/email-templates` | – | --- | ✓ | ~ | ~ | ~ |
@@ -562,7 +562,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Barn (oversikt) | `/forelder/barn` | – | ✓✓– | ✓ | ~ | ~ | ✓ |
 | · Barn-detalj | `/forelder/barn/[childId]` | – | ✓✓– | ✓ | ~ | – | ~ |
 | Bookinger | `/forelder/bookinger` | – | --- | ✓ | ~ | ~ | ~ |
-| Coach | `/forelder/coach` | – | --- | ✓ | ~ | ~ | ~ |
+| Coach | `/forelder/coach` | – | --- | ✓ | ~ | ✓ | † |
 | Fakturaer | `/forelder/fakturaer` | – | --- | ✓ | ~ | ~ | ~ |
 | Økonomi | `/forelder/okonomi` | – | --- | ✓ | ~ | ~ | ~ |
 | Samtykke | `/forelder/samtykke` | – | --- | ✓ | ~ | ~ | ~ |
@@ -787,6 +787,27 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   fortsatt legacy), `booking/ny` (578 linjer + `/bekreft`-underrute + ekte
   credits/tilgjengelighets-logikk — for stort for denne bølgen). Verifisert: `tsc --noEmit`,
   `eslint --quiet src`, full `npm run build` grønt.
+
+- 14. juli (siste mock-side i foreldreportalen fjernet): `/forelder/coach` hadde en hardkodet
+  `DATA`-konstant («coach-dialog kommer Q3 2026») — en toveis forelder↔coach-dialog finnes ikke i
+  datamodellen (`CoachingSession` er spiller↔coach). Erstattet med ekte oppslag: barnets coach
+  (fra kommende/siste booking), siste faktiske melding fra coachen (`Notification` type=«melding»,
+  samme kilde som `coachNote` i `hentForelderUkerapport`), og kontakt-CTA. Ærlig tom-tilstand når
+  ingen barn er koblet eller ingen coach er tildelt ennå — ingen fabrikerte tall eller
+  lanseringsdatoer. Data-haken satt til ✓.
+
+- 14. juli (AgencyOS v2-porting, branch `claude/port-trackman-v2`): **TrackMan (på tvers)
+  portet til v2.** `/admin/trackman` flyttet ut av `(legacy)`-gruppen til en egen v2preview-rute
+  (`V2Shell` + ny `AdminTrackmanV2`-komponent). Ingen 1:1 Claude Design-kit finnes for denne
+  cross-player-tabellen — kit-filen `ui_kits/agencyos/trackman-app.jsx` viste seg å være en
+  *per-spiller* sesjon-dybde-visning (dispersion/trajectory-plott for én spiller), en annen skjerm
+  enn coachens tvers-av-stallen-oversikt. Komponert utelukkende av v2-biblioteket, samme
+  «dekket via system»-mønster som Runder/Tester/Team-portene. Datakontrakt bevart 1:1 (ekte
+  `TrackManSession`-spørring, KPI-strip, spiller/HCP/dato/slag/kilde/miljø), men søk og
+  miljø-filter er nå ekte klientfilter (var placeholder-toast i legacy). Verifisert: fant at
+  commits som hevdet å ha portet både TrackMan og Risiko til v2 (`AgencyOS Bølge 3.7`/`3.17`)
+  kun eksisterte på en aldri-merget branch (`origin/claude/mobile-desktop-improvements-90kanx`)
+  — ikke i historikken til main. `/admin/risiko` er fortsatt legacy og gjenstår som egen jobb.
 
 - 14. juli (ren dokument-verifisering — 7 punkter fra intern oppgavelogg sjekket mot faktisk
   kode, ingen kildekode endret): **Rettet (haker var utdatert i forhold til levert kode):**

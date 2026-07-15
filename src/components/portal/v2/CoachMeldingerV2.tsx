@@ -110,9 +110,9 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
           </div>
         </div>
         {hovedcoach && (
-          <div className="hidden md:block">
+          <Link href="/portal/coach/melding/ny" className="hidden md:block" style={{ textDecoration: "none" }}>
             <CTAPill icon="send">Ny melding</CTAPill>
-          </div>
+          </Link>
         )}
       </div>
 
@@ -127,9 +127,9 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
               </div>
               <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>Hovedcoach</div>
             </div>
-            <div className="md:hidden">
+            <Link href="/portal/coach/melding/ny" className="md:hidden" style={{ textDecoration: "none" }}>
               <CTAPill icon="send">Ny melding</CTAPill>
-            </div>
+            </Link>
           </div>
         ) : (
           <TomTilstand icon="user" title="Ingen coach koblet" sub="Coachen din vises her når dere er koblet." />
