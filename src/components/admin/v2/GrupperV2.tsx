@@ -69,6 +69,9 @@ export function GrupperV2({ data }: { data: GrupperData }) {
         </div>
       </div>
       <div className="hidden md:block">
+        {/* Statisk — ingen opprett-gruppe-rute/action finnes i kodebasen ennå
+            (grupper opprettes i dag utenfor appen). Samme bevisste mønster
+            som «Ny oppgave» i AdminHandlingssenterV2.tsx. */}
         <CTAPill ghost icon="plus">Ny gruppe</CTAPill>
       </div>
     </div>
