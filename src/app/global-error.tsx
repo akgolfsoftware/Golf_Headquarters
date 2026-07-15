@@ -3,8 +3,25 @@
 // Next.js krever global-error.tsx i app/ for å fange feil i root-layout.
 
 import Link from "next/link";
+import { useEffect } from "react";
+import { reportClientError } from "@/lib/report-client-error";
 
-export default function GlobalError() {
+export default function GlobalError({
+  error,
+}: {
+  error: Error & { digest?: string };
+}) {
+  useEffect(() => {
+    reportClientError({
+      context: "global-error",
+      message: error.message,
+      stack: error.stack,
+      digest: error.digest,
+    }).catch(() => {
+      // Varsling skal aldri krasje feilsiden selv
+    });
+  }, [error]);
+
   return (
     <html lang="nb">
       <body>

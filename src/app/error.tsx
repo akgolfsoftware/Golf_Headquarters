@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
+import { reportClientError } from "@/lib/report-client-error";
+
 export default function Error({
   error,
   reset,
@@ -7,6 +10,17 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    reportClientError({
+      context: "segment-error",
+      message: error.message,
+      stack: error.stack,
+      digest: error.digest,
+    }).catch(() => {
+      // Varsling skal aldri krasje feilsiden selv
+    });
+  }, [error]);
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background text-foreground px-6">
       <p className="font-mono text-8xl font-semibold text-muted-foreground/30 tabular-nums">
