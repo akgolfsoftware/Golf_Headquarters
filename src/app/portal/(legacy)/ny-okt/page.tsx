@@ -9,7 +9,71 @@ import { Lock } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { EmptyState } from "@/components/shared/empty-state";
-import { NyOktWizard } from "./wizard";
+import { prisma } from "@/lib/prisma";
+import { NyOktWizard, type WizardDrill, type WizardTemplate } from "./wizard";
+import type { SkillArea } from "@/generated/prisma/client";
+
+/** Skill-område → visnings-kategori + malnavn (samme kategori-følelse som de
+ * gamle hardkodede malene, men bygget fra ekte ExerciseDefinition-rader). */
+const SKILL_LABEL: Partial<Record<SkillArea, { cat: string; name: string }>> = {
+  TEE_TOTAL: { cat: "OTT", name: "Driver-dag" },
+  TILNAERMING: { cat: "APP", name: "Innspill-fokus" },
+  AROUND_GREEN: { cat: "ARG", name: "Wedge-fokus" },
+  PUTTING: { cat: "PUTT", name: "Putting-serie" },
+};
+
+async function hentMalerOgOvelser(): Promise<{
+  templates: WizardTemplate[];
+  alleOvelser: WizardDrill[];
+}> {
+  const ovelser = await prisma.exerciseDefinition.findMany({
+    orderBy: [{ skillArea: "asc" }, { name: "asc" }],
+  });
+
+  function tilDrill(e: (typeof ovelser)[number]): WizardDrill {
+    return {
+      id: e.id,
+      name: e.name,
+      meta: `${e.durationMin ?? 20} min`,
+      cat: (e.skillArea && SKILL_LABEL[e.skillArea]?.cat) ?? "MIX",
+      durationMin: e.durationMin ?? 20,
+    };
+  }
+
+  const alleOvelser: WizardDrill[] = ovelser.map(tilDrill);
+
+  const ovelserPerSkill = new Map<SkillArea, WizardDrill[]>();
+  for (const e of ovelser) {
+    if (!e.skillArea) continue;
+    const liste = ovelserPerSkill.get(e.skillArea) ?? [];
+    liste.push(tilDrill(e));
+    ovelserPerSkill.set(e.skillArea, liste);
+  }
+
+  const templates: WizardTemplate[] = [];
+  for (const [skillArea, label] of Object.entries(SKILL_LABEL) as [SkillArea, { cat: string; name: string }][]) {
+    const drills = (ovelserPerSkill.get(skillArea) ?? []).slice(0, 3);
+    if (drills.length === 0) continue;
+    templates.push({
+      cat: label.cat,
+      name: label.name,
+      meta: `${drills.length} drills · ${drills.reduce((s, d) => s + d.durationMin, 0)} min`,
+      drills,
+    });
+  }
+
+  if (templates.length >= 2) {
+    const mixDrills = templates.map((t) => t.drills[0]).filter(Boolean);
+    templates.push({
+      cat: "MIX",
+      name: "Full økt",
+      meta: `${mixDrills.length} drills · ${mixDrills.reduce((s, d) => s + d.durationMin, 0)} min`,
+      drills: mixDrills,
+    });
+  }
+
+  return { templates, alleOvelser };
+}
 
 export default async function NyOktPage() {
   const user = await requirePortalUser();
@@ -41,6 +105,8 @@ export default async function NyOktPage() {
     );
   }
 
+  const { templates, alleOvelser } = await hentMalerOgOvelser();
+
   return (
     <div className="mx-auto max-w-[1240px] space-y-8 px-4 pb-32 sm:px-6">
       <PageHeader
@@ -50,7 +116,7 @@ export default async function NyOktPage() {
         titleTrail="økt"
         sub="Sett sammen en økt utenfor coach-planen din — på 4 raske steg."
       />
-      <NyOktWizard />
+      <NyOktWizard templates={templates} alleOvelser={alleOvelser} />
     </div>
   );
 }
