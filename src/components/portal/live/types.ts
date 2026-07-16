@@ -59,6 +59,23 @@ export type LiveV2Drill = {
   repMinutter: number | null;
   repSett: number | null;
   repReps: number | null;
+  // Fys-modalitet + mål (2026-07-16 · Live-økt-port) — NB: disse er i dag ALDRI
+  // fylt ut av plan→live-speilingen (syncDrillsToV2 kopierer kun repType/repSett/
+  // repReps over), så FysLogger faller tilbake til de generiske rep-feltene til
+  // en fremtidig autoring-pipeline kobler ExerciseDefinition.parametersJson hit.
+  fysTreningstype: string | null;
+  fysMuskelgruppe: string | null;
+  fysSett: number | null;
+  fysReps: number | null;
+  fysVektKg: number | null;
+  fysTempo: string | null;
+  fysPauseSek: number | null;
+  fysVarighetMin: number | null;
+  fysIntensitetsSone: number | null;
+  fysDistanseM: number | null;
+  fysAktivitet: string | null;
+  fysBevegelighetType: string | null;
+  fysHoldSek: number | null;
 };
 
 /** Planlagt rep-type + volum som klarspråk, f.eks. «120 baller», «30 min», «3 × 10». */
