@@ -370,7 +370,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Ressurser | `/admin/talent/ressurser` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Sammenligning | `/admin/talent/sammenligning` | – | ~✓– | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul: AMBIGUOUS — `TalentSammenligning`-komponenten er dokumentert som en pixel-perfect port av godkjent fasit (`components-multi-compare.html`), men importerer ikke golfdata/ui/v2. Teknisk gap etter import-testen, men trolig design-ferdig i ånd. |
 | · WAGR-benchmark | `/admin/talent/wagr-benchmark` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · WAGR-import | `/admin/talent/wagr-import` | – | –✓– | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul: BEKREFTET ekte gap — kun `@/components/admin/agencyos/ui`-familien. |
+| · WAGR-import | `/admin/talent/wagr-import` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminWagrImportV2` (Kort/Knapp/StatusPill/AvatarInit), erstatter `@/components/admin/agencyos/ui`-familien. Samme «Synk nå» (synkWagrNaa) uendret. Design – → ✓, Mob/Desk/iPad –✓– → ✓✓–. |
 
 ### Planlegge (lage planer FOR spillerne)
 
