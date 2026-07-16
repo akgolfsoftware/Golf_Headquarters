@@ -1,6 +1,6 @@
 # Master-skjermplan — AK Golf HQ
 
-> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 14. juli 2026.**
+> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 16. juli 2026.**
 
 > **OPPDATERT KANON (2026-07-08):** Design-kanon er nå UTELUKKENDE det levende Claude Design-
 > prosjektet (`claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`), hentet direkte via
@@ -393,7 +393,9 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Grupper | `/admin/grupper` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Gruppe-detalj (+ VG-trinn filter/badge, 2026-07-07) | `/admin/grupper/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Gruppe-timeplan (faste/kommende/tidligere + dupliser) | `/admin/grupper/[id]/timeplan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · **WANG Toppidrett — åpen treningsplan** (offentlig, ingen innlogging) | `/team-wang` | ~ | --- | ✓ | ~ | ✓ | † |
+| · **Gruppe-årsplan** (samme kalenderkjerne som /team-wang, koblet inn i gruppeplanleggingen) | `/admin/grupper/[id]/arsplan` | ~ | --- | ✓ | ~ | ~ | † |
+| · · Legg inn skoledata (lim-inn-import → SchoolScheduleEntry) | `/admin/grupper/[id]/arsplan/skoledata` | ~ | --- | ✓ | ✓ | ~ | † |
+| · **WANG Toppidrett — åpen treningsplan** (offentlig, ingen innlogging; nå med dagsvisning + samlinger + skole-/kompetansemål-lag) | `/team-wang` | ~ | -✓– | ✓ | ~ | ✓ | ✓ |
 | · **GFGK Junior — åpen treningsplan** (offentlig, 4 gruppefaner: Mini/Basis/Utvikling/Elite) | `/gfgk-junior` | ~ | --- | ✓ | ~ | ✓ | † |
 | Talent-hub | `/admin/talent` | – | --- | ✓ | ~ | ~ | ~ |
 | · Discovery | `/admin/talent/discovery` | – | --- | ✓ | ~ | ~ | ~ |
@@ -779,6 +781,29 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   skjermene stod ikke i haker-tabellene over (interne `/kommando`-ruter var
   aldri en del av de 341 sporede skjermene) — ingen hake-oppdatering nødvendig,
   kun denne loggposten.
+- 16. juli (WANG årskalender utvidet — dagsvisning + skole/samling/kompetansemål-lag, branch
+  `feature/wang-aarsplan`): `/team-wang` hadde kun år/måned/uke og viste bare faste treningstider
+  + AK-perioder. Lagt til: dagsvisning (fjerde visningsbryter, gjenbruker `TidsGrid` med 1
+  kolonne); ny `SchoolScheduleEntry`-tabell (skolerute/timeplan/prøveplan per trinn, additiv
+  `db execute`-migrasjon) med enkel lim-inn-importer; `GroupSchedule.kind` (SAMLING/
+  HELDAGSSAMLING) — disse var usynlige før pga. et `recurring: "WEEKLY"`-filter i
+  `hentGruppeKalenderData` som aldri hentet engangs-hendelser; `TrainingPeriod.competenceGoalIds`
+  kobler periodene til eksisterende `CompetenceGoal`-rader (fantes fra før, men var aldri koblet
+  til noe). Nytt klikk-detaljpanel viser dagens periode+kompetansemål, samlinger og full
+  skole-liste. Samme kalenderkjerne koblet inn i AgencyOS som ny fane `/admin/grupper/[id]/arsplan`
+  (+ `/arsplan/skoledata` for import) — dette var hovedmålet: årsplanen var kun en offentlig side,
+  ikke tilgjengelig fra gruppeplanleggingen coachen faktisk bruker. VG-trinn-filter gjenbruker
+  samme `?trinn=`-mønster som allerede fantes på `/admin/grupper/[id]`. Turneringsplan er lagt inn
+  som en tydelig tom-tilstand — venter på turneringskalender-kobling. Seedet: to samlinger
+  (WANG-Oslo vinterleir, ISO-uke 1 og 7 2027) med datoer beregnet eksakt (ikke gjettet), men
+  markert «estimert/ikke bekreftet» i notatfeltet siden WANG sentralt eier de faktiske datoene.
+  Bevisst IKKE seedet: 2026/2027 skolerute/prøveplan/full fag-timeplan — fjorårets konkrete datoer
+  ville vært feil hvis de bare ble relabelt til nytt skoleår, og gjetting av skolens fremtidige
+  timeplan er utenfor det som er forsvarlig å anta. Import-verktøyet står klart for når skolen
+  publiserer. tsc + eslint + `next build` grønt. Browser-testet ende-til-ende på `/team-wang`
+  (år/måned/uke/dag, trinn-filter, klikk-til-detaljpanel med ekte samling+periode-data) — admin-
+  fanen kun bygg-verifisert (auth-gate testet, ikke innlogget browser-test).
+
 - 15. juli (`/portal/ny-okt` koblet til ekte lagring, branch `claude/ny-okt-ekte-lagring`):
   wizarden hadde ingen backend — kun `useState` i nettleseren, «Lagre og start økt» gjorde
   bokstavelig talt ingenting. Fant at server actionen som trengs (`createAdHocSession`)
