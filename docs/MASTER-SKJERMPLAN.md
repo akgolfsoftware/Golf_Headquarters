@@ -1,6 +1,6 @@
 # Master-skjermplan — AK Golf HQ
 
-> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 14. juli 2026.**
+> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 16. juli 2026.**
 
 > **OPPDATERT KANON (2026-07-08):** Design-kanon er nå UTELUKKENDE det levende Claude Design-
 > prosjektet (`claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`), hentet direkte via
@@ -390,7 +390,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Tester | `/admin/spillere/[id]/tester` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
 | · Tildel test | `/admin/spillere/[id]/tildel-test` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger | `/admin/spillere/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
-| Grupper | `/admin/grupper` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
+| Grupper | `/admin/grupper` | – | –✓– | ✓ | ✓ | ✓ | ✓ | 16. juli: ekte opprett-/slett-gruppe lagt til (`createGroup`/`deleteGroup`) — medlemskap fantes fra før, selve gruppen manglet CRUD. «Ny gruppe» koblet til modal, «Slett gruppe» på detaljen med bekreftelse (viser antall medlemmer/samlinger). |
 | · Gruppe-detalj (+ VG-trinn filter/badge, 2026-07-07) | `/admin/grupper/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Gruppe-timeplan (faste/kommende/tidligere + dupliser) | `/admin/grupper/[id]/timeplan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · **WANG Toppidrett — åpen treningsplan** (offentlig, ingen innlogging) | `/team-wang` | ~ | --- | ✓ | ~ | ✓ | † |
@@ -766,6 +766,16 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 16. juli (Grupper — ekte opprett/slett, branch `claude/session-mn3f12`): AgencyOS Grupper hadde
+  ekte medlemskap (`leggTilGruppemedlem`/`fjernGruppemedlem`) men INGEN vei til å opprette eller
+  slette selve gruppen — «Ny gruppe» i `GrupperV2` var en statisk pille uten `onClick`. Ny
+  `src/app/admin/grupper/actions.ts` (`createGroup`/`deleteGroup`, husstilen fra
+  `drills/actions.ts`: `requirePortalUser`, zod, `audit()`, `revalidatePath`). «Ny gruppe» koblet
+  til en ny v2-native modal (`opprett-gruppe-modal.tsx`) som navigerer til den nye gruppens
+  detaljside. `Group` har ingen soft-delete og `GroupMember`/`GroupSchedule` kaskaderes bort
+  (schema `onDelete:Cascade`) — ny `SlettGruppeButton` på gruppedetaljen krever derfor eksplisitt
+  bekreftelse med antall medlemmer/samlinger før sletting, ingen stille kaskade.
 
 - 15. juli (`/portal/ny-okt` koblet til ekte lagring, branch `claude/ny-okt-ekte-lagring`):
   wizarden hadde ingen backend — kun `useState` i nettleseren, «Lagre og start økt» gjorde
