@@ -42,18 +42,26 @@ function minutter(hhmm: string): number {
 export default async function V2GrupperPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
-  const groups = await prisma.group.findMany({
-    select: {
-      id: true,
-      name: true,
-      _count: { select: { members: true } },
-      schedules: {
-        where: { recurring: "WEEKLY" },
-        select: { id: true, title: true, startAt: true, endAt: true, location: true },
+  const [groups, coachRows] = await Promise.all([
+    prisma.group.findMany({
+      select: {
+        id: true,
+        name: true,
+        _count: { select: { members: true } },
+        schedules: {
+          where: { recurring: "WEEKLY" },
+          select: { id: true, title: true, startAt: true, endAt: true, location: true },
+        },
       },
-    },
-    orderBy: { name: "asc" },
-  });
+      orderBy: { name: "asc" },
+    }),
+    prisma.user.findMany({
+      where: { role: { in: ["COACH", "ADMIN"] }, deletedAt: null },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
+  ]);
+  const coaches = coachRows.map((c) => ({ id: c.id, name: c.name ?? "Ukjent" }));
 
   const now = new Date();
   const naaUkedag = osloUkedag(now);
@@ -102,7 +110,7 @@ export default async function V2GrupperPage() {
     };
   });
 
-  const data: GrupperData = { grupper };
+  const data: GrupperData = { grupper, coaches };
 
   return (
     <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>

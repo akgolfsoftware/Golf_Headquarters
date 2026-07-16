@@ -25,11 +25,13 @@ import {
   Rad,
   StatusPill,
   CTAPill,
+  Knapp,
   MikroMeta,
   TomTilstand,
   Icon,
 } from "@/components/v2";
 import { T } from "@/lib/v2/tokens";
+import { OpprettGruppeModal, type CoachValg } from "@/app/admin/grupper/opprett-gruppe-modal";
 
 export interface FastTid {
   id: string;
@@ -48,14 +50,16 @@ export interface GruppeV2 {
 }
 export interface GrupperData {
   grupper: GruppeV2[];
+  coaches: CoachValg[];
 }
 
 const spillere = (n: number) => `${n} ${n === 1 ? "spiller" : "spillere"}`;
 const grupperOrd = (n: number) => `${n} ${n === 1 ? "gruppe" : "grupper"}`;
 
 export function GrupperV2({ data }: { data: GrupperData }) {
-  const { grupper } = data;
+  const { grupper, coaches } = data;
   const [valgtId, setValgtId] = useState<string | null>(grupper[0]?.id ?? null);
+  const [opprettApen, setOpprettApen] = useState(false);
   const valgt = grupper.find((g) => g.id === valgtId) ?? null;
   const totalMedlemmer = grupper.reduce((s, g) => s + g.antallMedlemmer, 0);
 
@@ -69,10 +73,9 @@ export function GrupperV2({ data }: { data: GrupperData }) {
         </div>
       </div>
       <div className="hidden md:block">
-        {/* Statisk — ingen opprett-gruppe-rute/action finnes i kodebasen ennå
-            (grupper opprettes i dag utenfor appen). Samme bevisste mønster
-            som «Ny oppgave» i AdminHandlingssenterV2.tsx. */}
-        <CTAPill ghost icon="plus">Ny gruppe</CTAPill>
+        <Knapp ghost icon="plus" onClick={() => setOpprettApen(true)}>
+          Ny gruppe
+        </Knapp>
       </div>
     </div>
   );
@@ -81,11 +84,14 @@ export function GrupperV2({ data }: { data: GrupperData }) {
   const liste = (
     <Kort eyebrow="Alle grupper">
       {grupper.length === 0 ? (
-        <TomTilstand
-          icon="users"
-          title="Ingen grupper ennå"
-          sub="Opprett den første gruppen for å samle spillere på tvers av klubbene dine."
-        />
+        <div style={{ display: "flex", flexDirection: "column", gap: 14, alignItems: "flex-start" }}>
+          <TomTilstand
+            icon="users"
+            title="Ingen grupper ennå"
+            sub="Opprett den første gruppen for å samle spillere på tvers av klubbene dine."
+          />
+          <Knapp icon="plus" onClick={() => setOpprettApen(true)}>Opprett gruppe</Knapp>
+        </div>
       ) : (
         grupper.map((g, i) => {
           const on = g.id === valgtId;
@@ -217,6 +223,9 @@ export function GrupperV2({ data }: { data: GrupperData }) {
         {liste}
         {detalj}
       </div>
+      {opprettApen && (
+        <OpprettGruppeModal coaches={coaches} onClose={() => setOpprettApen(false)} />
+      )}
     </div>
   );
 }
