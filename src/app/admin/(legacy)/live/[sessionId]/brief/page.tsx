@@ -1,5 +1,5 @@
 /**
- * AgencyOS · Live-økt brief — coach-perspektiv
+ * AgencyOS · Live-økt brief — coach-perspektiv (v2-port 16. juli 2026).
  *
  * Coach ser sesjonens detaljer og kan legge til et fokuspunkt
  * som vises til spilleren før økten starter.
@@ -8,9 +8,8 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, Target, Clock } from "lucide-react";
-import { BriefSend } from "./_brief-send";
+import type { PyramidArea } from "@/generated/prisma/client";
+import { AdminLiveBriefV2, type AdminLiveBriefV2Data } from "@/components/admin/v2/AdminLiveBriefV2";
 
 export const dynamic = "force-dynamic";
 
@@ -22,11 +21,12 @@ const MILJO_LABEL: Record<string, string> = {
   M2: "Korte banen",
   M3: "Banen",
   M4: "Turnering",
+  M5: "Simulator",
 };
 
 const PRACTICE_LABEL: Record<string, string> = {
   BLOKK: "Blokkpraksis",
-  RANDOM: "Tilfeldig",
+  RANDOM: "Tilfeldig praksis",
   KONKURRANSE: "Konkurranse",
   SPILL_TEST: "Spilltest",
 };
@@ -37,6 +37,7 @@ export default async function CoachLiveBriefPage({ params }: Props) {
 
   const session = await prisma.trainingSessionV2.findUnique({
     where: { id: sessionId },
+    include: { drills: { select: { pyramide: true } } },
   });
 
   if (!session) notFound();
@@ -47,13 +48,16 @@ export default async function CoachLiveBriefPage({ params }: Props) {
         select: { id: true, name: true },
       })
     : null;
-  const startTid = new Intl.DateTimeFormat("nb-NO", {
-    dateStyle: "short",
-    timeStyle: "short",
-  }).format(session.startTime);
-  const sluttTid = new Intl.DateTimeFormat("nb-NO", {
-    timeStyle: "short",
-  }).format(session.endTime);
+
+  const tidLabel = `${new Intl.DateTimeFormat("nb-NO", { dateStyle: "short", timeStyle: "short" }).format(session.startTime)} – ${new Intl.DateTimeFormat("nb-NO", { timeStyle: "short" }).format(session.endTime)}`;
+
+  // Økt-pyramide utledes fra drills (flertall), samme mønster som portal-siden.
+  const pyramideCounts = session.drills.reduce<Record<string, number>>((acc, d) => {
+    acc[d.pyramide] = (acc[d.pyramide] ?? 0) + 1;
+    return acc;
+  }, {});
+  const akse =
+    (Object.entries(pyramideCounts).sort(([, a], [, b]) => b - a)[0]?.[0] as PyramidArea) ?? "TEK";
 
   // Les ev. tidligere sendt brief-melding fra completedSummary.coachBrief.
   const rawSummary: unknown = session.completedSummary;
@@ -67,62 +71,21 @@ export default async function CoachLiveBriefPage({ params }: Props) {
     !Array.isArray(summaryObj.coachBrief)
       ? (summaryObj.coachBrief as Record<string, unknown>)
       : {};
-  const initialBrief =
-    typeof briefObj.melding === "string" ? briefObj.melding : "";
+  const initialMelding = typeof briefObj.melding === "string" ? briefObj.melding : "";
 
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-3xl px-6 py-10">
-        <div className="mb-6 flex items-center gap-3">
-          <Link
-            href={spiller ? `/admin/spillere/${spiller.id}` : "/admin/agencyos"}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            {spiller?.name ?? "Spiller"}
-          </Link>
-        </div>
+  const data: AdminLiveBriefV2Data = {
+    sessionId,
+    tittel: session.title,
+    spillerNavn: spiller?.name ?? null,
+    spillerHref: spiller ? `/admin/spillere/${spiller.id}` : "/admin/agencyos",
+    akse,
+    stedLabel: MILJO_LABEL[session.miljo] ?? session.miljo,
+    praksisLabel: PRACTICE_LABEL[session.practiceType] ?? session.practiceType,
+    tidLabel,
+    notater: session.notes,
+    initialMelding,
+    aktivHref: `/admin/live/${sessionId}/active`,
+  };
 
-        <div className="mb-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-            Coach · Live-brief
-          </p>
-          <h1 className="mt-2 font-display text-2xl font-semibold text-foreground">
-            {session.title}
-          </h1>
-          <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-            <span className="flex items-center gap-1.5">
-              <Target className="h-3.5 w-3.5" />
-              {MILJO_LABEL[session.miljo] ?? session.miljo} ·{" "}
-              {PRACTICE_LABEL[session.practiceType] ?? session.practiceType}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5" />
-              {startTid} – {sluttTid}
-            </span>
-          </div>
-        </div>
-
-        {session.notes && (
-          <div className="mb-6 rounded-lg border border-border bg-secondary/50 p-4">
-            <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-1">
-              Notater
-            </p>
-            <p className="text-sm text-foreground">{session.notes}</p>
-          </div>
-        )}
-
-        <BriefSend sessionId={sessionId} initialMelding={initialBrief} />
-
-        <div className="mt-6">
-          <Link
-            href={`/admin/live/${sessionId}/active`}
-            className="block w-full rounded-lg bg-primary px-6 py-3 text-center font-medium text-primary-foreground hover:bg-primary/90"
-          >
-            Start live-monitoring →
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
+  return <AdminLiveBriefV2 data={data} />;
 }
