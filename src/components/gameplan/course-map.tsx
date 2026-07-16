@@ -1,19 +1,25 @@
 "use client";
 
 /**
- * CourseMap — Mapbox GL satellitt-banekart for baneguiden.
- * Tegner banens GeoJSON-geometri (green/fairway/bunker/tee/vann) oppå
- * satellitt og markerer tee → green per hull. Dispersion-lag legges på
- * senere (fase 3-5) via `shots`-prop.
+ * CourseMap — Mapbox GL satellitt-banekart for Gameplan (B30, omdøpt fra
+ * "Baneguide"). Tegner banens GeoJSON-geometri (green/fairway/bunker/tee/vann)
+ * oppå satellitt og markerer tee → green per hull.
  *
- * Farger: lib/baneguide/map-colors.ts — det dokumenterte canvas-unntaket
- * fra ingen-rå-hex-regelen.
+ * Interaktiv modus (Gameplan hull-for-hull-planlegging, C7): når `interactive`
+ * er satt, kaller kartet `onKlikk` med ekte GPS-koordinater ved klikk/tapp —
+ * ingen piksel-matte, ingen tastet avstand. `sikte`/`soner` rendres som egne
+ * lag som oppdateres live via `setData` (opprettet én gang i `load`-handleren,
+ * siden selve kartet kun mountes én gang — se effekten under).
+ *
+ * Farger: lib/gameplan/map-colors.ts — det dokumenterte canvas-unntaket fra
+ * ingen-rå-hex-regelen.
  */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { MAP_COLORS, DISPERSION_COLORS } from "@/lib/baneguide/map-colors";
+import { MAP_COLORS, DISPERSION_COLORS, GAMEPLAN_COLORS } from "@/lib/gameplan/map-colors";
+import { circlePolygon, haversine } from "@/lib/gameplan/dispersion";
 
 export type CourseMapHole = {
   holeNumber: number;
@@ -22,6 +28,16 @@ export type CourseMapHole = {
   teeLng: number | null;
   greenLat: number | null;
   greenLng: number | null;
+};
+
+export type LatLngPoint = { lat: number; lng: number };
+
+export type GameplanSoneVisning = {
+  id: string;
+  /** "bra" = trygt å misse i (grønn), "aldri" = dyr sone (rød). */
+  type: "bra" | "aldri";
+  senter: LatLngPoint;
+  radiusMeter: number;
 };
 
 export type CourseMapProps = {
@@ -34,13 +50,56 @@ export type CourseMapProps = {
   shotPoints?: { lat: number; lng: number }[];
   /** Sikte-linje tee → green for ett hull. */
   aimLine?: { tee: { lat: number; lng: number }; green: { lat: number; lng: number } } | null;
+  /** Gameplan interaktiv modus: kartet blir klikkbart (crosshair-cursor). */
+  interactive?: boolean;
+  /** Kalles med ekte lat/lng ved klikk når `interactive` er satt. */
+  onKlikk?: (p: LatLngPoint) => void;
+  /** Spillerens valgte sikte for hullet (Gameplan-modus). */
+  sikte?: LatLngPoint | null;
+  /** Malte soner (bra/aldri) for hullet (Gameplan-modus). */
+  soner?: GameplanSoneVisning[];
 };
 
 const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
-export function CourseMap({ center, geojson, holes = [], zoom = 15.5, className, shotPoints = [], aimLine = null }: CourseMapProps) {
+const SONE_FARGE: Record<GameplanSoneVisning["type"], { fill: string; line: string }> = {
+  bra: { fill: "rgba(79,208,138,0.20)", line: GAMEPLAN_COLORS.soneBra },
+  aldri: { fill: "rgba(224,93,68,0.20)", line: GAMEPLAN_COLORS.soneAldri },
+};
+
+function sonerTilGeojson(soner: GameplanSoneVisning[]): GeoJSON.FeatureCollection {
+  return {
+    type: "FeatureCollection",
+    features: soner.map((s) => ({
+      type: "Feature",
+      properties: { type: s.type },
+      geometry: { type: "Polygon", coordinates: [circlePolygon(s.senter, s.radiusMeter)] },
+    })),
+  };
+}
+
+export function CourseMap({
+  center,
+  geojson,
+  holes = [],
+  zoom = 15.5,
+  className,
+  shotPoints = [],
+  aimLine = null,
+  interactive = false,
+  onKlikk,
+  sikte = null,
+  soner = [],
+}: CourseMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
+  const sikteMarkerRef = useRef<mapboxgl.Marker | null>(null);
+  const onKlikkRef = useRef(onKlikk);
+  const [lastet, setLastet] = useState(false);
+
+  useEffect(() => {
+    onKlikkRef.current = onKlikk;
+  }, [onKlikk]);
 
   useEffect(() => {
     if (!TOKEN || !containerRef.current || mapRef.current) return;
@@ -127,7 +186,7 @@ export function CourseMap({ center, geojson, holes = [], zoom = 15.5, className,
           id: "course-aim",
           type: "line",
           source: "aim",
-          paint: { "line-color": "#FFFFFF", "line-width": 1.5, "line-dasharray": [3, 3], "line-opacity": 0.6 },
+          paint: { "line-color": DISPERSION_COLORS.aimLine, "line-width": 1.5, "line-dasharray": [3, 3], "line-opacity": 0.6 },
         });
       }
 
@@ -156,6 +215,36 @@ export function CourseMap({ center, geojson, holes = [], zoom = 15.5, className,
           },
         });
       }
+
+      // Gameplan-soner (bra/aldri) — kilde opprettes tom, fylles via setData
+      // i den egne sikte/soner-effekten under (kan endre seg etter mount).
+      map.addSource("gp-soner", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
+      map.addLayer({
+        id: "gp-soner-fill",
+        type: "fill",
+        source: "gp-soner",
+        paint: {
+          "fill-color": ["match", ["get", "type"], "aldri", SONE_FARGE.aldri.fill, SONE_FARGE.bra.fill],
+        },
+      });
+      map.addLayer({
+        id: "gp-soner-line",
+        type: "line",
+        source: "gp-soner",
+        paint: {
+          "line-color": ["match", ["get", "type"], "aldri", SONE_FARGE.aldri.line, SONE_FARGE.bra.line],
+          "line-width": 1.6,
+        },
+      });
+
+      if (interactive) {
+        map.getCanvas().style.cursor = "crosshair";
+        map.on("click", (e) => {
+          onKlikkRef.current?.({ lat: e.lngLat.lat, lng: e.lngLat.lng });
+        });
+      }
+
+      setLastet(true);
     });
 
     return () => {
@@ -165,6 +254,40 @@ export function CourseMap({ center, geojson, holes = [], zoom = 15.5, className,
     // Kjør én gang ved mount; bane endres ved full remount (key på parent).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Gameplan-soner: oppdater kilden når `soner` endres (etter at kartet er lastet).
+  useEffect(() => {
+    if (!lastet || !mapRef.current) return;
+    const source = mapRef.current.getSource("gp-soner") as mapboxgl.GeoJSONSource | undefined;
+    source?.setData(sonerTilGeojson(soner));
+  }, [lastet, soner]);
+
+  // Gameplan-sikte: egen Mapbox-marker (lime crosshair), flyttes med .setLngLat
+  // i stedet for remount — unngår DOM-thrashing ved hver dra-bevegelse.
+  useEffect(() => {
+    if (!lastet || !mapRef.current) return;
+    const map = mapRef.current;
+
+    if (!sikte) {
+      sikteMarkerRef.current?.remove();
+      sikteMarkerRef.current = null;
+      return;
+    }
+
+    if (!sikteMarkerRef.current) {
+      const el = document.createElement("div");
+      el.className = "ak-gp-sikte";
+      sikteMarkerRef.current = new mapboxgl.Marker({ element: el, draggable: interactive });
+      if (interactive) {
+        sikteMarkerRef.current.on("dragend", () => {
+          const lngLat = sikteMarkerRef.current?.getLngLat();
+          if (lngLat) onKlikkRef.current?.({ lat: lngLat.lat, lng: lngLat.lng });
+        });
+      }
+      sikteMarkerRef.current.addTo(map);
+    }
+    sikteMarkerRef.current.setLngLat([sikte.lng, sikte.lat]);
+  }, [lastet, sikte, interactive]);
 
   if (!TOKEN) {
     return (
@@ -188,7 +311,20 @@ export function CourseMap({ center, geojson, holes = [], zoom = 15.5, className,
           font-family: var(--font-mono, monospace); font-size: 12px; font-weight: 700;
           border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.4); cursor: pointer;
         }
+        .ak-gp-sikte {
+          width: 22px; height: 22px; border-radius: 9999px;
+          border: 3px solid ${GAMEPLAN_COLORS.sikte}; background: rgba(209,248,67,0.18);
+          box-shadow: 0 1px 6px rgba(0,0,0,.5); cursor: ${interactive ? "grab" : "default"};
+        }
       `}</style>
     </>
   );
+}
+
+/** Carry (tee→sikte) og igjen (sikte→green) i meter, avrundet — aldri tastet. */
+export function gameplanAvstander(tee: LatLngPoint, sikte: LatLngPoint, green: LatLngPoint) {
+  return {
+    carry: Math.round(haversine(tee, sikte)),
+    igjen: Math.round(haversine(sikte, green)),
+  };
 }

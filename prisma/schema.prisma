@@ -379,6 +379,8 @@ model User {
   // PlayerHQ-relasjoner
   trainingPlans    TrainingPlan[]
   rounds           Round[]
+  gameplanHull     GameplanHull[]
+  gameplanSoner    GameplanSone[]
   testResults      TestResult[]
   testSessions     TestSession[]
   testAssignments       TestAssignment[] @relation("PlayerTestAssignments")
@@ -2201,6 +2203,54 @@ model CourseHole {
   @@unique([baneId, holeNumber])
   @@index([baneId])
   @@map("course_holes")
+
+  gameplanHull  GameplanHull[]
+  gameplanSoner GameplanSone[]
+}
+
+// Gameplan (B30/B39-æraen — omdøpt fra "Baneguide") interaktiv hull-for-hull-planlegging.
+// Spillerens eget sikte for hullet — ETT per (hull, spiller). Carry/igjen regnes
+// live fra tee/green-GPS på CourseHole, tastes aldri (haversine, se lib/gameplan/dispersion.ts).
+model GameplanHull {
+  id        String   @id @default(cuid())
+  holeId    String
+  userId    String
+  siktLat   Float
+  siktLng   Float
+  notat     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  hole CourseHole @relation(fields: [holeId], references: [id], onDelete: Cascade)
+  user User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([holeId, userId])
+  @@index([userId])
+  @@map("gameplan_hull")
+}
+
+// Sone spilleren (eller auto-utledet fra kartdata) har malt på hullet: "bra" å
+// misse i, eller "aldri" hit. Sirkel (senter + radius) — enklest form som
+// dekker prototypen; polygon kan legges til senere uten å røre denne raden.
+model GameplanSone {
+  id          String   @id @default(cuid())
+  holeId      String
+  userId      String
+  // "bra" | "aldri"
+  type        String
+  senterLat   Float
+  senterLng   Float
+  radiusMeter Float
+  // true for auto-utledede soner (vann/bunker/OB fra kartdata) — spilleren kan
+  // ikke slette disse, kun sine egne malte soner (se lib/gameplan/actions.ts).
+  laast       Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  hole CourseHole @relation(fields: [holeId], references: [id], onDelete: Cascade)
+  user User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([holeId, userId])
+  @@map("gameplan_sone")
 }
 
 // Norske + internasjonale spillere vi følger på /turneringer.
@@ -2452,6 +2502,8 @@ model GroupSchedule {
   // WEEKLY | NONE — for repeterende økter
   recurring        String?
   maxParticipants  Int?
+  // SAMLING | HELDAGSSAMLING | null (null = vanlig fast/enkelt-trening)
+  kind             String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -2476,6 +2528,8 @@ model TrainingPeriod {
   // primary | accent | moss | gold | muted — matcher YearPlanGantt/MonthGrid tone-typer
   tone       String?
   note       String?
+  // CompetenceGoal.id — 2-4 kompetansemål periodens treningsplan er bygget rundt
+  competenceGoalIds String[] @default([])
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -2499,6 +2553,27 @@ model CompetenceGoal {
 
   @@unique([classYear, curriculumCode, goalNumber])
   @@map("competence_goals")
+}
+
+// Skolerute, timeplan per fag og prøveplan i én tabell (ett rad-format, ulike
+// category-verdier). Konkrete kalenderdager, ikke et fast ukemønster — skolens
+// fag-timeplan endres uke for uke. Ingen @relation — additiv isolasjon (gotchas.md).
+model SchoolScheduleEntry {
+  id         String   @id @default(cuid())
+  // VG1 | VG2 | VG3 | null = gjelder alle trinn (skolerute/ferier)
+  classYear  String?
+  // f.eks. "2026/2027"
+  schoolYear String
+  date       DateTime
+  // TIME | PROVE | HELDAGSPROVE | EKSAMEN | FERIE | SKOLETUR | ANNET
+  category   String
+  title      String
+  note       String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([classYear, schoolYear, date])
+  @@map("school_schedule_entries")
 }
 
 model GroupMember {

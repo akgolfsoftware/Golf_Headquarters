@@ -1,22 +1,21 @@
 "use client";
 
 /**
- * PlayerHQ Baneguide — v2 (retning C «Presis»). Rekomponert fra den ekte
- * skjermen (src/app/portal/baneguide/page.tsx) med EKTE data fra getBaneLibrary.
- * Banebibliotek: baner med kartlagt geometri + baner spilleren har spilt.
- * Kun v2-komponenter fra "@/components/v2"; ingen ad-hoc UI, ingen rå hex (T.*).
+ * PlayerHQ Gameplan (B30, omdøpt fra "Baneguide") — banebibliotek: baner med
+ * kartlagt geometri + baner spilleren har spilt. Kun v2-komponenter fra
+ * "@/components/v2"; ingen ad-hoc UI, ingen rå hex (T.*).
  *
  * Ærlighet: ingen fabrikkerte tall — KPI-strimmelen er avledet direkte av
  * bibliotek-radene (antall baner, kartlagte baner, sum spilte runder). Detalj-
- * og hull-visning nås ved klikk på en rad → eksisterende /portal/baneguide/[id].
+ * og hull-visning nås ved klikk på en rad → /portal/gameplan/[id].
  *
- * V2Shell (montert i (v2preview)/v2-baneguide/page.tsx) eier chrome-en — denne
- * komponenten rendrer bare den indre innholds-stacken.
+ * V2Shell (montert i page.tsx) eier chrome-en — denne komponenten rendrer
+ * bare den indre innholds-stacken.
  */
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { BaneLibraryItem } from "@/lib/baneguide/queries";
+import type { BaneLibraryItem } from "@/lib/gameplan/queries";
 import {
   T,
   Caps,
@@ -43,7 +42,7 @@ function useMobile(): boolean {
   return m;
 }
 
-export function BaneguideV2({ data }: { data: BaneLibraryItem[] }) {
+export function GameplanV2({ data }: { data: BaneLibraryItem[] }) {
   const mobile = useMobile();
   const router = useRouter();
 
@@ -54,7 +53,7 @@ export function BaneguideV2({ data }: { data: BaneLibraryItem[] }) {
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Hode */}
       <div>
-        <Caps>Baneguide</Caps>
+        <Caps>Gameplan</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel mobile={mobile} em="dine">Banene</Tittel>
         </div>
@@ -85,7 +84,7 @@ export function BaneguideV2({ data }: { data: BaneLibraryItem[] }) {
             {data.map((b, i) => (
               <Rad
                 key={b.id}
-                onClick={() => router.push(`/portal/baneguide/${b.id}`)}
+                onClick={() => router.push(`/portal/gameplan/${b.id}`)}
                 leading={
                   <span
                     style={{

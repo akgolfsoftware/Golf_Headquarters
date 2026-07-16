@@ -1,7 +1,9 @@
 "use server";
 
 // Server actions for Kommando-oppgaver. Gated til ADMIN. Skriver til
-// kommando_tasks og revaliderer dashboard + oppgave-siden.
+// kommando_tasks. Flyttet ut av src/app/kommando/ (B8, ruten fjernet) —
+// TaskList mounter disse fra /admin/agent-team (oppgavelisten); fristene
+// leses også av /admin/kalender (dueAt-overlegg).
 
 import { revalidatePath } from "next/cache";
 import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
@@ -40,9 +42,8 @@ export async function createKommandoTask(input: {
       dueAt: dueAt && !Number.isNaN(dueAt.getTime()) ? dueAt : null,
     },
   });
-  revalidatePath("/kommando/oppgaver");
-  revalidatePath("/kommando");
-  revalidatePath("/kommando/kalender");
+  revalidatePath("/admin/agent-team");
+  revalidatePath("/admin/kalender");
 }
 
 export async function toggleKommandoTask(id: string) {
@@ -56,8 +57,8 @@ export async function toggleKommandoTask(id: string) {
     where: { id: task.id },
     data: { status: task.status === "open" ? "done" : "open" },
   });
-  revalidatePath("/kommando/oppgaver");
-  revalidatePath("/kommando");
+  revalidatePath("/admin/agent-team");
+  revalidatePath("/admin/kalender");
 }
 
 export async function deleteKommandoTask(id: string) {
@@ -65,6 +66,6 @@ export async function deleteKommandoTask(id: string) {
   if (!user) throw new Error("Ikke autorisert");
 
   await prisma.kommandoTask.deleteMany({ where: { id, userId: user.id } });
-  revalidatePath("/kommando/oppgaver");
-  revalidatePath("/kommando");
+  revalidatePath("/admin/agent-team");
+  revalidatePath("/admin/kalender");
 }
