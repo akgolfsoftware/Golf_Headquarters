@@ -139,6 +139,11 @@ const RAW = {
     forklaring:
       "Et automatisk beregnet tall for spilleren, som SG totalt, HCP-trend eller streak — typen står i teksten rett over tallet. Signalet varsler deg om noe har endret seg, det er ikke en dom i seg selv.",
   },
+  pulsSone: {
+    tittel: "Puls-sone",
+    forklaring:
+      "Intensitetstrinn fra S1 (rolig) til S5 (maks), basert på hjertefrekvens. Brukes til å styre hvor hardt en kondisjonsøkt faktisk kjentes, ikke bare hvor lenge den varte.",
+  },
 } as const satisfies Record<string, HjelpTekst>;
 
 export type HjelpNokkel = keyof typeof RAW;

@@ -19,6 +19,8 @@
 import { useState } from "react";
 import type { LiveV2Drill, DrillRepState } from "./types";
 import { SettRepsLogger, type SettRad, PulsSoneVelger, Stegteller, Caps } from "@/components/v2";
+import { MicButton } from "@/components/shared/mic-button";
+import { HjelpTips } from "@/components/v2/hjelp";
 
 type FysModalitet = "styrke" | "kondisjon" | "bevegelighet";
 
@@ -40,6 +42,27 @@ export type FysDrillLoggerProps = {
   onChange: (state: DrillRepState) => void;
 };
 
+/** Notat-felt m/ MicButton for talelogging — delt av alle tre modaliteter. */
+function FysNotat({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  return (
+    <div className="rounded-2xl border border-background/10 bg-background/5 p-4">
+      <Caps>Notat (valgfritt)</Caps>
+      <div className="relative mt-2 flex items-center">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="F.eks. «kjentes tungt siste sett»"
+          className="w-full rounded-xl border border-background/15 bg-background/5 py-2.5 pl-3 pr-12 text-sm text-background placeholder:text-background/40 focus:border-accent focus:outline-none"
+        />
+        <span className="absolute right-1.5">
+          <MicButton variant="suffix" onResult={(t) => onChange(value ? `${value} ${t}` : t)} />
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export function FysDrillLogger({ drill, onChange }: FysDrillLoggerProps) {
   const modalitet = fysModalitet(drill);
   const muskelgrupper = drill.fysMuskelgruppe
@@ -54,26 +77,45 @@ export function FysDrillLogger({ drill, onChange }: FysDrillLoggerProps) {
   const [varighetMin, setVarighetMin] = useState(drill.fysVarighetMin ?? drill.repMinutter ?? 10);
   const [bevegelseReps, setBevegelseReps] = useState(drill.fysReps ?? drill.plannedReps ?? 10);
   const [holdSek, setHoldSek] = useState(drill.fysHoldSek ?? 20);
+  const [sisteSett, setSisteSett] = useState<SettRad[]>(startSett);
+  const [notat, setNotat] = useState("");
 
   const erHold = drill.fysBevegelighetType === "hold";
 
-  function meldStyrke(sett: SettRad[]) {
+  function medNotat(tekst: string): string {
+    return notat.trim() ? `${tekst} — ${notat.trim()}` : tekst;
+  }
+
+  function meldStyrke(sett: SettRad[], nyttNotat?: string) {
+    setSisteSett(sett);
     const totalReps = sett.reduce((s, r) => s + r.reps, 0);
-    const notes = `Styrke: ${sett.map((r) => `${kgTekst(r.vekt)} kg × ${r.reps}`).join(" · ")}`;
-    onChange({ repsTotal: totalReps, repsWithoutBall: 0, repsLowSpeed: 0, repsAutomatic: 0, repsHit: totalReps, logNotes: notes });
+    const kjerne = `Styrke: ${sett.map((r) => `${kgTekst(r.vekt)} kg × ${r.reps}`).join(" · ")}`;
+    onChange({
+      repsTotal: totalReps,
+      repsWithoutBall: 0,
+      repsLowSpeed: 0,
+      repsAutomatic: 0,
+      repsHit: totalReps,
+      logNotes: nyttNotat !== undefined ? (nyttNotat.trim() ? `${kjerne} — ${nyttNotat.trim()}` : kjerne) : medNotat(kjerne),
+    });
   }
 
   function meldKondisjon(nesteSone: string, nesteVarighet: number) {
-    const notes = `Kondisjon: ${nesteVarighet} min i sone ${nesteSone.replace("S", "")}`;
-    onChange({ repsTotal: nesteVarighet, repsWithoutBall: 0, repsLowSpeed: 0, repsAutomatic: 0, repsHit: nesteVarighet, logNotes: notes });
+    const kjerne = `Kondisjon: ${nesteVarighet} min i sone ${nesteSone.replace("S", "")}`;
+    onChange({ repsTotal: nesteVarighet, repsWithoutBall: 0, repsLowSpeed: 0, repsAutomatic: 0, repsHit: nesteVarighet, logNotes: medNotat(kjerne) });
   }
 
   function meldBevegelighet(reps: number, hold: number) {
     const verdi = erHold ? hold : reps;
-    const notes = erHold
-      ? `Bevegelighet: hold ${hold} sek`
-      : `Bevegelighet: ${reps} reps`;
-    onChange({ repsTotal: verdi, repsWithoutBall: 0, repsLowSpeed: 0, repsAutomatic: 0, repsHit: verdi, logNotes: notes });
+    const kjerne = erHold ? `Bevegelighet: hold ${hold} sek` : `Bevegelighet: ${reps} reps`;
+    onChange({ repsTotal: verdi, repsWithoutBall: 0, repsLowSpeed: 0, repsAutomatic: 0, repsHit: verdi, logNotes: medNotat(kjerne) });
+  }
+
+  function håndterNotat(v: string) {
+    setNotat(v);
+    if (modalitet === "kondisjon") meldKondisjon(sone, varighetMin);
+    else if (modalitet === "bevegelighet") meldBevegelighet(bevegelseReps, holdSek);
+    else meldStyrke(sisteSett, v);
   }
 
   if (modalitet === "kondisjon") {
@@ -94,11 +136,15 @@ export function FysDrillLogger({ drill, onChange }: FysDrillLoggerProps) {
           </div>
         </div>
         <div className="rounded-2xl border border-background/10 bg-background/5 p-4">
-          <Caps>Oppnådd puls-sone</Caps>
+          <span className="inline-flex items-center gap-1.5">
+            <Caps>Oppnådd puls-sone</Caps>
+            <HjelpTips k="pulsSone" size={11} />
+          </span>
           <div className="mt-3">
             <PulsSoneVelger valgt={sone} onChange={(id) => { setSone(id); meldKondisjon(id, varighetMin); }} />
           </div>
         </div>
+        <FysNotat value={notat} onChange={håndterNotat} />
       </div>
     );
   }
@@ -132,6 +178,7 @@ export function FysDrillLogger({ drill, onChange }: FysDrillLoggerProps) {
             )}
           </div>
         </div>
+        <FysNotat value={notat} onChange={håndterNotat} />
       </div>
     );
   }
@@ -148,6 +195,7 @@ export function FysDrillLogger({ drill, onChange }: FysDrillLoggerProps) {
         vektSteg={2.5}
         onChange={meldStyrke}
       />
+      <FysNotat value={notat} onChange={håndterNotat} />
     </div>
   );
 }
