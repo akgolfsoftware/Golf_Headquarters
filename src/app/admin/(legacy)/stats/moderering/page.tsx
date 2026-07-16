@@ -1,5 +1,5 @@
 /**
- * /admin/stats/moderering — coach modereringskø (design 20)
+ * /admin/stats/moderering — coach modereringskø (design 20). v2-port 16. juli 2026.
  *
  * Krever ADMIN eller COACH.
  * Viser:
@@ -13,7 +13,7 @@
 
 import type { Metadata } from "next";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { ModeringClient } from "./client";
+import { ModeringClientV2 } from "@/components/admin/v2/AdminStatsModereringV2";
 
 export const dynamic = "force-dynamic";
 
@@ -30,7 +30,7 @@ export default async function ModeringPage() {
   // Vis ærlige tomme tilstander framfor oppdiktede saker — en GDPR-skjerm
   // skal aldri vise falske slett-forespørsler.
   return (
-    <ModeringClient
+    <ModeringClientV2
       turneringer={[]}
       slett={null}
       stats={{
