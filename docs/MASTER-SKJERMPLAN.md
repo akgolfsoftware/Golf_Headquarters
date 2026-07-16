@@ -399,7 +399,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Dubletter (rydd) | `/admin/tournaments/dubletter` | ✓ | ✓–– | ✓ | ~ | ✓ | ~ | 2026-07-13: v2, kun tom-tilstand nettleser-testet (0 dubletter i DB nå)
 | Økter | `/admin/okter` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminOkterV2`. |
 | Videoer | `/admin/videoer` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: AMBIGUOUS — kun `AdminHero`-header, `VideoUploadForm`/`VideoCard` hand-bygget. |
-| Opptak | `/admin/recording` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — ingen AdminHero engang, kun delt `EmptyState` + hand-bygget `RecordingControls`. |
+| Opptak | `/admin/recording` | ✓ | --- | ✓ | ~ | ~ | ~ | v2-port 16. jul: `AdminRecordingV2` (Kort/Caps/Tittel/KpiFlis). `RecordingControls` (ekte MediaRecorder/wake-lock/batteri-varsel) + `RecordingAnalyzeButton` urørt. Rettet en reell bug samtidig: varselbanneret sjekket `DEEPGRAM_API_KEY`, men transkribering (`src/lib/transcribe.ts`) bruker OpenAI Whisper og gates på `OPENAI_API_KEY` — feil variabel sjekket før. Copy endret fra "Deepgram" til nøytralt "talegjenkjenning" (Deepgram er aldri integrert — kjent navn/kode-avvik, ikke avklart med Anders). |
 
 ### Gjennomføre (daglig drift)
 
