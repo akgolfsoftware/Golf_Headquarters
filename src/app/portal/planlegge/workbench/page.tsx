@@ -19,6 +19,7 @@ import { WorkbenchV2, type WorkbenchV2Actions } from "@/components/portal/v2/Wor
 import { applyWorkbenchTemplate } from "@/lib/workbench/apply-template-actions";
 import { addWorkbenchSession, moveWorkbenchSession, updateWorkbenchSession, removeWorkbenchSession, duplicateWorkbenchWeek, suggestWeekWithCaddie, applySuggestedWeek, lagreWorkbenchPeriode, slettWorkbenchPeriode, duplicateWorkbenchSession } from "./actions";
 import { sokTekniskOppgaver } from "@/lib/workbench/teknisk-oppgave-sok";
+import { lesPreferences } from "@/lib/preferences";
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +32,7 @@ export default async function V2WorkbenchPreviewPage({ searchParams }: Props) {
 
   const weekOffset = parseWeekOffset((await searchParams).uke);
   const ctx = await loadWorkbenchContext(user.id, weekOffset);
+  const { wbMode } = lesPreferences(user);
 
   const actions: WorkbenchV2Actions = {
     addSession: addWorkbenchSession,
@@ -60,6 +62,7 @@ export default async function V2WorkbenchPreviewPage({ searchParams }: Props) {
         playerName={user.name}
         planStatus={ctx?.planStatus ?? null}
         actions={actions}
+        wbMode={wbMode}
       />
     </V2Shell>
   );

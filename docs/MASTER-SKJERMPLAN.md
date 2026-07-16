@@ -769,6 +769,25 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 16. juli (Workbench V4 / B40, delvis — Standard/Pro-modus + fasilitetskonsekvens,
+  branch `claude/workbench-v4-standard-pro`): to av B40s fem deler levert i denne runden.
+  **§3 Standard/Pro-modusbryter** (`wbMode` i `User.preferences`, samme mønster som
+  eksisterende `sgHubMode`, default «pro» — ingen endring i opplevd dybde for noen før
+  noen bevisst bytter): Standard-modus fjerner Årsplan-zoom fra Workbenchs zoom-velger
+  (periodisering/makro-faser), skjuler mal-biblioteket i Bibliotek-fanen, og skjuler
+  ACWR-belastningsstripa — alt Pro-gatet konsistent uansett hvilken vei brukeren prøver å
+  nå dem (delt bryter, spillerens EGEN preferanse på `/portal/planlegge/workbench`,
+  coachens egen på `/admin/spillere/[id]/workbench`). **§4 Fasilitetskonsekvens**:
+  fant at backend (`adaptTemplateWeek`) allerede regner ut mykt avvik når en mal-økt
+  krever et anlegg spilleren ikke har — men UI-et viste bare en generisk «lagt inn»-melding
+  og lot avviket forsvinne stille. Rettet: de tre stedene en mal appliseres i
+  `WorkbenchV2.tsx` viser nå de faktiske avviks-setningene. **Ikke levert i denne
+  runden** (egne, større byggerunder): §2 blank-ark-galleri (år/periode/måned-nivå —
+  ingen eksisterende UI å bygge videre på, ren nybygging), §6 belastningsraila som
+  fullstendig egen Pro-flate (i dag Pro-gatet inline, ikke løftet til egen visning —
+  ingen «Verktøy-velger»-mekanisme finnes ennå å henge den på), §7 gruppe-planlegging
+  (blokk-for-blokk maler + individuell tilpasning krever nye Prisma-modeller/migrasjon —
+  ikke forsøkt uten ekte databasetilgang til å verifisere).
 - 16. juli (Byggerunde 1a-verifisering + reell temabug, branch `claude/reskin-auth-screens`):
   satt i gang som en «reskin-sweep» av 11 skjermer merket Design=«–» (auth-trioen, de 7
   PlayerHQ Meg-hub-skjermene, `/portal/tren/turneringer`). Fersk `DesignSync`-verifisering mot

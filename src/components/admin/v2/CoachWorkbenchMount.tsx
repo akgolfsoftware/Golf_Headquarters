@@ -43,6 +43,8 @@ export interface CoachWorkbenchMountProps {
   planStatus?: PlanStatus | null;
   /** Skrivesiden, bundet til aktiv spiller (coachAddWorkbenchSession m.fl.). */
   actions?: WorkbenchV2Actions;
+  /** B40 §3 — coachens egen Standard/Pro-preferanse (lesPreferences(user).wbMode). */
+  wbMode?: "standard" | "pro";
 }
 
 /**
@@ -69,6 +71,7 @@ export function CoachWorkbenchMount({
   insights,
   planStatus,
   actions,
+  wbMode,
 }: CoachWorkbenchMountProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -174,6 +177,7 @@ export function CoachWorkbenchMount({
         coachName={coachName}
         planStatus={planStatus ?? null}
         actions={actions}
+        wbMode={wbMode}
       />
     </div>
   );
