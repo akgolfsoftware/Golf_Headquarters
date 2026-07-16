@@ -1,9 +1,6 @@
 /**
  * AgencyOS — Lag-snitt (ANALYSERE · LAG-SNITT), /admin/lag-snitt.
- *
- * Port av fasit `agencyos-app/screens-analyze.jsx` → TeamAverageScreen
- * (mørkt tema, desktop 1280): PageHead («Pyramide per gruppe.») +
- * 3-kolonners grid av gruppekort (navn + medlemstall-chip + pyramide-barer).
+ * v2-port 16. juli 2026.
  *
  * Datakilde: prisma.group → members → COMPLETED TrainingPlanSession gruppert
  * på pyramidArea per gruppe (samme grunnlag som /admin/analyse). Prosent =
@@ -13,52 +10,12 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AgChip, AgPage, AgPageHead } from "@/components/admin/agencyos/ui";
-import { cn } from "@/lib/utils";
+import { AdminLagSnittV2, type AdminLagSnittV2Data, type LagSnittRad } from "@/components/admin/v2/AdminLagSnittV2";
+import type { AkseKey } from "@/lib/v2/tokens";
 
 export const dynamic = "force-dynamic";
 
-/** Pyramide-aksene i fasit-rekkefølge (topp → bunn). */
-const AKSER = [
-  { key: "TURN", label: "Turnering", cls: "bg-pyr-turn" },
-  { key: "SPILL", label: "Spill", cls: "bg-pyr-spill" },
-  { key: "SLAG", label: "Golfslag", cls: "bg-pyr-slag" },
-  { key: "TEK", label: "Teknisk", cls: "bg-pyr-tek" },
-  { key: "FYS", label: "Fysisk", cls: "bg-pyr-fys" },
-] as const;
-
-type AkseKey = (typeof AKSER)[number]["key"];
-
-// ── Pyramide-barer (fasit PyramidBars / .pyr-row) ───────────────
-function PyramidBars({
-  rows,
-}: {
-  rows: { label: string; pct: number; value: string; cls: string }[];
-}) {
-  return (
-    <div>
-      {rows.map((r) => (
-        <div
-          key={r.label}
-          className="grid grid-cols-[72px_1fr_48px] items-center gap-3 py-[6px] leading-none"
-        >
-          <span className="font-mono text-[9px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-            {r.label}
-          </span>
-          <span className="h-[7px] overflow-hidden rounded-full bg-muted">
-            <span
-              className={cn("block h-full rounded-full", r.cls)}
-              style={{ width: `${r.pct}%` }}
-            />
-          </span>
-          <span className="text-right font-mono text-[11px] font-bold text-foreground">
-            {r.value}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
+const AKSER: readonly AkseKey[] = ["TURN", "SPILL", "SLAG", "TEK", "FYS"];
 
 export default async function LagSnittPage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
@@ -82,40 +39,17 @@ export default async function LagSnittPage() {
         for (const row of grouped) counts[row.pyramidArea as AkseKey] = row._count._all;
       }
 
-      const total = AKSER.reduce((s, a) => s + counts[a.key], 0);
-      const rows = AKSER.map((a) => {
-        const pct = total > 0 ? Math.round((counts[a.key] / total) * 100) : 0;
-        return { label: a.label, pct, value: total > 0 ? `${pct} %` : "—", cls: a.cls };
-      });
-      return { id: g.id, navn: g.name, n: memberIds.length, rows };
+      const total = AKSER.reduce((s, a) => s + counts[a], 0);
+      const rader: LagSnittRad[] = AKSER.map((a) => ({
+        akse: a,
+        pct: total > 0 ? Math.round((counts[a] / total) * 100) : 0,
+        harData: total > 0,
+      }));
+      return { id: g.id, navn: g.name, antallMedlemmer: memberIds.length, rader };
     }),
   );
 
-  return (
-    <AgPage>
-      <AgPageHead
-        eyebrow="Analysere · Lag-snitt"
-        title="Pyramide"
-        italic="per gruppe."
-        lead="Slik fordeler treningsbalansen seg i hver gruppe. Bruk det til å justere gruppeprogrammene."
-      />
+  const data: AdminLagSnittV2Data = { grupper: lag };
 
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-        {lag.length === 0 && (
-          <div className="md:col-span-3 rounded-xl border border-border bg-card px-[18px] py-10 text-center text-sm text-muted-foreground">
-            Ingen grupper opprettet ennå — opprett en gruppe under Stall for å sammenligne lag-snitt.
-          </div>
-        )}
-        {lag.map((t) => (
-          <div key={t.id} className="rounded-xl border border-border bg-card p-[18px]">
-            <div className="mb-[14px] flex items-center justify-between">
-              <span className="font-display text-[15px] font-bold leading-[1.2] text-foreground">{t.navn}</span>
-              <AgChip tone="neu">{t.n}</AgChip>
-            </div>
-            <PyramidBars rows={t.rows} />
-          </div>
-        ))}
-      </div>
-    </AgPage>
-  );
+  return <AdminLagSnittV2 data={data} />;
 }
