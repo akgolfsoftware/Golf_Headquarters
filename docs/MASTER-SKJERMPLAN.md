@@ -440,7 +440,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Tildel test | `/admin/tester/tildel/[spillerId]` | – | ✓✓– | ✓ | ✓ | ✓ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — `TildelModal` uten golfdata/ui. |
 | Økt-forespørsler | `/admin/foresporsler` | – | –✓– | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul: BEKREFTET ekte gap — `AgAvatar`/`AgChip`/`AgPage`/`AgTypeChip`-familien. |
 | Godkjenninger | `/admin/godkjenninger` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-14 dok-verifisering: `AdminGodkjenningerV2` — én kø samler PlanAction (agent-forslag) + CaddieDraft (AI-utkast) + SessionRequest (økt-forespørsler) = **3 kilder** (e-postutkast beholder bevisst egen godkjenning i `/admin/innboks-epost` — ikke en 4. kilde i denne køen), gruppert per spiller, paginert, screenshot-verifisert 1440+390. Design rettet – → ✓, Mob/Desk/iPad –✓– → ✓✓– |
-| · Godkjenning-detalj | `/admin/godkjenninger/[id]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — `ApprovalDetailClient` uten golfdata/ui. |
+| · Godkjenning-detalj | `/admin/godkjenninger/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminGodkjenningDetaljV2` (Kort/Knapp/StatusPill/AvatarInit/InnsiktChip), samme server actions (`approveRequestDetailed`/`declineRequestDetailed`/`requestMoreInfo`) uendret. Byttet lokal `ACTION_LABEL`-duplikat ut med delt `handlingstypeLabel` (kanon-kilde). Gammel `approval-detail-client.tsx` slettet (dead code). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | Godkjenninger (alt. → redirect) | `/admin/approvals` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/admin/godkjenninger")` — ikke en egen skjerm.
 | · Approval-detalj (alt. → redirect) | `/admin/approvals/[id]` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect` til `/admin/godkjenninger/[id]` — ikke en egen skjerm.
 | Rapporter | `/admin/reports` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminReportsV2`. |
@@ -762,6 +762,16 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 16. juli (Fase 0 + Byggerunde A pågår, branch `claude/skjermplan-fase0-reconciliation`, PR #59):
+  **Fase 0-reconciliation** av de 94 uverifiserte «Design: –»-radene fullført (3 parallelle
+  Explore-agenter, funn påført i egne commits). **Byggerunde A** (AgencyOS admin-batch) startet:
+  `/admin/drills` + `/admin/drills/[id]` portet til v2 (`AdminDrillsV2`/`AdminDrillDetaljV2`),
+  `/admin/recording` portet (`AdminRecordingV2` — fant og fikset en reell bug: varselbanneret
+  sjekket `DEEPGRAM_API_KEY`, men transkriberingen bruker OpenAI Whisper og gates på
+  `OPENAI_API_KEY`), `/admin/godkjenninger/[id]` portet (`AdminGodkjenningDetaljV2` — byttet
+  lokal `ACTION_LABEL`-duplikat ut med delt `handlingstypeLabel`, slettet nå-død
+  `approval-detail-client.tsx`). Byggerunde A fortsetter med resten av admin-batchen.
 
 - 16. juli (AgencyOS Organisasjon & innstillinger, branch `agencyos/org-innstillinger`): **11 admin-skjermer
   portet fra `(legacy)` til v2** — `/admin/settings` (+ api/calendar/security/tilgang-faner/underruter),
