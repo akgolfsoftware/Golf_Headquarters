@@ -349,30 +349,30 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | **Cockpit (hjem)** ★ | `/admin/agencyos` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v13 scope + components (full)
 | · Uka (kanban) | `/admin/agencyos/uka` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Complete v13 (golfdata scope + cards) |
 | · Spillere (snarvei) | `/admin/agencyos/spillere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Økonomi | `/admin/agencyos/okonomi` | – | --- | ✓ | ~ | ~ | ~ |
+| · Økonomi | `/admin/agencyos/okonomi` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell`+`TilbakeLenke`. |
 | · Live (Mission Control) | `/admin/agencyos/live` | ✓ | --- | ✓ | ✓ | – | ~ | v2 komponert (AgencyLiveV2), fortsatt visuelt skall med statisk seed-data (src/lib/agencyos/live-data.ts) — live-integrasjoner kobles senere |
-| · Caddie (AI-chat) | `/admin/agencyos/caddie` | – | ✓✓– | ✓ | ~ | – | ✓ |
-| · Caddie-aktivitet | `/admin/agencyos/caddie/aktivitet` | – | --- | ✓ | ~ | ~ | ~ |
-| Admin-rot (gml. hjem) | `/admin` | – | --- | ✓ | ~ | ~ | ✓ |
+| · Caddie (AI-chat) | `/admin/agencyos/caddie` | ✓ | ✓✓– | ✓ | ~ | – | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `CaddieChatV2`/`CaddieSubNavV2`. |
+| · Caddie-aktivitet | `/admin/agencyos/caddie/aktivitet` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminCaddieAktivitetV2`. |
+| Admin-rot (gml. hjem) | `/admin` | – | --- | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul: dette er en ren `redirect("/admin/agencyos")` — ikke en egen skjerm. |
 | Daglig AI-brief | `/admin/brief` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | Varsler (agent-forslag/signaler/meldinger) | `/admin/varsler` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| Coaching-board | `/admin/board` | – | --- | ✓ | ~ | ~ | ~ |
+| Coaching-board | `/admin/board` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: ren `redirect("/admin/spillere?view=tavle")` — ikke en egen skjerm. |
 | Oppfølging (alias → queue) | `/admin/oppfolging` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | Oppfølgingskø (kanban) | `/admin/queue` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| **Innboks** ★ | `/admin/innboks` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
+| **Innboks** ★ | `/admin/innboks` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `TriageV2`. |
 | E-post (post@) | `/admin/innboks-epost` | ✓ | --- | ✓ | ✓ | ✓ | ~ | v2 (InnboksEpostV2), ekte data via loadAlleEpost |
 | Handlingssenter | `/admin/handlingssenter` | ✓ | --- | ✓ | ✓ | ✓ | ~ | v2 (AdminHandlingssenterV2), ekte OppgaveCache/Notion-sync — ærlig tom-tilstand |
 | Meldinger (alt. → redirect) | `/admin/messages` | – | --- | ✓ | ✓ | – | ✓ |
-| Kommunikasjon-hub | `/admin/kommunikasjon` | – | --- | ✓ | ~ | ~ | ~ |
-| Reach | `/admin/reach` | – | --- | ✓ | ~ | ~ | ~ |
+| Kommunikasjon-hub | `/admin/kommunikasjon` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: ren `permanentRedirect("/admin/innboks")` — ikke en egen skjerm. |
+| Reach | `/admin/reach` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — `ReachClient` uten golfdata/ui/v2-imports. |
 
 ### Min uke / Workspace
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Workspace-hub | `/admin/workspace` | ~ | --- | ✓ | ~ | ✓ | ✓ | Real tasks via getTasksForUser (Notion fallback + cache) + scoped to coach. Data full. 
-| · Tildelt meg | `/admin/workspace/tildelt-meg` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| · Oppgaver | `/admin/workspace/oppgaver` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
+| · Tildelt meg | `/admin/workspace/tildelt-meg` | – | –✓– | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul: BEKREFTET ekte gap — `AgPage`/`AgPageHead` (bespoke lokalt system, ikke golfdata/ui/v2). |
+| · Oppgaver | `/admin/workspace/oppgaver` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: dette er en ren `redirect("/admin/handlingssenter")` — raden var feilaktig scoret som en levende skjerm med egne haker. |
 | · Prosjekter | `/admin/workspace/prosjekter` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Notion-sync | `/admin/workspace/notion` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 
@@ -380,34 +380,34 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Stall-oversikt | `/admin/stall` | – | --- | ✓ | ~ | ~ | ✓ |
+| Stall-oversikt | `/admin/stall` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: ren `redirect("/admin/spillere")` — ikke en egen skjerm. |
 | **Spillere (alle)** = SpillerTilstandKort-liste (v13 golfdata, bølge 1 2026-07-04) ★ | `/admin/spillere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Complete v13 (SpillerTilstandKort + scope + cards)
 | · Ny spiller | `/admin/spillere/ny` | ✓ | --- | ✓ | ✓ | ~ | ~ | 2026-07-14 dok-verifisering (funn under legacy-porterings-sjekk): `AdminNySpillerV2` — ekte `createSpiller`-server-action, router til ny spillers profil. Design rettet – → ✓, Flyt ~ → ✓ (skjema uten loader — Data-haken forblir ~, ikke relevant for et opprett-skjema) |
 | **Spiller-detalj** ★ | `/admin/spillere/[id]` | ✓ | ~✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-14 dok-verifisering: «100 % spillerinfo på én skjerm» levert — `SpillerDashboardV2` (7 faner: Oversikt/Utvikling/Plan/Helse/Turnering/Logg/Administrasjon), hero+KPI-strip m/ HjelpTips, én aggregert loader (`spiller-dashboard-data.ts`, 24 select-minimerte spørringer), kun ekte data + ærlige tomtilstander. Design rettet – → ✓ |
 | · **Analyse (coach-dybde)** = golfdata elite-visning (v13, bølge 1 2026-07-04) ★ | `/admin/spillere/[id]/analyse` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Profil | `/admin/spillere/[id]/profil` | – | --- | ✓ | ~ | ~ | ~ |
+| · Profil | `/admin/spillere/[id]/profil` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — ren hand-Tailwind. |
 | · **Workbench (coach-i-spiller)** ★ | `/admin/spillere/[id]/workbench` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-12: månedsvisning (ekte grid) + drag-and-drop (blokk→dag, bibliotek→klokkeslett) |
 | · Plan-detalj | `/admin/spillere/[id]/plan/[planId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-14: drills-panel viser automatisk repslogging + bilde/video fra spillerens live-økter
-| · Fremgang (trening vs SG) † | `/admin/spillere/[id]/fremgang` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
-| · Tester | `/admin/spillere/[id]/tester` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
-| · Tildel test | `/admin/spillere/[id]/tildel-test` | – | --- | ✓ | ~ | ~ | ~ |
-| · Rediger | `/admin/spillere/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
-| Grupper | `/admin/grupper` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
+| · Fremgang (trening vs SG) † | `/admin/spillere/[id]/fremgang` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminSpillerFremgangV2`. |
+| · Tester | `/admin/spillere/[id]/tester` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminSpillerTesterV2`. |
+| · Tildel test | `/admin/spillere/[id]/tildel-test` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — egen `test-modul-v2/`-familie, ikke golfdata/ui/v2-kanon. |
+| · Rediger | `/admin/spillere/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — ren hand-Tailwind. |
+| Grupper | `/admin/grupper` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `GrupperV2`. |
 | · Gruppe-detalj (+ VG-trinn filter/badge, 2026-07-07) | `/admin/grupper/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Gruppe-timeplan (faste/kommende/tidligere + dupliser) | `/admin/grupper/[id]/timeplan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · **Gruppe-årsplan** (samme kalenderkjerne som /team-wang, koblet inn i gruppeplanleggingen) | `/admin/grupper/[id]/arsplan` | ~ | --- | ✓ | ~ | ~ | † |
 | · · Legg inn skoledata (lim-inn-import → SchoolScheduleEntry) | `/admin/grupper/[id]/arsplan/skoledata` | ~ | --- | ✓ | ✓ | ~ | † |
 | · **WANG Toppidrett — åpen treningsplan** (offentlig, ingen innlogging; nå med dagsvisning + samlinger + skole-/kompetansemål-lag) | `/team-wang` | ~ | -✓– | ✓ | ~ | ✓ | ✓ |
 | · **GFGK Junior — åpen treningsplan** (offentlig, 4 gruppefaner: Mini/Basis/Utvikling/Elite) | `/gfgk-junior` | ~ | --- | ✓ | ~ | ✓ | † |
-| Talent-hub | `/admin/talent` | – | --- | ✓ | ~ | ~ | ~ |
+| Talent-hub | `/admin/talent` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: ren `redirect("/admin/talent/radar")` — ikke en egen skjerm. |
 | · Discovery | `/admin/talent/discovery` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Radar | `/admin/talent/radar` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
+| · Radar | `/admin/talent/radar` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminTalentRadarV2`. |
 | · Kohort | `/admin/talent/kohort` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Region | `/admin/talent/region` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Ressurser | `/admin/talent/ressurser` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Sammenligning | `/admin/talent/sammenligning` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
+| · Sammenligning | `/admin/talent/sammenligning` | – | ~✓– | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul: AMBIGUOUS — `TalentSammenligning`-komponenten er dokumentert som en pixel-perfect port av godkjent fasit (`components-multi-compare.html`), men importerer ikke golfdata/ui/v2. Teknisk gap etter import-testen, men trolig design-ferdig i ånd. |
 | · WAGR-benchmark | `/admin/talent/wagr-benchmark` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · WAGR-import | `/admin/talent/wagr-import` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
+| · WAGR-import | `/admin/talent/wagr-import` | – | –✓– | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul: BEKREFTET ekte gap — kun `@/components/admin/agencyos/ui`-familien. |
 
 ### Planlegge (lage planer FOR spillerne)
 
