@@ -30,7 +30,8 @@ function ukedagFraDato(d: Date): number {
 
 /**
  * Henter offentlig-trygg kalenderdata for én gruppe: faste ukentlige
- * treningstider + sesongperioder. Ingen spillernavn eller personlig data.
+ * treningstider, sesongperioder (+ kompetansemål), samlinger og
+ * skole-hendelser for periodenes skoleår. Ingen spillernavn eller personlig data.
  */
 export async function hentGruppeKalenderData(
   gruppeNavn: string,
@@ -48,10 +49,32 @@ export async function hentGruppeKalenderData(
   });
   if (!gruppe) return null;
 
-  const perioderRader = await prisma.trainingPeriod.findMany({
-    where: { groupId: gruppe.id },
-    orderBy: { startDate: "asc" },
-  });
+  const [perioderRader, samlingerRader] = await Promise.all([
+    prisma.trainingPeriod.findMany({
+      where: { groupId: gruppe.id },
+      orderBy: { startDate: "asc" },
+    }),
+    prisma.groupSchedule.findMany({
+      where: { groupId: gruppe.id, kind: { in: ["SAMLING", "HELDAGSSAMLING"] } },
+      orderBy: { startAt: "asc" },
+    }),
+  ]);
+
+  const alleMalIder = [...new Set(perioderRader.flatMap((p) => p.competenceGoalIds))];
+  const skoleAr = [...new Set(perioderRader.map((p) => p.schoolYear))];
+
+  const [malRader, skoleHendelserRader] = await Promise.all([
+    alleMalIder.length
+      ? prisma.competenceGoal.findMany({ where: { id: { in: alleMalIder } } })
+      : Promise.resolve([]),
+    skoleAr.length
+      ? prisma.schoolScheduleEntry.findMany({
+          where: { schoolYear: { in: skoleAr } },
+          orderBy: { date: "asc" },
+        })
+      : Promise.resolve([]),
+  ]);
+  const malPerId = new Map(malRader.map((m) => [m.id, m]));
 
   return {
     gruppeId: gruppe.id,
@@ -70,6 +93,25 @@ export async function hentGruppeKalenderData(
       endDate: p.endDate.toISOString(),
       tone: p.tone,
       note: p.note,
+      kompetansemal: p.competenceGoalIds
+        .map((id) => malPerId.get(id))
+        .filter((m): m is NonNullable<typeof m> => m != null),
+    })),
+    samlinger: samlingerRader.map((s) => ({
+      id: s.id,
+      title: s.title,
+      startAt: s.startAt.toISOString(),
+      endAt: s.endAt.toISOString(),
+      kind: s.kind as "SAMLING" | "HELDAGSSAMLING",
+      location: s.location,
+    })),
+    skoleHendelser: skoleHendelserRader.map((h) => ({
+      id: h.id,
+      classYear: h.classYear,
+      date: h.date.toISOString(),
+      category: h.category as GruppeKalenderData["skoleHendelser"][number]["category"],
+      title: h.title,
+      note: h.note,
     })),
   };
 }
