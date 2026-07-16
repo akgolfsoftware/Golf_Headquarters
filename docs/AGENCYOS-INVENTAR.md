@@ -153,8 +153,23 @@ kalender-aliasene · innboks-aliasene (messages/kommunikasjon) · stall/board→
 7. **B7 · seks overflødige flater** — ✅ UTFØRT 2026-07-12: alle redirecter
    (analysere→analyse, organisasjon→settings, mer→cockpit, plans/new→planlegge,
    tilstander→gjennomfore, coach-workbench→planlegge).
+8. **B8 · `/kommando` fjernet** — ✅ UTFØRT 2026-07-16. Det gamle personlige
+   kommandosenteret (`/kommando` + `agenter`/`kalender`/`oppgaver`/`prosjekter`/`team`)
+   er nå rene redirects → `/admin/agenter` (chat), `/admin/kalender` (kalender) og
+   `/admin/agent-team` (dashboard/oppgaver/prosjekter/team — alle fire pekte hit,
+   siden agent-team allerede var supersettet av kommando/team og B4 alt hadde
+   flyttet prosjektstyringen dit). To reelle funksjoner ble flyttet, ikke bare
+   redirectet, for å unngå tap: `TaskList` (opprett/fullfør/slett KommandoTask)
+   er nå montert på `/admin/agent-team` ved siden av `ProjectList`, og
+   `KommandoTask.dueAt` vises som «Oppgave-frist»-blokker i `/admin/kalender`
+   (egen `erOppgave`-markør, ikke dra-og-slipp-bar — det er ikke en booking).
+   `src/app/kommando/prosjekter/actions.ts` og `oppgaver/actions.ts` flyttet til
+   `src/lib/kommando/` (var kryss-tre-importert av `ProjectList`/`TaskList` fra
+   den levende `/admin/agent-team`-siden — måtte flyttes før noe kunne slettes).
+   `/api/kommando/chat` og `/api/kommando/team` er UENDRET (fortsatt levende
+   backend for `/admin/agenter` og `/admin/agent-team`).
 
-**Status: B1–B5 + B7 UTFØRT (kun B6 gjenstår, tas ved v2-port av okter). Netto effekt:** ~14 færre reelle flater, null tapt funksjon,
+**Status: B1–B5 + B7–B8 UTFØRT (kun B6 gjenstår, tas ved v2-port av okter). Netto effekt:** ~15 færre reelle flater, null tapt funksjon,
 og hver funksjon har ÉN adresse. Døde knapper som må kobles eller fjernes:
 wagr-import «Synk nå», availability «Synk».
 
