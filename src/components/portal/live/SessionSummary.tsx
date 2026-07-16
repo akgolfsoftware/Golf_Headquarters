@@ -1,6 +1,7 @@
-import { CheckCircle2, Clock, Dumbbell, Target, TrendingUp, ArrowRight } from "lucide-react";
+import { CheckCircle2, Clock, Dumbbell, Target, TrendingUp, ArrowRight, CircleCheck, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import type { LiveV2Summary } from "./types";
+import { HjelpTips } from "@/components/v2/hjelp";
 
 export type SessionSummaryProps = {
   data: LiveV2Summary;
@@ -30,6 +31,41 @@ function fmtMSS(totalSec: number): string {
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
+/** Klarspråk-dom på plan-etterlevelse — anbefaling, aldri en sperre (phq-live.jsx sin Verdict). */
+function Verdict({ pct }: { pct: number }) {
+  const onPlan = pct >= 70;
+  return (
+    <div
+      className={`flex items-start gap-3 rounded-2xl border p-3.5 ${
+        onPlan ? "border-accent/40 bg-accent/10" : "border-destructive/40 bg-destructive/10"
+      }`}
+    >
+      <span
+        className={`grid h-7 w-7 flex-shrink-0 place-items-center rounded-full ${
+          onPlan ? "bg-accent/20 text-accent" : "bg-destructive/20 text-destructive"
+        }`}
+      >
+        {onPlan ? (
+          <CircleCheck className="h-4 w-4" strokeWidth={2} aria-hidden />
+        ) : (
+          <TriangleAlert className="h-4 w-4" strokeWidth={2} aria-hidden />
+        )}
+      </span>
+      <div className="min-w-0 flex-1">
+        <span className={`inline-flex items-center gap-1.5 text-sm font-bold ${onPlan ? "text-accent" : "text-destructive"}`}>
+          {onPlan ? "På plan" : "Avvik fra plan"}
+          <HjelpTips k="planEtterlevelse" size={12} />
+        </span>
+        <p className="mt-1 text-[12.5px] leading-relaxed text-background/70">
+          {onPlan
+            ? `Du gjennomførte ${pct} % av planen. Økta teller som gjennomført på plan.`
+            : `Du gjennomførte ${pct} % av planen. Logges som avvik — coachen ser hva som skjedde, helt greit.`}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export function SessionSummary({ data, nesteOkt }: SessionSummaryProps) {
   const firstName = data.studentName?.split(" ")[0] ?? "spiller";
   const completionPct =
@@ -55,6 +91,9 @@ export function SessionSummary({ data, nesteOkt }: SessionSummaryProps) {
             : `Du fullførte ${data.drillsCompleted} av ${data.drills.length} drills.`}
         </p>
       </div>
+
+      {/* Plan-etterlevelse — klarspråk-dom, aldri en sperre */}
+      <Verdict pct={completionPct} />
 
       {/* KPI-kort */}
       <div className="grid grid-cols-3 gap-4">
