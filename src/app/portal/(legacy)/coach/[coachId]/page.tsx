@@ -121,8 +121,6 @@ export default async function CoachDetalj({
         <div className="rounded-lg border border-border bg-card p-6">
           <div className="grid gap-4">
             <Stat label="Felles økter" value={String(sesjoner)} />
-            <Stat label="Snittsvar" value="4 t" />
-            <Stat label="Rating" value="4,9" suffix=" / 5" />
           </div>
         </div>
       </section>

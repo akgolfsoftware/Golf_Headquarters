@@ -22,6 +22,7 @@ import {
   type AgentTeamRunView,
 } from "@/components/admin/v2/AdminAgentTeamV2";
 import { ProjectList, type KommandoProjectView } from "@/components/kommando/project-list";
+import { TaskList, type KommandoTaskView } from "@/components/kommando/task-list";
 import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
@@ -32,7 +33,11 @@ export default async function V2AdminAgentTeamPage() {
 
   // Alle prosjekter (også arkiverte) + task-teller: prosjektstyringen bor nå
   // HER — /admin/prosjekter er redirect hit (B4, 2026-07-12).
-  const [projects, alleProsjekter, taskCounts, runs] = await Promise.all([
+  // Oppgavelisten (KommandoTask CRUD) er montert her fra og med B8
+  // (2026-07-16) — /kommando/oppgaver er fjernet, dette er den nye,
+  // eneste flaten for å opprette/fullføre/slette en oppgave. Frister vises
+  // også som overlegg i /admin/kalender.
+  const [projects, alleProsjekter, taskCounts, runs, alleOppgaver] = await Promise.all([
     prisma.kommandoProject.findMany({
       where: { userId: user.id, status: "active" },
       orderBy: { createdAt: "desc" },
@@ -52,6 +57,10 @@ export default async function V2AdminAgentTeamPage() {
       orderBy: { createdAt: "desc" },
       take: 10,
     }),
+    prisma.kommandoTask.findMany({
+      where: { userId: user.id },
+      orderBy: [{ status: "asc" }, { createdAt: "desc" }],
+    }),
   ]);
 
   const countByProject = new Map(taskCounts.map((c) => [c.projectId, c._count._all]));
@@ -63,6 +72,17 @@ export default async function V2AdminAgentTeamPage() {
   }));
 
   const projectName = new Map(projects.map((p) => [p.id, p.name]));
+  const allProjectNameById = new Map(alleProsjekter.map((p) => [p.id, p.name]));
+
+  const oppgaveVisning: KommandoTaskView[] = alleOppgaver.map((t) => ({
+    id: t.id,
+    title: t.title,
+    status: t.status,
+    priority: t.priority,
+    projectName: t.projectId ? allProjectNameById.get(t.projectId) ?? null : null,
+    dueAt: t.dueAt ? t.dueAt.toISOString() : null,
+  }));
+  const prosjektAlternativer = projects.map((p) => ({ id: p.id, name: p.name }));
 
   const steps = runs.length
     ? await prisma.kommandoAgentStep.findMany({
@@ -93,7 +113,10 @@ export default async function V2AdminAgentTeamPage() {
     <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/agents">AI-agenter</TilbakeLenke>
       <AdminAgentTeamV2 data={data} />
+      <h2 className="mt-2 mb-3 font-display text-[13px] font-semibold text-foreground">Prosjekter</h2>
       <ProjectList initialProjects={prosjektVisning} />
+      <h2 className="mt-8 mb-3 font-display text-[13px] font-semibold text-foreground">Oppgaver</h2>
+      <TaskList initialTasks={oppgaveVisning} projects={prosjektAlternativer} />
     </V2Shell>
   );
 }

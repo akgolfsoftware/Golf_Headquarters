@@ -221,6 +221,7 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
       <div className="grid grid-cols-1 md:grid-cols-2" style={{ gridColumn: "1 / -1", gap: T.gap }}>
         {[
           { href: "/portal/analysere/hull", ic: "map", l: "Hull-analyse", s: "Hvor taper du slag — hull for hull" },
+          { href: "/portal/gameplan", ic: "crosshair", l: "Gameplan", s: "Banekart, spredning og hull-for-hull sikte" },
           { href: "/portal/datagolf", ic: "trophy", l: "Sammenlign med proffer", s: "Din SG mot DataGolf-baseline" },
         ].map((c) => (
           <Link key={c.href} href={c.href} className="v2-press v2-focus" style={{ textDecoration: "none" }}>

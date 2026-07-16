@@ -1,11 +1,11 @@
 /**
  * MIDLERTIDIG dev-rute for å verifisere banekart-fundamentet (fase 1).
- * Ikke en designet skjerm — de ekte baneguide-skjermene bygges via
- * design-porting-gate under /portal/baneguide. Slett eller erstatt når
- * skjerm 2 (/portal/baneguide/[baneId]) er portet.
+ * Ikke en designet skjerm — de ekte Gameplan-skjermene bygges via
+ * design-porting-gate under /portal/gameplan. Slett eller erstatt når
+ * skjerm 2 (/portal/gameplan/[baneId]) er portet.
  */
 import { prisma } from "@/lib/prisma";
-import { CourseMap, type CourseMapHole } from "@/components/baneguide/course-map";
+import { CourseMap, type CourseMapHole } from "@/components/gameplan/course-map";
 
 export const dynamic = "force-dynamic";
 
