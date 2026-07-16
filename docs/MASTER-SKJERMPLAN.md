@@ -771,6 +771,23 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 16. juli (DECADE-navnefjerning, branch `claude/decade-navnefjerning`): B30 forbyr ordet
+  «DECADE» overalt (rettighetsvern, `docs/juridisk/presisjonsstrategi-rettigheter.md`) —
+  research for Byggerunde 2b (Gameplan) fant at ordet faktisk hadde lekket inn i LEVENDE
+  kildekode og seed-data, ikke bare i foreldede dokumenter: `src/lib/domain/rules/pyramide.json`
+  (en ekte domeneregel lest av appen ved kjøretid) og hele
+  `prisma/seed-data/drills-expansion/decade-sg-range.json` (123 treff — dusinvis av drill-navn
+  som `decade-shot-cone-mapping`, `18-hull-decade-strategi`). Rettet 253 forekomster på tvers av
+  7 filer (case-bevarende DECADE/Decade/decade → PRESISJONSSTRATEGI/Presisjonsstrategi/
+  presisjonsstrategi, verifisert med JSON.parse etter hver fil) + omdøpt selve filen til
+  `presisjonsstrategi-sg-range.json` (trygt — `seed-drills-expansion.ts` leser mappen via
+  `readdirSync`, ingen hardkodet filnavn-referanse noe sted). **Viktig for produksjon:**
+  seed-scriptet upserter drills på `navn` (ikke en stabil id) — hvis
+  `decade-*`-drillene allerede er seedet i den ekte databasen, vil en fremtidig kjøring av
+  `seed-drills-expansion.ts` opprette NYE rader med de nye navnene i stedet for å omdøpe de
+  eksisterende. En engangs SQL-omdøping av eksisterende rader (`UPDATE "ExerciseDefinition" SET
+  name = ... WHERE name = '<gammelt-decade-navn>'`) bør kjøres mot den ekte databasen før neste
+  seed-kjøring — kunne ikke gjøres her (sandbox har ingen live DB-tilkobling).
 - 16. juli (Byggerunde 5, B39 Venner, branch `claude/venner-b39`): nytt sosialt lag i
   PlayerHQ, portet fra `ui_kits/playerhq/phq-venner.jsx` (fersk `DesignSync`-pull —
   design var faktisk ferdig til tross for at beslutningsloggens egen «status»-linje
