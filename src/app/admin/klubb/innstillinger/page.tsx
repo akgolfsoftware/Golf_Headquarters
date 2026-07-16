@@ -1,19 +1,28 @@
 /**
- * AgencyOS — Klubb-innstillinger (multi-club setup)
+ * AgencyOS — Klubb-innstillinger (v2, multi-club setup).
  *
- * ADMIN-only side hvor Anders kan se og redigere alle klubbene
- * (Locations). Hver klubb-card viser spillere, coacher, default-fasilitet
- * og daglig leder. Klikk "Detaljer" for åpningstider, fasiliteter og drift.
+ * ADMIN-only rekomponering av /admin/(legacy)/klubb/innstillinger i
+ * v2-språket (V2Shell/komponentbiblioteket), drevet av EKTE Prisma-data.
+ * Singleton ClubSettings (org-info) + Location-liste (klubber/anlegg) med
+ * fasiliteter og spillere/coacher matchet via homeClub-fritekst (samme
+ * fuzzy-logikk som legacy-siden — kopiert verbatim, ikke reimplementert).
+ *
+ * Mutasjonene (addClub/updateClubSettings/removeClub/lagreClubSettings)
+ * gjenbrukes 1:1 fra ../(legacy)/klubb/innstillinger/actions — ingen
+ * duplisering av server-actions.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { TilbakeLenke } from "@/components/v2";
 import {
-  KlubbInnstillingerClient,
+  AdminKlubbInnstillingerV2,
   type ClubItem,
   type ClubSettingsData,
-} from "./klubb-innstillinger-client";
+} from "@/components/admin/v2/AdminKlubbInnstillingerV2";
+
+export const dynamic = "force-dynamic";
 
 // Tom plassholder når et felt mangler — vis aldri fabrikerte verdier.
 const TOM = "—";
@@ -30,8 +39,8 @@ function parseApningstider(raw: unknown): Apningstider | null {
   return null;
 }
 
-export default async function KlubbInnstillingerPage() {
-  await requirePortalUser({ allow: ["ADMIN"] });
+export default async function V2KlubbInnstillingerPage() {
+  const user = await requirePortalUser({ allow: ["ADMIN"] });
 
   const [locations, settingsRow] = await Promise.all([
     prisma.location.findMany({
@@ -58,7 +67,8 @@ export default async function KlubbInnstillingerPage() {
   };
 
   // Spillere/coacher per klubb fra ekte tall. Schema har ikke User.locationId
-  // enda, så vi bruker `homeClub`-feltet (fritekst) som kobling.
+  // enda, så vi bruker `homeClub`-feltet (fritekst) som kobling — samme
+  // fuzzy-matching (første ord i klubbnavnet) som legacy-siden.
   const klubber: ClubItem[] = await Promise.all(
     locations.map(async (l) => {
       const [spillereCount, coacherCount] = await Promise.all([
@@ -102,64 +112,10 @@ export default async function KlubbInnstillingerPage() {
     }),
   );
 
-  const aktive = klubber.filter((k) => k.active).length;
-  const totalFasiliteter = klubber.reduce(
-    (sum, k) => sum + k.facilities.length,
-    0,
-  );
-
   return (
-    <div className="space-y-6">
-      <PageHeader
-        eyebrow="AgencyOS · /admin/klubb/innstillinger"
-        titleLead="Klubb-"
-        titleItalic="innstillinger"
-        titleTrail={`· ${klubber.length} klubber`}
-        sub="Multi-club setup. Hver klubb har egne fasiliteter, åpningstider og daglig leder. Default-fasilitet brukes ved hurtigbooking fra PlayerHQ."
-      />
-
-      {/* KPI-strip */}
-      <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
-        <Kpi label="Klubber totalt" value={String(klubber.length)} sub={`${aktive} aktive`} />
-        <Kpi label="Fasiliteter" value={String(totalFasiliteter)} sub="Bookbare rom" />
-        <Kpi
-          label="Spillere"
-          value={String(klubber.reduce((s, k) => s + k.spillereCount, 0))}
-          sub="Fordelt på klubber"
-        />
-        <Kpi
-          label="Coacher"
-          value={String(klubber.reduce((s, k) => s + k.coacherCount, 0))}
-          sub="Aktive i klubbene"
-        />
-      </div>
-
-      <KlubbInnstillingerClient klubber={klubber} settings={settings} />
-
-    </div>
-  );
-}
-
-function Kpi({
-  label,
-  value,
-  sub,
-}: {
-  label: string;
-  value: string;
-  sub?: string;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
-      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-        {label}
-      </div>
-      <div className="font-mono text-[28px] font-semibold leading-none tabular-nums text-foreground">
-        {value}
-      </div>
-      {sub && (
-        <div className="font-mono text-[11px] text-muted-foreground">{sub}</div>
-      )}
-    </div>
+    <V2Shell nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TilbakeLenke href="/admin/settings">Innstillinger</TilbakeLenke>
+      <AdminKlubbInnstillingerV2 klubber={klubber} settings={settings} />
+    </V2Shell>
   );
 }
