@@ -7,9 +7,11 @@
  * (steps-rail, TRINN-eyebrow + AHead, opt-card-valg, CTA-rad m/tilbake).
  * NB: fasitens 5 steg ≠ appens låste 7-stegs state-maskin — stegene beholdes.
  *
- * 7-stegs velkomst (state-maskinen i lib/auth/onboarding-state.ts er låst til 7):
+ * 5-stegs velkomst (state-maskinen i lib/auth/onboarding-state.ts er låst til 5,
+ * redusert fra 7 2026-07-16 — GolfBox- og TrackMan-auto-connect-stegene fjernet,
+ * ingen ekte integrasjon fantes bak dem, kun «kommer snart»-knapper):
  *   1 Velkommen · 2 Om deg + fødselsdato (GDPR <16 gate) · 3 Golf-erfaring ·
- *   4 GolfBox · 5 TrackMan · 6 Coach + abonnement · 7 Siste sjekk (samtykke).
+ *   4 Coach + abonnement · 5 Siste sjekk (samtykke).
  *
  * VIKTIG: All steg-logikk og lagre-actions er beholdt uendret fra forrige
  * versjon — kun presentasjonen er portet til mobil-først DS-token-komponenter.
@@ -25,8 +27,6 @@ import {
   Dumbbell,
   Flag,
   Hexagon,
-  Link2,
-  Settings,
   Sun,
   Sunrise,
   Sunset,
@@ -69,7 +69,7 @@ import {
 // Konstanter
 // ──────────────────────────────────────────────────────────────────────────────
 
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 5;
 
 const SESONMAAL = [
   "SENKE HCP",
@@ -297,12 +297,10 @@ export function OnboardingWizard({
   // Fasit-format: «TRINN N AV M» som mono-caps eyebrow rett over tittelen.
   const eyebrowFor: Record<number, string> = {
     1: "VELKOMMEN",
-    2: "TRINN 2 AV 7",
-    3: "TRINN 3 AV 7",
-    4: "TRINN 4 AV 7",
-    5: "TRINN 5 AV 7",
-    6: "TRINN 6 AV 7",
-    7: "TRINN 7 AV 7",
+    2: "TRINN 2 AV 5",
+    3: "TRINN 3 AV 5",
+    4: "TRINN 4 AV 5",
+    5: "TRINN 5 AV 5",
   };
 
   return (
@@ -583,118 +581,11 @@ export function OnboardingWizard({
         </StepBody>
       )}
 
-      {/* ── STEG 4 — GolfBox ───────────────────────────────────── */}
+      {/* ── STEG 4 — Coach + abonnement ────────────────────────── */}
       {step === 4 && (
         <StepBody>
           <StepHeading
             eyebrow={eyebrowFor[4]}
-            title="Koble til"
-            emphasis="GolfBox"
-            titleAfter="."
-            deck={
-              <>
-                Når du kobler til GolfBox-kontoen din, henter vi automatisk inn HCP-historikken og
-                runde-data dine.{" "}
-                <strong className="font-semibold text-foreground">
-                  Anders får et komplett bilde fra dag én.
-                </strong>
-              </>
-            }
-          />
-          <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-secondary px-4 py-6 text-center">
-            <span className="inline-flex h-14 w-14 items-center justify-center rounded-xl border border-border bg-card text-primary">
-              <Link2 className="h-6 w-6" strokeWidth={1.75} aria-hidden />
-            </span>
-            <span className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-foreground">
-              GolfBox
-            </span>
-            <p className="text-[13px] leading-relaxed text-muted-foreground">
-              Vi henter HCP, runder spilt siste 24 mnd, og turneringshistorikk.
-            </p>
-            <button
-              type="button"
-              disabled
-              title="Kommer post-BETA"
-              className="flex h-12 w-full cursor-not-allowed items-center justify-center rounded-xl bg-primary px-6 text-sm font-bold text-primary-foreground opacity-50"
-            >
-              Koble til GolfBox · kommer snart
-            </button>
-            <p className="font-mono text-[10px] tracking-[0.06em] text-muted-foreground">
-              Krever GolfBox-konto · Vi lagrer aldri passordet ditt
-            </p>
-          </div>
-          <SecurityStrip>
-            Vi følger GDPR og lagrer kun det vi trenger for å hjelpe deg utvikle deg som spiller.
-          </SecurityStrip>
-          <PrimaryCta
-            onClick={neste}
-            disabled={pending}
-            onBack={tilbake}
-            backDisabled={pending}
-          >
-            {pending ? "Lagrer…" : "Neste"}
-          </PrimaryCta>
-          <SecondaryLink onClick={neste} disabled={pending}>
-            Hopp over — jeg kobler til senere
-          </SecondaryLink>
-        </StepBody>
-      )}
-
-      {/* ── STEG 5 — TrackMan ──────────────────────────────────── */}
-      {step === 5 && (
-        <StepBody>
-          <StepHeading
-            eyebrow={eyebrowFor[5]}
-            title="Koble til"
-            emphasis="TrackMan"
-            titleAfter="."
-            deck="Har du en TrackMan-konto, kobler vi den slik at swing-data og ball-flight automatisk synkes til profilen din."
-          />
-          <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-secondary px-4 py-6 text-center">
-            <span className="inline-flex h-14 w-14 items-center justify-center rounded-xl border border-border bg-card text-primary">
-              <Settings className="h-6 w-6" strokeWidth={1.75} aria-hidden />
-            </span>
-            <span className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-foreground">
-              TrackMan
-            </span>
-            <p className="text-[13px] leading-relaxed text-muted-foreground">
-              Vi henter swing-data, ball-flight og distance-data fra alle dine økter.
-            </p>
-            <button
-              type="button"
-              disabled
-              title="Kommer post-BETA"
-              className="flex h-12 w-full cursor-not-allowed items-center justify-center rounded-xl bg-primary px-6 text-sm font-bold text-primary-foreground opacity-50"
-            >
-              Koble til TrackMan · kommer snart
-            </button>
-            <p className="font-mono text-[10px] tracking-[0.06em] text-muted-foreground">
-              Krever TrackMan-konto eller Performance Studio-tilgang
-            </p>
-          </div>
-          <SecurityStrip>
-            <strong className="font-semibold">Bruker du Performance Studio på GFGK?</strong> Da er
-            TrackMan automatisk koblet på via klubb-abonnementet.
-          </SecurityStrip>
-          <PrimaryCta
-            onClick={neste}
-            disabled={pending}
-            onBack={tilbake}
-            backDisabled={pending}
-          >
-            {pending ? "Lagrer…" : "Neste"}
-          </PrimaryCta>
-          <SecondaryLink onClick={neste} disabled={pending}>
-            Hopp over — jeg har ikke TrackMan-konto
-          </SecondaryLink>
-        </StepBody>
-      )}
-
-      {/* ── STEG 6 — Coach + abonnement ────────────────────────── */}
-      {step === 6 && (
-        <StepBody>
-          <StepHeading
-            eyebrow={eyebrowFor[6]}
             title="Din"
             emphasis="coach"
             titleAfter=" og ditt opplegg."
@@ -756,11 +647,11 @@ export function OnboardingWizard({
         </StepBody>
       )}
 
-      {/* ── STEG 7 — Siste sjekk (samtykke) ────────────────────── */}
-      {step === 7 && (
+      {/* ── STEG 5 — Siste sjekk (samtykke) ────────────────────── */}
+      {step === 5 && (
         <StepBody>
           <StepHeading
-            eyebrow={eyebrowFor[7]}
+            eyebrow={eyebrowFor[5]}
             title="Nesten"
             emphasis="ferdig"
             titleAfter=" — siste sjekk."

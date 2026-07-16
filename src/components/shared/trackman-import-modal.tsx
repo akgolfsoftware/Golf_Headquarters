@@ -29,8 +29,6 @@ import {
   ChevronRight,
   FileText,
   FileCode,
-  Lock,
-  Plug,
   X,
 } from "lucide-react";
 import {
@@ -43,7 +41,7 @@ import { parseTrackManCsv, type TrackManShot } from "@/lib/trackman/parse-csv";
 import { useToast } from "@/components/shared/toast-provider";
 
 type Steg = 1 | 2 | 3 | 4;
-type Kilde = "csv" | "html" | "account" | "api";
+type Kilde = "csv" | "html";
 
 type Props = {
   /**
@@ -84,20 +82,6 @@ const KILDER: Array<{
     desc: "Lagret som HTML fra TrackMan-nettleseren. Aggregert per kølle.",
     icon: FileCode,
     ready: true,
-  },
-  {
-    id: "account",
-    title: "TrackMan-konto",
-    desc: "Koble til kontoen din og hent automatisk. Kommer snart.",
-    icon: Plug,
-    ready: false,
-  },
-  {
-    id: "api",
-    title: "TrackMan API",
-    desc: "Live-import fra TrackMan-portalen. Krever Pro-tilgang.",
-    icon: Lock,
-    ready: false,
   },
 ];
 
