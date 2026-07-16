@@ -327,7 +327,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Handlingssenter | `/admin/handlingssenter` | ✓ | --- | ✓ | ✓ | ✓ | ~ | v2 (AdminHandlingssenterV2), ekte OppgaveCache/Notion-sync — ærlig tom-tilstand |
 | Meldinger (alt. → redirect) | `/admin/messages` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/admin/innboks")` — ikke en egen skjerm.
 | Kommunikasjon-hub | `/admin/kommunikasjon` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: ren `permanentRedirect("/admin/innboks")` — ikke en egen skjerm. |
-| Reach | `/admin/reach` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — `ReachClient` uten golfdata/ui/v2-imports. |
+| Reach | `/admin/reach` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminReachV2` (KPI-kort/Kort/StatusPill/AvatarFoto + lokal SVG-linjegraf/feature-bar styrt av T-tokens), erstatter hand-Tailwind `ReachClient`. Samme aggregeringslogikk (User/Notification/TrainingPlanSession/CoachingSession/Round/Goal) uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 
 ### Min uke / Workspace
 
