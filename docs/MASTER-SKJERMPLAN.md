@@ -489,23 +489,23 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Organisasjon-hub | `/admin/organisasjon` | – | --- | ✓ | ✓ | – | ✓ | 2026-07-14: ren redirect til /admin/settings, bekreftet. Fjernet fra Mer-menyen (var duplikat-menypunkt til samme mål) — siden selv beholdt for gamle lenker. |
-| Klubb-innstillinger | `/admin/klubb/innstillinger` | – | --- | ✓ | ~ | ~ | ~ |
-| Integrasjoner | `/admin/integrasjoner` | – | --- | ✓ | ~ | ~ | ~ |
-| Innstillinger | `/admin/settings` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| · API | `/admin/settings/api` | – | --- | ✓ | ~ | ~ | ~ |
-| · Kalender | `/admin/settings/calendar` | – | --- | ✓ | ~ | ~ | ~ |
-| · Sikkerhet | `/admin/settings/security` | – | --- | ✓ | ~ | ~ | ~ |
-| · Tilgang | `/admin/settings/tilgang` | – | --- | ✓ | ~ | ~ | ~ |
+| Klubb-innstillinger | `/admin/klubb/innstillinger` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-16: portet til v2 (`AdminKlubbInnstillingerV2`), gjenbruker legacy actions.ts 1:1 (multi-club CRUD + org-settings singleton). `(legacy)` page.tsx + client fjernet (kolliderte på samme rute). |
+| Integrasjoner | `/admin/integrasjoner` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-16: portet til v2, samme statuslogikk (Google Cal/Stripe/Notion/Anthropic/Resend/Supabase). `(legacy)` fjernet. |
+| Innstillinger (Organisasjon/Team/Tilgang-faner) | `/admin/settings` | ✓ | –✓– | ✓ | ✓ | ✓ | † | 2026-07-16: portet til v2 (`AdminSettingsV2`), fikser den tidligere brukne /admin/organisasjon-redirecten. `(legacy)` fjernet. |
+| · API | `/admin/settings/api` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-16: v2 (`AdminApiKeysV2`), gjenbruker legacy actions.ts. `(legacy)` page+modal-komponenter fjernet. |
+| · Kalender | `/admin/settings/calendar` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-16: v2 (`AdminKalenderSynkV2`), gjenbruker legacy actions.ts. NB: `calendar-sync-section.tsx` beholdt i `(legacy)` — brukes fortsatt direkte av `/admin/availability`. |
+| · Sikkerhet | `/admin/settings/security` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-16: v2 (`AdminSecurityV2`), gjenbruker `Setup2FA` uendret. `(legacy)` fjernet. |
+| · Tilgang | `/admin/settings/tilgang` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-16: v2 (`AdminTilgangV2`), samme CBAC-matrise (read-only). `(legacy)` fjernet. |
 | Team | `/admin/team` | – | --- | ✓ | ~ | ~ | ~ |
-| · Inviter | `/admin/team/inviter` | – | --- | ✓ | ~ | ~ | ~ |
+| · Inviter | `/admin/team/inviter` | ✓ | --- | ✓ | ✓ | – | † | 2026-07-16: v2 (`AdminInviterCoachV2`), samme `inviterCoach`-action. `(legacy)` fjernet. |
 | Audit-log | `/admin/audit-log` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminAuditLogV2`) — samme AuditLog-spørring/kind-status-utledning som legacy, KpiFlis+Rad-liste, ærlig tomtilstand. Lagt i Innsikt-mer-gruppen (var uten menylenke). `(legacy)/audit-log` slettet. |
 | AI-agenter | `/admin/agents` | – | --- | ✓ | ~ | ~ | ~ |
 | · Agent-detalj | `/admin/agents/[agentId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | E-postmaler | `/admin/email-templates` | – | --- | ✓ | ~ | ~ | ~ |
-| · Rediger e-postmal | `/admin/email-templates/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
+| · Rediger e-postmal | `/admin/email-templates/[id]/rediger` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-16: v2 (`AdminEmailTemplateEditorV2`), 2-pane editor m/ live preview, gjenbruker legacy actions.ts (lagre/send test/sett standard/arkiver). `(legacy)` page+editor-client fjernet. |
 | Marketing (innholdskalender + post-kø) | `/admin/marketing` | ✓ | --- | ✓ | ✓ | ✓ | ~ | v2 (AdminMarketingV2), ekte MarketingPost-data. M1-grunnmur uten AI-generering/eksterne API-er |
-| Profil | `/admin/profile` | – | --- | ✓ | ✓ | ✓ | ~ | nåbar via Mer → Drift → «Min coach-profil»; ekte brukerfelter, ikke v2-komponert ennå |
-| Hjelp | `/admin/hjelp` | – | --- | ✓ | ~ | ~ | ~ |
+| Profil | `/admin/profile` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-16: v2-komponert (`AdminProfilV2`), gjenbruker `oppdaterCoachProfil` + `uploadAvatar`. Droppet to ikke-fungerende legacy-plassholdere (galleri, «skjul profil»). `(legacy)` page+edit-form fjernet. |
+| Hjelp | `/admin/hjelp` | ✓ | --- | ✓ | ✓ | – | † | 2026-07-16: v2 (`AdminHjelpV2`), statisk innhold portet verbatim + fikset en død lenke (`/admin/messages` → `/admin/innboks`). `(legacy)` fjernet. |
 | Caddie (alt. adresse) | `/admin/caddie` | – | --- | ✓ | ~ | ~ | ~ |
 
 > **2026-07-12 — lenke-revisjon:** alle interne knapper/lenker på 45 admin-sider maskinsjekket
@@ -766,6 +766,26 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 16. juli (AgencyOS Organisasjon & innstillinger, branch `agencyos/org-innstillinger`): **11 admin-skjermer
+  portet fra `(legacy)` til v2** — `/admin/settings` (+ api/calendar/security/tilgang-faner/underruter),
+  `/admin/klubb/innstillinger`, `/admin/integrasjoner`, `/admin/team/inviter`,
+  `/admin/email-templates/[id]/rediger`, `/admin/profile`, `/admin/hjelp`. Fikser den tidligere brukne
+  `/admin/organisasjon`-redirecten (pekte på en side som ikke fantes). Ren komposisjon fra
+  `@/components/v2` mot eksisterende design (ingen ny mockup trengt — designgapet var allerede lukket,
+  se `DEKNINGSKART.md` i Claude Design-prosjektet). All mutasjonslogikk (server actions) gjenbrukt
+  uendret fra `(legacy)`-filene — kun presentasjonslaget er nytt. `(legacy)` page.tsx-filene for disse
+  11 rutene er slettet (Next.js tillater ikke to sider på samme URL selv på tvers av route-groups);
+  komponent-filer som ikke lenger hadde noen bruker (modaler, skjema-klienter) slettet i samme slag.
+  `calendar-sync-section.tsx` i `(legacy)` er bevisst BEHOLDT — brukes fortsatt direkte av
+  `/admin/availability`. La til 3 manglende Mer-meny-lenker (`klubb-innstillinger`, `integrasjoner`,
+  `hjelp`) i `AGENCYOS_MER` (`src/components/v2/shell.tsx`). Fant og fikset en død lenke i
+  hjelp-siden (`/admin/messages` → `/admin/innboks`). Verifisert: `tsc --noEmit` 0 feil, `eslint`
+  0 feil, `npm run build` grønt (Turbopack), 473/473 tester grønne. Alle 11 nye ruter bekreftet
+  307-redirect til `/auth/login` uinnlogget (ingen 500/404). Autentisert nettleser-klikkerunde ikke
+  gjort denne økten — miljøets sandkasse blokkerte lesing av `SCREENTEST_PASSWORD` fra `.env.local`
+  (en reell sikkerhetsgrense, ikke en feil); Funker-haken står derfor på † (bygd + ekte data +
+  tsc/build grønt) heller enn ✓ til noen har klikket seg gjennom i nettleser.
 
 - 15. juli (`/portal/ny-okt` koblet til ekte lagring, branch `claude/ny-okt-ekte-lagring`):
   wizarden hadde ingen backend — kun `useState` i nettleseren, «Lagre og start økt» gjorde

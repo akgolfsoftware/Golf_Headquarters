@@ -114,6 +114,9 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
       { id: "spiller-profil", label: "Min spillerprofil", icon: "user", href: "/portal" },
       { id: "services", label: "Tjenester og priser", icon: "credit-card", href: "/admin/services" },
       { id: "settings", label: "Innstillinger", icon: "settings", href: "/admin/settings" },
+      { id: "klubb-innstillinger", label: "Klubb-innstillinger", icon: "building-2", href: "/admin/klubb/innstillinger" },
+      { id: "integrasjoner", label: "Integrasjoner", icon: "plug", href: "/admin/integrasjoner" },
+      { id: "hjelp", label: "Hjelp", icon: "help-circle", href: "/admin/hjelp" },
     ],
   },
 ];
