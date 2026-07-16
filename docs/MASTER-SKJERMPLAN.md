@@ -390,8 +390,8 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Tester | `/admin/spillere/[id]/tester` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
 | · Tildel test | `/admin/spillere/[id]/tildel-test` | – | --- | ✓ | ~ | ~ | ~ |
 | · Rediger | `/admin/spillere/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
-| Grupper | `/admin/grupper` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| · Gruppe-detalj (+ VG-trinn filter/badge, 2026-07-07) | `/admin/grupper/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| Grupper | `/admin/grupper` | – | –✓– | ✓ | ✓ | ✓ | † | 2026-07-16: «Ny gruppe» koblet til ekte `createGroup`-action (`src/app/admin/grupper/actions.ts`) via modal (`ny-gruppe-modal.tsx`) — oppretter og navigerer til ny gruppe. Funker ✓ → † (tsc/build grønt, ikke nettleser-testet ende-til-ende — ingen DB i denne økta) |
+| · Gruppe-detalj (+ VG-trinn filter/badge, 2026-07-07) | `/admin/grupper/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-16: «Slett gruppe» lagt til (`SlettGruppeButton`/`deleteGroup`) — kaskade-sletter GroupMember/GroupSchedule, krever bekreftelse med antall medlemmer/samlinger i UI |
 | · Gruppe-timeplan (faste/kommende/tidligere + dupliser) | `/admin/grupper/[id]/timeplan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · **WANG Toppidrett — åpen treningsplan** (offentlig, ingen innlogging) | `/team-wang` | ~ | --- | ✓ | ~ | ✓ | † |
 | · **GFGK Junior — åpen treningsplan** (offentlig, 4 gruppefaner: Mini/Basis/Utvikling/Elite) | `/gfgk-junior` | ~ | --- | ✓ | ~ | ✓ | † |

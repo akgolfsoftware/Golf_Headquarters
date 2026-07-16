@@ -80,6 +80,7 @@ export type GruppeDetaljV2Actions = {
   SeAlleTimePlanButton: React.ComponentType<{ groupId: string }>;
   DetaljerButton: React.ComponentType<{ groupId: string; scheduleId: string }>;
   AapneButton: React.ComponentType<{ groupId: string; scheduleId: string }>;
+  SlettGruppeButton: React.ComponentType<{ groupId: string; navn: string; antallMedlemmer: number; antallSamlinger: number }>;
 };
 
 /* ── Rene hjelpere ─────────────────────────────────────────────────── */
@@ -131,6 +132,12 @@ export function GruppeDetaljV2({
             <MikroMeta icon="calendar">Planlegg / dupliser gruppetrening</MikroMeta>
           </Link>
           <A.LeggTilSpillerButton groupId={data.id} kandidater={data.kandidater} />
+          <A.SlettGruppeButton
+            groupId={data.id}
+            navn={data.navn}
+            antallMedlemmer={data.antallMedlemmer}
+            antallSamlinger={data.antallSamlinger}
+          />
         </div>
       </div>
 
