@@ -19,6 +19,11 @@ export type UserPreferences = {
   /** Måleenhet for lengder i appen. */
   enhet: "meter" | "yards";
   /**
+   * Opt-in (B39/Venner): vis mine fullførte økter i venners aktivitetsfeed.
+   * ALDRI default-på — venner ser da kun AT en økt skjedde, aldri plan/tall.
+   */
+  venneOktSynlig: boolean;
+  /**
    * Workbench-dybde (B40, uavhengig av B37 sin nivaa/dybde-prop): "standard"
    * skjuler periodisering/makro-faser (Årsplan-zoom), ACWR-belastningsraila
    * og mal-biblioteket. Default "pro" — dagens fulle dybde er uendret for alle
@@ -41,6 +46,7 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
   spraak: "nb",
   sgHubMode: "simple",
   enhet: "meter",
+  venneOktSynlig: false,
   wbMode: "pro",
 };
 
@@ -77,6 +83,7 @@ export function lesPreferences(user: Pick<User, "preferences">): UserPreferences
   const spraak = obj.spraak === "en" ? "en" : "nb";
   const sgHubMode = obj.sgHubMode === "advanced" ? "advanced" : "simple";
   const enhet = obj.enhet === "yards" ? "yards" : "meter";
+  const venneOktSynlig = boolPref(obj.venneOktSynlig, DEFAULT_PREFERENCES.venneOktSynlig);
   const wbMode = obj.wbMode === "standard" ? "standard" : "pro";
   const d = DEFAULT_PREFERENCES.notif;
 
@@ -94,6 +101,7 @@ export function lesPreferences(user: Pick<User, "preferences">): UserPreferences
     spraak,
     sgHubMode,
     enhet,
+    venneOktSynlig,
     wbMode,
   };
 }

@@ -49,6 +49,7 @@ export default async function InnstillingerPage() {
   const data: InnstillingerData = {
     epost: user.email,
     notif: prefs.notif,
+    venneOktSynlig: prefs.venneOktSynlig,
     samtykke: {
       kreves: user.requiresGuardianConsent,
       godkjentDato: formatDato(user.guardianConsentGivenAt),
