@@ -433,7 +433,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Innsikt-hub | `/admin/analysere` | ~ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: NYTT FUNN — ren `redirect("/admin/analyse")`, ikke en egen skjerm. |
 | · Compliance | `/admin/analysere/compliance` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET allerede v2-bygget — `AdminComplianceV2` inni `V2Shell`, ekte `loadComplianceData`-data. Falsk positiv, ingen kode-endring nødvendig.
 | Stall-analyse | `/admin/analyse` | ✓ | ~✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminAnalyseV2`. |
-| Lag-snitt | `/admin/lag-snitt` | – | ~✓– | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul: BEKREFTET ekte gap — `AgChip`/`AgPage`-familien. |
+| Lag-snitt | `/admin/lag-snitt` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminLagSnittV2` (Kort/StatusPill/AKSE_NAVN+T.ax-akselinjer), erstatter `AgChip`/`AgPage`-familien. Samme datagrunnlag (COMPLETED TrainingPlanSession per gruppe) uendret. Design – → ✓, Mob/Desk/iPad ~✓– → ✓✓–. |
 | · Fasiter (autosync) | `/admin/tester/benchmarks` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul: BEKREFTET ekte gap — hand-Tailwind, ingen golfdata/ui/v2. |
 | Tester (på tvers) | `/admin/tester` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminTesterV2`. |
 | · Foreslåtte tester | `/admin/tester/foreslatte` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: AMBIGUOUS — `PlayerHero` (wrapper rundt golfdata `Eyebrow`) som header, `ForeslattTestKort`-kroppen hand-bygget. |
