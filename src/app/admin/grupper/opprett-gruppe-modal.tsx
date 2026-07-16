@@ -37,8 +37,7 @@ export function OpprettGruppeModal({
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  const coachValg = ["Ingen coach satt", ...coaches.map((c) => c.name)];
-  const coachLabel = coachId ? (coaches.find((c) => c.id === coachId)?.name ?? "Ingen coach satt") : "Ingen coach satt";
+  const coachValg = [{ value: "", label: "Ingen coach satt" }, ...coaches.map((c) => ({ value: c.id, label: c.name }))];
 
   function bekreft() {
     if (!navn.trim()) {
@@ -118,8 +117,8 @@ export function OpprettGruppeModal({
           <Velger
             label="Coach (valgfritt)"
             options={coachValg}
-            value={coachLabel}
-            onChange={(label) => setCoachId(coaches.find((c) => c.name === label)?.id ?? "")}
+            value={coachId}
+            onChange={setCoachId}
           />
           <SkjemaFelt label="Maks deltagere (valgfritt)" hjelp="Brukes som standard-tak for gruppens treningstider.">
             <Inndata label={null} mono value={maxDeltagere} onChange={setMaxDeltagere} placeholder="F.eks. 12" />

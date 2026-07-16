@@ -4,10 +4,11 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { UserMinus } from "lucide-react";
+import { UserMinus, Trash2 } from "lucide-react";
 
 import { LeggTilMedlemModal, type Kandidat } from "./legg-til-medlem-modal";
 import { fjernGruppemedlem } from "./actions";
+import { deleteGroup } from "../actions";
 
 export function StartOktButton() {
   const router = useRouter();
@@ -140,5 +141,55 @@ export function AapneButton({
     >
       Åpne →
     </Link>
+  );
+}
+
+/**
+ * Slett gruppe. Group har ingen soft-delete — GroupMember/GroupSchedule
+ * kaskaderes bort med gruppen (schema onDelete:Cascade). Krever derfor
+ * eksplisitt bekreftelse med antall medlemmer/samlinger FØR sletting —
+ * aldri stille kaskade uten advarsel.
+ */
+export function SlettGruppeButton({
+  groupId,
+  navn,
+  antallMedlemmer,
+  antallSamlinger,
+}: {
+  groupId: string;
+  navn: string;
+  antallMedlemmer: number;
+  antallSamlinger: number;
+}) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+
+  function slett() {
+    const advarsel =
+      antallMedlemmer > 0 || antallSamlinger > 0
+        ? `Slett «${navn}»? Gruppen har ${antallMedlemmer} medlem(mer) og ${antallSamlinger} planlagt(e) samling(er) — alt fjernes sammen med gruppen. Dette kan ikke angres.`
+        : `Slett «${navn}»? Dette kan ikke angres.`;
+    if (!window.confirm(advarsel)) return;
+    startTransition(async () => {
+      const res = await deleteGroup(groupId);
+      if ("error" in res) {
+        toast.error(res.error);
+        return;
+      }
+      toast.success(`«${navn}» er slettet.`);
+      router.push("/admin/grupper");
+    });
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={slett}
+      disabled={pending}
+      className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-destructive hover:text-destructive disabled:opacity-50"
+    >
+      <Trash2 className="h-3.5 w-3.5" strokeWidth={1.75} />
+      {pending ? "Sletter…" : "Slett gruppe"}
+    </button>
   );
 }

@@ -21,6 +21,7 @@ import {
   SeAlleTimePlanButton,
   DetaljerButton,
   AapneButton,
+  SlettGruppeButton,
 } from "./gruppe-actions";
 
 export const dynamic = "force-dynamic";
@@ -210,6 +211,7 @@ export default async function GruppeDetaljPage({
           SeAlleTimePlanButton,
           DetaljerButton,
           AapneButton,
+          SlettGruppeButton,
         }}
       />
     </V2Shell>
