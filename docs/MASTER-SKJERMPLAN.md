@@ -1,6 +1,6 @@
 # Master-skjermplan — AK Golf HQ
 
-> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 14. juli 2026.**
+> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 16. juli 2026.**
 
 > **OPPDATERT KANON (2026-07-08):** Design-kanon er nå UTELUKKENDE det levende Claude Design-
 > prosjektet (`claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`), hentet direkte via
@@ -150,7 +150,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Mål-detalj | `/portal/mal/goal/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Milepæler | `/portal/mal/milepaeler` | – | --- | ✓ | ~ | ~ | ~ |
 | · Leaderboard | `/portal/mal/leaderboard` | – | --- | ✓ | ~ | ~ | ~ |
-| Turneringer (mine) ★ | `/portal/tren/turneringer` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Turneringer (mine) ★ | `/portal/tren/turneringer` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: v2-forhåndsvisning (retning C) allerede portert, hake aldri oppdatert |
 | · Turnering-detalj | `/portal/tren/turneringer/[id]` | – | ✓✓– | ~ | ~ | – | ~ |
 | · Ny turnering | `/portal/tren/turneringer/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | Utfordringer | `/portal/utfordringer` | ~ | --- | ✓ | ~ | ~ | ~ |
@@ -260,8 +260,8 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Meg (profil) ★ | `/portal/meg` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
-| Rediger profil ★ | `/portal/meg/profil` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
-| Abonnement ★ | `/portal/meg/abonnement` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Rediger profil ★ | `/portal/meg/profil` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MinProfilV2` (v2 retning C), portert 10. juli, hake aldri oppdatert |
+| Abonnement ★ | `/portal/meg/abonnement` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegAbonnementV2` (v2 retning C), hake aldri oppdatert |
 | · Oppgrader | `/portal/meg/abonnement/oppgrader` | – | --- | ✓ | ~ | ~ | ~ |
 | · Oppgrader-flyt | `/portal/meg/abonnement/oppgrader/flyt` | – | --- | ✓ | ~ | ~ | ~ |
 | · Avbestill | `/portal/meg/abonnement/avbestill` | – | --- | ✓ | ~ | ~ | ~ |
@@ -269,9 +269,9 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Faktura-detalj | `/portal/meg/abonnement/faktura/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | Mine bookinger | `/portal/meg/bookinger` | – | --- | ✓ | ~ | ~ | ~ |
 | · Endre tid | `/portal/meg/bookinger/reschedule/[bookingId]` | – | --- | ✓ | ~ | ~ | ~ |
-| Helse ★ | `/portal/meg/helse` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Helse ★ | `/portal/meg/helse` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegHelseV2` (v2 retning C), hake aldri oppdatert |
 | · Nytt symptom | `/portal/meg/helse/symptom/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| Innstillinger ★ | `/portal/meg/innstillinger` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Innstillinger ★ | `/portal/meg/innstillinger` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `InnstillingerV2` (v2 retning C), hake aldri oppdatert |
 | · Varsler | `/portal/meg/innstillinger/varsler` | – | --- | ✓ | ~ | ~ | ~ |
 | · Personvern | `/portal/meg/innstillinger/personvern` | – | --- | ✓ | ~ | ~ | ~ |
 | · Sikkerhet | `/portal/meg/innstillinger/sikkerhet` | – | --- | ✓ | ~ | ~ | ~ |
@@ -282,11 +282,11 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Økter | `/portal/meg/innstillinger/okter` | – | --- | ✓ | ~ | ~ | ~ |
 | Sikkerhet | `/portal/meg/sikkerhet` | – | --- | ✓ | ~ | ~ | ~ |
 | · To-faktor (2FA) | `/portal/meg/sikkerhet/2fa` | – | --- | ✓ | ~ | ~ | ~ |
-| Utstyrsbag ★ | `/portal/meg/utstyrsbag` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
-| Dokumenter ★ | `/portal/meg/dokumenter` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Utstyrsbag ★ | `/portal/meg/utstyrsbag` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegUtstyrsbagV2` (v2 retning C), hake aldri oppdatert |
+| Dokumenter ★ | `/portal/meg/dokumenter` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegDokumenterV2` (v2 retning C), hake aldri oppdatert |
 | Foreldre (foresatt-info) | `/portal/meg/foreldre` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | Feedback | `/portal/meg/feedback` | – | --- | ✓ | ~ | ~ | ~ |
-| Hjelpesenter ★ | `/portal/meg/help` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Hjelpesenter ★ | `/portal/meg/help` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegHelpV2` (v2 retning C), hake aldri oppdatert |
 | · Hjelp-artikkel | `/portal/meg/help/artikkel/[slug]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Hjelp-kategori | `/portal/meg/help/kategori/[slug]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Kontakt | `/portal/meg/help/kontakt` | – | --- | ✓ | ~ | ~ | ~ |
@@ -393,7 +393,9 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Grupper | `/admin/grupper` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Gruppe-detalj (+ VG-trinn filter/badge, 2026-07-07) | `/admin/grupper/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Gruppe-timeplan (faste/kommende/tidligere + dupliser) | `/admin/grupper/[id]/timeplan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · **WANG Toppidrett — åpen treningsplan** (offentlig, ingen innlogging) | `/team-wang` | ~ | --- | ✓ | ~ | ✓ | † |
+| · **Gruppe-årsplan** (samme kalenderkjerne som /team-wang, koblet inn i gruppeplanleggingen) | `/admin/grupper/[id]/arsplan` | ~ | --- | ✓ | ~ | ~ | † |
+| · · Legg inn skoledata (lim-inn-import → SchoolScheduleEntry) | `/admin/grupper/[id]/arsplan/skoledata` | ~ | --- | ✓ | ✓ | ~ | † |
+| · **WANG Toppidrett — åpen treningsplan** (offentlig, ingen innlogging; nå med dagsvisning + samlinger + skole-/kompetansemål-lag) | `/team-wang` | ~ | -✓– | ✓ | ~ | ✓ | ✓ |
 | · **GFGK Junior — åpen treningsplan** (offentlig, 4 gruppefaner: Mini/Basis/Utvikling/Elite) | `/gfgk-junior` | ~ | --- | ✓ | ~ | ✓ | † |
 | Talent-hub | `/admin/talent` | – | --- | ✓ | ~ | ~ | ~ |
 | · Discovery | `/admin/talent/discovery` | – | --- | ✓ | ~ | ~ | ~ |
@@ -542,12 +544,12 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Logg inn ★ | `/auth/login` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
-| Registrer ★ | `/auth/signup` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Logg inn ★ | `/auth/login` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `LoginV2` (v2 retning C), verifisert 1:1 mot `ui_kits/v2/auth-profil.jsx` — portert 10. juli, hake aldri oppdatert |
+| Registrer ★ | `/auth/signup` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `SignupV2` (samme v2-idiomfamilie som LoginV2), portert 10. juli, hake aldri oppdatert |
 | Glemt passord ★ | `/auth/forgot-password` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | Tilbakestill passord | `/auth/reset-password` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Sjekk e-post | `/auth/check-email` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| BankID ★ | `/auth/bankid` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| BankID ★ | `/auth/bankid` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `BankIDV2` (samme v2-idiomfamilie som LoginV2), portert 10. juli, hake aldri oppdatert |
 | Onboarding (spiller, 8 steg) | `/auth/onboarding` | – | ✓✓– | ~ | ✓ | ✓ | ✓ | 2026-07-11: fikset lesPreferences-lekkasje (data ble slettet av enhver innstillings-lagring); steg-3-svar (fasiliteter/dager/mål) lagres nå og feeder FacilityPrefs+Goal+plan-engine.
 | Onboarding (forelder) | `/auth/onboarding/forelder` | – | --- | ✓ | ~ | ~ | ~ |
 | Foreldresamtykke (token) | `/auth/guardian-consent/[token]` | ✓ | --- | ✓ | ~ | ~ | ~ |
@@ -786,6 +788,58 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   ingen «Verktøy-velger»-mekanisme finnes ennå å henge den på), §7 gruppe-planlegging
   (blokk-for-blokk maler + individuell tilpasning krever nye Prisma-modeller/migrasjon —
   ikke forsøkt uten ekte databasetilgang til å verifisere).
+- 16. juli (Byggerunde 1a-verifisering + reell temabug, branch `claude/reskin-auth-screens`):
+  satt i gang som en «reskin-sweep» av 11 skjermer merket Design=«–» (auth-trioen, de 7
+  PlayerHQ Meg-hub-skjermene, `/portal/tren/turneringer`). Fersk `DesignSync`-verifisering mot
+  Claude Design-prosjektet + lesing av faktisk produksjonskode viste at **alle 11 allerede var
+  1:1-portert til v2 retning C** (`LoginV2`/`SignupV2`/`BankIDV2` 10. juli, Meg-familien og
+  Turneringer-forhåndsvisningen likeens) — hakene var bare aldri flippet etter porteringen.
+  Ingen reskin-jobb var nødvendig; kun dokumentasjonsrettelse (se radene over). **Samtidig
+  funnet en reell bug** mens dette ble verifisert: `V2Shell` sin lys/mørk-bryter styrer ETT
+  delt `data-v2-tema`-cookie-attributt for BÅDE AgencyOS og PlayerHQ — en coach med mørk
+  AgencyOS-preferanse ville fått PlayerHQ-skjermer i mørkt tema også, og en helt ny bruker
+  (ingen cookie) fikk mørk PlayerHQ som DEFAULT. Dette bryter B28 (PlayerHQ er alltid lys,
+  ingen bryter — låst 15. jul). Fikset i `src/components/v2/shell.tsx` (tema tvinges lys når
+  `nav !== AGENCYOS_NAV`, bryteren skjules for spillere) + `src/app/layout.tsx` sitt
+  pre-paint-script (unngår mørk-blits på første lasting av `/portal/*`). **Anbefaling videre:**
+  gitt at 11 av 11 sjekkede rader var falske positiver, bør resten av MASTER-SKJERMPLAN.md sine
+  «Design: –»-rader stikkprøve-verifiseres mot faktisk kode før flere byggerunder scopes rent
+  fra denne tabellen.
+- 16. juli (`/kommando` fjernet, B8 i `docs/AGENCYOS-INVENTAR.md`, branch
+  `claude/kommando-route-cleanup`): det gamle personlige kommandosenteret
+  (dashboard + `agenter`/`kalender`/`oppgaver`/`prosjekter`/`team`) er nå rene
+  redirects til de ekte AgencyOS-flatene — `/admin/agenter` (chat),
+  `/admin/kalender` (kalender), `/admin/agent-team` (dashboard/oppgaver/
+  prosjekter/team). To funksjoner som IKKE hadde noen erstatning ble bygget inn
+  før redirect for å unngå tap: oppgave-CRUD (`TaskList`) montert på
+  `/admin/agent-team`, og oppgavefrister vises nå som «Oppgave-frist»-blokker i
+  `/admin/kalender` (ikke dra-og-slipp-bare — de er ikke bookinger). Disse
+  skjermene stod ikke i haker-tabellene over (interne `/kommando`-ruter var
+  aldri en del av de 341 sporede skjermene) — ingen hake-oppdatering nødvendig,
+  kun denne loggposten.
+- 16. juli (WANG årskalender utvidet — dagsvisning + skole/samling/kompetansemål-lag, branch
+  `feature/wang-aarsplan`): `/team-wang` hadde kun år/måned/uke og viste bare faste treningstider
+  + AK-perioder. Lagt til: dagsvisning (fjerde visningsbryter, gjenbruker `TidsGrid` med 1
+  kolonne); ny `SchoolScheduleEntry`-tabell (skolerute/timeplan/prøveplan per trinn, additiv
+  `db execute`-migrasjon) med enkel lim-inn-importer; `GroupSchedule.kind` (SAMLING/
+  HELDAGSSAMLING) — disse var usynlige før pga. et `recurring: "WEEKLY"`-filter i
+  `hentGruppeKalenderData` som aldri hentet engangs-hendelser; `TrainingPeriod.competenceGoalIds`
+  kobler periodene til eksisterende `CompetenceGoal`-rader (fantes fra før, men var aldri koblet
+  til noe). Nytt klikk-detaljpanel viser dagens periode+kompetansemål, samlinger og full
+  skole-liste. Samme kalenderkjerne koblet inn i AgencyOS som ny fane `/admin/grupper/[id]/arsplan`
+  (+ `/arsplan/skoledata` for import) — dette var hovedmålet: årsplanen var kun en offentlig side,
+  ikke tilgjengelig fra gruppeplanleggingen coachen faktisk bruker. VG-trinn-filter gjenbruker
+  samme `?trinn=`-mønster som allerede fantes på `/admin/grupper/[id]`. Turneringsplan er lagt inn
+  som en tydelig tom-tilstand — venter på turneringskalender-kobling. Seedet: to samlinger
+  (WANG-Oslo vinterleir, ISO-uke 1 og 7 2027) med datoer beregnet eksakt (ikke gjettet), men
+  markert «estimert/ikke bekreftet» i notatfeltet siden WANG sentralt eier de faktiske datoene.
+  Bevisst IKKE seedet: 2026/2027 skolerute/prøveplan/full fag-timeplan — fjorårets konkrete datoer
+  ville vært feil hvis de bare ble relabelt til nytt skoleår, og gjetting av skolens fremtidige
+  timeplan er utenfor det som er forsvarlig å anta. Import-verktøyet står klart for når skolen
+  publiserer. tsc + eslint + `next build` grønt. Browser-testet ende-til-ende på `/team-wang`
+  (år/måned/uke/dag, trinn-filter, klikk-til-detaljpanel med ekte samling+periode-data) — admin-
+  fanen kun bygg-verifisert (auth-gate testet, ikke innlogget browser-test).
+
 - 15. juli (`/portal/ny-okt` koblet til ekte lagring, branch `claude/ny-okt-ekte-lagring`):
   wizarden hadde ingen backend — kun `useState` i nettleseren, «Lagre og start økt» gjorde
   bokstavelig talt ingenting. Fant at server actionen som trengs (`createAdHocSession`)
