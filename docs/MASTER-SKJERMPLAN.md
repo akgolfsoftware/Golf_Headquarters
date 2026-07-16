@@ -767,6 +767,18 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 16. juli (`/kommando` fjernet, B8 i `docs/AGENCYOS-INVENTAR.md`, branch
+  `claude/kommando-route-cleanup`): det gamle personlige kommandosenteret
+  (dashboard + `agenter`/`kalender`/`oppgaver`/`prosjekter`/`team`) er nå rene
+  redirects til de ekte AgencyOS-flatene — `/admin/agenter` (chat),
+  `/admin/kalender` (kalender), `/admin/agent-team` (dashboard/oppgaver/
+  prosjekter/team). To funksjoner som IKKE hadde noen erstatning ble bygget inn
+  før redirect for å unngå tap: oppgave-CRUD (`TaskList`) montert på
+  `/admin/agent-team`, og oppgavefrister vises nå som «Oppgave-frist»-blokker i
+  `/admin/kalender` (ikke dra-og-slipp-bare — de er ikke bookinger). Disse
+  skjermene stod ikke i haker-tabellene over (interne `/kommando`-ruter var
+  aldri en del av de 341 sporede skjermene) — ingen hake-oppdatering nødvendig,
+  kun denne loggposten.
 - 15. juli (`/portal/ny-okt` koblet til ekte lagring, branch `claude/ny-okt-ekte-lagring`):
   wizarden hadde ingen backend — kun `useState` i nettleseren, «Lagre og start økt» gjorde
   bokstavelig talt ingenting. Fant at server actionen som trengs (`createAdHocSession`)
