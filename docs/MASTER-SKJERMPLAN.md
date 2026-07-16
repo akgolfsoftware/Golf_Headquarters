@@ -448,7 +448,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Skader/sykdom (tilstander) | `/admin/tilstander` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: NYTT FUNN — ren `redirect("/admin/gjennomfore")`, ikke en egen skjerm. |
 | Finans (alt. → redirect) | `/admin/finance` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/admin/okonomi")` — som selv er en redirect til `/admin/agencyos/okonomi` (2-hopps kjede). Ikke en egen skjerm.
 | **Økonomi (MRR/betalinger)** | `/admin/okonomi` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: NYTT FUNN — dette er nå selv en ren `redirect("/admin/agencyos/okonomi")`, ett hopp til fra den allerede dokumenterte `/admin/finance`-aliasen. Raden var feilaktig scoret som en levende skjerm. |
-| Stats-oversikt | `/admin/stats/overview` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — `Reveal`/`CountUp`/`RaskeHandlinger` uten golfdata/ui. |
+| Stats-oversikt | `/admin/stats/overview` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminStatsOverviewV2` + `AdminStatsRaskeHandlingerV2` (T-tokens; `Reveal`/`CountUp` beholdt uendret som generiske adferds-primitiver). Samme datagrunnlag (`hentAdminOverview`, `sjekkDbHelse`) uendret. La til `git-commit-horizontal` i v2-ikonregisteret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | Stats-moderering | `/admin/stats/moderering` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — `ModeringClient` uten golfdata/ui. |
 
 ### Admin (organisasjon og innstillinger)
