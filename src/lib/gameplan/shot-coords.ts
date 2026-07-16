@@ -1,7 +1,7 @@
 /**
- * Koordinat-konvensjon for slag-posisjon (baneguide/dispersion).
+ * Koordinat-konvensjon for slag-posisjon (Gameplan/dispersion).
  *
- * Shot-modellen har startX/startY/endX/endY (Float?). For baneguiden tolker
+ * Shot-modellen har startX/startY/endX/endY (Float?). For Gameplan tolker
  * vi dem som WGS84-GPS (besluttet 2026-06-28):
  *   X = longitude (øst/vest)
  *   Y = latitude  (nord/sør)

@@ -216,9 +216,9 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | TrackMan (liste) | `/portal/mal/trackman` | ✓ | ✓✓– | ✓ | ~ | ✓ | † |
 | · TrackMan-sesjon | `/portal/mal/trackman/[id]` | ✓ | ✓✓– | ✓ | ~ | ~ | † |
 | · TrackMan (alt. adresse) | `/portal/trackman/[sessionId]` | – | ✓✓– | ✓ | ~ | ~ | ~ |
-| Baneguide (baneliste) | `/portal/baneguide` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Banekart-oversikt | `/portal/baneguide/[baneId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Hull-detalj (dispersion) | `/portal/baneguide/[baneId]/hull/[nr]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| Gameplan (baneliste, omdøpt fra Baneguide 16. jul) | `/portal/gameplan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| · Banekart-oversikt | `/portal/gameplan/[baneId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| · Hull-detalj (dispersion + Planlegg-fane) | `/portal/gameplan/[baneId]/hull/[nr]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | Tester (oversikt) ★ | `/portal/tren/tester` | – | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
 | · Test-detalj ★ | `/portal/tren/tester/[testId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Test-gjennomføring (scorekort) ★ | `/portal/tren/tester/[testId]/gjennomfor` | – | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
@@ -771,6 +771,32 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 16. juli (Byggerunde 2b — Gameplan omdøping + interaktiv modus C7, branch
+  `claude/gameplan-interaktiv-modus`, siste post i skjerm-porting-roadmapen): **Baneguide
+  omdøpt til Gameplan** (B30) — hele mappetreet flyttet (`src/app/portal/baneguide` →
+  `.../gameplan`, `src/components/baneguide` → `.../gameplan`, `src/lib/baneguide` →
+  `.../gameplan`, `BaneguideV2` → `GameplanV2`), all synlig tekst («Baneguide» → «Gameplan»)
+  og alle interne lenker oppdatert. Gamle `/portal/baneguide/**`-URL-er lever videre som
+  permanente redirects til `/portal/gameplan/**` (samme mønster som B43 `/kommando`) —
+  ingen brutte bokmerker. Lagt til i navigasjon: ny snarveiskort «Gameplan» på
+  `/portal/analysere` (funksjonen manglet reelt en meny-inngang fra før — kun nåbar via
+  direkte URL). **Ny interaktiv hull-for-hull-modus (C7)**, fjerde fane «Planlegg» på
+  hull-detaljen ved siden av Utslag/Innspill/Putt: dra sikte direkte på det ekte,
+  interaktive Mapbox-banekartet (utvidet `CourseMap` med valgfri `interactive`/`onKlikk`/
+  `sikte`/`soner`-prop, bakoverkompatibel — de 3 eksisterende read-only bruksstedene er
+  urørt), mal «Bra å misse»/«Aldri hit»-soner, og se carry/igjen regnet LIVE fra ekte GPS
+  (haversine — aldri tastet avstand). Andelen av spillerens FAKTISKE spredningsellipse
+  (samme dispersion-motor som hull-detaljens σ/bias-KPI-er) som havner i en rød sone regnes
+  live via en ny `ellipseGpsPunkter`-projeksjon (ikke design-prototypens fake faste ellipse
+  på en statisk piksel-viewBox — en ekte forbedring utover selve mockupen). Ny additiv
+  skjema: `GameplanHull` (spillerens sikte per hull) + `GameplanSone` (malte soner), begge
+  scopet til `requirePortalUser().id` — kirurgisk `CREATE TABLE IF NOT EXISTS` via
+  `scripts/create-gameplan-tables-2026-07-16.ts` (samme gotcha-mønster som `course_holes` —
+  `migrate dev`/`db push` er blokkert i dette repoet). **Kunne ikke kjøres mot ekte DB i
+  denne sandboxen** — scriptet må kjøres manuelt mot produksjon før funksjonen er skrivbar
+  der. **Sidefunn under research:** det juridisk forbudte navnet «DECADE» (B30) hadde lekket
+  inn i levende kildekode/seed-data — rettet i egen, separat PR (`claude/decade-navnefjerning`)
+  fremfor å blande inn i denne omdøpingen.
 - 16. juli (DECADE-navnefjerning, branch `claude/decade-navnefjerning`): B30 forbyr ordet
   «DECADE» overalt (rettighetsvern, `docs/juridisk/presisjonsstrategi-rettigheter.md`) —
   research for Byggerunde 2b (Gameplan) fant at ordet faktisk hadde lekket inn i LEVENDE

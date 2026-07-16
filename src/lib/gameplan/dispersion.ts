@@ -1,5 +1,5 @@
 /**
- * Dispersion-motor for baneguiden (fase 3).
+ * Dispersion-motor for Gameplan (B30, omdøpt fra "Baneguide").
  *
  * Regner spredningsstatistikk fra slag: snitt, standardavvik, bias
  * (venstre/høyre + kort/lang) og en rotert konfidens-ellipse (kovarians →
@@ -10,8 +10,8 @@
  * GPS-slag projiseres inn i dette systemet med projectToAimFrame().
  * TrackMan-slag (side + carry) mappes med trackmanToPoints().
  *
- * Holder ALL spredningsmatematikk ett sted — UI (shot-map, banekart) leser
- * bare resultatet.
+ * Holder ALL spredningsmatematikk ett sted — UI (shot-map, banekart,
+ * Gameplan interaktiv modus) leser bare resultatet.
  */
 
 import type { LatLng } from "./shot-coords";
@@ -65,6 +65,36 @@ export function bearing(a: LatLng, b: LatLng): number {
   const y = Math.sin(dLng) * Math.cos(la2);
   const x = Math.cos(la1) * Math.sin(la2) - Math.sin(la1) * Math.cos(la2) * Math.cos(dLng);
   return Math.atan2(y, x);
+}
+
+/** Punkt `distanceM` meter unna `from`, i retning `bearingRad` (0 = nord). */
+export function destinationPoint(from: LatLng, bearingRad: number, distanceM: number): LatLng {
+  const la1 = toRad(from.lat);
+  const lo1 = toRad(from.lng);
+  const d = distanceM / R_EARTH;
+  const la2 = Math.asin(Math.sin(la1) * Math.cos(d) + Math.cos(la1) * Math.sin(d) * Math.cos(bearingRad));
+  const lo2 =
+    lo1 +
+    Math.atan2(
+      Math.sin(bearingRad) * Math.sin(d) * Math.cos(la1),
+      Math.cos(d) - Math.sin(la1) * Math.sin(la2),
+    );
+  return { lat: (la2 * 180) / Math.PI, lng: (lo2 * 180) / Math.PI };
+}
+
+/**
+ * GeoJSON-polygon (lukket ring) for en meter-nøyaktig sirkel — brukes til
+ * Gameplan-soner («bra å misse» / «aldri hit») som Mapbox GL circle-layer
+ * (piksel-radius) ikke kan gi presist på tvers av zoom-nivåer.
+ */
+export function circlePolygon(center: LatLng, radiusM: number, points = 32): [number, number][] {
+  const ring: [number, number][] = [];
+  for (let i = 0; i <= points; i++) {
+    const b = (i / points) * 2 * Math.PI;
+    const p = destinationPoint(center, b, radiusM);
+    ring.push([p.lng, p.lat]);
+  }
+  return ring;
 }
 
 /**
@@ -188,4 +218,55 @@ export function trackmanToPoints(
   if (valid.length === 0) return [];
   const meanCarry = valid.reduce((s, p) => s + p.carryDistance, 0) / valid.length;
   return valid.map((s) => ({ lateral: s.side, distance: s.carryDistance - meanCarry }));
+}
+
+/**
+ * Gameplan interaktiv modus (C7): prøv spillerens EKTE spredningsellipse mot
+ * et NYTT hypotetisk sikte spilleren drar rundt på kartet (i stedet for det
+ * historiske sikte'et ellipsen egentlig ble målt mot). Antakelsen — vanlig i
+ * golf-strategiverktøy — er at spredningsMØNSTERET (form/størrelse) er en
+ * egenskap ved svingen og roterer med hvor spilleren sikter; ellipsens
+ * lateral/distance-offset regnes derfor om til ekte GPS relativt til den NYE
+ * tee→sikte-retningen, ikke den opprinnelige tee→green-retningen.
+ */
+export function ellipseGpsPunkter(
+  ellipse: DispersionEllipse,
+  tee: LatLng,
+  sikte: LatLng,
+  antall = 240,
+): LatLng[] {
+  const aimBearing = bearing(tee, sikte);
+  const punkter: LatLng[] = [];
+  for (let i = 0; i < antall; i++) {
+    // Lavdiskrepans (sunflower-mønster) — jevn dekning av disken, som DISK i design-prototypen.
+    const r = Math.sqrt((i + 0.5) / antall);
+    const a = i * 2.39996;
+    const ux = r * Math.cos(a);
+    const uy = r * Math.sin(a);
+    // Roter og skaler til ellipsens akser, offset fra ellipsens eget senter.
+    const cosA = Math.cos(ellipse.angleRad);
+    const sinA = Math.sin(ellipse.angleRad);
+    const ex = ux * ellipse.semiMinor; // lateral-akse
+    const ey = uy * ellipse.semiMajor; // distance-akse
+    const lateral = ellipse.centerLateral + (ex * cosA - ey * sinA);
+    const distance = ellipse.centerDistance + (ex * sinA + ey * cosA);
+    // distance langs ny sikte-retning fra TEE (ikke fra sikte) — offset er
+    // relativt til historisk mål-avstand, så vi ankrer på ny sikte i stedet.
+    const langsSikte = destinationPoint(sikte, aimBearing, distance);
+    punkter.push(destinationPoint(langsSikte, aimBearing + Math.PI / 2, lateral));
+  }
+  return punkter;
+}
+
+/** Andel (0–1) av punktene som faller innenfor minst én sone av `type`. */
+export function andelISone(
+  punkter: LatLng[],
+  soner: { type: "bra" | "aldri"; senter: LatLng; radiusMeter: number }[],
+  type: "bra" | "aldri",
+): number {
+  if (punkter.length === 0) return 0;
+  const relevante = soner.filter((s) => s.type === type);
+  if (relevante.length === 0) return 0;
+  const treff = punkter.filter((p) => relevante.some((s) => haversine(p, s.senter) <= s.radiusMeter));
+  return treff.length / punkter.length;
 }

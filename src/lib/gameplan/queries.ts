@@ -1,5 +1,5 @@
 /**
- * Data-lag for baneguiden (fase 5). Henter baner, hull og spillerens
+ * Data-lag for Gameplan (B30, omdøpt fra "Baneguide"). Henter baner, hull og spillerens
  * slag-spredning, og kjører dispersion-motoren server-side.
  */
 import { prisma } from "@/lib/prisma";
