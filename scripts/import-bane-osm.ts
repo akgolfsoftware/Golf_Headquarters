@@ -5,8 +5,15 @@
  * golf=hole-senterlinjene. Idempotent (upsert på slug + (baneId,holeNumber)).
  *
  *   npx tsx scripts/import-bane-osm.ts onsoy
+ *   npx tsx scripts/import-bane-osm.ts        # kjører alle baner i BANER
  *
- * Kun Onsøy er konfigurert nå; legg flere baner i BANER under.
+ * B41 (16. jul 2026, Anders via Lanseringsprompt §6): Gameplan C2-banelisten
+ * er godkjent — de åtte banene under er lagt til ved siden av Onsøy. Bbox-
+ * sentrene er geokodet fra hver klubbs offisielle adresse (Nominatim/OSM);
+ * halvbredden følger samme mønster som Onsøy (~1,5 km × 2,5 km) bortsett fra
+ * Halden, som mangler en presis gateadresse i klubbdataene og derfor har en
+ * bevisst større bbox (Idd-distriktet, ikke selve klubbhuset) for å unngå å
+ * klippe banen ved feil senter.
  */
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
@@ -40,6 +47,95 @@ const BANER: BaneConfig[] = [
     kommune: "Fredrikstad",
     fylke: "Østfold",
     bbox: [59.262, 10.77, 59.288, 10.815],
+  },
+  {
+    key: "gfgk",
+    slug: "gamle-fredrikstad-golfklubb",
+    navn: "Gamle Fredrikstad Golfklubb",
+    kortNavn: "Gamle Fredrikstad",
+    klubb: "Gamle Fredrikstad Golfklubb",
+    region: "Øst",
+    kommune: "Fredrikstad",
+    fylke: "Østfold",
+    bbox: [59.1877, 10.9406, 59.2137, 10.9856],
+  },
+  {
+    key: "huseby-hanko",
+    slug: "huseby-hanko-golfklubb",
+    navn: "Huseby & Hankø Golfklubb",
+    kortNavn: "Huseby & Hankø",
+    klubb: "Huseby & Hankø Golfklubb",
+    region: "Øst",
+    kommune: "Fredrikstad",
+    fylke: "Østfold",
+    bbox: [59.2561, 10.7462, 59.2821, 10.7912],
+  },
+  {
+    key: "borregaard",
+    slug: "borregaard-golfklubb",
+    navn: "Borregaard Golfklubb",
+    kortNavn: "Borregaard",
+    klubb: "Borregaard Golfklubb",
+    region: "Øst",
+    kommune: "Sarpsborg",
+    fylke: "Østfold",
+    bbox: [59.282, 11.109, 59.308, 11.154],
+  },
+  {
+    key: "skjeberg",
+    slug: "skjeberg-golfklubb",
+    navn: "Skjeberg Golfklubb",
+    kortNavn: "Skjeberg",
+    klubb: "Skjeberg Golfklubb",
+    region: "Øst",
+    kommune: "Sarpsborg",
+    fylke: "Østfold",
+    bbox: [59.2613, 11.183, 59.2873, 11.228],
+  },
+  {
+    key: "moss-rygge",
+    slug: "moss-rygge-golfklubb",
+    navn: "Moss & Rygge Golfklubb",
+    kortNavn: "Moss & Rygge",
+    klubb: "Moss & Rygge Golfklubb",
+    region: "Øst",
+    kommune: "Moss",
+    fylke: "Østfold",
+    bbox: [59.3557, 10.6586, 59.3817, 10.7036],
+  },
+  {
+    key: "mork",
+    slug: "mork-golfklubb",
+    navn: "Mørk Golfklubb",
+    kortNavn: "Mørk",
+    klubb: "Mørk Golfklubb",
+    region: "Øst",
+    kommune: "Indre Østfold",
+    fylke: "Østfold",
+    bbox: [59.5188, 10.9782, 59.5448, 11.0232],
+  },
+  {
+    key: "askim",
+    slug: "askim-golfklubb",
+    navn: "Askim Golfklubb",
+    kortNavn: "Askim",
+    klubb: "Askim Golfklubb",
+    region: "Øst",
+    kommune: "Indre Østfold",
+    fylke: "Østfold",
+    bbox: [59.5826, 11.1506, 59.6086, 11.1956],
+  },
+  {
+    key: "halden",
+    slug: "halden-golfklubb",
+    navn: "Halden Golfklubb",
+    kortNavn: "Halden",
+    klubb: "Halden Golfklubb",
+    region: "Øst",
+    kommune: "Halden",
+    fylke: "Østfold",
+    // Større bbox (se filhode) — senter er Idd-distriktet, ikke klubbhuset selv.
+    bbox: [59.0749, 11.3943, 59.1149, 11.4643],
   },
 ];
 
