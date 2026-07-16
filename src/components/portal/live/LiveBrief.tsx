@@ -3,6 +3,8 @@ import { CheckCircle2, Lock, Play } from "lucide-react";
 import type { LiveV2Session } from "./types";
 import { plannedVolumText } from "./types";
 import { LiveSessionShell } from "./LiveSessionShell";
+import { HjelpTips } from "@/components/v2/hjelp";
+import { L_FASER } from "@/lib/taxonomy";
 
 export type LiveBriefProps = {
   data: LiveV2Session;
@@ -18,11 +20,22 @@ const AXIS_LABEL: Record<string, string> = {
   TURN: "Turnering",
 };
 
-const L_PHASE_LABEL: Record<string, string> = {
-  GRUNN: "Grunnfase",
-  SPESIAL: "Spesialfase",
-  TURNERING: "Turneringsfase",
+/** Rå CSS-var-navn (golfdata-laget, definert i globals.css) per pyramide-akse. */
+const AXIS_VAR: Record<string, string> = {
+  FYS: "--axis-fys",
+  TEK: "--axis-tek",
+  SLAG: "--axis-slag",
+  SPILL: "--axis-spill",
+  TURN: "--axis-turn",
 };
+
+// L_PHASE_LABEL het tidligere GRUNN/SPESIAL/TURNERING — det er faktisk den
+// separate LPhase-enumen (sesongperiode), ikke LFase (bevegelses-læringssteg)
+// som drill.lFase faktisk er typet som. Rettet til riktig L-Kropp/Arm/Kølle/
+// Ball/Auto-skala (samme kilde som drill-editor.tsx bruker).
+const L_PHASE_LABEL: Record<string, string> = Object.fromEntries(
+  L_FASER.map((f) => [f.kode, f.label]),
+);
 
 function formatDateTimeEyebrow(iso: string): string {
   const d = new Date(iso);
@@ -76,15 +89,29 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
           Brief · {formatDateTimeEyebrow(data.scheduledAtISO)}
         </span>
 
-        {/* Title */}
-        <h1 className="mt-3 font-display text-[30px] font-bold leading-[1.07] -tracking-[0.035em] text-background">
-          {data.title}{" "}
-          {data.studentName && (
-            <em className="font-medium not-italic text-accent">
-              med {data.studentName.split(" ")[0]}
-            </em>
-          )}
-        </h1>
+        {/* Title + akse-chip */}
+        <div className="mt-3 flex items-start justify-between gap-3">
+          <h1 className="font-display text-[30px] font-bold leading-[1.07] -tracking-[0.035em] text-background">
+            {data.title}{" "}
+            {data.studentName && (
+              <em className="font-medium not-italic text-accent">
+                med {data.studentName.split(" ")[0]}
+              </em>
+            )}
+          </h1>
+          <span
+            className="mt-1 flex flex-shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-3 py-1.5"
+            style={{
+              background: `color-mix(in srgb, var(${AXIS_VAR[data.pyramide]}) 16%, transparent)`,
+              border: `1px solid color-mix(in srgb, var(${AXIS_VAR[data.pyramide]}) 40%, transparent)`,
+            }}
+          >
+            <span className="font-mono text-[10.5px] font-bold" style={{ color: `var(${AXIS_VAR[data.pyramide]})` }}>
+              {AXIS_LABEL[data.pyramide] ?? data.pyramide}
+            </span>
+            <HjelpTips k="pyramideAkse" size={12} align="right" />
+          </span>
+        </div>
 
         {/* Focus/meta */}
         {data.focus && (
@@ -133,8 +160,9 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
 
         {/* Program */}
         <div className="mt-6">
-          <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.10em] text-background/45">
+          <span className="inline-flex items-center gap-1.5 font-mono text-[9.5px] font-bold uppercase tracking-[0.10em] text-background/45">
             Program
+            {data.drills.some((d) => d.lFase) && <HjelpTips k="lFase" size={11} />}
           </span>
 
           {data.drills.length === 0 ? (
