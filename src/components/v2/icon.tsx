@@ -17,6 +17,7 @@ import {
   RefreshCw, GitCompare, AlertOctagon, GitPullRequest, GitCommitHorizontal, Loader2, LineChart,
   Cog, ArrowUp, Wrench,
   Inbox, CalendarCheck, Columns3, Database,
+  Map, Radar,
   type LucideIcon,
 } from "lucide-react";
 
@@ -121,6 +122,8 @@ const MAP: Record<string, LucideIcon> = {
   "sprout": Sprout,
   "bot": Bot,
   "building-2": Building2,
+  "map": Map,
+  "radar": Radar,
   "plug": Plug,
   "archive": Archive,
   "reply": Reply,
