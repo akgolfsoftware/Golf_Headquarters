@@ -1,12 +1,12 @@
 /**
- * Kartpalett for Mapbox-lagene i baneguiden — samlet på ETT sted.
+ * Kartpalett for Mapbox-lagene i Gameplan — samlet på ETT sted.
  *
  * UNNTAK fra ingen-rå-hex-regelen: Mapbox GL tegner på <canvas> og kan ikke
  * lese CSS-variabler, så fargene må være statiske strings. Hver konstant er
  * avledet fra en navngitt kilde-token (pyramidColors i lib/design-tokens.ts /
  * T i lib/v2/tokens.ts) og kommentert med den. Endres tokens, endres denne
  * fila i samme commit. Paletten skal godkjennes av Anders (design-gap meldt
- * i baneguide-planen).
+ * i Gameplan-planen).
  */
 
 import { pyramidColors } from "@/lib/design-tokens";
@@ -30,4 +30,11 @@ export const DISPERSION_COLORS = {
   sigma2Stroke: "#A6A9A3", // T.fg2 grå kant
   aimLine: "#EEF0EC", // T.fg — siktelinje (stiplet i laget)
   activePlotPoint: "#4FD08A", // T.up grønn — punktet som plottes akkurat nå
+} as const;
+
+/** Gameplan interaktiv modus (C7) — sikte-markør + bra/aldri-soner. */
+export const GAMEPLAN_COLORS = {
+  sikte: pyramidColors.spill, // #D1F843 lime — samme sikte-farge som tee/holeLine
+  soneBra: "#4FD08A", // T.up grønn — «bra å misse»-sone
+  soneAldri: "#E05D44", // status-rød — «aldri hit»-sone
 } as const;

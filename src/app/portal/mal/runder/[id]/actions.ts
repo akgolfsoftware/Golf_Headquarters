@@ -87,7 +87,7 @@ export type ShotInput = {
   shotType: ShotType;
   isPenalty?: boolean;
   notes?: string;
-  // GPS-posisjon for baneguide/dispersion (X=lng, Y=lat — se lib/baneguide/shot-coords)
+  // GPS-posisjon for Gameplan/dispersion (X=lng, Y=lat — se lib/gameplan/shot-coords)
   startLat?: number;
   startLng?: number;
   endLat?: number;

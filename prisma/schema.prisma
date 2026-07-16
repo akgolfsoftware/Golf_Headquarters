@@ -379,6 +379,8 @@ model User {
   // PlayerHQ-relasjoner
   trainingPlans    TrainingPlan[]
   rounds           Round[]
+  gameplanHull     GameplanHull[]
+  gameplanSoner    GameplanSone[]
   testResults      TestResult[]
   testSessions     TestSession[]
   testAssignments       TestAssignment[] @relation("PlayerTestAssignments")
@@ -2201,6 +2203,54 @@ model CourseHole {
   @@unique([baneId, holeNumber])
   @@index([baneId])
   @@map("course_holes")
+
+  gameplanHull  GameplanHull[]
+  gameplanSoner GameplanSone[]
+}
+
+// Gameplan (B30/B39-æraen — omdøpt fra "Baneguide") interaktiv hull-for-hull-planlegging.
+// Spillerens eget sikte for hullet — ETT per (hull, spiller). Carry/igjen regnes
+// live fra tee/green-GPS på CourseHole, tastes aldri (haversine, se lib/gameplan/dispersion.ts).
+model GameplanHull {
+  id        String   @id @default(cuid())
+  holeId    String
+  userId    String
+  siktLat   Float
+  siktLng   Float
+  notat     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  hole CourseHole @relation(fields: [holeId], references: [id], onDelete: Cascade)
+  user User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([holeId, userId])
+  @@index([userId])
+  @@map("gameplan_hull")
+}
+
+// Sone spilleren (eller auto-utledet fra kartdata) har malt på hullet: "bra" å
+// misse i, eller "aldri" hit. Sirkel (senter + radius) — enklest form som
+// dekker prototypen; polygon kan legges til senere uten å røre denne raden.
+model GameplanSone {
+  id          String   @id @default(cuid())
+  holeId      String
+  userId      String
+  // "bra" | "aldri"
+  type        String
+  senterLat   Float
+  senterLng   Float
+  radiusMeter Float
+  // true for auto-utledede soner (vann/bunker/OB fra kartdata) — spilleren kan
+  // ikke slette disse, kun sine egne malte soner (se lib/gameplan/actions.ts).
+  laast       Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  hole CourseHole @relation(fields: [holeId], references: [id], onDelete: Cascade)
+  user User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([holeId, userId])
+  @@map("gameplan_sone")
 }
 
 // Norske + internasjonale spillere vi følger på /turneringer.
