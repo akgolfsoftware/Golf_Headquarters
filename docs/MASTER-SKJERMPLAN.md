@@ -195,13 +195,13 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | ~~· Sammenlign~~ | `/portal/statistikk/sammenlign` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-14) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | · Del runde | `/portal/statistikk/runder/[runId]/del` | – | --- | ✓ | ~ | ~ | ~ |
 | **SG-Hub (Strokes Gained)** ★ | `/portal/mal/sg-hub` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
-| · Kølle-detalj | `/portal/mal/sg-hub/[club]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Benchmark | `/portal/mal/sg-hub/benchmark` | – | --- | ✓ | ~ | ✓ | ✓ |
-| · Best vs nå | `/portal/mal/sg-hub/best-vs-now` | – | --- | ✓ | ~ | ~ | ~ |
-| · Utstyr | `/portal/mal/sg-hub/equipment` | – | --- | ✓ | ~ | ~ | ~ |
-| · Avstander (yardage) | `/portal/mal/sg-hub/yardage` | – | --- | ✓ | ~ | ~ | ~ |
-| · Forhold (vær/bane) | `/portal/mal/sg-hub/conditions` | – | --- | ✓ | ~ | ~ | ~ |
-| · Strategi | `/portal/mal/sg-hub/strategy` | – | --- | ✓ | ~ | ~ | ~ |
+| · Kølle-detalj | `/portal/mal/sg-hub/[club]` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Benchmark | `/portal/mal/sg-hub/benchmark` | ✓ | --- | ✓ | ~ | ✓ | ✓ |
+| · Best vs nå | `/portal/mal/sg-hub/best-vs-now` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Utstyr | `/portal/mal/sg-hub/equipment` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Avstander (yardage) | `/portal/mal/sg-hub/yardage` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Forhold (vær/bane) | `/portal/mal/sg-hub/conditions` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Strategi | `/portal/mal/sg-hub/strategy` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Coach ser spiller-SG | `/portal/mal/sg-hub/coach/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Coach: kølle | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Coach: utstyr | `/portal/mal/sg-hub/coach/[spillerId]/equipment` | – | --- | ✓ | ~ | ~ | ~ |
@@ -236,24 +236,24 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Coach-hub | `/portal/coach` | ~ | --- | ✓ | ~ | ~ | ✓ |
-| · Coach-profil | `/portal/coach/[coachId]` | – | --- | ✓ | ~ | ~ | ~ |
+| · Coach-profil | `/portal/coach/[coachId]` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Meldinger (innboks) | `/portal/coach/melding` | ~ | --- | ✓ | ~ | ~ | ✓ |
 | · Ny melding | `/portal/coach/melding/ny` | ✓ | --- | ✓ | ✓ | ✓ | ✓† |
-| · Meldingstråd | `/portal/coach/melding/[id]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Vedlegg | `/portal/coach/melding/[id]/vedlegg` | – | --- | ✓ | ~ | ~ | ~ |
+| · Meldingstråd | `/portal/coach/melding/[id]` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Vedlegg | `/portal/coach/melding/[id]/vedlegg` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Coach-planer | `/portal/coach/plans` | ~ | --- | ✓ | ~ | ~ | ~ |
-| · Plan-detalj | `/portal/coach/plans/[planId]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Ny økt i plan | `/portal/coach/plans/[planId]/ny-okt` | – | --- | ✓ | ~ | ~ | ~ |
-| · Perioder | `/portal/coach/plans/perioder` | – | --- | ✓ | ~ | ~ | ~ |
-| Coach-øvelser | `/portal/coach/ovelser` | ~ | --- | ✓ | ~ | ~ | ~ |
+| · Plan-detalj | `/portal/coach/plans/[planId]` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Ny økt i plan | `/portal/coach/plans/[planId]/ny-okt` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Perioder | `/portal/coach/plans/perioder` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| Coach-øvelser | `/portal/coach/ovelser` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Ny øvelse | `/portal/coach/ovelser/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| · Rediger øvelse | `/portal/coach/ovelser/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
-| Coach-videoer | `/portal/coach/videoer` | ~ | --- | ✓ | ~ | ~ | ~ |
-| Coach-notater | `/portal/coach/notes` | – | --- | ✓ | ~ | ~ | ~ |
-| · Notat-detalj | `/portal/coach/notes/[noteId]` | – | --- | ✓ | ~ | ~ | ~ |
+| · Rediger øvelse | `/portal/coach/ovelser/[id]/rediger` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| Coach-videoer | `/portal/coach/videoer` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| Coach-notater | `/portal/coach/notes` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Notat-detalj | `/portal/coach/notes/[noteId]` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Spørsmål til coach (liste løftet D3; [id]-tråd ikke løftet) | `/portal/coach/sporsmal/[id]` | ~ | --- | ✓ | ~ | ~ | ~ |
 | · Nytt spørsmål | `/portal/coach/sporsmal/ny` | ✓ | --- | ✓ | ✓ | ✓ | ✓† |
-| Coach-AI | `/portal/coach/ai` | – | --- | ✓ | ~ | ~ | ~ |
+| Coach-AI | `/portal/coach/ai` | ✓ | --- | ✓ | ~ | ~ | ~ |
 
 ### Meg (profil og innstillinger)
 
@@ -398,13 +398,13 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · **WANG Toppidrett — åpen treningsplan** (offentlig, ingen innlogging; nå med dagsvisning + samlinger + skole-/kompetansemål-lag) | `/team-wang` | ~ | -✓– | ✓ | ~ | ✓ | ✓ |
 | · **GFGK Junior — åpen treningsplan** (offentlig, 4 gruppefaner: Mini/Basis/Utvikling/Elite) | `/gfgk-junior` | ~ | --- | ✓ | ~ | ✓ | † |
 | Talent-hub | `/admin/talent` | – | --- | ✓ | ~ | ~ | ~ |
-| · Discovery | `/admin/talent/discovery` | – | --- | ✓ | ~ | ~ | ~ |
+| · Discovery | `/admin/talent/discovery` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Radar | `/admin/talent/radar` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| · Kohort | `/admin/talent/kohort` | – | --- | ✓ | ~ | ~ | ~ |
-| · Region | `/admin/talent/region` | – | --- | ✓ | ~ | ~ | ~ |
-| · Ressurser | `/admin/talent/ressurser` | – | --- | ✓ | ~ | ~ | ~ |
+| · Kohort | `/admin/talent/kohort` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Region | `/admin/talent/region` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Ressurser | `/admin/talent/ressurser` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Sammenligning | `/admin/talent/sammenligning` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
-| · WAGR-benchmark | `/admin/talent/wagr-benchmark` | – | --- | ✓ | ~ | ~ | ~ |
+| · WAGR-benchmark | `/admin/talent/wagr-benchmark` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · WAGR-import | `/admin/talent/wagr-import` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 
 ### Planlegge (lage planer FOR spillerne)
@@ -491,15 +491,15 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Organisasjon-hub | `/admin/organisasjon` | – | --- | ✓ | ✓ | – | ✓ | 2026-07-14: ren redirect til /admin/settings, bekreftet. Fjernet fra Mer-menyen (var duplikat-menypunkt til samme mål) — siden selv beholdt for gamle lenker. |
-| Klubb-innstillinger | `/admin/klubb/innstillinger` | – | --- | ✓ | ~ | ~ | ~ |
-| Integrasjoner | `/admin/integrasjoner` | – | --- | ✓ | ~ | ~ | ~ |
+| Klubb-innstillinger | `/admin/klubb/innstillinger` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| Integrasjoner | `/admin/integrasjoner` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Innstillinger | `/admin/settings` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| · API | `/admin/settings/api` | – | --- | ✓ | ~ | ~ | ~ |
-| · Kalender | `/admin/settings/calendar` | – | --- | ✓ | ~ | ~ | ~ |
-| · Sikkerhet | `/admin/settings/security` | – | --- | ✓ | ~ | ~ | ~ |
-| · Tilgang | `/admin/settings/tilgang` | – | --- | ✓ | ~ | ~ | ~ |
-| Team | `/admin/team` | – | --- | ✓ | ~ | ~ | ~ |
-| · Inviter | `/admin/team/inviter` | – | --- | ✓ | ~ | ~ | ~ |
+| · API | `/admin/settings/api` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Kalender | `/admin/settings/calendar` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Sikkerhet | `/admin/settings/security` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Tilgang | `/admin/settings/tilgang` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| Team | `/admin/team` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Inviter | `/admin/team/inviter` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Audit-log | `/admin/audit-log` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminAuditLogV2`) — samme AuditLog-spørring/kind-status-utledning som legacy, KpiFlis+Rad-liste, ærlig tomtilstand. Lagt i Innsikt-mer-gruppen (var uten menylenke). `(legacy)/audit-log` slettet. |
 | AI-agenter | `/admin/agents` | – | --- | ✓ | ~ | ~ | ~ |
 | · Agent-detalj | `/admin/agents/[agentId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
@@ -769,6 +769,35 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
+- 16. juli (Byggerunde 3+4, første bolk — Coach-seksjonen/SG-Hub/Talent/Admin-org, branch
+  `claude/bulk-sweep-verify`): fersk kodesjekk (ikke bare dokumentet) av ~32 skjermer merket
+  «Design: –/~» i PlayerHQ Coach-seksjonen, SG-Hub-undersidene, AgencyOS Talent-undersidene og
+  Admin/organisasjon-undersidene. **Samme mønster som byggerunde 1a igjen:** så godt som alle
+  var allerede ferdig portet til v2/golfdata med ekte Prisma-data — kun dokumentasjonen hadde
+  ikke fulgt med. Design-haken rettet ✓ for alle 32 (lista under). Fant og fikset 4 reelle,
+  små avvik underveis (fabrikkerte tall/tags som IKKE fantes i noe underliggende felt — samme
+  klasse feil som fake-CTA-opprydningen tidligere): `coach/[coachId]`-siden viste diktede
+  «Snittsvar 4t» og «Rating 4,9/5» (ingen slik modell finnes — kun ekte «Felles økter»-tallet
+  beholdt); `coach/notes/[noteId]` viste identiske statiske tags («TEK, SLAG, pitch-konsistens»)
+  på hvert notat (ingen tags-felt på `CoachingSession` — fjernet); to sider hadde feil
+  produkt-eyebrow («AgencyOS ·» i PlayerHQ-scopede skjermer) rettet til «PlayerHQ ·»
+  (`coach/plans/[planId]/ny-okt`, `coach/ovelser/[id]/rediger`). Statisk `CERTIFICATIONS`-array
+  og `settings/tilgang`s V1-read-only-scoping vurdert som bevisst, ikke fabrikkert — urørt.
+  **Fortsatt advarsel til neste byggerunde:** gitt at dette er andre runde på rad der nesten
+  alle «ikke startet»-rader viste seg allerede bygget, bør resten av de opplistede
+  144-skjermer-i-dokumentet IKKE tas for god fisk — stikkprøve mot faktisk kode FØR bygging,
+  hver gang. **Ikke rørt i denne bolken** (bevisst avgrenset til denne PR-en, tas i neste
+  bolk av samme byggerunde): Meg-undersidene (varsler/personvern/sikkerhet/språk/eksport/2FA),
+  Booking-undersidene, og hele Marketing/Stats v10-visuell-pass (8 grupperte rader). Rettet
+  Design-hake ✓ på: `/portal/mal/sg-hub/[club]`, `/benchmark`, `/best-vs-now`, `/equipment`,
+  `/yardage`, `/conditions`, `/strategy`, `/portal/coach/[coachId]`, `/coach/melding/[id]`,
+  `/coach/melding/[id]/vedlegg`, `/coach/plans/[planId]`, `/coach/plans/[planId]/ny-okt`,
+  `/coach/plans/perioder`, `/coach/ovelser`, `/coach/ovelser/[id]/rediger`, `/coach/videoer`,
+  `/coach/notes`, `/coach/notes/[noteId]`, `/coach/ai`, `/admin/talent/discovery`,
+  `/admin/talent/kohort`, `/admin/talent/region`, `/admin/talent/ressurser`,
+  `/admin/talent/wagr-benchmark`, `/admin/klubb/innstillinger`, `/admin/integrasjoner`,
+  `/admin/settings/api`, `/admin/settings/calendar`, `/admin/settings/security`,
+  `/admin/settings/tilgang`, `/admin/team`, `/admin/team/inviter`.
 - 16. juli (Workbench V4 / B40, delvis — Standard/Pro-modus + fasilitetskonsekvens,
   branch `claude/workbench-v4-standard-pro`): to av B40s fem deler levert i denne runden.
   **§3 Standard/Pro-modusbryter** (`wbMode` i `User.preferences`, samme mønster som
