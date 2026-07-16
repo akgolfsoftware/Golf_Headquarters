@@ -18,6 +18,13 @@ export type UserPreferences = {
   sgHubMode: "simple" | "advanced";
   /** Måleenhet for lengder i appen. */
   enhet: "meter" | "yards";
+  /**
+   * Workbench-dybde (B40, uavhengig av B37 sin nivaa/dybde-prop): "standard"
+   * skjuler periodisering/makro-faser (Årsplan-zoom), ACWR-belastningsraila
+   * og mal-biblioteket. Default "pro" — dagens fulle dybde er uendret for alle
+   * til noen bevisst bytter til Standard.
+   */
+  wbMode: "standard" | "pro";
 };
 
 export const DEFAULT_PREFERENCES: UserPreferences = {
@@ -34,6 +41,7 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
   spraak: "nb",
   sgHubMode: "simple",
   enhet: "meter",
+  wbMode: "pro",
 };
 
 function boolPref(val: unknown, defaultVal: boolean): boolean {
@@ -69,6 +77,7 @@ export function lesPreferences(user: Pick<User, "preferences">): UserPreferences
   const spraak = obj.spraak === "en" ? "en" : "nb";
   const sgHubMode = obj.sgHubMode === "advanced" ? "advanced" : "simple";
   const enhet = obj.enhet === "yards" ? "yards" : "meter";
+  const wbMode = obj.wbMode === "standard" ? "standard" : "pro";
   const d = DEFAULT_PREFERENCES.notif;
 
   return {
@@ -85,5 +94,6 @@ export function lesPreferences(user: Pick<User, "preferences">): UserPreferences
     spraak,
     sgHubMode,
     enhet,
+    wbMode,
   };
 }

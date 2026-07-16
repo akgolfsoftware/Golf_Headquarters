@@ -18,7 +18,7 @@
  * V2Shell (montert i (v2preview)/v2-workbench/page.tsx) eier chrome-en.
  */
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
   DndContext,
@@ -63,6 +63,7 @@ import type { WeekEvent } from "@/lib/workbench/week-types";
 import type { PlanStatus } from "@/generated/prisma/client";
 import { fmtVarighet, fmtTimer, toKl } from "@/lib/workbench/v2-format";
 import { WEEK_OFFSET_MIN, WEEK_OFFSET_MAX } from "@/lib/workbench/session-move-math";
+import { setWbMode } from "@/lib/workbench/wb-mode-action";
 
 export type { WorkbenchV2Actions } from "./WorkbenchV2Sheets";
 
@@ -95,6 +96,8 @@ export interface WorkbenchV2Props {
   planStatus?: PlanStatus | null;
   /** Skrivesiden — utelatt (forhåndsvisning) skjuler alle muterende knapper. */
   actions?: WorkbenchV2Actions;
+  /** B40 §3 — Standard/Pro-modus (lesPreferences(user).wbMode). Default "pro". */
+  wbMode?: "standard" | "pro";
 }
 
 /* ── Rene hjelpere ─────────────────────────────────────── */
@@ -439,7 +442,7 @@ function WBGruppetider({ slots }: { slots: NonNullable<WorkbenchData["groupSlots
 }
 
 
-export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukMal, visPerioder, onLeggDrillIValgt }: {
+export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukMal, visPerioder, onLeggDrillIValgt, proMode = true }: {
   data: WorkbenchData;
   tab: string; setTab: (t: string) => void;
   sok: string; setSok: (s: string) => void;
@@ -451,10 +454,19 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
   visPerioder?: boolean;
   /** 8c.6: Driller-fanen — klikk legger drillen i VALGT økt. Uten = lesevisning. */
   onLeggDrillIValgt?: (drill: { exerciseId: string; navn: string }) => Promise<{ ok: boolean; error?: string }>;
+  /** B40 §3/§5: mal-biblioteket er Pro-only. Default true — samme som Workbench for øvrig. */
+  proMode?: boolean;
 }) {
   const treff = (txt: string) => !sok || txt.toLowerCase().includes(sok.toLowerCase());
   // 8c.6 (fasit Palette): aksefilter-chips over listene.
   const [akseFilter, setAkseFilter] = useState<AkseKey | null>(null);
+  // B40 §3: "maler" er Pro-only — hvis brukeren står der og bytter til
+  // Standard, faller innholdet trygt tilbake til Økter (uten å fjerne
+  // den lagrede tab-verdien, i tilfelle de bytter tilbake til Pro).
+  const effectiveTab = !proMode && tab === "maler" ? "okter" : tab;
+  const faner = proMode
+    ? [["maler", "Maler"], ["okter", "Økter"], ["driller", "Driller"]]
+    : [["okter", "Økter"], ["driller", "Driller"]];
   const maler = (data.planTemplates ?? []).filter((m) => treff(m.name));
   const okter = (data.paletteItems ?? []).filter((b) => treff(b.title) && (!akseFilter || b.cat === akseFilter));
   // Driller-fanen: øvelsesbanken via server-søk (debounced).
@@ -474,8 +486,8 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
       </div>
       <PalettSok value={sok} onChange={setSok} placeholder="Søk…" />
       <div style={{ display: "flex", gap: 4 }}>
-        {[["maler", "Maler"], ["okter", "Økter"], ["driller", "Driller"]].map(([id, l]) => (
-          <button key={id} type="button" onClick={() => setTab(id)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", flex: 1, fontFamily: T.mono, fontSize: 9, fontWeight: 700, padding: "6px 0", borderRadius: 8, border: `1px solid ${tab === id ? "transparent" : T.border}`, background: tab === id ? T.lime : T.panel2, color: tab === id ? T.onLime : T.fg2, textTransform: "uppercase", letterSpacing: "0.04em" }}>{l}</button>
+        {faner.map(([id, l]) => (
+          <button key={id} type="button" onClick={() => setTab(id)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", flex: 1, fontFamily: T.mono, fontSize: 9, fontWeight: 700, padding: "6px 0", borderRadius: 8, border: `1px solid ${effectiveTab === id ? "transparent" : T.border}`, background: effectiveTab === id ? T.lime : T.panel2, color: effectiveTab === id ? T.onLime : T.fg2, textTransform: "uppercase", letterSpacing: "0.04em" }}>{l}</button>
         ))}
       </div>
       {visPerioder && (
@@ -483,7 +495,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
           <PeriodePalett />
         </div>
       )}
-      {tab !== "maler" && (
+      {effectiveTab !== "maler" && (
         <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }} data-wb-aksefilter>
           {([null, "FYS", "TEK", "SLAG", "SPILL", "TURN"] as (AkseKey | null)[]).map((f) => {
             const on = akseFilter === f;
@@ -495,7 +507,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
           })}
         </div>
       )}
-      {tab === "maler" ? (
+      {effectiveTab === "maler" ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 2 }}>
             <Caps size={9}>Planmaler</Caps>
@@ -936,18 +948,35 @@ function Felt({ label, children }: { label: string; children: React.ReactNode })
   );
 }
 /* ── Selve Workbench ───────────────────────────────────── */
-export function WorkbenchV2({ data, insights, playerName, planStatus, actions }: WorkbenchV2Props) {
+export function WorkbenchV2({ data, insights, playerName, planStatus, actions, wbMode }: WorkbenchV2Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const proMode = wbMode !== "standard";
+  const [modeBytterPending, startModeBytte] = useTransition();
+  // B40 §3: Årsplan (periodisering/makro-faser) er Pro-only — utelates helt
+  // fra zoom-velgeren i Standard, ikke bare deaktivert.
+  const zoomOptions = proMode
+    ? [{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Økt" }]
+    : [{ v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Økt" }];
+
+  function byttWbMode(neste: "standard" | "pro") {
+    if (neste === (wbMode ?? "pro") || modeBytterPending) return;
+    startModeBytte(async () => {
+      await setWbMode(neste);
+      router.refresh();
+    });
+  }
 
   // Zoom + valgt økt bor i URL-en (?zoom= / ?okt=) så visningen overlever
-  // router.refresh() etter endringer, remount og deling av lenke.
+  // router.refresh() etter endringer, remount og deling av lenke. B40 §3:
+  // Årsplan-zoom er Pro-only — en ?zoom=ar-lenke delt av en Pro-bruker skal
+  // ikke smugle periodiserings-flaten inn hos en Standard-bruker.
   const zoomParam = searchParams.get("zoom");
   const [nivaa, setNivaaState] = useState(
-    zoomParam === "ar" || zoomParam === "maned" || zoomParam === "dag" ? zoomParam : "uke",
+    zoomParam === "ar" ? (proMode ? "ar" : "uke") : zoomParam === "maned" || zoomParam === "dag" ? zoomParam : "uke",
   );
-  const [tab, setTab] = useState("maler");
+  const [tab, setTab] = useState(proMode ? "maler" : "okter");
   const [sok, setSok] = useState("");
   const [nyOktApen, setNyOktApen] = useState(false);
   const [nyOktPrefill, setNyOktPrefill] = useState<{ title: string; durMin: number; akse?: AkseKey; drills?: OktArkDrill[] } | null>(null);
@@ -1088,10 +1117,14 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
   };
   const setNivaa = (v: string) => {
-    setNivaaState(v);
+    // B40 §3: uansett hvilken vei "ar" ble forsøkt nådd (PillVelger,
+    // ZoomBrodsmule, «Legg årsplanen først»-CTA), Standard-modus faller
+    // trygt tilbake til uke — myk grense, ikke en feilmelding.
+    const neste = v === "ar" && !proMode ? "uke" : v;
+    setNivaaState(neste);
     oppdaterUrl((p) => {
-      if (v === "uke") p.delete("zoom");
-      else p.set("zoom", v);
+      if (neste === "uke") p.delete("zoom");
+      else p.set("zoom", neste);
     });
   };
   const setValgtId = (id: string | null) => {
@@ -1225,7 +1258,13 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     setMalLegger(false);
     setMalBekreft(null);
     if (res.ok) {
-      setMelding({ tone: "up", tekst: `Mal-uke 1 fra «${malBekreft.name}» lagt inn — juster på tidslinja.` });
+      // B40 §4: fasilitetskonsekvens — vis ØKTER SOM BLE TATT UT pga. anlegg,
+      // ikke bare den generiske «lagt inn»-teksten (var stille frafall før).
+      const tekst =
+        res.justeringer && res.justeringer.length > 0
+          ? `Mal-uke 1 fra «${malBekreft.name}» lagt inn. ${res.justeringer.join(" ")}`
+          : `Mal-uke 1 fra «${malBekreft.name}» lagt inn — juster på tidslinja.`;
+      setMelding({ tone: res.justeringer?.length ? "info" : "up", tekst });
       router.refresh();
     } else {
       setMelding({ tone: "down", tekst: res.error ?? "Kunne ikke bruke malen." });
@@ -1238,7 +1277,11 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
     setMelding(null);
     const res = await actions.applyTemplate(templateId);
     if (res.ok) {
-      setMelding({ tone: "up", tekst: "Mal-uke 1 lagt inn — juster øktene på tidslinja." });
+      const tekst =
+        res.justeringer && res.justeringer.length > 0
+          ? `Mal-uke 1 lagt inn. ${res.justeringer.join(" ")}`
+          : "Mal-uke 1 lagt inn — juster øktene på tidslinja.";
+      setMelding({ tone: res.justeringer?.length ? "info" : "up", tekst });
       router.refresh();
     } else {
       setMelding({ tone: "down", tekst: res.error ?? "Kunne ikke bruke malen." });
@@ -1431,7 +1474,12 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           onBrukMal={actions.applyTemplate ? async (templateId) => {
             const res = await actions.applyTemplate!(templateId);
             if (res.ok) {
-              setMelding({ tone: "up", tekst: "Første uke er lagt inn fra malen — juster den på tidslinja." });
+              // B40 §4: fasilitetskonsekvens — samme myke varsel som brukMalFraBibliotek/bekreftMal.
+              const tekst =
+                res.justeringer && res.justeringer.length > 0
+                  ? `Første uke er lagt inn fra malen. ${res.justeringer.join(" ")}`
+                  : "Første uke er lagt inn fra malen — juster den på tidslinja.";
+              setMelding({ tone: res.justeringer?.length ? "info" : "up", tekst });
               router.refresh();
             }
             return res;
@@ -1469,7 +1517,14 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, letterSpacing: "-0.02em", margin: "3px 0 6px" }}>{playerName}</div>
           <StatusPill tone={st.tone}>{st.l}</StatusPill>
         </div>
-        <Felt label="Zoom"><PillVelger options={[{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Økt" }]} value={nivaa} onChange={setNivaa} /></Felt>
+        <Felt label="Zoom"><PillVelger options={zoomOptions} value={nivaa} onChange={setNivaa} /></Felt>
+        <Felt label="Modus">
+          <PillVelger
+            options={[{ v: "standard", l: "Standard" }, { v: "pro", l: "Pro" }]}
+            value={wbMode ?? "pro"}
+            onChange={(v) => byttWbMode(v === "standard" ? "standard" : "pro")}
+          />
+        </Felt>
         <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "6px 14px", borderRadius: 12, background: `color-mix(in srgb, ${harAvvik ? T.warn : T.up} 6%, transparent)`, border: `1px solid color-mix(in srgb, ${harAvvik ? T.warn : T.up} 32%, transparent)`, flex: "none" }}>
           <span style={{ fontFamily: T.mono, fontSize: 26, fontWeight: 700, color: T.fg, lineHeight: 0.9, fontVariantNumeric: "tabular-nums", flex: "none" }}>{adher != null ? `${adherDisp}%` : "–"}</span>
           <div style={{ flex: "none", maxWidth: 150 }}>
@@ -1509,8 +1564,17 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
           </div>
         </div>
 
-        <div style={{ overflowX: "auto", paddingBottom: 1 }}>
-          <PillVelger options={[{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Økt" }]} value={nivaa} onChange={setNivaa} />
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ overflowX: "auto", paddingBottom: 1, flex: 1, minWidth: 0 }}>
+            <PillVelger options={zoomOptions} value={nivaa} onChange={setNivaa} />
+          </div>
+          <div style={{ flex: "none" }}>
+            <PillVelger
+              options={[{ v: "standard", l: "Std" }, { v: "pro", l: "Pro" }]}
+              value={wbMode ?? "pro"}
+              onChange={(v) => byttWbMode(v === "standard" ? "standard" : "pro")}
+            />
+          </div>
         </div>
 
         <div style={{ display: "flex", gap: 8 }}>
@@ -1610,7 +1674,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
 
       {/* TRE KOLONNER — desktop (md+): uendret (grid-cols-1 md→lg, 3-kol fra lg) */}
       <div className="hidden md:grid md:grid-cols-1 lg:grid-cols-[206px_1fr_302px]" style={{ gap: T.gap, alignItems: "start" }}>
-        <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} />
+        <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} proMode={proMode} />
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
           {dupliserMelding && <InnsiktChip>{dupliserMelding}</InnsiktChip>}
           {insights?.line && <InnsiktChip>{insights.line}</InnsiktChip>}
@@ -1648,7 +1712,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
               />
             </div>
           )}
-          {nivaa === "uke" && <WBBelastning data={data} />}
+          {nivaa === "uke" && proMode && <WBBelastning data={data} />}
           {nivaa === "ar" && (
             <div key="ar" className="v2-fade-in">
               <WorkbenchAarsplan
@@ -1684,7 +1748,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         )}
         {nivaa === "uke" && data.groupSlots && <WBGruppetider slots={data.groupSlots} />}
         {nivaa === "uke" && <div key="uke" className="v2-fade-in"><WBTidslinjeMobil dager={dager} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} onFlytt={actions ? handleDropMove : undefined} /></div>}
-        {nivaa === "uke" && <WBBelastning data={data} />}
+        {nivaa === "uke" && proMode && <WBBelastning data={data} />}
         {nivaa === "ar" && (
           <div key="ar" className="v2-fade-in">
             <WorkbenchAarsplan
@@ -1698,7 +1762,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions }:
         {nivaa === "maned" && <div key="maned" className="v2-fade-in"><MndNivaa data={data} onVelgDato={velgDatoFraMnd} /></div>}
 
         <MobilFold tittel="Bibliotek" ikon="layers">
-          <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} />
+          <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} proMode={proMode} />
         </MobilFold>
         <MobilFold tittel="Balanse" ikon="activity">
           <WBBalanse
