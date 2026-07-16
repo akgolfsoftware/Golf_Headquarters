@@ -2502,6 +2502,8 @@ model GroupSchedule {
   // WEEKLY | NONE — for repeterende økter
   recurring        String?
   maxParticipants  Int?
+  // SAMLING | HELDAGSSAMLING | null (null = vanlig fast/enkelt-trening)
+  kind             String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -2526,6 +2528,8 @@ model TrainingPeriod {
   // primary | accent | moss | gold | muted — matcher YearPlanGantt/MonthGrid tone-typer
   tone       String?
   note       String?
+  // CompetenceGoal.id — 2-4 kompetansemål periodens treningsplan er bygget rundt
+  competenceGoalIds String[] @default([])
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -2549,6 +2553,27 @@ model CompetenceGoal {
 
   @@unique([classYear, curriculumCode, goalNumber])
   @@map("competence_goals")
+}
+
+// Skolerute, timeplan per fag og prøveplan i én tabell (ett rad-format, ulike
+// category-verdier). Konkrete kalenderdager, ikke et fast ukemønster — skolens
+// fag-timeplan endres uke for uke. Ingen @relation — additiv isolasjon (gotchas.md).
+model SchoolScheduleEntry {
+  id         String   @id @default(cuid())
+  // VG1 | VG2 | VG3 | null = gjelder alle trinn (skolerute/ferier)
+  classYear  String?
+  // f.eks. "2026/2027"
+  schoolYear String
+  date       DateTime
+  // TIME | PROVE | HELDAGSPROVE | EKSAMEN | FERIE | SKOLETUR | ANNET
+  category   String
+  title      String
+  note       String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([classYear, schoolYear, date])
+  @@map("school_schedule_entries")
 }
 
 model GroupMember {

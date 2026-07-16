@@ -10,12 +10,49 @@ export type FastTid = {
   title: string;
 };
 
+export type Kompetansemal = {
+  id: string;
+  classYear: string;
+  curriculumCode: string;
+  goalNumber: number;
+  text: string;
+};
+
 export type Periode = {
   id: string;
   name: string;
   startDate: string; // ISO-dato, inkludert
   endDate: string; // ISO-dato, EKSKLUDERT
   tone: string | null;
+  note: string | null;
+  kompetansemal: Kompetansemal[];
+};
+
+export type Samling = {
+  id: string;
+  title: string;
+  startAt: string; // ISO, inkl. klokkeslett
+  endAt: string; // ISO, inkl. klokkeslett
+  kind: "SAMLING" | "HELDAGSSAMLING";
+  location: string | null;
+};
+
+// TIME | PROVE | HELDAGSPROVE | EKSAMEN | FERIE | SKOLETUR | ANNET
+export type SkoleHendelseKategori =
+  | "TIME"
+  | "PROVE"
+  | "HELDAGSPROVE"
+  | "EKSAMEN"
+  | "FERIE"
+  | "SKOLETUR"
+  | "ANNET";
+
+export type SkoleHendelse = {
+  id: string;
+  classYear: string | null; // null = gjelder alle trinn
+  date: string; // ISO-dato
+  category: SkoleHendelseKategori;
+  title: string;
   note: string | null;
 };
 
@@ -24,4 +61,6 @@ export type GruppeKalenderData = {
   gruppeNavn: string;
   faste: FastTid[];
   perioder: Periode[];
+  samlinger: Samling[];
+  skoleHendelser: SkoleHendelse[];
 };

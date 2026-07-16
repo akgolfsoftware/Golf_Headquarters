@@ -8,7 +8,7 @@
     "mac-ogrady-kb",
     "ak-second-brain:elite-metodikk",
     "aimpoint-express-method",
-    "decade-golf-methodology"
+    "presisjonsstrategi-golf-methodology"
   ],
   "drills": [
     {
@@ -545,7 +545,7 @@
     },
     {
       "navn": "makkertest-putt-1-8m-variasjon",
-      "beskrivelse": "To spillere eller coach+spiller. Coach velger en putt mellom 1 og 8m uten å si distansen. Spilleren leser og slår. De scorer poeng etter DECADE-prinsipp: i hull = 3 poeng, innenfor 60cm = 2 poeng, innenfor 1.2m = 1 poeng, utenfor = 0 poeng. 10 putter totalt. Varierende distanser. Mål: minst 20 poeng av 30 mulige. Logg poengsum per sett.",
+      "beskrivelse": "To spillere eller coach+spiller. Coach velger en putt mellom 1 og 8m uten å si distansen. Spilleren leser og slår. De scorer poeng etter PRESISJONSSTRATEGI-prinsipp: i hull = 3 poeng, innenfor 60cm = 2 poeng, innenfor 1.2m = 1 poeng, utenfor = 0 poeng. 10 putter totalt. Varierende distanser. Mål: minst 20 poeng av 30 mulige. Logg poengsum per sett.",
       "disciplin": "SPILL",
       "skillArea": "PUTTING",
       "minKategori": "A",
@@ -582,12 +582,12 @@
       "kilde": "ak-second-brain:elite-metodikk",
       "tags": [
         "variasjon",
-        "DECADE",
+        "PRESISJONSSTRATEGI",
         "poengsum",
         "1-8m",
         "makker"
       ],
-      "coachNotater": "DECADE-basert poengstruktur reflekterer reell spillverdi bedre enn bare 'hull eller ikke hull'. En god lag-putt fra 8m er mer verdt enn en spennende 1m som nesten går inn. Bruk dette som evalueringsverktøy for å tracke fremgang. Poengsum over 20 på A-nivå er forventet. Progresjonen er å øke maks-distansen til 12m."
+      "coachNotater": "PRESISJONSSTRATEGI-basert poengstruktur reflekterer reell spillverdi bedre enn bare 'hull eller ikke hull'. En god lag-putt fra 8m er mer verdt enn en spennende 1m som nesten går inn. Bruk dette som evalueringsverktøy for å tracke fremgang. Poengsum over 20 på A-nivå er forventet. Progresjonen er å øke maks-distansen til 12m."
     },
     {
       "navn": "putting-rytme-metronom-6m",
@@ -4048,7 +4048,7 @@
         "E": 79
       },
       "videoUrl": null,
-      "kilde": "decade-golf-methodology:strategy-scoring",
+      "kilde": "presisjonsstrategi-golf-methodology:strategy-scoring",
       "tags": [
         "bogey-unngaaelse",
         "defensivt-spill",
@@ -4060,7 +4060,7 @@
     },
     {
       "navn": "birdie-attempt-vs-par-safety-beslutning",
-      "beskrivelse": "9-hulls treningsrunde der du eksplisitt tar 'birdie-attempt vs. par-safety'-avgjørelsen på hvert hull basert på lie, distanse, flaggposisjon og mental tilstand. Opprett et enkelt beslutningsskjema: grønn = angrip, gul = spill safe til birdieputt-posisjon, rød = bare unngå bogey. For hvert hull: skriv fargen FØR du slår, og evaluer etterpå om du fulgte den. Suksess: beslutning og utføring samsvarer 8 av 9 hull. Dette er Decade Golf-metodikkens kjerneprinsipp: turneringsspill handler mer om beslutningskvalitet enn svingteknikk.",
+      "beskrivelse": "9-hulls treningsrunde der du eksplisitt tar 'birdie-attempt vs. par-safety'-avgjørelsen på hvert hull basert på lie, distanse, flaggposisjon og mental tilstand. Opprett et enkelt beslutningsskjema: grønn = angrip, gul = spill safe til birdieputt-posisjon, rød = bare unngå bogey. For hvert hull: skriv fargen FØR du slår, og evaluer etterpå om du fulgte den. Suksess: beslutning og utføring samsvarer 8 av 9 hull. Dette er Presisjonsstrategi Golf-metodikkens kjerneprinsipp: turneringsspill handler mer om beslutningskvalitet enn svingteknikk.",
       "disciplin": "SPILL",
       "skillArea": "SPILL",
       "minKategori": "A",
@@ -4096,12 +4096,12 @@
         "E": 80
       },
       "videoUrl": null,
-      "kilde": "decade-golf-methodology:decision-framework",
+      "kilde": "presisjonsstrategi-golf-methodology:decision-framework",
       "tags": [
         "birdie-attempt",
         "par-safety",
         "beslutning",
-        "decade-golf",
+        "presisjonsstrategi-golf",
         "elite-mental"
       ],
       "coachNotater": "Svært avslørende drill. Mange A-kategori-spillere spiller gul/grønt alt for konsekvent. Noen bør lære seg å spille mer rødt på farlige hull sent i turneringen.",

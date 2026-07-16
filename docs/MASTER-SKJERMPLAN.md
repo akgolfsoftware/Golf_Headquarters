@@ -1,6 +1,6 @@
 # Master-skjermplan — AK Golf HQ
 
-> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 14. juli 2026.**
+> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 16. juli 2026.**
 
 > **OPPDATERT KANON (2026-07-08):** Design-kanon er nå UTELUKKENDE det levende Claude Design-
 > prosjektet (`claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`), hentet direkte via
@@ -150,7 +150,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Mål-detalj | `/portal/mal/goal/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Milepæler | `/portal/mal/milepaeler` | – | --- | ✓ | ~ | ~ | ~ |
 | · Leaderboard | `/portal/mal/leaderboard` | – | --- | ✓ | ~ | ~ | ~ |
-| Turneringer (mine) ★ | `/portal/tren/turneringer` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Turneringer (mine) ★ | `/portal/tren/turneringer` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: v2-forhåndsvisning (retning C) allerede portert, hake aldri oppdatert |
 | · Turnering-detalj | `/portal/tren/turneringer/[id]` | – | ✓✓– | ~ | ~ | – | ~ |
 | · Ny turnering | `/portal/tren/turneringer/ny` | – | --- | ✓ | ~ | ~ | ~ |
 | Utfordringer | `/portal/utfordringer` | ~ | --- | ✓ | ~ | ~ | ~ |
@@ -195,13 +195,13 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | ~~· Sammenlign~~ | `/portal/statistikk/sammenlign` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-14) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | · Del runde | `/portal/statistikk/runder/[runId]/del` | – | --- | ✓ | ~ | ~ | ~ |
 | **SG-Hub (Strokes Gained)** ★ | `/portal/mal/sg-hub` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
-| · Kølle-detalj | `/portal/mal/sg-hub/[club]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Benchmark | `/portal/mal/sg-hub/benchmark` | – | --- | ✓ | ~ | ✓ | ✓ |
-| · Best vs nå | `/portal/mal/sg-hub/best-vs-now` | – | --- | ✓ | ~ | ~ | ~ |
-| · Utstyr | `/portal/mal/sg-hub/equipment` | – | --- | ✓ | ~ | ~ | ~ |
-| · Avstander (yardage) | `/portal/mal/sg-hub/yardage` | – | --- | ✓ | ~ | ~ | ~ |
-| · Forhold (vær/bane) | `/portal/mal/sg-hub/conditions` | – | --- | ✓ | ~ | ~ | ~ |
-| · Strategi | `/portal/mal/sg-hub/strategy` | – | --- | ✓ | ~ | ~ | ~ |
+| · Kølle-detalj | `/portal/mal/sg-hub/[club]` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Benchmark | `/portal/mal/sg-hub/benchmark` | ✓ | --- | ✓ | ~ | ✓ | ✓ |
+| · Best vs nå | `/portal/mal/sg-hub/best-vs-now` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Utstyr | `/portal/mal/sg-hub/equipment` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Avstander (yardage) | `/portal/mal/sg-hub/yardage` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Forhold (vær/bane) | `/portal/mal/sg-hub/conditions` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Strategi | `/portal/mal/sg-hub/strategy` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Coach ser spiller-SG | `/portal/mal/sg-hub/coach/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Coach: kølle | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Coach: utstyr | `/portal/mal/sg-hub/coach/[spillerId]/equipment` | – | --- | ✓ | ~ | ~ | ~ |
@@ -236,32 +236,32 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Coach-hub | `/portal/coach` | ~ | --- | ✓ | ~ | ~ | ✓ |
-| · Coach-profil | `/portal/coach/[coachId]` | – | --- | ✓ | ~ | ~ | ~ |
+| · Coach-profil | `/portal/coach/[coachId]` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Meldinger (innboks) | `/portal/coach/melding` | ~ | --- | ✓ | ~ | ~ | ✓ |
 | · Ny melding | `/portal/coach/melding/ny` | ✓ | --- | ✓ | ✓ | ✓ | ✓† |
-| · Meldingstråd | `/portal/coach/melding/[id]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Vedlegg | `/portal/coach/melding/[id]/vedlegg` | – | --- | ✓ | ~ | ~ | ~ |
+| · Meldingstråd | `/portal/coach/melding/[id]` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Vedlegg | `/portal/coach/melding/[id]/vedlegg` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Coach-planer | `/portal/coach/plans` | ~ | --- | ✓ | ~ | ~ | ~ |
-| · Plan-detalj | `/portal/coach/plans/[planId]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Ny økt i plan | `/portal/coach/plans/[planId]/ny-okt` | – | --- | ✓ | ~ | ~ | ~ |
-| · Perioder | `/portal/coach/plans/perioder` | – | --- | ✓ | ~ | ~ | ~ |
-| Coach-øvelser | `/portal/coach/ovelser` | ~ | --- | ✓ | ~ | ~ | ~ |
+| · Plan-detalj | `/portal/coach/plans/[planId]` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Ny økt i plan | `/portal/coach/plans/[planId]/ny-okt` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Perioder | `/portal/coach/plans/perioder` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| Coach-øvelser | `/portal/coach/ovelser` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Ny øvelse | `/portal/coach/ovelser/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| · Rediger øvelse | `/portal/coach/ovelser/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
-| Coach-videoer | `/portal/coach/videoer` | ~ | --- | ✓ | ~ | ~ | ~ |
-| Coach-notater | `/portal/coach/notes` | – | --- | ✓ | ~ | ~ | ~ |
-| · Notat-detalj | `/portal/coach/notes/[noteId]` | – | --- | ✓ | ~ | ~ | ~ |
+| · Rediger øvelse | `/portal/coach/ovelser/[id]/rediger` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| Coach-videoer | `/portal/coach/videoer` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| Coach-notater | `/portal/coach/notes` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Notat-detalj | `/portal/coach/notes/[noteId]` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Spørsmål til coach (liste løftet D3; [id]-tråd ikke løftet) | `/portal/coach/sporsmal/[id]` | ~ | --- | ✓ | ~ | ~ | ~ |
 | · Nytt spørsmål | `/portal/coach/sporsmal/ny` | ✓ | --- | ✓ | ✓ | ✓ | ✓† |
-| Coach-AI | `/portal/coach/ai` | – | --- | ✓ | ~ | ~ | ~ |
+| Coach-AI | `/portal/coach/ai` | ✓ | --- | ✓ | ~ | ~ | ~ |
 
 ### Meg (profil og innstillinger)
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Meg (profil) ★ | `/portal/meg` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
-| Rediger profil ★ | `/portal/meg/profil` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
-| Abonnement ★ | `/portal/meg/abonnement` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Rediger profil ★ | `/portal/meg/profil` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MinProfilV2` (v2 retning C), portert 10. juli, hake aldri oppdatert |
+| Abonnement ★ | `/portal/meg/abonnement` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegAbonnementV2` (v2 retning C), hake aldri oppdatert |
 | · Oppgrader | `/portal/meg/abonnement/oppgrader` | – | --- | ✓ | ~ | ~ | ~ |
 | · Oppgrader-flyt | `/portal/meg/abonnement/oppgrader/flyt` | – | --- | ✓ | ~ | ~ | ~ |
 | · Avbestill | `/portal/meg/abonnement/avbestill` | – | --- | ✓ | ~ | ~ | ~ |
@@ -269,9 +269,9 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Faktura-detalj | `/portal/meg/abonnement/faktura/[id]` | – | --- | ✓ | ~ | ~ | ~ |
 | Mine bookinger | `/portal/meg/bookinger` | – | --- | ✓ | ~ | ~ | ~ |
 | · Endre tid | `/portal/meg/bookinger/reschedule/[bookingId]` | – | --- | ✓ | ~ | ~ | ~ |
-| Helse ★ | `/portal/meg/helse` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Helse ★ | `/portal/meg/helse` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegHelseV2` (v2 retning C), hake aldri oppdatert |
 | · Nytt symptom | `/portal/meg/helse/symptom/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| Innstillinger ★ | `/portal/meg/innstillinger` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Innstillinger ★ | `/portal/meg/innstillinger` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `InnstillingerV2` (v2 retning C), hake aldri oppdatert |
 | · Varsler | `/portal/meg/innstillinger/varsler` | – | --- | ✓ | ~ | ~ | ~ |
 | · Personvern | `/portal/meg/innstillinger/personvern` | – | --- | ✓ | ~ | ~ | ~ |
 | · Sikkerhet | `/portal/meg/innstillinger/sikkerhet` | – | --- | ✓ | ~ | ~ | ~ |
@@ -282,11 +282,11 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Økter | `/portal/meg/innstillinger/okter` | – | --- | ✓ | ~ | ~ | ~ |
 | Sikkerhet | `/portal/meg/sikkerhet` | – | --- | ✓ | ~ | ~ | ~ |
 | · To-faktor (2FA) | `/portal/meg/sikkerhet/2fa` | – | --- | ✓ | ~ | ~ | ~ |
-| Utstyrsbag ★ | `/portal/meg/utstyrsbag` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
-| Dokumenter ★ | `/portal/meg/dokumenter` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Utstyrsbag ★ | `/portal/meg/utstyrsbag` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegUtstyrsbagV2` (v2 retning C), hake aldri oppdatert |
+| Dokumenter ★ | `/portal/meg/dokumenter` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegDokumenterV2` (v2 retning C), hake aldri oppdatert |
 | Foreldre (foresatt-info) | `/portal/meg/foreldre` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
 | Feedback | `/portal/meg/feedback` | – | --- | ✓ | ~ | ~ | ~ |
-| Hjelpesenter ★ | `/portal/meg/help` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Hjelpesenter ★ | `/portal/meg/help` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegHelpV2` (v2 retning C), hake aldri oppdatert |
 | · Hjelp-artikkel | `/portal/meg/help/artikkel/[slug]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Hjelp-kategori | `/portal/meg/help/kategori/[slug]` | – | --- | ✓ | ~ | ~ | ~ |
 | · Kontakt | `/portal/meg/help/kontakt` | – | --- | ✓ | ~ | ~ | ~ |
@@ -326,6 +326,8 @@ Disse finnes i appen, men er enten eldre kortadresser som peker videre, eller sm
 | Reach (oppsøk-verktøy) | `/portal/reach` | – | --- | ✓ | ~ | ~ | ~ |
 | Agent-pipeline (AI internt) | `/portal/agent-pipeline` | – | --- | ✓ | ~ | ~ | ~ |
 | Se annen spiller | `/portal/spiller/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
+| Venner (B39, ny 16. jul) | `/portal/venner` | ✓ | --- | ✓ | ✓ | ✓ | ✓ |
+| · Venn-profil (økt-feed) | `/portal/venner/[spillerId]` | ✓ | --- | ✓ | ✓ | ✓ | ✓ |
 | Øvelser (alt. → redirect) | `/portal/tren/ovelser` | – | --- | ✓ | ✓ | – | ✓ |
 | · Øvelse-detalj (alt. → redirect) | `/portal/tren/ovelser/[id]` | – | --- | ✓ | ✓ | – | ✓ |
 
@@ -393,16 +395,18 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Grupper | `/admin/grupper` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Gruppe-detalj (+ VG-trinn filter/badge, 2026-07-07) | `/admin/grupper/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Gruppe-timeplan (faste/kommende/tidligere + dupliser) | `/admin/grupper/[id]/timeplan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · **WANG Toppidrett — åpen treningsplan** (offentlig, ingen innlogging) | `/team-wang` | ~ | --- | ✓ | ~ | ✓ | † |
+| · **Gruppe-årsplan** (samme kalenderkjerne som /team-wang, koblet inn i gruppeplanleggingen) | `/admin/grupper/[id]/arsplan` | ~ | --- | ✓ | ~ | ~ | † |
+| · · Legg inn skoledata (lim-inn-import → SchoolScheduleEntry) | `/admin/grupper/[id]/arsplan/skoledata` | ~ | --- | ✓ | ✓ | ~ | † |
+| · **WANG Toppidrett — åpen treningsplan** (offentlig, ingen innlogging; nå med dagsvisning + samlinger + skole-/kompetansemål-lag) | `/team-wang` | ~ | -✓– | ✓ | ~ | ✓ | ✓ |
 | · **GFGK Junior — åpen treningsplan** (offentlig, 4 gruppefaner: Mini/Basis/Utvikling/Elite) | `/gfgk-junior` | ~ | --- | ✓ | ~ | ✓ | † |
 | Talent-hub | `/admin/talent` | – | --- | ✓ | ~ | ~ | ~ |
-| · Discovery | `/admin/talent/discovery` | – | --- | ✓ | ~ | ~ | ~ |
+| · Discovery | `/admin/talent/discovery` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Radar | `/admin/talent/radar` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| · Kohort | `/admin/talent/kohort` | – | --- | ✓ | ~ | ~ | ~ |
-| · Region | `/admin/talent/region` | – | --- | ✓ | ~ | ~ | ~ |
-| · Ressurser | `/admin/talent/ressurser` | – | --- | ✓ | ~ | ~ | ~ |
+| · Kohort | `/admin/talent/kohort` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Region | `/admin/talent/region` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Ressurser | `/admin/talent/ressurser` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Sammenligning | `/admin/talent/sammenligning` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
-| · WAGR-benchmark | `/admin/talent/wagr-benchmark` | – | --- | ✓ | ~ | ~ | ~ |
+| · WAGR-benchmark | `/admin/talent/wagr-benchmark` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · WAGR-import | `/admin/talent/wagr-import` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 
 ### Planlegge (lage planer FOR spillerne)
@@ -489,15 +493,15 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Organisasjon-hub | `/admin/organisasjon` | – | --- | ✓ | ✓ | – | ✓ | 2026-07-14: ren redirect til /admin/settings, bekreftet. Fjernet fra Mer-menyen (var duplikat-menypunkt til samme mål) — siden selv beholdt for gamle lenker. |
-| Klubb-innstillinger | `/admin/klubb/innstillinger` | – | --- | ✓ | ~ | ~ | ~ |
-| Integrasjoner | `/admin/integrasjoner` | – | --- | ✓ | ~ | ~ | ~ |
+| Klubb-innstillinger | `/admin/klubb/innstillinger` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| Integrasjoner | `/admin/integrasjoner` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Innstillinger | `/admin/settings` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| · API | `/admin/settings/api` | – | --- | ✓ | ~ | ~ | ~ |
-| · Kalender | `/admin/settings/calendar` | – | --- | ✓ | ~ | ~ | ~ |
-| · Sikkerhet | `/admin/settings/security` | – | --- | ✓ | ~ | ~ | ~ |
-| · Tilgang | `/admin/settings/tilgang` | – | --- | ✓ | ~ | ~ | ~ |
-| Team | `/admin/team` | – | --- | ✓ | ~ | ~ | ~ |
-| · Inviter | `/admin/team/inviter` | – | --- | ✓ | ~ | ~ | ~ |
+| · API | `/admin/settings/api` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Kalender | `/admin/settings/calendar` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Sikkerhet | `/admin/settings/security` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Tilgang | `/admin/settings/tilgang` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| Team | `/admin/team` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Inviter | `/admin/team/inviter` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Audit-log | `/admin/audit-log` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminAuditLogV2`) — samme AuditLog-spørring/kind-status-utledning som legacy, KpiFlis+Rad-liste, ærlig tomtilstand. Lagt i Innsikt-mer-gruppen (var uten menylenke). `(legacy)/audit-log` slettet. |
 | AI-agenter | `/admin/agents` | – | --- | ✓ | ~ | ~ | ~ |
 | · Agent-detalj | `/admin/agents/[agentId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
@@ -542,12 +546,12 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Logg inn ★ | `/auth/login` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
-| Registrer ★ | `/auth/signup` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Logg inn ★ | `/auth/login` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `LoginV2` (v2 retning C), verifisert 1:1 mot `ui_kits/v2/auth-profil.jsx` — portert 10. juli, hake aldri oppdatert |
+| Registrer ★ | `/auth/signup` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `SignupV2` (samme v2-idiomfamilie som LoginV2), portert 10. juli, hake aldri oppdatert |
 | Glemt passord ★ | `/auth/forgot-password` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | Tilbakestill passord | `/auth/reset-password` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Sjekk e-post | `/auth/check-email` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| BankID ★ | `/auth/bankid` | – | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| BankID ★ | `/auth/bankid` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `BankIDV2` (samme v2-idiomfamilie som LoginV2), portert 10. juli, hake aldri oppdatert |
 | Onboarding (spiller, 8 steg) | `/auth/onboarding` | – | ✓✓– | ~ | ✓ | ✓ | ✓ | 2026-07-11: fikset lesPreferences-lekkasje (data ble slettet av enhver innstillings-lagring); steg-3-svar (fasiliteter/dager/mål) lagres nå og feeder FacilityPrefs+Goal+plan-engine.
 | Onboarding (forelder) | `/auth/onboarding/forelder` | – | --- | ✓ | ~ | ~ | ~ |
 | Foreldresamtykke (token) | `/auth/guardian-consent/[token]` | ✓ | --- | ✓ | ~ | ~ | ~ |
@@ -793,6 +797,145 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   der. **Sidefunn under research:** det juridisk forbudte navnet «DECADE» (B30) hadde lekket
   inn i levende kildekode/seed-data — rettet i egen, separat PR (`claude/decade-navnefjerning`)
   fremfor å blande inn i denne omdøpingen.
+- 16. juli (DECADE-navnefjerning, branch `claude/decade-navnefjerning`): B30 forbyr ordet
+  «DECADE» overalt (rettighetsvern, `docs/juridisk/presisjonsstrategi-rettigheter.md`) —
+  research for Byggerunde 2b (Gameplan) fant at ordet faktisk hadde lekket inn i LEVENDE
+  kildekode og seed-data, ikke bare i foreldede dokumenter: `src/lib/domain/rules/pyramide.json`
+  (en ekte domeneregel lest av appen ved kjøretid) og hele
+  `prisma/seed-data/drills-expansion/decade-sg-range.json` (123 treff — dusinvis av drill-navn
+  som `decade-shot-cone-mapping`, `18-hull-decade-strategi`). Rettet 253 forekomster på tvers av
+  7 filer (case-bevarende DECADE/Decade/decade → PRESISJONSSTRATEGI/Presisjonsstrategi/
+  presisjonsstrategi, verifisert med JSON.parse etter hver fil) + omdøpt selve filen til
+  `presisjonsstrategi-sg-range.json` (trygt — `seed-drills-expansion.ts` leser mappen via
+  `readdirSync`, ingen hardkodet filnavn-referanse noe sted). **Viktig for produksjon:**
+  seed-scriptet upserter drills på `navn` (ikke en stabil id) — hvis
+  `decade-*`-drillene allerede er seedet i den ekte databasen, vil en fremtidig kjøring av
+  `seed-drills-expansion.ts` opprette NYE rader med de nye navnene i stedet for å omdøpe de
+  eksisterende. En engangs SQL-omdøping av eksisterende rader (`UPDATE "ExerciseDefinition" SET
+  name = ... WHERE name = '<gammelt-decade-navn>'`) bør kjøres mot den ekte databasen før neste
+  seed-kjøring — kunne ikke gjøres her (sandbox har ingen live DB-tilkobling).
+- 16. juli (Byggerunde 5, B39 Venner, branch `claude/venner-b39`): nytt sosialt lag i
+  PlayerHQ, portet fra `ui_kits/playerhq/phq-venner.jsx` (fersk `DesignSync`-pull —
+  design var faktisk ferdig til tross for at beslutningsloggens egen «status»-linje
+  fortsatt sa «ikke designet ennå», samme dokumentasjons-etterslep som er sett flere
+  ganger tidligere i denne økten). To nye skjermer: `/portal/venner` (venneliste +
+  søk/legg-til + inn-/utgående forespørsler) og en NY, EGEN rute `/portal/venner/[spillerId]`
+  for venn-profilen (hero + privacy-safe økt-feed). **Rute-kollisjon avklart med Anders
+  først:** `/portal/spiller/[spillerId]` er allerede en ekte, koblet side (akademi-
+  leaderboardet bruker den til å vise en spillers fulle Plan- og Coaching-historikk-fane
+  for enhver innlogget portal-bruker) — å gjenbruke samme URL for venn-feeden ville
+  kollidert med en fungerende funksjon. Anders valgte egen rute; `/portal/spiller/[spillerId]`
+  er urørt. Bruker den eksisterende `Friendship`-modellen (fantes i skjema, men hadde
+  ingen fungerende skrive-side i koden fra før — kun ett read-only forbruk i
+  `utfordringer/ny`-veiviseren) — ingen skjemaendring, kun nye server actions
+  (`src/lib/venner/actions.ts`: send/svar/fjern venneforespørsel, søk, privacy-safe
+  feed-uttrekk). Feeden kombinerer `Round` (spilte runder) og fullførte `TrainingSessionV2`,
+  projisert til KUN tittel/sted/dato — aldri SG-tall, `notes`, `completedSummary` eller
+  `coachId` (B29: venner ser AT en økt skjedde, ikke fagdata). Ny opt-in-innstilling
+  `preferences.venneOktSynlig` (default `false`, ALDRI default-på) lagt til i
+  `InnstillingerV2` under «Varsler»-seksjonen (samme plassering designet selv viser:
+  «Skru av i Meg › Innstillinger › Varsler») — venn-profilen viser en tydelig
+  «deler ikke økter ennå»-tilstand i stedet for tom feed når venn ikke har skrudd på
+  synlighet. Lagt til i navigasjon: `/portal/meg`-hub-kort + global søkekatalog.
+- 16. juli (Byggerunde 3+4, første bolk — Coach-seksjonen/SG-Hub/Talent/Admin-org, branch
+  `claude/bulk-sweep-verify`): fersk kodesjekk (ikke bare dokumentet) av ~32 skjermer merket
+  «Design: –/~» i PlayerHQ Coach-seksjonen, SG-Hub-undersidene, AgencyOS Talent-undersidene og
+  Admin/organisasjon-undersidene. **Samme mønster som byggerunde 1a igjen:** så godt som alle
+  var allerede ferdig portet til v2/golfdata med ekte Prisma-data — kun dokumentasjonen hadde
+  ikke fulgt med. Design-haken rettet ✓ for alle 32 (lista under). Fant og fikset 4 reelle,
+  små avvik underveis (fabrikkerte tall/tags som IKKE fantes i noe underliggende felt — samme
+  klasse feil som fake-CTA-opprydningen tidligere): `coach/[coachId]`-siden viste diktede
+  «Snittsvar 4t» og «Rating 4,9/5» (ingen slik modell finnes — kun ekte «Felles økter»-tallet
+  beholdt); `coach/notes/[noteId]` viste identiske statiske tags («TEK, SLAG, pitch-konsistens»)
+  på hvert notat (ingen tags-felt på `CoachingSession` — fjernet); to sider hadde feil
+  produkt-eyebrow («AgencyOS ·» i PlayerHQ-scopede skjermer) rettet til «PlayerHQ ·»
+  (`coach/plans/[planId]/ny-okt`, `coach/ovelser/[id]/rediger`). Statisk `CERTIFICATIONS`-array
+  og `settings/tilgang`s V1-read-only-scoping vurdert som bevisst, ikke fabrikkert — urørt.
+  **Fortsatt advarsel til neste byggerunde:** gitt at dette er andre runde på rad der nesten
+  alle «ikke startet»-rader viste seg allerede bygget, bør resten av de opplistede
+  144-skjermer-i-dokumentet IKKE tas for god fisk — stikkprøve mot faktisk kode FØR bygging,
+  hver gang. **Ikke rørt i denne bolken** (bevisst avgrenset til denne PR-en, tas i neste
+  bolk av samme byggerunde): Meg-undersidene (varsler/personvern/sikkerhet/språk/eksport/2FA),
+  Booking-undersidene, og hele Marketing/Stats v10-visuell-pass (8 grupperte rader). Rettet
+  Design-hake ✓ på: `/portal/mal/sg-hub/[club]`, `/benchmark`, `/best-vs-now`, `/equipment`,
+  `/yardage`, `/conditions`, `/strategy`, `/portal/coach/[coachId]`, `/coach/melding/[id]`,
+  `/coach/melding/[id]/vedlegg`, `/coach/plans/[planId]`, `/coach/plans/[planId]/ny-okt`,
+  `/coach/plans/perioder`, `/coach/ovelser`, `/coach/ovelser/[id]/rediger`, `/coach/videoer`,
+  `/coach/notes`, `/coach/notes/[noteId]`, `/coach/ai`, `/admin/talent/discovery`,
+  `/admin/talent/kohort`, `/admin/talent/region`, `/admin/talent/ressurser`,
+  `/admin/talent/wagr-benchmark`, `/admin/klubb/innstillinger`, `/admin/integrasjoner`,
+  `/admin/settings/api`, `/admin/settings/calendar`, `/admin/settings/security`,
+  `/admin/settings/tilgang`, `/admin/team`, `/admin/team/inviter`.
+- 16. juli (Workbench V4 / B40, delvis — Standard/Pro-modus + fasilitetskonsekvens,
+  branch `claude/workbench-v4-standard-pro`): to av B40s fem deler levert i denne runden.
+  **§3 Standard/Pro-modusbryter** (`wbMode` i `User.preferences`, samme mønster som
+  eksisterende `sgHubMode`, default «pro» — ingen endring i opplevd dybde for noen før
+  noen bevisst bytter): Standard-modus fjerner Årsplan-zoom fra Workbenchs zoom-velger
+  (periodisering/makro-faser), skjuler mal-biblioteket i Bibliotek-fanen, og skjuler
+  ACWR-belastningsstripa — alt Pro-gatet konsistent uansett hvilken vei brukeren prøver å
+  nå dem (delt bryter, spillerens EGEN preferanse på `/portal/planlegge/workbench`,
+  coachens egen på `/admin/spillere/[id]/workbench`). **§4 Fasilitetskonsekvens**:
+  fant at backend (`adaptTemplateWeek`) allerede regner ut mykt avvik når en mal-økt
+  krever et anlegg spilleren ikke har — men UI-et viste bare en generisk «lagt inn»-melding
+  og lot avviket forsvinne stille. Rettet: de tre stedene en mal appliseres i
+  `WorkbenchV2.tsx` viser nå de faktiske avviks-setningene. **Ikke levert i denne
+  runden** (egne, større byggerunder): §2 blank-ark-galleri (år/periode/måned-nivå —
+  ingen eksisterende UI å bygge videre på, ren nybygging), §6 belastningsraila som
+  fullstendig egen Pro-flate (i dag Pro-gatet inline, ikke løftet til egen visning —
+  ingen «Verktøy-velger»-mekanisme finnes ennå å henge den på), §7 gruppe-planlegging
+  (blokk-for-blokk maler + individuell tilpasning krever nye Prisma-modeller/migrasjon —
+  ikke forsøkt uten ekte databasetilgang til å verifisere).
+- 16. juli (Byggerunde 1a-verifisering + reell temabug, branch `claude/reskin-auth-screens`):
+  satt i gang som en «reskin-sweep» av 11 skjermer merket Design=«–» (auth-trioen, de 7
+  PlayerHQ Meg-hub-skjermene, `/portal/tren/turneringer`). Fersk `DesignSync`-verifisering mot
+  Claude Design-prosjektet + lesing av faktisk produksjonskode viste at **alle 11 allerede var
+  1:1-portert til v2 retning C** (`LoginV2`/`SignupV2`/`BankIDV2` 10. juli, Meg-familien og
+  Turneringer-forhåndsvisningen likeens) — hakene var bare aldri flippet etter porteringen.
+  Ingen reskin-jobb var nødvendig; kun dokumentasjonsrettelse (se radene over). **Samtidig
+  funnet en reell bug** mens dette ble verifisert: `V2Shell` sin lys/mørk-bryter styrer ETT
+  delt `data-v2-tema`-cookie-attributt for BÅDE AgencyOS og PlayerHQ — en coach med mørk
+  AgencyOS-preferanse ville fått PlayerHQ-skjermer i mørkt tema også, og en helt ny bruker
+  (ingen cookie) fikk mørk PlayerHQ som DEFAULT. Dette bryter B28 (PlayerHQ er alltid lys,
+  ingen bryter — låst 15. jul). Fikset i `src/components/v2/shell.tsx` (tema tvinges lys når
+  `nav !== AGENCYOS_NAV`, bryteren skjules for spillere) + `src/app/layout.tsx` sitt
+  pre-paint-script (unngår mørk-blits på første lasting av `/portal/*`). **Anbefaling videre:**
+  gitt at 11 av 11 sjekkede rader var falske positiver, bør resten av MASTER-SKJERMPLAN.md sine
+  «Design: –»-rader stikkprøve-verifiseres mot faktisk kode før flere byggerunder scopes rent
+  fra denne tabellen.
+- 16. juli (`/kommando` fjernet, B8 i `docs/AGENCYOS-INVENTAR.md`, branch
+  `claude/kommando-route-cleanup`): det gamle personlige kommandosenteret
+  (dashboard + `agenter`/`kalender`/`oppgaver`/`prosjekter`/`team`) er nå rene
+  redirects til de ekte AgencyOS-flatene — `/admin/agenter` (chat),
+  `/admin/kalender` (kalender), `/admin/agent-team` (dashboard/oppgaver/
+  prosjekter/team). To funksjoner som IKKE hadde noen erstatning ble bygget inn
+  før redirect for å unngå tap: oppgave-CRUD (`TaskList`) montert på
+  `/admin/agent-team`, og oppgavefrister vises nå som «Oppgave-frist»-blokker i
+  `/admin/kalender` (ikke dra-og-slipp-bare — de er ikke bookinger). Disse
+  skjermene stod ikke i haker-tabellene over (interne `/kommando`-ruter var
+  aldri en del av de 341 sporede skjermene) — ingen hake-oppdatering nødvendig,
+  kun denne loggposten.
+- 16. juli (WANG årskalender utvidet — dagsvisning + skole/samling/kompetansemål-lag, branch
+  `feature/wang-aarsplan`): `/team-wang` hadde kun år/måned/uke og viste bare faste treningstider
+  + AK-perioder. Lagt til: dagsvisning (fjerde visningsbryter, gjenbruker `TidsGrid` med 1
+  kolonne); ny `SchoolScheduleEntry`-tabell (skolerute/timeplan/prøveplan per trinn, additiv
+  `db execute`-migrasjon) med enkel lim-inn-importer; `GroupSchedule.kind` (SAMLING/
+  HELDAGSSAMLING) — disse var usynlige før pga. et `recurring: "WEEKLY"`-filter i
+  `hentGruppeKalenderData` som aldri hentet engangs-hendelser; `TrainingPeriod.competenceGoalIds`
+  kobler periodene til eksisterende `CompetenceGoal`-rader (fantes fra før, men var aldri koblet
+  til noe). Nytt klikk-detaljpanel viser dagens periode+kompetansemål, samlinger og full
+  skole-liste. Samme kalenderkjerne koblet inn i AgencyOS som ny fane `/admin/grupper/[id]/arsplan`
+  (+ `/arsplan/skoledata` for import) — dette var hovedmålet: årsplanen var kun en offentlig side,
+  ikke tilgjengelig fra gruppeplanleggingen coachen faktisk bruker. VG-trinn-filter gjenbruker
+  samme `?trinn=`-mønster som allerede fantes på `/admin/grupper/[id]`. Turneringsplan er lagt inn
+  som en tydelig tom-tilstand — venter på turneringskalender-kobling. Seedet: to samlinger
+  (WANG-Oslo vinterleir, ISO-uke 1 og 7 2027) med datoer beregnet eksakt (ikke gjettet), men
+  markert «estimert/ikke bekreftet» i notatfeltet siden WANG sentralt eier de faktiske datoene.
+  Bevisst IKKE seedet: 2026/2027 skolerute/prøveplan/full fag-timeplan — fjorårets konkrete datoer
+  ville vært feil hvis de bare ble relabelt til nytt skoleår, og gjetting av skolens fremtidige
+  timeplan er utenfor det som er forsvarlig å anta. Import-verktøyet står klart for når skolen
+  publiserer. tsc + eslint + `next build` grønt. Browser-testet ende-til-ende på `/team-wang`
+  (år/måned/uke/dag, trinn-filter, klikk-til-detaljpanel med ekte samling+periode-data) — admin-
+  fanen kun bygg-verifisert (auth-gate testet, ikke innlogget browser-test).
 
 - 15. juli (`/portal/ny-okt` koblet til ekte lagring, branch `claude/ny-okt-ekte-lagring`):
   wizarden hadde ingen backend — kun `useState` i nettleseren, «Lagre og start økt» gjorde
