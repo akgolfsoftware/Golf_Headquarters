@@ -68,6 +68,7 @@ const ROUTES: Omit<SearchRoute, "id">[] = [
   { label: "Mine bookinger", description: "Bookinger og endre", href: "/portal/meg/bookinger" },
   { label: "Booking ny", description: "Book time med coach", href: "/portal/booking/ny" },
   { label: "Coach", description: "Meldinger og planer med coach", href: "/portal/coach" },
+  { label: "Venner", description: "Legg til venner, se at de har trent", href: "/portal/venner" },
   { label: "Mål & Utfordringer", description: "Mål, milepæler og challenges", href: "/portal/mal" },
   { label: "Drills", description: "Øvelsesbibliotek", href: "/portal/drills" },
   { label: "Årsplan", description: "Langsiktig plan", href: "/portal/tren/aarsplan" },

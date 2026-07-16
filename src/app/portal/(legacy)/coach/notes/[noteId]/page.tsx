@@ -1,14 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowUpRight, ChevronLeft, MessageCircle, Quote, Tag } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, MessageCircle, Quote } from "lucide-react";
 import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 
 type ChatMelding = { role?: string; content?: string; ts?: string };
-
-const TAGS = ["TEK", "SLAG", "pitch-konsistens"];
 
 export default async function NoteDetalj({
   params,
@@ -200,30 +198,6 @@ export default async function NoteDetalj({
                   Send svar
                 </Link>
               )}
-            </div>
-
-            {/* Tags */}
-            <div className="rounded-lg border border-border bg-card p-4 md:p-6">
-              <div className="mb-4 flex items-center gap-2">
-                <Tag
-                  size={14}
-                  strokeWidth={1.5}
-                  className="text-muted-foreground"
-                />
-                <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                  Tags
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {TAGS.map((t) => (
-                  <span
-                    key={t}
-                    className="rounded-full border border-border bg-secondary px-4 py-1 text-[11px] font-medium text-foreground"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
             </div>
 
             {/* Relaterte notater */}

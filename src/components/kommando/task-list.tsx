@@ -12,7 +12,7 @@ import {
   createKommandoTask,
   toggleKommandoTask,
   deleteKommandoTask,
-} from "@/app/kommando/oppgaver/actions";
+} from "@/lib/kommando/task-actions";
 
 export type KommandoTaskView = {
   id: string;

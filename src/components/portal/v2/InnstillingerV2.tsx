@@ -39,6 +39,8 @@ export type InnstillingerData = {
   epost: string;
   /** Full notif-preferanse (alle felt) — 3 av dem vises som brytere. */
   notif: UserPreferences["notif"];
+  /** B39/Venner opt-in: vis mine fullførte økter i venners aktivitetsfeed. */
+  venneOktSynlig: boolean;
   samtykke: {
     /** Kontoen krever foreldresamtykke (mindreårig). Styrer om raden vises. */
     kreves: boolean;
@@ -182,6 +184,16 @@ export function InnstillingerV2({ data }: { data: InnstillingerData }) {
     });
   }
 
+  // Venner-synlighet (B39) — eget, ikke-nestet felt, alltid opt-in.
+  const [venneOktSynlig, setVenneOktSynlig] = useState(data.venneOktSynlig);
+  function vekslVenneSynlig() {
+    const neste = !venneOktSynlig;
+    setVenneOktSynlig(neste);
+    startLagre(() => {
+      void oppdaterPreferences({ venneOktSynlig: neste });
+    });
+  }
+
   const konto = (
     <Seksjon label="Konto">
       <Link href="/portal/meg/profil" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
@@ -222,11 +234,17 @@ export function InnstillingerV2({ data }: { data: InnstillingerData }) {
         trailing={<Toggle on={notif.nyMeldingFraCoach} onToggle={() => veksle("nyMeldingFraCoach")} label="Melding fra coach" />}
       />
       <Rad
-        last
         leading={<SeksjonIkon name="calendar" />}
         title="Plan publisert"
         sub="Når en ny ukeplan er klar"
         trailing={<Toggle on={notif.treningsplanOppdatert} onToggle={() => veksle("treningsplanOppdatert")} label="Plan publisert" />}
+      />
+      <Rad
+        last
+        leading={<SeksjonIkon name="activity" />}
+        title="Vis mine økter for venner"
+        sub="Venner ser KUN at du har trent — aldri plan, fagkoder eller coach-notater"
+        trailing={<Toggle on={venneOktSynlig} onToggle={vekslVenneSynlig} label="Vis mine økter for venner" />}
       />
     </Seksjon>
   );

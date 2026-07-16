@@ -34,6 +34,8 @@ export interface KalOkt {
   naa?: boolean;
   /** I3: kalenderhendelse (ferie, stengt anlegg, møte) — merkes i OktBlokk. */
   erHendelse?: boolean;
+  /** B8 (2026-07-16): oppgavefrist fra Kommando-oppgavelisten (/admin/agent-team). */
+  erOppgave?: boolean;
 }
 
 export interface KalDag {
@@ -96,7 +98,7 @@ function ukedagIndex(d: Date): number {
   return (d.getDay() + 6) % 7;
 }
 
-export async function hentAgencyKalenderData(ukeParam?: string): Promise<KalenderData> {
+export async function hentAgencyKalenderData(ukeParam?: string, userId?: string): Promise<KalenderData> {
   // 1 · Booking-basert uke-grid (gjenbruk eksisterende, verifisert loader).
   const uke = await loadWeekCalendar(ukeParam);
 
@@ -193,6 +195,39 @@ export async function hentAgencyKalenderData(ukeParam?: string): Promise<Kalende
       naa: false,
       erHendelse: true,
     });
+  }
+
+  // 4 · Oppgavefrister (Kommando-oppgaver, B8 2026-07-16) — kun for innlogget
+  // bruker (personlig oppgaveliste, samme som /admin/agent-team). Vises som
+  // egne "Oppgave-frist"-blokker, plasseres sist i dagen (startMin 1440) og
+  // er bevisst IKKE dra-og-slipp-bare (se erOppgave-guarden i OktBlokk).
+  if (userId) {
+    const frister = await prisma.kommandoTask.findMany({
+      where: {
+        userId,
+        status: "open",
+        dueAt: { gte: ukeStart, lt: ukeSluttForHendelser },
+      },
+      orderBy: { dueAt: "asc" },
+    });
+    for (const t of frister) {
+      if (!t.dueAt) continue;
+      const dayIndex = ukedagIndex(t.dueAt);
+      if (dayIndex < 0 || dayIndex > 6) continue;
+      dager[dayIndex].okter.push({
+        id: `oppgave-${t.id}`,
+        kl: "Frist",
+        startMin: 1440,
+        navn: t.title,
+        akse: t.priority === "haster" ? "TURN" : undefined,
+        sted: null,
+        gruppe: null,
+        serie: null,
+        href: "/admin/agent-team",
+        naa: false,
+        erOppgave: true,
+      });
+    }
   }
 
   // Sorter hver dag på starttid.

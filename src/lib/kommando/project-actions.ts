@@ -1,6 +1,8 @@
 "use server";
 
-// Server actions for Kommando-prosjekter. Gated til ADMIN.
+// Server actions for Kommando-prosjekter. Gated til ADMIN. Flyttet ut av
+// src/app/kommando/ (B8, ruten fjernet) — ProjectList mounter disse fra
+// /admin/agent-team, som er den levende prosjektstyrings-flaten (B4).
 
 import { revalidatePath } from "next/cache";
 import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
@@ -16,9 +18,7 @@ export async function createKommandoProject(input: { name: string }) {
   await prisma.kommandoProject.create({
     data: { userId: user.id, name },
   });
-  revalidatePath("/kommando/prosjekter");
-  revalidatePath("/admin/prosjekter");
-  revalidatePath("/kommando");
+  revalidatePath("/admin/agent-team");
 }
 
 export async function archiveKommandoProject(id: string) {
@@ -32,8 +32,7 @@ export async function archiveKommandoProject(id: string) {
     where: { id: project.id },
     data: { status: project.status === "archived" ? "active" : "archived" },
   });
-  revalidatePath("/kommando/prosjekter");
-  revalidatePath("/admin/prosjekter");
+  revalidatePath("/admin/agent-team");
 }
 
 export async function deleteKommandoProject(id: string) {
@@ -46,8 +45,5 @@ export async function deleteKommandoProject(id: string) {
     data: { projectId: null },
   });
   await prisma.kommandoProject.deleteMany({ where: { id, userId: user.id } });
-  revalidatePath("/kommando/prosjekter");
-  revalidatePath("/admin/prosjekter");
-  revalidatePath("/kommando/oppgaver");
-  revalidatePath("/kommando");
+  revalidatePath("/admin/agent-team");
 }
