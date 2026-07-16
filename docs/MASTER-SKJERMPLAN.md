@@ -106,21 +106,21 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Fys-plan (liste) | `/portal/tren/fys-plan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Fys-plan detalj/bygger | `/portal/tren/fys-plan/[planId]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `KPICard` (ui/) + `fys-plan`-modulen bruker `Input`/`ProgressBar` fra ui/. |
 | Drills (bibliotek) | `/portal/drills` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `OvelsesbankV2` i `V2Shell`. |
-| · Drill-detalj | `/portal/drills/[id]` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
-| Mål-hub | `/portal/mal` | – | --- | ✓ | ~ | ~ | ✓ |
-| · Mål-bygger (wizard) | `/portal/mal/bygger` | – | --- | ✓ | ~ | ~ | ~ |
-| · Mål-detalj | `/portal/mal/goal/[id]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Milepæler | `/portal/mal/milepaeler` | – | --- | ✓ | ~ | ~ | ~ |
-| · Leaderboard | `/portal/mal/leaderboard` | – | --- | ✓ | ~ | ~ | ~ |
+| · Drill-detalj | `/portal/drills/[id]` | – | ✓✓– | ✓ | ~ | ✓ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — kun react/lucide-react/@/lib/utils, 0 golfdata/v2-imports (v10 pixel-port).
+| Mål-hub | `/portal/mal` | ✓ | --- | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — `MalHubV2` inni `V2Shell` (@/components/portal/v2/MalHubV2).
+| · Mål-bygger (wizard) | `/portal/mal/bygger` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2-imports.
+| · Mål-detalj | `/portal/mal/goal/[id]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2-imports.
+| · Milepæler | `/portal/mal/milepaeler` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header importerer golfdata `Eyebrow`.
+| · Leaderboard | `/portal/mal/leaderboard` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ren Tailwind, ingen PlayerHero/golfdata/v2.
 | Turneringer (mine) ★ | `/portal/tren/turneringer` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: v2-forhåndsvisning (retning C) allerede portert, hake aldri oppdatert |
-| · Turnering-detalj | `/portal/tren/turneringer/[id]` | – | ✓✓– | ~ | ~ | – | ~ |
-| · Ny turnering | `/portal/tren/turneringer/ny` | – | --- | ✓ | ~ | ~ | ~ |
+| · Turnering-detalj | `/portal/tren/turneringer/[id]` | – | ✓✓– | ~ | ~ | – | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ren Tailwind + egen `EmptyState`, ingen golfdata/v2.
+| · Ny turnering | `/portal/tren/turneringer/ny` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
 | Utfordringer | `/portal/utfordringer` | ~ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: AMBIGUOUS — `UtfordringerV2` i `V2Shell`, altså fullt v2-komponert. Uklart om «~» reflekterer et reelt gjenstående gap agenten ikke fanget opp, eller selv er stale i motsatt retning — spot-check før den flippes til ✓. |
-| · Ny utfordring (wizard) | `/portal/utfordringer/ny` | – | --- | ✓ | ~ | ~ | ~ |
+| · Ny utfordring (wizard) | `/portal/utfordringer/ny` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
 | · Utfordring-detalj | `/portal/utfordringer/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| AI: mål-bygger | `/portal/ai/mal-bygger` | – | --- | ✓ | ~ | ~ | ~ |
-| AI: foreslå drill | `/portal/ai/foresla-drill` | – | --- | ✓ | ~ | ~ | ~ |
-| AI: foreslå turnering | `/portal/ai/foresla-turnering` | – | --- | ✓ | ~ | ~ | ~ |
+| AI: mål-bygger | `/portal/ai/mal-bygger` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2-imports.
+| AI: foreslå drill | `/portal/ai/foresla-drill` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2-imports.
+| AI: foreslå turnering | `/portal/ai/foresla-turnering` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2-imports.
 
 ### Gjennomføre (inkl. live-økt)
 
@@ -130,21 +130,21 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Økt-detalj (V2-økt fra coach) | `/portal/gjennomfore/[id]` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `OktV2`. |
 | Kalender | `/portal/kalender` | ✓ | --- | ✓ | ~ | ~ | ✓ | v13 composed (golfdata calendars + scope)
 | Kalender (alt. → redirect) | `/portal/tren/kalender` | – | --- | ✓ | ✓ | – | ✓ | Reconciliation 16. jul: redirect-only via `workbenchRedirectForTrenPath` (`src/proxy.ts`) → `/portal/planlegge/workbench?tab=uke`. `(legacy)/tren/kalender/page.tsx` er utilgjengelig dødkode, ikke en ekte gjenstående design-skjerm.
-| Ny økt (handlingsvalg) | `/portal/ny-okt` | – | --- | ✓ | ✓ | ✓ | ✓ |
-| Logg treningsøkt (volum per SG) † | `/portal/trening/logg` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
-| **Putte-laboratoriet** (3 verktøy) | `/portal/trening/putte-laboratoriet` | – | ✓✓– | ✓ | ✓ | – | ✓ |
-| **Break-tabell** (3 varianter) | `/portal/trening/break-tabell` | – | ✓✓– | ✓ | ✓ | – | ✓ |
+| Ny økt (handlingsvalg) | `/portal/ny-okt` | ✓ | --- | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
+| Logg treningsøkt (volum per SG) † | `/portal/trening/logg` | – | ✓✓– | ✓ | ✓ | ✓ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ren Tailwind klientkomponent.
+| **Putte-laboratoriet** (3 verktøy) | `/portal/trening/putte-laboratoriet` | – | ✓✓– | ✓ | ✓ | – | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — kun @/lib/putt-core, ingen golfdata/v2.
+| **Break-tabell** (3 varianter) | `/portal/trening/break-tabell` | – | ✓✓– | ✓ | ✓ | – | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — kun @/lib/putt-core, ingen golfdata/v2.
 | Ønsket økt (be coach) | `/portal/onskeligokt` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `OnskeligOktV2`. |
-| · Ønsket økt bekreftet | `/portal/onskeligokt/bekreftet` | – | --- | ✓ | ~ | ~ | ~ |
+| · Ønsket økt bekreftet | `/portal/onskeligokt/bekreftet` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ren Tailwind, ingen PlayerHero/golfdata/v2.
 | Live-økt: brief † | `/portal/(fullscreen)/live/[sessionId]/brief` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: lagt til akse-farget chip (`--axis-*`-tokens, matcher phq-live.jsx sin PyrChips) + `HjelpTips` (pyramideAkse/lFase). Rettet samtidig en pre-eksisterende feil: `L_PHASE_LABEL` viste GRUNN/SPESIAL/TURNERING (feil enum, LPhase) for `drill.lFase` (som faktisk er LFase — L-Kropp/Arm/Kølle/Ball/Auto); nå hentet fra `L_FASER` i `@/lib/taxonomy`. Egen `LiveSessionShell` beholdt (fullskjerm mørk, samme visuelle intensjon som mockupen).
 | Live-økt: aktiv † | `/portal/(fullscreen)/live/[sessionId]/active` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `DrillLogger` grener nå til ny `FysDrillLogger` for FYS-drills (SettRepsLogger/PulsSoneVelger/Stegteller, m/ `MicButton`-notat) i stedet for golf-only RepCounter-grid; golf-flyten uendret. Lagt til "Neste opp"-hint (matcher phq-live.jsx) + fikset FYS-progressbar (falt tilbake til repSett når plannedReps=0). Egenbygd fargepalett (18 hex, egen godkjent baseline) beholdt — dette er merkevarens forest/lime-primitiver, ikke tema-avhengige aliaser, og AI-Caddie-chat (LiveCoachPanel) dekker mockupens "AI-tip"-idé allerede reelt.
 | Live-økt: oppsummering † | `/portal/(fullscreen)/live/[sessionId]/summary` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: lagt til `Verdict`-banner (plan-etterlevelse ≥70 % = "På plan"/lime, <70 % = "Avvik"/koral, aldri sperre) + `HjelpTips` (planEtterlevelse), matcher phq-live.jsx sin Summary. Mockupens kvalitet(1–5)+følelse-tagger+"Send til Anders" er IKKE bygget — ingen spiller-side vurderings-action finnes i dag (kun coach-siden har `lagreCoachVurdering`); flagget som eget spørsmål, ikke bygget spekulativt.
 | Live-økt: drill-logger | `/portal/(fullscreen)/live/[sessionId]/logger` | ✓ | ✓✓– | ✓ | ~ | ~ | ✓ | Ren redirect-alias til /active (uendret) — arver v2-porten derfra.
-| Live-økt: score-tapper | `/portal/(fullscreen)/live/[sessionId]/tapper` | – | ✓✓– | ✓ | ~ | ~ | ✓ |
-| Tren (fullskjerm) | `/portal/(fullscreen)/tren` | – | --- | ✓ | ~ | ~ | ~ |
-| Økt-detalj | `/portal/tren/[sessionId]` | – | --- | ✓ | ~ | ~ | ✓ |
-| · Planlagt økt | `/portal/tren/[sessionId]/planlagt` | – | --- | ✓ | ~ | ~ | ✓ |
-| Feiring (etter plan ferdig) | `/portal/tren/feiring/[planId]` | – | --- | ✓ | ~ | ~ | ~ |
+| Live-økt: score-tapper | `/portal/(fullscreen)/live/[sessionId]/tapper` | ✓ | ✓✓– | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — `TapperShell` komponerer `LiveCoachPanel` som importerer fra @/components/v2.
+| Tren (fullskjerm) | `/portal/(fullscreen)/tren` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `redirect("/portal/planlegge/workbench")` — ikke en egen skjerm.
+| Økt-detalj | `/portal/tren/[sessionId]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
+| · Planlagt økt | `/portal/tren/[sessionId]/planlagt` | – | --- | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — `InviteFriendTrigger`/`ParticipantsList` importerer ikke golfdata/v2.
+| Feiring (etter plan ferdig) | `/portal/tren/feiring/[planId]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ren Tailwind/hand-tegnet SVG-ring.
 
 ### Analysere
 
@@ -153,9 +153,9 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Analysere = «Min golf» (6 faner: SG · Fokus · Runder · Baggen · Putting · Nivå — v13 golfdata, bølge 1 2026-07-04) ★ | `/portal/analysere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Hull-analyse | `/portal/analysere/hull` | – | ✓✓– | ✓ | ~ | ✓ | ✓ | Reconciliation 16. jul: AMBIGUOUS — delt komposisjon. «Sone-kart»-fanen (`HoleAnalysis`) bruker golfdata `Eyebrow`/`Sparkline`; «Hull for hull»-fanen er 100 % hand-bygget. Kan ikke flippes rent til én status. |
 | Statistikk (oversikt) | `/portal/statistikk` | ~ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul: AMBIGUOUS — `StatistikkHub` er fullt golfdata-komponert (`Card/Eyebrow/KpiTile` + `golfdata-scope`), kan trolig oppgraderes til ✓; «~» kan være stale i motsatt retning. |
-| · Metrikk-detalj | `/portal/statistikk/[metric]` | – | --- | ✓ | ~ | ~ | ~ |
+| · Metrikk-detalj | `/portal/statistikk/[metric]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2, ingen PlayerHero.
 | ~~· Sammenlign~~ | `/portal/statistikk/sammenlign` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-14) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
-| · Del runde | `/portal/statistikk/runder/[runId]/del` | – | --- | ✓ | ~ | ~ | ~ |
+| · Del runde | `/portal/statistikk/runder/[runId]/del` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2-imports.
 | **SG-Hub (Strokes Gained)** ★ | `/portal/mal/sg-hub` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: hub-komponenten importerer golfdata `Button/Card/Eyebrow/KpiTile` + `golfdata-scope`. |
 | · Kølle-detalj | `/portal/mal/sg-hub/[club]` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Benchmark | `/portal/mal/sg-hub/benchmark` | ✓ | --- | ✓ | ~ | ✓ | ✓ |
@@ -164,12 +164,12 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Avstander (yardage) | `/portal/mal/sg-hub/yardage` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Forhold (vær/bane) | `/portal/mal/sg-hub/conditions` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Strategi | `/portal/mal/sg-hub/strategy` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Coach ser spiller-SG | `/portal/mal/sg-hub/coach/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Coach: kølle | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Coach: utstyr | `/portal/mal/sg-hub/coach/[spillerId]/equipment` | – | --- | ✓ | ~ | ~ | ~ |
+| · Coach ser spiller-SG | `/portal/mal/sg-hub/coach/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ren Tailwind, kun @/lib/sg-hub/*-hjelpere.
+| · Coach: kølle | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — `DPlanePlot`/`StrikeHeatmap`/`SmashCurvePlot` importerer ikke golfdata/v2 heller.
+| · Coach: utstyr | `/portal/mal/sg-hub/coach/[spillerId]/equipment` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — delegerer til `EquipmentView`, ingen golfdata/v2.
 | Runder (liste) | `/portal/mal/runder` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `RunderV2`. |
 | · Runde-detalj ★ | `/portal/mal/runder/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Slag-for-slag (visning) | `/portal/mal/runder/[id]/shot-by-shot` | – | --- | ✓ | ~ | ~ | ~ |
+| · Slag-for-slag (visning) | `/portal/mal/runder/[id]/shot-by-shot` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `redirect` til `/portal/mal/runder/${id}/slag` — foreldet rute, ingen lenke peker hit lenger.
 | · Avansert slag-redigering (legacy wizard + UpGame-import) | `/portal/mal/runder/[id]/slag` | ✓ | ✓-- | ✓ | ✓ | ✓ | † |
 | · Fullfør kjeden (import/hurtig → slag-kjede per hull) ★ | `/portal/mal/runder/[id]/fullfor` | ✓ | --- | ✓ | ✓ | ✓ | ~ | Reconciliation 16. jul: gammel kommentar («fra main, v13/golfdata — gjenstår v2-port») var selv stale — `FullforKjedeKlient` er allerede v2-komponert (`T/fmtSg/Caps/Kort/Icon` fra `components/v2`). Design rettet ~ → ✓.
 | · Logg ny runde (hurtig score) ★ | `/portal/mal/runder/ny` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
@@ -177,21 +177,21 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Etterregistrering slag for slag ★ | `/portal/runde/logg` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | TrackMan (liste) | `/portal/mal/trackman` | ✓ | ✓✓– | ✓ | ~ | ✓ | † |
 | · TrackMan-sesjon | `/portal/mal/trackman/[id]` | ✓ | ✓✓– | ✓ | ~ | ~ | † |
-| · TrackMan (alt. adresse) | `/portal/trackman/[sessionId]` | – | ✓✓– | ✓ | ~ | ~ | ~ |
+| · TrackMan (alt. adresse) | `/portal/trackman/[sessionId]` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `redirect` til `/portal/mal/trackman/${sessionId}` — konsolidert 2026-06-25.
 | Gameplan (baneliste, omdøpt fra Baneguide 16. jul) | `/portal/gameplan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Banekart-oversikt | `/portal/gameplan/[baneId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Hull-detalj (dispersion + Planlegg-fane) | `/portal/gameplan/[baneId]/hull/[nr]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | Tester (oversikt) ★ | `/portal/tren/tester` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + v2-primitiver. |
 | · Test-detalj ★ | `/portal/tren/tester/[testId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Test-gjennomføring (scorekort) ★ | `/portal/tren/tester/[testId]/gjennomfor` | – | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
-| · Test-katalog (NGF) | `/portal/tren/tester/katalog` | – | --- | ✓ | ~ | ~ | ~ |
-| · Ny test | `/portal/tren/tester/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| · Ny egen test | `/portal/tren/tester/ny/egen` | – | --- | ✓ | ~ | ~ | ~ |
-| · Test live (fullskjerm) | `/portal/(fullscreen)/test/[testId]/live` | – | --- | ✓ | ~ | ~ | ~ |
-| · Test oppsummering | `/portal/(fullscreen)/test/[testId]/summary` | – | --- | ✓ | ~ | ~ | ~ |
+| · Test-gjennomføring (scorekort) ★ | `/portal/tren/tester/[testId]/gjennomfor` | – | ✓✓~ | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — `scorekort-klient.tsx` ingen golfdata/v2.
+| · Test-katalog (NGF) | `/portal/tren/tester/katalog` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
+| · Ny test | `/portal/tren/tester/ny` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — `wizard.tsx` ingen golfdata/v2, ingen PlayerHero.
+| · Ny egen test | `/portal/tren/tester/ny/egen` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
+| · Test live (fullskjerm) | `/portal/(fullscreen)/test/[testId]/live` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): RUTE FINNES IKKE i koden — ingen `(fullscreen)/test`-mappe, ingen redirect dit heller. Samme kategori som tidligere flaggede død-rute-funn (statistikk/sammenlign, mal/baner) — bør flagges til Anders, ikke bare flippes.
+| · Test oppsummering | `/portal/(fullscreen)/test/[testId]/summary` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): RUTE FINNES IKKE i koden — se samme rad over (live).
 | ~~Bane-bibliotek~~ | `/portal/mal/baner` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 16. jul, samme kategori som `/portal/statistikk/sammenlign` under). Fjern fra planen eller bygg bevisst — ikke bare en hake-fiks. |
 | ~~· Bane-detalj~~ | `/portal/mal/baner/[id]` | — | — | — | — | — | — | Samme — rute finnes ikke. |
-| Statistikk-side (gml.) | `/portal/mal/statistikk` | – | --- | ✓ | ~ | ~ | ~ |
+| Statistikk-side (gml.) | `/portal/mal/statistikk` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
 
 ### Coach (spillerens kontakt med coach)
 
