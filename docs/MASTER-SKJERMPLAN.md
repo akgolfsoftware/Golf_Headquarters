@@ -42,79 +42,41 @@ Tegnforklaring: ✓ = ferdig · ~ = delvis / i arbeid · – = ikke startet
 
 ---
 
-## Status akkurat nå — 17. juni 2026
+## Status akkurat nå — 16. juli 2026 (reconciliation)
 
-### Kodebase (kartlagt 17. juni)
+> Denne seksjonen erstatter en stale «17. juni»/«6. juli»-versjon (arkivert i git-historikken om
+> nødvendig) som fortsatt beskrev sub-sider, Coach-seksjonen og AgencyOS-sekundærskjermer som
+> «Design=– på samtlige» — det stemte ikke lenger. Claude Design-prosjektets DEKNINGSKART.md
+> rapporterte 16. juli **0 gjenstående design-gap** (139 ✅ · 235 ◆ · 27 🛠 · 23 ↪︎ · 2 🟡), og en
+> full kode-reconciliation samme dag bekreftet at det store flertallet av denne tabellens
+> «Design: –»-rader var nettopp den typen stale hake dokumentets egen endringslogg advarte om —
+> skjermen var alt v2- eller golfdata-komponert, bare uten at haken ble flippet.
 
-**404 sider implementert i Next.js App Router:**
+**Hva reconciliation fant, i grove trekk:**
+- **Design-kanon har gått videre fra golfdata til v2** (`src/components/v2/` + per-domene
+  `*V2.tsx`) per `.claude/rules/design-system-regel.md` — golfdata er nå «overgangs-lag».
+  De fleste rettede hakene under er til v2, ikke golfdata.
+- **Forelder-seksjonen** (11 skjermer) var systematisk stale — 10 av 11 er allerede v2-komponert.
+- **Marketing-seksjonen** var nesten helt stale — alt unntatt hele Booking-underflyten (4 ruter)
+  er allerede v2-komponert.
+- **AgencyOS** hadde en stor bølge stale haker (Innboks, Planlegge-hub, Plans, Plan-maler,
+  Teknisk plan, Økter, Tester-hub, Analyse, Rapporter, Agenter, E-postmaler, Talent/Radar,
+  Grupper, Spiller-fremgang/-tester, Caddie, Økonomi, m.fl.) — men også et helt annet funn:
+  **12 rader var feilaktig scoret som levende skjermer når de faktisk kun er redirects**
+  (`/admin`, `/admin/board`, `/admin/kommunikasjon`, `/admin/workspace/oppgaver`, `/admin/stall`,
+  `/admin/talent`-hub, `/admin/plans/new`, `/admin/kapasitet`, `/admin/analysere`,
+  `/admin/tilstander`, `/admin/okonomi`, `/admin/coach-workbench`).
+- **Ekte, bekreftede gap finnes fortsatt** — bl.a. hele Live-økt-familien (brief/aktiv/summary,
+  begge sider av coach/spiller), booking-underflyten (marketing OG portal), en bespoke lokal
+  komponent-familie i AgencyOS (`AgPage`/`AgPageHead`, ikke kanon), og et par ruter som ikke
+  finnes i koden i det hele tatt (`/portal/mal/baner(+[id])`, `/portal/statistikk/sammenlign`).
+- **Noen rader er AMBIGUOUS** (delt komposisjon, kun header-komponent, eller en pixel-perfect
+  hand-port av en godkjent fasit uten kanon-imports) — disse er merket som sådan i tabellene
+  under, ikke tvunget inn i enten ✓ eller –.
 
-| Type | Antall | Forklaring |
-|---|---|---|
-| FULL | 383 | Ekte innhold, koblet til data |
-| STUB | 17 | Minimal placeholder — trenger ferdigstilling |
-| SHELL | 3 | Tomt skall — trenger bygging |
-| REDIRECT | 1 | `/admin/spillere/[id]/fremgang` → redirect |
-
-**Backend:** 48 API-endepunkter · 23 cron-agenter (Vercel Cron) · 120+ server-action-filer · ~170 Prisma-modeller
-
-### Design-status (v13-baseline, 6. juli 2026)
-
-Bekreftet komponert fra v13-kit (Design=✓):
-- **PlayerHQ:** Hjem (`/portal`) · Planlegge · Gjennomføre · Analysere · Meg
-- **AgencyOS:** Spillere (`/admin/spillere`) · Spiller-analyse (`/admin/spillere/[id]/analyse`)
-
-Alt annet er funksjonelt bygget (se FULL-tellingen over), men ikke re-komponert mot dagens
-golfdata-kanon ennå. Rekkefølge og fremdrift styres av den aktive E-serie-planen (se plan-fil).
-
-**Mangler design (–):** de fleste sub-sider og sekundærskjermer — se tabellene nedenfor.
-
----
-
-## Design-fokus for neste sprint
-
-Skjermer som er implementert i kode men IKKE ferdig gjennom design-porting-gaten. Prioritert rekkefølge for Claude Design-arbeid.
-
-### Prioritet 1 — Sub-sider til allerede portede kjerneskjermer
-
-| Område | Skjermer (–) | Data tilgjengelig i Prisma |
-|---|---|---|
-| PlayerHQ Planlegge | Mål-hub, Mål-bygger, Teknisk plan, Fys-plan, Utfordringer, AI-assistenter | `Goal`, `TechnicalPlan`, `FysiskPlan`, `DrillChallenge`, `SeasonPlan`, `PeriodBlock` |
-| PlayerHQ Analysere | SG-Hub sub-sider (equipment/yardage/strategy/conditions/benchmark), Slag-for-slag, TrackMan-sesjon-detalj, Statistikk sub-sider | `Shot`, `HoleScore`, `BrukerSgInput`, `SgInsight`, `ClubMetricTrend`, `TrackManSession`, `TrackManShot` |
-| PlayerHQ Gjennomføre | Ny økt (handlingsvalg), Ønsket økt, Økt-detalj, Kalender, Feiring | `TrainingSessionV2`, `SessionParticipant`, `TrainingPlanSessionLog` |
-| PlayerHQ Booking | Booking-detalj, Ny booking bekreft, Coach-profil (booking), Anlegg-detalj | `Booking`, `CoachingSession`, `ServiceType`, `Facility`, `Payment` |
-| AgencyOS Stall | Spiller-profil, Ny spiller, Tildel test (skjema) | `User`, `Group`, `GroupMember`, `TestAssignment`, `TalentTracking` |
-| AgencyOS Planlegge | Plan-mal detalj, Drill-detalj, Teknisk plan, Ny turnering | `TrainingPlan`, `PlanTemplate`, `PlanEffectiveness`, `TechnicalPlan`, `Tournament` |
-
-### Prioritet 2 — Coach-seksjonen (PlayerHQ) — hele seksjonen mangler design
-
-Spillerens kontakt med coachen er implementert i kode men har **Design=– på samtlige skjermer**.
-
-| Skjerm | Adresse | Data |
-|---|---|---|
-| Coach-hub | `/portal/coach` | `CoachingSession`, `SessionRequest`, `Document` |
-| Meldinger (innboks) | `/portal/coach/melding` | `CaddieMessage`, `Notification` |
-| Meldingstråd | `/portal/coach/melding/[id]` | `CaddieMessage`, `Document` |
-| Coach-planer | `/portal/coach/plans/[planId]` | `TrainingPlan`, `PeriodBlock`, `PlanSession` |
-| Coach-øvelser | `/portal/coach/ovelser` | `ExerciseDefinition`, `CoachDrillDirectiv`, `DrillMal` |
-| Coach-videoer | `/portal/coach/videoer` | `SessionVideo`, `SessionRecording` |
-| Spørsmål til coach | `/portal/coach/sporsmal/[id]` | `CoachNote`, `Document` |
-
-### Prioritet 3 — AgencyOS sekundærskjermer
-
-| Område | Mangler design | Data |
-|---|---|---|
-| Innsikt | Innsikt-hub, Runder, Tilstander, Analytics | `SgInsight`, `Signal`, `Round`, `HealthEntry` |
-| Admin/org | Team, AI-agenter, E-postmaler, Audit-log, Klubb-innstillinger | `ApiKey`, `AuditLog`, `AgentRun`, `EmailTemplate` |
-| Gjennomføre | Daglig drift-hub, Ny booking, TrackMan på tvers | `TrainingSessionV2`, `TrackManSession` |
-| Workspace | Workspace-hub | `OppgaveCache`, `ProsjektCache`, `NotionConnection` |
-
-### Prioritet 4 — Booking-flyt (selvstendig)
-
-`/booking/[slug]` (ekstern booking via slug) + full intern booking-flyt i portal. Egne server actions for kreditbooking.
-
-### Prioritet 5 — Marketing-sider
-
-`/om-oss` · `/coaching` · `/priser` · `/playerhq` · `/cases` · `/suksess` · `/treningsfilosofi` · blogg-layout · coacher-profil
+**Konklusjon:** den tidligere «Prioritet 1–5»-listen under (nå fjernet) beskrev nesten
+utelukkende arbeid som allerede er gjort. Se de enkelte skjerm-radene lenger ned for nåværende,
+verifisert status — ikke gjenoppliv denne listen uten en fersk kode-sjekk.
 
 ---
 
