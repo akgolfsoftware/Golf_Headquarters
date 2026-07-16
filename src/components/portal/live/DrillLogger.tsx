@@ -1,6 +1,8 @@
 import { Check, Target } from "lucide-react";
 import type { LiveV2Drill, DrillRepState } from "./types";
 import { RepCounter } from "./RepCounter";
+import { FysDrillLogger } from "./FysDrillLogger";
+import { L_FASER } from "@/lib/taxonomy";
 
 export type DrillLoggerProps = {
   drill: LiveV2Drill;
@@ -30,11 +32,11 @@ const AXIS_LABEL: Record<string, string> = {
   TURN: "Turnering",
 };
 
-const L_PHASE_LABEL: Record<string, string> = {
-  GRUNN: "Grunnfase",
-  SPESIAL: "Spesialfase",
-  TURNERING: "Turneringsfase",
-};
+// Rettet 2026-07-16 (samme bug som LiveBrief.tsx hadde): drill.lFase er typet
+// LFase (L-Kropp/Arm/Kølle/Ball/Auto), ikke den separate LPhase-enumen.
+const L_PHASE_LABEL: Record<string, string> = Object.fromEntries(
+  L_FASER.map((f) => [f.kode, f.label]),
+);
 
 const AXIS_DOT: Record<string, string> = {
   FYS: "bg-pyr-fys",
@@ -69,6 +71,7 @@ export function DrillLogger({
 
   const progressPct = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
   const axisDot = AXIS_DOT[drill.pyramide] ?? "bg-accent";
+  const erFys = drill.pyramide === "FYS";
 
   return (
     <div className="flex flex-col gap-4 px-4 py-4">
@@ -132,37 +135,43 @@ export function DrillLogger({
         </div>
       </div>
 
-      {/* Rep-tellere */}
-      <RepCounter
-        label="Totalt"
-        value={computedTotal}
-        primary
-        hideDecrement
-        readOnly
-      />
+      {/* Rep-tellere golf, eller FYS-modalitetslogger for fysiske drills */}
+      {erFys ? (
+        <FysDrillLogger drill={drill} onChange={onChange} />
+      ) : (
+        <>
+          <RepCounter
+            label="Totalt"
+            value={computedTotal}
+            primary
+            hideDecrement
+            readOnly
+          />
 
-      <div className="grid gap-4">
-        <RepCounter
-          label="Uten ball"
-          value={state.repsWithoutBall}
-          onChange={(v) => setField("repsWithoutBall", v)}
-        />
-        <RepCounter
-          label="Lav hastighet"
-          value={state.repsLowSpeed}
-          onChange={(v) => setField("repsLowSpeed", v)}
-        />
-        <RepCounter
-          label="Automatikk"
-          value={state.repsAutomatic}
-          onChange={(v) => setField("repsAutomatic", v)}
-        />
-        <RepCounter
-          label="Golfballer slått"
-          value={state.repsHit}
-          onChange={(v) => setField("repsHit", v)}
-        />
-      </div>
+          <div className="grid gap-4">
+            <RepCounter
+              label="Uten ball"
+              value={state.repsWithoutBall}
+              onChange={(v) => setField("repsWithoutBall", v)}
+            />
+            <RepCounter
+              label="Lav hastighet"
+              value={state.repsLowSpeed}
+              onChange={(v) => setField("repsLowSpeed", v)}
+            />
+            <RepCounter
+              label="Automatikk"
+              value={state.repsAutomatic}
+              onChange={(v) => setField("repsAutomatic", v)}
+            />
+            <RepCounter
+              label="Golfballer slått"
+              value={state.repsHit}
+              onChange={(v) => setField("repsHit", v)}
+            />
+          </div>
+        </>
+      )}
 
       {/* Fullfør-knapp */}
       <button

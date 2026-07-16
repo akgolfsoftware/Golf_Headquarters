@@ -139,6 +139,9 @@ export type DrillRepState = {
   repsLowSpeed: number;
   repsAutomatic: number;
   repsHit: number;
+  /** Klarspråk-detaljer fra FYS-modalitetsloggeren (vekt/sone/RIR osv.) — golf-drills setter aldri denne.
+   *  Eget navn (ikke "notes") for å unngå kollisjon med LiveV2Drill.notes (coachens plan-notat). */
+  logNotes?: string;
 };
 
 /** Sammendragsdata for fullført økt. */

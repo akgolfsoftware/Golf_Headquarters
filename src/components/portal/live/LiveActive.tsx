@@ -307,6 +307,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         repsHit: active.repsHit,
         successRate:
           active.repsTotal > 0 ? Math.round((active.repsHit / active.repsTotal) * 100) : 0,
+        notes: active.logNotes,
       });
     } catch (err) {
       console.error("[LiveActive] completeDrill feilet", err);
