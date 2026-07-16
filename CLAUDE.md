@@ -118,6 +118,18 @@ npm run verify
 Tilsvarer: `prisma validate && prisma generate && tsc --noEmit && eslint --quiet src && node scripts/check-no-hex.mjs && npm run build`
 (`check-no-hex.mjs` håndhever at farger kommer fra designtokens, ikke rå hex-verdier). `npm run dev` skal starte uten warnings.
 
+## CI/CD (GitHub Actions, `.github/workflows/`)
+- **`ci.yml`** kjører på hver PR og push til main: `prisma generate` → `tsc --noEmit` → `eslint` →
+  hex-gate (`npm run check:hex`) → enhetstester (`npm test`) → `npm run build` → Playwright e2e
+  mot en lokalt startet instans. Bruker dummy env-verdier (Supabase/Stripe/DB) — trenger ingen
+  ekte secrets for å validere kode. `husky`/`lint-staged` kjører samme gate (eslint + tsc) på
+  staged `.ts`/`.tsx`-filer i pre-commit, så feil fanges lokalt før CI.
+- **`deploy.yml` er MANUELL** (`workflow_dispatch` — «Run workflow» i Actions-fanen, eller
+  `gh workflow run deploy.yml`), IKKE trigget av push til main. En push som består CI havner ikke
+  automatisk i prod; deploy er en bevisst, separat handling (Anders' beslutning 2026-07-05).
+- `playwright.yml`, `scrape-gjgt.yml`, `scrape-golfbox.yml` er egne, mer avgrensede workflows —
+  sjekk filene direkte ved behov.
+
 ## Sesjons-minne (hvor var vi sist)
 Native auto memory (Anthropic, på) husker automatisk på denne maskinen. Cross-machine state ligger i
 `~/ak-brain/prosjekter/akgolf-hq.md` — lastes automatisk ved øktstart (SessionStart-hook) og oppdateres
