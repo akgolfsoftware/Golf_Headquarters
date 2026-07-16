@@ -88,6 +88,7 @@ export async function oppdaterPreferences(input: Partial<UserPreferences>) {
     spraak: input.spraak ?? eksisterende.spraak,
     sgHubMode: input.sgHubMode ?? eksisterende.sgHubMode,
     enhet: input.enhet ?? eksisterende.enhet,
+    venneOktSynlig: input.venneOktSynlig ?? eksisterende.venneOktSynlig,
   };
   // Rå-merge bevarer ukjente nøkler (onboarding, trening) — kun de kjente
   // feltene over skal faktisk endres av denne handlingen.

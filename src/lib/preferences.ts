@@ -18,6 +18,11 @@ export type UserPreferences = {
   sgHubMode: "simple" | "advanced";
   /** Måleenhet for lengder i appen. */
   enhet: "meter" | "yards";
+  /**
+   * Opt-in (B39/Venner): vis mine fullførte økter i venners aktivitetsfeed.
+   * ALDRI default-på — venner ser da kun AT en økt skjedde, aldri plan/tall.
+   */
+  venneOktSynlig: boolean;
 };
 
 export const DEFAULT_PREFERENCES: UserPreferences = {
@@ -34,6 +39,7 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
   spraak: "nb",
   sgHubMode: "simple",
   enhet: "meter",
+  venneOktSynlig: false,
 };
 
 function boolPref(val: unknown, defaultVal: boolean): boolean {
@@ -69,6 +75,7 @@ export function lesPreferences(user: Pick<User, "preferences">): UserPreferences
   const spraak = obj.spraak === "en" ? "en" : "nb";
   const sgHubMode = obj.sgHubMode === "advanced" ? "advanced" : "simple";
   const enhet = obj.enhet === "yards" ? "yards" : "meter";
+  const venneOktSynlig = boolPref(obj.venneOktSynlig, DEFAULT_PREFERENCES.venneOktSynlig);
   const d = DEFAULT_PREFERENCES.notif;
 
   return {
@@ -85,5 +92,6 @@ export function lesPreferences(user: Pick<User, "preferences">): UserPreferences
     spraak,
     sgHubMode,
     enhet,
+    venneOktSynlig,
   };
 }

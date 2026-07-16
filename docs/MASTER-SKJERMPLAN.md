@@ -326,6 +326,8 @@ Disse finnes i appen, men er enten eldre kortadresser som peker videre, eller sm
 | Reach (oppsøk-verktøy) | `/portal/reach` | – | --- | ✓ | ~ | ~ | ~ |
 | Agent-pipeline (AI internt) | `/portal/agent-pipeline` | – | --- | ✓ | ~ | ~ | ~ |
 | Se annen spiller | `/portal/spiller/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
+| Venner (B39, ny 16. jul) | `/portal/venner` | ✓ | --- | ✓ | ✓ | ✓ | ✓ |
+| · Venn-profil (økt-feed) | `/portal/venner/[spillerId]` | ✓ | --- | ✓ | ✓ | ✓ | ✓ |
 | Øvelser (alt. → redirect) | `/portal/tren/ovelser` | – | --- | ✓ | ✓ | – | ✓ |
 | · Øvelse-detalj (alt. → redirect) | `/portal/tren/ovelser/[id]` | – | --- | ✓ | ✓ | – | ✓ |
 
@@ -766,6 +768,30 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 ---
 
 ## Endringslogg
+
+- 16. juli (Byggerunde 5, B39 Venner, branch `claude/venner-b39`): nytt sosialt lag i
+  PlayerHQ, portet fra `ui_kits/playerhq/phq-venner.jsx` (fersk `DesignSync`-pull —
+  design var faktisk ferdig til tross for at beslutningsloggens egen «status»-linje
+  fortsatt sa «ikke designet ennå», samme dokumentasjons-etterslep som er sett flere
+  ganger tidligere i denne økten). To nye skjermer: `/portal/venner` (venneliste +
+  søk/legg-til + inn-/utgående forespørsler) og en NY, EGEN rute `/portal/venner/[spillerId]`
+  for venn-profilen (hero + privacy-safe økt-feed). **Rute-kollisjon avklart med Anders
+  først:** `/portal/spiller/[spillerId]` er allerede en ekte, koblet side (akademi-
+  leaderboardet bruker den til å vise en spillers fulle Plan- og Coaching-historikk-fane
+  for enhver innlogget portal-bruker) — å gjenbruke samme URL for venn-feeden ville
+  kollidert med en fungerende funksjon. Anders valgte egen rute; `/portal/spiller/[spillerId]`
+  er urørt. Bruker den eksisterende `Friendship`-modellen (fantes i skjema, men hadde
+  ingen fungerende skrive-side i koden fra før — kun ett read-only forbruk i
+  `utfordringer/ny`-veiviseren) — ingen skjemaendring, kun nye server actions
+  (`src/lib/venner/actions.ts`: send/svar/fjern venneforespørsel, søk, privacy-safe
+  feed-uttrekk). Feeden kombinerer `Round` (spilte runder) og fullførte `TrainingSessionV2`,
+  projisert til KUN tittel/sted/dato — aldri SG-tall, `notes`, `completedSummary` eller
+  `coachId` (B29: venner ser AT en økt skjedde, ikke fagdata). Ny opt-in-innstilling
+  `preferences.venneOktSynlig` (default `false`, ALDRI default-på) lagt til i
+  `InnstillingerV2` under «Varsler»-seksjonen (samme plassering designet selv viser:
+  «Skru av i Meg › Innstillinger › Varsler») — venn-profilen viser en tydelig
+  «deler ikke økter ennå»-tilstand i stedet for tom feed når venn ikke har skrudd på
+  synlighet. Lagt til i navigasjon: `/portal/meg`-hub-kort + global søkekatalog.
 
 - 15. juli (`/portal/ny-okt` koblet til ekte lagring, branch `claude/ny-okt-ekte-lagring`):
   wizarden hadde ingen backend — kun `useState` i nettleseren, «Lagre og start økt» gjorde
