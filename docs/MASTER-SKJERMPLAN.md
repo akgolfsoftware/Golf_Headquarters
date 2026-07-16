@@ -552,75 +552,86 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Tilbakestill passord | `/auth/reset-password` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Sjekk e-post | `/auth/check-email` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | BankID ★ | `/auth/bankid` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `BankIDV2` (samme v2-idiomfamilie som LoginV2), portert 10. juli, hake aldri oppdatert |
-| Onboarding (spiller, 8 steg) | `/auth/onboarding` | – | ✓✓– | ~ | ✓ | ✓ | ✓ | 2026-07-11: fikset lesPreferences-lekkasje (data ble slettet av enhver innstillings-lagring); steg-3-svar (fasiliteter/dager/mål) lagres nå og feeder FacilityPrefs+Goal+plan-engine.
-| Onboarding (forelder) | `/auth/onboarding/forelder` | – | --- | ✓ | ~ | ~ | ~ |
+| Onboarding (spiller, 8 steg) | `/auth/onboarding` | – | ✓✓– | ~ | ✓ | ✓ | ✓ | Reconciliation 16. jul: BEKREFTET ekte gap — `onboarding-wizard.tsx` er egenbygd (`wizard-chrome`/`wizard-fields`), verken golfdata- eller v2-komponert (gjenbruker kun `ui/Input`+`ui/Checkbox`). 2026-07-11: fikset lesPreferences-lekkasje (data ble slettet av enhver innstillings-lagring); steg-3-svar (fasiliteter/dager/mål) lagres nå og feeder FacilityPrefs+Goal+plan-engine.
+| Onboarding (forelder) | `/auth/onboarding/forelder` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — samme egenbygde wizard-chrome/-fields som spiller-onboarding.
 | Foreldresamtykke (token) | `/auth/guardian-consent/[token]` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Samtykke venter | `/auth/samtykke-venter` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| Logget ut | `/auth/logget-ut` | – | ✓✓– | ✓ | ~ | – | ✓ |
+| Logget ut | `/auth/logget-ut` | ✓ | ✓✓– | ✓ | ~ | – | ✓ | Design rettet – → ✓ 16. jul: rendrer `LoggetUtV2` (`components/portal/v2/`), portert tidligere — hake aldri oppdatert (samme mønster som Login/Signup/BankID over) |
 
 ### Forelder (foreldreportal)
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Forelder-hjem | `/forelder` | – | ✓✓– | ✓ | ~ | – | ~ |
-| Barn (oversikt) | `/forelder/barn` | – | ✓✓– | ✓ | ~ | ~ | ✓ |
-| · Barn-detalj | `/forelder/barn/[childId]` | – | ✓✓– | ✓ | ~ | – | ~ |
-| Bookinger | `/forelder/bookinger` | – | --- | ✓ | ~ | ~ | ~ |
-| Coach | `/forelder/coach` | – | --- | ✓ | ~ | ✓ | † |
-| Fakturaer | `/forelder/fakturaer` | – | --- | ✓ | ~ | ~ | ~ |
-| Økonomi | `/forelder/okonomi` | – | --- | ✓ | ~ | ~ | ~ |
-| Samtykke | `/forelder/samtykke` | – | --- | ✓ | ~ | ~ | ~ |
-| Ukerapport | `/forelder/ukerapport` | – | --- | ✓ | ~ | ~ | ~ |
-| Innstillinger | `/forelder/innstillinger` | – | --- | ✓ | ~ | ~ | ~ |
-| Varsler | `/forelder/varsler` | – | --- | ✓ | ~ | ~ | ~ |
-| Inviter forelder (token) | `/inviter/forelder/[token]` | – | --- | ✓ | ~ | ~ | ~ |
+| Forelder-hjem | `/forelder` | ✓ | ✓✓– | ✓ | ~ | – | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderV2` — hele seksjonens «Design: –» var systematisk stale, se merknad under tabellen. |
+| Barn (oversikt) | `/forelder/barn` | ✓ | ✓✓– | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + v2-primitiver. |
+| · Barn-detalj | `/forelder/barn/[childId]` | – | ✓✓– | ✓ | ~ | – | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — eneste unntaket i seksjonen; `page.tsx` har ingen `@/components`-imports, egen rå Tailwind («Hybrid design: forest-gradient hero + white cards»). |
+| Bookinger | `/forelder/bookinger` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderBookingerV2`. |
+| Coach | `/forelder/coach` | ✓ | --- | ✓ | ~ | ✓ | † | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderCoachV2`. |
+| Fakturaer | `/forelder/fakturaer` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderFakturaerV2`. |
+| Økonomi | `/forelder/okonomi` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderOkonomiV2`. |
+| Samtykke | `/forelder/samtykke` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderSamtykkeV2`. |
+| Ukerapport | `/forelder/ukerapport` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderUkerapportV2`. |
+| Innstillinger | `/forelder/innstillinger` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderInnstillingerV2`. |
+| Varsler | `/forelder/varsler` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderVarslerV2`. |
+| Inviter forelder (token) | `/inviter/forelder/[token]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — `AksepterForm` er rått `<form>`/Tailwind, ingen komponent-imports. |
+
+> **Reconciliation 16. jul:** hele Forelder-seksjonens «Design: –»-merking var systematisk stale — 10 av 11 skjermer er allerede v2-komponert (`V2Shell` + dedikert `*V2`-komponent per rute), bare uten at haken noensinne ble flippet. Kun barn-detalj og invitasjons-aksept er ekte gap.
 
 ### Marketing (akgolf.no — offentlige sider)
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Forside | `/(marketing)` | – | ✓✓– | ~ | ~ | – | ✓† | 
-| Anlegg | `/(marketing)/anlegg` | – | --- | ✓ | ~ | ~ | ✓ |
-| · Anlegg-detalj | `/(marketing)/anlegg/[slug]` | – | --- | ✓ | ~ | ~ | ✓ |
+| Forside | `/(marketing)` | ✓ | ✓✓– | ~ | ~ | – | ✓† | Design rettet – → ✓ 16. jul: `MarkedForsideV2`.
+| Anlegg | `/(marketing)/anlegg` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedAnleggListeV2`.
+| · Anlegg-detalj | `/(marketing)/anlegg/[slug]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedAnleggDetaljV2`.
 | Blogg | `/(marketing)/blogg` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | · Blogg-innlegg | `/(marketing)/blogg/[slug]` | ✓ | --- | ✓ | ~ | ~ | ✓ |
-| Booking | `/(marketing)/booking` | – | --- | ✓ | ~ | ~ | ✓ |
-| · Booking-tjeneste | `/(marketing)/booking/[slug]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Booking bekreft | `/(marketing)/booking/[slug]/bekreft` | – | --- | ✓ | ~ | ~ | ~ |
-| · Booking kvittering | `/(marketing)/booking/kvittering/[bookingId]` | – | --- | ✓ | ~ | ~ | ~ |
+| Booking | `/(marketing)/booking` | – | --- | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul: BEKREFTET ekte gap — kun én `Eyebrow`-golfdata-import i toppen, resten (lokasjon/coach/tjeneste-velger) er egenbygd rå Tailwind.
+| · Booking-tjeneste | `/(marketing)/booking/[slug]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — ingen komponent-imports, egen `SlotPicker`.
+| · Booking bekreft | `/(marketing)/booking/[slug]/bekreft` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — helt egenbygd, ingen komponent-imports.
+| · Booking kvittering | `/(marketing)/booking/kvittering/[bookingId]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — samme som over.
 | Cases | `/(marketing)/cases` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | Coacher | `/(marketing)/coacher` | ✓ | --- | ✓ | ~ | ~ | ✓ |
-| · Coach-profil | `/(marketing)/coacher/[slug]` | – | --- | ✓ | ~ | ~ | ✓ |
-| Coaching | `/(marketing)/coaching` | – | --- | ✓ | ~ | ~ | ✓ |
-| Junior | `/(marketing)/junior` | – | --- | ✓ | ~ | ~ | ✓ |
-| Priser | `/(marketing)/priser` | – | --- | ✓ | ~ | ~ | ✓ |
-| PlayerHQ (salgsside) | `/(marketing)/playerhq` | – | --- | ✓ | ~ | ~ | ✓ |
+| · Coach-profil | `/(marketing)/coacher/[slug]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedCoachDetaljV2`.
+| Coaching | `/(marketing)/coaching` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedCoachingV2`.
+| Junior | `/(marketing)/junior` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedJuniorV2`.
+| Priser | `/(marketing)/priser` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedPriserV2`.
+| PlayerHQ (salgsside) | `/(marketing)/playerhq` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedPlayerHQV2`.
 | Om oss | `/(marketing)/om-oss` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | Kontakt | `/(marketing)/kontakt` | ✓ | --- | ✓ | ~ | ~ | ✓ |
-| Jobb | `/(marketing)/jobb` | – | --- | ✓ | ~ | ~ | ✓ |
-| FAQ | `/(marketing)/faq` | – | --- | ✓ | ~ | ~ | ✓ |
+| Jobb | `/(marketing)/jobb` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedJobbV2`.
+| FAQ | `/(marketing)/faq` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedFaqV2`.
 | Suksess | `/(marketing)/suksess` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | Treningsfilosofi | `/(marketing)/treningsfilosofi` | ✓ | --- | ✓ | ~ | ~ | ✓ |
-| Turneringer | `/(marketing)/turneringer` | – | --- | ✓ | ~ | ~ | ✓ |
-| · Turnering-detalj | `/(marketing)/turneringer/[slug]` | – | --- | ✓ | ~ | ~ | ✓ |
-| Cookies | `/(marketing)/cookies` | – | --- | ✓ | ~ | ~ | ✓ |
-| Personvern | `/(marketing)/personvern` | – | --- | ✓ | ~ | ~ | ✓ |
-| Vilkår | `/(marketing)/vilkar` | – | --- | ✓ | ~ | ~ | ✓ |
+| Turneringer | `/(marketing)/turneringer` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedTurneringerListeV2`.
+| · Turnering-detalj | `/(marketing)/turneringer/[slug]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedTurneringDetaljV2` (har også en villet redirect-gren for sammenslåtte turneringer, ikke dødt).
+| Cookies | `/(marketing)/cookies` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedCookiesV2`.
+| Personvern | `/(marketing)/personvern` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedPersonvernV2`.
+| Vilkår | `/(marketing)/vilkar` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedVilkarV2`.
+
+> **Reconciliation 16. jul:** nesten hele Marketing-tabellen var stale «Design: –» — alt unntatt Booking-underflyten (4 rader over) er allerede v2-komponert. Booking-underflyten er det ene ekte gapet i seksjonen.
 
 #### Marketing → Stats (det store offentlige stats-universet)
 
-Dette er en stor offentlig statistikk-seksjon (PGA-tall, norske spillere, verktøy osv.). Den er funksjonell med ekte data, men ikke pusset opp til v10-design. Gruppert kompakt her — alle adressene under begynner med `/(marketing)`:
+Dette er en stor offentlig statistikk-seksjon (PGA-tall, norske spillere, verktøy osv.). Den er funksjonell med ekte data. Gruppert kompakt her — alle adressene under begynner med `/(marketing)`. Status-nøkkel egen for denne tabellen: `✓` = v2-komponert · `◐` = hybrid (v2-skall `StatsLegacyShell` + eldre `stats/*`-innholdskomponenter, verken golfdata- eller v2-komponert innhold) · `–` = ikke individuelt verifisert denne runden.
 
 | Område | Adresse(r) (under `/(marketing)/stats/...`) | Design | Adresse-ok | Data | Funker |
 |---|---|---|---|---|---|
-| Stats-forside + uka + 2026 | `stats`, `stats/uka`, `stats/2026` | – | ✓ | ~ | ✓ |
-| Spillere + årgang | `stats/spillere`, `stats/spillere/[slug]`, `stats/aargang`, `stats/aargang/[aar]` | – | ✓ | ✓ | ✓ |
-| Baner + klubber + regioner | `stats/baner(/[slug])`, `stats/klubber(/[slug])`, `stats/regions(/[slug])` | – | ✓ | ✓ | ✓ |
-| Turneringer (offentlig) | `stats/turneringer(/[slug])(/statistikk)`, `stats/tour/[slug]` | – | ✓ | ✓ | ✓ |
-| Leaderboards + norske + PGA | `stats/leaderboards`, `stats/norske`, `stats/pga` (+ drive-distance, fairway-pct, gir-pct, putt-explorer, putts-per-round, scoring-avg, sg-total, spillere, spillere/[dg_id]) | – | ✓ | ✓ | ✓ |
-| Verktøy (kalkulatorer) | `stats/verktoy` (+ avstand, score-til-hcp, sg-estimator, tour-ekvivalent, whs-kalkulator) | – | ✓ | ✓ | ✓ |
-| Sammenlign + SG-sammenlign | `stats/sammenlign-spillere`, `stats/sg-sammenlign(/start)(/resultat/[id])` | – | ✓ | ✓ | ✓ |
-| Blogg + søk + quiz + wrapped + min progresjon | `stats/blogg(/[slug])`, `stats/sok`, `stats/quiz`, `stats/wrapped/[slug]`, `stats/min-progresjon` | – | ✓ | ✓ | ✓ |
+| Stats-forside + uka | `stats`, `stats/uka` | ✓ | ✓ | ~ | ✓ | Reconciliation 16. jul: `MarkedStatsHubV2`/`StatsUkaV2`. `stats/2026` ikke individuelt sjekket.
+| · 2026 (ikke individuelt sjekket) | `stats/2026` | – | ✓ | ~ | ✓ |
+| Spillere | `stats/spillere` | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul: `StatsSpillereV2`. `spillere/[slug]` + årgang-radene ikke individuelt sjekket.
+| · Spiller-detalj + årgang (ikke individuelt sjekket) | `stats/spillere/[slug]`, `stats/aargang`, `stats/aargang/[aar]` | – | ✓ | ✓ | ✓ |
+| Regioner | `stats/regions(/[slug])` | ◐ | ✓ | ✓ | ✓ | Reconciliation 16. jul: hybrid — `StatsLegacyShell` (v2-komponert skall) rundt eldre `@/components/stats/*`-widgets (norgeskart/heatmap/radar) via `STATS_LEGACY_VARS`-adapter. Verken ren gap eller ren ✓.
+| · Baner + klubber (ikke individuelt sjekket) | `stats/baner(/[slug])`, `stats/klubber(/[slug])` | – | ✓ | ✓ | ✓ | Sannsynlig samme `StatsLegacyShell`-mønster som Regioner — bør sjekkes sammen med den.
+| Turneringer (offentlig) | `stats/turneringer(/[slug])(/statistikk)`, `stats/tour/[slug]` | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul: `StatsTurneringerV2`.
+| Leaderboards | `stats/leaderboards` | ◐ | ✓ | ✓ | ✓ | Reconciliation 16. jul: hybrid — samme `StatsLegacyShell`-mønster som Regioner (`stats-leaderboard-card` m.fl., ikke v2/golfdata).
+| · Norske + PGA (ikke individuelt sjekket) | `stats/norske`, `stats/pga` (+ drive-distance, fairway-pct, gir-pct, putt-explorer, putts-per-round, scoring-avg, sg-total, spillere, spillere/[dg_id]) | – | ✓ | ✓ | ✓ | Sannsynlig samme `StatsLegacyShell`-mønster — bør sjekkes sammen med Leaderboards/Regioner.
+| Verktøy (kalkulatorer, ikke individuelt sjekket) | `stats/verktoy` (+ avstand, score-til-hcp, sg-estimator, tour-ekvivalent, whs-kalkulator) | – | ✓ | ✓ | ✓ |
+| Sammenlign + SG-sammenlign (ikke individuelt sjekket) | `stats/sammenlign-spillere`, `stats/sg-sammenlign(/start)(/resultat/[id])` | – | ✓ | ✓ | ✓ |
+| Wrapped | `stats/wrapped/[slug]` | ◐ | ✓ | ✓ | ✓ | Reconciliation 16. jul: hybrid — samme `StatsLegacyShell`-mønster (`stats-wrapped-player`).
+| · Blogg + søk + quiz + min progresjon (ikke individuelt sjekket) | `stats/blogg(/[slug])`, `stats/sok`, `stats/quiz`, `stats/min-progresjon` | – | ✓ | ✓ | ✓ |
+
+> **Reconciliation 16. jul:** stikkprøve fant at forside/uka/spillere/turneringer allerede er fullt v2-komponert (samme stale-mønster som resten av Marketing), mens regions/leaderboards/wrapped er i en genuint mellomliggende tilstand — v2-skall (`StatsLegacyShell`) rundt eldre, ikke-v2-komponert innhold (`◐`). Radene merket «ikke individuelt sjekket» er sannsynligvis samme mønster som sin nærmeste sjekkede nabo (delt `StatsLegacyShell`), men er IKKE bekreftet — verifiser før de flippes.
 
 ### System + interne sider (ikke for vanlige brukere)
 
