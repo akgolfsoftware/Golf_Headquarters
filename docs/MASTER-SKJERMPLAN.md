@@ -1,6 +1,6 @@
 # Master-skjermplan — AK Golf HQ
 
-> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 14. juli 2026.**
+> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 16. juli 2026.**
 
 > **OPPDATERT KANON (2026-07-08):** Design-kanon er nå UTELUKKENDE det levende Claude Design-
 > prosjektet (`claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`), hentet direkte via
@@ -393,7 +393,9 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Grupper | `/admin/grupper` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
 | · Gruppe-detalj (+ VG-trinn filter/badge, 2026-07-07) | `/admin/grupper/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Gruppe-timeplan (faste/kommende/tidligere + dupliser) | `/admin/grupper/[id]/timeplan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · **WANG Toppidrett — åpen treningsplan** (offentlig, ingen innlogging) | `/team-wang` | ~ | --- | ✓ | ~ | ✓ | † |
+| · **Gruppe-årsplan** (samme kalenderkjerne som /team-wang, koblet inn i gruppeplanleggingen) | `/admin/grupper/[id]/arsplan` | ~ | --- | ✓ | ~ | ~ | † |
+| · · Legg inn skoledata (lim-inn-import → SchoolScheduleEntry) | `/admin/grupper/[id]/arsplan/skoledata` | ~ | --- | ✓ | ✓ | ~ | † |
+| · **WANG Toppidrett — åpen treningsplan** (offentlig, ingen innlogging; nå med dagsvisning + samlinger + skole-/kompetansemål-lag) | `/team-wang` | ~ | -✓– | ✓ | ~ | ✓ | ✓ |
 | · **GFGK Junior — åpen treningsplan** (offentlig, 4 gruppefaner: Mini/Basis/Utvikling/Elite) | `/gfgk-junior` | ~ | --- | ✓ | ~ | ✓ | † |
 | Talent-hub | `/admin/talent` | – | --- | ✓ | ~ | ~ | ~ |
 | · Discovery | `/admin/talent/discovery` | – | --- | ✓ | ~ | ~ | ~ |
@@ -784,6 +786,40 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
   gitt at 11 av 11 sjekkede rader var falske positiver, bør resten av MASTER-SKJERMPLAN.md sine
   «Design: –»-rader stikkprøve-verifiseres mot faktisk kode før flere byggerunder scopes rent
   fra denne tabellen.
+- 16. juli (`/kommando` fjernet, B8 i `docs/AGENCYOS-INVENTAR.md`, branch
+  `claude/kommando-route-cleanup`): det gamle personlige kommandosenteret
+  (dashboard + `agenter`/`kalender`/`oppgaver`/`prosjekter`/`team`) er nå rene
+  redirects til de ekte AgencyOS-flatene — `/admin/agenter` (chat),
+  `/admin/kalender` (kalender), `/admin/agent-team` (dashboard/oppgaver/
+  prosjekter/team). To funksjoner som IKKE hadde noen erstatning ble bygget inn
+  før redirect for å unngå tap: oppgave-CRUD (`TaskList`) montert på
+  `/admin/agent-team`, og oppgavefrister vises nå som «Oppgave-frist»-blokker i
+  `/admin/kalender` (ikke dra-og-slipp-bare — de er ikke bookinger). Disse
+  skjermene stod ikke i haker-tabellene over (interne `/kommando`-ruter var
+  aldri en del av de 341 sporede skjermene) — ingen hake-oppdatering nødvendig,
+  kun denne loggposten.
+- 16. juli (WANG årskalender utvidet — dagsvisning + skole/samling/kompetansemål-lag, branch
+  `feature/wang-aarsplan`): `/team-wang` hadde kun år/måned/uke og viste bare faste treningstider
+  + AK-perioder. Lagt til: dagsvisning (fjerde visningsbryter, gjenbruker `TidsGrid` med 1
+  kolonne); ny `SchoolScheduleEntry`-tabell (skolerute/timeplan/prøveplan per trinn, additiv
+  `db execute`-migrasjon) med enkel lim-inn-importer; `GroupSchedule.kind` (SAMLING/
+  HELDAGSSAMLING) — disse var usynlige før pga. et `recurring: "WEEKLY"`-filter i
+  `hentGruppeKalenderData` som aldri hentet engangs-hendelser; `TrainingPeriod.competenceGoalIds`
+  kobler periodene til eksisterende `CompetenceGoal`-rader (fantes fra før, men var aldri koblet
+  til noe). Nytt klikk-detaljpanel viser dagens periode+kompetansemål, samlinger og full
+  skole-liste. Samme kalenderkjerne koblet inn i AgencyOS som ny fane `/admin/grupper/[id]/arsplan`
+  (+ `/arsplan/skoledata` for import) — dette var hovedmålet: årsplanen var kun en offentlig side,
+  ikke tilgjengelig fra gruppeplanleggingen coachen faktisk bruker. VG-trinn-filter gjenbruker
+  samme `?trinn=`-mønster som allerede fantes på `/admin/grupper/[id]`. Turneringsplan er lagt inn
+  som en tydelig tom-tilstand — venter på turneringskalender-kobling. Seedet: to samlinger
+  (WANG-Oslo vinterleir, ISO-uke 1 og 7 2027) med datoer beregnet eksakt (ikke gjettet), men
+  markert «estimert/ikke bekreftet» i notatfeltet siden WANG sentralt eier de faktiske datoene.
+  Bevisst IKKE seedet: 2026/2027 skolerute/prøveplan/full fag-timeplan — fjorårets konkrete datoer
+  ville vært feil hvis de bare ble relabelt til nytt skoleår, og gjetting av skolens fremtidige
+  timeplan er utenfor det som er forsvarlig å anta. Import-verktøyet står klart for når skolen
+  publiserer. tsc + eslint + `next build` grønt. Browser-testet ende-til-ende på `/team-wang`
+  (år/måned/uke/dag, trinn-filter, klikk-til-detaljpanel med ekte samling+periode-data) — admin-
+  fanen kun bygg-verifisert (auth-gate testet, ikke innlogget browser-test).
 
 - 15. juli (`/portal/ny-okt` koblet til ekte lagring, branch `claude/ny-okt-ekte-lagring`):
   wizarden hadde ingen backend — kun `useState` i nettleseren, «Lagre og start økt» gjorde

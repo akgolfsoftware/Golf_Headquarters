@@ -103,6 +103,7 @@ function OktBlokk({ okt, onSerieClick }: { okt: KalOkt; onSerieClick?: (okt: Kal
       </div>
       <span style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{okt.navn}</span>
       {okt.erHendelse && <MikroMeta icon="x-circle">Hendelse</MikroMeta>}
+      {okt.erOppgave && <MikroMeta icon="list">Oppgave-frist</MikroMeta>}
       {okt.sted && <MikroMeta icon="map-pin">{okt.sted}</MikroMeta>}
       {okt.serie && <SerieMerke tekst={okt.serie} />}
     </div>
@@ -226,7 +227,7 @@ function DagKolonne({ dag, onSerieClick, onFlytt, flytterId, onTomLuke }: { dag:
         <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, padding: "8px 2px" }}>Ingen økter</span>
       ) : (
         dag.okter.map((o) =>
-          onFlytt && !o.serie ? (
+          onFlytt && !o.serie && !o.erOppgave ? (
             <div
               key={o.id}
               draggable

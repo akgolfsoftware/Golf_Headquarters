@@ -26,7 +26,7 @@ export default async function V2AgencyKalenderPage({
 }) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const { uke } = await searchParams;
-  const data = await hentAgencyKalenderData(uke);
+  const data = await hentAgencyKalenderData(uke, user.id);
 
   return (
     <V2Shell aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
