@@ -1,19 +1,24 @@
 /**
- * /admin/plan-templates/[id]/rediger — Editor.
+ * AgencyOS — Plan-mal-editor (/admin/plan-templates/[id]/rediger) — v2.
+ * v2-port 17. juli 2026 (Team F1): `AdminPlanMalRedigerV2` erstatter
+ * template-editor + volum-linje, ruten flyttet ut av (legacy). Auth-guard
+ * (COACH + ADMIN), Prisma-queries (mal + økter + drill-bibliotek) og alle
+ * server actions (inkl. masseredigering: sett varighet for hele uka og
+ * kopier uke→uke med konflikt-bekreftelse) er uendret — kun presentasjonen
+ * er ny. Volum-beregningen bor fortsatt i src/lib/plan-templates/.
  */
 
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { TilbakeLenke } from "@/components/v2";
 import {
-  TemplateEditor,
-  type DrillOption,
-  type EditorTemplate,
-  type EditorSession,
-} from "@/components/admin/plan-templates/template-editor";
+  AdminPlanMalRedigerV2,
+  type RedigerDrillValg,
+  type RedigerMal,
+  type RedigerOkt,
+} from "@/components/admin/v2/AdminPlanMalRedigerV2";
 import {
   readDrills,
   readFordeling,
@@ -28,7 +33,7 @@ export default async function PlanTemplateEditorPage({
 }: {
   params: Promise<Params>;
 }) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { id } = await params;
 
   const [template, drillDefs] = await Promise.all([
@@ -51,7 +56,7 @@ export default async function PlanTemplateEditorPage({
 
   if (!template) notFound();
 
-  const sessions: EditorSession[] = template.sessions.map((s) => ({
+  const sessions: RedigerOkt[] = template.sessions.map((s) => ({
     id: s.id,
     ukeNr: s.ukeNr,
     dagNr: s.dagNr,
@@ -65,7 +70,7 @@ export default async function PlanTemplateEditorPage({
     drills: readDrills(s.drillsJson),
   }));
 
-  const data: EditorTemplate = {
+  const data: RedigerMal = {
     id: template.id,
     name: template.name,
     description: template.description,
@@ -80,7 +85,7 @@ export default async function PlanTemplateEditorPage({
     sessions,
   };
 
-  const drillOptions: DrillOption[] = drillDefs.map((d) => ({
+  const drillOptions: RedigerDrillValg[] = drillDefs.map((d) => ({
     id: d.id,
     name: d.name,
     pyramidArea: d.pyramidArea,
@@ -88,21 +93,9 @@ export default async function PlanTemplateEditorPage({
   }));
 
   return (
-    <div className="flex flex-col gap-6 pb-20 md:pb-0">
-      <Link
-        href={`/admin/plan-templates/${id}`}
-        className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.75} />
-        Tilbake til mal-detalj
-      </Link>
-      <PageHeader
-        eyebrow="REDIGERER"
-        titleLead="Rediger:"
-        titleItalic={template.name}
-        sub="Endringer på innstillinger må lagres separat. Endringer på enkeltøkter lagres når du klikker «Lagre endring»."
-      />
-      <TemplateEditor template={data} drillOptions={drillOptions} />
-    </div>
+    <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href={`/admin/plan-templates/${id}`}>Mal-detalj</TilbakeLenke>
+      <AdminPlanMalRedigerV2 template={data} drillOptions={drillOptions} />
+    </V2Shell>
   );
 }
