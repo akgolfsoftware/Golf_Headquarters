@@ -251,7 +251,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Feedback | `/portal/meg/feedback` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `MegFeedbackV2`. |
 | Hjelpesenter ★ | `/portal/meg/help` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegHelpV2` (v2 retning C), hake aldri oppdatert |
 | · Hjelp-artikkel | `/portal/meg/help/artikkel/[slug]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D4a): `MegHelpArtikkelV2` — 10 rå hex fjernet (T.ax-pyramide + AkseBar); del/feedback som thumbs-knapper; fabrikkerte feedback-tall («143/8») fjernet, eksempeltall i figurer merket «(eksempel)». ARTIKLER-oppslag/fallback uendret. Design – → ✓. |
-| · Hjelp-kategori | `/portal/meg/help/kategori/[slug]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — 0 golfdata/v2-imports.
+| · Hjelp-kategori | `/portal/meg/help/kategori/[slug]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D4a): `MegHelpKategoriV2` — sort-parametre (`?sort=`) og kategori-innhold uendret; ikon-bakgrunner normalisert til nøytralt v2-emblem (samme idiom som hjelp-huben). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | · Kontakt | `/portal/meg/help/kontakt` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET (tynn) — `PlayerHero`-header; skjemaet selv hand-bygget.
 
 ### Booking
