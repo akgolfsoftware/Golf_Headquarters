@@ -184,6 +184,11 @@ const RAW = {
     forklaring:
       "En enkel poengsum for hvor godt kontoen din er sikret. Passord alene gir grunnpoeng; tofaktor-innlogging løfter den. Scoren er en påminnelse, ikke en dom — ett grep (skru på 2FA) tar deg til topps.",
   },
+  kohortSnitt: {
+    tittel: "Kohort-snitt",
+    forklaring:
+      "Gjennomsnittet av de andre spillerne på samme nivå som deg. Det viser hvor du står i forhold til gruppen din akkurat nå — ikke et mål i seg selv, men et referansepunkt for å se hvor du skiller deg ut.",
+  },
   vas: {
     tittel: "VAS-skala (smerte 0–10)",
     forklaring:
