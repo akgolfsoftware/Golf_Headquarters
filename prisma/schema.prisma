@@ -4714,3 +4714,18 @@ model ModerationCase {
 
 // (D6a hull-for-hull, besluttet 2026-07-17: bruker den EKSISTERENDE HoleScore-
 // modellen lenger opp i fila — Bolk 6-notatet om at modellen manglet var stale.)
+
+// ── Fokus-spiller pin (D3, godkjent 2026-07-17) ──────────────────────────────
+// Coach pinner spillere øverst i cockpiten. Plain String-referanser (ingen
+// @relation) — additiv per gotcha-regelen. Unik per (coach, spiller).
+
+model CoachPinnedPlayer {
+  id        String   @id @default(cuid())
+  coachId   String
+  playerId  String
+  createdAt DateTime @default(now())
+
+  @@unique([coachId, playerId])
+  @@index([coachId])
+  @@map("coach_pinned_players")
+}
