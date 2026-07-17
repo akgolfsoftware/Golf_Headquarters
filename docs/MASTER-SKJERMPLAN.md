@@ -545,7 +545,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 |---|---|---|---|---|---|---|---|
 | Forelder-hjem | `/forelder` | ✓ | ✓✓– | ✓ | ~ | – | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderV2` — hele seksjonens «Design: –» var systematisk stale, se merknad under tabellen. |
 | Barn (oversikt) | `/forelder/barn` | ✓ | ✓✓– | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + v2-primitiver. |
-| · Barn-detalj | `/forelder/barn/[childId]` | – | ✓✓– | ✓ | ~ | – | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — eneste unntaket i seksjonen; `page.tsx` har ingen `@/components`-imports, egen rå Tailwind («Hybrid design: forest-gradient hero + white cards»). |
+| · Barn-detalj | `/forelder/barn/[childId]` | ✓ | ✓✓– | ✓ | ~ | ✓ | ~ | v2-port 16. jul (Team B): `ForelderBarnDetaljV2` (Kort/Caps/KpiFlis/Pyramide/TomTilstand/AvatarFoto) — seksjonens siste gap lukket. Samme Prisma-lesing (`assertBarnTilhorerForelder` + queries) og `?tab=`-navigasjon uendret; HCP-fremdrift vises kun for HCP_TARGET-mål med kalkulerbar verdi (aldri falsk prosent). Design – → ✓, Data – → ✓. |
 | Bookinger | `/forelder/bookinger` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderBookingerV2`. |
 | Coach | `/forelder/coach` | ✓ | --- | ✓ | ~ | ✓ | † | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderCoachV2`. |
 | Fakturaer | `/forelder/fakturaer` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderFakturaerV2`. |
