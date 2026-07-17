@@ -378,7 +378,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Plan-sentral (hub) | `/admin/planlegge` | ✓ | --- | ✓ | ~ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminPlanleggeV2`. Real prisma lookup for first player + redirect to workbench. Full auth. 
+| Plan-sentral (hub) | `/admin/planlegge` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminPlanleggeV2`. Real prisma lookup for first player + redirect to workbench. Full auth. **M2 mobil-Workbench (retning A, godkjent 17. jul):** mobil (`md:hidden`) viser oppgavekøen `WorkbenchMobilV2` — godkjenn AI-forslag (`acceptPlanAction`/`rejectPlanAction`) + svar på øktforespørsler (`markerSomPlanlagt`/`avslaaForespørsel`), ekte data fra `loadWorkbenchOppgaver` (PlanAction+SessionRequest, I0-scoped); desktop beholder spillervelgeren. Full ukeplanlegging henvist til desktop. Nettleser-verifisert 390px+desktop (12 ekte saker i scope). Fasit: `agencyos-wb-mobil-retninger.jsx` RetningA. Mob/Desk/iPad --- → ✓✓–. **Oppfølging:** belastnings-avvik-kort + flytt/preview-ark venter på AI-plan-justeringsaction (ikke wiret ennå). 
 | Planer (alle) | `/admin/plans` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminPlansV2`. |
 | · Ny plan (Plan-bygger) | `/admin/plans/new` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: ren `redirect("/admin/planlegge")` — ikke en egen skjerm. |
 | · Plan-detalj | `/admin/plans/[planId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |

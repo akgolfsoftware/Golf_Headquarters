@@ -21,6 +21,8 @@ import {
   AdminPlanleggeV2,
   type AdminPlanleggeData,
 } from "@/components/admin/v2/AdminPlanleggeV2";
+import { WorkbenchMobilV2 } from "@/components/admin/v2/WorkbenchMobilV2";
+import { loadWorkbenchOppgaver } from "@/lib/agencyos/workbench-oppgaver";
 
 export const dynamic = "force-dynamic";
 
@@ -54,9 +56,18 @@ export default async function V2AdminPlanleggePreviewPage() {
     })),
   };
 
+  // M2 (retning A): mobil-Workbench = oppgavekø. Flate-skille-regelen —
+  // mobil viser køen, desktop beholder spillervelgeren (full planlegging).
+  const oppgaver = await loadWorkbenchOppgaver({ id: user.id, role: user.role });
+
   return (
     <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <AdminPlanleggeV2 data={data} />
+      <div className="md:hidden">
+        <WorkbenchMobilV2 data={oppgaver} />
+      </div>
+      <div className="hidden md:block">
+        <AdminPlanleggeV2 data={data} />
+      </div>
     </V2Shell>
   );
 }
