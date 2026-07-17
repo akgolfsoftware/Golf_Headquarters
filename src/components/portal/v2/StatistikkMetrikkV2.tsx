@@ -14,7 +14,6 @@ import {
   Caps,
   Tittel,
   TallHero,
-  KpiFlis,
   Trend,
   TomTilstand,
   CTAPill,

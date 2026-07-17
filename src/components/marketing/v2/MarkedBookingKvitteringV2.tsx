@@ -10,7 +10,6 @@
    delt MRamme. */
 
 import { useEffect, type ReactNode } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { T } from "@/lib/v2/tokens";
 import { Icon, Kort, Caps } from "@/components/v2";

@@ -52,9 +52,6 @@ function formatVarighet(seconds: number | null): string {
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
-function formatDato(d: Date): string {
-  return d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", year: "numeric" });
-}
 
 function PipelineNode({ step }: { step: PipelineStep }) {
   const on = step.status === "active" || step.status === "done";
