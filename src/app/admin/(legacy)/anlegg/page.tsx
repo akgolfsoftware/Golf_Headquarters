@@ -1,24 +1,24 @@
 /**
- * AgencyOS — Anlegg (GJENNOMFØRE · ANLEGG), /admin/anlegg. v2-port 16. juli 2026.
+ * AgencyOS — Anlegg (GJENNOMFØRE · ANLEGG), /admin/anlegg. v2-port 16. juli
+ * 2026, administrasjon KOBLET 17. juli 2026 (B8a).
  *
- * Tile lenker til /admin/availability (fasit-flyt).
+ * Fasilitet-lenke til /admin/availability (fasit-flyt) er beholdt.
  *
- * Datakilde: prisma.location → facilities (aktive) + booking-telling denne uka.
+ * Datakilde: prisma.location → facilities + booking-telling denne uka.
+ * Henter nå OGSÅ deaktiverte lokasjoner/fasiliteter (soft delete) slik at de
+ * kan vises med ærlig «Deaktivert»-status og aktiveres igjen — tittel-tallet
+ * teller kun aktive fasiliteter i aktive lokasjoner (det booking faktisk ser).
  * Fasit viser «78 % belegg» — ekte belegg-% krever åpningstider vi ikke har,
  * så metaStrong viser ekte antall bookinger denne uka i stedet (aldri påfunn).
  * Beskrivelse (à la «12 matter · 2 TrackMan») = Facility.description, ellers «—».
- * «+ Nytt anlegg» gjenbruker eksisterende LocationFormV2 (ekte CRUD).
- *
- * Kjent, uendret begrensning (ikke del av denne restylingen): kun opprett av
- * lokasjon er koblet på denne siden. Rediger/slett-lokasjon og fasilitet-
- * administrasjon (FacilityFormV2 finnes og virker, men har ingen kallested
- * her) er en egen oppgave — se docs/MASTER-SKJERMPLAN.md.
+ * CRUD: LocationFormV2 (opprett/rediger/deaktiver) + FacilityFormV2
+ * (opprett/rediger/deaktiver) via location-actions.ts.
  */
 
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
-import { AdminAnleggV2, type AdminAnleggV2Data, type AnleggTile } from "@/components/admin/v2/AdminAnleggV2";
+import { AdminAnleggV2, type AdminAnleggV2Data, type AnleggLokasjon } from "@/components/admin/v2/AdminAnleggV2";
 import type { FacilityType } from "@/generated/prisma/client";
 
 export const dynamic = "force-dynamic";
@@ -48,12 +48,10 @@ export default async function AnleggPage() {
   ukeSlutt.setDate(ukeSlutt.getDate() + 7);
 
   const locations = await prisma.location.findMany({
-    where: { active: true },
-    orderBy: { name: "asc" },
+    orderBy: [{ active: "desc" }, { name: "asc" }],
     include: {
       facilities: {
-        where: { active: true },
-        orderBy: { name: "asc" },
+        orderBy: [{ active: "desc" }, { name: "asc" }],
         include: {
           _count: {
             select: {
@@ -70,20 +68,32 @@ export default async function AnleggPage() {
     },
   });
 
-  const tiles: AnleggTile[] = locations.flatMap((l) =>
-    l.facilities.map((f) => ({
+  const lokasjoner: AnleggLokasjon[] = locations.map((l) => ({
+    id: l.id,
+    navn: l.name,
+    adresse: l.address,
+    aktiv: l.active,
+    fasiliteter: l.facilities.map((f) => ({
       id: f.id,
-      tittel: `${l.name} · ${f.name}`,
+      navn: f.name,
       ikonNavn: TYPE_IKON[f.type],
+      type: f.type,
+      kapasitet: f.capacity,
+      aktiv: f.active,
       bookinger: f._count.bookings,
       beskrivelse: f.description,
     })),
-  );
+  }));
+
+  // Tittel-tallet = det booking faktisk ser: aktive fasiliteter i aktive lokasjoner.
+  const antallAktive = locations
+    .filter((l) => l.active)
+    .reduce((sum, l) => sum + l.facilities.filter((f) => f.active).length, 0);
 
   const data: AdminAnleggV2Data = {
-    tittelOrd: tiles.length < TALLORD.length ? TALLORD[tiles.length] : String(tiles.length),
-    flertall: tiles.length !== 1,
-    tiles,
+    tittelOrd: antallAktive < TALLORD.length ? TALLORD[antallAktive] : String(antallAktive),
+    flertall: antallAktive !== 1,
+    lokasjoner,
   };
 
   return <AdminAnleggV2 data={data} />;
