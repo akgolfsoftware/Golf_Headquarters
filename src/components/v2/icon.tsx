@@ -17,7 +17,7 @@ import {
   RefreshCw, GitCompare, AlertOctagon, GitPullRequest, GitCommitHorizontal, Loader2, LineChart,
   Cog, ArrowUp, Wrench,
   Inbox, CalendarCheck, Columns3, Database,
-  Map, Radar,
+  Map, Radar, Footprints, Ruler,
   type LucideIcon,
 } from "lucide-react";
 
@@ -124,6 +124,8 @@ const MAP: Record<string, LucideIcon> = {
   "building-2": Building2,
   "map": Map,
   "radar": Radar,
+  "footprints": Footprints,
+  "ruler": Ruler,
   "plug": Plug,
   "archive": Archive,
   "reply": Reply,

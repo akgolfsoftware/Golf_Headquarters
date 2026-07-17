@@ -144,6 +144,41 @@ const RAW = {
     forklaring:
       "Intensitetstrinn fra S1 (rolig) til S5 (maks), basert på hjertefrekvens. Brukes til å styre hvor hardt en kondisjonsøkt faktisk kjentes, ikke bare hvor lenge den varte.",
   },
+  stimp: {
+    tittel: "Stimp (greenhastighet)",
+    forklaring:
+      "Hvor raskt ballen ruller på greenen, målt med stimpmeter. Høyere tall betyr raskere green — stimp 8 er en treg klubbgreen, stimp 12 er turneringsraskt. Samme putt bryter mer på en rask green.",
+  },
+  break: {
+    tittel: "Break",
+    forklaring:
+      "Hvor mye putten svinger sideveis på grunn av hellingen i greenen. Oppgis i centimeter eller kopp-bredder fra midten av hullet — sikter du på riktig break, kan du putte med jevn fart rett gjennom svingen.",
+  },
+  makeProsent: {
+    tittel: "Make-prosent",
+    forklaring:
+      "Andelen putter som går i hullet fra en gitt avstand. Selv proffene holer bare rundt halvparten fra 2,5 meter — bruk tallet til å sette realistiske forventninger, ikke som en dom.",
+  },
+  prosessScore: {
+    tittel: "Prosess-score",
+    forklaring:
+      "Poeng for hvor godt du gjennomførte prosessen (oppsett, sikte, fart) — ikke om ballen gikk i. God prosess gir flere hull over tid, så denne scoren viser om du trener på riktig ting.",
+  },
+  kategoriSnitt: {
+    tittel: "Kategori-snitt (referanse)",
+    forklaring:
+      "Et typisk nivå for spillere i samme kategori (for eksempel A1), brukt som sammenligningspunkt. Det er en referanse å måle seg mot, ikke et krav — avstanden viser hvor du har mest å hente.",
+  },
+  smashFactor: {
+    tittel: "Smash factor",
+    forklaring:
+      "Ballhastighet delt på køllehastighet — et mål på hvor rent du treffer. Rundt 1,50 med driver er svært godt; lavere tall betyr at energi går tapt i treffet, ikke at du svinger for sakte.",
+  },
+  dPlane: {
+    tittel: "D-Plane (face og path)",
+    forklaring:
+      "Forholdet mellom hvor køllebladet peker (face) og hvor køllen beveger seg (path) i treffet, målt i grader. Face styrer mest av startretningen, forskjellen mellom face og path skaper skruen.",
+  },
 } as const satisfies Record<string, HjelpTekst>;
 
 export type HjelpNokkel = keyof typeof RAW;
