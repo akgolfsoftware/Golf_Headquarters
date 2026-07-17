@@ -144,6 +144,66 @@ const RAW = {
     forklaring:
       "Intensitetstrinn fra S1 (rolig) til S5 (maks), basert på hjertefrekvens. Brukes til å styre hvor hardt en kondisjonsøkt faktisk kjentes, ikke bare hvor lenge den varte.",
   },
+  stimp: {
+    tittel: "Stimp (greenhastighet)",
+    forklaring:
+      "Hvor raskt ballen ruller på greenen, målt med stimpmeter. Høyere tall betyr raskere green — stimp 8 er en treg klubbgreen, stimp 12 er turneringsraskt. Samme putt bryter mer på en rask green.",
+  },
+  break: {
+    tittel: "Break",
+    forklaring:
+      "Hvor mye putten svinger sideveis på grunn av hellingen i greenen. Oppgis i centimeter eller kopp-bredder fra midten av hullet — sikter du på riktig break, kan du putte med jevn fart rett gjennom svingen.",
+  },
+  makeProsent: {
+    tittel: "Make-prosent",
+    forklaring:
+      "Andelen putter som går i hullet fra en gitt avstand. Selv proffene holer bare rundt halvparten fra 2,5 meter — bruk tallet til å sette realistiske forventninger, ikke som en dom.",
+  },
+  prosessScore: {
+    tittel: "Prosess-score",
+    forklaring:
+      "Poeng for hvor godt du gjennomførte prosessen (oppsett, sikte, fart) — ikke om ballen gikk i. God prosess gir flere hull over tid, så denne scoren viser om du trener på riktig ting.",
+  },
+  kategoriSnitt: {
+    tittel: "Kategori-snitt (referanse)",
+    forklaring:
+      "Et typisk nivå for spillere i samme kategori (for eksempel A1), brukt som sammenligningspunkt. Det er en referanse å måle seg mot, ikke et krav — avstanden viser hvor du har mest å hente.",
+  },
+  smashFactor: {
+    tittel: "Smash factor",
+    forklaring:
+      "Ballhastighet delt på køllehastighet — et mål på hvor rent du treffer. Rundt 1,50 med driver er svært godt; lavere tall betyr at energi går tapt i treffet, ikke at du svinger for sakte.",
+  },
+  dPlane: {
+    tittel: "D-Plane (face og path)",
+    forklaring:
+      "Forholdet mellom hvor køllebladet peker (face) og hvor køllen beveger seg (path) i treffet, målt i grader. Face styrer mest av startretningen, forskjellen mellom face og path skaper skruen.",
+  },
+  sikkerhetsscore: {
+    tittel: "Sikkerhetsscore",
+    forklaring:
+      "En enkel poengsum for hvor godt kontoen din er sikret. Passord alene gir grunnpoeng; tofaktor-innlogging løfter den. Scoren er en påminnelse, ikke en dom — ett grep (skru på 2FA) tar deg til topps.",
+  },
+  malEffektivitet: {
+    tittel: "Mal-effektivitet",
+    forklaring:
+      "Hvor godt denne plan-malen har virket for spillerne som har brukt den: SG-Total-delta er gjennomsnittlig endring i Strokes Gained fra malen startet til den var ferdig, og effektivitets-tallet (1–5) er samme snitt omregnet til en enkel skala. Få brukere gir usikre tall.",
+  },
+  ngfNivaa: {
+    tittel: "NGF-nivå (D–G)",
+    forklaring:
+      "Norges Golfforbunds nivåtrapp for spillerutvikling. D er høyeste juniornivå her (toppjunior), G er aktiv klubbspiller. Nivået styrer hvilke tester og krav som er relevante for deg — ikke en karakter.",
+  },
+  kohortSnitt: {
+    tittel: "Kohort-snitt",
+    forklaring:
+      "Gjennomsnittet av de andre spillerne på samme nivå som deg. Det viser hvor du står i forhold til gruppen din akkurat nå — ikke et mål i seg selv, men et referansepunkt for å se hvor du skiller deg ut.",
+  },
+  vas: {
+    tittel: "VAS-skala (smerte 0–10)",
+    forklaring:
+      "Visuell analog skala: du angir smerten din fra 0 (ingen) til 10 (verst tenkelig). Det finnes ikke rett eller galt svar — poenget er å følge DIN utvikling over tid, så bruk skalaen likt hver gang.",
+  },
 } as const satisfies Record<string, HjelpTekst>;
 
 export type HjelpNokkel = keyof typeof RAW;

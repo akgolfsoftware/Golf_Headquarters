@@ -1,13 +1,24 @@
-// PlayerHQ · Hull-analyse — illustrativt top-down-kart med spillerens EKTE
-// SG- og treningsdata per sone (Tee → Innspill → Nærspill → Putt).
-// SG: BrukerSgInput. Trening: TrainingPlanSession per skillArea (siste 30 d).
+/**
+ * PlayerHQ · Hull-analyse — v2 (rekomponert 2026-07-17, samme URL). V2Shell
+ * leverer chrome-en, AnalysereHullV2 rendrer innholds-stacken (to faner:
+ * Sone-kart + Hull for hull).
+ *
+ * Dataloader er uendret fra den gamle skjermen:
+ *   - SG: BrukerSgInput (siste 8) → siste verdi + trend per sone.
+ *   - Trening: TrainingPlanSession per skillArea (siste 30 d) → økter/minutter.
+ *   - Siste runde (nyeste med hull-score) → hull-for-hull (ekte HoleScore-data,
+ *     ingen fabrikkering).
+ */
 
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { type HoleZone } from "@/components/hole-analysis/hole-analysis";
-import { HullTabs, type LastRound } from "./HullTabs";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { TilbakeLenke } from "@/components/v2";
+import {
+  AnalysereHullV2,
+  type AnalysereHullV2Data,
+  type HullSone,
+} from "@/components/portal/v2/AnalysereHullV2";
 
 export const dynamic = "force-dynamic";
 
@@ -65,96 +76,71 @@ export default async function HullAnalysePage() {
   const trendOf = (pick: (i: (typeof sgInputs)[number]) => number | null) =>
     [...sgInputs].reverse().map(pick).filter((v): v is number => v != null);
 
-  const zones: HoleZone[] = [
+  const soner: HullSone[] = [
     {
       id: "tee",
+      kode: "OTT",
       label: "Tee total",
       sub: "Off the tee",
-      x: 43,
-      y: 80,
       sg: latest?.sgOtt ?? null,
       ...trening.TEE_TOTAL,
       trend: trendOf((i) => i.sgOtt),
     },
     {
       id: "app",
+      kode: "APP",
       label: "Innspill",
       sub: "Tilnærming",
-      x: 52,
-      y: 50,
       sg: latest?.sgApp ?? null,
       ...trening.TILNAERMING,
       trend: trendOf((i) => i.sgApp),
     },
     {
       id: "arg",
+      kode: "ARG",
       label: "Nærspill",
       sub: "Chip, pitch, bunker",
-      x: 62,
-      y: 28,
       sg: latest?.sgArg ?? null,
       ...trening.AROUND_GREEN,
       trend: trendOf((i) => i.sgArg),
     },
     {
       id: "putt",
+      kode: "PUTT",
       label: "Putt",
       sub: "Putting",
-      x: 69,
-      y: 18,
       sg: latest?.sgPutt ?? null,
       ...trening.PUTTING,
       trend: trendOf((i) => i.sgPutt),
     },
   ];
 
-  // Siste runde → hull-for-hull-tabell (ekte HoleScore-data, ingen fabrikkering).
-  const lastRound: LastRound | null = sisteRunde
-    ? {
-        courseName: sisteRunde.course.name,
-        totalScore: sisteRunde.score,
-        parDiff: sisteRunde.holeScores.reduce(
-          (sum, h) => sum + (h.strokes - h.par),
-          0,
-        ),
-        holeCount: sisteRunde.holeScores.length,
-        holes: sisteRunde.holeScores.map((h) => ({
-          holeNumber: h.holeNumber,
-          par: h.par,
-          strokes: h.strokes,
-          diff: h.strokes - h.par,
-        })),
-      }
-    : null;
+  // Siste runde → hull-for-hull (ekte HoleScore-data, ingen fabrikkering).
+  const data: AnalysereHullV2Data = {
+    soner,
+    sgRegistreringer: sgInputs.length,
+    runde: sisteRunde
+      ? {
+          courseName: sisteRunde.course.name,
+          totalScore: sisteRunde.score,
+          parDiff: sisteRunde.holeScores.reduce(
+            (sum, h) => sum + (h.strokes - h.par),
+            0,
+          ),
+          holeCount: sisteRunde.holeScores.length,
+          holes: sisteRunde.holeScores.map((h) => ({
+            holeNumber: h.holeNumber,
+            par: h.par,
+            strokes: h.strokes,
+          })),
+        }
+      : null,
+  };
 
   return (
-    <div className="mx-auto max-w-[440px] space-y-5 px-4 pb-20 pt-2 md:pb-6">
-      {/* Back link */}
-      <Link
-        href="/portal/analysere"
-        className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
-        Analyse
-      </Link>
-
-      {/* Editorial header */}
-      <div className="space-y-1.5">
-        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-          PlayerHQ · hull-analyse
-        </div>
-        <h1 className="font-display text-2xl font-bold leading-tight tracking-tight text-foreground">
-          Hvor taper du{" "}
-          <em className="font-medium italic text-primary">slag</em>
-          ?
-        </h1>
-      </div>
-
-      <HullTabs
-        zones={zones}
-        sgRegistreringer={sgInputs.length}
-        lastRound={lastRound}
-      />
-    </div>
+    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
+      <AnalysereHullV2 data={data} />
+    </V2Shell>
   );
 }

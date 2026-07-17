@@ -1,10 +1,17 @@
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+/**
+ * v2 — PlayerHQ Innstillinger · Varsler (retning C). V2Shell leverer chrome-en
+ * (IkonRail/BunnNav, aktiv «meg»), InnstillingerVarslerV2 rendrer innholds-stacken.
+ *
+ * v2-port 17. juli 2026: auth + preferanse-oppslaget (requirePortalUser +
+ * prisma → lesPreferences) er uendret — kun presentasjonslaget er byttet.
+ */
+
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { lesPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
-import { NotifToggles } from "../notif-toggles";
-import { PushToggle } from "@/components/portal/push-toggle";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { TilbakeLenke } from "@/components/v2";
+import { InnstillingerVarslerV2 } from "@/components/portal/v2/InnstillingerVarslerV2";
 
 export const dynamic = "force-dynamic";
 
@@ -17,35 +24,9 @@ export default async function VarslerPage() {
   const prefs = lesPreferences(fullUser ?? { preferences: null });
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8 px-4 pb-20 sm:px-6">
-      <Link
-        href="/portal/meg/innstillinger"
-        className="inline-flex min-h-11 items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ChevronLeft size={14} strokeWidth={1.5} />
-        Tilbake til innstillinger
-      </Link>
-
-      <header className="space-y-2">
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          PlayerHQ · Meg · Innstillinger · Varsler
-        </span>
-        <h1 className="font-display text-[28px] sm:text-[36px] italic font-medium leading-[1.05] tracking-tight">
-          <em className="font-normal italic">Varsler</em>
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Velg hvilke varsler du vil ha og hvordan de leveres. Endringer lagres
-          automatisk.
-        </p>
-      </header>
-
-      <div className="rounded-lg border border-border bg-card p-4 sm:p-6">
-        <PushToggle />
-      </div>
-
-      <div className="rounded-lg border border-border bg-card p-4 sm:p-6">
-        <NotifToggles initial={prefs} />
-      </div>
-    </div>
+    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/meg/innstillinger">Innstillinger</TilbakeLenke>
+      <InnstillingerVarslerV2 data={{ notif: prefs.notif, spraak: prefs.spraak }} />
+    </V2Shell>
   );
 }

@@ -99,3 +99,4 @@ ds-bundle/
 tsconfig.sync.json
 tmp/
 .standardplan-work/
+.claude/settings.local.json
