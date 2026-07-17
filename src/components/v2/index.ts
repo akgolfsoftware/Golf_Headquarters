@@ -22,6 +22,7 @@ export * from "./utviklingsplan";
 export * from "./fysisk";
 export * from "./wb-composer";
 export * from "./samtale";
+export * from "./dropzone";
 
 // wb-mobil: eksplisitt re-eksport pga Ark/ArkProps-kollisjon med overlays.
 export {
