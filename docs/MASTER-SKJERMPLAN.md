@@ -264,7 +264,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Booking-detalj | `/portal/booking/[bookingId]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team G-B): `BookingDetaljV2` — fabrikkerte TIMELINE/MÅL/UTSTYR-plassholdere SLETTET (ærlig data, viser kun ekte booking-felter); `booking.css`-avhengigheten (1051 l) + inline-hex borte; dato/tid nå Oslo-korrekt (gotcha-regel). Design – → ✓. |
 | · Coach-profil (booking) | `/portal/booking/coach/[coachId]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team G-B): `BookingCoachV2` — `resolveCoach()` cuid/slug-fallback beholdt EKSAKT, ekte øktteller + tjenester, CTA-er → `/portal/booking/ny` med samme query-params. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | · Anlegg-detalj (booking) | `/portal/booking/anlegg/[anleggId]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team G-B): `BookingAnleggV2` — bevisste utelatelser beholdt (ingen hull/par/rating, intet faux time-grid), FASILITET_TYPE_LABEL uendret, CTA → ekte booking-flyt. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
-| · Bekreftet | `/portal/booking/bekreftet` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — bevisst utsatt booking-legacy.
+| · Bekreftet | `/portal/booking/bekreftet` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team G-B): `BookingBekreftetV2` — eierskaps-sjekk + `googleKalenderUrl()` uendret, Oslo-korrekt tid; COPY-FIKS: «Forespørsel sendt!» → «Booking bekreftet» (bookingen opprettes CONFIRMED). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 
 ### Talent (elite-spor — egen del av PlayerHQ)
 
