@@ -118,7 +118,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Utfordringer | `/portal/utfordringer` | ~ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: AMBIGUOUS — `UtfordringerV2` i `V2Shell`, altså fullt v2-komponert. Uklart om «~» reflekterer et reelt gjenstående gap agenten ikke fanget opp, eller selv er stale i motsatt retning — spot-check før den flippes til ✓. |
 | · Ny utfordring (wizard) | `/portal/utfordringer/ny` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
 | · Utfordring-detalj | `/portal/utfordringer/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| AI: mål-bygger | `/portal/ai/mal-bygger` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2-imports.
+| AI: mål-bygger | `/portal/ai/mal-bygger` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `AiMalByggerV2` (Kort/Knapp/ValgKort/Inndata) erstatter mal-bygger-wizard (v10), ruten flyttet ut av (legacy) — `actions.ts` (lagreMalForslag) flyttet uendret med. 3-stegs SMART-wizard-logikken uendret; ingen oppdiktede tall. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | AI: foreslå drill | `/portal/ai/foresla-drill` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2-imports.
 | AI: foreslå turnering | `/portal/ai/foresla-turnering` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2-imports.
 

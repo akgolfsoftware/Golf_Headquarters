@@ -2,6 +2,8 @@
 
 /**
  * Server-actions for AI mål-bygger (`/portal/ai/mal-bygger`).
+ * v2-port 16. juli 2026: flyttet uendret fra (legacy)/ai/mal-bygger/actions.ts
+ * — samme zod-validering, samme Goal-skriving, samme revalidate.
  *
  * Wizard-en hjelper spilleren å formulere egne SMART-mål — den dikter ALDRI
  * opp tall på spillerens vegne. Verdiene kommer fra spillerens egne valg.
