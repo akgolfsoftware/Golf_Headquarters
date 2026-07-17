@@ -417,7 +417,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Måned (alt. → redirect) | `/admin/calendar/maned` | ✓ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/admin/kalender/maned")` — ikke en egen skjerm.
 | **Bookinger** ★ | `/admin/bookinger` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v13 (KpiTile, Card, Tag + heatmap retokened)
 | · Ny booking | `/admin/bookinger/ny` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v2 2026-07-12: portet ut av legacy, V2Shell + NyBookingWizard; inngang fra kalender + bookinger |
-| Anlegg | `/admin/anlegg` | ✓ | ✓✓– | ✓ | ~ | ✓ | ~ | v2-port 16. jul: `AdminAnleggV2` + `LocationFormV2` (Kort/TomTilstand), erstatter `AgPage`/`AgPageHead`. Samme datagrunnlag uendret. Kjent, uendret hull (IKKE del av denne restylingen, se "Veien til 100%"): kun opprett-lokasjon er koblet — rediger/slett-lokasjon og fasilitet-administrasjon (`FacilityFormV2` finnes, portet, men uten kallested) mangler. Design – → ✓. |
+| Anlegg | `/admin/anlegg` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul (`AdminAnleggV2` + `LocationFormV2`). **Full administrasjon koblet 17. jul (B8a):** rediger/deaktiver lokasjon + opprett/rediger/deaktiver fasilitet (`FacilityFormV2` m/ type + beskrivelse, ikke lenger unwired). Soft delete via `active` — hard delete-actions FJERNET (bookinger/availability refererer radene; Location→Facility har cascade). Deaktiverte rader vises m/ StatusPill og kan reaktiveres; zod-validering + audit på alle actions. Kart-koordinater (mapX/mapY/latlong) bevisst utenfor — trenger egen kart-flate (meldt gap). Flyt/Funker ~ → ✓. |
 | Tilgjengelighet | `/admin/availability` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminAvailabilityV2` + `AdminSlotFormV2`/`AdminAvailabilityWeekGridV2`/`AdminAvailabilityYearGanttV2` (T-tokens), erstatter `AgPage`-familien + hand-Tailwind. Alle tre visninger (Måned/Uke-drag/År) og samme actions (addSlot/updateSlot/deleteSlot) uendret — drag-interaksjonen er portet 1:1, ingen ny funksjon. Design – → ✓, Mob/Desk/iPad –✓– → ✓✓–. |
 | Kapasitet | `/admin/kapasitet` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: NYTT FUNN — ren `redirect("/admin/bookinger")`, ikke en egen skjerm (var scoret som levende før). |
 | Tjenester/priser | `/admin/services` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminServicesV2` + `ServiceFormV2` (Kort/StatusPill/dialog), erstatter `@/components/admin/agencyos/ui`-familien. Fikset samtidig en reell UI-mangel: rediger/slett (`updateService`/`deleteService`) fantes alt i skjemaet men ble aldri kalt per rad — kun "+ Ny tjeneste" var koblet. Nå rendres "Endre" per rad — ingen ny funksjon, bare faktisk bruk av det som fantes. Design – → ✓, Mob/Desk/iPad –✓– → ✓✓–. |
@@ -759,8 +759,9 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 **Bolk 8 — Kjente funksjonelle hull avdekket under v2-portingen (16. jul), bevisst utsatt.**
 Anders sa "restyle nå, fiks funksjon separat" da disse ble avdekket — v2-portene er ferdige, men
 hullene under er reelle og uendret fra før portingen (ingen regresjon):
-- `/admin/anlegg`: kun opprett-lokasjon er koblet. Rediger/slett-lokasjon og fasilitet-administrasjon
-  (`FacilityFormV2` er portet og virker, men har ingen kallested på siden) mangler en egen flate.
+- ~~`/admin/anlegg`~~ **LUKKET 17. jul (B8a):** rediger/deaktiver lokasjon + full fasilitet-
+  administrasjon koblet. «Slett» er bevisst erstattet med deaktivering (aldri kaskade-slett
+  anleggsdata). Rest: kartplassering (mapX/mapY/latlong) trenger egen kart-flate — meldt gap.
 - `/admin/availability`: kompleks drag-interaksjon + 3 visningsmoduser — restylet 1:1 mot v2-tokens,
   ingen ny funksjon lagt til.
 - `/admin/stats/moderering`: ingen modererings-/GDPR-slett-kø finnes ennå i datamodellen — bevisst
