@@ -17,6 +17,7 @@ import { PlayerHero } from "@/components/portal/player-hero";
 import { EmptyState } from "@/components/shared/empty-state";
 import { hentVennProfil } from "@/lib/venner/actions";
 import { FjernVennKnapp } from "./FjernVennKnapp";
+import { RapporterVennKnapp } from "./RapporterVennKnapp";
 
 export const dynamic = "force-dynamic";
 
@@ -105,6 +106,10 @@ export default async function VennProfilPage({
         <span>
           Du ser kun AT {venn.name.split(" ")[0]} har trent — ingen plan, mål eller tall er delt.
         </span>
+      </div>
+
+      <div className="flex flex-col items-start gap-2">
+        <RapporterVennKnapp vennUserId={venn.id} />
       </div>
     </div>
   );
