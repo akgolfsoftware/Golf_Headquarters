@@ -399,7 +399,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Ny turnering | `/admin/tournaments/ny` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: v2 5-stegs-veiviser; fant+fikset "use server"-krasj ved innsending
 | · Dubletter (rydd) | `/admin/tournaments/dubletter` | ✓ | ✓–– | ✓ | ~ | ✓ | ~ | 2026-07-13: v2, kun tom-tilstand nettleser-testet (0 dubletter i DB nå)
 | Økter | `/admin/okter` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminOkterV2`. |
-| Videoer | `/admin/videoer` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: AMBIGUOUS — kun `AdminHero`-header, `VideoUploadForm`/`VideoCard` hand-bygget. |
+| Videoer | `/admin/videoer` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team F2): `AdminVideoerV2` (KpiFlis + v2-opplastingsskjema + Rad-liste), rute ut av (legacy); upload-/slette-logikk (`src/lib/storage/video.ts`, samme FormData/validering/canDelete) 100 % uendret. Meldt gap: dropzone finnes ikke som v2-primitiv (komponert lokalt av T-tokens). |
 | Opptak | `/admin/recording` | ✓ | --- | ✓ | ~ | ~ | ~ | v2-port 16. jul: `AdminRecordingV2` (Kort/Caps/Tittel/KpiFlis). `RecordingControls` (ekte MediaRecorder/wake-lock/batteri-varsel) + `RecordingAnalyzeButton` urørt. Rettet en reell bug samtidig: varselbanneret sjekket `DEEPGRAM_API_KEY`, men transkribering (`src/lib/transcribe.ts`) bruker OpenAI Whisper og gates på `OPENAI_API_KEY` — feil variabel sjekket før. Copy endret fra "Deepgram" til nøytralt "talegjenkjenning" (Deepgram er aldri integrert — kjent navn/kode-avvik, ikke avklart med Anders). |
 
 ### Gjennomføre (daglig drift)
