@@ -13,9 +13,10 @@
 >   ([PR #69](https://github.com/akgolfsoftware/Golf_Headquarters/pull/69)). Alle nettleser-verifisert.
 > - **M2 (Workbench-mobil) og M3 (kjerneskjermer) DESIGNET** i `ui_kits/v2/`
 >   (`agencyos-wb-mobil-retninger.jsx/.html` + `agencyos-mobil-kjerne.jsx/.html`, gruppe «v2-bolk5»).
->   **M2 leverer TO retninger — Anders må velge:** A = oppgavedrevet kø (anbefalt) · B = panel-replika.
->   M3 dekker cockpit/innboks/stall/kalender under den godkjente bunn-nav-en. Begge venter godkjenning
->   før implementering.
+>   **M2-retning VALGT av Anders (17. juli, natt): A = oppgavedrevet kø** (`RetningA` i
+>   `agencyos-wb-mobil-retninger.jsx` — panel-replika B forkastes, ikke bygg den). M3 dekker
+>   cockpit/innboks/stall/kalender under den godkjente bunn-nav-en. Begge er nå fullt besluttet og
+>   klare for implementering (samme draft-PR-flyt som D1–D3).
 >
 > Skrevet 17. juli 2026 etter Anders' prioritering: Bolk 5-trioen først i design-køen, og mobil-utgave
 > av Workbench/AgencyOS TRENGS før lansering. Briefene kjøres i det levende Claude Design-prosjektet
