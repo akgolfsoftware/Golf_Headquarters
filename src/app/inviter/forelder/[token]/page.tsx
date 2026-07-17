@@ -1,14 +1,57 @@
-// Offentlig accept-side for forelder-invitasjoner.
+// Offentlig accept-side for forelder-invitasjoner — v2-port 16. juli 2026.
 // Verifiserer token og rendrer registreringsskjema for den nye forelderen.
+// Presentasjonen er flyttet til v2 (VeiviserFlate + T-tokens); token-oppslag,
+// status-logikken (ugyldig/brukt/utløpt/ok) og AksepterForm-flyten er uendret.
+// Offentlig side — ingen app-shell.
 
 import { prisma } from "@/lib/prisma";
+import { T } from "@/lib/v2/tokens";
+import { VeiviserFlate } from "@/components/auth/onboarding/wizard-chrome";
 import { AksepterForm } from "./form";
 
 const NB = new Intl.DateTimeFormat("nb-NO", {
+  timeZone: "Europe/Oslo",
   day: "2-digit",
   month: "short",
   year: "numeric",
 });
+
+const CAPS: React.CSSProperties = {
+  fontFamily: T.mono,
+  fontSize: 10,
+  fontWeight: 700,
+  letterSpacing: "0.1em",
+  textTransform: "uppercase",
+  color: T.mut,
+};
+
+function StatusBoks({
+  tone,
+  children,
+}: {
+  tone: "feil" | "info";
+  children: React.ReactNode;
+}) {
+  const c = tone === "feil" ? T.down : T.mut;
+  return (
+    <p
+      style={{
+        marginTop: 24,
+        marginBottom: 0,
+        borderRadius: 12,
+        border: `1px solid color-mix(in srgb, ${c} 30%, transparent)`,
+        background: `color-mix(in srgb, ${c} 10%, transparent)`,
+        padding: "14px 16px",
+        fontFamily: T.ui,
+        fontSize: 13.5,
+        lineHeight: 1.55,
+        color: tone === "feil" ? T.down : T.fg2,
+      }}
+    >
+      {children}
+    </p>
+  );
+}
 
 export default async function AksepterInvitasjonPage({
   params,
@@ -32,49 +75,74 @@ export default async function AksepterInvitasjonPage({
         : "ok";
 
   return (
-    <div className="min-h-screen bg-background px-4 py-12">
-      <div className="mx-auto max-w-md">
-        <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          AK Golf · Foreldreinvitasjon
-        </div>
-        <h1 className="mt-2 font-display text-4xl">
-          Bli <em className="italic">forelder</em> i AK Golf
+    <VeiviserFlate>
+      <div style={{ margin: "0 auto", maxWidth: 430, padding: "24px 16px 0" }}>
+        <span style={CAPS}>AK Golf · Foreldreinvitasjon</span>
+        <h1
+          style={{
+            margin: "8px 0 0",
+            fontFamily: T.disp,
+            fontSize: 30,
+            fontWeight: 700,
+            lineHeight: 1.05,
+            letterSpacing: "-0.025em",
+            color: T.fg,
+            textWrap: "balance",
+          }}
+        >
+          Bli <em style={{ fontStyle: "italic", fontWeight: 400, color: T.lime }}>forelder</em>{" "}
+          i AK Golf
         </h1>
 
         {status === "ugyldig" ? (
-          <p className="mt-6 rounded-md bg-destructive/10 px-4 py-4 text-sm text-destructive">
+          <StatusBoks tone="feil">
             Invitasjonen finnes ikke. Be spilleren sende en ny.
-          </p>
+          </StatusBoks>
         ) : null}
 
         {status === "brukt" ? (
-          <p className="mt-6 rounded-md bg-muted px-4 py-4 text-sm text-muted-foreground">
+          <StatusBoks tone="info">
             Invitasjonen er allerede brukt. Gå til{" "}
-            <a href="/auth/login" className="font-semibold text-primary underline">
+            <a
+              href="/auth/login"
+              style={{ fontWeight: 600, color: T.lime, textDecoration: "underline" }}
+            >
               innloggingen
             </a>{" "}
             for å logge inn.
-          </p>
+          </StatusBoks>
         ) : null}
 
         {status === "utlopt" && invitation ? (
-          <p className="mt-6 rounded-md bg-destructive/10 px-4 py-4 text-sm text-destructive">
+          <StatusBoks tone="feil">
             Invitasjonen utløp {NB.format(invitation.expiresAt)}. Be spilleren sende en ny.
-          </p>
+          </StatusBoks>
         ) : null}
 
         {status === "ok" && invitation ? (
           <>
-            <p className="mt-4 text-sm text-muted-foreground">
-              <strong>{invitation.player.name}</strong> har invitert deg som foresatt. Fyll
-              inn opplysningene under for å opprette konto.
+            <p
+              style={{
+                marginTop: 14,
+                marginBottom: 0,
+                fontFamily: T.ui,
+                fontSize: 13.5,
+                lineHeight: 1.55,
+                color: T.mut,
+              }}
+            >
+              <strong style={{ fontWeight: 600, color: T.fg }}>
+                {invitation.player.name}
+              </strong>{" "}
+              har invitert deg som foresatt. Fyll inn opplysningene under for å opprette
+              konto.
             </p>
-            <div className="mt-6">
+            <div style={{ marginTop: 22 }}>
               <AksepterForm token={token} email={invitation.email} />
             </div>
           </>
         ) : null}
       </div>
-    </div>
+    </VeiviserFlate>
   );
 }

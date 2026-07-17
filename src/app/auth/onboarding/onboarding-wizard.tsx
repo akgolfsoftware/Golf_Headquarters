@@ -5,8 +5,6 @@
  * Chrome portet til fersk fasit (juni 2026): (historisk juni-fasit, fjernet fra repo)
  * AK Golf HQ Design System/playerhq-app/ph-auth.jsx → AOnboarding
  * (steps-rail, TRINN-eyebrow + AHead, opt-card-valg, CTA-rad m/tilbake).
- * NB: fasitens 5 steg ≠ appens låste 7-stegs state-maskin — stegene beholdes.
- *
  * 5-stegs velkomst (state-maskinen i lib/auth/onboarding-state.ts er låst til 5,
  * redusert fra 7 2026-07-16 — GolfBox- og TrackMan-auto-connect-stegene fjernet,
  * ingen ekte integrasjon fantes bak dem, kun «kommer snart»-knapper):
@@ -15,6 +13,10 @@
  *
  * VIKTIG: All steg-logikk og lagre-actions er beholdt uendret fra forrige
  * versjon — kun presentasjonen er portet til mobil-først DS-token-komponenter.
+ * v2-port 16. juli 2026: primitivfilene (wizard-chrome/wizard-fields) er
+ * restylet til v2-tokens; her er KUN inline-presentasjon (steg 1-merke,
+ * GolfBox/TrackMan-kort, feilboks) flyttet til T-tokens. Steg-maskin,
+ * mindreårig-sjekk (steg 2), resume og alle actions er 100 % uendret.
  * Ingen hardkodet hex. Ingen emoji — kun lucide-react. Norsk bokmål.
  */
 
@@ -33,6 +35,7 @@ import {
   Target,
   Trophy,
 } from "lucide-react";
+import { T } from "@/lib/v2/tokens";
 import {
   saveSpillerOnboardingStep,
   markStepComplete,
@@ -62,7 +65,6 @@ import {
   SummaryCard,
   SummaryRow,
   AgreeItem,
-  SecurityStrip,
 } from "@/components/auth/onboarding/wizard-fields";
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -319,7 +321,19 @@ export function OnboardingWizard({
             <div className="mb-5 flex justify-center">
               <span
                 aria-hidden
-                className="grid h-14 w-14 place-items-center rounded-[14px] bg-accent font-display text-2xl font-extrabold leading-none text-primary"
+                style={{
+                  display: "grid",
+                  placeItems: "center",
+                  width: 56,
+                  height: 56,
+                  borderRadius: 14,
+                  background: T.lime,
+                  color: T.onLime,
+                  fontFamily: T.disp,
+                  fontSize: 24,
+                  fontWeight: 700,
+                  lineHeight: 1,
+                }}
               >
                 ak
               </span>
@@ -394,7 +408,7 @@ export function OnboardingWizard({
                 placeholder="forelder@example.com"
                 autoComplete="email"
               />
-              <p className="mt-1 text-[11px] text-warning">
+              <p className="mt-1 text-[11px]" style={{ color: T.warn }}>
                 Vi sender en forespørsel om foreldresamtykke iht. GDPR art. 8.
               </p>
             </Field>
@@ -707,7 +721,13 @@ export function OnboardingWizard({
       {error && (
         <div className="mx-auto mb-4 w-full max-w-[430px] px-4">
           <div
-            className="rounded-lg border border-destructive/25 bg-destructive/10 px-4 py-3 text-[13px] text-destructive"
+            className="px-4 py-3 text-[13px]"
+            style={{
+              borderRadius: 11,
+              border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
+              background: `color-mix(in srgb, ${T.down} 10%, transparent)`,
+              color: T.down,
+            }}
             role="alert"
           >
             {error}

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getOnboardingState, getResumeStep } from "@/lib/auth/onboarding-state";
+import { VeiviserFlate } from "@/components/auth/onboarding/wizard-chrome";
 import { OnboardingWizard } from "./onboarding-wizard";
 
 export const dynamic = "force-dynamic";
@@ -30,11 +31,11 @@ export default async function OnboardingPage({
 
   const resumeStep = getResumeStep(user);
 
-  // Fersk fasit (ph-auth.jsx → AOnboarding): wizard direkte på cream-flate,
-  // uten mørk gradient-ramme. Forelder-flyten beholder OnboardingShell.
+  // v2-port 16. juli 2026: wizard på v2-flaten (VeiviserFlate, lys — B28).
+  // Auth/resume/steg-logikk over er uendret.
   return (
-    <main className="min-h-svh bg-background pb-6">
+    <VeiviserFlate>
       <OnboardingWizard initialStep={resumeStep} subscribe={subscribe} />
-    </main>
+    </VeiviserFlate>
   );
 }

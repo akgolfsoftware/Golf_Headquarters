@@ -15,7 +15,7 @@
     "ak-second-brain:ak-stigen-juniorutvikling",
     "ak-second-brain:iup-kategorisystem",
     "ak-second-brain:8-sekundersregelen",
-    "ak-second-brain:decade-golf",
+    "ak-second-brain:presisjonsstrategi-golf",
     "ak-second-brain:gfgk-treningsplan-skill",
     "ak-second-brain:sportsligplan-gfgk-2026"
   ],
@@ -1074,9 +1074,9 @@
         "L": null
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": ["distanse-kontroll", "trajectory", "tournament-prep"],
-      "coachNotater": "DECADE-prinsipp: lær klubben dybt før du legger til nye. Spillere som kan 5 distanser med 7-jern slår 3-køye-spillere som bare har én."
+      "coachNotater": "PRESISJONSSTRATEGI-prinsipp: lær klubben dybt før du legger til nye. Spillere som kan 5 distanser med 7-jern slår 3-køye-spillere som bare har én."
     },
     {
       "navn": "stinger-3jern-kontroll",
@@ -1736,7 +1736,7 @@
       "videoUrl": null,
       "kilde": "ak-second-brain:putting-1-300ft-metodikk",
       "tags": ["MORAD", "putting", "Mac-OGrady", "long-term"],
-      "coachNotater": "Mac: 'To master it may take half a decade or longer.' Brukes som vedlikeholds-protokoll for elite-spillere — 1 fot går først hver økt for å re-kalibrere."
+      "coachNotater": "Mac: 'To master it may take half a presisjonsstrategi or longer.' Brukes som vedlikeholds-protokoll for elite-spillere — 1 fot går først hver økt for å re-kalibrere."
     },
     {
       "navn": "gate-drill-putting",
@@ -2274,13 +2274,13 @@
         "L": null
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": ["course-mgmt", "strategi", "konservativ"],
-      "coachNotater": "DECADE-prinsipp. Spillere som forsøker å score taper score. Konservativ = bedre score. Trene dette først, så bygger du opp aggressivitet."
+      "coachNotater": "PRESISJONSSTRATEGI-prinsipp. Spillere som forsøker å score taper score. Konservativ = bedre score. Trene dette først, så bygger du opp aggressivitet."
     },
     {
-      "navn": "18-hull-decade-strategi",
-      "beskrivelse": "Spill full runde med DECADE-prinsipper: alltid sentrum av fairway, ALDRI direkte på flagg fra >100m, 8-sekundersregelen før hvert slag. Loggfør hvert hull med taktisk valg.",
+      "navn": "18-hull-presisjonsstrategi-strategi",
+      "beskrivelse": "Spill full runde med PRESISJONSSTRATEGI-prinsipper: alltid sentrum av fairway, ALDRI direkte på flagg fra >100m, 8-sekundersregelen før hvert slag. Loggfør hvert hull med taktisk valg.",
       "disciplin": "SPILL",
       "skillArea": "SPILL",
       "minKategori": "G",
@@ -2304,9 +2304,9 @@
         "L": null
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
-      "tags": ["course-mgmt", "DECADE", "full-runde"],
-      "coachNotater": "DECADE er Scott Fawcett-metoden. Loggfør avgjørelser (ikke utfall) — spillere lærer at gode beslutninger noen ganger gir dårlige slag, men over tid vinner."
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
+      "tags": ["course-mgmt", "PRESISJONSSTRATEGI", "full-runde"],
+      "coachNotater": "PRESISJONSSTRATEGI er Scott Fawcett-metoden. Loggfør avgjørelser (ikke utfall) — spillere lærer at gode beslutninger noen ganger gir dårlige slag, men over tid vinner."
     },
     {
       "navn": "scoring-9-hull-test-betingelser",
@@ -2653,7 +2653,7 @@
       "intensitet": 4,
       "lPhase": ["TURNERING"],
       "morad": false,
-      "prerequisites": ["18-hull-decade-strategi"],
+      "prerequisites": ["18-hull-presisjonsstrategi-strategi"],
       "defaultSets": 1,
       "defaultReps": 5,
       "csTargetByKategori": {
@@ -2664,9 +2664,9 @@
         "L": null
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": ["decision-making", "par-5", "WAGR"],
-      "coachNotater": "Klassisk go-for-green-scenario. DECADE-mate: hvis carry-rate <70%, legg opp. Spillere overestimerer egen evne."
+      "coachNotater": "Klassisk go-for-green-scenario. PRESISJONSSTRATEGI-mate: hvis carry-rate <70%, legg opp. Spillere overestimerer egen evne."
     },
     {
       "navn": "long-iron-bail-out-side",
@@ -2694,7 +2694,7 @@
         "L": null
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": ["bail-out", "trygghet", "course-mgmt"],
       "coachNotater": "Pro-tips. Pin er der pin er — den vinner. Spille til 'fete' siden av green = lavere variance, høyere GIR%."
     },
@@ -2754,7 +2754,7 @@
         "L": null
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": ["course-mgmt", "preparation", "yardage"],
       "coachNotater": "Mental prep > teknisk arbeid før turnering. Spillere som vet banen scorer 2-3 lavere enn de som ikke gjør det."
     },
@@ -2785,8 +2785,8 @@
       },
       "videoUrl": null,
       "kilde": "ak-second-brain:8-sekundersregelen",
-      "tags": ["pre-shot", "DECADE", "rytme"],
-      "coachNotater": "DECADE 8-sek-regel. Pre-shot-rutine må være under 8 sek for å unngå doubt og 'don't'-tanker. Junior Utvikling (14-16) introduseres her."
+      "tags": ["pre-shot", "PRESISJONSSTRATEGI", "rytme"],
+      "coachNotater": "PRESISJONSSTRATEGI 8-sek-regel. Pre-shot-rutine må være under 8 sek for å unngå doubt og 'don't'-tanker. Junior Utvikling (14-16) introduseres her."
     },
     {
       "navn": "verbalize-and-fire",
@@ -2814,9 +2814,9 @@
         "L": null
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": ["pre-shot", "commitment", "verbalize"],
-      "coachNotater": "DECADE-teknikk. Høyt-uttale tvinger commitment. Anders bruker dette personlig før hver wedge i turnering."
+      "coachNotater": "PRESISJONSSTRATEGI-teknikk. Høyt-uttale tvinger commitment. Anders bruker dette personlig før hver wedge i turnering."
     },
     {
       "navn": "50-rep-rutine-konsistens",

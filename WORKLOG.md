@@ -5,6 +5,37 @@
 
 ---
 
+## 2026-07-16 — Lansering i dag for 30 testspillere: Spor 1A + 1D
+
+**Kontekst:** Anders ba om lansering samme dag for 30 testspillere, samtidig som det pågående
+v2-redesignet (fler-uker) skulle fortsette uavhengig. Skilte de to eksplisitt i en plan
+(`/root/.claude/plans/federated-drifting-orbit.md`, kun lokal for denne økten): **Spor 1** =
+lanseringsblokkerende hull, **Spor 2** = løpende v2-bølgeplan (upåvirket).
+
+**Spor 1A — GolfBox + TrackMan auto-connect fjernet.** PR [#42](https://github.com/akgolfsoftware/Golf_Headquarters/pull/42)
+(`claude/golfbox-trackman-onboarding-cleanup`), draft, grønn Vercel-build. Fjernet GolfBox- og
+TrackMan-auto-connect-stegene fra spiller-onboardingen (`onboarding-wizard.tsx`: 7→5 steg),
+rettet `SPILLER_TOTAL_STEPS`/`completeOnboarding()`/`getResumeStep`-klemming tilsvarende, og
+fjernet de deaktiverte «kommer snart»-radene (`account`/`api`) fra TrackMan-opplastingsmodalen.
+
+**Spor 1D — Meldinger: vedlegg-knapp koblet.** PR [#43](https://github.com/akgolfsoftware/Golf_Headquarters/pull/43)
+(`claude/melding-vedlegg-composer`), draft, grønn Vercel-build. Composerens vedlegg-knapp
+(`trad-ui.tsx`) viste kun en «kommer snart»-toast, selv om hele vedleggs-galleriet
+(opplasting/nedlasting/sletting via ekte `MessageAttachment` + Supabase Storage på
+`melding/[id]/vedlegg`) allerede fantes og virket — bare ikke koblet fra chatten. Pekes nå dit.
+Fjernet også to urelaterte stub-knapper (søk, meny) i tråd-headeren (`melding-header-knapper.tsx`,
+slettet — ingen spesifikasjon fantes for dem).
+
+**Gjenstår (egne sesjoner, kickoff-prompter i planfilen):**
+- **Spor 1B** — AgencyOS gruppe-CRUD (opprett/slett `Group`; spiller-til-gruppe finnes allerede).
+- **Spor 1C** — Admin test-detalj + «Del med coach» + PDF-eksport (ingen av delene finnes i dag).
+- **Spor 1E** — drift, kun Anders (Resend DNS, aktiverings-e-post, Stripe-nøkler).
+- **Spor 1F** — ærlig sluttsjekk av hele 30-tester-stien, etter at 1A–1D er merget.
+
+Begge PR-er venter i Anders' godkjenningsport (`main` røres ikke uten hans eksplisitte «ja»).
+
+---
+
 ## 2026-07-10 — Live Coach-økt: AI Golf Coach under aktiv trening (feature/live-coach-session)
 
 **Branch:** `feature/live-coach-session` (utgrenet fra `redesign/v2` — inneholder ikke `main`s historikk,

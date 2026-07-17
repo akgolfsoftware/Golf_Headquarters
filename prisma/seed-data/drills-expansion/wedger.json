@@ -10,7 +10,7 @@
     "ak-second-brain:ak-golf-treningsfilosofi",
     "ak-second-brain:ak-golf-testprotokoller",
     "ak-second-brain:presisjonsstrategi-prosent-buffer",
-    "ak-second-brain:decade-golf",
+    "ak-second-brain:presisjonsstrategi-golf",
     "ak-second-brain:8-sekundersregelen",
     "ak-second-brain:morad-diagnostiske-regler",
     "notion:ak-golf-mac-ogrady-knowledge-base"
@@ -386,7 +386,7 @@
         "feedback",
         "trackman"
       ],
-      "coachNotater": "100m er DECADE-grensen — fra her og inn skal spilleren ha klar prosent for å treffe greenen. Mål: 90% greens hit fra 100m for elite."
+      "coachNotater": "100m er PRESISJONSSTRATEGI-grensen — fra her og inn skal spilleren ha klar prosent for å treffe greenen. Mål: 90% greens hit fra 100m for elite."
     },
     {
       "navn": "avstandskart-tre-wedger",
@@ -991,13 +991,13 @@
         "G": 62
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "distance-control",
         "consistency",
         "worst-shot"
       ],
-      "coachNotater": "DECADE-prinsipp: turnering avgjøres av worst shots, ikke best. Worst-ball-drill flytter fokus til consistency over topp-spike."
+      "coachNotater": "PRESISJONSSTRATEGI-prinsipp: turnering avgjøres av worst shots, ikke best. Worst-ball-drill flytter fokus til consistency over topp-spike."
     },
     {
       "navn": "ladder-back-tre-distanser",
@@ -2084,13 +2084,13 @@
         "J": 50
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "trajectory-control",
         "tucked-pin",
         "bane-spill"
       ],
-      "coachNotater": "DECADE-prinsipp: ikke spill direkte mot tucked pin med mindre ball-flight tillater det. Spilleren skal vurdere trajectory FØR han velger linje."
+      "coachNotater": "PRESISJONSSTRATEGI-prinsipp: ikke spill direkte mot tucked pin med mindre ball-flight tillater det. Spilleren skal vurdere trajectory FØR han velger linje."
     },
     {
       "navn": "trajectory-wet-conditions-pw",
@@ -3968,7 +3968,7 @@
         "distance-control",
         "100-yard"
       ],
-      "coachNotater": "100m er DECADE-grensen. Innenfor 100m skal spilleren ha klar plan og høyt forventet GIR. 100m proximity er en av Anders' nøkkelmetrikker."
+      "coachNotater": "100m er PRESISJONSSTRATEGI-grensen. Innenfor 100m skal spilleren ha klar plan og høyt forventet GIR. 100m proximity er en av Anders' nøkkelmetrikker."
     },
     {
       "navn": "kontroll-110-yard",
@@ -4403,7 +4403,7 @@
         "tykk-rough",
         "30-yard"
       ],
-      "coachNotater": "Tykk rough = ikke håpe på flagget. Spill ut, lande sikkert, putt for par. DECADE-prinsipp: aksepter bogey-risiko, unngå double."
+      "coachNotater": "Tykk rough = ikke håpe på flagget. Spill ut, lande sikkert, putt for par. PRESISJONSSTRATEGI-prinsipp: aksepter bogey-risiko, unngå double."
     },
     {
       "navn": "wedge-fra-tynn-lie-tett-gras",
@@ -4892,14 +4892,14 @@
         "G": 62
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "distance-control",
         "into-wind",
         "tucked-pin",
         "trajectory-control"
       ],
-      "coachNotater": "Vind-strategi handler om landing-zone, ikke flagg-jakt. DECADE-prinsipp: lande sikkert, rulle nær. Klar plan før hver wedge."
+      "coachNotater": "Vind-strategi handler om landing-zone, ikke flagg-jakt. PRESISJONSSTRATEGI-prinsipp: lande sikkert, rulle nær. Klar plan før hver wedge."
     },
     {
       "navn": "vind-anders-regel-1mph-1prosent",
@@ -5100,7 +5100,7 @@
         "J": 50
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "tucked-pin",
         "trajectory-control",
@@ -5183,7 +5183,7 @@
         "G": 62
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "tucked-pin",
         "trajectory-control",
@@ -5273,7 +5273,7 @@
       "coachNotater": "Draw inn mot pin er Tour-skill. Trenes for elite. Spillere som ikke kan styre shape skal aldri prøve dette under press."
     },
     {
-      "navn": "tucked-pin-decade-prosent",
+      "navn": "tucked-pin-presisjonsstrategi-prosent",
       "beskrivelse": "Anders' prosent-buffer-strategi: identifiser hvor mye dispersjon spilleren har, og sikt så pin er innenfor 2 standardavvik fra mål. Konkret: 5m dispersjon = sikt 10m fra pin minimum.",
       "disciplin": "SPILL",
       "skillArea": "TILNAERMING",
@@ -5309,7 +5309,7 @@
       "kilde": "ak-second-brain:presisjonsstrategi-prosent-buffer",
       "tags": [
         "tucked-pin",
-        "decade",
+        "presisjonsstrategi",
         "strategi",
         "dispersion"
       ],
@@ -5350,13 +5350,13 @@
         "J": 50
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "tucked-pin",
         "strategi",
         "safe-zone"
       ],
-      "coachNotater": "Safe zone vs pin zone er DECADE-kjernen. Klubb-spillere har for liten safe zone. Anders' regel: minst halve green-arealet skal være safe."
+      "coachNotater": "Safe zone vs pin zone er PRESISJONSSTRATEGI-kjernen. Klubb-spillere har for liten safe zone. Anders' regel: minst halve green-arealet skal være safe."
     },
     {
       "navn": "tucked-pin-walk-off",
@@ -5431,11 +5431,11 @@
         "J": 60
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "tucked-pin",
         "vurdering",
-        "decade"
+        "presisjonsstrategi"
       ],
       "coachNotater": "Pin-vurdering er en mental disiplin. Spillere som ikke kategoriserer pin, jakter alle pins likt. Resultat: doble på sucker-pins."
     },
@@ -5472,7 +5472,7 @@
         "J": 55
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "tucked-pin",
         "yardage",
@@ -5924,7 +5924,7 @@
         "J": 50
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "distance-control",
         "scoring",
@@ -6009,7 +6009,7 @@
         "G": 58
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "distance-control",
         "press",
@@ -6095,13 +6095,13 @@
         "G": 65
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "distance-control",
         "consistency",
         "worst-case"
       ],
-      "coachNotater": "DECADE-prinsipp: konsistens > brilliance. Worst-case-floor avgjør turneringsresultater, ikke beste skudd. Anders' nøkkelmetrikk."
+      "coachNotater": "PRESISJONSSTRATEGI-prinsipp: konsistens > brilliance. Worst-case-floor avgjør turneringsresultater, ikke beste skudd. Anders' nøkkelmetrikk."
     },
     {
       "navn": "pre-shot-routine-wedge",

@@ -114,6 +114,9 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
       { id: "spiller-profil", label: "Min spillerprofil", icon: "user", href: "/portal" },
       { id: "services", label: "Tjenester og priser", icon: "credit-card", href: "/admin/services" },
       { id: "settings", label: "Innstillinger", icon: "settings", href: "/admin/settings" },
+      { id: "klubb-innstillinger", label: "Klubb-innstillinger", icon: "building-2", href: "/admin/klubb/innstillinger" },
+      { id: "integrasjoner", label: "Integrasjoner", icon: "plug", href: "/admin/integrasjoner" },
+      { id: "hjelp", label: "Hjelp", icon: "help-circle", href: "/admin/hjelp" },
     ],
   },
 ];
@@ -335,7 +338,10 @@ function IkonRailNav({ aktiv, nav, mer, navn, avatarUrl, erAgency }: Required<Pi
       )}
       <div style={{ flex: 1, minHeight: 8 }} />
       <ProfilBytteKnapp erAgency={!!erAgency} />
-      <TemaRailKnapp />
+      {/* B28 (15. jul, låst): PlayerHQ er alltid lys, ingen bryter — knappen
+          styrer et DELT AgencyOS/PlayerHQ-tema-cookie, så den vises kun i
+          AgencyOS. Funnet + fikset 16. jul: spillere fikk denne uten grunn. */}
+      {erAgency && <TemaRailKnapp />}
       <AvatarFoto src={avatarUrl ?? undefined} navn={navn} size={32} ring />
       {merOpen && mer && <MerPanel grupper={mer} onClose={() => setMerOpen(false)} />}
     </nav>
@@ -440,6 +446,23 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
   // rettes ved hydration (suppressHydrationWarning) — v2-fargene er riktige
   // fra første paint uansett (var(--v2-*) + inline-script i rot-layout).
   const { tema } = useV2Tema();
+
+  // B28 (låst, funnet+fikset 16. jul): `data-v2-tema` er ETT delt attributt på
+  // <html> for BÅDE AgencyOS og PlayerHQ (samme cookie). Uten dette ville en
+  // coach med mørk AgencyOS-preferanse fått mørk PlayerHQ også — og siden
+  // Next-navigasjon mellom /portal og /admin er client-side (samme dokument),
+  // holder det IKKE å bare style om denne komponenten; selve attributtet må
+  // synkes ved hver rute-veksling. AgencyOS beholder cookien uendret — kun
+  // PlayerHQ-visningen låses til lys, uansett hva cookien sier.
+  useEffect(() => {
+    const cookieLys = document.cookie.split("; ").some((c) => c === "ak-v2-tema=light");
+    const onsket: V2Tema = erAgency ? (cookieLys ? "light" : "dark") : "light";
+    if (lesTema() !== onsket) {
+      if (onsket === "light") document.documentElement.setAttribute("data-v2-tema", "light");
+      else document.documentElement.removeAttribute("data-v2-tema");
+      window.dispatchEvent(new Event("ak-v2-tema"));
+    }
+  }, [erAgency]);
 
   // Coach-cookie for profil-veksleren: besøk i AgencyOS markerer nettleseren
   // som coach (kun UI-visning av toggle-lenken i PlayerHQ; guards uendret).

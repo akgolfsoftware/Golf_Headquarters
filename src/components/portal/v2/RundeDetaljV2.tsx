@@ -13,6 +13,7 @@
  */
 
 import Link from "next/link";
+import type { ReactNode } from "react";
 import {
   T,
   Caps,
@@ -51,6 +52,18 @@ export type GranulaerSgData = {
   putt40plus: number | null;
 };
 
+/** Aggregert scorekort-statistikk (D6a) — kun fra ekte HoleScore-rader. */
+export type HullStat = {
+  ut: { score: number; par: number; antall: number };
+  inn: { score: number; par: number; antall: number };
+  /** null når ingen hull har putter logget. */
+  putter: { totalt: number; hull: number } | null;
+  /** null når fairway ikke er logget på noe hull (par 3 teller aldri). */
+  fairway: { treff: number; av: number } | null;
+  /** null når GIR ikke er logget på noe hull. */
+  gir: { treff: number; av: number } | null;
+};
+
 export type RundeDetaljData = {
   id: string;
   baneNavn: string;
@@ -71,6 +84,8 @@ export type RundeDetaljData = {
   visKjedeStatus: boolean;
   antallKomplette: number;
   antallHullMedScore: number;
+  /** UT/INN + putter/FW/GIR fra scorekortet — null når hulldata mangler. */
+  hullStat: HullStat | null;
   granulaerSg: GranulaerSgData;
 };
 
@@ -79,6 +94,24 @@ export type RundeDetaljData = {
 function tilParTekst(diff: number): string {
   if (diff === 0) return "even par";
   return diff > 0 ? `+${diff}` : `−${Math.abs(diff)}`;
+}
+
+/** Kort par-differanse med retning: «+2», «−1», «E». */
+function tilKortParTekst(diff: number): string {
+  if (diff === 0) return "E";
+  return diff > 0 ? `+${diff}` : `−${Math.abs(diff)}`;
+}
+
+/** UT/INN/TOTALT-rad: score · par · differanse (tonet birdie-grønn/bogey-rød). */
+function UtInnTall({ score, par }: { score: number; par: number }) {
+  const d = score - par;
+  return (
+    <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>
+      {score}
+      <span style={{ fontSize: 10, fontWeight: 400, color: T.mut }}> · par {par} · </span>
+      <span style={{ color: d < 0 ? T.up : d > 0 ? T.down : T.fg }}>{tilKortParTekst(d)}</span>
+    </span>
+  );
 }
 
 function sgTekst(v: number | null): string {
@@ -170,6 +203,66 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
             sammendrag={{ score: data.score, par: data.par, sg: data.sgTotal }}
             hjelp="sgTotal"
           />
+          {/* UT/INN + putter/FW/GIR (D6a) — kun tall som faktisk er logget */}
+          {data.hullStat && (
+            <Kort eyebrow="Fra scorekortet" pad="12px 18px">
+              {(() => {
+                const s = data.hullStat;
+                const harBegge = s.ut.antall > 0 && s.inn.antall > 0;
+                const rader: Array<{ key: string; navn: ReactNode; innhold: ReactNode }> = [];
+                if (harBegge) {
+                  rader.push({ key: "ut", navn: "UT (hull 1–9)", innhold: <UtInnTall score={s.ut.score} par={s.ut.par} /> });
+                  rader.push({ key: "inn", navn: "INN (hull 10–18)", innhold: <UtInnTall score={s.inn.score} par={s.inn.par} /> });
+                }
+                rader.push({
+                  key: "totalt",
+                  navn: "TOTALT",
+                  innhold: <UtInnTall score={s.ut.score + s.inn.score} par={s.ut.par + s.inn.par} />,
+                });
+                if (s.putter) {
+                  rader.push({
+                    key: "putter",
+                    navn: <>Putter <HjelpTips k="putter" size={11} /></>,
+                    innhold: (
+                      <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>
+                        {s.putter.totalt}
+                        <span style={{ fontSize: 10, fontWeight: 400, color: T.mut }}>
+                          {" "}· {s.putter.hull} hull logget
+                        </span>
+                      </span>
+                    ),
+                  });
+                }
+                if (s.fairway) {
+                  rader.push({
+                    key: "fairway",
+                    navn: <>Fairway-treff <HjelpTips k="fairwayTreff" size={11} /></>,
+                    innhold: (
+                      <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>
+                        {s.fairway.treff}
+                        <span style={{ fontSize: 10, fontWeight: 400, color: T.mut }}> av {s.fairway.av}</span>
+                      </span>
+                    ),
+                  });
+                }
+                if (s.gir) {
+                  rader.push({
+                    key: "gir",
+                    navn: <>GIR (green på regulering) <HjelpTips k="gir" size={11} /></>,
+                    innhold: (
+                      <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>
+                        {s.gir.treff}
+                        <span style={{ fontSize: 10, fontWeight: 400, color: T.mut }}> av {s.gir.av}</span>
+                      </span>
+                    ),
+                  });
+                }
+                return rader.map((r, i) => (
+                  <Rad key={r.key} last={i === rader.length - 1} title={r.navn} trailing={r.innhold} />
+                ));
+              })()}
+            </Kort>
+          )}
           {data.visKjedeStatus && (
             <Link
               href={`/portal/mal/runder/${data.id}/fullfor`}
@@ -188,12 +281,20 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
             </Link>
           )}
           {data.erEier && (
-            <Link
-              href={`/portal/mal/runder/${data.id}/slag`}
-              style={{ textDecoration: "none", alignSelf: "flex-start" }}
-            >
-              <MikroMeta icon="pencil">Avansert redigering</MikroMeta>
-            </Link>
+            <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+              <Link
+                href={`/portal/mal/runder/${data.id}/hull`}
+                style={{ textDecoration: "none" }}
+              >
+                <MikroMeta icon="pencil">Rediger hull-for-hull</MikroMeta>
+              </Link>
+              <Link
+                href={`/portal/mal/runder/${data.id}/slag`}
+                style={{ textDecoration: "none" }}
+              >
+                <MikroMeta icon="list">Avansert redigering (slag for slag)</MikroMeta>
+              </Link>
+            </div>
           )}
         </>
       ) : (
@@ -208,12 +309,15 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
             <TomTilstand
               icon="flag"
               title="Hull-for-hull mangler"
-              sub="Slag er ikke registrert for denne runden ennå."
+              sub="Runden er logget med kun totalscore. Logg hull-for-hull neste gang — eller legg det til nå."
             />
             {data.erEier && (
-              <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
+              <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap", marginTop: 4 }}>
+                <Link href={`/portal/mal/runder/${data.id}/hull`} style={{ textDecoration: "none" }}>
+                  <CTAPill icon="plus">Legg til hull-for-hull</CTAPill>
+                </Link>
                 <Link href="/portal/runde/logg" style={{ textDecoration: "none" }}>
-                  <CTAPill icon="plus">Før slag for slag</CTAPill>
+                  <CTAPill ghost icon="list">Før slag for slag</CTAPill>
                 </Link>
               </div>
             )}

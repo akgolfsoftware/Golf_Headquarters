@@ -131,14 +131,18 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col">
         {/* DS2: v2-tema settes FØR paint fra cookie (ak-v2-tema) — ingen blits.
             Variablene bor i globals.css; veksleren i V2Shell skriver cookien.
-            nonce kreves — CSP blokkerer inline-script uten. */}
+            nonce kreves — CSP blokkerer inline-script uten.
+            B28 (låst, 16. jul): PlayerHQ (/portal/*) er alltid lys, uansett
+            AgencyOS' delte cookie-preferanse — sjekkes FØR cookien slik at et
+            fersk sideinnlastning på /portal aldri blitser mørkt (V2Shell
+            synker samme regel client-side ved SPA-navigasjon, se shell.tsx). */}
         {/* suppressHydrationWarning: nettlesere nuller nonce-attributtet i DOM
             (sikkerhetsmekanisme) → server/klient-avvik som er forventet. */}
         <script
           nonce={nonce}
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
-            __html: `try{if(document.cookie.split("; ").some(function(c){return c==="ak-v2-tema=light"}))document.documentElement.setAttribute("data-v2-tema","light")}catch(e){}`,
+            __html: `try{var p=window.location.pathname;var lys=p.indexOf("/portal")===0||document.cookie.split("; ").some(function(c){return c==="ak-v2-tema=light"});if(lys)document.documentElement.setAttribute("data-v2-tema","light")}catch(e){}`,
           }}
         />
         {children}

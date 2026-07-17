@@ -13,7 +13,7 @@
     "ak-second-brain:ak-golf-testprotokoller",
     "ak-second-brain:ak-golf-taksonomi",
     "ak-second-brain:treningsperioder-og-faser",
-    "ak-second-brain:decade-golf",
+    "ak-second-brain:presisjonsstrategi-golf",
     "ak-second-brain:8-sekundersregelen",
     "ak-second-brain:klokke-system-wedge-9-10-11",
     "ak-second-brain:short-game-wet-conditions",
@@ -196,7 +196,7 @@
         "high-ball",
         "low-ball"
       ],
-      "coachNotater": "Tre-vindus-tenking er DECADE-fundament. Spilleren skal kunne velge bevisst — ikke bare slå normal. Lav ball mot vind, høy ball til løs green."
+      "coachNotater": "Tre-vindus-tenking er PRESISJONSSTRATEGI-fundament. Spilleren skal kunne velge bevisst — ikke bare slå normal. Lav ball mot vind, høy ball til løs green."
     },
     {
       "navn": "knockdown-pw-vind",
@@ -449,14 +449,14 @@
         "I": 28
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "kort-jern",
         "8-PW",
         "into-wind",
         "knockdown"
       ],
-      "coachNotater": "DECADE-prinsipp: When in doubt, club up and swing easy. Klubb opp gir lavere spin og bedre vindpenetrasjon. Aldri swing harder mot vind."
+      "coachNotater": "PRESISJONSSTRATEGI-prinsipp: When in doubt, club up and swing easy. Klubb opp gir lavere spin og bedre vindpenetrasjon. Aldri swing harder mot vind."
     },
     {
       "navn": "kort-jern-9-jern-medvind",
@@ -491,7 +491,7 @@
         "I": 35
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "kort-jern",
         "8-PW",
@@ -534,7 +534,7 @@
         "H": 30
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "kort-jern",
         "8-PW",
@@ -910,7 +910,7 @@
         "I": 32
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "mellom-jern",
         "5-7",
@@ -953,7 +953,7 @@
         "H": 28
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "mellom-jern",
         "5-7",
@@ -1260,7 +1260,7 @@
         "G": 38
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "mellom-jern",
         "5-7",
@@ -1429,7 +1429,7 @@
         "G": 42
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "mellom-jern",
         "5-7",
@@ -1727,14 +1727,14 @@
         "E": 28
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "lang-jern",
         "3-4",
         "from-rough",
         "decision-making"
       ],
-      "coachNotater": "Beste lang-jern-skudd er ofte hybrid-skuddet. Avgjørelse å bytte klubb er like viktig som å slå godt. DECADE-prinsipp: avoid the big number."
+      "coachNotater": "Beste lang-jern-skudd er ofte hybrid-skuddet. Avgjørelse å bytte klubb er like viktig som å slå godt. PRESISJONSSTRATEGI-prinsipp: avoid the big number."
     },
     {
       "navn": "lang-jern-4-jern-uphill",
@@ -1854,7 +1854,7 @@
         "E": 26
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "lang-jern",
         "3-4",
@@ -2199,7 +2199,7 @@
         "H": 28
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "hybrid",
         "presisjon",
@@ -2278,7 +2278,7 @@
         "G": 28
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "hybrid",
         "fairway-bunker",
@@ -2480,7 +2480,7 @@
         "G": 35
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "fairway-wood",
         "presisjon",
@@ -2519,7 +2519,7 @@
         "F": 25
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "fairway-wood",
         "from-rough",
@@ -2805,13 +2805,13 @@
         "F": 35
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "distance-control",
         "yardage-ladder",
         "dispersion"
       ],
-      "coachNotater": "DECADE-prinsipp: spilleren skal kjenne sine dispersion-vinduer. Hvis 7-jern varierer 15m er det dypest mulig data — plan aldri som om man treffer eksakt."
+      "coachNotater": "PRESISJONSSTRATEGI-prinsipp: spilleren skal kjenne sine dispersion-vinduer. Hvis 7-jern varierer 15m er det dypest mulig data — plan aldri som om man treffer eksakt."
     },
     {
       "navn": "distance-control-9-spots",
@@ -2848,7 +2848,7 @@
         "H": 25
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "distance-control",
         "yardage-ladder",
@@ -2900,7 +2900,7 @@
       "coachNotater": "Selv om GW er teknisk en wedge brukes den ofte i tilnærmingsrollen 80-100m. Klokke-system gir 4 forutsigbare carry-distanser med samme klubb."
     },
     {
-      "navn": "decade-shot-cone-mapping",
+      "navn": "presisjonsstrategi-shot-cone-mapping",
       "beskrivelse": "For hver klubb: slå 20 baller og marker landing-mønster. Beregn shot-cone (95% confidence). Loggfør i yardage-bok. Brukes til strategi: bare sikt mot pin hvis cone hele er på green.",
       "disciplin": "TEK",
       "skillArea": "TILNAERMING",
@@ -2934,14 +2934,14 @@
         "E": 45
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "distance-control",
-        "decade",
+        "presisjonsstrategi",
         "shot-cone",
         "strategy"
       ],
-      "coachNotater": "Dette er ryggraden i DECADE-strategien. Spilleren tar bedre beslutninger på banen når de vet sin egen shot-cone. Krever én lang økt per år."
+      "coachNotater": "Dette er ryggraden i PRESISJONSSTRATEGI-strategien. Spilleren tar bedre beslutninger på banen når de vet sin egen shot-cone. Krever én lang økt per år."
     },
     {
       "navn": "yardage-stige-baklengs",
@@ -3101,7 +3101,7 @@
         "G": 32
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "distance-control",
         "club-selection",
@@ -3229,7 +3229,7 @@
         "G": 28
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "kort-jern",
         "8-PW",
@@ -3394,7 +3394,7 @@
         "F": 30
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "mellom-jern",
         "5-7",
@@ -3564,7 +3564,7 @@
         "G": 28
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "mellom-jern",
         "5-7",
@@ -3606,7 +3606,7 @@
         "G": 28
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "mellom-jern",
         "5-7",
@@ -3731,7 +3731,7 @@
         "F": 35
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "mellom-jern",
         "5-7",
@@ -3813,14 +3813,14 @@
         "G": 32
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "mellom-jern",
         "5-7",
         "into-wind",
         "club-selection"
       ],
-      "coachNotater": "DECADE-prinsipp: When in doubt, club up and swing easy. Demonstrert med data lærer spilleren regelen mye raskere enn ved teori."
+      "coachNotater": "PRESISJONSSTRATEGI-prinsipp: When in doubt, club up and swing easy. Demonstrert med data lærer spilleren regelen mye raskere enn ved teori."
     },
     {
       "navn": "downwind-spin-management",
@@ -3854,7 +3854,7 @@
         "G": 30
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "mellom-jern",
         "5-7",
@@ -3896,7 +3896,7 @@
         "G": 32
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "mellom-jern",
         "5-7",
@@ -3981,7 +3981,7 @@
         "F": 28
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "mellom-jern",
         "5-7",
@@ -4021,7 +4021,7 @@
         "F": 25
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "mellom-jern",
         "5-7",
@@ -4728,13 +4728,13 @@
         "F": 30
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "distance-control",
         "decision-making",
-        "decade"
+        "presisjonsstrategi"
       ],
-      "coachNotater": "DECADE-pilot. På bane lever spilleren av beslutninger, ikke teknikk. Drill at hver beslutning følges av commit + execution. Loggfør hva som var feil."
+      "coachNotater": "PRESISJONSSTRATEGI-pilot. På bane lever spilleren av beslutninger, ikke teknikk. Drill at hver beslutning følges av commit + execution. Loggfør hva som var feil."
     },
     {
       "navn": "8-sekundersregel-tilnaerming",
@@ -4809,12 +4809,12 @@
         "G": 45
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "mellom-jern",
         "5-7",
         "miss-pattern",
-        "decade"
+        "presisjonsstrategi"
       ],
       "coachNotater": "Den viktigste data-driven testen. Spilleren skal vite at sin natural miss er f.eks. 8m høyre. Da plan aim 8m venstre og bruk miss som default."
     },
@@ -4849,7 +4849,7 @@
         "F": 28
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "kort-jern",
         "8-PW",
@@ -4889,7 +4889,7 @@
         "F": 25
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "mellom-jern",
         "5-7",
@@ -4931,7 +4931,7 @@
         "E": 22
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "mellom-jern",
         "5-7",
@@ -4974,7 +4974,7 @@
         "E": 22
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "mellom-jern",
         "5-7",
@@ -5176,13 +5176,13 @@
         "G": 30
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "distance-control",
         "decision-making",
         "recovery"
       ],
-      "coachNotater": "Tilnærming etter trøbbel er en egen skill. Spilleren må ikke prøve helter-skudd. DECADE: minimer dårlig miss, neste skudd er den viktigste."
+      "coachNotater": "Tilnærming etter trøbbel er en egen skill. Spilleren må ikke prøve helter-skudd. PRESISJONSSTRATEGI: minimer dårlig miss, neste skudd er den viktigste."
     },
     {
       "navn": "approach-shot-cone-decision",
@@ -5208,7 +5208,7 @@
       ],
       "morad": false,
       "prerequisites": [
-        "decade-shot-cone-mapping"
+        "presisjonsstrategi-shot-cone-mapping"
       ],
       "defaultSets": 1,
       "defaultReps": 8,
@@ -5218,14 +5218,14 @@
         "E": 30
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "distance-control",
-        "decade",
+        "presisjonsstrategi",
         "decision-making",
         "shot-cone"
       ],
-      "coachNotater": "Shot-cone beslutning er Decade-rygraden. Når spilleren faktisk ser sin shot-cone og treffer den 95% av tiden bytter de aim-strategi."
+      "coachNotater": "Shot-cone beslutning er Presisjonsstrategi-rygraden. Når spilleren faktisk ser sin shot-cone og treffer den 95% av tiden bytter de aim-strategi."
     },
     {
       "navn": "approach-best-3-of-5",

@@ -1,28 +1,22 @@
 /**
- * PlayerHQ · Meg · Hjelp · Kategori (P2)
+ * PlayerHQ · Meg · Hjelp · Kategori (/portal/meg/help/kategori/[slug]) — v2.
+ * v2-port 17. juli 2026 (Team D4a): MegHelpKategoriV2 erstatter Tailwind-siden.
+ * Auth, KATEGORIER-innholdet, sort-logikken (?sort=populaer/dato/mest-leste)
+ * og notFound-oppførselen er uendret — kun presentasjonslaget er nytt
+ * (ikonene er nå v2 Icon-navn i stedet for direkte Lucide-imports).
  *
- * Listevisning av artikler innenfor én kategori. Hero med kategori-navn,
- * sort-filter (popularitet/dato/mest leste), og "send oss et spørsmål"-CTA
- * dersom ingen artikkel passer.
+ * NB: Artikkel-metadataene her er redaksjonelt hjelpesenter-innhold
+ * (samme verdier som før porten) — ikke spillerens egne data.
  */
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  Sparkles,
-  Dumbbell,
-  Headphones,
-  Calendar,
-  Settings,
-  ChevronLeft,
-  ChevronRight,
-  Clock,
-  TrendingUp,
-  Mail,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-
-type Sort = "populaer" | "dato" | "mest-leste";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { TilbakeLenke } from "@/components/v2";
+import {
+  MegHelpKategoriV2,
+  type KategoriSort,
+  type MegHelpKategoriData,
+} from "@/components/portal/v2/MegHelpKategoriV2";
 
 type Artikkel = {
   slug: string;
@@ -36,24 +30,19 @@ type Artikkel = {
 
 type KategoriDef = {
   slug: string;
-  navn: string;
-  italic: string;
+  tittel: string;
   beskrivelse: string;
-  ikon: LucideIcon;
-  iconBg: string;
-  iconFg: string;
+  /** v2 Icon-navn (Lucide via @/components/v2/icon). */
+  ikon: string;
   artikler: Artikkel[];
 };
 
 const KATEGORIER: Record<string, KategoriDef> = {
   "komme-i-gang": {
     slug: "komme-i-gang",
-    navn: "Komme",
-    italic: "i gang",
+    tittel: "Komme i gang",
     beskrivelse: "Førstegangs-oppsett og de viktigste tingene du må vite for å komme raskt i gang med PlayerHQ.",
-    ikon: Sparkles,
-    iconBg: "bg-primary/10",
-    iconFg: "text-primary",
+    ikon: "sparkles",
     artikler: [
       {
         slug: "logg-din-forste-runde",
@@ -86,12 +75,9 @@ const KATEGORIER: Record<string, KategoriDef> = {
   },
   trening: {
     slug: "trening",
-    navn: "",
-    italic: "Trening",
+    tittel: "Trening",
     beskrivelse: "Pyramide-systemet, øktstruktur, drills og hvordan du bruker statistikk for å trene smartere.",
-    ikon: Dumbbell,
-    iconBg: "bg-secondary",
-    iconFg: "text-foreground",
+    ikon: "dumbbell",
     artikler: [
       {
         slug: "pyramide-systemet",
@@ -133,12 +119,9 @@ const KATEGORIER: Record<string, KategoriDef> = {
   },
   coaching: {
     slug: "coaching",
-    navn: "",
-    italic: "Coaching",
+    tittel: "Coaching",
     beskrivelse: "Hvordan jobbe med din coach gjennom PlayerHQ — booking, meldinger, notater og videoanalyse.",
-    ikon: Headphones,
-    iconBg: "bg-accent/30",
-    iconFg: "text-foreground",
+    ikon: "message-circle",
     artikler: [
       {
         slug: "slik-bytter-du-coach",
@@ -171,12 +154,9 @@ const KATEGORIER: Record<string, KategoriDef> = {
   },
   booking: {
     slug: "booking",
-    navn: "Booking +",
-    italic: "betaling",
+    tittel: "Booking + betaling",
     beskrivelse: "Reservere fasiliteter, kjøpe credits, betale med Vipps eller kort, og forstå abonnement-detaljer.",
-    ikon: Calendar,
-    iconBg: "bg-destructive/15",
-    iconFg: "text-destructive",
+    ikon: "calendar",
     artikler: [
       {
         slug: "book-trackman-bay",
@@ -209,12 +189,9 @@ const KATEGORIER: Record<string, KategoriDef> = {
   },
   konto: {
     slug: "konto",
-    navn: "",
-    italic: "Kontoinnstillinger",
+    tittel: "Kontoinnstillinger",
     beskrivelse: "Profil, sikkerhet, personvern, varslinger og hvordan du eksporterer eller sletter dataen din.",
-    ikon: Settings,
-    iconBg: "bg-secondary",
-    iconFg: "text-foreground",
+    ikon: "settings",
     artikler: [
       {
         slug: "endre-passord",
@@ -247,12 +224,9 @@ const KATEGORIER: Record<string, KategoriDef> = {
   },
   statistikk: {
     slug: "statistikk",
-    navn: "",
-    italic: "Statistikk",
+    tittel: "Statistikk",
     beskrivelse: "SG-tall, strokes-gained, kart over slag, og hvordan du tolker rapporten etter hver runde.",
-    ikon: TrendingUp,
-    iconBg: "bg-primary/10",
-    iconFg: "text-primary",
+    ikon: "trending-up",
     artikler: [
       {
         slug: "hva-er-sg",
@@ -291,10 +265,10 @@ export default async function KategoriPage({
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ sort?: string }>;
 }) {
-  await requirePortalUser();
+  const user = await requirePortalUser();
   const { slug } = await params;
   const sp = await searchParams;
-  const sort: Sort =
+  const sort: KategoriSort =
     sp?.sort === "dato" || sp?.sort === "mest-leste" ? sp.sort : "populaer";
 
   const k = KATEGORIER[slug];
@@ -310,139 +284,32 @@ export default async function KategoriPage({
     return b.visninger - a.visninger;
   });
 
-  const Ikon = k.ikon;
-  const sortDef: { id: Sort; navn: string }[] = [
-    { id: "populaer", navn: "Populært" },
-    { id: "mest-leste", navn: "Mest leste" },
-    { id: "dato", navn: "Nyeste" },
-  ];
+  const data: MegHelpKategoriData = {
+    slug: k.slug,
+    tittel: k.tittel,
+    beskrivelse: k.beskrivelse,
+    ikon: k.ikon,
+    sort,
+    sistOppdatertTekst: formatDato(
+      k.artikler.reduce(
+        (max, a) => (a.oppdatert > max ? a.oppdatert : max),
+        k.artikler[0]?.oppdatert ?? "2026-01-01",
+      ),
+    ),
+    artikler: sortert.map((a) => ({
+      slug: a.slug,
+      tittel: a.tittel,
+      preview: a.preview,
+      lesetid: a.lesetid,
+      visninger: a.visninger,
+      oppdatertTekst: formatDato(a.oppdatert),
+    })),
+  };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 px-4 pb-20 sm:px-6 md:space-y-12 md:pb-0">
-      <Link
-        href="/portal/meg/help"
-        className="inline-flex min-h-11 items-center gap-1 text-[12px] font-medium text-muted-foreground hover:text-foreground"
-      >
-        <ChevronLeft size={14} strokeWidth={1.75} />
-        Tilbake til hjelp
-      </Link>
-
-      {/* Hero */}
-      <header className="flex flex-col items-center gap-6 pt-2 text-center">
-        <div
-          className={`grid h-16 w-16 place-items-center rounded-2xl ${k.iconBg} ${k.iconFg}`}
-        >
-          <Ikon size={28} strokeWidth={1.75} />
-        </div>
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          PlayerHQ · Hjelp · {k.italic}
-        </span>
-        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-medium leading-tight tracking-tight">
-          {k.navn && <span className="font-semibold">{k.navn} </span>}
-          <em className="italic text-primary font-normal">{k.italic}</em>
-        </h1>
-        <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
-          {k.beskrivelse}
-        </p>
-        <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-          {k.artikler.length} artikler · sist oppdatert {formatDato(
-            k.artikler.reduce(
-              (max, a) => (a.oppdatert > max ? a.oppdatert : max),
-              k.artikler[0]?.oppdatert ?? "2026-01-01",
-            ),
-          )}
-        </div>
-      </header>
-
-      {/* Sort-filter */}
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Sortér
-        </span>
-        {sortDef.map((s) => {
-          const aktiv = s.id === sort;
-          return (
-            <Link
-              key={s.id}
-              href={
-                s.id === "populaer"
-                  ? `/portal/meg/help/kategori/${k.slug}`
-                  : `/portal/meg/help/kategori/${k.slug}?sort=${s.id}`
-              }
-              className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-[12px] font-medium transition-colors ${
-                aktiv
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-card text-foreground hover:border-primary/40"
-              }`}
-            >
-              {s.navn}
-            </Link>
-          );
-        })}
-      </div>
-
-      {/* Artikkel-liste */}
-      <ul className="overflow-hidden rounded-lg border border-border bg-card">
-        {sortert.map((a, i) => (
-          <li
-            key={a.slug}
-            className="border-b border-border last:border-0"
-          >
-            <Link
-              href={`/portal/meg/help/artikkel/${a.slug}`}
-              className="flex items-start gap-2 px-4 py-4 transition-colors hover:bg-secondary/40 sm:gap-4 sm:px-6 sm:py-6"
-            >
-              <span className="w-8 shrink-0 pt-1 font-mono text-xs font-semibold tabular-nums text-muted-foreground">
-                {(i + 1).toString().padStart(2, "0")}
-              </span>
-              <div className="min-w-0 flex-1">
-                <h3 className="text-[15px] font-semibold leading-snug text-foreground">
-                  {a.tittel}
-                </h3>
-                <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-muted-foreground">
-                  {a.preview}
-                </p>
-                <div className="mt-2 flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-                  <span className="inline-flex items-center gap-1">
-                    <Clock size={11} strokeWidth={1.75} />
-                    {a.lesetid} min
-                  </span>
-                  <span className="inline-flex items-center gap-1">
-                    <TrendingUp size={11} strokeWidth={1.75} />
-                    {a.visninger.toLocaleString("nb-NO")} visninger
-                  </span>
-                  <span>Oppdatert {formatDato(a.oppdatert)}</span>
-                </div>
-              </div>
-              <ChevronRight
-                size={18}
-                strokeWidth={1.75}
-                className="mt-1.5 shrink-0 text-muted-foreground"
-              />
-            </Link>
-          </li>
-        ))}
-      </ul>
-
-      {/* Send-spørsmål-CTA */}
-      <section className="rounded-lg border border-border bg-gradient-to-br from-card to-secondary/40 p-4 text-center sm:p-6 md:p-8">
-        <div className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-accent/30 text-foreground">
-          <Mail size={18} strokeWidth={1.75} />
-        </div>
-        <h2 className="mt-4 font-display text-xl font-medium italic tracking-tight">
-          Fant du ikke det du lette etter?
-        </h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Send oss et spørsmål — vi svarer innen 24 timer på hverdager.
-        </p>
-        <Link
-          href="/portal/meg/help/kontakt"
-          className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-        >
-          <Mail size={14} strokeWidth={1.75} />
-          Send oss et spørsmål
-        </Link>
-      </section>
-    </div>
+    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/meg/help">Hjelp-hub</TilbakeLenke>
+      <MegHelpKategoriV2 data={data} />
+    </V2Shell>
   );
 }
