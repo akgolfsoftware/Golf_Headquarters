@@ -14,9 +14,10 @@ import {
   Bug, Lightbulb, Heart, History, Sprout, Bot,
   Building2, Plug, MailCheck, Archive,
   Reply, MessageSquare, CheckCheck, BookOpen, Globe, CornerUpLeft,
-  RefreshCw, GitCompare, AlertOctagon, GitPullRequest, Loader2, LineChart,
+  RefreshCw, GitCompare, AlertOctagon, GitPullRequest, GitCommitHorizontal, Loader2, LineChart,
   Cog, ArrowUp, Wrench,
-  Inbox, CalendarCheck, Columns3,
+  Inbox, CalendarCheck, Columns3, Database,
+  Map, Radar,
   type LucideIcon,
 } from "lucide-react";
 
@@ -121,6 +122,8 @@ const MAP: Record<string, LucideIcon> = {
   "sprout": Sprout,
   "bot": Bot,
   "building-2": Building2,
+  "map": Map,
+  "radar": Radar,
   "plug": Plug,
   "archive": Archive,
   "reply": Reply,
@@ -133,6 +136,7 @@ const MAP: Record<string, LucideIcon> = {
   "git-compare": GitCompare,
   "alert-octagon": AlertOctagon,
   "git-pull-request": GitPullRequest,
+  "git-commit-horizontal": GitCommitHorizontal,
   "loader": Loader2,
   "line-chart": LineChart,
   "cog": Cog,
@@ -140,6 +144,7 @@ const MAP: Record<string, LucideIcon> = {
   "inbox": Inbox,
   "calendar-check": CalendarCheck,
   "columns-3": Columns3,
+  "database": Database,
 };
 
 export interface IconProps {

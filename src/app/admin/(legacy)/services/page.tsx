@@ -1,40 +1,26 @@
 /**
- * AgencyOS — Tjenester (GJENNOMFØRE · TJENESTER), /admin/services.
- *
- * Port av fasit `agencyos-app/screens-ops.jsx` → ServicesScreen (mørkt tema,
- * desktop 1280): PageHead («Fem tjenester.» + «Ny tjeneste») og tabell
- * Tjeneste/Varighet/Pris/Status. Aktiv = chip-ok, inaktiv = «Skjult» (neu) —
- * som fasit. Demo-stall-tjenestene ligger inactive og vises dermed som Skjult.
+ * AgencyOS — Tjenester (GJENNOMFØRE · TJENESTER), /admin/services. v2-port 16. juli 2026.
  *
  * Datakilde: prisma.serviceType (priceOre/durationMin/active — ekte tall).
- * «Ny tjeneste» gjenbruker eksisterende ServiceForm (ekte CRUD, urørt).
+ * «+ Ny tjeneste» og «Endre»/slett per rad gjenbruker ServiceFormV2 (ekte CRUD, urørt).
+ *
+ * Fikset samtidig: tabellen viste tidligere kun opprett-knappen — rediger/slett
+ * var bygget i skjemaet (updateService/deleteService) men aldri koblet per rad.
+ * Nå rendres «Endre» per rad — ingen ny funksjon, bare faktisk bruk av det
+ * som allerede fantes.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import {
-  AgChip,
-  AgPage,
-  AgPageHead,
-  AgTable,
-  AgTd,
-  AgTh,
-  agTrClass,
-} from "@/components/admin/agencyos/ui";
-import { ServiceForm } from "./service-form";
+import { AdminServicesV2, type AdminServicesV2Data } from "@/components/admin/v2/AdminServicesV2";
 
 export const dynamic = "force-dynamic";
 
-const TALLORD = [
-  "Null", "Én", "To", "Tre", "Fire", "Fem", "Seks",
-  "Sju", "Åtte", "Ni", "Ti", "Elleve", "Tolv",
-];
+const TALLORD = ["Null", "Én", "To", "Tre", "Fire", "Fem", "Seks", "Sju", "Åtte", "Ni", "Ti", "Elleve", "Tolv"];
 
 function prisLabel(priceOre: number): string {
   const kr = priceOre / 100;
-  return `${kr.toLocaleString("nb-NO", {
-    maximumFractionDigits: priceOre % 100 === 0 ? 0 : 2,
-  })} kr`;
+  return `${kr.toLocaleString("nb-NO", { maximumFractionDigits: priceOre % 100 === 0 ? 0 : 2 })} kr`;
 }
 
 export default async function ServicesPage() {
@@ -42,63 +28,21 @@ export default async function ServicesPage() {
 
   const tjenester = await prisma.serviceType.findMany({
     orderBy: [{ active: "desc" }, { name: "asc" }],
-    select: {
-      id: true,
-      name: true,
-      durationMin: true,
-      priceOre: true,
-      active: true,
-    },
+    select: { id: true, name: true, description: true, durationMin: true, priceOre: true, active: true },
   });
 
-  const tittel =
-    tjenester.length < TALLORD.length ? TALLORD[tjenester.length] : String(tjenester.length);
+  const data: AdminServicesV2Data = {
+    tittelOrd: tjenester.length < TALLORD.length ? TALLORD[tjenester.length] : String(tjenester.length),
+    flertall: tjenester.length !== 1,
+    tjenester: tjenester.map((s) => ({
+      id: s.id,
+      navn: s.name,
+      varighetMin: s.durationMin,
+      prisLabel: prisLabel(s.priceOre),
+      aktiv: s.active,
+      raw: s,
+    })),
+  };
 
-  return (
-    <AgPage>
-      <AgPageHead
-        eyebrow="Gjennomføre · Tjenester"
-        title={tittel}
-        italic={tjenester.length === 1 ? "tjeneste." : "tjenester."}
-        lead="Det spillere kan booke. Pris og varighet styrer booking-flyten og faktureringen."
-        actions={<ServiceForm triggerLabel="+ Ny tjeneste" />}
-      />
-
-      <div className="overflow-hidden rounded-xl border border-border bg-card">
-        <AgTable>
-          <thead>
-            <tr>
-              <AgTh>Tjeneste</AgTh>
-              <AgTh>Varighet</AgTh>
-              <AgTh num>Pris</AgTh>
-              <AgTh>Status</AgTh>
-            </tr>
-          </thead>
-          <tbody>
-            {tjenester.length === 0 && (
-              <tr>
-                <td colSpan={4} className="px-[14px] py-10 text-center text-[13px] text-muted-foreground">
-                  Ingen tjenester ennå — opprett den første.
-                </td>
-              </tr>
-            )}
-            {tjenester.map((s) => (
-              <tr key={s.id} className={`${agTrClass} leading-[1.3]`}>
-                <AgTd className="font-semibold">{s.name}</AgTd>
-                <AgTd>
-                  <span className="font-mono text-xs text-muted-foreground">
-                    {s.durationMin} min
-                  </span>
-                </AgTd>
-                <AgTd num>{prisLabel(s.priceOre)}</AgTd>
-                <AgTd>
-                  <AgChip tone={s.active ? "ok" : "neu"}>{s.active ? "Aktiv" : "Skjult"}</AgChip>
-                </AgTd>
-              </tr>
-            ))}
-          </tbody>
-        </AgTable>
-      </div>
-    </AgPage>
-  );
+  return <AdminServicesV2 data={data} />;
 }

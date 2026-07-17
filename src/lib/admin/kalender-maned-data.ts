@@ -1,7 +1,7 @@
 /**
  * Data-loader for /admin/kalender/maned — måned-visning av alle bookinger på
  * tvers av spillere. Henter ekte Prisma-data for valgt måned (utvidet til 6-rad
- * grid) og mapper til MonthCalendarProps (src/components/admin/kalender/month-calendar.tsx).
+ * grid) og mapper til MonthCalendarV2Props (src/components/admin/v2/AdminKalenderManedV2.tsx).
  *
  * NB: src/lib/admin-kalender/* røres ikke — denne lever i src/lib/admin/.
  *
@@ -13,10 +13,10 @@
 
 import { prisma } from "@/lib/prisma";
 import type {
-  MonthCalendarProps,
+  MonthCalendarV2Props as MonthCalendarProps,
   MonthDay,
   MonthEvent,
-} from "@/components/admin/kalender/month-calendar";
+} from "@/components/admin/v2/AdminKalenderManedV2";
 
 const MND_LANG = [
   "januar", "februar", "mars", "april", "mai", "juni",

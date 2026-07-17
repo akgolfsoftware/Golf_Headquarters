@@ -1,6 +1,17 @@
 "use client";
 
+/**
+ * AksepterForm — registreringsskjema for invitert forelder.
+ * v2-port 16. juli 2026: restylet til v2 (Kort + Knapp + de v2-portede
+ * felt-primitivene fra wizard-fields). Skjema-flyten er uendret:
+ * FormData → aksepterInvitasjon-action (redirect() i action kaster —
+ * vi havner i feilgrenen kun ved feil). Ingen rå hex, ingen emoji.
+ */
+
 import { useState, useTransition } from "react";
+import { T } from "@/lib/v2/tokens";
+import { Kort, Knapp } from "@/components/v2";
+import { Field, TextField } from "@/components/auth/onboarding/wizard-fields";
 import { aksepterInvitasjon } from "./actions";
 
 export function AksepterForm({ token, email }: { token: string; email: string }) {
@@ -19,78 +30,83 @@ export function AksepterForm({ token, email }: { token: string; email: string })
   }
 
   return (
-    <form onSubmit={submit} className="space-y-4 rounded-xl border border-border bg-card p-6">
-      <input type="hidden" name="token" value={token} />
+    <Kort pad="20px 20px">
+      <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <input type="hidden" name="token" value={token} />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Felt label="Fornavn" name="firstName" required />
-        <Felt label="Etternavn" name="lastName" required />
-      </div>
-
-      <Felt label="E-post" name="email" defaultValue={email} disabled />
-
-      <Felt label="Telefon" name="phone" type="tel" placeholder="+47 ..." />
-
-      <Felt
-        label="Velg passord"
-        name="password"
-        type="password"
-        required
-        placeholder="Minst 8 tegn"
-      />
-
-      {error ? (
-        <div className="rounded-md bg-destructive/10 px-4 py-2 text-sm text-destructive">
-          {error}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Field label="Fornavn" htmlFor="inv-fornavn">
+            <TextField id="inv-fornavn" name="firstName" required autoComplete="given-name" />
+          </Field>
+          <Field label="Etternavn" htmlFor="inv-etternavn">
+            <TextField id="inv-etternavn" name="lastName" required autoComplete="family-name" />
+          </Field>
         </div>
-      ) : null}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="w-full rounded-full bg-primary px-4 py-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
-      >
-        {pending ? "Oppretter konto…" : "Godta og opprett konto"}
-      </button>
+        <Field label="E-post" htmlFor="inv-epost">
+          <TextField
+            id="inv-epost"
+            name="email"
+            defaultValue={email}
+            disabled
+            style={{ background: T.panel3, color: T.mut }}
+          />
+        </Field>
 
-      <p className="text-center text-xs text-muted-foreground">
-        Ved å fortsette godtar du AK Golfs vilkår for foresatte.
-      </p>
-    </form>
-  );
-}
+        <Field label="Telefon" htmlFor="inv-telefon">
+          <TextField id="inv-telefon" name="phone" type="tel" mono placeholder="+47 ..." autoComplete="tel" />
+        </Field>
 
-function Felt({
-  label,
-  name,
-  type = "text",
-  required,
-  placeholder,
-  defaultValue,
-  disabled,
-}: {
-  label: string;
-  name: string;
-  type?: string;
-  required?: boolean;
-  placeholder?: string;
-  defaultValue?: string;
-  disabled?: boolean;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-2 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-        {label}
-      </span>
-      <input
-        name={name}
-        type={type}
-        required={required}
-        placeholder={placeholder}
-        defaultValue={defaultValue}
-        disabled={disabled}
-        className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:bg-muted disabled:text-muted-foreground"
-      />
-    </label>
+        <Field label="Velg passord" htmlFor="inv-passord">
+          <TextField
+            id="inv-passord"
+            name="password"
+            type="password"
+            required
+            placeholder="Minst 8 tegn"
+            autoComplete="new-password"
+          />
+        </Field>
+
+        {error ? (
+          <div
+            role="alert"
+            style={{
+              borderRadius: 11,
+              border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
+              background: `color-mix(in srgb, ${T.down} 10%, transparent)`,
+              padding: "10px 14px",
+              fontFamily: T.ui,
+              fontSize: 13,
+              color: T.down,
+            }}
+          >
+            {error}
+          </div>
+        ) : null}
+
+        <Knapp
+          type="submit"
+          full
+          disabled={pending}
+          icon="check"
+          style={{ minHeight: 48, fontSize: 14 }}
+        >
+          {pending ? "Oppretter konto…" : "Godta og opprett konto"}
+        </Knapp>
+
+        <p
+          style={{
+            margin: 0,
+            textAlign: "center",
+            fontFamily: T.ui,
+            fontSize: 11.5,
+            color: T.mut,
+          }}
+        >
+          Ved å fortsette godtar du AK Golfs vilkår for foresatte.
+        </p>
+      </form>
+    </Kort>
   );
 }

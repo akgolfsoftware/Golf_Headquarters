@@ -8,8 +8,8 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { config as loadEnv } from "dotenv";
 import { writeFileSync } from "node:fs";
-import { projectToAimFrame, computeDispersion } from "../src/lib/baneguide/dispersion";
-import type { LatLng } from "../src/lib/baneguide/shot-coords";
+import { projectToAimFrame, computeDispersion } from "../src/lib/gameplan/dispersion";
+import type { LatLng } from "../src/lib/gameplan/shot-coords";
 loadEnv({ path: ".env.local" });
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) });
 

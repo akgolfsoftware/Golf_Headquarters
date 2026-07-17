@@ -42,86 +42,41 @@ Tegnforklaring: ✓ = ferdig · ~ = delvis / i arbeid · – = ikke startet
 
 ---
 
-## Status akkurat nå — 17. juni 2026
+## Status akkurat nå — 16. juli 2026 (reconciliation)
 
-### Kodebase (kartlagt 17. juni)
+> Denne seksjonen erstatter en stale «17. juni»/«6. juli»-versjon (arkivert i git-historikken om
+> nødvendig) som fortsatt beskrev sub-sider, Coach-seksjonen og AgencyOS-sekundærskjermer som
+> «Design=– på samtlige» — det stemte ikke lenger. Claude Design-prosjektets DEKNINGSKART.md
+> rapporterte 16. juli **0 gjenstående design-gap** (139 ✅ · 235 ◆ · 27 🛠 · 23 ↪︎ · 2 🟡), og en
+> full kode-reconciliation samme dag bekreftet at det store flertallet av denne tabellens
+> «Design: –»-rader var nettopp den typen stale hake dokumentets egen endringslogg advarte om —
+> skjermen var alt v2- eller golfdata-komponert, bare uten at haken ble flippet.
 
-**404 sider implementert i Next.js App Router:**
+**Hva reconciliation fant, i grove trekk:**
+- **Design-kanon har gått videre fra golfdata til v2** (`src/components/v2/` + per-domene
+  `*V2.tsx`) per `.claude/rules/design-system-regel.md` — golfdata er nå «overgangs-lag».
+  De fleste rettede hakene under er til v2, ikke golfdata.
+- **Forelder-seksjonen** (11 skjermer) var systematisk stale — 10 av 11 er allerede v2-komponert.
+- **Marketing-seksjonen** var nesten helt stale — alt unntatt hele Booking-underflyten (4 ruter)
+  er allerede v2-komponert.
+- **AgencyOS** hadde en stor bølge stale haker (Innboks, Planlegge-hub, Plans, Plan-maler,
+  Teknisk plan, Økter, Tester-hub, Analyse, Rapporter, Agenter, E-postmaler, Talent/Radar,
+  Grupper, Spiller-fremgang/-tester, Caddie, Økonomi, m.fl.) — men også et helt annet funn:
+  **12 rader var feilaktig scoret som levende skjermer når de faktisk kun er redirects**
+  (`/admin`, `/admin/board`, `/admin/kommunikasjon`, `/admin/workspace/oppgaver`, `/admin/stall`,
+  `/admin/talent`-hub, `/admin/plans/new`, `/admin/kapasitet`, `/admin/analysere`,
+  `/admin/tilstander`, `/admin/okonomi`, `/admin/coach-workbench`).
+- **Ekte, bekreftede gap finnes fortsatt** — bl.a. hele Live-økt-familien (brief/aktiv/summary,
+  begge sider av coach/spiller), booking-underflyten (marketing OG portal), en bespoke lokal
+  komponent-familie i AgencyOS (`AgPage`/`AgPageHead`, ikke kanon), og et par ruter som ikke
+  finnes i koden i det hele tatt (`/portal/mal/baner(+[id])`, `/portal/statistikk/sammenlign`).
+- **Noen rader er AMBIGUOUS** (delt komposisjon, kun header-komponent, eller en pixel-perfect
+  hand-port av en godkjent fasit uten kanon-imports) — disse er merket som sådan i tabellene
+  under, ikke tvunget inn i enten ✓ eller –.
 
-| Type | Antall | Forklaring |
-|---|---|---|
-| FULL | 383 | Ekte innhold, koblet til data |
-| STUB | 17 | Minimal placeholder — trenger ferdigstilling |
-| SHELL | 3 | Tomt skall — trenger bygging |
-| REDIRECT | 1 | `/admin/spillere/[id]/fremgang` → redirect |
-
-**Backend:** 48 API-endepunkter · 23 cron-agenter (Vercel Cron) · 120+ server-action-filer · ~170 Prisma-modeller
-
-### Design-status (v13-baseline, 6. juli 2026)
-
-Bekreftet komponert fra v13-kit (Design=✓):
-- **PlayerHQ:** Hjem (`/portal`) · Planlegge · Gjennomføre · Analysere · Meg
-- **AgencyOS:** Spillere (`/admin/spillere`) · Spiller-analyse (`/admin/spillere/[id]/analyse`)
-
-Alt annet er funksjonelt bygget (se FULL-tellingen over), men ikke re-komponert mot dagens
-golfdata-kanon ennå. Rekkefølge og fremdrift styres av den aktive E-serie-planen (se plan-fil).
-
-**2026-07-16 — Fase 0-avstemming (kode = fasit):** hele PlayerHQ- og AgencyOS-tabellene
-maskinsjekket mot filsystemet (page.tsx-plassering + V2Shell/v2-komponent-grep). 82 rader
-rettet – /~ → ✓ (kodeverifisert v2 eller fungerende redirect). Status nå: **PlayerHQ 87 av
-160 rader Design=✓** · **AgencyOS 98 av 135 rader Design=✓**. Gjenstår uten hake: PlayerHQ 73
-(51 legacy-only, 15 nye-men-ikke-v2, 1 fullskjerm-uportert, 6 ruter som ikke finnes i koden)
-· AgencyOS 37 (35 legacy-only, 2 offentlige kalendersider). Se endringsloggen for metode.
-
-**Mangler design (–):** de fleste sub-sider og sekundærskjermer — se tabellene nedenfor.
-
----
-
-## Design-fokus for neste sprint
-
-Skjermer som er implementert i kode men IKKE ferdig gjennom design-porting-gaten. Prioritert rekkefølge for Claude Design-arbeid.
-
-### Prioritet 1 — Sub-sider til allerede portede kjerneskjermer
-
-| Område | Skjermer (–) | Data tilgjengelig i Prisma |
-|---|---|---|
-| PlayerHQ Planlegge | Mål-hub, Mål-bygger, Teknisk plan, Fys-plan, Utfordringer, AI-assistenter | `Goal`, `TechnicalPlan`, `FysiskPlan`, `DrillChallenge`, `SeasonPlan`, `PeriodBlock` |
-| PlayerHQ Analysere | SG-Hub sub-sider (equipment/yardage/strategy/conditions/benchmark), Slag-for-slag, TrackMan-sesjon-detalj, Statistikk sub-sider | `Shot`, `HoleScore`, `BrukerSgInput`, `SgInsight`, `ClubMetricTrend`, `TrackManSession`, `TrackManShot` |
-| PlayerHQ Gjennomføre | Ny økt (handlingsvalg), Ønsket økt, Økt-detalj, Kalender, Feiring | `TrainingSessionV2`, `SessionParticipant`, `TrainingPlanSessionLog` |
-| PlayerHQ Booking | Booking-detalj, Ny booking bekreft, Coach-profil (booking), Anlegg-detalj | `Booking`, `CoachingSession`, `ServiceType`, `Facility`, `Payment` |
-| AgencyOS Stall | Spiller-profil, Ny spiller, Tildel test (skjema) | `User`, `Group`, `GroupMember`, `TestAssignment`, `TalentTracking` |
-| AgencyOS Planlegge | Plan-mal detalj, Drill-detalj, Teknisk plan, Ny turnering | `TrainingPlan`, `PlanTemplate`, `PlanEffectiveness`, `TechnicalPlan`, `Tournament` |
-
-### Prioritet 2 — Coach-seksjonen (PlayerHQ) — hele seksjonen mangler design
-
-Spillerens kontakt med coachen er implementert i kode men har **Design=– på samtlige skjermer**.
-
-| Skjerm | Adresse | Data |
-|---|---|---|
-| Coach-hub | `/portal/coach` | `CoachingSession`, `SessionRequest`, `Document` |
-| Meldinger (innboks) | `/portal/coach/melding` | `CaddieMessage`, `Notification` |
-| Meldingstråd | `/portal/coach/melding/[id]` | `CaddieMessage`, `Document` |
-| Coach-planer | `/portal/coach/plans/[planId]` | `TrainingPlan`, `PeriodBlock`, `PlanSession` |
-| Coach-øvelser | `/portal/coach/ovelser` | `ExerciseDefinition`, `CoachDrillDirectiv`, `DrillMal` |
-| Coach-videoer | `/portal/coach/videoer` | `SessionVideo`, `SessionRecording` |
-| Spørsmål til coach | `/portal/coach/sporsmal/[id]` | `CoachNote`, `Document` |
-
-### Prioritet 3 — AgencyOS sekundærskjermer
-
-| Område | Mangler design | Data |
-|---|---|---|
-| Innsikt | Innsikt-hub, Runder, Tilstander, Analytics | `SgInsight`, `Signal`, `Round`, `HealthEntry` |
-| Admin/org | Team, AI-agenter, E-postmaler, Audit-log, Klubb-innstillinger | `ApiKey`, `AuditLog`, `AgentRun`, `EmailTemplate` |
-| Gjennomføre | Daglig drift-hub, Ny booking, TrackMan på tvers | `TrainingSessionV2`, `TrackManSession` |
-| Workspace | Workspace-hub | `OppgaveCache`, `ProsjektCache`, `NotionConnection` |
-
-### Prioritet 4 — Booking-flyt (selvstendig)
-
-`/booking/[slug]` (ekstern booking via slug) + full intern booking-flyt i portal. Egne server actions for kreditbooking.
-
-### Prioritet 5 — Marketing-sider
-
-`/om-oss` · `/coaching` · `/priser` · `/playerhq` · `/cases` · `/suksess` · `/treningsfilosofi` · blogg-layout · coacher-profil
+**Konklusjon:** den tidligere «Prioritet 1–5»-listen under (nå fjernet) beskrev nesten
+utelukkende arbeid som allerede er gjort. Se de enkelte skjerm-radene lenger ned for nåværende,
+verifisert status — ikke gjenoppliv denne listen uten en fersk kode-sjekk.
 
 ---
 
@@ -142,66 +97,66 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 |---|---|---|---|---|---|---|---|
 | Planlegge (= Workbench mobil) ★ | `/portal/planlegge` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Complete v13 (golfdata scope + OektKort etc)
 | **Workbench (planlegging)** ★ | `/portal/planlegge/workbench` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14 dok-verifisering: samme delte `WorkbenchV2`-komponent som coach-siden — Del 8c (periodetype-grunnmur, årsplan-canvas, periodestrip, Cmd+D-duplisering, universell økt-popup, full økt-komponist, Driller-fane) + WB1–WB5 (belastningsstripe, publiser-diff, øktas driller i inspektøren) er alle levert og koblet til ekte server actions (`lib/workbench/*`). Design rettet – → ✓ for å matche faktisk kode |
-| · Plan-bygger (v2 wizard) | `/portal/planlegge/bygger` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2 2026-07-10: 5-stegs wizard per godkjent mockup (phq-plan-bygger); deler kjerner med legacy mal/bygger via lib/plan-builder; 2026-07-16: kodeverifisert v2 (Fase 0-avstemming) 
-| Årsplan | `/portal/tren/aarsplan` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
+| · Plan-bygger (v2 wizard) | `/portal/planlegge/bygger` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2 2026-07-10: 5-stegs wizard per godkjent mockup (phq-plan-bygger); deler kjerner med legacy mal/bygger via lib/plan-builder
+| Årsplan | `/portal/tren/aarsplan` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `Aarsplan`-komponenten importerer golfdata `Button/Card/Eyebrow`. |
 | · Rediger periode | `/portal/tren/aarsplan/periode/[id]/rediger` | ~ | --- | ✓ | ✓ | ✓ | ~ |
 | · Ny periode | `/portal/tren/aarsplan/periode/ny` | ~ | --- | ✓ | ✓ | ✓ | ~ |
 | Teknisk plan (liste) | `/portal/tren/teknisk-plan` | UTGÅTT | --- | → | ✓ | – | ✓ | <!-- redirect til Workbench (next.config) — død listeside slettet 2026-07-11 -->
 | · Teknisk plan detalj | `/portal/tren/teknisk-plan/[planId]` | – | --- | ✓ | ✓ | ✓ | ✓ | 2026-07-14: automatisk repslogging fra live-økt, bilde/video på oppgaver, kategori
 | Fys-plan (liste) | `/portal/tren/fys-plan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Fys-plan detalj/bygger | `/portal/tren/fys-plan/[planId]` | – | --- | ✓ | ~ | ~ | ✓ |
-| Drills (bibliotek) | `/portal/drills` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ |
-| · Drill-detalj | `/portal/drills/[id]` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
-| Mål-hub | `/portal/mal` | ✓ | --- | ✓ | ~ | ~ | ✓ |
-| · Mål-bygger (wizard) | `/portal/mal/bygger` | – | --- | ✓ | ~ | ~ | ~ |
-| · Mål-detalj | `/portal/mal/goal/[id]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Milepæler | `/portal/mal/milepaeler` | – | --- | ✓ | ~ | ~ | ~ |
-| · Leaderboard | `/portal/mal/leaderboard` | – | --- | ✓ | ~ | ~ | ~ |
+| · Fys-plan detalj/bygger | `/portal/tren/fys-plan/[planId]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `KPICard` (ui/) + `fys-plan`-modulen bruker `Input`/`ProgressBar` fra ui/. |
+| Drills (bibliotek) | `/portal/drills` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `OvelsesbankV2` i `V2Shell`. |
+| · Drill-detalj | `/portal/drills/[id]` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | v2-port 17. jul (Team D1): `DrillDetaljV2` (V2Shell/Kort/TomTilstand/CTAPill), ruten flyttet ut av (legacy) — gammel v10 pixel-port slettet. `loadDrillDetalj`-loaderen, auth-guard (PLAYER+PARENT) og ærlige tomtilstander («Media kommer», aldri fabrikerte tall) uendret. Design – → ✓. |
+| Mål-hub | `/portal/mal` | ✓ | --- | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — `MalHubV2` inni `V2Shell` (@/components/portal/v2/MalHubV2).
+| · Mål-bygger (wizard) | `/portal/mal/bygger` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `MalByggerV2` — ruten flyttet ut av (legacy), ny tynn page (`V2Shell aktiv="meg"` + `TilbakeLenke`) + presentasjonskomponent på v2-primitiver; all wizard-/lagringslogikk (anbefalMal → generer m/ valgtTemplateId → lagre/sendTilGodkjenning, GRATIS-gating) uendret via `actions.ts` flyttet byte-identisk. Disciplin-farger nå T.ax-aksefarger (var rå hex), HjelpTips på SG-svakhet/L-fase/SG-Total. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
+| · Mål-detalj | `/portal/mal/goal/[id]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `MalDetaljV2` (Kort/StatusPill/ProgresjonsBar/NivaStige + tre v2-modaler for endre/oppnådd/avbryt) erstatter hybrid-designet (page + goal-client), ruten flyttet ut av (legacy). Eierskaps-sjekk, fremdrifts-/ETA-utregning, A–K-stigen og `goals-actions` (endreGoal/markeerGoalSomOppnaadd/avbrytGoal) uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
+| · Milepæler | `/portal/mal/milepaeler` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header importerer golfdata `Eyebrow`.
+| · Leaderboard | `/portal/mal/leaderboard` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `LeaderboardV2` (V2Shell/Kort/AvatarInit) erstatter wireframe-designet, ruten flyttet ut av (legacy). Feature-gate (FEATURES.LEADERBOARD), Prisma-queries og rangeringslogikken (snitt-SG per felt siste 30 dager, topp 25) uendret. Delta-rang/badges fortsatt ikke bygget (TODO i original) — vises ikke i stedet for plassholdere. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | Turneringer (mine) ★ | `/portal/tren/turneringer` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: v2-forhåndsvisning (retning C) allerede portert, hake aldri oppdatert |
-| · Turnering-detalj | `/portal/tren/turneringer/[id]` | – | ✓✓– | ~ | ~ | – | ~ |
-| · Ny turnering | `/portal/tren/turneringer/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| Utfordringer | `/portal/utfordringer` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Ny utfordring (wizard) | `/portal/utfordringer/ny` | – | --- | ✓ | ~ | ~ | ~ |
+| · Turnering-detalj | `/portal/tren/turneringer/[id]` | ✓ | ✓✓– | ✓ | ~ | – | ~ | v2-port 17. jul (Team D1): `TurneringDetaljV2` (V2Shell/Kort/StatusPill/TomTilstand) erstatter hybrid-designet, ruten flyttet ut av (legacy). `loadTurneringDetalj`-loaderen og server actions (`meldDegPa`/`meldDegAv` fra (legacy)/tren/turneringer/actions.ts — beholdt der, deles med lista) uendret. Not-found beholdt med ærlig tomtilstand. Design – → ✓, Adresse ~ → ✓. |
+| · Ny turnering | `/portal/tren/turneringer/ny` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
+| Utfordringer | `/portal/utfordringer` | ~ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: AMBIGUOUS — `UtfordringerV2` i `V2Shell`, altså fullt v2-komponert. Uklart om «~» reflekterer et reelt gjenstående gap agenten ikke fanget opp, eller selv er stale i motsatt retning — spot-check før den flippes til ✓. |
+| · Ny utfordring (wizard) | `/portal/utfordringer/ny` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
 | · Utfordring-detalj | `/portal/utfordringer/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| AI: mål-bygger | `/portal/ai/mal-bygger` | – | --- | ✓ | ~ | ~ | ~ |
-| AI: foreslå drill | `/portal/ai/foresla-drill` | – | --- | ✓ | ~ | ~ | ~ |
-| AI: foreslå turnering | `/portal/ai/foresla-turnering` | – | --- | ✓ | ~ | ~ | ~ |
+| AI: mål-bygger | `/portal/ai/mal-bygger` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `AiMalByggerV2` (Kort/Knapp/ValgKort/Inndata) erstatter mal-bygger-wizard (v10), ruten flyttet ut av (legacy) — `actions.ts` (lagreMalForslag) flyttet uendret med. 3-stegs SMART-wizard-logikken uendret; ingen oppdiktede tall. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
+| AI: foreslå drill | `/portal/ai/foresla-drill` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `ForeslaDrillV2` (Kort/AkseChip/CTAPill/InnsiktChip/TomTilstand) erstatter foresla-drill-screen (v10), ruten flyttet ut av (legacy). Svakhets-signaler (`loadWeaknessSignals`) og den ærlige match-scoren (akse-overlapp, aldri oppdiktede tall) uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
+| AI: foreslå turnering | `/portal/ai/foresla-turnering` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `ForeslaTurneringV2` (Kort/CTAPill/StatusPill/InnsiktChip/TomTilstand) erstatter foresla-turnering-screen (v10), ruten flyttet ut av (legacy). Rangeringslogikken (påmeldinger + katalog, ingen oppdiktede sannsynligheter) uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 
 ### Gjennomføre (inkl. live-økt)
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Gjennomføre (I dag/Kalender/Booking) ★ | `/portal/gjennomfore` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
-| · Økt-detalj (V2-økt fra coach) | `/portal/gjennomfore/[id]` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| · Økt-detalj (V2-økt fra coach) | `/portal/gjennomfore/[id]` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `OktV2`. |
 | Kalender | `/portal/kalender` | ✓ | --- | ✓ | ~ | ~ | ✓ | v13 composed (golfdata calendars + scope)
-| Kalender (alt. → redirect) | `/portal/tren/kalender` | ✓ | --- | ✓ | ~ | ~ | ✓ |
-| Ny økt (handlingsvalg) | `/portal/ny-okt` | – | --- | ✓ | ✓ | ✓ | ✓ |
-| Logg treningsøkt (volum per SG) † | `/portal/trening/logg` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
-| **Putte-laboratoriet** (3 verktøy) | `/portal/trening/putte-laboratoriet` | – | ✓✓– | ✓ | ✓ | – | ✓ |
-| **Break-tabell** (3 varianter) | `/portal/trening/break-tabell` | – | ✓✓– | ✓ | ✓ | – | ✓ |
-| Ønsket økt (be coach) | `/portal/onskeligokt` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Ønsket økt bekreftet | `/portal/onskeligokt/bekreftet` | – | --- | ✓ | ~ | ~ | ~ |
-| Live-økt: brief † | `/portal/(fullscreen)/live/[sessionId]/brief` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
-| Live-økt: aktiv † | `/portal/(fullscreen)/live/[sessionId]/active` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
-| Live-økt: oppsummering † | `/portal/(fullscreen)/live/[sessionId]/summary` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
-| Live-økt: drill-logger (→ redirect) | `/portal/(fullscreen)/live/[sessionId]/logger` | ✓ | ✓✓– | ✓ | ~ | ~ | ✓ |
-| Live-økt: score-tapper | `/portal/(fullscreen)/live/[sessionId]/tapper` | ✓ | ✓✓– | ✓ | ~ | ~ | ✓ |
-| Tren (fullskjerm) (→ redirect) | `/portal/(fullscreen)/tren` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| Økt-detalj | `/portal/tren/[sessionId]` | – | --- | ✓ | ~ | ~ | ✓ |
-| · Planlagt økt | `/portal/tren/[sessionId]/planlagt` | – | --- | ✓ | ~ | ~ | ✓ |
-| Feiring (etter plan ferdig) | `/portal/tren/feiring/[planId]` | – | --- | ✓ | ~ | ~ | ~ |
+| Kalender (alt. → redirect) | `/portal/tren/kalender` | – | --- | ✓ | ✓ | – | ✓ | Reconciliation 16. jul: redirect-only via `workbenchRedirectForTrenPath` (`src/proxy.ts`) → `/portal/planlegge/workbench?tab=uke`. `(legacy)/tren/kalender/page.tsx` er utilgjengelig dødkode, ikke en ekte gjenstående design-skjerm.
+| Ny økt (handlingsvalg) | `/portal/ny-okt` | ✓ | --- | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
+| Logg treningsøkt (volum per SG) † | `/portal/trening/logg` | – | ✓✓– | ✓ | ✓ | ✓ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ren Tailwind klientkomponent.
+| **Putte-laboratoriet** (3 verktøy) | `/portal/trening/putte-laboratoriet` | – | ✓✓– | ✓ | ✓ | – | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — kun @/lib/putt-core, ingen golfdata/v2.
+| **Break-tabell** (3 varianter) | `/portal/trening/break-tabell` | – | ✓✓– | ✓ | ✓ | – | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — kun @/lib/putt-core, ingen golfdata/v2.
+| Ønsket økt (be coach) | `/portal/onskeligokt` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `OnskeligOktV2`. |
+| · Ønsket økt bekreftet | `/portal/onskeligokt/bekreftet` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ren Tailwind, ingen PlayerHero/golfdata/v2.
+| Live-økt: brief † | `/portal/(fullscreen)/live/[sessionId]/brief` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: lagt til akse-farget chip (`--axis-*`-tokens, matcher phq-live.jsx sin PyrChips) + `HjelpTips` (pyramideAkse/lFase). Rettet samtidig en pre-eksisterende feil: `L_PHASE_LABEL` viste GRUNN/SPESIAL/TURNERING (feil enum, LPhase) for `drill.lFase` (som faktisk er LFase — L-Kropp/Arm/Kølle/Ball/Auto); nå hentet fra `L_FASER` i `@/lib/taxonomy`. Egen `LiveSessionShell` beholdt (fullskjerm mørk, samme visuelle intensjon som mockupen).
+| Live-økt: aktiv † | `/portal/(fullscreen)/live/[sessionId]/active` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `DrillLogger` grener nå til ny `FysDrillLogger` for FYS-drills (SettRepsLogger/PulsSoneVelger/Stegteller, m/ `MicButton`-notat) i stedet for golf-only RepCounter-grid; golf-flyten uendret. Lagt til "Neste opp"-hint (matcher phq-live.jsx) + fikset FYS-progressbar (falt tilbake til repSett når plannedReps=0). Egenbygd fargepalett (18 hex, egen godkjent baseline) beholdt — dette er merkevarens forest/lime-primitiver, ikke tema-avhengige aliaser, og AI-Caddie-chat (LiveCoachPanel) dekker mockupens "AI-tip"-idé allerede reelt.
+| Live-økt: oppsummering † | `/portal/(fullscreen)/live/[sessionId]/summary` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: lagt til `Verdict`-banner (plan-etterlevelse ≥70 % = "På plan"/lime, <70 % = "Avvik"/koral, aldri sperre) + `HjelpTips` (planEtterlevelse), matcher phq-live.jsx sin Summary. Mockupens kvalitet(1–5)+følelse-tagger+"Send til Anders" er IKKE bygget — ingen spiller-side vurderings-action finnes i dag (kun coach-siden har `lagreCoachVurdering`); flagget som eget spørsmål, ikke bygget spekulativt.
+| Live-økt: drill-logger | `/portal/(fullscreen)/live/[sessionId]/logger` | ✓ | ✓✓– | ✓ | ~ | ~ | ✓ | Ren redirect-alias til /active (uendret) — arver v2-porten derfra.
+| Live-økt: score-tapper | `/portal/(fullscreen)/live/[sessionId]/tapper` | ✓ | ✓✓– | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — `TapperShell` komponerer `LiveCoachPanel` som importerer fra @/components/v2.
+| Tren (fullskjerm) | `/portal/(fullscreen)/tren` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `redirect("/portal/planlegge/workbench")` — ikke en egen skjerm.
+| Økt-detalj | `/portal/tren/[sessionId]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
+| · Planlagt økt | `/portal/tren/[sessionId]/planlagt` | – | --- | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — `InviteFriendTrigger`/`ParticipantsList` importerer ikke golfdata/v2.
+| Feiring (etter plan ferdig) | `/portal/tren/feiring/[planId]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ren Tailwind/hand-tegnet SVG-ring.
 
 ### Analysere
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Analysere = «Min golf» (6 faner: SG · Fokus · Runder · Baggen · Putting · Nivå — v13 golfdata, bølge 1 2026-07-04) ★ | `/portal/analysere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Hull-analyse | `/portal/analysere/hull` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
-| Statistikk (oversikt) | `/portal/statistikk` | ~ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
-| · Metrikk-detalj | `/portal/statistikk/[metric]` | – | --- | ✓ | ~ | ~ | ~ |
+| · Hull-analyse | `/portal/analysere/hull` | – | ✓✓– | ✓ | ~ | ✓ | ✓ | Reconciliation 16. jul: AMBIGUOUS — delt komposisjon. «Sone-kart»-fanen (`HoleAnalysis`) bruker golfdata `Eyebrow`/`Sparkline`; «Hull for hull»-fanen er 100 % hand-bygget. Kan ikke flippes rent til én status. |
+| Statistikk (oversikt) | `/portal/statistikk` | ~ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul: AMBIGUOUS — `StatistikkHub` er fullt golfdata-komponert (`Card/Eyebrow/KpiTile` + `golfdata-scope`), kan trolig oppgraderes til ✓; «~» kan være stale i motsatt retning. |
+| · Metrikk-detalj | `/portal/statistikk/[metric]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2, ingen PlayerHero.
 | ~~· Sammenlign~~ | `/portal/statistikk/sammenlign` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-14) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
-| · Del runde | `/portal/statistikk/runder/[runId]/del` | – | --- | ✓ | ~ | ~ | ~ |
-| **SG-Hub (Strokes Gained)** ★ | `/portal/mal/sg-hub` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
+| · Del runde | `/portal/statistikk/runder/[runId]/del` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2-imports.
+| **SG-Hub (Strokes Gained)** ★ | `/portal/mal/sg-hub` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: hub-komponenten importerer golfdata `Button/Card/Eyebrow/KpiTile` + `golfdata-scope`. |
 | · Kølle-detalj | `/portal/mal/sg-hub/[club]` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Benchmark | `/portal/mal/sg-hub/benchmark` | ✓ | --- | ✓ | ~ | ✓ | ✓ |
 | · Best vs nå | `/portal/mal/sg-hub/best-vs-now` | ✓ | --- | ✓ | ~ | ~ | ~ |
@@ -209,51 +164,51 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Avstander (yardage) | `/portal/mal/sg-hub/yardage` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Forhold (vær/bane) | `/portal/mal/sg-hub/conditions` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Strategi | `/portal/mal/sg-hub/strategy` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Coach ser spiller-SG | `/portal/mal/sg-hub/coach/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Coach: kølle | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Coach: utstyr | `/portal/mal/sg-hub/coach/[spillerId]/equipment` | – | --- | ✓ | ~ | ~ | ~ |
-| Runder (liste) | `/portal/mal/runder` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ |
+| · Coach ser spiller-SG | `/portal/mal/sg-hub/coach/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ren Tailwind, kun @/lib/sg-hub/*-hjelpere.
+| · Coach: kølle | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — `DPlanePlot`/`StrikeHeatmap`/`SmashCurvePlot` importerer ikke golfdata/v2 heller.
+| · Coach: utstyr | `/portal/mal/sg-hub/coach/[spillerId]/equipment` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — delegerer til `EquipmentView`, ingen golfdata/v2.
+| Runder (liste) | `/portal/mal/runder` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `RunderV2`. |
 | · Runde-detalj ★ | `/portal/mal/runder/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Slag-for-slag (visning) (→ redirect) | `/portal/mal/runder/[id]/shot-by-shot` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Slag-for-slag (visning) | `/portal/mal/runder/[id]/shot-by-shot` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `redirect` til `/portal/mal/runder/${id}/slag` — foreldet rute, ingen lenke peker hit lenger.
 | · Avansert slag-redigering (legacy wizard + UpGame-import) | `/portal/mal/runder/[id]/slag` | ✓ | ✓-- | ✓ | ✓ | ✓ | † |
-| · Fullfør kjeden (import/hurtig → slag-kjede per hull) ★ | `/portal/mal/runder/[id]/fullfor` | ~ | --- | ✓ | ✓ | ✓ | ~ | <!-- fra main, v13/golfdata — gjenstår v2-port -->
+| · Fullfør kjeden (import/hurtig → slag-kjede per hull) ★ | `/portal/mal/runder/[id]/fullfor` | ✓ | --- | ✓ | ✓ | ✓ | ~ | Reconciliation 16. jul: gammel kommentar («fra main, v13/golfdata — gjenstår v2-port») var selv stale — `FullforKjedeKlient` er allerede v2-komponert (`T/fmtSg/Caps/Kort/Icon` fra `components/v2`). Design rettet ~ → ✓.
 | · Logg ny runde (hurtig score) ★ | `/portal/mal/runder/ny` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Live slag-for-slag-føring ★ | `/portal/runde/live` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | · Etterregistrering slag for slag ★ | `/portal/runde/logg` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | TrackMan (liste) | `/portal/mal/trackman` | ✓ | ✓✓– | ✓ | ~ | ✓ | † |
 | · TrackMan-sesjon | `/portal/mal/trackman/[id]` | ✓ | ✓✓– | ✓ | ~ | ~ | † |
-| · TrackMan (alt. adresse) (→ redirect) | `/portal/trackman/[sessionId]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ |
-| Baneguide (baneliste) | `/portal/baneguide` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Banekart-oversikt | `/portal/baneguide/[baneId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Hull-detalj (dispersion) | `/portal/baneguide/[baneId]/hull/[nr]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| Tester (oversikt) ★ | `/portal/tren/tester` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
+| · TrackMan (alt. adresse) | `/portal/trackman/[sessionId]` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `redirect` til `/portal/mal/trackman/${sessionId}` — konsolidert 2026-06-25.
+| Gameplan (baneliste, omdøpt fra Baneguide 16. jul) | `/portal/gameplan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| · Banekart-oversikt | `/portal/gameplan/[baneId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| · Hull-detalj (dispersion + Planlegg-fane) | `/portal/gameplan/[baneId]/hull/[nr]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| Tester (oversikt) ★ | `/portal/tren/tester` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + v2-primitiver. |
 | · Test-detalj ★ | `/portal/tren/tester/[testId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Test-gjennomføring (scorekort) ★ | `/portal/tren/tester/[testId]/gjennomfor` | – | ✓✓~ | ✓ | ✓ | ✓ | ✓ |
-| · Test-katalog (NGF) | `/portal/tren/tester/katalog` | – | --- | ✓ | ~ | ~ | ~ |
-| · Ny test | `/portal/tren/tester/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| · Ny egen test | `/portal/tren/tester/ny/egen` | – | --- | ✓ | ~ | ~ | ~ |
-| · Test live (fullskjerm) | `/portal/(fullscreen)/test/[testId]/live` | – | --- | ✓ | ~ | ~ | ~ |
-| · Test oppsummering | `/portal/(fullscreen)/test/[testId]/summary` | – | --- | ✓ | ~ | ~ | ~ |
-| Bane-bibliotek | `/portal/mal/baner` | – | --- | ✓ | ~ | ~ | ~ |
-| · Bane-detalj | `/portal/mal/baner/[id]` | – | --- | ✓ | ~ | ~ | ~ |
-| Statistikk-side (gml.) | `/portal/mal/statistikk` | – | --- | ✓ | ~ | ~ | ~ |
+| · Test-gjennomføring (scorekort) ★ | `/portal/tren/tester/[testId]/gjennomfor` | – | ✓✓~ | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — `scorekort-klient.tsx` ingen golfdata/v2.
+| · Test-katalog (NGF) | `/portal/tren/tester/katalog` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
+| · Ny test | `/portal/tren/tester/ny` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — `wizard.tsx` ingen golfdata/v2, ingen PlayerHero.
+| · Ny egen test | `/portal/tren/tester/ny/egen` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
+| · Test live (fullskjerm) | `/portal/(fullscreen)/test/[testId]/live` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): RUTE FINNES IKKE i koden — ingen `(fullscreen)/test`-mappe, ingen redirect dit heller. Samme kategori som tidligere flaggede død-rute-funn (statistikk/sammenlign, mal/baner) — bør flagges til Anders, ikke bare flippes.
+| · Test oppsummering | `/portal/(fullscreen)/test/[testId]/summary` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): RUTE FINNES IKKE i koden — se samme rad over (live).
+| ~~Bane-bibliotek~~ | `/portal/mal/baner` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 16. jul, samme kategori som `/portal/statistikk/sammenlign` under). Fjern fra planen eller bygg bevisst — ikke bare en hake-fiks. |
+| ~~· Bane-detalj~~ | `/portal/mal/baner/[id]` | — | — | — | — | — | — | Samme — rute finnes ikke. |
+| Statistikk-side (gml.) | `/portal/mal/statistikk` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
 
 ### Coach (spillerens kontakt med coach)
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Coach-hub | `/portal/coach` | ✓ | --- | ✓ | ~ | ~ | ✓ |
+| Coach-hub | `/portal/coach` | ~ | --- | ✓ | ~ | ~ | ✓ |
 | · Coach-profil | `/portal/coach/[coachId]` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| Meldinger (innboks) | `/portal/coach/melding` | ✓ | --- | ✓ | ~ | ~ | ✓ |
+| Meldinger (innboks) | `/portal/coach/melding` | ~ | --- | ✓ | ~ | ~ | ✓ |
 | · Ny melding | `/portal/coach/melding/ny` | ✓ | --- | ✓ | ✓ | ✓ | ✓† |
 | · Meldingstråd | `/portal/coach/melding/[id]` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Vedlegg | `/portal/coach/melding/[id]/vedlegg` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| Coach-planer | `/portal/coach/plans` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| Coach-planer | `/portal/coach/plans` | ~ | --- | ✓ | ~ | ~ | ~ |
 | · Plan-detalj | `/portal/coach/plans/[planId]` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Ny økt i plan | `/portal/coach/plans/[planId]/ny-okt` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Perioder | `/portal/coach/plans/perioder` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Coach-øvelser | `/portal/coach/ovelser` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Ny øvelse | `/portal/coach/ovelser/ny` | – | --- | ✓ | ~ | ~ | ~ |
+| · Ny øvelse | `/portal/coach/ovelser/ny` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET (tynn) — `PlayerHero`-header (golfdata Eyebrow); selve `DrillEditor` har ingen golfdata/v2-import.
 | · Rediger øvelse | `/portal/coach/ovelser/[id]/rediger` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Coach-videoer | `/portal/coach/videoer` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Coach-notater | `/portal/coach/notes` | ✓ | --- | ✓ | ~ | ~ | ~ |
@@ -269,56 +224,56 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Meg (profil) ★ | `/portal/meg` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
 | Rediger profil ★ | `/portal/meg/profil` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MinProfilV2` (v2 retning C), portert 10. juli, hake aldri oppdatert |
 | Abonnement ★ | `/portal/meg/abonnement` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegAbonnementV2` (v2 retning C), hake aldri oppdatert |
-| · Oppgrader (→ redirect) | `/portal/meg/abonnement/oppgrader` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Oppgrader-flyt | `/portal/meg/abonnement/oppgrader/flyt` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Avbestill | `/portal/meg/abonnement/avbestill` | – | --- | ✓ | ~ | ~ | ~ |
-| · Nytt kort | `/portal/meg/abonnement/kort/ny` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Faktura-detalj | `/portal/meg/abonnement/faktura/[id]` | – | --- | ✓ | ~ | ~ | ~ |
-| Mine bookinger | `/portal/meg/bookinger` | – | --- | ✓ | ~ | ~ | ~ |
-| · Endre tid | `/portal/meg/bookinger/reschedule/[bookingId]` | – | --- | ✓ | ~ | ~ | ~ |
+| · Oppgrader | `/portal/meg/abonnement/oppgrader` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `redirect("/portal/meg/abonnement/oppgrader/flyt")` — ikke en egen skjerm.
+| · Oppgrader-flyt | `/portal/meg/abonnement/oppgrader/flyt` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET (tynn) — `oppgrader-flyt-wizard.tsx` bruker `Knapp` fra @/components/v2 som primær-CTA i alle steg.
+| · Avbestill | `/portal/meg/abonnement/avbestill` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — 0 golfdata/v2-imports (kun --v2-lime CSS-var referert direkte i inline style, ikke via komponent).
+| · Nytt kort | `/portal/meg/abonnement/kort/ny` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET (tynn) — `aapne-stripe-portal.tsx` bruker `Knapp` fra @/components/v2.
+| · Faktura-detalj | `/portal/meg/abonnement/faktura/[id]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — 0 golfdata/v2-imports.
+| Mine bookinger | `/portal/meg/bookinger` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET (tynn) — `PlayerHero`-header (golfdata Eyebrow); kroppen (`BookingerTabs`) er hand-bygget.
+| · Endre tid | `/portal/meg/bookinger/reschedule/[bookingId]` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET (tynn) — `PlayerHero`-header; dato/slot-velger hand-bygget.
 | Helse ★ | `/portal/meg/helse` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegHelseV2` (v2 retning C), hake aldri oppdatert |
-| · Nytt symptom | `/portal/meg/helse/symptom/ny` | – | --- | ✓ | ~ | ~ | ~ |
+| · Nytt symptom | `/portal/meg/helse/symptom/ny` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — 0 golfdata/v2-imports, ingen PlayerHero.
 | Innstillinger ★ | `/portal/meg/innstillinger` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `InnstillingerV2` (v2 retning C), hake aldri oppdatert |
-| · Varsler | `/portal/meg/innstillinger/varsler` | – | --- | ✓ | ~ | ~ | ~ |
-| · Personvern | `/portal/meg/innstillinger/personvern` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Sikkerhet | `/portal/meg/innstillinger/sikkerhet` | – | --- | ✓ | ~ | ~ | ~ |
-| · Språk | `/portal/meg/innstillinger/sprak` | – | --- | ✓ | ~ | ~ | ~ |
-| · Anlegg | `/portal/meg/innstillinger/anlegg` | – | --- | ✓ | ~ | ~ | ~ |
-| · Integrasjoner | `/portal/meg/innstillinger/integrasjoner` | – | --- | ✓ | ~ | ~ | ~ |
-| · Eksport (→ redirect) | `/portal/meg/innstillinger/eksport` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Økter | `/portal/meg/innstillinger/okter` | – | --- | ✓ | ~ | ~ | ~ |
-| Sikkerhet | `/portal/meg/sikkerhet` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · To-faktor (2FA) | `/portal/meg/sikkerhet/2fa` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Varsler | `/portal/meg/innstillinger/varsler` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — 0 golfdata/v2-imports.
+| · Personvern | `/portal/meg/innstillinger/personvern` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header + `personvern-actions.tsx` bruker `Knapp` fra @/components/v2.
+| · Sikkerhet | `/portal/meg/innstillinger/sikkerhet` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — kommentar hevder golfdata-redesign, men ingen faktisk import finnes.
+| · Språk | `/portal/meg/innstillinger/sprak` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — 0 golfdata/v2-imports.
+| · Anlegg | `/portal/meg/innstillinger/anlegg` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — 0 golfdata/v2-imports.
+| · Integrasjoner | `/portal/meg/innstillinger/integrasjoner` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — kommentar hevder DS-token-klasser, men ingen faktisk import finnes.
+| · Eksport | `/portal/meg/innstillinger/eksport` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `redirect("/portal/meg/innstillinger/personvern")` — ikke en egen skjerm.
+| · Økter | `/portal/meg/innstillinger/okter` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — 0 golfdata/v2-imports, i tillegg funksjonell placeholder («kommer Q3 2026»).
+| Sikkerhet | `/portal/meg/sikkerhet` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `MegSikkerhetV2`. |
+| · To-faktor (2FA) | `/portal/meg/sikkerhet/2fa` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `twofa-client.tsx` bruker `Knapp` fra @/components/v2 i alle tre steg (ikke bare tynn header-berøring).
 | Utstyrsbag ★ | `/portal/meg/utstyrsbag` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegUtstyrsbagV2` (v2 retning C), hake aldri oppdatert |
 | Dokumenter ★ | `/portal/meg/dokumenter` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegDokumenterV2` (v2 retning C), hake aldri oppdatert |
-| Foreldre (foresatt-info) | `/portal/meg/foreldre` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ |
-| Feedback | `/portal/meg/feedback` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| Foreldre (foresatt-info) | `/portal/meg/foreldre` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `MegForeldreV2`. |
+| Feedback | `/portal/meg/feedback` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `MegFeedbackV2`. |
 | Hjelpesenter ★ | `/portal/meg/help` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegHelpV2` (v2 retning C), hake aldri oppdatert |
-| · Hjelp-artikkel | `/portal/meg/help/artikkel/[slug]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Hjelp-kategori | `/portal/meg/help/kategori/[slug]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Kontakt | `/portal/meg/help/kontakt` | – | --- | ✓ | ~ | ~ | ~ |
+| · Hjelp-artikkel | `/portal/meg/help/artikkel/[slug]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — 0 golfdata/v2-imports.
+| · Hjelp-kategori | `/portal/meg/help/kategori/[slug]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — 0 golfdata/v2-imports.
+| · Kontakt | `/portal/meg/help/kontakt` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET (tynn) — `PlayerHero`-header; skjemaet selv hand-bygget.
 
 ### Booking
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Booking-hub | `/portal/booking` | ✓ | ✓✓– | ~ | ~ | ✓ | ✓ | 2026-07-14 dok-verifisering: `BookingV2` fullt token-komponert (stepper, tjenestekort, ekte slot-vindu fra availability-engine). Design rettet – → ✓. Merk: kun HUB-en er v2 — alle undersider (ny/[bookingId]/coach/anlegg/bekreftet) er fortsatt `(legacy)`-ruter, «Booking-flyt komplett i v2» stemmer IKKE ennå, se endringslogg |
-| · Ny booking (wizard) | `/portal/booking/ny` | – | ✓✓– | ~ | ~ | ✓ | ✓ |
-| · Ny booking bekreft | `/portal/booking/ny/bekreft` | – | --- | ✓ | ~ | ~ | ~ |
-| · Booking-detalj | `/portal/booking/[bookingId]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Coach-profil (booking) | `/portal/booking/coach/[coachId]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Anlegg-detalj (booking) | `/portal/booking/anlegg/[anleggId]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Bekreftet | `/portal/booking/bekreftet` | – | --- | ✓ | ~ | ~ | ~ |
+| · Ny booking (wizard) | `/portal/booking/ny` | – | ✓✓– | ~ | ~ | ✓ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — bevisst utsatt av Anders til akgolf-booking v2-design (11. jul-notat), ikke en oversett hake.
+| · Ny booking bekreft | `/portal/booking/ny/bekreft` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — samme bevisst utsatt booking-legacy som /ny.
+| · Booking-detalj | `/portal/booking/[bookingId]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — bruker egen booking.css, bevisst utsatt til v2-design.
+| · Coach-profil (booking) | `/portal/booking/coach/[coachId]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — bevisst utsatt booking-legacy.
+| · Anlegg-detalj (booking) | `/portal/booking/anlegg/[anleggId]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — bevisst utsatt booking-legacy.
+| · Bekreftet | `/portal/booking/bekreftet` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — bevisst utsatt booking-legacy.
 
 ### Talent (elite-spor — egen del av PlayerHQ)
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Talent-hub | `/portal/talent` | ✓ | ✓✓– | ✓ | ~ | ~ | † |
-| · Min plan | `/portal/talent/min-plan` | – | --- | ✓ | ~ | ~ | ~ |
-| · Mitt nivå | `/portal/talent/mitt-niva` | – | --- | ✓ | ~ | ~ | ~ |
-| · Roadmap | `/portal/talent/roadmap` | – | --- | ✓ | ~ | ~ | ~ |
-| · Sammenligning | `/portal/talent/sammenligning` | – | --- | ✓ | ~ | ~ | ~ |
+| · Min plan | `/portal/talent/min-plan` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — bespoke `@/components/portal/talent/*`-familie, 0 golfdata/v2.
+| · Mitt nivå | `/portal/talent/mitt-niva` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — samme bespoke talent-familie.
+| · Roadmap | `/portal/talent/roadmap` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — samme bespoke talent-familie.
+| · Sammenligning | `/portal/talent/sammenligning` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — samme bespoke talent-familie.
 
 > Merknad: Talent-delen er knyttet til «Elite Fase 2», som er bevisst utsatt. Disse adressene finnes, men er ikke prioritert nå.
 
@@ -328,20 +283,21 @@ Disse finnes i appen, men er enten eldre kortadresser som peker videre, eller sm
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Stats (alt. → redirect) | `/portal/stats` | ✓ | --- | ✓ | ✓ | – | ✓ |
-| Analyse (alt. → redirect) | `/portal/analyse` | ✓ | --- | ✓ | ✓ | – | ✓ |
-| Reach (oppsøk-verktøy) | `/portal/reach` | – | --- | ✓ | ~ | ~ | ~ |
-| Agent-pipeline (AI internt) | `/portal/agent-pipeline` | – | --- | ✓ | ~ | ~ | ~ |
-| Se annen spiller | `/portal/spiller/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
+| Stats (alt. → redirect) | `/portal/stats` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/portal/statistikk")` — ikke en egen skjerm.
+| Analyse (alt. → redirect) | `/portal/analyse` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/portal/analysere")` — ikke en egen skjerm.
+| Reach (oppsøk-verktøy) | `/portal/reach` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET (tynn) — `PlayerHero`-header; resten er ren tom-tilstand (ingen datamodell for reach ennå).
+| Agent-pipeline (AI internt) | `/portal/agent-pipeline` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET (tynn) — `PlayerHero`-header; signal/plan-action/agent-run-tabellene er hand-bygget Tailwind, bør sees nærmere på.
+| Se annen spiller | `/portal/spiller/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — 0 golfdata/v2-imports.
 | Venner (B39, ny 16. jul) | `/portal/venner` | ✓ | --- | ✓ | ✓ | ✓ | ✓ |
 | · Venn-profil (økt-feed) | `/portal/venner/[spillerId]` | ✓ | --- | ✓ | ✓ | ✓ | ✓ |
-| Øvelser (alt. → redirect) | `/portal/tren/ovelser` | ✓ | --- | ✓ | ✓ | – | ✓ |
-| · Øvelse-detalj (alt. → redirect) | `/portal/tren/ovelser/[id]` | ✓ | --- | ✓ | ✓ | – | ✓ |
+| Øvelser (alt. → redirect) | `/portal/tren/ovelser` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET — `proxy.ts`/`workbenchRedirectForTrenPath` redirecter til `/portal/planlegge/workbench?tab=std`. NB: dokumentets tidligere notat om mål `/portal/drills` var feil/foreldet — rettet her.
+| · Øvelse-detalj (alt. → redirect) | `/portal/tren/ovelser/[id]` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET — samme redirect-mekanisme som base-ruten over.
 
 > **Rettet 2026-07-14:** `/portal/stats` og `/portal/analyse` er allerede rene redirects til
 > `/portal/statistikk` og `/portal/analysere` (se «(alt. → redirect)»-merket over) —
-> ingen rydding gjenstår. `/portal/tren/ovelser` er også en redirect (til `/portal/drills`),
-> ikke en ekte overlappende side.
+> ingen rydding gjenstår. `/portal/tren/ovelser` er også en redirect, ikke en ekte
+> overlappende side. **Rettet 16. jul (Fase 0):** faktisk mål er `/portal/planlegge/workbench?tab=std`
+> via `proxy.ts`/`workbenchRedirectForTrenPath` — IKKE `/portal/drills` som stod her tidligere.
 
 ---
 
@@ -356,30 +312,30 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | **Cockpit (hjem)** ★ | `/admin/agencyos` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v13 scope + components (full)
 | · Uka (kanban) | `/admin/agencyos/uka` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Complete v13 (golfdata scope + cards) |
 | · Spillere (snarvei) | `/admin/agencyos/spillere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Økonomi | `/admin/agencyos/okonomi` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Økonomi | `/admin/agencyos/okonomi` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell`+`TilbakeLenke`. |
 | · Live (Mission Control) | `/admin/agencyos/live` | ✓ | --- | ✓ | ✓ | – | ~ | v2 komponert (AgencyLiveV2), fortsatt visuelt skall med statisk seed-data (src/lib/agencyos/live-data.ts) — live-integrasjoner kobles senere |
-| · Caddie (AI-chat) | `/admin/agencyos/caddie` | ✓ | ✓✓– | ✓ | ~ | – | ✓ |
-| · Caddie-aktivitet | `/admin/agencyos/caddie/aktivitet` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| Admin-rot (gml. hjem) (→ redirect) | `/admin` | ✓ | --- | ✓ | ~ | ~ | ✓ |
+| · Caddie (AI-chat) | `/admin/agencyos/caddie` | ✓ | ✓✓– | ✓ | ~ | – | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `CaddieChatV2`/`CaddieSubNavV2`. |
+| · Caddie-aktivitet | `/admin/agencyos/caddie/aktivitet` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminCaddieAktivitetV2`. |
+| Admin-rot (gml. hjem) | `/admin` | – | --- | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul: dette er en ren `redirect("/admin/agencyos")` — ikke en egen skjerm. |
 | Daglig AI-brief | `/admin/brief` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | Varsler (agent-forslag/signaler/meldinger) | `/admin/varsler` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| Coaching-board (→ redirect) | `/admin/board` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| Coaching-board | `/admin/board` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: ren `redirect("/admin/spillere?view=tavle")` — ikke en egen skjerm. |
 | Oppfølging (alias → queue) | `/admin/oppfolging` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | Oppfølgingskø (kanban) | `/admin/queue` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| **Innboks** ★ | `/admin/innboks` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
+| **Innboks** ★ | `/admin/innboks` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `TriageV2`. |
 | E-post (post@) | `/admin/innboks-epost` | ✓ | --- | ✓ | ✓ | ✓ | ~ | v2 (InnboksEpostV2), ekte data via loadAlleEpost |
 | Handlingssenter | `/admin/handlingssenter` | ✓ | --- | ✓ | ✓ | ✓ | ~ | v2 (AdminHandlingssenterV2), ekte OppgaveCache/Notion-sync — ærlig tom-tilstand |
-| Meldinger (alt. → redirect) | `/admin/messages` | ✓ | --- | ✓ | ✓ | – | ✓ |
-| Kommunikasjon-hub (→ redirect) | `/admin/kommunikasjon` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| Reach | `/admin/reach` | – | --- | ✓ | ~ | ~ | ~ |
+| Meldinger (alt. → redirect) | `/admin/messages` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/admin/innboks")` — ikke en egen skjerm.
+| Kommunikasjon-hub | `/admin/kommunikasjon` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: ren `permanentRedirect("/admin/innboks")` — ikke en egen skjerm. |
+| Reach | `/admin/reach` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminReachV2` (KPI-kort/Kort/StatusPill/AvatarFoto + lokal SVG-linjegraf/feature-bar styrt av T-tokens), erstatter hand-Tailwind `ReachClient`. Samme aggregeringslogikk (User/Notification/TrainingPlanSession/CoachingSession/Round/Goal) uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 
 ### Min uke / Workspace
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Workspace-hub | `/admin/workspace` | ✓ | --- | ✓ | ~ | ✓ | ✓ | Real tasks via getTasksForUser (Notion fallback + cache) + scoped to coach. Data full.; 2026-07-16: kodeverifisert v2 (Fase 0-avstemming) 
-| · Tildelt meg | `/admin/workspace/tildelt-meg` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| · Oppgaver (→ redirect) | `/admin/workspace/oppgaver` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
+| Workspace-hub | `/admin/workspace` | ~ | --- | ✓ | ~ | ✓ | ✓ | Real tasks via getTasksForUser (Notion fallback + cache) + scoped to coach. Data full. 
+| · Tildelt meg | `/admin/workspace/tildelt-meg` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminTildeltMegV2` (Kort/TomTilstand/Icon), erstatter `AgPage`/`AgPageHead`. Samme aggregering (PlanAction/SessionRequest/TrainingPlan DRAFT/Notion-oppgaver) uendret. Design – → ✓, Mob/Desk/iPad –✓– → ✓✓–. |
+| · Oppgaver | `/admin/workspace/oppgaver` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: dette er en ren `redirect("/admin/handlingssenter")` — raden var feilaktig scoret som en levende skjerm med egne haker. |
 | · Prosjekter | `/admin/workspace/prosjekter` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Notion-sync | `/admin/workspace/notion` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 
@@ -387,63 +343,63 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Stall-oversikt (→ redirect) | `/admin/stall` | ✓ | --- | ✓ | ~ | ~ | ✓ |
+| Stall-oversikt | `/admin/stall` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: ren `redirect("/admin/spillere")` — ikke en egen skjerm. |
 | **Spillere (alle)** = SpillerTilstandKort-liste (v13 golfdata, bølge 1 2026-07-04) ★ | `/admin/spillere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Complete v13 (SpillerTilstandKort + scope + cards)
 | · Ny spiller | `/admin/spillere/ny` | ✓ | --- | ✓ | ✓ | ~ | ~ | 2026-07-14 dok-verifisering (funn under legacy-porterings-sjekk): `AdminNySpillerV2` — ekte `createSpiller`-server-action, router til ny spillers profil. Design rettet – → ✓, Flyt ~ → ✓ (skjema uten loader — Data-haken forblir ~, ikke relevant for et opprett-skjema) |
 | **Spiller-detalj** ★ | `/admin/spillere/[id]` | ✓ | ~✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-14 dok-verifisering: «100 % spillerinfo på én skjerm» levert — `SpillerDashboardV2` (7 faner: Oversikt/Utvikling/Plan/Helse/Turnering/Logg/Administrasjon), hero+KPI-strip m/ HjelpTips, én aggregert loader (`spiller-dashboard-data.ts`, 24 select-minimerte spørringer), kun ekte data + ærlige tomtilstander. Design rettet – → ✓ |
 | · **Analyse (coach-dybde)** = golfdata elite-visning (v13, bølge 1 2026-07-04) ★ | `/admin/spillere/[id]/analyse` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Profil | `/admin/spillere/[id]/profil` | – | --- | ✓ | ~ | ~ | ~ |
+| · Profil | `/admin/spillere/[id]/profil` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminSpillerProfilSideV2` (T-tokens; navnet er bevisst forskjellig fra den allerede v2-portede `AdminSpillerProfilV2` — Profil-fanen på `/admin/spillere/[id]`, en annen skjerm). Samme datagrunnlag uendret. Kjent, uendret begrensning: mål-fremdriftsring viser fast 50 % (Goal-modellen mangler et reelt fremdriftsfelt — ikke en regresjon). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | · **Workbench (coach-i-spiller)** ★ | `/admin/spillere/[id]/workbench` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-12: månedsvisning (ekte grid) + drag-and-drop (blokk→dag, bibliotek→klokkeslett) |
 | · Plan-detalj | `/admin/spillere/[id]/plan/[planId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-14: drills-panel viser automatisk repslogging + bilde/video fra spillerens live-økter
-| · Fremgang (trening vs SG) † | `/admin/spillere/[id]/fremgang` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ~ |
-| · Tester | `/admin/spillere/[id]/tester` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ~ |
-| · Tildel test | `/admin/spillere/[id]/tildel-test` | – | --- | ✓ | ~ | ~ | ~ |
-| · Rediger | `/admin/spillere/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
-| Grupper | `/admin/grupper` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
+| · Fremgang (trening vs SG) † | `/admin/spillere/[id]/fremgang` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminSpillerFremgangV2`. |
+| · Tester | `/admin/spillere/[id]/tester` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminSpillerTesterV2`. |
+| · Tildel test | `/admin/spillere/[id]/tildel-test` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: delt `AdminTildelTestV2` med `/admin/tester/tildel/[spillerId]` (samme skjerm, to inngangspunkt) — konsoliderer to divergerende hand-bygde modaler (denne hadde fabrikerte «HCP 4.8 · 12/36 tester gjennomført · A1»-tall) til ÉN kanon-versjon m/ ekte A–K-kategori og ekte TestAssignment-tall. Gammel `test-modul-v2/`-familie slettet. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
+| · Rediger | `/admin/spillere/[id]/rediger` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminSpillerRedigerV2` (T-tokens, 2-kol form + sticky lagre-bar), erstatter hand-Tailwind. Samme server actions (`lagreSpiller`/`slettSpiller`) uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
+| Grupper | `/admin/grupper` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `GrupperV2`. |
 | · Gruppe-detalj (+ VG-trinn filter/badge, 2026-07-07) | `/admin/grupper/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Gruppe-timeplan (faste/kommende/tidligere + dupliser) | `/admin/grupper/[id]/timeplan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · **Gruppe-årsplan** (samme kalenderkjerne som /team-wang, koblet inn i gruppeplanleggingen) | `/admin/grupper/[id]/arsplan` | ✓ | --- | ✓ | ~ | ~ | † |
-| · · Legg inn skoledata (lim-inn-import → SchoolScheduleEntry) | `/admin/grupper/[id]/arsplan/skoledata` | ✓ | --- | ✓ | ✓ | ~ | † |
+| · **Gruppe-årsplan** (samme kalenderkjerne som /team-wang, koblet inn i gruppeplanleggingen) | `/admin/grupper/[id]/arsplan` | ~ | --- | ✓ | ~ | ~ | † |
+| · · Legg inn skoledata (lim-inn-import → SchoolScheduleEntry) | `/admin/grupper/[id]/arsplan/skoledata` | ~ | --- | ✓ | ✓ | ~ | † |
 | · **WANG Toppidrett — åpen treningsplan** (offentlig, ingen innlogging; nå med dagsvisning + samlinger + skole-/kompetansemål-lag) | `/team-wang` | ~ | -✓– | ✓ | ~ | ✓ | ✓ |
 | · **GFGK Junior — åpen treningsplan** (offentlig, 4 gruppefaner: Mini/Basis/Utvikling/Elite) | `/gfgk-junior` | ~ | --- | ✓ | ~ | ✓ | † |
-| Talent-hub (→ redirect) | `/admin/talent` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| Talent-hub | `/admin/talent` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: ren `redirect("/admin/talent/radar")` — ikke en egen skjerm. |
 | · Discovery | `/admin/talent/discovery` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Radar | `/admin/talent/radar` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
+| · Radar | `/admin/talent/radar` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminTalentRadarV2`. |
 | · Kohort | `/admin/talent/kohort` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Region | `/admin/talent/region` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Ressurser | `/admin/talent/ressurser` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Sammenligning | `/admin/talent/sammenligning` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
+| · Sammenligning | `/admin/talent/sammenligning` | – | ~✓– | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul: AMBIGUOUS — `TalentSammenligning`-komponenten er dokumentert som en pixel-perfect port av godkjent fasit (`components-multi-compare.html`), men importerer ikke golfdata/ui/v2. Teknisk gap etter import-testen, men trolig design-ferdig i ånd. |
 | · WAGR-benchmark | `/admin/talent/wagr-benchmark` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · WAGR-import | `/admin/talent/wagr-import` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
+| · WAGR-import | `/admin/talent/wagr-import` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminWagrImportV2` (Kort/Knapp/StatusPill/AvatarInit), erstatter `@/components/admin/agencyos/ui`-familien. Samme «Synk nå» (synkWagrNaa) uendret. Design – → ✓, Mob/Desk/iPad –✓– → ✓✓–. |
 
 ### Planlegge (lage planer FOR spillerne)
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Plan-sentral (hub) | `/admin/planlegge` | ✓ | --- | ✓ | ~ | ✓ | ✓ | Real prisma lookup for first player + redirect to workbench. Full auth.; 2026-07-16: kodeverifisert v2 (Fase 0-avstemming) 
-| Planer (alle) | `/admin/plans` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
-| · Ny plan (Plan-bygger) (→ redirect) | `/admin/plans/new` | ✓ | –✓– | ✓ | ~ | ✓ | ~ |
+| Plan-sentral (hub) | `/admin/planlegge` | ✓ | --- | ✓ | ~ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminPlanleggeV2`. Real prisma lookup for first player + redirect to workbench. Full auth. 
+| Planer (alle) | `/admin/plans` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminPlansV2`. |
+| · Ny plan (Plan-bygger) | `/admin/plans/new` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: ren `redirect("/admin/planlegge")` — ikke en egen skjerm. |
 | · Plan-detalj | `/admin/plans/[planId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Maler (alt. → redirect) | `/admin/plans/templates` | ✓ | --- | ✓ | ✓ | – | ✓ |
-| · Ny mal (alt. → redirect) | `/admin/plans/templates/ny` | ✓ | --- | ✓ | ✓ | – | ✓ |
-| · Rediger mal (alt. → redirect) | `/admin/plans/templates/[id]/rediger` | ✓ | --- | ✓ | ✓ | – | ✓ |
-| · Mal-effektivitet (alt. → redirect) | `/admin/plans/templates/[id]/effectiveness` | ✓ | --- | ✓ | ✓ | – | ✓ |
-| Plan-maler (alt.) | `/admin/plan-templates` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
-| · Plan-mal detalj | `/admin/plan-templates/[id]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Ny plan-mal | `/admin/plan-templates/ny` | – | --- | ✓ | ~ | ~ | ~ |
-| · Rediger plan-mal | `/admin/plan-templates/[id]/rediger` | – | --- | ✓ | ~ | ✓ | ✓ | 2026-07-11: volum-linje (timer/uke + reell pyramidefordeling vs. glidere) + masseredigering (sett varighet for hele uka, kopier uke→uke m/ konflikt-bekreftelse) — src/lib/plan-templates/
-| Drills (bibliotek) | `/admin/drills` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
-| · Drill-detalj | `/admin/drills/[id]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Rediger drill | `/admin/drills/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
-| Teknisk plan | `/admin/teknisk-plan` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Per spiller | `/admin/teknisk-plan/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ |
+| · Maler (alt. → redirect) | `/admin/plans/templates` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/admin/plan-templates")` — ikke en egen skjerm.
+| · Ny mal (alt. → redirect) | `/admin/plans/templates/ny` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/admin/plan-templates/ny")` — ikke en egen skjerm.
+| · Rediger mal (alt. → redirect) | `/admin/plans/templates/[id]/rediger` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect` til `/admin/plan-templates/[id]/rediger` — ikke en egen skjerm.
+| · Mal-effektivitet (alt. → redirect) | `/admin/plans/templates/[id]/effectiveness` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect` til `/admin/plan-templates/[id]/effectiveness` — ikke en egen skjerm.
+| Plan-maler (alt.) | `/admin/plan-templates` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminPlanMalerV2`. |
+| · Plan-mal detalj | `/admin/plan-templates/[id]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: AMBIGUOUS — kun `AdminHero`-header (som selv bruker golfdata `Eyebrow`), `template-detail.tsx`-kroppen er hand-Tailwind. Tynn kanon-berøring, ikke full v2-komposisjon. |
+| · Ny plan-mal | `/admin/plan-templates/ny` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: AMBIGUOUS — samme `AdminHero`-mønster som over. |
+| · Rediger plan-mal | `/admin/plan-templates/[id]/rediger` | – | --- | ✓ | ~ | ✓ | ✓ | Reconciliation 16. jul: AMBIGUOUS — samme `AdminHero`-mønster. 2026-07-11: volum-linje (timer/uke + reell pyramidefordeling vs. glidere) + masseredigering (sett varighet for hele uka, kopier uke→uke m/ konflikt-bekreftelse) — src/lib/plan-templates/
+| Drills (bibliotek) | `/admin/drills` | ✓ | ~✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminDrillsV2` (Kort/Caps/Tittel/CTAPill/TomTilstand) erstatter `AgPage`/`AgPageHead`/`agBtnClass`. Beholder ekte søk (?q=)/kategorifilter (?kat=)/30-cap Prisma-spørring uendret — ren server-rendret URL-drevet nav, ingen klient-state. Detalj/rediger/ny/forslag-skjermene er IKKE portet ennå — mockupens ett-app tile+inspektør+composer-modell matcher ikke produksjonens separate sider + 27-felts admin-skjema (DrillEditForm), så disse porter separat mot faktisk struktur, ikke mockupen 1:1. |
+| · Drill-detalj | `/admin/drills/[id]` | ✓ | --- | ✓ | ~ | ~ | ~ | v2-port 16. jul: `AdminDrillDetaljV2` (Kort/Caps/Tittel) erstatter lokale Card/Stat/Row/NgfRangePlot-hjelpere. Full feltdekning fra ExerciseDefinition beholdt uendret (nivå-range, csTarget, environment/utstyr/L-faser, prerequisites, tags, video). `DrillDetailActions` (Rediger/Dupliser/Slett) uendret. |
+| · Rediger drill | `/admin/drills/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — `DrillEditForm` hand-bygget. |
+| Teknisk plan | `/admin/teknisk-plan` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminTekniskPlanV2`. |
+| · Per spiller | `/admin/teknisk-plan/[spillerId]` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul (tynn men ekte): `DetailShell` (ui/`Breadcrumb`) + `KPICard` (wrapper rundt golfdata `Eyebrow`). |
 | **Turneringer** ★ | `/admin/tournaments` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: v2-redesign, hele legacy-mappen portert og slettet
 | · Turnering-detalj | `/admin/tournaments/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: duplikat tilbake-lenke fjernet, nettleser-testet
 | · Ny turnering | `/admin/tournaments/ny` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: v2 5-stegs-veiviser; fant+fikset "use server"-krasj ved innsending
 | · Dubletter (rydd) | `/admin/tournaments/dubletter` | ✓ | ✓–– | ✓ | ~ | ✓ | ~ | 2026-07-13: v2, kun tom-tilstand nettleser-testet (0 dubletter i DB nå)
-| Økter | `/admin/okter` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| Videoer | `/admin/videoer` | – | --- | ✓ | ~ | ~ | ~ |
-| Opptak | `/admin/recording` | – | --- | ✓ | ~ | ~ | ~ |
+| Økter | `/admin/okter` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminOkterV2`. |
+| Videoer | `/admin/videoer` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: AMBIGUOUS — kun `AdminHero`-header, `VideoUploadForm`/`VideoCard` hand-bygget. |
+| Opptak | `/admin/recording` | ✓ | --- | ✓ | ~ | ~ | ~ | v2-port 16. jul: `AdminRecordingV2` (Kort/Caps/Tittel/KpiFlis). `RecordingControls` (ekte MediaRecorder/wake-lock/batteri-varsel) + `RecordingAnalyzeButton` urørt. Rettet en reell bug samtidig: varselbanneret sjekket `DEEPGRAM_API_KEY`, men transkribering (`src/lib/transcribe.ts`) bruker OpenAI Whisper og gates på `OPENAI_API_KEY` — feil variabel sjekket før. Copy endret fra "Deepgram" til nøytralt "talegjenkjenning" (Deepgram er aldri integrert — kjent navn/kode-avvik, ikke avklart med Anders). |
 
 ### Gjennomføre (daglig drift)
 
@@ -452,72 +408,72 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Daglig drift (hub) | `/admin/gjennomfore` | ✓ | --- | ✓ | ~ | ~ | ~ | v13 composed (golfdata Button/Card/Eyebrow + scope)
 | · Økt-detalj | `/admin/gjennomfore/okter/[id]` | ✓ | ✓✓– | ✓ | ~ | ✓ | † |
 | Kalender | `/admin/kalender` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v13 golfdata (TidsGrid/Periodeplan + scope)
-| · Uke (redirect) | `/admin/kalender/uke` → `/admin/kalender` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
-| · Måned | `/admin/kalender/maned` | – | ✓✓– | ✓ | ~ | ✓ | ✓ |
+| · Uke (redirect) | `/admin/kalender/uke` → `/admin/kalender` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `redirect()` som bevarer `?uke=`-param — ikke en egen skjerm.
+| · Måned | `/admin/kalender/maned` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `MonthCalendarV2` (T-tokens), erstatter Tailwind/shadcn `MonthCalendar`. Samme loader (`loadKalenderManed`) uendret. Design – → ✓, Flyt ~ → ✓. |
 | · Ny hendelse (I3) | `/admin/kalender/hendelse/ny` | ✓ | --- | ✓ | ✓ | ✓ | ✓ | NY RAD 2026-07-14: I3-leveransen — `CalendarEvent` (ferie/stengt anlegg) blokkerer nå ekte booking-konflikt-sjekk; skjema leser `?start=` fra HurtigOpprett, egen v2-side |
 | · Hendelse-detalj/slett (I3) | `/admin/kalender/hendelse/[id]` | ✓ | --- | ✓ | ✓ | ✓ | ✓ | NY RAD 2026-07-14: v2, ekte `CalendarEvent`-oppslag, slett kun for eier/ADMIN (håndhevet i UI + action) |
-| Kalender (alt. → redirect) | `/admin/calendar` | ✓ | --- | ✓ | ✓ | – | ✓ |
-| · Måned (alt. → redirect) | `/admin/calendar/maned` | ✓ | --- | ✓ | ✓ | – | ✓ |
+| Kalender (alt. → redirect) | `/admin/calendar` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/admin/kalender")` — ikke en egen skjerm.
+| · Måned (alt. → redirect) | `/admin/calendar/maned` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/admin/kalender/maned")` — ikke en egen skjerm.
 | **Bookinger** ★ | `/admin/bookinger` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v13 (KpiTile, Card, Tag + heatmap retokened)
 | · Ny booking | `/admin/bookinger/ny` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v2 2026-07-12: portet ut av legacy, V2Shell + NyBookingWizard; inngang fra kalender + bookinger |
-| Anlegg | `/admin/anlegg` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| Tilgjengelighet | `/admin/availability` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| Kapasitet (→ redirect) | `/admin/kapasitet` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| Tjenester/priser | `/admin/services` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| TrackMan (på tvers) | `/admin/trackman` | ✓ | --- | ✓ | ✓ | ✓ | ✓ | v2 2026-07-14: portet ut av legacy, komponert av v2-biblioteket (KpiFlis/Rad/FilterChips — samme mønster som Runder/Tester/Team, ingen 1:1-kit finnes for denne cross-player-tabellen); ekte søk+miljø-filter (ikke placeholder-toast); TilbakeLenke → /admin/gjennomfore; 2026-07-16: kodeverifisert v2 (Fase 0-avstemming) |
-| Live-økt: brief (coach) | `/admin/live/[sessionId]/brief` | – | --- | ✓ | ✓ | ✓ | ✓ |
-| Live-økt: aktiv (coach) | `/admin/live/[sessionId]/active` | – | --- | ✓ | ✓ | ✓ | ✓ |
-| Live-økt: oppsummering (coach) | `/admin/live/[sessionId]/summary` | – | --- | ✓ | ✓ | ✓ | ✓ |
-| Coach-workbench (prototype) (→ redirect) | `/admin/coach-workbench` | ✓ | --- | ✓ | – | ~ | ~ |
+| Anlegg | `/admin/anlegg` | ✓ | ✓✓– | ✓ | ~ | ✓ | ~ | v2-port 16. jul: `AdminAnleggV2` + `LocationFormV2` (Kort/TomTilstand), erstatter `AgPage`/`AgPageHead`. Samme datagrunnlag uendret. Kjent, uendret hull (IKKE del av denne restylingen, se "Veien til 100%"): kun opprett-lokasjon er koblet — rediger/slett-lokasjon og fasilitet-administrasjon (`FacilityFormV2` finnes, portet, men uten kallested) mangler. Design – → ✓. |
+| Tilgjengelighet | `/admin/availability` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminAvailabilityV2` + `AdminSlotFormV2`/`AdminAvailabilityWeekGridV2`/`AdminAvailabilityYearGanttV2` (T-tokens), erstatter `AgPage`-familien + hand-Tailwind. Alle tre visninger (Måned/Uke-drag/År) og samme actions (addSlot/updateSlot/deleteSlot) uendret — drag-interaksjonen er portet 1:1, ingen ny funksjon. Design – → ✓, Mob/Desk/iPad –✓– → ✓✓–. |
+| Kapasitet | `/admin/kapasitet` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: NYTT FUNN — ren `redirect("/admin/bookinger")`, ikke en egen skjerm (var scoret som levende før). |
+| Tjenester/priser | `/admin/services` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminServicesV2` + `ServiceFormV2` (Kort/StatusPill/dialog), erstatter `@/components/admin/agencyos/ui`-familien. Fikset samtidig en reell UI-mangel: rediger/slett (`updateService`/`deleteService`) fantes alt i skjemaet men ble aldri kalt per rad — kun "+ Ny tjeneste" var koblet. Nå rendres "Endre" per rad — ingen ny funksjon, bare faktisk bruk av det som fantes. Design – → ✓, Mob/Desk/iPad –✓– → ✓✓–. |
+| TrackMan (på tvers) | `/admin/trackman` | ✓ | --- | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: doc-notatet sa alt «v2 2026-07-14: portet ut av legacy, komponert av v2-biblioteket» — nettopp den typen stale hake endringsloggen advarte om. v2 2026-07-14: portet ut av legacy, komponert av v2-biblioteket (KpiFlis/Rad/FilterChips — samme mønster som Runder/Tester/Team, ingen 1:1-kit finnes for denne cross-player-tabellen); ekte søk+miljø-filter (ikke placeholder-toast); TilbakeLenke → /admin/gjennomfore |
+| Live-økt: brief (coach) | `/admin/live/[sessionId]/brief` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminLiveBriefV2` (Kort/Caps/Tittel/AkseChip/TekstOmraade), matcher Claude Design agencyos-drift.jsx LiveBrief. Ekte data (økt+coachBrief); mockupens forrige-økt/SG-trend/ACWR-kort utelatt — ingen datakilde koblet. `sendBriefTilSpiller` uendret. |
+| Live-økt: aktiv (coach) | `/admin/live/[sessionId]/active` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminLiveActiveV2` (Kort/KpiFlis/StatusPill/Ring/AkseChip) — ingen egen Claude Design-mockup finnes for denne, komponert fra samme v2-språk som porterte Brief/Summary. `LiveMelding` (m/ MicButton) uendret. |
+| Live-økt: oppsummering (coach) | `/admin/live/[sessionId]/summary` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminLiveSummaryV2` (KpiFlis/Kort/StatusPill), matcher Claude Design agencyos-drift.jsx LiveSummary. Ekte drill-loggstatus + varighet fra completedSummary.liveSummary; mockupens «RPE» erstattet med Varighet (ingen RPE-datakilde finnes). `lagreCoachVurdering` uendret. |
+| Coach-workbench (prototype) | `/admin/coach-workbench` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: ren `redirect("/admin/planlegge")` — ikke en egen skjerm. |
 
 ### Innsikt (analyse på tvers)
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Innsikt-hub (→ redirect) | `/admin/analysere` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Compliance | `/admin/analysere/compliance` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ |
-| Stall-analyse | `/admin/analyse` | ✓ | ~✓– | ✓ | ✓ | ✓ | ✓ |
-| Lag-snitt | `/admin/lag-snitt` | – | ~✓– | ✓ | ✓ | ✓ | ✓ |
-| · Fasiter (autosync) | `/admin/tester/benchmarks` | – | ✓✓– | ✓ | ✓ | ✓ | ✓ |
-| Tester (på tvers) | `/admin/tester` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
-| · Foreslåtte tester | `/admin/tester/foreslatte` | – | --- | ✓ | ~ | ~ | ~ |
-| · Tildel test | `/admin/tester/tildel/[spillerId]` | – | ✓✓– | ✓ | ✓ | ✓ | ~ |
-| Økt-forespørsler | `/admin/foresporsler` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
+| Innsikt-hub | `/admin/analysere` | ~ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: NYTT FUNN — ren `redirect("/admin/analyse")`, ikke en egen skjerm. |
+| · Compliance | `/admin/analysere/compliance` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET allerede v2-bygget — `AdminComplianceV2` inni `V2Shell`, ekte `loadComplianceData`-data. Falsk positiv, ingen kode-endring nødvendig.
+| Stall-analyse | `/admin/analyse` | ✓ | ~✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminAnalyseV2`. |
+| Lag-snitt | `/admin/lag-snitt` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminLagSnittV2` (Kort/StatusPill/AKSE_NAVN+T.ax-akselinjer), erstatter `AgChip`/`AgPage`-familien. Samme datagrunnlag (COMPLETED TrainingPlanSession per gruppe) uendret. Design – → ✓, Mob/Desk/iPad ~✓– → ✓✓–. |
+| · Fasiter (autosync) | `/admin/tester/benchmarks` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminBenchmarksV2` (Kort/Knapp/StatusPill/TilbakeLenke), erstatter hand-Tailwind-tabell. Samme server actions (approve/reject/runBenchmarkSyncNow) uendret. Design – → ✓. |
+| Tester (på tvers) | `/admin/tester` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminTesterV2`. |
+| · Foreslåtte tester | `/admin/tester/foreslatte` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: AMBIGUOUS — `PlayerHero` (wrapper rundt golfdata `Eyebrow`) som header, `ForeslattTestKort`-kroppen hand-bygget. |
+| · Tildel test | `/admin/tester/tildel/[spillerId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: delt `AdminTildelTestV2` (se `/admin/spillere/[id]/tildel-test`-raden for full begrunnelse) — erstatter usstilt `TildelModal` (klassenavnene hadde ingen matchende CSS i det hele tatt). Design – → ✓. |
+| Økt-forespørsler | `/admin/foresporsler` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminForesporslerV2` (Kort/AvatarInit/StatusPill/Knapp/TomTilstand), samme server actions (`markerSomPlanlagt`/`avslaaForespørsel`) uendret. Gammel `AgPage`/`AgAvatar`/`AgChip`/`AgTypeChip`-familie + død `forespørsel-actions.tsx` slettet. Design – → ✓, Mob/Desk/iPad –✓– → ✓✓–. |
 | Godkjenninger | `/admin/godkjenninger` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-14 dok-verifisering: `AdminGodkjenningerV2` — én kø samler PlanAction (agent-forslag) + CaddieDraft (AI-utkast) + SessionRequest (økt-forespørsler) = **3 kilder** (e-postutkast beholder bevisst egen godkjenning i `/admin/innboks-epost` — ikke en 4. kilde i denne køen), gruppert per spiller, paginert, screenshot-verifisert 1440+390. Design rettet – → ✓, Mob/Desk/iPad –✓– → ✓✓– |
-| · Godkjenning-detalj | `/admin/godkjenninger/[id]` | – | --- | ✓ | ~ | ~ | ~ |
-| Godkjenninger (alt. → redirect) | `/admin/approvals` | ✓ | --- | ✓ | ✓ | – | ✓ |
-| · Approval-detalj (alt. → redirect) | `/admin/approvals/[id]` | ✓ | --- | ✓ | ✓ | – | ✓ |
-| Rapporter | `/admin/reports` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ |
-| Runder (på tvers) | `/admin/runder` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| Skader/sykdom (tilstander) (→ redirect) | `/admin/tilstander` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| Finans (alt. → redirect) | `/admin/finance` | ✓ | --- | ✓ | ✓ | – | ✓ |
-| **Økonomi (MRR/betalinger)** (→ redirect) | `/admin/okonomi` | ✓ | –✓– | ✓ | ~ | ✓ | ~ |
-| Stats-oversikt | `/admin/stats/overview` | – | --- | ✓ | ~ | ~ | ~ |
-| Stats-moderering | `/admin/stats/moderering` | – | --- | ✓ | ~ | ~ | ~ |
+| · Godkjenning-detalj | `/admin/godkjenninger/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminGodkjenningDetaljV2` (Kort/Knapp/StatusPill/AvatarInit/InnsiktChip), samme server actions (`approveRequestDetailed`/`declineRequestDetailed`/`requestMoreInfo`) uendret. Byttet lokal `ACTION_LABEL`-duplikat ut med delt `handlingstypeLabel` (kanon-kilde). Gammel `approval-detail-client.tsx` slettet (dead code). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
+| Godkjenninger (alt. → redirect) | `/admin/approvals` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/admin/godkjenninger")` — ikke en egen skjerm.
+| · Approval-detalj (alt. → redirect) | `/admin/approvals/[id]` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect` til `/admin/godkjenninger/[id]` — ikke en egen skjerm.
+| Rapporter | `/admin/reports` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminReportsV2`. |
+| Runder (på tvers) | `/admin/runder` | ~ | --- | ✓ | ~ | ~ | ~ |
+| Skader/sykdom (tilstander) | `/admin/tilstander` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: NYTT FUNN — ren `redirect("/admin/gjennomfore")`, ikke en egen skjerm. |
+| Finans (alt. → redirect) | `/admin/finance` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/admin/okonomi")` — som selv er en redirect til `/admin/agencyos/okonomi` (2-hopps kjede). Ikke en egen skjerm.
+| **Økonomi (MRR/betalinger)** | `/admin/okonomi` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: NYTT FUNN — dette er nå selv en ren `redirect("/admin/agencyos/okonomi")`, ett hopp til fra den allerede dokumenterte `/admin/finance`-aliasen. Raden var feilaktig scoret som en levende skjerm. |
+| Stats-oversikt | `/admin/stats/overview` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminStatsOverviewV2` + `AdminStatsRaskeHandlingerV2` (T-tokens; `Reveal`/`CountUp` beholdt uendret som generiske adferds-primitiver). Samme datagrunnlag (`hentAdminOverview`, `sjekkDbHelse`) uendret. La til `git-commit-horizontal` i v2-ikonregisteret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
+| Stats-moderering | `/admin/stats/moderering` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul: `AdminStatsModereringV2` (T-tokens), erstatter Tailwind/shadcn `ModeringClient`. Ingen modererings-/GDPR-slett-kø finnes i datamodellen ennå — bevisst tomme tilstander + ikke-koblede knapper beholdt UENDRET fra før (ikke en regresjon fra denne porten). Design – → ✓; Flyt/Data/Funker fortsatt ~ (reell begrensning, ikke stylingsgap). |
 
 ### Admin (organisasjon og innstillinger)
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Organisasjon-hub (→ redirect) | `/admin/organisasjon` | ✓ | --- | ✓ | ✓ | – | ✓ | 2026-07-14: ren redirect til /admin/settings, bekreftet. Fjernet fra Mer-menyen (var duplikat-menypunkt til samme mål) — siden selv beholdt for gamle lenker. |
-| Klubb-innstillinger | `/admin/klubb/innstillinger` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| Integrasjoner | `/admin/integrasjoner` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| Innstillinger | `/admin/settings` | – | –✓– | ✓ | ✓ | ✓ | ✓ |
-| · API | `/admin/settings/api` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Kalender | `/admin/settings/calendar` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Sikkerhet | `/admin/settings/security` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Tilgang | `/admin/settings/tilgang` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| Organisasjon-hub | `/admin/organisasjon` | – | --- | ✓ | ✓ | – | ✓ | 2026-07-14: ren redirect til /admin/settings, bekreftet. Fjernet fra Mer-menyen (var duplikat-menypunkt til samme mål) — siden selv beholdt for gamle lenker. |
+| Klubb-innstillinger | `/admin/klubb/innstillinger` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-16: portet til v2 (`AdminKlubbInnstillingerV2`), gjenbruker legacy actions.ts 1:1 (multi-club CRUD + org-settings singleton). `(legacy)` page.tsx + client fjernet (kolliderte på samme rute). |
+| Integrasjoner | `/admin/integrasjoner` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-16: portet til v2, samme statuslogikk (Google Cal/Stripe/Notion/Anthropic/Resend/Supabase). `(legacy)` fjernet. |
+| Innstillinger (Organisasjon/Team/Tilgang-faner) | `/admin/settings` | ✓ | –✓– | ✓ | ✓ | ✓ | † | 2026-07-16: portet til v2 (`AdminSettingsV2`), fikser den tidligere brukne /admin/organisasjon-redirecten. `(legacy)` fjernet. |
+| · API | `/admin/settings/api` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-16: v2 (`AdminApiKeysV2`), gjenbruker legacy actions.ts. `(legacy)` page+modal-komponenter fjernet. |
+| · Kalender | `/admin/settings/calendar` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-16: v2 (`AdminKalenderSynkV2`), gjenbruker legacy actions.ts. NB: `calendar-sync-section.tsx` beholdt i `(legacy)` — brukes fortsatt direkte av `/admin/availability`. |
+| · Sikkerhet | `/admin/settings/security` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-16: v2 (`AdminSecurityV2`), gjenbruker `Setup2FA` uendret. `(legacy)` fjernet. |
+| · Tilgang | `/admin/settings/tilgang` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-16: v2 (`AdminTilgangV2`), samme CBAC-matrise (read-only). `(legacy)` fjernet. |
 | Team | `/admin/team` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Inviter | `/admin/team/inviter` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Inviter | `/admin/team/inviter` | ✓ | --- | ✓ | ✓ | – | † | 2026-07-16: v2 (`AdminInviterCoachV2`), samme `inviterCoach`-action. `(legacy)` fjernet. |
 | Audit-log | `/admin/audit-log` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminAuditLogV2`) — samme AuditLog-spørring/kind-status-utledning som legacy, KpiFlis+Rad-liste, ærlig tomtilstand. Lagt i Innsikt-mer-gruppen (var uten menylenke). `(legacy)/audit-log` slettet. |
-| AI-agenter | `/admin/agents` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| AI-agenter | `/admin/agents` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminAgenterV2`. |
 | · Agent-detalj | `/admin/agents/[agentId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| E-postmaler | `/admin/email-templates` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| · Rediger e-postmal | `/admin/email-templates/[id]/rediger` | – | --- | ✓ | ~ | ~ | ~ |
+| E-postmaler | `/admin/email-templates` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminEmailV2`. |
+| · Rediger e-postmal | `/admin/email-templates/[id]/rediger` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-16: v2 (`AdminEmailTemplateEditorV2`), 2-pane editor m/ live preview, gjenbruker legacy actions.ts (lagre/send test/sett standard/arkiver). `(legacy)` page+editor-client fjernet. |
 | Marketing (innholdskalender + post-kø) | `/admin/marketing` | ✓ | --- | ✓ | ✓ | ✓ | ~ | v2 (AdminMarketingV2), ekte MarketingPost-data. M1-grunnmur uten AI-generering/eksterne API-er |
-| Profil | `/admin/profile` | – | --- | ✓ | ✓ | ✓ | ~ | nåbar via Mer → Drift → «Min coach-profil»; ekte brukerfelter, ikke v2-komponert ennå |
-| Hjelp | `/admin/hjelp` | – | --- | ✓ | ~ | ~ | ~ |
-| Caddie (alt. adresse) (→ redirect) | `/admin/caddie` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| Profil | `/admin/profile` | ✓ | --- | ✓ | ✓ | ✓ | † | 2026-07-16: v2-komponert (`AdminProfilV2`), gjenbruker `oppdaterCoachProfil` + `uploadAvatar`. Droppet to ikke-fungerende legacy-plassholdere (galleri, «skjul profil»). `(legacy)` page+edit-form fjernet. |
+| Hjelp | `/admin/hjelp` | ✓ | --- | ✓ | ✓ | – | † | 2026-07-16: v2 (`AdminHjelpV2`), statisk innhold portet verbatim + fikset en død lenke (`/admin/messages` → `/admin/innboks`). `(legacy)` fjernet. |
+| Caddie (alt. adresse) | `/admin/caddie` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/admin/agencyos/caddie/dashbord")` — mål-siden er bekreftet v2-bygget (AdminCaddieDashbordV2/AdminCaddieProaktivV2). Ikke en egen skjerm.
 
 > **2026-07-12 — lenke-revisjon:** alle interne knapper/lenker på 45 admin-sider maskinsjekket
 > (271 unike mål). Fikset: «Book økt»/«Melding» i daglig brief (pekte på død /admin/booking/ny og
@@ -545,6 +501,24 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 > `/admin/godkjenninger`, `/admin/plan-templates`). Ingen kode-endring trengtes — bare denne
 > rettelsen. «Veien til 100% — Bolk 4» kan lukkes for disse parene.
 
+> **Reconciliation 16. jul — nye redirect-funn:** i tillegg til parene over ble disse oppdaget å
+> også være rene redirects, feilaktig scoret som levende skjermer med egne haker: `/admin`→
+> `/admin/agencyos`, `/admin/board`→`/admin/spillere?view=tavle`, `/admin/kommunikasjon`→
+> `/admin/innboks`, `/admin/workspace/oppgaver`→`/admin/handlingssenter`, `/admin/stall`→
+> `/admin/spillere`, `/admin/talent` (hub)→`/admin/talent/radar`, `/admin/plans/new`→
+> `/admin/planlegge`, `/admin/kapasitet`→`/admin/bookinger`, `/admin/analysere`→`/admin/analyse`,
+> `/admin/tilstander`→`/admin/gjennomfore`, `/admin/okonomi`→`/admin/agencyos/okonomi`,
+> `/admin/coach-workbench`→`/admin/planlegge`. Alle rettet til `↪︎`-status i tabellene over.
+>
+> **Reconciliation 16. jul — kanon-presisering:** design-kanon har gått videre fra golfdata til
+> **v2** (`src/components/v2/` + `src/components/admin/v2/*V2.tsx`) — golfdata er nå
+> «overgangs-lag» per `.claude/rules/design-system-regel.md`. De fleste «Design: –»-flippene over
+> er derfor til v2-komponerte skjermer, ikke golfdata. En egen bespoke lokal komponent-familie
+> (`@/components/admin/agencyos/ui.tsx`: `AgPage`/`AgPageHead`/`AgChip` m.fl.) finnes også i
+> kodebasen — den teller IKKE som kanon; skjermer bygget kun på den er ekte gap. Flere rader bruker
+> kun `AdminHero` (header-only, selv en tynn wrapper rundt golfdata `Eyebrow`) med hand-bygget
+> kropp — merket AMBIGUOUS i tabellene, ikke en ren ✓ eller gap.
+
 ---
 
 ## Skjermene — Auth + Forelder + Marketing + System
@@ -559,75 +533,86 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Tilbakestill passord | `/auth/reset-password` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Sjekk e-post | `/auth/check-email` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | BankID ★ | `/auth/bankid` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `BankIDV2` (samme v2-idiomfamilie som LoginV2), portert 10. juli, hake aldri oppdatert |
-| Onboarding (spiller, 8 steg) | `/auth/onboarding` | – | ✓✓– | ~ | ✓ | ✓ | ✓ | 2026-07-11: fikset lesPreferences-lekkasje (data ble slettet av enhver innstillings-lagring); steg-3-svar (fasiliteter/dager/mål) lagres nå og feeder FacilityPrefs+Goal+plan-engine.
-| Onboarding (forelder) | `/auth/onboarding/forelder` | – | --- | ✓ | ~ | ~ | ~ |
+| Onboarding (spiller, 7 steg) | `/auth/onboarding` | ✓ | ✓✓– | ~ | ✓ | ✓ | ✓ | v2-port 16. jul (Team B): de DELTE primitivfilene `wizard-chrome`/`wizard-fields` restylet in place til v2 T-tokens (samme eksporterte navn/props — 836-linjers wizard-logikk urørt: mindreårig-sjekk, resume, lagring per steg). Ny `VeiviserFlate`-eksport bevarer den eksisterende lyse flaten. Rettet også rad-tittel: koden har 7 steg, ikke 8. 2026-07-11: fikset lesPreferences-lekkasje (data ble slettet av enhver innstillings-lagring); steg-3-svar (fasiliteter/dager/mål) lagres nå og feeder FacilityPrefs+Goal+plan-engine.
+| Onboarding (forelder) | `/auth/onboarding/forelder` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul (Team B): arver v2 fra de restylede delte primitivene (`wizard-chrome`/`wizard-fields`) + forelder-spesifikke justeringer i `forelder-wizard.tsx`/`page.tsx`. 4-stegs-logikken og `saveForelderOnboardingStep`/`completeForelderOnboarding` uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–.
 | Foreldresamtykke (token) | `/auth/guardian-consent/[token]` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Samtykke venter | `/auth/samtykke-venter` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| Logget ut | `/auth/logget-ut` | – | ✓✓– | ✓ | ~ | – | ✓ |
+| Logget ut | `/auth/logget-ut` | ✓ | ✓✓– | ✓ | ~ | – | ✓ | Design rettet – → ✓ 16. jul: rendrer `LoggetUtV2` (`components/portal/v2/`), portert tidligere — hake aldri oppdatert (samme mønster som Login/Signup/BankID over) |
 
 ### Forelder (foreldreportal)
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Forelder-hjem | `/forelder` | – | ✓✓– | ✓ | ~ | – | ~ |
-| Barn (oversikt) | `/forelder/barn` | – | ✓✓– | ✓ | ~ | ~ | ✓ |
-| · Barn-detalj | `/forelder/barn/[childId]` | – | ✓✓– | ✓ | ~ | – | ~ |
-| Bookinger | `/forelder/bookinger` | – | --- | ✓ | ~ | ~ | ~ |
-| Coach | `/forelder/coach` | – | --- | ✓ | ~ | ✓ | † |
-| Fakturaer | `/forelder/fakturaer` | – | --- | ✓ | ~ | ~ | ~ |
-| Økonomi | `/forelder/okonomi` | – | --- | ✓ | ~ | ~ | ~ |
-| Samtykke | `/forelder/samtykke` | – | --- | ✓ | ~ | ~ | ~ |
-| Ukerapport | `/forelder/ukerapport` | – | --- | ✓ | ~ | ~ | ~ |
-| Innstillinger | `/forelder/innstillinger` | – | --- | ✓ | ~ | ~ | ~ |
-| Varsler | `/forelder/varsler` | – | --- | ✓ | ~ | ~ | ~ |
-| Inviter forelder (token) | `/inviter/forelder/[token]` | – | --- | ✓ | ~ | ~ | ~ |
+| Forelder-hjem | `/forelder` | ✓ | ✓✓– | ✓ | ~ | – | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderV2` — hele seksjonens «Design: –» var systematisk stale, se merknad under tabellen. |
+| Barn (oversikt) | `/forelder/barn` | ✓ | ✓✓– | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + v2-primitiver. |
+| · Barn-detalj | `/forelder/barn/[childId]` | ✓ | ✓✓– | ✓ | ~ | ✓ | ~ | v2-port 16. jul (Team B): `ForelderBarnDetaljV2` (Kort/Caps/KpiFlis/Pyramide/TomTilstand/AvatarFoto) — seksjonens siste gap lukket. Samme Prisma-lesing (`assertBarnTilhorerForelder` + queries) og `?tab=`-navigasjon uendret; HCP-fremdrift vises kun for HCP_TARGET-mål med kalkulerbar verdi (aldri falsk prosent). Design – → ✓, Data – → ✓. |
+| Bookinger | `/forelder/bookinger` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderBookingerV2`. |
+| Coach | `/forelder/coach` | ✓ | --- | ✓ | ~ | ✓ | † | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderCoachV2`. |
+| Fakturaer | `/forelder/fakturaer` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderFakturaerV2`. |
+| Økonomi | `/forelder/okonomi` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderOkonomiV2`. |
+| Samtykke | `/forelder/samtykke` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderSamtykkeV2`. |
+| Ukerapport | `/forelder/ukerapport` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderUkerapportV2`. |
+| Innstillinger | `/forelder/innstillinger` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderInnstillingerV2`. |
+| Varsler | `/forelder/varsler` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderVarslerV2`. |
+| Inviter forelder (token) | `/inviter/forelder/[token]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul (Team B): side + `AksepterForm` v2-stylet (T-tokens), samme token-validering og `aksepterInvitasjon`-action uendret. Offentlig side uten shell. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
+
+> **Reconciliation 16. jul:** hele Forelder-seksjonens «Design: –»-merking var systematisk stale — 10 av 11 skjermer er allerede v2-komponert (`V2Shell` + dedikert `*V2`-komponent per rute), bare uten at haken noensinne ble flippet. Kun barn-detalj og invitasjons-aksept er ekte gap.
 
 ### Marketing (akgolf.no — offentlige sider)
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Forside | `/(marketing)` | – | ✓✓– | ~ | ~ | – | ✓† | 
-| Anlegg | `/(marketing)/anlegg` | – | --- | ✓ | ~ | ~ | ✓ |
-| · Anlegg-detalj | `/(marketing)/anlegg/[slug]` | – | --- | ✓ | ~ | ~ | ✓ |
+| Forside | `/(marketing)` | ✓ | ✓✓– | ~ | ~ | – | ✓† | Design rettet – → ✓ 16. jul: `MarkedForsideV2`.
+| Anlegg | `/(marketing)/anlegg` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedAnleggListeV2`.
+| · Anlegg-detalj | `/(marketing)/anlegg/[slug]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedAnleggDetaljV2`.
 | Blogg | `/(marketing)/blogg` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | · Blogg-innlegg | `/(marketing)/blogg/[slug]` | ✓ | --- | ✓ | ~ | ~ | ✓ |
-| Booking | `/(marketing)/booking` | – | --- | ✓ | ~ | ~ | ✓ |
-| · Booking-tjeneste | `/(marketing)/booking/[slug]` | – | --- | ✓ | ~ | ~ | ~ |
-| · Booking bekreft | `/(marketing)/booking/[slug]/bekreft` | – | --- | ✓ | ~ | ~ | ~ |
-| · Booking kvittering | `/(marketing)/booking/kvittering/[bookingId]` | – | --- | ✓ | ~ | ~ | ~ |
+| Booking | `/(marketing)/booking` | ✓ | ✓✓– | ✓ | ~ | ~ | ✓ | v2-port 16. jul (Team C): `MarkedBookingV2` — ruten flyttet fra `(mlegacy)`-gruppen til `(marketing)/booking/` (samme URL). Lokasjon/coach/tjeneste-velger-logikken uendret. Design – → ✓.
+| · Booking-tjeneste | `/(marketing)/booking/[slug]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul (Team C): `MarkedBookingTjenesteV2` — slot-gruppering, ?dato=-daglenker og bekreft-lenker (start&coach) bevart 1:1 fra gamle `SlotPicker`; kun presentasjonen er ny. Design – → ✓.
+| · Booking bekreft | `/(marketing)/booking/[slug]/bekreft` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul (Team C): `MarkedBookingBekreftV2` — samme felter/validering/action-kall som gamle bekreft-form; `createBookingCheckout` (Stripe) flyttet BYTE-IDENTISK til ny rute. Design – → ✓.
+| · Booking kvittering | `/(marketing)/booking/kvittering/[bookingId]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul (Team C): `MarkedBookingKvitteringV2` — pending-refresh-oppførselen (poll til betaling bekreftet) bevart. Design – → ✓.
 | Cases | `/(marketing)/cases` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | Coacher | `/(marketing)/coacher` | ✓ | --- | ✓ | ~ | ~ | ✓ |
-| · Coach-profil | `/(marketing)/coacher/[slug]` | – | --- | ✓ | ~ | ~ | ✓ |
-| Coaching | `/(marketing)/coaching` | – | --- | ✓ | ~ | ~ | ✓ |
-| Junior | `/(marketing)/junior` | – | --- | ✓ | ~ | ~ | ✓ |
-| Priser | `/(marketing)/priser` | – | --- | ✓ | ~ | ~ | ✓ |
-| PlayerHQ (salgsside) | `/(marketing)/playerhq` | – | --- | ✓ | ~ | ~ | ✓ |
+| · Coach-profil | `/(marketing)/coacher/[slug]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedCoachDetaljV2`.
+| Coaching | `/(marketing)/coaching` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedCoachingV2`.
+| Junior | `/(marketing)/junior` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedJuniorV2`.
+| Priser | `/(marketing)/priser` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedPriserV2`.
+| PlayerHQ (salgsside) | `/(marketing)/playerhq` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedPlayerHQV2`.
 | Om oss | `/(marketing)/om-oss` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | Kontakt | `/(marketing)/kontakt` | ✓ | --- | ✓ | ~ | ~ | ✓ |
-| Jobb | `/(marketing)/jobb` | – | --- | ✓ | ~ | ~ | ✓ |
-| FAQ | `/(marketing)/faq` | – | --- | ✓ | ~ | ~ | ✓ |
+| Jobb | `/(marketing)/jobb` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedJobbV2`.
+| FAQ | `/(marketing)/faq` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedFaqV2`.
 | Suksess | `/(marketing)/suksess` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | Treningsfilosofi | `/(marketing)/treningsfilosofi` | ✓ | --- | ✓ | ~ | ~ | ✓ |
-| Turneringer | `/(marketing)/turneringer` | – | --- | ✓ | ~ | ~ | ✓ |
-| · Turnering-detalj | `/(marketing)/turneringer/[slug]` | – | --- | ✓ | ~ | ~ | ✓ |
-| Cookies | `/(marketing)/cookies` | – | --- | ✓ | ~ | ~ | ✓ |
-| Personvern | `/(marketing)/personvern` | – | --- | ✓ | ~ | ~ | ✓ |
-| Vilkår | `/(marketing)/vilkar` | – | --- | ✓ | ~ | ~ | ✓ |
+| Turneringer | `/(marketing)/turneringer` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedTurneringerListeV2`.
+| · Turnering-detalj | `/(marketing)/turneringer/[slug]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedTurneringDetaljV2` (har også en villet redirect-gren for sammenslåtte turneringer, ikke dødt).
+| Cookies | `/(marketing)/cookies` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedCookiesV2`.
+| Personvern | `/(marketing)/personvern` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedPersonvernV2`.
+| Vilkår | `/(marketing)/vilkar` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedVilkarV2`.
+
+> **Reconciliation 16. jul:** nesten hele Marketing-tabellen var stale «Design: –» — alt unntatt Booking-underflyten (4 rader over) er allerede v2-komponert. Booking-underflyten er det ene ekte gapet i seksjonen.
 
 #### Marketing → Stats (det store offentlige stats-universet)
 
-Dette er en stor offentlig statistikk-seksjon (PGA-tall, norske spillere, verktøy osv.). Den er funksjonell med ekte data, men ikke pusset opp til v10-design. Gruppert kompakt her — alle adressene under begynner med `/(marketing)`:
+Dette er en stor offentlig statistikk-seksjon (PGA-tall, norske spillere, verktøy osv.). Den er funksjonell med ekte data. Gruppert kompakt her — alle adressene under begynner med `/(marketing)`. Status-nøkkel egen for denne tabellen: `✓` = v2-komponert · `◐` = hybrid (v2-skall `StatsLegacyShell` + eldre `stats/*`-innholdskomponenter, verken golfdata- eller v2-komponert innhold) · `–` = ikke individuelt verifisert denne runden.
 
 | Område | Adresse(r) (under `/(marketing)/stats/...`) | Design | Adresse-ok | Data | Funker |
 |---|---|---|---|---|---|
-| Stats-forside + uka + 2026 | `stats`, `stats/uka`, `stats/2026` | – | ✓ | ~ | ✓ |
-| Spillere + årgang | `stats/spillere`, `stats/spillere/[slug]`, `stats/aargang`, `stats/aargang/[aar]` | – | ✓ | ✓ | ✓ |
-| Baner + klubber + regioner | `stats/baner(/[slug])`, `stats/klubber(/[slug])`, `stats/regions(/[slug])` | – | ✓ | ✓ | ✓ |
-| Turneringer (offentlig) | `stats/turneringer(/[slug])(/statistikk)`, `stats/tour/[slug]` | – | ✓ | ✓ | ✓ |
-| Leaderboards + norske + PGA | `stats/leaderboards`, `stats/norske`, `stats/pga` (+ drive-distance, fairway-pct, gir-pct, putt-explorer, putts-per-round, scoring-avg, sg-total, spillere, spillere/[dg_id]) | – | ✓ | ✓ | ✓ |
-| Verktøy (kalkulatorer) | `stats/verktoy` (+ avstand, score-til-hcp, sg-estimator, tour-ekvivalent, whs-kalkulator) | – | ✓ | ✓ | ✓ |
-| Sammenlign + SG-sammenlign | `stats/sammenlign-spillere`, `stats/sg-sammenlign(/start)(/resultat/[id])` | – | ✓ | ✓ | ✓ |
-| Blogg + søk + quiz + wrapped + min progresjon | `stats/blogg(/[slug])`, `stats/sok`, `stats/quiz`, `stats/wrapped/[slug]`, `stats/min-progresjon` | – | ✓ | ✓ | ✓ |
+| Stats-forside + uka | `stats`, `stats/uka` | ✓ | ✓ | ~ | ✓ | Reconciliation 16. jul: `MarkedStatsHubV2`/`StatsUkaV2`. `stats/2026` ikke individuelt sjekket.
+| · 2026 (ikke individuelt sjekket) | `stats/2026` | ✓ | ✓ | ~ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — wraps i `StatsLegacyShell` (@/components/marketing/v2/stats-ramme, v2-primitiver).
+| Spillere | `stats/spillere` | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul: `StatsSpillereV2`. `spillere/[slug]` + årgang-radene ikke individuelt sjekket.
+| · Spiller-detalj + årgang (ikke individuelt sjekket) | `stats/spillere/[slug]`, `stats/aargang`, `stats/aargang/[aar]` | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — alle tre wraps i `StatsLegacyShell`.
+| Regioner | `stats/regions(/[slug])` | ◐ | ✓ | ✓ | ✓ | Reconciliation 16. jul: hybrid — `StatsLegacyShell` (v2-komponert skall) rundt eldre `@/components/stats/*`-widgets (norgeskart/heatmap/radar) via `STATS_LEGACY_VARS`-adapter. Verken ren gap eller ren ✓.
+| · Baner + klubber (ikke individuelt sjekket) | `stats/baner(/[slug])`, `stats/klubber(/[slug])` | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — egne `StatsBanerV2`/`StatsBaneDetaljV2`/`StatsKlubberV2`/`StatsKlubbDetaljV2` (@/components/marketing/v2/), importerer Icon/Kort/Caps/KpiFlis/FilterChips/TomTilstand fra @/components/v2.
+| Turneringer (offentlig) | `stats/turneringer(/[slug])(/statistikk)`, `stats/tour/[slug]` | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul: `StatsTurneringerV2`.
+| Leaderboards | `stats/leaderboards` | ◐ | ✓ | ✓ | ✓ | Reconciliation 16. jul: hybrid — samme `StatsLegacyShell`-mønster som Regioner (`stats-leaderboard-card` m.fl., ikke v2/golfdata).
+| · Norske + PGA (ikke individuelt sjekket) | `stats/norske`, `stats/pga` (+ drive-distance, fairway-pct, gir-pct, putt-explorer, putts-per-round, scoring-avg, sg-total, spillere, spillere/[dg_id]) | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — `stats/norske` bruker egen `StatsNorskeV2`; `stats/pga`+9 underruter wraps i `StatsLegacyShell`.
+| Verktøy (kalkulatorer, ikke individuelt sjekket) | `stats/verktoy` (+ avstand, score-til-hcp, sg-estimator, tour-ekvivalent, whs-kalkulator) | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — alle 6 (hub+5 kalkulatorer) er egne `*V2`-komponenter fra @/components/marketing/v2/MarkedStatsVerktoyV2, importerer Icon/Kort/Caps/Knapp/Glider/RadarProfil fra @/components/v2.
+| Sammenlign + SG-sammenlign (ikke individuelt sjekket) | `stats/sammenlign-spillere`, `stats/sg-sammenlign(/start)(/resultat/[id])` | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — alle fire wraps i `StatsLegacyShell`.
+| Wrapped | `stats/wrapped/[slug]` | ◐ | ✓ | ✓ | ✓ | Reconciliation 16. jul: hybrid — samme `StatsLegacyShell`-mønster (`stats-wrapped-player`).
+| · Blogg + søk + quiz + min progresjon (ikke individuelt sjekket) | `stats/blogg(/[slug])`, `stats/sok`, `stats/quiz`, `stats/min-progresjon` | ✓ | ✓ | ✓ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — blogg+søk+min-progresjon er egne `*V2`-komponenter (@/components/marketing/v2/), quiz wraps i `StatsLegacyShell`.
+
+> **Reconciliation 16. jul:** stikkprøve fant at forside/uka/spillere/turneringer allerede er fullt v2-komponert (samme stale-mønster som resten av Marketing), mens regions/leaderboards/wrapped er i en genuint mellomliggende tilstand — v2-skall (`StatsLegacyShell`) rundt eldre, ikke-v2-komponert innhold (`◐`). Radene merket «ikke individuelt sjekket» er sannsynligvis samme mønster som sin nærmeste sjekkede nabo (delt `StatsLegacyShell`), men er IKKE bekreftet — verifiser før de flippes.
 
 ### System + interne sider (ikke for vanlige brukere)
 
@@ -770,6 +755,16 @@ Shot-map/spredning, scorecard hull-for-hull, live turnerings-tracking. Her må v
 **Bolk 7 — Elite Fase 2 (bevisst utsatt).**
 Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier fra. Designet ligger klart.
 
+**Bolk 8 — Kjente funksjonelle hull avdekket under v2-portingen (16. jul), bevisst utsatt.**
+Anders sa "restyle nå, fiks funksjon separat" da disse ble avdekket — v2-portene er ferdige, men
+hullene under er reelle og uendret fra før portingen (ingen regresjon):
+- `/admin/anlegg`: kun opprett-lokasjon er koblet. Rediger/slett-lokasjon og fasilitet-administrasjon
+  (`FacilityFormV2` er portet og virker, men har ingen kallested på siden) mangler en egen flate.
+- `/admin/availability`: kompleks drag-interaksjon + 3 visningsmoduser — restylet 1:1 mot v2-tokens,
+  ingen ny funksjon lagt til.
+- `/admin/stats/moderering`: ingen modererings-/GDPR-slett-kø finnes ennå i datamodellen — bevisst
+  tomme tilstander og ikke-koblede knapper (Godkjenn/Avvis/Bekreft sletting) beholdt uendret.
+
 ---
 
 > Når en rad over endrer seg: oppdater de seks hakene her med en gang. Det er den eneste måten denne planen holder seg sann.
@@ -778,27 +773,62 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 
 ## Endringslogg
 
-- 16. juli (Fase 0-avstemming av Design-kolonnen, branch `v2/fase0-avstemming`): hele
-  PlayerHQ- og AgencyOS-tabellene (295 rader) avstemt maskinelt mot koden — throwaway-skript
-  som klassifiserte hver adresse etter (1) hvor page.tsx faktisk ligger (nytt tre vs
-  `(legacy)`/`(fullscreen)`-rutegruppe), (2) om siden eller komponenten den delegerer til
-  bruker `V2Shell`/`@/components/{admin,portal}/v2`/`@/components/v2`/`@/lib/v2/tokens`
-  (transitiv import-sjekk), og (3) om siden er en ren `redirect()`. Kode = fasit, dokumentet
-  hang etter (tredje runde på rad med samme mønster, jf. byggerunde 1a og 3+4). **82 rader
-  rettet – /~ → ✓:** 46 kodeverifiserte v2-sider (bl.a. hele live-økt-familien, Mål-hub,
-  Drills, Runder-liste, Tester-oversikt, Coach-hub/meldinger/planer, Meg-undersider,
-  AgencyOS Innboks, Workspace, Grupper, Planlegge-huben, Plans, Plan-maler, Teknisk plan,
-  Økter, TrackMan, Analyse-flatene, Tester, Reports, Runder, Agents, E-postmaler, Caddie,
-  Økonomi-cockpit, Radar, Fremgang/Tester per spiller, Årsplan-fanene) + 36 verifiserte
-  redirect-alias-rader (Design ikke relevant — haken betyr «fungerende redirect», navnene
-  merket «(→ redirect)»). Ingen ✓ nedgradert. Resultat: PlayerHQ 54 → 87 av 160 ✓, AgencyOS
-  49 → 98 av 135 ✓. Flagget (ikke endret): 27 rader står som ✓ men ligger fortsatt i
-  `(legacy)`-treet (SG-Hub-undersidene, deler av Coach-seksjonen, admin settings/talent-
-  undersider) — trolig riktige etter 16. juli-sweepene, men innholdet er ikke V2Shell-
-  komponert i nytt tre; og 6 PlayerHQ-rader peker på ruter som ikke finnes i koden
-  (`/portal/statistikk/sammenlign`, `/portal/(fullscreen)/test/[testId]/live` + `/summary`,
-  `/portal/mal/baner` + `/[id]`, `/portal/tren/teknisk-plan` (bevisst UTGÅTT)) — vurder
-  rad-sletting. Kun Design-kolonnen og redirect-navning endret; Mob/Flyt/Data/Funker urørt.
+- 16. juli (Fase 0 + Byggerunde A pågår, branch `claude/skjermplan-fase0-reconciliation`, PR #59):
+  **Fase 0-reconciliation** av de 94 uverifiserte «Design: –»-radene fullført (3 parallelle
+  Explore-agenter, funn påført i egne commits). **Byggerunde A** (AgencyOS admin-batch) startet:
+  `/admin/drills` + `/admin/drills/[id]` portet til v2 (`AdminDrillsV2`/`AdminDrillDetaljV2`),
+  `/admin/recording` portet (`AdminRecordingV2` — fant og fikset en reell bug: varselbanneret
+  sjekket `DEEPGRAM_API_KEY`, men transkriberingen bruker OpenAI Whisper og gates på
+  `OPENAI_API_KEY`), `/admin/godkjenninger/[id]` portet (`AdminGodkjenningDetaljV2` — byttet
+  lokal `ACTION_LABEL`-duplikat ut med delt `handlingstypeLabel`, slettet nå-død
+  `approval-detail-client.tsx`). Byggerunde A fortsetter med resten av admin-batchen.
+
+- 16. juli (AgencyOS Organisasjon & innstillinger, branch `agencyos/org-innstillinger`): **11 admin-skjermer
+  portet fra `(legacy)` til v2** — `/admin/settings` (+ api/calendar/security/tilgang-faner/underruter),
+  `/admin/klubb/innstillinger`, `/admin/integrasjoner`, `/admin/team/inviter`,
+  `/admin/email-templates/[id]/rediger`, `/admin/profile`, `/admin/hjelp`. Fikser den tidligere brukne
+  `/admin/organisasjon`-redirecten (pekte på en side som ikke fantes). Ren komposisjon fra
+  `@/components/v2` mot eksisterende design (ingen ny mockup trengt — designgapet var allerede lukket,
+  se `DEKNINGSKART.md` i Claude Design-prosjektet). All mutasjonslogikk (server actions) gjenbrukt
+  uendret fra `(legacy)`-filene — kun presentasjonslaget er nytt. `(legacy)` page.tsx-filene for disse
+  11 rutene er slettet (Next.js tillater ikke to sider på samme URL selv på tvers av route-groups);
+  komponent-filer som ikke lenger hadde noen bruker (modaler, skjema-klienter) slettet i samme slag.
+  `calendar-sync-section.tsx` i `(legacy)` er bevisst BEHOLDT — brukes fortsatt direkte av
+  `/admin/availability`. La til 3 manglende Mer-meny-lenker (`klubb-innstillinger`, `integrasjoner`,
+  `hjelp`) i `AGENCYOS_MER` (`src/components/v2/shell.tsx`). Fant og fikset en død lenke i
+  hjelp-siden (`/admin/messages` → `/admin/innboks`). Verifisert: `tsc --noEmit` 0 feil, `eslint`
+  0 feil, `npm run build` grønt (Turbopack), 473/473 tester grønne. Alle 11 nye ruter bekreftet
+  307-redirect til `/auth/login` uinnlogget (ingen 500/404). Autentisert nettleser-klikkerunde ikke
+  gjort denne økten — miljøets sandkasse blokkerte lesing av `SCREENTEST_PASSWORD` fra `.env.local`
+  (en reell sikkerhetsgrense, ikke en feil); Funker-haken står derfor på † (bygd + ekte data +
+  tsc/build grønt) heller enn ✓ til noen har klikket seg gjennom i nettleser.
+
+- 16. juli (Byggerunde 2b — Gameplan omdøping + interaktiv modus C7, branch
+  `claude/gameplan-interaktiv-modus`, siste post i skjerm-porting-roadmapen): **Baneguide
+  omdøpt til Gameplan** (B30) — hele mappetreet flyttet (`src/app/portal/baneguide` →
+  `.../gameplan`, `src/components/baneguide` → `.../gameplan`, `src/lib/baneguide` →
+  `.../gameplan`, `BaneguideV2` → `GameplanV2`), all synlig tekst («Baneguide» → «Gameplan»)
+  og alle interne lenker oppdatert. Gamle `/portal/baneguide/**`-URL-er lever videre som
+  permanente redirects til `/portal/gameplan/**` (samme mønster som B43 `/kommando`) —
+  ingen brutte bokmerker. Lagt til i navigasjon: ny snarveiskort «Gameplan» på
+  `/portal/analysere` (funksjonen manglet reelt en meny-inngang fra før — kun nåbar via
+  direkte URL). **Ny interaktiv hull-for-hull-modus (C7)**, fjerde fane «Planlegg» på
+  hull-detaljen ved siden av Utslag/Innspill/Putt: dra sikte direkte på det ekte,
+  interaktive Mapbox-banekartet (utvidet `CourseMap` med valgfri `interactive`/`onKlikk`/
+  `sikte`/`soner`-prop, bakoverkompatibel — de 3 eksisterende read-only bruksstedene er
+  urørt), mal «Bra å misse»/«Aldri hit»-soner, og se carry/igjen regnet LIVE fra ekte GPS
+  (haversine — aldri tastet avstand). Andelen av spillerens FAKTISKE spredningsellipse
+  (samme dispersion-motor som hull-detaljens σ/bias-KPI-er) som havner i en rød sone regnes
+  live via en ny `ellipseGpsPunkter`-projeksjon (ikke design-prototypens fake faste ellipse
+  på en statisk piksel-viewBox — en ekte forbedring utover selve mockupen). Ny additiv
+  skjema: `GameplanHull` (spillerens sikte per hull) + `GameplanSone` (malte soner), begge
+  scopet til `requirePortalUser().id` — kirurgisk `CREATE TABLE IF NOT EXISTS` via
+  `scripts/create-gameplan-tables-2026-07-16.ts` (samme gotcha-mønster som `course_holes` —
+  `migrate dev`/`db push` er blokkert i dette repoet). **Kunne ikke kjøres mot ekte DB i
+  denne sandboxen** — scriptet må kjøres manuelt mot produksjon før funksjonen er skrivbar
+  der. **Sidefunn under research:** det juridisk forbudte navnet «DECADE» (B30) hadde lekket
+  inn i levende kildekode/seed-data — rettet i egen, separat PR (`claude/decade-navnefjerning`)
+  fremfor å blande inn i denne omdøpingen.
 - 16. juli (DECADE-navnefjerning, branch `claude/decade-navnefjerning`): B30 forbyr ordet
   «DECADE» overalt (rettighetsvern, `docs/juridisk/presisjonsstrategi-rettigheter.md`) —
   research for Byggerunde 2b (Gameplan) fant at ordet faktisk hadde lekket inn i LEVENDE

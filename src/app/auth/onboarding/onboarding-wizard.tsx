@@ -13,6 +13,10 @@
  *
  * VIKTIG: All steg-logikk og lagre-actions er beholdt uendret fra forrige
  * versjon — kun presentasjonen er portet til mobil-først DS-token-komponenter.
+ * v2-port 16. juli 2026: primitivfilene (wizard-chrome/wizard-fields) er
+ * restylet til v2-tokens; her er KUN inline-presentasjon (steg 1-merke,
+ * GolfBox/TrackMan-kort, feilboks) flyttet til T-tokens. Steg-maskin,
+ * mindreårig-sjekk (steg 2), resume og alle actions er 100 % uendret.
  * Ingen hardkodet hex. Ingen emoji — kun lucide-react. Norsk bokmål.
  */
 
@@ -33,6 +37,7 @@ import {
   Target,
   Trophy,
 } from "lucide-react";
+import { T } from "@/lib/v2/tokens";
 import {
   saveSpillerOnboardingStep,
   markStepComplete,
@@ -321,7 +326,19 @@ export function OnboardingWizard({
             <div className="mb-5 flex justify-center">
               <span
                 aria-hidden
-                className="grid h-14 w-14 place-items-center rounded-[14px] bg-accent font-display text-2xl font-extrabold leading-none text-primary"
+                style={{
+                  display: "grid",
+                  placeItems: "center",
+                  width: 56,
+                  height: 56,
+                  borderRadius: 14,
+                  background: T.lime,
+                  color: T.onLime,
+                  fontFamily: T.disp,
+                  fontSize: 24,
+                  fontWeight: 700,
+                  lineHeight: 1,
+                }}
               >
                 ak
               </span>
@@ -396,7 +413,7 @@ export function OnboardingWizard({
                 placeholder="forelder@example.com"
                 autoComplete="email"
               />
-              <p className="mt-1 text-[11px] text-warning">
+              <p className="mt-1 text-[11px]" style={{ color: T.warn }}>
                 Vi sender en forespørsel om foreldresamtykke iht. GDPR art. 8.
               </p>
             </Field>
@@ -595,31 +612,40 @@ export function OnboardingWizard({
               <>
                 Når du kobler til GolfBox-kontoen din, henter vi automatisk inn HCP-historikken og
                 runde-data dine.{" "}
-                <strong className="font-semibold text-foreground">
+                <strong style={{ fontWeight: 600, color: T.fg }}>
                   Anders får et komplett bilde fra dag én.
                 </strong>
               </>
             }
           />
-          <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-secondary px-4 py-6 text-center">
-            <span className="inline-flex h-14 w-14 items-center justify-center rounded-xl border border-border bg-card text-primary">
+          <div
+            className="flex flex-col items-center gap-3 px-4 py-6 text-center"
+            style={{ borderRadius: 14, background: T.panel2, border: `1px solid ${T.border}` }}
+          >
+            <span
+              className="inline-flex h-14 w-14 items-center justify-center"
+              style={{ borderRadius: 14, background: T.panel3, color: T.lime }}
+            >
               <Link2 className="h-6 w-6" strokeWidth={1.75} aria-hidden />
             </span>
-            <span className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-foreground">
+            <span
+              style={{ fontFamily: T.disp, fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", color: T.fg }}
+            >
               GolfBox
             </span>
-            <p className="text-[13px] leading-relaxed text-muted-foreground">
+            <p className="text-[13px] leading-relaxed" style={{ color: T.mut }}>
               Vi henter HCP, runder spilt siste 24 mnd, og turneringshistorikk.
             </p>
             <button
               type="button"
               disabled
               title="Kommer post-BETA"
-              className="flex h-12 w-full cursor-not-allowed items-center justify-center rounded-xl bg-primary px-6 text-sm font-bold text-primary-foreground opacity-50"
+              className="flex h-12 w-full cursor-not-allowed items-center justify-center px-6 text-sm font-semibold"
+              style={{ borderRadius: 9999, background: T.panel3, border: `1px solid ${T.borderS}`, color: T.mut }}
             >
               Koble til GolfBox · kommer snart
             </button>
-            <p className="font-mono text-[10px] tracking-[0.06em] text-muted-foreground">
+            <p style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.06em", color: T.mut }}>
               Krever GolfBox-konto · Vi lagrer aldri passordet ditt
             </p>
           </div>
@@ -650,25 +676,34 @@ export function OnboardingWizard({
             titleAfter="."
             deck="Har du en TrackMan-konto, kobler vi den slik at swing-data og ball-flight automatisk synkes til profilen din."
           />
-          <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-secondary px-4 py-6 text-center">
-            <span className="inline-flex h-14 w-14 items-center justify-center rounded-xl border border-border bg-card text-primary">
+          <div
+            className="flex flex-col items-center gap-3 px-4 py-6 text-center"
+            style={{ borderRadius: 14, background: T.panel2, border: `1px solid ${T.border}` }}
+          >
+            <span
+              className="inline-flex h-14 w-14 items-center justify-center"
+              style={{ borderRadius: 14, background: T.panel3, color: T.lime }}
+            >
               <Settings className="h-6 w-6" strokeWidth={1.75} aria-hidden />
             </span>
-            <span className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-foreground">
+            <span
+              style={{ fontFamily: T.disp, fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", color: T.fg }}
+            >
               TrackMan
             </span>
-            <p className="text-[13px] leading-relaxed text-muted-foreground">
+            <p className="text-[13px] leading-relaxed" style={{ color: T.mut }}>
               Vi henter swing-data, ball-flight og distance-data fra alle dine økter.
             </p>
             <button
               type="button"
               disabled
               title="Kommer post-BETA"
-              className="flex h-12 w-full cursor-not-allowed items-center justify-center rounded-xl bg-primary px-6 text-sm font-bold text-primary-foreground opacity-50"
+              className="flex h-12 w-full cursor-not-allowed items-center justify-center px-6 text-sm font-semibold"
+              style={{ borderRadius: 9999, background: T.panel3, border: `1px solid ${T.borderS}`, color: T.mut }}
             >
               Koble til TrackMan · kommer snart
             </button>
-            <p className="font-mono text-[10px] tracking-[0.06em] text-muted-foreground">
+            <p style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.06em", color: T.mut }}>
               Krever TrackMan-konto eller Performance Studio-tilgang
             </p>
           </div>
@@ -816,7 +851,13 @@ export function OnboardingWizard({
       {error && (
         <div className="mx-auto mb-4 w-full max-w-[430px] px-4">
           <div
-            className="rounded-lg border border-destructive/25 bg-destructive/10 px-4 py-3 text-[13px] text-destructive"
+            className="px-4 py-3 text-[13px]"
+            style={{
+              borderRadius: 11,
+              border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
+              background: `color-mix(in srgb, ${T.down} 10%, transparent)`,
+              color: T.down,
+            }}
             role="alert"
           >
             {error}

@@ -1,5 +1,5 @@
 /**
- * AgencyOS · Live-økt summary — coach-perspektiv
+ * AgencyOS · Live-økt summary — coach-perspektiv (v2-port 16. juli 2026).
  *
  * Post-økt sammendrag: coach vurderer øktens kvalitet,
  * skriver observasjoner og lagrer til spillerprofilen.
@@ -8,28 +8,17 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, CheckCircle2 } from "lucide-react";
-import { CoachSummaryForm } from "./_coach-summary-form";
+import type { PyramidArea } from "@/generated/prisma/client";
+import { AdminLiveSummaryV2, type AdminLiveSummaryV2Data } from "@/components/admin/v2/AdminLiveSummaryV2";
 
 export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ sessionId: string }> };
 
-const MILJO_LABEL: Record<string, string> = {
-  M0: "Innendørs",
-  M1: "Driving range",
-  M2: "Korte banen",
-  M3: "Banen",
-  M4: "Turnering",
-};
-
-const PRACTICE_LABEL: Record<string, string> = {
-  BLOKK: "Blokkpraksis",
-  RANDOM: "Tilfeldig",
-  KONKURRANSE: "Konkurranse",
-  SPILL_TEST: "Spilltest",
-};
+function fmtVarighet(sek: number): string {
+  const min = Math.round(sek / 60);
+  return `${min} min`;
+}
 
 export default async function CoachLiveSummaryPage({ params }: Props) {
   const { sessionId } = await params;
@@ -37,6 +26,9 @@ export default async function CoachLiveSummaryPage({ params }: Props) {
 
   const session = await prisma.trainingSessionV2.findUnique({
     where: { id: sessionId },
+    include: {
+      drills: { orderBy: { sortOrder: "asc" }, select: { id: true, name: true, pyramide: true } },
+    },
   });
 
   if (!session) notFound();
@@ -47,12 +39,21 @@ export default async function CoachLiveSummaryPage({ params }: Props) {
         select: { id: true, name: true },
       })
     : null;
-  const startTid = new Intl.DateTimeFormat("nb-NO", {
-    dateStyle: "short",
-    timeStyle: "short",
-  }).format(session.startTime);
 
-  // Les ev. eksisterende coach-vurdering fra completedSummary-JSON.
+  const logs = await prisma.drillLogV2.findMany({
+    where: { drill: { sessionId } },
+    select: { drillId: true },
+  });
+  const loggedDrillIds = new Set(logs.map((l) => l.drillId));
+
+  const pyramideCounts = session.drills.reduce<Record<string, number>>((acc, d) => {
+    acc[d.pyramide] = (acc[d.pyramide] ?? 0) + 1;
+    return acc;
+  }, {});
+  const akse =
+    (Object.entries(pyramideCounts).sort(([, a], [, b]) => b - a)[0]?.[0] as PyramidArea) ?? "TEK";
+
+  // Les ev. eksisterende coach-vurdering + varighet fra completedSummary-JSON.
   const rawSummary: unknown = session.completedSummary;
   const summaryObj =
     rawSummary && typeof rawSummary === "object" && !Array.isArray(rawSummary)
@@ -60,78 +61,24 @@ export default async function CoachLiveSummaryPage({ params }: Props) {
       : {};
   const initialRating =
     typeof summaryObj.coachRating === "number" ? summaryObj.coachRating : null;
-  const initialNotat = session.notes ?? "";
+  const liveSummary =
+    summaryObj.liveSummary && typeof summaryObj.liveSummary === "object" && !Array.isArray(summaryObj.liveSummary)
+      ? (summaryObj.liveSummary as Record<string, unknown>)
+      : null;
+  const varighetLabel =
+    typeof liveSummary?.durationSec === "number" ? fmtVarighet(liveSummary.durationSec) : "–";
 
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-3xl px-6 py-10">
-        <div className="mb-6 flex items-center gap-3">
-          <Link
-            href={spiller ? `/admin/spillere/${spiller.id}` : "/admin/agencyos"}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Tilbake til {spiller?.name ?? "spiller"}
-          </Link>
-        </div>
+  const data: AdminLiveSummaryV2Data = {
+    sessionId,
+    tittel: session.title,
+    spillerNavn: spiller?.name ?? null,
+    spillerHref: spiller ? `/admin/spillere/${spiller.id}` : "/admin/agencyos",
+    akse,
+    varighetLabel,
+    drills: session.drills.map((d) => ({ id: d.id, navn: d.name, logget: loggedDrillIds.has(d.id) })),
+    initialRating,
+    initialNotat: session.notes ?? "",
+  };
 
-        <div className="mb-2 flex items-center gap-2">
-          <CheckCircle2 className="h-5 w-5 text-success" />
-          <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-            Coach · Økt fullført
-          </p>
-        </div>
-        <h1 className="font-display text-2xl font-semibold text-foreground">
-          {session.title} — sammendrag
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">{startTid}</p>
-
-        <div className="mt-8 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-lg border border-border bg-card p-4 text-center">
-            <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-              Miljø
-            </p>
-            <p className="mt-2 font-semibold text-foreground">
-              {MILJO_LABEL[session.miljo] ?? session.miljo}
-            </p>
-          </div>
-          <div className="rounded-lg border border-border bg-card p-4 text-center">
-            <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-              Økttype
-            </p>
-            <p className="mt-2 font-semibold text-foreground">
-              {PRACTICE_LABEL[session.practiceType] ?? session.practiceType}
-            </p>
-          </div>
-          <div className="rounded-lg border border-border bg-card p-4 text-center">
-            <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-              Status
-            </p>
-            <p className="mt-2 font-semibold text-success">Fullført</p>
-          </div>
-        </div>
-
-        <CoachSummaryForm
-          sessionId={sessionId}
-          initialRating={initialRating}
-          initialNotat={initialNotat}
-        />
-
-        <div className="mt-6 flex gap-3">
-          <Link
-            href={spiller ? `/admin/spillere/${spiller.id}` : "/admin/agencyos"}
-            className="flex-1 rounded-lg border border-border px-6 py-3 text-center text-sm text-muted-foreground hover:bg-muted"
-          >
-            Til spillerprofil
-          </Link>
-          <Link
-            href="/admin/agencyos"
-            className="flex-1 rounded-lg bg-primary px-6 py-3 text-center font-medium text-primary-foreground hover:bg-primary/90"
-          >
-            Tilbake til AgencyOS
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
+  return <AdminLiveSummaryV2 data={data} />;
 }
