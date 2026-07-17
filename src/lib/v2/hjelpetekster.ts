@@ -184,6 +184,11 @@ const RAW = {
     forklaring:
       "En enkel poengsum for hvor godt kontoen din er sikret. Passord alene gir grunnpoeng; tofaktor-innlogging løfter den. Scoren er en påminnelse, ikke en dom — ett grep (skru på 2FA) tar deg til topps.",
   },
+  credits: {
+    tittel: "Credits (pakketimer)",
+    forklaring:
+      "Coaching-pakken din (Performance / Performance Pro) gir et antall økter per måned — hver booking bruker én credit. Er de brukt opp denne måneden, kan du fortsatt booke drop-in med kort, eller vente til de fylles på.",
+  },
   malEffektivitet: {
     tittel: "Mal-effektivitet",
     forklaring:
