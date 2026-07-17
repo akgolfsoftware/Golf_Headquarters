@@ -4,8 +4,18 @@
 > D3 fokus-spillere, D4/M1 mobil-nav) er godkjent som de ligger i `ui_kits/v2/` (gruppe «v2-bolk5»:
 > `agencyos-fellesmelding|veksler|fokus|mobilnav.jsx/.html`). «Mer»-mønsteret: **skuff (kandidat A,
 > anbefalt)** valgt. Implementering per skjerm etter Byggerunde-oppskriften; D3 trenger et lite
-> additivt coach-preferanse-felt for pin. M2/M3 (Workbench-mobil + kjerneskjermene) designes som
-> neste designfase.
+> additivt coach-preferanse-felt for pin.
+>
+> **STATUS 17. juli (natt) — D1/D2/D3 bygget + M2/M3 designet:**
+> - **D1, D2, D3 implementert** som draft-PR-er mot main (venter Anders' ja): D1 fellesmelding
+>   ([PR #67](https://github.com/akgolfsoftware/Golf_Headquarters/pull/67)), D2 veksler
+>   ([PR #68](https://github.com/akgolfsoftware/Golf_Headquarters/pull/68)), D3 fokus-spillere
+>   ([PR #69](https://github.com/akgolfsoftware/Golf_Headquarters/pull/69)). Alle nettleser-verifisert.
+> - **M2 (Workbench-mobil) og M3 (kjerneskjermer) DESIGNET** i `ui_kits/v2/`
+>   (`agencyos-wb-mobil-retninger.jsx/.html` + `agencyos-mobil-kjerne.jsx/.html`, gruppe «v2-bolk5»).
+>   **M2 leverer TO retninger — Anders må velge:** A = oppgavedrevet kø (anbefalt) · B = panel-replika.
+>   M3 dekker cockpit/innboks/stall/kalender under den godkjente bunn-nav-en. Begge venter godkjenning
+>   før implementering.
 >
 > Skrevet 17. juli 2026 etter Anders' prioritering: Bolk 5-trioen først i design-køen, og mobil-utgave
 > av Workbench/AgencyOS TRENGS før lansering. Briefene kjøres i det levende Claude Design-prosjektet
