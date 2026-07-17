@@ -259,7 +259,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Booking-hub | `/portal/booking` | ✓ | ✓✓– | ~ | ~ | ✓ | ✓ | 2026-07-14 dok-verifisering: `BookingV2` fullt token-komponert (stepper, tjenestekort, ekte slot-vindu fra availability-engine). Design rettet – → ✓. Merk: kun HUB-en er v2 — alle undersider (ny/[bookingId]/coach/anlegg/bekreftet) er fortsatt `(legacy)`-ruter, «Booking-flyt komplett i v2» stemmer IKKE ennå, se endringslogg |
-| · Ny booking (wizard) | `/portal/booking/ny` | – | ✓✓– | ~ | ~ | ✓ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — bevisst utsatt av Anders til akgolf-booking v2-design (11. jul-notat), ikke en oversett hake.
+| · Ny booking (wizard) | `/portal/booking/ny` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | v2-port 17. jul (Team G-A, Anders' go samme dag): `BookingNyV2` — samme `?service=&dato=`-stegmodell, `getAvailableSlots`/credits-guards/lokasjonsoppløsning uendret i server-pagen, `CreditMeter` gjenbrukt, BruktOpp-tilstand beholdt; `credits`-HjelpTips på «1 credit». Rute ut av (legacy). Design – → ✓. |
 | · Ny booking bekreft | `/portal/booking/ny/bekreft` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — samme bevisst utsatt booking-legacy som /ny.
 | · Booking-detalj | `/portal/booking/[bookingId]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — bruker egen booking.css, bevisst utsatt til v2-design.
 | · Coach-profil (booking) | `/portal/booking/coach/[coachId]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — bevisst utsatt booking-legacy.
