@@ -106,21 +106,21 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Fys-plan (liste) | `/portal/tren/fys-plan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Fys-plan detalj/bygger | `/portal/tren/fys-plan/[planId]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `KPICard` (ui/) + `fys-plan`-modulen bruker `Input`/`ProgressBar` fra ui/. |
 | Drills (bibliotek) | `/portal/drills` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `OvelsesbankV2` i `V2Shell`. |
-| · Drill-detalj | `/portal/drills/[id]` | – | ✓✓– | ✓ | ~ | ✓ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — kun react/lucide-react/@/lib/utils, 0 golfdata/v2-imports (v10 pixel-port).
+| · Drill-detalj | `/portal/drills/[id]` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | v2-port 17. jul (Team D1): `DrillDetaljV2` (V2Shell/Kort/TomTilstand/CTAPill), ruten flyttet ut av (legacy) — gammel v10 pixel-port slettet. `loadDrillDetalj`-loaderen, auth-guard (PLAYER+PARENT) og ærlige tomtilstander («Media kommer», aldri fabrikerte tall) uendret. Design – → ✓. |
 | Mål-hub | `/portal/mal` | ✓ | --- | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — `MalHubV2` inni `V2Shell` (@/components/portal/v2/MalHubV2).
-| · Mål-bygger (wizard) | `/portal/mal/bygger` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2-imports.
-| · Mål-detalj | `/portal/mal/goal/[id]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2-imports.
+| · Mål-bygger (wizard) | `/portal/mal/bygger` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `MalByggerV2` — ruten flyttet ut av (legacy), ny tynn page (`V2Shell aktiv="meg"` + `TilbakeLenke`) + presentasjonskomponent på v2-primitiver; all wizard-/lagringslogikk (anbefalMal → generer m/ valgtTemplateId → lagre/sendTilGodkjenning, GRATIS-gating) uendret via `actions.ts` flyttet byte-identisk. Disciplin-farger nå T.ax-aksefarger (var rå hex), HjelpTips på SG-svakhet/L-fase/SG-Total. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
+| · Mål-detalj | `/portal/mal/goal/[id]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `MalDetaljV2` (Kort/StatusPill/ProgresjonsBar/NivaStige + tre v2-modaler for endre/oppnådd/avbryt) erstatter hybrid-designet (page + goal-client), ruten flyttet ut av (legacy). Eierskaps-sjekk, fremdrifts-/ETA-utregning, A–K-stigen og `goals-actions` (endreGoal/markeerGoalSomOppnaadd/avbrytGoal) uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | · Milepæler | `/portal/mal/milepaeler` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header importerer golfdata `Eyebrow`.
-| · Leaderboard | `/portal/mal/leaderboard` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ren Tailwind, ingen PlayerHero/golfdata/v2.
+| · Leaderboard | `/portal/mal/leaderboard` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `LeaderboardV2` (V2Shell/Kort/AvatarInit) erstatter wireframe-designet, ruten flyttet ut av (legacy). Feature-gate (FEATURES.LEADERBOARD), Prisma-queries og rangeringslogikken (snitt-SG per felt siste 30 dager, topp 25) uendret. Delta-rang/badges fortsatt ikke bygget (TODO i original) — vises ikke i stedet for plassholdere. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | Turneringer (mine) ★ | `/portal/tren/turneringer` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: v2-forhåndsvisning (retning C) allerede portert, hake aldri oppdatert |
-| · Turnering-detalj | `/portal/tren/turneringer/[id]` | – | ✓✓– | ~ | ~ | – | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ren Tailwind + egen `EmptyState`, ingen golfdata/v2.
+| · Turnering-detalj | `/portal/tren/turneringer/[id]` | ✓ | ✓✓– | ✓ | ~ | – | ~ | v2-port 17. jul (Team D1): `TurneringDetaljV2` (V2Shell/Kort/StatusPill/TomTilstand) erstatter hybrid-designet, ruten flyttet ut av (legacy). `loadTurneringDetalj`-loaderen og server actions (`meldDegPa`/`meldDegAv` fra (legacy)/tren/turneringer/actions.ts — beholdt der, deles med lista) uendret. Not-found beholdt med ærlig tomtilstand. Design – → ✓, Adresse ~ → ✓. |
 | · Ny turnering | `/portal/tren/turneringer/ny` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
 | Utfordringer | `/portal/utfordringer` | ~ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: AMBIGUOUS — `UtfordringerV2` i `V2Shell`, altså fullt v2-komponert. Uklart om «~» reflekterer et reelt gjenstående gap agenten ikke fanget opp, eller selv er stale i motsatt retning — spot-check før den flippes til ✓. |
 | · Ny utfordring (wizard) | `/portal/utfordringer/ny` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
 | · Utfordring-detalj | `/portal/utfordringer/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| AI: mål-bygger | `/portal/ai/mal-bygger` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2-imports.
-| AI: foreslå drill | `/portal/ai/foresla-drill` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2-imports.
-| AI: foreslå turnering | `/portal/ai/foresla-turnering` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2-imports.
+| AI: mål-bygger | `/portal/ai/mal-bygger` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `AiMalByggerV2` (Kort/Knapp/ValgKort/Inndata) erstatter mal-bygger-wizard (v10), ruten flyttet ut av (legacy) — `actions.ts` (lagreMalForslag) flyttet uendret med. 3-stegs SMART-wizard-logikken uendret; ingen oppdiktede tall. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
+| AI: foreslå drill | `/portal/ai/foresla-drill` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `ForeslaDrillV2` (Kort/AkseChip/CTAPill/InnsiktChip/TomTilstand) erstatter foresla-drill-screen (v10), ruten flyttet ut av (legacy). Svakhets-signaler (`loadWeaknessSignals`) og den ærlige match-scoren (akse-overlapp, aldri oppdiktede tall) uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
+| AI: foreslå turnering | `/portal/ai/foresla-turnering` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `ForeslaTurneringV2` (Kort/CTAPill/StatusPill/InnsiktChip/TomTilstand) erstatter foresla-turnering-screen (v10), ruten flyttet ut av (legacy). Rangeringslogikken (påmeldinger + katalog, ingen oppdiktede sannsynligheter) uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 
 ### Gjennomføre (inkl. live-økt)
 
@@ -533,8 +533,8 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Tilbakestill passord | `/auth/reset-password` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Sjekk e-post | `/auth/check-email` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | BankID ★ | `/auth/bankid` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `BankIDV2` (samme v2-idiomfamilie som LoginV2), portert 10. juli, hake aldri oppdatert |
-| Onboarding (spiller, 8 steg) | `/auth/onboarding` | – | ✓✓– | ~ | ✓ | ✓ | ✓ | Reconciliation 16. jul: BEKREFTET ekte gap — `onboarding-wizard.tsx` er egenbygd (`wizard-chrome`/`wizard-fields`), verken golfdata- eller v2-komponert (gjenbruker kun `ui/Input`+`ui/Checkbox`). 2026-07-11: fikset lesPreferences-lekkasje (data ble slettet av enhver innstillings-lagring); steg-3-svar (fasiliteter/dager/mål) lagres nå og feeder FacilityPrefs+Goal+plan-engine.
-| Onboarding (forelder) | `/auth/onboarding/forelder` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — samme egenbygde wizard-chrome/-fields som spiller-onboarding.
+| Onboarding (spiller, 7 steg) | `/auth/onboarding` | ✓ | ✓✓– | ~ | ✓ | ✓ | ✓ | v2-port 16. jul (Team B): de DELTE primitivfilene `wizard-chrome`/`wizard-fields` restylet in place til v2 T-tokens (samme eksporterte navn/props — 836-linjers wizard-logikk urørt: mindreårig-sjekk, resume, lagring per steg). Ny `VeiviserFlate`-eksport bevarer den eksisterende lyse flaten. Rettet også rad-tittel: koden har 7 steg, ikke 8. 2026-07-11: fikset lesPreferences-lekkasje (data ble slettet av enhver innstillings-lagring); steg-3-svar (fasiliteter/dager/mål) lagres nå og feeder FacilityPrefs+Goal+plan-engine.
+| Onboarding (forelder) | `/auth/onboarding/forelder` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul (Team B): arver v2 fra de restylede delte primitivene (`wizard-chrome`/`wizard-fields`) + forelder-spesifikke justeringer i `forelder-wizard.tsx`/`page.tsx`. 4-stegs-logikken og `saveForelderOnboardingStep`/`completeForelderOnboarding` uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–.
 | Foreldresamtykke (token) | `/auth/guardian-consent/[token]` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Samtykke venter | `/auth/samtykke-venter` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Logget ut | `/auth/logget-ut` | ✓ | ✓✓– | ✓ | ~ | – | ✓ | Design rettet – → ✓ 16. jul: rendrer `LoggetUtV2` (`components/portal/v2/`), portert tidligere — hake aldri oppdatert (samme mønster som Login/Signup/BankID over) |
@@ -545,7 +545,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 |---|---|---|---|---|---|---|---|
 | Forelder-hjem | `/forelder` | ✓ | ✓✓– | ✓ | ~ | – | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderV2` — hele seksjonens «Design: –» var systematisk stale, se merknad under tabellen. |
 | Barn (oversikt) | `/forelder/barn` | ✓ | ✓✓– | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + v2-primitiver. |
-| · Barn-detalj | `/forelder/barn/[childId]` | – | ✓✓– | ✓ | ~ | – | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — eneste unntaket i seksjonen; `page.tsx` har ingen `@/components`-imports, egen rå Tailwind («Hybrid design: forest-gradient hero + white cards»). |
+| · Barn-detalj | `/forelder/barn/[childId]` | ✓ | ✓✓– | ✓ | ~ | ✓ | ~ | v2-port 16. jul (Team B): `ForelderBarnDetaljV2` (Kort/Caps/KpiFlis/Pyramide/TomTilstand/AvatarFoto) — seksjonens siste gap lukket. Samme Prisma-lesing (`assertBarnTilhorerForelder` + queries) og `?tab=`-navigasjon uendret; HCP-fremdrift vises kun for HCP_TARGET-mål med kalkulerbar verdi (aldri falsk prosent). Design – → ✓, Data – → ✓. |
 | Bookinger | `/forelder/bookinger` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderBookingerV2`. |
 | Coach | `/forelder/coach` | ✓ | --- | ✓ | ~ | ✓ | † | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderCoachV2`. |
 | Fakturaer | `/forelder/fakturaer` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderFakturaerV2`. |
@@ -554,7 +554,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Ukerapport | `/forelder/ukerapport` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderUkerapportV2`. |
 | Innstillinger | `/forelder/innstillinger` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderInnstillingerV2`. |
 | Varsler | `/forelder/varsler` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderVarslerV2`. |
-| Inviter forelder (token) | `/inviter/forelder/[token]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — `AksepterForm` er rått `<form>`/Tailwind, ingen komponent-imports. |
+| Inviter forelder (token) | `/inviter/forelder/[token]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul (Team B): side + `AksepterForm` v2-stylet (T-tokens), samme token-validering og `aksepterInvitasjon`-action uendret. Offentlig side uten shell. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 
 > **Reconciliation 16. jul:** hele Forelder-seksjonens «Design: –»-merking var systematisk stale — 10 av 11 skjermer er allerede v2-komponert (`V2Shell` + dedikert `*V2`-komponent per rute), bare uten at haken noensinne ble flippet. Kun barn-detalj og invitasjons-aksept er ekte gap.
 
@@ -567,10 +567,10 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Anlegg-detalj | `/(marketing)/anlegg/[slug]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedAnleggDetaljV2`.
 | Blogg | `/(marketing)/blogg` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | · Blogg-innlegg | `/(marketing)/blogg/[slug]` | ✓ | --- | ✓ | ~ | ~ | ✓ |
-| Booking | `/(marketing)/booking` | – | --- | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul: BEKREFTET ekte gap — kun én `Eyebrow`-golfdata-import i toppen, resten (lokasjon/coach/tjeneste-velger) er egenbygd rå Tailwind.
-| · Booking-tjeneste | `/(marketing)/booking/[slug]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — ingen komponent-imports, egen `SlotPicker`.
-| · Booking bekreft | `/(marketing)/booking/[slug]/bekreft` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — helt egenbygd, ingen komponent-imports.
-| · Booking kvittering | `/(marketing)/booking/kvittering/[bookingId]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — samme som over.
+| Booking | `/(marketing)/booking` | ✓ | ✓✓– | ✓ | ~ | ~ | ✓ | v2-port 16. jul (Team C): `MarkedBookingV2` — ruten flyttet fra `(mlegacy)`-gruppen til `(marketing)/booking/` (samme URL). Lokasjon/coach/tjeneste-velger-logikken uendret. Design – → ✓.
+| · Booking-tjeneste | `/(marketing)/booking/[slug]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul (Team C): `MarkedBookingTjenesteV2` — slot-gruppering, ?dato=-daglenker og bekreft-lenker (start&coach) bevart 1:1 fra gamle `SlotPicker`; kun presentasjonen er ny. Design – → ✓.
+| · Booking bekreft | `/(marketing)/booking/[slug]/bekreft` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul (Team C): `MarkedBookingBekreftV2` — samme felter/validering/action-kall som gamle bekreft-form; `createBookingCheckout` (Stripe) flyttet BYTE-IDENTISK til ny rute. Design – → ✓.
+| · Booking kvittering | `/(marketing)/booking/kvittering/[bookingId]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul (Team C): `MarkedBookingKvitteringV2` — pending-refresh-oppførselen (poll til betaling bekreftet) bevart. Design – → ✓.
 | Cases | `/(marketing)/cases` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | Coacher | `/(marketing)/coacher` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | · Coach-profil | `/(marketing)/coacher/[slug]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedCoachDetaljV2`.

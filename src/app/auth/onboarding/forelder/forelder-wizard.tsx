@@ -10,13 +10,17 @@
  *
  * VIKTIG: All steg-logikk og lagre-actions er beholdt uendret — kun
  * presentasjonen er portet til DS-token-komponenter (samme vokabular som
- * spiller-wizarden i onboarding-wizard.tsx). Ingen hardkodet hex. Ingen
- * emoji — kun lucide-react. Norsk bokmål.
+ * spiller-wizarden i onboarding-wizard.tsx). v2-port 16. juli 2026:
+ * primitivfilene er restylet til v2-tokens; her er KUN inline-presentasjon
+ * (velkomst-kort, relasjon-/betalingsvalg, abonnement-kort, feilboks)
+ * flyttet til T-tokens. Steg-maskin og actions 100 % uendret.
+ * Ingen hardkodet hex. Ingen emoji — kun lucide-react. Norsk bokmål.
  */
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { CreditCard, Mail, Smartphone, Users } from "lucide-react";
+import { T } from "@/lib/v2/tokens";
 import {
   saveForelderOnboardingStep,
   completeForelderOnboarding,
@@ -37,7 +41,6 @@ import {
   AgreeItem,
   SecurityStrip,
 } from "@/components/auth/onboarding/wizard-fields";
-import { cn } from "@/lib/utils";
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Konstanter
@@ -171,20 +174,43 @@ export function ForelderWizard() {
             titleAfter="."
             deck="Coach Anders og spilleren din har akkurat satt opp profilen hos AK Golf Academy. Som foresatt er du en sentral del av utviklingen — uten å være i veien."
           />
-          <div className="rounded-xl bg-secondary px-4 py-4">
-            <p className="text-[13px] leading-relaxed text-muted-foreground">
+          <div
+            className="px-4 py-4"
+            style={{ borderRadius: 14, background: T.panel2, border: `1px solid ${T.border}` }}
+          >
+            <p className="text-[13px] leading-relaxed" style={{ color: T.mut }}>
               Du får din egen{" "}
-              <strong className="font-semibold text-foreground">foreldre-portal</strong> med
+              <strong style={{ fontWeight: 600, color: T.fg }}>foreldre-portal</strong> med
               innsyn i planer, runder, fakturaer og fremgang. Du kan også sende meldinger til
               Anders direkte.
             </p>
           </div>
-          <div className="rounded-xl bg-accent px-4 py-4">
-            <blockquote className="font-display text-[15px] italic leading-snug text-accent-foreground">
+          <div
+            className="px-4 py-4"
+            style={{
+              borderRadius: 14,
+              background: `color-mix(in srgb, ${T.lime} 10%, transparent)`,
+              border: `1px solid color-mix(in srgb, ${T.lime} 35%, transparent)`,
+            }}
+          >
+            <blockquote
+              className="italic leading-snug"
+              style={{ fontFamily: T.disp, fontSize: 15, color: T.fg }}
+            >
               Foreldre er den viktigste støttespilleren en ung utøver har. Vi gjør alt vi kan for
               at du skal føle deg trygg på hva vi gjør — og hvorfor.
             </blockquote>
-            <cite className="mt-2 block font-mono text-[10px] font-bold uppercase not-italic tracking-[0.10em] text-primary">
+            <cite
+              className="mt-2 block not-italic"
+              style={{
+                fontFamily: T.mono,
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                color: T.lime,
+              }}
+            >
               Anders Kristiansen · Head Coach
             </cite>
           </div>
@@ -245,12 +271,22 @@ export function ForelderWizard() {
                   type="button"
                   onClick={() => setParentRelation(rel.id)}
                   aria-pressed={selected}
-                  className={cn(
-                    "flex h-11 items-center justify-center rounded-lg border text-[13px] font-semibold transition-colors",
-                    selected
-                      ? "border-primary bg-primary/5 text-foreground"
-                      : "border-input bg-card text-muted-foreground hover:bg-secondary",
-                  )}
+                  className="v2-press v2-focus"
+                  style={{
+                    appearance: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: 44,
+                    borderRadius: 11,
+                    cursor: "pointer",
+                    fontFamily: T.ui,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    background: selected ? T.panel3 : T.panel2,
+                    border: `1px solid ${selected ? T.lime : T.border}`,
+                    color: selected ? T.fg : T.mut,
+                  }}
                 >
                   {rel.label}
                 </button>
@@ -322,18 +358,44 @@ export function ForelderWizard() {
             deck="Spilleren har valgt PRO-abonnement, 299 kr/mnd. Du faktureres månedlig fra dato spilleren er aktivert. Avsluttes når som helst."
           />
 
-          {/* Abonnement-oppsummering — mørkt forest-kort */}
-          <div className="flex flex-col gap-1 rounded-xl bg-primary px-4 py-4">
-            <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-accent">
+          {/* Abonnement-oppsummering — mørkt forest-merkevarekort (fast forest,
+              hvit tekst — uavhengig av tema, samme idiom som HeroIllo) */}
+          <div
+            className="flex flex-col gap-1 px-4 py-4"
+            style={{ borderRadius: 16, background: T.forest }}
+          >
+            <span
+              style={{
+                fontFamily: T.mono,
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "rgba(255,255,255,0.75)",
+              }}
+            >
               Abonnement
             </span>
-            <span className="font-display text-[18px] font-bold text-primary-foreground">
+            <span style={{ fontFamily: T.disp, fontSize: 18, fontWeight: 700, color: "rgba(255,255,255,0.96)" }}>
               AK Golf Academy PRO
             </span>
-            <span className="font-mono text-[28px] font-extrabold leading-none tracking-[-0.01em] text-primary-foreground">
+            <span
+              style={{
+                fontFamily: T.mono,
+                fontSize: 28,
+                fontWeight: 700,
+                lineHeight: 1,
+                letterSpacing: "-0.01em",
+                fontVariantNumeric: "tabular-nums",
+                color: "rgba(255,255,255,0.96)",
+              }}
+            >
               299 kr/mnd
             </span>
-            <span className="mt-1 font-mono text-[10px] tracking-[0.04em] text-primary-foreground/70">
+            <span
+              className="mt-1"
+              style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.04em", color: "rgba(255,255,255,0.65)" }}
+            >
               Avsluttes når som helst · 30 dagers oppsigelse
             </span>
           </div>
@@ -348,28 +410,73 @@ export function ForelderWizard() {
                   type="button"
                   onClick={() => setPaymentMethod(id)}
                   aria-pressed={selected}
-                  className={cn(
-                    "relative flex flex-col items-center gap-1.5 rounded-xl border px-2 py-3 text-center transition-colors",
-                    selected ? "border-primary bg-primary/5" : "border-input bg-card hover:bg-secondary",
-                  )}
+                  className="v2-press v2-focus"
+                  style={{
+                    position: "relative",
+                    appearance: "none",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 6,
+                    borderRadius: 13,
+                    padding: "12px 8px",
+                    textAlign: "center",
+                    cursor: "pointer",
+                    background: selected ? T.panel3 : T.panel2,
+                    border: `1px solid ${selected ? T.lime : T.border}`,
+                  }}
                 >
                   {anbefalt && (
-                    <span className="absolute -top-2 right-1.5 rounded-[3px] bg-accent px-1.5 py-0.5 font-mono text-[8px] font-extrabold uppercase tracking-[0.10em] text-accent-foreground">
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: -9,
+                        right: 6,
+                        borderRadius: 4,
+                        background: T.lime,
+                        padding: "2px 6px",
+                        fontFamily: T.mono,
+                        fontSize: 8,
+                        fontWeight: 700,
+                        letterSpacing: "0.1em",
+                        textTransform: "uppercase",
+                        color: T.onLime,
+                      }}
+                    >
                       Anbefalt
                     </span>
                   )}
                   <span
-                    className={cn(
-                      "inline-flex h-8 w-8 items-center justify-center rounded-full transition-colors",
-                      selected ? "bg-primary text-accent" : "bg-secondary text-muted-foreground",
-                    )}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: 32,
+                      height: 32,
+                      borderRadius: 9999,
+                      background: selected
+                        ? `color-mix(in srgb, ${T.lime} 14%, transparent)`
+                        : T.panel3,
+                      color: selected ? T.lime : T.mut,
+                    }}
                   >
-                    <Icon className="h-4 w-4" strokeWidth={1.5} aria-hidden />
+                    <Icon className="h-4 w-4" strokeWidth={1.75} aria-hidden />
                   </span>
-                  <span className="font-display text-xs font-bold tracking-[-0.015em] text-foreground">
+                  <span
+                    style={{ fontFamily: T.disp, fontSize: 12.5, fontWeight: 700, letterSpacing: "-0.015em", color: T.fg }}
+                  >
                     {label}
                   </span>
-                  <span className="font-mono text-[8px] font-semibold leading-tight tracking-[0.04em] text-muted-foreground">
+                  <span
+                    style={{
+                      fontFamily: T.mono,
+                      fontSize: 8,
+                      fontWeight: 600,
+                      lineHeight: 1.4,
+                      letterSpacing: "0.04em",
+                      color: T.mut,
+                    }}
+                  >
                     {sub}
                   </span>
                 </button>
@@ -390,7 +497,13 @@ export function ForelderWizard() {
       {error && (
         <div className="mx-auto mb-4 w-full max-w-[430px] px-4">
           <div
-            className="rounded-lg border border-destructive/25 bg-destructive/10 px-4 py-3 text-[13px] text-destructive"
+            className="px-4 py-3 text-[13px]"
+            style={{
+              borderRadius: 11,
+              border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
+              background: `color-mix(in srgb, ${T.down} 10%, transparent)`,
+              color: T.down,
+            }}
             role="alert"
           >
             {error}
