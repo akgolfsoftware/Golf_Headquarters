@@ -182,7 +182,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Banekart-oversikt | `/portal/gameplan/[baneId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Hull-detalj (dispersion + Planlegg-fane) | `/portal/gameplan/[baneId]/hull/[nr]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | Tester (oversikt) ★ | `/portal/tren/tester` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + v2-primitiver. |
-| · Test-detalj ★ | `/portal/tren/tester/[testId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| · Test-detalj ★ | `/portal/tren/tester/[testId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | UAT 17. jul (lokal dev, Playwright): detaljsiden lastet og «Gjennomfør»-CTA klikket → scorekortet åpnet, 390px + desktop, 0 konsollfeil. Funker † → ✓. |
 | · Test-gjennomføring (scorekort) ★ | `/portal/tren/tester/[testId]/gjennomfor` | ✓ | ✓✓~ | ✓ | ✓ | ✓ | ✓ | v2-port 17. jul (Team D2): flyttet fra egen `(fullscreen-test)`-gruppe til `(fullscreen)` (live-familiens chrome-løse konvensjon), restylet til T-tokens; felles score-motor, tilgangsregel og lagre-action byte-identisk. FYS-plassholder-noten beholdt ordrett. Design – → ✓. |
 | · Test-katalog (NGF) | `/portal/tren/tester/katalog` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
 | · Ny test | `/portal/tren/tester/ny` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D2): `NyTestV2` — 4-stegs wizard m/ identisk katalog/fuzzy-match/localStorage-draft/validering; `logTest` flyttet byte-identisk; stegindikator via ProgresjonsBar. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
@@ -259,12 +259,12 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Booking-hub | `/portal/booking` | ✓ | ✓✓– | ~ | ~ | ✓ | ✓ | 2026-07-14 dok-verifisering: `BookingV2` fullt token-komponert (stepper, tjenestekort, ekte slot-vindu fra availability-engine). Design rettet – → ✓. Merk: kun HUB-en er v2 — alle undersider (ny/[bookingId]/coach/anlegg/bekreftet) er fortsatt `(legacy)`-ruter, «Booking-flyt komplett i v2» stemmer IKKE ennå, se endringslogg |
-| · Ny booking (wizard) | `/portal/booking/ny` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | v2-port 17. jul (Team G-A, Anders' go samme dag): `BookingNyV2` — samme `?service=&dato=`-stegmodell, `getAvailableSlots`/credits-guards/lokasjonsoppløsning uendret i server-pagen, `CreditMeter` gjenbrukt, BruktOpp-tilstand beholdt; `credits`-HjelpTips på «1 credit». Rute ut av (legacy). Design – → ✓. |
-| · Ny booking bekreft | `/portal/booking/ny/bekreft` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team G-A): `BookingNyBekreftV2` — `createCreditBooking`-kallet (atomisk credit-dekrement, RØRT ALDRI), `?service=&start=&coach=`-kontrakten og redirect til `bekreftet?bookingId=` uendret; `isSlotStillAvailable`-sjekken beholdt. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
+| · Ny booking (wizard) | `/portal/booking/ny` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 17. jul (Team G-A, Anders' go samme dag): `BookingNyV2` — samme `?service=&dato=`-stegmodell, `getAvailableSlots`/credits-guards/lokasjonsoppløsning uendret i server-pagen, `CreditMeter` gjenbrukt, BruktOpp-tilstand beholdt; `credits`-HjelpTips på «1 credit». Rute ut av (legacy). Design – → ✓. UAT 17. jul (lokal dev, Playwright, testbruker): tjeneste → dag → slot klikket ende-til-ende, 390px + desktop; «brukt opp»-tilstanden verifisert m/ saldo 0 (viser drop-in-CTA). Flyt ~ → ✓. |
+| · Ny booking bekreft | `/portal/booking/ny/bekreft` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 17. jul (Team G-A): `BookingNyBekreftV2` — `createCreditBooking`-kallet (atomisk credit-dekrement, RØRT ALDRI), `?service=&start=&coach=`-kontrakten og redirect til `bekreftet?bookingId=` uendret; `isSlotStillAvailable`-sjekken beholdt. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. UAT 17. jul (lokal dev, Playwright, testbruker): «Bekreft booking» klikket i begge viewports — booking opprettet CONFIRMED m/ priceOre=0, credit-saldo dekrementert 1:1 (DB-verifisert), redirect til /bekreftet. Testdata ryddet + saldo tilbakeført. Flyt/Data/Funker ~ → ✓. |
 | · Booking-detalj | `/portal/booking/[bookingId]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team G-B): `BookingDetaljV2` — fabrikkerte TIMELINE/MÅL/UTSTYR-plassholdere SLETTET (ærlig data, viser kun ekte booking-felter); `booking.css`-avhengigheten (1051 l) + inline-hex borte; dato/tid nå Oslo-korrekt (gotcha-regel). Design – → ✓. |
 | · Coach-profil (booking) | `/portal/booking/coach/[coachId]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team G-B): `BookingCoachV2` — `resolveCoach()` cuid/slug-fallback beholdt EKSAKT, ekte øktteller + tjenester, CTA-er → `/portal/booking/ny` med samme query-params. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | · Anlegg-detalj (booking) | `/portal/booking/anlegg/[anleggId]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team G-B): `BookingAnleggV2` — bevisste utelatelser beholdt (ingen hull/par/rating, intet faux time-grid), FASILITET_TYPE_LABEL uendret, CTA → ekte booking-flyt. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
-| · Bekreftet | `/portal/booking/bekreftet` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team G-B): `BookingBekreftetV2` — eierskaps-sjekk + `googleKalenderUrl()` uendret, Oslo-korrekt tid; COPY-FIKS: «Forespørsel sendt!» → «Booking bekreftet» (bookingen opprettes CONFIRMED). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
+| · Bekreftet | `/portal/booking/bekreftet` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 17. jul (Team G-B): `BookingBekreftetV2` — eierskaps-sjekk + `googleKalenderUrl()` uendret, Oslo-korrekt tid; COPY-FIKS: «Forespørsel sendt!» → «Booking bekreftet» (bookingen opprettes CONFIRMED). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. UAT 17. jul (lokal dev, Playwright, testbruker): landet her etter ekte bekreftelse — riktig tjeneste/coach/tid (Oslo) vist + «Legg i kalender»/«Se alle bookinger», 390px + desktop. Flyt/Data/Funker ~ → ✓. |
 
 ### Talent (elite-spor — egen del av PlayerHQ)
 
@@ -774,7 +774,17 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 
 ## Endringslogg
 
-- 17. juli (nattløpet, Byggerunde B–F + Fase 2, PR #60 merget + PR #61): **Porteringsplanen er
+- 17. juli (UAT-økt, lokal dev + Playwright, testbrukerne Øyvind Rohjan/coachtest): **kritiske
+  nyporterte flyter nettleser-verifisert ende-til-ende** i 390px + desktop. Booking-wizarden
+  (ny → bekreft → bekreftet) full kjede m/ ekte credit-trekk (DB-verifisert 1:1, testdata ryddet,
+  saldo tilbakeført) + «brukt opp»-tilstanden; test-detalj → gjennomfør-scorekortet; stikkprøver
+  lastet uten reelle konsollfeil (onboarding, mål-bygger steg 1, putte-lab, Meg-innstillinger
+  m/ varsler+sikkerhet). Talent-rutene gir bevisst 404 (FEATURES.TALENT av — D1-beslutningen).
+  /admin/anlegg (PR #63-grenen) CRUD-verifisert: opprett → rediger → deaktiver → reaktiver for
+  både lokasjon og fasilitet (confirm-dialoger OK, soft delete bekreftet i UI, testdata slettet).
+  Haker flippet KUN for det som er bevist: booking-trioen + test-detalj. Merk (dev-miljø, ikke
+  prod-funn): streng CSP i dev-modus blokkerer Turbopack-chunks/eval → konsollstøy + rød
+  Next-badge lokalt. **Porteringsplanen er
   gjennomført — 63 skjermer portet til v2 på ~ett døgn.** PR #60 (merget av Anders): Byggerunde B
   (auth/onboarding/forelder, 4), C (marketing-booking, 4 — Stripe-action flyttet byte-identisk),
   D1 (Planlegge/Mål/AI, 8). PR #61: D2 (Trening/Tren, 8 — putte-lab 25 hex → 0), D3
