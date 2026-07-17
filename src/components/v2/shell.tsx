@@ -13,11 +13,19 @@
    Mobil: de 4 første punktene + Mer-ark med resten. */
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { T } from "@/lib/v2/tokens";
 import { Icon } from "./icon";
-import { LogoAK, AvatarFoto } from "./core";
+import { LogoAK, AvatarFoto, Caps } from "./core";
+
+/* D2 (bolk 5): spiller↔gruppe-veksleren i AgencyOS-toppraden. Lazy + kun
+   klient (ssr:false) så PlayerHQ/forelder-flatene aldri laster admin-koden. */
+const SpillerGruppeVeksler = dynamic(
+  () => import("@/components/admin/v2/SpillerGruppeVeksler").then((m) => m.SpillerGruppeVeksler),
+  { ssr: false },
+);
 
 export interface V2NavItem {
   id: string;
@@ -497,6 +505,15 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
         style={{ flex: 1, minWidth: 0, paddingTop: "calc(24px + env(safe-area-inset-top))" }}
       >
         <div style={{ maxWidth: maksBredde, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+          {/* D2: fast topprad m/ kontekst-veksler — kun AgencyOS (design-fasit
+              agencyos-veksler.jsx). zIndex over innholdet så nedtrekket flyter. */}
+          {erAgency && (
+            <div style={{ display: "flex", alignItems: "center", gap: 12, paddingBottom: 14, borderBottom: `1px solid ${T.border}`, position: "relative", zIndex: 30 }}>
+              <Caps size={9} style={{ flex: "none" }}>{nav.find((n) => n.id === autoAktiv)?.label ?? "AgencyOS"}</Caps>
+              <span style={{ width: 1, height: 20, background: T.border, flex: "none" }} aria-hidden />
+              <SpillerGruppeVeksler />
+            </div>
+          )}
           {children}
         </div>
       </div>
