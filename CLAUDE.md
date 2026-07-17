@@ -10,7 +10,7 @@ Hele plattformen for AK Golf Group. Ett monorepo, ett Next.js-prosjekt, fire pro
 
 ## Detaljerte regler (`.claude/rules/`)
 - `arkitektur.md` — produkter, ruter, mappestruktur.
-- `design-system-regel.md` — ÉN designkanon (8. juli 2026): det levende Claude Design-prosjektet, hentet via DesignSync. Ingen unntak, ingen "andre lag" for driftsskjermer.
+- `design-system-regel.md` — designkanon (v2-redesign, 9. juli 2026): det levende Claude Design-prosjektet via DesignSync; retning C er valgt og fase 6 pågår; golfdata/v13 er overgangs-lag.
 - `gotchas.md` — kjente feller (Prisma 7, Next.js 16 proxy, Supabase pooler, zod). Les FØR koding.
 
 ## FØR DU RØRER EN SKJERM — `docs/MASTER-SKJERMPLAN.md` (LÅST regel)
@@ -22,22 +22,22 @@ dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
 ## Låste beslutninger (juni 2026 — gjelder til Anders endrer dem)
 > **Fasit-kilde:** `docs/platform/BUSINESS-RULES.md`. Listen under er sammendrag — ved konflikt vinner BUSINESS-RULES.md. Ikke dupliser nye regler hit.
 
-> ⚠ **2026-06-22:** 4 regel-klynger er låst OPP (ikke lenger hard constraint) — tema-toggle,
-> abonnement/pris-nivåer, FYS-formel/A–K-tall, cockpit stall-SG/plan-etterlevelse. Verdier
-> under avklaring, se `docs/REGLER-OPPLAST-2026-06-22.md`. Ikke håndhev disse fire som låst
-> før nye verdier er bekreftet — resten av lista under står fast.
+> ⚠ **Oppdatert 2026-07-06** (historikk: `docs/REGLER-OPPLAST-2026-06-22.md`): av de 4 regel-klyngene
+> som ble låst opp 2026-06-22 er 3 nå **avklart og bygget** — tema-toggle (AgencyOS lys/mørk-bryter),
+> abonnement/pris (299 kr/mnd, ingen årlig) og cockpit stall-SG/plan-etterlevelse. Kun **FYS-formel +
+> A–K-nivåtall** har gjenstående deltråder (onboarding steg 6 + drill-retag) — ikke håndhev den som låst.
 
 - **Invarianter er anbefalinger, aldri sperrer:** ingenting i appen blokkerer trening. Avvik fra
   plan/regel vises i klarspråk til brukeren; sterkt avvik varsler coach. Aldri skriv «kan ikke
   brytes»-kode eller -tekst — se `plans/skjermplan-master.md` prinsipp 3 for fasit.
 - **App-navn:** Coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt — ikke bruk i ny UI-tekst.
-- **Tema (OPPHEVET 2026-07-09, v2-redesign):** «PlayerHQ alltid lyst»-regelen er opphevet — tema-strategi per app avgjøres av Anders i v2-retningsvalget (fase 3, `~/.claude/plans/breezy-forging-brook.md`). Anders' referansebilder er overveiende mørke. Inntil valget: ikke håndhev lys/mørk som regel; eksisterende skjermer beholder dagens oppførsel.
+- **Tema:** dagens bygde oppførsel er fasit (`BUSINESS-RULES.md` §Tema per produkt): PlayerHQ fast lyst, AgencyOS lys/mørk-bryter med standard mørk. «PlayerHQ alltid lyst» som HARD regel ble opphevet 2026-07-09 i påvente av v2; retning C er valgt, men en eksplisitt ny tema-strategi per app er ikke dokumentert etter valget — ikke endre tema-oppførsel uten Anders' beskjed.
 - **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen** — alltid fulle navn, gamle demo-navn skal bort. Unntak: ekte coach **«Markus Røinås Pedersen»** på markedssidene, ikke bytt ham ut.
 - **Planlegge → Workbench:** All planlegging går gjennom Workbench. Planlegge er **ett trykkpunkt** dit, ikke en meny av 6 kort. Samme i coachens spiller-Workbench.
 - **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner — ikke separate moduler. Mål bor i Oversikt, redigeres i Workbench.
 - **Abonnement (ingen tier-nivåer):** PlayerHQ-tilgang er gratis eller 299 kr/mnd. **Gratis** hvis: 1 mnd prøveperiode, ELLER coaching-pakke (Performance / Performance Pro), ELLER gruppe via AK Golf. **299 kr/mnd** for alle andre. «Performance / Performance Pro» er **coaching-pakker** (antall økter), IKKE app-nivåer. **ELITE finnes ikke** (dødt Prisma-enum — vis aldri i UI).
 - **FYS-resultatformel avventer:** Bygg testskjermer med plassholder-tall. Ikke hardkod referanseverdier før Anders gir grønt lys.
-- **Design-kilde (oppdatert 9. juli 2026 — v2-REDESIGN PÅGÅR):** kanon-kilden er fortsatt det LEVENDE Claude Design-prosjektet («AK Golf HQ Design System», `claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`) via DesignSync — men målbildet er nå **v2-generasjonen** (`ui_kits/v2/` + `tokens/v2/`) som designes per `~/.claude/plans/breezy-forging-brook.md`. v13/golfdata (`src/components/athletic/golfdata/`) er OVERGANGS-LAG: vedlikehold OK, nye store flater venter på v2-retningsvalget. `public/design-handover/` er stale og skal ikke brukes. Full regel: `.claude/rules/design-system-regel.md`. **Designdommer:** `.claude/skills/ak-designekspert` (gap meldes, ikke improviseres).
+- **Design-kilde (oppdatert 9. juli 2026 — v2-REDESIGN PÅGÅR):** kanon-kilden er fortsatt det LEVENDE Claude Design-prosjektet («AK Golf HQ Design System», `claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`) via DesignSync — men målbildet er nå **v2-generasjonen** (`ui_kits/v2/` + `tokens/v2/`) som designes per `~/.claude/plans/breezy-forging-brook.md`. **Retning C er valgt (2026-07-11) og fase 6 pågår:** gjenværende skjermer porteres til v2 bølge for bølge, én skjerm per commit, master-skjermplanens haker i samme commit. v13/golfdata (`src/components/athletic/golfdata/`) er OVERGANGS-LAG: vedlikehold OK, nye flater bygges mot godkjent v2-mockup. `public/design-handover/` er stale og skal ikke brukes. Full regel: `.claude/rules/design-system-regel.md`. **Designdommer:** `.claude/skills/ak-designekspert` (gap meldes, ikke improviseres).
 - **Skjermtekst (copy-kilde):** `docs/skjermtekst/` — ekte norsk UI-tekst per hovedskjerm + design-brief. Kopier derfra, ikke dikt opp ny tekst.
 - Aldri referer til `wireframe/`, gamle `design-package/` eller `design-files-v2/` i produksjonsfiler — disse er slettet fra prosjektet.
 
@@ -70,7 +70,7 @@ npx tsx --conditions=react-server --experimental-test-module-mocks --test src/li
 
 npm run e2e                          # Playwright e2e (e2e/*.spec.ts + tests/e2e/*.spec.ts)
 npx playwright test e2e/auth-guard.spec.ts    # kjør ÉN e2e-fil
-npm run e2e:ui                       # Playwright UI-modus (debug)
+npm run test:e2e:ui                  # Playwright UI-modus (debug)
 npm run test:all                     # enhetstester + e2e
 
 npm run verify                       # FULL sjekk før commit (prisma validate+generate, tsc --noEmit,
