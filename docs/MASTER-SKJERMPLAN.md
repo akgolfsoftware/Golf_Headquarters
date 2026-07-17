@@ -273,7 +273,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Talent-hub | `/portal/talent` | ✓ | ✓✓– | ✓ | ~ | ~ | † |
 | · Min plan | `/portal/talent/min-plan` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D5): `TalentMinPlanV2` + tynn page, rute ut av (legacy); TalentTracking-query og milepæl-parsing uendret; HjelpTips talentVurdering; datoformat fikk Oslo-tidssone (gotcha-regelen, legacy manglet den). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | · Mitt nivå | `/portal/talent/mitt-niva` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D5): `TalentMittNivaV2` (RadarProfil deg-mot-kohort m/ `kohortSnitt`-HjelpTips) + tynn page, rute ut av (legacy); kohort-query/`computeAverage` uendret. Tom kohort vises nå ærlig uten sammenlignings-serie (legacy tegnet 0-polygon). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
-| · Roadmap | `/portal/talent/roadmap` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — samme bespoke talent-familie.
+| · Roadmap | `/portal/talent/roadmap` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D5): `TalentRoadmapV2` + tynn page, rute ut av (legacy); SeasonPlan-/TalentTracking-queries og sortering uendret; HjelpTips lFase, pre-beta-merke beholdt, ærlige tomtilstander m/ CTA til Planlegge. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | · Sammenligning | `/portal/talent/sammenligning` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — samme bespoke talent-familie.
 
 > Merknad: Talent-delen er knyttet til «Elite Fase 2», som er bevisst utsatt. Disse adressene finnes, men er ikke prioritert nå.
