@@ -288,7 +288,7 @@ Disse finnes i appen, men er enten eldre kortadresser som peker videre, eller sm
 | Analyse (alt. → redirect) | `/portal/analyse` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/portal/analysere")` — ikke en egen skjerm.
 | Reach (oppsøk-verktøy) | `/portal/reach` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET (tynn) — `PlayerHero`-header; resten er ren tom-tilstand (ingen datamodell for reach ennå).
 | Agent-pipeline (AI internt) | `/portal/agent-pipeline` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET (tynn) — `PlayerHero`-header; signal/plan-action/agent-run-tabellene er hand-bygget Tailwind, bør sees nærmere på.
-| Se annen spiller | `/portal/spiller/[spillerId]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — 0 golfdata/v2-imports.
+| Se annen spiller | `/portal/spiller/[spillerId]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D3): `SpillerDetaljV2` (PillTabs, SgKategorier, DataTabell m/mobilkort) — queries og snitt-utregninger uendret; HjelpTips på HCP/SG. Mål-progresjonsbar ærlig utelatt (loaderen gir alltid `currentValue: null` — baren var aldri synlig). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | Venner (B39, ny 16. jul) | `/portal/venner` | ✓ | --- | ✓ | ✓ | ✓ | ✓ |
 | · Venn-profil (økt-feed) | `/portal/venner/[spillerId]` | ✓ | --- | ✓ | ✓ | ✓ | ✓ |
 | Øvelser (alt. → redirect) | `/portal/tren/ovelser` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET — `proxy.ts`/`workbenchRedirectForTrenPath` redirecter til `/portal/planlegge/workbench?tab=std`. NB: dokumentets tidligere notat om mål `/portal/drills` var feil/foreldet — rettet her.

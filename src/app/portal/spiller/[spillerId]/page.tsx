@@ -1,16 +1,20 @@
 /**
- * Spiller-detalj — /portal/spiller/[spillerId]
- *
- * Public-visning av en spillers profil — brukes fra "stall", lag-sider
- * og søkeresultater. Tabs: Oversikt · Plan · Statistikk · Runder · Coaching-historikk.
- *
- * Design-kilde: 01 Spiller-detalj.html
+ * PlayerHQ · Spiller-detalj (/portal/spiller/[spillerId]) — v2.
+ * v2-port 17. juli 2026 (Team D3): `SpillerDetaljV2` erstatter
+ * spiller-detalj-client (hybrid), ruten flyttet ut av (legacy). Auth
+ * (innlogging kreves), alle Prisma-queries og snitt-utregningene
+ * (snittScore/sgSnitt) er uendret — kun presentasjonslaget er nytt.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { SpillerDetaljClient, type SpillerData } from "./spiller-detalj-client";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { TilbakeLenke } from "@/components/v2";
+import {
+  SpillerDetaljV2,
+  type SpillerData,
+} from "@/components/portal/v2/SpillerDetaljV2";
 
 type Props = {
   params: Promise<{ spillerId: string }>;
@@ -18,7 +22,7 @@ type Props = {
 
 export default async function SpillerDetaljPage({ params }: Props) {
   const { spillerId } = await params;
-  await requirePortalUser(); // sikrer innlogging
+  const user = await requirePortalUser(); // sikrer innlogging
 
   const spiller = await prisma.user.findFirst({
     where: { id: spillerId },
@@ -143,5 +147,10 @@ export default async function SpillerDetaljPage({ params }: Props) {
     },
   };
 
-  return <SpillerDetaljClient data={data} />;
+  return (
+    <V2Shell nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal">Tilbake</TilbakeLenke>
+      <SpillerDetaljV2 data={data} />
+    </V2Shell>
+  );
 }
