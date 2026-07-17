@@ -1,55 +1,75 @@
 "use client";
 
 /**
- * /admin/stats/moderering — coach modereringskø, v2-port 16. juli 2026.
- * Erstatter Tailwind/shadcn-tokens med v2 T-tokens. Ingen modererings- eller
- * GDPR-slett-kø finnes ennå i datamodellen (se page.tsx) — skjermen viser
- * derfor bevisst tomme tilstander og de samme ikke-koblede knappene som før
- * (Godkjenn/Avvis/Bekreft sletting mangler fortsatt reell handling — det er
- * IKKE en regresjon fra denne porten, det var slik også før).
+ * /admin/stats/moderering — moderering-/GDPR-kø, KOBLET 17. juli 2026 (D5).
+ * Erstatter stub-fanene fra v2-porten 16. juli: kontrakten er nå bygget på den
+ * faktiske datamodellen (ModerationCase — rapportert innhold + GDPR-sletting),
+ * ikke de fem tenkte stats-fanene. Godkjenn/Avvis/Bekreft sletting kaller
+ * server actions i rutemappen med pending-state og inline-feil (samme mønster
+ * som AdminForeslatteTesterV2 — ingen toast). GDPR er to-stegs: Godkjenn
+ * først, deretter eksplisitt «Bekreft sletting» med confirm-vakt i klarspråk.
+ * Saker OPPRETTES ikke her ennå — rapporteringsflyten er egen jobb.
  */
 
-import { useState } from "react";
-import { Caps, Kort, StatusPill, TomTilstand, T } from "@/components/v2";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { Caps, Knapp, Kort, StatusPill, TekstOmraade, TomTilstand, T } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { CountUp } from "@/components/stats/count-up";
+import { avvisSak, godkjennSak, utforGdprSletting } from "@/app/admin/(legacy)/stats/moderering/actions";
 
-type Turnering = {
+/* ── Datakontrakt (mappes fra ModerationCase i page.tsx) ─────────────────── */
+
+export type ModereringSakType = "RAPPORTERT_INNHOLD" | "GDPR_SLETTING";
+export type ModereringSakStatus = "OPEN" | "APPROVED" | "REJECTED" | "EXECUTED";
+
+export interface ModereringSakV2 {
   id: string;
-  navn: string;
-  dato: string;
-  innlegger: string;
-  flagg: number;
-  dubletter: string[];
-};
-
-type Slett = {
-  spiller: string;
-  forespurAv: string;
+  type: ModereringSakType;
+  status: ModereringSakStatus;
+  /** Navnet på spilleren saken gjelder («Slettet bruker» etter utført GDPR). */
+  spillerNavn: string;
+  /** Hvem som meldte saken — null ved GDPR-egenforespørsel. */
+  rapportertAv: string | null;
+  /** Rapportert mål, f.eks. «Video · cku…» — null når ikke relevant. */
+  mal: string | null;
+  /** Innmelderens begrunnelse. */
+  begrunnelse: string | null;
+  /** Ferdig formatert mottatt-tidspunkt (Oslo-tid). */
   mottatt: string;
-  grunn: string;
-  rader: number;
-};
+  /** Ferdig formatert behandlet-tidspunkt — null for åpne saker. */
+  behandlet: string | null;
+}
 
-type Stats = {
-  turneringer: number;
-  resultater: number;
-  profilEndringer: number;
+export interface ModereringStatsV2 {
+  /** Åpne rapportert innhold-saker. */
+  rapporter: number;
+  /** Åpne + godkjente (ikke utførte) GDPR-slettesaker. */
   slett: number;
   godkjentDenneUka: number;
   avvistDenneUka: number;
   snittTid: string;
-};
+}
+
+export interface AdminStatsModereringV2Props {
+  /** Kø: OPEN-saker + APPROVED GDPR-saker som venter på utførelse. */
+  saker: ModereringSakV2[];
+  /** Nylig lukkede saker (avvist/utført/godkjent rapport), nyeste først. */
+  historikk: ModereringSakV2[];
+  stats: ModereringStatsV2;
+  /** Klarspråk-feilmelding når køen ikke kunne leses (f.eks. preview uten tabell). */
+  lasteFeil: string | null;
+}
 
 const TABS = [
-  { id: "turneringer", label: "Turneringer", icon: "trophy" },
-  { id: "resultater", label: "Resultater", icon: "list" },
-  { id: "profil", label: "Profil-endringer", icon: "user" },
+  { id: "rapporter", label: "Rapportert innhold", icon: "flag" },
   { id: "slett", label: "Slett-forespørsler", icon: "trash-2" },
   { id: "historikk", label: "Historikk", icon: "history" },
 ] as const;
 
 type Tab = (typeof TABS)[number]["id"];
+
+/* ── Småbiter ────────────────────────────────────────────────────────────── */
 
 function Kpi({ label, value, tone }: { label: string; value: number; tone: "lime" | "up" | "down" }) {
   const c = tone === "up" ? T.up : tone === "down" ? T.down : T.fg;
@@ -72,36 +92,198 @@ function KpiText({ label, value }: { label: string; value: string }) {
   );
 }
 
-function EmptyTab({ kind }: { kind: Tab }) {
-  const labels: Record<Tab, string> = {
-    turneringer: "turneringer",
-    resultater: "resultater",
-    profil: "profil-endringer",
-    slett: "slett-forespørsler",
-    historikk: "historikk",
-  };
+function TypePill({ type }: { type: ModereringSakType }) {
+  return type === "GDPR_SLETTING" ? (
+    <StatusPill tone="down">GDPR · Sletting</StatusPill>
+  ) : (
+    <StatusPill tone="warn">Rapportert innhold</StatusPill>
+  );
+}
+
+function ResultatPill({ status }: { status: ModereringSakStatus }) {
+  if (status === "APPROVED") return <StatusPill tone="up">Godkjent</StatusPill>;
+  if (status === "REJECTED") return <StatusPill tone="down">Avvist</StatusPill>;
+  if (status === "EXECUTED") return <StatusPill tone="info">Sletting utført</StatusPill>;
+  return <StatusPill tone="warn">Åpen</StatusPill>;
+}
+
+function InlineFeil({ melding }: { melding: string }) {
   return (
-    <Kort>
-      <TomTilstand icon="check" title={`Ingen ventende ${labels[kind]}`} sub="Køen er tom akkurat nå." />
+    <div
+      role="alert"
+      style={{
+        fontFamily: T.ui, fontSize: 12, color: T.down, lineHeight: 1.5,
+        background: `color-mix(in srgb, ${T.down} 10%, transparent)`,
+        border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
+        borderRadius: 10, padding: "8px 11px", marginTop: 12,
+      }}
+    >
+      {melding}
+    </div>
+  );
+}
+
+function MetaRad({ label, verdi }: { label: string; verdi: string }) {
+  return (
+    <>
+      <span style={{ color: T.mut }}>{label}</span>
+      <span style={{ color: T.fg, minWidth: 0, overflowWrap: "anywhere" }}>{verdi}</span>
+    </>
+  );
+}
+
+/* ── Sak-kort med koblede handlinger ─────────────────────────────────────── */
+
+function SakKort({ sak }: { sak: ModereringSakV2 }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+  const [visAvvis, setVisAvvis] = useState(false);
+  const [avvisGrunn, setAvvisGrunn] = useState("");
+
+  const gdpr = sak.type === "GDPR_SLETTING";
+  const venterUtforelse = gdpr && sak.status === "APPROVED";
+
+  function kjor(handling: () => Promise<{ ok: true }>, fallbackFeil: string) {
+    setError(null);
+    startTransition(async () => {
+      try {
+        await handling();
+        router.refresh();
+      } catch (err) {
+        setError(err instanceof Error && err.message ? err.message : fallbackFeil);
+      }
+    });
+  }
+
+  function godkjenn() {
+    kjor(() => godkjennSak(sak.id), "Kunne ikke godkjenne saken.");
+  }
+
+  function avvis() {
+    kjor(() => avvisSak(sak.id, avvisGrunn.trim() || undefined), "Kunne ikke avvise saken.");
+  }
+
+  function bekreftSletting() {
+    const ok = confirm(
+      `Bekreft GDPR-sletting for ${sak.spillerNavn}?\n\n` +
+        "Profilen anonymiseres: navnet erstattes med «Slettet bruker», og " +
+        "e-post, telefon, profilbilde og fødselsdato fjernes. Treningsdata, " +
+        "bookinger og økter beholdes — uten personopplysninger.\n\n" +
+        "Dette kan ikke angres.",
+    );
+    if (!ok) return;
+    kjor(() => utforGdprSletting(sak.id), "Kunne ikke utføre slettingen.");
+  }
+
+  return (
+    <Kort
+      eyebrow={
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <Icon name={gdpr ? "shield-check" : "flag"} size={11} style={{ color: T.mut }} />
+          Mottatt {sak.mottatt}
+        </span>
+      }
+      action={
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <TypePill type={sak.type} />
+          {venterUtforelse && <StatusPill tone="info">Godkjent · venter på utførelse</StatusPill>}
+        </span>
+      }
+    >
+      <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, lineHeight: 1.25, color: T.fg }}>
+        {sak.spillerNavn}
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "6px 16px", marginTop: 12, fontFamily: T.ui, fontSize: 13, lineHeight: 1.5 }}>
+        <MetaRad label={gdpr ? "Forespurt av:" : "Rapportert av:"} verdi={sak.rapportertAv ?? (gdpr ? "Spilleren selv (egenforespørsel)" : "Ukjent")} />
+        {sak.mal && <MetaRad label="Gjelder:" verdi={sak.mal} />}
+        {sak.begrunnelse && <MetaRad label="Begrunnelse:" verdi={`«${sak.begrunnelse}»`} />}
+      </div>
+
+      {venterUtforelse && (
+        <div style={{ marginTop: 14, borderRadius: 12, background: `color-mix(in srgb, ${T.down} 8%, transparent)`, padding: 14 }}>
+          <div style={{ marginBottom: 8, fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: T.down }}>
+            Dette skjer ved bekreftelse
+          </div>
+          <ul style={{ display: "flex", flexDirection: "column", gap: 6, fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.fg, margin: 0, paddingLeft: 0, listStyle: "none" }}>
+            <li>· Profilen anonymiseres — navn blir «Slettet bruker», e-post/telefon/bilde/fødselsdato fjernes</li>
+            <li>· Treningsdata, bookinger og økter beholdes uten personopplysninger</li>
+            <li>· Handlingen logges i audit-loggen og kan ikke angres</li>
+          </ul>
+        </div>
+      )}
+
+      {visAvvis && !pending && (
+        <div style={{ marginTop: 14 }}>
+          <TekstOmraade
+            label="Begrunnelse for avvisning (valgfritt — logges i audit-loggen)"
+            value={avvisGrunn}
+            rows={2}
+            placeholder="F.eks. «Innholdet bryter ikke retningslinjene.»"
+            onChange={setAvvisGrunn}
+          />
+        </div>
+      )}
+
+      {error && <InlineFeil melding={error} />}
+
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginTop: 16 }}>
+        {venterUtforelse ? (
+          <Knapp
+            icon={pending ? "loader" : "trash-2"}
+            disabled={pending}
+            onClick={bekreftSletting}
+            style={{ minHeight: 44, background: T.down, borderColor: T.down, color: T.bg }}
+          >
+            Bekreft sletting
+          </Knapp>
+        ) : visAvvis ? (
+          <>
+            <Knapp icon={pending ? "loader" : "x"} disabled={pending} onClick={avvis} style={{ minHeight: 44, background: T.down, borderColor: T.down, color: T.bg }}>
+              Bekreft avvisning
+            </Knapp>
+            <Knapp ghost disabled={pending} onClick={() => setVisAvvis(false)} style={{ minHeight: 44 }}>
+              Angre
+            </Knapp>
+          </>
+        ) : (
+          <>
+            <Knapp icon={pending ? "loader" : "check"} disabled={pending} onClick={godkjenn} style={{ minHeight: 44 }}>
+              {gdpr ? "Godkjenn forespørselen" : "Godkjenn rapporten"}
+            </Knapp>
+            <Knapp ghost icon="x" disabled={pending} onClick={() => setVisAvvis(true)} style={{ minHeight: 44, color: T.down }}>
+              Avvis
+            </Knapp>
+          </>
+        )}
+        {gdpr && !venterUtforelse && (
+          <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.5 }}>
+            To steg: godkjenning først — selve slettingen bekreftes etterpå.
+          </span>
+        )}
+      </div>
     </Kort>
   );
 }
 
-export function ModeringClientV2({ turneringer, slett, stats }: { turneringer: Turnering[]; slett: Slett | null; stats: Stats }) {
-  const [aktivTab, setAktivTab] = useState<Tab>("turneringer");
-  const [valgte, setValgte] = useState<string[]>([]);
-  const totaltVentende = stats.turneringer + stats.resultater + stats.profilEndringer + stats.slett;
+/* ── Skjerm ──────────────────────────────────────────────────────────────── */
 
-  const toggleValgt = (id: string) => setValgte((v) => (v.includes(id) ? v.filter((s) => s !== id) : [...v, id]));
+export function ModeringClientV2({ saker, historikk, stats, lasteFeil }: AdminStatsModereringV2Props) {
+  const [aktivTab, setAktivTab] = useState<Tab>("rapporter");
+  const totaltVentende = stats.rapporter + stats.slett;
+
+  const rapporter = saker.filter((s) => s.type === "RAPPORTERT_INNHOLD");
+  const slett = saker.filter((s) => s.type === "GDPR_SLETTING");
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap, paddingBottom: 96 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: T.gap, paddingBottom: 48 }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
           <Caps>Admin · Stats</Caps>
           <h1 style={{ margin: "8px 0 0", fontFamily: T.disp, fontWeight: 700, fontSize: 30, lineHeight: 1.05, letterSpacing: "-0.02em", color: T.fg }}>Moderering</h1>
           <p style={{ marginTop: 6, fontFamily: T.mono, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut }}>
-            Godkjenn innsendte turneringer, resultater og profil-endringer · håndter GDPR-slett
+            Behandle rapportert innhold · håndter GDPR-slett
           </p>
         </div>
         <div style={{ textAlign: "right" }}>
@@ -112,6 +294,15 @@ export function ModeringClientV2({ turneringer, slett, stats }: { turneringer: T
         </div>
       </div>
 
+      {lasteFeil && (
+        <Kort style={{ borderColor: `color-mix(in srgb, ${T.warn} 40%, ${T.border})` }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+            <Icon name="alert-triangle" size={16} style={{ color: T.warn, flex: "none", marginTop: 1 }} />
+            <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.55, margin: 0 }}>{lasteFeil}</p>
+          </div>
+        </Kort>
+      )}
+
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 12 }}>
         <Kpi label="Ventende" value={totaltVentende} tone="lime" />
         <Kpi label="Godkjent denne uka" value={stats.godkjentDenneUka} tone="up" />
@@ -121,25 +312,26 @@ export function ModeringClientV2({ turneringer, slett, stats }: { turneringer: T
 
       <div style={{ display: "flex", alignItems: "center", gap: 4, overflowX: "auto", borderBottom: `1px solid ${T.border}` }}>
         {TABS.map((t) => {
-          const count =
-            t.id === "turneringer" ? stats.turneringer : t.id === "resultater" ? stats.resultater : t.id === "profil" ? stats.profilEndringer : t.id === "slett" ? stats.slett : undefined;
+          const count = t.id === "rapporter" ? stats.rapporter : t.id === "slett" ? stats.slett : undefined;
           const isActive = aktivTab === t.id;
           return (
             <button
               key={t.id}
               type="button"
+              className="v2-focus"
               onClick={() => setAktivTab(t.id)}
               style={{
                 display: "inline-flex", alignItems: "center", gap: 8, whiteSpace: "nowrap",
-                borderBottom: `2px solid ${isActive ? T.lime : "transparent"}`, marginBottom: -1,
-                padding: "14px 14px", background: "none", border: "none", borderBottomWidth: 2, borderBottomStyle: "solid", borderBottomColor: isActive ? T.lime : "transparent",
-                fontFamily: T.mono, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: isActive ? T.lime : T.mut, cursor: "pointer",
+                marginBottom: -1, padding: "14px 14px", background: "none", border: "none",
+                borderBottomWidth: 2, borderBottomStyle: "solid", borderBottomColor: isActive ? T.lime : "transparent",
+                fontFamily: T.mono, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em",
+                color: isActive ? T.lime : T.mut, cursor: "pointer",
               }}
             >
               <Icon name={t.icon} size={14} />
               {t.label}
               {count !== undefined && count > 0 && (
-                <span style={{ borderRadius: 9999, padding: "1px 6px", fontFamily: T.mono, fontSize: 10, fontWeight: 800, background: t.id === "slett" ? T.down : T.lime, color: t.id === "slett" ? "#fff" : T.onLime }}>
+                <span style={{ borderRadius: 9999, padding: "1px 6px", fontFamily: T.mono, fontSize: 10, fontWeight: 800, background: t.id === "slett" ? T.down : T.lime, color: t.id === "slett" ? T.bg : T.onLime }}>
                   {count}
                 </span>
               )}
@@ -148,99 +340,54 @@ export function ModeringClientV2({ turneringer, slett, stats }: { turneringer: T
         })}
       </div>
 
-      <div>
-        {aktivTab === "turneringer" &&
-          (turneringer.length === 0 ? (
-            <EmptyTab kind="turneringer" />
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {aktivTab === "rapporter" &&
+          (rapporter.length === 0 ? (
+            <Kort>
+              <TomTilstand icon="check" title="Ingen ventende rapporter" sub="Køen er tom akkurat nå." />
+            </Kort>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {turneringer.map((t) => (
-                <Kort key={t.id}>
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
-                    <input type="checkbox" checked={valgte.includes(t.id)} onChange={() => toggleValgt(t.id)} style={{ marginTop: 4, width: 16, height: 16, flex: "none", cursor: "pointer" }} />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10 }}>
-                        <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg }}>{t.navn}</span>
-                        <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.mut }}>{t.dato.toUpperCase()}</span>
-                        {t.flagg > 0 && <StatusPill tone={t.flagg >= 3 ? "down" : "warn"}>{t.flagg} flagg</StatusPill>}
-                      </div>
-                      <div style={{ marginTop: 6, fontSize: 13, color: T.mut }}>
-                        Innlagt av <strong style={{ fontWeight: 600, color: T.fg }}>{t.innlegger}</strong>
-                        {t.dubletter.length > 0 && <> · Mulige dubletter: {t.dubletter.join(", ")}</>}
-                      </div>
-                    </div>
-                    <div style={{ display: "flex", gap: 8, flex: "none" }}>
-                      <button type="button" title="Godkjenn" style={{ display: "grid", placeItems: "center", width: 36, height: 36, borderRadius: 10, background: T.lime, color: T.onLime, border: "none", cursor: "pointer" }}>
-                        <Icon name="check" size={16} />
-                      </button>
-                      <button type="button" title="Avvis" style={{ display: "grid", placeItems: "center", width: 36, height: 36, borderRadius: 10, background: `color-mix(in srgb, ${T.down} 12%, transparent)`, color: T.down, border: "none", cursor: "pointer" }}>
-                        <Icon name="x" size={16} />
-                      </button>
-                    </div>
-                  </div>
-                </Kort>
-              ))}
-            </div>
+            rapporter.map((s) => <SakKort key={s.id} sak={s} />)
           ))}
 
-        {aktivTab === "slett" && !slett && <EmptyTab kind="slett" />}
+        {aktivTab === "slett" &&
+          (slett.length === 0 ? (
+            <Kort>
+              <TomTilstand icon="check" title="Ingen ventende slett-forespørsler" sub="Køen er tom akkurat nå." />
+            </Kort>
+          ) : (
+            slett.map((s) => <SakKort key={s.id} sak={s} />)
+          ))}
 
-        {aktivTab === "slett" && slett && (
-          <Kort style={{ maxWidth: 640, borderColor: `color-mix(in srgb, ${T.down} 35%, ${T.border})`, background: `color-mix(in srgb, ${T.down} 5%, ${T.panel})` }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: T.down }}>
-              <Icon name="shield-check" size={14} />
-              GDPR · Slett-forespørsel
-            </div>
-            <h2 style={{ margin: "10px 0 0", fontFamily: T.disp, fontWeight: 700, fontSize: 26, letterSpacing: "-0.02em", color: T.fg }}>{slett.spiller}</h2>
-            <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "8px 20px", marginTop: 18, fontSize: 13 }}>
-              <span style={{ color: T.mut }}>Forespurt av:</span>
-              <span style={{ color: T.fg }}>{slett.forespurAv}</span>
-              <span style={{ color: T.mut }}>Mottatt:</span>
-              <span style={{ color: T.fg }}>{slett.mottatt}</span>
-              <span style={{ color: T.mut }}>Grunn:</span>
-              <span style={{ color: T.fg }}>«{slett.grunn}»</span>
-            </div>
-            <div style={{ marginTop: 20, borderRadius: 12, background: `color-mix(in srgb, ${T.down} 8%, transparent)`, padding: 14 }}>
-              <div style={{ marginBottom: 8, fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: T.down }}>Konsekvens</div>
-              <ul style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 13, lineHeight: 1.55, color: T.fg, margin: 0, paddingLeft: 0, listStyle: "none" }}>
-                <li>· Sletter PublicPlayer + {slett.rader} PublicPlayerEntry-rader</li>
-                <li>· Markerer {slett.rader} turneringer som «anonym deltaker»</li>
-                <li>· Sender bekreftelse til {slett.forespurAv}</li>
-              </ul>
-            </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 20 }}>
-              <button type="button" style={{ borderRadius: 9999, background: T.down, padding: "12px 22px", fontSize: 13, fontWeight: 700, color: "#fff", border: "none", cursor: "pointer" }}>
-                Bekreft sletting
-              </button>
-              <button type="button" style={{ borderRadius: 9999, background: T.panel2, border: `1px solid ${T.border}`, padding: "12px 22px", fontSize: 13, fontWeight: 700, color: T.fg, cursor: "pointer" }}>
-                Avvis med begrunnelse
-              </button>
-            </div>
-          </Kort>
-        )}
-
-        {aktivTab !== "turneringer" && aktivTab !== "slett" && <EmptyTab kind={aktivTab} />}
+        {aktivTab === "historikk" &&
+          (historikk.length === 0 ? (
+            <Kort>
+              <TomTilstand icon="history" title="Ingen behandlede saker ennå" sub="Behandlede saker dukker opp her." />
+            </Kort>
+          ) : (
+            historikk.map((s) => (
+              <Kort key={s.id}>
+                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10 }}>
+                  <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg }}>{s.spillerNavn}</span>
+                  <TypePill type={s.type} />
+                  <ResultatPill status={s.status} />
+                  <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.mut }}>
+                    {s.behandlet ? `Behandlet ${s.behandlet}` : `Mottatt ${s.mottatt}`}
+                  </span>
+                </div>
+              </Kort>
+            ))
+          ))}
       </div>
 
-      {valgte.length > 0 && (
-        <div style={{ position: "sticky", bottom: 16, zIndex: 20, display: "flex", alignItems: "center", gap: 16, borderRadius: 9999, background: T.lime, padding: "12px 22px", boxShadow: "0 12px 32px rgba(0,0,0,0.35)" }}>
-          <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: T.onLime }}>{valgte.length} valgt</span>
-          <button type="button" style={{ borderRadius: 9999, border: `1px solid color-mix(in srgb, ${T.onLime} 40%, transparent)`, padding: "6px 16px", fontFamily: T.mono, fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: T.onLime, background: "none", cursor: "pointer" }}>
-            Godkjenn alle
-          </button>
-          <button type="button" style={{ borderRadius: 9999, border: `1px solid color-mix(in srgb, ${T.onLime} 40%, transparent)`, padding: "6px 16px", fontFamily: T.mono, fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: T.onLime, background: "none", cursor: "pointer" }}>
-            Avvis alle
-          </button>
-          <button
-            type="button"
-            onClick={() => setValgte([])}
-            aria-label="Lukk utvalg"
-            style={{ marginLeft: "auto", display: "grid", placeItems: "center", width: 28, height: 28, borderRadius: 9999, color: T.onLime, background: "none", border: "none", cursor: "pointer" }}
-          >
-            <Icon name="x" size={16} />
-          </button>
-        </div>
-      )}
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+        <Icon name="info" size={13} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
+        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.6, margin: 0, maxWidth: 620 }}>
+          Saker opprettes foreløpig av support — rapportert innhold meldes dit, og
+          GDPR-sletting startes ved skriftlig forespørsel fra spilleren. Rapporteringsflyt
+          i appen kommer senere.
+        </p>
+      </div>
     </div>
   );
 }

@@ -450,7 +450,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Finans (alt. → redirect) | `/admin/finance` | ✓ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/admin/okonomi")` — som selv er en redirect til `/admin/agencyos/okonomi` (2-hopps kjede). Ikke en egen skjerm.
 | **Økonomi (MRR/betalinger)** | `/admin/okonomi` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: NYTT FUNN — dette er nå selv en ren `redirect("/admin/agencyos/okonomi")`, ett hopp til fra den allerede dokumenterte `/admin/finance`-aliasen. Raden var feilaktig scoret som en levende skjerm. |
 | Stats-oversikt | `/admin/stats/overview` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminStatsOverviewV2` + `AdminStatsRaskeHandlingerV2` (T-tokens; `Reveal`/`CountUp` beholdt uendret som generiske adferds-primitiver). Samme datagrunnlag (`hentAdminOverview`, `sjekkDbHelse`) uendret. La til `git-commit-horizontal` i v2-ikonregisteret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
-| Stats-moderering | `/admin/stats/moderering` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul: `AdminStatsModereringV2` (T-tokens), erstatter Tailwind/shadcn `ModeringClient`. Ingen modererings-/GDPR-slett-kø finnes i datamodellen ennå — bevisst tomme tilstander + ikke-koblede knapper beholdt UENDRET fra før (ikke en regresjon fra denne porten). Design – → ✓; Flyt/Data/Funker fortsatt ~ (reell begrensning, ikke stylingsgap). |
+| Stats-moderering | `/admin/stats/moderering` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | **Kø koblet 17. jul (D5, Anders' ja):** `ModerationCase`-modell + actions m/ zod-statusoverganger og audit; Godkjenn/Avvis/Bekreft sletting virker; GDPR = to-stegs anonymisering (navn/e-post/telefon/avatar/fødselsdato — bevisst IKKE `deletedAt`, som ville trigget hard-delete-cronen). Faner endret fra 5 stubber til Rapportert innhold · Slett-forespørsler · Historikk (matcher datamodellen); falsk batch-bar fjernet. Rest: rapporteringsflyt i appen (opprette saker) + `publicPlayerId`-avklaring — se AAPNE-SPORSMAAL. NB: `scripts/create-moderation-cases-2026-07-17.ts` må kjøres mot DIRECT_URL før deploy. |
 
 ### Admin (organisasjon og innstillinger)
 
@@ -764,8 +764,8 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
   anleggsdata). Rest: kartplassering (mapX/mapY/latlong) trenger egen kart-flate — meldt gap.
 - `/admin/availability`: kompleks drag-interaksjon + 3 visningsmoduser — restylet 1:1 mot v2-tokens,
   ingen ny funksjon lagt til.
-- `/admin/stats/moderering`: ingen modererings-/GDPR-slett-kø finnes ennå i datamodellen — bevisst
-  tomme tilstander og ikke-koblede knapper (Godkjenn/Avvis/Bekreft sletting) beholdt uendret.
+- ~~`/admin/stats/moderering`~~ **LUKKET 17. jul (D5):** ModerationCase-kø koblet m/ audit og
+  GDPR-anonymisering. Rest (se AAPNE-SPORSMAAL D5): rapporteringsflyt i appen + publicPlayerId-avklaring.
 
 ---
 
