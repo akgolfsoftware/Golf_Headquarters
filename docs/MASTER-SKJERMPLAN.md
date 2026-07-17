@@ -396,7 +396,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Teknisk plan | `/admin/teknisk-plan` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminTekniskPlanV2`. |
 | · Per spiller | `/admin/teknisk-plan/[spillerId]` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul (tynn men ekte): `DetailShell` (ui/`Breadcrumb`) + `KPICard` (wrapper rundt golfdata `Eyebrow`). |
 | **Turneringer** ★ | `/admin/tournaments` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: v2-redesign, hele legacy-mappen portert og slettet
-| · Turnering-detalj | `/admin/tournaments/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: duplikat tilbake-lenke fjernet, nettleser-testet
+| · Turnering-detalj | `/admin/tournaments/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: duplikat tilbake-lenke fjernet, nettleser-testet. 17. jul: D1 Fellesmelding (bolk 5, fasit `agencyos-fellesmelding.jsx`) — 3-stegs panel (mottakere → melding → send) fra `FellesmeldingPanel`, sender via `sendFellesmeldingTilDeltakere` → `sendMeldingTilSpiller` (CoachingSession DIRECT per deltaker, ingen ny modell); kvittering, delvis-feil m/ «Prøv igjen for N», tom-tilstand; listeknappen på `/admin/tournaments` åpner samme panel via `?fellesmelding=1` (gamle GroupMember-notification-fan-outen fjernet)
 | · Ny turnering | `/admin/tournaments/ny` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: v2 5-stegs-veiviser; fant+fikset "use server"-krasj ved innsending
 | · Dubletter (rydd) | `/admin/tournaments/dubletter` | ✓ | ✓–– | ✓ | ~ | ✓ | ~ | 2026-07-13: v2, kun tom-tilstand nettleser-testet (0 dubletter i DB nå)
 | Økter | `/admin/okter` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminOkterV2`. |
@@ -718,7 +718,7 @@ Skjermer/funksjoner som planen vår (manifestene) sier vi trenger, men som ikke 
 1. **Shot-map / spredningsplott** (`/portal/statistikk/shot-map`) — designet finnes (elite-pakken), men databasen mangler punkt-koordinater for hvert slag. Kan ikke vise ekte data før datamodellen utvides. (Notert som data-blokkert.)
 2. **Scorecard per runde, hull-for-hull** (`/portal/tren/turneringer/[id]/runde/[nr]`) — mangler i databasen; `Round` har bare totalscore, ikke hull-for-hull. Data-blokkert.
 3. **Live turnerings-tracking** (`/portal/tren/turneringer/[id]/live`) — hele live-scoring-dataflyten mangler. Data-blokkert.
-4. **Fellesmelding til turneringsdeltakere** — planen for AgencyOS sier vi skal kunne sende én melding til alle deltakerne i en turnering. Flyten er beskrevet, men ingen ferdig design er levert for selve «velg deltakere → skriv → send»-stegene. Trenger design.
+4. **Fellesmelding til turneringsdeltakere** — LEVERT 17. jul (D1, bolk 5): design godkjent (`ui_kits/v2/agencyos-fellesmelding.jsx`) og bygget på `/admin/tournaments/[id]` (3-stegs panel, meldings-infrastrukturen gjenbrukt).
 5. **Spiller↔gruppe-veksler** (player-picker alltid øverst i AgencyOS) — beskrevet i planen som en ny fast del av toppmenyen, men ikke levert som design. Trenger design.
 6. **Fokus-spiller-blokk med pin + AI-forslag** — delvis bygget på cockpit, men «pin manuelt»-mekanismen + AI-forslagsfeltet er ikke ferdig designet. Trenger design.
 7. **Mobil-utgave av Workbench og AgencyOS** — designet er laget for stor skjerm (desktop). Mobil-varianter er ikke tegnet for disse to. Spørsmål til deg: trengs mobil her før lansering, eller holder desktop?
@@ -746,7 +746,7 @@ gjensto å bygge — bare dokumentasjonen som trengte å bli rettet.
 
 **Bolk 5 — Det som trenger nytt design fra deg (Anders).**
 Disse kan vi ikke bygge riktig før du har godkjent et design:
-- Fellesmelding til turneringsdeltakere (velg → skriv → send).
+- ~~Fellesmelding til turneringsdeltakere (velg → skriv → send).~~ Godkjent 17. jul og bygget (D1).
 - Spiller↔gruppe-veksler øverst i AgencyOS.
 - Fokus-spiller med manuell pin + AI-forslag.
 - Avgjørelse: trengs mobil-utgave av Workbench/AgencyOS nå?
@@ -775,6 +775,19 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 ---
 
 ## Endringslogg
+
+- 17. juli (kveld, D1 bolk 5): **Fellesmelding til turneringsdeltakere bygget** etter godkjent
+  fasit (`ui_kits/v2/agencyos-fellesmelding.jsx/.html`). Nytt 3-stegs panel på
+  `/admin/tournaments/[id]` (`FellesmeldingPanel`): velg mottakere fra TournamentEntry
+  (forhåndsvalgt alle, teller, Alle/Ingen, hvit valgt-tilstand) → skriv (mal-snarveiene
+  Oppmøtetid/Væravlysning + forhåndsvisnings-boble) → send (bekreftelsesrad, lime Send-CTA som
+  skjermens eneste lime, sender-tilstand, kvittering m/ innboks-lenke, delvis-feil m/ «Prøv igjen
+  for N»). Server action `sendFellesmeldingTilDeltakere` fan-outer over `sendMeldingTilSpiller`
+  (CoachingSession DIRECT per spiller — ingen ny datamodell) og samler feilede. Tom deltakerliste
+  = ærlig tomtilstand uten send. Listeknappen på `/admin/tournaments` peker nå til panelet
+  (`?fellesmelding=1`); den gamle GroupMember-notification-fan-outen
+  (`sendTournamentFellesmelding`/`notify-tournament-group.ts`/`fellesmelding-knapp.tsx`) er
+  fjernet. Ny hjelpetekst-nøkkel `fellesmelding`.
 
 - 17. juli (UAT-økt, lokal dev + Playwright, testbrukerne Øyvind Rohjan/coachtest): **kritiske
   nyporterte flyter nettleser-verifisert ende-til-ende** i 390px + desktop. Booking-wizarden

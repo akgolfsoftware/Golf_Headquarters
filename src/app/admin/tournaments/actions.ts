@@ -454,16 +454,90 @@ export async function exportTournamentsReport(
   return { success: true, downloadUrl, filename };
 }
 
-/** Fellesmelding til alle spillere i coachens grupper (GroupMember-fan-out). */
-export async function sendTournamentFellesmelding(input: {
-  subject: string;
+// ---------------------------------------------------------------------------
+// D1 — Fellesmelding til turneringsdeltakere (bolk 5, godkjent 17. jul 2026)
+// ---------------------------------------------------------------------------
+
+const FellesmeldingSchema = z.object({
+  tournamentId: z.string().min(1, "Turnering er påkrevd"),
+  userIds: z.array(z.string().min(1)).min(1, "Velg minst én mottaker"),
+  body: z.string().trim().min(1, "Skriv en melding").max(4000),
+});
+
+export type FellesmeldingResultat =
+  | { ok: true; sendt: number; feilede: { userId: string }[] }
+  | { ok: false; error: string };
+
+/**
+ * Sender én beskjed som direktemelding (CoachingSession DIRECT-tråd) til hver
+ * valgt deltaker i turneringen — gjenbruker sendMeldingTilSpiller-infrastrukturen,
+ * ingen ny datamodell. Mottakere valideres mot TournamentEntry (trukkede
+ * ekskluderes). Feilede mottakere samles og returneres for «Prøv igjen for N».
+ */
+export async function sendFellesmeldingTilDeltakere(input: {
+  tournamentId: string;
+  userIds: string[];
   body: string;
-  link?: string;
-}): Promise<{ ok: boolean; count?: number; error?: string }> {
-  const { notifyTournamentToCoachGroups } = await import(
-    "@/lib/workbench/notify-tournament-group"
+}): Promise<FellesmeldingResultat> {
+  const parsed = FellesmeldingSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig input" };
+  }
+
+  let coach;
+  try {
+    coach = await krevCoach();
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "forbidden" };
+  }
+
+  const { tournamentId, body } = parsed.data;
+  const userIds = [...new Set(parsed.data.userIds)];
+
+  const turnering = await prisma.tournament.findUnique({
+    where: { id: tournamentId },
+    select: { id: true },
+  });
+  if (!turnering) return { ok: false, error: "Turnering ikke funnet" };
+
+  const entries = await prisma.tournamentEntry.findMany({
+    where: {
+      tournamentId,
+      userId: { in: userIds },
+      entryStatus: { not: "WITHDRAWN" },
+    },
+    select: { userId: true },
+    distinct: ["userId"],
+  });
+  const gyldige = new Set(entries.map((e) => e.userId));
+
+  const { sendMeldingTilSpiller } = await import(
+    "@/app/admin/(legacy)/messages/actions"
   );
-  const result = await notifyTournamentToCoachGroups(input);
-  if (!result.ok) return { ok: false, error: result.error };
-  return { ok: true, count: result.count };
+
+  let sendt = 0;
+  const feilede: { userId: string }[] = [];
+  for (const userId of userIds) {
+    if (!gyldige.has(userId)) {
+      feilede.push({ userId });
+      continue;
+    }
+    try {
+      const res = await sendMeldingTilSpiller(userId, body);
+      if (res.ok) sendt++;
+      else feilede.push({ userId });
+    } catch {
+      feilede.push({ userId });
+    }
+  }
+
+  await audit({
+    actorId: coach.id,
+    action: "tournament.fellesmelding_sent",
+    target: `Tournament:${tournamentId}`,
+    metadata: { valgt: userIds.length, sendt, feilet: feilede.length },
+  });
+
+  revalidatePath("/admin/innboks");
+  return { ok: true, sendt, feilede };
 }

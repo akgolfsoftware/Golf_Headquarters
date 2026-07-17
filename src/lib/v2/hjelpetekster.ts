@@ -219,6 +219,11 @@ const RAW = {
     forklaring:
       "Gjennomsnittet av de andre spillerne på samme nivå som deg. Det viser hvor du står i forhold til gruppen din akkurat nå — ikke et mål i seg selv, men et referansepunkt for å se hvor du skiller deg ut.",
   },
+  fellesmelding: {
+    tittel: "Fellesmelding",
+    forklaring:
+      "Sender samme beskjed som direktemelding til hver valgt deltaker i turneringen. Spilleren finner den i innboksen sin i PlayerHQ, og svar fra spillerne kommer i innboksen din i AgencyOS.",
+  },
   vas: {
     tittel: "VAS-skala (smerte 0–10)",
     forklaring:

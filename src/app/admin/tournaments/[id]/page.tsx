@@ -16,6 +16,7 @@ import { Caps, Tittel, Kort, Rad, KpiFlis, StatusPill, TomTilstand, AvatarInit, 
 import { TournamentForm } from "@/app/admin/tournaments/tournament-form";
 import { ResultForm } from "./result-form";
 import { UnmergeBanner } from "./unmerge-banner";
+import { FellesmeldingPanel, type FellesmeldingDeltaker } from "./fellesmelding-panel";
 import { TournamentEnrollModal, PriorityPill } from "@/components/coachhq/tournament-enroll-modal";
 
 const TOUR_LABEL: Record<string, string> = {
@@ -27,11 +28,14 @@ const TOUR_LABEL: Record<string, string> = {
 
 export default async function TurneringDetalj({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ fellesmelding?: string }>;
 }) {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { id } = await params;
+  const { fellesmelding } = await searchParams;
 
   const [tournament, courses, players, entries] = await Promise.all([
     prisma.tournament.findUnique({
@@ -92,6 +96,16 @@ export default async function TurneringDetalj({
   const HCP_LABEL: Record<string, string> = { FULL: "Full HCP", P90: "90 % HCP", P75: "75 % HCP", SCRATCH: "Scratch" };
   const PRIO_LABEL: Record<string, string> = { MAJOR: "Major", NORMAL: "Normal", LOCAL: "Lokal" };
 
+  // D1 Fellesmelding — mottakere fra TournamentEntry (trukkede ekskluderes)
+  const fellesmeldingDeltakere: FellesmeldingDeltaker[] = entries
+    .filter((e) => e.entryStatus !== "WITHDRAWN")
+    .map((e) => ({
+      userId: e.userId,
+      navn: e.user.name ?? "(uten navn)",
+      status: e.entryStatus === "CONFIRMED" ? ("BEKREFTET" as const) : ("PAMELDT" as const),
+    }));
+  const fellesmeldingKontekst = `${tournament.name}${tournament.course ? ` · ${tournament.course.name}` : ""}`;
+
   return (
     <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/admin/tournaments">Turneringer</TilbakeLenke>
@@ -112,6 +126,14 @@ export default async function TurneringDetalj({
             </p>
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <FellesmeldingPanel
+              tournamentId={tournament.id}
+              turneringNavn={tournament.name}
+              kontekst={fellesmeldingKontekst}
+              coachNavn={user.name ?? "Coach"}
+              deltakere={fellesmeldingDeltakere}
+              autoApen={fellesmelding === "1"}
+            />
             <TournamentEnrollModal
               tournamentId={tournament.id}
               tournamentName={tournament.name}
