@@ -17,6 +17,7 @@ import { TournamentForm } from "@/app/admin/tournaments/tournament-form";
 import { ResultForm } from "./result-form";
 import { UnmergeBanner } from "./unmerge-banner";
 import { TournamentEnrollModal, PriorityPill } from "@/components/coachhq/tournament-enroll-modal";
+import { FellesmeldingFlyt } from "@/components/admin/v2/fellesmelding-flyt";
 
 const TOUR_LABEL: Record<string, string> = {
   olyo: "Olyo Juniortour",
@@ -112,6 +113,15 @@ export default async function TurneringDetalj({
             </p>
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <FellesmeldingFlyt
+              turneringId={tournament.id}
+              turneringNavn={tournament.name}
+              deltakere={entries.map((e) => ({
+                userId: e.userId,
+                navn: e.user.name ?? "(uten navn)",
+                status: e.entryStatus,
+              }))}
+            />
             <TournamentEnrollModal
               tournamentId={tournament.id}
               tournamentName={tournament.name}

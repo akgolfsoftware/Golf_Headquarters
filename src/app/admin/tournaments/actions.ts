@@ -3,9 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import type { Prisma } from "@/generated/prisma/client";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { notify } from "@/lib/notifications";
 
 async function krevCoach() {
   const user = await getCurrentUser();
@@ -466,4 +468,152 @@ export async function sendTournamentFellesmelding(input: {
   const result = await notifyTournamentToCoachGroups(input);
   if (!result.ok) return { ok: false, error: result.error };
   return { ok: true, count: result.count };
+}
+
+// ============================================================
+// Fellesmelding (D1) — ÉN melding til valgte turneringsdeltakere.
+// Gjenbruker meldings-infrastrukturen: CoachingSession(kind DIRECT) +
+// Notification — samme modell som /portal/coach/melding-trådene og
+// coach→spiller-utsendingen i plan-action-executor. Ingen ny datamodell.
+// Til forskjell fra sendTournamentFellesmelding (gruppe-fan-out via
+// Notification alene) lander DENNE som en ekte melding i hver valgte
+// spillers PlayerHQ-innboks, kun til faktiske deltakere i turneringen.
+// ============================================================
+
+const FellesmeldingSchema = z.object({
+  turneringId: z.string().min(1, "Turnering mangler"),
+  spillerIds: z.array(z.string().min(1)).min(1, "Velg minst én mottaker"),
+  tekst: z.string().trim().min(1, "Skriv en melding").max(4000),
+});
+
+export type FellesmeldingInput = z.infer<typeof FellesmeldingSchema>;
+
+export type FellesmeldingResultat = {
+  ok: boolean;
+  sendt: number;
+  feilet: { userId: string; navn: string }[];
+  error?: string;
+};
+
+/**
+ * Lever ÉN melding fra coach til én spiller ved å opprette/oppdatere den
+ * delte DIRECT-tråden (samme mønster som legacy sendMessage og
+ * plan-action-executor) og varsle. Kaster ved DB-feil slik at fan-out-løkka
+ * kan telle per-mottaker-feil.
+ */
+async function leverCoachMelding(
+  coachId: string,
+  playerId: string,
+  tekst: string,
+  turneringNavn: string,
+): Promise<void> {
+  const nyMelding: Prisma.InputJsonValue = {
+    role: "coach",
+    content: tekst,
+    ts: new Date().toISOString(),
+  };
+  const eksisterende = await prisma.coachingSession.findFirst({
+    where: { userId: playerId, coachId, kind: "DIRECT" },
+    orderBy: { updatedAt: "desc" },
+    select: { id: true, messages: true },
+  });
+  let traadId: string;
+  if (eksisterende) {
+    const forrige = Array.isArray(eksisterende.messages)
+      ? (eksisterende.messages as Prisma.InputJsonValue[])
+      : [];
+    await prisma.coachingSession.update({
+      where: { id: eksisterende.id },
+      data: { messages: [...forrige, nyMelding] },
+    });
+    traadId = eksisterende.id;
+  } else {
+    const opprettet = await prisma.coachingSession.create({
+      data: {
+        userId: playerId,
+        coachId,
+        kind: "DIRECT",
+        messages: [nyMelding] as Prisma.InputJsonValue[],
+      },
+      select: { id: true },
+    });
+    traadId = opprettet.id;
+  }
+  await notify({
+    userId: playerId,
+    type: "melding",
+    title: `Melding om ${turneringNavn}`,
+    body: tekst.slice(0, 280),
+    link: `/portal/coach/melding/${traadId}`,
+  });
+}
+
+/**
+ * Send én fellesmelding til valgte deltakere i en turnering. Fan-out per
+ * mottaker med per-spiller feiltelling (delvis feil er ærlig — «2 av 12
+ * feilet»). Sender kun til userId-er som faktisk er påmeldt turneringen.
+ */
+export async function sendFellesmelding(
+  input: FellesmeldingInput,
+): Promise<FellesmeldingResultat> {
+  const parsed = FellesmeldingSchema.safeParse(input);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      sendt: 0,
+      feilet: [],
+      error: parsed.error.issues[0]?.message ?? "Ugyldig input",
+    };
+  }
+  const coach = await krevCoach();
+  const { turneringId, spillerIds, tekst } = parsed.data;
+
+  const turnering = await prisma.tournament.findUnique({
+    where: { id: turneringId },
+    select: { id: true, name: true },
+  });
+  if (!turnering) {
+    return { ok: false, sendt: 0, feilet: [], error: "Turnering ikke funnet" };
+  }
+
+  // Sikkerhet: send kun til faktiske deltakere i denne turneringen (ignorer
+  // id-er som ikke er påmeldt). Dedupliser på userId.
+  const entries = await prisma.tournamentEntry.findMany({
+    where: { tournamentId: turneringId, userId: { in: spillerIds } },
+    select: { userId: true, user: { select: { name: true } } },
+  });
+  const mottakere = Array.from(
+    new Map(entries.map((e) => [e.userId, e.user.name ?? "(uten navn)"])).entries(),
+  );
+  if (mottakere.length === 0) {
+    return {
+      ok: false,
+      sendt: 0,
+      feilet: [],
+      error: "Ingen gyldige mottakere blant deltakerne",
+    };
+  }
+
+  const melding = tekst.trim();
+  let sendt = 0;
+  const feilet: { userId: string; navn: string }[] = [];
+  for (const [playerId, navn] of mottakere) {
+    try {
+      await leverCoachMelding(coach.id, playerId, melding, turnering.name);
+      sendt++;
+    } catch (err) {
+      console.error("[fellesmelding] kunne ikke levere til", playerId, err);
+      feilet.push({ userId: playerId, navn });
+    }
+  }
+
+  await audit({
+    actorId: coach.id,
+    action: "tournament_fellesmelding.sent",
+    target: `Tournament:${turneringId}`,
+    metadata: { sendt, feilet: feilet.length, forespurt: spillerIds.length },
+  });
+
+  revalidatePath(`/admin/tournaments/${turneringId}`);
+  return { ok: feilet.length === 0, sendt, feilet };
 }
