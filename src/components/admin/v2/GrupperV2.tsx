@@ -50,10 +50,22 @@ export interface GrupperData {
   grupper: GruppeV2[];
 }
 
+export interface GrupperV2Actions {
+  NyGruppeButton: React.ComponentType<{ coaches: { id: string; name: string }[] }>;
+}
+
 const spillere = (n: number) => `${n} ${n === 1 ? "spiller" : "spillere"}`;
 const grupperOrd = (n: number) => `${n} ${n === 1 ? "gruppe" : "grupper"}`;
 
-export function GrupperV2({ data }: { data: GrupperData }) {
+export function GrupperV2({
+  data,
+  actions: A,
+  coaches,
+}: {
+  data: GrupperData;
+  actions: GrupperV2Actions;
+  coaches: { id: string; name: string }[];
+}) {
   const { grupper } = data;
   const [valgtId, setValgtId] = useState<string | null>(grupper[0]?.id ?? null);
   const valgt = grupper.find((g) => g.id === valgtId) ?? null;
@@ -69,10 +81,7 @@ export function GrupperV2({ data }: { data: GrupperData }) {
         </div>
       </div>
       <div className="hidden md:block">
-        {/* Statisk — ingen opprett-gruppe-rute/action finnes i kodebasen ennå
-            (grupper opprettes i dag utenfor appen). Samme bevisste mønster
-            som «Ny oppgave» i AdminHandlingssenterV2.tsx. */}
-        <CTAPill ghost icon="plus">Ny gruppe</CTAPill>
+        <A.NyGruppeButton coaches={coaches} />
       </div>
     </div>
   );
