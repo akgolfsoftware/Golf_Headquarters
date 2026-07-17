@@ -10,13 +10,19 @@
  *   UT/INN med −/+ per hull (3-kol mobil / 9-kol md) → primær full-bredde
  *   «Lagre runde» m/ check. Eyebrow + h1 eies av siden (ny/page.tsx).
  *
+ * D6a (17. juli 2026): hull-for-hull-steget er nå VALGFRITT — spilleren kan
+ * logge kun totalscore, velge 9 eller 18 hull, justere par per hull (3/4/5)
+ * og valgfritt logge putter + fairway/GIR per hull (HullEditor, delt med
+ * redigeringen på runde-detaljen). Totalen auto-summeres fra hullene
+ * (brutto score — aldri netto).
+ *
  * Strokes Gained (valgfritt) + Notat beholdes fra eksisterende form — de mater
  * lagringen og er ikke en del av fasit-strukturen, men fjernes ikke (lagrings-
  * logikken er uendret).
  *
- * Lagringslogikk/state EKSAKT som før: logRoundManual, par-mal per bane,
- * score starter på par, norsk desimal-parsing for SG. DS-tokens kun — ingen
- * hardkodet hex, ingen emoji (kun lucide). Ingen falske tall.
+ * Lagringslogikk EKSAKT som før (logRoundManual) + det additive hullDetaljer-
+ * feltet. DS-tokens kun — ingen hardkodet hex, ingen emoji (kun lucide).
+ * Ingen falske tall: putter/FW/GIR sendes kun når detalj-steget er på.
  */
 
 import { useMemo, useState, useTransition } from "react";
@@ -25,24 +31,19 @@ import { Calendar, Check, Minus, Plus, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { logRoundManual } from "@/app/portal/mal/runder/ny/actions";
 import { parTemplate } from "@/lib/portal-runder/par-template";
+import {
+  HullEditor,
+  nyeHull,
+  summerHull,
+  scoreTextClass,
+  tilParLabel,
+  type HullVerdi,
+} from "./hull-editor";
 
 type Course = { id: string; name: string; par: number };
 
-const MIN_SCORE = 1;
-const MAX_SCORE = 12;
-
-/** Birdie/par/bogey/dobbel+ — fasitens fargekoding (kun tekstfarge). */
-function scoreTextClass(diff: number): string {
-  if (diff <= -1) return "text-success";
-  if (diff === 0) return "text-foreground";
-  if (diff === 1) return "text-warning";
-  return "text-destructive";
-}
-
-function toParLabel(diff: number): string {
-  if (diff === 0) return "E";
-  return diff > 0 ? `+${diff}` : `−${Math.abs(diff)}`;
-}
+const MIN_TOTAL = 1;
+const MAX_TOTAL = 199;
 
 /** Norsk desimal-parsing: «+0,32» / «−0,15» → tall. Tom → null. */
 function parseSg(raw: string): number | null {
@@ -65,6 +66,13 @@ const lblCls =
   "font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground";
 const inpCls =
   "flex h-12 w-full items-center gap-2.5 rounded-xl border border-input bg-card px-3.5 text-foreground transition-colors focus-within:border-primary focus-within:ring-[3px] focus-within:ring-ring/20";
+const segmentCls = (aktiv: boolean) =>
+  cn(
+    "h-9 rounded-lg px-3 font-mono text-[10px] font-bold uppercase tracking-[0.08em] transition-colors",
+    aktiv
+      ? "bg-primary text-primary-foreground"
+      : "text-muted-foreground hover:bg-secondary",
+  );
 
 export function RundeNyForm({
   courses,
@@ -89,14 +97,23 @@ export function RundeNyForm({
   const coursePar = course?.par ?? 72;
   const pars = useMemo(() => parTemplate(coursePar), [coursePar]);
 
-  // Score per hull — starter på par for hvert hull (spilleren stepper opp/ned).
-  const [scores, setScores] = useState<number[]>(() => parTemplate(72));
+  // D6a: hull-for-hull er valgfritt — «hull» (dagens oppførsel, default)
+  // eller «total» (kun totalscore, ingen HoleScore-rader).
+  const [modus, setModus] = useState<"hull" | "total">("hull");
+  const [antallHull, setAntallHull] = useState<9 | 18>(18);
+  const [visDetaljer, setVisDetaljer] = useState(false);
 
-  // Re-baselinjer scoren når banen (og dermed par-malen) endres.
+  // Hull-state — starter på par for hvert hull (spilleren stepper opp/ned).
+  const [hull, setHull] = useState<HullVerdi[]>(() => nyeHull(parTemplate(72)));
+  // Kun-total-modus: fri totalscore (tekst-state for redigerbart felt).
+  const [totalTekst, setTotalTekst] = useState("72");
+
+  // Re-baselinjer hull + total når banen (og dermed par-malen) endres.
   const parKey = pars.join(",");
   const [lastParKey, setLastParKey] = useState(parKey);
   if (parKey !== lastParKey) {
-    setScores(pars.slice());
+    setHull(nyeHull(pars.slice(0, antallHull)));
+    setTotalTekst(String(pars.slice(0, antallHull).reduce((a, b) => a + b, 0)));
     setLastParKey(parKey);
   }
 
@@ -109,20 +126,33 @@ export function RundeNyForm({
   const [notes, setNotes] = useState("");
 
   // ── Beregninger (live) ─────────────────────────────────────────
-  const parOut = pars.slice(0, 9).reduce((a, b) => a + b, 0);
-  const parIn = pars.slice(9).reduce((a, b) => a + b, 0);
-  const sOut = scores.slice(0, 9).reduce((a, b) => a + b, 0);
-  const sIn = scores.slice(9).reduce((a, b) => a + b, 0);
-  const total = sOut + sIn;
-  const parTotal = parOut + parIn;
+  const parMal = pars.slice(0, antallHull).reduce((a, b) => a + b, 0);
+  const totalScore = Number.parseInt(totalTekst, 10);
+  const hullSum = summerHull(hull);
+  const total = modus === "hull" ? hullSum.score : Number.isFinite(totalScore) ? totalScore : 0;
+  const parTotal = modus === "hull" ? hullSum.par : parMal;
   const diff = total - parTotal;
 
-  function step(i: number, delta: number) {
-    setScores((prev) => {
-      const next = prev.slice();
-      next[i] = Math.max(MIN_SCORE, Math.min(MAX_SCORE, next[i] + delta));
-      return next;
-    });
+  function endreHull(nr: number, patch: Partial<HullVerdi>) {
+    setHull((prev) => prev.map((h) => (h.nr === nr ? { ...h, ...patch } : h)));
+  }
+
+  function velgAntall(n: 9 | 18) {
+    setAntallHull(n);
+    // Behold det spilleren alt har tastet på hull 1–9; bygg 10–18 fra malen.
+    setHull((prev) =>
+      n === 9
+        ? prev.filter((h) => h.nr <= 9)
+        : [...prev.filter((h) => h.nr <= 9), ...nyeHull(pars.slice(9), 10)],
+    );
+    setTotalTekst(String(pars.slice(0, n).reduce((a, b) => a + b, 0)));
+  }
+
+  function stegTotal(delta: number) {
+    const basis = Number.isFinite(totalScore) ? totalScore : parMal;
+    setTotalTekst(
+      String(Math.max(MIN_TOTAL, Math.min(MAX_TOTAL, basis + delta))),
+    );
   }
 
   function pickCourse(c: Course) {
@@ -144,7 +174,11 @@ export function RundeNyForm({
       setError("Velg en bane.");
       return;
     }
-    if (!total) {
+    if (modus === "total" && (!Number.isInteger(totalScore) || totalScore < MIN_TOTAL || totalScore > MAX_TOTAL)) {
+      setError("Oppgi en gyldig totalscore.");
+      return;
+    }
+    if (modus === "hull" && !total) {
       setError("Registrer score for hullene.");
       return;
     }
@@ -155,7 +189,19 @@ export function RundeNyForm({
           courseId,
           playedAt,
           score: total,
-          holeScores: scores,
+          // Hull-for-hull kun i hull-modus. Detaljer (putter/FW/GIR) sendes
+          // kun når detalj-steget er PÅ — skjulte verdier lagres aldri.
+          hullDetaljer:
+            modus === "hull"
+              ? hull.map((h) => ({
+                  nr: h.nr,
+                  par: h.par,
+                  strokes: h.strokes,
+                  putts: visDetaljer ? h.putts : null,
+                  fairway: visDetaljer ? h.fairway : null,
+                  gir: visDetaljer ? h.gir : null,
+                }))
+              : undefined,
           notes: notes.trim() || undefined,
           sgOtt: parseSg(sg.ott),
           sgApp: parseSg(sg.app),
@@ -251,6 +297,63 @@ export function RundeNyForm({
         </div>
       </div>
 
+      {/* Modus — hull-for-hull (valgfritt, dagens default) eller kun total */}
+      <div className="mt-4 grid grid-cols-2 gap-1 rounded-xl border border-border bg-card p-1">
+        <button
+          type="button"
+          onClick={() => setModus("hull")}
+          aria-pressed={modus === "hull"}
+          className={segmentCls(modus === "hull")}
+        >
+          Hull for hull
+        </button>
+        <button
+          type="button"
+          onClick={() => setModus("total")}
+          aria-pressed={modus === "total"}
+          className={segmentCls(modus === "total")}
+        >
+          Kun totalscore
+        </button>
+      </div>
+
+      {/* 9/18 hull + detalj-toggle */}
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <div className="grid grid-cols-2 gap-1 rounded-xl border border-border bg-card p-1">
+          <button
+            type="button"
+            onClick={() => velgAntall(9)}
+            aria-pressed={antallHull === 9}
+            className={segmentCls(antallHull === 9)}
+          >
+            9 hull
+          </button>
+          <button
+            type="button"
+            onClick={() => velgAntall(18)}
+            aria-pressed={antallHull === 18}
+            className={segmentCls(antallHull === 18)}
+          >
+            18 hull
+          </button>
+        </div>
+        {modus === "hull" && (
+          <button
+            type="button"
+            onClick={() => setVisDetaljer((v) => !v)}
+            aria-pressed={visDetaljer}
+            className={cn(
+              "h-9 rounded-xl border px-3 font-mono text-[10px] font-bold uppercase tracking-[0.08em] transition-colors",
+              visDetaljer
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border bg-card text-muted-foreground hover:bg-secondary",
+            )}
+          >
+            Putter · FW · GIR · valgfritt
+          </button>
+        )}
+      </div>
+
       {/* Accent-kort — LIVE to-par (jf. fasit) */}
       <div className="mt-4 flex items-center gap-3.5 rounded-xl border border-border border-l-[3px] border-l-accent bg-card px-4 py-3.5">
         <span
@@ -259,43 +362,53 @@ export function RundeNyForm({
             scoreTextClass(diff),
           )}
         >
-          {toParLabel(diff)}
+          {tilParLabel(diff)}
         </span>
         <div className="flex-1">
           <div className="font-mono text-base font-extrabold tabular-nums text-foreground">
             {total} slag
           </div>
           <div className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-muted-foreground">
-            Par {parTotal} · 18 hull
+            Par {parTotal} · {antallHull} hull
           </div>
         </div>
       </div>
 
-      {/* UT 1–9 */}
-      <NineLabel
-        title="UT · 1–9"
-        parTotal={parOut}
-        scoreTotal={sOut}
-      />
-      <HoleGrid
-        pars={pars.slice(0, 9)}
-        scores={scores.slice(0, 9)}
-        startIdx={0}
-        onStep={step}
-      />
-
-      {/* INN 10–18 */}
-      <NineLabel
-        title="INN · 10–18"
-        parTotal={parIn}
-        scoreTotal={sIn}
-      />
-      <HoleGrid
-        pars={pars.slice(9)}
-        scores={scores.slice(9)}
-        startIdx={9}
-        onStep={step}
-      />
+      {modus === "hull" ? (
+        <HullEditor hull={hull} visDetaljer={visDetaljer} onEndre={endreHull} />
+      ) : (
+        /* Kun totalscore — brutto slag, ingen hull-data lagres */
+        <div className="mt-4 flex items-center justify-center gap-4 rounded-2xl border border-border bg-card px-4 py-5">
+          <button
+            type="button"
+            onClick={() => stegTotal(-1)}
+            disabled={Number.isInteger(totalScore) && totalScore <= MIN_TOTAL}
+            aria-label="Trekk fra totalscore"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-background text-foreground transition-colors active:bg-secondary disabled:pointer-events-none disabled:opacity-35"
+          >
+            <Minus className="h-4 w-4" strokeWidth={1.5} aria-hidden />
+          </button>
+          <input
+            type="text"
+            inputMode="numeric"
+            value={totalTekst}
+            onChange={(e) =>
+              setTotalTekst(e.target.value.replace(/[^0-9]/g, "").slice(0, 3))
+            }
+            aria-label="Totalscore (brutto slag)"
+            className="w-24 border-0 bg-transparent p-0 text-center font-mono text-[34px] font-extrabold tabular-nums text-foreground outline-none"
+          />
+          <button
+            type="button"
+            onClick={() => stegTotal(1)}
+            disabled={Number.isInteger(totalScore) && totalScore >= MAX_TOTAL}
+            aria-label="Legg til totalscore"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-background text-foreground transition-colors active:bg-secondary disabled:pointer-events-none disabled:opacity-35"
+          >
+            <Plus className="h-4 w-4" strokeWidth={1.5} aria-hidden />
+          </button>
+        </div>
+      )}
 
       {/* Seksjon — Strokes Gained (valgfritt) */}
       <SectionHead optional="· valgfritt">Strokes Gained</SectionHead>
@@ -374,87 +487,6 @@ function SectionHead({
         {optional && <span className="font-bold">{optional}</span>}
       </span>
       <span className="h-px flex-1 bg-border" aria-hidden />
-    </div>
-  );
-}
-
-function NineLabel({
-  title,
-  parTotal,
-  scoreTotal,
-}: {
-  title: string;
-  parTotal: number;
-  scoreTotal: number;
-}) {
-  return (
-    <div className="mb-2 mt-4 flex items-baseline justify-between">
-      <span className="font-mono text-[10px] font-extrabold tracking-[0.10em] text-foreground">
-        {title}
-      </span>
-      <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
-        Par {parTotal} · <b className="font-extrabold text-foreground">{scoreTotal}</b>
-      </span>
-    </div>
-  );
-}
-
-function HoleGrid({
-  pars,
-  scores,
-  startIdx,
-  onStep,
-}: {
-  pars: number[];
-  scores: number[];
-  startIdx: number;
-  onStep: (i: number, delta: number) => void;
-}) {
-  return (
-    <div className="grid grid-cols-3 gap-2 md:grid-cols-6 lg:grid-cols-9">
-      {pars.map((par, i) => {
-        const idx = startIdx + i;
-        const score = scores[i];
-        const d = score - par;
-        return (
-          <div
-            key={idx}
-            className="flex flex-col items-center gap-1.5 rounded-2xl border border-border bg-card px-1.5 py-2"
-          >
-            <div className="whitespace-nowrap font-mono text-[9px] text-muted-foreground">
-              {idx + 1} · par {par}
-            </div>
-            <span
-              className={cn(
-                "font-mono text-[22px] font-extrabold leading-none tracking-[-0.03em] tabular-nums",
-                scoreTextClass(d),
-              )}
-            >
-              {score}
-            </span>
-            <div className="grid w-full grid-cols-2 gap-1.5">
-              <button
-                type="button"
-                onClick={() => onStep(idx, -1)}
-                disabled={score <= MIN_SCORE}
-                aria-label={`Trekk fra hull ${idx + 1}`}
-                className="inline-flex h-[34px] items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors active:bg-secondary disabled:pointer-events-none disabled:opacity-35"
-              >
-                <Minus className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />
-              </button>
-              <button
-                type="button"
-                onClick={() => onStep(idx, 1)}
-                disabled={score >= MAX_SCORE}
-                aria-label={`Legg til hull ${idx + 1}`}
-                className="inline-flex h-[34px] items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors active:bg-secondary disabled:pointer-events-none disabled:opacity-35"
-              >
-                <Plus className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />
-              </button>
-            </div>
-          </div>
-        );
-      })}
     </div>
   );
 }

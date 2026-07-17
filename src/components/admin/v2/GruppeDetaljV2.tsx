@@ -130,6 +130,9 @@ export function GruppeDetaljV2({
           <Link href={`/admin/grupper/${data.id}/timeplan`} style={{ textDecoration: "none" }}>
             <MikroMeta icon="calendar">Planlegg / dupliser gruppetrening</MikroMeta>
           </Link>
+          <Link href={`/admin/grupper/${data.id}/arsplan`} style={{ textDecoration: "none" }}>
+            <MikroMeta icon="calendar">Årsplan</MikroMeta>
+          </Link>
           <A.LeggTilSpillerButton groupId={data.id} kandidater={data.kandidater} />
         </div>
       </div>

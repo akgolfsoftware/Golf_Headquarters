@@ -30,7 +30,7 @@
     {
       "code": "SPILL",
       "name": "Spill",
-      "description": "Banespill, strategi, beslutninger, risikostyring (DECADE).",
+      "description": "Banespill, strategi, beslutninger, risikostyring (Presisjonsstrategi).",
       "color": "--pyr-spill",
       "default_percent": 15,
       "priority": 4

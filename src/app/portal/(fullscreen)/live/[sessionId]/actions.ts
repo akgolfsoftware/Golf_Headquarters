@@ -119,6 +119,19 @@ function mapDrill(drill: {
   repMinutter: number | null;
   repSett: number | null;
   repReps: number | null;
+  fysTreningstype: string | null;
+  fysMuskelgruppe: string | null;
+  fysSett: number | null;
+  fysReps: number | null;
+  fysVektKg: number | null;
+  fysTempo: string | null;
+  fysPauseSek: number | null;
+  fysVarighetMin: number | null;
+  fysIntensitetsSone: number | null;
+  fysDistanseM: number | null;
+  fysAktivitet: string | null;
+  fysBevegelighetType: string | null;
+  fysHoldSek: number | null;
 }): LiveV2Drill {
   return {
     id: drill.id,
@@ -135,6 +148,19 @@ function mapDrill(drill: {
     repMinutter: drill.repMinutter,
     repSett: drill.repSett,
     repReps: drill.repReps,
+    fysTreningstype: drill.fysTreningstype,
+    fysMuskelgruppe: drill.fysMuskelgruppe,
+    fysSett: drill.fysSett,
+    fysReps: drill.fysReps,
+    fysVektKg: drill.fysVektKg,
+    fysTempo: drill.fysTempo,
+    fysPauseSek: drill.fysPauseSek,
+    fysVarighetMin: drill.fysVarighetMin,
+    fysIntensitetsSone: drill.fysIntensitetsSone,
+    fysDistanseM: drill.fysDistanseM,
+    fysAktivitet: drill.fysAktivitet,
+    fysBevegelighetType: drill.fysBevegelighetType,
+    fysHoldSek: drill.fysHoldSek,
   };
 }
 

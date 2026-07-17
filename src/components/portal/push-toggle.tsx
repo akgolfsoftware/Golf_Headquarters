@@ -1,7 +1,12 @@
 "use client";
 
 /**
- * Push-varsler-toggle for PlayerHQ / AgencyOS.
+ * Push-varsel-logikk for PlayerHQ / AgencyOS (klient).
+ *
+ * v2-port 17. juli 2026: den gamle <PushToggle/>-presentasjonen er erstattet av
+ * InnstillingerVarslerV2 (v2-designsystemet). Denne filen beholder KUN
+ * browser-logikken — uendret — og eksporterer den slik at presentasjonslaget
+ * kan bo i v2-komponenten.
  *
  * Flyt når brukeren skrur PÅ:
  *  1. Request permission via Notification.requestPermission()
@@ -15,121 +20,11 @@
  *
  * Krever HTTPS (eller localhost) og en moderne browser med Push API.
  */
-import { useEffect, useState, useTransition } from "react";
 import { VAPID_PUBLIC_KEY } from "@/lib/push/vapid";
 
-type Status = "loading" | "unsupported" | "blocked" | "off" | "on";
+export type PushStatus = "loading" | "unsupported" | "blocked" | "off" | "on";
 
-export function PushToggle() {
-  const [status, setStatus] = useState<Status>("loading");
-  const [error, setError] = useState<string | null>(null);
-  const [pending, startTransition] = useTransition();
-
-  useEffect(() => {
-    void detectStatus().then(setStatus);
-  }, []);
-
-  function aktiver() {
-    setError(null);
-    startTransition(async () => {
-      try {
-        const next = await aktiverPush();
-        setStatus(next);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Kunne ikke aktivere");
-        setStatus(await detectStatus());
-      }
-    });
-  }
-
-  function deaktiver() {
-    setError(null);
-    startTransition(async () => {
-      try {
-        const next = await deaktiverPush();
-        setStatus(next);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Kunne ikke deaktivere");
-      }
-    });
-  }
-
-  if (status === "loading") {
-    return (
-      <div className="text-xs text-muted-foreground">
-        Sjekker push-status …
-      </div>
-    );
-  }
-
-  if (status === "unsupported") {
-    return (
-      <div className="rounded-md border border-border bg-muted/40 p-4 text-xs text-muted-foreground">
-        Push-varsler støttes ikke i denne browseren. Prøv en moderne versjon
-        av Safari, Chrome eller Firefox.
-      </div>
-    );
-  }
-
-  if (!VAPID_PUBLIC_KEY) {
-    return (
-      <div className="rounded-md border border-border bg-muted/40 p-4 text-xs text-muted-foreground">
-        Push-varsler er midlertidig deaktivert. (VAPID-keys ikke konfigurert.)
-      </div>
-    );
-  }
-
-  if (status === "blocked") {
-    return (
-      <div className="rounded-md border border-destructive/30 bg-destructive/5 p-4 text-xs text-destructive-foreground">
-        Du har blokkert varsler for dette nettstedet. Tillat varsler i
-        browser-innstillinger for å aktivere push.
-      </div>
-    );
-  }
-
-  const isOn = status === "on";
-
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <div className="text-sm font-medium">Push-varsler på denne enheten</div>
-          <p className="text-xs text-muted-foreground">
-            Få varsler direkte i browser eller på telefonen — selv når portalen
-            er lukket.
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={() => (isOn ? deaktiver() : aktiver())}
-          disabled={pending}
-          aria-pressed={isOn}
-          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
-            isOn ? "bg-primary" : "bg-muted"
-          }`}
-        >
-          <span
-            className={`inline-block h-5 w-5 transform rounded-full bg-background transition-transform ${
-              isOn ? "translate-x-5" : "translate-x-0.5"
-            }`}
-          />
-        </button>
-      </div>
-      {error ? (
-        <div className="rounded-md border border-destructive/30 bg-destructive/5 p-2 text-xs text-destructive-foreground">
-          {error}
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-// ----------------------------------------------------------------
-// Helpers — alt browser-only.
-// ----------------------------------------------------------------
-
-async function detectStatus(): Promise<Status> {
+export async function detectPushStatus(): Promise<PushStatus> {
   if (typeof window === "undefined") return "loading";
   if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
     return "unsupported";
@@ -147,7 +42,7 @@ async function detectStatus(): Promise<Status> {
   }
 }
 
-async function aktiverPush(): Promise<Status> {
+export async function aktiverPush(): Promise<PushStatus> {
   const permission = await Notification.requestPermission();
   if (permission !== "granted") {
     return permission === "denied" ? "blocked" : "off";
@@ -186,7 +81,7 @@ async function aktiverPush(): Promise<Status> {
   return "on";
 }
 
-async function deaktiverPush(): Promise<Status> {
+export async function deaktiverPush(): Promise<PushStatus> {
   const reg = await navigator.serviceWorker.getRegistration();
   const sub = await reg?.pushManager.getSubscription();
   if (!sub) return "off";

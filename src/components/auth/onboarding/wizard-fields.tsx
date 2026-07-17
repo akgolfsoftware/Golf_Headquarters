@@ -2,20 +2,42 @@
 
 /**
  * Onboarding-wizard — mobil-først felt- og valg-byggeklosser (430px).
- * Valg-kort portet til fersk fasit: [historisk fasit, fjernet 2026-07-03] AK Golf HQ Design
- * System/playerhq-app (ph-auth.jsx AOnboarding + app.css .opt-card).
+ * v2-port 16. juli 2026 (retning C «Presis»): restylet IN PLACE til
+ * v2-tokens (T fra @/lib/v2/tokens) — samme eksporterte navn og
+ * prop-signaturer som før, så wizard-filene er UENDRET. Inndatafeltene
+ * følger FELT-idiomet fra src/components/v2/skjema.tsx, valg-kortene følger
+ * ValgKort/RadioGruppe-idiomet (valgt = lime kant, panel3), pillene følger
+ * FilterChips-idiomet (valgt = lime m/ onLime).
  *
- * Editorial sport-analytics: mono-caps labels, lime-accent på valgt tilstand,
- * card-bg + 3px lime venstrekant på info-banner. 44px touch-targets.
- *
- * Ren presentasjon. Ingen hardkodet hex — kun DS-token-klasser.
- * Ingen emoji — kun lucide-react. ui/-primitiver gjenbrukes (Input, Checkbox).
+ * Ren presentasjon — ingen logikk endret. Ingen rå hex (kun T-tokens +
+ * rgba/color-mix). Ingen emoji — kun lucide-react.
  */
 
 import { Check, Info, type LucideIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
+import { T } from "@/lib/v2/tokens";
 import { cn } from "@/lib/utils";
+
+// Placeholder-farge + siste-rad-regler kan ikke settes inline — injiseres én
+// gang (samme idiom som core.tsx/skjema.tsx sine ensureStyles).
+function ensureFeltStyles(): void {
+  if (typeof document === "undefined" || document.getElementById("v2-obfelt-style")) return;
+  const el = document.createElement("style");
+  el.id = "v2-obfelt-style";
+  el.textContent =
+    `.obf-input::placeholder{color:var(--v2-mut);opacity:1;}` +
+    `.obf-sumrow:last-child{border-bottom:none;padding-bottom:0;}`;
+  document.head.appendChild(el);
+}
+if (typeof document !== "undefined") ensureFeltStyles();
+
+const CAPS: React.CSSProperties = {
+  fontFamily: T.mono,
+  fontSize: 10,
+  fontWeight: 700,
+  letterSpacing: "0.1em",
+  textTransform: "uppercase",
+  color: T.mut,
+};
 
 // ── Felt-label + input ──────────────────────────────────────────
 export function Field({
@@ -32,14 +54,22 @@ export function Field({
   className?: string;
 }) {
   return (
-    <div className={cn("flex flex-col gap-1.5", className)}>
-      <label
-        htmlFor={htmlFor}
-        className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground"
-      >
+    <div className={cn("flex flex-col", className)} style={{ gap: 7 }}>
+      <label htmlFor={htmlFor} style={CAPS}>
         {label}
         {hint && (
-          <span className="ml-1.5 font-mono text-[9px] font-semibold normal-case tracking-[0.04em] text-muted-foreground/80">
+          <span
+            style={{
+              marginLeft: 7,
+              fontFamily: T.mono,
+              fontSize: 9,
+              fontWeight: 600,
+              letterSpacing: "0.04em",
+              textTransform: "none",
+              color: T.mut,
+              opacity: 0.85,
+            }}
+          >
             {hint}
           </span>
         )}
@@ -52,57 +82,179 @@ export function Field({
 export function TextField(
   props: React.InputHTMLAttributes<HTMLInputElement> & { mono?: boolean },
 ) {
-  const { mono, className, ...rest } = props;
-  return <Input className={cn(mono && "font-mono", className)} {...rest} />;
+  const { mono, className, style, ...rest } = props;
+  return (
+    <input
+      className={cn("obf-input v2-focus", className)}
+      style={{
+        width: "100%",
+        boxSizing: "border-box",
+        appearance: "none",
+        height: 44,
+        background: T.panel2,
+        border: `1px solid ${T.borderS}`,
+        borderRadius: 11,
+        padding: "0 13px",
+        fontFamily: mono ? T.mono : T.ui,
+        fontVariantNumeric: mono ? "tabular-nums" : undefined,
+        fontSize: 13.5,
+        color: T.fg,
+        outline: "none",
+        lineHeight: 1.4,
+        ...style,
+      }}
+      {...rest}
+    />
+  );
 }
 
-// ── Hero-illo (kun steg 1) — bevisst mørkt kort løftet fra cream-flaten ─
+// ── Hero-illo (kun steg 1) — forest-merkevarekort på v2-flaten ──
 export function HeroIllo({ label }: { label: string }) {
   return (
-    <div className="relative flex h-[88px] items-end overflow-hidden rounded-xl bg-primary px-3 py-2 shadow-[0_8px_22px_-10px_hsl(var(--primary)/0.55)]">
+    <div
+      style={{
+        position: "relative",
+        display: "flex",
+        alignItems: "flex-end",
+        height: 88,
+        overflow: "hidden",
+        borderRadius: 16,
+        background: T.forest,
+        padding: "8px 12px",
+      }}
+    >
       {/* diagonal-stripe-overlay */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.06]"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(135deg, transparent 0 12px, hsl(var(--primary-foreground)) 12px 24px)",
-        }}
         aria-hidden
+        style={{
+          position: "absolute",
+          inset: 0,
+          opacity: 0.07,
+          pointerEvents: "none",
+          backgroundImage:
+            "repeating-linear-gradient(135deg, transparent 0 12px, rgba(255,255,255,0.9) 12px 24px)",
+        }}
       />
       <span
-        className="pointer-events-none absolute -right-2.5 -top-2.5 h-14 w-14 rounded-full bg-accent opacity-20 blur-xl"
-        aria-hidden
-      />
-      <span className="relative z-10 inline-flex h-7 w-7 items-center justify-center rounded-md bg-accent font-display text-[13px] font-bold text-primary">
+        style={{
+          position: "relative",
+          zIndex: 1,
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 28,
+          height: 28,
+          borderRadius: 8,
+          background: "rgba(255,255,255,0.14)",
+          fontFamily: T.disp,
+          fontSize: 13,
+          fontWeight: 700,
+          color: "rgba(255,255,255,0.95)",
+        }}
+      >
         ak
       </span>
-      <span className="relative z-10 ml-auto font-mono text-[9px] font-extrabold uppercase tracking-[0.12em] text-accent">
+      <span
+        style={{
+          position: "relative",
+          zIndex: 1,
+          marginLeft: "auto",
+          fontFamily: T.mono,
+          fontSize: 9,
+          fontWeight: 700,
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+          color: "rgba(255,255,255,0.75)",
+        }}
+      >
         {label}
       </span>
     </div>
   );
 }
 
-// ── Info-banner (mindreårig-note): card-bg + 3px lime venstrekant ─
+// ── Info-banner (mindreårig-note): panel + 3px lime venstrekant ─
 export function InfoNote({ children }: { children: React.ReactNode }) {
   return (
-    <div className="grid grid-cols-[14px_1fr] gap-2 rounded-lg border border-border border-l-[3px] border-l-accent bg-card px-3 py-2.5">
-      <Info className="mt-0.5 h-3.5 w-3.5 text-primary" strokeWidth={1.5} aria-hidden />
-      <p className="text-[11px] leading-relaxed text-foreground">{children}</p>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "14px 1fr",
+        gap: 8,
+        borderRadius: 11,
+        background: T.panel2,
+        border: `1px solid ${T.border}`,
+        borderLeft: `3px solid ${T.lime}`,
+        padding: "10px 12px",
+      }}
+    >
+      <Info size={14} strokeWidth={1.75} style={{ marginTop: 2, color: T.lime }} aria-hidden />
+      <p style={{ margin: 0, fontFamily: T.ui, fontSize: 11.5, lineHeight: 1.55, color: T.fg }}>
+        {children}
+      </p>
     </div>
   );
 }
 
 // ── Seksjons-eyebrow inne i steg-body ───────────────────────────
 export function FieldGroupLabel({ children }: { children: React.ReactNode }) {
+  return <span style={{ ...CAPS, display: "block" }}>{children}</span>;
+}
+
+// ── Valg-kort (ValgKort-idiom: ikon-kvadrat + tittel + check-sirkel) ─
+function CheckCircle({ selected }: { selected: boolean }) {
   return (
-    <span className="block font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">
-      {children}
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: 22,
+        height: 22,
+        flex: "none",
+        borderRadius: 9999,
+        background: selected ? T.lime : "transparent",
+        border: `1.5px solid ${selected ? T.lime : T.borderS}`,
+        color: selected ? T.onLime : "transparent",
+      }}
+    >
+      {selected && <Check size={13} strokeWidth={2.5} aria-hidden />}
     </span>
   );
 }
 
-// ── Valg-kort (fasit opt-card: ikon-kvadrat + tittel + check-sirkel) ─
+function IkonKvadrat({ icon: Icon, selected }: { icon: LucideIcon; selected: boolean }) {
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: 44,
+        height: 44,
+        flex: "none",
+        borderRadius: 12,
+        background: selected ? `color-mix(in srgb, ${T.lime} 14%, transparent)` : T.panel3,
+        color: selected ? T.lime : T.fg2,
+      }}
+    >
+      <Icon size={21} strokeWidth={1.75} aria-hidden />
+    </span>
+  );
+}
+
+const VALGKORT: React.CSSProperties = {
+  appearance: "none",
+  display: "flex",
+  alignItems: "center",
+  gap: 13,
+  width: "100%",
+  borderRadius: 14,
+  padding: "13px 15px",
+  textAlign: "left",
+  cursor: "pointer",
+};
+
 export function OptionRow({
   label,
   sub,
@@ -123,56 +275,44 @@ export function OptionRow({
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className={cn(
-        "flex w-full items-center gap-3.5 rounded-[14px] border bg-card p-4 text-left transition-[border-color,box-shadow]",
-        selected
-          ? "border-primary shadow-[inset_0_0_0_1px_hsl(var(--primary))]"
-          : "border-border hover:border-primary",
-      )}
+      className="v2-press v2-focus"
+      style={{
+        ...VALGKORT,
+        background: selected ? T.panel3 : T.panel2,
+        border: `1px solid ${selected ? T.lime : T.border}`,
+      }}
     >
-      {Icon && (
-        <span
-          className={cn(
-            "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl",
-            selected ? "bg-primary text-accent" : "bg-secondary text-primary",
-          )}
-        >
-          <Icon className="h-[22px] w-[22px]" strokeWidth={1.75} aria-hidden />
-        </span>
-      )}
-      <span className="min-w-0 flex-1 leading-tight">
-        <span className="block text-[15px] font-semibold tracking-[-0.01em] text-foreground">
+      {Icon && <IkonKvadrat icon={Icon} selected={selected} />}
+      <span style={{ minWidth: 0, flex: 1, lineHeight: 1.3 }}>
+        <span style={{ display: "block", fontFamily: T.ui, fontSize: 14.5, fontWeight: 600, color: T.fg }}>
           {label}
         </span>
         {sub && (
-          <span className="mt-0.5 block font-mono text-[11px] text-muted-foreground">
+          <span style={{ display: "block", marginTop: 2, fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
             {sub}
           </span>
         )}
       </span>
       {trailing && (
         <span
-          className={cn(
-            "shrink-0 font-mono text-xs font-extrabold tabular-nums tracking-[-0.005em]",
-            selected ? "text-primary" : "text-foreground",
-          )}
+          style={{
+            flex: "none",
+            fontFamily: T.mono,
+            fontSize: 12,
+            fontWeight: 700,
+            fontVariantNumeric: "tabular-nums",
+            color: selected ? T.lime : T.fg,
+          }}
         >
           {trailing}
         </span>
       )}
-      <span
-        className={cn(
-          "inline-flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border-[1.5px]",
-          selected ? "border-primary bg-primary text-accent" : "border-border text-transparent",
-        )}
-      >
-        {selected && <Check className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />}
-      </span>
+      <CheckCircle selected={selected} />
     </button>
   );
 }
 
-// ── Multi-pill toggle (sesongmål, preferanser) ──────────────────
+// ── Multi-pill toggle (sesongmål, preferanser) — FilterChips-idiom ─
 export function PillToggle({
   label,
   selected,
@@ -189,14 +329,26 @@ export function PillToggle({
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className={cn(
-        "inline-flex h-8 items-center gap-1.5 rounded-full border px-3 font-mono text-[11px] font-semibold tracking-[0.04em] transition-colors",
-        selected
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-input bg-card text-muted-foreground hover:bg-secondary",
-      )}
+      className="v2-press v2-focus"
+      style={{
+        appearance: "none",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        height: 32,
+        padding: "0 12px",
+        borderRadius: 9999,
+        background: selected ? T.lime : T.panel3,
+        border: `1px solid ${selected ? "transparent" : T.borderS}`,
+        color: selected ? T.onLime : T.fg2,
+        fontFamily: T.mono,
+        fontSize: 11,
+        fontWeight: 600,
+        letterSpacing: "0.03em",
+        cursor: "pointer",
+      }}
     >
-      {Icon && <Icon className="h-3 w-3" strokeWidth={1.5} aria-hidden />}
+      {Icon && <Icon size={12} strokeWidth={1.75} aria-hidden />}
       {label}
     </button>
   );
@@ -221,39 +373,77 @@ export function ProfileCard({
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className={cn(
-        "flex flex-col items-center gap-1.5 rounded-xl border-[1.5px] px-2 py-3 text-center transition-colors",
-        selected ? "border-primary bg-primary/5" : "border-input bg-card hover:bg-secondary",
-      )}
+      className="v2-press v2-focus"
+      style={{
+        appearance: "none",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 6,
+        borderRadius: 13,
+        padding: "12px 8px",
+        textAlign: "center",
+        cursor: "pointer",
+        background: selected ? T.panel3 : T.panel2,
+        border: `1px solid ${selected ? T.lime : T.border}`,
+      }}
     >
       <span
-        className={cn(
-          "inline-flex h-8 w-8 items-center justify-center rounded-full transition-colors",
-          selected ? "bg-primary text-accent" : "bg-secondary text-muted-foreground",
-        )}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 32,
+          height: 32,
+          borderRadius: 9999,
+          background: selected ? `color-mix(in srgb, ${T.lime} 14%, transparent)` : T.panel3,
+          color: selected ? T.lime : T.mut,
+        }}
       >
-        <Icon className="h-4 w-4" strokeWidth={1.5} aria-hidden />
+        <Icon size={15} strokeWidth={1.75} aria-hidden />
       </span>
-      <span className="font-display text-xs font-bold tracking-[-0.015em] text-foreground">
+      <span style={{ fontFamily: T.disp, fontSize: 12.5, fontWeight: 700, letterSpacing: "-0.015em", color: T.fg }}>
         {name}
       </span>
-      <span className="font-mono text-[8px] font-semibold leading-tight tracking-[0.04em] text-muted-foreground">
+      <span
+        style={{
+          fontFamily: T.mono,
+          fontSize: 8,
+          fontWeight: 600,
+          letterSpacing: "0.04em",
+          lineHeight: 1.4,
+          color: T.mut,
+        }}
+      >
         {desc}
       </span>
     </button>
   );
 }
 
-// ── Implikasjons-banner (lime) ──────────────────────────────────
+// ── Implikasjons-banner (lime-tint, aldri ropende) ──────────────
 export function ImplicationBanner({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-lg bg-accent px-3 py-2 font-mono text-[9px] font-extrabold uppercase leading-relaxed tracking-[0.04em] text-accent-foreground">
+    <div
+      style={{
+        borderRadius: 10,
+        background: `color-mix(in srgb, ${T.lime} 12%, transparent)`,
+        padding: "8px 12px",
+        fontFamily: T.mono,
+        fontSize: 9,
+        fontWeight: 700,
+        letterSpacing: "0.04em",
+        textTransform: "uppercase",
+        lineHeight: 1.7,
+        color: T.lime,
+      }}
+    >
       {children}
     </div>
   );
 }
 
-// ── Fasilitet-rad (fasit opt-card-utseende, multi-select) ───────
+// ── Fasilitet-rad (samme valg-kort-utseende, multi-select) ──────
 export function FacilityRow({
   name,
   sub,
@@ -272,39 +462,25 @@ export function FacilityRow({
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className={cn(
-        "flex w-full items-center gap-3.5 rounded-[14px] border bg-card p-4 text-left transition-[border-color,box-shadow]",
-        selected
-          ? "border-primary shadow-[inset_0_0_0_1px_hsl(var(--primary))]"
-          : "border-border hover:border-primary",
-      )}
+      className="v2-press v2-focus"
+      style={{
+        ...VALGKORT,
+        background: selected ? T.panel3 : T.panel2,
+        border: `1px solid ${selected ? T.lime : T.border}`,
+      }}
     >
-      <span
-        className={cn(
-          "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl",
-          selected ? "bg-primary text-accent" : "bg-secondary text-primary",
-        )}
-      >
-        <Icon className="h-[22px] w-[22px]" strokeWidth={1.75} aria-hidden />
-      </span>
-      <span className="min-w-0 flex-1 leading-tight">
-        <span className="block text-[15px] font-semibold tracking-[-0.01em] text-foreground">
+      <IkonKvadrat icon={Icon} selected={selected} />
+      <span style={{ minWidth: 0, flex: 1, lineHeight: 1.3 }}>
+        <span style={{ display: "block", fontFamily: T.ui, fontSize: 14.5, fontWeight: 600, color: T.fg }}>
           {name}
         </span>
         {sub && (
-          <span className="mt-0.5 block font-mono text-[11px] text-muted-foreground">
+          <span style={{ display: "block", marginTop: 2, fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
             {sub}
           </span>
         )}
       </span>
-      <span
-        className={cn(
-          "inline-flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border-[1.5px]",
-          selected ? "border-primary bg-primary text-accent" : "border-border text-transparent",
-        )}
-      >
-        {selected && <Check className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />}
-      </span>
+      <CheckCircle selected={selected} />
     </button>
   );
 }
@@ -322,34 +498,63 @@ export function FrequencySegment({
   unit?: string;
 }) {
   return (
-    <div className="rounded-lg bg-secondary p-2.5">
-      <div className="mb-1.5 flex items-baseline gap-1">
-        <span className="font-mono text-[26px] font-extrabold leading-none tabular-nums tracking-[-0.025em] text-foreground">
+    <div
+      style={{
+        borderRadius: 12,
+        background: T.panel2,
+        border: `1px solid ${T.border}`,
+        padding: 10,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "baseline", gap: 5, marginBottom: 8 }}>
+        <span
+          style={{
+            fontFamily: T.mono,
+            fontSize: 26,
+            fontWeight: 700,
+            lineHeight: 1,
+            letterSpacing: "-0.025em",
+            fontVariantNumeric: "tabular-nums",
+            color: T.fg,
+          }}
+        >
           {value}
         </span>
         {unit && (
-          <span className="font-mono text-[11px] font-bold tracking-[0.04em] text-muted-foreground">
+          <span style={{ fontFamily: T.mono, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.04em", color: T.mut }}>
             {unit}
           </span>
         )}
       </div>
-      <div className="flex gap-1">
-        {options.map((n) => (
-          <button
-            key={n}
-            type="button"
-            onClick={() => onChange(n)}
-            aria-pressed={value === n}
-            className={cn(
-              "h-9 flex-1 rounded-md font-mono text-[13px] font-bold tabular-nums transition-colors",
-              value === n
-                ? "bg-primary text-primary-foreground"
-                : "bg-card text-muted-foreground hover:bg-card/60",
-            )}
-          >
-            {n}
-          </button>
-        ))}
+      <div style={{ display: "flex", gap: 4 }}>
+        {options.map((n) => {
+          const on = value === n;
+          return (
+            <button
+              key={n}
+              type="button"
+              onClick={() => onChange(n)}
+              aria-pressed={on}
+              className="v2-press v2-focus"
+              style={{
+                appearance: "none",
+                height: 36,
+                flex: 1,
+                borderRadius: 9,
+                border: "1px solid transparent",
+                fontFamily: T.mono,
+                fontSize: 13,
+                fontWeight: 700,
+                fontVariantNumeric: "tabular-nums",
+                cursor: "pointer",
+                background: on ? T.lime : T.panel3,
+                color: on ? T.onLime : T.fg2,
+              }}
+            >
+              {n}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -376,32 +581,67 @@ export function CoachCard({
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className={cn(
-        "relative flex w-full items-center gap-3 rounded-xl border px-3 py-3 text-left transition-colors",
-        selected ? "border-primary bg-primary/5" : "border-border bg-card hover:bg-secondary",
-      )}
+      className="v2-press v2-focus"
+      style={{
+        position: "relative",
+        appearance: "none",
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        width: "100%",
+        borderRadius: 13,
+        padding: "12px 14px",
+        textAlign: "left",
+        cursor: "pointer",
+        background: selected ? T.panel3 : T.panel2,
+        border: `1px solid ${selected ? T.lime : T.border}`,
+      }}
     >
       {selected && (
-        <span className="absolute right-2.5 top-2.5 rounded-[3px] bg-accent px-1.5 py-0.5 font-mono text-[8px] font-extrabold uppercase tracking-[0.10em] text-accent-foreground">
+        <span
+          style={{
+            position: "absolute",
+            top: 10,
+            right: 10,
+            borderRadius: 4,
+            background: T.lime,
+            padding: "2px 6px",
+            fontFamily: T.mono,
+            fontSize: 8,
+            fontWeight: 700,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: T.onLime,
+          }}
+        >
           Valgt
         </span>
       )}
       <span
-        className={cn(
-          "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full font-display text-sm font-bold",
-          selected ? "bg-primary text-accent" : "bg-secondary text-foreground",
-        )}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 44,
+          height: 44,
+          flex: "none",
+          borderRadius: 9999,
+          background: selected ? T.lime : T.panel3,
+          border: `1px solid ${selected ? "transparent" : T.border}`,
+          fontFamily: T.mono,
+          fontSize: 13,
+          fontWeight: 700,
+          color: selected ? T.onLime : T.fg2,
+        }}
       >
         {initials}
       </span>
-      <span className="min-w-0 leading-tight">
-        <span className="block font-display text-[13px] font-bold tracking-[-0.015em] text-foreground">
+      <span style={{ minWidth: 0, lineHeight: 1.3 }}>
+        <span style={{ display: "block", fontFamily: T.disp, fontSize: 13.5, fontWeight: 700, letterSpacing: "-0.015em", color: T.fg }}>
           {name}
         </span>
-        <span className="mt-0.5 block font-mono text-[9px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
-          {role}
-        </span>
-        <span className="mt-0.5 block text-[11px] leading-snug text-muted-foreground">
+        <span style={{ ...CAPS, display: "block", marginTop: 2, fontSize: 9 }}>{role}</span>
+        <span style={{ display: "block", marginTop: 2, fontFamily: T.ui, fontSize: 11, lineHeight: 1.45, color: T.mut }}>
           {meta}
         </span>
       </span>
@@ -434,40 +674,79 @@ export function PlanCard({
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className={cn(
-        "relative flex flex-col gap-2 rounded-xl border px-4 py-4 text-left transition-colors",
-        selected ? "border-primary bg-primary/5" : "border-border bg-card hover:bg-secondary",
-      )}
+      className="v2-press v2-focus"
+      style={{
+        position: "relative",
+        appearance: "none",
+        display: "flex",
+        flexDirection: "column",
+        gap: 8,
+        borderRadius: 14,
+        padding: "15px 16px",
+        textAlign: "left",
+        cursor: "pointer",
+        background: selected ? T.panel3 : T.panel2,
+        border: `1px solid ${selected ? T.lime : T.border}`,
+      }}
     >
       {recommended && selected && (
-        <span className="absolute -top-2 right-3.5 rounded-[3px] bg-accent px-1.5 py-0.5 font-mono text-[8px] font-extrabold uppercase tracking-[0.10em] text-accent-foreground">
+        <span
+          style={{
+            position: "absolute",
+            top: -9,
+            right: 14,
+            borderRadius: 4,
+            background: T.lime,
+            padding: "2px 6px",
+            fontFamily: T.mono,
+            fontSize: 8,
+            fontWeight: 700,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: T.onLime,
+          }}
+        >
           Anbefalt
         </span>
       )}
       <span
-        className={cn(
-          "font-mono text-[11px] font-extrabold uppercase tracking-[0.14em]",
-          selected ? "text-primary" : "text-muted-foreground",
-        )}
+        style={{
+          fontFamily: T.mono,
+          fontSize: 10.5,
+          fontWeight: 700,
+          letterSpacing: "0.14em",
+          textTransform: "uppercase",
+          color: selected ? T.lime : T.mut,
+        }}
       >
         {tier}
       </span>
-      <span className="font-mono text-[22px] font-extrabold leading-none text-foreground">
+      <span
+        style={{
+          fontFamily: T.mono,
+          fontSize: 22,
+          fontWeight: 700,
+          lineHeight: 1,
+          fontVariantNumeric: "tabular-nums",
+          color: T.fg,
+        }}
+      >
         {price}
-        {per && (
-          <span className="ml-1 text-[13px] font-medium text-muted-foreground">{per}</span>
-        )}
+        {per && <span style={{ marginLeft: 4, fontSize: 12.5, fontWeight: 500, color: T.mut }}>{per}</span>}
       </span>
-      <span className="flex flex-col gap-1.5">
+      <span style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         {features.map((f) => (
-          <span key={f} className="flex items-start gap-1.5 text-xs text-muted-foreground">
-            <Check className="mt-0.5 h-3 w-3 shrink-0 text-success" strokeWidth={2} aria-hidden />
+          <span
+            key={f}
+            style={{ display: "flex", alignItems: "flex-start", gap: 6, fontFamily: T.ui, fontSize: 12, lineHeight: 1.45, color: T.fg2 }}
+          >
+            <Check size={12} strokeWidth={2} style={{ marginTop: 3, flex: "none", color: T.up }} aria-hidden />
             {f}
           </span>
         ))}
       </span>
       {footnote && (
-        <span className="font-mono text-[10px] text-muted-foreground">{footnote}</span>
+        <span style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>{footnote}</span>
       )}
     </button>
   );
@@ -476,27 +755,42 @@ export function PlanCard({
 // ── Oppsummering (siste sjekk) ──────────────────────────────────
 export function SummaryRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="flex items-baseline justify-between gap-3 border-b border-border py-2 last:border-b-0 last:pb-0">
-      <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-        {label}
+    <div
+      className="obf-sumrow"
+      style={{
+        display: "flex",
+        alignItems: "baseline",
+        justifyContent: "space-between",
+        gap: 12,
+        padding: "9px 0",
+        borderBottom: `1px solid ${T.border}`,
+      }}
+    >
+      <span style={{ ...CAPS, flex: "none", letterSpacing: "0.06em" }}>{label}</span>
+      <span style={{ textAlign: "right", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+        {value}
       </span>
-      <span className="text-right text-[13px] font-semibold text-foreground">{value}</span>
     </div>
   );
 }
 
 export function SummaryCard({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-border bg-secondary px-4 py-4">
-      <span className="mb-2 block font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-        Du har valgt
-      </span>
+    <div
+      style={{
+        borderRadius: 14,
+        background: T.panel2,
+        border: `1px solid ${T.border}`,
+        padding: "15px 16px",
+      }}
+    >
+      <span style={{ ...CAPS, display: "block", marginBottom: 6 }}>Du har valgt</span>
       {children}
     </div>
   );
 }
 
-// ── Samtykke-rad (checkbox-kort) ────────────────────────────────
+// ── Samtykke-rad (checkbox-kort, Avkryssing-idiom) ──────────────
 export function AgreeItem({
   title,
   desc,
@@ -513,26 +807,65 @@ export function AgreeItem({
       type="button"
       onClick={onClick}
       aria-pressed={checked}
-      className={cn(
-        "flex w-full items-start gap-3 rounded-xl border px-4 py-3.5 text-left transition-colors",
-        checked ? "border-primary bg-primary/5" : "border-border bg-secondary hover:bg-secondary/70",
-      )}
+      className="v2-press v2-focus"
+      style={{
+        appearance: "none",
+        display: "flex",
+        alignItems: "flex-start",
+        gap: 11,
+        width: "100%",
+        borderRadius: 13,
+        padding: "13px 15px",
+        textAlign: "left",
+        cursor: "pointer",
+        background: checked ? T.panel3 : T.panel2,
+        border: `1px solid ${checked ? T.lime : T.border}`,
+      }}
     >
-      <span className="mt-0.5">
-        <Checkbox checked={checked} readOnly tabIndex={-1} className="pointer-events-none" />
+      <span
+        style={{
+          marginTop: 1,
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 20,
+          height: 20,
+          flex: "none",
+          borderRadius: 6,
+          background: checked ? T.lime : T.panel2,
+          border: `1px solid ${checked ? "transparent" : T.borderS}`,
+          color: T.onLime,
+        }}
+      >
+        {checked && <Check size={13} strokeWidth={2.5} aria-hidden />}
       </span>
-      <span className="leading-snug">
-        <span className="block font-display text-sm font-bold text-foreground">{title}</span>
-        <span className="mt-0.5 block text-xs text-muted-foreground">{desc}</span>
+      <span style={{ lineHeight: 1.4 }}>
+        <span style={{ display: "block", fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+          {title}
+        </span>
+        <span style={{ display: "block", marginTop: 2, fontFamily: T.ui, fontSize: 12, lineHeight: 1.5, color: T.mut }}>
+          {desc}
+        </span>
       </span>
     </button>
   );
 }
 
-// ── Sikkerhets-strip (lime, GDPR) ───────────────────────────────
+// ── Sikkerhets-strip (lime-tint, GDPR) ──────────────────────────
 export function SecurityStrip({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-lg border border-accent/55 bg-accent/20 px-4 py-3 text-[13px] leading-relaxed text-foreground">
+    <div
+      style={{
+        borderRadius: 12,
+        border: `1px solid color-mix(in srgb, ${T.lime} 40%, transparent)`,
+        background: `color-mix(in srgb, ${T.lime} 10%, transparent)`,
+        padding: "11px 15px",
+        fontFamily: T.ui,
+        fontSize: 12.5,
+        lineHeight: 1.55,
+        color: T.fg,
+      }}
+    >
       {children}
     </div>
   );

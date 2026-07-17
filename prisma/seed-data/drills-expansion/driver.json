@@ -13,7 +13,7 @@
     "ak-second-brain:treningsperioder-og-faser",
     "ak-second-brain:ak-golf-treningsfilosofi",
     "ak-second-brain:ak-golf-testprotokoller",
-    "ak-second-brain:decade-golf",
+    "ak-second-brain:presisjonsstrategi-golf",
     "notion:mac-ogrady-kb",
     "notion:ak-treningsplan-skill"
   ],
@@ -478,14 +478,14 @@
         "L": 15
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "scenario",
         "trouble-tee",
         "ob-trussel",
         "pressure-tee-shot"
       ],
-      "coachNotater": "OB venstre er hookerens mareritt. DECADE-tankegang: aksepter klubb ned hvis stock-shot ikke unngår OB. Mange tour-spillere bruker 3-wood her uten å blunke. Døm valget, ikke utfallet."
+      "coachNotater": "OB venstre er hookerens mareritt. PRESISJONSSTRATEGI-tankegang: aksepter klubb ned hvis stock-shot ikke unngår OB. Mange tour-spillere bruker 3-wood her uten å blunke. Døm valget, ikke utfallet."
     },
     {
       "navn": "ob-trussel-hoyre-tee",
@@ -526,7 +526,7 @@
         "L": 15
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "scenario",
         "trouble-tee",
@@ -573,7 +573,7 @@
         "L": 15
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "scenario",
         "dog-leg",
@@ -621,7 +621,7 @@
         "L": 15
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "scenario",
         "dog-leg",
@@ -1500,13 +1500,13 @@
         "L": 15
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "scoring-club",
         "decision-making",
         "course-management"
       ],
-      "coachNotater": "DECADE-tankegang. Driver på 14 hull er gjennomsnitt for tour-spillere. Amatører bør være lavere — kanskje 10 av 14. Hybrid på par 4 under 360 yards er underutnyttet."
+      "coachNotater": "PRESISJONSSTRATEGI-tankegang. Driver på 14 hull er gjennomsnitt for tour-spillere. Amatører bør være lavere — kanskje 10 av 14. Hybrid på par 4 under 360 yards er underutnyttet."
     },
     {
       "navn": "3-wood-vs-driver-compare",
@@ -1544,7 +1544,7 @@
         "L": 15
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "scoring-club",
         "decision-making",
@@ -1588,7 +1588,7 @@
         "L": 25
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "scoring-club",
         "hybrid",
@@ -1633,7 +1633,7 @@
         "L": 15
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "scoring-club",
         "long-iron",
@@ -3584,15 +3584,15 @@
         "L": 10
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "scenario",
         "elevated-tee",
         "course-management",
-        "decade",
+        "presisjonsstrategi",
         "calculation"
       ],
-      "coachNotater": "Decade-tankegang: distanse er ikke statisk — alltid juster for elevation, vind, temp. Lær spillere kalkulering, ikke gjetting."
+      "coachNotater": "Presisjonsstrategi-tankegang: distanse er ikke statisk — alltid juster for elevation, vind, temp. Lær spillere kalkulering, ikke gjetting."
     },
     {
       "navn": "double-dog-leg-tee-strategy",
@@ -3631,7 +3631,7 @@
         "L": 10
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "scenario",
         "dog-leg",
@@ -3639,7 +3639,7 @@
         "course-management",
         "par-5"
       ],
-      "coachNotater": "Lengste tee-shot er ofte ikke beste tee-shot. Lær spillere å tenke 'hvor vil jeg slå fra'. Decade-prinsipp."
+      "coachNotater": "Lengste tee-shot er ofte ikke beste tee-shot. Lær spillere å tenke 'hvor vil jeg slå fra'. Presisjonsstrategi-prinsipp."
     },
     {
       "navn": "left-side-elimination-driver",
@@ -3678,7 +3678,7 @@
         "L": 10
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "scenario",
         "trouble-tee",
@@ -3686,7 +3686,7 @@
         "fade",
         "shot-shape"
       ],
-      "coachNotater": "'Side-elimination' er Decade-stil — du fjerner én side helt og spiller hele bredden av fairway. Funker bare hvis stock-shape er pålitelig."
+      "coachNotater": "'Side-elimination' er Presisjonsstrategi-stil — du fjerner én side helt og spiller hele bredden av fairway. Funker bare hvis stock-shape er pålitelig."
     },
     {
       "navn": "right-side-elimination-driver",
@@ -3725,7 +3725,7 @@
         "L": 10
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "scenario",
         "trouble-tee",
@@ -4182,7 +4182,7 @@
         "L": 15
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "scoring-club",
         "decision-making",
@@ -4327,7 +4327,7 @@
       "coachNotater": "Tør spilleren satse penger? Hvis ikke — ingen press. Hvis ja — reell adrenalinrush. Skille mellom 'trening' og 'press' krever stake."
     },
     {
-      "navn": "decade-fairway-width-aim",
+      "navn": "presisjonsstrategi-fairway-width-aim",
       "beskrivelse": "På bane: maaler fairway-bredde med skritt. Beregn aim-point i midten, juster for shape. Slå driver, scor 1 hvis innenfor 5 yards av plan, 0 hvis utenfor. 5 hull. Mål: 4/5 innenfor plan. Bygger aim-disiplin.",
       "disciplin": "TURN",
       "skillArea": "TEE_TOTAL",
@@ -4362,14 +4362,14 @@
         "L": 10
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "scenario",
-        "decade",
+        "presisjonsstrategi",
         "aim",
         "course-management"
       ],
-      "coachNotater": "Decade-prinsipp: aim er ikke 'midten av fairway' — det er 'optimal aim-punkt gitt shape og dispersion'. Krever data om egen dispersion."
+      "coachNotater": "Presisjonsstrategi-prinsipp: aim er ikke 'midten av fairway' — det er 'optimal aim-punkt gitt shape og dispersion'. Krever data om egen dispersion."
     },
     {
       "navn": "out-of-rythm-recovery-driver",
@@ -4803,12 +4803,12 @@
         "L": 10
       },
       "videoUrl": null,
-      "kilde": "ak-second-brain:decade-golf",
+      "kilde": "ak-second-brain:presisjonsstrategi-golf",
       "tags": [
         "trackman",
         "dispersion",
         "selvkunnskap",
-        "decade",
+        "presisjonsstrategi",
         "test"
       ],
       "coachNotater": "De fleste spillere undervurderer sitt dispersion-mønster. 25-ball test gir reell data. Bruk til å sette aim-strategi etterpå."

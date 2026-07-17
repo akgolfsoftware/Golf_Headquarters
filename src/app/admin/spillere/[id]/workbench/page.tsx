@@ -32,6 +32,7 @@ import {
   coachSlettPeriode,
 } from "@/lib/workbench/session-actions";
 import { coachSokTekniskOppgaver } from "@/lib/workbench/teknisk-oppgave-sok";
+import { lesPreferences } from "@/lib/preferences";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import type { WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
 import {
@@ -49,6 +50,11 @@ type Props = {
 export default async function CoachWorkbenchPage({ params, searchParams }: Props) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const coachName = user.name ?? "Anders Kristiansen";
+  // B40 §3: Standard/Pro er en visningspreferanse hos DEN SOM SER PÅ
+  // Workbench (coachen), ikke spilleren som planlegges for — samme prinsipp
+  // som sgHubMode, og unngår at bryteren skriver til én bruker mens neste
+  // sideinnlasting leser fra en annen.
+  const { wbMode } = lesPreferences(user);
   const { id } = await params;
   const weekOffset = parseWeekOffset((await searchParams).uke);
 
@@ -114,6 +120,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
         insights={ctx.insights ?? null}
         planStatus={ctx.planStatus ?? null}
         actions={actions}
+        wbMode={wbMode}
       />
     </V2Shell>
   );

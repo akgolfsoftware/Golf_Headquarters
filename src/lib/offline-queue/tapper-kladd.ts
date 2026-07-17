@@ -1,6 +1,6 @@
 /**
  * Ren logikk for tapper-offline-køen (flytpakke 2, punkt 2.9 — avgrenset til
- * tapper; slag-plotting er baneguide-avhengig og parkert). saveTapperCounts
+ * tapper; slag-plotting er gameplan-avhengig og parkert). saveTapperCounts
  * er idempotent (absolutt telling, UNIQUE på planSessionId+kølle), så køen
  * trenger bare siste kjente snapshot per økt — ikke en voksende hendelseslogg.
  * IndexedDB-I/O ligger i tapper-queue.ts (browser-only); denne fila er
