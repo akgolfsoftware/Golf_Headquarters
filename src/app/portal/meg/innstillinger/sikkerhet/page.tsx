@@ -2,13 +2,16 @@
  * v2 — PlayerHQ Innstillinger · Sikkerhet (retning C). V2Shell leverer chrome-en
  * (IkonRail/BunnNav, aktiv «meg»), InnstillingerSikkerhetV2 rendrer innholds-stacken.
  *
- * v2-port 17. juli 2026: auth-guard og score-heuristikken er uendret fra
- * athletic-versjonen — kun presentasjonslaget er byttet:
+ * KANONISK sikkerhet-skjerm etter D7-konsolideringen (Anders 17. juli 2026):
+ * /portal/meg/sikkerhet er nå redirect hit; passord-/e-post-skjemaene derfra
+ * er flyttet inn i InnstillingerSikkerhetV2. Auth-guard og score-heuristikk
+ * uendret:
  *   - Sikkerhetsscore utledet ærlig fra hva vi faktisk vet (e-post bekreftet
  *     → 80, ellers 55; 2FA-flagg finnes ikke på User ennå, så +20 opptjenes
  *     via 2FA-flyten).
- *   - Passord: lenke til Supabase-tilbakestilling. Tofaktor: lenke til den
- *     ekte TOTP-flyten på /portal/meg/sikkerhet/2fa.
+ *   - Endre passord/e-post: skjema klientside mot Supabase Auth (i
+ *     komponenten). Glemt passord: lenke til /auth/forgot-password.
+ *     Tofaktor: lenke til den ekte TOTP-flyten på /portal/meg/sikkerhet/2fa.
  *   - Aktive økter: ekte lastLoginAt; full øktliste er «kommer snart» —
  *     ingen oppdiktede enheter eller tidspunkter.
  */
@@ -26,7 +29,8 @@ function formatSiste(d: Date | null | undefined): string {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
-  })} · ${d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })}`;
+    timeZone: "Europe/Oslo",
+  })} · ${d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Oslo" })}`;
 }
 
 export default async function SikkerhetPage() {

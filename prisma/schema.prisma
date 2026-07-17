@@ -4689,3 +4689,28 @@ model MarketingPost {
   @@index([scheduledAt])
   @@map("marketing_posts")
 }
+
+// ── Moderering/GDPR-kø (D5, besluttet 2026-07-17) ────────────────────────────
+// Plain String-referanser uten @relation — holder endringen additiv (gotcha-regelen).
+
+model ModerationCase {
+  id           String    @id @default(cuid())
+  type         String // "RAPPORTERT_INNHOLD" | "GDPR_SLETTING" — zod-håndhevet i actions
+  status       String    @default("OPEN") // "OPEN" | "APPROVED" | "REJECTED" | "EXECUTED"
+  userId       String // spilleren saken gjelder
+  reporterId   String? // hvem som meldte (null ved GDPR-egenforespørsel)
+  targetType   String? // f.eks. "VIDEO", "KOMMENTAR" — polymorf uten relasjon
+  targetId     String?
+  begrunnelse  String?
+  resolvedById String?
+  resolvedAt   DateTime?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  @@index([status, type])
+  @@index([userId])
+  @@map("moderation_cases")
+}
+
+// (D6a hull-for-hull, besluttet 2026-07-17: bruker den EKSISTERENDE HoleScore-
+// modellen lenger opp i fila — Bolk 6-notatet om at modellen manglet var stale.)

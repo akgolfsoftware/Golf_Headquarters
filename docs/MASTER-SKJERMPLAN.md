@@ -168,11 +168,12 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Coach: kølle | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D3): `CoachSgHubKolleV2` — analysekjeden (computeDPlane/StrikePattern/SmashCurve) og de token-styrte grafene gjenbrukt; Enkel/Avansert-veksleren gjenskapt mot samme `setSgHubMode`-action; slag-tabell nå med enheter (°, mph); HjelpTips på D-Plane/smash factor. Design – → ✓. |
 | · Coach: utstyr | `/portal/mal/sg-hub/coach/[spillerId]/equipment` | – | --- | ✓ | ~ | ~ | ~ | 17. jul (Team F3): wrapper-ruten flyttet ut av (legacy) (samme URL, samme auth som naboruten, nå V2Shell-chrome); rendrer fortsatt legacy `EquipmentView` — v2-port av selve visningen gjenstår (deles med spillerens equipment-side, tas samlet). |
 | Runder (liste) | `/portal/mal/runder` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `RunderV2`. |
-| · Runde-detalj ★ | `/portal/mal/runder/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| · Runde-detalj ★ | `/portal/mal/runder/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | D6a 17. jul: «Fra scorekortet»-kort (UT/INN/TOTALT m/ tonet ±, putter/FW/GIR-aggregater m/ HjelpTips — kun fra ekte HoleScore-rader) + «Rediger hull-for-hull»-lenke + ærlig tomtilstand m/ «legg til nå»-CTA. |
 | · Slag-for-slag (visning) | `/portal/mal/runder/[id]/shot-by-shot` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `redirect` til `/portal/mal/runder/${id}/slag` — foreldet rute, ingen lenke peker hit lenger.
 | · Avansert slag-redigering (legacy wizard + UpGame-import) | `/portal/mal/runder/[id]/slag` | ✓ | ✓-- | ✓ | ✓ | ✓ | † |
 | · Fullfør kjeden (import/hurtig → slag-kjede per hull) ★ | `/portal/mal/runder/[id]/fullfor` | ✓ | --- | ✓ | ✓ | ✓ | ~ | Reconciliation 16. jul: gammel kommentar («fra main, v13/golfdata — gjenstår v2-port») var selv stale — `FullforKjedeKlient` er allerede v2-komponert (`T/fmtSg/Caps/Kort/Icon` fra `components/v2`). Design rettet ~ → ✓.
-| · Logg ny runde (hurtig score) ★ | `/portal/mal/runder/ny` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| · Logg ny runde (hurtig score) ★ | `/portal/mal/runder/ny` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | D6a 17. jul: valgfritt hull-for-hull-steg (9/18 hull, par 3/4/5, valgfrie putter/FW/GIR) + NY «kun totalscore»-modus; auto-summert brutto total; legacy-lagringssti urørt. |
+| · Rediger hull-for-hull | `/portal/mal/runder/[id]/hull` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | NY skjerm (D6a 17. jul): gjenbruker logge-flytens HullEditor-idiom (ingen egen mockup — komponentsystem-dekket); kun eier; upsert mot @@unique(roundId,holeNumber), sletter slag-kjeder kun på hull der slag endres; `recomputeRoundSg` gjenbrukt. |
 | · Live slag-for-slag-føring ★ | `/portal/runde/live` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | · Etterregistrering slag for slag ★ | `/portal/runde/logg` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ |
 | TrackMan (liste) | `/portal/mal/trackman` | ✓ | ✓✓– | ✓ | ~ | ✓ | † |
@@ -237,13 +238,13 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Innstillinger ★ | `/portal/meg/innstillinger` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `InnstillingerV2` (v2 retning C), hake aldri oppdatert |
 | · Varsler | `/portal/meg/innstillinger/varsler` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D4b): NotifToggles+PushToggle → `InnstillingerVarslerV2` (Bryter-rader); browser-push-logikken uendret i `push-toggle.tsx` (kun UI-delen flyttet), samme `oppdaterPreferences`-flyt. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | · Personvern | `/portal/meg/innstillinger/personvern` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header + `personvern-actions.tsx` bruker `Knapp` fra @/components/v2.
-| · Sikkerhet | `/portal/meg/innstillinger/sikkerhet` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D4b): `InnstillingerSikkerhetV2` — TallHero-score m/ `sikkerhetsscore`-HjelpTips, ekte lastLoginAt, øktliste ærlig «kommer snart». Kjent: nær-duplikat av `/portal/meg/sikkerhet` — konsolidering er produktbeslutning (Anders). Design – → ✓. |
+| · Sikkerhet | `/portal/meg/innstillinger/sikkerhet` | ✓ | ✓✓– | ✓ | ✓ | ~ | ✓ | **KANONISK sikkerhet-skjerm (D7-konsolidering 17. jul, Anders' ja):** score-hero + passord-/e-post-skjema (flyttet fra /meg/sikkerhet, Supabase-auth + ReauthModal 1:1) + glemt-passord- og 2FA-lenker + ekte lastLoginAt (nå Oslo-korrekt). `MegSikkerhetV2` slettet. |
 | · Språk | `/portal/meg/innstillinger/sprak` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D4b): SpraakToggle → `InnstillingerSprakV2` (ValgKort nb/en, engelsk fortsatt sperret «Kommer Q3 2026», samme `oppdaterPreferences`). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | · Anlegg | `/portal/meg/innstillinger/anlegg` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D4b): FasilitetProfilForm → `InnstillingerAnleggV2` (avkryssings-rader per gruppe, Velg alle); GRUPPER-katalog og `lagreFasilitetProfil`-action uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | · Integrasjoner | `/portal/meg/innstillinger/integrasjoner` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D4b): `InnstillingerIntegrasjonerV2` — brand-SVG-ene (14 rå hex) erstattet med token-emblemer (0 hex); ekte status kun for TrackMan/GCal, «Be om tilgang» går fortsatt ærlig til support. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | · Eksport | `/portal/meg/innstillinger/eksport` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `redirect("/portal/meg/innstillinger/personvern")` — ikke en egen skjerm.
 | · Økter | `/portal/meg/innstillinger/okter` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D4b): `InnstillingerOkterV2` — info-kort + ærlig TomTilstand, StatusPill «Kommer Q3 2026» (fortsatt funksjonell placeholder som før). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
-| Sikkerhet | `/portal/meg/sikkerhet` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `MegSikkerhetV2`. |
+| Sikkerhet | `/portal/meg/sikkerhet` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Redirect → `/portal/meg/innstillinger/sikkerhet` (D7-konsolidering 17. jul). Undersiden `/2fa` beholdes som fungerende TOTP-flate (tilbakelenke peker nå til kanonisk side; fortsatt athletic-lag — egen v2-port senere). |
 | · To-faktor (2FA) | `/portal/meg/sikkerhet/2fa` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `twofa-client.tsx` bruker `Knapp` fra @/components/v2 i alle tre steg (ikke bare tynn header-berøring).
 | Utstyrsbag ★ | `/portal/meg/utstyrsbag` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegUtstyrsbagV2` (v2 retning C), hake aldri oppdatert |
 | Dokumenter ★ | `/portal/meg/dokumenter` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegDokumenterV2` (v2 retning C), hake aldri oppdatert |
@@ -450,7 +451,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Finans (alt. → redirect) | `/admin/finance` | ✓ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/admin/okonomi")` — som selv er en redirect til `/admin/agencyos/okonomi` (2-hopps kjede). Ikke en egen skjerm.
 | **Økonomi (MRR/betalinger)** | `/admin/okonomi` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: NYTT FUNN — dette er nå selv en ren `redirect("/admin/agencyos/okonomi")`, ett hopp til fra den allerede dokumenterte `/admin/finance`-aliasen. Raden var feilaktig scoret som en levende skjerm. |
 | Stats-oversikt | `/admin/stats/overview` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminStatsOverviewV2` + `AdminStatsRaskeHandlingerV2` (T-tokens; `Reveal`/`CountUp` beholdt uendret som generiske adferds-primitiver). Samme datagrunnlag (`hentAdminOverview`, `sjekkDbHelse`) uendret. La til `git-commit-horizontal` i v2-ikonregisteret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
-| Stats-moderering | `/admin/stats/moderering` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul: `AdminStatsModereringV2` (T-tokens), erstatter Tailwind/shadcn `ModeringClient`. Ingen modererings-/GDPR-slett-kø finnes i datamodellen ennå — bevisst tomme tilstander + ikke-koblede knapper beholdt UENDRET fra før (ikke en regresjon fra denne porten). Design – → ✓; Flyt/Data/Funker fortsatt ~ (reell begrensning, ikke stylingsgap). |
+| Stats-moderering | `/admin/stats/moderering` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | **Kø koblet 17. jul (D5, Anders' ja):** `ModerationCase`-modell + actions m/ zod-statusoverganger og audit; Godkjenn/Avvis/Bekreft sletting virker; GDPR = to-stegs anonymisering (navn/e-post/telefon/avatar/fødselsdato — bevisst IKKE `deletedAt`, som ville trigget hard-delete-cronen). Faner endret fra 5 stubber til Rapportert innhold · Slett-forespørsler · Historikk (matcher datamodellen); falsk batch-bar fjernet. Rest: rapporteringsflyt i appen (opprette saker) + `publicPlayerId`-avklaring — se AAPNE-SPORSMAAL. NB: `scripts/create-moderation-cases-2026-07-17.ts` må kjøres mot DIRECT_URL før deploy. |
 
 ### Admin (organisasjon og innstillinger)
 
@@ -764,8 +765,8 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
   anleggsdata). Rest: kartplassering (mapX/mapY/latlong) trenger egen kart-flate — meldt gap.
 - `/admin/availability`: kompleks drag-interaksjon + 3 visningsmoduser — restylet 1:1 mot v2-tokens,
   ingen ny funksjon lagt til.
-- `/admin/stats/moderering`: ingen modererings-/GDPR-slett-kø finnes ennå i datamodellen — bevisst
-  tomme tilstander og ikke-koblede knapper (Godkjenn/Avvis/Bekreft sletting) beholdt uendret.
+- ~~`/admin/stats/moderering`~~ **LUKKET 17. jul (D5):** ModerationCase-kø koblet m/ audit og
+  GDPR-anonymisering. Rest (se AAPNE-SPORSMAAL D5): rapporteringsflyt i appen + publicPlayerId-avklaring.
 
 ---
 
