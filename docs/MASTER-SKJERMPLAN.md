@@ -106,7 +106,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Fys-plan (liste) | `/portal/tren/fys-plan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Fys-plan detalj/bygger | `/portal/tren/fys-plan/[planId]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `KPICard` (ui/) + `fys-plan`-modulen bruker `Input`/`ProgressBar` fra ui/. |
 | Drills (bibliotek) | `/portal/drills` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `OvelsesbankV2` i `V2Shell`. |
-| · Drill-detalj | `/portal/drills/[id]` | – | ✓✓– | ✓ | ~ | ✓ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — kun react/lucide-react/@/lib/utils, 0 golfdata/v2-imports (v10 pixel-port).
+| · Drill-detalj | `/portal/drills/[id]` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | v2-port 17. jul (Team D1): `DrillDetaljV2` (V2Shell/Kort/TomTilstand/CTAPill), ruten flyttet ut av (legacy) — gammel v10 pixel-port slettet. `loadDrillDetalj`-loaderen, auth-guard (PLAYER+PARENT) og ærlige tomtilstander («Media kommer», aldri fabrikerte tall) uendret. Design – → ✓. |
 | Mål-hub | `/portal/mal` | ✓ | --- | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — `MalHubV2` inni `V2Shell` (@/components/portal/v2/MalHubV2).
 | · Mål-bygger (wizard) | `/portal/mal/bygger` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2-imports.
 | · Mål-detalj | `/portal/mal/goal/[id]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2-imports.
