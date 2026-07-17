@@ -1,31 +1,26 @@
 "use client";
 
 /**
- * PlayerHQ · Tren · Tester · Gjennomfør — scorekort-klient.
+ * PlayerHQ · Tren · Tester · Gjennomfør — scorekort-klient (v2).
+ * v2-port 17. juli 2026 (Team D2): flyttet fra (fullscreen-test) og restylet
+ * til v2 (T-tokens + v2-primitiver), samme fullskjerm-konvensjon som
+ * live-familien (chrome-løs, egen flate).
  *
  * Tre steg: Brief (m/kontekst) → Scorekort → Oppsummering.
  *
  * Scoren regnes via den FELLES motoren (test-scoring.ts) — samme funksjon
  * serveren bruker som fasit. Klienten sender kun rå slag-verdier + kontekst;
  * live-preview og lagret score kan derfor aldri avvike. Enheter/mål kommer
- * alltid fra protokollen (ingen hardkodede referanseverdier).
+ * alltid fra protokollen (ingen hardkodede referanseverdier). Logikken er
+ * uendret fra legacy-klienten — kun presentasjonslaget er nytt.
  */
 
 import { useEffect, useMemo, useState, useTransition } from "react";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  ArrowRight,
-  Check,
-  ChevronLeft,
-  Minus,
-  Play,
-  Plus,
-  RotateCcw,
-  X,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+import { T, Caps, Knapp, CTAPill, TekstOmraade } from "@/components/v2";
+import { Icon } from "@/components/v2/icon";
 import type { ScorekortFelt, ScorekortForsok, ScorekortSpec } from "@/lib/portal-tester/protocol";
 import { scoreTest } from "@/lib/portal-tester/test-scoring";
 import { lagreTestResultat } from "./actions";
@@ -48,13 +43,6 @@ type Kontekst = {
 
 const MAKS_HISTORIKK = 50;
 const MAKS_POENG = 999;
-
-const lblCls =
-  "font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground";
-const pillCls =
-  "inline-flex h-11 items-center justify-center gap-1.5 rounded-full border border-border bg-card px-4 font-mono text-[11px] font-bold uppercase tracking-[0.08em] text-foreground transition-colors active:bg-secondary disabled:pointer-events-none disabled:opacity-40";
-const ctaCls =
-  "inline-flex h-[52px] w-full items-center justify-center gap-2 rounded-full bg-primary font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-primary-foreground shadow-[0_8px_20px_rgba(0,88,64,0.18)] transition hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-60";
 
 /** Stegene i flyten — drives status-stripens teller (jf. Live Test «Øvelse N av M»). */
 const STEG_REKKE: Steg[] = ["brief", "scorekort", "oppsummering"];
@@ -93,6 +81,32 @@ function renKontekst(k: Kontekst): Record<string, string> | undefined {
   if (k.greenfasthet) ut.greenfasthet = k.greenfasthet;
   return Object.keys(ut).length > 0 ? ut : undefined;
 }
+
+/* ── Delte stiler (v2) ─────────────────────────────────── */
+
+const lblStil: CSSProperties = {
+  fontFamily: T.mono,
+  fontSize: 9,
+  fontWeight: 700,
+  letterSpacing: "0.10em",
+  textTransform: "uppercase",
+  color: T.mut,
+};
+
+const inputStil: CSSProperties = {
+  width: "100%",
+  boxSizing: "border-box",
+  appearance: "none",
+  height: 44,
+  background: T.panel2,
+  border: `1px solid ${T.borderS}`,
+  borderRadius: 11,
+  padding: "0 13px",
+  fontFamily: T.mono,
+  fontSize: 13,
+  color: T.fg,
+  outline: "none",
+};
 
 export function ScorekortKlient({
   testId,
@@ -234,37 +248,37 @@ export function ScorekortKlient({
         <StatusStrip steg="brief" progressPct={0} live={false} />
 
         {beskrivelse && (
-          <p className="mb-4 mt-5 max-w-[62ch] text-sm leading-relaxed text-muted-foreground">
+          <p style={{ margin: "18px 0 14px", maxWidth: "62ch", fontFamily: T.ui, fontSize: 13.5, lineHeight: 1.6, color: T.fg2 }}>
             {beskrivelse}
           </p>
         )}
 
         <SectionHead>Protokoll</SectionHead>
-        <div className="overflow-hidden rounded-2xl border border-border bg-card">
+        <div style={{ overflow: "hidden", borderRadius: 16, border: `1px solid ${T.border}`, background: T.panel }}>
           <BriefRad label="Forsøk" verdi={`${antallForsok}`} />
           <BriefRad label="Per forsøk" verdi={felterTekst} />
           {protokollEnhet && <BriefRad label="Enhet" verdi={protokollEnhet} />}
-          <BriefRad label="Scoring" verdi={scoringRule} />
+          <BriefRad label="Scoring" verdi={scoringRule} last />
         </div>
 
         {harMaal && (
-          <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
+          <p style={{ margin: "10px 0 0", fontFamily: T.ui, fontSize: 11.5, lineHeight: 1.6, color: T.mut }}>
             Målverdier i protokollen er foreslått fra IUP — ikke låst fasit.
           </p>
         )}
 
         <KontekstForm kontekst={kontekst} onSett={(k, v) => setKontekst((prev) => ({ ...prev, [k]: v }))} />
 
-        <button type="button" onClick={() => setSteg("scorekort")} className={cn(ctaCls, "mt-6")}>
-          <Play className="h-[18px] w-[18px]" strokeWidth={2} aria-hidden />
-          Start test
-        </button>
-        <Link
-          href={`/portal/tren/tester/${testId}`}
-          className={cn(pillCls, "mt-2.5 w-full border-transparent bg-transparent text-muted-foreground")}
-        >
-          Tilbake til testen
-        </Link>
+        <div style={{ marginTop: 22 }}>
+          <Knapp full icon="play" onClick={() => setSteg("scorekort")} style={{ minHeight: 48 }}>
+            Start test
+          </Knapp>
+        </div>
+        <div style={{ marginTop: 10, display: "flex", justifyContent: "center" }}>
+          <Link href={`/portal/tren/tester/${testId}`} style={{ textDecoration: "none" }}>
+            <CTAPill ghost icon="arrow-left">Tilbake til testen</CTAPill>
+          </Link>
+        </div>
 
         <FysPlassholderNote />
       </div>
@@ -281,7 +295,7 @@ export function ScorekortKlient({
         />
 
         {/* Accent-kort — løpende score (jf. runde-ny) */}
-        <div className="mt-5">
+        <div style={{ marginTop: 18 }}>
           <ScoreKort
             score={score}
             scoreEnhet={scoreEnhet}
@@ -290,7 +304,7 @@ export function ScorekortKlient({
         </div>
 
         <SectionHead>{fellesLabel ?? "Scorekort"}</SectionHead>
-        <div className={cn("grid gap-2", enkel ? "grid-cols-2 md:grid-cols-3" : "grid-cols-1 md:grid-cols-2")}>
+        <div style={{ display: "grid", gap: 8, gridTemplateColumns: enkel ? "repeat(auto-fill, minmax(150px, 1fr))" : "repeat(auto-fill, minmax(260px, 1fr))" }}>
           {spec.forsok.map((f) => (
             <ForsokKort
               key={f.nr}
@@ -303,31 +317,20 @@ export function ScorekortKlient({
           ))}
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-2.5">
-          <button
-            type="button"
-            onClick={angreSiste}
-            disabled={historikk.length === 0}
-            className={pillCls}
-          >
-            <RotateCcw className="h-4 w-4" strokeWidth={1.5} aria-hidden />
+        <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+          <Knapp ghost icon="rotate-cw" onClick={angreSiste} disabled={historikk.length === 0} style={{ minHeight: 44 }}>
             Angre siste
-          </button>
-          <button type="button" onClick={avbryt} className={pillCls}>
-            <X className="h-4 w-4" strokeWidth={1.5} aria-hidden />
+          </Knapp>
+          <Knapp ghost icon="x" onClick={avbryt} style={{ minHeight: 44 }}>
             Avbryt
-          </button>
+          </Knapp>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setSteg("oppsummering")}
-          disabled={antallFort === 0}
-          className={cn(ctaCls, "mt-4")}
-        >
-          Til oppsummering
-          <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2} aria-hidden />
-        </button>
+        <div style={{ marginTop: 16 }}>
+          <Knapp full icon="arrow-right" onClick={() => setSteg("oppsummering")} disabled={antallFort === 0} style={{ minHeight: 48 }}>
+            Til oppsummering
+          </Knapp>
+        </div>
 
         <FysPlassholderNote />
       </div>
@@ -339,7 +342,7 @@ export function ScorekortKlient({
     <div>
       <StatusStrip steg="oppsummering" progressPct={100} live={false} />
 
-      <div className="mt-5">
+      <div style={{ marginTop: 18 }}>
         <ScoreKort
           score={score}
           scoreEnhet={scoreEnhet}
@@ -348,38 +351,37 @@ export function ScorekortKlient({
       </div>
 
       <SectionHead>Per forsøk</SectionHead>
-      <div className="overflow-hidden rounded-2xl border border-border bg-card">
-        {spec.forsok.map((f) => (
+      <div style={{ overflow: "hidden", borderRadius: 16, border: `1px solid ${T.border}`, background: T.panel }}>
+        {spec.forsok.map((f, i) => (
           <div
             key={f.nr}
-            className="flex items-center gap-3 border-b border-border px-4 py-3 last:border-b-0"
+            style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 16px", borderBottom: i === spec.forsok.length - 1 ? "none" : `1px solid ${T.border}` }}
           >
-            <span className="w-7 shrink-0 font-mono text-[10px] font-extrabold tabular-nums text-muted-foreground">
+            <span style={{ width: 28, flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: T.mut }}>
               {String(f.nr).padStart(2, "0")}
             </span>
-            <span className="min-w-0 flex-1 truncate text-[13px] font-semibold text-foreground">
+            <span style={{ minWidth: 0, flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
               {f.label}
             </span>
-            <span className="shrink-0 font-mono text-xs tabular-nums text-muted-foreground">
+            <span style={{ flex: "none", fontFamily: T.mono, fontSize: 12, fontVariantNumeric: "tabular-nums", color: T.fg2 }}>
               {forsokSammendrag(f, verdier[f.nr])}
             </span>
           </div>
         ))}
       </div>
 
-      <div className="mt-4 flex flex-col gap-1.5">
-        <span className={lblCls}>Notat · valgfritt</span>
-        <textarea
+      <div style={{ marginTop: 16 }}>
+        <TekstOmraade
+          label="Notat · valgfritt"
           value={notat}
-          onChange={(e) => setNotat(e.target.value.slice(0, 500))}
-          placeholder="Forhold, følelse, hva du jobbet med…"
           rows={3}
-          className="min-h-[72px] w-full resize-none rounded-xl border border-input bg-card px-3.5 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-[3px] focus:ring-ring/20"
+          placeholder="Forhold, følelse, hva du jobbet med…"
+          onChange={(v) => setNotat(v.slice(0, 500))}
         />
       </div>
 
       {!alleFort && (
-        <p className="mt-3 text-[11px] leading-relaxed text-warning">
+        <p style={{ margin: "12px 0 0", fontFamily: T.ui, fontSize: 11.5, lineHeight: 1.6, color: T.warn }}>
           Før resultat på alle {antallForsok} slag før du lagrer ({antallFort} ført).
         </p>
       )}
@@ -387,34 +389,29 @@ export function ScorekortKlient({
       {feil && (
         <div
           role="alert"
-          className="mt-4 rounded-xl border border-destructive/30 bg-destructive/10 px-3.5 py-2.5 text-sm text-destructive"
+          style={{ marginTop: 16, borderRadius: 11, border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`, background: `color-mix(in srgb, ${T.down} 10%, transparent)`, padding: "10px 14px", fontFamily: T.ui, fontSize: 13, color: T.down }}
         >
           {feil}
         </div>
       )}
 
-      <button type="button" onClick={lagre} disabled={pending || !alleFort} className={cn(ctaCls, "mt-6")}>
-        <Check className="h-[18px] w-[18px]" strokeWidth={2} aria-hidden />
-        {pending ? "Lagrer…" : "Lagre resultat"}
-      </button>
-      <div className="mt-2.5 grid grid-cols-2 gap-2.5">
-        <button
-          type="button"
-          onClick={() => setSteg("scorekort")}
-          disabled={pending}
-          className={pillCls}
-        >
-          <ChevronLeft className="h-4 w-4" strokeWidth={1.5} aria-hidden />
+      <div style={{ marginTop: 22 }}>
+        <Knapp full icon="check" onClick={lagre} disabled={pending || !alleFort} style={{ minHeight: 48 }}>
+          {pending ? "Lagrer…" : "Lagre resultat"}
+        </Knapp>
+      </div>
+      <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        <Knapp ghost icon="chevron-left" onClick={() => setSteg("scorekort")} disabled={pending} style={{ minHeight: 44 }}>
           Tilbake
-        </button>
-        <button
-          type="button"
+        </Knapp>
+        <Knapp
+          ghost
           onClick={avbryt}
           disabled={pending}
-          className={cn(pillCls, "border-destructive/30 text-destructive active:bg-destructive/10")}
+          style={{ minHeight: 44, color: T.down, borderColor: `color-mix(in srgb, ${T.down} 35%, transparent)` }}
         >
           Forkast
-        </button>
+        </Knapp>
       </div>
 
       <FysPlassholderNote />
@@ -427,15 +424,15 @@ export function ScorekortKlient({
 /** Bunn-note fra Live Test-fasit — gjør FYS-plassholder-status eksplisitt. */
 function FysPlassholderNote() {
   return (
-    <p className="mt-7 border-t border-border pt-4 text-center font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-muted-foreground/70">
+    <p style={{ margin: "26px 0 0", borderTop: `1px solid ${T.border}`, paddingTop: 16, textAlign: "center", fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
       FYS-resultater er plassholderverdier · formelen er ikke låst
     </p>
   );
 }
 
 /**
- * Terminal status-stripe (Live Test-idiom, oversatt til lyst tema).
- * Venstre: live-puls + stegstatus. Høyre: «Steg N av 3». Under: framdriftslinje.
+ * Terminal status-stripe (Live Test-idiom). Venstre: live-puls + stegstatus.
+ * Høyre: «Steg N av 3». Under: framdriftslinje.
  */
 function StatusStrip({
   steg,
@@ -448,33 +445,24 @@ function StatusStrip({
 }) {
   const stegNr = STEG_REKKE.indexOf(steg) + 1;
   return (
-    <div className="mt-4 rounded-2xl border border-border bg-card p-3.5">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
+    <div style={{ marginTop: 16, borderRadius: 16, border: `1px solid ${T.border}`, background: T.panel, padding: 14 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <span
-            className={cn(
-              "h-2 w-2 shrink-0 rounded-full",
-              live ? "animate-pulse bg-accent ring-2 ring-accent/30" : "bg-muted-foreground/40",
-            )}
             aria-hidden
+            style={{ width: 8, height: 8, flex: "none", borderRadius: 9999, background: live ? T.lime : T.mut, boxShadow: live ? `0 0 0 3px color-mix(in srgb, ${T.lime} 30%, transparent)` : "none" }}
           />
-          <span
-            className={cn(
-              "font-mono text-[10px] font-bold uppercase tracking-[0.1em]",
-              live ? "text-primary" : "text-muted-foreground",
-            )}
-          >
+          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: live ? T.lime : T.mut }}>
             {STEG_LABEL[steg]}
           </span>
         </div>
-        <span className="font-mono text-[11px] font-bold tabular-nums text-muted-foreground">
+        <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: T.mut }}>
           Steg {stegNr} av {STEG_REKKE.length}
         </span>
       </div>
-      <div className="mt-3 h-[3px] overflow-hidden rounded-full bg-secondary">
+      <div style={{ marginTop: 12, height: 3, overflow: "hidden", borderRadius: 9999, background: T.track }}>
         <div
-          className="h-full rounded-full bg-primary transition-[width] duration-500"
-          style={{ width: `${Math.max(0, Math.min(100, progressPct))}%` }}
+          style={{ height: "100%", borderRadius: 9999, background: T.lime, width: `${Math.max(0, Math.min(100, progressPct))}%`, transition: `width 500ms ${T.ease}` }}
         />
       </div>
     </div>
@@ -483,18 +471,18 @@ function StatusStrip({
 
 function SectionHead({ children }: { children: ReactNode }) {
   return (
-    <div className="mb-2.5 mt-5 flex items-baseline gap-2.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
-      <span>{children}</span>
-      <span className="h-px flex-1 bg-border" aria-hidden />
+    <div style={{ margin: "20px 0 10px", display: "flex", alignItems: "baseline", gap: 10 }}>
+      <Caps size={9}>{children}</Caps>
+      <span aria-hidden style={{ height: 1, flex: 1, background: T.border }} />
     </div>
   );
 }
 
-function BriefRad({ label, verdi }: { label: string; verdi: string }) {
+function BriefRad({ label, verdi, last }: { label: string; verdi: string; last?: boolean }) {
   return (
-    <div className="flex items-baseline justify-between gap-3 border-b border-border px-4 py-3 last:border-b-0">
-      <span className={cn(lblCls, "shrink-0")}>{label}</span>
-      <span className="min-w-0 text-right text-[13px] font-semibold leading-snug text-foreground">
+    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, borderBottom: last ? "none" : `1px solid ${T.border}`, padding: "11px 16px" }}>
+      <span style={{ ...lblStil, flex: "none" }}>{label}</span>
+      <span style={{ minWidth: 0, textAlign: "right", fontFamily: T.ui, fontSize: 13, fontWeight: 600, lineHeight: 1.4, color: T.fg }}>
         {verdi}
       </span>
     </div>
@@ -510,18 +498,17 @@ function KontekstForm({
   kontekst: Kontekst;
   onSett: <K extends keyof Kontekst>(key: K, verdi: Kontekst[K]) => void;
 }) {
-  const inputCls =
-    "h-11 w-full rounded-xl border border-input bg-card px-3 font-mono text-[13px] text-foreground outline-none transition-colors placeholder:text-muted-foreground/50 focus:border-primary focus:ring-[3px] focus:ring-ring/20";
   return (
     <>
       <SectionHead>Kontekst</SectionHead>
-      <div className="grid grid-cols-2 gap-2.5">
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10 }}>
         <Felt label="Dato">
           <input
             type="date"
             value={kontekst.dato}
             onChange={(e) => onSett("dato", e.target.value)}
-            className={inputCls}
+            className="v2-focus"
+            style={inputStil}
           />
         </Felt>
         <Felt label="Lokasjon">
@@ -530,7 +517,8 @@ function KontekstForm({
             value={kontekst.lokasjon}
             onChange={(e) => onSett("lokasjon", e.target.value)}
             placeholder="Bane / anlegg"
-            className={inputCls}
+            className="v2-focus"
+            style={inputStil}
           />
         </Felt>
         <Felt label="Vanskelighetsgrad">
@@ -550,7 +538,8 @@ function KontekstForm({
             value={kontekst.vaer}
             onChange={(e) => onSett("vaer", e.target.value)}
             placeholder="Vind, sol, regn…"
-            className={inputCls}
+            className="v2-focus"
+            style={inputStil}
           />
         </Felt>
         <Felt label="Fart på greener">
@@ -559,7 +548,8 @@ function KontekstForm({
             value={kontekst.greenfart}
             onChange={(e) => onSett("greenfart", e.target.value)}
             placeholder="Stimp / rask–treig"
-            className={inputCls}
+            className="v2-focus"
+            style={inputStil}
           />
         </Felt>
         <Felt label="Green-fasthet">
@@ -580,8 +570,8 @@ function KontekstForm({
 
 function Felt({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <span className={lblCls}>{label}</span>
+    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      <span style={lblStil}>{label}</span>
       {children}
     </div>
   );
@@ -597,23 +587,38 @@ function PillValg({
   onVelg: (v: string) => void;
 }) {
   return (
-    <div className="grid grid-cols-3 gap-1.5">
-      {verdier.map(([v, label]) => (
-        <button
-          key={v}
-          type="button"
-          onClick={() => onVelg(v)}
-          aria-pressed={valgt === v}
-          className={cn(
-            "inline-flex h-11 items-center justify-center rounded-lg border font-mono text-[10px] font-bold uppercase tracking-[0.05em] transition-colors",
-            valgt === v
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-border bg-background text-muted-foreground active:bg-secondary",
-          )}
-        >
-          {label}
-        </button>
-      ))}
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
+      {verdier.map(([v, label]) => {
+        const on = valgt === v;
+        return (
+          <button
+            key={v}
+            type="button"
+            onClick={() => onVelg(v)}
+            aria-pressed={on}
+            className="v2-press v2-focus"
+            style={{
+              appearance: "none",
+              cursor: "pointer",
+              display: "inline-flex",
+              height: 44,
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 11,
+              fontFamily: T.mono,
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: "0.05em",
+              textTransform: "uppercase",
+              background: on ? T.lime : T.panel2,
+              border: `1px solid ${on ? "transparent" : T.borderS}`,
+              color: on ? T.onLime : T.fg2,
+            }}
+          >
+            {label}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -628,15 +633,15 @@ function ScoreKort({
   subline: string;
 }) {
   return (
-    <div className="flex items-center gap-3.5 rounded-xl border border-border border-l-[3px] border-l-accent bg-card px-4 py-3.5">
-      <span className="font-mono text-[30px] font-extrabold leading-none tracking-[-0.03em] tabular-nums text-foreground">
+    <div style={{ display: "flex", alignItems: "center", gap: 14, borderRadius: 14, border: `1px solid ${T.border}`, borderLeft: `3px solid ${T.lime}`, background: T.panel, padding: "14px 16px" }}>
+      <span style={{ fontFamily: T.mono, fontSize: 30, fontWeight: 700, lineHeight: 1, letterSpacing: "-0.03em", fontVariantNumeric: "tabular-nums", color: T.fg }}>
         {score === null ? "–" : fmt.format(score)}
       </span>
-      <div className="min-w-0 flex-1">
-        <div className="truncate font-mono text-base font-extrabold tabular-nums text-foreground">
+      <div style={{ minWidth: 0, flex: 1 }}>
+        <div style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: T.mono, fontSize: 15, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: T.fg }}>
           {scoreEnhet ?? "Score"}
         </div>
-        <div className="mt-0.5 truncate font-mono text-[9px] uppercase tracking-[0.1em] text-muted-foreground">
+        <div style={{ marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: T.mono, fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut }}>
           {subline}
         </div>
       </div>
@@ -658,19 +663,17 @@ function ForsokKort({
   onSnapshot: () => void;
 }) {
   return (
-    <div className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-3">
-      <div className="flex items-baseline justify-between gap-2">
-        <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
-          Forsøk {forsok.nr}
-        </span>
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, borderRadius: 14, border: `1px solid ${T.border}`, background: T.panel, padding: 12 }}>
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
+        <span style={lblStil}>Forsøk {forsok.nr}</span>
         {forsok.target && (
-          <span className="truncate font-mono text-[9px] tabular-nums text-muted-foreground">
+          <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: T.mono, fontSize: 9, fontVariantNumeric: "tabular-nums", color: T.mut }}>
             mål {forsok.target}
           </span>
         )}
       </div>
       {visLabel && (
-        <span className="text-[12.5px] font-semibold leading-snug text-foreground">
+        <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, lineHeight: 1.4, color: T.fg }}>
           {forsok.label}
         </span>
       )}
@@ -702,23 +705,37 @@ function FeltInput({
   onSnapshot: () => void;
 }) {
   if (felt.type === "checkbox") {
+    const valgStil = (on: boolean): CSSProperties => ({
+      appearance: "none",
+      cursor: "pointer",
+      display: "inline-flex",
+      height: 44,
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 4,
+      borderRadius: 11,
+      fontFamily: T.mono,
+      fontSize: 10,
+      fontWeight: 700,
+      letterSpacing: "0.06em",
+      textTransform: "uppercase",
+      background: on ? T.lime : T.panel2,
+      border: `1px solid ${on ? "transparent" : T.borderS}`,
+      color: on ? T.onLime : T.fg2,
+    });
     return (
-      <div className="flex flex-col gap-1.5">
-        <span className={lblCls}>{felt.label}</span>
-        <div className="grid grid-cols-2 gap-1.5">
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <span style={lblStil}>{felt.label}</span>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
           <button
             type="button"
             onClick={() => onSett(true, true)}
             aria-pressed={verdi === true}
             aria-label={`Treff, forsøk ${forsokNr}`}
-            className={cn(
-              "inline-flex h-11 items-center justify-center gap-1 rounded-lg border font-mono text-[10px] font-bold uppercase tracking-[0.06em] transition-colors",
-              verdi === true
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border bg-background text-muted-foreground active:bg-secondary",
-            )}
+            className="v2-press v2-focus"
+            style={valgStil(verdi === true)}
           >
-            <Check className="h-4 w-4" strokeWidth={1.5} aria-hidden />
+            <Icon name="check" size={14} />
             Treff
           </button>
           <button
@@ -726,14 +743,15 @@ function FeltInput({
             onClick={() => onSett(false, true)}
             aria-pressed={verdi === false}
             aria-label={`Bom, forsøk ${forsokNr}`}
-            className={cn(
-              "inline-flex h-11 items-center justify-center gap-1 rounded-lg border font-mono text-[10px] font-bold uppercase tracking-[0.06em] transition-colors",
-              verdi === false
-                ? "border-foreground/25 bg-secondary text-foreground"
-                : "border-border bg-background text-muted-foreground active:bg-secondary",
-            )}
+            className="v2-press v2-focus"
+            style={{
+              ...valgStil(false),
+              ...(verdi === false
+                ? { background: T.panel3, border: `1px solid ${T.borderS}`, color: T.fg }
+                : null),
+            }}
           >
-            <X className="h-4 w-4" strokeWidth={1.5} aria-hidden />
+            <Icon name="x" size={14} />
             Bom
           </button>
         </div>
@@ -748,28 +766,38 @@ function FeltInput({
       const neste = Math.max(0, Math.min(MAKS_POENG, tall + delta));
       onSett(String(neste), true);
     };
+    const steppStil: CSSProperties = {
+      appearance: "none",
+      cursor: "pointer",
+      display: "inline-flex",
+      width: 44,
+      height: 44,
+      flex: "none",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 11,
+      background: T.panel3,
+      border: `1px solid ${T.borderS}`,
+      color: T.fg,
+    };
     return (
-      <div className="flex flex-col gap-1.5">
-        <span className={lblCls}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <span style={lblStil}>
           {felt.label}
           {felt.unit ? ` · ${felt.unit}` : ""}
         </span>
-        <div className="flex items-center gap-1.5">
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <button
             type="button"
             onClick={() => stepp(-1)}
             disabled={!fort || tall <= 0}
             aria-label={`Trekk fra poeng, forsøk ${forsokNr}`}
-            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors active:bg-secondary disabled:pointer-events-none disabled:opacity-35"
+            className="v2-press v2-focus"
+            style={{ ...steppStil, ...((!fort || tall <= 0) ? { opacity: 0.35, pointerEvents: "none" } : null) }}
           >
-            <Minus className="h-4 w-4" strokeWidth={1.5} aria-hidden />
+            <Icon name="minus" size={15} />
           </button>
-          <span
-            className={cn(
-              "min-w-0 flex-1 text-center font-mono text-[22px] font-extrabold leading-none tracking-[-0.03em] tabular-nums",
-              fort ? "text-foreground" : "text-muted-foreground/50",
-            )}
-          >
+          <span style={{ minWidth: 0, flex: 1, textAlign: "center", fontFamily: T.mono, fontSize: 22, fontWeight: 700, lineHeight: 1, letterSpacing: "-0.03em", fontVariantNumeric: "tabular-nums", color: fort ? T.fg : T.mut }}>
             {fort ? fmt.format(tall) : "–"}
           </span>
           <button
@@ -777,9 +805,10 @@ function FeltInput({
             onClick={() => stepp(1)}
             disabled={tall >= MAKS_POENG}
             aria-label={`Legg til poeng, forsøk ${forsokNr}`}
-            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors active:bg-secondary disabled:pointer-events-none disabled:opacity-35"
+            className="v2-press v2-focus"
+            style={{ ...steppStil, ...(tall >= MAKS_POENG ? { opacity: 0.35, pointerEvents: "none" } : null) }}
           >
-            <Plus className="h-4 w-4" strokeWidth={1.5} aria-hidden />
+            <Icon name="plus" size={15} />
           </button>
         </div>
       </div>
@@ -789,9 +818,9 @@ function FeltInput({
   // number / meter — tallfelt med enhets-suffiks
   const enhet = felt.unit ?? (felt.type === "meter" ? "m" : null);
   return (
-    <div className="flex flex-col gap-1.5">
-      <span className={lblCls}>{felt.label}</span>
-      <label className="flex h-12 items-center gap-2 rounded-xl border border-input bg-card px-3 transition-colors focus-within:border-primary focus-within:ring-[3px] focus-within:ring-ring/20">
+    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      <span style={lblStil}>{felt.label}</span>
+      <label style={{ display: "flex", height: 48, alignItems: "center", gap: 8, borderRadius: 11, border: `1px solid ${T.borderS}`, background: T.panel2, padding: "0 13px" }}>
         <input
           type="text"
           inputMode="decimal"
@@ -800,10 +829,10 @@ function FeltInput({
           onChange={(e) => onSett(e.target.value, false)}
           placeholder="0"
           aria-label={`${felt.label}, forsøk ${forsokNr}`}
-          className="min-w-0 flex-1 border-0 bg-transparent p-0 font-mono text-[15px] font-bold tabular-nums text-foreground outline-none placeholder:text-muted-foreground/50"
+          style={{ minWidth: 0, flex: 1, border: 0, background: "transparent", padding: 0, outline: "none", fontFamily: T.mono, fontSize: 15, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: T.fg }}
         />
         {enhet && (
-          <span className="shrink-0 font-mono text-[10px] font-bold text-muted-foreground">
+          <span style={{ flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut }}>
             {enhet}
           </span>
         )}
