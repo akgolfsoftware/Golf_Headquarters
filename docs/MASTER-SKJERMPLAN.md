@@ -271,7 +271,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Talent-hub | `/portal/talent` | ✓ | ✓✓– | ✓ | ~ | ~ | † |
-| · Min plan | `/portal/talent/min-plan` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — bespoke `@/components/portal/talent/*`-familie, 0 golfdata/v2.
+| · Min plan | `/portal/talent/min-plan` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D5): `TalentMinPlanV2` + tynn page, rute ut av (legacy); TalentTracking-query og milepæl-parsing uendret; HjelpTips talentVurdering; datoformat fikk Oslo-tidssone (gotcha-regelen, legacy manglet den). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | · Mitt nivå | `/portal/talent/mitt-niva` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — samme bespoke talent-familie.
 | · Roadmap | `/portal/talent/roadmap` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — samme bespoke talent-familie.
 | · Sammenligning | `/portal/talent/sammenligning` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — samme bespoke talent-familie.
