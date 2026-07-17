@@ -1,6 +1,6 @@
 # Master-skjermplan — AK Golf HQ
 
-> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 16. juli 2026.**
+> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 17. juli 2026.**
 
 > **OPPDATERT KANON (2026-07-08):** Design-kanon er nå UTELUKKENDE det levende Claude Design-
 > prosjektet (`claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`), hentet direkte via
@@ -773,6 +773,24 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 ---
 
 ## Endringslogg
+
+- 17. juli (nattløpet, Byggerunde B–F + Fase 2, PR #60 merget + PR #61): **Porteringsplanen er
+  gjennomført — 63 skjermer portet til v2 på ~ett døgn.** PR #60 (merget av Anders): Byggerunde B
+  (auth/onboarding/forelder, 4), C (marketing-booking, 4 — Stripe-action flyttet byte-identisk),
+  D1 (Planlegge/Mål/AI, 8). PR #61: D2 (Trening/Tren, 8 — putte-lab 25 hex → 0), D3
+  (Statistikk/SG-hub, 7 — fikset også fortegns-feil mot kategori-snitt; ny rad for
+  `/portal/coach/sg-hub` som manglet i planen), D4a+D4b (hele Meg-seksjonen, 11), D5 (Talent, 4),
+  Fase 2 (alle 9 AMBIGUOUS-rader løst: 3 flippet m/ begrunnelse, 6 portet — plan-templates-trioen
+  m/ masseredigering bevart eksakt, videoer, foreslåtte tester, hull-analyse begge faner) + halerester
+  (InviteFriendTrigger-modal restylet, `tester/ny/egen` portet, coach-equipment-wrapper flyttet).
+  Delte tilskudd: 21 nye ikoner i v2-MAP, 12 nye HjelpTips-nøkler (stimp/break/make-%/prosess-score/
+  kategori-snitt/kohort-snitt/smash factor/D-Plane/sikkerhetsscore/VAS/NGF-nivå/mal-effektivitet).
+  Alt restyling only — Prisma/auth/server actions urørt; én skjerm per commit m/ doc-haker i samme
+  commit; `tsc`/`eslint`/`check-no-hex` grønn per skjerm; Vercel-preview grønn gjennom hele løpet.
+  **Gjenstående bekreftede gap: kun de 6 bevisst utsatte `/portal/booking/*`-underrutene** (Anders'
+  tidligere beslutning) + Bolk 5 (beslutningspunkter), Bolk 6 (data-blokkert), Bolk 8 (funksjonelle
+  hull). Meldte v2-kanon-gap fra løpet: dropzone-primitiv, illustrativt banekart for hull-analysen,
+  EquipmentView (deles av spiller + coach-wrapper).
 
 - 16. juli (Fase 0 + Byggerunde A pågår, branch `claude/skjermplan-fase0-reconciliation`, PR #59):
   **Fase 0-reconciliation** av de 94 uverifiserte «Design: –»-radene fullført (3 parallelle
