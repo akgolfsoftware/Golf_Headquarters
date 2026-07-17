@@ -1,3 +1,10 @@
+> **HISTORISK 2026-07-17** (jf. PR #40, oppdatert etter porteringsløpet): denne
+> prioriteringslisten er UTDATERT — v2-porteringen ble gjennomført 17. juli
+> (69 skjermer, PR #58–#62), se `docs/MASTER-SKJERMPLAN.md` endringslogg.
+> Eneste kjente gjenværende punkt herfra: `/kommando` → `/admin/workspace`-
+> databakking (ekte KommandoTask/KommandoProject/KommandoAgentRun-data) må
+> porteres inn før `/kommando` kan slettes.
+
 # Legacy-portering — prioritert rekkefølge (2026-07-12)
 
 82 sider ligger igjen i `src/app/admin/(legacy)/` med gammelt design. ALLE er
