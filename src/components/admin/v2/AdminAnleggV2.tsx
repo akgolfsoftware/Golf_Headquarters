@@ -27,6 +27,8 @@ export interface AnleggLokasjon {
   navn: string;
   adresse: string;
   aktiv: boolean;
+  breddegrad: number | null;
+  lengdegrad: number | null;
   fasiliteter: AnleggFasilitet[];
 }
 export interface AdminAnleggV2Data {
@@ -104,7 +106,7 @@ export function AdminAnleggV2({ data }: { data: AdminAnleggV2Data }) {
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                 <LocationFormV2
-                  initial={{ id: l.id, name: l.navn, address: l.adresse, active: l.aktiv }}
+                  initial={{ id: l.id, name: l.navn, address: l.adresse, active: l.aktiv, latitude: l.breddegrad, longitude: l.lengdegrad }}
                   triggerLabel="Endre"
                 />
                 <FacilityFormV2 locationId={l.id} triggerLabel="+ Ny fasilitet" />

@@ -25,8 +25,27 @@ import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { notify } from "@/lib/notifications";
 
 const MODERERING_PATH = "/admin/stats/moderering";
+
+/**
+ * Kvittering til den som meldte inn saken (D5-deltråd i, 2026-07-17).
+ * Best-effort — en varslingsfeil skal aldri velte selve behandlingen.
+ * reporterId er null når saken ikke har en innmelder; da gjør vi ingenting.
+ */
+async function varsleForesporrer(
+  reporterId: string | null,
+  tittel: string,
+  body: string,
+): Promise<void> {
+  if (!reporterId) return;
+  try {
+    await notify({ userId: reporterId, type: "system", title: tittel, body });
+  } catch {
+    // Kvittering er sekundær — svelg feilen bevisst.
+  }
+}
 
 async function krevCoach() {
   const user = await getCurrentUser();
@@ -74,6 +93,14 @@ export async function godkjennSak(id: string) {
     metadata: { type: sak.type, userId: sak.userId },
   });
 
+  await varsleForesporrer(
+    sak.reporterId,
+    "Saken din er behandlet",
+    sak.type === "GDPR_SLETTING"
+      ? "Slettforespørselen din er godkjent og blir utført."
+      : "Rapporten din er gjennomgått og godkjent for oppfølging.",
+  );
+
   revalidatePath(MODERERING_PATH);
   return { ok: true as const };
 }
@@ -101,6 +128,14 @@ export async function avvisSak(id: string, begrunnelse?: string) {
     target: `ModerationCase:${sakId}`,
     metadata: { type: sak.type, userId: sak.userId, begrunnelse: grunn ?? null },
   });
+
+  await varsleForesporrer(
+    sak.reporterId,
+    "Saken din er behandlet",
+    sak.type === "GDPR_SLETTING"
+      ? "Slettforespørselen din er gjennomgått og ikke innvilget. Ta kontakt med support hvis du har spørsmål."
+      : "Rapporten din er gjennomgått. Vi fant ikke grunnlag for tiltak denne gangen.",
+  );
 
   revalidatePath(MODERERING_PATH);
   return { ok: true as const };

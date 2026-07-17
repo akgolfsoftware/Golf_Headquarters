@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { ChevronLeft, ChevronRight, Check, Plus, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, Plus, Trash2, MapPin, X } from "lucide-react";
 import { saveShot, deleteShot } from "./actions";
 import type { ShotInput } from "./actions";
+import { CourseMap, type CourseMapHole, type LatLngPoint } from "@/components/gameplan/course-map";
 
 type SlagData = {
   id?: string;
@@ -18,6 +19,18 @@ type SlagData = {
   shotType: string;
   isPenalty: boolean;
   notes: string | null;
+  // GPS-fangst for dispersion/Gameplan (lat/lng — persisteres til Shot.startX/Y/endX/Y).
+  startLat: number | null;
+  startLng: number | null;
+  endLat: number | null;
+  endLng: number | null;
+};
+
+/** Banegeometri for det interaktive slag-kartet (null → bane uten kart). */
+export type BaneKartData = {
+  center: { lat: number; lng: number };
+  geojson: GeoJSON.FeatureCollection;
+  holes: CourseMapHole[];
 };
 
 const KØLLELISTE = [
@@ -72,15 +85,21 @@ function defaultSlag(holeNumber: number, holePar: number, shotNumber: number): S
     shotType,
     isPenalty: false,
     notes: null,
+    startLat: null,
+    startLng: null,
+    endLat: null,
+    endLng: null,
   };
 }
 
 export function SlagWizard({
   roundId,
   eksisterendeSlag,
+  baneKart = null,
 }: {
   roundId: string;
   eksisterendeSlag: SlagData[];
+  baneKart?: BaneKartData | null;
 }) {
   const [aktivtHull, setAktivtHull] = useState(1);
   const [alleSlag, setAlleSlag] = useState<SlagData[]>(eksisterendeSlag);
@@ -108,8 +127,23 @@ export function SlagWizard({
 
   function startNyttSlag() {
     const nesteNr = hullSlag.length + 1;
-    setRedigert(defaultSlag(aktivtHull, effektivPar, nesteNr));
+    const nytt = defaultSlag(aktivtHull, effektivPar, nesteNr);
+    // Kjede: forrige slags landingspunkt blir dette slagets startpunkt.
+    const forrige = hullSlag[hullSlag.length - 1];
+    if (forrige?.endLat != null && forrige?.endLng != null) {
+      nytt.startLat = forrige.endLat;
+      nytt.startLng = forrige.endLng;
+    }
+    setRedigert(nytt);
     setFeilmelding(null);
+    setLagret(false);
+  }
+
+  /** Setter (eller nullstiller) det aktive slagets landingspunkt fra et kart-tapp. */
+  function settSluttpunkt(p: LatLngPoint | null) {
+    setRedigert((prev) =>
+      prev ? { ...prev, endLat: p?.lat ?? null, endLng: p?.lng ?? null } : prev,
+    );
     setLagret(false);
   }
 
@@ -143,6 +177,10 @@ export function SlagWizard({
           shotType: redigert.shotType as ShotInput["shotType"],
           isPenalty: redigert.isPenalty,
           notes: redigert.notes ?? undefined,
+          startLat: redigert.startLat ?? undefined,
+          startLng: redigert.startLng ?? undefined,
+          endLat: redigert.endLat ?? undefined,
+          endLng: redigert.endLng ?? undefined,
         };
         await saveShot(roundId, input);
         setAlleSlag((prev) => {
@@ -177,6 +215,24 @@ export function SlagWizard({
   }
 
   const hullFerdig = (nr: number) => alleSlag.some((s) => s.holeNumber === nr);
+
+  // Kart-geometri for aktivt hull: senter på tee (fallback bane-senter),
+  // sikte-linje tee → green når GPS finnes.
+  const aktivHullGeo = baneKart?.holes.find((h) => h.holeNumber === aktivtHull);
+  const kartSenter =
+    aktivHullGeo?.teeLat != null && aktivHullGeo?.teeLng != null
+      ? { lat: aktivHullGeo.teeLat, lng: aktivHullGeo.teeLng }
+      : baneKart?.center ?? null;
+  const sikteLinje =
+    aktivHullGeo?.teeLat != null &&
+    aktivHullGeo?.teeLng != null &&
+    aktivHullGeo?.greenLat != null &&
+    aktivHullGeo?.greenLng != null
+      ? {
+          tee: { lat: aktivHullGeo.teeLat, lng: aktivHullGeo.teeLng },
+          green: { lat: aktivHullGeo.greenLat, lng: aktivHullGeo.greenLng },
+        }
+      : null;
 
   return (
     <div className="space-y-6">
@@ -406,6 +462,59 @@ export function SlagWizard({
                   placeholder="Eks. dårlig kontakt, god read..."
                   className="w-full rounded-lg border border-border bg-card px-4 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-primary"
                 />
+              </FieldGroup>
+
+              {/* Landingspunkt på kart — tapp der ballen landet (GPS-fangst) */}
+              <FieldGroup label="Landingspunkt — tapp der ballen landet">
+                {baneKart && kartSenter ? (
+                  <div className="space-y-2">
+                    <CourseMap
+                      key={`slag-kart-${aktivtHull}`}
+                      center={kartSenter}
+                      geojson={baneKart.geojson}
+                      holes={baneKart.holes}
+                      interactive
+                      onKlikk={settSluttpunkt}
+                      sikte={
+                        redigert.endLat != null && redigert.endLng != null
+                          ? { lat: redigert.endLat, lng: redigert.endLng }
+                          : null
+                      }
+                      aimLine={sikteLinje}
+                      shotPoints={hullSlag
+                        .filter(
+                          (s) =>
+                            s.shotNumber !== redigert.shotNumber &&
+                            s.endLat != null &&
+                            s.endLng != null,
+                        )
+                        .map((s) => ({ lat: s.endLat as number, lng: s.endLng as number }))}
+                      className="h-[300px] w-full overflow-hidden rounded-xl border border-border"
+                    />
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
+                        <MapPin className="h-3.5 w-3.5" />
+                        {redigert.endLat != null && redigert.endLng != null
+                          ? `${redigert.endLat.toFixed(5)}, ${redigert.endLng.toFixed(5)}`
+                          : "Ingen posisjon satt — tapp på kartet."}
+                      </span>
+                      {redigert.endLat != null && (
+                        <button
+                          type="button"
+                          onClick={() => settSluttpunkt(null)}
+                          className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-1 text-[11px] text-muted-foreground hover:border-primary hover:text-foreground"
+                        >
+                          <X className="h-3 w-3" />
+                          Fjern punkt
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-xl border border-border bg-secondary p-6 text-center text-sm text-muted-foreground">
+                    Kart ikke tilgjengelig for denne banen.
+                  </div>
+                )}
               </FieldGroup>
 
               {feilmelding && (

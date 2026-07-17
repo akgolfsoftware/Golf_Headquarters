@@ -17,7 +17,7 @@
  * Dropzone-mønsteret finnes ikke i v2-kanon — komponert av T-tokens (se gap).
  */
 
-import { useRef, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { uploadVideo, deleteVideo, getSignedVideoUrl } from "@/lib/storage/video";
@@ -35,6 +35,7 @@ import {
   Inndata,
   Velger,
   TekstOmraade,
+  Dropzone,
   type VelgerIdValg,
 } from "@/components/v2";
 
@@ -81,12 +82,11 @@ const MAX_MB = 500;
 
 function OpplastingsSkjema({ spillere }: { spillere: AdminVideoSpiller[] }) {
   const router = useRouter();
-  const fileRef = useRef<HTMLInputElement>(null);
+  const [resetKey, setResetKey] = useState(0);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-  const [dragging, setDragging] = useState(false);
 
   const [title, setTitle] = useState("");
   const [playerId, setPlayerId] = useState("");
@@ -145,7 +145,7 @@ function OpplastingsSkjema({ spillere }: { spillere: AdminVideoSpiller[] }) {
         setTag("");
         setBookingId("");
         setNotes("");
-        if (fileRef.current) fileRef.current.value = "";
+        setResetKey((k) => k + 1);
         router.refresh();
       } catch (err) {
         setError(err instanceof Error ? err.message : "Opplasting feilet.");
@@ -158,91 +158,21 @@ function OpplastingsSkjema({ spillere }: { spillere: AdminVideoSpiller[] }) {
     ...spillere.map((s) => ({ value: s.id, label: s.name })),
   ];
 
-  const dropBorder = dragging || file ? T.lime : T.borderS;
-
   return (
     <Kort
       eyebrow="Last opp ny video"
       action={<Caps size={9}>Maks {MAX_MB} MB · mp4 · mov · webm</Caps>}
     >
       <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        {/* Dropzone — v2-kanon mangler filopplastings-primitiv; komponert av T-tokens */}
-        <label
-          onDragOver={(e) => {
-            e.preventDefault();
-            setDragging(true);
-          }}
-          onDragLeave={() => setDragging(false)}
-          onDrop={(e) => {
-            e.preventDefault();
-            setDragging(false);
-            settFil(e.dataTransfer.files?.[0] ?? null);
-          }}
-          className="v2-focus"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 8,
-            textAlign: "center",
-            padding: "34px 20px",
-            borderRadius: 14,
-            border: `1.5px dashed ${dropBorder}`,
-            background: dragging || file ? `color-mix(in srgb, ${T.lime} 6%, transparent)` : T.panel2,
-            cursor: "pointer",
-            transition: "border-color 180ms, background 180ms",
-          }}
-        >
-          <input
-            ref={fileRef}
-            type="file"
-            accept={ACCEPT}
-            onChange={(e) => settFil(e.target.files?.[0] ?? null)}
-            style={{ position: "absolute", width: 1, height: 1, opacity: 0, overflow: "hidden" }}
-          />
-          <span
-            style={{
-              width: 46,
-              height: 46,
-              borderRadius: 9999,
-              background: file ? `color-mix(in srgb, ${T.lime} 12%, transparent)` : T.panel3,
-              border: `1px solid ${T.border}`,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Icon name={file ? "video" : "upload"} size={19} style={{ color: file ? T.lime : T.fg2 }} />
-          </span>
-          {file ? (
-            <>
-              <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14, color: T.fg }}>{file.name}</span>
-              <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
-                {(file.size / 1024 / 1024).toFixed(1).replace(".", ",")} MB · {file.type}
-              </span>
-              <Knapp
-                ghost
-                icon="x"
-                onClick={() => {
-                  if (fileRef.current) fileRef.current.value = "";
-                  settFil(null);
-                }}
-              >
-                Fjern
-              </Knapp>
-            </>
-          ) : (
-            <>
-              <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14, color: T.fg }}>
-                Slipp videofilen her
-              </span>
-              <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>
-                eller klikk for å velge fra maskinen
-              </span>
-            </>
-          )}
-        </label>
+        <Dropzone
+          key={resetKey}
+          file={file}
+          onFile={settFil}
+          accept={ACCEPT}
+          valgtIkon="video"
+          idleTittel="Slipp videofilen her"
+          idleSub="eller klikk for å velge fra maskinen"
+        />
 
         {/* Fremdrift under opplasting */}
         {pending && (

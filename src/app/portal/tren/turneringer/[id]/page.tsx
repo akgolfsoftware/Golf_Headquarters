@@ -12,6 +12,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { loadTurneringDetalj } from "@/lib/portal-turnering/turnering-detalj-data";
 import { meldDegPa, meldDegAv } from "@/app/portal/(legacy)/tren/turneringer/actions";
+import { startTurneringsrunde } from "./actions";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke, TomTilstand, CTAPill, Kort } from "@/components/v2";
 import {
@@ -71,6 +72,16 @@ export default async function TurneringDetaljPage({
     if (entry) await meldDegAv(entry.id);
   }
 
+  async function startRundeAction() {
+    "use server";
+    await startTurneringsrunde(id);
+  }
+
+  // «Start turneringsrunde» kun for en aktivt påmeldt spiller, når turneringen
+  // er relevant nå, en bane finnes, og det ikke alt er startet en runde.
+  const kanStarteRunde =
+    pameldt && data.erRelevantNa && data.rundeBaneId != null && data.liveRunde == null;
+
   const v2Data: TurneringDetaljV2Data = {
     navn: data.name,
     datoLang: data.dateLong,
@@ -106,6 +117,18 @@ export default async function TurneringDetaljPage({
         pameldt={pameldt}
         pameldAction={pameldAction}
         avmeldAction={avmeldAction}
+        turneringsrunde={
+          data.liveRunde
+            ? {
+                rundeId: data.liveRunde.id,
+                fort: data.liveRunde.fort,
+                score: data.liveRunde.score,
+                hullAntall: data.liveRunde.hullAntall,
+              }
+            : null
+        }
+        kanStarteRunde={kanStarteRunde}
+        startRundeAction={startRundeAction}
       />
     </V2Shell>
   );

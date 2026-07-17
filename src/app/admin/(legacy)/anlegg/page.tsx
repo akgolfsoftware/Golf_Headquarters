@@ -73,6 +73,8 @@ export default async function AnleggPage() {
     navn: l.name,
     adresse: l.address,
     aktiv: l.active,
+    breddegrad: l.latitude,
+    lengdegrad: l.longitude,
     fasiliteter: l.facilities.map((f) => ({
       id: f.id,
       navn: f.name,

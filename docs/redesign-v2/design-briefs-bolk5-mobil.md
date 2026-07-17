@@ -110,3 +110,53 @@ tilstander per skjerm; «?»-forklaringene (HjelpTips) skal fungere på touch.
 1. `/design-login` i en interaktiv økt → DesignSync mot prosjekt `bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`.
 2. Kjør D1–D3 som enkelt-briefs i `ui_kits/v2/` (små, kan gå parallelt); D4/M1 som egen retningsoppgave.
 3. Anders godkjenner mockups → implementering planlegges per skjerm (samme oppskrift som Byggerunde A–G).
+
+---
+
+# M2/M3 — detaljerte mobil-briefer (neste designfase)
+
+> Status 17. juli (kveld): M1 mobil-nav ER BYGGET (bunn-nav + Mer-skuff, PR #66). Anders' beslutning:
+> «start designfasen nå» for M2/M3. Disse briefene er klare til å kjøres i Claude Design (`ui_kits/v2/`,
+> gruppe «v2-mobil-m2m3») når `/design-login` er gjort. Ingenting bygges før mockup er godkjent.
+> Fundament allerede i kode: `AgencyBunnNav` + Mer-skuff i `src/components/v2/shell.tsx`, 390 px-rammer,
+> `useMobile()`-mønsteret (jf. FellesmeldingFlyt) for mobil/desktop-forgrening.
+
+## M2 — Workbench på mobil (den vanskelige; produktvalg i mockup)
+
+**Jobben:** Coachen skal kunne gjøre de VIKTIGE Workbench-handlingene fra mobil — ikke hele
+ukeplanleggingen. Full drag-og-slipp-ukeplanlegging forblir desktop (henvis ærlig dit på mobil).
+
+**To retninger mockupen skal vise side om side (Anders velger):**
+- **A · Oppgave-drevet (anbefalt):** Workbench-mobil = en KØ av konkrete handlinger, ikke en panel-replika.
+  Kort-stabel: «Juster økt X» · «Svar på avvik hos spiller Y» · «Godkjenn AI-forslag Z». Hvert kort åpner
+  én fokusert handling (bottomsheet), gjør den ferdig, faller ut av køen. Tom kø = «Alt er ajour».
+- **B · Krympet panel:** dagens multi-panel stablet vertikalt med kollaps/faner. Vis den så Anders ser
+  hvorfor A er bedre for tommelen.
+
+**Hierarki:** den ene handlingen brukeren skal gjøre nå er størst; kontekst (spiller/uke) sekundært.
+**Data:** eksisterende Workbench-actions (juster økt, avviks-håndtering, godkjenn plan-action) — ingen ny
+datamodell. **Tilstander:** tom kø (ajour), handling pågår, handling feilet (prøv igjen), «gå til desktop
+for full planlegging»-henvisning. **Rammer:** 390 px, mørkt AgencyOS-tema, v2-tokens, HjelpTips på touch.
+
+## M3 — Kjerneskjermene på mobil, bølge for bølge
+
+Én mockup per skjerm, godkjennes enkeltvis, implementeres skjerm for skjerm (Byggerunde-oppskriften).
+Rekkefølge etter hvor ofte coachen trenger dem på farten:
+
+1. **Cockpit** — fokus-spiller-blokken (D3, alt bygget) + dagens viktigste signaler stablet for tommel;
+   veksleren (D2) som kompakt topp-element. Accent kun på «neste handling».
+2. **Stall + spiller-detalj** — stall som søkbar liste (ikke tett tabell) → spiller-detaljens 7 faner som
+   horisontal PillTabs + vertikal innhold; hero + KPI-strip komprimert.
+3. **Innboks** — trådliste → tråd, med raske svar-maler; komponer-felt tommelvennlig nederst.
+4. **Kalender** — dag/uke som liste-først på mobil (ikke rutenett), tap → dag-detalj.
+5. **Resten** (godkjenninger, økonomi-nøkkeltall, tester) — komprimeres etter samme prinsipp når 1–4 er godkjent.
+
+**Felles rammer:** 390 px referanse, eksisterende v2-tokens/typografi, ingen nye farger, alle tilstander
+(hover-ekvivalent/aktiv/tom/laster/feil), HjelpTips fungerer på touch, mørkt AgencyOS-tema. Ingen ny
+datakontrakt — mobil er en presentasjon av data skjermene alt bærer på desktop.
+
+## Implementeringsnote (etter godkjenning)
+
+Bygges som egne byggerunder, én skjerm per commit m/ MASTER-SKJERMPLAN-haker, samme disjunkt-scope-
+team-orkestrering som Byggerunde A–G. Mobil-forgreningen gjøres via `useMobile()` inne i eksisterende
+skjermkomponenter (ikke egne ruter) der det er rent, ellers egne mobil-underkomponenter.

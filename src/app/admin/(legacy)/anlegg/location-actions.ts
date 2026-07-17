@@ -28,13 +28,27 @@ const lokasjonSchema = z.object({
   name: z.string().trim().min(1).max(200),
   address: z.string().trim().min(1).max(300),
   active: z.boolean(),
+  // GPS-posisjon (valgfri). Nullable med vilje: eksplisitt null NULLSTILLER
+  // posisjonen i DB (`?? undefined` ville latt gammel verdi stå — se gotchas.md).
+  // Gyldig lat/lng-range håndheves her; tomt kart = null (ingen posisjon satt).
+  latitude: z.number().min(-90).max(90).nullable(),
+  longitude: z.number().min(-180).max(180).nullable(),
 });
 export type LocationInput = z.input<typeof lokasjonSchema>;
+
+/** Lat/lng skal alltid være satt sammen — begge eller ingen (aldri halv posisjon). */
+function normaliserPosisjon(lat: number | null, lng: number | null): { latitude: number | null; longitude: number | null } {
+  if (lat == null || lng == null) return { latitude: null, longitude: null };
+  return { latitude: lat, longitude: lng };
+}
 
 export async function createLocation(input: LocationInput) {
   const user = await krevCoach();
   const data = lokasjonSchema.parse(input);
-  const ny = await prisma.location.create({ data });
+  const { latitude, longitude } = normaliserPosisjon(data.latitude ?? null, data.longitude ?? null);
+  const ny = await prisma.location.create({
+    data: { name: data.name, address: data.address, active: data.active, latitude, longitude },
+  });
   await audit({
     actorId: user.id,
     action: "location.created",
@@ -46,7 +60,13 @@ export async function createLocation(input: LocationInput) {
 export async function updateLocation(id: string, input: LocationInput) {
   const user = await krevCoach();
   const data = lokasjonSchema.parse(input);
-  await prisma.location.update({ where: { id }, data });
+  // Eksplisitt null nullstiller posisjonen (jf. gotcha: `?? undefined` ville
+  // latt gammel lat/lng stå urørt).
+  const { latitude, longitude } = normaliserPosisjon(data.latitude ?? null, data.longitude ?? null);
+  await prisma.location.update({
+    where: { id },
+    data: { name: data.name, address: data.address, active: data.active, latitude, longitude },
+  });
   await audit({ actorId: user.id, action: "location.updated", target: `Location:${id}` });
   revalidatePath("/admin/anlegg");
 }

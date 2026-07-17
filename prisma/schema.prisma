@@ -1253,6 +1253,9 @@ model Round {
   // 'turnering' | 'trening' — null = ukjent (eksisterende runder forblir umerket)
   roundType    String?
   notes        String?
+  // D6c live turneringsrunde (godkjent 2026-07-17): knytter en runde til en
+  // TournamentEntry. Plain id uten @relation — additiv per gotcha-regelen.
+  tournamentEntryId String?
   createdAt    DateTime @default(now())
 
   user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -1261,6 +1264,7 @@ model Round {
   holeScores HoleScore[]
 
   @@index([userId, playedAt])
+  @@index([tournamentEntryId])
   @@map("rounds")
 }
 
