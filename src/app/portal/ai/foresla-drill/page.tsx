@@ -1,7 +1,8 @@
 /**
- * /portal/ai/foresla-drill — AI foreslår drills basert på spillerens svakeste
- * pyramide-akser (fra ekte testdata). Ingen oppdiktede tall: match-scoren er en
- * ærlig akse-overlapp og begrunnelsen er den faktiske test-svakheten.
+ * /portal/ai/foresla-drill — AI foreslår drills — v2.
+ * v2-port 16. juli 2026: `ForeslaDrillV2` erstatter foresla-drill-screen (v10),
+ * ruten flyttet ut av (legacy). Auth-guard, Prisma-queries, svakhets-signaler
+ * og den ærlige match-scoren (akse-overlapp, aldri oppdiktede tall) uendret.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -11,10 +12,12 @@ import {
   AXIS_LABEL,
   loadWeaknessSignals,
 } from "@/lib/portal-ai/ai-data";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { TilbakeLenke } from "@/components/v2";
 import {
-  ForeslaDrillScreen,
+  ForeslaDrillV2,
   type DrillSuggestion,
-} from "@/components/portal/ai/foresla-drill-screen";
+} from "@/components/portal/v2/ForeslaDrillV2";
 
 export const dynamic = "force-dynamic";
 
@@ -84,10 +87,15 @@ export default async function ForeslaDrillPage() {
   });
 
   return (
-    <ForeslaDrillScreen
-      playerFirstName={(user.name ?? "deg").split(" ")[0]}
-      analysedTestCount={analysedTestCount}
-      suggestions={suggestions}
-    />
+    <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/drills">Øvelsesbank</TilbakeLenke>
+      <ForeslaDrillV2
+        data={{
+          playerFirstName: (user.name ?? "deg").split(" ")[0],
+          analysedTestCount,
+          suggestions,
+        }}
+      />
+    </V2Shell>
   );
 }
