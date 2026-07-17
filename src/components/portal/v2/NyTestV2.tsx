@@ -1,34 +1,30 @@
 "use client";
 
 /**
- * NyTestWizard — fire-stegs flyt for å logge ny test.
- *   1. Type (velg testtype fra kortgrid)
- *   2. Detaljer (dato, lokasjon, utstyr, notater)
- *   3. Resultat (metrikker tilpasset valgt testtype)
- *   4. Bekreft (sammendrag + delta + del med coach-toggle)
- *
- * Auto-lagrer draft til localStorage hvert 10. sek. AK Golf-branding:
- * cream/forest/lime, Familjen Grotesk + Mono.
+ * PlayerHQ · Ny test — v2 (retning C «Presis»).
+ * v2-port 17. juli 2026 (Team D2): erstatter legacy NyTestWizard. Fire-stegs
+ * flyt (Type → Detaljer → Resultat → Bekreft) med IDENTISK logikk: samme
+ * test-katalog m/ fuzzy navn-match, localStorage-draft (autosave hvert 10. s),
+ * samme validering og samme server action `logTest` (flyttet byte-identisk
+ * til /portal/tren/tester/ny/actions.ts). Kun presentasjonslaget er nytt.
  */
 import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Activity,
-  ArrowUp,
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  ChevronUp,
-  CircleDot,
-  Footprints,
-  Plus,
-  Share2,
-  Target,
-  X,
-} from "lucide-react";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { useToast } from "@/components/shared/toast-provider";
-import { logTest } from "./actions";
+import { logTest } from "@/app/portal/tren/tester/ny/actions";
+import {
+  T,
+  Caps,
+  Kort,
+  Knapp,
+  Inndata,
+  Velger,
+  TekstOmraade,
+  Bryter,
+  ProgresjonsBar,
+} from "@/components/v2";
+import { Icon } from "@/components/v2/icon";
 
 type TestDef = {
   id: string;
@@ -58,7 +54,8 @@ type Katalog = {
   navn: string;
   beskrivelse: string;
   matchTokens: string[];
-  Icon: typeof Target;
+  /** Ikon-navn i v2-kartet (Icon fra @/components/v2/icon). */
+  ikon: string;
   metrics: MetricDef[];
 };
 
@@ -68,7 +65,7 @@ const KATALOG: Katalog[] = [
     navn: "CMJ (Countermovement Jump)",
     beskrivelse: "Eksplosiv kraft i underkropp — standard fys-test.",
     matchTokens: ["cmj", "countermovement"],
-    Icon: ChevronUp,
+    ikon: "chevron-up",
     metrics: [
       { key: "hoydeCm", label: "Hopp-høyde", unit: "cm", step: 0.1, primary: true },
       { key: "kraftN", label: "Kraft-toppunkt", unit: "N", step: 1 },
@@ -80,7 +77,7 @@ const KATALOG: Katalog[] = [
     navn: "Vertikalt hopp",
     beskrivelse: "Maks hopp uten armsving.",
     matchTokens: ["vertikalt", "vertical"],
-    Icon: ArrowUp,
+    ikon: "arrow-up",
     metrics: [
       { key: "hoydeCm", label: "Max hopp", unit: "cm", step: 0.1, primary: true },
     ],
@@ -90,7 +87,7 @@ const KATALOG: Katalog[] = [
     navn: "60m sprint",
     beskrivelse: "Akselerasjon og toppfart over 60 meter.",
     matchTokens: ["sprint", "60m"],
-    Icon: Footprints,
+    ikon: "activity",
     metrics: [
       { key: "tidSek", label: "Total tid", unit: "s", step: 0.01, primary: true },
       { key: "split30", label: "Split 30m", unit: "s", step: 0.01 },
@@ -101,7 +98,7 @@ const KATALOG: Katalog[] = [
     navn: "Putting-konsistens",
     beskrivelse: "10 putts à 3 meter — registrer distanse-feil i cm.",
     matchTokens: ["putt", "putting"],
-    Icon: Target,
+    ikon: "target",
     metrics: Array.from({ length: 10 }, (_, i) => ({
       key: `putt${i + 1}`,
       label: `Putt ${i + 1}`,
@@ -114,7 +111,7 @@ const KATALOG: Katalog[] = [
     navn: "Putting-prosent (1–5 m)",
     beskrivelse: "Andel innslag fra fem forskjellige distanser.",
     matchTokens: ["putt-prosent", "innslag"],
-    Icon: Activity,
+    ikon: "activity",
     metrics: [
       { key: "p1m", label: "1 meter", unit: "%", step: 1, primary: true },
       { key: "p2m", label: "2 meter", unit: "%", step: 1 },
@@ -128,7 +125,7 @@ const KATALOG: Katalog[] = [
     navn: "SG Putt-test",
     beskrivelse: "10 putts — oppgi oppdrag- og resultat-distanse.",
     matchTokens: ["sg putt", "sg-putt", "strokes gained"],
-    Icon: Activity,
+    ikon: "activity",
     metrics: Array.from({ length: 10 }, (_, i) => ({
       key: `putt${i + 1}Dist`,
       label: `Putt ${i + 1} resultat`,
@@ -141,7 +138,7 @@ const KATALOG: Katalog[] = [
     navn: "Wedge Matrix",
     beskrivelse: "Snitt-treff fra 30/50/70/90 m.",
     matchTokens: ["wedge", "matrix"],
-    Icon: CircleDot,
+    ikon: "circle-dot",
     metrics: [
       { key: "w30", label: "30m snitt-feil", unit: "m", step: 0.1, primary: true },
       { key: "w50", label: "50m snitt-feil", unit: "m", step: 0.1 },
@@ -154,7 +151,7 @@ const KATALOG: Katalog[] = [
     navn: "TrackMan Combine",
     beskrivelse: "Standard 60-slag combine-score.",
     matchTokens: ["combine", "trackman"],
-    Icon: Activity,
+    ikon: "activity",
     metrics: [
       { key: "score", label: "Combine-score", unit: "/100", step: 0.1, primary: true },
     ],
@@ -164,7 +161,7 @@ const KATALOG: Katalog[] = [
     navn: "T-test (agility)",
     beskrivelse: "Klassisk agility-test i T-bane.",
     matchTokens: ["t-test", "agility"],
-    Icon: Footprints,
+    ikon: "activity",
     metrics: [
       { key: "tidSek", label: "Tid", unit: "s", step: 0.01, primary: true },
     ],
@@ -174,7 +171,7 @@ const KATALOG: Katalog[] = [
     navn: "Y-balance",
     beskrivelse: "Balanse-rekkevidde i tre retninger.",
     matchTokens: ["y-balance", "y balance"],
-    Icon: CircleDot,
+    ikon: "circle-dot",
     metrics: [
       { key: "anterior", label: "Anterior", unit: "cm", step: 0.1, primary: true },
       { key: "posteromedial", label: "Posteromedial", unit: "cm", step: 0.1 },
@@ -186,7 +183,7 @@ const KATALOG: Katalog[] = [
     navn: "Egen test",
     beskrivelse: "Custom test med ett enkelt resultat-felt.",
     matchTokens: [],
-    Icon: Plus,
+    ikon: "plus",
     metrics: [
       { key: "verdi", label: "Resultat", unit: "verdi", step: 0.1, primary: true },
     ],
@@ -209,6 +206,8 @@ type State = {
 };
 
 const LOKASJONER = ["Performance Studio", "Bossum", "Annet"] as const;
+
+const STEG_LABELS = ["Type", "Detaljer", "Resultat", "Bekreft"] as const;
 
 function todayIso(): string {
   const d = new Date();
@@ -243,7 +242,7 @@ function matchTestId(slug: string, tests: TestDef[]): string | null {
   return tests[0]?.id ?? null;
 }
 
-export function NyTestWizard({ tests, sistePerTest, spillerNavn }: Props) {
+export function NyTestV2({ tests, sistePerTest, spillerNavn }: Props) {
   const router = useRouter();
   const toast = useToast();
   const [pending, startTransition] = useTransition();
@@ -415,15 +414,17 @@ export function NyTestWizard({ tests, sistePerTest, spillerNavn }: Props) {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[720px]">
-      <Stegbar steg={state.steg} />
+    <div style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+      <ProgresjonsBar
+        variant="segment"
+        total={4}
+        filled={state.steg}
+        label={STEG_LABELS[state.steg - 1]}
+      />
 
-      <div className="mt-8 rounded-lg border border-border bg-card p-6 sm:p-8">
+      <Kort>
         {state.steg === 1 && (
-          <Steg1
-            valgtSlug={state.valgtSlug}
-            onVelg={velgType}
-          />
+          <Steg1 valgtSlug={state.valgtSlug} onVelg={velgType} />
         )}
 
         {state.steg === 2 && (
@@ -459,117 +460,53 @@ export function NyTestWizard({ tests, sistePerTest, spillerNavn }: Props) {
                 : null
             }
             onPostNotes={(v) => setState((p) => ({ ...p, postNotes: v }))}
-            onShareToggle={(v) =>
-              setState((p) => ({ ...p, shareWithCoach: v }))
-            }
+            onShareToggle={(v) => setState((p) => ({ ...p, shareWithCoach: v }))}
           />
         )}
 
         {feil && (
           <div
             role="alert"
-            className="mt-6 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
+            style={{ marginTop: 18, borderRadius: 11, border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`, background: `color-mix(in srgb, ${T.down} 10%, transparent)`, padding: "10px 14px", fontFamily: T.ui, fontSize: 13, color: T.down }}
           >
             {feil}
           </div>
         )}
-      </div>
+      </Kort>
 
-      {/* Sticky footer */}
-      <div className="sticky bottom-0 z-10 mt-4 flex items-center justify-between gap-2 rounded-lg border border-border bg-card/95 px-4 py-4 backdrop-blur">
-        <button
-          type="button"
-          onClick={tilbake}
-          disabled={state.steg === 1 || pending}
-          className="inline-flex h-11 items-center gap-1.5 rounded-md border border-input bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-border disabled:opacity-40"
-        >
-          <ChevronLeft size={14} strokeWidth={1.75} /> Tilbake
-        </button>
-
-        <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Steg {state.steg} av 4
-        </span>
-
+      {/* Footer-navigasjon */}
+      <div style={{ position: "sticky", bottom: 12, zIndex: 10, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, borderRadius: 16, border: `1px solid ${T.border}`, background: T.panel, padding: "12px 14px", boxShadow: "0 12px 32px rgba(0,0,0,0.35)" }}>
+        <Knapp ghost icon="chevron-left" onClick={tilbake} disabled={state.steg === 1 || pending}>
+          Tilbake
+        </Knapp>
+        <Caps size={9}>Steg {state.steg} av 4</Caps>
         {state.steg < 4 ? (
-          <button
-            type="button"
-            onClick={neste}
-            disabled={!kanGaTilNeste || pending}
-            className="inline-flex h-11 items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
-          >
-            Neste <ChevronRight size={14} strokeWidth={1.75} />
-          </button>
+          <Knapp icon="chevron-right" onClick={neste} disabled={!kanGaTilNeste || pending}>
+            Neste
+          </Knapp>
         ) : (
-          <button
-            type="button"
-            onClick={lagre}
-            disabled={pending}
-            className="inline-flex h-11 items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
-          >
-            <Check size={14} strokeWidth={1.75} />
+          <Knapp icon="check" onClick={lagre} disabled={pending}>
             {pending ? "Lagrer…" : "Lagre test"}
-          </button>
+          </Knapp>
         )}
       </div>
     </div>
   );
 }
 
-function Stegbar({ steg }: { steg: 1 | 2 | 3 | 4 }) {
-  const labels = ["Type", "Detaljer", "Resultat", "Bekreft"];
+function StegTittel({ children }: { children: React.ReactNode }) {
   return (
-    <ol
-      aria-label="Steg-progresjon"
-      className="flex items-center justify-between gap-2"
-    >
-      {labels.map((lab, i) => {
-        const n = (i + 1) as 1 | 2 | 3 | 4;
-        const aktiv = n === steg;
-        const ferdig = n < steg;
-        return (
-          <li key={lab} className="flex flex-1 items-center gap-2">
-            <span
-              aria-current={aktiv ? "step" : undefined}
-              className={[
-                "grid h-8 w-8 shrink-0 place-items-center rounded-full border font-mono text-xs font-semibold tabular-nums transition-colors",
-                ferdig
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : aktiv
-                    ? "border-primary bg-card text-primary"
-                    : "border-border bg-card text-muted-foreground",
-              ].join(" ")}
-            >
-              {ferdig ? (
-                <Check size={14} strokeWidth={1.75} />
-              ) : (
-                <span>{n}</span>
-              )}
-            </span>
-            <span
-              className={[
-                "hidden text-xs font-medium sm:inline",
-                aktiv
-                  ? "text-foreground"
-                  : ferdig
-                    ? "text-foreground"
-                    : "text-muted-foreground",
-              ].join(" ")}
-            >
-              {lab}
-            </span>
-            {i < labels.length - 1 && (
-              <span
-                aria-hidden="true"
-                className={[
-                  "ml-2 h-px flex-1",
-                  ferdig ? "bg-primary/60" : "bg-border",
-                ].join(" ")}
-              />
-            )}
-          </li>
-        );
-      })}
-    </ol>
+    <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 21, letterSpacing: "-0.02em", color: T.fg, lineHeight: 1.2, margin: 0 }}>
+      {children}
+    </h2>
+  );
+}
+
+function StegIngress({ children }: { children: React.ReactNode }) {
+  return (
+    <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55, margin: "8px 0 0" }}>
+      {children}
+    </p>
   );
 }
 
@@ -582,50 +519,61 @@ function Steg1({
 }) {
   return (
     <div>
-      <h2 className="font-display text-2xl font-semibold leading-tight tracking-tight">
-        Hvilken <em className="font-normal text-primary md:italic">test</em>{" "}
-        skal du logge?
-      </h2>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Velg én av de elleve testtypene under. Resultat-felter tilpasser seg
-        valget.
-      </p>
+      <StegTittel>
+        Hvilken <em style={{ fontStyle: "italic", color: T.lime }}>test</em> skal du logge?
+      </StegTittel>
+      <StegIngress>
+        Velg én av de elleve testtypene under. Resultat-felter tilpasser seg valget.
+      </StegIngress>
 
-      <div className="mt-6 grid grid-cols-1 gap-2 sm:grid-cols-2">
+      <div style={{ marginTop: 18, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 8 }}>
         {KATALOG.map((k) => {
           const aktiv = valgtSlug === k.slug;
-          const Icon = k.Icon;
           return (
             <button
               key={k.slug}
               type="button"
               onClick={() => onVelg(k.slug)}
               aria-pressed={aktiv}
-              className={[
-                "group flex h-[140px] flex-col items-start justify-between rounded-lg border bg-card p-4 text-left transition-all hover:border-primary/60",
-                aktiv
-                  ? "border-primary bg-primary/5 ring-2 ring-primary/30"
-                  : "border-border",
-              ].join(" ")}
+              className="v2-press v2-focus"
+              style={{
+                appearance: "none",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                justifyContent: "space-between",
+                minHeight: 128,
+                gap: 12,
+                textAlign: "left",
+                borderRadius: 13,
+                padding: 14,
+                background: aktiv ? T.panel3 : T.panel2,
+                border: `1px solid ${aktiv ? T.lime : T.border}`,
+              }}
             >
               <span
-                className={[
-                  "grid h-9 w-9 place-items-center rounded-full",
-                  aktiv
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-secondary text-foreground",
-                ].join(" ")}
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 9999,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: aktiv ? T.lime : T.panel3,
+                  border: aktiv ? "none" : `1px solid ${T.borderS}`,
+                }}
               >
-                <Icon size={18} strokeWidth={1.75} aria-hidden />
+                <Icon name={k.ikon} size={16} style={{ color: aktiv ? T.onLime : T.fg2 }} />
               </span>
-              <div>
-                <div className="text-sm font-semibold leading-tight text-foreground">
+              <span>
+                <span style={{ display: "block", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, lineHeight: 1.3 }}>
                   {k.navn}
-                </div>
-                <div className="mt-1 text-xs leading-snug text-muted-foreground">
+                </span>
+                <span style={{ display: "block", fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.45, marginTop: 4 }}>
                   {k.beskrivelse}
-                </div>
-              </div>
+                </span>
+              </span>
             </button>
           );
         })}
@@ -668,86 +616,72 @@ function Steg2({
 
   return (
     <div>
-      <h2 className="font-display text-2xl font-semibold leading-tight tracking-tight">
-        <em className="font-normal text-primary md:italic">Detaljer</em> om
-        gjennomføringen
-      </h2>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Dato, sted og utstyr — slik at coachen kan tolke resultatet riktig.
-      </p>
+      <StegTittel>
+        <em style={{ fontStyle: "italic", color: T.lime }}>Detaljer</em> om gjennomføringen
+      </StegTittel>
+      <StegIngress>Dato, sted og utstyr — slik at coachen kan tolke resultatet riktig.</StegIngress>
 
-      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Felt label="Dato">
-          <input
-            type="date"
-            value={takenAt}
-            max={today}
-            onChange={(e) => onTakenAt(e.target.value)}
-            className={inputCls}
-          />
-        </Felt>
-        <Felt label="Lokasjon">
-          <select
-            value={location}
-            onChange={(e) => onLocation(e.target.value)}
-            className={inputCls}
-          >
-            {LOKASJONER.map((l) => (
-              <option key={l} value={l}>
-                {l}
-              </option>
-            ))}
-          </select>
-        </Felt>
+      <div style={{ marginTop: 18, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14 }}>
+        <Inndata
+          label="Dato"
+          type="date"
+          mono
+          value={takenAt}
+          onChange={(v) => onTakenAt(v > today ? today : v)}
+        />
+        <Velger
+          label="Lokasjon"
+          options={[...LOKASJONER]}
+          value={location}
+          onChange={onLocation}
+        />
       </div>
 
-      <div className="mt-4">
-        <Felt label="Utstyr brukt (tags)">
-          <div className="flex flex-wrap items-center gap-2 rounded-md border border-input bg-card px-4 py-2">
-            {equipment.map((tag) => (
-              <span
-                key={tag}
-                className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-4 py-1 text-xs font-medium text-foreground"
+      <div style={{ marginTop: 14 }}>
+        <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg2, display: "block", marginBottom: 7 }}>
+          Utstyr brukt (tags)
+        </span>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 7, borderRadius: 11, border: `1px solid ${T.borderS}`, background: T.panel2, padding: "8px 12px" }}>
+          {equipment.map((tag) => (
+            <span key={tag} style={{ display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 9999, background: T.panel3, border: `1px solid ${T.borderS}`, padding: "4px 11px", fontFamily: T.ui, fontSize: 12, fontWeight: 500, color: T.fg }}>
+              {tag}
+              <button
+                type="button"
+                onClick={() => onFjernUtstyr(tag)}
+                aria-label={`Fjern ${tag}`}
+                className="v2-focus"
+                style={{ appearance: "none", background: "transparent", border: 0, padding: 0, cursor: "pointer", color: T.mut, display: "inline-flex" }}
               >
-                {tag}
-                <button
-                  type="button"
-                  onClick={() => onFjernUtstyr(tag)}
-                  aria-label={`Fjern ${tag}`}
-                  className="opacity-60 hover:opacity-100"
-                >
-                  <X size={12} strokeWidth={1.75} aria-hidden />
-                </button>
-              </span>
-            ))}
-            <input
-              type="text"
-              value={utstyrInput}
-              onChange={(e) => setUtstyrInput(e.target.value)}
-              onKeyDown={handleUtstyrKey}
-              onBlur={() => {
-                if (utstyrInput.trim()) {
-                  onLeggTilUtstyr(utstyrInput);
-                  setUtstyrInput("");
-                }
-              }}
-              placeholder="Trykk Enter for å legge til…"
-              className="min-w-[140px] flex-1 bg-transparent text-sm outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 placeholder:text-muted-foreground"
-            />
-          </div>
-        </Felt>
+                <Icon name="x" size={12} />
+              </button>
+            </span>
+          ))}
+          <input
+            type="text"
+            value={utstyrInput}
+            onChange={(e) => setUtstyrInput(e.target.value)}
+            onKeyDown={handleUtstyrKey}
+            onBlur={() => {
+              if (utstyrInput.trim()) {
+                onLeggTilUtstyr(utstyrInput);
+                setUtstyrInput("");
+              }
+            }}
+            placeholder="Trykk Enter for å legge til…"
+            className="v2-focus"
+            style={{ minWidth: 140, flex: 1, background: "transparent", border: 0, outline: "none", fontFamily: T.ui, fontSize: 13, color: T.fg, padding: "4px 0" }}
+          />
+        </div>
       </div>
 
-      <div className="mt-4">
-        <Felt label="Notater før test (valgfritt)">
-          <textarea
-            value={preNotes}
-            onChange={(e) => onPreNotes(e.target.value.slice(0, 1000))}
-            rows={3}
-            placeholder="Hvordan føltes oppvarmingen? Skader å være obs på?"
-            className={inputCls}
-          />
-        </Felt>
+      <div style={{ marginTop: 14 }}>
+        <TekstOmraade
+          label="Notater før test (valgfritt)"
+          value={preNotes}
+          rows={3}
+          placeholder="Hvordan føltes oppvarmingen? Skader å være obs på?"
+          onChange={(v) => onPreNotes(v.slice(0, 1000))}
+        />
       </div>
     </div>
   );
@@ -776,50 +710,38 @@ function Steg3({
 
   return (
     <div>
-      <h2 className="font-display text-2xl font-semibold leading-tight tracking-tight">
-        <em className="font-normal text-primary md:italic">Resultater</em> for{" "}
-        {katalog.navn.toLowerCase()}
-      </h2>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Fyll inn det du har målt. Påkrevd: minst hovedmetrikken under.
-      </p>
+      <StegTittel>
+        <em style={{ fontStyle: "italic", color: T.lime }}>Resultater</em> for {katalog.navn.toLowerCase()}
+      </StegTittel>
+      <StegIngress>Fyll inn det du har målt. Påkrevd: minst hovedmetrikken under.</StegIngress>
 
       <div
-        className={
-          erPutting
-            ? "mt-6 grid grid-cols-2 gap-2 sm:grid-cols-5"
-            : "mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2"
-        }
+        style={{
+          marginTop: 18,
+          display: "grid",
+          gridTemplateColumns: erPutting
+            ? "repeat(auto-fill, minmax(120px, 1fr))"
+            : "repeat(auto-fit, minmax(220px, 1fr))",
+          gap: erPutting ? 8 : 14,
+        }}
       >
         {katalog.metrics.map((m) => (
-          <Felt key={m.key} label={`${m.label}${m.primary ? " *" : ""}`}>
-            <div className="relative">
-              <input
-                type="number"
-                inputMode="decimal"
-                step={m.step ?? 0.1}
-                min={0}
-                value={results[m.key] ?? ""}
-                onChange={(e) => onResultat(m.key, e.target.value)}
-                className={`${inputCls} pr-12 tabular-nums`}
-              />
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[11px] text-muted-foreground"
-              >
-                {m.unit}
-              </span>
-            </div>
-          </Felt>
+          <Inndata
+            key={m.key}
+            label={`${m.label}${m.primary ? " *" : ""}`}
+            type="number"
+            mono
+            suffix={m.unit}
+            value={results[m.key] ?? ""}
+            onChange={(v) => onResultat(m.key, v)}
+          />
         ))}
       </div>
 
       {erPutting && snitt != null && (
-        <div className="mt-6 rounded-md border border-border bg-secondary/50 px-4 py-2">
-          <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Auto-snitt
-          </div>
-          <div className="mt-1 font-mono text-2xl font-semibold tabular-nums text-foreground">
+        <div style={{ marginTop: 18, borderRadius: 12, border: `1px solid ${T.border}`, background: T.panel2, padding: "12px 14px" }}>
+          <Caps size={9}>Auto-snitt</Caps>
+          <div style={{ fontFamily: T.mono, fontSize: 24, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: T.fg, marginTop: 6 }}>
             {nb(snitt)} cm
           </div>
         </div>
@@ -854,73 +776,42 @@ function Steg4({
 
   return (
     <div>
-      <h2 className="font-display text-2xl font-semibold leading-tight tracking-tight">
-        Klar til å{" "}
-        <em className="font-normal text-primary md:italic">bekrefte</em>?
-      </h2>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Sjekk at sammendraget under stemmer før du lagrer.
-      </p>
+      <StegTittel>
+        Klar til å <em style={{ fontStyle: "italic", color: T.lime }}>bekrefte</em>?
+      </StegTittel>
+      <StegIngress>Sjekk at sammendraget under stemmer før du lagrer.</StegIngress>
 
-      <div className="mt-6 rounded-lg border border-border bg-secondary/30 p-6">
-        <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Sammendrag · {spillerNavn}
+      <div style={{ marginTop: 18, borderRadius: 13, border: `1px solid ${T.border}`, background: T.panel2, padding: 18 }}>
+        <Caps size={9}>Sammendrag · {spillerNavn}</Caps>
+
+        <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px 24px" }}>
+          {[
+            ["Type", katalog.navn],
+            ["Dato", formatDato(state.takenAt)],
+            ["Lokasjon", state.location],
+            ["Utstyr", state.equipment.length > 0 ? state.equipment.join(", ") : "—"],
+          ].map(([label, verdi]) => (
+            <div key={label}>
+              <Caps size={9}>{label}</Caps>
+              <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.fg, marginTop: 4 }}>
+                {verdi}
+              </div>
+            </div>
+          ))}
         </div>
 
-        <div className="mt-2 grid grid-cols-2 gap-x-6 gap-y-4 text-sm">
-          <div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              Type
-            </div>
-            <div className="mt-1 font-medium text-foreground">
-              {katalog.navn}
-            </div>
-          </div>
-          <div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              Dato
-            </div>
-            <div className="mt-1 font-medium text-foreground">
-              {formatDato(state.takenAt)}
-            </div>
-          </div>
-          <div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              Lokasjon
-            </div>
-            <div className="mt-1 font-medium text-foreground">
-              {state.location}
-            </div>
-          </div>
-          <div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              Utstyr
-            </div>
-            <div className="mt-1 text-foreground">
-              {state.equipment.length > 0 ? state.equipment.join(", ") : "—"}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-6 border-t border-border pt-4">
-          <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            Resultater
-          </div>
-          <ul className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
+        <div style={{ marginTop: 18, borderTop: `1px solid ${T.border}`, paddingTop: 14 }}>
+          <Caps size={9}>Resultater</Caps>
+          <ul style={{ listStyle: "none", margin: "10px 0 0", padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 8 }}>
             {katalog.metrics.map((m) => {
               const raw = state.results[m.key];
               if (!raw) return null;
               const n = Number(raw.replace(",", "."));
               if (isNaN(n)) return null;
               return (
-                <li
-                  key={m.key}
-                  className="rounded-md border border-border bg-card px-4 py-2"
-                >
-                  <div className="font-mono text-[10px] uppercase text-muted-foreground">
-                    {m.label}
-                  </div>
-                  <div className="mt-0.5 font-mono text-sm font-semibold tabular-nums text-foreground">
+                <li key={m.key} style={{ borderRadius: 11, border: `1px solid ${T.border}`, background: T.panel, padding: "10px 12px" }}>
+                  <Caps size={8.5}>{m.label}</Caps>
+                  <div style={{ fontFamily: T.mono, fontSize: 13.5, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: T.fg, marginTop: 3 }}>
                     {nb(n, m.step && m.step >= 1 ? 0 : 1)} {m.unit}
                   </div>
                 </li>
@@ -930,84 +821,42 @@ function Steg4({
         </div>
 
         {siste && !isNaN(nyVerdi) && (
-          <div className="mt-6 flex items-center justify-between rounded-md border border-primary/20 bg-primary/5 px-4 py-2">
+          <div style={{ marginTop: 18, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, borderRadius: 11, border: `1px solid color-mix(in srgb, ${T.lime} 25%, transparent)`, background: `color-mix(in srgb, ${T.lime} 6%, transparent)`, padding: "10px 14px" }}>
             <div>
-              <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                Sammenlignet med forrige
-              </div>
-              <div className="mt-1 text-sm text-foreground">
+              <Caps size={9}>Sammenlignet med forrige</Caps>
+              <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, marginTop: 4 }}>
                 Forrige: {nb(siste.score, primary.step && primary.step >= 1 ? 0 : 1)} {primary.unit} ·{" "}
                 {formatDato(siste.takenAt)}
               </div>
             </div>
             {deltaTekst && delta != null && (
-              <div
-                className={[
-                  "flex items-center gap-1 font-mono text-base font-semibold tabular-nums",
-                  delta > 0
-                    ? "text-primary"
-                    : delta < 0
-                      ? "text-destructive"
-                      : "text-muted-foreground",
-                ].join(" ")}
-              >
-                <ArrowUp
-                  size={14}
-                  strokeWidth={1.75}
-                  className={delta < 0 ? "rotate-180" : ""}
-                  aria-hidden
-                />
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 14, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: delta > 0 ? T.up : delta < 0 ? T.down : T.mut }}>
+                <Icon name={delta < 0 ? "arrow-down" : "arrow-up"} size={13} />
                 {deltaTekst}
-              </div>
+              </span>
             )}
           </div>
         )}
       </div>
 
-      <div className="mt-6 space-y-4">
-        <Felt label="Notater etter test (valgfritt)">
-          <textarea
-            value={state.postNotes}
-            onChange={(e) => onPostNotes(e.target.value.slice(0, 1000))}
-            rows={3}
-            placeholder="Hva fungerte? Hva ble du overrasket over?"
-            className={inputCls}
-          />
-        </Felt>
+      <div style={{ marginTop: 18, display: "flex", flexDirection: "column", gap: 14 }}>
+        <TekstOmraade
+          label="Notater etter test (valgfritt)"
+          value={state.postNotes}
+          rows={3}
+          placeholder="Hva fungerte? Hva ble du overrasket over?"
+          onChange={(v) => onPostNotes(v.slice(0, 1000))}
+        />
 
-        <label className="flex items-center justify-between rounded-md border border-border bg-card px-4 py-2 text-sm">
-          <span className="flex items-center gap-2">
-            <Share2 size={16} strokeWidth={1.75} aria-hidden />
-            <span className="font-medium text-foreground">Del med coach</span>
-          </span>
-          <input
-            type="checkbox"
+        <div style={{ borderRadius: 12, border: `1px solid ${T.border}`, background: T.panel2, padding: "12px 14px" }}>
+          <Bryter
+            label="Del med coach"
+            sub="Coachen ser resultatet og kan følge opp"
             checked={state.shareWithCoach}
-            onChange={(e) => onShareToggle(e.target.checked)}
-            className="h-5 w-5 cursor-pointer accent-[color:var(--color-primary)]"
+            onChange={onShareToggle}
           />
-        </label>
+        </div>
       </div>
     </div>
-  );
-}
-
-const inputCls =
-  "w-full min-h-11 rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30";
-
-function Felt({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-        {label}
-      </span>
-      {children}
-    </label>
   );
 }
