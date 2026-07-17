@@ -775,6 +775,16 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 
 ## Endringslogg
 
+- 17. juli (ettermiddag, Byggerunde G + B8a, PR #62 merget + PR #63): **Booking-underrutene — det
+  siste skjerm-gapet — er lukket.** Alle 6 (`ny`, `ny/bekreft`, `[bookingId]`, `coach`, `anlegg`,
+  `bekreftet`) portet til v2 med all credit-/slot-logikk urørt; fabrikkerte TIMELINE/MÅL/UTSTYR-
+  plassholdere fjernet fra booking-detaljen; copy-fiks på bekreftet-siden; foreldreløse
+  `booking.css` (25 hex) + `booking-hub.tsx` slettet. **B8a (PR #63):** full anleggs-administrasjon
+  koblet — rediger/deaktiver lokasjon + fasiliteter, hard delete-actions fjernet (soft delete).
+  Hex-baseline vasket (90 → 44 filer, `check-no-hex` helt ren). Beslutningsnotater D5–D7 lagt i
+  `AAPNE-SPORSMAAL.md`; design-briefs for Bolk 5-trioen + mobil-faseplan i
+  `docs/redesign-v2/design-briefs-bolk5-mobil.md`.
+
 - 17. juli (nattløpet, Byggerunde B–F + Fase 2, PR #60 merget + PR #61): **Porteringsplanen er
   gjennomført — 63 skjermer portet til v2 på ~ett døgn.** PR #60 (merget av Anders): Byggerunde B
   (auth/onboarding/forelder, 4), C (marketing-booking, 4 — Stripe-action flyttet byte-identisk),
