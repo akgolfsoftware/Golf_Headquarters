@@ -10,7 +10,7 @@
  * grid 2-kol (Dagens timer | Stall-uka) → InnsiktChip «Planlegg i Workbench».
  */
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -38,6 +38,11 @@ import type {
   CockpitFocusPlayer,
 } from "@/components/admin/cockpit/agency-cockpit";
 import type { InnboksSammendrag } from "@/lib/innboks/data";
+import type { FokusSpillereData } from "@/lib/admin/fokus-spillere-data";
+import {
+  FokusSpillereAsync,
+  FokusSpillereSkjelett,
+} from "@/components/admin/v2/FokusSpillereV2";
 
 /* signal.tone → SevChip-kategori (klarspråk, aldri sperre-språk) */
 const SEV_MAP: Record<CockpitFocusPlayer["signal"]["tone"], SevKey> = {
@@ -70,7 +75,16 @@ function useLiveKlokke(startMin: number | null, nowMin: number): string {
   return `${String(mm).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
 }
 
-export function CockpitV2({ data, innboks }: { data: CockpitData; innboks?: InnboksSammendrag }) {
+export function CockpitV2({
+  data,
+  innboks,
+  fokus,
+}: {
+  data: CockpitData;
+  innboks?: InnboksSammendrag;
+  /** D3: «Fokus-spillere»-blokken streames (Suspense) — derfor promise. */
+  fokus?: Promise<FokusSpillereData>;
+}) {
   const router = useRouter();
 
   // ── Aktiv økt (live) ────────────────────────────────────────────
@@ -283,6 +297,12 @@ export function CockpitV2({ data, innboks }: { data: CockpitData; innboks?: Innb
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
+      {/* D3: Fokus-spillere øverst — pinnet av coachen + AI-foreslått. */}
+      {fokus && (
+        <Suspense fallback={<FokusSpillereSkjelett />}>
+          <FokusSpillereAsync promise={fokus} />
+        </Suspense>
+      )}
       {live}
       {kpi}
       {koen}

@@ -19,6 +19,7 @@ import {
   Inbox, CalendarCheck, Columns3, Database,
   Map, Radar, Footprints, Ruler,
   Pause, Printer, Share2, ThumbsUp, ThumbsDown, Headphones, Wifi, Wind, Link2, UserPlus, Coins, Ticket,
+  Pin, PinOff,
   type LucideIcon,
 } from "lucide-react";
 
@@ -160,6 +161,10 @@ const MAP: Record<string, LucideIcon> = {
   "calendar-check": CalendarCheck,
   "columns-3": Columns3,
   "database": Database,
+  // DS-gap tettet (D3, 2026-07-17): pin-glyfene fra fasitens lokale Lucide-
+  // geometri — brukes med strokeWidth 1.5 i FokusSpillereV2.
+  "pin": Pin,
+  "pin-off": PinOff,
 };
 
 export interface IconProps {

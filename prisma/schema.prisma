@@ -4714,3 +4714,19 @@ model ModerationCase {
 
 // (D6a hull-for-hull, besluttet 2026-07-17: bruker den EKSISTERENDE HoleScore-
 // modellen lenger opp i fila — Bolk 6-notatet om at modellen manglet var stale.)
+
+// ── Fokus-spillere i cockpit (D3, godkjent 2026-07-17) ──────────────────────
+// Coachens manuelle pin av spillere i «Fokus-spillere»-blokken øverst i
+// cockpiten. Plain String-referanser uten @relation — additiv, kirurgisk
+// migrering (scripts/create-coach-fokus-pins-2026-07-17.ts, gotcha-regelen).
+
+model CoachFokusPin {
+  id        String   @id @default(cuid())
+  coachId   String // User.id (COACH/ADMIN) som har pinnet
+  playerId  String // User.id (PLAYER) som er pinnet
+  createdAt DateTime @default(now())
+
+  @@unique([coachId, playerId])
+  @@index([coachId])
+  @@map("coach_fokus_pins")
+}
