@@ -311,7 +311,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| **Cockpit (hjem)** ★ | `/admin/agencyos` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v13 scope + components (full)
+| **Cockpit (hjem)** ★ | `/admin/agencyos` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v13 scope + components (full). **D3 Fokus-spiller lagt til 17. jul (godkjent mockup):** pin (maks 3, `CoachPinnedPlayer`) + regelbaserte AI-forslag (plan-etterlevelse <50 % / SG-delta ≤ −0,3 fra eksisterende stall-signaler), ærlige tomtilstander. **D2 spiller↔gruppe-veksler** i toppbaren (navigasjons-dropdown → `/admin/spillere/[id]` · `/admin/grupper/[id]`). **M1 mobil-nav** (bunn-nav + Mer-skuff) gjelder alle AgencyOS-sider via shell. NB: `coach_pinned_players` må migreres (script) før pin virker i prod. Mob/Desk/iPad –✓– → ✓✓–.
 | · Uka (kanban) | `/admin/agencyos/uka` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Complete v13 (golfdata scope + cards) |
 | · Spillere (snarvei) | `/admin/agencyos/spillere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Økonomi | `/admin/agencyos/okonomi` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell`+`TilbakeLenke`. |
@@ -396,7 +396,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Teknisk plan | `/admin/teknisk-plan` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminTekniskPlanV2`. |
 | · Per spiller | `/admin/teknisk-plan/[spillerId]` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul (tynn men ekte): `DetailShell` (ui/`Breadcrumb`) + `KPICard` (wrapper rundt golfdata `Eyebrow`). |
 | **Turneringer** ★ | `/admin/tournaments` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: v2-redesign, hele legacy-mappen portert og slettet
-| · Turnering-detalj | `/admin/tournaments/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: duplikat tilbake-lenke fjernet, nettleser-testet
+| · Turnering-detalj | `/admin/tournaments/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: duplikat tilbake-lenke fjernet, nettleser-testet. **D1 Fellesmelding lagt til 17. jul (godkjent mockup):** `FellesmeldingFlyt` — 3-stegs (velg mottakere fra `TournamentEntry` · skriv m/ maler · send + kvittering); `sendFellesmelding`-action fan-out via gjenbrukt coach→spiller-melding (CoachingSession DIRECT + notify), audit, per-mottaker feilhåndtering («N av M feilet — prøv igjen»). Ingen ny datamodell. |
 | · Ny turnering | `/admin/tournaments/ny` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | 2026-07-13: v2 5-stegs-veiviser; fant+fikset "use server"-krasj ved innsending
 | · Dubletter (rydd) | `/admin/tournaments/dubletter` | ✓ | ✓–– | ✓ | ~ | ✓ | ~ | 2026-07-13: v2, kun tom-tilstand nettleser-testet (0 dubletter i DB nå)
 | Økter | `/admin/okter` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminOkterV2`. |

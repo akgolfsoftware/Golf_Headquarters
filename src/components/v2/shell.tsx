@@ -18,6 +18,11 @@ import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } fr
 import { T } from "@/lib/v2/tokens";
 import { Icon } from "./icon";
 import { LogoAK, AvatarFoto } from "./core";
+import { SpillerVeksler, type VekslerData } from "./spiller-veksler";
+
+// D2 (17. juli): re-eksporter veksler-datakontrakten fra shellen så kallsteder
+// (cockpit m.fl.) kan importere den fra samme sted som V2Shell.
+export type { VekslerData, VekslerSpiller, VekslerGruppe } from "./spiller-veksler";
 
 export interface V2NavItem {
   id: string;
@@ -140,6 +145,13 @@ export interface V2ShellProps {
   navn?: string;
   /** Opplastet profilbilde-URL, hvis satt (ellers init-avatar). */
   avatarUrl?: string | null;
+  /**
+   * D2 — spiller↔gruppe-veksler i AgencyOS-toppraden. VALGFRITT: uten dette
+   * (default `undefined`) vises ingen veksler, så ingen av de ~50 kallstedene
+   * må endres. Sett den (kun meningsfullt sammen med nav=AGENCYOS_NAV) fra en
+   * side som vil tilby kontekst-veksling.
+   */
+  vekslerData?: VekslerData;
   children: ReactNode;
 }
 
@@ -237,8 +249,10 @@ function RailLenke({ item, on }: { item: V2NavItem; on: boolean }) {
   );
 }
 
-/** «Mer»-panelet — grupperte lenker. Desktop: flytende panel ved railen. */
-function MerPanel({ grupper, onClose, mobil }: { grupper: V2NavGruppe[]; onClose: () => void; mobil?: boolean }) {
+/** «Mer»-panelet — grupperte lenker. Desktop: flytende panel ved railen.
+ *  mobil: bunn-ark (72vh). mobil+full: full-høyde skuff (kandidat A, godkjent
+ *  17. juli for AgencyOS-mobil) — dekker viewporten fra topp til bunn. */
+function MerPanel({ grupper, onClose, mobil, full }: { grupper: V2NavGruppe[]; onClose: () => void; mobil?: boolean; full?: boolean }) {
   const pathname = usePathname();
   const { tema, bytt } = useV2Tema();
   useEffect(() => {
@@ -261,7 +275,9 @@ function MerPanel({ grupper, onClose, mobil }: { grupper: V2NavGruppe[]; onClose
         aria-label="Mer"
         style={
           mobil
-            ? { position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 91, maxHeight: "72vh", overflowY: "auto", background: T.panel, opacity: 1, border: `1px solid ${T.border}`, borderRadius: "18px 18px 0 0", padding: "14px 16px calc(20px + env(safe-area-inset-bottom))", boxShadow: "0 -18px 48px rgba(0,0,0,0.5)" }
+            ? full
+              ? { position: "fixed", inset: 0, zIndex: 91, overflowY: "auto", background: T.panel, opacity: 1, borderRadius: 0, padding: "calc(14px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom))", boxShadow: "0 -18px 48px rgba(0,0,0,0.5)" }
+              : { position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 91, maxHeight: "72vh", overflowY: "auto", background: T.panel, opacity: 1, border: `1px solid ${T.border}`, borderRadius: "18px 18px 0 0", padding: "14px 16px calc(20px + env(safe-area-inset-bottom))", boxShadow: "0 -18px 48px rgba(0,0,0,0.5)" }
             : { position: "fixed", left: 68, top: 12, bottom: 12, zIndex: 91, width: 560, maxWidth: "calc(100vw - 84px)", overflowY: "auto", background: T.panel, opacity: 1, border: `1px solid ${T.border}`, borderRadius: 16, padding: "18px 20px", boxShadow: "0 24px 64px rgba(0,0,0,0.55)" }
         }
       >
@@ -398,13 +414,73 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
   );
 }
 
+/* M1 (17. juli, godkjent): AgencyOS mobil-bunn-nav. Fire kuraterte hovedseksjoner
+   + «Mer» — samme tommelvennlige mønster som PlayerHQ-BunnNav (BunnNavLenker),
+   men «Mer» åpner en FULL-HØYDE skuff (kandidat A) med resten av seksjonene +
+   AGENCYOS_MER-gruppene, så hele coach-flaten er nåbar. Mørkt tema beholdes
+   (V2Shell holder AgencyOS mørk/lys via cookie som før). PlayerHQ-mobilen bruker
+   fortsatt BunnNavLenker uendret. */
+const AGENCY_MOBIL_PRIMÆR = ["cockpit", "innboks", "spillere", "kalender"];
+
+function AgencyBunnNav({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; mer?: V2NavGruppe[] }) {
+  const [skuffOpen, setSkuffOpen] = useState(false);
+  // Primærseksjoner i kanonisk rekkefølge; hopp over det som ikke finnes i nav-en.
+  const primær = AGENCY_MOBIL_PRIMÆR
+    .map((id) => nav.find((n) => n.id === id))
+    .filter((n): n is V2NavItem => n != null);
+  const primærIds = new Set(primær.map((n) => n.id));
+  // Alt annet i hovednav-en legges øverst i skuffen — ingen seksjon faller bort.
+  const resten = nav.filter((n) => !primærIds.has(n.id));
+  const skuffGrupper: V2NavGruppe[] = [
+    ...(resten.length > 0 ? [{ label: "Seksjoner", items: resten }] : []),
+    ...(mer ?? []),
+  ];
+
+  return (
+    <>
+      <nav
+        className="flex md:hidden"
+        style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, justifyContent: "space-around", padding: "8px 8px calc(16px + env(safe-area-inset-bottom))", borderTop: `1px solid ${T.border}`, background: `color-mix(in srgb,${T.bg} 82%,transparent)`, backdropFilter: "blur(10px)" }}
+        aria-label="Hovedmeny"
+      >
+        {primær.map((n) => {
+          const on = aktiv === n.id;
+          return (
+            <Link
+              key={n.id}
+              href={n.href}
+              aria-current={on ? "page" : undefined}
+              className="v2-press"
+              style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "4px 0", color: on ? T.lime : T.mut, textDecoration: "none" }}
+            >
+              <Icon name={n.icon} size={20} strokeWidth={on ? 2 : 1.5} />
+              <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600 }}>{n.label}</span>
+            </Link>
+          );
+        })}
+        <button
+          onClick={() => setSkuffOpen(true)}
+          aria-haspopup="menu"
+          aria-expanded={skuffOpen}
+          className="v2-press"
+          style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "4px 0", color: skuffOpen ? T.lime : T.mut, background: "transparent", border: 0, cursor: "pointer" }}
+        >
+          <Icon name="more-horizontal" size={20} strokeWidth={1.5} />
+          <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600 }}>Mer</span>
+        </button>
+      </nav>
+      {skuffOpen && <MerPanel grupper={skuffGrupper} onClose={() => setSkuffOpen(false)} mobil full />}
+    </>
+  );
+}
+
 /**
  * V2Shell — dark-scope app-ramme for v2-flater. Desktop: IkonRail + fluid innhold
  * (maks T.maxw; AgencyOS får full kontrolltårn-bredde). Mobil: innhold + fast
  * BunnNav. Innholdet stables med T.gap — skjermkomponentene rendrer bare
  * stacken, shellen leverer chrome.
  */
-export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan", avatarUrl, children }: V2ShellProps) {
+export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan", avatarUrl, vekslerData, children }: V2ShellProps) {
   // AgencyOS: auto-koble Mer-menyen og full desktop-bredde uten å måtte endre
   // ~50 kallsteder (alle importerer samme AGENCYOS_NAV-konstant → ref-likhet).
   const erAgency = nav === AGENCYOS_NAV;
@@ -497,10 +573,17 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
         style={{ flex: 1, minWidth: 0, paddingTop: "calc(24px + env(safe-area-inset-top))" }}
       >
         <div style={{ maxWidth: maksBredde, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+          {/* D2: kontekst-veksler i toppraden — kun AgencyOS og kun når data er
+              gitt (usatt prop ⇒ skjult ⇒ ingen kallsted må endres). */}
+          {erAgency && vekslerData && <SpillerVeksler data={vekslerData} />}
           {children}
         </div>
       </div>
-      <BunnNavLenker aktiv={autoAktiv} nav={nav} mer={merGrupper} />
+      {/* Mobil-bunnnav: AgencyOS får dedikert nav + full-høyde «Mer»-skuff (M1);
+          PlayerHQ/forelder beholder BunnNavLenker uendret. */}
+      {erAgency
+        ? <AgencyBunnNav aktiv={autoAktiv} nav={nav} mer={merGrupper} />
+        : <BunnNavLenker aktiv={autoAktiv} nav={nav} mer={merGrupper} />}
     </div>
   );
 }

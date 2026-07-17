@@ -14,6 +14,10 @@
  * personopplysninger (navn/e-post/telefon/bilde/fødselsdato), men relasjoner
  * (bookinger, økter, treningsdata) beholdes urørt. Vi setter IKKE deletedAt —
  * det ville trigget cron-jobben som hard-sletter med kaskade etter 30 dager.
+ *
+ * PublicPlayer (offentlig turneringsidentitet): raden beholdes fordi
+ * turneringsresultater refererer den (cascade), men navn/bio/bilde/instagram
+ * anonymiseres og raden skjules (isActive=false) så den ikke lekker navnet.
  */
 
 import { revalidatePath } from "next/cache";
@@ -126,7 +130,7 @@ export async function utforGdprSletting(id: string) {
 
   const målBruker = await prisma.user.findUnique({
     where: { id: sak.userId },
-    select: { id: true, role: true },
+    select: { id: true, role: true, publicPlayerId: true },
   });
 
   if (målBruker && målBruker.role !== "PLAYER" && målBruker.role !== "PARENT") {
@@ -143,11 +147,34 @@ export async function utforGdprSletting(id: string) {
     dateOfBirth: null,
   };
 
+  // Offentlig turneringsidentitet (PublicPlayer): raden BEHOLDES — turnerings-
+  // resultater (PublicPlayerEntry) refererer den med onDelete: Cascade, så en
+  // sletting ville tatt turneringshistorikken med seg. Men den offentlige
+  // profilen skal ikke lekke navnet på en slettet person: vi anonymiserer de
+  // synlige identitetsfeltene og skjuler raden fra listinger (isActive=false).
+  // Koblingen User.publicPlayerId beholdes (intern, ingen lekkasje).
+  const anonymisererPublicPlayer = Boolean(målBruker?.publicPlayerId);
+  const publicPlayerAnonymisering = {
+    name: "Anonymisert spiller",
+    bio: null,
+    photoUrl: null,
+    instagramHandle: null,
+    isActive: false,
+  };
+
   await prisma.$transaction([
     // Brukeren kan allerede være hard-slettet (cron P20) — da er forespørselen
     // reelt oppfylt, og saken markeres utført med notat i audit-loggen.
     ...(målBruker
       ? [prisma.user.update({ where: { id: sak.userId }, data: anonymisering })]
+      : []),
+    ...(anonymisererPublicPlayer
+      ? [
+          prisma.publicPlayer.update({
+            where: { id: målBruker!.publicPlayerId! },
+            data: publicPlayerAnonymisering,
+          }),
+        ]
       : []),
     prisma.moderationCase.update({
       where: { id: sakId },
@@ -163,6 +190,8 @@ export async function utforGdprSletting(id: string) {
       sakId,
       anonymiserteFelter: ["name", "email", "phone", "avatarUrl", "dateOfBirth"],
       brukerFantesIkke: !målBruker,
+      publicPlayerAnonymisert: anonymisererPublicPlayer,
+      publicPlayerId: målBruker?.publicPlayerId ?? null,
     },
   });
 

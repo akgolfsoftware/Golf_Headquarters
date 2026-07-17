@@ -3,19 +3,21 @@
 import { Knapp } from "@/components/v2";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Download, Trash2 } from "lucide-react";
+import { Check, Download, Trash2, ShieldQuestion } from "lucide-react";
 import {
   exportUserData,
   deleteUserAccount,
 } from "@/app/portal/meg/innstillinger/actions";
+import { opprettGdprForesporsel } from "@/lib/moderering/actions";
 import { logout } from "@/lib/auth/logout";
 
 type Props = {
-  kind: "export" | "delete";
+  kind: "export" | "delete" | "gdpr-request";
 };
 
 export function PersonvernActions({ kind }: Props) {
   if (kind === "export") return <ExportAction />;
+  if (kind === "gdpr-request") return <GdprForesporselAction />;
   return <DeleteAction />;
 }
 
@@ -145,6 +147,100 @@ function DeleteAction() {
         >
           Avbryt
         </button>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * GDPR-slettforespørsel (D5): oppretter en GDPR_SLETTING-sak i moderering-køen
+ * i stedet for å slette umiddelbart. Til forskjell fra «Slett kontoen din»
+ * (30-dagers automatikk) behandles denne av en coach/administrator, og data
+ * anonymiseres i stedet for å fjernes fysisk — treningshistorikk beholdes
+ * avidentifisert. Passer når du vil ha kontoen slettet, men saken skal ses av
+ * en person.
+ */
+function GdprForesporselAction() {
+  const [isPending, startTransition] = useTransition();
+  const [showForm, setShowForm] = useState(false);
+  const [begrunnelse, setBegrunnelse] = useState("");
+  const [status, setStatus] = useState<Status | null>(null);
+
+  function onSend() {
+    startTransition(async () => {
+      setStatus(null);
+      const result = await opprettGdprForesporsel(begrunnelse.trim() || undefined);
+      if (!result.ok) {
+        setStatus({ ok: false, msg: result.error ?? "Kunne ikke sende forespørselen." });
+        return;
+      }
+      setShowForm(false);
+      setBegrunnelse("");
+      setStatus({
+        ok: true,
+        msg: result.alleredeSendt
+          ? "Du har allerede en åpen forespørsel."
+          : "Forespørsel sendt",
+      });
+    });
+  }
+
+  if (!showForm) {
+    return (
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <Knapp ghost onClick={() => setShowForm(true)}>
+          <ShieldQuestion className="h-4 w-4" />
+          Be om sletting av kontoen min
+        </Knapp>
+        {status ? (
+          <span
+            className={`inline-flex items-center gap-1 font-mono text-[11px] tracking-[0.06em] ${
+              status.ok ? "text-primary" : "text-destructive"
+            }`}
+          >
+            {status.msg}
+            {status.ok && <Check className="h-3 w-3" strokeWidth={2.5} aria-hidden />}
+          </span>
+        ) : null}
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-4 rounded-xl border border-border bg-card p-4">
+      <p className="text-sm font-semibold text-foreground">
+        Be om at kontoen din slettes
+      </p>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Forespørselen behandles av en coach eller administrator. Ved godkjenning
+        anonymiseres opplysningene dine — navn, e-post, telefon og bilde fjernes,
+        mens avidentifisert treningshistorikk beholdes. Du kan legge ved en
+        begrunnelse (valgfritt).
+      </p>
+      <textarea
+        value={begrunnelse}
+        onChange={(e) => setBegrunnelse(e.target.value)}
+        rows={3}
+        maxLength={1000}
+        placeholder="Begrunnelse (valgfritt)"
+        className="mt-2 w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      />
+      <div className="mt-3 flex flex-wrap gap-2">
+        <Knapp onClick={onSend} disabled={isPending}>
+          <ShieldQuestion className="h-4 w-4" />
+          {isPending ? "Sender…" : "Send forespørsel"}
+        </Knapp>
+        <Knapp
+          ghost
+          disabled={isPending}
+          onClick={() => {
+            setShowForm(false);
+            setBegrunnelse("");
+            setStatus(null);
+          }}
+        >
+          Avbryt
+        </Knapp>
       </div>
     </div>
   );
