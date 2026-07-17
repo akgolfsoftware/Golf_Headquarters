@@ -272,7 +272,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 |---|---|---|---|---|---|---|---|
 | Talent-hub | `/portal/talent` | ✓ | ✓✓– | ✓ | ~ | ~ | † |
 | · Min plan | `/portal/talent/min-plan` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D5): `TalentMinPlanV2` + tynn page, rute ut av (legacy); TalentTracking-query og milepæl-parsing uendret; HjelpTips talentVurdering; datoformat fikk Oslo-tidssone (gotcha-regelen, legacy manglet den). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
-| · Mitt nivå | `/portal/talent/mitt-niva` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — samme bespoke talent-familie.
+| · Mitt nivå | `/portal/talent/mitt-niva` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D5): `TalentMittNivaV2` (RadarProfil deg-mot-kohort m/ `kohortSnitt`-HjelpTips) + tynn page, rute ut av (legacy); kohort-query/`computeAverage` uendret. Tom kohort vises nå ærlig uten sammenlignings-serie (legacy tegnet 0-polygon). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | · Roadmap | `/portal/talent/roadmap` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — samme bespoke talent-familie.
 | · Sammenligning | `/portal/talent/sammenligning` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — samme bespoke talent-familie.
 
