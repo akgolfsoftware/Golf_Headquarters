@@ -315,6 +315,112 @@ export async function importUpGameHoleScores(
 }
 
 /**
+ * Manuell hull-for-hull-redigering (D6a, 17. juli 2026): eieren redigerer
+ * scorekortet (par/slag/putter/FW/GIR per hull) direkte. Upsert mot
+ * @@unique(roundId, holeNumber); hull som ikke lenger er med (18→9) fjernes.
+ * Rundens totalscore = summen av hullene (brutto — aldri netto).
+ *
+ * Ærlighetsregel for slag-kjeden: endres et hulls SLAG-tall, motsier kjeden
+ * scorekortet — da slettes hullets Shot-rader (samme presedens som
+ * UpGame-importen), og recomputeRoundSg nullstiller ev. «beregnet» SG.
+ * Kjeder på urørte hull beholdes. SG-utregningen selv røres ikke.
+ */
+const manuellHullSchema = z
+  .object({
+    holeNumber: z.number().int().min(1).max(18),
+    // 3–6: editoren tilbyr 3/4/5, men importerte scorekort kan ha par 6.
+    par: z.number().int().min(3).max(6),
+    strokes: z.number().int().min(1).max(25),
+    putts: z.number().int().min(0).max(10).nullable(),
+    fairway: z.boolean().nullable(),
+    gir: z.boolean().nullable(),
+  })
+  .refine((h) => h.putts == null || h.putts <= h.strokes, {
+    message: "Putter kan ikke overstige antall slag",
+  });
+const manuellHullListe = z
+  .array(manuellHullSchema)
+  .min(1)
+  .max(18)
+  .refine((h) => new Set(h.map((x) => x.holeNumber)).size === h.length, {
+    message: "Duplikate hullnummer",
+  });
+
+export async function lagreHullScorer(
+  roundId: string,
+  hull: unknown,
+): Promise<{ ok: boolean; error?: string }> {
+  const user = await requireConsentingUser();
+  await assertRoundOwner(roundId, user.id);
+
+  const parsed = manuellHullListe.safeParse(hull);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldige hulldata" };
+  }
+  // Par 3 har ingen fairway — logges aldri der.
+  const data = parsed.data.map((h) => ({
+    ...h,
+    fairway: h.par === 3 ? null : h.fairway,
+  }));
+
+  await prisma.$transaction(async (tx) => {
+    const eksisterende = await tx.holeScore.findMany({
+      where: { roundId },
+      select: { holeNumber: true, strokes: true },
+    });
+    const eksStrokes = new Map(eksisterende.map((e) => [e.holeNumber, e.strokes]));
+
+    for (const h of data) {
+      await tx.holeScore.upsert({
+        where: { roundId_holeNumber: { roundId, holeNumber: h.holeNumber } },
+        create: {
+          roundId,
+          holeNumber: h.holeNumber,
+          par: h.par,
+          strokes: h.strokes,
+          putts: h.putts,
+          fairway: h.fairway,
+          gir: h.gir,
+        },
+        update: { par: h.par, strokes: h.strokes, putts: h.putts, fairway: h.fairway, gir: h.gir },
+      });
+    }
+
+    // Hull som ble fjernet fra scorekortet (f.eks. 18 → 9 hull).
+    const beholdt = new Set(data.map((h) => h.holeNumber));
+    const fjernet = eksisterende
+      .filter((e) => !beholdt.has(e.holeNumber))
+      .map((e) => e.holeNumber);
+    if (fjernet.length > 0) {
+      await tx.holeScore.deleteMany({ where: { roundId, holeNumber: { in: fjernet } } });
+    }
+
+    // Slag-kjeder som nå motsier scorekortet: endret slag-tall eller fjernet hull.
+    const endretStrokes = data
+      .filter((h) => {
+        const gamle = eksStrokes.get(h.holeNumber);
+        return gamle != null && gamle !== h.strokes;
+      })
+      .map((h) => h.holeNumber);
+    const slettSlagFor = [...endretStrokes, ...fjernet];
+    if (slettSlagFor.length > 0) {
+      await tx.shot.deleteMany({ where: { roundId, holeNumber: { in: slettSlagFor } } });
+    }
+
+    // Brutto totalscore = summen av scorekortet.
+    await tx.round.update({
+      where: { id: roundId },
+      data: { score: data.reduce((sum, h) => sum + h.strokes, 0) },
+    });
+  });
+
+  await recomputeRoundSg(roundId);
+  revalidatePath(`/portal/mal/runder/${roundId}`);
+  revalidatePath("/portal/mal/runder");
+  return { ok: true };
+}
+
+/**
  * «Fullfør kjeden»: spilleren fører slag-kjeden for ETT hull på en runde som
  * har HoleScore uten slag (import/hurtig score). Kjeden må stemme med
  * scorekortet — slag + straffer == strokes — ellers avvises den (ærlighet:

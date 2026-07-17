@@ -184,6 +184,21 @@ const RAW = {
     forklaring:
       "En enkel poengsum for hvor godt kontoen din er sikret. Passord alene gir grunnpoeng; tofaktor-innlogging løfter den. Scoren er en påminnelse, ikke en dom — ett grep (skru på 2FA) tar deg til topps.",
   },
+  gir: {
+    tittel: "GIR (green på regulering)",
+    forklaring:
+      "Du treffer greenen på par minus to slag — altså i 1 på par 3, 2 på par 4, 3 på par 5. GIR-prosenten er en av de sterkeste enkeltindikatorene på ballstriking; proffene ligger rundt 65 %.",
+  },
+  fairwayTreff: {
+    tittel: "Fairway-treff (FW)",
+    forklaring:
+      "Utslaget stoppet på fairway. Telles kun på par 4 og par 5 (på par 3 sikter du på greenen). Fairway-treff gir enklere innspill — men lengde og vinkel inn mot greenen betyr ofte mer enn treffprosenten alene.",
+  },
+  putter: {
+    tittel: "Putter per runde",
+    forklaring:
+      "Antall slag på greenen. Tallet må leses sammen med GIR: mange putter kan bety god ballstriking (flere lange førsteputter), ikke nødvendigvis dårlig putting. Under 30 putter på 18 hull er solid.",
+  },
   credits: {
     tittel: "Credits (pakketimer)",
     forklaring:
