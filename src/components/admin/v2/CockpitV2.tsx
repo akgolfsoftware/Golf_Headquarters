@@ -38,6 +38,8 @@ import type {
   CockpitFocusPlayer,
 } from "@/components/admin/cockpit/agency-cockpit";
 import type { InnboksSammendrag } from "@/lib/innboks/data";
+import type { FokusData } from "@/lib/agencyos/fokus-spillere";
+import { FokusSpillere } from "@/components/admin/v2/FokusSpillere";
 
 /* signal.tone → SevChip-kategori (klarspråk, aldri sperre-språk) */
 const SEV_MAP: Record<CockpitFocusPlayer["signal"]["tone"], SevKey> = {
@@ -70,7 +72,7 @@ function useLiveKlokke(startMin: number | null, nowMin: number): string {
   return `${String(mm).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
 }
 
-export function CockpitV2({ data, innboks }: { data: CockpitData; innboks?: InnboksSammendrag }) {
+export function CockpitV2({ data, innboks, fokus }: { data: CockpitData; innboks?: InnboksSammendrag; fokus?: FokusData }) {
   const router = useRouter();
 
   // ── Aktiv økt (live) ────────────────────────────────────────────
@@ -283,6 +285,7 @@ export function CockpitV2({ data, innboks }: { data: CockpitData; innboks?: Innb
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
+      {fokus && <FokusSpillere fokus={fokus} />}
       {live}
       {kpi}
       {koen}
