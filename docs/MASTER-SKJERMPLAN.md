@@ -144,7 +144,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Tren (fullskjerm) | `/portal/(fullscreen)/tren` | ↪︎ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `redirect("/portal/planlegge/workbench")` — ikke en egen skjerm.
 | Økt-detalj | `/portal/tren/[sessionId]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
 | · Planlagt økt | `/portal/tren/[sessionId]/planlagt` | ✓ | ✓✓– | ✓ | ~ | ~ | ✓ | v2-port 17. jul (Team D2): `OktPlanlagtV2` — auth/tilgang/timing/inviter-kandidat-logikk uendret; deltakerliste restylet til AvatarInit+StatusPill. Kjent rest: `InviteFriendTrigger`-modalen gjenbrukt uendret (gammel stil) — egen v2-port gjenstår. Design – → ✓. |
-| Feiring (etter plan ferdig) | `/portal/tren/feiring/[planId]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ren Tailwind/hand-tegnet SVG-ring.
+| Feiring (etter plan ferdig) | `/portal/tren/feiring/[planId]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D2): `FeiringV2` — fullført-guard, computeEffectiveness best-effort og rekord-sammenligning uendret; RingMaaler for gjennomføringsgrad, ærlig tomtilstand uten SG-data, HjelpTips på SG-kortene. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 
 ### Analysere
 
