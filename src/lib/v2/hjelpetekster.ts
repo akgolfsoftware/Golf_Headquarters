@@ -179,6 +179,16 @@ const RAW = {
     forklaring:
       "Forholdet mellom hvor køllebladet peker (face) og hvor køllen beveger seg (path) i treffet, målt i grader. Face styrer mest av startretningen, forskjellen mellom face og path skaper skruen.",
   },
+  sikkerhetsscore: {
+    tittel: "Sikkerhetsscore",
+    forklaring:
+      "En enkel poengsum for hvor godt kontoen din er sikret. Passord alene gir grunnpoeng; tofaktor-innlogging løfter den. Scoren er en påminnelse, ikke en dom — ett grep (skru på 2FA) tar deg til topps.",
+  },
+  vas: {
+    tittel: "VAS-skala (smerte 0–10)",
+    forklaring:
+      "Visuell analog skala: du angir smerten din fra 0 (ingen) til 10 (verst tenkelig). Det finnes ikke rett eller galt svar — poenget er å følge DIN utvikling over tid, så bruk skalaen likt hver gang.",
+  },
 } as const satisfies Record<string, HjelpTekst>;
 
 export type HjelpNokkel = keyof typeof RAW;

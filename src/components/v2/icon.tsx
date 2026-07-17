@@ -18,6 +18,7 @@ import {
   Cog, ArrowUp, Wrench,
   Inbox, CalendarCheck, Columns3, Database,
   Map, Radar, Footprints, Ruler,
+  Pause, Printer, Share2, ThumbsUp, ThumbsDown, Headphones, Wifi, Wind, Link2,
   type LucideIcon,
 } from "lucide-react";
 
@@ -126,6 +127,15 @@ const MAP: Record<string, LucideIcon> = {
   "radar": Radar,
   "footprints": Footprints,
   "ruler": Ruler,
+  "pause": Pause,
+  "printer": Printer,
+  "share-2": Share2,
+  "thumbs-up": ThumbsUp,
+  "thumbs-down": ThumbsDown,
+  "headphones": Headphones,
+  "wifi": Wifi,
+  "wind": Wind,
+  "link-2": Link2,
   "plug": Plug,
   "archive": Archive,
   "reply": Reply,
