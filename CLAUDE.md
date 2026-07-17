@@ -124,9 +124,11 @@ Tilsvarer: `prisma validate && prisma generate && tsc --noEmit && eslint --quiet
   mot en lokalt startet instans. Bruker dummy env-verdier (Supabase/Stripe/DB) — trenger ingen
   ekte secrets for å validere kode. `husky`/`lint-staged` kjører samme gate (eslint + tsc) på
   staged `.ts`/`.tsx`-filer i pre-commit, så feil fanges lokalt før CI.
-- **`deploy.yml` er MANUELL** (`workflow_dispatch` — «Run workflow» i Actions-fanen, eller
-  `gh workflow run deploy.yml`), IKKE trigget av push til main. En push som består CI havner ikke
-  automatisk i prod; deploy er en bevisst, separat handling (Anders' beslutning 2026-07-05).
+- **`deploy.yml` (Actions) er MANUELL** (`workflow_dispatch` — «Run workflow» i Actions-fanen,
+  eller `gh workflow run deploy.yml`), IKKE trigget av push til main. MEN: prod-deploy skjer
+  likevel automatisk via **Vercels git-integrasjon** — push til main auto-deployer til
+  akgolf-hq.vercel.app (koblet og verifisert 2026-07-10; kjør ALDRI `vercel deploy --prod`
+  manuelt). Main-porten (Anders' ja før merge) er derfor den reelle deploy-porten.
 - `playwright.yml`, `scrape-gjgt.yml`, `scrape-golfbox.yml` er egne, mer avgrensede workflows —
   sjekk filene direkte ved behov.
 
