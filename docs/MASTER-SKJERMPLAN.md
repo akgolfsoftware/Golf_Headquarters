@@ -554,7 +554,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Ukerapport | `/forelder/ukerapport` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderUkerapportV2`. |
 | Innstillinger | `/forelder/innstillinger` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderInnstillingerV2`. |
 | Varsler | `/forelder/varsler` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `ForelderVarslerV2`. |
-| Inviter forelder (token) | `/inviter/forelder/[token]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — `AksepterForm` er rått `<form>`/Tailwind, ingen komponent-imports. |
+| Inviter forelder (token) | `/inviter/forelder/[token]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul (Team B): side + `AksepterForm` v2-stylet (T-tokens), samme token-validering og `aksepterInvitasjon`-action uendret. Offentlig side uten shell. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 
 > **Reconciliation 16. jul:** hele Forelder-seksjonens «Design: –»-merking var systematisk stale — 10 av 11 skjermer er allerede v2-komponert (`V2Shell` + dedikert `*V2`-komponent per rute), bare uten at haken noensinne ble flippet. Kun barn-detalj og invitasjons-aksept er ekte gap.
 
