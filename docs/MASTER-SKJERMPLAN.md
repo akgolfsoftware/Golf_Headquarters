@@ -165,7 +165,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Forhold (vær/bane) | `/portal/mal/sg-hub/conditions` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Strategi | `/portal/mal/sg-hub/strategy` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Coach ser spiller-SG | `/portal/mal/sg-hub/coach/[spillerId]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D3): `CoachSgHubSpillerV2` (coach-modus-banner, KpiFliser, kølle-grid) — `requireCoachForPlayer`, TrackMan-query og CLUB_ORDER-sortering uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
-| · Coach: kølle | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — `DPlanePlot`/`StrikeHeatmap`/`SmashCurvePlot` importerer ikke golfdata/v2 heller.
+| · Coach: kølle | `/portal/mal/sg-hub/coach/[spillerId]/[club]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D3): `CoachSgHubKolleV2` — analysekjeden (computeDPlane/StrikePattern/SmashCurve) og de token-styrte grafene gjenbrukt; Enkel/Avansert-veksleren gjenskapt mot samme `setSgHubMode`-action; slag-tabell nå med enheter (°, mph); HjelpTips på D-Plane/smash factor. Design – → ✓. |
 | · Coach: utstyr | `/portal/mal/sg-hub/coach/[spillerId]/equipment` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — delegerer til `EquipmentView`, ingen golfdata/v2.
 | Runder (liste) | `/portal/mal/runder` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `RunderV2`. |
 | · Runde-detalj ★ | `/portal/mal/runder/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
