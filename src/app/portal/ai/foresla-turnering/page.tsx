@@ -1,16 +1,19 @@
 /**
- * /portal/ai/foresla-turnering — AI foreslår turneringer basert på ekte data:
- * spillerens kommende påmeldinger + katalogen av kommende turneringer. Status
- * og begrunnelse speiler faktisk påmeldingsstatus og tier — ingen oppdiktede
- * sannsynligheter.
+ * /portal/ai/foresla-turnering — AI foreslår turneringer — v2.
+ * v2-port 16. juli 2026: `ForeslaTurneringV2` erstatter foresla-turnering-screen
+ * (v10), ruten flyttet ut av (legacy). Auth-guard, Prisma-queries og
+ * rangeringslogikken (påmeldinger + katalog, ingen oppdiktede sannsynligheter)
+ * uendret.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { TilbakeLenke } from "@/components/v2";
 import {
-  ForeslaTurneringScreen,
+  ForeslaTurneringV2,
   type TournamentSuggestion,
-} from "@/components/portal/ai/foresla-turnering-screen";
+} from "@/components/portal/v2/ForeslaTurneringV2";
 
 export const dynamic = "force-dynamic";
 
@@ -132,11 +135,16 @@ export default async function ForeslaTurneringPage() {
     user.hcp != null ? user.hcp.toLocaleString("nb-NO", { maximumFractionDigits: 1 }) : "—";
 
   return (
-    <ForeslaTurneringScreen
-      playerFirstName={(user.name ?? "deg").split(" ")[0]}
-      hcpLabel={hcpLabel}
-      catalogCount={catalog.length}
-      suggestions={suggestions.slice(0, 6)}
-    />
+    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/tren/turneringer">Turneringer</TilbakeLenke>
+      <ForeslaTurneringV2
+        data={{
+          playerFirstName: (user.name ?? "deg").split(" ")[0],
+          hcpLabel,
+          catalogCount: catalog.length,
+          suggestions: suggestions.slice(0, 6),
+        }}
+      />
+    </V2Shell>
   );
 }

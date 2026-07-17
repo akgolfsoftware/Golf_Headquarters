@@ -120,7 +120,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Utfordring-detalj | `/portal/utfordringer/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | AI: mål-bygger | `/portal/ai/mal-bygger` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `AiMalByggerV2` (Kort/Knapp/ValgKort/Inndata) erstatter mal-bygger-wizard (v10), ruten flyttet ut av (legacy) — `actions.ts` (lagreMalForslag) flyttet uendret med. 3-stegs SMART-wizard-logikken uendret; ingen oppdiktede tall. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | AI: foreslå drill | `/portal/ai/foresla-drill` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `ForeslaDrillV2` (Kort/AkseChip/CTAPill/InnsiktChip/TomTilstand) erstatter foresla-drill-screen (v10), ruten flyttet ut av (legacy). Svakhets-signaler (`loadWeaknessSignals`) og den ærlige match-scoren (akse-overlapp, aldri oppdiktede tall) uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
-| AI: foreslå turnering | `/portal/ai/foresla-turnering` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — ingen golfdata/v2-imports.
+| AI: foreslå turnering | `/portal/ai/foresla-turnering` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `ForeslaTurneringV2` (Kort/CTAPill/StatusPill/InnsiktChip/TomTilstand) erstatter foresla-turnering-screen (v10), ruten flyttet ut av (legacy). Rangeringslogikken (påmeldinger + katalog, ingen oppdiktede sannsynligheter) uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 
 ### Gjennomføre (inkl. live-økt)
 
