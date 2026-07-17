@@ -12,18 +12,32 @@
  * utelatt fra v10: den tomme «Fremgang 0 %»-plassholder-baren (fabrikkert).
  */
 
+import Link from "next/link";
 import {
   T,
   Caps,
   Tittel,
   Kort,
   Knapp,
+  CTAPill,
   StatusPill,
   MikroMeta,
   AvatarInit,
 } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import type { StatusTone } from "@/components/v2";
+
+/**
+ * Spillerens egen turneringsrunde (D6c). «pågår» = startet, men scorekortet er
+ * ikke ført ennå → fortsett i hull-flaten. «ført» = scorekort finnes → vis
+ * score-sammendrag + lenke til runde-detaljen. Defensivt utledet i loaderen.
+ */
+export type TurneringsrundeV2 = {
+  rundeId: string;
+  fort: boolean;
+  score: number;
+  hullAntall: number;
+} | null;
 
 export type TurneringDetaljV2Data = {
   navn: string;
@@ -65,12 +79,22 @@ export function TurneringDetaljV2({
   pameldt,
   pameldAction,
   avmeldAction,
+  turneringsrunde,
+  kanStarteRunde,
+  startRundeAction,
 }: {
   data: TurneringDetaljV2Data;
   pameldt: boolean;
   pameldAction: () => Promise<void>;
   avmeldAction: () => Promise<void>;
+  /** Spillerens turneringsrunde hvis den finnes (D6c). */
+  turneringsrunde: TurneringsrundeV2;
+  /** Sant når en påmeldt spiller kan starte en runde nå (relevant + bane finnes). */
+  kanStarteRunde: boolean;
+  /** Oppretter runden og sender spilleren til hull-for-hull-flaten. */
+  startRundeAction: () => Promise<void>;
 }) {
+  const visRundeKort = turneringsrunde != null || kanStarteRunde;
   return (
     <div style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Header */}
@@ -131,6 +155,55 @@ export function TurneringDetaljV2({
           </p>
         )}
       </Kort>
+
+      {/* Din turneringsrunde (D6c) — spilleren fører runden hull for hull.
+          Utelates helt når spilleren verken har en runde eller kan starte. */}
+      {visRundeKort && (
+        <Kort eyebrow="Din turneringsrunde" action={<Icon name="flag" size={14} style={{ color: T.mut }} />}>
+          {turneringsrunde ? (
+            turneringsrunde.fort ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                  <StatusPill tone="up">Ført</StatusPill>
+                  <span style={{ fontFamily: T.mono, fontSize: 20, fontWeight: 800, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+                    {turneringsrunde.score}
+                    <span style={{ fontSize: 10, fontWeight: 700, color: T.mut, textTransform: "uppercase", letterSpacing: "0.06em", marginLeft: 6 }}>slag</span>
+                  </span>
+                </div>
+                <MikroMeta icon="check-circle">{turneringsrunde.hullAntall} hull ført</MikroMeta>
+                <div>
+                  <Link href={`/portal/mal/runder/${turneringsrunde.rundeId}`} style={{ textDecoration: "none" }}>
+                    <CTAPill ghost icon="arrow-right">Se runden</CTAPill>
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <StatusPill tone="lime">Pågår</StatusPill>
+                </div>
+                <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, margin: 0, lineHeight: 1.6 }}>
+                  Runden er startet, men scorekortet er ikke ført ennå. Før det hull for hull mens du spiller.
+                </p>
+                <div>
+                  <Link href={`/portal/mal/runder/${turneringsrunde.rundeId}/hull`} style={{ textDecoration: "none" }}>
+                    <CTAPill icon="arrow-right">Fortsett runden</CTAPill>
+                  </Link>
+                </div>
+              </div>
+            )
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, margin: 0, lineHeight: 1.6 }}>
+                Fører du runden hull for hull mens du spiller, knyttes den til turneringen.
+              </p>
+              <form action={startRundeAction}>
+                <Knapp icon="flag" type="submit">Start turneringsrunde</Knapp>
+              </form>
+            </div>
+          )}
+        </Kort>
+      )}
 
       {/* Historikk — utelates når tom (loaderens ærlighetsprinsipp) */}
       {data.historikk.length > 0 && (

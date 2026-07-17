@@ -12,7 +12,7 @@ import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { Caps, Tittel, MikroMeta } from "@/components/v2";
 import { T } from "@/lib/v2/tokens";
-import { SlagWizard } from "../slag-wizard";
+import { SlagWizard, type BaneKartData } from "../slag-wizard";
 import { UpGameImportModal } from "../upgame-import-modal";
 
 export const dynamic = "force-dynamic";
@@ -28,7 +28,30 @@ export default async function SlagRegistreringPage({
   const runde = await prisma.round.findUnique({
     where: { id },
     include: {
-      course: { select: { name: true } },
+      course: {
+        select: {
+          name: true,
+          // Banegeometri for det interaktive slag-kartet (valgfri Bane-kobling).
+          bane: {
+            select: {
+              geojson: true,
+              latitude: true,
+              longitude: true,
+              holes: {
+                orderBy: { holeNumber: "asc" },
+                select: {
+                  holeNumber: true,
+                  par: true,
+                  teeLat: true,
+                  teeLng: true,
+                  greenLat: true,
+                  greenLng: true,
+                },
+              },
+            },
+          },
+        },
+      },
       shots: { orderBy: [{ holeNumber: "asc" }, { shotNumber: "asc" }] },
     },
   });
@@ -56,7 +79,31 @@ export default async function SlagRegistreringPage({
     shotType: s.shotType as string,
     isPenalty: s.isPenalty,
     notes: s.notes,
+    // GPS bevares ved redigering (X=lng, Y=lat — se lib/gameplan/shot-coords).
+    startLat: s.startY,
+    startLng: s.startX,
+    endLat: s.endY,
+    endLng: s.endX,
   }));
+
+  // Banegeometri til slag-kartet — kun når banen har geojson + senter.
+  // Ellers null: wizarden skjuler kartet ærlig og lar logging virke uendret.
+  const bane = runde.course.bane;
+  const baneKart: BaneKartData | null =
+    bane && bane.geojson && bane.latitude != null && bane.longitude != null
+      ? {
+          center: { lat: bane.latitude, lng: bane.longitude },
+          geojson: bane.geojson as unknown as GeoJSON.FeatureCollection,
+          holes: bane.holes.map((h) => ({
+            holeNumber: h.holeNumber,
+            par: h.par,
+            teeLat: h.teeLat,
+            teeLng: h.teeLng,
+            greenLat: h.greenLat,
+            greenLng: h.greenLng,
+          })),
+        }
+      : null;
 
   return (
     <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
@@ -87,7 +134,7 @@ export default async function SlagRegistreringPage({
           <UpGameImportModal roundId={id} />
         </div>
 
-        <SlagWizard roundId={id} eksisterendeSlag={serialiserteSlag} />
+        <SlagWizard roundId={id} eksisterendeSlag={serialiserteSlag} baneKart={baneKart} />
       </div>
     </V2Shell>
   );

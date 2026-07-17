@@ -16,6 +16,8 @@ import { useState, useTransition } from "react";
 import { ArrowLeft, Plus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { AKSE_NAVN } from "@/components/v2/core";
+import type { PyramidArea } from "@/generated/prisma/client";
 import { createAdHocSession } from "./actions";
 
 // ── Data ──────────────────────────────────────────────────────────────────────
@@ -44,6 +46,17 @@ interface NyOktWizardProps {
 
 function totalMinutes(drills: WizardDrill[]): number {
   return drills.reduce((sum, d) => sum + d.durationMin, 0);
+}
+
+/** De fem pyramide-aksene i kanon-rekkefølge (FYS/TEK/SLAG/SPILL/TURN). */
+const AKSER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
+
+/** datetime-local-verdi ("YYYY-MM-DDTHH:mm") for nå i klientens (Oslo) veggklokke.
+ *  Kjøres kun i klienten — unngår UTC/Oslo-skjevheten server-side ville gitt. */
+function naaDatetimeLocal(): string {
+  const d = new Date();
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 function focusLabel(drills: WizardDrill[]): string {
@@ -135,6 +148,8 @@ export function NyOktWizard({ templates, alleOvelser }: NyOktWizardProps) {
   const [started, setStarted] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<WizardTemplate | null>(null);
   const [drills, setDrills] = useState<WizardDrill[]>([]);
+  const [pyramidArea, setPyramidArea] = useState<PyramidArea>("SLAG");
+  const [scheduledAt, setScheduledAt] = useState<string>(naaDatetimeLocal);
   const [saved, setSaved] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -184,8 +199,10 @@ export function NyOktWizard({ templates, alleOvelser }: NyOktWizardProps) {
       try {
         await createAdHocSession({
           title: selectedTemplate ? selectedTemplate.name : "Egen økt",
-          pyramidArea: "SLAG",
-          scheduledAt: new Date().toISOString(),
+          pyramidArea,
+          scheduledAt: scheduledAt
+            ? new Date(scheduledAt).toISOString()
+            : new Date().toISOString(),
           durationMin: totalMinutes(drills),
           exerciseIds: drills.map((d) => d.id),
         });
@@ -291,6 +308,37 @@ export function NyOktWizard({ templates, alleOvelser }: NyOktWizardProps) {
             </select>
           </label>
         )}
+
+        {/* Tidspunkt + fokusområde */}
+        <div className="grid gap-3 sm:grid-cols-2">
+          <label className="block">
+            <span className="mb-1.5 block font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+              Fokusområde
+            </span>
+            <select
+              value={pyramidArea}
+              onChange={(e) => setPyramidArea(e.target.value as PyramidArea)}
+              className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-primary"
+            >
+              {AKSER.map((a) => (
+                <option key={a} value={a}>
+                  {AKSE_NAVN[a]}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block">
+            <span className="mb-1.5 block font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+              Tidspunkt
+            </span>
+            <input
+              type="datetime-local"
+              value={scheduledAt}
+              onChange={(e) => setScheduledAt(e.target.value)}
+              className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-primary"
+            />
+          </label>
+        </div>
 
         {/* CTAs */}
         {saved ? (
