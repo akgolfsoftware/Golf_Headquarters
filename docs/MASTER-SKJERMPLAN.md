@@ -567,10 +567,10 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Anlegg-detalj | `/(marketing)/anlegg/[slug]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedAnleggDetaljV2`.
 | Blogg | `/(marketing)/blogg` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | · Blogg-innlegg | `/(marketing)/blogg/[slug]` | ✓ | --- | ✓ | ~ | ~ | ✓ |
-| Booking | `/(marketing)/booking` | – | --- | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul: BEKREFTET ekte gap — kun én `Eyebrow`-golfdata-import i toppen, resten (lokasjon/coach/tjeneste-velger) er egenbygd rå Tailwind.
-| · Booking-tjeneste | `/(marketing)/booking/[slug]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — ingen komponent-imports, egen `SlotPicker`.
-| · Booking bekreft | `/(marketing)/booking/[slug]/bekreft` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — helt egenbygd, ingen komponent-imports.
-| · Booking kvittering | `/(marketing)/booking/kvittering/[bookingId]` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul: BEKREFTET ekte gap — samme som over.
+| Booking | `/(marketing)/booking` | ✓ | ✓✓– | ✓ | ~ | ~ | ✓ | v2-port 16. jul (Team C): `MarkedBookingV2` — ruten flyttet fra `(mlegacy)`-gruppen til `(marketing)/booking/` (samme URL). Lokasjon/coach/tjeneste-velger-logikken uendret. Design – → ✓.
+| · Booking-tjeneste | `/(marketing)/booking/[slug]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul (Team C): `MarkedBookingTjenesteV2` — slot-gruppering, ?dato=-daglenker og bekreft-lenker (start&coach) bevart 1:1 fra gamle `SlotPicker`; kun presentasjonen er ny. Design – → ✓.
+| · Booking bekreft | `/(marketing)/booking/[slug]/bekreft` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul (Team C): `MarkedBookingBekreftV2` — samme felter/validering/action-kall som gamle bekreft-form; `createBookingCheckout` (Stripe) flyttet BYTE-IDENTISK til ny rute. Design – → ✓.
+| · Booking kvittering | `/(marketing)/booking/kvittering/[bookingId]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul (Team C): `MarkedBookingKvitteringV2` — pending-refresh-oppførselen (poll til betaling bekreftet) bevart. Design – → ✓.
 | Cases | `/(marketing)/cases` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | Coacher | `/(marketing)/coacher` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | · Coach-profil | `/(marketing)/coacher/[slug]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedCoachDetaljV2`.
