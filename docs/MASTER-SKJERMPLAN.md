@@ -388,7 +388,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Plan-maler (alt.) | `/admin/plan-templates` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminPlanMalerV2`. |
 | · Plan-mal detalj | `/admin/plan-templates/[id]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team F1): `AdminPlanMalDetaljV2` erstatter template-detail — KpiFlis (m/ `malEffektivitet`-HjelpTips) + uke-grid (T.ax) + Pyramide mot anbefalt baseline + v2-øktdialog; actions (dupliser/arkiver/gjenåpne) uendret; rute ut av (legacy). Hardkodet «Completion-rate 87%»-plassholder fjernet (aldri oppdiktede tall). |
 | · Ny plan-mal | `/admin/plan-templates/ny` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team F1): `AdminPlanMalNyV2` erstatter new-template-form — samme felter/validering (fordeling = 100 %), T.ax-glidere, `createTemplate` + redirect uendret; rute ut av (legacy). |
-| · Rediger plan-mal | `/admin/plan-templates/[id]/rediger` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | v2-port 17. jul (Team F1): `AdminPlanMalRedigerV2` erstatter template-editor + volum-linje — 3-pane, økt-dialog, volum/uke-chips og masseredigering (uke-varighet, uke-kopi m/ konflikt-bekreftelse, logikk i `src/lib/plan-templates/`) beholdt eksakt; rute ut av (legacy). Kjent rest: prompt/confirm-flytene er bevart ordrett (ikke v2-dialoger) — egen UX-oppgave senere.
+| · Rediger plan-mal | `/admin/plan-templates/[id]/rediger` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | v2-port 17. jul (Team F1): `AdminPlanMalRedigerV2` erstatter template-editor + volum-linje — 3-pane, økt-dialog, volum/uke-chips og masseredigering (uke-varighet, uke-kopi m/ konflikt-bekreftelse, logikk i `src/lib/plan-templates/`) beholdt eksakt; rute ut av (legacy). 17. jul (kvalitetshale): prompt/confirm/alert-flytene erstattet med v2-dialoger (VarighetUkeDialog, KopierUkeDialog m/ konflikt-visning + Overskriv, BekreftSlettOktDialog, inline lagre-status) — samme actions og logikk-rekkefølge.
 | Drills (bibliotek) | `/admin/drills` | ✓ | ~✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminDrillsV2` (Kort/Caps/Tittel/CTAPill/TomTilstand) erstatter `AgPage`/`AgPageHead`/`agBtnClass`. Beholder ekte søk (?q=)/kategorifilter (?kat=)/30-cap Prisma-spørring uendret — ren server-rendret URL-drevet nav, ingen klient-state. Detalj/rediger/ny/forslag-skjermene er IKKE portet ennå — mockupens ett-app tile+inspektør+composer-modell matcher ikke produksjonens separate sider + 27-felts admin-skjema (DrillEditForm), så disse porter separat mot faktisk struktur, ikke mockupen 1:1. |
 | · Drill-detalj | `/admin/drills/[id]` | ✓ | --- | ✓ | ~ | ~ | ~ | v2-port 16. jul: `AdminDrillDetaljV2` (Kort/Caps/Tittel) erstatter lokale Card/Stat/Row/NgfRangePlot-hjelpere. Full feltdekning fra ExerciseDefinition beholdt uendret (nivå-range, csTarget, environment/utstyr/L-faser, prerequisites, tags, video). `DrillDetailActions` (Rediger/Dupliser/Slett) uendret. |
 | · Rediger drill | `/admin/drills/[id]/rediger` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D3): `AdminDrillRedigerV2` (alle ExerciseDefinition-felt, sticky lagre-bar) — skjema-state, `numOrNull`/csTarget-vasking og `updateDrill` portert 1:1 fra delt actions.ts; HjelpTips på akse/skillArea/miljø/L-fase/CS. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
@@ -417,7 +417,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Måned (alt. → redirect) | `/admin/calendar/maned` | ✓ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/admin/kalender/maned")` — ikke en egen skjerm.
 | **Bookinger** ★ | `/admin/bookinger` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v13 (KpiTile, Card, Tag + heatmap retokened)
 | · Ny booking | `/admin/bookinger/ny` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | v2 2026-07-12: portet ut av legacy, V2Shell + NyBookingWizard; inngang fra kalender + bookinger |
-| Anlegg | `/admin/anlegg` | ✓ | ✓✓– | ✓ | ~ | ✓ | ~ | v2-port 16. jul: `AdminAnleggV2` + `LocationFormV2` (Kort/TomTilstand), erstatter `AgPage`/`AgPageHead`. Samme datagrunnlag uendret. Kjent, uendret hull (IKKE del av denne restylingen, se "Veien til 100%"): kun opprett-lokasjon er koblet — rediger/slett-lokasjon og fasilitet-administrasjon (`FacilityFormV2` finnes, portet, men uten kallested) mangler. Design – → ✓. |
+| Anlegg | `/admin/anlegg` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul (`AdminAnleggV2` + `LocationFormV2`). **Full administrasjon koblet 17. jul (B8a):** rediger/deaktiver lokasjon + opprett/rediger/deaktiver fasilitet (`FacilityFormV2` m/ type + beskrivelse, ikke lenger unwired). Soft delete via `active` — hard delete-actions FJERNET (bookinger/availability refererer radene; Location→Facility har cascade). Deaktiverte rader vises m/ StatusPill og kan reaktiveres; zod-validering + audit på alle actions. Kart-koordinater (mapX/mapY/latlong) bevisst utenfor — trenger egen kart-flate (meldt gap). Flyt/Funker ~ → ✓. UAT 17. jul (lokal dev, Playwright, coach-testbruker): full CRUD klikkverifisert — opprett anlegg → rediger navn → ny fasilitet → deaktiver (confirm-dialog) → «Deaktivert»-merke vist → reaktiver, samme for lokasjonen; mobil 390px stabler til én kolonne. Testdata (UAT-TEST-prefiks) slettet fra DB etterpå. |
 | Tilgjengelighet | `/admin/availability` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminAvailabilityV2` + `AdminSlotFormV2`/`AdminAvailabilityWeekGridV2`/`AdminAvailabilityYearGanttV2` (T-tokens), erstatter `AgPage`-familien + hand-Tailwind. Alle tre visninger (Måned/Uke-drag/År) og samme actions (addSlot/updateSlot/deleteSlot) uendret — drag-interaksjonen er portet 1:1, ingen ny funksjon. Design – → ✓, Mob/Desk/iPad –✓– → ✓✓–. |
 | Kapasitet | `/admin/kapasitet` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: NYTT FUNN — ren `redirect("/admin/bookinger")`, ikke en egen skjerm (var scoret som levende før). |
 | Tjenester/priser | `/admin/services` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminServicesV2` + `ServiceFormV2` (Kort/StatusPill/dialog), erstatter `@/components/admin/agencyos/ui`-familien. Fikset samtidig en reell UI-mangel: rediger/slett (`updateService`/`deleteService`) fantes alt i skjemaet men ble aldri kalt per rad — kun "+ Ny tjeneste" var koblet. Nå rendres "Endre" per rad — ingen ny funksjon, bare faktisk bruk av det som fantes. Design – → ✓, Mob/Desk/iPad –✓– → ✓✓–. |
@@ -759,8 +759,9 @@ Hele talent-/elite-delen + den tegnede elite-spredningspakken tas når du sier f
 **Bolk 8 — Kjente funksjonelle hull avdekket under v2-portingen (16. jul), bevisst utsatt.**
 Anders sa "restyle nå, fiks funksjon separat" da disse ble avdekket — v2-portene er ferdige, men
 hullene under er reelle og uendret fra før portingen (ingen regresjon):
-- `/admin/anlegg`: kun opprett-lokasjon er koblet. Rediger/slett-lokasjon og fasilitet-administrasjon
-  (`FacilityFormV2` er portet og virker, men har ingen kallested på siden) mangler en egen flate.
+- ~~`/admin/anlegg`~~ **LUKKET 17. jul (B8a):** rediger/deaktiver lokasjon + full fasilitet-
+  administrasjon koblet. «Slett» er bevisst erstattet med deaktivering (aldri kaskade-slett
+  anleggsdata). Rest: kartplassering (mapX/mapY/latlong) trenger egen kart-flate — meldt gap.
 - `/admin/availability`: kompleks drag-interaksjon + 3 visningsmoduser — restylet 1:1 mot v2-tokens,
   ingen ny funksjon lagt til.
 - `/admin/stats/moderering`: ingen modererings-/GDPR-slett-kø finnes ennå i datamodellen — bevisst
@@ -784,7 +785,19 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
   både lokasjon og fasilitet (confirm-dialoger OK, soft delete bekreftet i UI, testdata slettet).
   Haker flippet KUN for det som er bevist: booking-trioen + test-detalj. Merk (dev-miljø, ikke
   prod-funn): streng CSP i dev-modus blokkerer Turbopack-chunks/eval → konsollstøy + rød
-  Next-badge lokalt. **Porteringsplanen er
+  Next-badge lokalt.
+
+- 17. juli (ettermiddag, Byggerunde G + B8a, PR #62 merget + PR #63): **Booking-underrutene — det
+  siste skjerm-gapet — er lukket.** Alle 6 (`ny`, `ny/bekreft`, `[bookingId]`, `coach`, `anlegg`,
+  `bekreftet`) portet til v2 med all credit-/slot-logikk urørt; fabrikkerte TIMELINE/MÅL/UTSTYR-
+  plassholdere fjernet fra booking-detaljen; copy-fiks på bekreftet-siden; foreldreløse
+  `booking.css` (25 hex) + `booking-hub.tsx` slettet. **B8a (PR #63):** full anleggs-administrasjon
+  koblet — rediger/deaktiver lokasjon + fasiliteter, hard delete-actions fjernet (soft delete).
+  Hex-baseline vasket (90 → 44 filer, `check-no-hex` helt ren). Beslutningsnotater D5–D7 lagt i
+  `AAPNE-SPORSMAAL.md`; design-briefs for Bolk 5-trioen + mobil-faseplan i
+  `docs/redesign-v2/design-briefs-bolk5-mobil.md`.
+
+- 17. juli (nattløpet, Byggerunde B–F + Fase 2, PR #60 merget + PR #61): **Porteringsplanen er
   gjennomført — 63 skjermer portet til v2 på ~ett døgn.** PR #60 (merget av Anders): Byggerunde B
   (auth/onboarding/forelder, 4), C (marketing-booking, 4 — Stripe-action flyttet byte-identisk),
   D1 (Planlegge/Mål/AI, 8). PR #61: D2 (Trening/Tren, 8 — putte-lab 25 hex → 0), D3

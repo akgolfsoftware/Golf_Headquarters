@@ -8,9 +8,11 @@
  *     deleteTemplateSession, setWeekDuration, copyTemplateWeek.
  *   - Volum-linje (timer/uke + reell pyramidefordeling) via
  *     beregnTemplateVolum i src/lib/plan-templates/ — urørt.
- *   - Masseredigering: «sett varighet for hele uka» (prompt) og «kopier
- *     uke→uke» med konflikt-bekreftelse (prompt + confirm + retry med
- *     overskriv=true) — samme flyt som før.
+ *   - Masseredigering: «sett varighet for hele uka» og «kopier uke→uke» med
+ *     konflikt-bekreftelse (retry med overskriv=true) — samme logikk-rekkefølge
+ *     som før, men prompt()/confirm()/alert() er erstattet med v2-dialoger
+ *     (kvalitetshale 17. juli 2026): lokalt ModalSkall (idiom fra MalDetaljV2)
+ *     + Inndata/Velger, og feil/statuser vises inline i stedet for alert().
  * Kun presentasjonen er byttet til v2 (Kort/Knapp/T-tokens/HjelpTips).
  *
  * 3-pane på desktop (som før): drill-bibliotek · økt-grid · innstillinger.
@@ -53,6 +55,8 @@ import {
   Caps,
   Tittel,
   Knapp,
+  Inndata,
+  Velger,
   Icon,
   HjelpTips,
   AKSE_NAVN,
@@ -108,6 +112,15 @@ type ModalState =
   | { kind: "closed" }
   | { kind: "create"; ukeNr: number; dagNr: number }
   | { kind: "edit"; session: RedigerOkt };
+
+// Uke-verktøy og bekreftelser (erstatter prompt()/confirm()-flytene fra golfdata)
+type UkeDialogState =
+  | { kind: "ingen" }
+  | { kind: "varighet"; ukeNr: number }
+  | { kind: "kopier"; fraUke: number; konflikt: { tilUke: number; antallIMaal: number } | null }
+  | { kind: "slett-okt"; sessionId: string };
+
+type LagreMelding = { type: "ok" | "feil"; tekst: string };
 
 /* ── v2-feltstiler (samme idiom som AdminDrillRedigerV2) ── */
 
@@ -172,6 +185,71 @@ function IkonKnappLiten({
   );
 }
 
+// Destruktiv ghost-Knapp (samme idiom som «Slett økt» i økt-dialogen)
+const KNAPP_FARE_STIL: React.CSSProperties = {
+  color: T.down,
+  borderColor: `color-mix(in srgb, ${T.down} 40%, transparent)`,
+};
+
+function FeilBoks({ children }: { children: React.ReactNode }) {
+  return (
+    <p
+      role="alert"
+      style={{ margin: 0, borderRadius: 10, border: `1px solid color-mix(in srgb, ${T.down} 40%, transparent)`, background: `color-mix(in srgb, ${T.down} 10%, transparent)`, padding: "9px 12px", fontFamily: T.ui, fontSize: 12, color: T.down, lineHeight: 1.5 }}
+    >
+      {children}
+    </p>
+  );
+}
+
+/* ── Modal-skall (lokal variant av idiomet i MalDetaljV2) ─ */
+
+function ModalSkall({
+  eyebrow,
+  tittel,
+  onClose,
+  children,
+}: {
+  eyebrow: string;
+  tittel: string;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={tittel}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      style={{ position: "fixed", inset: 0, zIndex: 90, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px", background: "rgba(0,0,0,0.55)" }}
+    >
+      <div
+        className="v2-sheet-in"
+        style={{ width: "100%", maxWidth: 440, background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)", maxHeight: "86vh", overflowY: "auto" }}
+      >
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+          <div>
+            <Caps size={9}>{eyebrow}</Caps>
+            <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: T.fg, margin: "6px 0 0", lineHeight: 1.2 }}>{tittel}</h2>
+          </div>
+          <button
+            type="button"
+            aria-label="Lukk"
+            onClick={onClose}
+            className="v2-press v2-focus"
+            style={{ appearance: "none", width: 28, height: 28, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flex: "none", color: T.fg2 }}
+          >
+            <Icon name="x" size={14} />
+          </button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 /* ── Hovedkomponent ───────────────────────────────────── */
 
 export function AdminPlanMalRedigerV2({
@@ -197,6 +275,10 @@ export function AdminPlanMalRedigerV2({
   const [approved, setApproved] = useState(template.approved);
 
   const [modal, setModal] = useState<ModalState>({ kind: "closed" });
+  const [oktFeil, setOktFeil] = useState<string | null>(null); // server-feil vist inline i økt-dialogen
+  const [ukeDialog, setUkeDialog] = useState<UkeDialogState>({ kind: "ingen" });
+  const [dialogFeil, setDialogFeil] = useState<string | null>(null); // server-feil vist inline i uke-dialogene
+  const [lagreMelding, setLagreMelding] = useState<LagreMelding | null>(null); // inline-status for «Lagre innstillinger»
   const [drillSok, setDrillSok] = useState("");
 
   const fordelingSum = useMemo(() => {
@@ -220,7 +302,7 @@ export function AdminPlanMalRedigerV2({
 
   function onSaveSettings() {
     if (fordelingSum !== 100) {
-      alert(`Discipline-fordelingen må summere til 100% (er nå ${fordelingSum}%).`);
+      setLagreMelding({ type: "feil", tekst: `Disiplin-fordelingen må summere til 100 % (er nå ${fordelingSum} %).` });
       return;
     }
     const input: TemplateUpdateInput = {
@@ -235,25 +317,37 @@ export function AdminPlanMalRedigerV2({
       maxAlder: maxAlder ? parseInt(maxAlder, 10) : null,
       approved,
     };
+    setLagreMelding(null);
     startTransition(async () => {
       const res = await updateTemplate(template.id, input);
       if (res.ok) {
         router.refresh();
-        alert("Lagret.");
+        setLagreMelding({ type: "ok", tekst: "Lagret." });
       } else {
-        alert(`Kunne ikke lagre: ${res.error}`);
+        setLagreMelding({ type: "feil", tekst: `Kunne ikke lagre: ${res.error}` });
       }
     });
   }
 
-  function onDeleteSession(sessionId: string) {
-    if (!confirm("Slette denne økten?")) return;
+  function aapneUkeDialog(state: UkeDialogState) {
+    setDialogFeil(null);
+    setUkeDialog(state);
+  }
+
+  function lukkUkeDialog() {
+    setDialogFeil(null);
+    setUkeDialog({ kind: "ingen" });
+  }
+
+  // Kjøres først etter «Slett»-bekreftelse i dialogen (før: confirm())
+  function onDeleteSessionBekreftet(sessionId: string) {
     startTransition(async () => {
       const res = await deleteTemplateSession(sessionId);
       if (res.ok) {
+        lukkUkeDialog();
         router.refresh();
       } else {
-        alert(res.error);
+        setDialogFeil(res.error);
       }
     });
   }
@@ -262,45 +356,40 @@ export function AdminPlanMalRedigerV2({
     return sessions.find((s) => s.ukeNr === ukeNr && s.dagNr === dagNr);
   }
 
-  function onSetWeekDuration(ukeNr: number) {
-    const nyVarighet = prompt(`Ny varighet (minutter) for alle økter i uke ${ukeNr}:`);
-    if (!nyVarighet) return;
-    const parsed = parseInt(nyVarighet, 10);
-    if (!Number.isFinite(parsed)) return;
+  // Kjøres fra varighet-dialogen (før: prompt())
+  function onSetWeekDurationBekreftet(ukeNr: number, varighetMin: number) {
     startTransition(async () => {
-      const res = await setWeekDuration(template.id, ukeNr, parsed);
+      const res = await setWeekDuration(template.id, ukeNr, varighetMin);
       if (res.ok) {
+        lukkUkeDialog();
         router.refresh();
       } else {
-        alert(res.error);
+        setDialogFeil(res.error);
       }
     });
   }
 
-  function onCopyWeek(fraUke: number) {
-    const tilUkeStr = prompt(`Kopier uke ${fraUke} til uke (1–${varighetUker}):`);
-    if (!tilUkeStr) return;
-    const tilUke = parseInt(tilUkeStr, 10);
+  // Kjøres fra kopier-dialogen (før: prompt() + confirm() + retry).
+  // Samme logikk-rekkefølge som før: feil → vises; konflikt → «Overskriv»-
+  // spørsmål (nå i modalen) → nytt kall med overskriv=true; ellers refresh.
+  function onCopyWeekUtfor(fraUke: number, tilUke: number, overskriv: boolean) {
     if (!Number.isFinite(tilUke) || tilUke < 1 || tilUke > varighetUker) {
-      alert("Ugyldig uke.");
+      setDialogFeil("Ugyldig uke.");
       return;
     }
     startTransition(async () => {
-      const forsokKopi = async (overskriv: boolean) => {
-        const res = await copyTemplateWeek(template.id, fraUke, tilUke, overskriv);
-        if (!res.ok) {
-          alert(res.error);
-          return;
-        }
-        if (res.data.status === "konflikt") {
-          if (confirm(`Uke ${tilUke} har ${res.data.antallIMaal} økter fra før. Erstatte dem?`)) {
-            await forsokKopi(true);
-          }
-          return;
-        }
-        router.refresh();
-      };
-      await forsokKopi(false);
+      const res = await copyTemplateWeek(template.id, fraUke, tilUke, overskriv);
+      if (!res.ok) {
+        setDialogFeil(res.error);
+        return;
+      }
+      if (res.data.status === "konflikt") {
+        setDialogFeil(null);
+        setUkeDialog({ kind: "kopier", fraUke, konflikt: { tilUke, antallIMaal: res.data.antallIMaal } });
+        return;
+      }
+      lukkUkeDialog();
+      router.refresh();
     });
   }
 
@@ -413,8 +502,8 @@ export function AdminPlanMalRedigerV2({
                         </span>
                       )}
                       <div style={{ display: "flex", gap: 2, marginTop: 2 }}>
-                        <IkonKnappLiten icon="clock" title="Sett varighet for hele uka" disabled={isPending} onClick={() => onSetWeekDuration(uke)} />
-                        <IkonKnappLiten icon="copy" title="Kopier uka til …" disabled={isPending} onClick={() => onCopyWeek(uke)} />
+                        <IkonKnappLiten icon="clock" title="Sett varighet for hele uka" disabled={isPending} onClick={() => aapneUkeDialog({ kind: "varighet", ukeNr: uke })} />
+                        <IkonKnappLiten icon="copy" title="Kopier uka til …" disabled={isPending} onClick={() => aapneUkeDialog({ kind: "kopier", fraUke: uke, konflikt: null })} />
                       </div>
                     </div>
                     {[1, 2, 3, 4, 5, 6, 7].map((dag) => {
@@ -586,7 +675,16 @@ export function AdminPlanMalRedigerV2({
       </div>
 
       {/* Sticky lagre-bar (samme mønster som AdminDrillRedigerV2) */}
-      <div style={{ position: "sticky", bottom: 0, zIndex: 20, background: `color-mix(in srgb, ${T.bg} 95%, transparent)`, backdropFilter: "blur(6px)", borderTop: `1px solid ${T.border}`, padding: "10px 0", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 8 }}>
+      <div style={{ position: "sticky", bottom: 0, zIndex: 20, background: `color-mix(in srgb, ${T.bg} 95%, transparent)`, backdropFilter: "blur(6px)", borderTop: `1px solid ${T.border}`, padding: "10px 0", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 12 }}>
+        {lagreMelding && (
+          <span
+            role={lagreMelding.type === "feil" ? "alert" : "status"}
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: lagreMelding.type === "feil" ? T.down : T.up, textAlign: "right", lineHeight: 1.4 }}
+          >
+            <Icon name={lagreMelding.type === "feil" ? "alert-triangle" : "check"} size={13} style={{ flex: "none" }} />
+            {lagreMelding.tekst}
+          </span>
+        )}
         <Knapp icon="check" disabled={isPending} onClick={onSaveSettings}>
           {isPending ? "Lagrer…" : "Lagre innstillinger"}
         </Knapp>
@@ -598,8 +696,13 @@ export function AdminPlanMalRedigerV2({
           drillOptions={drillOptions}
           maxUke={varighetUker}
           isPending={isPending}
-          onClose={() => setModal({ kind: "closed" })}
-          onSave={(input, sessionId) =>
+          serverFeil={oktFeil}
+          onClose={() => {
+            setModal({ kind: "closed" });
+            setOktFeil(null);
+          }}
+          onSave={(input, sessionId) => {
+            setOktFeil(null);
             startTransition(async () => {
               const res = sessionId
                 ? await updateTemplateSession(sessionId, input)
@@ -608,22 +711,201 @@ export function AdminPlanMalRedigerV2({
                 setModal({ kind: "closed" });
                 router.refresh();
               } else {
-                alert(res.error);
+                setOktFeil(res.error);
               }
-            })
-          }
+            });
+          }}
           onDelete={
             modal.kind === "edit"
               ? () => {
                   const sid = modal.session.id;
                   setModal({ kind: "closed" });
-                  onDeleteSession(sid);
+                  setOktFeil(null);
+                  aapneUkeDialog({ kind: "slett-okt", sessionId: sid });
                 }
               : undefined
           }
         />
       )}
+
+      {ukeDialog.kind === "varighet" && (
+        <VarighetUkeDialog
+          ukeNr={ukeDialog.ukeNr}
+          isPending={isPending}
+          feil={dialogFeil}
+          onClose={lukkUkeDialog}
+          onLagre={(min) => onSetWeekDurationBekreftet(ukeDialog.ukeNr, min)}
+        />
+      )}
+
+      {ukeDialog.kind === "kopier" && (
+        <KopierUkeDialog
+          fraUke={ukeDialog.fraUke}
+          maxUke={varighetUker}
+          konflikt={ukeDialog.konflikt}
+          isPending={isPending}
+          feil={dialogFeil}
+          onClose={lukkUkeDialog}
+          onKopier={(tilUke, overskriv) => onCopyWeekUtfor(ukeDialog.fraUke, tilUke, overskriv)}
+        />
+      )}
+
+      {ukeDialog.kind === "slett-okt" && (
+        <BekreftSlettOktDialog
+          isPending={isPending}
+          feil={dialogFeil}
+          onClose={lukkUkeDialog}
+          onBekreft={() => onDeleteSessionBekreftet(ukeDialog.sessionId)}
+        />
+      )}
     </div>
+  );
+}
+
+/* ── Uke-dialoger (erstatter prompt()/confirm()-flytene) ── */
+
+function VarighetUkeDialog({
+  ukeNr,
+  isPending,
+  feil,
+  onClose,
+  onLagre,
+}: {
+  ukeNr: number;
+  isPending: boolean;
+  feil: string | null;
+  onClose: () => void;
+  onLagre: (varighetMin: number) => void;
+}) {
+  const [minutter, setMinutter] = useState("");
+  const parsed = parseInt(minutter, 10);
+  const gyldig = Number.isFinite(parsed);
+  return (
+    <ModalSkall eyebrow={`Uke ${ukeNr}`} tittel="Sett varighet for hele uka" onClose={onClose}>
+      <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 12 }}>
+        <Inndata
+          label="Ny varighet (minutter)"
+          type="number"
+          mono
+          suffix="min"
+          placeholder="60"
+          value={minutter}
+          onChange={setMinutter}
+        />
+        <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, margin: 0, lineHeight: 1.55 }}>
+          Gjelder alle økter i uke {ukeNr}. Mellom 5 og 480 minutter.
+        </p>
+        {feil && <FeilBoks>{feil}</FeilBoks>}
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+          <Knapp ghost disabled={isPending} onClick={onClose}>
+            Avbryt
+          </Knapp>
+          <Knapp icon="check" disabled={isPending || !gyldig} onClick={() => onLagre(parsed)}>
+            {isPending ? "Lagrer…" : "Lagre"}
+          </Knapp>
+        </div>
+      </div>
+    </ModalSkall>
+  );
+}
+
+function KopierUkeDialog({
+  fraUke,
+  maxUke,
+  konflikt,
+  isPending,
+  feil,
+  onClose,
+  onKopier,
+}: {
+  fraUke: number;
+  maxUke: number;
+  konflikt: { tilUke: number; antallIMaal: number } | null;
+  isPending: boolean;
+  feil: string | null;
+  onClose: () => void;
+  onKopier: (tilUke: number, overskriv: boolean) => void;
+}) {
+  const ukeValg = useMemo(
+    () =>
+      Array.from({ length: maxUke }, (_, i) => i + 1)
+        .filter((u) => u !== fraUke)
+        .map((u) => ({ value: u.toString(), label: `Uke ${u}` })),
+    [maxUke, fraUke],
+  );
+  const [tilUke, setTilUke] = useState<string>(ukeValg[0]?.value ?? "");
+  const parsed = parseInt(tilUke, 10);
+  return (
+    <ModalSkall eyebrow={`Uke ${fraUke}`} tittel="Kopier uka til …" onClose={onClose}>
+      <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 12 }}>
+        {konflikt ? (
+          <>
+            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, margin: 0, lineHeight: 1.55 }}>
+              Uke {konflikt.tilUke} har {konflikt.antallIMaal} økter fra før. Erstatte dem?
+            </p>
+            {feil && <FeilBoks>{feil}</FeilBoks>}
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+              <Knapp ghost disabled={isPending} onClick={onClose}>
+                Avbryt
+              </Knapp>
+              <Knapp ghost icon="copy" disabled={isPending} onClick={() => onKopier(konflikt.tilUke, true)} style={KNAPP_FARE_STIL}>
+                {isPending ? "Kopierer…" : "Overskriv"}
+              </Knapp>
+            </div>
+          </>
+        ) : (
+          <>
+            {ukeValg.length > 0 ? (
+              <Velger label="Kopier til uke" options={ukeValg} value={tilUke} onChange={setTilUke} />
+            ) : (
+              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.55 }}>
+                Malen har ingen andre uker å kopiere til.
+              </p>
+            )}
+            {feil && <FeilBoks>{feil}</FeilBoks>}
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+              <Knapp ghost disabled={isPending} onClick={onClose}>
+                Avbryt
+              </Knapp>
+              <Knapp icon="copy" disabled={isPending || !Number.isFinite(parsed)} onClick={() => onKopier(parsed, false)}>
+                {isPending ? "Kopierer…" : "Lagre"}
+              </Knapp>
+            </div>
+          </>
+        )}
+      </div>
+    </ModalSkall>
+  );
+}
+
+function BekreftSlettOktDialog({
+  isPending,
+  feil,
+  onClose,
+  onBekreft,
+}: {
+  isPending: boolean;
+  feil: string | null;
+  onClose: () => void;
+  onBekreft: () => void;
+}) {
+  return (
+    <ModalSkall eyebrow="Bekreft" tittel="Slette denne økten?" onClose={onClose}>
+      <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 12 }}>
+        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, margin: 0, lineHeight: 1.55 }}>
+          Økten fjernes fra malen. Dette kan ikke angres.
+        </p>
+        {feil && <FeilBoks>{feil}</FeilBoks>}
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+          <Knapp ghost disabled={isPending} onClick={onClose}>
+            Avbryt
+          </Knapp>
+          <Knapp ghost icon="trash-2" disabled={isPending} onClick={onBekreft} style={KNAPP_FARE_STIL}>
+            {isPending ? "Sletter…" : "Slett økt"}
+          </Knapp>
+        </div>
+      </div>
+    </ModalSkall>
   );
 }
 
@@ -634,6 +916,7 @@ function OktRedigerDialog({
   drillOptions,
   maxUke,
   isPending,
+  serverFeil,
   onClose,
   onSave,
   onDelete,
@@ -642,6 +925,7 @@ function OktRedigerDialog({
   drillOptions: RedigerDrillValg[];
   maxUke: number;
   isPending: boolean;
+  serverFeil: string | null;
   onClose: () => void;
   onSave: (input: SessionInput, sessionId?: string) => void;
   onDelete?: () => void;
@@ -674,6 +958,7 @@ function OktRedigerDialog({
   const [notes, setNotes] = useState(initial.notes ?? "");
   const [drills, setDrills] = useState<DrillEntry[]>(initial.drills);
   const [drillSok, setDrillSok] = useState("");
+  const [lokalFeil, setLokalFeil] = useState<string | null>(null); // klientvalidering (før: alert())
 
   const filtererteDrills = useMemo(() => {
     if (!drillSok.trim()) return drillOptions;
@@ -701,9 +986,10 @@ function OktRedigerDialog({
 
   function submit() {
     if (!title.trim()) {
-      alert("Tittel er påkrevd.");
+      setLokalFeil("Tittel er påkrevd.");
       return;
     }
+    setLokalFeil(null);
     const input: SessionInput = {
       ukeNr,
       dagNr,
@@ -915,6 +1201,12 @@ function OktRedigerDialog({
           </div>
         </div>
 
+        {(lokalFeil ?? serverFeil) && (
+          <div style={{ marginTop: 14 }}>
+            <FeilBoks>{lokalFeil ?? serverFeil}</FeilBoks>
+          </div>
+        )}
+
         <div style={{ marginTop: 20, display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
           {onDelete ? (
             <Knapp
@@ -922,7 +1214,7 @@ function OktRedigerDialog({
               icon="trash-2"
               disabled={isPending}
               onClick={onDelete}
-              style={{ color: T.down, borderColor: `color-mix(in srgb, ${T.down} 40%, transparent)` }}
+              style={KNAPP_FARE_STIL}
             >
               Slett økt
             </Knapp>
