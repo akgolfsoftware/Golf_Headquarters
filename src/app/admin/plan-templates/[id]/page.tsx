@@ -1,21 +1,23 @@
 /**
- * /admin/plan-templates/[id] — Mal-detalj.
+ * AgencyOS — Plan-mal-detalj (/admin/plan-templates/[id]) — v2.
+ * v2-port 17. juli 2026 (Team F1): `AdminPlanMalDetaljV2` erstatter
+ * template-detail, ruten flyttet ut av (legacy). Auth-guard (COACH + ADMIN),
+ * Prisma-queries (mal + økter + drill-navn-oppslag) og datamapping er
+ * uendret — kun presentasjonslaget er nytt.
  */
 
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AdminHero as PageHeader } from "@/components/admin/admin-hero";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { TilbakeLenke } from "@/components/v2";
 import {
-  TemplateDetail,
-  type SessionData,
-  type TemplateData,
-} from "@/components/admin/plan-templates/template-detail";
+  AdminPlanMalDetaljV2,
+  type PlanMalDetalj,
+  type PlanMalOkt,
+} from "@/components/admin/v2/AdminPlanMalDetaljV2";
 import {
   ANBEFALT_FORDELING_PER_KATEGORI,
-  FASE_LABEL,
   readDrills,
   readFordeling,
 } from "@/components/admin/plan-templates/shared";
@@ -29,7 +31,7 @@ export default async function PlanTemplateDetailPage({
 }: {
   params: Promise<Params>;
 }) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { id } = await params;
 
   const template = await prisma.planTemplate.findUnique({
@@ -59,7 +61,7 @@ export default async function PlanTemplateDetailPage({
       : [];
   const drillNavn = new Map(drillDefs.map((d) => [d.id, d.name]));
 
-  const sessions: SessionData[] = template.sessions.map((s) => {
+  const sessions: PlanMalOkt[] = template.sessions.map((s) => {
     const drills = readDrills(s.drillsJson);
     return {
       id: s.id,
@@ -79,7 +81,7 @@ export default async function PlanTemplateDetailPage({
     };
   });
 
-  const data: TemplateData = {
+  const data: PlanMalDetalj = {
     id: template.id,
     name: template.name,
     description: template.description,
@@ -97,29 +99,10 @@ export default async function PlanTemplateDetailPage({
     sessions,
   };
 
-  // Splitt navn: siste ord italic
-  const parts = template.name.split(" ");
-  const titleItalic = parts[parts.length - 1];
-  const titleLead = parts.slice(0, parts.length - 1).join(" ");
-
   return (
-    <div className="flex flex-col gap-6 pb-20 md:pb-0">
-      <Link
-        href="/admin/plan-templates"
-        className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.75} />
-        Tilbake til biblioteket
-      </Link>
-
-      <PageHeader
-        eyebrow={`NGF-KATEGORI ${template.kategori} · ${FASE_LABEL[template.lPhase].toUpperCase()} · ${template.varighetUker} UKER`}
-        titleLead={titleLead || undefined}
-        titleItalic={titleItalic}
-        sub={template.description ?? "Ingen beskrivelse lagt til ennå."}
-      />
-
-      <TemplateDetail template={data} />
-    </div>
+    <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/admin/plan-templates">Plan-maler</TilbakeLenke>
+      <AdminPlanMalDetaljV2 template={data} />
+    </V2Shell>
   );
 }
