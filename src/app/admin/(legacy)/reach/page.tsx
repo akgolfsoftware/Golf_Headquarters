@@ -1,6 +1,13 @@
+/**
+ * AgencyOS — Reach & engasjement (/admin/reach). v2-port 16. juli 2026.
+ * Samme aggregeringslogikk som før (User/Notification/TrainingPlanSession/
+ * CoachingSession/Round/Goal) — kun presentasjonslaget flyttet til
+ * AdminReachV2.
+ */
+
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { ReachClient, type ReachData } from "./reach-client";
+import { AdminReachV2, type AdminReachV2Data } from "@/components/admin/v2/AdminReachV2";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +30,28 @@ type PlayerAggregate = {
   engagementScore: number;
 };
 
+function daysSince(iso: string): number {
+  const then = new Date(iso).getTime();
+  const now = Date.now();
+  return Math.max(0, Math.floor((now - then) / (1000 * 60 * 60 * 24)));
+}
+
+function formatRelative(iso: string): string {
+  const d = daysSince(iso);
+  if (d === 0) return "i dag";
+  if (d === 1) return "i går";
+  if (d < 7) return `${d}d siden`;
+  if (d < 30) return `${Math.floor(d / 7)}u siden`;
+  return `${Math.floor(d / 30)}mnd siden`;
+}
+
+function statusFromCompliance(pct: number, lastSeen: Date | null, now: Date): "green" | "amber" | "red" {
+  const dagerSiden = lastSeen ? Math.floor((now.getTime() - lastSeen.getTime()) / (1000 * 60 * 60 * 24)) : 999;
+  if (pct >= 75 && dagerSiden <= 7) return "green";
+  if (pct >= 50 || dagerSiden <= 14) return "amber";
+  return "red";
+}
+
 export default async function ReachPage() {
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
@@ -32,39 +61,19 @@ export default async function ReachPage() {
   const trettiDager = new Date(now);
   trettiDager.setDate(trettiDager.getDate() - 30);
 
-  const [
-    spillere,
-    notifikasjoner,
-    treningsPlanSesjoner,
-    aiSesjoner,
-    runder,
-    goals,
-  ] = await Promise.all([
+  const [spillere, notifikasjoner, treningsPlanSesjoner, aiSesjoner, runder, goals] = await Promise.all([
     prisma.user.findMany({
       where: { role: "PLAYER" },
-      select: {
-        id: true,
-        name: true,
-        avatarUrl: true,
-        lastLoginAt: true,
-      },
+      select: { id: true, name: true, avatarUrl: true, lastLoginAt: true },
       orderBy: { name: "asc" },
     }),
     prisma.notification.findMany({
       where: { createdAt: { gte: trettiDager } },
-      select: {
-        userId: true,
-        readAt: true,
-        createdAt: true,
-      },
+      select: { userId: true, readAt: true, createdAt: true },
     }),
     prisma.trainingPlanSession.findMany({
       where: { scheduledAt: { gte: trettiDager } },
-      select: {
-        status: true,
-        scheduledAt: true,
-        plan: { select: { userId: true } },
-      },
+      select: { status: true, scheduledAt: true, plan: { select: { userId: true } } },
     }),
     prisma.coachingSession.findMany({
       where: { kind: "AI", updatedAt: { gte: trettiDager } },
@@ -80,7 +89,6 @@ export default async function ReachPage() {
     }),
   ]);
 
-  // Bygg per-spiller-aggregater
   const playersMap = new Map<string, PlayerAggregate>();
   for (const s of spillere) {
     playersMap.set(s.id, {
@@ -132,47 +140,12 @@ export default async function ReachPage() {
   }
 
   for (const p of playersMap.values()) {
-    p.compliancePct =
-      p.sessionsPlanned > 0
-        ? Math.round((p.sessionsCompleted / p.sessionsPlanned) * 100)
-        : 0;
-    p.readRatePct =
-      p.messagesSent > 0
-        ? Math.round((p.messagesRead / p.messagesSent) * 100)
-        : 0;
-    // Enkel score: compliance + read-rate + features
+    p.compliancePct = p.sessionsPlanned > 0 ? Math.round((p.sessionsCompleted / p.sessionsPlanned) * 100) : 0;
+    p.readRatePct = p.messagesSent > 0 ? Math.round((p.messagesRead / p.messagesSent) * 100) : 0;
     p.engagementScore =
-      p.compliancePct * 0.4 +
-      p.readRatePct * 0.3 +
-      Math.min(p.aiCaddieThreads, 10) * 2 +
-      Math.min(p.roundsLogged, 10) * 1.5 +
-      Math.min(p.goalsTouched, 5) * 1.5;
+      p.compliancePct * 0.4 + p.readRatePct * 0.3 + Math.min(p.aiCaddieThreads, 10) * 2 + Math.min(p.roundsLogged, 10) * 1.5 + Math.min(p.goalsTouched, 5) * 1.5;
   }
 
-  // Ekte data. Når DB er tom rendrer klienten ærlige tomme tilstander
-  // (0-tall, tomme lister) — ingen fabrikkerte spillere.
-  const realData: ReachData = buildRealData(
-    playersMap,
-    notifikasjoner,
-    treningsPlanSesjoner,
-    aiSesjoner,
-    runder,
-    goals,
-    now,
-  );
-
-  return <ReachClient data={realData} />;
-}
-
-function buildRealData(
-  playersMap: Map<string, PlayerAggregate>,
-  notifikasjoner: { userId: string; readAt: Date | null; createdAt: Date }[],
-  treningsPlanSesjoner: { status: string; scheduledAt: Date; plan: { userId: string } }[],
-  aiSesjoner: { userId: string; updatedAt: Date }[],
-  runder: { userId: string; playedAt: Date }[],
-  goals: { userId: string; updatedAt: Date }[],
-  now: Date,
-): ReachData {
   const players = Array.from(playersMap.values());
   const totalPlayers = players.length;
   const active7d = players.filter((p) => p.active7d).length;
@@ -180,18 +153,12 @@ function buildRealData(
 
   const totalPlanned = players.reduce((s, p) => s + p.sessionsPlanned, 0);
   const totalCompleted = players.reduce((s, p) => s + p.sessionsCompleted, 0);
-  const avgCompliance =
-    totalPlanned > 0 ? Math.round((totalCompleted / totalPlanned) * 100) : 0;
+  const avgCompliance = totalPlanned > 0 ? Math.round((totalCompleted / totalPlanned) * 100) : 0;
 
   const totalMessagesSent = players.reduce((s, p) => s + p.messagesSent, 0);
   const totalMessagesRead = players.reduce((s, p) => s + p.messagesRead, 0);
-  const messageReadRate =
-    totalMessagesSent > 0
-      ? Math.round((totalMessagesRead / totalMessagesSent) * 100)
-      : 0;
+  const messageReadRate = totalMessagesSent > 0 ? Math.round((totalMessagesRead / totalMessagesSent) * 100) : 0;
 
-  // Daglig aktivitet siste 30 dager (basert på lastLoginAt for spillere kombinert
-  // med faktiske aktivitets-events: AI, runder, økter, mål, notifikasjoner-lest).
   const daily: { date: string; active: number }[] = [];
   for (let i = 29; i >= 0; i--) {
     const day = new Date(now);
@@ -201,45 +168,22 @@ function buildRealData(
     dayEnd.setDate(dayEnd.getDate() + 1);
 
     const activeIds = new Set<string>();
-    for (const a of aiSesjoner) {
-      if (a.updatedAt >= day && a.updatedAt < dayEnd) activeIds.add(a.userId);
-    }
-    for (const r of runder) {
-      if (r.playedAt >= day && r.playedAt < dayEnd) activeIds.add(r.userId);
-    }
-    for (const t of treningsPlanSesjoner) {
-      if (
-        t.status === "COMPLETED" &&
-        t.scheduledAt >= day &&
-        t.scheduledAt < dayEnd
-      )
-        activeIds.add(t.plan.userId);
-    }
-    for (const g of goals) {
-      if (g.updatedAt >= day && g.updatedAt < dayEnd) activeIds.add(g.userId);
-    }
-    for (const n of notifikasjoner) {
-      if (n.readAt && n.readAt >= day && n.readAt < dayEnd)
-        activeIds.add(n.userId);
-    }
+    for (const a of aiSesjoner) if (a.updatedAt >= day && a.updatedAt < dayEnd) activeIds.add(a.userId);
+    for (const r of runder) if (r.playedAt >= day && r.playedAt < dayEnd) activeIds.add(r.userId);
+    for (const t of treningsPlanSesjoner)
+      if (t.status === "COMPLETED" && t.scheduledAt >= day && t.scheduledAt < dayEnd) activeIds.add(t.plan.userId);
+    for (const g of goals) if (g.updatedAt >= day && g.updatedAt < dayEnd) activeIds.add(g.userId);
+    for (const n of notifikasjoner) if (n.readAt && n.readAt >= day && n.readAt < dayEnd) activeIds.add(n.userId);
 
-    daily.push({
-      date: day.toISOString().slice(0, 10),
-      active: activeIds.size,
-    });
+    daily.push({ date: day.toISOString().slice(0, 10), active: activeIds.size });
   }
 
-  // Feature-bruk siste 30 dager (antall unike spillere som har brukt featuret)
   const liveLoggerUsers = new Set<string>();
-  for (const t of treningsPlanSesjoner) {
-    if (t.status === "COMPLETED") liveLoggerUsers.add(t.plan.userId);
-  }
+  for (const t of treningsPlanSesjoner) if (t.status === "COMPLETED") liveLoggerUsers.add(t.plan.userId);
   const goalsUsers = new Set(goals.map((g) => g.userId));
   const sgHubUsers = new Set(runder.map((r) => r.userId));
   const aiCaddieUsers = new Set(aiSesjoner.map((a) => a.userId));
-  const messagesUsers = new Set(
-    notifikasjoner.filter((n) => !!n.readAt).map((n) => n.userId),
-  );
+  const messagesUsers = new Set(notifikasjoner.filter((n) => !!n.readAt).map((n) => n.userId));
 
   const featureUsage = [
     { label: "Live Logger", count: liveLoggerUsers.size },
@@ -249,63 +193,48 @@ function buildRealData(
     { label: "AI-Caddie", count: aiCaddieUsers.size },
   ];
 
-  // Sortér spillere etter engasjement
-  const sortedByEngagement = [...players].sort(
-    (a, b) => b.engagementScore - a.engagementScore,
-  );
+  const sortedByEngagement = [...players].sort((a, b) => b.engagementScore - a.engagementScore);
   const topEngaged = sortedByEngagement.slice(0, 3);
   const needsFollowup = [...players]
     .filter((p) => p.sessionsPlanned > 0 || p.messagesSent > 0)
     .sort((a, b) => a.engagementScore - b.engagementScore)
     .slice(0, 3);
 
-  return {
-    totalPlayers,
-    active7d,
-    active30d,
-    avgCompliance,
-    messageReadRate,
-    daily,
-    players: players
+  const data: AdminReachV2Data = {
+    totaltSpillere: totalPlayers,
+    aktiv7d: active7d,
+    aktiv30d: active30d,
+    snittCompliance: avgCompliance,
+    meldingLesRate: messageReadRate,
+    daglig: daily.map((d) => ({ dato: d.date, aktive: d.active })),
+    spillere: players
       .sort((a, b) => a.compliancePct - b.compliancePct)
       .map((p) => ({
         id: p.id,
-        name: p.name,
+        navn: p.name,
         avatarUrl: p.avatarUrl,
-        sessions7d: 0, // beregnes nedenfor
         compliancePct: p.compliancePct,
-        lastSeen: p.lastSeen?.toISOString() ?? null,
+        sistSett: p.lastSeen ? formatRelative(p.lastSeen.toISOString()) : null,
         status: statusFromCompliance(p.compliancePct, p.lastSeen, now),
       })),
-    topEngaged: topEngaged.map((p) => ({
+    toppEngasjerte: topEngaged.map((p) => ({
       id: p.id,
-      name: p.name,
+      navn: p.name,
       avatarUrl: p.avatarUrl,
       compliancePct: p.compliancePct,
       readRatePct: p.readRatePct,
       aiCaddieThreads: p.aiCaddieThreads,
     })),
-    needsFollowup: needsFollowup.map((p) => ({
+    trengerOppfolging: needsFollowup.map((p) => ({
       id: p.id,
-      name: p.name,
+      navn: p.name,
       avatarUrl: p.avatarUrl,
       compliancePct: p.compliancePct,
       readRatePct: p.readRatePct,
-      lastSeen: p.lastSeen?.toISOString() ?? null,
+      sistSett: p.lastSeen ? formatRelative(p.lastSeen.toISOString()) : null,
     })),
-    featureUsage,
+    featureBruk: featureUsage.map((f) => ({ label: f.label, antall: f.count })),
   };
-}
 
-function statusFromCompliance(
-  pct: number,
-  lastSeen: Date | null,
-  now: Date,
-): "green" | "amber" | "red" {
-  const dagerSiden = lastSeen
-    ? Math.floor((now.getTime() - lastSeen.getTime()) / (1000 * 60 * 60 * 24))
-    : 999;
-  if (pct >= 75 && dagerSiden <= 7) return "green";
-  if (pct >= 50 || dagerSiden <= 14) return "amber";
-  return "red";
+  return <AdminReachV2 data={data} />;
 }

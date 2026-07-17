@@ -1,8 +1,17 @@
-import Link from "next/link";
-import { ArrowLeft, Check, CreditCard, FileX } from "lucide-react";
+/**
+ * PlayerHQ · Meg · Abonnement · Faktura-detalj — v2.
+ * v2-port 17. juli 2026 (Team D4a): MegFakturaV2 erstatter Tailwind-siden.
+ * Auth, Prisma-oppslaget (kun brukerens egne Payments), status-mapping og
+ * netto/mva-utregningen er uendret — kun presentasjonslaget er nytt.
+ * PDF-genereringen (faktura-document.tsx, actions.tsx, pdf/route.tsx) er
+ * bevisst IKKE rørt; knappene (faktura-actions.tsx) sendes inn som slot.
+ */
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { PrintButton } from "@/components/shared/print-button";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { TilbakeLenke, TomTilstand, Kort } from "@/components/v2";
+import { MegFakturaV2, type MegFakturaData } from "@/components/portal/v2/MegFakturaV2";
 import { LastNedPdfKnapp, SendEpostKnapp } from "./faktura-actions";
 
 const NOK = new Intl.NumberFormat("nb-NO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -42,24 +51,16 @@ export default async function FakturaDetaljPage({
   // Ingen ekte faktura med denne id-en på brukeren — vis ærlig "ikke funnet".
   if (!payment) {
     return (
-      <div className="mx-auto w-full max-w-[640px] px-4 py-16 text-center sm:px-6">
-        <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-secondary text-muted-foreground">
-          <FileX className="h-5 w-5" strokeWidth={1.75} />
-        </span>
-        <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight">
-          Faktura ikke funnet
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Vi fant ingen faktura med denne ID-en på kontoen din.
-        </p>
-        <Link
-          href="/portal/meg/abonnement"
-          className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
-          Tilbake til abonnement
-        </Link>
-      </div>
+      <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+        <TilbakeLenke href="/portal/meg/abonnement">Abonnement</TilbakeLenke>
+        <Kort>
+          <TomTilstand
+            icon="file-text"
+            title="Faktura ikke funnet"
+            sub="Vi fant ingen faktura med denne ID-en på kontoen din."
+          />
+        </Kort>
+      </V2Shell>
     );
   }
 
@@ -83,203 +84,43 @@ export default async function FakturaDetaljPage({
             ? "Feilet"
             : "Venter";
 
+  const data: MegFakturaData = {
+    fakturaNr,
+    fakturadato: formatLang(fakturadato),
+    forfallsdato: formatLang(forfallsdato),
+    fakturadatoKort: formatDato(fakturadato),
+    forfallsdatoKort: formatDato(forfallsdato),
+    fakturaId: payment.stripeInvoiceId ?? payment.id.slice(-12),
+    beskrivelse:
+      payment.description ??
+      `Abonnement — ${fakturadato.toLocaleDateString("nb-NO", { month: "long", year: "numeric" })}`,
+    nettoKr: `${NOK.format(netto / 100)} kr`,
+    mvaKr: `${NOK.format(mva / 100)} kr`,
+    totalKr: `${NOK.format(beloepOre / 100)} kr`,
+    erBetalt,
+    statusLabel,
+    betaltDato: erBetalt && payment.paidAt ? formatLang(payment.paidAt) : null,
+    transaksjonsId: payment.stripeChargeId ?? null,
+    navn: user.name ?? null,
+    epost: user.email ?? null,
+  };
+
   return (
-    <div className="mx-auto w-full max-w-[820px] space-y-8 px-4 sm:px-6">
-      <Link
-        href="/portal/meg/abonnement"
-        className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
-        Tilbake til abonnement
-      </Link>
-
-      {/* Hero */}
-      <header className="flex flex-col items-start justify-between gap-4 border-b border-border pb-6 sm:flex-row sm:items-end">
-        <div>
-          <span className="font-mono text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
-            AK Golf · Faktura
-          </span>
-          <h1 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight">
-            Faktura <em className="font-normal italic text-primary">#{fakturaNr}</em>
-          </h1>
-          <p className="mt-2 font-mono text-sm text-muted-foreground">
-            Fakturadato <strong className="text-foreground">{formatLang(fakturadato)}</strong> · Forfaller {formatLang(forfallsdato)}
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <span
-            className={
-              erBetalt
-                ? "inline-flex items-center gap-1.5 rounded-full bg-success/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-[0.06em] text-success"
-                : "inline-flex items-center gap-1.5 rounded-full bg-secondary px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-[0.06em] text-muted-foreground"
-            }
-          >
-            {erBetalt && <Check className="h-3 w-3" strokeWidth={2.5} />}
-            {statusLabel}
-          </span>
-          <PrintButton
-            label="Skriv ut"
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-muted"
-          />
-          <SendEpostKnapp paymentId={payment.id} />
-          <LastNedPdfKnapp paymentId={payment.id} />
-        </div>
-      </header>
-
-      {/* Meta grid */}
-      <section className="grid gap-4 sm:grid-cols-2">
-        <MetaBlock label="Fakturert til">
-          <div className="font-display text-base font-semibold text-foreground">
-            {user.name ?? "—"}
-          </div>
-          {user.email && (
-            <div className="text-sm text-muted-foreground">{user.email}</div>
-          )}
-        </MetaBlock>
-        <MetaBlock label="Fakturert fra">
-          <div className="font-display text-base font-semibold text-foreground">
-            AK Golf Academy AS
-          </div>
-        </MetaBlock>
-        <div className="grid grid-cols-3 gap-4 sm:col-span-2">
-          <MetaMini label="Fakturadato" value={formatDato(fakturadato)} />
-          <MetaMini label="Forfallsdato" value={formatDato(forfallsdato)} />
-          <MetaMini
-            label="Faktura-ID"
-            value={payment.stripeInvoiceId ?? payment.id.slice(-12)}
-          />
-        </div>
-      </section>
-
-      {/* Lines */}
-      <section className="overflow-x-auto rounded-xl border border-border bg-card shadow-sm">
-        <table className="w-full min-w-[640px]">
-          <caption className="sr-only">Fakturalinjer</caption>
-          <thead className="bg-muted/60">
-            <tr>
-              <th className="px-6 py-2 text-left font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
-                Beskrivelse
-              </th>
-              <th className="px-6 py-2 text-right font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
-                Antall
-              </th>
-              <th className="px-6 py-2 text-right font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
-                Stk-pris
-              </th>
-              <th className="px-6 py-2 text-right font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
-                MVA
-              </th>
-              <th className="px-6 py-2 text-right font-mono text-[10.5px] font-bold uppercase tracking-[0.06em] text-muted-foreground">
-                Sum
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="border-t border-border">
-              <td className="px-6 py-4">
-                <div className="font-display text-sm font-semibold text-foreground">
-                  {payment.description ?? `Abonnement — ${fakturadato.toLocaleDateString("nb-NO", { month: "long", year: "numeric" })}`}
-                </div>
-              </td>
-              <td className="px-6 py-4 text-right font-mono text-sm tabular-nums">1</td>
-              <td className="px-6 py-4 text-right font-mono text-sm tabular-nums">
-                {NOK.format(netto / 100)} kr
-              </td>
-              <td className="px-6 py-4 text-right">
-                <span className="rounded-sm bg-muted px-2 py-0.5 font-mono text-[10px] font-bold text-muted-foreground">
-                  25 %
-                </span>
-              </td>
-              <td className="px-6 py-4 text-right font-mono text-sm tabular-nums">
-                {NOK.format(netto / 100)} kr
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div className="space-y-1 border-t border-border px-6 py-6">
-          <TotalRow label="Netto" value={`${NOK.format(netto / 100)} kr`} />
-          <TotalRow label="MVA (25 %)" value={`${NOK.format(mva / 100)} kr`} />
-          <div className="mt-2 flex items-baseline justify-between border-t border-border pt-2">
-            <span className="font-display text-sm font-semibold text-foreground">Total</span>
-            <span className="font-mono text-2xl font-bold tabular-nums text-foreground">
-              {NOK.format(beloepOre / 100)} kr
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* Betalingsinfo — kun ekte data */}
-      {erBetalt && payment.paidAt && (
-        <section className="flex items-center gap-4 rounded-xl border border-success/20 bg-success/[0.04] border-l-4 border-l-success p-6">
-          <span className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-md bg-success/15 text-success">
-            <CreditCard className="h-4 w-4" strokeWidth={1.75} />
-          </span>
-          <div className="text-sm">
-            <strong>Betalt {formatLang(payment.paidAt)}</strong>
-            {payment.stripeChargeId && (
-              <>
-                . Transaksjons-ID{" "}
-                <span className="font-mono">{payment.stripeChargeId}</span>
-              </>
-            )}
-            .
-          </div>
-        </section>
-      )}
-
-      {/* Footer */}
-      <footer className="flex flex-wrap items-center justify-between gap-4 border-t border-dashed border-border pt-6">
-        <span className="font-mono text-[11px] text-muted-foreground">
-          Spørsmål om fakturaen?{" "}
-          <Link href="/portal/meg/help/kontakt" className="font-semibold text-primary hover:underline">
-            Kontakt support
-          </Link>
-        </span>
-        <div className="flex gap-2">
-          <SendEpostKnapp paymentId={payment.id} />
-          <LastNedPdfKnapp paymentId={payment.id} />
-        </div>
-      </footer>
-    </div>
-  );
-}
-
-function MetaBlock({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-      <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-        {label}
-      </span>
-      <div className="mt-2 space-y-1">{children}</div>
-    </div>
-  );
-}
-
-function MetaMini({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border border-border bg-muted/50 px-4 py-2">
-      <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-        {label}
-      </span>
-      <div className="mt-1 font-mono text-sm font-bold tabular-nums text-foreground">
-        {value}
-      </div>
-    </div>
-  );
-}
-
-function TotalRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-baseline justify-between font-mono text-sm tabular-nums">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="font-medium text-foreground">{value}</span>
-    </div>
+    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/meg/abonnement">Abonnement</TilbakeLenke>
+      <MegFakturaV2
+        data={data}
+        handlinger={
+          <>
+            <PrintButton
+              label="Skriv ut"
+              className="inline-flex items-center gap-2 rounded-full border border-[var(--v2-border-s)] bg-[var(--v2-panel3)] px-4 py-2 text-[12.5px] font-semibold text-[var(--v2-fg)]"
+            />
+            <SendEpostKnapp paymentId={payment.id} />
+            <LastNedPdfKnapp paymentId={payment.id} />
+          </>
+        }
+      />
+    </V2Shell>
   );
 }

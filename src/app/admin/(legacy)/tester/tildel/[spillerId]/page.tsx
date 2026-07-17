@@ -1,17 +1,17 @@
 /**
- * /admin/tester/tildel/[spillerId] — Coach tildel-test-modal (T5)
- *
- * Pixel-perfekt fra Claude Design-bundle _SEBg4QyodvbW2k06JWiGw
- * (test-modul/tildel-test-modal.html).
+ * /admin/tester/tildel/[spillerId] — Coach tildel-test-modal (T5). v2-port
+ * 16. juli 2026: delt `AdminTildelTestV2` med `/admin/spillere/[id]/tildel-test`
+ * (samme skjerm, to inngangspunkt). Ekte spillerkategori (A–K) og ekte
+ * gjennomførte/tildelte test-tall — ingen fabrikerte tall.
  *
  * Route-baserte modaler (åpnes fra "Tildel"-CTAene på /admin/tester).
- * Spilleren hentes fra Prisma, tester fra TestDefinition.
  */
 
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { TildelModal } from "./tildel-modal";
+import { hentSpillerAkKategori } from "@/lib/domain/spiller-kategori";
+import { AdminTildelTestV2, type AdminTildelTestV2Data } from "@/components/admin/v2/AdminTildelTestV2";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +23,7 @@ export default async function TildelTestPage({
   await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { spillerId } = await params;
 
-  const [spiller, tester] = await Promise.all([
+  const [spiller, tester, totalt, fullforte] = await Promise.all([
     prisma.user.findUnique({
       where: { id: spillerId },
       select: { id: true, name: true, hcp: true },
@@ -34,41 +34,29 @@ export default async function TildelTestPage({
         select: { id: true, name: true, description: true, pyramidArea: true },
       })
       .catch(() => []),
+    prisma.testAssignment.count({ where: { playerId: spillerId } }),
+    prisma.testAssignment.count({ where: { playerId: spillerId, status: "COMPLETED" } }),
   ]);
 
   if (!spiller) notFound();
 
-  const initials = spiller.name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase() ?? "")
-    .join("");
+  const kategori = await hentSpillerAkKategori(spiller.id, { hcp: spiller.hcp });
 
-  // Aggregér count per pyramide
-  const pyrCounts = tester.reduce(
-    (acc, t) => {
-      acc[t.pyramidArea] = (acc[t.pyramidArea] ?? 0) + 1;
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
+  const data: AdminTildelTestV2Data = {
+    spillerId: spiller.id,
+    spillerNavn: spiller.name,
+    kategori,
+    hcpLabel: spiller.hcp != null ? `HCP ${spiller.hcp}` : "HCP —",
+    fullforte,
+    totalt,
+    tester: tester.map((t) => ({
+      id: t.id,
+      name: t.name,
+      description: t.description ?? "",
+      pyramidArea: t.pyramidArea,
+    })),
+    tilbakeHref: "/admin/tester",
+  };
 
-  return (
-    <TildelModal
-      spiller={{
-        id: spiller.id,
-        name: spiller.name,
-        initials,
-        hcp: spiller.hcp != null ? String(spiller.hcp) : "—",
-      }}
-      tester={tester.map((t) => ({
-        id: t.id,
-        name: t.name,
-        description: t.description ?? "",
-        pyramidArea: t.pyramidArea,
-      }))}
-      pyrCounts={pyrCounts}
-    />
-  );
+  return <AdminTildelTestV2 data={data} />;
 }

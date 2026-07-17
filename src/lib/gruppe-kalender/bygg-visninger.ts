@@ -4,15 +4,35 @@
 
 // eslint-disable-next-line no-restricted-imports -- TODO(opprydding): golfdata mangler AK-periode-årsgantt (gap meldt) — YearPlanGantt beholdes til DS får en
 import type { YearPhase } from "@/components/athletic/calendars/year-plan-gantt";
-import type { MaanedDag } from "@/components/athletic/golfdata";
-import type { FastTid, Periode } from "./types";
+import type { MaanedDag, MaanedOkt } from "@/components/athletic/golfdata";
+import type { FastTid, GruppeKalenderData, Periode, Samling, SkoleHendelse, SkoleHendelseKategori } from "./types";
 
-type Tone = "primary" | "accent" | "moss" | "gold" | "muted";
+export type Tone = "primary" | "accent" | "moss" | "gold" | "muted";
 
 function tilTone(tone: string | null, fallback: Tone): Tone {
   const gyldige: Tone[] = ["primary", "accent", "moss", "gold", "muted"];
   return gyldige.includes(tone as Tone) ? (tone as Tone) : fallback;
 }
+
+const SKOLE_TONE: Record<SkoleHendelseKategori, Tone> = {
+  TIME: "muted",
+  PROVE: "gold",
+  HELDAGSPROVE: "gold",
+  EKSAMEN: "accent",
+  FERIE: "muted",
+  SKOLETUR: "primary",
+  ANNET: "muted",
+};
+
+const SKOLE_LABEL: Record<SkoleHendelseKategori, string> = {
+  TIME: "Time",
+  PROVE: "Prøve",
+  HELDAGSPROVE: "Heldagsprøve",
+  EKSAMEN: "Eksamen",
+  FERIE: "Ferie",
+  SKOLETUR: "Skoletur",
+  ANNET: "Annet",
+};
 
 /** Én fast treningstid plassert i TidsGrid (ukevisningen). */
 export type UkeBlokk = {
@@ -61,11 +81,50 @@ export function byggArsfaser(perioder: Periode[], year: number): YearPhase[] {
   return faser;
 }
 
-/** Alle dager i en måned med treningsøkter som piller (for MaanedKalender, piller-modus). */
+/** Dager en samling/heldagssamling strekker seg over, som lokale yyyy-mm-dd-strenger. */
+function dagerISamling(startAt: string, endAt: string): string[] {
+  const dager: string[] = [];
+  const start = new Date(startAt);
+  const sluttDag = new Date(endAt);
+  const cursor = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
+  const slutt = new Date(Date.UTC(sluttDag.getUTCFullYear(), sluttDag.getUTCMonth(), sluttDag.getUTCDate()));
+  while (cursor <= slutt) {
+    dager.push(cursor.toISOString().slice(0, 10));
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+  }
+  return dager;
+}
+
+/** Samlinger som overlapper et gitt kalenderår, som ekstra faser i YearPlanGantt (samme bånd-mekanikk som periodene). */
+export function byggArsSamlinger(samlinger: Samling[], year: number): YearPhase[] {
+  const yearStart = new Date(Date.UTC(year, 0, 1));
+  const yearEnd = new Date(Date.UTC(year + 1, 0, 1));
+  const faser: YearPhase[] = [];
+  for (const s of samlinger) {
+    const start = new Date(s.startAt);
+    const end = new Date(s.endAt);
+    if (end < yearStart || start >= yearEnd) continue;
+    const klippetStart = start < yearStart ? yearStart : start;
+    const klippetSlutt = end > yearEnd ? yearEnd : end;
+    faser.push({
+      key: `samling-${s.id}`,
+      label: s.kind === "HELDAGSSAMLING" ? "Heldagssamling" : "Samling",
+      startMonth: klippetStart.getUTCMonth() + 1,
+      endMonth: klippetSlutt.getUTCMonth() + 1,
+      tone: s.kind === "HELDAGSSAMLING" ? "primary" : "accent",
+    });
+  }
+  return faser;
+}
+
+/** Alle dager i en måned med treningsøkter + samlinger/skole-hendelser som piller (MaanedKalender, piller-modus). */
 export function byggManedsdager(
   faste: FastTid[],
   year: number,
   month: number, // 1-indeksert (1=januar)
+  samlinger: Samling[] = [],
+  skoleHendelser: SkoleHendelse[] = [],
+  classYear: string | null = null,
 ): MaanedDag[] {
   const maanedIndex = month - 1; // 0-indeksert for Date.UTC
   const antallDager = new Date(Date.UTC(year, maanedIndex + 1, 0)).getUTCDate();
@@ -74,17 +133,27 @@ export function byggManedsdager(
   const dager: MaanedDag[] = [];
   for (let dag = 1; dag <= antallDager; dag++) {
     const dato = new Date(Date.UTC(year, maanedIndex, dag));
+    const iso = dato.toISOString().slice(0, 10);
     const ukedag = (dato.getUTCDay() + 6) % 7; // søn(0)->6, man(1)->0
     const treningIDag = faste.filter((f) => f.weekday === ukedag);
-    dager.push({
-      date: dag,
-      today: erSammeDag(dato, idag),
-      okter: treningIDag.map((f) => ({
-        id: f.id,
-        tittel: f.title,
-        tid: f.startTime,
-      })),
-    });
+
+    const okter: MaanedOkt[] = treningIDag.map((f) => ({
+      id: f.id,
+      tittel: f.title,
+      tid: f.startTime,
+    }));
+    for (const s of samlinger) {
+      if (dagerISamling(s.startAt, s.endAt).includes(iso)) {
+        okter.push({ id: s.id, tittel: `${s.kind === "HELDAGSSAMLING" ? "Heldagssamling" : "Samling"}: ${s.title}` });
+      }
+    }
+    for (const h of skoleHendelser) {
+      if (h.date.slice(0, 10) === iso && (h.classYear === null || h.classYear === classYear)) {
+        okter.push({ id: h.id, tittel: `${SKOLE_LABEL[h.category]}: ${h.title}` });
+      }
+    }
+
+    dager.push({ date: dag, today: erSammeDag(dato, idag), okter });
   }
   return dager;
 }
@@ -99,4 +168,68 @@ export function byggUkeblokker(faste: FastTid[]): UkeBlokk[] {
     tittel: f.title,
     tid: `${f.startTime}–${f.endTime}`,
   }));
+}
+
+/** Faste treningstider for én enkelt dag (0=man..6=søn) — for dagsvisningen. */
+export function byggDagblokker(faste: FastTid[], dag: number): UkeBlokk[] {
+  return byggUkeblokker(faste).filter((b) => b.dag === dag);
+}
+
+export type AllDagHendelse = {
+  id: string;
+  dato: string; // yyyy-mm-dd
+  tittel: string;
+  tone: Tone;
+};
+
+/** Samlinger + skole-hendelser for et datovindu, som helcelle-hendelser (over TidsGrid). */
+export function byggAllDagHendelser(
+  samlinger: Samling[],
+  skoleHendelser: SkoleHendelse[],
+  fraIso: string,
+  tilIso: string, // inkludert
+  classYear: string | null,
+): AllDagHendelse[] {
+  const hendelser: AllDagHendelse[] = [];
+  for (const s of samlinger) {
+    for (const iso of dagerISamling(s.startAt, s.endAt)) {
+      if (iso < fraIso || iso > tilIso) continue;
+      hendelser.push({
+        id: `${s.id}-${iso}`,
+        dato: iso,
+        tittel: s.title,
+        tone: s.kind === "HELDAGSSAMLING" ? "primary" : "accent",
+      });
+    }
+  }
+  for (const h of skoleHendelser) {
+    const iso = h.date.slice(0, 10);
+    if (iso < fraIso || iso > tilIso) continue;
+    if (h.classYear !== null && h.classYear !== classYear) continue;
+    if (h.category === "TIME") continue; // vanlige skoletimer vises kun i detaljpanelet, ikke som helcelle-markør
+    hendelser.push({ id: h.id, dato: iso, tittel: `${SKOLE_LABEL[h.category]}: ${h.title}`, tone: SKOLE_TONE[h.category] });
+  }
+  return hendelser;
+}
+
+export type Dagsdetaljer = {
+  dato: string; // yyyy-mm-dd
+  periode: Periode | null;
+  samlinger: Samling[];
+  skoleHendelser: (SkoleHendelse & { kategoriLabel: string; tone: Tone })[];
+};
+
+/** Full detalj for én valgt dag — periode+kompetansemål, samlinger og hele skole-listen (inkl. TIME). */
+export function finnDagsdetaljer(
+  data: Pick<GruppeKalenderData, "perioder" | "samlinger" | "skoleHendelser">,
+  dato: string, // yyyy-mm-dd
+  classYear: string | null,
+): Dagsdetaljer {
+  const periode =
+    data.perioder.find((p) => dato >= p.startDate.slice(0, 10) && dato < p.endDate.slice(0, 10)) ?? null;
+  const samlinger = data.samlinger.filter((s) => dagerISamling(s.startAt, s.endAt).includes(dato));
+  const skoleHendelser = data.skoleHendelser
+    .filter((h) => h.date.slice(0, 10) === dato && (h.classYear === null || h.classYear === classYear))
+    .map((h) => ({ ...h, kategoriLabel: SKOLE_LABEL[h.category], tone: SKOLE_TONE[h.category] }));
+  return { dato, periode, samlinger, skoleHendelser };
 }

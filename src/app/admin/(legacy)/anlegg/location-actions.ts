@@ -1,7 +1,18 @@
 "use server";
 
+/**
+ * Server actions for /admin/anlegg — lokasjoner + fasiliteter.
+ *
+ * 17. juli 2026: zod-validering lagt på alle mutasjoner, og hard delete
+ * (deleteLocation/deleteFacility) er FJERNET — bookinger og availability
+ * refererer lokasjoner/fasiliteter, og Location→Facility har onDelete:
+ * Cascade, så sletting ville kaskade-slettet data. Deaktivering
+ * (setLocationActive/setFacilityActive med `active=false`) er riktig vei:
+ * deaktiverte anlegg vises ikke i booking, og kan aktiveres igjen.
+ */
+
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
@@ -13,21 +24,17 @@ async function krevCoach() {
   return user;
 }
 
-export type LocationInput = {
-  name: string;
-  address: string;
-  active: boolean;
-};
+const lokasjonSchema = z.object({
+  name: z.string().trim().min(1).max(200),
+  address: z.string().trim().min(1).max(300),
+  active: z.boolean(),
+});
+export type LocationInput = z.input<typeof lokasjonSchema>;
 
 export async function createLocation(input: LocationInput) {
   const user = await krevCoach();
-  const ny = await prisma.location.create({
-    data: {
-      name: input.name.trim(),
-      address: input.address.trim(),
-      active: input.active,
-    },
-  });
+  const data = lokasjonSchema.parse(input);
+  const ny = await prisma.location.create({ data });
   await audit({
     actorId: user.id,
     action: "location.created",
@@ -38,42 +45,45 @@ export async function createLocation(input: LocationInput) {
 
 export async function updateLocation(id: string, input: LocationInput) {
   const user = await krevCoach();
-  await prisma.location.update({
-    where: { id },
-    data: {
-      name: input.name.trim(),
-      address: input.address.trim(),
-      active: input.active,
-    },
-  });
+  const data = lokasjonSchema.parse(input);
+  await prisma.location.update({ where: { id }, data });
   await audit({ actorId: user.id, action: "location.updated", target: `Location:${id}` });
   revalidatePath("/admin/anlegg");
 }
 
-export async function deleteLocation(id: string) {
+/** Soft delete/gjenoppretting — aldri hard delete (bookinger/availability refererer lokasjonen). */
+export async function setLocationActive(id: string, active: boolean) {
   const user = await krevCoach();
-  await prisma.location.delete({ where: { id } });
-  await audit({ actorId: user.id, action: "location.deleted", target: `Location:${id}` });
+  await prisma.location.update({ where: { id }, data: { active: z.boolean().parse(active) } });
+  await audit({
+    actorId: user.id,
+    action: active ? "location.activated" : "location.deactivated",
+    target: `Location:${id}`,
+  });
   revalidatePath("/admin/anlegg");
-  redirect("/admin/anlegg");
 }
 
-export type FacilityInput = {
-  locationId: string;
-  name: string;
-  capacity: number;
-  active: boolean;
-};
+const fasilitetSchema = z.object({
+  name: z.string().trim().min(1).max(200),
+  capacity: z.number().int().min(1).max(500),
+  active: z.boolean(),
+  // Speiler Prisma-enumet FacilityType — valideres her så klienten kan
+  // sende ren streng uten import fra generert klient.
+  type: z.enum([
+    "STUDIO", "RANGE_1F", "RANGE_2F", "PUTTING_GREEN", "SHORT_GAME",
+    "COURSE_9H", "COURSE_18H", "SPECIFIC_HOLES", "GENERAL",
+  ]),
+  // Nullable med vilje: eksplisitt null NULLSTILLER beskrivelsen i DB
+  // (`?? undefined` ville latt gammel verdi stå — se gotchas.md).
+  description: z.string().trim().max(500).nullable(),
+});
+export type FacilityInput = z.input<typeof fasilitetSchema>;
 
-export async function createFacility(input: FacilityInput) {
+export async function createFacility(locationId: string, input: FacilityInput) {
   const user = await krevCoach();
+  const data = fasilitetSchema.parse(input);
   const ny = await prisma.facility.create({
-    data: {
-      locationId: input.locationId,
-      name: input.name.trim(),
-      capacity: input.capacity,
-      active: input.active,
-    },
+    data: { locationId: z.string().min(1).parse(locationId), ...data },
   });
   await audit({
     actorId: user.id,
@@ -83,23 +93,22 @@ export async function createFacility(input: FacilityInput) {
   revalidatePath("/admin/anlegg");
 }
 
-export async function updateFacility(id: string, input: Omit<FacilityInput, "locationId">) {
+export async function updateFacility(id: string, input: FacilityInput) {
   const user = await krevCoach();
-  await prisma.facility.update({
-    where: { id },
-    data: {
-      name: input.name.trim(),
-      capacity: input.capacity,
-      active: input.active,
-    },
-  });
+  const data = fasilitetSchema.parse(input);
+  await prisma.facility.update({ where: { id }, data });
   await audit({ actorId: user.id, action: "facility.updated", target: `Facility:${id}` });
   revalidatePath("/admin/anlegg");
 }
 
-export async function deleteFacility(id: string) {
+/** Soft delete/gjenoppretting — aldri hard delete (bookinger refererer fasiliteten). */
+export async function setFacilityActive(id: string, active: boolean) {
   const user = await krevCoach();
-  await prisma.facility.delete({ where: { id } });
-  await audit({ actorId: user.id, action: "facility.deleted", target: `Facility:${id}` });
+  await prisma.facility.update({ where: { id }, data: { active: z.boolean().parse(active) } });
+  await audit({
+    actorId: user.id,
+    action: active ? "facility.activated" : "facility.deactivated",
+    target: `Facility:${id}`,
+  });
   revalidatePath("/admin/anlegg");
 }

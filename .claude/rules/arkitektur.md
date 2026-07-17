@@ -44,18 +44,21 @@ akgolf-hq/
 │   │   ├── ui/               # UI-primitiver: Button, Dialog, Sheet, Popover,
 │   │   │                     # DropdownMenu, Toast, Input, Tabs, etc.
 │   │   │                     # ERROR-håndhevet av ESLint — drift blokker CI.
-│   │   ├── athletic/         # Branded bibliotek. golfdata/ (v13) er gjeldende
-│   │   │                     # kilde; resten er vedlikeholdsmodus (Hero,
-│   │   │                     # FeaturedCard, KpiStrip, calendars/, data/ m.fl.)
-│   │   │                     # — fases ut per design-system-regel.md.
+│   │   ├── athletic/         # Branded bibliotek. Kun to undermapper igjen:
+│   │   │                     # golfdata/ (v13, overgangs-laget) og calendars/.
+│   │   │                     # Gamle Hero/FeaturedCard/KpiStrip/data/ er fjernet.
+│   │   ├── v2/                # Delte v2-redesign-primitiver, bl.a. hjelp.tsx
+│   │   │                     # (se «?»-forklaringsregelen i design-system-regel.md)
 │   │   ├── shared/           # Funksjonelle utility-komponenter (cookie-banner,
 │   │   │                     # cmd-palette, analytics-loader, mobile-bottom-nav).
 │   │   │                     # NB: Modal/PageHeader/OverviewShell er thin-wrappers
 │   │   │                     # for bakoverkompatibilitet — ny kode bruker
 │   │   │                     # ui/Dialog og athletic/golfdata/-mønstre direkte.
-│   │   ├── admin*/           # AgencyOS-spesifikke
-│   │   ├── portal*/          # PlayerHQ-spesifikke
-│   │   └── booking/          # Booking-spesifikke
+│   │   └── admin/, portal/, booking/, forelder/, coachhq/, m.fl.
+│   │                         # Produkt-/flate-spesifikke komponenter. Flere har
+│   │                         # egen v2/-undermappe (admin/v2, portal/v2,
+│   │                         # marketing/v2) for pågående v2-porting, pluss
+│   │                         # frittstående planlegge-v2/ og test-modul-v2/.
 │   ├── lib/
 │   │   ├── design-tokens.ts  # TS-speil av globals.css
 │   │   ├── prisma.ts

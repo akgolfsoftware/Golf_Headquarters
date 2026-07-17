@@ -2,11 +2,18 @@ import { CalendarClock, MapPin } from "lucide-react";
 
 import { hentGruppeKalenderData } from "@/lib/gruppe-kalender/hent-data";
 import { GruppeKalenderWrapper } from "@/components/gruppe-kalender/gruppe-kalender-wrapper";
+import { TrinnFilter } from "@/components/gruppe-kalender/trinn-filter";
+import { TurneringStub } from "@/components/gruppe-kalender/turnering-stub";
 import { EmptyState } from "@/components/shared/empty-state";
 
 export const revalidate = 300; // 5 min — nok fersk for en foreldre-/spiller-oversikt
 
-export default async function TeamWangPage() {
+export default async function TeamWangPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ trinn?: string }>;
+}) {
+  const { trinn } = await searchParams;
   const data = await hentGruppeKalenderData("WANG Toppidrett Fredrikstad");
 
   if (!data) {
@@ -37,7 +44,10 @@ export default async function TeamWangPage() {
         </p>
       </header>
 
-      <GruppeKalenderWrapper data={data} />
+      <TrinnFilter basePath="/team-wang" aktivtTrinn={trinn ?? null} />
+      <GruppeKalenderWrapper data={data} classYear={trinn ?? null} />
+
+      <TurneringStub />
 
       <section className="grid gap-4 rounded-2xl border border-border bg-card p-6 sm:grid-cols-2">
         <div>

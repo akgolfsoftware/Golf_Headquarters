@@ -95,6 +95,8 @@ export interface SettRepsLoggerProps {
   sist?: SettRad[];
   startSett?: SettRad[];
   vektSteg?: number;
+  /** Varsler forelder om nye sett-verdier — brukt der loggen skal persisteres (f.eks. live-økt). */
+  onChange?: (sett: SettRad[]) => void;
 }
 export function SettRepsLogger({
   ovelse = "Markløft",
@@ -103,11 +105,21 @@ export function SettRepsLogger({
   sist = [{ vekt: 60, reps: 8 }, { vekt: 60, reps: 8 }, { vekt: 62.5, reps: 6 }],
   startSett = [{ vekt: 60, reps: 8 }, { vekt: 62.5, reps: 8 }],
   vektSteg = 2.5,
+  onChange,
 }: SettRepsLoggerProps) {
   const [sett, setSett] = useState<SettRad[]>(startSett);
   const endre = (i: number, felt: keyof SettRad, delta: number) =>
-    setSett((s) => s.map((r, j) => (j !== i ? r : { ...r, [felt]: Math.max(felt === "reps" ? 1 : 0, r[felt] + delta) })));
-  const leggTil = () => setSett((s) => [...s, { ...(s[s.length - 1] || { vekt: 20, reps: 8 }) }]);
+    setSett((s) => {
+      const nx = s.map((r, j) => (j !== i ? r : { ...r, [felt]: Math.max(felt === "reps" ? 1 : 0, r[felt] + delta) }));
+      onChange?.(nx);
+      return nx;
+    });
+  const leggTil = () =>
+    setSett((s) => {
+      const nx = [...s, { ...(s[s.length - 1] || { vekt: 20, reps: 8 }) }];
+      onChange?.(nx);
+      return nx;
+    });
   return (
     <Kort pad="16px 18px">
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>

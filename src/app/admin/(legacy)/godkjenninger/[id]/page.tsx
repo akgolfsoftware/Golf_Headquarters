@@ -5,8 +5,8 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { computeDelta, type PlanContext } from "@/lib/agents/plan-action-executor";
-import { ApprovalDetailClient } from "@/app/admin/(legacy)/approvals/[id]/approval-detail-client";
-import { ApprovalNotFound } from "@/app/admin/(legacy)/approvals/[id]/approval-detail-client";
+import { ApprovalDetailClient, ApprovalNotFound } from "@/components/admin/v2/AdminGodkjenningDetaljV2";
+import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 
 export const dynamic = "force-dynamic";
 
@@ -29,18 +29,6 @@ export type ApprovalDetail = {
   signalSnapshot: { kind: string; value?: string | number } | null;
   diffPreview: string | null;
   beforeSummary: string | null;
-};
-
-const ACTION_LABEL: Record<string, string> = {
-  PYRAMID_ADJUST: "Juster pyramide",
-  TRAINING_GAP: "Treningsgap",
-  SESSION_ADD: "Legg til økt",
-  SESSION_REMOVE: "Fjern økt",
-  INTENSITY_ADJUST: "Juster intensitet",
-  FOCUS_CHANGE: "Endre fokus",
-  PERIOD_SWITCH: "Bytt periode",
-  DRILL_SWAP: "Bytt drill",
-  REST_DAY_ADD: "Hviledag",
 };
 
 function initials(name: string): string {
@@ -77,7 +65,7 @@ export default async function GodkjenningDetailPage({
   const forklaring =
     typeof suggestion.forklaring === "string"
       ? suggestion.forklaring
-      : ACTION_LABEL[action.actionType] ?? action.actionType;
+      : handlingstypeLabel(action.actionType);
 
   const signalSnapshot =
     suggestion.signalSnapshot &&

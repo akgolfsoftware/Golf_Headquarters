@@ -72,13 +72,8 @@ export const KATEGORI_LABEL: Record<NgfKategori, string> = {
   L: "L — Junior klubb",
 };
 
-export const PYR_COLOR: Record<PyramidArea, string> = {
-  FYS: "var(--color-pyr-fys, #A32D2D)",
-  TEK: "var(--color-pyr-tek, #005840)",
-  SLAG: "var(--color-pyr-slag, #D1F843)",
-  SPILL: "var(--color-pyr-spill, #E0B82A)",
-  TURN: "var(--color-pyr-turn, #1F2937)",
-};
+// PYR_COLOR (rå hex-fallbacks) er fjernet 2026-07-17 (Team F1, v2-port):
+// aksefarger hentes nå fra T.ax i @/lib/v2/tokens der de vises.
 
 export const PYR_LABEL: Record<PyramidArea, string> = {
   FYS: "Fysisk",
@@ -165,19 +160,6 @@ export function readDrills(value: unknown): DrillEntry[] {
     });
   }
   return result;
-}
-
-export function donutGradient(fordeling: DisciplinFordeling): string {
-  const order: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
-  const total = order.reduce((sum, k) => sum + fordeling[k], 0) || 1;
-  let acc = 0;
-  const stops = order.map((k) => {
-    const start = (acc / total) * 360;
-    acc += fordeling[k];
-    const end = (acc / total) * 360;
-    return `${PYR_COLOR[k]} ${start}deg ${end}deg`;
-  });
-  return `conic-gradient(${stops.join(", ")})`;
 }
 
 export function formatPct(value: number): string {

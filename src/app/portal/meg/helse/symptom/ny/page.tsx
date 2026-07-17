@@ -1,36 +1,20 @@
 /**
- * PlayerHQ · Meg · Helse · Legg til symptom (/portal/meg/helse/symptom/ny).
- * Mobil-først (430px).
- *
- * 3-stegs wizard: kroppskart → intensitet/varighet → triggere/notat.
- * Server component, behold auth-guard. Selve wizarden er client (logSymptom).
+ * PlayerHQ · Meg · Helse · Legg til symptom (/portal/meg/helse/symptom/ny) — v2.
+ * v2-port 17. juli 2026 (Team D4a): MegSymptomNyV2 erstatter wizard.tsx.
+ * Auth-guarden er uendret; selve wizarden er client (kaller logSymptom i
+ * actions.ts, som er urørt).
  */
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { SymptomWizard } from "./wizard";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { TilbakeLenke } from "@/components/v2";
+import { MegSymptomNyV2 } from "@/components/portal/v2/MegSymptomNyV2";
 
 export default async function NyttSymptomPage() {
-  await requirePortalUser();
+  const user = await requirePortalUser();
   return (
-    <div className="mx-auto w-full max-w-[480px] pb-28">
-      {/* topbar — tilbake + tittel */}
-      <div className="flex items-center gap-3 border-b border-border px-2 py-3">
-        <Link
-          href="/portal/meg/helse"
-          className="inline-flex items-center gap-1.5 px-1 py-1.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ChevronLeft className="h-[13px] w-[13px]" strokeWidth={2} aria-hidden />
-          Helse
-        </Link>
-        <h1 className="font-display text-[17px] font-bold tracking-[-0.015em] text-foreground">
-          Legg til symptom
-        </h1>
-      </div>
-
-      <div className="px-2 pt-3">
-        <SymptomWizard />
-      </div>
-    </div>
+    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/meg/helse">Helse</TilbakeLenke>
+      <MegSymptomNyV2 />
+    </V2Shell>
   );
 }

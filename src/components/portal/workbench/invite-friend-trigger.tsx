@@ -5,11 +5,13 @@
  *
  * Tynn client-wrapper for å brukes fra server-komponenter (RSC). Server-siden
  * gjør authz og henter spiller-listen; denne håndterer kun open/close-state.
+ *
+ * v2-restyling 17. juli 2026 (Team F3): rendrer v2 `Knapp` i stedet for
+ * legacy Tailwind-pille. Props-API og invitasjons-logikk er uendret.
  */
 
 import { useState } from "react";
-import { UserPlus } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Knapp } from "@/components/v2";
 import {
   InviteFriendModal,
   type InviteSpiller,
@@ -40,22 +42,15 @@ export function InviteFriendTrigger({
 }: InviteFriendTriggerProps) {
   const [open, setOpen] = useState(false);
 
+  const knapp = (
+    <Knapp ghost={variant === "ghost"} icon="users" onClick={() => setOpen(true)}>
+      {label}
+    </Knapp>
+  );
+
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className={cn(
-          "inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-colors",
-          variant === "primary"
-            ? "bg-primary text-primary-foreground hover:opacity-90"
-            : "border border-border bg-card text-foreground hover:bg-secondary",
-          className,
-        )}
-      >
-        <UserPlus size={14} strokeWidth={2} aria-hidden />
-        {label}
-      </button>
+      {className ? <span className={className}>{knapp}</span> : knapp}
 
       <InviteFriendModal
         open={open}

@@ -48,7 +48,7 @@ function buildCsp(nonce: string): string {
     // next/font serverer fonter fra self
     "font-src 'self'",
     // Fetch / WebSocket: Supabase Realtime, Stripe API, Vercel, Mapbox
-    // (baneguide-kartet henter stil/tiles/sprites via fetch — offisiell
+    // (Gameplan-kartet henter stil/tiles/sprites via fetch — offisiell
     // Mapbox GL JS-CSP: api + events + *.tiles.mapbox.com)
     "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://vitals.vercel-insights.com https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com",
     // Mapbox GL kjører web workers fra blob:
