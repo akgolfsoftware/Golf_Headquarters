@@ -199,6 +199,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 |---|---|---|---|---|---|---|---|
 | Coach-hub | `/portal/coach` | ~ | --- | ✓ | ~ | ~ | ✓ |
 | · Coach-profil | `/portal/coach/[coachId]` | ✓ | --- | ✓ | ~ | ~ | ~ |
+| · Coach SG-sammenligning | `/portal/coach/sg-hub` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | Rad lagt til 17. jul (manglet i planen). v2-port 17. jul (Team D3): `CoachSgHubV2` — COACH_SG-referanseverdier, BrukerSgInput-query og størst-gap-logikk uendret; H2H som opp/ned-bar fra nullstrek, statiske coach-referanser merket. Legacy-sidens 8 rå hex → 0. |
 | Meldinger (innboks) | `/portal/coach/melding` | ~ | --- | ✓ | ~ | ~ | ✓ |
 | · Ny melding | `/portal/coach/melding/ny` | ✓ | --- | ✓ | ✓ | ✓ | ✓† |
 | · Meldingstråd | `/portal/coach/melding/[id]` | ✓ | --- | ✓ | ~ | ~ | ~ |
