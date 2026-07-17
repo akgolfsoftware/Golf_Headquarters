@@ -233,7 +233,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Mine bookinger | `/portal/meg/bookinger` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET (tynn) — `PlayerHero`-header (golfdata Eyebrow); kroppen (`BookingerTabs`) er hand-bygget.
 | · Endre tid | `/portal/meg/bookinger/reschedule/[bookingId]` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET (tynn) — `PlayerHero`-header; dato/slot-velger hand-bygget.
 | Helse ★ | `/portal/meg/helse` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegHelseV2` (v2 retning C), hake aldri oppdatert |
-| · Nytt symptom | `/portal/meg/helse/symptom/ny` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — 0 golfdata/v2-imports, ingen PlayerHero.
+| · Nytt symptom | `/portal/meg/helse/symptom/ny` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D4a): `MegSymptomNyV2` erstatter wizard.tsx — 3-stegs flyt m/ kroppskart-SVG, VAS-Glider (m/ `vas`-HjelpTips), FilterChips-triggere; `logSymptom`-actionen uendret (fortsatt auth-validert stub). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | Innstillinger ★ | `/portal/meg/innstillinger` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `InnstillingerV2` (v2 retning C), hake aldri oppdatert |
 | · Varsler | `/portal/meg/innstillinger/varsler` | – | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET ekte gap — 0 golfdata/v2-imports.
 | · Personvern | `/portal/meg/innstillinger/personvern` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header + `personvern-actions.tsx` bruker `Knapp` fra @/components/v2.
