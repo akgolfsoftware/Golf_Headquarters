@@ -1,5 +1,12 @@
 # Design-briefs: Bolk 5-trioen + mobil Workbench/AgencyOS
 
+> **GODKJENT av Anders 17. juli 2026 (kveld):** alle fire mockups (D1 fellesmelding, D2 veksler,
+> D3 fokus-spillere, D4/M1 mobil-nav) er godkjent som de ligger i `ui_kits/v2/` (gruppe «v2-bolk5»:
+> `agencyos-fellesmelding|veksler|fokus|mobilnav.jsx/.html`). «Mer»-mønsteret: **skuff (kandidat A,
+> anbefalt)** valgt. Implementering per skjerm etter Byggerunde-oppskriften; D3 trenger et lite
+> additivt coach-preferanse-felt for pin. M2/M3 (Workbench-mobil + kjerneskjermene) designes som
+> neste designfase.
+>
 > Skrevet 17. juli 2026 etter Anders' prioritering: Bolk 5-trioen først i design-køen, og mobil-utgave
 > av Workbench/AgencyOS TRENGS før lansering. Briefene kjøres i det levende Claude Design-prosjektet
 > («AK Golf HQ Design System», `ui_kits/v2/`) når DesignSync er innlogget (`/design-login`).
