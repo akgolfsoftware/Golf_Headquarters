@@ -184,6 +184,16 @@ const RAW = {
     forklaring:
       "En enkel poengsum for hvor godt kontoen din er sikret. Passord alene gir grunnpoeng; tofaktor-innlogging løfter den. Scoren er en påminnelse, ikke en dom — ett grep (skru på 2FA) tar deg til topps.",
   },
+  malEffektivitet: {
+    tittel: "Mal-effektivitet",
+    forklaring:
+      "Hvor godt denne plan-malen har virket for spillerne som har brukt den: SG-Total-delta er gjennomsnittlig endring i Strokes Gained fra malen startet til den var ferdig, og effektivitets-tallet (1–5) er samme snitt omregnet til en enkel skala. Få brukere gir usikre tall.",
+  },
+  ngfNivaa: {
+    tittel: "NGF-nivå (D–G)",
+    forklaring:
+      "Norges Golfforbunds nivåtrapp for spillerutvikling. D er høyeste juniornivå her (toppjunior), G er aktiv klubbspiller. Nivået styrer hvilke tester og krav som er relevante for deg — ikke en karakter.",
+  },
   kohortSnitt: {
     tittel: "Kohort-snitt",
     forklaring:

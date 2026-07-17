@@ -18,7 +18,7 @@ import {
   Cog, ArrowUp, Wrench,
   Inbox, CalendarCheck, Columns3, Database,
   Map, Radar, Footprints, Ruler,
-  Pause, Printer, Share2, ThumbsUp, ThumbsDown, Headphones, Wifi, Wind, Link2,
+  Pause, Printer, Share2, ThumbsUp, ThumbsDown, Headphones, Wifi, Wind, Link2, UserPlus,
   type LucideIcon,
 } from "lucide-react";
 
@@ -136,6 +136,7 @@ const MAP: Record<string, LucideIcon> = {
   "wifi": Wifi,
   "wind": Wind,
   "link-2": Link2,
+  "user-plus": UserPlus,
   "plug": Plug,
   "archive": Archive,
   "reply": Reply,
