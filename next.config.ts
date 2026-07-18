@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
       // Supabase Storage (profilbilder)
       {
         protocol: "https",
-        hostname: "eljkjqvggsmnbbszzbpj.supabase.co",
+        hostname: "dcnxoztjtdqoidaekxry.supabase.co",
         pathname: "/storage/v1/object/public/**",
       },
     ],

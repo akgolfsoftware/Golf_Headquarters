@@ -98,11 +98,13 @@ rot» men havnet i `src/app/admin/`, og en `launch.json` ble skrevet til
 `src/app/admin/.claude/`. Regel: bruk absolutte stier, og verifiser med `pwd`
 før filoperasjoner mot rot.
 
-### Ytelse: Vercel-region MÅ matche Supabase-region (oppdaget 2026-07-12)
-Supabase ligger i eu-west-1 (Irland). Uten `"regions"` i vercel.json kjørte
-funksjonene i default iad1 (USA) — hver Prisma-spørring krysset Atlanteren og
-sider med mange spørringer fikk TTFB på 0,5–1,1 s. Fix: `"regions": ["dub1"]`
-i vercel.json. Ikke fjern denne uten å flytte databasen samtidig.
+### Ytelse: Vercel-region MÅ matche Supabase-region (oppdatert 2026-07-18)
+Supabase ligger nå i **eu-west-2 (London)** etter kontobyttet (nytt prosjekt
+`dcnxoztjtdqoidaekxry`). Uten `"regions"` i vercel.json kjørte funksjonene i
+default iad1 (USA) — hver Prisma-spørring krysset Atlanteren og sider med mange
+spørringer fikk TTFB på 0,5–1,1 s. Fix: `"regions": ["lhr1"]` i vercel.json
+(London, samlokalisert med DB). Ikke fjern eller endre denne uten å flytte
+databasen samtidig. (Historikk: var eu-west-1/dub1 før 18. juli-byttet.)
 
 ### Dev-server med foreldet Prisma-klient etter `prisma generate` (truffet 2×, 2026-07-13)
 Kjører `npx prisma generate` (nytt felt/enum) mens `next dev` står oppe →
