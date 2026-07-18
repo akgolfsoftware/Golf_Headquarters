@@ -16,6 +16,7 @@ import { emailLayout, primaryButton } from "@/lib/email/templates/shared";
 import { logError } from "@/lib/error-tracking";
 import { phone, email, optStr } from "@/lib/validation/schemas";
 import { byggTreningPreferanser, fasiliteterTilFacilityPrefs, sesongmaalTilTittel } from "@/lib/onboarding/trening-preferanser";
+import { APP_URL } from "@/lib/app-url";
 
 const SaveOnboardingProfileSchema = z.object({
   phone: phone.nullable().optional(),
@@ -429,8 +430,7 @@ export async function setDateOfBirthAndCheckMinor(input: {
       // Send e-post til forelder
       try {
         const klient = resendKlient();
-        const appUrl =
-          process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf-hq.vercel.app";
+        const appUrl = APP_URL;
         const consentUrl = `${appUrl}/auth/guardian-consent/${invitation.token}`;
 
         await klient.emails.send({

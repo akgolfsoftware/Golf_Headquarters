@@ -20,6 +20,7 @@ import { createCreditBooking } from "@/lib/booking/credit-booking";
 import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
 import { stripeKlient } from "@/lib/stripe";
 import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
+import { APP_URL } from "@/lib/app-url";
 
 export async function hentSlotVindu(tjenesteId: string): Promise<SlotVindu> {
   await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
@@ -163,7 +164,7 @@ export async function opprettBookingMedKort(
     throw e;
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf-hq.vercel.app";
+  const appUrl = APP_URL;
   const session = await stripeKlient().checkout.sessions.create({
     mode: "payment",
     customer_email: user.email,

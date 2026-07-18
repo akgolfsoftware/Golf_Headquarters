@@ -9,6 +9,7 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { audit } from "@/lib/audit";
 import { nonEmpty, isoDate, email, phone } from "@/lib/validation/schemas";
+import { APP_URL } from "@/lib/app-url";
 
 export type BookingFormInput = {
   slug: string;
@@ -127,7 +128,7 @@ export async function createBookingCheckout(
       throw e;
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf-hq.vercel.app";
+    const appUrl = APP_URL;
     const stripe = stripeKlient();
 
     const session = await stripe.checkout.sessions.create({

@@ -29,6 +29,10 @@ const ANBEFALTE = [
   "ANTHROPIC_API_KEY",
   "NOTION_ENCRYPTION_KEY",
   "GOOGLE_TOKEN_ENCRYPTION_KEY",
+  // Uten denne faller absolutte lenker i e-post/Stripe-redirects tilbake til
+  // akgolf.no-defaulten (lib/app-url.ts). Sett den eksplisitt i prod så
+  // vertsnavnet alltid stemmer med det faktiske domenet.
+  "NEXT_PUBLIC_APP_URL",
 ] as const;
 
 export function validateEnv(): void {
