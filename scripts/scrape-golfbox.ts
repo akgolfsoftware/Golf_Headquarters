@@ -78,11 +78,18 @@ async function syncSchedules(): Promise<{ customers: number; events: number }> {
     const sched = await getSchedule(src.customerId);
     for (const e of sched) {
       if (!e.startDate) continue;
+      // Region-kunder lister også Region Tour-kval o.l. — ta kun de matchende.
+      if (src.onlyMatching && !src.onlyMatching.test(e.name)) continue;
       const cls = classifyTour(e.name, src.defaultTour);
       const year = e.startDate.getUTCFullYear();
       const slug = `${golfboxSlugify(e.name)}-${year}`;
       const status = deriveStatus(e.startDate, e.endDate, NOW);
       const format = e.type === "MatchPlay" ? "MATCH" : "STROKE";
+      // Fest region på Olyo-turneringer så de kan filtreres per region.
+      // undefined = ikke rør notes-feltet (gjelder ikke-region-kunder).
+      const notes = src.region
+        ? JSON.stringify({ tour: "olyo", krets: src.region })
+        : undefined;
 
       await prisma.tournament.upsert({
         where: { slug },
@@ -98,6 +105,7 @@ async function syncSchedules(): Promise<{ customers: number; events: number }> {
           country: "NO",
           location: e.venue,
           status,
+          notes,
           lastSyncAt: NOW,
         },
         update: {
@@ -110,6 +118,7 @@ async function syncSchedules(): Promise<{ customers: number; events: number }> {
           tour: cls.tour,
           location: e.venue,
           status,
+          notes,
           lastSyncAt: NOW,
         },
       });

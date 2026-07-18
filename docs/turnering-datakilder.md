@@ -82,10 +82,10 @@ men lister **kun sertifiserte counting events** (~4 300/år) — ikke alle amat�
 | Tour | Hvor data bor | Eksisterende verktøy |
 |---|---|---|
 | NGF-turneringer (NM m.m.) | `golfbox.no/app_livescoring/` | 1167 importert manuelt |
-| Olyo Tour (6 regioner) | GolfBox via NGF | `import-norske-turneringer.ts` |
-| Srixon Tour (WAGR-tellende) | GolfBox via NGF | ↑ |
-| Garmin Norgescup | `golfbox.no/app_livescoring/` (IKKE eget subdomene) | ↑ |
-| Region-tourer (Østland m.fl.) | GolfBox via NGF | ↑ |
+| Olyo Tour (6 regioner) | GolfBox-kunder 873–878 (én per region) | **LIVE** via `scrape-golfbox.ts` (kartlagt 2026-07-18) |
+| Srixon Tour (WAGR-tellende) | GolfBox via NGF (customer 18) | **LIVE** via `scrape-golfbox.ts` |
+| Garmin Norgescup | GolfBox via NGF (customer 18) | **LIVE** via `scrape-golfbox.ts` |
+| Østlandstour | GolfBox-kunde 895 | **LIVE** via `scrape-golfbox.ts` (kartlagt 2026-07-18) |
 | GJGT / Global Junior Golf | **IKKE GolfBox** — `globaljuniorgolflive.com` | `import-gjgt.ts` |
 
 ### Tier 4 — College

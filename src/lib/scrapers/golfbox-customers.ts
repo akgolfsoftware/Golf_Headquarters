@@ -5,6 +5,12 @@
  * customer 18 = Norges Golfforbund lister alle nasjonale tourer (Srixon,
  * Garmin Norgescup, NM, Jr NM, Para Norgescup …) — IKKE klubbturneringer.
  *
+ * Olyo- og Østlandstour-kundene kartlagt 2026-07-18: NGF har én GolfBox-kunde
+ * per region (873 Midt, 874 Vestland, 875 Rogaland, 876 Sør, 877 Viken Vest,
+ * 878 Øst), og Østlandstour er en egen serie-kunde (895). Region-kundene lister
+ * BÅDE Olyo Juniortour OG "Region Tour"-kval (til Garmin Norgescup) o.l., så
+ * onlyMatching begrenser dem til Olyo-eventene.
+ *
  * Vi holder oss bevisst til føderasjons- og tour-kunder, ikke de ~135 klubbene,
  * fordi vi IKKE skal ha lokale klubbturneringer.
  *
@@ -17,14 +23,33 @@ export type GolfBoxCustomerSource = {
   label: string;
   /** Default tour-kode hvis event-navnet ikke matcher en mer spesifikk regel. */
   defaultTour: "amateur-no" | "junior-no";
+  /**
+   * Olyo-regionsnavn. Festes i Tournament.notes (krets) så regionale Olyo-
+   * turneringer kan filtreres per region (f.eks. "Øst" = Østlandet Øst).
+   */
+  region?: string;
+  /**
+   * Hvis satt: hopp over events i kundens schedule som IKKE matcher. Brukes på
+   * Olyo-region-kundene, som også inneholder Region Tour-kval o.l. vi ikke vil ha.
+   */
+  onlyMatching?: RegExp;
 };
 
-// Kuraterte norske tour-/føderasjonskunder. Utvides når flere tourer kartlegges
-// (f.eks. Olyo regionskunder).
+// Kuraterte norske tour-/føderasjonskunder.
 export const NO_TOUR_CUSTOMERS: GolfBoxCustomerSource[] = [
   { customerId: 18, label: "Norges Golfforbund", defaultTour: "amateur-no" },
   { customerId: 154, label: "Norsk Senior Golf", defaultTour: "amateur-no" },
   { customerId: 184, label: "Mid Am Tour", defaultTour: "amateur-no" },
+  // Olyo Juniortour — én kunde per NGF-region. onlyMatching holder Region Tour-
+  // kval o.l. ute; region festes i notes for regionfiltrering.
+  { customerId: 878, label: "Olyo Region Øst", defaultTour: "junior-no", region: "Øst", onlyMatching: /olyo/i },
+  { customerId: 877, label: "Olyo Region Viken Vest", defaultTour: "junior-no", region: "Viken Vest", onlyMatching: /olyo/i },
+  { customerId: 876, label: "Olyo Region Sør", defaultTour: "junior-no", region: "Sør", onlyMatching: /olyo/i },
+  { customerId: 875, label: "Olyo Region Rogaland", defaultTour: "junior-no", region: "Rogaland", onlyMatching: /olyo/i },
+  { customerId: 874, label: "Olyo Region Vestland", defaultTour: "junior-no", region: "Vestland", onlyMatching: /olyo/i },
+  { customerId: 873, label: "Olyo Region Midt", defaultTour: "junior-no", region: "Midt", onlyMatching: /olyo/i },
+  // Østlandstour — egen serie-kunde (amatør/junior, flere WAGR-tellende runder).
+  { customerId: 895, label: "Østlandstour", defaultTour: "amateur-no" },
 ];
 
 export type TourClassification = {
@@ -55,6 +80,8 @@ export function classifyTour(
     return { tour: isJunior ? "junior-no" : "amateur-no", sourceOrigin: "NORGESCUP", playerTier: isJunior ? "junior" : "amateur" };
   if (/olyo/.test(n))
     return { tour: "junior-no", sourceOrigin: "OLYO", playerTier: "junior" };
+  if (/østlandstour|ostlandstour/.test(n))
+    return { tour: isJunior ? "junior-no" : "amateur-no", sourceOrigin: "OSTLANDS", playerTier: isJunior ? "junior" : "amateur" };
   if (/mid ?am/.test(n))
     return { tour: "amateur-no", sourceOrigin: "MIDAM", playerTier: "amateur" };
   if (/senior/.test(n))
