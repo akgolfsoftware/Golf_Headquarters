@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import type { GruppeKalenderData } from "./types";
+import { hentWangTurneringer } from "./wang-turneringer";
 
 const NB_WEEKDAY_NUM: Record<string, number> = {
   monday: 0,
@@ -63,7 +64,7 @@ export async function hentGruppeKalenderData(
   const alleMalIder = [...new Set(perioderRader.flatMap((p) => p.competenceGoalIds))];
   const skoleAr = [...new Set(perioderRader.map((p) => p.schoolYear))];
 
-  const [malRader, skoleHendelserRader] = await Promise.all([
+  const [malRader, skoleHendelserRader, turneringer] = await Promise.all([
     alleMalIder.length
       ? prisma.competenceGoal.findMany({ where: { id: { in: alleMalIder } } })
       : Promise.resolve([]),
@@ -73,6 +74,7 @@ export async function hentGruppeKalenderData(
           orderBy: { date: "asc" },
         })
       : Promise.resolve([]),
+    hentWangTurneringer(),
   ]);
   const malPerId = new Map(malRader.map((m) => [m.id, m]));
 
@@ -113,5 +115,6 @@ export async function hentGruppeKalenderData(
       title: h.title,
       note: h.note,
     })),
+    turneringer,
   };
 }

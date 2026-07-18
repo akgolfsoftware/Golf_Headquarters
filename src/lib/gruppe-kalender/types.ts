@@ -56,6 +56,17 @@ export type SkoleHendelse = {
   note: string | null;
 };
 
+export type Turnering = {
+  id: string;
+  navn: string;
+  serie: string; // kort serie-etikett, f.eks. "Østlandstour" | "Srixon Tour" | "Garmin NC" | "Olyo"
+  tone: string; // primary | accent | moss | gold | muted — matcher periode-tonene
+  startDate: string; // ISO-dato
+  endDate: string | null; // ISO-dato eller null
+  slug: string | null; // for /turneringer/[slug]-lenke, null = ingen lenke
+  location: string | null;
+};
+
 export type GruppeKalenderData = {
   gruppeId: string;
   gruppeNavn: string;
@@ -63,4 +74,5 @@ export type GruppeKalenderData = {
   perioder: Periode[];
   samlinger: Samling[];
   skoleHendelser: SkoleHendelse[];
+  turneringer: Turnering[];
 };

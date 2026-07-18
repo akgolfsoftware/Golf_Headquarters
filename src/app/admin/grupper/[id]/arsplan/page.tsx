@@ -14,7 +14,7 @@ import { TilbakeLenke } from "@/components/v2";
 import { hentGruppeKalenderData } from "@/lib/gruppe-kalender/hent-data";
 import { GruppeKalenderWrapper } from "@/components/gruppe-kalender/gruppe-kalender-wrapper";
 import { TrinnFilter } from "@/components/gruppe-kalender/trinn-filter";
-import { TurneringStub } from "@/components/gruppe-kalender/turnering-stub";
+import { TurneringPlan } from "@/components/gruppe-kalender/turnering-plan";
 
 export const dynamic = "force-dynamic";
 
@@ -55,7 +55,7 @@ export default async function GruppeArsplanPage({
         <div className="space-y-4">
           <TrinnFilter basePath={basePath} aktivtTrinn={trinn ?? null} />
           <GruppeKalenderWrapper data={data} classYear={trinn ?? null} />
-          <TurneringStub />
+          <TurneringPlan turneringer={data.turneringer} />
         </div>
       ) : (
         <p className="text-sm text-muted-foreground">
