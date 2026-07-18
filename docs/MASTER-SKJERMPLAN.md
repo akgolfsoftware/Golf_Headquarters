@@ -718,16 +718,21 @@ Skjermer/funksjoner som planen vår (manifestene) sier vi trenger, men som ikke 
 1. ~~**Shot-map / spredningsplott**~~ **LØST 17. jul (D6b):** slag-koordinatene fanges nå der de skapes — interaktivt `CourseMap` i `slag-wizard.tsx` lar spilleren tappe landingspunktet, og `saveShot` persisterer det til `Shot.startX/Y/endX/Y`. Datamodellen manglet aldri feltene; det som manglet var fangst-UI-et. Ren dispersion-visningsskjerm kan nå bygges på ekte punkter (egen senere skjerm, ikke spekulativt nå).
 2. ~~**Scorecard per runde, hull-for-hull**~~ **LØST 17. jul (D6a):** `HoleScore`-stacken + `/portal/mal/runder/[id]/hull` fører runden hull-for-hull (par-justering, putter/FW/GIR, 9/18, kun-totalscore-modus, scorecard-aggregater).
 3. ~~**Live turnerings-tracking**~~ **LØST 17. jul (D6c):** Anders valgte «spiller selv, hull-for-hull» — «Start turneringsrunde» på turneringsdetaljen kobler en `Round` til `TournamentEntry` og sender til hull-flaten. IKKE en sanntids-leaderboard (bevisst avgrenset — egen senere beslutning).
-4. **Fellesmelding til turneringsdeltakere** — planen for AgencyOS sier vi skal kunne sende én melding til alle deltakerne i en turnering. Flyten er beskrevet, men ingen ferdig design er levert for selve «velg deltakere → skriv → send»-stegene. Trenger design.
+4. ~~**Fellesmelding til turneringsdeltakere**~~ **ALLEREDE BYGGET (verifisert 18. jul):** hele «velg deltakere → skriv → send»-flyten finnes som `FellesmeldingFlyt` (`src/components/admin/v2/fellesmelding-flyt.tsx`), rendret på turneringsdetaljen (`src/app/admin/tournaments/[id]/page.tsx:116`) bak knappen «Send fellesmelding». 3 steg + statusmerker + maler + forhåndsvisning + kvittering med «prøv igjen» for de som feilet, koblet til server-action `sendFellesmelding`. Denne listeraden var stale — funksjonen var levert (D1) uten at punktet ble krysset ut. Formen er en modal på turneringssiden, ikke en egen full-side; det er et bevisst valg (beholder konteksten), ikke en mangel.
 5. ~~**Spiller↔gruppe-veksler**~~ **LØST 17. jul (D2):** navigasjons-dropdown i AgencyOS-toppbaren (`/admin/spillere/[id]` · `/admin/grupper/[id]`), fasit `agencyos-veksler.jsx` godkjent samme dag. Denne listen var ikke oppdatert da raden på cockpit-skjermen ble flippet — rettet nå.
 6. ~~**Fokus-spiller-blokk med pin + AI-forslag**~~ **LØST 17. jul (D3):** «Pinnet av deg» (maks 3, `CoachPinnedPlayer`) + regelbaserte AI-forslag på cockpiten, migrasjon kjørt mot prod. Samme stale-liste-årsak som punkt 5.
 7. ~~**Mobil-utgave av Workbench og AgencyOS**~~ **LØST 17. jul (M2+M3):** Workbench fikk en egen mobil-oppgavekø (retning A, godkjent), og AgencyOS-kjerneskjermene (cockpit, stall, spiller-detalj, kalender, godkjenninger, tester, økonomi, innboks) fikk hver sin `useMobile()`-tilpasning. Samme stale-liste-årsak som punkt 5–6.
-8. **To fullskjerm test-ruter finnes ikke i kode** (`/portal/(fullscreen)/test/[testId]/live` og `/summary`) — nevnt i planen/manifestene, men ingen mappe, ingen redirect, og ingen godkjent design finnes for dem. Avklar med Anders hva disse skal vise før noe bygges.
+8. **To fullskjerm test-ruter** (`/portal/(fullscreen)/test/[testId]/live` og `/summary`) — de to EKSAKTE rutene finnes ikke i kode, men **funksjonen finnes allerede**: hele brief → live scorekort → oppsummering → lagring kjører på `/portal/(fullscreen)/tren/tester/[testId]/gjennomfor` (`page.tsx` + `scorekort-klient.tsx` + `actions.ts` med `lagreTestResultat`), nådd fra «Start test» på test-detaljen (`src/app/portal/tren/tester/[testId]/page.tsx:235`). Skjermradene over (linje 191–192) er dessuten **UTSATT POST-LANSERING av Anders 2026-07-18**. Konklusjon: ingen ny skjerm skal bygges — funksjonen er dekket av `gjennomfor`, og de separate rutene er bevisst utsatt. Rad-status og denne listen samstemmer nå.
 
 > **Rettelse 18. juli:** punkt 5–7 var reelt ferdige (se de enkelte skjerm-radene over, alle
 > datert 17. juli), men denne oppsummerings-listen ble ikke oppdatert i samme commit som
-> skjerm-radene — nøyaktig den typen stale hake resten av dokumentet advarer mot. Punkt 8 er nytt,
-> oppdaget ved full gjennomgang 18. juli.
+> skjerm-radene — nøyaktig den typen stale hake resten av dokumentet advarer mot.
+>
+> **Rettelse 18. juli (kveld):** punkt 4 og 8 var ALTSÅ OGSÅ stale. Fellesmelding (punkt 4)
+> var bygget som modal-flyt hele tiden, og test-rutene (punkt 8) er dekket av `gjennomfor` +
+> bevisst utsatt. Oppdaget ved full kode-verifisering etter at det ble laget designforslag for
+> skjermer som viste seg allerede å eksistere. Lærdom: verifiser hvert «Mangler helt»-punkt mot
+> faktisk kode FØR design/bygg — denne listen er den minst pålitelige delen av dokumentet.
 
 ---
 
@@ -750,12 +755,13 @@ godkjenninger/approvals, agencyos-spillere/spillere, stats/statistikk, analyse/a
 drills/ovelser) har allerede én kanonisk adresse med ren redirect fra den gamle. Ingenting
 gjensto å bygge — bare dokumentasjonen som trengte å bli rettet.
 
-**Bolk 5 — Det som trenger nytt design fra deg (Anders).**
-Disse kan vi ikke bygge riktig før du har godkjent et design:
-- Fellesmelding til turneringsdeltakere (velg → skriv → send).
-- Spiller↔gruppe-veksler øverst i AgencyOS.
-- Fokus-spiller med manuell pin + AI-forslag.
-- Avgjørelse: trengs mobil-utgave av Workbench/AgencyOS nå?
+**Bolk 5 — LUKKET 2026-07-18.** Alle punktene her viste seg ved kode-verifisering å være
+bygget eller allerede avgjort:
+- ~~Fellesmelding til turneringsdeltakere~~ — bygget som modal-flyt (se «Mangler helt» punkt 4).
+- ~~Spiller↔gruppe-veksler øverst i AgencyOS~~ — bygget 17. jul (D2).
+- ~~Fokus-spiller med manuell pin + AI-forslag~~ — bygget 17. jul (D3).
+- ~~Mobil-utgave av Workbench/AgencyOS~~ — bygget 17. jul (M2+M3).
+Ingenting gjenstod å designe; det som manglet var å krysse ut de stale liste-punktene.
 
 **Bolk 6 — Det som er data-blokkert (krever databasearbeid først).**
 Shot-map/spredning, scorecard hull-for-hull, live turnerings-tracking. Her må vi bygge ut databasen og en måte å samle inn tallene på FØR skjermene kan vise ekte data. Ikke noe vi løser med design.
