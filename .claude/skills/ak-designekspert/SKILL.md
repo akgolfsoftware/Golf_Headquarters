@@ -22,9 +22,9 @@ Ditt operativsystem er beslutningshierarkiet: **1 Jobben → 2 Flyten → 3 Hier
 
 ## Designfundament (AK Golf HQ)
 
-- **Låst:** merkevarefarger som hue (primary #005840, accent #D1F843, dark-bg #0A0B0A near-black — jf. token-lås i CLAUDE.md), Familjen Grotesk (display) / Inter (UI/body), Lucide-ikoner, 8pt grid, norsk bokmål i UI.
+- **Låst:** merkevarefarger som hue (primary/forest #005840, accent/lime #D1F843, dark-bg = `--v2-bg` — shipped v2 mørk **#131513** varm near-black «løftet»; CLAUDE.md token-lås nevner #0A0B0A, men bruk ALLTID token-verdien i `src/lib/v2/tokens.ts` + `--v2-*` i globals.css), Familjen Grotesk (display) / Inter (UI/body), Lucide-ikoner, 8pt grid, norsk bokmål i UI.
 - **Semantiske tokens:** alle komponenter refererer bg / surface-1/2/3 / text-primary/secondary/muted / accent / accent-contrast — aldri hex direkte. Light og dark mode er to verdisett over samme lag; begge skal holde samme nivå.
-- **Premium-kvalitetene** er definert i `references/visuelt-sprak.md` for BEGGE moduser — dark (surface-lag, hvit pill-CTA, lime-disiplin) og light (myke skygger, sort/grønn pill som valgt-tilstand, pastell-kategorifarger). Light er aldri en blek eksport av dark.
+- **Premium-kvalitetene** er definert i `references/visuelt-sprak.md` for BEGGE moduser — dark (surface-lag, **lime pill-CTA/valgt-tilstand**, lime-disiplin, aldri lyse piller på mørk) og light (myke skygger, forest-pille som valgt-tilstand, pastell-kategorifarger). Light er aldri en blek eksport av dark.
 - **Designsystemet** har ~97 komponenter i 12 kategorier (core, data, domain, forms, nav, overlays, premium, trackman, calendar, feedback, structure, marketing). Sjekk alltid om komponenten finnes før du tegner ny (`check_design_system` / `readme.md`).
 
 ## Domeneekspertise — påkrevd lesing
@@ -55,4 +55,12 @@ Kjører du i et miljø med tilgang til `~/Developer/ak-second-brain` eller AK Go
 
 ---
 
-> **Merknad (lagt inn 3. jul 2026):** Rettet mot kit-kanon ved innlegging: «CoachHQ» → **AgencyOS** (absolutt regel — legacy-navnet er forbudt); dark-bg **#0A0B0A** (near-black token-lås, ikke #0A1F18); display-font **Familjen Grotesk** (ikke bare Inter); komponenttall ~97. `references/*.md` som skillen peker på er IKKE installert i dette designsystemet ennå — behandle dem som TODO-kilder; `skills/ak-terminologi/ordbok.md` + `guidelines/` + `readme.md` er de faktiske referansene her.
+> **Kanon-synk (18. juli 2026):** Skillen er nå i tråd med det **siste** designsystemet —
+> **v2 (retning C «Presis», mørk-først)**. Eksakt kilde til farger/verdier: `src/lib/v2/tokens.ts`
+> (`T`-objektet) + `--v2-*`-variablene i `src/app/globals.css` + det levende Claude Design-
+> prosjektet («AK Golf HQ Design System», `ui_kits/v2` / `tokens/v2`). `golfdata/v13` er overgangs-lag.
+> **Ved tvil om en eksakt verdi: les token-kilden, ikke prosaen.**
+> Rettelser innarbeidet i `references/*.md`: dark-base #0A1F18 → v2 near-black (**#131513** / `--v2-bg`);
+> primær- og valgt-tilstand i mørk = **lime-pille** (aldri hvit/lys pill på mørk flate — jf. core.tsx);
+> «CoachHQ» → **AgencyOS** (forbudt legacy-navn). `references/*.md` ER installert (tidligere
+> «TODO/ikke installert»-merknad var selv feil).
