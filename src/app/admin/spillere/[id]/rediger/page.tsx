@@ -1,16 +1,29 @@
 /**
- * AgencyOS — Rediger spiller (`/admin/spillere/[id]/rediger`). v2-port
- * 16. juli 2026.
+ * AgencyOS — Rediger spiller (/admin/spillere/[id]/rediger), v2-design
+ * (retning C).
  *
- * 2-kol form med sticky lagre-bar topp + bunn. Endrings-historikk høyre.
- * Bruker Server Action `lagreSpiller`.
+ * Auth + datagrunnlag gjenbrukt 1:1 fra den forrige (legacy) siden: samme
+ * requirePortalUser-guard (COACH/ADMIN), samme spørringer (spiller, audit-
+ * historikk, foreldre) og samme Server Action `lagreSpiller` (legacy-sti).
+ * Spiller-oppslaget er i tillegg coach-scopet (coachScopedPlayerWhere) som
+ * hovedsiden /admin/spillere/[id] — notFound() hvis spilleren ikke finnes
+ * eller er utenfor coachens stall.
+ *
+ * Server component.
  */
 
 import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
-import { AdminSpillerRedigerV2, type AdminSpillerRedigerV2Data } from "@/components/admin/v2/AdminSpillerRedigerV2";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import {
+  AdminSpillerRedigerV2,
+  type AdminSpillerRedigerV2Data,
+} from "@/components/admin/v2/AdminSpillerRedigerV2";
+
+export const dynamic = "force-dynamic";
 
 function formatHcpInput(v: number | null | undefined): string {
   if (v == null) return "";
@@ -25,11 +38,11 @@ function dateToYmd(d: Date | null | undefined): string {
 const NB_DT = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
 
 export default async function RedigerSpiller({ params }: { params: Promise<{ id: string }> }) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { id } = await params;
 
   const [player, history, parents] = await Promise.all([
-    prisma.user.findUnique({ where: { id } }),
+    prisma.user.findFirst({ where: { AND: [coachScopedPlayerWhere(user), { id }] } }),
     prisma.auditLog.findMany({
       where: { target: `user:${id}` },
       orderBy: { createdAt: "desc" },
@@ -69,5 +82,9 @@ export default async function RedigerSpiller({ params }: { params: Promise<{ id:
     })),
   };
 
-  return <AdminSpillerRedigerV2 data={data} />;
+  return (
+    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <AdminSpillerRedigerV2 data={data} />
+    </V2Shell>
+  );
 }

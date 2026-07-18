@@ -17,7 +17,7 @@ import {
   RefreshCw, GitCompare, AlertOctagon, GitPullRequest, GitCommitHorizontal, Loader2, LineChart,
   Cog, ArrowUp, Wrench,
   Inbox, CalendarCheck, Columns3, Database,
-  Map, Radar,
+  Map, Radar, Headphones,
   type LucideIcon,
 } from "lucide-react";
 
@@ -145,6 +145,7 @@ const MAP: Record<string, LucideIcon> = {
   "calendar-check": CalendarCheck,
   "columns-3": Columns3,
   "database": Database,
+  "headphones": Headphones,
 };
 
 export interface IconProps {

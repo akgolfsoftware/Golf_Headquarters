@@ -123,9 +123,9 @@ export function AdminKlubbInnstillingerV2({ klubber, settings }: Props) {
             sub="Legg til din første klubb for å begynne å håndtere multi-club setup. Hver klubb kan ha egne fasiliteter, åpningstider og daglig leder."
           />
           <div style={{ marginTop: 16 }}>
-            <CTAPill icon="plus">
-              <span onClick={() => setAddOpen(true)}>Legg til klubb</span>
-            </CTAPill>
+            <span onClick={() => setAddOpen(true)} style={{ display: "inline-flex" }}>
+              <CTAPill icon="plus">Legg til klubb</CTAPill>
+            </span>
           </div>
         </Kort>
       ) : (
@@ -199,7 +199,7 @@ function OrgInnstillingerPanel({
     <Kort
       eyebrow="Org-innstillinger"
       action={
-        <span onClick={onEdit}>
+        <span onClick={onEdit} style={{ display: "inline-flex" }}>
           <CTAPill ghost icon="pencil">
             Rediger
           </CTAPill>
@@ -377,7 +377,7 @@ function KlubbKort({ klubb, onEdit }: { klubb: ClubItem; onEdit: () => void }) {
       </div>
 
       <div style={{ marginTop: 16, paddingTop: 14, borderTop: `1px solid ${T.border}` }}>
-        <span onClick={onEdit}>
+        <span onClick={onEdit} style={{ display: "inline-flex" }}>
           <CTAPill ghost icon="pencil">
             Rediger
           </CTAPill>
@@ -608,13 +608,12 @@ function V2ModalRamme({
         ref={panelRef}
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
-        className="w-full sm:max-w-2xl"
+        className="w-full rounded-t-[20px] sm:max-w-2xl sm:rounded-[20px]"
         style={{
           maxHeight: "90vh",
           overflowY: "auto",
           background: T.panel,
           border: `1px solid ${T.borderS}`,
-          borderRadius: "20px 20px 0 0",
           padding: "20px 22px calc(20px + env(safe-area-inset-bottom))",
           boxShadow: "0 24px 60px rgba(0,0,0,0.5)",
           outline: "none",

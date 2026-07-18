@@ -1,16 +1,29 @@
 /**
- * AgencyOS — Full spiller-profil (`/admin/spillere/[id]/profil`). v2-port
- * 16. juli 2026.
+ * AgencyOS — Full spiller-profil (/admin/spillere/[id]/profil), v2-design
+ * (retning C).
  *
- * Vertikal stack med personalia, forelder, spiller-DNA (radar), aktive mål,
- * skade-historikk og coach-vurdering.
+ * Auth + datagrunnlag gjenbrukt 1:1 fra den forrige (legacy) siden: samme
+ * requirePortalUser-guard (COACH/ADMIN) og samme User-spørring med relasjoner
+ * (foreldre, mål, permisjoner, coach-notat). Spiller-oppslaget er i tillegg
+ * coach-scopet (coachScopedPlayerWhere) som hovedsiden /admin/spillere/[id] —
+ * notFound() hvis spilleren ikke finnes eller er utenfor coachens stall.
+ *
+ * Server component.
  */
 
 import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
-import { AdminSpillerProfilSideV2, type AdminSpillerProfilSideV2Data, type DnaShape } from "@/components/admin/v2/AdminSpillerProfilSideV2";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import {
+  AdminSpillerProfilSideV2,
+  type AdminSpillerProfilSideV2Data,
+  type DnaShape,
+} from "@/components/admin/v2/AdminSpillerProfilSideV2";
+
+export const dynamic = "force-dynamic";
 
 const NB_LONG = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "long", year: "numeric" });
 const NB_DATE = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", year: "numeric" });
@@ -21,11 +34,11 @@ function calcAge(dob: Date | null): number | null {
 }
 
 export default async function SpillerProfilSide({ params }: { params: Promise<{ id: string }> }) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { id } = await params;
 
-  const player = await prisma.user.findUnique({
-    where: { id },
+  const player = await prisma.user.findFirst({
+    where: { AND: [coachScopedPlayerWhere(user), { id }] },
     include: {
       childRelations: {
         include: {
@@ -95,5 +108,9 @@ export default async function SpillerProfilSide({ params }: { params: Promise<{ 
       : null,
   };
 
-  return <AdminSpillerProfilSideV2 data={data} />;
+  return (
+    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <AdminSpillerProfilSideV2 data={data} />
+    </V2Shell>
+  );
 }

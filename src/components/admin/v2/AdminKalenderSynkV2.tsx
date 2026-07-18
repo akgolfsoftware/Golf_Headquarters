@@ -378,7 +378,10 @@ export function AdminKalenderSynkV2({ data }: { data: AdminKalenderSynkV2Data })
             </Knapp>
           </div>
 
-          <Kort eyebrow="Hvor skal nye bookinger legges?" pad="4px 20px 6px">
+          <Kort eyebrow="Nye bookinger" pad="4px 20px 6px">
+            <p style={{ margin: "0 0 10px", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
+              Velg hvilken kalender som skal motta hendelsen når en kunde booker en time.
+            </p>
             {subscriptions.map((rad, i) => (
               <Rad
                 key={rad.id}
@@ -398,7 +401,10 @@ export function AdminKalenderSynkV2({ data }: { data: AdminKalenderSynkV2Data })
             ))}
           </Kort>
 
-          <Kort eyebrow="Hvilke kalendere skal blokkere booking-tider?" pad="4px 20px 6px">
+          <Kort eyebrow="Blokker booking-tider" pad="4px 20px 6px">
+            <p style={{ margin: "0 0 10px", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
+              Tider med hendelser i disse kalenderne vises ikke som ledige i booking-systemet.
+            </p>
             {subscriptions.map((rad, i) => (
               <Rad
                 key={rad.id}

@@ -1,25 +1,35 @@
 /**
- * /admin/spillere/[id]/tildel-test — v2-port 16. juli 2026: delt
- * `AdminTildelTestV2` med `/admin/tester/tildel/[spillerId]` (samme skjerm,
- * to inngangspunkt). Erstatter `TildelTestModalScreen`
- * (`test-modul-v2/`) som viste fabrikerte tall («HCP 4.8 · 12/36 tester
- * gjennomført · A1») uansett hvem spilleren faktisk var.
+ * AgencyOS — Tildel test (/admin/spillere/[id]/tildel-test), v2-design
+ * (retning C). Deler `AdminTildelTestV2` med `/admin/tester/tildel/[spillerId]`
+ * (samme skjerm, to inngangspunkt) — mutasjonen `tildelTest` (TestAssignment +
+ * varsel) gjenbrukes via legacy-stien i komponenten.
+ *
+ * Auth + datagrunnlag gjenbrukt 1:1 fra den forrige (legacy) siden: samme
+ * requirePortalUser-guard (COACH/ADMIN), samme spørringer (testdefinisjoner,
+ * tildelings-tall, AK-kategori). Spiller-oppslaget er i tillegg coach-scopet
+ * (coachScopedPlayerWhere) som hovedsiden /admin/spillere/[id] — notFound()
+ * hvis spilleren ikke finnes eller er utenfor coachens stall.
+ *
+ * Server component.
  */
 
 import { notFound } from "next/navigation";
+
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { hentSpillerAkKategori } from "@/lib/domain/spiller-kategori";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { AdminTildelTestV2, type AdminTildelTestV2Data } from "@/components/admin/v2/AdminTildelTestV2";
 
 export const dynamic = "force-dynamic";
 
 export default async function TildelTestPage({ params }: { params: Promise<{ id: string }> }) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { id } = await params;
 
   const [spiller, tester, totalt, fullforte] = await Promise.all([
-    prisma.user.findUnique({ where: { id } }),
+    prisma.user.findFirst({ where: { AND: [coachScopedPlayerWhere(user), { id }] } }),
     prisma.testDefinition
       .findMany({
         orderBy: { name: "asc" },
@@ -29,7 +39,7 @@ export default async function TildelTestPage({ params }: { params: Promise<{ id:
     prisma.testAssignment.count({ where: { playerId: id } }),
     prisma.testAssignment.count({ where: { playerId: id, status: "COMPLETED" } }),
   ]);
-  if (!spiller) notFound();
+  if (!spiller || spiller.role !== "PLAYER") notFound();
 
   const kategori = await hentSpillerAkKategori(spiller.id, { hcp: spiller.hcp });
 
@@ -49,5 +59,9 @@ export default async function TildelTestPage({ params }: { params: Promise<{ id:
     tilbakeHref: `/admin/spillere/${spiller.id}/tester`,
   };
 
-  return <AdminTildelTestV2 data={data} />;
+  return (
+    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <AdminTildelTestV2 data={data} />
+    </V2Shell>
+  );
 }
