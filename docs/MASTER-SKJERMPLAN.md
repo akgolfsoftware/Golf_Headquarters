@@ -719,9 +719,15 @@ Skjermer/funksjoner som planen vår (manifestene) sier vi trenger, men som ikke 
 2. ~~**Scorecard per runde, hull-for-hull**~~ **LØST 17. jul (D6a):** `HoleScore`-stacken + `/portal/mal/runder/[id]/hull` fører runden hull-for-hull (par-justering, putter/FW/GIR, 9/18, kun-totalscore-modus, scorecard-aggregater).
 3. ~~**Live turnerings-tracking**~~ **LØST 17. jul (D6c):** Anders valgte «spiller selv, hull-for-hull» — «Start turneringsrunde» på turneringsdetaljen kobler en `Round` til `TournamentEntry` og sender til hull-flaten. IKKE en sanntids-leaderboard (bevisst avgrenset — egen senere beslutning).
 4. **Fellesmelding til turneringsdeltakere** — planen for AgencyOS sier vi skal kunne sende én melding til alle deltakerne i en turnering. Flyten er beskrevet, men ingen ferdig design er levert for selve «velg deltakere → skriv → send»-stegene. Trenger design.
-5. **Spiller↔gruppe-veksler** (player-picker alltid øverst i AgencyOS) — beskrevet i planen som en ny fast del av toppmenyen, men ikke levert som design. Trenger design.
-6. **Fokus-spiller-blokk med pin + AI-forslag** — delvis bygget på cockpit, men «pin manuelt»-mekanismen + AI-forslagsfeltet er ikke ferdig designet. Trenger design.
-7. **Mobil-utgave av Workbench og AgencyOS** — designet er laget for stor skjerm (desktop). Mobil-varianter er ikke tegnet for disse to. Spørsmål til deg: trengs mobil her før lansering, eller holder desktop?
+5. ~~**Spiller↔gruppe-veksler**~~ **LØST 17. jul (D2):** navigasjons-dropdown i AgencyOS-toppbaren (`/admin/spillere/[id]` · `/admin/grupper/[id]`), fasit `agencyos-veksler.jsx` godkjent samme dag. Denne listen var ikke oppdatert da raden på cockpit-skjermen ble flippet — rettet nå.
+6. ~~**Fokus-spiller-blokk med pin + AI-forslag**~~ **LØST 17. jul (D3):** «Pinnet av deg» (maks 3, `CoachPinnedPlayer`) + regelbaserte AI-forslag på cockpiten, migrasjon kjørt mot prod. Samme stale-liste-årsak som punkt 5.
+7. ~~**Mobil-utgave av Workbench og AgencyOS**~~ **LØST 17. jul (M2+M3):** Workbench fikk en egen mobil-oppgavekø (retning A, godkjent), og AgencyOS-kjerneskjermene (cockpit, stall, spiller-detalj, kalender, godkjenninger, tester, økonomi, innboks) fikk hver sin `useMobile()`-tilpasning. Samme stale-liste-årsak som punkt 5–6.
+8. **To fullskjerm test-ruter finnes ikke i kode** (`/portal/(fullscreen)/test/[testId]/live` og `/summary`) — nevnt i planen/manifestene, men ingen mappe, ingen redirect, og ingen godkjent design finnes for dem. Avklar med Anders hva disse skal vise før noe bygges.
+
+> **Rettelse 18. juli:** punkt 5–7 var reelt ferdige (se de enkelte skjerm-radene over, alle
+> datert 17. juli), men denne oppsummerings-listen ble ikke oppdatert i samme commit som
+> skjerm-radene — nøyaktig den typen stale hake resten av dokumentet advarer mot. Punkt 8 er nytt,
+> oppdaget ved full gjennomgang 18. juli.
 
 ---
 
