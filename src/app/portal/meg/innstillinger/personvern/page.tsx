@@ -5,7 +5,7 @@
  * Begge handlinger er ekte og automatiserte (P20 fra master-plan).
  */
 
-import { Shield, Download, Trash2, Lock, Mail, ShieldQuestion } from "lucide-react";
+import { Shield, Download, Trash2, Lock, Mail } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { PersonvernActions } from "./personvern-actions";
@@ -54,33 +54,13 @@ export default async function PersonvernPage() {
                 Slett kontoen din
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                GDPR artikkel 17 — rett til sletting. Kontoen din deaktiveres
-                umiddelbart. Alle dine data slettes permanent etter{" "}
-                <strong>30 dager</strong>. I 30-dagers-vinduet kan du angre ved
-                å kontakte support.
+                GDPR artikkel 17 — rett til sletting. Forespørselen behandles av
+                en coach eller administrator. Ved godkjenning{" "}
+                <strong>anonymiseres</strong> opplysningene dine — navn, e-post,
+                telefon, bilde og offentlig profil fjernes, mens avidentifisert
+                treningshistorikk beholdes. Har du spørsmål, kontakt support.
               </p>
               <PersonvernActions kind="delete" />
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-border bg-card p-6">
-          <div className="flex items-start gap-4">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-accent">
-              <ShieldQuestion className="h-5 w-5" strokeWidth={1.75} />
-            </span>
-            <div className="min-w-0 flex-1">
-              <h2 className="font-display text-lg font-semibold tracking-tight">
-                Be om sletting (behandles av en person)
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Vil du heller at en coach eller administrator ser på slettingen?
-                Send en forespørsel. Da anonymiseres opplysningene dine ved
-                godkjenning — navn, e-post, telefon og bilde fjernes, mens
-                avidentifisert treningshistorikk beholdes. Bruk denne hvis du er
-                usikker på den automatiske slettingen over.
-              </p>
-              <PersonvernActions kind="gdpr-request" />
             </div>
           </div>
         </div>
