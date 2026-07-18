@@ -201,7 +201,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Coach-hub | `/portal/coach` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | · Coach-profil | `/portal/coach/[coachId]` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Coach SG-sammenligning | `/portal/coach/sg-hub` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | Rad lagt til 17. jul (manglet i planen). v2-port 17. jul (Team D3): `CoachSgHubV2` — COACH_SG-referanseverdier, BrukerSgInput-query og størst-gap-logikk uendret; H2H som opp/ned-bar fra nullstrek, statiske coach-referanser merket. Legacy-sidens 8 rå hex → 0. |
-| Meldinger (innboks) | `/portal/coach/melding` | ✓ | --- | ✓ | ~ | ~ | ✓ |
+| Meldinger (innboks) | `/portal/coach/melding` | ✓ | ✓✓– | ✓ | ~ | ~ | ✓ | **M3 mobil (bølge 3) 17. jul:** ekte master/detail på mobil — trådliste full bredde, tapp på innlastet tråd → tråd-visning m/ tilbake-lenke; tommelvennlig komponer-felt (`Skrivefelt`, sticky bunn + safe-area) med raske svar-maler (`ForslagRad`, copy fra `CoachMeldingNyV2`s `HURTIGVALG`). Desktop side-om-side uendret. Merknad: skjerm-bunn-festet komponer over shell-bunn-nav vil kreve en delt offset-token i shell (meldt gap, ikke improvisert). Mob --- → ✓✓–. |
 | · Ny melding | `/portal/coach/melding/ny` | ✓ | --- | ✓ | ✓ | ✓ | ✓† |
 | · Meldingstråd | `/portal/coach/melding/[id]` | ✓ | --- | ✓ | ✓ | ~ | ✓ | PR #43 (17. jul): composerens vedlegg-knapp koblet til det ekte vedleggs-galleriet (var «kommer snart»-toast); søk/meny-stubbene i tråd-headeren fjernet ærlig. Flyt/Funker ~ → ✓. |
 | · Vedlegg | `/portal/coach/melding/[id]/vedlegg` | ✓ | --- | ✓ | ~ | ~ | ~ |
