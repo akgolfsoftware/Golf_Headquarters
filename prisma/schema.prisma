@@ -4733,3 +4733,30 @@ model CoachPinnedPlayer {
   @@index([coachId])
   @@map("coach_pinned_players")
 }
+
+// Coach-satt pyramide-fordeling per periode (fase 1, godkjent 2026-07-18).
+// Global akademi-standard: én rad per PeriodeType med min/maks-% per pyramide-
+// område. Overstyrer de hardkodede defaultene i periode-constraints.ts via en
+// resolver med fallback — finnes ingen rad, gjelder dagens hardkodede verdier
+// (så deploy gir null oppførsel-endring til en coach faktisk setter noe).
+// periodeType lagres som String (PeriodeType-enum-verdi) for å holde endringen
+// additiv (ingen enum-drift). Plain felt, ingen @relation, per gotcha-regelen.
+// Anbefalingsmotor (fase 2) bygges som eget lag oppå denne tabellen.
+model PeriodeFordeling {
+  id            String   @id @default(cuid())
+  periodeType   String   @unique
+  minFys        Int
+  maxFys        Int
+  minTek        Int
+  maxTek        Int
+  minSlag       Int
+  maxSlag       Int
+  minSpill      Int
+  maxSpill      Int
+  minTurn       Int
+  maxTurn       Int
+  oppdatertAvId String?
+  oppdatertAt   DateTime @default(now()) @updatedAt
+
+  @@map("periode_fordelinger")
+}

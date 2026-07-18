@@ -88,6 +88,7 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
       { id: "plan-templates", label: "Plan-maler", icon: "copy", href: "/admin/plan-templates" },
       { id: "teknisk-plan", label: "Teknisk plan", icon: "wrench", href: "/admin/teknisk-plan" },
       { id: "okter", label: "Økter", icon: "clock", href: "/admin/okter" },
+      { id: "periode-fordeling", label: "Periode-fordeling", icon: "sliders", href: "/admin/settings/periode-fordeling" },
       { id: "gjennomfore", label: "Gjennomføre", icon: "play", href: "/admin/gjennomfore" },
       { id: "tournaments", label: "Turneringer", icon: "trophy", href: "/admin/tournaments" },
       { id: "drills", label: "Drills-bibliotek", icon: "dumbbell", href: "/admin/drills" },
