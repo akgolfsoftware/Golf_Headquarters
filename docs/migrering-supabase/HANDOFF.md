@@ -1,5 +1,19 @@
 # HANDOFF — Supabase-kontobytte AK Golf HQ (til ny økt)
 
+## ✅ STATUS 18. juli (sen kveld) — LONDON VALGT, FASE 3–5 FERDIG
+
+To økter bygde hver sin nye DB parallelt. Anders valgte «hva er tryggest» → **London beholdes.**
+
+- **KANONISK PRODUKSJONS-DB: `dcnxoztjtdqoidaekxry`** (eu-west-2 London). Ferdig bygget av
+  cloud-økten: 157 tabeller, 99+2 RLS-policyer, 13 buckets, **2 212 innholdsrader kopiert +
+  verifisert 1:1** (øvelser 931 · maler 92 · mal-økter 874 · baner 38), Anders (ADMIN) +
+  Markus (COACH) inne. Kode omkoblet hit (next.config.ts + proxy.ts), ren 0_baseline, ELITE
+  fjernet, datagolf i schema.prisma. Vercel-region satt til **lhr1** (samlokalisert = rask).
+- **🗑️ SLETT (Anders, dashbord): `uclxccmiztmgxfrafdpq`** (eu-west-1 Irland) — redundant tomt
+  parallell-prosjekt. **ALDRI slett dcnxoztjtdqoidaekxry (det er produksjon).**
+- Beslutning #6 nedenfor (eu-west-1) er **OPPHEVET** → eu-west-2 London + Vercel lhr1.
+- **GJENSTÅR:** Fase 5-rest (Vercel-env for London-prosjektet — DB-passord fra dashbord),
+  Fase 6 (Google-OAuth på London), Fase 7 (live-verifisering), så PR #78 → main.
 
 ## Oppdraget (godkjent plan 2026-07-18)
 
