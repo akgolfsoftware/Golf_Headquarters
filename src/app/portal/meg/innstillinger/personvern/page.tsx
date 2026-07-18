@@ -54,10 +54,11 @@ export default async function PersonvernPage() {
                 Slett kontoen din
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                GDPR artikkel 17 — rett til sletting. Kontoen din deaktiveres
-                umiddelbart. Alle dine data slettes permanent etter{" "}
-                <strong>30 dager</strong>. I 30-dagers-vinduet kan du angre ved
-                å kontakte support.
+                GDPR artikkel 17 — rett til sletting. Forespørselen behandles av
+                en coach eller administrator. Ved godkjenning{" "}
+                <strong>anonymiseres</strong> opplysningene dine — navn, e-post,
+                telefon, bilde og offentlig profil fjernes, mens avidentifisert
+                treningshistorikk beholdes. Har du spørsmål, kontakt support.
               </p>
               <PersonvernActions kind="delete" />
             </div>

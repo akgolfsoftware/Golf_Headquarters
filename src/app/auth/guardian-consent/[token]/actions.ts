@@ -5,6 +5,7 @@ import { audit } from "@/lib/audit";
 import { logError } from "@/lib/error-tracking";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { isSameOriginAction } from "@/lib/security/same-origin";
+import { APP_URL } from "@/lib/app-url";
 
 export type ConfirmGuardianConsentInput = {
   token: string;
@@ -133,7 +134,7 @@ export async function confirmGuardianConsent({
         html: `<p>Hei ${guardianName},</p>
           <p>Takk for at du bekreftet samtykke for <strong>${invitation.player.name}</strong>.</p>
           <p>Du har nå tilgang til foreldreportalen der du kan følge med på barnets utvikling, bookinger og fakturaer.</p>
-          <p><a href="${process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf-hq.vercel.app"}/forelder">Gå til foreldreportalen</a></p>
+          <p><a href="${APP_URL}/forelder">Gå til foreldreportalen</a></p>
           <p>Du kan trekke samtykket når som helst ved å kontakte oss på post@akgolf.no.</p>
           <p>Mvh,<br/>AK Golf Group</p>`,
       });
@@ -145,7 +146,7 @@ export async function confirmGuardianConsent({
           subject: "Foreldresamtykke bekreftet — du kan nå bruke AK Golf",
           html: `<p>Hei ${invitation.player.name},</p>
             <p>Foreldresamtykke fra ${guardianName} er nå bekreftet, og du kan bruke AK Golf-portalen.</p>
-            <p><a href="${process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf-hq.vercel.app"}/portal">Logg inn</a></p>
+            <p><a href="${APP_URL}/portal">Logg inn</a></p>
             <p>Velkommen!<br/>AK Golf Group</p>`,
         });
       }

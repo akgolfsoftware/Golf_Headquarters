@@ -1,3 +1,8 @@
+> **ARKIVERT 2026-07-17** (berget fra PR #40): forslaget om å fysisk kollapse
+> `/portal/mal/*` og `/portal/tren/*` til faner ble ALDRI gjennomført — v2-kanon
+> (det levende Claude Design-prosjektet) bygger dem som egne, kryss-lenkede
+> rute-familier. Beholdt kun som historikk — ikke bygg mot dette.
+
 # Redesign-konsolidering — «redesign færre, tettere skjermer»
 
 **Dato:** 2026-07-08 · **Status:** beslutnings-notat, venter på Anders' avklaringer.

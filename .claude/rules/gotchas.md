@@ -4,6 +4,18 @@ Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekk
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
 Designkanon: `.claude/rules/design-system-regel.md` (v13/golfdata).
 
+### dedupe-tournament-data foretrekker NGF som merge-target — feil for ferske scraper-kilder (oppdaget 2026-07-18)
+- `dedupeTournaments()` velger target med regelen «behold NGF-raden» (den historiske
+  import-kilden hadde mest data). Da Olyo/Østlandstour ble koblet på GolfBox-roboten,
+  fantes det gamle NGF-stubs (fra `import-norske-turneringer.ts`) med SAMME navn+år som
+  de nye robot-radene. Dedupe skjulte de ferske robot-radene (OLYO/OSTLANDS, riktig
+  status + region i notes) bak de tomme NGF-stubbene → serie-/regionfiltrering brøt og
+  Østlandstour beholdt feil COMPLETED-status.
+- Regel: når en fersk scraper-origin kolliderer med en gammel NGF-stub, skal den FERSKE
+  raden være target. Sjekk retningen etter dedupe (`sourceOrigin in (OLYO,OSTLANDS)` +
+  `mergedIntoId != null` skal være ~0). NGF-stubbene hadde 0 entries, så korreksjonen var
+  å snu `mergedIntoId` (robot-rad aktiv, stub merget inn) — reversibel soft-merge.
+
 ### Stripe-abonnement — knapper i appen MÅ kalle Stripe, aldri bare egen DB (oppdaget 2026-07-13)
 - «Avbestill»-knappen satte kun `Subscription.status = CANCELLED` lokalt — Stripe fortsatte å
   belaste kortet. Regel: enhver avbestill/endre-knapp kaller Stripe (`subscriptions.update` med
@@ -86,11 +98,13 @@ rot» men havnet i `src/app/admin/`, og en `launch.json` ble skrevet til
 `src/app/admin/.claude/`. Regel: bruk absolutte stier, og verifiser med `pwd`
 før filoperasjoner mot rot.
 
-### Ytelse: Vercel-region MÅ matche Supabase-region (oppdaget 2026-07-12)
-Supabase ligger i eu-west-1 (Irland). Uten `"regions"` i vercel.json kjørte
-funksjonene i default iad1 (USA) — hver Prisma-spørring krysset Atlanteren og
-sider med mange spørringer fikk TTFB på 0,5–1,1 s. Fix: `"regions": ["dub1"]`
-i vercel.json. Ikke fjern denne uten å flytte databasen samtidig.
+### Ytelse: Vercel-region MÅ matche Supabase-region (oppdatert 2026-07-18)
+Supabase ligger nå i **eu-west-2 (London)** etter kontobyttet (nytt prosjekt
+`dcnxoztjtdqoidaekxry`). Uten `"regions"` i vercel.json kjørte funksjonene i
+default iad1 (USA) — hver Prisma-spørring krysset Atlanteren og sider med mange
+spørringer fikk TTFB på 0,5–1,1 s. Fix: `"regions": ["lhr1"]` i vercel.json
+(London, samlokalisert med DB). Ikke fjern eller endre denne uten å flytte
+databasen samtidig. (Historikk: var eu-west-1/dub1 før 18. juli-byttet.)
 
 ### Dev-server med foreldet Prisma-klient etter `prisma generate` (truffet 2×, 2026-07-13)
 Kjører `npx prisma generate` (nytt felt/enum) mens `next dev` står oppe →

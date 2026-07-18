@@ -120,7 +120,11 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
   const isDone = drill.status === "done";
   const isQueued = drill.status === "queued";
 
-  const progressPct = drill.plannedReps > 0 ? Math.min((drill.repsTotal / drill.plannedReps) * 100, 100) : 0;
+  // FYS-drills har ofte ikke plannedReps (repetitions) satt — bruk repSett/
+  // fysSett som mål-proxy (antall sett) i stedet for å vise en tom 0/0-bar.
+  const fysMaal = drill.pyramide === "FYS" ? drill.fysSett ?? drill.repSett ?? 0 : 0;
+  const maal = drill.plannedReps > 0 ? drill.plannedReps : fysMaal;
+  const progressPct = maal > 0 ? Math.min((drill.repsTotal / maal) * 100, 100) : 0;
 
   let cardClasses =
     "relative overflow-hidden rounded-[14px] border p-4 transition-all duration-200";
@@ -310,6 +314,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         repsHit: active.repsHit,
         successRate:
           active.repsTotal > 0 ? Math.round((active.repsHit / active.repsTotal) * 100) : 0,
+        notes: active.logNotes,
       });
     } catch (err) {
       console.error("[LiveActive] completeDrill feilet", err);
@@ -539,6 +544,34 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             />
           ))}
         </div>
+
+        {/* Neste opp — hint om neste drill i køen (matcher phq-live.jsx) */}
+        {active && !allDone && activeIdx < drills.length - 1 && (() => {
+          const neste = drills[activeIdx + 1];
+          const nesteMaal =
+            neste.pyramide === "FYS"
+              ? neste.fysSett ?? neste.repSett
+                ? `${neste.fysSett ?? neste.repSett} sett`
+                : ""
+              : neste.plannedReps > 0
+                ? `${neste.plannedReps} reps`
+                : "";
+          return (
+            <div className="mt-[10px] flex items-center gap-3 rounded-[14px] border border-background/10 bg-background/5 px-[14px] py-[11px]">
+              <span className="min-w-0 flex-1">
+                <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.09em] text-background/45">
+                  Neste opp
+                </span>
+                <span className="mt-[2px] block truncate text-[13.5px] font-semibold text-background">
+                  {neste.name}
+                </span>
+              </span>
+              {nesteMaal && (
+                <span className="flex-shrink-0 font-mono text-[10.5px] text-background/60">{nesteMaal}</span>
+              )}
+            </div>
+          );
+        })()}
 
         {/* Fullfør aktiv drill — sticky-knapp */}
         {active && !allDone && (

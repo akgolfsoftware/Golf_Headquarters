@@ -115,7 +115,12 @@ export interface WorkbenchV2Actions {
   /** Kun coach-rolle. Utelatt → knappen skjules. */
   duplicateWeek?: (weekOffset?: number) => Promise<{ ok: boolean; count?: number; error?: string }>;
   /** G7/fasit: legg inn mal-uke 1 fra en godkjent planmal (coldstart + bibliotek). */
-  applyTemplate?: (templateId: string) => Promise<{ ok: boolean; error?: string }>;
+  /**
+   * B40 §4 (fasilitetskonsekvens): `justeringer` er myke avviks-meldinger for
+   * økter adaptTemplateWeek droppet pga. manglende fasilitet — se
+   * apply-template-actions.ts. Må vises til brukeren, ikke bare telles.
+   */
+  applyTemplate?: (templateId: string) => Promise<{ ok: boolean; error?: string; justeringer?: string[] }>;
   /** Runde 2: søk i spillerens tekniske oppgaver for "koble til oppgave"-velgeren på drill-rader. */
   searchTeknisk?: (query: string) => Promise<{ id: string; tittel: string; pNummer: string }[]>;
 }

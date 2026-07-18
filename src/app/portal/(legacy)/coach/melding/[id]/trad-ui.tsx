@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { Check, CheckCheck, Paperclip, Send } from "lucide-react";
-import { useToast } from "@/components/shared/toast-provider";
 import { sendReply } from "./actions";
 
 export type TradMelding = {
@@ -36,7 +36,6 @@ export function TradUi({
   meInitials: string;
   initialMeldinger: TradMelding[];
 }) {
-  const toast = useToast();
   const [meldinger, setMeldinger] = useState<TradMelding[]>(initialMeldinger);
   const [draft, setDraft] = useState("");
   const [pending, startTransition] = useTransition();
@@ -121,14 +120,13 @@ export function TradUi({
             ))}
           </div>
           <div className="flex items-end gap-2 rounded-2xl border border-input bg-background p-2">
-            <button
-              type="button"
+            <Link
+              href={`/portal/coach/melding/${threadId}/vedlegg`}
               title="Vedlegg"
-              onClick={() => toast.info("Vedlegg-opplasting kommer snart")}
               className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground"
             >
               <Paperclip className="h-4 w-4" strokeWidth={1.75} />
-            </button>
+            </Link>
             <textarea
               value={draft}
               onChange={(e) => setDraft(e.target.value)}

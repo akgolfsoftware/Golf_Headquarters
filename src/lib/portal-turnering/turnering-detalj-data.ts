@@ -21,7 +21,20 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { sisteSpilteBaneId } from "@/lib/portal/siste-spilte-bane";
 import type { TournamentEntryStatus } from "@/generated/prisma/client";
+
+/**
+ * Norsk kalenderdag (YYYY-MM-DD, Europe/Oslo) for relevans-vinduet under.
+ * ISO-strengene sorterer leksikalsk, så «i dag ∈ [start, slutt]» blir en
+ * enkel streng-sammenligning uten DST-feller (jf. gotcha: Vercel kjører UTC).
+ */
+const OSLO_DAG_FMT = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "Europe/Oslo",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
 
 const MND_LANG = [
   "januar",
@@ -161,6 +174,31 @@ export type TurneringDetalj = {
   } | null;
   /** Spillerens tidligere resultater (tom = card utelates). */
   history: HistoricResult[];
+  /**
+   * Turneringens dato-vindu er nå/aktivt (i dag ∈ [start, slutt] eller
+   * status IN_PROGRESS) → «Start turneringsrunde» kan tilbys en påmeldt spiller.
+   */
+  erRelevantNa: boolean;
+  /**
+   * Bane for en ny turneringsrunde: turneringens egen bane, ellers spillerens
+   * sist spilte bane. null = ingen ærlig bane → «start»-CTA vises ikke
+   * (spilleren loggfører i stedet en runde manuelt og velger bane der).
+   */
+  rundeBaneId: string | null;
+  /**
+   * Spillerens turneringsrunde for denne påmeldingen, hvis den finnes.
+   * Defensiv lesing: kolonnen rounds."tournamentEntryId" finnes kanskje ikke i
+   * preview-DB → tolkes som «ingen runde» (null), aldri en feil.
+   */
+  liveRunde: {
+    id: string;
+    /** Har ført scorekort (HoleScore-rader) — ellers «pågår / ikke ført ennå». */
+    fort: boolean;
+    /** Brutto totalscore så langt (0 før scorekortet er ført). */
+    score: number;
+    /** Antall førte hull. */
+    hullAntall: number;
+  } | null;
 };
 
 /**
@@ -179,6 +217,7 @@ export async function loadTurneringDetalj(
       startDate: true,
       endDate: true,
       location: true,
+      courseId: true,
       format: true,
       tour: true,
       status: true,
@@ -188,6 +227,7 @@ export async function loadTurneringDetalj(
         where: { userId },
         take: 1,
         select: {
+          id: true,
           entryStatus: true,
           category: true,
           notes: true,
@@ -213,6 +253,43 @@ export async function loadTurneringDetalj(
   });
 
   const entryRow = tournament.entries[0] ?? null;
+
+  // Relevans-vindu: IN_PROGRESS, eller i dag ∈ [startDate, endDate] (norsk
+  // kalenderdag). Uten endDate teller kun selve startdagen.
+  const iDag = OSLO_DAG_FMT.format(new Date());
+  const startDag = OSLO_DAG_FMT.format(tournament.startDate);
+  const sluttDag = tournament.endDate
+    ? OSLO_DAG_FMT.format(tournament.endDate)
+    : startDag;
+  const erRelevantNa =
+    tournament.status === "IN_PROGRESS" || (iDag >= startDag && iDag <= sluttDag);
+
+  // Bane for en ny turneringsrunde: turneringens egen bane → sist spilte.
+  const rundeBaneId =
+    tournament.courseId ?? (entryRow ? await sisteSpilteBaneId(userId) : null);
+
+  // Eksisterende turneringsrunde for påmeldingen — defensiv (kolonnen finnes
+  // kanskje ikke i preview-DB; da tolkes det som ingen runde).
+  let liveRunde: TurneringDetalj["liveRunde"] = null;
+  if (entryRow) {
+    try {
+      const runde = await prisma.round.findFirst({
+        where: { tournamentEntryId: entryRow.id },
+        orderBy: { createdAt: "desc" },
+        select: { id: true, score: true, _count: { select: { holeScores: true } } },
+      });
+      if (runde) {
+        liveRunde = {
+          id: runde.id,
+          fort: runde._count.holeScores > 0,
+          score: runde.score,
+          hullAntall: runde._count.holeScores,
+        };
+      }
+    } catch {
+      liveRunde = null;
+    }
+  }
 
   return {
     id: tournament.id,
@@ -242,5 +319,8 @@ export async function loadTurneringDetalj(
       position: r.position,
       score: r.score,
     })),
+    erRelevantNa,
+    rundeBaneId,
+    liveRunde,
   };
 }

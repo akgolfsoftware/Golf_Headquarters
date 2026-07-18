@@ -16,7 +16,7 @@ import type {
   CSNivaa,
   PeriodeType,
 } from "@/generated/prisma/client";
-import { PERIODE_CONSTRAINTS } from "@/lib/portal/training/periode-constraints";
+import { PERIODE_CONSTRAINTS, type PeriodeConstraints } from "@/lib/portal/training/periode-constraints";
 
 // ---------------------------------------------------------------------------
 // Kontrakt
@@ -46,7 +46,19 @@ export type InvariantKontekst = {
   perioder: KanonPeriode[];
   /** Spillerens alder i hele år (for aldersregelen). Null = ukjent → regelen hopper over. */
   spillerAlder?: number | null;
+  /**
+   * Effektive periode-constraints (coach-satt pyramide-fordeling flettet på
+   * defaultene). Utelates → dagens hardkodede `PERIODE_CONSTRAINTS` brukes, så
+   * invariantene forblir rene funksjoner og eksisterende kallere/tester er uendret.
+   * Resolveren `hentEffektivePeriodeConstraints` (periode-fordeling.ts) leverer denne.
+   */
+  constraints?: Record<PeriodeType, PeriodeConstraints>;
 };
+
+/** Effektive constraints for en kontekst — coach-satt om oppgitt, ellers default. */
+function C(ctx: InvariantKontekst): Record<PeriodeType, PeriodeConstraints> {
+  return ctx.constraints ?? PERIODE_CONSTRAINTS;
+}
 
 export type InvariantResultat = {
   ok: boolean;
@@ -166,7 +178,7 @@ const tekMin: Invariant = {
       if (total === 0) continue;
       const tek = pyramideMinutter(okter).TEK;
       const pst = Math.round((tek / total) * 100);
-      const grense = PERIODE_CONSTRAINTS[periode.type].minPyramide.TEK;
+      const grense = C(ctx)[periode.type].minPyramide.TEK;
       if (pst < grense) {
         return {
           ok: false,
@@ -286,7 +298,7 @@ const lFaseTillatt: Invariant = {
       if (o.lFase == null) continue;
       const p = periodeFor(o.dato, ctx.perioder);
       if (!p) continue;
-      const tillatt = Object.keys(PERIODE_CONSTRAINTS[p.type].lFaseFordeling) as LFase[];
+      const tillatt = Object.keys(C(ctx)[p.type].lFaseFordeling) as LFase[];
       if (!tillatt.includes(o.lFase)) brudd.push(o);
     }
     if (brudd.length === 0) return OK();
@@ -312,7 +324,7 @@ const pyramideMaks: Invariant = {
       if (total === 0) continue;
       for (const omr of omrader) {
         const pst = Math.round((fordeling[omr] / total) * 100);
-        const maks = PERIODE_CONSTRAINTS[periode.type].maxPyramide[omr];
+        const maks = C(ctx)[periode.type].maxPyramide[omr];
         if (pst > maks) {
           return {
             ok: false,
@@ -337,7 +349,7 @@ const volumUkeMaks: Invariant = {
   valider(ctx) {
     for (const [uke, { okter, periode }] of perUke(ctx)) {
       const total = okter.reduce((s, o) => s + o.varighetMin, 0);
-      const maks = PERIODE_CONSTRAINTS[periode.type].volumPerUke.maxMin;
+      const maks = C(ctx)[periode.type].volumPerUke.maxMin;
       if (total > maks) {
         return {
           ok: false,

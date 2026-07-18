@@ -57,20 +57,18 @@ export async function subscribeToPush(): Promise<PushSubscription | null> {
 }
 
 /**
- * Server-side: sender push til en gitt subscription.
- * Stub — krever `web-push`-pakke + faktisk implementasjon.
+ * @deprecated Bruk `sendPush(userId, payload)` fra `@/lib/push/send` — den er
+ * fullt implementert (web-push + VAPID + 404/410-opprydding) og kobler mot
+ * brukerens lagrede subscriptions. Denne per-subscription-varianten er ubrukt
+ * og beholdes kun for bakoverkompatibilitet.
  */
 export async function sendPushNotification(
   _subscription: PushSubscriptionJSON,
   _payload: PushPayload,
 ): Promise<{ ok: boolean; error?: string }> {
-  // TODO V2.1: implementer med `web-push`-pakke.
-  // import webpush from "web-push";
-  // webpush.setVapidDetails("mailto:...", VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
-  // await webpush.sendNotification(subscription, JSON.stringify(payload));
   return {
     ok: false,
-    error: "push-not-configured: install web-push + sett VAPID-keys i env",
+    error: "deprecated: bruk sendPush(userId, payload) fra @/lib/push/send",
   };
 }
 

@@ -3,7 +3,6 @@ import { ArrowLeft, Paperclip } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { TradUi } from "./trad-ui";
-import { MeldingHeaderKnapper } from "./melding-header-knapper";
 
 type RouteProps = {
   params: Promise<{ id: string }>;
@@ -103,7 +102,6 @@ export default async function MeldingstradPage({ params }: RouteProps) {
           >
             <Paperclip className="h-4 w-4" strokeWidth={1.75} />
           </Link>
-          <MeldingHeaderKnapper />
         </div>
       </header>
 

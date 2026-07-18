@@ -28,6 +28,10 @@ export async function GET(req: Request): Promise<NextResponse> {
     const usersToDelete = await prisma.user.findMany({
       where: {
         deletedAt: { lt: cutoff, not: null },
+        // D5 (2026-07-18): anonymiserte konti setter deletedAt for å falle ut av
+        // aktiv-filtre, men skal ALDRI hard-slettes (avidentifisert historikk
+        // beholdes). Ekskluder dem her.
+        anonymisertAt: null,
       },
       select: { id: true, email: true, deletedAt: true },
       take: 100,

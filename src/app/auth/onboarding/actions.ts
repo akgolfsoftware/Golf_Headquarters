@@ -16,6 +16,7 @@ import { emailLayout, primaryButton } from "@/lib/email/templates/shared";
 import { logError } from "@/lib/error-tracking";
 import { phone, email, optStr } from "@/lib/validation/schemas";
 import { byggTreningPreferanser, fasiliteterTilFacilityPrefs, sesongmaalTilTittel } from "@/lib/onboarding/trening-preferanser";
+import { APP_URL } from "@/lib/app-url";
 
 const SaveOnboardingProfileSchema = z.object({
   phone: phone.nullable().optional(),
@@ -57,10 +58,10 @@ export type SpillerOnboardingData = {
   traningsdager?: string[];
   tidPaaDagen?: string;
   drivkraft?: string[];
-  // Steg 5 — Coach + abonnement
+  // Steg 4 — Coach + abonnement
   selectedCoach?: string;
   selectedTier?: string;
-  // Steg 6 — Avtaler
+  // Steg 5 — Avtaler
   acceptedTerms?: boolean;
   acceptedPrivacy?: boolean;
 };
@@ -268,7 +269,7 @@ export async function completeOnboarding(subscribe?: string): Promise<void> {
     onboarding: {
       ...existing,
       completedAt: new Date().toISOString(),
-      stepCompleted: 7,
+      stepCompleted: 5,
     },
     // Re-onboarding overskriver — nyeste svar vinner.
     trening: treningPrefs,
@@ -429,8 +430,7 @@ export async function setDateOfBirthAndCheckMinor(input: {
       // Send e-post til forelder
       try {
         const klient = resendKlient();
-        const appUrl =
-          process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf-hq.vercel.app";
+        const appUrl = APP_URL;
         const consentUrl = `${appUrl}/auth/guardian-consent/${invitation.token}`;
 
         await klient.emails.send({

@@ -10,6 +10,7 @@ import {
   type KanonPeriode,
   type Scope,
 } from "./invarianter";
+import { hentEffektivePeriodeConstraints } from "@/lib/portal/training/periode-fordeling";
 
 /**
  * Valideringslag — leser plandata fra DB (TrainingPlanSession + SeasonPlan/PeriodBlock
@@ -73,7 +74,7 @@ async function byggKontekst(planId: string, naa: Date): Promise<InvariantKonteks
   });
   if (!plan) return null;
 
-  const [okter, user, seasonPlans] = await Promise.all([
+  const [okter, user, seasonPlans, constraints] = await Promise.all([
     prisma.trainingPlanSession.findMany({
       where: { planId },
       select: { id: true, scheduledAt: true, durationMin: true, pyramidArea: true, lFase: true, csNivaa: true },
@@ -83,6 +84,8 @@ async function byggKontekst(planId: string, naa: Date): Promise<InvariantKonteks
       where: { userId: plan.userId },
       select: { periodBlocks: { select: { lPhase: true, startDate: true, endDate: true } } },
     }),
+    // Coach-satt pyramide-fordeling (fase 1) — defaulter til hardkodede constraints.
+    hentEffektivePeriodeConstraints(),
   ]);
 
   const kanonOkter: KanonOkt[] = okter.map((o) => ({
@@ -102,7 +105,7 @@ async function byggKontekst(planId: string, naa: Date): Promise<InvariantKonteks
     })
     .filter((p): p is KanonPeriode => p !== null);
 
-  return { okter: kanonOkter, perioder, spillerAlder: alderFra(user?.dateOfBirth ?? null, naa) };
+  return { okter: kanonOkter, perioder, spillerAlder: alderFra(user?.dateOfBirth ?? null, naa), constraints };
 }
 
 function aggreger(brudd: BruddRad[]): PlanValidering {
@@ -151,6 +154,7 @@ export async function validerOkt(sessionId: string, naa: Date = new Date()): Pro
     okter: full.okter.filter((o) => o.id === sessionId),
     perioder: full.perioder,
     spillerAlder: full.spillerAlder,
+    constraints: full.constraints,
   };
   return aggreger(kjorOgMap(ctx, "okt"));
 }

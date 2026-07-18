@@ -38,9 +38,10 @@ import {
   Icon,
   HurtigOpprett,
   foreslaTid,
+  BunnArk,
 } from "@/components/v2";
 import { type AkseKey } from "@/lib/v2/tokens";
-import type { KalenderData, KalOkt } from "@/app/admin/kalender/data";
+import type { KalenderData, KalDag, KalOkt } from "@/app/admin/kalender/data";
 
 /** true på klient etter mount når viewport < 768px (styrer kun layout-tetthet). */
 function useMobile(): boolean {
@@ -103,6 +104,7 @@ function OktBlokk({ okt, onSerieClick }: { okt: KalOkt; onSerieClick?: (okt: Kal
       </div>
       <span style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{okt.navn}</span>
       {okt.erHendelse && <MikroMeta icon="x-circle">Hendelse</MikroMeta>}
+      {okt.erOppgave && <MikroMeta icon="list">Oppgave-frist</MikroMeta>}
       {okt.sted && <MikroMeta icon="map-pin">{okt.sted}</MikroMeta>}
       {okt.serie && <SerieMerke tekst={okt.serie} />}
     </div>
@@ -226,7 +228,7 @@ function DagKolonne({ dag, onSerieClick, onFlytt, flytterId, onTomLuke }: { dag:
         <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, padding: "8px 2px" }}>Ingen økter</span>
       ) : (
         dag.okter.map((o) =>
-          onFlytt && !o.serie ? (
+          onFlytt && !o.serie && !o.erOppgave ? (
             <div
               key={o.id}
               draggable
@@ -257,6 +259,88 @@ function DagKolonne({ dag, onSerieClick, onFlytt, flytterId, onTomLuke }: { dag:
   );
 }
 
+/* ── DagOkterListe — én dags økter som OktBlokk-liste + «Ny booking eller økt»-
+   inngang. Delt av desktop dag-visning OG mobilens dag-detalj-BunnArk, så
+   opprett-inngangen (tom luke → HurtigOpprett) er identisk begge steder. ── */
+function DagOkterListe({ dag, onSerieClick, onTomLuke }: { dag: KalDag; onSerieClick: (okt: KalOkt) => void; onTomLuke: (datoISO: string, kl: string) => void }) {
+  return (
+    <>
+      {dag.okter.length === 0 ? (
+        <TomTilstand icon="calendar" title="Ingen økter denne dagen" sub="Dagen er åpen — rom for planlegging." />
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {dag.okter.map((o) => (
+            <OktBlokk key={o.id} okt={o} onSerieClick={onSerieClick} />
+          ))}
+        </div>
+      )}
+      {/* I1: tom luke → samme hurtigvelger med tid etter siste økt. */}
+      <button
+        type="button"
+        onClick={() => onTomLuke(dag.datoISO, foreslaTid(dag.okter[dag.okter.length - 1]?.kl))}
+        className="v2-press v2-focus"
+        style={{ appearance: "none", cursor: "pointer", marginTop: 10, width: "100%", minHeight: 44, borderRadius: 10, border: `1px dashed ${T.border}`, background: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, color: T.mut, fontFamily: T.ui, fontSize: 12, fontWeight: 600 }}
+      >
+        <Icon name="plus" size={13} />
+        Ny booking eller økt
+      </button>
+    </>
+  );
+}
+
+/* ── MobilDagSeksjon — én ukedag som liste-rad på mobil (M3). Hele dagen er ETT
+   tap-mål (ingen dra-og-slipp på mobil) → åpner dag-detalj i BunnArk. Viser
+   dato-merke, økt-antall og et kompakt sammendrag av dagens økter (tid · navn ·
+   akse). Rene visnings-spans inni knappen — ingen nøstede tap-mål. ── */
+function MobilDagSeksjon({ dag, onApne }: { dag: KalDag; onApne: () => void }) {
+  const antall = dag.okter.length;
+  const antallTekst = antall === 0 ? "Ingen økter" : `${antall} ${antall === 1 ? "økt" : "økter"}`;
+  return (
+    <button
+      type="button"
+      onClick={onApne}
+      className="v2-press v2-focus"
+      aria-label={`Vis ${dag.dag} ${dag.dato} — ${antallTekst.toLowerCase()}`}
+      style={{
+        appearance: "none",
+        textAlign: "left",
+        width: "100%",
+        cursor: "pointer",
+        background: dag.idag ? `${T.tint}, ${T.panel}` : T.panel,
+        border: `1px solid ${dag.idag ? T.borderS : T.border}`,
+        borderRadius: T.rCard,
+        padding: "12px 14px",
+        display: "flex",
+        flexDirection: "column",
+        gap: antall > 0 ? 10 : 0,
+      }}
+    >
+      <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <span style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: 44, flex: "none", borderRadius: T.rRow, background: T.panel2, border: `1px solid ${dag.idag ? T.borderS : T.border}`, padding: "6px 0" }}>
+          <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: dag.idag ? T.fg : T.mut }}>{dag.dag}</span>
+          <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: dag.idag ? T.fg : T.fg2, fontVariantNumeric: "tabular-nums" }}>{dag.dato}</span>
+        </span>
+        <span style={{ flex: 1, minWidth: 0, fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: antall > 0 ? T.fg : T.mut }}>{antallTekst}</span>
+        {dag.idag && <StatusPill>Nå</StatusPill>}
+        <Icon name="chevron-right" size={16} style={{ color: T.mut, flex: "none" }} />
+      </span>
+      {antall > 0 && (
+        <span style={{ display: "flex", flexDirection: "column", gap: 6, paddingLeft: 54 }}>
+          {dag.okter.map((o) => (
+            <span key={o.id} style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+              <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.fg2, fontVariantNumeric: "tabular-nums", flex: "none" }}>{o.kl}</span>
+              <span style={{ width: 5, height: 5, borderRadius: 9999, background: o.akse ? T.ax[o.akse as AkseKey] : T.mut, flex: "none" }} />
+              <span style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex: 1, minWidth: 0 }}>{o.navn}</span>
+              {o.serie && <Icon name="repeat" size={11} style={{ color: T.mut, flex: "none" }} />}
+              {o.naa && <StatusPill tone="down">Live</StatusPill>}
+            </span>
+          ))}
+        </span>
+      )}
+    </button>
+  );
+}
+
 export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   const mobile = useMobile();
   const router = useRouter();
@@ -277,6 +361,12 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   // I1: trykk på tom luke → hurtigvelger (Ny booking / Ny økt) med tid fra luken.
   const [tomLuke, setTomLuke] = useState<{ dato: string; kl: string } | null>(null);
   const onTomLuke = (dato: string, kl: string) => setTomLuke({ dato, kl });
+  // Mobil (M3): valgt dag vises som dag-detalj i et BunnArk (tap→detalj).
+  const [dagAark, setDagArk] = useState<KalDag | null>(null);
+  // Sekundær-overlay åpnet FRA dag-arket må først lukke arket (z-rekkefølge:
+  // SerieMeny/HurtigOpprett ligger under BunnArk), ellers havner det bak.
+  const serieFraArk = (okt: KalOkt) => { setDagArk(null); setValgtSerieOkt(okt); };
+  const tomLukeFraArk = (dato: string, kl: string) => { setDagArk(null); setTomLuke({ dato, kl }); };
 
   // Nav-piler (ekte uke-navigasjon via ?uke=).
   const pil = (href: string, ikon: string, label: string) => (
@@ -349,30 +439,50 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     </div>
   ) : null;
 
-  // ── Mobil: stablede dag-kort (kun dager med økter) ──
+  // ── Mobil (M3, bølge 4): LISTE-først, ikke rutenett. Uke = én seksjon per
+  //    ukedag (stablet vertikalt); tap på en dag → dag-detalj i BunnArk. Dag =
+  //    én dag ekspandert. All interaksjon er TAP — ingen dra-og-slipp (desktop-
+  //    only). PillVelger, serie-merker og opprett-inngang er tap-baserte. ──
   if (mobile) {
-    const dagerMedOkter = data.dager.filter((d) => d.okter.length > 0);
+    let mobilKropp: React.ReactNode;
+    if (visning === "maned") {
+      mobilKropp = (
+        <Kort>
+          <TomTilstand icon="calendar" title="Månedsvisning kommer" sub="Denne forhåndsvisningen laster uke-data. Måned kobles i en senere bølge." />
+        </Kort>
+      );
+    } else if (visning === "dag") {
+      const valgt = data.dager.find((d) => d.idag) ?? data.dager[0];
+      mobilKropp = (
+        <Kort eyebrow={`${valgt.dag} ${valgt.dato}${valgt.idag ? " · i dag" : ""}`}>
+          <DagOkterListe dag={valgt} onSerieClick={setValgtSerieOkt} onTomLuke={onTomLuke} />
+        </Kort>
+      );
+    } else {
+      // Uke: alle 7 ukedager som stablede liste-seksjoner, tap → dag-detalj.
+      mobilKropp = (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {data.dager.map((d, i) => (
+            <MobilDagSeksjon key={i} dag={d} onApne={() => setDagArk(d)} />
+          ))}
+        </div>
+      );
+    }
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {hode}
-        {dagerMedOkter.length === 0 ? (
-          <Kort>
-            <TomTilstand icon="calendar" title="Ingen økter denne uka" sub="Uka er åpen — rom for planlegging." />
-          </Kort>
-        ) : (
-          dagerMedOkter.map((d, i) => (
-            <Kort key={i} eyebrow={`${d.dag} ${d.dato}${d.idag ? " · i dag" : ""}`}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {d.okter.map((o) => (
-                  <OktBlokk key={o.id} okt={o} onSerieClick={setValgtSerieOkt} />
-                ))}
-              </div>
-            </Kort>
-          ))
-        )}
-        {serieHint}
+        {mobilKropp}
+        {visning === "uke" && serieHint}
         {innsikt}
+        <BunnArk
+          open={dagAark !== null}
+          onClose={() => setDagArk(null)}
+          tittel={dagAark ? `${dagAark.dag} ${dagAark.dato}${dagAark.idag ? " · i dag" : ""}` : undefined}
+        >
+          {dagAark && <DagOkterListe dag={dagAark} onSerieClick={serieFraArk} onTomLuke={tomLukeFraArk} />}
+        </BunnArk>
         {valgtSerieOkt && <SerieMeny okt={valgtSerieOkt} onClose={() => setValgtSerieOkt(null)} mobile />}
+        {tomLuke && <HurtigOpprett dato={tomLuke.dato} klokkeslett={tomLuke.kl} onLukk={() => setTomLuke(null)} />}
       </div>
     );
   }
@@ -391,25 +501,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     const valgt = data.dager.find((d) => d.idag) ?? data.dager[0];
     kropp = (
       <Kort eyebrow={`${valgt.dag} ${valgt.dato}${valgt.idag ? " · i dag" : ""}`}>
-        {valgt.okter.length === 0 ? (
-          <TomTilstand icon="calendar" title="Ingen økter denne dagen" sub="Dagen er åpen — rom for planlegging." />
-        ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {valgt.okter.map((o) => (
-              <OktBlokk key={o.id} okt={o} onSerieClick={setValgtSerieOkt} />
-            ))}
-          </div>
-        )}
-        {/* I1: tom luke i dag-visningen → samme hurtigvelger med tid etter siste økt. */}
-        <button
-          type="button"
-          onClick={() => onTomLuke(valgt.datoISO, foreslaTid(valgt.okter[valgt.okter.length - 1]?.kl))}
-          className="v2-press v2-focus"
-          style={{ appearance: "none", cursor: "pointer", marginTop: 10, width: "100%", minHeight: 44, borderRadius: 10, border: `1px dashed ${T.border}`, background: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, color: T.mut, fontFamily: T.ui, fontSize: 12, fontWeight: 600 }}
-        >
-          <Icon name="plus" size={13} />
-          Ny booking eller økt
-        </button>
+        <DagOkterListe dag={valgt} onSerieClick={setValgtSerieOkt} onTomLuke={onTomLuke} />
       </Kort>
     );
   } else {

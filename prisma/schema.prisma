@@ -356,6 +356,14 @@ model User {
   // Cron /api/cron/cleanup-deleted-accounts sletter permanent etter 30 dager.
   deletedAt DateTime?
 
+  // GDPR anonymisering (D5, 2026-07-18). Settes ved coach-godkjent anonymisering
+  // (utforGdprSletting). Da settes OGSÅ deletedAt = now() så kontoen faller ut av
+  // alle «aktiv bruker»-filtre (deletedAt: null) uten å røre de ~40 kallstedene —
+  // MEN hard-delete-cronen ekskluderer anonymisertAt != null, så raden BEHOLDES
+  // (avidentifisert treningshistorikk overlever). Skiller anonymisering fra vanlig
+  // soft-delete, som fortsatt hard-slettes etter 30 dager.
+  anonymisertAt DateTime?
+
   // GDPR art. 8 — mindreårig + foreldresamtykke (P17).
   // Norge: 16 år er aldersgrense for å samtykke selv til behandling av persondata.
   dateOfBirth             DateTime?
@@ -379,6 +387,8 @@ model User {
   // PlayerHQ-relasjoner
   trainingPlans    TrainingPlan[]
   rounds           Round[]
+  gameplanHull     GameplanHull[]
+  gameplanSoner    GameplanSone[]
   testResults      TestResult[]
   testSessions     TestSession[]
   testAssignments       TestAssignment[] @relation("PlayerTestAssignments")
@@ -1251,6 +1261,9 @@ model Round {
   // 'turnering' | 'trening' — null = ukjent (eksisterende runder forblir umerket)
   roundType    String?
   notes        String?
+  // D6c live turneringsrunde (godkjent 2026-07-17): knytter en runde til en
+  // TournamentEntry. Plain id uten @relation — additiv per gotcha-regelen.
+  tournamentEntryId String?
   createdAt    DateTime @default(now())
 
   user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -1259,6 +1272,7 @@ model Round {
   holeScores HoleScore[]
 
   @@index([userId, playedAt])
+  @@index([tournamentEntryId])
   @@map("rounds")
 }
 
@@ -2201,6 +2215,54 @@ model CourseHole {
   @@unique([baneId, holeNumber])
   @@index([baneId])
   @@map("course_holes")
+
+  gameplanHull  GameplanHull[]
+  gameplanSoner GameplanSone[]
+}
+
+// Gameplan (B30/B39-æraen — omdøpt fra "Baneguide") interaktiv hull-for-hull-planlegging.
+// Spillerens eget sikte for hullet — ETT per (hull, spiller). Carry/igjen regnes
+// live fra tee/green-GPS på CourseHole, tastes aldri (haversine, se lib/gameplan/dispersion.ts).
+model GameplanHull {
+  id        String   @id @default(cuid())
+  holeId    String
+  userId    String
+  siktLat   Float
+  siktLng   Float
+  notat     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  hole CourseHole @relation(fields: [holeId], references: [id], onDelete: Cascade)
+  user User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([holeId, userId])
+  @@index([userId])
+  @@map("gameplan_hull")
+}
+
+// Sone spilleren (eller auto-utledet fra kartdata) har malt på hullet: "bra" å
+// misse i, eller "aldri" hit. Sirkel (senter + radius) — enklest form som
+// dekker prototypen; polygon kan legges til senere uten å røre denne raden.
+model GameplanSone {
+  id          String   @id @default(cuid())
+  holeId      String
+  userId      String
+  // "bra" | "aldri"
+  type        String
+  senterLat   Float
+  senterLng   Float
+  radiusMeter Float
+  // true for auto-utledede soner (vann/bunker/OB fra kartdata) — spilleren kan
+  // ikke slette disse, kun sine egne malte soner (se lib/gameplan/actions.ts).
+  laast       Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  hole CourseHole @relation(fields: [holeId], references: [id], onDelete: Cascade)
+  user User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([holeId, userId])
+  @@map("gameplan_sone")
 }
 
 // Norske + internasjonale spillere vi følger på /turneringer.
@@ -4638,4 +4700,89 @@ model MarketingPost {
 
   @@index([scheduledAt])
   @@map("marketing_posts")
+}
+
+// ── Moderering/GDPR-kø (D5, besluttet 2026-07-17) ────────────────────────────
+// Plain String-referanser uten @relation — holder endringen additiv (gotcha-regelen).
+
+model ModerationCase {
+  id           String    @id @default(cuid())
+  type         String // "RAPPORTERT_INNHOLD" | "GDPR_SLETTING" — zod-håndhevet i actions
+  status       String    @default("OPEN") // "OPEN" | "APPROVED" | "REJECTED" | "EXECUTED"
+  userId       String // spilleren saken gjelder
+  reporterId   String? // hvem som meldte (null ved GDPR-egenforespørsel)
+  targetType   String? // f.eks. "VIDEO", "KOMMENTAR" — polymorf uten relasjon
+  targetId     String?
+  begrunnelse  String?
+  resolvedById String?
+  resolvedAt   DateTime?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  @@index([status, type])
+  @@index([userId])
+  @@map("moderation_cases")
+}
+
+// (D6a hull-for-hull, besluttet 2026-07-17: bruker den EKSISTERENDE HoleScore-
+// modellen lenger opp i fila — Bolk 6-notatet om at modellen manglet var stale.)
+
+// ── Fokus-spiller pin (D3, godkjent 2026-07-17) ──────────────────────────────
+// Coach pinner spillere øverst i cockpiten. Plain String-referanser (ingen
+// @relation) — additiv per gotcha-regelen. Unik per (coach, spiller).
+
+model CoachPinnedPlayer {
+  id        String   @id @default(cuid())
+  coachId   String
+  playerId  String
+  createdAt DateTime @default(now())
+
+  @@unique([coachId, playerId])
+  @@index([coachId])
+  @@map("coach_pinned_players")
+}
+
+// Coach-satt pyramide-fordeling per periode (fase 1, godkjent 2026-07-18).
+// Global akademi-standard: én rad per PeriodeType med min/maks-% per pyramide-
+// område. Overstyrer de hardkodede defaultene i periode-constraints.ts via en
+// resolver med fallback — finnes ingen rad, gjelder dagens hardkodede verdier
+// (så deploy gir null oppførsel-endring til en coach faktisk setter noe).
+// periodeType lagres som String (PeriodeType-enum-verdi) for å holde endringen
+// additiv (ingen enum-drift). Plain felt, ingen @relation, per gotcha-regelen.
+// Anbefalingsmotor (fase 2) bygges som eget lag oppå denne tabellen.
+model PeriodeFordeling {
+  id            String   @id @default(cuid())
+  periodeType   String   @unique
+  minFys        Int
+  maxFys        Int
+  minTek        Int
+  maxTek        Int
+  minSlag       Int
+  maxSlag       Int
+  minSpill      Int
+  maxSpill      Int
+  minTurn       Int
+  maxTurn       Int
+  oppdatertAvId String?
+  oppdatertAt   DateTime @default(now()) @updatedAt
+
+  @@map("periode_fordelinger")
+}
+
+/// Sync-state for DataGolf-endepunkter. Skrives ikke av denne appen i dag,
+/// men beholdes fordi ak-golf-intelligence-tjenesten kan bruke tabellen.
+/// (Reconciliert fra pre-eksisterende prod-drift 2026-07-18; ligger i den nye
+/// London-DB-en.)
+model DatagolfSyncState {
+  endpoint     String
+  paramsHash   String    @map("params_hash")
+  paramsJson   String?   @map("params_json")
+  s3Key        String?   @map("s3_key")
+  rowCount     Int?      @default(0) @map("row_count")
+  lastStatus   Int?      @map("last_status")
+  lastError    String?   @map("last_error")
+  lastSyncedAt DateTime? @map("last_synced_at") @db.Timestamptz(6)
+
+  @@id([endpoint, paramsHash])
+  @@map("datagolf_sync_state")
 }

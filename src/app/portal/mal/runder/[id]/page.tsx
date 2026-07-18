@@ -77,6 +77,44 @@ export default async function RundeDetaljPage({
     runde.sgSource !== "beregnet" &&
     runde.sgSource !== "manual";
 
+  // Scorekort-statistikk (D6a): UT/INN/TOTALT + putter/fairway/GIR-aggregater
+  // — kun fra ekte HoleScore-rader (aldri fra shot-fallback), og kun for
+  // felter som faktisk er logget (null = ikke logget, vises ikke).
+  const hs = runde.holeScores;
+  const delsum = (xs: typeof hs) => ({
+    score: xs.reduce((sum, h) => sum + h.strokes, 0),
+    par: xs.reduce((sum, h) => sum + h.par, 0),
+    antall: xs.length,
+  });
+  const medPutter = hs.filter((h) => h.putts != null);
+  const medFairway = hs.filter((h) => h.fairway != null);
+  const medGir = hs.filter((h) => h.gir != null);
+  const hullStat =
+    hs.length > 0
+      ? {
+          ut: delsum(hs.filter((h) => h.holeNumber <= 9)),
+          inn: delsum(hs.filter((h) => h.holeNumber > 9)),
+          putter:
+            medPutter.length > 0
+              ? {
+                  totalt: medPutter.reduce((sum, h) => sum + (h.putts ?? 0), 0),
+                  hull: medPutter.length,
+                }
+              : null,
+          fairway:
+            medFairway.length > 0
+              ? {
+                  treff: medFairway.filter((h) => h.fairway).length,
+                  av: medFairway.length,
+                }
+              : null,
+          gir:
+            medGir.length > 0
+              ? { treff: medGir.filter((h) => h.gir).length, av: medGir.length }
+              : null,
+        }
+      : null;
+
   const sgKategorier = (
     [
       { akse: "OTT", sg: runde.sgOtt },
@@ -105,6 +143,7 @@ export default async function RundeDetaljPage({
     visKjedeStatus,
     antallKomplette,
     antallHullMedScore: runde.holeScores.length,
+    hullStat,
     granulaerSg: {
       tee: runde.sgTee,
       app200: runde.sgApp200,

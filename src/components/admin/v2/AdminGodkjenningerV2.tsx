@@ -200,7 +200,7 @@ function SakHandlinger({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: bo
 function SakKort({ row, mobile }: { row: SakMedAntall; mobile: boolean }) {
   return (
     <Kort
-      pad="16px 18px"
+      pad={mobile ? "14px 15px" : "16px 18px"}
       style={row.urgent ? { borderLeft: `3px solid ${T.warn}` } : undefined}
     >
       <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
@@ -241,7 +241,7 @@ function SakKort({ row, mobile }: { row: SakMedAntall; mobile: boolean }) {
           {row.diffPreview && (
             <div style={{ display: "flex", alignItems: "flex-start", gap: 8, marginTop: 10, padding: "8px 11px", borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}` }}>
               <Icon name="layers" size={13} style={{ color: T.lime, flex: "none", marginTop: 1 }} />
-              <span style={{ fontFamily: T.mono, fontSize: 11, lineHeight: 1.5, color: T.fg2 }}>
+              <span style={{ fontFamily: T.mono, fontSize: 11, lineHeight: 1.5, color: T.fg2, minWidth: 0, overflowWrap: "anywhere" }}>
                 {row.diffPreview}
               </span>
             </div>

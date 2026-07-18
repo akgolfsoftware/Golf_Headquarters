@@ -16,6 +16,7 @@ import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { GrupperV2, type GrupperData, type GruppeV2, type FastTid } from "@/components/admin/v2/GrupperV2";
 import { TilbakeLenke } from "@/components/v2";
+import { NyGruppeButton } from "./grupper-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -41,6 +42,13 @@ function minutter(hhmm: string): number {
 
 export default async function V2GrupperPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+
+  const coachesRaw = await prisma.user.findMany({
+    where: { role: "COACH", deletedAt: null },
+    select: { id: true, name: true },
+    orderBy: { name: "asc" },
+  });
+  const coaches = coachesRaw.map((c) => ({ id: c.id, name: c.name ?? "Ukjent" }));
 
   const groups = await prisma.group.findMany({
     select: {
@@ -107,7 +115,7 @@ export default async function V2GrupperPage() {
   return (
     <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/spillere">Stall</TilbakeLenke>
-      <GrupperV2 data={data} />
+      <GrupperV2 data={data} actions={{ NyGruppeButton }} coaches={coaches} />
     </V2Shell>
   );
 }

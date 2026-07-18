@@ -1,23 +1,25 @@
 "use client";
 
 /**
- * InviteFriendModal — bottomsheet på mobile, modal på desktop.
+ * InviteFriendModal — v2-overlay (mørkt bakteppe + panel-kort).
  *
  * Brukes når host av en delt TrainingSessionV2 vil invitere spillere.
- * Tre tabs: "Min gruppe" / "Akademi" / "Søk".
+ * Tre faner: "Min gruppe" / "Akademi" / "Søk".
  *
  * Optimistic UI med useTransition: trykk "Inviter" → server action kjører
  * i bakgrunnen, UI markerer som "Invitert" umiddelbart, ruller tilbake ved
  * feil. Maks-deltakere-counter (X av Y plasser) håndheves klient-side i
  * tillegg til server-validering.
+ *
+ * v2-restyling 17. juli 2026 (Team F3): ModalSkall-idiomet (jf. MalDetaljV2)
+ * med T-tokens/v2-primitiver erstatter legacy bottomsheet/Tailwind.
+ * Invitasjons-logikken (inviterSpiller-action, optimistic state, filter,
+ * counter) er uendret.
  */
 
 import { useMemo, useState, useTransition } from "react";
-import { Check, Search, UserPlus, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { avatarBg, initialsFromName } from "@/lib/avatar-colors";
-import { Tabs, TabList, Tab } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
+import { T, Caps, PillTabs, AvatarInit, TomTilstand, Knapp } from "@/components/v2";
+import { Icon } from "@/components/v2/icon";
 import { inviterSpiller } from "./invite-actions";
 
 export type InviteSpiller = {
@@ -113,88 +115,69 @@ export function InviteFriendModal({
   if (!open) return null;
 
   return (
-    <>
-      {/* Scrim */}
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Inviter spillere"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      style={{ position: "fixed", inset: 0, zIndex: 90, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px", background: "rgba(0,0,0,0.55)" }}
+    >
       <div
-        className="fixed inset-0 z-40 bg-foreground/50 backdrop-blur-sm"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-
-      {/* Sheet/modal */}
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label="Inviter spillere"
-        className={cn(
-          "fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col rounded-t-3xl bg-card shadow-2xl",
-          "sm:inset-auto sm:left-1/2 sm:top-1/2 sm:max-h-[80vh] sm:w-full sm:max-w-lg sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl",
-        )}
+        className="v2-sheet-in"
+        style={{ width: "100%", maxWidth: 480, maxHeight: "86vh", display: "flex", flexDirection: "column", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, boxShadow: "0 24px 60px rgba(0,0,0,0.5)", overflow: "hidden" }}
       >
-        {/* Drag handle (mobile) */}
-        <div className="flex justify-center pb-1 pt-2.5 shrink-0 sm:hidden">
-          <div className="h-1.5 w-10 rounded-full bg-border" />
-        </div>
-
         {/* Header */}
-        <div className="flex shrink-0 items-center justify-between border-b border-border px-6 py-4">
+        <div style={{ flex: "none", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, padding: "18px 20px 14px", borderBottom: `1px solid ${T.border}` }}>
           <div>
-            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-              Trene sammen
-            </p>
-            <h2 className="font-display mt-0.5 text-lg font-semibold tracking-tight text-foreground">
+            <Caps size={9}>Trene sammen</Caps>
+            <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: T.fg, margin: "6px 0 0", lineHeight: 1.2 }}>
               Inviter en kompis
             </h2>
           </div>
           <button
             type="button"
-            onClick={onClose}
             aria-label="Lukk"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            onClick={onClose}
+            className="v2-press v2-focus"
+            style={{ appearance: "none", width: 28, height: 28, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flex: "none", color: T.fg2 }}
           >
-            <X size={16} aria-hidden />
+            <Icon name="x" size={14} />
           </button>
         </div>
 
         {/* Counter */}
-        <div className="shrink-0 border-b border-border bg-secondary/30 px-6 py-2.5">
-          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-            <span className="tabular-nums text-foreground">
-              {currentParticipants + inviterteIdag}
-            </span>{" "}
-            av <span className="tabular-nums">{maxParticipants}</span> plasser
-            {erFull && (
-              <span className="ml-2 rounded-full bg-destructive/10 px-2 py-0.5 text-destructive">
-                Fullt
-              </span>
-            )}
-          </p>
+        <div style={{ flex: "none", display: "flex", alignItems: "center", gap: 8, padding: "9px 20px", borderBottom: `1px solid ${T.border}`, background: T.panel2 }}>
+          <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, fontVariantNumeric: "tabular-nums", letterSpacing: "0.04em", textTransform: "uppercase", color: T.fg2 }}>
+            <span style={{ color: T.fg }}>{currentParticipants + inviterteIdag}</span> av{" "}
+            {maxParticipants} plasser
+          </span>
+          {erFull && (
+            <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.down, background: `color-mix(in srgb, ${T.down} 13%, transparent)`, borderRadius: 9999, padding: "3px 9px" }}>
+              Fullt
+            </span>
+          )}
         </div>
 
-        {/* Tabs */}
-        <div className="shrink-0 border-b border-border px-4 py-2">
-          <Tabs
+        {/* Faner + søk */}
+        <div style={{ flex: "none", padding: "12px 20px 12px" }}>
+          <PillTabs
+            tabs={[
+              { id: "gruppe", l: "Min gruppe" },
+              { id: "akademi", l: "Akademi" },
+              { id: "sok", l: "Søk" },
+            ]}
             value={tab}
-            onValueChange={(v) => setTab(v as typeof tab)}
-            defaultValue="gruppe"
-          >
-            <TabList>
-              <Tab value="gruppe">Min gruppe</Tab>
-              <Tab value="akademi">Akademi</Tab>
-              <Tab value="sok">Søk</Tab>
-            </TabList>
-          </Tabs>
-        </div>
-
-        {/* Søk-input */}
-        <div className="shrink-0 border-b border-border px-6 py-2">
-          <div className="relative">
-            <Search
-              size={16}
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-              aria-hidden
+            onChange={(id) => setTab(id as typeof tab)}
+          />
+          <div style={{ position: "relative", marginTop: 10 }}>
+            <Icon
+              name="search"
+              size={14}
+              style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: T.mut, pointerEvents: "none" }}
             />
-            <Input
+            <input
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -203,47 +186,47 @@ export function InviteFriendModal({
                   ? "Søk etter navn eller gruppe …"
                   : "Filtrer listen …"
               }
-              className="pl-10"
               aria-label="Søk"
+              className="v2-focus"
+              style={{ width: "100%", boxSizing: "border-box", appearance: "none", borderRadius: 11, border: `1px solid ${T.borderS}`, background: T.panel2, padding: "9px 12px 9px 34px", fontFamily: T.ui, fontSize: 13, color: T.fg, outline: "none" }}
             />
           </div>
         </div>
 
         {/* Spiller-liste */}
-        <div className="flex-1 overflow-y-auto px-4 py-2">
+        <div style={{ flex: 1, minHeight: 120, overflowY: "auto", padding: "0 12px 10px" }}>
           {filtered.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 px-6 py-12 text-center">
-              <p className="text-sm text-muted-foreground">
-                {tab === "sok" && query.length === 0
+            <TomTilstand
+              icon="users"
+              title={
+                tab === "sok" && query.length === 0
+                  ? "Søk etter spillere"
+                  : "Ingen spillere funnet"
+              }
+              sub={
+                tab === "sok" && query.length === 0
                   ? "Skriv inn et navn for å søke."
-                  : "Ingen spillere funnet."}
-              </p>
-            </div>
+                  : "Prøv en annen fane eller et annet søkeord."
+              }
+            />
           ) : (
-            <ul className="space-y-1.5">
+            <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 4 }}>
               {filtered.map((spiller) => {
                 const state = statusPerSpiller[spiller.id] ?? "idle";
                 const erInvitert = state === "sent" || state === "pending";
                 return (
                   <li
                     key={spiller.id}
-                    className="flex items-center gap-2 rounded-md px-2 py-2 transition-colors hover:bg-secondary/60"
+                    style={{ display: "flex", alignItems: "center", gap: 10, borderRadius: 11, padding: "8px 8px" }}
                   >
-                    {/* Avatar */}
-                    <div
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white"
-                      style={{ background: avatarBg(spiller.name) }}
-                      aria-hidden
-                    >
-                      {initialsFromName(spiller.name)}
-                    </div>
+                    <AvatarInit navn={spiller.name} size={34} />
 
                     {/* Navn + HCP/gruppe */}
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold text-foreground">
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
                         {spiller.name}
                       </p>
-                      <p className="font-mono text-[11px] text-muted-foreground tabular-nums">
+                      <p style={{ margin: "2px 0 0", fontFamily: T.mono, fontSize: 10.5, fontVariantNumeric: "tabular-nums", color: T.mut }}>
                         {spiller.hcp != null ? `HCP ${spiller.hcp}` : "Ingen HCP"}
                         {spiller.gruppe ? ` · ${spiller.gruppe}` : ""}
                       </p>
@@ -255,25 +238,44 @@ export function InviteFriendModal({
                       onClick={() => handleInviter(spiller.id)}
                       disabled={erInvitert || (erFull && !erInvitert)}
                       aria-pressed={erInvitert}
-                      className={cn(
-                        "inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold transition-colors",
-                        erInvitert
-                          ? "bg-primary/10 text-primary"
+                      className="v2-press v2-focus"
+                      style={{
+                        appearance: "none",
+                        cursor: erInvitert || (erFull && !erInvitert) ? "default" : "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 6,
+                        flex: "none",
+                        minHeight: 32,
+                        borderRadius: 9999,
+                        border: "1px solid transparent",
+                        padding: "5px 14px",
+                        fontFamily: T.ui,
+                        fontSize: 12,
+                        fontWeight: 600,
+                        opacity: erFull && !erInvitert ? 0.4 : 1,
+                        background: erInvitert
+                          ? `color-mix(in srgb, ${T.lime} 13%, transparent)`
                           : state === "error"
-                            ? "bg-destructive/10 text-destructive hover:bg-destructive/20"
-                            : "bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-40",
-                      )}
+                            ? `color-mix(in srgb, ${T.down} 13%, transparent)`
+                            : T.lime,
+                        color: erInvitert
+                          ? T.lime
+                          : state === "error"
+                            ? T.down
+                            : T.onLime,
+                      }}
                     >
                       {erInvitert ? (
                         <>
-                          <Check size={12} strokeWidth={2.5} aria-hidden />
+                          <Icon name="check" size={12} strokeWidth={2.5} />
                           Invitert
                         </>
                       ) : state === "error" ? (
                         "Prøv igjen"
                       ) : (
                         <>
-                          <UserPlus size={12} strokeWidth={2} aria-hidden />
+                          <Icon name="user-plus" size={12} strokeWidth={2} />
                           Inviter
                         </>
                       )}
@@ -286,21 +288,17 @@ export function InviteFriendModal({
         </div>
 
         {/* Footer */}
-        <div className="flex shrink-0 items-center justify-between border-t border-border bg-card px-6 py-4">
-          <p className="font-mono text-[10.5px] text-muted-foreground tracking-wide">
+        <div style={{ flex: "none", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "12px 20px", borderTop: `1px solid ${T.border}` }}>
+          <span style={{ fontFamily: T.mono, fontSize: 10.5, fontVariantNumeric: "tabular-nums", color: T.mut }}>
             {inviterteIdag > 0
               ? `${inviterteIdag} invitert${inviterteIdag === 1 ? "" : "e"} nå`
               : "Ingen inviterte ennå"}
-          </p>
-          <button
-            type="button"
-            onClick={onClose}
-            className="inline-flex min-h-9 items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-          >
+          </span>
+          <Knapp icon="check" onClick={onClose}>
             Ferdig
-          </button>
+          </Knapp>
         </div>
       </div>
-    </>
+    </div>
   );
 }

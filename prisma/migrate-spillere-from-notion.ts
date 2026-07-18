@@ -55,7 +55,7 @@ const PLAYERS: NotionPlayer[] = [
     notionPageId: "31b35a45-535a-815f-b2fd-e860c721433f",
     kalenderNavn: "Jørgen Engh",
     fokusomrader: ["Sving", "Langt spill", "Taktisk"],
-    mal: "Forbedre driver-konsistens og release-timing. Redusere spredning ved høy klubbhodefart. Implementere DECADE-banemanagement.",
+    mal: "Forbedre driver-konsistens og release-timing. Redusere spredning ved høy klubbhodefart. Implementere presisjonsstrategi-banemanagement.",
     styrker:
       "Høy klubbhodefart (115-120 mph). God selvbevissthet om eget spill. Analytisk tilnærming og åpen for teknologibasert analyse.",
     utviklingsomrader:

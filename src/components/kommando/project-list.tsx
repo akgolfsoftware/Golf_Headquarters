@@ -10,7 +10,7 @@ import {
   createKommandoProject,
   archiveKommandoProject,
   deleteKommandoProject,
-} from "@/app/kommando/prosjekter/actions";
+} from "@/lib/kommando/project-actions";
 
 export type KommandoProjectView = {
   id: string;

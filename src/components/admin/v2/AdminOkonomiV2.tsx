@@ -23,6 +23,7 @@
  * tom liste ved 0 betalinger, «—» der data mangler.
  */
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Caps,
@@ -86,6 +87,19 @@ const STATUS: Record<BetalingStatusKey, { label: string; tone: StatusTone }> = {
 
 const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
 
+/** md-breakpoint-speil (matcher V2Shell/AdminBookingerV2). */
+function useMobile(): boolean {
+  const [m, setM] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const oppdater = () => setM(mq.matches);
+    oppdater();
+    mq.addEventListener("change", oppdater);
+    return () => mq.removeEventListener("change", oppdater);
+  }, []);
+  return m;
+}
+
 /** nb-NO heltall med tusenskille — konsekvent «kr»-prefiks (aldri rå float). */
 function kr(v: number): string {
   return `kr ${new Intl.NumberFormat("nb-NO").format(Math.round(v))}`;
@@ -96,8 +110,9 @@ function kompakt(v: number): string {
   return v >= 1000 ? `${Math.round(v / 1000)}k` : `${Math.round(v)}`;
 }
 
-/** Én betalingsrad som kort-liste-innslag (mobil-vennlig, ingen tabell). */
-function BetalingRad({ b, last }: { b: AdminOkonomiV2Betaling; last: boolean }) {
+/** Én betalingsrad som kort-liste-innslag (mobil-vennlig, ingen tabell).
+ *  Mobil: beløp over status-pille (smal meta-kolonne → mer plass til navn/tekst). */
+function BetalingRad({ b, last, mobile }: { b: AdminOkonomiV2Betaling; last: boolean; mobile: boolean }) {
   const st = STATUS[b.status];
   const sub = [b.dato, b.beskrivelse ?? b.type.toLowerCase()].filter(Boolean).join(" · ");
   const refund = b.refundertKr > 0 ? ` · − ${kr(b.refundertKr)} refundert` : "";
@@ -107,7 +122,14 @@ function BetalingRad({ b, last }: { b: AdminOkonomiV2Betaling; last: boolean }) 
       title={b.navn}
       sub={sub + refund}
       meta={
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+        <span
+          style={{
+            display: "inline-flex",
+            flexDirection: mobile ? "column" : "row",
+            alignItems: mobile ? "flex-end" : "center",
+            gap: mobile ? 4 : 10,
+          }}
+        >
           <span
             style={{
               fontFamily: T.mono,
@@ -130,6 +152,7 @@ function BetalingRad({ b, last }: { b: AdminOkonomiV2Betaling; last: boolean }) 
 }
 
 export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
+  const mobile = useMobile();
   const maks = Math.max(1000, ...data.serie.map((m) => m.kr));
   const harTrend = data.serie.length >= 2 && data.serie.some((m) => m.kr > 0);
 
@@ -139,7 +162,7 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
       <div>
         <Caps>{`Stripe · ${data.periodeLabel} · AgencyOS`}</Caps>
         <div style={{ marginTop: 10 }}>
-          <Tittel em="i kontroll">Økonomi</Tittel>
+          <Tittel em="i kontroll" mobile={mobile}>Økonomi</Tittel>
         </div>
       </div>
       <a
@@ -199,7 +222,7 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
           <TomTilstand icon="credit-card" title="Ingen transaksjoner ennå" sub="Betalinger dukker opp her når spillere blir fakturert." />
         </div>
       ) : (
-        data.betalinger.map((b, i) => <BetalingRad key={b.id} b={b} last={i === data.betalinger.length - 1} />)
+        data.betalinger.map((b, i) => <BetalingRad key={b.id} b={b} last={i === data.betalinger.length - 1} mobile={mobile} />)
       )}
     </Kort>
   );

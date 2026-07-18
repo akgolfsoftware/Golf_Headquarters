@@ -3,7 +3,7 @@ import "server-only";
 /**
  * Delt repslogg-automatikk for teknisk-plan-oppgaver (runde 2 · 2026-07-14).
  * Trukket ut fra den opprinnelige logReps()-server-actionen i
- * src/app/portal/(legacy)/tren/teknisk-plan/actions.ts, som fortsatt eier
+ * src/app/portal/tren/teknisk-plan/actions.ts, som fortsatt eier
  * autorisasjon (ensurePlanAccess) og kaller denne. Live-økt-hookupen
  * (src/app/portal/(fullscreen)/live/[sessionId]/actions.ts) kaller den
  * også, med sessionV2Id satt, når en drill er koblet til en oppgave.
