@@ -356,6 +356,14 @@ model User {
   // Cron /api/cron/cleanup-deleted-accounts sletter permanent etter 30 dager.
   deletedAt DateTime?
 
+  // GDPR anonymisering (D5, 2026-07-18). Settes ved coach-godkjent anonymisering
+  // (utforGdprSletting). Da settes OGSÅ deletedAt = now() så kontoen faller ut av
+  // alle «aktiv bruker»-filtre (deletedAt: null) uten å røre de ~40 kallstedene —
+  // MEN hard-delete-cronen ekskluderer anonymisertAt != null, så raden BEHOLDES
+  // (avidentifisert treningshistorikk overlever). Skiller anonymisering fra vanlig
+  // soft-delete, som fortsatt hard-slettes etter 30 dager.
+  anonymisertAt DateTime?
+
   // GDPR art. 8 — mindreårig + foreldresamtykke (P17).
   // Norge: 16 år er aldersgrense for å samtykke selv til behandling av persondata.
   dateOfBirth             DateTime?

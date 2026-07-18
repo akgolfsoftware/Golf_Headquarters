@@ -296,3 +296,31 @@ AK Golf Academy bruker en 5-trinns trenings-pyramide:
 - Alt strategiinnhold skrives fra AK-metodikkens egne dokumenter og plattformens egen
   dispersjonsmotor — aldri fra DECADE-materiale (kurs, tekster, yardage books).
 - Full vurdering og sjekkliste: `docs/juridisk/presisjonsstrategi-rettigheter.md`.
+
+---
+
+## CANON-invariantene — de 13 (metodikk)
+
+> Navngitt kanonisk liste (A4, forankret 2026-07-18). Kilde: `src/lib/ai-coach/kunnskap/canon-invariants-13.md`
+> (CANON v3.5). **Invariantene er ANBEFALINGER som varsler ved avvik — aldri harde sperrer.**
+> Ingenting i appen blokkerer trening; sterkt avvik vises i klarspråk og kan varsle coach.
+> Pyramide-fordelingen (#1, #5) er coach-redigerbar per periode (`/admin/settings/periode-fordeling`).
+
+1. **TEK ≥ minimum** — teknisk andel alltid over periodens minimum (coach-satt, standard grunn 25 % / turneringsfase 15 %). Teknikk forsvinner aldri helt.
+2. **CS50-minimum for ballkontakt** — slag med ballkontakt krever ferdighetsnivå (CS) ≥ 50 %. Under: kun ren bevegelse uten ball.
+3. **Junior volum-tak** — under 18: treningstimer per uke ≤ alder i år. Vern mot overbelastning.
+4. **L-fase overstyrer alt** — læringsfasen har forrang over SG-data, turneringskalender og coach-input.
+5. **Pyramide = 100 %** — fordelingen mellom FYS/TEK/SLAG/SPILL/TURN summerer til 100 %.
+6. **SG krever teknisk plan** — et Strokes Gained-tiltak må kobles til en konkret teknisk plan, ikke stå som diagnose alene.
+7. **Konfidens < 0,70 = retningssignal** — anbefalinger under 0,70 konfidens er hint, aldri definitive.
+8. **Rough-baseline +0,15–0,25** — SG fra rough legger til 0,15–0,25 slag; aldri fairway-baseline for rough.
+9. **Lav readiness → lavere PR + volum** — lav dagsform/restitusjon senker både intensitet og volum.
+10. **Alle 5 APP-bånd med baseline** — alle fem APP-bånd må ha baseline før tiltaket settes i produksjon.
+11. **Metrikker ≠ sjekkpunkter** — måltall og sjekkpunkter er separate felt; en måling er ikke en godkjenning.
+12. **MORAD-feil → P-posisjon påkrevd** — sving-feil må lokaliseres til en P-posisjon (P1–P10), ikke bare beskrives.
+13. **Anbefalings-format** — enhver anbefaling har fire ledd: why + what + expected_effect + why_now.
+
+**Kode-håndhevelse:** #1–#5 og #cs-tak/#l-fase/#volum/#hviledager er implementert som rene funksjoner i
+`src/lib/canon/invarianter.ts` (9 invarianter, testet). #6, #7, #8, #11, #12, #13 bor foreløpig i
+AI-coach-kunnskapen (retningsgivende), ikke som validerings-funksjoner — et kjent gap hvis full
+kode-håndhevelse av alle 13 ønskes senere.

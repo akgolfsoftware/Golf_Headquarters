@@ -7,7 +7,7 @@
  * Server component.
  */
 
-import { TilbakeLenke } from "@/components/v2";
+import { TilbakeLenke, Kort, StatusPill, Icon, T } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getOrCreateActiveConversation } from "@/lib/caddie/conversation";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
@@ -29,6 +29,25 @@ export default async function V2CaddieSamtalePage({
   return (
     <V2Shell nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
+      <Kort
+        pad="14px 18px"
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 14,
+          marginBottom: 16,
+          background: `color-mix(in srgb, ${T.warn} 12%, ${T.panel})`,
+          border: `1px solid color-mix(in srgb, ${T.warn} 45%, ${T.border})`,
+        }}
+      >
+        <Icon name="triangle-alert" size={22} style={{ color: T.warn, flexShrink: 0 }} />
+        <div style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
+          <StatusPill tone="warn">Forhåndsvisning</StatusPill>
+          <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.4 }}>
+            Dataene her er ikke live ennå. Kobles til sanntidsdata før full lansering.
+          </span>
+        </div>
+      </Kort>
       <CaddieSubNavV2 />
       <div style={{ flex: 1, minHeight: 0, display: "flex" }}>
         <CaddieChatV2 conversationId={conversation.id} initialSeed={seed} />
