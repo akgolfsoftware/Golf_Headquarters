@@ -3,7 +3,7 @@ import { CalendarClock, MapPin } from "lucide-react";
 import { hentGruppeKalenderData } from "@/lib/gruppe-kalender/hent-data";
 import { GruppeKalenderWrapper } from "@/components/gruppe-kalender/gruppe-kalender-wrapper";
 import { TrinnFilter } from "@/components/gruppe-kalender/trinn-filter";
-import { TurneringStub } from "@/components/gruppe-kalender/turnering-stub";
+import { TurneringPlan } from "@/components/gruppe-kalender/turnering-plan";
 import { EmptyState } from "@/components/shared/empty-state";
 
 export const revalidate = 300; // 5 min — nok fersk for en foreldre-/spiller-oversikt
@@ -47,7 +47,7 @@ export default async function TeamWangPage({
       <TrinnFilter basePath="/team-wang" aktivtTrinn={trinn ?? null} />
       <GruppeKalenderWrapper data={data} classYear={trinn ?? null} />
 
-      <TurneringStub />
+      <TurneringPlan turneringer={data.turneringer} />
 
       <section className="grid gap-4 rounded-2xl border border-border bg-card p-6 sm:grid-cols-2">
         <div>

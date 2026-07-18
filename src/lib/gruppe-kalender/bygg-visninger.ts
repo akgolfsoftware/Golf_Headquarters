@@ -5,7 +5,7 @@
 // eslint-disable-next-line no-restricted-imports -- TODO(opprydding): golfdata mangler AK-periode-årsgantt (gap meldt) — YearPlanGantt beholdes til DS får en
 import type { YearPhase } from "@/components/athletic/calendars/year-plan-gantt";
 import type { MaanedDag, MaanedOkt } from "@/components/athletic/golfdata";
-import type { FastTid, GruppeKalenderData, Periode, Samling, SkoleHendelse, SkoleHendelseKategori } from "./types";
+import type { FastTid, GruppeKalenderData, Periode, Samling, SkoleHendelse, SkoleHendelseKategori, Turnering } from "./types";
 
 export type Tone = "primary" | "accent" | "moss" | "gold" | "muted";
 
@@ -52,6 +52,11 @@ function erSammeDag(a: Date, b: Date): boolean {
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate()
   );
+}
+
+/** Dager en turnering strekker seg over (endDate valgfri), som lokale yyyy-mm-dd-strenger. */
+function dagerITurnering(t: Turnering): string[] {
+  return dagerISamling(t.startDate, t.endDate ?? t.startDate);
 }
 
 /** Perioder som overlapper et gitt kalenderår, klippet til år-grensene (for YearPlanGantt). */
@@ -125,6 +130,7 @@ export function byggManedsdager(
   samlinger: Samling[] = [],
   skoleHendelser: SkoleHendelse[] = [],
   classYear: string | null = null,
+  turneringer: Turnering[] = [],
 ): MaanedDag[] {
   const maanedIndex = month - 1; // 0-indeksert for Date.UTC
   const antallDager = new Date(Date.UTC(year, maanedIndex + 1, 0)).getUTCDate();
@@ -150,6 +156,12 @@ export function byggManedsdager(
     for (const h of skoleHendelser) {
       if (h.date.slice(0, 10) === iso && (h.classYear === null || h.classYear === classYear)) {
         okter.push({ id: h.id, tittel: `${SKOLE_LABEL[h.category]}: ${h.title}` });
+      }
+    }
+    for (const t of turneringer) {
+      if (dagerITurnering(t).includes(iso)) {
+        // Navnet starter alt med serien (Olyo…/Østlandstour…/Srixon…/Garmin…), så ingen prefiks.
+        okter.push({ id: `turn-${t.id}`, tittel: t.navn });
       }
     }
 
@@ -189,6 +201,7 @@ export function byggAllDagHendelser(
   fraIso: string,
   tilIso: string, // inkludert
   classYear: string | null,
+  turneringer: Turnering[] = [],
 ): AllDagHendelse[] {
   const hendelser: AllDagHendelse[] = [];
   for (const s of samlinger) {
@@ -209,6 +222,12 @@ export function byggAllDagHendelser(
     if (h.category === "TIME") continue; // vanlige skoletimer vises kun i detaljpanelet, ikke som helcelle-markør
     hendelser.push({ id: h.id, dato: iso, tittel: `${SKOLE_LABEL[h.category]}: ${h.title}`, tone: SKOLE_TONE[h.category] });
   }
+  for (const t of turneringer) {
+    for (const iso of dagerITurnering(t)) {
+      if (iso < fraIso || iso > tilIso) continue;
+      hendelser.push({ id: `turn-${t.id}-${iso}`, dato: iso, tittel: t.navn, tone: tilTone(t.tone, "muted") });
+    }
+  }
   return hendelser;
 }
 
@@ -217,11 +236,12 @@ export type Dagsdetaljer = {
   periode: Periode | null;
   samlinger: Samling[];
   skoleHendelser: (SkoleHendelse & { kategoriLabel: string; tone: Tone })[];
+  turneringer: Turnering[];
 };
 
-/** Full detalj for én valgt dag — periode+kompetansemål, samlinger og hele skole-listen (inkl. TIME). */
+/** Full detalj for én valgt dag — periode+kompetansemål, samlinger, turneringer og hele skole-listen (inkl. TIME). */
 export function finnDagsdetaljer(
-  data: Pick<GruppeKalenderData, "perioder" | "samlinger" | "skoleHendelser">,
+  data: Pick<GruppeKalenderData, "perioder" | "samlinger" | "skoleHendelser" | "turneringer">,
   dato: string, // yyyy-mm-dd
   classYear: string | null,
 ): Dagsdetaljer {
@@ -231,5 +251,6 @@ export function finnDagsdetaljer(
   const skoleHendelser = data.skoleHendelser
     .filter((h) => h.date.slice(0, 10) === dato && (h.classYear === null || h.classYear === classYear))
     .map((h) => ({ ...h, kategoriLabel: SKOLE_LABEL[h.category], tone: SKOLE_TONE[h.category] }));
-  return { dato, periode, samlinger, skoleHendelser };
+  const turneringer = data.turneringer.filter((t) => dagerITurnering(t).includes(dato));
+  return { dato, periode, samlinger, skoleHendelser, turneringer };
 }
