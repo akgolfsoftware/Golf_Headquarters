@@ -19,7 +19,7 @@
  * og fabrikeres ikke. Filter-fanene bygges fra de FAKTISKE testnavnene i data.
  */
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -74,6 +74,19 @@ export interface AdminTesterV2Data {
   rader: AdminTesterV2Rad[];
 }
 
+/** md-breakpoint-speil (matcher V2Shell/AdminBookingerV2). */
+function useMobile(): boolean {
+  const [m, setM] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const oppdater = () => setM(mq.matches);
+    oppdater();
+    mq.addEventListener("change", oppdater);
+    return () => mq.removeEventListener("change", oppdater);
+  }, []);
+  return m;
+}
+
 /** Signal-pille kun for retnings-status; nøytral status vises som dempet tekst. */
 function StatusMerke({ status }: { status: AdminTesterStatus }) {
   if (status === "Bedre") return <StatusPill tone="up">Bedre</StatusPill>;
@@ -97,6 +110,7 @@ function StatusMerke({ status }: { status: AdminTesterStatus }) {
 
 export function AdminTesterV2({ data }: { data: AdminTesterV2Data }) {
   const router = useRouter();
+  const mobile = useMobile();
   const [filter, setFilter] = useState<string>("alle");
 
   const tabs = useMemo(
@@ -129,7 +143,7 @@ export function AdminTesterV2({ data }: { data: AdminTesterV2Data }) {
       <div>
         <Caps>Analysere · Tester</Caps>
         <div style={{ marginTop: 10 }}>
-          <Tittel em="tester.">Stallens</Tittel>
+          <Tittel em="tester." mobile={mobile}>Stallens</Tittel>
         </div>
       </div>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -179,7 +193,7 @@ export function AdminTesterV2({ data }: { data: AdminTesterV2Data }) {
           sub="Resultater dukker opp her når spillerne gjennomfører tester."
         />
       ) : (
-        <div style={{ maxHeight: 520, overflowY: "auto", margin: "0 -4px", padding: "0 4px" }}>
+        <div style={{ maxHeight: mobile ? undefined : 520, overflowY: mobile ? "visible" : "auto", margin: "0 -4px", padding: "0 4px" }}>
           {synlige.map((r, i) => (
             <Rad
               key={r.key}

@@ -13,7 +13,7 @@
  */
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { T } from "@/lib/v2/tokens";
 import {
   Kort,
@@ -23,6 +23,7 @@ import {
   StatusPill,
   AvatarInit,
   CTAPill,
+  PillTabs,
   TilbakeLenke,
 } from "@/components/v2";
 import { HjelpTips } from "@/components/v2/hjelp";
@@ -175,7 +176,21 @@ const FANER = [
 
 type FaneId = (typeof FANER)[number]["id"];
 
+/** true på klient etter mount når viewport < 768px (M3-mobilvariant). */
+function useMobile(): boolean {
+  const [m, setM] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const oppdater = () => setM(mq.matches);
+    oppdater();
+    mq.addEventListener("change", oppdater);
+    return () => mq.removeEventListener("change", oppdater);
+  }, []);
+  return m;
+}
+
 export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
+  const mobile = useMobile();
   const [fane, setFane] = useState<FaneId>("oversikt");
   const p = data.profil;
 
@@ -185,13 +200,13 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
         <TilbakeLenke href="/admin/spillere">Alle spillere</TilbakeLenke>
       </div>
 
-      {/* Hero — identitet + badges + CTA-er */}
+      {/* Hero — identitet + badges + CTA-er (komprimert på mobil) */}
       <Kort>
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 18 }}>
-          <AvatarInit navn={p.navn} size={64} />
-          <div style={{ flex: 1, minWidth: 200 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: mobile ? 12 : 18 }}>
+          <AvatarInit navn={p.navn} size={mobile ? 48 : 64} />
+          <div style={{ flex: 1, minWidth: mobile ? 160 : 200 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 9, flexWrap: "wrap" }}>
-              <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 26, letterSpacing: "-0.02em", color: T.fg, margin: 0, lineHeight: 1.1 }}>{p.navn}</h2>
+              <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: mobile ? 21 : 26, letterSpacing: "-0.02em", color: T.fg, margin: 0, lineHeight: 1.1 }}>{p.navn}</h2>
               {data.heroBadges.map((b) => (
                 <StatusPill key={b.label} tone={b.tone}>{b.label}</StatusPill>
               ))}
@@ -207,38 +222,46 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
         </div>
       </Kort>
 
-      {/* KPI-strip */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7" style={{ gap: 10 }}>
+      {/* KPI-strip (komprimert på mobil) */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7" style={{ gap: mobile ? 8 : 10 }}>
         {data.kpi.map((k) => (
-          <div key={k.label} style={{ background: T.panel, border: `1px solid ${T.border}`, borderRadius: 12, padding: "10px 13px" }}>
+          <div key={k.label} style={{ background: T.panel, border: `1px solid ${T.border}`, borderRadius: 12, padding: mobile ? "8px 10px" : "10px 13px" }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
               <Caps size={8}>{k.label}</Caps>
               {k.hjelp && <HjelpTips k={k.hjelp} size={11} />}
             </span>
-            <div style={{ fontFamily: T.mono, fontSize: 17, fontWeight: 700, color: k.tone ? TONE_FARGE[k.tone] : T.fg, marginTop: 6, fontVariantNumeric: "tabular-nums" }}>{k.verdi}</div>
+            <div style={{ fontFamily: T.mono, fontSize: mobile ? 15 : 17, fontWeight: 700, color: k.tone ? TONE_FARGE[k.tone] : T.fg, marginTop: mobile ? 4 : 6, fontVariantNumeric: "tabular-nums" }}>{k.verdi}</div>
           </div>
         ))}
       </div>
 
-      {/* Fanelinje */}
-      <div role="tablist" aria-label="Spillerinformasjon" style={{ display: "flex", gap: 2, borderBottom: `1px solid ${T.border}`, overflowX: "auto" }}>
-        {FANER.map((f) => {
-          const on = fane === f.id;
-          return (
-            <button
-              key={f.id}
-              role="tab"
-              aria-selected={on}
-              onClick={() => setFane(f.id)}
-              className="v2-press v2-focus"
-              style={{ height: 40, padding: "0 13px", background: "none", border: "none", borderBottom: `2px solid ${on ? T.lime : "transparent"}`, color: on ? T.fg : T.mut, fontFamily: T.ui, fontSize: 12.5, fontWeight: on ? 700 : 500, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, whiteSpace: "nowrap", flex: "none" }}
-            >
-              <Icon name={f.icon} size={13} style={{ color: on ? T.lime : T.mut }} />
-              {f.label}
-            </button>
-          );
-        })}
-      </div>
+      {/* Fanelinje — mobil: horisontal PillTabs (scroll + fade); desktop: understrek-faner */}
+      {mobile ? (
+        <PillTabs
+          tabs={FANER.map((f) => ({ id: f.id, l: f.label }))}
+          value={fane}
+          onChange={(id) => setFane(id as FaneId)}
+        />
+      ) : (
+        <div role="tablist" aria-label="Spillerinformasjon" style={{ display: "flex", gap: 2, borderBottom: `1px solid ${T.border}`, overflowX: "auto" }}>
+          {FANER.map((f) => {
+            const on = fane === f.id;
+            return (
+              <button
+                key={f.id}
+                role="tab"
+                aria-selected={on}
+                onClick={() => setFane(f.id)}
+                className="v2-press v2-focus"
+                style={{ height: 40, padding: "0 13px", background: "none", border: "none", borderBottom: `2px solid ${on ? T.lime : "transparent"}`, color: on ? T.fg : T.mut, fontFamily: T.ui, fontSize: 12.5, fontWeight: on ? 700 : 500, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, whiteSpace: "nowrap", flex: "none" }}
+              >
+                <Icon name={f.icon} size={13} style={{ color: on ? T.lime : T.mut }} />
+                {f.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* ── Oversikt: eksisterende 360-seksjoner (uten dobbel hero) ── */}
       {fane === "oversikt" && <AdminSpillerProfilV2 data={p} variant="seksjoner" />}

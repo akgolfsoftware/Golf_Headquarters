@@ -16,7 +16,7 @@
  */
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Caps,
   Tittel,
@@ -31,11 +31,25 @@ import {
   FilterChips,
   CTAPill,
   TomTilstand,
+  BunnArk,
   Icon,
   T,
   type SevKey,
 } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
+
+/** true på klient etter mount når viewport < 768px (M3-mobilvariant). */
+function useMobile(): boolean {
+  const [m, setM] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const oppdater = () => setM(mq.matches);
+    oppdater();
+    mq.addEventListener("change", oppdater);
+    return () => mq.removeEventListener("change", oppdater);
+  }, []);
+  return m;
+}
 
 // ── Datakontrakt (mappes fra StallenData i ruten) ───────────────
 export interface StallV2Adherence {
@@ -193,6 +207,7 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
 }
 
 export function StallV2({ data }: { data: StallV2Data }) {
+  const mobile = useMobile();
   const [grp, setGrp] = useState<string[]>([]);
   const [sta, setSta] = useState<string[]>([]);
   const [bet, setBet] = useState<string[]>([]);
@@ -204,6 +219,12 @@ export function StallV2({ data }: { data: StallV2Data }) {
   const [valgtId, setValgtId] = useState<string | null>(
     data.spillere.find((p) => !p.venter)?.id ?? data.spillere[0]?.id ?? null,
   );
+  // Mobil: valgt spiller vises i et BunnArk i stedet for et side-panel.
+  const [arkApen, setArkApen] = useState(false);
+  const velg = (id: string) => {
+    setValgtId(id);
+    setArkApen(true);
+  };
 
   const toggle = (arr: string[], set: (v: string[]) => void) => (x: string) =>
     set(arr.indexOf(x) !== -1 ? arr.filter((y) => y !== x) : arr.concat(x));
@@ -260,7 +281,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
             key={x.id}
             s={x}
             valgt={valgt?.id === x.id}
-            onClick={() => setValgtId(x.id)}
+            onClick={() => velg(x.id)}
             last={i === aktiveRader.length - 1}
           />
         ))}
@@ -283,7 +304,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
               key={x.id}
               s={x}
               valgt={valgt?.id === x.id}
-              onClick={() => setValgtId(x.id)}
+              onClick={() => velg(x.id)}
               last={i === venterRader.length - 1}
             />
           ))}
@@ -313,6 +334,23 @@ export function StallV2({ data }: { data: StallV2Data }) {
         <Kort>
           <TomTilstand icon="users" title="Ingen spillere i stallen" sub="Ingen aktive spillere er koblet til deg ennå." />
         </Kort>
+      </div>
+    );
+  }
+
+  if (mobile) {
+    // Mobil (M3): kun den søkbare lista i full bredde; valgt spiller åpnes i BunnArk.
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        {hode}
+        {filtre}
+        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+          {aktivListe}
+          {venterSeksjon}
+        </div>
+        <BunnArk open={arkApen && !!valgt} onClose={() => setArkApen(false)} tittel={valgt?.navn}>
+          {valgt && <SpillerSammendrag s={valgt} />}
+        </BunnArk>
       </div>
     );
   }
