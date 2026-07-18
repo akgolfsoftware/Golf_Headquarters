@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import Link from "next/link";
+import { ChevronLeft, ChevronRight, Trophy, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 // eslint-disable-next-line no-restricted-imports -- TODO(opprydding): golfdata mangler AK-periode-årsgantt (gap meldt) — YearPlanGantt beholdes til DS får en
@@ -142,6 +143,29 @@ function Dagspanel({
         </div>
       )}
 
+      {detaljer.turneringer.length > 0 && (
+        <div className="mb-3 space-y-1.5">
+          {detaljer.turneringer.map((t) => {
+            const rad = (
+              <>
+                <Trophy className="h-3.5 w-3.5 shrink-0 text-muted-foreground" strokeWidth={1.75} />
+                <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold uppercase ${TONE_KLASSE[t.tone as Tone] ?? TONE_KLASSE.muted}`}>
+                  {t.serie}
+                </span>
+                <span className="min-w-0 flex-1 truncate text-[13px] text-foreground">{t.navn}</span>
+              </>
+            );
+            return t.slug ? (
+              <Link key={t.id} href={`/turneringer/${t.slug}`} className="flex items-center gap-2 rounded-lg bg-background p-2 hover:bg-muted/50">
+                {rad}
+              </Link>
+            ) : (
+              <div key={t.id} className="flex items-center gap-2 rounded-lg bg-background p-2">{rad}</div>
+            );
+          })}
+        </div>
+      )}
+
       {detaljer.skoleHendelser.length > 0 ? (
         <div className="space-y-1">
           <p className="font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
@@ -157,7 +181,8 @@ function Dagspanel({
         </div>
       ) : (
         !detaljer.periode &&
-        detaljer.samlinger.length === 0 && (
+        detaljer.samlinger.length === 0 &&
+        detaljer.turneringer.length === 0 && (
           <p className="text-[13px] text-muted-foreground">Ingen registrerte hendelser denne dagen.</p>
         )
       )}
@@ -251,7 +276,7 @@ export function GruppeKalenderWrapper({ data, classYear = null }: { data: Gruppe
             year={year}
             month={month - 1}
             modus="piller"
-            days={byggManedsdager(data.faste, year, month, data.samlinger, data.skoleHendelser, classYear)}
+            days={byggManedsdager(data.faste, year, month, data.samlinger, data.skoleHendelser, classYear, data.turneringer)}
             onChange={(date) => setValgtDato(tilIso(new Date(Date.UTC(year, month - 1, date))))}
             onOktKlikk={(_, date) => setValgtDato(tilIso(new Date(Date.UTC(year, month - 1, date))))}
             onVisAlle={(date) => setValgtDato(tilIso(new Date(Date.UTC(year, month - 1, date))))}
@@ -263,7 +288,7 @@ export function GruppeKalenderWrapper({ data, classYear = null }: { data: Gruppe
         <div>
           <AllDagRad
             dager={ukeDager}
-            hendelser={byggAllDagHendelser(data.samlinger, data.skoleHendelser, tilIso(ukeDager[0]), tilIso(ukeDager[6]), classYear)}
+            hendelser={byggAllDagHendelser(data.samlinger, data.skoleHendelser, tilIso(ukeDager[0]), tilIso(ukeDager[6]), classYear, data.turneringer)}
             onVelg={setValgtDato}
           />
           <TidsGrid fraTime={7} tilTime={21}>
@@ -306,7 +331,7 @@ export function GruppeKalenderWrapper({ data, classYear = null }: { data: Gruppe
           </p>
           <AllDagRad
             dager={[dag]}
-            hendelser={byggAllDagHendelser(data.samlinger, data.skoleHendelser, tilIso(dag), tilIso(dag), classYear)}
+            hendelser={byggAllDagHendelser(data.samlinger, data.skoleHendelser, tilIso(dag), tilIso(dag), classYear, data.turneringer)}
             onVelg={setValgtDato}
           />
           <TidsGrid fraTime={7} tilTime={21}>
