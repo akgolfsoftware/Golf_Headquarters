@@ -102,6 +102,21 @@ total utestengelse fra dashbordet og full databasemigrering som konsekvens.
 Regel: Supabase/Vercel/Google Cloud/Stripe skal alltid ha en e-postidentitet
 Anders kontrollerer som eier. «Logg inn med GitHub» kan være tillegg, aldri eneste vei.
 
+### Meg-assistenten samhostes i golf-DB (public.me_*) — UTENFOR Prisma (2026-07-18)
+Meg (Anders' private Telegram-assistent) hadde egen Supabase-base på den gamle flaggede
+kontoen. Ved kontobyttet ble de 7 `me_*`-tabellene (`me_log`, `me_conversation`,
+`me_memory`, `me_knowledge` (4990 rader, `vector(512)`-embeddings), `me_pending_action`,
+`me_health`, `me_brief`) lagt inn i **golf-prosjektet** (`dcnxoztjtdqoidaekxry`, `public`-
+skjema) i stedet for eget prosjekt (ny Free-org var full 2/2). `MEG_SUPABASE_URL` +
+`MEG_SUPABASE_SERVICE_ROLE_KEY` peker nå på golf-basen; Meg-klienten (`src/lib/meg/`)
+leser kun env, så ingen kodeendring.
+- **Isolasjon = deny-all RLS** (RLS på, INGEN policyer) → app-brukere (anon-nøkkel) ser
+  dem aldri. Kun service-role når dem. Ikke legg til policyer uten grunn.
+- **Prisma eier dem IKKE.** De ble laget med rå SQL (Supabase-migrasjon), ligger ikke i
+  `schema.prisma`/baseline. `prisma migrate deploy` rører dem ikke. MEN `prisma migrate
+  reset` og `prisma db push --accept-data-loss` ville slette dem — kjør ALDRI de mot prod.
+- Kanonisk DDL: `supabase-meg/migrations/0001-0006` + `scripts/meg-tilbakeskriving/migration.sql`.
+
 ### Dev-server med foreldet Prisma-klient etter `prisma generate` (truffet 2×, 2026-07-13)
 Kjører `npx prisma generate` (nytt felt/enum) mens `next dev` står oppe →
 server-actions feiler stille med PrismaClientValidationError («Unknown
