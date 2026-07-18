@@ -47,6 +47,16 @@ const RAW = {
     forklaring:
       "Samlet planlagt treningstid per uke, i minutter. Hver periode har et anbefalt volum-vindu; ligger du utenfor er det et signal om å justere, ikke et forbud.",
   },
+  pPosisjon: {
+    tittel: "P-posisjon",
+    forklaring:
+      "Fast punkt i svingen (P1–P10): P1 er oppstilling, P4 topp av baksving, P7 treff, P10 avslutning. Brukes til å plassere en teknisk oppgave nøyaktig der i svingen den hører hjemme.",
+  },
+  repsHastighet: {
+    tittel: "Reps-hastighet",
+    forklaring:
+      "Hvor fort en repetisjon gjøres: TØRR (uten ball, langsomt for kontroll), LAV (redusert fart) eller FULL (full svinghastighet). Lav hastighet bygger mønster; full hastighet tester det under press.",
+  },
   planEtterlevelse: {
     tittel: "Plan-etterlevelse",
     forklaring:

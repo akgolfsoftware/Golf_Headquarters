@@ -179,7 +179,7 @@ export default async function PlanBuilderPage({ params }: PageProps) {
               <StatusPill tone={statusTone}>{statusLabel}</StatusPill>
             </div>
           </Kort>
-          <KpiFlis label="P-posisjoner" value={String(plan.positions.length)} instant />
+          <KpiFlis label="P-posisjoner" value={String(plan.positions.length)} hjelp="pPosisjon" instant />
           <KpiFlis label="Oppgaver" value={String(allTasks.length)} instant />
           <KpiFlis label="Reps logget" value={totalCurrent.toLocaleString("nb-NO")} hjelp="planEtterlevelse" />
         </div>

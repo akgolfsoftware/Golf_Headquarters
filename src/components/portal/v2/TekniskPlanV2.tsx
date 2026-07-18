@@ -180,7 +180,13 @@ export function TekniskTaskKort(props: TekniskTaskKortProps) {
       </div>
 
       {/* Reps */}
-      <div style={{ display: "flex", gap: 14, marginTop: 13 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 13, marginBottom: 7 }}>
+        <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
+          Reps
+        </span>
+        <HjelpTips k="repsHastighet" size={11} />
+      </div>
+      <div style={{ display: "flex", gap: 14 }}>
         <RepKolonne navn="DRY" rep={props.reps.dry} />
         <RepKolonne navn="LAV" rep={props.reps.lav} />
         <RepKolonne navn="FULL" rep={props.reps.full} />
