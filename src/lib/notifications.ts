@@ -10,6 +10,7 @@
  * - system        — generell systemmelding
  */
 import { prisma } from "@/lib/prisma";
+import { sendPush } from "@/lib/push/send";
 
 export type NotificationType =
   | "booking"
@@ -43,6 +44,17 @@ export async function notify(input: NotifyInput): Promise<void> {
   } catch (err) {
     console.error("[notifications] notify failed", err);
   }
+  // Web push — samme varsel til brukerens enheter (best-effort, aldri kastende).
+  // sendPush er no-op når VAPID-keys mangler eller brukeren ikke har abonnert.
+  try {
+    await sendPush(input.userId, {
+      title: input.title,
+      body: input.body ?? "",
+      link: input.link,
+    });
+  } catch (err) {
+    console.error("[notifications] push failed", err);
+  }
 }
 
 /**
@@ -65,6 +77,20 @@ export async function notifyMany(
     });
   } catch (err) {
     console.error("[notifications] notifyMany failed", err);
+  }
+  // Web push til hver mottaker (best-effort, aldri kastende).
+  try {
+    await Promise.all(
+      userIds.map((userId) =>
+        sendPush(userId, {
+          title: input.title,
+          body: input.body ?? "",
+          link: input.link,
+        }),
+      ),
+    );
+  } catch (err) {
+    console.error("[notifications] notifyMany push failed", err);
   }
 }
 
