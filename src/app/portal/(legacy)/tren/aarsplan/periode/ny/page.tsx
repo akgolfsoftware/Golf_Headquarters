@@ -1,15 +1,19 @@
 /**
- * PlayerHQ · Tren · Årsplan · Ny periode
+ * PlayerHQ · Tren · Årsplan · Ny periode — v2.
  *
  * Søsterrute til `/periode/[id]/rediger` — samme skjema, ingen id i url.
  * `seasonPlanId` tas fra `?seasonPlanId=`, ellers brukerens nyeste sesongplan.
+ *
+ * v2-port 18. juli 2026: V2Shell + v2-primitiver erstatter PlayerHero/EmptyState.
+ * Auth-guard, datainnhenting og server actions er uendret — kun presentasjon.
  */
-import { Calendar } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
-import { EmptyState } from "@/components/shared/empty-state";
-import { PeriodeForm } from "../periode-form";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { Caps, Tittel, TomTilstand, TilbakeLenke } from "@/components/v2";
+import { PeriodeFormV2 } from "@/components/portal/v2/PeriodeFormV2";
+
+export const dynamic = "force-dynamic";
 
 export default async function NyPeriodePage({
   searchParams,
@@ -33,24 +37,25 @@ export default async function NyPeriodePage({
 
   const harTilgang = seasonPlan && (isCoach || seasonPlan.userId === user.id);
 
-  if (!harTilgang) {
-    return (
-      <div className="space-y-8 pb-32">
-        <PageHeader eyebrow="PlayerHQ · Tren · Årsplan" titleLead="Ny" titleItalic="periode" />
-        <EmptyState
-          icon={Calendar}
-          titleItalic="Ingen sesongplan"
-          titleTrail="funnet"
+  return (
+    <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/tren/aarsplan">Årsplan</TilbakeLenke>
+      <div style={{ margin: "14px 0 20px" }}>
+        <Caps>PlayerHQ · Tren · Årsplan</Caps>
+        <div style={{ marginTop: 10 }}>
+          <Tittel em="periode">Ny</Tittel>
+        </div>
+      </div>
+
+      {harTilgang ? (
+        <PeriodeFormV2 mode="ny" seasonPlanId={seasonPlan.id} />
+      ) : (
+        <TomTilstand
+          icon="calendar"
+          title="Ingen sesongplan funnet"
           sub="Du trenger en sesongplan før du kan legge til perioder. Opprett en årsplan først."
         />
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-8 pb-32">
-      <PageHeader eyebrow="PlayerHQ · Tren · Årsplan" titleLead="Ny" titleItalic="periode" />
-      <PeriodeForm mode="ny" seasonPlanId={seasonPlan.id} />
-    </div>
+      )}
+    </V2Shell>
   );
 }

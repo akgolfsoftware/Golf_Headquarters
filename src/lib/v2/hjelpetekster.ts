@@ -37,6 +37,16 @@ const RAW = {
     forklaring:
       "Hvor langt en bevegelse har kommet i læringsstigen: L-Kropp (grunnbevegelsen), L-Arm, L-Kølle, L-Ball (med ball) eller L-Auto (automatisk under press).",
   },
+  periodetype: {
+    tittel: "Periodetype",
+    forklaring:
+      "Hvilken fase treningsperioden er i: Grunn (bygg basis), Spesialisering (integrer ferdigheter), Turnering (automatiser og spiss form), Evaluering (test) eller Ferie (vedlikehold). Hver fase har sin anbefalte fordeling av trening — anbefalinger, aldri sperrer.",
+  },
+  ukevolum: {
+    tittel: "Ukevolum",
+    forklaring:
+      "Samlet planlagt treningstid per uke, i minutter. Hver periode har et anbefalt volum-vindu; ligger du utenfor er det et signal om å justere, ikke et forbud.",
+  },
   planEtterlevelse: {
     tittel: "Plan-etterlevelse",
     forklaring:
