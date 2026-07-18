@@ -99,10 +99,10 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | **Workbench (planlegging)** ★ | `/portal/planlegge/workbench` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14 dok-verifisering: samme delte `WorkbenchV2`-komponent som coach-siden — Del 8c (periodetype-grunnmur, årsplan-canvas, periodestrip, Cmd+D-duplisering, universell økt-popup, full økt-komponist, Driller-fane) + WB1–WB5 (belastningsstripe, publiser-diff, øktas driller i inspektøren) er alle levert og koblet til ekte server actions (`lib/workbench/*`). Design rettet – → ✓ for å matche faktisk kode |
 | · Plan-bygger (v2 wizard) | `/portal/planlegge/bygger` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2 2026-07-10: 5-stegs wizard per godkjent mockup (phq-plan-bygger); deler kjerner med legacy mal/bygger via lib/plan-builder
 | Årsplan | `/portal/tren/aarsplan` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `Aarsplan`-komponenten importerer golfdata `Button/Card/Eyebrow`. |
-| · Rediger periode | `/portal/tren/aarsplan/periode/[id]/rediger` | ~ | --- | ✓ | ✓ | ✓ | ~ |
-| · Ny periode | `/portal/tren/aarsplan/periode/ny` | ~ | --- | ✓ | ✓ | ✓ | ~ |
+| · Rediger periode | `/portal/tren/aarsplan/periode/[id]/rediger` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 18. jul: delt `PeriodeFormV2` (V2Shell/Kort/Caps/Tittel/Inndata/TekstOmraade, periodetype som lime-piller, CANON-constraints som chips, HjelpTips på L-fase/periodetype/ukevolum). Datalogikk + actions (`oppdaterPeriode`/`slettPeriode`) uendret. Gammel v13 `periode-form.tsx` slettet (foreldreløs). Design ~ → ✓, Mob/Desk/iPad --- → ✓✓–, Funker ~ → ✓. |
+| · Ny periode | `/portal/tren/aarsplan/periode/ny` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 18. jul: samme delte `PeriodeFormV2` som rediger. `opprettPeriode`-action uendret. Design ~ → ✓, Mob/Desk/iPad --- → ✓✓–, Funker ~ → ✓. |
 | Teknisk plan (liste) | `/portal/tren/teknisk-plan` | UTGÅTT | --- | → | ✓ | – | ✓ | <!-- redirect til Workbench (next.config) — død listeside slettet 2026-07-11 -->
-| · Teknisk plan detalj | `/portal/tren/teknisk-plan/[planId]` | – | --- | ✓ | ✓ | ✓ | ✓ | 2026-07-14: automatisk repslogging fra live-økt, bilde/video på oppgaver, kategori
+| · Teknisk plan detalj | `/portal/tren/teknisk-plan/[planId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 18. jul: `TekniskPlanV2` (V2Shell + kanon-primitiver + T-tokens) erstatter rå Tailwind; ruten flyttet ut av (legacy) (hele mappen inkl. `actions.ts` + oppgave-launchere), legacy-ruten slettet for å unngå kollisjon. Ekstern importør `drills-panel.tsx` (admin) repekt til ny actions-sti. Automatisk repslogging + bilde/video + kategori uendret. 2026-07-14-grunnlaget bevart. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | Fys-plan (liste) | `/portal/tren/fys-plan` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Fys-plan detalj/bygger | `/portal/tren/fys-plan/[planId]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `KPICard` (ui/) + `fys-plan`-modulen bruker `Input`/`ProgressBar` fra ui/. |
 | Drills (bibliotek) | `/portal/drills` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `OvelsesbankV2` i `V2Shell`. |
@@ -215,7 +215,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Coach-videoer | `/portal/coach/videoer` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Coach-notater | `/portal/coach/notes` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Notat-detalj | `/portal/coach/notes/[noteId]` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| Spørsmål til coach (liste løftet D3; [id]-tråd ikke løftet) | `/portal/coach/sporsmal/[id]` | ~ | --- | ✓ | ~ | ~ | ~ |
+| Spørsmål til coach (tråd) | `/portal/coach/sporsmal/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 18. jul: `CoachSporsmalTraadV2` (V2Shell/Kort/Caps/Tittel/StatusPill/TekstOmraade) erstatter legacy-tråden. Ruten flyttet ut av (legacy) — gammel `(legacy)/coach/sporsmal/[id]` slettet for å unngå rutekollisjon (samme mønster som `/ny`), delt `svarPaSporsmal`-action beholdt i legacy-actions og importert uendret. Datoformat Oslo-TZ. Design ~ → ✓, Mob/Desk/iPad --- → ✓✓–, Flyt/Data/Funker ~ → ✓. |
 | · Nytt spørsmål | `/portal/coach/sporsmal/ny` | ✓ | --- | ✓ | ✓ | ✓ | ✓† |
 | Coach-AI | `/portal/coach/ai` | ✓ | --- | ✓ | ~ | ~ | ~ |
 

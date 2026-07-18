@@ -37,6 +37,26 @@ const RAW = {
     forklaring:
       "Hvor langt en bevegelse har kommet i læringsstigen: L-Kropp (grunnbevegelsen), L-Arm, L-Kølle, L-Ball (med ball) eller L-Auto (automatisk under press).",
   },
+  periodetype: {
+    tittel: "Periodetype",
+    forklaring:
+      "Hvilken fase treningsperioden er i: Grunn (bygg basis), Spesialisering (integrer ferdigheter), Turnering (automatiser og spiss form), Evaluering (test) eller Ferie (vedlikehold). Hver fase har sin anbefalte fordeling av trening — anbefalinger, aldri sperrer.",
+  },
+  ukevolum: {
+    tittel: "Ukevolum",
+    forklaring:
+      "Samlet planlagt treningstid per uke, i minutter. Hver periode har et anbefalt volum-vindu; ligger du utenfor er det et signal om å justere, ikke et forbud.",
+  },
+  pPosisjon: {
+    tittel: "P-posisjon",
+    forklaring:
+      "Fast punkt i svingen (P1–P10): P1 er oppstilling, P4 topp av baksving, P7 treff, P10 avslutning. Brukes til å plassere en teknisk oppgave nøyaktig der i svingen den hører hjemme.",
+  },
+  repsHastighet: {
+    tittel: "Reps-hastighet",
+    forklaring:
+      "Hvor fort en repetisjon gjøres: TØRR (uten ball, langsomt for kontroll), LAV (redusert fart) eller FULL (full svinghastighet). Lav hastighet bygger mønster; full hastighet tester det under press.",
+  },
   planEtterlevelse: {
     tittel: "Plan-etterlevelse",
     forklaring:

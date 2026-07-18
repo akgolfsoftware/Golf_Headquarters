@@ -16,7 +16,7 @@
  * det ville trigget cron-jobben som hard-sletter med kaskade etter 30 dager.
  *
  * PublicPlayer (offentlig turneringsidentitet): raden beholdes fordi
- * turneringsresultater refererer den (cascade), men navn/bio/bilde/instagram
+ * turneringsresultater refererer den (cascade), men navn/slug/bio/bilde/instagram
  * anonymiseres og raden skjules (isActive=false) så den ikke lekker navnet.
  */
 
@@ -191,6 +191,11 @@ export async function utforGdprSletting(id: string) {
   const anonymisererPublicPlayer = Boolean(målBruker?.publicPlayerId);
   const publicPlayerAnonymisering = {
     name: "Anonymisert spiller",
+    // slug er ofte navn-derivert (f.eks. «ola-nordmann-2001») og ville lekket
+    // navnet i URL-en etter anonymisering. Bytt til et deterministisk, ikke-navn-
+    // token (unik via publicPlayerId — @unique holder). Gamle URL-er gir 404,
+    // som er personvernmessig ønsket (D5-beslutning 2026-07-17).
+    slug: `slettet-${målBruker?.publicPlayerId ?? "ukjent"}`,
     bio: null,
     photoUrl: null,
     instagramHandle: null,
@@ -226,6 +231,9 @@ export async function utforGdprSletting(id: string) {
       anonymiserteFelter: ["name", "email", "phone", "avatarUrl", "dateOfBirth"],
       brukerFantesIkke: !målBruker,
       publicPlayerAnonymisert: anonymisererPublicPlayer,
+      publicPlayerFelter: anonymisererPublicPlayer
+        ? ["name", "slug", "bio", "photoUrl", "instagramHandle", "isActive"]
+        : [],
       publicPlayerId: målBruker?.publicPlayerId ?? null,
     },
   });

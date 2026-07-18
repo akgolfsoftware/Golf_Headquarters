@@ -2,23 +2,17 @@
 
 import { Knapp } from "@/components/v2";
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { Check, Download, Trash2, ShieldQuestion } from "lucide-react";
-import {
-  exportUserData,
-  deleteUserAccount,
-} from "@/app/portal/meg/innstillinger/actions";
+import { Check, Download, Trash2 } from "lucide-react";
+import { exportUserData } from "@/app/portal/meg/innstillinger/actions";
 import { opprettGdprForesporsel } from "@/lib/moderering/actions";
-import { logout } from "@/lib/auth/logout";
 
 type Props = {
-  kind: "export" | "delete" | "gdpr-request";
+  kind: "export" | "delete";
 };
 
 export function PersonvernActions({ kind }: Props) {
   if (kind === "export") return <ExportAction />;
-  if (kind === "gdpr-request") return <GdprForesporselAction />;
-  return <DeleteAction />;
+  return <SlettKontoAction />;
 }
 
 type Status = { ok: boolean; msg: string };
@@ -71,126 +65,49 @@ function ExportAction() {
   );
 }
 
-function DeleteAction() {
-  const router = useRouter();
+/**
+ * Slett kontoen din (D5-konsolidering, 2026-07-18). Tidligere fantes to veier:
+ * umiddelbar selvbetjent hard-delete (satte `deletedAt` → 30-dagers cron-kaskade)
+ * OG coach-godkjent anonymisering via moderering-køen. De er nå slått sammen til
+ * ÉN vei: forespørselen går alltid til køen (`opprettGdprForesporsel`), og ved
+ * godkjenning ANONYMISERES opplysningene (navn/e-post/telefon/bilde/slug) mens
+ * avidentifisert treningshistorikk beholdes. Ingen umiddelbar hard-delete lenger.
+ * SLETT-bekreftelsen beholdes som friksjon; begrunnelse er valgfri.
+ */
+function SlettKontoAction() {
   const [isPending, startTransition] = useTransition();
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmText, setConfirmText] = useState("");
-  const [error, setError] = useState<string | null>(null);
-
-  function onDelete() {
-    startTransition(async () => {
-      setError(null);
-      const result = await deleteUserAccount(confirmText);
-      if (!result.ok) {
-        setError(result.error ?? "Sletting feilet.");
-        return;
-      }
-      // Logg ut og redirect
-      await logout();
-      router.push("/auth/login?deleted=1");
-    });
-  }
-
-  if (!showConfirm) {
-    return (
-      <div className="mt-4">
-        <Knapp ghost onClick={() => setShowConfirm(true)}>
-          <Trash2 className="h-4 w-4" />
-          Slett kontoen min
-        </Knapp>
-      </div>
-    );
-  }
-
-  return (
-    <div className="mt-4 rounded-xl border border-destructive bg-card p-4">
-      <p className="text-sm font-semibold text-destructive">
-        Er du helt sikker?
-      </p>
-      <p className="mt-1 text-xs text-muted-foreground">
-        Dette deaktiverer kontoen umiddelbart og sletter alle dine data
-        permanent etter 30 dager. Skriv <strong>SLETT</strong> for å bekrefte.
-      </p>
-      <input
-        type="text"
-        value={confirmText}
-        onChange={(e) => setConfirmText(e.target.value)}
-        placeholder="SLETT"
-        autoComplete="off"
-        autoCapitalize="characters"
-        className="mt-2 w-full max-w-[200px] rounded-md border border-border bg-card px-4 py-2 text-sm tracking-[0.10em] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive"
-      />
-      {error ? (
-        <p className="font-mono mt-2 text-[11px] tracking-[0.06em] text-destructive">
-          {error}
-        </p>
-      ) : null}
-      <div className="mt-2 flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={onDelete}
-          disabled={isPending || confirmText !== "SLETT"}
-          className="font-display inline-flex h-10 items-center justify-center gap-1.5 rounded-full bg-destructive px-6 text-sm font-bold text-destructive-foreground transition disabled:opacity-50"
-        >
-          {isPending ? "Sletter…" : "Bekreft sletting"}
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setShowConfirm(false);
-            setConfirmText("");
-            setError(null);
-          }}
-          disabled={isPending}
-          className="font-display inline-flex h-10 items-center justify-center gap-1.5 rounded-full border border-border bg-card px-6 text-sm font-semibold text-foreground transition hover:bg-secondary"
-        >
-          Avbryt
-        </button>
-      </div>
-    </div>
-  );
-}
-
-/**
- * GDPR-slettforespørsel (D5): oppretter en GDPR_SLETTING-sak i moderering-køen
- * i stedet for å slette umiddelbart. Til forskjell fra «Slett kontoen din»
- * (30-dagers automatikk) behandles denne av en coach/administrator, og data
- * anonymiseres i stedet for å fjernes fysisk — treningshistorikk beholdes
- * avidentifisert. Passer når du vil ha kontoen slettet, men saken skal ses av
- * en person.
- */
-function GdprForesporselAction() {
-  const [isPending, startTransition] = useTransition();
-  const [showForm, setShowForm] = useState(false);
   const [begrunnelse, setBegrunnelse] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<Status | null>(null);
 
   function onSend() {
     startTransition(async () => {
-      setStatus(null);
+      setError(null);
       const result = await opprettGdprForesporsel(begrunnelse.trim() || undefined);
       if (!result.ok) {
-        setStatus({ ok: false, msg: result.error ?? "Kunne ikke sende forespørselen." });
+        setError(result.error ?? "Kunne ikke sende forespørselen.");
         return;
       }
-      setShowForm(false);
+      setShowConfirm(false);
+      setConfirmText("");
       setBegrunnelse("");
       setStatus({
         ok: true,
         msg: result.alleredeSendt
           ? "Du har allerede en åpen forespørsel."
-          : "Forespørsel sendt",
+          : "Forespørsel om sletting sendt",
       });
     });
   }
 
-  if (!showForm) {
+  if (!showConfirm) {
     return (
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <Knapp ghost onClick={() => setShowForm(true)}>
-          <ShieldQuestion className="h-4 w-4" />
-          Be om sletting av kontoen min
+        <Knapp ghost onClick={() => setShowConfirm(true)}>
+          <Trash2 className="h-4 w-4" />
+          Slett kontoen min
         </Knapp>
         {status ? (
           <span
@@ -207,16 +124,23 @@ function GdprForesporselAction() {
   }
 
   return (
-    <div className="mt-4 rounded-xl border border-border bg-card p-4">
-      <p className="text-sm font-semibold text-foreground">
-        Be om at kontoen din slettes
-      </p>
+    <div className="mt-4 rounded-xl border border-destructive bg-card p-4">
+      <p className="text-sm font-semibold text-destructive">Er du helt sikker?</p>
       <p className="mt-1 text-xs text-muted-foreground">
         Forespørselen behandles av en coach eller administrator. Ved godkjenning
         anonymiseres opplysningene dine — navn, e-post, telefon og bilde fjernes,
-        mens avidentifisert treningshistorikk beholdes. Du kan legge ved en
-        begrunnelse (valgfritt).
+        mens avidentifisert treningshistorikk beholdes. Skriv <strong>SLETT</strong>{" "}
+        for å bekrefte.
       </p>
+      <input
+        type="text"
+        value={confirmText}
+        onChange={(e) => setConfirmText(e.target.value)}
+        placeholder="SLETT"
+        autoComplete="off"
+        autoCapitalize="characters"
+        className="mt-2 w-full max-w-[200px] rounded-md border border-border bg-card px-4 py-2 text-sm tracking-[0.10em] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive"
+      />
       <textarea
         value={begrunnelse}
         onChange={(e) => setBegrunnelse(e.target.value)}
@@ -225,22 +149,33 @@ function GdprForesporselAction() {
         placeholder="Begrunnelse (valgfritt)"
         className="mt-2 w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
       />
-      <div className="mt-3 flex flex-wrap gap-2">
-        <Knapp onClick={onSend} disabled={isPending}>
-          <ShieldQuestion className="h-4 w-4" />
-          {isPending ? "Sender…" : "Send forespørsel"}
-        </Knapp>
-        <Knapp
-          ghost
-          disabled={isPending}
+      {error ? (
+        <p className="font-mono mt-2 text-[11px] tracking-[0.06em] text-destructive">
+          {error}
+        </p>
+      ) : null}
+      <div className="mt-2 flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={onSend}
+          disabled={isPending || confirmText !== "SLETT"}
+          className="font-display inline-flex h-10 items-center justify-center gap-1.5 rounded-full bg-destructive px-6 text-sm font-bold text-destructive-foreground transition disabled:opacity-50"
+        >
+          {isPending ? "Sender…" : "Send slette-forespørsel"}
+        </button>
+        <button
+          type="button"
           onClick={() => {
-            setShowForm(false);
+            setShowConfirm(false);
+            setConfirmText("");
             setBegrunnelse("");
-            setStatus(null);
+            setError(null);
           }}
+          disabled={isPending}
+          className="font-display inline-flex h-10 items-center justify-center gap-1.5 rounded-full border border-border bg-card px-6 text-sm font-semibold text-foreground transition hover:bg-secondary"
         >
           Avbryt
-        </Knapp>
+        </button>
       </div>
     </div>
   );
