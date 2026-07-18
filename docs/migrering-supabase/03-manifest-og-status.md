@@ -74,3 +74,28 @@
 ## Flagget for Fase 3-QA
 - storage-policy `coach_full_access_recordings` ser buggy ut (bruker `u.name` i
   storage.foldername i stedet for objects.name) — gjenskapes som-den-er, vurderes fikset.
+
+---
+
+## Fase 3–4 UTFØRT (2026-07-18, nytt prosjekt `dcnxoztjtdqoidaekxry`, eu-west-2 London)
+
+- Skjema bygget og verifisert: 157 tabeller, 63 enums, 168 FK, RLS på alle,
+  99+2 policyer, 13 buckets, 4 extensions. ELITE + LacFase + 2 foreldreløse
+  tabeller fjernet. NB: region ble London (eu-west-2) → vercel.json endres til
+  ["lhr1"] i Fase 5 (erstatter dub1 — matcher fortsatt).
+- Innhold kopiert server-til-server via postgres_fdw og verifisert mot manifest:
+  **2 212 rader / 17 tabeller** — alle radtall eksakte treff.
+- **Korrigering av manifestet:** position_tasks (15), position_task_tm_goals (16)
+  og training_drills_v2 (42) viste seg å være spiller-plandata (NOT NULL-FK til
+  technical_plans/training_sessions_v2 = KAST-data) — korrekt utelatt. 2285−73=2212.
+- Kolonne-drift funnet og håndtert: exercise_definitions.lacFaser og
+  users.anonymisertAt fantes kun i gammel DB, ubrukt i kode → ikke videreført.
+- Brukere videreført: **Anders (anders@akgolf.no, ADMIN, id cmacgoers0000andersadmin01)**
+  og **Markus Røinås Pedersen (markus@akgolf.no, COACH)** — med GAMLE authId-er.
+  Testkontoen coachtest@akgolf.test remappet til Anders og slettet.
+- ⚠ Fase 7-punkt: etter at Anders/Markus registrerer seg på ny DB må authId
+  relinkes (oauth-callback relinker på e-post automatisk ved Google-login;
+  ved passord-signup: manuell `UPDATE users SET "authId"=... WHERE email=...`).
+- FDW-broen (med gammelt passord) og LacFase er slettet fra ny DB.
+- Gammel DIRECT_URL er delt i chat → regnes som brent; gamle prosjektet skal
+  uansett avvikles (Fase 8). Gjenstår i Fase 3-QA: get_advisors (krevde godkjenning).
