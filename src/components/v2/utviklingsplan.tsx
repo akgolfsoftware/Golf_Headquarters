@@ -159,8 +159,8 @@ export function KravRad({
    = TechnicalPlanPosition + tasks. hovedfokus → lime venstre-stripe
    (samme flagg som i Prisma). Godkjent-linje når coach har bekreftet. */
 const DEMO_KRAV: KravData[] = [
-  { tittel: "Hoftedreining 45° før armene starter ned", status: "done", spor: "FERDIG", repsGjort: 300, repsMaal: 300, lFase: "L-Kropp", cs: "CS50", tmMaal: null },
-  { tittel: "Venstre arm parallell med skulderlinjen i P4", status: "active", spor: "PAA_VEI", repsGjort: 240, repsMaal: 300, lFase: "L-Ball", cs: "CS60", tmMaal: "Spredning 7-jern < 9,0 m" },
+  { tittel: "Hoftedreining 45° før armene starter ned", status: "done", spor: "FERDIG", repsGjort: 300, repsMaal: 300, lFase: "Uten ball", cs: "CS50", tmMaal: null },
+  { tittel: "Venstre arm parallell med skulderlinjen i P4", status: "active", spor: "PAA_VEI", repsGjort: 240, repsMaal: 300, lFase: "Lav hastighet", cs: "CS60", tmMaal: "Spredning 7-jern < 9,0 m" },
   { tittel: "Kølleblad square mot svingplan i P4", status: "pending", spor: "INAKTIV", repsGjort: 0, repsMaal: 200, lFase: "L-Kølle", cs: "CS50", tmMaal: "Face angle ±2° — 8/10 slag" },
 ];
 export interface MilepaelKortProps {
@@ -201,19 +201,17 @@ export function MilepaelKort({
   );
 }
 
-/* ── LaeringsTrapp — MORAD L-faser som nivåtrinn ────────
-   L_FASER fra taxonomy.ts: L-Kropp → L-Arm → L-Kølle → L-Ball → L-Auto. */
+/* ── LaeringsTrapp — læringsfasen som 3 nivåtrinn ────────
+   Uten ball → Lav hastighet → Auto (grupperer MORAD-fasene under). */
 export interface TrappTrinn {
   l: string;
   sub: string;
   cs: string;
 }
 const DEMO_TRAPP: TrappTrinn[] = [
-  { l: "L-Kropp", sub: "Kroppen lærer", cs: "CS50–60" },
-  { l: "L-Arm", sub: "Armene med", cs: "CS60–70" },
-  { l: "L-Kølle", sub: "Kølle, sakte", cs: "CS60–75" },
-  { l: "L-Ball", sub: "Ball og mål", cs: "CS70–85" },
-  { l: "L-Auto", sub: "Automatisk under press", cs: "CS85–100" },
+  { l: "Uten ball", sub: "Grunnbevegelsen bygges", cs: "Ren bevegelse" },
+  { l: "Lav hastighet", sub: "Ball i redusert tempo", cs: "CS50–80" },
+  { l: "Auto", sub: "Automatisk under press", cs: "CS80–100" },
 ];
 export interface LaeringsTrappProps {
   trinn?: TrappTrinn[];
@@ -221,7 +219,7 @@ export interface LaeringsTrappProps {
   tittel?: string;
   hjelp?: boolean;
 }
-export function LaeringsTrapp({ trinn = DEMO_TRAPP, aktiv = 3, tittel = "Læringstrapp — hvor bevegelsen sitter nå", hjelp }: LaeringsTrappProps) {
+export function LaeringsTrapp({ trinn = DEMO_TRAPP, aktiv = 1, tittel = "Læringstrapp — hvor bevegelsen sitter nå", hjelp }: LaeringsTrappProps) {
   const H0 = 34, dH = 20;
   return (
     <Kort

@@ -30,7 +30,7 @@ import {
   SKILL_AREA_LABEL,
   SKILL_AREA_REKKEFOLGE,
 } from "@/lib/labels/taxonomy";
-import { PR_PRESS } from "@/lib/taxonomy";
+import { PRESS_NIVAER, pressTilNivaa, nivaaTilPress, pressLabel } from "@/lib/ak-formel-visning";
 import { PyramideFordeling } from "@/components/portal/pyramide-fordeling";
 import {
   leggTilOkt,
@@ -68,16 +68,6 @@ type Props = {
 };
 
 const TOTAL_STEPS = 9;
-
-const PRESSURE_LABEL: Record<PressureLevel, string> = {
-  PR1: "Ingen press",
-  PR2: "Lav press",
-  PR3: "Moderat press",
-  PR4: "Hoy press",
-  PR5: "Maks press",
-};
-
-const PRESSURE_ORDER: PressureLevel[] = ["PR1", "PR2", "PR3", "PR4", "PR5"];
 
 const PYR_TIL_SKILL_HINT: Record<PyramidArea, SkillArea | null> = {
   FYS: null,
@@ -405,15 +395,14 @@ export function AddSessionWizard({
           tittel="Pressniva"
           ingress="Hvor mye press skal okten ha?"
         >
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-            {PRESSURE_ORDER.map((p) => {
-              const aktiv = p === pressureLevel;
-              const info = PR_PRESS.find((pr) => pr.kode === p);
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            {PRESS_NIVAER.map((n) => {
+              const aktiv = pressTilNivaa(pressureLevel) === n.key;
               return (
                 <button
-                  key={p}
+                  key={n.key}
                   type="button"
-                  onClick={() => setPressureLevel(p)}
+                  onClick={() => setPressureLevel(nivaaTilPress(n.key, pressureLevel) ?? "PR1")}
                   className={`rounded-md border p-4 text-left transition-colors ${
                     aktiv
                       ? "border-primary bg-primary/5"
@@ -421,13 +410,11 @@ export function AddSessionWizard({
                   }`}
                 >
                   <div className={`font-display text-base ${aktiv ? "font-semibold text-primary" : "text-foreground"}`}>
-                    {PRESSURE_LABEL[p]}
+                    {n.label}
                   </div>
-                  {info && (
-                    <div className="mt-1 text-[11px] leading-[1.3] text-muted-foreground">
-                      {info.beskrivelse}
-                    </div>
-                  )}
+                  <div className="mt-1 text-[11px] leading-[1.3] text-muted-foreground">
+                    {n.beskrivelse}
+                  </div>
                 </button>
               );
             })}
@@ -594,7 +581,7 @@ export function AddSessionWizard({
             <Rad label="Omraade">{SKILL_AREA_LABEL[skillArea]}</Rad>
             <Rad label="Miljo">{ENVIRONMENT_LABEL[environment]}</Rad>
             <Rad label="Laeringsfase">{LPHASE_LABEL[lPhase]}</Rad>
-            <Rad label="Pressniva">{PRESSURE_LABEL[pressureLevel]}</Rad>
+            <Rad label="Pressniva">{pressLabel(pressureLevel)}</Rad>
             <Rad label="Drills">{valgteDrills.length} valgt</Rad>
           </dl>
 

@@ -27,6 +27,8 @@ import { resolvePlanSessionLiveHref } from "@/lib/workbench/session-actions";
 import { sokOvelser, hentOktKomponist } from "@/lib/workbench/ovelse-sok";
 import { useEffect } from "react";
 import { planSessionStartHref, v2SessionStartHref, type V2OktUiStatus } from "@/lib/portal/session-hrefs";
+import type { LFase } from "@/generated/prisma/client";
+import { FASE_STEG_KEYS, lFaseTilSteg, stegTilLFase, faseLabel, type FaseSteg } from "@/lib/ak-formel-visning";
 
 const DAGER = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
 
@@ -293,7 +295,6 @@ type OktArkState = {
   drills: OktArkDrill[];
 };
 
-const L_FASER = ["L_KROPP", "L_ARM", "L_KOLLE", "L_BALL", "L_AUTO"] as const;
 const MILJOER = ["M0", "M1", "M2", "M3", "M4", "M5"] as const;
 
 function OktArkSkjema({
@@ -352,8 +353,13 @@ function OktArkSkjema({
   }, [oppgaveSok, oppgaveKobler, searchTeknisk]);
 
   const sykleLFase = () => {
-    const i = lFase ? L_FASER.indexOf(lFase as (typeof L_FASER)[number]) : -1;
-    setLFase(i === L_FASER.length - 1 ? null : L_FASER[i + 1]);
+    // Sykler gjennom de 3 visnings-stegene (Uten ball / Lav hastighet / Auto) og
+    // lagrer representativ L-fase. Bevarer motor-satt finkornet verdi i gruppen.
+    const rekkefolge: (FaseSteg | null)[] = [null, ...FASE_STEG_KEYS];
+    const naa = lFaseTilSteg(lFase as LFase | null);
+    const i = rekkefolge.indexOf(naa);
+    const neste = rekkefolge[(i + 1) % rekkefolge.length];
+    setLFase(stegTilLFase(neste, lFase as LFase | null));
   };
   const sykleMiljo = () => {
     const i = miljo ? MILJOER.indexOf(miljo as (typeof MILJOER)[number]) : -1;
@@ -420,9 +426,9 @@ function OktArkSkjema({
 
           {/* 8c.7: AK-formel — sykle-chips (valgfritt, aldri sperre) */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            <Felt label="L-fase — trykk for å bytte" hjelp="lFase">
+            <Felt label="Læringsfase — trykk for å bytte" hjelp="lFase">
               <button type="button" onClick={sykleLFase} className="v2-press v2-focus" data-wb-lfasechip data-klar style={chipStil(!!lFase)}>
-                {lFase ? lFase.replace("L_", "L-").replace("KROPP", "Kropp").replace("ARM", "Arm").replace("KOLLE", "Kølle").replace("BALL", "Ball").replace("AUTO", "Auto") : "Ikke satt"}
+                {lFase ? faseLabel(lFase as LFase) : "Ikke satt"}
                 <Icon name="refresh-cw" size={11} style={{ color: T.mut }} />
               </button>
             </Felt>

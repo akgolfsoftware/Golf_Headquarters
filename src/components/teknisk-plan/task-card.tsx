@@ -1,5 +1,7 @@
 import { GripVertical, MoreHorizontal } from "lucide-react";
 import type { PyramidArea } from "./constants";
+import type { LFase } from "@/generated/prisma/client";
+import { faseLabel } from "@/lib/ak-formel-visning";
 
 export interface RepProgress {
   current: number;
@@ -74,7 +76,7 @@ export function TaskCard(props: TaskCardProps) {
               {props.koller.length === 12 ? "ALLE KØLLER" : `${props.koller.length} KØLLER`}
             </span>
           )}
-          {props.lFase ? <span className="tp-tag lphase">{props.lFase}</span> : null}
+          {props.lFase ? <span className="tp-tag lphase">{faseLabel(props.lFase as LFase)}</span> : null}
           {props.cs ? <span className="tp-tag cs">{props.cs}</span> : null}
           {props.m ? <span className="tp-tag">{props.m}</span> : null}
           {props.pr ? <span className="tp-tag">{props.pr}</span> : null}

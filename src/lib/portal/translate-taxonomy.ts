@@ -26,12 +26,14 @@ const MILJO: Record<MMiljo, string> = {
   M5: "Turnering",
 };
 
+// Vei B (2026-07-19): de 5 finkornede L-fasene vises gruppert i 3 steg.
+// Kanonisk mapping i src/lib/ak-formel-visning.ts.
 const L_FASE: Record<LFase, string> = {
-  L_KROPP: "Kropp",
-  L_ARM: "Arm",
-  L_KOLLE: "Kølle",
-  L_BALL: "Ball",
-  L_AUTO: "Automatisert",
+  L_KROPP: "Uten ball",
+  L_ARM: "Uten ball",
+  L_KOLLE: "Lav hastighet",
+  L_BALL: "Lav hastighet",
+  L_AUTO: "Auto",
 };
 
 const CS_NIVAA: Record<CSNivaa, string> = {
@@ -43,12 +45,13 @@ const CS_NIVAA: Record<CSNivaa, string> = {
   CS100: "Full intensitet",
 };
 
+// Vei B (2026-07-19): PR1–PR5 vises som 4-trinns konsekvens-trapp.
 const PR_PRESS: Record<PRPress, string> = {
-  PR1: "Veldig lavt press",
-  PR2: "Lavt press",
-  PR3: "Moderat press",
-  PR4: "Høyt press",
-  PR5: "Konkurransepress",
+  PR1: "Fri",
+  PR2: "Krav",
+  PR3: "Utfordring",
+  PR4: "Konkurranse",
+  PR5: "Konkurranse",
 };
 
 const PRAKSISTYPE: Record<PracticeType, string> = {

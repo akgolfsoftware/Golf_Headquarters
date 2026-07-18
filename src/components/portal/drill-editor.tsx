@@ -12,13 +12,14 @@ import {
   BEVEGELIGHET_TYPER,
   KONDISJON_AKTIVITETER,
   TRENINGSOMRADER,
-  L_FASER,
   P_POSISJONER,
   DrillParametersSchema,
   type FysTreningstype,
   type DrillParameters,
 } from "@/lib/taxonomy";
 import { opprettOvelse, oppdaterOvelse, type OvelseInput } from "@/app/portal/(legacy)/coach/ovelser/actions";
+import { FASE_STEG, lFaseTilSteg, stegTilLFase } from "@/lib/ak-formel-visning";
+import type { LFase } from "@/generated/prisma/client";
 
 const PYR_ORDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 const LPHASE_ORDER: LPhase[] = ["GRUNN", "SPESIAL", "TURNERING", "TESTUKE", "FERIE", "TRENINGSSAMLING", "HELDAGSSAMLING"];
@@ -383,18 +384,21 @@ export function DrillEditor({
               >
                 Ingen
               </button>
-              {L_FASER.map((l) => (
-                <button
-                  key={l.kode}
-                  type="button"
-                  onClick={() => setGolfLFase(l.kode)}
-                  className={`rounded-md border px-4 py-1.5 text-xs font-medium transition-colors ${
-                    golfLFase === l.kode ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground hover:border-foreground/20"
-                  }`}
-                >
-                  {l.label}
-                </button>
-              ))}
+              {FASE_STEG.map((steg) => {
+                const aktiv = lFaseTilSteg(golfLFase as LFase) === steg.key;
+                return (
+                  <button
+                    key={steg.key}
+                    type="button"
+                    onClick={() => setGolfLFase(stegTilLFase(steg.key, golfLFase as LFase) ?? "")}
+                    className={`rounded-md border px-4 py-1.5 text-xs font-medium transition-colors ${
+                      aktiv ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground hover:border-foreground/20"
+                    }`}
+                  >
+                    {steg.label}
+                  </button>
+                );
+              })}
             </div>
           </Felt>
 

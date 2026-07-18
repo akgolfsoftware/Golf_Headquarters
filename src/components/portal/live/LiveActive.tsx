@@ -12,8 +12,11 @@ import { completeDrill, completeSession, startSession } from "@/app/portal/(full
 
 // Samme mørke forest-gradient som brief/logger/oppsummering (LiveSessionShell
 // "dark"-variant) — hele live-flyten er bevisst alltid mørk uansett appens
-// lys/mørk-tema (immersivt treningsmodus-fokus), derfor pinnet hex og ikke
-// var(--v2-lime)-typer tokens som ville byttet til forest i lys modus.
+// lys/mørk-tema (immersivt treningsmodus-fokus). Atmosfære-fargene under er
+// pinnet hex (ingen palett-token), mens merkevarefargene forest/lime bruker de
+// mode-invariante palett-primitivene var(--forest-700)/var(--lime-500) — de
+// bytter ALDRI per tema, så mørk-utseendet bevares uten rå hex. Bruk aldri
+// semantiske tokens (var(--signal)/var(--v2-lime)) her — de byttes i lys modus.
 const LIVE_BG_GRADIENT = "radial-gradient(120% 80% at 50% 0%, #0d2218, #0A1F17 70%)";
 
 type DrillStatus = "done" | "active" | "queued";
@@ -87,7 +90,7 @@ function ConfirmOverlay({ show, onConfirm, onCancel }: ConfirmOverlayProps) {
             type="button"
             onClick={onCancel}
             className="w-full rounded-full py-[13px] font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-accent"
-            style={{ background: "#005840" }}
+            style={{ background: "var(--forest-700)" }}
           >
             Fortsett økt
           </button>
@@ -137,7 +140,7 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
   }
 
   return (
-    <div className={cardClasses} style={isActive ? { borderColor: "#D1F843" } : undefined}>
+    <div className={cardClasses} style={isActive ? { borderColor: "var(--lime-500)" } : undefined}>
       {/* Eyebrow */}
       <div className="mb-2 flex items-center gap-[6px] font-mono text-[9.5px] font-semibold uppercase tracking-[0.10em] text-background/60">
         <span className="h-[6px] w-[6px] rounded-full bg-accent" aria-hidden />
@@ -176,8 +179,8 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
           style={{
             width: `${isDone ? 100 : progressPct}%`,
             background: isDone
-              ? "linear-gradient(90deg, #1A7D56, #005840)"
-              : "linear-gradient(90deg, #005840, #D1F843)",
+              ? "linear-gradient(90deg, #1A7D56, var(--forest-700))"
+              : "linear-gradient(90deg, var(--forest-700), var(--lime-500))",
           }}
         />
       </div>
@@ -188,7 +191,7 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
           className="font-mono text-[10px] uppercase tracking-[0.06em]"
           style={{
             // Lys status-tekst på den mørke forest-flata.
-            color: isActive ? "#D1F843" : isDone ? "rgba(247,247,244,0.65)" : "rgba(247,247,244,0.45)",
+            color: isActive ? "var(--lime-500)" : isDone ? "rgba(247,247,244,0.65)" : "rgba(247,247,244,0.45)",
           }}
         >
           {isActive ? "Pågår" : isDone ? "Fullført" : isQueued ? "Venter" : ""}
@@ -199,7 +202,7 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
             type="button"
             onClick={onLogRep}
             className="rounded-full border-none px-5 py-[9px] font-mono text-[11px] font-bold uppercase tracking-[0.06em] text-accent-foreground"
-            style={{ background: "#D1F843" }}
+            style={{ background: "var(--lime-500)" }}
           >
             Logg rep
           </button>
@@ -461,7 +464,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
               type="button"
               onClick={() => router.replace("/portal/planlegge/workbench")}
               className="mt-[14px] rounded-full border-none px-6 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.06em] text-accent-foreground"
-              style={{ background: "#D1F843" }}
+              style={{ background: "var(--lime-500)" }}
             >
               Til planen
             </button>
@@ -486,7 +489,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
               className="h-full rounded-full transition-all duration-700"
               style={{
                 width: `${progressPct}%`,
-                background: "linear-gradient(90deg, #005840, #D1F843)",
+                background: "linear-gradient(90deg, var(--forest-700), var(--lime-500))",
               }}
             />
           </div>
@@ -514,7 +517,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         {allDone && (
           <div
             className="mb-[14px] rounded-[14px] p-[18px] text-center"
-            style={{ background: "#005840" }}
+            style={{ background: "var(--forest-700)" }}
           >
             <div className="font-display text-[20px] font-bold text-white">
               Alle drills fullført
@@ -524,7 +527,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
               type="button"
               onClick={() => void completeSession(data.sessionId, totalSec)}
               className="mt-[14px] rounded-full border-none px-6 py-3 font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-accent-foreground"
-              style={{ background: "#D1F843" }}
+              style={{ background: "var(--lime-500)" }}
             >
               Se oppsummering
             </button>
@@ -577,7 +580,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             onClick={handleCompleteDrill}
             disabled={isCompleting}
             className="mt-5 flex h-[54px] w-full items-center justify-center gap-2 rounded-full font-mono text-[12.5px] font-bold uppercase tracking-[0.04em] text-accent-foreground disabled:opacity-50"
-            style={{ background: "#D1F843" }}
+            style={{ background: "var(--lime-500)" }}
           >
             <Check className="h-4 w-4" strokeWidth={2.5} aria-hidden />
             {activeIdx === drills.length - 1 ? "Fullfør økt" : "Fullfør drill"}
