@@ -18,13 +18,14 @@ import {
   DrillParametersSchema,
   M_MILJO,
   TRENINGSOMRADER,
-  L_FASER,
   type DrillParameters,
 } from "@/lib/taxonomy";
+import { faseLabel } from "@/lib/ak-formel-visning";
 import type {
   PyramidArea,
   SkillArea,
   SessionEnvironment,
+  LFase,
 } from "@/generated/prisma/client";
 
 export type Axis = "fys" | "tek" | "slag" | "spill" | "turn";
@@ -261,8 +262,7 @@ export async function loadDrillDetalj(
   const miljo = miljoLabel(params, drill.environment);
   if (miljo) params_table.push({ key: "Miljø", value: miljo });
   if (params?.modus === "GOLF" && params.lFase) {
-    const l = L_FASER.find((x) => x.kode === params.lFase);
-    if (l) params_table.push({ key: "L-fase", value: l.label });
+    params_table.push({ key: "Læringsfase", value: faseLabel(params.lFase as LFase) });
   }
 
   // Hero-meta — kun chips med data.

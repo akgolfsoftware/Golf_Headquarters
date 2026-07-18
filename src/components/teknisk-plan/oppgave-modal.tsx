@@ -18,6 +18,17 @@
 import { useState, type FormEvent } from "react";
 import { X, Check, Camera, Play, Sparkles, Search, GripVertical, Plus, Trash2 } from "lucide-react";
 import {
+  FASE_STEG_KEYS,
+  PRESS_NIVAA_KEYS,
+  lFaseTilSteg,
+  stegTilLFase,
+  stegLabel,
+  faseLabel,
+  pressTilNivaa,
+  nivaaTilPress,
+  pressNivaaLabel,
+} from "@/lib/ak-formel-visning";
+import {
   KOLLER,
   L_PHASES,
   CS_LEVELS,
@@ -445,12 +456,13 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
 
             <div className="modality-grid">
               <ModalitySeg
-                label="L-fase"
-                helper="Kropp → Arm → Kølle → Ball → Auto."
-                options={L_PHASES}
-                value={draft.lFase}
-                onChange={(v) => patch({ lFase: v })}
-                cols={5}
+                label="Læringsfase"
+                helper="Uten ball → Lav hastighet → Auto."
+                options={FASE_STEG_KEYS}
+                value={lFaseTilSteg(draft.lFase) ?? undefined}
+                onChange={(v) => patch({ lFase: stegTilLFase(v, draft.lFase) ?? undefined })}
+                cols={3}
+                labelFor={stegLabel}
               />
               <ModalitySeg
                 label="CS-nivå · hastighet"
@@ -469,12 +481,13 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
                 cols={6}
               />
               <ModalitySeg
-                label="PR · press"
-                helper="Konsekvens om mislykket. PR5 = turnering."
-                options={PR_LEVELS}
-                value={draft.pr}
-                onChange={(v) => patch({ pr: v })}
-                cols={5}
+                label="Press"
+                helper="Fri → Krav → Utfordring → Konkurranse."
+                options={PRESS_NIVAA_KEYS}
+                value={pressTilNivaa(draft.pr) ?? undefined}
+                onChange={(v) => patch({ pr: nivaaTilPress(v, draft.pr) ?? undefined })}
+                cols={4}
+                labelFor={pressNivaaLabel}
               />
             </div>
           </section>
@@ -740,7 +753,7 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
                     ) : draft.koller.length > 1 ? (
                       <span className="tp-tag club">{draft.koller.length} KØLLER</span>
                     ) : null}
-                    {draft.lFase ? <span className="tp-tag lphase">{draft.lFase}</span> : null}
+                    {draft.lFase ? <span className="tp-tag lphase">{faseLabel(draft.lFase)}</span> : null}
                     {draft.cs ? <span className="tp-tag cs">{draft.cs}</span> : null}
                     {draft.m ? <span className="tp-tag">{draft.m}</span> : null}
                     {draft.pr ? <span className="tp-tag">{draft.pr}</span> : null}
@@ -783,7 +796,9 @@ interface ModalitySegProps<T extends string> {
   options: readonly T[];
   value: T | undefined;
   onChange: (v: T) => void;
-  cols: 5 | 6;
+  cols: 3 | 4 | 5 | 6;
+  /** Valgfri klarspråk-label per option (ellers vises rå verdi). */
+  labelFor?: (o: T) => string;
 }
 
 function ModalitySeg<T extends string>({
@@ -793,6 +808,7 @@ function ModalitySeg<T extends string>({
   value,
   onChange,
   cols,
+  labelFor,
 }: ModalitySegProps<T>) {
   return (
     <div className="modality-cell">
@@ -806,7 +822,7 @@ function ModalitySeg<T extends string>({
             className={o === value ? "active" : ""}
             onClick={() => onChange(o)}
           >
-            <span className="dot" />{o}
+            <span className="dot" />{labelFor ? labelFor(o) : o}
           </button>
         ))}
       </div>

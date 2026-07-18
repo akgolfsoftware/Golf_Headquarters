@@ -31,6 +31,7 @@ import type {
   TalentMilepael,
 } from "@/components/v2";
 import type { LFase, CSNivaa, TrackStatus, SuggestionType } from "@/generated/prisma/client";
+import { faseLabel } from "@/lib/ak-formel-visning";
 import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
@@ -42,11 +43,9 @@ const P_NAVN: Record<string, string> = {
   P6: "Halvveis ned", P7: "Impact", P8: "Tidlig oppfølging", P9: "Kølle parallell", P10: "Finish",
 };
 
-const LFASE_LABEL: Record<LFase, string> = {
-  L_KROPP: "L-Kropp", L_ARM: "L-Arm", L_KOLLE: "L-Kølle", L_BALL: "L-Ball", L_AUTO: "L-Auto",
-};
-const LFASE_INDEX: Record<LFase, number> = {
-  L_KROPP: 0, L_ARM: 1, L_KOLLE: 2, L_BALL: 3, L_AUTO: 4,
+// 3-trinns visnings-index (Uten ball=0 · Lav hastighet=1 · Auto=2) for læringstrappen.
+const LFASE_STEG_INDEX: Record<LFase, number> = {
+  L_KROPP: 0, L_ARM: 0, L_KOLLE: 1, L_BALL: 1, L_AUTO: 2,
 };
 
 // TrackStatus → SporChip-nøkkel. AVSLAATT (diagnostic override) vises som «står stille».
@@ -191,7 +190,7 @@ async function loadData(userId: string): Promise<UtviklingsplanData> {
         spor: SPOR_MAP[t.trackStatus],
         repsGjort: t.repsGjortDry + t.repsGjortLav + t.repsGjortFull,
         repsMaal: t.repsMaalDry + t.repsMaalLav + t.repsMaalFull,
-        lFase: t.lFase ? LFASE_LABEL[t.lFase] : null,
+        lFase: t.lFase ? faseLabel(t.lFase) : null,
         cs: t.cs ? csLabel(t.cs) : null,
         tmMaal,
         tmNaadd,
@@ -223,7 +222,7 @@ async function loadData(userId: string): Promise<UtviklingsplanData> {
     const nesteKrav = aktivTask ? tilKrav(aktivTask) : null;
 
     // Læringstrapp: index fra aktiv task sin L-fase (ellers null → tom-tilstand).
-    const laeringsAktiv = aktivTask?.lFase != null ? LFASE_INDEX[aktivTask.lFase] : null;
+    const laeringsAktiv = aktivTask?.lFase != null ? LFASE_STEG_INDEX[aktivTask.lFase] : null;
 
     const aktivP = fokusPos ? pKort(fokusPos.pNummer) : "";
 

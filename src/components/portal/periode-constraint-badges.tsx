@@ -1,7 +1,8 @@
 "use client";
 
-import type { LPhase } from "@/generated/prisma/client";
-import { PERIODE_TYPER, L_FASER } from "@/lib/taxonomy";
+import type { LPhase, LFase } from "@/generated/prisma/client";
+import { PERIODE_TYPER } from "@/lib/taxonomy";
+import { faseLabel } from "@/lib/ak-formel-visning";
 
 export function PeriodeConstraintBadges({
   lPhase,
@@ -21,9 +22,9 @@ export function PeriodeConstraintBadges({
       {c.turneringsLaas && <Badge tone="warn">Turneringslås</Badge>}
       {!compact && (
         <Badge tone="subtle">
-          {c.lFaserTillatt
-            .map((kode) => L_FASER.find((l) => l.kode === kode)?.label ?? kode)
-            .join(", ")}
+          {Array.from(
+            new Set(c.lFaserTillatt.map((kode) => faseLabel(kode as LFase))),
+          ).join(", ")}
         </Badge>
       )}
     </div>

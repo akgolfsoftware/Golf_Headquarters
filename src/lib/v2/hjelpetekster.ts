@@ -33,9 +33,9 @@ const RAW = {
       "Club Standard, et målt ferdighetsnivå for en bestemt del av svingen eller slaget. Høyere tall (for eksempel CS100) krever mer presisjon enn et lavere (CS50).",
   },
   lFase: {
-    tittel: "L-fase",
+    tittel: "Læringsfase",
     forklaring:
-      "Hvor langt en bevegelse har kommet i læringsstigen: L-Kropp (grunnbevegelsen), L-Arm, L-Kølle, L-Ball (med ball) eller L-Auto (automatisk under press).",
+      "Hvor langt en bevegelse har kommet i tre steg: Uten ball (grunnbevegelsen bygges med tørrsving og speil), Lav hastighet (med ball i redusert tempo) og Auto (automatisk under press, full fart).",
   },
   planEtterlevelse: {
     tittel: "Plan-etterlevelse",
@@ -65,7 +65,7 @@ const RAW = {
   prPress: {
     tittel: "Press-nivå",
     forklaring:
-      "Hvor mye press drillen er lagt opp med, fra fri utførelse uten konsekvens til turneringslignende press med resultat som teller. Høyere press trener nervene, ikke bare teknikken.",
+      "Hvor mye konsekvens som ligger på slaget, i fire trinn: Fri (bygge, feil er gratis), Krav (score mot et eget mål), Utfordring (én sjanse per slag, men alene) og Konkurranse (mot andre eller turnering, poeng teller). Høyere press trener nervene, ikke bare teknikken.",
   },
   streak: {
     tittel: "Streak",
