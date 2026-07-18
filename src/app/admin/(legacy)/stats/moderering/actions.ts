@@ -12,8 +12,10 @@
  *
  * GDPR-sletting er ANONYMISERING, aldri kaskade-slett: User-raden tømmes for
  * personopplysninger (navn/e-post/telefon/bilde/fødselsdato), men relasjoner
- * (bookinger, økter, treningsdata) beholdes urørt. Vi setter IKKE deletedAt —
- * det ville trigget cron-jobben som hard-sletter med kaskade etter 30 dager.
+ * (bookinger, økter, treningsdata) beholdes urørt. Vi setter deletedAt = now()
+ * (D5, 2026-07-18) så kontoen faller ut av alle «aktiv bruker»-filtre, men OGSÅ
+ * anonymisertAt = now() — hard-delete-cronen ekskluderer anonymisertAt != null,
+ * så raden hard-slettes ALDRI (til forskjell fra vanlig 30-dagers soft-delete).
  *
  * PublicPlayer (offentlig turneringsidentitet): raden beholdes fordi
  * turneringsresultater refererer den (cascade), men navn/slug/bio/bilde/instagram
@@ -180,6 +182,13 @@ export async function utforGdprSletting(id: string) {
     phone: null,
     avatarUrl: null,
     dateOfBirth: null,
+    // D5 (2026-07-18): sett deletedAt så kontoen faller ut av alle «aktiv bruker»-
+    // filtre (deletedAt: null) uten å røre de ~40 kallstedene. anonymisertAt
+    // markerer at dette er anonymisering, IKKE vanlig soft-delete — hard-delete-
+    // cronen ekskluderer anonymisertAt != null, så raden (avidentifisert historikk)
+    // beholdes i stedet for å kaskade-slettes etter 30 dager.
+    deletedAt: nå,
+    anonymisertAt: nå,
   };
 
   // Offentlig turneringsidentitet (PublicPlayer): raden BEHOLDES — turnerings-
