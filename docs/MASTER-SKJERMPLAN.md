@@ -315,8 +315,8 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Uka (kanban) | `/admin/agencyos/uka` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Complete v13 (golfdata scope + cards) |
 | · Spillere (snarvei) | `/admin/agencyos/spillere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Økonomi | `/admin/agencyos/okonomi` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell`+`TilbakeLenke`. **M3 mobil (bølge 5) 17. jul:** `useMobile()` — komprimert tittel, betalingsrader stabler beløp over status-pill for mer plass til kundenavn (KPI-strip alt 2-kol, transaksjoner alt `Rad`). Mob --- → ✓✓–. |
-| · Live (Mission Control) | `/admin/agencyos/live` | ✓ | --- | ✓ | ✓ | – | ~ | v2 komponert (AgencyLiveV2), fortsatt visuelt skall med statisk seed-data (src/lib/agencyos/live-data.ts) — live-integrasjoner kobles senere |
-| · Caddie (AI-chat) | `/admin/agencyos/caddie` | ✓ | ✓✓– | ✓ | ~ | – | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `CaddieChatV2`/`CaddieSubNavV2`. |
+| · Live (Mission Control) | `/admin/agencyos/live` | ✓ | --- | ✓ | ✓ | – | ~ | v2 komponert (AgencyLiveV2), fortsatt visuelt skall med statisk seed-data (src/lib/agencyos/live-data.ts) — live-integrasjoner kobles senere. **Lansering 2026-07-18:** ærlig «Forhåndsvisning — ikke live data ennå»-banner lagt til øverst så seed-data ikke fremstår som ekte. |
+| · Caddie (AI-chat) | `/admin/agencyos/caddie` | ✓ | ✓✓– | ✓ | ~ | – | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `CaddieChatV2`/`CaddieSubNavV2`. **Lansering 2026-07-18:** ærlig «Forhåndsvisning»-banner lagt til øverst (chat uten live data ennå). |
 | · Caddie-aktivitet | `/admin/agencyos/caddie/aktivitet` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminCaddieAktivitetV2`. |
 | Admin-rot (gml. hjem) | `/admin` | ✓ | --- | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul: dette er en ren `redirect("/admin/agencyos")` — ikke en egen skjerm. |
 | Daglig AI-brief | `/admin/brief` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
