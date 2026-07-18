@@ -34,7 +34,7 @@ import {
   deleteTask,
   logReps,
   type TaskInput,
-} from "@/app/portal/(legacy)/tren/teknisk-plan/actions";
+} from "@/app/portal/tren/teknisk-plan/actions";
 import { uploadTaskMedia } from "@/lib/storage/task-media";
 
 /** Pyramide-aksene — kategori-chip-settet. Speiler PositionTask.pyramide. */

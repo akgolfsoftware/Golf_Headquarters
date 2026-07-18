@@ -2,7 +2,7 @@ import "server-only";
 
 /**
  * Delt autorisasjon for teknisk-plan (runde 2 · 2026-07-14). Trukket ut fra
- * src/app/portal/(legacy)/tren/teknisk-plan/actions.ts sin lokale
+ * src/app/portal/tren/teknisk-plan/actions.ts sin lokale
  * ensurePlanAccess, slik at andre moduler (task-media.ts) kan gjenbruke
  * samme regel uten å eksponere den som en "use server"-action.
  */

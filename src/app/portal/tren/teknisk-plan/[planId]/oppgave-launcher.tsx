@@ -1,21 +1,23 @@
 "use client";
 
 /**
- * Klient-wrapper som kobler de døde "Ny oppgave"/"Legg til oppgave"-knappene
- * til OppgaveModal og createTask-actionen.
+ * Klient-wrapper som kobler «Ny oppgave»/«Legg til oppgave»-knappene til
+ * OppgaveModal og createTask-actionen.
  *
- * Ansvar:
+ * Ansvar (uendret datalogikk):
  *   1. Holde modal-åpen/lukket-state.
  *   2. Bygge en tom OppgaveDraft for en gitt P-posisjon.
  *   3. Mappe OppgaveDraft → TaskInput (løser felt-mismatchen: m→miljo, pr→prPress,
  *      omraadeTab er UI-only og droppes, tm/hit-rate-mål renses for tomme felter).
  *   4. Kalle createTask og refreshe ruten ved suksess.
+ *
+ * v2 (2026-07-18): trigger-knappen bruker v2-Knapp — modalen og all logikk er som før.
  */
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
 import { useToast } from "@/components/shared/toast-provider";
+import { Knapp } from "@/components/v2";
 import {
   OppgaveModal,
   type OppgaveDraft,
@@ -117,7 +119,7 @@ interface OppgaveLauncherProps {
   planId: string;
   /** Posisjon som ny oppgave legges til i når knappen trykkes. */
   target: PositionTarget;
-  /** Knapp-utseende — matcher de eksisterende stubbene. */
+  /** Knapp-utseende — primær (lime) eller stiplet ghost for tom posisjon. */
   variant: "primary" | "ghost-dashed";
   /** Knapp-tekst. */
   label: string;
@@ -154,22 +156,13 @@ export function OppgaveLauncher({ planId, target, variant, label }: OppgaveLaunc
   return (
     <>
       {variant === "primary" ? (
-        <button className="tp-btn primary" type="button" onClick={openModal}>
-          <Plus size={13} aria-hidden /> {label}
-        </button>
+        <Knapp icon="plus" onClick={openModal}>
+          {label}
+        </Knapp>
       ) : (
-        <button
-          type="button"
-          className="tp-btn ghost"
-          style={{
-            justifyContent: "center",
-            border: "1px dashed hsl(var(--border))",
-            width: "100%",
-          }}
-          onClick={openModal}
-        >
-          <Plus size={13} aria-hidden /> {label}
-        </button>
+        <Knapp icon="plus" ghost full onClick={openModal} style={{ borderStyle: "dashed" }}>
+          {label}
+        </Knapp>
       )}
 
       <OppgaveModal
