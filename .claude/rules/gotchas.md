@@ -4,6 +4,18 @@ Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekk
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
 Designkanon: `.claude/rules/design-system-regel.md` (v13/golfdata).
 
+### dedupe-tournament-data foretrekker NGF som merge-target — feil for ferske scraper-kilder (oppdaget 2026-07-18)
+- `dedupeTournaments()` velger target med regelen «behold NGF-raden» (den historiske
+  import-kilden hadde mest data). Da Olyo/Østlandstour ble koblet på GolfBox-roboten,
+  fantes det gamle NGF-stubs (fra `import-norske-turneringer.ts`) med SAMME navn+år som
+  de nye robot-radene. Dedupe skjulte de ferske robot-radene (OLYO/OSTLANDS, riktig
+  status + region i notes) bak de tomme NGF-stubbene → serie-/regionfiltrering brøt og
+  Østlandstour beholdt feil COMPLETED-status.
+- Regel: når en fersk scraper-origin kolliderer med en gammel NGF-stub, skal den FERSKE
+  raden være target. Sjekk retningen etter dedupe (`sourceOrigin in (OLYO,OSTLANDS)` +
+  `mergedIntoId != null` skal være ~0). NGF-stubbene hadde 0 entries, så korreksjonen var
+  å snu `mergedIntoId` (robot-rad aktiv, stub merget inn) — reversibel soft-merge.
+
 ### Stripe-abonnement — knapper i appen MÅ kalle Stripe, aldri bare egen DB (oppdaget 2026-07-13)
 - «Avbestill»-knappen satte kun `Subscription.status = CANCELLED` lokalt — Stripe fortsatte å
   belaste kortet. Regel: enhver avbestill/endre-knapp kaller Stripe (`subscriptions.update` med
