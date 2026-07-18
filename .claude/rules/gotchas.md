@@ -50,11 +50,15 @@ Designkanon: `.claude/rules/design-system-regel.md` (v13/golfdata).
 ### JSON-blobs MÅ valideres med zod
 Alle `as unknown as <Type>` på JSON-felter fra Prisma er forbudt for forretningskritiske data. Bruk zod `safeParse` ved read.
 
-### Schema-endringer: `migrate dev` og `db push` er BEGGE blokkert — bruk kirurgisk `db execute`
-Oppdaget 2026-06-22 ved tillegg av 3 tabeller. To feller:
-- **`prisma migrate dev` feiler** på shadow-DB-replay: en gammel migrasjon (`20260510..._add_parent_role_and_tier_enum`) feiler når alle 80 migrasjoner replayes fra bunnen («type UserRole does not exist», P3018). Prod-DB er fin (`migrate status` = up to date), men shadow-replayen er ødelagt.
-- **`prisma db push` vil DROPPE data**: prod har en `datagolf_sync_state`-tabell som ikke finnes i `schema.prisma` (pre-eksisterende drift), så push krever `--accept-data-loss` og ville slettet den.
-- **Trygg vei for ADDITIVE endringer:** legg modellen i `schema.prisma`, og kjør `CREATE TABLE IF NOT EXISTS ...` direkte via tsx + `PrismaPg`-adapter (`prisma.$executeRawUnsafe`) mot `DIRECT_URL`. Da rører du KUN dine egne tabeller. Deretter `npx prisma generate`. Bruk plain `userId String` (ingen `@relation`) i nye modeller så du slipper å redigere `User` og holder endringen isolert.
+### Schema-endringer: LØST 2026-07-18 — ren `0_baseline` etter Supabase-kontobyttet
+Den gamle fellen (ødelagt shadow-replay P3018 + `datagolf_sync_state`-drift som gjorde
+både `migrate dev` og `db push` farlige) ble **løst permanent** ved migreringen til nytt
+Supabase-prosjekt (`dcnxoztjtdqoidaekxry`): migrasjonshistorikken er erstattet av én
+`prisma/migrations/0_baseline` som speiler faktisk DB 1:1 (drift reconciliert —
+`datagolf_sync_state` ligger nå i `schema.prisma`, døde `ELITE`/`LacFase` er fjernet).
+De 82 gamle migrasjonene ligger i `prisma/migrations-arkiv/`. `migrate dev`,
+`migrate deploy` og shadow-replay fungerer normalt igjen. Historikk: se
+`docs/migrering-supabase/` og git-historikken for den gamle regelen.
 
 ### Prisma 7 — connection-strings i `prisma.config.ts`, ikke `schema.prisma`
 - Schema har bare `provider = "postgresql"`. Url ligger i `prisma.config.ts` → `datasource.url = env("DIRECT_URL")`.
@@ -86,11 +90,17 @@ rot» men havnet i `src/app/admin/`, og en `launch.json` ble skrevet til
 `src/app/admin/.claude/`. Regel: bruk absolutte stier, og verifiser med `pwd`
 før filoperasjoner mot rot.
 
-### Ytelse: Vercel-region MÅ matche Supabase-region (oppdaget 2026-07-12)
-Supabase ligger i eu-west-1 (Irland). Uten `"regions"` i vercel.json kjørte
-funksjonene i default iad1 (USA) — hver Prisma-spørring krysset Atlanteren og
-sider med mange spørringer fikk TTFB på 0,5–1,1 s. Fix: `"regions": ["dub1"]`
-i vercel.json. Ikke fjern denne uten å flytte databasen samtidig.
+### Ytelse: Vercel-region MÅ matche Supabase-region (oppdaget 2026-07-12, oppdatert 2026-07-18)
+Supabase ligger i **eu-west-2 (London)** etter kontobyttet 2026-07-18 → vercel.json
+har `"regions": ["lhr1"]` (London). Uten region-pinning kjørte funksjonene i default
+iad1 (USA) — hver Prisma-spørring krysset Atlanteren og sider med mange spørringer
+fikk TTFB på 0,5–1,1 s. Ikke endre region-pinningen uten å flytte databasen samtidig.
+
+### Kontoeierskap: kritisk infra eies via E-POST, aldri kun GitHub-login (lærdom 2026-07-18)
+Gammel Supabase-konto var kun tilgjengelig via en GitHub-konto som ble flagget →
+total utestengelse fra dashbordet og full databasemigrering som konsekvens.
+Regel: Supabase/Vercel/Google Cloud/Stripe skal alltid ha en e-postidentitet
+Anders kontrollerer som eier. «Logg inn med GitHub» kan være tillegg, aldri eneste vei.
 
 ### Dev-server med foreldet Prisma-klient etter `prisma generate` (truffet 2×, 2026-07-13)
 Kjører `npx prisma generate` (nytt felt/enum) mens `next dev` står oppe →

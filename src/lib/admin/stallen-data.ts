@@ -139,7 +139,6 @@ const PROGRAM_BUCKET: Record<PlayerProgram, GroupBucket | null> = {
 /** Tier-enum → fasitens ikon-bucket + label. Vi har ikke ambisjons-tier i
  *  datamodellen, så abonnement-tier brukes som nærmeste ekte felt. */
 const TIER_MAP: Record<Tier, { kind: TierKind; label: string }> = {
-  ELITE: { kind: "konk", label: "PRO" }, // ELITE dødt enum → vis som PRO (betalt)
   PRO: { kind: "konk", label: "PRO" },
   GRATIS: { kind: "mosj", label: "FREE" },
 };

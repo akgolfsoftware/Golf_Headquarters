@@ -44,7 +44,7 @@ function buildCsp(nonce: string): string {
     // Tailwind v4 / React inline styles
     "style-src 'self' 'unsafe-inline'",
     // Supabase Storage + data-URI + blob (fil-previews)
-    "img-src 'self' blob: data: https://eljkjqvggsmnbbszzbpj.supabase.co",
+    "img-src 'self' blob: data: https://dcnxoztjtdqoidaekxry.supabase.co",
     // next/font serverer fonter fra self
     "font-src 'self'",
     // Fetch / WebSocket: Supabase Realtime, Stripe API, Vercel, Mapbox

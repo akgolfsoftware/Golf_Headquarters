@@ -58,8 +58,7 @@ export default async function CoachHubPage({
   const data: CoachSgHubSpillerV2Data = {
     spillerNavn: player.name,
     antallOkter: sessions.length,
-    // ELITE er et dødt enum — vises aldri i UI (mappes til PRO som før).
-    tierLabel: player.tier === "ELITE" ? "PRO" : player.tier,
+    tierLabel: player.tier,
     klubber: clubs,
     baseHref: `/portal/mal/sg-hub/coach/${spillerId}`,
   };

@@ -24,7 +24,6 @@ enum UserRole {
 enum Tier {
   GRATIS
   PRO
-  ELITE
 }
 
 enum BookingStatus {
@@ -4732,4 +4731,21 @@ model CoachPinnedPlayer {
   @@unique([coachId, playerId])
   @@index([coachId])
   @@map("coach_pinned_players")
+}
+
+/// Sync-state for DataGolf-endepunkter. Skrives ikke av denne appen i dag,
+/// men beholdes fordi ak-golf-intelligence-tjenesten kan bruke tabellen.
+/// (Reconciliert fra pre-eksisterende prod-drift 2026-07-18.)
+model DatagolfSyncState {
+  endpoint     String
+  paramsHash   String    @map("params_hash")
+  paramsJson   String?   @map("params_json")
+  s3Key        String?   @map("s3_key")
+  rowCount     Int?      @default(0) @map("row_count")
+  lastStatus   Int?      @map("last_status")
+  lastError    String?   @map("last_error")
+  lastSyncedAt DateTime? @map("last_synced_at") @db.Timestamptz(6)
+
+  @@id([endpoint, paramsHash])
+  @@map("datagolf_sync_state")
 }
