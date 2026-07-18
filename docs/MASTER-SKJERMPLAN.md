@@ -215,7 +215,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Coach-videoer | `/portal/coach/videoer` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Coach-notater | `/portal/coach/notes` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Notat-detalj | `/portal/coach/notes/[noteId]` | ✓ | --- | ✓ | ~ | ~ | ~ |
-| Spørsmål til coach (liste løftet D3; [id]-tråd ikke løftet) | `/portal/coach/sporsmal/[id]` | ~ | --- | ✓ | ~ | ~ | ~ |
+| Spørsmål til coach (tråd) | `/portal/coach/sporsmal/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 18. jul: `CoachSporsmalTraadV2` (V2Shell/Kort/Caps/Tittel/StatusPill/TekstOmraade) erstatter legacy-tråden. Ruten flyttet ut av (legacy) — gammel `(legacy)/coach/sporsmal/[id]` slettet for å unngå rutekollisjon (samme mønster som `/ny`), delt `svarPaSporsmal`-action beholdt i legacy-actions og importert uendret. Datoformat Oslo-TZ. Design ~ → ✓, Mob/Desk/iPad --- → ✓✓–, Flyt/Data/Funker ~ → ✓. |
 | · Nytt spørsmål | `/portal/coach/sporsmal/ny` | ✓ | --- | ✓ | ✓ | ✓ | ✓† |
 | Coach-AI | `/portal/coach/ai` | ✓ | --- | ✓ | ~ | ~ | ~ |
 
