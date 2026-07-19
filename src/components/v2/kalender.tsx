@@ -31,7 +31,7 @@ export interface UkeDag {
   sessions: UkeSession[];
 }
 const UG_DAGER = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
-const UG_COMP: Record<ComplianceKey, string> = { on: T.up, off: T.down, none: T.mut, planned: "rgba(255,255,255,0.28)" };
+const UG_COMP: Record<ComplianceKey, string> = { on: T.up, off: T.down, none: T.mut, planned: `color-mix(in srgb, ${T.fg} 28%, transparent)` };
 const UG_DEMO: UkeDag[] = [
   { date: 6, sessions: [{ time: "07:00", title: "FYS styrke", axis: "FYS", compliance: "on" }] },
   { date: 7, sessions: [{ time: "16:00", title: "Teknikk driver", axis: "TEK", compliance: "off" }] },

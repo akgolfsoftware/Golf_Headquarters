@@ -13,12 +13,24 @@
 const MAKS_KANT = 640;
 const JPEG_KVALITET = 0.85;
 
+/** Server actions avviser bodies over grensen i next.config.ts (4 MB) FØR
+ *  action-koden kjører. Filer som ikke kan nedskaleres (video/PDF/lyd) må
+ *  sjekkes på klienten mot denne, så brukeren får en ærlig norsk feilmelding
+ *  i stedet for Nexts generiske engelske. Litt under 4 MB pga FormData-overhead. */
+export const MAKS_ACTION_BYTES = 3_500_000;
+
 export async function skalerAvatar(fil: File): Promise<File> {
+  return skalerBilde(fil, MAKS_KANT);
+}
+
+/** Generell klient-nedskalering til JPEG — brukes også for innholdsbilder
+ *  (teknisk-plan-oppgaver, vedlegg) med større maks-kant enn avatarer. */
+export async function skalerBilde(fil: File, maksKant: number): Promise<File> {
   try {
     const url = URL.createObjectURL(fil);
     try {
       const img = await lastBilde(url);
-      const skala = Math.min(1, MAKS_KANT / Math.max(img.naturalWidth, img.naturalHeight));
+      const skala = Math.min(1, maksKant / Math.max(img.naturalWidth, img.naturalHeight));
       const w = Math.max(1, Math.round(img.naturalWidth * skala));
       const h = Math.max(1, Math.round(img.naturalHeight * skala));
 

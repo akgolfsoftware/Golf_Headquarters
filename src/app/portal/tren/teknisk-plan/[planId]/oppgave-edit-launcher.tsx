@@ -16,6 +16,7 @@ import { TekniskTaskKort, type TekniskTaskKortProps } from "@/components/portal/
 import { OppgaveModal, type OppgaveDraft } from "@/components/teknisk-plan/oppgave-modal";
 import { updateTaskBasics, logReps } from "../actions";
 import { uploadTaskMedia } from "@/lib/storage/task-media";
+import { skalerBilde, MAKS_ACTION_BYTES } from "@/lib/klient/skaler-avatar";
 
 function draftToBasicsPatch(draft: OppgaveDraft) {
   return {
@@ -80,8 +81,14 @@ export function OppgaveEditLauncher({ taskId, draft, cardProps }: OppgaveEditLau
           onSubmit={handleSubmit}
           onLogReps={(reps) => logReps(taskId, reps).then(() => router.refresh())}
           onUploadMedia={async (file, kind) => {
+            // Server action-grensen (4 MB) avviser store filer FØR uploadTaskMedia
+            // kjører: bilder nedskaleres på klienten, video sjekkes med ærlig feil.
+            const sendes = kind === "bilde" ? await skalerBilde(file, 1600) : file;
+            if (sendes.size > MAKS_ACTION_BYTES) {
+              throw new Error("Fila er for stor (maks ~3,5 MB). Full videostøtte for større filer kommer.");
+            }
             const fd = new FormData();
-            fd.append("file", file);
+            fd.append("file", sendes);
             const res = await uploadTaskMedia(taskId, fd, kind);
             router.refresh();
             return res.url;

@@ -175,7 +175,7 @@ export async function createSpiller(
   }
 
   // Placeholder authId før Supabase-invitasjon.
-  const placeholderAuthId = `pending:${crypto.randomUUID()}`;
+  const placeholderAuthId = `pending-${crypto.randomUUID()}`;
 
   // Prefs lagrer fødselsdato, kategori og foreldre-info som strukturert JSON.
   const prefs: Record<string, unknown> = {
