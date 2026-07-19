@@ -1,7 +1,8 @@
 // /meg — dashboard for Meg-assistenten. Server component, låst til ADMIN.
-// Viser siste morgenbrief, ventende bekreftelser, og siste logg. Funksjonell
-// v1 — den polerte fler-skjerm-versjonen bygges etter Anders kjører Claude
-// Design-promptene (lagret i Google Drive inbox/meg-assistent-design-prompter.md).
+// Viser siste morgenbrief, ventende bekreftelser, og siste logg. Dispatch
+// (pause-kortet) og den daglige Morgenbrief-visningen (v2, 19. juli) bor nå
+// på egne ruter — lenket rett under.
+import Link from "next/link";
 import { Eyebrow, Tag } from "@/components/athletic/golfdata";
 import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
@@ -46,6 +47,14 @@ export default async function MegDashboard() {
           Personlig assistent. Snakk inn via Telegram — her ser du briefer, ventende
           bekreftelser og siste logg.
         </p>
+        <div className="flex gap-4 pt-2">
+          <Link href="/meg/dispatch" className="text-sm font-medium text-primary hover:underline">
+            Dispatch (pause-kortet) →
+          </Link>
+          <Link href="/meg/morgenbrief" className="text-sm font-medium text-primary hover:underline">
+            Morgenbrief →
+          </Link>
+        </div>
       </header>
 
       {/* Siste brief */}
