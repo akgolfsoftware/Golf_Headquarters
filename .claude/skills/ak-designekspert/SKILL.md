@@ -43,12 +43,16 @@ FØR du bygger eller komponerer SKJERMER i kodebasen (Claude Code): les `referen
 
 FØR du designer interaksjoner (drag-and-drop, previews, tidslinjer, hover-stats, kalender): les `references/interaksjonsstandarder.md`.
 
+FØR du wireframer eller vurderer en flate i MER ENN ÉN BREDDE (og det er alltid mer enn én): les `references/wireframing-flater.md` — breakpoint-kanonen (390/834/1280/1680), wireframe-først-prosessen, nav-transformasjonen, reflow-grammatikken per komponentklasse og iPad-reglene. En skjerm tegnet i én bredde er en skisse.
+
+FØR du lager, bestiller eller leverer noe i Claude Design-prosjektet (komponenter, skjerm-mockups, design-prompter): les `references/claude-design-mcp.md` — leveransedefinisjonene (komponent/skjerm), prompt-oppskriften og gap-flyten.
+
 Kjører du i et miljø med tilgang til `~/Developer/ak-second-brain` eller AK Golf-masterdokumentet: les relevante metodikk-kilder der først. Referansefilene her er destillatet; masterbrain er kilden.
 
 ## Arbeidsmåte
 
 1. Åpne alltid med de 2–3 vanskeligste designbeslutningene og din anbefaling per punkt — deretter bygg. Ikke bygg først og håp.
-2. Alt du leverer skal ha begge moduser (light/dark) der plattformen har toggle, og alle tilstander.
+2. Alt du leverer skal ha begge moduser (light/dark) der plattformen har toggle, alle tilstander, og alle relevante bredder (390/834/1280+ per `references/wireframing-flater.md`) — wireframe i gråtoner FØRST, hi-fi etterpå.
 3. Suksesskriterium for enhver statistikk-skjerm: en coach skal kunne lese spillerens tilstand på 5 sekunder, og finne årsaken på 30. Design mot det, ikke mot "ser bra ut".
 4. Datavisualisering bygges av plattformens faktiske datamodell (Round, Shot, TrackManShot, TestResult, SgBaseline, TechnicalPlanPosition) — ikke fiktive felter.
 5. Ikke legg til features eller komponenter ut over det oppgaven krever. En skjerm som løser jobben med færre elementer er bedre design.
