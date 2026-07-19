@@ -159,7 +159,8 @@ function MRamme({ mobile, aktiv, children }: { mobile: boolean; aktiv: string; c
       }}
     >
       <MNav mobile={mobile} aktiv={aktiv} />
-      <div style={{ flex: 1 }}>{children}</div>
+      {/* <main>-landemerke — samme a11y-fiks som delt marked-ramme.tsx. */}
+      <main style={{ flex: 1 }}>{children}</main>
       <MFot mobile={mobile} />
     </div>
   );
