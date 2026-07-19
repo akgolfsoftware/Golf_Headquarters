@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Morgenkjøring kl. 08:30 — inbox-sortering + «Venter på deg» i dagsnotatet.
+  Installasjon (Mac Mini):
+    1. Juster stien under WorkingDirectory til repoets plassering.
+    2. cp com.akgolf.meg-morgen.plist ~/Library/LaunchAgents/
+    3. launchctl load ~/Library/LaunchAgents/com.akgolf.meg-morgen.plist
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.akgolf.meg-morgen</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/npm</string>
+    <string>run</string>
+    <string>meg:morgen</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/Users/anderskristiansen/Developer/Golf_Headquarters</string>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key>
+    <integer>8</integer>
+    <key>Minute</key>
+    <integer>30</integer>
+  </dict>
+  <key>StandardOutPath</key>
+  <string>/tmp/meg-morgen.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/meg-morgen.err</string>
+</dict>
+</plist>

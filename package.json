@@ -23,7 +23,8 @@
     "test:e2e:headed": "playwright test --headed",
     "test:all": "npm test && npm run test:e2e",
     "prepare": "husky",
-    "meg:tilbakeskriv": "tsx scripts/meg-tilbakeskriving/run.ts"
+    "meg:tilbakeskriv": "tsx scripts/meg-tilbakeskriving/run.ts",
+    "meg:morgen": "tsx scripts/meg-tilbakeskriving/morgen.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.85",
