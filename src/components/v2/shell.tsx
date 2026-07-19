@@ -20,6 +20,7 @@ import { Icon } from "./icon";
 import { LogoAK, AvatarFoto } from "./core";
 import { SpillerVeksler, type VekslerData } from "./spiller-veksler";
 import { useErAdmin } from "./rolle";
+import { GlobalSearchModal } from "@/components/admin/global-search-modal";
 
 // D2 (17. juli): re-eksporter veksler-datakontrakten fra shellen så kallsteder
 // (cockpit m.fl.) kan importere den fra samme sted som V2Shell.
@@ -105,7 +106,9 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
       { id: "runder", label: "Runder", icon: "flag", href: "/admin/runder" },
       { id: "compliance", label: "Plan-etterlevelse", icon: "shield-check", href: "/admin/analysere/compliance" },
       { id: "audit-log", label: "Audit-log", icon: "shield", href: "/admin/audit-log" },
+      { id: "moderering", label: "Moderering", icon: "eye", href: "/admin/stats/moderering" },
       { id: "trackman", label: "TrackMan", icon: "target", href: "/admin/trackman" },
+      { id: "live", label: "Live", icon: "monitor", href: "/admin/agencyos/live" },
     ],
   },
   {
@@ -256,7 +259,7 @@ function RailLenke({ item, on }: { item: V2NavItem; on: boolean }) {
 /** «Mer»-panelet — grupperte lenker. Desktop: flytende panel ved railen.
  *  mobil: bunn-ark (72vh). mobil+full: full-høyde skuff (kandidat A, godkjent
  *  17. juli for AgencyOS-mobil) — dekker viewporten fra topp til bunn. */
-function MerPanel({ grupper, onClose, mobil, full }: { grupper: V2NavGruppe[]; onClose: () => void; mobil?: boolean; full?: boolean }) {
+function MerPanel({ grupper, onClose, mobil, full, erAgency }: { grupper: V2NavGruppe[]; onClose: () => void; mobil?: boolean; full?: boolean; erAgency?: boolean }) {
   const pathname = usePathname();
   const { tema, bytt } = useV2Tema();
   useEffect(() => {
@@ -288,6 +291,20 @@ function MerPanel({ grupper, onClose, mobil, full }: { grupper: V2NavGruppe[]; o
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
           <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>Alle flater</span>
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            {erAgency && (
+              // Touch-tilgang til globalt søk (Cmd+K har ingen ekvivalent på
+              // mobil/iPad) — funnet manglet helt i AgencyOS 19. juli, fikset her
+              // fordi «Mer» er det ene stedet som nås fra BÅDE rail og bunn-nav.
+              <button
+                onClick={() => { onClose(); window.dispatchEvent(new CustomEvent("global-search:open")); }}
+                className="v2-press"
+                aria-label="Åpne globalt søk"
+                style={{ display: "flex", alignItems: "center", gap: 6, background: "transparent", border: `1px solid ${T.border}`, borderRadius: 8, color: T.fg2, cursor: "pointer", padding: "4px 9px" }}
+              >
+                <Icon name="search" size={13} />
+                <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>Søk</span>
+              </button>
+            )}
             <button
               onClick={bytt}
               className="v2-press"
@@ -363,7 +380,7 @@ function IkonRailNav({ aktiv, nav, mer, navn, avatarUrl, erAgency }: Required<Pi
           AgencyOS. Funnet + fikset 16. jul: spillere fikk denne uten grunn. */}
       {erAgency && <TemaRailKnapp />}
       <AvatarFoto src={avatarUrl ?? undefined} navn={navn} size={32} ring />
-      {merOpen && mer && <MerPanel grupper={mer} onClose={() => setMerOpen(false)} />}
+      {merOpen && mer && <MerPanel grupper={mer} onClose={() => setMerOpen(false)} erAgency={!!erAgency} />}
     </nav>
   );
 }
@@ -473,7 +490,7 @@ function AgencyBunnNav({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
           <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600 }}>Mer</span>
         </button>
       </nav>
-      {skuffOpen && <MerPanel grupper={skuffGrupper} onClose={() => setSkuffOpen(false)} mobil full />}
+      {skuffOpen && <MerPanel grupper={skuffGrupper} onClose={() => setSkuffOpen(false)} mobil full erAgency />}
     </>
   );
 }
@@ -602,6 +619,9 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
       {erAgency
         ? <AgencyBunnNav aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} />
         : <BunnNavLenker aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} />}
+      {/* Globalt søk (Cmd+K + «global-search:open»-event fra Mer-panelets
+          søkeknapp) — kun montert i AgencyOS. Selv-styrt, rendrer null lukket. */}
+      {erAgency && <GlobalSearchModal />}
     </div>
   );
 }
