@@ -51,8 +51,17 @@ export default async function GfgkJuniorForside() {
     <div>
       <GfgkHeader aktiv="hjem" />
 
-      {/* Hero — premium: duotone-flate, én gull-CTA, forankret nøkkeltall-strip */}
-      <section id="top" className="jr-duotone relative overflow-hidden">
+      {/* Hero — premium: brufoto med lett skygge, én gull-CTA, forankret nøkkeltall-strip */}
+      <section id="top" className="relative overflow-hidden" style={{ background: "var(--ink)" }}>
+        <Image
+          src="/images/anlegg/gfgk-3.jpg"
+          alt="Gangbrua over vannet på Gamle Fredrikstad Golfklubb"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="jr-hero-skygge pointer-events-none absolute inset-0" />
         <div className="jr-hero-gradient pointer-events-none absolute inset-0" />
         <div className="relative mx-auto max-w-[1200px] px-5 pb-32 pt-20 text-white sm:px-7 sm:pb-36 sm:pt-24">
           <div className="jr-fade-up max-w-[680px]">
