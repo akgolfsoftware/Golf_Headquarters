@@ -724,7 +724,7 @@ export function GuardianConsentV2(props: GuardianConsentV2Props) {
       }}
     >
       <BrandPanel />
-      <div
+      <main
         style={{
           flex: 1,
           minWidth: 0,
@@ -752,7 +752,7 @@ export function GuardianConsentV2(props: GuardianConsentV2Props) {
           />
         )}
         <InfoSeksjon />
-      </div>
+      </main>
     </div>
   );
 }

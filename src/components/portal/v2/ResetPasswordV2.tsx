@@ -429,7 +429,7 @@ export function ResetPasswordV2() {
       }}
     >
       <BrandPanel />
-      <div
+      <main
         style={{
           flex: 1,
           minWidth: 0,
@@ -441,7 +441,7 @@ export function ResetPasswordV2() {
         }}
       >
         <ResetKort />
-      </div>
+      </main>
     </div>
   );
 }

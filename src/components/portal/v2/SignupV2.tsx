@@ -843,7 +843,7 @@ export function SignupV2({
       }}
     >
       <BrandPanel />
-      <div
+      <main
         style={{
           flex: 1,
           minWidth: 0,
@@ -855,7 +855,7 @@ export function SignupV2({
         }}
       >
         <SignupKort defaultEmail={defaultEmail} subscribe={subscribe} />
-      </div>
+      </main>
     </div>
   );
 }
