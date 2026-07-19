@@ -114,13 +114,17 @@ rot» men havnet i `src/app/admin/`, og en `launch.json` ble skrevet til
 `src/app/admin/.claude/`. Regel: bruk absolutte stier, og verifiser med `pwd`
 før filoperasjoner mot rot.
 
-### Ytelse: Vercel-region MÅ matche Supabase-region (oppdatert 2026-07-18)
-Supabase ligger nå i **eu-west-2 (London)** etter kontobyttet (nytt prosjekt
-`dcnxoztjtdqoidaekxry`). Uten `"regions"` i vercel.json kjørte funksjonene i
-default iad1 (USA) — hver Prisma-spørring krysset Atlanteren og sider med mange
-spørringer fikk TTFB på 0,5–1,1 s. Fix: `"regions": ["lhr1"]` i vercel.json
-(London, samlokalisert med DB). Ikke fjern eller endre denne uten å flytte
-databasen samtidig. (Historikk: var eu-west-1/dub1 før 18. juli-byttet.)
+### Ytelse: Vercel-region MÅ matche Supabase-region (korrigert 2026-07-19)
+Kanonisk Supabase-prosjekt er `eljkjqvggsmnbbszzbpj` i **eu-west-1 (Dublin)** —
+vercel.json har `"regions": ["dub1"]` (samlokalisert). Uten `"regions"` kjører
+funksjonene i default iad1 (USA) med TTFB 0,5–1,1 s. Ikke fjern eller endre
+uten å flytte databasen samtidig.
+OBS: 18. juli-versjonen av dette notatet sa «nytt prosjekt dcnxoztjtdqoidaekxry»
+(eu-west-2/lhr1) — det var INVERTERT: dcnx er det GAMLE, døde prosjektet fra den
+flaggede kontoen. 19. juli pekte Vercel-env fortsatt på dcnx → total
+innloggings-stopp i prod. Fiks: alle Supabase/DB-env byttet til eljk-verdiene +
+rebuild UTEN build-cache (NEXT_PUBLIC_* bakes inn ved bygging). Meg-boten har
+bevisst EGET Supabase-prosjekt (`ffaitjztfnelzwefbdhw`, MEG_SUPABASE_URL).
 
 ### Dev-server med foreldet Prisma-klient etter `prisma generate` (truffet 2×, 2026-07-13)
 Kjører `npx prisma generate` (nytt felt/enum) mens `next dev` står oppe →
