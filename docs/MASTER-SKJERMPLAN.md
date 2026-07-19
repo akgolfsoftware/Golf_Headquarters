@@ -525,6 +525,13 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 > kun `AdminHero` (header-only, selv en tynn wrapper rundt golfdata `Eyebrow`) med hand-bygget
 > kropp — merket AMBIGUOUS i tabellene, ikke en ren ✓ eller gap.
 
+### Meg (Anders' personlige assistent — utenfor AgencyOS-menyen, ADMIN-only)
+
+| Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
+|---|---|---|---|---|---|---|---|
+| Dispatch (pause-kortet) | `/meg/dispatch` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Ny 19. jul: v2-mockup (Claude Design, verifisert i nettleser) portet 1:1 til TSX. Leser `pause-kort.json` fra ak-brain (skrevet av sla-vakt-pause/kveldsjekk-dispatch) via `hentPauseKort()`. Ingen iPad-spesifikk visning — enkelt-kolonne responsiv. Data finnes kun på maskiner med ak-brain montert (Mac Mini); Vercel viser ærlig tom-tilstand.
+| Morgenbrief | `/meg/morgenbrief` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Ny 19. jul: samme mockup-kilde. Leser `morgenbrief-data.json` (skrevet av morgenbrief-dispatch kl 06:33). Meldinger → Oppgaver → Kalender → Neste steg.
+
 ---
 
 ## Skjermene — Auth + Forelder + Marketing + System
@@ -787,6 +794,16 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 
 ## Endringslogg
 
+- 19. juli: **`/meg/dispatch` og `/meg/morgenbrief` bygget.** Nye rader («Meg» — Anders'
+  personlige assistent, utenfor AgencyOS-menyen). Design ble redesignet i v2 (retning C) i Claude
+  Design-prosjektet etter at det viste seg opprinnelig tegnet i gammel v13/golfdata-stil, verifisert
+  i nettleser (alle scenarier, mobil+desktop), to designsystem-gap funnet og fikset ved kilden
+  (CTAPill manglet onClick, fire ikoner manglet i golfdata-Icon — se `fix/meg-design-gaps`-grenen).
+  Ny delt komponent `MeldingRad` (`src/components/meg/dispatch-ui.tsx`) — SLA-meldingsrad m/
+  svarutkast, ikke tidligere i v2-core. Datalag `src/lib/meg/dispatch-data.ts` leser
+  `pause-kort.json`/`morgenbrief-data.json` fra ak-brain (skrevet av de tre planlagte vaktene),
+  zod-validert, ærlig tom-tilstand der filene mangler. Ingen database — bevisst valg, datakilden er
+  Anders' egne Mac Mini-vakter, ikke Postgres.
 - 19. juli (illustrativt sone-kart bygget, etter Anders' svar på formell bestilling): **drop-off-
   gapet «illustrativt banekart m/ trykkbare soner» på Hull-analyse er lukket.**
   `docs/design-bestillinger/v2-sonekart-hull-analyse.md` fikk to avklarte svar (1: illustrativt
@@ -799,7 +816,6 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
   SG-registreringer) viser alle fire soner nøytrale (`T.mut`), aldri et dødt eller fabrikkert
   diagram. Ny HjelpTips-nøkkel `soneDiagram` i `src/lib/v2/hjelpetekster.ts`. Ingen nye rå hex, kun
   `T.*`-tokens. Skjerm-raden for `/portal/analysere/hull` oppdatert i samme commit.
-
 - 19. juli (siste drop-off-punkt lukket): **`components-course-heatmap.html` bygget** — varmekart
   over banen på Hull-analyse (`/portal/analysere/hull`, «Hull for hull»-fanen). Gjenbrukte den
   eksisterende v2-primitiven `VarmeKart` (`src/components/v2/datavis.tsx`, allerede kanon-dekket —
