@@ -18,7 +18,21 @@ import {
   TIPS,
   type CoachPeriode,
 } from "../_data/coach-arsplan";
+import type { WangLiveData } from "../_data/hent-wang-gruppe";
+import { GruppeRoster } from "../_components/live-seksjoner";
 import { HelpDot, Ikon } from "../_components/primitiver";
+
+// Overlegg: ekte periode-datoer + fokus fra AgencyOS oppå demo-pyramiden.
+// DB-blokkene er sortert kronologisk (TURNERING→GRUNN→SPESIAL→TURNERING) og
+// matcher COACH_PERIODS-rekkefølgen [turnr, grunn, spes, turn] 1:1 på indeks.
+function effektivePerioder(live: WangLiveData | null): CoachPeriode[] {
+  if (!live || live.perioder.length === 0) return COACH_PERIODS;
+  return COACH_PERIODS.map((p, i) => {
+    const db = live.perioder[i];
+    if (!db) return p;
+    return { ...p, start: db.startIso, end: db.endIso, fokus: db.fokus ?? p.fokus };
+  });
+}
 
 function dato(s: string): string {
   const MON = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
@@ -26,9 +40,10 @@ function dato(s: string): string {
   return `${d.getDate()}. ${MON[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-export function CoachArsplan() {
+export function CoachArsplan({ live = null }: { live?: WangLiveData | null }) {
   const [selPeriod, setSelPeriod] = useState<string | null>(null);
-  const periode = selPeriod ? COACH_PERIODS.find((p) => p.key === selPeriod) ?? null : null;
+  const perioder = effektivePerioder(live);
+  const periode = selPeriod ? perioder.find((p) => p.key === selPeriod) ?? null : null;
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-app)" }}>
@@ -86,7 +101,7 @@ export function CoachArsplan() {
           {periode ? (
             <PeriodeDetalj periode={periode} onBack={() => setSelPeriod(null)} />
           ) : (
-            <Oversikt onOpen={setSelPeriod} />
+            <Oversikt perioder={perioder} live={live} onOpen={setSelPeriod} />
           )}
         </main>
       </div>
@@ -94,19 +109,28 @@ export function CoachArsplan() {
   );
 }
 
-function Oversikt({ onOpen }: { onOpen: (key: string) => void }) {
+function Oversikt({ perioder, live, onOpen }: { perioder: CoachPeriode[]; live: WangLiveData | null; onOpen: (key: string) => void }) {
   return (
     <>
       <section style={{ background: "var(--grad-hero-line)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-hero)", padding: "clamp(22px,4vw,30px)", color: "var(--text-on-dark)" }}>
-        <div className="t-label" style={{ color: "var(--wang-mint)", marginBottom: 10 }}>Årsplan · Sesong 2026–2027</div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap", marginBottom: 10 }}>
+          <div className="t-label" style={{ color: "var(--wang-mint)" }}>Årsplan · Sesong 2026–2027</div>
+          {live ? (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 24, padding: "0 11px", borderRadius: 999, background: "rgba(73,202,159,0.18)", color: "var(--wang-mint)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 11, whiteSpace: "nowrap" }}>
+              <span style={{ width: 7, height: 7, borderRadius: 999, background: "var(--wang-mint)" }} />Ekte datoer synket fra AgencyOS
+            </span>
+          ) : null}
+        </div>
         <h1 style={{ margin: "0 0 8px", fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: "clamp(24px,4vw,32px)", lineHeight: 1.12 }}>Periodisert årsplan – golfgruppa</h1>
         <p style={{ margin: 0, fontFamily: "var(--font-body)", fontSize: 14.5, lineHeight: 1.55, color: "rgba(255,255,255,0.9)", maxWidth: 620 }}>
           Fire perioder fra august til juni. Hver periode har sin egen treningsfordeling (pyramide), læringsfase-fokus og mål. Trykk på en periode for detaljer.
         </p>
       </section>
 
+      <GruppeRoster live={live} />
+
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 16 }}>
-        {COACH_PERIODS.map((p) => (
+        {perioder.map((p) => (
           <button key={p.key} onClick={() => onOpen(p.key)} className="wang-card wang-pressable" style={{ padding: 20, border: "none", cursor: "pointer", textAlign: "left", display: "flex", flexDirection: "column", gap: 14 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
               <span style={{ display: "inline-flex", alignItems: "center", height: 28, padding: "0 12px", borderRadius: 999, background: p.tint, color: p.fg, fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: 12.5 }}>{p.name}</span>

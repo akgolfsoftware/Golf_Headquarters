@@ -34,11 +34,13 @@ import {
   weekStartOf,
   type Okt,
 } from "../_data/wang-plan";
+import type { WangLiveData } from "../_data/hent-wang-gruppe";
 import { Arshjul } from "./arshjul";
 import { FaneForeldre } from "./fane-foreldre";
 import { FaneKalender } from "./fane-kalender";
 import { FaneSamlinger } from "./fane-samlinger";
 import { FaneSkole } from "./fane-skole";
+import { AgencyOsHendelser, GruppeRoster } from "./live-seksjoner";
 import { HeroCard, IconChip, Tabs, navPillStyle } from "./primitiver";
 import { OktDetalj } from "./okt-detalj";
 
@@ -63,7 +65,7 @@ function klientNaa(): string {
   return naaCache;
 }
 
-export function WangFellesside({ startFane }: { startFane: Fane }) {
+export function WangFellesside({ startFane, live = null }: { startFane: Fane; live?: WangLiveData | null }) {
   const naaIso = useSyncExternalStore(tomAbonnement, klientNaa, () => SPAN_START_ISO);
   const naa = new Date(naaIso + "T12:00:00");
 
@@ -117,7 +119,7 @@ export function WangFellesside({ startFane }: { startFane: Fane }) {
         {detalj ? (
           <OktDetalj okt={detalj} onBack={() => setDetaljId(null)} />
         ) : fane === "oversikt" ? (
-          <Oversikt naaIso={naaIso} naa={naa} weekOffset={weekOffset} setWeekOffset={setWeekOffset} onOpen={aapne} goTo={(f) => { setFane(f); setDetaljId(null); }} setPlanMain={setPlanMain} />
+          <Oversikt naaIso={naaIso} naa={naa} weekOffset={weekOffset} setWeekOffset={setWeekOffset} onOpen={aapne} goTo={(f) => { setFane(f); setDetaljId(null); }} setPlanMain={setPlanMain} live={live} />
         ) : fane === "plan" ? (
           <Plan
             naaIso={naaIso}
@@ -132,7 +134,7 @@ export function WangFellesside({ startFane }: { startFane: Fane }) {
         ) : fane === "skole" ? (
           <FaneSkole />
         ) : (
-          <FaneForeldre />
+          <FaneForeldre live={live} />
         )}
       </main>
     </div>
@@ -148,6 +150,7 @@ function Oversikt({
   onOpen,
   goTo,
   setPlanMain,
+  live,
 }: {
   naaIso: string;
   naa: Date;
@@ -156,6 +159,7 @@ function Oversikt({
   onOpen: (id: string) => void;
   goTo: (f: Fane) => void;
   setPlanMain: (v: "Sesong" | "Kalender" | "Samlinger") => void;
+  live: WangLiveData | null;
 }) {
   const neste = SESSIONS.find((s) => s.iso >= naaIso) ?? SESSIONS[SESSIONS.length - 1];
   const actions = byggHandlinger(naaIso);
@@ -218,6 +222,8 @@ function Oversikt({
           </div>
         </section>
       ) : null}
+
+      <AgencyOsHendelser live={live} naaIso={naaIso} />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 16 }}>
         <StatKort label="Aktiv periode" prikk={periode.color}>

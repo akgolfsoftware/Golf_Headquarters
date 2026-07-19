@@ -48,7 +48,7 @@ function Login({ onAdmin }: { onAdmin: () => void }) {
         <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 24 }}>
           <Felt label="E-post" type="email" placeholder="navn@wang.no" value={epost} onChange={setEpost} />
           <Felt label="Passord" type="password" placeholder="••••••••" value={pw} onChange={setPw} />
-          <Link href="/logg-inn" className="wang-pressable" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", height: 48, borderRadius: 999, background: "var(--wang-navy)", color: "var(--white)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
+          <Link href="/auth/login?next=/team-wang" className="wang-pressable" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", height: 48, borderRadius: 999, background: "var(--wang-navy)", color: "var(--white)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
             Logg inn
           </Link>
         </div>

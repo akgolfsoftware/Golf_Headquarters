@@ -6,10 +6,12 @@
 import { useState } from "react";
 import { Send } from "lucide-react";
 
+import type { WangLiveData } from "../_data/hent-wang-gruppe";
 import { CHAT_SEED, PARENT_MEETINGS, type ChatMelding } from "../_data/wang-plan";
+import { GruppeRoster } from "./live-seksjoner";
 import { IconChip } from "./primitiver";
 
-export function FaneForeldre() {
+export function FaneForeldre({ live = null }: { live?: WangLiveData | null }) {
   const [meldinger, setMeldinger] = useState<ChatMelding[]>(CHAT_SEED);
   const [tekst, setTekst] = useState("");
 
@@ -23,6 +25,8 @@ export function FaneForeldre() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
       <h1 style={{ margin: 0, fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 24, color: "var(--text-primary)" }}>Foreldre</h1>
+
+      <GruppeRoster live={live} />
 
       <div className="wang-card" style={{ padding: 20, display: "flex", gap: 14, alignItems: "flex-start" }}>
         <IconChip icon="users" color="navy" size={46} />
