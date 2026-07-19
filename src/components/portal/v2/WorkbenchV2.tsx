@@ -74,8 +74,8 @@ export const MANEDER = [
   "juli", "august", "september", "oktober", "november", "desember",
 ];
 const HOUR_H = 44;
-const START_TIME = 7;
-const END_TIME = 21;
+const START_TIME = 5;
+const END_TIME = 23;
 
 /** eb (AkseKey, stor bokstav) → ax (Axis, liten bokstav) for optimistiske temp-events. */
 const AKSE_TO_AXIS: Record<AkseKey, WeekEvent["ax"]> = {
@@ -135,7 +135,8 @@ function tidFraPointerY(pointerY: number, kolonneTop: number): { hour: number; m
   const y = pointerY - kolonneTop;
   const raa = START_TIME + y / HOUR_H;
   const snappet = Math.round(raa * 2) / 2;
-  const klemt = Math.max(START_TIME, Math.min(END_TIME - 1, snappet));
+  // Siste gyldige start er 30 min før stengetid (22:30 → 23:00-slutt).
+  const klemt = Math.max(START_TIME, Math.min(END_TIME - 0.5, snappet));
   return { hour: Math.floor(klemt), minute: klemt % 1 === 0.5 ? 30 : 0 };
 }
 
@@ -255,7 +256,7 @@ function WBTidslinjeDagKolonne({ dag, index, valgt, onVelg, droppbar, kanFlytteO
         if (e.target !== e.currentTarget) return; // kun tom flate, ikke økt-blokker
         const y = e.clientY - e.currentTarget.getBoundingClientRect().top;
         const raa = START_TIME + y / HOUR_H;
-        const snappet = Math.max(START_TIME, Math.min(END_TIME - 1, Math.round(raa * 2) / 2));
+        const snappet = Math.max(START_TIME, Math.min(END_TIME - 0.5, Math.round(raa * 2) / 2));
         onTomKlikk(index, Math.floor(snappet), snappet % 1 === 0.5 ? 30 : 0);
       } : undefined}
       style={{
@@ -320,13 +321,19 @@ function WBTidslinje({ dager, valgt, onVelg, kanFlytteOkter, kanLeggeTil, kanBru
       {/* Kropp: tidsakse + 7 dag-kolonner */}
       <div style={{ display: "flex", position: "relative", height: bodyH }}>
         <div style={{ width: 44, flex: "none", position: "relative" }}>
-          {timer.filter((_, i) => i % 3 === 0).map((h) => (
-            <span key={h} style={{ position: "absolute", top: (h - START_TIME) * HOUR_H - 5, right: 8, fontFamily: T.mono, fontSize: 9, color: T.mut }}>{h}:00</span>
+          {timer.map((h) => (
+            <span key={h} style={{ position: "absolute", top: (h - START_TIME) * HOUR_H - 5, right: 8, fontFamily: T.mono, fontSize: 9, color: T.mut }}>{String(h).padStart(2, "0")}:00</span>
           ))}
         </div>
         <div style={{ flex: 1, position: "relative", display: "flex" }}>
-          {timer.filter((_, i) => i % 3 === 0 && i > 0).map((h) => (
-            <span key={h} style={{ position: "absolute", left: 0, right: 0, top: (h - START_TIME) * HOUR_H, height: 1, background: "rgba(255,255,255,0.03)" }} />
+          {/* Gridlinjer i border-token (temariktig i begge moduser — den gamle
+              hvit-alphaen var usynlig i lys modus): hel time markert, halvtime
+              nedtonet så 30-min-snappingen har synlig anker. */}
+          {timer.slice(1, -1).map((h) => (
+            <span key={h} style={{ position: "absolute", left: 0, right: 0, top: (h - START_TIME) * HOUR_H, height: 1, background: `color-mix(in srgb, ${T.border} 70%, transparent)`, pointerEvents: "none" }} />
+          ))}
+          {timer.slice(0, -1).map((h) => (
+            <span key={`half-${h}`} style={{ position: "absolute", left: 0, right: 0, top: (h - START_TIME) * HOUR_H + HOUR_H / 2, height: 1, background: `color-mix(in srgb, ${T.border} 32%, transparent)`, pointerEvents: "none" }} />
           ))}
           {dager.map((d, i) => (
             <WBTidslinjeDagKolonne
