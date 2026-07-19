@@ -180,6 +180,10 @@
     {
       "path": "/api/cron/tripletex-maanedsavslutning",
       "schedule": "0 6 2 * *"
+    },
+    {
+      "path": "/api/cron/gfgk-ballplukking-sjekk",
+      "schedule": "0 9 * * 3"
     }
   ],
   "regions": [

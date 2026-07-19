@@ -10,6 +10,7 @@ import { gmailSok, gmailLesTraad, diskSok, diskLesFil, kalenderAgenda } from "@/
 import { stripeSaldo, stripeBetalinger, stripeAbonnementer, stripeFakturaer, stripeKundeSok } from "@/lib/meg/connectors/stripe";
 import { createPending } from "@/lib/meg/pending";
 import { bekreftLonn } from "@/lib/agents/tripletex-lonn-agent";
+import { bekreftBallplukking } from "@/lib/agents/gfgk-ballplukking-agent";
 
 // ────────────────────────────────────────────────────────────────────────────
 // Tool-definisjoner (Anthropic SDK-format)
@@ -357,6 +358,34 @@ export const lonnBekreftTool: Tool = {
   input_schema: { type: "object", properties: {}, required: [] },
 };
 
+// ── GFGK ballplukking (Agentic OS Steg 2) ────────────────────────────────────
+// Se .claude/rules/gfgk-junior.md: agenten regner ALDRI ut hvem sin tur det
+// er i rotasjonen — dette tool-et lar Anders BEKREFTE at ansvarlig for
+// torsdagens ballplukking er avklart for uka, som stopper onsdagsvarselet.
+// Kjøres direkte (som `lonn_bekreft`) — registrerer kun en bekreftelse Anders
+// allerede har gjort, ikke en ny skrive-handling agenten selv foreslår.
+
+export const ballplukkingBekreftTool: Tool = {
+  name: "ballplukking_bekreft",
+  description:
+    "Bekrefter at ansvarlig for torsdagens ballplukking (GFGK) er avklart for " +
+    "denne uka. Bruk KUN når Anders selv sier noe som «ballplukking bekreftet», " +
+    "«jeg tar ballplukking», «Christoffer tar ballplukking» e.l. Kjøres direkte " +
+    "— stopper den automatiske varslingen onsdag.",
+  input_schema: {
+    type: "object",
+    properties: {
+      ansvarlig: {
+        type: "string",
+        description:
+          "Hvem som har ansvaret (valgfritt, f.eks. «Anders» eller «Christoffer») — " +
+          "utelates hvis Anders bare bekrefter uten å oppgi navn.",
+      },
+    },
+    required: [],
+  },
+};
+
 export const MEG_ALL_TOOLS: Tool[] = [
   loggTool,
   hentNyligeTool,
@@ -382,6 +411,7 @@ export const MEG_ALL_TOOLS: Tool[] = [
   stripeFakturaerTool,
   stripeKundeSokTool,
   lonnBekreftTool,
+  ballplukkingBekreftTool,
 ];
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -421,6 +451,7 @@ type KalenderAgendaInput = { dager?: number };
 type DiskSokInput = { query: string; limit?: number };
 type DiskLesFilInput = { fileId: string };
 type DiskOpprettInput = { navn: string; innhold: string };
+type BallplukkingBekreftInput = { ansvarlig?: string };
 
 // ────────────────────────────────────────────────────────────────────────────
 // Executor-tabell
@@ -592,6 +623,12 @@ export function megExecutorsFor(
 
   // ── Tripletex lønn (kjøres direkte — se lonnBekreftTool over) ──
   lonn_bekreft: async () => bekreftLonn(),
+
+  // ── GFGK ballplukking (kjøres direkte — se ballplukkingBekreftTool over) ──
+  ballplukking_bekreft: async (raw) => {
+    const args = raw as BallplukkingBekreftInput;
+    return bekreftBallplukking(args?.ansvarlig);
+  },
   };
 }
 
