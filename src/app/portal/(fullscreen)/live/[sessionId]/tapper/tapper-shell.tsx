@@ -155,7 +155,10 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
   }
 
   return (
-    <div className="fixed inset-0 grid grid-rows-[56px_1fr_auto] overflow-hidden bg-[#0A1F18] text-white">
+    <div
+      className="fixed inset-0 grid grid-rows-[56px_1fr_auto] overflow-hidden bg-[#0A1F18] text-white"
+      style={{ paddingTop: "env(safe-area-inset-top)" }}
+    >
       {/* Radial accent */}
       <div
         aria-hidden

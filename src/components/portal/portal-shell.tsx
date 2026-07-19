@@ -59,7 +59,7 @@ export async function PortalShell({
       <div className="flex min-w-0 flex-1 flex-col">
         <header
           role="banner"
-          className="sticky top-0 z-30 flex items-center justify-between gap-2 border-b border-border bg-card/85 px-4 py-2 pt-[calc(8px+env(safe-area-inset-top))] backdrop-blur-md sm:gap-4 sm:px-8 sm:py-4 sm:pt-[calc(16px+env(safe-area-inset-top))]"
+          className="sticky top-0 z-30 flex items-center justify-between gap-2 border-b border-border bg-card px-4 py-2 pt-[calc(8px+env(safe-area-inset-top))] sm:gap-4 sm:px-8 sm:py-4 sm:pt-[calc(16px+env(safe-area-inset-top))]"
         >
           <div className="flex items-center gap-2 sm:gap-4">
             <MobileSidebarDrawer
