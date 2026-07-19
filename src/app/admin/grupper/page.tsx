@@ -16,7 +16,8 @@ import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { GrupperV2, type GrupperData, type GruppeV2, type FastTid } from "@/components/admin/v2/GrupperV2";
 import { TilbakeLenke } from "@/components/v2";
-import { NyGruppeButton } from "./grupper-actions";
+import { GfgkBootstrapButton, NyGruppeButton } from "./grupper-actions";
+import { GFGK_BOOTSTRAP_GRUPPER } from "@/lib/gfgk-junior/bootstrap";
 
 export const dynamic = "force-dynamic";
 
@@ -112,9 +113,19 @@ export default async function V2GrupperPage() {
 
   const data: GrupperData = { grupper };
 
+  // gfgkjunior.no-bootstrap: vis engangsknappen til alle fire gruppene finnes.
+  const gfgkNavn = new Set(GFGK_BOOTSTRAP_GRUPPER.map((g) => g.navn));
+  const manglerGfgk =
+    groups.filter((g) => gfgkNavn.has(g.name)).length < gfgkNavn.size;
+
   return (
     <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/spillere">Stall</TilbakeLenke>
+      {manglerGfgk ? (
+        <div style={{ marginBottom: 14 }}>
+          <GfgkBootstrapButton />
+        </div>
+      ) : null}
       <GrupperV2 data={data} actions={{ NyGruppeButton }} coaches={coaches} />
     </V2Shell>
   );

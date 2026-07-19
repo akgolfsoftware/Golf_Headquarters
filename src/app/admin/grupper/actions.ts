@@ -8,6 +8,10 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import {
+  kjorGfgkJuniorBootstrap,
+  type BootstrapResultat,
+} from "@/lib/gfgk-junior/bootstrap";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 
@@ -103,4 +107,38 @@ export async function deleteGroup(
 
   revalidatePath("/admin/grupper");
   return { success: true, data: { groupId } };
+}
+
+/* ─── bootstrapGfgkJuniorGrupper ────────────────────────────────────── */
+
+/**
+ * Engangs-bootstrap for gfgkjunior.no: oppretter de 4 GFGK Junior-gruppene
+ * med kanoniske ukentlige økter (ti/to) og sesongperioder. Idempotent —
+ * eksisterende grupper/økter/perioder røres aldri. Knappen på /admin/grupper
+ * vises kun når grupper mangler.
+ */
+export async function bootstrapGfgkJuniorGrupper(): Promise<
+  ActionResult<BootstrapResultat>
+> {
+  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+
+  try {
+    const resultat = await kjorGfgkJuniorBootstrap();
+    await audit({
+      actorId: user.id,
+      action: "group.gfgk_bootstrap",
+      target: "Group:gfgk-junior",
+      metadata: {
+        opprettet: resultat.grupperOpprettet,
+        okter: resultat.okterOpprettet,
+        perioder: resultat.perioderOpprettet,
+      },
+    });
+    revalidatePath("/admin/grupper");
+    revalidatePath("/gfgk-junior");
+    return { success: true, data: resultat };
+  } catch (err) {
+    console.error("bootstrapGfgkJuniorGrupper failed", err);
+    return { error: "Kunne ikke opprette GFGK Junior-gruppene" };
+  }
 }
