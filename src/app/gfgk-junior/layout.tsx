@@ -26,6 +26,21 @@ export const metadata: Metadata = {
   description:
     "Strukturert golftrening for barn og ungdom fra 6 til 19 år i Gamle Fredrikstad Golfklubb. Fire grupper tilpasset alder og nivå, erfarne trenere og et trygt fellesskap.",
   robots: { index: true, follow: true },
+  // Egen PWA-identitet for micrositen: «Legg til på Hjem-skjerm» gir GFGK-logo
+  // som ikon og navnet «GFGK Junior» — ikke AK Golf-appens globale manifest.
+  manifest: "/gfgk-junior/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/gfgk-junior/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/gfgk-junior/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: "/gfgk-junior/apple-touch-icon.png",
+  },
+  appleWebApp: {
+    capable: true,
+    title: "GFGK Junior",
+    statusBarStyle: "default",
+  },
 };
 
 export default function GfgkJuniorLayout({

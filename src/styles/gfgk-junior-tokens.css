@@ -156,8 +156,14 @@
 .gfgk-jr .jr-hero-gradient {
   background: linear-gradient(
     90deg,
-    rgba(20, 20, 20, 0.85) 0%,
-    rgba(20, 20, 20, 0.55) 48%,
-    rgba(20, 20, 20, 0.15) 100%
+    rgba(20, 20, 20, 0.72) 0%,
+    rgba(20, 20, 20, 0.42) 48%,
+    rgba(20, 20, 20, 0.08) 100%
   );
+}
+
+/* Lett, jevn skygge over hero-foto — nok til tekstlesbarhet, lite nok til at
+   bildet lever. Ligger UNDER tekstgradienten. */
+.gfgk-jr .jr-hero-skygge {
+  background: rgba(20, 20, 20, 0.25);
 }

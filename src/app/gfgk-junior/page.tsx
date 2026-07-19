@@ -51,8 +51,17 @@ export default async function GfgkJuniorForside() {
     <div>
       <GfgkHeader aktiv="hjem" />
 
-      {/* Hero — premium: duotone-flate, én gull-CTA, forankret nøkkeltall-strip */}
-      <section id="top" className="jr-duotone relative overflow-hidden">
+      {/* Hero — premium: brufoto med lett skygge, én gull-CTA, forankret nøkkeltall-strip */}
+      <section id="top" className="relative overflow-hidden" style={{ background: "var(--ink)" }}>
+        <Image
+          src="/images/anlegg/gfgk-hero.jpg"
+          alt="Fredrikstad Festning bak banen på Gamle Fredrikstad Golfklubb"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="jr-hero-skygge pointer-events-none absolute inset-0" />
         <div className="jr-hero-gradient pointer-events-none absolute inset-0" />
         <div className="relative mx-auto max-w-[1200px] px-5 pb-32 pt-20 text-white sm:px-7 sm:pb-36 sm:pt-24">
           <div className="jr-fade-up max-w-[680px]">
@@ -80,7 +89,7 @@ export default async function GfgkJuniorForside() {
             <div className="mt-7 flex flex-wrap gap-3">
               <a
                 href="#gruppene"
-                className="inline-flex min-h-[48px] items-center gap-2 rounded-full px-6 py-3.5 text-base font-bold no-underline transition-colors"
+                className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 text-base font-bold no-underline transition-colors sm:w-auto"
                 style={{
                   color: "var(--ink)",
                   background: "var(--gfgk-gold)",
@@ -92,7 +101,7 @@ export default async function GfgkJuniorForside() {
               </a>
               <a
                 href="#slik-starter-du"
-                className="inline-flex min-h-[48px] items-center rounded-full px-6 py-3 text-base font-bold text-white no-underline backdrop-blur-sm transition-colors"
+                className="inline-flex min-h-[48px] w-full items-center justify-center rounded-full px-6 py-3 text-base font-bold text-white no-underline backdrop-blur-sm transition-colors sm:w-auto"
                 style={{
                   background: "rgba(255,255,255,0.12)",
                   border: "1.5px solid rgba(255,255,255,0.4)",
