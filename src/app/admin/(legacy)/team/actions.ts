@@ -69,7 +69,7 @@ export async function inviterCoach(
     };
   }
 
-  const placeholderAuthId = `pending:${crypto.randomUUID()}`;
+  const placeholderAuthId = `pending-${crypto.randomUUID()}`;
   const ny = await prisma.user.create({
     data: {
       authId: placeholderAuthId,

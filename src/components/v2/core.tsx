@@ -537,7 +537,7 @@ export function Prikker({ n = 84, hits, on = T.lime, cols = 28 }: PrikkerProps) 
   return (
     <div style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: 3 }}>
       {Array.from({ length: n }, (_, i) => (
-        <span key={i} style={{ width: 5, height: 5, borderRadius: 9999, background: seed.indexOf(i) !== -1 ? on : "rgba(255,255,255,0.10)" }} />
+        <span key={i} style={{ width: 5, height: 5, borderRadius: 9999, background: seed.indexOf(i) !== -1 ? on : T.track }} />
       ))}
     </div>
   );
@@ -607,12 +607,12 @@ export function Trend({ series, height = 96, yMin, yMax, baseline = 0, fmt, xLab
       </defs>
       {grid.map((v, i) => (
         <g key={i}>
-          <line x1={PADL} x2={W_ - PADR} y1={Y(v)} y2={Y(v)} stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+          <line x1={PADL} x2={W_ - PADR} y1={Y(v)} y2={Y(v)} stroke={`color-mix(in srgb, ${T.border} 70%, transparent)`} strokeWidth="1" />
           <text x={PADL - 7} y={Y(v) + 3} textAnchor="end" fontFamily='"JetBrains Mono",monospace' fontSize="8.5" fill={T.mut}>{f(v)}</text>
         </g>
       ))}
       {baseline != null && baseline >= lo && baseline <= hi && (
-        <line x1={PADL} x2={W_ - PADR} y1={Y(baseline)} y2={Y(baseline)} stroke="rgba(255,255,255,0.16)" strokeWidth="1" strokeDasharray="3 4" />
+        <line x1={PADL} x2={W_ - PADR} y1={Y(baseline)} y2={Y(baseline)} stroke={`color-mix(in srgb, ${T.fg} 22%, transparent)`} strokeWidth="1" strokeDasharray="3 4" />
       )}
       <polygon points={omr} fill={`url(#${gid})`} style={{ opacity: drawn ? 1 : 0, transition: `opacity 700ms ${EASE}` }} />
       <polyline ref={lineRef} points={pts} fill="none" stroke={T.lime} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" filter={`url(#${gid + "g"})`}

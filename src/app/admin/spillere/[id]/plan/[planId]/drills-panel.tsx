@@ -36,6 +36,7 @@ import {
   type TaskInput,
 } from "@/app/portal/tren/teknisk-plan/actions";
 import { uploadTaskMedia } from "@/lib/storage/task-media";
+import { skalerBilde, MAKS_ACTION_BYTES } from "@/lib/klient/skaler-avatar";
 
 /** Pyramide-aksene — kategori-chip-settet. Speiler PositionTask.pyramide. */
 const CATEGORIES: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
@@ -386,8 +387,14 @@ export function DrillsPanel({ planId, defaultTarget, drills }: DrillsPanelProps)
           onUploadMedia={
             modal.mode === "edit"
               ? async (file, kind) => {
+                  // Server action-grensen (4 MB) avviser store filer FØR uploadTaskMedia
+                  // kjører: bilder nedskaleres på klienten, video sjekkes med ærlig feil.
+                  const sendes = kind === "bilde" ? await skalerBilde(file, 1600) : file;
+                  if (sendes.size > MAKS_ACTION_BYTES) {
+                    throw new Error("Fila er for stor (maks ~3,5 MB). Full videostøtte for større filer kommer.");
+                  }
                   const fd = new FormData();
-                  fd.append("file", file);
+                  fd.append("file", sendes);
                   const res = await uploadTaskMedia(modal.taskId, fd, kind);
                   router.refresh();
                   return res.url;

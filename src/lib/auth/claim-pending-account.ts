@@ -20,7 +20,12 @@ import type { User } from "@/generated/prisma/client";
  * bevares fordi det er SAMME rad som oppdateres.
  *
  * Returnerer den krevde raden, eller null hvis ingen ventende rad matcher.
- * Rører kun rader med `pending-`-prefiks — aldri ekte kontoer.
+ * Rører kun rader med pending-prefiks — aldri ekte kontoer.
+ *
+ * NB (funnet 2026-07-19): to prefiks-varianter finnes i databasen —
+ * `pending-<id>` (guardian-consent) og `pending:<uuid>` (admin «Ny spiller» /
+ * inviter coach). Begge må godtas her, ellers kobles admin-opprettede kontoer
+ * aldri til den ekte innloggingen (brukeren fikk «e-post allerede i bruk»).
  */
 export async function claimPendingAccountByEmail(
   authId: string,
@@ -30,7 +35,7 @@ export async function claimPendingAccountByEmail(
     where: { email: { equals: email, mode: "insensitive" } },
   });
   if (!existing) return null;
-  if (!existing.authId.startsWith("pending-")) return null;
+  if (!existing.authId.startsWith("pending-") && !existing.authId.startsWith("pending:")) return null;
   if (existing.authId === authId) return existing;
 
   return prisma.user.update({

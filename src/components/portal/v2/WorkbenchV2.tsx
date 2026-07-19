@@ -680,7 +680,7 @@ function KoachNotatSeksjon({ coachNotat }: { coachNotat: NonNullable<WorkbenchV2
   );
 }
 
-export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekOffset, onEndret }: {
+export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekOffset, onEndret, skjulTittel = false }: {
   data: WorkbenchData;
   valgtOkt: WeekEvent | null;
   /** Dagindeks (0=man) for valgt økt — brukes i slett-popupen. -1 = ukjent. */
@@ -689,6 +689,8 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
   actions?: WorkbenchV2Actions;
   weekOffset: number;
   onEndret: () => void;
+  /** Mobil: MobilFold-headeren viser allerede «Balanse» — dropp den interne. */
+  skjulTittel?: boolean;
 }) {
   const axis = data.axisHours ?? [];
   const totalT = axis.reduce((a, x) => a + x.hours, 0);
@@ -696,11 +698,13 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
   const adherDisp = useCountUp(data.adherencePct ?? 0);
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20, minWidth: 0 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <Icon name="activity" size={15} style={{ color: T.lime }} />
-        <span style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg }}>Balanse</span>
-        <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>uke {weekNumber}</span>
-      </div>
+      {!skjulTittel && (
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <Icon name="activity" size={15} style={{ color: T.lime }} />
+          <span style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg }}>Balanse</span>
+          <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>uke {weekNumber}</span>
+        </div>
+      )}
 
       {/* WB2 (fasit G5): samlet spillerinnsikt øverst i inspektøren —
           fokus + plan-etterlevelse + neste turnering. Kun ekte kilder;
@@ -1777,6 +1781,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
         </MobilFold>
         <MobilFold tittel="Balanse" ikon="activity">
           <WBBalanse
+            skjulTittel
             data={data}
             valgtOkt={valgtOkt}
           valgtDag={valgtDag}
