@@ -16,6 +16,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Cookie, X } from "lucide-react";
 
 const CONSENT_KEY = "ak_cookie_consent";
@@ -43,6 +44,38 @@ function getStoredConsent(): string | null {
 
 export function CookieBanner() {
   const [visible, setVisible] = useState(false);
+  const pathname = usePathname();
+  // GFGK Junior-micrositen har egen merkevare — banneren skifter drakt der.
+  // Klassen gfgk-jr gir tilgang til de scopede GFGK-variablene (tokens-fila
+  // lastes av micrositens layout på de samme rutene).
+  const gfgk = pathname?.startsWith("/gfgk-junior") ?? false;
+  const farger = gfgk
+    ? {
+        kortBg: "var(--gfgk-white)",
+        kortBorder: "var(--hairline)",
+        tittel: "var(--ink)",
+        tittelFont: "var(--font-jr-sans)",
+        tekst: "var(--fg-2)",
+        ikon: "var(--gold-700)",
+        lenke: "var(--teal-600)",
+        knappBg: "var(--gfgk-ink)",
+        knappFg: "var(--gfgk-white)",
+        knapp2Fg: "var(--fg-2)",
+        knapp2Border: "var(--n-200)",
+      }
+    : {
+        kortBg: "hsl(var(--card))",
+        kortBorder: "hsl(var(--border))",
+        tittel: "hsl(var(--foreground))",
+        tittelFont: "var(--font-familjen-grotesk)",
+        tekst: "hsl(var(--muted-foreground))",
+        ikon: "hsl(var(--primary))",
+        lenke: "hsl(var(--primary))",
+        knappBg: "hsl(var(--primary))",
+        knappFg: "hsl(var(--accent))",
+        knapp2Fg: "hsl(var(--muted-foreground))",
+        knapp2Border: "hsl(var(--border))",
+      };
 
   useEffect(() => {
     const stored = getStoredConsent();
@@ -70,7 +103,9 @@ export function CookieBanner() {
       role="dialog"
       aria-modal="false"
       aria-label="Cookie-samtykke"
+      className={gfgk ? "gfgk-jr" : undefined}
       style={{
+        background: "transparent",
         position: "fixed",
         bottom: 0,
         left: 0,
@@ -87,8 +122,8 @@ export function CookieBanner() {
         style={{
           maxWidth: 560,
           width: "100%",
-          background: "hsl(var(--card))",
-          border: "1px solid hsl(var(--border))",
+          background: farger.kortBg,
+          border: `1px solid ${farger.kortBorder}`,
           borderRadius: "16px 16px 0 0",
           padding: "20px 24px",
           boxShadow: "0 -4px 24px rgba(0,0,0,0.10)",
@@ -101,13 +136,13 @@ export function CookieBanner() {
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Cookie size={18} style={{ color: "hsl(var(--primary))" }} strokeWidth={1.75} />
+            <Cookie size={18} style={{ color: farger.ikon }} strokeWidth={1.75} />
             <span
               style={{
-                fontFamily: "var(--font-familjen-grotesk)",
+                fontFamily: farger.tittelFont,
                 fontSize: 15,
                 fontWeight: 700,
-                color: "hsl(var(--foreground))",
+                color: farger.tittel,
                 letterSpacing: "-0.01em",
               }}
             >
@@ -124,7 +159,7 @@ export function CookieBanner() {
               cursor: "pointer",
               width: 44,
               height: 44,
-              color: "hsl(var(--muted-foreground))",
+              color: farger.tekst,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -139,7 +174,7 @@ export function CookieBanner() {
         <p
           style={{
             fontSize: 13,
-            color: "hsl(var(--muted-foreground))",
+            color: farger.tekst,
             lineHeight: 1.5,
             margin: 0,
           }}
@@ -149,7 +184,7 @@ export function CookieBanner() {
           personopplysninger deles med tredjeparter.{" "}
           <Link
             href="/cookies"
-            style={{ color: "hsl(var(--primary))", textDecoration: "underline" }}
+            style={{ color: farger.lenke, textDecoration: "underline" }}
           >
             Les mer
           </Link>
@@ -166,13 +201,13 @@ export function CookieBanner() {
               minWidth: 140,
               height: 44,
               borderRadius: 999,
-              background: "hsl(var(--primary))",
-              color: "hsl(var(--accent))",
+              background: farger.knappBg,
+              color: farger.knappFg,
               border: "none",
               fontSize: 13,
               fontWeight: 700,
               cursor: "pointer",
-              fontFamily: "var(--font-familjen-grotesk)",
+              fontFamily: farger.tittelFont,
             }}
           >
             Godta alle
@@ -186,8 +221,8 @@ export function CookieBanner() {
               height: 44,
               borderRadius: 999,
               background: "transparent",
-              color: "hsl(var(--muted-foreground))",
-              border: "1px solid hsl(var(--border))",
+              color: farger.knapp2Fg,
+              border: `1px solid ${farger.knapp2Border}`,
               fontSize: 13,
               fontWeight: 600,
               cursor: "pointer",
