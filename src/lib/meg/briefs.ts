@@ -14,7 +14,7 @@ import { notionOppgaver } from "@/lib/meg/connectors/notion";
 import { kalenderAgenda } from "@/lib/meg/connectors/google";
 import { prisma } from "@/lib/prisma";
 
-type BriefKind = "morgenbrief" | "kveldsjournal" | "loftesjekk" | "crm_nudge";
+type BriefKind = "morgenbrief" | "kveldsjournal" | "loftesjekk" | "crm_nudge" | "wang_agenda";
 
 export type BriefResult = { kind: BriefKind; sent: boolean; stored: boolean; skipped?: string };
 
@@ -145,4 +145,49 @@ export async function runCrmNudge(): Promise<BriefResult> {
   );
   if (!content) return { kind: "crm_nudge", sent: false, stored: false, skipped: "AI ikke aktivert" };
   return lagreOgSend("crm_nudge", content);
+}
+
+// ── WANG sportssjefsmøte-agenda ──────────────────────────────────────────────
+// Se .claude/rules/wang-toppidrett.md: onsdag 11-13 er sportssjefsmøtet, og
+// tirsdag kveld genereres et agenda-utkast fra (a) forrige møtes aksjonspunkter
+// (Notion), (b) ukas kalenderhendelser i "Work - WANG Toppidrett Fredrikstad".
+//
+// PII-AVVIK FRA MØNSTERET OVER (bevisst): denne brief-funksjonen kaller ALDRI
+// komponer()/Anthropic. Notion-oppgavetekst kan inneholde elevnavn (mindreårige
+// — se PII-begrensningen i wang-toppidrett.md: "aldri elevnavn i sky-prompts
+// uten anonymisering"). En Claude-komposisjon ville sendt rå oppgavetekst til
+// Anthropic sitt API, som telles som en sky-prompt. Derfor bygges agendaen som
+// en ren, deterministisk markdown-mal i kode — kildene settes sammen rått
+// under egne overskrifter, ingen AI-omskriving. Dette passer også bedre med at
+// utkastet skal være "et UTGANGSPUNKT" Anders fyller faglig inn i, ikke et
+// AI-generert narrativ som kunne introdusere feil i elevinfo.
+
+/**
+ * Ren malbygger — ingen nettverk/AI. Eksportert separat slik at malen kan
+ * testes uavhengig av connectorene.
+ */
+export function byggWangAgendaMarkdown(oppgaver: string, kalender: string): string {
+  return [
+    "# Sportssjefsmøte WANG Toppidrett Fredrikstad — agenda-utkast",
+    "",
+    "## Aksjonspunkter fra forrige møte",
+    oppgaver,
+    "",
+    "## Ukas hendelser",
+    kalender,
+    "",
+    "## Uavklarte saker",
+    "Det finnes ikke noe eget datafelt for «uavklart elevsak» i systemet ennå — " +
+      "Anders markerer selv uavklarte elevsaker i møtet. Sjekk aksjonspunktene over " +
+      "for saker som fortsatt står åpne.",
+  ].join("\n");
+}
+
+export async function runWangAgenda(): Promise<BriefResult> {
+  const [oppgaver, kalender] = await Promise.all([
+    notionOppgaver(15, "WANG Toppidrett Fredrikstad"),
+    kalenderAgenda(7, "Work - WANG Toppidrett Fredrikstad"),
+  ]);
+  const content = byggWangAgendaMarkdown(oppgaver, kalender);
+  return lagreOgSend("wang_agenda", content);
 }

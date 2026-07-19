@@ -6,7 +6,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { getNotionClient } from "@/lib/notion/client";
-import type { Client } from "@notionhq/client";
+import type { Client, QueryDataSourceParameters } from "@notionhq/client";
 
 // Env: plain UUID — prepend "collection://" for dataSources.query
 const TASKS_UUID = process.env.NOTION_SB_TASKS_DB_ID ?? "";
@@ -94,14 +94,38 @@ export async function notionLesSide(pageId: string): Promise<string> {
 
 // ── Oppgaver: les (direkte) ──────────────────────────────────────────────────
 
-export async function notionOppgaver(limit = 15): Promise<string> {
+/**
+ * Bygger Notion-filteret for notionOppgaver(). Ren funksjon (ingen nettverk)
+ * slik at filter-oppbyggingen kan testes isolert.
+ *
+ * TODO(verifiser-mot-notion-schema): bekreft at "Virksomhet"-egenskapen faktisk
+ * heter dette og er select/multi_select i Anders' Tasks-database før denne
+ * filtreringen stoles på i prod.
+ */
+export function byggOppgaveFilter(virksomhet?: string): Record<string, unknown> {
+  const statusFilter = { property: "Status", status: { does_not_equal: "Completed" } };
+  if (!virksomhet) return statusFilter;
+  return {
+    and: [
+      statusFilter,
+      {
+        or: [
+          { property: "Virksomhet", select: { equals: virksomhet } },
+          { property: "Virksomhet", multi_select: { contains: virksomhet } },
+        ],
+      },
+    ],
+  };
+}
+
+export async function notionOppgaver(limit = 15, virksomhet?: string): Promise<string> {
   const klient = await getOwnerNotionClient();
   if (!klient) return "Notion er ikke koblet (ingen ADMIN-tilkobling).";
   if (!TASKS_UUID) return "NOTION_SB_TASKS_DB_ID mangler i miljøvariabler.";
   try {
     const res = await klient.dataSources.query({
       data_source_id: `collection://${TASKS_UUID}`,
-      filter: { property: "Status", status: { does_not_equal: "Completed" } },
+      filter: byggOppgaveFilter(virksomhet) as QueryDataSourceParameters["filter"],
       sorts: [{ property: "Date", direction: "ascending" }],
       page_size: Math.min(Math.max(limit, 1), 30),
     });

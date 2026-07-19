@@ -30,6 +30,7 @@ import {
   runKveldsjournal,
   runLoftesjekk,
   runCrmNudge,
+  runWangAgenda,
 } from "@/lib/meg/briefs";
 import { runCaddieProactive } from "@/lib/agents/caddie-proactive";
 import { triggerTurneringAgent } from "@/lib/agents/triggers";
@@ -82,6 +83,8 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "meg-kveldsjournal": runKveldsjournal,
   "meg-loftesjekk": runLoftesjekk,
   "meg-crm-nudge": runCrmNudge,
+  // WANG sportssjefsmøte-agenda (tirsdag kveld, se .claude/rules/wang-toppidrett.md)
+  "meg-wang-agenda": runWangAgenda,
   // Proaktiv Caddie (Fase 3) — inaktive spillere → forslag i Caddie-dashbordet
   "caddie-proactive": runCaddieProactive,
   "turnering-agent": triggerTurneringAgent,
