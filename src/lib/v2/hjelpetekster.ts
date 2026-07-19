@@ -244,6 +244,11 @@ const RAW = {
     forklaring:
       "Visuell analog skala: du angir smerten din fra 0 (ingen) til 10 (verst tenkelig). Det finnes ikke rett eller galt svar — poenget er å følge DIN utvikling over tid, så bruk skalaen likt hver gang.",
   },
+  hullVarme: {
+    tittel: "Varmekart · hvor du taper slag",
+    forklaring:
+      "Viser gjennomsnittlig avvik fra par på hvert hull, regnet ut fra alle runder du har registrert hull for hull. Jo sterkere farge, jo mer taper du på det hullet i snitt — hull spilt på eller under par vises tomt. Bygges først når du har logget minst tre runder med hull-for-hull-score.",
+  },
 } as const satisfies Record<string, HjelpTekst>;
 
 export type HjelpNokkel = keyof typeof RAW;

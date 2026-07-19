@@ -151,7 +151,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Analysere = «Min golf» (6 faner: SG · Fokus · Runder · Baggen · Putting · Nivå — v13 golfdata, bølge 1 2026-07-04) ★ | `/portal/analysere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Hull-analyse | `/portal/analysere/hull` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | v2-port 17. jul (Team F2): hele skjermen (begge faner) rekomponert til v2 — `AnalysereHullV2` (PillTabs/SgKategorier/Scorekort/MiniSpark); queries og fane-logikk uendret; SG per hull vises ærlig som «—» (ikke beregnet i datagrunnlaget). Meldt gap: illustrativt top-down-banekart m/ trykkbare soner finnes ikke i v2-kanon — må designes i ui_kits/v2 om Anders vil ha det tilbake. |
+| · Hull-analyse | `/portal/analysere/hull` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 17. jul (Team F2): hele skjermen (begge faner) rekomponert til v2 — `AnalysereHullV2` (PillTabs/SgKategorier/Scorekort/MiniSpark); queries og fane-logikk uendret; SG per hull vises ærlig som «—» (ikke beregnet i datagrunnlaget). **Varmekart 19. jul:** `VarmekartKort` i «Hull for hull»-fanen — v2 `VarmeKart`-primitiven (`src/components/v2/datavis.tsx`) farget med `T.down`, snitt avvik fra par per hull aggregert på tvers av ALLE spillerens runder (`aggregerHullVarme`, `src/lib/domain/hole-heatmap.ts`), tom-tilstand under 3 runder. Flyt ~ → ✓. Gjenstående, separat meldt gap: illustrativt top-down-banekart m/ trykkbare soner finnes ikke i v2-kanon — må designes i ui_kits/v2 om Anders vil ha det tilbake. |
 | Statistikk (oversikt) | `/portal/statistikk` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Fase 2 spot-check 17. jul: FLIPPET ~ → ✓. `StatistikkHub` (via statistikk-hybrid) er fullt golfdata-komponert — overgangs-laget teller som kanon per design-system-regelen. Rekomponeres til v2 når hub-bølgen tas; underruten `[metric]` er alt v2 (Team D3). |
 | · Metrikk-detalj | `/portal/statistikk/[metric]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D3): `StatistikkMetrikkV2` — metric-oppslag (5 pyramide + 4 SG + aliaser), queries og trend-buckets uendret. Falsk (disabled) periode-velger erstattet med ærlig «Siste 90 d»-badge; fortegn mot kategori-snitt vises nå korrekt; HjelpTips på SG/pyramide/kategori-snitt. A1-benchmark fortsatt statisk proxy, merket «(referanse)». Design – → ✓. |
 | ~~· Sammenlign~~ | `/portal/statistikk/sammenlign` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-14) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
@@ -640,29 +640,24 @@ Dette er en stor offentlig statistikk-seksjon (PGA-tall, norske spillere, verkt�
 
 Dette er det viktigste å passe på: ting designeren (Claude Design) har tegnet ferdig, men som ennå IKKE har funnet veien inn i appen som en ekte, koblet skjerm. Målet er at denne lista skal bli tom.
 
-### A. Ferdige skjermbilder uten en oppdatert ekte skjerm
+### A. Ferdige skjermbilder uten en oppdatert ekte skjerm — LUKKET (kodeverifisert 19. juli 2026)
 
-Designeren leverte 44 ferdige skjermbilder. De fleste er nå bygget i forhåndsvisning (pulje 1 + 2) eller har en motpart i appen. Disse har et bilde, men skjermen i appen er enten ikke pusset opp eller ikke koblet til ekte adresse ennå:
+> **Rettelse 19. juli:** hele denne tabellen var stale — samme mønster som «Mangler helt»-listen
+> 18. juli. Alle 15 rader ble verifisert rute for rute mot faktisk kode: hver eneste finnes som
+> ekte, komponert side på riktig adresse med data/auth. Detaljer fra verifiseringen:
+> - `mx-404.png` → `src/app/not-found.tsx` rendrer `IkkeFunnet` — koblet allerede **3. juni**.
+> - `pl-onboarding` → `/auth/onboarding` er full wizard med P7 state-machine + auto-resume.
+> - `pl-forelder`/`pl-varsler`/`pl-innstillinger`/`pl-trackman`/`pl-turnering`/`fo-barn`
+>   → alle v2-komponert med Prisma-data på adressene sine.
+> - `ag-caddie` → `/admin/caddie` (CoAgent) · `ag-compare` → `/admin/talent/sammenligning` ·
+>   `ag-drift` → `/admin/anlegg` — alle tre ligger i route-grupper (`(legacy)`/`agencyos`),
+>   så «MANGLER page.tsx» på toppnivå var en falsk alarm; URL-ene svarer.
+> - `ag-compliance`/`ag-kalender`/`ag-tester`/`mk-forside` → v2-komponert på adressene sine
+>   (kalenderen henter data via `hentAgencyKalenderData` i `./data`).
+>
+> **Ingen skjermbilder gjenstår som drop-off.** Denne seksjonen holdes som historikk.
 
-| Tegnet skjermbilde | Hører hjemme på | Status |
-|---|---|---|
-| `mx-404.png` (404-side) | Appens «ikke funnet»-side | Bygget i forhåndsvisning. Mangler kobling til ekte side. Enkel jobb — bør gjøres. |
-| `pl-onboarding.png` | `/auth/onboarding` | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
-| `pl-forelder.png` | `/portal/meg/foreldre` (eller foreldreportalen) | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
-| `pl-varsler.png` | `/portal/varsler` | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
-| `pl-innstillinger.png` | `/portal/meg/innstillinger` | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
-| `pl-trackman.png` | `/portal/mal/trackman` | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
-| `pl-turnering.png` | `/portal/tren/turneringer` | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
-| `fo-barn.png` (forelder ser barn) | `/forelder/barn` | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
-| `ag-caddie.png` (coach AI-chat) | `/admin/agencyos/caddie` | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
-| `ag-compare.png` (sammenlign spillere) | `/admin/talent/sammenligning` | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
-| `ag-compliance.png` | `/admin/analysere/compliance` | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
-| `ag-drift.png` (drift/anlegg) | `/admin/anlegg` / drift-sidene | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
-| `ag-kalender.png` | `/admin/kalender` | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
-| `ag-tester.png` | `/admin/tester` | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
-| `mk-forside.png` (marketing-forside) | `/(marketing)` | Bygget i forhåndsvisning (liksom-tall). Mangler ekte data + ekte adresse. |
-
-> De øvrige skjermbildene (f.eks. `pl-hjem`, `pl-sghub`, `pl-runder`, `pl-live-*`, `ag-dashboard`, `ag-stallen`, `ag-innboks`, `ag-spiller`, `ag-workbench`, `au-login` m.fl.) er allerede tatt i bruk eller bygget i forhåndsvisning i natt — de er IKKE drop-off.
+> De øvrige skjermbildene (f.eks. `pl-hjem`, `pl-sghub`, `pl-runder`, `pl-live-*`, `ag-dashboard`, `ag-stallen`, `ag-innboks`, `ag-spiller`, `ag-workbench`, `au-login` m.fl.) er allerede tatt i bruk — de er IKKE drop-off.
 
 ### B. Ferdige design-komponenter (HTML) uten en plass i appen
 
@@ -678,7 +673,7 @@ Designeren leverte 47 ferdige komponent-design (HTML-biter). Mange er brukt i sk
 | `components-insight-narrative.html` | AI-fortelling i ord om formen din | ✅ Bygget som `InsightNarrativeCard` (`src/components/portal/insight/insight-narrative-card.tsx`) — 7-del anatomi (strip · kicker · tittel · lede · pivots · rec-block · footnote), 5 strip-varianter (left-strip, ikke top). Koblet til (1) `/portal/analysere` fanen «Innsikt» via `InsightNarrativeData`-mapper i `analysere-data.ts`, og (2) `/portal/mal/sg-hub` via payload-mapper `mapInsightToCard` — topp 3 uløste SgInsights. |
 | `components-season-timeline.html` | Tidslinje for hele sesongen | ✅ Bygget som `Aarsplan`-komponenten (`src/components/portal/aarsplan/aarsplan.tsx`) — Gantt-kart på `/portal/tren/aarsplan`. Portet fra fasit + skjerm-PNG. |
 | `components-test-week.html` | «Testuke»-oppsett | ✅ Bygget som `TestUkeKommende` (spiller) + `TestUkeTrigger` (coach/admin). Aktiveres når TestWeek-modell kobles — returnerer null til da. Kobling: `/portal/tren/tester` + `/admin/tester`. |
-| `components-course-heatmap.html` | Varmekart over banen | Hull-analyse (`/portal/analysere/hull`). Delvis. |
+| `components-course-heatmap.html` | Varmekart over banen | ✅ **Bygget 19. juli** på Hull-analyse (`/portal/analysere/hull`, «Hull for hull»-fanen): `VarmekartKort` i `src/components/portal/v2/AnalysereHullV2.tsx` bruker v2-primitiven `VarmeKart` (`src/components/v2/datavis.tsx` — allerede kanon-dekket, ingen ny komponent trengtes). Server-aggregering (snitt avvik fra par per hull, over ALLE `HoleScore`-runder) i `src/lib/domain/hole-heatmap.ts` (`aggregerHullVarme`); 2×9-grid (UT/INN) ved 18 hull; tom-tilstand under 3 runder. |
 | `components-trackman-stability.html` | TrackMan stabilitet-graf | ✅ Bygget i `/portal/mal/trackman/[id]` som `StabilitetSeksjon`: varians-heatmap (6 param × N køller, 5-nivå fargeskala), stabilitets-score 1-10, callouts + bias/spredning SVG-minikart. |
 | `components-trackman-trend.html` | TrackMan trend-graf | ✅ Bygget i `/portal/mal/trackman` som `TrackManTrendSeksjon` (KPI-strip avg. carry + klubbhastighet m/ sparklines, per-kølle carry-trender fra CLUB_AVG-signaler). |
 | `components-sg-training-scatter.html` | SG vs trening punktsky | ✅ Bygget i `/portal/mal/sg-hub` som `SgTrainingScatter`: hero scatter (APP/innspill) + 4 mini-multiples per kategori, lineær regresjon, R², 95 %-konfidensband beregnet server-side fra TrainingLog + Round. Tom-tilstand når < 4 datapunkter. |
@@ -689,7 +684,7 @@ Designeren leverte 47 ferdige komponent-design (HTML-biter). Mange er brukt i sk
 |---|---|---|
 | `components-co-agent.html` | Coachens AI-medhjelper-panel | ✅ Bygget på `/admin/caddie` som `CoAgent` — utkast/godkjenning, agent-fleet-tabell, audit-log. Kobler til `loadCoAgent` Prisma-data. |
 | `components-multi-compare.html` | Sammenlign flere spillere side om side | ✅ Bygget og koblet til `/admin/talent/sammenligning` — v10 full 4-panel-komponent (side-om-side · pyramide · kohort-rangering · region-fordeling) via `mapCompareData`-mapper. |
-| `components-coach-mobile.html` | Coach-visning på mobil | Mobil-utgave av AgencyOS. Ikke bygget (AgencyOS er laget for data/desktop først). |
+| `components-coach-mobile.html` | Coach-visning på mobil | ✅ Dekket av M2+M3 (17. jul): AgencyOS-kjerneskjermene fikk `useMobile()`-tilpasning + Workbench mobil-oppgavekø. Raden var stale (rettet 19. juli). |
 | `components-foreldre.html` | Foreldre-komponent for coach | ✅ Bygget som `ForeldreInfo` på `/portal/meg/foreldre` — viser spillerens egne foresatte fra Prisma parentRelation. Invite-modal + server actions. |
 | `components-cmdk.html` | Hurtigsøk-boks (⌘K) | ✅ `GlobalSearchModal` (`src/components/admin/global-search-modal.tsx`) — mountet i AdminShell. Cmd+K, debounced API, 17 hurtig-handlinger, spillere/planer/bookinger/ruter, tastaturnav, focus-trap. |
 
@@ -747,8 +742,8 @@ Enkle bolker, i den rekkefølgen som gir minst risiko og raskest synlig fremgang
 **Bolk 1 — Gjør ferdig det som ble bygget i natt (ingen nytt design trengs).**
 De 43 skjermene som er tegnet og bygget i forhåndsvisning (PlayerHQ-hjem, SG-Hub, Live-økt, Runder, Statistikk, Analyse, Meg, Abonnement, Drills, Tester, Årsplan, Booking, Varsler, Innstillinger, TrackMan, Turneringer, Logg ny runde, Forelder-side, Onboarding + AgencyOS cockpit, Spillere, Innboks, Spiller-detalj, Kalender, Bookinger, Tester, Turneringer, Caddie, Sammenlign, Compliance, Drift + auth-sider + marketing-forside): flytt dem fra forhåndsvisning til ekte adresse, koble på ekte data, og test. Mål: alle seks haker grønne.
 
-**Bolk 2 — Plukk de enkle drop-off-skjermbildene (kan bygges selv).**
-404-siden mangler fortsatt kobling. Andre tegnede skjermbilder som ennå ikke er bygget kobles på. Disse er tegnet og venter — bare å koble på.
+**Bolk 2 — LUKKET 2026-07-19.** Kodeverifisering viste at alle drop-off-skjermbildene i
+A-lista allerede er koblet (404-siden siden 3. juni). Se rettelsen i seksjon A over.
 
 **Bolk 3 — Ta i bruk de tegnede komponentene (kan bygges selv).**
 Bygg inn stemme-logging, credit-måler, svakhet-til-drill-bro, sesong-tidslinje, TrackMan-grafene og spiller-sammenligning der de hører hjemme (se drop-off-liste B). Da blir flere skjermer komplette samtidig.
@@ -791,6 +786,16 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 ---
 
 ## Endringslogg
+
+- 19. juli (siste drop-off-punkt lukket): **`components-course-heatmap.html` bygget** — varmekart
+  over banen på Hull-analyse (`/portal/analysere/hull`, «Hull for hull»-fanen). Gjenbrukte den
+  eksisterende v2-primitiven `VarmeKart` (`src/components/v2/datavis.tsx`, allerede kanon-dekket —
+  ingen ny komponent trengtes) i en ny `VarmekartKort`-seksjon i `AnalysereHullV2.tsx`. Ny
+  domenefunksjon `aggregerHullVarme` (`src/lib/domain/hole-heatmap.ts`, m/ enhetstester) regner
+  snitt avvik-fra-par per hull server-side over ALLE spillerens `HoleScore`-runder (ikke bare siste
+  runde), normalisert 0–1 mot en fast risiko-skala; 2×9-grid (UT/INN) ved 18 hull, tom-tilstand
+  under 3 runder. Ny HjelpTips-nøkkel `hullVarme` i `src/lib/v2/hjelpetekster.ts`. B-lista-raden og
+  skjerm-raden for `/portal/analysere/hull` oppdatert i samme commit (Flyt ~ → ✓).
 
 - 17. juli (UAT-økt, lokal dev + Playwright, testbrukerne Øyvind Rohjan/coachtest): **kritiske
   nyporterte flyter nettleser-verifisert ende-til-ende** i 390px + desktop. Booking-wizarden
