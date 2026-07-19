@@ -49,6 +49,9 @@ export function CookieBanner() {
   // Klassen gfgk-jr gir tilgang til de scopede GFGK-variablene (tokens-fila
   // lastes av micrositens layout på de samme rutene).
   const gfgk = pathname?.startsWith("/gfgk-junior") ?? false;
+  // Auth-flyten (login/signup/onboarding) er kort og fokusert — banneren
+  // dekket «Fortsett med Google»-knappen og andre CTA-er nederst på skjermen.
+  const skjulPaAuth = pathname?.startsWith("/auth") ?? false;
   const farger = gfgk
     ? {
         kortBg: "var(--gfgk-white)",
@@ -86,7 +89,7 @@ export function CookieBanner() {
     }
   }, []);
 
-  if (!visible) return null;
+  if (!visible || skjulPaAuth) return null;
 
   function onGodta() {
     setCookieConsent(CONSENT_ALL);
