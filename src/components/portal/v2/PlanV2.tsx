@@ -32,6 +32,7 @@ import {
   InnsiktChip,
   DagStripe,
   TomTilstand,
+  HjelpTips,
   type StripeDag,
 } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
@@ -205,14 +206,28 @@ export function PlanV2({ data }: { data: DashboardData }) {
 
             {/* Belastning + innsikt + Workbench-inngang */}
             <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-              <Kort tint eyebrow="Ukas belastning">
+              <Kort
+                tint
+                eyebrow={
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                    Ukas belastning
+                    <HjelpTips k="ukevolum" size={11} />
+                  </span>
+                }
+                action={<HjelpTips k="pyramideAkse" size={11} align="right" />}
+              >
                 {weekProgress.plannedMin > 0 ? (
                   <>
                     <TallHero
                       value={fmtT(planlagtTot)}
                       unit="timer"
                       size={40}
-                      sub={`${fmtT(fullfortTot)} t fullført · ${gjennomforPct} % av planen`}
+                      sub={
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
+                          {`${fmtT(fullfortTot)} t fullført · ${gjennomforPct} % av planen`}
+                          <HjelpTips k="planEtterlevelse" size={11} />
+                        </span>
+                      }
                     />
                     <div style={{ marginTop: 12 }}>
                       {akseRader.map((r, i) => (

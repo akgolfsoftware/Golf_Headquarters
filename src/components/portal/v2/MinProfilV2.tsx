@@ -30,6 +30,7 @@ import {
   Inndata,
   TomTilstand,
   Icon,
+  HjelpTips,
   type StatusTone,
 } from "@/components/v2";
 import { oppdaterProfil } from "@/app/portal/meg/actions";
@@ -185,12 +186,14 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
       title: "TrackMan-konto",
       sub: `${epost} · ingen kobling registrert`,
       meta: { l: "Ikke koblet", tone: "info" as StatusTone },
+      hjelp: "trackman" as const,
     },
     {
       ikon: "shield",
       title: "Foreldresamtykke",
       sub: samtykkeSub,
       meta: samtykkeMeta,
+      hjelp: undefined,
     },
   ];
 
@@ -235,7 +238,18 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
     <Kort eyebrow="Profil" pad="18px 20px" style={{ gap: 14 }}>
       <Inndata label="Fullt navn" value={navnFelt} onChange={setNavnFelt} placeholder="Ikke satt" />
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: 14 }}>
-        <Inndata label="Handicap" value={hcpFelt} onChange={setHcpFelt} placeholder="Ikke satt" mono />
+        <Inndata
+          label={
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+              Handicap
+              <HjelpTips k="hcp" size={11} />
+            </span>
+          }
+          value={hcpFelt}
+          onChange={setHcpFelt}
+          placeholder="Ikke satt"
+          mono
+        />
         <ProfilFelt label="Fødselsår" value={fodselsaar != null ? String(fodselsaar) : ""} placeholder="Ikke satt" mono hint="Endres ikke her — kontakt coach for å rette fødselsår." />
       </div>
       <Inndata label="Klubb" value={klubbFelt} onChange={setKlubbFelt} placeholder="Ikke satt" />
@@ -250,7 +264,7 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
 
   /* WAGR-verdensranking finnes ikke i datamodellen → ærlig tom-tilstand (gap). */
   const wagr = (
-    <Kort eyebrow="WAGR">
+    <Kort eyebrow="WAGR" action={<HjelpTips k="wagr" size={11} align="right" />}>
       <TomTilstand icon="globe" title="Verdensranking ikke koblet" sub="WAGR (World Amateur Golf Ranking) hentes ikke inn i PlayerHQ ennå." />
     </Kort>
   );
@@ -261,7 +275,16 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
         <Rad
           key={r.title}
           leading={<RadIkon name={r.ikon} />}
-          title={r.title}
+          title={
+            r.hjelp ? (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                {r.title}
+                <HjelpTips k={r.hjelp} size={11} />
+              </span>
+            ) : (
+              r.title
+            )
+          }
           sub={r.sub}
           meta={<StatusPill tone={r.meta.tone}>{r.meta.l}</StatusPill>}
           trailing={null}
