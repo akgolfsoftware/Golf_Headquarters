@@ -1,0 +1,161 @@
+/* =========================================================================
+   GFGK Junior & Elite — merkevare-tokens (gfgkjunior.no-micrositen)
+   Kilde: Claude Design-prosjektet «GFGK Junior og Elite» (colors_and_type.css).
+   Scopet under .gfgk-jr slik at GFGK-paletten aldri lekker inn i appens
+   HSL-tokens (samme mønster som /team-gfgk sin deck.css).
+   Rå hex er tillatt her: src/styles/ er utenfor check-no-hex-gaten —
+   komponentene bruker kun var(--gfgk-*)/var(--jr-*).
+   ========================================================================= */
+
+.gfgk-jr {
+  /* ---- Merkevarekjerne (fra klubblogoen) ---- */
+  --gfgk-gold: #ffd000;
+  --gfgk-red: #ef4136;
+  --gfgk-teal: #00a0b0;
+  --gfgk-ink: #202020;
+  --gfgk-white: #ffffff;
+
+  /* Gull-rampe */
+  --gold-100: #fff4c2;
+  --gold-200: #ffe680;
+  --gold-300: #ffdb47;
+  --gold-400: #ffd000;
+  --gold-500: #f2c200;
+  --gold-600: #d9a800;
+  --gold-700: #a87e00;
+
+  /* Rød-rampe */
+  --red-100: #fcdad7;
+  --red-200: #f7a9a2;
+  --red-300: #f26e64;
+  --red-400: #ef4136;
+  --red-500: #dc3429;
+  --red-600: #c02a20;
+  --red-700: #8f1e17;
+
+  /* Teal-rampe */
+  --teal-100: #c9eef2;
+  --teal-200: #8fdce4;
+  --teal-300: #46c2ce;
+  --teal-400: #00a0b0;
+  --teal-500: #008c9b;
+  --teal-600: #00747f;
+  --teal-700: #015862;
+
+  /* Fairway-grønn (utvidet palett — status/«spill», ikke i logoen) */
+  --green-100: #d9f0df;
+  --green-300: #6fc78c;
+  --green-500: #2e9e5b;
+  --green-600: #1f7e47;
+
+  /* ---- Nøytraler ---- */
+  --paper: #fafaf7;
+  --n-50: #f4f5f4;
+  --n-100: #e9ebea;
+  --n-200: #d8dbda;
+  --n-300: #bcc1bf;
+  --n-400: #949a98;
+  --n-500: #6c7370;
+  --n-600: #4c524f;
+  --n-700: #343836;
+  --n-800: #262a28;
+  --ink: #202020;
+
+  /* ---- Semantiske roller ---- */
+  --fg-1: var(--ink);
+  --fg-2: var(--n-600);
+  --fg-3: var(--n-500);
+  --hairline: rgba(32, 32, 32, 0.08);
+  --link: var(--teal-600);
+  --link-hover: var(--teal-700);
+
+  /* ---- Typefamilier (settes av next/font-variabler i layout) ---- */
+  --font-jr-sans: var(--font-gfgk-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-jr-mono: var(--font-gfgk-mono), ui-monospace, "SF Mono", monospace;
+
+  /* ---- Radius ---- */
+  --r-xs: 4px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+
+  /* ---- Elevation (lys flate: myke skygger, aldri borders) ---- */
+  --shadow-sm: 0 1px 2px rgba(32, 32, 32, 0.06), 0 1px 1px rgba(32, 32, 32, 0.04);
+  --shadow-md: 0 4px 12px rgba(32, 32, 32, 0.08), 0 1px 3px rgba(32, 32, 32, 0.06);
+  --shadow-lg: 0 14px 36px rgba(32, 32, 32, 0.12), 0 4px 10px rgba(32, 32, 32, 0.07);
+  --shadow-gold: 0 10px 24px rgba(255, 208, 0, 0.35);
+
+  /* ---- Motion ---- */
+  --ease-jr: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-fast: 120ms;
+  --dur: 200ms;
+  --dur-slow: 360ms;
+
+  font-family: var(--font-jr-sans);
+  color: var(--fg-1);
+  background: var(--paper);
+}
+
+/* Lenker i micrositen */
+.gfgk-jr a {
+  color: inherit;
+}
+.gfgk-jr .jr-link {
+  color: var(--link);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-jr);
+}
+.gfgk-jr .jr-link:hover {
+  color: var(--link-hover);
+}
+
+/* Focus-ring: 2px teal med offset — på alt interaktivt */
+.gfgk-jr a:focus-visible,
+.gfgk-jr button:focus-visible {
+  outline: 2px solid var(--teal-400);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+/* Seksjonsinngang: diskret fade-up (én bevegelse per hendelse) */
+@keyframes jrFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.gfgk-jr .jr-fade-up {
+  animation: jrFadeUp var(--dur-slow) var(--ease-jr) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gfgk-jr .jr-fade-up {
+    animation: none;
+  }
+  .gfgk-jr * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* Duotone-bildeflate for hero/plassholdere: ink-flate med subtil gull-radial.
+   Ser bevisst ut uten foto; ekte foto legges som <Image> under samme overlay. */
+.gfgk-jr .jr-duotone {
+  background:
+    radial-gradient(ellipse 90% 70% at 78% 30%, rgba(255, 208, 0, 0.14), transparent 60%),
+    radial-gradient(ellipse 70% 60% at 90% 85%, rgba(0, 160, 176, 0.1), transparent 55%),
+    var(--ink);
+}
+.gfgk-jr .jr-hero-gradient {
+  background: linear-gradient(
+    90deg,
+    rgba(20, 20, 20, 0.85) 0%,
+    rgba(20, 20, 20, 0.55) 48%,
+    rgba(20, 20, 20, 0.15) 100%
+  );
+}
