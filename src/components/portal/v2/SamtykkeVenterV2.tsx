@@ -449,7 +449,7 @@ export function SamtykkeVenterV2({ spillerNavn, invitasjonEmail }: Props) {
       }}
     >
       <BrandPanel />
-      <div
+      <main
         style={{
           flex: 1,
           minWidth: 0,
@@ -461,7 +461,7 @@ export function SamtykkeVenterV2({ spillerNavn, invitasjonEmail }: Props) {
         }}
       >
         <VenterKort spillerNavn={spillerNavn} invitasjonEmail={invitasjonEmail} />
-      </div>
+      </main>
     </div>
   );
 }

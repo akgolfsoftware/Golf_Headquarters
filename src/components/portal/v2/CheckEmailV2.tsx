@@ -284,7 +284,7 @@ export function CheckEmailV2() {
       }}
     >
       <BrandPanel />
-      <div
+      <main
         style={{
           flex: 1,
           minWidth: 0,
@@ -296,7 +296,7 @@ export function CheckEmailV2() {
         }}
       >
         <CheckEmailKort />
-      </div>
+      </main>
     </div>
   );
 }

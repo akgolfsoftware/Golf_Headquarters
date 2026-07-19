@@ -272,7 +272,7 @@ export function BankIDV2() {
       }}
     >
       <BrandPanel />
-      <div
+      <main
         style={{
           flex: 1,
           minWidth: 0,
@@ -284,7 +284,7 @@ export function BankIDV2() {
         }}
       >
         <BankIDKort />
-      </div>
+      </main>
     </div>
   );
 }
