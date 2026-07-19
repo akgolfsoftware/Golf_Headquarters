@@ -5,6 +5,9 @@ on:
     branches: [main]
   push:
     branches: [main]
+  # Manuell kjøring fra Actions-fanen — lagt til 2026-07-19 for å kunne teste
+  # Actions-oppsettet direkte (kjøringer trigget av push/PR har aldri startet).
+  workflow_dispatch:
 
 jobs:
   verify:
