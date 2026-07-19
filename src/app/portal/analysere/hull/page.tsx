@@ -19,6 +19,7 @@ import {
   type AnalysereHullV2Data,
   type HullSone,
 } from "@/components/portal/v2/AnalysereHullV2";
+import { aggregerHullVarme } from "@/lib/domain/hole-heatmap";
 
 export const dynamic = "force-dynamic";
 
@@ -30,7 +31,7 @@ export default async function HullAnalysePage() {
   const tretti = new Date();
   tretti.setDate(tretti.getDate() - 30);
 
-  const [sgInputs, sessions, sisteRunde] = await Promise.all([
+  const [sgInputs, sessions, sisteRunde, alleHullScores] = await Promise.all([
     prisma.brukerSgInput.findMany({
       where: { userId: user.id },
       orderBy: { dato: "desc" },
@@ -53,6 +54,12 @@ export default async function HullAnalysePage() {
           select: { holeNumber: true, par: true, strokes: true },
         },
       },
+    }),
+    // Varmekart: hull-score på tvers av ALLE spillerens runder (ikke bare
+    // siste), for å aggregere snitt avvik fra par per hull server-side.
+    prisma.holeScore.findMany({
+      where: { round: { userId: user.id } },
+      select: { holeNumber: true, par: true, strokes: true, roundId: true },
     }),
   ]);
 
@@ -135,6 +142,9 @@ export default async function HullAnalysePage() {
           })),
         }
       : null,
+    // Varmekart over banen: snitt avvik fra par per hull, aggregert over
+    // ALLE registrerte runder (domenelogikk i src/lib/domain/hole-heatmap.ts).
+    hullVarme: aggregerHullVarme(alleHullScores),
   };
 
   return (

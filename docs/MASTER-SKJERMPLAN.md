@@ -151,7 +151,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Analysere = «Min golf» (6 faner: SG · Fokus · Runder · Baggen · Putting · Nivå — v13 golfdata, bølge 1 2026-07-04) ★ | `/portal/analysere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Hull-analyse | `/portal/analysere/hull` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | v2-port 17. jul (Team F2): hele skjermen (begge faner) rekomponert til v2 — `AnalysereHullV2` (PillTabs/SgKategorier/Scorekort/MiniSpark); queries og fane-logikk uendret; SG per hull vises ærlig som «—» (ikke beregnet i datagrunnlaget). Meldt gap: illustrativt top-down-banekart m/ trykkbare soner finnes ikke i v2-kanon — må designes i ui_kits/v2 om Anders vil ha det tilbake. |
+| · Hull-analyse | `/portal/analysere/hull` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 17. jul (Team F2): hele skjermen (begge faner) rekomponert til v2 — `AnalysereHullV2` (PillTabs/SgKategorier/Scorekort/MiniSpark); queries og fane-logikk uendret; SG per hull vises ærlig som «—» (ikke beregnet i datagrunnlaget). **Varmekart 19. jul:** `VarmekartKort` i «Hull for hull»-fanen — v2 `VarmeKart`-primitiven (`src/components/v2/datavis.tsx`) farget med `T.down`, snitt avvik fra par per hull aggregert på tvers av ALLE spillerens runder (`aggregerHullVarme`, `src/lib/domain/hole-heatmap.ts`), tom-tilstand under 3 runder. Flyt ~ → ✓. Gjenstående, separat meldt gap: illustrativt top-down-banekart m/ trykkbare soner finnes ikke i v2-kanon — må designes i ui_kits/v2 om Anders vil ha det tilbake. |
 | Statistikk (oversikt) | `/portal/statistikk` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Fase 2 spot-check 17. jul: FLIPPET ~ → ✓. `StatistikkHub` (via statistikk-hybrid) er fullt golfdata-komponert — overgangs-laget teller som kanon per design-system-regelen. Rekomponeres til v2 når hub-bølgen tas; underruten `[metric]` er alt v2 (Team D3). |
 | · Metrikk-detalj | `/portal/statistikk/[metric]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D3): `StatistikkMetrikkV2` — metric-oppslag (5 pyramide + 4 SG + aliaser), queries og trend-buckets uendret. Falsk (disabled) periode-velger erstattet med ærlig «Siste 90 d»-badge; fortegn mot kategori-snitt vises nå korrekt; HjelpTips på SG/pyramide/kategori-snitt. A1-benchmark fortsatt statisk proxy, merket «(referanse)». Design – → ✓. |
 | ~~· Sammenlign~~ | `/portal/statistikk/sammenlign` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-14) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
@@ -673,7 +673,7 @@ Designeren leverte 47 ferdige komponent-design (HTML-biter). Mange er brukt i sk
 | `components-insight-narrative.html` | AI-fortelling i ord om formen din | ✅ Bygget som `InsightNarrativeCard` (`src/components/portal/insight/insight-narrative-card.tsx`) — 7-del anatomi (strip · kicker · tittel · lede · pivots · rec-block · footnote), 5 strip-varianter (left-strip, ikke top). Koblet til (1) `/portal/analysere` fanen «Innsikt» via `InsightNarrativeData`-mapper i `analysere-data.ts`, og (2) `/portal/mal/sg-hub` via payload-mapper `mapInsightToCard` — topp 3 uløste SgInsights. |
 | `components-season-timeline.html` | Tidslinje for hele sesongen | ✅ Bygget som `Aarsplan`-komponenten (`src/components/portal/aarsplan/aarsplan.tsx`) — Gantt-kart på `/portal/tren/aarsplan`. Portet fra fasit + skjerm-PNG. |
 | `components-test-week.html` | «Testuke»-oppsett | ✅ Bygget som `TestUkeKommende` (spiller) + `TestUkeTrigger` (coach/admin). Aktiveres når TestWeek-modell kobles — returnerer null til da. Kobling: `/portal/tren/tester` + `/admin/tester`. |
-| `components-course-heatmap.html` | Varmekart over banen | Hull-analyse (`/portal/analysere/hull`). Delvis — **verifisert fortsatt åpen 19. juli** (ingen varmekart i `hole-analysis.tsx`); eneste gjenstående B-punkt. Bygges mot v2 `Heatmap`-komponenten når hull-for-hull-data (`HoleScore`, D6a) gir nok punkter. |
+| `components-course-heatmap.html` | Varmekart over banen | ✅ **Bygget 19. juli** på Hull-analyse (`/portal/analysere/hull`, «Hull for hull»-fanen): `VarmekartKort` i `src/components/portal/v2/AnalysereHullV2.tsx` bruker v2-primitiven `VarmeKart` (`src/components/v2/datavis.tsx` — allerede kanon-dekket, ingen ny komponent trengtes). Server-aggregering (snitt avvik fra par per hull, over ALLE `HoleScore`-runder) i `src/lib/domain/hole-heatmap.ts` (`aggregerHullVarme`); 2×9-grid (UT/INN) ved 18 hull; tom-tilstand under 3 runder. |
 | `components-trackman-stability.html` | TrackMan stabilitet-graf | ✅ Bygget i `/portal/mal/trackman/[id]` som `StabilitetSeksjon`: varians-heatmap (6 param × N køller, 5-nivå fargeskala), stabilitets-score 1-10, callouts + bias/spredning SVG-minikart. |
 | `components-trackman-trend.html` | TrackMan trend-graf | ✅ Bygget i `/portal/mal/trackman` som `TrackManTrendSeksjon` (KPI-strip avg. carry + klubbhastighet m/ sparklines, per-kølle carry-trender fra CLUB_AVG-signaler). |
 | `components-sg-training-scatter.html` | SG vs trening punktsky | ✅ Bygget i `/portal/mal/sg-hub` som `SgTrainingScatter`: hero scatter (APP/innspill) + 4 mini-multiples per kategori, lineær regresjon, R², 95 %-konfidensband beregnet server-side fra TrainingLog + Round. Tom-tilstand når < 4 datapunkter. |
@@ -786,6 +786,16 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 ---
 
 ## Endringslogg
+
+- 19. juli (siste drop-off-punkt lukket): **`components-course-heatmap.html` bygget** — varmekart
+  over banen på Hull-analyse (`/portal/analysere/hull`, «Hull for hull»-fanen). Gjenbrukte den
+  eksisterende v2-primitiven `VarmeKart` (`src/components/v2/datavis.tsx`, allerede kanon-dekket —
+  ingen ny komponent trengtes) i en ny `VarmekartKort`-seksjon i `AnalysereHullV2.tsx`. Ny
+  domenefunksjon `aggregerHullVarme` (`src/lib/domain/hole-heatmap.ts`, m/ enhetstester) regner
+  snitt avvik-fra-par per hull server-side over ALLE spillerens `HoleScore`-runder (ikke bare siste
+  runde), normalisert 0–1 mot en fast risiko-skala; 2×9-grid (UT/INN) ved 18 hull, tom-tilstand
+  under 3 runder. Ny HjelpTips-nøkkel `hullVarme` i `src/lib/v2/hjelpetekster.ts`. B-lista-raden og
+  skjerm-raden for `/portal/analysere/hull` oppdatert i samme commit (Flyt ~ → ✓).
 
 - 17. juli (UAT-økt, lokal dev + Playwright, testbrukerne Øyvind Rohjan/coachtest): **kritiske
   nyporterte flyter nettleser-verifisert ende-til-ende** i 390px + desktop. Booking-wizarden

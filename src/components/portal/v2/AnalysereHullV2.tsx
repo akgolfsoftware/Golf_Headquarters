@@ -30,7 +30,10 @@ import {
   SgKategorier,
   MiniSpark,
   Scorekort,
+  VarmeKart,
+  HjelpTips,
 } from "@/components/v2";
+import { MIN_RUNDER, type HullVarmeCelle, type HullVarmeResultat } from "@/lib/domain/hole-heatmap";
 
 /* ── Datakontrakt (mappes fra Prisma i ruten) ──────────────────────────── */
 
@@ -70,12 +73,37 @@ export interface AnalysereHullV2Data {
   /** Antall SG-registreringer datagrunnlaget bygger på. */
   sgRegistreringer: number;
   runde: HullRunde | null;
+  /** Varmekart-aggregat (snitt avvik fra par per hull) — se src/lib/domain/hole-heatmap.ts. */
+  hullVarme: HullVarmeResultat;
 }
 
 /* ── Hjelpere ──────────────────────────────────────────────────────────── */
 
 function fmtSignedNb(n: number): string {
   return n === 0 ? "E" : (n > 0 ? "+" : "−") + String(Math.abs(n));
+}
+
+/** Rutenett-form for varmekartet: ≤ 9 hull → én rad; ellers UT (1–9) / INN
+ *  (10–18) i to rader — jf. designkontrakten («hold gridet lite, ≤ ~10×8»). */
+function byggVarmeGrid(celler: HullVarmeCelle[]): {
+  rows: string[];
+  cols: string[];
+  values: number[][];
+  raw: (HullVarmeCelle | null)[][];
+} {
+  if (celler.length === 0) return { rows: [], cols: [], values: [], raw: [] };
+  const byNr = new Map(celler.map((c) => [c.holeNumber, c]));
+  const maxHull = Math.max(...celler.map((c) => c.holeNumber));
+
+  const lagRad = (fra: number, til: number) =>
+    Array.from({ length: til - fra + 1 }, (_, i) => byNr.get(fra + i) ?? null);
+
+  const raw = maxHull <= 9 ? [lagRad(1, maxHull)] : [lagRad(1, 9), lagRad(10, 18)];
+  const cols = Array.from({ length: raw[0].length }, (_, i) => String(i + 1));
+  const rows = raw.length === 1 ? ["Hull"] : ["UT", "INN"];
+  const values = raw.map((rad) => rad.map((c) => c?.intensitet ?? 0));
+
+  return { rows, cols, values, raw };
 }
 
 /* ── Fane 1: Sone-kart (SG + trening per sone) ─────────────────────────── */
@@ -144,7 +172,49 @@ function SoneFane({ soner, sgRegistreringer }: { soner: HullSone[]; sgRegistreri
 
 /* ── Fane 2: Hull for hull (siste runde) ───────────────────────────────── */
 
-function HullFane({ runde }: { runde: HullRunde | null }) {
+function VarmekartKort({ hullVarme }: { hullVarme: HullVarmeResultat }) {
+  const grid = byggVarmeGrid(hullVarme.celler);
+  return (
+    <Kort
+      eyebrow={
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          Varmekart · hvor du taper slag <HjelpTips k="hullVarme" size={11} />
+        </span>
+      }
+      action={
+        hullVarme.harNokData ? (
+          <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>
+            {hullVarme.rundeAntall} runder m/ hull-for-hull
+          </span>
+        ) : undefined
+      }
+    >
+      {hullVarme.harNokData ? (
+        <div style={{ overflowX: "auto" }}>
+          <VarmeKart
+            rows={grid.rows}
+            cols={grid.cols}
+            values={grid.values}
+            color={T.down}
+            fmt={(_v, ri, ci) => {
+              const c = grid.raw[ri]?.[ci];
+              if (!c) return "Ingen data på dette hullet";
+              return `${fmtSg(c.snittDiff)} mot par · ${c.rundeAntall} ${c.rundeAntall === 1 ? "runde" : "runder"}`;
+            }}
+          />
+        </div>
+      ) : (
+        <TomTilstand
+          icon="flag"
+          title="For få runder til varmekart"
+          sub={`Logg minst ${MIN_RUNDER} runder hull for hull, så vises varmekartet over banen.`}
+        />
+      )}
+    </Kort>
+  );
+}
+
+function HullFane({ runde, hullVarme }: { runde: HullRunde | null; hullVarme: HullVarmeResultat }) {
   if (!runde) {
     return (
       <Kort eyebrow="Hull for hull">
@@ -188,6 +258,8 @@ function HullFane({ runde }: { runde: HullRunde | null }) {
         baseline="Broadie scratch"
         hjelp="sgTotal"
       />
+
+      <VarmekartKort hullVarme={hullVarme} />
     </>
   );
 }
@@ -221,7 +293,7 @@ export function AnalysereHullV2({ data }: { data: AnalysereHullV2Data }) {
       {tab === "sone" ? (
         <SoneFane soner={data.soner} sgRegistreringer={data.sgRegistreringer} />
       ) : (
-        <HullFane runde={data.runde} />
+        <HullFane runde={data.runde} hullVarme={data.hullVarme} />
       )}
     </div>
   );

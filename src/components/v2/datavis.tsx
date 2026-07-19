@@ -148,7 +148,10 @@ export interface VarmeKartProps {
   color?: string;
   cell?: number;
   gap?: number;
-  fmt?: (v: number) => string;
+  /** Hover-tekst per celle. Får normalisert verdi (0..1) + rad-/kolonneindeks
+   *  slik at kalleren kan slå opp eksakte rådata (f.eks. «+0,4 mot par · 5
+   *  runder») i stedet for å avlede alt fra den klipte 0..1-verdien. */
+  fmt?: (v: number, ri: number, ci: number) => string;
 }
 export function VarmeKart({ rows = VK_ROWS, cols = VK_COLS, values = VK_VALS, color = T.lime, cell = 24, gap = 3, fmt = (v) => `${Math.round(v * 100)} %` }: VarmeKartProps) {
   return (
@@ -161,7 +164,7 @@ export function VarmeKart({ rows = VK_ROWS, cols = VK_COLS, values = VK_VALS, co
           {cols.map((_, ci) => {
             const v = Math.max(0, Math.min(1, (values[ri] || [])[ci] ?? 0));
             return (
-              <span key={ci} title={fmt(v)} style={{
+              <span key={ci} title={fmt(v, ri, ci)} style={{
                 width: cell, height: cell, borderRadius: 6,
                 background: v === 0 ? T.track : `color-mix(in srgb, ${color} ${Math.round(v * 80)}%, ${T.panel2})`,
               }} />
