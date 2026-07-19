@@ -114,17 +114,31 @@ rot» men havnet i `src/app/admin/`, og en `launch.json` ble skrevet til
 `src/app/admin/.claude/`. Regel: bruk absolutte stier, og verifiser med `pwd`
 før filoperasjoner mot rot.
 
-### Ytelse: Vercel-region MÅ matche Supabase-region (korrigert 2026-07-19)
-Kanonisk Supabase-prosjekt er `eljkjqvggsmnbbszzbpj` i **eu-west-1 (Dublin)** —
-vercel.json har `"regions": ["dub1"]` (samlokalisert). Uten `"regions"` kjører
-funksjonene i default iad1 (USA) med TTFB 0,5–1,1 s. Ikke fjern eller endre
-uten å flytte databasen samtidig.
-OBS: 18. juli-versjonen av dette notatet sa «nytt prosjekt dcnxoztjtdqoidaekxry»
-(eu-west-2/lhr1) — det var INVERTERT: dcnx er det GAMLE, døde prosjektet fra den
-flaggede kontoen. 19. juli pekte Vercel-env fortsatt på dcnx → total
-innloggings-stopp i prod. Fiks: alle Supabase/DB-env byttet til eljk-verdiene +
-rebuild UTEN build-cache (NEXT_PUBLIC_* bakes inn ved bygging). Meg-boten har
-bevisst EGET Supabase-prosjekt (`ffaitjztfnelzwefbdhw`, MEG_SUPABASE_URL).
+### Ytelse: Vercel-region MÅ matche Supabase-region (re-korrigert 19. juli kveld)
+Kanonisk Supabase-prosjekt er **`dcnxoztjtdqoidaekxry`** i **eu-west-2 (London)** —
+vercel.json har `"regions": ["lhr1"]` (samlokalisert). Uten `"regions"` kjører
+funksjonene i default iad1 (USA) med TTFB 0,5–1,1 s. Ikke fjern eller endre uten
+å flytte databasen samtidig.
+
+OBS — to inverteringer på rad denne kvelden, verifiser alltid mot `list_projects`
+FØR du stoler på et notat her:
+1. 18. juli: notatet sa riktig «dcnx, eu-west-2/lhr1».
+2. 19. juli ettermiddag: en økt inverterte det til «eljk er kanonisk, eu-west-1/
+   dub1», med begrunnelse «total innloggings-stopp fordi env pekte på dødt dcnx».
+   Denne påstanden var **feil** — verifisert 19. juli kveld: `dcnxoztjtdqoidaekxry`
+   er `ACTIVE_HEALTHY` under riktig ny konto («akgolfsoftware's Org»), hadde et
+   ekte vellykket innlogg samme dag kl. 15:25, og null økte feilrater i timene
+   før byttet. `eljkjqvggsmnbbszzbpj` er GAMLE prosjektet fra den flaggede
+   GitHub-kontoen — utilgjengelig fra denne kontoens Supabase MCP-tilkobling
+   (`get_project` gir 403) og mangler alt arbeid gjort mot dcnx 19. juli (14
+   GFGK/WANG-spillere, Google OAuth-oppsett, avatar-bucket m.m.). Byttet til
+   eljk 19. juli kl. 19:02 forårsaket en EKTE regresjon (bekreftet av Anders:
+   «Fortsett med Google» feilet med «provider is not enabled» mot eljk).
+3. 19. juli kveld: byttet tilbake til dcnx (denne commiten) etter Anders'
+   eksplisitte «koble til den nye databasen nå». Alle Supabase/DB-env satt til
+   dcnx-verdiene + rebuild UTEN build-cache (NEXT_PUBLIC_* bakes inn ved
+   bygging). Meg-boten har bevisst EGET Supabase-prosjekt (`ffaitjztfnelzwefbdhw`,
+   MEG_SUPABASE_URL) — urørt av dette.
 
 ### Dev-server med foreldet Prisma-klient etter `prisma generate` (truffet 2×, 2026-07-13)
 Kjører `npx prisma generate` (nytt felt/enum) mens `next dev` står oppe →
