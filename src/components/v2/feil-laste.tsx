@@ -27,7 +27,7 @@ export interface V2FeilProps {
  *  logger error.digest) — se docs/redesign-v2/maler/error-mal.tsx.txt. */
 export function V2Feil({ reset, tilbakeHref, tittel = "Noe gikk galt" }: V2FeilProps) {
   return (
-    <div style={{ minHeight: "60vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", gap: 14, padding: "48px 24px" }}>
+    <main style={{ minHeight: "60vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", gap: 14, padding: "48px 24px" }}>
       <span style={{ width: 52, height: 52, borderRadius: 16, background: `color-mix(in srgb, ${T.down} 14%, transparent)`, border: `1px solid ${T.down}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
         <Icon name="alert-triangle" size={22} style={{ color: T.down }} />
       </span>
@@ -45,7 +45,7 @@ export function V2Feil({ reset, tilbakeHref, tittel = "Noe gikk galt" }: V2FeilP
           <Icon name="arrow-left" size={14} />Tilbake
         </Link>
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -419,9 +419,9 @@ export function V2Laster({ variant = "kort" }: V2LasterProps) {
     >
       {/* Rail-silhuett — matcher V2Shell-railen så overgangen er sømløs. */}
       <div className="hidden md:block" style={{ width: 60, flex: "none", borderRight: `1px solid ${T.border}` }} />
-      <div className="px-4 md:px-8 pt-6 pb-24 md:pb-9" style={{ flex: 1, minWidth: 0 }}>
+      <main className="px-4 md:px-8 pt-6 pb-24 md:pb-9" style={{ flex: 1, minWidth: 0 }}>
         <div style={{ maxWidth: 1680, margin: "0 auto" }}>{inner}</div>
-      </div>
+      </main>
     </div>
   );
 }
