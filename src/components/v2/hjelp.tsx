@@ -11,7 +11,10 @@ import { T } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
 import { HJELPETEKSTER, type HjelpNokkel } from "@/lib/v2/hjelpetekster";
 
-function hoverKapabel(): boolean {
+/** Delt med andre v2-tap/hover-popovere (bl.a. VarmeKart-celler i datavis.tsx)
+ *  slik at «ekte hover-enhet åpner ved museover, touch åpner ved trykk»-logikken
+ *  ikke dupliseres. */
+export function hoverKapabel(): boolean {
   return (
     typeof window !== "undefined" &&
     !!window.matchMedia &&

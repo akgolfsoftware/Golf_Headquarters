@@ -9,11 +9,11 @@
    Port av ui_kits/v2/v2-datavis.jsx → produksjons-TSX (diff-null). */
 
 import type { CSSProperties, ReactNode } from "react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { T, fmtSg, type AkseKey } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
 import { Kort, TallHero, Caps, TomTilstand, CTAPill, AkseChip, InnsiktChip, DeltaChip, AvatarInit, AKSE_NAVN, Rad } from "./core";
-import { HjelpTips } from "./hjelp";
+import { HjelpTips, hoverKapabel } from "./hjelp";
 import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
 
 /* ── Delte hjelpere ───────────────────────────────────── */
@@ -153,6 +153,72 @@ export interface VarmeKartProps {
    *  runder») i stedet for å avlede alt fra den klipte 0..1-verdien. */
   fmt?: (v: number, ri: number, ci: number) => string;
 }
+/* Én celle: samme tap/hover-popover-mønster som HjelpTips (kanon for «vis
+   liten forklaring ved trykk» i v2) — ekte hover-enhet åpner ved museover,
+   touch åpner/lukker ved trykk, Escape/fokus-tap lukker. `title` beholdes som
+   fallback (skjermlesere uten JS, langt museover før popoveren rekker å vises). */
+interface VarmeKartCelleProps {
+  verdi: number;
+  tekst: string;
+  color: string;
+  cell: number;
+  align: "left" | "right";
+}
+function VarmeKartCelle({ verdi, tekst, color, cell, align }: VarmeKartCelleProps) {
+  const [open, setOpen] = useState(false);
+  const kanHover = useRef(false);
+  useEffect(() => {
+    kanHover.current = hoverKapabel();
+  }, []);
+  return (
+    <span
+      style={{ position: "relative", display: "inline-flex" }}
+      onMouseEnter={() => { if (kanHover.current) setOpen(true); }}
+      onMouseLeave={() => { if (kanHover.current) setOpen(false); }}
+    >
+      <span
+        role="button"
+        tabIndex={0}
+        aria-label={tekst}
+        aria-expanded={open}
+        title={tekst}
+        className="v2-focus"
+        onClick={() => setOpen((o) => !o)}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setOpen(false)}
+        onKeyDown={(e) => { if (e.key === "Escape") setOpen(false); }}
+        style={{
+          width: cell, height: cell, borderRadius: 6, display: "block", cursor: "pointer",
+          background: verdi === 0 ? T.track : `color-mix(in srgb, ${color} ${Math.round(verdi * 80)}%, ${T.panel2})`,
+        }}
+      />
+      {open && (
+        <div
+          role="tooltip"
+          style={{
+            position: "absolute",
+            top: "calc(100% + 8px)",
+            [align === "right" ? "right" : "left"]: 0,
+            zIndex: 50,
+            width: "max-content",
+            maxWidth: 200,
+            background: T.panel3,
+            border: `1px solid ${T.border}`,
+            borderRadius: 10,
+            padding: "7px 10px",
+            boxShadow: "0 12px 32px rgba(0,0,0,0.45)",
+            fontFamily: T.ui,
+            fontSize: 11.5,
+            color: T.fg,
+            fontWeight: 600,
+          }}
+        >
+          {tekst}
+        </div>
+      )}
+    </span>
+  );
+}
 export function VarmeKart({ rows = VK_ROWS, cols = VK_COLS, values = VK_VALS, color = T.lime, cell = 24, gap = 3, fmt = (v) => `${Math.round(v * 100)} %` }: VarmeKartProps) {
   return (
     <div style={{ display: "grid", gridTemplateColumns: `52px repeat(${cols.length}, ${cell}px)`, gridTemplateRows: `16px repeat(${rows.length}, ${cell}px)`, gap, alignItems: "center" }}>
@@ -164,10 +230,14 @@ export function VarmeKart({ rows = VK_ROWS, cols = VK_COLS, values = VK_VALS, co
           {cols.map((_, ci) => {
             const v = Math.max(0, Math.min(1, (values[ri] || [])[ci] ?? 0));
             return (
-              <span key={ci} title={fmt(v, ri, ci)} style={{
-                width: cell, height: cell, borderRadius: 6,
-                background: v === 0 ? T.track : `color-mix(in srgb, ${color} ${Math.round(v * 80)}%, ${T.panel2})`,
-              }} />
+              <VarmeKartCelle
+                key={ci}
+                verdi={v}
+                tekst={fmt(v, ri, ci)}
+                color={color}
+                cell={cell}
+                align={ci >= cols.length / 2 ? "right" : "left"}
+              />
             );
           })}
         </Fragment>
