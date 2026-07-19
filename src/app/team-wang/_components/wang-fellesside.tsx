@@ -5,7 +5,7 @@
 // «Nå»-avhengig innhold beregnes Oslo-korrekt klient-side (hydreringstrygt via
 // useSyncExternalStore), klampet til sesongspennet — deterministisk på server.
 
-import { useState, useSyncExternalStore, type CSSProperties } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 import {
   COMPS,
@@ -35,6 +35,10 @@ import {
   type Okt,
 } from "../_data/wang-plan";
 import { Arshjul } from "./arshjul";
+import { FaneForeldre } from "./fane-foreldre";
+import { FaneKalender } from "./fane-kalender";
+import { FaneSamlinger } from "./fane-samlinger";
+import { FaneSkole } from "./fane-skole";
 import { HeroCard, IconChip, Tabs, navPillStyle } from "./primitiver";
 import { OktDetalj } from "./okt-detalj";
 
@@ -123,9 +127,12 @@ export function WangFellesside({ startFane }: { startFane: Fane }) {
             setPlanSub={setPlanSub}
             selMonth={selMonth}
             setSelMonth={setSelMonth}
+            onOpen={aapne}
           />
+        ) : fane === "skole" ? (
+          <FaneSkole />
         ) : (
-          <UnderBygging fane={fane} />
+          <FaneForeldre />
         )}
       </main>
     </div>
@@ -312,6 +319,7 @@ function Plan({
   setPlanSub,
   selMonth,
   setSelMonth,
+  onOpen,
 }: {
   naaIso: string;
   planMain: "Sesong" | "Kalender" | "Samlinger";
@@ -320,6 +328,7 @@ function Plan({
   setPlanSub: (v: "Årshjul" | "Tidslinje") => void;
   selMonth: string;
   setSelMonth: (v: string) => void;
+  onOpen: (id: string) => void;
 }) {
   const [selY, selM] = selMonth.split("-").map(Number);
   const md = monthInfo(selM, selY, naaIso);
@@ -392,8 +401,10 @@ function Plan({
             </>
           )}
         </>
+      ) : planMain === "Kalender" ? (
+        <FaneKalender onOpen={onOpen} />
       ) : (
-        <UnderByggingKort tittel={`Plan · ${planMain}`} />
+        <FaneSamlinger />
       )}
     </div>
   );
@@ -487,26 +498,6 @@ function TallRute({ value, label, bg, fg, lblFg }: { value: number; label: strin
     <div style={{ padding: "14px 12px", borderRadius: 16, background: bg }}>
       <div className="wang-num" style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: 24, color: fg }}>{value}</div>
       <div className="t-label" style={{ color: lblFg, marginTop: 2 }}>{label}</div>
-    </div>
-  );
-}
-
-function UnderByggingKort({ tittel }: { tittel: string }) {
-  return (
-    <div className="wang-card" style={{ padding: "40px 24px", display: "flex", flexDirection: "column", alignItems: "center", gap: 10, textAlign: "center" }}>
-      <IconChip icon="calendar" color="blue" size={48} />
-      <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 16, color: "var(--text-primary)" }}>{tittel}</div>
-      <div style={{ fontFamily: "var(--font-body)", fontSize: 13.5, color: "var(--text-secondary)", maxWidth: 420 }}>Denne visningen bygges i neste steg – dataene ligger klare i planen.</div>
-    </div>
-  );
-}
-
-function UnderBygging({ fane }: { fane: Fane }) {
-  const tittel = fane === "skole" ? "Skole – kompetansemål, timeplan og prøver" : "Foreldre – informasjon og kontakt";
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
-      <h1 style={{ margin: 0, fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 24, color: "var(--text-primary)", textTransform: "capitalize" }}>{fane}</h1>
-      <UnderByggingKort tittel={tittel} />
     </div>
   );
 }
