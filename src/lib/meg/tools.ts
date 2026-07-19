@@ -11,6 +11,7 @@ import { stripeSaldo, stripeBetalinger, stripeAbonnementer, stripeFakturaer, str
 import { createPending } from "@/lib/meg/pending";
 import { bekreftLonn } from "@/lib/agents/tripletex-lonn-agent";
 import { bekreftBallplukking } from "@/lib/agents/gfgk-ballplukking-agent";
+import { bekreftVaskeliste } from "@/lib/agents/mulligan-vaskeliste-agent";
 
 // ────────────────────────────────────────────────────────────────────────────
 // Tool-definisjoner (Anthropic SDK-format)
@@ -386,6 +387,35 @@ export const ballplukkingBekreftTool: Tool = {
   },
 };
 
+// ── Mulligan vaskeliste (Agentic OS Steg 2) ──────────────────────────────────
+// Se .claude/rules/mulligan-drift.md: agenten regner ALDRI ut hvem sin tur
+// det er i den ukentlige rulleringen mellom Anders og Christoffer — dette
+// tool-et lar Anders BEKREFTE at ansvarlig for ukas vask av Mulligan Indoor
+// Golf-simulatorene er avklart, som stopper mandagsvarselet. Kjøres direkte
+// (som `ballplukking_bekreft`) — registrerer kun en bekreftelse Anders
+// allerede har gjort, ikke en ny skrive-handling agenten selv foreslår.
+
+export const vaskelisteBekreftTool: Tool = {
+  name: "vaskeliste_bekreft",
+  description:
+    "Bekrefter at ansvarlig for ukas vask av Mulligan Indoor Golf-simulatorene er " +
+    "avklart for denne uka. Bruk KUN når Anders selv sier noe som «vaskeliste bekreftet», " +
+    "«jeg tar vaskelista», «Christoffer tar vaskelista» e.l. Kjøres direkte — stopper " +
+    "den automatiske varslingen mandag.",
+  input_schema: {
+    type: "object",
+    properties: {
+      ansvarlig: {
+        type: "string",
+        description:
+          "Hvem som har ansvaret (valgfritt, f.eks. «Anders» eller «Christoffer») — " +
+          "utelates hvis Anders bare bekrefter uten å oppgi navn.",
+      },
+    },
+    required: [],
+  },
+};
+
 export const MEG_ALL_TOOLS: Tool[] = [
   loggTool,
   hentNyligeTool,
@@ -412,6 +442,7 @@ export const MEG_ALL_TOOLS: Tool[] = [
   stripeKundeSokTool,
   lonnBekreftTool,
   ballplukkingBekreftTool,
+  vaskelisteBekreftTool,
 ];
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -452,6 +483,7 @@ type DiskSokInput = { query: string; limit?: number };
 type DiskLesFilInput = { fileId: string };
 type DiskOpprettInput = { navn: string; innhold: string };
 type BallplukkingBekreftInput = { ansvarlig?: string };
+type VaskelisteBekreftInput = { ansvarlig?: string };
 
 // ────────────────────────────────────────────────────────────────────────────
 // Executor-tabell
@@ -628,6 +660,12 @@ export function megExecutorsFor(
   ballplukking_bekreft: async (raw) => {
     const args = raw as BallplukkingBekreftInput;
     return bekreftBallplukking(args?.ansvarlig);
+  },
+
+  // ── Mulligan vaskeliste (kjøres direkte — se vaskelisteBekreftTool over) ──
+  vaskeliste_bekreft: async (raw) => {
+    const args = raw as VaskelisteBekreftInput;
+    return bekreftVaskeliste(args?.ansvarlig);
   },
   };
 }
