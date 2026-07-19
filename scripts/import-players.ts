@@ -33,7 +33,7 @@ type Row = {
   hcp: number | null;
   birthYear: number | null;
   homeClub: string | null;
-  tier: "GRATIS" | "PRO" | "ELITE";
+  tier: "GRATIS" | "PRO";
   group: string | null;
 };
 
@@ -66,7 +66,7 @@ function parseRow(line: string, delim: string): Row | null {
     hcp: hcp ? parseFloat(hcp.replace(",", ".")) : null,
     birthYear: birthYear ? parseInt(birthYear, 10) : null,
     homeClub: homeClub || null,
-    tier: (tier as "GRATIS" | "PRO" | "ELITE") || "GRATIS",
+    tier: tier === "PRO" ? "PRO" : "GRATIS",
     group: group || null,
   };
 }

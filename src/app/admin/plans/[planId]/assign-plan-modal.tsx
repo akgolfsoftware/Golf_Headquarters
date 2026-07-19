@@ -226,7 +226,7 @@ export function AssignPlanToPlayerModal({
       cls: "bg-secondary text-muted-foreground",
     },
     PRO: { label: "PRO", cls: "bg-accent text-accent-foreground" },
-    // ELITE er dødt enum (CLAUDE.md: vises aldri) — vis som PRO (betalt tier).
+    // ELITE lever fortsatt i DB-enumet (fjernes i egen migrering) — vises som PRO.
     ELITE: { label: "PRO", cls: "bg-accent text-accent-foreground" },
   };
 

@@ -42,7 +42,7 @@ function prio(p: string): WorkspacePrio {
 }
 
 export default async function V2AdminWorkspacePage() {
-  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const user = await requirePortalUser({ allow: ["ADMIN"] });
 
   const [tasks, projects] = await Promise.all([
     getTasksForUser(user.id),

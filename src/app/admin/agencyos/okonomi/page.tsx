@@ -62,7 +62,7 @@ const PRO_PRIS_KR = 299;
 const ore = (v: number) => v / 100;
 
 export default async function V2AdminOkonomiPage() {
-  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const user = await requirePortalUser({ allow: ["ADMIN"] });
 
   const now = new Date();
   const mndStart = new Date(now.getFullYear(), now.getMonth(), 1);

@@ -19,6 +19,7 @@ import { T } from "@/lib/v2/tokens";
 import { Icon } from "./icon";
 import { LogoAK, AvatarFoto } from "./core";
 import { SpillerVeksler, type VekslerData } from "./spiller-veksler";
+import { useErAdmin } from "./rolle";
 
 // D2 (17. juli): re-eksporter veksler-datakontrakten fra shellen så kallsteder
 // (cockpit m.fl.) kan importere den fra samme sted som V2Shell.
@@ -29,6 +30,8 @@ export interface V2NavItem {
   label: string;
   icon: string;
   href: string;
+  /** Skjules for COACH i AgencyOS — siden bak er ADMIN-only (server-gated). */
+  adminOnly?: boolean;
 }
 
 /** Gruppe i «Mer»-menyen (AgencyOS lang hale). */
@@ -56,7 +59,7 @@ export const AGENCYOS_NAV: V2NavItem[] = [
   { id: "bookinger", label: "Booking", icon: "calendar-check", href: "/admin/bookinger" },
   { id: "uka", label: "Uka", icon: "columns-3", href: "/admin/agencyos/uka" },
   { id: "innsikt", label: "Innsikt", icon: "bar-chart", href: "/admin/analyse" },
-  { id: "okonomi", label: "Økonomi", icon: "credit-card", href: "/admin/agencyos/okonomi" },
+  { id: "okonomi", label: "Økonomi", icon: "credit-card", href: "/admin/agencyos/okonomi", adminOnly: true },
 ];
 
 /** AgencyOS «Mer»-meny — lang hale gruppert. Alt en coach trenger, nåbart. */
@@ -65,7 +68,7 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
     label: "Kommunikasjon",
     items: [
       { id: "varsler", label: "Varsler", icon: "bell", href: "/admin/varsler" },
-      { id: "innboks-epost", label: "E-post (post@)", icon: "mail", href: "/admin/innboks-epost" },
+      { id: "innboks-epost", label: "E-post (post@)", icon: "mail", href: "/admin/innboks-epost", adminOnly: true },
       { id: "godkjenninger", label: "Godkjenninger", icon: "badge-check", href: "/admin/godkjenninger" },
       { id: "handlingssenter", label: "Handlingssenter", icon: "check-check", href: "/admin/handlingssenter" },
       { id: "brief", label: "Daglig brief", icon: "file-text", href: "/admin/brief" },
@@ -108,9 +111,9 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
   {
     label: "Drift",
     items: [
-      { id: "workspace", label: "Workspace", icon: "layout-dashboard", href: "/admin/workspace" },
-      { id: "marketing", label: "Marketing", icon: "megaphone", href: "/admin/marketing" },
-      { id: "caddie", label: "Caddie (AI)", icon: "message-circle", href: "/admin/agencyos/caddie" },
+      { id: "workspace", label: "Workspace", icon: "layout-dashboard", href: "/admin/workspace", adminOnly: true },
+      { id: "marketing", label: "Marketing", icon: "megaphone", href: "/admin/marketing", adminOnly: true },
+      { id: "caddie", label: "Caddie (AI)", icon: "message-circle", href: "/admin/agencyos/caddie", adminOnly: true },
       { id: "agents", label: "AI-agenter", icon: "bot", href: "/admin/agents" },
       { id: "team", label: "Team", icon: "users", href: "/admin/team" },
       { id: "email-templates", label: "E-postmaler", icon: "mail-check", href: "/admin/email-templates" },
@@ -119,7 +122,7 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
       { id: "min-profil", label: "Min coach-profil", icon: "id-card", href: "/admin/profile" },
       { id: "spiller-profil", label: "Min spillerprofil", icon: "user", href: "/portal" },
       { id: "services", label: "Tjenester og priser", icon: "credit-card", href: "/admin/services" },
-      { id: "settings", label: "Innstillinger", icon: "settings", href: "/admin/settings" },
+      { id: "settings", label: "Innstillinger", icon: "settings", href: "/admin/settings", adminOnly: true },
       { id: "klubb-innstillinger", label: "Klubb-innstillinger", icon: "building-2", href: "/admin/klubb/innstillinger" },
       { id: "integrasjoner", label: "Integrasjoner", icon: "plug", href: "/admin/integrasjoner" },
       { id: "hjelp", label: "Hjelp", icon: "help-circle", href: "/admin/hjelp" },
@@ -485,8 +488,22 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
   // AgencyOS: auto-koble Mer-menyen og full desktop-bredde uten å måtte endre
   // ~50 kallsteder (alle importerer samme AGENCYOS_NAV-konstant → ref-likhet).
   const erAgency = nav === AGENCYOS_NAV;
-  const merGrupper = mer ?? (erAgency ? AGENCYOS_MER : undefined);
   const maksBredde = erAgency ? 1680 : T.maxw;
+
+  // COACH ser ikke adminOnly-punkter (Økonomi, Workspace, E-post m.fl.).
+  // Ren UI-skjuling — sidene bak er alltid server-gated.
+  const erAdmin = useErAdmin();
+  const navSynlig = useMemo(
+    () => (erAdmin ? nav : nav.filter((i) => !i.adminOnly)),
+    [nav, erAdmin],
+  );
+  const merRaa = mer ?? (erAgency ? AGENCYOS_MER : undefined);
+  const merGrupper = useMemo(() => {
+    if (!merRaa || erAdmin) return merRaa;
+    return merRaa
+      .map((g) => ({ ...g, items: g.items.filter((i) => !i.adminOnly) }))
+      .filter((g) => g.items.length > 0);
+  }, [merRaa, erAdmin]);
 
   // Uten eksplisitt aktiv-prop (legacy-sidene): utled fra URL-en — lengste
   // href-prefiks-match over hovednav + Mer-gruppene. Treff i en Mer-gruppe
@@ -562,7 +579,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
         display: "flex",
       }}
     >
-      <IkonRailNav aktiv={autoAktiv} nav={nav} mer={merGrupper} navn={navn} avatarUrl={avatarUrl} erAgency={erAgency} />
+      <IkonRailNav aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} navn={navn} avatarUrl={avatarUrl} erAgency={erAgency} />
       {/* Topp-luft inkluderer safe-area: i installert PWA på iPhone dekker
           innholdet statuslinje-området — uten env() kolliderer hilsen/avatar
           med klokka (Anders' mobil-funn 2026-07-13). Desktop: env() = 0. */}
@@ -583,8 +600,8 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
       {/* Mobil-bunnnav: AgencyOS får dedikert nav + full-høyde «Mer»-skuff (M1);
           PlayerHQ/forelder beholder BunnNavLenker uendret. */}
       {erAgency
-        ? <AgencyBunnNav aktiv={autoAktiv} nav={nav} mer={merGrupper} />
-        : <BunnNavLenker aktiv={autoAktiv} nav={nav} mer={merGrupper} />}
+        ? <AgencyBunnNav aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} />
+        : <BunnNavLenker aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} />}
     </div>
   );
 }

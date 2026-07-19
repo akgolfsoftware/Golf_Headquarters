@@ -23,7 +23,7 @@ export default async function WorkspaceNotionPage({
 }: {
   searchParams: Promise<{ state?: string; error?: string }>;
 }) {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["ADMIN"] });
 
   await ensureNotionConnection(user.id, user.role);
 

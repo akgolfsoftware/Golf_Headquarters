@@ -35,7 +35,7 @@ function somStatus(v: string): MarketingStatus {
 }
 
 export default async function AdminMarketingPage() {
-  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const user = await requirePortalUser({ allow: ["ADMIN"] });
 
   const poster = await prisma.marketingPost.findMany({ orderBy: { scheduledAt: "asc" } });
 

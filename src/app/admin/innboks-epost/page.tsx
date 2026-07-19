@@ -17,7 +17,7 @@ import { TilbakeLenke } from "@/components/v2";
 export const dynamic = "force-dynamic";
 
 export default async function InnboksEpostPage() {
-  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const user = await requirePortalUser({ allow: ["ADMIN"] });
   const epost = await loadAlleEpost();
   return (
     <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>

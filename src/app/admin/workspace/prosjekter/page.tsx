@@ -29,7 +29,7 @@ export default async function WorkspaceProsjekterPage({
 }: {
   searchParams: Promise<{ filter?: string }>;
 }) {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["ADMIN"] });
   const sp = await searchParams;
   const filter = sp.filter ?? "alle";
 

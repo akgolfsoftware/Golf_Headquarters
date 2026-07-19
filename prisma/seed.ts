@@ -635,7 +635,7 @@ async function seedCoaches() {
       update: {
         name: c.name,
         role: c.role as "ADMIN" | "COACH" | "PLAYER" | "PARENT",
-        tier: c.tier as "GRATIS" | "PRO" | "ELITE",
+        tier: c.tier as "GRATIS" | "PRO",
         homeClub: c.homeClub,
         ambition: c.ambition,
       },
@@ -644,7 +644,7 @@ async function seedCoaches() {
         email: c.email,
         name: c.name,
         role: c.role as "ADMIN" | "COACH" | "PLAYER" | "PARENT",
-        tier: c.tier as "GRATIS" | "PRO" | "ELITE",
+        tier: c.tier as "GRATIS" | "PRO",
         homeClub: c.homeClub,
         ambition: c.ambition,
       },
