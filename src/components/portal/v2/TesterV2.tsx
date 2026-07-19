@@ -33,6 +33,7 @@ import {
   Rad,
   InnsiktChip,
   PillTabs,
+  HjelpTips,
   TomTilstand,
 } from "@/components/v2";
 
@@ -152,10 +153,10 @@ function TestTabell({ seksjoner }: { seksjoner: TesterSeksjon[] }) {
           <tr>
             <th style={{ ...th, textAlign: "left", padding: "4px 0 8px" }}>Test</th>
             <th style={th}>Resultat</th>
-            <th style={th}>Mål</th>
+            <th style={th}><span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Mål<HjelpTips k="testMaal" size={10} /></span></th>
             <th style={th}>Forrige</th>
             <th style={th}>Endring</th>
-            <th style={{ ...th, width: 84 }}>Nivå</th>
+            <th style={{ ...th, width: 84 }}><span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Nivå<HjelpTips k="csNivaa" size={10} /></span></th>
           </tr>
         </thead>
         <tbody>
@@ -246,7 +247,7 @@ function TabScorekort({ data, mobile }: { data: TesterV2Data; mobile: boolean })
           {/* Footer: ærlig dekning — ingen fabrikkert totalscore (FYS-formelen avventer). */}
           <div style={{ borderTop: `2px solid ${T.borderS}`, marginTop: 4, paddingTop: 14 }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
-              <Caps size={9}>Dekning</Caps>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Caps size={9}>Dekning</Caps><HjelpTips k="testDekning" size={11} /></span>
               <span style={{ fontFamily: T.mono, fontSize: 30, fontWeight: 700, color: T.lime, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{data.testedCount}</span>
               <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>av {data.totalTests} tester tatt</span>
               <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>· {data.totalAttempts} registreringer totalt</span>
@@ -271,6 +272,7 @@ function TabScorekort({ data, mobile }: { data: TesterV2Data; mobile: boolean })
       {data.withDeltaCount > 0 ? (
         <TallHero
           label="Fremgang siden forrige måling"
+          hjelp="testFremgang"
           value={data.improvedCount}
           unit={data.improvedCount === 1 ? "test bedre" : "tester bedre"}
           size={mobile ? 38 : 42}
@@ -280,6 +282,7 @@ function TabScorekort({ data, mobile }: { data: TesterV2Data; mobile: boolean })
       ) : (
         <TallHero
           label="Fremgang siden forrige måling"
+          hjelp="testFremgang"
           value="—"
           size={mobile ? 38 : 42}
           sub="Trenger minst to målinger på en test for å vise fremgang"

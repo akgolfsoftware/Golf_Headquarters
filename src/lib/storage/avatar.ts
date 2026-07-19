@@ -19,21 +19,24 @@ const EXT_FOR_TYPE: Record<string, string> = {
   "image/webp": "webp",
 };
 
-export type UploadAvatarResult = {
-  ok: true;
-  url: string;
-};
+// Feil RETURNERES, aldri kastes (bortsett fra manglende innlogging): Next
+// maskerer kastede server action-feil i prod («An error occurred in the
+// Server Components render…», sett 2026-07-19), så norske meldinger må gå
+// som verdier for å nå brukeren.
+export type UploadAvatarResult =
+  | { ok: true; url: string }
+  | { ok: false; error: string };
 
 export async function uploadAvatar(formData: FormData): Promise<UploadAvatarResult> {
   const user = await getCurrentUser();
   if (!user) throw new Error("unauthenticated");
 
   const fil = formData.get("file");
-  if (!(fil instanceof File)) throw new Error("Ingen fil sendt.");
-  if (fil.size === 0) throw new Error("Tom fil.");
-  if (fil.size > MAX_BYTES) throw new Error("Bilde er for stort (maks 2 MB).");
+  if (!(fil instanceof File)) return { ok: false, error: "Ingen fil sendt." };
+  if (fil.size === 0) return { ok: false, error: "Tom fil." };
+  if (fil.size > MAX_BYTES) return { ok: false, error: "Bilde er for stort (maks 2 MB)." };
   if (!ALLOWED_TYPES.has(fil.type)) {
-    throw new Error("Bare JPG, PNG eller WEBP er tillatt.");
+    return { ok: false, error: "Bare JPG, PNG eller WEBP er tillatt." };
   }
 
   const ext = EXT_FOR_TYPE[fil.type];
@@ -49,7 +52,7 @@ export async function uploadAvatar(formData: FormData): Promise<UploadAvatarResu
       upsert: true,
       cacheControl: "3600",
     });
-  if (error) throw new Error(`Opplasting feilet: ${error.message}`);
+  if (error) return { ok: false, error: `Opplasting feilet: ${error.message}` };
 
   const { data } = sb.storage.from("avatars").getPublicUrl(path);
   // Legg til cache-buster så header oppdaterer umiddelbart

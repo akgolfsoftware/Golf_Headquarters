@@ -119,6 +119,7 @@ export function AdminProfilV2({ data }: { data: AdminProfilV2Data }) {
         const formData = new FormData();
         formData.append("file", await skalerAvatar(fil));
         const res = await uploadAvatar(formData);
+        if (!res.ok) throw new Error(res.error);
         setAvatarUrl(res.url);
         router.refresh();
       } catch (err) {

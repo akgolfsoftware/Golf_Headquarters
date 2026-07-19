@@ -20,6 +20,7 @@ import type { Tier } from "@/generated/prisma/client";
 import type { GoalItem } from "@/app/portal/actions";
 import { logout } from "@/lib/auth/logout";
 import { uploadAvatar } from "@/lib/storage/avatar";
+import { skalerAvatar } from "@/lib/klient/skaler-avatar";
 import { useCountUp } from "@/lib/v2/hooks";
 import {
   T,
@@ -33,6 +34,7 @@ import {
   AvatarFoto,
   TomTilstand,
   Icon,
+  HjelpTips,
   type StatusTone,
 } from "@/components/v2";
 
@@ -136,11 +138,15 @@ export function MegV2({ data }: { data: MegData }) {
     const fil = e.target.files?.[0];
     if (!fil) return;
     setAvatarFeil(null);
-    const formData = new FormData();
-    formData.append("file", fil);
+    
     startAvatarLagring(async () => {
       try {
+        // Nedskaler på klienten (manglet her i #99-fiksen — Meg-skjermen var
+        // eneste opplastingssted uten, sett i prod 19. juli kl. 16:00).
+        const formData = new FormData();
+        formData.append("file", await skalerAvatar(fil));
         const res = await uploadAvatar(formData);
+        if (!res.ok) throw new Error(res.error);
         setAvatarUrl(res.url);
         router.refresh();
       } catch (err) {
@@ -213,7 +219,15 @@ export function MegV2({ data }: { data: MegData }) {
         />
         <div>
           <Tittel mobile={mobile}>{navn}</Tittel>
-          {metaDeler.length > 0 && <Caps style={{ marginTop: 8 }}>{metaDeler.join(" · ")}</Caps>}
+          {metaDeler.length > 0 && (
+            <Caps style={{ marginTop: 8 }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
+                {metaDeler[0]}
+                {hcp != null && <HjelpTips k="hcp" size={11} />}
+                {metaDeler.length > 1 && <span>· {metaDeler.slice(1).join(" · ")}</span>}
+              </span>
+            </Caps>
+          )}
           {avatarFeil && <Caps style={{ marginTop: 8, color: T.down }}>{avatarFeil}</Caps>}
         </div>
       </div>
@@ -237,7 +251,14 @@ export function MegV2({ data }: { data: MegData }) {
           )}
         </Kort>
 
-        <Kort eyebrow="Utviklingsplan · P-milepæler">
+        <Kort
+          eyebrow={
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              Utviklingsplan · P-milepæler
+              <HjelpTips k="pPosisjon" size={11} />
+            </span>
+          }
+        >
           <TomTilstand icon="flag" title="Ingen milepæler ennå" sub="Utviklingsplanen bygges i Workbench." />
         </Kort>
       </div>

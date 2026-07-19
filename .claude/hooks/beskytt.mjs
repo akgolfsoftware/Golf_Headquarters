@@ -81,10 +81,13 @@ if (tool === "Bash") {
   const SEG = String.raw`(^|[;&|(]\s*)`;
   const seg = (mønster) => new RegExp(SEG + mønster);
 
-  // Deny: main-porten og kjente feller.
+  // Main-porten: spør — push godkjennes KUN når Anders har sagt eksplisitt «ja» i samtalen.
+  // (Endret fra deny → ask 2026-07-19 etter Anders' beslutning: hard deny gjorde at ingen
+  // økt kunne fullføre en godkjent merge. Selve ja-et håndheves av Anders i prompten.)
   if (seg(String.raw`git\s+push\b[^&|;]*\s(HEAD:)?main\b`).test(cmd)) {
-    svar("deny", "BLOKKERT: push til main går KUN etter Anders' eksplisitte «ja» i samtalen (CLAUDE.md §Git-arbeidsflyt). Push grenen og åpne PR i stedet.");
+    svar("ask", "MAIN-PORTEN: push til main krever Anders' eksplisitte «ja» i samtalen (CLAUDE.md §Git-arbeidsflyt). Godkjenn kun hvis ja er gitt.");
   }
+  // Deny: kjente feller.
   if (seg(String.raw`(npx\s+|pnpm\s+|yarn\s+|bunx?\s+)?prisma\s+(migrate\s+dev|db\s+push)\b`).test(cmd)) {
     svar("deny", "BLOKKERT: migrate dev og db push er begge ødelagte for dette repoet (shadow-DB / data-tap). Bruk kirurgisk db execute — se gotchas.md §Schema-endringer.");
   }

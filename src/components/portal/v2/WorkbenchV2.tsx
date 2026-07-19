@@ -1401,14 +1401,13 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
       meta: [],
     };
     setPendingAdds((prev) => [...prev, { key: addKey, dayIndex: input.dayIndex, event: tempEvent }]);
-    const res = await actions.addSession({
+    const payload = {
       dayIndex: input.dayIndex,
       title: input.title,
       durMin: input.durMin,
       area: input.akse,
       hour: input.hour,
       minute: input.minute,
-      weekOffset,
       // Felles økt-ark (2026-07-13): AK-formel + driller følger med fra «Ny økt».
       ...(input.lFase || input.miljo
         ? { akFormel: { lFase: input.lFase, miljo: input.miljo } }
@@ -1427,15 +1426,33 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             })),
           }
         : {}),
-    });
-    if (res.ok) {
-      setNyOktApen(false);
-      setNyOktPrefill(null);
-      setNyOktSted(null);
-      router.refresh();
-    } else {
+    };
+    const res = await actions.addSession({ ...payload, weekOffset });
+    if (!res.ok) {
       setPendingAdds((prev) => prev.filter((p) => p.key !== addKey));
+      return res;
     }
+    // Gjenta ukentlig (kalendermønster, 2026-07-19): samme økt legges inn i
+    // ukene fremover via samme action med weekOffset+i — hver uke blir en
+    // selvstendig økt (kan flyttes/endres/slettes uavhengig). Delvis feil
+    // stopper ikke det som alt er lagt inn — meldes ærlig i stedet.
+    const gjenta = Math.max(1, Math.min(12, input.gjentaUker ?? 1));
+    let lagtInn = 1;
+    for (let i = 1; i < gjenta; i++) {
+      const r = await actions.addSession({ ...payload, weekOffset: weekOffset + i });
+      if (r.ok) lagtInn++;
+    }
+    if (gjenta > 1) {
+      setMelding(
+        lagtInn === gjenta
+          ? { tone: "up", tekst: `Økten er lagt inn ${gjenta} uker fremover.` }
+          : { tone: "down", tekst: `Økten ble lagt inn i ${lagtInn} av ${gjenta} uker — sjekk ukene og legg til resten manuelt.` },
+      );
+    }
+    setNyOktApen(false);
+    setNyOktPrefill(null);
+    setNyOktSted(null);
+    router.refresh();
     return res;
   };
 

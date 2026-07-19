@@ -68,6 +68,11 @@ const RAW = {
     forklaring:
       "Hvor mye av planlagt trening som faktisk ble gjennomført, i prosent. Et lavt tall er ikke et forbud mot noe, bare et signal om at planen og virkeligheten har sklidd fra hverandre.",
   },
+  gjentaOkt: {
+    tittel: "Gjenta ukentlig",
+    forklaring:
+      "Legger den samme økta inn på samme dag og klokkeslett i flere uker fremover — som en fast treningsrytme. Hver uke får sin egen økt som kan flyttes eller endres uavhengig av de andre.",
+  },
   tonnasje: {
     tittel: "Tonnasje",
     forklaring:
@@ -254,6 +259,71 @@ const RAW = {
     tittel: "Varmekart · hvor du taper slag",
     forklaring:
       "Viser gjennomsnittlig avvik fra par på hvert hull, regnet ut fra alle runder du har registrert hull for hull. Jo sterkere farge, jo mer taper du på det hullet i snitt — hull spilt på eller under par vises tomt. Bygges først når du har logget minst tre runder med hull-for-hull-score.",
+  },
+  bruttoScore: {
+    tittel: "Brutto score",
+    forklaring:
+      "Antall slag du faktisk brukte, uten handicap-fradrag. All statistikk i appen bygger på brutto — det er det ærligste bildet av spillet ditt og det som brukes i utviklingsarbeidet.",
+  },
+  tilPar: {
+    tittel: "Til par",
+    forklaring:
+      "Differansen mellom scoren din og banens par. E betyr at du spilte på par, +3 er tre slag over, −2 er to slag under.",
+  },
+  sgBaseline: {
+    tittel: "SG-referanse (baseline)",
+    forklaring:
+      "Nivået Strokes Gained måles mot — for eksempel scratch eller tour-snitt. 0 betyr at du presterer nøyaktig som referansen; tallene dine viser avstanden opp eller ned.",
+  },
+  tigerFive: {
+    tittel: "Tiger Five — bortkastede slag",
+    forklaring:
+      "De fem feilene som koster flest slag: dobbeltbogey eller verre, tre putt, straffeslag, ikke opp-og-ned fra kort avstand, og par 5 uten birdiesjanse. Fjerner du disse, faller scoren raskt — uten at svingen må endres.",
+  },
+  ballhastighet: {
+    tittel: "Ballhastighet",
+    forklaring:
+      "Hvor fort ballen forlater køllebladet, målt i mph. Den enkeltfaktoren som betyr mest for lengde — mer ballhastighet gir lengre slag med samme treff.",
+  },
+  baereLengde: {
+    tittel: "Bærelengde (carry)",
+    forklaring:
+      "Hvor langt ballen flyr i lufta før den lander, målt i meter. Viktigere enn totallengde når du skal bære over hindringer eller stoppe ballen på green.",
+  },
+  dataGolfBaseline: {
+    tittel: "Tour-referanse (0-linjen)",
+    forklaring:
+      "0-linjen er tour-snittet fra DataGolf. Tallene dine viser hvor mange slag per runde du ligger over eller under det nivået i hver kategori — negativt tall betyr at gapet fortsatt er der, ikke at du spiller dårlig.",
+  },
+  sgGap: {
+    tittel: "Gap til referansen",
+    forklaring:
+      "Avstanden mellom ditt SG-tall og referansenivået i én kategori, i slag per runde. Kategorien med størst gap er der flest slag er å hente.",
+  },
+  spillerKategori: {
+    tittel: "Spillerkategori",
+    forklaring:
+      "AK-kategoriseringen (A–K) plasserer deg på et ferdighetsnivå ut fra score og tester. Kategorien styrer hvilke krav og referansetall du måles mot — den er et arbeidsverktøy, aldri en dom.",
+  },
+  testDekning: {
+    tittel: "Testdekning",
+    forklaring:
+      "Hvor mange av testene i batteriet du har tatt minst én gang. Full dekning gir det mest presise bildet av hvor du står — mangler du tester, er profilen din foreløpig ufullstendig.",
+  },
+  testMaal: {
+    tittel: "Testmål",
+    forklaring:
+      "Målverdien for testen på ditt nivå. Når resultatet ditt når målet, er du klar for neste nivå i den ferdigheten.",
+  },
+  testFremgang: {
+    tittel: "Fremgang siden forrige måling",
+    forklaring:
+      "Endringen fra forrige gang du tok samme test. Retningen betyr mer enn enkeltmålingen — én svak dag sier lite, en trend sier mye.",
+  },
+  treningsHeatmap: {
+    tittel: "Treningsaktivitet · 12 uker",
+    forklaring:
+      "Hver prikk er en dag; fylt prikk betyr at du gjennomførte trening den dagen. Mønsteret viser rytmen din over de siste ukene — jevn aktivitet slår skippertak.",
   },
 } as const satisfies Record<string, HjelpTekst>;
 

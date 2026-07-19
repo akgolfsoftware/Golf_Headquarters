@@ -31,6 +31,7 @@ import {
   Rad,
   TomTilstand,
   Icon,
+  HjelpTips,
 } from "@/components/v2";
 
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
@@ -124,7 +125,10 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
       {/* Hode */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
-          <Caps>{eyebrow}</Caps>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+            <Caps>{eyebrow}</Caps>
+            {hcp != null && <HjelpTips k="hcp" size={11} />}
+          </span>
           <div style={{ marginTop: 10 }}>
             <Tittel mobile={mobile} em="runder">{fornavn ? `${fornavn}s` : "Dine"}</Tittel>
           </div>
@@ -178,13 +182,13 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
 
           {/* KPI-strip */}
           <div className="grid grid-cols-3" style={{ gap: T.gap }}>
-            <KpiFlis label="Snittscore · brutto" value={snittScore} />
-            <KpiFlis label="Snitt SG" value={snittSg} />
+            <KpiFlis label="Snittscore · brutto" value={snittScore} hjelp="bruttoScore" />
+            <KpiFlis label="Snitt SG" value={snittSg} hjelp="sgTotal" />
             <KpiFlis label="Runder" value={String(kpis.total)} tint />
           </div>
 
           {/* Runde-historikk */}
-          <Kort eyebrow="Runde-historikk" action={<Caps size={9}>{rows.length} runder</Caps>}>
+          <Kort eyebrow="Runde-historikk" action={<span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><Caps size={9}>{rows.length} runder</Caps><HjelpTips k="tilPar" size={11} /></span>}>
             {rows.map((r, i, arr) => (
               <Rad
                 key={r.id}

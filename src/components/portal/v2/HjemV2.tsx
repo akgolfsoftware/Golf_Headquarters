@@ -34,6 +34,7 @@ import {
   DagStripe,
   TomTilstand,
   Icon,
+  HjelpTips,
   type StatusTone,
   type StripeDag,
 } from "@/components/v2";
@@ -268,7 +269,14 @@ export function HjemV2({ data }: { data: DashboardData }) {
         <KpiFlis label="Streak" value={`${streak} uker`} hjelp="streak" />
         <KpiFlis label="Uke-gjennomføring" value={ukePct} hjelp="planEtterlevelse" />
         <div className="col-span-2 md:col-span-1">
-          <Kort eyebrow="Trening · 12 uker">
+          <Kort
+            eyebrow={
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                Trening · 12 uker
+                <HjelpTips k="treningsHeatmap" size={11} />
+              </span>
+            }
+          >
             <div style={{ marginTop: 4 }}>
               <Prikker n={hmVals.length * hmCols} cols={hmCols} hits={hmHits} />
             </div>
