@@ -13,9 +13,12 @@ import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { PeriodeInputSchema } from "@/lib/workbench/perioder";
 
+/** YYYY-MM-DD → UTC-midnatt. MÅ være UTC, ikke serverens lokale midnatt:
+ * lokal dev (Oslo) skriver ellers 22:00Z dagen FØR til samme DB som prod
+ * (UTC) — datoen sklir én dag bakover per lagring (truffet 2026-07-19). */
 function lokalDag(s: string): Date {
   const [y, m, d] = s.split("-").map(Number);
-  return new Date(y, m - 1, d);
+  return new Date(Date.UTC(y, m - 1, d));
 }
 
 export async function coachLagreGruppePeriode(
