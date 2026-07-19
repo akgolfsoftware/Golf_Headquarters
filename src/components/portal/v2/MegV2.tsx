@@ -20,6 +20,7 @@ import type { Tier } from "@/generated/prisma/client";
 import type { GoalItem } from "@/app/portal/actions";
 import { logout } from "@/lib/auth/logout";
 import { uploadAvatar } from "@/lib/storage/avatar";
+import { skalerAvatar } from "@/lib/klient/skaler-avatar";
 import { useCountUp } from "@/lib/v2/hooks";
 import {
   T,
@@ -136,11 +137,15 @@ export function MegV2({ data }: { data: MegData }) {
     const fil = e.target.files?.[0];
     if (!fil) return;
     setAvatarFeil(null);
-    const formData = new FormData();
-    formData.append("file", fil);
+    
     startAvatarLagring(async () => {
       try {
+        // Nedskaler på klienten (manglet her i #99-fiksen — Meg-skjermen var
+        // eneste opplastingssted uten, sett i prod 19. juli kl. 16:00).
+        const formData = new FormData();
+        formData.append("file", await skalerAvatar(fil));
         const res = await uploadAvatar(formData);
+        if (!res.ok) throw new Error(res.error);
         setAvatarUrl(res.url);
         router.refresh();
       } catch (err) {
