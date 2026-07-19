@@ -44,6 +44,8 @@ import { runDemandPredictor } from "@/lib/agents/demand-predictor";
 import { runProactiveBookingAlerts } from "@/lib/agents/booking-alerts-proactive";
 import { runPlanEffectivenessAgent } from "@/lib/agents/plan-effectiveness-agent";
 import { runWagrSync } from "@/lib/agents/wagr-sync";
+import { runLonnSjekkliste, runLonnPurring } from "@/lib/agents/tripletex-lonn-agent";
+import { runMaanedsavslutning } from "@/lib/agents/tripletex-maanedsavslutning-agent";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -96,6 +98,10 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "plan-effectiveness-agent": runPlanEffectivenessAgent,
   // WAGR-rankinger fra wagr.com (onsdager — WAGR publiserer onsdag).
   "wagr-sync": runWagrSync,
+  // Tripletex-lønnsrytme (Agentic OS Steg 2) — se .claude/rules/admin-tripletex.md.
+  "tripletex-lonn-sjekkliste": runLonnSjekkliste,
+  "tripletex-lonn-purring": runLonnPurring,
+  "tripletex-maanedsavslutning": runMaanedsavslutning,
 };
 
 export async function GET(

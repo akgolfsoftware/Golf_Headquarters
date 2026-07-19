@@ -9,6 +9,7 @@ import { helseHent } from "@/lib/meg/connectors/health";
 import { gmailSok, gmailLesTraad, diskSok, diskLesFil, kalenderAgenda } from "@/lib/meg/connectors/google";
 import { stripeSaldo, stripeBetalinger, stripeAbonnementer, stripeFakturaer, stripeKundeSok } from "@/lib/meg/connectors/stripe";
 import { createPending } from "@/lib/meg/pending";
+import { bekreftLonn } from "@/lib/agents/tripletex-lonn-agent";
 
 // ────────────────────────────────────────────────────────────────────────────
 // Tool-definisjoner (Anthropic SDK-format)
@@ -340,6 +341,22 @@ export const stripeKundeSokTool: Tool = {
   },
 };
 
+// ── Tripletex lønn (Agentic OS Steg 2) ───────────────────────────────────────
+// Se .claude/rules/admin-tripletex.md: agenten UTFØRER aldri lønnskjøringer —
+// dette tool-et lar Anders BEKREFTE at han selv har kjørt lønnen, som stopper
+// purringen den 6. Kjøres direkte (som `logg`) — ikke via BEKREFT-flyten,
+// siden det bare registrerer en bekreftelse Anders allerede har gjort, ikke
+// en ny skrive-handling agenten selv foreslår.
+
+export const lonnBekreftTool: Tool = {
+  name: "lonn_bekreft",
+  description:
+    "Bekrefter at månedens lønnskjøring i Tripletex er utført. Bruk KUN når " +
+    "Anders selv sier noe som «lønn ok», «bekreft lønn», «lønn er kjørt» " +
+    "e.l. Kjøres direkte — stopper den automatiske purringen den 6.",
+  input_schema: { type: "object", properties: {}, required: [] },
+};
+
 export const MEG_ALL_TOOLS: Tool[] = [
   loggTool,
   hentNyligeTool,
@@ -364,6 +381,7 @@ export const MEG_ALL_TOOLS: Tool[] = [
   stripeAbonnementerTool,
   stripeFakturaerTool,
   stripeKundeSokTool,
+  lonnBekreftTool,
 ];
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -571,6 +589,9 @@ export function megExecutorsFor(
     const args = raw as { query: string };
     return stripeKundeSok(args.query);
   },
+
+  // ── Tripletex lønn (kjøres direkte — se lonnBekreftTool over) ──
+  lonn_bekreft: async () => bekreftLonn(),
   };
 }
 
