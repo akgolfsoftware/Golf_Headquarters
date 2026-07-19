@@ -89,6 +89,7 @@ export function ProfileForm({ user, onSubmit }: ProfileFormProps) {
         const formData = new FormData();
         formData.append("file", await skalerAvatar(fil));
         const res = await uploadAvatar(formData);
+        if (!res.ok) throw new Error(res.error);
         setAvatarUrl(res.url);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Opplasting feilet.");

@@ -90,6 +90,7 @@ export function OppgaveEditLauncher({ taskId, draft, cardProps }: OppgaveEditLau
             const fd = new FormData();
             fd.append("file", sendes);
             const res = await uploadTaskMedia(taskId, fd, kind);
+            if (!res.ok) throw new Error(res.error);
             router.refresh();
             return res.url;
           }}

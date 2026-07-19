@@ -396,6 +396,7 @@ export function DrillsPanel({ planId, defaultTarget, drills }: DrillsPanelProps)
                   const fd = new FormData();
                   fd.append("file", sendes);
                   const res = await uploadTaskMedia(modal.taskId, fd, kind);
+                  if (!res.ok) throw new Error(res.error);
                   router.refresh();
                   return res.url;
                 }
