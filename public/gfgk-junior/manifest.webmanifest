@@ -1,0 +1,17 @@
+{
+  "name": "GFGK Junior & Elite",
+  "short_name": "GFGK Junior",
+  "description": "Juniorgolf og trening i Gamle Fredrikstad Golfklubb — grupper, treningsplaner og kunnskapsbase.",
+  "start_url": "/gfgk-junior",
+  "scope": "/gfgk-junior",
+  "display": "standalone",
+  "background_color": "#FAFAF7",
+  "theme_color": "#FAFAF7",
+  "lang": "nb-NO",
+  "icons": [
+    { "src": "/gfgk-junior/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/gfgk-junior/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/gfgk-junior/icon-192-maskable.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/gfgk-junior/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
