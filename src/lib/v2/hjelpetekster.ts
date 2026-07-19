@@ -22,6 +22,12 @@ const RAW = {
     forklaring:
       "Bryter Strokes Gained ned på del av spillet, som driving, nærspill og putting, slik at du ser hvor slagene faktisk vinnes eller tapes.",
   },
+  soneDiagram: {
+    tittel: "Sone-kart",
+    forklaring:
+      "Et illustrativt bilde av veien fra tee til hull, delt i fire soner: tee, innspill, nærspill og putt. Kartet er ikke knyttet til én bestemt bane — det oppsummerer alle rundene du har registrert Strokes Gained fra. Fargen viser om du vinner (grønn) eller taper (rød) slag mot Broadie scratch-referansen i hver sone. Trykk på en sone for tall, trend og hvor mye du har trent på den siste 30 dager.",
+    mobilTips: "Trykk på en sone for å åpne detaljene, trykk igjen eller et annet sted for å lukke.",
+  },
   acwr: {
     tittel: "ACWR (belastningsforhold)",
     forklaring:

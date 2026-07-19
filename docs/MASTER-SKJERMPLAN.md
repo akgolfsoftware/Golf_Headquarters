@@ -151,7 +151,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Analysere = «Min golf» (6 faner: SG · Fokus · Runder · Baggen · Putting · Nivå — v13 golfdata, bølge 1 2026-07-04) ★ | `/portal/analysere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| · Hull-analyse | `/portal/analysere/hull` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 17. jul (Team F2): hele skjermen (begge faner) rekomponert til v2 — `AnalysereHullV2` (PillTabs/SgKategorier/Scorekort/MiniSpark); queries og fane-logikk uendret; SG per hull vises ærlig som «—» (ikke beregnet i datagrunnlaget). **Varmekart 19. jul:** `VarmekartKort` i «Hull for hull»-fanen — v2 `VarmeKart`-primitiven (`src/components/v2/datavis.tsx`) farget med `T.down`, snitt avvik fra par per hull aggregert på tvers av ALLE spillerens runder (`aggregerHullVarme`, `src/lib/domain/hole-heatmap.ts`), tom-tilstand under 3 runder. Flyt ~ → ✓. Gjenstående, separat meldt gap: illustrativt top-down-banekart m/ trykkbare soner finnes ikke i v2-kanon — må designes i ui_kits/v2 om Anders vil ha det tilbake. **Formell bestilling skrevet 19. jul** (undersøkte og forkastet gjenbruk av golfdata `HoleAnalysis` og Mapbox `CourseMap` — ingen av dem dekker et bane-uavhengig aggregert sone-kart): `docs/design-bestillinger/v2-sonekart-hull-analyse.md`. |
+| · Hull-analyse | `/portal/analysere/hull` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 17. jul (Team F2): hele skjermen (begge faner) rekomponert til v2 — `AnalysereHullV2` (PillTabs/SgKategorier/Scorekort/MiniSpark); queries og fane-logikk uendret; SG per hull vises ærlig som «—» (ikke beregnet i datagrunnlaget). **Varmekart 19. jul:** `VarmekartKort` i «Hull for hull»-fanen — v2 `VarmeKart`-primitiven (`src/components/v2/datavis.tsx`) farget med `T.down`, snitt avvik fra par per hull aggregert på tvers av ALLE spillerens runder (`aggregerHullVarme`, `src/lib/domain/hole-heatmap.ts`), tom-tilstand under 3 runder. Flyt ~ → ✓. **Sone-kart-diagram 19. jul** (samme dag, etter Anders' svar på `docs/design-bestillinger/v2-sonekart-hull-analyse.md`): drop-off-gapet er lukket — `SoneDiagram`/`SoneDiagramBlokk` i `AnalysereHullV2.tsx` (`SoneFane`) tegner et illustrativt, bane-uavhengig «vei mot green»-diagram (tee → innspill → nærspill → putt) som et nytt lag OVER de eksisterende `SgKategorier`/`Rad`-detaljene (fjernet ingenting). Tap/hover-popover er en 1:1-kopi av `VarmeKartCelle`-mønsteret (ekte hover åpner ved museover, touch åpner/lukker ved trykk, Escape/fokus-tap lukker); popover viser SG (`fmtSg`), `MiniSpark`-trend og økter/minutter siste 30 dager — samme tall som Rad-listen. Tom-tilstand (0 SG-registreringer): alle soner nøytrale `T.mut`, aldri fabrikkert tall. Ny HjelpTips-nøkkel `soneDiagram` i `src/lib/v2/hjelpetekster.ts`. Design/Flyt fortsatt ✓ (ingen nye queries, kun ny visning av data skjermen allerede hadde). |
 | Statistikk (oversikt) | `/portal/statistikk` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Fase 2 spot-check 17. jul: FLIPPET ~ → ✓. `StatistikkHub` (via statistikk-hybrid) er fullt golfdata-komponert — overgangs-laget teller som kanon per design-system-regelen. Rekomponeres til v2 når hub-bølgen tas; underruten `[metric]` er alt v2 (Team D3). |
 | · Metrikk-detalj | `/portal/statistikk/[metric]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D3): `StatistikkMetrikkV2` — metric-oppslag (5 pyramide + 4 SG + aliaser), queries og trend-buckets uendret. Falsk (disabled) periode-velger erstattet med ærlig «Siste 90 d»-badge; fortegn mot kategori-snitt vises nå korrekt; HjelpTips på SG/pyramide/kategori-snitt. A1-benchmark fortsatt statisk proxy, merket «(referanse)». Design – → ✓. |
 | ~~· Sammenlign~~ | `/portal/statistikk/sammenlign` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-14) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
@@ -786,6 +786,19 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 ---
 
 ## Endringslogg
+
+- 19. juli (illustrativt sone-kart bygget, etter Anders' svar på formell bestilling): **drop-off-
+  gapet «illustrativt banekart m/ trykkbare soner» på Hull-analyse er lukket.**
+  `docs/design-bestillinger/v2-sonekart-hull-analyse.md` fikk to avklarte svar (1: illustrativt
+  bane-uavhengig 4-sonediagram, ikke en Shot-basert avstandsbånd-variant; 2: popover-mønster som
+  `HjelpTips`/`VarmeKart`, ikke bunn-sheet). Nye `SoneDiagram`/`SoneDiagramBlokk` i
+  `src/components/portal/v2/AnalysereHullV2.tsx` (`SoneFane`) tegner tee → innspill → nærspill →
+  putt som et nytt lag OVER de eksisterende `SgKategorier`-stolpene og `Rad`-listen (begge beholdt
+  uendret — kartet er en alternativ visning av SAMME data, ingen ny query). Tap/hover-popover er
+  kopiert 1:1 fra `VarmeKartCelle`s mønster i `src/components/v2/datavis.tsx`. Tom-tilstand (0
+  SG-registreringer) viser alle fire soner nøytrale (`T.mut`), aldri et dødt eller fabrikkert
+  diagram. Ny HjelpTips-nøkkel `soneDiagram` i `src/lib/v2/hjelpetekster.ts`. Ingen nye rå hex, kun
+  `T.*`-tokens. Skjerm-raden for `/portal/analysere/hull` oppdatert i samme commit.
 
 - 19. juli (siste drop-off-punkt lukket): **`components-course-heatmap.html` bygget** — varmekart
   over banen på Hull-analyse (`/portal/analysere/hull`, «Hull for hull»-fanen). Gjenbrukte den
