@@ -10,6 +10,15 @@ const withMDX = createMDX({
 
 const nextConfig: NextConfig = {
   pageExtensions: ["ts", "tsx", "md", "mdx"],
+  experimental: {
+    serverActions: {
+      // Avatar-opplasting går som server action med fil i FormData — Nexts
+      // 1 MB-default avviste kamerabilder FØR action-koden kjørte (generisk
+      // «unexpected response»-feil hos brukeren). Klienten nedskalerer til
+      // ~640px JPEG før sending (skaler-avatar.ts); 4 MB er sikkerhetsmargin.
+      bodySizeLimit: "4mb",
+    },
+  },
   // Lås Turbopack-root til denne katalogen — uten dette feiler CSS-resolve
   // og dev-server kan havne i compile/render-loop (jf. CLAUDE.md gotcha).
   turbopack: {

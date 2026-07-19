@@ -24,6 +24,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { uploadAvatar } from "@/lib/storage/avatar";
+import { skalerAvatar } from "@/lib/klient/skaler-avatar";
 
 type ProfileUpdateInput = {
   name: string;
@@ -81,10 +82,12 @@ export function ProfileForm({ user, onSubmit }: ProfileFormProps) {
     const fil = e.target.files?.[0];
     if (!fil) return;
     setError(null);
-    const formData = new FormData();
-    formData.append("file", fil);
     startTransition(async () => {
       try {
+        // Nedskaler på klienten — kamerabilder (2–8 MB) sprenger ellers
+        // server-action-grensen før uploadAvatar i det hele tatt kjører.
+        const formData = new FormData();
+        formData.append("file", await skalerAvatar(fil));
         const res = await uploadAvatar(formData);
         setAvatarUrl(res.url);
       } catch (err) {

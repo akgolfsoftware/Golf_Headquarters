@@ -33,6 +33,7 @@ import {
 } from "@/components/v2";
 import { oppdaterCoachProfil } from "@/app/admin/(legacy)/profile/actions";
 import { uploadAvatar } from "@/lib/storage/avatar";
+import { skalerAvatar } from "@/lib/klient/skaler-avatar";
 
 /* ── Datakontrakt (mappes fra requirePortalUser i ruten) ────────────── */
 export type AdminProfilV2Data = {
@@ -111,10 +112,12 @@ export function AdminProfilV2({ data }: { data: AdminProfilV2Data }) {
     const fil = e.target.files?.[0];
     if (!fil) return;
     setAvatarFeil(null);
-    const formData = new FormData();
-    formData.append("file", fil);
     startAvatarLagring(async () => {
       try {
+        // Nedskaler på klienten — kamerabilder (2–8 MB) sprenger ellers
+        // server-action-grensen før uploadAvatar i det hele tatt kjører.
+        const formData = new FormData();
+        formData.append("file", await skalerAvatar(fil));
         const res = await uploadAvatar(formData);
         setAvatarUrl(res.url);
         router.refresh();
