@@ -54,8 +54,8 @@ export default async function GfgkJuniorForside() {
       {/* Hero — premium: brufoto med lett skygge, én gull-CTA, forankret nøkkeltall-strip */}
       <section id="top" className="relative overflow-hidden" style={{ background: "var(--ink)" }}>
         <Image
-          src="/images/anlegg/gfgk-3.jpg"
-          alt="Gangbrua over vannet på Gamle Fredrikstad Golfklubb"
+          src="/images/anlegg/gfgk-hero.jpg"
+          alt="Fredrikstad Festning bak banen på Gamle Fredrikstad Golfklubb"
           fill
           priority
           sizes="100vw"
@@ -89,7 +89,7 @@ export default async function GfgkJuniorForside() {
             <div className="mt-7 flex flex-wrap gap-3">
               <a
                 href="#gruppene"
-                className="inline-flex min-h-[48px] items-center gap-2 rounded-full px-6 py-3.5 text-base font-bold no-underline transition-colors"
+                className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 text-base font-bold no-underline transition-colors sm:w-auto"
                 style={{
                   color: "var(--ink)",
                   background: "var(--gfgk-gold)",
@@ -101,7 +101,7 @@ export default async function GfgkJuniorForside() {
               </a>
               <a
                 href="#slik-starter-du"
-                className="inline-flex min-h-[48px] items-center rounded-full px-6 py-3 text-base font-bold text-white no-underline backdrop-blur-sm transition-colors"
+                className="inline-flex min-h-[48px] w-full items-center justify-center rounded-full px-6 py-3 text-base font-bold text-white no-underline backdrop-blur-sm transition-colors sm:w-auto"
                 style={{
                   background: "rgba(255,255,255,0.12)",
                   border: "1.5px solid rgba(255,255,255,0.4)",
