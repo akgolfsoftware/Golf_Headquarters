@@ -164,6 +164,18 @@
     {
       "path": "/api/cron/wagr-sync",
       "schedule": "15 6 * * 3"
+    },
+    {
+      "path": "/api/cron/tripletex-lonn-sjekkliste",
+      "schedule": "0 6 3 * *"
+    },
+    {
+      "path": "/api/cron/tripletex-lonn-purring",
+      "schedule": "0 6 6 * *"
+    },
+    {
+      "path": "/api/cron/tripletex-maanedsavslutning",
+      "schedule": "0 6 2 * *"
     }
   ],
   "regions": [
