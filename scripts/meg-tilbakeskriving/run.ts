@@ -14,6 +14,8 @@ import { mkdir, writeFile } from "fs/promises";
 import { destiller, type LogRad } from "./destiller";
 import { skrivAkBrain } from "./skriv-ak-brain";
 import { skrivSecondBrain } from "./skriv-second-brain";
+import { sorterInbox, type InboxRapport } from "./inbox-sortering";
+import { skrivVenterPaaDeg } from "./venter-paa-deg";
 
 // ── Konfigurasjon fra env ──────────────────────────────────────────────────
 
@@ -100,6 +102,23 @@ async function skrivRapport(dato: string, linjer: string[]): Promise<void> {
   console.log(`[rapport] skrevet → ${filsti}`);
 }
 
+async function oppdaterVenterPaaDeg(
+  dato: string,
+  dagensDestillat: string | null,
+  inbox: InboxRapport,
+): Promise<void> {
+  try {
+    await skrivVenterPaaDeg(dato, AK_BRAIN_PATH, {
+      dagsnotat: dagensDestillat,
+      uavklartInbox: inbox.uavklart,
+    });
+  } catch (err) {
+    console.warn(
+      `[venter] ⚠️ Venter på deg feilet (ikke kritisk): ${err instanceof Error ? err.message : String(err)}`,
+    );
+  }
+}
+
 // ── Hoved ─────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -109,9 +128,22 @@ async function main() {
 
   await verifiserKolonne(db);
 
+  // Steg 0: tøm inbox — klassifiser noter til domene-MOC-er (Ollama lokalt,
+  // Claude-fallback). Feil her skal aldri stoppe tilbakeskrivingen.
+  let inboxRapport: InboxRapport = { sortert: [], uavklart: [], feil: [] };
+  try {
+    inboxRapport = await sorterInbox(AK_BRAIN_PATH);
+  } catch (err) {
+    console.warn(
+      `[inbox] ⚠️ Sortering feilet (fortsetter): ${err instanceof Error ? err.message : String(err)}`,
+    );
+  }
+
   const rader = await hentUprosesserte(db);
+  const dagensDato = datoIOslo(new Date().toISOString());
   if (rader.length === 0) {
-    console.log("[meg:tilbakeskriv] Ingen uprosesserte rader — ferdig.");
+    console.log("[meg:tilbakeskriv] Ingen uprosesserte rader.");
+    await oppdaterVenterPaaDeg(dagensDato, null, inboxRapport);
     return;
   }
 
@@ -126,6 +158,7 @@ async function main() {
   let totaltMonstre = 0;
   let totaltStoy = 0;
   let totaltFeil = 0;
+  let dagensDestillat: string | null = null;
 
   for (const [dato, dagsRader] of grupper) {
     console.log(`\n[${dato}] Prosesserer ${dagsRader.length} rader...`);
@@ -146,6 +179,7 @@ async function main() {
 
       await markerProsessert(db, dagsRader.map((r) => r.id));
 
+      if (dato === dagensDato) dagensDestillat = destillert.dagsnotat;
       totaltDagsnotater += 1;
       totaltMonstre += destillert.varige_monstre.length;
       totaltStoy += destillert.stoy_antall;
@@ -166,12 +200,15 @@ async function main() {
     }
   }
 
-  const rapportDato = datoIOslo(new Date().toISOString());
+  // Steg siste: «Venter på deg» — maks 3 aksjonspunkter i dagens notat.
+  await oppdaterVenterPaaDeg(dagensDato, dagensDestillat, inboxRapport);
+
   rapportLinjer.push(
     "---",
+    `**Inbox:** ${inboxRapport.sortert.length} sortert · ${inboxRapport.uavklart.length} uavklart · ${inboxRapport.feil.length} feil`,
     `**Totalt:** ${totaltDagsnotater} dagsnotater · ${totaltMonstre} mønstre · ${totaltStoy} støy · ${totaltFeil} feil`,
   );
-  await skrivRapport(rapportDato, rapportLinjer);
+  await skrivRapport(dagensDato, rapportLinjer);
 
   console.log(
     `\n[meg:tilbakeskriv] Ferdig. ${totaltDagsnotater} dager · ${totaltMonstre} mønstre · ${totaltFeil} feil.`,

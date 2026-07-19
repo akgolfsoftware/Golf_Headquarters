@@ -12,34 +12,23 @@ Hele plattformen for AK Golf Group. Ett monorepo, ett Next.js-prosjekt, fire pro
 - `arkitektur.md` — produkter, ruter, mappestruktur.
 - `design-system-regel.md` — designkanon (v2-redesign, 9. juli 2026): det levende Claude Design-prosjektet via DesignSync; retning C er valgt og fase 6 pågår; golfdata/v13 er overgangs-lag.
 - `gotchas.md` — kjente feller (Prisma 7, Next.js 16 proxy, Supabase pooler, zod). Les FØR koding.
+- `beslutninger.md` — ALLE låste beslutninger (juni–juli 2026): invarianter-aldri-sperrer, AgencyOS-navnet, tema, navne-kanon, Workbench-planlegging, analyse-samling, abonnement 299/gratis, FYS-avventing, design-kilde, skjermtekst-kilde. Les FØR produktbeslutninger — ved konflikt vinner `docs/platform/BUSINESS-RULES.md`.
+- Domene-regler (Agentic OS, 2026-07-19): `mulligan-drift.md`, `wang-toppidrett.md`, `gfgk-junior.md`, `admin-tripletex.md` — Anders' driftsdomener utenfor appkoden. Relevante KUN for agent-økter som håndterer disse domenene; ignorer dem under ren kodeutvikling.
+
+## Harde invarianter (aldri brytes — detaljer i rules-filene)
+1. **Anbefalinger sperrer aldri:** ingenting i appen blokkerer trening. Aldri «kan ikke brytes»-kode/tekst.
+2. **Farger kun fra designtokens** — aldri rå hex (håndheves av `check-no-hex` + ESLint). 8pt-grid i v2.
+3. **Norsk bokmål (æ, ø, å) i all UI-tekst.** Copy hentes fra `docs/skjermtekst/`, aldri diktes.
+4. **Lucide-ikoner, aldri emoji i UI.** Kun `ui/`-primitiver + `golfdata/` (overgang) + v2-mønstre.
+5. **Domenelogikk kun i `src/lib/domain/`** (SG, HCP, FYS, CS, pyramide) — aldri reberegnes i komponenter/ruter.
+6. **JSON fra Prisma valideres med zod** — `as unknown as T` er forbudt for forretningskritiske data.
+7. **Main er portet:** aldri merge/push til main uten Anders' eksplisitte «ja» i samtalen.
 
 ## FØR DU RØRER EN SKJERM — `docs/MASTER-SKJERMPLAN.md` (LÅST regel)
 Autoritativ liste over hver skjerm + 6 haker (Design · Mobil/Desktop/iPad · Adresse · Flyt · Data · Funker).
 Før du bygger/endrer/kobler en skjerm: finn raden, jobb mot den, oppdater hakene i SAMME commit. En skjerm er
 ikke ferdig før alle 6 er grønne. Alt Claude Design har tegnet skal kobles — sjekk «drop-off»-lista. Oppdater
 dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
-
-## Låste beslutninger (juni 2026 — gjelder til Anders endrer dem)
-> **Fasit-kilde:** `docs/platform/BUSINESS-RULES.md`. Listen under er sammendrag — ved konflikt vinner BUSINESS-RULES.md. Ikke dupliser nye regler hit.
-
-> ⚠ **Oppdatert 2026-07-06** (historikk: `docs/REGLER-OPPLAST-2026-06-22.md`): av de 4 regel-klyngene
-> som ble låst opp 2026-06-22 er 3 nå **avklart og bygget** — tema-toggle (AgencyOS lys/mørk-bryter),
-> abonnement/pris (299 kr/mnd, ingen årlig) og cockpit stall-SG/plan-etterlevelse. Kun **FYS-formel +
-> A–K-nivåtall** har gjenstående deltråder (onboarding steg 6 + drill-retag) — ikke håndhev den som låst.
-
-- **Invarianter er anbefalinger, aldri sperrer:** ingenting i appen blokkerer trening. Avvik fra
-  plan/regel vises i klarspråk til brukeren; sterkt avvik varsler coach. Aldri skriv «kan ikke
-  brytes»-kode eller -tekst — se `plans/skjermplan-master.md` prinsipp 3 for fasit.
-- **App-navn:** Coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt — ikke bruk i ny UI-tekst.
-- **Tema:** dagens bygde oppførsel er fasit (`BUSINESS-RULES.md` §Tema per produkt): PlayerHQ fast lyst, AgencyOS lys/mørk-bryter med standard mørk. «PlayerHQ alltid lyst» som HARD regel ble opphevet 2026-07-09 i påvente av v2; retning C er valgt, men en eksplisitt ny tema-strategi per app er ikke dokumentert etter valget — ikke endre tema-oppførsel uten Anders' beskjed.
-- **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen** — alltid fulle navn, gamle demo-navn skal bort. Unntak: ekte coach **«Markus Røinås Pedersen»** på markedssidene, ikke bytt ham ut.
-- **Planlegge → Workbench:** All planlegging går gjennom Workbench. Planlegge er **ett trykkpunkt** dit, ikke en meny av 6 kort. Samme i coachens spiller-Workbench.
-- **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner — ikke separate moduler. Mål bor i Oversikt, redigeres i Workbench.
-- **Abonnement (ingen tier-nivåer):** PlayerHQ-tilgang er gratis eller 299 kr/mnd. **Gratis** hvis: 1 mnd prøveperiode, ELLER coaching-pakke (Performance / Performance Pro), ELLER gruppe via AK Golf. **299 kr/mnd** for alle andre. «Performance / Performance Pro» er **coaching-pakker** (antall økter), IKKE app-nivåer. **ELITE finnes ikke** (dødt Prisma-enum — vis aldri i UI).
-- **FYS-resultatformel avventer:** Bygg testskjermer med plassholder-tall. Ikke hardkod referanseverdier før Anders gir grønt lys.
-- **Design-kilde (oppdatert 9. juli 2026 — v2-REDESIGN PÅGÅR):** kanon-kilden er fortsatt det LEVENDE Claude Design-prosjektet («AK Golf HQ Design System», `claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`) via DesignSync — men målbildet er nå **v2-generasjonen** (`ui_kits/v2/` + `tokens/v2/`) som designes per `~/.claude/plans/breezy-forging-brook.md`. **Retning C er valgt (2026-07-11) og fase 6 pågår:** gjenværende skjermer porteres til v2 bølge for bølge, én skjerm per commit, master-skjermplanens haker i samme commit. v13/golfdata (`src/components/athletic/golfdata/`) er OVERGANGS-LAG: vedlikehold OK, nye flater bygges mot godkjent v2-mockup. `public/design-handover/` er stale og skal ikke brukes. Full regel: `.claude/rules/design-system-regel.md`. **Designdommer:** `.claude/skills/ak-designekspert` (gap meldes, ikke improviseres).
-- **Skjermtekst (copy-kilde):** `docs/skjermtekst/` — ekte norsk UI-tekst per hovedskjerm + design-brief. Kopier derfra, ikke dikt opp ny tekst.
-- Aldri referer til `wireframe/`, gamle `design-package/` eller `design-files-v2/` i produksjonsfiler — disse er slettet fra prosjektet.
 
 ## Stack (eksakte versjoner — ikke oppgrader uten beslutning)
 - Next.js 16 (App Router, TypeScript strict, Turbopack), React 19
@@ -49,15 +38,12 @@ dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
 - Testrammeverk: `node:test` via `tsx --test` (enhetstester i `src/lib/**/*.test.ts`) + Playwright (e2e). vitest/jest er IKKE installert.
 
 ## Kjernelogikk og miljø
-- **Domenelogikk** (matte/forretningsregler brukt på tvers av PlayerHQ og AgencyOS) bor i `src/lib/domain/`:
-  `sg.ts` (Strokes Gained, Broadie + Team Norway IUP-kalibrert), `hcp.ts`, `fys-score.ts`, `cs-progression.ts`,
-  `pyramid-weighting.ts`, `ak-kategori.ts`/`spiller-kategori.ts`, `rules/`. Gjenbruk disse — ikke regn ut SG/HCP
-  på nytt i en komponent eller API-rute.
-- **Miljøvariabler** valideres ved oppstart i `src/lib/env.ts`. Kritiske (appen starter ikke uten): Supabase-URL/nøkler,
-  `DATABASE_URL`, `DIRECT_URL`. Se `.env.example` for full liste. `tsx`-scripts utenfor Next-runtime (i `scripts/`)
-  MÅ `import "./_env"` FØR `@/lib/prisma`, ellers feiler DB-tilkoblingen (ESM-importrekkefølge).
-- **API-ruter** (`src/app/api/`) er organisert per domene (`admin/`, `portal/`, `auth/`, `stripe/`, `cron/`, `ai-plan/`,
-  `caddie/`, `mcp/` m.fl.) — speiler produktinndelingen i `arkitektur.md`, ikke REST-ressurser.
+- **Domenelogikk** bor i `src/lib/domain/`: `sg.ts` (Strokes Gained, Broadie + Team Norway IUP-kalibrert),
+  `hcp.ts`, `fys-score.ts`, `cs-progression.ts`, `pyramid-weighting.ts`, `ak-kategori.ts`/`spiller-kategori.ts`, `rules/`.
+- **Miljøvariabler** valideres ved oppstart i `src/lib/env.ts`. Se `.env.example` for full liste.
+  `tsx`-scripts utenfor Next-runtime (i `scripts/`) MÅ `import "./_env"` FØR `@/lib/prisma` (ESM-importrekkefølge).
+- **API-ruter** (`src/app/api/`) er organisert per domene (`admin/`, `portal/`, `auth/`, `stripe/`, `cron/`,
+  `ai-plan/`, `caddie/`, `mcp/` m.fl.) — speiler produktinndelingen i `arkitektur.md`, ikke REST-ressurser.
 
 ## Kommandoer
 ```bash
@@ -66,7 +52,7 @@ npm run build                        # prisma generate + next build + serwist (P
 npm run lint                         # eslint
 
 npm test                             # alle enhetstester (src/lib/**/*.test.ts)
-npx tsx --conditions=react-server --experimental-test-module-mocks --test src/lib/auth/minor.test.ts   # kjør ÉN testfil
+npx tsx --conditions=react-server --experimental-test-module-mocks --test src/lib/auth/minor.test.ts   # ÉN testfil
 
 npm run e2e                          # Playwright e2e (e2e/*.spec.ts + tests/e2e/*.spec.ts)
 npx playwright test e2e/auth-guard.spec.ts    # kjør ÉN e2e-fil
@@ -74,7 +60,7 @@ npm run test:e2e:ui                  # Playwright UI-modus (debug)
 npm run test:all                     # enhetstester + e2e
 
 npm run verify                       # FULL sjekk før commit (prisma validate+generate, tsc --noEmit,
-                                      # eslint --quiet, check-no-hex, build) — se Verifikasjon under
+                                      # eslint --quiet, check-no-hex, build)
 ```
 
 ## Modell og effort
@@ -90,7 +76,8 @@ All UI-tekst på norsk bokmål med æ, ø, å. Kommentarer kan være engelsk ell
 2. **Implementer aldri uten godkjent plan.**
 3. **Pek på eksisterende mønstre** (AthleticCard, lib-helpere) — bygg ikke på nytt det som finnes.
 4. **Stopp og spør ved usikkerhet.** Aldri gjett.
-5. **Aldri lag nye token-filer eller wireframe-mapper.** Unntak (2026-07-09): v2-redesignets tokens — `tokens/v2/` i designprosjektet og porten derfra til `src/styles/` — er godkjent av Anders.
+5. **Aldri lag nye token-filer eller wireframe-mapper.** Unntak (2026-07-09): v2-redesignets tokens —
+   `tokens/v2/` i designprosjektet og porten derfra til `src/styles/` — er godkjent av Anders.
 6. **Feil → `.claude/rules/gotchas.md`.**
 
 ## Git-arbeidsflyt — GODKJENNINGSPORT for main (Anders' beslutning 2026-07-13)
@@ -110,27 +97,24 @@ Anders er ikke utvikler og skal ikke skrive git-kommandoer. Claude håndterer gi
 
 Stopp og spør før destruktive operasjoner: `--force`, `reset --hard`, `rebase main`, sletting av remote branches.
 Etter push: oppsummer på norsk hva som ble gjort.
+Hooks i `.claude/settings.json` håndhever dette deterministisk (blokkerer sensitive filer,
+krever bekreftelse for schema/main, kjører eslint + hex-gate etter edits) — se `.claude/hooks/`.
 
 ## Verifikasjon (kjør før hver commit)
 ```bash
 npm run verify
 ```
 Tilsvarer: `prisma validate && prisma generate && tsc --noEmit && eslint --quiet src && node scripts/check-no-hex.mjs && npm run build`
-(`check-no-hex.mjs` håndhever at farger kommer fra designtokens, ikke rå hex-verdier). `npm run dev` skal starte uten warnings.
+(`check-no-hex.mjs` håndhever at farger kommer fra designtokens). `npm run dev` skal starte uten warnings.
 
 ## CI/CD (GitHub Actions, `.github/workflows/`)
 - **`ci.yml`** kjører på hver PR og push til main: `prisma generate` → `tsc --noEmit` → `eslint` →
-  hex-gate (`npm run check:hex`) → enhetstester (`npm test`) → `npm run build` → Playwright e2e
-  mot en lokalt startet instans. Bruker dummy env-verdier (Supabase/Stripe/DB) — trenger ingen
-  ekte secrets for å validere kode. `husky`/`lint-staged` kjører samme gate (eslint + tsc) på
-  staged `.ts`/`.tsx`-filer i pre-commit, så feil fanges lokalt før CI.
-- **`deploy.yml` (Actions) er MANUELL** (`workflow_dispatch` — «Run workflow» i Actions-fanen,
-  eller `gh workflow run deploy.yml`), IKKE trigget av push til main. MEN: prod-deploy skjer
-  likevel automatisk via **Vercels git-integrasjon** — push til main auto-deployer til
-  akgolf-hq.vercel.app (koblet og verifisert 2026-07-10; kjør ALDRI `vercel deploy --prod`
-  manuelt). Main-porten (Anders' ja før merge) er derfor den reelle deploy-porten.
-- `playwright.yml`, `scrape-gjgt.yml`, `scrape-golfbox.yml` er egne, mer avgrensede workflows —
-  sjekk filene direkte ved behov.
+  hex-gate → enhetstester → `npm run build` → Playwright e2e. Dummy env-verdier — trenger ingen
+  ekte secrets. `husky`/`lint-staged` kjører samme gate (eslint + tsc) på staged filer i pre-commit.
+- **`deploy.yml` (Actions) er MANUELL** (`workflow_dispatch`), IKKE trigget av push til main. MEN:
+  prod-deploy skjer likevel automatisk via **Vercels git-integrasjon** — push til main auto-deployer
+  til akgolf-hq.vercel.app (kjør ALDRI `vercel deploy --prod` manuelt). Main-porten er deploy-porten.
+- `playwright.yml`, `scrape-gjgt.yml`, `scrape-golfbox.yml` er egne workflows — sjekk filene ved behov.
 
 ## Sesjons-minne (hvor var vi sist)
 Native auto memory (Anthropic, på) husker automatisk på denne maskinen. Cross-machine state ligger i
