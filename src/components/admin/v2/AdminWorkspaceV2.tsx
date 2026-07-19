@@ -34,7 +34,6 @@ import {
   Rad,
   KpiFlis,
   StatusPill,
-  CTAPill,
   FilterChips,
   PillTabs,
   FordelingRad,
@@ -295,9 +294,6 @@ export function AdminWorkspaceV2({ data }: { data: AdminWorkspaceV2Data }) {
         <div style={{ marginTop: 10 }}>
           <Tittel em="uke.">Min</Tittel>
         </div>
-      </div>
-      <div className="hidden md:inline-flex">
-        <CTAPill icon="plus">Ny oppgave</CTAPill>
       </div>
     </div>
   );
