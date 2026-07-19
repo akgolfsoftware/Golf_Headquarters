@@ -77,21 +77,31 @@ export async function skrivVenterPaaDeg(
     return;
   }
 
+  // API-feil (tom kreditt, nede, rate-limit) skal aldri velte morgen-/kveldskjøringen —
+  // seksjonen hoppes over, akkurat som når nøkkelen mangler.
   const client = new Anthropic({ apiKey });
-  const res = await client.messages.create({
-    model: process.env.MEG_MODEL_SMART ?? "claude-sonnet-4-6",
-    max_tokens: 512,
-    system: SYSTEM,
-    tools: [
-      {
-        name: "sett_venter_punkter",
-        description: "Lagre maks 3 prioriterte aksjonspunkter",
-        input_schema: toolSchema as unknown as Anthropic.Tool.InputSchema,
-      },
-    ],
-    tool_choice: { type: "tool", name: "sett_venter_punkter" },
-    messages: [{ role: "user", content: deler.join("\n\n") }],
-  });
+  let res: Anthropic.Message;
+  try {
+    res = await client.messages.create({
+      model: process.env.MEG_MODEL_SMART ?? "claude-sonnet-4-6",
+      max_tokens: 512,
+      system: SYSTEM,
+      tools: [
+        {
+          name: "sett_venter_punkter",
+          description: "Lagre maks 3 prioriterte aksjonspunkter",
+          input_schema: toolSchema as unknown as Anthropic.Tool.InputSchema,
+        },
+      ],
+      tool_choice: { type: "tool", name: "sett_venter_punkter" },
+      messages: [{ role: "user", content: deler.join("\n\n") }],
+    });
+  } catch (err) {
+    console.warn(
+      `[venter] Claude-kallet feilet — hopper over: ${err instanceof Error ? err.message : String(err)}`,
+    );
+    return;
+  }
 
   const blokk = res.content.find((b) => b.type === "tool_use");
   if (!blokk || blokk.type !== "tool_use") {
