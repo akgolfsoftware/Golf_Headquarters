@@ -231,6 +231,8 @@ export interface NyOktInput {
   lFase: string | null;
   miljo: string | null;
   drills: OktArkDrill[];
+  /** Gjenta ukentlig: totalt antall uker økta legges inn (1 = kun denne uka). */
+  gjentaUker: number;
 }
 export interface NyOktArkProps {
   defaultDayIndex: number;
@@ -266,6 +268,7 @@ export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAks
         drills: defaultDrills ?? [],
       }}
       tittelPlaceholder="F.eks. Wedge 60–100 m"
+      visGjenta
       onLukk={onLukk}
       onSubmit={(s) =>
         onOpprett({
@@ -278,6 +281,7 @@ export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAks
           lFase: s.lFase,
           miljo: s.miljo,
           drills: s.drills,
+          gjentaUker: s.gjentaUker,
         })
       }
     />
@@ -304,6 +308,7 @@ function OktArkSkjema({
   submitIcon,
   initial,
   tittelPlaceholder,
+  visGjenta,
   onLukk,
   onSubmit,
   searchTeknisk,
@@ -314,8 +319,10 @@ function OktArkSkjema({
   submitIcon: "plus" | "check";
   initial: OktArkState;
   tittelPlaceholder?: string;
+  /** Ny økt: vis «Gjenta ukentlig»-velgeren (kalendermønster). Rediger: skjult. */
+  visGjenta?: boolean;
   onLukk: () => void;
-  onSubmit: (state: OktArkState & { hour: number; minute: number }) => Promise<{ ok: boolean; error?: string }>;
+  onSubmit: (state: OktArkState & { hour: number; minute: number; gjentaUker: number }) => Promise<{ ok: boolean; error?: string }>;
   searchTeknisk?: (query: string) => Promise<{ id: string; tittel: string; pNummer: string }[]>;
 }) {
   const [title, setTitle] = useState(initial.title);
@@ -326,6 +333,7 @@ function OktArkSkjema({
   const [lFase, setLFase] = useState<string | null>(initial.lFase);
   const [miljo, setMiljo] = useState<string | null>(initial.miljo);
   const [drills, setDrills] = useState<OktArkDrill[]>(initial.drills);
+  const [gjentaUker, setGjentaUker] = useState(1);
   const [drillSok, setDrillSok] = useState("");
   const [drillTreff, setDrillTreff] = useState<{ id: string; name: string; pyramidArea: string }[]>([]);
   const [oppgaveKobler, setOppgaveKobler] = useState<number | null>(null);
@@ -378,10 +386,20 @@ function OktArkSkjema({
     const minute = Math.max(0, Math.min(59, Number(mStr) || 0));
     setLagrer(true);
     setFeil(null);
-    const res = await onSubmit({ title, dayIndex, tid, durMin: Math.max(5, Math.min(480, durMin)), akse, lFase, miljo, drills, hour, minute });
+    const res = await onSubmit({ title, dayIndex, tid, durMin: Math.max(5, Math.min(480, durMin)), akse, lFase, miljo, drills, hour, minute, gjentaUker: visGjenta ? gjentaUker : 1 });
     setLagrer(false);
     if (!res.ok) setFeil(res.error ?? "Kunne ikke lagre økten.");
   };
+
+  // Kalendermønster: beregnet sluttid + varighet i klartekst («16:00 → 17:30 · 1,5 t»).
+  const sluttTid = (() => {
+    const [hStr, mStr] = tid.split(":");
+    const start = (Number(hStr) || 0) * 60 + (Number(mStr) || 0);
+    const slutt = Math.min(24 * 60 - 1, start + durMin);
+    return `${String(Math.floor(slutt / 60)).padStart(2, "0")}:${String(slutt % 60).padStart(2, "0")}`;
+  })();
+  const gjentaValg = [1, 2, 4, 8, 12] as const;
+  const effektivSubmitLabel = visGjenta && gjentaUker > 1 ? `Opprett ${gjentaUker} økter` : submitLabel;
 
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
@@ -395,9 +413,17 @@ function OktArkSkjema({
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 14 }}>
-          <Felt label="Tittel">
-            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={tittelPlaceholder} maxLength={120} style={inputStyle} />
-          </Felt>
+          {/* Kalendermønster (Anders' referanse 19. juli): stor tittel-linje øverst
+              med autofokus — tittelen ER hendelsen, ikke ett felt blant mange. */}
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder={tittelPlaceholder}
+            maxLength={120}
+            autoFocus
+            aria-label="Tittel"
+            style={{ appearance: "none", width: "100%", background: "transparent", border: "none", borderBottom: `1px solid ${T.border}`, borderRadius: 0, padding: "2px 0 10px", color: T.fg, fontFamily: T.disp, fontSize: 18, fontWeight: 700, letterSpacing: "-0.02em", outline: "none" }}
+          />
           <Felt label="Dag">
             <DagPillRow value={dayIndex} onChange={setDayIndex} disabled={lagrer} />
           </Felt>
@@ -409,6 +435,36 @@ function OktArkSkjema({
               <input type="number" min={5} max={480} step={5} value={durMin} onChange={(e) => setDurMin(Number(e.target.value) || 60)} style={inputStyle} />
             </Felt>
           </div>
+          {/* Sluttid-hint + hurtigvalg for varighet — færre tastetrykk enn tallfeltet. */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginTop: -4 }}>
+            <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, fontVariantNumeric: "tabular-nums" }}>{tid} → {sluttTid} · {fmtVarighet(durMin)}</span>
+            <span style={{ display: "inline-flex", gap: 4, marginLeft: "auto" }}>
+              {[30, 45, 60, 90, 120].map((m) => (
+                <button key={m} type="button" onClick={() => setDurMin(m)} className="v2-press" aria-label={`${m} minutter`} style={{ appearance: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 9, fontWeight: 700, padding: "4px 8px", borderRadius: 9999, background: durMin === m ? T.lime : T.panel2, border: `1px solid ${durMin === m ? "transparent" : T.border}`, color: durMin === m ? T.onLime : T.fg2 }}>
+                  {m}
+                </button>
+              ))}
+            </span>
+          </div>
+          {visGjenta && (
+            <Felt label="Gjenta ukentlig" hjelp="gjentaOkt">
+              <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+                {gjentaValg.map((n) => (
+                  <button
+                    key={n}
+                    type="button"
+                    onClick={() => setGjentaUker(n)}
+                    className="v2-press v2-focus"
+                    disabled={lagrer}
+                    aria-pressed={gjentaUker === n}
+                    style={{ appearance: "none", cursor: "pointer", fontFamily: T.ui, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 9999, background: gjentaUker === n ? T.lime : T.panel2, border: `1px solid ${gjentaUker === n ? "transparent" : T.border}`, color: gjentaUker === n ? T.onLime : T.fg2 }}
+                  >
+                    {n === 1 ? "Aldri" : `${n} uker`}
+                  </button>
+                ))}
+              </div>
+            </Felt>
+          )}
           <Felt label="Område — trykk for å bytte" hjelp="pyramideAkse">
             <button
               type="button"
@@ -532,7 +588,7 @@ function OktArkSkjema({
 
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
           <Knapp ghost onClick={onLukk} disabled={lagrer}>Avbryt</Knapp>
-          <Knapp icon={submitIcon} onClick={submit} disabled={lagrer}>{lagrer ? lagrerLabel : submitLabel}</Knapp>
+          <Knapp icon={submitIcon} onClick={submit} disabled={lagrer}>{lagrer ? lagrerLabel : effektivSubmitLabel}</Knapp>
         </div>
       </div>
     </div>
