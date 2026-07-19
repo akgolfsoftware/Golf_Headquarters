@@ -442,7 +442,7 @@ function WBGruppetider({ slots }: { slots: NonNullable<WorkbenchData["groupSlots
 }
 
 
-export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukMal, visPerioder, onLeggDrillIValgt, proMode = true }: {
+export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukMal, visPerioder, onLeggDrillIValgt, proMode = true, skjulTittel = false }: {
   data: WorkbenchData;
   tab: string; setTab: (t: string) => void;
   sok: string; setSok: (s: string) => void;
@@ -456,6 +456,8 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
   onLeggDrillIValgt?: (drill: { exerciseId: string; navn: string }) => Promise<{ ok: boolean; error?: string }>;
   /** B40 §3/§5: mal-biblioteket er Pro-only. Default true — samme som Workbench for øvrig. */
   proMode?: boolean;
+  /** Mobil: MobilFold-headeren viser allerede «Bibliotek» — dropp den interne. */
+  skjulTittel?: boolean;
 }) {
   const treff = (txt: string) => !sok || txt.toLowerCase().includes(sok.toLowerCase());
   // 8c.6 (fasit Palette): aksefilter-chips over listene.
@@ -481,9 +483,11 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
   }, [tab, sok, akseFilter]);
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10, minWidth: 0 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <Caps size={10}>Bibliotek</Caps>
-      </div>
+      {!skjulTittel && (
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Caps size={10}>Bibliotek</Caps>
+        </div>
+      )}
       <PalettSok value={sok} onChange={setSok} placeholder="Søk…" />
       <div style={{ display: "flex", gap: 4 }}>
         {faner.map(([id, l]) => (
@@ -1762,7 +1766,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
         {nivaa === "maned" && <div key="maned" className="v2-fade-in"><MndNivaa data={data} onVelgDato={velgDatoFraMnd} /></div>}
 
         <MobilFold tittel="Bibliotek" ikon="layers">
-          <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} proMode={proMode} />
+          <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} proMode={proMode} skjulTittel />
         </MobilFold>
         <MobilFold tittel="Balanse" ikon="activity">
           <WBBalanse

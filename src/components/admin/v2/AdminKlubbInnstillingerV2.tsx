@@ -123,9 +123,9 @@ export function AdminKlubbInnstillingerV2({ klubber, settings }: Props) {
             sub="Legg til din første klubb for å begynne å håndtere multi-club setup. Hver klubb kan ha egne fasiliteter, åpningstider og daglig leder."
           />
           <div style={{ marginTop: 16 }}>
-            <CTAPill icon="plus">
-              <span onClick={() => setAddOpen(true)}>Legg til klubb</span>
-            </CTAPill>
+            <span onClick={() => setAddOpen(true)}>
+              <CTAPill icon="plus">Legg til klubb</CTAPill>
+            </span>
           </div>
         </Kort>
       ) : (

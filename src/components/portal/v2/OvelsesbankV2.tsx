@@ -797,11 +797,6 @@ export function OvelsesbankV2({ data }: { data: DrillDetail[] }) {
           </Tittel>
         </div>
       </div>
-      {!mobile && (
-        <CTAPill icon="plus" ghost>
-          Ny øvelse
-        </CTAPill>
-      )}
     </div>
   );
 

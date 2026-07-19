@@ -20,6 +20,7 @@
 
 import { Fragment, useEffect, useState } from "react";
 import type { ReactNode } from "react";
+import Link from "next/link";
 import {
   T,
   Caps,
@@ -382,7 +383,9 @@ export function TesterV2({ data }: { data: TesterV2Data }) {
             <Tittel mobile={mobile} em="scorekort">Ditt test-</Tittel>
           </div>
         </div>
-        <CTAPill icon="plus">Registrer test</CTAPill>
+        <Link href="/portal/tren/tester/ny" style={{ textDecoration: "none" }}>
+          <CTAPill icon="plus">Registrer test</CTAPill>
+        </Link>
       </div>
       <PillTabs
         tabs={[
