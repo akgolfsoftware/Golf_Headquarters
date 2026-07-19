@@ -94,7 +94,18 @@ export async function gmailSend(args: { til: string; emne: string; tekst: string
 
 // ── Kalender: les (direkte) ──────────────────────────────────────────────────
 
-export async function kalenderAgenda(dager = 1): Promise<string> {
+/**
+ * Ren match-funksjon for kalenderfilteret i kalenderAgenda(): case-insensitiv
+ * substring-match mot kalenderens summary-felt. Eksportert separat slik at
+ * den kan testes uten Google-API-kall.
+ */
+export function kalenderNavnMatcher(summary: string | null | undefined, filter: string): boolean {
+  if (!filter.trim()) return true;
+  if (!summary) return false;
+  return summary.toLowerCase().includes(filter.toLowerCase());
+}
+
+export async function kalenderAgenda(dager = 1, kalenderNavn?: string): Promise<string> {
   const conn = await getOwnerConnection();
   if (!conn) return "Google er ikke koblet (ingen aktiv ADMIN-tilkobling).";
   try {
@@ -104,9 +115,11 @@ export async function kalenderAgenda(dager = 1): Promise<string> {
 
     // Hent alle kalendere og spørr hver enkelt — "primary" er bare én av mange
     const kalListRes = await cal.calendarList.list({ maxResults: 50 });
-    const kalenderIds = (kalListRes.data.items ?? [])
-      .map((k) => k.id)
-      .filter((id): id is string => !!id);
+    const kalenderItems = kalListRes.data.items ?? [];
+    const filtrerte = kalenderNavn
+      ? kalenderItems.filter((k) => kalenderNavnMatcher(k.summary, kalenderNavn))
+      : kalenderItems;
+    const kalenderIds = filtrerte.map((k) => k.id).filter((id): id is string => !!id);
 
     type EventItem = { start: string; tekst: string; eid: string };
     const alle: EventItem[] = [];
