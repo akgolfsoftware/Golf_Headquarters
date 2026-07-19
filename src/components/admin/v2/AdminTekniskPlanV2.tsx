@@ -9,7 +9,8 @@
  * Funksjon/data bevart 1:1 fra den ekte skjermen
  * (src/app/admin/teknisk-plan/page.tsx):
  *   - Spillerliste (PLAYER) med aktiv plan, antall TEK-økter + timer, og
- *     TEK-fullført-andel. Hver rad → /admin/teknisk-plan/[spillerId].
+ *     TEK-fullført-andel. Hver rad → /admin/spillere/[id]/plan (v2-flyten;
+ *     gamle /admin/teknisk-plan/[spillerId] er legacy-design og pekes ikke til).
  *   - Plan-maler (godkjente PlanTemplate): navn, beskrivelse, varighet i uker.
  *   - Ærlige tom-tilstander for både spillere og maler.
  *
@@ -24,6 +25,7 @@
  */
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   Caps,
   Tittel,
@@ -114,7 +116,9 @@ export function AdminTekniskPlanV2({ data }: { data: AdminTekniskPlanData }) {
         </div>
       </div>
       <div className="hidden md:inline-flex">
-        <CTAPill ghost icon="plus">Ny mal</CTAPill>
+        <Link href="/admin/plan-templates/ny" style={{ textDecoration: "none" }}>
+          <CTAPill ghost icon="plus">Ny mal</CTAPill>
+        </Link>
       </div>
     </div>
   );
@@ -151,7 +155,7 @@ export function AdminTekniskPlanV2({ data }: { data: AdminTekniskPlanData }) {
           return (
             <Rad
               key={s.id}
-              onClick={() => router.push(`/admin/teknisk-plan/${s.id}`)}
+              onClick={() => router.push(`/admin/spillere/${s.id}/plan`)}
               leading={<AvatarFoto src={s.avatarUrl ?? null} navn={s.navn} size={34} />}
               title={s.navn}
               sub={sub}
@@ -203,9 +207,9 @@ export function AdminTekniskPlanV2({ data }: { data: AdminTekniskPlanData }) {
                 <span style={{ fontFamily: T.mono, fontSize: 11, color: T.fg2, fontVariantNumeric: "tabular-nums" }}>
                   {m.varighetUker}<span style={{ color: T.mut }}> uker</span>
                 </span>
-                <span className="hidden md:inline-flex">
+                <Link href={`/admin/plan-templates/${m.id}`} className="hidden md:inline-flex" style={{ textDecoration: "none" }}>
                   <CTAPill ghost>Bruk mal</CTAPill>
-                </span>
+                </Link>
               </span>
             }
             trailing={null}

@@ -15,6 +15,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { T } from "@/lib/v2/tokens";
 import { Icon } from "./icon";
 import { LogoAK, AvatarFoto } from "./core";
@@ -274,7 +275,13 @@ function MerPanel({ grupper, onClose, mobil, full, erAgency }: { grupper: V2NavG
     if (pathname !== apnetPa) onClose();
   }, [pathname, apnetPa, onClose]);
 
-  return (
+  // Portal til <body>: railen (position: sticky) og bunn-navene (fixed +
+  // zIndex) lager egne stacking-contexter, så panelets zIndex 91 gjaldt bare
+  // INNE i nav-en — Workbench-innhold (sett i prod 19. juli) malte seg over
+  // panelet og backdropen dimmet aldri siden. Tokens er globale --v2-*-vars
+  // på <html>, så temaet følger med ut. Panelet monteres kun etter klikk
+  // (post-hydrering), så document finnes alltid her.
+  return createPortal(
     <>
       <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 90, background: "rgba(0,0,0,0.55)" }} aria-hidden />
       <div
@@ -345,7 +352,8 @@ function MerPanel({ grupper, onClose, mobil, full, erAgency }: { grupper: V2NavG
           ))}
         </div>
       </div>
-    </>
+    </>,
+    document.body,
   );
 }
 
