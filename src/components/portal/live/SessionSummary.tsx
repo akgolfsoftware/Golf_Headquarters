@@ -102,8 +102,9 @@ export function SessionSummary({ data, nesteOkt }: SessionSummaryProps) {
           <div className="mt-4 font-mono text-3xl font-bold leading-none text-background">
             {data.totalReps}
           </div>
-          <div className="mt-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-background/55">
+          <div className="mt-2 flex items-center justify-center gap-1 font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-background/55">
             Reps
+            <HjelpTips k="repsHastighet" size={11} />
           </div>
         </div>
         <div className="rounded-2xl border border-background/10 bg-background/5 p-4 text-center">
@@ -134,6 +135,7 @@ export function SessionSummary({ data, nesteOkt }: SessionSummaryProps) {
             <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-background/70">
               Fordeling etter pyramide
             </span>
+            <HjelpTips k="pyramideAkse" size={11} />
           </div>
           <div className="flex flex-col gap-4">
             {pyramidEntries.map(([axis, reps]) => {

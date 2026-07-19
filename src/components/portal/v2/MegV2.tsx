@@ -34,6 +34,7 @@ import {
   AvatarFoto,
   TomTilstand,
   Icon,
+  HjelpTips,
   type StatusTone,
 } from "@/components/v2";
 
@@ -218,7 +219,15 @@ export function MegV2({ data }: { data: MegData }) {
         />
         <div>
           <Tittel mobile={mobile}>{navn}</Tittel>
-          {metaDeler.length > 0 && <Caps style={{ marginTop: 8 }}>{metaDeler.join(" · ")}</Caps>}
+          {metaDeler.length > 0 && (
+            <Caps style={{ marginTop: 8 }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
+                {metaDeler[0]}
+                {hcp != null && <HjelpTips k="hcp" size={11} />}
+                {metaDeler.length > 1 && <span>· {metaDeler.slice(1).join(" · ")}</span>}
+              </span>
+            </Caps>
+          )}
           {avatarFeil && <Caps style={{ marginTop: 8, color: T.down }}>{avatarFeil}</Caps>}
         </div>
       </div>
@@ -242,7 +251,14 @@ export function MegV2({ data }: { data: MegData }) {
           )}
         </Kort>
 
-        <Kort eyebrow="Utviklingsplan · P-milepæler">
+        <Kort
+          eyebrow={
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              Utviklingsplan · P-milepæler
+              <HjelpTips k="pPosisjon" size={11} />
+            </span>
+          }
+        >
           <TomTilstand icon="flag" title="Ingen milepæler ennå" sub="Utviklingsplanen bygges i Workbench." />
         </Kort>
       </div>

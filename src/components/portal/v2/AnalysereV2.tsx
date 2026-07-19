@@ -45,6 +45,7 @@ import {
   Skjelett,
   type StatusTone,
 } from "@/components/v2";
+import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
 
 /** Laveste tenkelige brutto 18-hulls golfscore — under dette er tallet en datafeil,
  *  ikke en ekte runde. Brukt til å vise lasteskjelett i stedet for umulige score-tall. */
@@ -174,7 +175,7 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
         )}
       </Kort>
 
-      <Kort eyebrow="Hvor du vinner slag" action={<HjelpTips k="sgOmrade" />}>
+      <Kort eyebrow="Hvor du vinner slag" action={<span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><HjelpTips k="sgBaseline" size={12} /><HjelpTips k="sgOmrade" /></span>}>
         {sgStatus.kategorier.length > 0 ? (
           <>
             {sgStatus.kategorier.map((k, i) => (
@@ -272,7 +273,7 @@ function TabStatistikk({ data }: { data: AnalysereData }) {
         <KpiFlis label="Runder i sesong" value={String(rounds.totalRounds)} tint />
       </div>
 
-      <Kort eyebrow="Tiger Five · bortkastede slag" action={<Caps size={9}>Per runde · sesong</Caps>}>
+      <Kort eyebrow="Tiger Five · bortkastede slag" action={<span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><Caps size={9}>Per runde · sesong</Caps><HjelpTips k="tigerFive" size={11} /></span>}>
         {tigerFive.length > 0 ? (
           tigerFive.map((t, i) => {
             const v = typeof t.verdi === "number" ? t.verdi : Number(t.verdi);
@@ -473,11 +474,13 @@ type TmParam = {
   unit: string;
   get: (c: AnalyticsWorkbenchData["trackman"]["clubs"][number]) => number | null;
   fmt: (v: number) => string;
+  /** «?»-nøkkel i tekstbanken — TrackMan-tallene er faguttrykk (låst regel). */
+  hjelp?: HjelpNokkel;
 };
 const TM_PARAMS: TmParam[] = [
-  { id: "smash", l: "Smash", unit: "", get: (c) => c.avgSmash, fmt: (v) => komma(v, 2) },
-  { id: "ball", l: "Ballhastighet", unit: "mph", get: (c) => c.avgBallSpeed, fmt: (v) => komma(v, 0) },
-  { id: "total", l: "Bære", unit: "m", get: (c) => c.avgTotal, fmt: (v) => komma(v, 0) },
+  { id: "smash", l: "Smash", unit: "", get: (c) => c.avgSmash, fmt: (v) => komma(v, 2), hjelp: "smashFactor" },
+  { id: "ball", l: "Ballhastighet", unit: "mph", get: (c) => c.avgBallSpeed, fmt: (v) => komma(v, 0), hjelp: "ballhastighet" },
+  { id: "total", l: "Bære", unit: "m", get: (c) => c.avgTotal, fmt: (v) => komma(v, 0), hjelp: "baereLengde" },
 ];
 
 function TabTrackman({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
@@ -529,7 +532,7 @@ function TabTrackman({ data, mobile }: { data: AnalysereData; mobile: boolean })
               const raw = valgt ? p.get(valgt) : null;
               return (
                 <div key={p.id}>
-                  <Caps size={9} style={{ whiteSpace: "nowrap" }}>{p.l}</Caps>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Caps size={9} style={{ whiteSpace: "nowrap" }}>{p.l}</Caps>{p.hjelp && <HjelpTips k={p.hjelp} size={10} />}</span>
                   <span style={{ fontFamily: T.mono, fontSize: i === 0 ? 30 : 20, fontWeight: 700, color: i === 0 ? T.lime : T.fg, lineHeight: 1, display: "block", marginTop: 7, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
                     {raw == null ? "–" : p.fmt(raw)}
                     {raw != null && p.unit && <span style={{ fontSize: 11, color: T.mut, fontWeight: 600 }}> {p.unit}</span>}
@@ -690,7 +693,7 @@ export function AnalysereV2({
       ) : (
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
           <div>
-            <Caps>{eyebrow}</Caps>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Caps>{eyebrow}</Caps>{kat && <HjelpTips k="spillerKategori" size={11} />}</span>
             <div style={{ marginTop: 10 }}>
               <Tittel mobile={mobile} em="analyse">Din</Tittel>
             </div>

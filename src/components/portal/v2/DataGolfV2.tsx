@@ -33,6 +33,7 @@ import {
   PillVelger,
   TomTilstand,
   MikroMeta,
+  HjelpTips,
 } from "@/components/v2";
 
 export type DataGolfProps = { data: DataGolfData; spillerNavn?: string };
@@ -54,32 +55,6 @@ function useMobile(): boolean {
 /** SG-verdi → norsk komma-desimal m/ fortegn, «—» for null. */
 function sg(v: number | null): string {
   return v == null ? "—" : fmtSg(v);
-}
-
-/* ── Delt: «?»-hjelp (title-tooltip) — reprodusert fra mockupens Hjelp ── */
-function Hjelp({ tekst }: { tekst: string }) {
-  return (
-    <span
-      title={tekst}
-      style={{
-        width: 15,
-        height: 15,
-        borderRadius: 9999,
-        border: `1px solid ${T.borderS}`,
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontFamily: T.mono,
-        fontSize: 9,
-        fontWeight: 700,
-        color: T.mut,
-        cursor: "help",
-        flex: "none",
-      }}
-    >
-      ?
-    </span>
-  );
 }
 
 /* ── Legende: Deg vs referansespiller vs tour-baseline (0) ───────────── */
@@ -141,8 +116,9 @@ function DGGruppe({ k, refNavn, max, last }: { k: DataGolfKategori; refNavn: str
         <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.fg2 }}>{k.code}</span>
         <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>{k.name}</span>
         {k.gap != null && (
-          <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 10, color: T.mut }}>
+          <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 4, fontFamily: T.mono, fontSize: 10, color: T.mut }}>
             gap {sg(-k.gap)}
+            <HjelpTips k="sgGap" size={10} />
           </span>
         )}
       </div>
@@ -228,7 +204,7 @@ export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 7 }}>
           <Caps>Deg mot touren · SG total</Caps>
-          <Hjelp tekst="Strokes gained mot en ekte PGA Tour-spiller (DataGolf). Tour-baselinen er 0,0 — tallet viser hvor mange slag per runde du ligger foran (+) eller bak (−) referansen." />
+          <HjelpTips k="dataGolfBaseline" size={12} />
         </span>
         {data.gapDelta != null && (
           <StatusPill tone={data.gapDeltaDir === "up" ? "up" : "down"}>
