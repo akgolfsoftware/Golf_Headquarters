@@ -15,11 +15,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/personvern`, changeFrequency: "yearly", priority: 0.3 },
   ];
 
-  // Hent aktive service-typer for booking-deep-links
-  const services = await prisma.serviceType.findMany({
-    where: { active: true, priceOre: { gt: 0 } },
-    select: { slug: true, updatedAt: true },
-  });
+  // Hent aktive service-typer for booking-deep-links. Uten DB (build/CI med
+  // dummy-URL) faller vi tilbake til de statiske sidene — bygget skal aldri
+  // kreve en nåbar database.
+  let services: { slug: string; updatedAt: Date }[] = [];
+  try {
+    services = await prisma.serviceType.findMany({
+      where: { active: true, priceOre: { gt: 0 } },
+      select: { slug: true, updatedAt: true },
+    });
+  } catch {
+    services = [];
+  }
   const bookingPages: MetadataRoute.Sitemap = services.map((s) => ({
     url: `${BASE_URL}/booking/${s.slug}`,
     lastModified: s.updatedAt,

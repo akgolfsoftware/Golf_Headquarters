@@ -363,7 +363,11 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · **Gruppe-årsplan** (samme kalenderkjerne som /team-wang, koblet inn i gruppeplanleggingen) | `/admin/grupper/[id]/arsplan` | ✓ | --- | ✓ | ~ | ~ | † |
 | · · Legg inn skoledata (lim-inn-import → SchoolScheduleEntry) | `/admin/grupper/[id]/arsplan/skoledata` | ✓ | --- | ✓ | ✓ | ~ | † |
 | · **WANG Toppidrett — åpen treningsplan** (offentlig, ingen innlogging; nå med dagsvisning + samlinger + skole-/kompetansemål-lag) | `/team-wang` | ~ | -✓– | ✓ | ~ | ✓ | ✓ |
-| · **GFGK Junior — åpen treningsplan** (offentlig, 4 gruppefaner: Mini/Basis/Utvikling/Elite) | `/gfgk-junior` | ~ | --- | ✓ | ~ | ✓ | † |
+| · **GFGK Junior — offentlig microsite (gfgkjunior.no)** — forside m/ premium-hero, GFGK-merkevaretokens (`src/styles/gfgk-junior-tokens.css`), Source Sans 3 + IBM Plex Mono, index:true | `/gfgk-junior` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 19. jul: komplett site fra Claude Design-prosjektet «GFGK Junior treningsprogram». DB-first via `hentGfgkGruppe` (AgencyOS = master, design-fallback til gruppene er opprettet — `scripts/opprett-gfgk-junior-grupper.ts`). |
+| · · Treningsplaner (årsplan/periodisering/måned/uke/økter, `?g=`-velger) | `/gfgk-junior/treningsplaner` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| · · Gruppeplan per gruppe (neste trening, 7-dagers liste, kalender m/ historikk-toggle) | `/gfgk-junior/gruppe/[u10-u19]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | Oslo-korrekt dato-logikk klient-side (mounted-guard) |
+| · · Kunnskapsbase + 10 artikler (fulltekst fra gfgkjunior.no/veileder) | `/gfgk-junior/veileder` + `/[slug]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
+| · · Treningskalender (DB-kalenderen flyttet fra rota, noindex beholdt) | `/gfgk-junior/kalender` | ~ | --- | ✓ | ~ | ✓ | † |
 | Talent-hub | `/admin/talent` | ✓ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: ren `redirect("/admin/talent/radar")` — ikke en egen skjerm. |
 | · Discovery | `/admin/talent/discovery` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Radar | `/admin/talent/radar` | ✓ | –✓– | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminTalentRadarV2`. |
