@@ -100,7 +100,8 @@ function MRamme({ mobile, aktiv, children }: { mobile: boolean; aktiv: string; c
   return (
     <div className="dark" style={{ minHeight: "100vh", colorScheme: "dark", color: T.fg, fontFamily: T.ui, background: `radial-gradient(1100px 520px at 30% -10%, rgba(0,88,64,0.20), transparent 62%), ${T.bg}`, display: "flex", flexDirection: "column" }}>
       <MNav mobile={mobile} aktiv={aktiv} />
-      <div style={{ flex: 1 }}>{children}</div>
+      {/* <main>-landemerke — samme a11y-fiks som delt marked-ramme.tsx. */}
+      <main style={{ flex: 1 }}>{children}</main>
       <MFot mobile={mobile} />
     </div>
   );
