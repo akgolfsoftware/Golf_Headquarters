@@ -27,8 +27,8 @@ export function GfgkFooter() {
           <div className="mt-4 flex gap-2.5">
             <a
               href={KONTAKT.facebook}
-              className="rounded-full px-3.5 py-2 text-[13px] font-bold text-white no-underline"
-              style={{ background: "rgba(255,255,255,0.1)" }}
+              className="rounded-full px-3.5 py-2 text-[13px] font-bold no-underline"
+              style={{ background: "rgba(255,255,255,0.1)", color: "var(--gfgk-white)" }}
             >
               Facebook
             </a>

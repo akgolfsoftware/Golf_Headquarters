@@ -98,8 +98,10 @@
   background: var(--paper);
 }
 
-/* Lenker i micrositen */
-.gfgk-jr a {
+/* Lenker i micrositen. :where() gir null spesifisitet slik at regelen kun
+   nøytraliserer nettleserens standard lenkefarge — Tailwind-tekstklasser og
+   inline-stiler på ankere vinner alltid. */
+:where(.gfgk-jr) a {
   color: inherit;
 }
 .gfgk-jr .jr-link {

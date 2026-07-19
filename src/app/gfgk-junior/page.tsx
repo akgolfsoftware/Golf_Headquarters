@@ -1,4 +1,5 @@
 import { ArrowRight, MapPin } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 import { GfgkFooter } from "./_components/gfgk-footer";
@@ -428,11 +429,14 @@ export default async function GfgkJuniorForside() {
             className="flex items-center gap-4 rounded-[var(--r-md)] bg-white p-6 no-underline transition-shadow hover:shadow-lg"
             style={{ boxShadow: "var(--shadow-md)" }}
           >
-            <div
-              className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-[var(--r-sm)] text-[19px] font-black"
-              style={{ background: "var(--ink)", color: "var(--gfgk-gold)" }}
-            >
-              AK
+            <div className="flex h-[60px] w-[84px] shrink-0 items-center justify-center">
+              <Image
+                src="/logos/ak-golf-logo-primary-on-light.svg"
+                alt="AK Golf Academy"
+                width={84}
+                height={60}
+                className="h-full w-auto object-contain"
+              />
             </div>
             <div>
               <h3 className="m-0 mb-1 text-lg font-bold" style={{ color: "var(--ink)" }}>
@@ -448,11 +452,14 @@ export default async function GfgkJuniorForside() {
             className="flex items-center gap-4 rounded-[var(--r-md)] bg-white p-6 no-underline transition-shadow hover:shadow-lg"
             style={{ boxShadow: "var(--shadow-md)" }}
           >
-            <div
-              className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-[var(--r-sm)] text-base font-black text-white"
-              style={{ background: "var(--teal-600)" }}
-            >
-              W
+            <div className="flex h-[64px] w-[84px] shrink-0 items-center justify-center">
+              <Image
+                src="/images/logos/wang.svg"
+                alt="WANG Toppidrett"
+                width={50}
+                height={64}
+                className="h-full w-auto object-contain"
+              />
             </div>
             <div>
               <h3 className="m-0 mb-1 text-lg font-bold" style={{ color: "var(--ink)" }}>
@@ -487,8 +494,8 @@ export default async function GfgkJuniorForside() {
             <div className="mt-6 flex flex-wrap gap-3">
               <a
                 href={`mailto:${KONTAKT.epost}?subject=Påmelding juniortrening`}
-                className="inline-flex min-h-[48px] items-center rounded-full px-7 py-3.5 text-base font-bold text-white no-underline transition-colors"
-                style={{ background: "var(--ink)" }}
+                className="inline-flex min-h-[48px] items-center rounded-full px-7 py-3.5 text-base font-bold no-underline transition-colors"
+                style={{ background: "var(--ink)", color: "var(--gfgk-white)" }}
               >
                 Ta kontakt
               </a>
