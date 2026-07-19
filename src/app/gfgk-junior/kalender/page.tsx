@@ -23,7 +23,9 @@ export const metadata: Metadata = {
 export default async function GfgkJuniorKalenderPage() {
   const grupper = (
     await Promise.all(
-      Object.values(GRUPPE_DB_NAVN).map((navn) => hentGruppeKalenderData(navn)),
+      Object.values(GRUPPE_DB_NAVN).map((navn) =>
+        hentGruppeKalenderData(navn).catch(() => null),
+      ),
     )
   ).filter((g): g is NonNullable<typeof g> => g !== null);
 
