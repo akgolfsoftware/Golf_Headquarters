@@ -184,6 +184,10 @@
     {
       "path": "/api/cron/gfgk-ballplukking-sjekk",
       "schedule": "0 9 * * 3"
+    },
+    {
+      "path": "/api/cron/mulligan-vaskeliste-sjekk",
+      "schedule": "0 8 * * 1"
     }
   ],
   "regions": [
