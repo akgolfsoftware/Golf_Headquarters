@@ -10,10 +10,12 @@ import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { PeriodeInputSchema, type PeriodeInput } from "@/lib/workbench/perioder";
 
-/** YYYY-MM-DD → lokal Date (00:00). Aldri new Date("YYYY-MM-DD") (UTC-fella). */
+/** YYYY-MM-DD → UTC-midnatt. MÅ være UTC, ikke serverens lokale midnatt:
+ * lokal dev (Oslo) skriver ellers 23:00Z/22:00Z dagen FØR til samme DB som
+ * prod (UTC) — datoen sklir én dag bakover per lagring (truffet 2026-07-19). */
 function lokalDag(s: string): Date {
   const [y, m, d] = s.split("-").map(Number);
-  return new Date(y, m - 1, d);
+  return new Date(Date.UTC(y, m - 1, d));
 }
 
 function tilData(input: PeriodeInput) {

@@ -112,3 +112,10 @@ server-actions feiler stille med PrismaClientValidationError («Unknown
 argument»)/gamle typer, selv om tsx-scripts mot samme kode virker. Turbopack
 plukker ikke opp ny generert klient. Regel: RESTART dev-serveren etter hver
 `prisma generate` før Playwright-verifisering.
+
+### Dato-strenger («YYYY-MM-DD») → Date MÅ bruke UTC-midnatt, ikke serverens lokale (truffet 2026-07-19)
+- `new Date(y, m-1, d)` i en server action gir SERVERENS lokale midnatt. Vercel (UTC) = riktig,
+  men lokal dev (Oslo) skriver 22:00Z dagen FØR til samme prod-DB → datoer sklir én dag bakover
+  per lagring fra lokal maskin. Truffet i gruppe-workbench periode-lagring (17.8 ble 16.8).
+- Regel: dags-strenger parses med `new Date(Date.UTC(y, m-1, d))`. Lesing tilbake med lokale
+  getters er trygt i Oslo (øst for UTC). Fikset i `gruppe-periode-actions.ts` + `periode-core.ts`.
