@@ -47,6 +47,7 @@ import { runPlanEffectivenessAgent } from "@/lib/agents/plan-effectiveness-agent
 import { runWagrSync } from "@/lib/agents/wagr-sync";
 import { runLonnSjekkliste, runLonnPurring } from "@/lib/agents/tripletex-lonn-agent";
 import { runMaanedsavslutning } from "@/lib/agents/tripletex-maanedsavslutning-agent";
+import { runBallplukkingSjekk } from "@/lib/agents/gfgk-ballplukking-agent";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -105,6 +106,8 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "tripletex-lonn-sjekkliste": runLonnSjekkliste,
   "tripletex-lonn-purring": runLonnPurring,
   "tripletex-maanedsavslutning": runMaanedsavslutning,
+  // GFGK ballplukking-rotasjon (onsdag) — se .claude/rules/gfgk-junior.md.
+  "gfgk-ballplukking-sjekk": runBallplukkingSjekk,
 };
 
 export async function GET(
