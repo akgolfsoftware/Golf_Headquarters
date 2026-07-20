@@ -428,7 +428,7 @@ function Plan({
             <>
               <section className="wang-card" style={{ padding: 26 }}>
                 <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 16, marginBottom: 24, color: "var(--text-primary)" }}>Sesongtidslinje 2026–2027</div>
-                <div style={{ position: "relative", paddingTop: 26, paddingBottom: 8 }}>
+                <div style={{ position: "relative", paddingTop: 26, paddingBottom: 34 }}>
                   <div style={{ display: "flex", height: 44, borderRadius: 14, overflow: "hidden", boxShadow: "var(--shadow-card-sm)" }}>
                     {timelineSegs.map((g, i) => (
                       <div key={i} style={{ flex: `${g.w} 0 0%`, background: g.color, display: "flex", alignItems: "center", justifyContent: "center", minWidth: 0 }}>
@@ -436,9 +436,10 @@ function Plan({
                       </div>
                     ))}
                   </div>
+                  {/* Turneringsmerker UNDER baren (aldri oppå periodenavnet) — sikksakk i to rader så tette datoer ikke overlapper hverandre. */}
                   {timelineMarks.map((m, i) => (
-                    <div key={i} style={{ position: "absolute", top: 29, left: m.left, transform: "translateX(-50%)", width: 14, height: 38, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
-                      <span style={{ width: 11, height: 11, borderRadius: 2, background: "var(--cat-orange)", border: "2.5px solid var(--surface-card)", boxSizing: "border-box", transform: "rotate(45deg)" }} />
+                    <div key={i} style={{ position: "absolute", top: i % 2 === 0 ? 76 : 92, left: m.left, transform: "translateX(-50%)", pointerEvents: "none" }}>
+                      <span style={{ display: "block", width: 9, height: 9, borderRadius: 999, background: "var(--cat-orange)", border: "2px solid var(--surface-card)", boxSizing: "border-box" }} />
                     </div>
                   ))}
                   <div style={{ position: "absolute", top: 0, left: nowLeft, transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", pointerEvents: "none" }}>
