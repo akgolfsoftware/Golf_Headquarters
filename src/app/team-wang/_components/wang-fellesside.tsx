@@ -35,6 +35,19 @@ import {
   type Okt,
 } from "../_data/wang-plan";
 import type { WangLiveData } from "../_data/hent-wang-gruppe";
+import {
+  type LivePeriode,
+  byggLivePerioder,
+  liveMonthInfo,
+  monthPkLive,
+  periodeFarge,
+  periodeForDato,
+  pctFraSpenn,
+  spennFraPerioder,
+  tidslinjeMerker,
+  tidslinjeSegs,
+  turneringerFraHendelser,
+} from "../_data/live-sesong";
 import { Arshjul } from "./arshjul";
 import { FaneForeldre } from "./fane-foreldre";
 import { FaneKalender } from "./fane-kalender";
@@ -130,9 +143,10 @@ export function WangFellesside({ startFane, live = null }: { startFane: Fane; li
             selMonth={selMonth}
             setSelMonth={setSelMonth}
             onOpen={aapne}
+            live={live}
           />
         ) : fane === "skole" ? (
-          <FaneSkole />
+          <FaneSkole live={live} />
         ) : (
           <FaneForeldre live={live} />
         )}
@@ -164,9 +178,14 @@ function Oversikt({
   const neste = SESSIONS.find((s) => s.iso >= naaIso) ?? SESSIONS[SESSIONS.length - 1];
   const actions = byggHandlinger(naaIso);
   const uke = seasonWeek(naaIso);
-  const pk = periodKey(naa);
-  const periode = PERIODS.find((p) => p.key === pk)!;
+
+  const livePerioder = live && live.perioder.length > 0 ? byggLivePerioder(live.perioder) : null;
+  const periode = livePerioder
+    ? (periodeForDato(livePerioder, naaIso) ?? livePerioder[0])
+    : PERIODS.find((p) => p.key === periodKey(naa))!;
   const ukerIgjen = Math.max(1, Math.round((new Date(periode.end).getTime() - naa.getTime()) / (7 * 864e5)));
+
+  const liveTurneringer = live ? turneringerFraHendelser(live.hendelser) : [];
 
   const ws = weekStartOf(naa);
   ws.setDate(ws.getDate() + weekOffset * 7);
@@ -182,8 +201,11 @@ function Oversikt({
   const denneUka = SESSIONS.filter((s) => s.iso >= iso(cw0) && s.iso <= iso(cw1));
 
   const nesteFrist = actions[0];
-  const nesteComp = COMPS.find((c) => c.iso >= naaIso);
-  const kommendeComps = COMPS.filter((c) => c.iso >= naaIso).slice(0, 4);
+  const turneringVisning: { iso: string; name: string; place: string }[] = live
+    ? liveTurneringer.map((c) => ({ iso: c.startIso, name: c.navn, place: c.sted ?? "Sted ikke oppgitt" }))
+    : COMPS;
+  const nesteComp = turneringVisning.find((c) => c.iso >= naaIso);
+  const kommendeComps = turneringVisning.filter((c) => c.iso >= naaIso).slice(0, 4);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
@@ -326,6 +348,7 @@ function Plan({
   selMonth,
   setSelMonth,
   onOpen,
+  live,
 }: {
   naaIso: string;
   planMain: "Sesong" | "Kalender" | "Samlinger";
@@ -335,10 +358,37 @@ function Plan({
   selMonth: string;
   setSelMonth: (v: string) => void;
   onOpen: (id: string) => void;
+  live: WangLiveData | null;
 }) {
   const [selY, selM] = selMonth.split("-").map(Number);
-  const md = monthInfo(selM, selY, naaIso);
-  const nowLeft = `${Math.max(0, Math.min(100, pct(naaIso)))}%`;
+
+  const livePerioder = live && live.perioder.length > 0 ? byggLivePerioder(live.perioder) : null;
+  const isLive = livePerioder !== null;
+  const spenn = livePerioder ? spennFraPerioder(livePerioder) : null;
+  const liveTurneringer = live ? turneringerFraHendelser(live.hendelser) : [];
+
+  const md = isLive
+    ? liveMonthInfo({
+        m: selM,
+        y: selY,
+        naaIso,
+        perioder: livePerioder!,
+        startIso: spenn!.startIso,
+        endIso: spenn!.endIso,
+        hendelser: live!.hendelser,
+        turneringer: liveTurneringer,
+        skoleDager: live!.skoleDager,
+        fasteOkter: live!.fasteOkter,
+      })
+    : monthInfo(selM, selY, naaIso);
+
+  const nowLeft = isLive
+    ? `${Math.max(0, Math.min(100, pctFraSpenn(naaIso, spenn!.startIso, spenn!.endIso)))}%`
+    : `${Math.max(0, Math.min(100, pct(naaIso)))}%`;
+
+  const timelineSegs = isLive ? tidslinjeSegs(livePerioder!, spenn!.startIso, spenn!.endIso) : TIMELINE_SEGS;
+  const timelineMarks = isLive ? tidslinjeMerker(liveTurneringer, spenn!.startIso, spenn!.endIso) : TIMELINE_MARKS;
+  const periodeFargeKart: Record<string, string> = isLive ? periodeFarge(livePerioder!) : PERIOD_COL;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
@@ -361,9 +411,16 @@ function Plan({
                   <span style={{ fontFamily: "var(--font-body)", fontSize: 12, color: "var(--text-secondary)" }}>Trykk på en måned</span>
                 </div>
                 <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "8px 0" }}>
-                  <Arshjul selMonth={selMonth} naaIso={naaIso} onSelect={(m, y) => setSelMonth(`${y}-${m}`)} />
+                  <Arshjul
+                    selMonth={selMonth}
+                    naaIso={naaIso}
+                    onSelect={(m, y) => setSelMonth(`${y}-${m}`)}
+                    perioder={livePerioder ?? undefined}
+                    turneringer={isLive ? liveTurneringer : undefined}
+                    liveInfo={isLive ? (md as ReturnType<typeof liveMonthInfo>) : undefined}
+                  />
                 </div>
-                <PeriodeLegende />
+                <PeriodeLegende perioder={livePerioder} />
               </section>
               <MaanedDetalj md={md} />
             </div>
@@ -371,17 +428,18 @@ function Plan({
             <>
               <section className="wang-card" style={{ padding: 26 }}>
                 <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 16, marginBottom: 24, color: "var(--text-primary)" }}>Sesongtidslinje 2026–2027</div>
-                <div style={{ position: "relative", paddingTop: 26, paddingBottom: 8 }}>
+                <div style={{ position: "relative", paddingTop: 26, paddingBottom: 34 }}>
                   <div style={{ display: "flex", height: 44, borderRadius: 14, overflow: "hidden", boxShadow: "var(--shadow-card-sm)" }}>
-                    {TIMELINE_SEGS.map((g, i) => (
+                    {timelineSegs.map((g, i) => (
                       <div key={i} style={{ flex: `${g.w} 0 0%`, background: g.color, display: "flex", alignItems: "center", justifyContent: "center", minWidth: 0 }}>
                         <span style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 11.5, color: "var(--white)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", padding: "0 6px" }}>{g.short}</span>
                       </div>
                     ))}
                   </div>
-                  {TIMELINE_MARKS.map((m, i) => (
-                    <div key={i} style={{ position: "absolute", top: 29, left: m.left, transform: "translateX(-50%)", width: 14, height: 38, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
-                      <span style={{ width: 11, height: 11, borderRadius: 2, background: "var(--cat-orange)", border: "2.5px solid var(--surface-card)", boxSizing: "border-box", transform: "rotate(45deg)" }} />
+                  {/* Turneringsmerker UNDER baren (aldri oppå periodenavnet) — sikksakk i to rader så tette datoer ikke overlapper hverandre. */}
+                  {timelineMarks.map((m, i) => (
+                    <div key={i} style={{ position: "absolute", top: i % 2 === 0 ? 76 : 92, left: m.left, transform: "translateX(-50%)", pointerEvents: "none" }}>
+                      <span style={{ display: "block", width: 9, height: 9, borderRadius: 999, background: "var(--cat-orange)", border: "2px solid var(--surface-card)", boxSizing: "border-box" }} />
                     </div>
                   ))}
                   <div style={{ position: "absolute", top: 0, left: nowLeft, transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", pointerEvents: "none" }}>
@@ -392,11 +450,11 @@ function Plan({
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(12,1fr)", gap: 5, marginTop: 16 }}>
                   {MONTH_ORDER.map((mo) => {
                     const key = `${mo[1]}-${mo[0]}`;
-                    const pk = monthPk(mo[0], mo[1]);
+                    const pk = isLive ? monthPkLive(mo[0], mo[1], livePerioder!) : monthPk(mo[0], mo[1]);
                     const isSel = key === selMonth;
                     return (
                       <button key={key} onClick={() => setSelMonth(key)} className="wang-pressable" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 5, padding: "8px 2px 6px", borderRadius: 12, border: "none", cursor: "pointer", background: isSel ? "var(--wang-navy)" : "var(--neutral-50)", color: isSel ? "var(--white)" : "var(--text-secondary)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 11.5 }}>
-                        <span style={{ width: 6, height: 6, borderRadius: 999, background: isSel ? "var(--white)" : PERIOD_COL[pk] }} />
+                        <span style={{ width: 6, height: 6, borderRadius: 999, background: isSel ? "var(--white)" : (periodeFargeKart[pk] ?? "var(--neutral-300)") }} />
                         {MON_SHORT[mo[0]].charAt(0).toUpperCase() + MON_SHORT[mo[0]].slice(1)}
                       </button>
                     );
@@ -441,10 +499,11 @@ function RundKnapp({ children, label, onClick }: { children: React.ReactNode; la
   );
 }
 
-function PeriodeLegende() {
+function PeriodeLegende({ perioder }: { perioder: LivePeriode[] | null }) {
+  const liste = perioder ?? PERIODS;
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center", marginTop: 12, paddingTop: 14, borderTop: "1px solid var(--border-subtle)" }}>
-      {PERIODS.map((p) => (
+      {liste.map((p) => (
         <div key={p.key} style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <span style={{ width: 10, height: 10, borderRadius: 999, background: p.color }} />
           <span style={{ fontFamily: "var(--font-body)", fontSize: 12.5, color: "var(--text-secondary)" }}>{p.name}</span>
@@ -458,7 +517,7 @@ function PeriodeLegende() {
   );
 }
 
-function MaanedDetalj({ md }: { md: ReturnType<typeof monthInfo> }) {
+function MaanedDetalj({ md }: { md: ReturnType<typeof monthInfo> | ReturnType<typeof liveMonthInfo> }) {
   return (
     <section className="wang-card" style={{ padding: 24, display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>

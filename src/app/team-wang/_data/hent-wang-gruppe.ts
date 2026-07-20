@@ -50,12 +50,29 @@ export interface WangHendelseDb {
   beskrivelse: string | null;
 }
 
+export interface WangFastOkt {
+  ukedag: number; // 0=man..6=søn (Oslo)
+  startTid: string;
+  sluttTid: string;
+  sted: string | null;
+  tittel: string;
+}
+
+export interface WangSkoleDagDb {
+  dato: string; // yyyy-mm-dd
+  tittel: string;
+  kategori: string | null;
+  notat: string | null;
+}
+
 export interface WangLiveData {
   gruppeNavn: string;
   antallElever: number;
   elever: WangElev[];
   perioder: WangPeriodeDb[];
   hendelser: WangHendelseDb[]; // ikke-ukentlige enkelthendelser (samlinger, tester, sosialt …)
+  fasteOkter: WangFastOkt[]; // ukentlig rullerende treningstider
+  skoleDager: WangSkoleDagDb[]; // ferier/planleggingsdager/siste skoledag
   oppdatertIso: string; // sist synket (Oslo-dato)
 }
 
@@ -71,6 +88,26 @@ function osloTid(d: Date): string {
     hour12: false,
     timeZone: "Europe/Oslo",
   });
+}
+const NB_UKEDAG: Record<string, number> = {
+  monday: 0,
+  tuesday: 1,
+  wednesday: 2,
+  thursday: 3,
+  friday: 4,
+  saturday: 5,
+  sunday: 6,
+};
+function osloUkedag(d: Date): number {
+  const engelsk = d.toLocaleDateString("en-US", { weekday: "long", timeZone: "Europe/Oslo" }).toLowerCase();
+  return NB_UKEDAG[engelsk] ?? 0;
+}
+// "2026/2027" fra periodenes datospenn — matcher SchoolScheduleEntry.schoolYear.
+function skoleAr(perioder: { startIso: string; endIso: string }[]): string | null {
+  if (perioder.length === 0) return null;
+  const startAar = Math.min(...perioder.map((p) => Number(p.startIso.slice(0, 4))));
+  const sluttAar = Math.max(...perioder.map((p) => Number(p.endIso.slice(0, 4))));
+  return `${startAar}/${sluttAar}`;
 }
 
 /**
@@ -149,12 +186,39 @@ export async function hentWangGruppe(): Promise<WangLiveData | null> {
         beskrivelse: s.description,
       }));
 
+    const fasteOkter: WangFastOkt[] = gruppe.schedules
+      .filter((s) => s.recurring === "WEEKLY")
+      .map((s) => ({
+        ukedag: osloUkedag(s.startAt),
+        startTid: osloTid(s.startAt),
+        sluttTid: osloTid(s.endAt),
+        sted: s.location,
+        tittel: s.title,
+      }));
+
+    const ar = skoleAr(perioder);
+    const skoleRader = ar
+      ? await prisma.schoolScheduleEntry.findMany({
+          where: { schoolYear: ar },
+          orderBy: { date: "asc" },
+          select: { date: true, title: true, category: true, note: true },
+        })
+      : [];
+    const skoleDager: WangSkoleDagDb[] = skoleRader.map((s) => ({
+      dato: osloDato(s.date),
+      tittel: s.title,
+      kategori: s.category,
+      notat: s.note,
+    }));
+
     return {
       gruppeNavn: gruppe.name,
       antallElever: elever.length,
       elever,
       perioder,
       hendelser,
+      fasteOkter,
+      skoleDager,
       oppdatertIso: osloDato(new Date()),
     };
   } catch {

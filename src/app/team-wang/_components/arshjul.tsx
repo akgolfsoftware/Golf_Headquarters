@@ -13,6 +13,13 @@ import {
   monthInfo,
   monthPk,
 } from "../_data/wang-plan";
+import {
+  type LivePeriode,
+  type LiveTurnering,
+  liveMonthInfo,
+  monthPkLive,
+  periodeFarge,
+} from "../_data/live-sesong";
 
 const SIZE = 360;
 const CX = 180;
@@ -37,21 +44,38 @@ export function Arshjul({
   selMonth,
   naaIso,
   onSelect,
+  perioder,
+  turneringer,
+  liveInfo,
 }: {
   selMonth: string; // "år-måned", f.eks "2026-10"
   naaIso: string;
   onSelect: (m: number, y: number) => void;
+  /** Ekte AK-perioder fra AgencyOS — når satt, brukes disse i stedet for demo-PERIODS. */
+  perioder?: LivePeriode[];
+  turneringer?: LiveTurnering[];
+  liveInfo?: ReturnType<typeof liveMonthInfo>;
 }) {
   const now = new Date(naaIso + "T12:00:00");
   const [selY, selM] = selMonth.split("-").map(Number);
-  const info = monthInfo(selM, selY, naaIso);
+  const live = !!(perioder && perioder.length > 0);
+  const farger: Record<string, string> = live ? periodeFarge(perioder!) : PERIOD_COL;
+  const comps = live ? (turneringer ?? []).map((t) => ({ iso: t.startIso })) : COMPS;
+
+  const demoInfo = live ? null : monthInfo(selM, selY, naaIso);
+  const isNow = live ? liveInfo!.isNow : demoInfo!.isNow;
+  const periodLabel = live ? liveInfo!.periodName : demoInfo!.periodShort;
+  const periodColor = live ? liveInfo!.periodColor : demoInfo!.periodColor;
+  const infoName = live ? liveInfo!.name : demoInfo!.name;
+  const infoYear = live ? liveInfo!.year : demoInfo!.year;
+  const sessionCount = live ? liveInfo!.sessionCount : demoInfo!.sessionCount;
 
   return (
     <svg
       viewBox={`0 0 ${SIZE} ${SIZE}`}
       style={{ width: "100%", maxWidth: 380, height: "auto", display: "block", margin: "0 auto", overflow: "visible" }}
       role="img"
-      aria-label={`Årshjul – valgt måned ${info.name} ${info.year}`}
+      aria-label={`Årshjul – valgt måned ${infoName} ${infoYear}`}
     >
       {MONTH_ORDER.map((mo, k) => {
         const key = `${mo[1]}-${mo[0]}`;
@@ -59,8 +83,8 @@ export function Arshjul({
         const gap = 1.8;
         const a0 = k * 30 + gap;
         const a1 = (k + 1) * 30 - gap;
-        const pk = monthPk(mo[0], mo[1]);
-        const col = PERIOD_COL[pk];
+        const pk = live ? monthPkLive(mo[0], mo[1], perioder!) : monthPk(mo[0], mo[1]);
+        const col = farger[pk] ?? "var(--neutral-300)";
         const ro = isSel ? R_OUT + 9 : R_OUT;
         const lp = pol((isSel ? R_OUT + 9 + R_IN : R_OUT + R_IN) / 2, (a0 + a1) / 2);
         const nm = MON_SHORT[mo[0]];
@@ -97,7 +121,7 @@ export function Arshjul({
         );
       })}
 
-      {COMPS.map((c, i) => {
+      {comps.map((c, i) => {
         const cd = new Date(c.iso + "T12:00:00");
         const idx = MONTH_ORDER.findIndex((o) => o[0] === cd.getMonth() && o[1] === cd.getFullYear());
         if (idx < 0) return null;
@@ -117,18 +141,18 @@ export function Arshjul({
       })()}
 
       <circle cx={CX} cy={CY} r={R_IN - 10} fill="var(--surface-card)" />
-      <circle cx={CX} cy={CY} r={R_IN - 10} fill="none" stroke={info.periodColor} strokeWidth={2} opacity={0.5} />
-      <text x={CX} y={CY - 34} textAnchor="middle" style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: "9.5px", letterSpacing: "0.12em", textTransform: "uppercase", fill: info.periodColor }}>
-        {info.isNow ? "NÅ · " + info.periodShort : info.periodShort}
+      <circle cx={CX} cy={CY} r={R_IN - 10} fill="none" stroke={periodColor} strokeWidth={2} opacity={0.5} />
+      <text x={CX} y={CY - 34} textAnchor="middle" style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: "9.5px", letterSpacing: "0.12em", textTransform: "uppercase", fill: periodColor }}>
+        {isNow ? "NÅ · " + periodLabel : periodLabel}
       </text>
       <text x={CX} y={CY - 8} textAnchor="middle" style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: "21px", fill: "var(--text-primary)" }}>
-        {info.name}
+        {infoName}
       </text>
       <text x={CX} y={CY + 11} textAnchor="middle" style={{ fontFamily: "var(--font-body)", fontSize: "11px", fill: "var(--text-secondary)" }}>
-        {info.year}
+        {infoYear}
       </text>
       <text x={CX} y={CY + 38} textAnchor="middle" style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: "17px", fill: "var(--text-primary)" }}>
-        {info.sessionCount} økter
+        {sessionCount} økter
       </text>
     </svg>
   );

@@ -25,6 +25,21 @@ export const metadata: Metadata = {
     "Fellesside for elever og foreldre i golfgruppa ved WANG Toppidrett Fredrikstad — sesongplan, kalender, samlinger, skole og foreldreinfo.",
   // Elevrelatert innhold — holdes utenfor søkemotorer inntil Anders sier noe annet.
   robots: { index: false, follow: false },
+  // Egen PWA-identitet for WANG-micrositen: «Legg til på Hjem-skjerm» gir WANG-
+  // våpenskjoldet som ikon og navnet «WANG Golf» — ikke AK Golf-appens globale manifest.
+  manifest: "/team-wang/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/team-wang/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/team-wang/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: "/team-wang/apple-touch-icon.png",
+  },
+  appleWebApp: {
+    capable: true,
+    title: "WANG Golf",
+    statusBarStyle: "default",
+  },
 };
 
 export default function TeamWangLayout({
