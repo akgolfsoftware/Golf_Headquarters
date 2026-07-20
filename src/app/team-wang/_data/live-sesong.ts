@@ -3,8 +3,8 @@
 // hardkodede PERIODS/COMPS/TIMELINE_*/monthInfo fra wang-plan.ts når live-data
 // finnes. Ingen DB-import her (kalles fra klientkomponenter også).
 
-import type { WangFarge } from "./wang-plan";
-import type { WangHendelseDb, WangPeriodeDb, WangSkoleDagDb, WangFastOkt } from "./hent-wang-gruppe";
+import type { WangFarge, Okt } from "./wang-plan";
+import type { WangHendelseDb, WangPeriodeDb, WangSkoleDagDb, WangFastOkt, WangLiveData } from "./hent-wang-gruppe";
 
 export interface LivePeriode {
   key: string;
@@ -234,4 +234,41 @@ export function liveMonthInfo(params: {
     hasEvents: ev.length > 0,
     events: ev.map((e) => ({ icon: e.icon, color: e.color, title: e.title, sub: e.sub, dateShort: kortDato(e.iso) })),
   };
+}
+
+// ---- Kalenderhendelser (dagdetalj i Plan → Kalender) ----------------------
+// Slår sammen demo-øktmalene (ingen live øktinnhold finnes i basen ennå) med
+// ekte turneringer/tester/skoledager fra AgencyOS — én kilde for alle
+// kalenderprikker, i stedet for den 100 % hardkodede EVENTS-tabellen.
+export interface DagHendelse {
+  type: "okt" | "konkurranse" | "prove" | "skole";
+  label: string;
+  time?: string;
+  sted?: string | null;
+}
+
+export function byggLiveKalenderHendelser(
+  sessions: Pick<Okt, "iso" | "short" | "timeLabel">[],
+  live: WangLiveData | null,
+): Record<string, DagHendelse[]> {
+  const out: Record<string, DagHendelse[]> = {};
+  const push = (iso: string, h: DagHendelse) => {
+    (out[iso] ??= []).push(h);
+  };
+
+  sessions.forEach((s) => push(s.iso, { type: "okt", label: s.short, time: s.timeLabel }));
+
+  if (live) {
+    const turneringer = turneringerFraHendelser(live.hendelser);
+    const turneringNavn = new Set(turneringer.map((t) => t.startIso + t.navn));
+    turneringer.forEach((t) => push(t.startIso, { type: "konkurranse", label: t.navn, sted: t.sted }));
+
+    live.hendelser
+      .filter((h) => /test/i.test(h.tittel) && !turneringNavn.has(h.startIso + h.tittel.replace(/^Turnering:\s*/, "")))
+      .forEach((h) => push(h.startIso, { type: "prove", label: h.tittel, time: h.startTid, sted: h.sted }));
+
+    live.skoleDager.forEach((s) => push(s.dato, { type: "skole", label: s.tittel }));
+  }
+
+  return out;
 }

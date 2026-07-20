@@ -90,6 +90,9 @@ export function WangFellesside({ startFane, live = null }: { startFane: Fane; li
   const [weekOffset, setWeekOffset] = useState(0);
 
   const detalj: Okt | null = detaljId ? SESSION_BY_ID[detaljId] ?? null : null;
+  const detaljIdx = detalj ? SESSIONS.findIndex((s) => s.id === detalj.id) : -1;
+  const forrigeOkt = detaljIdx > 0 ? SESSIONS[detaljIdx - 1] : null;
+  const nesteOkt = detaljIdx >= 0 && detaljIdx < SESSIONS.length - 1 ? SESSIONS[detaljIdx + 1] : null;
   const aapne = (id: string) => {
     setDetaljId(id);
     if (typeof window !== "undefined") window.scrollTo(0, 0);
@@ -130,7 +133,15 @@ export function WangFellesside({ startFane, live = null }: { startFane: Fane; li
 
       <main style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(20px,4vw,36px) clamp(16px,4vw,40px) 72px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: 22 }}>
         {detalj ? (
-          <OktDetalj okt={detalj} onBack={() => setDetaljId(null)} />
+          <OktDetalj
+            okt={detalj}
+            naaIso={naaIso}
+            onBack={() => setDetaljId(null)}
+            onPrev={forrigeOkt ? () => aapne(forrigeOkt.id) : undefined}
+            onNext={nesteOkt ? () => aapne(nesteOkt.id) : undefined}
+            forrigeLabel={forrigeOkt?.short}
+            nesteLabel={nesteOkt?.short}
+          />
         ) : fane === "oversikt" ? (
           <Oversikt naaIso={naaIso} naa={naa} weekOffset={weekOffset} setWeekOffset={setWeekOffset} onOpen={aapne} goTo={(f) => { setFane(f); setDetaljId(null); }} setPlanMain={setPlanMain} live={live} />
         ) : fane === "plan" ? (
@@ -287,29 +298,22 @@ function Oversikt({
             <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 15.5, color: "var(--text-primary)" }}>Ingen fellesøkter denne uka</div>
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 14 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {ukeOkter.map((s) => (
-              <div key={s.id} className="wang-card wang-pressable" onClick={() => onOpen(s.id)} style={{ padding: 16, cursor: "pointer", display: "flex", flexDirection: "column", gap: 12 }}>
-                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
-                    <IconChip icon={s.chipIcon} color={s.chipColor} size={42} />
-                    <div style={{ minWidth: 0 }}>
-                      <div className="wang-num" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 12, color: "var(--text-secondary)", textTransform: "capitalize" }}>{s.dateLabel}</div>
-                      <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 15, color: "var(--text-primary)" }}>{s.typeLabel}</div>
-                    </div>
+              <div key={s.id} className="wang-card wang-pressable" onClick={() => onOpen(s.id)} style={{ padding: "10px 14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 12 }}>
+                <IconChip icon={s.chipIcon} color={s.chipColor} size={38} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
+                    <span className="wang-num" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 11.5, color: "var(--text-secondary)", textTransform: "capitalize" }}>{s.dateLabel}</span>
+                    <span className="wang-num" style={{ fontFamily: "var(--font-body)", fontSize: 11, color: "var(--text-secondary)" }}>· {s.timeLabel}</span>
                   </div>
-                  {s.iso < naaIso ? (
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, height: 24, padding: "0 10px", borderRadius: 999, background: "var(--tint-teal)", color: "var(--wang-teal-text)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 11, whiteSpace: "nowrap", flexShrink: 0 }}>Gjennomført</span>
-                  ) : s.id === neste.id ? (
-                    <span style={{ display: "inline-flex", alignItems: "center", height: 24, padding: "0 10px", borderRadius: 999, background: "var(--wang-navy)", color: "var(--white)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 11, whiteSpace: "nowrap", flexShrink: 0 }}>Neste økt</span>
-                  ) : null}
+                  <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 13.5, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.typeLabel} · {s.locShort}</div>
                 </div>
-                <div style={{ fontFamily: "var(--font-body)", fontSize: 13, lineHeight: 1.45, color: "var(--text-secondary)" }}>{s.title}</div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: "auto", paddingTop: 4 }}>
-                  <span className="wang-num" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 12, color: "var(--text-secondary)" }}>{s.timeLabel}</span>
-                  <span style={{ width: 4, height: 4, borderRadius: 999, background: "var(--neutral-300)" }} />
-                  <span style={{ fontFamily: "var(--font-body)", fontSize: 12, color: "var(--text-secondary)" }}>{s.locShort}</span>
-                </div>
+                {s.iso < naaIso ? (
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5, height: 22, padding: "0 9px", borderRadius: 999, background: "var(--tint-teal)", color: "var(--wang-teal-text)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 10.5, whiteSpace: "nowrap", flexShrink: 0 }}>Gjennomført</span>
+                ) : s.id === neste.id ? (
+                  <span style={{ display: "inline-flex", alignItems: "center", height: 22, padding: "0 9px", borderRadius: 999, background: "var(--wang-navy)", color: "var(--white)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 10.5, whiteSpace: "nowrap", flexShrink: 0 }}>Neste</span>
+                ) : null}
               </div>
             ))}
           </div>
@@ -466,7 +470,7 @@ function Plan({
           )}
         </>
       ) : planMain === "Kalender" ? (
-        <FaneKalender onOpen={onOpen} />
+        <FaneKalender onOpen={onOpen} naaIso={naaIso} live={live} />
       ) : (
         <FaneSamlinger />
       )}
