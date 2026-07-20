@@ -1,0 +1,17 @@
+{
+  "name": "WANG Toppidrett Fredrikstad — Golf",
+  "short_name": "WANG Golf",
+  "description": "Fellesside for golfgruppa ved WANG Toppidrett Fredrikstad — sesongplan, kalender, samlinger, skole og foreldreinfo.",
+  "start_url": "/team-wang",
+  "scope": "/team-wang",
+  "display": "standalone",
+  "background_color": "#17446f",
+  "theme_color": "#17446f",
+  "lang": "nb-NO",
+  "icons": [
+    { "src": "/team-wang/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/team-wang/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/team-wang/icon-192-maskable.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/team-wang/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
