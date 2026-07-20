@@ -523,7 +523,7 @@ export function LoginV2() {
       }}
     >
       <BrandPanel />
-      <div
+      <main
         style={{
           flex: 1,
           minWidth: 0,
@@ -537,7 +537,7 @@ export function LoginV2() {
         <Suspense fallback={<div style={{ width: "100%", maxWidth: 400, height: 420 }} aria-hidden />}>
           <LoginKort />
         </Suspense>
-      </div>
+      </main>
     </div>
   );
 }

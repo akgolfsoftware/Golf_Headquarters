@@ -16,7 +16,7 @@
  * fabrikkerer ingenting. Kun v2-primitiver, ingen rå hex (kun T.*).
  */
 
-import { useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import {
   T,
   fmtSg,
@@ -32,6 +32,8 @@ import {
   Scorekort,
   VarmeKart,
   HjelpTips,
+  Icon,
+  hoverKapabel,
 } from "@/components/v2";
 import { MIN_RUNDER, type HullVarmeCelle, type HullVarmeResultat } from "@/lib/domain/hole-heatmap";
 
@@ -106,6 +108,155 @@ function byggVarmeGrid(celler: HullVarmeCelle[]): {
   return { rows, cols, values, raw };
 }
 
+/* ── Sone-diagram — illustrativt, bane-uavhengig «vei mot green» ───────────
+   (tee → innspill → nærspill → putt). IKKE et geografisk kart — aggregert på
+   tvers av spillerens runder, se docs/design-bestillinger/v2-sonekart-hull-
+   analyse.md for hvorfor et ekte banekart (golfdata HoleAnalysis / Mapbox
+   CourseMap) ble forkastet. Tap/hover-popover per sone er en 1:1-kopi av
+   VarmeKartCelle-mønsteret i src/components/v2/datavis.tsx: ekte hover-enhet
+   åpner ved museover, touch åpner/lukker ved trykk, Escape/fokus-tap lukker.
+   Ny visning av SAMME data som Rad-listen under viser — ingen ny query. ── */
+
+const SONE_IKON: Record<HullSone["id"], string> = {
+  tee: "target",
+  app: "crosshair",
+  arg: "footprints",
+  putt: "flag",
+};
+
+function SoneDiagramBlokk({
+  sone,
+  harData,
+  align,
+}: {
+  sone: HullSone;
+  harData: boolean;
+  align: "left" | "right";
+}) {
+  const [open, setOpen] = useState(false);
+  const kanHover = useRef(false);
+  useEffect(() => {
+    kanHover.current = hoverKapabel();
+  }, []);
+
+  // Tom-tilstand (0 SG-registreringer totalt): nøytral T.mut uansett fortegn
+  // — aldri fabrikker et tall når datagrunnlaget mangler.
+  const visSg = harData && sone.sg != null;
+  const farge = visSg ? (sone.sg! >= 0 ? T.up : T.down) : T.mut;
+  const sgTekst = visSg ? `${fmtSg(sone.sg!)} slag` : "—";
+  const kortTekst = `${sone.label}: ${sgTekst}`;
+
+  return (
+    <span
+      style={{ position: "relative", display: "flex", flex: 1, minWidth: 0 }}
+      onMouseEnter={() => { if (kanHover.current) setOpen(true); }}
+      onMouseLeave={() => { if (kanHover.current) setOpen(false); }}
+    >
+      <span
+        role="button"
+        tabIndex={0}
+        aria-label={kortTekst}
+        aria-expanded={open}
+        title={kortTekst}
+        className="v2-focus"
+        onClick={() => setOpen((o) => !o)}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setOpen(false)}
+        onKeyDown={(e) => { if (e.key === "Escape") setOpen(false); }}
+        style={{
+          flex: 1,
+          minWidth: 0,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 6,
+          padding: "12px 4px 10px",
+          borderRadius: T.rRow,
+          cursor: "pointer",
+          background: T.panel2,
+          border: `1px solid ${T.border}`,
+        }}
+      >
+        <Icon name={SONE_IKON[sone.id]} size={16} style={{ color: farge }} />
+        <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut }}>
+          {sone.kode}
+        </span>
+        <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: farge, fontVariantNumeric: "tabular-nums" }}>
+          {visSg ? fmtSg(sone.sg!) : "—"}
+        </span>
+        <span style={{ width: "70%", height: 4, borderRadius: 9999, background: T.track, overflow: "hidden" }}>
+          <span
+            style={{
+              display: "block",
+              height: "100%",
+              borderRadius: 9999,
+              background: farge,
+              width: visSg ? `${Math.min(100, Math.abs(sone.sg!) * 40 + 14)}%` : "0%",
+            }}
+          />
+        </span>
+      </span>
+
+      {open && (
+        <div
+          role="tooltip"
+          style={{
+            position: "absolute",
+            top: "calc(100% + 8px)",
+            [align === "right" ? "right" : "left"]: 0,
+            zIndex: 50,
+            width: "max-content",
+            maxWidth: 220,
+            background: T.panel3,
+            border: `1px solid ${T.border}`,
+            borderRadius: 12,
+            padding: "11px 13px",
+            boxShadow: "0 12px 32px rgba(0,0,0,0.45)",
+          }}
+        >
+          <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 700, color: T.fg }}>{sone.label}</div>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 14, marginTop: 6 }}>
+            <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>mot Broadie scratch</span>
+            <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: farge }}>{sgTekst}</span>
+          </div>
+          <div style={{ marginTop: 8 }}>
+            <MiniSpark verdier={sone.trend} />
+          </div>
+          <p style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, lineHeight: 1.5, margin: "8px 0 0", paddingTop: 7, borderTop: `1px solid ${T.border}` }}>
+            {sone.okter} økter · {sone.minutter} min siste 30 d
+          </p>
+        </div>
+      )}
+    </span>
+  );
+}
+
+function SoneDiagram({ soner, harData }: { soner: HullSone[]; harData: boolean }) {
+  return (
+    <Kort
+      eyebrow={
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          Sone-kart <HjelpTips k="soneDiagram" size={11} />
+        </span>
+      }
+    >
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 4 }}>
+        {soner.map((s, i) => (
+          <Fragment key={s.id}>
+            {i > 0 && (
+              <span
+                aria-hidden
+                style={{ flex: "0 1 10px", minWidth: 6, height: 2, borderRadius: 2, background: T.border, alignSelf: "center", marginTop: 20 }}
+              />
+            )}
+            <SoneDiagramBlokk sone={s} harData={harData} align={i < soner.length / 2 ? "left" : "right"} />
+          </Fragment>
+        ))}
+      </div>
+    </Kort>
+  );
+}
+
 /* ── Fane 1: Sone-kart (SG + trening per sone) ─────────────────────────── */
 
 function SoneFane({ soner, sgRegistreringer }: { soner: HullSone[]; sgRegistreringer: number }) {
@@ -116,6 +267,8 @@ function SoneFane({ soner, sgRegistreringer }: { soner: HullSone[]; sgRegistreri
 
   return (
     <>
+      <SoneDiagram soner={soner} harData={harData} />
+
       {harData && kategorier.length > 0 ? (
         <SgKategorier
           kategorier={kategorier}

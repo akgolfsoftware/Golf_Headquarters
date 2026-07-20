@@ -456,7 +456,7 @@ export function ForgotPasswordV2() {
       }}
     >
       <BrandPanel />
-      <div
+      <main
         style={{
           flex: 1,
           minWidth: 0,
@@ -468,7 +468,7 @@ export function ForgotPasswordV2() {
         }}
       >
         <ForgotKort />
-      </div>
+      </main>
     </div>
   );
 }

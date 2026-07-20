@@ -244,7 +244,10 @@ export function MRamme({ mobile, aktiv, children }: { mobile: boolean; aktiv: st
       }}
     >
       <MNav mobile={mobile} aktiv={aktiv} />
-      <div style={{ flex: 1 }}>{children}</div>
+      {/* <main>-landemerket forsvant i v2-porten (a11y-regresjon fanget av
+          E2E-testenes locator("main") første gang CI faktisk kjørte) —
+          innholdet mellom nav og footer ER sidens main. */}
+      <main style={{ flex: 1 }}>{children}</main>
       <MFot mobile={mobile} />
     </div>
   );

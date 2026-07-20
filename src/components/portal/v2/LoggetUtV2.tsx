@@ -306,7 +306,7 @@ export function LoggetUtV2({
       }}
     >
       <BrandPanel />
-      <div
+      <main
         style={{
           flex: 1,
           minWidth: 0,
@@ -323,7 +323,7 @@ export function LoggetUtV2({
           marketingHref={marketingHref}
           feedbackEpost={feedbackEpost}
         />
-      </div>
+      </main>
     </div>
   );
 }
