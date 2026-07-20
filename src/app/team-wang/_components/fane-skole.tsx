@@ -18,6 +18,7 @@ import {
   type FagKey,
   type Trinn,
 } from "../_data/wang-plan";
+import type { WangLiveData, WangSkoleDagDb } from "../_data/hent-wang-gruppe";
 import { IconChip, Tabs, yearPillStyle } from "./primitiver";
 
 const OMR_IKON: Record<string, string> = {
@@ -28,7 +29,7 @@ const OMR_IKON: Record<string, string> = {
   "Helsefremmende livsstil": "heart-pulse",
 };
 
-export function FaneSkole() {
+export function FaneSkole({ live = null }: { live?: WangLiveData | null }) {
   const [sub, setSub] = useState<"Vurdering" | "Timeplan" | "Skolerute og prøver">("Vurdering");
 
   return (
@@ -37,7 +38,7 @@ export function FaneSkole() {
         <h1 style={{ margin: 0, fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 24, color: "var(--text-primary)" }}>Skole</h1>
         <Tabs options={["Vurdering", "Timeplan", "Skolerute og prøver"]} value={sub} onChange={(v) => setSub(v as typeof sub)} />
       </div>
-      {sub === "Vurdering" ? <Vurdering /> : sub === "Timeplan" ? <Timeplan /> : <Skolerute />}
+      {sub === "Vurdering" ? <Vurdering /> : sub === "Timeplan" ? <Timeplan /> : <Skolerute live={live} />}
     </div>
   );
 }
@@ -181,13 +182,59 @@ function Timeplan() {
 }
 
 // ---- Skolerute og prøver -----------------------------------------------
-function Skolerute() {
+const MND_KORT = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
+
+function kortDato(iso: string): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  return `${d}. ${MND_KORT[m - 1]} ${y}`;
+}
+function nesteDag(iso: string): string {
+  const d = new Date(iso + "T00:00:00Z");
+  d.setUTCDate(d.getUTCDate() + 1);
+  return d.toISOString().slice(0, 10);
+}
+function skoleType(tittel: string): string {
+  const t = tittel.toLowerCase();
+  if (t === "siste skoledag") return "Avslutning";
+  if (t.includes("planleggingsdag")) return "Elevfri";
+  if (t.includes("ferie")) return "Ferie";
+  return "Fridag";
+}
+/** Grupperer sammenhengende dager med samme tittel til én rad (f.eks. 5 høstferie-dager → «28. sep – 2. okt»). */
+function grupperSkoleDager(dager: WangSkoleDagDb[]): { iso: string; dato: string; name: string; type: string }[] {
+  const sortert = [...dager].sort((a, b) => a.dato.localeCompare(b.dato));
+  const grupper: { start: string; slutt: string; tittel: string }[] = [];
+  for (const d of sortert) {
+    const siste = grupper[grupper.length - 1];
+    if (siste && siste.tittel === d.tittel && nesteDag(siste.slutt) === d.dato) {
+      siste.slutt = d.dato;
+    } else {
+      grupper.push({ start: d.dato, slutt: d.dato, tittel: d.tittel });
+    }
+  }
+  return grupper.map((g) => ({
+    iso: g.start,
+    dato: g.start === g.slutt ? kortDato(g.start) : `${kortDato(g.start)} – ${kortDato(g.slutt)}`,
+    name: g.tittel,
+    type: skoleType(g.tittel),
+  }));
+}
+
+function Skolerute({ live }: { live: WangLiveData | null }) {
+  const skoleListe = live && live.skoleDager.length > 0 ? grupperSkoleDager(live.skoleDager) : SCHOOL;
   return (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 22 }}>
       <section>
-        <SeksjonTittel>Skolerute 2026–2027</SeksjonTittel>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, margin: "2px 2px 12px" }}>
+          <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 17, color: "var(--text-primary)" }}>Skolerute 2026–2027</div>
+          {live && live.skoleDager.length > 0 ? (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 24, padding: "0 11px", borderRadius: 999, background: "var(--tint-teal)", color: "var(--wang-teal-text)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 11, whiteSpace: "nowrap" }}>
+              <span style={{ width: 7, height: 7, borderRadius: 999, background: "var(--wang-mint)" }} />Synket fra AgencyOS
+            </span>
+          ) : null}
+        </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {SCHOOL.map((s) => (
+          {skoleListe.map((s) => (
             <div key={s.iso + s.name} className="wang-card" style={{ padding: "13px 16px", display: "flex", alignItems: "center", gap: 14 }}>
               <div className="wang-num" style={{ flexShrink: 0, minWidth: 108, fontFamily: "var(--font-body)", fontSize: 12.5, color: "var(--text-secondary)" }}>{s.dato}</div>
               <div style={{ flex: 1, minWidth: 0, fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 13.5, color: "var(--text-primary)" }}>{s.name}</div>
