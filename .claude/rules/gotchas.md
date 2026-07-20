@@ -114,13 +114,21 @@ rot» men havnet i `src/app/admin/`, og en `launch.json` ble skrevet til
 `src/app/admin/.claude/`. Regel: bruk absolutte stier, og verifiser med `pwd`
 før filoperasjoner mot rot.
 
-### Ytelse: Vercel-region MÅ matche Supabase-region (oppdatert 2026-07-18)
-Supabase ligger nå i **eu-west-2 (London)** etter kontobyttet (nytt prosjekt
-`dcnxoztjtdqoidaekxry`). Uten `"regions"` i vercel.json kjørte funksjonene i
-default iad1 (USA) — hver Prisma-spørring krysset Atlanteren og sider med mange
-spørringer fikk TTFB på 0,5–1,1 s. Fix: `"regions": ["lhr1"]` i vercel.json
-(London, samlokalisert med DB). Ikke fjern eller endre denne uten å flytte
-databasen samtidig. (Historikk: var eu-west-1/dub1 før 18. juli-byttet.)
+### KANONISK PROD-DB = `eljkjqvggsmnbbszzbpj` (eljk), IKKE dcnx (korrigert 2026-07-20)
+- **Fasit:** appens `.env.local` (DATABASE_URL/DIRECT_URL + NEXT_PUBLIC_SUPABASE_URL) peker på
+  `eljkjqvggsmnbbszzbpj` — DET er den levende prod-databasen. Prosjektet
+  `dcnxoztjtdqoidaekxry` (også kalt «Golf_Headquarters» i Supabase, eu-west-2, opprettet 18. juli)
+  er den GAMLE/døde databasen fra før kontobyttet 19. juli — ikke bruk den, ikke skriv til den.
+- **Konto-felle (oppdaget 2026-07-20):** Supabase-MCP-en var logget inn på den GAMLE kontoen
+  (org `ohxvvrqehngxfknotcyp`, eier dcnx + wang), som IKKE har tilgang til eljk
+  (`get_project(eljk)` → «You do not have permission»). `.mcp.json` er nå scoped til eljk, men
+  MCP-en må re-autoriseres med kontoen som eier eljk før den kan lese prod. Se auto-memory
+  `supabase-mcp-riktig-konto`.
+- **Region (MÅ verifiseres for eljk):** `vercel.json` står på `"regions": ["lhr1"]` (London),
+  satt da dcnx lå i eu-west-2. Bekreft at eljk også ligger i London — hvis eljk er i en annen
+  region krysser hver Prisma-spørring kontinenter (TTFB 0,5–1,1 s målt tidligere med feil region).
+  Vercel-funksjonsregion og Supabase-region SKAL være samlokalisert. Ikke endre `lhr1` uten å
+  matche eljk sin faktiske region. (Historikk: iad1/USA → eu-west-1/dub1 → lhr1/London.)
 
 ### Dev-server med foreldet Prisma-klient etter `prisma generate` (truffet 2×, 2026-07-13)
 Kjører `npx prisma generate` (nytt felt/enum) mens `next dev` står oppe →
