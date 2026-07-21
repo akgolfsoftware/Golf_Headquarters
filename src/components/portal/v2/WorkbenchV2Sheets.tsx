@@ -799,15 +799,29 @@ export function ValgtOktSeksjon({ okt, dag, actions, weekOffset, onEndret }: Val
 
   // WB5 (fasit G4): øktas driller i inspektøren — navn + dose i rekkefølge.
   const [oktDrills, setOktDrills] = useState<{ navn: string; minutter: number | null; sett: number | null; reps: number | null; nivaa: string }[] | null>(null);
+  // AK-formel på valgt økt (læringsfase + miljø) — first-class i Balanse-panelet.
+  const [oktFormel, setOktFormel] = useState<{ lFase: string | null; miljo: string | null } | null>(null);
   useEffect(() => {
     let aktiv = true;
     if (!okt.id || !erPlanKilde(okt)) {
       // Asynkront (mikrotask) — regelen forbyr synkron setState i effekt-kropp.
-      Promise.resolve().then(() => { if (aktiv) setOktDrills(null); });
+      Promise.resolve().then(() => {
+        if (aktiv) {
+          setOktDrills(null);
+          setOktFormel(null);
+        }
+      });
       return () => { aktiv = false; };
     }
     hentOktKomponist(okt.id).then((res) => {
-      if (aktiv) setOktDrills(res.ok ? (res.drills ?? []) : null);
+      if (!aktiv) return;
+      if (res.ok) {
+        setOktDrills(res.drills ?? []);
+        setOktFormel({ lFase: res.lFase ?? null, miljo: res.miljo ?? null });
+      } else {
+        setOktDrills(null);
+        setOktFormel(null);
+      }
     });
     return () => { aktiv = false; };
     // dep på hele okt-objektet: refetch etter router.refresh (nye objekter),
@@ -919,6 +933,55 @@ export function ValgtOktSeksjon({ okt, dag, actions, weekOffset, onEndret }: Val
         >
           {toKl(okt.h, okt.m)} · {fmtVarighet(okt.durMin)}
           {okt.meta.filter(([ic]) => ic === "map-pin").map(([, t]) => ` · ${t}`).join("")}
+        </div>
+      )}
+
+      {(oktFormel?.lFase || oktFormel?.miljo) && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10 }} data-wb-formel-chips>
+          {oktFormel.lFase && (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              <span
+                style={{
+                  fontFamily: T.mono,
+                  fontSize: 9,
+                  fontWeight: 700,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                  color: T.fg2,
+                  background: T.panel2,
+                  border: `1px solid ${T.border}`,
+                  borderRadius: 9999,
+                  padding: "4px 9px",
+                }}
+                title="Læringsfase"
+              >
+                {faseLabel(oktFormel.lFase as LFase)}
+              </span>
+              <HjelpTips k="lFase" size={11} />
+            </span>
+          )}
+          {oktFormel.miljo && (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              <span
+                style={{
+                  fontFamily: T.mono,
+                  fontSize: 9,
+                  fontWeight: 700,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                  color: T.fg2,
+                  background: T.panel2,
+                  border: `1px solid ${T.border}`,
+                  borderRadius: 9999,
+                  padding: "4px 9px",
+                }}
+                title="Miljø"
+              >
+                {oktFormel.miljo}
+              </span>
+              <HjelpTips k="miljo" size={11} />
+            </span>
+          )}
         </div>
       )}
 

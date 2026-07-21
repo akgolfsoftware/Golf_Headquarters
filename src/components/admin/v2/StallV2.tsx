@@ -238,6 +238,13 @@ export function StallV2({ data }: { data: StallV2Data }) {
       (bet.indexOf("Skylder") !== -1 && p.skylder);
     return gOk && sOk && bOk;
   });
+  // Hub-tall (5 sek): på plan / trenger deg / skylder — kun fra ekte rader.
+  const stallKpi = {
+    total: data.spillere.filter((p) => !p.venter).length,
+    trenger: data.spillere.filter((p) => !p.venter && p.trenger).length,
+    iRute: data.spillere.filter((p) => !p.venter && !p.trenger).length,
+    skylder: data.spillere.filter((p) => !p.venter && p.skylder).length,
+  };
   // Aktive/komplette profiler først — aldri-aktiverte bulk-import-rader
   // grupperes bak en egen, kollapsbar «Venter på innlogging»-seksjon.
   const aktiveRader = filtered.filter((p) => !p.venter);
@@ -311,6 +318,40 @@ export function StallV2({ data }: { data: StallV2Data }) {
       </Kort>
     );
 
+  const tilstandKort = (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)",
+        gap: 10,
+      }}
+      data-stall-kpi
+    >
+      {([
+        { l: "Aktive", v: String(stallKpi.total), c: T.fg },
+        { l: "I rute", v: String(stallKpi.iRute), c: T.up },
+        { l: "Trenger deg", v: String(stallKpi.trenger), c: stallKpi.trenger > 0 ? T.down : T.fg },
+        { l: "Skylder", v: String(stallKpi.skylder), c: stallKpi.skylder > 0 ? T.warn : T.fg },
+      ] as const).map((k) => (
+        <Kort key={k.l} pad="12px 14px">
+          <Caps size={9}>{k.l}</Caps>
+          <div
+            style={{
+              fontFamily: T.mono,
+              fontSize: mobile ? 22 : 26,
+              fontWeight: 700,
+              color: k.c,
+              marginTop: 6,
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
+            {k.v}
+          </div>
+        </Kort>
+      ))}
+    </div>
+  );
+
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
@@ -343,6 +384,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {hode}
+        {tilstandKort}
         {filtre}
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
           {aktivListe}
@@ -358,6 +400,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
+      {tilstandKort}
       {filtre}
       <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>

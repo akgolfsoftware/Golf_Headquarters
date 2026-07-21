@@ -30,7 +30,7 @@ export type NesteHandling = {
   href: string;
   ikon: string;
   /** Hvilken regel som vant — til unit-testing og ev. UI-debug. */
-  regel: "plan-godkjenning" | "start-okt" | "planlegg-uke" | "fallback";
+  regel: "plan-godkjenning" | "start-okt" | "planlegg-uke" | "hviledag" | "fallback";
 };
 
 export function nesteBesteHandling(input: NesteHandlingInput): NesteHandling {
@@ -55,16 +55,27 @@ export function nesteBesteHandling(input: NesteHandlingInput): NesteHandling {
   if (!input.ukenHarOkter) {
     return {
       tekst: "Planlegg uka",
-      href: "/portal/planlegge/workbench",
+      href: "/portal/planlegge/workbench?zoom=uke",
       ikon: "calendar-plus",
       regel: "planlegg-uke",
     };
   }
 
+  // Hviledag eller alt fullført i dag, men uken har økter — ikke «Start dagens økt»
+  // mot en tom/ferdig dag (tidligere feil fallback til /gjennomfore).
+  if (!input.dagensOkt) {
+    return {
+      tekst: "Åpne Workbench",
+      href: "/portal/planlegge/workbench?zoom=uke",
+      ikon: "calendar",
+      regel: "hviledag",
+    };
+  }
+
   return {
-    tekst: "Start dagens økt",
-    href: "/portal/gjennomfore",
-    ikon: "play",
+    tekst: "Se uka",
+    href: "/portal/planlegge/workbench?zoom=uke",
+    ikon: "calendar",
     regel: "fallback",
   };
 }

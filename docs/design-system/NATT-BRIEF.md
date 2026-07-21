@@ -58,6 +58,10 @@ Spiller: klarspråk-chip. Hard CANON kan stoppe ugyldig lagring i motor — aldr
 - [x] Branch  
 - [x] NATT-BRIEF  
 - [x] AnalysereV2: Planlegg-dette-bro fra nesteFokus  
-- [ ] Claude Design hi-fi Workbench/analyse-bro  
-- [ ] Shell polish om gap  
-- [ ] Verify + NATT-RAPPORT + draft PR  
+- [x] Komplett plattform-design (wireframe+hi-fi+361)  
+- [x] Hjem: optimalSession → Workbench  
+- [x] nesteBesteHandling: hviledag-regel  
+- [x] Workbench: formel-chips i valgt økt  
+- [x] Stall: hub-KPI  
+- [x] Verify + NATT-RAPPORT + draft PR  
+- [~] Claude Design-synk (token/auth kan trenge fornyelse) 
