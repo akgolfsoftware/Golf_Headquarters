@@ -60,12 +60,22 @@ import { LPHASE_LABEL as LPHASE_LABEL_KANON, LPHASE_FARGE as LPHASE_FARGE_KANON 
 import { sokOvelser, hentOktKomponist, hentMalOktDrills } from "@/lib/workbench/ovelse-sok";
 import type { WorkbenchInsights } from "@/lib/workbench/types";
 import type { WeekEvent } from "@/lib/workbench/week-types";
-import type { PlanStatus } from "@/generated/prisma/client";
+import type { PlanStatus, LFase } from "@/generated/prisma/client";
 import { fmtVarighet, fmtTimer, toKl } from "@/lib/workbench/v2-format";
 import { WEEK_OFFSET_MIN, WEEK_OFFSET_MAX } from "@/lib/workbench/session-move-math";
 import { setWbMode } from "@/lib/workbench/wb-mode-action";
+import { faseLabel } from "@/lib/ak-formel-visning";
 
 export type { WorkbenchV2Actions } from "./WorkbenchV2Sheets";
+
+/** Klarspråk for L-fase i tidslinje — tåler null/ukjent uten å kaste. */
+function faseLabelSafe(lFase: string): string {
+  try {
+    return faseLabel(lFase as LFase);
+  } catch {
+    return lFase;
+  }
+}
 
 /* ── Konstanter ────────────────────────────────────────── */
 const DOW7 = ["MAN", "TIR", "ONS", "TOR", "FRE", "LØR", "SØN"];
@@ -146,6 +156,10 @@ function TLBlokkInnhold({ o, kompakt, h, col }: { o: WeekEvent; kompakt: boolean
   const ak = o.eb as AkseKey;
   const done = o.compliance === "pa-plan";
   const avvik = o.compliance === "avvik" || o.compliance === "ikke-gjennomfort";
+  // Formel-linjer kun når blokken er høy nok — ellers bare tittel.
+  const formelLinje = !kompakt && h >= 72
+    ? [o.miljo, o.lFase ? faseLabelSafe(o.lFase) : null].filter(Boolean).join(" · ")
+    : "";
   return (
     <>
       <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
@@ -155,6 +169,11 @@ function TLBlokkInnhold({ o, kompakt, h, col }: { o: WeekEvent; kompakt: boolean
       </div>
       {!kompakt && <div style={{ fontFamily: T.ui, fontSize: 10.5, fontWeight: 600, color: T.fg, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{o.ttl}</div>}
       {!kompakt && h >= 58 && <div style={{ fontFamily: T.mono, fontSize: 8, color: T.mut, marginTop: 2 }}>{toKl(o.h, o.m)} · {fmtVarighet(o.durMin)}</div>}
+      {formelLinje ? (
+        <div style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, color: T.fg2, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          {formelLinje}
+        </div>
+      ) : null}
     </>
   );
 }

@@ -9,6 +9,9 @@ export type WeekSessionRow = {
   pyramidArea: PyramidArea;
   environment: "RANGE" | "BANE" | "STUDIO" | "HJEM" | "SIMULATOR" | "GYM" | null;
   status: SessionStatus;
+  /** AK-formel på økt-nivå (plan-økter). Null for v2-rader uten speil. */
+  lFase?: string | null;
+  miljo?: string | null;
   _count: { drills: number };
   /** Hvilken tabell raden kommer fra — styrer hvilke handlinger som er gyldige
    *  (flytt/slett virker kun på TrainingPlanSession; v2-id-er er egne cuid-er). */
