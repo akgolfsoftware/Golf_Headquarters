@@ -31,7 +31,15 @@
 | **Stall** | Hub-KPI-rad (5-sekunders tilstand) |
 | **Live summary** | CTA: hjem + Workbench (lukker flyten) |
 | **Gjør (tom dag)** | Workbench + SG-lenker |
+| **Workbench tidslinje** | Læringsfase + miljø på større økt-blokker |
 | **Tester** | 12/12 neste-beste-handling grønn · `tsc` grønn |
+
+### Commits (nyeste først)
+
+- `feat(workbench): vis læringsfase og miljø i tidslinje-blokker`
+- `feat(portal): live-summary og Gjør tom-tilstand…`
+- `feat(portal,admin): hjem SG-anbefaling, hviledag-CTA, formel-chips, stall-KPI`
+- `docs(design): komplett plattform wireframe + hi-fi…`
 
 ## Fortsatt parkert (F1–F7)
 
