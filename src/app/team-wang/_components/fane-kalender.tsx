@@ -20,24 +20,28 @@ const TYPE_LABEL: Record<HendelseType, string> = {
   konkurranse: "Turnering",
   prove: "Test",
   skole: "Skole",
+  samling: "Samling",
 };
 const TYPE_IKON: Record<HendelseType, string> = {
   okt: "flag",
   konkurranse: "trophy",
   prove: "clipboard-list",
   skole: "calendar",
+  samling: "users",
 };
 const TYPE_FARGE: Record<HendelseType, string> = {
   okt: "var(--wang-teal)",
   konkurranse: "var(--cat-orange)",
   prove: "var(--cat-purple)",
   skole: "var(--cat-blue)",
+  samling: "var(--wang-navy)",
 };
-const TYPE_CHIPFARGE: Record<HendelseType, "teal" | "orange" | "purple" | "blue"> = {
+const TYPE_CHIPFARGE: Record<HendelseType, "teal" | "orange" | "purple" | "blue" | "navy"> = {
   okt: "teal",
   konkurranse: "orange",
   prove: "purple",
   skole: "blue",
+  samling: "navy",
 };
 
 function isoOf(y: number, m: number, dag: number): string {
@@ -49,13 +53,18 @@ export function FaneKalender({
   onOpen,
   naaIso,
   live = null,
+  startValgtDag,
 }: {
   onOpen: (id: string) => void;
   naaIso: string;
   live?: WangLiveData | null;
+  /** Sett fra «Nøkkelhendelser» i Plan → Sesong — hopper rett til den dagen (bruk `key` på FaneKalender for å tvinge remount ved nytt hopp). */
+  startValgtDag?: string | null;
 }) {
-  const [sub, setSub] = useState<"Årskalender" | "Kalender" | "Uke">("Årskalender");
-  const [ym, setYm] = useState<[number, number]>([MONTH_ORDER[0][1], MONTH_ORDER[0][0]]);
+  const startAar = startValgtDag ? Number(startValgtDag.slice(0, 4)) : MONTH_ORDER[0][1];
+  const startMnd = startValgtDag ? Number(startValgtDag.slice(5, 7)) - 1 : MONTH_ORDER[0][0];
+  const [sub, setSub] = useState<"Årskalender" | "Kalender" | "Uke">(startValgtDag ? "Kalender" : "Årskalender");
+  const [ym, setYm] = useState<[number, number]>([startAar, startMnd]);
 
   const hendelser = byggLiveKalenderHendelser(SESSIONS, live);
 
@@ -76,7 +85,7 @@ export function FaneKalender({
       {sub === "Årskalender" ? (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: 14 }}>
           {MONTH_ORDER.map(([m, y]) => {
-            const teller: Record<HendelseType, number> = { okt: 0, konkurranse: 0, prove: 0, skole: 0 };
+            const teller: Record<HendelseType, number> = { okt: 0, konkurranse: 0, prove: 0, skole: 0, samling: 0 };
             Object.keys(hendelser).forEach((k) => {
               const [ky, km] = k.split("-").map(Number);
               if (ky === y && km - 1 === m) hendelser[k].forEach((e) => (teller[e.type] += 1));
@@ -109,7 +118,7 @@ export function FaneKalender({
           })}
         </div>
       ) : sub === "Kalender" ? (
-        <MaanedGrid ym={ym} setYm={setYm} onOpen={onOpen} naaIso={naaIso} hendelser={hendelser} />
+        <MaanedGrid ym={ym} setYm={setYm} onOpen={onOpen} naaIso={naaIso} hendelser={hendelser} startValgtDag={startValgtDag ?? null} />
       ) : (
         <UkeListe naaIso={naaIso} onOpen={onOpen} hendelser={hendelser} />
       )}
@@ -124,15 +133,17 @@ function MaanedGrid({
   onOpen,
   naaIso,
   hendelser,
+  startValgtDag,
 }: {
   ym: [number, number];
   setYm: (v: [number, number]) => void;
   onOpen: (id: string) => void;
   naaIso: string;
   hendelser: Record<string, DagHendelse[]>;
+  startValgtDag?: string | null;
 }) {
   const [y, m] = ym;
-  const [valgtDag, setValgtDag] = useState<string | null>(null);
+  const [valgtDag, setValgtDag] = useState<string | null>(startValgtDag ?? null);
   const first = new Date(y, m, 1);
   const startOffset = (first.getDay() + 6) % 7;
   const days = new Date(y, m + 1, 0).getDate();
@@ -325,7 +336,7 @@ function UkeListe({
 }
 
 function Legende() {
-  const rows: [HendelseType, string][] = [["okt", "Treningsøkt"], ["konkurranse", "Turnering"], ["prove", "Test"], ["skole", "Skole"]];
+  const rows: [HendelseType, string][] = [["okt", "Treningsøkt"], ["konkurranse", "Turnering"], ["prove", "Test"], ["skole", "Skole"], ["samling", "Samling"]];
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center" }}>
       {rows.map(([t, l]) => (

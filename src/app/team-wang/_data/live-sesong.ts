@@ -3,7 +3,7 @@
 // hardkodede PERIODS/COMPS/TIMELINE_*/monthInfo fra wang-plan.ts når live-data
 // finnes. Ingen DB-import her (kalles fra klientkomponenter også).
 
-import type { WangFarge, Okt } from "./wang-plan";
+import { COMPS, TESTS, SCHOOL, TRAINING_CAMPS, FULL_DAY_CAMPS, PARENT_MEETINGS, type WangFarge, type Okt } from "./wang-plan";
 import type { WangHendelseDb, WangPeriodeDb, WangSkoleDagDb, WangFastOkt, WangLiveData } from "./hent-wang-gruppe";
 
 export interface LivePeriode {
@@ -146,7 +146,7 @@ export interface LiveMonthInfo {
   testCount: number;
   focus: string;
   hasEvents: boolean;
-  events: { icon: string; color: WangFarge; title: string; sub: string; dateShort: string }[];
+  events: { iso: string; icon: string; color: WangFarge; title: string; sub: string; dateShort: string }[];
 }
 
 const MND_KORT = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
@@ -232,7 +232,7 @@ export function liveMonthInfo(params: {
     testCount: testerIMaaned.length,
     focus: periode ? periode.focus : "Ingen registrert AK-periode denne måneden — utenom sesongspennet i AgencyOS.",
     hasEvents: ev.length > 0,
-    events: ev.map((e) => ({ icon: e.icon, color: e.color, title: e.title, sub: e.sub, dateShort: kortDato(e.iso) })),
+    events: ev.map((e) => ({ iso: e.iso, icon: e.icon, color: e.color, title: e.title, sub: e.sub, dateShort: kortDato(e.iso) })),
   };
 }
 
@@ -241,7 +241,7 @@ export function liveMonthInfo(params: {
 // ekte turneringer/tester/skoledager fra AgencyOS — én kilde for alle
 // kalenderprikker, i stedet for den 100 % hardkodede EVENTS-tabellen.
 export interface DagHendelse {
-  type: "okt" | "konkurranse" | "prove" | "skole";
+  type: "okt" | "konkurranse" | "prove" | "skole" | "samling";
   label: string;
   time?: string;
   sted?: string | null;
@@ -267,7 +267,21 @@ export function byggLiveKalenderHendelser(
       .filter((h) => /test/i.test(h.tittel) && !turneringNavn.has(h.startIso + h.tittel.replace(/^Turnering:\s*/, "")))
       .forEach((h) => push(h.startIso, { type: "prove", label: h.tittel, time: h.startTid, sted: h.sted }));
 
+    live.hendelser
+      .filter((h) => h.kind === "SAMLING" || h.kind === "HELDAGSSAMLING")
+      .forEach((h) => push(h.startIso, { type: "samling", label: h.tittel, time: h.startTid, sted: h.sted }));
+
     live.skoleDager.forEach((s) => push(s.dato, { type: "skole", label: s.tittel }));
+  } else {
+    // Demo-fallback (ingen AgencyOS-data tilgjengelig) — samme kategorier
+    // som live-grenen, hentet fra sesongplan-malen i wang-plan.ts, slik at
+    // kalenderen og «Nøkkelhendelser» (monthInfo) alltid viser samme hendelser.
+    COMPS.forEach((c) => push(c.iso, { type: "konkurranse", label: c.name, sted: c.place }));
+    TESTS.forEach((t) => push(t.iso, { type: "prove", label: t.name }));
+    SCHOOL.forEach((s) => push(s.iso, { type: "skole", label: s.name }));
+    TRAINING_CAMPS.forEach((c) => push(c.iso, { type: "samling", label: c.name, sted: c.hvor }));
+    FULL_DAY_CAMPS.forEach((c) => push(c.iso, { type: "samling", label: c.tema, sted: c.hvor }));
+    PARENT_MEETINGS.forEach((p) => push(p.iso, { type: "skole", label: "Foreldremøte: " + p.tema, time: p.tid, sted: p.hvor }));
   }
 
   return out;
