@@ -29,6 +29,8 @@
 | **Optimal-session tekst** | Klarspråk (Nærspill…), ikke «SG ARG» |
 | **Workbench Balanse** | Formel-chips (læringsfase + miljø) på valgt økt |
 | **Stall** | Hub-KPI-rad (5-sekunders tilstand) |
+| **Live summary** | CTA: hjem + Workbench (lukker flyten) |
+| **Gjør (tom dag)** | Workbench + SG-lenker |
 | **Tester** | 12/12 neste-beste-handling grønn · `tsc` grønn |
 
 ## Fortsatt parkert (F1–F7)
