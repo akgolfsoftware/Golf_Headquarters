@@ -63,7 +63,9 @@ export function FaneKalender({
 }) {
   const startAar = startValgtDag ? Number(startValgtDag.slice(0, 4)) : MONTH_ORDER[0][1];
   const startMnd = startValgtDag ? Number(startValgtDag.slice(5, 7)) - 1 : MONTH_ORDER[0][0];
-  const [sub, setSub] = useState<"Årskalender" | "Kalender" | "Uke">(startValgtDag ? "Kalender" : "Årskalender");
+  // Standardvisning er Uke — Anders' beslutning: trykk på Kalender skal gi inneværende
+  // uke + oversikt over kommende uke (økter/skole/turneringer), ikke årsoversikten.
+  const [sub, setSub] = useState<"Årskalender" | "Kalender" | "Uke">(startValgtDag ? "Kalender" : "Uke");
   const [ym, setYm] = useState<[number, number]>([startAar, startMnd]);
 
   const hendelser = byggLiveKalenderHendelser(SESSIONS, live);
@@ -72,7 +74,7 @@ export function FaneKalender({
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 16, flexWrap: "wrap" }}>
         <div style={{ display: "inline-flex", gap: 4, padding: 4, borderRadius: 999, background: "var(--surface-card)", boxShadow: "var(--shadow-card-sm)", overflowX: "auto" }}>
-          {(["Årskalender", "Kalender", "Uke"] as const).map((o) => (
+          {(["Uke", "Kalender", "Årskalender"] as const).map((o) => (
             <button key={o} onClick={() => setSub(o)} className="wang-pressable" style={{ display: "inline-flex", alignItems: "center", height: 36, padding: "0 16px", borderRadius: 999, border: "none", cursor: "pointer", whiteSpace: "nowrap", fontFamily: "var(--font-brand)", fontWeight: 600, fontSize: 13, background: o === sub ? "var(--wang-navy)" : "transparent", color: o === sub ? "var(--white)" : "var(--text-secondary)" }}>
               {o}
             </button>

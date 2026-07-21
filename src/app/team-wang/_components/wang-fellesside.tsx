@@ -396,7 +396,9 @@ function Plan({
     : `${Math.max(0, Math.min(100, pct(naaIso)))}%`;
 
   const timelineSegs = isLive ? tidslinjeSegs(livePerioder!, spenn!.startIso, spenn!.endIso) : TIMELINE_SEGS;
-  const timelineMarks = isLive ? tidslinjeMerker(liveTurneringer, spenn!.startIso, spenn!.endIso) : TIMELINE_MARKS;
+  const timelineMarks = isLive
+    ? tidslinjeMerker(liveTurneringer, spenn!.startIso, spenn!.endIso)
+    : TIMELINE_MARKS.map((m) => ({ left: m.left, count: 1 }));
   const periodeFargeKart: Record<string, string> = isLive ? periodeFarge(livePerioder!) : PERIOD_COL;
 
   return (
@@ -445,10 +447,28 @@ function Plan({
                       </div>
                     ))}
                   </div>
-                  {/* Turneringsmerker UNDER baren (aldri oppå periodenavnet) — sikksakk i to rader så tette datoer ikke overlapper hverandre. */}
+                  {/* Turneringsmerker UNDER baren (aldri oppå periodenavnet). Tette datoer slås
+                      sammen til ÉN klynge med tallbadge (tidslinjeMerker) — aldri flere separate
+                      prikker på samme sted, som kan leses som duplikate hendelser. */}
                   {timelineMarks.map((m, i) => (
-                    <div key={i} style={{ position: "absolute", top: i % 2 === 0 ? 76 : 92, left: m.left, transform: "translateX(-50%)", pointerEvents: "none" }}>
-                      <span style={{ display: "block", width: 9, height: 9, borderRadius: 999, background: "var(--cat-orange)", border: "2px solid var(--surface-card)", boxSizing: "border-box" }} />
+                    <div key={i} style={{ position: "absolute", top: 76, left: m.left, transform: "translateX(-50%)", pointerEvents: "none" }}>
+                      <span
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: m.count > 1 ? 15 : 9,
+                          height: m.count > 1 ? 15 : 9,
+                          borderRadius: 999,
+                          background: "var(--cat-orange)",
+                          border: "2px solid var(--surface-card)",
+                          boxSizing: "border-box",
+                        }}
+                      >
+                        {m.count > 1 ? (
+                          <span className="wang-num" style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: 8, lineHeight: 1, color: "var(--white)" }}>{m.count}</span>
+                        ) : null}
+                      </span>
                     </div>
                   ))}
                   <div style={{ position: "absolute", top: 0, left: nowLeft, transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", pointerEvents: "none" }}>

@@ -113,9 +113,16 @@ export interface LiveTurnering {
   sted: string | null;
 }
 
+/** Eneste sted som avgjør om en GroupSchedule-rad er en turnering — brukes både til å
+ * BYGGE turneringslisten og til å EKSKLUDERE turneringer fra andre hendelseslister
+ * (f.eks. «Kommende samlinger og tester»), slik at samme hendelse aldri vises to steder. */
+export function erTurneringstittel(tittel: string): boolean {
+  return tittel.startsWith("Turnering:") || tittel.startsWith("Klubbmesterskap");
+}
+
 export function turneringerFraHendelser(hendelser: WangHendelseDb[]): LiveTurnering[] {
   return hendelser
-    .filter((h) => h.tittel.startsWith("Turnering:") || h.tittel.startsWith("Klubbmesterskap"))
+    .filter((h) => erTurneringstittel(h.tittel))
     .map((h) => ({
       navn: h.tittel.replace(/^Turnering:\s*/, ""),
       startIso: h.startIso,
@@ -125,12 +132,29 @@ export function turneringerFraHendelser(hendelser: WangHendelseDb[]): LiveTurner
     .sort((a, b) => a.startIso.localeCompare(b.startIso));
 }
 
-export function tidslinjeMerker(
-  turneringer: LiveTurnering[],
-  startIso: string,
-  endIso: string,
-): { left: string }[] {
-  return turneringer.map((t) => ({ left: pctFraSpenn(t.startIso, startIso, endIso).toFixed(1) + "%" }));
+export interface LiveTidslinjeMerke {
+  left: string;
+  /** Antall turneringer klynget på denne posisjonen (tette datoer slås sammen med tallbadge, aldri flere separate prikker som kan leses som duplikater). */
+  count: number;
+}
+
+/** Slår sammen turneringer som ligger tettere enn TERSKEL prosentpoeng til én klynge — unngår at
+ * tette datoer (f.eks. flere turneringer samme uke) vises som mange overlappende/duplikat-aktige prikker. */
+export function tidslinjeMerker(turneringer: LiveTurnering[], startIso: string, endIso: string): LiveTidslinjeMerke[] {
+  const TERSKEL = 2.5;
+  const posisjoner = turneringer
+    .map((t) => pctFraSpenn(t.startIso, startIso, endIso))
+    .sort((a, b) => a - b);
+  const klynger: number[][] = [];
+  for (const p of posisjoner) {
+    const siste = klynger[klynger.length - 1];
+    if (siste && p - siste[siste.length - 1] <= TERSKEL) siste.push(p);
+    else klynger.push([p]);
+  }
+  return klynger.map((k) => ({
+    left: (k.reduce((a, b) => a + b, 0) / k.length).toFixed(1) + "%",
+    count: k.length,
+  }));
 }
 
 // ---- Måneddetalj (erstatter monthInfo() fra wang-plan.ts) ----------------
@@ -260,11 +284,10 @@ export function byggLiveKalenderHendelser(
 
   if (live) {
     const turneringer = turneringerFraHendelser(live.hendelser);
-    const turneringNavn = new Set(turneringer.map((t) => t.startIso + t.navn));
     turneringer.forEach((t) => push(t.startIso, { type: "konkurranse", label: t.navn, sted: t.sted }));
 
     live.hendelser
-      .filter((h) => /test/i.test(h.tittel) && !turneringNavn.has(h.startIso + h.tittel.replace(/^Turnering:\s*/, "")))
+      .filter((h) => /test/i.test(h.tittel) && !erTurneringstittel(h.tittel))
       .forEach((h) => push(h.startIso, { type: "prove", label: h.tittel, time: h.startTid, sted: h.sted }));
 
     live.hendelser
