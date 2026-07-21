@@ -365,6 +365,11 @@ function Plan({
   live: WangLiveData | null;
 }) {
   const [selY, selM] = selMonth.split("-").map(Number);
+  const [kalenderHopp, setKalenderHopp] = useState<string | null>(null);
+  const hoppTilKalenderDag = (iso: string) => {
+    setPlanMain("Kalender");
+    setKalenderHopp(iso);
+  };
 
   const livePerioder = live && live.perioder.length > 0 ? byggLivePerioder(live.perioder) : null;
   const isLive = livePerioder !== null;
@@ -391,7 +396,9 @@ function Plan({
     : `${Math.max(0, Math.min(100, pct(naaIso)))}%`;
 
   const timelineSegs = isLive ? tidslinjeSegs(livePerioder!, spenn!.startIso, spenn!.endIso) : TIMELINE_SEGS;
-  const timelineMarks = isLive ? tidslinjeMerker(liveTurneringer, spenn!.startIso, spenn!.endIso) : TIMELINE_MARKS;
+  const timelineMarks = isLive
+    ? tidslinjeMerker(liveTurneringer, spenn!.startIso, spenn!.endIso)
+    : TIMELINE_MARKS.map((m) => ({ left: m.left, count: 1 }));
   const periodeFargeKart: Record<string, string> = isLive ? periodeFarge(livePerioder!) : PERIOD_COL;
 
   return (
@@ -426,7 +433,7 @@ function Plan({
                 </div>
                 <PeriodeLegende perioder={livePerioder} />
               </section>
-              <MaanedDetalj md={md} />
+              <MaanedDetalj md={md} onOpenDag={hoppTilKalenderDag} />
             </div>
           ) : (
             <>
@@ -440,10 +447,28 @@ function Plan({
                       </div>
                     ))}
                   </div>
-                  {/* Turneringsmerker UNDER baren (aldri oppå periodenavnet) — sikksakk i to rader så tette datoer ikke overlapper hverandre. */}
+                  {/* Turneringsmerker UNDER baren (aldri oppå periodenavnet). Tette datoer slås
+                      sammen til ÉN klynge med tallbadge (tidslinjeMerker) — aldri flere separate
+                      prikker på samme sted, som kan leses som duplikate hendelser. */}
                   {timelineMarks.map((m, i) => (
-                    <div key={i} style={{ position: "absolute", top: i % 2 === 0 ? 76 : 92, left: m.left, transform: "translateX(-50%)", pointerEvents: "none" }}>
-                      <span style={{ display: "block", width: 9, height: 9, borderRadius: 999, background: "var(--cat-orange)", border: "2px solid var(--surface-card)", boxSizing: "border-box" }} />
+                    <div key={i} style={{ position: "absolute", top: 76, left: m.left, transform: "translateX(-50%)", pointerEvents: "none" }}>
+                      <span
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: m.count > 1 ? 15 : 9,
+                          height: m.count > 1 ? 15 : 9,
+                          borderRadius: 999,
+                          background: "var(--cat-orange)",
+                          border: "2px solid var(--surface-card)",
+                          boxSizing: "border-box",
+                        }}
+                      >
+                        {m.count > 1 ? (
+                          <span className="wang-num" style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: 8, lineHeight: 1, color: "var(--white)" }}>{m.count}</span>
+                        ) : null}
+                      </span>
                     </div>
                   ))}
                   <div style={{ position: "absolute", top: 0, left: nowLeft, transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", pointerEvents: "none" }}>
@@ -465,12 +490,12 @@ function Plan({
                   })}
                 </div>
               </section>
-              <MaanedDetalj md={md} />
+              <MaanedDetalj md={md} onOpenDag={hoppTilKalenderDag} />
             </>
           )}
         </>
       ) : planMain === "Kalender" ? (
-        <FaneKalender onOpen={onOpen} naaIso={naaIso} live={live} />
+        <FaneKalender key={kalenderHopp ?? "std"} onOpen={onOpen} naaIso={naaIso} live={live} startValgtDag={kalenderHopp} />
       ) : (
         <FaneSamlinger />
       )}
@@ -521,7 +546,13 @@ function PeriodeLegende({ perioder }: { perioder: LivePeriode[] | null }) {
   );
 }
 
-function MaanedDetalj({ md }: { md: ReturnType<typeof monthInfo> | ReturnType<typeof liveMonthInfo> }) {
+function MaanedDetalj({
+  md,
+  onOpenDag,
+}: {
+  md: ReturnType<typeof monthInfo> | ReturnType<typeof liveMonthInfo>;
+  onOpenDag: (iso: string) => void;
+}) {
   return (
     <section className="wang-card" style={{ padding: 24, display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
@@ -543,13 +574,21 @@ function MaanedDetalj({ md }: { md: ReturnType<typeof monthInfo> | ReturnType<ty
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <div className="t-label" style={{ color: "var(--text-secondary)" }}>Nøkkelhendelser</div>
           {md.events.map((e, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 13px", borderRadius: 14, background: "var(--neutral-50)" }}>
+            <div
+              key={i}
+              onClick={() => onOpenDag(e.iso)}
+              className="wang-pressable"
+              style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 13px", borderRadius: 14, background: "var(--neutral-50)", cursor: "pointer" }}
+            >
               <IconChip icon={e.icon} color={e.color} size={38} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 13.5, color: "var(--text-primary)" }}>{e.title}</div>
                 <div style={{ fontFamily: "var(--font-body)", fontSize: 12, color: "var(--text-secondary)", marginTop: 1 }}>{e.sub}</div>
               </div>
-              <span className="wang-num" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 12.5, color: "var(--text-secondary)", whiteSpace: "nowrap", flexShrink: 0 }}>{e.dateShort}</span>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2, flexShrink: 0 }}>
+                <span className="wang-num" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 12.5, color: "var(--text-secondary)", whiteSpace: "nowrap" }}>{e.dateShort}</span>
+                <span style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 10.5, color: "var(--wang-teal-text)", whiteSpace: "nowrap" }}>Se i kalender →</span>
+              </div>
             </div>
           ))}
         </div>

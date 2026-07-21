@@ -1240,7 +1240,7 @@ export interface MonthInfo {
   campCount: number;
   focus: string;
   locLabel: string;
-  events: { icon: string; color: WangFarge; title: string; sub: string; dateShort: string }[];
+  events: { iso: string; icon: string; color: WangFarge; title: string; sub: string; dateShort: string }[];
   hasEvents: boolean;
 }
 
@@ -1291,6 +1291,7 @@ export function monthInfo(m: number, y: number, naaIso: string | null): MonthInf
       : "Ingen organisert fellestrening denne måneden – sesongen er utenom aktiv periode.",
     locLabel: hasSport ? golf.name + " + Active Trening" : "—",
     events: ev.map((e) => ({
+      iso: e.iso,
       icon: e.icon,
       color: e.color,
       title: e.title,

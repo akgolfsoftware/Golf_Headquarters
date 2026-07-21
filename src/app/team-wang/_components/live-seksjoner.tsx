@@ -6,6 +6,7 @@
 // kompilering, så ingenting server-only havner i klientbundelen.
 
 import type { WangLiveData } from "../_data/hent-wang-gruppe";
+import { erTurneringstittel } from "../_data/live-sesong";
 import { IconChip } from "./primitiver";
 
 const MND_KORT = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
@@ -40,8 +41,10 @@ function SyncStempel({ oppdatertIso }: { oppdatertIso: string }) {
 // ---- Kommende hendelser fra AgencyOS (ekte GroupSchedule) ----------------
 export function AgencyOsHendelser({ live, naaIso }: { live: WangLiveData | null; naaIso: string }) {
   if (!live) return null;
+  // Turneringer ekskluderes her — de vises allerede i «Kommende turneringer»
+  // lenger ned på Oversikt, og skal aldri dupliseres på tvers av seksjoner.
   const kommende = live.hendelser
-    .filter((h) => h.sluttIso >= naaIso)
+    .filter((h) => h.sluttIso >= naaIso && !erTurneringstittel(h.tittel))
     .sort((a, b) => a.startIso.localeCompare(b.startIso))
     .slice(0, 6);
 
