@@ -230,7 +230,31 @@ export function HjemV2({ data }: { data: DashboardData }) {
               )}
             </>
           ) : (
-            <TomTilstand icon="calendar" title="Ingen økt i dag" sub="Nyt hviledagen — eller legg til en økt i Plan." />
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <TomTilstand
+                icon="calendar"
+                title="Ingen økt i dag"
+                sub="Nyt hviledagen — eller planlegg fra SG-svakheten din i Workbench."
+              />
+              <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none" }}>
+                <CTAPill icon="calendar" full>
+                  Åpne Workbench
+                </CTAPill>
+              </Link>
+              <Link
+                href="/portal/analysere"
+                style={{
+                  textDecoration: "none",
+                  fontFamily: T.ui,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: T.fg2,
+                  textAlign: "center",
+                }}
+              >
+                Se SG og planlegg resept
+              </Link>
+            </div>
           )}
         </Kort>
       </div>

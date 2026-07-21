@@ -27,13 +27,17 @@
 | **Sikkerhet/CSP** | `unsafe-eval` kun i development |
 | **Kvalitet** | `tsc --noEmit` grønn på commit |
 
-## Ikke ferdig (planlagt, blokkert eller parkert)
+## Oppdatert 2026-07-21 (fortsettelse)
 
-| Punkt | Årsak |
+| Punkt | Status |
 |---|---|
-| Claude Design hi-fi Workbench/analyse | Design MCP **401** (token uten design-scope / må `/design-login` på nytt) |
-| Full shell-polish alle ruter | Tid; P0 bro prioritert |
-| F1–F7 store funksjoner | Bevisst parkert (ny-okt DB, Gantt, offline, AI uke, landing, aktivering) |
+| Claude Design hi-fi SG→Workbench | **Lastet opp** `ui_kits/v2/hifi-sg-workbench-bro.html` |
+| Hjem tom dag → Workbench | **Kode:** CTA «Åpne Workbench» + lenke til SG |
+| Analysere Planlegg-dette | Allerede i PR |
+| F1–F7 store funksjoner | Fortsatt parkert |
+
+**Se mockup:** https://claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d?file=ui_kits%2Fv2%2Fhifi-sg-workbench-bro.html  
+**Lokalt:** `docs/design-system/wireframes/hifi-sg-workbench-bro.html`
 
 ## Sikkerhet (mini)
 
