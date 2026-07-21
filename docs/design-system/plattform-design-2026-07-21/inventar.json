@@ -1,0 +1,3612 @@
+[
+  {
+    "path": "/",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Start",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/admin",
+    "product": "AgencyOS",
+    "family": "Hub",
+    "title": "AgencyOS",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/agencyos",
+    "product": "AgencyOS",
+    "family": "Hub",
+    "title": "AgencyOS cockpit",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/agencyos/caddie",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "AgencyOS cockpit · Caddie",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/agencyos/caddie/aktivitet",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Caddie · Aktivitet",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/agencyos/caddie/dashbord",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Caddie · Dashbord",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/agencyos/live",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "AgencyOS cockpit · Live",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/agencyos/okonomi",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "AgencyOS cockpit · Økonomi",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/agencyos/spillere",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS cockpit · Spillere",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/agencyos/uka",
+    "product": "AgencyOS",
+    "family": "Kalender",
+    "title": "AgencyOS cockpit · Uka",
+    "job": "Se tid og handle der du ser det",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/agent-team",
+    "product": "AgencyOS",
+    "family": "Hub",
+    "title": "AgencyOS · Agent Team",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/agents",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · Agenter",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/agents/[agentId]",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "AgencyOS · Agenter",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/analyse",
+    "product": "AgencyOS",
+    "family": "Analyse",
+    "title": "AgencyOS · Analyse",
+    "job": "Se tilstand på 5 sek, årsak på 30 sek",
+    "cta": "Planlegg dette",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/analysere/compliance",
+    "product": "AgencyOS",
+    "family": "Analyse",
+    "title": "Analysere · Compliance",
+    "job": "Se tilstand på 5 sek, årsak på 30 sek",
+    "cta": "Planlegg dette",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/approvals",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · Godkjenninger",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/approvals/[id]",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "AgencyOS · Godkjenninger",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/audit-log",
+    "product": "AgencyOS",
+    "family": "Hub",
+    "title": "AgencyOS · Audit Log",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/bookinger",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · Bookinger",
+    "job": "Booke eller endre tid",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/bookinger/[id]",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "AgencyOS · Bookinger",
+    "job": "Booke eller endre tid",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/bookinger/ny",
+    "product": "AgencyOS",
+    "family": "Wizard",
+    "title": "Bookinger · Ny",
+    "job": "Booke eller endre tid",
+    "cta": "Neste / Fullfør",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/brief",
+    "product": "AgencyOS",
+    "family": "Live",
+    "title": "AgencyOS · Brief",
+    "job": "Logge underveis uten distraksjon",
+    "cta": "Pause / Neste / Avslutt",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/calendar",
+    "product": "AgencyOS",
+    "family": "Kalender",
+    "title": "AgencyOS · Calendar",
+    "job": "Se tid og handle der du ser det",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/calendar/maned",
+    "product": "AgencyOS",
+    "family": "Kalender",
+    "title": "Maned",
+    "job": "Se tid og handle der du ser det",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/drills/[id]/rediger",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Driller · Rediger",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/email-templates",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · E-postmaler",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/email-templates/[id]/rediger",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "E-postmaler · Rediger",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/finance",
+    "product": "AgencyOS",
+    "family": "Hub",
+    "title": "AgencyOS · Økonomi",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/gjennomfore",
+    "product": "AgencyOS",
+    "family": "Hub",
+    "title": "AgencyOS · Gjennomføre",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/gjennomfore/okter/[id]",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Gjennomføre · Økter",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/godkjenninger",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · Godkjenninger",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/grupper",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · Grupper",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/grupper/[id]",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "AgencyOS · Grupper",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/grupper/[id]/arsplan",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Grupper · Arsplan",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/grupper/[id]/arsplan/skoledata",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Skoledata",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/grupper/[id]/timeplan",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Grupper · Timeplan",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/grupper/[id]/workbench",
+    "product": "AgencyOS",
+    "family": "Kalender",
+    "title": "Grupper · Workbench",
+    "job": "Planlegge og flytte økter i tid",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/handlingssenter",
+    "product": "AgencyOS",
+    "family": "Hub",
+    "title": "AgencyOS · Handlingssenter",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/hjelp",
+    "product": "AgencyOS",
+    "family": "Hub",
+    "title": "AgencyOS · Hjelp",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/innboks",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · Innboks",
+    "job": "Tøm kø av beslutninger",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/innboks-epost",
+    "product": "AgencyOS",
+    "family": "Hub",
+    "title": "AgencyOS · Innboks Epost",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/integrasjoner",
+    "product": "AgencyOS",
+    "family": "Hub",
+    "title": "AgencyOS · Integrasjoner",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/kalender",
+    "product": "AgencyOS",
+    "family": "Kalender",
+    "title": "AgencyOS · Kalender",
+    "job": "Se tid og handle der du ser det",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/kalender/hendelse/[id]",
+    "product": "AgencyOS",
+    "family": "Kalender",
+    "title": "Kalender · Hendelse",
+    "job": "Se tid og handle der du ser det",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/kalender/hendelse/ny",
+    "product": "AgencyOS",
+    "family": "Kalender",
+    "title": "Ny",
+    "job": "Se tid og handle der du ser det",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/klubb/innstillinger",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Innstillinger",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/marketing",
+    "product": "AgencyOS",
+    "family": "Hub",
+    "title": "AgencyOS · Markedsføring",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/messages",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · Messages",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/okter",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · Økter",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/oppfolging",
+    "product": "AgencyOS",
+    "family": "Hub",
+    "title": "AgencyOS · Oppfolging",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/organisasjon",
+    "product": "AgencyOS",
+    "family": "Hub",
+    "title": "AgencyOS · Organisasjon",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/plan-templates",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · Planmaler",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/plan-templates/[id]",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "AgencyOS · Planmaler",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/plan-templates/[id]/rediger",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Planmaler · Rediger",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/plan-templates/ny",
+    "product": "AgencyOS",
+    "family": "Wizard",
+    "title": "Planmaler · Ny",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/planlegge",
+    "product": "AgencyOS",
+    "family": "Kalender",
+    "title": "AgencyOS · Planlegge",
+    "job": "Se tid og handle der du ser det",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/plans",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · Planer",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/plans/[planId]",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "AgencyOS · Planer",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/plans/templates",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Planer · Templates",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/plans/templates/[id]/effectiveness",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Effectiveness",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/plans/templates/[id]/rediger",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Rediger",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/plans/templates/ny",
+    "product": "AgencyOS",
+    "family": "Wizard",
+    "title": "Ny",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/profile",
+    "product": "AgencyOS",
+    "family": "Hub",
+    "title": "AgencyOS · Profile",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/queue",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · Kø",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/reports",
+    "product": "AgencyOS",
+    "family": "Analyse",
+    "title": "AgencyOS · Rapporter",
+    "job": "Se tilstand på 5 sek, årsak på 30 sek",
+    "cta": "Planlegg dette",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/runder",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · Runder",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/settings",
+    "product": "AgencyOS",
+    "family": "Hub",
+    "title": "AgencyOS · Innstillinger",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/settings/api",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Innstillinger · Api",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/settings/calendar",
+    "product": "AgencyOS",
+    "family": "Kalender",
+    "title": "Innstillinger · Calendar",
+    "job": "Se tid og handle der du ser det",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/settings/periode-fordeling",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Innstillinger · Periode Fordeling",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/settings/security",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Innstillinger · Security",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/settings/tilgang",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Innstillinger · Tilgang",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/spillere",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · Spillere",
+    "job": "Se stall-tilstand og plukk spiller",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/spillere/[id]",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "AgencyOS · Spillere",
+    "job": "360° på én spiller",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/spillere/[id]/analyse",
+    "product": "AgencyOS",
+    "family": "Analyse",
+    "title": "Spillere · Analyse",
+    "job": "Se tilstand på 5 sek, årsak på 30 sek",
+    "cta": "Planlegg dette",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/spillere/[id]/fremgang",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Spillere · Fremgang",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/spillere/[id]/plan",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Spillere · Plan",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/spillere/[id]/plan/[planId]",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Spillere · Plan",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/spillere/[id]/tester",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "Spillere · Tester",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/spillere/[id]/workbench",
+    "product": "AgencyOS",
+    "family": "Kalender",
+    "title": "Spillere · Workbench",
+    "job": "Planlegge for denne spilleren",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/spillere/ny",
+    "product": "AgencyOS",
+    "family": "Wizard",
+    "title": "Spillere · Ny",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/talent",
+    "product": "AgencyOS",
+    "family": "Hub",
+    "title": "AgencyOS · Talent",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/talent/discovery",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Talent · Discovery",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/talent/radar",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Talent · Radar",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/team",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · Team",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/team/inviter",
+    "product": "AgencyOS",
+    "family": "Wizard",
+    "title": "Team · Inviter",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/teknisk-plan",
+    "product": "AgencyOS",
+    "family": "Hub",
+    "title": "AgencyOS · Teknisk plan",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/tester",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · Tester",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/tester/foreslatte",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Tester · Foreslatte",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/tournaments",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · Turneringer",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/tournaments/[id]",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "AgencyOS · Turneringer",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/tournaments/dubletter",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Turneringer · Dubletter",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/tournaments/ny",
+    "product": "AgencyOS",
+    "family": "Wizard",
+    "title": "Turneringer · Ny",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/trackman",
+    "product": "AgencyOS",
+    "family": "Analyse",
+    "title": "AgencyOS · TrackMan",
+    "job": "Se tilstand på 5 sek, årsak på 30 sek",
+    "cta": "Planlegg dette",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/uka",
+    "product": "AgencyOS",
+    "family": "Kalender",
+    "title": "AgencyOS · Uka",
+    "job": "Se tid og handle der du ser det",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/varsler",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · Varsler",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/videoer",
+    "product": "AgencyOS",
+    "family": "Liste",
+    "title": "AgencyOS · Videoer",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/workspace",
+    "product": "AgencyOS",
+    "family": "Hub",
+    "title": "AgencyOS · Workspace",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/workspace/notion",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Workspace · Notion",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/workspace/oppgaver",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Workspace · Oppgaver",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/admin/workspace/prosjekter",
+    "product": "AgencyOS",
+    "family": "Detalj",
+    "title": "Workspace · Prosjekter",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "mørk default",
+    "widths": "1680·1280·390 triage"
+  },
+  {
+    "path": "/anlegg",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Anlegg",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/anlegg/[slug]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Anlegg",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/auth/bankid",
+    "product": "Auth",
+    "family": "Hub",
+    "title": "Bankid",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/auth/check-email",
+    "product": "Auth",
+    "family": "Hub",
+    "title": "Check Email",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/auth/checkout-resume",
+    "product": "Auth",
+    "family": "Hub",
+    "title": "Checkout Resume",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/auth/etter-innlogging",
+    "product": "Auth",
+    "family": "Hub",
+    "title": "Etter Innlogging",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/auth/forgot-password",
+    "product": "Auth",
+    "family": "Hub",
+    "title": "Forgot Password",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/auth/guardian-consent/[token]",
+    "product": "Auth",
+    "family": "Detalj",
+    "title": "Guardian Consent",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/auth/logg-inn",
+    "product": "Auth",
+    "family": "Hub",
+    "title": "Logg Inn",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/auth/logget-ut",
+    "product": "Auth",
+    "family": "Hub",
+    "title": "Logget Ut",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/auth/login",
+    "product": "Auth",
+    "family": "Hub",
+    "title": "Login",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/auth/onboarding",
+    "product": "Auth",
+    "family": "Wizard",
+    "title": "Onboarding",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "lys",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/auth/onboarding/forelder",
+    "product": "Auth",
+    "family": "Wizard",
+    "title": "Forelder hjem",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "lys",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/auth/reset-password",
+    "product": "Auth",
+    "family": "Hub",
+    "title": "Reset Password",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/auth/samtykke-venter",
+    "product": "Auth",
+    "family": "Hub",
+    "title": "Samtykke Venter",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/auth/signup",
+    "product": "Auth",
+    "family": "Hub",
+    "title": "Signup",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/blogg",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Blogg",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/blogg/[slug]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Blogg",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/booking",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Booking",
+    "job": "Booke eller endre tid",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/booking/[slug]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Booking",
+    "job": "Booke eller endre tid",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/booking/[slug]/bekreft",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Booking · Bekreft",
+    "job": "Booke eller endre tid",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/booking/kvittering/[bookingId]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Booking · Kvittering",
+    "job": "Booke eller endre tid",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/cases",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Cases",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/coacher",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Coacher",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/coacher/[slug]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Coacher",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/coaching",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Coaching",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/cookies",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Cookies",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/demos/newplan/[steg]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Newplan",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/demos/ny-okt/[steg]",
+    "product": "Marketing/System",
+    "family": "Wizard",
+    "title": "Ny Okt",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/demos/plan-bygger",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Plan Bygger",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/demos/plan-bygger/[steg]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Plan Bygger",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/demos/trackman-import/[steg]",
+    "product": "Marketing/System",
+    "family": "Analyse",
+    "title": "Trackman Import",
+    "job": "Se tilstand på 5 sek, årsak på 30 sek",
+    "cta": "Planlegg dette",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/design-system",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Design System",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/dev-banekart",
+    "product": "System",
+    "family": "Hub",
+    "title": "Dev Banekart",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/faq",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Faq",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/forelder",
+    "product": "Forelder",
+    "family": "Hub",
+    "title": "Forelder hjem",
+    "job": "Se barnets uke uten støy",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/forelder/barn",
+    "product": "Forelder",
+    "family": "Hub",
+    "title": "Forelder hjem · Barn",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/forelder/barn/[childId]",
+    "product": "Forelder",
+    "family": "Detalj",
+    "title": "Forelder hjem · Barn",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/forelder/bookinger",
+    "product": "Forelder",
+    "family": "Liste",
+    "title": "Forelder hjem · Bookinger",
+    "job": "Booke eller endre tid",
+    "cta": "Åpne rad / Ny",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/forelder/coach",
+    "product": "Forelder",
+    "family": "Hub",
+    "title": "Forelder hjem · Coach",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/forelder/fakturaer",
+    "product": "Forelder",
+    "family": "Hub",
+    "title": "Forelder hjem · Fakturaer",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/forelder/innstillinger",
+    "product": "Forelder",
+    "family": "Hub",
+    "title": "Forelder hjem · Innstillinger",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/forelder/okonomi",
+    "product": "Forelder",
+    "family": "Hub",
+    "title": "Forelder hjem · Økonomi",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/forelder/samtykke",
+    "product": "Forelder",
+    "family": "Hub",
+    "title": "Forelder hjem · Samtykke",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/forelder/ukerapport",
+    "product": "Forelder",
+    "family": "Hub",
+    "title": "Forelder hjem · Ukerapport",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/forelder/varsler",
+    "product": "Forelder",
+    "family": "Liste",
+    "title": "Forelder hjem · Varsler",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/gfgk-junior",
+    "product": "Intern",
+    "family": "Hub",
+    "title": "Gfgk Junior",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/gfgk-junior/gruppe/[gruppe]",
+    "product": "Intern",
+    "family": "Detalj",
+    "title": "Gruppe",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/gfgk-junior/kalender",
+    "product": "Intern",
+    "family": "Kalender",
+    "title": "Kalender",
+    "job": "Se tid og handle der du ser det",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/gfgk-junior/treningsplaner",
+    "product": "Intern",
+    "family": "Hub",
+    "title": "Treningsplaner",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/gfgk-junior/veileder",
+    "product": "Intern",
+    "family": "Hub",
+    "title": "Veileder",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/gfgk-junior/veileder/[slug]",
+    "product": "Intern",
+    "family": "Detalj",
+    "title": "Veileder",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/intern/komponenter",
+    "product": "Intern",
+    "family": "Hub",
+    "title": "Komponenter",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/intern/komponenter/daglig-brief",
+    "product": "Intern",
+    "family": "Detalj",
+    "title": "Daglig Brief",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/intern/komponenter/forelder",
+    "product": "Intern",
+    "family": "Detalj",
+    "title": "Forelder hjem",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/intern/komponenter/hull-analyse",
+    "product": "Intern",
+    "family": "Detalj",
+    "title": "Hull Analyse",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/intern/komponenter/spiller-panel",
+    "product": "Intern",
+    "family": "Detalj",
+    "title": "Spiller Panel",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/intern/komponenter/team-bookinger",
+    "product": "Intern",
+    "family": "Detalj",
+    "title": "Team Bookinger",
+    "job": "Booke eller endre tid",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/inviter/forelder/[token]",
+    "product": "System",
+    "family": "Wizard",
+    "title": "Forelder hjem",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/jobb",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Jobb",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/junior",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Junior",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/kommando",
+    "product": "Intern",
+    "family": "Hub",
+    "title": "Kommando",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/kommando/agenter",
+    "product": "Intern",
+    "family": "Hub",
+    "title": "Agenter",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/kommando/kalender",
+    "product": "Intern",
+    "family": "Kalender",
+    "title": "Kalender",
+    "job": "Se tid og handle der du ser det",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/kommando/oppgaver",
+    "product": "Intern",
+    "family": "Hub",
+    "title": "Oppgaver",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/kommando/prosjekter",
+    "product": "Intern",
+    "family": "Hub",
+    "title": "Prosjekter",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/kommando/team",
+    "product": "Intern",
+    "family": "Liste",
+    "title": "Team",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/kontakt",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Kontakt",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/meg",
+    "product": "PlayerHQ",
+    "family": "Hub",
+    "title": "Meg",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/offline",
+    "product": "System",
+    "family": "Hub",
+    "title": "Offline",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/om-oss",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Om Oss",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/onboard/coach",
+    "product": "Auth",
+    "family": "Wizard",
+    "title": "Onboarding · Coach",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "lys",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/onboard/klubb",
+    "product": "Auth",
+    "family": "Wizard",
+    "title": "Onboarding · Klubb",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "lys",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/personvern",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Personvern",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/playerhq",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Playerhq",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/portal",
+    "product": "PlayerHQ",
+    "family": "Hub",
+    "title": "PlayerHQ Hjem",
+    "job": "Hva skal jeg gjøre i dag? (én hero + CTA)",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/ai/foresla-drill",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Foresla Drill",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/ai/foresla-turnering",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Foresla Turnering",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/ai/mal-bygger",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Mal Bygger",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/analyse",
+    "product": "PlayerHQ",
+    "family": "Analyse",
+    "title": "PlayerHQ Hjem · Analyse",
+    "job": "Se tilstand på 5 sek, årsak på 30 sek",
+    "cta": "Planlegg dette",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/analysere",
+    "product": "PlayerHQ",
+    "family": "Analyse",
+    "title": "PlayerHQ Hjem · Analysere",
+    "job": "Forstå min golf (SG → fokus → plan)",
+    "cta": "Planlegg dette",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/analysere/hull",
+    "product": "PlayerHQ",
+    "family": "Analyse",
+    "title": "Analysere · Hull",
+    "job": "Se tilstand på 5 sek, årsak på 30 sek",
+    "cta": "Planlegg dette",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/baneguide",
+    "product": "PlayerHQ",
+    "family": "Hub",
+    "title": "PlayerHQ Hjem · Baneguide",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/baneguide/[baneId]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "PlayerHQ Hjem · Baneguide",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/baneguide/[baneId]/hull/[nr]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Baneguide · Hull",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/booking",
+    "product": "PlayerHQ",
+    "family": "Hub",
+    "title": "PlayerHQ Hjem · Booking",
+    "job": "Booke eller endre tid",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/booking/[bookingId]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "PlayerHQ Hjem · Booking",
+    "job": "Booke eller endre tid",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/booking/anlegg/[anleggId]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Booking · Anlegg",
+    "job": "Booke eller endre tid",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/booking/bekreftet",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Booking · Bekreftet",
+    "job": "Booke eller endre tid",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/booking/coach/[coachId]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Booking · Coach",
+    "job": "Booke eller endre tid",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/booking/ny",
+    "product": "PlayerHQ",
+    "family": "Wizard",
+    "title": "Booking · Ny",
+    "job": "Booke eller endre tid",
+    "cta": "Neste / Fullfør",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/booking/ny/bekreft",
+    "product": "PlayerHQ",
+    "family": "Wizard",
+    "title": "Ny · Bekreft",
+    "job": "Booke eller endre tid",
+    "cta": "Neste / Fullfør",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/coach",
+    "product": "PlayerHQ",
+    "family": "Hub",
+    "title": "PlayerHQ Hjem · Coach",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/coach/ai",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Coach · Ai",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/coach/melding",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Coach · Meldinger",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/coach/melding/ny",
+    "product": "PlayerHQ",
+    "family": "Wizard",
+    "title": "Meldinger · Ny",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/coach/ovelser",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Coach · Ovelser",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/coach/plans",
+    "product": "PlayerHQ",
+    "family": "Liste",
+    "title": "Coach · Planer",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/coach/sg-hub",
+    "product": "PlayerHQ",
+    "family": "Analyse",
+    "title": "Coach · SG-hub",
+    "job": "Se tilstand på 5 sek, årsak på 30 sek",
+    "cta": "Planlegg dette",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/coach/sporsmal",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Coach · Sporsmal",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/coach/sporsmal/[id]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Coach · Sporsmal",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/coach/sporsmal/ny",
+    "product": "PlayerHQ",
+    "family": "Wizard",
+    "title": "Ny",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/coach/videoer",
+    "product": "PlayerHQ",
+    "family": "Liste",
+    "title": "Coach · Videoer",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/datagolf",
+    "product": "PlayerHQ",
+    "family": "Analyse",
+    "title": "PlayerHQ Hjem · Datagolf",
+    "job": "Se tilstand på 5 sek, årsak på 30 sek",
+    "cta": "Planlegg dette",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/drills",
+    "product": "PlayerHQ",
+    "family": "Liste",
+    "title": "PlayerHQ Hjem · Driller",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/drills/[id]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "PlayerHQ Hjem · Driller",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/fysisk",
+    "product": "PlayerHQ",
+    "family": "Hub",
+    "title": "PlayerHQ Hjem · Fysisk",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/gameplan",
+    "product": "PlayerHQ",
+    "family": "Hub",
+    "title": "PlayerHQ Hjem · Gameplan",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/gameplan/[baneId]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "PlayerHQ Hjem · Gameplan",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/gameplan/[baneId]/hull/[nr]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Gameplan · Hull",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/gjennomfore",
+    "product": "PlayerHQ",
+    "family": "Hub",
+    "title": "PlayerHQ Hjem · Gjennomføre",
+    "job": "Start eller fortsett dagens økt",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/gjennomfore/[id]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "PlayerHQ Hjem · Gjennomføre",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/kalender",
+    "product": "PlayerHQ",
+    "family": "Kalender",
+    "title": "PlayerHQ Hjem · Kalender",
+    "job": "Se tid og handle der du ser det",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/live/[sessionId]",
+    "product": "PlayerHQ",
+    "family": "Live",
+    "title": "PlayerHQ Hjem · Live",
+    "job": "Logge underveis uten distraksjon",
+    "cta": "Pause / Neste / Avslutt",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/live/[sessionId]/active",
+    "product": "PlayerHQ",
+    "family": "Live",
+    "title": "Live aktiv",
+    "job": "Logge drill nå",
+    "cta": "Pause / Neste / Avslutt",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/live/[sessionId]/brief",
+    "product": "PlayerHQ",
+    "family": "Live",
+    "title": "Live · Brief",
+    "job": "Logge underveis uten distraksjon",
+    "cta": "Pause / Neste / Avslutt",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/live/[sessionId]/logger",
+    "product": "PlayerHQ",
+    "family": "Live",
+    "title": "Live · Logger",
+    "job": "Logge underveis uten distraksjon",
+    "cta": "Pause / Neste / Avslutt",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/live/[sessionId]/summary",
+    "product": "PlayerHQ",
+    "family": "Live",
+    "title": "Live · Oppsummering",
+    "job": "Logge underveis uten distraksjon",
+    "cta": "Pause / Neste / Avslutt",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/live/[sessionId]/tapper",
+    "product": "PlayerHQ",
+    "family": "Live",
+    "title": "Live · Tapper",
+    "job": "Logge underveis uten distraksjon",
+    "cta": "Pause / Neste / Avslutt",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/mal",
+    "product": "PlayerHQ",
+    "family": "Hub",
+    "title": "PlayerHQ Hjem · Mål",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/mal/bygger",
+    "product": "PlayerHQ",
+    "family": "Wizard",
+    "title": "Mål · Bygger",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/mal/goal/[id]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Mål · Goal",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/mal/leaderboard",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Mål · Leaderboard",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/mal/runder",
+    "product": "PlayerHQ",
+    "family": "Liste",
+    "title": "Mål · Runder",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/mal/runder/[id]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Mål · Runder",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/mal/runder/[id]/hull",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Runder · Hull",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/mal/runder/[id]/slag",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Runder · Slag",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/mal/runder/ny",
+    "product": "PlayerHQ",
+    "family": "Wizard",
+    "title": "Runder · Ny",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/mal/sg-hub/coach/[spillerId]",
+    "product": "PlayerHQ",
+    "family": "Analyse",
+    "title": "SG-hub · Coach",
+    "job": "Se tilstand på 5 sek, årsak på 30 sek",
+    "cta": "Planlegg dette",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/mal/sg-hub/coach/[spillerId]/[club]",
+    "product": "PlayerHQ",
+    "family": "Analyse",
+    "title": "SG-hub · Coach",
+    "job": "Se tilstand på 5 sek, årsak på 30 sek",
+    "cta": "Planlegg dette",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/mal/sg-hub/coach/[spillerId]/equipment",
+    "product": "PlayerHQ",
+    "family": "Analyse",
+    "title": "Coach · Utstyr",
+    "job": "Se tilstand på 5 sek, årsak på 30 sek",
+    "cta": "Planlegg dette",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/mal/trackman",
+    "product": "PlayerHQ",
+    "family": "Analyse",
+    "title": "Mål · TrackMan",
+    "job": "Se tilstand på 5 sek, årsak på 30 sek",
+    "cta": "Planlegg dette",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/mal/trackman/[id]",
+    "product": "PlayerHQ",
+    "family": "Analyse",
+    "title": "Mål · TrackMan",
+    "job": "Se tilstand på 5 sek, årsak på 30 sek",
+    "cta": "Planlegg dette",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg",
+    "product": "PlayerHQ",
+    "family": "Hub",
+    "title": "PlayerHQ Hjem · Meg",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/abonnement",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Meg · Abonnement",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/abonnement/avbestill",
+    "product": "PlayerHQ",
+    "family": "Wizard",
+    "title": "Abonnement · Avbestill",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/abonnement/faktura/[id]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Abonnement · Faktura",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/abonnement/kort/ny",
+    "product": "PlayerHQ",
+    "family": "Wizard",
+    "title": "Ny",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/abonnement/oppgrader",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Abonnement · Oppgrader",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/abonnement/oppgrader/flyt",
+    "product": "PlayerHQ",
+    "family": "Wizard",
+    "title": "Flyt",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/bookinger",
+    "product": "PlayerHQ",
+    "family": "Liste",
+    "title": "Meg · Bookinger",
+    "job": "Booke eller endre tid",
+    "cta": "Åpne rad / Ny",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/bookinger/reschedule/[bookingId]",
+    "product": "PlayerHQ",
+    "family": "Wizard",
+    "title": "Bookinger · Reschedule",
+    "job": "Booke eller endre tid",
+    "cta": "Neste / Fullfør",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/dokumenter",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Meg · Dokumenter",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/feedback",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Meg · Feedback",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/foreldre",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Meg · Foreldre",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/help",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Meg · Help",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/help/artikkel/[slug]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Artikkel",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/help/kategori/[slug]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Kategori",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/help/kontakt",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Kontakt",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/helse",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Meg · Helse",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/helse/symptom/ny",
+    "product": "PlayerHQ",
+    "family": "Wizard",
+    "title": "Ny",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/innstillinger",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Meg · Innstillinger",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/innstillinger/ai-coach",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Innstillinger · Ai Coach",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/innstillinger/anlegg",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Innstillinger · Anlegg",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/innstillinger/eksport",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Innstillinger · Eksport",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/innstillinger/integrasjoner",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Innstillinger · Integrasjoner",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/innstillinger/okter",
+    "product": "PlayerHQ",
+    "family": "Liste",
+    "title": "Innstillinger · Økter",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/innstillinger/personvern",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Innstillinger · Personvern",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/innstillinger/sikkerhet",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Innstillinger · Sikkerhet",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/innstillinger/sprak",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Innstillinger · Sprak",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/innstillinger/varsler",
+    "product": "PlayerHQ",
+    "family": "Liste",
+    "title": "Innstillinger · Varsler",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/profil",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Meg · Profil",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/sikkerhet",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Meg · Sikkerhet",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/sikkerhet/2fa",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Sikkerhet · 2Fa",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/meg/utstyrsbag",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Meg · Utstyrsbag",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/onskeligokt",
+    "product": "PlayerHQ",
+    "family": "Hub",
+    "title": "PlayerHQ Hjem · Ønsket økt",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/onskeligokt/bekreftet",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Ønsket økt · Bekreftet",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/planlegge",
+    "product": "PlayerHQ",
+    "family": "Kalender",
+    "title": "PlayerHQ Hjem · Planlegge",
+    "job": "Se tid og handle der du ser det",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/planlegge/bygger",
+    "product": "PlayerHQ",
+    "family": "Kalender",
+    "title": "Planlegge · Bygger",
+    "job": "Se tid og handle der du ser det",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/planlegge/workbench",
+    "product": "PlayerHQ",
+    "family": "Kalender",
+    "title": "Planlegge · Workbench",
+    "job": "Planlegge uke/økt i Workbench",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/runde/live",
+    "product": "PlayerHQ",
+    "family": "Live",
+    "title": "Live",
+    "job": "Logge underveis uten distraksjon",
+    "cta": "Pause / Neste / Avslutt",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/runde/logg",
+    "product": "PlayerHQ",
+    "family": "Live",
+    "title": "Logg",
+    "job": "Logge underveis uten distraksjon",
+    "cta": "Pause / Neste / Avslutt",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/spiller/[spillerId]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "PlayerHQ Hjem · Spiller",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/statistikk/[metric]",
+    "product": "PlayerHQ",
+    "family": "Analyse",
+    "title": "PlayerHQ Hjem · Statistikk",
+    "job": "Se tilstand på 5 sek, årsak på 30 sek",
+    "cta": "Planlegg dette",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/statistikk/runder/[runId]/del",
+    "product": "PlayerHQ",
+    "family": "Analyse",
+    "title": "Runder · Del",
+    "job": "Se tilstand på 5 sek, årsak på 30 sek",
+    "cta": "Planlegg dette",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/stats",
+    "product": "PlayerHQ",
+    "family": "Hub",
+    "title": "PlayerHQ Hjem · Stats",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/talent",
+    "product": "PlayerHQ",
+    "family": "Hub",
+    "title": "PlayerHQ Hjem · Talent",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/talent/min-plan",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Talent · Min Plan",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/talent/mitt-niva",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Talent · Mitt Niva",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/talent/roadmap",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Talent · Roadmap",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/talent/sammenligning",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Talent · Sammenligning",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/tren",
+    "product": "PlayerHQ",
+    "family": "Hub",
+    "title": "PlayerHQ Hjem · Tren",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/tren/[sessionId]/planlagt",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Planlagt",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/tren/feiring/[planId]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Feiring",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/tren/fys-plan",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Fys-plan",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/tren/kalender",
+    "product": "PlayerHQ",
+    "family": "Kalender",
+    "title": "Kalender",
+    "job": "Se tid og handle der du ser det",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/tren/ovelser",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Ovelser",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/tren/ovelser/[id]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Ovelser",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/tren/teknisk-plan/[planId]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Teknisk plan",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/tren/tester",
+    "product": "PlayerHQ",
+    "family": "Liste",
+    "title": "Tester",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/tren/tester/[testId]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Tester",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/tren/tester/[testId]/gjennomfor",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Tester · Gjennomfor",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/tren/tester/ny",
+    "product": "PlayerHQ",
+    "family": "Wizard",
+    "title": "Tester · Ny",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/tren/tester/ny/egen",
+    "product": "PlayerHQ",
+    "family": "Wizard",
+    "title": "Ny · Egen",
+    "job": "Fullføre en flerstegs handling uten å gå vill",
+    "cta": "Neste / Fullfør",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/tren/turneringer",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Turneringer",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/tren/turneringer/[id]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Turneringer",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/trening/break-tabell",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Break-tabell",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/trening/logg",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Logg",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/trening/putte-laboratoriet",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "Putte-lab",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/utfordringer",
+    "product": "PlayerHQ",
+    "family": "Liste",
+    "title": "PlayerHQ Hjem · Utfordringer",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/utfordringer/[id]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "PlayerHQ Hjem · Utfordringer",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/utviklingsplan",
+    "product": "PlayerHQ",
+    "family": "Hub",
+    "title": "PlayerHQ Hjem · Utviklingsplan",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/varsler",
+    "product": "PlayerHQ",
+    "family": "Liste",
+    "title": "PlayerHQ Hjem · Varsler",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/venner",
+    "product": "PlayerHQ",
+    "family": "Hub",
+    "title": "PlayerHQ Hjem · Venner",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/portal/venner/[spillerId]",
+    "product": "PlayerHQ",
+    "family": "Detalj",
+    "title": "PlayerHQ Hjem · Venner",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "lys",
+    "widths": "390·834·1280"
+  },
+  {
+    "path": "/priser",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Priser",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Stats",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/2026",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "2026",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/aargang",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Aargang",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/aargang/[aar]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Aargang",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/baner",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Baner",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/baner/[slug]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Baner",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/blogg",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Blogg",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/blogg/[slug]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Blogg",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/klubber",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Klubber",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/klubber/[slug]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Klubber",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/leaderboards",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Leaderboards",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/min-progresjon",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Min Progresjon",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/norske",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Norske",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/pga",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Pga",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/pga/drive-distance",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Drive Distance",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/pga/fairway-pct",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Fairway Pct",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/pga/gir-pct",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Gir Pct",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/pga/putt-explorer",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Putt Explorer",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/pga/putts-per-round",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Putts Per Round",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/pga/scoring-avg",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Scoring Avg",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/pga/sg-total",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Sg Total",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/pga/spillere",
+    "product": "Marketing/System",
+    "family": "Liste",
+    "title": "Spillere",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/pga/spillere/[dg_id]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Spillere",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/quiz",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Quiz",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/regions",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Regions",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/regions/[slug]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Regions",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/sammenlign-spillere",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Sammenlign Spillere",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/sg-sammenlign",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Sg Sammenlign",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/sg-sammenlign/resultat/[id]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Resultat",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/sg-sammenlign/start",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Start",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/sok",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Sok",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/spillere",
+    "product": "Marketing/System",
+    "family": "Liste",
+    "title": "Spillere",
+    "job": "Skann, filtrer og åpne én ting",
+    "cta": "Åpne rad / Ny",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/spillere/[slug]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Spillere",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/tour/[slug]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Tour",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/turneringer",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Turneringer",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/turneringer/[slug]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Turneringer",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/turneringer/[slug]/statistikk",
+    "product": "Marketing/System",
+    "family": "Analyse",
+    "title": "Turneringer · Statistikk",
+    "job": "Se tilstand på 5 sek, årsak på 30 sek",
+    "cta": "Planlegg dette",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/uka",
+    "product": "Marketing/System",
+    "family": "Kalender",
+    "title": "Uka",
+    "job": "Se tid og handle der du ser det",
+    "cta": "Ny økt / Flytt / Publiser",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/verktoy",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Verktoy",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/verktoy/avstand",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Avstand",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/verktoy/score-til-hcp",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Score Til Hcp",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/verktoy/sg-estimator",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Sg Estimator",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/verktoy/tour-ekvivalent",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Tour Ekvivalent",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/verktoy/whs-kalkulator",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Whs Kalkulator",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/stats/wrapped/[slug]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Wrapped",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/suksess",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Suksess",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/team-gfgk",
+    "product": "Intern",
+    "family": "Hub",
+    "title": "Team Gfgk",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/team-wang",
+    "product": "Intern",
+    "family": "Hub",
+    "title": "Team Wang",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/team-wang/coach",
+    "product": "Intern",
+    "family": "Hub",
+    "title": "Coach",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/team-wang/logg-inn",
+    "product": "Intern",
+    "family": "Hub",
+    "title": "Logg Inn",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/treningsfilosofi",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Treningsfilosofi",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/turneringer",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Turneringer",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/turneringer/[slug]",
+    "product": "Marketing/System",
+    "family": "Detalj",
+    "title": "Turneringer",
+    "job": "Forstå én enhet og ta neste steg",
+    "cta": "Primær handling",
+    "theme": "begge",
+    "widths": "1280·390"
+  },
+  {
+    "path": "/vilkar",
+    "product": "Marketing/System",
+    "family": "Hub",
+    "title": "Vilkar",
+    "job": "Se hva som er viktig nå og trykk på neste handling",
+    "cta": "Primær CTA (én)",
+    "theme": "begge",
+    "widths": "1280·390"
+  }
+]
