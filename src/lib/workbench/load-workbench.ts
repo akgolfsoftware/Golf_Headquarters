@@ -200,6 +200,8 @@ const SESSION_SELECT = {
   pyramidArea: true,
   environment: true,
   status: true,
+  lFase: true,
+  miljo: true,
   _count: { select: { drills: true } },
 } as const;
 
@@ -761,5 +763,7 @@ function sessionToWeekEvent(s: WeekSessionRow, now: Date): WeekEvent {
     ttl: s.title,
     meta,
     compliance: oktCompliance(s, now),
+    lFase: s.lFase ?? null,
+    miljo: s.miljo ?? null,
   };
 }

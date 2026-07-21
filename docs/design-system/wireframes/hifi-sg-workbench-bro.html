@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="no"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Hi-fi · SG → Workbench-bro</title>
+<style>
+:root{
+  --bg:#131513;--panel:#1C1F1C;--panel2:#191C19;--panel3:#232623;
+  --fg:#F3F5F1;--fg2:#B4B7B0;--mut:#8B8E87;
+  --lime:#D1F843;--on:#0D0E0D;--forest:#005840;
+  --up:#4FD08A;--down:#F0683E;--border:rgba(255,255,255,.11);
+  --font-d:"Familjen Grotesk",Inter,system-ui,sans-serif;
+  --font-u:Inter,system-ui,sans-serif;--font-m:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:13.5px/1.4 var(--font-u)}
+.wrap{max-width:1100px;margin:0 auto;padding:28px 20px 60px}
+h1{font-family:var(--font-d);font-size:28px;margin:0 0 6px}
+.sub{color:var(--mut);margin:0 0 28px}
+.grid{display:grid;gap:16px}
+@media(min-width:900px){.grid-2{grid-template-columns:1.2fr .9fr}}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:18px 20px}
+.card.tint{background:linear-gradient(140deg,rgba(0,88,64,.38) 0%,rgba(28,31,28,0) 55%),var(--panel)}
+.caps{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.hero{font-family:var(--font-m);font-size:48px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.unit{font-size:14px;color:var(--mut);margin-left:6px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:0}
+.neg{color:var(--down)}.pos{color:var(--up)}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;background:var(--panel3);font-family:var(--font-m);font-size:10px;font-weight:700}
+.chip.ax{background:color-mix(in srgb,#5AA9F0 25%,transparent);color:#9fd0ff}
+.cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:42px;padding:0 18px;border-radius:9999px;background:var(--lime);color:var(--on);font-weight:700;text-decoration:none;font-size:13px}
+.ghost{background:var(--panel3);color:var(--fg);border:1px solid var(--border)}
+.diag{margin-top:12px;padding:12px;border-radius:12px;background:var(--panel2);border:1px solid var(--border)}
+.phone{width:320px;margin:0 auto;border:1px solid var(--border);border-radius:28px;padding:14px;background:#0e100e}
+.phone .cta{width:100%}
+.section{margin-top:36px}
+.frame-label{font-family:var(--font-m);font-size:10px;color:var(--mut);margin-bottom:10px;letter-spacing:.08em}
+.wb-cols{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:10px;min-height:220px}
+.wb-col{background:var(--panel2);border-radius:14px;padding:12px;border:1px solid var(--border)}
+.okt{background:var(--panel3);border-radius:10px;padding:8px 10px;margin-top:8px;font-size:12px}
+.okt .t{font-weight:700}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.tag{font-family:var(--font-m);font-size:9px;padding:3px 7px;border-radius:9999px;background:var(--panel);border:1px solid var(--border);color:var(--fg2)}
+.light-note{margin-top:40px;padding:16px;border-radius:16px;background:#F2F1EA;color:#171B18}
+.light-note .cta{background:#005840;color:#fff}
+</style></head><body>
+<div class="wrap">
+  <h1>Hi-fi · SG → AK-formel → Workbench</h1>
+  <p class="sub">v2 Presis · mørk AgencyOS-stil / lys PlayerHQ-notat under · 2026-07-21</p>
+
+  <div class="grid grid-2">
+    <div>
+      <div class="frame-label">ANALYSE · SG-fane (desktop)</div>
+      <div class="card tint">
+        <div class="caps">Total Strokes Gained · PGA baseline</div>
+        <div style="margin-top:10px"><span class="hero">−0,42</span><span class="unit">slag/runde</span></div>
+        <div class="caps" style="margin-top:8px;color:var(--down)">Synkende · siste 10 runder</div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="caps">Hvor du vinner slag</div>
+        <div class="row"><span>Tee-slag</span><span class="pos">+0,18</span></div>
+        <div class="row"><span>Innspill</span><span class="neg">−0,31</span></div>
+        <div class="row"><span>Nærspill</span><span class="neg" style="font-weight:700">−0,55</span></div>
+        <div class="row"><span>Putting</span><span class="pos">+0,26</span></div>
+        <div class="diag">
+          <div class="caps">Neste fokus</div>
+          <div style="font-weight:700;margin-top:6px">Nærspill koster deg mest (−0,55 slag/runde)</div>
+          <div style="color:var(--mut);font-size:12px;margin-top:4px">Basert på siste 8 runder · baseline PGA Top 40</div>
+          <div style="margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <span class="chip ax">SLAG</span>
+            <span style="color:var(--fg2);font-size:12px">Resept: kontakt + lav tempo (CS50–70), M2 range med mål</span>
+          </div>
+        </div>
+        <a class="cta" style="margin-top:14px;width:100%" href="#">Planlegg dette i Workbench</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="frame-label">MOBIL 390 · samme bro</div>
+      <div class="phone">
+        <div class="caps">SG · form</div>
+        <div class="hero" style="font-size:40px;margin:8px 0">−0,42</div>
+        <div class="card" style="padding:12px">
+          <div class="caps">Nærspill</div>
+          <div style="font-weight:700;margin-top:4px">−0,55 slag</div>
+          <div style="display:flex;gap:6px;margin-top:8px"><span class="chip ax">SLAG</span><span class="tag">Lav hastighet</span></div>
+          <a class="cta" style="margin-top:12px" href="#">Planlegg dette</a>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:14px;opacity:.5">
+          <div style="flex:1;height:36px;background:var(--panel2);border-radius:10px"></div>
+          <div style="flex:1;height:36px;background:var(--panel2);border-radius:10px"></div>
+          <div style="flex:1;height:36px;background:var(--lime);border-radius:10px"></div>
+          <div style="flex:1;height:36px;background:var(--panel2);border-radius:10px"></div>
+          <div style="flex:1;height:36px;background:var(--panel2);border-radius:10px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="frame-label">WORKBENCH MOTTAK · coach/spiller uke · formel first-class</div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+        <span class="caps">Uke 30 · SPESIAL</span>
+        <span class="chip">Fokus · Nærspill · fra SG-gap</span>
+        <span style="margin-left:auto" class="caps">Etterlevelse 72 %</span>
+      </div>
+      <div class="wb-cols">
+        <div class="wb-col">
+          <div class="caps">Bibliotek</div>
+          <div class="okt"><div class="t">Mal · Nærspill 60 min</div><div class="tags"><span class="tag">SLAG</span><span class="tag">M2</span></div></div>
+          <div class="okt"><div class="t">Drill · 30 m pitch</div><div class="tags"><span class="tag">CS60</span></div></div>
+        </div>
+        <div class="wb-col">
+          <div class="caps">Tidslinje</div>
+          <div class="okt" style="border:1px solid color-mix(in srgb,var(--lime) 40%,transparent)">
+            <div class="t">Ons 10:00 · Nærspill-fokus</div>
+            <div class="tags">
+              <span class="tag">SLAG</span>
+              <span class="tag">Lav hastighet</span>
+              <span class="tag">CS60</span>
+              <span class="tag">M2</span>
+              <span class="tag">Krav</span>
+            </div>
+          </div>
+          <div class="okt"><div class="t">Tor · FYS base</div><div class="tags"><span class="tag">FYS</span></div></div>
+        </div>
+        <div class="wb-col">
+          <div class="caps">Balanse / valgt økt</div>
+          <div style="margin-top:8px;font-size:12px;color:var(--mut)">Ukens fordeling</div>
+          <div class="row"><span>SLAG</span><span>38 %</span></div>
+          <div class="row"><span>TEK</span><span>22 %</span></div>
+          <div class="row"><span>FYS</span><span>20 %</span></div>
+          <div style="margin-top:10px;font-size:11px;color:var(--mut)">CANON SPES: SLAG høyere · OK</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="light-note">
+    <div style="font-weight:700;font-family:var(--font-d);font-size:18px">PlayerHQ lys-modus</div>
+    <p style="margin:8px 0 12px;color:#4A4F4A;font-size:13px">Samme hierarki. CTA er forest-pill (#005840), ikke lime på lys flate. Wireframe-struktur uendret.</p>
+    <a class="cta" href="#">Planlegg dette i Workbench</a>
+  </div>
+</div>
+</body></html>

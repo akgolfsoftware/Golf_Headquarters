@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="no"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Wireframe — 8 familier</title>
+<style>
+:root{--g1:#f0f0ee;--g2:#e2e2de;--g3:#c8c8c2;--g4:#9a9a94;--g5:#5a5a56;--ink:#1a1a18;--line:#bbb}
+*{box-sizing:border-box}body{margin:0;font:13px/1.4 Inter,system-ui,sans-serif;color:var(--ink);background:#fafaf8}
+h1{font-size:20px;margin:0 0 4px}h2{font-size:12px;margin:0 0 8px;letter-spacing:.08em;text-transform:uppercase;color:var(--g5)}
+.sub{color:var(--g5);margin-bottom:20px}.board{padding:24px;max-width:1600px;margin:0 auto;display:flex;flex-direction:column;gap:32px}
+.family{border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff}
+.row{display:flex;flex-wrap:wrap;gap:16px}
+.frame{background:var(--g1);border:1px solid var(--line);border-radius:12px;overflow:hidden;position:relative}
+.m{width:180px;height:360px}.d{width:380px;height:240px}.w{width:480px;height:260px}
+.label{position:absolute;top:6px;left:8px;font-size:9px;font-weight:700;color:var(--g5)}
+.bar{background:var(--g3);height:26px}.side{position:absolute;left:0;top:0;bottom:0;width:32px;background:var(--g3)}
+.bottom{position:absolute;bottom:0;left:0;right:0;height:36px;display:flex}
+.dot{flex:1;margin:8px 3px;background:var(--g4);border-radius:4px}.dot.on{background:var(--g5)}
+.hero{margin:34px 10px 6px;height:44px;background:var(--g3);border-radius:8px}
+.cta{margin:6px 10px;height:26px;width:55%;background:var(--g5);border-radius:999px}
+.card{margin:6px 10px;height:36px;background:var(--g2);border-radius:10px}.sm{height:24px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 10px}.cell{height:32px;background:var(--g2);border-radius:8px}
+.main{margin-left:32px;padding:30px 10px 10px;display:flex;flex-direction:column;gap:6px;height:100%}
+.split{display:flex;gap:6px;height:100%;padding:30px 8px 8px 40px}.pane{flex:1;background:var(--g2);border-radius:8px}.wide{flex:2}
+.steps{display:flex;gap:3px;margin:34px 10px 6px}.step{flex:1;height:5px;background:var(--g3);border-radius:3px}.step.on{background:var(--g5)}
+.big{margin:36px 14px;height:100px;background:var(--g3);border-radius:14px}
+.note{font-size:11px;color:var(--g5);margin-top:8px}
+</style></head><body><div class="board">
+<div><h1>8 skjerm-familier — wireframe (gråtoner)</h1><p class="sub">AK Golf HQ v2 · 2026-07-20 · Se SKJERM-FAMILIER.md</p></div>
+
+<section class="family"><h2>1 · Shell</h2><div class="row">
+<div class="frame m"><span class="label">PHQ 390</span><div class="bar"></div><div class="card" style="margin-top:40px"></div><div class="card sm"></div>
+<div class="bar bottom"><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
+<div class="frame w"><span class="label">AOS 1680</span><div class="side"></div><div class="main"><div class="card sm" style="width:40%;margin:0"></div><div class="grid"><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div></div></div>
+</div><p class="note">Bunn-nav spiller · ikon-rail coach</p></section>
+
+<section class="family"><h2>2 · Hub</h2><div class="row">
+<div class="frame m"><span class="label">PHQ Hjem</span><div class="bar"></div><div class="hero"></div><div class="cta"></div><div class="card"></div><div class="card sm"></div>
+<div class="bar bottom"><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
+<div class="frame w"><span class="label">AOS tilstand</span><div class="side"></div><div class="main"><div class="card sm" style="width:30%;margin:0"></div><div class="grid"><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div></div></div>
+</div><p class="note">5-sekunders: ett hero (spiller) · grid (coach)</p></section>
+
+<section class="family"><h2>3 · Liste</h2><div class="row">
+<div class="frame m"><span class="label">390 kort</span><div class="bar"></div><div class="card sm" style="margin-top:34px;width:70%"></div><div class="card"></div><div class="card"></div><div class="card"></div>
+<div class="bar bottom"><div class="dot"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
+<div class="frame d"><span class="label">1280 tabell</span><div class="bar"></div><div style="padding:34px 10px;display:flex;flex-direction:column;gap:5px"><div class="card sm" style="margin:0"></div><div class="card sm" style="margin:0;background:var(--g3)"></div><div class="card sm" style="margin:0"></div><div class="card sm" style="margin:0;background:var(--g3)"></div></div></div>
+</div></section>
+
+<section class="family"><h2>4 · Detalj</h2><div class="row">
+<div class="frame m"><span class="label">390 stack</span><div class="bar"></div><div class="hero" style="height:32px"></div><div class="card"></div><div class="card"></div>
+<div class="bar bottom"><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></div>
+<div class="frame w"><span class="label">Split</span><div class="side"></div><div class="split"><div class="pane"></div><div class="pane wide"></div></div></div>
+</div></section>
+
+<section class="family"><h2>5 · Wizard</h2><div class="row">
+<div class="frame m"><span class="label">Steg</span><div class="steps"><div class="step on"></div><div class="step on"></div><div class="step"></div><div class="step"></div></div>
+<div class="hero" style="height:22px;margin-top:12px"></div><div class="card"></div><div class="card"></div>
+<div class="cta" style="position:absolute;bottom:14px;width:calc(100% - 20px)"></div></div>
+</div><p class="note">Samme skall PHQ/AOS</p></section>
+
+<section class="family"><h2>6 · Live</h2><div class="row">
+<div class="frame m"><span class="label">Fullskjerm</span><div class="card sm" style="margin-top:14px;width:40%"></div><div class="big"></div>
+<div class="cta" style="width:80%;margin:10px auto"></div></div>
+</div><p class="note">Touch ≥44px · pause alltid synlig</p></section>
+
+<section class="family"><h2>7 · Analyse</h2><div class="row">
+<div class="frame m"><span class="label">Faner</span><div class="bar"></div>
+<div class="card sm" style="margin-top:34px;background:transparent;display:flex;gap:4px"><div style="flex:1;background:var(--g5);border-radius:999px"></div><div style="flex:1;background:var(--g3);border-radius:999px"></div><div style="flex:1;background:var(--g3);border-radius:999px"></div></div>
+<div class="hero"></div><div class="card"></div>
+<div class="bar bottom"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot"></div></div></div>
+<div class="frame d"><span class="label">+ sidepanel</span><div class="bar"></div><div class="split" style="padding-left:10px"><div class="pane wide"></div><div class="pane"></div></div></div>
+</div><p class="note">Én analyseflate med faner</p></section>
+
+<section class="family"><h2>8 · Kalender</h2><div class="row">
+<div class="frame m"><span class="label">Stripe + dag</span><div class="bar"></div>
+<div class="grid" style="margin-top:34px;grid-template-columns:repeat(7,1fr)"><div class="cell" style="height:22px"></div><div class="cell" style="height:22px;background:var(--g5)"></div><div class="cell" style="height:22px"></div><div class="cell" style="height:22px"></div><div class="cell" style="height:22px"></div><div class="cell" style="height:22px"></div><div class="cell" style="height:22px"></div></div>
+<div class="card"></div><div class="card sm"></div>
+<div class="bar bottom"><div class="dot"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
+<div class="frame w"><span class="label">Uke coach</span><div class="side"></div><div class="main"><div class="grid" style="grid-template-columns:repeat(7,1fr);margin:0"><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div><div class="card sm" style="margin:0;height:56px"></div></div></div>
+</div></section>
+</div></body></html>

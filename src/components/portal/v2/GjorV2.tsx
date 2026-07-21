@@ -186,11 +186,23 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
 
       {antall === 0 ? (
         <Kort>
-          <TomTilstand
-            icon="calendar"
-            title="Ingen økter i dag"
-            sub="Nyt hviledagen — eller legg til en økt i Plan."
-          />
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <TomTilstand
+              icon="calendar"
+              title="Ingen økter i dag"
+              sub="Nyt hviledagen — eller planlegg fra Workbench."
+            />
+            <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none" }}>
+              <CTAPill icon="calendar" full>
+                Åpne Workbench
+              </CTAPill>
+            </Link>
+            <Link href="/portal/analysere" style={{ textDecoration: "none" }}>
+              <CTAPill ghost full icon="bar-chart">
+                Se SG og finn fokus
+              </CTAPill>
+            </Link>
+          </div>
         </Kort>
       ) : (
         <>

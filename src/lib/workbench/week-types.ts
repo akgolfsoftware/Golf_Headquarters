@@ -26,6 +26,9 @@ export type WeekEvent = {
   selected?: boolean;
   group?: boolean;
   tournament?: boolean;
+  /** AK-formel (plan-økter) — klarspråk i UI via ak-formel-visning. */
+  lFase?: string | null;
+  miljo?: string | null;
 };
 
 export type WeekDay = {

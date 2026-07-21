@@ -50,23 +50,27 @@ describe("nesteBesteHandling", () => {
         dagensOkt: { href: "/portal/gjennomfore/x", title: "Økt", status },
         ukenHarOkter: true,
       });
+      // Status er «ferdig» i regelen (ikke start) — men dagensOkt er fortsatt satt,
+      // så vi lander i fallback «Se uka» (ikke hviledag uten okt-objekt).
       assert.equal(r.regel, "fallback", `status=${status}`);
+      assert.match(r.href, /workbench/);
     }
   });
 
   it("tom ukeplan uten dagens økt gir Planlegg uka", () => {
     const r = nesteBesteHandling(TOM_DAG);
     assert.equal(r.regel, "planlegg-uke");
-    assert.equal(r.href, "/portal/planlegge/workbench");
+    assert.match(r.href, /workbench/);
   });
 
-  it("ingen dagens økt men uken har andre økter → fallback (hviledag, ikke tom uke)", () => {
+  it("ingen dagens økt men uken har andre økter → hviledag (Workbench, ikke Start)", () => {
     const r = nesteBesteHandling({ harPlanTilGodkjenning: false, dagensOkt: null, ukenHarOkter: true });
-    assert.equal(r.regel, "fallback");
-    assert.equal(r.href, "/portal/gjennomfore");
+    assert.equal(r.regel, "hviledag");
+    assert.match(r.href, /workbench/);
+    assert.match(r.tekst, /Workbench/i);
   });
 
-  it("prioritet: plan-godkjenning > start-økt > planlegg-uke > fallback", () => {
+  it("prioritet: plan-godkjenning > start-økt > planlegg-uke > hviledag", () => {
     // Alle fire betingelser samtidig sanne bortsett fra plan → sjekk nest-høyeste vinner
     const kunOktOgUke = nesteBesteHandling({
       harPlanTilGodkjenning: false,

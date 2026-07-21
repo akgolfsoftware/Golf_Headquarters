@@ -65,10 +65,14 @@ export async function hentOptimalOktHint(
   const svakest = medVerdi.reduce((min, cur) => (cur.v < min.v ? cur : min));
   const skill = SG_TO_SKILL[svakest.a];
   const pyramid = SG_TO_PYR[svakest.a];
+  const label = SG_LABEL[svakest.a];
+  // Spiller-UI: klarspråk + norsk komma. Aldri rå kode som «SG ARG».
+  const sgTekst = svakest.v.toFixed(2).replace(".", ",");
+  const retning = svakest.v < 0 ? "koster deg slag" : "er svakest relativt";
 
   return {
-    title: `${SG_LABEL[svakest.a]}-fokus`,
-    rationale: `SG ${svakest.a} er ${svakest.v.toFixed(2)} — én målrettet økt her gir størst effekt denne uka.`,
+    title: `${label}-fokus`,
+    rationale: `${label} ${retning} (${sgTekst} slag/runde · siste ${runder.length} runder). Én målrettet økt her gir størst effekt — planlegg i Workbench.`,
     pyramidArea: pyramid,
     skillArea: skill,
     durationMin: 60,

@@ -40,7 +40,7 @@ En slaggruppe (test, økt, kølle) beskrives av to uavhengige akser:
 ## 3. Kobling til AK-metodikken
 
 - **Testprotokoller (kategorier A–K, 20 protokoller):** hver test med utslag/innspill produserer Side- og Carry-serier → hver testvisning skal ha dispersion-analyse, ikke bare snittall. ScoringRule og pyramidArea styrer hvilken pyramide-søyle (FYS/TEK/SLAG/SPILL/TURN) resultatet teller mot.
-- **DECADE / Presisjonsstrategi:** ellipsen ER strategiverktøyet. Sikte = plasser ellipsen så minst mulig havner i straff. Visning: ellipse-overlay på mål/korridor med buffer.
+- **Presisjonsstrategi** (aldri «DECADE» i UI): ellipsen ER strategiverktøyet. Sikte = plasser ellipsen så minst mulig havner i straff. Visning: ellipse-overlay på mål/korridor med buffer.
 - **Tiger Five:** stabilitetsmål — dispersion-trend over tid er ledende indikator.
 - **Strokes Gained:** plattformen har SG-motor (OTT/APP/ARG mot Broadie-baselines, putting mot Team Norway IUP). Dispersion forklarer HVORFOR SG er som den er — koble visningene.
 - **Kontekst-tags:** hver måleserie bærer M-miljø (M0–M5) og PR-press (PR1–PR5). Sammenligning på tvers av M/PR uten merking er ugyldig — UI skal alltid vise kontekst-badge.

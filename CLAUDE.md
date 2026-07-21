@@ -10,7 +10,7 @@ Hele plattformen for AK Golf Group. Ett monorepo, ett Next.js-prosjekt, fire pro
 
 ## Detaljerte regler (`.claude/rules/`)
 - `arkitektur.md` — produkter, ruter, mappestruktur.
-- `design-system-regel.md` — designkanon (v2-redesign, 9. juli 2026): det levende Claude Design-prosjektet via DesignSync; retning C er valgt og fase 6 pågår; golfdata/v13 er overgangs-lag.
+- `design-system-regel.md` — designkanon v2 (retning C). **Fasit:** `docs/design-system/FASIT.md` + Claude Design-prosjektet. golfdata/v13 = overgang.
 - `gotchas.md` — kjente feller (Prisma 7, Next.js 16 proxy, Supabase pooler, zod). Les FØR koding.
 - `beslutninger.md` — ALLE låste beslutninger (juni–juli 2026): invarianter-aldri-sperrer, AgencyOS-navnet, tema, navne-kanon, Workbench-planlegging, analyse-samling, abonnement 299/gratis, FYS-avventing, design-kilde, skjermtekst-kilde. Les FØR produktbeslutninger — ved konflikt vinner `docs/platform/BUSINESS-RULES.md`.
 - Domene-regler (Agentic OS, 2026-07-19): `mulligan-drift.md`, `wang-toppidrett.md`, `gfgk-junior.md`, `admin-tripletex.md` — Anders' driftsdomener utenfor appkoden. Relevante KUN for agent-økter som håndterer disse domenene; ignorer dem under ren kodeutvikling.

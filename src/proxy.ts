@@ -37,10 +37,16 @@ const STATS_PROTOTYPE_PREFIXES = [
  * bruker inline-stiler i komponent-kode.
  */
 function buildCsp(nonce: string): string {
-  return [
+  const isDev = process.env.NODE_ENV === "development";
+  // React dev (HMR/refresh) trenger eval() lokalt. Aldri i prod.
+  const scriptSrc = isDev
+    ? `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval' https://js.stripe.com https://vitals.vercel-insights.com`
+    : `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://js.stripe.com https://vitals.vercel-insights.com`;
+
+  const directives = [
     "default-src 'self'",
     // Next.js hydration + Vercel Analytics + Stripe.js
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://js.stripe.com https://vitals.vercel-insights.com`,
+    scriptSrc,
     // Tailwind v4 / React inline styles
     "style-src 'self' 'unsafe-inline'",
     // Supabase Storage + data-URI + blob (fil-previews)
@@ -63,11 +69,14 @@ function buildCsp(nonce: string): string {
     "form-action 'self'",
     // Blokker Flash/Java
     "object-src 'none'",
-    // Tving HTTPS for sub-ressurser
-    "upgrade-insecure-requests",
-  ]
-    .join("; ")
-    .trim();
+  ];
+
+  // Tving HTTPS for sub-ressurser — kun i prod. Lokalt ødelegger det http://localhost.
+  if (!isDev) {
+    directives.push("upgrade-insecure-requests");
+  }
+
+  return directives.join("; ").trim();
 }
 
 export async function proxy(request: NextRequest) {

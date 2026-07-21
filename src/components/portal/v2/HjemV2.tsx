@@ -84,7 +84,7 @@ function useMobile(): boolean {
 export function HjemV2({ data }: { data: DashboardData }) {
   const mobile = useMobile();
   const router = useRouter();
-  const { user, greeting, weekNumber, today, todayAll, week, kpiStats, weekProgress, trainingHeatmap, coachMessage, nesteHandling } = data;
+  const { user, greeting, weekNumber, today, todayAll, week, kpiStats, weekProgress, trainingHeatmap, coachMessage, nesteHandling, optimalSession } = data;
 
   // SG-form (kpiStats — snitt SG total siste 10 runder). Badgen under er eneste
   // retningssignal her (10-runders trend) — en egen per-runde-delta ble fjernet
@@ -230,7 +230,67 @@ export function HjemV2({ data }: { data: DashboardData }) {
               )}
             </>
           ) : (
-            <TomTilstand icon="calendar" title="Ingen økt i dag" sub="Nyt hviledagen — eller legg til en økt i Plan." />
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {optimalSession ? (
+                <>
+                  <Caps>Anbefalt i dag (fra SG)</Caps>
+                  <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, lineHeight: 1.3 }}>
+                    {optimalSession.title}
+                  </div>
+                  <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.55, margin: 0 }}>
+                    {optimalSession.rationale}
+                  </p>
+                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+                    <AkseChip a={optimalSession.pyramidArea} />
+                    <StatusPill tone="info">{varighet(optimalSession.durationMin)}</StatusPill>
+                  </div>
+                  <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none" }}>
+                    <CTAPill icon="calendar" full>
+                      Planlegg dette i Workbench
+                    </CTAPill>
+                  </Link>
+                  <Link
+                    href="/portal/analysere"
+                    style={{
+                      textDecoration: "none",
+                      fontFamily: T.ui,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: T.fg2,
+                      textAlign: "center",
+                    }}
+                  >
+                    Se full SG-analyse
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <TomTilstand
+                    icon="calendar"
+                    title="Ingen økt i dag"
+                    sub="Nyt hviledagen — eller legg inn økter i Workbench."
+                  />
+                  <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none" }}>
+                    <CTAPill icon="calendar" full>
+                      Åpne Workbench
+                    </CTAPill>
+                  </Link>
+                  <Link
+                    href="/portal/analysere"
+                    style={{
+                      textDecoration: "none",
+                      fontFamily: T.ui,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: T.fg2,
+                      textAlign: "center",
+                    }}
+                  >
+                    Se SG og planlegg resept
+                  </Link>
+                </>
+              )}
+            </div>
           )}
         </Kort>
       </div>

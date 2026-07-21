@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="no"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Hi-fi · hele plattformen</title>
+<style>
+:root{
+  --bg:#F2F1EA;--panel:#fff;--panel2:#F7F6F0;--panel3:#ECEBE2;
+  --fg:#171B18;--fg2:#4A4F4A;--mut:#62675F;--forest:#005840;--lime:#005840;--on:#fff;
+  --up:#1E8A50;--down:#C04A1E;--border:rgba(16,22,19,.10);--border-s:rgba(16,22,19,.19);
+  --ax-fys:#1E8A50;--ax-tek:#96690A;--ax-slag:#1F6CB0;--ax-spill:#647F00;--ax-turn:#C04A1E;
+  --font-d:"Familjen Grotesk",Inter,system-ui,sans-serif;
+  --font-u:Inter,system-ui,sans-serif;
+  --font-m:"JetBrains Mono",ui-monospace,monospace;
+  --g1:#f0f0ee;--g2:#e2e2de;--g3:#c8c8c2;--g4:#9a9a94;--g5:#5a5a56;--line:#bbb;
+}
+[data-theme=dark]{
+  --bg:#131513;--panel:#1C1F1C;--panel2:#191C19;--panel3:#232623;
+  --fg:#F3F5F1;--fg2:#B4B7B0;--mut:#8B8E87;--forest:#005840;--lime:#D1F843;--on:#0D0E0D;
+  --up:#4FD08A;--down:#F0683E;--border:rgba(255,255,255,.11);--border-s:rgba(255,255,255,.19);
+  --ax-fys:#3DBE78;--ax-tek:#E8B43C;--ax-slag:#5AA9F0;--ax-spill:#D1F843;--ax-turn:#F0683E;
+}
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.45 var(--font-u);background:var(--bg);color:var(--fg)}
+a{color:var(--forest)}
+.wrap{max-width:1280px;margin:0 auto;padding:24px 18px 80px}
+h1{font-family:var(--font-d);font-size:28px;margin:0 0 6px;letter-spacing:-.02em}
+h2{font-family:var(--font-d);font-size:20px;margin:32px 0 10px}
+h3{font-size:14px;margin:0 0 8px}
+.sub{color:var(--mut);margin:0 0 20px;max-width:60ch}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 28px;position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);padding:10px 0;border-bottom:1px solid var(--border)}
+.nav a{display:inline-flex;align-items:center;height:34px;padding:0 12px;border-radius:9999px;background:var(--panel);border:1px solid var(--border);text-decoration:none;color:var(--fg);font-size:12px;font-weight:600}
+.nav a:hover{border-color:var(--forest)}
+.nav a.on{background:var(--lime);color:var(--on);border-color:transparent}
+.pill{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:9999px;font-family:var(--font-m);font-size:10px;font-weight:700;background:var(--panel3);color:var(--fg2)}
+.pill.f{background:color-mix(in srgb,var(--forest) 15%,transparent);color:var(--forest)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:16px 18px}
+.grid{display:grid;gap:14px}
+.grid-2{grid-template-columns:1fr}@media(min-width:900px){.grid-2{grid-template-columns:1fr 1fr}}
+.grid-3{grid-template-columns:1fr}@media(min-width:900px){.grid-3{grid-template-columns:repeat(3,1fr)}}
+.muted{color:var(--mut);font-size:12px}
+.mono{font-family:var(--font-m)}
+.cta{display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 16px;border-radius:9999px;background:var(--lime);color:var(--on);font-weight:700;font-size:13px;text-decoration:none;border:0}
+.hero-n{font-family:var(--font-m);font-size:40px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.caps{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);position:sticky;top:52px;background:var(--bg)}
+tr:hover td{background:color-mix(in srgb,var(--forest) 4%,transparent)}
+.filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.filter-bar button{height:32px;padding:0 12px;border-radius:9999px;border:1px solid var(--border);background:var(--panel);font:inherit;font-size:12px;font-weight:600;cursor:pointer;color:var(--fg)}
+.filter-bar button.on{background:var(--lime);color:var(--on);border-color:transparent}
+.frame{background:var(--g1);border:1px solid var(--line);border-radius:14px;overflow:hidden;position:relative}
+.frame.m{width:168px;height:340px;flex-shrink:0}
+.frame.d{width:360px;height:220px;flex-shrink:0}
+.frame.w{width:440px;height:240px;flex-shrink:0}
+.flabel{position:absolute;top:6px;left:8px;font-size:9px;font-weight:700;color:var(--g5);z-index:2}
+.g-bar{background:var(--g3);height:26px}
+.g-side{position:absolute;left:0;top:0;bottom:0;width:28px;background:var(--g3)}
+.g-bottom{position:absolute;bottom:0;left:0;right:0;height:36px;display:flex;background:var(--g2);border-top:1px solid var(--line)}
+.g-dot{flex:1;margin:8px 3px;background:var(--g4);border-radius:4px}.g-dot.on{background:var(--g5)}
+.g-hero{margin:34px 10px 6px;height:44px;background:var(--g3);border-radius:8px}
+.g-cta{margin:6px 10px;height:26px;width:55%;background:var(--g5);border-radius:999px}
+.g-card{margin:6px 10px;height:36px;background:var(--g2);border-radius:10px}
+.g-sm{height:22px}
+.g-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 10px}
+.g-cell{height:32px;background:var(--g2);border-radius:8px}
+.g-main{margin-left:28px;padding:30px 10px 10px;display:flex;flex-direction:column;gap:6px;height:100%}
+.g-steps{display:flex;gap:3px;margin:34px 10px 6px}.g-step{flex:1;height:5px;background:var(--g3);border-radius:3px}.g-step.on{background:var(--g5)}
+.g-big{margin:36px 14px;height:90px;background:var(--g3);border-radius:14px}
+.row-frames{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start}
+.screen-hifi{border:1px solid var(--border);border-radius:24px;overflow:hidden;background:var(--panel);min-height:420px;display:flex;flex-direction:column}
+.screen-hifi .chrome{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--border);background:var(--panel2);font-size:11px;color:var(--mut)}
+.screen-hifi .body{padding:14px;flex:1}
+.screen-hifi.phone{max-width:320px}
+.screen-hifi.desk{max-width:100%}
+.kpi{font-family:var(--font-m);font-size:28px;font-weight:700}
+.rowline{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.rowline:last-child{border-bottom:0}
+.neg{color:var(--down)}.pos{color:var(--up)}
+.bnav{display:flex;margin-top:auto;border-top:1px solid var(--border);padding:8px 4px}
+.bnav span{flex:1;text-align:center;font-size:9px;color:var(--mut);padding:6px 0}
+.bnav span.on{color:var(--forest);font-weight:700}
+.rail{width:48px;background:#005840;color:#fff;display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px 0;font-size:9px}
+.aos-layout{display:flex;min-height:360px}
+.aos-main{flex:1;padding:14px;background:var(--bg)}
+.chip{display:inline-flex;padding:3px 8px;border-radius:9999px;background:var(--panel3);font-family:var(--font-m);font-size:10px;font-weight:700}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.stat{background:var(--panel2);border-radius:14px;padding:12px;border:1px solid var(--border)}
+.tabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap}
+.tab{padding:6px 10px;border-radius:9999px;background:var(--panel3);font-size:11px;font-weight:600;color:var(--fg2)}
+.tab.on{background:var(--lime);color:var(--on)}
+.list-item{display:flex;gap:10px;align-items:center;padding:10px;border-radius:14px;background:var(--panel2);margin-bottom:6px;border:1px solid var(--border)}
+.av{width:32px;height:32px;border-radius:50%;background:var(--panel3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.wb{display:grid;grid-template-columns:1fr 1.3fr .9fr;gap:8px;min-height:200px}
+.wb col,.wb-c{background:var(--panel2);border-radius:12px;padding:10px;border:1px solid var(--border)}
+.okt{background:var(--panel3);border-radius:10px;padding:8px;margin-top:6px;font-size:11px}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 16px}
+.note-box{background:var(--panel2);border-left:3px solid var(--forest);padding:12px 14px;border-radius:0 12px 12px 0;margin:16px 0;font-size:13px}
+footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--border);color:var(--mut);font-size:12px}
+
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;margin-top:40px}
+.mock-row{display:flex;flex-wrap:wrap;gap:18px;margin-top:14px;align-items:flex-start}
+</style></head><body>
+<div class="wrap">
+  <h1>Hi-fi design — kjerne + maler for alle</h1>
+  <p class="sub">Full farge med v2-tokens. Under hver kjerne: «samme mal gjelder for» med alle ruter i familien. PlayerHQ lyst · AgencyOS mørkt.</p>
+  <div class="nav">
+    <a href="index.html">Start</a>
+    <a href="wireframes.html">Wireframes</a>
+    <a class="on" href="hifi.html">Hi-fi</a>
+    <a href="inventar.html">Full liste</a>
+    <a href="flyter.html">Flyter</a>
+  </div>
+
+  <div class="section-head">
+    <div>
+      <h2 style="margin:0">PlayerHQ · Hub (Hjem)</h2>
+      <p class="muted" style="margin:4px 0 0">Familie: Hub · 16 skjermer bruker denne malen</p>
+    </div>
+  </div>
+  <div class="mock-row"><div class="screen-hifi phone">
+  <div class="chrome"><span class="pill">390 · lys</span><span style="margin-left:auto">Hjem</span></div>
+  <div class="body">
+<div class="caps">I dag · tirsdag</div>
+<div style="margin-top:8px;font-family:var(--font-d);font-size:22px;font-weight:700">Hei, Markus</div>
+<div class="stat" style="margin-top:14px;background:linear-gradient(140deg,rgba(0,88,64,.10),transparent),var(--panel2)">
+  <div class="caps">Neste fokus</div>
+  <div class="kpi" style="margin-top:4px">Nærspill</div>
+  <div class="muted" style="margin-top:4px">−0,55 slag/runde · siste 8 runder</div>
+  <a class="cta" style="margin-top:12px;width:100%">Start økt i dag</a>
+</div>
+<div class="list-item" style="margin-top:10px"><div class="av">W</div><div style="flex:1"><strong>Workbench-økt</strong><div class="muted">16:00 · M2 range</div></div><span class="chip">60 min</span></div>
+<div class="list-item"><div class="av">T</div><div style="flex:1"><strong>Tester</strong><div class="muted">Driver Basic forfaller</div></div><span class="chip">!</span></div>
+</div>
+  <div class="bnav"><span class="on">Hjem</span><span class="">Plan</span><span class="">Gjør</span><span class="">Analyse</span><span class="">Meg</span></div>
+</div>
+    <div class="card" style="flex:1;min-width:240px;max-width:420px">
+      <div class="caps">Samme mal gjelder for</div>
+      <div class="mono" style="font-size:11px;margin-top:8px;line-height:1.6;max-height:280px;overflow:auto">/meg<br>/portal<br>/portal/baneguide<br>/portal/booking<br>/portal/coach<br>/portal/fysisk<br>/portal/gameplan<br>/portal/gjennomfore<br>/portal/mal<br>/portal/meg<br>/portal/onskeligokt<br>/portal/stats<br>/portal/talent<br>/portal/tren<br>/portal/utviklingsplan<br>/portal/venner</div>
+      <div class="note-box" style="margin-top:12px">Tilstander: default · tom · laster · feil · (live: pause)</div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div>
+      <h2 style="margin:0">PlayerHQ · Analyse</h2>
+      <p class="muted" style="margin:4px 0 0">Familie: Analyse · 12 skjermer bruker denne malen</p>
+    </div>
+  </div>
+  <div class="mock-row"><div class="screen-hifi phone">
+  <div class="chrome"><span class="pill">390 · lys</span><span style="margin-left:auto">Analysere</span></div>
+  <div class="body">
+<div class="tabs"><span class="tab on">SG</span><span class="tab">Fokus</span><span class="tab">Runder</span><span class="tab">Bag</span></div>
+<div class="caps">Total SG · PGA</div>
+<div class="kpi">−0,42 <span class="muted" style="font-size:14px">slag/runde</span></div>
+<div class="muted neg" style="margin-top:4px">Synkende · 10 runder</div>
+<div style="margin-top:12px">
+  <div class="rowline"><span>Tee-slag</span><span class="pos">+0,18</span></div>
+  <div class="rowline"><span>Innspill</span><span class="neg">−0,31</span></div>
+  <div class="rowline"><span>Nærspill</span><span class="neg" style="font-weight:700">−0,55</span></div>
+  <div class="rowline"><span>Putting</span><span class="pos">+0,26</span></div>
+</div>
+<div class="stat" style="margin-top:12px">
+  <div class="caps">AK-formel</div>
+  <div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">
+    <span class="chip" style="background:color-mix(in srgb,var(--ax-slag) 20%,transparent)">SLAG</span>
+    <span class="muted">CS50–70 · kontakt</span>
+  </div>
+  <a class="cta" style="margin-top:10px;width:100%">Planlegg dette</a>
+</div>
+</div>
+  <div class="bnav"><span class="">Hjem</span><span class="">Plan</span><span class="">Gjør</span><span class="on">Analyse</span><span class="">Meg</span></div>
+</div>
+    <div class="card" style="flex:1;min-width:240px;max-width:420px">
+      <div class="caps">Samme mal gjelder for</div>
+      <div class="mono" style="font-size:11px;margin-top:8px;line-height:1.6;max-height:280px;overflow:auto">/portal/analyse<br>/portal/analysere<br>/portal/analysere/hull<br>/portal/coach/sg-hub<br>/portal/datagolf<br>/portal/mal/sg-hub/coach/[spillerId]<br>/portal/mal/sg-hub/coach/[spillerId]/[club]<br>/portal/mal/sg-hub/coach/[spillerId]/equipment<br>/portal/mal/trackman<br>/portal/mal/trackman/[id]<br>/portal/statistikk/[metric]<br>/portal/statistikk/runder/[runId]/del</div>
+      <div class="note-box" style="margin-top:12px">Tilstander: default · tom · laster · feil · (live: pause)</div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div>
+      <h2 style="margin:0">PlayerHQ · Kalender/Workbench</h2>
+      <p class="muted" style="margin:4px 0 0">Familie: Kalender · 5 skjermer bruker denne malen</p>
+    </div>
+  </div>
+  <div class="mock-row"><div class="screen-hifi phone">
+  <div class="chrome"><span class="pill">390 · lys</span><span style="margin-left:auto">Workbench</span></div>
+  <div class="body">
+<div class="caps">Uke 30 · Plan</div>
+<div style="display:flex;gap:4px;margin:10px 0">
+  <div class="stat" style="flex:1;text-align:center;padding:8px"><div class="mono" style="font-size:11px">M</div><div style="height:40px;background:var(--panel3);border-radius:8px;margin-top:4px"></div></div>
+  <div class="stat" style="flex:1;text-align:center;padding:8px;border-color:var(--forest)"><div class="mono" style="font-size:11px;color:var(--forest);font-weight:700">T</div><div style="height:40px;background:color-mix(in srgb,var(--forest) 20%,transparent);border-radius:8px;margin-top:4px;font-size:10px;padding:4px">Nærspill</div></div>
+  <div class="stat" style="flex:1;text-align:center;padding:8px"><div class="mono" style="font-size:11px">O</div><div style="height:40px;background:var(--panel3);border-radius:8px;margin-top:4px"></div></div>
+  <div class="stat" style="flex:1;text-align:center;padding:8px"><div class="mono" style="font-size:11px">T</div><div style="height:40px;background:var(--panel3);border-radius:8px;margin-top:4px"></div></div>
+  <div class="stat" style="flex:1;text-align:center;padding:8px"><div class="mono" style="font-size:11px">F</div><div style="height:40px;background:var(--panel3);border-radius:8px;margin-top:4px"></div></div>
+</div>
+<div class="okt"><strong>Tir 16:00</strong> · M2 range · 60 min<br><span class="muted">SLAG · nærspill · 3 driller</span></div>
+<a class="cta" style="margin-top:12px;width:100%">Legg til økt</a>
+</div>
+  <div class="bnav"><span class="">Hjem</span><span class="on">Plan</span><span class="">Gjør</span><span class="">Analyse</span><span class="">Meg</span></div>
+</div>
+    <div class="card" style="flex:1;min-width:240px;max-width:420px">
+      <div class="caps">Samme mal gjelder for</div>
+      <div class="mono" style="font-size:11px;margin-top:8px;line-height:1.6;max-height:280px;overflow:auto">/portal/kalender<br>/portal/planlegge<br>/portal/planlegge/bygger<br>/portal/planlegge/workbench<br>/portal/tren/kalender</div>
+      <div class="note-box" style="margin-top:12px">Tilstander: default · tom · laster · feil · (live: pause)</div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div>
+      <h2 style="margin:0">PlayerHQ · Live</h2>
+      <p class="muted" style="margin:4px 0 0">Familie: Live · 8 skjermer bruker denne malen</p>
+    </div>
+  </div>
+  <div class="mock-row"><div class="screen-hifi phone">
+  <div class="chrome"><span class="pill">390 · lys</span><span style="margin-left:auto">Live økt</span></div>
+  <div class="body">
+<div style="display:flex;justify-content:space-between;align-items:center">
+  <span class="chip">Drill 2/5</span>
+  <span class="muted mono">12:40</span>
+</div>
+<div style="margin-top:16px;font-family:var(--font-d);font-size:20px;font-weight:700">50 m pitch · landingssone</div>
+<div class="muted">Mål: 8/10 innen 3 m · CS60</div>
+<div class="stat" style="margin:18px 0;text-align:center;padding:20px">
+  <div class="caps">Reps</div>
+  <div class="kpi" style="font-size:48px">6<span class="muted" style="font-size:18px">/10</span></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+  <a class="cta" style="background:var(--panel3);color:var(--fg)">−</a>
+  <a class="cta">+ treff</a>
+</div>
+<a class="cta" style="margin-top:8px;width:100%;background:var(--panel3);color:var(--fg)">Pause</a>
+</div>
+  <div class="bnav"><span class="">Hjem</span><span class="">Plan</span><span class="on">Gjør</span><span class="">Analyse</span><span class="">Meg</span></div>
+</div>
+    <div class="card" style="flex:1;min-width:240px;max-width:420px">
+      <div class="caps">Samme mal gjelder for</div>
+      <div class="mono" style="font-size:11px;margin-top:8px;line-height:1.6;max-height:280px;overflow:auto">/portal/live/[sessionId]<br>/portal/live/[sessionId]/active<br>/portal/live/[sessionId]/brief<br>/portal/live/[sessionId]/logger<br>/portal/live/[sessionId]/summary<br>/portal/live/[sessionId]/tapper<br>/portal/runde/live<br>/portal/runde/logg</div>
+      <div class="note-box" style="margin-top:12px">Tilstander: default · tom · laster · feil · (live: pause)</div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div>
+      <h2 style="margin:0">PlayerHQ · Wizard</h2>
+      <p class="muted" style="margin:4px 0 0">Familie: Wizard · 13 skjermer bruker denne malen</p>
+    </div>
+  </div>
+  <div class="mock-row"><div class="screen-hifi phone">
+  <div class="chrome"><span class="pill">390 · lys</span><span style="margin-left:auto">Booking</span></div>
+  <div class="body">
+<div class="caps">Steg 2 av 4</div>
+<div style="display:flex;gap:4px;margin:8px 0 14px"><div style="flex:1;height:4px;background:var(--forest);border-radius:2px"></div><div style="flex:1;height:4px;background:var(--forest);border-radius:2px"></div><div style="flex:1;height:4px;background:var(--panel3);border-radius:2px"></div><div style="flex:1;height:4px;background:var(--panel3);border-radius:2px"></div></div>
+<div style="font-weight:700;font-size:18px">Velg tid</div>
+<div class="list-item" style="border-color:var(--forest)"><strong>Tir 16:00</strong><span class="muted" style="margin-left:auto">60 min</span></div>
+<div class="list-item"><strong>Ons 09:00</strong><span class="muted" style="margin-left:auto">60 min</span></div>
+<div class="list-item"><strong>Tor 17:30</strong><span class="muted" style="margin-left:auto">90 min</span></div>
+<a class="cta" style="width:100%;margin-top:10px">Neste</a>
+</div>
+  <div class="bnav"><span class="">Hjem</span><span class="">Plan</span><span class="on">Gjør</span><span class="">Analyse</span><span class="">Meg</span></div>
+</div>
+    <div class="card" style="flex:1;min-width:240px;max-width:420px">
+      <div class="caps">Samme mal gjelder for</div>
+      <div class="mono" style="font-size:11px;margin-top:8px;line-height:1.6;max-height:280px;overflow:auto">/portal/booking/ny<br>/portal/booking/ny/bekreft<br>/portal/coach/melding/ny<br>/portal/coach/sporsmal/ny<br>/portal/mal/bygger<br>/portal/mal/runder/ny<br>/portal/meg/abonnement/avbestill<br>/portal/meg/abonnement/kort/ny<br>/portal/meg/abonnement/oppgrader/flyt<br>/portal/meg/bookinger/reschedule/[bookingId]<br>/portal/meg/helse/symptom/ny<br>/portal/tren/tester/ny<br>/portal/tren/tester/ny/egen</div>
+      <div class="note-box" style="margin-top:12px">Tilstander: default · tom · laster · feil · (live: pause)</div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div>
+      <h2 style="margin:0">PlayerHQ · Meg (Hub)</h2>
+      <p class="muted" style="margin:4px 0 0">Familie: Hub · 16 skjermer bruker denne malen</p>
+    </div>
+  </div>
+  <div class="mock-row"><div class="screen-hifi phone">
+  <div class="chrome"><span class="pill">390 · lys</span><span style="margin-left:auto">Meg</span></div>
+  <div class="body">
+<div style="display:flex;gap:12px;align-items:center">
+  <div class="av" style="width:56px;height:56px;background:var(--panel3)">MR</div>
+  <div><div style="font-weight:700;font-size:18px">Markus R.</div><div class="muted">Pro · HCP 4,2</div></div>
+</div>
+<div class="list-item" style="margin-top:14px"><strong>Profil</strong><span class="muted" style="margin-left:auto">›</span></div>
+<div class="list-item"><strong>Abonnement</strong><span class="chip" style="margin-left:auto">Pro</span></div>
+<div class="list-item"><strong>Utstyrsbag</strong><span class="muted" style="margin-left:auto">›</span></div>
+<div class="list-item"><strong>Innstillinger</strong><span class="muted" style="margin-left:auto">›</span></div>
+</div>
+  <div class="bnav"><span class="">Hjem</span><span class="">Plan</span><span class="">Gjør</span><span class="">Analyse</span><span class="on">Meg</span></div>
+</div>
+    <div class="card" style="flex:1;min-width:240px;max-width:420px">
+      <div class="caps">Samme mal gjelder for</div>
+      <div class="mono" style="font-size:11px;margin-top:8px;line-height:1.6;max-height:280px;overflow:auto">/meg<br>/portal<br>/portal/baneguide<br>/portal/booking<br>/portal/coach<br>/portal/fysisk<br>/portal/gameplan<br>/portal/gjennomfore<br>/portal/mal<br>/portal/meg<br>/portal/onskeligokt<br>/portal/stats<br>/portal/talent<br>/portal/tren<br>/portal/utviklingsplan<br>/portal/venner</div>
+      <div class="note-box" style="margin-top:12px">Tilstander: default · tom · laster · feil · (live: pause)</div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div>
+      <h2 style="margin:0">AgencyOS · Hub/Liste stall</h2>
+      <p class="muted" style="margin:4px 0 0">Familie: Liste · 21 skjermer bruker denne malen</p>
+    </div>
+  </div>
+  <div class="mock-row"><div class="screen-hifi desk" data-theme="dark" style="background:#131513;color:#F3F5F1;border-color:rgba(255,255,255,.11)">
+  <div class="chrome" style="background:#1C1F1C;border-color:rgba(255,255,255,.11);color:#8B8E87"><span class="pill" style="background:#232623;color:#B4B7B0">1680 · mørk</span><span style="margin-left:auto">Spillere</span></div>
+  <div class="aos-layout">
+    <div class="rail"><div>⌂</div><div style="opacity:.5">◎</div><div style="opacity:.5">☰</div><div style="opacity:.5">△</div><div style="opacity:.5">⚙</div></div>
+    <div class="aos-main" style="background:#131513;color:#F3F5F1">
+<div class="caps" style="color:#8B8E87">Stall · 18 spillere</div>
+<div style="font-family:var(--font-d);font-size:22px;font-weight:700;margin:6px 0 12px;color:#F3F5F1">Tilstand i dag</div>
+<div class="stat-grid">
+  <div class="stat" style="background:#1C1F1C;border-color:rgba(255,255,255,.11)"><div class="caps" style="color:#8B8E87">På plan</div><div class="kpi" style="color:#4FD08A">11</div></div>
+  <div class="stat" style="background:#1C1F1C;border-color:rgba(255,255,255,.11)"><div class="caps" style="color:#8B8E87">Trenger øye</div><div class="kpi" style="color:#F0683E">4</div></div>
+  <div class="stat" style="background:#1C1F1C;border-color:rgba(255,255,255,.11)"><div class="caps" style="color:#8B8E87">Tester</div><div class="kpi" style="color:#F3F5F1">3</div></div>
+  <div class="stat" style="background:#1C1F1C;border-color:rgba(255,255,255,.11)"><div class="caps" style="color:#8B8E87">Innboks</div><div class="kpi" style="color:#D1F843">7</div></div>
+</div>
+<div class="list-item" style="background:#1C1F1C;border-color:rgba(255,255,255,.11)"><div class="av" style="background:#232623;color:#D1F843">MR</div><div style="flex:1;color:#F3F5F1"><strong>Markus R.</strong><div style="color:#8B8E87;font-size:12px">Nærspill faller · Workbench tom fre</div></div><span class="chip" style="background:#232623;color:#F0683E">!</span></div>
+<div class="list-item" style="background:#1C1F1C;border-color:rgba(255,255,255,.11)"><div class="av" style="background:#232623;color:#4FD08A">EH</div><div style="flex:1;color:#F3F5F1"><strong>Emma H.</strong><div style="color:#8B8E87;font-size:12px">På plan · test OK</div></div><span class="chip" style="background:#232623;color:#4FD08A">OK</span></div>
+</div>
+  </div>
+</div>
+    <div class="card" style="flex:1;min-width:240px;max-width:420px">
+      <div class="caps">Samme mal gjelder for</div>
+      <div class="mono" style="font-size:11px;margin-top:8px;line-height:1.6;max-height:280px;overflow:auto">/admin/agencyos/spillere<br>/admin/agents<br>/admin/approvals<br>/admin/bookinger<br>/admin/email-templates<br>/admin/godkjenninger<br>/admin/grupper<br>/admin/innboks<br>/admin/messages<br>/admin/okter<br>/admin/plan-templates<br>/admin/plans<br>/admin/queue<br>/admin/runder<br>/admin/spillere<br>/admin/spillere/[id]/tester<br>/admin/team<br>/admin/tester<br>/admin/tournaments<br>/admin/varsler<br>/admin/videoer</div>
+      <div class="note-box" style="margin-top:12px">Tilstander: default · tom · laster · feil · (live: pause)</div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div>
+      <h2 style="margin:0">AgencyOS · Workbench</h2>
+      <p class="muted" style="margin:4px 0 0">Familie: Kalender · 11 skjermer bruker denne malen</p>
+    </div>
+  </div>
+  <div class="mock-row"><div class="screen-hifi desk" data-theme="dark" style="background:#131513;color:#F3F5F1;border-color:rgba(255,255,255,.11)">
+  <div class="chrome" style="background:#1C1F1C;border-color:rgba(255,255,255,.11);color:#8B8E87"><span class="pill" style="background:#232623;color:#B4B7B0">1680 · mørk</span><span style="margin-left:auto">Workbench</span></div>
+  <div class="aos-layout">
+    <div class="rail"><div>⌂</div><div style="opacity:.5">◎</div><div style="opacity:.5">☰</div><div style="opacity:.5">△</div><div style="opacity:.5">⚙</div></div>
+    <div class="aos-main" style="background:#131513;color:#F3F5F1">
+<div class="caps" style="color:#8B8E87">Workbench · Markus</div>
+<div style="font-weight:700;font-size:18px;color:#F3F5F1;margin:4px 0 12px">Uke 30 · GRUNN</div>
+<div class="wb">
+  <div class="wb-c" style="background:#1C1F1C;border-color:rgba(255,255,255,.11)"><div class="caps" style="color:#8B8E87">Periode</div><div class="okt" style="background:#232623;color:#F3F5F1">GRUNN · L2</div><div class="okt" style="background:#232623;color:#F3F5F1">Fokus: nærspill</div></div>
+  <div class="wb-c" style="background:#1C1F1C;border-color:rgba(255,255,255,.11)"><div class="caps" style="color:#8B8E87">Uke</div>
+    <div class="okt" style="background:#232623;color:#F3F5F1"><strong>Tir</strong> M2 · 60m · SLAG</div>
+    <div class="okt" style="background:#232623;color:#F3F5F1"><strong>Tor</strong> Bane · SPILL</div>
+  </div>
+  <div class="wb-c" style="background:#1C1F1C;border-color:rgba(255,255,255,.11)"><div class="caps" style="color:#8B8E87">Økt</div><div class="okt" style="background:#232623;color:#F3F5F1">3 driller<br><span style="color:#8B8E87">+ last fra resept</span></div>
+  <a class="cta" style="margin-top:10px;width:100%;background:#D1F843;color:#0D0E0D">Publiser</a></div>
+</div>
+</div>
+  </div>
+</div>
+    <div class="card" style="flex:1;min-width:240px;max-width:420px">
+      <div class="caps">Samme mal gjelder for</div>
+      <div class="mono" style="font-size:11px;margin-top:8px;line-height:1.6;max-height:280px;overflow:auto">/admin/agencyos/uka<br>/admin/calendar<br>/admin/calendar/maned<br>/admin/grupper/[id]/workbench<br>/admin/kalender<br>/admin/kalender/hendelse/[id]<br>/admin/kalender/hendelse/ny<br>/admin/planlegge<br>/admin/settings/calendar<br>/admin/spillere/[id]/workbench<br>/admin/uka</div>
+      <div class="note-box" style="margin-top:12px">Tilstander: default · tom · laster · feil · (live: pause)</div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div>
+      <h2 style="margin:0">AgencyOS · Spiller 360</h2>
+      <p class="muted" style="margin:4px 0 0">Familie: Detalj · 38 skjermer bruker denne malen</p>
+    </div>
+  </div>
+  <div class="mock-row"><div class="screen-hifi desk" data-theme="dark" style="background:#131513;color:#F3F5F1;border-color:rgba(255,255,255,.11)">
+  <div class="chrome" style="background:#1C1F1C;border-color:rgba(255,255,255,.11);color:#8B8E87"><span class="pill" style="background:#232623;color:#B4B7B0">1680 · mørk</span><span style="margin-left:auto">Spiller</span></div>
+  <div class="aos-layout">
+    <div class="rail"><div>⌂</div><div style="opacity:.5">◎</div><div style="opacity:.5">☰</div><div style="opacity:.5">△</div><div style="opacity:.5">⚙</div></div>
+    <div class="aos-main" style="background:#131513;color:#F3F5F1">
+<div style="display:flex;gap:12px;align-items:center;margin-bottom:12px">
+  <div class="av" style="width:48px;height:48px;background:#232623;color:#D1F843;font-size:14px">MR</div>
+  <div><div style="font-weight:700;font-size:18px;color:#F3F5F1">Markus R.</div><div style="color:#8B8E87;font-size:12px">HCP 4,2 · Kategori C · WANG</div></div>
+</div>
+<div class="tabs"><span class="tab on" style="background:#D1F843;color:#0D0E0D">Oversikt</span><span class="tab" style="background:#232623;color:#B4B7B0">Plan</span><span class="tab" style="background:#232623;color:#B4B7B0">SG</span><span class="tab" style="background:#232623;color:#B4B7B0">Tester</span></div>
+<div class="stat-grid">
+  <div class="stat" style="background:#1C1F1C;border-color:rgba(255,255,255,.11)"><div class="caps" style="color:#8B8E87">SG total</div><div class="kpi" style="color:#F0683E">−0,42</div></div>
+  <div class="stat" style="background:#1C1F1C;border-color:rgba(255,255,255,.11)"><div class="caps" style="color:#8B8E87">Uke-volum</div><div class="kpi" style="color:#F3F5F1">4,5 t</div></div>
+</div>
+<a class="cta" style="width:100%;background:#D1F843;color:#0D0E0D;margin-top:8px">Åpne Workbench</a>
+</div>
+  </div>
+</div>
+    <div class="card" style="flex:1;min-width:240px;max-width:420px">
+      <div class="caps">Samme mal gjelder for</div>
+      <div class="mono" style="font-size:11px;margin-top:8px;line-height:1.6;max-height:280px;overflow:auto">/admin/agencyos/caddie<br>/admin/agencyos/caddie/aktivitet<br>/admin/agencyos/caddie/dashbord<br>/admin/agencyos/live<br>/admin/agencyos/okonomi<br>/admin/agents/[agentId]<br>/admin/approvals/[id]<br>/admin/bookinger/[id]<br>/admin/drills/[id]/rediger<br>/admin/email-templates/[id]/rediger<br>/admin/gjennomfore/okter/[id]<br>/admin/grupper/[id]<br>/admin/grupper/[id]/arsplan<br>/admin/grupper/[id]/arsplan/skoledata<br>/admin/grupper/[id]/timeplan<br>/admin/klubb/innstillinger<br>/admin/plan-templates/[id]<br>/admin/plan-templates/[id]/rediger<br>/admin/plans/[planId]<br>/admin/plans/templates<br>/admin/plans/templates/[id]/effectiveness<br>/admin/plans/templates/[id]/rediger<br>/admin/settings/api<br>/admin/settings/periode-fordeling<span class="muted"> +14 til</span></div>
+      <div class="note-box" style="margin-top:12px">Tilstander: default · tom · laster · feil · (live: pause)</div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div>
+      <h2 style="margin:0">Forelder · Hub</h2>
+      <p class="muted" style="margin:4px 0 0">Familie: Hub · 11 skjermer bruker denne malen</p>
+    </div>
+  </div>
+  <div class="mock-row"><div class="screen-hifi phone">
+  <div class="chrome"><span class="pill">390 · lys</span><span style="margin-left:auto">Forelder</span></div>
+  <div class="body">
+<div class="caps">Denne uka</div>
+<div style="font-family:var(--font-d);font-size:20px;font-weight:700;margin-top:4px">Emma · WANG</div>
+<div class="stat" style="margin-top:12px">
+  <div class="caps">Trening fullført</div>
+  <div class="kpi">3<span class="muted" style="font-size:14px">/4 økter</span></div>
+  <div class="muted">På plan · coach har ingen røde flagg</div>
+</div>
+<div class="list-item"><div class="av">E</div><div style="flex:1"><strong>Ukerapport</strong><div class="muted">Klar mandag</div></div></div>
+<div class="list-item"><div class="av">$</div><div style="flex:1"><strong>Faktura</strong><div class="muted">Forfall 1. aug</div></div></div>
+</div>
+  <div class="bnav"><span class="on">Hjem</span><span class="">Plan</span><span class="">Gjør</span><span class="">Analyse</span><span class="">Meg</span></div>
+</div>
+    <div class="card" style="flex:1;min-width:240px;max-width:420px">
+      <div class="caps">Samme mal gjelder for</div>
+      <div class="mono" style="font-size:11px;margin-top:8px;line-height:1.6;max-height:280px;overflow:auto">/forelder<br>/forelder/barn<br>/forelder/barn/[childId]<br>/forelder/bookinger<br>/forelder/coach<br>/forelder/fakturaer<br>/forelder/innstillinger<br>/forelder/okonomi<br>/forelder/samtykke<br>/forelder/ukerapport<br>/forelder/varsler</div>
+      <div class="note-box" style="margin-top:12px">Tilstander: default · tom · laster · feil · (live: pause)</div>
+    </div>
+  </div>
+
+  <div class="section-head"><div><h2 style="margin:0">PlayerHQ · Liste + Detalj</h2><p class="muted">Gjelder runder, driller, tester, turneringer, utfordringer, venner, bookinger…</p></div></div>
+  <div class="mock-row">
+    <div class="screen-hifi phone">
+  <div class="chrome"><span class="pill">390 · lys</span><span style="margin-left:auto">Liste</span></div>
+  <div class="body">
+<div style="display:flex;justify-content:space-between;align-items:center"><div class="caps">Runder</div><span class="chip">Filter</span></div>
+<div class="list-item" style="margin-top:10px"><div class="av">−2</div><div style="flex:1"><strong>GFGK</strong><div class="muted">12. jul · 74</div></div><span class="pos mono">+0,12</span></div>
+<div class="list-item"><div class="av">+3</div><div style="flex:1"><strong>Onsøy</strong><div class="muted">5. jul · 79</div></div><span class="neg mono">−0,40</span></div>
+<div class="list-item"><div class="av">E</div><div style="flex:1"><strong>Østfold Open</strong><div class="muted">Turnering</div></div></div>
+<a class="cta" style="width:100%;margin-top:8px">Logg runde</a>
+</div>
+  <div class="bnav"><span class="">Hjem</span><span class="">Plan</span><span class="">Gjør</span><span class="on">Analyse</span><span class="">Meg</span></div>
+</div>
+    <div class="screen-hifi phone">
+  <div class="chrome"><span class="pill">390 · lys</span><span style="margin-left:auto">Detalj</span></div>
+  <div class="body">
+<div class="caps">Runde</div>
+<div style="font-weight:700;font-size:20px">GFGK · 74</div>
+<div class="muted">12. jul · 18 hull</div>
+<div class="stat-grid" style="margin-top:12px">
+  <div class="stat"><div class="caps">SG</div><div class="kpi pos" style="font-size:22px">+0,12</div></div>
+  <div class="stat"><div class="caps">Putter</div><div class="kpi" style="font-size:22px">31</div></div>
+</div>
+<div class="tabs" style="margin-top:8px"><span class="tab on">Scorekort</span><span class="tab">SG</span><span class="tab">Slag</span></div>
+<div class="list-item"><strong>Hull 1–9</strong><span class="muted" style="margin-left:auto">36</span></div>
+<div class="list-item"><strong>Hull 10–18</strong><span class="muted" style="margin-left:auto">38</span></div>
+</div>
+  <div class="bnav"><span class="">Hjem</span><span class="">Plan</span><span class="">Gjør</span><span class="on">Analyse</span><span class="">Meg</span></div>
+</div>
+  </div>
+
+  <h2>Hi-fi mal-matrise (alle kombinasjoner)</h2>
+  <p class="sub">Hvis en skjerm ikke har egen pixel-mockup over, er den 100 % dekket av malen under + inventar-jobben.</p>
+  <div class="grid grid-2">
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">AgencyOS</span><span class="pill">Analyse</span></div>
+  <h3 style="margin:10px 0 4px">AgencyOS · Analyse</h3>
+  <p class="muted">5 skjermer · tema mørk</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:#131513;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:#8B8E87;font-size:12px">
+    Hi-fi: Analyse-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/admin/analyse<br>/admin/analysere/compliance<br>/admin/reports<br>/admin/spillere/[id]/analyse<br>/admin/trackman</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">AgencyOS</span><span class="pill">Detalj</span></div>
+  <h3 style="margin:10px 0 4px">AgencyOS · Detalj</h3>
+  <p class="muted">38 skjermer · tema mørk</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:#131513;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:#8B8E87;font-size:12px">
+    Hi-fi: Detalj-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/admin/agencyos/caddie<br>/admin/agencyos/caddie/aktivitet<br>/admin/agencyos/caddie/dashbord<br>/admin/agencyos/live<br>/admin/agencyos/okonomi<br>/admin/agents/[agentId]<br>/admin/approvals/[id]<br>/admin/bookinger/[id]<br>/admin/drills/[id]/rediger<br>/admin/email-templates/[id]/rediger<br>/admin/gjennomfore/okter/[id]<br>/admin/grupper/[id]…</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">AgencyOS</span><span class="pill">Hub</span></div>
+  <h3 style="margin:10px 0 4px">AgencyOS · Hub</h3>
+  <p class="muted">18 skjermer · tema mørk</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:#131513;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:#8B8E87;font-size:12px">
+    Hi-fi: Hub-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/admin<br>/admin/agencyos<br>/admin/agent-team<br>/admin/audit-log<br>/admin/finance<br>/admin/gjennomfore<br>/admin/handlingssenter<br>/admin/hjelp<br>/admin/innboks-epost<br>/admin/integrasjoner<br>/admin/marketing<br>/admin/oppfolging…</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">AgencyOS</span><span class="pill">Kalender</span></div>
+  <h3 style="margin:10px 0 4px">AgencyOS · Kalender</h3>
+  <p class="muted">11 skjermer · tema mørk</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:#131513;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:#8B8E87;font-size:12px">
+    Hi-fi: Kalender-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/admin/agencyos/uka<br>/admin/calendar<br>/admin/calendar/maned<br>/admin/grupper/[id]/workbench<br>/admin/kalender<br>/admin/kalender/hendelse/[id]<br>/admin/kalender/hendelse/ny<br>/admin/planlegge<br>/admin/settings/calendar<br>/admin/spillere/[id]/workbench<br>/admin/uka</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">AgencyOS</span><span class="pill">Liste</span></div>
+  <h3 style="margin:10px 0 4px">AgencyOS · Liste</h3>
+  <p class="muted">21 skjermer · tema mørk</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:#131513;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:#8B8E87;font-size:12px">
+    Hi-fi: Liste-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/admin/agencyos/spillere<br>/admin/agents<br>/admin/approvals<br>/admin/bookinger<br>/admin/email-templates<br>/admin/godkjenninger<br>/admin/grupper<br>/admin/innboks<br>/admin/messages<br>/admin/okter<br>/admin/plan-templates<br>/admin/plans…</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">AgencyOS</span><span class="pill">Live</span></div>
+  <h3 style="margin:10px 0 4px">AgencyOS · Live</h3>
+  <p class="muted">1 skjermer · tema mørk</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:#131513;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:#8B8E87;font-size:12px">
+    Hi-fi: Live-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/admin/brief</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">AgencyOS</span><span class="pill">Wizard</span></div>
+  <h3 style="margin:10px 0 4px">AgencyOS · Wizard</h3>
+  <p class="muted">6 skjermer · tema mørk</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:#131513;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:#8B8E87;font-size:12px">
+    Hi-fi: Wizard-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/admin/bookinger/ny<br>/admin/plan-templates/ny<br>/admin/plans/templates/ny<br>/admin/spillere/ny<br>/admin/team/inviter<br>/admin/tournaments/ny</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">Auth</span><span class="pill">Detalj</span></div>
+  <h3 style="margin:10px 0 4px">Auth · Detalj</h3>
+  <p class="muted">1 skjermer · tema lys</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Detalj-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/auth/guardian-consent/[token]</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">Auth</span><span class="pill">Hub</span></div>
+  <h3 style="margin:10px 0 4px">Auth · Hub</h3>
+  <p class="muted">11 skjermer · tema lys</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Hub-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/auth/bankid<br>/auth/check-email<br>/auth/checkout-resume<br>/auth/etter-innlogging<br>/auth/forgot-password<br>/auth/logg-inn<br>/auth/logget-ut<br>/auth/login<br>/auth/reset-password<br>/auth/samtykke-venter<br>/auth/signup</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">Auth</span><span class="pill">Wizard</span></div>
+  <h3 style="margin:10px 0 4px">Auth · Wizard</h3>
+  <p class="muted">4 skjermer · tema lys</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Wizard-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/auth/onboarding<br>/auth/onboarding/forelder<br>/onboard/coach<br>/onboard/klubb</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">Forelder</span><span class="pill">Detalj</span></div>
+  <h3 style="margin:10px 0 4px">Forelder · Detalj</h3>
+  <p class="muted">1 skjermer · tema lys</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Detalj-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/forelder/barn/[childId]</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">Forelder</span><span class="pill">Hub</span></div>
+  <h3 style="margin:10px 0 4px">Forelder · Hub</h3>
+  <p class="muted">8 skjermer · tema lys</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Hub-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/forelder<br>/forelder/barn<br>/forelder/coach<br>/forelder/fakturaer<br>/forelder/innstillinger<br>/forelder/okonomi<br>/forelder/samtykke<br>/forelder/ukerapport</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">Forelder</span><span class="pill">Liste</span></div>
+  <h3 style="margin:10px 0 4px">Forelder · Liste</h3>
+  <p class="muted">2 skjermer · tema lys</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Liste-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/forelder/bookinger<br>/forelder/varsler</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">Intern</span><span class="pill">Detalj</span></div>
+  <h3 style="margin:10px 0 4px">Intern · Detalj</h3>
+  <p class="muted">7 skjermer · tema begge</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Detalj-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/gfgk-junior/gruppe/[gruppe]<br>/gfgk-junior/veileder/[slug]<br>/intern/komponenter/daglig-brief<br>/intern/komponenter/forelder<br>/intern/komponenter/hull-analyse<br>/intern/komponenter/spiller-panel<br>/intern/komponenter/team-bookinger</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">Intern</span><span class="pill">Hub</span></div>
+  <h3 style="margin:10px 0 4px">Intern · Hub</h3>
+  <p class="muted">12 skjermer · tema begge</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Hub-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/gfgk-junior<br>/gfgk-junior/treningsplaner<br>/gfgk-junior/veileder<br>/intern/komponenter<br>/kommando<br>/kommando/agenter<br>/kommando/oppgaver<br>/kommando/prosjekter<br>/team-gfgk<br>/team-wang<br>/team-wang/coach<br>/team-wang/logg-inn</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">Intern</span><span class="pill">Kalender</span></div>
+  <h3 style="margin:10px 0 4px">Intern · Kalender</h3>
+  <p class="muted">2 skjermer · tema begge</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Kalender-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/gfgk-junior/kalender<br>/kommando/kalender</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">Intern</span><span class="pill">Liste</span></div>
+  <h3 style="margin:10px 0 4px">Intern · Liste</h3>
+  <p class="muted">1 skjermer · tema begge</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Liste-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/kommando/team</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">Marketing/System</span><span class="pill">Analyse</span></div>
+  <h3 style="margin:10px 0 4px">Marketing/System · Analyse</h3>
+  <p class="muted">2 skjermer · tema begge</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Analyse-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/demos/trackman-import/[steg]<br>/stats/turneringer/[slug]/statistikk</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">Marketing/System</span><span class="pill">Detalj</span></div>
+  <h3 style="margin:10px 0 4px">Marketing/System · Detalj</h3>
+  <p class="muted">34 skjermer · tema begge</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Detalj-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/anlegg/[slug]<br>/blogg/[slug]<br>/booking/[slug]<br>/booking/[slug]/bekreft<br>/booking/kvittering/[bookingId]<br>/coacher/[slug]<br>/demos/newplan/[steg]<br>/demos/plan-bygger/[steg]<br>/stats/2026<br>/stats/aargang/[aar]<br>/stats/baner/[slug]<br>/stats/blogg/[slug]…</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">Marketing/System</span><span class="pill">Hub</span></div>
+  <h3 style="margin:10px 0 4px">Marketing/System · Hub</h3>
+  <p class="muted">38 skjermer · tema begge</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Hub-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/<br>/anlegg<br>/blogg<br>/booking<br>/cases<br>/coacher<br>/coaching<br>/cookies<br>/demos/plan-bygger<br>/design-system<br>/faq<br>/jobb…</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">Marketing/System</span><span class="pill">Kalender</span></div>
+  <h3 style="margin:10px 0 4px">Marketing/System · Kalender</h3>
+  <p class="muted">1 skjermer · tema begge</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Kalender-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/stats/uka</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">Marketing/System</span><span class="pill">Liste</span></div>
+  <h3 style="margin:10px 0 4px">Marketing/System · Liste</h3>
+  <p class="muted">2 skjermer · tema begge</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Liste-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/stats/pga/spillere<br>/stats/spillere</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">Marketing/System</span><span class="pill">Wizard</span></div>
+  <h3 style="margin:10px 0 4px">Marketing/System · Wizard</h3>
+  <p class="muted">1 skjermer · tema begge</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Wizard-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/demos/ny-okt/[steg]</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">PlayerHQ</span><span class="pill">Analyse</span></div>
+  <h3 style="margin:10px 0 4px">PlayerHQ · Analyse</h3>
+  <p class="muted">12 skjermer · tema lys</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Analyse-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/portal/analyse<br>/portal/analysere<br>/portal/analysere/hull<br>/portal/coach/sg-hub<br>/portal/datagolf<br>/portal/mal/sg-hub/coach/[spillerId]<br>/portal/mal/sg-hub/coach/[spillerId]/[club]<br>/portal/mal/sg-hub/coach/[spillerId]/equipment<br>/portal/mal/trackman<br>/portal/mal/trackman/[id]<br>/portal/statistikk/[metric]<br>/portal/statistikk/runder/[runId]/del</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">PlayerHQ</span><span class="pill">Detalj</span></div>
+  <h3 style="margin:10px 0 4px">PlayerHQ · Detalj</h3>
+  <p class="muted">67 skjermer · tema lys</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Detalj-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/portal/ai/foresla-drill<br>/portal/ai/foresla-turnering<br>/portal/ai/mal-bygger<br>/portal/baneguide/[baneId]<br>/portal/baneguide/[baneId]/hull/[nr]<br>/portal/booking/[bookingId]<br>/portal/booking/anlegg/[anleggId]<br>/portal/booking/bekreftet<br>/portal/booking/coach/[coachId]<br>/portal/coach/ai<br>/portal/coach/melding<br>/portal/coach/ovelser…</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">PlayerHQ</span><span class="pill">Hub</span></div>
+  <h3 style="margin:10px 0 4px">PlayerHQ · Hub</h3>
+  <p class="muted">16 skjermer · tema lys</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Hub-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/meg<br>/portal<br>/portal/baneguide<br>/portal/booking<br>/portal/coach<br>/portal/fysisk<br>/portal/gameplan<br>/portal/gjennomfore<br>/portal/mal<br>/portal/meg<br>/portal/onskeligokt<br>/portal/stats…</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">PlayerHQ</span><span class="pill">Kalender</span></div>
+  <h3 style="margin:10px 0 4px">PlayerHQ · Kalender</h3>
+  <p class="muted">5 skjermer · tema lys</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Kalender-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/portal/kalender<br>/portal/planlegge<br>/portal/planlegge/bygger<br>/portal/planlegge/workbench<br>/portal/tren/kalender</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">PlayerHQ</span><span class="pill">Liste</span></div>
+  <h3 style="margin:10px 0 4px">PlayerHQ · Liste</h3>
+  <p class="muted">10 skjermer · tema lys</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Liste-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/portal/coach/plans<br>/portal/coach/videoer<br>/portal/drills<br>/portal/mal/runder<br>/portal/meg/bookinger<br>/portal/meg/innstillinger/okter<br>/portal/meg/innstillinger/varsler<br>/portal/tren/tester<br>/portal/utfordringer<br>/portal/varsler</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">PlayerHQ</span><span class="pill">Live</span></div>
+  <h3 style="margin:10px 0 4px">PlayerHQ · Live</h3>
+  <p class="muted">8 skjermer · tema lys</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Live-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/portal/live/[sessionId]<br>/portal/live/[sessionId]/active<br>/portal/live/[sessionId]/brief<br>/portal/live/[sessionId]/logger<br>/portal/live/[sessionId]/summary<br>/portal/live/[sessionId]/tapper<br>/portal/runde/live<br>/portal/runde/logg</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">PlayerHQ</span><span class="pill">Wizard</span></div>
+  <h3 style="margin:10px 0 4px">PlayerHQ · Wizard</h3>
+  <p class="muted">13 skjermer · tema lys</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Wizard-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/portal/booking/ny<br>/portal/booking/ny/bekreft<br>/portal/coach/melding/ny<br>/portal/coach/sporsmal/ny<br>/portal/mal/bygger<br>/portal/mal/runder/ny<br>/portal/meg/abonnement/avbestill<br>/portal/meg/abonnement/kort/ny<br>/portal/meg/abonnement/oppgrader/flyt<br>/portal/meg/bookinger/reschedule/[bookingId]<br>/portal/meg/helse/symptom/ny<br>/portal/tren/tester/ny…</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">System</span><span class="pill">Hub</span></div>
+  <h3 style="margin:10px 0 4px">System · Hub</h3>
+  <p class="muted">2 skjermer · tema begge</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Hub-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/dev-banekart<br>/offline</div>
+</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill f">System</span><span class="pill">Wizard</span></div>
+  <h3 style="margin:10px 0 4px">System · Wizard</h3>
+  <p class="muted">1 skjermer · tema begge</p>
+  <div style="height:72px;border-radius:12px;margin:10px 0;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:12px">
+    Hi-fi: Wizard-komposisjon · v2 tokens
+  </div>
+  <div class="mono muted" style="font-size:10px;max-height:100px;overflow:auto">/inviter/forelder/[token]</div>
+</div>
+</div>
+  <h2>Tilstander (påkrevd på alle skjermer)</h2>
+  <div class="grid grid-3">
+    <div class="card"><div class="caps">Tom</div><p style="margin:8px 0 0;font-size:13px">Ærlig tom tekst + én CTA. Aldri fake tall.</p></div>
+    <div class="card"><div class="caps">Laster</div><p style="margin:8px 0 0;font-size:13px">Skeleton i samme layout (ikke spinner midt i skjermen).</p></div>
+    <div class="card"><div class="caps">Feil</div><p style="margin:8px 0 0;font-size:13px">Kort feilmelding + Prøv igjen. Behold ramme.</p></div>
+  </div>
+
+  <footer>Hi-fi v2 Presis · forest #005840 · lime #D1F843 (kun mørk) · 2026-07-21</footer>
+</div></body></html>
