@@ -100,3 +100,4 @@ tsconfig.sync.json
 tmp/
 .standardplan-work/
 .claude/settings.local.json
+.env*.local
