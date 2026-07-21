@@ -207,14 +207,22 @@ export function SessionSummary({ data, nesteOkt }: SessionSummaryProps) {
         </ul>
       </div>
 
-      {/* CTA */}
-      <Link
-        href="/portal/planlegge"
-        className="flex h-16 w-full items-center justify-center gap-2 rounded-full bg-accent font-mono text-base font-extrabold uppercase tracking-[0.06em] text-foreground active:scale-[0.98]"
-        style={{ boxShadow: "0 4px 18px rgba(209, 248, 67, 0.28)" }}
-      >
-        Gå til treningsplanen
-      </Link>
+      {/* CTA-rad — lukk løkka: hjem / workbench / neste økt */}
+      <div className="flex flex-col gap-2.5">
+        <Link
+          href="/portal"
+          className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-accent font-mono text-sm font-extrabold uppercase tracking-[0.06em] text-foreground active:scale-[0.98]"
+          style={{ boxShadow: "0 4px 18px rgba(209, 248, 67, 0.28)" }}
+        >
+          Tilbake til hjem
+        </Link>
+        <Link
+          href="/portal/planlegge/workbench?zoom=uke"
+          className="flex h-12 w-full items-center justify-center gap-2 rounded-full border border-background/15 bg-background/5 font-mono text-xs font-extrabold uppercase tracking-[0.06em] text-background active:scale-[0.98]"
+        >
+          Åpne Workbench
+        </Link>
+      </div>
 
       {/* Summary-kjeding — hva skjer videre */}
       {nesteOkt && (
