@@ -61,7 +61,7 @@ SEO/URL (🔴 må fikses):
   - [ ] Signup → e-postbekreftelse → onboarding (spiller)
   - [ ] Booking drop-in → betaling (test) → bekreftelse
   - [ ] Logg inn → PlayerHQ hjem laster med ekte data
-  - [ ] Logg inn som coach → CoachHQ dashboard + spillerliste laster
+  - [ ] Logg inn som coach → AgencyOS dashboard + spillerliste laster
   - [ ] Forelder-samtykke-flyt for mindreårig
 
 ## E6 — Deploy-rutine

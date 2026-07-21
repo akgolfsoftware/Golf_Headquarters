@@ -191,10 +191,62 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
               />
             ))}
             {nesteFokus && (
-              <div style={{ marginTop: 12 }}>
+              <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }}>
                 <InnsiktChip>
                   {nesteFokus.omrade} ({nesteFokus.sgTap} per runde). Baseline: {nesteFokus.baseline}.
                 </InnsiktChip>
+                {/* Bro: SG-gap → AK-resept → Workbench (plan natt/Cherny-standard) */}
+                {nesteFokus.diagnose && (
+                  <div
+                    style={{
+                      padding: "10px 12px",
+                      borderRadius: 12,
+                      background: T.panel2,
+                      border: `1px solid ${T.border}`,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 6,
+                    }}
+                  >
+                    <Caps size={9} style={{ color: T.mut }}>
+                      Neste fokus
+                    </Caps>
+                    <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, lineHeight: 1.35 }}>
+                      {nesteFokus.diagnose.symptom}
+                    </div>
+                    <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.4 }}>
+                      {nesteFokus.diagnose.grunnlag}
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2, flexWrap: "wrap" }}>
+                      <AkseChip a={nesteFokus.diagnose.resept.akse as AkseKey} />
+                      <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.fg2 }}>
+                        {nesteFokus.diagnose.resept.tekst}
+                      </span>
+                    </div>
+                  </div>
+                )}
+                <Link
+                  href={nesteFokus.handlingHref}
+                  className="v2-press v2-focus"
+                  style={{
+                    textDecoration: "none",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                    height: 40,
+                    padding: "0 16px",
+                    borderRadius: 9999,
+                    background: T.lime,
+                    color: T.onLime,
+                    fontFamily: T.ui,
+                    fontSize: 13,
+                    fontWeight: 700,
+                  }}
+                >
+                  <Icon name="calendar" size={15} style={{ color: T.onLime }} />
+                  Planlegg dette i Workbench
+                </Link>
               </div>
             )}
           </>

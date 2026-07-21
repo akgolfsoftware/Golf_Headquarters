@@ -1,9 +1,10 @@
-# Visuelt språk — v2 (retning C «Presis», mørk-først) — light + dark
+# Visuelt språk — v2 (retning C «Presis») — light + dark
 
-Fasiten for hvordan AK Golf HQ ser ut i **v2-generasjonen (retning C, valgt 2026-07-11)**. Dette
-er destillert og deretter **oppdatert mot shipped v2**: den eksakte kilden til farger/verdier er
-`src/lib/v2/tokens.ts` (`T`-objektet) + `--v2-*`-variablene i `src/app/globals.css` + det levende
-Claude Design-prosjektet («AK Golf HQ Design System», `ui_kits/v2`). golfdata/v13 er overgangs-lag.
+Fasiten for hvordan AK Golf HQ ser ut i **v2-generasjonen (retning C, valgt 2026-07-09/11)**.
+**Produkt-tema (låst):** PlayerHQ/Forelder = alltid lys · AgencyOS = lys/mørk (standard mørk) ·
+Marketing = begge. «Mørk default i tokens» ≠ mørk PlayerHQ.
+Eksakt kilde til farger/verdier: `tokens/v2/tokens.css` i Claude Design + `src/lib/v2/tokens.ts`
+(`T`) + `--v2-*` i `globals.css`. Se også `docs/design-system/FASIT.md`. golfdata/v13 = overgang.
 **Ved tvil om en eksakt verdi: les token-kilden, ikke dette dokumentet — hardkod aldri hex.**
 Merkevarefargene er låst som hue; dette dokumentet definerer BRUKEN.
 

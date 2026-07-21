@@ -1,22 +1,18 @@
-# Design-system-regel — v2-redesign pågår
+# Design-system-regel — v2 (retning C «Presis») er kanon
 
-Oppdatert 9. juli 2026 (Anders' beslutning: komplett redesign av hele appen).
-Erstatter regelen av 8. juli som låste kanon til v13/golfdata.
+Oppdatert 20. juli 2026. Retning C valgt 9. juli; tokens + tema per produkt låst i
+`docs/design-system/FASIT.md`.
 
 ## Målbildet: v2-generasjonen
 
-Anders har bestilt et **helt nytt designspråk** for hele plattformen (PlayerHQ, AgencyOS,
-forelder, auth OG markedssidene) — Notion/Linear/Bloomberg-inspirert, funnet via Mobbin,
-bygget i AK Golf-merkevaren. Styringsplan: `~/.claude/plans/breezy-forging-brook.md`
-(fase 0–6) + `docs/redesign-v2/`.
-
-- **Kanon-kilde er fortsatt det levende Claude Design-prosjektet** («AK Golf HQ Design
-  System», `claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`), hentet via
-  DesignSync. v2 bygges der som ny generasjon: `ui_kits/v2/**` + `tokens/v2/**`.
-- **Designretning avgjøres av Anders** i fase 3 (tre retningsforslag). Før retningen er
-  valgt er INGEN visuell stil låst — heller ikke tema-strategien (lys/mørk per app).
-- Rekkefølgen er ufravikelig: **design → system → prod.** Skjermer implementeres først
-  når mockupen deres er godkjent av Anders. Aldri fikse design direkte i prod.
+- **Kanon-kilde:** Claude Design «AK Golf HQ Design System»
+  (`claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`) — `tokens/v2/**`,
+  `components/**`, `ui_kits/v2/**` + playerhq/agencyos-kits.
+- **Retning C «Presis» er valgt** — Linear/Notion-tetthet i AK-merkevare.
+- **Tema (låst):** PlayerHQ alltid lys · AgencyOS lys/mørk (standard mørk) · se FASIT.
+- Rekkefølge: **design → system → prod.** Aldri fikse design bare i prod.
+- Skills: `akgolf-design-system` (tokens) + `ak-designekspert` (tenking). Ikke
+  `ak-golf-hq-design` (utdatert).
 
 ## Hva som beholdes uansett retning
 
@@ -41,14 +37,14 @@ er nå et **overgangs-lag**, ikke målbildet:
 
 `src/components/ui/` (shadcn-primitivene for skjema/overlay) er fortsatt unntatt.
 
-## Praktisk beslutningsregel (inntil v2-retning er valgt)
+## Praktisk beslutningsregel
 
 | Skal gjøre | Gjør |
 |---|---|
-| Bugfiks/vedlikehold på eksisterende skjerm | golfdata som før |
-| Ny skjerm/stor flate | STOPP — venter på v2-retningsvalget (fase 3) |
-| Designe v2 | I Claude Design-prosjektet under `ui_kits/v2/`, per plan |
-| Farge/spacing/type i v2 | AK-fargene beholdes; alt annet defineres i `tokens/v2/` |
+| Bugfiks på gammel skjerm (golfdata) | golfdata OK |
+| Ny skjerm / redesign | Claude Design v2-mockup først, deretter port til `src/components/v2` |
+| Farge/spacing/type | Kun `--v2-*` / `T` / `tokens/v2/tokens.css` |
+| Usikker stil | `docs/design-system/FASIT.md` |
 
 ## Prioritet (Anders 2026-07-11): fullfør v2 på ALLE skjermer
 
