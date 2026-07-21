@@ -47,7 +47,44 @@
 
 ---
 
-## 3. Visuelle regler (kort)
+## 3. Enkelhet og færrest trykk (LÅST — Anders 2026-07-21)
+
+> **Kraftig under panseret · enkelt i ansiktet.**  
+> Alle funksjoner beholdes. Appen skal likevel være super enkel å bruke.
+
+### Hard regel
+
+1. **Behold funksjoner** — redesign/kode kaster ikke muligheter; vi skjuler og prioriterer.
+2. **Minst mulig trykk** — færrest steg fra åpnet app til «det jeg skal gjøre nå».
+3. **Super enkelt** — en smart person uten teknisk bakgrunn forstår skjermen på første lesning.
+4. **Vanskelig = feil design** — da er UI/flyt feil, ikke brukeren. Fiks hierarki/flyt, ikke legg til mer forklaringstekst alene.
+
+### Skjerm-test (må bestå før «ferdig»)
+
+| Test | Krav |
+|---|---|
+| **5 sekunder** | Brukeren ser *hva som er viktig* og *hva som er neste steg* |
+| **Én hovedhandling** | Én primær CTA (lime/forest) — resten er sekundært |
+| **Trykk-tall** | Primærjobben på skjermen: så få trykk som mulig (mål: 1–2 fra hub) |
+| **Første lag rent** | Dybde/ekspert-valg kommer *etter* primærhandling — ikke alt synlig samtidig |
+| **Klarspråk** | Ordbok: nærspill ikke ARG, osv. HjelpTips på tall/fagord |
+| **Tom tilstand** | Alltid ærlig tom + *én* vei videre |
+
+### Spilleren vs coach
+
+- **PlayerHQ / Forelder:** enklest mulig. «Hva nå?» først. Faglig dybde bak faner/detalj.
+- **AgencyOS:** mer makt og oversikt tillatt — men fortsatt *tilstand på 5 s*, detalj på 30 s. Ikke dump hele systemet på én flate.
+
+### Forbudt i navn av «enklere»
+
+- Fjerne funksjoner uten eksplisitt GO fra Anders
+- Flere knapper som «løsning» på kompleksitet
+- Sjargong uten «?»
+- Blindveier (tom skjerm uten neste steg)
+
+---
+
+## 4. Visuelle regler (kort)
 
 1. **Én lime-jobb per skjerm** (CTA / valgt fane / aktiv pin) — ikke tre steder.
 2. **Data opp/ned** = `--v2-up` / `--v2-down` — aldri lime for delta.
@@ -59,7 +96,7 @@
 
 ---
 
-## 4. Komponentbibliotek (Claude Design)
+## 5. Komponentbibliotek (Claude Design)
 
 ~**124** navngitte komponenter i `components/` (13 familier):
 
@@ -86,7 +123,7 @@
 
 ---
 
-## 5. Skjerm-familier (for PlayerHQ + AgencyOS)
+## 6. Skjerm-familier (for PlayerHQ + AgencyOS)
 
 | Familie | Eksempel | Mobil | Desktop |
 |---|---|---|---|
@@ -101,7 +138,7 @@
 
 ---
 
-## 6. Rekkefølge (låst)
+## 7. Rekkefølge (låst)
 
 1. Designsystem ferdig (denne fasiten + tokens + komponentstatus)  
 2. Wireframe per familie  
@@ -113,7 +150,7 @@ Aldri: fikse design bare i prod. Aldri: VibeUI/ekstern stil som kilde.
 
 ---
 
-## 7. Skills (etter oppdatering 2026-07-20)
+## 8. Skills (etter oppdatering 2026-07-20)
 
 | Skill | Bruk |
 |---|---|
@@ -123,7 +160,7 @@ Aldri: fikse design bare i prod. Aldri: VibeUI/ekstern stil som kilde.
 
 ---
 
-## 8. Status / gap (2026-07-20)
+## 9. Status / gap (2026-07-20)
 
 **Solid:** tokens mørk+lys, ~124 komponenter m/ d.ts/prompt, store ui_kits (v2, playerhq, agencyos), guidelines (tema-bevis, tilstander).
 

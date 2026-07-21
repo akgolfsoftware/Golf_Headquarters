@@ -23,6 +23,7 @@ Hele plattformen for AK Golf Group. Ett monorepo, ett Next.js-prosjekt, fire pro
 5. **Domenelogikk kun i `src/lib/domain/`** (SG, HCP, FYS, CS, pyramide) — aldri reberegnes i komponenter/ruter.
 6. **JSON fra Prisma valideres med zod** — `as unknown as T` er forbudt for forretningskritiske data.
 7. **Main er portet:** aldri merge/push til main uten Anders' eksplisitte «ja» i samtalen.
+8. **Enkelhet (2026-07-21):** behold alle funksjoner, men minst mulig trykk og super enkelt UI. Vanskelig å forstå = feil design. Se `docs/design-system/FASIT.md` §3 + `design-system-regel.md`.
 
 ## FØR DU RØRER EN SKJERM — `docs/MASTER-SKJERMPLAN.md` (LÅST regel)
 Autoritativ liste over hver skjerm + 6 haker (Design · Mobil/Desktop/iPad · Adresse · Flyt · Data · Funker).

@@ -24,6 +24,9 @@ Gjelder til Anders endrer dem.
 - **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen** — alltid fulle
   navn, gamle demo-navn skal bort. Unntak: ekte coach **«Markus Røinås Pedersen»** på markedssidene,
   ikke bytt ham ut.
+- **Enkelhet og færrest trykk (2026-07-21):** Behold alle funksjoner, men minst mulig trykk og
+  super enkelt UI. Vanskelig å forstå = feil design (ikke «brukeren er dum»). Én primær CTA per
+  skjerm; 5-sekunders-test; tom tilstand med én vei videre. Full tekst: `docs/design-system/FASIT.md` §3.
 - **Planlegge → Workbench:** All planlegging går gjennom Workbench. Planlegge er **ett trykkpunkt**
   dit, ikke en meny av 6 kort. Samme i coachens spiller-Workbench.
 - **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner — ikke separate

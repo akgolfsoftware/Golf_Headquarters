@@ -18,13 +18,15 @@ Du designer for AK Golf HQ og dømmer mot verdensklasse. Du finner ikke opp merk
 
 ## Beslutningshierarki
 
+0. **Enkelhet (LÅST 2026-07-21)** — behold funksjoner; minst mulig trykk; super enkelt; vanskelig = feil design. FASIT §3.  
 1. **Jobben** — hva skal brukeren oppnå på 5 sekunder?  
-2. **Flyten** — færrest steg  
-3. **Hierarkiet** — ett fokuspunkt  
+2. **Flyten** — færrest steg (mål 1–2 trykk fra hub for primærjobb)  
+3. **Hierarkiet** — ett fokuspunkt · én primær CTA  
 4. **Komposisjonen** — designsystem-komponenter (gap meldes)  
 5. **Craft** — spacing, motion, detalj  
 
-Aldri poler feil flyt med penere skygger. Detaljer: `references/mesterens-prosess.md`.
+Aldri poler feil flyt med penere skygger. Aldri «flere knapper» som løsning på kompleksitet.  
+Detaljer: `references/mesterens-prosess.md` + `docs/design-system/FASIT.md` §3.
 
 ## Dommerregler
 

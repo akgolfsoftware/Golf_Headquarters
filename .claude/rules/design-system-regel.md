@@ -61,7 +61,19 @@ HCP, WAGR osv.). All forklaringstekst bor i `src/lib/v2/hjelpetekster.ts` — al
 tekst i skjermfiler. Mangler en nøkkel: legg den til i tekstbanken (klarspråk, norsk bokmål,
 ordboken gjelder — «nærspill», aldri «kort spill»). Gjelder både nybygg og ombygging.
 
+## Enkelhet og færrest trykk (LÅST — Anders 2026-07-21)
+
+**Kraftig under panseret · enkelt i ansiktet.**
+
+1. **Alle funksjoner beholdes** — redesign skjuler/prioriterer, kaster ikke muligheter uten GO.
+2. **Minst mulig trykk** til «det jeg skal gjøre nå» (mål: 1–2 trykk fra hub for primærjobb).
+3. **Super enkelt** — forstås på første lesning av ikke-teknisk bruker.
+4. **Vanskelig = feil design** — fiks flyt/hierarki; legg ikke bare på mer tekst.
+
+**Skjerm er ikke ferdig før:** 5-sekunders-test OK · én primær CTA · tom tilstand med én vei videre · klarspråk/ordbok.  
+Full tekst: `docs/design-system/FASIT.md` §3.
+
 ## Design-veiledning
 
-`.claude/skills/ak-designekspert` + referansebildene og Mobbin-prinsippene i
-`docs/redesign-v2/`. Andre generiske design-skills skal ikke brukes.
+`.claude/skills/ak-designekspert` + `docs/design-system/FASIT.md`.  
+Arkiv (ikke fasit): `docs/arkiv/redesign-v2/`. Andre generiske design-skills skal ikke brukes.

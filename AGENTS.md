@@ -9,3 +9,6 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Master-skjermplan — les FØR skjerm-arbeid
 `docs/MASTER-SKJERMPLAN.md` er den autoritative lista over alle skjermer i appen + status (Design · Mobil/Desktop/iPad · Adresse · Flyt · Data · Funker). Før du bygger/endrer/kobler en skjerm: finn raden, jobb mot den, oppdater hakene i samme commit. Ingen skjerm er ferdig før alle 6 er grønne. Alt Claude Design har tegnet skal kobles — sjekk drop-off-lista.
+
+# Enkelhet (LÅST 2026-07-21)
+Behold alle funksjoner, men minst mulig trykk og super enkelt UI. Vanskelig å forstå = feil design. Se `docs/design-system/FASIT.md` §3.
