@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AK Golf HQ · Verdensklasse UI · Flaggskip-flyter</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+  :root{
+    --bg:#F2F1EA; --panel:#fff; --panel2:#F7F6F0; --panel3:#ECEBE2;
+    --fg:#171B18; --fg2:#4A4F4A; --mut:#62675F;
+    --forest:#005840; --lime:#005840; --on:#fff;
+    --up:#1E8A50; --down:#C04A1E; --warn:#96690A; --info:#1F6CB0;
+    --border:rgba(16,22,19,.10); --border-s:rgba(16,22,19,.18);
+    --shadow:0 1px 2px rgba(16,22,19,.04), 0 12px 32px rgba(16,22,19,.06);
+    --r:20px; --rpill:9999px;
+    --d:"Familjen Grotesk",Inter,system-ui,sans-serif;
+    --u:Inter,system-ui,sans-serif;
+    --m:"JetBrains Mono",ui-monospace,monospace;
+    --ax-slag:#1F6CB0; --ax-tek:#96690A; --ax-fys:#1E8A50;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 var(--u);-webkit-font-smoothing:antialiased}
+  .page{max-width:1280px;margin:0 auto;padding:28px 20px 100px}
+  h1{font-family:var(--d);font-size:34px;letter-spacing:-.03em;margin:0 0 8px;line-height:1.1}
+  h2{font-family:var(--d);font-size:22px;letter-spacing:-.02em;margin:48px 0 10px}
+  h3{font-family:var(--d);font-size:16px;margin:0 0 8px}
+  .lead{color:var(--mut);max-width:62ch;margin:0 0 24px;font-size:15px}
+  .pill{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:var(--rpill);background:var(--panel3);font-family:var(--m);font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--fg2)}
+  .pill.ok{background:color-mix(in srgb,var(--forest) 14%,transparent);color:var(--forest)}
+  .pill.tap{background:color-mix(in srgb,var(--info) 12%,transparent);color:var(--info)}
+  .rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:20px 0 8px}
+  .rule{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow)}
+  .rule strong{display:block;font-size:13px;margin-bottom:4px}
+  .rule span{font-size:12px;color:var(--mut)}
+  .flow-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0 20px}
+  .flow-step{display:inline-flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--border);border-radius:var(--rpill);padding:8px 14px;font-weight:600;font-size:13px;box-shadow:var(--shadow)}
+  .flow-step em{font-style:normal;font-family:var(--m);font-size:10px;color:var(--mut);font-weight:700}
+  .flow-step.on{background:var(--forest);color:#fff;border-color:transparent}
+  .flow-step.on em{color:rgba(255,255,255,.75)}
+  .arr{color:var(--mut);font-weight:700}
+  .row{display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start;margin-top:18px}
+  /* Phone */
+  .phone{width:320px;background:var(--panel);border:1px solid var(--border);border-radius:32px;overflow:hidden;box-shadow:var(--shadow);flex-shrink:0}
+  .phone-top{height:28px;display:flex;align-items:center;justify-content:center;background:var(--panel2);border-bottom:1px solid var(--border)}
+  .notch{width:86px;height:8px;border-radius:99px;background:var(--panel3)}
+  .phone-body{padding:14px 14px 0;min-height:520px;display:flex;flex-direction:column;gap:12px}
+  .phone-nav{display:flex;border-top:1px solid var(--border);background:var(--panel);padding:8px 4px 12px}
+  .phone-nav span{flex:1;text-align:center;font-size:9px;font-weight:600;color:var(--mut);padding-top:4px}
+  .phone-nav span.on{color:var(--forest)}
+  .phone-nav span i{display:block;width:18px;height:3px;border-radius:99px;background:transparent;margin:0 auto 4px}
+  .phone-nav span.on i{background:var(--forest)}
+  /* Desktop coach */
+  .desk{width:min(920px,100%);background:#131513;color:#F3F5F1;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:var(--shadow);display:flex;min-height:420px}
+  .rail{width:56px;background:#005840;display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px 0}
+  .rail b{width:28px;height:28px;border-radius:8px;background:rgba(209,248,67,.2);display:grid;place-items:center;font-size:11px;color:#D1F843}
+  .rail span{width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,.12)}
+  .desk-main{flex:1;padding:18px;background:#131513}
+  .caps{font-family:var(--m);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+  .desk .caps{color:#8B8E87}
+  .hero{font-family:var(--m);font-size:40px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1;letter-spacing:-.02em}
+  .unit{font-size:13px;color:var(--mut);font-weight:600;margin-left:6px}
+  .cta{display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 18px;border-radius:var(--rpill);background:var(--forest);color:#fff;font-weight:700;font-size:14px;border:0;width:100%;text-decoration:none}
+  .cta.ghost{background:var(--panel3);color:var(--fg)}
+  .desk .cta{background:#D1F843;color:#0D0E0D}
+  .desk .cta.ghost{background:#232623;color:#F3F5F1;border:1px solid rgba(255,255,255,.12)}
+  .card{background:var(--panel2);border:1px solid var(--border);border-radius:16px;padding:12px 14px}
+  .card.tint{background:linear-gradient(145deg,rgba(0,88,64,.09),transparent 55%),var(--panel2)}
+  .desk .card{background:#1C1F1C;border-color:rgba(255,255,255,.1)}
+  .desk .card.tint{background:linear-gradient(145deg,rgba(0,88,64,.35),transparent 55%),#1C1F1C}
+  .rowline{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+  .rowline:last-child{border-bottom:0}
+  .desk .rowline{border-color:rgba(255,255,255,.08)}
+  .pos{color:var(--up);font-family:var(--m);font-weight:700}
+  .neg{color:var(--down);font-family:var(--m);font-weight:700}
+  .chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:var(--rpill);background:color-mix(in srgb,var(--ax-slag) 14%,transparent);color:var(--ax-slag);font-family:var(--m);font-size:10px;font-weight:700}
+  .chip.tek{background:color-mix(in srgb,var(--ax-tek) 14%,transparent);color:var(--ax-tek)}
+  .list{display:flex;flex-direction:column;gap:8px}
+  .li{display:flex;gap:10px;align-items:center;padding:10px;border-radius:14px;background:var(--panel);border:1px solid var(--border)}
+  .desk .li{background:#191C19;border-color:rgba(255,255,255,.08)}
+  .av{width:34px;height:34px;border-radius:50%;background:var(--panel3);display:grid;place-items:center;font-size:11px;font-weight:700;flex:none}
+  .desk .av{background:#232623;color:#D1F843}
+  .meta{margin-left:auto;font-family:var(--m);font-size:11px;font-weight:700}
+  .note{margin-top:14px;padding:12px 14px;border-radius:12px;background:color-mix(in srgb,var(--forest) 8%,var(--panel));border-left:3px solid var(--forest);font-size:13px;color:var(--fg2);max-width:720px}
+  .label{font-family:var(--m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:8px}
+  .screen-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .kpi{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:10px 12px}
+  .desk .kpi{background:#191C19;border-color:rgba(255,255,255,.08)}
+  .kpi .v{font-family:var(--m);font-size:22px;font-weight:700}
+  .wk{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+  .wd{text-align:center;padding:6px 2px;border-radius:10px;background:var(--panel3);font-family:var(--m);font-size:9px;font-weight:700;color:var(--mut)}
+  .wd.on{background:color-mix(in srgb,var(--forest) 18%,transparent);color:var(--forest);outline:1px solid color-mix(in srgb,var(--forest) 35%,transparent)}
+  .wd .dot{height:28px;margin-top:4px;border-radius:6px;background:var(--panel2)}
+  .wd.on .dot{background:color-mix(in srgb,var(--forest) 25%,transparent)}
+  .big-rep{text-align:center;padding:18px;border-radius:18px;background:var(--panel2);border:1px solid var(--border)}
+  .big-rep .n{font-family:var(--m);font-size:56px;font-weight:700;line-height:1}
+  .split{display:grid;grid-template-columns:1.1fr .9fr;gap:10px}
+  @media(max-width:900px){.split{grid-template-columns:1fr}}
+  footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--border);color:var(--mut);font-size:12px}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="pill ok">Open Design · Verdensklasse V2.5</div>
+  <h1>AK Golf HQ — enklest mulig, full kraft</h1>
+  <p class="lead">Flaggskip-flyter redesignet for <strong>færrest trykk</strong>, <strong>5-sekunders forståelse</strong> og <strong>én hovedhandling</strong>. Alle funksjoner beholdes — dybde kommer etter neste steg, ikke før.</p>
+
+  <div class="rules">
+    <div class="rule"><strong>1. Hva nå?</strong><span>Én hero + én CTA. Resten er støy til det er valgt.</span></div>
+    <div class="rule"><strong>2. 1–2 trykk</strong><span>Fra hjem til plan / start økt. Aldri «meny av 6 like kort».</span></div>
+    <div class="rule"><strong>3. Klarspråk</strong><span>Nærspill, ikke ARG. Tall med enhet. «?» på fagord.</span></div>
+    <div class="rule"><strong>4. Tom = vei videre</strong><span>Aldri blindvei. Alltid ærlig tom + én knapp.</span></div>
+  </div>
+
+  <h2>Spillerflyt · 5 trykk til ferdig økt</h2>
+  <p class="lead">Jobb: Se svakhet → planlegg → start → logg → ferdig. Mål: under 2 minutter fra åpnet app til første rep (når økt finnes).</p>
+  <div class="flow-bar">
+    <span class="flow-step on"><em>1</em> Hjem</span><span class="arr">→</span>
+    <span class="flow-step"><em>2</em> Analyse</span><span class="arr">→</span>
+    <span class="flow-step"><em>3</em> Workbench</span><span class="arr">→</span>
+    <span class="flow-step"><em>4</em> Live</span><span class="arr">→</span>
+    <span class="flow-step"><em>5</em> Ferdig</span>
+  </div>
+
+  <div class="row">
+    <!-- PHONE 1 HJEM -->
+    <div>
+      <div class="screen-meta"><span class="pill">PlayerHQ · 390</span><span class="pill tap">1 trykk til start</span><span class="pill ok">Hub</span></div>
+      <div class="label">Hjem — «Hva skal jeg gjøre nå?»</div>
+      <div class="phone">
+        <div class="phone-top"><div class="notch"></div></div>
+        <div class="phone-body">
+          <div class="caps">Tirsdag 21. juli · uke 30</div>
+          <div style="font-family:var(--d);font-size:22px;font-weight:700;letter-spacing:-.02em">Hei, Markus</div>
+          <div class="card tint">
+            <div class="caps">Neste fokus</div>
+            <div style="font-family:var(--d);font-size:20px;font-weight:700;margin-top:4px">Nærspill</div>
+            <div style="font-size:12px;color:var(--mut);margin-top:4px">−0,55 slag/runde · siste 8 runder</div>
+            <div style="margin-top:10px"><span class="chip">SLAG</span></div>
+            <button class="cta" style="margin-top:12px">Start økt i dag</button>
+          </div>
+          <div class="list">
+            <div class="li"><div class="av">16</div><div><strong style="font-size:13px">M2 range</strong><div style="font-size:11px;color:var(--mut)">60 min · 3 driller</div></div><span class="meta" style="color:var(--forest)">Planlagt</span></div>
+          </div>
+          <div style="font-size:12px;color:var(--mut);text-align:center;padding:4px 0 8px">Eller: se SG → planlegg uke</div>
+        </div>
+        <div class="phone-nav">
+          <span class="on"><i></i>Hjem</span><span><i></i>Plan</span><span><i></i>Gjør</span><span><i></i>Analyse</span><span><i></i>Meg</span>
+        </div>
+      </div>
+      <div class="note"><strong>Designgrep:</strong> Fokus er ikke et dashboard. Det er et <em>vedtak</em>. CTA er den eneste lime/forest-jobben.</div>
+    </div>
+
+    <!-- PHONE 2 ANALYSE -->
+    <div>
+      <div class="screen-meta"><span class="pill">PlayerHQ · 390</span><span class="pill tap">1 trykk til plan</span><span class="pill ok">Analyse</span></div>
+      <div class="label">Analysere — tilstand 5s · årsak 30s</div>
+      <div class="phone">
+        <div class="phone-top"><div class="notch"></div></div>
+        <div class="phone-body">
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span class="chip" style="background:var(--forest);color:#fff">SG</span>
+            <span class="chip" style="background:var(--panel3);color:var(--mut)">Fokus</span>
+            <span class="chip" style="background:var(--panel3);color:var(--mut)">Runder</span>
+          </div>
+          <div class="card tint">
+            <div class="caps">Total SG · PGA</div>
+            <div style="margin-top:6px"><span class="hero">−0,42</span><span class="unit">slag/runde</span></div>
+            <div class="caps" style="color:var(--down);margin-top:6px">Synkende · 10 runder</div>
+          </div>
+          <div class="card">
+            <div class="rowline"><span>Tee-slag</span><span class="pos">+0,18</span></div>
+            <div class="rowline"><span>Innspill</span><span class="neg">−0,31</span></div>
+            <div class="rowline"><span><strong>Nærspill</strong></span><span class="neg" style="font-size:15px">−0,55</span></div>
+            <div class="rowline"><span>Putting</span><span class="pos">+0,26</span></div>
+          </div>
+          <div class="card">
+            <div class="caps">Resept</div>
+            <div style="font-weight:700;margin-top:6px;font-size:14px">Kontakt + lav tempo</div>
+            <div style="font-size:12px;color:var(--mut);margin-top:4px">CS50–70 · M2 range · 60 min</div>
+            <button class="cta" style="margin-top:12px">Planlegg dette</button>
+          </div>
+        </div>
+        <div class="phone-nav">
+          <span><i></i>Hjem</span><span><i></i>Plan</span><span><i></i>Gjør</span><span class="on"><i></i>Analyse</span><span><i></i>Meg</span>
+        </div>
+      </div>
+      <div class="note"><strong>Designgrep:</strong> Svakeste rad er tykkest. CTA er broen til Workbench — ikke «utforsk mer data».</div>
+    </div>
+
+    <!-- PHONE 3 WORKBENCH -->
+    <div>
+      <div class="screen-meta"><span class="pill">PlayerHQ · 390</span><span class="pill tap">1 trykk legg økt</span><span class="pill ok">Kalender</span></div>
+      <div class="label">Workbench — økten lander i uka</div>
+      <div class="phone">
+        <div class="phone-top"><div class="notch"></div></div>
+        <div class="phone-body">
+          <div class="caps">Uke 30 · Plan</div>
+          <div class="wk">
+            <div class="wd">M<div class="dot"></div></div>
+            <div class="wd on">T<div class="dot"></div></div>
+            <div class="wd">O<div class="dot"></div></div>
+            <div class="wd">T<div class="dot"></div></div>
+            <div class="wd">F<div class="dot"></div></div>
+          </div>
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:start">
+              <div>
+                <div style="font-weight:700">Nærspill-fokus</div>
+                <div style="font-size:12px;color:var(--mut);margin-top:2px">Tir 16:00 · 60 min · M2</div>
+              </div>
+              <span class="chip">SLAG</span>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+              <span class="chip tek">Lav tempo</span>
+              <span class="chip" style="background:var(--panel3);color:var(--fg2)">M2</span>
+            </div>
+          </div>
+          <div class="card" style="border-style:dashed">
+            <div style="font-size:12px;color:var(--mut)">Fra SG · 3 driller foreslått</div>
+            <div style="font-weight:600;margin-top:4px;font-size:13px">Pitch 50 m · Landingssone · Tempo</div>
+          </div>
+          <button class="cta">Bekreft økt</button>
+          <div style="font-size:11px;color:var(--mut);text-align:center">Anbefaling — du kan endre fritt</div>
+        </div>
+        <div class="phone-nav">
+          <span><i></i>Hjem</span><span class="on"><i></i>Plan</span><span><i></i>Gjør</span><span><i></i>Analyse</span><span><i></i>Meg</span>
+        </div>
+      </div>
+      <div class="note"><strong>Designgrep:</strong> Formel (akse, tempo, miljø) er synlig men sekundær. Primærjobb = bekrefte tiden.</div>
+    </div>
+
+    <!-- PHONE 4 LIVE -->
+    <div>
+      <div class="screen-meta"><span class="pill">Live · fullskjerm</span><span class="pill tap">store knapper</span><span class="pill ok">Live</span></div>
+      <div class="label">Live — logg uten støy</div>
+      <div class="phone">
+        <div class="phone-top"><div class="notch"></div></div>
+        <div class="phone-body">
+          <div style="display:flex;justify-content:space-between"><span class="chip">Drill 2/5</span><span class="caps" style="align-self:center">12:40</span></div>
+          <div style="font-family:var(--d);font-size:20px;font-weight:700;letter-spacing:-.02em">50 m pitch · landingssone</div>
+          <div style="font-size:12px;color:var(--mut)">Mål: 8/10 innen 3 m · CS60</div>
+          <div class="big-rep">
+            <div class="caps">Treff</div>
+            <div class="n">6<span style="font-size:22px;color:var(--mut)">/10</span></div>
+          </div>
+          <div class="grid2">
+            <button class="cta ghost">−</button>
+            <button class="cta">+ treff</button>
+          </div>
+          <button class="cta ghost">Pause</button>
+        </div>
+      </div>
+      <div class="note"><strong>Designgrep:</strong> Ingen bunn-nav. Pause alltid synlig. Tommel-soner ≥44px. Én tallflate.</div>
+    </div>
+
+    <!-- PHONE 5 SUMMARY -->
+    <div>
+      <div class="screen-meta"><span class="pill">Live · oppsummering</span><span class="pill tap">1 trykk hjem</span><span class="pill ok">Live</span></div>
+      <div class="label">Ferdig — lukk løkka</div>
+      <div class="phone">
+        <div class="phone-top"><div class="notch"></div></div>
+        <div class="phone-body">
+          <div style="text-align:center;padding-top:8px">
+            <div style="width:52px;height:52px;border-radius:50%;background:color-mix(in srgb,var(--forest) 15%,transparent);margin:0 auto;display:grid;place-items:center;font-size:22px;color:var(--forest)">✓</div>
+            <div style="font-family:var(--d);font-size:22px;font-weight:700;margin-top:10px">Bra jobba</div>
+            <div style="font-size:13px;color:var(--mut);margin-top:4px">På plan · 92 % gjennomført</div>
+          </div>
+          <div class="grid2">
+            <div class="kpi"><div class="caps">Reps</div><div class="v">48</div></div>
+            <div class="kpi"><div class="caps">Tid</div><div class="v">54<span style="font-size:12px;color:var(--mut)">m</span></div></div>
+          </div>
+          <div class="card">
+            <div class="caps">Fokus i dag</div>
+            <div style="font-weight:700;margin-top:4px">Nærspill · SLAG</div>
+          </div>
+          <button class="cta">Tilbake til hjem</button>
+          <button class="cta ghost">Åpne Workbench</button>
+        </div>
+      </div>
+      <div class="note"><strong>Designgrep:</strong> Dom først (på plan), tall etter. To veier: hjem (default) eller plan.</div>
+    </div>
+  </div>
+
+  <h2>Coach-flyt · tilstand på 5 sekunder</h2>
+  <p class="lead">Jobb: Se hvem som trenger deg → åpne spiller → juster uke. Mobil er triage; desktop er arbeid.</p>
+  <div class="flow-bar">
+    <span class="flow-step on"><em>1</em> Stall</span><span class="arr">→</span>
+    <span class="flow-step"><em>2</em> Spiller 360</span><span class="arr">→</span>
+    <span class="flow-step"><em>3</em> Workbench</span><span class="arr">→</span>
+    <span class="flow-step"><em>4</em> Publiser</span>
+  </div>
+
+  <div class="row">
+    <div style="flex:1;min-width:280px">
+      <div class="screen-meta"><span class="pill" style="background:#232623;color:#B4B7B0">AgencyOS · 1680 mørk</span><span class="pill tap">skann → plukk</span></div>
+      <div class="label" style="color:var(--mut)">Stall — kontrolltårn</div>
+      <div class="desk">
+        <div class="rail"><b>A</b><span></span><span></span><span></span><span></span></div>
+        <div class="desk-main">
+          <div class="caps">Stall · 18 spillere</div>
+          <div style="font-family:var(--d);font-size:22px;font-weight:700;margin:6px 0 14px">Hvem trenger deg i dag?</div>
+          <div class="grid2" style="grid-template-columns:repeat(4,1fr);margin-bottom:14px">
+            <div class="kpi"><div class="caps">I rute</div><div class="v" style="color:#4FD08A">11</div></div>
+            <div class="kpi"><div class="caps">Trenger deg</div><div class="v" style="color:#F0683E">4</div></div>
+            <div class="kpi"><div class="caps">Tester</div><div class="v">3</div></div>
+            <div class="kpi"><div class="caps">Innboks</div><div class="v" style="color:#D1F843">7</div></div>
+          </div>
+          <div class="list">
+            <div class="li"><div class="av">MR</div><div><strong>Markus R.</strong><div class="caps" style="margin-top:2px">Nærspill faller · Workbench tom fre</div></div><span class="meta" style="color:#F0683E">!</span></div>
+            <div class="li"><div class="av">EH</div><div><strong>Emma H.</strong><div class="caps" style="margin-top:2px">På plan · test OK</div></div><span class="meta" style="color:#4FD08A">OK</span></div>
+            <div class="li"><div class="av">JL</div><div><strong>Jonas L.</strong><div class="caps" style="margin-top:2px">Skylig betaling · lav uke</div></div><span class="meta" style="color:#E8B43C">$</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><strong>Designgrep:</strong> KPI-rad = 5-sekunders tilstand. Liste sortert med «trenger deg» øverst. Én rad = ett valg.</div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:24px">
+    <div style="flex:1;min-width:280px">
+      <div class="screen-meta"><span class="pill" style="background:#232623;color:#B4B7B0">AgencyOS · spiller</span><span class="pill tap">1 trykk Workbench</span></div>
+      <div class="label" style="color:var(--mut)">Spiller 360 + Workbench (samme økt)</div>
+      <div class="desk">
+        <div class="rail"><b>A</b><span></span><span></span><span></span></div>
+        <div class="desk-main">
+          <div class="split">
+            <div>
+              <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px">
+                <div class="av" style="width:48px;height:48px;font-size:14px">MR</div>
+                <div>
+                  <div style="font-weight:700;font-size:18px">Markus R.</div>
+                  <div class="caps">HCP 4,2 · Kategori C · WANG</div>
+                </div>
+              </div>
+              <div class="grid2">
+                <div class="kpi"><div class="caps">SG total</div><div class="v" style="color:#F0683E">−0,42</div></div>
+                <div class="kpi"><div class="caps">Uke</div><div class="v">4,5 t</div></div>
+              </div>
+              <div class="card" style="margin-top:10px">
+                <div class="caps">Neste fokus</div>
+                <div style="font-weight:700;margin-top:4px">Nærspill · SLAG</div>
+                <div class="caps" style="margin-top:4px">Fra SG-gap · siste 8 runder</div>
+              </div>
+              <button class="cta" style="margin-top:12px">Åpne Workbench</button>
+            </div>
+            <div>
+              <div class="caps">Uke 30 · valgt økt</div>
+              <div class="card" style="margin-top:8px">
+                <div style="font-weight:700">Tir · Nærspill-fokus</div>
+                <div class="caps" style="margin-top:4px">16:00 · 60 min · M2</div>
+                <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+                  <span class="chip">SLAG</span>
+                  <span class="chip tek">Lav tempo</span>
+                </div>
+                <div class="caps" style="margin-top:12px">3 driller lastet fra resept</div>
+              </div>
+              <button class="cta" style="margin-top:10px">Publiser til spiller</button>
+              <button class="cta ghost" style="margin-top:8px">Endre uke</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><strong>Designgrep:</strong> 360 er diagnose. Workbench er handling. Publiser er den eneste lime-CTA. Anbefaling, ikke sperre.</div>
+    </div>
+  </div>
+
+  <h2>Tom tilstand · samme standard</h2>
+  <div class="row">
+    <div class="phone">
+      <div class="phone-top"><div class="notch"></div></div>
+      <div class="phone-body" style="justify-content:center;text-align:center;gap:14px">
+        <div style="font-size:28px;opacity:.35">○</div>
+        <div style="font-family:var(--d);font-size:18px;font-weight:700">Ingen økt i dag</div>
+        <div style="font-size:13px;color:var(--mut);max-width:24ch;margin:0 auto">Nyt hviledagen — eller planlegg fra nærspill-svakheten din.</div>
+        <button class="cta">Planlegg i Workbench</button>
+        <div style="font-size:12px;font-weight:600;color:var(--fg2)">Se SG-analyse</div>
+      </div>
+      <div class="phone-nav">
+        <span class="on"><i></i>Hjem</span><span><i></i>Plan</span><span><i></i>Gjør</span><span><i></i>Analyse</span><span><i></i>Meg</span>
+      </div>
+    </div>
+    <div class="note" style="align-self:center;max-width:360px">
+      <strong>Regel:</strong> Tom tilstand er en produktflate. Alltid forklaring + én primær vei + valgfri sekundær. Aldri tom hvit skjerm.
+    </div>
+  </div>
+
+  <h2>Trykk-budsjett (suksessmål)</h2>
+  <div class="rules">
+    <div class="rule"><strong>Spiller: start økt</strong><span>Hjem → Start = <b>1 trykk</b> (når økt finnes i dag)</span></div>
+    <div class="rule"><strong>Spiller: SG → plan</strong><span>Analyse → Planlegg → Bekreft = <b>2–3 trykk</b></span></div>
+    <div class="rule"><strong>Coach: rød flagg</strong><span>Stall → rad → Workbench = <b>2 trykk</b></span></div>
+    <div class="rule"><strong>Coach: publiser</strong><span>Workbench → Publiser = <b>1 trykk</b> fra valgt økt</span></div>
+  </div>
+
+  <footer>
+    AK Golf HQ · V2.5 Verdensklasse · Open Design artifact · 2026-07-21<br/>
+    Tokens: forest #005840 · cream #F2F1EA · mørk #131513 · Familjen Grotesk / Inter / JetBrains Mono<br/>
+    Låst: enkelhet, færrest trykk, én CTA, anbefaling aldri sperre · FASIT §3
+  </footer>
+</div>
+</body>
+</html>

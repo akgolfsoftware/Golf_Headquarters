@@ -15,12 +15,16 @@ Eller dobbeltklikk `index.html` i Finder.
 | Fil | Hva |
 |---|---|
 | `index.html` | Start her |
+| `verdensklasse-flaggskip.html` | **NY** — verdensklasse UI + user flow (færrest trykk) |
+| `VERDENSKLASSE-BRIEF.md` | Brief + port-rekkefølge til kode |
 | `wireframes.html` | 8 familier + alle skjermer som wireframe-kort |
 | `hifi.html` | Hi-fi kjerne + mal for alle kombinasjoner |
 | `inventar.html` | Filtrerbar liste over alle ruter |
 | `flyter.html` | End-to-end stier |
 | `INVENTAR.md` | Samme liste i markdown |
 | `inventar.json` | Maskinlesbar |
+
+**Open Design:** prosjekt `AK Golf HQ · Verdensklasse UI` (`akgolf-verdensklasse-ui`)
 
 ## Metode
 
