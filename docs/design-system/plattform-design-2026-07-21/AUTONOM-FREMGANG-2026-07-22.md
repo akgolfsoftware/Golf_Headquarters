@@ -23,15 +23,31 @@
 - Brief/cockpit lesbare agent-forslag  
 - Synlighet: alt JA (unntatt forbud)
 
-## Fortsatt åpent (trenger tid/deg)
+## Senere commits (fortsett alle oppgaver)
 
-- P0: DKIM, Stripe, DNS, merge  
-- Marketing full V2-polish  
+| Commit | Innhold |
+|---|---|
+| (neste) | F.01/F.02 hurtigmodus runde · auto neste hull · V2 DRAFT-filter · TM stabilitet/dispersjon DB-fallback · tester |
+
+## Ferdig i kode (runde + filter + TM)
+
+- **Hurtigmodus** i live/etterpå-føring: switch Slag/Hurtig, Birdie/Par/Bogey, lagre score  
+- **Færre trykk:** auto neste hull etter hole-out / hurtig-lagring  
+- **V2-økter:** spiller ser ikke speil av DRAFT/REJECTED-planer (workbench + neste økt)  
+- **TrackMan E.03:** stabilitet + dispersjon faller tilbake til lagrede slag  
+- **Tester:** `syntetiser-hurtig` + `stabilitet-fallback`  
+- **H.07** ny-okt: allerede `createAdHocSession` → DB  
+
+## Fortsatt åpent (trenger deg)
+
+- P0: DKIM, Stripe, DNS, merge PR #118  
+- Marketing/stats full V2 + SEO (G)  
 - Open Design daemon / claude-config sync  
-- V2-økter (TrainingSessionV2) kan fortsatt lekke utkast hvis generertFraId ikke filtreres  
-- Live runde trykk-optimalisering end-to-end  
+- Manuell TrackMan smoke i browser  
+- GolfBox/Arccos kun på GO  
 
 ## Smoke
 
 - `TRACKMAN-SMOKE.md`  
 - `WORKBENCH-SMOKE.md`  
+- Automatisk: `npx tsx --test src/lib/runde-logg/syntetiser-hurtig.test.ts src/lib/trackman/stabilitet-fallback.test.ts`  

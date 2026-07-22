@@ -82,10 +82,10 @@
 |---|---|---|---|
 | E.01 | Duplikat-advarsel ved lik session | FERDIG | JA (når ferdig) |
 | E.02 | Manuell match-override i import | FERDIG | JA (når ferdig) |
-| E.03 | Dispersjon/stabilitet (eksisterende session-UI) | DELVIS | JA |
+| E.03 | Dispersjon/stabilitet (eksisterende session-UI) | FERDIG | JA |
 | E.04 | Legacy TrackMan-ruter → redirect | FERDIG | — |
 | E.05 | Test-resultat: hint om baseline/full sving | FERDIG | JA |
-| E.06 | Smoke/E2E CSV → TmGoal | TODO | — |
+| E.06 | Smoke/E2E CSV → TmGoal | DELVIS | — |
 | E.07 | Admin TrackMan (samme motor) | FERDIG | JA |
 
 ---
@@ -94,8 +94,8 @@
 
 | ID | Punkt | St | S (forslag) |
 |---|---|---|---|
-| F.01 | Live runde færre trykk (polish) | DELVIS | JA |
-| F.02 | Hurtigmodus score (samme motor) | TODO | JA |
+| F.01 | Live runde færre trykk (polish) | FERDIG | JA |
+| F.02 | Hurtigmodus score (samme motor) | FERDIG | JA |
 | F.03 | UpGame: «SG full/delvis/mangler»-tekst | FERDIG | JA |
 | F.04 | Round-agent synlig i godkjenninger | FERDIG | JA |
 | F.05 | GolfBox personlig runde-import | SENERE | NEI til GO |
@@ -124,7 +124,7 @@
 | H.04 | Intern komponent-lab | DELVIS | NEI (kun intern) |
 | H.05 | Meg-assistent (admin) | DELVIS | NEI / admin |
 | H.06 | claude-config git-sync | TODO | — |
-| H.07 | `/portal/ny-okt` ekte DB-lagring | TODO | JA |
+| H.07 | `/portal/ny-okt` ekte DB-lagring | FERDIG | JA |
 | H.08 | Talent-radar / talent-sider | DELVIS | ? (feature flag finnes) |
 
 ---

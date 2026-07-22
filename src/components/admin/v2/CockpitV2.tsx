@@ -6,7 +6,7 @@
  * fra loadDailyBrief (Prisma). Bygget utelukkende av v2-komponentbiblioteket
  * (src/components/v2) — ingen ad-hoc UI, ingen rå hex (kun T.*).
  *
- * Desktop-rekkefølge: hode → live → kpi (4) → koen «Trenger deg nå» →
+ * Desktop-rekkefølge: hode → live → kpi (4) → AI-dispatch → koen «Trenger deg nå» →
  * grid 2-kol (Dagens timer | Stall-uka) → InnsiktChip «Planlegg i Workbench».
  */
 
@@ -39,7 +39,9 @@ import type {
 } from "@/components/admin/cockpit/agency-cockpit";
 import type { InnboksSammendrag } from "@/lib/innboks/data";
 import type { FokusData } from "@/lib/agencyos/fokus-spillere";
+import type { AiDispatchData } from "@/lib/agencyos/ai-dispatch-data";
 import { FokusSpillere } from "@/components/admin/v2/FokusSpillere";
+import { AiDispatchPanelV2 } from "@/components/admin/v2/AiDispatchPanelV2";
 
 /* signal.tone → SevChip-kategori (klarspråk, aldri sperre-språk) */
 const SEV_MAP: Record<CockpitFocusPlayer["signal"]["tone"], SevKey> = {
@@ -85,7 +87,17 @@ function useLiveKlokke(startMin: number | null, nowMin: number): string {
   return `${String(mm).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
 }
 
-export function CockpitV2({ data, innboks, fokus }: { data: CockpitData; innboks?: InnboksSammendrag; fokus?: FokusData }) {
+export function CockpitV2({
+  data,
+  innboks,
+  fokus,
+  aiDispatch,
+}: {
+  data: CockpitData;
+  innboks?: InnboksSammendrag;
+  fokus?: FokusData;
+  aiDispatch?: AiDispatchData;
+}) {
   const router = useRouter();
   const mobile = useMobile();
 
@@ -302,6 +314,7 @@ export function CockpitV2({ data, innboks, fokus }: { data: CockpitData; innboks
       {fokus && <FokusSpillere fokus={fokus} />}
       {live}
       {kpi}
+      {aiDispatch && <AiDispatchPanelV2 data={aiDispatch} />}
       {koen}
       {innboksModul}
       <div className={mobile ? "grid grid-cols-1" : "grid grid-cols-1 lg:grid-cols-2"} style={{ gap: T.gap }}>

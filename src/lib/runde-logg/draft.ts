@@ -48,6 +48,8 @@ const hullSchema = z.object({
 const kladdSchema = z.object({
   versjon: z.literal(1),
   modus: z.enum(["live", "etterpaa"]),
+  /** slag = full kjede, hurtig = score per hull (F.02). */
+  foringsModus: z.enum(["slag", "hurtig"]).optional().default("slag"),
   steg: z.enum(["oppsett", "foring", "oppsummering"]),
   oppsett: z.object({
     courseId: z.string().nullable(),

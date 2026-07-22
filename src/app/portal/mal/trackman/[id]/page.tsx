@@ -64,6 +64,11 @@ export default async function TrackManDetalj({
         smashFactor: true,
         matchConfidence: true,
         positionTaskId: true,
+        ballSpeed: true,
+        launchAngle: true,
+        spinRate: true,
+        side: true,
+        clubSpeed: true,
       },
     }),
   ]);
@@ -103,7 +108,7 @@ export default async function TrackManDetalj({
     ? (sesjon.rawJson as Record<string, string>[])
     : [];
 
-  const stabilitetData = beregnStabilitet(sesjon.rawJson);
+  const stabilitetData = beregnStabilitet(sesjon.rawJson, shots);
 
   const datoTekst = sesjon.recordedAt.toLocaleDateString("nb-NO", {
     day: "2-digit",
@@ -140,7 +145,7 @@ export default async function TrackManDetalj({
             </span>
           }
         >
-          <DispersionPlot rader={rader} />
+          <DispersionPlot rader={rader} dbShots={shots} />
         </Kort>
 
         {/* Per kølle */}

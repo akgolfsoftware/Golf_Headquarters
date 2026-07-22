@@ -1,30 +1,57 @@
 // Server-rendert SVG dispersion-plot fra TrackMan rawJson.
 // Plotter total distance vs lateral (left/right) for hvert slag.
+// Fallback: strukturerte TrackManShot-rader (E.03).
 
 type Slag = Record<string, string | undefined>;
+
+export type DispersionDbShot = {
+  club: string;
+  carryDistance: number | null;
+  totalDistance: number | null;
+  side: number | null;
+};
 
 const PLOT_W = 400;
 const PLOT_H = 300;
 const PADDING = 30;
 
-export function DispersionPlot({ rader }: { rader: Slag[] }) {
-  const punkter = rader
+export function DispersionPlot({
+  rader,
+  dbShots,
+}: {
+  rader: Slag[];
+  dbShots?: DispersionDbShot[];
+}) {
+  let punkter = rader
     .map((r) => {
       const distanse = Number(r.Distance ?? r.distance ?? r.Carry ?? r.carry ?? 0);
       const lateral = Number(r.Lateral ?? r.lateral ?? r.Side ?? r.side ?? 0);
       const klubb = r.Club ?? r.club ?? r.kolle ?? null;
-      if (Number.isNaN(distanse) || Number.isNaN(lateral)) return null;
+      if (Number.isNaN(distanse) || Number.isNaN(lateral) || distanse <= 0) return null;
       return { distanse, lateral, klubb };
     })
     .filter((p): p is NonNullable<typeof p> => p != null);
 
+  // E.03: fallback til lagrede slag når rawJson mangler dist/side-kolonner
+  if (punkter.length === 0 && dbShots && dbShots.length > 0) {
+    punkter = dbShots
+      .map((s) => {
+        const distanse = s.totalDistance ?? s.carryDistance;
+        if (distanse == null || distanse <= 0) return null;
+        return {
+          distanse,
+          lateral: s.side ?? 0,
+          klubb: s.club,
+        };
+      })
+      .filter((p): p is NonNullable<typeof p> => p != null);
+  }
+
   if (punkter.length === 0) {
     return (
       <div className="rounded-lg border border-dashed border-border bg-muted/40 p-6 text-center text-sm text-muted-foreground">
-        Klarte ikke parse dispersion-data fra CSV. Forventet kolonner:{" "}
-        <code className="font-mono">Distance</code>,{" "}
-        <code className="font-mono">Lateral</code>,{" "}
-        <code className="font-mono">Club</code>.
+        Ingen dispersjonsdata ennå. Importer TrackMan-økt med distanse og
+        side-avvik, så vises spredningen her.
       </div>
     );
   }

@@ -13,6 +13,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadDailyBrief } from "@/lib/agencyos/daily-brief-data";
 import { loadInnboksSammendrag } from "@/lib/innboks/data";
 import { loadFokusSpillere } from "@/lib/agencyos/fokus-spillere";
+import { loadAiDispatch } from "@/lib/agencyos/ai-dispatch-data";
 import { prisma } from "@/lib/prisma";
 import type { PlayerProgram } from "@/generated/prisma/client";
 import { V2Shell, AGENCYOS_NAV, type VekslerData } from "@/components/v2/shell";
@@ -23,10 +24,11 @@ export const dynamic = "force-dynamic";
 export default async function V2CockpitPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const isAdmin = user.role === "ADMIN";
-  const [data, innboks, fokus, spillereRaw, grupperRaw] = await Promise.all([
+  const [data, innboks, fokus, aiDispatch, spillereRaw, grupperRaw] = await Promise.all([
     loadDailyBrief({ id: user.id, name: user.name, avatarUrl: user.avatarUrl, role: user.role }),
     loadInnboksSammendrag(),
     loadFokusSpillere({ id: user.id, role: user.role }),
+    loadAiDispatch({ id: user.id, role: user.role }),
     // D2-veksler: lettvekts spillerliste i coachens scope (samme where-mønster
     // som loadStallen — ADMIN ser alle, COACH ser egne). Kun id/navn/avatar.
     prisma.user.findMany({
@@ -61,7 +63,7 @@ export default async function V2CockpitPage() {
 
   return (
     <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} vekslerData={vekslerData}>
-      <CockpitV2 data={data} innboks={innboks} fokus={fokus} />
+      <CockpitV2 data={data} innboks={innboks} fokus={fokus} aiDispatch={aiDispatch} />
     </V2Shell>
   );
 }
