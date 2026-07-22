@@ -222,6 +222,30 @@ export default async function PgaStatsHub() {
           <div style={{ marginTop: 24 }}>
             <StatsEyebrow>PGA Tour · Statistikk</StatsEyebrow>
           </div>
+          {/* B-status: 5-sekunders lesning før hero */}
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 10,
+              marginTop: 14,
+              marginBottom: 8,
+              padding: "6px 12px",
+              borderRadius: 9999,
+              border: "1px solid var(--border)",
+              background: "var(--card)",
+              fontFamily: "var(--font-mono, ui-monospace, monospace)",
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              color: "var(--foreground)",
+            }}
+          >
+            {harData
+              ? `${totalSpillere} spillere · sesong ${YEAR}`
+              : `Sesong ${YEAR} · venter på sync`}
+          </div>
           <h1>
             Hva er <em className="italic-accent">snittet</em> egentlig?
           </h1>
@@ -229,7 +253,15 @@ export default async function PgaStatsHub() {
             Alt fra drive distance til putter per runde, hentet rett fra DataGolf,
             vektet mot Tour-snittet. Lek deg gjennom seks kategorier.
           </p>
-          <div style={{ display: "flex", gap: 20, marginTop: 28, alignItems: "center", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 12, marginTop: 28, alignItems: "center", flexWrap: "wrap" }}>
+            <Link href="/stats/pga/drive-distance" className="inline-flex">
+              <StatsBtn>Start med drive distance</StatsBtn>
+            </Link>
+            <Link href="/stats/sg-sammenlign" className="inline-flex">
+              <StatsBtn variant="ghost">Sammenlign deg selv</StatsBtn>
+            </Link>
+          </div>
+          <div style={{ display: "flex", gap: 20, marginTop: 20, alignItems: "center", flexWrap: "wrap" }}>
             <div className="mini-mono">{harData ? totalSpillere : "—"} SPILLERE</div>
             <span className="mini-mono" style={{ color: "var(--border)" }}>·</span>
             <div className="mini-mono">SESONG {YEAR}</div>

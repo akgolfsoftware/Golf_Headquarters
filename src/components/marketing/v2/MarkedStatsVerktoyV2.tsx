@@ -14,8 +14,8 @@ import { T } from "@/lib/v2/tokens";
 import { Icon, Kort, Caps, Knapp } from "@/components/v2";
 import { Glider, RadarProfil } from "@/components/v2";
 import { hcpFromAvgScore, tourEquivalentScore, estimerSgFordelingFraSnitt } from "@/lib/stats/sg-estimator";
-import { StatsRamme, useMobile } from "./stats-ramme";
-import { Eyebrow, HeroT, SeksT, Lede, Seksjon } from "./marked-ramme";
+import { StatsRamme, StatsStatusBar, useMobile } from "./stats-ramme";
+import { Eyebrow, HeroT, SeksT, Lede, Seksjon, MCta } from "./marked-ramme";
 
 /* ── Delt: tilbake-lenke ──────────────────────────────── */
 function TilbakeVerktoy() {
@@ -72,12 +72,25 @@ export function VerktoyHubV2() {
     <StatsRamme mobile={mobile} aktiv="verktoy">
       <Seksjon mobile={mobile}>
         <Eyebrow>AK Golf Stats · Verktøy</Eyebrow>
+        <StatsStatusBar
+          label="5 gratis verktøy"
+          tone="lime"
+          meta="Ingen innlogging · beregn på 30 sekunder"
+        />
         <HeroT mobile={mobile} em="lurer på.">
           Beregn det du
         </HeroT>
         <Lede style={{ marginTop: 22, maxWidth: 580 }}>
           Score til HCP, Tour-ekvivalent, WHS, SG-estimator. Alt gratis, alt nøyaktig.
         </Lede>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 22 }}>
+          <MCta icon="arrow-right" href="/stats/verktoy/score-til-hcp">
+            Start med Score til HCP
+          </MCta>
+          <MCta ghost href="/stats/sg-sammenlign">
+            SG-sammenligning
+          </MCta>
+        </div>
       </Seksjon>
 
       <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>

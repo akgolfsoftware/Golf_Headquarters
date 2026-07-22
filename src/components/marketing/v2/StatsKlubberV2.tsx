@@ -11,7 +11,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { T } from "@/lib/v2/tokens";
 import { Kort, Caps, KpiFlis, FilterChips, TomTilstand } from "@/components/v2";
-import { StatsRamme, StatsSok, useMobile } from "./stats-ramme";
+import { StatsRamme, StatsSok, StatsStatusBar, useMobile } from "./stats-ramme";
 import { Eyebrow, HeroT, SeksT, Lede, MCta, Seksjon } from "./marked-ramme";
 
 export interface KlubbRad {
@@ -71,12 +71,26 @@ export function StatsKlubberV2({ klubber, totalSpillere, totalTurneringer }: Sta
       {/* Hero */}
       <Seksjon mobile={mobile}>
         <Eyebrow>AK Golf Stats · Klubber</Eyebrow>
+        <StatsStatusBar
+          label={`${klubber.length} klubber`}
+          tone="info"
+          meta={
+            filtrert.length !== klubber.length
+              ? `${filtrert.length} treff nå · ${totalSpillere} spillere`
+              : `${totalSpillere} spillere · ${totalTurneringer} turneringer`
+          }
+        />
         <HeroT mobile={mobile} em="norske">
           Alle golfklubber.
         </HeroT>
         <Lede style={{ marginTop: 22, maxWidth: 560 }}>
           Spillere, pro-talent, juniorprogram og turneringshistorikk for alle norske golfklubber i databasen vår.
         </Lede>
+        <div style={{ marginTop: 20 }}>
+          <MCta icon="arrow-right" href={flestSpillere ? `/stats/klubber/${flestSpillere.slug}` : "/stats/spillere"}>
+            {flestSpillere ? `Se ${flestSpillere.navn}` : "Utforsk spillere"}
+          </MCta>
+        </div>
       </Seksjon>
 
       {/* KPI-strip */}

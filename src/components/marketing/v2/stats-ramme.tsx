@@ -15,11 +15,52 @@
 import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import { T } from "@/lib/v2/tokens";
-import { Icon, Kort, Caps, KpiFlis, DataTabell, TomTilstand, FilterChips } from "@/components/v2";
-import type { DataTabellColumn, DataTabellRow } from "@/components/v2";
+import { Icon, Kort, Caps, KpiFlis, DataTabell, TomTilstand, FilterChips, StatusPill } from "@/components/v2";
+import type { DataTabellColumn, DataTabellRow, StatusTone } from "@/components/v2";
 import { MRamme, Eyebrow, HeroT, SeksT, Lede, Seksjon, useMobile } from "./marked-ramme";
 
 export { useMobile };
+
+/**
+ * B-pakke: status først — hva er viktig på 5 sekunder.
+ * Brukes på stats-hub, lister og detalj før innhold/CTA.
+ */
+export function StatsStatusBar({
+  label,
+  tone = "info",
+  meta,
+}: {
+  label: string;
+  tone?: StatusTone;
+  meta?: string;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        gap: 10,
+        marginBottom: 18,
+      }}
+    >
+      <StatusPill tone={tone}>{label}</StatusPill>
+      {meta ? (
+        <span
+          style={{
+            fontFamily: T.mono,
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: "0.04em",
+            color: T.mut,
+          }}
+        >
+          {meta}
+        </span>
+      ) : null}
+    </div>
+  );
+}
 
 /**
  * STATS_LEGACY_VARS — adapter for porterte (mlegacy) stats-komponenter
@@ -278,17 +319,20 @@ export interface StatsListeProps {
   tittel: ReactNode;
   tittelEm?: string;
   lede?: ReactNode;
+  /** B: status-linje over tittel (f.eks. «1 500 spillere · oppdatert i dag»). */
+  status?: { label: string; tone?: StatusTone; meta?: string };
   sok?: { value: string; onChange: (v: string) => void; placeholder?: string };
   filter?: { items: string[]; active: string[]; onToggle: (x: string) => void };
   meta?: ReactNode;
   tom?: { icon?: string; title: ReactNode; sub?: ReactNode };
   children: ReactNode;
 }
-export function StatsListe({ mobile, eyebrow, tittel, tittelEm, lede, sok, filter, meta, tom, children }: StatsListeProps) {
+export function StatsListe({ mobile, eyebrow, tittel, tittelEm, lede, status, sok, filter, meta, tom, children }: StatsListeProps) {
   return (
     <>
       <Seksjon mobile={mobile}>
         <Eyebrow>{eyebrow}</Eyebrow>
+        {status ? <StatsStatusBar label={status.label} tone={status.tone} meta={status.meta} /> : null}
         <HeroT mobile={mobile} em={tittelEm}>
           {tittel}
         </HeroT>
@@ -333,17 +377,20 @@ export interface StatsDetaljProps {
   tittelEm?: string;
   sub?: ReactNode;
   action?: ReactNode;
+  /** B: status først (5-sekunders lesning). */
+  status?: { label: string; tone?: StatusTone; meta?: string };
   kpis?: StatsDetaljKpi[];
   tabell?: StatsDetaljTabell;
   children?: ReactNode;
 }
-export function StatsDetalj({ mobile, eyebrow, tittel, tittelEm, sub, action, kpis, tabell, children }: StatsDetaljProps) {
+export function StatsDetalj({ mobile, eyebrow, tittel, tittelEm, sub, action, status, kpis, tabell, children }: StatsDetaljProps) {
   return (
     <>
       <Seksjon mobile={mobile}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
           <div>
             <Eyebrow>{eyebrow}</Eyebrow>
+            {status ? <StatsStatusBar label={status.label} tone={status.tone} meta={status.meta} /> : null}
             <HeroT mobile={mobile} em={tittelEm}>
               {tittel}
             </HeroT>

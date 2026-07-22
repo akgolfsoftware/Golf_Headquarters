@@ -11,7 +11,7 @@ import Link from "next/link";
 import { T } from "@/lib/v2/tokens";
 import { Icon, Kort, Caps, KpiFlis, FilterChips, TomTilstand } from "@/components/v2";
 import type { BaneListItem } from "@/lib/stats/bane-queries";
-import { StatsRamme, StatsSok, useMobile } from "./stats-ramme";
+import { StatsRamme, StatsSok, StatsStatusBar, useMobile } from "./stats-ramme";
 import { Eyebrow, HeroT, SeksT, Lede, MCta, Seksjon } from "./marked-ramme";
 
 const REGIONER = ["Alle", "Øst", "Vest", "Midt", "Sør", "Nord"];
@@ -45,11 +45,20 @@ export function StatsBanerV2({ baner, totalTurneringer, totalSpillere }: StatsBa
       {/* Hero */}
       <Seksjon mobile={mobile}>
         <Eyebrow>AK Golf Stats · Baner</Eyebrow>
+        <StatsStatusBar
+          label={`${baner.length} baner`}
+          tone="info"
+          meta={
+            filtrert.length !== baner.length
+              ? `${filtrert.length} treff nå · ${totalTurneringer} turneringer`
+              : `${totalTurneringer} turneringer · ${totalSpillere} spillere`
+          }
+        />
         <HeroT mobile={mobile} em="norske">
           Alle golfbaner.
         </HeroT>
         <Lede style={{ marginTop: 22, maxWidth: 560 }}>
-          Vanskelighetsgrad, slope, course rating og vår statistikk fra ekte turneringer på hver bane.
+          Vanskelighetsgrad, slope, course rating og vår statistikk fra ekte turneringer på hver bane. Bruk søk under for å finne din bane.
         </Lede>
       </Seksjon>
 

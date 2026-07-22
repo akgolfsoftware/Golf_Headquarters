@@ -12,6 +12,7 @@ import { T } from "@/lib/v2/tokens";
 import { Icon, Kort, TomTilstand } from "@/components/v2";
 import { StatsRamme, StatsListe, useMobile } from "./stats-ramme";
 import { MCta } from "./marked-ramme";
+// status via StatsListe.status (B-pakke)
 
 export type Spiller = {
   id: string;
@@ -154,10 +155,25 @@ export function StatsSpillereV2({ q, aar, tier, view, side, totalSpillere, total
       <StatsListe
         mobile={mobile}
         eyebrow="AK Golf Stats · Norsk golfdatabase"
+        status={{
+          label: `${totalSpillere.toLocaleString("nb-NO")} spillere`,
+          tone: "info",
+          meta: harFilter
+            ? `${spillere.length} treff nå · ${totalResultater.toLocaleString("nb-NO")} resultater`
+            : `${totalResultater.toLocaleString("nb-NO")}+ resultater siden 2016`,
+        }}
         tittel="Alle norske golfspillere."
         tittelEm="Ett sted."
         lede={`${totalSpillere.toLocaleString("nb-NO")}+ spillere · ${totalResultater.toLocaleString("nb-NO")}+ turneringsresultater siden 2016 · oppdateres månedlig.`}
       >
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 18 }}>
+          <MCta icon="arrow-right" href="/stats/sammenlign-spillere">
+            Sammenlign spillere
+          </MCta>
+          <MCta ghost href="/stats/norske">
+            Norske i aksjon
+          </MCta>
+        </div>
         {/* SØK */}
         <form id="søk" method="GET" style={{ maxWidth: 520, marginBottom: 20, position: "relative" }}>
           {aar && <input type="hidden" name="aar" value={aar} />}

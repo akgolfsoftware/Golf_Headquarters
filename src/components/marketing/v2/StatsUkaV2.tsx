@@ -10,7 +10,7 @@ import Link from "next/link";
 import { T } from "@/lib/v2/tokens";
 import { Icon, Kort, Caps, KpiFlis, DataTabell, TomTilstand } from "@/components/v2";
 import type { DataTabellRow } from "@/components/v2";
-import { StatsRamme, useMobile } from "./stats-ramme";
+import { StatsRamme, StatsStatusBar, useMobile } from "./stats-ramme";
 import { Eyebrow, HeroT, SeksT, MCta, Seksjon } from "./marked-ramme";
 
 export interface StatsUkaResultat {
@@ -75,12 +75,29 @@ export function StatsUkaV2({
         <Eyebrow>
           Uke {ukeNummer} · {aar} · {fraTilTekst}
         </Eyebrow>
+        <StatsStatusBar
+          label={
+            antallSpillere > 0
+              ? `${antallSpillere} norske spilte`
+              : "Ingen resultater ennå"
+          }
+          tone={antallSpillere > 0 ? "up" : "info"}
+          meta={`${antallTurneringer} turneringer · ${antallResultater} resultater`}
+        />
         <HeroT mobile={mobile} em="denne uken.">
           Norsk golf
         </HeroT>
         <p style={{ fontFamily: T.ui, fontSize: 15, color: T.fg2, marginTop: 18, maxWidth: 520, lineHeight: 1.6 }}>
           Alle norske resultater, ukens spiller og hva som venter neste uke, på 60 sekunder.
         </p>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 20 }}>
+          <MCta icon="arrow-right" href="/stats/norske">
+            Se norske i aksjon
+          </MCta>
+          <MCta ghost href="/stats/spillere">
+            Hele databasen
+          </MCta>
+        </div>
       </Seksjon>
 
       {/* KPI-strip */}
