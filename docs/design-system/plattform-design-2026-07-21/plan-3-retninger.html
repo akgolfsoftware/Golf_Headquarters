@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PlayerHQ Plan — 3 retninger (samme fasit)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+:root{
+  --bg:#F2F1EA;--panel:#FFFFFF;--panel2:#F7F6F0;--panel3:#ECEBE2;
+  --fg:#171B18;--fg2:#4A4F4A;--mut:#62675F;
+  --forest:#005840;--up:#1E8A50;--down:#C04A1E;--info:#1F6CB0;
+  --border:rgba(16,22,19,.10);
+  --shadow:0 1px 2px rgba(16,22,19,.04),0 10px 28px rgba(16,22,19,.06);
+  --r:20px;--rp:9999px;
+  --d:"Familjen Grotesk",Inter,system-ui,sans-serif;
+  --u:Inter,system-ui,sans-serif;--m:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.5 var(--u);background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1280px;margin:0 auto;padding:28px 18px 100px}
+h1{font-family:var(--d);font-size:30px;letter-spacing:-.03em;margin:0 0 8px;line-height:1.15}
+h2{font-family:var(--d);font-size:22px;letter-spacing:-.02em;margin:36px 0 10px}
+h3{font-family:var(--d);font-size:17px;margin:0 0 6px;letter-spacing:-.01em}
+.lead{color:var(--fg2);max-width:68ch;margin:0 0 18px;font-size:15px}
+.pill{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:var(--rp);
+  font-family:var(--m);font-size:10px;font-weight:700;background:var(--panel3);color:var(--fg2);margin-right:6px}
+.pill.ok{background:color-mix(in srgb,var(--forest) 16%,transparent);color:var(--forest)}
+.note{margin:16px 0 24px;padding:14px 16px;border-left:3px solid var(--forest);
+  background:color-mix(in srgb,var(--forest) 7%,var(--panel));border-radius:0 14px 14px 0;color:var(--fg2);font-size:13.5px}
+.board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:18px}
+@media(max-width:980px){.board{grid-template-columns:1fr}}
+.col{display:flex;flex-direction:column;gap:12px}
+.col-head{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:14px;box-shadow:var(--shadow)}
+.col-head .tag{font-family:var(--m);font-size:10px;font-weight:700;color:var(--forest);letter-spacing:.04em;text-transform:uppercase}
+.col-head p{margin:8px 0 0;font-size:13px;color:var(--fg2)}
+.col-head ul{margin:10px 0 0;padding-left:18px;font-size:12.5px;color:var(--mut)}
+.rec{display:inline-flex;margin-top:10px;height:26px;padding:0 10px;align-items:center;border-radius:var(--rp);
+  background:var(--forest);color:#fff;font-size:11px;font-weight:700}
+.phone{width:100%;max-width:340px;margin:0 auto;background:var(--panel);border:1px solid var(--border);
+  border-radius:36px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;min-height:700px}
+.notch{height:28px;display:flex;align-items:center;justify-content:center}
+.notch i{width:90px;height:8px;border-radius:99px;background:var(--panel3)}
+.body{flex:1;padding:6px 14px 12px;display:flex;flex-direction:column;gap:10px}
+.bnav{height:58px;border-top:1px solid var(--border);display:flex;background:var(--panel);padding:6px 4px 10px}
+.bnav span{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  font-size:9px;font-weight:600;color:var(--mut)}
+.bnav span.on{color:var(--forest)}
+.bnav span b{width:18px;height:3px;border-radius:99px;background:transparent;display:block}
+.bnav span.on b{background:var(--forest)}
+.caps{font-family:var(--m);font-size:10px;font-weight:700;color:var(--mut);letter-spacing:.04em;text-transform:uppercase}
+.cta{display:flex;align-items:center;justify-content:center;height:44px;border-radius:var(--rp);
+  background:var(--forest);color:#fff;font-weight:700;font-size:14px;border:0;width:100%}
+.cta.ghost{background:transparent;color:var(--forest);border:1px solid var(--border);height:38px;font-size:13px}
+.card{background:var(--panel2);border:1px solid var(--border);border-radius:16px;padding:12px}
+.card.white{background:#fff}
+.t-display{font-family:var(--d);font-weight:700;letter-spacing:-.02em}
+.muted{color:var(--mut);font-size:12px}
+.tiny{font-size:11px;color:var(--mut)}
+.chip{display:inline-flex;height:22px;padding:0 8px;align-items:center;border-radius:999px;
+  background:var(--panel3);font-size:10px;font-weight:700;color:var(--fg2)}
+.chip.g{background:color-mix(in srgb,var(--forest) 14%,transparent);color:var(--forest)}
+.chip.u{background:color-mix(in srgb,var(--up) 12%,transparent);color:var(--up)}
+.chip.d{background:color-mix(in srgb,var(--down) 12%,transparent);color:var(--down)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.wk{display:flex;gap:4px}
+.wk .d{flex:1;text-align:center;padding:8px 0 6px;border-radius:12px;background:var(--panel2);border:1px solid transparent}
+.wk .d strong{display:block;font-size:13px;font-family:var(--m)}
+.wk .d span{font-size:9px;color:var(--mut);font-weight:600}
+.wk .d.on{background:var(--forest);color:#fff}
+.wk .d.on span{color:rgba(255,255,255,.75)}
+.wk .d .dot{width:5px;height:5px;border-radius:99px;background:var(--forest);margin:4px auto 0}
+.wk .d.on .dot{background:#fff}
+.session{background:#fff;border:1px solid var(--border);border-radius:14px;padding:10px 12px;margin-top:6px}
+.session .t{font-weight:700;font-size:13px}
+.session .s{font-size:11px;color:var(--mut);margin-top:2px}
+.bar{height:8px;border-radius:99px;background:var(--panel3);overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--forest);border-radius:99px}
+.kpi-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.kpi{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:8px}
+.kpi .v{font-family:var(--m);font-weight:700;font-size:15px;margin-top:2px}
+.soft{text-align:center;font-size:12px;font-weight:600;color:var(--mut);padding:4px}
+.timeline{display:flex;flex-direction:column;gap:0}
+.tl{display:grid;grid-template-columns:44px 1fr;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.tl:last-child{border-bottom:0}
+.tl .time{font-family:var(--m);font-size:11px;font-weight:700;color:var(--mut);padding-top:2px}
+.tl .box{background:var(--panel2);border-radius:12px;padding:8px 10px;border:1px solid var(--border)}
+.tl .box.on{border-color:var(--forest);background:color-mix(in srgb,var(--forest) 6%,#fff)}
+.footer-note{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);color:var(--mut);font-size:12.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="pill ok">FASIT v2 Presis</span>
+  <span class="pill">PlayerHQ · Plan / Workbench</span>
+  <span class="pill ok">Valgt: B · Uke + status</span>
+  <span class="pill ok">Hjem: B</span>
+
+  <h1>3 retninger for PlayerHQ Plan</h1>
+  <p class="lead">
+    <strong>Beslutning 2026-07-21:</strong> Retning B er låst for Plan. Se <code>RETNING-PLAN.md</code>.
+    Matcher Hjem B (Form + plan).
+  </p>
+
+  <div class="note">
+    <strong>Jobben på Plan:</strong> Se uka → forstå volum/fokus → juster eller bekreft økt → start når det er i dag.
+    Én grønn hovedhandling per øyeblikk.
+  </div>
+
+  <div class="board">
+
+    <!-- A -->
+    <div class="col">
+      <div class="col-head">
+        <div class="tag">Retning A · «Bare uka»</div>
+        <h3>Minimal kalender</h3>
+        <p>Lite tall. Velg dag, se økter, bekreft. Formel og SG er gjemt bak «detaljer».</p>
+        <ul>
+          <li>Enklest å skanne</li>
+          <li>Lite «hvorfor trener jeg dette»</li>
+          <li>Matcher Hjem A (ikke valgt)</li>
+        </ul>
+      </div>
+      <div class="phone">
+        <div class="notch"><i></i></div>
+        <div class="body">
+          <div class="row">
+            <div>
+              <div class="caps">Plan</div>
+              <div class="t-display" style="font-size:22px">Uke 30</div>
+            </div>
+            <span class="chip">Uke</span>
+          </div>
+          <div class="wk">
+            <div class="d"><span>M</span><strong>20</strong><div class="dot"></div></div>
+            <div class="d on"><span>T</span><strong>21</strong><div class="dot"></div></div>
+            <div class="d"><span>O</span><strong>22</strong></div>
+            <div class="d"><span>T</span><strong>23</strong><div class="dot"></div></div>
+            <div class="d"><span>F</span><strong>24</strong></div>
+            <div class="d"><span>L</span><strong>25</strong></div>
+            <div class="d"><span>S</span><strong>26</strong></div>
+          </div>
+          <div class="card white">
+            <div class="caps">Tirsdag</div>
+            <div class="session">
+              <div class="t">Nærspill</div>
+              <div class="s">16:00 · 60 min · M2 range</div>
+            </div>
+          </div>
+          <button class="cta">Bekreft økt</button>
+          <button class="cta ghost">Legg til økt</button>
+          <div class="soft">Se formel og SG →</div>
+        </div>
+        <div class="bnav">
+          <span><b></b>Hjem</span><span class="on"><b></b>Plan</span><span><b></b>Gjør</span>
+          <span><b></b>Analyse</span><span><b></b>Meg</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- B -->
+    <div class="col">
+      <div class="col-head">
+        <div class="tag">Retning B · «Uke + status»</div>
+        <h3>Oversikt som sport-plan</h3>
+        <p>Uke-volum, fokus, formel-brikker og tidslinje. Matcher Hjem B: du ser både «hvorfor» og «når».</p>
+        <ul>
+          <li>Ser status på 5 sek (volum + fokus)</li>
+          <li>Mer innhold — må holdes ryddig</li>
+          <li><strong>Naturlig match til valgt Hjem B</strong></li>
+        </ul>
+        <span class="rec">VALGT av Anders · 2026-07-21</span>
+      </div>
+      <div class="phone" style="outline:3px solid var(--forest);outline-offset:4px">
+        <div class="notch"><i></i></div>
+        <div class="body">
+          <div class="row">
+            <div>
+              <div class="caps">Workbench · uke 30</div>
+              <div class="t-display" style="font-size:20px">Din uke</div>
+            </div>
+            <span class="chip g">På plan</span>
+          </div>
+
+          <div class="kpi-row">
+            <div class="kpi"><div class="caps">Planlagt</div><div class="v">4,5 t</div></div>
+            <div class="kpi"><div class="caps">Gjort</div><div class="v">2,8 t</div></div>
+            <div class="kpi"><div class="caps">Fokus</div><div class="v" style="font-size:12px;font-family:var(--u)">Nærsp.</div></div>
+          </div>
+          <div>
+            <div class="row"><span class="tiny">Uke-gjennomføring</span><span class="tiny" style="font-family:var(--m);font-weight:700">62 %</span></div>
+            <div class="bar"><i style="width:62%"></i></div>
+          </div>
+
+          <div class="wk">
+            <div class="d"><span>M</span><strong>20</strong><div class="dot"></div></div>
+            <div class="d on"><span>T</span><strong>21</strong><div class="dot"></div></div>
+            <div class="d"><span>O</span><strong>22</strong></div>
+            <div class="d"><span>T</span><strong>23</strong><div class="dot"></div></div>
+            <div class="d"><span>F</span><strong>24</strong></div>
+            <div class="d"><span>L</span><strong>25</strong></div>
+            <div class="d"><span>S</span><strong>26</strong></div>
+          </div>
+
+          <div class="card white">
+            <div class="row">
+              <div class="caps">Tirsdag · i dag</div>
+              <span class="chip">1 økt</span>
+            </div>
+            <div class="session" style="border-color:color-mix(in srgb,var(--forest) 35%,var(--border))">
+              <div class="row">
+                <div class="t">Nærspill · M2</div>
+                <span class="chip g">SLAG</span>
+              </div>
+              <div class="s">16:00 · 60 min · Planlagt</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:8px">
+                <span class="chip">Lav tempo</span>
+                <span class="chip">Kontakt</span>
+                <span class="chip">Range</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="caps">Fra form (SG)</div>
+            <div style="font-weight:600;font-size:13px;margin-top:4px">Nærspill er svakest (−0,55)</div>
+            <div class="tiny" style="margin-top:2px">3 driller foreslått · anbefaling</div>
+          </div>
+
+          <button class="cta">Bekreft / start økt</button>
+          <button class="cta ghost">Endre tidslinje</button>
+        </div>
+        <div class="bnav">
+          <span><b></b>Hjem</span><span class="on"><b></b>Plan</span><span><b></b>Gjør</span>
+          <span><b></b>Analyse</span><span><b></b>Meg</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- C -->
+    <div class="col">
+      <div class="col-head">
+        <div class="tag">Retning C · «Resept-uke»</div>
+        <h3>Coach-resept driver uka</h3>
+        <p>Øverst: hva treneren/systemet foreskriver. Under: tidslinje du kan godta. Menneskelig, mer tekst.</p>
+        <ul>
+          <li>Sterk «hvorfor» og tillit</li>
+          <li>Kan føles som mer å lese</li>
+          <li>Matcher Hjem C (ikke valgt)</li>
+        </ul>
+      </div>
+      <div class="phone">
+        <div class="notch"><i></i></div>
+        <div class="body">
+          <div class="caps">Plan · uke 30</div>
+          <div class="t-display" style="font-size:20px">Ukens resept</div>
+
+          <div class="card white" style="box-shadow:var(--shadow)">
+            <div class="caps">Fokus</div>
+            <div class="t-display" style="font-size:18px;margin-top:4px">Nærspill · kontakt + tempo</div>
+            <p class="muted" style="margin:8px 0 0;line-height:1.4">
+              Tre økter denne uka. Ikke jag score — bygg treffprosent 30–70 m.
+            </p>
+            <div style="display:flex;gap:4px;margin-top:10px;flex-wrap:wrap">
+              <span class="chip g">Fra SG</span>
+              <span class="chip">SLAG 40 %</span>
+              <span class="chip">SPILL 20 %</span>
+            </div>
+          </div>
+
+          <div class="caps" style="margin-top:4px">Tidslinje</div>
+          <div class="timeline">
+            <div class="tl">
+              <div class="time">I dag</div>
+              <div class="box on">
+                <div style="font-weight:700;font-size:13px">Nærspill 60 min</div>
+                <div class="tiny">16:00 · M2</div>
+              </div>
+            </div>
+            <div class="tl">
+              <div class="time">Tor</div>
+              <div class="box">
+                <div style="font-weight:700;font-size:13px">Nærspill + spill</div>
+                <div class="tiny">90 min · bane</div>
+              </div>
+            </div>
+            <div class="tl">
+              <div class="time">Lør</div>
+              <div class="box">
+                <div style="font-weight:700;font-size:13px">Vedlikehold</div>
+                <div class="tiny">45 min · putting</div>
+              </div>
+            </div>
+          </div>
+
+          <button class="cta">Godta uka</button>
+          <div class="soft">Justér enkeltøkt →</div>
+        </div>
+        <div class="bnav">
+          <span><b></b>Hjem</span><span class="on"><b></b>Plan</span><span><b></b>Gjør</span>
+          <span><b></b>Analyse</span><span><b></b>Meg</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="note" style="margin-top:28px">
+    <strong>Anbefaling:</strong> Velg <strong>B</strong> for Plan også — da matcher Hjem og Plan.
+    Si <strong>A</strong>, <strong>B</strong> eller <strong>C</strong>.
+    (Hvis du egentlig mente «bygg Hjem B i appen»: skriv <strong>bygg</strong>.)
+  </div>
+
+  <div class="footer-note">
+    Fil: plan-3-retninger.html · Hjem låst B (RETNING-HJEM.md) · Tokens FASIT v2
+  </div>
+</div>
+</body>
+</html>

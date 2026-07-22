@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PlayerHQ Analyse — 3 retninger (samme fasit)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+:root{
+  --bg:#F2F1EA;--panel:#FFFFFF;--panel2:#F7F6F0;--panel3:#ECEBE2;
+  --fg:#171B18;--fg2:#4A4F4A;--mut:#62675F;
+  --forest:#005840;--up:#1E8A50;--down:#C04A1E;
+  --border:rgba(16,22,19,.10);
+  --shadow:0 1px 2px rgba(16,22,19,.04),0 10px 28px rgba(16,22,19,.06);
+  --r:20px;--rp:9999px;
+  --d:"Familjen Grotesk",Inter,system-ui,sans-serif;
+  --u:Inter,system-ui,sans-serif;--m:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.5 var(--u);background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1280px;margin:0 auto;padding:28px 18px 100px}
+h1{font-family:var(--d);font-size:30px;letter-spacing:-.03em;margin:0 0 8px;line-height:1.15}
+h3{font-family:var(--d);font-size:17px;margin:0 0 6px;letter-spacing:-.01em}
+.lead{color:var(--fg2);max-width:68ch;margin:0 0 18px;font-size:15px}
+.pill{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:var(--rp);
+  font-family:var(--m);font-size:10px;font-weight:700;background:var(--panel3);color:var(--fg2);margin-right:6px}
+.pill.ok{background:color-mix(in srgb,var(--forest) 16%,transparent);color:var(--forest)}
+.note{margin:16px 0 24px;padding:14px 16px;border-left:3px solid var(--forest);
+  background:color-mix(in srgb,var(--forest) 7%,var(--panel));border-radius:0 14px 14px 0;color:var(--fg2);font-size:13.5px}
+.board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:18px}
+@media(max-width:980px){.board{grid-template-columns:1fr}}
+.col{display:flex;flex-direction:column;gap:12px}
+.col-head{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:14px;box-shadow:var(--shadow)}
+.col-head .tag{font-family:var(--m);font-size:10px;font-weight:700;color:var(--forest);letter-spacing:.04em;text-transform:uppercase}
+.col-head p{margin:8px 0 0;font-size:13px;color:var(--fg2)}
+.col-head ul{margin:10px 0 0;padding-left:18px;font-size:12.5px;color:var(--mut)}
+.rec{display:inline-flex;margin-top:10px;height:26px;padding:0 10px;align-items:center;border-radius:var(--rp);
+  background:var(--forest);color:#fff;font-size:11px;font-weight:700}
+.phone{width:100%;max-width:340px;margin:0 auto;background:var(--panel);border:1px solid var(--border);
+  border-radius:36px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;min-height:720px}
+.notch{height:28px;display:flex;align-items:center;justify-content:center}
+.notch i{width:90px;height:8px;border-radius:99px;background:var(--panel3)}
+.body{flex:1;padding:6px 14px 12px;display:flex;flex-direction:column;gap:10px}
+.bnav{height:58px;border-top:1px solid var(--border);display:flex;background:var(--panel);padding:6px 4px 10px}
+.bnav span{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  font-size:9px;font-weight:600;color:var(--mut)}
+.bnav span.on{color:var(--forest)}
+.bnav span b{width:18px;height:3px;border-radius:99px;background:transparent;display:block}
+.bnav span.on b{background:var(--forest)}
+.caps{font-family:var(--m);font-size:10px;font-weight:700;color:var(--mut);letter-spacing:.04em;text-transform:uppercase}
+.cta{display:flex;align-items:center;justify-content:center;height:44px;border-radius:var(--rp);
+  background:var(--forest);color:#fff;font-weight:700;font-size:14px;border:0;width:100%}
+.cta.ghost{background:transparent;color:var(--forest);border:1px solid var(--border);height:38px;font-size:13px}
+.card{background:var(--panel2);border:1px solid var(--border);border-radius:16px;padding:12px}
+.card.white{background:#fff}
+.t-display{font-family:var(--d);font-weight:700;letter-spacing:-.02em}
+.muted{color:var(--mut);font-size:12px}
+.tiny{font-size:11px;color:var(--mut)}
+.chip{display:inline-flex;height:22px;padding:0 8px;align-items:center;border-radius:999px;
+  background:var(--panel3);font-size:10px;font-weight:700;color:var(--fg2)}
+.chip.g{background:var(--forest);color:#fff}
+.chip.on{background:var(--forest);color:#fff}
+.chip.d{background:color-mix(in srgb,var(--down) 12%,transparent);color:var(--down)}
+.chip.u{background:color-mix(in srgb,var(--up) 12%,transparent);color:var(--up)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.hero-num{font-family:var(--m);font-weight:700;font-size:42px;letter-spacing:-.04em;line-height:1}
+.unit{font-size:12px;color:var(--mut);font-weight:500}
+.sg-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.sg-row:last-child{border-bottom:0}
+.sg-row.weak{background:color-mix(in srgb,var(--down) 6%,transparent);margin:0 -8px;padding:10px 8px;border-radius:12px;border-bottom:0}
+.sg-row .n{font-weight:600;font-size:13px}
+.sg-row .v{font-family:var(--m);font-weight:700;font-size:14px}
+.sg-row .v.pos{color:var(--up)}
+.sg-row .v.neg{color:var(--down)}
+.sg-row.weak .n{font-weight:700;font-size:14px}
+.sg-row.weak .v{font-size:16px}
+.spark{height:40px;display:flex;align-items:flex-end;gap:3px;margin-top:8px}
+.spark i{flex:1;border-radius:3px 3px 0 0;background:color-mix(in srgb,var(--forest) 30%,var(--panel3));display:block}
+.spark i:last-child{background:var(--forest)}
+.soft{text-align:center;font-size:12px;font-weight:600;color:var(--mut);padding:4px}
+.mega{background:linear-gradient(165deg,color-mix(in srgb,var(--down) 8%,#fff),#fff);
+  border:1px solid var(--border);border-radius:22px;padding:16px;box-shadow:var(--shadow)}
+.footer-note{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);color:var(--mut);font-size:12.5px}
+.lock{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.lock span{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:8px 12px;font-size:12.5px}
+.lock strong{color:var(--forest)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="pill ok">FASIT v2 Presis</span>
+  <span class="pill">PlayerHQ · Analyse</span>
+  <span class="pill ok">Valgt: B · Form + nedbrytning</span>
+
+  <h1>3 retninger for PlayerHQ Analyse</h1>
+  <p class="lead">
+    <strong>Beslutning 2026-07-22:</strong> Retning B er låst. Se <code>RETNING-ANALYSE.md</code> og <code>RETNING-B-PAKKE.md</code>.
+  </p>
+
+  <div class="lock">
+    <span>Hjem: <strong>B</strong> Form + plan</span>
+    <span>Plan: <strong>B</strong> Uke + status</span>
+    <span>Analyse: <strong>B</strong> Form + nedbrytning</span>
+  </div>
+
+  <div class="note">
+    <strong>Regel:</strong> Svakeste rad er tykkest/tydeligst. Grønn knapp = bro til Plan — ikke «utforsk mer data».
+    Klarspråk: nærspill (ikke ARG), tee-slag, innspill, putting.
+  </div>
+
+  <div class="board">
+
+    <!-- A -->
+    <div class="col">
+      <div class="col-head">
+        <div class="tag">Retning A · «Bare gapet»</div>
+        <h3>Én svakhet, én handling</h3>
+        <p>Nestemest bare det som er verst + planlegg. Total SG og alle områder bak «se mer».</p>
+        <ul>
+          <li>Raskest til handling</li>
+          <li>Lite oversikt over hele spillet</li>
+          <li>Matcher Hjem/Plan A (ikke valgt)</li>
+        </ul>
+      </div>
+      <div class="phone">
+        <div class="notch"><i></i></div>
+        <div class="body">
+          <div class="caps">Analyse</div>
+          <div class="t-display" style="font-size:22px">Hva koster slag?</div>
+
+          <div class="mega">
+            <div class="caps">Svakest nå</div>
+            <div class="t-display" style="font-size:26px;margin-top:6px">Nærspill</div>
+            <div class="row" style="margin-top:8px;align-items:baseline">
+              <span class="hero-num" style="font-size:36px;color:var(--down)">−0,55</span>
+              <span class="unit">slag/runde</span>
+            </div>
+            <div class="tiny" style="margin-top:6px">Siste 10 runder · det som trekker form ned</div>
+          </div>
+
+          <div class="card white">
+            <div class="caps">Anbefalt økt</div>
+            <div style="font-weight:700;font-size:15px;margin-top:4px">Kontakt + lav tempo</div>
+            <div class="muted" style="margin-top:4px">60 min · M2 range · 3 øvelser</div>
+          </div>
+
+          <button class="cta">Planlegg dette</button>
+          <div class="soft">Se alle områder og form →</div>
+        </div>
+        <div class="bnav">
+          <span><b></b>Hjem</span><span><b></b>Plan</span><span><b></b>Gjør</span>
+          <span class="on"><b></b>Analyse</span><span><b></b>Meg</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- B -->
+    <div class="col">
+      <div class="col-head">
+        <div class="tag">Retning B · «Form + nedbrytning»</div>
+        <h3>Sport-analyse, ryddig</h3>
+        <p>Total form, fire områder (svakest uthevet), resept + CTA. Matcher Hjem/Plan B.</p>
+        <ul>
+          <li>Tilstand 5 s · årsak 30 s</li>
+          <li>Mer info — hierarki holder det lesbart</li>
+          <li><strong>Naturlig match til Hjem B + Plan B</strong></li>
+        </ul>
+        <span class="rec">VALGT av Anders · 2026-07-22</span>
+      </div>
+      <div class="phone" style="outline:3px solid var(--forest);outline-offset:4px">
+        <div class="notch"><i></i></div>
+        <div class="body">
+          <div class="row">
+            <div>
+              <div class="caps">Analyse</div>
+              <div class="t-display" style="font-size:20px">Din form</div>
+            </div>
+          </div>
+
+          <div class="tabs">
+            <span class="chip on">SG</span>
+            <span class="chip">Fokus</span>
+            <span class="chip">Runder</span>
+          </div>
+
+          <div class="card white" style="box-shadow:var(--shadow)">
+            <div class="row">
+              <div class="caps">Strokes Gained · snitt</div>
+              <span class="chip d">Synkende</span>
+            </div>
+            <div class="row" style="align-items:baseline;margin-top:6px">
+              <span class="hero-num">−0,42</span>
+              <span class="unit">slag/runde · 10 runder</span>
+            </div>
+            <div class="spark">
+              <i style="height:45%"></i><i style="height:58%"></i><i style="height:50%"></i>
+              <i style="height:62%"></i><i style="height:48%"></i><i style="height:42%"></i>
+              <i style="height:38%"></i><i style="height:40%"></i>
+            </div>
+          </div>
+
+          <div class="card white">
+            <div class="caps">Per område</div>
+            <div class="sg-row">
+              <span class="n">Tee-slag</span>
+              <span class="v pos">+0,18</span>
+            </div>
+            <div class="sg-row">
+              <span class="n">Innspill</span>
+              <span class="v neg">−0,31</span>
+            </div>
+            <div class="sg-row weak">
+              <span class="n">Nærspill · svakest</span>
+              <span class="v neg">−0,55</span>
+            </div>
+            <div class="sg-row">
+              <span class="n">Putting</span>
+              <span class="v pos">+0,26</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="caps">Resept</div>
+            <div style="font-weight:700;font-size:14px;margin-top:4px">Kontakt + lav tempo</div>
+            <div class="muted" style="margin-top:4px">60 min · M2 range · CS50–70</div>
+            <button class="cta" style="margin-top:12px">Planlegg dette</button>
+          </div>
+        </div>
+        <div class="bnav">
+          <span><b></b>Hjem</span><span><b></b>Plan</span><span><b></b>Gjør</span>
+          <span class="on"><b></b>Analyse</span><span><b></b>Meg</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- C -->
+    <div class="col">
+      <div class="col-head">
+        <div class="tag">Retning C · «Fortelling + tall»</div>
+        <h3>Coach forklarer først</h3>
+        <p>Kort historie om formen. Deretter tall. CTA til plan. Varm, mer tekst.</p>
+        <ul>
+          <li>God for tillit og «jeg skjønner hvorfor»</li>
+          <li>Tregere til tall-skanning</li>
+          <li>Matcher Hjem/Plan C (ikke valgt)</li>
+        </ul>
+      </div>
+      <div class="phone">
+        <div class="notch"><i></i></div>
+        <div class="body">
+          <div class="caps">Analyse · uke 30</div>
+          <div class="t-display" style="font-size:20px">Sånn står det til</div>
+
+          <div class="card white" style="box-shadow:var(--shadow)">
+            <div class="caps">Kort fortalt</div>
+            <p style="margin:8px 0 0;font-size:13.5px;line-height:1.45;color:var(--fg)">
+              Formen er litt ned. Putting og tee holder deg oppe —
+              <strong>nærspill er det som koster</strong> deg flest slag akkurat nå.
+            </p>
+            <div class="tiny" style="margin-top:8px">Basert på 10 siste runder</div>
+          </div>
+
+          <div class="row" style="gap:8px">
+            <div class="card" style="flex:1;text-align:center">
+              <div class="caps">Form</div>
+              <div style="font-family:var(--m);font-weight:700;font-size:20px;margin-top:4px">−0,42</div>
+            </div>
+            <div class="card" style="flex:1;text-align:center;border-color:color-mix(in srgb,var(--down) 30%,var(--border))">
+              <div class="caps">Nærspill</div>
+              <div style="font-family:var(--m);font-weight:700;font-size:20px;margin-top:4px;color:var(--down)">−0,55</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="caps">Hva vi gjør med det</div>
+            <div style="font-weight:700;margin-top:4px;font-size:14px">3 økter nærspill denne uka</div>
+            <div class="muted" style="margin-top:4px">Start med 60 min kontakt + tempo i dag</div>
+          </div>
+
+          <button class="cta">Planlegg dette i uke</button>
+          <button class="cta ghost">Se full SG-tabell</button>
+        </div>
+        <div class="bnav">
+          <span><b></b>Hjem</span><span><b></b>Plan</span><span><b></b>Gjør</span>
+          <span class="on"><b></b>Analyse</span><span><b></b>Meg</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="note" style="margin-top:28px">
+    <strong>Anbefaling:</strong> Velg <strong>B</strong> — da er alle tre dommerskjermene samme pakke
+    (form + nedbrytning + én vei til plan).
+    Si <strong>A</strong>, <strong>B</strong> eller <strong>C</strong>.
+  </div>
+
+  <div class="footer-note">
+    Fil: analyse-3-retninger.html · Hjem + Plan låst B · Tokens FASIT v2
+  </div>
+</div>
+</body>
+</html>

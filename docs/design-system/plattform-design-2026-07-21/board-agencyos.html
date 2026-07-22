@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="no"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AgencyOS — alle skjermer</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+:root{
+  --bg:#F2F1EA;--panel:#FFFFFF;--panel2:#F7F6F0;--panel3:#ECEBE2;
+  --fg:#171B18;--fg2:#4A4F4A;--mut:#62675F;
+  --forest:#005840;--accent:#005840;--on:#FFFFFF;
+  --up:#1E8A50;--down:#C04A1E;--warn:#96690A;--info:#1F6CB0;
+  --border:rgba(16,22,19,.10);--shadow:0 1px 2px rgba(16,22,19,.04),0 10px 28px rgba(16,22,19,.06);
+  --r:20px;--rp:9999px;
+  --d:"Familjen Grotesk",Inter,system-ui,sans-serif;
+  --u:Inter,system-ui,sans-serif;--m:"JetBrains Mono",ui-monospace,monospace;
+}
+[data-theme=dark]{
+  --bg:#131513;--panel:#1C1F1C;--panel2:#191C19;--panel3:#232623;
+  --fg:#F3F5F1;--fg2:#B4B7B0;--mut:#8B8E87;
+  --forest:#005840;--accent:#D1F843;--on:#0D0E0D;
+  --up:#4FD08A;--down:#F0683E;--warn:#E8B43C;--info:#5AA9F0;
+  --border:rgba(255,255,255,.11);
+  --shadow:0 0 0 1px rgba(255,255,255,.04);
+}
+*{box-sizing:border-box}
+body{margin:0;font:13.5px/1.45 var(--u);background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased}
+a{color:var(--forest);text-decoration:none}
+.wrap{max-width:1320px;margin:0 auto;padding:24px 18px 80px}
+h1{font-family:var(--d);font-size:28px;letter-spacing:-.03em;margin:0 0 6px}
+h2{font-family:var(--d);font-size:20px;margin:36px 0 10px;letter-spacing:-.02em}
+.sub{color:var(--mut);margin:0 0 18px;max-width:70ch}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px;position:sticky;top:0;z-index:20;
+  background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(8px);padding:10px 0;border-bottom:1px solid var(--border)}
+.nav a{display:inline-flex;align-items:center;height:32px;padding:0 12px;border-radius:var(--rp);
+  background:var(--panel);border:1px solid var(--border);color:var(--fg);font-size:12px;font-weight:600}
+.nav a.on{background:var(--accent);color:var(--on);border-color:transparent}
+.pill{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:var(--rp);
+  font-family:var(--m);font-size:10px;font-weight:700;background:var(--panel3);color:var(--fg2)}
+.pill.ok{background:color-mix(in srgb,var(--forest) 14%,transparent);color:var(--forest)}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:14px 14px 12px;box-shadow:var(--shadow)}
+.card h3{font-family:var(--d);font-size:15px;margin:6px 0 4px;letter-spacing:-.01em}
+.meta{font-family:var(--m);font-size:10px;color:var(--mut);word-break:break-all}
+.job{font-size:12.5px;color:var(--fg2);margin:8px 0 6px}
+.cta{display:inline-flex;align-items:center;justify-content:center;height:36px;padding:0 14px;border-radius:var(--rp);
+  background:var(--accent);color:var(--on);font-weight:700;font-size:12.5px;margin-top:8px;border:0}
+.layout{font-size:11px;color:var(--mut);margin-top:8px}
+.phone{width:100%;max-width:260px;min-height:340px;border-radius:24px;border:1px solid var(--border);
+  background:var(--panel2);padding:12px;position:relative;overflow:hidden}
+.phone .bar{height:22px;border-radius:8px;background:var(--panel3);margin-bottom:10px}
+.phone .hero{height:56px;border-radius:14px;background:linear-gradient(145deg,color-mix(in srgb,var(--forest) 18%,transparent),transparent 60%),var(--panel3);margin-bottom:8px}
+.phone .btn{height:36px;border-radius:var(--rp);background:var(--accent);margin-top:8px}
+.phone .row{height:40px;border-radius:12px;background:var(--panel);border:1px solid var(--border);margin-top:6px}
+.phone .tabs{display:flex;gap:4px;margin-bottom:8px}
+.phone .tabs i{flex:1;height:22px;border-radius:var(--rp);background:var(--panel3)}
+.phone .tabs i.on{background:var(--accent)}
+.phone .bnav{position:absolute;left:0;right:0;bottom:0;height:40px;border-top:1px solid var(--border);
+  display:flex;background:var(--panel)}
+.phone .bnav span{flex:1}
+.desk{min-height:160px;border-radius:16px;border:1px solid var(--border);background:var(--panel2);display:flex;overflow:hidden}
+.desk .rail{width:36px;background:#005840;flex:none}
+.desk .main{flex:1;padding:10px;display:flex;flex-direction:column;gap:6px}
+.desk .kpi{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.desk .k{height:36px;border-radius:10px;background:var(--panel);border:1px solid var(--border)}
+.note{margin:16px 0;padding:12px 14px;border-left:3px solid var(--forest);background:color-mix(in srgb,var(--forest) 7%,var(--panel));
+  border-radius:0 12px 12px 0;font-size:13px;color:var(--fg2)}
+footer{margin-top:48px;padding-top:14px;border-top:1px solid var(--border);color:var(--mut);font-size:12px}
+.std-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.std-table th,.std-table td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+.std-table th{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
+.filter{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.filter button{height:30px;padding:0 10px;border-radius:var(--rp);border:1px solid var(--border);background:var(--panel);font:inherit;font-size:11px;font-weight:600;cursor:pointer;color:var(--fg)}
+.filter button.on{background:var(--accent);color:var(--on);border-color:transparent}
+</style></head>
+<body><div class="wrap">
+
+<div class="nav">
+  <a href="index.html">Start</a>
+  <a href="STANDARD.html">Standard</a>
+  <a href="families-hifi.html">8 familier</a>
+  <a href="board-playerhq.html">PlayerHQ</a>
+  <a href="board-agencyos.html" class="on">AgencyOS</a>
+  <a href="board-forelder.html">Forelder</a>
+  <a href="board-auth-system.html">Auth/System</a>
+  <a href="verdensklasse-flaggskip.html">Flaggskip</a>
+  <a href="inventar.html">Inventar</a>
+  <a href="KVELD-RAPPORT.html">Kveldsrapport</a>
+</div>
+
+<span class="pill ok">HI-FI BOARD</span><h1>AgencyOS — alle skjermer</h1>
+<p class="sub">100 skjermer · samme tokens · én CTA · familie-mal. Kveld 2026-07-21.</p>
+<h2>Hub <span class="pill">18</span></h2><div class="grid">
+<article class="card" id="admin" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS</h3>
+  <div class="meta">/admin</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="admin-agencyos" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS cockpit</h3>
+  <div class="meta">/admin/agencyos</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="admin-agent-team" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Agent Team</h3>
+  <div class="meta">/admin/agent-team</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="admin-audit-log" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Audit Log</h3>
+  <div class="meta">/admin/audit-log</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="admin-finance" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Økonomi</h3>
+  <div class="meta">/admin/finance</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="admin-gjennomfore" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Gjennomføre</h3>
+  <div class="meta">/admin/gjennomfore</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="admin-handlingssenter" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Handlingssenter</h3>
+  <div class="meta">/admin/handlingssenter</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="admin-hjelp" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Hjelp</h3>
+  <div class="meta">/admin/hjelp</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="admin-innboks-epost" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Innboks Epost</h3>
+  <div class="meta">/admin/innboks-epost</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="admin-integrasjoner" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Integrasjoner</h3>
+  <div class="meta">/admin/integrasjoner</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="admin-marketing" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Markedsføring</h3>
+  <div class="meta">/admin/marketing</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="admin-oppfolging" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Oppfolging</h3>
+  <div class="meta">/admin/oppfolging</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="admin-organisasjon" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Organisasjon</h3>
+  <div class="meta">/admin/organisasjon</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="admin-profile" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Profile</h3>
+  <div class="meta">/admin/profile</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="admin-settings" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Innstillinger</h3>
+  <div class="meta">/admin/settings</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="admin-talent" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Talent</h3>
+  <div class="meta">/admin/talent</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="admin-teknisk-plan" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Teknisk plan</h3>
+  <div class="meta">/admin/teknisk-plan</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="admin-workspace" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Workspace</h3>
+  <div class="meta">/admin/workspace</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article></div>
+<h2>Liste <span class="pill">21</span></h2><div class="grid">
+<article class="card" id="admin-agencyos-spillere" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS cockpit · Spillere</h3>
+  <div class="meta">/admin/agencyos/spillere</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-agents" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Agenter</h3>
+  <div class="meta">/admin/agents</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-approvals" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Godkjenninger</h3>
+  <div class="meta">/admin/approvals</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-bookinger" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Bookinger</h3>
+  <div class="meta">/admin/bookinger</div>
+  <div class="job"><strong>5s:</strong> Booke eller endre tid</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-email-templates" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · E-postmaler</h3>
+  <div class="meta">/admin/email-templates</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-godkjenninger" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Godkjenninger</h3>
+  <div class="meta">/admin/godkjenninger</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-grupper" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Grupper</h3>
+  <div class="meta">/admin/grupper</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-innboks" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Innboks</h3>
+  <div class="meta">/admin/innboks</div>
+  <div class="job"><strong>5s:</strong> Tøm kø av beslutninger</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-messages" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Messages</h3>
+  <div class="meta">/admin/messages</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-okter" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Økter</h3>
+  <div class="meta">/admin/okter</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-plan-templates" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Planmaler</h3>
+  <div class="meta">/admin/plan-templates</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-plans" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Planer</h3>
+  <div class="meta">/admin/plans</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-queue" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Kø</h3>
+  <div class="meta">/admin/queue</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-runder" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Runder</h3>
+  <div class="meta">/admin/runder</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-spillere" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Spillere</h3>
+  <div class="meta">/admin/spillere</div>
+  <div class="job"><strong>5s:</strong> Se stall-tilstand og plukk spiller</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-spillere-[id]-tester" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Spillere · Tester</h3>
+  <div class="meta">/admin/spillere/[id]/tester</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-team" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Team</h3>
+  <div class="meta">/admin/team</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-tester" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Tester</h3>
+  <div class="meta">/admin/tester</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-tournaments" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Turneringer</h3>
+  <div class="meta">/admin/tournaments</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-varsler" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Varsler</h3>
+  <div class="meta">/admin/varsler</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="admin-videoer" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Videoer</h3>
+  <div class="meta">/admin/videoer</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article></div>
+<h2>Detalj <span class="pill">38</span></h2><div class="grid">
+<article class="card" id="admin-agencyos-caddie" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS cockpit · Caddie</h3>
+  <div class="meta">/admin/agencyos/caddie</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-agencyos-caddie-aktivitet" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Caddie · Aktivitet</h3>
+  <div class="meta">/admin/agencyos/caddie/aktivitet</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-agencyos-caddie-dashbord" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Caddie · Dashbord</h3>
+  <div class="meta">/admin/agencyos/caddie/dashbord</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-agencyos-live" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS cockpit · Live</h3>
+  <div class="meta">/admin/agencyos/live</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-agencyos-okonomi" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS cockpit · Økonomi</h3>
+  <div class="meta">/admin/agencyos/okonomi</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-agents-[agentId]" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Agenter</h3>
+  <div class="meta">/admin/agents/[agentId]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-approvals-[id]" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Godkjenninger</h3>
+  <div class="meta">/admin/approvals/[id]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-bookinger-[id]" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Bookinger</h3>
+  <div class="meta">/admin/bookinger/[id]</div>
+  <div class="job"><strong>5s:</strong> Booke eller endre tid</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-drills-[id]-rediger" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Driller · Rediger</h3>
+  <div class="meta">/admin/drills/[id]/rediger</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-email-templates-[id]-rediger" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>E-postmaler · Rediger</h3>
+  <div class="meta">/admin/email-templates/[id]/rediger</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-gjennomfore-okter-[id]" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Gjennomføre · Økter</h3>
+  <div class="meta">/admin/gjennomfore/okter/[id]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-grupper-[id]" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Grupper</h3>
+  <div class="meta">/admin/grupper/[id]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-grupper-[id]-arsplan" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Grupper · Arsplan</h3>
+  <div class="meta">/admin/grupper/[id]/arsplan</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-grupper-[id]-arsplan-skoledata" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Skoledata</h3>
+  <div class="meta">/admin/grupper/[id]/arsplan/skoledata</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-grupper-[id]-timeplan" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Grupper · Timeplan</h3>
+  <div class="meta">/admin/grupper/[id]/timeplan</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-klubb-innstillinger" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Innstillinger</h3>
+  <div class="meta">/admin/klubb/innstillinger</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-plan-templates-[id]" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Planmaler</h3>
+  <div class="meta">/admin/plan-templates/[id]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-plan-templates-[id]-rediger" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Planmaler · Rediger</h3>
+  <div class="meta">/admin/plan-templates/[id]/rediger</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-plans-[planId]" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Planer</h3>
+  <div class="meta">/admin/plans/[planId]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-plans-templates" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Planer · Templates</h3>
+  <div class="meta">/admin/plans/templates</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-plans-templates-[id]-effectiveness" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Effectiveness</h3>
+  <div class="meta">/admin/plans/templates/[id]/effectiveness</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-plans-templates-[id]-rediger" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Rediger</h3>
+  <div class="meta">/admin/plans/templates/[id]/rediger</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-settings-api" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Innstillinger · Api</h3>
+  <div class="meta">/admin/settings/api</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-settings-periode-fordeling" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Innstillinger · Periode Fordeling</h3>
+  <div class="meta">/admin/settings/periode-fordeling</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-settings-security" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Innstillinger · Security</h3>
+  <div class="meta">/admin/settings/security</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-settings-tilgang" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Innstillinger · Tilgang</h3>
+  <div class="meta">/admin/settings/tilgang</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-spillere-[id]" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Spillere</h3>
+  <div class="meta">/admin/spillere/[id]</div>
+  <div class="job"><strong>5s:</strong> 360° på én spiller</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-spillere-[id]-fremgang" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Spillere · Fremgang</h3>
+  <div class="meta">/admin/spillere/[id]/fremgang</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-spillere-[id]-plan" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Spillere · Plan</h3>
+  <div class="meta">/admin/spillere/[id]/plan</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-spillere-[id]-plan-[planId]" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Spillere · Plan</h3>
+  <div class="meta">/admin/spillere/[id]/plan/[planId]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-talent-discovery" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Talent · Discovery</h3>
+  <div class="meta">/admin/talent/discovery</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-talent-radar" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Talent · Radar</h3>
+  <div class="meta">/admin/talent/radar</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-tester-foreslatte" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Tester · Foreslatte</h3>
+  <div class="meta">/admin/tester/foreslatte</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-tournaments-[id]" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Turneringer</h3>
+  <div class="meta">/admin/tournaments/[id]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-tournaments-dubletter" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Turneringer · Dubletter</h3>
+  <div class="meta">/admin/tournaments/dubletter</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-workspace-notion" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Workspace · Notion</h3>
+  <div class="meta">/admin/workspace/notion</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-workspace-oppgaver" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Workspace · Oppgaver</h3>
+  <div class="meta">/admin/workspace/oppgaver</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="admin-workspace-prosjekter" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Workspace · Prosjekter</h3>
+  <div class="meta">/admin/workspace/prosjekter</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article></div>
+<h2>Wizard <span class="pill">6</span></h2><div class="grid">
+<article class="card" id="admin-bookinger-ny" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Bookinger · Ny</h3>
+  <div class="meta">/admin/bookinger/ny</div>
+  <div class="job"><strong>5s:</strong> Booke eller endre tid</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article>
+<article class="card" id="admin-plan-templates-ny" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Planmaler · Ny</h3>
+  <div class="meta">/admin/plan-templates/ny</div>
+  <div class="job"><strong>5s:</strong> Fullføre en flerstegs handling uten å gå vill</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article>
+<article class="card" id="admin-plans-templates-ny" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Ny</h3>
+  <div class="meta">/admin/plans/templates/ny</div>
+  <div class="job"><strong>5s:</strong> Fullføre en flerstegs handling uten å gå vill</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article>
+<article class="card" id="admin-spillere-ny" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Spillere · Ny</h3>
+  <div class="meta">/admin/spillere/ny</div>
+  <div class="job"><strong>5s:</strong> Fullføre en flerstegs handling uten å gå vill</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article>
+<article class="card" id="admin-team-inviter" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Team · Inviter</h3>
+  <div class="meta">/admin/team/inviter</div>
+  <div class="job"><strong>5s:</strong> Fullføre en flerstegs handling uten å gå vill</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article>
+<article class="card" id="admin-tournaments-ny" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Turneringer · Ny</h3>
+  <div class="meta">/admin/tournaments/ny</div>
+  <div class="job"><strong>5s:</strong> Fullføre en flerstegs handling uten å gå vill</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article></div>
+<h2>Live <span class="pill">1</span></h2><div class="grid">
+<article class="card" id="admin-brief" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Live</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Brief</h3>
+  <div class="meta">/admin/brief</div>
+  <div class="job"><strong>5s:</strong> Logge underveis uten distraksjon</div>
+  <div class="meta">Layout: Fullskjerm + store knapper · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar" style="width:40%"></div><div class="hero" style="height:100px"></div><div class="btn"></div><div class="btn" style="background:var(--panel3);margin-top:6px"></div></div></div>
+  <div class="cta">Pause / Neste / Avslutt</div>
+</article></div>
+<h2>Analyse <span class="pill">5</span></h2><div class="grid">
+<article class="card" id="admin-analyse" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Analyse</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Analyse</h3>
+  <div class="meta">/admin/analyse</div>
+  <div class="job"><strong>5s:</strong> Se tilstand på 5 sek, årsak på 30 sek</div>
+  <div class="meta">Layout: Faner + hero-tall + Planlegg · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="hero"></div><div class="row"></div><div class="btn"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Planlegg dette</div>
+</article>
+<article class="card" id="admin-analysere-compliance" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Analyse</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Analysere · Compliance</h3>
+  <div class="meta">/admin/analysere/compliance</div>
+  <div class="job"><strong>5s:</strong> Se tilstand på 5 sek, årsak på 30 sek</div>
+  <div class="meta">Layout: Faner + hero-tall + Planlegg · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="hero"></div><div class="row"></div><div class="btn"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Planlegg dette</div>
+</article>
+<article class="card" id="admin-reports" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Analyse</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Rapporter</h3>
+  <div class="meta">/admin/reports</div>
+  <div class="job"><strong>5s:</strong> Se tilstand på 5 sek, årsak på 30 sek</div>
+  <div class="meta">Layout: Faner + hero-tall + Planlegg · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="hero"></div><div class="row"></div><div class="btn"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Planlegg dette</div>
+</article>
+<article class="card" id="admin-spillere-[id]-analyse" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Analyse</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Spillere · Analyse</h3>
+  <div class="meta">/admin/spillere/[id]/analyse</div>
+  <div class="job"><strong>5s:</strong> Se tilstand på 5 sek, årsak på 30 sek</div>
+  <div class="meta">Layout: Faner + hero-tall + Planlegg · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="hero"></div><div class="row"></div><div class="btn"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Planlegg dette</div>
+</article>
+<article class="card" id="admin-trackman" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Analyse</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · TrackMan</h3>
+  <div class="meta">/admin/trackman</div>
+  <div class="job"><strong>5s:</strong> Se tilstand på 5 sek, årsak på 30 sek</div>
+  <div class="meta">Layout: Faner + hero-tall + Planlegg · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="hero"></div><div class="row"></div><div class="btn"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Planlegg dette</div>
+</article></div>
+<h2>Kalender <span class="pill">11</span></h2><div class="grid">
+<article class="card" id="admin-agencyos-uka" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Kalender</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS cockpit · Uka</h3>
+  <div class="meta">/admin/agencyos/uka</div>
+  <div class="job"><strong>5s:</strong> Se tid og handle der du ser det</div>
+  <div class="meta">Layout: Uke/dag + øktkort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar"></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px"><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Ny økt / Flytt / Publiser</div>
+</article>
+<article class="card" id="admin-calendar" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Kalender</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Calendar</h3>
+  <div class="meta">/admin/calendar</div>
+  <div class="job"><strong>5s:</strong> Se tid og handle der du ser det</div>
+  <div class="meta">Layout: Uke/dag + øktkort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar"></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px"><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Ny økt / Flytt / Publiser</div>
+</article>
+<article class="card" id="admin-calendar-maned" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Kalender</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Maned</h3>
+  <div class="meta">/admin/calendar/maned</div>
+  <div class="job"><strong>5s:</strong> Se tid og handle der du ser det</div>
+  <div class="meta">Layout: Uke/dag + øktkort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar"></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px"><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Ny økt / Flytt / Publiser</div>
+</article>
+<article class="card" id="admin-grupper-[id]-workbench" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Kalender</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Grupper · Workbench</h3>
+  <div class="meta">/admin/grupper/[id]/workbench</div>
+  <div class="job"><strong>5s:</strong> Planlegge og flytte økter i tid</div>
+  <div class="meta">Layout: Uke/dag + øktkort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar"></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px"><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Ny økt / Flytt / Publiser</div>
+</article>
+<article class="card" id="admin-kalender" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Kalender</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Kalender</h3>
+  <div class="meta">/admin/kalender</div>
+  <div class="job"><strong>5s:</strong> Se tid og handle der du ser det</div>
+  <div class="meta">Layout: Uke/dag + øktkort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar"></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px"><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Ny økt / Flytt / Publiser</div>
+</article>
+<article class="card" id="admin-kalender-hendelse-[id]" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Kalender</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Kalender · Hendelse</h3>
+  <div class="meta">/admin/kalender/hendelse/[id]</div>
+  <div class="job"><strong>5s:</strong> Se tid og handle der du ser det</div>
+  <div class="meta">Layout: Uke/dag + øktkort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar"></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px"><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Ny økt / Flytt / Publiser</div>
+</article>
+<article class="card" id="admin-kalender-hendelse-ny" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Kalender</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Ny</h3>
+  <div class="meta">/admin/kalender/hendelse/ny</div>
+  <div class="job"><strong>5s:</strong> Se tid og handle der du ser det</div>
+  <div class="meta">Layout: Uke/dag + øktkort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar"></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px"><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Ny økt / Flytt / Publiser</div>
+</article>
+<article class="card" id="admin-planlegge" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Kalender</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Planlegge</h3>
+  <div class="meta">/admin/planlegge</div>
+  <div class="job"><strong>5s:</strong> Se tid og handle der du ser det</div>
+  <div class="meta">Layout: Uke/dag + øktkort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar"></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px"><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Ny økt / Flytt / Publiser</div>
+</article>
+<article class="card" id="admin-settings-calendar" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Kalender</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Innstillinger · Calendar</h3>
+  <div class="meta">/admin/settings/calendar</div>
+  <div class="job"><strong>5s:</strong> Se tid og handle der du ser det</div>
+  <div class="meta">Layout: Uke/dag + øktkort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar"></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px"><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Ny økt / Flytt / Publiser</div>
+</article>
+<article class="card" id="admin-spillere-[id]-workbench" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Kalender</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Spillere · Workbench</h3>
+  <div class="meta">/admin/spillere/[id]/workbench</div>
+  <div class="job"><strong>5s:</strong> Planlegge for denne spilleren</div>
+  <div class="meta">Layout: Uke/dag + øktkort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar"></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px"><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Ny økt / Flytt / Publiser</div>
+</article>
+<article class="card" id="admin-uka" data-theme="dark">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Kalender</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>AgencyOS · Uka</h3>
+  <div class="meta">/admin/uka</div>
+  <div class="job"><strong>5s:</strong> Se tid og handle der du ser det</div>
+  <div class="meta">Layout: Uke/dag + øktkort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone" data-theme="dark"><div class="bar"></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px"><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Ny økt / Flytt / Publiser</div>
+</article></div>
+<footer>AK Golf HQ · Kveld hi-fi 2026-07-21 · V2.5 Presis+ · FASIT §3 enkelhet · én CTA · færrest trykk</footer>
+</div></body></html>

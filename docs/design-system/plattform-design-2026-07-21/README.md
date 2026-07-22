@@ -1,46 +1,23 @@
-# Plattform-design 2026-07-21
+# Plattform-design — kveld hi-fi
 
-Komplett designforslag for AK Golf HQ (wireframe + hi-fi + inventar).
-
-## Åpne dette
+## Åpne
 
 ```bash
 open docs/design-system/plattform-design-2026-07-21/index.html
 ```
 
-Eller dobbeltklikk `index.html` i Finder.
+## Innhold
 
-## Filer
-
-| Fil | Hva |
+| Fil | Innhold |
 |---|---|
-| `index.html` | Start her |
-| `verdensklasse-flaggskip.html` | **NY** — verdensklasse UI + user flow (færrest trykk) |
-| `VERDENSKLASSE-BRIEF.md` | Brief + port-rekkefølge til kode |
-| `wireframes.html` | 8 familier + alle skjermer som wireframe-kort |
-| `hifi.html` | Hi-fi kjerne + mal for alle kombinasjoner |
-| `inventar.html` | Filtrerbar liste over alle ruter |
-| `flyter.html` | End-to-end stier |
-| `INVENTAR.md` | Samme liste i markdown |
-| `inventar.json` | Maskinlesbar |
+| STANDARD.html | Låst designstandard |
+| families-hifi.html | 8 familier lys+mørk |
+| board-playerhq.html | Alle PlayerHQ-skjermer |
+| board-agencyos.html | Alle AgencyOS-skjermer |
+| board-forelder.html | Alle Forelder-skjermer |
+| board-auth-system.html | Auth/Marketing/Intern |
+| inventar.html | 361 rader med hi-fi-lenke |
+| verdensklasse-flaggskip.html | End-to-end flyter |
+| KVELD-RAPPORT.html | Status |
 
-**Open Design:** prosjekt `AK Golf HQ · Verdensklasse UI` (`akgolf-verdensklasse-ui`)
-
-## Metode
-
-1. Hver rute tilhører **én familie** (Hub, Liste, Detalj, Wizard, Live, Analyse, Kalender).
-2. Familien har **wireframe + hi-fi-mal**.
-3. Unike skjermer er spesifisert med **5-sekunders jobb** + **primær CTA**.
-4. Kjerne-skjermer (hjem, analyse, workbench, live, stall, 360, forelder) har **full hi-fi mockup**.
-
-## Ikke i denne leveransen
-
-- Pixel-port til React for alle 361 (gjør bølgevis etter GO)
-- Open Design / Claude Design-synk (kan lastes opp senere)
-- Endring av tokens (fasiten står)
-
-## Neste steg for Anders
-
-1. Åpne `index.html`
-2. Si hva som er feil / mangler på familiene
-3. GO på bølge 1 kode (Workbench + bro + live) eller juster design først
+**Suksess kveld:** A+B+C (alle sider i hi-fi designpakke + konsistens). Kodeport er bølgevis.

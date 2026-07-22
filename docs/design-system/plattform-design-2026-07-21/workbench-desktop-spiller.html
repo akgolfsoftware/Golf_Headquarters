@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Workbench desktop · PlayerHQ (design · ingen innlogging)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+:root{
+  --bg:#F2F1EA;--panel:#FFFFFF;--panel2:#F7F6F0;--panel3:#ECEBE2;
+  --fg:#171B18;--fg2:#4A4F4A;--mut:#62675F;
+  --forest:#005840;--up:#1E8A50;--down:#C04A1E;--warn:#96690A;
+  --border:rgba(16,22,19,.10);--shadow:0 1px 2px rgba(16,22,19,.04),0 10px 28px rgba(16,22,19,.06);
+  --d:"Familjen Grotesk",Inter,system-ui,sans-serif;
+  --u:Inter,system-ui,sans-serif;--m:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;font:13px/1.4 var(--u);background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased}
+.shell{display:grid;grid-template-columns:56px 1fr;min-height:100vh}
+.rail{background:#005840;display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:8px}
+.rail i{width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.12)}
+.rail i.on{background:#D1F843}
+.main{display:flex;flex-direction:column;min-width:0}
+.top{padding:16px 20px 12px;border-bottom:1px solid var(--border);background:var(--panel)}
+.kpis{display:grid;grid-template-columns:repeat(3,140px);gap:8px;margin-bottom:12px}
+.kpi{background:var(--panel2);border:1px solid var(--border);border-radius:14px;padding:10px 12px}
+.kpi .l{font-family:var(--m);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
+.kpi .v{font-family:var(--m);font-size:16px;font-weight:700;margin-top:4px}
+.bar{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.bar .title{font-family:var(--d);font-size:17px;font-weight:700;letter-spacing:-.02em}
+.caps{font-family:var(--m);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--mut)}
+.pill{display:inline-flex;height:22px;padding:0 10px;align-items:center;border-radius:999px;font-family:var(--m);font-size:10px;font-weight:700;background:color-mix(in srgb,var(--up) 12%,transparent);color:var(--up)}
+.seg{display:flex;gap:4px;background:var(--panel3);padding:3px;border-radius:999px}
+.seg span{padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;color:var(--mut)}
+.seg span.on{background:var(--forest);color:#fff}
+.btn{height:36px;padding:0 14px;border-radius:10px;border:1px solid var(--border);background:var(--panel3);font:inherit;font-weight:600;font-size:12.5px;cursor:default}
+.btn.primary{background:var(--forest);color:#fff;border-color:transparent}
+.crumb{display:flex;align-items:center;gap:8px;padding:10px 20px;font-size:12.5px;color:var(--fg2)}
+.crumb b{color:var(--fg)}
+.grid{display:grid;grid-template-columns:206px 1fr 302px;gap:14px;padding:0 20px 24px;align-items:start}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:12px;min-height:420px}
+.card h3{font-family:var(--d);font-size:14px;margin:0 0 10px}
+.list .row{display:flex;align-items:center;gap:8px;padding:8px;border-radius:10px;margin-bottom:4px;background:var(--panel2);font-size:12px}
+.list .row.on{outline:1px solid color-mix(in srgb,var(--forest) 35%,transparent);background:color-mix(in srgb,var(--forest) 6%,#fff)}
+.tl{overflow:auto}
+.days{display:grid;grid-template-columns:40px repeat(5,1fr);gap:4px;min-width:640px}
+.days .h{font-family:var(--m);font-size:10px;font-weight:700;color:var(--mut);text-align:center;padding:6px}
+.days .time{font-family:var(--m);font-size:9px;color:var(--mut);padding-top:8px}
+.cell{min-height:52px;background:var(--panel2);border-radius:8px;border:1px solid var(--border);position:relative}
+.ev{position:absolute;left:3px;right:3px;top:4px;padding:6px 8px;border-radius:8px;background:color-mix(in srgb,var(--forest) 12%,#fff);border:1px solid color-mix(in srgb,var(--forest) 30%,transparent);font-size:11px;font-weight:600}
+.ev small{display:block;font-weight:500;color:var(--mut);font-size:10px}
+.bal .stat{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
+.bal .cta{margin-top:12px;height:40px;border-radius:999px;background:var(--forest);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.note{margin:0 20px 20px;padding:12px 14px;border-left:3px solid var(--forest);background:color-mix(in srgb,var(--forest) 7%,var(--panel));border-radius:0 12px 12px 0;color:var(--fg2);font-size:13px;max-width:900px}
+.banner{background:#005840;color:#fff;padding:10px 20px;font-size:12.5px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.banner a{color:#D1F843;font-weight:700;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="banner">
+  <span><strong>Design-visning</strong> — Workbench desktop for spiller. Ingen innlogging. Ikke den ekte appen.</span>
+  <span>
+    <a href="index.html">Design-start</a> ·
+    <a href="plan-3-retninger.html">Plan B</a> ·
+    <a href="verdensklasse-flaggskip.html">Flaggskip</a>
+  </span>
+</div>
+<div class="shell">
+  <aside class="rail" aria-hidden="true">
+    <i></i><i class="on"></i><i></i><i></i><i></i>
+  </aside>
+  <div class="main">
+    <div class="top">
+      <div class="kpis">
+        <div class="kpi"><div class="l">Økter i uke</div><div class="v">4</div></div>
+        <div class="kpi"><div class="l">Etterlevelse</div><div class="v">62 %</div></div>
+        <div class="kpi"><div class="l">Status</div><div class="v" style="font-size:13px;font-family:var(--u)">Aktiv</div></div>
+      </div>
+      <div class="bar">
+        <div>
+          <div class="caps">Workbench</div>
+          <div class="title">Markus Kristiansen</div>
+          <span class="pill">Aktiv plan</span>
+        </div>
+        <div class="seg"><span>År</span><span>Måned</span><span class="on">Uke</span><span>Økt</span></div>
+        <div class="seg"><span class="on">Standard</span><span>Pro</span></div>
+        <div style="margin-left:auto;display:flex;gap:8px">
+          <button class="btn">+ Ny økt</button>
+          <button class="btn primary">Publiser</button>
+        </div>
+      </div>
+    </div>
+    <div class="crumb">Sesong 2026 <span>›</span> Juli <span>›</span> <b>Uke 30</b> &nbsp; ‹ ›</div>
+    <div class="grid">
+      <div class="card list">
+        <h3>Bibliotek</h3>
+        <div class="row on">Mal · Nærspill-uke</div>
+        <div class="row">Økt · Kontakt + tempo</div>
+        <div class="row">Økt · Putting 45 min</div>
+        <div class="row">Drill · Pitch 50 m</div>
+        <div class="row">Drill · Landingssone</div>
+        <p style="font-size:11px;color:var(--mut);margin:12px 4px 0">Dra inn i tidslinja (i ekte app).</p>
+      </div>
+      <div class="card tl">
+        <h3>Tidslinje · uke 30</h3>
+        <div class="days">
+          <div></div>
+          <div class="h">MAN 20</div><div class="h">TIR 21</div><div class="h">ONS 22</div><div class="h">TOR 23</div><div class="h">FRE 24</div>
+          <div class="time">14</div>
+          <div class="cell"></div>
+          <div class="cell"><div class="ev">Nærspill<small>16:00 · 60 min</small></div></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="time">16</div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"><div class="ev">Nærspill + spill<small>16:00 · 90 min</small></div></div>
+          <div class="cell"></div>
+          <div class="time">18</div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+        </div>
+      </div>
+      <div class="card bal">
+        <h3>Balanse</h3>
+        <div class="stat"><span>Planlagt</span><strong>4,5 t</strong></div>
+        <div class="stat"><span>Gjort</span><strong>2,8 t</strong></div>
+        <div class="stat"><span>Fokus</span><strong>Nærspill</strong></div>
+        <div class="stat"><span>Valgt økt</span><strong>Tir 16:00</strong></div>
+        <p style="font-size:12px;color:var(--mut);margin:12px 0 0;line-height:1.45">
+          Formel: SLAG · lav tempo · range. Fra SG: nærspill svakest (−0,55).
+        </p>
+        <div class="cta">Start / bekreft økt</div>
+      </div>
+    </div>
+    <div class="note">
+      <strong>Slik er ekte Workbench på desktop:</strong> tre kolonner (bibliotek · uke-tidslinje · balanse),
+      zoom, ny økt og publiser. Denne fila er bare bilde-for-forståelse mens lokal app venter på database-passord.
+    </div>
+  </div>
+</div>
+</body>
+</html>

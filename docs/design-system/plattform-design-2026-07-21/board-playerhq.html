@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="no"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PlayerHQ — alle skjermer</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+:root{
+  --bg:#F2F1EA;--panel:#FFFFFF;--panel2:#F7F6F0;--panel3:#ECEBE2;
+  --fg:#171B18;--fg2:#4A4F4A;--mut:#62675F;
+  --forest:#005840;--accent:#005840;--on:#FFFFFF;
+  --up:#1E8A50;--down:#C04A1E;--warn:#96690A;--info:#1F6CB0;
+  --border:rgba(16,22,19,.10);--shadow:0 1px 2px rgba(16,22,19,.04),0 10px 28px rgba(16,22,19,.06);
+  --r:20px;--rp:9999px;
+  --d:"Familjen Grotesk",Inter,system-ui,sans-serif;
+  --u:Inter,system-ui,sans-serif;--m:"JetBrains Mono",ui-monospace,monospace;
+}
+[data-theme=dark]{
+  --bg:#131513;--panel:#1C1F1C;--panel2:#191C19;--panel3:#232623;
+  --fg:#F3F5F1;--fg2:#B4B7B0;--mut:#8B8E87;
+  --forest:#005840;--accent:#D1F843;--on:#0D0E0D;
+  --up:#4FD08A;--down:#F0683E;--warn:#E8B43C;--info:#5AA9F0;
+  --border:rgba(255,255,255,.11);
+  --shadow:0 0 0 1px rgba(255,255,255,.04);
+}
+*{box-sizing:border-box}
+body{margin:0;font:13.5px/1.45 var(--u);background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased}
+a{color:var(--forest);text-decoration:none}
+.wrap{max-width:1320px;margin:0 auto;padding:24px 18px 80px}
+h1{font-family:var(--d);font-size:28px;letter-spacing:-.03em;margin:0 0 6px}
+h2{font-family:var(--d);font-size:20px;margin:36px 0 10px;letter-spacing:-.02em}
+.sub{color:var(--mut);margin:0 0 18px;max-width:70ch}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px;position:sticky;top:0;z-index:20;
+  background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(8px);padding:10px 0;border-bottom:1px solid var(--border)}
+.nav a{display:inline-flex;align-items:center;height:32px;padding:0 12px;border-radius:var(--rp);
+  background:var(--panel);border:1px solid var(--border);color:var(--fg);font-size:12px;font-weight:600}
+.nav a.on{background:var(--accent);color:var(--on);border-color:transparent}
+.pill{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:var(--rp);
+  font-family:var(--m);font-size:10px;font-weight:700;background:var(--panel3);color:var(--fg2)}
+.pill.ok{background:color-mix(in srgb,var(--forest) 14%,transparent);color:var(--forest)}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:14px 14px 12px;box-shadow:var(--shadow)}
+.card h3{font-family:var(--d);font-size:15px;margin:6px 0 4px;letter-spacing:-.01em}
+.meta{font-family:var(--m);font-size:10px;color:var(--mut);word-break:break-all}
+.job{font-size:12.5px;color:var(--fg2);margin:8px 0 6px}
+.cta{display:inline-flex;align-items:center;justify-content:center;height:36px;padding:0 14px;border-radius:var(--rp);
+  background:var(--accent);color:var(--on);font-weight:700;font-size:12.5px;margin-top:8px;border:0}
+.layout{font-size:11px;color:var(--mut);margin-top:8px}
+.phone{width:100%;max-width:260px;min-height:340px;border-radius:24px;border:1px solid var(--border);
+  background:var(--panel2);padding:12px;position:relative;overflow:hidden}
+.phone .bar{height:22px;border-radius:8px;background:var(--panel3);margin-bottom:10px}
+.phone .hero{height:56px;border-radius:14px;background:linear-gradient(145deg,color-mix(in srgb,var(--forest) 18%,transparent),transparent 60%),var(--panel3);margin-bottom:8px}
+.phone .btn{height:36px;border-radius:var(--rp);background:var(--accent);margin-top:8px}
+.phone .row{height:40px;border-radius:12px;background:var(--panel);border:1px solid var(--border);margin-top:6px}
+.phone .tabs{display:flex;gap:4px;margin-bottom:8px}
+.phone .tabs i{flex:1;height:22px;border-radius:var(--rp);background:var(--panel3)}
+.phone .tabs i.on{background:var(--accent)}
+.phone .bnav{position:absolute;left:0;right:0;bottom:0;height:40px;border-top:1px solid var(--border);
+  display:flex;background:var(--panel)}
+.phone .bnav span{flex:1}
+.desk{min-height:160px;border-radius:16px;border:1px solid var(--border);background:var(--panel2);display:flex;overflow:hidden}
+.desk .rail{width:36px;background:#005840;flex:none}
+.desk .main{flex:1;padding:10px;display:flex;flex-direction:column;gap:6px}
+.desk .kpi{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.desk .k{height:36px;border-radius:10px;background:var(--panel);border:1px solid var(--border)}
+.note{margin:16px 0;padding:12px 14px;border-left:3px solid var(--forest);background:color-mix(in srgb,var(--forest) 7%,var(--panel));
+  border-radius:0 12px 12px 0;font-size:13px;color:var(--fg2)}
+footer{margin-top:48px;padding-top:14px;border-top:1px solid var(--border);color:var(--mut);font-size:12px}
+.std-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.std-table th,.std-table td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+.std-table th{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
+.filter{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.filter button{height:30px;padding:0 10px;border-radius:var(--rp);border:1px solid var(--border);background:var(--panel);font:inherit;font-size:11px;font-weight:600;cursor:pointer;color:var(--fg)}
+.filter button.on{background:var(--accent);color:var(--on);border-color:transparent}
+</style></head>
+<body><div class="wrap">
+
+<div class="nav">
+  <a href="index.html">Start</a>
+  <a href="STANDARD.html">Standard</a>
+  <a href="families-hifi.html">8 familier</a>
+  <a href="board-playerhq.html" class="on">PlayerHQ</a>
+  <a href="board-agencyos.html">AgencyOS</a>
+  <a href="board-forelder.html">Forelder</a>
+  <a href="board-auth-system.html">Auth/System</a>
+  <a href="verdensklasse-flaggskip.html">Flaggskip</a>
+  <a href="inventar.html">Inventar</a>
+  <a href="KVELD-RAPPORT.html">Kveldsrapport</a>
+</div>
+
+<span class="pill ok">HI-FI BOARD</span><h1>PlayerHQ — alle skjermer</h1>
+<p class="sub">131 skjermer · samme tokens · én CTA · familie-mal. Kveld 2026-07-21.</p>
+<h2>Hub <span class="pill">16</span></h2><div class="grid">
+<article class="card" id="meg">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Meg</h3>
+  <div class="meta">/meg</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="portal">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem</h3>
+  <div class="meta">/portal</div>
+  <div class="job"><strong>5s:</strong> Hva skal jeg gjøre i dag? (én hero + CTA)</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="portal-baneguide">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Baneguide</h3>
+  <div class="meta">/portal/baneguide</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="portal-booking">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Booking</h3>
+  <div class="meta">/portal/booking</div>
+  <div class="job"><strong>5s:</strong> Booke eller endre tid</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="portal-coach">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Coach</h3>
+  <div class="meta">/portal/coach</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="portal-fysisk">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Fysisk</h3>
+  <div class="meta">/portal/fysisk</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="portal-gameplan">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Gameplan</h3>
+  <div class="meta">/portal/gameplan</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="portal-gjennomfore">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Gjennomføre</h3>
+  <div class="meta">/portal/gjennomfore</div>
+  <div class="job"><strong>5s:</strong> Start eller fortsett dagens økt</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="portal-mal">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Mål</h3>
+  <div class="meta">/portal/mal</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="portal-meg">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Meg</h3>
+  <div class="meta">/portal/meg</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="portal-onskeligokt">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Ønsket økt</h3>
+  <div class="meta">/portal/onskeligokt</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="portal-stats">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Stats</h3>
+  <div class="meta">/portal/stats</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="portal-talent">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Talent</h3>
+  <div class="meta">/portal/talent</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="portal-tren">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Tren</h3>
+  <div class="meta">/portal/tren</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="portal-utviklingsplan">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Utviklingsplan</h3>
+  <div class="meta">/portal/utviklingsplan</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article>
+<article class="card" id="portal-venner">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Hub</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Venner</h3>
+  <div class="meta">/portal/venner</div>
+  <div class="job"><strong>5s:</strong> Se hva som er viktig nå og trykk på neste handling</div>
+  <div class="meta">Layout: Hero + 1 CTA + 2–3 kort · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:55%"></div><div class="hero"></div><div class="btn"></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær CTA (én)</div>
+</article></div>
+<h2>Liste <span class="pill">10</span></h2><div class="grid">
+<article class="card" id="portal-coach-plans">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Coach · Planer</h3>
+  <div class="meta">/portal/coach/plans</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="portal-coach-videoer">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Coach · Videoer</h3>
+  <div class="meta">/portal/coach/videoer</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="portal-drills">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Driller</h3>
+  <div class="meta">/portal/drills</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="portal-mal-runder">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Mål · Runder</h3>
+  <div class="meta">/portal/mal/runder</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="portal-meg-bookinger">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Meg · Bookinger</h3>
+  <div class="meta">/portal/meg/bookinger</div>
+  <div class="job"><strong>5s:</strong> Booke eller endre tid</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="portal-meg-innstillinger-okter">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Innstillinger · Økter</h3>
+  <div class="meta">/portal/meg/innstillinger/okter</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="portal-meg-innstillinger-varsler">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Innstillinger · Varsler</h3>
+  <div class="meta">/portal/meg/innstillinger/varsler</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="portal-tren-tester">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Tester</h3>
+  <div class="meta">/portal/tren/tester</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="portal-utfordringer">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Utfordringer</h3>
+  <div class="meta">/portal/utfordringer</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article>
+<article class="card" id="portal-varsler">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Liste</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Varsler</h3>
+  <div class="meta">/portal/varsler</div>
+  <div class="job"><strong>5s:</strong> Skann, filtrer og åpne én ting</div>
+  <div class="meta">Layout: Filter + rader/kort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:50%"></div><div class="row"></div><div class="row"></div><div class="row"></div><div class="btn" style="width:40%"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Åpne rad / Ny</div>
+</article></div>
+<h2>Detalj <span class="pill">67</span></h2><div class="grid">
+<article class="card" id="portal-ai-foresla-drill">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Foresla Drill</h3>
+  <div class="meta">/portal/ai/foresla-drill</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-ai-foresla-turnering">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Foresla Turnering</h3>
+  <div class="meta">/portal/ai/foresla-turnering</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-ai-mal-bygger">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Mal Bygger</h3>
+  <div class="meta">/portal/ai/mal-bygger</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-baneguide-[baneId]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Baneguide</h3>
+  <div class="meta">/portal/baneguide/[baneId]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-baneguide-[baneId]-hull-[nr]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Baneguide · Hull</h3>
+  <div class="meta">/portal/baneguide/[baneId]/hull/[nr]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-booking-[bookingId]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Booking</h3>
+  <div class="meta">/portal/booking/[bookingId]</div>
+  <div class="job"><strong>5s:</strong> Booke eller endre tid</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-booking-anlegg-[anleggId]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Booking · Anlegg</h3>
+  <div class="meta">/portal/booking/anlegg/[anleggId]</div>
+  <div class="job"><strong>5s:</strong> Booke eller endre tid</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-booking-bekreftet">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Booking · Bekreftet</h3>
+  <div class="meta">/portal/booking/bekreftet</div>
+  <div class="job"><strong>5s:</strong> Booke eller endre tid</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-booking-coach-[coachId]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Booking · Coach</h3>
+  <div class="meta">/portal/booking/coach/[coachId]</div>
+  <div class="job"><strong>5s:</strong> Booke eller endre tid</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-coach-ai">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Coach · Ai</h3>
+  <div class="meta">/portal/coach/ai</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-coach-melding">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Coach · Meldinger</h3>
+  <div class="meta">/portal/coach/melding</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-coach-ovelser">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Coach · Ovelser</h3>
+  <div class="meta">/portal/coach/ovelser</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-coach-sporsmal">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Coach · Sporsmal</h3>
+  <div class="meta">/portal/coach/sporsmal</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-coach-sporsmal-[id]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Coach · Sporsmal</h3>
+  <div class="meta">/portal/coach/sporsmal/[id]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-drills-[id]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Driller</h3>
+  <div class="meta">/portal/drills/[id]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-gameplan-[baneId]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Gameplan</h3>
+  <div class="meta">/portal/gameplan/[baneId]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-gameplan-[baneId]-hull-[nr]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Gameplan · Hull</h3>
+  <div class="meta">/portal/gameplan/[baneId]/hull/[nr]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-gjennomfore-[id]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Gjennomføre</h3>
+  <div class="meta">/portal/gjennomfore/[id]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-mal-goal-[id]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Mål · Goal</h3>
+  <div class="meta">/portal/mal/goal/[id]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-mal-leaderboard">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Mål · Leaderboard</h3>
+  <div class="meta">/portal/mal/leaderboard</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-mal-runder-[id]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Mål · Runder</h3>
+  <div class="meta">/portal/mal/runder/[id]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-mal-runder-[id]-hull">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Runder · Hull</h3>
+  <div class="meta">/portal/mal/runder/[id]/hull</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-mal-runder-[id]-slag">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Runder · Slag</h3>
+  <div class="meta">/portal/mal/runder/[id]/slag</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-abonnement">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Meg · Abonnement</h3>
+  <div class="meta">/portal/meg/abonnement</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-abonnement-faktura-[id]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Abonnement · Faktura</h3>
+  <div class="meta">/portal/meg/abonnement/faktura/[id]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-abonnement-oppgrader">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Abonnement · Oppgrader</h3>
+  <div class="meta">/portal/meg/abonnement/oppgrader</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-dokumenter">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Meg · Dokumenter</h3>
+  <div class="meta">/portal/meg/dokumenter</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-feedback">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Meg · Feedback</h3>
+  <div class="meta">/portal/meg/feedback</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-foreldre">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Meg · Foreldre</h3>
+  <div class="meta">/portal/meg/foreldre</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-help">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Meg · Help</h3>
+  <div class="meta">/portal/meg/help</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-help-artikkel-[slug]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Artikkel</h3>
+  <div class="meta">/portal/meg/help/artikkel/[slug]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-help-kategori-[slug]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Kategori</h3>
+  <div class="meta">/portal/meg/help/kategori/[slug]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-help-kontakt">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Kontakt</h3>
+  <div class="meta">/portal/meg/help/kontakt</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-helse">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Meg · Helse</h3>
+  <div class="meta">/portal/meg/helse</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-innstillinger">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Meg · Innstillinger</h3>
+  <div class="meta">/portal/meg/innstillinger</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-innstillinger-ai-coach">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Innstillinger · Ai Coach</h3>
+  <div class="meta">/portal/meg/innstillinger/ai-coach</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-innstillinger-anlegg">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Innstillinger · Anlegg</h3>
+  <div class="meta">/portal/meg/innstillinger/anlegg</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-innstillinger-eksport">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Innstillinger · Eksport</h3>
+  <div class="meta">/portal/meg/innstillinger/eksport</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-innstillinger-integrasjoner">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Innstillinger · Integrasjoner</h3>
+  <div class="meta">/portal/meg/innstillinger/integrasjoner</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-innstillinger-personvern">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Innstillinger · Personvern</h3>
+  <div class="meta">/portal/meg/innstillinger/personvern</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-innstillinger-sikkerhet">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Innstillinger · Sikkerhet</h3>
+  <div class="meta">/portal/meg/innstillinger/sikkerhet</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-innstillinger-sprak">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Innstillinger · Sprak</h3>
+  <div class="meta">/portal/meg/innstillinger/sprak</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-profil">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Meg · Profil</h3>
+  <div class="meta">/portal/meg/profil</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-sikkerhet">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Meg · Sikkerhet</h3>
+  <div class="meta">/portal/meg/sikkerhet</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-sikkerhet-2fa">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Sikkerhet · 2Fa</h3>
+  <div class="meta">/portal/meg/sikkerhet/2fa</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-meg-utstyrsbag">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Meg · Utstyrsbag</h3>
+  <div class="meta">/portal/meg/utstyrsbag</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-onskeligokt-bekreftet">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Ønsket økt · Bekreftet</h3>
+  <div class="meta">/portal/onskeligokt/bekreftet</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-spiller-[spillerId]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Spiller</h3>
+  <div class="meta">/portal/spiller/[spillerId]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-talent-min-plan">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Talent · Min Plan</h3>
+  <div class="meta">/portal/talent/min-plan</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-talent-mitt-niva">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Talent · Mitt Niva</h3>
+  <div class="meta">/portal/talent/mitt-niva</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-talent-roadmap">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Talent · Roadmap</h3>
+  <div class="meta">/portal/talent/roadmap</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-talent-sammenligning">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Talent · Sammenligning</h3>
+  <div class="meta">/portal/talent/sammenligning</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-tren-[sessionId]-planlagt">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Planlagt</h3>
+  <div class="meta">/portal/tren/[sessionId]/planlagt</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-tren-feiring-[planId]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Feiring</h3>
+  <div class="meta">/portal/tren/feiring/[planId]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-tren-fys-plan">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Fys-plan</h3>
+  <div class="meta">/portal/tren/fys-plan</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-tren-ovelser">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Ovelser</h3>
+  <div class="meta">/portal/tren/ovelser</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-tren-ovelser-[id]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Ovelser</h3>
+  <div class="meta">/portal/tren/ovelser/[id]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-tren-teknisk-plan-[planId]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Teknisk plan</h3>
+  <div class="meta">/portal/tren/teknisk-plan/[planId]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-tren-tester-[testId]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Tester</h3>
+  <div class="meta">/portal/tren/tester/[testId]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-tren-tester-[testId]-gjennomfor">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Tester · Gjennomfor</h3>
+  <div class="meta">/portal/tren/tester/[testId]/gjennomfor</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-tren-turneringer">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Turneringer</h3>
+  <div class="meta">/portal/tren/turneringer</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-tren-turneringer-[id]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Turneringer</h3>
+  <div class="meta">/portal/tren/turneringer/[id]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-trening-break-tabell">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Break-tabell</h3>
+  <div class="meta">/portal/trening/break-tabell</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-trening-logg">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Logg</h3>
+  <div class="meta">/portal/trening/logg</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-trening-putte-laboratoriet">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Putte-lab</h3>
+  <div class="meta">/portal/trening/putte-laboratoriet</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-utfordringer-[id]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Utfordringer</h3>
+  <div class="meta">/portal/utfordringer/[id]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article>
+<article class="card" id="portal-venner-[spillerId]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Detalj</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Venner</h3>
+  <div class="meta">/portal/venner/[spillerId]</div>
+  <div class="job"><strong>5s:</strong> Forstå én enhet og ta neste steg</div>
+  <div class="meta">Layout: Header + faner/stack + handling · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="hero" style="height:40px"></div><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Primær handling</div>
+</article></div>
+<h2>Wizard <span class="pill">13</span></h2><div class="grid">
+<article class="card" id="portal-booking-ny">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Booking · Ny</h3>
+  <div class="meta">/portal/booking/ny</div>
+  <div class="job"><strong>5s:</strong> Booke eller endre tid</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article>
+<article class="card" id="portal-booking-ny-bekreft">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Ny · Bekreft</h3>
+  <div class="meta">/portal/booking/ny/bekreft</div>
+  <div class="job"><strong>5s:</strong> Booke eller endre tid</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article>
+<article class="card" id="portal-coach-melding-ny">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Meldinger · Ny</h3>
+  <div class="meta">/portal/coach/melding/ny</div>
+  <div class="job"><strong>5s:</strong> Fullføre en flerstegs handling uten å gå vill</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article>
+<article class="card" id="portal-coach-sporsmal-ny">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Ny</h3>
+  <div class="meta">/portal/coach/sporsmal/ny</div>
+  <div class="job"><strong>5s:</strong> Fullføre en flerstegs handling uten å gå vill</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article>
+<article class="card" id="portal-mal-bygger">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Mål · Bygger</h3>
+  <div class="meta">/portal/mal/bygger</div>
+  <div class="job"><strong>5s:</strong> Fullføre en flerstegs handling uten å gå vill</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article>
+<article class="card" id="portal-mal-runder-ny">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Runder · Ny</h3>
+  <div class="meta">/portal/mal/runder/ny</div>
+  <div class="job"><strong>5s:</strong> Fullføre en flerstegs handling uten å gå vill</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article>
+<article class="card" id="portal-meg-abonnement-avbestill">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Abonnement · Avbestill</h3>
+  <div class="meta">/portal/meg/abonnement/avbestill</div>
+  <div class="job"><strong>5s:</strong> Fullføre en flerstegs handling uten å gå vill</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article>
+<article class="card" id="portal-meg-abonnement-kort-ny">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Ny</h3>
+  <div class="meta">/portal/meg/abonnement/kort/ny</div>
+  <div class="job"><strong>5s:</strong> Fullføre en flerstegs handling uten å gå vill</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article>
+<article class="card" id="portal-meg-abonnement-oppgrader-flyt">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Flyt</h3>
+  <div class="meta">/portal/meg/abonnement/oppgrader/flyt</div>
+  <div class="job"><strong>5s:</strong> Fullføre en flerstegs handling uten å gå vill</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article>
+<article class="card" id="portal-meg-bookinger-reschedule-[bookingId]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Bookinger · Reschedule</h3>
+  <div class="meta">/portal/meg/bookinger/reschedule/[bookingId]</div>
+  <div class="job"><strong>5s:</strong> Booke eller endre tid</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article>
+<article class="card" id="portal-meg-helse-symptom-ny">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Ny</h3>
+  <div class="meta">/portal/meg/helse/symptom/ny</div>
+  <div class="job"><strong>5s:</strong> Fullføre en flerstegs handling uten å gå vill</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article>
+<article class="card" id="portal-tren-tester-ny">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Tester · Ny</h3>
+  <div class="meta">/portal/tren/tester/ny</div>
+  <div class="job"><strong>5s:</strong> Fullføre en flerstegs handling uten å gå vill</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article>
+<article class="card" id="portal-tren-tester-ny-egen">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Wizard</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Ny · Egen</h3>
+  <div class="meta">/portal/tren/tester/ny/egen</div>
+  <div class="job"><strong>5s:</strong> Fullføre en flerstegs handling uten å gå vill</div>
+  <div class="meta">Layout: Stegstripe + felt + Neste · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="row"></div><div class="row"></div><div class="btn" style="position:absolute;bottom:48px;left:12px;right:12px"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Neste / Fullfør</div>
+</article></div>
+<h2>Live <span class="pill">8</span></h2><div class="grid">
+<article class="card" id="portal-live-[sessionId]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Live</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Live</h3>
+  <div class="meta">/portal/live/[sessionId]</div>
+  <div class="job"><strong>5s:</strong> Logge underveis uten distraksjon</div>
+  <div class="meta">Layout: Fullskjerm + store knapper · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:40%"></div><div class="hero" style="height:100px"></div><div class="btn"></div><div class="btn" style="background:var(--panel3);margin-top:6px"></div></div></div>
+  <div class="cta">Pause / Neste / Avslutt</div>
+</article>
+<article class="card" id="portal-live-[sessionId]-active">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Live</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Live aktiv</h3>
+  <div class="meta">/portal/live/[sessionId]/active</div>
+  <div class="job"><strong>5s:</strong> Logge drill nå</div>
+  <div class="meta">Layout: Fullskjerm + store knapper · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:40%"></div><div class="hero" style="height:100px"></div><div class="btn"></div><div class="btn" style="background:var(--panel3);margin-top:6px"></div></div></div>
+  <div class="cta">Pause / Neste / Avslutt</div>
+</article>
+<article class="card" id="portal-live-[sessionId]-brief">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Live</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Live · Brief</h3>
+  <div class="meta">/portal/live/[sessionId]/brief</div>
+  <div class="job"><strong>5s:</strong> Logge underveis uten distraksjon</div>
+  <div class="meta">Layout: Fullskjerm + store knapper · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:40%"></div><div class="hero" style="height:100px"></div><div class="btn"></div><div class="btn" style="background:var(--panel3);margin-top:6px"></div></div></div>
+  <div class="cta">Pause / Neste / Avslutt</div>
+</article>
+<article class="card" id="portal-live-[sessionId]-logger">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Live</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Live · Logger</h3>
+  <div class="meta">/portal/live/[sessionId]/logger</div>
+  <div class="job"><strong>5s:</strong> Logge underveis uten distraksjon</div>
+  <div class="meta">Layout: Fullskjerm + store knapper · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:40%"></div><div class="hero" style="height:100px"></div><div class="btn"></div><div class="btn" style="background:var(--panel3);margin-top:6px"></div></div></div>
+  <div class="cta">Pause / Neste / Avslutt</div>
+</article>
+<article class="card" id="portal-live-[sessionId]-summary">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Live</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Live · Oppsummering</h3>
+  <div class="meta">/portal/live/[sessionId]/summary</div>
+  <div class="job"><strong>5s:</strong> Logge underveis uten distraksjon</div>
+  <div class="meta">Layout: Fullskjerm + store knapper · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:40%"></div><div class="hero" style="height:100px"></div><div class="btn"></div><div class="btn" style="background:var(--panel3);margin-top:6px"></div></div></div>
+  <div class="cta">Pause / Neste / Avslutt</div>
+</article>
+<article class="card" id="portal-live-[sessionId]-tapper">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Live</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Live · Tapper</h3>
+  <div class="meta">/portal/live/[sessionId]/tapper</div>
+  <div class="job"><strong>5s:</strong> Logge underveis uten distraksjon</div>
+  <div class="meta">Layout: Fullskjerm + store knapper · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:40%"></div><div class="hero" style="height:100px"></div><div class="btn"></div><div class="btn" style="background:var(--panel3);margin-top:6px"></div></div></div>
+  <div class="cta">Pause / Neste / Avslutt</div>
+</article>
+<article class="card" id="portal-runde-live">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Live</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Live</h3>
+  <div class="meta">/portal/runde/live</div>
+  <div class="job"><strong>5s:</strong> Logge underveis uten distraksjon</div>
+  <div class="meta">Layout: Fullskjerm + store knapper · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:40%"></div><div class="hero" style="height:100px"></div><div class="btn"></div><div class="btn" style="background:var(--panel3);margin-top:6px"></div></div></div>
+  <div class="cta">Pause / Neste / Avslutt</div>
+</article>
+<article class="card" id="portal-runde-logg">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Live</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Logg</h3>
+  <div class="meta">/portal/runde/logg</div>
+  <div class="job"><strong>5s:</strong> Logge underveis uten distraksjon</div>
+  <div class="meta">Layout: Fullskjerm + store knapper · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar" style="width:40%"></div><div class="hero" style="height:100px"></div><div class="btn"></div><div class="btn" style="background:var(--panel3);margin-top:6px"></div></div></div>
+  <div class="cta">Pause / Neste / Avslutt</div>
+</article></div>
+<h2>Analyse <span class="pill">12</span></h2><div class="grid">
+<article class="card" id="portal-analyse">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Analyse</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Analyse</h3>
+  <div class="meta">/portal/analyse</div>
+  <div class="job"><strong>5s:</strong> Se tilstand på 5 sek, årsak på 30 sek</div>
+  <div class="meta">Layout: Faner + hero-tall + Planlegg · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="hero"></div><div class="row"></div><div class="btn"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Planlegg dette</div>
+</article>
+<article class="card" id="portal-analysere">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Analyse</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Analysere</h3>
+  <div class="meta">/portal/analysere</div>
+  <div class="job"><strong>5s:</strong> Forstå min golf (SG → fokus → plan)</div>
+  <div class="meta">Layout: Faner + hero-tall + Planlegg · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="hero"></div><div class="row"></div><div class="btn"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Planlegg dette</div>
+</article>
+<article class="card" id="portal-analysere-hull">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Analyse</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Analysere · Hull</h3>
+  <div class="meta">/portal/analysere/hull</div>
+  <div class="job"><strong>5s:</strong> Se tilstand på 5 sek, årsak på 30 sek</div>
+  <div class="meta">Layout: Faner + hero-tall + Planlegg · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="hero"></div><div class="row"></div><div class="btn"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Planlegg dette</div>
+</article>
+<article class="card" id="portal-coach-sg-hub">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Analyse</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Coach · SG-hub</h3>
+  <div class="meta">/portal/coach/sg-hub</div>
+  <div class="job"><strong>5s:</strong> Se tilstand på 5 sek, årsak på 30 sek</div>
+  <div class="meta">Layout: Faner + hero-tall + Planlegg · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="hero"></div><div class="row"></div><div class="btn"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Planlegg dette</div>
+</article>
+<article class="card" id="portal-datagolf">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Analyse</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Datagolf</h3>
+  <div class="meta">/portal/datagolf</div>
+  <div class="job"><strong>5s:</strong> Se tilstand på 5 sek, årsak på 30 sek</div>
+  <div class="meta">Layout: Faner + hero-tall + Planlegg · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="hero"></div><div class="row"></div><div class="btn"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Planlegg dette</div>
+</article>
+<article class="card" id="portal-mal-sg-hub-coach-[spillerId]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Analyse</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>SG-hub · Coach</h3>
+  <div class="meta">/portal/mal/sg-hub/coach/[spillerId]</div>
+  <div class="job"><strong>5s:</strong> Se tilstand på 5 sek, årsak på 30 sek</div>
+  <div class="meta">Layout: Faner + hero-tall + Planlegg · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="hero"></div><div class="row"></div><div class="btn"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Planlegg dette</div>
+</article>
+<article class="card" id="portal-mal-sg-hub-coach-[spillerId]-[club]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Analyse</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>SG-hub · Coach</h3>
+  <div class="meta">/portal/mal/sg-hub/coach/[spillerId]/[club]</div>
+  <div class="job"><strong>5s:</strong> Se tilstand på 5 sek, årsak på 30 sek</div>
+  <div class="meta">Layout: Faner + hero-tall + Planlegg · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="hero"></div><div class="row"></div><div class="btn"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Planlegg dette</div>
+</article>
+<article class="card" id="portal-mal-sg-hub-coach-[spillerId]-equipment">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Analyse</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Coach · Utstyr</h3>
+  <div class="meta">/portal/mal/sg-hub/coach/[spillerId]/equipment</div>
+  <div class="job"><strong>5s:</strong> Se tilstand på 5 sek, årsak på 30 sek</div>
+  <div class="meta">Layout: Faner + hero-tall + Planlegg · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="hero"></div><div class="row"></div><div class="btn"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Planlegg dette</div>
+</article>
+<article class="card" id="portal-mal-trackman">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Analyse</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Mål · TrackMan</h3>
+  <div class="meta">/portal/mal/trackman</div>
+  <div class="job"><strong>5s:</strong> Se tilstand på 5 sek, årsak på 30 sek</div>
+  <div class="meta">Layout: Faner + hero-tall + Planlegg · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="hero"></div><div class="row"></div><div class="btn"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Planlegg dette</div>
+</article>
+<article class="card" id="portal-mal-trackman-[id]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Analyse</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Mål · TrackMan</h3>
+  <div class="meta">/portal/mal/trackman/[id]</div>
+  <div class="job"><strong>5s:</strong> Se tilstand på 5 sek, årsak på 30 sek</div>
+  <div class="meta">Layout: Faner + hero-tall + Planlegg · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="hero"></div><div class="row"></div><div class="btn"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Planlegg dette</div>
+</article>
+<article class="card" id="portal-statistikk-[metric]">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Analyse</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Statistikk</h3>
+  <div class="meta">/portal/statistikk/[metric]</div>
+  <div class="job"><strong>5s:</strong> Se tilstand på 5 sek, årsak på 30 sek</div>
+  <div class="meta">Layout: Faner + hero-tall + Planlegg · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="hero"></div><div class="row"></div><div class="btn"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Planlegg dette</div>
+</article>
+<article class="card" id="portal-statistikk-runder-[runId]-del">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Analyse</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Runder · Del</h3>
+  <div class="meta">/portal/statistikk/runder/[runId]/del</div>
+  <div class="job"><strong>5s:</strong> Se tilstand på 5 sek, årsak på 30 sek</div>
+  <div class="meta">Layout: Faner + hero-tall + Planlegg · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="tabs"><i class="on"></i><i></i><i></i></div><div class="hero"></div><div class="row"></div><div class="btn"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Planlegg dette</div>
+</article></div>
+<h2>Kalender <span class="pill">5</span></h2><div class="grid">
+<article class="card" id="portal-kalender">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Kalender</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Kalender</h3>
+  <div class="meta">/portal/kalender</div>
+  <div class="job"><strong>5s:</strong> Se tid og handle der du ser det</div>
+  <div class="meta">Layout: Uke/dag + øktkort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar"></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px"><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Ny økt / Flytt / Publiser</div>
+</article>
+<article class="card" id="portal-planlegge">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Kalender</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>PlayerHQ Hjem · Planlegge</h3>
+  <div class="meta">/portal/planlegge</div>
+  <div class="job"><strong>5s:</strong> Se tid og handle der du ser det</div>
+  <div class="meta">Layout: Uke/dag + øktkort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar"></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px"><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Ny økt / Flytt / Publiser</div>
+</article>
+<article class="card" id="portal-planlegge-bygger">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Kalender</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Planlegge · Bygger</h3>
+  <div class="meta">/portal/planlegge/bygger</div>
+  <div class="job"><strong>5s:</strong> Se tid og handle der du ser det</div>
+  <div class="meta">Layout: Uke/dag + øktkort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar"></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px"><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Ny økt / Flytt / Publiser</div>
+</article>
+<article class="card" id="portal-planlegge-workbench">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Kalender</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Planlegge · Workbench</h3>
+  <div class="meta">/portal/planlegge/workbench</div>
+  <div class="job"><strong>5s:</strong> Planlegge uke/økt i Workbench</div>
+  <div class="meta">Layout: Uke/dag + øktkort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar"></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px"><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Ny økt / Flytt / Publiser</div>
+</article>
+<article class="card" id="portal-tren-kalender">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">
+    <span class="pill ok">Kalender</span>
+    <span class="pill">hi-fi</span>
+  </div>
+  <h3>Kalender</h3>
+  <div class="meta">/portal/tren/kalender</div>
+  <div class="job"><strong>5s:</strong> Se tid og handle der du ser det</div>
+  <div class="meta">Layout: Uke/dag + øktkort + Ny · Tilstander: default · tom · laster · feil</div>
+  <div style="margin-top:10px;transform:scale(.92);transform-origin:top left"><div class="phone"><div class="bar"></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px"><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div><div class="row" style="height:28px;margin:0"></div></div><div class="row"></div><div class="bnav"><span></span><span></span><span></span><span></span><span></span></div></div></div>
+  <div class="cta">Ny økt / Flytt / Publiser</div>
+</article></div>
+<footer>AK Golf HQ · Kveld hi-fi 2026-07-21 · V2.5 Presis+ · FASIT §3 enkelhet · én CTA · færrest trykk</footer>
+</div></body></html>

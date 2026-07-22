@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="no"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Plattform-design kveld</title>
+<title>Designstandard</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
 :root{
@@ -74,8 +74,8 @@ footer{margin-top:48px;padding-top:14px;border-top:1px solid var(--border);color
 <body><div class="wrap">
 
 <div class="nav">
-  <a href="index.html" class="on">Start</a>
-  <a href="STANDARD.html">Standard</a>
+  <a href="index.html">Start</a>
+  <a href="STANDARD.html" class="on">Standard</a>
   <a href="families-hifi.html">8 familier</a>
   <a href="board-playerhq.html">PlayerHQ</a>
   <a href="board-agencyos.html">AgencyOS</a>
@@ -87,30 +87,33 @@ footer{margin-top:48px;padding-top:14px;border-top:1px solid var(--border);color
 </div>
 
 
-<span class="pill ok">GO 2026-07-22 · B-PAKKE</span>
-<h1>Design + utvikling</h1>
-<p class="sub">B-pakke låst (Hjem · Plan · Analyse). Utviklingsplan i gang. 361 skjermer kartlagt — bygges bølgevis.</p>
-<div class="note"><strong>Nå:</strong> Steg 1–2 ferdig · Steg 3 (app) pågår. Se <a href="UTVIKLINGSPLAN-DESIGN.md">UTVIKLINGSPLAN-DESIGN.md</a> og <a href="RETNING-B-PAKKE.md">RETNING-B-PAKKE.md</a>.</div>
-<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));margin-bottom:18px">
-  <a class="card" href="hjem-3-retninger.html"><h3>Hjem · 3 retninger</h3><div class="job">Valgt: B</div></a>
-  <a class="card" href="plan-3-retninger.html"><h3>Plan · 3 retninger</h3><div class="job">Valgt: B</div></a>
-  <a class="card" href="analyse-3-retninger.html"><h3>Analyse · 3 retninger</h3><div class="job">Valgt: B</div></a>
-  <a class="card" href="UTVIKLINGSPLAN-DESIGN.md"><h3>Utviklingsplan</h3><div class="job">8 steg · GO</div></a>
-</div>
-<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">
-  <a class="card" href="STANDARD.html"><h3>1. Standard</h3><div class="job">Tokens, CTA, tester</div></a>
-  <a class="card" href="families-hifi.html"><h3>2. 8 familier</h3><div class="job">Lys + mørk hi-fi-maler</div></a>
-  <a class="card" href="board-playerhq.html"><h3>3. PlayerHQ</h3><div class="job">131 skjermer</div></a>
-  <a class="card" href="board-agencyos.html"><h3>4. AgencyOS</h3><div class="job">100 skjermer · mørk</div></a>
-  <a class="card" href="board-forelder.html"><h3>5. Forelder</h3><div class="job">11 skjermer</div></a>
-  <a class="card" href="board-auth-system.html"><h3>6. Auth/System</h3><div class="job">Auth + marketing + intern</div></a>
-  <a class="card" href="verdensklasse-flaggskip.html"><h3>7. Flaggskip-flyt</h3><div class="job">End-to-end trykk-budsjett</div></a>
-  <a class="card" href="inventar.html"><h3>8. Inventar</h3><div class="job">361 rader med hi-fi-lenke</div></a>
-</div>
-<h2>Status</h2>
+<span class="pill ok">LÅST KVELD</span>
+<h1>Designstandard — kveld 2026-07-21</h1>
+<p class="sub">Alle boards og skjermkort i denne pakken følger denne standarden. Avvik = bug.</p>
+<div class="note"><strong>Kraftig under panseret · enkelt i ansiktet.</strong> Behold funksjoner. Minst mulig trykk. Super enkelt. Vanskelig = feil design.</div>
+<table class="std-table">
+<tr><th>Token</th><th>Verdi</th><th>Bruk</th></tr>
+<tr><td>Canvas lys</td><td><code>#F2F1EA</code></td><td>PlayerHQ, Forelder, Auth</td></tr>
+<tr><td>Canvas mørk</td><td><code>#131513</code></td><td>AgencyOS default</td></tr>
+<tr><td>Forest</td><td><code>#005840</code></td><td>CTA lys, rail</td></tr>
+<tr><td>Lime</td><td><code>#D1F843</code></td><td>CTA mørk kun</td></tr>
+<tr><td>Display</td><td>Familjen Grotesk</td><td>Titler</td></tr>
+<tr><td>UI</td><td>Inter</td><td>Tekst</td></tr>
+<tr><td>Tall</td><td>JetBrains Mono</td><td>SG, KPI, meta</td></tr>
+<tr><td>Radius</td><td>20px kort · 9999px pille</td><td>Overalt</td></tr>
+<tr><td>Grid</td><td>8pt</td><td>Spacing</td></tr>
+<tr><td>CTA</td><td>Én primær per skjerm</td><td>Aldri 3 lime-jobber</td></tr>
+<tr><td>Nav PHQ</td><td>5 bunn: Hjem Plan Gjør Analyse Meg</td><td>390</td></tr>
+<tr><td>Nav AOS</td><td>Forest ikon-rail</td><td>1680</td></tr>
+<tr><td>Tom</td><td>Tekst + 1 CTA + valgfri sekundær</td><td>Aldri blindvei</td></tr>
+<tr><td>Språk</td><td>Norsk bokmål · nærspill ikke ARG</td><td>HjelpTips på fagord</td></tr>
+</table>
+<h2>Skjerm-test (må bestå)</h2>
 <ul>
-<li><strong>Design A+B+C:</strong> FERDIG — alle skjermer i hi-fi-pakke</li>
-<li><strong>Kode D:</strong> delvis fra tidligere natt (Hjem, Analyse-bro, WB, Stall, Live) — fortsetter bølgevis</li>
+<li>5 sekunder: ser hva som er viktig + neste steg</li>
+<li>1 primær CTA</li>
+<li>Primærjobb 1–2 trykk fra hub der mulig</li>
+<li>Dybde bak faner, ikke alt først</li>
 </ul>
 
 <footer>AK Golf HQ · Kveld hi-fi 2026-07-21 · V2.5 Presis+ · FASIT §3 enkelhet · én CTA · færrest trykk</footer>

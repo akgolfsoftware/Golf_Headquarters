@@ -1,10 +1,14 @@
 # Designsystem-fasit — AK Golf HQ v2
 
-> **Låst 2026-07-20.** Ved konflikt vinner denne fila + `tokens/v2/tokens.css` i Claude Design
+> **Låst 2026-07-20 · oppdatert 2026-07-22 (B-pakke).** Ved konflikt vinner denne fila + `tokens/v2/tokens.css` i Claude Design
 > + `src/lib/v2/tokens.ts` / `--v2-*` i `globals.css`. Aldri gjett farger eller navn.
 
 **Claude Design:** https://claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d  
-**Retning:** C «Presis» (valgt 9. juli 2026)
+**Visuell retning:** C «Presis» (valgt 9. juli 2026)  
+**Opplevelses-retning PlayerHQ:** **B-pakken** (valgt 2026-07-21–22) — se §3b
+
+**Utviklingsplan (GO 2026-07-22):**  
+`docs/design-system/plattform-design-2026-07-21/UTVIKLINGSPLAN-DESIGN.md`
 
 ---
 
@@ -84,6 +88,53 @@
 
 ---
 
+## 3b. Opplevelse B-pakken (LÅST — Anders 2026-07-21–22)
+
+> **Oversikt før handling.** Tall og status synlig. Én grønn hovedknapp.  
+> Ikke «bare start» (A). Ikke lang coach-tekst først (C).  
+> Detaljer: `plattform-design-2026-07-21/RETNING-B-PAKKE.md`
+
+### Dommerskjermer (må matche B)
+
+| Skjerm | Retning | Kort |
+|---|---|---|
+| **Hjem** | Form + plan | Form-tall + dagens plan + Start |
+| **Plan** | Uke + status | Volum/gjort/fokus + økt + Bekreft/Start |
+| **Analyse** | Form + nedbrytning | Total SG + fire områder (svakest uthevet) + Planlegg |
+
+### Felles følelse (hele PlayerHQ arver)
+
+1. **Oversikt før handling** — form/status synlig, ikke tom flate med bare én knapp.
+2. **Én grønn hovedknapp** per skjerm — resten er sekundært (lenker, ghost).
+3. **5 sekunder** — standpunkt + neste steg er opplagt.
+4. **Klarspråk** — nærspill, innspill, tee-slag (ikke ARG i spiller-UI). HjelpTips på fagord.
+5. **Bro:** Analyse → Planlegg → Plan/Workbench → Start (Hjem).
+
+### AgencyOS
+
+Samme idé (oversikt + én hovedhandling + 5s-test), men **mørk standard** og mer makt/detalj tillatt.
+
+### Forbudt som hovedretning
+
+- **A** (ekstrem minimal / bare vedtak) som default for PlayerHQ
+- **C** (lang fortelling/coach først) som hovedlayout  
+  (Kort coach-melding *inne i* B er OK senere)
+
+### Byggeklosser (steg 2)
+
+| Kloss | Bruk | Kode (v2) |
+|---|---|---|
+| Primær CTA | Én grønn handling | `CTAPill` |
+| Form-kort | SG + trend + status | `TallHero` + `Trend` + `StatusPill` i `Kort` |
+| Plan/økt-kort | Dagens eller valgt økt | `Kort` + `AkseChip` + `Rad` |
+| SG-områder | Fire rader, svakest tykkest | `FordelingRad` / `SgKategorier` |
+| Uke-status | Planlagt / gjort / % | `KpiFlis` + `ProgresjonsBar` / uke-stripe |
+| Tom / laster / feil | Alltid vei videre | `TomTilstand`, laste-skjelett, feil-komponenter |
+
+Nye sider skal **komponere disse**, ikke finne opp ny hierarki-stil.
+
+---
+
 ## 4. Visuelle regler (kort)
 
 1. **Én lime-jobb per skjerm** (CTA / valgt fane / aktiv pin) — ikke tre steder.
@@ -138,15 +189,20 @@
 
 ---
 
-## 7. Rekkefølge (låst)
+## 7. Rekkefølge (låst — GO 2026-07-22)
 
-1. Designsystem ferdig (denne fasiten + tokens + komponentstatus)  
-2. Wireframe per familie  
-3. Hi-fi alle PlayerHQ-ruter  
-4. Hi-fi alle AgencyOS-ruter  
-5. Port til kode bølge for bølge  
+1. ~~Designsystem + B-pakke i fasit~~ (steg 1)  
+2. Felles B-klosser i kode (steg 2)  
+3. Dommerskjermer Hjem / Plan / Analyse = 100 % B (steg 3)  
+4. PlayerHQ resten via 8 familier (steg 4)  
+5. Forelder (steg 5)  
+6. AgencyOS (steg 6)  
+7. Auth / marketing / system (steg 7)  
+8. Konsistens-pass + fasit-oppdatering (steg 8)  
 
-Aldri: fikse design bare i prod. Aldri: VibeUI/ekstern stil som kilde.
+Full plan: `plattform-design-2026-07-21/UTVIKLINGSPLAN-DESIGN.md`  
+
+Aldri: VibeUI/ekstern stil som kilde. Unntak bare etter ny 3-veis-test med Anders.
 
 ---
 
@@ -160,21 +216,20 @@ Aldri: fikse design bare i prod. Aldri: VibeUI/ekstern stil som kilde.
 
 ---
 
-## 9. Status / gap (2026-07-20)
+## 9. Status / gap (2026-07-22)
 
-**Solid:** tokens mørk+lys, ~124 komponenter m/ d.ts/prompt, store ui_kits (v2, playerhq, agencyos), guidelines (tema-bevis, tilstander).
+**Solid:** tokens mørk+lys, ~124 komponenter, inventar 361 sider, B-pakke låst på 3 dommerskjermer.
 
-**Ferdig fase 1a (2026-07-20):**
-- [x] `FASIT.md` i Claude Design + repo
-- [x] `ui_kits/v2/README.md` oppdatert (PlayerHQ alltid lys)
-- [x] `KOMPONENTSTATUS.md` (124/124 full trippel)
-- [x] Skills v2 + utdatert skill deaktivert
-- [x] `docs/redesign-v2` → `docs/arkiv/redesign-v2`
-- [x] `SKJERM-FAMILIER.md` + gråtone-wireframe board
+**Ferdig:**
+- [x] FASIT tokens + Presis
+- [x] B-pakke valgt (Hjem / Plan / Analyse)
+- [x] B skrevet inn i denne filen (§3b) — steg 1
+- [x] Design-boards + 3-retnings-tester i `plattform-design-2026-07-21/`
+- [x] Inventar 361 med familie + hi-fi-ref
 
-**Neste:**
-- [ ] Hi-fi per familie (etter wireframe-godkjenning)
-- [ ] Alle PlayerHQ-ruter mappet til familie + mockup
-- [ ] Alle AgencyOS-ruter mappet til familie + mockup
+**Pågår (GO 2026-07-22):**
+- [x] Steg 2: B-klosser verifisert (`B-KLOSSER.md`)
+- [x] Steg 3: Hjem / Plan / Analyse B i app
+- [ ] Steg 4–8: se utviklingsplan
 
-**Ikke i scope her:** full kodeport av alle skjermer (etter design).
+**Ikke i scope denne uken:** full kodeport av alle 361 sider.
