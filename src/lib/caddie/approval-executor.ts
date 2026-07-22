@@ -270,7 +270,7 @@ export async function executeApprovedTool(
       if (!player) throw new Error(`Spiller med id=${input.playerId} finnes ikke`);
 
       // MVP: Logg intent som Notification — faktisk plan-redigering kommer
-      // i CoachHQ-fase. adminUserId persisteres via CaddieMessage-audit.
+      // i AgencyOS-fase. adminUserId persisteres via CaddieMessage-audit.
       const notification = await prisma.notification.create({
         data: {
           userId: input.playerId,

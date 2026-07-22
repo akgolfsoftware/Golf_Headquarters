@@ -88,6 +88,10 @@ export interface WorkbenchV2Actions {
     patch: import("@/lib/workbench/session-update").SessionUpdateInput,
   ) => Promise<{ ok: boolean; error?: string }>;
   publish: () => Promise<{ ok: boolean; error?: string; status?: PlanStatus }>;
+  /** Spiller: godta plan som venter (PENDING_PLAYER → ACTIVE). */
+  acceptPlan?: () => Promise<{ ok: boolean; error?: string; status?: PlanStatus }>;
+  /** Spiller: be om endring (PENDING_PLAYER → REJECTED). */
+  rejectPlan?: (kommentar: string) => Promise<{ ok: boolean; error?: string; status?: PlanStatus }>;
   /** WB4: diff mot forrige publisering — vises i bekreft-modalen før publish. */
   publishDiff?: () => Promise<{ ok: boolean; diff?: import("@/lib/workbench/publish-actions").PubliserDiff; error?: string }>;
   /** 8c.6: coach-notat i inspektøren (kun coach — bind-es bare i admin-siden). */

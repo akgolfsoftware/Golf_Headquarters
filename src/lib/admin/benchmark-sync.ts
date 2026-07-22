@@ -43,7 +43,7 @@ const FOLLOW_TESTS: Record<string, { follows: string; metric: AutoMetric; label:
   chs: { follows: "driver_basic", metric: "driving_dist", label: "Clubhead Speed (CHS)" },
 };
 
-/** Synk-modus for en test, brukt av fasit-siden i CoachHQ. */
+/** Synk-modus for en test, brukt av fasit-siden i AgencyOS. */
 export function syncModeFor(key: string): "auto" | "follow" | "static" {
   if (key in AUTO_TESTS) return "auto";
   if (key in FOLLOW_TESTS) return "follow";

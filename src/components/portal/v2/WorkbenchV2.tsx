@@ -982,7 +982,7 @@ function Felt({ label, children }: { label: string; children: React.ReactNode })
   );
 }
 /* ── Selve Workbench ───────────────────────────────────── */
-export function WorkbenchV2({ data, insights, playerName, planStatus, actions, wbMode }: WorkbenchV2Props) {
+export function WorkbenchV2({ data, insights, playerName, planStatus, actions, wbMode, role }: WorkbenchV2Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -1596,6 +1596,70 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           </div>
         ))}
       </div>
+
+      {/* Spiller: plan venter på godkjenning */}
+      {role === "player" &&
+        (optimisticStatus ?? planStatus) === "PENDING_PLAYER" &&
+        actions?.acceptPlan && (
+          <Kort pad="14px 16px">
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div>
+                <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg }}>
+                  Ny plan fra coachen venter
+                </span>
+                <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "6px 0 0", lineHeight: 1.5 }}>
+                  Se uka under. Godkjenn for å gjøre den aktiv, eller be om endring.
+                </p>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                <Knapp
+                  icon="check"
+                  onClick={async () => {
+                    if (!actions.acceptPlan) return;
+                    setPubLoading(true);
+                    const res = await actions.acceptPlan();
+                    setPubLoading(false);
+                    if (res.ok) {
+                      setOptimisticStatus("ACTIVE");
+                      setMelding({ tone: "up", tekst: "Planen er godkjent og aktiv." });
+                      router.refresh();
+                    } else {
+                      setMelding({ tone: "down", tekst: res.error ?? "Kunne ikke godkjenne." });
+                    }
+                  }}
+                  disabled={pubLoading}
+                >
+                  Godkjenn plan
+                </Knapp>
+                <Knapp
+                  icon="message-square"
+                  ghost
+                  onClick={async () => {
+                    if (!actions.rejectPlan) return;
+                    const kommentar =
+                      typeof window !== "undefined"
+                        ? window.prompt("Hva vil du endre? (minst 5 tegn)")
+                        : null;
+                    if (!kommentar) return;
+                    setPubLoading(true);
+                    const res = await actions.rejectPlan(kommentar);
+                    setPubLoading(false);
+                    if (res.ok) {
+                      setOptimisticStatus("REJECTED");
+                      setMelding({ tone: "up", tekst: "Endringsønske sendt til coachen." });
+                      router.refresh();
+                    } else {
+                      setMelding({ tone: "down", tekst: res.error ?? "Kunne ikke sende." });
+                    }
+                  }}
+                  disabled={pubLoading}
+                >
+                  Be om endring
+                </Knapp>
+              </div>
+            </div>
+          </Kort>
+        )}
 
       {/* TOPP-BAR — desktop (md+): uendret */}
       <div className="hidden md:flex" style={{ alignItems: "flex-end", gap: 16, flexWrap: "wrap", paddingBottom: 14, borderBottom: `1px solid ${T.border}` }}>
