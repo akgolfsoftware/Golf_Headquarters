@@ -6,6 +6,7 @@
 import { prisma } from "@/lib/prisma";
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { erFullsving } from "@/lib/teknisk-plan/fullsving";
+import { varsleVedPlanAction } from "@/lib/agents/notify-plan-action";
 
 export const AGENT_NAME_TEST_TM = "test-tm-baseline";
 
@@ -145,7 +146,8 @@ export async function proposeTmBaselinesFromTest(
             if (s.goalId === goal.id) continue;
           }
 
-          await prisma.planAction.create({
+          const forklaring = `Test «${result.test.name}» ga ${value}. Foreslår som baseline for ${goal.metric} på «${task.tittel}».`;
+          const created = await prisma.planAction.create({
             data: {
               userId,
               coachId,
@@ -163,9 +165,16 @@ export async function proposeTmBaselinesFromTest(
                 testResultId: result.id,
                 testName: result.test.name,
                 technicalPlanId: plan.id,
-                forklaring: `Test «${result.test.name}» ga ${value}. Foreslår som baseline for ${goal.metric} på «${task.tittel}».`,
+                forklaring,
               },
             },
+          });
+          await varsleVedPlanAction({
+            userId,
+            agentName: AGENT_NAME_TEST_TM,
+            actionType: "TM_BASELINE_PROPOSE",
+            forklaring,
+            planActionId: created.id,
           });
           proposalsWritten++;
         }
