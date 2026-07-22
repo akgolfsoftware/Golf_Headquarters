@@ -22,7 +22,15 @@ export async function loadNesteOkt(
       select: { id: true, title: true, startTime: true, status: true },
     }),
     prisma.trainingPlanSession.findFirst({
-      where: { plan: { userId }, scheduledAt: { gt: etter }, status: "PLANNED" },
+      where: {
+        plan: {
+          userId,
+          // Match spiller-workbench: skjul DRAFT/REJECTED
+          status: { in: ["PENDING_PLAYER", "ACCEPTED", "ACTIVE", "PAUSED"] },
+        },
+        scheduledAt: { gt: etter },
+        status: "PLANNED",
+      },
       orderBy: { scheduledAt: "asc" },
       select: { id: true, title: true, scheduledAt: true, status: true },
     }),
