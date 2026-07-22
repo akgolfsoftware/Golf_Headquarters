@@ -1693,7 +1693,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           {actions?.suggestWeek && (
             <button type="button" onClick={handleSuggest} disabled={suggestLoading} title="AI-forslag for uka" className="v2-press v2-focus" style={{ appearance: "none", cursor: suggestLoading ? "default" : "pointer", width: 38, height: 38, borderRadius: 10, background: T.panel3, border: `1px solid ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: suggestLoading ? 0.5 : 1 }}><Icon name="sparkles" size={15} style={{ color: T.lime }} /></button>
           )}
-          {actions && (
+          {actions &&
+            !(role === "player" && (optimisticStatus ?? planStatus) === "PENDING_PLAYER") && (
             <Knapp icon="send" onClick={handlePublish} disabled={pubLoading}>{pubLoading ? "Publiserer…" : "Publiser"}</Knapp>
           )}
         </div>
@@ -1734,7 +1735,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
               <Knapp icon="plus" ghost full onClick={() => setNyOktApen(true)}>Ny økt</Knapp>
             </div>
           )}
-          {actions && (
+          {actions &&
+            !(role === "player" && (optimisticStatus ?? planStatus) === "PENDING_PLAYER") && (
             <div style={{ flex: 1 }}>
               <Knapp icon="send" full onClick={handlePublish} disabled={pubLoading}>{pubLoading ? "Publiserer…" : "Publiser"}</Knapp>
             </div>

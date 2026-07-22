@@ -56,8 +56,8 @@
 
 | ID | Punkt | St | S (forslag) |
 |---|---|---|---|
-| C.01 | Coach: publiser uke → spiller ser | DELVIS | JA |
-| C.02 | Spiller: kun publisert plan (ikke utkast-forvirring) | DELVIS | JA |
+| C.01 | Coach: publiser uke → spiller ser | FERDIG | JA |
+| C.02 | Spiller: kun publisert plan (ikke utkast-forvirring) | FERDIG | JA |
 | C.03 | Notion Calendar → HQ-økt | DELVIS | JA |
 | C.04 | iPad/touch DnD verifisert av deg | TODO | — |
 
@@ -67,10 +67,10 @@
 
 | ID | Punkt | St | S (forslag) |
 |---|---|---|---|
-| D.01 | Godkjenningskø: TM + test-forslag lesbart | DELVIS | JA |
-| D.02 | Godkjenn TM-baseline i UI (én knapp) | TODO | JA |
-| D.03 | 0 «CoachHQ» i synlig UI-tekst | DELVIS | JA |
-| D.04 | Daily brief: runde + TM + test-signaler | DELVIS | JA |
+| D.01 | Godkjenningskø: TM + test-forslag lesbart | FERDIG | JA |
+| D.02 | Godkjenn TM-baseline i UI (én knapp) | FERDIG | JA |
+| D.03 | 0 «CoachHQ» i synlig UI-tekst | FERDIG | JA |
+| D.04 | Daily brief: runde + TM + test-signaler | FERDIG | JA |
 | D.05 | Caddie / AI-hub AgencyOS | FERDIG | JA |
 | D.06 | AI-agenter admin-side | FERDIG | JA |
 
@@ -80,11 +80,11 @@
 
 | ID | Punkt | St | S (forslag) |
 |---|---|---|---|
-| E.01 | Duplikat-advarsel ved lik session | TODO | JA (når ferdig) |
-| E.02 | Manuell match-override i import | TODO | JA (når ferdig) |
+| E.01 | Duplikat-advarsel ved lik session | FERDIG | JA (når ferdig) |
+| E.02 | Manuell match-override i import | FERDIG | JA (når ferdig) |
 | E.03 | Dispersjon/stabilitet (eksisterende session-UI) | DELVIS | JA |
-| E.04 | Legacy TrackMan-ruter → redirect | TODO | — |
-| E.05 | Test-resultat: hint om baseline/full sving | TODO | JA |
+| E.04 | Legacy TrackMan-ruter → redirect | FERDIG | — |
+| E.05 | Test-resultat: hint om baseline/full sving | FERDIG | JA |
 | E.06 | Smoke/E2E CSV → TmGoal | TODO | — |
 | E.07 | Admin TrackMan (samme motor) | FERDIG | JA |
 
@@ -96,8 +96,8 @@
 |---|---|---|---|
 | F.01 | Live runde færre trykk (polish) | DELVIS | JA |
 | F.02 | Hurtigmodus score (samme motor) | TODO | JA |
-| F.03 | UpGame: «SG full/delvis/mangler»-tekst | TODO | JA |
-| F.04 | Round-agent synlig i godkjenninger | DELVIS | JA |
+| F.03 | UpGame: «SG full/delvis/mangler»-tekst | FERDIG | JA |
+| F.04 | Round-agent synlig i godkjenninger | FERDIG | JA |
 | F.05 | GolfBox personlig runde-import | SENERE | NEI til GO |
 | F.06 | Arccos / Shot Scope | SENERE | NEI til GO |
 
