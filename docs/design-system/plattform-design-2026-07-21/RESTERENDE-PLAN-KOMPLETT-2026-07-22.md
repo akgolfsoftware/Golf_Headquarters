@@ -1,9 +1,10 @@
 # Komplett plan — alle resterende oppgaver
 
-**Dato:** 2026-07-22  
+**Dato:** 2026-07-22 · **oppdatert 2026-07-23**  
 **Gren:** `design/b-pass-playerhq-agencyos` (PR #118)  
 **Hard regel:** Én jobb → én inngang → én motor. Aldri duplikat.  
-**For deg:** Enkel norsk, én pakke om gangen. Si **GO + pakkenummer**.
+**For deg:** Enkel norsk, én pakke om gangen. Si **GO + pakkenummer**.  
+**Tema:** PlayerHQ alltid lys · AgencyOS mørk default — `docs/design-system/TEMA-LYS-MORK.md`.
 
 > **Alle punkter (katalog + synlighet):**  
 > 1. `PUNKT-KATALOG-KOMPLETT.md` — ~103 ID-er, ferdig + gjenstår  
@@ -16,16 +17,18 @@
 
 | Område | Status |
 |---|---|
-| PlayerHQ / AgencyOS / Forelder / Auth (produktflyt) redesign | Ferdig i app (0 GAP ruter) |
+| PlayerHQ / AgencyOS / Forelder / Auth (produktflyt) redesign | **0 GAP** ruter (gates 2026-07-22/23) |
 | Stats B-pass (status + primær CTA) | I PR #118 |
 | Skills: AgencyOS, workbench, AgenticOS, formel, OD, designekspert v8 | På plass (+ SKILLS-GATE i HQ) |
-| **TrackMan MVP** | Én import, HTML=CSV shots, snitt-TM-mål, fullsving-match |
+| **TrackMan MVP + polish** | Import, match, duplikat, stabilitet/dispersjon DB-fallback |
 | **Full sving-flate** i teknisk plan | Filter + TM-progresjon + import-CTA |
 | **Test → TM-baseline-forslag** | PlanAction `TM_BASELINE_PROPOSE` (godkjenn) |
-| **Runde:** Fortsett-kladd, UpGame synlig, lagret-CTA | Ferdig i PR |
+| **Workbench:** publish + spiller ser ikke DRAFT/REJECTED | Inkl. V2-speil-filter |
+| **Runde:** Fortsett-kladd, UpGame, **hurtigmodus**, auto neste hull | F.01/F.02 FERDIG |
+| **Ny økt** (`createAdHocSession`) | H.07 FERDIG |
+| **AgencyOS AI-dispatch** på cockpit | I PR |
 
-**Siste commits (HQ):**  
-`65fbabcf` docs(skills) · `5a54359c` feat(trackman) …
+**Siste store commit (HQ):** `46aae126` (hurtigmodus + filter + TM-fallback) · PR #118 tip.
 
 ---
 
@@ -62,10 +65,10 @@ P5  Intern / team / OD-daemon
 
 | # | Oppgave | Ferdig når |
 |---|---|---|
-| **P1.A1** | Coach workbench: publiser → spiller ser uke uten forvirring | 1 trykk publish, spiller ser samme uke |
-| **P1.A2** | Spiller workbench: kun les/utfør det som er publisert | Ingen «skjult coach-utkast» som ser ut som plan |
-| **P1.A3** | Notion Calendar-planlegging (hvis fortsatt gap) | Økt lander i HQ-kalender etter kjent flyt |
-| **P1.A4** | Touch/iPad DnD — manuell verifisering på din enhet | Du har dratt økt på iPad |
+| **P1.A1** | Coach workbench: publiser → spiller ser uke uten forvirring | ✅ FERDIG i PR |
+| **P1.A2** | Spiller workbench: kun les/utfør det som er publisert | ✅ FERDIG (inkl. V2-speil av utkast) |
+| **P1.A3** | Notion Calendar-planlegging (hvis fortsatt gap) | DELVIS — sjekk ved behov |
+| **P1.A4** | Touch/iPad DnD — manuell verifisering på din enhet | TODO — **du** på iPad |
 
 Skill: `workbench-planlegging`
 
@@ -73,10 +76,10 @@ Skill: `workbench-planlegging`
 
 | # | Oppgave | Ferdig når |
 |---|---|---|
-| **P1.B1** | Godkjenningskø viser TrackMan- og test-forslag tydelig (inkl. `TM_BASELINE_PROPOSE`) | Coach/spiller forstår «hva foreslås» på 5 s |
-| **P1.B2** | Godkjenn baseline fra UI (én knapp → `acceptAndApply` / apply) | Baseline flytter etter nikk, ikke bare i DB-script |
-| **P1.B3** | AI-hub / Caddie: AgencyOS-navn overalt (0 «CoachHQ» i UI) | Grep UI-tekst ren |
-| **P1.B4** | Daily brief bruker ferske signaler (runde + TM + test) | Brief nevner siste import/runde når data finnes |
+| **P1.B1** | Godkjenningskø viser TrackMan- og test-forslag tydelig (inkl. `TM_BASELINE_PROPOSE`) | ✅ FERDIG |
+| **P1.B2** | Godkjenn baseline fra UI (én knapp → `acceptAndApply` / apply) | ✅ FERDIG |
+| **P1.B3** | AI-hub / Caddie: AgencyOS-navn overalt (0 «CoachHQ» i UI) | ✅ FERDIG |
+| **P1.B4** | Daily brief bruker ferske signaler (runde + TM + test) | ✅ FERDIG (+ AI-dispatch på cockpit) |
 
 Skill: `agenticos`
 
@@ -86,12 +89,12 @@ Skill: `agenticos`
 
 | # | Oppgave | Ferdig når | Notat |
 |---|---|---|---|
-| **P2.1** | Duplikat-advarsel ved lik session (dato+antall slag) | Modal spør «fortsett likevel?» | Lett |
-| **P2.2** | Manuell override av match i import-modal (velg oppgave) | Du kan tvinge P/oppgave | UX |
-| **P2.3** | Dispersjon/stabilitet kun der data finnes (eksisterende session-UI) | Ikke ny app | TM7 |
-| **P2.4** | Én kanonisk TrackMan-inngang i Analyse-IA (redirect legacy) | Ingen død `/portal/trackman` | Rydd |
-| **P2.5** | Whitelist-tester: UI-hint «kan sette baseline på full sving» | Etter test ser du lenke til forslag | TM5 polish |
-| **P2.6** | E2E smoke: CSV → TmGoal i teknisk plan | Automatisert eller manuell sjekkliste | TM8 |
+| **P2.1** | Duplikat-advarsel ved lik session (dato+antall slag) | ✅ FERDIG | |
+| **P2.2** | Manuell override av match i import-modal (velg oppgave) | ✅ FERDIG | |
+| **P2.3** | Dispersjon/stabilitet (inkl. DB-slag-fallback) | ✅ FERDIG | E.03 |
+| **P2.4** | Én kanonisk TrackMan-inngang i Analyse-IA (redirect legacy) | ✅ FERDIG | |
+| **P2.5** | Whitelist-tester: UI-hint «kan sette baseline på full sving» | ✅ FERDIG | |
+| **P2.6** | E2E smoke: CSV → TmGoal i teknisk plan | DELVIS — unit + manuell sjekkliste | E.06 |
 
 **Ikke uten GO:** GolfBox personlig runde, Arccos, HIT_RATE fra range-CSV, egen FullSving-app.
 
@@ -101,11 +104,11 @@ Skill: `agenticos`
 
 | # | Oppgave | Ferdig når |
 |---|---|---|
-| **P3.1** | Live runde B-pass polish (færre trykk der det fortsatt er tungt) | Du klarer hull uten å gi opp midt i |
-| **P3.2** | Hurtigmodus score (valgfri, inne i **samme** motor) | Kun hvis P3.1 fortsatt for tung — ikke ny app |
-| **P3.3** | UpGame: tydelig «SG full / delvis / mangler» etter import | Oppsummering på norsk |
-| **P3.4** | Round-agent: forslag synlig i AgenticOS etter runde | Du ser «forslag venter» uten å grave |
-| **P3.5** | (Valgfri GO) GolfBox personlig score-import | Egen bølge |
+| **P3.1** | Live runde færre trykk (auto neste hull) | ✅ FERDIG |
+| **P3.2** | Hurtigmodus score (samme motor, Slag/Hurtig) | ✅ FERDIG |
+| **P3.3** | UpGame: tydelig «SG full / delvis / mangler» etter import | ✅ FERDIG |
+| **P3.4** | Round-agent: forslag synlig i AgenticOS etter runde | ✅ FERDIG |
+| **P3.5** | (Valgfri GO) GolfBox personlig score-import | SENERE — kun på GO |
 
 ---
 
@@ -130,7 +133,7 @@ Skill: `akgolf-design-system`, `ak-designekspert`
 | **P5.2** | Team WANG / GFGK junior merkevaresider polish | Egen stil OK, ikke PlayerHQ-kopi |
 | **P5.3** | Intern komponent-lab / Meg-assistent | Kun internt |
 | **P5.4** | claude-config sync: løs stuck rebase på `~/.claude` | Auto-sync grønn igjen |
-| **P5.5** | `/portal/ny-okt` ekte Prisma-lagring (hvis fortsatt stub) | Økt lagres i DB |
+| **P5.5** | `/portal/ny-okt` ekte Prisma-lagring | ✅ FERDIG (`createAdHocSession`) |
 
 ---
 
@@ -164,16 +167,13 @@ Skill: `akgolf-design-system`, `ak-designekspert`
 
 | Bølge | Innhold | Si |
 |---|---|---|
-| **Nå** | Skills i HQ ✅ | — |
-| **L1** | P1.B1–B2 (godkjenning TM-baseline i UI) | `GO L1` |
-| **L2** | P1.A1–A2 (workbench publish-sløyfe) | `GO L2` |
-| **L3** | P2.1–P2.2 + P2.6 (import polish + smoke) | `GO L3` |
-| **L4** | P3.1 + P3.3–P3.4 (runde polish) | `GO L4` |
-| **L5** | P0 med deg (DKIM, aktivering, Stripe, DNS) | `GO L5` + din panel-tid |
+| **Nå** | Skills + TrackMan + workbench + runde + gates ✅ | — |
+| **L1–L4** | P1–P3 kjerne | ✅ I PR #118 (manuell smoke gjenstår) |
+| **L5** | P0 med deg (DKIM, aktivering, Stripe, DNS, **merge**) | `GO L5` + din panel-tid |
 | **L6** | P4 marketing/stats | `GO L6` |
 | **L7** | P5.1 OD + P5.4 claude-config | `GO L7` |
 
-**Anbefalt neste:** **L1** (liten, synlig, lukker test→full sving-løkka) deretter **L2**.
+**Anbefalt neste:** **L5** (lansering du eier) eller manuell smoke, deretter **L6** hvis marketing.
 
 ---
 

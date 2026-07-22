@@ -1,7 +1,7 @@
 # Designsystem-fasit — AK Golf HQ v2
 
-> **Låst 2026-07-20 · oppdatert 2026-07-22 (B-pakke).** Ved konflikt vinner denne fila + `tokens/v2/tokens.css` i Claude Design
-> + `src/lib/v2/tokens.ts` / `--v2-*` i `globals.css`. Aldri gjett farger eller navn.
+> **Låst 2026-07-20 · oppdatert 2026-07-23 (tema-fasit + B-pakke).** Ved konflikt vinner denne fila + `tokens/v2/tokens.css` i Claude Design
+> + `src/lib/v2/tokens.ts` / `--v2-*` i `globals.css`. Tema-detalj: [`TEMA-LYS-MORK.md`](./TEMA-LYS-MORK.md). Aldri gjett farger eller navn.
 
 **Claude Design:** https://claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d  
 **Visuell retning:** C «Presis» (valgt 9. juli 2026)  
@@ -16,14 +16,15 @@
 
 | Produkt | Rute | Tema | Bryter? |
 |---|---|---|---|
-| **PlayerHQ** | `/portal` | **Alltid lys** | Nei |
-| **AgencyOS** | `/admin` | Lys/mørk, standard mørk | Ja (cookie `ak-admin-theme`) |
+| **PlayerHQ** | `/portal` | **Alltid lys** (B28) | Nei |
+| **AgencyOS** | `/admin` | Lys/mørk, **standard mørk** | Ja (cookie `ak-v2-tema`) |
 | **Forelder** | `/forelder` | Lys | Nei |
 | **Marketing** | `akgolf.no` | Begge (hero kan være mørk) | N/A |
 | **Auth** | `/auth` | Lys | Nei |
 
-- Coach-chrome (sidebar/topbar) i AgencyOS: **alltid forest**, uansett tema.
-- «Mørk-først» gjelder **design av v2-komponenter i mørk default** — ikke at PlayerHQ er mørk.
+- Cookie/attributt: `ak-v2-tema` + `html[data-v2-tema="light"]` — se [`TEMA-LYS-MORK.md`](./TEMA-LYS-MORK.md).
+- «Mørk-først» = v2 CSS `:root` er mørk — **ikke** at PlayerHQ er mørk.
+- PlayerHQ tvinges lys i `V2Shell` selv om coach har mørk preferanse fra AgencyOS.
 
 **Navn (låst):** AgencyOS (aldri «CoachHQ»). PlayerHQ. Presisjonsstrategi (aldri «DECADE» i UI).
 

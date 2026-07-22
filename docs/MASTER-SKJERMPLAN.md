@@ -1008,13 +1008,12 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
   1:1-portert til v2 retning C** (`LoginV2`/`SignupV2`/`BankIDV2` 10. juli, Meg-familien og
   Turneringer-forhåndsvisningen likeens) — hakene var bare aldri flippet etter porteringen.
   Ingen reskin-jobb var nødvendig; kun dokumentasjonsrettelse (se radene over). **Samtidig
-  funnet en reell bug** mens dette ble verifisert: `V2Shell` sin lys/mørk-bryter styrer ETT
-  delt `data-v2-tema`-cookie-attributt for BÅDE AgencyOS og PlayerHQ — en coach med mørk
-  AgencyOS-preferanse ville fått PlayerHQ-skjermer i mørkt tema også, og en helt ny bruker
-  (ingen cookie) fikk mørk PlayerHQ som DEFAULT. Dette bryter B28 (PlayerHQ er alltid lys,
-  ingen bryter — låst 15. jul). Fikset i `src/components/v2/shell.tsx` (tema tvinges lys når
-  `nav !== AGENCYOS_NAV`, bryteren skjules for spillere) + `src/app/layout.tsx` sitt
-  pre-paint-script (unngår mørk-blits på første lasting av `/portal/*`). **Anbefaling videre:**
+  funnet en reell bug** mens dette ble verifisert: `V2Shell` sin lys/mørk-bryter styrte ETT
+  delt `data-v2-tema`-attributt for BÅDE AgencyOS og PlayerHQ — en coach med mørk
+  AgencyOS-preferanse ville fått PlayerHQ mørk også, og ny bruker uten cookie fikk mørk
+  PlayerHQ som DEFAULT. Dette brøt B28 (PlayerHQ alltid lys). **Fikset** i `shell.tsx` +
+  layout pre-paint; fasit 2026-07-23: `docs/design-system/TEMA-LYS-MORK.md` (cookie
+  `ak-v2-tema`). **Anbefaling videre:**
   gitt at 11 av 11 sjekkede rader var falske positiver, bør resten av MASTER-SKJERMPLAN.md sine
   «Design: –»-rader stikkprøve-verifiseres mot faktisk kode før flere byggerunder scopes rent
   fra denne tabellen.

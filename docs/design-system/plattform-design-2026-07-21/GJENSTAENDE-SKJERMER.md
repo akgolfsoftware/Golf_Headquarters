@@ -1,19 +1,19 @@
-# Gjenstående skjermer (oppdatert 2026-07-22, kveld)
+# Gjenstående skjermer (oppdatert 2026-07-23)
 
 ## Ferdig i app-produktene
 
-| Produkt | Status |
-|---|---|
-| **PlayerHQ** | 0 GAP |
-| **AgencyOS** | 0 GAP ruter + B-pass lister + **19 dype skjemaer** |
-| **Forelder** (11) | V2 + **B-pass** (status, CTA, tom) |
-| **Auth kjerne** | Login, signup, glemt/reset, check-email, BankID, logget-ut, samtykke, guardian |
-| **Auth checkout-resume** | V2/B |
-| **Offline** | V2/B |
-| **Onboard coach/klubb** | VeiviserFlate + v2-CSS |
-| **Inviter forelder** | V2/B (status + CTA ved feil) |
+| Produkt | Status | Tema |
+|---|---|---|
+| **PlayerHQ** | 0 GAP | Alltid lys |
+| **AgencyOS** | 0 GAP ruter + B-pass lister + dype skjemaer | Mørk default, lys valgfri |
+| **Forelder** (11) | V2 + **B-pass** (status, CTA, tom) | Lys |
+| **Auth kjerne** | Login, signup, glemt/reset, check-email, BankID, logget-ut, samtykke, guardian | Lys |
+| **Auth checkout-resume** | V2/B | Lys |
+| **Offline** | V2/B | — |
+| **Onboard coach/klubb** | VeiviserFlate + v2-CSS | — |
+| **Inviter forelder** | V2/B (status + CTA ved feil) | Lys |
 
-Typecheck: grønn.
+Typecheck: grønn. Tema-fasit: `docs/design-system/TEMA-LYS-MORK.md`.
 
 ---
 

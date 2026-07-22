@@ -32,12 +32,16 @@ står; skjermer som er innholds-korrekte men visuelt ulike (f.eks. abonnement) s
 
 ---
 
-## 1. Tema-toggle  ·  STATUS: låst opp, venter verdi
+## 1. Tema-toggle  ·  STATUS: AVKLART OG BYGGET (historikk — les ikke som eneste fasit)
+
+> **Gjeldende fasit 2026-07-23:** `docs/design-system/TEMA-LYS-MORK.md` + `BUSINESS-RULES.md` § Tema.  
+> Cookie er nå **`ak-v2-tema`** (ikke `ak-admin-theme`). PlayerHQ **alltid lys** (B28 i V2Shell). AgencyOS mørk default + bryter.
+
 - **Var låst som:** PlayerHQ alltid lyst, AgencyOS alltid mørkt, INGEN toggle.
 - **Designkonsekvens av låsen:** ingen lys/mørk-bytte noe sted.
-- **Trenger fra Anders:** Vil du ha en bruker-toggle (lys/mørk) — og på begge produkter, eller bare ett? Eller bare bytte standard-temaet for et produkt?
-- **BESLUTTET (2026-06-22, oppdatert):** Anders presiserte: **AgencyOS skal kunne være BÅDE lys OG mørk.** → BYGD: lys/mørk-toggle i AgencyOS-topbaren (sol/måne-ikon), tema persistert i cookie `ak-admin-theme` (leses server-side i AdminShell → ingen flash), standard = mørk. PlayerHQ forblir lyst (ikke endret). Coach-chrome-variablene (sidebar/topbar) er faste forest i `@theme inline` → lys AgencyOS = mørk forest-sidebar + lyst arbeidsområde. Komponenter: src/components/admin/admin-theme-toggle.tsx + admin-shell.tsx + agencyos-topbar.tsx.
-- **LYS-MODUS-QA BESTÅTT ✅ (2026-06-22):** verifisert rent i lys på 9 AgencyOS-skjermer: cockpit, stall, handlingssenter, spiller-detalj, tester, runder, okonomi, kalender, grupper. Konsistent forest-sidebar + lyst innhold, lesbar tekst/aksenter. Eneste mindre polish-punkt: handlingssenter-header-bånd litt flatt grått i lys (ikke ødelagt — kan tokeniseres ved en senere lys-polish-runde).
+- **BESLUTTET (2026-06-22, oppdatert 2026-07):** AgencyOS = lys **og** mørk (standard mørk). PlayerHQ = fast lys.  
+  Implementasjon i v2: cookie `ak-v2-tema`, `data-v2-tema` på `<html>`, layout-script før paint, V2Shell B28.
+- **LYS-MODUS-QA BESTÅTT ✅ (2026-06-22):** AgencyOS i lys på nøkkel-skjermer (historisk notat).
 
 ## 2. Abonnement & pris  ·  STATUS: AVKLART på nytt 2026-07-07
 

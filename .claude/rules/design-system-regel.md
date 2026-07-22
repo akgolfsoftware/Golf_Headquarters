@@ -1,6 +1,6 @@
 # Design-system-regel — v2 (retning C «Presis») er kanon
 
-Oppdatert 20. juli 2026. Retning C valgt 9. juli; tokens + tema per produkt låst i
+Oppdatert 23. juli 2026. Retning C valgt 9. juli; tokens + tema per produkt låst i
 `docs/design-system/FASIT.md`.
 
 ## Målbildet: v2-generasjonen
@@ -9,7 +9,7 @@ Oppdatert 20. juli 2026. Retning C valgt 9. juli; tokens + tema per produkt lås
   (`claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`) — `tokens/v2/**`,
   `components/**`, `ui_kits/v2/**` + playerhq/agencyos-kits.
 - **Retning C «Presis» er valgt** — Linear/Notion-tetthet i AK-merkevare.
-- **Tema (låst):** PlayerHQ alltid lys · AgencyOS lys/mørk (standard mørk) · se FASIT.
+- **Tema (låst):** PlayerHQ alltid lys · AgencyOS lys/mørk (standard mørk) · se `docs/design-system/TEMA-LYS-MORK.md` + FASIT §1.
 - Rekkefølge: **design → system → prod.** Aldri fikse design bare i prod.
 - Skills: `akgolf-design-system` (tokens) + `ak-designekspert` (tenking). Ikke
   `ak-golf-hq-design` (utdatert).

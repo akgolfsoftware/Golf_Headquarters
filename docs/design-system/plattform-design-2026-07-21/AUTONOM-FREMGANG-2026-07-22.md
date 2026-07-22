@@ -1,9 +1,10 @@
 # Autonom byggeøkt — fremgang
 
 **Gren:** `design/b-pass-playerhq-agencyos`  
-**PR:** https://github.com/akgolfsoftware/Golf_Headquarters/pull/118
+**PR:** https://github.com/akgolfsoftware/Golf_Headquarters/pull/118  
+**Sist oppdatert:** 2026-07-23
 
-## Commits denne økten (etter «bygg resten» / 6t-auto)
+## Commits (utvalg)
 
 | Commit | Innhold |
 |---|---|
@@ -13,41 +14,43 @@
 | `ad9d2a21` | Player skuler DRAFT-planer til publish |
 | `6f0e1a6b` | Coach varsles ved TM-baseline-forslag |
 | `cee43e1f` | Hjem «neste økt» skjuler DRAFT |
+| **`46aae126`** | **Hurtigmodus runde · auto neste hull · V2 DRAFT-filter · TM stabilitet/dispersjon-fallback · AI-dispatch · tester** |
 
-## Ferdig i kode
+## Ferdig i kode (produkt)
 
 - TrackMan: én pipeline, match override, duplikat, redirects, session-stats fra shots  
 - Full sving-flate, test→baseline, godkjenning, varsel  
 - Workbench: spiller godkjenn/avvis, coach re-publish, **spiller ser ikke DRAFT**  
+- V2-økter speilet fra DRAFT/REJECTED skjules for spiller (workbench + neste økt)  
 - UpGame SG-status, Fortsett runde, feature flags default on  
-- Brief/cockpit lesbare agent-forslag  
-- Synlighet: alt JA (unntatt forbud)
-
-## Senere commits (fortsett alle oppgaver)
-
-| Commit | Innhold |
-|---|---|
-| (neste) | F.01/F.02 hurtigmodus runde · auto neste hull · V2 DRAFT-filter · TM stabilitet/dispersjon DB-fallback · tester |
-
-## Ferdig i kode (runde + filter + TM)
-
-- **Hurtigmodus** i live/etterpå-føring: switch Slag/Hurtig, Birdie/Par/Bogey, lagre score  
-- **Færre trykk:** auto neste hull etter hole-out / hurtig-lagring  
-- **V2-økter:** spiller ser ikke speil av DRAFT/REJECTED-planer (workbench + neste økt)  
+- **Runde F.01/F.02:** hurtig score (Slag/Hurtig), auto neste hull  
 - **TrackMan E.03:** stabilitet + dispersjon faller tilbake til lagrede slag  
-- **Tester:** `syntetiser-hurtig` + `stabilitet-fallback`  
-- **H.07** ny-okt: allerede `createAdHocSession` → DB  
+- **H.07** ny-okt: `createAdHocSession` → DB  
+- AgencyOS cockpit: AI-dispatch-panel  
+- Synlighet: alt JA (unntatt forbud K.* / panel B.*)  
+- **Skjerm-gate:** PlayerHQ 0 GAP · AgencyOS 0 GAP (se PLAYERHQ/AGENCYOS-SKJERM-GATE)
+
+## Tema (docs fasit 2026-07-23)
+
+- PlayerHQ **alltid lys** · AgencyOS **mørk default** med bryter  
+- Se `docs/design-system/TEMA-LYS-MORK.md`
 
 ## Fortsatt åpent (trenger deg)
 
-- P0: DKIM, Stripe, DNS, merge PR #118  
+- P0: DKIM, Stripe, DNS, **merge PR #118**  
 - Marketing/stats full V2 + SEO (G)  
 - Open Design daemon / claude-config sync  
-- Manuell TrackMan smoke i browser  
+- Manuell TrackMan/workbench smoke i browser  
+- iPad DnD (C.04) — din verifisering  
 - GolfBox/Arccos kun på GO  
 
 ## Smoke
 
 - `TRACKMAN-SMOKE.md`  
 - `WORKBENCH-SMOKE.md`  
-- Automatisk: `npx tsx --test src/lib/runde-logg/syntetiser-hurtig.test.ts src/lib/trackman/stabilitet-fallback.test.ts`  
+- Automatisk:
+  ```bash
+  npx tsx --conditions=react-server --test \
+    src/lib/runde-logg/syntetiser-hurtig.test.ts \
+    src/lib/trackman/stabilitet-fallback.test.ts
+  ```

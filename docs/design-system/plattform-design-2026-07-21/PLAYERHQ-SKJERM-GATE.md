@@ -1,8 +1,10 @@
 # PlayerHQ skjerm-gate
 
-Oppdatert 2026-07-22 (komplett redesign-gate).
+Oppdatert 2026-07-23 (komplett redesign-gate + tema-fasit).
 
 **Mål:** Alle PlayerHQ-ruter = V2/B eller redirect til V2.
+
+**Tema:** Alltid **lys** (ingen bryter). Se `docs/design-system/TEMA-LYS-MORK.md`.
 
 ## Resultat: 0 GAP
 

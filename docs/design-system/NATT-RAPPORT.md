@@ -55,4 +55,4 @@ https://github.com/akgolfsoftware/Golf_Headquarters/pull/116
 
 ## Domene (uendret fasit)
 
-SG-gap → pyramide → Workbench · ARG = nærspill · bias ≠ spredning · PlayerHQ alltid lys · AgencyOS mørk default
+SG-gap → pyramide → Workbench · ARG = nærspill · bias ≠ spredning · PlayerHQ alltid lys · AgencyOS mørk default · fasit `TEMA-LYS-MORK.md`

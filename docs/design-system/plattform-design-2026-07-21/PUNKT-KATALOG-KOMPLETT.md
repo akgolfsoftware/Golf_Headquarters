@@ -1,7 +1,8 @@
 # Punktkatalog — ALLE punkter (ferdig + gjenstår + synlighet)
 
-**Dato:** 2026-07-22  
+**Dato:** 2026-07-22 · **oppdatert 2026-07-23**  
 **Synlighet besluttet:** ALT **JA** (Anders, alt. 1) — unntak K.* = NEI, B.* = ANDERS.  
+**Tema:** PlayerHQ alltid lys · AgencyOS mørk default — `docs/design-system/TEMA-LYS-MORK.md`.  
 **Formål:** Én liste over *alt*. Først se alle punkter. **Deretter** setter du hva som er **synlig** i produktet.  
 **Synlighet (kolonne S):**  
 - `JA` = synlig for bruker nå  
