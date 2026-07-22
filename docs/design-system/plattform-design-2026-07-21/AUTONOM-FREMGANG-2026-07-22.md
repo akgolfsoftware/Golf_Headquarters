@@ -11,7 +11,8 @@
 | `c2aa3de2` | Workbench accept/reject + brief previews |
 | `c69d9669` | TrackMan detail shots, feature flags on |
 | `ad9d2a21` | Player skuler DRAFT-planer til publish |
-| (+ notify TM baseline) | Coach varsles ved baseline-forslag |
+| `6f0e1a6b` | Coach varsles ved TM-baseline-forslag |
+| `cee43e1f` | Hjem «neste økt» skjuler DRAFT |
 
 ## Ferdig i kode
 
