@@ -1,7 +1,6 @@
 /**
  * PlayerHQ TrackMan-hub — v2. Liste over importerte økter, nyeste først.
- * Import-modalene (CSV/HTML/TrackMan) og trend-seksjonen er tailwind/shadcn
- * og gjenbrukes som de er; sidens ramme og liste er v2. Ingen hardkodede
+ * Én TrackMan-import-modal og trend-seksjon; sidens ramme og liste er v2. Ingen hardkodede
  * tall — ærlig tom tilstand når ingen økt er importert.
  * «?»-regelen: TrackMan-begrepet forklares via hjelpetekst-nøkkelen trackman.
  */
@@ -20,8 +19,6 @@ import {
   TomTilstand,
   HjelpTips, TilbakeLenke } from "@/components/v2";
 import { TrackmanImportModal } from "@/components/shared/trackman-import-modal";
-import { CsvImportModal } from "./csv-import-modal";
-import { HtmlImportModal } from "./html-import-modal";
 import { TrackManTrendSeksjon, byggTrendData } from "./trend-seksjon";
 import type { TrackManEnvironment } from "@/generated/prisma/client";
 
@@ -86,8 +83,6 @@ export default async function TrackManListePage() {
         variant="primary"
         label={okter.length === 0 ? "Importer TrackMan" : "Importer ny økt"}
       />
-      <CsvImportModal />
-      <HtmlImportModal />
     </div>
   );
 

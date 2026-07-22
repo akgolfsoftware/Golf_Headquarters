@@ -6,6 +6,7 @@ import { resolveDrillPakke } from "./plan-action-executor";
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { varsleVedPlanAction } from "./notify-plan-action";
+import { proposeTmBaselinesFromTest } from "@/lib/teknisk-plan/test-to-tm-baseline";
 
 export const AGENT_NAME = "test-agent";
 
@@ -22,6 +23,18 @@ export async function runTestAgent(userId: string): Promise<AgentResult> {
 
     if (resultater.length === 0) {
       return { signalsWritten: 0, planActionsWritten: 0 };
+    }
+
+    // Whitelist-tester → foreslå TM-baseline på fullsving (PlanAction, ikke auto-skriv)
+    const sisteResultat = resultater[0];
+    if (sisteResultat) {
+      try {
+        const tm = await proposeTmBaselinesFromTest(userId, sisteResultat.id);
+        // teller ikke som signals; PlanAction telles nedenfor via separat path
+        void tm;
+      } catch {
+        // baseline-forslag er best-effort
+      }
     }
 
     const perTest = new Map<string, typeof resultater>();

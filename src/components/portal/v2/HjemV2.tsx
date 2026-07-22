@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { DashboardData } from "@/app/portal/actions";
 import { WorkbenchInngang } from "./WorkbenchInngang";
+import { FortsettRundeCta } from "@/components/portal/runde-logg/fortsett-runde-cta";
 import {
   T,
   fmtSg,
@@ -302,11 +303,19 @@ export function HjemV2({ data }: { data: DashboardData }) {
 
       {/* Runde-føring + booking — faste innganger (runde: maks 2 trykk fra åpnet app) */}
       <Kort pad="8px 20px">
+        <FortsettRundeCta />
         <Link href="/portal/runde/live" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
           <Rad
             leading={<Icon name="flag" size={16} style={{ color: T.lime }} />}
             title="Før runde slag for slag"
             sub="SG beregnes automatisk når du lagrer"
+          />
+        </Link>
+        <Link href="/portal/mal/runder/ny" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+          <Rad
+            leading={<Icon name="upload" size={16} style={{ color: T.mut }} />}
+            title="Hurtig score / importer runde"
+            sub="Ny runde uten live — eller hent score fra fil etterpå"
           />
         </Link>
         <Link href="/portal/booking" style={{ textDecoration: "none", color: "inherit", display: "block" }}>

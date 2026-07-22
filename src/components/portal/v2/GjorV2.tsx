@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition, type ReactNode } from "react";
 import { markerOktStatus } from "@/lib/portal-gjennomfore/okt-status-actions";
 import type { GjennomforeData } from "@/lib/portal-gjennomfore/gjennomfore-data";
+import { FortsettRundeCta } from "@/components/portal/runde-logg/fortsett-runde-cta";
 import {
   T,
   Caps,
@@ -111,6 +112,7 @@ function HurtigStatus({
 function SekundarHandlinger() {
   return (
     <Kort eyebrow="Annet i dag">
+      <FortsettRundeCta />
       <Link href="/portal/runde/live" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
         <Rad
           leading={<Icon name="flag" size={16} style={{ color: T.mut }} />}
@@ -123,6 +125,13 @@ function SekundarHandlinger() {
           leading={<Icon name="list" size={16} style={{ color: T.mut }} />}
           title="Logg tidligere runde"
           sub="Etterpå-føring"
+        />
+      </Link>
+      <Link href="/portal/mal/runder/ny" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+        <Rad
+          leading={<Icon name="upload" size={16} style={{ color: T.mut }} />}
+          title="Hurtig score / importer runde"
+          sub="Ny runde eller score fra fil (UpGame) etter lagring"
         />
       </Link>
       <Link href="/portal/fysisk" style={{ textDecoration: "none", color: "inherit", display: "block" }}>

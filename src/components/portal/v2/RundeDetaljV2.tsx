@@ -7,6 +7,7 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { UpGameImportModal } from "@/app/portal/mal/runder/[id]/upgame-import-modal";
 import {
   T,
   Caps,
@@ -59,6 +60,8 @@ export type HullStat = {
 
 export type RundeDetaljData = {
   id: string;
+  /** True rett etter lagring fra live/etterpå-føring (?lagret=1). */
+  nettoppLagret?: boolean;
   baneNavn: string;
   datoTekst: string;
   score: number;
@@ -195,6 +198,30 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
         )}
       </div>
 
+      {data.nettoppLagret && data.erEier && (
+        <Kort>
+          <p style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, margin: 0 }}>
+            Runden er lagret
+          </p>
+          <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "6px 0 12px" }}>
+            Se Strokes Gained under. Mangler hull-score? Importer fra UpGame (CSV) eller fyll inn detaljer.
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
+            <UpGameImportModal roundId={data.id} />
+            {data.sgTotal != null ? (
+              <StatusPill tone="up">SG klar</StatusPill>
+            ) : (
+              <Link
+                href={`/portal/mal/runder/${data.id}/slag`}
+                style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.forest }}
+              >
+                Legg til mer detalj →
+              </Link>
+            )}
+          </div>
+        </Kort>
+      )}
+
       {/* B: én primær CTA tidlig */}
       {data.erEier && data.visKjedeStatus ? (
         <Link href={`/portal/mal/runder/${data.id}/fullfor`} style={{ textDecoration: "none", display: "block" }}>
@@ -302,7 +329,8 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
             </Link>
           )}
           {data.erEier && (
-            <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+              <UpGameImportModal roundId={data.id} />
               <Link
                 href={`/portal/mal/runder/${data.id}/hull`}
                 style={{ textDecoration: "none" }}

@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { RundeRow, RunderKpis } from "@/lib/portal-runder/runder-list-data";
+import { FortsettRundeCta } from "@/components/portal/runde-logg/fortsett-runde-cta";
 import {
   T,
   fmtSg,
@@ -123,7 +124,8 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
             <Tittel mobile={mobile} em="runder">{fornavn ? `${fornavn}s` : "Dine"}</Tittel>
           </div>
         </div>
-        <div className="hidden md:flex" style={{ gap: 8 }}>
+        <div className="hidden md:flex" style={{ gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+          <FortsettRundeCta variant="pill" />
           <Link href={RUTE_LIVE} style={{ textDecoration: "none" }}>
             <CTAPill icon="flag">Start live-føring</CTAPill>
           </Link>
@@ -134,6 +136,13 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
             <Knapp ghost icon="plus">Hurtig score</Knapp>
           </Link>
         </div>
+      </div>
+
+      {/* Fortsett kladd — mobil/alle */}
+      <div className="md:hidden">
+        <Kort pad="4px 16px">
+          <FortsettRundeCta />
+        </Kort>
       </div>
 
       {/* B: status først (også tom) */}
@@ -168,7 +177,7 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
                 color: T.mut,
               }}
             >
-              Hurtig score eller import →
+              Hurtig score — deretter importer fra UpGame på rundedetalj →
             </Link>
           </div>
         </Kort>
