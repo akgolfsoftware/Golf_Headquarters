@@ -1,7 +1,7 @@
 /**
  * translate-taxonomy — gjør AK-taksonomi spillervennlig i PlayerHQ Standard-modus.
  *
- * I CoachHQ vises koder som M0, L_AUTO, CS80, PR3 — disse er kompakte og presise
+ * I AgencyOS vises koder som M0, L_AUTO, CS80, PR3 — disse er kompakte og presise
  * for trenere som er fortrolige med taksonomien. For spillere er de uleselige.
  *
  * Disse helperne oversetter koder til hverdagsspråk (norsk bokmål). Bruk dem

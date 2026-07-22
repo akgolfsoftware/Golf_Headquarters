@@ -40,4 +40,5 @@ export const LOW_RISK_ACTION_TYPES = new Set([
   "REST_DAY_ADD",
   "INTENSITY_ADJUST",
   "TRAINING_GAP",
+  "TM_BASELINE_PROPOSE",
 ]);

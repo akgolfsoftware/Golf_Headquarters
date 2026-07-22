@@ -28,6 +28,10 @@ export type ImportTrackManResult = {
   matchedCount: number;
   goalsUpdated: number;
   source: "csv-import" | "html-import";
+  /** Satt når vi stoppet pga lignende økt — kall på nytt med forceImport. */
+  needsConfirm?: boolean;
+  similarSessionId?: string;
+  message?: string;
 };
 
 export type ImportTrackManInput = {
@@ -39,7 +43,28 @@ export type ImportTrackManInput = {
   preferredTaskId?: string;
   /** 0-baserte indekser for valgte slag (steg 3 i modal). Uten = alle. */
   selectedIndices?: number[];
+  /** Overstyr advarsel om lignende økt samme dag. */
+  forceImport?: boolean;
 };
+
+/** Oppgaver i aktiv teknisk plan — til manuell match i import-modal. */
+export async function listMatchTasksForImport(onBehalfOfUserId?: string) {
+  const user = await requireConsentingUser();
+  const targetUserId = await resolveTargetUserId(user, onBehalfOfUserId);
+  const plan = await loadMatchPlan(targetUserId);
+  if (!plan) return [] as Array<{ id: string; label: string }>;
+  return plan.tasks.map((t) => ({
+    id: t.id,
+    label: [
+      t.pNummer,
+      t.tittel,
+      t.slagType ?? null,
+      t.koller.slice(0, 2).join("/") || null,
+    ]
+      .filter(Boolean)
+      .join(" · "),
+  }));
+}
 
 /**
  * Én import-pipeline for CSV og HTML.
@@ -99,6 +124,35 @@ export async function importTrackMan(
   }
   if (shots.length === 0) {
     throw new Error("Ingen slag valgt for import.");
+  }
+
+  // Duplikat-advarsel: samme bruker, samme kalenderdag, samme antall slag
+  if (!input.forceImport) {
+    const dayStart = new Date(recordedAt);
+    dayStart.setHours(0, 0, 0, 0);
+    const dayEnd = new Date(dayStart);
+    dayEnd.setDate(dayEnd.getDate() + 1);
+    const similar = await prisma.trackManSession.findFirst({
+      where: {
+        userId: targetUserId,
+        recordedAt: { gte: dayStart, lt: dayEnd },
+        shotCount: shots.length,
+      },
+      select: { id: true, shotCount: true, recordedAt: true },
+      orderBy: { recordedAt: "desc" },
+    });
+    if (similar) {
+      return {
+        sessionIds: [],
+        shotCount: shots.length,
+        matchedCount: 0,
+        goalsUpdated: 0,
+        source,
+        needsConfirm: true,
+        similarSessionId: similar.id,
+        message: `Ligner en økt allerede lagret i dag (${similar.shotCount} slag). Vil du importere likevel?`,
+      };
+    }
   }
 
   const plan = await loadMatchPlan(targetUserId);

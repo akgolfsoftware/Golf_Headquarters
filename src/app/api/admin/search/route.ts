@@ -1,4 +1,4 @@
-// Global søk for CoachHQ — brukes av Cmd+K-modalen.
+// Global søk for AgencyOS — brukes av Cmd+K-modalen.
 //
 // Returnerer fire kategorier: players, plans, bookings, routes.
 // Begrenset til 5 per kategori for å holde respons-tiden lav.

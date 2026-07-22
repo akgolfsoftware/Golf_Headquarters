@@ -8,11 +8,13 @@ export type ShotMatchResult = {
 
 export type MatchTaskCandidate = {
   id: string;
+  tittel: string;
   koller: string[];
   slagType: string | null;
   sortOrder: number;
   hovedfokus: boolean;
   pSortOrder: number;
+  pNummer: string;
 };
 
 export type MatchPlan = {
@@ -73,11 +75,13 @@ export async function loadMatchPlan(userId: string): Promise<MatchPlan | null> {
         select: {
           sortOrder: true,
           hovedfokus: true,
+          pNummer: true,
           tasks: {
             where: { status: { in: ["ACTIVE", "PENDING"] } },
             orderBy: { sortOrder: "asc" },
             select: {
               id: true,
+              tittel: true,
               koller: true,
               slagType: true,
               sortOrder: true,
@@ -95,11 +99,13 @@ export async function loadMatchPlan(userId: string): Promise<MatchPlan | null> {
     for (const task of pos.tasks) {
       tasks.push({
         id: task.id,
+        tittel: task.tittel,
         koller: task.koller,
         slagType: task.slagType,
         sortOrder: task.sortOrder,
         hovedfokus: pos.hovedfokus,
         pSortOrder: pos.sortOrder,
+        pNummer: pos.pNummer,
       });
     }
   }

@@ -6,19 +6,23 @@ const plan: MatchPlan = {
   tasks: [
     {
       id: "pitch-7",
+      tittel: "Pitch 7i",
       koller: ["7-jern"],
       slagType: "pitch",
       sortOrder: 0,
       hovedfokus: false,
       pSortOrder: 2,
+      pNummer: "P5.0",
     },
     {
       id: "full-7",
+      tittel: "Full sving 7i",
       koller: ["7-jern"],
       slagType: "fullsving",
       sortOrder: 0,
       hovedfokus: true,
       pSortOrder: 0,
+      pNummer: "P3.0",
     },
   ],
 };

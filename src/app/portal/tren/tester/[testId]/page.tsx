@@ -99,10 +99,19 @@ export default async function TestDetaljSpillerPage({
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {lagret && (
           <Kort tint pad="14px 18px">
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-              <StatusPill tone="up">Test fullført · resultat lagret</StatusPill>
-              <Link href="/portal/coach/melding" style={{ textDecoration: "none" }}>
-                <MikroMeta icon="send">Del med coach</MikroMeta>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+                <StatusPill tone="up">Test fullført · resultat lagret</StatusPill>
+                <Link href="/portal/coach/melding" style={{ textDecoration: "none" }}>
+                  <MikroMeta icon="send">Del med coach</MikroMeta>
+                </Link>
+              </div>
+              <p style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, margin: 0, lineHeight: 1.5 }}>
+                Utvalgte tester (f.eks. CHS, driver carry, smash) kan foreslå baseline på{" "}
+                <strong>full sving</strong>-TM-mål. Coach ser forslaget under Godkjenninger i AgencyOS.
+              </p>
+              <Link href="/portal/tren/teknisk-plan" style={{ textDecoration: "none" }}>
+                <MikroMeta icon="wrench">Se teknisk plan / full sving</MikroMeta>
               </Link>
             </div>
           </Kort>

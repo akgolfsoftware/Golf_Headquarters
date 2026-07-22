@@ -271,7 +271,14 @@ export type ImportertHull = z.infer<typeof importertHullSchema>;
 export async function importUpGameHoleScores(
   roundId: string,
   hull: unknown,
-): Promise<{ ok: boolean; antallHull?: number; error?: string }> {
+): Promise<{
+  ok: boolean;
+  antallHull?: number;
+  error?: string;
+  /** full = slag-kjede/SG, delvis = hullscore uten full kjede, mangler = ingen SG */
+  sgStatus?: "full" | "delvis" | "mangler";
+  sgMelding?: string;
+}> {
   const user = await requireConsentingUser();
   await assertRoundOwner(roundId, user.id);
 
@@ -311,7 +318,30 @@ export async function importUpGameHoleScores(
 
   await recomputeRoundSg(roundId);
   revalidatePath(`/portal/mal/runder/${roundId}`);
-  return { ok: true, antallHull: parsed.data.length };
+
+  // UpGame = hull-score, ikke slag-kjede → SG er typisk mangler/delvis
+  const runde = await prisma.round.findUnique({
+    where: { id: roundId },
+    select: { sgTotal: true, sgSource: true },
+  });
+  let sgStatus: "full" | "delvis" | "mangler" = "mangler";
+  let sgMelding =
+    "Hull-score er lagret. Full Strokes Gained krever slag for slag — legg til detalj om du vil.";
+  if (runde?.sgSource === "beregnet" && runde.sgTotal != null) {
+    sgStatus = "full";
+    sgMelding = "SG er beregnet fra komplett slag-kjede.";
+  } else if (runde?.sgTotal != null || runde?.sgSource === "manual") {
+    sgStatus = "delvis";
+    sgMelding =
+      "Score er oppdatert. SG er begrenset uten slag for slag (UpGame gir hull-tall).";
+  }
+
+  return {
+    ok: true,
+    antallHull: parsed.data.length,
+    sgStatus,
+    sgMelding,
+  };
 }
 
 /**

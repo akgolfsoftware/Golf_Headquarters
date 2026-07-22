@@ -28,6 +28,8 @@ export async function acceptPlanAction(actionId: string) {
   revalidatePath("/admin/godkjenninger");
   revalidatePath(`/admin/godkjenninger/${actionId}`);
   revalidatePath("/admin/approvals");
+  revalidatePath("/portal/tren/teknisk-plan");
+  revalidatePath("/portal/mal/trackman");
 }
 
 export async function rejectPlanAction(actionId: string) {
