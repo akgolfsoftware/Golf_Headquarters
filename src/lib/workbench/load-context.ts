@@ -11,8 +11,9 @@ import type { WorkbenchContext } from "./types";
 export async function loadWorkbenchContext(
   userId: string,
   weekOffset = 0,
+  opts?: { viewer?: "player" | "coach" },
 ): Promise<WorkbenchContext | null> {
-  const data = await loadWorkbenchData(userId, weekOffset);
+  const data = await loadWorkbenchData(userId, weekOffset, opts);
   if (data === null) return null;
 
   const [insights, activePlan, tekniskPlan, agentFeed] = await Promise.all([

@@ -53,7 +53,7 @@ async function ensurePlanForPlayer(playerId: string, createdById?: string) {
         userId: playerId,
         name: "Treningsplan",
         startDate: new Date(),
-        status: "ACTIVE",
+        status: "DRAFT",
         isActive: true,
         ...(createdById ? { createdById } : {}),
       },

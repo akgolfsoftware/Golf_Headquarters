@@ -18,23 +18,10 @@ import { anthropicKlient, COACH_MODEL } from "@/lib/anthropic";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
 import { Caps, Tittel, Kort, KpiFlis, StatusPill, CTAPill, TomTilstand, Icon, TilbakeLenke } from "@/components/v2";
+import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 
 export const dynamic = "force-dynamic";
 
-const ACTION_LABEL: Record<string, string> = {
-  PYRAMID_ADJUST: "Juster pyramide",
-  SESSION_ADD: "Legg til økt",
-  SESSION_REMOVE: "Fjern økt",
-  INTENSITY_ADJUST: "Juster intensitet",
-  TAPER_ENGAGE: "Start taper",
-  WITHDRAW: "Trekk fra",
-  DRILL_SUGGEST: "Drill-forslag",
-  TEST_SCHEDULE: "Planlegg test",
-  PEER_COMPARE: "Sammenlign",
-  RECOVERY_ADD: "Legg til hvile",
-  ESCALATION: "Eskalering",
-  DELOAD: "Pauseuke",
-};
 
 export default async function DagligBrief() {
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
@@ -65,10 +52,10 @@ export default async function DagligBrief() {
       name,
       initials,
       tone: "neu" as const,
-      meta: ACTION_LABEL[a.actionType] ?? a.actionType,
+      meta: handlingstypeLabel(a.actionType),
       signal: isEscalation ? "Haster" : isWarn ? "Plan-justering" : "Forslag venter",
       signalType: isEscalation ? "alert" : isWarn ? "warn" : "info",
-      reason: forklaring ?? `${ACTION_LABEL[a.actionType] ?? a.actionType} — foreslått av ${a.agentName}`,
+      reason: forklaring ?? `${handlingstypeLabel(a.actionType)} — foreslått av ${a.agentName}`,
     });
   }
 
@@ -249,7 +236,7 @@ export default async function DagligBrief() {
                               {a.user.name}
                             </span>
                             <span style={{ fontFamily: T.mono, fontSize: 9, textTransform: "uppercase", color: T.mut, background: T.panel3, borderRadius: 4, padding: "1px 6px" }}>
-                              {ACTION_LABEL[a.actionType] ?? a.actionType}
+                              {handlingstypeLabel(a.actionType)}
                             </span>
                           </div>
                           <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>

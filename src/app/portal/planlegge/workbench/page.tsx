@@ -36,7 +36,7 @@ export default async function V2WorkbenchPreviewPage({ searchParams }: Props) {
   if (user.role === "GUEST") redirect("/admin/kalender");
 
   const weekOffset = parseWeekOffset((await searchParams).uke);
-  const ctx = await loadWorkbenchContext(user.id, weekOffset);
+  const ctx = await loadWorkbenchContext(user.id, weekOffset, { viewer: "player" });
   const { wbMode } = lesPreferences(user);
 
   const actions: WorkbenchV2Actions = {

@@ -208,10 +208,14 @@ const SESSION_SELECT = {
 /**
  * Kjernen: gitt en bruker-id, bygg `WorkbenchData` fra ekte Prisma-data.
  * Returnerer `null` hvis brukeren ikke finnes (coach-rute → notFound()).
+ *
+ * viewer "player": skjul DRAFT/REJECTED-planer (kun det coachen har sendt / aktivt).
+ * viewer "coach" (default): alt for planlegging.
  */
 export async function loadWorkbenchData(
   userId: string,
   weekOffset = 0,
+  opts?: { viewer?: "player" | "coach" },
 ): Promise<WorkbenchData | null> {
   const exists = await prisma.user.findUnique({ where: { id: userId }, select: { id: true } });
   if (!exists) return null;
@@ -236,6 +240,18 @@ export async function loadWorkbenchData(
 
   const year = now.getFullYear();
 
+  // Spiller ser kun planer som er sendt / aktive — ikke coach-utkast (DRAFT/REJECTED).
+  const playerVisibleStatuses: import("@/generated/prisma/client").PlanStatus[] = [
+    "PENDING_PLAYER",
+    "ACCEPTED",
+    "ACTIVE",
+    "PAUSED",
+  ];
+  const planFilter =
+    opts?.viewer === "player"
+      ? { userId, status: { in: playerVisibleStatuses } }
+      : { userId };
+
   const [
     weekSessions,
     last30Sessions,
@@ -251,12 +267,12 @@ export async function loadWorkbenchData(
     monthV2Sessions,
   ] = await Promise.all([
     prisma.trainingPlanSession.findMany({
-      where: { plan: { userId }, scheduledAt: { gte: weekStart, lt: weekEnd } },
+      where: { plan: planFilter, scheduledAt: { gte: weekStart, lt: weekEnd } },
       orderBy: { scheduledAt: "asc" },
       select: SESSION_SELECT,
     }),
     prisma.trainingPlanSession.findMany({
-      where: { plan: { userId }, scheduledAt: { gte: tretti, lt: now } },
+      where: { plan: planFilter, scheduledAt: { gte: tretti, lt: now } },
       select: { pyramidArea: true, durationMin: true, scheduledAt: true },
     }),
     prisma.goal.findMany({
@@ -368,7 +384,7 @@ export async function loadWorkbenchData(
     // dag-cellene trenger. Plan + v2 lukes for dubletter via generertFraId
     // under, samme regel som mergeWeekSessions.
     prisma.trainingPlanSession.findMany({
-      where: { plan: { userId }, scheduledAt: { gte: monthStart, lt: monthEnd } },
+      where: { plan: planFilter, scheduledAt: { gte: monthStart, lt: monthEnd } },
       select: { id: true, scheduledAt: true, durationMin: true, pyramidArea: true },
     }),
     prisma.trainingSessionV2.findMany({

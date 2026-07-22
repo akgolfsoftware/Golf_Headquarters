@@ -66,7 +66,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
       where: { AND: [coachScopedPlayerWhere(user), { id }] },
       select: { name: true },
     }),
-    loadWorkbenchContext(id, weekOffset),
+    loadWorkbenchContext(id, weekOffset, { viewer: "coach" }),
     prisma.user
       .findMany({
         where: { AND: [coachScopedPlayerWhere(user), { deletedAt: null }] }, // I0: kun coachede spillere (PLATFORM_ONLY er usynlig i AgencyOS).
