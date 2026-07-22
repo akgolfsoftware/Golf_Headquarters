@@ -5,6 +5,11 @@
 **Hard regel:** Én jobb → én inngang → én motor. Aldri duplikat.  
 **For deg:** Enkel norsk, én pakke om gangen. Si **GO + pakkenummer**.
 
+> **Alle punkter (katalog + synlighet):**  
+> 1. `PUNKT-KATALOG-KOMPLETT.md` — ~103 ID-er, ferdig + gjenstår  
+> 2. `SYNLIGHET-RUNDE-2.md` — du setter JA/NEI  
+> 3. `src/lib/product-visibility.ts` — kode-fasit når du har bestemt  
+
 ---
 
 ## 0. Hva som allerede er ferdig (ikke gjør om)
