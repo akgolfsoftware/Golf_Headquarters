@@ -134,16 +134,48 @@ Kun Hjem, Plan/Workbench-spiller, Analyse. Mål: **du** klarer 5-sekunders-teste
 
 ## 7. Mobbin MCP — status og hvordan koble
 
-**Nå:** Ingen Mobbin-server i Grok MCP-listen (søkt «mobbin» → 0 tools).
+**Config:** Lagt inn i `~/.grok/config.toml`:
 
-**Når du vil ha den:**
+```toml
+[mcp_servers.mobbin]
+url = "https://api.mobbin.com/mcp"
+enabled = true
+```
 
-1. Mobbin Pro/Team-abonnement med API/MCP hvis tilgjengelig  
-2. Legg inn i `~/.grok/config.toml` under `[mcp_servers.mobbin]` (url/command + nøkkel i env, aldri i git)  
-3. Restart Grok  
-4. Skill `ak-design-evolution` (nedenfor) bruker da Mobbin først  
+**URL:** `https://api.mobbin.com/mcp` (Streamable HTTP + OAuth)  
+**Krever:** Betalt Mobbin-plan + innlogging i nettleser ved første bruk.
 
-**Inntil da:** Bruk Mobbin i nettleser + denne planen + skillen.
+### Status 2026-07-23
+
+| Steg | Status |
+|---|---|
+| Server i config | ✅ |
+| Server starter | ✅ |
+| OAuth / innlogging | ❌ **må du gjøre** (handshake feiler til du autoriserer) |
+
+### Du gjør dette én gang (Grok)
+
+1. I Grok: skriv **`/mcps`** (eller Ctrl+L → MCP Servers)  
+2. Finn **mobbin**  
+3. Velg **Authenticate** / logg inn  
+4. Nettleser åpner → logg inn med **Mobbin-kontoen** din  
+5. Trykk **r** i MCP-modal for å refreshe  
+6. Sjekk: `grok mcp doctor mobbin` → skal bli grønn  
+
+**Alternativ CLI** (hvis Grok støtter det i din versjon):
+
+```bash
+grok mcp add --transport http mobbin https://api.mobbin.com/mcp
+# deretter /mcps → Authenticate
+```
+
+Tokens lagres lokalt under `~/.grok/mcp_credentials.json` (ikke i git).
+
+### Etter autorisering
+
+Si i chat f.eks.:  
+«Søk Mobbin for home dashboard fitness-apper»  
+Skill `ak-design-evolution` bruker da MCP først.
 
 ---
 
