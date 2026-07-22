@@ -8,8 +8,8 @@
  * "off" = skjul (rute kan fortsatt finnes for direkte URL / admin)
  * "core" = alltid på (kan ikke skrus av uten kodeendring)
  *
- * Inntil runde 2 er ferdig: defaults speiler dagens app (kjerne på, eksperiment
- * ofte på i AgencyOS Mer — endres når du har bestemt).
+ * Beslutning 2026-07-22 (Anders): ALT synlig som default.
+ * Unntak: forbud (K.*) og rene panel-oppgaver (B.*) — ikke meny-toggles.
  */
 
 export type Visibility = "core" | "on" | "off";
@@ -47,8 +47,8 @@ export const PLAYERHQ_VISIBILITY: VisibilityArea[] = [
   { id: "phq-venner", label: "Venner", visibility: "on", punktIds: ["J.11"] },
   { id: "phq-utfordringer", label: "Utfordringer", visibility: "on", punktIds: ["J.12"] },
   { id: "phq-talent", label: "Talent (spiller)", visibility: "on", punktIds: ["J.13", "H.08"] },
-  { id: "phq-tm-baseline-ui", label: "Godkjenn TM-baseline (UI)", visibility: "off", punktIds: ["D.02", "A.10"] },
-  { id: "phq-runde-hurtig", label: "Runde hurtigmodus", visibility: "off", punktIds: ["F.02"] },
+  { id: "phq-tm-baseline-ui", label: "Godkjenn TM-baseline (UI)", visibility: "on", punktIds: ["D.02", "A.10"] },
+  { id: "phq-runde-hurtig", label: "Runde hurtigmodus", visibility: "on", punktIds: ["F.02"] },
 ];
 
 /**

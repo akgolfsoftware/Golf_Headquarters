@@ -1,6 +1,7 @@
 # Punktkatalog — ALLE punkter (ferdig + gjenstår + synlighet)
 
 **Dato:** 2026-07-22  
+**Synlighet besluttet:** ALT **JA** (Anders, alt. 1) — unntak K.* = NEI, B.* = ANDERS.  
 **Formål:** Én liste over *alt*. Først se alle punkter. **Deretter** setter du hva som er **synlig** i produktet.  
 **Synlighet (kolonne S):**  
 - `JA` = synlig for bruker nå  
@@ -26,7 +27,7 @@
 | A.07 | Teknisk plan (P1–P10) | FERDIG | JA | |
 | A.08 | TrackMan-hub + **én** import (CSV/HTML) | FERDIG | JA | MVP 2026-07-22 |
 | A.09 | Full sving-flate i teknisk plan | FERDIG | JA | |
-| A.10 | Test → TM-baseline *forslag* (PlanAction) | FERDIG | ? | UI-godkjenning kan være skjult til L1 |
+| A.10 | Test → TM-baseline *forslag* (PlanAction) | FERDIG | JA | UI-godkjenning kan være skjult til L1 |
 | A.11 | Runde live + etterpå + kladd | FERDIG | JA | |
 | A.12 | Fortsett-runde CTA (Hjem/Gjør/Runder) | FERDIG | JA | |
 | A.13 | UpGame-import på runde | FERDIG | JA | |
@@ -57,7 +58,7 @@
 |---|---|---|---|
 | C.01 | Coach: publiser uke → spiller ser | DELVIS | JA |
 | C.02 | Spiller: kun publisert plan (ikke utkast-forvirring) | DELVIS | JA |
-| C.03 | Notion Calendar → HQ-økt | DELVIS | ? |
+| C.03 | Notion Calendar → HQ-økt | DELVIS | JA |
 | C.04 | iPad/touch DnD verifisert av deg | TODO | — |
 
 ---
@@ -66,12 +67,12 @@
 
 | ID | Punkt | St | S (forslag) |
 |---|---|---|---|
-| D.01 | Godkjenningskø: TM + test-forslag lesbart | DELVIS | ? |
-| D.02 | Godkjenn TM-baseline i UI (én knapp) | TODO | ? |
+| D.01 | Godkjenningskø: TM + test-forslag lesbart | DELVIS | JA |
+| D.02 | Godkjenn TM-baseline i UI (én knapp) | TODO | JA |
 | D.03 | 0 «CoachHQ» i synlig UI-tekst | DELVIS | JA |
-| D.04 | Daily brief: runde + TM + test-signaler | DELVIS | ? |
-| D.05 | Caddie / AI-hub AgencyOS | FERDIG | ? |
-| D.06 | AI-agenter admin-side | FERDIG | ? |
+| D.04 | Daily brief: runde + TM + test-signaler | DELVIS | JA |
+| D.05 | Caddie / AI-hub AgencyOS | FERDIG | JA |
+| D.06 | AI-agenter admin-side | FERDIG | JA |
 
 ---
 
@@ -81,9 +82,9 @@
 |---|---|---|---|
 | E.01 | Duplikat-advarsel ved lik session | TODO | JA (når ferdig) |
 | E.02 | Manuell match-override i import | TODO | JA (når ferdig) |
-| E.03 | Dispersjon/stabilitet (eksisterende session-UI) | DELVIS | ? |
+| E.03 | Dispersjon/stabilitet (eksisterende session-UI) | DELVIS | JA |
 | E.04 | Legacy TrackMan-ruter → redirect | TODO | — |
-| E.05 | Test-resultat: hint om baseline/full sving | TODO | ? |
+| E.05 | Test-resultat: hint om baseline/full sving | TODO | JA |
 | E.06 | Smoke/E2E CSV → TmGoal | TODO | — |
 | E.07 | Admin TrackMan (samme motor) | FERDIG | JA |
 
@@ -94,9 +95,9 @@
 | ID | Punkt | St | S (forslag) |
 |---|---|---|---|
 | F.01 | Live runde færre trykk (polish) | DELVIS | JA |
-| F.02 | Hurtigmodus score (samme motor) | TODO | ? |
+| F.02 | Hurtigmodus score (samme motor) | TODO | JA |
 | F.03 | UpGame: «SG full/delvis/mangler»-tekst | TODO | JA |
-| F.04 | Round-agent synlig i godkjenninger | DELVIS | ? |
+| F.04 | Round-agent synlig i godkjenninger | DELVIS | JA |
 | F.05 | GolfBox personlig runde-import | SENERE | NEI til GO |
 | F.06 | Arccos / Shot Scope | SENERE | NEI til GO |
 
@@ -109,7 +110,7 @@
 | G.01 | Marketing forside/priser/coaching/blogg V2 | DELVIS | JA (offentlig) |
 | G.02 | Stats-hub polish | DELVIS | JA |
 | G.03 | SEO nøkkel-landinger | TODO | JA når klart |
-| G.04 | PGA / baner / spillere / verktøy | DELVIS | ? |
+| G.04 | PGA / baner / spillere / verktøy | DELVIS | JA |
 
 ---
 
@@ -123,7 +124,7 @@
 | H.04 | Intern komponent-lab | DELVIS | NEI (kun intern) |
 | H.05 | Meg-assistent (admin) | DELVIS | NEI / admin |
 | H.06 | claude-config git-sync | TODO | — |
-| H.07 | `/portal/ny-okt` ekte DB-lagring | TODO | ? |
+| H.07 | `/portal/ny-okt` ekte DB-lagring | TODO | JA |
 | H.08 | Talent-radar / talent-sider | DELVIS | ? (feature flag finnes) |
 
 ---
@@ -134,31 +135,31 @@ Disse finnes i menyen i dag. Sett S i runde 2.
 
 | ID | Punkt (nav) | St | S |
 |---|---|---|---|
-| I.01 | Godkjenninger | FERDIG | ? |
-| I.02 | Handlingssenter | FERDIG | ? |
-| I.03 | Daglig brief | FERDIG | ? |
-| I.04 | Oppfølgingskø | FERDIG | ? |
-| I.05 | Grupper | FERDIG | ? |
-| I.06 | Talent-radar | FERDIG | ? |
-| I.07 | Talent-sammenligning | FERDIG | ? |
-| I.08 | Planer / maler / teknisk plan admin | FERDIG | ? |
-| I.09 | Turneringer | FERDIG | ? |
-| I.10 | Drills-bibliotek | FERDIG | ? |
-| I.11 | Tester | FERDIG | ? |
-| I.12 | Rapporter | FERDIG | ? |
-| I.13 | Runder (admin) | FERDIG | ? |
-| I.14 | Compliance | FERDIG | ? |
-| I.15 | Audit-log | FERDIG | ? |
-| I.16 | Moderering | FERDIG | ? |
-| I.17 | TrackMan admin | FERDIG | ? |
-| I.18 | Live / mission | FERDIG | ? |
-| I.19 | Caddie AI | FERDIG | ? |
-| I.20 | AI-agenter | FERDIG | ? |
-| I.21 | Økonomi | FERDIG | ? |
-| I.22 | Marketing admin | FERDIG | ? |
-| I.23 | E-postmaler | FERDIG | ? |
-| I.24 | Kalender-synk Google | FERDIG | ? |
-| I.25 | Klubb-innstillinger | FERDIG | ? |
+| I.01 | Godkjenninger | FERDIG | JA |
+| I.02 | Handlingssenter | FERDIG | JA |
+| I.03 | Daglig brief | FERDIG | JA |
+| I.04 | Oppfølgingskø | FERDIG | JA |
+| I.05 | Grupper | FERDIG | JA |
+| I.06 | Talent-radar | FERDIG | JA |
+| I.07 | Talent-sammenligning | FERDIG | JA |
+| I.08 | Planer / maler / teknisk plan admin | FERDIG | JA |
+| I.09 | Turneringer | FERDIG | JA |
+| I.10 | Drills-bibliotek | FERDIG | JA |
+| I.11 | Tester | FERDIG | JA |
+| I.12 | Rapporter | FERDIG | JA |
+| I.13 | Runder (admin) | FERDIG | JA |
+| I.14 | Compliance | FERDIG | JA |
+| I.15 | Audit-log | FERDIG | JA |
+| I.16 | Moderering | FERDIG | JA |
+| I.17 | TrackMan admin | FERDIG | JA |
+| I.18 | Live / mission | FERDIG | JA |
+| I.19 | Caddie AI | FERDIG | JA |
+| I.20 | AI-agenter | FERDIG | JA |
+| I.21 | Økonomi | FERDIG | JA |
+| I.22 | Marketing admin | FERDIG | JA |
+| I.23 | E-postmaler | FERDIG | JA |
+| I.24 | Kalender-synk Google | FERDIG | JA |
+| I.25 | Klubb-innstillinger | FERDIG | JA |
 
 ---
 
@@ -172,13 +173,13 @@ Disse finnes i menyen i dag. Sett S i runde 2.
 | J.04 | Tester (spiller) | FERDIG | JA |
 | J.05 | Drills | FERDIG | JA |
 | J.06 | Booking hub | FERDIG | JA |
-| J.07 | Fysisk | FERDIG | ? |
-| J.08 | Gameplan / baneguide | FERDIG | ? |
-| J.09 | DataGolf | FERDIG | ? |
+| J.07 | Fysisk | FERDIG | JA |
+| J.08 | Gameplan / baneguide | FERDIG | JA |
+| J.09 | DataGolf | FERDIG | JA |
 | J.10 | Coach-meldinger | FERDIG | JA |
-| J.11 | Venner | FERDIG | ? |
-| J.12 | Utfordringer | FERDIG | ? |
-| J.13 | Talent (spiller) | DELVIS | ? |
+| J.11 | Venner | FERDIG | JA |
+| J.12 | Utfordringer | FERDIG | JA |
+| J.13 | Talent (spiller) | DELVIS | JA |
 | J.14 | Meg · abonnement / innstillinger / helse | FERDIG | JA |
 
 ---
@@ -188,7 +189,7 @@ Disse finnes i menyen i dag. Sett S i runde 2.
 | ID | Punkt | S |
 |---|---|---|
 | K.01 | Egen FullSving-app/tabell | NEI |
-| K.02 | To TrackMan-import-modaler | NEI (fjernet) |
+| K.02 | To TrackMan-import-modaler | NEI |
 | K.03 | CoachHQ som produktnavn i UI | NEI |
 | K.04 | Auto-endring av plan uten godkjenning | NEI |
 | K.05 | Force-push main | NEI |
@@ -216,7 +217,9 @@ Disse finnes i menyen i dag. Sett S i runde 2.
 
 ## Runde 2 — sett synlighet
 
-Når du er klar, svar f.eks.:
+**FERDIG 2026-07-22:** Anders valgte **alt synlig** (alt. 1).
+
+Historisk mal (ikke lenger nødvendig):
 
 ```
 Synlig: A.*, J.01–J.06, I.01, I.10–I.12, C.01–C.02
