@@ -1,9 +1,9 @@
 # Utviklingsplan — design system + alle skjermer
 
-**Status:** GO 2026-07-22 — under utførelse  
-**Dato:** 2026-07-22  
-**Grunnlag:** FASIT v2 Presis + **B-pakke** (Hjem, Plan, Analyse låst)  
-**I dag:** se `DAGSPLAN-2026-07-22.md` (blokk 1–3 ut dagen)
+**Status:** Redesign-gate 0 GAP (2026-07-22/23) · **neste = evolusjon**  
+**Dato:** 2026-07-22 · oppdatert 2026-07-23  
+**Grunnlag:** FASIT v2 Presis + **B-pakke**  
+**Evolusjon:** `docs/design-system/DESIGN-EVOLUSJON-2026-07-23.md` (bølger V1–V6)
 
 ### Fremdrift
 
@@ -12,8 +12,8 @@
 | 1 FASIT + B | **Ferdig** (§3b i FASIT.md) |
 | 2 B-klosser | **Ferdig** (B-KLOSSER.md — finnes i v2) |
 | 3 Dommerskjermer i app | **Ferdig** (Hjem · Plan · Analyse = B i app) |
-| 4 PlayerHQ resten | **Pågår** — Gjør · Booking · Live · Oppsummering · Meg B (blokk 1 ferdig i dagsplan) |
-| 5–8 | Ikke startet |
+| 4 PlayerHQ resten | **0 GAP redesign** — finpuss = evolusjon V1–V2 |
+| 5–8 AgencyOS / craft | **0 GAP ruter** — finpuss = evolusjon V3–V6 |
 
 ---
 

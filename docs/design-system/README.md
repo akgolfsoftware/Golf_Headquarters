@@ -4,6 +4,7 @@
 |---|---|
 | **[FASIT.md](./FASIT.md)** | Låst fasit (tokens, tema, navn, familier) |
 | **[TEMA-LYS-MORK.md](./TEMA-LYS-MORK.md)** | **Lys/mørk per produkt** (PlayerHQ alltid lys · AgencyOS mørk default) |
+| **[DESIGN-EVOLUSJON-2026-07-23.md](./DESIGN-EVOLUSJON-2026-07-23.md)** | **Neste steg mot verdensklasse** (bølger V1–V6, Mobbin-mønstre) |
 | **[KOMPONENTSTATUS.md](./KOMPONENTSTATUS.md)** | 124 komponenter i Claude Design |
 | **[plattform-design-2026-07-21/](./plattform-design-2026-07-21/)** | **Komplett designforslag** — wireframe + hi-fi + alle 361 skjermer |
 | **plattform-design … /PLAYERHQ-SKJERM-GATE.md** | PlayerHQ ruter = 0 GAP redesign |
