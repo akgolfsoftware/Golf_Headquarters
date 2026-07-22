@@ -1,10 +1,9 @@
 "use client";
 
 /**
- * PlayerHQ Analysere — v2 (retning C «Presis»). Komponert 1:1 fra
- * ui_kits/v2/phq-analysere.jsx → funksjonen Analysere (fem faner), men med
- * EKTE data fra loadMinGolf + loadAnalyticsWorkbenchData. Kun v2-komponenter
- * fra "@/components/v2"; ingen ad-hoc UI-primitiver, ingen rå hex (kun T.*).
+ * PlayerHQ Analysere — v2 Presis + opplevelse B-pakke (form + nedbrytning).
+ * Komponert fra ui_kits/v2/phq-analysere.jsx, EKTE data fra loadMinGolf +
+ * loadAnalyticsWorkbenchData. Kun v2-komponenter; ingen rå hex (kun T.*).
  *
  * Ærlighet foran pixel-1:1: der datakontrakten ikke bærer et felt (per-slag
  * TrackMan, klubbfart/spinn/høyde/landing/side, scoring per hulltype, test-
@@ -43,6 +42,7 @@ import {
   Icon,
   HjelpTips,
   Skjelett,
+  CTAPill,
   type StatusTone,
 } from "@/components/v2";
 import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
@@ -148,6 +148,11 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
   }
 
   const maxAbs = Math.max(0.1, ...sgStatus.kategorier.map((k) => Math.abs(k.sg)));
+  // B-pakke: svakeste område (lavest SG) utheves — matcher analyse-3-retninger B.
+  const svakestAkse =
+    sgStatus.kategorier.length > 0
+      ? sgStatus.kategorier.reduce((a, b) => (b.sg < a.sg ? b : a)).akse
+      : null;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap }}>
@@ -155,7 +160,7 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
         {sgStatus.verdi ? (
           <>
             <TallHero
-              label="Total Strokes Gained"
+              label="Strokes Gained · form"
               value={sgStatus.verdi}
               delta={sgDelta}
               dir={sgDir}
@@ -175,32 +180,33 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
         )}
       </Kort>
 
-      <Kort eyebrow="Hvor du vinner slag" action={<span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><HjelpTips k="sgBaseline" size={12} /><HjelpTips k="sgOmrade" /></span>}>
+      <Kort eyebrow="Per område" action={<span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><HjelpTips k="sgBaseline" size={12} /><HjelpTips k="sgOmrade" /></span>}>
         {sgStatus.kategorier.length > 0 ? (
           <>
-            {sgStatus.kategorier.map((k, i) => (
-              <FordelingRad
-                key={k.akse}
-                code={k.akse}
-                label={SG_NAVN[k.akse]}
-                signal
-                pct={(Math.abs(k.sg) / maxAbs) * 100}
-                value={fmtSg2(k.sg)}
-                neg={k.sg < 0}
-                last={i === sgStatus.kategorier.length - 1}
-              />
-            ))}
+            {sgStatus.kategorier.map((k, i) => {
+              const isWeak = k.akse === svakestAkse;
+              return (
+                <FordelingRad
+                  key={k.akse}
+                  code={k.akse}
+                  label={isWeak ? `${SG_NAVN[k.akse]} · svakest` : SG_NAVN[k.akse]}
+                  signal
+                  pct={(Math.abs(k.sg) / maxAbs) * 100}
+                  value={fmtSg2(k.sg)}
+                  neg={k.sg < 0}
+                  emphasis={isWeak}
+                  last={i === sgStatus.kategorier.length - 1}
+                />
+              );
+            })}
             {nesteFokus && (
               <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }}>
-                <InnsiktChip>
-                  {nesteFokus.omrade} ({nesteFokus.sgTap} per runde). Baseline: {nesteFokus.baseline}.
-                </InnsiktChip>
-                {/* Bro: SG-gap → AK-resept → Workbench (plan natt/Cherny-standard) */}
-                {nesteFokus.diagnose && (
+                {/* Bro: SG-gap → resept → Workbench (B-pakke: én primær CTA) */}
+                {nesteFokus.diagnose ? (
                   <div
                     style={{
-                      padding: "10px 12px",
-                      borderRadius: 12,
+                      padding: "12px 14px",
+                      borderRadius: 16,
                       background: T.panel2,
                       border: `1px solid ${T.border}`,
                       display: "flex",
@@ -209,43 +215,30 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
                     }}
                   >
                     <Caps size={9} style={{ color: T.mut }}>
-                      Neste fokus
+                      Resept
                     </Caps>
-                    <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, lineHeight: 1.35 }}>
+                    <div style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, color: T.fg, lineHeight: 1.3 }}>
                       {nesteFokus.diagnose.symptom}
                     </div>
-                    <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.4 }}>
+                    <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.4 }}>
                       {nesteFokus.diagnose.grunnlag}
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2, flexWrap: "wrap" }}>
                       <AkseChip a={nesteFokus.diagnose.resept.akse as AkseKey} />
-                      <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.fg2 }}>
+                      <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2 }}>
                         {nesteFokus.diagnose.resept.tekst}
                       </span>
                     </div>
                   </div>
+                ) : (
+                  <InnsiktChip>
+                    {nesteFokus.omrade} ({nesteFokus.sgTap} per runde). Baseline: {nesteFokus.baseline}.
+                  </InnsiktChip>
                 )}
-                <Link
-                  href={nesteFokus.handlingHref}
-                  className="v2-press v2-focus"
-                  style={{
-                    textDecoration: "none",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                    height: 40,
-                    padding: "0 16px",
-                    borderRadius: 9999,
-                    background: T.lime,
-                    color: T.onLime,
-                    fontFamily: T.ui,
-                    fontSize: 13,
-                    fontWeight: 700,
-                  }}
-                >
-                  <Icon name="calendar" size={15} style={{ color: T.onLime }} />
-                  Planlegg dette i Workbench
+                <Link href={nesteFokus.handlingHref} style={{ textDecoration: "none", display: "block" }}>
+                  <CTAPill icon="calendar" full>
+                    Planlegg dette
+                  </CTAPill>
                 </Link>
               </div>
             )}

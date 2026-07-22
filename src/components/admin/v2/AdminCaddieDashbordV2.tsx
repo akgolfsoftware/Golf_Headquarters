@@ -1,23 +1,13 @@
 "use client";
 
 /**
- * AgencyOS · Caddie · Dashbord (v2) — co-agent-rammeverket. Rekomponert fra
- * src/components/admin/caddie/co-agent.tsx (samme data-kontrakt,
- * src/lib/admin-caddie/co-agent-data.tsx, uendret) med v2-biblioteket.
- *
- * Tre primitiver, samme funksjon som originalen:
- *   1. Utkast → godkjenning (kildebruk + diff + tre-handlings-struktur)
- *   2. Agent-forvaltning (fleet som kort-liste: status/modenhet/treffsikkerhet)
- *   3. Audit-log (agent og menneske likestilt)
- *
- * Mobil-optimalisert: fleet/audit er Rad-lister, ikke brede tabeller — ingen
- * sidescroll. Bygget utelukkende av v2-primitiver (Kort/Rad/StatusPill/
- * TomTilstand) — ingen ad-hoc UI, ingen rå hex.
+ * AgencyOS Caddie-dashbord — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Co-agent: utkast · fleet · audit. T.* only.
  */
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Caps, Tittel, Kort, Rad, StatusPill, Knapp, TomTilstand, Icon, T, type StatusTone } from "@/components/v2";
+import { Caps, Tittel, Kort, Rad, StatusPill, Knapp, TomTilstand, CTAPill, Icon, T, type StatusTone } from "@/components/v2";
 import type {
   AuditRow,
   CoAgentDraft,
@@ -313,23 +303,36 @@ function AuditPanelV2({ audit }: { audit: AuditRow[] }) {
 
 // ── Hovedkomponent ──────────────────────────────────────────────
 export function AdminCaddieDashbordV2({ coachFirstName, dateLabel, timeLabel, draft, fleet, fleetSummary, audit }: CoAgentProps) {
+  const statusTekst = draft ? "Utkast venter" : fleetSummary.active > 0 ? `${fleetSummary.active} aktive` : "Klar";
+  const statusTone: StatusTone = draft ? "warn" : fleetSummary.active > 0 ? "lime" : "info";
+
   return (
-    <>
-      <div>
-        <Caps>AGENCYOS · CO-AGENT RAMMEVERK</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="caddien jobber for deg.">{`God dag, ${coachFirstName} —`}</Tittel>
-        </div>
-        <p style={{ marginTop: 8, maxWidth: 720, fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut }}>
-          Tre primitiver for AI-assistert coaching: utkast-til-godkjenning med kildebruk og diff, forvaltning av agenter med modenhet og treffsikkerhet, og en audit-logg som likestiller agent og menneske. Hver utgående handling krever godkjenning — interne handlinger utføres direkte.
-        </p>
-        <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-          <StatusPill>Live</StatusPill>
-          <span style={{ fontFamily: T.mono, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: T.mut }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
+        <div>
+          <Caps>AgencyOS · Co-agent</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em="caddien jobber for deg.">{`God dag, ${coachFirstName} —`}</Tittel>
+          </div>
+          <p style={{ marginTop: 8, maxWidth: 720, fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut }}>
+            Utkast-til-godkjenning, agent-forvaltning og audit. Utgående handlinger krever alltid godkjenning.
+          </p>
+          <div style={{ marginTop: 10, fontFamily: T.mono, fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: T.mut }}>
             {dateLabel} · {timeLabel}
-          </span>
+          </div>
         </div>
+        <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
       </div>
+
+      {/* B: én primær CTA */}
+      <Link
+        href={draft ? `/admin/godkjenninger/${draft.id}` : "/admin/godkjenninger"}
+        style={{ textDecoration: "none", display: "block" }}
+      >
+        <CTAPill icon={draft ? "check" : "inbox"} full>
+          {draft ? "Behandle utkast" : "Åpne godkjenninger"}
+        </CTAPill>
+      </Link>
 
       <SeksjonHode n="1" title="Utkast-til-godkjenning" sub="kildebruk · diff · godkjenn / rediger / avvis" badge="PLAN-JUSTERING" />
       <DraftPanelV2 draft={draft} />
@@ -340,20 +343,11 @@ export function AdminCaddieDashbordV2({ coachFirstName, dateLabel, timeLabel, dr
       <SeksjonHode n="3" title="Audit-log" sub="agent og menneske · samme logg · samme språk" badge={`SISTE ${audit.length} HENDELSER`} />
       <AuditPanelV2 audit={audit} />
 
-      <Kort style={{ background: T.panel2 }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, fontFamily: T.mono, fontSize: 11, lineHeight: 1.7, color: T.mut }}>
-          <p style={{ margin: 0 }}><b style={{ color: T.fg, fontWeight: 800 }}>Fire primitiver, samme språk.</b> Kommandolinjen tolker. Utkastet forklarer. Forvaltningen evaluerer. Audit logger. Alle bruker samme tre-handlings-struktur (Godkjenn · Rediger · Avvis) og samme kildebruk-vekting (0–100%).</p>
-          <p style={{ margin: 0 }}><b style={{ color: T.fg, fontWeight: 800 }}>Interne vs utgående er ikke knapp-tekst — det er arkitektur.</b> Interne handlinger (navigasjon, åpne mal, filtrer) krever aldri godkjenning. Utgående (book, send, endre plan) krever alltid utkast.</p>
-          <p style={{ margin: 0 }}><b style={{ color: T.fg, fontWeight: 800 }}>Modenhet er en kontrakt.</b> En agent under 80% treff promoteres ikke til høyere nivå. Coachen kan overstyre, men blokkeringen er default.</p>
-          <p style={{ margin: 0 }}><b style={{ color: T.fg, fontWeight: 800 }}>Loggføres alltid — ingen unntak.</b> Hver tolkning, hvert utkast, hver godkjenning og hver avvisning lander i audit.</p>
-        </div>
-      </Kort>
-
-      <p style={{ textAlign: "center", fontFamily: T.mono, fontSize: 10, color: T.mut }}>
-        <Link href="/admin/agencyos/caddie/aktivitet" style={{ color: T.lime, textDecoration: "underline" }}>
+      <Link href="/admin/agencyos/caddie/aktivitet" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill ghost icon="activity" full>
           Se full aktivitetslogg
-        </Link>
-      </p>
-    </>
+        </CTAPill>
+      </Link>
+    </div>
   );
 }

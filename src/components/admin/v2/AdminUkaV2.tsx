@@ -16,7 +16,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Caps, Tittel, Kort, KpiFlis, CTAPill, Icon, T, HurtigOpprett, foreslaTid } from "@/components/v2";
+import { Caps, Tittel, Kort, KpiFlis, CTAPill, StatusPill, TomTilstand, Icon, T, HurtigOpprett, foreslaTid } from "@/components/v2";
 import { flyttBookingTilDag } from "@/app/admin/agencyos/uka/actions";
 
 // I5: samme DnD-payload-mønster som Workbench-tidslinja.
@@ -175,6 +175,14 @@ export function AdminUkaV2({ data }: { data: AdminUkaV2Data }) {
     else setFeil(res.error ?? "Kunne ikke flytte bookingen.");
   };
 
+  const primaerCta = (
+    <Link href="/admin/bookinger/ny" style={{ textDecoration: "none", display: "block" }}>
+      <CTAPill icon="plus" full>
+        Ny booking
+      </CTAPill>
+    </Link>
+  );
+
   return (
     <>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
@@ -187,9 +195,9 @@ export function AdminUkaV2({ data }: { data: AdminUkaV2Data }) {
             Caddie balanserer kapasitet, reise og familie-tid.
           </p>
         </div>
-        <Link href="/admin/bookinger/ny" style={{ textDecoration: "none" }}>
-          <CTAPill icon="plus">Ny booking</CTAPill>
-        </Link>
+        <StatusPill tone={data.antallBookinger > 0 ? "lime" : "warn"}>
+          {data.antallBookinger === 0 ? "Tom uke" : `${data.antallBookinger} bookinger`}
+        </StatusPill>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
@@ -199,12 +207,25 @@ export function AdminUkaV2({ data }: { data: AdminUkaV2Data }) {
         <KpiFlis label="Kapasitet" value={`${data.kapasitetPct} %`} delta={`${data.kapasitetMaal} t mål`} dir={data.kapasitetPct >= 70 ? "up" : undefined} />
       </div>
 
+      {primaerCta}
+
       {feil && (
         <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 13px", borderRadius: 11, background: `color-mix(in srgb, ${T.down} 9%, ${T.panel})`, border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)` }}>
           <Icon name="alert-triangle" size={13} style={{ color: T.down }} />
           <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg }}>{feil}</span>
         </div>
       )}
+
+      {data.antallBookinger === 0 && (
+        <Kort>
+          <TomTilstand
+            icon="calendar"
+            title="Ingen bookinger denne uka"
+            sub="Opprett en booking for å fylle uka, eller åpne full kalender for oversikt."
+          />
+        </Kort>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7" style={{ gap: 8 }}>
         {data.dager.map((d) => (
           <DagKort key={d.key} d={d} onFlytt={onFlytt} flytterId={flytterId} onTomLuke={(dato, kl) => setTomLuke({ dato: tilISODato(dato), kl })} />

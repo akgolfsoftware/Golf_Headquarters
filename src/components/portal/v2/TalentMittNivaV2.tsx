@@ -1,11 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · Talent · Mitt nivå — v2 (retning C «Presis»).
- * Spilleren mot kohort-snittet (samme nivå): RadarProfil med to serier +
- * akse-detaljer med kohort-referansemerke. Verdiene (1–10) og kohort-snittet
- * beregnes i server-page (uendret logikk fra legacy) — her vises de bare.
- * Tom kohort (0 andre spillere) vises ærlig uten sammenlignings-serie.
+ * PlayerHQ · Talent · Mitt nivå — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { T, Caps, Tittel, Kort, StatusPill, HjelpTips, RadarProfil } from "@/components/v2";

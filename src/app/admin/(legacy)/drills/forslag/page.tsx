@@ -4,13 +4,14 @@
  * Viser PENDING drill-forslag fra drill-forslag-agenten (CaddieDraft med
  * toolName "createDrillSuggestion"). Coach godkjenner (→ ExerciseDefinition i
  * biblioteket) eller avviser. COACH/ADMIN.
+ *
+ * V2 chrome via (legacy)/layout V2Shell. Header: Caps/Tittel/TilbakeLenke.
  */
 
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AgPage, AgPageHead } from "@/components/admin/agencyos/ui";
+import { Caps, Tittel, TilbakeLenke } from "@/components/v2";
+import { T } from "@/lib/v2/tokens";
 import { DRILL_DRAFT_TOOL } from "@/lib/agents/drill-forslag-agent";
 import { ForslagListe, type ForslagRad } from "./forslag-liste";
 
@@ -51,23 +52,18 @@ export default async function DrillForslagPage() {
   });
 
   return (
-    <AgPage>
-      <AgPageHead
-        eyebrow="Planlegge · Drill-bibliotek"
-        title="AI drill-"
-        italic="forslag"
-        lead={`${forslag.length} forslag venter på godkjenning. Godkjente driller legges i biblioteket.`}
-        actions={
-          <Link
-            href="/admin/drills"
-            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" strokeWidth={1.8} />
-            Til biblioteket
-          </Link>
-        }
-      />
+    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <TilbakeLenke href="/admin/drills">Til biblioteket</TilbakeLenke>
+      <div>
+        <Caps>Planlegge · Drill-bibliotek</Caps>
+        <div style={{ marginTop: 10 }}>
+          <Tittel em="forslag">AI drill-</Tittel>
+        </div>
+        <p style={{ marginTop: 8, maxWidth: 520, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+          {forslag.length} forslag venter på godkjenning. Godkjente driller legges i biblioteket.
+        </p>
+      </div>
       <ForslagListe forslag={forslag} />
-    </AgPage>
+    </div>
   );
 }

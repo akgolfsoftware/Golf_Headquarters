@@ -1,22 +1,12 @@
 "use client";
 
-import { Knapp } from "@/components/v2";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Check,
-  ChevronRight,
-  Copy,
-  Download,
-  KeyRound,
-  Loader2,
-  ShieldCheck,
-  Smartphone,
-  Trash2,
-} from "lucide-react";
 import { useToast } from "@/components/shared/toast-provider";
 import { ReauthModal } from "@/components/auth/reauth-modal";
 import { createClient } from "@/lib/supabase/client";
+import { T } from "@/lib/v2/tokens";
+import { Caps, Kort, Knapp, StatusPill, Icon } from "@/components/v2";
 
 type Steg = 1 | 2 | 3;
 
@@ -34,16 +24,7 @@ type AktivFactor = {
 };
 
 /**
- * 2FA-flyt via Supabase MFA (TOTP).
- *
- * Tre tilstander:
- * 1. Ingen verifisert factor → vis 3-stegs setup-flyt (metode → QR → backup)
- * 2. Verifisert factor finnes → vis status + "Deaktivér 2FA"-knapp (krever re-auth)
- * 3. Laster → spinner
- *
- * Backup-koder genereres lokalt og vises kun én gang. Supabase Auth støtter
- * IKKE serverside backup-koder for TOTP — derfor lager vi koder kun til
- * visning, og lar brukeren laste ned/kopiere selv.
+ * 2FA-flyt via Supabase MFA (TOTP) — B-pakke UI.
  */
 export function TwoFaClient() {
   const router = useRouter();
@@ -54,7 +35,6 @@ export function TwoFaClient() {
   const [henter, setHenter] = useState(true);
   const [feil, setFeil] = useState<string | null>(null);
 
-  // Setup-flyt state
   const [steg, setSteg] = useState<Steg>(1);
   const [enrolled, setEnrolled] = useState<EnrolledFactor | null>(null);
   const [kode, setKode] = useState("");
@@ -62,11 +42,9 @@ export function TwoFaClient() {
   const [lagret, setLagret] = useState(false);
   const [backupKoder, setBackupKoder] = useState<string[]>([]);
 
-  // Deaktivering
   const [showReauth, setShowReauth] = useState(false);
   const [deaktiverer, setDeaktiverer] = useState(false);
 
-  // Sjekk om brukeren allerede har 2FA aktivert
   const hentFactors = useCallback(async () => {
     setHenter(true);
     setFeil(null);
@@ -76,7 +54,6 @@ export function TwoFaClient() {
       setFeil(error.message);
       return;
     }
-    // data.totp er allerede filtrert til kun verifiserte TOTP-factors
     const verifisert = data?.totp[0];
     if (verifisert) {
       setAktivFactor({
@@ -94,14 +71,9 @@ export function TwoFaClient() {
     hentFactors();
   }, [hentFactors]);
 
-  // Steg 1 → 2: kall enroll() og hent QR-kode
   async function tilSteg2() {
     setFeil(null);
     setPending(true);
-    // Hvis det allerede finnes en ikke-verifisert factor, rydd opp først.
-    // Supabase returnerer feil hvis vi prøver å enrolle en ny factor mens
-    // det finnes "unverified" factors. data.all inneholder factors med alle
-    // statuser, mens data.totp kun er verifiserte.
     const { data: existingFactors } = await supabase.auth.mfa.listFactors();
     const uverifiserte = existingFactors?.all.filter(
       (f) => f.factor_type === "totp" && f.status === "unverified",
@@ -130,7 +102,6 @@ export function TwoFaClient() {
     setSteg(2);
   }
 
-  // Steg 2 → 3: kall challenge() + verify()
   async function bekreftKode() {
     if (!enrolled) return;
     setFeil(null);
@@ -157,8 +128,6 @@ export function TwoFaClient() {
       setFeil(oversettAuthFeil(error.message));
       return;
     }
-    // Generer backup-koder lokalt (kun for visning — Supabase støtter ikke
-    // server-side backup-koder for TOTP).
     setBackupKoder(genererBackupKoder());
     setSteg(3);
   }
@@ -169,7 +138,6 @@ export function TwoFaClient() {
       return;
     }
     toast.success("2FA aktivert");
-    // Reset setup-state og hent oppdatert factor-liste
     setEnrolled(null);
     setKode("");
     setBackupKoder([]);
@@ -219,42 +187,52 @@ export function TwoFaClient() {
     toast.info("Backup-koder lastet ned");
   }
 
-  // -----------------------------------------------------------------------
-  // RENDER
-  // -----------------------------------------------------------------------
-
   if (henter) {
     return (
-      <div className="flex items-center justify-center rounded-xl border border-border bg-card p-12">
-        <Loader2
-          className="h-5 w-5 animate-spin text-muted-foreground"
-          strokeWidth={1.75}
-        />
-      </div>
+      <Kort>
+        <div style={{ display: "flex", justifyContent: "center", padding: 32 }}>
+          <Icon name="loader" size={18} style={{ color: T.mut }} />
+        </div>
+      </Kort>
     );
   }
 
-  // Tilstand A: 2FA er allerede aktivert
   if (aktivFactor) {
     return (
       <>
-        <div className="space-y-6">
-          <Kort tittel="2FA er aktivert" aux="Aktiv">
-            <div className="flex items-start gap-4">
-              <div className="grid h-12 w-12 flex-shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-                <ShieldCheck className="h-6 w-6" strokeWidth={1.75} aria-hidden />
-              </div>
-              <div className="flex-1 space-y-2">
-                <p className="text-sm text-foreground">
-                  Kontoen din er beskyttet med tofaktor-autentisering. Du må
-                  oppgi en 6-sifret kode hver gang du logger inn.
+        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <StatusPill tone="up">Aktiv</StatusPill>
+          </div>
+          <Kort>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+              <span
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 9999,
+                  background: `color-mix(in srgb, ${T.up} 12%, ${T.panel})`,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flex: "none",
+                }}
+              >
+                <Icon name="shield-check" size={20} style={{ color: T.up }} />
+              </span>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg }}>
+                  2FA er aktivert
+                </div>
+                <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+                  Kontoen din er beskyttet. Du må oppgi en 6-sifret kode ved innlogging.
                 </p>
                 {aktivFactor.friendlyName && (
-                  <p className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+                  <p style={{ margin: "8px 0 0", fontFamily: T.mono, fontSize: 10, color: T.mut, textTransform: "uppercase", letterSpacing: "0.08em" }}>
                     {aktivFactor.friendlyName}
                   </p>
                 )}
-                <p className="font-mono text-xs text-muted-foreground">
+                <p style={{ margin: "4px 0 0", fontFamily: T.mono, fontSize: 11, color: T.mut }}>
                   Aktivert{" "}
                   {new Date(aktivFactor.createdAt).toLocaleDateString("nb-NO", {
                     year: "numeric",
@@ -265,33 +243,34 @@ export function TwoFaClient() {
               </div>
             </div>
 
-            {feil && (
-              <div
-                role="alert"
-                className="mt-6 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
-              >
-                {feil}
-              </div>
-            )}
+            {feil && <FeilBoks msg={feil} />}
 
-            <div className="mt-6 flex justify-end">
+            <div style={{ marginTop: 16, display: "flex", justifyContent: "flex-end" }}>
               <button
                 type="button"
                 onClick={() => setShowReauth(true)}
                 disabled={deaktiverer}
-                className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-destructive/30 bg-destructive/10 px-4 text-sm font-semibold text-destructive transition-colors hover:bg-destructive/20 disabled:opacity-60"
+                className="v2-press v2-focus"
+                style={{
+                  appearance: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  minHeight: 40,
+                  borderRadius: 9999,
+                  border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`,
+                  background: `color-mix(in srgb, ${T.down} 10%, ${T.panel})`,
+                  padding: "0 14px",
+                  fontFamily: T.ui,
+                  fontSize: 12.5,
+                  fontWeight: 600,
+                  color: T.down,
+                  cursor: deaktiverer ? "default" : "pointer",
+                  opacity: deaktiverer ? 0.5 : 1,
+                }}
               >
-                {deaktiverer ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.75} />
-                    Deaktiverer …
-                  </>
-                ) : (
-                  <>
-                    <Trash2 className="h-4 w-4" strokeWidth={1.75} />
-                    Deaktivér 2FA
-                  </>
-                )}
+                <Icon name="trash-2" size={14} />
+                {deaktiverer ? "Deaktiverer …" : "Deaktivér 2FA"}
               </button>
             </div>
           </Kort>
@@ -311,169 +290,173 @@ export function TwoFaClient() {
     );
   }
 
-  // Tilstand B: Setup-flyt
   return (
-    <div className="space-y-6">
+    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <StegIndikator steg={steg} />
 
       {steg === 1 && (
-        <Kort tittel="Aktiver tofaktor" aux="Steg 1 av 3">
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Beskytt kontoen din med en 6-sifret engangskode i tillegg til
-              passord. Du trenger en autenticator-app:
-            </p>
-            <ul className="space-y-2 text-sm text-foreground">
-              {[
-                "Google Authenticator",
-                "Authy",
-                "1Password",
-                "Microsoft Authenticator",
-              ].map((app) => (
-                <li key={app} className="flex items-center gap-2">
-                  <Smartphone
-                    className="h-4 w-4 text-primary"
-                    strokeWidth={1.75}
-                    aria-hidden
-                  />
-                  {app}
-                </li>
-              ))}
-            </ul>
+        <Kort>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
+            <div style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg }}>Aktiver tofaktor</div>
+            <Caps>Steg 1 av 3</Caps>
           </div>
-
-          {feil && (
-            <div
-              role="alert"
-              className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
-            >
-              {feil}
-            </div>
-          )}
-
-          <div className="mt-6 flex justify-end">
-            <Knapp onClick={tilSteg2} disabled={pending}>
-              {pending ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.75} />
-                  Starter …
-                </>
-              ) : (
-                <>
-                  Start oppsett
-                  <ChevronRight className="h-4 w-4" strokeWidth={1.75} />
-                </>
-              )}
+          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+            Beskytt kontoen med en 6-sifret engangskode i tillegg til passord. Du trenger en authenticator-app:
+          </p>
+          <ul style={{ margin: "12px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
+            {["Google Authenticator", "Authy", "1Password", "Microsoft Authenticator"].map((app) => (
+              <li key={app} style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontSize: 13, color: T.fg }}>
+                <Icon name="phone" size={14} style={{ color: T.forest }} />
+                {app}
+              </li>
+            ))}
+          </ul>
+          {feil && <FeilBoks msg={feil} />}
+          <div style={{ marginTop: 16, display: "flex", justifyContent: "flex-end" }}>
+            <Knapp icon="arrow-right" onClick={tilSteg2} disabled={pending}>
+              {pending ? "Starter …" : "Start oppsett"}
             </Knapp>
           </div>
         </Kort>
       )}
 
       {steg === 2 && enrolled && (
-        <Kort tittel="Skann QR-kode" aux="Steg 2 av 3">
-          <div className="space-y-6">
-            <p className="text-sm text-muted-foreground">
-              Åpne autenticator-appen og skann QR-koden under. Eller skriv inn
-              secret-koden manuelt.
-            </p>
-            <div className="flex flex-col items-center gap-4">
-              <QrKode src={enrolled.qrCode} />
-              <div className="text-center">
-                <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                  Manuell secret
-                </div>
-                <code className="mt-1 inline-block break-all rounded-md border border-border bg-muted px-4 py-2 font-mono text-sm tabular-nums text-foreground">
-                  {enrolled.secret}
-                </code>
-              </div>
+        <Kort>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
+            <div style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg }}>Skann QR-kode</div>
+            <Caps>Steg 2 av 3</Caps>
+          </div>
+          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+            Åpne authenticator-appen og skann QR-koden. Eller skriv inn secret manuelt.
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, marginTop: 16 }}>
+            <div style={{ borderRadius: 12, border: `1px solid ${T.border}`, background: T.panel2, padding: 12 }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={enrolled.qrCode} alt="QR-kode for 2FA-oppsett" width={200} height={200} style={{ display: "block" }} />
             </div>
-
-            <label className="block">
-              <span className="mb-2 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-                6-sifret kode fra appen
-              </span>
-              <input
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]{6}"
-                maxLength={6}
-                value={kode}
-                onChange={(e) =>
-                  setKode(e.target.value.replace(/[^0-9]/g, ""))
-                }
-                autoFocus
-                className="w-full rounded-md border border-input bg-card px-4 py-4 text-center font-mono text-lg tabular-nums tracking-[0.5em] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30"
-                placeholder="000000"
-              />
-            </label>
-
-            {feil && (
-              <div
-                role="alert"
-                className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
-              >
-                {feil}
-              </div>
-            )}
-
-            <div className="flex items-center justify-between gap-2">
-              <button
-                type="button"
-                onClick={async () => {
-                  // Avbryt: fjern uverifisert factor
-                  if (enrolled) {
-                    await supabase.auth.mfa.unenroll({
-                      factorId: enrolled.factorId,
-                    });
-                  }
-                  setEnrolled(null);
-                  setKode("");
-                  setSteg(1);
+            <div style={{ textAlign: "center" }}>
+              <Caps>Manuell secret</Caps>
+              <code
+                style={{
+                  display: "inline-block",
+                  marginTop: 6,
+                  borderRadius: 10,
+                  border: `1px solid ${T.borderS}`,
+                  background: T.panel2,
+                  padding: "8px 12px",
+                  fontFamily: T.mono,
+                  fontSize: 12,
+                  color: T.fg,
+                  wordBreak: "break-all",
                 }}
-                disabled={pending}
-                className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-input bg-card px-4 text-sm font-medium text-foreground hover:border-primary hover:text-primary disabled:opacity-60"
               >
-                Tilbake
-              </button>
-              <Knapp onClick={bekreftKode} disabled={pending || kode.length !== 6}>
-                {pending ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.75} />
-                    Bekrefter …
-                  </>
-                ) : (
-                  <>
-                    Bekreft
-                    <ChevronRight className="h-4 w-4" strokeWidth={1.75} />
-                  </>
-                )}
-              </Knapp>
+                {enrolled.secret}
+              </code>
             </div>
+          </div>
+
+          <label style={{ display: "block", marginTop: 16 }}>
+            <Caps style={{ marginBottom: 8 }}>6-sifret kode fra appen</Caps>
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]{6}"
+              maxLength={6}
+              value={kode}
+              onChange={(e) => setKode(e.target.value.replace(/[^0-9]/g, ""))}
+              autoFocus
+              placeholder="000000"
+              style={{
+                width: "100%",
+                height: 52,
+                borderRadius: 12,
+                border: `1px solid ${T.borderS}`,
+                background: T.panel2,
+                textAlign: "center",
+                fontFamily: T.mono,
+                fontSize: 20,
+                letterSpacing: "0.4em",
+                color: T.fg,
+                outline: "none",
+                boxSizing: "border-box",
+              }}
+            />
+          </label>
+
+          {feil && <FeilBoks msg={feil} />}
+
+          <div style={{ marginTop: 16, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+            <Knapp
+              ghost
+              disabled={pending}
+              onClick={async () => {
+                if (enrolled) {
+                  await supabase.auth.mfa.unenroll({ factorId: enrolled.factorId });
+                }
+                setEnrolled(null);
+                setKode("");
+                setSteg(1);
+              }}
+            >
+              Tilbake
+            </Knapp>
+            <Knapp icon="arrow-right" onClick={bekreftKode} disabled={pending || kode.length !== 6}>
+              {pending ? "Bekrefter …" : "Bekreft"}
+            </Knapp>
           </div>
         </Kort>
       )}
 
       {steg === 3 && (
-        <Kort tittel="Backup-koder" aux="Steg 3 av 3">
-          <div className="flex items-start gap-2 rounded-md border border-accent/40 bg-accent/10 px-4 py-2">
-            <KeyRound
-              className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-foreground"
-              strokeWidth={1.75}
-            />
-            <p className="text-sm text-foreground">
-              Hver kode kan brukes <strong>én gang</strong> hvis du mister
-              tilgang til autenticator-appen. Lagre dem trygt — du får ikke se
-              dem igjen.
+        <Kort>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
+            <div style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg }}>Backup-koder</div>
+            <Caps>Steg 3 av 3</Caps>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              gap: 10,
+              alignItems: "flex-start",
+              borderRadius: T.rRow,
+              border: `1px solid color-mix(in srgb, ${T.warn} 35%, transparent)`,
+              background: `color-mix(in srgb, ${T.warn} 10%, ${T.panel})`,
+              padding: "10px 12px",
+            }}
+          >
+            <Icon name="lock" size={14} style={{ color: T.warn, marginTop: 2, flex: "none" }} />
+            <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.5 }}>
+              Hver kode kan brukes <strong>én gang</strong> hvis du mister appen. Lagre dem trygt — du får ikke se dem igjen.
             </p>
           </div>
 
-          <ul className="mt-6 grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <ul
+            style={{
+              margin: "14px 0 0",
+              padding: 0,
+              listStyle: "none",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 8,
+            }}
+          >
             {backupKoder.map((k, i) => (
               <li
                 key={k}
-                className="flex items-center gap-2 rounded-md border border-border bg-muted px-4 py-2 font-mono text-sm tabular-nums text-foreground"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  borderRadius: 10,
+                  border: `1px solid ${T.borderS}`,
+                  background: T.panel2,
+                  padding: "8px 10px",
+                  fontFamily: T.mono,
+                  fontSize: 12,
+                  color: T.fg,
+                }}
               >
-                <span className="font-mono text-[10px] text-muted-foreground">
+                <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 {k}
@@ -481,26 +464,28 @@ export function TwoFaClient() {
             ))}
           </ul>
 
-          <div className="mt-6 flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={lastNedBackup}
-              className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-input bg-card px-4 text-sm font-medium text-foreground hover:border-primary hover:text-primary"
-            >
-              <Download className="h-3.5 w-3.5" strokeWidth={1.75} />
+          <div style={{ marginTop: 14, display: "flex", flexWrap: "wrap", gap: 8 }}>
+            <Knapp ghost icon="download" onClick={lastNedBackup}>
               Last ned
-            </button>
-            <button
-              type="button"
-              onClick={kopierBackup}
-              className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-input bg-card px-4 text-sm font-medium text-foreground hover:border-primary hover:text-primary"
-            >
-              <Copy className="h-3.5 w-3.5" strokeWidth={1.75} />
+            </Knapp>
+            <Knapp ghost icon="copy" onClick={kopierBackup}>
               Kopier alle
-            </button>
+            </Knapp>
           </div>
 
-          <label className="mt-6 flex cursor-pointer items-start gap-2 rounded-md border border-border bg-card px-4 py-2">
+          <label
+            style={{
+              marginTop: 14,
+              display: "flex",
+              gap: 10,
+              alignItems: "flex-start",
+              borderRadius: T.rRow,
+              border: `1px solid ${T.border}`,
+              background: T.panel2,
+              padding: "12px 14px",
+              cursor: "pointer",
+            }}
+          >
             <input
               type="checkbox"
               checked={lagret}
@@ -508,25 +493,17 @@ export function TwoFaClient() {
                 setLagret(e.target.checked);
                 setFeil(null);
               }}
-              className="mt-1 h-4 w-4 cursor-pointer rounded-sm border-input accent-primary"
+              style={{ marginTop: 2, accentColor: "var(--v2-lime)" }}
             />
-            <span className="text-sm text-foreground">
+            <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.45 }}>
               Jeg har lagret backup-kodene på et trygt sted.
             </span>
           </label>
 
-          {feil && (
-            <div
-              role="alert"
-              className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
-            >
-              {feil}
-            </div>
-          )}
+          {feil && <FeilBoks msg={feil} />}
 
-          <div className="mt-6 flex justify-end">
-            <Knapp onClick={fullfor} disabled={!lagret}>
-              <ShieldCheck className="h-4 w-4" strokeWidth={1.75} />
+          <div style={{ marginTop: 16, display: "flex", justifyContent: "flex-end" }}>
+            <Knapp icon="shield-check" onClick={fullfor} disabled={!lagret}>
               Fullfør og aktiver
             </Knapp>
           </div>
@@ -536,12 +513,27 @@ export function TwoFaClient() {
   );
 }
 
-// ---------------------------------------------------------------------------
-// HJELPERE
-// ---------------------------------------------------------------------------
+function FeilBoks({ msg }: { msg: string }) {
+  return (
+    <div
+      role="alert"
+      style={{
+        marginTop: 12,
+        borderRadius: 10,
+        border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
+        background: `color-mix(in srgb, ${T.down} 10%, ${T.panel})`,
+        padding: "10px 12px",
+        fontFamily: T.ui,
+        fontSize: 13,
+        color: T.down,
+      }}
+    >
+      {msg}
+    </div>
+  );
+}
 
 function genererBackupKoder(): string[] {
-  // Bruk crypto API hvis tilgjengelig (browser), fallback til Math.random
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   function tilfeldigByte(): number {
     if (typeof crypto !== "undefined" && crypto.getRandomValues) {
@@ -570,52 +562,6 @@ function oversettAuthFeil(msg: string): string {
   return msg;
 }
 
-// ---------------------------------------------------------------------------
-// UI-KOMPONENTER
-// ---------------------------------------------------------------------------
-
-function QrKode({ src }: { src: string }) {
-  // Supabase returnerer QR-koden som data-URL (SVG eller PNG).
-  return (
-    <div className="rounded-md border border-border bg-card p-4">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={src}
-        alt="QR-kode for 2FA-oppsett"
-        width={200}
-        height={200}
-        className="block h-[200px] w-[200px]"
-      />
-    </div>
-  );
-}
-
-function Kort({
-  tittel,
-  aux,
-  children,
-}: {
-  tittel: string;
-  aux?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-      <header className="flex items-baseline justify-between gap-4 border-b border-border px-6 py-4">
-        <h2 className="font-display text-base font-semibold text-foreground">
-          {tittel}
-        </h2>
-        {aux && (
-          <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            {aux}
-          </span>
-        )}
-      </header>
-      <div className="p-4 md:p-6">{children}</div>
-    </section>
-  );
-}
-
 function StegIndikator({ steg }: { steg: Steg }) {
   const stegene: { id: Steg; label: string }[] = [
     { id: 1, label: "Start" },
@@ -623,40 +569,50 @@ function StegIndikator({ steg }: { steg: Steg }) {
     { id: 3, label: "Backup" },
   ];
   return (
-    <ol className="flex items-center gap-2" aria-label="Fremdrift">
+    <ol style={{ display: "flex", alignItems: "center", gap: 8, margin: 0, padding: 0, listStyle: "none" }} aria-label="Fremdrift">
       {stegene.map((s, i) => {
         const ferdig = steg > s.id;
         const aktiv = steg === s.id;
         return (
-          <li key={s.id} className="flex items-center gap-2">
+          <li key={s.id} style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <span
-              className={`inline-flex h-8 w-8 items-center justify-center rounded-full border font-mono text-xs tabular-nums ${
-                aktiv
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : ferdig
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-border bg-card text-muted-foreground"
-              }`}
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 9999,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontFamily: T.mono,
+                fontSize: 11,
+                fontWeight: 700,
+                border: `1px solid ${aktiv || ferdig ? "transparent" : T.border}`,
+                background: aktiv ? T.lime : ferdig ? `color-mix(in srgb, ${T.up} 14%, ${T.panel})` : T.panel2,
+                color: aktiv ? T.onLime : ferdig ? T.up : T.mut,
+              }}
             >
-              {ferdig ? (
-                <Check className="h-3.5 w-3.5" strokeWidth={2.25} />
-              ) : (
-                s.id
-              )}
+              {ferdig ? <Icon name="check" size={12} /> : s.id}
             </span>
             <span
-              className={`font-mono text-[10px] uppercase tracking-[0.10em] ${
-                aktiv ? "text-foreground" : "text-muted-foreground"
-              }`}
+              style={{
+                fontFamily: T.mono,
+                fontSize: 10,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: aktiv ? T.fg : T.mut,
+              }}
             >
               {s.label}
             </span>
             {i < stegene.length - 1 && (
               <span
                 aria-hidden
-                className={`mx-2 h-px w-8 ${
-                  ferdig ? "bg-primary" : "bg-border"
-                }`}
+                style={{
+                  width: 24,
+                  height: 1,
+                  background: ferdig ? T.up : T.border,
+                  margin: "0 4px",
+                }}
               />
             )}
           </li>

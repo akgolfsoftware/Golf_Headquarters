@@ -1,22 +1,7 @@
 "use client";
 
 /**
- * PlayerHQ Meg · Abonnement — v2 (retning C «Presis»). Rekomponert fra den
- * ekte /portal/meg/abonnement-siden, men med EKTE data fra getAbonnementData
- * (montert i (v2preview)/v2-meg-abonnement/page.tsx). Kun v2-komponenter fra
- * "@/components/v2"; lokale byggeklosser (Melding, LenkePille, Punkt) er
- * komponert 1:1 av T.*-tokens + v2-primitiver, jf. mønsteret i InnstillingerV2
- * (Toggle/Seksjon/AboHjelp). Ingen ad-hoc UI, ingen rå hex (kun T.*).
- *
- * Abonnement-kanon (låst): PlayerHQ har INGEN nivåer. Appen er gratis via
- * prøveperiode / coaching-pakke (Performance / Performance Pro = antall økter,
- * IKKE app-nivåer) / gruppe, ELLER 299 kr/mnd. ELITE finnes ikke og vises aldri.
- *
- * Ærlighet: alt her er avledet av FAKTISK Prisma-tilstand (tier + subscription
- * + faktura-historikk). Ingen tall fabrikkeres. Post-handling-banners speiler
- * searchParams fra Stripe-flyten; tier/status utledes ALDRI fra dem.
- *
- * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
+ * PlayerHQ Meg · Abonnement — v2 Presis + B-pakke (status-hero, én grønn CTA).
  */
 
 import { useEffect, useState, type ReactNode } from "react";
@@ -256,15 +241,11 @@ export function MegAbonnementV2({ data }: { data: MegAbonnementData }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
       <div>
         <Caps>Meg · Abonnement</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel mobile={mobile}>Abonnement</Tittel>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, lineHeight: 1.6, margin: "12px 0 0", maxWidth: 540 }}>
-          PlayerHQ har ingen nivåer. Appen er gratis så lenge du har en aktiv coaching-pakke, prøveperiode eller gruppe, ellers 299 kr/mnd.
-        </p>
       </div>
 
       {/* Post-handling-banners (searchParams) + PAST_DUE-varsel */}
@@ -353,8 +334,7 @@ export function MegAbonnementV2({ data }: { data: MegAbonnementData }) {
         </Kort>
       )}
 
-      {/* Fakturaer */}
-      {fakturaer.length > 0 && (
+      {fakturaer.length > 0 ? (
         <Kort eyebrow="Fakturaer" action={<Caps size={9}>{fakturaer.length} stk</Caps>}>
           {fakturaer.map((f) => (
             <Link key={f.id} href={`/portal/meg/abonnement/faktura/${f.id}`} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
@@ -370,12 +350,22 @@ export function MegAbonnementV2({ data }: { data: MegAbonnementData }) {
             <Rad last leading={<Icon name="file-text" size={16} style={{ color: T.mut }} />} title="Alle dokumenter" />
           </Link>
         </Kort>
+      ) : (
+        <Kort eyebrow="Fakturaer">
+          <Rad
+            last
+            leading={<Icon name="file-text" size={16} style={{ color: T.mut }} />}
+            title="Ingen fakturaer ennå"
+            sub="Kvitteringer dukker opp her etter betaling"
+          />
+        </Kort>
       )}
 
-      {/* Bunn — administrer coaching-pakke (booking) */}
-      <div>
-        <LenkePille href="/portal/booking" icon="external-link" ghost>Administrer pakke</LenkePille>
-      </div>
+      {hero !== "oppgrader" && (
+        <LenkePille href="/portal/booking" icon="calendar" full>
+          Book coachtime
+        </LenkePille>
+      )}
     </div>
   );
 }

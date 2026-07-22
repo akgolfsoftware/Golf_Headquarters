@@ -1,24 +1,13 @@
 "use client";
 
 /**
- * AgencyOS TrackMan (på tvers) — v2 (retning C «Presis»). Coach-view over alle
- * TrackMan-sesjoner fra hele stallen. Ingen 1:1-mockup finnes i Claude
- * Design-kanon for denne cross-player-tabellen (design-kittet
- * `ui_kits/agencyos/trackman-app.jsx` er en per-spiller sesjon-dybde-visning
- * med dispersion/trajectory-plott, en annen skjerm) — komponert utelukkende
- * av v2-biblioteket (src/components/v2), samme mønster som Runder/Tester/Team:
- * ingen ad-hoc UI, ingen rå hex (kun T.*).
- *
- * Funksjon/data bevart 1:1 fra den ekte skjermen
- * (tidligere src/app/admin/(legacy)/trackman/page.tsx):
- *   - KPI-strip: sesjoner/slag siste 30 dager, snitt slag/sesjon, aktive spillere.
- *   - Søk (ekte klientfilter på spillernavn) + miljø-filter (ekte, ikke placeholder-toast).
- *   - Rad-liste: spiller, HCP, dato, slag, kilde, miljø — lenker til spillerprofil.
- *   - Ærlig tom-tilstand (ingen sesjoner ennå / ingen treff på filter).
+ * AgencyOS TrackMan — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Coach-view over alle TrackMan-sesjoner i stallen. T.* only.
  */
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   Caps,
   Tittel,
@@ -28,6 +17,8 @@ import {
   KpiFlis,
   FilterChips,
   TomTilstand,
+  StatusPill,
+  CTAPill,
   HjelpTips,
   Icon,
   T,
@@ -98,19 +89,32 @@ export function AdminTrackmanV2({ data }: { data: AdminTrackmanV2Data }) {
     });
   }, [data.rader, sok, aktivMiljo]);
 
-  // ── Hode ────────────────────────────────────────────────────────
+  // ── Hode — B: status ───────────────────────────────────────────
+  const nSesjoner = data.rader.length;
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <Caps>Gjennomføre · TrackMan</Caps>
+          <Caps>Gjennomføre · TrackMan · AgencyOS</Caps>
           <HjelpTips k="trackman" size={11} />
         </div>
         <div style={{ marginTop: 10 }}>
           <Tittel em="på tvers.">TrackMan</Tittel>
         </div>
       </div>
+      <StatusPill tone={nSesjoner > 0 ? "lime" : "warn"}>
+        {nSesjoner === 0 ? "Ingen sesjoner" : nSesjoner === 1 ? "1 sesjon" : `${nSesjoner} sesjoner`}
+      </StatusPill>
     </div>
+  );
+
+  // B: én primær — hjelp til import / kobling
+  const primaerCta = (
+    <Link href="/admin/hjelp" style={{ textDecoration: "none", display: "block" }}>
+      <CTAPill icon="upload" full>
+        Slik importerer du TrackMan
+      </CTAPill>
+    </Link>
   );
 
   // ── KPI-flis ────────────────────────────────────────────────────
@@ -158,14 +162,19 @@ export function AdminTrackmanV2({ data }: { data: AdminTrackmanV2Data }) {
     </div>
   );
 
-  // ── Ingen sesjoner registrert i det hele tatt ────────────────────
+  // ── Ingen sesjoner — tom + vei ──────────────────────────────────
   if (data.rader.length === 0) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {hode}
         <Kort>
-          <TomTilstand icon="activity" title="Ingen TrackMan-sesjoner ennå" sub="Når spillere importerer CSV fra TrackMan eller kobler API-en, vises sesjonene her." />
+          <TomTilstand
+            icon="activity"
+            title="Ingen TrackMan-sesjoner ennå"
+            sub="Når spillere importerer CSV fra TrackMan eller kobler API-en, vises sesjonene her."
+          />
         </Kort>
+        {primaerCta}
       </div>
     );
   }
@@ -214,6 +223,7 @@ export function AdminTrackmanV2({ data }: { data: AdminTrackmanV2Data }) {
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
       {kpi}
+      {primaerCta}
       {filterRad}
       {liste}
     </div>

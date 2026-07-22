@@ -1,18 +1,11 @@
 "use client";
 
 /**
- * PlayerHQ Meg · Hjelp · Kategori — v2 (retning C «Presis»).
- * Rekomponert fra /portal/meg/help/kategori/[slug]/page.tsx: hero med
- * kategori-navn, sort-filter (lenkebasert, samme ?sort=-parametre som før),
- * artikkel-liste og «send oss et spørsmål»-CTA.
- *
- * NB: Artikkel-metadataene (titler, lesetid, visninger, datoer) er
- * redaksjonelt hjelpesenter-innhold fra kilderuten — ikke spillerens data.
- * Sorteringen skjer i server-page (uendret); komponenten rendrer lista.
+ * PlayerHQ Meg · Hjelp · Kategori — v2 Presis + B-pakke (liste + én full CTA).
  */
 
 import Link from "next/link";
-import { T, Caps, Kort, Icon, CTAPill, MikroMeta } from "@/components/v2";
+import { T, Caps, Kort, Icon, CTAPill, MikroMeta, TomTilstand } from "@/components/v2";
 
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
@@ -119,6 +112,15 @@ export function MegHelpKategoriV2({ data }: { data: MegHelpKategoriData }) {
       </div>
 
       {/* Artikkel-liste */}
+      {data.artikler.length === 0 ? (
+        <Kort>
+          <TomTilstand
+            icon="file-text"
+            title="Ingen artikler her ennå"
+            sub="Send oss et spørsmål — vi svarer på hverdager."
+          />
+        </Kort>
+      ) : (
       <Kort pad="6px 20px">
         {data.artikler.map((a, i) => (
           <Link key={a.slug} href={`/portal/meg/help/artikkel/${a.slug}`} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
@@ -168,24 +170,13 @@ export function MegHelpKategoriV2({ data }: { data: MegHelpKategoriData }) {
           </Link>
         ))}
       </Kort>
+      )}
 
-      {/* Send-spørsmål-CTA */}
-      <Kort tint>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, textAlign: "center", padding: "10px 4px" }}>
-          <span style={{ width: 40, height: 40, borderRadius: 9999, background: `color-mix(in srgb, ${T.lime} 14%, transparent)`, color: T.lime, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-            <Icon name="mail" size={17} />
-          </span>
-          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.01em", color: T.fg }}>
-            Fant du ikke det du lette etter?
-          </div>
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, lineHeight: 1.6, color: T.mut, margin: 0 }}>
-            Send oss et spørsmål — vi svarer innen 24 timer på hverdager.
-          </p>
-          <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", marginTop: 4 }}>
-            <CTAPill icon="mail">Send oss et spørsmål</CTAPill>
-          </Link>
-        </div>
-      </Kort>
+      <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="mail" full>
+          Send oss et spørsmål
+        </CTAPill>
+      </Link>
     </div>
   );
 }

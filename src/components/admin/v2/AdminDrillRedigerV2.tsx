@@ -19,7 +19,7 @@ import type {
   SessionEnvironment,
 } from "@/generated/prisma/enums";
 import { updateDrill, type DrillInput } from "@/app/admin/(legacy)/drills/actions";
-import { Kort, Caps, Knapp, Icon, HjelpTips, T } from "@/components/v2";
+import { Kort, Caps, Knapp, Icon, HjelpTips, StatusPill, T } from "@/components/v2";
 
 export type DrillRecord = {
   id: string;
@@ -298,7 +298,7 @@ export function AdminDrillRedigerV2({ drill, andreDrills }: AdminDrillRedigerV2P
 
   return (
     <form onSubmit={lagre} style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Topptekst */}
+      {/* Topptekst — B: status + én primær CTA */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
         <div style={{ minWidth: 0 }}>
           <Link
@@ -311,6 +311,9 @@ export function AdminDrillRedigerV2({ drill, andreDrills }: AdminDrillRedigerV2P
           <h1 style={{ margin: "4px 0 0", fontFamily: T.disp, fontWeight: 700, fontSize: 26, letterSpacing: "-0.02em", color: T.fg }}>
             Rediger <em style={{ fontStyle: "italic", fontWeight: 400, color: T.lime }}>{drill.name}</em>
           </h1>
+          <div style={{ marginTop: 8 }}>
+            <StatusPill tone={pending ? "warn" : "info"}>{pending ? "Lagrer…" : "Ulagrede endringer lagres med knappen"}</StatusPill>
+          </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <Knapp ghost disabled={pending} onClick={() => router.push(`/admin/drills/${drill.id}`)}>

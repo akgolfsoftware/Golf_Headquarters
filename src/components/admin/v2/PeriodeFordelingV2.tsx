@@ -33,25 +33,43 @@ function sum(rec: Record<PyramidArea, number>): number {
 }
 
 export function PeriodeFordelingV2({ rader }: { rader: PeriodeFordelingRad[] }) {
+  const overstyrt = rader.filter((r) => r.erOverstyrt).length;
+  const statusTone = overstyrt > 0 ? "lime" as const : "info" as const;
+  const statusTekst =
+    overstyrt > 0
+      ? `${overstyrt} av ${rader.length} overstyrt`
+      : `${rader.length} perioder · standard`;
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 900 }}>
-      <div>
-        <Caps>Metodikk</Caps>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
-          <Tittel em="-fordeling">Periode</Tittel>
-          <HjelpTips k="pyramideAkse" />
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
+        <div>
+          <Caps>Metodikk</Caps>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
+            <Tittel em="-fordeling">Periode</Tittel>
+            <HjelpTips k="pyramideAkse" />
+          </div>
+          <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.mut, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 680 }}>
+            Sett minimum og maksimum andel (%) per pyramide-område for hver periode. Verdiene
+            styrer hva planleggings-varslene reagerer på — de er anbefalinger, aldri sperrer.
+            En periode uten egne verdier bruker standard-fordelingen. Etter hvert kommer
+            data-drevne forslag du kan godta eller overstyre.
+          </p>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.mut, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 680 }}>
-          Sett minimum og maksimum andel (%) per pyramide-område for hver periode. Verdiene
-          styrer hva planleggings-varslene reagerer på — de er anbefalinger, aldri sperrer.
-          En periode uten egne verdier bruker standard-fordelingen. Etter hvert kommer
-          data-drevne forslag du kan godta eller overstyre.
-        </p>
+        <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
       </div>
 
-      {rader.map((rad) => (
-        <PeriodeKort key={rad.periodeType} rad={rad} />
-      ))}
+      {rader.length === 0 ? (
+        <Kort>
+          <div style={{ textAlign: "center", padding: "24px 12px", fontFamily: T.ui, fontSize: 13, color: T.mut }}>
+            Ingen perioder konfigurert ennå.
+          </div>
+        </Kort>
+      ) : (
+        rader.map((rad) => (
+          <PeriodeKort key={rad.periodeType} rad={rad} />
+        ))
+      )}
     </div>
   );
 }

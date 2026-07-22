@@ -1455,17 +1455,20 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
     // ukene fremover via samme action med weekOffset+i — hver uke blir en
     // selvstendig økt (kan flyttes/endres/slettes uavhengig). Delvis feil
     // stopper ikke det som alt er lagt inn — meldes ærlig i stedet.
-    const gjenta = Math.max(1, Math.min(12, input.gjentaUker ?? 1));
+    // Gjenta: antall ganger × steg i uker (1 = hver uke, 2 = annenhver uke).
+    const gjenta = Math.max(1, Math.min(26, input.gjentaUker ?? 1));
+    const steg = Math.max(1, Math.min(4, input.gjentaStegUker ?? 1));
     let lagtInn = 1;
     for (let i = 1; i < gjenta; i++) {
-      const r = await actions.addSession({ ...payload, weekOffset: weekOffset + i });
+      const r = await actions.addSession({ ...payload, weekOffset: weekOffset + i * steg });
       if (r.ok) lagtInn++;
     }
     if (gjenta > 1) {
+      const stegTekst = steg === 1 ? "hver uke" : `hver ${steg}. uke`;
       setMelding(
         lagtInn === gjenta
-          ? { tone: "up", tekst: `Økten er lagt inn ${gjenta} uker fremover.` }
-          : { tone: "down", tekst: `Økten ble lagt inn i ${lagtInn} av ${gjenta} uker — sjekk ukene og legg til resten manuelt.` },
+          ? { tone: "up", tekst: `Økten er lagt inn ${gjenta} ganger (${stegTekst}).` }
+          : { tone: "down", tekst: `Økten ble lagt inn ${lagtInn} av ${gjenta} ganger — sjekk tidslinja.` },
       );
     }
     setNyOktApen(false);
@@ -1561,6 +1564,39 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
       onDragCancel={() => setActiveDrag(null)}
     >
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap, position: "relative" }}>
+      {/* B-pakke: uke-status øverst (mobil + desktop) — matcher Plan B */}
+      <div className="grid grid-cols-3" style={{ gap: 8 }}>
+        {(
+          [
+            {
+              l: "Økter i uke",
+              v: String(alleEvents.length),
+            },
+            {
+              l: "Etterlevelse",
+              v: adher != null ? `${adherDisp}%` : "—",
+            },
+            {
+              l: "Status",
+              v: st.l,
+            },
+          ] as const
+        ).map((k) => (
+          <div
+            key={k.l}
+            style={{
+              background: T.panel,
+              border: `1px solid ${T.border}`,
+              borderRadius: 14,
+              padding: "10px 12px",
+            }}
+          >
+            <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut }}>{k.l}</span>
+            <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 15, color: T.fg, marginTop: 6, letterSpacing: "-0.02em" }}>{k.v}</div>
+          </div>
+        ))}
+      </div>
+
       {/* TOPP-BAR — desktop (md+): uendret */}
       <div className="hidden md:flex" style={{ alignItems: "flex-end", gap: 16, flexWrap: "wrap", paddingBottom: 14, borderBottom: `1px solid ${T.border}` }}>
         <div style={{ minWidth: 0 }}>

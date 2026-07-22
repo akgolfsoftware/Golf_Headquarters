@@ -1,16 +1,9 @@
 "use client";
 
 /**
- * Foreldreportal · Oversikt — v2 (retning C «Presis»). Lese-først ukerapport for
- * ÉT fokus-barn, komponert kun av v2-komponenter fra "@/components/v2" (ingen
- * ad-hoc UI-primitiver, ingen rå hex — kun T.*-tokens). Auth-profil-mockupen har
- * ingen forelder-spesifikk skjerm, så språket lånes 1:1 fra de generelle v2-
- * idiomene: Kort / Rad / TallHero / KpiFlis / StatusPill / Trend / InnsiktChip.
- *
- * ALL data kommer fra hentForelderUkerapport (src/lib/forelder.ts) — avledet av
- * barnets EKTE Prisma-data. Ingen tall fabrikeres: mangler et felt vises ærlig
- * tom-tilstand. V2Shell (montert i (v2preview)/v2-forelder/page.tsx) eier chrome-en;
- * denne komponenten rendrer bare den indre innholds-stacken.
+ * Foreldreportal · Oversikt — v2 Presis + B-pakke (status først, én grønn CTA).
+ * Lese-først ukerapport for ÉT barn. Kun v2 + T.*. Enklere foreldre-språk.
+ * Data: hentForelderUkerapport — ingen fabrikkerte tall.
  */
 
 import { useEffect, useState } from "react";
@@ -31,6 +24,7 @@ import {
   TomTilstand,
   Knapp,
   Icon,
+  HjelpTips,
   type StatusTone,
 } from "@/components/v2";
 
@@ -128,32 +122,34 @@ export function ForelderV2({ data }: { data: ForelderUkerapport }) {
         }}
       >
         <div>
-          <Caps>{`Uke ${ukenummer} · forelderrapport`}</Caps>
+          <Caps>{`Uke ${ukenummer} · ${childName}${alderTekst}`}</Caps>
           <div style={{ marginTop: 10 }}>
             <Tittel mobile={mobile} em={`${childFirstName}.`}>
-              Ukerapport for
+              Slik gikk uka for
             </Tittel>
           </div>
-          <span
-            style={{
-              fontFamily: T.ui,
-              fontSize: 12.5,
-              color: T.mut,
-              display: "block",
-              marginTop: 8,
-            }}
-          >
-            {childName}
-            {alderTekst}
-          </span>
         </div>
         <StatusPill tone={consentActive ? "up" : "warn"}>
-          {consentActive ? "Samtykke aktivt" : "Venter på samtykke"}
+          {consentActive ? "Alt i orden" : "Trenger samtykke"}
         </StatusPill>
       </div>
 
-      {/* Samtykke-banner (kun når samtykke ikke er aktivt — anbefaling, ikke sperre) */}
-      {!consentActive && (
+      {/* KPI-stripe — status først (B) */}
+      <div className="grid grid-cols-2 md:grid-cols-4" style={{ gap: T.gap }}>
+        <KpiFlis
+          label="Oppmøte"
+          value={oppmotePct != null ? `${oppmotePct} %` : "–"}
+        />
+        <KpiFlis label="Økter gjort" value={`${oktFullfort} / ${oktPlanlagt}`} />
+        <KpiFlis
+          label="Timer trent"
+          value={trentTimer > 0 ? komma(trentTimer) : "–"}
+        />
+        <KpiFlis label="På rad" value={streak} />
+      </div>
+
+      {/* Én primær CTA (B) — samtykke hvis mangler, ellers barnets side */}
+      {!consentActive ? (
         <Kort tint>
           <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
             <Icon
@@ -170,7 +166,7 @@ export function ForelderV2({ data }: { data: ForelderUkerapport }) {
                   color: T.fg,
                 }}
               >
-                Godkjenn barnets konto
+                Godkjenn kontoen til {childFirstName}
               </div>
               <p
                 style={{
@@ -181,8 +177,8 @@ export function ForelderV2({ data }: { data: ForelderUkerapport }) {
                   margin: "6px 0 12px",
                 }}
               >
-                {childFirstName} er under 18, og trenger ditt samtykke for å bruke
-                appen fullt ut. {childFirstName} kan trene mens dere venter.
+                {childFirstName} er under 18 og trenger ditt ja for å bruke appen
+                fullt ut. Trening kan fortsette mens du ser gjennom.
               </p>
               <Knapp icon="arrow-right" onClick={gaaTil("/forelder/samtykke")}>
                 Gå til samtykke
@@ -190,36 +186,36 @@ export function ForelderV2({ data }: { data: ForelderUkerapport }) {
             </div>
           </div>
         </Kort>
+      ) : (
+        <div>
+          <Knapp icon="arrow-right" full={mobile} onClick={gaaTil("/forelder/barn")}>
+            Se mer om {childFirstName}
+          </Knapp>
+        </div>
       )}
 
-      {/* KPI-stripe — barnets uke i tall */}
-      <div className="grid grid-cols-2 md:grid-cols-4" style={{ gap: T.gap }}>
-        <KpiFlis
-          label="Oppmøte · uke"
-          value={oppmotePct != null ? `${oppmotePct} %` : "–"}
-        />
-        <KpiFlis label="Økter fullført" value={`${oktFullfort} / ${oktPlanlagt}`} />
-        <KpiFlis
-          label="Timer trent"
-          value={trentTimer > 0 ? komma(trentTimer) : "–"}
-        />
-        <KpiFlis label="Aktiv streak" value={streak} />
-      </div>
-
-      {/* SG-form + melding fra coach */}
+      {/* Form + melding fra coach */}
       <div
         className="grid grid-cols-1 md:grid-cols-[3fr_2fr]"
         style={{ gap: T.gap }}
       >
-        <Kort tint eyebrow="Strokes gained · form">
+        <Kort
+          tint
+          eyebrow={
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              Form denne uka
+              <HjelpTips k="sgTotal" size={11} />
+            </span>
+          }
+        >
           {ukeSg != null || visTrend ? (
             <>
               <TallHero
-                label="SG denne uka"
+                label="Spillnivå (SG)"
                 value={sgVerdi}
                 delta={sgDelta}
                 dir={sgDir}
-                sub="snitt strokes gained per runde denne uka"
+                sub="snitt per runde denne uka"
                 size={mobile ? 42 : 50}
                 action={
                   retning ? (
@@ -245,7 +241,7 @@ export function ForelderV2({ data }: { data: ForelderUkerapport }) {
                       marginTop: 8,
                     }}
                   >
-                    Relativ SG-utvikling · uker med spilte runder
+                    Utvikling · uker med spilte runder
                   </span>
                 </div>
               )}
@@ -254,7 +250,7 @@ export function ForelderV2({ data }: { data: ForelderUkerapport }) {
             <TomTilstand
               icon="bar-chart"
               title="Ingen runder ennå"
-              sub={`${childFirstName} har ikke registrert runder denne perioden. Strokes gained fylles ut når runder legges inn.`}
+              sub={`${childFirstName} har ikke registrert runder denne perioden. Tallene fylles inn når runder legges inn.`}
             />
           )}
         </Kort>
@@ -279,7 +275,7 @@ export function ForelderV2({ data }: { data: ForelderUkerapport }) {
             <TomTilstand
               icon="message-circle"
               title="Ingen ny melding"
-              sub="Coachen har ikke lagt igjen en melding denne uka."
+              sub="Når coachen skriver noe, dukker det opp her."
             />
           )}
         </Kort>
@@ -327,8 +323,8 @@ export function ForelderV2({ data }: { data: ForelderUkerapport }) {
           ) : (
             <TomTilstand
               icon="trophy"
-              title="Ingen testresultat"
-              sub="Høydepunkter dukker opp når det er registrert tester."
+              title="Ingen testresultat ennå"
+              sub="Beste tester dukker opp her når de er logget."
             />
           )}
         </Kort>
@@ -358,32 +354,32 @@ export function ForelderV2({ data }: { data: ForelderUkerapport }) {
             <TomTilstand
               icon="target"
               title="Ingen økter denne uka"
-              sub="Fokusområdet regnes ut fra øvelsene i ukas økter."
+              sub={`Når ${childFirstName} trener, ser du hva det gikk mest i her.`}
             />
           )}
         </Kort>
       </div>
 
-      {/* Snarveier — ekte forelder-ruter */}
-      <Kort eyebrow="Snarveier">
+      {/* Sekundære snarveier */}
+      <Kort eyebrow="Mer">
         <Rad
-          leading={<Icon name="users" size={16} style={{ color: T.fg2 }} />}
-          title="Barnets side"
-          sub="Profil, nivå og full oversikt"
-          onClick={gaaTil("/forelder/barn")}
+          leading={<Icon name="calendar" size={16} style={{ color: T.fg2 }} />}
+          title="Bookinger"
+          sub="Kommende timer"
+          onClick={gaaTil("/forelder/bookinger")}
         />
         <Rad
           leading={<Icon name="credit-card" size={16} style={{ color: T.fg2 }} />}
-          title="Økonomi og fakturaer"
-          sub="Se fakturaer og betaling"
+          title="Økonomi"
+          sub="Fakturaer og betaling"
           onClick={gaaTil("/forelder/okonomi")}
         />
         <Rad
           leading={
             <Icon name="message-circle" size={16} style={{ color: T.fg2 }} />
           }
-          title="Meldinger med coach"
-          sub="Skriv til eller les fra coachen"
+          title="Coach"
+          sub="Kontakt og siste melding"
           onClick={gaaTil("/forelder/coach")}
           last
         />

@@ -1,15 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · Turnering-detalj — v2 (retning C «Presis»).
- * v2-port 16. juli 2026: erstatter hybrid-designet i
- * (legacy)/tren/turneringer/[id]/page.tsx.
- *
- * Kun presentasjonslaget er nytt (v2-primitiver + T-tokens). Datakontrakten
- * speiler loaderens ærlige prinsipp (felter som ofte er null rendres kun når
- * de finnes; historikk-kortet utelates når tomt). Meld på / meld av går via
- * server actions (form action) fra siden — logikken er uendret. Bevisst
- * utelatt fra v10: den tomme «Fremgang 0 %»-plassholder-baren (fabrikkert).
+ * PlayerHQ · Turnering-detalj — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import Link from "next/link";

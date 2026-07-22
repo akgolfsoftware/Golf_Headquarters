@@ -1,14 +1,8 @@
 "use client";
 
 /**
- * Teknisk plan (PlayerHQ) — v2-presentasjon.
- *
- * Rekomponert fra golfdata/legacy tp-*-CSS til v2-kanonspråket (retning C):
- * Kort/Caps/StatusPill/FordelingRad-mønstre + T-tokens + Icon (Lucide) +
- * HjelpTips på faguttrykkene. Ingen datalogikk her — komponentene tar ferdige,
- * serialiserbare props fra server-siden (page.tsx). Erstatter presentasjonen i
- * de gamle komponentene PRow/TaskCard/PageHead/sidebar uten å røre dem (de deles
- * fortsatt med AgencyOS-plan-skjermen).
+ * Teknisk plan (PlayerHQ) — v2 Presis + B-pakke (status + fremdrift, tom = vei).
+ * P-posisjoner og krav. T.* only. Ingen datalogikk her.
  */
 
 import { useState, type ReactNode } from "react";
@@ -511,9 +505,9 @@ export function TomPlan({ children }: { children?: ReactNode }) {
       <TomTilstand
         icon="target"
         title="Ingen P-posisjoner i denne planen enda"
-        sub="Legg til P-posisjoner (P1.0 – P10.0) du vil fokusere på i denne perioden."
+        sub="Legg til P-posisjoner (P1.0 – P10.0) du vil fokusere i denne perioden."
       />
-      {children ? <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>{children}</div> : null}
+      {children ? <div style={{ marginTop: 12 }}>{children}</div> : null}
     </Kort>
   );
 }

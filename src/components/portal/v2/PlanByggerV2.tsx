@@ -1,11 +1,8 @@
 "use client";
 
 /**
- * PLAN-BYGGER V2 — 5-stegs wizard (Mål → Mal → Generer → Juster → Lagre).
- * Port av godkjent mockup ui_kits/v2/phq-plan-bygger.jsx (10. juli, retning C).
- * Komponert kun av v2-primitiver. Produktregler: AI foreslår, sperrer aldri ·
- * mennesket lagrer/godkjenner (DRAFT → PENDING_PLAYER) · GRATIS ser forslag
- * men kan ikke lagre (gaten bor i lib/plan-builder) · klarspråk, aldri fagkoder.
+ * PLAN-BYGGER V2 — 5-stegs wizard (Mål → Mal → Generer → Juster → Lag… — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useState } from "react";

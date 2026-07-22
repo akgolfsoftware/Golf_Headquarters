@@ -1,32 +1,12 @@
 "use client";
 
 /**
- * AgencyOS Workspace — v2 (retning C «Presis»). Oppgave-/prosjektstyring for
- * coach/ADMIN, drevet av EKTE data fra OppgaveCache/ProsjektCache (Notion-sync)
- * via getTasksForUser + getProjectsForUser. Ingen mockup fantes — komponert
- * utelukkende av v2-biblioteket (src/components/v2), ingen ad-hoc UI, ingen rå
- * hex (kun T.*).
- *
- * Funksjon/data bevart fra den ekte skjermen (src/app/admin/workspace + oppgaver
- * + prosjekter):
- *   - KPI-strip (4): I dag · Denne uka · Blokkert · Delt — alle avledet fra
- *     reelle tasks (ingen hardkodede tall).
- *   - «Min uke»: brenner-strip + 3-kol (I dag · Denne uka · Senere), samme
- *     kolonne-avledning som serveren (today / !today&!done / slice).
- *   - «Oppgaver»: hele lista gruppert på status (Pågår · Å gjøre · Blokkert ·
- *     Fullført), samme gruppering som listevisningen.
- *   - «Prosjekter»: prosjekt-oversikt med selskap/status, 4 stats, fremdrift
- *     og tildelt — statusfilter (Aktive/Pause/Arkivert).
- *
- * Mobil: PillTabs + KPI 2-kol, alle 3-kol-grid stabler til én kolonne, prosjekt-
- * grid 3→1. Tailwind md/lg-breakpoints (speiler CockpitV2/StallV2).
- *
- * Ærlige tomrom: tom liste → TomTilstand (ingen fabrikerte oppgaver/prosjekter).
- * GAP (meldes i ruten): kanban/kalender-visning, søk/avansert filter, Notion-
- * konfigurasjonsskjermen og inline oppgave-toggle er ikke del av denne hub-en.
+ * AgencyOS Workspace — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Oppgaver/prosjekter fra Notion-sync. T.* only.
  */
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import {
   Caps,
   Tittel,
@@ -40,6 +20,7 @@ import {
   AvatarInit,
   TomTilstand,
   InnsiktChip,
+  CTAPill,
   T,
   type StatusTone,
 } from "@/components/v2";
@@ -286,16 +267,34 @@ export function AdminWorkspaceV2({ data }: { data: AdminWorkspaceV2Data }) {
   const toggleFilter = (x: string) =>
     setProsjektFilter((prev) => (prev.indexOf(x) !== -1 ? prev.filter((y) => y !== x) : prev.concat(x)));
 
-  // ── Hode ──────────────────────────────────────────────────────
+  // ── Hode — B: status ──────────────────────────────────────────
+  const statusTone: StatusTone = brenner.length > 0 ? "down" : kpi.apne > 0 ? "lime" : "info";
+  const statusTekst =
+    brenner.length > 0
+      ? `${brenner.length} brenner`
+      : kpi.apne > 0
+        ? `${kpi.apne} åpne`
+        : "Alt klart";
+
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>{`${data.coachNavn} · AgencyOS`}</Caps>
+        <Caps>{`${data.coachNavn} · Workspace · AgencyOS`}</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel em="uke.">Min</Tittel>
         </div>
       </div>
+      <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
     </div>
+  );
+
+  // B: én primær CTA
+  const primaerCta = (
+    <Link href="/admin/workspace/notion" style={{ textDecoration: "none", display: "block" }}>
+      <CTAPill icon="refresh-cw" full>
+        Synk Notion
+      </CTAPill>
+    </Link>
   );
 
   // ── KPI-flis (4) ──────────────────────────────────────────────
@@ -410,6 +409,7 @@ export function AdminWorkspaceV2({ data }: { data: AdminWorkspaceV2Data }) {
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
       {kpiFlis}
+      {primaerCta}
       {faner}
       {fane === "uke" && ukeView}
       {fane === "oppgaver" && oppgaverView}

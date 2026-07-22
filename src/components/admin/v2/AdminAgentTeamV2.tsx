@@ -1,22 +1,8 @@
 "use client";
 
 /**
- * AgencyOS Agent-team — v2 (retning C «Presis», mørk først). Rekomponert fra
- * den ekte skjermen src/app/admin/agent-team/page.tsx +
- * src/components/kommando/agent-team.tsx. Flere AI-er (appens eget agent-OS,
- * KommandoAgentRun — IKKE Hermes) jobber sekvensielt på én oppgave: output fra
- * ett steg mates inn i neste.
- *
- * Funksjon/data bevart 1:1:
- *   - Definer oppgave (tittel + valgfritt prosjekt) → POST /api/kommando/team.
- *   - Live NDJSON-strøm oppdaterer steg-status fortløpende (samme applyEvent).
- *   - Fast oppskrift (KOMMANDO_TEAM): Research → Utkast → Gjennomgang, hvert
- *     som et agent-kort m/ rolle · modell · status.
- *   - Historikk (siste kjøringer) med utvidbare steg-kort.
- *
- * Bygget utelukkende av v2-biblioteket (src/components/v2) — ingen ad-hoc UI-
- * primitiver, ingen rå hex (kun T.*). Mobil: alt stabler i én kolonne, kjør-
- * knapp full bredde, historikk-kort utvider seg vertikalt.
+ * AgencyOS Agent-team — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Flere AI-er jobber sekvensielt. T.* only.
  */
 
 import { useState } from "react";
@@ -26,10 +12,10 @@ import {
   Tittel,
   Kort,
   StatusPill,
-  Knapp,
   Inndata,
   Velger,
   TomTilstand,
+  CTAPill,
   Icon,
   T,
   type StatusTone,
@@ -240,7 +226,7 @@ export function AdminAgentTeamV2({ data }: { data: AdminAgentTeamV2Data }) {
     }
   }
 
-  // ── Hode ────────────────────────────────────────────────────────
+  // ── Hode — B: status ───────────────────────────────────────────
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
@@ -252,15 +238,13 @@ export function AdminAgentTeamV2({ data }: { data: AdminAgentTeamV2Data }) {
           Flere AI-er jobber sekvensielt på én oppgave. Output fra ett steg mates inn i neste.
         </p>
       </div>
-      {running && (
-        <div className="hidden md:block">
-          <StatusPill tone="warn">Teamet jobber</StatusPill>
-        </div>
-      )}
+      <StatusPill tone={running ? "warn" : data.pastRuns.length > 0 ? "lime" : "info"}>
+        {running ? "Teamet jobber" : data.pastRuns.length === 0 ? "Klar" : `${data.pastRuns.length} kjøringer`}
+      </StatusPill>
     </div>
   );
 
-  // ── Ny oppgave (skjema) ─────────────────────────────────────────
+  // ── Ny oppgave (skjema) — B: én primær CTAPill ──────────────────
   const skjema = (
     <Kort eyebrow="Ny oppgave" action={<Caps size={9}>{oppskrift}</Caps>}>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -278,9 +262,22 @@ export function AdminAgentTeamV2({ data }: { data: AdminAgentTeamV2Data }) {
             onChange={setProsjektNavn}
           />
         )}
-        <Knapp icon="play" full disabled={running || title.trim().length === 0} onClick={run}>
-          {running ? "Kjører team …" : "Kjør team"}
-        </Knapp>
+        <button
+          type="button"
+          disabled={running || title.trim().length === 0}
+          onClick={run}
+          style={{
+            all: "unset",
+            cursor: running || title.trim().length === 0 ? "not-allowed" : "pointer",
+            opacity: running || title.trim().length === 0 ? 0.55 : 1,
+            display: "block",
+            width: "100%",
+          }}
+        >
+          <CTAPill icon="play" full>
+            {running ? "Kjører team …" : "Kjør team"}
+          </CTAPill>
+        </button>
         {error && (
           <p style={{ fontFamily: T.ui, fontSize: 12, color: T.down, margin: 0 }}>{error}</p>
         )}

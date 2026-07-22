@@ -1,13 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · AI foreslår turneringer — v2 (retning C «Presis»).
- * v2-port 16. juli 2026: erstatter src/components/portal/ai/foresla-turnering-screen.tsx.
- *
- * Kun presentasjonslaget er nytt (v2-primitiver + T-tokens). Datakontrakten
- * (TournamentSuggestion) er uendret: status og begrunnelse speiler faktisk
- * påmeldingsstatus og tier — ingen oppdiktede sannsynligheter. Tom katalog →
- * ærlig TomTilstand.
+ * PlayerHQ · AI foreslår turneringer — v2 Presis + B-pakke (status + én vei).
+ * Tom = full grønn til turneringslista. T.* only.
  */
 
 import Link from "next/link";
@@ -140,11 +135,13 @@ export function ForeslaTurneringV2({ data }: { data: ForeslaTurneringV2Data }) {
           <TomTilstand
             icon="trophy"
             title="Ingen forslag ennå"
-            sub="Når det finnes kommende turneringer som passer nivået ditt, dukker de opp her. Du kan også bla i hele kalenderen selv."
+            sub="Når turneringer passer nivået ditt, dukker de opp her."
           />
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <Link href="/portal/tren/turneringer" style={{ textDecoration: "none" }}>
-              <CTAPill icon="calendar-plus">Se turneringer</CTAPill>
+          <div style={{ marginTop: 12 }}>
+            <Link href="/portal/tren/turneringer" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="calendar-plus" full>
+                Se turneringer
+              </CTAPill>
             </Link>
           </div>
         </Kort>
@@ -153,8 +150,18 @@ export function ForeslaTurneringV2({ data }: { data: ForeslaTurneringV2Data }) {
           {suggestions.map((t) => (
             <ForslagKort key={t.id} t={t} />
           ))}
-          <Link href="/portal/tren/turneringer" style={{ textDecoration: "none", alignSelf: "center" }}>
-            <CTAPill ghost icon="arrow-right">Se alle turneringene mine</CTAPill>
+          <Link
+            href="/portal/tren/turneringer"
+            style={{
+              textDecoration: "none",
+              alignSelf: "center",
+              fontFamily: T.ui,
+              fontSize: 12,
+              fontWeight: 600,
+              color: T.mut,
+            }}
+          >
+            Se alle turneringene mine →
           </Link>
         </>
       )}

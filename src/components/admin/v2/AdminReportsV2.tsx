@@ -23,6 +23,9 @@ import {
   Tittel,
   Kort,
   Icon,
+  StatusPill,
+  TomTilstand,
+  CTAPill,
   T,
 } from "@/components/v2";
 
@@ -218,31 +221,30 @@ export function AdminReportsV2({ data }: { data: ReportsV2Data }) {
     },
   ];
 
-  const hode = (
-    <div>
-      <Caps>System · Rapporter</Caps>
-      <div style={{ marginTop: 10 }}>
-        <Tittel em="rapporter.">Seks</Tittel>
-      </div>
-      <span
-        style={{
-          fontFamily: T.ui,
-          fontSize: 13,
-          color: T.fg2,
-          display: "block",
-          marginTop: 8,
-          maxWidth: 460,
-        }}
-      >
-        Generer rapporter for spillere, foreldre, klubb eller forbund. Eksport til
-        PDF og CSV.
-      </span>
-    </div>
-  );
-
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {hode}
+      {/* B: status først + én primær CTA */}
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
+        <div>
+          <Caps>System · Rapporter</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em="rapporter.">Seks</Tittel>
+          </div>
+          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", maxWidth: 460 }}>
+            Generer rapporter for spillere, foreldre, klubb eller forbund. Eksport til PDF og CSV.
+          </p>
+        </div>
+        <StatusPill tone="lime">
+          {spillere} spillere · {okter} økter · sesong {sesong}
+        </StatusPill>
+      </div>
+
+      <a href="/api/admin/reports/spillere.csv" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="download" full>
+          Generer spiller-rapport
+        </CTAPill>
+      </a>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: T.gap }}>
         {tiles.map((t) => (
           <RapportKort key={t.navn} t={t} />
@@ -255,9 +257,11 @@ export function AdminReportsV2({ data }: { data: ReportsV2Data }) {
         {maanedsrapporter.length === 0 ? (
           <div style={{ marginTop: 12 }}>
             <Kort>
-              <span style={{ fontFamily: T.ui, fontSize: 13, color: T.mut }}>
-                Første månedsrapport genereres automatisk natt til den 1. — arkivet bygger seg opp her.
-              </span>
+              <TomTilstand
+                icon="calendar"
+                title="Ingen månedsrapporter ennå"
+                sub="Første rapport genereres automatisk natt til den 1. — arkivet bygger seg opp her."
+              />
             </Kort>
           </div>
         ) : (

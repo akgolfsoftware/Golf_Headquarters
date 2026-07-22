@@ -1,20 +1,8 @@
 "use client";
 
 /**
- * Foreldreportal · Innstillinger — v2 (retning C «Presis», mørk-først). Lese-først
- * konto/varsel/samtykke-flate for forelder-rollen. Rekomponert 1:1 fra den ekte
- * skjermen (src/app/forelder/innstillinger/page.tsx): samme funksjon, samme data-
- * kontrakt, kun v2-komponenter fra "@/components/v2" + T.*-tokens (ingen rå hex,
- * ingen ad-hoc UI-primitiver, kun Lucide via Icon).
- *
- * VIKTIG (bevart eksakt): varsel-bryterne er IKKE koblet på ennå — de vises som
- * lese-status «På» med en ærlig fotnote, akkurat som originalen. Ingen interaktiv
- * toggle her ville antydet en lagring som ikke finnes (GDPR/samtykke-semantikk
- * urørt). ALL data (navn, e-post, telefon, koblede barn) kommer fra Prisma via
- * loaderen i (v2preview)-ruta — ingenting fabrikeres; manglende felt vises ærlig.
- *
- * V2Shell (montert i ruta) eier chrome-en; denne komponenten rendrer bare den
- * indre innholds-stacken.
+ * Foreldreportal · Innstillinger — v2 Presis + B-pakke (status + én grønn CTA).
+ * Varsel-brytere fortsatt lese-status (ikke lagret ennå). Kun v2 + T.*.
  */
 
 import { useRouter } from "next/navigation";
@@ -28,6 +16,7 @@ import {
   TomTilstand,
   AvatarInit,
   Icon,
+  Knapp,
 } from "@/components/v2";
 
 /* ── Datakontrakt (avledet av requirePortalUser + hentBarnForForelder) ── */
@@ -99,23 +88,47 @@ export function ForelderInnstillingerV2({ data }: { data: ForelderInnstillingerD
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
-      <div>
-        <Caps>Foreldreportal · Innstillinger</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="varsler">Konto og</Tittel>
+      {/* Hode + status */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          gap: 12,
+          flexWrap: "wrap",
+        }}
+      >
+        <div>
+          <Caps>Innstillinger</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em="varsler">Konto og</Tittel>
+          </div>
+          <span
+            style={{
+              fontFamily: T.ui,
+              fontSize: 12.5,
+              color: T.mut,
+              display: "block",
+              marginTop: 8,
+            }}
+          >
+            Kontaktinfo, varsler og sikkerhet.
+          </span>
         </div>
-        <span
-          style={{
-            fontFamily: T.ui,
-            fontSize: 12.5,
-            color: T.mut,
-            display: "block",
-            marginTop: 8,
-          }}
-        >
-          Kontaktinfo, varslingsvalg og kontosikkerhet.
-        </span>
+        <StatusPill tone={barn.length > 0 ? "up" : "warn"}>
+          {barn.length > 0
+            ? barn.length === 1
+              ? "1 barn"
+              : `${barn.length} barn`
+            : "Ingen barn"}
+        </StatusPill>
+      </div>
+
+      {/* Én primær CTA (B) */}
+      <div>
+        <Knapp icon="user" onClick={gaaTil("/portal/meg")}>
+          Rediger profil
+        </Knapp>
       </div>
 
       {/* Kontaktinfo — ekte data fra Prisma */}
@@ -148,7 +161,7 @@ export function ForelderInnstillingerV2({ data }: { data: ForelderInnstillingerD
           <TomTilstand
             icon="users"
             title="Ingen barn koblet ennå"
-            sub="Be spilleren sende en invitasjon fra sin profil, så dukker barnet opp her."
+            sub="Be spilleren sende en invitasjon fra sin profil."
           />
         ) : (
           <div>

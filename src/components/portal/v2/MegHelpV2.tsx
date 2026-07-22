@@ -1,21 +1,7 @@
 "use client";
 
 /**
- * PlayerHQ Meg · Hjelpesenter — v2 (retning C «Presis»). Rekomponert fra den
- * eksisterende /portal/meg/help-flaten (help/page.tsx + kategori/[slug] +
- * artikkel/[slug] + kontakt), men i v2-språket. Kun v2-komponenter fra
- * "@/components/v2"; ingen ad-hoc UI, ingen rå hex (kun T.*).
- *
- * FUNKSJON bevart: FAQ-accordion, kategori-grid (→ ekte kategori-ruter),
- * artikkel-oppslag (→ ekte artikkel-ruter), søk over kategorier + artikler,
- * ta-kontakt (chat/e-post/veiledninger) og «send forslag / meld feil».
- * Adressene er de EKTE, eksisterende rutene — ingen nye oppfunnet.
- *
- * Ærlighet: innholdet (FAQ + artikkel-titler) er redaksjonelt hjelpe-innhold,
- * ikke spillerens egne data — det følger datakontrakten fra kilde-rutene.
- * Søket filtrerer kun dette faktiske innholdet, fabrikkerer ingenting.
- *
- * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
+ * PlayerHQ Meg · Hjelpesenter — v2 Presis + B-pakke (søk, tom = én grønn vei).
  */
 
 import { useEffect, useMemo, useState } from "react";
@@ -147,13 +133,20 @@ export function MegHelpV2({ data }: { data: MegHelpData }) {
       {q ? (
         /* ── Søkeresultat ─────────────────────────────────────────── */
         ingenTreff ? (
-          <Kort>
-            <TomTilstand
-              icon="search"
-              title="Ingen treff"
-              sub="Prøv et annet søkeord, eller ta kontakt med support nederst."
-            />
-          </Kort>
+          <>
+            <Kort>
+              <TomTilstand
+                icon="search"
+                title="Ingen treff"
+                sub="Prøv et annet søkeord, eller ta kontakt med support."
+              />
+            </Kort>
+            <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="message-circle" full>
+                Kontakt support
+              </CTAPill>
+            </Link>
+          </>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
             {treffKat.length > 0 && (
@@ -263,9 +256,25 @@ export function MegHelpV2({ data }: { data: MegHelpData }) {
             </Link>
           </Kort>
 
-          {/* Send forslag / meld feil */}
-          <Link href="/portal/meg/feedback" style={{ textDecoration: "none" }}>
-            <CTAPill ghost icon="send">Send forslag eller meld feil</CTAPill>
+          <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block" }}>
+            <CTAPill icon="message-circle" full>
+              Kontakt support
+            </CTAPill>
+          </Link>
+          <Link
+            href="/portal/meg/feedback"
+            style={{
+              textDecoration: "none",
+              display: "block",
+              textAlign: "center",
+              fontFamily: T.ui,
+              fontSize: 12,
+              fontWeight: 600,
+              color: T.mut,
+              padding: "2px 0 4px",
+            }}
+          >
+            Send forslag eller meld feil →
           </Link>
         </>
       )}

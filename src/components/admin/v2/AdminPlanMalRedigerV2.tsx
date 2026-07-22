@@ -53,6 +53,8 @@ import { beregnTemplateVolum } from "@/lib/plan-templates/beregn-volum";
 import {
   Kort,
   Caps,
+  StatusPill,
+  TomTilstand,
   Tittel,
   Knapp,
   Inndata,
@@ -395,16 +397,21 @@ export function AdminPlanMalRedigerV2({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Topptekst */}
+      {/* Topptekst — B: status + én primær CTA */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
         <div style={{ minWidth: 0 }}>
-          <Caps>Redigerer</Caps>
+          <Caps>Redigerer planmal</Caps>
           <div style={{ marginTop: 6 }}>
             <Tittel em={template.name}>Rediger:</Tittel>
           </div>
           <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, margin: "8px 0 0", lineHeight: 1.55, maxWidth: 640 }}>
             Endringer på innstillinger må lagres separat. Endringer på enkeltøkter lagres når du klikker «Lagre endring».
           </p>
+          <div style={{ marginTop: 10 }}>
+            <StatusPill tone={isPending ? "warn" : "info"}>
+              {isPending ? "Lagrer…" : `${drillOptions.length} drills · lagre innstillinger for metadata`}
+            </StatusPill>
+          </div>
         </div>
         <Knapp icon="check" disabled={isPending} onClick={onSaveSettings}>
           {isPending ? "Lagrer…" : "Lagre innstillinger"}
@@ -450,9 +457,11 @@ export function AdminPlanMalRedigerV2({
               </p>
             )}
             {filtererteDrills.length === 0 && (
-              <p style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, margin: "2px 0 0" }}>
-                Ingen drills matcher søket.
-              </p>
+              <TomTilstand
+                icon="search"
+                title={drillOptions.length === 0 ? "Ingen drills i biblioteket" : "Ingen drills matcher"}
+                sub={drillOptions.length === 0 ? "Opprett drills under Drills først." : "Prøv et annet søkeord."}
+              />
             )}
           </div>
         </Kort>

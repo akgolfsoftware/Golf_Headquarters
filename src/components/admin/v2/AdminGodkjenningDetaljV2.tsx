@@ -16,7 +16,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { T } from "@/lib/v2/tokens";
-import { Caps, Kort, Knapp, StatusPill, AvatarInit, InnsiktChip, TilbakeLenke } from "@/components/v2";
+import { Caps, Kort, Knapp, StatusPill, AvatarInit, InnsiktChip, TilbakeLenke, TomTilstand, Tittel } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 import { approveRequestDetailed, declineRequestDetailed, requestMoreInfo } from "@/app/admin/(legacy)/approvals/actions";
@@ -35,13 +35,15 @@ export function ApprovalNotFound() {
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <TilbakeLenke href="/admin/godkjenninger">Tilbake til godkjenninger</TilbakeLenke>
       <Kort>
-        <div style={{ textAlign: "center", padding: "48px 16px" }}>
-          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 22, color: T.fg }}>Fant ikke godkjenningen</div>
-          <p style={{ marginTop: 8, fontFamily: T.ui, fontSize: 13, color: T.mut }}>
-            Denne handlingen finnes ikke, eller er allerede behandlet.
-          </p>
-        </div>
+        <TomTilstand
+          icon="inbox"
+          title="Fant ikke godkjenningen"
+          sub="Denne handlingen finnes ikke, eller er allerede behandlet."
+        />
       </Kort>
+      <Link href="/admin/godkjenninger" style={{ textDecoration: "none", display: "block" }}>
+        <Knapp icon="arrow-left" full>Tilbake til godkjenninger</Knapp>
+      </Link>
     </div>
   );
 }
@@ -99,10 +101,25 @@ export function ApprovalDetailClient({ detail }: { detail: ApprovalDetail }) {
 
   const isPending = detail.status === "PENDING";
   const eyebrow = ["Godkjenning", relativeTimeNb(detail.createdAt), detail.agentName].join(" · ");
+  const statusTone = detail.status === "PENDING" ? "info" as const : detail.status === "ACCEPTED" ? "lime" as const : "down" as const;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap, paddingBottom: 96 }}>
       <TilbakeLenke href="/admin/godkjenninger">{eyebrow}</TilbakeLenke>
+
+      {/* B: status først */}
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
+        <div>
+          <Caps>AI-forslag · {detail.player.name}</Caps>
+          <div style={{ marginTop: 8 }}>
+            <Tittel>
+              {handlingstypeLabel(detail.actionType)}
+              {detail.title.trail}
+            </Tittel>
+          </div>
+        </div>
+        <StatusPill tone={statusTone}>{STATUS_LABEL[detail.status] ?? detail.status}</StatusPill>
+      </div>
 
       {(detail.signalSnapshot || detail.diffPreview || detail.beforeSummary) && (
         <Kort eyebrow="Analyse">
@@ -132,24 +149,18 @@ export function ApprovalDetailClient({ detail }: { detail: ApprovalDetail }) {
               <Icon name="sparkles" size={11} />
               AI-foreslått
             </span>
-            <div style={{ marginTop: 8, fontFamily: T.disp, fontWeight: 700, fontSize: 22, color: T.fg }}>
-              {handlingstypeLabel(detail.actionType)}
-              {detail.title.trail}
-            </div>
-            <p style={{ margin: "4px 0 0", fontFamily: T.ui, fontSize: 13, color: T.mut }}>{detail.player.name}</p>
+            <p style={{ margin: "8px 0 0", fontFamily: T.ui, fontSize: 13, color: T.mut }}>{detail.player.name}</p>
           </div>
-          <StatusPill tone={detail.status === "PENDING" ? "info" : detail.status === "ACCEPTED" ? "lime" : "down"}>
-            {STATUS_LABEL[detail.status] ?? detail.status}
-          </StatusPill>
         </div>
       </Kort>
 
       {isPending ? (
         <div style={{ position: "sticky", bottom: 16, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, borderRadius: T.rCard, background: T.panel, border: `1px solid ${T.borderS}`, padding: 16, boxShadow: "0 12px 32px rgba(0,0,0,0.35)" }}>
+          {/* B: én primær = Godkjenn; resten ghost */}
           <Knapp icon="check" disabled={pending} onClick={godkjenn}>Godkjenn</Knapp>
           <Knapp icon="x" ghost disabled={pending} onClick={() => { setMode("decline"); setComment(""); setError(null); }}>Avslå med begrunnelse</Knapp>
           <Knapp icon="message-circle" ghost disabled={pending} onClick={() => { setMode("info"); setComment(""); setError(null); }}>Be om mer info</Knapp>
-          <Link href={`/admin/spillere/${detail.player.id}?compose=1`} style={{ marginLeft: "auto" }}>
+          <Link href={`/admin/spillere/${detail.player.id}?compose=1`} style={{ marginLeft: "auto", textDecoration: "none" }}>
             <Knapp ghost icon="send">Send melding</Knapp>
           </Link>
         </div>

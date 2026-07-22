@@ -1,14 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Coach — Spørsmål (v2, retning C «Presis»). Rekomponert fra den ekte
- * skjermen src/app/portal/coach/sporsmal/page.tsx: coachens innkomne spørsmål fra
- * spillere (Question-modellen), status OPEN/ANSWERED, rader → tråd-detalj.
- *
- * Funksjon og datakontrakt uendret — kun det visuelle er løftet til v2. Kun
- * v2-komponenter fra "@/components/v2"; ingen ad-hoc UI. Ingen rå hex (kun T.*).
- * Ærlighet: teller/status avledes av EKTE Question-rader, aldri fabrikkert; tom
- * kø gir ærlig tom-tilstand. Ordbok låst. V2Shell eier chrome-en.
+ * PlayerHQ Coach — Spørsmål — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useEffect, useState } from "react";
@@ -24,6 +18,7 @@ import {
   Rad,
   AvatarInit,
   TomTilstand,
+  CTAPill,
 } from "@/components/v2";
 
 /* ── Datakontrakt (serialiserbar — formatert på server) ────────────── */
@@ -109,11 +104,18 @@ export function CoachQAV2({ data }: { data: CoachQAData }) {
         }
       >
         {sporsmal.length === 0 ? (
-          <TomTilstand
-            icon="message-circle"
-            title="Ingen spørsmål ennå"
-            sub="Når en spiller stiller deg et spørsmål, dukker det opp her."
-          />
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <TomTilstand
+              icon="message-circle"
+              title="Ingen spørsmål ennå"
+              sub="Når noen stiller et spørsmål, dukker det opp her."
+            />
+            <Link href="/portal/coach/sporsmal/ny" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="send" full>
+                Still et spørsmål
+              </CTAPill>
+            </Link>
+          </div>
         ) : vist.length === 0 ? (
           <TomTilstand
             icon="filter"

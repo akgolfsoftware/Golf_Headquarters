@@ -1,25 +1,13 @@
 "use client";
 
 /**
- * Foreldreportal · Barn-profil (read-only) — v2 (retning C «Presis»).
- * v2-port 16. juli 2026: rekomponert fra den ekte skjermen
- * (src/app/forelder/barn/[childId]/page.tsx, rå Tailwind) med EKSAKT samme
- * datakontrakt: barnets hero (HCP/runder/snitt SG), pyramide-fordeling fra
- * aktiv plan, sesongmål m/ ekte HCP-fremdrift, og fire faner (oversikt /
- * uke / mål / økonomi) — server-rendret via ?tab=-lenker, uendret.
- *
- * Kun v2-komponenter fra "@/components/v2" (Kort, Caps, Tittel, KpiFlis,
- * Pyramide, TomTilstand, AvatarFoto, TilbakeLenke, StatusPill, HjelpTips,
- * Icon) + T-tokens for layout-lim. ALL data er ekte Prisma-data fra page.tsx
- * — aldri fabrikert; mangler et felt vises «—». Fremdrifts-bar vises KUN for
- * HCP_TARGET-mål med kalkulerbar verdi (som før). Ingen rå hex, ingen emoji.
- *
- * Bevisst uendret fra originalen: assertBarnTilhorerForelder + alle
- * Prisma-queries bor i page.tsx; denne komponenten er ren presentasjon.
+ * Foreldreportal · Barn-profil — v2 Presis + B-pakke (status først, én vei).
+ * Read-only. Kun v2 + T.*. Enklere foreldre-språk. Faner uendret.
  */
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { PaymentStatus, PyramidArea } from "@/generated/prisma/client";
 import {
   T,
@@ -35,6 +23,7 @@ import {
   StatusPill,
   HjelpTips,
   Icon,
+  Knapp,
   type StatusTone,
 } from "@/components/v2";
 
@@ -263,6 +252,7 @@ function ListeRad({
 
 export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData }) {
   const mobile = useMobile();
+  const router = useRouter();
   const { barn, tab } = data;
   const fornavn = barn.navn.split(" ")[0];
   const etternavn = barn.navn.split(" ").slice(1).join(" ");
@@ -303,28 +293,45 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
           >
             HCP <span style={{ fontVariantNumeric: "tabular-nums" }}>{hcpStr}</span>
             <HjelpTips k="hcp" size={11} />
-            · PlayerHQ · {barn.homeClub ?? "Ingen hjemmeklubb"}
+            · {barn.homeClub ?? "Ingen hjemmeklubb"}
           </span>
         </div>
       </div>
 
-      {/* KPI-rad — HCP · runder · snitt SG (ekte tall, «—» når mangler) */}
+      {/* Status først — HCP · runder · form */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: T.gap }}>
         <KpiFlis label="HCP" value={hcpStr} hjelp="hcp" instant />
         <KpiFlis label="Runder" value={data.antallRunder} instant />
         <KpiFlis
-          label="Snitt SG"
+          label="Form (SG)"
           value={data.avgSg != null ? fmtSg(data.avgSg) : "—"}
           hjelp="sgTotal"
           instant
         />
       </div>
 
-      {/* Pyramide-fordeling fra aktiv plan */}
+      {/* Én primær vei videre (B) */}
+      <div>
+        <Knapp
+          icon={tab === "uke" ? "message-circle" : "calendar"}
+          full={mobile}
+          onClick={() =>
+            router.push(
+              tab === "uke"
+                ? "/forelder/coach"
+                : `/forelder/barn/${barn.id}?tab=uke`,
+            )
+          }
+        >
+          {tab === "uke" ? "Kontakt coach" : `Se uka til ${fornavn}`}
+        </Knapp>
+      </div>
+
+      {/* Treningsfordeling fra aktiv plan */}
       <Kort
         eyebrow={
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            Pyramide-balanse · aktiv plan
+            Hva det trenes på
             <HjelpTips k="pyramideAkse" size={11} />
           </span>
         }
@@ -337,9 +344,11 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
             </span>
           </>
         ) : (
-          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>
-            Ingen aktiv plan — fordeling ikke tilgjengelig.
-          </p>
+          <TomTilstand
+            icon="calendar"
+            title="Ingen aktiv plan ennå"
+            sub="Når coachen aktiverer en plan, ser du fordelingen her."
+          />
         )}
       </Kort>
 
@@ -413,7 +422,7 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
               <TomTilstand
                 icon="calendar"
                 title="Ingen aktiv plan"
-                sub="Coachen har ikke aktivert en treningsplan ennå."
+                sub="Coachen har ikke satt i gang en plan ennå. Spør gjerne."
               />
             ) : (
               <>

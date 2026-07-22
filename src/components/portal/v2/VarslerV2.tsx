@@ -1,21 +1,13 @@
 "use client";
 
 /**
- * PlayerHQ Varsler — v2 (retning C «Presis»). Rekomponert fra den ekte skjermen
- * (src/app/portal/varsler/page.tsx): samme funksjon og datakontrakt (Notification-
- * rader gruppert i «i dag»/«tidligere», ulest-markør, «marker alle lest»), men
- * bygget kun av v2-komponenter fra "@/components/v2". Ingen ad-hoc UI, ingen rå hex
- * (kun T.*-tokens). V2Shell (montert i (v2preview)/v2-varsler) eier chrome-en —
- * denne komponenten rendrer bare den indre innholds-stacken.
- *
- * Server-siden (page.tsx) gjenbruker loaderen 1:1: leser Notification-rader,
- * beregner relativ tid, grupperer på i dag/tidligere og teller uleste. Klienten
- * kaller markNotificationsRead (server action) via useTransition, akkurat som
- * den gamle VarslerMarkerKnapp.
+ * PlayerHQ Varsler — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { markNotificationsRead } from "@/app/portal/(legacy)/varsler/actions";
 import {
   T,
@@ -131,8 +123,22 @@ export function VarslerV2({ data }: { data: VarslerV2Data }) {
           <TomTilstand
             icon="bell"
             title="Ingen varsler — du er à jour"
-            sub="Alt nytt vises her: meldinger fra coach, AI Caddie-forslag, bookinger og fakturaer."
+            sub="Nye meldinger, bookinger og forslag dukker opp her."
           />
+          <div style={{ marginTop: 12, textAlign: "center" }}>
+            <Link
+              href="/portal"
+              style={{
+                textDecoration: "none",
+                fontFamily: T.ui,
+                fontSize: 12,
+                fontWeight: 600,
+                color: T.mut,
+              }}
+            >
+              Tilbake til hjem →
+            </Link>
+          </div>
         </Kort>
       ) : (
         <>

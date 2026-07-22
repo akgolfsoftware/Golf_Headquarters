@@ -1,15 +1,11 @@
 "use client";
 
 /**
- * SPILLER-DASHBOARD (100 %) — alt om én spiller på én adresse.
- * Portet fra design-fasit ui_kits/agencyos/spiller-dashboard.jsx (skrevet i
- * Claude Design-prosjektet 2026-07-12, Anders' bestilling): hero + KPI-strip
- * + 7 faner: Oversikt · Utvikling · Plan · Helse · Turnering · Logg ·
- * Administrasjon. Dekker alle 26 spillerdata-domener fra prisma-inventaret.
+ * AgencyOS Spiller 360 — v2 Presis + B-pakke (tilstand 5s · én hovedhandling).
+ * Hero + KPI + 7 faner. Kun ekte data (server-mappet). Kun T.* / v2.
  *
- * Kun ekte data — all formatering skjer server-side (page.tsx); denne
- * komponenten mottar ferdige strenger og viser ærlige tomtilstander der
- * data mangler. HjelpTips på faguttrykk (SG/ACWR/WAGR/HCP) per låst regel.
+ * B-hierarki: tilbake → identitet → KPI-strip (status) → én primær (Workbench)
+ * → sekundære ghost-lenker → faner. Dybde bak faner, ikke i hero.
  */
 
 import Link from "next/link";
@@ -194,13 +190,15 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
   const [fane, setFane] = useState<FaneId>("oversikt");
   const p = data.profil;
 
+  const trengerOppfolging = data.heroBadges.some((b) => b.tone === "down" || b.tone === "warn");
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <div>
         <TilbakeLenke href="/admin/spillere">Alle spillere</TilbakeLenke>
       </div>
 
-      {/* Hero — identitet + badges + CTA-er (komprimert på mobil) */}
+      {/* B: identitet først — ingen CTA-rad her (status under, handling etter KPI) */}
       <Kort>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: mobile ? 12 : 18 }}>
           <AvatarInit navn={p.navn} size={mobile ? 48 : 64} />
@@ -213,16 +211,10 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
             </div>
             <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, marginTop: 7, fontVariantNumeric: "tabular-nums" }}>{data.heroMeta}</div>
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            <Link href={data.wbHref} style={{ textDecoration: "none" }}><CTAPill icon="layout-dashboard">Workbench</CTAPill></Link>
-            <Link href={data.analyseHref} style={{ textDecoration: "none" }}><CTAPill ghost icon="bar-chart">Analyse</CTAPill></Link>
-            <Link href="/admin/innboks" style={{ textDecoration: "none" }}><CTAPill ghost icon="message-circle">Melding</CTAPill></Link>
-            <Link href="/admin/bookinger/ny" style={{ textDecoration: "none" }}><CTAPill ghost icon="calendar-plus">Book time</CTAPill></Link>
-          </div>
         </div>
       </Kort>
 
-      {/* KPI-strip (komprimert på mobil) */}
+      {/* B: status/KPI først (5s-test) */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7" style={{ gap: mobile ? 8 : 10 }}>
         {data.kpi.map((k) => (
           <div key={k.label} style={{ background: T.panel, border: `1px solid ${T.border}`, borderRadius: 12, padding: mobile ? "8px 10px" : "10px 13px" }}>
@@ -233,6 +225,18 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
             <div style={{ fontFamily: T.mono, fontSize: mobile ? 15 : 17, fontWeight: 700, color: k.tone ? TONE_FARGE[k.tone] : T.fg, marginTop: mobile ? 4 : 6, fontVariantNumeric: "tabular-nums" }}>{k.verdi}</div>
           </div>
         ))}
+      </div>
+
+      {/* B: én primær (Workbench) · øvrige ghost */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+        <Link href={data.wbHref} style={{ textDecoration: "none", flex: mobile ? "1 1 100%" : undefined }}>
+          <CTAPill icon="layout-dashboard" full={mobile}>
+            {trengerOppfolging ? "Følg opp i Workbench" : "Åpne Workbench"}
+          </CTAPill>
+        </Link>
+        <Link href={data.analyseHref} style={{ textDecoration: "none" }}><CTAPill ghost icon="bar-chart">Analyse</CTAPill></Link>
+        <Link href="/admin/innboks" style={{ textDecoration: "none" }}><CTAPill ghost icon="message-circle">Melding</CTAPill></Link>
+        <Link href="/admin/bookinger/ny" style={{ textDecoration: "none" }}><CTAPill ghost icon="calendar-plus">Book time</CTAPill></Link>
       </div>
 
       {/* Fanelinje — mobil: horisontal PillTabs (scroll + fade); desktop: understrek-faner */}
@@ -321,7 +325,14 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
                   <Link href={data.wbHref} style={{ textDecoration: "none" }}><CTAPill icon="layout-dashboard">Åpne Workbench</CTAPill></Link>
                 </div>
               ) : (
-                <TomTilstand icon="calendar" title="Ingen aktiv plan" sub="Start fra mal i Workbench." />
+                <>
+                  <TomTilstand icon="calendar" title="Ingen aktiv plan" sub="Start fra mal i Workbench for å gi spilleren ukentlig program." />
+                  <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
+                    <Link href={data.wbHref} style={{ textDecoration: "none" }}>
+                      <CTAPill icon="plus">Lag plan i Workbench</CTAPill>
+                    </Link>
+                  </div>
+                </>
               )}
             </Kort>
             <Kort eyebrow="Teknisk plan" action={<Link href={data.plan.planHref} style={{ textDecoration: "none" }}><Caps size={9}>Detaljer →</Caps></Link>}>

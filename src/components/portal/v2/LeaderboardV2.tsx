@@ -1,16 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · Mål · Leaderboard — v2 (retning C «Presis»).
- * v2-port 16. juli 2026: erstatter wireframe-designet i
- * (legacy)/mal/leaderboard/page.tsx.
- *
- * Kun presentasjonslaget er nytt (v2-primitiver + T-tokens). Datakontrakten
- * (rangering etter snitt-SG siste 30 dager, tab/sg-kategori via URL) er
- * uendret — navigasjon skjer med Link mot searchParams som før. Bevisst
- * utelatt fra det gamle designet: den statiske badge-kolonnen (streak/test/
- * momentum) som var identisk plassholder for alle rader (TODO i original),
- * og de døde «Sesong»-/paginerings-knappene.
+ * PlayerHQ · Leaderboard — v2 Presis + B-pakke (din plass først, tom = logg runde).
+ * Rangering etter snitt-SG siste 30 dager. T.* only.
  */
 
 import Link from "next/link";
@@ -24,6 +16,7 @@ import {
   StatusPill,
   TomTilstand,
   HjelpTips,
+  CTAPill,
 } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 
@@ -202,8 +195,15 @@ export function LeaderboardV2({ data }: { data: LeaderboardV2Data }) {
           <TomTilstand
             icon="trophy"
             title="Ingen rangering ennå"
-            sub="Når flere Pro-brukere har registrert SG-data dukker rangeringen opp her."
+            sub="Registrer runder med SG — da dukker plasseringen din opp her."
           />
+          <div style={{ marginTop: 12 }}>
+            <Link href="/portal/runde/live" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="flag" full>
+                Start live-føring
+              </CTAPill>
+            </Link>
+          </div>
         </Kort>
       ) : (
         <Kort pad="6px 20px">

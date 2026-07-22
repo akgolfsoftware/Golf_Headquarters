@@ -12,7 +12,8 @@
 
 import { useMemo, useState } from "react";
 import { avatarBg } from "@/lib/avatar-colors";
-import { Caps, Tittel, Kort, Rad, KpiFlis, StatusPill, FordelingRad, TomTilstand, Icon, Knapp, T, type StatusTone } from "@/components/v2";
+import Link from "next/link";
+import { Caps, Tittel, Kort, Rad, KpiFlis, StatusPill, FordelingRad, TomTilstand, Icon, Knapp, CTAPill, T, type StatusTone } from "@/components/v2";
 
 export type CaddieEvent = {
   id: string;
@@ -195,6 +196,20 @@ export function AdminCaddieAktivitetV2({
     setFollowups((s) => ({ ...s, [id]: s[id] === kind ? null : kind }));
   }
 
+  // B: status + én primær CTA
+  const statusTone: StatusTone =
+    loadError ? "down" : stats.wait > 0 ? "warn" : stats.total > 0 ? "lime" : "info";
+  const statusTekst = loadError
+    ? "Kunne ikke laste"
+    : stats.wait > 0
+      ? `${stats.wait} venter i dag`
+      : stats.total > 0
+        ? `${stats.total} hendelser i dag`
+        : "Ingen hendelser i dag";
+  const primaerHref = stats.wait > 0 ? "/admin/godkjenninger" : "/admin/agencyos/caddie";
+  const primaerTekst = stats.wait > 0 ? "Behandle godkjenninger" : "Åpne Caddie-chat";
+  const primaerIkon = stats.wait > 0 ? "check" : "message-circle";
+
   return (
     <>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
@@ -207,15 +222,17 @@ export function AdminCaddieAktivitetV2({
             I dag · {stats.total} hendelser · {stats.ok} godkjent · {stats.rej} avvist · {stats.wait} venter · snitt-konfidens {(stats.conf * 100).toFixed(0)}%
           </p>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {loadError && (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 9999, border: `1px solid ${T.down}`, padding: "5px 12px", fontFamily: T.mono, fontSize: 9.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", color: T.down }}>
-              <Icon name="alert-triangle" size={12} /> Kunne ikke laste
-            </span>
-          )}
-          <StatusPill>Live · auto 10s</StatusPill>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
+          {!loadError && <StatusPill tone="info">Live · auto 10s</StatusPill>}
         </div>
       </div>
+
+      <Link href={primaerHref} style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon={primaerIkon} full>
+          {primaerTekst}
+        </CTAPill>
+      </Link>
 
       <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
         <KpiFlis label="I dag · samtaler" value={stats.total} tint />
@@ -276,7 +293,11 @@ export function AdminCaddieAktivitetV2({
               </div>
             ) : grouped.length === 0 ? (
               <div style={{ padding: "40px 16px" }}>
-                <TomTilstand icon="activity" title={initialEvents.length === 0 ? "Ingen Caddie-aktivitet ennå" : "Ingen treff"} sub={initialEvents.length === 0 ? undefined : "Ingen hendelser matcher filtrene."} />
+                <TomTilstand
+                  icon="activity"
+                  title={initialEvents.length === 0 ? "Ingen Caddie-aktivitet ennå" : "Ingen treff"}
+                  sub={initialEvents.length === 0 ? "Når Caddie foreslår eller analyserer, dukker hendelsene opp her. Bruk knappen over for å starte en samtale." : "Ingen hendelser matcher filtrene — nullstill søk eller filter."}
+                />
               </div>
             ) : (
               grouped.map((g) => (

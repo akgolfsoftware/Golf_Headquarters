@@ -1,22 +1,8 @@
 "use client";
 
 /**
- * AgencyOS Spiller-plan — v2 (retning C «Presis»). Coach-kontekst: oversikt
- * over en spillers tekniske utviklingsplaner (TechnicalPlan) med snarvei til
- * Workbench. Ingen mockup fantes — komponert utelukkende av v2-biblioteket
- * (src/components/v2), ingen ad-hoc UI, ingen rå hex (kun T.*).
- *
- * Funksjon/data bevart 1:1 fra den ekte skjermen
- * (src/app/admin/spillere/[id]/plan/page.tsx):
- *   - TechnicalPlan-liste (navn/status/start-/sluttdato) med samme sortering:
- *     ACTIVE → DRAFT → ARCHIVED, nyeste (updatedAt) først innen hver gruppe.
- *   - Status-etiketter Aktiv/Utkast/Arkivert.
- *   - Ærlig tom-tilstand med «Lag plan» → Workbench når spilleren har 0 planer.
- *   - Hver rad lenker til plan-detaljen; footer lenker til Workbench.
- *
- * Merk: den ekte ruten redirecter til detaljen når spilleren har nøyaktig én
- * plan. Det er ruteatferd, ikke komponentatferd — komponenten viser alltid en
- * ærlig liste (også ved én plan) så forhåndsvisningen er komplett.
+ * AgencyOS Spiller-plan — v2 Presis + B-pakke (status + én primær «Lag plan»).
+ * TechnicalPlan-liste · KPI · tom = Workbench. Kun T.* / v2.
  */
 
 import { useRouter } from "next/navigation";
@@ -30,7 +16,6 @@ import {
   StatusPill,
   CTAPill,
   TilbakeLenke,
-  Knapp,
   InnsiktChip,
   TomTilstand,
   Icon,
@@ -94,33 +79,50 @@ export function AdminSpillerPlanV2({ data }: { data: AdminSpillerPlanData }) {
 
   const workbenchHref = `/admin/spillere/${spiller.id}/workbench`;
 
-  // ── Hode ──────────────────────────────────────────────────────
+  const statusTone: StatusTone =
+    aktive > 0 ? "lime" : utkast > 0 ? "warn" : sortert.length > 0 ? "info" : "warn";
+  const statusTekst =
+    aktive > 0
+      ? pl(aktive, "aktiv", "aktive")
+      : utkast > 0
+        ? pl(utkast, "utkast", "utkast")
+        : sortert.length > 0
+          ? "Kun arkivert"
+          : "Ingen planer";
+
+  // ── Hode — B: status ──────────────────────────────────────────
   const hode = (
-    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-      <div>
-        <Caps>{spiller.navn} · AgencyOS · Utviklingsplaner</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="planer.">Tekniske</Tittel>
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <TilbakeLenke href={`/admin/spillere/${spiller.id}`}>Tilbake til {spiller.navn}</TilbakeLenke>
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
+        <div>
+          <Caps>{spiller.navn} · AgencyOS · Utviklingsplaner</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em="planer.">Tekniske</Tittel>
+          </div>
         </div>
-      </div>
-      <div className="hidden md:inline-flex" style={{ gap: 8 }}>
-        <TilbakeLenke href={`/admin/spillere/${spiller.id}`}>Tilbake til {spiller.navn}</TilbakeLenke>
-        <Link href={workbenchHref} style={{ textDecoration: "none" }}>
-          <CTAPill icon="plus">Lag plan</CTAPill>
-        </Link>
+        <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
       </div>
     </div>
   );
 
-  // ── KPI-flis (kun når det finnes planer) ──────────────────────
-  const kpi =
-    sortert.length > 0 ? (
-      <div className="grid grid-cols-3" style={{ gap: T.gap }}>
-        <KpiFlis label="Planer" value={sortert.length} />
-        <KpiFlis label="Aktive" value={aktive} />
-        <KpiFlis label="Utkast" value={utkast} />
-      </div>
-    ) : null;
+  // ── KPI ───────────────────────────────────────────────────────
+  const kpi = (
+    <div className="grid grid-cols-3" style={{ gap: T.gap }}>
+      <KpiFlis label="Planer" value={sortert.length} />
+      <KpiFlis label="Aktive" value={aktive} tint={aktive > 0} />
+      <KpiFlis label="Utkast" value={utkast} />
+    </div>
+  );
+
+  // B: én primær
+  const primaerCta = (
+    <Link href={workbenchHref} style={{ textDecoration: "none", display: "block" }}>
+      <CTAPill icon="plus" full>
+        {sortert.length === 0 ? "Lag første plan" : "Lag plan"}
+      </CTAPill>
+    </Link>
+  );
 
   // ── Plan-liste / tom-tilstand ─────────────────────────────────
   const liste =
@@ -129,13 +131,8 @@ export function AdminSpillerPlanV2({ data }: { data: AdminSpillerPlanData }) {
         <TomTilstand
           icon="file-text"
           title="Ingen utviklingsplaner ennå"
-          sub={`${spiller.navn} har ingen tekniske planer. Lag en plan i Workbench for å sette mål, periodisering og drills.`}
+          sub={`${spiller.navn} har ingen tekniske planer. Sett mål, periodisering og drills i Workbench.`}
         />
-        <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
-          <Knapp icon="plus" onClick={() => router.push(workbenchHref)}>
-            Lag plan
-          </Knapp>
-        </div>
       </Kort>
     ) : (
       <Kort
@@ -156,21 +153,20 @@ export function AdminSpillerPlanV2({ data }: { data: AdminSpillerPlanData }) {
       </Kort>
     );
 
-  // ── AI-innsikt → Workbench ────────────────────────────────────
   const innsiktTekst =
     sortert.length === 0
       ? `${spiller.navn} mangler en utviklingsplan — sett mål og periodisering samlet i Workbench.`
       : aktive === 0
         ? "Ingen aktiv plan akkurat nå — publiser et utkast eller bygg videre i Workbench."
         : `${pl(aktive, "aktiv plan", "aktive planer")} — juster mål, drills og periodisering i Workbench.`;
-  const innsikt = <InnsiktChip cta="Planlegg i Workbench" href={workbenchHref}>{innsiktTekst}</InnsiktChip>;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
       {kpi}
+      {primaerCta}
       {liste}
-      {innsikt}
+      <InnsiktChip cta="Planlegg i Workbench" href={workbenchHref}>{innsiktTekst}</InnsiktChip>
     </div>
   );
 }

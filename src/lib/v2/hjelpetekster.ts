@@ -69,9 +69,9 @@ const RAW = {
       "Hvor mye av planlagt trening som faktisk ble gjennomført, i prosent. Et lavt tall er ikke et forbud mot noe, bare et signal om at planen og virkeligheten har sklidd fra hverandre.",
   },
   gjentaOkt: {
-    tittel: "Gjenta ukentlig",
+    tittel: "Gjenta",
     forklaring:
-      "Legger den samme økta inn på samme dag og klokkeslett i flere uker fremover — som en fast treningsrytme. Hver uke får sin egen økt som kan flyttes eller endres uavhengig av de andre.",
+      "Som i kalenderen: Av, hver uke eller annenhver uke. Velg hvor mange ganger totalt. Hver gang blir en egen økt du kan flytte eller slette uten å påvirke de andre.",
   },
   tonnasje: {
     tittel: "Tonnasje",

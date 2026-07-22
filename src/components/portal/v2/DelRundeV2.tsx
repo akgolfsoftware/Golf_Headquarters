@@ -1,12 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · Del runde (/portal/statistikk/runder/[runId]/del) — v2.
- * v2-port 17. juli 2026 (Team D3): erstatter del-runde-client (hybrid, 3 rå hex).
- * Samme funksjon: format-velger (Story/Post/PDF/Lenke), synlighet, kopier
- * delbar lenke (/r/[id]) og nedlastings-knapp. Delekortet er en merkevare-
- * grafikk — bruker T.wrapped-gradientene (faste merkefarger uansett tema),
- * aldri rå hex i skjermfila.
+ * PlayerHQ · Del runde — v2 Presis + B-pakke (status + én primær last ned/kopier).
+ * Format + synlighet. Delekort bruker T.wrapped. T.* only.
  */
 
 import Link from "next/link";
@@ -350,13 +346,13 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
         />
       </Kort>
 
-      {/* Handlinger */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-        <Knapp ghost icon={kopiert ? "check" : "copy"} onClick={kopierLenke}>
-          {kopiert ? "Kopiert" : "Kopier lenke"}
-        </Knapp>
-        <Knapp icon="download" disabled={lasterNed} onClick={lastNed}>
+      {/* B: én primær Last ned + sekundær kopier */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <Knapp icon="download" full disabled={lasterNed} onClick={lastNed}>
           {lasterNed ? "Laster ned…" : "Last ned"}
+        </Knapp>
+        <Knapp ghost icon={kopiert ? "check" : "copy"} full onClick={kopierLenke}>
+          {kopiert ? "Kopiert" : "Kopier lenke"}
         </Knapp>
       </div>
 

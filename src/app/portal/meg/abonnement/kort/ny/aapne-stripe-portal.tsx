@@ -1,16 +1,12 @@
 "use client";
 
 /**
- * AapneStripePortal — åpner Stripe Customer Billing Portal for kort-administrasjon.
- *
- * Kort lagres ALDRI hos oss. Spilleren legger til / endrer kort i Stripes egen
- * sikre portal (PCI-DSS). POST /api/stripe/portal oppretter en portal-session
- * for innlogget bruker og returnerer URL-en vi redirecter til.
+ * Åpner Stripe Customer Billing Portal — B-pakke (én grønn Knapp).
  */
 
-import { Knapp } from "@/components/v2";
 import { useState } from "react";
-import { Loader2, ExternalLink, AlertTriangle } from "lucide-react";
+import { Knapp, Icon } from "@/components/v2";
+import { T } from "@/lib/v2/tokens";
 
 export function AapneStripePortal() {
   const [loading, setLoading] = useState(false);
@@ -37,32 +33,26 @@ export function AapneStripePortal() {
   }
 
   return (
-    <div className="space-y-3">
-      <Knapp full onClick={handleClick} disabled={loading}>
-        {loading ? (
-          <span className="inline-flex items-center gap-2">
-            <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} aria-hidden />
-            Åpner Stripe …
-          </span>
-        ) : (
-          <span className="inline-flex items-center gap-2">
-            <ExternalLink className="h-4 w-4" strokeWidth={2} aria-hidden />
-            Administrer kort i Stripe
-          </span>
-        )}
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <Knapp full icon="external-link" onClick={handleClick} disabled={loading}>
+        {loading ? "Åpner Stripe …" : "Administrer kort i Stripe"}
       </Knapp>
 
       {error ? (
         <div
           role="alert"
-          className="flex items-start gap-2.5 rounded-xl border border-destructive/25 border-l-[3px] border-l-destructive bg-destructive/10 p-3.5"
+          style={{
+            display: "flex",
+            gap: 10,
+            alignItems: "flex-start",
+            borderRadius: T.rRow,
+            border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
+            background: `color-mix(in srgb, ${T.down} 10%, ${T.panel})`,
+            padding: 12,
+          }}
         >
-          <AlertTriangle
-            className="mt-0.5 h-4 w-4 shrink-0 text-destructive"
-            strokeWidth={2}
-            aria-hidden
-          />
-          <span className="text-[13px] leading-relaxed text-foreground">{error}</span>
+          <Icon name="triangle-alert" size={14} style={{ color: T.down, marginTop: 2, flex: "none" }} />
+          <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.45 }}>{error}</span>
         </div>
       ) : null}
     </div>

@@ -1,20 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Mål-hub — v2 (retning C «Presis»). Rekomponert fra den ekte skjermen
- * src/app/portal/mal/page.tsx (funksjon + datakontrakt bevart 1:1): header med
- * antall aktive mål + inngang til å sette nytt mål, siste milepæl, mål-liste med
- * fremdrift/status, og ærlig tom-tilstand. Mål bor i Oversikt — dette er hub-en
- * for å se og åpne dem; ingen utviklingsplan-innhold blandes inn.
- *
- * Kun v2-komponenter fra "@/components/v2"; ingen ad-hoc UI, ingen rå hex (T.*).
- * V2Shell (montert i (v2preview)/v2-mal/page.tsx) eier chrome-en — denne
- * komponenten rendrer bare den indre innholds-stacken.
- *
- * Gap: v2-biblioteket har ingen funksjonell dialog-primitiv (overlays/Modal er en
- * statisk design-ramme), så «Nytt mål»/«Sett første mål» går til den eksisterende
- * mål-byggeren (/portal/mal/bygger) — samme create-funksjon som NyGoalModal, via
- * ekte navigasjon. Meldt i retur-kontraktens `gaps`.
+ * PlayerHQ Mål-hub — v2 Presis + B-pakke (status + én primær «nytt mål»).
+ * Liste med fremdrift. Tom = full grønn vei til bygger. T.* only.
  */
 
 import Link from "next/link";
@@ -89,18 +77,25 @@ export function MalHubV2({ data }: { data: MalHubData }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
+      {/* Hode + B: status pill */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
-          <Caps>{antall} {antall === 1 ? "aktivt mål" : "aktive mål"}</Caps>
+          <Caps>Mål</Caps>
           <div style={{ marginTop: 10 }}>
             <Tittel mobile={mobile} em="mål">Mine</Tittel>
           </div>
         </div>
-        <Link href="/portal/mal/bygger" style={{ textDecoration: "none" }}>
-          <CTAPill icon="plus">Nytt mål</CTAPill>
-        </Link>
+        <StatusPill tone={antall > 0 ? "lime" : "info"}>
+          {antall} {antall === 1 ? "aktivt" : "aktive"}
+        </StatusPill>
       </div>
+
+      {/* B: én primær CTA full */}
+      <Link href="/portal/mal/bygger" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="plus" full>
+          {goals.length === 0 ? "Sett første mål" : "Nytt mål"}
+        </CTAPill>
+      </Link>
 
       {/* Siste milepæl */}
       {milepael && (
@@ -153,13 +148,8 @@ export function MalHubV2({ data }: { data: MalHubData }) {
           <TomTilstand
             icon="target"
             title="Ingen mål ennå"
-            sub="Sett ditt første mål og begynn å spore fremgangen din."
+            sub="Sett ditt første mål med knappen over — så sporer du fremgangen her."
           />
-          <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
-            <Link href="/portal/mal/bygger" style={{ textDecoration: "none" }}>
-              <CTAPill icon="plus">Sett første mål</CTAPill>
-            </Link>
-          </div>
         </Kort>
       )}
     </div>

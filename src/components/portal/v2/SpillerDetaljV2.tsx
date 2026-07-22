@@ -1,11 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · Spiller-detalj (/portal/spiller/[spillerId]) — v2.
- * v2-port 17. juli 2026 (Team D3): erstatter spiller-detalj-client (hybrid).
- * Offentlig spillerprofil fra stall/lag-sider/søk: hero + KPI-rad + faner
- * (Oversikt · Plan · Statistikk · Runder · Coaching-historikk). Samme data-
- * kontrakt som før — page.tsx eier queries og snitt-utregningene.
+ * PlayerHQ · Spiller-detalj (/portal/spiller/[spillerId]) — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import Link from "next/link";

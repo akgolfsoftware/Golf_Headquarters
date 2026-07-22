@@ -1,40 +1,21 @@
 "use client";
 
 /**
- * OppgraderFlytWizard — mobil-først (430px) oppgraderings-flyt til PRO.
- *
- * Steg på én skjerm: verdi → bekreft. Én pris: 299 kr/mnd (ingen årlig — låst regel).
- * Bekreft åpner ekte Stripe Checkout via POST /api/stripe/checkout (samme
- * sti som UpgradeButton). Stripe styrer faktisk pris/plan — UI viser PRO.
- *
- * Kun DS-token-klasser. Ingen emoji (lucide). Pris: 299 kr/mnd.
+ * Oppgrader til Pro — B-pakke.
+ * Pris/status først, fordeler, én grønn «Gå til betaling».
  */
 
-import { Knapp } from "@/components/v2";
 import { useState } from "react";
-import Link from "next/link";
-import {
-  ChevronLeft,
-  Sparkles,
-  Crosshair,
-  Video,
-  CalendarDays,
-  BarChart3,
-  Users,
-  Check,
-  Lock,
-  ArrowRight,
-  Loader2,
-  type LucideIcon,
-} from "lucide-react";
+import { Knapp, Caps, Tittel, Kort, TilbakeLenke, StatusPill, Icon } from "@/components/v2";
+import { T } from "@/lib/v2/tokens";
 
-const FORDELER: { icon: LucideIcon; tittel: string; meta: string }[] = [
-  { icon: Sparkles, tittel: "AI-coach 24/7", meta: "Svar tilpasset dine TrackMan-data" },
-  { icon: Crosshair, tittel: "4 coaching-credits / mnd", meta: "1:1-time, video eller treningsuke" },
-  { icon: Video, tittel: "Videoanalyse", meta: "Coach tegner linjer og vinkler" },
-  { icon: CalendarDays, tittel: "Smart planlegger", meta: "Pyramide-balansert ukeplan" },
-  { icon: BarChart3, tittel: "Komplett historikk", meta: "Alle runder og økter, ubegrenset" },
-  { icon: Users, tittel: "Familiekonto", meta: "Opptil 3 sammenkoblinger" },
+const FORDELER: { icon: string; tittel: string; meta: string }[] = [
+  { icon: "sparkles", tittel: "AI-coach 24/7", meta: "Svar tilpasset dine TrackMan-data" },
+  { icon: "crosshair", tittel: "4 coaching-credits / mnd", meta: "1:1-time, video eller treningsuke" },
+  { icon: "video", tittel: "Videoanalyse", meta: "Coach tegner linjer og vinkler" },
+  { icon: "calendar", tittel: "Smart planlegger", meta: "Pyramide-balansert ukeplan" },
+  { icon: "bar-chart", tittel: "Komplett historikk", meta: "Alle runder og økter, ubegrenset" },
+  { icon: "users", tittel: "Familiekonto", meta: "Opptil 3 sammenkoblinger" },
 ];
 
 export function OppgraderFlytWizard() {
@@ -64,128 +45,133 @@ export function OppgraderFlytWizard() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-[480px] px-4 pb-20 sm:px-6">
-      {/* Tilbake */}
-      <Link
-        href="/portal/meg/abonnement"
-        className="inline-flex min-h-11 items-center gap-1.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground transition-colors hover:text-foreground"
+    <div
+      style={{
+        maxWidth: 480,
+        margin: "0 auto",
+        padding: "0 0 24px",
+        display: "flex",
+        flexDirection: "column",
+        gap: T.gap,
+      }}
+    >
+      <TilbakeLenke href="/portal/meg/abonnement">Abonnement</TilbakeLenke>
+
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+        <div>
+          <Caps>Abonnement · Oppgrader</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em="Pro">Løft spillet med</Tittel>
+          </div>
+          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.45, maxWidth: "36ch" }}>
+            AI-coach, videoanalyse og komplett historikk. Avbryt når som helst.
+          </p>
+        </div>
+        <StatusPill tone="lime">299 kr/mnd</StatusPill>
+      </div>
+
+      <Kort
+        style={{
+          background: T.forest,
+          border: "none",
+        }}
       >
-        <ChevronLeft className="h-[13px] w-[13px]" strokeWidth={2} aria-hidden />
-        Abonnement
-      </Link>
-
-      {/* Header */}
-      <header className="mt-3 space-y-2">
-        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
-          PlayerHQ · Meg · Abonnement · Oppgrader
-        </span>
-        <h1 className="font-display text-[28px] font-bold leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[34px]">
-          Løft spillet med{" "}
-          <em
-            className="not-italic"
-            style={{
-              fontFamily: "var(--font-familjen-grotesk), sans-serif",
-              fontStyle: "italic",
-              color: "hsl(var(--primary))",
-            }}
-          >
-            Pro
-          </em>
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          AI-coach hele døgnet, videoanalyse og komplett historikk. Avbryt når som
-          helst — første 30 dager er angreretten din.
-        </p>
-      </header>
-
-      {/* Pris-hero */}
-      <section className="mt-6 overflow-hidden rounded-2xl bg-primary p-6 text-accent">
-        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-accent/70">
-          Din pris
-        </span>
-        <div className="mt-2 flex items-baseline gap-1.5">
-          <span className="font-mono text-5xl font-extrabold leading-none tabular-nums">
-            300
+        <Caps color="color-mix(in srgb, var(--v2-on-lime) 70%, transparent)">Din pris</Caps>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 8 }}>
+          <span style={{ fontFamily: T.mono, fontSize: 48, fontWeight: 800, letterSpacing: "-0.03em", color: T.onLime, lineHeight: 1 }}>
+            299
           </span>
-          <span className="font-mono text-base font-bold text-accent/70">
+          <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: "color-mix(in srgb, var(--v2-on-lime) 70%, transparent)" }}>
             kr / mnd
           </span>
         </div>
-        <p className="mt-2 text-sm text-accent/80">
+        <p style={{ margin: "10px 0 0", fontFamily: T.ui, fontSize: 13, color: "color-mix(in srgb, var(--v2-on-lime) 80%, transparent)", lineHeight: 1.45 }}>
           Alt inkludert. Fri pause, fri avbestilling.
         </p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {["AI-coach 24/7", "4 credits/mnd", "Videoanalyse", "Familiekonto"].map((c) => (
+        <div style={{ marginTop: 14, display: "flex", flexWrap: "wrap", gap: 6 }}>
+          {["AI-coach", "4 credits", "Video", "Familie"].map((c) => (
             <span
               key={c}
-              className="inline-flex items-center gap-1 rounded-full border border-accent/30 bg-accent/10 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.06em]"
+              style={{
+                fontFamily: T.mono,
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: "0.04em",
+                color: T.forest,
+                background: T.lime,
+                borderRadius: 9999,
+                padding: "4px 9px",
+              }}
             >
-              <Check className="h-2.5 w-2.5" strokeWidth={3} aria-hidden />
               {c}
             </span>
           ))}
         </div>
-      </section>
+      </Kort>
 
-      {/* Fordeler */}
-      <h2 className="mb-3 mt-8 font-display text-base font-bold tracking-[-0.015em] text-foreground">
-        Dette får du
-      </h2>
-      <div className="overflow-hidden rounded-2xl border border-border bg-card">
-        {FORDELER.map((f, i) => {
-          const Icon = f.icon;
-          return (
-            <div
-              key={f.tittel}
-              className={`flex items-center gap-3 px-4 py-3.5 ${i > 0 ? "border-t border-border" : ""}`}
+      <Kort pad="0">
+        <div style={{ padding: "12px 18px", borderBottom: `1px solid ${T.border}` }}>
+          <Caps>Inkludert i Pro</Caps>
+        </div>
+        {FORDELER.map((f, i) => (
+          <div
+            key={f.tittel}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              padding: "12px 18px",
+              borderBottom: i < FORDELER.length - 1 ? `1px solid ${T.border}` : "none",
+            }}
+          >
+            <span
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: 10,
+                background: T.panel3,
+                border: `1px solid ${T.border}`,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flex: "none",
+              }}
             >
-              <span className="inline-flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[9px] bg-primary/[0.08] text-primary">
-                <Icon className="h-[17px] w-[17px]" strokeWidth={1.75} aria-hidden />
-              </span>
-              <span className="flex flex-1 flex-col gap-0.5">
-                <span className="text-[14px] font-semibold leading-tight tracking-[-0.005em] text-foreground">
-                  {f.tittel}
-                </span>
-                <span className="mt-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.04em] text-muted-foreground">
-                  {f.meta}
-                </span>
-              </span>
-              <Check className="h-4 w-4 shrink-0 text-primary" strokeWidth={2.5} aria-hidden />
+              <Icon name={f.icon} size={15} style={{ color: T.fg2 }} />
+            </span>
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{f.tittel}</div>
+              <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 2 }}>{f.meta}</div>
             </div>
-          );
-        })}
-      </div>
+            <Icon name="check" size={14} style={{ color: T.up, marginLeft: "auto", flex: "none" }} />
+          </div>
+        ))}
+      </Kort>
 
-      {/* Feil */}
-      {error ? (
+      {error && (
         <div
           role="alert"
-          className="mt-6 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+          style={{
+            borderRadius: T.rRow,
+            border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
+            background: `color-mix(in srgb, ${T.down} 10%, ${T.panel})`,
+            padding: 12,
+            fontFamily: T.ui,
+            fontSize: 13,
+            color: T.down,
+          }}
         >
           {error}
         </div>
-      ) : null}
+      )}
 
-      {/* Bekreft */}
-      <div className="mt-6 space-y-3">
-        <Knapp full onClick={handleBekreft} disabled={loading}>
-          {loading ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} aria-hidden />
-              Åpner Stripe …
-            </>
-          ) : (
-            <>
-              Fortsett til betaling
-              <ArrowRight className="h-4 w-4" strokeWidth={2.2} aria-hidden />
-            </>
-          )}
-        </Knapp>
-        <p className="flex items-center justify-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-          <Lock className="h-3 w-3 text-primary" strokeWidth={2} aria-hidden />
-          Sikker betaling · Stripe
-        </p>
-      </div>
+      <Knapp full icon="arrow-right" onClick={handleBekreft} disabled={loading}>
+        {loading ? "Åpner betaling …" : "Gå til betaling"}
+      </Knapp>
+
+      <p style={{ margin: 0, fontFamily: T.ui, fontSize: 11.5, color: T.mut, textAlign: "center", lineHeight: 1.5 }}>
+        Sikker betaling via Stripe. 30 dagers angrerett.
+      </p>
     </div>
   );
 }

@@ -1,9 +1,6 @@
 /**
- * PlayerHQ · SG-hub · Coach-modus spilleroversikt
- * (/portal/mal/sg-hub/coach/[spillerId]) — v2.
- * v2-port 17. juli 2026 (Team D3): coachens inngang til én spillers SG-hub.
- * Coach-modus-banner, nøkkeltall (TrackMan-økter/køller/tier), per-kølle-grid
- * og verktøy (Equipment Fit). Data og tilgangskontroll bor i server-page.
+ * PlayerHQ · SG-hub · Coach-modus spilleroversikt — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import Link from "next/link";

@@ -1,8 +1,11 @@
-/* Onboarding-spesifikke stiler — scoped med .ob-* prefiks */
+/* Onboarding-spesifikke stiler — scoped med .ob-* prefiks.
+   B/V2 (2026-07-22): knapper og CTA bruker --v2-* (lys: forest CTA).
+   Shell er avviklet (OnboardingShell → VeiviserFlate); .ob-shell beholdes
+   kun som fallback hvis gammel markup finnes. */
 
 .ob-shell {
   min-height: 100vh;
-  background: linear-gradient(160deg, #005840 0%, #003A2A 60%, #0A1F17 100%);
+  background: var(--v2-bg, #F2F1EA);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -21,10 +24,11 @@
 .ob-content {
   width: 100%;
   max-width: 520px;
-  background: #ffffff;
+  background: var(--v2-panel, #ffffff);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--v2-border, #E5E3DD);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
 }
 
 .ob-step-body {
@@ -58,20 +62,20 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.15;
-  color: #0A1F17;
+  color: var(--v2-fg, #0A1F17);
 }
 
 .ob-step-title em {
   font-family: var(--font-familjen-grotesk), sans-serif;
   font-style: italic;
   font-weight: 400;
-  color: #005840;
+  color: var(--v2-lime, #005840);
 }
 
 .ob-ingress {
   font-size: 15px;
   line-height: 1.55;
-  color: #5E5C57;
+  color: var(--v2-mut, #5E5C57);
 }
 
 .ob-ingress p + p {
@@ -353,8 +357,8 @@
 }
 
 .ob-agree-item.checked .ob-agree-checkbox {
-  background: #005840;
-  border-color: #005840;
+  background: var(--v2-lime, #005840);
+  border-color: var(--v2-lime, #005840);
 }
 
 .ob-security-strip {
@@ -419,8 +423,8 @@
   width: 88px;
   height: 88px;
   border-radius: 50%;
-  background: #D1F843;
-  color: #0A1F17;
+  background: var(--v2-lime, #005840);
+  color: var(--v2-on-lime, #ffffff);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -444,8 +448,9 @@
   gap: 6px;
   padding: 12px 24px;
   border-radius: 999px;
-  background: #D1F843;
-  color: #0A1F17;
+  /* Lys tema: --v2-lime = forest, --v2-on-lime = hvit */
+  background: var(--v2-lime, #005840);
+  color: var(--v2-on-lime, #ffffff);
   font-size: 14px;
   font-weight: 700;
   border: 0;
@@ -475,17 +480,17 @@
   gap: 6px;
   padding: 12px 20px;
   border-radius: 999px;
-  background: #ffffff;
-  color: #0A1F17;
+  background: var(--v2-panel, #ffffff);
+  color: var(--v2-fg, #0A1F17);
   font-size: 14px;
   font-weight: 600;
-  border: 1px solid #E5E3DD;
+  border: 1px solid var(--v2-border, #E5E3DD);
   cursor: pointer;
   transition: border-color 0.15s;
 }
 
 .ob-btn-outline:hover {
-  border-color: #005840;
+  border-color: var(--v2-lime, #005840);
 }
 
 .ob-btn-outline:disabled {
@@ -514,9 +519,9 @@
 }
 
 .ob-pill-toggle.selected {
-  background: #005840;
-  color: #D1F843;
-  border-color: #005840;
+  background: var(--v2-lime, #005840);
+  color: var(--v2-on-lime, #ffffff);
+  border-color: var(--v2-lime, #005840);
 }
 
 .ob-pay-summary {

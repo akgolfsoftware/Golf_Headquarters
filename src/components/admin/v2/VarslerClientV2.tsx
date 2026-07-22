@@ -1,18 +1,8 @@
 "use client";
 
 /**
- * AgencyOS Varsler — v2 klientkomponent. Tre grupper: agent-forslag som
- * krever handling (godta/avvis), ferske signaler (siste per spiller/kind),
- * og coachens egne uleste meldinger. Server-actions (godtaPlanAction/
- * avvisPlanAction/markerVarselLest) bevart 1:1 — kortet fjernes optimistisk
- * lokalt før router.refresh().
- *
- * Audit 2026-07-12: per-rad «Godta» er ghost (T.panel3 + border) — lime er
- * reservert bulk-handlinger, og 37 lime-piller var visuell støy. På mobil
- * stables hver sak i to etasjer (tekst over knappene) så navn aldri trunkeres.
- * Alle klikkbare knapper har min-høyde 44px (touch-mål).
- * «Venter på deg»-tellingen bruker kanonisk koTelling (samme tall som
- * innboksen og godkjenninger-hodet).
+ * AgencyOS Varsler — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Agent-forslag · signaler · uleste. T.* only. Lime reservert bulk/primær.
  */
 
 import { useEffect, useState, useTransition, type CSSProperties } from "react";
@@ -20,7 +10,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { VarslerData } from "@/lib/admin/load-varsler";
 import { avvisPlanAction, godtaPlanAction, markerVarselLest } from "@/app/admin/varsler/actions";
-import { T, Caps, Kort, Rad, Knapp, AvatarInit, TomTilstand, MikroMeta, HjelpTips } from "@/components/v2";
+import { T, Caps, Kort, Rad, Knapp, AvatarInit, TomTilstand, MikroMeta, HjelpTips, StatusPill, CTAPill } from "@/components/v2";
 
 /** Touch-mål (Apple HIG/WCAG): ingen klikkbar flate i denne fila under 44px. */
 const TOUCH: CSSProperties = { minHeight: 44 };
@@ -62,12 +52,26 @@ export function VarslerClientV2({ data }: { data: VarslerData }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+        <Caps>AgencyOS · Varsler</Caps>
+        <StatusPill tone={venterTall > 0 ? "warn" : "lime"}>
+          {venterTall === 0 ? "Ingenting venter" : `${venterTall} venter`}
+        </StatusPill>
+      </div>
+
+      {/* B: én primær CTA */}
+      <Link href="/admin/godkjenninger" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="check-circle" full>
+          Åpne godkjenninger
+        </CTAPill>
+      </Link>
+
       {/* Venter på deg */}
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <Caps>Venter på deg ({venterTall})</Caps>
         {planActions.length === 0 ? (
           <Kort>
-            <TomTilstand icon="check" title="Ingenting venter" sub="Ingen agent-forslag krever handling akkurat nå." />
+            <TomTilstand icon="check" title="Ingenting venter" sub="Ingen agent-forslag krever handling akkurat nå. Nye lander i godkjenninger." />
           </Kort>
         ) : (
           <Kort pad="6px 18px">

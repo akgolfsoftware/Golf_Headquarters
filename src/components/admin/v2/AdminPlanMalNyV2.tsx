@@ -24,7 +24,7 @@ import {
   KATEGORI_LABEL,
   type DisciplinFordeling,
 } from "@/components/admin/plan-templates/shared";
-import { Kort, Caps, Tittel, Knapp, Icon, HjelpTips, T, AKSE_NAVN } from "@/components/v2";
+import { Kort, Caps, Tittel, Knapp, Icon, HjelpTips, StatusPill, T, AKSE_NAVN } from "@/components/v2";
 
 const PYR_ALLE: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
@@ -140,14 +140,19 @@ export function AdminPlanMalNyV2() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      <div>
-        <Caps>Ny mal</Caps>
-        <div style={{ marginTop: 6 }}>
-          <Tittel em="mal">Opprett</Tittel>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
+        <div>
+          <Caps>Ny mal · AgencyOS</Caps>
+          <div style={{ marginTop: 6 }}>
+            <Tittel em="mal">Opprett</Tittel>
+          </div>
+          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.55 }}>
+            Fyll inn metadata og opprett. Du kan legge til økter etterpå.
+          </p>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.55 }}>
-          Fyll inn metadata og opprett. Du kan legge til økter etterpå.
-        </p>
+        <StatusPill tone={sum === 100 && name.trim() ? "lime" : "info"}>
+          {sum === 100 ? "Fordeling OK · 100 %" : `Fordeling ${sum} %`}
+        </StatusPill>
       </div>
 
       <Kort>

@@ -1,9 +1,6 @@
 /**
- * PlayerHQ · Økt-detalj (planlagt) — v2 (retning C «Presis»).
- * v2-port 17. juli 2026 (Team D2): erstatter legacy pre-økt-visningen.
- * Server-safe presentasjon (ingen egen state) — page.tsx eier auth, Prisma
- * og timing-logikken. «Inviter kompis»-flyten (InviteFriendTrigger m/ modal
- * + server actions) beholdes uendret og kommer inn som ferdig slot.
+ * PlayerHQ · Økt-detalj (planlagt) — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import type { ReactNode } from "react";
@@ -160,8 +157,15 @@ export function OktPlanlagtV2({
           <TomTilstand
             icon="target"
             title="Ingen drills ennå"
-            sub="Ingen drills er lagt til denne økten ennå."
+            sub="Legg til drills i Workbench — eller start økten likevel."
           />
+          <div style={{ marginTop: 12 }}>
+            <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill ghost full icon="calendar">
+                Åpne Workbench
+              </CTAPill>
+            </Link>
+          </div>
         </Kort>
       )}
 

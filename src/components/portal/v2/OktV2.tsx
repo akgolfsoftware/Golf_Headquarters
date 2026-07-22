@@ -1,16 +1,12 @@
 "use client";
 
 /**
- * PlayerHQ Økt (økt-detalj) — v2 (retning C «Presis»). Komponert 1:1 fra
- * ui_kits/v2/phq-kalender.jsx → funksjonen Okt, men med EKTE data fra
- * getOktDetaljData (src/lib/portal-okt/okt-detalj-data.ts). Kun v2-komponenter
- * fra "@/components/v2"; ingen ad-hoc UI. Ingen rå hex (kun T.*-tokens).
- *
- * V2Shell (montert i (v2preview)/v2-okt/page.tsx) eier chrome-en — denne
- * komponenten rendrer bare den indre innholds-stacken.
+ * PlayerHQ Økt-detalj — v2 Presis + B (status + én Start/Fortsett).
+ * Ekte data fra getOktDetaljData.
  */
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import type { OktDetaljData, OktDrill } from "@/lib/portal-okt/okt-detalj-data";
 import type { AkseKey } from "@/lib/v2/tokens";
 import {
@@ -90,9 +86,14 @@ export function OktV2({ data, onSettPyramide }: { data: OktDetaljData; onSettPyr
           <TomTilstand
             icon="calendar"
             title="Ingen økt å vise"
-            sub="Når coachen din legger inn en økt, ser du øvelsene og oppsettet her."
+            sub="Når coachen din legger inn en økt, ser du øvelsene her."
           />
         </Kort>
+        <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="calendar" full>
+            Åpne Workbench
+          </CTAPill>
+        </Link>
       </div>
     );
   }
@@ -107,12 +108,19 @@ export function OktV2({ data, onSettPyramide }: { data: OktDetaljData; onSettPyr
             <Tittel mobile={mobile} em={data.emTittel}>{data.pyramide} ·</Tittel>
           </div>
         </div>
-        {data.kanStarte ? (
-          <CTAPill icon="play">{data.startLabel}</CTAPill>
-        ) : (
+        {!data.kanStarte && (
           <StatusPill tone={data.statusTone}>{data.statusLabel}</StatusPill>
         )}
       </div>
+
+      {/* B: én primær CTA full bredde */}
+      {data.kanStarte && (
+        <Link href={data.startHref} style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="play" full>
+            {data.startLabel}
+          </CTAPill>
+        </Link>
+      )}
 
       <div
         className="grid grid-cols-1 md:grid-cols-[3fr_2fr]"

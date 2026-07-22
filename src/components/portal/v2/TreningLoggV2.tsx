@@ -1,12 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · Logg treningsøkt — v2 (retning C «Presis»).
- * v2-port 17. juli 2026 (Team D2): erstatter legacy-skjemaet i
- * (legacy)/trening/logg. Logikken er uendret («kode er fasit»): samme
- * POST til /api/portal/trening/logg, samme felter/grenser (5–240 min,
- * kvalitet 1–5, maks 100/500 tegn) og samme redirect til /portal/gjennomfore.
- * Kun presentasjonslaget er nytt (v2-primitiver + T-tokens).
+ * PlayerHQ · Logg treningsøkt — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useState } from "react";

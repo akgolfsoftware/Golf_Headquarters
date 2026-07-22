@@ -16,7 +16,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { T, Caps, AkseChip, Knapp } from "@/components/v2";
+import { T, Caps, AkseChip, Knapp, StatusPill, TomTilstand } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { tildelTest } from "@/app/admin/(legacy)/tester/tildel/[spillerId]/actions";
 
@@ -115,6 +115,12 @@ export function AdminTildelTestV2({ data }: { data: AdminTildelTestV2Data }) {
             <h2 style={{ margin: "8px 0 0", fontFamily: T.disp, fontWeight: 700, fontSize: 19, color: T.fg }}>
               Tildel test til <strong>{data.spillerNavn}</strong>
             </h2>
+            <div style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+              <StatusPill tone="info">
+                {data.fullforte}/{data.totalt} tester gjennomført
+              </StatusPill>
+              {data.kategori && <StatusPill tone="lime">Kategori {data.kategori}</StatusPill>}
+            </div>
           </div>
           <button
             onClick={lukk}
@@ -133,14 +139,9 @@ export function AdminTildelTestV2({ data }: { data: AdminTildelTestV2Data }) {
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14, color: T.fg }}>{data.spillerNavn}</div>
               <div style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
-                {data.hcpLabel} · {data.fullforte}/{data.totalt} tester gjennomført
+                {data.hcpLabel} · {data.tester.length} tester i biblioteket
               </div>
             </div>
-            {data.kategori && (
-              <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.onLime, background: T.lime, borderRadius: 9999, padding: "3px 10px", flex: "none" }}>
-                {data.kategori}
-              </span>
-            )}
           </div>
 
           <div>
@@ -177,7 +178,11 @@ export function AdminTildelTestV2({ data }: { data: AdminTildelTestV2Data }) {
 
             <div style={{ marginTop: 10, borderRadius: 12, border: `1px solid ${T.border}`, overflow: "hidden" }}>
               {filtered.length === 0 ? (
-                <div style={{ padding: 24, textAlign: "center", fontFamily: T.mono, fontSize: 12, color: T.mut }}>Ingen tester matcher</div>
+                <TomTilstand
+                  icon="search"
+                  title={data.tester.length === 0 ? "Ingen tester i biblioteket" : "Ingen tester matcher"}
+                  sub={data.tester.length === 0 ? "Opprett tester under Tester før du tildeler." : "Prøv et annet søk eller filter."}
+                />
               ) : (
                 filtered.map((t, i) => {
                   const isSel = t.id === selectedId;

@@ -3,9 +3,11 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { rescheduleBooking } from "@/app/portal/meg/bookinger/actions";
+import { T } from "@/lib/v2/tokens";
+import { Caps, Kort, Knapp } from "@/components/v2";
 
 type Slot = {
-  start: string; // ISO
+  start: string;
   coachId: string;
   coachName: string;
 };
@@ -38,7 +40,6 @@ export function RescheduleSlotPicker({ bookingId, slots }: Props) {
     });
   }
 
-  // Grupper slots per coach
   const perCoach = new Map<string, Slot[]>();
   for (const s of slots) {
     const arr = perCoach.get(s.coachId);
@@ -47,13 +48,17 @@ export function RescheduleSlotPicker({ bookingId, slots }: Props) {
   }
 
   return (
-    <div className="space-y-4">
+    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       {Array.from(perCoach.entries()).map(([coachId, coachSlots]) => (
         <div key={coachId}>
-          <h3 className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-            {coachSlots[0].coachName}
-          </h3>
-          <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+          <Caps style={{ marginBottom: 8 }}>{coachSlots[0].coachName}</Caps>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(72px, 1fr))",
+              gap: 8,
+            }}
+          >
             {coachSlots.map((s) => {
               const aktiv = valgt?.start === s.start;
               const klokke = new Date(s.start).toLocaleTimeString("nb-NO", {
@@ -65,11 +70,21 @@ export function RescheduleSlotPicker({ bookingId, slots }: Props) {
                   key={s.start}
                   type="button"
                   onClick={() => setValgt(s)}
-                  className={`rounded-md border px-4 py-2 text-center font-mono text-sm tabular-nums transition-colors ${
-                    aktiv
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border bg-card text-foreground hover:border-primary"
-                  }`}
+                  className="v2-press v2-focus"
+                  style={{
+                    appearance: "none",
+                    borderRadius: 11,
+                    border: `1px solid ${aktiv ? "transparent" : T.border}`,
+                    background: aktiv ? T.lime : T.panel,
+                    color: aktiv ? T.onLime : T.fg,
+                    padding: "10px 8px",
+                    fontFamily: T.mono,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    fontVariantNumeric: "tabular-nums",
+                    cursor: "pointer",
+                    textAlign: "center",
+                  }}
                 >
                   {klokke}
                 </button>
@@ -80,26 +95,34 @@ export function RescheduleSlotPicker({ bookingId, slots }: Props) {
       ))}
 
       {error && (
-        <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive">
+        <div
+          role="alert"
+          style={{
+            borderRadius: 10,
+            border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
+            background: `color-mix(in srgb, ${T.down} 10%, ${T.panel})`,
+            padding: "10px 12px",
+            fontFamily: T.ui,
+            fontSize: 13,
+            color: T.down,
+          }}
+        >
           {error}
         </div>
       )}
 
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-md border border-border bg-card p-4">
-        <p className="text-sm text-muted-foreground">
-          {valgt
-            ? `Valgt: ${new Date(valgt.start).toLocaleString("nb-NO", { dateStyle: "medium", timeStyle: "short" })} (${valgt.coachName})`
-            : "Velg en tid over for å bekrefte byttet."}
-        </p>
-        <button
-          type="button"
-          onClick={bekreft}
-          disabled={!valgt || pending}
-          className="rounded-md bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-50"
-        >
-          {pending ? "Bytter …" : "Bekreft bytte"}
-        </button>
-      </div>
+      <Kort>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.45, flex: 1, minWidth: 180 }}>
+            {valgt
+              ? `Valgt: ${new Date(valgt.start).toLocaleString("nb-NO", { dateStyle: "medium", timeStyle: "short" })} (${valgt.coachName})`
+              : "Velg en tid over for å bekrefte byttet."}
+          </p>
+          <Knapp icon="check" onClick={bekreft} disabled={!valgt || pending}>
+            {pending ? "Bytter …" : "Bekreft bytte"}
+          </Knapp>
+        </div>
+      </Kort>
     </div>
   );
 }

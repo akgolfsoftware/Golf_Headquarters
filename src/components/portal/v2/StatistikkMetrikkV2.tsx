@@ -1,11 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · Statistikk · Drill-down per disiplin (/portal/statistikk/[metric]) — v2.
- * v2-port 17. juli 2026 (Team D3): ren presentasjon av dataene page.tsx regner ut
- * (pyramide-timer eller SG per runde, 90 d-trend, topp-drills / SG-ukesrader).
- * All aggregering/bucketing skjer i server-page — denne fila viser bare tall,
- * alltid med enhet og retning.
+ * PlayerHQ · Statistikk · Drill-down per disiplin (/portal/statistikk… — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import Link from "next/link";

@@ -1,20 +1,8 @@
 "use client";
 
 /**
- * AgencyOS Coaching-videoer — v2 (retning C «Presis», mørk først). Coach/ADMIN
- * laster opp video til en spiller og ser alle opplastede videoer. Rekomponert
- * fra den hånd-bygde golfdata-skjermen (video-upload-form.tsx + video-card.tsx)
- * — kun v2-primitiver fra "@/components/v2", ingen rå hex (kun T.*).
- *
- * Funksjon/datakontrakt bevart 1:1 fra den gamle skjermen:
- *   - Opplasting via uploadVideo(FormData) — samme feltnavn (file, title,
- *     playerId, tag, bookingId, notes), samme klientvalidering (maks 500 MB,
- *     mp4/mov/webm), refresh etter suksess.
- *   - «Åpne» henter signert URL (getSignedVideoUrl) og åpner i ny fane.
- *   - «Slett» (deleteVideo) med confirm-vakt — kun for eier/ADMIN (canDelete
- *     beregnes serverside som før).
- * Ingen fabrikerte tall — ærlig tom-tilstand når ingen videoer finnes.
- * Dropzone-mønsteret finnes ikke i v2-kanon — komponert av T-tokens (se gap).
+ * AgencyOS Coaching-videoer — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Last opp video til spiller · se opplastede. T.* only.
  */
 
 import { useState, useTransition } from "react";
@@ -31,6 +19,7 @@ import {
   Rad,
   StatusPill,
   TomTilstand,
+  CTAPill,
   Icon,
   Inndata,
   Velger,
@@ -241,9 +230,19 @@ function OpplastingsSkjema({ spillere }: { spillere: AdminVideoSpiller[] }) {
           <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>
             Spilleren får varsel når videoen er klar.
           </span>
-          <Knapp type="submit" icon="upload" disabled={pending || !file}>
-            {pending ? "Laster opp …" : "Last opp og send"}
-          </Knapp>
+          {/* B: én primær lime CTA for opplasting */}
+          <button
+            type="submit"
+            disabled={pending || !file}
+            style={{
+              all: "unset",
+              cursor: pending || !file ? "not-allowed" : "pointer",
+              opacity: pending || !file ? 0.55 : 1,
+              display: "inline-block",
+            }}
+          >
+            <CTAPill icon="upload">{pending ? "Laster opp …" : "Last opp og send"}</CTAPill>
+          </button>
         </div>
       </form>
     </Kort>
@@ -357,15 +356,20 @@ export function AdminVideoerV2({ data }: { data: AdminVideoerV2Data }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
-      <div>
-        <Caps>AgencyOS · Coaching-videoer</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="del med spillerne">Last opp og</Tittel>
+      {/* Hode — B: status */}
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
+        <div>
+          <Caps>AgencyOS · Coaching-videoer</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em="del med spillerne">Last opp og</Tittel>
+          </div>
+          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.55, margin: "10px 0 0" }}>
+            {kpis.totalt} videoer totalt. Maks {MAX_MB} MB per video — mp4, mov eller webm.
+          </p>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.55, margin: "10px 0 0" }}>
-          {kpis.totalt} videoer totalt. Maks {MAX_MB} MB per video — mp4, mov eller webm.
-        </p>
+        <StatusPill tone={kpis.totalt > 0 ? "lime" : "warn"}>
+          {kpis.totalt === 0 ? "Ingen videoer" : `${kpis.totalt} totalt`}
+        </StatusPill>
       </div>
 
       {/* KPI-rad */}

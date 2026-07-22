@@ -1,14 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · AI mål-bygger (SMART-mål) — v2 (retning C «Presis»).
- * v2-port 16. juli 2026: erstatter src/components/portal/ai/mal-bygger-wizard.tsx.
- *
- * Kun presentasjonslaget er nytt (v2-primitiver + T-tokens). Wizard-logikken
- * er uendret: 3 steg (ambisjon → velg + fyll SMART-mål → bekreft + lagre),
- * samme maler (TEMPLATES), samme utfylling (fillTitle) og samme server action
- * (lagreMalForslag → Goal-rader). Spilleren fyller egne verdier — vi dikter
- * ALDRI opp tall.
+ * PlayerHQ · AI mål-bygger (SMART-mål) — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useMemo, useState, useTransition } from "react";

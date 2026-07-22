@@ -207,33 +207,39 @@ export function SessionSummary({ data, nesteOkt }: SessionSummaryProps) {
         </ul>
       </div>
 
-      {/* CTA-rad — lukk løkka: hjem / workbench / neste økt */}
+      {/* CTA — B: én grønn primær, resten sekundært */}
       <div className="flex flex-col gap-2.5">
+        {nesteOkt ? (
+          <Link
+            href={nesteOkt.href}
+            className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-accent font-mono text-sm font-extrabold uppercase tracking-[0.06em] text-foreground active:scale-[0.98]"
+            style={{ boxShadow: "0 4px 18px rgba(209, 248, 67, 0.28)" }}
+          >
+            {nesteOkt.tekst}
+            <ArrowRight className="h-4 w-4" strokeWidth={2.5} aria-hidden />
+          </Link>
+        ) : (
+          <Link
+            href="/portal"
+            className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-accent font-mono text-sm font-extrabold uppercase tracking-[0.06em] text-foreground active:scale-[0.98]"
+            style={{ boxShadow: "0 4px 18px rgba(209, 248, 67, 0.28)" }}
+          >
+            Tilbake til hjem
+          </Link>
+        )}
         <Link
           href="/portal"
-          className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-accent font-mono text-sm font-extrabold uppercase tracking-[0.06em] text-foreground active:scale-[0.98]"
-          style={{ boxShadow: "0 4px 18px rgba(209, 248, 67, 0.28)" }}
+          className="flex h-11 w-full items-center justify-center font-mono text-xs font-bold uppercase tracking-[0.06em] text-background/55 active:opacity-80"
         >
-          Tilbake til hjem
+          {nesteOkt ? "Tilbake til hjem" : "Lukk"}
         </Link>
         <Link
           href="/portal/planlegge/workbench?zoom=uke"
-          className="flex h-12 w-full items-center justify-center gap-2 rounded-full border border-background/15 bg-background/5 font-mono text-xs font-extrabold uppercase tracking-[0.06em] text-background active:scale-[0.98]"
+          className="flex h-11 w-full items-center justify-center gap-2 rounded-full border border-background/15 bg-background/5 font-mono text-[11px] font-extrabold uppercase tracking-[0.06em] text-background/80 active:scale-[0.98]"
         >
           Åpne Workbench
         </Link>
       </div>
-
-      {/* Summary-kjeding — hva skjer videre */}
-      {nesteOkt && (
-        <Link
-          href={nesteOkt.href}
-          className="flex items-center justify-between gap-3 rounded-2xl border border-background/10 bg-background/5 px-4 py-3.5 transition-colors active:bg-background/10"
-        >
-          <span className="text-sm font-medium text-background/85">{nesteOkt.tekst}</span>
-          <ArrowRight className="h-4 w-4 shrink-0 text-background/50" strokeWidth={2} aria-hidden />
-        </Link>
-      )}
     </div>
   );
 }

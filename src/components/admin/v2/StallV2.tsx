@@ -1,18 +1,11 @@
 "use client";
 
 /**
- * AgencyOS Stall — v2 (retning C «Presis»). 1:1 med mockup-fasit
- * ui_kits/v2/agencyos.jsx → Stall({mobile}) (+ SpillerRadEnkel,
- * SpillerSammendrag), men drevet av EKTE data fra loadStallen (Prisma).
- * Bygget utelukkende av v2-komponentbiblioteket (src/components/v2) —
- * ingen ad-hoc UI, ingen rå hex (kun T.*).
+ * AgencyOS Stall — v2 Presis + B-idé (tilstand 5s, én hovedhandling per spiller).
+ * Ekte data loadStallen. Kun v2 / T.*. Standard mørk AgencyOS-chrome.
  *
- * Desktop: hode → filtre → grid 3fr/2fr (spillerliste | spillersammendrag).
- * Mobil: hode → filtre → liste → valgt spillers sammendrag.
- *
- * Ærlige tomrom: felter uten kilde (spiller-kategori A–K) er utelatt, ikke
- * fabrikert. SG-form/-trend, plan-etterlevelse per akse, gruppe, hcp og
- * tilstand er alle utledet fra ekte Prisma-data i loaderen.
+ * Desktop: hode + KPI → filtre → grid liste | sammendrag.
+ * Mobil: liste + BunnArk for valgt spiller.
  */
 
 import Link from "next/link";
@@ -194,9 +187,12 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+      {/* B: én primær (Workbench) · profil er sekundær */}
+      <div style={{ display: "flex", gap: 8, marginTop: 16, flexWrap: "wrap" }}>
         <Link href={`/admin/spillere/${s.id}/workbench`} style={{ display: "inline-flex", textDecoration: "none" }}>
-          <CTAPill icon="arrow-right">Åpne Workbench</CTAPill>
+          <CTAPill icon="arrow-right">
+            {s.trenger ? "Følg opp i Workbench" : "Åpne Workbench"}
+          </CTAPill>
         </Link>
         <Link href={`/admin/spillere/${s.id}`} style={{ display: "inline-flex", textDecoration: "none" }}>
           <CTAPill ghost>Se profil</CTAPill>
@@ -352,6 +348,15 @@ export function StallV2({ data }: { data: StallV2Data }) {
     </div>
   );
 
+  const foelgOpp = () => {
+    setSta(["Trenger deg"]);
+    const foerste = data.spillere.find((p) => !p.venter && p.trenger);
+    if (foerste) {
+      setValgtId(foerste.id);
+      if (mobile) setArkApen(true);
+    }
+  };
+
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
@@ -360,31 +365,66 @@ export function StallV2({ data }: { data: StallV2Data }) {
           <Tittel em="stall.">Din</Tittel>
         </div>
       </div>
-      <div className="hidden md:inline-flex">
-        <Link href="/admin/spillere/ny" style={{ textDecoration: "none" }}>
-          <CTAPill ghost icon="user-plus">Ny spiller</CTAPill>
-        </Link>
+      {/* B: én primær i hode — «følg opp» når noen trenger deg; ellers ghost «Ny spiller» */}
+      <div className="hidden md:inline-flex" style={{ gap: 8 }}>
+        {stallKpi.trenger > 0 ? (
+          <button type="button" onClick={foelgOpp} style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}>
+            <CTAPill icon="alert-circle">
+              Følg opp {stallKpi.trenger}
+            </CTAPill>
+          </button>
+        ) : (
+          <Link href="/admin/spillere/ny" style={{ textDecoration: "none" }}>
+            <CTAPill ghost icon="user-plus">Ny spiller</CTAPill>
+          </Link>
+        )}
       </div>
     </div>
   );
 
+  /** B: full-bredde primær under KPI på mobil når noen trenger deg. */
+  const mobilPrimaer =
+    stallKpi.trenger > 0 ? (
+      <div className="md:hidden">
+        <button type="button" onClick={foelgOpp} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", width: "100%" }}>
+          <CTAPill icon="alert-circle" full>
+            Følg opp {stallKpi.trenger} {stallKpi.trenger === 1 ? "spiller" : "spillere"}
+          </CTAPill>
+        </button>
+      </div>
+    ) : null;
+
   if (data.spillere.length === 0) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-        {hode}
+        <div>
+          <Caps>AgencyOS</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em="stall.">Din</Tittel>
+          </div>
+        </div>
         <Kort>
-          <TomTilstand icon="users" title="Ingen spillere i stallen" sub="Ingen aktive spillere er koblet til deg ennå." />
+          <TomTilstand
+            icon="users"
+            title="Ingen spillere i stallen"
+            sub="Legg til første spiller for å se tilstand, plan og oppfølging her."
+          />
         </Kort>
+        <Link href="/admin/spillere/ny" style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="user-plus" full>
+            Legg til første spiller
+          </CTAPill>
+        </Link>
       </div>
     );
   }
 
   if (mobile) {
-    // Mobil (M3): kun den søkbare lista i full bredde; valgt spiller åpnes i BunnArk.
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {hode}
         {tilstandKort}
+        {mobilPrimaer}
         {filtre}
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
           {aktivListe}

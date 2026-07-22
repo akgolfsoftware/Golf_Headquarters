@@ -1,18 +1,12 @@
 "use client";
 
 /**
- * PlayerHQ Meg · Abonnement · Faktura-detalj — v2 (retning C «Presis»).
- * Rekomponert fra /portal/meg/abonnement/faktura/[id]/page.tsx. Kun de
- * FAKTISKE Payment-feltene vises (via datakontrakten) — ingen fabrikkerte
- * verdier. Handlingsknappene (Skriv ut / Send e-post / Last ned PDF) eies av
- * ruten (faktura-actions.tsx + PrintButton) og sendes inn som ReactNode så
- * server-actionene og pdf-ruten forblir urørt. PDF-genereringen
- * (faktura-document.tsx / actions.tsx) er bevisst IKKE en del av denne porten.
+ * PlayerHQ Meg · Faktura — v2 Presis + B-pakke (status + sum først).
  */
 
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { T, Caps, Kort, StatusPill, Icon } from "@/components/v2";
+import { T, Caps, Kort, StatusPill, Icon, CTAPill } from "@/components/v2";
 
 export type MegFakturaData = {
   fakturaNr: string;
@@ -73,22 +67,32 @@ function SumRad({ label, value, total }: { label: string; value: string; total?:
 export function MegFakturaV2({ data, handlinger }: { data: MegFakturaData; handlinger?: ReactNode }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div style={{ minWidth: 0 }}>
           <Caps>AK Golf · Faktura</Caps>
           <h1 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 30, letterSpacing: "-0.02em", color: T.fg, margin: "10px 0 0", lineHeight: 1.05 }}>
             Faktura <em style={{ fontStyle: "italic", fontWeight: 400, color: T.lime }}>#{data.fakturaNr}</em>
           </h1>
-          <p style={{ fontFamily: T.mono, fontSize: 11.5, color: T.mut, margin: "10px 0 0" }}>
-            Fakturadato <strong style={{ color: T.fg }}>{data.fakturadato}</strong> · Forfaller {data.forfallsdato}
-          </p>
         </div>
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
-          <StatusPill tone={data.erBetalt ? "up" : "info"}>{data.statusLabel}</StatusPill>
-          {handlinger}
-        </div>
+        <StatusPill tone={data.erBetalt ? "up" : "info"}>{data.statusLabel}</StatusPill>
       </div>
+
+      {/* B: status + sum først */}
+      <div className="grid grid-cols-2" style={{ gap: 8 }}>
+        <Kort pad="12px">
+          <Caps size={9}>Total</Caps>
+          <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 22, marginTop: 8, color: T.fg }}>{data.totalKr}</div>
+        </Kort>
+        <Kort pad="12px">
+          <Caps size={9}>Status</Caps>
+          <div style={{ fontFamily: T.ui, fontWeight: 600, fontSize: 15, marginTop: 8, color: T.fg }}>{data.statusLabel}</div>
+          <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, marginTop: 4 }}>{data.fakturadato}</div>
+        </Kort>
+      </div>
+
+      {handlinger && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{handlinger}</div>
+      )}
 
       {/* Parter + meta */}
       <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: T.gap }}>
@@ -179,16 +183,17 @@ export function MegFakturaV2({ data, handlinger }: { data: MegFakturaData; handl
         </Kort>
       )}
 
-      {/* Bunn */}
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 12, borderTop: `1px dashed ${T.border}`, paddingTop: 16 }}>
-        <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
-          Spørsmål om fakturaen?{" "}
-          <Link href="/portal/meg/help/kontakt" style={{ color: T.lime, fontWeight: 700, textDecoration: "none" }}>
-            Kontakt support
-          </Link>
-        </span>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{handlinger}</div>
-      </div>
+      <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="arrow-left" full>
+          Tilbake til abonnement
+        </CTAPill>
+      </Link>
+      <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, textAlign: "center", margin: 0 }}>
+        Spørsmål?{" "}
+        <Link href="/portal/meg/help/kontakt" style={{ color: T.fg2, fontWeight: 600, textDecoration: "none" }}>
+          Kontakt support →
+        </Link>
+      </p>
     </div>
   );
 }

@@ -1,24 +1,12 @@
 "use client";
 
 /**
- * AgencyOS Talent-discovery — v2 (retning C «Presis»). Rekomponerer den ekte
- * skjermen src/app/admin/talent/discovery/page.tsx i v2-idiomet, med IDENTISK
- * funksjon + datakontrakt: scout-feed over PLAYER-brukere som IKKE er i
- * TalentTracking, med søk (navn/klubb), HCP-range-filter og hjemmeklubb-filter,
- * pluss inline «legg til i talent»-flyt per kandidat via den EKTE server action
- * `leggTilITalent`.
- *
- * Bygget utelukkende av v2-komponentbiblioteket (src/components/v2) — ingen
- * ad-hoc UI, ingen rå hex (kun T.*). Ærlige tomrom: potensial-indikatorene er
- * kun de dataene som faktisk finnes (HCP + spilte år). WAGR/percentil/kategori
- * A–K finnes ikke på kandidatene → aldri fabrikert.
- *
- * Desktop: hode → KPI (3) → søk → filtre → kandidat-liste (Kort m/ Rad-rader).
- * Mobil: samme stakk; DataTabellen er allerede en kort-/rad-liste (responsiv),
- * KPI 3-kol → 2-kol, filtre brytes, inline-skjema stables 1-kol.
+ * AgencyOS Talent-discovery — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Scout-feed over spillere utenfor talent-tracking. T.* only.
  */
 
 import { useMemo, useState, useTransition } from "react";
+import Link from "next/link";
 import {
   Caps,
   Tittel,
@@ -33,6 +21,7 @@ import {
   Inndata,
   ValideringsChip,
   TomTilstand,
+  CTAPill,
   T,
 } from "@/components/v2";
 import {
@@ -217,7 +206,18 @@ export function AdminTalentDiscoveryV2({ data }: { data: TalentDiscoveryV2Data }
           klubb, og legg de mest aktuelle inn i oppfølgingen.
         </p>
       </div>
+      <StatusPill tone={data.total > 0 ? "lime" : "info"}>
+        {data.total === 0 ? "Alle i tracking" : `${data.total} kandidater`}
+      </StatusPill>
     </div>
+  );
+
+  const primaerCta = (
+    <Link href="/admin/talent/radar" style={{ textDecoration: "none", display: "block" }}>
+      <CTAPill icon="radar" full>
+        Åpne talent-radar
+      </CTAPill>
+    </Link>
   );
 
   const kpi = (
@@ -289,9 +289,10 @@ export function AdminTalentDiscoveryV2({ data }: { data: TalentDiscoveryV2Data }
           <TomTilstand
             icon="users"
             title="Alle spillere er i tracking"
-            sub="Ingen PLAYER-brukere står utenfor talent-oppfølgingen akkurat nå."
+            sub="Ingen spillere står utenfor talent-oppfølgingen akkurat nå. Se radaren for oppfølging."
           />
         </Kort>
+        {primaerCta}
       </div>
     );
   }
@@ -300,6 +301,7 @@ export function AdminTalentDiscoveryV2({ data }: { data: TalentDiscoveryV2Data }
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
       {kpi}
+      {primaerCta}
       {sokFelt}
       {filtre}
       {liste}

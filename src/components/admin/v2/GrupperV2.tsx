@@ -1,19 +1,8 @@
 "use client";
 
 /**
- * AgencyOS Grupper — v2 (retning C «Presis»). 1:1 med mockup-fasit
- * ui_kits/v2/agencyos.jsx → Grupper + GruppeDetalj + EgentreningVindu, men
- * drevet av EKTE gruppedata (Prisma: Group + GroupMember + GroupSchedule).
- * Bygget utelukkende av v2-komponentbiblioteket (src/components/v2) — ingen
- * ad-hoc UI, ingen rå hex (kun T.*).
- *
- * Desktop: hode → grid 2fr/3fr (gruppeliste | valgt gruppes detalj).
- * Mobil (stack): hode → liste → detalj.
- *
- * Ærlighet: mockupens «gruppeøkt-mal» (blokk-for-blokk oppvarming/stasjoner/
- * avslutning) og egentrening-vinduets per-spiller-planer finnes IKKE i
- * datamodellen. I stedet vises de reelle faste treningstidene, og egentrening-
- * vinduet får en ærlig tom-tilstand. Se gaps i retur-JSON.
+ * AgencyOS Grupper — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Gruppeliste + detalj. T.* only. Primær: Ny gruppe / Åpne gruppe.
  */
 
 import Link from "next/link";
@@ -71,18 +60,28 @@ export function GrupperV2({
   const valgt = grupper.find((g) => g.id === valgtId) ?? null;
   const totalMedlemmer = grupper.reduce((s, g) => s + g.antallMedlemmer, 0);
 
-  // ── Hode ────────────────────────────────────────────────────────
+  // ── Hode — B: status ───────────────────────────────────────────
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>{grupperOrd(grupper.length)} · {spillere(totalMedlemmer)}</Caps>
+        <Caps>Planlegge · Grupper · AgencyOS</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel>Grupper</Tittel>
         </div>
+        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "8px 0 0" }}>
+          {grupperOrd(grupper.length)} · {spillere(totalMedlemmer)}
+        </p>
       </div>
-      <div className="hidden md:block">
-        <A.NyGruppeButton coaches={coaches} />
-      </div>
+      <StatusPill tone={grupper.length > 0 ? "lime" : "warn"}>
+        {grupper.length === 0 ? "Ingen grupper" : grupperOrd(grupper.length)}
+      </StatusPill>
+    </div>
+  );
+
+  // B: én primær — NyGruppeButton (desktop + mobil)
+  const primaerCta = (
+    <div style={{ width: "100%" }}>
+      <A.NyGruppeButton coaches={coaches} />
     </div>
   );
 
@@ -222,6 +221,7 @@ export function GrupperV2({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
+      {primaerCta}
       <div className="grid grid-cols-1 lg:[grid-template-columns:2fr_3fr]" style={{ gap: T.gap, alignItems: "start" }}>
         {liste}
         {detalj}

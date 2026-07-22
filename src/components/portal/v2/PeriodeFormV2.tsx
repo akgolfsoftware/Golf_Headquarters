@@ -1,17 +1,8 @@
 "use client";
 
 /**
- * Delt periode-skjema (v2) for både `/periode/ny` og `/periode/[id]/rediger`.
- *
- * v2-port 18. juli 2026: erstatter presentasjonen i
- * `src/app/portal/(legacy)/tren/aarsplan/periode/periode-form.tsx`. KUN
- * presentasjonslaget er nytt (v2-primitiver + T-tokens). All datalogikk er
- * uendret: samme felt (lPhase, datoer, ukevolum, fokus, notater), samme
- * server actions (opprettPeriode / oppdaterPeriode / slettPeriode), samme
- * anbefalings-varsler (aldri sperrer — perioden lagres uansett).
- *
- * Constraint-visningen leser samme CANON-taxonomi (PERIODE_TYPER + L_FASER)
- * som `PeriodeConstraintBadges`, re-presentert med v2-chips.
+ * Delt periode-skjema — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useState, useTransition } from "react";

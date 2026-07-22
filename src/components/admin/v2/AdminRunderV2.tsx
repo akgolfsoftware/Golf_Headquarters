@@ -1,22 +1,9 @@
 "use client";
 
 /**
- * AgencyOS Runder-admin — v2 (retning C «Presis»). Rekomponerer den ekte
- * skjermen src/app/admin/runder/page.tsx i v2-idiomet, men med IDENTISK
- * funksjon + datakontrakt: alle registrerte runder på tvers av stallen
- * (Round) — brutto score, avvik mot par og SG-total per runde, med
- * aggregat-KPI-er (snitt-score, vs par, beste runde, SG-snitt).
- *
- * Bygget utelukkende av v2-komponentbiblioteket (src/components/v2) — ingen
- * ad-hoc UI-mønstre, ingen rå hex (kun T.*). Tabellen er komponert med
- * v2-tokens (som CockpitV2/StallV2 komponerer layout), fordi DataTabell
- * mangler avatar-ledecelle, rad-profil-lenke og golf-vendt fortegnsfarge.
- *
- * Mobil (Anders-krav): desktop-tabell → kort-liste (Rad) under md. Søket
- * (ekte klientfilter på spiller/bane) driver begge visningene.
- *
- * Ærlige tomrom: runder uten SG-data viser «—», aldri fabrikerte tall.
- * Brutto score gjennomgående. Anbefalinger finnes ikke her — ren oversikt.
+ * AgencyOS Runder — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Alle registrerte runder på tvers av stallen (Round) med KPI og ærlig tomrom.
+ * T.* only. Mobil: tabell → Rad under md.
  */
 
 import { useMemo, useState } from "react";
@@ -32,6 +19,7 @@ import {
   TallHero,
   StatusPill,
   TomTilstand,
+  CTAPill,
   Icon,
 } from "@/components/v2";
 import { T, fmtSg } from "@/lib/v2/tokens";
@@ -305,21 +293,28 @@ export function AdminRunderV2({ data }: { data: AdminRunderV2Data }) {
     );
   }, [sok, data.runder]);
 
-  // ── Hode ────────────────────────────────────────────────────────
+  // ── Hode — B: status ───────────────────────────────────────────
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>AgencyOS · Runder</Caps>
+        <Caps>Analysere · Runder · AgencyOS</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel em="stallen.">Runder på tvers av</Tittel>
         </div>
       </div>
-      <div className="hidden md:block">
-        <StatusPill tone="info">
-          {data.vist} av {data.total} · {data.spillere} spillere
-        </StatusPill>
-      </div>
+      <StatusPill tone={data.total > 0 ? "lime" : "warn"}>
+        {data.total === 0 ? "Ingen runder" : `${data.vist} av ${data.total} · ${data.spillere} spillere`}
+      </StatusPill>
     </div>
+  );
+
+  // B: én primær CTA — stall for å følge opp spillere uten runder
+  const primaerCta = (
+    <Link href="/admin/stall" style={{ textDecoration: "none", display: "block" }}>
+      <CTAPill icon="users" full>
+        Åpne stall
+      </CTAPill>
+    </Link>
   );
 
   // ── KPI-strip (4) ───────────────────────────────────────────────
@@ -393,7 +388,7 @@ export function AdminRunderV2({ data }: { data: AdminRunderV2Data }) {
     </div>
   );
 
-  // ── Tom-tilstand ────────────────────────────────────────────────
+  // ── Tom-tilstand + vei videre ───────────────────────────────────
   if (data.runder.length === 0) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
@@ -403,9 +398,10 @@ export function AdminRunderV2({ data }: { data: AdminRunderV2Data }) {
           <TomTilstand
             icon="flag"
             title="Ingen runder registrert"
-            sub="Når spillere logger runder fra portalen eller via import, dukker de opp her."
+            sub="Når spillere logger runder fra portalen eller via import, dukker de opp her. Følg opp stallen for å få i gang logging."
           />
         </Kort>
+        {primaerCta}
       </div>
     );
   }
@@ -432,6 +428,7 @@ export function AdminRunderV2({ data }: { data: AdminRunderV2Data }) {
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
       {kpi}
+      {primaerCta}
       {sokefelt}
       {innhold}
     </div>

@@ -1,23 +1,12 @@
 "use client";
 
 /**
- * Foreldreportal · Bookinger — v2 (retning C «Presis», mørk-først). Lese-først
- * innsyn i barnas bookede timer. Ingen handling på vegne av barnet (samme
- * kontrakt som den ekte /forelder/bookinger-siden).
- *
- * Komponert KUN av v2-komponenter fra "@/components/v2" (Kort / Rad / KpiFlis /
- * StatusPill / TomTilstand / Icon / Caps / Tittel) — ingen ad-hoc UI-primitiver,
- * ingen rå hex (kun T.*-tokens). Mobil-optimalisert: KPI stabler til 2 kolonner,
- * booking-radene er en kort-liste som holder seg på 375px. Bruttotall, norsk
- * bokmål, Lucide via Icon.
- *
- * ALL data kommer fra loaderen i (v2preview)/v2-forelder-bookinger/page.tsx —
- * avledet av barnets EKTE Prisma-bookinger. Ingen tall fabrikeres: mangler det
- * data vises ærlig tom-tilstand. V2Shell eier chrome-en; denne komponenten
- * rendrer bare den indre innholds-stacken.
+ * Foreldreportal · Bookinger — v2 Presis + B-pakke (status + innsyn).
+ * Lese-først. Kun v2 + T.*. Enklere foreldre-språk.
  */
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { BookingStatus } from "@/generated/prisma/client";
 import {
   T,
@@ -29,6 +18,7 @@ import {
   Rad,
   TomTilstand,
   Icon,
+  Knapp,
   type StatusTone,
 } from "@/components/v2";
 
@@ -179,6 +169,7 @@ function BookingRad({
 
 export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
   const mobile = useMobile();
+  const router = useRouter();
   const { antallBarn, visBarn, ukenummer, denneUka, kommende, tidligere } = data;
 
   // Ingen barn koblet → ærlig tom-tilstand (lese-først portal).
@@ -186,10 +177,10 @@ export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <div>
-          <Caps>Bookinger · innsyn</Caps>
+          <Caps>Bookinger</Caps>
           <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em="bookinger.">
-              Barnas
+            <Tittel mobile={mobile} em="timer">
+              Kommende
             </Tittel>
           </div>
         </div>
@@ -197,16 +188,24 @@ export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
           <TomTilstand
             icon="users"
             title="Ingen barn er koblet ennå"
-            sub="Be spilleren sende en invitasjon, eller kontakt coachen din — så dukker bookingene opp her."
+            sub="Be spilleren sende en invitasjon, eller spør coachen — så dukker timer opp her."
           />
         </Kort>
       </div>
     );
   }
 
+  const statusTone = denneUka > 0 ? "up" : kommende.length > 0 ? "info" : "warn";
+  const statusTekst =
+    denneUka > 0
+      ? `${denneUka} denne uka`
+      : kommende.length > 0
+        ? `${kommende.length} kommende`
+        : "Ingen timer snart";
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
+      {/* Hode + status */}
       <div
         style={{
           display: "flex",
@@ -217,25 +216,32 @@ export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
         }}
       >
         <div>
-          <Caps>{`Uke ${ukenummer} · innsyn`}</Caps>
+          <Caps>{`Uke ${ukenummer}`}</Caps>
           <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em="bookinger.">
-              Barnas
+            <Tittel mobile={mobile} em="timer">
+              Kommende
             </Tittel>
           </div>
         </div>
-        <StatusPill tone="info">Lesemodus</StatusPill>
+        <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
       </div>
 
-      {/* KPI-stripe */}
+      {/* KPI-stripe — status først */}
       <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: T.gap }}>
         <KpiFlis label="Kommende" value={kommende.length} />
         <KpiFlis label="Denne uka" value={denneUka} />
         <KpiFlis label="Tidligere" value={tidligere.length} />
       </div>
 
+      {/* Én vei videre (B) — lesemodus, se coach/barn */}
+      <div>
+        <Knapp icon="users" full={mobile} onClick={() => router.push("/forelder/barn")}>
+          Se barnets oversikt
+        </Knapp>
+      </div>
+
       {/* Kommende bookinger */}
-      <Kort eyebrow="Kommende bookinger">
+      <Kort eyebrow="Kommende timer">
         {kommende.length > 0 ? (
           kommende.map((b, i) => (
             <BookingRad
@@ -248,15 +254,15 @@ export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
         ) : (
           <TomTilstand
             icon="calendar"
-            title="Ingen kommende bookinger"
-            sub="Spilleren booker selv fra sin egen profil."
+            title="Ingen kommende timer"
+            sub="Spilleren booker selv fra sin profil. Du ser dem her når de er booket."
           />
         )}
       </Kort>
 
       {/* Tidligere bookinger */}
       {tidligere.length > 0 && (
-        <Kort eyebrow="Tidligere bookinger">
+        <Kort eyebrow="Tidligere timer">
           {tidligere.map((b, i) => (
             <BookingRad
               key={b.id}
@@ -282,8 +288,8 @@ export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
               margin: 0,
             }}
           >
-            Foreldreportalen er kun for innsyn. Booking og avbestilling gjøres av
-            spilleren selv fra sin egen profil.
+            Du kan se timer her, men ikke endre dem. Booking og avbestilling
+            gjøres av spilleren selv.
           </p>
         </div>
       </Kort>

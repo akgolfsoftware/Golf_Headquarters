@@ -12,8 +12,9 @@
  * V2Shell (montert i ruten) eier chrome-en.
  */
 
+import Link from "next/link";
 import { AnalysereV2, type AnalysereData } from "@/components/portal/v2/AnalysereV2";
-import { Caps, Tittel, StatusPill, TilbakeLenke, type StatusTone } from "@/components/v2";
+import { Caps, Tittel, StatusPill, TilbakeLenke, CTAPill, type StatusTone } from "@/components/v2";
 
 /** Norsk eieform: «Rohjan» → «Rohjans», «Alex» → «Alex'». Holder navnet helt. */
 function eieform(navn: string): string {
@@ -69,8 +70,15 @@ export function AdminSpillerAnalyseV2({ navn, spillerId, data }: AdminSpillerAna
                 </Tittel>
               </div>
             </div>
-            {form && <StatusPill tone={form.tone}>{form.l}</StatusPill>}
+            {/* B: status — form eller «ingen trend» */}
+            <StatusPill tone={form?.tone ?? "info"}>{form?.l ?? "Ingen trend ennå"}</StatusPill>
           </div>
+          {/* B: én primær CTA — Workbench / plan */}
+          <Link href={`/admin/spillere/${spillerId}/plan`} style={{ textDecoration: "none", display: "block" }}>
+            <CTAPill icon="layout-dashboard" full={mobile}>
+              Åpne plan / Workbench
+            </CTAPill>
+          </Link>
         </div>
       )}
     />

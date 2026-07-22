@@ -1,9 +1,13 @@
+/**
+ * PlayerHQ · Mine bookinger — B-pakke (v2 tokens + én primær CTA).
+ */
 import Link from "next/link";
-import { CalendarPlus } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { BookingerTabs } from "./bookinger-tabs";
+import { T } from "@/lib/v2/tokens";
+import { Caps, Tittel, CTAPill, Kort, StatusPill } from "@/components/v2";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 
 export default async function MineBookinger() {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
@@ -36,29 +40,34 @@ export default async function MineBookinger() {
   );
 
   return (
-    <div className="mx-auto max-w-[1240px] space-y-6 px-4 sm:px-6">
-      <PageHeader
-        eyebrow="PlayerHQ · Meg · Bookinger"
-        titleLead="Dine"
-        titleItalic="timer"
-        titleTrail="og kvitteringer"
-        sub="Kommende økter, tidligere besøk og avbestillingsmuligheter."
-        actions={
-          <Link
-            href={nyBookingHref}
-            className="inline-flex min-h-11 items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
-          >
-            <CalendarPlus className="h-4 w-4" strokeWidth={1.75} />
-            Ny booking
-          </Link>
-        }
-      />
+    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <div style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 1240, margin: "0 auto" }}>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <div>
+            <Caps>Meg · Bookinger</Caps>
+            <div style={{ marginTop: 10 }}>
+              <Tittel em="timer">Dine</Tittel>
+            </div>
+          </div>
+          <StatusPill tone={kommende.length > 0 ? "info" : "up"}>
+            {kommende.length > 0 ? `${kommende.length} kommende` : "Ingen planlagt"}
+          </StatusPill>
+        </div>
 
-      <BookingerTabs
-        kommende={kommende}
-        historikk={historikk}
-        nyBookingHref={nyBookingHref}
-      />
-    </div>
+        <Link href={nyBookingHref} style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="calendar-plus" full>
+            Ny booking
+          </CTAPill>
+        </Link>
+
+        <Kort>
+          <BookingerTabs
+            kommende={kommende}
+            historikk={historikk}
+            nyBookingHref={nyBookingHref}
+          />
+        </Kort>
+      </div>
+    </V2Shell>
   );
 }

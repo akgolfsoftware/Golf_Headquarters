@@ -1,12 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · Break-tabell — v2 (retning C «Presis»).
- * v2-port 17. juli 2026 (Team D2): erstatter legacy break-tabell-client.
- * All break-matte kommer uendret fra @/lib/putt-core (samme referansetabell,
- * samme opp/ned-fartsregel 1 % ≈ ±2 / 2 % ≈ ±3 på stimpen). Kun
- * presentasjonslaget er nytt: T-tokens + v2-primitiver, ingen rå hex —
- * varmekartet fylles med color-mix over T.forest.
+ * PlayerHQ · Break-tabell — v2 Presis + B-pakke (referanse først, én aktiv variant).
+ * Matte fra putt-core. T.* only (color-mix over T.forest).
  */
 
 import { Fragment, useState } from "react";

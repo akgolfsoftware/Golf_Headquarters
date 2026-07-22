@@ -1,16 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Utfordring-detalj — v2 (retning C «Presis»). Rekomponert fra
- * legacy-skjermen (portal/(legacy)/utfordringer/[id]): hero med status/eierskap,
- * nøkkeltall, score-registrering for deltakere og resultatliste.
- *
- * INGEN mockup finnes for denne skjermen → komponert fra v2-biblioteket
- * (@/components/v2). Kun v2-komponenter + T.*-tokens; ingen rå hex.
- *
- * Datakontrakt og server-actions er bevart 1:1 fra legacy: bliMed /
- * avsluttUtfordring / registrerScore sendes inn som props fra server-siden.
- * «?»-regelen: score forklares via HjelpTips (nøkkel utfordringScore).
+ * PlayerHQ Utfordring-detalj — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useState, useTransition } from "react";

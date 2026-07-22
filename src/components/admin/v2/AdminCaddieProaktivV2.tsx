@@ -9,7 +9,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { Kort, Knapp, Icon, T } from "@/components/v2";
+import { Kort, Knapp, Icon, StatusPill, TomTilstand, T } from "@/components/v2";
 import { avvisProaktivtForslag, kjorCaddieProaktiv } from "@/app/admin/agencyos/caddie/dashbord/actions";
 
 export type ProaktivtForslag = {
@@ -38,10 +38,14 @@ export function AdminCaddieProaktivV2({ forslag }: { forslag: ProaktivtForslag[]
   return (
     <Kort>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 12, flexWrap: "wrap" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
           <Icon name="sparkles" size={15} style={{ color: T.lime }} />
           <span style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em", color: T.fg }}>Proaktive forslag fra Caddie</span>
+          <StatusPill tone={forslag.length > 0 ? "warn" : "info"}>
+            {forslag.length > 0 ? `${forslag.length} åpne` : "Ingen åpne"}
+          </StatusPill>
         </div>
+        {/* B: én primær CTA */}
         <Knapp icon={pending ? "loader" : "sparkles"} disabled={pending} onClick={kjorNa}>
           {pending ? "Kjører…" : "Kjør nå"}
         </Knapp>
@@ -54,9 +58,11 @@ export function AdminCaddieProaktivV2({ forslag }: { forslag: ProaktivtForslag[]
       )}
 
       {forslag.length === 0 ? (
-        <div style={{ borderRadius: 12, border: `1px dashed ${T.border}`, padding: "20px 16px", textAlign: "center", fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>
-          Ingen åpne forslag. Caddie skanner automatisk etter inaktive spillere og legger forslag her — trykk «Kjør nå» for å sjekke med en gang.
-        </div>
+        <TomTilstand
+          icon="sparkles"
+          title="Ingen åpne forslag"
+          sub="Caddie skanner automatisk etter inaktive spillere — trykk «Kjør nå» for å sjekke med en gang."
+        />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {forslag.map((f) => (

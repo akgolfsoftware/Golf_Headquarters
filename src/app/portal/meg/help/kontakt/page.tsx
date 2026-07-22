@@ -1,5 +1,12 @@
+/**
+ * /portal/meg/help/kontakt — B-pakke.
+ * Status (svartid) først, deretter skjema med én grønn send-CTA.
+ */
+
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
+import { T } from "@/lib/v2/tokens";
+import { Caps, Tittel, Kort, TilbakeLenke, StatusPill } from "@/components/v2";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { KontaktSupportForm } from "./kontakt-support-form";
 
 export default async function KontaktSupportPage({
@@ -11,38 +18,47 @@ export default async function KontaktSupportPage({
   const sp = await searchParams;
 
   return (
-    <div className="mx-auto w-full max-w-[720px] space-y-8 px-4 sm:px-6">
-      <PageHeader
-        eyebrow="Støtte · Direkte kontakt"
-        titleLead="Kontakt"
-        titleItalic="support"
-        sub="Beskriv problemet du opplever, så får vi det riktig første gang. Jo mer kontekst — desto raskere svar."
-      />
-
-      <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground shadow-sm">
-        <span className="relative inline-block h-2 w-2">
-          <span className="absolute inset-0 animate-ping rounded-full bg-success opacity-60" />
-          <span className="absolute inset-0 rounded-full bg-success" />
-        </span>
-        <span>Svartid</span>
-        <span className="font-bold text-foreground">~4 timer</span>
-        <span className="h-3 w-px bg-border" />
-        <span>Hverdager</span>
-        <span className="font-bold text-foreground">08:00–17:00</span>
-      </div>
-
-      {sp?.ticket && (
-        <div className="rounded-md border border-primary/30 bg-primary/10 px-4 py-2 text-sm text-foreground">
-          Melding sendt. Ticket-ID <span className="font-mono font-semibold">#{sp.ticket}</span>. Du får svar på e-post.
-        </div>
-      )}
-
-      <KontaktSupportForm
-        bruker={{
-          navn: user.name ?? "",
-          epost: user.email ?? "",
+    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <div
+        style={{
+          maxWidth: 720,
+          margin: "0 auto",
+          display: "flex",
+          flexDirection: "column",
+          gap: T.gap,
         }}
-      />
-    </div>
+      >
+        <TilbakeLenke href="/portal/meg/help">Hjelp</TilbakeLenke>
+
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <div>
+            <Caps>Støtte · Direkte kontakt</Caps>
+            <div style={{ marginTop: 10 }}>
+              <Tittel em="support">Kontakt</Tittel>
+            </div>
+            <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.45, maxWidth: "42ch" }}>
+              Beskriv problemet — jo mer kontekst, desto raskere svar.
+            </p>
+          </div>
+          <StatusPill tone="up">~4 t · hverdager 08–17</StatusPill>
+        </div>
+
+        {sp?.ticket && (
+          <Kort style={{ borderColor: `color-mix(in srgb, ${T.up} 30%, ${T.border})` }}>
+            <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13.5, color: T.fg, lineHeight: 1.5 }}>
+              Melding sendt. Ticket-ID{" "}
+              <span style={{ fontFamily: T.mono, fontWeight: 700 }}>#{sp.ticket}</span>. Du får svar på e-post.
+            </p>
+          </Kort>
+        )}
+
+        <KontaktSupportForm
+          bruker={{
+            navn: user.name ?? "",
+            epost: user.email ?? "",
+          }}
+        />
+      </div>
+    </V2Shell>
   );
 }

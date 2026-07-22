@@ -1,19 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Delte planer — v2 (retning C «Presis»). Rekomponert fra den ekte
- * skjermen src/app/portal/coach/plans/page.tsx (coach-delte treningsplaner:
- * TrainingPlan + sessions), men i det mørke v2-språket. Kun v2-komponenter fra
- * "@/components/v2"; ingen ad-hoc UI, ingen rå hex (kun T.*).
- *
- * FUNKSJON bevart 1:1: Pro-gating (GRATIS ser låst tilstand), samme
- * kolonne-inndeling (Aktiv · Fullført · Pause) som filter, gjennomførings-
- * prosent per plan (fullførte / totale økter), og gjennomklikk til den ekte
- * plan-detaljen (/portal/coach/plans/[planId]). Ærlig tom-tilstand når ingen
- * plan finnes — ingenting fabrikkeres.
- *
- * V2Shell (montert i (v2preview)/v2-coach-planer/page.tsx) eier chrome-en —
- * denne komponenten rendrer bare den indre innholds-stacken.
+ * PlayerHQ Delte planer — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import Link from "next/link";
@@ -130,8 +119,15 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
           <TomTilstand
             icon="lock"
             title="Krever PlayerHQ Pro"
-            sub="Coach-laget plan er en del av Pro-abonnementet (299 kr/mnd). Oppgrader for å se planene coachen deler med deg."
+            sub="Coach-laget plan er del av Pro (299 kr/mnd)."
           />
+          <div style={{ marginTop: 12 }}>
+            <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="arrow-right" full>
+                Oppgrader til Pro
+              </CTAPill>
+            </Link>
+          </div>
         </Kort>
       </div>
     );
@@ -146,11 +142,26 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
           <TomTilstand
             icon="list"
             title="Ingen planer fra coach"
-            sub="Når coachen lager en plan til deg, dukker den opp her."
+            sub="Når coachen lager en plan, dukker den opp her."
           />
-          <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
-            <Link href="/portal/gjennomfore" style={{ textDecoration: "none" }}>
-              <CTAPill icon="arrow-up-right" ghost>Til mine økter</CTAPill>
+          <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+            <Link href="/portal/onskeligokt" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="send" full>
+                Be om plan
+              </CTAPill>
+            </Link>
+            <Link
+              href="/portal/gjennomfore"
+              style={{
+                textDecoration: "none",
+                textAlign: "center",
+                fontFamily: T.ui,
+                fontSize: 12,
+                fontWeight: 600,
+                color: T.mut,
+              }}
+            >
+              Til mine økter →
             </Link>
           </div>
         </Kort>

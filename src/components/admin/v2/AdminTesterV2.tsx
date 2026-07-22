@@ -1,22 +1,8 @@
 "use client";
 
 /**
- * AgencyOS Tester — v2 (retning C «Presis», mørk først). Rekomponert fra den
- * ekte /admin/tester-flaten (KPI-strip + testresultat-tabell + tildel-handling),
- * men bygget utelukkende av v2-komponentbiblioteket (src/components/v2) — ingen
- * ad-hoc UI, ingen rå hex (kun T.*).
- *
- * Retning C-idiom: tabellen fra fasit-flaten er recomponert til en Rad-liste
- * (som Stall/Cockpit), så samme layout tjener mobil (375px) og desktop uten
- * separat tabell-markup. All datakontrakt bevart: spiller · test · resultat ·
- * delta · dato · status.
- *
- * FYS-PLASSHOLDER-REGEL (LÅST): ingen fargekoding basert på normverdier. Delta/
- * status her er ren trend mot spillerens EGET forrige resultat (tillatt), aldri
- * mot en fasit — derfor nøytralt til trenden faktisk peker opp/ned.
- *
- * Ærlige tomrom: WAGR/percentil/kategori A–K finnes ikke i TestResult-schemaet
- * og fabrikeres ikke. Filter-fanene bygges fra de FAKTISKE testnavnene i data.
+ * AgencyOS Tester — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Stallens testresultater. T.* only. FYS-plassholder: ingen fasit-fargekoding.
  */
 
 import { useEffect, useMemo, useState } from "react";
@@ -141,12 +127,25 @@ export function AdminTesterV2({ data }: { data: AdminTesterV2Data }) {
       }}
     >
       <div>
-        <Caps>Analysere · Tester</Caps>
+        <Caps>Analysere · Tester · AgencyOS</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel em="tester." mobile={mobile}>Stallens</Tittel>
         </div>
       </div>
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <StatusPill tone={data.rader.length > 0 ? "lime" : "warn"}>
+        {data.rader.length === 0 ? "Ingen resultater" : `${data.rader.length} resultater`}
+      </StatusPill>
+    </div>
+  );
+
+  const primaerCta = (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <Link href="/admin/tester/tildel" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="plus" full>
+          Registrer test
+        </CTAPill>
+      </Link>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
         <Link href="/admin/tester/foreslatte" style={{ textDecoration: "none" }}>
           <CTAPill ghost icon="lightbulb">
             Foreslåtte
@@ -156,9 +155,6 @@ export function AdminTesterV2({ data }: { data: AdminTesterV2Data }) {
           <CTAPill ghost icon="target">
             Fasiter
           </CTAPill>
-        </Link>
-        <Link href="/admin/tester/tildel" style={{ textDecoration: "none" }}>
-          <CTAPill icon="plus">Registrer test</CTAPill>
         </Link>
       </div>
     </div>
@@ -239,6 +235,7 @@ export function AdminTesterV2({ data }: { data: AdminTesterV2Data }) {
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
       {kpi}
+      {primaerCta}
       {liste}
     </div>
   );

@@ -1,18 +1,11 @@
 "use client";
 
 /**
- * AgencyOS Audit-log — v2 (retning C «Presis»). Rekomponerer den ekte
- * skjermen src/app/admin/(legacy)/audit-log/page.tsx i v2-idiomet, med
- * IDENTISK funksjon + datakontrakt: siste 50 sikkerhetshendelser (AuditLog)
- * med kategori (auth/api/data/security) og status (ok/warn/danger) utledet
- * av action-prefiks, pluss et 7-dagers mistenkelig-tall.
- *
- * Bygget utelukkende av v2-komponentbiblioteket (src/components/v2) — ingen
- * ad-hoc UI-mønstre, ingen rå hex (kun T.*). Ærlig tomtilstand når loggen er
- * tom. Ingen rad-klikk/detaljside — /admin/audit-log/[id] finnes ikke
- * (bekreftet død rute i master-skjermplanen).
+ * AgencyOS Audit-log — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Siste sikkerhetshendelser. T.* only.
  */
 
+import Link from "next/link";
 import {
   Caps,
   Tittel,
@@ -21,6 +14,7 @@ import {
   KpiFlis,
   StatusPill,
   TomTilstand,
+  CTAPill,
   Icon,
   T,
 } from "@/components/v2";
@@ -116,7 +110,16 @@ export function AdminAuditLogV2({ data }: { data: AdminAuditLogV2Data }) {
     </div>
   );
 
-  // ── Tom-tilstand ──────────────────────────────────────────────
+  // B: én primær CTA
+  const primaerCta = (
+    <Link href="/admin/settings/sikkerhet" style={{ textDecoration: "none", display: "block" }}>
+      <CTAPill icon="shield" full>
+        Åpne sikkerhet
+      </CTAPill>
+    </Link>
+  );
+
+  // ── Tom-tilstand + vei ────────────────────────────────────────
   if (data.events.length === 0) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
@@ -129,6 +132,7 @@ export function AdminAuditLogV2({ data }: { data: AdminAuditLogV2Data }) {
             sub="Innlogginger, bookinger, data-endringer og API-kall vises her etter hvert som de skjer."
           />
         </Kort>
+        {primaerCta}
       </div>
     );
   }
@@ -137,6 +141,7 @@ export function AdminAuditLogV2({ data }: { data: AdminAuditLogV2Data }) {
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
       {kpi}
+      {primaerCta}
       <Kort pad="4px 18px">
         {data.events.map((ev, i) => (
           <Rad

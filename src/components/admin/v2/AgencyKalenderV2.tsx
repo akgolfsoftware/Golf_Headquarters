@@ -1,21 +1,8 @@
 "use client";
 
 /**
- * AgencyOS Kalender — v2 (retning C «Presis»). Komponert 1:1 fra mockup-fasit
- * ui_kits/v2/agencyos.jsx → funksjon Kalender (+ OktBlokk, SerieMerke, SerieMeny),
- * men drevet av EKTE data fra hentAgencyKalenderData
- * (../(v2preview)/v2-agency-kalender/data.ts).
- *
- * Coach-uke med alle spillere: 1-til-1-økter og gruppe-økter fra Booking, pluss
- * GJENTAKENDE SERIER fra GroupSchedule (WEEKLY) merket med SerieMerke. Klikk på
- * en serie-merket økt åpner SerieMeny som panel — GroupSchedule har ingen
- * mutasjonsflate ennå (kun opprett/dupliser), så «endre denne/alle fremtidige»
- * er en ærlig «kommer»-tekst, ikke døde knapper. Eneste ekte handling derfra:
- * lenke til gruppens timeplan.
- *
- * Kun v2-komponenter fra "@/components/v2" + skjerm-lokale komposisjoner på
- * T.*-tokens (samme mønster som CockpitV2/KalenderV2). Ingen rå hex.
- * V2Shell (montert i page.tsx) eier chrome-en.
+ * AgencyOS Kalender — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Mørk AgencyOS. Coach-uke: bookinger + gjentakende serier.
  */
 
 import { useEffect, useState } from "react";
@@ -31,10 +18,10 @@ import {
   Tittel,
   PillVelger,
   CTAPill,
-  Knapp,
   Kort,
   StatusPill,
   TomTilstand,
+  KpiFlis,
   Icon,
   HurtigOpprett,
   foreslaTid,
@@ -379,6 +366,17 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     </Link>
   );
 
+  const antallOkter = data.antallOkter;
+  const liveIDag = data.dager.find((d) => d.idag)?.okter.filter((o) => o.naa).length ?? 0;
+  const statusTone = liveIDag > 0 ? "down" : antallOkter > 0 ? "lime" : "info";
+  const statusTekst =
+    liveIDag > 0
+      ? `Live · ${liveIDag}`
+      : antallOkter > 0
+        ? `${antallOkter} økter`
+        : "Tom uke";
+
+  // B: hode = tittel + status (primær CTA ligger under)
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
@@ -387,41 +385,60 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
           <Tittel mobile={mobile} em="uke.">Stallens</Tittel>
         </div>
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-        <PillVelger
-          options={[
-            { v: "dag", l: "Dag" },
-            { v: "uke", l: "Uke" },
-            { v: "maned", l: "Måned" },
-          ]}
-          value={visning}
-          onChange={setVisning}
-        />
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          {!data.nav.erInnevaerende && (
-            <Link
-              href={data.nav.idag}
-              style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 9999, padding: "6px 13px", textDecoration: "none" }}
-            >
-              I dag
-            </Link>
-          )}
-          {pil(data.nav.forrige, "chevron-left", "Forrige uke")}
-          {pil(data.nav.neste, "chevron-right", "Neste uke")}
-        </div>
-        {!mobile && (
-          <>
-            <Link href="/admin/bookinger/ny" style={{ textDecoration: "none" }}>
-              <Knapp icon="calendar-check" ghost>Ny booking</Knapp>
-            </Link>
-            {/* Planlegge er ETT trykkpunkt til Workbench (låst beslutning) —
-                ikke prototypen /admin/coach-workbench. */}
-            <Link href="/admin/planlegge" style={{ textDecoration: "none" }}>
-              <CTAPill icon="plus">Ny økt</CTAPill>
-            </Link>
-          </>
-        )}
+      <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
+    </div>
+  );
+
+  // B: én primær CTA full · booking er sekundær
+  const primaerCta = (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <Link href="/admin/planlegge" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="plus" full>
+          Ny økt
+        </CTAPill>
+      </Link>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Link href="/admin/bookinger/ny" style={{ textDecoration: "none" }}>
+          <CTAPill ghost icon="calendar-check">
+            Ny booking
+          </CTAPill>
+        </Link>
       </div>
+    </div>
+  );
+
+  const navigasjon = (
+    <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+      <PillVelger
+        options={[
+          { v: "dag", l: "Dag" },
+          { v: "uke", l: "Uke" },
+          { v: "maned", l: "Måned" },
+        ]}
+        value={visning}
+        onChange={setVisning}
+      />
+      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        {!data.nav.erInnevaerende && (
+          <Link
+            href={data.nav.idag}
+            style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 9999, padding: "6px 13px", textDecoration: "none" }}
+          >
+            I dag
+          </Link>
+        )}
+        {pil(data.nav.forrige, "chevron-left", "Forrige uke")}
+        {pil(data.nav.neste, "chevron-right", "Neste uke")}
+      </div>
+    </div>
+  );
+
+  // B: uke-status (5s)
+  const kpi = (
+    <div className="grid grid-cols-3" style={{ gap: T.gap }}>
+      <KpiFlis label="Økter uke" value={antallOkter} tint={antallOkter > 0} />
+      <KpiFlis label="Serier" value={data.serieOkterAntall} />
+      <KpiFlis label="Live nå" value={liveIDag} varsle={liveIDag > 0} />
     </div>
   );
 
@@ -471,6 +488,9 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {hode}
+        {primaerCta}
+        {kpi}
+        {navigasjon}
         {mobilKropp}
         {visning === "uke" && serieHint}
         {innsikt}
@@ -516,6 +536,9 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
+      {primaerCta}
+      {kpi}
+      {navigasjon}
       {kropp}
       {visning === "uke" && serieHint}
       {innsikt}

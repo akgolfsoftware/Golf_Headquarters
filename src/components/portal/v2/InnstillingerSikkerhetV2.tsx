@@ -1,22 +1,7 @@
 "use client";
 
 /**
- * PlayerHQ Innstillinger · Sikkerhet — v2 (retning C «Presis»). KANONISK
- * sikkerhet-skjerm etter D7-konsolideringen 17. juli 2026: den tidligere
- * /portal/meg/sikkerhet (MegSikkerhetV2) er slått sammen hit, og gammel
- * adresse er redirect. Funksjon bevart 1:1 fra begge:
- *  - Sikkerhetsscore: samme ærlige heuristikk (utregnes fortsatt i page.tsx —
- *    verifisert e-post → 80, ellers 55; +20 opptjenes via 2FA-flyten).
- *  - Endre passord / Endre e-post: skjema klientside mot Supabase Auth
- *    (samme mønster som reset-form.tsx). Krever Supabase step-up (AAL-feil)
- *    → gjenbruker ReauthModal-mønsteret fra 2FA-flyten (twofa-client.tsx).
- *  - Glemt passord: lenke til Supabase-tilbakestilling (/auth/forgot-password).
- *  - Tofaktor: lenke til den ekte TOTP-flyten (/portal/meg/sikkerhet/2fa).
- *  - Aktive økter: ekte lastLoginAt for denne enheten; full øktliste/historikk
- *    markeres «kommer snart» — aldri falske rader.
- *
- * Kun v2-komponenter fra "@/components/v2" + T.*-tokens. Ingen rå hex.
- * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
+ * PlayerHQ Innstillinger · Sikkerhet — v2 Presis + B-pakke (score først, full CTA).
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -35,6 +20,7 @@ import {
   Icon,
   Inndata,
   Knapp,
+  CTAPill,
   type StatusTone,
 } from "@/components/v2";
 
@@ -185,11 +171,8 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <Tittel mobile={mobile}>Sikkerhet</Tittel>
-      <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.6, margin: "-8px 0 0" }}>
-        Tofaktor-autentisering anbefales for alle som har koblet betalingskort.
-      </p>
 
-      {/* Sikkerhetsscore — hero */}
+      {/* B: score/status først */}
       <Kort tint>
         <TallHero
           label="Sikkerhetsscore"
@@ -203,9 +186,17 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
           <ProgresjonsBar variant="bar" value={score} max={100} label={null} showValue={false} />
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "12px 0 0" }}>
-          Sterkt passord og bekreftet e-post er på plass. Aktiver tofaktor for +20.
+          Sist innlogget: {sisteInnlogging}. Aktiver tofaktor for +20.
         </p>
       </Kort>
+
+      {score < 100 && (
+        <Link href="/portal/meg/sikkerhet/2fa" style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="shield" full>
+            Aktiver tofaktor
+          </CTAPill>
+        </Link>
+      )}
 
       {/* Endre passord + Endre e-post */}
       <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: T.gap, alignItems: "start" }}>
@@ -231,7 +222,7 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
             {passordSuksess && !passordFeil && (
               <p style={{ fontFamily: T.ui, fontSize: 12, color: T.up, margin: 0 }}>Passord oppdatert.</p>
             )}
-            <Knapp icon="check" disabled={passordLagrer} onClick={lagrePassord}>
+            <Knapp icon="check" full disabled={passordLagrer} onClick={lagrePassord}>
               {passordLagrer ? "Lagrer …" : "Lagre nytt passord"}
             </Knapp>
           </div>
@@ -255,7 +246,7 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
                 lenken.
               </p>
             )}
-            <Knapp icon="check" disabled={epostLagrer} onClick={lagreEpost}>
+            <Knapp icon="check" full disabled={epostLagrer} onClick={lagreEpost}>
               {epostLagrer ? "Sender …" : "Lagre ny e-post"}
             </Knapp>
           </div>

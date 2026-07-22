@@ -8,7 +8,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { T, Caps } from "@/components/v2";
+import { T, Caps, CTAPill } from "@/components/v2";
 import { addSlot, updateSlot, deleteSlot } from "@/app/admin/(legacy)/availability/actions";
 
 const DAGER = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
@@ -137,17 +137,26 @@ export function SlotFormV2({ locations, initial, defaultWeekday, triggerLabel, t
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        style={
-          triggerVariant === "lenke"
-            ? { background: "none", border: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 11, color: T.lime, textTransform: "uppercase", letterSpacing: "0.06em" }
-            : { borderRadius: 9999, border: `1px solid ${T.border}`, background: T.panel2, padding: "8px 16px", fontSize: 12, fontWeight: 600, color: T.fg, cursor: "pointer" }
-        }
-      >
-        {triggerLabel}
-      </button>
+      {triggerVariant === "lenke" ? (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          style={{ background: "none", border: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 11, color: T.lime, textTransform: "uppercase", letterSpacing: "0.06em" }}
+        >
+          {triggerLabel}
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          style={{ all: "unset", cursor: "pointer", display: "block", width: "100%" }}
+          aria-label={triggerLabel}
+        >
+          <CTAPill icon="plus" full>
+            {triggerLabel}
+          </CTAPill>
+        </button>
+      )}
 
       <dialog
         ref={dialogRef}

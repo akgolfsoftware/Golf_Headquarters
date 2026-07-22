@@ -1,10 +1,9 @@
-import { Caps, Tittel, Kort, StatusPill, T } from "@/components/v2";
+import { Caps, Tittel, Kort, StatusPill, TomTilstand, T } from "@/components/v2";
 import { ServiceFormV2 } from "./AdminServiceFormV2";
 
 /**
- * AgencyOS — Tjenester (Gjennomføre · Tjenester), v2-port 16. juli 2026.
- * Erstatter AgPage/AgTable/AgChip-familien med v2-primitiver. Samme
- * datakilde (ServiceType) uendret.
+ * AgencyOS Tjenester — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * ServiceType-liste. T.* only. Primær CTA via ServiceFormV2 (CTAPill).
  */
 
 export interface AdminServiceRad {
@@ -22,11 +21,14 @@ export interface AdminServicesV2Data {
 }
 
 export function AdminServicesV2({ data }: { data: AdminServicesV2Data }) {
+  const n = data.tjenester.length;
+  const aktive = data.tjenester.filter((s) => s.aktiv).length;
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
-          <Caps>Gjennomføre · Tjenester</Caps>
+          <Caps>Gjennomføre · Tjenester · AgencyOS</Caps>
           <div style={{ marginTop: 10 }}>
             <Tittel em={data.flertall ? "tjenester." : "tjeneste."}>{data.tittelOrd}</Tittel>
           </div>
@@ -34,14 +36,21 @@ export function AdminServicesV2({ data }: { data: AdminServicesV2Data }) {
             Det spillere kan booke. Pris og varighet styrer booking-flyten og faktureringen.
           </p>
         </div>
-        <ServiceFormV2 triggerLabel="+ Ny tjeneste" />
+        <StatusPill tone={n === 0 ? "warn" : "lime"}>
+          {n === 0 ? "Ingen tjenester" : `${aktive} aktive`}
+        </StatusPill>
       </div>
 
+      {/* B: én primær — ServiceFormV2 (lime Knapp/CTA internt) */}
+      <ServiceFormV2 triggerLabel="Ny tjeneste" />
+
       <Kort pad="0">
-        {data.tjenester.length === 0 ? (
-          <div style={{ padding: "40px 16px", textAlign: "center", fontFamily: T.ui, fontSize: 13, color: T.mut }}>
-            Ingen tjenester ennå — opprett den første.
-          </div>
+        {n === 0 ? (
+          <TomTilstand
+            icon="list"
+            title="Ingen tjenester ennå"
+            sub="Opprett den første tjenesten — da kan spillere booke den i booking-flyten."
+          />
         ) : (
           data.tjenester.map((s, i) => (
             <div key={s.id} style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr auto auto", alignItems: "center", gap: 12, padding: "14px 18px", borderTop: i ? `1px solid ${T.border}` : "none" }}>

@@ -1,10 +1,15 @@
-import Link from "next/link";
+/**
+ * Bytt tid på booking — B-pakke.
+ * Nåværende status først, deretter dato → tid, én grønn bekreft i slot-picker.
+ */
+
 import { notFound, redirect } from "next/navigation";
-import { ChevronLeft } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
 import { getAvailableSlots } from "@/lib/booking/availability";
+import { T } from "@/lib/v2/tokens";
+import { Caps, Tittel, Kort, TilbakeLenke, StatusPill, TomTilstand } from "@/components/v2";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { RescheduleDatoVelger } from "./reschedule-dato-velger";
 import { RescheduleSlotPicker } from "./reschedule-slot-picker";
 
@@ -34,11 +39,9 @@ export default async function ReschedulePage({ params, searchParams }: Props) {
   });
   if (!booking) notFound();
 
-  // Tilgang: egen booking eller staff
   const erStaff = user.role === "ADMIN" || user.role === "COACH";
   if (booking.userId !== user.id && !erStaff) notFound();
 
-  // 24t-regel for spillere
   // eslint-disable-next-line react-hooks/purity
   const tidTilStart = booking.startAt.getTime() - Date.now();
   if (!erStaff && tidTilStart <= 24 * 60 * 60 * 1000) {
@@ -49,7 +52,6 @@ export default async function ReschedulePage({ params, searchParams }: Props) {
     redirect("/portal/meg/bookinger?error=cancelled");
   }
 
-  // Default dato: i morgen
   const valgtDato = parseDatoQuery(datoParam) ?? startOfDay(addDays(new Date(), 1));
   const slots = await getAvailableSlots(booking.serviceType.id, valgtDato);
 
@@ -64,61 +66,63 @@ export default async function ReschedulePage({ params, searchParams }: Props) {
   });
 
   return (
-    <div className="mx-auto max-w-[1240px] space-y-6 px-4 sm:px-6">
-      <Link
-        href="/portal/meg/bookinger"
-        className="inline-flex min-h-11 items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <div
+        style={{
+          maxWidth: 720,
+          margin: "0 auto",
+          display: "flex",
+          flexDirection: "column",
+          gap: T.gap,
+        }}
       >
-        <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.75} />
-        Tilbake til bookinger
-      </Link>
+        <TilbakeLenke href="/portal/meg/bookinger">Bookinger</TilbakeLenke>
 
-      <PageHeader
-        eyebrow="PlayerHQ · Bytt tid"
-        titleLead="Bytt tid på"
-        titleItalic={booking.serviceType.name}
-        sub={`Nåværende: ${naa} kl ${naaTid}. Velg ny dato og tid under.`}
-      />
-
-      {/* Nåværende booking-info */}
-      <div className="rounded-xl bg-secondary p-4 text-sm">
-        <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-          Nåværende tid
-        </div>
-        <p className="mt-1 font-medium text-foreground">
-          {naa} kl {naaTid} &middot; {booking.serviceType.durationMin} min &middot; {booking.location.name}
-        </p>
-      </div>
-
-      {/* Avbestillingspolicy */}
-      <div className="rounded-md border border-border bg-card p-4 text-sm text-muted-foreground">
-        <span className="font-semibold text-foreground">Avbestillingspolicy:</span> Bytting av tid er gratis frem til 24 timer
-        før opprinnelig starttidspunkt. Etter 24-timersgrensen kan ikke
-        tidspunktet endres, og bookingen er ikke refunderbar.
-      </div>
-
-      <section>
-        <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-          1. Velg ny dato
-        </h2>
-        <div className="mt-4">
-          <RescheduleDatoVelger
-            valgtDato={valgtDato}
-            bookingId={booking.id}
-            dager={14}
-          />
-        </div>
-      </section>
-
-      <section>
-        <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-          2. Velg tid
-        </h2>
-        <div className="mt-4">
-          {slots.length === 0 ? (
-            <div className="rounded-md border border-border bg-card p-6 text-center text-sm text-muted-foreground">
-              Ingen ledige tider på valgt dato. Prøv en annen dag.
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <div>
+            <Caps>Bookinger · Bytt tid</Caps>
+            <div style={{ marginTop: 10 }}>
+              <Tittel em={booking.serviceType.name}>Bytt tid på</Tittel>
             </div>
+            <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.45 }}>
+              Velg ny dato og tid under.
+            </p>
+          </div>
+          <StatusPill tone="info">Nå: {naaTid}</StatusPill>
+        </div>
+
+        <Kort>
+          <Caps style={{ marginBottom: 8 }}>Nåværende tid</Caps>
+          <div style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 600, color: T.fg }}>
+            {naa} kl {naaTid}
+          </div>
+          <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, marginTop: 4 }}>
+            {booking.serviceType.durationMin} min · {booking.location.name}
+          </div>
+        </Kort>
+
+        <Kort>
+          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.5 }}>
+            <strong style={{ color: T.fg }}>Regel:</strong> Bytting er gratis frem til 24 timer før start.
+            Etter det kan ikke tidspunktet endres, og bookingen er ikke refunderbar.
+          </p>
+        </Kort>
+
+        <div>
+          <Caps style={{ marginBottom: 10 }}>1. Velg ny dato</Caps>
+          <RescheduleDatoVelger valgtDato={valgtDato} bookingId={booking.id} dager={14} />
+        </div>
+
+        <div>
+          <Caps style={{ marginBottom: 10 }}>2. Velg tid</Caps>
+          {slots.length === 0 ? (
+            <Kort>
+              <TomTilstand
+                icon="calendar"
+                title="Ingen ledige tider denne dagen"
+                sub="Prøv en annen dato over — så finner vi en ledig slot."
+              />
+            </Kort>
           ) : (
             <RescheduleSlotPicker
               bookingId={booking.id}
@@ -130,8 +134,8 @@ export default async function ReschedulePage({ params, searchParams }: Props) {
             />
           )}
         </div>
-      </section>
-    </div>
+      </div>
+    </V2Shell>
   );
 }
 

@@ -1,11 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · Plan-feiring — v2 (retning C «Presis»).
- * v2-port 17. juli 2026 (Team D2): erstatter legacy-feiringssiden. Viser
- * KUN ekte tall fra page.tsx (gjennomføringsgrad, PlanEffectiveness-deltaer,
- * personlig rekord) — mangler SG-data vises ærlig tomtilstand, aldri
- * fabrikerte deltaer.
+ * PlayerHQ · Plan-feiring — v2 Presis + B-pakke (status + én primær «ny plan»).
+ * Ekte gjennomføring/SG-delta. T.* only.
  */
 
 import Link from "next/link";
@@ -138,9 +135,15 @@ export function FeiringV2({ data }: { data: FeiringV2Data }) {
       ) : (
         <Kort>
           <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, textAlign: "center", lineHeight: 1.6, margin: 0 }}>
-            Ikke nok runde-data ennå til å beregne SG-deltaer. Spill noen runder så regner vi dette
-            automatisk.
+            Ikke nok runde-data ennå til SG-delta. Spill noen runder — vi regner det automatisk.
           </p>
+          <div style={{ marginTop: 12 }}>
+            <Link href="/portal/runde/live" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill ghost full icon="flag">
+                Start live-føring
+              </CTAPill>
+            </Link>
+          </div>
         </Kort>
       )}
 
@@ -177,13 +180,24 @@ export function FeiringV2({ data }: { data: FeiringV2Data }) {
         </Kort>
       )}
 
-      {/* CTA-er */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingBottom: 24 }}>
-        <Link href="/portal/tren" style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill icon="arrow-right" full>Be om ny plan</CTAPill>
+      {/* B: én primær + tekst-sekundær */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingBottom: 24 }}>
+        <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="calendar" full>Planlegg neste periode</CTAPill>
         </Link>
-        <Link href="/portal" style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill ghost icon="arrow-left" full>Tilbake til hjem</CTAPill>
+        <Link
+          href="/portal"
+          style={{
+            textDecoration: "none",
+            display: "block",
+            textAlign: "center",
+            fontFamily: T.ui,
+            fontSize: 12,
+            fontWeight: 600,
+            color: T.mut,
+          }}
+        >
+          Tilbake til hjem →
         </Link>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Caps, Kort, Knapp, T } from "@/components/v2";
+import { Caps, Kort, Knapp, StatusPill, TomTilstand, T } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { AdminSlettSpillerKnappV2 } from "./AdminSlettSpillerKnappV2";
 import { lagreSpiller } from "@/app/admin/(legacy)/spillere/[id]/rediger/actions";
@@ -117,9 +117,21 @@ export function AdminSpillerRedigerV2({ data }: { data: AdminSpillerRedigerV2Dat
             <h1 style={{ margin: "4px 0 0", fontFamily: T.disp, fontWeight: 700, fontSize: 24, color: T.fg }}>
               Rediger <em style={{ fontStyle: "italic", fontWeight: 400, color: T.lime }}>spiller</em>
             </h1>
+            <div style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+              <StatusPill tone="info">
+                {data.foreldre.length > 0
+                  ? `${data.foreldre.length} foresatt${data.foreldre.length === 1 ? "" : "e"}`
+                  : "Ingen foresatte"}
+              </StatusPill>
+              <StatusPill tone={data.historikk.length > 0 ? "lime" : "info"}>
+                {data.historikk.length > 0
+                  ? `${data.historikk.length} endring${data.historikk.length === 1 ? "" : "er"} logget`
+                  : "Ingen endringer ennå"}
+              </StatusPill>
+            </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Link href={`/admin/spillere/${data.spillerId}`}>
+            <Link href={`/admin/spillere/${data.spillerId}`} style={{ textDecoration: "none" }}>
               <Knapp ghost>Avbryt</Knapp>
             </Link>
             <LagreKnapp>Lagre</LagreKnapp>
@@ -170,7 +182,11 @@ export function AdminSpillerRedigerV2({ data }: { data: AdminSpillerRedigerV2Dat
               <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>{data.foreldre.length}</span>
             </div>
             {data.foreldre.length === 0 ? (
-              <div style={{ borderRadius: 10, border: `1px dashed ${T.border}`, background: T.panel2, padding: 16, fontSize: 13, color: T.mut }}>Ingen foresatte registrert.</div>
+              <TomTilstand
+                icon="users"
+                title="Ingen foresatte registrert"
+                sub="Legg til foresatte fra spillerens profil når det trengs."
+              />
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {data.foreldre.map((p) => (
@@ -196,7 +212,11 @@ export function AdminSpillerRedigerV2({ data }: { data: AdminSpillerRedigerV2Dat
               <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>{data.historikk.length}</span>
             </div>
             {data.historikk.length === 0 ? (
-              <div style={{ borderRadius: 10, border: `1px dashed ${T.border}`, background: T.panel2, padding: 14, fontSize: 12, color: T.mut }}>Ingen endringer ennå.</div>
+              <TomTilstand
+                icon="history"
+                title="Ingen endringer ennå"
+                sub="Endringer du lagrer vises her."
+              />
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {data.historikk.map((h) => (

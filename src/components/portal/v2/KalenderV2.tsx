@@ -93,7 +93,14 @@ function Dag({ dag }: { dag: KalenderData["dag"] }) {
   return (
     <Kort eyebrow={dag.label} action={<Caps size={9}>{dag.totalLabel}</Caps>}>
       {dag.okter.length === 0 ? (
-        <TomTilstand icon="calendar" title="Ingen økter i dag" sub="Nyt hviledagen — eller be om en økt fra coachen din." />
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <TomTilstand icon="calendar" title="Ingen økter i dag" sub="Nyt hviledagen — eller planlegg i Workbench." />
+          <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
+            <CTAPill icon="calendar" full>
+              Åpne Workbench
+            </CTAPill>
+          </Link>
+        </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column" }}>
           {Array.from({ length: dag.tilTime - dag.fraTime }, (_, i) => {

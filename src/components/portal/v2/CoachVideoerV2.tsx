@@ -1,22 +1,14 @@
 "use client";
 
 /**
- * PlayerHQ Coach-videoer — v2 (retning C «Presis»). Rekomponert fra den ekte
- * skjermen (src/app/portal/coach/videoer/page.tsx): video-analyse fra coach
- * (SessionVideo, status READY), video-kort-grid med thumbnail-fallback.
- *
- * Funksjon/datakontrakt beholdt 1:1: hver video åpnes via getSignedVideoUrl
- * (signert URL, ny fane) — samme server-action som golfdata-kortet brukte.
- * Kun v2-komponenter fra "@/components/v2" (VideoKort er ny v2-komponent, se
- * gaps). Ingen fabrikkerte tall — ærlig tom-tilstand når ingen videoer finnes.
- *
- * V2Shell (montert i (v2preview)/v2-coach-videoer/page.tsx) eier chrome-en;
- * denne komponenten rendrer bare den indre innholds-stacken.
+ * PlayerHQ Coach-videoer — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useEffect, useState } from "react";
 import { getSignedVideoUrl } from "@/lib/storage/video";
-import { T, Caps, Tittel, Kort, VideoKort, TomTilstand } from "@/components/v2";
+import Link from "next/link";
+import { T, Caps, Tittel, Kort, VideoKort, TomTilstand, CTAPill } from "@/components/v2";
 
 /* ── Datakontrakt (speiler prisma.sessionVideo, status READY) ──────────── */
 
@@ -111,8 +103,15 @@ export function CoachVideoerV2({ data }: { data: CoachVideoerData }) {
           <TomTilstand
             icon="video"
             title="Ingen videoer ennå"
-            sub="Coachen din kan dele swing-analyser, drill-demo og kamp-feedback her."
+            sub="Coachen deler swing-analyser og drill-demo her."
           />
+          <div style={{ marginTop: 12 }}>
+            <Link href="/portal/coach/melding" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="send" full>
+                Spør coach om video
+              </CTAPill>
+            </Link>
+          </div>
         </Kort>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: T.gap }}>

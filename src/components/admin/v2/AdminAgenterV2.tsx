@@ -1,23 +1,8 @@
 "use client";
 
 /**
- * AgencyOS Agenter — v2 (retning C «Presis»). Coach/ADMIN ser AI-agent-pipelinen
- * (appens eget agent-OS: AgentRun). Ingen mockup fantes — komponert utelukkende
- * av v2-biblioteket (src/components/v2), ingen ad-hoc UI, ingen rå hex (kun T.*).
- *
- * Funksjon/data bevart 1:1 fra den ekte skjermen (src/app/admin/agents):
- *   - 3 KPI-er: aktive agenter · forslag i dag · venter på godkjenning (lenke).
- *   - Registrerte agenter som kort-liste: navn, trigger, kjøringer, snitt-tid,
- *     status (Aktiv / Feil / Ingen data) — rad → /admin/agents/{slug}.
- *   - Manuell kjøring (KUN ADMIN): velg agent + kjør nå (server-action
- *     triggerAgentManually), med OK/feil-tilbakemelding.
- *   - Siste 30 kjøringer: agent · status · tid · når.
- *
- * Mobil: alt stables (kort-lister er allerede mobilvennlige — ingen bred tabell).
- * KPI-grid 2-kol → 3-kol på lg; agent/kjøringer-grid 1-kol → 3fr/2fr på lg.
- *
- * Ærlige tomrom: ingen fabrikerte tall — «Ingen data» der agenten mangler
- * kjøringer, TomTilstand ved 0 kjøringer.
+ * AgencyOS Agenter — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Mørk AgencyOS. Pipeline: aktive · forslag · godkjenninger.
  */
 
 import { useState, useTransition } from "react";
@@ -31,6 +16,7 @@ import {
   KpiFlis,
   StatusPill,
   Knapp,
+  CTAPill,
   FilterChips,
   InnsiktChip,
   TomTilstand,
@@ -159,7 +145,15 @@ function KjorAgent({ agenter }: { agenter: { slug: string; navn: string }[] }) {
 export function AdminAgenterV2({ data }: { data: AdminAgenterV2Data }) {
   const router = useRouter();
 
-  // ── Hode ──────────────────────────────────────────────────────
+  const statusTone = data.pendingCount > 0 ? "warn" : data.aktiveAgenter > 0 ? "up" : "info";
+  const statusTekst =
+    data.pendingCount > 0
+      ? `${pl(data.pendingCount, "venter", "venter")}`
+      : data.aktiveAgenter > 0
+        ? `${pl(data.aktiveAgenter, "aktiv", "aktive")}`
+        : "Ingen data";
+
+  // ── Hode — B: status ──────────────────────────────────────────
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
@@ -171,14 +165,22 @@ export function AdminAgenterV2({ data }: { data: AdminAgenterV2Data }) {
           {pl(data.signalsCount, "signal", "signaler")} · {pl(data.planActionsCount, "plan-action", "plan-actions")} totalt.
         </div>
       </div>
-      {data.pendingCount > 0 && (
-        <div className="hidden md:block">
-          <StatusPill tone="warn">
-            {pl(data.pendingCount, "venter", "venter")}
-          </StatusPill>
-        </div>
-      )}
+      <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
     </div>
+  );
+
+  // B: én primær CTA — godkjenninger når kø, ellers agent-team
+  const primaerHref = data.pendingCount > 0 ? data.godkjenningerHref : "/admin/agent-team";
+  const primaerTekst =
+    data.pendingCount > 0
+      ? `Behandle ${pl(data.pendingCount, "forslag", "forslag")}`
+      : "Se agent-team";
+  const primaerCta = (
+    <Link href={primaerHref} style={{ textDecoration: "none", display: "block" }}>
+      <CTAPill icon="arrow-right" full>
+        {primaerTekst}
+      </CTAPill>
+    </Link>
   );
 
   // ── KPI-flis (3) ──────────────────────────────────────────────
@@ -277,6 +279,7 @@ export function AdminAgenterV2({ data }: { data: AdminAgenterV2Data }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
+      {primaerCta}
       {kpi}
       {data.erAdmin && data.manuelleAgenter.length > 0 && <KjorAgent agenter={data.manuelleAgenter} />}
       <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>

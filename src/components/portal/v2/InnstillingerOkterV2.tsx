@@ -1,17 +1,12 @@
 "use client";
 
 /**
- * PlayerHQ Innstillinger · Apparater og økter — v2 (retning C «Presis»).
- * v2-port 17. juli 2026: erstatter athletic-versjonen (EmptyState + info-boks).
- * Innhold uendret: apparat-oversikten finnes ikke ennå og vises som ærlig
- * tomtilstand («kommer Q3 2026») — aldri falske enhetsrader.
- *
- * Kun v2-komponenter fra "@/components/v2" + T.*-tokens. Ingen rå hex.
- * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
+ * PlayerHQ Innstillinger · Apparater — v2 Presis + B-pakke (tom = én grønn vei).
  */
 
 import { useEffect, useState } from "react";
-import { T, Tittel, Kort, TomTilstand, StatusPill, Icon } from "@/components/v2";
+import Link from "next/link";
+import { T, Tittel, Kort, TomTilstand, StatusPill, CTAPill } from "@/components/v2";
 
 /* ── Hjelpere ──────────────────────────────────────────────────────── */
 
@@ -36,49 +31,38 @@ export function InnstillingerOkterV2() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <Tittel mobile={mobile}>Apparater og økter</Tittel>
-      <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.6, margin: "-8px 0 0" }}>
-        Se hvor du er logget inn og administrer aktive sesjoner. Logg ut alle andre enheter med ett
-        klikk.
-      </p>
 
-      {/* Sikkerhets-info */}
-      <Kort tint>
-        <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-          <span
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: 10,
-              background: `color-mix(in srgb, ${T.lime} 10%, transparent)`,
-              border: `1px solid ${T.border}`,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flex: "none",
-            }}
-          >
-            <Icon name="shield-check" size={14} style={{ color: T.lime }} />
-          </span>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
-              Sikker tilgang
-            </div>
-            <p style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.6, margin: "5px 0 0" }}>
-              Alle sesjoner krypteres via Supabase Auth. Du kan trygt logge ut denne enheten via
-              «Logg ut»-knappen i hovedmenyen.
-            </p>
-          </div>
-        </div>
-      </Kort>
+      <div className="grid grid-cols-2" style={{ gap: 8 }}>
+        <Kort pad="12px">
+          <CapsPlaceholder label="Denne enheten" value="Aktiv" />
+        </Kort>
+        <Kort pad="12px">
+          <CapsPlaceholder label="Andre enheter" value="—" />
+        </Kort>
+      </div>
 
-      {/* Apparat-oversikt — ærlig tomtilstand */}
-      <Kort eyebrow="Apparat-oversikt" action={<StatusPill tone="info">Kommer Q3 2026</StatusPill>}>
+      <Kort eyebrow="Apparat-oversikt" action={<StatusPill tone="info">Kommer snart</StatusPill>}>
         <TomTilstand
           icon="monitor"
-          title="Apparat-oversikt kommer Q3 2026"
-          sub="Vi bygger en oversikt der du kan se alle dine aktive innlogginger og logge ut spesifikke enheter."
+          title="Oversikt over enheter kommer snart"
+          sub="Da kan du se innlogginger og logge ut andre enheter. Nå: logg ut via Meg."
         />
       </Kort>
+
+      <Link href="/portal/meg/innstillinger/sikkerhet" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="shield" full>
+          Åpne sikkerhet
+        </CTAPill>
+      </Link>
     </div>
+  );
+}
+
+function CapsPlaceholder({ label, value }: { label: string; value: string }) {
+  return (
+    <>
+      <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: T.mut, display: "block" }}>{label}</span>
+      <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 16, marginTop: 8, color: T.fg }}>{value}</div>
+    </>
   );
 }

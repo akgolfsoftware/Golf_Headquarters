@@ -93,6 +93,27 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
         </div>
       </div>
 
+      {/* B: primær handling først */}
+      <Link href={data.hrefLeggTilIPlan} style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="plus" full>
+          Legg til i plan
+        </CTAPill>
+      </Link>
+      <Link
+        href={data.hrefBibliotek}
+        style={{
+          textDecoration: "none",
+          display: "block",
+          textAlign: "center",
+          fontFamily: T.ui,
+          fontSize: 12,
+          fontWeight: 600,
+          color: T.mut,
+        }}
+      >
+        Tilbake til øvelsesbanken →
+      </Link>
+
       {/* Beskrivelse */}
       {data.beskrivelse && (
         <Kort eyebrow="Om drillen">
@@ -194,15 +215,6 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
         </Kort>
       )}
 
-      {/* CTA-er */}
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        <Link href={data.hrefLeggTilIPlan} style={{ textDecoration: "none" }}>
-          <CTAPill icon="plus">Legg til i plan</CTAPill>
-        </Link>
-        <Link href={data.hrefBibliotek} style={{ textDecoration: "none" }}>
-          <CTAPill ghost icon="arrow-left">Til øvelsesbanken</CTAPill>
-        </Link>
-      </div>
     </div>
   );
 }

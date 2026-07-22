@@ -1,13 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · SG-hub · Coach-modus per-kølle analyse
- * (/portal/mal/sg-hub/coach/[spillerId]/[club]) — v2.
- * v2-port 17. juli 2026 (Team D3): coach-speil av spillerens per-kølle-visning.
- * Gjenbruker de token-styrte graf-komponentene (DPlanePlot/StrikeHeatmap/
- * SmashCurvePlot) i v2-kort. Enkel/Avansert-veksler bruker samme server action
- * (setSgHubMode) som før — den lå tidligere i sg-hub-layouten.
- * All utregning (computeDPlane/StrikePattern/SmashCurve) bor i server-page.
+ * PlayerHQ · SG-hub · Coach-modus per-kølle analyse — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useTransition } from "react";

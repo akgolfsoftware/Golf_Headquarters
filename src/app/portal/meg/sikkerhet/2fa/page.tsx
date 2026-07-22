@@ -1,31 +1,42 @@
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+/**
+ * /portal/meg/sikkerhet/2fa — B-pakke.
+ * Status/steg først, én grønn handling per steg (i TwoFaClient).
+ */
+
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PlayerHero as PageHeader } from "@/components/portal/player-hero";
+import { T } from "@/lib/v2/tokens";
+import { Caps, Tittel, TilbakeLenke } from "@/components/v2";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TwoFaClient } from "./twofa-client";
 
 export default async function TwoFaPage() {
-  await requirePortalUser();
+  const user = await requirePortalUser();
 
   return (
-    <div className="mx-auto max-w-[1240px] space-y-6 px-4 pb-20 sm:px-6 md:space-y-8 md:pb-0">
-      <Link
-        href="/portal/meg/innstillinger/sikkerhet"
-        className="inline-flex h-11 items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <div
+        style={{
+          maxWidth: 640,
+          margin: "0 auto",
+          display: "flex",
+          flexDirection: "column",
+          gap: T.gap,
+        }}
       >
-        <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
-        Sikkerhet
-      </Link>
+        <TilbakeLenke href="/portal/meg/innstillinger/sikkerhet">Sikkerhet</TilbakeLenke>
 
-      <PageHeader
-        eyebrow="PlayerHQ · Sikkerhet · 2FA"
-        titleLead="Aktiver"
-        titleItalic="tofaktor"
-        titleTrail="på kontoen"
-        sub="Tre raske steg. Etter aktivering må du oppgi en 6-sifret kode hver gang du logger inn."
-      />
+        <div>
+          <Caps>Sikkerhet · Tofaktor</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em="tofaktor">Aktiver</Tittel>
+          </div>
+          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.45, maxWidth: "42ch" }}>
+            Tre raske steg. Etter aktivering trenger du en 6-sifret kode hver gang du logger inn.
+          </p>
+        </div>
 
-      <TwoFaClient />
-    </div>
+        <TwoFaClient />
+      </div>
+    </V2Shell>
   );
 }

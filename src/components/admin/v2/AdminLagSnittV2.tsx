@@ -5,7 +5,8 @@
  * uendret — kun presentasjonslaget er nytt.
  */
 
-import { Caps, Tittel, Kort, StatusPill, T, AKSE_NAVN } from "@/components/v2";
+import Link from "next/link";
+import { Caps, Tittel, Kort, StatusPill, TomTilstand, CTAPill, T, AKSE_NAVN } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
 
 export interface LagSnittRad {
@@ -42,29 +43,43 @@ function AksePctBar({ rad }: { rad: LagSnittRad }) {
 export function AdminLagSnittV2({ data }: { data: AdminLagSnittV2Data }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      <div>
-        <Caps>Analysere · Lag-snitt</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="per gruppe.">Pyramide</Tittel>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
+        <div>
+          <Caps>Analysere · Lag-snitt</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em="per gruppe.">Pyramide</Tittel>
+          </div>
+          <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut, margin: "10px 0 0", maxWidth: 560 }}>
+            Slik fordeler treningsbalansen seg i hver gruppe. Bruk det til å justere gruppeprogrammene.
+          </p>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut, margin: "10px 0 0", maxWidth: 560 }}>
-          Slik fordeler treningsbalansen seg i hver gruppe. Bruk det til å justere gruppeprogrammene.
-        </p>
+        <StatusPill tone={data.grupper.length > 0 ? "lime" : "info"}>
+          {data.grupper.length > 0
+            ? `${data.grupper.length} gruppe${data.grupper.length === 1 ? "" : "r"}`
+            : "Ingen grupper"}
+        </StatusPill>
       </div>
 
       {data.grupper.length === 0 ? (
-        <Kort>
-          <div style={{ textAlign: "center", padding: "32px 16px", fontFamily: T.ui, fontSize: 13, color: T.mut }}>
-            Ingen grupper opprettet ennå — opprett en gruppe under Stall for å sammenligne lag-snitt.
-          </div>
-        </Kort>
+        <>
+          <Kort>
+            <TomTilstand
+              icon="users"
+              title="Ingen grupper opprettet ennå"
+              sub="Opprett en gruppe under Stall for å sammenligne lag-snitt."
+            />
+          </Kort>
+          <Link href="/admin/grupper" style={{ textDecoration: "none", display: "block" }}>
+            <CTAPill icon="plus" full>Opprett gruppe</CTAPill>
+          </Link>
+        </>
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
           {data.grupper.map((g) => (
             <Kort key={g.id}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
                 <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg }}>{g.navn}</span>
-                <StatusPill tone="info">{g.antallMedlemmer}</StatusPill>
+                <StatusPill tone="info">{g.antallMedlemmer} medl.</StatusPill>
               </div>
               {g.rader.map((r) => (
                 <AksePctBar key={r.akse} rad={r} />

@@ -1,12 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · Talent · Sammenligning — v2 (retning C «Presis»).
- * Side-ved-side med en annen spiller på samme nivå: søk/velg (URL-param
- * ?q / ?spiller / ?periode — samme kontrakt som legacy), overlappende
- * RadarProfil, akse-barer og SG-utvikling over valgt periode. Anonymiser-
- * bryteren kaller server-action `toggleAnonymiser` (uendret logikk).
- * Ingen falske tall — tomtilstander når data mangler.
+ * PlayerHQ · Talent · Sammenligning — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useState, useTransition } from "react";

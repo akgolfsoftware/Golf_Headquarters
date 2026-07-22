@@ -1,33 +1,8 @@
 "use client";
 
 /**
- * AgencyOS Godkjenninger — v2 (retning C «Presis», mørk først). Coach/ADMIN
- * behandler agent-forslag (plan-endringer / samtykke-signaler): godkjenn eller
- * avvis. Ingen mockup fantes — komponert utelukkende av v2-biblioteket
- * (src/components/v2), ingen ad-hoc UI, ingen rå hex (kun T.*).
- *
- * Funksjon/data bevart 1:1 fra den ekte skjermen (src/app/admin/godkjenninger):
- *   - Kø av PENDING PlanAction-forslag (nyeste først), én kort-rad per sak.
- *   - Per sak: spiller, tittel, forklaring, actionType, «når», signal-snapshot,
- *     forhåndsvist diff (buildDiffPreview i ruten), Haster-/Lav risiko-flagg.
- *   - Handlinger per sak: Godkjenn (acceptPlanAction) · Avvis (rejectPlanAction)
- *     · Detaljer (/admin/godkjenninger/[id]) · Se profil (/admin/spillere/[id]).
- *   - Massehandling: Godkjenn lav-risiko (batchApproveLowRisk) når slike finnes.
- *   - Filter på Haster / Lav risiko (klient, over ekte flagg).
- *
- * Mobil (375px): kort stables; primærhandlinger fullbredde, lenker under.
- * Chips brytes. Ingen fabrikerte tall — tom kø → TomTilstand.
- *
- * Audit 2026-07-12 (funn 2): saker grupperes per spiller (seksjonshode),
- * identiske saker (samme who+tittel+actionType) dedupliseres til én rad med
- * «×N»-badge (Godkjenn/Avvis gjelder kun FØRSTE sak — aldri bulk uten
- * eksplisitt handling), og køen pagineres klientside (10 seksjoner om gangen)
- * så siden aldri blir 12–17 000 px lang. Knapphierarki per sak: Godkjenn
- * primær (lime) · Avvis ghost · Detaljer/Se profil som tekstlenker.
- *
- * Chip-valg: original brukte «Haster»/«Lav risiko». SevChip har fastlåste
- * etiketter (Sterkt avvik/Venter/…) som ville brutt den låste copy-en, så
- * StatusPill (warn/info) bærer flaggene med original tekst.
+ * AgencyOS Godkjenninger — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Kø av agent-/caddie-/forespørsel-saker. T.* only.
  */
 
 import { useEffect, useMemo, useState, useTransition, type ReactNode } from "react";
@@ -44,6 +19,7 @@ import {
   AvatarInit,
   TomTilstand,
   InnsiktChip,
+  CTAPill,
   Icon,
   T,
 } from "@/components/v2";
@@ -120,22 +96,29 @@ function useMobile(): boolean {
   return m;
 }
 
-/** Massehandling: godkjenn alle lav-risiko-forslag i køen. */
+/** Massehandling: godkjenn alle lav-risiko-forslag i køen. B: primær CTAPill. */
 function GodkjennLavRisiko({ count }: { count: number }) {
   const router = useRouter();
   const [busy, start] = useTransition();
   if (count === 0) return null;
   return (
-    <div style={{ opacity: busy ? 0.5 : 1 }}>
-      <Knapp
-        icon="check-circle"
-        ghost
-        disabled={busy}
-        onClick={() => start(async () => { await batchApproveLowRisk(); router.refresh(); })}
-      >
-        Godkjenn lav-risiko ({count})
-      </Knapp>
-    </div>
+    <button
+      type="button"
+      disabled={busy}
+      onClick={() => start(async () => { await batchApproveLowRisk(); router.refresh(); })}
+      style={{
+        all: "unset",
+        cursor: busy ? "wait" : "pointer",
+        opacity: busy ? 0.55 : 1,
+        display: "block",
+        width: "100%",
+      }}
+      aria-label={`Godkjenn lav-risiko (${count})`}
+    >
+      <CTAPill icon="check-circle" full>
+        {busy ? "Godkjenner …" : `Godkjenn lav-risiko (${count})`}
+      </CTAPill>
+    </button>
   );
 }
 
@@ -318,11 +301,11 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
     setVisSeksjoner(10);
   };
 
-  // ── Hode ──────────────────────────────────────────────────────
+  // ── Hode — B: status ──────────────────────────────────────────
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>Innboks · Godkjenninger</Caps>
+        <Caps>Innboks · Godkjenninger · AgencyOS</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel em="på deg." mobile={mobile}>{`${totalt} venter`}</Tittel>
         </div>
@@ -330,22 +313,28 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
           Plan-endringer fra agenter. Godkjenn eller avvis — endringer skrives til planen ved godkjenning.
         </p>
       </div>
-      <div className="hidden md:block">
-        <GodkjennLavRisiko count={data.lowRiskCount} />
-      </div>
+      <StatusPill tone={totalt === 0 ? "lime" : antallHaster > 0 ? "warn" : "info"}>
+        {totalt === 0 ? "Kø tom" : antallHaster > 0 ? `${antallHaster} haster` : `${totalt} i kø`}
+      </StatusPill>
     </div>
   );
+
+  // B: én primær — masse-godkjenn lav-risiko, ellers vei til stall/innboks
+  const primaerCta =
+    data.lowRiskCount > 0 ? (
+      <GodkjennLavRisiko count={data.lowRiskCount} />
+    ) : (
+      <Link href="/admin/innboks" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="inbox" full>
+          Åpne innboks
+        </CTAPill>
+      </Link>
+    );
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
-
-      {/* Mobil-massehandling (skjult på desktop der den ligger i hodet) */}
-      {data.lowRiskCount > 0 && (
-        <div className="md:hidden">
-          <GodkjennLavRisiko count={data.lowRiskCount} />
-        </div>
-      )}
+      {primaerCta}
 
       {tilgjengeligeFiltre.length > 0 && (
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>

@@ -3,8 +3,6 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, ChevronRight, EyeOff, UserPlus } from "lucide-react";
-import { EmptyState } from "@/components/shared/empty-state";
 import {
   sokSpillere,
   sendVenneforesporsel,
@@ -14,23 +12,8 @@ import {
   type VennRad,
   type SokResultat,
 } from "@/lib/venner/actions";
-
-function initials(name: string): string {
-  const deler = name.trim().split(/\s+/).filter(Boolean);
-  if (deler.length >= 2) return (deler[0][0] + deler[deler.length - 1][0]).toUpperCase();
-  return (name.slice(0, 2) || "?").toUpperCase();
-}
-
-function AvatarSirkel({ navn, size = 40 }: { navn: string; size?: number }) {
-  return (
-    <div
-      className="grid shrink-0 place-items-center rounded-full bg-primary font-semibold text-primary-foreground"
-      style={{ width: size, height: size, fontSize: size * 0.35 }}
-    >
-      {initials(navn)}
-    </div>
-  );
-}
+import { T } from "@/lib/v2/tokens";
+import { Caps, TomTilstand, Icon, AvatarInit, StatusPill } from "@/components/v2";
 
 function vennSub(v: { hcp: number | null; kategori: string | null }): string {
   const deler: string[] = [];
@@ -68,10 +51,22 @@ function SokLeggTil() {
   }
 
   return (
-    <div className="space-y-3">
-      <form onSubmit={utforSok} className="flex items-center gap-2">
-        <div className="flex h-11 flex-1 items-center gap-2 rounded-full border border-border bg-card px-4">
-          <Search size={15} strokeWidth={1.5} className="shrink-0 text-muted-foreground" />
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <form onSubmit={utforSok} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div
+          style={{
+            flex: 1,
+            height: 44,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            borderRadius: 9999,
+            border: `1px solid ${T.border}`,
+            background: T.panel,
+            padding: "0 14px",
+          }}
+        >
+          <Icon name="search" size={15} style={{ color: T.mut, flex: "none" }} />
           <input
             value={q}
             onChange={(e) => {
@@ -79,43 +74,104 @@ function SokLeggTil() {
               setSokt(false);
             }}
             placeholder="Søk navn…"
-            className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+            style={{
+              minWidth: 0,
+              flex: 1,
+              border: "none",
+              outline: "none",
+              background: "transparent",
+              fontFamily: T.ui,
+              fontSize: 13.5,
+              color: T.fg,
+            }}
           />
         </div>
         <button
           type="submit"
           disabled={q.trim().length < 2 || pending}
-          className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40"
+          style={{
+            height: 44,
+            flex: "none",
+            border: "none",
+            borderRadius: 9999,
+            background: T.forest,
+            color: T.onLime,
+            fontFamily: T.ui,
+            fontSize: 13.5,
+            fontWeight: 600,
+            padding: "0 18px",
+            cursor: q.trim().length < 2 || pending ? "not-allowed" : "pointer",
+            opacity: q.trim().length < 2 || pending ? 0.4 : 1,
+          }}
         >
           Søk
         </button>
       </form>
 
       {sokt && (
-        <div className="space-y-2">
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {treff.length === 0 ? (
-            <p className="px-1 text-xs text-muted-foreground">Ingen spillere funnet.</p>
+            <p style={{ margin: 0, padding: "0 4px", fontFamily: T.ui, fontSize: 12, color: T.mut }}>
+              Ingen spillere funnet.
+            </p>
           ) : (
             treff.map((t) => (
               <div
                 key={t.id}
-                className="flex items-center gap-3 rounded-xl border border-border bg-card p-3"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  borderRadius: T.rRow,
+                  border: `1px solid ${T.border}`,
+                  background: T.panel,
+                  padding: 12,
+                }}
               >
-                <AvatarSirkel navn={t.name} size={36} />
-                <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-semibold leading-none">{t.name}</div>
-                  <div className="mt-1 text-[11px] text-muted-foreground">{vennSub(t) || "—"}</div>
+                <AvatarInit navn={t.name} size={36} />
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div
+                    style={{
+                      fontFamily: T.ui,
+                      fontSize: 13.5,
+                      fontWeight: 600,
+                      color: T.fg,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {t.name}
+                  </div>
+                  <div style={{ marginTop: 4, fontFamily: T.ui, fontSize: 11, color: T.mut }}>
+                    {vennSub(t) || "—"}
+                  </div>
                 </div>
                 {sendtTil.has(t.id) ? (
-                  <span className="shrink-0 text-[11px] text-muted-foreground">Sendt</span>
+                  <span style={{ flex: "none", fontFamily: T.ui, fontSize: 11, color: T.mut }}>Sendt</span>
                 ) : (
                   <button
                     type="button"
                     onClick={() => inviter(t.id)}
                     disabled={pending}
-                    className="inline-flex shrink-0 items-center gap-1 rounded-full border border-border bg-transparent px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-40"
+                    style={{
+                      flex: "none",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                      borderRadius: 9999,
+                      border: `1px solid ${T.border}`,
+                      background: "transparent",
+                      padding: "6px 12px",
+                      fontFamily: T.ui,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: T.fg,
+                      cursor: pending ? "not-allowed" : "pointer",
+                      opacity: pending ? 0.4 : 1,
+                    }}
                   >
-                    <UserPlus size={12} strokeWidth={1.5} />
+                    <Icon name="user-plus" size={12} />
                     Inviter
                   </button>
                 )}
@@ -152,11 +208,33 @@ function ForesporselInnRad({
   if (svart) return null;
 
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-border bg-secondary/40 p-3">
-      <AvatarSirkel navn={bruker.name} size={36} />
-      <div className="min-w-0 flex-1">
-        <div className="truncate text-sm font-semibold leading-none">{bruker.name}</div>
-        <div className="mt-1 text-[11px] text-muted-foreground">
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        borderRadius: T.rRow,
+        border: `1px solid ${T.border}`,
+        background: T.panel2,
+        padding: 12,
+      }}
+    >
+      <AvatarInit navn={bruker.name} size={36} />
+      <div style={{ minWidth: 0, flex: 1 }}>
+        <div
+          style={{
+            fontFamily: T.ui,
+            fontSize: 13.5,
+            fontWeight: 600,
+            color: T.fg,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {bruker.name}
+        </div>
+        <div style={{ marginTop: 4, fontFamily: T.ui, fontSize: 11, color: T.mut }}>
           {vennSub(bruker) ? `${vennSub(bruker)} · ` : ""}vil bli venn
         </div>
       </div>
@@ -164,7 +242,19 @@ function ForesporselInnRad({
         type="button"
         onClick={() => svar("avslaa")}
         disabled={pending}
-        className="shrink-0 rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary disabled:opacity-40"
+        style={{
+          flex: "none",
+          border: "none",
+          borderRadius: 9999,
+          background: "transparent",
+          padding: "6px 12px",
+          fontFamily: T.ui,
+          fontSize: 12,
+          fontWeight: 600,
+          color: T.mut,
+          cursor: pending ? "not-allowed" : "pointer",
+          opacity: pending ? 0.4 : 1,
+        }}
       >
         Avslå
       </button>
@@ -172,7 +262,19 @@ function ForesporselInnRad({
         type="button"
         onClick={() => svar("godkjenn")}
         disabled={pending}
-        className="shrink-0 rounded-full bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40"
+        style={{
+          flex: "none",
+          border: "none",
+          borderRadius: 9999,
+          background: T.forest,
+          color: T.onLime,
+          padding: "6px 12px",
+          fontFamily: T.ui,
+          fontSize: 12,
+          fontWeight: 600,
+          cursor: pending ? "not-allowed" : "pointer",
+          opacity: pending ? 0.4 : 1,
+        }}
       >
         Godkjenn
       </button>
@@ -198,17 +300,26 @@ function UtgaendeRad({ friendshipId, bruker }: { friendshipId: string; bruker: V
   if (trukket) return null;
 
   return (
-    <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
-      <AvatarSirkel navn={bruker.name} size={28} />
-      <span className="flex-1 truncate">{bruker.name}</span>
-      <span className="rounded-full border border-border px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wide">
-        Venter
-      </span>
+    <div style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: T.ui, fontSize: 13.5, color: T.fg2 }}>
+      <AvatarInit navn={bruker.name} size={28} />
+      <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{bruker.name}</span>
+      <StatusPill tone="info">Venter</StatusPill>
       <button
         type="button"
         onClick={trekkTilbake}
         disabled={pending}
-        className="text-[11px] font-medium text-muted-foreground underline-offset-2 hover:text-foreground hover:underline disabled:opacity-40"
+        style={{
+          border: "none",
+          background: "transparent",
+          fontFamily: T.ui,
+          fontSize: 11,
+          fontWeight: 600,
+          color: T.mut,
+          textDecoration: "underline",
+          textUnderlineOffset: 2,
+          cursor: pending ? "not-allowed" : "pointer",
+          opacity: pending ? 0.4 : 1,
+        }}
       >
         Trekk tilbake
       </button>
@@ -220,14 +331,38 @@ function VennRadKomponent({ v }: { v: VennRad }) {
   return (
     <Link
       href={`/portal/venner/${v.id}`}
-      className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:bg-secondary/40"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        borderRadius: T.rRow,
+        border: `1px solid ${T.border}`,
+        background: T.panel,
+        padding: 12,
+        textDecoration: "none",
+        color: "inherit",
+      }}
     >
-      <AvatarSirkel navn={v.name} size={40} />
-      <div className="min-w-0 flex-1">
-        <div className="truncate text-sm font-semibold leading-none">{v.name}</div>
-        <div className="mt-1 text-[11.5px] text-muted-foreground">{vennSub(v) || "Ingen delte økter ennå"}</div>
+      <AvatarInit navn={v.name} size={40} />
+      <div style={{ minWidth: 0, flex: 1 }}>
+        <div
+          style={{
+            fontFamily: T.ui,
+            fontSize: 13.5,
+            fontWeight: 600,
+            color: T.fg,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {v.name}
+        </div>
+        <div style={{ marginTop: 4, fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>
+          {vennSub(v) || "Ingen delte økter ennå"}
+        </div>
       </div>
-      <ChevronRight size={16} strokeWidth={1.5} className="shrink-0 text-muted-foreground" />
+      <Icon name="chevron-right" size={16} style={{ color: T.mut, flex: "none" }} />
     </Link>
   );
 }
@@ -236,20 +371,16 @@ export function VennerClient({ initial }: { initial: VennerData }) {
   const { venner, innkommende, utgaende } = initial;
 
   return (
-    <div className="space-y-8">
-      <section className="space-y-2">
-        <h2 className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-          Legg til venn
-        </h2>
+    <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+      <section style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <Caps>Legg til venn</Caps>
         <SokLeggTil />
       </section>
 
       {innkommende.length > 0 && (
-        <section className="space-y-2">
-          <h2 className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-            Venneforespørsler
-          </h2>
-          <div className="space-y-2">
+        <section style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <Caps>Venneforespørsler</Caps>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {innkommende.map((f) => (
               <ForesporselInnRad key={f.friendshipId} friendshipId={f.friendshipId} bruker={f.bruker} />
             ))}
@@ -258,11 +389,9 @@ export function VennerClient({ initial }: { initial: VennerData }) {
       )}
 
       {utgaende.length > 0 && (
-        <section className="space-y-2">
-          <h2 className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-            Sendt, venter
-          </h2>
-          <div className="space-y-2">
+        <section style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <Caps>Sendt, venter</Caps>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {utgaende.map((f) => (
               <UtgaendeRad key={f.friendshipId} friendshipId={f.friendshipId} bruker={f.bruker} />
             ))}
@@ -270,19 +399,16 @@ export function VennerClient({ initial }: { initial: VennerData }) {
         </section>
       )}
 
-      <section className="space-y-2">
-        <h2 className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-          Dine venner ({venner.length})
-        </h2>
+      <section style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <Caps>Dine venner ({venner.length})</Caps>
         {venner.length === 0 ? (
-          <EmptyState
-            icon={UserPlus}
-            titleItalic="Ingen venner"
-            titleTrail="ennå"
+          <TomTilstand
+            icon="user-plus"
+            title="Ingen venner ennå"
             sub="Søk over for å legge til den første."
           />
         ) : (
-          <div className="space-y-2">
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {venner.map((v) => (
               <VennRadKomponent key={v.id} v={v} />
             ))}
@@ -290,11 +416,26 @@ export function VennerClient({ initial }: { initial: VennerData }) {
         )}
       </section>
 
-      <div className="flex items-start gap-2 border-t border-border pt-4 text-xs leading-relaxed text-muted-foreground">
-        <EyeOff size={14} strokeWidth={1.5} className="mt-0.5 shrink-0 text-primary" />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          gap: 8,
+          borderTop: `1px solid ${T.border}`,
+          paddingTop: 14,
+          fontFamily: T.ui,
+          fontSize: 12,
+          lineHeight: 1.5,
+          color: T.mut,
+        }}
+      >
+        <Icon name="eye" size={14} style={{ color: T.forest, marginTop: 2, flex: "none" }} />
         <span>
           Venner ser kun AT du har trent — aldri plan, fagkoder eller coach-notater. Skru av i{" "}
-          <Link href="/portal/meg/innstillinger" className="font-medium text-primary underline-offset-2 hover:underline">
+          <Link
+            href="/portal/meg/innstillinger"
+            style={{ fontWeight: 600, color: T.forest, textDecoration: "none" }}
+          >
             Meg › Innstillinger › Varsler
           </Link>
           .

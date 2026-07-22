@@ -224,6 +224,9 @@ export function AdminNySpillerV2() {
           invitasjon på e-post hvis du sender den nå.
         </p>
       </div>
+      <StatusPill tone={steg === 4 ? "lime" : "info"}>
+        Steg {steg} av 4 · {STEG_NAVN[steg - 1]}
+      </StatusPill>
     </div>
   );
 

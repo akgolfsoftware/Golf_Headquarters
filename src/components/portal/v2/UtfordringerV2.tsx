@@ -1,18 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Utfordringer — v2 (retning C «Presis»). Rekomponert fra den ekte
- * skjermen (src/app/portal/utfordringer/page.tsx): gamification-oversikt over
- * drill-utfordringer (DrillChallenge) — aktive + fullførte, med deltakerantall,
- * spillerens plassering/score og sluttdato.
- *
- * INGEN mockup finnes for denne skjermen → komponert fra v2-biblioteket
- * (@/components/v2) i retning C. Kun v2-komponenter + T.*-tokens; ingen rå hex,
- * ingen ad-hoc UI-primitiver. Ærlig tom-tilstand når det ikke finnes utfordringer.
- *
- * V2Shell (montert i (v2preview)/v2-utfordringer/page.tsx) eier chrome-en — denne
- * komponenten rendrer bare den indre innholds-stacken. All funksjon + datakontrakt
- * er bevart; erEier/min plassering/deltakerantall er ferdigberegnet på serveren.
+ * PlayerHQ Utfordringer — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import Link from "next/link";
@@ -186,9 +176,11 @@ export function UtfordringerV2({ data }: { data: UtfordringerData }) {
               title="Ingen aktive utfordringer"
               sub="Lag en ny utfordring eller bli med i en eksisterende."
             />
-            <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
-              <Link href="/portal/utfordringer/ny" style={{ textDecoration: "none" }}>
-                <CTAPill icon="plus">Ny utfordring</CTAPill>
+            <div style={{ marginTop: 12 }}>
+              <Link href="/portal/utfordringer/ny" style={{ textDecoration: "none", display: "block" }}>
+                <CTAPill icon="plus" full>
+                  Ny utfordring
+                </CTAPill>
               </Link>
             </div>
           </Kort>

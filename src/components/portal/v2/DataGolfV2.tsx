@@ -1,23 +1,12 @@
 "use client";
 
 /**
- * PlayerHQ DataGolf — v2 (retning C «Presis»). Komponert 1:1 fra
- * ui_kits/v2/datagolf-tester.jsx → funksjonen DataGolf (+ DGGruppe, DGLegend,
- * Hjelp), men med EKTE data fra hentDataGolf (BrukerSammenligning + BrukerSgInput
- * + PgaPlayerSeason). Kun v2-komponenter fra "@/components/v2"; ingen ad-hoc
- * UI-primitiver, ingen rå hex (kun T.*).
- *
- * Ærlighet foran pixel-1:1: der datakontrakten ikke bærer et felt bygges ærlig
- * tom-tilstand — aldri fabrikkerte tall. Konkret: percentil-plassering på eget
- * nivå og «nivå-snitt per kategori» finnes ikke som kilde og er derfor utelatt
- * (meldt som gap), ikke diktet opp. DGGruppe viser to EKTE serier — Deg og
- * referansespilleren — som divergerende SG-barer rundt 0-linjen (tour-baseline).
- *
- * V2Shell (montert i (v2preview)/v2-datagolf/page.tsx) eier chrome-en — denne
- * komponenten rendrer bare den indre innholds-stacken.
+ * PlayerHQ DataGolf — v2 Presis + B-pakke (status mot tour + én vei til plan).
+ * Ekte SG vs PGA Tour-baseline. T.* only. Tom = registrer runde / se analyse.
  */
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import type { DataGolfData, DataGolfKategori } from "@/lib/portal-stats/datagolf-data";
 import { WORKBENCH_HREF } from "./WorkbenchInngang";
 import {
@@ -34,6 +23,7 @@ import {
   TomTilstand,
   MikroMeta,
   HjelpTips,
+  CTAPill,
 } from "@/components/v2";
 
 export type DataGolfProps = { data: DataGolfData; spillerNavn?: string };
@@ -180,12 +170,38 @@ export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
             <Tittel mobile={mobile} em="touren">Deg mot</Tittel>
           </div>
         </div>
+        <div className="grid grid-cols-3" style={{ gap: 8 }}>
+          {(
+            [
+              { l: "Gap", v: "—" },
+              { l: "Kategorier", v: "—" },
+              { l: "Status", v: "Ingen data" },
+            ] as const
+          ).map((k) => (
+            <Kort key={k.l} pad="12px">
+              <Caps size={9}>{k.l}</Caps>
+              <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 15, marginTop: 8, color: T.fg }}>{k.v}</div>
+            </Kort>
+          ))}
+        </div>
         <Kort>
           <TomTilstand
             icon="bar-chart"
             title="Ingen sammenligning ennå"
-            sub="Registrer strokes gained og sammenlign deg mot en PGA Tour-spiller — så fyller denne skjermen seg med ekte tall for hvor du står mot touren, per kategori og over tid."
+            sub="Registrer SG på runder — da fylles gap mot touren per kategori."
           />
+          <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+            <Link href="/portal/runde/live" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="flag" full>
+                Start live-føring
+              </CTAPill>
+            </Link>
+            <Link href="/portal/analysere" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill ghost full icon="bar-chart">
+                Se SG-analyse
+              </CTAPill>
+            </Link>
+          </div>
         </Kort>
       </div>
     );

@@ -1,12 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · Ny test — v2 (retning C «Presis»).
- * v2-port 17. juli 2026 (Team D2): erstatter legacy NyTestWizard. Fire-stegs
- * flyt (Type → Detaljer → Resultat → Bekreft) med IDENTISK logikk: samme
- * test-katalog m/ fuzzy navn-match, localStorage-draft (autosave hvert 10. s),
- * samme validering og samme server action `logTest` (flyttet byte-identisk
- * til /portal/tren/tester/ny/actions.ts). Kun presentasjonslaget er nytt.
+ * PlayerHQ · Ny test — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";

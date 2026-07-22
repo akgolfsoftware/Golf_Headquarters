@@ -1,18 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Runder — v2 (retning C «Presis»). Rekomponert fra den ekte skjermen
- * (src/app/portal/mal/runder/page.tsx → RundeListeSide, v13) med SAMME funksjon
- * og datakontrakt: runde-liste + KPI-strip, brutto score alltid, ★beste-markør,
- * rad → detalj/scorekort (/portal/mal/runder/[id]). Kun v2-komponenter fra
- * "@/components/v2"; ingen ad-hoc UI, ingen rå hex (kun T.*-tokens).
- *
- * Datakontrakten er getRunderListModel (rows + kpis) + fornavn/hcp. Tom-tilstand
- * (0 runder) er ærlig — aldri fabrikkerte tall. hrefs bygges av de kanoniske
- * rutene i klient (funksjoner kan ikke krysse server→klient-grensen).
- *
- * V2Shell (montert i (v2preview)/v2-runder/page.tsx) eier chrome-en — denne
- * komponenten rendrer bare den indre innholds-stacken.
+ * PlayerHQ Runder — v2 Presis + B-pakke (KPI-status + én primær live-føring).
+ * Liste + snitt. Tom = full grønn vei til live-føring. T.* only.
  */
 
 import { useEffect, useState } from "react";
@@ -146,45 +136,59 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
         </div>
       </div>
 
+      {/* B: status først (også tom) */}
+      <div className="grid grid-cols-3" style={{ gap: T.gap }}>
+        <KpiFlis label="Snittscore · brutto" value={tom ? "—" : snittScore} hjelp="bruttoScore" />
+        <KpiFlis label="Snitt SG" value={tom ? "—" : snittSg} hjelp="sgTotal" />
+        <KpiFlis label="Runder" value={tom ? "0" : String(kpis.total)} tint />
+      </div>
+
       {tom ? (
         <Kort>
           <TomTilstand
             icon="flag"
             title="Ingen runder logget ennå"
-            sub="Loggfør din første 18-hulls runde, eller importer historikken fra GolfBox."
+            sub="Loggfør din første runde — live-føring er raskest."
           />
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "center", marginTop: 4 }}>
-            <Link href={RUTE_LIVE} style={{ textDecoration: "none" }}>
-              <CTAPill icon="flag">Start live-føring</CTAPill>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 12 }}>
+            <Link href={RUTE_LIVE} style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="flag" full>
+                Start live-føring
+              </CTAPill>
             </Link>
-            <Link href={RUTE_NY} style={{ textDecoration: "none" }}>
-              <Knapp ghost icon="plus">Loggfør runde</Knapp>
-            </Link>
-            <Link href={RUTE_NY} style={{ textDecoration: "none" }}>
-              <Knapp ghost icon="download">Importer fra GolfBox</Knapp>
+            <Link
+              href={RUTE_NY}
+              style={{
+                textDecoration: "none",
+                display: "block",
+                textAlign: "center",
+                fontFamily: T.ui,
+                fontSize: 12,
+                fontWeight: 600,
+                color: T.mut,
+              }}
+            >
+              Hurtig score eller import →
             </Link>
           </div>
         </Kort>
       ) : (
         <>
-          {/* Mobil-CTA (desktop har knappene i hodet) */}
-          <div className="flex md:hidden" style={{ gap: 8, flexWrap: "wrap" }}>
-            <Link href={RUTE_LIVE} style={{ textDecoration: "none", flex: "1 1 100%", display: "flex" }}>
-              <CTAPill icon="flag">Start live-føring</CTAPill>
+          {/* B: én primær CTA full på mobil; desktop har den i hodet */}
+          <div className="flex md:hidden" style={{ flexDirection: "column", gap: 8 }}>
+            <Link href={RUTE_LIVE} style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="flag" full>
+                Start live-føring
+              </CTAPill>
             </Link>
-            <Link href={RUTE_SLAG} style={{ textDecoration: "none" }}>
-              <Knapp ghost icon="pencil">Slag for slag</Knapp>
-            </Link>
-            <Link href={RUTE_NY} style={{ textDecoration: "none" }}>
-              <Knapp ghost icon="plus">Hurtig score</Knapp>
-            </Link>
-          </div>
-
-          {/* KPI-strip */}
-          <div className="grid grid-cols-3" style={{ gap: T.gap }}>
-            <KpiFlis label="Snittscore · brutto" value={snittScore} hjelp="bruttoScore" />
-            <KpiFlis label="Snitt SG" value={snittSg} hjelp="sgTotal" />
-            <KpiFlis label="Runder" value={String(kpis.total)} tint />
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <Link href={RUTE_SLAG} style={{ textDecoration: "none" }}>
+                <Knapp ghost icon="pencil">Slag for slag</Knapp>
+              </Link>
+              <Link href={RUTE_NY} style={{ textDecoration: "none" }}>
+                <Knapp ghost icon="plus">Hurtig score</Knapp>
+              </Link>
+            </div>
           </div>
 
           {/* Runde-historikk */}

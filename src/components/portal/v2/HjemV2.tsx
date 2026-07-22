@@ -1,13 +1,11 @@
 "use client";
 
 /**
- * PlayerHQ Hjem — v2 (retning C «Presis»). Komponert 1:1 fra
- * ui_kits/v2/phq-skjermer.jsx → funksjonen Hjem, men med EKTE data fra
- * getDashboardData (src/app/portal/actions.ts). Kun v2-komponenter fra
- * "@/components/v2"; ingen ad-hoc UI. Ingen rå hex (kun T.*-tokens).
+ * PlayerHQ Hjem — v2 Presis + opplevelse B-pakke (form + plan).
+ * EKTE data fra getDashboardData. Kun v2-komponenter; ingen rå hex (T.*).
+ * Låst retning: docs/design-system/plattform-design-2026-07-21/RETNING-HJEM.md
  *
- * V2Shell (montert i (v2preview)/v2-hjem/page.tsx) eier chrome-en — denne
- * komponenten rendrer bare den indre innholds-stacken.
+ * V2Shell eier chrome — denne filen er innholds-stacken.
  */
 
 import Link from "next/link";

@@ -1,23 +1,12 @@
 "use client";
 
 /**
- * AgencyOS Talent-radar — v2 (retning C «Presis»). Rekomponerer de ekte
- * skjermene src/app/admin/talent/radar/page.tsx (liste) + /[playerId]
- * (pentagon-radar) til ÉN v2-flate med IDENTISK funksjon + datakontrakt:
- *   1) Spiller-velger over alle talenter i programmet (klient-state, ingen
- *      navigasjon — samme datasett lastes én gang server-side),
- *   2) Pentagonal radar (5 akser 1–10) for valgt spiller + nivåsnitt som
- *      stiplet sammenligning (samme peer-logikk som detaljskjermen:
- *      snitt av andre talenter på samme nivå),
- *   3) Akse-for-akse-sammenligning med KPI-remse (sum, snitt, nivåsnitt, HCP).
- *
- * Bygget kun av v2-biblioteket (src/components/v2) — radaren bruker den nye
- * `RadarProfil` (fri ord-akser; pyramidens `Radar` er låst til FYS…TURN).
- * Ingen rå hex (kun T.*), ingen fabrikerte tall: uvurderte akser vises «—»,
- * mangler peer-data utelates. Anbefaling er klarspråk, aldri sperre.
+ * AgencyOS Talent-radar — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Pentagon-radar over talenter i programmet. T.* only.
  */
 
 import { useState } from "react";
+import Link from "next/link";
 import { T } from "@/lib/v2/tokens";
 import {
   Caps,
@@ -27,6 +16,8 @@ import {
   DeltaChip,
   InnsiktChip,
   TomTilstand,
+  StatusPill,
+  CTAPill,
   AvatarInit,
   StatStrip,
   RadarProfil,
@@ -88,19 +79,27 @@ export function AdminTalentRadarV2({ data }: { data: TalentRadarData }) {
   if (!valgt) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-        <div>
-          <Caps>AgencyOS · Talent-radar</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="programmet.">Ingen emner i </Tittel>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
+          <div>
+            <Caps>AgencyOS · Talent-radar</Caps>
+            <div style={{ marginTop: 10 }}>
+              <Tittel em="programmet.">Ingen emner i </Tittel>
+            </div>
           </div>
+          <StatusPill tone="warn">Ingen talenter</StatusPill>
         </div>
         <Kort>
           <TomTilstand
             icon="target"
             title="Ingen talenter i programmet ennå"
-            sub="Legg til spillere via Talent-modulen for å vurdere dem på de fem aksene."
+            sub="Legg til spillere via Discovery for å vurdere dem på de fem aksene."
           />
         </Kort>
+        <Link href="/admin/talent/discovery" style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="user-plus" full>
+            Finn talenter
+          </CTAPill>
+        </Link>
       </div>
     );
   }
@@ -129,7 +128,7 @@ export function AdminTalentRadarV2({ data }: { data: TalentRadarData }) {
     { l: "HCP", v: valgt.hcp != null ? kd(valgt.hcp) : null },
   ];
 
-  // ── Hode ────────────────────────────────────────────────────────
+  // ── Hode — B: status ───────────────────────────────────────────
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
@@ -137,14 +136,25 @@ export function AdminTalentRadarV2({ data }: { data: TalentRadarData }) {
         <div style={{ marginTop: 10 }}>
           <Tittel em={em}>{em ? fornavn : valgt.navn}</Tittel>
         </div>
+        <div className="hidden md:block" style={{ marginTop: 6 }}>
+          <Caps size={9}>{valgt.niva}{valgt.region ? ` · ${valgt.region}` : ""}</Caps>
+          {valgt.klubb && (
+            <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 3 }}>{valgt.klubb}</div>
+          )}
+        </div>
       </div>
-      <div className="hidden md:block" style={{ textAlign: "right" }}>
-        <Caps size={9}>{valgt.niva}{valgt.region ? ` · ${valgt.region}` : ""}</Caps>
-        {valgt.klubb && (
-          <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 3 }}>{valgt.klubb}</div>
-        )}
-      </div>
+      <StatusPill tone={valgt.antallVurdert > 0 ? "lime" : "warn"}>
+        {valgt.antallVurdert > 0 ? `${valgt.antallVurdert}/5 vurdert` : "Uvurdert"}
+      </StatusPill>
     </div>
+  );
+
+  const primaerCta = (
+    <Link href="/admin/talent/discovery" style={{ textDecoration: "none", display: "block" }}>
+      <CTAPill icon="user-plus" full>
+        Finn flere talenter
+      </CTAPill>
+    </Link>
   );
 
   // ── Spiller-velger (horisontal scroll — mobil + desktop) ────────
@@ -270,6 +280,7 @@ export function AdminTalentRadarV2({ data }: { data: TalentRadarData }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
+      {primaerCta}
       {velger}
       <StatStrip items={kpiItems} />
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,360px)_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
