@@ -63,15 +63,21 @@ Referanse: `~/Documents/Claude/inbox/agenticos-verdensklasse-inspirasjon.md`
 | ollama | Privat / rask |
 | agent-team | Grok → Claude → Gemini |
 
-## HQ-komponenter
+## HQ-komponenter (inntil AgencyOS coach — LÅST)
 
-| Del | Hvor |
-|-----|------|
-| AI-dispatch panel | `/admin/agencyos` · `AiDispatchPanelV2` |
+**AgenticOS lever inne i AgencyOS coach-flaten.** Ikke egen app. Ikke bare under Mer.
+
+| Del | Hvor coach ser det |
+|-----|-------------------|
+| AI-dispatch panel | **Hjem** `/admin/agencyos` · `AiDispatchPanelV2` · eyebrow «AgenticOS · AI-dispatch» |
+| Godkjenningskø | **Kø** `/admin/godkjenninger` · merket «AgenticOS · Kø · AgencyOS» |
+| Mer-gruppe | Første gruppe i Mer-skuffen: **AgenticOS** (Kø, Caddie, agenter, agent-team, brief) |
 | Bygg | `byggAiDispatch` i `ai-dispatch-build.ts` |
-| Godkjenninger | `/admin/godkjenninger` |
 | Agent-team | `/admin/agent-team` |
 | Agenter | `/admin/agents` + `src/lib/agents/*` |
+| Caddie | `/admin/agencyos/caddie` |
+
+Ved all AgencyOS-arbeid: behold AgenticOS synlig på Hjem + Kø.
 
 ## Dispatch-flyt
 

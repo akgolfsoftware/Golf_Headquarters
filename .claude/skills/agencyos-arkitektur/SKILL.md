@@ -41,7 +41,18 @@ Kanon: `docs/platform/AGENT-BRIEF.md`, `docs/MASTER-SKJERMPLAN.md`, `docs/design
 
 Chrome: `V2Shell` + `AGENCYOS_NAV` (`src/components/v2/shell.tsx`).
 
-## AI-laget (AgenticOS i produktet)
+## AI-laget (AgenticOS i produktet) — LÅST
+
+**AgenticOS er en del av AgencyOS coach-funksjon — ikke en egen app, ikke gjemt under «Mer» alene.**
+
+Låst plassering (PR #122, 2026-07-24):
+
+| Hvor coach ser det | Hva |
+|--------------------|-----|
+| **Hjem** `/admin/agencyos` | AI-dispatch-panel («AgenticOS · AI-dispatch»), «én ting NÅ» |
+| **Kø** `/admin/godkjenninger` | Godkjenn AI-forslag (PlanAction, CaddieDraft) — merket AgenticOS |
+| **Mer → gruppe «AgenticOS»** | Kø, Caddie, AI-agenter, Agent-team, Daglig brief |
+| Cockpit-eyebrow | `AgencyOS · AgenticOS` |
 
 ```
 Cron/agenter → PlanAction / CaddieDraft → /admin/godkjenninger
@@ -52,6 +63,8 @@ Agent-team: Grok → Claude → Gemini (/admin/agent-team)
 Skills: `agenticos`, `agenticos-cockpit`, `hq-godkjenning`, `playerhq-agents` (pipeline; kode i `src/lib/agents/`).
 
 **Regel:** AI foreslår, coach godkjenner, system utfører. Aldri stille auto-publiser plan.
+
+**Aldri:** fjern AgenticOS-branding fra Hjem/Kø, lag 7. primær-nav bare for AI, eller bygg AI-kø utenfor AgencyOS.
 
 ## Viktige filer
 
