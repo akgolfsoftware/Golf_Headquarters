@@ -50,7 +50,6 @@ import {
 } from "@/components/v2";
 import { PalettSok } from "@/components/v2/wb-composer";
 import { ForslagArk, NyOktArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput, type OktArkDrill } from "./WorkbenchV2Sheets";
-import { WorkbenchColdstart } from "./WorkbenchColdstart";
 import { WorkbenchAarsplan, PeriodePalett, WBPeriodeStrip } from "./WorkbenchAarsplan";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
 import { WBTidslinjeMobil, MobilFold } from "./WorkbenchV2Mobil";
@@ -1010,7 +1009,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
   const [nivaa, setNivaaState] = useState(
     zoomParam === "ar" ? (proMode ? "ar" : "uke") : zoomParam === "maned" || zoomParam === "dag" ? zoomParam : "uke",
   );
-  const [tab, setTab] = useState(proMode ? "maler" : "okter");
+  // Standardøkter først — DnD fra bibliotek er primær vei inn i tom uke.
+  const [tab, setTab] = useState("okter");
   const [sok, setSok] = useState("");
   const [nyOktApen, setNyOktApen] = useState(false);
   const [nyOktPrefill, setNyOktPrefill] = useState<{ title: string; durMin: number; akse?: AkseKey; drills?: OktArkDrill[] } | null>(null);
@@ -1046,9 +1046,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
   const [forslag, setForslag] = useState<{ suggestions: WeekSuggestion[]; usedAi: boolean } | null>(null);
   const [dupLoading, setDupLoading] = useState(false);
   const [merApen, setMerApen] = useState(false);
-  // Coldstart-utgang: bruker valgte «start med blanke ark» — hopp forbi
-  // guidet-start-skjermen og inn i den tomme tidslinja (Ny økt finnes der).
-  const [manuellStart, setManuellStart] = useState(false);
+  // v1: coldstart er tips-banner, ikke fullskjerm-vegg (tom uke = tom grid + DnD).
+  const [coldstartTipsLukket, setColdstartTipsLukket] = useState(false);
 
   // dnd-kit: PointerSensor dekker BÅDE mus og touch (Pointer Events) — samme
   // sensor for iPad/mobil som desktop, ingen egen touch-håndtering. distance:8
@@ -1534,54 +1533,13 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
     );
   }
 
-  // G7 · Coldstart (fasit): helt tom plan (ingen økter i uka, ingen timer,
-  // ingen sesongplan) → guidet start i stedet for tomt grid. Aldri blindgate.
+  // Tom uke: alltid tidslinje + bibliotek (DnD). Tips kan lukkes.
   const heltTom =
     alleEvents.length === 0 &&
     (data.axisHours ?? []).every((x) => x.hours === 0) &&
     (data.seasonBlocks ?? []).length === 0 &&
     pendingAdds.length === 0;
-  // 8c.2: eksplisitt årsplan-zoom vinner over coldstart — Anders' års-først-
-  // flyt: legg periodiseringen FØR første økt/mal (coldstart lenker hit).
-  if (heltTom && actions && nivaa !== "ar" && !manuellStart) {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-        <Caps>Workbench · {playerName}</Caps>
-        {melding && (
-          <Kort pad="10px 14px"><span style={{ fontFamily: T.ui, fontSize: 12.5, color: melding.tone === "down" ? T.down : T.fg }}>{melding.tekst}</span></Kort>
-        )}
-        <WorkbenchColdstart
-          data={data}
-          playerName={playerName}
-          onBrukMal={actions.applyTemplate ? async (templateId) => {
-            const res = await actions.applyTemplate!(templateId);
-            if (res.ok) {
-              // B40 §4: fasilitetskonsekvens — samme myke varsel som brukMalFraBibliotek/bekreftMal.
-              const tekst =
-                res.justeringer && res.justeringer.length > 0
-                  ? `Første uke er lagt inn fra malen. ${res.justeringer.join(" ")}`
-                  : "Første uke er lagt inn fra malen — juster den på tidslinja.";
-              setMelding({ tone: res.justeringer?.length ? "info" : "up", tekst });
-              router.refresh();
-            }
-            return res;
-          } : undefined}
-          onForeslaaUke={actions.suggestWeek ? handleSuggest : undefined}
-          foreslarUke={suggestLoading}
-          onAarsplan={actions.lagrePeriode ? () => setNivaa("ar") : undefined}
-          onManuelt={() => setManuellStart(true)}
-        />
-        {forslag && (
-          <ForslagArk
-            suggestions={forslag.suggestions}
-            usedAi={forslag.usedAi}
-            onLukk={() => setForslag(null)}
-            onBruk={handleBrukForslag}
-          />
-        )}
-      </div>
-    );
-  }
+  const visColdstartTips = heltTom && !!actions && nivaa !== "ar" && !coldstartTipsLukket;
 
   return (
     <DndContext
@@ -1592,6 +1550,53 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
       onDragCancel={() => setActiveDrag(null)}
     >
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap, position: "relative" }}>
+      {visColdstartTips && (
+        <Kort pad="12px 14px" style={{ border: `1px solid color-mix(in srgb, ${T.lime} 28%, ${T.border})` }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
+            <div style={{ flex: 1, minWidth: 200 }}>
+              <Caps size={9}>Kom i gang · {playerName.split(" ")[0]}</Caps>
+              <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.45 }}>
+                Uka er tom — dra en standardøkt fra biblioteket inn på tidslinja, eller trykk en tom luke.
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10 }}>
+                {actions?.applyTemplate && (data.planTemplates?.length ?? 0) > 0 && (
+                  <Knapp
+                    icon="layers"
+                    onClick={() => {
+                      const first = data.planTemplates![0];
+                      if (first) void brukMalFraBibliotek(first.id);
+                    }}
+                  >
+                    Bruk mal
+                  </Knapp>
+                )}
+                {actions?.suggestWeek && (
+                  <Knapp ghost icon="sparkles" onClick={() => void handleSuggest()} disabled={suggestLoading}>
+                    {suggestLoading ? "Foreslår…" : "Foreslå uke"}
+                  </Knapp>
+                )}
+                {actions?.lagrePeriode && (
+                  <Knapp ghost icon="calendar" onClick={() => setNivaa("ar")}>
+                    Årsplan først
+                  </Knapp>
+                )}
+                <Knapp ghost onClick={() => setNyOktApen(true)}>
+                  Ny økt
+                </Knapp>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setColdstartTipsLukket(true)}
+              className="v2-press"
+              aria-label="Lukk tips"
+              style={{ appearance: "none", cursor: "pointer", background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 8, color: T.mut, padding: 6 }}
+            >
+              <Icon name="x" size={14} />
+            </button>
+          </div>
+        </Kort>
+      )}
       {/* B-pakke: uke-status øverst (mobil + desktop) — matcher Plan B */}
       <div className="grid grid-cols-3" style={{ gap: 8 }}>
         {(

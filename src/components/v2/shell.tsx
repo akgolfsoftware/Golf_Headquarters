@@ -51,30 +51,31 @@ export const PLAYERHQ_NAV: V2NavItem[] = [
   { id: "meg", label: "Meg", icon: "user", href: "/portal/meg" },
 ];
 
-/** AgencyOS-navigasjon (coach). Full seksjonsstruktur — alle hovedflater. */
+/**
+ * AgencyOS primær-nav (v1 lansering): 5 tydelige jobber + shell «Mer»-skuff.
+ * Planlegge / Uka / Booking → redirects til Kalender eller Stall (se page.tsx).
+ * Økonomi, plan-maler, TrackMan osv. bor under Mer.
+ */
 export const AGENCYOS_NAV: V2NavItem[] = [
-  { id: "cockpit", label: "Cockpit", icon: "home", href: "/admin/agencyos" },
-  { id: "innboks", label: "Innboks", icon: "inbox", href: "/admin/innboks" },
+  { id: "cockpit", label: "Hjem", icon: "home", href: "/admin/agencyos" },
   { id: "spillere", label: "Stall", icon: "users", href: "/admin/spillere" },
-  { id: "planlegge", label: "Planlegge", icon: "target", href: "/admin/planlegge" },
   { id: "kalender", label: "Kalender", icon: "calendar", href: "/admin/kalender" },
-  { id: "bookinger", label: "Booking", icon: "calendar-check", href: "/admin/bookinger" },
-  { id: "uka", label: "Uka", icon: "columns-3", href: "/admin/agencyos/uka" },
+  { id: "innboks", label: "Kø", icon: "inbox", href: "/admin/godkjenninger" },
   { id: "innsikt", label: "Innsikt", icon: "bar-chart", href: "/admin/analyse" },
-  { id: "okonomi", label: "Økonomi", icon: "credit-card", href: "/admin/agencyos/okonomi", adminOnly: true },
 ];
 
-/** AgencyOS «Mer»-meny — lang hale gruppert. Alt en coach trenger, nåbart. */
+/** AgencyOS «Mer» — alt som ikke er primærjobb (v1: booking/planer/økonomi hit). */
 export const AGENCYOS_MER: V2NavGruppe[] = [
   {
     label: "Kommunikasjon",
     items: [
+      { id: "godkjenninger", label: "Godkjenninger (kø)", icon: "badge-check", href: "/admin/godkjenninger" },
+      { id: "meldinger", label: "Meldinger", icon: "inbox", href: "/admin/innboks" },
       { id: "varsler", label: "Varsler", icon: "bell", href: "/admin/varsler" },
-      { id: "innboks-epost", label: "E-post (post@)", icon: "mail", href: "/admin/innboks-epost", adminOnly: true },
-      { id: "godkjenninger", label: "Godkjenninger", icon: "badge-check", href: "/admin/godkjenninger" },
       { id: "handlingssenter", label: "Handlingssenter", icon: "check-check", href: "/admin/handlingssenter" },
       { id: "brief", label: "Daglig brief", icon: "file-text", href: "/admin/brief" },
       { id: "queue", label: "Oppfølgingskø", icon: "list", href: "/admin/queue" },
+      { id: "innboks-epost", label: "E-post (post@)", icon: "mail", href: "/admin/innboks-epost", adminOnly: true },
     ],
   },
   {
@@ -84,6 +85,15 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
       { id: "spillere-ny", label: "Ny spiller", icon: "plus", href: "/admin/spillere/ny" },
       { id: "talent-radar", label: "Talent-radar", icon: "star", href: "/admin/talent/radar" },
       { id: "talent-sammenligning", label: "Talent-sammenligning", icon: "crosshair", href: "/admin/talent/sammenligning" },
+    ],
+  },
+  {
+    label: "Tid og booking",
+    items: [
+      { id: "bookinger", label: "Bookinger (liste)", icon: "calendar-check", href: "/admin/bookinger" },
+      { id: "availability", label: "Tilgjengelighet", icon: "clock", href: "/admin/availability" },
+      { id: "uka", label: "Uka (tavle)", icon: "columns-3", href: "/admin/agencyos/uka" },
+      { id: "planlegge", label: "Velg spiller → plan", icon: "target", href: "/admin/planlegge" },
     ],
   },
   {
@@ -115,13 +125,13 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
   {
     label: "Drift",
     items: [
+      { id: "okonomi", label: "Økonomi", icon: "credit-card", href: "/admin/agencyos/okonomi", adminOnly: true },
       { id: "workspace", label: "Workspace", icon: "layout-dashboard", href: "/admin/workspace", adminOnly: true },
       { id: "marketing", label: "Marketing", icon: "megaphone", href: "/admin/marketing", adminOnly: true },
       { id: "caddie", label: "Caddie (AI)", icon: "message-circle", href: "/admin/agencyos/caddie", adminOnly: true },
       { id: "agents", label: "AI-agenter", icon: "bot", href: "/admin/agents" },
       { id: "team", label: "Team", icon: "users", href: "/admin/team" },
       { id: "email-templates", label: "E-postmaler", icon: "mail-check", href: "/admin/email-templates" },
-      { id: "availability", label: "Tilgjengelighet", icon: "clock", href: "/admin/availability" },
       { id: "kalender-synk", label: "Kalender-synk (Google)", icon: "refresh-cw", href: "/admin/settings/calendar" },
       { id: "min-profil", label: "Min coach-profil", icon: "id-card", href: "/admin/profile" },
       { id: "spiller-profil", label: "Min spillerprofil", icon: "user", href: "/portal" },
@@ -538,7 +548,8 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
     const gruppeTilSeksjon: Record<string, string> = {
       Kommunikasjon: "innboks",
       Stall: "spillere",
-      Planlegging: "planlegge",
+      Planlegging: "kalender",
+      "Tid og booking": "kalender",
       Innsikt: "innsikt",
       Drift: "cockpit",
     };
