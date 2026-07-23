@@ -7,8 +7,10 @@
 |---|---|---|
 | Mobil | 390 | PlayerHQ, Forelder |
 | iPad | 834 | Coach i felt, Forelder |
-| Desktop | 1280 | PlayerHQ desktop, Marketing |
-| AgencyOS full | 1680 | Coach kontrolltårn |
+| Desktop wireframe | 1280 | Layout-skisser, Marketing lesebredde |
+| App desktop (live) | **full flate etter sidemeny** | PlayerHQ + AgencyOS — ingen 1120/1680-midtsone |
+
+**Låst 2026-07-23:** `V2Shell` bruker `width: 100%` etter ikon-rail. Nested `max-w-[1200–1440]` i app-skjermer skal unngås (unntak: wizard-tekstfelt, dialoger, chat-bobler).
 
 ## De 8 familiene
 

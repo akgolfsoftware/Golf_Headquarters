@@ -483,7 +483,7 @@ export function PlayerWorkbench({ data }: { data: PlayerWorkbenchData }) {
   const hasAnySession = data.days.some((d) => d.sessions.length > 0);
 
   return (
-    <div className="mx-auto flex h-full max-w-[430px] flex-col bg-background">
+    <div className="mx-auto flex h-full w-full max-w-[430px] flex-col bg-background md:max-w-none">
       {/* TOPBAR */}
       <header className="sticky top-0 z-50 border-b border-border bg-background pt-[env(safe-area-inset-top)]">
         <div className="flex items-center gap-2 px-4 py-3">

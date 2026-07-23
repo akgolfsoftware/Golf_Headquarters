@@ -686,7 +686,7 @@ export function DailyBrief({
   kpis,
 }: DailyBriefProps) {
   return (
-    <div className="mx-auto max-w-[1200px]">
+    <div className="w-full">
       {/* header */}
       <div className="mb-3 flex items-end justify-between gap-4">
         <h1 className="font-display text-[26px] font-bold leading-tight tracking-[-0.02em] text-foreground">

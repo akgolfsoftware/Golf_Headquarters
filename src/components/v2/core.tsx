@@ -785,7 +785,7 @@ export function Skjerm({ aktiv, mobile, children }: SkjermProps) {
       <div style={{ position: "relative", display: "flex", width: "100%" }}>
         <Sidebar aktiv={aktiv} />
         <div style={{ flex: 1, minWidth: 0, padding: "28px 32px 36px" }}>
-          <div style={{ maxWidth: T.maxw, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>{children}</div>
+          <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: T.gap }}>{children}</div>
         </div>
       </div>
     </div>

@@ -627,7 +627,7 @@ export function Bookinger({ data }: { data: BookingerData }) {
   const empty = data.headMeta.length === 0;
 
   return (
-    <div className="mx-auto w-full max-w-[1240px]">
+    <div className="w-full">
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
         {/* TITTELRAD */}
         <div className="flex flex-wrap items-baseline gap-3 px-5 pb-3 pt-4">

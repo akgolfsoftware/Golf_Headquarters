@@ -29,6 +29,7 @@ import { useEffect } from "react";
 import { planSessionStartHref, v2SessionStartHref, type V2OktUiStatus } from "@/lib/portal/session-hrefs";
 import type { LFase } from "@/generated/prisma/client";
 import { FASE_STEG_KEYS, lFaseTilSteg, stegTilLFase, faseLabel, type FaseSteg } from "@/lib/ak-formel-visning";
+import { gridTimeSlots } from "@/lib/calendar/notion-grid";
 
 const DAGER = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
 
@@ -503,7 +504,20 @@ function OktArkSkjema({
             </Felt>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               <Felt label="Klokkeslett">
-                <input type="time" value={tid} onChange={(e) => setTid(e.target.value)} style={inputStyle} />
+                {/* Notion-grid 05:00–23:00 i 30-min slots — samme fasit som tidslinja */}
+                <select
+                  value={tid}
+                  onChange={(e) => setTid(e.target.value)}
+                  aria-label="Klokkeslett"
+                  style={inputStyle}
+                >
+                  {!gridTimeSlots().includes(tid) && (
+                    <option value={tid}>{tid}</option>
+                  )}
+                  {gridTimeSlots().map((slot) => (
+                    <option key={slot} value={slot}>{slot}</option>
+                  ))}
+                </select>
               </Felt>
               <Felt label="Varighet (min)">
                 <input type="number" min={5} max={480} step={5} value={durMin} onChange={(e) => setDurMin(Number(e.target.value) || 60)} style={inputStyle} />

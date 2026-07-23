@@ -768,7 +768,7 @@ export function Caddie({
   activityHref = "/admin/agencyos/caddie/aktivitet",
 }: CaddieProps) {
   return (
-    <div className="mx-auto max-w-[1200px]">
+    <div className="w-full">
       {/* header */}
       <div className="mb-6">
         <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-muted-foreground">

@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
  */
 
 export function AgPage({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn("mx-auto max-w-[1320px] px-4 pb-14 pt-5 md:px-7 md:pt-6", className)}>{children}</div>;
+  return <div className={cn("w-full px-4 pb-14 pt-5 md:px-7 md:pt-6", className)}>{children}</div>;
 }
 
 export function AgPageHead({

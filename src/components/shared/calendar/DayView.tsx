@@ -75,7 +75,7 @@ export function DayView({ dato, okter, forventet }: Props) {
 
   return (
     <div className="h-full overflow-auto bg-background">
-      <div className="mx-auto flex max-w-4xl flex-col gap-8 p-8">
+      <div className="flex w-full flex-col gap-8 p-6 md:p-8">
         {/* Hero */}
         <header className="flex flex-col gap-2 border-b border-border pb-6">
           <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">

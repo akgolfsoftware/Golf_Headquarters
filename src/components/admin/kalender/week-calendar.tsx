@@ -28,8 +28,9 @@ import {
 import { cn } from "@/lib/utils";
 
 // 07:00–18:00 = 12 timerader. 48px per time (8pt-grid).
-const START_HOUR = 7;
-const END_HOUR = 18;
+// Notion Calendar-fasit — se src/lib/calendar/notion-grid.ts
+const START_HOUR = 5;
+const END_HOUR = 23;
 const ROW_PX = 48;
 const HOURS = Array.from({ length: END_HOUR - START_HOUR + 1 }, (_, i) => START_HOUR + i);
 const BODY_PX = (END_HOUR - START_HOUR) * ROW_PX; // 12 * 48 = 576
@@ -369,7 +370,7 @@ function TopAction({ icon: Icon, label, href }: { icon: LucideIcon; label: strin
 // ── Hovedkomponent ──────────────────────────────────────────────
 export function WeekCalendar(props: WeekCalendarProps) {
   return (
-    <div className="mx-auto max-w-[1280px] px-6 py-6 lg:px-8">
+    <div className="w-full px-6 py-6 lg:px-8">
       {/* H1-rad: tittel + toggle + Ny booking */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="font-display text-[26px] font-bold leading-tight tracking-[-0.02em] text-foreground">

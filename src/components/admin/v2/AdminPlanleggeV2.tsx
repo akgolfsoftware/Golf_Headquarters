@@ -5,7 +5,7 @@
  * T.* only. Mørk AgencyOS. Hver rad = ett trykk til Workbench.
  */
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
   Caps,
@@ -35,12 +35,16 @@ export interface AdminPlanleggeData {
 
 const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
 
-/** Workbench-adressen for en spiller — samme mål som den ekte redirecten. */
-const workbenchHref = (id: string) => `/admin/spillere/${id}/workbench`;
-
 export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { spillere } = data;
+  // HurtigOpprett sender ?start= — følg med inn i Workbench så Ny økt prefylles.
+  const startQ = searchParams.get("start");
+  const workbenchHref = (id: string) => {
+    const base = `/admin/spillere/${id}/workbench`;
+    return startQ ? `${base}?start=${encodeURIComponent(startQ)}` : base;
+  };
 
   const totalt = spillere.length;
   const medAktiv = spillere.filter((s) => s.aktivePlaner > 0).length;
