@@ -9,14 +9,13 @@
  * Tre valg:
  *  - «Ny booking» → /admin/bookinger/ny?start=<dato>T<klokkeslett>
  *    (wizarden leser ?start= og prefyller Dato & tid).
- *  - «Ny økt» → /admin/planlegge (låst beslutning: Planlegge er ETT
- *    trykkpunkt inn i Workbench). Planlegge/Workbench har ingen
- *    ?start=-støtte ennå — lenken bærer derfor ingen param (kjent gap).
+ *  - «Ny økt» → /admin/planlegge?start=YYYY-MM-DDTHH:mm (prefyller øktplanlegger).
  *  - «Ny hendelse» (I3) → /admin/kalender/hendelse/ny?start=<dato>T<klokkeslett>
  *    — ferie/stengt anlegg/møte som blokkerer booking i tidsrommet.
  */
 
 import Link from "next/link";
+import { foreslaGridTid, tilStartParam } from "@/lib/calendar/notion-grid";
 import { T } from "@/lib/v2/tokens";
 import { Caps, Knapp } from "./core";
 import { Icon } from "./icon";
@@ -30,16 +29,11 @@ export interface HurtigOpprettProps {
 }
 
 /**
- * Foreslå klokkeslett for en tom luke: neste hele/halve slot etter forrige
- * aktivitet (start «HH:MM» + varighet), ellers 09:00. Klemmes til 06:00–21:00.
+ * Foreslå klokkeslett for en tom luke: neste 30-min slot etter forrige
+ * aktivitet. Klemmes til Notion-grid 05:00–23:00.
  */
 export function foreslaTid(sisteStartKl?: string, varighetMin = 60): string {
-  if (!sisteStartKl) return "09:00";
-  const [h, m] = sisteStartKl.split(":").map(Number);
-  if (!Number.isFinite(h) || !Number.isFinite(m)) return "09:00";
-  const min = Math.max(6 * 60, Math.min(21 * 60, h * 60 + m + varighetMin));
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${pad(Math.floor(min / 60))}:${pad(min % 60)}`;
+  return foreslaGridTid(sisteStartKl, varighetMin);
 }
 
 function Valg({ href, icon, tittel, sub }: { href: string; icon: string; tittel: string; sub: string }) {
@@ -90,6 +84,7 @@ export function HurtigOpprett({ dato, klokkeslett, onLukk }: HurtigOpprettProps)
   const datoLabel = Number.isNaN(d.getTime())
     ? dato
     : new Intl.DateTimeFormat("nb-NO", { weekday: "long", day: "numeric", month: "long" }).format(d);
+  const startParam = tilStartParam(dato, klokkeslett);
 
   return (
     <div
@@ -154,10 +149,10 @@ export function HurtigOpprett({ dato, klokkeslett, onLukk }: HurtigOpprettProps)
             sub="Veiviser med dato og tid ferdig utfylt"
           />
           <Valg
-            href="/admin/planlegge"
+            href={`/admin/planlegge?start=${encodeURIComponent(startParam)}`}
             icon="plus"
             tittel="Ny økt"
-            sub="Planlegg i Workbench — velg spiller først"
+            sub={`${datoLabel} · ${klokkeslett} — åpner planlegger med tid ferdig`}
           />
           <Valg
             href={`/admin/kalender/hendelse/ny?start=${dato}T${klokkeslett}`}

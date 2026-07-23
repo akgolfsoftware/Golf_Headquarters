@@ -593,7 +593,7 @@ function RegionPanel({ data }: { data: CompareData["region"] }) {
 // ── Hoved-komponent ─────────────────────────────────────────────
 export function TalentSammenligning({ data }: { data: CompareData }) {
   return (
-    <div className="mx-auto w-full max-w-[1240px]">
+    <div className="w-full">
       {/* Side-header */}
       <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>

@@ -1,18 +1,30 @@
 "use client";
 
-// WeekView — 7-dagers timegrid (06:00–22:00) med drag-and-drop-stubber.
+// WeekView — 7-dagers timegrid (Notion Calendar-fasit: 05:00–23:00, 30 min).
 //
 // - Første kolonne er tid (64px)
-// - 56px per time
+// - PIXEL_PER_HOUR fra notion-grid
 // - Økter rendres som blokker proporsjonale med varighet
-// - LIVE-økt: 2px solid lime border + pulserende prikk + NÅ-badge
-// - Today-kolonne: mørkere grønn bakgrunn
+// - LIVE-økt: ring + NÅ-badge
+// - Today-kolonne: tint + nå-linje
+// - Dobbeltklikk / klikk tom luke → onOpprett med avrundet 30-min slot
 
 import { useEffect, useMemo, useState } from "react";
 import { addDays, format, isSameDay, startOfWeek } from "date-fns";
 import { nb } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import type { PyramidArea, PracticeType } from "@/generated/prisma/client";
+import {
+  GRID_BODY_PX,
+  GRID_END_HOUR,
+  GRID_SLOT_MIN,
+  GRID_START_HOUR,
+  PIXEL_PER_HOUR,
+  WEEK_STARTS_ON,
+  dateToPx,
+  durationToPx,
+  gridHours,
+} from "@/lib/calendar/notion-grid";
 import { PraksistypeBadge } from "./PraksistypeBadge";
 
 export type WeekOkt = {
@@ -32,10 +44,6 @@ type Props = {
   onOpprett?: (start: Date) => void;
 };
 
-const TIME_START = 6;
-const TIME_SLUTT = 22;
-const PIXEL_PER_TIME = 56;
-
 const PYRAMIDE_BG: Record<PyramidArea, string> = {
   FYS: "bg-pyr-fys/20 border-l-pyr-fys",
   TEK: "bg-pyr-tek/20 border-l-pyr-tek",
@@ -44,13 +52,8 @@ const PYRAMIDE_BG: Record<PyramidArea, string> = {
   TURN: "bg-pyr-turn/25 border-l-pyr-turn",
 };
 
-function tidsPx(dato: Date): number {
-  const t = dato.getHours() + dato.getMinutes() / 60;
-  return Math.max(0, (t - TIME_START) * PIXEL_PER_TIME);
-}
-
 function varighetPx(start: Date, slutt: Date): number {
-  return Math.max(20, ((slutt.getTime() - start.getTime()) / 3_600_000) * PIXEL_PER_TIME);
+  return durationToPx((slutt.getTime() - start.getTime()) / 60_000);
 }
 
 function erLive(start: Date, slutt: Date): boolean {
@@ -58,22 +61,38 @@ function erLive(start: Date, slutt: Date): boolean {
   return naa >= start && naa <= slutt;
 }
 
+/** Y → Date med 30-min avrunding innenfor grid. */
+function yTilDato(dato: Date, y: number): Date {
+  const time = GRID_START_HOUR + y / PIXEL_PER_HOUR;
+  const totalMin = Math.round((time * 60) / GRID_SLOT_MIN) * GRID_SLOT_MIN;
+  const clamped = Math.max(GRID_START_HOUR * 60, Math.min(GRID_END_HOUR * 60, totalMin));
+  const ny = new Date(dato);
+  ny.setHours(Math.floor(clamped / 60), clamped % 60, 0, 0);
+  return ny;
+}
+
 export function WeekView({ uke, okter, onFlyttOkt, onValgOkt, onOpprett }: Props) {
   const [draOkt, setDraOkt] = useState<string | null>(null);
   const [tikk, setTikk] = useState(0);
-  // Re-render hvert minutt for live-indikator
   useEffect(() => {
     const i = setInterval(() => setTikk((t) => t + 1), 60_000);
     return () => clearInterval(i);
   }, []);
 
-  const ukeStart = useMemo(() => startOfWeek(uke, { weekStartsOn: 1 }), [uke]);
-  const dager = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(ukeStart, i)), [ukeStart]);
-  const timer = useMemo(
-    () => Array.from({ length: TIME_SLUTT - TIME_START + 1 }, (_, i) => TIME_START + i),
-    [],
+  const ukeStart = useMemo(
+    () => startOfWeek(uke, { weekStartsOn: WEEK_STARTS_ON }),
+    [uke],
   );
+  const dager = useMemo(
+    () => Array.from({ length: 7 }, (_, i) => addDays(ukeStart, i)),
+    [ukeStart],
+  );
+  const timer = useMemo(() => gridHours(), []);
   const idag = new Date();
+  const nowMin = idag.getHours() * 60 + idag.getMinutes();
+  const nowInGrid =
+    nowMin >= GRID_START_HOUR * 60 && nowMin <= GRID_END_HOUR * 60;
+  const nowTop = ((nowMin - GRID_START_HOUR * 60) / 60) * PIXEL_PER_HOUR;
 
   function handleDrop(e: React.DragEvent<HTMLDivElement>, dato: Date) {
     e.preventDefault();
@@ -81,16 +100,12 @@ export function WeekView({ uke, okter, onFlyttOkt, onValgOkt, onOpprett }: Props
     if (!oktId) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const y = e.clientY - rect.top;
-    const time = TIME_START + y / PIXEL_PER_TIME;
-    const t = Math.max(TIME_START, Math.min(TIME_SLUTT, time));
-    const ny = new Date(dato);
-    ny.setHours(Math.floor(t), Math.round((t % 1) * 60), 0, 0);
-    onFlyttOkt?.(oktId, ny);
+    onFlyttOkt?.(oktId, yTilDato(dato, y));
     setDraOkt(null);
   }
 
   return (
-    <div className="flex h-full flex-col overflow-auto bg-background" data-tikk={tikk}>
+    <div className="flex h-full w-full flex-col overflow-auto bg-background" data-tikk={tikk}>
       {/* Dags-header */}
       <div
         className="sticky top-0 z-10 grid border-b border-border bg-card"
@@ -118,13 +133,12 @@ export function WeekView({ uke, okter, onFlyttOkt, onValgOkt, onOpprett }: Props
 
       {/* Time-grid */}
       <div className="relative grid flex-1" style={{ gridTemplateColumns: "64px repeat(7, 1fr)" }}>
-        {/* Tids-kolonne */}
         <div className="border-r border-border bg-card">
           {timer.map((t) => (
             <div
               key={t}
-              className="border-b border-border/50 px-2 pt-1 text-right text-[10px] font-mono tabular-nums text-muted-foreground"
-              style={{ height: `${PIXEL_PER_TIME}px` }}
+              className="border-b border-border/50 px-2 pt-1 text-right font-mono text-[10px] tabular-nums text-muted-foreground"
+              style={{ height: `${PIXEL_PER_HOUR}px` }}
             >
               {String(t).padStart(2, "0")}:00
             </div>
@@ -143,25 +157,41 @@ export function WeekView({ uke, okter, onFlyttOkt, onValgOkt, onOpprett }: Props
               onDoubleClick={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect();
                 const y = e.clientY - rect.top;
-                const time = TIME_START + y / PIXEL_PER_TIME;
-                const ny = new Date(dato);
-                ny.setHours(Math.floor(time), 0, 0, 0);
-                onOpprett?.(ny);
+                onOpprett?.(yTilDato(dato, y));
               }}
-              style={{ height: `${PIXEL_PER_TIME * timer.length}px` }}
+              style={{ height: `${GRID_BODY_PX + PIXEL_PER_HOUR}px` }}
             >
-              {/* Time-linjer */}
               {timer.map((t) => (
-                <div
-                  key={t}
-                  className="absolute left-0 right-0 border-b border-border/30"
-                  style={{ top: `${(t - TIME_START) * PIXEL_PER_TIME}px` }}
-                />
+                <div key={t}>
+                  <div
+                    className="absolute left-0 right-0 border-b border-border/30"
+                    style={{ top: `${(t - GRID_START_HOUR) * PIXEL_PER_HOUR}px` }}
+                  />
+                  {/* Halvtime-stiplet */}
+                  {t < GRID_END_HOUR && (
+                    <div
+                      className="absolute left-0 right-0 border-b border-dashed border-border/20"
+                      style={{
+                        top: `${(t - GRID_START_HOUR) * PIXEL_PER_HOUR + PIXEL_PER_HOUR / 2}px`,
+                      }}
+                    />
+                  )}
+                </div>
               ))}
 
-              {/* Økter */}
+              {erIdag && nowInGrid && (
+                <div
+                  className="pointer-events-none absolute left-0 right-0 z-20 flex items-center"
+                  style={{ top: `${nowTop}px` }}
+                  aria-hidden
+                >
+                  <span className="h-2 w-2 shrink-0 rounded-full bg-accent" />
+                  <span className="h-px flex-1 bg-accent" />
+                </div>
+              )}
+
               {dagensOkter.map((o) => {
-                const top = tidsPx(o.startTime);
+                const top = dateToPx(o.startTime);
                 const h = varighetPx(o.startTime, o.endTime);
                 const live = erLive(o.startTime, o.endTime);
                 return (

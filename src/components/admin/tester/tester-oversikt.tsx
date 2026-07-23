@@ -318,7 +318,7 @@ export function TesterOversikt({ data }: { data: TesterOversiktData }) {
   const totalCells = data.meta.players * data.meta.tests;
 
   return (
-    <div className="mx-auto w-full max-w-[1240px]">
+    <div className="w-full">
       {/* Section eyebrow */}
       <div className="mb-3.5 flex items-center gap-2">
         <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">

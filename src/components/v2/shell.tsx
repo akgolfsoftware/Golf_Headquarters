@@ -505,15 +505,14 @@ function AgencyBunnNav({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
 
 /**
  * V2Shell — dark-scope app-ramme for v2-flater. Desktop: IkonRail + fluid innhold
- * (maks T.maxw; AgencyOS får full kontrolltårn-bredde). Mobil: innhold + fast
+ * (full bredde etter rail — ingen midtsone 1120/1680). Mobil: innhold + fast
  * BunnNav. Innholdet stables med T.gap — skjermkomponentene rendrer bare
  * stacken, shellen leverer chrome.
  */
 export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan", avatarUrl, vekslerData, children }: V2ShellProps) {
-  // AgencyOS: auto-koble Mer-menyen og full desktop-bredde uten å måtte endre
-  // ~50 kallsteder (alle importerer samme AGENCYOS_NAV-konstant → ref-likhet).
+  // AgencyOS: auto-koble Mer-menyen uten å måtte endre ~50 kallsteder
+  // (alle importerer samme AGENCYOS_NAV-konstant → ref-likhet).
   const erAgency = nav === AGENCYOS_NAV;
-  const maksBredde = erAgency ? 1680 : T.maxw;
 
   // COACH ser ikke adminOnly-punkter (Økonomi, Workspace, E-post m.fl.).
   // Ren UI-skjuling — sidene bak er alltid server-gated.
@@ -615,7 +614,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
         className="px-4 md:px-8 pb-[calc(96px+env(safe-area-inset-bottom))] md:pb-9"
         style={{ flex: 1, minWidth: 0, paddingTop: "calc(24px + env(safe-area-inset-top))" }}
       >
-        <div style={{ maxWidth: maksBredde, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: T.gap }}>
           {/* D2: kontekst-veksler i toppraden — kun AgencyOS og kun når data er
               gitt (usatt prop ⇒ skjult ⇒ ingen kallsted må endres). */}
           {erAgency && vekslerData && <SpillerVeksler data={vekslerData} />}

@@ -420,7 +420,7 @@ export function V2Laster({ variant = "kort" }: V2LasterProps) {
       {/* Rail-silhuett — matcher V2Shell-railen så overgangen er sømløs. */}
       <div className="hidden md:block" style={{ width: 60, flex: "none", borderRight: `1px solid ${T.border}` }} />
       <main className="px-4 md:px-8 pt-6 pb-24 md:pb-9" style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ maxWidth: 1680, margin: "0 auto" }}>{inner}</div>
+        <div style={{ width: "100%" }}>{inner}</div>
       </main>
     </div>
   );

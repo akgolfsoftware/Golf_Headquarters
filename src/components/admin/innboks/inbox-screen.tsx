@@ -87,7 +87,7 @@ export function InboxScreen({
   // Tom innboks — ingen tråder i det hele tatt.
   if (threadCount === 0) {
     return (
-      <div className="mx-auto max-w-[1200px]">
+      <div className="w-full">
         <Header unreadCount={0} />
         <InboxEmpty />
       </div>
@@ -95,7 +95,7 @@ export function InboxScreen({
   }
 
   return (
-    <div className="mx-auto max-w-[1200px]">
+    <div className="w-full">
       <Header unreadCount={unreadCount} />
 
       <SplitInboxShell

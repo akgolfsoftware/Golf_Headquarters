@@ -605,7 +605,7 @@ function LastComm({ comms, id }: { comms: SpillerComm[]; id: string }) {
 // ── DetailShell (eksport) ───────────────────────────────────────
 export function SpillerDetalj({ data }: { data: SpillerDetaljData }) {
   return (
-    <div className="mx-auto flex max-w-[1180px] flex-col gap-5">
+    <div className="flex w-full flex-col gap-5">
       <DetailHeader data={data} />
       <TabRow id={data.id} />
 

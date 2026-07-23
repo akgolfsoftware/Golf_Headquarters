@@ -1016,6 +1016,27 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
   const [nyOktPrefill, setNyOktPrefill] = useState<{ title: string; durMin: number; akse?: AkseKey; drills?: OktArkDrill[] } | null>(null);
   // I1: trykk på tom luke i tidslinja → Ny økt med dag + klokkeslett prefylt.
   const [nyOktSted, setNyOktSted] = useState<{ dayIndex: number; tid: string } | null>(null);
+  // HurtigOpprett / kalender: ?start=YYYY-MM-DDTHH:mm — deriveres fra URL (ingen setState i effect).
+  const [startPrefillLukket, setStartPrefillLukket] = useState(false);
+  const startFraUrl = useMemo(() => {
+    if (startPrefillLukket || !data?.weekStartISO) return null;
+    const raw = searchParams.get("start");
+    if (!raw) return null;
+    const m = raw.match(/^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})/);
+    if (!m) return null;
+    const [, datoIso, hh, mm] = m;
+    const target = new Date(`${datoIso}T12:00:00`);
+    if (Number.isNaN(target.getTime())) return null;
+    const weekStart = new Date(data.weekStartISO);
+    const mandag = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate());
+    const maal = new Date(target.getFullYear(), target.getMonth(), target.getDate());
+    const dayDiff = Math.round((maal.getTime() - mandag.getTime()) / 86_400_000);
+    const dayIndex = Math.max(0, Math.min(6, dayDiff));
+    const min = Number(hh) * 60 + Number(mm);
+    const snappet = Math.round(min / 30) * 30;
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return { dayIndex, tid: `${pad(Math.floor(snappet / 60))}:${pad(snappet % 60)}` };
+  }, [searchParams, data, startPrefillLukket]);
   // Mal dratt til canvas → bekreftelses-popup (Anders-logikken).
   const [malBekreft, setMalBekreft] = useState<{ templateId: string; name: string; sessionCount: number; varighetUker: number } | null>(null);
   const [malLegger, setMalLegger] = useState(false);
@@ -1474,6 +1495,13 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
     setNyOktApen(false);
     setNyOktPrefill(null);
     setNyOktSted(null);
+    setStartPrefillLukket(true);
+    if (searchParams.get("start")) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("start");
+      const q = params.toString();
+      router.replace(q ? `${pathname}?${q}` : pathname, { scroll: false });
+    }
     router.refresh();
     return res;
   };
@@ -2022,15 +2050,26 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
         />
       )}
 
-      {nyOktApen && actions && (
+      {(nyOktApen || startFraUrl) && actions && (
         <NyOktArk
-          defaultDayIndex={nyOktSted?.dayIndex ?? (aktivDag ? dager.indexOf(aktivDag) : 0)}
-          defaultTid={nyOktSted?.tid}
+          defaultDayIndex={nyOktSted?.dayIndex ?? startFraUrl?.dayIndex ?? (aktivDag ? dager.indexOf(aktivDag) : 0)}
+          defaultTid={nyOktSted?.tid ?? startFraUrl?.tid}
           defaultTitle={nyOktPrefill?.title}
           defaultAkse={nyOktPrefill?.akse}
           defaultDurMin={nyOktPrefill?.durMin}
           defaultDrills={nyOktPrefill?.drills}
-          onLukk={() => { setNyOktApen(false); setNyOktPrefill(null); setNyOktSted(null); }}
+          onLukk={() => {
+            setNyOktApen(false);
+            setNyOktPrefill(null);
+            setNyOktSted(null);
+            setStartPrefillLukket(true);
+            if (searchParams.get("start")) {
+              const params = new URLSearchParams(searchParams.toString());
+              params.delete("start");
+              const q = params.toString();
+              router.replace(q ? `${pathname}?${q}` : pathname, { scroll: false });
+            }
+          }}
           onOpprett={handleCreateSession}
           searchTeknisk={actions.searchTeknisk}
         />

@@ -149,10 +149,11 @@ const TABS = [
 ] as const;
 
 // Uke-grid: timer 07–21 (15 rader), 1 t = 40px.
-const GRID_START_HOUR = 7;
-const GRID_END_HOUR = 21;
+// Notion Calendar-fasit — se src/lib/calendar/notion-grid.ts
+const GRID_START_HOUR = 5;
+const GRID_END_HOUR = 23;
 const HOUR_PX = 40;
-const GRID_HEIGHT = (GRID_END_HOUR - GRID_START_HOUR) * HOUR_PX; // 560
+const GRID_HEIGHT = (GRID_END_HOUR - GRID_START_HOUR) * HOUR_PX;
 
 function monoLabel(text: string) {
   return (
@@ -781,7 +782,7 @@ export function CoachWorkbench(props: CoachWorkbenchProps) {
   } = props;
 
   return (
-    <div className="mx-auto max-w-[1440px]">
+    <div className="w-full">
       {/* Spiller-context-bar */}
       <div className="mb-4 flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3">
         <Avatar src={playerAvatarUrl ?? undefined} name={playerName} size="md" />
