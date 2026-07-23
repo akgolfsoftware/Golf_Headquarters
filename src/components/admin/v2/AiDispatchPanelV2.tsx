@@ -310,7 +310,7 @@ export function AiDispatchPanelV2({ data }: { data: AiDispatchData }) {
 
   return (
     <Kort
-      eyebrow="AI-dispatch"
+      eyebrow="AgenticOS · AI-dispatch"
       action={
         harKø ? (
           <StatusPill tone="warn">
@@ -397,8 +397,8 @@ export function AiDispatchPanelV2({ data }: { data: AiDispatchData }) {
       {data.rader.length === 0 ? (
         <TomTilstand
           icon="bot"
-          title="Ingen AI-oppdrag"
-          sub="Når agenter lager forslag, dukker de opp her."
+          title="AgenticOS er klar"
+          sub="Når AI lager forslag (plan, Caddie, team), dukker de opp her — du godkjenner i Kø."
         />
       ) : (
         <>
@@ -458,7 +458,7 @@ export function AiDispatchPanelV2({ data }: { data: AiDispatchData }) {
       >
         <Link href="/admin/godkjenninger" style={{ textDecoration: "none" }}>
           <CTAPill ghost icon="check">
-            Godkjenninger
+            Åpne Kø
             {t.planActions > 0 ? ` (${t.planActions})` : ""}
           </CTAPill>
         </Link>
@@ -472,7 +472,7 @@ export function AiDispatchPanelV2({ data }: { data: AiDispatchData }) {
             Agenter
           </CTAPill>
         </Link>
-        <Link href="/admin/caddie" style={{ textDecoration: "none" }}>
+        <Link href="/admin/agencyos/caddie" style={{ textDecoration: "none" }}>
           <CTAPill ghost icon="message-square">
             Caddie
             {t.caddieDrafts > 0 ? ` (${t.caddieDrafts})` : ""}

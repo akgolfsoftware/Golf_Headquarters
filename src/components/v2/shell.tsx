@@ -67,13 +67,21 @@ export const AGENCYOS_NAV: V2NavItem[] = [
 /** AgencyOS «Mer» — alt som ikke er primærjobb (v1: booking/planer/økonomi hit). */
 export const AGENCYOS_MER: V2NavGruppe[] = [
   {
+    label: "AgenticOS",
+    items: [
+      { id: "godkjenninger", label: "Kø (godkjenn AI)", icon: "badge-check", href: "/admin/godkjenninger" },
+      { id: "caddie", label: "Caddie (AI-chat)", icon: "message-circle", href: "/admin/agencyos/caddie", adminOnly: true },
+      { id: "agents", label: "AI-agenter", icon: "bot", href: "/admin/agents" },
+      { id: "agent-team", label: "Agent-team", icon: "users", href: "/admin/agent-team" },
+      { id: "brief", label: "Daglig brief", icon: "file-text", href: "/admin/brief" },
+    ],
+  },
+  {
     label: "Kommunikasjon",
     items: [
-      { id: "godkjenninger", label: "Godkjenninger (kø)", icon: "badge-check", href: "/admin/godkjenninger" },
       { id: "meldinger", label: "Meldinger", icon: "inbox", href: "/admin/innboks" },
       { id: "varsler", label: "Varsler", icon: "bell", href: "/admin/varsler" },
       { id: "handlingssenter", label: "Handlingssenter", icon: "check-check", href: "/admin/handlingssenter" },
-      { id: "brief", label: "Daglig brief", icon: "file-text", href: "/admin/brief" },
       { id: "queue", label: "Oppfølgingskø", icon: "list", href: "/admin/queue" },
       { id: "innboks-epost", label: "E-post (post@)", icon: "mail", href: "/admin/innboks-epost", adminOnly: true },
     ],
@@ -128,8 +136,6 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
       { id: "okonomi", label: "Økonomi", icon: "credit-card", href: "/admin/agencyos/okonomi", adminOnly: true },
       { id: "workspace", label: "Workspace", icon: "layout-dashboard", href: "/admin/workspace", adminOnly: true },
       { id: "marketing", label: "Marketing", icon: "megaphone", href: "/admin/marketing", adminOnly: true },
-      { id: "caddie", label: "Caddie (AI)", icon: "message-circle", href: "/admin/agencyos/caddie", adminOnly: true },
-      { id: "agents", label: "AI-agenter", icon: "bot", href: "/admin/agents" },
       { id: "team", label: "Team", icon: "users", href: "/admin/team" },
       { id: "email-templates", label: "E-postmaler", icon: "mail-check", href: "/admin/email-templates" },
       { id: "kalender-synk", label: "Kalender-synk (Google)", icon: "refresh-cw", href: "/admin/settings/calendar" },
