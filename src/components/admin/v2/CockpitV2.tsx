@@ -115,7 +115,7 @@ export function CockpitV2({
         {/* 8c.8: profilbilde ved hilsenen (samme grep som PlayerHQ-hjem). */}
         <AvatarFoto src={data.coachAvatarUrl ?? undefined} navn={data.coachFirstName} size={46} ring />
         <div>
-          <Caps>{data.dayLabel} · AgencyOS</Caps>
+          <Caps>{data.dayLabel} · AgencyOS · AgenticOS</Caps>
           <div style={{ marginTop: 10 }}>
             <Tittel em={`${data.coachFirstName}.`}>{data.greeting},</Tittel>
           </div>

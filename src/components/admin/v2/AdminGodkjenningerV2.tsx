@@ -385,12 +385,12 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>Innboks · Godkjenninger · AgencyOS</Caps>
+        <Caps>AgenticOS · Kø · AgencyOS</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel em="på deg." mobile={mobile}>{`${totalt} venter`}</Tittel>
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut, margin: "10px 0 0", maxWidth: 560 }}>
-          Plan-endringer fra agenter. Godkjenn eller avvis — endringer skrives til planen ved godkjenning.
+          AI foreslår — du godkjenner — systemet utfører. Plan-endringer, Caddie-utkast og forespørsler i én kø.
         </p>
       </div>
       <StatusPill tone={totalt === 0 ? "lime" : antallHaster > 0 ? "warn" : "info"}>

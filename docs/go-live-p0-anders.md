@@ -21,7 +21,7 @@ Disse kan ikke kodes ferdig for deg. Uten dem er appen «klar» men folk kommer 
 
 ## 5. 30-sekunders meny-test (N4)
 Les høyt:
-> «Hjem er hva som haster. Stall er spillerne — trykk navn, da er jeg i uka deres. Kalender er all tid. Kø er ting jeg må si ja/nei til. Innsikt er tall. Resten er under Mer.»
+> «Hjem er hva som haster — der ligger også AgenticOS (AI-dispatch). Stall er spillerne — trykk navn, da er jeg i uka deres. Kalender er all tid. Kø er der jeg godkjenner AI-forslag. Innsikt er tall. Caddie og agenter ligger under Mer → AgenticOS.»
 
 ## Etter dette
 Si **deploy** / **launch** hvis du vil ha ny prod-deploy av kode-PR, eller be om status.
