@@ -9,6 +9,7 @@
  */
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   Caps,
@@ -204,6 +205,7 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
 
 export function StallV2({ data }: { data: StallV2Data }) {
   const mobile = useMobile();
+  const router = useRouter();
   const [grp, setGrp] = useState<string[]>([]);
   const [sta, setSta] = useState<string[]>([]);
   const [bet, setBet] = useState<string[]>([]);
@@ -215,12 +217,8 @@ export function StallV2({ data }: { data: StallV2Data }) {
   const [valgtId, setValgtId] = useState<string | null>(
     data.spillere.find((p) => !p.venter)?.id ?? data.spillere[0]?.id ?? null,
   );
-  // Mobil: valgt spiller vises i et BunnArk i stedet for et side-panel.
+  // Mobil: sammendrag i BunnArk (valg via desktop-panel / initial valgtId).
   const [arkApen, setArkApen] = useState(false);
-  const velg = (id: string) => {
-    setValgtId(id);
-    setArkApen(true);
-  };
 
   const toggle = (arr: string[], set: (v: string[]) => void) => (x: string) =>
     set(arr.indexOf(x) !== -1 ? arr.filter((y) => y !== x) : arr.concat(x));
@@ -284,7 +282,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
             key={x.id}
             s={x}
             valgt={valgt?.id === x.id}
-            onClick={() => velg(x.id)}
+            onClick={() => router.push(`/admin/spillere/${x.id}/workbench`)}
             last={i === aktiveRader.length - 1}
           />
         ))}
@@ -307,7 +305,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
               key={x.id}
               s={x}
               valgt={valgt?.id === x.id}
-              onClick={() => velg(x.id)}
+              onClick={() => router.push(`/admin/spillere/${x.id}/workbench`)}
               last={i === venterRader.length - 1}
             />
           ))}
