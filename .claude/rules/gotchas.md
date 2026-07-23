@@ -4,6 +4,22 @@ Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekk
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
 Designkanon: `.claude/rules/design-system-regel.md` (v13/golfdata).
 
+### Workbench-datomatte (session-move-math.ts) bruker rå getDay()/setHours() — ikke Oslo-korrekt (oppdaget 2026-07-19, IKKE fikset)
+- **Symptom (potensielt):** `mondayOf`/`dateForDayIndex`/`weekRefDate` i `src/lib/workbench/session-move-math.ts`
+  regner uke/dag fra `new Date()` med rå `.getDay()`/`.setHours(0,0,0,0)`/`.setDate()` — akkurat
+  mønsteret `uke-helpers.ts`-gotchaen forbyr. Filen er bevisst «pure date math, no server imports»
+  (delt klient+server for drag-drop), så den går IKKE via `uke-helpers.ts`.
+- **Årsak:** Vercel kjører UTC. Nær midnatt i Oslo (23:00–01:00 ca., avhengig av sommer/vintertid)
+  kan server (UTC) og klient (Oslo) uenes om hvilken dag/uke «nå» er → en økt lagt til eller flyttet
+  i det vinduet kan havne på feil dag/uke.
+- **Ikke fikset 2026-07-19** (kvelden før lansering — for risikabelt å endre kjernematte i
+  `moveWorkbenchSession`/`addWorkbenchSession`/coach-Workbench uten regresjonstid). Testet
+  ende-til-ende via direkte DB-skrivning/lesning (samme kontrakt som koden) — funker for
+  dagtid-bruk, som er alt 30-spiller-testen i morgen trenger.
+- **Fiks (gjør etter lansering):** flytt logikken til å bruke `Intl.DateTimeFormat` med
+  `timeZone: "Europe/Oslo"` (samme mønster som `uke-helpers.ts`), eller re-eksporter derfra hvis
+  «no server imports»-kravet kan lempes. Test grundig rundt midnatt.
+
 ### dedupe-tournament-data foretrekker NGF som merge-target — feil for ferske scraper-kilder (oppdaget 2026-07-18)
 - `dedupeTournaments()` velger target med regelen «behold NGF-raden» (den historiske
   import-kilden hadde mest data). Da Olyo/Østlandstour ble koblet på GolfBox-roboten,
@@ -98,13 +114,17 @@ rot» men havnet i `src/app/admin/`, og en `launch.json` ble skrevet til
 `src/app/admin/.claude/`. Regel: bruk absolutte stier, og verifiser med `pwd`
 før filoperasjoner mot rot.
 
-### Ytelse: Vercel-region MÅ matche Supabase-region (oppdatert 2026-07-18)
-Supabase ligger nå i **eu-west-2 (London)** etter kontobyttet (nytt prosjekt
-`dcnxoztjtdqoidaekxry`). Uten `"regions"` i vercel.json kjørte funksjonene i
-default iad1 (USA) — hver Prisma-spørring krysset Atlanteren og sider med mange
-spørringer fikk TTFB på 0,5–1,1 s. Fix: `"regions": ["lhr1"]` i vercel.json
-(London, samlokalisert med DB). Ikke fjern eller endre denne uten å flytte
-databasen samtidig. (Historikk: var eu-west-1/dub1 før 18. juli-byttet.)
+### Ytelse: Vercel-region MÅ matche Supabase-region (korrigert 2026-07-19)
+Kanonisk Supabase-prosjekt er `eljkjqvggsmnbbszzbpj` i **eu-west-1 (Dublin)** —
+vercel.json har `"regions": ["dub1"]` (samlokalisert). Uten `"regions"` kjører
+funksjonene i default iad1 (USA) med TTFB 0,5–1,1 s. Ikke fjern eller endre
+uten å flytte databasen samtidig.
+OBS: 18. juli-versjonen av dette notatet sa «nytt prosjekt dcnxoztjtdqoidaekxry»
+(eu-west-2/lhr1) — det var INVERTERT: dcnx er det GAMLE, døde prosjektet fra den
+flaggede kontoen. 19. juli pekte Vercel-env fortsatt på dcnx → total
+innloggings-stopp i prod. Fiks: alle Supabase/DB-env byttet til eljk-verdiene +
+rebuild UTEN build-cache (NEXT_PUBLIC_* bakes inn ved bygging). Meg-boten har
+bevisst EGET Supabase-prosjekt (`ffaitjztfnelzwefbdhw`, MEG_SUPABASE_URL).
 
 ### Dev-server med foreldet Prisma-klient etter `prisma generate` (truffet 2×, 2026-07-13)
 Kjører `npx prisma generate` (nytt felt/enum) mens `next dev` står oppe →
