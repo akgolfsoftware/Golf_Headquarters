@@ -1,11 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · Ønskelig økt · Bekreftet — v2 (retning C «Presis»).
- * v2-port 17. juli 2026 (Team D2): erstatter legacy-bekreftelsessiden.
- * Ren presentasjon av EKTE request-data (siste SessionRequest) — ingen
- * oppdiktede navn/tider/referanser. Tidslinjens tilstander beregnes i
- * page.tsx fra faktisk status (uendret logikk).
+ * PlayerHQ · Ønskelig økt · Bekreftet — v2 Presis + B-pakke (status + én primær hjem).
+ * Ekte request-data. T.* only.
  */
 
 import Link from "next/link";
@@ -175,19 +172,25 @@ export function OnskeligOktBekreftetV2({ data }: { data: OnskeligOktBekreftetV2D
         </ol>
       </Kort>
 
-      {/* Handlinger */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      {/* B: én primær + tekst-sekundær */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <Link href="/portal" style={{ textDecoration: "none", display: "block" }}>
           <CTAPill icon="home" full>Tilbake til hjem</CTAPill>
         </Link>
-        <div style={{ display: "flex", gap: 8 }}>
-          <Link href="/portal/coach" style={{ textDecoration: "none", flex: 1 }}>
-            <CTAPill ghost icon="message-square" full>Melding</CTAPill>
-          </Link>
-          <Link href="/portal/coach" style={{ textDecoration: "none", flex: 1 }}>
-            <CTAPill ghost icon="users" full>Coacher</CTAPill>
-          </Link>
-        </div>
+        <Link
+          href="/portal/coach/melding"
+          style={{
+            textDecoration: "none",
+            display: "block",
+            textAlign: "center",
+            fontFamily: T.ui,
+            fontSize: 12,
+            fontWeight: 600,
+            color: T.mut,
+          }}
+        >
+          Skriv til coach →
+        </Link>
       </div>
 
       <p style={{ textAlign: "center", fontFamily: T.mono, fontSize: 10, letterSpacing: "0.04em", color: T.mut, margin: 0 }}>

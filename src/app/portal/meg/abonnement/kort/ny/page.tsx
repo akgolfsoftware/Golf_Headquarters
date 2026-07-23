@@ -1,18 +1,14 @@
 /**
- * /portal/meg/abonnement/kort/ny — Administrer betalingskort
- *
- * Kort-administrasjon skjer i Stripe Customer Billing Portal (PCI-DSS). Vi lagrer
- * aldri kortdata. Siden viser ekte abonnement-info og en knapp som åpner Stripe-
- * portalen via POST /api/stripe/portal.
- *
- * Auth-guard + redirect-vakt (krever aktivt abonnement med Stripe-kunde) beholdt.
+ * /portal/meg/abonnement/kort/ny — B-pakke.
+ * Status (neste belastning) først, én grønn CTA til Stripe.
  */
 
 import { redirect } from "next/navigation";
-import Link from "next/link";
-import { ChevronLeft, Lock, Check } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { T } from "@/lib/v2/tokens";
+import { Caps, Tittel, Kort, TilbakeLenke, StatusPill, Icon } from "@/components/v2";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { AapneStripePortal } from "./aapne-stripe-portal";
 
 export const dynamic = "force-dynamic";
@@ -34,104 +30,107 @@ export default async function NyttKortPage() {
     select: { currentPeriodEnd: true, status: true },
   });
 
-  // PAST_DUE og TRIALING slipper også inn — «Endre kort» er nettopp veien
-  // ut av en feilet betaling, og PAST_DUE-abonnementer har stripeCustomerId.
   const TILLATTE_STATUSER = new Set(["ACTIVE", "PAST_DUE", "TRIALING"]);
   if (!subscription || !TILLATTE_STATUSER.has(subscription.status)) {
     redirect("/portal/meg/abonnement");
   }
 
   const nesteBelastning = subscription.currentPeriodEnd ?? null;
+  const betalingFeilet = subscription.status === "PAST_DUE";
 
   return (
-    <div className="mx-auto w-full max-w-[480px] px-4 pb-20 sm:px-6">
-      <Link
-        href="/portal/meg/abonnement"
-        className="inline-flex min-h-11 items-center gap-1.5 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground transition-colors hover:text-foreground"
+    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <div
+        style={{
+          maxWidth: 480,
+          margin: "0 auto",
+          display: "flex",
+          flexDirection: "column",
+          gap: T.gap,
+        }}
       >
-        <ChevronLeft className="h-[13px] w-[13px]" strokeWidth={2} aria-hidden />
-        Abonnement
-      </Link>
+        <TilbakeLenke href="/portal/meg/abonnement">Abonnement</TilbakeLenke>
 
-      <header className="mt-3 space-y-2">
-        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
-          PlayerHQ · Meg · Abonnement · Betalingskort
-        </span>
-        <h1 className="font-display text-[28px] font-bold leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[34px]">
-          Administrer{" "}
-          <em
-            className="not-italic"
-            style={{
-              fontFamily: "var(--font-familjen-grotesk), sans-serif",
-              fontStyle: "italic",
-              color: "hsl(var(--primary))",
-            }}
-          >
-            kort
-          </em>
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Legg til eller endre betalingskort i Stripes sikre portal. Kortdata
-          forlater aldri din enhet, og lagres aldri hos AK Golf.
-        </p>
-      </header>
-
-      <div className="mt-6 space-y-4">
-        <div className="rounded-2xl border border-border bg-card p-5">
-          <AapneStripePortal />
-          <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-border bg-secondary/40 p-3.5">
-            <Lock
-              className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground"
-              strokeWidth={1.75}
-              aria-hidden
-            />
-            <p className="text-xs leading-relaxed text-muted-foreground">
-              <strong className="text-foreground">Vi lagrer aldri kortdata.</strong>{" "}
-              Betalingen håndteres av Stripe — AK Golf får kun et token.
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <div>
+            <Caps>Abonnement · Betalingskort</Caps>
+            <div style={{ marginTop: 10 }}>
+              <Tittel em="kort">Administrer</Tittel>
+            </div>
+            <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.45 }}>
+              Legg til eller endre kort i Stripes sikre portal. Vi lagrer aldri kortdata.
             </p>
           </div>
+          <StatusPill tone={betalingFeilet ? "down" : "up"}>
+            {betalingFeilet ? "Betaling feilet" : "Aktiv"}
+          </StatusPill>
         </div>
 
-        {/* Neste belastning (ekte data) */}
-        <div className="rounded-2xl border border-border bg-card p-5">
-          <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
-            Neste belastning
-          </span>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="font-display text-2xl font-bold tracking-[-0.02em] text-foreground">
+        <Kort>
+          <Caps style={{ marginBottom: 8 }}>Neste belastning</Caps>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
+            <span style={{ fontFamily: T.mono, fontSize: 28, fontWeight: 700, color: T.fg, letterSpacing: "-0.03em" }}>
               299 kr
             </span>
-            <span className="font-mono text-xs text-muted-foreground">
+            <span style={{ fontFamily: T.mono, fontSize: 12, color: T.mut }}>
               {formatNesteBelastning(nesteBelastning)}
             </span>
           </div>
-          <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
-            PRO · månedlig · fornyes automatisk. Kanselleres når som helst fra
-            abonnement-siden.
+          <p style={{ margin: "8px 0 0", fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.45 }}>
+            Pro · månedlig · fornyes automatisk. Kanseller når som helst fra abonnement-siden.
           </p>
-        </div>
+        </Kort>
 
-        {/* Sikkerhet */}
-        <div className="rounded-2xl border border-border bg-card p-5">
-          <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-muted-foreground">
-            Sikkerhet
-          </span>
-          <ul className="mt-3 space-y-2 text-sm">
+        <Kort>
+          <AapneStripePortal />
+          <div
+            style={{
+              marginTop: 14,
+              display: "flex",
+              gap: 10,
+              alignItems: "flex-start",
+              borderRadius: T.rRow,
+              border: `1px solid ${T.border}`,
+              background: T.panel2,
+              padding: 12,
+            }}
+          >
+            <Icon name="lock" size={14} style={{ color: T.mut, marginTop: 2, flex: "none" }} />
+            <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5 }}>
+              <strong style={{ color: T.fg }}>Vi lagrer aldri kortdata.</strong> Betalingen håndteres av Stripe.
+            </p>
+          </div>
+        </Kort>
+
+        <Kort>
+          <Caps style={{ marginBottom: 10 }}>Sikkerhet</Caps>
+          <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
             {[
               "PCI-DSS Level 1 (Stripe)",
-              "3-D Secure 2 (Strong Customer Auth)",
+              "3-D Secure 2 (sterk autentisering)",
               "Kortdata lagres aldri hos AK Golf",
             ].map((s) => (
-              <li key={s} className="flex items-center gap-2.5">
-                <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
-                  <Check className="h-3 w-3" strokeWidth={3} aria-hidden />
+              <li key={s} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span
+                  style={{
+                    width: 18,
+                    height: 18,
+                    borderRadius: 9999,
+                    background: T.lime,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flex: "none",
+                  }}
+                >
+                  <Icon name="check" size={11} style={{ color: T.onLime }} />
                 </span>
-                <span className="text-foreground">{s}</span>
+                <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>{s}</span>
               </li>
             ))}
           </ul>
-        </div>
+        </Kort>
       </div>
-    </div>
+    </V2Shell>
   );
 }

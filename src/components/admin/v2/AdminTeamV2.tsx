@@ -1,18 +1,8 @@
 "use client";
 
 /**
- * AgencyOS Team — v2 (retning C «Presis»). Rekomponerer /admin/team
- * (coach- og admin-roster med invitasjon) i v2-språket, drevet av EKTE
- * Prisma-data fra ruten. Bygget utelukkende av v2-komponentbiblioteket
- * (src/components/v2) — ingen ad-hoc UI, ingen rå hex (kun T.*).
- *
- * Mobil-først: KPI-grid 2→4 kolonner, søk filtrerer lista på klienten,
- * roster som Rad-liste (søster-idiom til StallV2) som stables trygt på 375px.
- * Rolle-pillen vises fra md-breakpoint; e-post-handlingen er alltid
- * tilgjengelig per rad.
- *
- * Ærlige tomrom: kun felter med kilde vises (navn, rolle, antall grupper,
- * tidsvinduer, e-post). Ingen fabrikerte tall.
+ * AgencyOS Team — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Coach-roster med invitasjon. T.* only.
  */
 
 import { useState } from "react";
@@ -102,10 +92,18 @@ export function AdminTeamV2({ data }: { data: AdminTeamV2Data }) {
           <Tittel em="og roller.">Team</Tittel>
         </div>
       </div>
-      <Link href={data.inviterHref} style={{ textDecoration: "none" }}>
-        <CTAPill icon="user-plus">Inviter coach</CTAPill>
-      </Link>
+      <StatusPill tone={data.totalCount > 0 ? "lime" : "warn"}>
+        {data.totalCount === 0 ? "Bare deg" : `${data.totalCount} i teamet`}
+      </StatusPill>
     </div>
+  );
+
+  const primaerCta = (
+    <Link href={data.inviterHref} style={{ textDecoration: "none", display: "block" }}>
+      <CTAPill icon="user-plus" full>
+        Inviter coach
+      </CTAPill>
+    </Link>
   );
 
   const kpier = (
@@ -156,6 +154,7 @@ export function AdminTeamV2({ data }: { data: AdminTeamV2Data }) {
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
       {kpier}
+      {primaerCta}
       {sok}
       {liste}
       <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.6, margin: 0 }}>

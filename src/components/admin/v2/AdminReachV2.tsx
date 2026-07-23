@@ -1,16 +1,13 @@
 "use client";
 
 /**
- * AgencyOS — Reach & engasjement (/admin/reach), v2-port 16. juli 2026.
- * Erstatter hand-Tailwind (ReachClient) med v2-primitiver. Samme
- * datagrunnlag (aggregert i page.tsx fra User/Notification/
- * TrainingPlanSession/CoachingSession/Round/Goal) uendret — kun
- * presentasjonslaget er nytt.
+ * AgencyOS Reach — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Engasjement & compliance. T.* only.
  */
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Caps, Tittel, Kort, Knapp, StatusPill, AvatarFoto, TomTilstand, T } from "@/components/v2";
+import { Caps, Tittel, Kort, Knapp, StatusPill, AvatarFoto, TomTilstand, CTAPill, T } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 
 export interface ReachSpiller {
@@ -147,15 +144,29 @@ export function AdminReachV2({ data }: { data: AdminReachV2Data }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      <div>
-        <Caps>Reach & engasjement · Siste 30 dager</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="engasjement.">Plattform</Tittel>
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
+        <div>
+          <Caps>Reach & engasjement · Siste 30 dager · AgencyOS</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em="engasjement.">Plattform</Tittel>
+          </div>
+          <p style={{ fontFamily: T.mono, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut, margin: "8px 0 0" }}>
+            {data.totaltSpillere} spillere · hvor mye lander det vi sender, og hvem trenger oppmerksomhet?
+          </p>
         </div>
-        <p style={{ fontFamily: T.mono, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut, margin: "8px 0 0" }}>
-          {data.totaltSpillere} spillere · hvor mye lander det vi sender, og hvem trenger oppmerksomhet?
-        </p>
+        <StatusPill tone={data.trengerOppfolging.length > 0 ? "warn" : "lime"}>
+          {data.trengerOppfolging.length > 0
+            ? `${data.trengerOppfolging.length} trenger oppfølging`
+            : "I rute"}
+        </StatusPill>
       </div>
+
+      {/* B: én primær CTA */}
+      <Link href="/admin/innboks" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="message-circle" full>
+          Åpne innboks
+        </CTAPill>
+      </Link>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
         <Kpi label="Aktive (7d)" value={String(data.aktiv7d)} sub={`av ${data.totaltSpillere} (${aktiv7dPct} %)`} progress={aktiv7dPct} />
@@ -251,7 +262,11 @@ export function AdminReachV2({ data }: { data: AdminReachV2Data }) {
 
         <Kort pad="0">
           {filtrerte.length === 0 ? (
-            <TomTilstand icon="users" title="Ingen spillere matcher filteret" />
+            <TomTilstand
+              icon="users"
+              title="Ingen spillere matcher filteret"
+              sub="Bytt filter eller følg opp stallen for å se engasjement her."
+            />
           ) : (
             filtrerte.map((p, i) => (
               <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", borderTop: i ? `1px solid ${T.border}` : "none", flexWrap: "wrap" }}>

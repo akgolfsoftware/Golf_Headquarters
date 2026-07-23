@@ -2,32 +2,33 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import {
-  CreditCard,
-  MessageSquare,
-  AlertTriangle,
-  Key,
-  RefreshCw,
-  HelpCircle,
-  Upload,
-  Image as ImageIcon,
-  X,
-  ChevronDown,
-  Send,
-  Check,
-} from "lucide-react";
 import { submitSupportTicket } from "./actions";
+import { T } from "@/lib/v2/tokens";
+import { Caps, Kort, Knapp, Icon } from "@/components/v2";
 
 type Kategori = "booking" | "coach-meldinger" | "app-feil" | "konto" | "data-synk" | "annet";
 
-const KATEGORIER: { id: Kategori; navn: string; eksempel: string; Icon: React.ComponentType<{ className?: string; strokeWidth?: number }> }[] = [
-  { id: "booking", navn: "Booking & betaling", eksempel: "Faktura, refunderinger, double-charge", Icon: CreditCard },
-  { id: "coach-meldinger", navn: "Coach-meldinger", eksempel: "Mangler svar, varsler, vedlegg", Icon: MessageSquare },
-  { id: "app-feil", navn: "App-feil / bug", eksempel: "Krasj, frys, layout-feil", Icon: AlertTriangle },
-  { id: "konto", navn: "Konto & login", eksempel: "Glemt passord, 2FA, sperret konto", Icon: Key },
-  { id: "data-synk", navn: "Data & synk", eksempel: "GolfBox, TrackMan, Apple Health", Icon: RefreshCw },
-  { id: "annet", navn: "Annet", eksempel: "Generelle spørsmål, forslag", Icon: HelpCircle },
+const KATEGORIER: { id: Kategori; navn: string; eksempel: string; icon: string }[] = [
+  { id: "booking", navn: "Booking & betaling", eksempel: "Faktura, refunderinger", icon: "credit-card" },
+  { id: "coach-meldinger", navn: "Coach-meldinger", eksempel: "Mangler svar, vedlegg", icon: "message-square" },
+  { id: "app-feil", navn: "App-feil / bug", eksempel: "Krasj, frys, layout", icon: "triangle-alert" },
+  { id: "konto", navn: "Konto & login", eksempel: "Passord, 2FA", icon: "lock" },
+  { id: "data-synk", navn: "Data & synk", eksempel: "GolfBox, TrackMan", icon: "refresh-cw" },
+  { id: "annet", navn: "Annet", eksempel: "Generelle spørsmål", icon: "help-circle" },
 ];
+
+const feltStil: React.CSSProperties = {
+  width: "100%",
+  borderRadius: 12,
+  border: `1px solid ${T.borderS}`,
+  background: T.panel2,
+  padding: "11px 13px",
+  fontFamily: T.ui,
+  fontSize: 13.5,
+  color: T.fg,
+  outline: "none",
+  boxSizing: "border-box",
+};
 
 export function KontaktSupportForm({
   bruker,
@@ -37,15 +38,9 @@ export function KontaktSupportForm({
   const [kategori, setKategori] = useState<Kategori>("app-feil");
   const [emne, setEmne] = useState("");
   const [beskrivelse, setBeskrivelse] = useState("");
-  const [vedlegg, setVedlegg] = useState<{ navn: string; storrelse: string }[]>([]);
   const [tillatInnsyn, setTillatInnsyn] = useState(false);
-  const [techOpen, setTechOpen] = useState(false);
   const [pending, startTransition] = useTransition();
   const router = useRouter();
-
-  function fjernVedlegg(navn: string) {
-    setVedlegg((v) => v.filter((f) => f.navn !== navn));
-  }
 
   function send() {
     startTransition(async () => {
@@ -62,14 +57,21 @@ export function KontaktSupportForm({
 
   return (
     <form
-      className="space-y-8"
+      style={{ display: "flex", flexDirection: "column", gap: T.gap }}
       onSubmit={(e) => {
         e.preventDefault();
         if (kanSende) send();
       }}
     >
-      <SectionNum num="01" title="Hva gjelder det?">
-        <div className="grid grid-cols-1 gap-2 p-6 sm:grid-cols-2 lg:grid-cols-3">
+      <Kort>
+        <Caps style={{ marginBottom: 12 }}>01 · Hva gjelder det?</Caps>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+            gap: 8,
+          }}
+        >
           {KATEGORIER.map((k) => {
             const valgt = kategori === k.id;
             return (
@@ -77,39 +79,34 @@ export function KontaktSupportForm({
                 key={k.id}
                 type="button"
                 onClick={() => setKategori(k.id)}
-                className={`relative flex flex-col items-start gap-2 rounded-xl border p-4 text-left transition-all ${
-                  valgt
-                    ? "border-primary bg-primary/5 ring-2 ring-primary/20"
-                    : "border-border bg-card hover:border-primary/50"
-                }`}
+                className="v2-press v2-focus"
+                style={{
+                  appearance: "none",
+                  textAlign: "left",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 6,
+                  borderRadius: T.rRow,
+                  border: `1px solid ${valgt ? T.lime : T.border}`,
+                  background: valgt ? `color-mix(in srgb, ${T.lime} 10%, ${T.panel})` : T.panel2,
+                  padding: 12,
+                  cursor: "pointer",
+                }}
               >
-                <span
-                  className={`grid h-9 w-9 place-items-center rounded-lg ${
-                    valgt
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  <k.Icon className="h-4 w-4" strokeWidth={1.75} />
-                </span>
-                <span className="font-display text-sm font-semibold text-foreground">
-                  {k.navn}
-                </span>
-                <span className="text-xs text-muted-foreground">{k.eksempel}</span>
-                {valgt && (
-                  <span className="absolute right-3 top-3 grid h-5 w-5 place-items-center rounded-full bg-primary text-primary-foreground">
-                    <Check className="h-3 w-3" strokeWidth={2.5} />
-                  </span>
-                )}
+                <Icon name={k.icon} size={15} style={{ color: valgt ? T.lime : T.mut }} />
+                <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}>{k.navn}</span>
+                <span style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, lineHeight: 1.35 }}>{k.eksempel}</span>
               </button>
             );
           })}
         </div>
-      </SectionNum>
+      </Kort>
 
-      <SectionNum num="02" title="Beskriv problemet">
-        <div className="space-y-6 p-6">
-          <Field label="Emne" htmlFor="emne">
+      <Kort>
+        <Caps style={{ marginBottom: 12 }}>02 · Beskriv problemet</Caps>
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <div>
+            <Caps style={{ marginBottom: 7 }}>Emne</Caps>
             <input
               id="emne"
               type="text"
@@ -118,14 +115,15 @@ export function KontaktSupportForm({
               value={emne}
               onChange={(e) => setEmne(e.target.value)}
               placeholder="Kort tittel på problemet"
-              className={inputCss}
+              style={feltStil}
             />
-            <MetaRow
-              hint="Kort tittel — gjør det enklere å sortere."
-              count={`${emne.length} / 100`}
-            />
-          </Field>
-          <Field label="Beskrivelse" htmlFor="besk">
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
+              <span style={{ fontFamily: T.ui, fontSize: 11, color: T.mut }}>Kort tittel — enklere å sortere</span>
+              <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>{emne.length} / 100</span>
+            </div>
+          </div>
+          <div>
+            <Caps style={{ marginBottom: 7 }}>Beskrivelse</Caps>
             <textarea
               id="besk"
               maxLength={1000}
@@ -133,213 +131,74 @@ export function KontaktSupportForm({
               rows={6}
               value={beskrivelse}
               onChange={(e) => setBeskrivelse(e.target.value)}
-              placeholder="Beskriv hva som skjedde, hvilke steg du tok, hvilken side du var på, og tid/dato."
-              className={inputCss}
+              placeholder="Hva skjedde, hvilke steg du tok, hvilken side, tid/dato."
+              style={{ ...feltStil, resize: "vertical", lineHeight: 1.55 }}
             />
-            <MetaRow
-              hint="Inkluder steg du tok, hvilken side du var på, og tid/dato."
-              count={`${beskrivelse.length} / 1000`}
-            />
-          </Field>
-        </div>
-      </SectionNum>
-
-      <SectionNum num="03" title="Vedlegg" optional="Valgfritt">
-        <div className="space-y-2 p-6">
-          <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-muted/40 py-8 text-center transition-colors hover:border-primary hover:bg-muted">
-            <span className="grid h-10 w-10 place-items-center rounded-full bg-card text-muted-foreground">
-              <Upload className="h-4 w-4" strokeWidth={1.75} />
-            </span>
-            <span className="text-sm text-foreground">
-              Slipp filer her eller <strong className="font-semibold text-primary">velg fra enheten</strong>
-            </span>
-            <span className="font-mono text-[10px] text-muted-foreground">
-              JPG · PNG · PDF — maks 10 MB hver, opptil 3 filer
-            </span>
-            <input type="file" multiple accept="image/png,image/jpeg,application/pdf" className="hidden" />
-          </label>
-
-          {vedlegg.length > 0 && (
-            <div className="space-y-2">
-              {vedlegg.map((v) => (
-                <div
-                  key={v.navn}
-                  className="grid grid-cols-[40px_1fr_auto] items-center gap-2 rounded-lg border border-border bg-card p-4"
-                >
-                  <div className="grid h-10 w-10 place-items-center rounded-md bg-gradient-to-br from-primary to-[color:rgb(136_180_90)] text-white">
-                    <ImageIcon className="h-4 w-4" strokeWidth={1.75} />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="truncate text-sm font-medium text-foreground">
-                      {v.navn}
-                    </div>
-                    <div className="flex items-center gap-1 font-mono text-[10.5px] text-muted-foreground">
-                      <span>{v.storrelse}</span>
-                      <span>·</span>
-                      <span className="text-success">Lastet opp</span>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    aria-label="Fjern vedlegg"
-                    onClick={() => fjernVedlegg(v.navn)}
-                    className="grid h-7 w-7 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
-                  >
-                    <X className="h-3.5 w-3.5" strokeWidth={1.75} />
-                  </button>
-                </div>
-              ))}
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
+              <span style={{ fontFamily: T.ui, fontSize: 11, color: T.mut }}>Minst 20 tegn</span>
+              <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>{beskrivelse.length} / 1000</span>
             </div>
-          )}
+          </div>
         </div>
-      </SectionNum>
+      </Kort>
 
-      <SectionNum num="04" title="Tilgang">
-        <div className="space-y-4 p-6">
-          <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary/40">
-            <input
-              type="checkbox"
-              checked={tillatInnsyn}
-              onChange={(e) => setTillatInnsyn(e.target.checked)}
-              className="mt-1 h-4 w-4 rounded border-border accent-primary"
-            />
-            <div>
-              <div className="text-sm font-medium text-foreground">
-                Tillat at support kan se profilen min
-              </div>
-              <div className="mt-0.5 text-xs text-muted-foreground">
-                Lar oss reprodusere problemet og sjekke planen din direkte. Du kan trekke tilgangen når som helst i «Personvern».
-              </div>
+      <Kort>
+        <Caps style={{ marginBottom: 12 }}>03 · Tilgang</Caps>
+        <label
+          style={{
+            display: "flex",
+            gap: 10,
+            alignItems: "flex-start",
+            borderRadius: T.rRow,
+            border: `1px solid ${T.border}`,
+            background: T.panel2,
+            padding: 12,
+            cursor: "pointer",
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={tillatInnsyn}
+            onChange={(e) => setTillatInnsyn(e.target.checked)}
+            style={{ marginTop: 2, accentColor: "var(--v2-lime)" }}
+          />
+          <div>
+            <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+              Tillat at support kan se profilen min
             </div>
-          </label>
-
-          <details
-            open={techOpen}
-            onToggle={(e) => setTechOpen((e.target as HTMLDetailsElement).open)}
-            className="overflow-hidden rounded-lg border border-border bg-card"
-          >
-            <summary className="flex cursor-pointer items-center gap-2 px-4 py-2 [&::-webkit-details-marker]:hidden">
-              <span className="grid h-7 w-7 place-items-center rounded-md bg-muted text-muted-foreground">
-                <RefreshCw className="h-3.5 w-3.5" strokeWidth={1.75} />
-              </span>
-              <span className="font-display text-sm font-semibold text-foreground">
-                Kontaktinfo
-              </span>
-              <span className="font-mono text-[10px] text-muted-foreground">
-                Automatisk vedlagt
-              </span>
-              <ChevronDown
-                className={`ml-auto h-4 w-4 text-muted-foreground transition-transform ${techOpen ? "rotate-180" : ""}`}
-                strokeWidth={1.75}
-              />
-            </summary>
-            <div className="grid grid-cols-[140px_1fr] gap-x-4 gap-y-1.5 border-t border-border px-4 py-4 font-mono text-xs">
-              {[
-                ["Navn", bruker.navn],
-                ["E-post", bruker.epost],
-              ].map(([k, v]) => (
-                <div key={k} className="contents">
-                  <span className="tracking-[0.06em] text-muted-foreground">{k}</span>
-                  <span className="font-medium tabular-nums text-foreground">{v}</span>
-                </div>
-              ))}
+            <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 3, lineHeight: 1.45 }}>
+              Lar oss finne problemet raskere. Du kan trekke tilgangen i Personvern.
             </div>
-          </details>
+          </div>
+        </label>
+        <div style={{ marginTop: 12, fontFamily: T.mono, fontSize: 11, color: T.mut, lineHeight: 1.6 }}>
+          Sendes som: {bruker.navn || "—"} · {bruker.epost || "—"}
         </div>
-      </SectionNum>
+      </Kort>
 
-      <div className="sticky bottom-0 -mx-6 flex items-center gap-2 border-t border-border bg-card/95 px-6 py-4 backdrop-blur">
-        <div className="text-xs text-muted-foreground">
-          Eller send e-post til{" "}
-          <a
-            href="mailto:post@akgolf.no"
-            className="font-semibold text-foreground underline underline-offset-2 hover:text-primary"
-          >
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          gap: 10,
+          borderTop: `1px solid ${T.border}`,
+          paddingTop: 14,
+        }}
+      >
+        <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, flex: 1, minWidth: 160 }}>
+          Eller e-post{" "}
+          <a href="mailto:post@akgolf.no" style={{ color: T.forest, fontWeight: 600, textDecoration: "none" }}>
             post@akgolf.no
-          </a>{" "}
-          — svar innen 1 virkedag
-        </div>
-        <button
-          type="button"
-          onClick={() => router.push("/portal/meg/help")}
-          className="ml-auto rounded-full border border-border px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted"
-        >
+          </a>
+        </span>
+        <Knapp ghost onClick={() => router.push("/portal/meg/help")}>
           Avbryt
-        </button>
-        <button
-          type="submit"
-          disabled={!kanSende || pending}
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
-        >
-          <Send className="h-3.5 w-3.5" strokeWidth={1.75} />
+        </Knapp>
+        <Knapp type="submit" icon="send" disabled={!kanSende || pending}>
           {pending ? "Sender …" : "Send melding"}
-        </button>
+        </Knapp>
       </div>
     </form>
-  );
-}
-
-const inputCss =
-  "w-full rounded-md border border-input bg-card px-4 py-2.5 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30";
-
-function SectionNum({
-  num,
-  title,
-  optional,
-  children,
-}: {
-  num: string;
-  title: string;
-  optional?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-      <header className="flex items-baseline gap-2 border-b border-border px-6 py-4">
-        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
-          {num}
-        </span>
-        <h2 className="font-display text-base font-semibold text-foreground">
-          {title}
-        </h2>
-        {optional && (
-          <span className="ml-auto rounded-full bg-muted px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
-            {optional}
-          </span>
-        )}
-      </header>
-      <div>{children}</div>
-    </section>
-  );
-}
-
-function Field({
-  label,
-  htmlFor,
-  children,
-}: {
-  label: string;
-  htmlFor: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label
-        htmlFor={htmlFor}
-        className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.10em] text-muted-foreground"
-      >
-        {label}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-function MetaRow({ hint, count }: { hint: string; count: string }) {
-  return (
-    <div className="flex items-center justify-between text-[10.5px]">
-      <span className="text-muted-foreground/80">{hint}</span>
-      <span className="font-mono tabular-nums text-muted-foreground">{count}</span>
-    </div>
   );
 }

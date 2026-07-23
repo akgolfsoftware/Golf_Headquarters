@@ -1,16 +1,14 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { Caps, Kort, T } from "@/components/v2";
+import { Caps, Kort, StatusPill, CTAPill, T } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { Reveal } from "@/components/stats/reveal";
 import { CountUp } from "@/components/stats/count-up";
 import { RaskeHandlingerV2 } from "@/components/admin/v2/AdminStatsRaskeHandlingerV2";
 
 /**
- * AgencyOS — Stats-oversikt (admin), v2-port 16. juli 2026. Erstatter
- * Tailwind/shadcn-tokens med v2 T-tokens. Reveal/CountUp (scroll-reveal +
- * tell-opp-animasjon) er generiske adferds-primitiver uten egen styling —
- * beholdt uendret. Samme datagrunnlag (hentAdminOverview i page.tsx) uendret.
+ * AgencyOS Stats-oversikt — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Admin-dashboard for plattformtall. T.* only.
  */
 
 export type SyncStatus = "ok" | "stale" | "warning" | "error";
@@ -112,10 +110,20 @@ export function AdminStatsOverviewV2({ data }: { data: AdminStatsOverviewV2Data 
             Admin-dashboard for AK Golf Stats — brukere, SG-data, turneringsdatabase og pipeline-status, alt live fra databasen.
           </p>
         </div>
-        <span style={{ display: "inline-flex", flex: "none", alignItems: "center", gap: 8, fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.mut }}>
-          <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.lime }} />
-          Sist oppdatert {data.sistOppdatertLabel}
-        </span>
+        <StatusPill tone={data.ventendeManuelleTurneringer > 0 ? "warn" : "lime"}>
+          {data.ventendeManuelleTurneringer > 0
+            ? `${data.ventendeManuelleTurneringer} venter`
+            : `Oppdatert ${data.sistOppdatertLabel}`}
+        </StatusPill>
+      </div>
+
+      {/* B: én primær CTA */}
+      <div style={{ marginBottom: 12 }}>
+        <Link href="/admin/stats/moderering" style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="shield-check" full>
+            Åpne moderering
+          </CTAPill>
+        </Link>
       </div>
 
       <Reveal>

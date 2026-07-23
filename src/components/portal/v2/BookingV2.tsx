@@ -1,18 +1,9 @@
 "use client";
 
 /**
- * PlayerHQ Booking — v2 (retning C «super effektiv og smooth»). Komponert 1:1
- * fra ui_kits/v2/booking.jsx → SpillerBooking (+ StegType/StegCoach/StegTid/
- * StegBekreft/StegIndikator/MiniKalender/TidKolonne/Kvittering), men med EKTE
- * data: tjenester (ServiceType), coacher og ledige tider (availability-engine).
- *
- * Flerstegs-flyt rett fra PlayerHQ: type → coach → dato/tid → bekreft →
- * kvittering. Steg-state klientside. Bytter spilleren tjeneste, re-hentes
- * slot-vinduet via server-action (varighet påvirker hvilke tider som får plass).
- *
- * Kun v2-komponenter fra "@/components/v2"; ingen ad-hoc UI. Ingen rå hex
- * (kun T.*-tokens + rgba/color-mix). V2Shell eier chrome-en; denne rendrer
- * innholds-stacken.
+ * PlayerHQ Booking — v2 Presis + B-pakke (oversikt + én primær Neste/Book).
+ * Flerstegs: type → coach → dato/tid → bekreft → kvittering. Ekte data.
+ * Én grønn hovedhandling per steg (sticky Neste / Book time).
  */
 
 import { useEffect, useState } from "react";
@@ -737,16 +728,30 @@ export function BookingV2({ data }: { data: BookingV2Data }) {
     setBookFeil(res.grunn);
   }
 
+  const creditStatus = credits.canUseCredits
+    ? `${credits.creditsRemaining} t igjen`
+    : credits.monthlyCredits > 0
+      ? "Ingen timer igjen"
+      : "Uten pakke";
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
+      {/* Hode — B: status synlig før steg */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
           <Caps>Booking · AK Golf Academy</Caps>
           <div style={{ marginTop: 10 }}><Tittel mobile={mobile} em="coachtime.">Book</Tittel></div>
         </div>
-        {!kvittert && !mobile && <Caps size={9}>Steg {steg} av 4</Caps>}
+        {!kvittert && (
+          <StatusPill tone={credits.canUseCredits ? "up" : credits.monthlyCredits > 0 ? "warn" : "info"}>
+            {creditStatus}
+          </StatusPill>
+        )}
       </div>
+
+      {!kvittert && !mobile && (
+        <Caps size={9}>Steg {steg} av 4 · velg og trykk Neste</Caps>
+      )}
 
       {!kvittert && <StegIndikator steg={steg} onVelg={setSteg} mobile={mobile} />}
 
@@ -770,22 +775,33 @@ export function BookingV2({ data }: { data: BookingV2Data }) {
             display: "flex",
             justifyContent: "space-between",
             gap: 10,
-            ...(mobile
-              ? {
-                  position: "sticky",
-                  bottom: "calc(70px + env(safe-area-inset-bottom))",
-                  margin: "0 -16px",
-                  padding: "10px 16px",
-                  background: `color-mix(in srgb,${T.bg} 88%,transparent)`,
-                  backdropFilter: "blur(10px)",
-                  borderTop: `1px solid ${T.border}`,
-                  zIndex: 30,
-                }
-              : {}),
+            marginTop: 8,
+            position: "sticky",
+            bottom: mobile ? "calc(70px + env(safe-area-inset-bottom))" : 0,
+            marginLeft: mobile ? -16 : -4,
+            marginRight: mobile ? -16 : -4,
+            padding: mobile ? "12px 16px" : "14px 16px",
+            background: `color-mix(in srgb,${T.bg} 92%,transparent)`,
+            backdropFilter: "blur(10px)",
+            borderTop: `1px solid ${T.border}`,
+            zIndex: 30,
+            borderRadius: mobile ? 0 : 16,
           }}
         >
-          <Knapp ghost icon="arrow-left" onClick={() => setSteg(Math.max(1, steg - 1))} disabled={steg === 1}>Tilbake</Knapp>
-          {steg < 4 && <Knapp icon="arrow-right" onClick={() => setSteg(steg + 1)} disabled={nesteSperret}>Neste</Knapp>}
+          <Knapp ghost icon="arrow-left" onClick={() => setSteg(Math.max(1, steg - 1))} disabled={steg === 1}>
+            Tilbake
+          </Knapp>
+          {steg < 4 && (
+            <Knapp
+              icon="arrow-right"
+              full
+              onClick={() => setSteg(steg + 1)}
+              disabled={nesteSperret}
+              style={{ flex: 1, maxWidth: mobile ? undefined : 280 }}
+            >
+              Neste
+            </Knapp>
+          )}
         </div>
       )}
     </div>

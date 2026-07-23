@@ -1,21 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Coach Meldinger — v2 (retning C «Presis»). Rekomponerer den ekte
- * skjermen (src/app/portal/coach/melding/page.tsx + /[id]): meldingsinnboks
- * (tråd-liste) + valgt tråd med chat-bobler. EKTE data fra CoachingSession
- * (kind DIRECT) — montert i (v2preview)/v2-coach-melding/page.tsx.
- *
- * Kun v2-komponenter fra "@/components/v2"; ingen ad-hoc UI, ingen rå hex
- * (kun T.*). Ærlighet: tom innboks / tom tråd får ærlig tom-tilstand — ingen
- * fabrikkert historikk. Ordbok låst (Situasjon/økt/Nærspill). Norsk bokmål.
- *
- * Mobil (M3, bølge 3): master/detail. På mobil vises trådlista full bredde;
- * valg av den innlastede tråden åpner tråd-visningen med tilbake-lenke og et
- * tommelvennlig komponer-felt forankret nederst i samtale-kortet (safe-area).
- * Desktop-oppførsel er uendret (innboks + valgt tråd side-om-side).
- *
- * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
+ * PlayerHQ Coach Meldinger — v2 Presis + B-pakke (innboks + én primær «Ny melding»).
+ * Master/detail mobil. T.* only. Tom = grønn vei.
  */
 
 import { useEffect, useState } from "react";
@@ -104,11 +91,13 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
           <TomTilstand
             icon="lock"
             title="Direkte coach-meldinger er en Pro-funksjon"
-            sub="Meldinger til coachen din er en del av PlayerHQ Pro (299 kr/mnd)."
+            sub="Meldinger til coachen er del av PlayerHQ Pro (299 kr/mnd)."
           />
-          <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
-            <Link href="/portal/meg/abonnement" style={{ textDecoration: "none" }}>
-              <CTAPill icon="arrow-right">Oppgrader til Pro</CTAPill>
+          <div style={{ marginTop: 12 }}>
+            <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="arrow-right" full>
+                Oppgrader til Pro
+              </CTAPill>
             </Link>
           </div>
         </Kort>
@@ -250,7 +239,7 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
+      {/* Hode + B: status */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
           <Caps>Coach · Meldinger</Caps>
@@ -258,14 +247,21 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
             <Tittel mobile={mobile}>Meldinger</Tittel>
           </div>
         </div>
-        {hovedcoach && (
-          <Link href="/portal/coach/melding/ny" className="hidden md:block" style={{ textDecoration: "none" }}>
-            <CTAPill icon="send">Ny melding</CTAPill>
-          </Link>
-        )}
+        <StatusPill tone={hovedcoach ? "up" : "warn"}>
+          {hovedcoach ? "Koblet" : "Ingen coach"}
+        </StatusPill>
       </div>
 
-      {/* Mottaker / ny melding */}
+      {/* B: én primær CTA full */}
+      {hovedcoach && (
+        <Link href="/portal/coach/melding/ny" style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="send" full>
+            Ny melding
+          </CTAPill>
+        </Link>
+      )}
+
+      {/* Mottaker */}
       <Kort eyebrow="Til">
         {hovedcoach ? (
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -276,9 +272,6 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
               </div>
               <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>Hovedcoach</div>
             </div>
-            <Link href="/portal/coach/melding/ny" className="md:hidden" style={{ textDecoration: "none" }}>
-              <CTAPill icon="send">Ny melding</CTAPill>
-            </Link>
           </div>
         ) : (
           <TomTilstand icon="user" title="Ingen coach koblet" sub="Coachen din vises her når dere er koblet." />
@@ -296,15 +289,15 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
         </div>
       )}
 
-      {/* Q&A — spørsmål direkte til coachen */}
+      {/* Q&A — sekundær (primær er Ny melding) */}
       <Kort eyebrow={`Q&A med ${fornavn}`}>
         <div style={{ display: "flex", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
           <Icon name="help-circle" size={18} style={{ color: T.lime, flex: "none", marginTop: 2 }} />
           <p style={{ flex: 1, minWidth: 180, fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
-            Still spørsmål direkte til coachen din. Coachen svarer typisk innen 4 timer på hverdager.
+            Still spørsmål direkte. Coachen svarer typisk innen 4 timer på hverdager.
           </p>
           <Link href="/portal/coach/sporsmal/ny" style={{ textDecoration: "none" }}>
-            <CTAPill icon="send">Still spørsmål</CTAPill>
+            <CTAPill ghost icon="send">Still spørsmål</CTAPill>
           </Link>
         </div>
       </Kort>

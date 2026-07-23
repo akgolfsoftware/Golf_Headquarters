@@ -79,20 +79,21 @@ function ConfirmOverlay({ show, onConfirm, onCancel }: ConfirmOverlayProps) {
           Fremgangen din blir lagret. Du kan fortsette senere.
         </p>
         <div className="flex flex-col gap-2">
+          {/* B: primær = fortsett (lime); avslutt er sekundær */}
+          <button
+            type="button"
+            onClick={onCancel}
+            className="w-full rounded-full py-[14px] font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-accent-foreground"
+            style={{ background: "var(--lime-500)", minHeight: 48 }}
+          >
+            Fortsett økt
+          </button>
           <button
             type="button"
             onClick={onConfirm}
             className="w-full rounded-full border border-destructive/25 bg-destructive/10 py-[13px] font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-destructive"
           >
             Avslutt og lagre
-          </button>
-          <button
-            type="button"
-            onClick={onCancel}
-            className="w-full rounded-full py-[13px] font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-accent"
-            style={{ background: "var(--forest-700)" }}
-          >
-            Fortsett økt
           </button>
         </div>
       </div>
@@ -201,8 +202,8 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
           <button
             type="button"
             onClick={onLogRep}
-            className="rounded-full border-none px-5 py-[9px] font-mono text-[11px] font-bold uppercase tracking-[0.06em] text-accent-foreground"
-            style={{ background: "var(--lime-500)" }}
+            className="rounded-full border-none px-5 py-[11px] font-mono text-[12px] font-bold uppercase tracking-[0.06em] text-accent-foreground"
+            style={{ background: "var(--lime-500)", minHeight: 44 }}
           >
             Logg rep
           </button>
@@ -534,9 +535,15 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
           </div>
         )}
 
-        {/* Drill-kort */}
+        {/* Drill-kort — aktiv øvelse først (B: 5s ser hva som skjer nå) */}
         <div className="flex flex-col gap-[10px]">
-          {drills.map((drill) => (
+          {drills
+            .slice()
+            .sort((a, b) => {
+              const rank = (s: DrillStatus) => (s === "active" ? 0 : s === "queued" ? 1 : 2);
+              return rank(a.status) - rank(b.status);
+            })
+            .map((drill) => (
             <ChallengeCard
               key={drill.id}
               drill={drill}
@@ -545,7 +552,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
           ))}
         </div>
 
-        {/* Neste opp — hint om neste drill i køen (matcher phq-live.jsx) */}
+        {/* Neste opp — sekundær info */}
         {active && !allDone && activeIdx < drills.length - 1 && (() => {
           const neste = drills[activeIdx + 1];
           const nesteMaal =
@@ -573,22 +580,37 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
           );
         })()}
 
-        {/* Fullfør aktiv drill — sticky-knapp */}
-        {active && !allDone && (
-          <button
-            type="button"
-            onClick={handleCompleteDrill}
-            disabled={isCompleting}
-            className="mt-5 flex h-[54px] w-full items-center justify-center gap-2 rounded-full font-mono text-[12.5px] font-bold uppercase tracking-[0.04em] text-accent-foreground disabled:opacity-50"
-            style={{ background: "var(--lime-500)" }}
-          >
-            <Check className="h-4 w-4" strokeWidth={2.5} aria-hidden />
-            {activeIdx === drills.length - 1 ? "Fullfør økt" : "Fullfør drill"}
-          </button>
-        )}
-
         <div className="h-4" />
       </main>
+
+      {/* Sticky primær CTA — B: én grønn jobb (tommel-sone) */}
+      {active && !allDone && (
+        <footer
+          className="flex-shrink-0 border-t border-background/10 px-4 pt-3"
+          style={{
+            paddingBottom: "max(env(safe-area-inset-bottom), 16px)",
+            background: "rgba(10, 31, 23, 0.92)",
+            backdropFilter: "blur(8px)",
+          }}
+        >
+          <button
+            type="button"
+            onClick={handleLogRep}
+            className="w-full rounded-full border-none py-4 font-mono text-[13px] font-bold uppercase tracking-[0.08em] text-accent-foreground active:scale-[0.98]"
+            style={{ background: "var(--lime-500)", minHeight: 52 }}
+          >
+            Logg rep
+          </button>
+          <button
+            type="button"
+            onClick={() => void handleCompleteDrill()}
+            disabled={isCompleting}
+            className="mt-2 w-full py-2 font-mono text-[11px] font-bold uppercase tracking-[0.06em] text-background/55 disabled:opacity-50"
+          >
+            {activeIdx === drills.length - 1 ? "Fullfør økt uten mer logging" : "Fullfør drill · neste"}
+          </button>
+        </footer>
+      )}
 
       <LiveCoachPanel data={coachPanel} activeDrillId={active?.id ?? null} />
     </div>

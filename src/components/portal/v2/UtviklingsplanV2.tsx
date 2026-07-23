@@ -1,25 +1,19 @@
 "use client";
 
 /**
- * PlayerHQ Utviklingsplan — v2 (retning C «Presis»). MERGE-skjerm: samler
- * talent-sporet (TalentTracking-radar + milepæler) og det tekniske P1–P10-
- * sporet (TechnicalPlan → posisjoner → krav) på ÉN read-only flate.
- *
- * Komponert 1:1 fra ui_kits/v2/v2-utviklingsplan.jsx (portet til
- * src/components/v2/utviklingsplan.tsx) + TalentProfil (gap — mockupen hadde
- * ingen talent-visning). Kun v2-komponenter fra "@/components/v2"; ingen
- * ad-hoc UI, ingen rå hex (kun T.*-tokens). Ærlig tom-tilstand der data mangler.
- *
- * V2Shell (montert i (v2preview)/v2-utviklingsplan/page.tsx) eier chrome-en —
- * denne komponenten rendrer bare den indre innholds-stacken.
+ * PlayerHQ Utviklingsplan — v2 Presis + B-pakke (oversikt + tom = Workbench).
+ * Talent + teknisk P-spor. T.* only.
  */
 
+import Link from "next/link";
 import {
   T,
   Caps,
   Tittel,
   Kort,
   TomTilstand,
+  CTAPill,
+  StatusPill,
   UtviklingsplanOversikt,
   MilepaelKort,
   LaeringsTrapp,
@@ -81,12 +75,17 @@ export function UtviklingsplanV2({ data }: { data: UtviklingsplanData }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
-      <div>
-        <Caps>PlayerHQ · Plan · Utviklingsplan</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="utviklingsplan">Min</Tittel>
+      {/* Hode + B: status */}
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+        <div>
+          <Caps>Plan · Utviklingsplan</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em="utviklingsplan">Min</Tittel>
+          </div>
         </div>
+        <StatusPill tone={plan ? "lime" : "info"}>
+          {plan ? plan.aktivP : "Ingen plan"}
+        </StatusPill>
       </div>
 
       {/* Oversikt — teknisk plan-speil (hero). Tom-tilstand hvis ingen plan. */}
@@ -105,8 +104,15 @@ export function UtviklingsplanV2({ data }: { data: UtviklingsplanData }) {
           <TomTilstand
             icon="file-text"
             title="Ingen teknisk utviklingsplan ennå"
-            sub="Coachen setter opp din første plan i Workbench — da vises P-posisjoner, krav og milepæler her."
+            sub="Sett opp plan i Workbench — da vises P-posisjoner, krav og milepæler her."
           />
+          <div style={{ marginTop: 12 }}>
+            <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="calendar" full>
+                Åpne Workbench
+              </CTAPill>
+            </Link>
+          </div>
         </Kort>
       )}
 

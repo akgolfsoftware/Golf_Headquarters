@@ -1,19 +1,10 @@
 /**
- * AgencyOS · Drill-bibliotek — v2 (retning C «Presis»). Erstatter `AgPage`/
- * `AgPageHead`/`agBtnClass` (bespoke, ikke-kanon) med v2-primitivene.
- * Rekomponert med idéer fra Claude Design ui_kits/agencyos/drills-app.jsx
- * (segmentert kategorifilter, tile-grid, kategorifarget ikon) — men
- * STRUKTUREN følger faktisk produksjonskode, ikke mockupens ett-app-modell:
- * mockupen bruker en klient-side inspektør+composer-modal, mens produksjon
- * har egne sider for detalj/rediger/ny med et 27-felts admin-skjema
- * (`DrillEditForm`) og en ekte AI-forslagskø (`/admin/drills/forslag`,
- * CaddieDraft-basert). Porten endrer IKKE denne arkitekturen — kun visuell
- * restyling av søk/filter/tile-grid, ren server-rendret (URL-drevet
- * kategori+søk, ingen klient-state nødvendig).
+ * AgencyOS Drill-bibliotek — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Kategori + søk + tile-grid. T.* only.
  */
 
 import Link from "next/link";
-import { Caps, Tittel, CTAPill, Kort, TomTilstand } from "@/components/v2";
+import { Caps, Tittel, CTAPill, Kort, TomTilstand, StatusPill } from "@/components/v2";
 import { T } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
 
@@ -50,7 +41,7 @@ export function AdminDrillsV2({ data }: { data: AdminDrillsV2Data }) {
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
         <div>
-          <Caps>Planlegge · Drill-bibliotek</Caps>
+          <Caps>Planlegge · Drill-bibliotek · AgencyOS</Caps>
           <div style={{ marginTop: 10 }}>
             <Tittel em="tagget.">{`${data.total} drills,`}</Tittel>
           </div>
@@ -58,10 +49,16 @@ export function AdminDrillsV2({ data }: { data: AdminDrillsV2Data }) {
             Øvelsesbiblioteket coachene deler. Filtrer på ferdighet og slipp drills rett inn i en plan.
           </p>
         </div>
-        <Link href="/admin/drills/ny" style={{ display: "contents" }}>
-          <CTAPill icon="plus">Ny drill</CTAPill>
-        </Link>
+        <StatusPill tone={data.total > 0 ? "lime" : "warn"}>
+          {data.total === 0 ? "Tomt bibliotek" : `${data.total} drills`}
+        </StatusPill>
       </div>
+
+      <Link href="/admin/drills/ny" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="plus" full>
+          Ny drill
+        </CTAPill>
+      </Link>
 
       {/* Søk — kombineres med kategorifilteret via ?q= */}
       <form action="/admin/drills" method="GET" style={{ maxWidth: 360 }}>
@@ -101,7 +98,11 @@ export function AdminDrillsV2({ data }: { data: AdminDrillsV2Data }) {
       </div>
 
       {data.drills.length === 0 ? (
-        <TomTilstand icon="search" title="Ingen drills i denne kategorien ennå" />
+        <TomTilstand
+          icon="search"
+          title="Ingen drills i denne kategorien ennå"
+          sub="Bytt kategori, fjern søk, eller opprett en ny drill."
+        />
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 12 }}>
           {data.drills.map((d) => (

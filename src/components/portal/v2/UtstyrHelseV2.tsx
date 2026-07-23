@@ -1,13 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · SG-hub · Utstyr-helsesjekk (equipment fit) — v2.
- * v2-port 17. juli 2026: ren design-port av `EquipmentView`. Presentasjonen
- * flyttet fra rå Tailwind til v2-primitiver (Kort/Caps/Tittel/StatusPill/
- * TomTilstand) + T-tokens. ALL datalogikk (prisma-queries + computeClubFit)
- * bor uendret i server-siden (EquipmentView) — denne komponenten tar kun
- * ferdig utregnede `ClubFitReport[]` som serialiserbare props.
- * Delt av spiller-inngangen og coach-proxy-ruten via EquipmentView.
+ * PlayerHQ · SG-hub · Utstyr-helsesjekk (equipment fit) — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import Link from "next/link";

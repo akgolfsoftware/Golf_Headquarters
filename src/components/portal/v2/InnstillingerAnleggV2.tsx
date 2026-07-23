@@ -1,15 +1,7 @@
 "use client";
 
 /**
- * PlayerHQ Innstillinger · Mitt treningsanlegg — v2 (retning C «Presis»).
- * v2-port 17. juli 2026: erstatter FasilitetProfilForm-presentasjonen.
- * Lagringslogikk bevart 1:1: samme GRUPPER-katalog, samme toggle/toggleGruppe/
- * handleLagre-flyt mot lagreFasilitetProfil-server-action + router.refresh.
- *
- * Kun v2-komponenter fra "@/components/v2" + T.*-tokens. Ingen rå hex.
- * Ikon-merknad: MAP-en mangler «wifi»/«wind» — gruppene bruker nærmeste
- * eksisterende navn (radar/home) i stedet for å hardkode Lucide-importer.
- * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
+ * PlayerHQ Innstillinger · Anlegg — v2 Presis + B-pakke (status, lagre = full CTA).
  */
 
 import { useEffect, useState, useTransition } from "react";
@@ -287,11 +279,17 @@ export function InnstillingerAnleggV2({ data }: { data: InnstillingerAnleggData 
         {status === "lagret" && <StatusPill tone="up">Lagret</StatusPill>}
         {status === "feil" && <StatusPill tone="down">Noe gikk galt — prøv igjen</StatusPill>}
       </div>
-      <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.6, margin: "-8px 0 0" }}>
-        Registrer utstyret og anlegget du har tilgang til. Drill-biblioteket og AI-treningsplanen din
-        bruker dette til å kun foreslå øvelser du faktisk kan gjøre — uten å sende deg til en bunker du
-        ikke har, eller en 25m putting-green når du bare har 10m.
-      </p>
+
+      {/* B: status først */}
+      <Kort pad="12px">
+        <Caps size={9}>Valgt</Caps>
+        <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 18, marginTop: 8, color: T.fg }}>
+          {antallValgt}
+        </div>
+        <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 4 }}>
+          {antallValgt === 0 ? "Ingen filter — alle drills vises" : "Drills filtreres etter dette"}
+        </div>
+      </Kort>
 
       {/* Grupper */}
       {GRUPPER.map((gruppe) => {
@@ -340,33 +338,9 @@ export function InnstillingerAnleggV2({ data }: { data: InnstillingerAnleggData 
         );
       })}
 
-      {/* Lagre */}
-      <Kort>
-        <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-          <p style={{ flex: 1, minWidth: 180, fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.55, margin: 0 }}>
-            {antallValgt === 0
-              ? "Ingen fasiliteter valgt — du ser alle drills."
-              : `${antallValgt} fasilitet${antallValgt !== 1 ? "er" : ""} valgt — drills filtreres deretter.`}
-          </p>
-          <Knapp icon={pending ? "loader" : "check"} disabled={pending} onClick={handleLagre}>
-            {pending ? "Lagrer …" : "Lagre anleggsprofil"}
-          </Knapp>
-        </div>
-      </Kort>
-
-      {/* Info */}
-      <Kort eyebrow="Slik virker dette">
-        <div style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.6 }}>
-          <p style={{ margin: 0 }}>
-            Drills med krav om spesiell fasilitet (f.eks. bunker, radar, lang putting-green) vil
-            automatisk filtreres bort hvis du ikke har den fasiliteten registrert. Drill-biblioteket og
-            treningsplanen din blir da 100 % praktisk gjennomførbar.
-          </p>
-          <p style={{ margin: "8px 0 0", color: T.mut }}>
-            Hvis du har ingen fasiliteter registrert, vises alle drills ufiltrert — som før.
-          </p>
-        </div>
-      </Kort>
+      <Knapp icon={pending ? "loader" : "check"} full disabled={pending} onClick={handleLagre}>
+        {pending ? "Lagrer …" : "Lagre anleggsprofil"}
+      </Knapp>
     </div>
   );
 }

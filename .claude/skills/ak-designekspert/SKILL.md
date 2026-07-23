@@ -5,28 +5,37 @@ description: >
   Bruk ALLTID ved design, UI, wireframe, komponentvalg, TrackMan/SG-visualisering,
   kalendere, live-økt, «premium», design-review, eller prompts til Claude Design.
   Token-fasit: akgolf-design-system + docs/design-system/FASIT.md — les den før farger.
-Versjon: 7
+  Lanseringskjerne: workbench + AgenticOS. Open Design for godkjenning: open-design-sync.
+Versjon: 8 (2026-07-22)
 ---
 
 # AK Designekspert
 
 Du designer for AK Golf HQ og dømmer mot verdensklasse. Du finner ikke opp merkevare.
 
-**Før farger/tokens:** les `docs/design-system/FASIT.md` eller skill `akgolf-design-system`.  
-**Denne skillen** = *hvordan* tenke (jobb, flyt, wireframe, kritikk, golf-data-UI).  
-**akgolf-design-system** = *hva* som er lov (tokens, navn, tema per produkt).
+**Før farger/tokens:** `akgolf-design-system` + `docs/design-system/FASIT.md`.  
+**Denne skillen** = *hvordan* tenke. **akgolf-design-system** = *hva* som er lov.
+
+## Lanseringsprioritet (2026-07)
+
+1. **Workbench** (begge roller) — Notion-rask uke + AK-nøyaktig — skill `workbench-planlegging`  
+2. **AgenticOS** — AI synlig og trygg — skill `agenticos`  
+3. Live-sløyfe — skill `playerhq-live-session`  
+4. Resterende flater  
+
+Godkjenning av wireframes: skill `open-design-sync` (live) eller HTML-boards.
 
 ## Beslutningshierarki
 
-0. **Enkelhet (LÅST 2026-07-21)** — behold funksjoner; minst mulig trykk; super enkelt; vanskelig = feil design. FASIT §3.  
-1. **Jobben** — hva skal brukeren oppnå på 5 sekunder?  
-2. **Flyten** — færrest steg (mål 1–2 trykk fra hub for primærjobb)  
-3. **Hierarkiet** — ett fokuspunkt · én primær CTA  
-4. **Komposisjonen** — designsystem-komponenter (gap meldes)  
+0. **Enkelhet (LÅST)** — behold funksjoner; minst trykk; super enkelt; vanskelig = feil. FASIT §3.  
+1. **Jobben** — 5 sekunder  
+2. **Flyten** — 1–2 trykk til primærjobb  
+3. **Hierarkiet** — ett fokus · én primær CTA  
+4. **Komposisjonen** — v2-komponenter (gap meldes)  
 5. **Craft** — spacing, motion, detalj  
 
-Aldri poler feil flyt med penere skygger. Aldri «flere knapper» som løsning på kompleksitet.  
-Detaljer: `references/mesterens-prosess.md` + `docs/design-system/FASIT.md` §3.
+Aldri poler feil flyt med penere skygger.  
+Arkitektur: `playerhq-arkitektur` / `agencyos-arkitektur` — **ikke** deprecated `coachhq-*`.
 
 ## Dommerregler
 

@@ -1,19 +1,12 @@
 "use client";
 
 /**
- * PlayerHQ Gameplan (B30, omdøpt fra "Baneguide") — banebibliotek: baner med
- * kartlagt geometri + baner spilleren har spilt. Kun v2-komponenter fra
- * "@/components/v2"; ingen ad-hoc UI, ingen rå hex (T.*).
- *
- * Ærlighet: ingen fabrikkerte tall — KPI-strimmelen er avledet direkte av
- * bibliotek-radene (antall baner, kartlagte baner, sum spilte runder). Detalj-
- * og hull-visning nås ved klikk på en rad → /portal/gameplan/[id].
- *
- * V2Shell (montert i page.tsx) eier chrome-en — denne komponenten rendrer
- * bare den indre innholds-stacken.
+ * PlayerHQ Gameplan — v2 Presis + B-pakke (status + baneliste, tom = én grønn vei).
+ * Banebibliotek: kartlagt geometri + spilte baner. Ekte tall, T.* only.
  */
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { BaneLibraryItem } from "@/lib/gameplan/queries";
 import {
@@ -26,6 +19,7 @@ import {
   StatusPill,
   MikroMeta,
   TomTilstand,
+  CTAPill,
   Icon,
 } from "@/components/v2";
 
@@ -62,22 +56,30 @@ export function GameplanV2({ data }: { data: BaneLibraryItem[] }) {
         </p>
       </div>
 
+      {/* B: status først (også tom = null-tall) */}
+      <div className="grid grid-cols-3" style={{ gap: T.gap }}>
+        <KpiFlis label="Baner" value={String(data.length || "—")} />
+        <KpiFlis label="Kartlagt" value={data.length === 0 ? "—" : String(kartlagte)} />
+        <KpiFlis label="Spilte runder" value={data.length === 0 ? "—" : String(sumRunder)} tint />
+      </div>
+
       {data.length === 0 ? (
         <Kort>
           <TomTilstand
             icon="map-pin"
             title="Ingen baner ennå"
-            sub="Logg en runde for å komme i gang — banene dine dukker opp her."
+            sub="Logg en runde — banene dine dukker opp her."
           />
+          <div style={{ marginTop: 12 }}>
+            <Link href="/portal/runde/live" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="flag" full>
+                Start live-føring
+              </CTAPill>
+            </Link>
+          </div>
         </Kort>
       ) : (
         <>
-          {/* KPI-strimmel — avledet av bibliotek-radene (ekte tall) */}
-          <div className="grid grid-cols-3" style={{ gap: T.gap }}>
-            <KpiFlis label="Baner" value={String(data.length)} />
-            <KpiFlis label="Kartlagt" value={String(kartlagte)} />
-            <KpiFlis label="Spilte runder" value={String(sumRunder)} tint />
-          </div>
 
           {/* Banebibliotek */}
           <Kort eyebrow="Banebibliotek" action={<Caps size={9}>{data.length} baner</Caps>}>

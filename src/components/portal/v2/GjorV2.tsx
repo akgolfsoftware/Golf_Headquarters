@@ -1,19 +1,9 @@
 "use client";
 
 /**
- * PlayerHQ Gjør — v2 (retning C «Presis»). Komponert fra
- * ui_kits/v2/phq-skjermer.jsx → funksjonen Gjor, men med EKTE data fra
- * getGjennomforeData (src/lib/portal-gjennomfore/gjennomfore-data.ts).
- * Kun v2-komponenter fra "@/components/v2"; ingen ad-hoc UI. Ingen rå hex (T.*).
- *
- * Ærlighet fremfor mockup-fasade: mockupen viser en LIVE repetisjons-teller
- * (treff-rate, «på rad nå», 9/15 treff, hits-prikker). Datakontrakten har ingen
- * live-rep-felter, så de er IKKE fabrikkert — de er meldt som gap. Skjermen
- * bygges av det loaderen faktisk gir: dagens/ventende økter, status og
- * live-inngangen (href) til hver økt.
- *
- * V2Shell (montert i (v2preview)/v2-gjor/page.tsx) eier chrome-en — denne
- * komponenten rendrer bare den indre innholds-stacken.
+ * PlayerHQ Gjør — v2 Presis + opplevelse B-pakke.
+ * Oversikt (status + tall) → én grønn start → detalj. Runde/fysisk er sekundært.
+ * Ekte data fra getGjennomforeData. Låst følelse: RETNING-B-PAKKE.md
  */
 
 import Link from "next/link";
@@ -21,12 +11,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition, type ReactNode } from "react";
 import { markerOktStatus } from "@/lib/portal-gjennomfore/okt-status-actions";
 import type { GjennomforeData } from "@/lib/portal-gjennomfore/gjennomfore-data";
+import { FortsettRundeCta } from "@/components/portal/runde-logg/fortsett-runde-cta";
 import {
   T,
   Caps,
   Tittel,
   StatusPill,
-  KpiFlis,
   Kort,
   Rad,
   TallHero,
@@ -34,17 +24,14 @@ import {
   AkseChip,
   TomTilstand,
   Icon,
+  ProgresjonsBar,
 } from "@/components/v2";
 
-/* ── Rene hjelpere (norsk bokmål) ──────────────────────────────────── */
-
-/** Minutter → «2,5 t» (≥60) eller «45 min». */
 function fmtTid(min: number): string {
   if (min >= 60) return `${(min / 60).toFixed(1).replace(".", ",")} t`;
   return `${min} min`;
 }
 
-/** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
 function useMobile(): boolean {
   const [m, setM] = useState(false);
   useEffect(() => {
@@ -56,8 +43,6 @@ function useMobile(): boolean {
   }, []);
   return m;
 }
-
-/* ── Skjerm ────────────────────────────────────────────────────────── */
 
 function HurtigStatus({
   o,
@@ -76,7 +61,21 @@ function HurtigStatus({
         disabled={oppdaterer}
         onClick={() => onMarker(o, "COMPLETED")}
         title="Marker som gjennomført"
-        style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 9999, padding: "7px 12px", cursor: "pointer", minHeight: 32 }}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 5,
+          fontFamily: T.ui,
+          fontSize: 11.5,
+          fontWeight: 600,
+          color: T.fg,
+          background: T.panel3,
+          border: `1px solid ${T.borderS}`,
+          borderRadius: 9999,
+          padding: "7px 12px",
+          cursor: "pointer",
+          minHeight: 32,
+        }}
       >
         <Icon name="check" size={12} />
         Gjort
@@ -87,7 +86,21 @@ function HurtigStatus({
         disabled={oppdaterer}
         onClick={() => onMarker(o, "SKIPPED")}
         title="Hopp over økten — coachen ser det i klarspråk"
-        style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.mut, background: "transparent", border: `1px solid ${T.border}`, borderRadius: 9999, padding: "7px 12px", cursor: "pointer", minHeight: 32 }}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 5,
+          fontFamily: T.ui,
+          fontSize: 11.5,
+          fontWeight: 600,
+          color: T.mut,
+          background: "transparent",
+          border: `1px solid ${T.border}`,
+          borderRadius: 9999,
+          padding: "7px 12px",
+          cursor: "pointer",
+          minHeight: 32,
+        }}
       >
         Hopp over
       </button>
@@ -95,12 +108,48 @@ function HurtigStatus({
   );
 }
 
+/** Sekundære innganger — aldri grønn primær (B: én accent-jobb). */
+function SekundarHandlinger() {
+  return (
+    <Kort eyebrow="Annet i dag">
+      <FortsettRundeCta />
+      <Link href="/portal/runde/live" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+        <Rad
+          leading={<Icon name="flag" size={16} style={{ color: T.mut }} />}
+          title="Før runde slag for slag"
+          sub="SG beregnes automatisk når du lagrer"
+        />
+      </Link>
+      <Link href="/portal/runde/logg" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+        <Rad
+          leading={<Icon name="list" size={16} style={{ color: T.mut }} />}
+          title="Logg tidligere runde"
+          sub="Etterpå-føring"
+        />
+      </Link>
+      <Link href="/portal/mal/runder/ny" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+        <Rad
+          leading={<Icon name="upload" size={16} style={{ color: T.mut }} />}
+          title="Hurtig score / importer runde"
+          sub="Ny runde eller score fra fil (UpGame) etter lagring"
+        />
+      </Link>
+      <Link href="/portal/fysisk" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+        <Rad
+          leading={<Icon name="dumbbell" size={16} style={{ color: T.mut }} />}
+          title="Logg fysisk-økt"
+          sub="Styrke, mobilitet, kondisjon"
+          last
+        />
+      </Link>
+    </Kort>
+  );
+}
+
 export function GjorV2({ data }: { data: GjennomforeData }) {
   const mobile = useMobile();
   const router = useRouter();
   const { datoTekst, antall, totalMin, nesteOkt, resteAvDagen, fullfortIdag } = data;
-  // C5b: én-trykks gjennomført/hopp over — direkte fra lista, uten skjema.
-  // Kun raden som oppdateres disables (id-sporing), ikke alle radene.
   const [oppdaterer, startOppdatering] = useTransition();
   const [oppdatererId, setOppdatererId] = useState<string | null>(null);
   const marker = (o: { id: string; kilde: "v2" | "plan" }, status: "COMPLETED" | "SKIPPED") => {
@@ -111,21 +160,20 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
     });
   };
 
-
   const live = nesteOkt?.status === "now";
+  const fullfortPct = antall > 0 ? Math.round((fullfortIdag.length / antall) * 100) : 0;
 
-  // Adaptivt hode: live-økt · neste økt · alt fullført · tomt.
   let headerCaps: string;
   let titelChildren: string;
   let titelEm: string;
   let headerStatus: ReactNode = null;
   if (nesteOkt && live) {
-    headerCaps = `Pågående økt · startet ${nesteOkt.tid}`;
+    headerCaps = `Pågående · startet ${nesteOkt.tid}`;
     titelChildren = `${nesteOkt.pyramidArea} ·`;
     titelEm = nesteOkt.tittel;
     headerStatus = <StatusPill tone="lime">Live</StatusPill>;
   } else if (nesteOkt) {
-    headerCaps = `Neste økt · ${nesteOkt.relTidTekst}`;
+    headerCaps = `Neste · ${nesteOkt.relTidTekst}`;
     titelChildren = `${nesteOkt.pyramidArea} ·`;
     titelEm = nesteOkt.tittel;
     headerStatus = <StatusPill tone="info">kl {nesteOkt.tid}</StatusPill>;
@@ -139,83 +187,175 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Hode */}
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          gap: 12,
+          flexWrap: "wrap",
+        }}
+      >
         <div>
           <Caps>{headerCaps}</Caps>
           <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em={titelEm}>{titelChildren}</Tittel>
+            <Tittel mobile={mobile} em={titelEm}>
+              {titelChildren}
+            </Tittel>
           </div>
         </div>
         {headerStatus}
       </div>
 
-      {/* BETA-RUNDE: runde-føring skal nås med maks 2 trykk fra åpnet app —
-          alltid synlig her på Gjør, uavhengig av dagens økter. */}
-      <Kort tint eyebrow="Runde">
-        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-          <div style={{ flex: 1, minWidth: 180 }}>
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>Spille runde?</div>
-            <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 4 }}>
-              Før slag for slag på banen — SG beregnes automatisk når du lagrer.
-            </div>
-          </div>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <Link href="/portal/runde/live" style={{ textDecoration: "none" }}>
-              <CTAPill ghost={nesteOkt != null} icon="flag">Før runde slag for slag</CTAPill>
-            </Link>
-            <Link href="/portal/runde/logg" style={{ textDecoration: "none" }}>
-              <CTAPill ghost icon="list">Logg tidligere runde</CTAPill>
-            </Link>
-          </div>
-        </div>
-      </Kort>
-
-      <Kort tint eyebrow="Fysisk">
-        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-          <div style={{ flex: 1, minWidth: 180 }}>
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>Egentrening?</div>
-            <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 4 }}>
-              Logg styrke, mobilitet og kondisjon utenfor planlagte økter.
-            </div>
-          </div>
-          <Link href="/portal/fysisk" style={{ textDecoration: "none" }}>
-            <CTAPill ghost icon="dumbbell">Logg fysisk-økt</CTAPill>
-          </Link>
-        </div>
-      </Kort>
-
       {antall === 0 ? (
-        <Kort>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <>
+          {/* Tom dag — B: ærlig tom + én grønn vei */}
+          <div className="grid grid-cols-3" style={{ gap: 8 }}>
+            {(
+              [
+                { l: "Økter", v: "0" },
+                { l: "Tid", v: "—" },
+                { l: "Status", v: "Hvile" },
+              ] as const
+            ).map((k) => (
+              <Kort key={k.l} pad="12px">
+                <Caps size={9}>{k.l}</Caps>
+                <div
+                  style={{
+                    fontFamily: T.mono,
+                    fontWeight: 700,
+                    fontSize: 16,
+                    marginTop: 8,
+                    color: T.fg,
+                  }}
+                >
+                  {k.v}
+                </div>
+              </Kort>
+            ))}
+          </div>
+
+          <Kort>
             <TomTilstand
               icon="calendar"
               title="Ingen økter i dag"
               sub="Nyt hviledagen — eller planlegg fra Workbench."
             />
-            <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none" }}>
-              <CTAPill icon="calendar" full>
-                Åpne Workbench
-              </CTAPill>
-            </Link>
-            <Link href="/portal/analysere" style={{ textDecoration: "none" }}>
-              <CTAPill ghost full icon="bar-chart">
-                Se SG og finn fokus
-              </CTAPill>
-            </Link>
-          </div>
-        </Kort>
+          </Kort>
+
+          <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
+            <CTAPill icon="calendar" full>
+              Åpne Workbench
+            </CTAPill>
+          </Link>
+          <Link
+            href="/portal/analysere"
+            style={{
+              textDecoration: "none",
+              display: "block",
+              textAlign: "center",
+              fontFamily: T.ui,
+              fontSize: 12,
+              fontWeight: 600,
+              color: T.mut,
+              padding: "2px 0",
+            }}
+          >
+            Se form og finn fokus →
+          </Link>
+
+          <SekundarHandlinger />
+        </>
       ) : (
         <>
-          {/* KPI-rad — ekte dagssammendrag (mockupens live-rep-fliser finnes ikke i data) */}
-          <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: T.gap }}>
-            <KpiFlis label="Økter i dag" value={String(antall)} tint />
-            <KpiFlis label="Planlagt tid" value={fmtTid(totalMin)} />
-            <div className="hidden md:block">
-              <KpiFlis label="Fullført" value={`${fullfortIdag.length} / ${antall}`} />
-            </div>
+          {/* Status-tall først (B) */}
+          <div className="grid grid-cols-3" style={{ gap: 8 }}>
+            {(
+              [
+                { l: "Økter", v: String(antall) },
+                { l: "Planlagt", v: fmtTid(totalMin) },
+                { l: "Fullført", v: `${fullfortIdag.length}/${antall}` },
+              ] as const
+            ).map((k) => (
+              <Kort key={k.l} pad="12px">
+                <Caps size={9}>{k.l}</Caps>
+                <div
+                  style={{
+                    fontFamily: T.mono,
+                    fontWeight: 700,
+                    fontSize: mobile ? 15 : 17,
+                    marginTop: 8,
+                    color: T.fg,
+                    letterSpacing: "-0.02em",
+                  }}
+                >
+                  {k.v}
+                </div>
+              </Kort>
+            ))}
           </div>
 
-          {/* Øvelser i økta — drills fra neste/pågående økt (ingen per-drill status i data) */}
+          {antall > 0 && (
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: 6,
+                }}
+              >
+                <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, fontWeight: 600 }}>
+                  Dagens gjennomføring
+                </span>
+                <span style={{ fontFamily: T.mono, fontSize: 11.5, fontWeight: 700 }}>{fullfortPct} %</span>
+              </div>
+              <ProgresjonsBar variant="bar" value={fullfortPct} max={100} showValue={false} label="" />
+            </div>
+          )}
+
+          {/* Én primær CTA */}
+          {nesteOkt && (
+            <Link href={nesteOkt.href} style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="play" full>
+                {live ? "Fortsett økt" : "Start økt"}
+              </CTAPill>
+            </Link>
+          )}
+
+          {/* Detalj neste/live */}
+          {nesteOkt && (
+            <Kort tint eyebrow={live ? "Aktiv økt" : "Neste økt"}>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 16, flexWrap: "wrap" }}>
+                <TallHero
+                  value={nesteOkt.varighet}
+                  unit="min"
+                  size={mobile ? 40 : 44}
+                  accent
+                  sub={`${nesteOkt.sted} · ${nesteOkt.coachNavn}`}
+                />
+              </div>
+              <div style={{ display: "flex", gap: 6, marginTop: 12, flexWrap: "wrap", alignItems: "center" }}>
+                <AkseChip a={nesteOkt.pyramidArea} />
+                <StatusPill tone={live ? "lime" : "info"}>
+                  {live ? `Live · kl ${nesteOkt.tid}` : nesteOkt.relTidTekst}
+                </StatusPill>
+              </div>
+              <div style={{ marginTop: 14, display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                <HurtigStatus
+                  o={nesteOkt}
+                  oppdaterer={oppdaterer && oppdatererId === nesteOkt.id}
+                  onMarker={marker}
+                />
+                <Link href={`${nesteOkt.href}?logg=1`} style={{ textDecoration: "none" }}>
+                  <CTAPill ghost icon="send">
+                    Avslutt og send
+                  </CTAPill>
+                </Link>
+              </div>
+            </Kort>
+          )}
+
+          {/* Øvelser */}
           {nesteOkt && (
             <Kort eyebrow="Øvelser i økta" action={<Caps size={9}>{nesteOkt.antallDrills} øvelser</Caps>}>
               {nesteOkt.drillNavn.length > 0 ? (
@@ -250,54 +390,22 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
             </Kort>
           )}
 
-          {/* Live-inngang + avslutt-flyt */}
-          {nesteOkt && (
-            <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap }}>
-              <Kort tint eyebrow={live ? "Aktiv økt · live-inngang" : "Neste økt"}>
-                <div style={{ display: "flex", alignItems: "baseline", gap: 16, flexWrap: "wrap" }}>
-                  <TallHero
-                    value={nesteOkt.varighet}
-                    unit="min"
-                    size={mobile ? 40 : 44}
-                    accent
-                    sub={`${nesteOkt.sted} · ${nesteOkt.coachNavn}`}
-                  />
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                    <Link href={nesteOkt.href} style={{ textDecoration: "none" }}>
-                      <CTAPill icon="play">{live ? "Fortsett økt" : "Start økt"}</CTAPill>
-                    </Link>
-                    <HurtigStatus o={nesteOkt} oppdaterer={oppdaterer && oppdatererId === nesteOkt.id} onMarker={marker} />
-                  </span>
-                </div>
-                <div style={{ display: "flex", gap: 6, marginTop: 12 }}>
-                  <AkseChip a={nesteOkt.pyramidArea} />
-                  <StatusPill tone={live ? "lime" : "info"}>
-                    {live ? `Live · kl ${nesteOkt.tid}` : nesteOkt.relTidTekst}
-                  </StatusPill>
-                </div>
-              </Kort>
-
-              <Kort eyebrow="Når du er ferdig">
-                <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
-                  Logg kvalitet, RPE og følelse — så sendes økta til {nesteOkt.coachNavn} med ett trykk.
-                </p>
-                <div style={{ marginTop: 12 }}>
-                  <Link href={`${nesteOkt.href}?logg=1`} style={{ textDecoration: "none" }}>
-                    <CTAPill ghost={!live} icon="send">Avslutt og send</CTAPill>
-                  </Link>
-                </div>
-              </Kort>
-            </div>
-          )}
-
-          {/* Resten av dagen */}
           {resteAvDagen.length > 0 && (
             <Kort eyebrow="Resten av dagen" action={<Caps size={9}>{resteAvDagen.length} økter</Caps>}>
               {resteAvDagen.map((o, i) => (
                 <Rad
                   key={o.id}
                   leading={
-                    <span style={{ width: 44, flex: "none", fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.mut }}>
+                    <span
+                      style={{
+                        width: 44,
+                        flex: "none",
+                        fontFamily: T.mono,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: T.mut,
+                      }}
+                    >
                       {o.tid}
                     </span>
                   }
@@ -306,7 +414,11 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
                   meta={
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
                       <AkseChip a={o.pyramidArea} />
-                      <HurtigStatus o={o} oppdaterer={oppdaterer && oppdatererId === o.id} onMarker={marker} />
+                      <HurtigStatus
+                        o={o}
+                        oppdaterer={oppdaterer && oppdatererId === o.id}
+                        onMarker={marker}
+                      />
                     </span>
                   }
                   onClick={() => router.push(o.href)}
@@ -316,7 +428,6 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
             </Kort>
           )}
 
-          {/* Fullført i dag */}
           {fullfortIdag.length > 0 && (
             <Kort eyebrow="Fullført i dag" action={<Caps size={9}>{fullfortIdag.length} fullført</Caps>}>
               {fullfortIdag.map((o, i) => (
@@ -354,6 +465,9 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
               ))}
             </Kort>
           )}
+
+          {/* Runde / fysisk nederst — sekundært */}
+          <SekundarHandlinger />
         </>
       )}
     </div>

@@ -1,12 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · Ny egen test — v2 (retning C «Presis»).
- * v2-port 17. juli 2026 (Team F3): erstatter legacy EgenTestWizard. Fem-stegs
- * flyt (Navn & kategori → Protokoll → Måleenhet → Synlighet → Forhåndsvisning)
- * med IDENTISK logikk: samme validering per steg, samme payload-bygging og
- * samme server action `opprettCustomTest` (flyttet byte-identisk til
- * /portal/tren/tester/ny/egen/actions.ts). Kun presentasjonslaget er nytt.
+ * PlayerHQ · Ny egen test — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";

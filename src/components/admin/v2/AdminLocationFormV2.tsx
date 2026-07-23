@@ -10,7 +10,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { T, Caps, Knapp, Velger } from "@/components/v2";
+import { T, Caps, CTAPill, Velger } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { CourseMap } from "@/components/gameplan/course-map";
 import {
@@ -311,7 +311,16 @@ export function LocationFormV2({ initial, triggerLabel }: LocationFormV2Props) {
           {triggerLabel}
         </button>
       ) : (
-        <Knapp icon="plus" onClick={aapne}>{triggerLabel}</Knapp>
+        <button
+          type="button"
+          onClick={aapne}
+          style={{ all: "unset", cursor: "pointer", display: "block", width: "100%" }}
+          aria-label={triggerLabel}
+        >
+          <CTAPill icon="plus" full>
+            {triggerLabel}
+          </CTAPill>
+        </button>
       )}
       <DialogSkall open={open} onClose={() => setOpen(false)} tittel={`${initial ? "Endre" : "Ny"} lokasjon`}>
         <form onSubmit={lagre}>

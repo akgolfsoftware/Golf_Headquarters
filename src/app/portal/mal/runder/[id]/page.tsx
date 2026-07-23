@@ -14,11 +14,15 @@ export const dynamic = "force-dynamic";
 
 export default async function RundeDetaljPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ lagret?: string }>;
 }) {
   const user = await requirePortalUser();
   const { id } = await params;
+  const sp = await searchParams;
+  const nettoppLagret = sp.lagret === "1";
 
   const runde = await prisma.round.findUnique({
     where: { id },
@@ -126,6 +130,7 @@ export default async function RundeDetaljPage({
 
   const data: RundeDetaljData = {
     id: runde.id,
+    nettoppLagret,
     baneNavn: runde.course.name,
     datoTekst: runde.playedAt.toLocaleDateString("nb-NO", {
       day: "numeric",

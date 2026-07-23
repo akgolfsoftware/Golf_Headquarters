@@ -72,7 +72,8 @@ export function Oppsummering({
         roundType,
       });
       slettKladd();
-      router.push(`/portal/mal/runder/${res.roundId}`);
+      // CTA-løkke: rundedetalj har SG + Importer runde-data (UpGame)
+      router.push(`/portal/mal/runder/${res.roundId}?lagret=1`);
     } catch (e) {
       setFeil(
         e instanceof Error && e.message.startsWith("Ugyldig runde-logg")

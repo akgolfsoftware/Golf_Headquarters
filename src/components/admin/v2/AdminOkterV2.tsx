@@ -1,25 +1,8 @@
 "use client";
 
 /**
- * AgencyOS Økter — v2 (retning C «Presis»). Coach-kontekst: ukas
- * treningsøkter (TrainingPlanSession) på tvers av hele stallen, gruppert per
- * ukedag som en agenda. Ingen mockup fantes — komponert utelukkende av
- * v2-biblioteket (src/components/v2): ingen ad-hoc UI, ingen rå hex (kun T.*).
- *
- * Funksjon/data bevart 1:1 fra den ekte skjermen
- * (src/app/admin/okter/page.tsx):
- *   - Ukas økter, gruppert mandag→søndag (norsk ukestart), tid + varighet.
- *   - KPI-tall: totalt, gjennomført, planlagt, forfalt (planlagt + passert),
- *     kansellert (inkl. hoppet over). Live-antall i hodet.
- *   - Snitt-pyramide for uka (timer per akse) via TidsPyramide.
- *   - Hver rad lenker til planen (/admin/plans/[planId]).
- *   - Ærlig tom-tilstand når uka er tom.
- *
- * Nytt i v2 (ekte data, ingen fabrikasjon): interaktive filtre på akse og
- * status som den ekte skjermen bare tegnet visuelt (v1 hadde ingen filter-state).
- *
- * Mobil: agenda-stabel (ett dagskort under hverandre). Desktop: to-kolonners
- * dagsrutenett for å bruke bredden. KPI 2→5 kolonner, filtre brytes.
+ * AgencyOS Økter — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Mørk AgencyOS. Uke-agenda for hele stallen.
  */
 
 import { useState } from "react";
@@ -146,7 +129,29 @@ export function AdminOkterV2({ data }: { data: AdminOkterData }) {
   const antallSynlig = dagerFiltrert.reduce((n, d) => n + d.okter.length, 0);
   const harFilter = akseAktiv.length > 0 || statAktiv.length > 0;
 
-  // ── Hode ──────────────────────────────────────────────────────
+  // B: status
+  const statusTone: StatusTone =
+    kpi.liveNa > 0 ? "down" : kpi.forfalt > 0 ? "warn" : kpi.total > 0 ? "lime" : "info";
+  const statusTekst =
+    kpi.liveNa > 0
+      ? `Live · ${kpi.liveNa}`
+      : kpi.forfalt > 0
+        ? `${pl(kpi.forfalt, "forfalt", "forfalte")}`
+        : kpi.total > 0
+          ? `${pl(kpi.total, "økt", "økter")}`
+          : "Tom uke";
+
+  // B: primær CTA — forfalt → planlegg, ellers kalender / planlegge
+  const primaerHref = kpi.forfalt > 0 || kpi.total === 0 ? "/admin/planlegge" : "/admin/kalender";
+  const primaerTekst =
+    kpi.forfalt > 0
+      ? "Følg opp i Workbench"
+      : kpi.total === 0
+        ? "Planlegg uke"
+        : "Åpne kalender";
+  const primaerIkon = kpi.forfalt > 0 || kpi.total === 0 ? "arrow-right" : "calendar";
+
+  // ── Hode — B: status ──────────────────────────────────────────
   const hode = (
     <div
       style={{
@@ -163,22 +168,19 @@ export function AdminOkterV2({ data }: { data: AdminOkterData }) {
           <Tittel em="økter.">{kpi.total}</Tittel>
         </div>
       </div>
-      <div className="hidden md:flex" style={{ alignItems: "center", gap: 10 }}>
-        {kpi.liveNa > 0 && (
-          <StatusPill tone="down">
-            Live · {pl(kpi.liveNa, "økt pågår", "økter pågår")}
-          </StatusPill>
-        )}
-        <Link href="/admin/kalender" style={{ textDecoration: "none" }}>
-          <CTAPill ghost icon="calendar">
-            Åpne kalender
-          </CTAPill>
-        </Link>
-      </div>
+      <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
     </div>
   );
 
-  // Tom uke: ærlig tom-tilstand, ingen KPI-rad med bare nuller.
+  const primaerCta = (
+    <Link href={primaerHref} style={{ textDecoration: "none", display: "block" }}>
+      <CTAPill icon={primaerIkon} full>
+        {primaerTekst}
+      </CTAPill>
+    </Link>
+  );
+
+  // Tom uke: ærlig tom-tilstand + vei
   if (data.dager.length === 0) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
@@ -187,12 +189,23 @@ export function AdminOkterV2({ data }: { data: AdminOkterData }) {
           <TomTilstand
             icon="calendar"
             title="Ingen planlagte økter denne uka"
-            sub={`Det er ingen treningsøkter i uke ${data.ukenr} (${data.periodeLabel}). Lag en plan i Workbench eller åpne kalenderen.`}
+            sub={`Ingen treningsøkter i uke ${data.ukenr} (${data.periodeLabel}).`}
           />
         </Kort>
-        <InnsiktChip cta="Planlegg i Workbench" href="/admin/planlegge">
-          Uka er åpen — bruk roen til å planlegge økter samlet i Workbench.
-        </InnsiktChip>
+        {primaerCta}
+        <Link
+          href="/admin/kalender"
+          style={{
+            textDecoration: "none",
+            textAlign: "center",
+            fontFamily: T.ui,
+            fontSize: 12,
+            fontWeight: 600,
+            color: T.mut,
+          }}
+        >
+          Eller åpne kalender →
+        </Link>
       </div>
     );
   }
@@ -309,6 +322,7 @@ export function AdminOkterV2({ data }: { data: AdminOkterData }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
+      {primaerCta}
       {kpiRad}
       {pyramide}
       {filtre}

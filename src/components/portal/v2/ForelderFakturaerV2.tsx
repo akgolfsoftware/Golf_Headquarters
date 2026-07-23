@@ -1,25 +1,12 @@
 "use client";
 
 /**
- * Foreldreportal · Økonomi/Fakturaer — v2 (retning C «Presis», mørk først).
- * Lese-først faktura-oversikt for foreldre, komponert utelukkende av
- * v2-komponenter fra "@/components/v2" (ingen ad-hoc UI, ingen rå hex — kun
- * T.*-tokens). Mobil-først: KPI stables på 375px, betalings-lista er en
- * kort-liste (Rad), aldri en tabell.
- *
- * Funksjon + datakontrakt bevart 1:1 fra den ekte skjermen
- * (src/app/forelder/fakturaer/page.tsx):
- *   - 2 KPI-er: «Betalt hittil» (sum betalte fakturaer) + «Neste forfall»
- *     (beløp + dato på første ubetalte, ellers «Ingen utestående»).
- *   - Fakturahistorikk: beskrivelse · spiller · dato · beløp · status.
- *   - Kontakt-note (betalinger administreres via coaching-avtalen).
- *
- * Ærlige tomrom: ingen fabrikerte tall — tom liste → TomTilstand, «—» der
- * data mangler. Beløp vises alltid som brutto «kr»-heltall (aldri rå float).
- * V2Shell (montert i (v2preview)/v2-forelder-fakturaer/page.tsx) eier chrome-en.
+ * Foreldreportal · Fakturaer — v2 Presis + B-pakke (status + én vei).
+ * Kun v2 + T.*. Enklere foreldre-språk.
  */
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   T,
   Caps,
@@ -30,6 +17,7 @@ import {
   StatusPill,
   TomTilstand,
   Icon,
+  Knapp,
   type StatusTone,
 } from "@/components/v2";
 
@@ -147,6 +135,7 @@ function FakturaRad({ f, last }: { f: ForelderFakturaRad; last: boolean }) {
 
 export function ForelderFakturaerV2({ data }: { data: ForelderFakturaerData }) {
   const mobile = useMobile();
+  const router = useRouter();
   const { fakturaer } = data;
 
   // KPI-aggregater — avledet av den ekte lista (identisk logikk som ekte skjerm).
@@ -159,17 +148,30 @@ export function ForelderFakturaerV2({ data }: { data: ForelderFakturaerData }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
-      <div>
-        <Caps>Foreldreportal · økonomi</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel mobile={mobile} em="økonomi">
-            Fakturaer &amp;
-          </Tittel>
+      {/* Hode + status */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          gap: 12,
+          flexWrap: "wrap",
+        }}
+      >
+        <div>
+          <Caps>Økonomi</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel mobile={mobile} em="fakturaer">
+              Mine
+            </Tittel>
+          </div>
         </div>
+        <StatusPill tone={neste ? "warn" : "up"}>
+          {neste ? "Noe forfaller" : "Alt betalt"}
+        </StatusPill>
       </div>
 
-      {/* KPI-stripe — stables på 375px, to-kol fra sm */}
+      {/* Status-stripe */}
       <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: T.gap }}>
         <Kort tint>
           <TallHero
@@ -202,12 +204,37 @@ export function ForelderFakturaerV2({ data }: { data: ForelderFakturaerData }) {
         )}
       </div>
 
-      {/* Fakturahistorikk — kort-liste, aldri tabell */}
+      {/* Én primær CTA (B) */}
+      <div>
+        {neste ? (
+          <Knapp
+            icon="mail"
+            full={mobile}
+            onClick={() => {
+              window.location.href =
+                "mailto:hei@akgolf.no?subject=" +
+                encodeURIComponent("Spørsmål om faktura");
+            }}
+          >
+            Spør om betaling
+          </Knapp>
+        ) : (
+          <Knapp
+            icon="arrow-right"
+            full={mobile}
+            onClick={() => router.push("/forelder/okonomi")}
+          >
+            Se abonnement
+          </Knapp>
+        )}
+      </div>
+
+      {/* Fakturahistorikk */}
       <Kort
-        eyebrow="Fakturahistorikk"
+        eyebrow="Alle fakturaer"
         action={
           fakturaer.length > 0 ? (
-            <Caps size={9}>{`${fakturaer.length} fakturaer`}</Caps>
+            <Caps size={9}>{`${fakturaer.length} stk`}</Caps>
           ) : undefined
         }
       >
@@ -219,12 +246,11 @@ export function ForelderFakturaerV2({ data }: { data: ForelderFakturaerData }) {
           <TomTilstand
             icon="file-text"
             title="Ingen fakturaer ennå"
-            sub="Fakturaer dukker opp her når det er registrert betalinger."
+            sub="Når det kommer en betaling, ser du den her. Spør coachen ved tvil."
           />
         )}
       </Kort>
 
-      {/* Kontakt-note */}
       <Kort>
         <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
           <Icon
@@ -241,8 +267,7 @@ export function ForelderFakturaerV2({ data }: { data: ForelderFakturaerData }) {
               margin: 0,
             }}
           >
-            Betalinger administreres via coaching-avtalen. Spørsmål om fakturaer?
-            Kontakt{" "}
+            Betaling følger coaching-avtalen. Spørsmål? Skriv til{" "}
             <a
               href="mailto:hei@akgolf.no"
               style={{ color: T.lime, fontWeight: 600, textDecoration: "none" }}

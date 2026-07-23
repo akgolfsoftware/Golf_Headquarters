@@ -1,21 +1,23 @@
 /**
- * /portal/venner/[spillerId] — B39, venn-profil (Strava-mønsteret).
- *
- * Egen rute, bevisst ATSKILT fra /portal/spiller/[spillerId] (som i dag viser
- * en spillers FULLE profil — Plan + Coaching-historikk — for enhver innlogget
- * portal-bruker, brukt fra akademi-leaderboardet). Denne siden viser KUN en
- * venns hero + aktivitetsfeed (AT en økt/runde skjedde) — aldri plan, fagkoder,
- * SG-tall eller coach-notater (B29). Krever et bekreftet (ACCEPTED)
- * venneforhold — 404 ellers, i stedet for å lekke at brukeren finnes.
+ * /portal/venner/[spillerId] — B-pakke.
+ * Hero/status først, aktivitetsfeed, TomTilstand med vei videre.
  */
 
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeft, EyeOff, Activity } from "lucide-react";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { PlayerHero } from "@/components/portal/player-hero";
-import { EmptyState } from "@/components/shared/empty-state";
 import { hentVennProfil } from "@/lib/venner/actions";
+import { T } from "@/lib/v2/tokens";
+import {
+  Caps,
+  Tittel,
+  Kort,
+  TilbakeLenke,
+  StatusPill,
+  TomTilstand,
+  AvatarInit,
+  Icon,
+} from "@/components/v2";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { FjernVennKnapp } from "./FjernVennKnapp";
 import { RapporterVennKnapp } from "./RapporterVennKnapp";
 
@@ -30,14 +32,16 @@ export default async function VennProfilPage({
 }: {
   params: Promise<{ spillerId: string }>;
 }) {
-  await requirePortalUser();
+  const user = await requirePortalUser();
   const { spillerId } = await params;
 
   const data = await hentVennProfil(spillerId);
   if (!data) notFound();
 
   const { venn, feed, synligAv } = data;
-  const vennSub = [
+  const fornavn = venn.name.split(" ")[0];
+  const etternavn = venn.name.split(" ").slice(1).join(" ");
+  const meta = [
     venn.kategori ? `Kategori ${venn.kategori}` : null,
     venn.hcp != null ? `HCP ${venn.hcp.toString().replace(".", ",")}` : null,
   ]
@@ -45,72 +49,101 @@ export default async function VennProfilPage({
     .join(" · ");
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 px-4 pb-20 sm:px-6">
-      <Link
-        href="/portal/venner"
-        className="inline-flex h-11 items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ChevronLeft size={14} strokeWidth={1.5} />
-        Venner
-      </Link>
+    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <div
+      style={{
+        maxWidth: 640,
+        margin: "0 auto",
+        display: "flex",
+        flexDirection: "column",
+        gap: T.gap,
+      }}
+    >
+      <TilbakeLenke href="/portal/venner">Venner</TilbakeLenke>
 
-      <PlayerHero
-        eyebrow="PlayerHQ · Venn"
-        titleLead="Venn"
-        titleItalic={venn.name.split(" ")[0]}
-        titleTrail={venn.name.split(" ").slice(1).join(" ") || undefined}
-        sub={vennSub || undefined}
-        actions={<FjernVennKnapp vennUserId={venn.id} />}
-      />
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14, minWidth: 0 }}>
+          <AvatarInit navn={venn.name} size={52} />
+          <div style={{ minWidth: 0 }}>
+            <Caps>PlayerHQ · Venn</Caps>
+            <div style={{ marginTop: 6 }}>
+              {etternavn ? (
+                <Tittel mobile em={etternavn}>{fornavn}</Tittel>
+              ) : (
+                <Tittel mobile>{fornavn}</Tittel>
+              )}
+            </div>
+            {meta ? (
+              <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "6px 0 0" }}>{meta}</p>
+            ) : null}
+          </div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
+          <StatusPill tone={synligAv ? "up" : "warn"}>
+            {synligAv ? "Deler aktivitet" : "Skjult aktivitet"}
+          </StatusPill>
+          <FjernVennKnapp vennUserId={venn.id} />
+        </div>
+      </div>
 
-      <section className="space-y-2">
-        <h2 className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
-          Aktivitet
-        </h2>
+      <div>
+        <Caps style={{ marginBottom: 10 }}>Aktivitet</Caps>
         {!synligAv ? (
-          <EmptyState
-            icon={EyeOff}
-            titleItalic={venn.name.split(" ")[0]}
-            titleTrail="deler ikke økter ennå"
-            sub="Denne spilleren har ikke skrudd på synlige økter for venner."
-          />
+          <Kort>
+            <TomTilstand
+              icon="eye"
+              title={`${fornavn} deler ikke økter ennå`}
+              sub="Denne spilleren har ikke skrudd på synlige økter for venner."
+            />
+          </Kort>
         ) : feed.length === 0 ? (
-          <EmptyState
-            icon={Activity}
-            titleItalic="Ingen"
-            titleTrail="aktivitet ennå"
-            sub="Ingen fullførte økter eller runder registrert ennå."
-          />
+          <Kort>
+            <TomTilstand
+              icon="activity"
+              title="Ingen aktivitet ennå"
+              sub="Ingen fullførte økter eller runder registrert ennå."
+            />
+          </Kort>
         ) : (
-          <div className="space-y-2">
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {feed.map((a) => (
-              <div
-                key={a.id}
-                className="flex items-center gap-3 rounded-xl border border-border bg-card p-3"
-              >
-                <div className="min-w-0 flex-1">
-                  <div className="text-sm font-semibold leading-none">{a.tittel}</div>
-                  <div className="mt-1 text-[11.5px] text-muted-foreground">{a.detalj}</div>
+              <Kort key={a.id} pad="12px 14px">
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+                      {a.tittel}
+                    </div>
+                    <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 3 }}>
+                      {a.detalj}
+                    </div>
+                  </div>
+                  <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, flex: "none" }}>
+                    {formatterDato(a.dato)}
+                  </div>
                 </div>
-                <div className="shrink-0 text-[10.5px] text-muted-foreground">
-                  {formatterDato(a.dato)}
-                </div>
-              </div>
+              </Kort>
             ))}
           </div>
         )}
-      </section>
+      </div>
 
-      <div className="flex items-start gap-2 border-t border-border pt-4 text-xs leading-relaxed text-muted-foreground">
-        <EyeOff size={14} strokeWidth={1.5} className="mt-0.5 shrink-0 text-primary" />
-        <span>
-          Du ser kun AT {venn.name.split(" ")[0]} har trent — ingen plan, mål eller tall er delt.
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          gap: 8,
+          borderTop: `1px solid ${T.border}`,
+          paddingTop: 14,
+        }}
+      >
+        <Icon name="eye" size={14} style={{ color: T.mut, marginTop: 2, flex: "none" }} />
+        <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.5 }}>
+          Du ser kun AT {fornavn} har trent — ingen plan, mål eller tall er delt.
         </span>
       </div>
 
-      <div className="flex flex-col items-start gap-2">
-        <RapporterVennKnapp vennUserId={venn.id} />
-      </div>
+      <RapporterVennKnapp vennUserId={venn.id} />
     </div>
+    </V2Shell>
   );
 }

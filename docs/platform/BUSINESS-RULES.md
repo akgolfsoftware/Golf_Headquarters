@@ -240,14 +240,17 @@ AK Golf Academy bruker en 5-trinns trenings-pyramide:
 
 | Produkt | Tema | Kan endres av bruker? |
 |---|---|---|
-| PlayerHQ (`/portal`) | Alltid **lyst** | Nei — fast |
-| AgencyOS (`/admin`) | **Lyst/mørkt, brukervalgt** | Ja — sol/måne-bryter i topbar, standard mørk |
+| PlayerHQ (`/portal`) | Alltid **lyst** | Nei — fast (B28) |
+| AgencyOS (`/admin`) | **Mørk standard**, valgfri lys | Ja — sol/måne i V2Shell |
+| Forelder / auth | **Lyst** | Nei |
 
-- **Oppdatert 2026-06-22:** AgencyOS har en lys/mørk-bryter (`admin-theme-toggle.tsx`), valget
-  persisteres i cookie `ak-admin-theme` og leses server-side i `AdminShell` (ingen flash).
-  Coach-chrome (sidebar/topbar) er alltid forest uansett tema — kun arbeidsområdet bytter.
-  PlayerHQ er uendret: fortsatt fast lyst, ingen bryter.
-- Begge paletter finnes i `globals.css`.
+- **Oppdatert 2026-07-23 (kode-fasit):** Ett tema-system for v2:
+  - Cookie: `ak-v2-tema` (`light` \| `dark`) — **ikke** eldre `ak-admin-theme`.
+  - Attributt: `html[data-v2-tema="light"]` (mørk = attributt fraværende; CSS `:root` er mørk).
+  - Før paint: `src/app/layout.tsx` setter lys for `/portal` **eller** cookie `light`.
+  - PlayerHQ **låses til lys** i `V2Shell` (B28) selv om coach har mørk cookie fra AgencyOS.
+  - Tokens: `src/app/globals.css` + speil `src/lib/v2/tokens.ts`.
+- Full forklaring: `docs/design-system/TEMA-LYS-MORK.md`.
 
 ---
 

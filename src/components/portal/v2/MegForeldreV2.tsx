@@ -1,20 +1,7 @@
 "use client";
 
 /**
- * PlayerHQ Meg · Foresatte — v2 (retning C «Presis»). Rekomponert fra den ekte
- * skjermen src/app/portal/meg/foreldre/page.tsx + foreldre-info.tsx, men med
- * v2-biblioteket (@/components/v2). Kun v2-komponenter; ingen ad-hoc UI, ingen
- * rå hex (kun T.*).
- *
- * Datakontrakt bevart 1:1 fra parentRelation-mappingen: hver foresatt har
- * navn, relasjon (Far/Mor/Verge), kontekst (e-post) og href. Tom liste →
- * ærlig tom-tilstand (aldri dummy-data).
- *
- * Ærlighet: den gamle skjermen bærer verken samtykke-status per rad eller en
- * «inviter foresatt»-flyt (ingen server-action finnes) — de fabrikkeres ikke
- * her, men meldes som gap. Relasjonen vises som nøytral info-pill.
- *
- * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
+ * PlayerHQ Meg · Foresatte — v2 Presis + B-pakke (status, tom = én grønn vei).
  */
 
 import { useEffect, useState } from "react";
@@ -28,6 +15,7 @@ import {
   StatusPill,
   AvatarInit,
   TomTilstand,
+  CTAPill,
 } from "@/components/v2";
 
 /* ── Datakontrakt (1:1 fra parentRelation-mappingen) ───────────────────── */
@@ -80,24 +68,30 @@ export function MegForeldreV2({ data }: { data: MegForeldreData }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode — eyebrow + tittel + antall-linje */}
       <div>
         <Caps>Foresatte · Oversikt</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel mobile={mobile}>Mine foresatte</Tittel>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, margin: "10px 0 0", lineHeight: 1.5 }}>
-          {antallTekst(foresatte.length)}
-        </p>
       </div>
 
-      {/* Liste over koblede foresatte, eller tom-tilstand */}
+      {/* B: status først */}
+      <Kort pad="12px">
+        <Caps size={9}>Koblede</Caps>
+        <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 18, marginTop: 8, color: T.fg }}>
+          {foresatte.length}
+        </div>
+        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "6px 0 0", lineHeight: 1.45 }}>
+          {antallTekst(foresatte.length)}
+        </p>
+      </Kort>
+
       <Kort eyebrow="Koblede foresatte">
         {erTom ? (
           <TomTilstand
             icon="users"
             title="Ingen foresatte koblet"
-            sub="Ingen foresatte er koblet til kontoen din ennå. Kontakt coachen din for å koble en foresatt."
+            sub="Kontakt coachen din for å koble en foresatt til kontoen."
           />
         ) : (
           foresatte.map((f, i) => (
@@ -117,6 +111,14 @@ export function MegForeldreV2({ data }: { data: MegForeldreData }) {
           ))
         )}
       </Kort>
+
+      {erTom && (
+        <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="message-circle" full>
+            Kontakt support
+          </CTAPill>
+        </Link>
+      )}
     </div>
   );
 }

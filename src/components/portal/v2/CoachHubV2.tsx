@@ -1,18 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Coach-hub — v2 (retning C «Presis»). Rekomponert fra den ekte
- * /portal/coach-siden, men med samme funksjon og datakontrakt: spillerens
- * coach-relasjon som hub — coachkort med ukes-fokus + snarveier (melding /
- * profil / booking), tidslinje over kommende økter med coach, og en
- * meldingstråd med inngang til full samtale.
- *
- * Ingen pixel-mockup finnes for denne skjermen — komponert utelukkende av
- * v2-komponenter fra "@/components/v2" (ingen ad-hoc UI, ingen rå hex).
- * Ærlighet: felt repoet ikke bærer fabrikkeres aldri — ærlig tom-tilstand.
- *
- * V2Shell (montert i (v2preview)/v2-coach/page.tsx) eier chrome-en; denne
- * komponenten rendrer bare den indre innholds-stacken.
+ * PlayerHQ Coach-hub — v2 Presis + B-pakke (status + én primær «skriv/book»).
+ * Coachkort, kommende økter, meldingstråd. T.* only. Tom = grønn vei.
  */
 
 import { useEffect, useState } from "react";
@@ -128,13 +118,37 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
-      <div>
-        <Caps>{coach ? `Coach · ${coach.name}` : "Coach"}</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel mobile={mobile} em="coach">Din</Tittel>
+      {/* Hode + B: status først */}
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+        <div>
+          <Caps>{coach ? `Coach · ${coach.name}` : "Coach"}</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel mobile={mobile} em="coach">Din</Tittel>
+          </div>
         </div>
+        {coach ? (
+          <StatusPill tone={kommende.length > 0 ? "lime" : "info"}>
+            {kommende.length > 0 ? `${kommende.length} kommende` : "Ingen time booket"}
+          </StatusPill>
+        ) : (
+          <StatusPill tone="warn">Ingen coach</StatusPill>
+        )}
       </div>
+
+      {/* B: én primær CTA */}
+      {coach ? (
+        <Link href="/portal/coach/melding" style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="send" full>
+            {meldinger.length > 0 ? "Skriv til coach" : `Start samtalen med ${coach.name.split(" ")[0]}`}
+          </CTAPill>
+        </Link>
+      ) : (
+        <Link href="/portal/booking" style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="calendar" full>
+            Book en time
+          </CTAPill>
+        </Link>
+      )}
 
       {/* Coachkort + tidslinje */}
       <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
@@ -164,15 +178,12 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
               )}
 
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16 }}>
-                {/* Én lime-primær per skjerm — meldings-CTAen i tråd-panelet er
-                    primærhandlingen; denne snarveien er sekundær (audit-funn 10). */}
-                <Snarvei href="/portal/coach/melding" icon="send" ghost>Send melding</Snarvei>
                 <Snarvei href={`/portal/coach/${coach.id}`} icon="user" ghost>Se profil</Snarvei>
                 <Snarvei href="/portal/booking" icon="calendar" ghost>Booking</Snarvei>
               </div>
             </>
           ) : (
-            <TomTilstand icon="user" title="Ingen coach tildelt ennå" sub="Kontakt AK Golf for å komme i gang." />
+            <TomTilstand icon="user" title="Ingen coach tildelt ennå" sub="Book en time eller kontakt AK Golf for tildeling." />
           )}
         </Kort>
 
@@ -208,25 +219,31 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
               )}
             </>
           ) : (
-            <TomTilstand icon="calendar" title="Ingen kommende økter" sub="Book en time med coachen din." />
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <TomTilstand icon="calendar" title="Ingen kommende økter" sub="Book en time med coachen din." />
+              {coach && (
+                <Link href="/portal/booking" style={{ textDecoration: "none", display: "block" }}>
+                  <CTAPill ghost full icon="calendar">
+                    Book time
+                  </CTAPill>
+                </Link>
+              )}
+            </div>
           )}
         </Kort>
       </div>
 
-      {/* Meldinger */}
+      {/* Meldinger — primær CTA er øverst; her kun forhåndsvisning */}
       <Kort
         eyebrow="Meldinger"
         action={coach && nyeFraCoach > 0 ? <StatusPill tone="lime">{nyeFraCoach} fra coach</StatusPill> : undefined}
       >
         {coach ? (
-          <>
+          sisteMeldinger.length > 0 ? (
             <MeldingsTraad meldinger={sisteMeldinger} />
-            <div style={{ marginTop: 16, paddingTop: 14, borderTop: `1px solid ${T.border}` }}>
-              <Snarvei href="/portal/coach/melding" icon="send">
-                {meldinger.length > 0 ? "Skriv til coach" : `Start samtalen med ${coach.name.split(" ")[0]}`}
-              </Snarvei>
-            </div>
-          </>
+          ) : (
+            <TomTilstand icon="message-circle" title="Ingen meldinger ennå" sub="Bruk knappen øverst for å starte samtalen." />
+          )
         ) : (
           <TomTilstand icon="message-circle" title="Ingen meldinger" sub="Du får en coach tildelt før dere kan skrive sammen." />
         )}

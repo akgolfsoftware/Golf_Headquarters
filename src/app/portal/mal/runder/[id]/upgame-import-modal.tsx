@@ -23,6 +23,7 @@ export function UpGameImportModal({ roundId }: { roundId: string }) {
   });
   const [steg, setSteg] = useState<"last-opp" | "kartlegg" | "ferdig">("last-opp");
   const [advarsel, setAdvarsel] = useState<string | null>(null);
+  const [sgMelding, setSgMelding] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const filRef = useRef<HTMLInputElement>(null);
 
@@ -32,6 +33,7 @@ export function UpGameImportModal({ roundId }: { roundId: string }) {
     setRader([]);
     setSteg("last-opp");
     setAdvarsel(null);
+    setSgMelding(null);
   }
 
   function lastOppFil(e: React.ChangeEvent<HTMLInputElement>) {
@@ -68,8 +70,10 @@ export function UpGameImportModal({ roundId }: { roundId: string }) {
     startTransition(async () => {
       try {
         const res = await importUpGameHoleScores(roundId, hull);
-        if (res.ok) setSteg("ferdig");
-        else setAdvarsel(res.error ?? "Import feilet. Prøv igjen.");
+        if (res.ok) {
+          setSgMelding(res.sgMelding ?? null);
+          setSteg("ferdig");
+        } else setAdvarsel(res.error ?? "Import feilet. Prøv igjen.");
       } catch {
         setAdvarsel("Import feilet. Prøv igjen.");
       }
@@ -228,8 +232,8 @@ export function UpGameImportModal({ roundId }: { roundId: string }) {
                   <div>
                     <p className="font-display text-lg font-semibold text-foreground">Import fullført</p>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      Score, putter og FIR/GIR per hull er lagt inn. Strokes Gained krever
-                      slag-for-slag-kjede — fullfør kjeden fra rundesiden når du vil ha SG.
+                      {sgMelding ??
+                        "Score, putter og FIR/GIR per hull er lagt inn. Strokes Gained krever slag-for-slag for full SG."}
                     </p>
                   </div>
                   {advarsel && (

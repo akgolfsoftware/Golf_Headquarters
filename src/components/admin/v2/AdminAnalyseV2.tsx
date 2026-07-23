@@ -1,21 +1,11 @@
 "use client";
 
 /**
- * AgencyOS Stall-analyse — v2 (retning C «Presis»). Rekomponerer den ekte
- * skjermen src/app/admin/analyse/page.tsx i v2-idiomet, men med IDENTISK
- * funksjon + datakontrakt: stall-SG-analyse på tvers —
- *   1) 4 KPI-er (treningstimer 30 d · snitt SG-utvikling · økt-oppmøte ·
- *      inaktive 7+ dg), alle med delta mot forrige vindu,
- *   2) pyramide-fordeling for hele stallen (andel fullførte økter per akse),
- *   3) per gruppe (spillere · timer/uke · snitt SG).
- *
- * Bygget utelukkende av v2-komponentbiblioteket (src/components/v2) — ingen
- * ad-hoc UI, ingen rå hex (kun T.*). Ærlige tomrom: uten datagrunnlag vises
- * «—» / tom-tilstand, aldri fabrikerte tall. Innsikt er klarspråk, aldri sperre.
- *
- * Mobil: KPI 4→2-kol, 2-kols-grid stables, per gruppe-DataTabell → kort-liste.
+ * AgencyOS Stall-analyse — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * KPI · pyramide · per gruppe. T.* only.
  */
 
+import Link from "next/link";
 import {
   Caps,
   Tittel,
@@ -25,6 +15,8 @@ import {
   FordelingRad,
   InnsiktChip,
   TomTilstand,
+  StatusPill,
+  CTAPill,
   AvatarInit,
   DataTabell,
   type DataTabellColumn,
@@ -87,21 +79,27 @@ const GRUPPE_KOLONNER: DataTabellColumn[] = [
 export function AdminAnalyseV2({ data }: { data: AnalyseV2Data }) {
   const { nSpillere, kpis, harPyr, dist, innsikt, grupper } = data;
 
-  // ── Hode ────────────────────────────────────────────────────────
+  // ── Hode — B: status ───────────────────────────────────────────
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>Analysere · Stall-analyse</Caps>
+        <Caps>Analysere · Stall-analyse · AgencyOS</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel em="i tall.">Stallen</Tittel>
         </div>
       </div>
-      <div className="hidden md:block">
-        <Caps size={9}>
-          {nSpillere === 1 ? "1 spiller" : `${nSpillere} spillere`}
-        </Caps>
-      </div>
+      <StatusPill tone={nSpillere > 0 ? "lime" : "warn"}>
+        {nSpillere === 1 ? "1 spiller" : nSpillere === 0 ? "Ingen spillere" : `${nSpillere} spillere`}
+      </StatusPill>
     </div>
+  );
+
+  const primaerCta = (
+    <Link href="/admin/stall" style={{ textDecoration: "none", display: "block" }}>
+      <CTAPill icon="users" full>
+        Åpne stall
+      </CTAPill>
+    </Link>
   );
 
   // ── KPI-strip (4) ───────────────────────────────────────────────
@@ -212,6 +210,7 @@ export function AdminAnalyseV2({ data }: { data: AnalyseV2Data }) {
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
       {kpi}
+      {primaerCta}
       <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: T.gap, alignItems: "start" }}>
         {pyramide}
         {perGruppe}

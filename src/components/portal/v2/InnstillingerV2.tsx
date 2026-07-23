@@ -1,22 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Innstillinger — v2 (retning C «Presis»). Komponert 1:1 fra
- * ui_kits/v2/auth-profil.jsx → funksjonen Innstillinger (+ Toggle, Seksjon,
- * SeksjonIkon, AboHjelp), men med EKTE data fra requirePortalUser +
- * getAbonnementData (montert i (v2preview)/v2-innstillinger/page.tsx).
- * Kun v2-komponenter fra "@/components/v2"; ingen ad-hoc UI, ingen rå hex (kun T.*).
- *
- * Abonnement-kanon (låst): PlayerHQ er gratis (prøveperiode / coaching-pakke /
- * gruppe) ELLER 299 kr/mnd. «Performance / Performance Pro» er coaching-PAKKER,
- * ikke app-nivåer. ELITE finnes ikke og vises aldri.
- *
- * Ærlighet: felt repoet ikke bærer fabrikkeres ALDRI. «Sist endret»-dato på
- * passord finnes ikke → nøytral handlingstekst. Foreldresamtykke-raden vises
- * kun når kontoen faktisk krever samtykke. Varsel-bryterne speiler EKTE
- * preferanser og lagres ved klikk (oppdaterPreferences).
- *
- * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
+ * PlayerHQ Innstillinger — v2 Presis + B-pakke (status først, lys fast, én vei).
+ * Ekte data fra requirePortalUser + getAbonnementData. Kun T.* / v2.
  */
 
 import { useEffect, useState, useTransition, type ReactNode } from "react";
@@ -31,6 +17,7 @@ import {
   Rad,
   StatusPill,
   Icon,
+  CTAPill,
 } from "@/components/v2";
 
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
@@ -302,12 +289,12 @@ export function InnstillingerV2({ data }: { data: InnstillingerData }) {
     <Seksjon label="Utseende">
       <Rad
         last
-        leading={<SeksjonIkon name="moon" />}
+        leading={<SeksjonIkon name="sun" />}
         title="Tema"
-        sub="Mørkt hele veien — bygget for kvelds- og simulatortimer"
+        sub="PlayerHQ er alltid lyst — enklere å lese ute og innendørs"
         trailing={
           <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.fg2, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 9999, padding: "5px 11px", whiteSpace: "nowrap" }}>
-            Mørk (lys kommer)
+            Lys (fast)
           </span>
         }
       />
@@ -334,9 +321,37 @@ export function InnstillingerV2({ data }: { data: InnstillingerData }) {
     </div>
   );
 
+  const aboStatusLabel = abonnement.gratis ? "Gratis" : "Pro";
+  const aboStatusSub = abonnement.gratis
+    ? abonnement.pakkeNavn ?? "Hele appen uten kostnad"
+    : abonnement.nesteTrekk
+      ? `Neste trekk ${abonnement.nesteTrekk}`
+      : "299 kr/mnd";
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <Tittel mobile={mobile}>Innstillinger</Tittel>
+
+      {/* B: status først */}
+      <div className="grid grid-cols-2" style={{ gap: 8 }}>
+        <Kort pad="12px">
+          <Caps size={9}>Tilgang</Caps>
+          <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 16, marginTop: 8, color: T.fg }}>{aboStatusLabel}</div>
+          <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 4, lineHeight: 1.4 }}>{aboStatusSub}</div>
+        </Kort>
+        <Kort pad="12px">
+          <Caps size={9}>Konto</Caps>
+          <div style={{ fontFamily: T.ui, fontWeight: 600, fontSize: 13, marginTop: 8, color: T.fg, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{epost}</div>
+          <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 4 }}>E-post og passord under</div>
+        </Kort>
+      </div>
+
+      <Link href="/portal/meg" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="arrow-left" full>
+          Tilbake til Meg
+        </CTAPill>
+      </Link>
+
       {mobile ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           {konto}{preferanser}{varsler}{personvern}{abo}{utseende}{farlig}

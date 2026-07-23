@@ -25,6 +25,22 @@ Nivåer, XP og streaks motiverer — men juniorfilteret er absolutt: aldri skyld
 **Tomme tilstander ← Notion**
 En tom flate er onboarding, ikke blindvei: forklar hva som hører hjemme her + én handling for å komme i gang. Gjelder alle data-komponenter (spiller uten tester, uke uten økter).
 
+## Mobbin-kategorier (research 2026-07-23)
+
+Bruk når du scroller Mobbin (MCP eller nettleser). Lån flyt, ikke skin.
+
+| Kategori | URL | Hva du ser etter for AK |
+|---|---|---|
+| Health & Fitness (mobile) | https://mobbin.com/explore/mobile/app-categories/health-fitness | Home dashboard: ett hero-tall, progress, logging-flow |
+| Sports (mobile) | https://mobbin.com/explore/mobile/app-categories/sports | Activity dashboard, plan selection |
+| Fitness (web) | https://mobbin.com/explore/web/app-categories/health-fitness | Stats-sider, «My stats»-hierarki |
+| Flows | Logging & Tracking, Creating account | Færrest steg, empty → first value |
+
+**AK-map:** hero score → Whoop · start workout → Strava/Nike · coach triage → Linear · empty → Notion.
+
+Full evolusjonsplan: `docs/design-system/DESIGN-EVOLUSJON-2026-07-23.md`  
+Skill: `ak-design-evolution`.
+
 ## Anti-mønstre — sett dem feile i 50 år, avvis på syne
 
 - **Dashboard-grøt:** åtte likestilte kort = ingenting viktig. Én jobb per skjerm, ett fokuspunkt.

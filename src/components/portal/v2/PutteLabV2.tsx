@@ -1,13 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · Putte-laboratoriet — v2 (retning C «Presis»).
- * v2-port 17. juli 2026 (Team D2): erstatter legacy putte-lab-client. All
- * putt-fysikk/-sannsynlighet kommer uendret fra @/lib/putt-core (break-at-
- * speed, geomCeiling, makeProb, processScore) — samme tre retninger
- * (Greenen/Kjeden/Kontroll), samme simulering og samme tekster. Kun
- * presentasjonslaget er nytt: T-tokens + v2-primitiver. Legacy-filens 25 rå
- * hex-verdier er erstattet med T-tokens/color-mix (0 rå hex her).
+ * PlayerHQ · Putte-laboratoriet — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useState, useRef, useCallback, useEffect } from "react";

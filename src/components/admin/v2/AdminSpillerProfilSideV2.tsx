@@ -1,21 +1,11 @@
 import Link from "next/link";
-import { Caps, Kort, StatusPill, AvatarFoto, TilbakeLenke, T } from "@/components/v2";
-import { Icon } from "@/components/v2/icon";
+import { Caps, Kort, StatusPill, AvatarFoto, TilbakeLenke, CTAPill, TomTilstand, T } from "@/components/v2";
 import { InviteParentButtonV2 } from "./AdminInviteParentButtonV2";
 
 /**
- * AgencyOS — Full spiller-profil (`/admin/spillere/[id]/profil`), v2-port
- * 16. juli 2026. Erstatter Tailwind/shadcn-tokens med v2 T-tokens. Samme
- * datagrunnlag (User + relations) uendret.
- *
- * NB: navnet er bevisst «ProfilSideV2» og ikke «ProfilV2» — sistnevnte er
- * allerede en annen, tidligere skipsen komponent (Profil-fanen i
- * SpillerDashboardV2, `/admin/spillere/[id]`) og skal ikke overskrives.
- *
- * Kjent, uendret begrensning fra før porten: mål-fremdriftsringen viser en
- * fast 50 % — Goal-modellen har ikke et reelt fremdriftsfelt ennå (kun
- * targetValue/payload uten en standardisert "nåverdi"). Ikke noe denne
- * porten kan fikse uten domenearbeid — flagget, ikke gjettet på.
+ * AgencyOS — Full spiller-profil (`/admin/spillere/[id]/profil`), v2 + B-pakke.
+ * Stamdata-side: status/hode · én primær «Rediger» · TomTilstand med vei.
+ * Kun T.* / v2. (ProfilSideV2 ≠ ProfilV2 i dashboard.)
  */
 
 export type TalentAxis = "fysisk" | "teknikk" | "taktikk" | "mental" | "motivasjon";
@@ -161,9 +151,8 @@ export function AdminSpillerProfilSideV2({ data }: { data: AdminSpillerProfilSid
           <h1 style={{ margin: 0, fontFamily: T.disp, fontWeight: 700, fontSize: 30, color: T.fg }}>
             Spiller-<em style={{ fontStyle: "italic", fontWeight: 400, color: T.lime }}>profil</em>
           </h1>
-          <Link href={`/admin/spillere/${data.spillerId}/rediger`} style={{ display: "inline-flex", alignItems: "center", gap: 8, borderRadius: 9999, background: T.lime, padding: "10px 18px", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.onLime, textDecoration: "none" }}>
-            <Icon name="pencil" size={14} />
-            Rediger
+          <Link href={`/admin/spillere/${data.spillerId}/rediger`} style={{ textDecoration: "none" }}>
+            <CTAPill icon="pencil">Rediger</CTAPill>
           </Link>
         </div>
       </div>
@@ -191,7 +180,7 @@ export function AdminSpillerProfilSideV2({ data }: { data: AdminSpillerProfilSid
           <InviteParentButtonV2 playerId={data.spillerId} playerName={data.navn} />
         </div>
         {data.foreldre.length === 0 ? (
-          <div style={{ borderRadius: 10, border: `1px dashed ${T.border}`, background: T.panel2, padding: 16, fontSize: 13, color: T.mut }}>Ingen foresatte registrert.</div>
+          <TomTilstand icon="users" title="Ingen foresatte registrert" sub="Inviter foresatt med knappen over når det trengs." />
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10 }}>
             {data.foreldre.map((p) => (
@@ -236,7 +225,7 @@ export function AdminSpillerProfilSideV2({ data }: { data: AdminSpillerProfilSid
           <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>{data.maal.length}</span>
         </div>
         {data.maal.length === 0 ? (
-          <div style={{ borderRadius: 10, border: `1px dashed ${T.border}`, background: T.panel2, padding: 16, fontSize: 13, color: T.mut }}>Ingen aktive mål.</div>
+          <TomTilstand icon="target" title="Ingen aktive mål" sub="Mål settes sammen med spilleren i Workbench." />
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 10 }}>
             {data.maal.map((g) => (
@@ -256,7 +245,7 @@ export function AdminSpillerProfilSideV2({ data }: { data: AdminSpillerProfilSid
       <Kort>
         <SeksjonHode eyebrow="Skader / permisjoner" tittel="Historikk" />
         {data.permisjoner.length === 0 ? (
-          <div style={{ borderRadius: 10, border: `1px dashed ${T.border}`, background: T.panel2, padding: 16, fontSize: 13, color: T.mut }}>Ingen registrerte hendelser.</div>
+          <TomTilstand icon="shield-check" title="Ingen registrerte hendelser" sub="Skader og permisjoner vises her når de er logget." />
         ) : (
           <div style={{ overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>

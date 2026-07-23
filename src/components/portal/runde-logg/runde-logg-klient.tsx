@@ -19,18 +19,21 @@ import {
   lagreKladd,
   slettKladd,
 } from "@/lib/runde-logg/draft";
+import { syntetiserHurtigHull } from "@/lib/runde-logg/syntetiser-hurtig";
 
 /** Kladden endres aldri utenfra mens siden er åpen — tom subscribe. */
 const abonnerIngen = () => () => {};
 import { T, Icon } from "@/components/v2";
 import { OppsettSteg, type OppsettVerdi } from "./oppsett-steg";
 import { HullForing } from "./hull-foring";
+import { HurtigHullForing } from "./hurtig-hull-foring";
 import { HullOversikt } from "./hull-oversikt";
 import { SgPanel } from "./sg-panel";
 import { Oppsummering } from "./oppsummering";
 
 type Steg = "oppsett" | "foring" | "oppsummering";
 type Visning = "foring" | "oversikt" | "sg";
+type ForingsModus = "slag" | "hurtig";
 
 type RundeLoggKlientProps = {
   modus: "live" | "etterpaa";
@@ -45,6 +48,7 @@ export function RundeLoggKlient({ modus, baner }: RundeLoggKlientProps) {
   const router = useRouter();
   const [steg, setSteg] = useState<Steg>("oppsett");
   const [visning, setVisning] = useState<Visning>("foring");
+  const [foringsModus, setForingsModus] = useState<ForingsModus>("slag");
   const [oppsett, setOppsett] = useState<Omit<OppsettVerdi, "hull"> | null>(null);
   const [hullData, setHullData] = useState<LoggetHull[]>([]);
   const [aktivtHullIdx, setAktivtHullIdx] = useState(0);
@@ -62,6 +66,7 @@ export function RundeLoggKlient({ modus, baner }: RundeLoggKlientProps) {
     lagreKladd({
       versjon: 1,
       modus,
+      foringsModus,
       steg,
       oppsett: {
         courseId: oppsett.courseId,
@@ -73,7 +78,7 @@ export function RundeLoggKlient({ modus, baner }: RundeLoggKlientProps) {
       hullData,
       aktivtHullIdx,
     });
-  }, [startet, modus, steg, oppsett, hullData, aktivtHullIdx]);
+  }, [startet, modus, foringsModus, steg, oppsett, hullData, aktivtHullIdx]);
 
   const start = (verdi: OppsettVerdi) => {
     setOppsett({
@@ -107,6 +112,7 @@ export function RundeLoggKlient({ modus, baner }: RundeLoggKlientProps) {
     });
     setHullData(kladd.hullData);
     setAktivtHullIdx(Math.min(kladd.aktivtHullIdx, Math.max(kladd.hullData.length - 1, 0)));
+    setForingsModus(kladd.foringsModus === "hurtig" ? "hurtig" : "slag");
     setSteg(kladd.steg === "oppsett" ? "foring" : kladd.steg);
     setKladdHandtert(true);
   };
@@ -119,14 +125,65 @@ export function RundeLoggKlient({ modus, baner }: RundeLoggKlientProps) {
   const aktivtHull = hullData[aktivtHullIdx];
 
   const leggTilSlag = (slag: LoggetSlag) => {
-    setHullData((data) =>
-      data.map((h, i) => (i === aktivtHullIdx ? { ...h, slag: [...h.slag, slag] } : h)),
-    );
+    setHullData((data) => {
+      const neste = data.map((h, i) =>
+        i === aktivtHullIdx ? { ...h, slag: [...h.slag, slag] } : h,
+      );
+      // F.01: auto-neste hull ved hole-out (ett trykk mindre).
+      if (slag.resultat.iHull) {
+        queueMicrotask(() => {
+          const n = neste.length;
+          for (let steg2 = 1; steg2 <= n; steg2++) {
+            const idx = (aktivtHullIdx + steg2) % n;
+            if (!erFerdig(neste[idx])) {
+              setAktivtHullIdx(idx);
+              return;
+            }
+          }
+          setSteg("oppsummering");
+        });
+      }
+      return neste;
+    });
   };
 
   const angre = () => {
     setHullData((data) =>
       data.map((h, i) => (i === aktivtHullIdx ? { ...h, slag: h.slag.slice(0, -1) } : h)),
+    );
+  };
+
+  const lagreHurtigHull = (strokes: number, putts?: number) => {
+    setHullData((data) => {
+      const neste = data.map((h, i) => {
+        if (i !== aktivtHullIdx) return h;
+        return syntetiserHurtigHull({
+          holeNumber: h.holeNumber,
+          par: h.par,
+          lengdeMeter: h.lengdeMeter,
+          strokes,
+          putts,
+        });
+      });
+      // F.01/F.02: etter lagret hurtig-score → neste uferdige hull.
+      queueMicrotask(() => {
+        const n = neste.length;
+        for (let steg2 = 1; steg2 <= n; steg2++) {
+          const idx = (aktivtHullIdx + steg2) % n;
+          if (!erFerdig(neste[idx])) {
+            setAktivtHullIdx(idx);
+            return;
+          }
+        }
+        setSteg("oppsummering");
+      });
+      return neste;
+    });
+  };
+
+  const slettAktivtHull = () => {
+    setHullData((data) =>
+      data.map((h, i) => (i === aktivtHullIdx ? { ...h, slag: [] } : h)),
     );
   };
 
@@ -194,27 +251,74 @@ export function RundeLoggKlient({ modus, baner }: RundeLoggKlientProps) {
             {modus === "live" ? "Live-føring" : "Etterregistrering"}
             {oppsett ? ` · ${oppsett.courseNavn}` : ""}
           </span>
-          <button
-            type="button"
-            onClick={lukk}
-            aria-label="Lukk føringen — kladden beholdes"
-            className="v2-press v2-focus"
-            style={{
-              appearance: "none",
-              cursor: "pointer",
-              width: 32,
-              height: 32,
-              borderRadius: 10,
-              background: T.panel2,
-              border: `1px solid ${T.border}`,
-              color: T.fg2,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Icon name="x" size={15} />
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            {steg === "foring" && (
+              <div
+                role="group"
+                aria-label="Føringsmodus"
+                style={{
+                  display: "flex",
+                  gap: 2,
+                  padding: 2,
+                  borderRadius: 10,
+                  border: `1px solid ${T.border}`,
+                  background: T.panel2,
+                }}
+              >
+                {(
+                  [
+                    ["slag", "Slag"],
+                    ["hurtig", "Hurtig"],
+                  ] as const
+                ).map(([id, label]) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setForingsModus(id)}
+                    aria-pressed={foringsModus === id}
+                    className="v2-press v2-focus"
+                    style={{
+                      appearance: "none",
+                      cursor: "pointer",
+                      padding: "5px 10px",
+                      borderRadius: 8,
+                      border: "none",
+                      background: foringsModus === id ? T.lime : "transparent",
+                      color: foringsModus === id ? T.onLime : T.fg2,
+                      fontFamily: T.mono,
+                      fontSize: 10,
+                      fontWeight: 700,
+                      letterSpacing: "0.04em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={lukk}
+              aria-label="Lukk føringen — kladden beholdes"
+              className="v2-press v2-focus"
+              style={{
+                appearance: "none",
+                cursor: "pointer",
+                width: 32,
+                height: 32,
+                borderRadius: 10,
+                background: T.panel2,
+                border: `1px solid ${T.border}`,
+                color: T.fg2,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Icon name="x" size={15} />
+            </button>
+          </div>
         </div>
 
         {steg === "oppsett" && (
@@ -287,7 +391,21 @@ export function RundeLoggKlient({ modus, baner }: RundeLoggKlientProps) {
 
         {steg === "foring" && oppsett && aktivtHull && (
           <>
-            {visning === "foring" && (
+            {visning === "foring" && foringsModus === "hurtig" && (
+              <HurtigHullForing
+                key={`hurtig-${aktivtHullIdx}-${aktivtHull.slag.length}`}
+                hull={aktivtHull}
+                antallHull={hullData.length}
+                ferdigeFor={antallFerdige}
+                scoreHittil={scoreHittil}
+                onLagre={lagreHurtigHull}
+                onNesteHull={nesteHull}
+                onVisOversikt={() => setVisning("oversikt")}
+                onVisSg={() => setVisning("sg")}
+                onSlettHull={aktivtHull.slag.length > 0 ? slettAktivtHull : null}
+              />
+            )}
+            {visning === "foring" && foringsModus === "slag" && (
               <HullForing
                 hull={aktivtHull}
                 antallHull={hullData.length}

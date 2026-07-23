@@ -1,64 +1,6 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { getSignedUrl, STORAGE_BUCKETS } from "@/lib/storage/supabase-storage";
-import { VedleggUi, type VedleggItem } from "./vedlegg-ui";
+import { redirect } from "next/navigation";
 
-type RouteProps = {
-  params: Promise<{ id: string }>;
-};
-
-export default async function VedleggGalleriPage({ params }: RouteProps) {
-  const user = await requirePortalUser({
-    allow: ["PLAYER", "COACH", "ADMIN", "PARENT"],
-  });
-  const { id } = await params;
-
-  // Access-sjekk: bruker MÅ være part i meldingen (spiller eller coach) eller ADMIN.
-  // Storage omgår RLS, så dette er eneste vern.
-  const session = await prisma.coachingSession.findUnique({
-    where: { id },
-    select: { id: true, userId: true, coachId: true },
-  });
-  if (!session) notFound();
-  const erPart = session.userId === user.id || session.coachId === user.id;
-  if (!erPart && user.role !== "ADMIN") notFound();
-
-  const rader = await prisma.messageAttachment.findMany({
-    where: { sessionId: id },
-    orderBy: { createdAt: "desc" },
-  });
-
-  const vedlegg: VedleggItem[] = await Promise.all(
-    rader.map(async (r) => ({
-      id: r.id,
-      fileName: r.fileName,
-      fileType: r.fileType,
-      fileSize: r.fileSize,
-      createdAt: r.createdAt.toISOString(),
-      url: await getSignedUrl(STORAGE_BUCKETS.MESSAGE_ATTACHMENTS, r.path),
-    })),
-  );
-
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      <nav className="flex flex-wrap items-center gap-2 border-b border-border bg-card px-4 py-2 sm:gap-4 sm:px-8 sm:py-[18px]">
-        <Link
-          href={`/portal/coach/melding/${id}`}
-          className="inline-flex h-11 items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.04em] text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Tilbake til tråd
-        </Link>
-        <span className="ml-auto hidden font-mono text-[11px] uppercase tracking-[0.04em] text-muted-foreground sm:inline">
-          /portal / coach / melding / {id.slice(0, 9)} /{" "}
-          <span className="font-semibold text-foreground">vedlegg</span>
-        </span>
-      </nav>
-
-      <VedleggUi sessionId={id} vedlegg={vedlegg} />
-    </div>
-  );
+/** Legacy → moderne PlayerHQ-rute (B / v2). */
+export default function LegacyRedirect() {
+  redirect("/portal/coach/melding");
 }

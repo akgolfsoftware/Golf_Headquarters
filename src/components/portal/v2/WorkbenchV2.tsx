@@ -982,7 +982,7 @@ function Felt({ label, children }: { label: string; children: React.ReactNode })
   );
 }
 /* ── Selve Workbench ───────────────────────────────────── */
-export function WorkbenchV2({ data, insights, playerName, planStatus, actions, wbMode }: WorkbenchV2Props) {
+export function WorkbenchV2({ data, insights, playerName, planStatus, actions, wbMode, role }: WorkbenchV2Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -1455,17 +1455,20 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
     // ukene fremover via samme action med weekOffset+i — hver uke blir en
     // selvstendig økt (kan flyttes/endres/slettes uavhengig). Delvis feil
     // stopper ikke det som alt er lagt inn — meldes ærlig i stedet.
-    const gjenta = Math.max(1, Math.min(12, input.gjentaUker ?? 1));
+    // Gjenta: antall ganger × steg i uker (1 = hver uke, 2 = annenhver uke).
+    const gjenta = Math.max(1, Math.min(26, input.gjentaUker ?? 1));
+    const steg = Math.max(1, Math.min(4, input.gjentaStegUker ?? 1));
     let lagtInn = 1;
     for (let i = 1; i < gjenta; i++) {
-      const r = await actions.addSession({ ...payload, weekOffset: weekOffset + i });
+      const r = await actions.addSession({ ...payload, weekOffset: weekOffset + i * steg });
       if (r.ok) lagtInn++;
     }
     if (gjenta > 1) {
+      const stegTekst = steg === 1 ? "hver uke" : `hver ${steg}. uke`;
       setMelding(
         lagtInn === gjenta
-          ? { tone: "up", tekst: `Økten er lagt inn ${gjenta} uker fremover.` }
-          : { tone: "down", tekst: `Økten ble lagt inn i ${lagtInn} av ${gjenta} uker — sjekk ukene og legg til resten manuelt.` },
+          ? { tone: "up", tekst: `Økten er lagt inn ${gjenta} ganger (${stegTekst}).` }
+          : { tone: "down", tekst: `Økten ble lagt inn ${lagtInn} av ${gjenta} ganger — sjekk tidslinja.` },
       );
     }
     setNyOktApen(false);
@@ -1561,6 +1564,103 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
       onDragCancel={() => setActiveDrag(null)}
     >
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap, position: "relative" }}>
+      {/* B-pakke: uke-status øverst (mobil + desktop) — matcher Plan B */}
+      <div className="grid grid-cols-3" style={{ gap: 8 }}>
+        {(
+          [
+            {
+              l: "Økter i uke",
+              v: String(alleEvents.length),
+            },
+            {
+              l: "Etterlevelse",
+              v: adher != null ? `${adherDisp}%` : "—",
+            },
+            {
+              l: "Status",
+              v: st.l,
+            },
+          ] as const
+        ).map((k) => (
+          <div
+            key={k.l}
+            style={{
+              background: T.panel,
+              border: `1px solid ${T.border}`,
+              borderRadius: 14,
+              padding: "10px 12px",
+            }}
+          >
+            <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut }}>{k.l}</span>
+            <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 15, color: T.fg, marginTop: 6, letterSpacing: "-0.02em" }}>{k.v}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Spiller: plan venter på godkjenning */}
+      {role === "player" &&
+        (optimisticStatus ?? planStatus) === "PENDING_PLAYER" &&
+        actions?.acceptPlan && (
+          <Kort pad="14px 16px">
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div>
+                <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg }}>
+                  Ny plan fra coachen venter
+                </span>
+                <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "6px 0 0", lineHeight: 1.5 }}>
+                  Se uka under. Godkjenn for å gjøre den aktiv, eller be om endring.
+                </p>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                <Knapp
+                  icon="check"
+                  onClick={async () => {
+                    if (!actions.acceptPlan) return;
+                    setPubLoading(true);
+                    const res = await actions.acceptPlan();
+                    setPubLoading(false);
+                    if (res.ok) {
+                      setOptimisticStatus("ACTIVE");
+                      setMelding({ tone: "up", tekst: "Planen er godkjent og aktiv." });
+                      router.refresh();
+                    } else {
+                      setMelding({ tone: "down", tekst: res.error ?? "Kunne ikke godkjenne." });
+                    }
+                  }}
+                  disabled={pubLoading}
+                >
+                  Godkjenn plan
+                </Knapp>
+                <Knapp
+                  icon="message-square"
+                  ghost
+                  onClick={async () => {
+                    if (!actions.rejectPlan) return;
+                    const kommentar =
+                      typeof window !== "undefined"
+                        ? window.prompt("Hva vil du endre? (minst 5 tegn)")
+                        : null;
+                    if (!kommentar) return;
+                    setPubLoading(true);
+                    const res = await actions.rejectPlan(kommentar);
+                    setPubLoading(false);
+                    if (res.ok) {
+                      setOptimisticStatus("REJECTED");
+                      setMelding({ tone: "up", tekst: "Endringsønske sendt til coachen." });
+                      router.refresh();
+                    } else {
+                      setMelding({ tone: "down", tekst: res.error ?? "Kunne ikke sende." });
+                    }
+                  }}
+                  disabled={pubLoading}
+                >
+                  Be om endring
+                </Knapp>
+              </div>
+            </div>
+          </Kort>
+        )}
+
       {/* TOPP-BAR — desktop (md+): uendret */}
       <div className="hidden md:flex" style={{ alignItems: "flex-end", gap: 16, flexWrap: "wrap", paddingBottom: 14, borderBottom: `1px solid ${T.border}` }}>
         <div style={{ minWidth: 0 }}>
@@ -1593,7 +1693,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           {actions?.suggestWeek && (
             <button type="button" onClick={handleSuggest} disabled={suggestLoading} title="AI-forslag for uka" className="v2-press v2-focus" style={{ appearance: "none", cursor: suggestLoading ? "default" : "pointer", width: 38, height: 38, borderRadius: 10, background: T.panel3, border: `1px solid ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: suggestLoading ? 0.5 : 1 }}><Icon name="sparkles" size={15} style={{ color: T.lime }} /></button>
           )}
-          {actions && (
+          {actions &&
+            !(role === "player" && (optimisticStatus ?? planStatus) === "PENDING_PLAYER") && (
             <Knapp icon="send" onClick={handlePublish} disabled={pubLoading}>{pubLoading ? "Publiserer…" : "Publiser"}</Knapp>
           )}
         </div>
@@ -1634,7 +1735,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
               <Knapp icon="plus" ghost full onClick={() => setNyOktApen(true)}>Ny økt</Knapp>
             </div>
           )}
-          {actions && (
+          {actions &&
+            !(role === "player" && (optimisticStatus ?? planStatus) === "PENDING_PLAYER") && (
             <div style={{ flex: 1 }}>
               <Knapp icon="send" full onClick={handlePublish} disabled={pubLoading}>{pubLoading ? "Publiserer…" : "Publiser"}</Knapp>
             </div>

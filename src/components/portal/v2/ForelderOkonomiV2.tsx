@@ -1,17 +1,8 @@
 "use client";
 
 /**
- * Foreldreportal · Økonomi — v2 (retning C «Presis», mørk først). Lese-først
- * innsyn i barnas økonomi: utestående, betalt totalt, aktive pakker + abonnement
- * per barn (tier, credits, neste trekk) + siste betalinger. Full historikk ligger
- * på /forelder/fakturaer — denne flaten er sammendraget (som den ekte skjermen
- * src/app/forelder/okonomi/page.tsx).
- *
- * Komponert KUN av v2-komponenter fra "@/components/v2" (ingen ad-hoc UI-primitiver,
- * ingen rå hex — kun T.*-tokens). ALL data kommer typet inn via {data}, avledet av
- * barnas EKTE Prisma-rader i route-loaderen (v2-forelder-okonomi/page.tsx). Ingen
- * tall fabrikeres: mangler et felt vises ærlig tom-tilstand. V2Shell eier chrome-en;
- * denne komponenten rendrer bare den indre innholds-stacken. Beløp i øre (Int).
+ * Foreldreportal · Økonomi — v2 Presis + B-pakke (status + én grønn CTA).
+ * Kun v2 + T.*. Enklere foreldre-språk.
  */
 
 import { useEffect, useState } from "react";
@@ -160,12 +151,12 @@ export function ForelderOkonomiV2({ data }: { data: ForelderOkonomiData }) {
   if (barnAntall === 0) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-        <Hode mobile={mobile} sub="Status for abonnement, fakturaer og kommende trekk." />
+        <Hode mobile={mobile} sub="Abonnement, fakturaer og kommende trekk." />
         <Kort>
           <TomTilstand
             icon="credit-card"
             title="Ingen barn koblet til kontoen din"
-            sub="Be spilleren sende en invitasjon, eller kontakt coachen din."
+            sub="Be spilleren sende en invitasjon, eller spør coachen."
           />
         </Kort>
       </div>
@@ -185,12 +176,12 @@ export function ForelderOkonomiV2({ data }: { data: ForelderOkonomiData }) {
         mobile={mobile}
         sub={
           barnAntall === 1
-            ? "Status for abonnement, credits og kommende trekk."
-            : `Økonomi-oversikt for ${barnAntall} barn.`
+            ? "Abonnement, timer og kommende trekk."
+            : `Oversikt for ${barnAntall} barn.`
         }
         pill={
           <StatusPill tone={harUtestaaende ? "warn" : "up"}>
-            {harUtestaaende ? "Forfaller" : "Ajour"}
+            {harUtestaaende ? "Forfaller" : "Alt i orden"}
           </StatusPill>
         }
       />
@@ -208,17 +199,15 @@ export function ForelderOkonomiV2({ data }: { data: ForelderOkonomiData }) {
             size={mobile ? 40 : 48}
             action={
               <StatusPill tone={harUtestaaende ? "warn" : "up"}>
-                {harUtestaaende ? "Forfaller" : "Ajour"}
+                {harUtestaaende ? "Forfaller" : "Alt i orden"}
               </StatusPill>
             }
           />
-          {harUtestaaende && (
-            <div style={{ marginTop: 16 }}>
-              <Knapp icon="arrow-right" onClick={gaaTil("/forelder/fakturaer")}>
-                Se fakturaer
-              </Knapp>
-            </div>
-          )}
+          <div style={{ marginTop: 16 }}>
+            <Knapp icon="arrow-right" onClick={gaaTil("/forelder/fakturaer")}>
+              {harUtestaaende ? "Se utestående fakturaer" : "Se alle fakturaer"}
+            </Knapp>
+          </div>
         </Kort>
 
         <Kort eyebrow="Nøkkeltall">
@@ -229,7 +218,7 @@ export function ForelderOkonomiV2({ data }: { data: ForelderOkonomiData }) {
           />
           <Rad
             title="Aktive pakker"
-            sub="Coaching-pakker med credits"
+            sub="Coaching-pakker med timer"
             trailing={<MonoVerdi>{aktivePakker}</MonoVerdi>}
             last
           />
@@ -267,8 +256,8 @@ export function ForelderOkonomiV2({ data }: { data: ForelderOkonomiData }) {
         {sistePayments.length === 0 ? (
           <TomTilstand
             icon="credit-card"
-            title="Ingen betalinger registrert ennå"
-            sub="Betalinger dukker opp her når det er registrert trekk."
+            title="Ingen betalinger ennå"
+            sub="Når det trekkes betaling, ser du det her."
           />
         ) : (
           <div>
@@ -312,8 +301,8 @@ export function ForelderOkonomiV2({ data }: { data: ForelderOkonomiData }) {
               margin: 0,
             }}
           >
-            Abonnement og betaling administreres av spilleren selv. Foreldreportalen
-            gir innsyn — kontakt coachen din ved spørsmål om fakturering.
+            Abonnement styres av spilleren. Her ser du bare oversikten — spør
+            coachen ved spørsmål om betaling.
           </p>
         </div>
       </Kort>
@@ -409,7 +398,7 @@ function AbonnementKort({ a }: { a: OkonomiAbonnement }) {
         >
           <Rad
             leading={<Icon name="sparkles" size={15} style={{ color: T.lime }} />}
-            title="Credits igjen"
+            title="Timer igjen"
             trailing={
               <MonoVerdi>
                 {a.creditsRemaining}

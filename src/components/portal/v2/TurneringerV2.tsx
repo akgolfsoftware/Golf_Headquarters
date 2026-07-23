@@ -1,20 +1,12 @@
 "use client";
 
 /**
- * PlayerHQ Turneringer — v2 (retning C «Presis»). Rekomponert fra den ekte
- * skjermen (src/app/portal/tren/turneringer/page.tsx) med EKTE TournamentEntry-
- * data: ren lese-oversikt over spillerens turneringskalender. Kun v2-komponenter
- * fra "@/components/v2"; ingen ad-hoc UI-primitiver, ingen rå hex (kun T.*).
- *
- * Funksjonen bevares 1:1: eyebrow «OVERSIKT · {år}» → «{N} påmeldt.» → lead →
- * guidance-kort → turneringsliste (trophy + navn + dato·kategori + status +
- * chevron, klikk → detalj) → «Planlegg i Workbench». Ærlig tom-tilstand.
- *
- * V2Shell (montert i (v2preview)/v2-turneringer/page.tsx) eier chrome-en — denne
- * komponenten rendrer bare den indre innholds-stacken.
+ * PlayerHQ Turneringer — v2 Presis + B-pakke (status + én primær Workbench).
+ * Påmeldte turneringer. Tom = grønn vei til plan. T.* only.
  */
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   T,
@@ -23,7 +15,7 @@ import {
   Kort,
   Rad,
   StatusPill,
-  Knapp,
+  CTAPill,
   TomTilstand,
   Icon,
 } from "@/components/v2";
@@ -71,7 +63,7 @@ export function TurneringerV2({ data }: { data: TurneringerData }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
+      {/* Hode + B: status */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
           <Caps>Oversikt · {aar}</Caps>
@@ -79,20 +71,17 @@ export function TurneringerV2({ data }: { data: TurneringerData }) {
             <Tittel mobile={mobile} em="påmeldt.">{antallOrd}</Tittel>
           </div>
         </div>
+        <StatusPill tone={antall > 0 ? "lime" : "info"}>
+          {antall} {antall === 1 ? "turnering" : "turneringer"}
+        </StatusPill>
       </div>
 
-      <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, lineHeight: 1.6, margin: 0, maxWidth: "62ch" }}>
-        Hva som kommer. Å planlegge mot en turnering skjer i Workbench.
-      </p>
-
-      {/* Guidance — ren oversikt */}
-      <Kort tint>
-        <Caps size={9} style={{ marginBottom: 8 }}>Ren oversikt</Caps>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
-          Dette er en ren oversikt. Trykk{" "}
-          <b style={{ color: T.fg, fontWeight: 600 }}>«Planlegg i Workbench»</b> for å legge en turnering i årsplanen.
-        </p>
-      </Kort>
+      {/* B: én primær CTA først */}
+      <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="calendar-plus" full>
+          Planlegg i Workbench
+        </CTAPill>
+      </Link>
 
       {/* Turneringsliste */}
       <Kort eyebrow="Kommende turneringer" action={antall > 0 ? <Caps size={9}>{antall} stk</Caps> : undefined}>
@@ -125,16 +114,9 @@ export function TurneringerV2({ data }: { data: TurneringerData }) {
             />
           ))
         ) : (
-          <TomTilstand icon="trophy" title="Ingen kommende turneringer" sub="Turneringer du melder deg på dukker opp her." />
+          <TomTilstand icon="trophy" title="Ingen kommende turneringer" sub="Melder du deg på, dukker de opp her. Planlegg forberedelse i Workbench." />
         )}
       </Kort>
-
-      {/* Primær CTA */}
-      <div>
-        <Knapp icon="calendar-plus" full={mobile} onClick={() => router.push("/portal/planlegge")}>
-          Planlegg i Workbench
-        </Knapp>
-      </div>
     </div>
   );
 }

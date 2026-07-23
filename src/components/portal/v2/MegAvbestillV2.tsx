@@ -1,14 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Meg · Abonnement · Avbestill (steg 2 av 2) — v2 (retning C «Presis»).
- * Rekomponert fra /portal/meg/abonnement/avbestill/page.tsx + avbestill-buttons.tsx.
- * KRITISK (gotchas.md): all avbestill-logikk bor i actions.ts (cancelPro kaller
- * Stripe FØR DB) — denne komponenten er KUN presentasjon rundt samme kall,
- * samme confirm()-vakt og samme feilhåndtering som før.
- *
- * Konsekvens-listen er redaksjonell forklaringstekst (hva Pro-fordelene er),
- * 1:1 fra kildeskjermen — ikke spillerens egne data.
+ * PlayerHQ Meg · Avbestill — v2 Presis + B-pakke (status først, Behold = grønn).
+ * Avbestill-logikk i actions.ts (cancelPro) — urørt.
  */
 
 import { useState, useTransition } from "react";
@@ -166,20 +160,19 @@ export function MegAvbestillV2({ data }: { data: MegAvbestillData }) {
         </div>
       </Kort>
 
-      {/* Handlinger — behold (autofokus-idiomet fra kilden: trygt valg først) */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-        <Knapp icon="heart" onClick={() => router.push("/portal/meg/abonnement")} style={{ minHeight: 44 }}>
-          Behold Pro
-        </Knapp>
-        <Knapp
-          ghost
-          disabled={pending}
-          onClick={avbestill}
-          style={{ minHeight: 44, color: T.down, border: `1.5px solid color-mix(in srgb, ${T.down} 35%, transparent)` }}
-        >
-          {pending ? "Avbestiller …" : "Ja, avbestill"}
-        </Knapp>
-      </div>
+      {/* B: én grønn primær (behold) + farlig sekundær under */}
+      <Knapp icon="heart" full onClick={() => router.push("/portal/meg/abonnement")} style={{ minHeight: 44 }}>
+        Behold Pro
+      </Knapp>
+      <Knapp
+        ghost
+        full
+        disabled={pending}
+        onClick={avbestill}
+        style={{ minHeight: 44, color: T.down, border: `1.5px solid color-mix(in srgb, ${T.down} 35%, transparent)` }}
+      >
+        {pending ? "Avbestiller …" : "Ja, avbestill"}
+      </Knapp>
       {feil && (
         <p role="alert" style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 500, lineHeight: 1.5, color: T.down, textAlign: "center", margin: 0 }}>
           {feil}

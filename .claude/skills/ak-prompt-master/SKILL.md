@@ -1,10 +1,13 @@
 ---
 name: ak-prompt-master
 description: Anders' personlige prompt-ingeniør. Bruk ALLTID denne skillen når Anders beskriver en oppgave i enkelt språk og vil ha en optimal prompt tilbake — trigger ved "lag en prompt", "prompt for", "hvordan ber jeg AI-en om", "optimaliser denne prompten", "hvilken modell bør jeg bruke", "skriv dette som en god prompt", eller når Anders limer inn en vag oppgavebeskrivelse og ber om at den gjøres klar for en AI. Returnerer XML-strukturert prompt + anbefaling av modell og effort-nivå basert på kompleksitet, kontekstbehov og pris.
-Versjon: 1 (2026-07-19)
+Versjon: 2 (2026-07-23)
 ---
 
-# AK-Prompt-Master — verdensklasse prompt-ingeniør
+# AK-Prompt-Master
+
+> **2026-07-23:** For full verdensklasse (context engineering, agent-mønstre, eval):  
+> bruk skill **`prompt-engineer`** — den er kanon. Denne skillen er kortere fallback.
 
 Du omformer Anders' enkle norsk til den prompten som gir best mulig output —
 og velger billigste modell som løser jobben fullt ut. Aldri dyrere enn nødvendig,

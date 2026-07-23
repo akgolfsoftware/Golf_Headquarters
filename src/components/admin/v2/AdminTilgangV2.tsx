@@ -1,23 +1,13 @@
 "use client";
 
 /**
- * AgencyOS Innstillinger → Tilgang & roller — v2. Rekomponerer den ekte
- * /admin/(legacy)/settings/tilgang-flaten (read-only CBAC-matrise) i
- * v2-idiomet. Bygget utelukkende av v2-komponentbiblioteket
- * (src/components/v2) — ingen ad-hoc UI, ingen rå hex (kun T.*).
- *
- * Read-only: matrisen kommer fra en hardkodet rolle→capability-tabell i
- * @/lib/auth/cbac (can()), ingen DB-kall. Endringer i tilgang krever
- * koderefaktor og logges alltid i AuditLog.
- *
- * Ingen mobil-kortliste her — dette er en ekte matrise (10 rader × 5
- * kolonner), ikke en post-liste. Tabellen scroller horisontalt under det
- * brede brekkpunktet, samme mønster som legacy-flaten.
+ * AgencyOS Tilgang & roller — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Read-only CBAC-matrise. T.* only.
  */
 
 import Link from "next/link";
 import type { UserRole } from "@/generated/prisma/client";
-import { Caps, Tittel, Kort, Icon, T } from "@/components/v2";
+import { Caps, Tittel, Kort, Icon, StatusPill, CTAPill, TomTilstand, T } from "@/components/v2";
 
 export interface AdminTilgangV2Row {
   /** Capability-verdien (f.eks. "view_all_players") — vist som kode under beskrivelsen. */
@@ -112,15 +102,26 @@ function TilgangTabell({ roller, rader }: { roller: UserRole[]; rader: AdminTilg
 
 export function AdminTilgangV2({ roller, rader }: { roller: UserRole[]; rader: AdminTilgangV2Row[] }) {
   const hode = (
-    <div>
-      <Caps>Innstillinger · Tilgang & roller</Caps>
-      <div style={{ marginTop: 10 }}>
-        <Tittel em="matrise.">Capability</Tittel>
+    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
+      <div>
+        <Caps>Innstillinger · Tilgang & roller · AgencyOS</Caps>
+        <div style={{ marginTop: 10 }}>
+          <Tittel em="matrise.">Capability</Tittel>
+        </div>
+        <p style={{ marginTop: 10, fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.6 }}>
+          Hvilke handlinger hver rolle kan utføre i plattformen.
+        </p>
       </div>
-      <p style={{ marginTop: 10, fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.6 }}>
-        Hvilke handlinger hver rolle kan utføre i plattformen.
-      </p>
+      <StatusPill tone="info">Read-only</StatusPill>
     </div>
+  );
+
+  const primaerCta = (
+    <Link href="/admin/audit-log" style={{ textDecoration: "none", display: "block" }}>
+      <CTAPill icon="shield" full>
+        Åpne audit-log
+      </CTAPill>
+    </Link>
   );
 
   const infoRad = (
@@ -166,9 +167,22 @@ export function AdminTilgangV2({ roller, rader }: { roller: UserRole[]; rader: A
     </Kort>
   );
 
+  if (rader.length === 0) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        {hode}
+        <Kort>
+          <TomTilstand icon="shield" title="Ingen capabilities lastet" sub="Matrisen kommer fra CBAC-tabellen — sjekk konfigurasjonen." />
+        </Kort>
+        {primaerCta}
+      </div>
+    );
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
+      {primaerCta}
       {infoRad}
       <Kort pad="8px 8px 4px">
         <TilgangTabell roller={roller} rader={rader} />

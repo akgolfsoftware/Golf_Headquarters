@@ -1,8 +1,8 @@
 "use client";
 
 import { Knapp } from "@/components/v2";
+import { T } from "@/lib/v2/tokens";
 import { useState, useTransition } from "react";
-import { Check, Download, Trash2 } from "lucide-react";
 import { exportUserData } from "@/app/portal/meg/innstillinger/actions";
 import { opprettGdprForesporsel } from "@/lib/moderering/actions";
 
@@ -29,7 +29,6 @@ function ExportAction() {
         setStatus({ ok: false, msg: result.error ?? "Eksport feilet." });
         return;
       }
-      // Trigger nedlasting av JSON-fil
       const blob = new Blob([JSON.stringify(result.data, null, 2)], {
         type: "application/json",
       });
@@ -46,19 +45,20 @@ function ExportAction() {
   }
 
   return (
-    <div className="mt-4 flex flex-wrap items-center gap-2">
-      <Knapp onClick={onExport} disabled={isPending}>
-        <Download className="h-4 w-4" />
+    <div style={{ marginTop: 14, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10 }}>
+      <Knapp icon="download" onClick={onExport} disabled={isPending}>
         {isPending ? "Genererer…" : "Last ned mine data"}
       </Knapp>
       {status ? (
         <span
-          className={`inline-flex items-center gap-1 font-mono text-[11px] tracking-[0.06em] ${
-            status.ok ? "text-primary" : "text-destructive"
-          }`}
+          style={{
+            fontFamily: T.mono,
+            fontSize: 11,
+            letterSpacing: "0.04em",
+            color: status.ok ? T.up : T.down,
+          }}
         >
           {status.msg}
-          {status.ok && <Check className="h-3 w-3" strokeWidth={2.5} aria-hidden />}
         </span>
       ) : null}
     </div>
@@ -66,13 +66,8 @@ function ExportAction() {
 }
 
 /**
- * Slett kontoen din (D5-konsolidering, 2026-07-18). Tidligere fantes to veier:
- * umiddelbar selvbetjent hard-delete (satte `deletedAt` → 30-dagers cron-kaskade)
- * OG coach-godkjent anonymisering via moderering-køen. De er nå slått sammen til
- * ÉN vei: forespørselen går alltid til køen (`opprettGdprForesporsel`), og ved
- * godkjenning ANONYMISERES opplysningene (navn/e-post/telefon/bilde/slug) mens
- * avidentifisert treningshistorikk beholdes. Ingen umiddelbar hard-delete lenger.
- * SLETT-bekreftelsen beholdes som friksjon; begrunnelse er valgfri.
+ * Slett kontoen din: forespørsel til moderering-køen.
+ * Ved godkjenning anonymiseres opplysninger — ingen hard-delete.
  */
 function SlettKontoAction() {
   const [isPending, startTransition] = useTransition();
@@ -104,19 +99,20 @@ function SlettKontoAction() {
 
   if (!showConfirm) {
     return (
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        <Knapp ghost onClick={() => setShowConfirm(true)}>
-          <Trash2 className="h-4 w-4" />
+      <div style={{ marginTop: 14, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10 }}>
+        <Knapp ghost icon="trash-2" onClick={() => setShowConfirm(true)}>
           Slett kontoen min
         </Knapp>
         {status ? (
           <span
-            className={`inline-flex items-center gap-1 font-mono text-[11px] tracking-[0.06em] ${
-              status.ok ? "text-primary" : "text-destructive"
-            }`}
+            style={{
+              fontFamily: T.mono,
+              fontSize: 11,
+              letterSpacing: "0.04em",
+              color: status.ok ? T.up : T.down,
+            }}
           >
             {status.msg}
-            {status.ok && <Check className="h-3 w-3" strokeWidth={2.5} aria-hidden />}
           </span>
         ) : null}
       </div>
@@ -124,13 +120,20 @@ function SlettKontoAction() {
   }
 
   return (
-    <div className="mt-4 rounded-xl border border-destructive bg-card p-4">
-      <p className="text-sm font-semibold text-destructive">Er du helt sikker?</p>
-      <p className="mt-1 text-xs text-muted-foreground">
-        Forespørselen behandles av en coach eller administrator. Ved godkjenning
-        anonymiseres opplysningene dine — navn, e-post, telefon og bilde fjernes,
-        mens avidentifisert treningshistorikk beholdes. Skriv <strong>SLETT</strong>{" "}
-        for å bekrefte.
+    <div
+      style={{
+        marginTop: 14,
+        borderRadius: T.rRow,
+        border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`,
+        background: `color-mix(in srgb, ${T.down} 6%, ${T.panel})`,
+        padding: 14,
+      }}
+    >
+      <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.down }}>
+        Er du helt sikker?
+      </p>
+      <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.5 }}>
+        Forespørselen behandles av coach eller admin. Skriv <strong style={{ color: T.fg }}>SLETT</strong> for å bekrefte.
       </p>
       <input
         type="text"
@@ -139,7 +142,22 @@ function SlettKontoAction() {
         placeholder="SLETT"
         autoComplete="off"
         autoCapitalize="characters"
-        className="mt-2 w-full max-w-[200px] rounded-md border border-border bg-card px-4 py-2 text-sm tracking-[0.10em] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive"
+        style={{
+          marginTop: 10,
+          width: "100%",
+          maxWidth: 200,
+          height: 42,
+          borderRadius: 11,
+          border: `1px solid ${T.borderS}`,
+          background: T.panel2,
+          padding: "0 12px",
+          fontFamily: T.mono,
+          fontSize: 13,
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+          color: T.fg,
+          outline: "none",
+        }}
       />
       <textarea
         value={begrunnelse}
@@ -147,35 +165,59 @@ function SlettKontoAction() {
         rows={3}
         maxLength={1000}
         placeholder="Begrunnelse (valgfritt)"
-        className="mt-2 w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        style={{
+          marginTop: 8,
+          width: "100%",
+          resize: "none",
+          borderRadius: 11,
+          border: `1px solid ${T.borderS}`,
+          background: T.panel2,
+          padding: "10px 12px",
+          fontFamily: T.ui,
+          fontSize: 13,
+          color: T.fg,
+          outline: "none",
+          boxSizing: "border-box",
+        }}
       />
       {error ? (
-        <p className="font-mono mt-2 text-[11px] tracking-[0.06em] text-destructive">
-          {error}
-        </p>
+        <p style={{ margin: "8px 0 0", fontFamily: T.mono, fontSize: 11, color: T.down }}>{error}</p>
       ) : null}
-      <div className="mt-2 flex flex-wrap gap-2">
+      <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", gap: 8 }}>
         <button
           type="button"
           onClick={onSend}
           disabled={isPending || confirmText !== "SLETT"}
-          className="font-display inline-flex h-10 items-center justify-center gap-1.5 rounded-full bg-destructive px-6 text-sm font-bold text-destructive-foreground transition disabled:opacity-50"
+          className="v2-press v2-focus"
+          style={{
+            appearance: "none",
+            height: 40,
+            borderRadius: 9999,
+            border: "none",
+            padding: "0 18px",
+            background: T.down,
+            color: T.onLime,
+            fontFamily: T.ui,
+            fontSize: 12.5,
+            fontWeight: 600,
+            cursor: isPending || confirmText !== "SLETT" ? "default" : "pointer",
+            opacity: isPending || confirmText !== "SLETT" ? 0.45 : 1,
+          }}
         >
           {isPending ? "Sender…" : "Send slette-forespørsel"}
         </button>
-        <button
-          type="button"
+        <Knapp
+          ghost
+          disabled={isPending}
           onClick={() => {
             setShowConfirm(false);
             setConfirmText("");
             setBegrunnelse("");
             setError(null);
           }}
-          disabled={isPending}
-          className="font-display inline-flex h-10 items-center justify-center gap-1.5 rounded-full border border-border bg-card px-6 text-sm font-semibold text-foreground transition hover:bg-secondary"
         >
           Avbryt
-        </button>
+        </Knapp>
       </div>
     </div>
   );

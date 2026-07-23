@@ -1,17 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Coach · Spørsmål-tråd (v2, retning C «Presis»). Rekomponert fra
- * legacy-skjermen src/app/portal/(legacy)/coach/sporsmal/[id] (page.tsx +
- * sporsmal-interaktiv.tsx): ett spørsmål fra en spiller (Question-modellen)
- * med tittel + brødtekst, coachens svar ELLER svarskjema, reaksjon og
- * liknende spørsmål.
- *
- * Funksjon og datakontrakt uendret — kun det visuelle er løftet til v2.
- * svarPaSporsmal-server-actionen sendes inn som prop og kalles uendret. Kun
- * v2-komponenter fra "@/components/v2"; ingen ad-hoc UI, ingen rå hex (kun
- * T.*). Ærlighet: svar/status/tid avledes av EKTE Question-rader. Norsk
- * bokmål, ordbok låst.
+ * PlayerHQ Coach · Spørsmål-tråd — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useEffect, useState, useTransition } from "react";

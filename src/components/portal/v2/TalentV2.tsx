@@ -1,13 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Talent-hub — v2 (retning C «Presis»). Rekomponert fra
- * legacy-skjermen (portal/(legacy)/talent): utviklingsreise, mastery-ringer,
- * målfremgang, streak, SG-percentil og nivåstige.
- *
- * INGEN mockup finnes → komponert fra v2-biblioteket. PRE-BETA-merket
- * beholdes: modulen viser delvis demo-data til den kobles helt til DB.
- * «?»-regelen: talentVurdering, streak og sgTotal forklares via HjelpTips.
+ * PlayerHQ Talent-hub — v2 Presis + B-pakke (nivå-status + én vei til min plan).
+ * Pre-beta merket ærlig. T.* only.
  */
 
 import Link from "next/link";
@@ -26,6 +21,7 @@ import {
   VarmeKart,
   NivaStige,
   BenchmarkBadge,
+  CTAPill,
 } from "@/components/v2";
 
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
@@ -76,10 +72,17 @@ export function TalentV2({ data }: { data: TalentData }) {
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <StatusPill tone="warn">Pre-beta</StatusPill>
           <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut }}>
-            Talent-modulen viser foreløpig delvis demo-data — kobles helt til databasen etter beta.
+            Delvis demo-data — kobles helt til databasen etter beta.
           </span>
         </div>
       </Kort>
+
+      {/* B: én primær vei */}
+      <Link href="/portal/talent/min-plan" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="target" full>
+          Åpne min plan
+        </CTAPill>
+      </Link>
 
       {/* Reisen */}
       <Kort eyebrow="Reisen — klubb til tour">
@@ -106,11 +109,18 @@ export function TalentV2({ data }: { data: TalentData }) {
       {/* Målfremgang */}
       <Kort eyebrow="Målfremgang">
         {data.maal.length === 0 ? (
-          <TomTilstand
-            icon="target"
-            title="Ingen aktive mål"
-            sub="Sett mål i PlayerHQ for å se fremgang her."
-          />
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <TomTilstand
+              icon="target"
+              title="Ingen aktive mål"
+              sub="Sett mål for å se fremgang her."
+            />
+            <Link href="/portal/mal/bygger" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill ghost full icon="plus">
+                Sett mål
+              </CTAPill>
+            </Link>
+          </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {data.maal.map((g) => (

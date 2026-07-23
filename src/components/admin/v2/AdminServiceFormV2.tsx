@@ -13,7 +13,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { T, Caps, Knapp } from "@/components/v2";
+import { T, Caps, CTAPill } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { createService, updateService, deleteService } from "@/app/admin/(legacy)/services/actions";
 
@@ -104,7 +104,16 @@ export function ServiceFormV2({ initial, triggerLabel, triggerVariant = "cta" }:
   return (
     <>
       {triggerVariant === "cta" ? (
-        <Knapp icon="plus" onClick={() => setOpen(true)}>{triggerLabel}</Knapp>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          style={{ all: "unset", cursor: "pointer", display: "block", width: "100%" }}
+          aria-label={triggerLabel}
+        >
+          <CTAPill icon="plus" full>
+            {triggerLabel}
+          </CTAPill>
+        </button>
       ) : (
         <button
           type="button"

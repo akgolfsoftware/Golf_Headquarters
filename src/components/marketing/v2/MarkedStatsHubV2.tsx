@@ -11,7 +11,7 @@
 import Link from "next/link";
 import { T } from "@/lib/v2/tokens";
 import { Icon, Kort, Caps, KpiFlis } from "@/components/v2";
-import { StatsRamme, useMobile, type StatsFamilie } from "./stats-ramme";
+import { StatsRamme, StatsStatusBar, useMobile, type StatsFamilie } from "./stats-ramme";
 import { Eyebrow, HeroT, SeksT, Lede, MCta, Seksjon } from "./marked-ramme";
 
 const FAMILIER: {
@@ -105,6 +105,15 @@ export function MarkedStatsHubV2({ norskeIAksjon, kommendeTurneringer, sisteSync
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1.4fr 1fr", gap: mobile ? 32 : 48, alignItems: "start" }}>
           <div>
             <Eyebrow>AK GOLF STATS</Eyebrow>
+            <StatsStatusBar
+              label={
+                norskeIAksjon > 0
+                  ? `${norskeIAksjon} norske i aksjon denne uken`
+                  : "Ingen norske i aksjon denne uken"
+              }
+              tone={norskeIAksjon > 0 ? "up" : "info"}
+              meta={`${kommendeTurneringer} turneringer neste 30 d · ${sisteSync}`}
+            />
             <HeroT mobile={mobile} em="Gratis. Alltid.">
               All statistikken.
             </HeroT>
@@ -112,11 +121,11 @@ export function MarkedStatsHubV2({ norskeIAksjon, kommendeTurneringer, sisteSync
               Live PGA Tour-data, norske spillere over hele verden, og verktøy for å sammenligne ditt eget spill mot proffene. Bygget i Norge, åpent for alle.
             </Lede>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 26 }}>
-              <MCta icon="arrow-right" href="/turneringer">
-                Se ukens turneringer
+              <MCta icon="arrow-right" href={norskeIAksjon > 0 ? "/stats/norske" : "/stats/spillere"}>
+                {norskeIAksjon > 0 ? "Se norske i aksjon" : "Utforsk spillere"}
               </MCta>
               <MCta ghost icon="arrow-down" href="#familier">
-                Utforsk alle verktøy
+                Alle verktøy
               </MCta>
             </div>
           </div>

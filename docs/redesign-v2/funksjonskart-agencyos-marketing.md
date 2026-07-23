@@ -186,7 +186,7 @@ P2 = sekundærflater med reell bruk, P3 = aliaser, interne verktøy og parkerte 
 ## Organisasjon og innstillinger — `/admin/organisasjon`
 - **Jobb:** Alt administrativt: team, tilgang, integrasjoner, e-postmaler, revisjonslogg, klubb- og systeminnstillinger.
 - **Data inn:** Teammedlemmer/invitasjoner, ApiKey, AuditLog, EmailTemplate, integrasjonsstatus (GolfBox m.fl.), CBAC-capabilities (gating på capability, ikke rolleliste).
-- **Handlinger:** Invitere teammedlem, styre tilgang/API-nøkler, redigere e-postmaler, lese audit-log, endre innstillinger (inkl. lys/mørk-tema-toggle i topbar, cookie `ak-admin-theme`).
+- **Handlinger:** Invitere teammedlem, styre tilgang/API-nøkler, redigere e-postmaler, lese audit-log, endre innstillinger (inkl. lys/mørk-tema-toggle, cookie `ak-v2-tema` — se `docs/design-system/TEMA-LYS-MORK.md`).
 - **Varianter:** `/admin/klubb/innstillinger`, `/admin/settings(/api|/calendar|/security|/tilgang)`, `/admin/team(/inviter)`, `/admin/integrasjoner`, `/admin/email-templates(/[id]/rediger)`, `/admin/audit-log(/[id])`, `/admin/profile`, `/admin/hjelp`.
 - **Prioritet:** P1 som hub (org); undersidene P2–P3.
 

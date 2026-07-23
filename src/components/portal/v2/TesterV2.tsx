@@ -1,21 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Tester — v2 (retning C «Presis»). Komponert 1:1 fra
- * ui_kits/v2/datagolf-tester.jsx → funksjonen TesterScorekort (+ TabScorekort,
- * TabHistorikk, TestTabell, NivaBadge), men med EKTE data fra loadTesterScreen
- * (src/lib/portal-tester/tester-data.tsx) + tildelinger/resultat-logg fra siden.
- *
- * Kun v2-komponenter fra "@/components/v2"; ingen ad-hoc UI-primitiver. TestTabell
- * og NivaBadge er skjerm-lokale komposisjoner (som i mockupen) bygget av T.*-
- * tokens + v2-primitiver — ingen rå hex.
- *
- * Ærlighet: schemaet har ingen mål-verdi, ingen enhet, ingen benchmark/CS-nivå
- * per test og ingen kalibrert totalscore (FYS-formelen avventer). Disse feltene
- * vises som «—»/utelates, aldri fabrikkert. Se `gaps` i leveransen.
- *
- * V2Shell (montert i (v2preview)/v2-tester/page.tsx) eier chrome-en — denne
- * komponenten rendrer bare den indre innholds-stacken.
+ * PlayerHQ Tester — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { Fragment, useEffect, useState } from "react";
@@ -258,11 +245,18 @@ function TabScorekort({ data, mobile }: { data: TesterV2Data; mobile: boolean })
           </div>
         </>
       ) : (
-        <TomTilstand
-          icon="target"
-          title="Ingen tester tatt ennå"
-          sub="Gjennomfør en test i katalogen for å bygge scorekortet ditt over tid."
-        />
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <TomTilstand
+            icon="target"
+            title="Ingen tester tatt ennå"
+            sub="Registrer en test — scorekortet fylles over tid."
+          />
+          <Link href="/portal/tren/tester/ny" style={{ textDecoration: "none", display: "block" }}>
+            <CTAPill icon="plus" full>
+              Registrer test
+            </CTAPill>
+          </Link>
+        </div>
       )}
     </Kort>
   );
@@ -386,8 +380,10 @@ export function TesterV2({ data }: { data: TesterV2Data }) {
             <Tittel mobile={mobile} em="scorekort">Ditt test-</Tittel>
           </div>
         </div>
-        <Link href="/portal/tren/tester/ny" style={{ textDecoration: "none" }}>
-          <CTAPill icon="plus">Registrer test</CTAPill>
+        <Link href="/portal/tren/tester/ny" style={{ textDecoration: "none", display: "block", width: "100%", maxWidth: 280 }}>
+          <CTAPill icon="plus" full>
+            Registrer test
+          </CTAPill>
         </Link>
       </div>
       <PillTabs

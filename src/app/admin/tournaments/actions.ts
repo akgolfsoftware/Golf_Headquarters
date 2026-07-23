@@ -248,7 +248,7 @@ export async function oppdaterPrioritet(entryId: string, priority: string) {
 }
 
 // ------------------------------------------------------------------
-// Eksport-action for CoachHQ turneringer
+// Eksport-action for AgencyOS turneringer
 // ------------------------------------------------------------------
 
 const tExportFormatSchema = z.enum(["pdf", "csv"]);

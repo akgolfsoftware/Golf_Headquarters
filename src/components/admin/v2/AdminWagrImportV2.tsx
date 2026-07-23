@@ -9,7 +9,7 @@
 import { useTransition } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Caps, Tittel, Kort, Knapp, StatusPill, AvatarInit, T } from "@/components/v2";
+import { Caps, Tittel, Kort, Knapp, StatusPill, AvatarInit, TomTilstand, T } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { synkWagrNaa } from "@/app/admin/(legacy)/talent/wagr-import/actions";
 
@@ -61,16 +61,30 @@ function SynkNaaKnapp() {
 }
 
 export function AdminWagrImportV2({ data }: { data: AdminWagrImportV2Data }) {
+  const statusTone = data.koblede.length === 0 ? "info" as const : data.koblede.length < data.antallSpillere ? "warn" as const : "lime" as const;
+  const statusTekst =
+    data.koblede.length === 0
+      ? "Ingen koblet ennå"
+      : `${data.koblede.length} av ${data.antallSpillere} koblet`;
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      <div>
-        <Caps>Talent · WAGR-import</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="verdensrankingen.">Synk mot</Tittel>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
+        <div>
+          <Caps>Talent · WAGR-import</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em="verdensrankingen.">Synk mot</Tittel>
+          </div>
+          <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut, margin: "10px 0 0", maxWidth: 560 }}>
+            Hent World Amateur Golf Ranking for stallen din. Vi matcher på navn og fødselsdato.
+          </p>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut, margin: "10px 0 0", maxWidth: 560 }}>
-          Hent World Amateur Golf Ranking for stallen din. Vi matcher på navn og fødselsdato.
-        </p>
+        <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
+      </div>
+
+      {/* B: én primær CTA */}
+      <div style={{ display: "flex", justifyContent: "flex-start" }}>
+        <SynkNaaKnapp />
       </div>
 
       <Kort>
@@ -86,7 +100,6 @@ export function AdminWagrImportV2({ data }: { data: AdminWagrImportV2Data }) {
               {data.sistSynketLabel ? `Sist synket ${data.sistSynketLabel}` : "Aldri synket"}
             </div>
           </div>
-          <SynkNaaKnapp />
         </div>
       </Kort>
 
@@ -97,9 +110,11 @@ export function AdminWagrImportV2({ data }: { data: AdminWagrImportV2Data }) {
 
       <Kort pad="0">
         {data.koblede.length === 0 ? (
-          <div style={{ padding: "40px 16px", textAlign: "center", fontFamily: T.ui, fontSize: 13, color: T.mut }}>
-            Ingen spillere koblet til WAGR ennå — importer fra wagr.com via Talent-modulen.
-          </div>
+          <TomTilstand
+            icon="globe"
+            title="Ingen spillere koblet til WAGR ennå"
+            sub="Trykk «Synk nå» for å hente ranking fra wagr.com og matche stallen."
+          />
         ) : (
           data.koblede.map((s, i) => (
             <Link

@@ -81,6 +81,23 @@ async function buildDiffPreview(
       ? `Sender melding: «${m.data.melding.subject}» — ${m.data.melding.body.slice(0, 120)}…`
       : null;
   }
+  // Test → full sving TM-baseline
+  if (actionType === "TM_BASELINE_PROPOSE") {
+    const m = z
+      .object({
+        taskTittel: z.string().optional(),
+        metric: z.string().optional(),
+        proposedBaseline: z.number().optional(),
+        currentBaseline: z.number().optional(),
+        testName: z.string().optional(),
+        forklaring: z.string().optional(),
+      })
+      .safeParse(suggestion);
+    if (!m.success) return null;
+    const s = m.data;
+    if (s.forklaring) return s.forklaring;
+    return `Baseline ${s.metric ?? "mål"} på «${s.taskTittel ?? "oppgave"}»: ${s.currentBaseline ?? "—"} → ${s.proposedBaseline ?? "—"} (fra ${s.testName ?? "test"}).`;
+  }
   try {
     const plan =
       planId != null

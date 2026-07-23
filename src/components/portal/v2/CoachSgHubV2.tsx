@@ -1,10 +1,6 @@
 /**
- * PlayerHQ · Coach SG-hub (/portal/coach/sg-hub) — v2.
- * v2-port 17. juli 2026 (Team D3): erstatter hybrid-designet (8 rå hex).
- * Spiller-siden av coach-SG-sammenligningen: H2H per SG-kategori (din verdi
- * som opp/ned-fylt bar fra nullstrek, coachens referanse som markørstrek),
- * innsikt om størst gap, og inngangspunkter til Utstyr og Per-kølle.
- * Coach-verdiene er statiske referanser til coach-profilen har egne data.
+ * PlayerHQ · Coach SG-hub (/portal/coach/sg-hub) — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import Link from "next/link";
@@ -16,6 +12,7 @@ import {
   InnsiktChip,
   Icon,
   HjelpTips,
+  CTAPill,
   T,
   fmtSg,
 } from "@/components/v2";
@@ -98,11 +95,18 @@ export function CoachSgHubV2({ data }: { data: CoachSgHubV2Data }) {
         </div>
 
         {data.ingenData ? (
-          <TomTilstand
-            icon="bar-chart"
-            title="Ingen SG-data ennå"
-            sub="Logg runder for å se sammenligningen mot coach."
-          />
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <TomTilstand
+              icon="bar-chart"
+              title="Ingen SG-data ennå"
+              sub="Logg runder for å se sammenligningen mot coach."
+            />
+            <Link href="/portal/runde/live" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="flag" full>
+                Start live-føring
+              </CTAPill>
+            </Link>
+          </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column" }}>
             {data.kategorier.map((k, i) => {

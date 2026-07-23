@@ -1,20 +1,8 @@
 "use client";
 
 /**
- * AgencyOS Planlegge-hub — v2 (retning C «Presis»). Coach-inngang til
- * planlegging. Ingen mockup fantes — komponert utelukkende av v2-biblioteket
- * (src/components/v2), ingen ad-hoc UI, ingen rå hex (kun T.*).
- *
- * Den EKTE skjermen (src/app/admin/planlegge/page.tsx) er en tynn redirect:
- * den finner en spiller (role=PLAYER, deletedAt=null, navn asc) og sender
- * coachen rett inn i den spillerens Workbench — «Planlegge er ETT trykkpunkt
- * dit, ikke en meny av 6 kort» (låst beslutning). En redirect har ingen egen
- * flate å forhåndsvise, så dette er en ærlig v2-inngang som bevarer
- * datakontrakten (spillerliste) og målet (Workbench per spiller): coachen
- * velger hvilken spiller planleggingen gjelder, hver rad er ett trykk til
- * spillerens Workbench. Ingen planlegging skjer utenfor Workbench.
- *
- * All planlegging går gjennom Workbench — se lib/CLAUDE.md låste beslutninger.
+ * AgencyOS Planlegge-hub — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Mørk AgencyOS. Hver rad = ett trykk til Workbench.
  */
 
 import { useRouter } from "next/navigation";
@@ -27,7 +15,6 @@ import {
   KpiFlis,
   AvatarInit,
   CTAPill,
-  Knapp,
   InnsiktChip,
   TomTilstand,
   StatusPill,
@@ -59,11 +46,18 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
   const medAktiv = spillere.filter((s) => s.aktivePlaner > 0).length;
   const utenAktiv = totalt - medAktiv;
 
-  // Primærmål (mobil-CTA + innsikt): den ekte redirecten valgte første spiller
-  // alfabetisk — behold samme innløp her.
-  const primaer = spillere[0] ?? null;
+  // B: primær = spillere uten plan først (trenger deg), ellers første alfabetisk
+  const primaer =
+    spillere.find((s) => s.aktivePlaner === 0) ?? spillere[0] ?? null;
+  const primaerFornavn = primaer?.navn.split(" ")[0] ?? "";
+  const primaerTekst =
+    primaer && primaer.aktivePlaner === 0
+      ? `Planlegg for ${primaerFornavn}`
+      : primaer
+        ? `Åpne Workbench · ${primaerFornavn}`
+        : "Åpne Workbench";
 
-  // ── Hode ──────────────────────────────────────────────────────
+  // ── Hode — B: status ──────────────────────────────────────────
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
@@ -72,17 +66,17 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
           <Tittel em="planlegg.">La oss</Tittel>
         </div>
       </div>
-      {primaer && (
-        <div className="hidden md:inline-flex">
-          <Link href={workbenchHref(primaer.id)} style={{ textDecoration: "none" }}>
-            <CTAPill icon="arrow-right">Åpne Workbench</CTAPill>
-          </Link>
-        </div>
+      {totalt > 0 && (
+        <StatusPill tone={utenAktiv > 0 ? "warn" : "up"}>
+          {utenAktiv > 0
+            ? `${pl(utenAktiv, "mangler plan", "mangler plan")}`
+            : "Alle har plan"}
+        </StatusPill>
       )}
     </div>
   );
 
-  // Ingen spillere → ærlig tom-tilstand, ingen fabrikerte tall.
+  // Ingen spillere → ærlig tom-tilstand + vei
   if (totalt === 0) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
@@ -91,14 +85,19 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
           <TomTilstand
             icon="users"
             title="Ingen spillere å planlegge for"
-            sub="Ingen aktive spillere er koblet til deg ennå. Når en spiller kobles, planlegger du for hen i Workbench."
+            sub="Når en spiller kobles til deg, planlegger du for hen i Workbench."
           />
         </Kort>
+        <Link href="/admin/spillere/ny" style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="user-plus" full>
+            Legg til spiller
+          </CTAPill>
+        </Link>
       </div>
     );
   }
 
-  // ── KPI-flis (ekte tall) ──────────────────────────────────────
+  // ── KPI ───────────────────────────────────────────────────────
   const kpi = (
     <div className="grid grid-cols-3" style={{ gap: T.gap }}>
       <KpiFlis label="Spillere" value={totalt} />
@@ -107,22 +106,29 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
     </div>
   );
 
-  // ── Mobil-primærknapp: full bredde, tommelvennlig (kun < md) ───
-  const mobilCTA = primaer ? (
-    <div className="md:hidden">
-      <Knapp icon="arrow-right" full onClick={() => router.push(workbenchHref(primaer.id))}>
-        Planlegg for {primaer.navn.split(" ")[0]}
-      </Knapp>
-    </div>
+  // ── B: én primær CTA ──────────────────────────────────────────
+  const primaerCta = primaer ? (
+    <Link href={workbenchHref(primaer.id)} style={{ textDecoration: "none", display: "block" }}>
+      <CTAPill icon="arrow-right" full>
+        {primaerTekst}
+      </CTAPill>
+    </Link>
   ) : null;
 
   // ── Spillerliste — hver rad er ETT trykk til Workbench ─────────
+  // Vis uten plan øverst (trenger deg)
+  const sortert = [...spillere].sort((a, b) => {
+    if (a.aktivePlaner === 0 && b.aktivePlaner > 0) return -1;
+    if (a.aktivePlaner > 0 && b.aktivePlaner === 0) return 1;
+    return a.navn.localeCompare(b.navn, "nb");
+  });
+
   const liste = (
     <Kort
       eyebrow="Velg spiller å planlegge for"
       action={<Caps size={9}>{pl(totalt, "spiller", "spillere")}</Caps>}
     >
-      {spillere.map((s, i) => (
+      {sortert.map((s, i) => (
         <Rad
           key={s.id}
           onClick={() => router.push(workbenchHref(s.id))}
@@ -138,28 +144,29 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
               <StatusPill tone="warn">Ingen aktiv plan</StatusPill>
             )
           }
-          last={i === spillere.length - 1}
+          last={i === sortert.length - 1}
         />
       ))}
     </Kort>
   );
 
-  // ── AI-innsikt → Workbench ────────────────────────────────────
   const innsiktTekst =
     utenAktiv > 0
-      ? `${pl(utenAktiv, "spiller mangler", "spillere mangler")} en aktiv plan — sett mål og periodisering samlet i Workbench.`
-      : "Alle spillere har en aktiv plan — bruk roen til å finjustere mål og drills i Workbench.";
-  const innsikt = primaer ? (
-    <InnsiktChip cta="Planlegg i Workbench" href={workbenchHref(primaer.id)}>{innsiktTekst}</InnsiktChip>
-  ) : null;
+      ? `${pl(utenAktiv, "spiller mangler", "spillere mangler")} en aktiv plan — sett mål og periodisering i Workbench.`
+      : "Alle spillere har en aktiv plan — finjuster mål og drills i Workbench.";
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
+      {/* B: status/KPI først, deretter én primær */}
       {kpi}
-      {mobilCTA}
+      {primaerCta}
       {liste}
-      {innsikt}
+      {primaer && (
+        <InnsiktChip cta="Planlegg i Workbench" href={workbenchHref(primaer.id)}>
+          {innsiktTekst}
+        </InnsiktChip>
+      )}
     </div>
   );
 }

@@ -1,19 +1,7 @@
 "use client";
 
 /**
- * PlayerHQ Innstillinger · Integrasjoner — v2 (retning C «Presis»).
- * v2-port 17. juli 2026: erstatter athletic-versjonen (inkl. de hardkodede
- * brand-SVG-logoene med 14 rå hex — nå token-baserte Icon-emblemer, 0 hex).
- *
- * Ærlighet bevart 1:1 fra originalen:
- *  - Kun TrackMan og Google Calendar har ekte backing i databasen; status
- *    kommer fra faktiske rader (page.tsx). Resten vises som «tilgjengelig».
- *  - Ingen oppdiktede sync-tidspunkter eller datapunkt-tall.
- *  - Ingen selvbetjent connect-flyt finnes ennå → «Be om tilgang» og
- *    «Administrer» går ærlig til support, aldri en falsk koble-til-knapp.
- *
- * Kun v2-komponenter fra "@/components/v2" + T.*-tokens. Ingen rå hex.
- * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
+ * PlayerHQ Innstillinger · Integrasjoner — v2 Presis + B-pakke (status, tom + CTA).
  */
 
 import { useEffect, useState } from "react";
@@ -352,13 +340,20 @@ export function InnstillingerIntegrasjonerV2({ data }: { data: InnstillingerInte
             ))}
           </div>
         ) : (
-          <Kort>
-            <TomTilstand
-              icon="plug"
-              title="Ingen kilder tilkoblet"
-              sub="Koble til en tjeneste nedenfor så samles dataene dine her automatisk."
-            />
-          </Kort>
+          <>
+            <Kort>
+              <TomTilstand
+                icon="plug"
+                title="Ingen kilder tilkoblet"
+                sub="Be om tilgang under, så hjelper support deg i gang."
+              />
+            </Kort>
+            <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block", marginBottom: 8 }}>
+              <CTAPill icon="message-circle" full>
+                Be om tilkobling
+              </CTAPill>
+            </Link>
+          </>
         )}
       </div>
 

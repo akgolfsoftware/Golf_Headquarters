@@ -1,19 +1,7 @@
 "use client";
 
 /**
- * PlayerHQ Innstillinger · Varsler — v2 (retning C «Presis»).
- * v2-port 17. juli 2026: erstatter den gamle NotifToggles + PushToggle-
- * presentasjonen. All lagringslogikk er bevart 1:1:
- *  - Varsel-/kanal-brytere: samme oppdaterPreferences({ notif: full merge })
- *    + router.refresh + «Lagret»-flash som notif-toggles.tsx.
- *  - Språk: samme oppdaterPreferences({ spraak }) (nb/en begge valgbare —
- *    som originalen her, ulikt språk-siden som sperrer en).
- *  - Push på denne enheten: samme browser-flyt (detectPushStatus/aktiverPush/
- *    deaktiverPush fra push-toggle.tsx) — kun presentasjonen er ny. Ærlige
- *    tilstander for «ikke støttet» / «blokkert» / manglende VAPID-nøkkel.
- *
- * Kun v2-komponenter fra "@/components/v2" + T.*-tokens. Ingen rå hex.
- * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
+ * PlayerHQ Innstillinger · Varsler — v2 Presis + B-pakke (status først, auto-lagre).
  */
 
 import { useEffect, useState, useTransition, type ReactNode } from "react";
@@ -186,17 +174,29 @@ export function InnstillingerVarslerV2({ data }: { data: InnstillingerVarslerDat
     );
   })();
 
+  const antallPaa = Object.values(prefs.notif).filter(Boolean).length;
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <Tittel mobile={mobile}>Varsler</Tittel>
         {lagret && <StatusPill tone="lime">Lagret</StatusPill>}
       </div>
-      <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.6, margin: "-8px 0 0" }}>
-        Velg hvilke varsler du vil ha og hvordan de leveres. Endringer lagres automatisk.
-      </p>
 
-      {/* Denne enheten (push) */}
+      {/* B: status først */}
+      <div className="grid grid-cols-2" style={{ gap: 8 }}>
+        <Kort pad="12px">
+          <Caps size={9}>På</Caps>
+          <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 18, marginTop: 8, color: T.fg }}>{antallPaa}</div>
+        </Kort>
+        <Kort pad="12px">
+          <Caps size={9}>Push</Caps>
+          <div style={{ fontFamily: T.ui, fontWeight: 600, fontSize: 14, marginTop: 8, color: T.fg }}>
+            {pushStatus === "on" ? "Aktiv" : pushStatus === "loading" ? "…" : "Av"}
+          </div>
+        </Kort>
+      </div>
+
       <Kort eyebrow="Denne enheten">{pushKropp}</Kort>
 
       <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: T.gap, alignItems: "start" }}>

@@ -1,24 +1,10 @@
 "use client";
 
 /**
- * PlayerHQ Meg · Dokumenter — v2 (retning C «Presis», mørk først). Rekomponert
- * fra den ekte /portal/meg/dokumenter-siden, men bygget kun av v2-komponenter
- * fra "@/components/v2" (Kort/Rad/StatusPill/TomTilstand/Icon/Caps/Tittel) +
- * T.*-tokens. Ingen ad-hoc UI, ingen rå hex.
- *
- * Funksjon bevart 1:1: ÉN liste med dokument-rader (ikon-emblem per kind +
- * tittel + mono-meta «dato · type» + status-pill der kind impliserer status +
- * chevron). Rad åpner dokumentets url i ny fane. Ærlig tom-tilstand når lista
- * er tom — ingenting fabrikkeres.
- *
- * Datakontrakt: EKTE Prisma-Document (globale + egne). Modellen har ikke
- * status-felt — status-pill vises kun der `kind` impliserer status (kontrakt =
- * signert, kvittering = betalt osv.), speilet fra den opprinnelige siden.
- * `dato` formateres server-side (nb-NO) for konsistent tidssone.
- *
- * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
+ * PlayerHQ Meg · Dokumenter — v2 Presis + B-pakke (status, tom = én grønn vei).
  */
 
+import Link from "next/link";
 import {
   T,
   Caps,
@@ -28,6 +14,7 @@ import {
   StatusPill,
   TomTilstand,
   Icon,
+  CTAPill,
   type StatusTone,
 } from "@/components/v2";
 
@@ -108,29 +95,46 @@ function DokIkon({ kind }: { kind: string }) {
 
 export function MegDokumenterV2({ data }: { data: MegDokumenterData }) {
   const { dokumenter } = data;
+  const n = dokumenter.length;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
       <div>
         <Caps>Meg · Dokumenter</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel>Dokumenter</Tittel>
         </div>
-        <div style={{ fontFamily: T.ui, fontSize: T.bodySm, color: T.mut, marginTop: 10 }}>
-          Signerte avtaler, samtykker og kvitteringer samlet på ett sted.
-        </div>
       </div>
 
-      {/* Liste eller ærlig tom-tilstand */}
-      {dokumenter.length === 0 ? (
-        <Kort>
-          <TomTilstand
-            icon="file-text"
-            title="Ingen dokumenter ennå"
-            sub="Signerte avtaler, samtykker og kvitteringer dukker opp her når de er klare."
-          />
+      {/* B: status først */}
+      <div className="grid grid-cols-2" style={{ gap: 8 }}>
+        <Kort pad="12px">
+          <Caps size={9}>Antall</Caps>
+          <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 18, marginTop: 8, color: T.fg }}>{n}</div>
         </Kort>
+        <Kort pad="12px">
+          <Caps size={9}>Status</Caps>
+          <div style={{ fontFamily: T.ui, fontWeight: 600, fontSize: 14, marginTop: 8, color: T.fg }}>
+            {n === 0 ? "Ingen ennå" : "Klar"}
+          </div>
+        </Kort>
+      </div>
+
+      {n === 0 ? (
+        <>
+          <Kort>
+            <TomTilstand
+              icon="file-text"
+              title="Ingen dokumenter ennå"
+              sub="Avtaler, samtykker og kvitteringer dukker opp her når de er klare."
+            />
+          </Kort>
+          <Link href="/portal/meg" style={{ textDecoration: "none", display: "block" }}>
+            <CTAPill icon="arrow-left" full>
+              Tilbake til Meg
+            </CTAPill>
+          </Link>
+        </>
       ) : (
         <Kort pad="4px 20px 6px">
           {dokumenter.map((d, i) => {

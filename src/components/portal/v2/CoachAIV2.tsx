@@ -1,16 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ AI-coach — v2 (retning C «Presis»). Rekomponert fra den ekte skjermen
- * (src/app/portal/coach/ai/page.tsx + chat.tsx + chat-toolbar.tsx) med BEVART
- * funksjon og datakontrakt: streaming-chat mot /api/coach/ai-chat, sesjons-id via
- * x-session-id-header, forslags-chips, eksporter samtale, ny samtale, Pro-gating.
- *
- * Kun v2-komponenter (samtale-familien for chat-mønsteret); ingen ad-hoc UI, ingen
- * rå hex (kun T.*). Ingen fabrikkerte meldinger — tom samtale = ærlig tom-tilstand.
- *
- * V2Shell (montert i (v2preview)/v2-coach-ai/page.tsx) eier chrome-en; denne
- * komponenten rendrer bare den indre innholds-stacken.
+ * PlayerHQ AI-coach — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useEffect, useRef, useState } from "react";

@@ -46,16 +46,34 @@ export default async function TrackManDetalj({
     notFound();
   }
 
-  // Hent CLUB_AVG-signals knyttet til denne sesjonen
-  const signals = await prisma.signal.findMany({
-    where: {
-      userId: sesjon.userId,
-      kind: "CLUB_AVG",
-    },
-    orderBy: { computedAt: "desc" },
-  });
+  // Hent CLUB_AVG-signals knyttet til denne sesjonen + strukturerte shots
+  const [signals, shots] = await Promise.all([
+    prisma.signal.findMany({
+      where: {
+        userId: sesjon.userId,
+        kind: "CLUB_AVG",
+      },
+      orderBy: { computedAt: "desc" },
+    }),
+    prisma.trackManShot.findMany({
+      where: { sessionId: sesjon.id },
+      select: {
+        club: true,
+        carryDistance: true,
+        totalDistance: true,
+        smashFactor: true,
+        matchConfidence: true,
+        positionTaskId: true,
+        ballSpeed: true,
+        launchAngle: true,
+        spinRate: true,
+        side: true,
+        clubSpeed: true,
+      },
+    }),
+  ]);
 
-  const klubbStats = signals
+  let klubbStats = signals
     .filter((s) => {
       const p = s.payload as { sessionId?: string } | null;
       return p?.sessionId === sesjon.id;
@@ -69,11 +87,28 @@ export default async function TrackManDetalj({
       };
     });
 
+  // Fallback: aggreger fra TrackManShot når agent-signaler mangler
+  if (klubbStats.length === 0 && shots.length > 0) {
+    const map = new Map<string, number[]>();
+    for (const s of shots) {
+      const d = s.carryDistance ?? s.totalDistance;
+      if (d == null) continue;
+      map.set(s.club, [...(map.get(s.club) ?? []), d]);
+    }
+    klubbStats = [...map.entries()].map(([klubb, vals]) => ({
+      klubb,
+      snittDistanse: vals.reduce((a, b) => a + b, 0) / vals.length,
+      antallSlag: vals.length,
+    }));
+  }
+
+  const matchet = shots.filter((s) => s.positionTaskId != null).length;
+
   const rader = Array.isArray(sesjon.rawJson)
     ? (sesjon.rawJson as Record<string, string>[])
     : [];
 
-  const stabilitetData = beregnStabilitet(sesjon.rawJson);
+  const stabilitetData = beregnStabilitet(sesjon.rawJson, shots);
 
   const datoTekst = sesjon.recordedAt.toLocaleDateString("nb-NO", {
     day: "2-digit",
@@ -94,7 +129,11 @@ export default async function TrackManDetalj({
             <Tittel em={datoTekst}>Økt</Tittel>
           </div>
           <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
-            {sesjon.shotCount} slag registrert.
+            {sesjon.shotCount} slag registrert
+            {shots.length > 0
+              ? ` · ${matchet} matchet til teknisk plan`
+              : ""}
+            .
           </p>
         </div>
 
@@ -106,7 +145,7 @@ export default async function TrackManDetalj({
             </span>
           }
         >
-          <DispersionPlot rader={rader} />
+          <DispersionPlot rader={rader} dbShots={shots} />
         </Kort>
 
         {/* Per kølle */}
@@ -114,8 +153,8 @@ export default async function TrackManDetalj({
           {klubbStats.length === 0 ? (
             <TomTilstand
               icon="wrench"
-              title="Beregner per kølle"
-              sub="Per-kølle-statistikk beregnes når trackman-agenten kjører. Trigges automatisk ved CSV-import."
+              title="Ingen kølle-snitt ennå"
+              sub="Importer CSV/HTML med slag — snitt beregnes fra lagrede slag eller agent."
             />
           ) : (
             <div>

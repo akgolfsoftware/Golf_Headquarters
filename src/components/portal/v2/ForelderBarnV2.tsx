@@ -1,20 +1,8 @@
 "use client";
 
 /**
- * Foreldreportal · Barn — v2 (retning C «Presis», mørk-først). Mobil-optimalisert
- * oversikt over alle koblede barn som store, trykkbare fremgangskort. Rekomponert
- * fra den ekte skjermen (src/app/forelder/barn/page.tsx) med EKSAKT samme
- * datakontrakt: pyramide-snapshot (siste 30 d), økter (30 d), neste kommende økt
- * og utestående betaling per barn. Trykk på et kort → barnets fulle profil på
- * /forelder/barn/[childId] (ekte rute, uendret).
- *
- * Kun v2-komponenter fra "@/components/v2" (Kort, Pyramide, Rad,
- * Caps, Tittel, TomTilstand, AvatarFoto, Icon) + T.*-tokens for layout-lim.
- * Ingen rå hex, ingen emoji, norsk bokmål. ALL data er ekte (avledet av barnets
- * Prisma-data i preview-ruten) — aldri fabrikert; mangler et felt vises «—».
- *
- * V2Shell (montert i (v2preview)/v2-forelder-barn/page.tsx) eier chrome-en;
- * denne komponenten rendrer bare den indre innholds-stacken.
+ * Foreldreportal · Barn — v2 Presis + B-pakke (status først, én vei videre).
+ * Trykkbare kort per barn. Kun v2 + T.*. Enklere foreldre-språk.
  */
 
 import { useEffect, useState } from "react";
@@ -29,6 +17,9 @@ import {
   TomTilstand,
   AvatarFoto,
   Icon,
+  StatusPill,
+  Knapp,
+  HjelpTips,
 } from "@/components/v2";
 
 /* ── Datakontrakt (1:1 med page.tsx-loaderen) ──────────────────────── */
@@ -215,18 +206,19 @@ function BarnKort({
         <Icon name="chevron-right" size={18} style={{ color: T.mut, flex: "none" }} />
       </button>
 
-      {/* Pyramide-snapshot (siste 30 dager) */}
+      {/* Treningsfordeling (siste 30 dager) */}
       <div style={{ borderTop: `1px solid ${T.border}`, padding: mobile ? "14px 16px" : "14px 20px" }}>
         <Caps size={9} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
           <Icon name="layers" size={12} style={{ color: T.mut }} />
-          Pyramide · siste 30 dager
+          Hva det er trent på · 30 dager
+          <HjelpTips k="pyramideAkse" size={11} />
         </Caps>
         <div style={{ marginTop: 12 }}>
           {okter > 0 ? (
             <Pyramide data={b.pyramide} max={Math.max(1, okter)} showValues />
           ) : (
             <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0 }}>
-              Ingen fullførte økter ennå.
+              Ingen fullførte økter ennå — trykk for å se profilen.
             </p>
           )}
         </div>
@@ -266,48 +258,80 @@ export function ForelderBarnV2({ data }: { data: ForelderBarnData }) {
   const router = useRouter();
   const { barn } = data;
 
+  const forste = barn[0];
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
-      <div>
-        <Caps>Foreldreportal · Barn</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel mobile={mobile} em="barn">
-            Mine
-          </Tittel>
+      {/* Hode + status */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          gap: 12,
+          flexWrap: "wrap",
+        }}
+      >
+        <div>
+          <Caps>Foreldreportal · Barn</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel mobile={mobile} em="barn">
+              Mine
+            </Tittel>
+          </div>
+          <span
+            style={{
+              display: "block",
+              marginTop: 8,
+              fontFamily: T.ui,
+              fontSize: 12.5,
+              color: T.mut,
+            }}
+          >
+            {barn.length > 0
+              ? "Trykk på et kort for å se treningen."
+              : "Her dukker barna opp når de er koblet."}
+          </span>
         </div>
-        <span
-          style={{
-            display: "block",
-            marginTop: 8,
-            fontFamily: T.ui,
-            fontSize: 12.5,
-            color: T.mut,
-          }}
-        >
-          {barn.length > 0
-            ? `${barn.length} barn koblet til kontoen din. Trykk for å se hele treningsprofilen.`
-            : "Velg et barn for å følge treningen."}
-        </span>
+        {barn.length > 0 && (
+          <StatusPill tone="up">
+            {barn.length === 1 ? "1 barn" : `${barn.length} barn`}
+          </StatusPill>
+        )}
       </div>
 
       {barn.length === 0 ? (
-        <TomTilstand
-          icon="users"
-          title="Ingen barn koblet til kontoen din"
-          sub="Be spilleren sende en invitasjon, eller kontakt coachen din."
-        />
+        <Kort>
+          <TomTilstand
+            icon="users"
+            title="Ingen barn er koblet ennå"
+            sub="Be spilleren sende en invitasjon fra sin profil, eller spør coachen."
+          />
+        </Kort>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-          {barn.map((b) => (
-            <BarnKort
-              key={b.id}
-              b={b}
-              mobile={mobile}
-              onOpen={() => router.push(`/forelder/barn/${b.id}`)}
-            />
-          ))}
-        </div>
+        <>
+          {forste && (
+            <div>
+              <Knapp
+                icon="arrow-right"
+                full={mobile}
+                onClick={() => router.push(`/forelder/barn/${forste.id}`)}
+              >
+                Åpne {forste.navn.split(" ")[0]}
+              </Knapp>
+            </div>
+          )}
+          <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+            {barn.map((b) => (
+              <BarnKort
+                key={b.id}
+                b={b}
+                mobile={mobile}
+                onOpen={() => router.push(`/forelder/barn/${b.id}`)}
+              />
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

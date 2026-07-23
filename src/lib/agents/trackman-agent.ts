@@ -1,5 +1,5 @@
-// trackman-agent: kjøres etter TrackManSession.create. Parser rawJson,
-// skriver Signal og evt. INTENSITY_ADJUST PlanAction ved lav smash-trend.
+// trackman-agent: kjøres etter TrackManSession.create. Leser primært TrackManShot,
+// fallback rawJson. Skriver Signal og evt. INTENSITY_ADJUST PlanAction.
 
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -17,47 +17,73 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
     const sisteSesjon = await prisma.trackManSession.findFirst({
       where: { userId },
       orderBy: { recordedAt: "desc" },
+      include: {
+        shots: {
+          select: {
+            club: true,
+            carryDistance: true,
+            totalDistance: true,
+            smashFactor: true,
+            faceToPath: true,
+          },
+        },
+      },
     });
-    if (!sisteSesjon?.rawJson) {
+    if (!sisteSesjon) {
       return { signalsWritten: 0, planActionsWritten: 0 };
     }
-
-    const rader = Array.isArray(sisteSesjon.rawJson)
-      ? (sisteSesjon.rawJson as unknown[])
-      : [];
-    if (rader.length === 0) return { signalsWritten: 0, planActionsWritten: 0 };
 
     const perKolle = new Map<string, number[]>();
     const smashValues: number[] = [];
     const faceToPathValues: number[] = [];
 
-    for (const rad of rader) {
-      if (typeof rad !== "object" || rad === null) continue;
-      const r = rad as Slag;
-      const klubb = r.Club ?? r.club ?? r.kolle ?? null;
-      const distanseStr =
-        r.Distance ?? r.distance ?? r.Carry ?? r.carry ?? null;
-      const smashStr = r["Smash Factor"] ?? r.smashFactor ?? r.Smash ?? null;
-      const ftpStr =
-        r["Face To Path"] ??
-        r.faceToPath ??
-        r["Face to Path"] ??
-        r.FaceToPath ??
-        null;
-      if (klubb && distanseStr) {
-        const distanse = Number(distanseStr);
-        if (!Number.isNaN(distanse)) {
-          perKolle.set(klubb, [...(perKolle.get(klubb) ?? []), distanse]);
+    // Primær: strukturerte TrackManShot-rader (CSV + HTML-pipeline)
+    if (sisteSesjon.shots.length > 0) {
+      for (const s of sisteSesjon.shots) {
+        const dist = s.carryDistance ?? s.totalDistance;
+        if (dist != null) {
+          perKolle.set(s.club, [...(perKolle.get(s.club) ?? []), dist]);
+        }
+        if (s.smashFactor != null) smashValues.push(s.smashFactor);
+        if (s.faceToPath != null) faceToPathValues.push(s.faceToPath);
+      }
+    } else if (sisteSesjon.rawJson) {
+      // Fallback: rawJson (eldre HTML uten shots)
+      const rader = Array.isArray(sisteSesjon.rawJson)
+        ? (sisteSesjon.rawJson as unknown[])
+        : [];
+      for (const rad of rader) {
+        if (typeof rad !== "object" || rad === null) continue;
+        const r = rad as Slag;
+        const klubb = r.Club ?? r.club ?? r.kolle ?? null;
+        const distanseStr =
+          r.Distance ?? r.distance ?? r.Carry ?? r.carry ?? null;
+        const smashStr = r["Smash Factor"] ?? r.smashFactor ?? r.Smash ?? null;
+        const ftpStr =
+          r["Face To Path"] ??
+          r.faceToPath ??
+          r["Face to Path"] ??
+          r.FaceToPath ??
+          null;
+        if (klubb && distanseStr) {
+          const distanse = Number(distanseStr);
+          if (!Number.isNaN(distanse)) {
+            perKolle.set(klubb, [...(perKolle.get(klubb) ?? []), distanse]);
+          }
+        }
+        if (smashStr) {
+          const smash = Number(smashStr);
+          if (!Number.isNaN(smash)) smashValues.push(smash);
+        }
+        if (ftpStr) {
+          const ftp = Number(ftpStr);
+          if (!Number.isNaN(ftp)) faceToPathValues.push(ftp);
         }
       }
-      if (smashStr) {
-        const smash = Number(smashStr);
-        if (!Number.isNaN(smash)) smashValues.push(smash);
-      }
-      if (ftpStr) {
-        const ftp = Number(ftpStr);
-        if (!Number.isNaN(ftp)) faceToPathValues.push(ftp);
-      }
+    }
+
+    if (perKolle.size === 0 && smashValues.length === 0) {
+      return { signalsWritten: 0, planActionsWritten: 0 };
     }
 
     const computedAt = new Date();

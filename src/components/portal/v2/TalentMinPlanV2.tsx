@@ -1,14 +1,12 @@
 "use client";
 
 /**
- * PlayerHQ · Talent · Min plan — v2 (retning C «Presis»).
- * Rekomponert fra legacy-skjermen: status-strip, fem akse-barer (1–10),
- * «Neste mål»-kort og milepæl-liste. All data kommer ferdig formatert fra
- * server-page (TalentTracking) — ingen tall regnes ut her, ærlige
- * tomtilstander når data mangler.
+ * PlayerHQ · Talent · Min plan — v2 Presis + B-pakke (status + akser + neste mål).
+ * Ekte TalentTracking. Tom milepæl = vei til coach/workbench. T.* only.
  */
 
-import { T, Caps, Tittel, Kort, Rad, StatusPill, FordelingRad, TomTilstand, HjelpTips } from "@/components/v2";
+import Link from "next/link";
+import { T, Caps, Tittel, Kort, Rad, StatusPill, FordelingRad, TomTilstand, HjelpTips, CTAPill } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
@@ -113,14 +111,30 @@ export function TalentMinPlanV2({ data }: { data: TalentMinPlanData }) {
         </div>
       </Kort>
 
+      {/* B: primær vei når neste mål mangler */}
+      {!data.nesteMal && (
+        <Link href="/portal/coach/melding" style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="send" full>
+            Spør coach om neste mål
+          </CTAPill>
+        </Link>
+      )}
+
       {/* Milepæler */}
       <Kort eyebrow="Milepæler">
         {data.milepaeler.length === 0 ? (
-          <TomTilstand
-            icon="flag"
-            title="Ingen milepæler registrert ennå"
-            sub="Coachen din legger til milepæler etter hvert som planen utvikles."
-          />
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <TomTilstand
+              icon="flag"
+              title="Ingen milepæler registrert ennå"
+              sub="Coachen legger inn milepæler — hold tråden i ukeplanen i mellomtiden."
+            />
+            <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill ghost full icon="calendar">
+                Åpne Workbench
+              </CTAPill>
+            </Link>
+          </div>
         ) : (
           <div>
             {data.milepaeler.map((m, i) => (

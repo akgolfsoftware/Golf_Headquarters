@@ -38,6 +38,8 @@ import type { OppgaveDraft } from "@/components/teknisk-plan/oppgave-modal";
 import "@/components/teknisk-plan/teknisk-plan.css";
 import { OppgaveLauncher, type PositionTarget } from "./oppgave-launcher";
 import { OppgaveEditLauncher } from "./oppgave-edit-launcher";
+import { TekniskPlanFullsvingShell } from "@/components/portal/v2/TekniskPlanFullsvingShell";
+import { erFullsving } from "@/lib/teknisk-plan/fullsving";
 
 export const dynamic = "force-dynamic";
 
@@ -139,6 +141,32 @@ export default async function PlanBuilderPage({ params }: PageProps) {
     return a.sortOrder - b.sortOrder;
   });
 
+  const fullsvingTasks = allTasks
+    .filter((t) => erFullsving(t.slagType))
+    .map((t) => {
+      const pos = plan.positions.find((p) => p.tasks.some((x) => x.id === t.id));
+      return {
+        id: t.id,
+        tittel: t.tittel,
+        pNummer: pos?.pNummer ?? "—",
+        koller: t.koller,
+        goals: t.tmGoals
+          .filter((g) => g.targetType !== "HIT_RATE")
+          .map((g) => ({
+            id: g.id,
+            metric: g.metric,
+            baseline: g.baselineValue,
+            target: g.targetValue,
+            current: g.currentValue,
+            progressPct: g.progressPct,
+            inTarget: g.inTarget,
+            lastUpdated: g.lastUpdated
+              ? g.lastUpdated.toLocaleDateString("nb-NO", { day: "numeric", month: "short" })
+              : null,
+          })),
+      };
+    });
+
   const periodLabel = formatPeriode(plan.startDato);
 
   // Standard mål-posisjon for de generiske "Ny oppgave"-knappene: planens
@@ -187,14 +215,24 @@ export default async function PlanBuilderPage({ params }: PageProps) {
         {/* Innhold: posisjoner + sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr]" style={{ gap: T.gap }}>
           <section style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
+            <TekniskPlanFullsvingShell fullsvingTasks={fullsvingTasks}>
+              {({ onlyFullsving }) => (
+                <>
             {sortedPositions.length === 0 ? (
               <TomPlan>
                 <OppgaveLauncher planId={plan.id} target={defaultTarget} variant="primary" label="Legg til oppgave" />
               </TomPlan>
             ) : null}
 
-            {sortedPositions.map((position, idx) => {
-              const tasks = position.tasks;
+            {sortedPositions
+              .filter((position) =>
+                !onlyFullsving ||
+                position.tasks.some((t) => erFullsving(t.slagType)),
+              )
+              .map((position, idx) => {
+              const tasks = onlyFullsving
+                ? position.tasks.filter((t) => erFullsving(t.slagType))
+                : position.tasks;
               const repsCurrent = tasks.reduce(
                 (s, t) => s + (t.repsGjortDry ?? 0) + (t.repsGjortLav ?? 0) + (t.repsGjortFull ?? 0),
                 0,
@@ -319,6 +357,9 @@ export default async function PlanBuilderPage({ params }: PageProps) {
                 </PPosisjonSeksjon>
               );
             })}
+                </>
+              )}
+            </TekniskPlanFullsvingShell>
           </section>
 
           <aside style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>

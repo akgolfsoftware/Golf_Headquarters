@@ -206,6 +206,19 @@ export function StatsNorskeV2({ grupper }: StatsNorskeV2Props) {
       <StatsDetalj
         mobile={mobile}
         eyebrow="Denne uken"
+        status={{
+          label:
+            antallLiveNaa > 0
+              ? `${antallLiveNaa} live nå`
+              : antallSpillere > 0
+                ? `${antallSpillere} norske i aksjon`
+                : "Ingen i aksjon",
+          tone: antallLiveNaa > 0 ? "up" : antallSpillere > 0 ? "info" : "warn",
+          meta:
+            antallSpillere > 0
+              ? `${antallTurneringer} turneringer denne uken`
+              : "Oppdateres kl. 06:00",
+        }}
         tittel="Norske i aksjon."
         sub={
           antallSpillere > 0

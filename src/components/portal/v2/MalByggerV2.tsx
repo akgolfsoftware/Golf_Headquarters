@@ -1,16 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · AI mal-bygger (/portal/mal/bygger) — v2.
- * v2-port 17. juli 2026: `MalByggerV2` erstatter legacy bygger-client.tsx
- * (ruten flyttet ut av (legacy)). KUN presentasjonslaget er nytt — all
- * wizard-logikk er bevart 1:1: samme state, samme stegrekkefølge
- * (Velg mål → Få mal-anbefaling → AI tilpasser → Forhåndsvis → Send til
- * godkjenning), samme action-kall (anbefalMal → genererPlanForslag med
- * valgtTemplateId → lagrePlan → sendTilGodkjenning), samme tier-gating
- * (GRATIS ser forslaget men kan ikke lagre — gaten bor i lib/plan-builder).
- * Disciplin-farger: legacy rå hex erstattet av T.ax-aksefargene via
- * OktType→AkseKey-mapping (kun visuelt, beregningen er uendret).
+ * PlayerHQ · AI mal-bygger (/portal/mal/bygger) — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useState, useTransition } from "react";

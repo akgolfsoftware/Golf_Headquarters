@@ -1,14 +1,7 @@
 "use client";
 
 /**
- * PlayerHQ Meg · Hjelp · Artikkel — v2 (retning C «Presis»).
- * Rekomponert fra /portal/meg/help/artikkel/[slug]/page.tsx (+ del-knapp.tsx
- * og feedback.tsx som nå er lokale subkomponenter her).
- *
- * NB: Brødteksten (+ eksempeltallene i figurene) er redaksjonelt
- * illustrasjonsmateriale for hjelpesenteret — ikke spillerens egne data.
- * Innholdet er 1:1 fra kildeskjermen; pyramide-figuren bruker nå
- * T.ax-aksefargene (kanon) i stedet for rå hex.
+ * PlayerHQ Meg · Hjelp · Artikkel — v2 Presis + B-pakke (klarspråk, T.* only).
  */
 
 import { useState } from "react";
@@ -328,12 +321,26 @@ export function MegHelpArtikkelV2({ data }: { data: MegHelpArtikkelData }) {
             Anders K og resten av coach-teamet svarer innen 4 timer på hverdager. Helt fritt for
             Pro-medlemmer.
           </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
-            <Link href="/portal/coach/melding/ny" style={{ textDecoration: "none" }}>
-              <CTAPill icon="message-square">Send melding</CTAPill>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 14 }}>
+            <Link href="/portal/coach/melding/ny" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="message-square" full>
+                Send melding
+              </CTAPill>
             </Link>
-            <Link href="/portal/meg/abonnement/oppgrader" style={{ textDecoration: "none" }}>
-              <CTAPill ghost>Se Pro-medlemskap</CTAPill>
+            <Link
+              href="/portal/meg/abonnement"
+              style={{
+                textDecoration: "none",
+                display: "block",
+                textAlign: "center",
+                fontFamily: T.ui,
+                fontSize: 12,
+                fontWeight: 600,
+                color: T.mut,
+                padding: "4px 0",
+              }}
+            >
+              Se abonnement →
             </Link>
           </div>
         </Kort>

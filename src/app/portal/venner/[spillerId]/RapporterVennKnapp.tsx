@@ -1,15 +1,12 @@
 "use client";
 
 /**
- * Rapporter-inngang på venn-profilen (D5, rapporteringsflyt). Venn-profilen er
- * den ENE flaten med brukergenerert innhold en annen bruker faktisk ser (navn +
- * aktivitetsfeed) — derfor bor rapporter-handlingen her, ikke strødd overalt.
- * Oppretter en RAPPORTERT_INNHOLD-sak (status OPEN) i moderering-køen.
+ * Rapporter-inngang på venn-profilen — B-pakke (T tokens + Knapp).
  */
 
 import { useState, useTransition } from "react";
-import { Flag, Check } from "lucide-react";
-import { Knapp } from "@/components/v2";
+import { Knapp, Kort } from "@/components/v2";
+import { T } from "@/lib/v2/tokens";
 import { opprettRapport } from "@/lib/moderering/actions";
 
 export function RapporterVennKnapp({ vennUserId }: { vennUserId: string }) {
@@ -35,8 +32,20 @@ export function RapporterVennKnapp({ vennUserId }: { vennUserId: string }) {
 
   if (sendt) {
     return (
-      <div className="flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs text-muted-foreground">
-        <Check className="h-3.5 w-3.5 text-primary" strokeWidth={2} aria-hidden />
+      <div
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          borderRadius: 9999,
+          border: `1px solid ${T.border}`,
+          background: T.panel,
+          padding: "8px 14px",
+          fontFamily: T.ui,
+          fontSize: 12,
+          color: T.fg2,
+        }}
+      >
         Rapport sendt — takk. En coach ser på den.
       </div>
     );
@@ -44,23 +53,19 @@ export function RapporterVennKnapp({ vennUserId }: { vennUserId: string }) {
 
   if (!apen) {
     return (
-      <button
-        type="button"
-        onClick={() => setApen(true)}
-        className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-      >
-        <Flag size={14} strokeWidth={1.5} />
+      <Knapp ghost icon="flag" onClick={() => setApen(true)}>
         Rapporter
-      </button>
+      </Knapp>
     );
   }
 
   return (
-    <div className="w-full max-w-sm rounded-xl border border-border bg-card p-4">
-      <p className="text-sm font-semibold text-foreground">Rapporter denne profilen</p>
-      <p className="mt-1 text-xs text-muted-foreground">
-        Fortell kort hva som er galt. En coach eller administrator vurderer
-        rapporten. Vi deler ikke hvem som har rapportert.
+    <Kort style={{ maxWidth: 360 }}>
+      <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+        Rapporter denne profilen
+      </div>
+      <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.45 }}>
+        Fortell kort hva som er galt. En coach vurderer rapporten. Vi deler ikke hvem som har rapportert.
       </p>
       <textarea
         value={begrunnelse}
@@ -68,14 +73,26 @@ export function RapporterVennKnapp({ vennUserId }: { vennUserId: string }) {
         rows={3}
         maxLength={1000}
         placeholder="Hva vil du melde fra om?"
-        className="mt-2 w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        style={{
+          marginTop: 10,
+          width: "100%",
+          resize: "none",
+          borderRadius: 11,
+          border: `1px solid ${T.borderS}`,
+          background: T.panel2,
+          padding: "10px 12px",
+          fontFamily: T.ui,
+          fontSize: 13,
+          color: T.fg,
+          outline: "none",
+          boxSizing: "border-box",
+        }}
       />
       {feil ? (
-        <p className="font-mono mt-2 text-[11px] tracking-[0.06em] text-destructive">{feil}</p>
+        <p style={{ margin: "8px 0 0", fontFamily: T.mono, fontSize: 11, color: T.down }}>{feil}</p>
       ) : null}
-      <div className="mt-3 flex flex-wrap gap-2">
-        <Knapp onClick={send} disabled={pending || begrunnelse.trim().length === 0}>
-          <Flag className="h-4 w-4" />
+      <div style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 8 }}>
+        <Knapp icon="flag" onClick={send} disabled={pending || begrunnelse.trim().length === 0}>
           {pending ? "Sender…" : "Send rapport"}
         </Knapp>
         <Knapp
@@ -90,6 +107,6 @@ export function RapporterVennKnapp({ vennUserId }: { vennUserId: string }) {
           Avbryt
         </Knapp>
       </div>
-    </div>
+    </Kort>
   );
 }

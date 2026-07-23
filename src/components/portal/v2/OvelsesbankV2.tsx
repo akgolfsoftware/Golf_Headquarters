@@ -1,23 +1,12 @@
 "use client";
 
 /**
- * PlayerHQ Øvelsesbank — v2 (retning C «Presis»). Komponert 1:1 fra
- * ui_kits/v2/ovelsesbank.jsx → funksjonen Bank, men med EKTE data fra
- * getDrillLibraryRich (src/lib/portal-drills/drills-data.ts → ExerciseDefinition).
- *
- * Kun v2-primitiver fra "@/components/v2" (Kort, AkseChip, CTAPill, PillTabs,
- * FilterChips, Caps, Tittel, InnsiktChip, TomTilstand, Icon). De skjerm-lokale
- * komposisjonene (NivaBadge, ParamChip, ChipGruppe, HeroBilde, OvelseKort,
- * DetaljPanel, AutoTilpasning, FilterTopp) speiler mockupens egne lokale
- * subkomponenter og er bygget av v2-primitiver + T-tokens. Ingen rå hex.
- *
- * ÆRLIGHET: alt som vises kommer fra ekte kolonner. Felt som ikke finnes på
- * ExerciseDefinition (press-nivå/PR, P-posisjoner, per-spiller-anbefaling med
- * SG-begrunnelse, tekstlige mål/justeringer per nivå) er bevisst utelatt — se
- * gap-listen i retur-JSON. csTargetByKategori gir den ekte A–K-tilpasningen.
+ * PlayerHQ Øvelsesbank — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import type { DrillDetail } from "@/lib/portal-drills/drills-data";
 import type { AkseKey } from "@/lib/v2/tokens";
 import {
@@ -599,12 +588,23 @@ function DetaljPanel({ o, mobile, onLukk }: { o: DrillDetail; mobile?: boolean; 
         {/* Ekte A–K-tilpasning */}
         <AutoTilpasning o={o} />
 
-        {/* Handlinger (forhåndsvisning) */}
-        <div style={{ display: "flex", gap: 8 }}>
-          <CTAPill icon="plus">Legg i økt</CTAPill>
-          <CTAPill icon="copy" ghost>
-            Dupliser
+        {/* B: én primær handling */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <CTAPill icon="plus" full>
+            Legg i økt
           </CTAPill>
+          <span
+            style={{
+              textAlign: "center",
+              fontFamily: T.ui,
+              fontSize: 12,
+              fontWeight: 600,
+              color: T.mut,
+              cursor: "pointer",
+            }}
+          >
+            Dupliser →
+          </span>
         </div>
       </div>
     </Kort>
@@ -816,11 +816,18 @@ export function OvelsesbankV2({ data }: { data: DrillDetail[] }) {
           <div style={{ gridColumn: "1 / -1" }}>
             <Kort>
               {tomBank ? (
-                <TomTilstand
-                  icon="book-open"
-                  title="Ingen øvelser ennå"
-                  sub="Øvelsesbanken er tom. Coachen din legger inn øvelser, eller du kan lage dine egne."
-                />
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  <TomTilstand
+                    icon="book-open"
+                    title="Ingen øvelser ennå"
+                    sub="Coachen legger inn øvelser — eller lag dine egne."
+                  />
+                  <Link href="/portal/coach/ovelser/ny" style={{ textDecoration: "none", display: "block" }}>
+                    <CTAPill icon="plus" full>
+                      Ny øvelse
+                    </CTAPill>
+                  </Link>
+                </div>
               ) : (
                 <TomTilstand
                   icon="search"

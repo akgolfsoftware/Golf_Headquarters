@@ -1,14 +1,7 @@
 "use client";
 
 /**
- * PlayerHQ Innstillinger · Språk og region — v2 (retning C «Presis»).
- * v2-port 17. juli 2026: erstatter SpraakToggle-presentasjonen. Lagringslogikk
- * bevart 1:1: valg av «nb» kaller oppdaterPreferences({ spraak }) + refresh +
- * «Lagret»-flash; «en» er fortsatt sperret (kommer Q3 2026) — samme oppførsel
- * som originalen på denne siden.
- *
- * Kun v2-komponenter fra "@/components/v2" + T.*-tokens. Ingen rå hex.
- * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
+ * PlayerHQ Innstillinger · Språk — v2 Presis + B-pakke (status, klarspråk).
  */
 
 import { useEffect, useState, useTransition } from "react";
@@ -65,11 +58,14 @@ export function InnstillingerSprakV2({ data }: { data: InnstillingerSprakData })
         <Tittel mobile={mobile}>Språk og region</Tittel>
         {lagret && <StatusPill tone="lime">Lagret</StatusPill>}
       </div>
-      <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.6, margin: "-8px 0 0" }}>
-        Velg hvilket språk appen vises på. Tidssone og datoformat tilpasses automatisk.
-      </p>
 
-      {/* Språkvalg */}
+      <Kort pad="12px">
+        <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: T.mut, display: "block" }}>Nå</span>
+        <div style={{ fontFamily: T.ui, fontWeight: 600, fontSize: 15, marginTop: 8, color: T.fg }}>
+          {valgt === "nb" ? "Norsk bokmål" : "English"}
+        </div>
+      </Kort>
+
       <Kort eyebrow="App-språk">
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <ValgKort

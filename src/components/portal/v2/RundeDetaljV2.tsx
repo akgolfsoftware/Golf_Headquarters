@@ -1,19 +1,13 @@
 "use client";
 
 /**
- * PlayerHQ Runde-detalj — v2 (retning C «Presis»). Rekomponert fra
- * legacy-skjermen (portal/(legacy)/mal/runder/[id]): score-hero, scorekort
- * hull-for-hull (HoleScore er sannheten, Shot-avledet som fallback), SG per
- * kategori og granulære SG-buckets (fra SG slag-for-slag-pakken, 10. juli).
- * Gjenbruker datavis-fasitkomponentene Scorekort + SgKategorier.
- *
- * «?»-regelen: SG total forklares via hjelpetekst-nøkkelen sgTotal, SG per
- * kategori via sgOmrade. Ingen fabrikkerte tall — null vises som «—», og
- * SG vises aldri før slag-kjeden er komplett («vi gjetter aldri»).
+ * PlayerHQ Runde-detalj — v2 Presis + B-pakke (score-status + én primær handling).
+ * Scorekort, SG, hull. T.* only. Tom hull/SG = grønn vei videre.
  */
 
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { UpGameImportModal } from "@/app/portal/mal/runder/[id]/upgame-import-modal";
 import {
   T,
   Caps,
@@ -66,6 +60,8 @@ export type HullStat = {
 
 export type RundeDetaljData = {
   id: string;
+  /** True rett etter lagring fra live/etterpå-føring (?lagret=1). */
+  nettoppLagret?: boolean;
   baneNavn: string;
   datoTekst: string;
   score: number;
@@ -185,15 +181,67 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
         <MikroMeta icon="arrow-left">Alle runder</MikroMeta>
       </Link>
 
-      {/* Hode */}
-      <div>
-        <Caps>
-          {data.baneNavn} · {data.datoTekst}
-        </Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em={`${tilParTekst(diff)}.`}>{data.score}</Tittel>
+      {/* Hode + B: status-rad */}
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+        <div>
+          <Caps>
+            {data.baneNavn} · {data.datoTekst}
+          </Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em={`${tilParTekst(diff)}.`}>{data.score}</Tittel>
+          </div>
         </div>
+        {data.sgTotal != null ? (
+          <StatusPill tone={data.sgTotal >= 0 ? "up" : "down"}>SG {sgTotalTekst}</StatusPill>
+        ) : (
+          <StatusPill tone="info">SG mangler</StatusPill>
+        )}
       </div>
+
+      {data.nettoppLagret && data.erEier && (
+        <Kort>
+          <p style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, margin: 0 }}>
+            Runden er lagret
+          </p>
+          <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "6px 0 12px" }}>
+            Se Strokes Gained under. Mangler hull-score? Importer fra UpGame (CSV) eller fyll inn detaljer.
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
+            <UpGameImportModal roundId={data.id} />
+            {data.sgTotal != null ? (
+              <StatusPill tone="up">SG klar</StatusPill>
+            ) : (
+              <Link
+                href={`/portal/mal/runder/${data.id}/slag`}
+                style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.forest }}
+              >
+                Legg til mer detalj →
+              </Link>
+            )}
+          </div>
+        </Kort>
+      )}
+
+      {/* B: én primær CTA tidlig */}
+      {data.erEier && data.visKjedeStatus ? (
+        <Link href={`/portal/mal/runder/${data.id}/fullfor`} style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="check" full>
+            Fullfør slag-kjeden
+          </CTAPill>
+        </Link>
+      ) : data.erEier && !harHull ? (
+        <Link href={`/portal/mal/runder/${data.id}/hull`} style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="plus" full>
+            Legg til hull-for-hull
+          </CTAPill>
+        </Link>
+      ) : (
+        <Link href="/portal/coach/melding" style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="send" full>
+            Del med coach
+          </CTAPill>
+        </Link>
+      )}
 
       {/* Scorekort — HoleScore-sannhet / Shot-avledet fallback */}
       {harHull ? (
@@ -281,7 +329,8 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
             </Link>
           )}
           {data.erEier && (
-            <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+              <UpGameImportModal roundId={data.id} />
               <Link
                 href={`/portal/mal/runder/${data.id}/hull`}
                 style={{ textDecoration: "none" }}
@@ -312,12 +361,18 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
               sub="Runden er logget med kun totalscore. Logg hull-for-hull neste gang — eller legg det til nå."
             />
             {data.erEier && (
-              <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap", marginTop: 4 }}>
-                <Link href={`/portal/mal/runder/${data.id}/hull`} style={{ textDecoration: "none" }}>
-                  <CTAPill icon="plus">Legg til hull-for-hull</CTAPill>
-                </Link>
-                <Link href="/portal/runde/logg" style={{ textDecoration: "none" }}>
-                  <CTAPill ghost icon="list">Før slag for slag</CTAPill>
+              <div style={{ marginTop: 8, textAlign: "center" }}>
+                <Link
+                  href="/portal/runde/logg"
+                  style={{
+                    textDecoration: "none",
+                    fontFamily: T.ui,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: T.mut,
+                  }}
+                >
+                  Eller før slag for slag →
                 </Link>
               </div>
             )}
@@ -331,24 +386,8 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
           <TomTilstand
             icon="trending-up"
             title="Ingen Strokes Gained ennå"
-            sub="Strokes Gained krever slag-for-slag-kjeden — vi gjetter aldri."
+            sub="SG krever slag-for-slag — vi gjetter aldri. Bruk knappen øverst for å fullføre."
           />
-          {data.erEier && (
-            <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
-              <Link
-                href={
-                  data.antallHullMedScore > 0
-                    ? `/portal/mal/runder/${data.id}/fullfor`
-                    : "/portal/runde/logg"
-                }
-                style={{ textDecoration: "none" }}
-              >
-                <CTAPill ghost icon={data.antallHullMedScore > 0 ? "check" : "plus"}>
-                  {data.antallHullMedScore > 0 ? "Fullfør kjeden" : "Før slag for slag"}
-                </CTAPill>
-              </Link>
-            </div>
-          )}
         </Kort>
       ) : (
         <>
@@ -426,17 +465,21 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
         </>
       )}
 
-      {/* Knapperad */}
-      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-        <Link href="/portal/analysere" style={{ textDecoration: "none" }}>
-          <CTAPill ghost icon="trending-up">
-            Se SG-trend
-          </CTAPill>
-        </Link>
-        <Link href="/portal/coach/melding" style={{ textDecoration: "none" }}>
-          <CTAPill icon="send">Del med coach</CTAPill>
-        </Link>
-      </div>
+      {/* Sekundær vei — primær CTA er øverst */}
+      <Link
+        href="/portal/analysere"
+        style={{
+          textDecoration: "none",
+          display: "block",
+          textAlign: "center",
+          fontFamily: T.ui,
+          fontSize: 12,
+          fontWeight: 600,
+          color: T.mut,
+        }}
+      >
+        Se SG-trend i Analyse →
+      </Link>
     </div>
   );
 }

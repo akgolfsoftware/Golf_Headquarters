@@ -1,17 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Coach · Ny melding — v2 (retning C «Presis»). Komponert fra
- * ui_kits/playerhq/phq-wizards.jsx → MeldingNyView (Batch B1, delt
- * Veiviser-skall), men med EKTE hovedcoach fra CoachMeldingerV2 sin
- * datakilde (aktiv PlayerEnrollment → fallback første COACH-bruker).
- *
- * Erstatter legacy /portal/(legacy)/coach/melding/ny. Samme Pro-gate og
- * CoachingSession(kind DIRECT)-modell som hub-siden
- * (src/app/portal/coach/melding/page.tsx → CoachMeldingerV2).
- *
- * Kun v2-komponenter fra "@/components/v2"; ingen ad-hoc UI, ingen rå hex
- * (kun T.*). Norsk bokmål, ordbok låst.
+ * PlayerHQ Coach · Ny melding — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useState, useTransition } from "react";

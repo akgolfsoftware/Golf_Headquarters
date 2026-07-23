@@ -8,7 +8,8 @@ import { prisma } from "@/lib/prisma";
 import { sendPush } from "@/lib/push/send";
 import type { PlanStatus } from "@/generated/prisma/client";
 
-const PUBLISHABLE: PlanStatus[] = ["DRAFT", "REJECTED"];
+/** Coach kan sende første gang (DRAFT/REJECTED) og sende oppdatering (ACTIVE/ACCEPTED). */
+const PUBLISHABLE: PlanStatus[] = ["DRAFT", "REJECTED", "ACTIVE", "ACCEPTED"];
 
 /* ── WB4: publiser-diff ──────────────────────────────────────
    Snapshot av øktene lagres ved hver publisering; neste publisering
@@ -162,8 +163,10 @@ export async function publishWorkbenchPlan(
   }
 
   if (!PUBLISHABLE.includes(plan.status)) {
-    return { ok: false, error: "Planen er allerede publisert eller aktiv" };
+    return { ok: false, error: "Planen kan ikke publiseres i denne statusen" };
   }
+
+  const erOppdatering = plan.status === "ACTIVE" || plan.status === "ACCEPTED";
 
   // WB4: snapshot av kommende økter lagres — diff-grunnlag for neste publisering.
   const snapshotPlan = await hentPlanOgOkter(plan.userId);
@@ -181,14 +184,18 @@ export async function publishWorkbenchPlan(
       data: {
         userId: plan.userId,
         type: "plan",
-        title: "Ny treningsplan venter på godkjenning",
-        body: `Planen «${plan.name}» er sendt til deg. Åpne Workbench for å godkjenne.`,
+        title: erOppdatering
+          ? "Oppdatert treningsplan venter på deg"
+          : "Ny treningsplan venter på godkjenning",
+        body: erOppdatering
+          ? `Coachen har oppdatert «${plan.name}». Åpne Workbench for å se og godkjenne.`
+          : `Planen «${plan.name}» er sendt til deg. Åpne Workbench for å godkjenne.`,
         link: "/portal/planlegge/workbench",
       },
     });
     // C5: push til spillerens enheter — best-effort (stille av uten VAPID/abonnement).
     await sendPush(plan.userId, {
-      title: "Ny treningsplan fra coachen din",
+      title: erOppdatering ? "Plan oppdatert av coachen" : "Ny treningsplan fra coachen din",
       body: `«${plan.name}» er klar — åpne Workbench for å se og godkjenne.`,
       link: "/portal/planlegge/workbench",
       tag: "plan-publisert",
@@ -199,4 +206,67 @@ export async function publishWorkbenchPlan(
 
   revalidateWorkbench(targetUserId);
   return { ok: true, status: "PENDING_PLAYER" };
+}
+
+/**
+ * Spiller godtar plan som venter (PENDING_PLAYER → ACTIVE).
+ * Brukes fra spiller-workbench — ikke coach.
+ */
+export async function acceptWorkbenchPlan(): Promise<{
+  ok: boolean;
+  error?: string;
+  status?: PlanStatus;
+}> {
+  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const plan = await prisma.trainingPlan.findFirst({
+    where: { userId: user.id, status: "PENDING_PLAYER" },
+    orderBy: { updatedAt: "desc" },
+    select: { id: true, name: true, status: true },
+  });
+  if (!plan) {
+    return { ok: false, error: "Ingen plan venter på godkjenning." };
+  }
+
+  await prisma.trainingPlan.update({
+    where: { id: plan.id },
+    data: { status: "ACTIVE", isActive: true, playerComment: null },
+  });
+  // Kun én aktiv plan
+  await prisma.trainingPlan.updateMany({
+    where: { userId: user.id, id: { not: plan.id }, isActive: true },
+    data: { isActive: false },
+  });
+
+  revalidateWorkbench(user.id);
+  return { ok: true, status: "ACTIVE" };
+}
+
+/**
+ * Spiller ber om endring (PENDING_PLAYER → REJECTED + kommentar).
+ */
+export async function rejectWorkbenchPlan(
+  kommentar: string,
+): Promise<{ ok: boolean; error?: string; status?: PlanStatus }> {
+  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const trimmet = kommentar.trim();
+  if (trimmet.length < 5) {
+    return { ok: false, error: "Skriv minst 5 tegn om hva som bør endres." };
+  }
+
+  const plan = await prisma.trainingPlan.findFirst({
+    where: { userId: user.id, status: "PENDING_PLAYER" },
+    orderBy: { updatedAt: "desc" },
+    select: { id: true },
+  });
+  if (!plan) {
+    return { ok: false, error: "Ingen plan venter på godkjenning." };
+  }
+
+  await prisma.trainingPlan.update({
+    where: { id: plan.id },
+    data: { status: "REJECTED", playerComment: trimmet.slice(0, 2000) },
+  });
+
+  revalidateWorkbench(user.id);
+  return { ok: true, status: "REJECTED" };
 }

@@ -1,16 +1,8 @@
 "use client";
 
 /**
- * AgencyOS Triage / Innboks — v2 (retning C «Presis»). 1:1 med mockup-fasit
- * ui_kits/v2/agencyos.jsx → Triage + TriageGruppe, men drevet av EKTE data fra
- * loadDailyBrief (Prisma) — samme loader som cockpiten. Bygget utelukkende av
- * v2-komponentbiblioteket (src/components/v2). Ingen ad-hoc UI, ingen rå hex.
- *
- * «Trenger deg»-køen gruppert etter hastegrad:
- *   Avvik    (sterk)  ← focus-spillere med signal-tone alert/warn (frafall/belastning)
- *   Venter   (medium) ← innboks type «appr» (ventende godkjenninger)
- *   Spørsmål (lav)    ← innboks type «req/msg/advice» (forespørsler + meldinger)
- * Anbefaling, aldri sperre: du bestemmer alltid selv.
+ * AgencyOS Triage / Innboks — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Mørk AgencyOS. Kø: Avvik · Venter · Spørsmål.
  */
 
 import { useState, useTransition } from "react";
@@ -27,6 +19,8 @@ import {
   Knapp,
   InnsiktChip,
   TomTilstand,
+  KpiFlis,
+  StatusPill,
   type SevKey,
 } from "@/components/v2";
 import { T } from "@/lib/v2/tokens";
@@ -57,13 +51,9 @@ function reasonText(reason: CockpitFocusPlayer["reason"]): string {
 
 /** Bygg de tre køene fra CockpitData. Ingen fabrikering — kun det loaderen gir. */
 function byggGrupper(data: CockpitData): Gruppe[] {
-  // Avvik: spillere loaderen har flagget som frafall/over belastning.
   const avvik: Sak[] = data.focus
     .filter((f) => f.signal.tone === "alert" || f.signal.tone === "warn")
     .map((f) => {
-      // Knappeteksten MÅ komme fra samme handling som lenken peker til —
-      // ellers viser raden f.eks. "Ring" men trykk går til meldinger
-      // (I8 lag 2-funn: primary/nav valgte forskjellige actions).
       const nav = f.actions.find((a) => a.href);
       const handling = nav ?? f.actions.find((a) => a.primary) ?? f.actions[0];
       return {
@@ -76,7 +66,6 @@ function byggGrupper(data: CockpitData): Gruppe[] {
       };
     });
 
-  // Venter: ventende godkjenninger (PlanAction PENDING → innboks «appr»).
   const venter: Sak[] = data.inbox
     .filter((i) => i.type === "appr")
     .map((i) => ({
@@ -88,7 +77,6 @@ function byggGrupper(data: CockpitData): Gruppe[] {
       href: i.href,
     }));
 
-  // Spørsmål: forespørsler + meldinger/råd.
   const spm: Sak[] = data.inbox
     .filter((i) => i.type !== "appr")
     .map((i) => ({
@@ -218,29 +206,69 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
 
   const totalSaker = grupper.reduce((n, g) => n + g.saker.length, 0);
   const avvikCount = grupper.find((g) => g.key === "avvik")?.saker.length ?? 0;
-  // Kanonisk kø-telling (samme tall som godkjenninger-hodet og varsler-siden).
   const godkjenningsKo = ko?.totalt ?? 0;
 
-  // ── Hode ────────────────────────────────────────────────────────
+  // B: primær handling — godkjenninger hvis kø, ellers første avvik, ellers stall
+  const forsteAvvik = grupper.find((g) => g.key === "avvik")?.saker[0];
+  const primaerHref =
+    godkjenningsKo > 0
+      ? "/admin/godkjenninger"
+      : forsteAvvik?.href
+        ? forsteAvvik.href
+        : totalSaker > 0
+          ? grupper[0]?.saker[0]?.href ?? "/admin/godkjenninger"
+          : "/admin/agencyos";
+  const primaerTekst =
+    godkjenningsKo > 0
+      ? `Behandle ${pl(godkjenningsKo, "godkjenning", "godkjenninger")}`
+      : forsteAvvik
+        ? `Følg opp ${forsteAvvik.name.split(" ")[0]}`
+        : totalSaker > 0
+          ? "Åpne første sak"
+          : "Til stall";
+
+  const statusTone =
+    avvikCount > 0 ? "down" : godkjenningsKo > 0 || totalSaker > 0 ? "warn" : "up";
+  const statusTekst =
+    avvikCount > 0
+      ? `${pl(avvikCount, "avvik", "avvik")}`
+      : godkjenningsKo > 0
+        ? `${pl(godkjenningsKo, "venter", "venter")}`
+        : totalSaker > 0
+          ? `${pl(totalSaker, "sak", "saker")}`
+          : "Tom";
+
+  // ── Hode — B: status ──────────────────────────────────────────
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>
-          {pl(totalSaker, "sak", "saker")} · {pl(avvikCount, "avvik", "avvik")} · AgencyOS
-        </Caps>
+        <Caps>AgencyOS · Innboks</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel>Innboks</Tittel>
         </div>
       </div>
-      <div className="hidden md:block">
-        <Caps size={9}>Anbefalinger — du bestemmer alltid selv</Caps>
-      </div>
+      <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
     </div>
   );
 
-  // ── AI-innsikt (ærlig, avledet av reelle tall — ingen oppdiktet plan) ──
-  // Banneret bærer kanonisk godkjenningskø-tall og lenker til godkjenninger
-  // (aldri til innboksen selv — vi er allerede her).
+  // ── B: én primær CTA ──────────────────────────────────────────
+  const primaerCta = (
+    <Link href={primaerHref} style={{ textDecoration: "none", display: "block" }}>
+      <CTAPill icon={godkjenningsKo > 0 || totalSaker > 0 ? "arrow-right" : "users"} full>
+        {primaerTekst}
+      </CTAPill>
+    </Link>
+  );
+
+  // ── KPI ───────────────────────────────────────────────────────
+  const kpi = (
+    <div className="grid grid-cols-3" style={{ gap: T.gap }}>
+      <KpiFlis label="Saker" value={totalSaker} />
+      <KpiFlis label="Avvik" value={avvikCount} varsle={avvikCount > 0} />
+      <KpiFlis label="Godkjenninger" value={godkjenningsKo} varsle={godkjenningsKo > 0} />
+    </div>
+  );
+
   const innsiktTekst =
     godkjenningsKo > 0
       ? `${pl(godkjenningsKo, "sak venter", "saker venter")} på godkjenning${
@@ -251,17 +279,12 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
             avvikCount > 0 ? ` — ${pl(avvikCount, "avvik", "avvik")} bør ses først.` : "."
           }`
         : "Innboksen er tom — ingenting venter på deg akkurat nå.";
-  const innsikt = (
-    <Link href="/admin/godkjenninger" style={{ textDecoration: "none" }}>
-      <InnsiktChip cta="Åpne godkjenninger">{innsiktTekst}</InnsiktChip>
-    </Link>
-  );
 
   if (grupper.length === 0) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {hode}
-        {godkjenningsKo > 0 && innsikt}
+        {kpi}
         <Kort>
           <TomTilstand
             icon="inbox"
@@ -269,6 +292,13 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
             sub="Ingen saker trenger deg akkurat nå."
           />
         </Kort>
+        {godkjenningsKo > 0 ? primaerCta : (
+          <Link href="/admin/agencyos" style={{ textDecoration: "none", display: "block" }}>
+            <CTAPill icon="users" full>
+              Til stall
+            </CTAPill>
+          </Link>
+        )}
         <TilbakemeldingerKort rader={feedback} />
       </div>
     );
@@ -277,6 +307,8 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
+      {primaerCta}
+      {kpi}
       <div
         className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]"
         style={{ gap: T.gap, alignItems: "start" }}
@@ -287,7 +319,9 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
           ))}
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-          {innsikt}
+          <InnsiktChip cta="Åpne godkjenninger" href="/admin/godkjenninger">
+            {innsiktTekst}
+          </InnsiktChip>
           <TilbakemeldingerKort rader={feedback} />
         </div>
       </div>

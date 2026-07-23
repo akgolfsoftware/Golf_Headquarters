@@ -33,7 +33,35 @@ const MND_KORT = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep",
 const PRO_PRIS_KR = 299;
 
 /** PlanAction.suggestion er JSON-blob — valider med zod før bruk (CLAUDE.md-regel). */
-const suggestionSchema = z.object({ forklaring: z.string() });
+const suggestionSchema = z
+  .object({
+    forklaring: z.string().optional(),
+    tittel: z.string().optional(),
+    title: z.string().optional(),
+    testName: z.string().optional(),
+    taskTittel: z.string().optional(),
+    metric: z.string().optional(),
+    proposedBaseline: z.number().optional(),
+  })
+  .passthrough();
+
+function planActionPreview(actionType: string, suggestion: unknown): string {
+  const parsed = suggestionSchema.safeParse(suggestion);
+  const s = parsed.success ? parsed.data : null;
+  if (s?.forklaring) return s.forklaring;
+  if (actionType === "TM_BASELINE_PROPOSE") {
+    return `Baseline for ${s?.metric ?? "TM-mål"} på «${s?.taskTittel ?? "full sving"}» fra test${s?.testName ? ` «${s.testName}»` : ""}${s?.proposedBaseline != null ? `: ${s.proposedBaseline}` : ""}.`;
+  }
+  if (s?.tittel || s?.title) return s.tittel ?? s.title ?? actionType;
+  // Kanonisk label — aldri rå enum i UI
+  const labels: Record<string, string> = {
+    TM_BASELINE_PROPOSE: "TrackMan-baseline fra test",
+    INTENSITY_ADJUST: "Juster intensitet",
+    FOCUS_CHANGE: "Endre fokus",
+    TRAINING_GAP: "Treningsgap",
+  };
+  return labels[actionType] ?? "AI-forslag venter";
+}
 
 function initials(name: string | null | undefined): string {
   if (!name) return "—";
@@ -179,7 +207,7 @@ export async function loadDailyBrief(coach: {
     prisma.planAction.findMany({
       where: { status: "PENDING" },
       orderBy: { createdAt: "desc" },
-      take: 4,
+      take: 8,
       select: {
         id: true,
         actionType: true,
@@ -342,17 +370,25 @@ export async function loadDailyBrief(coach: {
     });
   }
   for (const a of pendingActions) {
-    const parsed = suggestionSchema.safeParse(a.suggestion);
     raw.push({
       ts: a.createdAt.getTime(),
       item: {
         id: `appr-${a.id}`,
         initials: initials(a.user?.name ?? a.agentName),
         avatarTone: "primary",
-        name: a.user?.name ?? a.agentName,
+        name: a.user?.name ?? a.agentName ?? "Spiller",
         type: "appr",
-        typeLabel: "GODKJENN",
-        preview: parsed.success ? parsed.data.forklaring : a.actionType,
+        typeLabel:
+          a.actionType === "TM_BASELINE_PROPOSE"
+            ? "TM-BASELINE"
+            : a.agentName?.includes("round")
+              ? "RUNDE"
+              : a.agentName?.includes("trackman")
+                ? "TRACKMAN"
+                : a.agentName?.includes("test")
+                  ? "TEST"
+                  : "GODKJENN",
+        preview: planActionPreview(a.actionType, a.suggestion),
         unread: true,
         href: `/admin/godkjenninger#${a.id}`,
       },

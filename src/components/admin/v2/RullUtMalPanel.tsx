@@ -10,7 +10,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Caps, Kort, Knapp, PillVelger, Icon, T } from "@/components/v2";
+import { Caps, Kort, Knapp, PillVelger, Icon, StatusPill, T } from "@/components/v2";
 import { coachApplyTemplateToGroup } from "@/lib/workbench/apply-template-actions";
 
 export interface RullUtMal {
@@ -66,13 +66,20 @@ export function RullUtMalPanel({ groupId, maler, antallMedlemmer }: {
     }>
       {!apen ? (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-          <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>
-            Rull ut en planmal til alle {antallMedlemmer} medlemmene i én operasjon.
-          </span>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>
+              Rull ut en planmal til alle {antallMedlemmer} medlemmene i én operasjon.
+            </span>
+            <StatusPill tone="info">{maler.length} maler · {antallMedlemmer} medlemmer</StatusPill>
+          </div>
+          {/* B: én primær CTA */}
           <Knapp icon="layers" onClick={() => setApen(true)}>Rull ut mal</Knapp>
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <StatusPill tone={kjorer ? "warn" : "lime"}>
+            {kjorer ? "Ruller ut…" : `Klar · ${antallMedlemmer} spillere`}
+          </StatusPill>
           <div>
             <Caps size={9}>Planmal</Caps>
             <select

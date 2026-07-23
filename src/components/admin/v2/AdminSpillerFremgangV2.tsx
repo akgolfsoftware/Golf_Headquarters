@@ -1,19 +1,11 @@
 "use client";
 
 /**
- * AgencyOS Spiller-fremgang — v2 (retning C «Presis»). Rekomponerer den ekte
- * skjermen src/app/admin/spillere/[id]/fremgang/page.tsx i v2-idiomet, men med
- * IDENTISK funksjon + datakontrakt: spillerens utvikling siste 8 uker —
- *   1) SG per område over tid (ukesnitt → trendkurve per akse),
- *   2) treningsvolum per uke (ukestotal-trend + fordeling per område),
- *   3) korrelasjon trening ↔ SG-fremgang (Pearson r + klarspråk-tolkning).
- *
- * Bygget utelukkende av v2-komponentbiblioteket (src/components/v2) — ingen
- * ad-hoc visualiseringer, ingen rå hex (kun T.*). Ærlige tomrom: områder/uker
- * uten datapunkter utelates eller får tom-tilstand, aldri fabrikerte tall.
- * Anbefalinger er klarspråk, aldri sperre.
+ * AgencyOS Spiller-fremgang — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * SG · volum · korrelasjon. T.* only.
  */
 
+import Link from "next/link";
 import { T, fmtSg } from "@/lib/v2/tokens";
 import {
   Caps,
@@ -25,6 +17,8 @@ import {
   FordelingRad,
   InnsiktChip,
   TomTilstand,
+  StatusPill,
+  CTAPill,
   TilbakeLenke,
 } from "@/components/v2";
 
@@ -150,7 +144,7 @@ export function AdminSpillerFremgangV2({ data }: { data: FremgangV2Data }) {
 
   const periode = `Siste ${uker} uker`;
 
-  // ── Hode ────────────────────────────────────────────────────────
+  // ── Hode — B: status ───────────────────────────────────────────
   const hode = (
     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       <TilbakeLenke href={`/admin/spillere/${spillerId}`}>Tilbake til {navn}</TilbakeLenke>
@@ -160,12 +154,21 @@ export function AdminSpillerFremgangV2({ data }: { data: FremgangV2Data }) {
           <div style={{ marginTop: 10 }}>
             <Tittel em={em}>{em ? `${fornavn} ` : navn}</Tittel>
           </div>
+          <Caps size={9} style={{ display: "block", marginTop: 6 }}>{periode}</Caps>
         </div>
-        <div className="hidden md:block">
-          <Caps size={9}>{periode}</Caps>
-        </div>
+        <StatusPill tone={harRunder ? "lime" : "warn"}>
+          {harRunder ? "Har data" : "Mangler runder"}
+        </StatusPill>
       </div>
     </div>
+  );
+
+  const primaerCta = (
+    <Link href={`/admin/spillere/${spillerId}/plan`} style={{ textDecoration: "none", display: "block" }}>
+      <CTAPill icon="layout-dashboard" full>
+        Åpne plan i Workbench
+      </CTAPill>
+    </Link>
   );
 
   // ── 1) SG per område over tid ───────────────────────────────────
@@ -305,6 +308,7 @@ export function AdminSpillerFremgangV2({ data }: { data: FremgangV2Data }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
+      {primaerCta}
       {sgKort}
       <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: T.gap, alignItems: "start" }}>
         {volumKort}

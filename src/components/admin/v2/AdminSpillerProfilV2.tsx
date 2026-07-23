@@ -1,19 +1,9 @@
 "use client";
 
 /**
- * AgencyOS — Spillerprofil 360° i v2 (retning C «Presis»).
- *
- * Rekomponering av /admin/spillere/[id]/page.tsx til v2-idiomet. All FUNKSJON og
- * hele DATAKONTRAKTEN fra den ekte skjermen er bevart — server-siden gjør Prisma-
- * uthenting + all utleding (coach-flagg, pyramide-adherence, aktiv plan, meldinger)
- * og sender ferdig-mappet AdminSpillerProfilV2Data hit. Denne filen rendrer bare,
- * utelukkende av v2-komponentbiblioteket (src/components/v2) — ingen ad-hoc UI,
- * ingen rå hex (kun T.*).
- *
- * Desktop-rekkefølge: tilbake-lenke → hero-kort → grid 1.3fr/1fr:
- *   venstre  = coach-flagg (betinget) · treningspyramide + innsikt · siste runder & tester
- *   høyre    = aktiv plan · hurtighandlinger · meldinger
- * Ærlige tomrom: manglende data vises som TomTilstand, aldri fabrikerte tall.
+ * AgencyOS — Spillerprofil 360° seksjoner — v2 Presis + B-pakke.
+ * Brukes i SpillerDashboardV2 (variant «seksjoner») og full variant.
+ * Kun T.* / v2. Én primær CTA (Workbench) i full-hero; tom plan har vei videre.
  */
 
 import Link from "next/link";
@@ -107,12 +97,11 @@ const TABELL_KOLONNER: DataTabellColumn[] = [
 export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSpillerProfilV2Data; variant?: "full" | "seksjoner" }) {
   const router = useRouter();
 
-  // ── Hero ───────────────────────────────────────────────────
+  // ── Hero (B: én primær Workbench · øvrige ghost) ───────────
   const heroKnapper: { label: string; icon: string; href: string; ghost: boolean }[] = [
+    { label: "Workbench", icon: "layout-dashboard", href: data.wbHref, ghost: false },
     { label: "Analyse", icon: "bar-chart", href: data.analyseHref, ghost: true },
     { label: "Melding", icon: "message-circle", href: data.meldingHref, ghost: true },
-    { label: "Ny plan", icon: "list", href: data.wbHref, ghost: true },
-    { label: "Ny økt", icon: "plus", href: data.wbHref, ghost: false },
   ];
   const hero = (
     <Kort>
@@ -203,7 +192,8 @@ export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSp
       <TomTilstand icon="calendar" title="Ingen aktiv plan" sub="Lag en plan i Workbench for å komme i gang." />
       <div style={{ marginTop: 4, display: "flex", justifyContent: "center" }}>
         <Link href={data.wbHref} style={{ textDecoration: "none" }}>
-          <CTAPill ghost icon="plus">Lag plan i Workbench</CTAPill>
+          {/* Full-variant: primær. Seksjoner (dashboard eier Workbench): ghost. */}
+          <CTAPill icon="plus" ghost={variant === "seksjoner"}>Lag plan i Workbench</CTAPill>
         </Link>
       </div>
     </Kort>

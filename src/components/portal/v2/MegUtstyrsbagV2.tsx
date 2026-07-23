@@ -1,19 +1,7 @@
 "use client";
 
 /**
- * PlayerHQ Meg · Utstyrsbag — v2 (retning C «Presis»). Rekomponert fra den
- * ekte skjermen (src/app/portal/meg/utstyrsbag) med BEVART funksjon + datakontrakt:
- * køllesett + ball/øvrig som lese-rader, redigering via samme lagreUtstyrsbag-
- * server-action (upsert av EquipmentBag) og samme 200-tegns validering.
- *
- * Kun v2-komponenter fra "@/components/v2"; ingen ad-hoc UI, ingen rå hex (kun T.*).
- *
- * Ærlighet: EquipmentBag har ETT fritekstfelt per kategori (ikke spec + modell
- * separat). Verdien vises som mono-meta under kategorinavnet — aldri oppdiktet.
- * Tomme grupper får ærlig tom-tilstand. Fasitens Hanske/Sko finnes ikke i
- * modellen og vises ikke.
- *
- * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
+ * PlayerHQ Meg · Utstyrsbag — v2 Presis + B-pakke (status, én grønn CTA).
  */
 
 import { useEffect, useState, useTransition } from "react";
@@ -127,23 +115,44 @@ export function MegUtstyrsbagV2({ data }: { data: MegUtstyrsbagData }) {
   const ovrig = medVerdi(data.utstyr, OVRIG);
   const harNoe = koller.length > 0 || ovrig.length > 0;
 
+  const antall = koller.length + ovrig.length;
+  const total = KOLLER.length + OVRIG.length;
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
       <div>
         <Tittel mobile={mobile}>Utstyrsbag</Tittel>
         <Caps size={9} style={{ marginTop: 10 }}>
-          Køllesett, ball og spesifikasjoner · TrackMan-kalibrering
+          Køller, ball og bag
         </Caps>
       </div>
 
-      {/* Køller */}
+      {/* B: status først */}
+      <div className="grid grid-cols-2" style={{ gap: 8 }}>
+        <Kort pad="12px">
+          <Caps size={9}>Registrert</Caps>
+          <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 18, marginTop: 8, color: T.fg }}>
+            {antall} / {total}
+          </div>
+        </Kort>
+        <Kort pad="12px">
+          <Caps size={9}>Status</Caps>
+          <div style={{ fontFamily: T.ui, fontWeight: 600, fontSize: 14, marginTop: 8, color: T.fg }}>
+            {harNoe ? "Delvis fylt" : "Tom"}
+          </div>
+        </Kort>
+      </div>
+
+      <Knapp icon="plus" full onClick={() => setRedigerer(true)}>
+        {harNoe ? "Rediger utstyr" : "Legg til utstyr"}
+      </Knapp>
+
       <Kort eyebrow="Køller" action={<Caps size={9}>{`${koller.length} / ${KOLLER.length}`}</Caps>}>
         {koller.length === 0 ? (
           <TomTilstand
             icon="crosshair"
             title="Ingen køller registrert"
-            sub="Legg inn køllesettet ditt for å kalibrere TrackMan-tallene."
+            sub="Legg inn køllesettet for bedre TrackMan-tall."
           />
         ) : (
           koller.map((f, i) => (
@@ -152,7 +161,6 @@ export function MegUtstyrsbagV2({ data }: { data: MegUtstyrsbagData }) {
         )}
       </Kort>
 
-      {/* Ball og øvrig */}
       <Kort eyebrow="Ball og øvrig">
         {ovrig.length === 0 ? (
           <TomTilstand icon="circle" title="Ikke registrert ennå" sub="Ball, bag og notater legges inn her." />
@@ -163,15 +171,24 @@ export function MegUtstyrsbagV2({ data }: { data: MegUtstyrsbagData }) {
         )}
       </Kort>
 
-      {/* Handlinger */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-        <Knapp icon="plus" onClick={() => setRedigerer(true)}>
-          {harNoe ? "Rediger utstyr" : "Legg til utstyr"}
-        </Knapp>
-        <Knapp ghost icon="bar-chart" onClick={() => router.push("/portal/analysere")}>
-          Se TrackMan-tall
-        </Knapp>
-      </div>
+      <button
+        type="button"
+        onClick={() => router.push("/portal/analysere")}
+        style={{
+          appearance: "none",
+          background: "transparent",
+          border: 0,
+          cursor: "pointer",
+          textAlign: "center",
+          fontFamily: T.ui,
+          fontSize: 12,
+          fontWeight: 600,
+          color: T.mut,
+          padding: "4px 0",
+        }}
+      >
+        Se TrackMan-tall →
+      </button>
     </div>
   );
 }
@@ -306,7 +323,7 @@ function UtstyrsbagRediger({
           </Caps>
         </span>
         <Knapp ghost onClick={onFerdig} disabled={pending}>Avbryt</Knapp>
-        <Knapp icon="check" onClick={lagre} disabled={pending}>{pending ? "Lagrer" : "Lagre"}</Knapp>
+        <Knapp icon="check" onClick={lagre} disabled={pending} style={{ minWidth: 120 }}>{pending ? "Lagrer" : "Lagre"}</Knapp>
       </div>
     </div>
   );

@@ -1,33 +1,8 @@
 "use client";
 
 /**
- * AgencyOS Godkjenninger — v2 (retning C «Presis», mørk først). Coach/ADMIN
- * behandler agent-forslag (plan-endringer / samtykke-signaler): godkjenn eller
- * avvis. Ingen mockup fantes — komponert utelukkende av v2-biblioteket
- * (src/components/v2), ingen ad-hoc UI, ingen rå hex (kun T.*).
- *
- * Funksjon/data bevart 1:1 fra den ekte skjermen (src/app/admin/godkjenninger):
- *   - Kø av PENDING PlanAction-forslag (nyeste først), én kort-rad per sak.
- *   - Per sak: spiller, tittel, forklaring, actionType, «når», signal-snapshot,
- *     forhåndsvist diff (buildDiffPreview i ruten), Haster-/Lav risiko-flagg.
- *   - Handlinger per sak: Godkjenn (acceptPlanAction) · Avvis (rejectPlanAction)
- *     · Detaljer (/admin/godkjenninger/[id]) · Se profil (/admin/spillere/[id]).
- *   - Massehandling: Godkjenn lav-risiko (batchApproveLowRisk) når slike finnes.
- *   - Filter på Haster / Lav risiko (klient, over ekte flagg).
- *
- * Mobil (375px): kort stables; primærhandlinger fullbredde, lenker under.
- * Chips brytes. Ingen fabrikerte tall — tom kø → TomTilstand.
- *
- * Audit 2026-07-12 (funn 2): saker grupperes per spiller (seksjonshode),
- * identiske saker (samme who+tittel+actionType) dedupliseres til én rad med
- * «×N»-badge (Godkjenn/Avvis gjelder kun FØRSTE sak — aldri bulk uten
- * eksplisitt handling), og køen pagineres klientside (10 seksjoner om gangen)
- * så siden aldri blir 12–17 000 px lang. Knapphierarki per sak: Godkjenn
- * primær (lime) · Avvis ghost · Detaljer/Se profil som tekstlenker.
- *
- * Chip-valg: original brukte «Haster»/«Lav risiko». SevChip har fastlåste
- * etiketter (Sterkt avvik/Venter/…) som ville brutt den låste copy-en, så
- * StatusPill (warn/info) bærer flaggene med original tekst.
+ * AgencyOS Godkjenninger — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Kø av agent-/caddie-/forespørsel-saker. T.* only.
  */
 
 import { useEffect, useMemo, useState, useTransition, type ReactNode } from "react";
@@ -44,6 +19,7 @@ import {
   AvatarInit,
   TomTilstand,
   InnsiktChip,
+  CTAPill,
   Icon,
   T,
 } from "@/components/v2";
@@ -120,22 +96,29 @@ function useMobile(): boolean {
   return m;
 }
 
-/** Massehandling: godkjenn alle lav-risiko-forslag i køen. */
+/** Massehandling: godkjenn alle lav-risiko-forslag i køen. B: primær CTAPill. */
 function GodkjennLavRisiko({ count }: { count: number }) {
   const router = useRouter();
   const [busy, start] = useTransition();
   if (count === 0) return null;
   return (
-    <div style={{ opacity: busy ? 0.5 : 1 }}>
-      <Knapp
-        icon="check-circle"
-        ghost
-        disabled={busy}
-        onClick={() => start(async () => { await batchApproveLowRisk(); router.refresh(); })}
-      >
-        Godkjenn lav-risiko ({count})
-      </Knapp>
-    </div>
+    <button
+      type="button"
+      disabled={busy}
+      onClick={() => start(async () => { await batchApproveLowRisk(); router.refresh(); })}
+      style={{
+        all: "unset",
+        cursor: busy ? "wait" : "pointer",
+        opacity: busy ? 0.55 : 1,
+        display: "block",
+        width: "100%",
+      }}
+      aria-label={`Godkjenn lav-risiko (${count})`}
+    >
+      <CTAPill icon="check-circle" full>
+        {busy ? "Godkjenner …" : `Godkjenn lav-risiko (${count})`}
+      </CTAPill>
+    </button>
   );
 }
 
@@ -198,50 +181,130 @@ function SakHandlinger({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: bo
  *  Spilleren navngis av seksjonshodet — kortet dropper derfor egen avatar.
  *  antall > 1 → «×N»-badge; Godkjenn/Avvis gjelder kun første sak. */
 function SakKort({ row, mobile }: { row: SakMedAntall; mobile: boolean }) {
+  // Samme kø-språk som AI-dispatch: strek + tint for haster (Superhuman/Linear)
+  const kildeLabel =
+    row.kilde === "caddie" ? "Caddie" : row.kilde === "forespørsel" ? "Forespørsel" : "Agent";
   return (
     <Kort
       pad={mobile ? "14px 15px" : "16px 18px"}
-      style={row.urgent ? { borderLeft: `3px solid ${T.warn}` } : undefined}
+      style={{
+        overflow: "hidden",
+        borderLeft: row.urgent ? `3px solid ${T.warn}` : undefined,
+        background: row.urgent
+          ? `color-mix(in srgb, ${T.warn} 6%, ${T.panel})`
+          : undefined,
+        borderColor: row.urgent
+          ? `color-mix(in srgb, ${T.warn} 28%, ${T.border})`
+          : undefined,
+      }}
     >
       <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
-            <span style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em", color: T.fg }}>
-              {row.title}
-            </span>
+            <Caps size={9} color={row.urgent ? T.warn : T.mut}>
+              {kildeLabel}
+            </Caps>
+            {row.urgent && <StatusPill tone="warn">Haster</StatusPill>}
+            {row.lowRisk && <StatusPill tone="info">Lav risiko</StatusPill>}
             {row.antall > 1 && (
               <span
                 title={`${row.antall} like saker — Godkjenn/Avvis gjelder den første, resten blir i køen`}
-                style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 5, padding: "2px 6px" }}
+                style={{
+                  fontFamily: T.mono,
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: T.fg2,
+                  background: T.panel2,
+                  border: `1px solid ${T.border}`,
+                  borderRadius: 5,
+                  padding: "2px 6px",
+                }}
               >
                 ×{row.antall}
               </span>
             )}
-            {row.urgent && <StatusPill tone="warn">Haster</StatusPill>}
-            {row.lowRisk && <StatusPill tone="info">Lav risiko</StatusPill>}
           </div>
 
-          <div style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", color: T.mut, marginTop: 4 }}>
+          <div
+            style={{
+              fontFamily: T.disp,
+              fontSize: 16,
+              fontWeight: 700,
+              letterSpacing: "-0.015em",
+              color: T.fg,
+              marginTop: 8,
+              lineHeight: 1.25,
+            }}
+          >
+            {row.title}
+          </div>
+
+          <div
+            style={{
+              fontFamily: T.mono,
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: "0.04em",
+              color: T.mut,
+              marginTop: 6,
+            }}
+          >
             {row.who} · {row.when} · {handlingstypeLabel(row.actionType)}
           </div>
 
           {row.detail && (
-            <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.fg2, margin: "8px 0 0" }}>
+            <p
+              style={{
+                fontFamily: T.ui,
+                fontSize: 13,
+                lineHeight: 1.55,
+                color: T.fg2,
+                margin: "10px 0 0",
+              }}
+            >
               {row.detail}
             </p>
           )}
 
           {row.signalKind && (
-            <div style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut, marginTop: 8 }}>
+            <div
+              style={{
+                fontFamily: T.mono,
+                fontSize: 10,
+                fontWeight: 700,
+                color: T.mut,
+                marginTop: 8,
+              }}
+            >
               Signal: {row.signalKind}
               {row.signalValue != null ? ` = ${row.signalValue}` : ""}
             </div>
           )}
 
           {row.diffPreview && (
-            <div style={{ display: "flex", alignItems: "flex-start", gap: 8, marginTop: 10, padding: "8px 11px", borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}` }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 8,
+                marginTop: 10,
+                padding: "8px 11px",
+                borderRadius: 10,
+                background: T.panel2,
+                border: `1px solid ${T.border}`,
+              }}
+            >
               <Icon name="layers" size={13} style={{ color: T.lime, flex: "none", marginTop: 1 }} />
-              <span style={{ fontFamily: T.mono, fontSize: 11, lineHeight: 1.5, color: T.fg2, minWidth: 0, overflowWrap: "anywhere" }}>
+              <span
+                style={{
+                  fontFamily: T.mono,
+                  fontSize: 11,
+                  lineHeight: 1.5,
+                  color: T.fg2,
+                  minWidth: 0,
+                  overflowWrap: "anywhere",
+                }}
+              >
                 {row.diffPreview}
               </span>
             </div>
@@ -318,11 +381,11 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
     setVisSeksjoner(10);
   };
 
-  // ── Hode ──────────────────────────────────────────────────────
+  // ── Hode — B: status ──────────────────────────────────────────
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>Innboks · Godkjenninger</Caps>
+        <Caps>Innboks · Godkjenninger · AgencyOS</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel em="på deg." mobile={mobile}>{`${totalt} venter`}</Tittel>
         </div>
@@ -330,22 +393,28 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
           Plan-endringer fra agenter. Godkjenn eller avvis — endringer skrives til planen ved godkjenning.
         </p>
       </div>
-      <div className="hidden md:block">
-        <GodkjennLavRisiko count={data.lowRiskCount} />
-      </div>
+      <StatusPill tone={totalt === 0 ? "lime" : antallHaster > 0 ? "warn" : "info"}>
+        {totalt === 0 ? "Kø tom" : antallHaster > 0 ? `${antallHaster} haster` : `${totalt} i kø`}
+      </StatusPill>
     </div>
   );
+
+  // B: én primær — masse-godkjenn lav-risiko, ellers vei til stall/innboks
+  const primaerCta =
+    data.lowRiskCount > 0 ? (
+      <GodkjennLavRisiko count={data.lowRiskCount} />
+    ) : (
+      <Link href="/admin/innboks" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="inbox" full>
+          Åpne innboks
+        </CTAPill>
+      </Link>
+    );
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
-
-      {/* Mobil-massehandling (skjult på desktop der den ligger i hodet) */}
-      {data.lowRiskCount > 0 && (
-        <div className="md:hidden">
-          <GodkjennLavRisiko count={data.lowRiskCount} />
-        </div>
-      )}
+      {primaerCta}
 
       {tilgjengeligeFiltre.length > 0 && (
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>

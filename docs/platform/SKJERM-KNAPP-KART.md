@@ -26,7 +26,7 @@
 
 ## DEL 1 — Kanonisk navigasjonsfasit (knapp → skjerm)
 
-### PlayerHQ — `/portal` (alltid lys). 5 faner: mobil bunn-nav = desktop sidebar.
+### PlayerHQ — `/portal` (alltid lys, B28 — se `docs/design-system/TEMA-LYS-MORK.md`). 5 faner: mobil bunn-nav = desktop sidebar.
 
 | Fane | Rute | Undersider (sidebar-children / faner) |
 |---|---|---|
@@ -38,7 +38,7 @@
 
 Coach-hub `/portal/coach` (Pro): SUB-NAV Oversikt/Meldinger/Notater/Spørsmål/Øvelser/SG-hub/AI/Planer/Perioder. Booking-hub `/portal/booking` (credit) nås via coach-flate + hurtighandlinger.
 
-### AgencyOS — `/admin` (mørk terminal + lys-toggle). Cockpit + gruppert sidebar.
+### AgencyOS — `/admin` (mørk default + lys-toggle via `ak-v2-tema`). Cockpit + gruppert sidebar.
 
 Cockpit `/admin/agencyos` fane-rad: **I dag · Live · Uka · Spillere · Økonomi**(admin) **· Caddie**(admin).
 

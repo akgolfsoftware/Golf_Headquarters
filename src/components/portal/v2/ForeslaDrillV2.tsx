@@ -1,13 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · AI foreslår drills — v2 (retning C «Presis»).
- * v2-port 16. juli 2026: erstatter src/components/portal/ai/foresla-drill-screen.tsx.
- *
- * Kun presentasjonslaget er nytt (v2-primitiver + T-tokens). Datakontrakten
- * (DrillSuggestion) og prinsippet er uendret: forslag bygget på ekte
- * svakhets-signaler, match-prosenten er en ærlig akse-overlapp — aldri
- * oppdiktede tall. Tom liste → ærlig TomTilstand.
+ * PlayerHQ · AI foreslår drills — v2 Presis + B-pakke (status + én vei per kort).
+ * Tom = full grønn vei til tester. T.* only.
  */
 
 import Link from "next/link";
@@ -107,21 +102,23 @@ export function ForeslaDrillV2({ data }: { data: ForeslaDrillV2Data }) {
   const { playerFirstName, analysedTestCount, suggestions } = data;
   return (
     <div style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
-      <div>
-        <Caps>AI · Drill-anbefaling</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em={playerFirstName}>Drills tilpasset</Tittel>
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+        <div>
+          <Caps>AI · Drill-anbefaling</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em={playerFirstName}>Drills tilpasset</Tittel>
+          </div>
+          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, margin: "10px 0 0", lineHeight: 1.55 }}>
+            Matchet mot dine svakeste områder fra tester.
+          </p>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, margin: "10px 0 0", lineHeight: 1.55 }}>
-          Forslag matchet mot dine svakeste områder fra testdataene dine.
-        </p>
       </div>
 
       <InnsiktChip>
         {analysedTestCount > 0 ? (
           <>
-            Analysert <span style={{ color: T.fg, fontWeight: 600 }}>{analysedTestCount} tester</span> i
-            biblioteket for å finne hvor du mangler ferske målinger.
+            Analysert <span style={{ color: T.fg, fontWeight: 600 }}>{analysedTestCount} tester</span>
+            {suggestions.length > 0 ? ` · ${suggestions.length} forslag` : ""}.
           </>
         ) : (
           "Ingen testdata å analysere ennå."
@@ -133,11 +130,13 @@ export function ForeslaDrillV2({ data }: { data: ForeslaDrillV2Data }) {
           <TomTilstand
             icon="target"
             title="Ingen forslag ennå"
-            sub="Ta noen tester så AI-en kan se hvor du står og foreslå drills som treffer der du har mest å hente."
+            sub="Ta noen tester — da foreslår vi drills der du har mest å hente."
           />
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <Link href="/portal/tren/tester" style={{ textDecoration: "none" }}>
-              <CTAPill icon="arrow-right">Gå til tester</CTAPill>
+          <div style={{ marginTop: 12 }}>
+            <Link href="/portal/tren/tester" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="arrow-right" full>
+                Gå til tester
+              </CTAPill>
             </Link>
           </div>
         </Kort>
@@ -146,8 +145,18 @@ export function ForeslaDrillV2({ data }: { data: ForeslaDrillV2Data }) {
           {suggestions.map((d) => (
             <ForslagKort key={d.id} drill={d} />
           ))}
-          <Link href="/portal/drills" style={{ textDecoration: "none", alignSelf: "center" }}>
-            <CTAPill ghost icon="arrow-right">Se hele øvelsesbanken</CTAPill>
+          <Link
+            href="/portal/drills"
+            style={{
+              textDecoration: "none",
+              alignSelf: "center",
+              fontFamily: T.ui,
+              fontSize: 12,
+              fontWeight: 600,
+              color: T.mut,
+            }}
+          >
+            Se hele øvelsesbanken →
           </Link>
         </>
       )}

@@ -1,16 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Meg — v2 (retning C «Presis»). Komponert 1:1 fra
- * ui_kits/v2/phq-skjermer.jsx → funksjonen Meg, men med EKTE data fra
- * hentProfil + getGoals + Round-aggregat (montert i (v2preview)/v2-meg/page.tsx).
- * Kun v2-komponenter fra "@/components/v2"; ingen ad-hoc UI. Ingen rå hex (kun T.*).
- *
- * Ærlighet: felt som mockupen viser men repoet ikke bærer (WAGR/kategori,
- * P-milepæler, birdies/treningstimer) fabrikkeres ALDRI — de får ærlig
- * tom-tilstand og meldes som gap. Mål bor i Oversikt, redigeres i Workbench (låst).
- *
- * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
+ * PlayerHQ Meg — v2 Presis + B-pakke (oversikt først, konto-liste etter).
+ * Ekte data: profil, mål, sesongtall. Én grønn hovedhandling øverst.
  */
 
 import { useEffect, useRef, useState, useTransition } from "react";
@@ -35,6 +27,7 @@ import {
   TomTilstand,
   Icon,
   HjelpTips,
+  CTAPill,
   type StatusTone,
 } from "@/components/v2";
 
@@ -175,12 +168,10 @@ export function MegV2({ data }: { data: MegData }) {
 
   const konto: KontoRad[] = [
     { ic: "user", l: "Profil og innstillinger", sub: "Navn, HCP, klubb", href: "/portal/meg/profil" },
-    { ic: "trending-up", l: "Utviklingsplan", sub: "Talent og teknisk plan samlet", href: "/portal/utviklingsplan" },
     { ic: "heart-pulse", l: "Helse", sub: "Søvn, hvilepuls, skadelogg", href: "/portal/meg/helse" },
     { ic: "briefcase", l: "Utstyrsbag", sub: "Køller, ball, bag", href: "/portal/meg/utstyrsbag" },
     { ic: "users", l: "Foresatte", sub: "Registrerte foreldre/verger", href: "/portal/meg/foreldre" },
     { ic: "activity", l: "Venner", sub: "Legg til venner, se at de har trent", href: "/portal/venner" },
-    { ic: "calendar-plus", l: "Book coachtime", sub: "Velg tjeneste, coach og tid", href: "/portal/booking" },
     { ic: "credit-card", l: "Abonnement", sub: tierSub(tier), href: "/portal/meg/abonnement" },
     { ic: "settings", l: "Innstillinger", sub: "Varsler, personvern, anlegg, språk", href: "/portal/meg/innstillinger" },
     { ic: "bell", l: "Varsler", sub: "Push og e-post", href: "/portal/meg/innstillinger/varsler" },
@@ -232,50 +223,84 @@ export function MegV2({ data }: { data: MegData }) {
         </div>
       </div>
 
-      {/* Sesongmål + utviklingsplan */}
-      <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
-        <Kort tint eyebrow="Sesongmål" action={pill ? <StatusPill tone={pill.tone}>{pill.l}</StatusPill> : undefined}>
-          {primaer ? (
-            <>
-              <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, color: T.fg, lineHeight: 1.25 }}>
-                {primaer.title}
-              </div>
-              <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 13 }}>
-                {goals.map((g) => (
-                  <ProgresjonsBar key={g.id} variant="bar" value={g.progress} max={100} label={g.title} />
-                ))}
-              </div>
-            </>
-          ) : (
-            <TomTilstand icon="target" title="Ingen mål satt" sub="Mål settes i Oversikt og redigeres i Workbench." />
-          )}
-        </Kort>
-
-        <Kort
-          eyebrow={
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-              Utviklingsplan · P-milepæler
-              <HjelpTips k="pPosisjon" size={11} />
-            </span>
-          }
-        >
-          <TomTilstand icon="flag" title="Ingen milepæler ennå" sub="Utviklingsplanen bygges i Workbench." />
-        </Kort>
-      </div>
-
-      {/* Sesongen i tall */}
-      <Kort eyebrow="Sesongen i tall">
-        <div className="grid grid-cols-2 md:grid-cols-4" style={{ gap: "16px 20px" }}>
-          {tall.map((t) => (
-            <div key={t.l}>
-              <Caps size={9}>{t.l}</Caps>
+      {/* B: form/status først — kompakte sesongtall */}
+      <div className="grid grid-cols-2 md:grid-cols-4" style={{ gap: 8 }}>
+        {tall.map((t) => (
+          <Kort key={t.l} pad="12px">
+            <Caps size={9}>{t.l}</Caps>
+            <div style={{ marginTop: 4 }}>
               <SesongTallVerdi value={t.v} />
             </div>
-          ))}
-        </div>
+          </Kort>
+        ))}
+      </div>
+
+      {/* Primær mål + én grønn vei */}
+      <Kort tint eyebrow="Sesongmål" action={pill ? <StatusPill tone={pill.tone}>{pill.l}</StatusPill> : undefined}>
+        {primaer ? (
+          <>
+            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, color: T.fg, lineHeight: 1.25 }}>
+              {primaer.title}
+            </div>
+            <div style={{ marginTop: 12 }}>
+              <ProgresjonsBar variant="bar" value={primaer.progress} max={100} label="" showValue />
+            </div>
+          </>
+        ) : (
+          <TomTilstand icon="target" title="Ingen mål satt" sub="Sett mål via Workbench / plan." />
+        )}
       </Kort>
 
-      {/* Konto */}
+      <Link href="/portal" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="home" full>
+          Til hjem · se hva du skal gjøre
+        </CTAPill>
+      </Link>
+      <Link
+        href="/portal/booking"
+        style={{
+          textDecoration: "none",
+          display: "block",
+          textAlign: "center",
+          fontFamily: T.ui,
+          fontSize: 12,
+          fontWeight: 600,
+          color: T.mut,
+          padding: "2px 0 4px",
+        }}
+      >
+        Book coachtime →
+      </Link>
+
+      {goals.length > 1 && (
+        <Kort eyebrow="Flere mål">
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {goals.slice(1).map((g) => (
+              <ProgresjonsBar key={g.id} variant="bar" value={g.progress} max={100} label={g.title} />
+            ))}
+          </div>
+        </Kort>
+      )}
+
+      <Kort
+        eyebrow={
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            Utviklingsplan
+            <HjelpTips k="pPosisjon" size={11} />
+          </span>
+        }
+      >
+        <Link href="/portal/utviklingsplan" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+          <Rad
+            leading={<Icon name="trending-up" size={16} style={{ color: T.mut }} />}
+            title="Åpne utviklingsplan"
+            sub="Talent og teknisk plan"
+            last
+          />
+        </Link>
+      </Kort>
+
+      {/* Konto — sekundær liste */}
       <Kort eyebrow="Konto">
         {konto.map((k, i) => (
           <Link key={`${k.l}-${i}`} href={k.href} style={{ textDecoration: "none", color: "inherit", display: "block" }}>

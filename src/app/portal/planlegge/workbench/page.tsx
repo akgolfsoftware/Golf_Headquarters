@@ -13,7 +13,12 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadWorkbenchContext } from "@/lib/workbench/load-context";
 import { parseWeekOffset } from "@/lib/workbench/session-move-math";
-import { publishWorkbenchPlan, hentPubliserDiff } from "@/lib/workbench/publish-actions";
+import {
+  publishWorkbenchPlan,
+  hentPubliserDiff,
+  acceptWorkbenchPlan,
+  rejectWorkbenchPlan,
+} from "@/lib/workbench/publish-actions";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { WorkbenchV2, type WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
 import { applyWorkbenchTemplate } from "@/lib/workbench/apply-template-actions";
@@ -31,7 +36,7 @@ export default async function V2WorkbenchPreviewPage({ searchParams }: Props) {
   if (user.role === "GUEST") redirect("/admin/kalender");
 
   const weekOffset = parseWeekOffset((await searchParams).uke);
-  const ctx = await loadWorkbenchContext(user.id, weekOffset);
+  const ctx = await loadWorkbenchContext(user.id, weekOffset, { viewer: "player" });
   const { wbMode } = lesPreferences(user);
 
   const actions: WorkbenchV2Actions = {
@@ -41,6 +46,8 @@ export default async function V2WorkbenchPreviewPage({ searchParams }: Props) {
     applyTemplate: applyWorkbenchTemplate,
     removeSession: removeWorkbenchSession,
     publish: publishWorkbenchPlan,
+    acceptPlan: acceptWorkbenchPlan,
+    rejectPlan: rejectWorkbenchPlan,
     publishDiff: hentPubliserDiff,
     duplicateWeek: duplicateWorkbenchWeek,
     // AI-ukeforslag: ekte Anthropic-kall når nøkkel finnes, ellers ærlig

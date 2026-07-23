@@ -1,18 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Be om økt — v2 (retning C «Presis»). Rekomponert fra den ekte
- * skjermen (src/app/portal/onskeligokt/page.tsx + form.tsx) med EKTE data
- * (coach-lista fra DB) og SAMME datakontrakt mot server-action `sendOnskeligOkt`
- * (src/app/portal/onskeligokt/actions.ts): notat-strengen pakkes 1:1 som før.
- *
- * Kun v2-komponenter fra "@/components/v2"; ingen ad-hoc UI. Ingen rå hex (T.*).
- * Anbefaling aldri sperre: Elite-runden er IKKE hardlåst (produktregel «ingenting
- * blokkerer») — den er et vanlig valg med et meta-varsel. `Seksjon` er ren
- * komposisjon av Kort + Caps (ikke en ny primitiv).
- *
- * V2Shell (montert i (v2preview)/v2-onskeligokt/page.tsx) eier chrome-en — denne
- * komponenten rendrer bare den indre innholds-stacken.
+ * PlayerHQ Be om økt — v2 Presis + B-pakke (skjema + én primær «Send»).
+ * Ekte coach-liste. T.* only.
  */
 
 import { useState, useTransition, type ReactNode } from "react";
@@ -279,14 +269,29 @@ export function OnskeligOktV2({ data }: { data: OnskeligOktV2Data }) {
         </div>
       )}
 
-      {/* Handlinger */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", paddingTop: 6 }}>
-        <Knapp ghost icon="arrow-left" onClick={() => router.push("/portal")}>
-          Avbryt
-        </Knapp>
-        <Knapp icon="send" onClick={send} disabled={pending}>
+      {/* B: én primær Send full bredde */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 6 }}>
+        <Knapp icon="send" full onClick={send} disabled={pending}>
           {pending ? "Sender …" : "Send forespørsel"}
         </Knapp>
+        <button
+          type="button"
+          onClick={() => router.push("/portal")}
+          style={{
+            appearance: "none",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            fontFamily: T.ui,
+            fontSize: 12,
+            fontWeight: 600,
+            color: T.mut,
+            textAlign: "center",
+            padding: 0,
+          }}
+        >
+          Avbryt →
+        </button>
       </div>
     </div>
   );

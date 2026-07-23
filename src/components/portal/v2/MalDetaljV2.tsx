@@ -1,15 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · Mål-detalj — v2 (retning C «Presis»).
- * v2-port 16. juli 2026: erstatter hybrid-designet i
- * (legacy)/mal/goal/[id] (page + goal-client).
- *
- * Kun presentasjonslaget er nytt (v2-primitiver + T-tokens). Server actions
- * (endreGoal / markeerGoalSomOppnaadd / avbrytGoal fra goals-actions.ts) og
- * handlingslogikken (tre modaler, router.refresh/push) er uendret. Fremdrift,
- * nivå-stige og statuser kommer ferdig beregnet fra siden — ingen ny
- * utregning her.
+ * PlayerHQ · Mål-detalj — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useState, useTransition } from "react";

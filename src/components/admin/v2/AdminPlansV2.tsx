@@ -1,24 +1,8 @@
 "use client";
 
 /**
- * AgencyOS Treningsplaner — v2 (retning C «Presis»). Coach-kontekst: alle
- * treningsplaner (TrainingPlan) fordelt på tre faser — Utkast · Aktiv ·
- * Fullført — med snarvei til Workbench. Ingen mockup fantes for denne flaten;
- * komponert utelukkende av v2-biblioteket (src/components/v2), ingen ad-hoc UI,
- * ingen rå hex (kun T.*).
- *
- * Funksjon/data bevart 1:1 fra den ekte skjermen (src/app/admin/plans/page.tsx):
- *   - Samme fase-bucketing (Fullført = arkivert/utløpt · Aktiv = i drift ·
- *     Utkast = resten) og samme meta-tekster (prosent, uke-spenn, status).
- *   - «Ny plan» → Workbench for spilleren med dagens økt (fasit-beslutning);
- *     wizarden er bevisst fjernet, /admin/plans/new lenkes ikke herfra.
- *   - «Maler» → /admin/plan-templates. Hver rad → plan-detaljen /admin/plans/{id}.
- *   - Template-placeholder-brukerens FYS-malplaner er allerede filtrert i loaderen.
- *
- * Desktop: hode → KPI (3 faser) → kanban med tre kolonner.
- * Mobil: hode → mobil-handlinger → KPI (2-kol) → faneveksler + én kolonne-stabel
- *   (3-kolonne-kanban komprimeres til fane + liste — ekte mobil-layout, ikke
- *   krympet desktop).
+ * AgencyOS Treningsplaner — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Mørk AgencyOS. Utkast · Aktiv · Fullført · Workbench for ny plan.
  */
 
 import { useState } from "react";
@@ -78,9 +62,19 @@ export function AdminPlansV2({ data }: { data: AdminPlansData }) {
 
   const iFase = (f: PlanFase) => data.kort.filter((k) => k.fase === f);
 
+  // B: status-tone for stallen
+  const statusTone: StatusTone =
+    data.aktive > 0 ? "lime" : data.utkast > 0 ? "warn" : data.antall > 0 ? "info" : "warn";
+  const statusTekst =
+    data.aktive > 0
+      ? `${pl(data.aktive, "aktiv", "aktive")}`
+      : data.utkast > 0
+        ? `${pl(data.utkast, "utkast", "utkast")}`
+        : data.antall > 0
+          ? "Kun fullført"
+          : "Ingen planer";
+
   // ── Én kolonne (kanban-kort med rad-liste) ─────────────────────
-  // Plain render-funksjon (ikke JSX-komponent) — unngår at en komponent
-  // opprettes under render (react-hooks/static-components).
   const renderKolonne = (f: PlanFase, mobil?: boolean) => {
     const meta = FASER.find((x) => x.id === f)!;
     const rader = iFase(f);
@@ -109,7 +103,7 @@ export function AdminPlansV2({ data }: { data: AdminPlansData }) {
     );
   };
 
-  // ── Hode ───────────────────────────────────────────────────────
+  // ── Hode — B: status ───────────────────────────────────────────
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
@@ -118,32 +112,48 @@ export function AdminPlansV2({ data }: { data: AdminPlansData }) {
           <Tittel em="i drift.">{data.tittel}</Tittel>
         </div>
       </div>
-      <div className="hidden md:inline-flex" style={{ gap: 8 }}>
-        <Link href={MALER_HREF} style={{ textDecoration: "none" }}>
-          <CTAPill ghost icon="copy">Maler</CTAPill>
-        </Link>
-        <Link href={data.nyPlanHref} style={{ textDecoration: "none" }}>
-          <CTAPill icon="plus">Ny plan</CTAPill>
-        </Link>
-      </div>
+      <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
     </div>
   );
 
-  // ── Mobil-handlinger (full bredde, under hodet) ────────────────
-  const mobilHandlinger = (
-    <div className="md:hidden" style={{ display: "flex", gap: 8 }}>
-      <Link href={MALER_HREF} style={{ textDecoration: "none", flex: 1 }}>
-        <span style={{ display: "flex", justifyContent: "center" }}>
-          <CTAPill ghost icon="copy">Maler</CTAPill>
-        </span>
-      </Link>
-      <Link href={data.nyPlanHref} style={{ textDecoration: "none", flex: 1 }}>
-        <span style={{ display: "flex", justifyContent: "center" }}>
-          <CTAPill icon="plus">Ny plan</CTAPill>
-        </span>
-      </Link>
-    </div>
+  // ── B: én primær CTA ───────────────────────────────────────────
+  const primaerCta = (
+    <Link href={data.nyPlanHref} style={{ textDecoration: "none", display: "block" }}>
+      <CTAPill icon="plus" full>
+        Ny plan
+      </CTAPill>
+    </Link>
   );
+
+  // Tom stalle — ærlig vei videre
+  if (data.antall === 0) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        {hode}
+        <Kort>
+          <TomTilstand
+            icon="file-text"
+            title="Ingen treningsplaner ennå"
+            sub="Sett opp den første planen i Workbench — den dukker opp her som utkast eller aktiv."
+          />
+        </Kort>
+        {primaerCta}
+        <Link
+          href={MALER_HREF}
+          style={{
+            textDecoration: "none",
+            textAlign: "center",
+            fontFamily: T.ui,
+            fontSize: 12,
+            fontWeight: 600,
+            color: T.mut,
+          }}
+        >
+          Eller start fra en mal →
+        </Link>
+      </div>
+    );
+  }
 
   // ── KPI (3 faser) ──────────────────────────────────────────────
   const kpi = (
@@ -154,22 +164,28 @@ export function AdminPlansV2({ data }: { data: AdminPlansData }) {
     </div>
   );
 
-  // ── AI-innsikt → Workbench ─────────────────────────────────────
   const innsiktTekst =
     data.aktive > 0
-      ? `${pl(data.aktive, "aktiv plan driver", "aktive planer driver")} spillernes daglige program — juster mål og periodisering i Workbench.`
-      : data.antall > 0
-        ? "Ingen aktive planer akkurat nå — publiser et utkast eller bygg videre i Workbench."
-        : "Ingen treningsplaner ennå — sett opp den første i Workbench.";
-  const innsikt = <InnsiktChip cta="Planlegg i Workbench" href={data.nyPlanHref}>{innsiktTekst}</InnsiktChip>;
+      ? `${pl(data.aktive, "aktiv plan driver", "aktive planer driver")} spillernes daglige program — juster i Workbench.`
+      : data.utkast > 0
+        ? "Ingen aktive planer — publiser et utkast eller bygg videre i Workbench."
+        : "Ingen aktive planer akkurat nå — bygg videre i Workbench.";
 
   const mobilTabs = FASER.map((f) => ({ id: f.id, l: `${f.label} · ${iFase(f.id).length}` }));
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
-      {mobilHandlinger}
+      {/* B: status/KPI først, deretter én primær */}
       {kpi}
+      {primaerCta}
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Link href={MALER_HREF} style={{ textDecoration: "none" }}>
+          <CTAPill ghost icon="copy">
+            Maler
+          </CTAPill>
+        </Link>
+      </div>
 
       {/* Desktop: 3-kolonne kanban */}
       <div className="hidden md:grid md:grid-cols-3" style={{ gap: T.gap, alignItems: "start" }}>
@@ -181,13 +197,15 @@ export function AdminPlansV2({ data }: { data: AdminPlansData }) {
       {/* Mobil: faneveksler + én kolonne-stabel */}
       <div className="md:hidden" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <StatusPill tone="lime">Fase</StatusPill>
+          <StatusPill tone="info">Fase</StatusPill>
           <PillTabs tabs={mobilTabs} value={mobilFase} onChange={(id) => setMobilFase(id as PlanFase)} />
         </div>
         {renderKolonne(mobilFase, true)}
       </div>
 
-      {innsikt}
+      <InnsiktChip cta="Planlegg i Workbench" href={data.nyPlanHref}>
+        {innsiktTekst}
+      </InnsiktChip>
     </div>
   );
 }

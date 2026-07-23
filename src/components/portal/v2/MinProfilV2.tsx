@@ -1,24 +1,16 @@
 "use client";
 
 /**
- * PlayerHQ Min profil — v2 (retning C «Presis»). Komponert 1:1 fra
- * ui_kits/v2/auth-profil.jsx → funksjonen MinProfil, men med EKTE data fra
- * hentProfil + foreldresamtykke-feltene på User (montert i
- * (v2preview)/v2-profil/page.tsx). Kun v2-komponenter fra "@/components/v2";
- * ingen ad-hoc UI, ingen rå hex (kun T.*-tokens).
- *
- * Ærlighet: felt mockupen viser men repoet ikke bærer (Kategori A–K, WAGR-
- * verdensranking, TrackMan-kobling) fabrikkeres ALDRI — de får ærlig tom-/
- * ukoblet-tilstand og meldes som gap. Reelle felter: navn, avatar, klubb,
- * fødselsår, HCP, foreldresamtykke.
- *
- * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
+ * PlayerHQ Min profil — v2 Presis + B-pakke (status først, lagre = én grønn CTA).
+ * Ekte data: navn, avatar, klubb, HCP, samtykke. WAGR/kategori = ærlig tom.
  */
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   T,
+  Caps,
   Tittel,
   CTAPill,
   Knapp,
@@ -263,10 +255,15 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
     </Kort>
   );
 
-  /* WAGR-verdensranking finnes ikke i datamodellen → ærlig tom-tilstand (gap). */
+  /* WAGR-verdensranking finnes ikke i datamodellen → ærlig tom + én vei. */
   const wagr = (
     <Kort eyebrow="WAGR" action={<HjelpTips k="wagr" size={11} align="right" />}>
-      <TomTilstand icon="globe" title="Verdensranking ikke koblet" sub="WAGR (World Amateur Golf Ranking) hentes ikke inn i PlayerHQ ennå." />
+      <TomTilstand icon="globe" title="Verdensranking ikke koblet" sub="WAGR hentes ikke inn i PlayerHQ ennå." />
+      <Link href="/portal/meg/help" style={{ textDecoration: "none", display: "block", marginTop: 4 }}>
+        <CTAPill ghost icon="help-circle" full>
+          Les mer i hjelp
+        </CTAPill>
+      </Link>
     </Kort>
   );
 
@@ -306,13 +303,29 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
         )}
       </div>
 
+      {/* B: status først */}
+      <div className="grid grid-cols-3" style={{ gap: 8 }}>
+        {(
+          [
+            { l: "HCP", v: hcp != null ? hcpTekst(hcp) : "—" },
+            { l: "Klubb", v: homeClub ?? "—" },
+            { l: "Samtykke", v: samtykkeMeta.l },
+          ] as const
+        ).map((k) => (
+          <Kort key={k.l} pad="12px">
+            <Caps size={9}>{k.l}</Caps>
+            <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 14, marginTop: 8, color: T.fg, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{k.v}</div>
+          </Kort>
+        ))}
+      </div>
+
       {topp}
 
       {mobile ? (
         <>
-          {wagr}
           {felter}
           {koblinger}
+          {wagr}
           <Knapp icon={lagrer ? "loader" : "check"} full disabled={lagrer} onClick={lagreEndringer}>
             {lagrer ? "Lagrer …" : "Lagre endringer"}
           </Knapp>

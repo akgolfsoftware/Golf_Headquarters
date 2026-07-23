@@ -146,22 +146,23 @@ export function AdminEmailTemplateEditorV2({ template, testRecipient }: Props) {
     });
   }
 
+  // B: status — dirty / aktiv
+  const statusTone = dirty ? "warn" as const : active ? "up" as const : "info" as const;
+  const statusTekst = dirty ? "Ulagrede endringer" : active ? "Aktiv · lagret" : "Utkast · lagret";
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
+      {/* Hode — B: status + én primær CTA (Lagre) */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div style={{ minWidth: 0 }}>
-          <Caps>AgencyOS · Rediger mal</Caps>
+          <Caps>AgencyOS · Rediger mal · {template.slug}</Caps>
           <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
             <Tittel>{name || "Ny mal"}</Tittel>
-            <StatusPill tone={active ? "up" : "info"}>{active ? "Aktiv" : "Utkast"}</StatusPill>
+            <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
           </div>
-          <p style={{ fontFamily: T.mono, fontSize: 10.5, letterSpacing: "0.06em", color: T.mut, margin: "8px 0 0" }}>
-            Slug: {template.slug}
-          </p>
         </div>
 
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
           <Knapp ghost icon="send" disabled={pending} onClick={sendTest}>
             Send test
           </Knapp>

@@ -157,6 +157,18 @@ export function StatsTurneringerV2({ tour, tid, turneringer, counts, totaltNorsk
       <StatsListe
         mobile={mobile}
         eyebrow="AK Golf Stats · Turneringer"
+        status={{
+          label: harData
+            ? `${turneringer.length} turneringer`
+            : "Ingen turneringer i filteret",
+          tone: harData ? "info" : "warn",
+          meta:
+            tid === "uke" && totaltNorske > 0
+              ? `${totaltNorske} norske på ${antallTurneringerMedNorske} turneringer`
+              : harNoenTurneringer
+                ? "Filtrer tour eller tid"
+                : undefined,
+        }}
         tittel="Turneringer."
         tittelEm="Hele oversikten."
         lede="Alle tourer. Norske spillere fremhevet."

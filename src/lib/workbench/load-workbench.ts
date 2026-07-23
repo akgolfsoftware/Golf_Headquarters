@@ -208,10 +208,14 @@ const SESSION_SELECT = {
 /**
  * Kjernen: gitt en bruker-id, bygg `WorkbenchData` fra ekte Prisma-data.
  * Returnerer `null` hvis brukeren ikke finnes (coach-rute → notFound()).
+ *
+ * viewer "player": skjul DRAFT/REJECTED-planer (kun det coachen har sendt / aktivt).
+ * viewer "coach" (default): alt for planlegging.
  */
 export async function loadWorkbenchData(
   userId: string,
   weekOffset = 0,
+  opts?: { viewer?: "player" | "coach" },
 ): Promise<WorkbenchData | null> {
   const exists = await prisma.user.findUnique({ where: { id: userId }, select: { id: true } });
   if (!exists) return null;
@@ -236,6 +240,18 @@ export async function loadWorkbenchData(
 
   const year = now.getFullYear();
 
+  // Spiller ser kun planer som er sendt / aktive — ikke coach-utkast (DRAFT/REJECTED).
+  const playerVisibleStatuses: import("@/generated/prisma/client").PlanStatus[] = [
+    "PENDING_PLAYER",
+    "ACCEPTED",
+    "ACTIVE",
+    "PAUSED",
+  ];
+  const planFilter =
+    opts?.viewer === "player"
+      ? { userId, status: { in: playerVisibleStatuses } }
+      : { userId };
+
   const [
     weekSessions,
     last30Sessions,
@@ -244,19 +260,21 @@ export async function loadWorkbenchData(
     player,
     seasonPlan,
     yearTournaments,
-    v2WeekSessions,
+    v2WeekSessionsRaw,
+    skjulteV2WeekIds,
+    skjulteV2MonthIds,
     groupMemberships,
     planTemplates,
     monthPlanSessions,
-    monthV2Sessions,
+    monthV2SessionsRaw,
   ] = await Promise.all([
     prisma.trainingPlanSession.findMany({
-      where: { plan: { userId }, scheduledAt: { gte: weekStart, lt: weekEnd } },
+      where: { plan: planFilter, scheduledAt: { gte: weekStart, lt: weekEnd } },
       orderBy: { scheduledAt: "asc" },
       select: SESSION_SELECT,
     }),
     prisma.trainingPlanSession.findMany({
-      where: { plan: { userId }, scheduledAt: { gte: tretti, lt: now } },
+      where: { plan: planFilter, scheduledAt: { gte: tretti, lt: now } },
       select: { pyramidArea: true, durationMin: true, scheduledAt: true },
     }),
     prisma.goal.findMany({
@@ -323,6 +341,25 @@ export async function loadWorkbenchData(
         status: true,
       },
     }),
+    // Spiller: V2-speil av DRAFT/REJECTED-planer må skjules (V1 filtreres allerede).
+    opts?.viewer === "player"
+      ? prisma.trainingPlanSession.findMany({
+          where: {
+            plan: { userId, status: { in: ["DRAFT", "REJECTED"] } },
+            scheduledAt: { gte: weekStart, lt: weekEnd },
+          },
+          select: { id: true },
+        })
+      : Promise.resolve([] as { id: string }[]),
+    opts?.viewer === "player"
+      ? prisma.trainingPlanSession.findMany({
+          where: {
+            plan: { userId, status: { in: ["DRAFT", "REJECTED"] } },
+            scheduledAt: { gte: monthStart, lt: monthEnd },
+          },
+          select: { id: true },
+        })
+      : Promise.resolve([] as { id: string }[]),
     prisma.groupMember.findMany({
       where: { userId },
       select: {
@@ -368,7 +405,7 @@ export async function loadWorkbenchData(
     // dag-cellene trenger. Plan + v2 lukes for dubletter via generertFraId
     // under, samme regel som mergeWeekSessions.
     prisma.trainingPlanSession.findMany({
-      where: { plan: { userId }, scheduledAt: { gte: monthStart, lt: monthEnd } },
+      where: { plan: planFilter, scheduledAt: { gte: monthStart, lt: monthEnd } },
       select: { id: true, scheduledAt: true, durationMin: true, pyramidArea: true },
     }),
     prisma.trainingSessionV2.findMany({
@@ -383,6 +420,16 @@ export async function loadWorkbenchData(
       },
     }),
   ]);
+
+  // Filtrer bort V2-speil av coach-utkast for spiller-visning.
+  const skjulteUke = new Set(skjulteV2WeekIds.map((s) => s.id));
+  const skjulteMnd = new Set(skjulteV2MonthIds.map((s) => s.id));
+  const v2WeekSessions = v2WeekSessionsRaw.filter(
+    (v) => !(v.generertFraId && skjulteUke.has(v.generertFraId)),
+  );
+  const monthV2Sessions = monthV2SessionsRaw.filter(
+    (v) => !(v.generertFraId && skjulteMnd.has(v.generertFraId)),
+  );
 
   // Aktiv periode-blokk (dagens dato innenfor start/slutt) → ukevolum-mål + coach-fokus.
   // Gjenbruker seasonPlan.periodBlocks (allerede hentet til Gantt) — ingen egen spørring.

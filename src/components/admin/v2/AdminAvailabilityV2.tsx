@@ -2,19 +2,15 @@
 
 import Link from "next/link";
 import { toast } from "sonner";
-import { T, Caps, Tittel } from "@/components/v2";
+import { T, Caps, Tittel, StatusPill, TomTilstand, Kort } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { SlotFormV2, type LocationOption } from "./AdminSlotFormV2";
 import { AvailabilityWeekGridV2, type WeekWindow } from "./AdminAvailabilityWeekGridV2";
 import { AvailabilityYearGanttV2, type YearWindow } from "./AdminAvailabilityYearGanttV2";
 
 /**
- * AgencyOS — Tilgjengelighet (Gjennomføre · Tilgjengelighet), v2-port
- * 16. juli 2026. Erstatter AgPage/AgPageHead/agBtnClass med v2-primitiver.
- * Samme datagrunnlag (CoachAvailability projisert på valgt måned/uke/år) og
- * samme visnings-bytter (Måned/Uke-drag/År) uendret — kun presentasjonslaget
- * er nytt. Google Calendar-seksjonen (CalendarSyncSection) er urørt, rendres
- * av page.tsx under denne komponenten.
+ * AgencyOS Tilgjengelighet — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Tidsvinduer for booking. T.* only. Primær: Nytt tidsvindu (SlotFormV2).
  */
 
 export type Visning = "maaned" | "uke" | "aar";
@@ -84,11 +80,12 @@ function VisningKnapp({ href, aktiv, children }: { href: string; aktiv: boolean;
 }
 
 export function AdminAvailabilityV2({ data }: { data: AdminAvailabilityV2Data }) {
+  const nSlots = data.slots.length;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
-          <Caps>Gjennomføre · Tilgjengelighet</Caps>
+          <Caps>Gjennomføre · Tilgjengelighet · AgencyOS</Caps>
           <div style={{ marginTop: 10 }}>
             <Tittel em="åpen for booking.">Din måned,</Tittel>
           </div>
@@ -96,11 +93,28 @@ export function AdminAvailabilityV2({ data }: { data: AdminAvailabilityV2Data })
             Sett tidsvinduer du er tilgjengelig, per anlegg. Grønne dager er åpne for spiller-booking. Du kan aldri være tilgjengelig to steder samtidig.
           </p>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flex: "none" }}>
-          <SlotFormV2 locations={data.locations} triggerLabel="+ Nytt tidsvindu" />
-          <SynkKnappV2 />
-        </div>
+        <StatusPill tone={nSlots > 0 ? "lime" : "warn"}>
+          {nSlots === 0 ? "Ingen vinduer" : `${nSlots} vinduer`}
+        </StatusPill>
       </div>
+
+      {/* B: én primær — nytt tidsvindu */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+        <div style={{ flex: 1, minWidth: 180 }}>
+          <SlotFormV2 locations={data.locations} triggerLabel="Nytt tidsvindu" />
+        </div>
+        <SynkKnappV2 />
+      </div>
+
+      {nSlots === 0 && data.visning === "maaned" && (
+        <Kort>
+          <TomTilstand
+            icon="calendar"
+            title="Ingen tidsvinduer ennå"
+            sub="Opprett det første vinduet — da kan spillere booke deg på de dagene."
+          />
+        </Kort>
+      )}
 
       <div style={{ display: "flex", gap: 8 }}>
         <VisningKnapp href="/admin/availability?v=maaned" aktiv={data.visning === "maaned"}>Måned</VisningKnapp>

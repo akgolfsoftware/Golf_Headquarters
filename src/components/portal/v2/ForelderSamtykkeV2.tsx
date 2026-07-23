@@ -1,16 +1,8 @@
 "use client";
 
 /**
- * Foreldreportal · Samtykke — v2 (retning C «Presis», mørk-først). GDPR-samtykke
- * for mindreårig: se og styre datatillatelser per barn, be om eksport/sletting.
- * Komponert kun av v2-komponenter fra "@/components/v2" (ingen ad-hoc UI, ingen
- * rå hex — kun T.*-tokens). Mobil-først: alt stables i én kolonne på 375px.
- *
- * SAMTYKKE-HÅNDHEVELSE ER UENDRET: de EKTE server-actionene gjenbrukes 1:1
- * (lagreSamtykker / beOmDataSletting fra src/app/forelder/samtykke/actions.ts).
- * Denne komponenten setter kun `valg` og kaller actionen — all tilgangs- og
- * revisjonslogikk (godkjent-foresatt-sjekk, AuditLog) ligger uendret server-side.
- * ALL data kommer fra loaderen i (v2preview)/v2-forelder-samtykke/page.tsx.
+ * Foreldreportal · Samtykke — v2 Presis + B-pakke (status + lagre-CTA).
+ * Server-actions uendret. Kun v2 + T.*. Enklere foreldre-språk.
  */
 
 import { useEffect, useState, useTransition } from "react";
@@ -55,27 +47,27 @@ export type ForelderSamtykkeData = {
 const SAMTYKKER: { key: string; tittel: string; beskrivelse: string }[] = [
   {
     key: "fotoBruk",
-    tittel: "Foto- og video-bruk",
+    tittel: "Bilder og video",
     beskrivelse:
-      "Tillater at AK Golf bruker bilder/video av barnet i interne plan- og fremgangs-rapporter, samt i marketing-materiale (anonymisert hvis annet ikke avtales).",
+      "AK Golf kan bruke bilder/video av barnet i planer og rapporter, og i markedsføring (anonymisert om ikke annet er avtalt).",
   },
   {
     key: "dataDeling",
-    tittel: "Deling av treningsdata med coach",
+    tittel: "Dele treningsdata med coach",
     beskrivelse:
-      "Tillater at runde-statistikk, Trackman-data og helse-data deles med tilknyttede coacher i AK Golf for å lage bedre treningsplaner.",
+      "Runder, Trackman og helse-data kan deles med barnets coach for bedre planer.",
   },
   {
     key: "nyhetsbrev",
-    tittel: "Nyhetsbrev og oppdateringer",
+    tittel: "Nyheter på e-post",
     beskrivelse:
-      "Sender e-post med tips, kurs-informasjon og nyheter relevant for juniorgolf. Du kan melde deg av når som helst.",
+      "Tips, kurs og nyheter om juniorgolf. Du kan melde deg av når som helst.",
   },
   {
     key: "thirdParty",
-    tittel: "Dataeksport til tredjepartsverktøy",
+    tittel: "Dele anonym data videre",
     beskrivelse:
-      "Tillater eksport av anonymisert data til WAGR, NGF og talent-databaser hvis barnet kvalifiserer for elite-tracking.",
+      "Anonym data kan deles med WAGR, NGF og talentregistre hvis barnet kvalifiserer.",
   },
 ];
 
@@ -439,7 +431,7 @@ export function ForelderSamtykkeV2({ data }: { data: ForelderSamtykkeData }) {
         }}
       >
         <div>
-          <Caps>Personvern · samtykke</Caps>
+          <Caps>Personvern</Caps>
           <div style={{ marginTop: 10 }}>
             <Tittel mobile={mobile} em="samtykke">
               Personvern og
@@ -454,12 +446,12 @@ export function ForelderSamtykkeV2({ data }: { data: ForelderSamtykkeData }) {
               marginTop: 8,
             }}
           >
-            Her administrerer du samtykker for {barnNavn} data i AK Golf HQ.
+            Du styrer hva som er greit for {barnNavn} data.
           </span>
         </div>
         {harBarn && (
-          <StatusPill tone={alleAktive ? "up" : "info"}>
-            {alleAktive ? "Alle aktive" : "Se gjennom"}
+          <StatusPill tone={alleAktive ? "up" : "warn"}>
+            {alleAktive ? "Alt godkjent" : "Se gjennom"}
           </StatusPill>
         )}
       </div>
@@ -481,7 +473,7 @@ export function ForelderSamtykkeV2({ data }: { data: ForelderSamtykkeData }) {
                 color: T.fg,
               }}
             >
-              Du styrer samtykkene på vegne av barnet inntil 18 år
+              Du bestemmer til barnet er 18
             </div>
             <p
               style={{
@@ -492,8 +484,8 @@ export function ForelderSamtykkeV2({ data }: { data: ForelderSamtykkeData }) {
                 margin: "6px 0 0",
               }}
             >
-              For barn over 13 år bør samtykker diskuteres sammen. Etter fylte 18
-              år tar barnet over kontrollen selv.
+              Over 13 år: snakk gjerne gjennom valgene sammen. Etter 18 tar
+              barnet over selv.
             </p>
           </div>
         </div>
@@ -506,8 +498,8 @@ export function ForelderSamtykkeV2({ data }: { data: ForelderSamtykkeData }) {
         <Kort>
           <TomTilstand
             icon="users"
-            title="Ingen tilknyttede barn"
-            sub="Når barn er koblet via invitasjon, vises samtykke-skjemaene her."
+            title="Ingen barn er koblet"
+            sub="Når barn er koblet via invitasjon, vises samtykkene her."
           />
         </Kort>
       )}

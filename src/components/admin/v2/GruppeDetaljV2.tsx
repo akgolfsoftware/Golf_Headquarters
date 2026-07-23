@@ -1,14 +1,8 @@
 "use client";
 
 /**
- * AgencyOS Gruppe-detalj — v2 (retning C «Presis»). Rekomponert fra
- * legacy-skjermen (admin/(legacy)/grupper/[id]): hero, neste samling,
- * medlem-grid med sammenlignet statistikk (HCP/runder/plan-fremdrift),
- * gruppeprestasjon-quick-stats.
- *
- * StartOktButton/LeggTilSpillerButton/FjernMedlemButton/SeAlleTimePlanButton/
- * DetaljerButton/AapneButton (gruppe-actions.tsx) er tailwind-only og
- * gjenbrukes som de er.
+ * AgencyOS Gruppe-detalj — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Hero · samling · medlemmer. T.* only.
  */
 
 import Link from "next/link";
@@ -22,6 +16,7 @@ import {
   StatusPill,
   MikroMeta,
   TomTilstand,
+  CTAPill,
   AvatarFoto,
 } from "@/components/v2";
 
@@ -112,7 +107,7 @@ export function GruppeDetaljV2({
         <MikroMeta icon="arrow-left">Grupper</MikroMeta>
       </Link>
 
-      {/* Hode */}
+      {/* Hode — B: status */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -127,21 +122,29 @@ export function GruppeDetaljV2({
             {data.coachNavn ?? "ikke satt"}
           </p>
         </div>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <Link href={`/admin/grupper/${data.id}/timeplan`} style={{ textDecoration: "none" }}>
-            <MikroMeta icon="calendar">Planlegg / dupliser gruppetrening</MikroMeta>
-          </Link>
-          <Link href={`/admin/grupper/${data.id}/arsplan`} style={{ textDecoration: "none" }}>
-            <MikroMeta icon="calendar">Årsplan</MikroMeta>
-          </Link>
-          <A.LeggTilSpillerButton groupId={data.id} kandidater={data.kandidater} />
-          <A.SlettGruppeButton
-            groupId={data.id}
-            navn={data.navn}
-            antallMedlemmer={data.antallMedlemmer}
-            antallSamlinger={data.antallSamlinger}
-          />
-        </div>
+        <StatusPill tone={data.antallMedlemmer > 0 ? "lime" : "warn"}>
+          {data.antallMedlemmer === 0 ? "Ingen medlemmer" : `${data.antallMedlemmer} medlemmer`}
+        </StatusPill>
+      </div>
+
+      {/* B: én primær CTA */}
+      <Link href={`/admin/grupper/${data.id}/timeplan`} style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="calendar" full>
+          Planlegg gruppetrening
+        </CTAPill>
+      </Link>
+
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+        <Link href={`/admin/grupper/${data.id}/arsplan`} style={{ textDecoration: "none" }}>
+          <CTAPill ghost icon="calendar">Årsplan</CTAPill>
+        </Link>
+        <A.LeggTilSpillerButton groupId={data.id} kandidater={data.kandidater} />
+        <A.SlettGruppeButton
+          groupId={data.id}
+          navn={data.navn}
+          antallMedlemmer={data.antallMedlemmer}
+          antallSamlinger={data.antallSamlinger}
+        />
       </div>
 
       {ekstra}

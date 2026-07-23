@@ -1,21 +1,12 @@
 "use client";
 
 /**
- * Foreldreportal · Varsler — v2 (retning C «Presis», mørk først). Rekomponert
- * fra src/app/forelder/varsler/page.tsx, tro mot funksjon + datakontrakt:
- *
- *  1. Info-banner: push-varsler kommer i Spor 1, inntil videre e-post til forelder.
- *  2. Per barn: fire varselkanaler (KANALER) som låst-på brytere (lese-modus —
- *     preferanselagring kommer i Spor 1, akkurat som originalens disablede toggles).
- *  3. Siste varsler: barnas nyeste Notification-rader, ikon per type + fornavn/dato.
- *
- * KANALER er statisk UI-config (ikke DB-data), 1:1 fra originalen. ALL øvrig data
- * kommer serialisert fra loaderen i (v2preview)/v2-forelder-varsler/page.tsx —
- * ingen tall/tekst fabrikeres. Kun v2-komponenter + T.*-tokens (ingen rå hex).
- * V2Shell eier chrome-en; denne komponenten rendrer bare innholds-stacken.
+ * Foreldreportal · Varsler — v2 Presis + B-pakke (status + tom = vei).
+ * Kanaler fortsatt lese-modus (ikke lagret ennå). Kun v2 + T.*.
  */
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   T,
   Caps,
@@ -25,6 +16,7 @@ import {
   Bryter,
   TomTilstand,
   Icon,
+  Knapp,
 } from "@/components/v2";
 
 /* ── Datakontrakt (serialisert fra loader) ─────────────────────────── */
@@ -148,11 +140,12 @@ function VarselRad({ v, last }: { v: ForelderVarsel; last: boolean }) {
 
 export function ForelderVarslerV2({ data }: { data: ForelderVarslerData }) {
   const mobile = useMobile();
+  const router = useRouter();
   const { email, barn, varsler } = data;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
+      {/* Hode + status */}
       <div
         style={{
           display: "flex",
@@ -163,10 +156,10 @@ export function ForelderVarslerV2({ data }: { data: ForelderVarslerData }) {
         }}
       >
         <div>
-          <Caps>Foreldreportal · varsler</Caps>
+          <Caps>Varsler</Caps>
           <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em="varsles om">
-              Velg hva du vil
+            <Tittel mobile={mobile} em="hører om">
+              Hva du
             </Tittel>
           </div>
           <span
@@ -178,13 +171,15 @@ export function ForelderVarslerV2({ data }: { data: ForelderVarslerData }) {
               marginTop: 8,
             }}
           >
-            Du styrer varslene per barn.
+            Du får e-post om det viktigste per barn.
           </span>
         </div>
-        <StatusPill tone="info">Lese-modus</StatusPill>
+        <StatusPill tone={varsler.length > 0 ? "info" : "up"}>
+          {varsler.length > 0 ? `${varsler.length} nylig` : "Ingen nye"}
+        </StatusPill>
       </div>
 
-      {/* Info: push kommer i Spor 1 */}
+      {/* Status: e-post inntil app-varsler */}
       <Kort tint>
         <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
           <Icon
@@ -201,7 +196,7 @@ export function ForelderVarslerV2({ data }: { data: ForelderVarslerData }) {
                 color: T.fg,
               }}
             >
-              Push-varsler aktiveres i Spor 1
+              Varsler sendes på e-post
             </div>
             <p
               style={{
@@ -212,12 +207,18 @@ export function ForelderVarslerV2({ data }: { data: ForelderVarslerData }) {
                 margin: "6px 0 0",
               }}
             >
-              Inntil mobil-appen er ferdig kan du følge varsler på e-post, sendt
-              til {email}.
+              App-varsler kommer snart. Inntil videre går alt til {email}.
             </p>
           </div>
         </div>
       </Kort>
+
+      {/* Én vei videre (B) */}
+      <div>
+        <Knapp icon="arrow-right" full={mobile} onClick={() => router.push("/forelder")}>
+          Til oversikten
+        </Knapp>
+      </div>
 
       {/* Per barn — kanaler */}
       {barn.length === 0 ? (
@@ -225,7 +226,7 @@ export function ForelderVarslerV2({ data }: { data: ForelderVarslerData }) {
           <TomTilstand
             icon="users"
             title="Ingen barn koblet ennå"
-            sub="Be coachen om en forelder-invitasjon, så dukker barnas varselvalg opp her."
+            sub="Be spilleren sende en invitasjon, så dukker varselvalg opp her."
           />
         </Kort>
       ) : (
@@ -321,7 +322,7 @@ export function ForelderVarslerV2({ data }: { data: ForelderVarslerData }) {
           <TomTilstand
             icon="bell"
             title="Ingen varsler å vise"
-            sub="Varsler for barna dine dukker opp her når det skjer noe."
+            sub="Når det skjer noe for barna, dukker det opp her."
           />
         ) : (
           <div>

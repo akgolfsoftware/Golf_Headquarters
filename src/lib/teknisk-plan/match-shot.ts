@@ -6,6 +6,28 @@ export type ShotMatchResult = {
   matchConfidence: string | null;
 };
 
+export type MatchTaskCandidate = {
+  id: string;
+  tittel: string;
+  koller: string[];
+  slagType: string | null;
+  sortOrder: number;
+  hovedfokus: boolean;
+  pSortOrder: number;
+  pNummer: string;
+};
+
+export type MatchPlan = {
+  tasks: MatchTaskCandidate[];
+};
+
+export type MatchOptions = {
+  /** Eksplisitt oppgave valgt i import-modal. */
+  preferredTaskId?: string | null;
+  /** Prioriter fullsving-oppgaver (default true for range/simulator). */
+  preferFullsving?: boolean;
+};
+
 const CLUB_ALIASES: Record<string, string[]> = {
   driver: ["driver", "d"],
   "3-tre": ["3-tre", "3 wood", "3w", "3-wood"],
@@ -32,22 +54,18 @@ function clubsMatch(taskKoller: string[], shotClub: string): boolean {
   const normShot = normalizeClub(shotClub);
   return taskKoller.some((k) => {
     const nk = normalizeClub(k);
-    return nk === "alle køller" || nk === normShot;
+    return nk === "alle køller" || nk === normShot || nk.includes(normShot) || normShot.includes(nk);
   });
 }
 
-/**
- * Matcher ett TrackMan-slag mot aktiv PositionTask via kølle (hovedstrategi).
- * Drill-kontekst og manuell tagging kommer i senere fase.
- */
-export async function matchShotToTask(
-  userId: string,
-  club: string,
-): Promise<ShotMatchResult> {
-  if (!club.trim()) {
-    return { taskId: null, matchSource: null, matchConfidence: null };
-  }
+function isFullsving(slagType: string | null): boolean {
+  if (!slagType) return false;
+  const s = slagType.trim().toLowerCase();
+  return s === "fullsving" || s === "full sving" || s === "full-sving";
+}
 
+/** Laster aktiv teknisk plan én gang for batch-match under import. */
+export async function loadMatchPlan(userId: string): Promise<MatchPlan | null> {
   const plan = await prisma.technicalPlan.findFirst({
     where: { userId, status: "ACTIVE" },
     orderBy: { updatedAt: "desc" },
@@ -55,33 +73,126 @@ export async function matchShotToTask(
       positions: {
         orderBy: { sortOrder: "asc" },
         select: {
+          sortOrder: true,
+          hovedfokus: true,
+          pNummer: true,
           tasks: {
             where: { status: { in: ["ACTIVE", "PENDING"] } },
             orderBy: { sortOrder: "asc" },
-            select: { id: true, koller: true },
+            select: {
+              id: true,
+              tittel: true,
+              koller: true,
+              slagType: true,
+              sortOrder: true,
+            },
           },
         },
       },
     },
   });
 
-  if (!plan) {
-    return { taskId: null, matchSource: null, matchConfidence: null };
-  }
+  if (!plan) return null;
 
+  const tasks: MatchTaskCandidate[] = [];
   for (const pos of plan.positions) {
     for (const task of pos.tasks) {
-      if (clubsMatch(task.koller, club)) {
-        return {
-          taskId: task.id,
-          matchSource: "auto-club",
-          matchConfidence: "medium",
-        };
-      }
+      tasks.push({
+        id: task.id,
+        tittel: task.tittel,
+        koller: task.koller,
+        slagType: task.slagType,
+        sortOrder: task.sortOrder,
+        hovedfokus: pos.hovedfokus,
+        pSortOrder: pos.sortOrder,
+        pNummer: pos.pNummer,
+      });
     }
   }
 
-  return { taskId: null, matchSource: null, matchConfidence: null };
+  return { tasks };
+}
+
+/**
+ * Matcher ett slag mot allerede lastet plan (ingen ekstra DB-kall).
+ */
+export function matchShotAgainstPlan(
+  plan: MatchPlan | null,
+  club: string,
+  options: MatchOptions = {},
+): ShotMatchResult {
+  if (!club.trim()) {
+    return { taskId: null, matchSource: null, matchConfidence: null };
+  }
+
+  const preferFullsving = options.preferFullsving !== false;
+
+  if (options.preferredTaskId) {
+    const exists = plan?.tasks.some((t) => t.id === options.preferredTaskId);
+    if (exists || !plan) {
+      return {
+        taskId: options.preferredTaskId,
+        matchSource: "manual",
+        matchConfidence: "high",
+      };
+    }
+  }
+
+  if (!plan || plan.tasks.length === 0) {
+    return { taskId: null, matchSource: null, matchConfidence: null };
+  }
+
+  type Scored = MatchTaskCandidate & { score: number; confidence: string; source: string };
+  const scored: Scored[] = [];
+
+  for (const task of plan.tasks) {
+    if (!clubsMatch(task.koller, club)) continue;
+
+    let score = 10;
+    let confidence = "medium";
+    let source = "auto-club";
+
+    if (preferFullsving && isFullsving(task.slagType)) {
+      score += 40;
+      confidence = "high";
+      source = "auto-fullsving-club";
+    }
+    if (task.hovedfokus) {
+      score += 25;
+      if (confidence !== "high") confidence = "high";
+      source = isFullsving(task.slagType) ? "auto-fullsving-fokus" : "auto-club-fokus";
+    }
+
+    // Lavere sortOrder = høyere prio
+    score += Math.max(0, 10 - task.pSortOrder) + Math.max(0, 5 - task.sortOrder);
+
+    scored.push({ ...task, score, confidence, source });
+  }
+
+  if (scored.length === 0) {
+    return { taskId: null, matchSource: null, matchConfidence: null };
+  }
+
+  scored.sort((a, b) => b.score - a.score);
+  const best = scored[0]!;
+  return {
+    taskId: best.id,
+    matchSource: best.source,
+    matchConfidence: best.confidence,
+  };
+}
+
+/**
+ * Matcher ett TrackMan-slag mot aktiv PositionTask.
+ * For batch-import: bruk loadMatchPlan + matchShotAgainstPlan i stedet.
+ */
+export async function matchShotToTask(
+  userId: string,
+  club: string,
+  options: MatchOptions = {},
+): Promise<ShotMatchResult> {
+  const plan = await loadMatchPlan(userId);
+  return matchShotAgainstPlan(plan, club, options);
 }
 
 /** Mps → mph (TrackMan-schema lagrer clubSpeed i mph). */

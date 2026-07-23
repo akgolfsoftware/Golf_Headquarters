@@ -4,12 +4,8 @@ import { Icon } from "@/components/v2/icon";
 import { LocationFormV2, FacilityFormV2, type FasilitetType } from "./AdminLocationFormV2";
 
 /**
- * AgencyOS — Anlegg (Gjennomføre · Anlegg), v2-port 16. juli 2026,
- * administrasjon KOBLET 17. juli 2026 (B8a): gruppert per lokasjon med
- * «Endre» (rediger/deaktiver lokasjon — soft delete, aldri hard delete),
- * «+ Ny fasilitet» og «Endre» per fasilitet (FacilityFormV2). Deaktiverte
- * rader vises med ærlig status-pill så de kan aktiveres igjen.
- * Fasilitet-lenken til /admin/availability (fasit-flyten) er beholdt.
+ * AgencyOS Anlegg — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * Gruppert per lokasjon. Primær: LocationFormV2 (CTAPill).
  */
 
 export interface AnleggFasilitet {
@@ -71,11 +67,16 @@ function FasilitetKort({ f }: { f: AnleggFasilitet }) {
 }
 
 export function AdminAnleggV2({ data }: { data: AdminAnleggV2Data }) {
+  const nLok = data.lokasjoner.length;
+  const nAktive = data.lokasjoner.filter((l) => l.aktiv).length;
+  const statusTekst =
+    nLok === 0 ? "Ingen anlegg" : nAktive === nLok ? `${nLok} aktive` : `${nAktive} av ${nLok} aktive`;
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
-          <Caps>Gjennomføre · Anlegg</Caps>
+          <Caps>Gjennomføre · Anlegg · AgencyOS</Caps>
           <div style={{ marginTop: 10 }}>
             <Tittel em={data.flertall ? "fasiliteter." : "fasilitet."}>{data.tittelOrd}</Tittel>
           </div>
@@ -83,12 +84,23 @@ export function AdminAnleggV2({ data }: { data: AdminAnleggV2Data }) {
             Anleggene du disponerer. Tallet viser hvor presset hver ressurs er denne uka. Deaktiverte anlegg og fasiliteter vises ikke i booking.
           </p>
         </div>
-        <LocationFormV2 triggerLabel="+ Nytt anlegg" />
+        <StatusPill tone={nLok === 0 ? "warn" : "lime"}>{statusTekst}</StatusPill>
+      </div>
+
+      {/* B: én primær — LocationFormV2 åpner dialogen (Knapp lime internt) */}
+      <div style={{ display: "flex", justifyContent: "stretch" }}>
+        <div style={{ width: "100%" }}>
+          <LocationFormV2 triggerLabel="Nytt anlegg" />
+        </div>
       </div>
 
       {data.lokasjoner.length === 0 ? (
         <Kort>
-          <TomTilstand icon="building-2" title="Ingen anlegg registrert ennå" sub="Opprett det første med «+ Nytt anlegg»." />
+          <TomTilstand
+            icon="building-2"
+            title="Ingen anlegg registrert ennå"
+            sub="Opprett det første anlegget — deretter legger du til fasiliteter og åpner tilgjengelighet."
+          />
         </Kort>
       ) : (
         data.lokasjoner.map((l) => (

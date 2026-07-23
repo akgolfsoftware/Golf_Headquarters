@@ -2,7 +2,7 @@
  * AK Golf HQ — delte organismer
  *
  * Plassering: src/components/shared/
- * Brukes på tvers av CoachHQ + PlayerHQ + marketing.
+ * Brukes på tvers av AgencyOS + PlayerHQ + marketing.
  */
 
 export { OverviewShell } from "./overview-shell";

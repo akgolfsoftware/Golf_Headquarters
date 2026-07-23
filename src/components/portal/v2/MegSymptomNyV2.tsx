@@ -1,12 +1,7 @@
 "use client";
 
 /**
- * PlayerHQ Meg · Helse · Legg til symptom — v2 (retning C «Presis»).
- * Rekomponert fra /portal/meg/helse/symptom/ny/wizard.tsx: samme 3-stegs flyt
- * (kroppskart → intensitet/varighet → triggere/notat), samme tilstands-logikk
- * og samme logSymptom-kall — kun presentasjonslaget er nytt (v2-primitiver +
- * T-tokens). Region-/trigger-listene er skjema-valg (datakontrakt), ikke
- * spillerens data.
+ * PlayerHQ Meg · Symptom — v2 Presis + B-pakke (wizard, Neste/Lagre = grønn).
  */
 
 import { useState, useTransition } from "react";
@@ -421,31 +416,33 @@ export function MegSymptomNyV2() {
         </p>
       )}
 
-      {/* Handlingsbar */}
+      {/* B: status-linje + én grønn Neste/Lagre full */}
       <div
         className="sticky bottom-[calc(84px+env(safe-area-inset-bottom))] md:bottom-4"
         style={{
           display: "flex",
-          alignItems: "center",
-          gap: 10,
-          padding: "10px 12px",
+          flexDirection: "column",
+          gap: 8,
+          padding: "12px",
           borderRadius: 16,
           background: T.panel,
           border: `1px solid ${T.border}`,
-          boxShadow: "0 12px 32px rgba(0,0,0,0.35)",
+          boxShadow: "0 8px 24px color-mix(in srgb, " + T.fg + " 8%, transparent)",
         }}
       >
-        {step > 1 && (
-          <Knapp ghost icon="arrow-left" disabled={pending} onClick={() => setStep((s) => (s - 1) as 1 | 2 | 3)}>
-            Tilbake
-          </Knapp>
-        )}
-        <span style={{ flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: T.mono, fontSize: 10, color: T.mut }}>
+        <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: T.mono, fontSize: 10, color: T.mut, textAlign: "center" }}>
           {side} {region?.label.toLowerCase()} · VAS <strong style={{ color: T.fg }}>{vas}/10</strong>
         </span>
-        <Knapp icon="arrow-right" disabled={pending} onClick={next} style={{ minHeight: 44, flex: "none" }}>
-          {step < 3 ? "Neste" : pending ? "Lagrer …" : "Lagre"}
-        </Knapp>
+        <div style={{ display: "flex", gap: 8 }}>
+          {step > 1 && (
+            <Knapp ghost icon="arrow-left" disabled={pending} onClick={() => setStep((s) => (s - 1) as 1 | 2 | 3)}>
+              Tilbake
+            </Knapp>
+          )}
+          <Knapp icon="arrow-right" full disabled={pending} onClick={next} style={{ minHeight: 44, flex: 1 }}>
+            {step < 3 ? "Neste" : pending ? "Lagrer …" : "Lagre"}
+          </Knapp>
+        </div>
       </div>
     </div>
   );

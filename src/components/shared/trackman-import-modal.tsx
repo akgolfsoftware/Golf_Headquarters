@@ -32,12 +32,14 @@ import {
   X,
 } from "lucide-react";
 import {
-  importTrackManCsv,
-  importTrackManHtml,
+  importTrackMan,
+  listMatchTasksForImport,
   type TrackManEnvironment,
 } from "@/app/portal/mal/trackman/actions";
 import { ENVIRONMENT_OPTIONS } from "@/lib/sg-hub/environment-labels";
 import { parseTrackManCsv, type TrackManShot } from "@/lib/trackman/parse-csv";
+import { parseTrackManHtmlReport } from "@/lib/trackman/parse-html-report";
+import { htmlReportToCanonical } from "@/lib/trackman/canonical";
 import { useToast } from "@/components/shared/toast-provider";
 
 type Steg = 1 | 2 | 3 | 4;
@@ -107,6 +109,9 @@ export function TrackmanImportModal({
   const [recordedAt, setRecordedAt] = useState(today);
   const [environment, setEnvironment] =
     useState<TrackManEnvironment>("SIMULATOR_INDOOR");
+  const [preferredTaskId, setPreferredTaskId] = useState<string>("");
+  const [matchTasks, setMatchTasks] = useState<Array<{ id: string; label: string }>>([]);
+  const [forceImport, setForceImport] = useState(false);
   const [filename, setFilename] = useState<string | null>(null);
   const [csvContent, setCsvContent] = useState("");
   const [htmlContent, setHtmlContent] = useState("");
@@ -118,10 +123,13 @@ export function TrackmanImportModal({
   useEffect(() => {
     if (open) {
       dialogRef.current?.showModal();
+      void listMatchTasksForImport(onBehalfOfUserId)
+        .then(setMatchTasks)
+        .catch(() => setMatchTasks([]));
     } else {
       dialogRef.current?.close();
     }
-  }, [open]);
+  }, [open, onBehalfOfUserId]);
 
   function reset() {
     setSteg(1);
@@ -132,6 +140,8 @@ export function TrackmanImportModal({
     setShots([]);
     setValgt(new Set());
     setEnvironment("SIMULATOR_INDOOR");
+    setPreferredTaskId("");
+    setForceImport(false);
     setFeil(null);
   }
 
@@ -164,6 +174,29 @@ export function TrackmanImportModal({
       }
     } else if (kilde === "html") {
       setHtmlContent(tekst);
+      try {
+        const rapport = parseTrackManHtmlReport(tekst);
+        const canon = htmlReportToCanonical(rapport);
+        // Map til preview-shape (carry/ball/smash) for steg 3
+        const preview: TrackManShot[] = canon.map((s) => ({
+          club: s.club,
+          clubSpeedMps: s.clubSpeedMph,
+          ballSpeedMps: s.ballSpeedMph,
+          smashFactor: s.smashFactor,
+          carryMeters: s.carryMeters,
+          totalMeters: s.totalMeters,
+          launchAngleDeg: s.launchAngleDeg,
+          spinRateRpm: s.spinRateRpm,
+          sideMeters: s.sideMeters,
+          notes: null,
+        }));
+        setShots(preview);
+        setValgt(new Set(preview.map((_, i) => i)));
+        if (rapport.reportDate) setRecordedAt(rapport.reportDate);
+      } catch (err) {
+        setFeil(err instanceof Error ? err.message : "Ugyldig HTML-rapport");
+        setShots([]);
+      }
     }
   }
 
@@ -187,11 +220,11 @@ export function TrackmanImportModal({
         setFeil("Last opp en CSV-fil først.");
         return;
       }
-      if (kilde === "html" && !htmlContent) {
-        setFeil("Last opp en HTML-fil først.");
+      if (kilde === "html" && (shots.length === 0 || !htmlContent)) {
+        setFeil("Last opp en gyldig HTML-fil med slag først.");
         return;
       }
-      setSteg(kilde === "csv" ? 3 : 4);
+      setSteg(3);
       return;
     }
     if (steg === 3) {
@@ -206,8 +239,7 @@ export function TrackmanImportModal({
 
   function forrige() {
     setFeil(null);
-    if (steg === 4 && kilde !== "csv") setSteg(2);
-    else if (steg === 4) setSteg(3);
+    if (steg === 4) setSteg(3);
     else if (steg === 3) setSteg(2);
     else if (steg === 2) setSteg(1);
   }
@@ -216,29 +248,28 @@ export function TrackmanImportModal({
     setFeil(null);
     startTransition(async () => {
       try {
-        if (kilde === "csv") {
-          // Filtrer CSV til kun valgte slag.
-          const filtrert = byggCsvFraValgte(csvContent, valgt);
-          await importTrackManCsv({
-            recordedAt,
-            csvContent: filtrert,
-            environment,
-            ...(onBehalfOfUserId ? { onBehalfOfUserId } : {}),
-          });
-        } else if (kilde === "html") {
-          await importTrackManHtml({
-            recordedAt,
-            htmlContent,
-            environment,
-            ...(onBehalfOfUserId ? { onBehalfOfUserId } : {}),
-          });
-        } else {
-          throw new Error("Ikke implementert.");
+        if (!kilde) throw new Error("Velg kilde først.");
+        const content =
+          kilde === "csv" ? byggCsvFraValgte(csvContent, valgt) : htmlContent;
+        const result = await importTrackMan({
+          format: kilde,
+          content,
+          recordedAt,
+          environment,
+          forceImport,
+          preferredTaskId: preferredTaskId || undefined,
+          // CSV filtreres allerede i content; HTML trenger indekser mot full parse
+          selectedIndices:
+            kilde === "html" ? [...valgt].sort((a, b) => a - b) : undefined,
+          ...(onBehalfOfUserId ? { onBehalfOfUserId } : {}),
+        });
+        if (result.needsConfirm) {
+          setForceImport(true);
+          setFeil(result.message ?? "Ligner eksisterende økt. Trykk bekreft på nytt for å importere.");
+          return;
         }
         toast.success(
-          kilde === "csv"
-            ? `TrackMan-økt importert · ${valgt.size} slag lagret`
-            : "TrackMan-rapport importert",
+          `${result.shotCount} slag · ${result.matchedCount} matchet til teknisk plan · ${result.goalsUpdated} TM-mål oppdatert`,
         );
         lukk();
         router.refresh();
@@ -331,6 +362,9 @@ export function TrackmanImportModal({
               filename={filename}
               onFile={handleFile}
               shotsCount={shots.length}
+              preferredTaskId={preferredTaskId}
+              setPreferredTaskId={setPreferredTaskId}
+              matchTasks={matchTasks}
             />
           )}
           {steg === 3 && (
@@ -347,8 +381,8 @@ export function TrackmanImportModal({
               recordedAt={recordedAt}
               environment={environment}
               filename={filename}
-              valgtCount={kilde === "csv" ? valgt.size : null}
-              totalCount={kilde === "csv" ? shots.length : null}
+              valgtCount={valgt.size}
+              totalCount={shots.length}
             />
           )}
         </div>
@@ -392,7 +426,11 @@ export function TrackmanImportModal({
               className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
             >
               <Check size={14} strokeWidth={1.75} />
-              {pending ? "Importerer…" : "Bekreft og importer"}
+              {pending
+                ? "Importerer…"
+                : forceImport
+                  ? "Importer likevel"
+                  : "Bekreft og importer"}
             </button>
           )}
         </div>
@@ -469,6 +507,9 @@ function Steg2({
   filename,
   onFile,
   shotsCount,
+  preferredTaskId,
+  setPreferredTaskId,
+  matchTasks,
 }: {
   kilde: Kilde | null;
   recordedAt: string;
@@ -478,6 +519,9 @@ function Steg2({
   filename: string | null;
   onFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
   shotsCount: number;
+  preferredTaskId: string;
+  setPreferredTaskId: (s: string) => void;
+  matchTasks: Array<{ id: string; label: string }>;
 }) {
   const accept = kilde === "csv" ? ".csv,text/csv" : ".html,text/html";
   return (
@@ -535,7 +579,7 @@ function Steg2({
         {filename && (
           <span className="mt-1 block text-xs text-muted-foreground">
             Valgt: {filename}
-            {kilde === "csv" && shotsCount > 0 && (
+            {shotsCount > 0 && (
               <span className="text-foreground">
                 {" "}
                 · {shotsCount} slag parset
@@ -544,6 +588,26 @@ function Steg2({
           </span>
         )}
       </label>
+
+      {matchTasks.length > 0 && (
+        <label className="block">
+          <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            Koble til teknisk oppgave (valgfritt)
+          </span>
+          <select
+            value={preferredTaskId}
+            onChange={(e) => setPreferredTaskId(e.target.value)}
+            className="w-full rounded-md border border-input bg-card px-4 py-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <option value="">Automatisk match (full sving + kølle)</option>
+            {matchTasks.map((task) => (
+              <option key={task.id} value={task.id}>
+                {task.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
     </div>
   );
 }

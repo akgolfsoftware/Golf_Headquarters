@@ -1,19 +1,7 @@
 "use client";
 
 /**
- * PlayerHQ Meg · Feedback — v2 (retning C «Presis»). Rekomponert fra den EKTE
- * skjermen src/app/portal/meg/feedback/page.tsx (+ app-feedback-form.tsx):
- * NPS-anbefaling, type tilbakemelding, dynamisk fritekst og anonym-bryter,
- * sendt via den EKTE server-action submitFeedback — uendret datakontrakt
- * (nps 0–10, type ∈ {bug,forslag,ros,sporsmal}, tekst, anonym). Kun
- * v2-komponenter fra "@/components/v2"; ingen ad-hoc UI, ingen rå hex (kun T.*).
- *
- * Ærlighet: den gamle skjermens «tidligere tilbakemeldinger» var 100 % hardkodet
- * demo-data, og submitFeedback PERSISTERER ikke (kun auditlogg + redirect) — det
- * finnes altså ingen ekte historikk-kilde. Den fabrikkerte lista (med coach-svar
- * og NPS-tall) portes ALDRI; historikk får ærlig tom-tilstand og meldes som gap.
- *
- * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
+ * PlayerHQ Meg · Feedback — v2 Presis + B-pakke (send = én full grønn CTA).
  */
 
 import { useEffect, useState, useTransition } from "react";
@@ -203,20 +191,16 @@ export function MegFeedbackV2({ data }: { data: MegFeedbackData }) {
         />
       </Kort>
 
-      {/* Innsending */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <MikroMeta icon="clock">Tar under ett minutt · vi leser alt</MikroMeta>
-        <Knapp icon="send" onClick={send} disabled={!kanSende}>
-          {pending ? "Sender …" : "Send tilbakemelding"}
-        </Knapp>
-      </div>
+      <MikroMeta icon="clock">Tar under ett minutt · vi leser alt</MikroMeta>
+      <Knapp icon="send" full onClick={send} disabled={!kanSende}>
+        {pending ? "Sender …" : "Send tilbakemelding"}
+      </Knapp>
 
-      {/* Tidligere tilbakemeldinger — ærlig tom-tilstand (ingen persistering, se gap) */}
       <Kort eyebrow="Tidligere tilbakemeldinger">
         <TomTilstand
           icon="history"
           title="Ingen innsendinger å vise ennå"
-          sub="Tidligere tilbakemeldinger og eventuelle svar fra teamet vil dukke opp her når historikk kobles på."
+          sub="Historikk kommer når lagring er på plass. Send gjerne en ny tilbakemelding over."
         />
       </Kort>
     </div>

@@ -107,7 +107,8 @@ export async function coachAddWorkbenchSession(
         userId: playerId,
         name: "Treningsplan",
         startDate: new Date(),
-        status: "ACTIVE",
+        // Utkast til coach publiserer — spiller ser ikke før PENDING_PLAYER/ACTIVE
+        status: "DRAFT",
         isActive: true,
         createdById: coach.id,
       },

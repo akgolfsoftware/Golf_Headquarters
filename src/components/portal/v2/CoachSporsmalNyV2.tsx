@@ -1,16 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Coach · Nytt spørsmål — v2 (retning C «Presis»). Komponert fra
- * ui_kits/playerhq/phq-wizards.jsx → SporsmalNyView (Batch B1, delt
- * Veiviser-skall: «Hva gjelder spørsmålet?» → «Skriv spørsmålet»), tilpasset
- * den EKTE Question-modellen (title+body, ikke bare fritekst — designet har
- * ingen tittel-input, men title er påkrevd i skjemaet, så feltet er lagt inn
- * i steg 2). Samme stillSporsmal-mønster som legacy
- * (src/app/portal/(legacy)/coach/sporsmal/ny → still-sporsmal-form.tsx).
- *
- * Kun v2-komponenter fra "@/components/v2"; ingen ad-hoc UI, ingen rå hex
- * (kun T.*). Norsk bokmål, ordbok låst.
+ * PlayerHQ Coach · Nytt spørsmål — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useState, useTransition } from "react";

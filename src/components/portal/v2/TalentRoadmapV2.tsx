@@ -1,11 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ · Talent · Roadmap — v2 (retning C «Presis»).
- * Utviklings-roadmap på ekte data: faser fra SeasonPlan.periodBlocks,
- * turneringer fra tournamentEntries og milepæler fra TalentTracking.
- * KPI-tallene er ekte tellinger. Pre-beta-merket beholdes (sesongplan-
- * funksjonen er under utbygging); tomme seksjoner vises ærlig.
+ * PlayerHQ · Talent · Roadmap — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import Link from "next/link";
@@ -73,9 +70,11 @@ export function TalentRoadmapV2({ data }: { data: TalentRoadmapData }) {
               title={`Ingen sesongplan for ${data.ar} ennå`}
               sub="Faser dukker opp her når planen er lagt i Workbench."
             />
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <Link href="/portal/planlegge" style={{ textDecoration: "none" }}>
-                <CTAPill ghost icon="arrow-right">Gå til planlegging</CTAPill>
+            <div style={{ marginTop: 12 }}>
+              <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
+                <CTAPill icon="calendar" full>
+                  Åpne Workbench
+                </CTAPill>
               </Link>
             </div>
           </>
@@ -154,8 +153,15 @@ export function TalentRoadmapV2({ data }: { data: TalentRoadmapData }) {
           <TomTilstand
             icon="map"
             title="Ingen roadmap-data registrert ennå"
-            sub="Faser, turneringer og milepæler dukker opp her etter hvert som planen legges."
+            sub="Faser, turneringer og milepæler dukker opp når planen legges."
           />
+          <div style={{ marginTop: 12 }}>
+            <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="calendar" full>
+                Åpne Workbench
+              </CTAPill>
+            </Link>
+          </div>
         </Kort>
       )}
     </div>

@@ -1,25 +1,8 @@
 "use client";
 
 /**
- * AgencyOS Bookinger & kapasitet — v2 (retning C «Presis»). Coach/ADMIN
- * håndterer ukens bookinger og ser kapasitet. Ingen mockup fantes —
- * komponert utelukkende av v2-biblioteket (src/components/v2), ingen ad-hoc
- * UI, ingen rå hex (kun T.*).
- *
- * Funksjon/data bevart 1:1 fra den ekte skjermen (src/app/admin/bookinger):
- *   - 4 KPI-er: bookinger uke · kapasitet brukt % · forespørsler · ledige luker.
- *   - Kapasitet-heatmap (timer × dag) fra ekte bookinger (VarmeKart).
- *   - Booking-liste (spiller/tid/tjeneste/anlegg/status) med inline bekreft/avvis
- *     for PENDING (server-actions bekreftBooking/avvisBooking).
- *   - Massehandlinger (bekreft/avvis alle PENDING · marker CONFIRMED fullført).
- *   - Snarvei «Ny booking» → wizard, og CSV-eksport av kapasitet.
- *   - Plan-lenke per booking der spilleren har en aktiv teknisk plan.
- *
- * Mobil: 2-kolonne (liste | heatmap) kollapser til stabel med lista først;
- * PENDING-rader viser fullbredde bekreft/avvis under raden i stedet for i meta.
- *
- * Ærlige tomrom: ingen fabrikerte tall — tom heatmap ved 0 anlegg, tom liste
- * ved 0 bookinger. Coach-filter og kalender-fane er GAP (meldes i ruten).
+ * AgencyOS Bookinger & kapasitet — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Mørk AgencyOS. Ukens bookinger + kapasitets-heatmap.
  */
 
 import { Fragment, useEffect, useMemo, useState, useTransition } from "react";
@@ -232,7 +215,23 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
   const toggle = (x: string) =>
     setFiltre((prev) => (prev.indexOf(x) !== -1 ? prev.filter((y) => y !== x) : prev.concat(x)));
 
-  // ── Hode ──────────────────────────────────────────────────────
+  // B: status
+  const statusTone =
+    antallPending > 0 || data.kpis.foresporsler > 0
+      ? "warn"
+      : data.kpis.bookinger > 0
+        ? "lime"
+        : "info";
+  const statusTekst =
+    antallPending > 0
+      ? `${pl(antallPending, "forespørsel", "forespørsler")}`
+      : data.kpis.foresporsler > 0
+        ? `${pl(data.kpis.foresporsler, "i kø", "i kø")}`
+        : data.kpis.bookinger > 0
+          ? `${pl(data.kpis.bookinger, "booking", "bookinger")}`
+          : "Tom uke";
+
+  // ── Hode — B: status ──────────────────────────────────────────
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
@@ -241,11 +240,20 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
           <Tittel em="kapasitet.">Bookinger &amp;</Tittel>
         </div>
       </div>
-      <div className="hidden md:flex" style={{ gap: 8 }}>
+      <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
+    </div>
+  );
+
+  // B: én primær CTA · eksport er sekundær
+  const primaerCta = (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <Link href={data.nyHref} style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="plus" full>
+          Ny booking
+        </CTAPill>
+      </Link>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <Eksporter heat={data.heat} ukeNr={data.ukeNr} />
-        <Link href={data.nyHref} style={{ textDecoration: "none" }}>
-          <CTAPill icon="plus">Ny booking</CTAPill>
-        </Link>
       </div>
     </div>
   );
@@ -353,20 +361,28 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
         ? `${pl(data.kpis.foresporsler, "forespørsel venter", "forespørsler venter")} i køen — åpne Forespørsler.`
         : `Ingen ubehandlede forespørsler. Kapasitet brukt ${data.kpis.kapasitetPct} % denne uka.`;
 
+  // Tom uke uten bookinger — ærlig vei
+  if (data.bookinger.length === 0) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        {hode}
+        {kpi}
+        <Kort>
+          <TomTilstand
+            icon="calendar"
+            title="Ingen bookinger denne uka"
+            sub="Opprett første booking, eller sjekk kapasiteten når anlegg er aktive."
+          />
+        </Kort>
+        {primaerCta}
+      </div>
+    );
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
-
-      {/* Mobil-handlinger (skjult på desktop der de ligger i hodet) */}
-      <div className="flex md:hidden" style={{ gap: 8 }}>
-        <Link href={data.nyHref} style={{ textDecoration: "none", flex: 1 }}>
-          <Knapp icon="plus" full>
-            Ny booking
-          </Knapp>
-        </Link>
-        <Eksporter heat={data.heat} ukeNr={data.ukeNr} />
-      </div>
-
+      {primaerCta}
       {kpi}
 
       {tilgjengeligeFiltre.length > 0 && (

@@ -1,19 +1,11 @@
 "use client";
 
 /**
- * Foreldreportal · Ukerapport (detalj) — v2 (retning C «Presis»). Lese-først
- * ukesoppsummering for ÉT barn: «Denne uka» (økter · trent · SG) + coachens
- * kommentar + ukens høydepunkt. Komponert kun av v2-komponenter fra
- * "@/components/v2" (ingen ad-hoc UI-primitiver, ingen rå hex — kun T.*-tokens).
- *
- * ALL data kommer fra hentForelderUkerapport (src/lib/forelder.ts) — avledet av
- * barnets EKTE Prisma-data. Ingen tall fabrikeres: mangler et felt vises ærlig
- * tom-tilstand. V2Shell (montert i (v2preview)/v2-forelder-ukerapport/page.tsx)
- * eier chrome-en; denne komponenten rendrer bare den indre innholds-stacken.
- *
- * Mobil-først: KPI-stripe stabler 3→3 (kompakte fliser) og holder seg på 375px.
+ * Foreldreportal · Ukerapport (detalj) — v2 Presis + B-pakke.
+ * Status først, én grønn CTA, TomTilstand med neste steg. Kun v2 + T.*.
  */
 
+import { useRouter } from "next/navigation";
 import type { ForelderUkerapport } from "@/lib/forelder";
 import {
   T,
@@ -24,6 +16,10 @@ import {
   KpiFlis,
   Rad,
   Icon,
+  TomTilstand,
+  Knapp,
+  StatusPill,
+  HjelpTips,
 } from "@/components/v2";
 
 /* ── Rene hjelpere ─────────────────────────────────────────────────── */
@@ -36,6 +32,7 @@ function komma(n: number): string {
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function ForelderUkerapportV2({ data }: { data: ForelderUkerapport }) {
+  const router = useRouter();
   const {
     childFirstName,
     ukenummer,
@@ -48,26 +45,55 @@ export function ForelderUkerapportV2({ data }: { data: ForelderUkerapport }) {
 
   const sgTekst = ukeSg != null ? fmtSg(ukeSg) : "–";
   const trentTekst = trentTimer > 0 ? `${komma(trentTimer)} t` : "–";
+  const harAktivitet = oktFullfort > 0 || ukeSg != null;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
-      <div>
-        <Caps>{`Uke ${ukenummer} · ${childFirstName}`}</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="Ukerapport">Ukas</Tittel>
+      {/* Hode + status */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          gap: 12,
+          flexWrap: "wrap",
+        }}
+      >
+        <div>
+          <Caps>{`Uke ${ukenummer} · ${childFirstName}`}</Caps>
+          <div style={{ marginTop: 10 }}>
+            <Tittel em="uke">Denne</Tittel>
+          </div>
         </div>
+        <StatusPill tone={harAktivitet ? "up" : "info"}>
+          {harAktivitet ? "Aktiv uke" : "Rolig uke"}
+        </StatusPill>
       </div>
 
-      {/* Denne uka — 3 kompakte KPI-fliser */}
+      {/* Status først — 3 KPI */}
       <div className="grid grid-cols-3" style={{ gap: T.gap }}>
         <KpiFlis label="Økter" value={String(oktFullfort)} />
         <KpiFlis label="Trent" value={trentTekst} />
-        <KpiFlis label="SG · uke" value={sgTekst} />
+        <KpiFlis
+          label={
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+              Form
+              <HjelpTips k="sgTotal" size={10} />
+            </span>
+          }
+          value={sgTekst}
+        />
+      </div>
+
+      {/* Én primær CTA (B) */}
+      <div>
+        <Knapp icon="arrow-right" onClick={() => router.push("/forelder")}>
+          Til oversikten
+        </Knapp>
       </div>
 
       {/* Coachens kommentar */}
-      <Kort eyebrow="Coachens kommentar">
+      <Kort eyebrow="Fra coachen">
         {coachNote ? (
           <div>
             <p
@@ -86,17 +112,11 @@ export function ForelderUkerapportV2({ data }: { data: ForelderUkerapport }) {
             </div>
           </div>
         ) : (
-          <p
-            style={{
-              fontFamily: T.ui,
-              fontSize: 12.5,
-              color: T.mut,
-              lineHeight: 1.6,
-              margin: 0,
-            }}
-          >
-            Coachen har ikke lagt igjen en kommentar denne uka.
-          </p>
+          <TomTilstand
+            icon="message-circle"
+            title="Ingen kommentar denne uka"
+            sub="Når coachen skriver noe, dukker det opp her."
+          />
         )}
       </Kort>
 
@@ -139,17 +159,11 @@ export function ForelderUkerapportV2({ data }: { data: ForelderUkerapport }) {
             last
           />
         ) : (
-          <p
-            style={{
-              fontFamily: T.ui,
-              fontSize: 12.5,
-              color: T.mut,
-              lineHeight: 1.6,
-              margin: 0,
-            }}
-          >
-            Høydepunkter dukker opp når det er registrert tester.
-          </p>
+          <TomTilstand
+            icon="trophy"
+            title="Ingen test denne uka"
+            sub="Beste tester dukker opp her når de er logget."
+          />
         )}
       </Kort>
     </div>

@@ -1,21 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Coach-øvelser — v2 (retning C «Presis», mørk). Rekomponert fra den
- * ekte skjermen src/app/portal/coach/ovelser/page.tsx: coach-tildelt
- * øvelsesbibliotek (ExerciseDefinition) med filter per pyramideområde og
- * kort-liste med AK-formel-chips. Åpner drill-detalj (/portal/drills/{id}).
- *
- * Kun v2-komponenter fra "@/components/v2"; ingen ad-hoc UI, ingen rå hex (T.*).
- * EKTE data — filtreres klientside. Ærlig tom-tilstand når biblioteket er tomt
- * eller et filter ikke gir treff. Norsk bokmål; ordboken låst.
- *
- * V2Shell (montert i (v2preview)/v2-coach-ovelser/page.tsx) eier chrome-en;
- * denne komponenten rendrer bare den indre innholds-stacken.
- *
- * Gap meldt: legacy-kortets inline rediger/slett-meny (ExerciseCardActions) har
- * ingen v2-motpart (kort-hjørne-kebab). Utelatt her framfor å blande inn ad-hoc
- * UI — redigering nås fortsatt via /portal/coach/ovelser/{id}/rediger.
+ * PlayerHQ Coach-øvelser — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { useEffect, useMemo, useState } from "react";
@@ -122,8 +109,10 @@ export function CoachOvelserV2({ data }: { data: CoachOvelserData }) {
             {ovelser.length} øvelse{ovelser.length === 1 ? "" : "r"} i biblioteket
           </Caps>
         </div>
-        <Link href="/portal/coach/ovelser/ny" style={{ textDecoration: "none" }}>
-          <CTAPill icon="plus">Ny øvelse</CTAPill>
+        <Link href="/portal/coach/ovelser/ny" style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="plus" full>
+            Ny øvelse
+          </CTAPill>
         </Link>
       </div>
 
@@ -140,9 +129,11 @@ export function CoachOvelserV2({ data }: { data: CoachOvelserData }) {
             title="Ingen øvelser ennå"
             sub="Opprett den første øvelsen for å begynne å bygge treningsbiblioteket."
           />
-          <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
-            <Link href="/portal/coach/ovelser/ny" style={{ textDecoration: "none" }}>
-              <CTAPill icon="plus">Opprett øvelse</CTAPill>
+          <div style={{ marginTop: 12 }}>
+            <Link href="/portal/coach/ovelser/ny" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="plus" full>
+                Opprett øvelse
+              </CTAPill>
             </Link>
           </div>
         </Kort>
@@ -153,6 +144,13 @@ export function CoachOvelserV2({ data }: { data: CoachOvelserData }) {
             title={`Ingen øvelser i ${valgtLabel}`}
             sub="Velg et annet område, eller opprett en øvelse her."
           />
+          <div style={{ marginTop: 12 }}>
+            <Link href="/portal/coach/ovelser/ny" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill ghost full icon="plus">
+                Opprett øvelse
+              </CTAPill>
+            </Link>
+          </div>
         </Kort>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4" style={{ gap: 12 }}>

@@ -1,19 +1,8 @@
 "use client";
 
 /**
- * PlayerHQ Hull-analyse — v2 (retning C «Presis»). To faner (samme fane-logikk
- * som gamle HullTabs.tsx):
- *   1. «Sone-kart»    — spillerens EKTE SG- og treningsdata per sone
- *                       (Tee → Innspill → Nærspill → Putt). Det illustrative
- *                       top-down-banekartet (golfdata HoleAnalysis) har ingen
- *                       v2-motpart — dataene bæres i stedet av SgKategorier
- *                       (divergerende SG-stolper) + sone-rader m/ MiniSpark
- *                       (gap meldt, ikke improvisert kart).
- *   2. «Hull for hull» — score fra siste runde (ekte HoleScore-data) i
- *                       v2-Scorekort. SG per hull er ikke beregnet → vises
- *                       ærlig som «—» (aldri fabrikkert 0).
- * All data lastes i page.tsx (server) og sendes hit som props — komponenten
- * fabrikkerer ingenting. Kun v2-primitiver, ingen rå hex (kun T.*).
+ * PlayerHQ Hull-analyse — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Lys PlayerHQ.
  */
 
 import { Fragment, useEffect, useRef, useState } from "react";

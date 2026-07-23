@@ -484,22 +484,51 @@ export interface FordelingRadProps {
   signal?: boolean;
   kol2?: boolean;
   last?: boolean;
+  /** B-pakke: uthev svakeste/viktigste rad (tykkere, bakgrunn). */
+  emphasis?: boolean;
 }
 /* signal=true → opp/ned-DATA (SG o.l.): positiv grønn / negativ rød (aldri lime på data).
    Uten signal → MENGDE/andel: lime-fyll (aksent, ikke signal). */
-export function FordelingRad({ code, label, pct, value, neg, signal, kol2, last }: FordelingRadProps) {
+export function FordelingRad({ code, label, pct, value, neg, signal, kol2, last, emphasis }: FordelingRadProps) {
   const grown = useMount();
   const fyll = signal ? (neg ? T.down : T.up) : (neg ? T.down : T.lime);
   const valgFg = signal ? (neg ? T.down : T.up) : (neg ? T.down : T.fg);
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 11, padding: "10px 0", borderBottom: last ? "none" : `1px solid ${T.border}` }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 11,
+        padding: emphasis ? "12px 10px" : "10px 0",
+        margin: emphasis ? "0 -10px" : undefined,
+        borderRadius: emphasis ? 12 : undefined,
+        background: emphasis ? `color-mix(in srgb, ${T.down} 8%, transparent)` : undefined,
+        borderBottom: last || emphasis ? "none" : `1px solid ${T.border}`,
+      }}
+    >
       {code && <span style={{ width: 40, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.fg2, flex: "none" }}>{code}</span>}
-      {label && <span style={{ width: 110, flex: "none", fontFamily: T.ui, fontSize: 13, color: T.fg2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{label}</span>}
-      <div style={{ flex: 1, height: 7, borderRadius: 9999, background: T.track, overflow: "hidden" }}>
+      {label && (
+        <span
+          style={{
+            width: 110,
+            flex: "none",
+            fontFamily: T.ui,
+            fontSize: emphasis ? 14 : 13,
+            fontWeight: emphasis ? 700 : 400,
+            color: emphasis ? T.fg : T.fg2,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {label}
+        </span>
+      )}
+      <div style={{ flex: 1, height: emphasis ? 9 : 7, borderRadius: 9999, background: T.track, overflow: "hidden" }}>
         <div style={{ width: (grown ? Math.max(3, Math.min(100, pct)) : 0) + "%", height: "100%", background: fyll, opacity: (neg || signal) ? 1 : 0.9, borderRadius: 9999, transition: `width 500ms ${EASE}` }} />
       </div>
       {typeof pct === "number" && <span style={{ width: 36, flex: "none", textAlign: "right", fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg2, fontVariantNumeric: "tabular-nums" }}>{Math.round(pct)}%</span>}
-      <span style={{ width: kol2 ? 84 : 48, flex: "none", textAlign: "right", fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: valgFg, fontVariantNumeric: "tabular-nums" }}>{value}</span>
+      <span style={{ width: kol2 ? 84 : 48, flex: "none", textAlign: "right", fontFamily: T.mono, fontSize: emphasis ? 15 : 12.5, fontWeight: 700, color: valgFg, fontVariantNumeric: "tabular-nums" }}>{value}</span>
     </div>
   );
 }

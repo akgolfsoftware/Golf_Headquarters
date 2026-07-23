@@ -1,25 +1,13 @@
 "use client";
 
 /**
- * PlayerHQ Fysisk logging — v2 (retning C «Presis»). Komponert av de porterte
- * fysisk-primitivene i src/components/v2/fysisk.tsx (SettRepsLogger, TonnasjeHero,
- * IntervallBlokk, PulsSoneVelger, FysOktKort) med EKTE data fra getFysiskData
- * (src/lib/portal-fysisk/fysisk-data.ts). Kun v2-komponenter fra "@/components/v2";
- * ingen ad-hoc UI, ingen rå hex (kun T.*-tokens).
- *
- * Ærlighet fremfor mockup-fasade:
- *  - TonnasjeHero vises kun når det faktisk er logget sett (tonnasje > 0) —
- *    beregnet fra loggSettData, aldri et lagret felt.
- *  - «sist»-spøkelsesverdier og auto-progresjons-anbefaling har ingen datakilde
- *    ennå → utelatt (meldt som gap), ikke fabrikkert.
- *  - Mangler spilleren fysisk plan/økt: ærlig tom-tilstand.
- *
- * V2Shell (montert i (v2preview)/v2-fysisk/page.tsx) eier chrome-en — denne
- * komponenten rendrer bare den indre innholds-stacken.
+ * PlayerHQ Fysisk — v2 Presis + B-pakke (status + logg, tom = én grønn vei).
+ * Ekte data fra getFysiskData. SettRepsLogger m.m. fra v2/fysisk.
  */
 
 import { useEffect, useState } from "react";
 import type { FysiskViewData } from "@/lib/portal-fysisk/fysisk-data";
+import Link from "next/link";
 import {
   T,
   Caps,
@@ -27,6 +15,7 @@ import {
   StatusPill,
   Kort,
   TomTilstand,
+  CTAPill,
   SettRepsLogger,
   TonnasjeHero,
   IntervallBlokk,
@@ -64,13 +53,46 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
             <Tittel mobile={mobile} em={spillerNavn.split(" ")[0]}>Fysisk ·</Tittel>
           </div>
         </div>
+        <div className="grid grid-cols-3" style={{ gap: 8 }}>
+          {(
+            [
+              { l: "Økt", v: "—" },
+              { l: "Tonnasje", v: "—" },
+              { l: "Status", v: "Ingen" },
+            ] as const
+          ).map((k) => (
+            <Kort key={k.l} pad="12px">
+              <Caps size={9}>{k.l}</Caps>
+              <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 15, marginTop: 8, color: T.fg }}>{k.v}</div>
+            </Kort>
+          ))}
+        </div>
         <Kort>
           <TomTilstand
             icon="dumbbell"
             title="Ingen fysisk økt planlagt"
-            sub="Coachen bygger den fysiske planen i Workbench — da dukker sett, tonnasje og intervaller opp her."
+            sub="Planlegg fysisk i Workbench — da dukker sett, tonnasje og intervaller opp her."
           />
         </Kort>
+        <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
+          <CTAPill icon="calendar" full>
+            Åpne Workbench
+          </CTAPill>
+        </Link>
+        <Link
+          href="/portal/gjennomfore"
+          style={{
+            textDecoration: "none",
+            display: "block",
+            textAlign: "center",
+            fontFamily: T.ui,
+            fontSize: 12,
+            fontWeight: 600,
+            color: T.mut,
+          }}
+        >
+          Tilbake til Gjør →
+        </Link>
       </div>
     );
   }
@@ -91,7 +113,23 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
         {okt.varighetMin != null && <StatusPill tone="info">{`${okt.varighetMin} min`}</StatusPill>}
       </div>
 
-      {/* Tonnasje-hero — kun når det faktisk er logget sett (beregnet fra loggSettData) */}
+      {/* B: status-rad */}
+      <div className="grid grid-cols-3" style={{ gap: 8 }}>
+        {(
+          [
+            { l: "Sett", v: String(okt.settTotalt) },
+            { l: "Reps", v: String(okt.repsTotalt) },
+            { l: "Tonnasje", v: okt.tonnasje > 0 ? String(Math.round(okt.tonnasje)) : "—" },
+          ] as const
+        ).map((k) => (
+          <Kort key={k.l} pad="12px">
+            <Caps size={9}>{k.l}</Caps>
+            <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 16, marginTop: 8, color: T.fg }}>{k.v}</div>
+          </Kort>
+        ))}
+      </div>
+
+      {/* Tonnasje-hero — kun når det faktisk er logget sett */}
       {okt.tonnasje > 0 && (
         <TonnasjeHero
           tonnasje={okt.tonnasje}
@@ -108,9 +146,20 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
           <TomTilstand
             icon="list"
             title="Ingen øvelser i økta ennå"
-            sub="Coachen legger til styrkeøvelser og intervaller i Workbench."
+            sub="Legg til styrke og intervaller i Workbench."
           />
+          <div style={{ marginTop: 12 }}>
+            <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="calendar" full>
+                Åpne Workbench
+              </CTAPill>
+            </Link>
+          </div>
         </Kort>
+      )}
+
+      {harInnhold && (
+        <Caps style={{ color: T.mut }}>Logg under — lagres når du fyller sett</Caps>
       )}
 
       {/* Styrke — én logger per øvelse (sett × reps) */}

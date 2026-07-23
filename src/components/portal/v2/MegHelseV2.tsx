@@ -1,17 +1,7 @@
 "use client";
 
 /**
- * PlayerHQ Meg · Helse — v2 (retning C «Presis», mørk). Rekomponert fra den
- * ekte skjermen /portal/meg/helse/page.tsx: SAMME funksjon og datakontrakt
- * (helselogg/HealthEntry: skader, symptomer, velvære + tidslinje/status +
- * registrer-symptom-CTA), bare i v2-språket. Kun v2-komponenter fra
- * "@/components/v2"; ingen ad-hoc UI, ingen rå hex (kun T.*).
- *
- * Ærlighet: intet fabrikkeres. FYS-score/hvilepuls/søvn/HRV/belastning viser
- * «—» når spilleren mangler tester/logger. Skade-raden speiler ekte Leave-data.
- * FYS-formelen er Anders' 2026-06-22-formel; referanseverdier hardkodes ikke.
- *
- * V2Shell eier chrome-en; denne komponenten rendrer bare den indre stacken.
+ * PlayerHQ Meg · Helse — v2 Presis + B-pakke (status først, logg = én grønn CTA).
  */
 
 import { useEffect, useState, useTransition } from "react";
@@ -219,7 +209,7 @@ function HelseLoggForm({
 
   if (!open) {
     return (
-      <Knapp icon="plus" onClick={() => setOpen(true)}>
+      <Knapp icon="plus" full onClick={() => setOpen(true)}>
         Logg søvn / status
       </Knapp>
     );
@@ -237,13 +227,14 @@ function HelseLoggForm({
       <div style={{ marginTop: 14 }}>
         <TekstOmraade label="Notater (valgfritt)" value={notes} rows={2} placeholder="Hvordan føler du deg i dag?" onChange={setNotes} />
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 16, flexWrap: "wrap" }}>
-        <Knapp icon="check" disabled={pending} onClick={submit}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 16 }}>
+        <Knapp icon="check" full disabled={pending} onClick={submit}>
           {pending ? "Lagrer…" : "Lagre"}
         </Knapp>
-        <Knapp ghost disabled={pending} onClick={() => setOpen(false)}>
+        <Knapp ghost full disabled={pending} onClick={() => setOpen(false)}>
           Lukk
         </Knapp>
+        <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
         {lagret && (
           <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.lime }}>
             Lagret
@@ -254,6 +245,7 @@ function HelseLoggForm({
             {feil}
           </span>
         )}
+        </div>
       </div>
     </Kort>
   );
@@ -271,15 +263,11 @@ export function MegHelseV2({ data, lagre }: { data: MegHelseData; lagre: LagreFn
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
       <div>
         <Caps style={{ marginBottom: 10 }}>Meg · Helse</Caps>
-        <Tittel mobile={mobile} em="readiness.">
+        <Tittel mobile={mobile} em="status">
           Helse &amp;
         </Tittel>
-        <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, lineHeight: 1.55, margin: "12px 0 0", maxWidth: 560 }}>
-          Søvn, puls, HRV, belastning og FYS-form. Alt fra dine egne ekte logger og tester.
-        </p>
       </div>
 
       {/* 3-KPI-grid */}

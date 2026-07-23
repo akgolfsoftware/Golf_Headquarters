@@ -1,25 +1,8 @@
 "use client";
 
 /**
- * AgencyOS Plan-maler — v2 (retning C «Presis»). Coach/admin-kontekst:
- * gjenbrukbare plan-skjeletter (PlanTemplate) vist som mal-kort-grid med
- * akse-fordeling. Ingen mockup fantes — komponert utelukkende av
- * v2-biblioteket (src/components/v2), ingen ad-hoc UI, ingen rå hex (kun T.*).
- *
- * Funksjon/data bevart 1:1 fra den ekte skjermen
- * (src/app/admin/plan-templates/page.tsx):
- *   - Mal-liste sortert mest brukt → navn (usageCount desc, name asc).
- *   - Per mal: fase-ikon (Grunn/Spesial/Turnering), navn, «Brukt N×»,
- *     kategori · varighet · økter/uke.
- *   - Hvert kort lenker til mal-detaljen (/admin/plan-templates/{id}).
- *   - «Ny mal» → /admin/plan-templates/ny.
- *   - Ærlig tom-tilstand når det ikke finnes maler.
- * Utvidelse (retning C, samme data): akse-fordeling per mal (disciplinFordeling
- * fra Prisma) tegnet som pyramide, og et klientside fase-filter over den
- * samme lista — ingen fabrikerte tall.
- *
- * Mobil: KPI 3→ radbrudd (2 kol), grid 3→1 kolonne, header-CTA byttes til
- * full-bredde «Ny mal» under filtrene. Tailwind md-breakpoints.
+ * AgencyOS Plan-maler — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * T.* only. Mørk AgencyOS. Gjenbrukbare plan-skjeletter.
  */
 
 import Link from "next/link";
@@ -31,6 +14,7 @@ import {
   KpiFlis,
   FilterChips,
   CTAPill,
+  StatusPill,
   MikroMeta,
   Pyramide,
   TomTilstand,
@@ -175,7 +159,12 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
   const snittUker =
     total > 0 ? Math.round(data.maler.reduce((s, m) => s + m.varighetUker, 0) / total) : 0;
 
-  // ── Hode ──────────────────────────────────────────────────────
+  // B: status
+  const statusTone = total === 0 ? "warn" : totalBruk > 0 ? "up" : "info";
+  const statusTekst =
+    total === 0 ? "Ingen maler" : totalBruk > 0 ? `Brukt ${totalBruk}×` : pl(total, "mal", "maler");
+
+  // ── Hode — B: status ──────────────────────────────────────────
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
@@ -184,10 +173,17 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
           <Tittel em="plan-maler.">Dine</Tittel>
         </div>
       </div>
-      <Link href="/admin/plan-templates/ny" className="hidden md:inline-flex" style={{ textDecoration: "none" }}>
-        <CTAPill icon="plus">Ny mal</CTAPill>
-      </Link>
+      <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
     </div>
+  );
+
+  // B: én primær CTA
+  const primaerCta = (
+    <Link href="/admin/plan-templates/ny" style={{ textDecoration: "none", display: "block" }}>
+      <CTAPill icon="plus" full>
+        Ny mal
+      </CTAPill>
+    </Link>
   );
 
   if (total === 0) {
@@ -198,14 +194,10 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
           <TomTilstand
             icon="layers"
             title="Ingen maler ennå"
-            sub="Gjenbrukbare plan-skjeletter dukker opp her. Opprett den første malen for å spare tid når du lager nye planer."
+            sub="Opprett den første malen for å spare tid når du lager nye planer."
           />
-          <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
-            <Link href="/admin/plan-templates/ny" style={{ textDecoration: "none" }}>
-              <CTAPill icon="plus">Ny mal</CTAPill>
-            </Link>
-          </div>
         </Kort>
+        {primaerCta}
       </div>
     );
   }
@@ -241,39 +233,13 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
       </div>
     );
 
-  // ── Mobil-CTA (header-CTA er skjult under md) ──────────────────
-  const mobilCta = (
-    <Link href="/admin/plan-templates/ny" className="md:hidden" style={{ textDecoration: "none" }}>
-      <span
-        className="v2-press v2-focus"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 8,
-          width: "100%",
-          fontFamily: T.ui,
-          fontSize: 13,
-          fontWeight: 600,
-          color: T.onLime,
-          background: T.lime,
-          borderRadius: 9999,
-          padding: "12px 16px",
-        }}
-      >
-        <Icon name="plus" size={15} style={{ color: T.onLime }} />
-        Ny mal
-      </span>
-    </Link>
-  );
-
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
+      {primaerCta}
       {kpi}
       {filtre}
       {grid}
-      {mobilCta}
     </div>
   );
 }

@@ -9,7 +9,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Caps, Kort, T, Veiviser, Inndata, Velger, TekstOmraade, RadioGruppe, ValgKort, Avkryssing } from "@/components/v2";
+import { Caps, Kort, T, Veiviser, Inndata, Velger, TekstOmraade, RadioGruppe, ValgKort, Avkryssing, StatusPill, Tittel } from "@/components/v2";
 import { createTournament } from "@/app/admin/tournaments/ny/actions";
 
 type Course = { id: string; name: string };
@@ -190,6 +190,19 @@ export function TurneringWizardV2({ courses }: { courses: Course[] }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 640, margin: "0 auto" }}>
+      {/* B: status først */}
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
+        <div>
+          <Caps>AgencyOS · Ny turnering</Caps>
+          <div style={{ marginTop: 8 }}>
+            <Tittel em="turnering.">Ny</Tittel>
+          </div>
+        </div>
+        <StatusPill tone={step === 4 ? "lime" : "info"}>
+          Steg {step + 1} av 5 · {STEPS[step]}
+        </StatusPill>
+      </div>
+
       <Veiviser steg={STEPS} aktiv={step} onTilbake={tilbake} onNeste={step === 4 ? submit : neste} sisteTekst={pending ? "Oppretter…" : "Opprett turnering"} />
 
       <Kort pad="22px 22px">

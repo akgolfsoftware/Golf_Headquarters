@@ -5,7 +5,7 @@
  */
 
 import Link from "next/link";
-import { Caps, Tittel, Kort } from "@/components/v2";
+import { Caps, Tittel, Kort, StatusPill, TomTilstand } from "@/components/v2";
 import { T } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
 
@@ -109,9 +109,15 @@ function Stat({ label, value }: { label: string; value: string }) {
 }
 
 export function AdminDrillDetaljV2({ data, actions }: { data: AdminDrillDetaljV2Data; actions: React.ReactNode }) {
+  const statusTekst =
+    data.brukAntall > 0
+      ? `Brukt i ${data.brukAntall} økt${data.brukAntall === 1 ? "" : "er"}`
+      : "Ikke brukt ennå";
+  const statusTone = data.brukAntall > 0 ? "lime" as const : "info" as const;
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      <Link href="/admin/drills" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut }}>
+      <Link href="/admin/drills" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut, textDecoration: "none" }}>
         <Icon name="arrow-left" size={12} />
         Tilbake til biblioteket
       </Link>
@@ -125,7 +131,8 @@ export function AdminDrillDetaljV2({ data, actions }: { data: AdminDrillDetaljV2
           <div style={{ marginTop: 8 }}>
             <Tittel>{data.navn}</Tittel>
           </div>
-          <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", gap: 8 }}>
+          <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
+            <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
             {data.morad && (
               <Chip accent>
                 <Icon name="star" size={11} style={{ marginRight: 4 }} />
@@ -133,10 +140,11 @@ export function AdminDrillDetaljV2({ data, actions }: { data: AdminDrillDetaljV2
               </Chip>
             )}
             {data.kilde && <Chip>{data.kilde}</Chip>}
-            <Chip>Brukt i {data.brukAntall} økt(er)</Chip>
           </div>
         </div>
-        {actions}
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
+          {actions}
+        </div>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: T.gap, alignItems: "start" }}>
@@ -145,7 +153,11 @@ export function AdminDrillDetaljV2({ data, actions }: { data: AdminDrillDetaljV2
             {data.beskrivelse ? (
               <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, lineHeight: 1.6, color: T.fg, whiteSpace: "pre-wrap" }}>{data.beskrivelse}</p>
             ) : (
-              <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, color: T.mut }}>Ingen beskrivelse lagret.</p>
+              <TomTilstand
+                icon="file-text"
+                title="Ingen beskrivelse"
+                sub="Legg til hvordan drillen skal forklares under Rediger."
+              />
             )}
           </Kort>
 
@@ -197,7 +209,7 @@ export function AdminDrillDetaljV2({ data, actions }: { data: AdminDrillDetaljV2
                 ))}
               </div>
             ) : (
-              <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>Ingen.</p>
+              <TomTilstand icon="map-pin" title="Ingen miljø" sub="Range, bane, studio m.m. settes under Rediger." />
             )}
           </Kort>
 
@@ -211,7 +223,7 @@ export function AdminDrillDetaljV2({ data, actions }: { data: AdminDrillDetaljV2
                 ))}
               </ul>
             ) : (
-              <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>Intet utstyr.</p>
+              <TomTilstand icon="package" title="Intet utstyr" sub="Valgfritt — legg til under Rediger." />
             )}
           </Kort>
 
@@ -223,7 +235,7 @@ export function AdminDrillDetaljV2({ data, actions }: { data: AdminDrillDetaljV2
                 ))}
               </div>
             ) : (
-              <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>Ingen.</p>
+              <TomTilstand icon="layers" title="Ingen L-faser" sub="Grunn, spesial eller turnering settes under Rediger." />
             )}
           </Kort>
 

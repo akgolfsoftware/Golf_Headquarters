@@ -1,14 +1,12 @@
 "use client";
 
 /**
- * AgencyOS — Tester · Fasiter (DataGolf-autosync), v2-port 16. juli 2026.
- * Erstatter rå Tailwind-tabell/kort med v2-primitiver. Samme server actions
- * (approveBenchmarkPending/rejectBenchmarkPending/runBenchmarkSyncNow)
- * uendret — kun presentasjonslaget er nytt.
+ * AgencyOS Fasiter — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
+ * DataGolf-autosync. T.* only.
  */
 
 import { useTransition } from "react";
-import { Caps, Tittel, Kort, Knapp, StatusPill, TilbakeLenke, T } from "@/components/v2";
+import { Caps, Tittel, Kort, Knapp, StatusPill, TilbakeLenke, CTAPill, TomTilstand, T } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 
 export type SyncMode = "auto" | "follow" | "static";
@@ -98,15 +96,15 @@ export function AdminBenchmarksV2({
         <div>
           <TilbakeLenke href="/admin/tester">Tester</TilbakeLenke>
           <div style={{ marginTop: 10 }}>
-            <Caps>Tester · Fasiter</Caps>
+            <Caps>Tester · Fasiter · AgencyOS</Caps>
           </div>
           <div style={{ marginTop: 8 }}>
             <Tittel em="autosync.">DataGolf-fasiter</Tittel>
           </div>
         </div>
-        <Knapp icon="refresh-cw" disabled={syncPending} onClick={() => startSync(onSyncNow)}>
-          Kjør synk nå
-        </Knapp>
+        <StatusPill tone={data.ventende.length > 0 ? "warn" : "lime"}>
+          {data.ventende.length > 0 ? `${data.ventende.length} venter` : "I synk"}
+        </StatusPill>
       </div>
 
       <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut, margin: 0, maxWidth: 620 }}>
@@ -115,26 +113,58 @@ export function AdminBenchmarksV2({
         etter hver kjøring. Siste kjøring: <b style={{ color: T.fg }}>{data.sisteKjoring}</b>.
       </p>
 
+      {/* B: én primær CTA */}
+      <button
+        type="button"
+        disabled={syncPending}
+        onClick={() => startSync(onSyncNow)}
+        style={{
+          all: "unset",
+          cursor: syncPending ? "wait" : "pointer",
+          opacity: syncPending ? 0.55 : 1,
+          display: "block",
+          width: "100%",
+        }}
+      >
+        <CTAPill icon="refresh-cw" full>
+          {syncPending ? "Synker …" : "Kjør synk nå"}
+        </CTAPill>
+      </button>
+
+      {data.ventende.length === 0 && data.alle.length === 0 ? (
+        <Kort>
+          <TomTilstand
+            icon="target"
+            title="Ingen fasiter ennå"
+            sub="Kjør synk for å hente DataGolf-fasiter, eller legg til tester under Tester."
+          />
+        </Kort>
+      ) : null}
+
       {data.ventende.map((rad) => (
         <VentendeKort key={rad.id} rad={rad} onApprove={onApprove} onReject={onReject} />
       ))}
 
       <Kort pad="0">
-        <div>
-          {data.alle.map((rad, i) => (
-            <div
-              key={rad.id}
-              style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr auto", alignItems: "center", gap: 12, padding: "12px 18px", borderTop: i ? `1px solid ${T.border}` : "none" }}
-            >
-              <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 700, color: T.fg }}>{rad.navn}</span>
-              <StatusPill tone={rad.mode === "static" ? "info" : "lime"}>{MODE_LABEL[rad.mode]}</StatusPill>
-              <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>{rad.kilde}</span>
-              <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>
-                {rad.verdier}
-              </span>
-            </div>
-          ))}
-        </div>
+        {data.alle.length === 0 ? (
+          <TomTilstand icon="list" title="Ingen fasiter i listen" sub="Etter første synk dukker fasitene opp her." />
+        ) : (
+          <div>
+            {data.alle.map((rad, i) => (
+              <div
+                key={rad.id}
+                style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr auto", alignItems: "center", gap: 12, padding: "12px 18px", borderTop: i ? `1px solid ${T.border}` : "none" }}
+              >
+                <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 700, color: T.fg }}>{rad.navn}</span>
+                <StatusPill tone={rad.mode === "static" ? "info" : "lime"}>{MODE_LABEL[rad.mode]}</StatusPill>
+                <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>{rad.kilde}</span>
+                <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>
+                  {rad.verdier}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 8, padding: "12px 18px", borderTop: `1px solid ${T.border}`, background: T.panel2 }}>
           <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.mut }}>
             {data.alle.length} tester med fasit · {data.ventende.length} venter godkjenning
