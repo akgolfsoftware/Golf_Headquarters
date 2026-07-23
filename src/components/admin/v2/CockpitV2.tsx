@@ -177,16 +177,18 @@ export function CockpitV2({
     </div>
   );
 
-  // ── «Trenger deg nå» (kø) ───────────────────────────────────────
+  // ── «Trenger deg nå» (kø) — Superhuman/Linear: signal-strek på alert ──
   const koen = (
     <Kort
       eyebrow="Trenger deg nå"
       action={
         data.focus.length > 0 ? (
           <Link href="/admin/innboks" style={{ textDecoration: "none" }}>
-            <Caps size={9} color={T.down}>{pl(data.focus.length, "sak", "saker")}</Caps>
+            <StatusPill tone="warn">{pl(data.focus.length, "sak", "saker")}</StatusPill>
           </Link>
-        ) : undefined
+        ) : (
+          <StatusPill tone="lime">Tom</StatusPill>
+        )
       }
     >
       {data.focus.length === 0 ? (
@@ -195,34 +197,88 @@ export function CockpitV2({
         data.focus.map((p, i) => {
           const href = p.actions.find((a) => a.href)?.href;
           const sub = p.reason.map((r) => r.text).join("");
+          const sterk = p.signal.tone === "alert" || p.signal.tone === "warn";
           return (
-            <Rad
+            <div
               key={p.id}
-              onClick={href ? () => router.push(href) : undefined}
-              leading={<AvatarInit navn={p.name} size={30} />}
-              title={<span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", whiteSpace: "normal" }}>{p.name}</span>}
-              sub={sub}
-              meta={
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                  <SevChip s={SEV_MAP[p.signal.tone]} />
-                  <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>{p.signal.label}</span>
-                </span>
-              }
-              last={i === data.focus.length - 1}
-            />
+              style={{
+                display: "flex",
+                alignItems: "stretch",
+                marginBottom: i === data.focus.length - 1 ? 0 : 4,
+                borderRadius: 12,
+                overflow: "hidden",
+                background: sterk
+                  ? `color-mix(in srgb, ${T.warn} 6%, transparent)`
+                  : "transparent",
+                border: sterk
+                  ? `1px solid color-mix(in srgb, ${T.warn} 18%, ${T.border})`
+                  : "1px solid transparent",
+              }}
+            >
+              <span
+                aria-hidden
+                style={{
+                  width: 3,
+                  flex: "none",
+                  background: sterk ? T.warn : "transparent",
+                }}
+              />
+              <div style={{ flex: 1, minWidth: 0, paddingLeft: sterk ? 4 : 0 }}>
+                <Rad
+                  onClick={href ? () => router.push(href) : undefined}
+                  leading={<AvatarInit navn={p.name} size={30} />}
+                  title={
+                    <span
+                      style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        whiteSpace: "normal",
+                      }}
+                    >
+                      {p.name}
+                    </span>
+                  }
+                  sub={sub}
+                  meta={
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                      <SevChip s={SEV_MAP[p.signal.tone]} />
+                      <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>
+                        {p.signal.label}
+                      </span>
+                    </span>
+                  }
+                  last
+                />
+              </div>
+            </div>
           );
         })
       )}
     </Kort>
   );
 
-  // ── Innboks (post@akgolf.no) — kompakt: antall nye + siste 3 ────
+  // ── Innboks (post@) — badge + tynn warn-strek når nye ────────────
   const innboksModul = innboks ? (
     <Link href="/admin/innboks-epost" style={{ textDecoration: "none" }}>
       <Kort
         hover
         eyebrow="Innboks"
-        action={innboks.antallNye > 0 ? <Caps size={9} color={T.warn}>{pl(innboks.antallNye, "ny", "nye")}</Caps> : undefined}
+        action={
+          innboks.antallNye > 0 ? (
+            <StatusPill tone="warn">{pl(innboks.antallNye, "ny", "nye")}</StatusPill>
+          ) : (
+            <Caps size={9}>post@</Caps>
+          )
+        }
+        style={
+          innboks.antallNye > 0
+            ? {
+                boxShadow: `inset 3px 0 0 ${T.warn}`,
+              }
+            : undefined
+        }
       >
         {innboks.siste.length === 0 ? (
           <TomTilstand icon="mail" title="Ingen e-poster" sub="Innboksen er tom." />

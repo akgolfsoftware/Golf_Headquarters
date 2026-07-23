@@ -181,50 +181,130 @@ function SakHandlinger({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: bo
  *  Spilleren navngis av seksjonshodet — kortet dropper derfor egen avatar.
  *  antall > 1 → «×N»-badge; Godkjenn/Avvis gjelder kun første sak. */
 function SakKort({ row, mobile }: { row: SakMedAntall; mobile: boolean }) {
+  // Samme kø-språk som AI-dispatch: strek + tint for haster (Superhuman/Linear)
+  const kildeLabel =
+    row.kilde === "caddie" ? "Caddie" : row.kilde === "forespørsel" ? "Forespørsel" : "Agent";
   return (
     <Kort
       pad={mobile ? "14px 15px" : "16px 18px"}
-      style={row.urgent ? { borderLeft: `3px solid ${T.warn}` } : undefined}
+      style={{
+        overflow: "hidden",
+        borderLeft: row.urgent ? `3px solid ${T.warn}` : undefined,
+        background: row.urgent
+          ? `color-mix(in srgb, ${T.warn} 6%, ${T.panel})`
+          : undefined,
+        borderColor: row.urgent
+          ? `color-mix(in srgb, ${T.warn} 28%, ${T.border})`
+          : undefined,
+      }}
     >
       <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
-            <span style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em", color: T.fg }}>
-              {row.title}
-            </span>
+            <Caps size={9} color={row.urgent ? T.warn : T.mut}>
+              {kildeLabel}
+            </Caps>
+            {row.urgent && <StatusPill tone="warn">Haster</StatusPill>}
+            {row.lowRisk && <StatusPill tone="info">Lav risiko</StatusPill>}
             {row.antall > 1 && (
               <span
                 title={`${row.antall} like saker — Godkjenn/Avvis gjelder den første, resten blir i køen`}
-                style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 5, padding: "2px 6px" }}
+                style={{
+                  fontFamily: T.mono,
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: T.fg2,
+                  background: T.panel2,
+                  border: `1px solid ${T.border}`,
+                  borderRadius: 5,
+                  padding: "2px 6px",
+                }}
               >
                 ×{row.antall}
               </span>
             )}
-            {row.urgent && <StatusPill tone="warn">Haster</StatusPill>}
-            {row.lowRisk && <StatusPill tone="info">Lav risiko</StatusPill>}
           </div>
 
-          <div style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", color: T.mut, marginTop: 4 }}>
+          <div
+            style={{
+              fontFamily: T.disp,
+              fontSize: 16,
+              fontWeight: 700,
+              letterSpacing: "-0.015em",
+              color: T.fg,
+              marginTop: 8,
+              lineHeight: 1.25,
+            }}
+          >
+            {row.title}
+          </div>
+
+          <div
+            style={{
+              fontFamily: T.mono,
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: "0.04em",
+              color: T.mut,
+              marginTop: 6,
+            }}
+          >
             {row.who} · {row.when} · {handlingstypeLabel(row.actionType)}
           </div>
 
           {row.detail && (
-            <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.fg2, margin: "8px 0 0" }}>
+            <p
+              style={{
+                fontFamily: T.ui,
+                fontSize: 13,
+                lineHeight: 1.55,
+                color: T.fg2,
+                margin: "10px 0 0",
+              }}
+            >
               {row.detail}
             </p>
           )}
 
           {row.signalKind && (
-            <div style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut, marginTop: 8 }}>
+            <div
+              style={{
+                fontFamily: T.mono,
+                fontSize: 10,
+                fontWeight: 700,
+                color: T.mut,
+                marginTop: 8,
+              }}
+            >
               Signal: {row.signalKind}
               {row.signalValue != null ? ` = ${row.signalValue}` : ""}
             </div>
           )}
 
           {row.diffPreview && (
-            <div style={{ display: "flex", alignItems: "flex-start", gap: 8, marginTop: 10, padding: "8px 11px", borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}` }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 8,
+                marginTop: 10,
+                padding: "8px 11px",
+                borderRadius: 10,
+                background: T.panel2,
+                border: `1px solid ${T.border}`,
+              }}
+            >
               <Icon name="layers" size={13} style={{ color: T.lime, flex: "none", marginTop: 1 }} />
-              <span style={{ fontFamily: T.mono, fontSize: 11, lineHeight: 1.5, color: T.fg2, minWidth: 0, overflowWrap: "anywhere" }}>
+              <span
+                style={{
+                  fontFamily: T.mono,
+                  fontSize: 11,
+                  lineHeight: 1.5,
+                  color: T.fg2,
+                  minWidth: 0,
+                  overflowWrap: "anywhere",
+                }}
+              >
                 {row.diffPreview}
               </span>
             </div>

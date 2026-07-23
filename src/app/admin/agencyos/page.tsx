@@ -24,11 +24,10 @@ export const dynamic = "force-dynamic";
 export default async function V2CockpitPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const isAdmin = user.role === "ADMIN";
-  const [data, innboks, fokus, aiDispatch, spillereRaw, grupperRaw] = await Promise.all([
+  const [data, innboks, fokus, spillereRaw, grupperRaw] = await Promise.all([
     loadDailyBrief({ id: user.id, name: user.name, avatarUrl: user.avatarUrl, role: user.role }),
     loadInnboksSammendrag(),
     loadFokusSpillere({ id: user.id, role: user.role }),
-    loadAiDispatch({ id: user.id, role: user.role }),
     // D2-veksler: lettvekts spillerliste i coachens scope (samme where-mønster
     // som loadStallen — ADMIN ser alle, COACH ser egne). Kun id/navn/avatar.
     prisma.user.findMany({
@@ -52,6 +51,14 @@ export default async function V2CockpitPage() {
       orderBy: { name: "asc" },
     }),
   ]);
+
+  // AI-dispatch etter at innboks/fokus er kjent — speiler AgenticOS multi-AI-mal.
+  const aiDispatch = await loadAiDispatch({
+    id: user.id,
+    role: user.role,
+    innboksNye: innboks.antallNye,
+    fokusSpillere: fokus.forslag.length + fokus.pinnet.length,
+  });
 
   const vekslerData: VekslerData = {
     spillere: spillereRaw.map((s) => ({ id: s.id, navn: s.name ?? "Spiller", avatarUrl: s.avatarUrl })),
