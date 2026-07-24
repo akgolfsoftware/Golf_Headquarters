@@ -210,12 +210,23 @@ async function main() {
         `  ${r.name ?? "—"} (${r.role})`,
     );
     if (r.tier !== "exclude" && r.total > 0) {
+      const softAdmin =
+        r.tier === "tier2" && (r.role === "ADMIN" || r.role === "COACH");
       const detail = Object.entries(r.counts)
         .filter(([, n]) => n > 0)
         .map(([k, n]) => `${k}=${n}`)
         .join(", ");
       console.log(`  → ${detail}`);
-      wipeTotal += r.total;
+      if (softAdmin) {
+        const keep =
+          (r.counts.PlanAction ?? 0) + (r.counts.Notification ?? 0);
+        console.log(
+          `  · softAdmin: beholder PlanAction+Notification (${keep} rader)`,
+        );
+        wipeTotal += r.total - keep;
+      } else {
+        wipeTotal += r.total;
+      }
     }
   }
 
