@@ -66,6 +66,9 @@ export function coachScopedPlayerWhere(viewer: {
   if (viewer.role !== "COACH") return coachedPlayerWhere();
   return {
     role: "PLAYER",
+    // Samme soft-delete-port som coachedPlayerWhere — myk-slettede skal aldri
+    // dukke opp i stall, tilgangssjekker eller AI for COACH.
+    deletedAt: null,
     OR: [
       {
         enrollmentsAsPlayer: {

@@ -17,6 +17,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import type { PyramidArea } from "@/generated/prisma/client";
 import {
   DISPLAY_UNIT,
@@ -89,15 +90,21 @@ function cellBenchmark(bm: Benchmarks | undefined, score: number): CellBenchmark
   return { short: lvl.short, label: lvl.label, index: lvl.index, achieved: true, ladder };
 }
 
-export async function loadTesterMatrix(): Promise<TesterMatrixData> {
+export async function loadTesterMatrix(viewer: {
+  id: string;
+  role: string;
+}): Promise<TesterMatrixData> {
   const now = new Date();
 
-  const [players, testDefs, results] = await Promise.all([
-    prisma.user.findMany({
-      where: { role: "PLAYER", deletedAt: null },
-      select: { id: true, name: true, homeClub: true, hcp: true, tier: true },
-      orderBy: { name: "asc" },
-    }),
+  // Spillere først — resultater scopes til dem (unngår full testResult-tabell).
+  const players = await prisma.user.findMany({
+    where: coachScopedPlayerWhere(viewer),
+    select: { id: true, name: true, homeClub: true, hcp: true, tier: true },
+    orderBy: { name: "asc" },
+  });
+  const playerIds = players.map((p) => p.id);
+
+  const [testDefs, results] = await Promise.all([
     prisma.testDefinition.findMany({
       select: {
         id: true,
@@ -108,10 +115,21 @@ export async function loadTesterMatrix(): Promise<TesterMatrixData> {
       },
       orderBy: [{ pyramidArea: "asc" }, { name: "asc" }],
     }),
-    prisma.testResult.findMany({
-      select: { id: true, userId: true, testId: true, score: true, takenAt: true },
-      orderBy: { takenAt: "asc" }, // eldst → nyest, så vi enkelt finner siste + forrige
-    }),
+    playerIds.length === 0
+      ? Promise.resolve(
+          [] as {
+            id: string;
+            userId: string;
+            testId: string;
+            score: number;
+            takenAt: Date;
+          }[],
+        )
+      : prisma.testResult.findMany({
+          where: { userId: { in: playerIds } },
+          select: { id: true, userId: true, testId: true, score: true, takenAt: true },
+          orderBy: { takenAt: "asc" }, // eldst → nyest for siste + forrige
+        }),
   ]);
 
   // Grupper resultater per (player, test), bevarer kronologisk rekkefølge.

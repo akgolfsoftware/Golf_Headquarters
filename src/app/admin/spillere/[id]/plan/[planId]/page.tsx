@@ -10,6 +10,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
@@ -45,7 +46,10 @@ export default async function SpillerPlanDetaljPage({
   const tab: Tab = TABS.includes(sp.tab as Tab) ? (sp.tab as Tab) : "drills";
 
   const [spiller, plan] = await Promise.all([
-    prisma.user.findUnique({ where: { id }, select: { id: true, name: true, hcp: true } }),
+    prisma.user.findFirst({
+      where: { AND: [coachScopedPlayerWhere(coach), { id }] },
+      select: { id: true, name: true, hcp: true },
+    }),
     prisma.technicalPlan.findUnique({
       where: { id: planId },
       select: {

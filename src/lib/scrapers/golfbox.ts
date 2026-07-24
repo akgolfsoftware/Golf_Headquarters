@@ -249,13 +249,33 @@ function toParToNumber(
   return null;
 }
 
-function extractRoundScore(round: unknown): number | null {
+/**
+ * AK Golf-regel: alltid brutto (ekte slag). Aldri netto.
+ * GolfBox nett-klasser ender typisk på « N» / «N» (f.eks. «Scratch N»).
+ * Eksportert for tester og andre importstier.
+ */
+export function erNettoKlasse(klasseNavn: string | null | undefined): boolean {
+  if (!klasseNavn) return false;
+  const t = klasseNavn.trim();
+  // Eksakt «N», ender på « N», «-N», «(N)», « Net», « Netto»
+  if (/^N$/i.test(t)) return true;
+  if (/(?:\s|-)N\s*$/i.test(t)) return true;
+  if (/\(N\)\s*$/i.test(t)) return true;
+  if (/\bnetto\b/i.test(t)) return true;
+  if (/\bnet\b/i.test(t) && !/\bnett?work\b/i.test(t)) return true;
+  return false;
+}
+
+/**
+ * Brutto-score for runden: ResultSum.ActualText / ActualValue.
+ * Bruker ALDRI NetText/NetValue — det er handicap-justert netto.
+ */
+export function extractRoundScore(round: unknown): number | null {
   if (!round || typeof round !== "object") return null;
   const r = round as Record<string, unknown>;
-  // Brutto-score for runden ligger i ResultSum.ActualText ("64") /
-  // ActualValue (640000 = 64×10000).
   const sum = r.ResultSum as Record<string, unknown> | undefined;
   if (sum) {
+    // Eksplisitt: Actual = brutto. Ikke fall tilbake til Net*.
     if (typeof sum.ActualText === "string" && sum.ActualText !== "") {
       const n = parseInt(sum.ActualText, 10);
       if (!isNaN(n)) return n;
@@ -263,6 +283,19 @@ function extractRoundScore(round: unknown): number | null {
     if (typeof sum.ActualValue === "number") return Math.round(sum.ActualValue / 10000);
   }
   return null;
+}
+
+/** Klassenavn fra GolfBox-class-objekt eller dict-nøkkel. */
+export function golfboxKlasseNavn(cls: unknown, dictKey?: string): string {
+  if (cls && typeof cls === "object") {
+    const o = cls as Record<string, unknown>;
+    for (const k of ["Name", "ClassName", "Title", "DisplayName"]) {
+      if (typeof o[k] === "string" && (o[k] as string).trim()) {
+        return (o[k] as string).trim();
+      }
+    }
+  }
+  return (dictKey ?? "").trim();
 }
 
 // Rounds kommer som dict (keyed pr. runde) eller array. Normaliser til ordnet liste.
@@ -294,7 +327,11 @@ export async function getLeaderboard(
   let isScoringOpen = false;
   const entries: GolfBoxLeaderboardEntry[] = [];
 
-  for (const cls of Object.values(classes)) {
+  for (const [classKey, cls] of Object.entries(classes)) {
+    const klasseNavn = golfboxKlasseNavn(cls, classKey);
+    // AK-regel: ekskluder nett-klasser (navn som ender på N / Net / Netto).
+    if (erNettoKlasse(klasseNavn)) continue;
+
     const lb = (cls as { Leaderboard?: RawLeaderboard } | null)?.Leaderboard;
     if (!lb) continue;
     if (Array.isArray(lb.RoundNames) && lb.RoundNames.length > roundNames.length)

@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
+import { assertCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { nonEmpty } from "@/lib/validation/schemas";
 
@@ -150,6 +151,12 @@ export async function sendMeldingTilSpiller(
     select: { id: true },
   });
   if (!spiller) return { ok: false, error: "Spiller ikke funnet" };
+
+  try {
+    await assertCoachTilgangTilSpiller(me, playerId);
+  } catch {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
+  }
 
   const trimmet = body.trim();
   const ny: ChatMelding = {

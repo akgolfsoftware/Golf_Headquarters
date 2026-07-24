@@ -10,6 +10,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { assertCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 
@@ -58,6 +59,7 @@ export async function lagreSpiller(formData: FormData): Promise<void> {
   }
 
   const data = parsed.data;
+  await assertCoachTilgangTilSpiller(actor, data.id);
   const name = [data.fornavn, data.etternavn].filter((s) => s && s.length > 0).join(" ");
   const dateOfBirth = data.fodselsdato ? new Date(data.fodselsdato) : null;
 

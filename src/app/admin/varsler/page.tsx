@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 
 export default async function VarslerPage() {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
-  const data = await loadVarsler(user.id);
+  const data = await loadVarsler(user.id, user.role);
   // Kanonisk kø-telling (koTelling) + coachens egne uleste meldinger — samme
   // handlings-tall som innboks-banneret og godkjenninger-hodet.
   const total = data.ko.planActions + data.counts.notifications;

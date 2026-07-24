@@ -258,16 +258,25 @@ export async function POST(req: Request) {
             : session.payment_intent?.id ?? null;
 
         if (bookingId && session.payment_status === "paid") {
+          // Kun PENDING → CONFIRMED; match checkout-session når lagret (forsvar i dybden).
           const result = await prisma.booking.updateMany({
-            where: { id: bookingId },
+            where: {
+              id: bookingId,
+              status: "PENDING",
+              OR: [
+                { stripeCheckoutSessionId: null },
+                { stripeCheckoutSessionId: session.id },
+              ],
+            },
             data: {
               status: "CONFIRMED",
               stripePaymentIntentId: paymentIntentId,
+              stripeCheckoutSessionId: session.id,
             },
           });
           if (result.count === 0) {
             console.warn(
-              "[stripe-webhook] checkout.session.completed: ukjent bookingId",
+              "[stripe-webhook] checkout.session.completed: ukjent/ikke-PENDING bookingId",
               bookingId,
             );
           }
@@ -330,13 +339,21 @@ export async function POST(req: Request) {
         const session = event.data.object as Stripe.Checkout.Session;
         const bookingId = session.metadata?.bookingId;
         if (bookingId) {
+          // Aldri overskriv CONFIRMED/COMPLETED ved race med completed-event.
           const result = await prisma.booking.updateMany({
-            where: { id: bookingId },
+            where: {
+              id: bookingId,
+              status: "PENDING",
+              OR: [
+                { stripeCheckoutSessionId: null },
+                { stripeCheckoutSessionId: session.id },
+              ],
+            },
             data: { status: "CANCELLED" },
           });
           if (result.count === 0) {
             console.warn(
-              "[stripe-webhook] checkout.session.expired: ukjent bookingId",
+              "[stripe-webhook] checkout.session.expired: ukjent/ikke-PENDING bookingId",
               bookingId
             );
           }

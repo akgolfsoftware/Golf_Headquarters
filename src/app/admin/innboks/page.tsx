@@ -23,7 +23,7 @@ export default async function V2TriagePage() {
   const [data, feedback, ko] = await Promise.all([
     loadDailyBrief({ id: user.id, name: user.name, role: user.role }),
     loadAppFeedback(),
-    koTelling(user.id),
+    koTelling(user.id, user.role),
   ]);
   return (
     <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
