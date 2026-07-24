@@ -13,11 +13,22 @@
  *
  * Portal/admin krever innlogging og dekkes derfor ikke her — de går via
  * `webapp-testing`/manuell UAT til vi har en e2e-testbruker i CI.
+ *
+ * MOT PROD vs. MOT BYGGET: `ci.yml` kjører suiten mot PR-ens egen build på
+ * localhost, mens `playwright.yml` kjører den samme suiten mot den DEPLOYEDE
+ * prod-URL-en. En kode-assertion som denne er bare gyldig mot koden den testes
+ * sammen med — mot prod måler den en deploy som ligger bak grenen, og en fiks i
+ * PR-en ville vist seg som rødt helt til den var merget. Derfor: streng
+ * (failer) mot localhost, informativ (annotert) mot en ekstern base-URL.
  */
 
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { gotoAndWait } from "./_helpers";
+
+/** Kjører vi mot PR-ens egen build, eller mot en allerede deployet URL? */
+const BASE = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";
+const MOT_EGEN_BUILD = BASE.includes("localhost") || BASE.includes("127.0.0.1");
 
 /** Auth-frie flater som skal tåle en axe-skanning. */
 const FLATER = [
@@ -58,12 +69,20 @@ test.describe("Accessibility — axe-smoke på v2-flater", () => {
         });
       }
 
-      expect(
-        critical,
-        `Critical a11y-violations på ${flate.path}: ${critical
-          .map((v) => `${v.id} — ${v.help}`)
-          .join(" · ")}`,
-      ).toHaveLength(0);
+      const beskrivelse = critical.map((v) => `${v.id} — ${v.help}`).join(" · ");
+
+      if (!MOT_EGEN_BUILD) {
+        // Prod-kjøring: rapporter, men fell ikke — deployen kan ligge bak grenen.
+        if (critical.length > 0) {
+          test.info().annotations.push({
+            type: "critical a11y (deployet versjon)",
+            description: `${flate.path}: ${beskrivelse}`,
+          });
+        }
+        return;
+      }
+
+      expect(critical, `Critical a11y-violations på ${flate.path}: ${beskrivelse}`).toHaveLength(0);
     });
   }
 });
