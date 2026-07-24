@@ -260,6 +260,38 @@
   font-weight: 700;
 }
 
+
+/* ── Scroll-avsløring (markedsflater) ─────────────────────────────────
+   Innhold som toner inn når det kommer i viewporten. Klassen settes ved
+   render; `data-inne="ja"` settes av IntersectionObserver i
+   marketing/v2/scroll-animasjon.tsx. Ingen bevegelse før observeren har
+   sagt fra, og ingen bevegelse i det hele tatt ved redusert bevegelse
+   (regelen nederst i fila) — da står innholdet synlig fra første maling. */
+.m-avslor {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 620ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 620ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--m-forsink, 0ms);
+}
+.m-avslor[data-inne="ja"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Parallakse: --m-skift settes fra scroll-posisjon (rAF) i samme fil. */
+.m-parallaks {
+  transform: translate3d(0, var(--m-skift, 0px), 0) scale(var(--m-skala, 1));
+  will-change: transform;
+}
+
+/* Sticky produkt-scene: telefonen står stille mens teksten ruller forbi. */
+.m-klebrig {
+  position: sticky;
+  top: calc(50vh - 320px);
+}
+
 /* ── Redusert bevegelse — gjelder HELE katalogen ──────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .v2-press,
@@ -273,6 +305,15 @@
   .v2-sheet-in,
   .v2-backdrop-in {
     animation: none;
+  }
+  /* Markedsflatene: vis alt med én gang, uten inn-toning eller parallakse. */
+  .m-avslor {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .m-parallaks {
+    transform: none;
   }
   .v2-skel {
     animation: none;

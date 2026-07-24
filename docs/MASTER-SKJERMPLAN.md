@@ -575,7 +575,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Forside | `/(marketing)` | ✓ | ✓✓– | ✓ | ✓ | – | ✓† | Design rettet – → ✓ 16. jul: `MarkedForsideV2`. **Coaching-først 24. juli (Anders):** forsiden bygget på nytt rundt coaching — hero med coach + Book en samtale, «slik jobber vi» (3 steg), coaching-pakkene m/ «hva er en pakke»-note, PlayerHQ som støtteargument, bevis, slutt-CTA. Én primær handling hele siden (nav-CTA byttet til booking via ny `cta`-prop på delt `MRamme`), app-sporet flyttet til stille lenke → /playerhq. Egen kopi av marketing-rammen fjernet: bruker nå delt `marked-ramme`. Adresse/Flyt ~ → ✓. Skjermbilde-verifisert 1440 + 390, axe 0 critical/0 serious. |
+| Forside | `/(marketing)` | ✓ | ✓✓– | ✓ | ✓ | – | ✓† | Design rettet – → ✓ 16. jul: `MarkedForsideV2`. **Coaching-først 24. juli (Anders):** forsiden bygget på nytt rundt coaching — hero med coach + Book en samtale, «slik jobber vi» (3 steg), coaching-pakkene m/ «hva er en pakke»-note, PlayerHQ som støtteargument, bevis, slutt-CTA. Én primær handling hele siden (nav-CTA byttet til booking via ny `cta`-prop på delt `MRamme`), app-sporet flyttet til stille lenke → /playerhq. Egen kopi av marketing-rammen fjernet: bruker nå delt `marked-ramme`. Adresse/Flyt ~ → ✓. Skjermbilde-verifisert 1440 + 390, axe 0 critical/0 serious. **Scroll-drevet 24. juli (Anders):** hero med ekte foto + parallakse, tjenestekort med ekte akademi-bilder, klebrig PlayerHQ-scene der telefonen står stille og bytter mellom ekte app-skjermer (`Skjerm` + portalens egne v2-komponenter) mens teksten ruller, og «AK Golf Intelligence»-seksjon med kanonisk `SgKategorier` mot PGA Tour-baseline. Bevegelse ligger i motion-katalogen (`m-avslor`/`m-parallaks`/`m-klebrig`) og slås helt av ved prefers-reduced-motion. Skjermbilde-verifisert 1440 + 390, axe 0 critical/0 serious. |
 | Anlegg | `/(marketing)/anlegg` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedAnleggListeV2`.
 | · Anlegg-detalj | `/(marketing)/anlegg/[slug]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedAnleggDetaljV2`.
 | Blogg | `/(marketing)/blogg` | ✓ | --- | ✓ | ~ | ~ | ✓ |
@@ -796,6 +796,8 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 ---
 
 ## Endringslogg
+
+- 24. juli: **Scroll-drevet forside** — `/` fortelles nedover med ekte bilder: parallakse-hero, tjenestekort med akademi-foto, klebrig PlayerHQ-scene som viser ekte app-skjermer bygget av portalens egne v2-komponenter, og «AK Golf Intelligence» med divergerende SG mot PGA Tour-baseline (`SgKategorier`). Ny `src/components/marketing/v2/scroll-animasjon.tsx` (Avslor/Parallaks/useAktivtSteg) + tre klasser i motion-katalogen; alt av bevegelse dør ved prefers-reduced-motion. NB: «AK Golf Intelligence» er et nytt navn utad — legg det i `docs/skjermtekst` hvis det skal være offisielt.
 
 - 24. juli: **Ny forside (coaching-først)** — `/` selger nå coaching, ikke appen: coach i heroen, «slik jobber vi», pakkene, PlayerHQ som verktøy som følger med, bevis, booking-CTA. Én primær handling (Book en samtale) på hele flaten; nav-CTA-en kan nå overstyres per side (`cta`-prop på `MRamme`). Forsiden bruker den delte marketing-rammen i stedet for sin egen kopi. NB: dette avviker bevisst fra M1 i `docs/skjermtekst/skjerm-tekst-hovedskjermer.md` (app-først hero) — skjermteksten bør oppdateres når Anders har sett flaten.
 
