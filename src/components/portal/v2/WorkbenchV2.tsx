@@ -740,7 +740,7 @@ function KoachNotatSeksjon({ coachNotat }: { coachNotat: NonNullable<WorkbenchV2
   );
 }
 
-export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekOffset, onEndret, skjulTittel = false }: {
+export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekOffset, onEndret, skjulTittel = false, onApneFullRediger }: {
   data: WorkbenchData;
   valgtOkt: WeekEvent | null;
   /** Dagindeks (0=man) for valgt økt — brukes i slett-popupen. -1 = ukjent. */
@@ -751,6 +751,8 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
   onEndret: () => void;
   /** Mobil: MobilFold-headeren viser allerede «Balanse» — dropp den interne. */
   skjulTittel?: boolean;
+  /** G5: åpne full rediger-ark for valgt økt. */
+  onApneFullRediger?: (sessionId: string) => void;
 }) {
   const axis = data.axisHours ?? [];
   const totalT = axis.reduce((a, x) => a + x.hours, 0);
@@ -761,7 +763,9 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
       {!skjulTittel && (
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <Icon name="activity" size={15} style={{ color: T.lime }} />
-          <span style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg }}>Balanse</span>
+          <span style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg }}>
+            {valgtOkt ? "Inspektør" : "Balanse"}
+          </span>
           <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>uke {weekNumber}</span>
         </div>
       )}
@@ -814,10 +818,21 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
 
       {actions?.coachNotat && <KoachNotatSeksjon coachNotat={actions.coachNotat} />}
 
-      <BalSeksjon label="Valgt økt">
+      <BalSeksjon label={valgtOkt ? "Valgt økt · rediger her" : "Valgt økt"}>
         {valgtOkt ? (
-          <ValgtOktSeksjon okt={valgtOkt} dag={valgtDag} actions={actions} weekOffset={weekOffset} onEndret={onEndret} />
-        ) : <TomTilstand icon="target" title="Ingen økt valgt" sub="Trykk en økt i tidslinja." />}
+          <ValgtOktSeksjon
+            okt={valgtOkt}
+            dag={valgtDag}
+            actions={actions}
+            weekOffset={weekOffset}
+            onEndret={onEndret}
+            onApneFullRediger={
+              valgtOkt.id && onApneFullRediger
+                ? () => onApneFullRediger(valgtOkt.id!)
+                : undefined
+            }
+          />
+        ) : <TomTilstand icon="target" title="Ingen økt valgt" sub="Trykk en økt i tidslinja — da åpnes inspektøren her." />}
       </BalSeksjon>
 
       <BalSeksjon label="Ukens fordeling · timer" right={<span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, color: T.fg2 }}>{fmtTimer(totalT)}</span>}>
@@ -1961,6 +1976,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           actions={balanseActions}
           weekOffset={weekOffset}
           onEndret={() => router.refresh()}
+          onApneFullRediger={(id) => setRedigerOktId(id)}
         />
       </div>
 
@@ -1992,16 +2008,17 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
         <MobilFold tittel="Bibliotek" ikon="layers">
           <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} proMode={proMode} skjulTittel />
         </MobilFold>
-        <MobilFold tittel="Balanse" ikon="activity">
+        <MobilFold tittel={valgtOkt ? "Inspektør" : "Balanse"} ikon="activity">
           <WBBalanse
             skjulTittel
             data={data}
             valgtOkt={valgtOkt}
-          valgtDag={valgtDag}
+            valgtDag={valgtDag}
             weekNumber={weekNumber}
             actions={balanseActions}
             weekOffset={weekOffset}
             onEndret={() => router.refresh()}
+            onApneFullRediger={(id) => setRedigerOktId(id)}
           />
         </MobilFold>
       </div>

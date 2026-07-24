@@ -945,7 +945,17 @@ export interface ValgtOktSeksjonProps {
   /** Kalles etter vellykket flytt/sletting — parent kaller router.refresh(). */
   onEndret: () => void;
 }
-export function ValgtOktSeksjon({ okt, dag, actions, weekOffset, onEndret }: ValgtOktSeksjonProps) {
+export function ValgtOktSeksjon({
+  okt,
+  dag,
+  actions,
+  weekOffset,
+  onEndret,
+  onApneFullRediger,
+}: ValgtOktSeksjonProps & {
+  /** G5: åpne full RedigerOktArk fra inspektøren (parent eier modal-state). */
+  onApneFullRediger?: () => void;
+}) {
   const router = useRouter();
   const [flyttApen, setFlyttApen] = useState(false);
   const [flyttLoading, setFlyttLoading] = useState(false);
@@ -1144,57 +1154,72 @@ export function ValgtOktSeksjon({ okt, dag, actions, weekOffset, onEndret }: Val
         </div>
       )}
 
-      {(oktFormel?.lFase || oktFormel?.miljo) && (
+      {/* G5: AK-formel-chips — coach sykler med trykk (samme logikk som økt-ark) */}
+      {(kanRedigere || oktFormel?.lFase || oktFormel?.miljo) && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10 }} data-wb-formel-chips>
-          {oktFormel.lFase && (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-              <span
-                style={{
-                  fontFamily: T.mono,
-                  fontSize: 9,
-                  fontWeight: 700,
-                  letterSpacing: "0.04em",
-                  textTransform: "uppercase",
-                  color: T.fg2,
-                  background: T.panel2,
-                  border: `1px solid ${T.border}`,
-                  borderRadius: 9999,
-                  padding: "4px 9px",
+          {kanRedigere ? (
+            <>
+              <button
+                type="button"
+                disabled={lagrerFelt}
+                onClick={() => {
+                  const rekkefolge: (FaseSteg | null)[] = [null, ...FASE_STEG_KEYS];
+                  const naa = lFaseTilSteg((oktFormel?.lFase as LFase | null) ?? null);
+                  const i = rekkefolge.indexOf(naa);
+                  const neste = rekkefolge[(i + 1) % rekkefolge.length];
+                  const lFase = stegTilLFase(neste, (oktFormel?.lFase as LFase | null) ?? null);
+                  setOktFormel((prev) => ({ lFase: lFase ?? null, miljo: prev?.miljo ?? null }));
+                  void lagreFelt({ lFase });
                 }}
-                title="Læringsfase"
+                className="v2-press v2-focus"
+                title="Trykk for å bytte læringsfase"
+                style={chipStil(!!oktFormel?.lFase)}
               >
-                {faseLabel(oktFormel.lFase as LFase)}
-              </span>
+                {oktFormel?.lFase ? faseLabel(oktFormel.lFase as LFase) : "Læringsfase"}
+              </button>
               <HjelpTips k="lFase" size={11} />
-            </span>
-          )}
-          {oktFormel.miljo && (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-              <span
-                style={{
-                  fontFamily: T.mono,
-                  fontSize: 9,
-                  fontWeight: 700,
-                  letterSpacing: "0.04em",
-                  textTransform: "uppercase",
-                  color: T.fg2,
-                  background: T.panel2,
-                  border: `1px solid ${T.border}`,
-                  borderRadius: 9999,
-                  padding: "4px 9px",
+              <button
+                type="button"
+                disabled={lagrerFelt}
+                onClick={() => {
+                  const i = oktFormel?.miljo ? MILJOER.indexOf(oktFormel.miljo as (typeof MILJOER)[number]) : -1;
+                  const miljo = i === MILJOER.length - 1 ? null : MILJOER[i + 1];
+                  setOktFormel((prev) => ({ lFase: prev?.lFase ?? null, miljo: miljo ?? null }));
+                  void lagreFelt({ miljo });
                 }}
-                title="Miljø"
+                className="v2-press v2-focus"
+                title="Trykk for å bytte miljø"
+                style={chipStil(!!oktFormel?.miljo)}
               >
-                {oktFormel.miljo}
-              </span>
+                {oktFormel?.miljo ?? "Miljø"}
+              </button>
               <HjelpTips k="miljo" size={11} />
-            </span>
+            </>
+          ) : (
+            <>
+              {oktFormel?.lFase && (
+                <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 9999, padding: "4px 9px" }}>
+                  {faseLabel(oktFormel.lFase as LFase)}
+                </span>
+              )}
+              {oktFormel?.miljo && (
+                <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 9999, padding: "4px 9px" }}>
+                  {oktFormel.miljo}
+                </span>
+              )}
+            </>
           )}
         </div>
       )}
 
       {okt.id && (
         <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+          {/* G5: full redigering i ark uten å miste uke-lerretet */}
+          {kanRedigere && onApneFullRediger && (
+            <Knapp ghost icon="sliders" full onClick={onApneFullRediger}>
+              Rediger økt (drills, AK-formel)
+            </Knapp>
+          )}
           {/* Exit til gjennomføring: Start (plan, via live-flyt) / Se økt (ferdig eller v2) */}
           {erPlan ? (
             ferdig ? (
@@ -1219,21 +1244,56 @@ export function ValgtOktSeksjon({ okt, dag, actions, weekOffset, onEndret }: Val
 
       {okt.id && feil && <span style={{ fontFamily: T.ui, fontSize: 11, color: T.down, display: "block", marginTop: 8 }}>{feil}</span>}
 
-      {oktDrills && oktDrills.length > 0 && (
+      {okt.id && erPlan && (
         <div style={{ marginTop: 10 }} data-wb-inspektordrills>
-          <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>Driller ({oktDrills.length})</span>
-          <div style={{ display: "flex", flexDirection: "column", gap: 4, marginTop: 6 }}>
-            {oktDrills.map((d, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 9px", borderRadius: 9, background: T.panel2, border: `1px solid ${T.border}` }}>
-                <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, flex: "none" }}>{i + 1}</span>
-                <span style={{ flex: 1, minWidth: 0, fontFamily: T.ui, fontSize: 11.5, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.navn}</span>
-                <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut, flex: "none" }}>
-                  {[d.minutter != null ? `${d.minutter} min` : null, d.sett != null && d.reps != null ? `${d.sett}×${d.reps}` : null, d.nivaa === "uten" ? "uten ball" : d.nivaa === "lav" ? "lav fart" : null].filter(Boolean).join(" · ") || "—"}
-                </span>
-              </div>
-            ))}
-          </div>
-          <span style={{ display: "block", marginTop: 5, fontFamily: T.mono, fontSize: 8, color: T.mut }}>Rediger driller: trykk økten i tidslinja.</span>
+          <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
+            Driller {oktDrills ? `(${oktDrills.length})` : ""}
+          </span>
+          {oktDrills === null ? (
+            <div style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginTop: 6 }}>Henter…</div>
+          ) : oktDrills.length > 0 ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 4, marginTop: 6 }}>
+              {oktDrills.map((d, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={kanRedigere && onApneFullRediger ? onApneFullRediger : undefined}
+                  className={kanRedigere && onApneFullRediger ? "v2-press v2-focus" : undefined}
+                  style={{
+                    appearance: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "6px 9px",
+                    borderRadius: 9,
+                    background: T.panel2,
+                    border: `1px solid ${T.border}`,
+                    cursor: kanRedigere && onApneFullRediger ? "pointer" : "default",
+                    textAlign: "left",
+                    width: "100%",
+                    color: "inherit",
+                  }}
+                >
+                  <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, flex: "none" }}>{i + 1}</span>
+                  <span style={{ flex: 1, minWidth: 0, fontFamily: T.ui, fontSize: 11.5, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.navn}</span>
+                  <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut, flex: "none" }}>
+                    {[d.minutter != null ? `${d.minutter} min` : null, d.sett != null && d.reps != null ? `${d.sett}×${d.reps}` : null, d.nivaa === "uten" ? "uten ball" : d.nivaa === "lav" ? "lav fart" : null].filter(Boolean).join(" · ") || "—"}
+                  </span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div style={{ marginTop: 6 }}>
+              <span style={{ display: "block", fontFamily: T.ui, fontSize: 11, color: T.mut, marginBottom: 6 }}>
+                Ingen driller i denne økta ennå.
+              </span>
+              {kanRedigere && onApneFullRediger && (
+                <Knapp ghost icon="plus" full onClick={onApneFullRediger}>
+                  Legg til driller
+                </Knapp>
+              )}
+            </div>
+          )}
         </div>
       )}
 
