@@ -36,7 +36,7 @@ RLS-policyer fra migrasjonene påføres ikke av `db push`, men Prisma kjører so
 Seed lager Prisma-brukere med placeholder-`authId`. For å logge inn må en Supabase Auth-bruker kobles: opprett auth-bruker via service-role (`supabase.auth.admin.createUser`, `email_confirm:true`) og sett `UPDATE public.users SET "authId"=<uuid> WHERE email=...`. Etablert test-coach: **anders@akgolf.no / Passord123!** (rolle COACH → lander på `/admin/agencyos`).
 
 ### GOTCHA: CSP blokkerer nettleser-auth mot lokal Supabase
-`src/proxy.ts` `buildCsp()` hardkoder `connect-src ... https://*.supabase.co` og har ingen env-hook. Nettleseren blokkerer derfor `supabase-js`-login mot `http://127.0.0.1:54321` («Failed to fetch»). Ikke endre app-koden for å fikse dette i en setup-jobb. For UI/e2e-login lokalt: kjør Playwright med `bypassCSP: true` (samme rammeverk som repoets e2e), eller bruk en ekte hostet Supabase. Server-side render, Prisma-data og offentlige sider (`/`, `/booking`, `/stats`) fungerer uten dette.
+`src/proxy.ts` `buildCsp()` tillater i dev `connect-src` mot origin fra `NEXT_PUBLIC_SUPABASE_URL` (pluss localhost/127.0.0.1). Sett den til Tailscale-IP-en når du åpner appen fra egen maskin, f.eks. `http://100.115.94.1:54321` — **server-side** `DATABASE_URL`/`DIRECT_URL` skal fortsatt peke på `127.0.0.1:54322` på VM-en. Uten dev-CSP-tillegget får nettleseren «Failed to fetch» ved login mot lokal Supabase.
 
 ### GOTCHA: ikke source `.env.local` inn i shellen før `npm test`
 Enhetstestene leser `process.env` direkte. `NEXT_PUBLIC_APP_URL=http://localhost:3000` fra `.env.local` får `src/lib/security/same-origin.test.ts` til å feile (forventer default `https://akgolf.no`). Kjør `npm test` i et rent miljø.
