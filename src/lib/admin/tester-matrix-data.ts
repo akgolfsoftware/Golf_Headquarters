@@ -17,6 +17,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import type { PyramidArea } from "@/generated/prisma/client";
 import {
   DISPLAY_UNIT,
@@ -89,12 +90,15 @@ function cellBenchmark(bm: Benchmarks | undefined, score: number): CellBenchmark
   return { short: lvl.short, label: lvl.label, index: lvl.index, achieved: true, ladder };
 }
 
-export async function loadTesterMatrix(): Promise<TesterMatrixData> {
+export async function loadTesterMatrix(viewer: {
+  id: string;
+  role: string;
+}): Promise<TesterMatrixData> {
   const now = new Date();
 
   const [players, testDefs, results] = await Promise.all([
     prisma.user.findMany({
-      where: { role: "PLAYER", deletedAt: null },
+      where: coachScopedPlayerWhere(viewer),
       select: { id: true, name: true, homeClub: true, hcp: true, tier: true },
       orderBy: { name: "asc" },
     }),

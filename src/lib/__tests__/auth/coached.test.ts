@@ -37,6 +37,7 @@ test("coach-scoping: ADMIN ser alle coachede (identisk med basisporten)", () => 
 test("coach-scoping: COACH ser kun egne via enrollment (coachId på aktiv enrollment)", () => {
   const w = coachScopedPlayerWhere({ id: "coach-1", role: "COACH" });
   assert.equal(w.role, "PLAYER");
+  assert.equal(w.deletedAt, null, "myk-slettede spillere er stengt ute for COACH");
   const grener = w.OR;
   assert.ok(Array.isArray(grener) && grener.length === 2, "to lovlige veier inn");
   const enrollment = grener.find((g) => "enrollmentsAsPlayer" in g);

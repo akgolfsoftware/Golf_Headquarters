@@ -173,7 +173,19 @@ export async function loadDailyBrief(coach: {
     latestDailyBriefRun,
   ] = await Promise.all([
     prisma.booking.findMany({
-      where: { startAt: { gte: dagStart, lt: dagSlutt }, status: { in: ["CONFIRMED", "PENDING"] } },
+      where: {
+        startAt: { gte: dagStart, lt: dagSlutt },
+        status: { in: ["CONFIRMED", "PENDING"] },
+        ...(coach.role === "ADMIN"
+          ? {}
+          : {
+              OR: [
+                { coachId: coach.id },
+                { serviceType: { coachUserId: coach.id } },
+                { user: coachScopedPlayerWhere(coach) },
+              ],
+            }),
+      },
       orderBy: { startAt: "asc" },
       select: {
         id: true,
@@ -205,7 +217,11 @@ export async function loadDailyBrief(coach: {
       },
     }),
     prisma.planAction.findMany({
-      where: { status: "PENDING" },
+      where: {
+        status: "PENDING",
+        OR: [{ coachId: coach.id }, { coachId: null }],
+        user: coachScopedPlayerWhere(coach),
+      },
       orderBy: { createdAt: "desc" },
       take: 8,
       select: {
@@ -218,7 +234,11 @@ export async function loadDailyBrief(coach: {
       },
     }),
     prisma.sessionRequest.findMany({
-      where: { status: "PENDING" },
+      where: {
+        status: "PENDING",
+        OR: [{ coachId: coach.id }, { coachId: null }],
+        user: coachScopedPlayerWhere(coach),
+      },
       orderBy: { createdAt: "desc" },
       take: 4,
       select: {

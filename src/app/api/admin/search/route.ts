@@ -5,6 +5,7 @@
 
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
@@ -106,13 +107,29 @@ export async function GET(req: Request) {
     return NextResponse.json(empty);
   }
 
+  const spillerScope = coachScopedPlayerWhere(coach);
+  const bookingScope =
+    coach.role === "ADMIN"
+      ? {}
+      : {
+          OR: [
+            { coachId: coach.id },
+            { serviceType: { coachUserId: coach.id } },
+            { user: spillerScope },
+          ],
+        };
+
   const [playersRaw, plansRaw, bookingsRaw] = await Promise.all([
     prisma.user.findMany({
       where: {
-        role: "PLAYER",
-        OR: [
-          { name: { contains: q, mode: "insensitive" } },
-          { email: { contains: q, mode: "insensitive" } },
+        AND: [
+          spillerScope,
+          {
+            OR: [
+              { name: { contains: q, mode: "insensitive" } },
+              { email: { contains: q, mode: "insensitive" } },
+            ],
+          },
         ],
       },
       select: { id: true, name: true, email: true, avatarUrl: true },
@@ -122,6 +139,7 @@ export async function GET(req: Request) {
     prisma.trainingPlan.findMany({
       where: {
         name: { contains: q, mode: "insensitive" },
+        user: spillerScope,
       },
       select: {
         id: true,
@@ -134,9 +152,14 @@ export async function GET(req: Request) {
     }),
     prisma.booking.findMany({
       where: {
-        user: {
-          name: { contains: q, mode: "insensitive" },
-        },
+        AND: [
+          bookingScope,
+          {
+            user: {
+              name: { contains: q, mode: "insensitive" },
+            },
+          },
+        ],
       },
       select: {
         id: true,

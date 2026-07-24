@@ -12,6 +12,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 import { koTelling, type KoTelling } from "@/lib/admin/ko-telling";
 
@@ -94,13 +95,21 @@ function lesSummary(suggestion: unknown): string | null {
   return null;
 }
 
-export async function loadVarsler(coachUserId: string): Promise<VarslerData> {
+export async function loadVarsler(
+  coachUserId: string,
+  viewerRole: string = "COACH",
+): Promise<VarslerData> {
   const now = new Date();
   const signalCutoff = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+  const spillerScope = coachScopedPlayerWhere({ id: coachUserId, role: viewerRole });
 
   const [planActions, signalsRaw, notifications, ko] = await Promise.all([
     prisma.planAction.findMany({
-      where: { status: "PENDING" },
+      where: {
+        status: "PENDING",
+        OR: [{ coachId: coachUserId }, { coachId: null }],
+        user: spillerScope,
+      },
       select: {
         id: true,
         actionType: true,
@@ -113,7 +122,10 @@ export async function loadVarsler(coachUserId: string): Promise<VarslerData> {
       take: 50,
     }),
     prisma.signal.findMany({
-      where: { computedAt: { gte: signalCutoff } },
+      where: {
+        computedAt: { gte: signalCutoff },
+        user: spillerScope,
+      },
       select: {
         id: true,
         kind: true,
@@ -133,7 +145,7 @@ export async function loadVarsler(coachUserId: string): Promise<VarslerData> {
       orderBy: { createdAt: "desc" },
       take: 30,
     }),
-    koTelling(coachUserId),
+    koTelling(coachUserId, viewerRole),
   ]);
 
   const signals = [...signalsRaw]

@@ -14,6 +14,7 @@ import { notFound } from "next/navigation";
 
 import type { SgCategory } from "@/generated/prisma/client";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { hentTreningsVolum } from "@/lib/training/volum";
 import { beregnKorrelasjon } from "@/lib/training/korrelasjon";
@@ -55,7 +56,10 @@ export default async function SpillerFremgangPage({
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const { id } = await params;
 
-  const spiller = await prisma.user.findUnique({ where: { id }, select: { id: true, name: true } });
+  const spiller = await prisma.user.findFirst({
+    where: { AND: [coachScopedPlayerWhere(user), { id }] },
+    select: { id: true, name: true },
+  });
   if (!spiller) notFound();
 
   const UKER = 8;

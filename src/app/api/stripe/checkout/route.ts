@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { headers } from "next/headers";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import {
@@ -56,8 +55,11 @@ export async function POST(req: Request) {
     );
   }
 
-  const h = await headers();
-  const origin = h.get("origin") ?? `https://${h.get("host")}`;
+  // Hardkodet app-URL — ikke stol på Origin/Host (åpen redirect-risiko).
+  const origin = (process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no").replace(
+    /\/$/,
+    "",
+  );
 
   // Hent eller opprett Stripe customer for brukeren
   let subscription = await prisma.subscription.findUnique({
