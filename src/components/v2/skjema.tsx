@@ -8,7 +8,7 @@
 
 import { Fragment } from "react";
 import type { CSSProperties, ReactNode } from "react";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { T } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
 import { CTAPill, Caps } from "./core";
@@ -27,9 +27,19 @@ const FELT: CSSProperties = {
 };
 interface EtikettProps {
   children?: ReactNode;
+  /** Kobler etiketten til kontrollen sin (a11y: `select-name`/`label`-reglene). */
+  htmlFor?: string;
 }
-function Etikett({ children }: EtikettProps) {
-  return <label style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg2, display: "block", marginBottom: 7 }}>{children}</label>;
+function Etikett({ children, htmlFor }: EtikettProps) {
+  return <label htmlFor={htmlFor} style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg2, display: "block", marginBottom: 7 }}>{children}</label>;
+}
+
+/* Etiketten kan være en vilkårlig ReactNode (ikon + tekst, HjelpTips osv.), så
+   `htmlFor` alene er ikke nok når teksten ikke er en ren streng — da faller vi
+   tilbake på et eksplisitt aria-label. Uten dette manglet kontrollene
+   tilgjengelig navn (axe `select-name`, fanget på /kontakt i GO V6-smoken). */
+function ariaNavn(label: ReactNode): string | undefined {
+  return typeof label === "string" ? label : undefined;
 }
 
 /* ── Inndata — tekstfelt m/ label ─────────────────────── */
@@ -46,11 +56,13 @@ export interface InndataProps {
 export function Inndata({ label = "Navn", value, defaultValue = "Øyvind Rohjan", placeholder, type = "text", mono, suffix, onChange }: InndataProps) {
   const [v, setV] = useState(defaultValue);
   const val = value !== undefined ? value : v;
+  const id = useId();
   return (
     <div>
-      {label && <Etikett>{label}</Etikett>}
+      {label && <Etikett htmlFor={id}>{label}</Etikett>}
       <div style={{ position: "relative" }}>
         <input
+          id={id} aria-label={label ? ariaNavn(label) : undefined}
           type={type} value={val} placeholder={placeholder}
           onChange={(e) => { setV(e.target.value); onChange?.(e.target.value); }}
           style={{ ...FELT, fontFamily: mono ? T.mono : T.ui, fontVariantNumeric: mono ? "tabular-nums" : undefined, paddingRight: suffix ? 44 : 13 }}
@@ -109,11 +121,13 @@ export function Velger({ label = "Treningsområde", options = ["Nærspill", "Tee
   const [v, setV] = useState(defaultValue);
   const val = value !== undefined ? value : v;
   const norm: VelgerIdValg[] = options.map((o) => (typeof o === "string" ? { value: o, label: o } : o));
+  const id = useId();
   return (
     <div>
-      {label && <Etikett>{label}</Etikett>}
+      {label && <Etikett htmlFor={id}>{label}</Etikett>}
       <div style={{ position: "relative" }}>
         <select
+          id={id} aria-label={ariaNavn(label) ?? "Velg"}
           value={val}
           onChange={(e) => { setV(e.target.value); onChange?.(e.target.value); }}
           style={{ ...FELT, paddingRight: 38, cursor: "pointer" }}
@@ -138,10 +152,12 @@ export interface TekstOmraadeProps {
 export function TekstOmraade({ label = "Notat til coach", defaultValue = "Kjente at P4-følelsen satt bedre i dag. Litt stiv i hoftene på slutten.", value, rows = 4, placeholder, onChange }: TekstOmraadeProps) {
   const [v, setV] = useState(defaultValue);
   const val = value !== undefined ? value : v;
+  const id = useId();
   return (
     <div>
-      {label && <Etikett>{label}</Etikett>}
+      {label && <Etikett htmlFor={id}>{label}</Etikett>}
       <textarea
+        id={id} aria-label={label ? ariaNavn(label) : undefined}
         value={val} rows={rows} placeholder={placeholder}
         onChange={(e) => { setV(e.target.value); onChange?.(e.target.value); }}
         style={{ ...FELT, resize: "vertical", lineHeight: 1.55 }}

@@ -797,6 +797,8 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 
 ## Endringslogg
 
+- 24. juli: **A11y-fiks fra GO V6-smoken** — v2-skjemakontrollene (`Inndata`/`Velger`/`TekstOmraade`) manglet kobling mellom etikett og kontroll; `<select>` på /kontakt hadde derfor ikke tilgjengelig navn (axe `select-name`, critical). Etikett fikk `htmlFor` + `useId`, med aria-label-fallback når etiketten ikke er ren tekst. Gjelder alle skjemaer bygget på v2-primitivene.
+
 - 24. juli: **GO V6 Craft** — «?»-pass på flaggskip-skjermene som manglet det (Gjør, Stall, Godkjenninger, AgencyOS-analyse + spilleranalyse; `AnalyseV2Kpi` fikk `hjelp`-felt); axe-smoke utvidet fra 3 til 12 offentlige flater (`tests/e2e/accessibility-v2-smoke.spec.ts`); navigasjonsovergang — v2-shell toner innholdet inn ved rutebytte (`.v2-fade-in`, honorerer prefers-reduced-motion).
 
 - 24. juli: **GO V2 Live + runde** — delt tommel-sone (`src/components/portal/runde-logg/tommel-sone.tsx`) holder primærhandlingen nederst i skjermen i både slag- og hurtigmodus og i oppsummeringen; live-økt-oppsummeringen og «Runden er lagret» har én neste handling hver. Se `plans/design-forbedring-plattform-2026-07-24.md` §4.
