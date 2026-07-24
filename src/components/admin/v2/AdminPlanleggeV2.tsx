@@ -20,6 +20,7 @@ import {
   StatusPill,
   T,
 } from "@/components/v2";
+// T is exported from v2 barrel — used for G9 year-wheel chip
 
 // ── Datakontrakt (mappes fra loaderen i ruten) ─────────────────
 export interface PlanleggeSpiller {
@@ -41,9 +42,13 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
   const { spillere } = data;
   // HurtigOpprett sender ?start= — følg med inn i Workbench så Ny økt prefylles.
   const startQ = searchParams.get("start");
-  const workbenchHref = (id: string) => {
+  const workbenchHref = (id: string, extra?: { zoom?: string }) => {
     const base = `/admin/spillere/${id}/workbench`;
-    return startQ ? `${base}?start=${encodeURIComponent(startQ)}` : base;
+    const params = new URLSearchParams();
+    if (startQ) params.set("start", startQ);
+    if (extra?.zoom) params.set("zoom", extra.zoom);
+    const q = params.toString();
+    return q ? `${base}?${q}` : base;
   };
 
   const totalt = spillere.length;
@@ -65,9 +70,9 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>AgencyOS · Planlegging</Caps>
+        <Caps>AgencyOS · Workbench</Caps>
         <div style={{ marginTop: 10 }}>
-          <Tittel em="planlegg.">La oss</Tittel>
+          <Tittel em="Workbench.">Åpne</Tittel>
         </div>
       </div>
       {totalt > 0 && (
@@ -129,7 +134,7 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
 
   const liste = (
     <Kort
-      eyebrow="Velg spiller å planlegge for"
+      eyebrow="Workbench · velg spiller"
       action={<Caps size={9}>{pl(totalt, "spiller", "spillere")}</Caps>}
     >
       {sortert.map((s, i) => (
@@ -138,15 +143,41 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
           onClick={() => router.push(workbenchHref(s.id))}
           leading={<AvatarInit navn={s.navn} size={34} />}
           title={s.navn}
-          sub="Åpne Workbench for å planlegge"
+          sub="Ukeplan · trykk rad · årshjul til høyre"
           meta={
-            s.aktivePlaner > 0 ? (
-              <StatusPill tone="lime">
-                {pl(s.aktivePlaner, "aktiv plan", "aktive planer")}
-              </StatusPill>
-            ) : (
-              <StatusPill tone="warn">Ingen aktiv plan</StatusPill>
-            )
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+              {s.aktivePlaner > 0 ? (
+                <StatusPill tone="lime">
+                  {pl(s.aktivePlaner, "aktiv plan", "aktive planer")}
+                </StatusPill>
+              ) : (
+                <StatusPill tone="warn">Ingen aktiv plan</StatusPill>
+              )}
+              {/* G9: stall-tidslinje / årshjul = Workbench årsplan-zoom */}
+              <Link
+                href={workbenchHref(s.id, { zoom: "ar" })}
+                onClick={(e) => e.stopPropagation()}
+                title="Årshjul / årsplan"
+                style={{
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  fontFamily: T.mono,
+                  fontSize: 9,
+                  fontWeight: 700,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                  color: T.lime,
+                  padding: "4px 8px",
+                  borderRadius: 8,
+                  border: `1px solid ${T.border}`,
+                  background: T.panel2,
+                }}
+              >
+                År
+              </Link>
+            </span>
           }
           last={i === sortert.length - 1}
         />

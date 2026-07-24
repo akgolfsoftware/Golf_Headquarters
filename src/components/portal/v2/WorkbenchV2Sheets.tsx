@@ -16,7 +16,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { ReactNode, CSSProperties } from "react";
-import { T, Icon, Kort, Knapp, AkseChip, HjelpTips } from "@/components/v2";
+import { T, Icon, Kort, Knapp, AkseChip, HjelpTips, Caps } from "@/components/v2";
 import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WeekEvent } from "@/lib/workbench/week-types";
@@ -480,10 +480,68 @@ function OktArkSkjema({
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>{overskrift}</h2>
+          <div>
+            <Caps size={8.5}>Composer · bygg økt</Caps>
+            <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, letterSpacing: "-0.02em", color: T.fg, margin: "4px 0 0" }}>{overskrift}</h2>
+          </div>
           <button onClick={onLukk} className="v2-press" aria-label="Lukk" style={{ background: T.panel3, border: `1px solid ${T.border}`, borderRadius: 9, color: T.mut, cursor: "pointer", padding: 6, display: "inline-flex" }}>
             <Icon name="x" size={14} />
           </button>
+        </div>
+
+        {/* G6: tre steg i composer — tydelig flyt uten wizard-sperre */}
+        <div
+          style={{
+            display: "flex",
+            gap: 6,
+            marginTop: 14,
+            flexWrap: "wrap",
+          }}
+          data-wb-composer-steg
+        >
+          {(
+            [
+              { n: "1", l: "Når" },
+              { n: "2", l: "Hva" },
+              { n: "3", l: "Driller" },
+            ] as const
+          ).map((s) => (
+            <span
+              key={s.n}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "5px 10px",
+                borderRadius: 9999,
+                background: T.panel2,
+                border: `1px solid ${T.border}`,
+                fontFamily: T.mono,
+                fontSize: 9,
+                fontWeight: 700,
+                color: T.fg2,
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+              }}
+            >
+              <span
+                style={{
+                  width: 16,
+                  height: 16,
+                  borderRadius: 9999,
+                  background: T.lime,
+                  color: T.onLime,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 9,
+                }}
+              >
+                {s.n}
+              </span>
+              {s.l}
+            </span>
+          ))}
         </div>
 
         <input
@@ -499,6 +557,7 @@ function OktArkSkjema({
         {/* Desktop: to kolonner · mobil: stack */}
         <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 20, marginTop: 16, alignItems: "start" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <Caps size={8.5}>1 · Når</Caps>
             <Felt label="Dag">
               <DagPillRow value={dayIndex} onChange={setDayIndex} disabled={lagrer} />
             </Felt>
@@ -610,6 +669,7 @@ function OktArkSkjema({
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <Caps size={8.5}>2 · Hva + 3 · Driller</Caps>
             <Felt label="Område — trykk for å bytte" hjelp="pyramideAkse">
               <button
                 type="button"

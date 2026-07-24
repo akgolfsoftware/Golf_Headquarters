@@ -81,9 +81,58 @@ export function WorkbenchColdstart({
               Ingen plan for {fornavn} ennå
             </div>
             <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.mut, lineHeight: 1.55, margin: "7px auto 0", maxWidth: 380 }}>
-              Start fra en godkjent planmal — så finjusterer du uken rett på tidslinja etterpå.
+              Tre trygge veier inn — velg én, finjuster på tidslinja etterpå.
             </p>
           </div>
+        </div>
+
+        {/* G7: tre veier som nummererte steg */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: mobile ? "1fr" : "1fr 1fr 1fr",
+            gap: 8,
+            marginBottom: 14,
+          }}
+        >
+          {(
+            [
+              { n: "1", t: "Mal", d: "Første uke ferdig" },
+              { n: "2", t: "AI / årsplan", d: "Forslag eller perioder" },
+              { n: "3", t: "Blankt", d: "Bygg økt for økt" },
+            ] as const
+          ).map((s) => (
+            <div
+              key={s.n}
+              style={{
+                padding: "10px 12px",
+                borderRadius: 12,
+                background: T.panel,
+                border: `1px solid ${T.border}`,
+                textAlign: "left",
+              }}
+            >
+              <span
+                style={{
+                  display: "inline-flex",
+                  width: 18,
+                  height: 18,
+                  borderRadius: 9999,
+                  background: T.lime,
+                  color: T.onLime,
+                  fontFamily: T.mono,
+                  fontSize: 10,
+                  fontWeight: 800,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {s.n}
+              </span>
+              <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 700, color: T.fg, marginTop: 6 }}>{s.t}</div>
+              <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 2 }}>{s.d}</div>
+            </div>
+          ))}
         </div>
 
         <Kort pad="20px" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
@@ -100,7 +149,7 @@ export function WorkbenchColdstart({
           {/* Mal-velger — ekte godkjente maler, fase-merket */}
           <div>
             <div style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut, marginBottom: 9 }}>
-              Planmal
+              1 · Planmal
             </div>
             {maler.length === 0 ? (
               <TomTilstand icon="layers" title="Ingen godkjente maler" sub="Lag en mal under Plan-maler først." />

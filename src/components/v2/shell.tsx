@@ -101,12 +101,13 @@ export const AGENCYOS_MER: V2NavGruppe[] = [
       { id: "bookinger", label: "Bookinger (liste)", icon: "calendar-check", href: "/admin/bookinger" },
       { id: "availability", label: "Tilgjengelighet", icon: "clock", href: "/admin/availability" },
       { id: "uka", label: "Uka (tavle)", icon: "columns-3", href: "/admin/agencyos/uka" },
-      { id: "planlegge", label: "Velg spiller → plan", icon: "target", href: "/admin/planlegge" },
     ],
   },
   {
-    label: "Planlegging",
+    label: "Workbench & plan",
     items: [
+      // G8: Workbench først — velg spiller → ukeplan (ikke 6. primær-nav)
+      { id: "planlegge", label: "Workbench · velg spiller", icon: "target", href: "/admin/planlegge" },
       { id: "plans", label: "Planer (alle)", icon: "layers", href: "/admin/plans" },
       { id: "plan-templates", label: "Plan-maler", icon: "copy", href: "/admin/plan-templates" },
       { id: "teknisk-plan", label: "Teknisk plan", icon: "wrench", href: "/admin/teknisk-plan" },
