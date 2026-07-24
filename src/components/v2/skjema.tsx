@@ -13,20 +13,10 @@ import { T } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
 import { CTAPill, Caps } from "./core";
 
-/* Responsive skjema-stiler injiseres én gang (samme idiom som core.tsx ensureStyles) —
-   inline-styles kan ikke bære media queries. NPS-skalaen brytes i to rader (0–5 / 6–10)
-   med ≥44px trykkmål på smale skjermer; desktop beholder én rad à 11. */
-function ensureSkjemaStyles(): void {
-  if (typeof document === "undefined" || document.getElementById("v2-skjema-style")) return;
-  const el = document.createElement("style");
-  el.id = "v2-skjema-style";
-  el.textContent =
-    `.v2-nps-grid{display:grid;grid-template-columns:repeat(11,1fr);gap:5px;}` +
-    `.v2-nps-knapp{height:38px;}` +
-    `@media (max-width:767px){.v2-nps-grid{grid-template-columns:repeat(6,1fr);gap:8px;}.v2-nps-knapp{height:44px;}}`;
-  document.head.appendChild(el);
-}
-if (typeof document !== "undefined") ensureSkjemaStyles();
+/* Responsive skjema-stiler (.v2-nps-grid/.v2-nps-knapp) bor statisk i
+   src/styles/v2/motion.css — inline-styles kan ikke bære media queries.
+   NPS-skalaen brytes i to rader (0–5 / 6–10) med ≥44px trykkmål på smale
+   skjermer; desktop beholder én rad à 11. */
 
 /* Delte felt-stiler */
 const FELT: CSSProperties = {

@@ -23,10 +23,11 @@ import {
 
 // String-literaler (ikke verdi-import fra Prisma-klienten) — denne client-
 // komponenten må ikke dra Node-moduler inn i nettleser-bundelen.
+// Ordbok-kanon (docs/ordbok.json §sg.kategorier): norsk klarspråk i spiller-UI.
 const OMRAADER: { value: SgCategory; label: string }[] = [
-  { value: "OTT", label: "Off the tee" },
-  { value: "APP", label: "Approach" },
-  { value: "ARG", label: "Around green" },
+  { value: "OTT", label: "Tee-slag" },
+  { value: "APP", label: "Innspill" },
+  { value: "ARG", label: "Nærspill" },
   { value: "PUTT", label: "Putting" },
 ];
 

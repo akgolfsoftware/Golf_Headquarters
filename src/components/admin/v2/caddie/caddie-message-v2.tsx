@@ -12,28 +12,8 @@ import { T } from "@/components/v2";
 import type { CaddieMessage } from "@/components/admin/caddie/types";
 import { CaddieToolCallV2 } from "./caddie-tool-call-v2";
 
-/* Ett-gangs scoped CSS for markdown-innhold (lister, kode, tabeller, lenker)
-   — samme mønster som v2/core.tsx sin ensureStyles(). */
-function ensureMdStyles(): void {
-  if (typeof document === "undefined" || document.getElementById("v2-caddie-md-style")) return;
-  const el = document.createElement("style");
-  el.id = "v2-caddie-md-style";
-  el.textContent =
-    `.v2-md p{margin:0 0 8px;}.v2-md p:last-child{margin-bottom:0;}` +
-    `.v2-md strong{font-weight:700;}.v2-md em{font-style:italic;}` +
-    `.v2-md ul{margin:4px 0;padding-left:18px;list-style:disc;}` +
-    `.v2-md ol{margin:4px 0;padding-left:18px;list-style:decimal;}` +
-    `.v2-md li{margin:2px 0;}` +
-    `.v2-md a{color:${T.lime};text-decoration:underline;}` +
-    `.v2-md code{border-radius:4px;background:${T.panel3};padding:1px 5px;font-family:${T.mono};font-size:12px;}` +
-    `.v2-md pre{margin:8px 0;overflow-x:auto;border-radius:8px;background:${T.panel3};padding:8px;font-family:${T.mono};font-size:12px;}` +
-    `.v2-md pre code{background:transparent;padding:0;}` +
-    `.v2-md table{margin:8px 0;width:100%;border-collapse:collapse;font-family:${T.mono};font-size:12px;}` +
-    `.v2-md th,.v2-md td{border:1px solid ${T.border};padding:4px 8px;text-align:left;}` +
-    `.v2-md th{background:${T.panel3};font-weight:700;}`;
-  document.head.appendChild(el);
-}
-if (typeof document !== "undefined") ensureMdStyles();
+/* Scoped CSS for markdown-innhold (.v2-md — lister, kode, tabeller, lenker)
+   bor statisk i src/styles/v2/motion.css (FASIT §4b). */
 
 function CaddieMarkdown({ text }: { text: string }) {
   if (!text) return null;

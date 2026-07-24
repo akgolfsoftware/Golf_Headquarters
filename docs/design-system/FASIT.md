@@ -35,8 +35,12 @@
 | Kilde | Bruk |
 |---|---|
 | Claude Design `tokens/v2/tokens.css` | Design-fasit |
-| Prod `src/app/globals.css` `--v2-*` | Runtime |
+| Prod `src/app/globals.css` `--v2-*` | Runtime (ENESTE CSS-kilde i prod) |
 | Prod `src/lib/v2/tokens.ts` (`T`) | TS/React inline |
+
+> **Rydding 2026-07-24:** gammel `src/styles/v2/tokens.css` (uimportert kopi med utdaterte
+> verdier, bl.a. `#0D0E0D`-canvas) er SLETTET. Runtime-fasit er `--v2-*` i `globals.css` —
+> aldri gjenopprett en parallell tokens-CSS i prod.
 
 **Merkevare (hue, aldri endre uten beslutning):**
 - Forest `#005840`
@@ -44,11 +48,20 @@
 - On-lime: mørk `#0D0E0D` · lys `#FFFFFF`
 
 **Mørk canvas:** `#131513` (`--v2-bg`) — ikke gammel `#0A1F18` / `#0A0B0A`.  
-**Lys canvas:** `#F2F1EA` cream.
+**Lys canvas:** `#F2F1EA` cream. PWA-manifestet (splash/chrome) speiler LYS canvas
+(start_url er `/portal` = alltid lys, B28).
 
 **Typografi:** Familjen Grotesk (display) · Inter (UI) · JetBrains Mono (tall).  
 **Ikoner:** Lucide 1.5px — aldri emoji.  
-**Grid:** 8pt. Kort-radius 20px. Piller 9999px.
+**Grid:** 8pt **på layout-nivå** (seksjons-gap, kort-gap = `T.gap` 16, sidemarger).
+Komponent-INTERIØR følger mockup-pikslene fra Claude Design 1:1 (der finnes 6/9/11.5-verdier)
+— mockupen er fasit, ESLint-gaten håndhever 8pt kun for Tailwind-klasser.
+Kort-radius 20px. Piller 9999px.
+
+**Kontrast (målt 2026-07-24, WCAG AA):** alle tekst-tokens (`fg`/`fg2`/`mut`) og
+signal-/aksefarger holder ≥ 4,5:1 som normal tekst på alle fire flater (bg/panel/panel2/panel3)
+i BÅDE mørk og lys skala. Lys `up`/`down`/`warn`/`ax-spill` ble AA-kalibrert 2026-07-24
+(`#1a7745` / `#b4461c` / `#8a6109` / `#5a7200`). Nye farger må måles før de tas inn.
 
 ---
 
@@ -148,6 +161,37 @@ Nye sider skal **komponere disse**, ikke finne opp ny hierarki-stil.
 
 ---
 
+## 4b. Motion-katalog (LÅST kilde: `src/styles/v2/motion.css`)
+
+**Ett bevegelsesspråk:** `cubic-bezier(0.2, 0, 0, 1)` · 180 ms interaksjon · 200 ms
+inn-animasjon · 600 ms count-up (JS). ALT honorerer `prefers-reduced-motion`.
+
+All v2-interaksjons-CSS bor STATISK i `src/styles/v2/motion.css` (importert via
+`globals.css`) — aldri runtime-injisert `<style>` i komponentfiler (fjernet 2026-07-24;
+ga FOUC og spredte kanon over 8 filer). Nye klasser legges i katalogen, aldri ad-hoc.
+
+| Klasse | Jobb |
+|---|---|
+| `.v2-press` | Trykk-skala 0.98 på knapper/kort |
+| `.v2-focus` | Fokusring (bg + 55 % lime) på `:focus-visible` |
+| `.v2-row-h` / `.v2-kort-h` | Hover: rad-bakgrunn / kort-løft −2px |
+| `.v2-drag-lift` / `.v2-drag-settle` | Workbench dra-løft + landing |
+| `.v2-fade-in` / `.v2-sheet-in` / `.v2-backdrop-in` | Inn-animasjon for innhold / ark+popup / backdrop |
+| `.v2-skel` | Skeleton-puls (V2Laster) |
+| `.v2-blink` | «Skriver»-prikker (samtale/Caddie) |
+| `mic-wave/-pulse/-spin` | Taleknapp |
+| `.v2-nps-grid/-knapp` | Responsiv NPS-skala (media query) |
+| `.v2-tekstlenke` | Stille lenke med hover-understrek |
+| `.v2-md` | Markdown-innhold (Caddie) |
+
+**Overlay-kontrakt (delt `BunnArk`):** inn-animasjon fra katalogen + backdrop-fade,
+fokus flyttes inn og gjenopprettes ved lukking, Tab holdes innenfor (fokus-felle),
+body-scroll låses, Escape lukker. Nye ark/dialoger skal BRUKE `BunnArk` — aldri egen overlay.
+Eldre pulse-animasjoner (`patterns.css`: itinPulse, nowPulse, liveBarDot m.fl.) er
+overgangs-vokabular for eldre flater — nye skjermer bruker katalogen over.
+
+---
+
 ## 5. Komponentbibliotek (Claude Design)
 
 ~**124** navngitte komponenter i `components/` (13 familier):
@@ -232,5 +276,14 @@ Aldri: VibeUI/ekstern stil som kilde. Unntak bare etter ny 3-veis-test med Ander
 - [x] Steg 2: B-klosser verifisert (`B-KLOSSER.md`)
 - [x] Steg 3: Hjem / Plan / Analyse B i app
 - [ ] Steg 4–8: se utviklingsplan
+
+**Systemløft 2026-07-24 (GO Anders — «ingenting låst, gjør det optimalt»):**
+- [x] Én token-kilde: død `src/styles/v2/tokens.css` slettet; PWA-manifest rettet til lys canvas
+- [x] Motion-katalog statisk i `src/styles/v2/motion.css` (§4b) — 8 runtime-injeksjoner fjernet
+- [x] `BunnArk`: inn-animasjon + backdrop-fade + fokus-felle + scroll-lås (overlay-kontrakten)
+- [x] Lys skala AA-kalibrert (`up`/`down`/`warn`/`ax-spill`) — kontrast målt på alle flater
+- [x] Zoom-sperre fjernet (WCAG 1.4.4) i rot-viewport
+- [x] Ordbok-pass spiller-UI: Tee-slag/Innspill/Nærspill (TreningLogg, statistikk, hull-analyse)
+- Full auditrapport: `DESIGN-KVALITETSAUDIT-2026-07-24.md` (funn D1–D10)
 
 **Ikke i scope denne uken:** full kodeport av alle 361 sider.
