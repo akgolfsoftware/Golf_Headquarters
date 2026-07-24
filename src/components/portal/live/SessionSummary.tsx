@@ -218,37 +218,24 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering }: SessionSumm
         </ul>
       </div>
 
-      {/* CTA — B: én grønn primær, resten sekundært */}
+      {/* CTA — GO V2: ÉN neste handling. Er det en økt igjen i dag, er den
+          handlingen. Ellers er veien ut den primære, og planlegging blir den
+          ene stille lenken. Tre likeverdige knapper etter en gjennomført økt
+          er et valg spilleren ikke skal måtte ta. */}
       <div className="flex flex-col gap-2.5">
-        {nesteOkt ? (
-          <Link
-            href={nesteOkt.href}
-            className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-accent font-mono text-sm font-extrabold uppercase tracking-[0.06em] text-foreground active:scale-[0.98]"
-            style={{ boxShadow: "0 4px 18px rgba(209, 248, 67, 0.28)" }}
-          >
-            {nesteOkt.tekst}
-            <ArrowRight className="h-4 w-4" strokeWidth={2.5} aria-hidden />
-          </Link>
-        ) : (
-          <Link
-            href="/portal"
-            className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-accent font-mono text-sm font-extrabold uppercase tracking-[0.06em] text-foreground active:scale-[0.98]"
-            style={{ boxShadow: "0 4px 18px rgba(209, 248, 67, 0.28)" }}
-          >
-            Tilbake til hjem
-          </Link>
-        )}
         <Link
-          href="/portal"
-          className="flex h-11 w-full items-center justify-center font-mono text-xs font-bold uppercase tracking-[0.06em] text-background/55 active:opacity-80"
+          href={nesteOkt ? nesteOkt.href : "/portal"}
+          className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-accent font-mono text-sm font-extrabold uppercase tracking-[0.06em] text-foreground active:scale-[0.98]"
+          style={{ boxShadow: "0 4px 18px rgba(209, 248, 67, 0.28)" }}
         >
-          {nesteOkt ? "Tilbake til hjem" : "Lukk"}
+          {nesteOkt ? nesteOkt.tekst : "Tilbake til hjem"}
+          {nesteOkt && <ArrowRight className="h-4 w-4" strokeWidth={2.5} aria-hidden />}
         </Link>
         <Link
-          href="/portal/planlegge/workbench?zoom=uke"
-          className="flex h-11 w-full items-center justify-center gap-2 rounded-full border border-background/15 bg-background/5 font-mono text-[11px] font-extrabold uppercase tracking-[0.06em] text-background/80 active:scale-[0.98]"
+          href={nesteOkt ? "/portal" : "/portal/planlegge/workbench?zoom=uke"}
+          className="flex h-11 w-full items-center justify-center font-mono text-xs font-bold uppercase tracking-[0.06em] text-background/55 active:opacity-80"
         >
-          Åpne Workbench
+          {nesteOkt ? "Tilbake til hjem" : "Planlegg i Workbench"}
         </Link>
       </div>
     </div>

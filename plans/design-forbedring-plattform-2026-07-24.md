@@ -60,7 +60,7 @@
 | GO | Fokus |
 |---|---|
 | **GO V3** ✅ | *Levert 24. juli.* Cockpit: NÅ øverst. Stall: rad = detalj, Workbench = CTA; sorter «trenger deg». Godkjenninger: primær følger køen. SerieMeny → BunnArk. |
-| **GO V2** | Live + runde: tommel-soner, oppsummering med én neste handling. |
+| **GO V2** ✅ | *Levert 24. juli.* Live + runde: tommel-soner, oppsummering med én neste handling. |
 | **GO V6** | HjelpTips-dekning ★ → 100 %, axe-smoke, navigasjonsovergang. |
 | **GO V4 / V5** | Booking/betaling · marketing/stats (egen bølge). |
 

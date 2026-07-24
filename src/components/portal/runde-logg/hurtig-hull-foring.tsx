@@ -10,6 +10,7 @@ import { useState } from "react";
 import type { LoggetHull } from "@/lib/runde-logg/types";
 import { scoreFraHull } from "@/lib/runde-logg/syntetiser-hurtig";
 import { T, Icon } from "@/components/v2";
+import { TommelSone, PrimaerKnapp } from "./tommel-sone";
 
 type HurtigHullForingProps = {
   hull: LoggetHull;
@@ -188,31 +189,6 @@ export function HurtigHullForing({
               Endre score
             </button>
           )}
-          <button
-            type="button"
-            onClick={onNesteHull}
-            className="v2-press v2-focus"
-            style={{
-              appearance: "none",
-              cursor: "pointer",
-              width: "100%",
-              height: 54,
-              borderRadius: 16,
-              border: "none",
-              background: T.lime,
-              color: T.onLime,
-              fontFamily: T.disp,
-              fontSize: 16,
-              fontWeight: 700,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-            }}
-          >
-            {ferdigeFor >= antallHull ? "Til oppsummering" : "Neste hull"}
-            <Icon name="arrow-right" size={16} />
-          </button>
         </div>
       ) : (
         <>
@@ -340,33 +316,25 @@ export function HurtigHullForing({
             </div>
           )}
 
-          <button
-            type="button"
-            onClick={lagre}
-            className="v2-press v2-focus"
-            style={{
-              appearance: "none",
-              cursor: "pointer",
-              width: "100%",
-              height: 54,
-              borderRadius: 16,
-              border: "none",
-              background: T.lime,
-              color: T.onLime,
-              fontFamily: T.disp,
-              fontSize: 16,
-              fontWeight: 700,
-            }}
-          >
-            Lagre hull · {strokes} slag
-          </button>
         </>
       )}
 
+      {/* GO V2: sekundær navigasjon over tommel-sonen — den store handlingen
+          nederst skal stå alene der tommelen faktisk treffer. */}
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         {sekundaer("Hull-oversikt", "layout-dashboard", onVisOversikt)}
         {sekundaer("SG hittil", "trending-up", onVisSg)}
       </div>
+
+      <TommelSone>
+        {ferdig ? (
+          <PrimaerKnapp onClick={onNesteHull} ikon="arrow-right">
+            {ferdigeFor >= antallHull ? "Til oppsummering" : "Neste hull"}
+          </PrimaerKnapp>
+        ) : (
+          <PrimaerKnapp onClick={lagre}>Lagre hull · {strokes} slag</PrimaerKnapp>
+        )}
+      </TommelSone>
     </div>
   );
 }
