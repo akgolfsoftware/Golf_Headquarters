@@ -2464,44 +2464,86 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
       {pubDiff && (
         <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
           <div onClick={() => setPubDiff(null)} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
-          <div role="dialog" aria-label="Bekreft publisering" className="v2-sheet-in" style={{ position: "relative", width: "min(440px, 100%)", maxHeight: "85vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+          <div role="dialog" aria-label="Bekreft publisering" className="v2-sheet-in" style={{ position: "relative", width: "min(460px, 100%)", maxHeight: "85vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <Icon name="send" size={16} style={{ color: T.lime }} />
-              <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>Publiser plan</h2>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <Caps size={8.5}>Før spiller ser endringen</Caps>
+                <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: "4px 0 0" }}>
+                  {pubDiff.forsteGang ? "Første publisering" : "Publiser endringer"}
+                </h2>
+              </div>
             </div>
             {pubDiff.forsteGang ? (
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, margin: "12px 0 0", lineHeight: 1.55 }}>
-                Første publisering — hele planen sendes til spilleren for godkjenning.
+              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, margin: "14px 0 0", lineHeight: 1.55 }}>
+                Hele planen sendes til spilleren for godkjenning. Du kan endre og publisere på nytt senere.
               </p>
             ) : (
-              <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }} data-wb-pubdiff>
-                {pubDiff.lagtTil.length > 0 && (
-                  <div>
-                    <Caps size={8.5}>Lagt til ({pubDiff.lagtTil.length})</Caps>
-                    {pubDiff.lagtTil.map((r, i) => <div key={i} style={{ fontFamily: T.ui, fontSize: 12, color: T.up, marginTop: 3 }}>+ {r.title} · {r.nar}</div>)}
-                  </div>
-                )}
-                {pubDiff.fjernet.length > 0 && (
-                  <div>
-                    <Caps size={8.5}>Fjernet ({pubDiff.fjernet.length})</Caps>
-                    {pubDiff.fjernet.map((r, i) => <div key={i} style={{ fontFamily: T.ui, fontSize: 12, color: T.down, marginTop: 3 }}>− {r.title} · {r.nar}</div>)}
-                  </div>
-                )}
-                {pubDiff.endret.length > 0 && (
-                  <div>
-                    <Caps size={8.5}>Endret ({pubDiff.endret.length})</Caps>
-                    {pubDiff.endret.map((r, i) => <div key={i} style={{ fontFamily: T.ui, fontSize: 12, color: T.warn, marginTop: 3 }}>~ {r.title} — {r.hva}</div>)}
-                  </div>
-                )}
+              <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 10 }} data-wb-pubdiff>
+                {([
+                  { key: "lagtTil" as const, label: "Lagt til", tone: T.up, prefix: "+" },
+                  { key: "fjernet" as const, label: "Fjernet", tone: T.down, prefix: "−" },
+                  { key: "endret" as const, label: "Endret", tone: T.warn, prefix: "~" },
+                ] as const).map((sek) => {
+                  const rader =
+                    sek.key === "lagtTil"
+                      ? pubDiff.lagtTil.map((r) => `${r.title} · ${r.nar}`)
+                      : sek.key === "fjernet"
+                        ? pubDiff.fjernet.map((r) => `${r.title} · ${r.nar}`)
+                        : pubDiff.endret.map((r) => `${r.title} — ${r.hva}`);
+                  if (rader.length === 0) return null;
+                  return (
+                    <div
+                      key={sek.key}
+                      style={{
+                        padding: "10px 12px",
+                        borderRadius: 12,
+                        background: `color-mix(in srgb, ${sek.tone} 8%, ${T.panel2})`,
+                        border: `1px solid color-mix(in srgb, ${sek.tone} 28%, transparent)`,
+                      }}
+                    >
+                      <Caps size={8.5}>{sek.label} ({rader.length})</Caps>
+                      {rader.map((tekst, i) => (
+                        <div key={i} style={{ fontFamily: T.ui, fontSize: 12.5, color: sek.tone, marginTop: 5, lineHeight: 1.35 }}>
+                          {sek.prefix} {tekst}
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })}
                 {pubDiff.lagtTil.length === 0 && pubDiff.fjernet.length === 0 && pubDiff.endret.length === 0 && (
-                  <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>Ingen endringer siden forrige publisering.</span>
+                  <div style={{ padding: "12px 14px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
+                    <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>Ingen endringer siden forrige publisering — du kan likevel sende på nytt.</span>
+                  </div>
                 )}
-                <div style={{ fontFamily: T.mono, fontSize: 10, color: T.fg2, paddingTop: 8, borderTop: `1px solid ${T.border}` }}>
-                  Belastning: {fmtTimer(pubDiff.minutterFor / 60)} → <span style={{ fontWeight: 700, color: pubDiff.minutterNa > pubDiff.minutterFor ? T.warn : T.fg }}>{fmtTimer(pubDiff.minutterNa / 60)}</span> planlagt fremover
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    padding: "10px 12px",
+                    borderRadius: 12,
+                    background: T.panel2,
+                    border: `1px solid ${T.border}`,
+                  }}
+                >
+                  <Icon name="activity" size={14} style={{ color: T.fg2, flex: "none" }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, letterSpacing: "0.05em", textTransform: "uppercase" }}>
+                      Belastning fremover
+                    </div>
+                    <div style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg, marginTop: 3, fontVariantNumeric: "tabular-nums" }}>
+                      {fmtTimer(pubDiff.minutterFor / 60)}
+                      <span style={{ color: T.mut, fontWeight: 600 }}> → </span>
+                      <span style={{ color: pubDiff.minutterNa > pubDiff.minutterFor ? T.warn : T.fg }}>
+                        {fmtTimer(pubDiff.minutterNa / 60)}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 18 }}>
               <Knapp ghost onClick={() => setPubDiff(null)} disabled={pubLoading}>Avbryt</Knapp>
               <Knapp icon="send" onClick={handlePublishBekreft} disabled={pubLoading}>{pubLoading ? "Publiserer…" : "Bekreft og publiser"}</Knapp>
             </div>
