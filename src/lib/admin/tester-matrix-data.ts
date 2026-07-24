@@ -96,12 +96,15 @@ export async function loadTesterMatrix(viewer: {
 }): Promise<TesterMatrixData> {
   const now = new Date();
 
-  const [players, testDefs, results] = await Promise.all([
-    prisma.user.findMany({
-      where: coachScopedPlayerWhere(viewer),
-      select: { id: true, name: true, homeClub: true, hcp: true, tier: true },
-      orderBy: { name: "asc" },
-    }),
+  // Spillere først — resultater scopes til dem (unngår full testResult-tabell).
+  const players = await prisma.user.findMany({
+    where: coachScopedPlayerWhere(viewer),
+    select: { id: true, name: true, homeClub: true, hcp: true, tier: true },
+    orderBy: { name: "asc" },
+  });
+  const playerIds = players.map((p) => p.id);
+
+  const [testDefs, results] = await Promise.all([
     prisma.testDefinition.findMany({
       select: {
         id: true,
@@ -112,10 +115,21 @@ export async function loadTesterMatrix(viewer: {
       },
       orderBy: [{ pyramidArea: "asc" }, { name: "asc" }],
     }),
-    prisma.testResult.findMany({
-      select: { id: true, userId: true, testId: true, score: true, takenAt: true },
-      orderBy: { takenAt: "asc" }, // eldst → nyest, så vi enkelt finner siste + forrige
-    }),
+    playerIds.length === 0
+      ? Promise.resolve(
+          [] as {
+            id: string;
+            userId: string;
+            testId: string;
+            score: number;
+            takenAt: Date;
+          }[],
+        )
+      : prisma.testResult.findMany({
+          where: { userId: { in: playerIds } },
+          select: { id: true, userId: true, testId: true, score: true, takenAt: true },
+          orderBy: { takenAt: "asc" }, // eldst → nyest for siste + forrige
+        }),
   ]);
 
   // Grupper resultater per (player, test), bevarer kronologisk rekkefølge.
