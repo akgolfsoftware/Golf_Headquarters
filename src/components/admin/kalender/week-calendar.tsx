@@ -27,13 +27,17 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// 07:00–18:00 = 12 timerader. 48px per time (8pt-grid).
-// Notion Calendar-fasit — se src/lib/calendar/notion-grid.ts
-const START_HOUR = 5;
-const END_HOUR = 23;
-const ROW_PX = 48;
-const HOURS = Array.from({ length: END_HOUR - START_HOUR + 1 }, (_, i) => START_HOUR + i);
-const BODY_PX = (END_HOUR - START_HOUR) * ROW_PX; // 12 * 48 = 576
+// Notion Calendar-fasit — én kilde (05:00–23:00, 30 min).
+import {
+  GRID_START_HOUR as START_HOUR,
+  GRID_END_HOUR as END_HOUR,
+  PIXEL_PER_HOUR as ROW_PX,
+  GRID_BODY_PX as BODY_PX,
+  gridHours,
+  minutesToPx,
+} from "@/lib/calendar/notion-grid";
+
+const HOURS = gridHours();
 
 export type WeekEventKind = "oneToOne" | "group" | "live";
 
@@ -206,8 +210,8 @@ function DayHeaders({ days }: { days: WeekDayHeader[] }) {
 function EventBlock({ ev }: { ev: WeekEvent }) {
   const minTop = START_HOUR * 60;
   const maxBottom = END_HOUR * 60;
-  const top = ((Math.max(ev.startMin, minTop) - minTop) / 60) * ROW_PX;
-  const bottom = ((Math.min(ev.endMin, maxBottom) - minTop) / 60) * ROW_PX;
+  const top = minutesToPx(Math.max(ev.startMin, minTop));
+  const bottom = minutesToPx(Math.min(ev.endMin, maxBottom));
   const height = Math.max(22, bottom - top);
   const compact = height < 44;
 
@@ -258,7 +262,7 @@ function WeekGridBody({
 }: Pick<WeekCalendarProps, "days" | "events" | "nowMinutes" | "nowDayIndex">) {
   const nowVisible =
     nowDayIndex !== null && nowMinutes >= START_HOUR * 60 && nowMinutes <= END_HOUR * 60;
-  const nowTop = ((nowMinutes - START_HOUR * 60) / 60) * ROW_PX;
+  const nowTop = minutesToPx(nowMinutes);
 
   return (
     <div className="relative grid" style={{ gridTemplateColumns: "64px repeat(7, 1fr)" }}>
