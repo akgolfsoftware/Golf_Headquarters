@@ -52,6 +52,9 @@ import {
   HjelpTips,
   ZoomBrodsmule,
   useCountUp,
+  TimeGrid,
+  timeGridBlockStyle,
+  snapYToSlot,
 } from "@/components/v2";
 import { PalettSok } from "@/components/v2/wb-composer";
 import { ForslagArk, NyOktArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput, type OktArkDrill } from "./WorkbenchV2Sheets";
@@ -184,16 +187,15 @@ function TLBlokkInnhold({ o, kompakt, h, col }: { o: WeekEvent; kompakt: boolean
 }
 
 function TLBlokk({ o, dragKey, valgt, onVelg, dragbar }: { o: WeekEvent; /** Stabil id for dnd-kit — o.id kan mangle (fallback til dag+indeks). */ dragKey: string; valgt: boolean; onVelg: (id: string) => void; dragbar?: boolean }) {
-  const start = o.h + (o.m ?? 0) / 60;
-  const dur = o.durMin / 60;
-  const h = dur * HOUR_H;
+  const startMin = o.h * 60 + (o.m ?? 0);
+  const blockStyle = timeGridBlockStyle(startMin, o.durMin);
+  const h = typeof blockStyle.height === "number" ? blockStyle.height : 40;
   const kompakt = h < 42;
   const ak = o.eb as AkseKey;
   const col = T.ax[ak] || T.mut;
   const avvik = o.compliance === "avvik" || o.compliance === "ikke-gjennomfort";
   const pending = erOptimistisk(o.id);
   const ramme = avvik ? T.down : valgt ? T.lime : T.border;
-  const top = Math.max(0, (start - START_TIME) * HOUR_H + 2);
   const kanDra = dragbar && !pending && !!o.id;
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `session:${dragKey}`,
@@ -208,7 +210,7 @@ function TLBlokk({ o, dragKey, valgt, onVelg, dragbar }: { o: WeekEvent; /** Sta
       {...(kanDra ? attributes : undefined)}
       {...(kanDra ? listeners : undefined)}
       style={{
-        position: "absolute", top, left: 3, right: 3, height: Math.max(18, h - 4),
+        ...blockStyle,
         borderRadius: 8, padding: kompakt ? "2px 7px" : "5px 8px", cursor: pending ? "default" : dragbar ? "grab" : "pointer", overflow: "hidden",
         touchAction: kanDra ? "none" : undefined,
         background: `color-mix(in srgb, ${col} 15%, ${T.panel3})`,
@@ -257,9 +259,8 @@ function WBDragOverlayInnhold({ data }: { data: WbDragData }) {
   );
 }
 
-/** Én dag-kolonne — egen komponent fordi dnd-kit sin `useDroppable` er en
- *  hook (kan ikke kalles inne i en `.map()`-callback). */
-function WBTidslinjeDagKolonne({ dag, index, valgt, onVelg, droppbar, kanFlytteOkter, onTomKlikk }: {
+/** Droppable dag-innhold for TimeGrid (N1) — egen komponent for dnd-kit hooks. */
+function WBTidslinjeDagInnhold({ dag, index, valgt, onVelg, droppbar, kanFlytteOkter, onTomKlikk }: {
   dag: DagKol;
   index: number;
   valgt: string | null;
@@ -276,18 +277,20 @@ function WBTidslinjeDagKolonne({ dag, index, valgt, onVelg, droppbar, kanFlytteO
     <div
       ref={setNodeRef}
       data-wb-dag={index}
-      onClick={onTomKlikk ? (e) => {
-        if (e.target !== e.currentTarget) return; // kun tom flate, ikke økt-blokker
-        const y = e.clientY - e.currentTarget.getBoundingClientRect().top;
-        const raa = START_TIME + y / HOUR_H;
-        const snappet = Math.max(START_TIME, Math.min(END_TIME - 0.5, Math.round(raa * 2) / 2));
-        onTomKlikk(index, Math.floor(snappet), snappet % 1 === 0.5 ? 30 : 0);
-      } : undefined}
+      onClick={
+        onTomKlikk
+          ? (e) => {
+              if (e.target !== e.currentTarget) return;
+              const y = e.clientY - e.currentTarget.getBoundingClientRect().top;
+              const slot = snapYToSlot(y);
+              onTomKlikk(index, slot.hour, slot.minute);
+            }
+          : undefined
+      }
       style={{
-        flex: 1, minWidth: 0, position: "relative", borderLeft: `1px solid ${T.border}`,
-        background: isOver
-          ? `color-mix(in srgb, ${T.lime} 8%, transparent)`
-          : dag.today ? `color-mix(in srgb, ${T.lime} 3%, transparent)` : "transparent",
+        position: "absolute",
+        inset: 0,
+        background: isOver ? `color-mix(in srgb, ${T.lime} 8%, transparent)` : "transparent",
         outline: isOver ? `1px dashed color-mix(in srgb, ${T.lime} 45%, transparent)` : "none",
         outlineOffset: -2,
         transition: "background 80ms",
@@ -307,13 +310,7 @@ function WBTidslinjeDagKolonne({ dag, index, valgt, onVelg, droppbar, kanFlytteO
   );
 }
 
-/** Ukekalender: 7 dag-kolonner × timelinje, økter absolutt posisjonert.
- *  Med `kanFlytteOkter`/`kanLeggeTil`/`kanBrukeMal` (kun når skrivesiden
- *  finnes) er kolonnene drop-soner: dra en økt-blokk til ny dag, en
- *  bibliotek-brikke inn på et klokkeslett (Y-posisjon → time, snappet til
- *  hel/halv), eller en mal inn (dagen/tiden spiller ingen rolle for mal).
- *  Selve drop-håndteringen skjer sentralt i WorkbenchV2 sin DndContext —
- *  denne komponenten markerer bare dra-/slippbare flater. */
+/** Ukekalender via felles Notion TimeGrid (N1). */
 function WBTidslinje({ dager, valgt, onVelg, kanFlytteOkter, kanLeggeTil, kanBrukeMal, onTomKlikk }: {
   dager: DagKol[];
   valgt: string | null;
@@ -321,59 +318,34 @@ function WBTidslinje({ dager, valgt, onVelg, kanFlytteOkter, kanLeggeTil, kanBru
   kanFlytteOkter?: boolean;
   kanLeggeTil?: boolean;
   kanBrukeMal?: boolean;
-  /** I1: trykk på tom flate i en dag-kolonne → Ny økt med dag+tid prefylt. */
   onTomKlikk?: (dayIndex: number, hour: number, minute: number) => void;
 }) {
-  const timer: number[] = [];
-  for (let h = START_TIME; h <= END_TIME; h++) timer.push(h);
-  const bodyH = (timer.length - 1) * HOUR_H;
   const droppbar = !!(kanFlytteOkter || kanLeggeTil || kanBrukeMal);
+  const days = dager.map((d, i) => ({
+    id: `wb-day-${i}-${d.dato}`,
+    dow: d.dow,
+    date: d.dato,
+    today: d.today,
+  }));
 
   return (
-    <Kort pad="0" style={{ overflow: "hidden" }}>
-      {/* Dag-header */}
-      <div style={{ display: "flex", borderBottom: `1px solid ${T.border}` }}>
-        <div style={{ width: 44, flex: "none" }} />
-        {dager.map((d, i) => (
-          <div key={i} style={{ flex: 1, minWidth: 0, textAlign: "center", padding: "9px 0 8px", borderLeft: `1px solid ${T.border}`, background: d.today ? `color-mix(in srgb, ${T.lime} 6%, transparent)` : "transparent" }}>
-            <div style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", color: d.today ? T.lime : T.mut }}>{d.dow}</div>
-            <div style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, color: d.today ? T.fg : T.fg2, marginTop: 1 }}>{d.dato}</div>
-            {d.today && <span style={{ display: "inline-block", width: 4, height: 4, borderRadius: 9999, background: T.lime, marginTop: 3 }} />}
-          </div>
-        ))}
-      </div>
-      {/* Kropp: tidsakse + 7 dag-kolonner */}
-      <div style={{ display: "flex", position: "relative", height: bodyH }}>
-        <div style={{ width: 44, flex: "none", position: "relative" }}>
-          {timer.map((h) => (
-            <span key={h} style={{ position: "absolute", top: (h - START_TIME) * HOUR_H - 5, right: 8, fontFamily: T.mono, fontSize: 9, color: T.mut }}>{String(h).padStart(2, "0")}:00</span>
-          ))}
-        </div>
-        <div style={{ flex: 1, position: "relative", display: "flex" }}>
-          {/* Gridlinjer i border-token (temariktig i begge moduser — den gamle
-              hvit-alphaen var usynlig i lys modus): hel time markert, halvtime
-              nedtonet så 30-min-snappingen har synlig anker. */}
-          {timer.slice(1, -1).map((h) => (
-            <span key={h} style={{ position: "absolute", left: 0, right: 0, top: (h - START_TIME) * HOUR_H, height: 1, background: `color-mix(in srgb, ${T.border} 70%, transparent)`, pointerEvents: "none" }} />
-          ))}
-          {timer.slice(0, -1).map((h) => (
-            <span key={`half-${h}`} style={{ position: "absolute", left: 0, right: 0, top: (h - START_TIME) * HOUR_H + HOUR_H / 2, height: 1, background: `color-mix(in srgb, ${T.border} 32%, transparent)`, pointerEvents: "none" }} />
-          ))}
-          {dager.map((d, i) => (
-            <WBTidslinjeDagKolonne
-              key={i}
-              dag={d}
-              index={i}
-              valgt={valgt}
-              onVelg={onVelg}
-              droppbar={droppbar}
-              kanFlytteOkter={!!kanFlytteOkter}
-              onTomKlikk={onTomKlikk}
-            />
-          ))}
-        </div>
-      </div>
-    </Kort>
+    <TimeGrid
+      days={days}
+      showNowLine
+      timeColWidth={44}
+      bordered
+      renderDay={(i) => (
+        <WBTidslinjeDagInnhold
+          dag={dager[i]}
+          index={i}
+          valgt={valgt}
+          onVelg={onVelg}
+          droppbar={droppbar}
+          kanFlytteOkter={!!kanFlytteOkter}
+          onTomKlikk={onTomKlikk}
+        />
+      )}
+    />
   );
 }
 
