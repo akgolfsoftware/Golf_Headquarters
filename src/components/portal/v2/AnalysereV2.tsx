@@ -176,7 +176,27 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
             )}
           </>
         ) : (
-          <TomTilstand icon="target" title="Ingen SG-data ennå" sub="Spill en registrert runde for å se Strokes Gained." />
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <TomTilstand icon="target" title="Ingen SG-data ennå" sub="Spill en registrert runde for å se Strokes Gained." />
+            <Link href="/portal/runde/live" style={{ textDecoration: "none", display: "block" }}>
+              <CTAPill icon="flag" full>
+                Logg runde
+              </CTAPill>
+            </Link>
+            <Link
+              href="/portal/mal/runder/ny"
+              style={{
+                textDecoration: "none",
+                fontFamily: T.ui,
+                fontSize: 12,
+                fontWeight: 600,
+                color: T.fg2,
+                textAlign: "center",
+              }}
+            >
+              Hurtig score / importer
+            </Link>
+          </div>
         )}
       </Kort>
 
@@ -188,7 +208,6 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
               return (
                 <FordelingRad
                   key={k.akse}
-                  code={k.akse}
                   label={isWeak ? `${SG_NAVN[k.akse]} · svakest` : SG_NAVN[k.akse]}
                   signal
                   pct={(Math.abs(k.sg) / maxAbs) * 100}
@@ -438,6 +457,7 @@ function TabTrening({ data, mobile }: { data: AnalysereData; mobile: boolean }) 
           sub={`${training.sessions} økter · ${training.reps} reps`}
           size={mobile ? 44 : 48}
           action={<StatusPill tone="up">{training.sessions} økter</StatusPill>}
+          hjelp="treningsVolum"
         />
       </Kort>
 
@@ -445,7 +465,10 @@ function TabTrening({ data, mobile }: { data: AnalysereData; mobile: boolean }) 
         <Kort eyebrow="Planlagt vs gjennomført · Bølge 5">
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div>
-              <Caps size={9}>Etterlevelse</Caps>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                <Caps size={9}>Etterlevelse</Caps>
+                <HjelpTips k="planEtterlevelse" size={11} />
+              </span>
               <div style={{ marginTop: 6, fontFamily: T.disp, fontSize: mobile ? 28 : 32, fontWeight: 700, color: T.fg }}>
                 {training.analyse.etterlevelsePct != null ? `${training.analyse.etterlevelsePct} %` : "–"}
               </div>
@@ -566,7 +589,14 @@ function TabTrackman({ data, mobile }: { data: AnalysereData; mobile: boolean })
   if (clubs.length === 0) {
     return (
       <Kort>
-        <TomTilstand icon="crosshair" title="Ingen TrackMan-data siste 30 dager" sub="Importer eller registrer en TrackMan-økt for å se snitt per kølle." />
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <TomTilstand icon="crosshair" title="Ingen TrackMan-data siste 30 dager" sub="Importer eller registrer en TrackMan-økt for å se snitt per kølle." />
+          <Link href="/portal/mal/trackman" style={{ textDecoration: "none", display: "block" }}>
+            <CTAPill icon="crosshair" full>
+              Åpne TrackMan
+            </CTAPill>
+          </Link>
+        </div>
       </Kort>
     );
   }
@@ -649,7 +679,14 @@ function TabTester({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
   if (tests.length === 0) {
     return (
       <Kort>
-        <TomTilstand icon="badge-check" title="Ingen testresultater" sub="FYS- og ferdighetstester dukker opp her når de er registrert." />
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <TomTilstand icon="badge-check" title="Ingen testresultater" sub="FYS- og ferdighetstester dukker opp her når de er registrert." />
+          <Link href="/portal/tren/tester/ny" style={{ textDecoration: "none", display: "block" }}>
+            <CTAPill icon="badge-check" full>
+              Registrer test
+            </CTAPill>
+          </Link>
+        </div>
       </Kort>
     );
   }
@@ -717,10 +754,10 @@ function TabTester({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
 /* ── Skjermen ──────────────────────────────────────────────────────── */
 
 const TABS = [
+  { id: "sg", l: "SG" },
   { id: "trening", l: "Trening" },
   { id: "tester", l: "Tester" },
   { id: "trackman", l: "TrackMan" },
-  { id: "sg", l: "SG" },
   { id: "statistikk", l: "Statistikk" },
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
@@ -736,7 +773,7 @@ export function AnalysereV2({
   header?: (mobile: boolean) => ReactNode;
 }) {
   const mobile = useMobile();
-  const [tab, setTab] = useState<TabId>("trening");
+  const [tab, setTab] = useState<TabId>("sg");
 
   // URL-tab-state (?tab=) — leses ved mount, oppdateres uten full navigasjon.
   useEffect(() => {

@@ -201,8 +201,9 @@ export function HjemV2({ data }: { data: DashboardData }) {
               {fokusDetalj && (
                 <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "8px 0 0" }}>{fokusDetalj}</p>
               )}
-              <div style={{ display: "flex", gap: 6, marginTop: 12 }}>
+              <div style={{ display: "flex", gap: 6, marginTop: 12, alignItems: "center", flexWrap: "wrap" }}>
                 <AkseChip a={today.pyramidArea} />
+                <HjelpTips k="pyramideAkse" size={11} />
                 {fokusStatus && <StatusPill tone={fokusStatus.tone}>{fokusStatus.l}</StatusPill>}
               </div>
               {todayAll.length > 1 && (
@@ -246,7 +247,7 @@ export function HjemV2({ data }: { data: DashboardData }) {
                     <StatusPill tone="info">{varighet(optimalSession.durationMin)}</StatusPill>
                   </div>
                   <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none" }}>
-                    <CTAPill icon="calendar" full>
+                    <CTAPill icon="calendar" ghost full>
                       Planlegg dette i Workbench
                     </CTAPill>
                   </Link>
@@ -272,7 +273,7 @@ export function HjemV2({ data }: { data: DashboardData }) {
                     sub="Nyt hviledagen — eller legg inn økter i Workbench."
                   />
                   <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none" }}>
-                    <CTAPill icon="calendar" full>
+                    <CTAPill icon="calendar" ghost full>
                       Åpne Workbench
                     </CTAPill>
                   </Link>

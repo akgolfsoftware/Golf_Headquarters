@@ -1,6 +1,6 @@
 # Master-skjermplan — AK Golf HQ
 
-> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 17. juli 2026.**
+> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 24. juli 2026.**
 
 > **OPPDATERT KANON (2026-07-08):** Design-kanon er nå UTELUKKENDE det levende Claude Design-
 > prosjektet (`claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`), hentet direkte via
@@ -88,14 +88,14 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Hjem (Workbench-hjem) ★ | `/portal` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Complete v13 (golfdata scope + components)
+| Hjem (Workbench-hjem) ★ | `/portal` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24 GO V1: én primær CTA når ingen økt i dag (Workbench ghost); HjelpTips på dagens pyramide-akse. Complete v13 (golfdata scope + components)
 | Varsler ★ | `/portal/varsler` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | v13 golfdata-scope + Eyebrow/Card primitives (full composition)
 
 ### Planlegge
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Planlegge (= Workbench mobil) ★ | `/portal/planlegge` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Complete v13 (golfdata scope + OektKort etc)
+| Planlegge (= Workbench mobil) ★ | `/portal/planlegge` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24 GO V1: HjelpTips på uke-% + «Fra form (SG)»; tom uke med ghost-CTA til Workbench. Complete v13 (golfdata scope + OektKort etc)
 | **Workbench (planlegging)** ★ | `/portal/planlegge/workbench` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14 dok-verifisering: samme delte `WorkbenchV2`-komponent som coach-siden — Del 8c (periodetype-grunnmur, årsplan-canvas, periodestrip, Cmd+D-duplisering, universell økt-popup, full økt-komponist, Driller-fane) + WB1–WB5 (belastningsstripe, publiser-diff, øktas driller i inspektøren) er alle levert og koblet til ekte server actions (`lib/workbench/*`). Design rettet – → ✓ for å matche faktisk kode |
 | · Plan-bygger (v2 wizard) | `/portal/planlegge/bygger` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2 2026-07-10: 5-stegs wizard per godkjent mockup (phq-plan-bygger); deler kjerner med legacy mal/bygger via lib/plan-builder
 | Årsplan | `/portal/tren/aarsplan` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `Aarsplan`-komponenten importerer golfdata `Button/Card/Eyebrow`. |
@@ -150,7 +150,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Analysere = «Min golf» (6 faner: SG · Fokus · Runder · Baggen · Putting · Nivå — v13 golfdata, bølge 1 2026-07-04) ★ | `/portal/analysere` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24: Bølge 5 treningsanalyse (planlagt vs gjennomført) i Trening-fanen; Mob/iPad ✓✓✓ (fluid v2); lanserings-smoke e2e. |
+| Analysere = «Min golf» (6 faner: SG · Fokus · Runder · Baggen · Putting · Nivå — v13 golfdata, bølge 1 2026-07-04) ★ | `/portal/analysere` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24 GO V1: default-fane SG først; tom SG med «Logg runde»; skjul OTT/APP/ARG-koder; HjelpTips treningsvolum/etterlevelse; TrackMan/Tester tom+CTA. Bølge 5 treningsanalyse; Mob/iPad ✓✓✓; lanserings-smoke e2e. |
 | · Hull-analyse | `/portal/analysere/hull` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 17. jul (Team F2): hele skjermen (begge faner) rekomponert til v2 — `AnalysereHullV2` (PillTabs/SgKategorier/Scorekort/MiniSpark); queries og fane-logikk uendret; SG per hull vises ærlig som «—» (ikke beregnet i datagrunnlaget). **Varmekart 19. jul:** `VarmekartKort` i «Hull for hull»-fanen — v2 `VarmeKart`-primitiven (`src/components/v2/datavis.tsx`) farget med `T.down`, snitt avvik fra par per hull aggregert på tvers av ALLE spillerens runder (`aggregerHullVarme`, `src/lib/domain/hole-heatmap.ts`), tom-tilstand under 3 runder. Flyt ~ → ✓. **Sone-kart-diagram 19. jul** (samme dag, etter Anders' svar på `docs/design-bestillinger/v2-sonekart-hull-analyse.md`): drop-off-gapet er lukket — `SoneDiagram`/`SoneDiagramBlokk` i `AnalysereHullV2.tsx` (`SoneFane`) tegner et illustrativt, bane-uavhengig «vei mot green»-diagram (tee → innspill → nærspill → putt) som et nytt lag OVER de eksisterende `SgKategorier`/`Rad`-detaljene (fjernet ingenting). Tap/hover-popover er en 1:1-kopi av `VarmeKartCelle`-mønsteret (ekte hover åpner ved museover, touch åpner/lukker ved trykk, Escape/fokus-tap lukker); popover viser SG (`fmtSg`), `MiniSpark`-trend og økter/minutter siste 30 dager — samme tall som Rad-listen. Tom-tilstand (0 SG-registreringer): alle soner nøytrale `T.mut`, aldri fabrikkert tall. Ny HjelpTips-nøkkel `soneDiagram` i `src/lib/v2/hjelpetekster.ts`. Design/Flyt fortsatt ✓ (ingen nye queries, kun ny visning av data skjermen allerede hadde). |
 | Statistikk (oversikt) | `/portal/statistikk` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Fase 2 spot-check 17. jul: FLIPPET ~ → ✓. `StatistikkHub` (via statistikk-hybrid) er fullt golfdata-komponert — overgangs-laget teller som kanon per design-system-regelen. Rekomponeres til v2 når hub-bølgen tas; underruten `[metric]` er alt v2 (Team D3). |
 | · Metrikk-detalj | `/portal/statistikk/[metric]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D3): `StatistikkMetrikkV2` — metric-oppslag (5 pyramide + 4 SG + aliaser), queries og trend-buckets uendret. Falsk (disabled) periode-velger erstattet med ærlig «Siste 90 d»-badge; fortegn mot kategori-snitt vises nå korrekt; HjelpTips på SG/pyramide/kategori-snitt. A1-benchmark fortsatt statisk proxy, merket «(referanse)». Design – → ✓. |
@@ -796,6 +796,8 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 ---
 
 ## Endringslogg
+
+- 24. juli: **GO V1 Dommer-finpuss** — Analysere default SG + «Logg runde» + ordbok uten OTT/APP/ARG-koder; Hjem én primær CTA (Workbench ghost når ingen økt); Plan HjelpTips på uke-%/SG + tom-uke ghost-CTA. Se `plans/design-forbedring-plattform-2026-07-24.md`.
 
 - 24. juli: **Ferdigstillingsplan Fase A+B levert (gren).** Dokumentsynk (STATUS-NÅ,
   skjermplan-master bølger, Bolk 6); `lastLoginAt` på alle innloggingsstier +

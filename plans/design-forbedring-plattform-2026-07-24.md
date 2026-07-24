@@ -3,7 +3,7 @@
 > **Metode:** ak-design-evolution (diagnose før kode). Mobbin MCP: **nei** (ikke koblet).
 > **Kontekst:** Designsystem-pass (PR #127) og KS-1 er i main. Dette er *anvendelsen*
 > skjerm for skjerm — ikke nytt tokensett.
-> **Uten «GO V1»:** kun denne planen. Implementasjon starter når Anders sier GO.
+> **GO V1:** levert 2026-07-24 (sjekkliste §3).
 
 ---
 
@@ -36,20 +36,22 @@
 ## 3. GO V1 — kirurgisk sjekkliste (etter GO)
 
 ### Analyse (`AnalysereV2.tsx`) — størst impact
-1. Default-fane → `"sg"`; SG først i fanelisten.
-2. Tom SG: én `CTAPill` «Logg runde» (vei videre).
-3. Fjern synlig `ARG`/`APP`/`OTT` som `code=` i `FordelingRad` (norske labels allerede OK).
-4. `HjelpTips` på Trening-volum + etterlevelse; TomTilstand med CTA på TrackMan/Tester.
+1. [x] Default-fane → `"sg"`; SG først i fanelisten.
+2. [x] Tom SG: én `CTAPill` «Logg runde» (vei videre).
+3. [x] Fjern synlig `ARG`/`APP`/`OTT` som `code=` i `FordelingRad` (norske labels allerede OK).
+4. [x] `HjelpTips` på Trening-volum + etterlevelse; TomTilstand med CTA på TrackMan/Tester.
 
 ### Hjem (`HjemV2.tsx`)
-5. Når ingen økt i dag: **kun én** primær `CTAPill` (nesteHandling *eller* Workbench — den andre ghost/tekst).
-6. `HjelpTips` på dagens pyramide-akse.
+5. [x] Når ingen økt i dag: **kun én** primær `CTAPill` (nesteHandling *eller* Workbench — den andre ghost/tekst).
+6. [x] `HjelpTips` på dagens pyramide-akse.
 
 ### Plan (`PlanV2.tsx`) — finpuss
-7. `HjelpTips` på uke-% og «Fra form (SG)».
-8. Tom uke: ghost-CTA til Workbench inne i kortet.
+7. [x] `HjelpTips` på uke-% og «Fra form (SG)».
+8. [x] Tom uke: ghost-CTA til Workbench inne i kortet.
 
 **Ferdig når:** Anders består 5-sekunders-testen på telefon for alle tre uten å tenke. MASTER-haker oppdateres i samme commits.
+
+**Status:** GO V1 levert 2026-07-24 på `cursor/design-forbedring-plattform-5979`.
 
 ---
 
