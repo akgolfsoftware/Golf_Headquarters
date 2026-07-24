@@ -36,12 +36,37 @@ const STATS_PROTOTYPE_PREFIXES = [
  * style-src tillater 'unsafe-inline' fordi Tailwind v4 + CSS custom props
  * bruker inline-stiler i komponent-kode.
  */
+function devSupabaseConnectOrigins(): string {
+  const extras = new Set<string>([
+    "http://127.0.0.1:54321",
+    "http://localhost:54321",
+    "ws://127.0.0.1:54321",
+    "ws://localhost:54321",
+  ]);
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (url) {
+    try {
+      const parsed = new URL(url);
+      extras.add(parsed.origin);
+      const wsProto = parsed.protocol === "https:" ? "wss:" : "ws:";
+      extras.add(`${wsProto}//${parsed.host}`);
+    } catch {
+      // Ugyldig URL — ignorer (prod/hostet Supabase bruker https://*.supabase.co uansett).
+    }
+  }
+  return [...extras].join(" ");
+}
+
 function buildCsp(nonce: string): string {
   const isDev = process.env.NODE_ENV === "development";
   // React dev (HMR/refresh) trenger eval() lokalt. Aldri i prod.
   const scriptSrc = isDev
     ? `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval' https://js.stripe.com https://vitals.vercel-insights.com`
     : `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://js.stripe.com https://vitals.vercel-insights.com`;
+
+  const connectSrc = isDev
+    ? `connect-src 'self' ${devSupabaseConnectOrigins()} https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://vitals.vercel-insights.com https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com`
+    : "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://vitals.vercel-insights.com https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com";
 
   const directives = [
     "default-src 'self'",
@@ -56,7 +81,7 @@ function buildCsp(nonce: string): string {
     // Fetch / WebSocket: Supabase Realtime, Stripe API, Vercel, Mapbox
     // (Gameplan-kartet henter stil/tiles/sprites via fetch — offisiell
     // Mapbox GL JS-CSP: api + events + *.tiles.mapbox.com)
-    "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://vitals.vercel-insights.com https://api.mapbox.com https://events.mapbox.com https://*.tiles.mapbox.com",
+    connectSrc,
     // Mapbox GL kjører web workers fra blob:
     "worker-src 'self' blob:",
     // Stripe embedded UI + same-origin iframes
