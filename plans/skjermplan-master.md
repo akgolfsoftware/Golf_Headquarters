@@ -30,11 +30,13 @@ Loopen som ER produktet: **Analyse → Plan (workbench) → Live-økt → Gjenno
 
 ## Bølgeplanen
 
-> ⚠ **STATUS VERIFISERT MOT KODE 2026-07-06** (ikke bare mot planteksten under — commit-arkeologi
-> avdekket at mye ble bygget 4. juli av en samtidig økt uten at det ble kommunisert). Fasit:
-> **Bølge 0 ✅ · Bølge 1 nesten ferdig (se detalj) · Bølge 2 ✅ ferdig (annen modell enn planlagt,
-> se detalj) · Bølge 3 kun funksjonslag, INGEN redesign ennå · Bølge 4 kun startet (4a) ·
-> Bølge 5 IKKE startet · Bølge 6 kun 1 punkt · Bølge 7 urørt (riktig).**
+> ⚠ **STATUS VERIFISERT MOT KODE 2026-07-24** (oppdatering fra ferdigstillingsplan — erstatter
+> 6. juli-snapshot). Fasit:
+> **Bølge 0 ✅ · Bølge 1 ✅ (Min golf + cockpit/spillere; `/admin/stall` = redirect) · Bølge 2 ✅
+> (SessionDrill/TrainingDrillV2) · Bølge 2.5 ✅ · Bølge 3 ✅ (WorkbenchV2 + `@/components/v2`,
+> ikke golfdata/`workbench-hybrid`) · Bølge 4 🟡 (UI: checklist/timer/reps levert; offline-synk
+> for drills mangler) · Bølge 5 ⬜ IKKE startet · Bølge 6 🟡 (HCP-plassering + forelder/varsler;
+> nivå-quiz mangler) · Bølge 7 urørt (riktig — etter lukket loop).**
 > Detaljer per bølge i egne bokser under hver seksjon.
 
 ### Bølge 0 — Mottak og fundament · KLAR · ~1 time
@@ -44,12 +46,9 @@ Eksport inn i `public/design-handover/` (2 MB-sjekk), én designkilde verifisert
 PlayerHQ **Min golf**: konsolidert flate med tabs — SG-status (SgTotalKort, SgKategoriBar, SgTrend), Neste fokus (NesteFokusKort + SlagLekkasjeKart + DiagnoseKort), Runder (Scorekort, TigerFive), Baggen (GappingChart, LaunchWindow, StrikeSmash), Putting (PuttModellKort), Progresjon (KategoriKravKort). AgencyOS **cockpit**: SpillerTilstandKort-grid → klikk åpner full analyse i coach-dybde. Data: sg-hub, runde-/test-/TrackMan-modeller — kun visning, ingen ny beregning. Empty states = onboarding.
 **Ferdig når:** SG-tall stemmer mot sg-hub for kjent spiller; coach leser tilstand på 5 sek med ekte data.
 
-> **✅ Verifisert 2026-07-06:** PlayerHQ Analyse (`/portal/analysere`) og Gjennomføre (`/portal/gjennomfore`)
-> ferdig portet til golfdata-familien. AgencyOS-halvdelen landet på en annen rute enn planlagt:
-> `/admin/spillere` (SpillerTilstandKort-liste) + `/admin/spillere/[id]/analyse` (coach-dybde) — IKKE
-> `/admin/stall`, som fortsatt er på eldre komponenter. **Åpent spørsmål til Anders:** skal
-> `/admin/spillere` erstatte `/admin/stall`, eller skal begge leve videre? Gjenstår i Bølge 1: Hjem sin
-> `WeekProgress`-underkomponent (liten jobb), Planlegge og Meg (fortsatt eldre komponenter).
+> **✅ FERDIG (verifisert 2026-07-24):** PlayerHQ Analyse/Gjennomføre/Hjem/Planlegge/Meg på v2.
+> AgencyOS: `/admin/spillere` + spiller-dashboard + analyse er kanon; `/admin/stall` er redirect
+> til spillere (beslutning C11/IA). Ingen gjenstående Bølge 1-bygg.
 
 ### Bølge 2 — Datamodell drill-nivå · KLAR (input besvart 2026-07-04) · ~1 økt
 Økt blir container: `Okt` → `OktDrill[]`, hver drill med ALLE seks akser (PYR/Område/CS/Læringstrinn/Situasjon/Press) + én av fire repstyper (svinger uten ball / baller slått / tid / sett×reps) + volum. Bulk-apply-affordance i UI (ikke i modellen). Drillbank på plattformen = sannhetskilde (ingen Notion-synk). FysProgram/ProgramSplitt/ProgramOvelse (sett/reps/kg/tid/sone). **Additiv migrering** (nye tabeller, CREATE TABLE IF NOT EXISTS via db execute per gotchas — rører aldri eksisterende data). Gamle økter migreres IKKE (fryses lesbar; drill-modell fra dato). Offline-krav (svar 4) håndteres i bølge 4, men modellen må tåle klient-generert id + synk-status.
@@ -86,31 +85,37 @@ innlogget testbruker gjenstår (ingen dev-innloggingsdata tilgjengelig denne øk
 Composer på drill-nivå (velg fra drillbank → reps per drill → økt). Øktmaler og ukemaler med fase-tag (GRUNN/SPES/TURN), deling coach→spiller. «Dupliser forrige uke». FYS-programkobling når PYR=FYS. Pyramide-budsjett regnes fra drill-minutter. Anbefalings-chips (aldri sperrer) + coach-varsel-event.
 **Ferdig når:** spiller på mobil: velg ukemal → juster én økt → lagre, under 60 sek.
 
-> **🟡 Delvis (3a–3c, 2026-07-04):** drill-param-serverlag, rep-type/volum-editor i `DrillProgram.tsx`,
-> og «Dupliser forrige uke» er bygget — men **kun som funksjonstillegg til den eksisterende
-> `WorkbenchHybrid`-stacken.** Null golfdata-bruk i `src/components/workbench-hybrid/` (verifisert
-> med grep). Selve VISUELLE re-designet av Workbench (den store jobben fra design-revisjonen
-> 6. juli) er ikke rørt — funksjon og design er to separate ting her, og kun funksjon er gjort.
+> **✅ FERDIG (verifisert 2026-07-24):** Visuell + funksjonell Workbench er `WorkbenchV2` under
+> `src/components/portal/v2/` med `@/components/v2` + wb-composer. Delte roller spiller|coach.
+> «Dupliser forrige uke», drill-composer, maler, publiser-diff, årsplan-canvas, coldstart levert
+> (se VEIKART WB1–WB5 + 8c). `workbench-hybrid/` er stub/levning — ikke bygg videre der.
 
 ### Bølge 4 — Live-økt v2 · avhenger av bølge 2 · ~1 økt
 Drill-sjekkliste med aktiv drill ekspandert, auto-timer (total + per drill), rep-logging +5/+10/+20 med 44 px-mål, sett-avhuking, faktisk-vs-planlagt lagres på økten. TrackMan-kobling per drill (strategi avklares i plan). Coach ser status i AgencyOS (planlagt/pågår/ferdig).
 **Blokkert av intervjusvar 4 (offline).** Ferdig når: hel økt gjennomføres på 390 px uten å forlate flaten.
 
-> **🟡 Kun startet (4a, 2026-07-04):** viser planlagt repstype+volum i live-økten. Drill-sjekkliste,
-> auto-timer, rep-logging-knapper og offline-synk er ikke bygget ennå.
+> **🟡 UI levert, offline mangler (2026-07-24):** `LiveActive` har drill-sjekkliste, auto-timer
+> (total + per drill), `RepCounter` (+1/+5/+10/+25), planlagt-vs-faktisk i summary. Offline-kø
+> finnes for score-tapper (`src/lib/offline-queue/`) men **ikke for drill-reps**; reps lever i
+> `sessionStorage` til synk bygges. Snapshot-API finnes men kalles ikke fra LiveActive. TrackMan
+> per drill og AgencyOS live-status: delvis / seed.
 
 ### Bølge 5 — Leserne: kalender + treningsanalyse · avhenger av 2–4 · ~1–2 økter
 AgencyOS-kalender: ukevisning med pyramidefarger og varighet, klikk/hover gir full drilliste med formler og reps — ren lesevisning, redigering skjer i workbench. Treningsanalyse (ny modul, begge roller): filter på alle seks akser + repstype + drill + periode; nøkkeltall (baller slått, svinger uten ball, CS-fordeling, M/PR-eksponering); planlagt vs. gjennomført. Spiller-dybde i klarspråk i Min trening; coach-dybde i AgencyOS.
 **Ferdig når:** coach kan svare «hva har spilleren faktisk trent mot plan» med tre klikk.
 
-> **⬜ IKKE startet.** Ingen commits funnet for Bølge 5. Reell neste store jobb etter at Bølge 3/4
-> sitt visuelle/funksjonelle arbeid lukkes.
+> **⬜→🟡 STARTET 2026-07-24 (ferdigstillingsplan):** treningsanalyse-loader
+> (`hentTreningsanalyse`) + planlagt-vs-gjennomført i Analysere Trening-fane;
+> AgencyOS-kalender viser TrainingSessionV2-blokker med drill-lesevisning (BunnArk).
+> Full 6-akse-filter + krysstabell kan utvides videre.
 
 ### Bølge 6 — Komplettering til full app · delvis klar · ~2 økter
 Onboarding-quiz med nivåplassering (lanseringskritisk for selvbetjening). Foreldreportal: progresjons-lesevisning i klarspråk. Spilleradmin i AgencyOS. Booking-forbedringer (betalingstilstander fra komponentfamilien). Varslingssenter (avviks- og live-events fra bølge 3–4). Resterende ⬜ i DEKNINGSKART, prioritert etter brukersynlighet.
 
-> **🟡 Kun 1 punkt (2026-07-04):** nye spillere uten runder plasseres nå etter HCP. Resten
-> (onboarding-quiz, foreldreportal, spilleradmin, booking, varslingssenter) ikke startet.
+> **🟡 Delvis (2026-07-24):** HCP→dybde for spillere uten runder ✅. Foreldreportal (11 ruter) ✅.
+> Spiller-dashboard / admin ✅. Booking-trygging + varsler-UI ✅. **Mangler:** nivåplasserings-quiz
+> (ett spørsmål per skjerm) i `/auth/onboarding` — dagens wizard er profil/samtykke, ikke quiz.
+> Marketing/stats = egen bølge (utenfor kjerneapp).
 
 ### Bølge 7 — AI Coach-laget · strategisk, etter lukket loop
 Når loopen produserer data (plan + gjennomføring + resultat) er grunnlaget lagt for AI Coach-satsingen ($10M ARR-sporet): samtale over egne data, ukesoppsummeringer, proaktive dommer. Bygges IKKE før bølge 1–5 er i produksjon — AI uten gjennomføringsdata er en chatbot, med data er den en coach.

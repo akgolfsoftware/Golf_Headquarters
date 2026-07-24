@@ -1,9 +1,9 @@
 /**
  * Onboarding state-machine (P7 fra master-plan).
  *
- * Spiller-onboarding har 5 steg (redusert fra 7 2026-07-16 — GolfBox- og
- * TrackMan-auto-connect-stegene fjernet, se onboarding-wizard.tsx). State
- * lagres i User.preferences.onboarding. Forelder-onboarding har 4 steg.
+ * Spiller-onboarding har 6 steg (nivåplasserings-quiz lagt til 2026-07-24
+ * mellom golf-erfaring og coach/abonnement — ett spørsmål per skjerm).
+ * State lagres i User.preferences.onboarding. Forelder-onboarding har 4 steg.
  *
  * Bruker kan resume fra siste fullførte steg + 1 hvis de mister tilkobling.
  * Auto-complete hvis siste steg er fullført.
@@ -21,7 +21,7 @@
 import { lesRaaPreferences } from "@/lib/preferences";
 import type { Prisma } from "@/generated/prisma/client";
 
-export const SPILLER_TOTAL_STEPS = 5;
+export const SPILLER_TOTAL_STEPS = 6;
 export const FORELDER_TOTAL_STEPS = 4;
 
 export type OnboardingStepState = {

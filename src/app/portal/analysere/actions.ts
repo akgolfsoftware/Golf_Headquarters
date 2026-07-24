@@ -15,6 +15,7 @@ import type {
   ShotType,
 } from "@/generated/prisma/client";
 import { assertCanViewPlayerData } from "@/lib/auth/assert-own-or-coached";
+import { hentTreningsanalyse } from "@/lib/portal-analyse/treningsanalyse-data";
 
 function startOfPeriod(period: "7d" | "30d" | "90d" | "1y" | "all"): Date | null {
   const now = new Date();
@@ -47,6 +48,16 @@ export type TrainingStats = {
     pyramidArea: PyramidArea;
     reps: number;
   }[];
+  /** Bølge 5 — planlagt vs gjennomført + repstype (siste 30d default). */
+  analyse: {
+    planlagteOkter: number;
+    gjennomforteOkter: number;
+    etterlevelsePct: number | null;
+    planlagteReps: number;
+    faktiskeReps: number;
+    ballerSlatt: number;
+    svingerUtenBall: number;
+  } | null;
 };
 
 export type RoundListItem = {
@@ -245,12 +256,30 @@ export async function getTrainingStats(
     reps: drills.filter((d) => d.drill?.sessionId === s.id).reduce((sum, d) => sum + (d.repsTotal ?? 0), 0),
   }));
 
+  const analyseFra = from ?? new Date(naa.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const analyse = await hentTreningsanalyse({
+    userId,
+    fra: analyseFra,
+    til: naa,
+  }).catch(() => null);
+
   return {
     sessions: sessions.length,
     reps,
     minutes: Math.round(minutes),
     byAxis,
     recentSessions,
+    analyse: analyse
+      ? {
+          planlagteOkter: analyse.planlagteOkter,
+          gjennomforteOkter: analyse.gjennomforteOkter,
+          etterlevelsePct: analyse.etterlevelsePct,
+          planlagteReps: analyse.planlagteReps,
+          faktiskeReps: analyse.faktiskeReps,
+          ballerSlatt: analyse.ballerSlatt,
+          svingerUtenBall: analyse.svingerUtenBall,
+        }
+      : null,
   };
 }
 

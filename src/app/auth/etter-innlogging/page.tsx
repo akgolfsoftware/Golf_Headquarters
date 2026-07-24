@@ -12,6 +12,7 @@
  */
 
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { recordLastLogin } from "@/lib/auth/record-last-login";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +22,11 @@ export default async function EtterInnloggingPage() {
 
   // Ikke innlogget → logg inn
   if (!user) redirect("/auth/login");
+
+  // Passord-login lander her (OAuth setter lastLoginAt i oauth-callback).
+  // getCurrentUser oppdaterer også stale lastLoginAt, men vi er eksplisitte
+  // på denne stien så aktiveringsmetrikken alltid treffer.
+  await recordLastLogin(user.id).catch(() => undefined);
 
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "ADMIN" || user.role === "COACH") redirect("/admin/agencyos");

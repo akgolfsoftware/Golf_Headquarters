@@ -8,6 +8,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { flyttBookingTilDag } from "@/app/admin/agencyos/uka/actions";
+import { hentKalenderDrills } from "@/app/admin/kalender/drill-actions";
 
 // I5: samme DnD-mønster som uka-kanbanen — dra booking til ny dag.
 const DND_MIME = "application/x-akgolf-kalender";
@@ -64,14 +65,24 @@ function SerieMerke({ tekst }: { tekst: string }) {
 
 /* ── OktBlokk — én økt i uke-grid/dag-liste. Serie-økter åpner SerieMeny
    (klikk setter state hos forelder) i stedet for å navigere bort — vanlige
-   økter beholder Link-navigasjon til booking/gruppe. ── */
-function OktBlokk({ okt, onSerieClick }: { okt: KalOkt; onSerieClick?: (okt: KalOkt) => void }) {
+   økter beholder Link-navigasjon til booking/gruppe. Treningsøkter med
+   treningsSessionId åpner drill-lesevisning (Bølge 5). ── */
+function OktBlokk({
+  okt,
+  onSerieClick,
+  onTreningClick,
+}: {
+  okt: KalOkt;
+  onSerieClick?: (okt: KalOkt) => void;
+  onTreningClick?: (okt: KalOkt) => void;
+}) {
   const erSerie = Boolean(okt.serie);
+  const erTrening = Boolean(okt.treningsSessionId);
   const kant = okt.naa ? NAA_KANT : erSerie ? SERIE_KANT : T.border;
   const inner = (
     <div
       style={{
-        background: erSerie || okt.naa ? `${T.tint}, ${T.panel2}` : T.panel2,
+        background: erSerie || okt.naa || erTrening ? `${T.tint}, ${T.panel2}` : T.panel2,
         border: `1px solid ${kant}`,
         boxShadow: erSerie ? SERIE_GLOW : "none",
         borderRadius: T.rRow,
@@ -79,7 +90,7 @@ function OktBlokk({ okt, onSerieClick }: { okt: KalOkt; onSerieClick?: (okt: Kal
         display: "flex",
         flexDirection: "column",
         gap: 4,
-        cursor: okt.href || erSerie ? "pointer" : "default",
+        cursor: okt.href || erSerie || erTrening ? "pointer" : "default",
         minWidth: 0,
       }}
     >
@@ -87,6 +98,7 @@ function OktBlokk({ okt, onSerieClick }: { okt: KalOkt; onSerieClick?: (okt: Kal
         <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.fg2, fontVariantNumeric: "tabular-nums" }}>{okt.kl}</span>
         <span style={{ width: 5, height: 5, borderRadius: 9999, background: okt.akse ? T.ax[okt.akse as AkseKey] : T.mut, flex: "none" }} />
         {okt.naa && <StatusPill tone="down">Live</StatusPill>}
+        {erTrening && <MikroMeta icon="list">Drills</MikroMeta>}
         {okt.gruppe != null && <MikroMeta icon="users">{okt.gruppe}</MikroMeta>}
       </div>
       <span style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{okt.navn}</span>
@@ -96,6 +108,18 @@ function OktBlokk({ okt, onSerieClick }: { okt: KalOkt; onSerieClick?: (okt: Kal
       {okt.serie && <SerieMerke tekst={okt.serie} />}
     </div>
   );
+  if (erTrening) {
+    return (
+      <button
+        type="button"
+        onClick={() => onTreningClick?.(okt)}
+        className="v2-focus"
+        style={{ appearance: "none", background: "none", border: "none", padding: 0, textAlign: "left", width: "100%", cursor: "pointer" }}
+      >
+        {inner}
+      </button>
+    );
+  }
   if (erSerie) {
     return (
       <button
@@ -192,7 +216,7 @@ function SerieMeny({ okt, onClose, mobile }: { okt: KalOkt; onClose: () => void;
 }
 
 /* ── Dag-kolonne (desktop grid-celle) ── */
-function DagKolonne({ dag, onSerieClick, onFlytt, flytterId, onTomLuke }: { dag: KalenderData["dager"][number]; onSerieClick: (okt: KalOkt) => void; onFlytt?: (bookingId: string, datoISO: string) => void; flytterId?: string | null; onTomLuke: (datoISO: string, kl: string) => void }) {
+function DagKolonne({ dag, onSerieClick, onTreningClick, onFlytt, flytterId, onTomLuke }: { dag: KalenderData["dager"][number]; onSerieClick: (okt: KalOkt) => void; onTreningClick: (okt: KalOkt) => void; onFlytt?: (bookingId: string, datoISO: string) => void; flytterId?: string | null; onTomLuke: (datoISO: string, kl: string) => void }) {
   const [over, setOver] = useState(false);
   return (
     <div
@@ -222,10 +246,10 @@ function DagKolonne({ dag, onSerieClick, onFlytt, flytterId, onTomLuke }: { dag:
               onDragStart={(e) => { e.dataTransfer.setData(DND_MIME, o.id); e.dataTransfer.effectAllowed = "move"; }}
               style={{ cursor: "grab", opacity: flytterId === o.id ? 0.45 : 1 }}
             >
-              <OktBlokk okt={o} onSerieClick={onSerieClick} />
+              <OktBlokk okt={o} onSerieClick={onSerieClick} onTreningClick={onTreningClick} />
             </div>
           ) : (
-            <OktBlokk key={o.id} okt={o} onSerieClick={onSerieClick} />
+            <OktBlokk key={o.id} okt={o} onSerieClick={onSerieClick} onTreningClick={onTreningClick} />
           ),
         )
       )}
@@ -249,7 +273,7 @@ function DagKolonne({ dag, onSerieClick, onFlytt, flytterId, onTomLuke }: { dag:
 /* ── DagOkterListe — én dags økter som OktBlokk-liste + «Ny booking eller økt»-
    inngang. Delt av desktop dag-visning OG mobilens dag-detalj-BunnArk, så
    opprett-inngangen (tom luke → HurtigOpprett) er identisk begge steder. ── */
-function DagOkterListe({ dag, onSerieClick, onTomLuke }: { dag: KalDag; onSerieClick: (okt: KalOkt) => void; onTomLuke: (datoISO: string, kl: string) => void }) {
+function DagOkterListe({ dag, onSerieClick, onTreningClick, onTomLuke }: { dag: KalDag; onSerieClick: (okt: KalOkt) => void; onTreningClick: (okt: KalOkt) => void; onTomLuke: (datoISO: string, kl: string) => void }) {
   return (
     <>
       {dag.okter.length === 0 ? (
@@ -257,7 +281,7 @@ function DagOkterListe({ dag, onSerieClick, onTomLuke }: { dag: KalDag; onSerieC
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {dag.okter.map((o) => (
-            <OktBlokk key={o.id} okt={o} onSerieClick={onSerieClick} />
+            <OktBlokk key={o.id} okt={o} onSerieClick={onSerieClick} onTreningClick={onTreningClick} />
           ))}
         </div>
       )}
@@ -345,6 +369,19 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   // Hvilken serie-økt (om noen) er valgt — styrer SerieMeny-panelet (kun ekte
   // klikk på en merket serie-blokk åpner det, aldri statisk synlig).
   const [valgtSerieOkt, setValgtSerieOkt] = useState<KalOkt | null>(null);
+  const [valgtTreningOkt, setValgtTreningOkt] = useState<KalOkt | null>(null);
+  const [treningsDrills, setTreningsDrills] = useState<{
+    title: string;
+    drills: Array<{
+      id: string;
+      name: string;
+      pyramide: string;
+      durationMinutes: number;
+      repType: string | null;
+      plannedReps: number;
+      faktiskeReps: number | null;
+    }>;
+  } | null>(null);
   // I1: trykk på tom luke → hurtigvelger (Ny booking / Ny økt) med tid fra luken.
   const [tomLuke, setTomLuke] = useState<{ dato: string; kl: string } | null>(null);
   const onTomLuke = (dato: string, kl: string) => setTomLuke({ dato, kl });
@@ -353,7 +390,16 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   // Sekundær-overlay åpnet FRA dag-arket må først lukke arket (z-rekkefølge:
   // SerieMeny/HurtigOpprett ligger under BunnArk), ellers havner det bak.
   const serieFraArk = (okt: KalOkt) => { setDagArk(null); setValgtSerieOkt(okt); };
+  const treningFraArk = (okt: KalOkt) => { setDagArk(null); void apneTrening(okt); };
   const tomLukeFraArk = (dato: string, kl: string) => { setDagArk(null); setTomLuke({ dato, kl }); };
+
+  async function apneTrening(okt: KalOkt) {
+    if (!okt.treningsSessionId) return;
+    setValgtTreningOkt(okt);
+    setTreningsDrills(null);
+    const res = await hentKalenderDrills(okt.treningsSessionId);
+    if (res.ok) setTreningsDrills({ title: res.title, drills: res.drills });
+  }
 
   // Nav-piler (ekte uke-navigasjon via ?uke=).
   const pil = (href: string, ikon: string, label: string) => (
@@ -472,7 +518,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       const valgt = data.dager.find((d) => d.idag) ?? data.dager[0];
       mobilKropp = (
         <Kort eyebrow={`${valgt.dag} ${valgt.dato}${valgt.idag ? " · i dag" : ""}`}>
-          <DagOkterListe dag={valgt} onSerieClick={setValgtSerieOkt} onTomLuke={onTomLuke} />
+          <DagOkterListe dag={valgt} onSerieClick={setValgtSerieOkt} onTreningClick={(o) => void apneTrening(o)} onTomLuke={onTomLuke} />
         </Kort>
       );
     } else {
@@ -499,9 +545,46 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
           onClose={() => setDagArk(null)}
           tittel={dagAark ? `${dagAark.dag} ${dagAark.dato}${dagAark.idag ? " · i dag" : ""}` : undefined}
         >
-          {dagAark && <DagOkterListe dag={dagAark} onSerieClick={serieFraArk} onTomLuke={tomLukeFraArk} />}
+          {dagAark && <DagOkterListe dag={dagAark} onSerieClick={serieFraArk} onTreningClick={treningFraArk} onTomLuke={tomLukeFraArk} />}
         </BunnArk>
         {valgtSerieOkt && <SerieMeny okt={valgtSerieOkt} onClose={() => setValgtSerieOkt(null)} mobile />}
+        <BunnArk
+          open={valgtTreningOkt !== null}
+          onClose={() => { setValgtTreningOkt(null); setTreningsDrills(null); }}
+          tittel={treningsDrills?.title ?? valgtTreningOkt?.navn ?? "Økt"}
+        >
+          {!treningsDrills ? (
+            <TomTilstand icon="loader" title="Laster drills…" sub="Henter planlagt og gjennomført volum." />
+          ) : treningsDrills.drills.length === 0 ? (
+            <TomTilstand icon="list" title="Ingen drills" sub="Åpne Workbench for å legge til øvelser." />
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {treningsDrills.drills.map((d) => (
+                <div
+                  key={d.id}
+                  style={{
+                    padding: "10px 12px",
+                    borderRadius: T.rRow,
+                    border: `1px solid ${T.border}`,
+                    background: T.panel2,
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[d.pyramide as AkseKey] ?? T.mut }} />
+                    <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, flex: 1 }}>{d.name}</span>
+                    <Caps size={9}>{d.pyramide}</Caps>
+                  </div>
+                  <div style={{ marginTop: 6, fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+                    {d.durationMinutes} min
+                    {d.repType ? ` · ${d.repType}` : ""}
+                    {d.plannedReps > 0 ? ` · plan ${d.plannedReps}` : ""}
+                    {d.faktiskeReps != null ? ` · gjort ${d.faktiskeReps}` : ""}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </BunnArk>
         {tomLuke && <HurtigOpprett dato={tomLuke.dato} klokkeslett={tomLuke.kl} onLukk={() => setTomLuke(null)} />}
       </div>
     );
@@ -513,7 +596,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     kropp = (
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 10 }}>
         {data.dager.map((d, i) => (
-          <DagKolonne key={i} dag={d} onSerieClick={setValgtSerieOkt} onFlytt={onFlytt} flytterId={flytterId} onTomLuke={onTomLuke} />
+          <DagKolonne key={i} dag={d} onSerieClick={setValgtSerieOkt} onTreningClick={(o) => void apneTrening(o)} onFlytt={onFlytt} flytterId={flytterId} onTomLuke={onTomLuke} />
         ))}
       </div>
     );
@@ -521,7 +604,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     const valgt = data.dager.find((d) => d.idag) ?? data.dager[0];
     kropp = (
       <Kort eyebrow={`${valgt.dag} ${valgt.dato}${valgt.idag ? " · i dag" : ""}`}>
-        <DagOkterListe dag={valgt} onSerieClick={setValgtSerieOkt} onTomLuke={onTomLuke} />
+        <DagOkterListe dag={valgt} onSerieClick={setValgtSerieOkt} onTreningClick={(o) => void apneTrening(o)} onTomLuke={onTomLuke} />
       </Kort>
     );
   } else {
@@ -543,6 +626,46 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       {visning === "uke" && serieHint}
       {innsikt}
       {valgtSerieOkt && <SerieMeny okt={valgtSerieOkt} onClose={() => setValgtSerieOkt(null)} />}
+      <BunnArk
+        open={valgtTreningOkt !== null}
+        onClose={() => { setValgtTreningOkt(null); setTreningsDrills(null); }}
+        tittel={treningsDrills?.title ?? valgtTreningOkt?.navn ?? "Økt"}
+      >
+        {!treningsDrills ? (
+          <TomTilstand icon="loader" title="Laster drills…" sub="Henter planlagt og gjennomført volum." />
+        ) : treningsDrills.drills.length === 0 ? (
+          <TomTilstand icon="list" title="Ingen drills" sub="Åpne Workbench for å legge til øvelser." />
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {treningsDrills.drills.map((d) => (
+              <div
+                key={d.id}
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: T.rRow,
+                  border: `1px solid ${T.border}`,
+                  background: T.panel2,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[d.pyramide as AkseKey] ?? T.mut }} />
+                  <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, flex: 1 }}>{d.name}</span>
+                  <Caps size={9}>{d.pyramide}</Caps>
+                </div>
+                <div style={{ marginTop: 6, fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+                  {d.durationMinutes} min
+                  {d.repType ? ` · ${d.repType}` : ""}
+                  {d.plannedReps > 0 ? ` · plan ${d.plannedReps}` : ""}
+                  {d.faktiskeReps != null ? ` · gjort ${d.faktiskeReps}` : ""}
+                </div>
+              </div>
+            ))}
+            <Link href="/admin/agencyos" style={{ textDecoration: "none", marginTop: 8 }}>
+              <CTAPill ghost full>Til Workbench for redigering</CTAPill>
+            </Link>
+          </div>
+        )}
+      </BunnArk>
       {tomLuke && <HurtigOpprett dato={tomLuke.dato} klokkeslett={tomLuke.kl} onLukk={() => setTomLuke(null)} />}
     </div>
   );

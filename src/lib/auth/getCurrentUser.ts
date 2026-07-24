@@ -28,7 +28,23 @@ export const getCurrentUserRaw = cache(async (): Promise<User | null> => {
   // GDPR (P20): soft-slettet konto (deletedAt satt) behandles som utlogget —
   // brukeren kan ikke bruke appen i 30-dagers angrevinduet. Gjenoppretting via support.
   if (user?.deletedAt) return null;
-  if (user) return withEffektivTilgang(user);
+  if (user) {
+    // Marker innlogging for alle stier (passord + OAuth). OAuth-callback setter
+    // også lastLoginAt, men passord-login gikk tidligere rett til /portal uten
+    // å oppdatere — aktiveringsmetrikken (31 spillere / 0 innlogginger) ble da
+    // feil. Oppdater maks én gang per 6 timer for å unngå write-storm.
+    const staleMs = 6 * 60 * 60 * 1000;
+    const needsLoginStamp =
+      !user.lastLoginAt || Date.now() - user.lastLoginAt.getTime() > staleMs;
+    if (needsLoginStamp) {
+      const now = new Date();
+      await prisma.user
+        .update({ where: { id: user.id }, data: { lastLoginAt: now } })
+        .catch(() => null);
+      return withEffektivTilgang({ ...user, lastLoginAt: now });
+    }
+    return withEffektivTilgang(user);
+  }
 
   // Supabase-bruker finnes, men Prisma-rad mangler — opprett via metadata.
   const ny = await ensureUser(authUser);

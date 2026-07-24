@@ -11,6 +11,7 @@ export { SessionTimer } from "./SessionTimer";
 export { RepCounter } from "./RepCounter";
 export { DrillLogger } from "./DrillLogger";
 export { SessionSummary } from "./SessionSummary";
+export { SpillerVurderingForm } from "./SpillerVurderingForm";
 export { LiveBrief } from "./LiveBrief";
 export { PlanSessionBrief } from "./PlanSessionBrief";
 export { LiveActive } from "./LiveActive";

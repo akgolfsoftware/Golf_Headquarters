@@ -8,7 +8,14 @@ import { plannedVolumText } from "./types";
 import { DrillLogger } from "./DrillLogger";
 import { SessionTimer } from "./SessionTimer";
 import { LiveCoachPanel } from "./LiveCoachPanel";
-import { completeDrill, completeSession, startSession } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
+import { completeDrill, completeSession, startSession, logDrillReps } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
+import {
+  lagreLiveDrillUtkast,
+  lesLiveDrillUtkast,
+  slettLiveDrillUtkast,
+  synkLiveDrillKo,
+} from "@/lib/offline-queue/live-drill-queue";
+import type { LiveDrillReps } from "@/lib/offline-queue/live-drill-kladd";
 
 // Samme mørke forest-gradient som brief/logger/oppsummering (LiveSessionShell
 // "dark"-variant) — hele live-flyten er bevisst alltid mørk uansett appens
@@ -252,6 +259,100 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
     };
   }, [data.sessionId, router]);
 
+  // Gjenopprett midlertidige reps fra IndexedDB (overlever refresh/offline).
+  const restoredRef = useRef(false);
+  useEffect(() => {
+    if (restoredRef.current) return;
+    restoredRef.current = true;
+    void lesLiveDrillUtkast(data.sessionId).then((utkast) => {
+      if (!utkast?.drills.length) return;
+      setDrills((prev) =>
+        prev.map((d) => {
+          const u = utkast.drills.find((x) => x.drillId === d.id);
+          if (!u) return d;
+          // Fullførte drills i DB vinner; ellers gjenopprett lokale tellinger.
+          if (d.status === "done") return d;
+          return {
+            ...d,
+            status: u.status === "done" ? "done" : d.status,
+            repsTotal: Math.max(d.repsTotal, u.repsTotal),
+            repsWithoutBall: Math.max(d.repsWithoutBall, u.repsWithoutBall),
+            repsLowSpeed: Math.max(d.repsLowSpeed, u.repsLowSpeed),
+            repsAutomatic: Math.max(d.repsAutomatic, u.repsAutomatic),
+            repsHit: Math.max(d.repsHit, u.repsHit),
+            logNotes: u.notes ?? d.logNotes,
+          };
+        }),
+      );
+      if (utkast.totalSec > 0) setTotalSec((t) => Math.max(t, utkast.totalSec));
+    });
+  }, [data.sessionId]);
+
+  // Debounce: lagre lokal utkast + forsøk synk når online.
+  const persistTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const persistDrills = useCallback(
+    (neste: DrillState[], sec: number) => {
+      const payload: LiveDrillReps[] = neste.map((d) => ({
+        drillId: d.id,
+        repsTotal: d.repsTotal,
+        repsWithoutBall: d.repsWithoutBall,
+        repsLowSpeed: d.repsLowSpeed,
+        repsAutomatic: d.repsAutomatic,
+        repsHit: d.repsHit,
+        notes: d.logNotes,
+        status: d.status,
+      }));
+      if (persistTimer.current) clearTimeout(persistTimer.current);
+      persistTimer.current = setTimeout(() => {
+        void lagreLiveDrillUtkast(data.sessionId, payload, sec).then(() => {
+          if (typeof navigator !== "undefined" && !navigator.onLine) return;
+          void synkLiveDrillKo(data.sessionId, async (sessionId, drills) => {
+            for (const d of drills) {
+              if (d.repsTotal <= 0 && d.status !== "done") continue;
+              const res = await logDrillReps({
+                sessionId,
+                drillId: d.drillId,
+                repsTotal: d.repsTotal,
+                repsWithoutBall: d.repsWithoutBall,
+                repsLowSpeed: d.repsLowSpeed,
+                repsAutomatic: d.repsAutomatic,
+                repsHit: d.repsHit,
+                notes: d.notes,
+              }).catch(() => ({ ok: false }));
+              if (!res.ok) return { ok: false };
+            }
+            return { ok: true };
+          });
+        });
+      }, 800);
+    },
+    [data.sessionId],
+  );
+
+  useEffect(() => {
+    function onOnline() {
+      void synkLiveDrillKo(data.sessionId, async (sessionId, drills) => {
+        for (const d of drills) {
+          if (d.repsTotal <= 0 && d.status !== "done") continue;
+          const res = await logDrillReps({
+            sessionId,
+            drillId: d.drillId,
+            repsTotal: d.repsTotal,
+            repsWithoutBall: d.repsWithoutBall,
+            repsLowSpeed: d.repsLowSpeed,
+            repsAutomatic: d.repsAutomatic,
+            repsHit: d.repsHit,
+            notes: d.notes,
+          }).catch(() => ({ ok: false }));
+          if (!res.ok) return { ok: false };
+        }
+        return { ok: true };
+      });
+    }
+    window.addEventListener("online", onOnline);
+    return () => window.removeEventListener("online", onOnline);
+  }, [data.sessionId]);
+
   // Timer — økt-tid tikker fra start uavhengig av aktiv drill (0-drill-økter
   // sto tidligere fastfrosset på 00:00); stopper når alt er fullført.
   useEffect(() => {
@@ -294,9 +395,13 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   const handleDrillChange = useCallback(
     (state: DrillRepState) => {
       if (!active) return;
-      setDrills((prev) => prev.map((d) => (d.id === active.id ? { ...d, ...state } : d)));
+      setDrills((prev) => {
+        const neste = prev.map((d) => (d.id === active.id ? { ...d, ...state } : d));
+        persistDrills(neste, totalSec);
+        return neste;
+      });
     },
-    [active],
+    [active, persistDrills, totalSec],
   );
 
   const handleCompleteDrill = useCallback(async () => {
@@ -305,7 +410,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
     vibrate(40);
 
     try {
-      await completeDrill({
+      const res = await completeDrill({
         sessionId: data.sessionId,
         drillId: active.id,
         repsTotal: active.repsTotal,
@@ -317,27 +422,41 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
           active.repsTotal > 0 ? Math.round((active.repsHit / active.repsTotal) * 100) : 0,
         notes: active.logNotes,
       });
+      if (!res.ok && typeof navigator !== "undefined" && !navigator.onLine) {
+        // Offline: behold lokal state; synk ved online.
+        persistDrills(
+          drills.map((d) =>
+            d.id === active.id ? { ...d, status: "done" as const } : d,
+          ),
+          totalSec,
+        );
+      }
     } catch (err) {
       console.error("[LiveActive] completeDrill feilet", err);
+      // Offline-fallback: lagre utkast så reps ikke forsvinner.
+      persistDrills(drills, totalSec);
     } finally {
       setIsCompleting(false);
     }
 
-    setDrills((prev) =>
-      prev.map((d, i) => {
+    setDrills((prev) => {
+      const neste = prev.map((d, i) => {
         if (d.id === active.id) return { ...d, status: "done" as const };
         if (i === activeIdx + 1) return { ...d, status: "active" as const };
         return d;
-      }),
-    );
+      });
+      persistDrills(neste, totalSec);
+      return neste;
+    });
     setDrillSec(0);
     setShowDrillLogger(false);
     vibrate([60, 40]);
 
     if (activeIdx === drills.length - 1) {
       await completeSession(data.sessionId, totalSec);
+      await slettLiveDrillUtkast(data.sessionId);
     }
-  }, [active, activeIdx, data.sessionId, drills.length, isCompleting, totalSec]);
+  }, [active, activeIdx, data.sessionId, drills, isCompleting, persistDrills, totalSec]);
 
   const handleLogRep = useCallback(() => {
     setShowDrillLogger(true);

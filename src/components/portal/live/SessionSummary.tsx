@@ -2,11 +2,17 @@ import { CheckCircle2, Clock, Dumbbell, Target, TrendingUp, ArrowRight, CircleCh
 import Link from "next/link";
 import type { LiveV2Summary } from "./types";
 import { HjelpTips } from "@/components/v2/hjelp";
+import { SpillerVurderingForm } from "./SpillerVurderingForm";
 
 export type SessionSummaryProps = {
   data: LiveV2Summary;
   /** Summary-kjeding (flytpakke 2, 2.7) — neste økt på tvers av begge spor. */
   nesteOkt?: { tekst: string; href: string };
+  spillerVurdering?: {
+    kvalitet: number;
+    nesteFokus: string;
+    folelse?: string | null;
+  } | null;
 };
 
 const AXIS_LABEL: Record<string, string> = {
@@ -66,7 +72,7 @@ function Verdict({ pct }: { pct: number }) {
   );
 }
 
-export function SessionSummary({ data, nesteOkt }: SessionSummaryProps) {
+export function SessionSummary({ data, nesteOkt, spillerVurdering }: SessionSummaryProps) {
   const firstName = data.studentName?.split(" ")[0] ?? "spiller";
   const completionPct =
     data.drills.length > 0 ? Math.round((data.drillsCompleted / data.drills.length) * 100) : 0;
@@ -94,6 +100,11 @@ export function SessionSummary({ data, nesteOkt }: SessionSummaryProps) {
 
       {/* Plan-etterlevelse — klarspråk-dom, aldri en sperre */}
       <Verdict pct={completionPct} />
+
+      <SpillerVurderingForm
+        sessionId={data.sessionId}
+        eksisterende={spillerVurdering}
+      />
 
       {/* KPI-kort */}
       <div className="grid grid-cols-3 gap-4">

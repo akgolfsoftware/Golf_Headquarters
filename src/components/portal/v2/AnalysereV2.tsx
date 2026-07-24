@@ -441,6 +441,31 @@ function TabTrening({ data, mobile }: { data: AnalysereData; mobile: boolean }) 
         />
       </Kort>
 
+      {training.analyse && (
+        <Kort eyebrow="Planlagt vs gjennomført · Bølge 5">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div>
+              <Caps size={9}>Etterlevelse</Caps>
+              <div style={{ marginTop: 6, fontFamily: T.disp, fontSize: mobile ? 28 : 32, fontWeight: 700, color: T.fg }}>
+                {training.analyse.etterlevelsePct != null ? `${training.analyse.etterlevelsePct} %` : "–"}
+              </div>
+              <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 4 }}>
+                {training.analyse.gjennomforteOkter} av {training.analyse.planlagteOkter} økter
+              </div>
+            </div>
+            <div>
+              <Caps size={9}>Reps</Caps>
+              <div style={{ marginTop: 6, fontFamily: T.disp, fontSize: mobile ? 28 : 32, fontWeight: 700, color: T.fg }}>
+                {training.analyse.faktiskeReps}
+              </div>
+              <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 4 }}>
+                av {training.analyse.planlagteReps} planlagt · {training.analyse.ballerSlatt} baller · {training.analyse.svingerUtenBall} uten ball
+              </div>
+            </div>
+          </div>
+        </Kort>
+      )}
+
       <Kort eyebrow="Fordeling per akse · andel av tiden">
         {synlig.length > 0 ? (
           <>
