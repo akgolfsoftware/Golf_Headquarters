@@ -3178,6 +3178,29 @@ model ClubsPracticed {
   @@map("clubs_practiced")
 }
 
+// Kunnskapsbase (RAG) — MasterBrain rag-corpus med pgvector-embeddings.
+// Tabellen opprettes kirurgisk via scripts/create-knowledge-chunks-2026-07-19.ts
+// (migrate dev/db push er blokkert — se .claude/rules/gotchas.md). Seedes fra
+// ~/Developer/Masterbrain/rag-corpus via scripts/seed-rag-corpus-2026-07-19.ts.
+// Spørres via src/lib/ai/rag.ts ($queryRaw — Prisma kan ikke lese vector-felt).
+model KnowledgeChunk {
+  id        String                       @id // chunk_id fra MasterBrain (f.eks. "sg-baselines-001")
+  corpus    String // sg-trackman | sg-baselines | treningsvolum | morad | live
+  content   String
+  source    String? // kildedokument (fra frontmatter)
+  section   String? // seksjon i kildedokumentet
+  tags      String[]                     @default([])
+  topics    String[]                     @default([])
+  relevance String[]                     @default([])
+  wordCount Int                          @default(0)
+  embedding Unsupported("vector(1536)")? // text-embedding-3-small
+  createdAt DateTime                     @default(now())
+  updatedAt DateTime                     @updatedAt
+
+  @@index([corpus])
+  @@map("knowledge_chunks")
+}
+
 // PGA Tour benchmark-data fra Data Golf — ukentlig cron-sync.
 model SgBaseline {
   id              String     @id @default(cuid())

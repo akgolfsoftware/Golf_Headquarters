@@ -5,6 +5,38 @@
 
 ---
 
+## 2026-07-19 — MasterBrain → plattform: SG-baselines seedet + RAG-kunnskapsbase live
+
+**Kontekst:** Anders ba om å fullføre seedingen og RAG-innlastingen fra
+`~/Developer/Masterbrain` (README-ens «Neste steg» fra juni).
+
+- **SG-baselines:** `scripts/seed-sg-baselines-2026-07-19.ts` — interpolerer MasterBrains
+  5 APP-bånd til appens 25y-buckets (samme format som `datagolf-sync.ts` skriver og
+  `same-distance-strategy.ts` leser). 10 rader i `sg_baselines` (APP/FAIRWAY, 0–250y).
+  DataGolf-syncen overskriver med ferske verdier når den kjøres — ønsket oppførsel.
+- **RAG-kunnskapsbase:** ny tabell `knowledge_chunks` (pgvector 1536, HNSW cosine, RLS på
+  uten policies — kun server-side via Prisma). DDL: `scripts/create-knowledge-chunks-2026-07-19.ts`
+  (aktiverer også `vector`-extension i `extensions`-schema). Modell `KnowledgeChunk` i schema.prisma.
+- **Innlasting:** `scripts/seed-rag-corpus-2026-07-19.ts` — 96 chunks fra MasterBrain
+  rag-corpus (sg-trackman 47, morad 15, sg-baselines 15, treningsvolum 14, live 5),
+  embeddet med `openai/text-embedding-3-small` via **Vercel AI Gateway** (`AI_GATEWAY_API_KEY`)
+  — direkte OpenAI-konto er tom for kvote (`insufficient_quota`). Idempotent upsert på chunk_id.
+- **Søk:** `src/lib/ai/rag.ts` (`searchKnowledge`) + tool `search_knowledge` registrert i
+  `ALL_TOOLS`/`EXEC_BY_NAME` — agentene kan nå slå opp SG/Trackman/MORAD/LTAD-kunnskap.
+- **Verifisert:** `npm run verify` helgrønn. E2E-søk mot prod-DB: «forventet antall slag fra
+  150 yards fairway» → topptreff sg-trackman-007 (Broadie Tabell 9, expected strokes) ✓.
+- **MasterBrain-fix:** 3 corpus-filer hadde ugyldige YAML-escapes (`\|`, `\.`) i frontmatter
+  — rettet i kildefilene.
+- **VIKTIG (PR #78-avhengighet):** alt dette gikk til NÅVÆRENDE prod-DB (eu-west-1-pooler).
+  Det nye Supabase-prosjektet (Golf_Headquarters, eu-west-2) ble snapshotet FØR denne økten
+  (`sg_baselines` = 0 der). Etter kontobyttet: kjør de tre skriptene på nytt mot ny DB
+  (idempotente, styres av `DIRECT_URL` i `.env.local`):
+  `create-knowledge-chunks` → `seed-sg-baselines` → `seed-rag-corpus`.
+- **Bevisst IKKE gjort:** `positions.json`/`faults.json`-seeding fra MasterBrain — appens
+  `TechnicalPlanPosition` er per-plan (planId FK), ikke en kunnskapskatalog; MasterBrain-READMEs
+  mapping fra juni er utdatert der. `pyramide.json` i `src/lib/domain/rules/` avviker fra
+  MasterBrain-versjonen — ikke overskrevet (appens kopi kan være nyere).
+
 ## 2026-07-16 — Lansering i dag for 30 testspillere: Spor 1A + 1D
 
 **Kontekst:** Anders ba om lansering samme dag for 30 testspillere, samtidig som det pågående

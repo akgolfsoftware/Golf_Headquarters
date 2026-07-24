@@ -346,12 +346,14 @@ export interface CTAPillProps {
   ghost?: boolean;
   /** Strekker pillen til full bredde av forelder (f.eks. mobil-CTA under et kort). */
   full?: boolean;
+  /** DS-GAP fikset 2026-07-19: CTAPill manglet onClick — var kun dekorativ. */
+  onClick?: () => void;
 }
-export function CTAPill({ icon, children, ghost, full }: CTAPillProps) {
+export function CTAPill({ icon, children, ghost, full, onClick }: CTAPillProps) {
   return (
-    <span className="v2-press v2-focus" tabIndex={0} role="button" style={{ display: "inline-flex", alignItems: "center", justifyContent: full ? "center" : undefined, gap: 8, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: ghost ? T.fg : T.onLime, background: ghost ? T.panel3 : T.lime, border: ghost ? `1px solid ${T.borderS}` : "none", borderRadius: 9999, padding: "9px 16px", cursor: "pointer", width: full ? "100%" : undefined }}>
+    <button type="button" onClick={onClick} className="v2-press v2-focus" style={{ appearance: "none", display: "inline-flex", alignItems: "center", justifyContent: full ? "center" : undefined, gap: 8, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: ghost ? T.fg : T.onLime, background: ghost ? T.panel3 : T.lime, border: ghost ? `1px solid ${T.borderS}` : "none", borderRadius: 9999, padding: "9px 16px", cursor: "pointer", width: full ? "100%" : undefined }}>
       {icon && <Icon name={icon} size={14} />}{children}
-    </span>
+    </button>
   );
 }
 
