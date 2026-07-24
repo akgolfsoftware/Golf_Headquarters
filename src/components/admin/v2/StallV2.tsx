@@ -28,6 +28,7 @@ import {
   CTAPill,
   TomTilstand,
   BunnArk,
+  HjelpTips,
   Icon,
   T,
   type SevKey,
@@ -155,6 +156,7 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
       <div style={{ marginTop: 16 }}>
         <TallHero
           label="Strokes Gained · form"
+          hjelp="sgTotal"
           value={s.sg}
           delta={s.delta ?? undefined}
           dir={s.dir}
@@ -173,7 +175,10 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
       </div>
 
       <div style={{ marginTop: 12 }}>
-        <Caps size={9}>Uka · plan-etterlevelse per akse</Caps>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+          <Caps size={9}>Uka · plan-etterlevelse per akse</Caps>
+          <HjelpTips k="planEtterlevelse" size={11} />
+        </span>
         <div style={{ marginTop: 4 }}>
           {s.adhPct != null ? (
             s.adherence.map((x, i) => (

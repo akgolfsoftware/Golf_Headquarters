@@ -632,7 +632,15 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
         className="px-4 md:px-8 pb-[calc(96px+env(safe-area-inset-bottom))] md:pb-9"
         style={{ flex: 1, minWidth: 0, paddingTop: "calc(24px + env(safe-area-inset-top))" }}
       >
-        <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: T.gap }}>
+        {/* GO V6 — navigasjonsovergang: innholdet toner inn ved hvert rutebytte
+            (key = pathname remonterer wrapperen, .v2-fade-in eier bevegelsen fra
+            motion-katalogen og honorerer prefers-reduced-motion). Uten dette
+            hopper skjermbytter hardt i en app som ellers beveger seg mykt. */}
+        <div
+          key={pathname}
+          className="v2-fade-in"
+          style={{ width: "100%", display: "flex", flexDirection: "column", gap: T.gap }}
+        >
           {/* D2: kontekst-veksler i toppraden — kun AgencyOS og kun når data er
               gitt (usatt prop ⇒ skjult ⇒ ingen kallsted må endres). */}
           {erAgency && vekslerData && <SpillerVeksler data={vekslerData} />}

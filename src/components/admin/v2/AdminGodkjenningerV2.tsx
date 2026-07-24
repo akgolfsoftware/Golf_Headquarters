@@ -20,6 +20,7 @@ import {
   TomTilstand,
   InnsiktChip,
   CTAPill,
+  HjelpTips,
   Icon,
   T,
 } from "@/components/v2";
@@ -269,8 +270,11 @@ function SakKort({ row, mobile }: { row: SakMedAntall; mobile: boolean }) {
                 marginTop: 8,
               }}
             >
-              Signal: {row.signalKind}
-              {row.signalValue != null ? ` = ${row.signalValue}` : ""}
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                Signal: {row.signalKind}
+                {row.signalValue != null ? ` = ${row.signalValue}` : ""}
+                <HjelpTips k="signalVerdi" size={11} />
+              </span>
             </div>
           )}
 

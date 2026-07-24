@@ -126,7 +126,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Gjennomføre (I dag/Kalender/Booking) ★ | `/portal/gjennomfore` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Gjennomføre (I dag/Kalender/Booking) ★ | `/portal/gjennomfore` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ **GO V6 (24. juli):** «?»-forklaring på «Dagens gjennomføring» (plan-etterlevelse) og pyramide-aksen. |
 | · Økt-detalj (V2-økt fra coach) | `/portal/gjennomfore/[id]` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `OktV2`. |
 | Kalender | `/portal/kalender` | ✓ | --- | ✓ | ~ | ~ | ✓ | v13 composed (golfdata calendars + scope)
 | Kalender (alt. → redirect) | `/portal/tren/kalender` | ✓ | --- | ✓ | ✓ | – | ✓ | Reconciliation 16. jul: redirect-only via `workbenchRedirectForTrenPath` (`src/proxy.ts`) → `/portal/planlegge/workbench?tab=uke`. `(legacy)/tren/kalender/page.tsx` er utilgjengelig dødkode, ikke en ekte gjenstående design-skjerm.
@@ -346,7 +346,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Stall-oversikt | `/admin/stall` | – | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul: ren `redirect("/admin/spillere")` — ikke en egen skjerm. |
-| **Spillere (alle)** = SpillerTilstandKort-liste (v13 golfdata, bølge 1 2026-07-04) ★ | `/admin/spillere` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Complete v13 (SpillerTilstandKort + scope + cards). **M3 mobil (bølge 2) 17. jul:** `useMobile()` — mobil viser kun den søkbare spillerlista i full bredde; valgt spillers `SpillerSammendrag` åpnes i `BunnArk` (bunn-ark) i stedet for side-panel. Desktop uendret. **GO V3 (24. juli):** rad = detalj (velger spiller → sammendrag/BunnArk) i stedet for å navigere rett til Workbench; Workbench er CTA i sammendraget. Lista sorterer «trenger deg» øverst, sterkeste signal først. |
+| **Spillere (alle)** = SpillerTilstandKort-liste (v13 golfdata, bølge 1 2026-07-04) ★ | `/admin/spillere` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Complete v13 (SpillerTilstandKort + scope + cards). **M3 mobil (bølge 2) 17. jul:** `useMobile()` — mobil viser kun den søkbare spillerlista i full bredde; valgt spillers `SpillerSammendrag` åpnes i `BunnArk` (bunn-ark) i stedet for side-panel. Desktop uendret. **GO V3 (24. juli):** rad = detalj (velger spiller → sammendrag/BunnArk) i stedet for å navigere rett til Workbench; Workbench er CTA i sammendraget. Lista sorterer «trenger deg» øverst, sterkeste signal først. **GO V6 (24. juli):** «?» på SG-form og plan-etterlevelse per akse i spillersammendraget. |
 | · Ny spiller | `/admin/spillere/ny` | ✓ | --- | ✓ | ✓ | ~ | ~ | 2026-07-14 dok-verifisering (funn under legacy-porterings-sjekk): `AdminNySpillerV2` — ekte `createSpiller`-server-action, router til ny spillers profil. Design rettet – → ✓, Flyt ~ → ✓ (skjema uten loader — Data-haken forblir ~, ikke relevant for et opprett-skjema) |
 | **Spiller-detalj** ★ | `/admin/spillere/[id]` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14 dok-verifisering: «100 % spillerinfo på én skjerm» levert — `SpillerDashboardV2` (7 faner: Oversikt/Utvikling/Plan/Helse/Turnering/Logg/Administrasjon), hero+KPI-strip m/ HjelpTips, én aggregert loader (`spiller-dashboard-data.ts`, 24 select-minimerte spørringer), kun ekte data + ærlige tomtilstander. Design rettet – → ✓. **M3 mobil (bølge 2) 17. jul:** de 7 fanene rendres som `PillTabs` (horisontal scroll) på mobil, hero + KPI-strip komprimert, fane-innhold stables til én kolonne. Desktop-fanelinja uendret. Mob ~ → ✓. |
 | · **Analyse (coach-dybde)** = golfdata elite-visning (v13, bølge 1 2026-07-04) ★ | `/admin/spillere/[id]/analyse` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24: arver Bølge 5 treningsanalyse via AnalysereV2. |
@@ -796,6 +796,8 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 ---
 
 ## Endringslogg
+
+- 24. juli: **GO V6 Craft** — «?»-pass på flaggskip-skjermene som manglet det (Gjør, Stall, Godkjenninger, AgencyOS-analyse + spilleranalyse; `AnalyseV2Kpi` fikk `hjelp`-felt); axe-smoke utvidet fra 3 til 12 offentlige flater (`tests/e2e/accessibility-v2-smoke.spec.ts`); navigasjonsovergang — v2-shell toner innholdet inn ved rutebytte (`.v2-fade-in`, honorerer prefers-reduced-motion).
 
 - 24. juli: **GO V2 Live + runde** — delt tommel-sone (`src/components/portal/runde-logg/tommel-sone.tsx`) holder primærhandlingen nederst i skjermen i både slag- og hurtigmodus og i oppsummeringen; live-økt-oppsummeringen og «Runden er lagret» har én neste handling hver. Se `plans/design-forbedring-plattform-2026-07-24.md` §4.
 

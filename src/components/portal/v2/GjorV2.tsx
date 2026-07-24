@@ -22,6 +22,7 @@ import {
   TallHero,
   CTAPill,
   AkseChip,
+  HjelpTips,
   TomTilstand,
   Icon,
   ProgresjonsBar,
@@ -304,8 +305,9 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
                   marginBottom: 6,
                 }}
               >
-                <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, fontWeight: 600 }}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.ui, fontSize: 11.5, color: T.mut, fontWeight: 600 }}>
                   Dagens gjennomføring
+                  <HjelpTips k="planEtterlevelse" size={11} />
                 </span>
                 <span style={{ fontFamily: T.mono, fontSize: 11.5, fontWeight: 700 }}>{fullfortPct} %</span>
               </div>
@@ -336,6 +338,7 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
               </div>
               <div style={{ display: "flex", gap: 6, marginTop: 12, flexWrap: "wrap", alignItems: "center" }}>
                 <AkseChip a={nesteOkt.pyramidArea} />
+                <HjelpTips k="pyramideAkse" size={11} />
                 <StatusPill tone={live ? "lime" : "info"}>
                   {live ? `Live · kl ${nesteOkt.tid}` : nesteOkt.relTidTekst}
                 </StatusPill>

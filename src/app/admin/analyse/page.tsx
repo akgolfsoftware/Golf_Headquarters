@@ -143,6 +143,7 @@ async function loadStallAnalyse(viewer: { id: string; role: string }): Promise<A
   const kpis: AnalyseV2Kpi[] = [
     {
       label: "Treningstimer · 30 d",
+      hjelp: "treningsVolum" as const,
       value: String(timerCur),
       unit: "t",
       delta: harTimer ? `${fmtSigned(timerDiff, 0)} t` : undefined,
@@ -150,12 +151,14 @@ async function loadStallAnalyse(viewer: { id: string; role: string }): Promise<A
     },
     {
       label: "Snitt SG-utvikling",
+      hjelp: "sgTotal" as const,
       value: sgUtvikling != null ? fmtSigned(sgUtvikling) : "—",
       sub: sgUtvikling != null ? "vs forrige mnd." : undefined,
       accent: sgUtvikling != null && sgUtvikling >= 0,
     },
     {
       label: "Økt-oppmøte",
+      hjelp: "planEtterlevelse" as const,
       value: oppmoteCur != null ? String(oppmoteCur) : "—",
       unit: oppmoteCur != null ? "%" : undefined,
       delta: oppmoteDiff != null ? `${fmtSigned(oppmoteDiff, 0)} %` : undefined,
