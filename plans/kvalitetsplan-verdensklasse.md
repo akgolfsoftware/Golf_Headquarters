@@ -164,6 +164,13 @@ haker oppdateres per skjerm som berøres.
    på 5 min», lenker til FASIT/BUSINESS-RULES/MASTER. Dette er det første en Anthropic/Cursor-
    reviewer åpner.
 
+### KS-9 — Design/UI/UX/animasjon (egen audit)
+
+Full gjennomgang av design-laget (regler, FASIT, wireframes, motion, a11y, kode) ligger i
+`docs/design-system/DESIGN-KVALITETSAUDIT-2026-07-24.md` med funn D1–D10 og bølge-kobling
+(V1–V6). Kanon-vedlikehold (død tokens.css, 8pt-presisering, arkivering) krever ingen GO;
+craft-/motion-arbeid følger «GO V1»/«GO V6» per `ak-design-evolution`-skillen.
+
 ### KS-8 — Skjema og drift (P3)
 
 1. **Prisma-skjema:** behold én fil (Prisma 7-standard), men organiser de 158 modellene i
