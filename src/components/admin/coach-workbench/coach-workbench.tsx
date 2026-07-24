@@ -46,6 +46,13 @@ import {
 } from "lucide-react";
 import type { PlanStatus } from "@/generated/prisma/client";
 import { cn } from "@/lib/utils";
+import {
+  GRID_START_HOUR,
+  GRID_END_HOUR,
+  PIXEL_PER_HOUR as HOUR_PX,
+  GRID_BODY_PX as GRID_HEIGHT,
+  gridHours,
+} from "@/lib/calendar/notion-grid";
 
 type Tone = "fys" | "tek" | "slag" | "spill" | "turn";
 
@@ -147,13 +154,6 @@ const TABS = [
   "Notater",
   "Admin",
 ] as const;
-
-// Uke-grid: timer 07–21 (15 rader), 1 t = 40px.
-// Notion Calendar-fasit — se src/lib/calendar/notion-grid.ts
-const GRID_START_HOUR = 5;
-const GRID_END_HOUR = 23;
-const HOUR_PX = 40;
-const GRID_HEIGHT = (GRID_END_HOUR - GRID_START_HOUR) * HOUR_PX;
 
 function monoLabel(text: string) {
   return (
@@ -413,7 +413,7 @@ function WeekCalendar({
 >) {
   const nowTop = ((nowMin - GRID_START_HOUR * 60) / 60) * HOUR_PX;
   const nowVisible = nowMin >= GRID_START_HOUR * 60 && nowMin <= GRID_END_HOUR * 60;
-  const hours = Array.from({ length: GRID_END_HOUR - GRID_START_HOUR + 1 }, (_, i) => GRID_START_HOUR + i);
+  const hours = gridHours();
 
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-card">

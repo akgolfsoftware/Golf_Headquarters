@@ -56,6 +56,8 @@ export interface TekniskPlanSpillerRad {
   tekFullfort: number;
   /** Sum planlagte minutter for TEK-øktene. */
   tekTidMin: number;
+  /** Antall TrackMan-sesjoner (ærlig status — 0 = mangler data). */
+  tmSesjoner: number;
 }
 export interface TekniskPlanMal {
   id: string;
@@ -149,6 +151,7 @@ export function AdminTekniskPlanV2({ data }: { data: AdminTekniskPlanData }) {
             `Hcp ${fmtHcp(s.hcp)}`,
             s.homeClub || null,
             s.planNavn ?? "Ingen aktiv plan",
+            s.tmSesjoner > 0 ? `TM ${s.tmSesjoner}` : "TM mangler",
           ]
             .filter(Boolean)
             .join(" · ");
@@ -169,6 +172,12 @@ export function AdminTekniskPlanV2({ data }: { data: AdminTekniskPlanData }) {
                       label="Fullført"
                       sub={`${s.tekFullfort}/${s.tekTotalt}`}
                       accent={høy}
+                    />
+                    <Stat
+                      verdi={String(s.tmSesjoner)}
+                      label="TrackMan"
+                      sub={s.tmSesjoner > 0 ? "sesjoner" : "mangler"}
+                      accent={s.tmSesjoner > 0}
                     />
                   </span>
                   {/* Kompakt fullført-pille — alle bredder */}

@@ -64,6 +64,17 @@ export function dateToPx(dato: Date): number {
   return timeToPx(dato.getHours(), dato.getMinutes());
 }
 
+/**
+ * Y-posisjon fra minutter siden midnatt (f.eks. 9:30 → 570).
+ * Klemmes til grid.
+ */
+export function minutesToPx(minSinceMidnight: number): number {
+  return Math.max(
+    0,
+    Math.min(GRID_BODY_PX, ((minSinceMidnight - GRID_START_MIN) / 60) * PIXEL_PER_HOUR),
+  );
+}
+
 /** Høyde i px for varighet i minutter (min 20px for klikkbarhet). */
 export function durationToPx(varighetMin: number): number {
   return Math.max(20, (varighetMin / 60) * PIXEL_PER_HOUR);

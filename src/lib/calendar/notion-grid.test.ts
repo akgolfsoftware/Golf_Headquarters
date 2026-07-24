@@ -9,6 +9,7 @@ import {
   gridTimeSlots,
   tilStartParam,
   timeToPx,
+  minutesToPx,
   durationToPx,
   PIXEL_PER_HOUR,
 } from "./notion-grid";
@@ -45,6 +46,8 @@ describe("notion-grid fasit", () => {
   it("regner px for tid og varighet", () => {
     assert.equal(timeToPx(5, 0), 0);
     assert.equal(timeToPx(6, 0), PIXEL_PER_HOUR);
+    assert.equal(minutesToPx(5 * 60), 0);
+    assert.equal(minutesToPx(6 * 60), PIXEL_PER_HOUR);
     assert.equal(durationToPx(60), PIXEL_PER_HOUR);
     assert.ok(durationToPx(15) >= 20);
   });

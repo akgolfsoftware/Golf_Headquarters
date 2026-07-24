@@ -27,8 +27,8 @@ export const dynamic = "force-dynamic";
 export default async function V2AdminTekniskPlanPreviewPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
-  // Samme loader-kontrakt som den ekte /admin/teknisk-plan-oversikten.
-  const [spillere, maler] = await Promise.all([
+  // Samme loader-kontrakt som den ekte /admin/teknisk-plan-oversikten + ærlig TM-status.
+  const [spillere, maler, tmCounts] = await Promise.all([
     prisma.user.findMany({
       where: coachScopedPlayerWhere(user),
       select: {
@@ -60,7 +60,13 @@ export default async function V2AdminTekniskPlanPreviewPage() {
       orderBy: { createdAt: "desc" },
       select: { id: true, name: true, description: true, varighetUker: true },
     }),
+    prisma.trackManSession.groupBy({
+      by: ["userId"],
+      _count: { _all: true },
+    }),
   ]);
+
+  const tmByUser = new Map(tmCounts.map((r) => [r.userId, r._count._all]));
 
   const data: AdminTekniskPlanData = {
     spillere: spillere.map((s) => {
@@ -76,6 +82,7 @@ export default async function V2AdminTekniskPlanPreviewPage() {
         tekTotalt: tekOkter.length,
         tekFullfort: tekOkter.filter((o) => o.status === "COMPLETED").length,
         tekTidMin: tekOkter.reduce((sum, o) => sum + o.durationMin, 0),
+        tmSesjoner: tmByUser.get(s.id) ?? 0,
       };
     }),
     maler: maler.map((m) => ({
