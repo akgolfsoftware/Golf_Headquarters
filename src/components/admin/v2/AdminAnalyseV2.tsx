@@ -18,11 +18,13 @@ import {
   StatusPill,
   CTAPill,
   AvatarInit,
+  HjelpTips,
   DataTabell,
   type DataTabellColumn,
   type DataTabellRow,
 } from "@/components/v2";
 import { T, fmtSg, type AkseKey } from "@/lib/v2/tokens";
+import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
 
 // ── Datakontrakt (mappes fra den ekte loaderen i ruten) ─────────
 export interface AnalyseV2Kpi {
@@ -37,6 +39,8 @@ export interface AnalyseV2Kpi {
   sub?: string;
   /** Lime-aksent på hero-tallet (positiv SG-utvikling). */
   accent?: boolean;
+  /** GO V6: «?»-forklaring for faguttrykket bak tallet (hjelpetekster.ts). */
+  hjelp?: HjelpNokkel;
 }
 export interface AnalyseV2Dist {
   /** Akse-nøkkel for kategorifarge (FYS/TEK/SLAG/SPILL/TURN). */
@@ -115,6 +119,7 @@ export function AdminAnalyseV2({ data }: { data: AnalyseV2Data }) {
             dir={k.dir}
             sub={k.sub}
             accent={k.accent}
+            hjelp={k.hjelp}
             size={34}
           />
         </Kort>
@@ -124,7 +129,15 @@ export function AdminAnalyseV2({ data }: { data: AnalyseV2Data }) {
 
   // ── Pyramide-fordeling · stall ──────────────────────────────────
   const pyramide = (
-    <Kort eyebrow="Pyramide-fordeling · stall" action={<Caps size={9}>Andel av økter</Caps>}>
+    <Kort
+      eyebrow="Pyramide-fordeling · stall"
+      action={
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+          <Caps size={9}>Andel av økter</Caps>
+          <HjelpTips k="pyramideAkse" size={11} />
+        </span>
+      }
+    >
       {harPyr ? (
         <>
           <div>

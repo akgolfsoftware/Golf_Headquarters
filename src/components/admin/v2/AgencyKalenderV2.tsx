@@ -160,72 +160,30 @@ function OktBlokk({
    src/app/admin/(legacy)/grupper/[id]/actions.ts) — «Endre denne»/«Endre alle
    fremtidige»/«Avslutt serien» er derfor FJERNET (aldri døde knapper). Eneste
    ekte handling: lenke til gruppens timeplan (view + dupliser, finnes).
-   På <md presenteres den som fast bunn-ark (edge-to-edge, r20 kun øverst) —
-   samme mønster som AdminHandlingssenterV2s mobilArk; på ≥md forblir den et
-   sentrert flytende panel. ── */
-function SerieMeny({ okt, onClose, mobile }: { okt: KalOkt; onClose: () => void; mobile?: boolean }) {
+   GO V3: kjører nå på BunnArk-kontrakten (fokus-felle, fokus-gjenoppretting,
+   scroll-lås, Escape, sheet-in) i stedet for et eget ad-hoc overlay — samme
+   ark på mobil og desktop. ── */
+function SerieMeny({ okt, onClose }: { okt: KalOkt; onClose: () => void }) {
   const scheduleId = okt.id.startsWith("serie-") ? okt.id.slice("serie-".length) : null;
   const timeplanHref = okt.href && scheduleId ? `${okt.href}/timeplan?focus=${scheduleId}` : okt.href;
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label="Gjentakende økt"
-      onClick={onClose}
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 60,
-        background: `color-mix(in srgb, ${T.bg} 62%, transparent)`,
-        backdropFilter: "blur(2px)",
-        display: "flex",
-        alignItems: "flex-end",
-        justifyContent: mobile ? "flex-start" : "center",
-        padding: mobile ? 0 : 12,
-      }}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={
-          mobile
-            ? {
-                background: T.panel3,
-                borderTop: `1px solid ${T.borderS}`,
-                borderRadius: "20px 20px 0 0",
-                padding: "14px 16px calc(18px + env(safe-area-inset-bottom))",
-                width: "100%",
-                boxShadow: "0 -24px 60px rgba(0,0,0,0.5)",
-              }
-            : { background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 18, padding: "14px 16px 18px", width: "100%", maxWidth: 380, marginBottom: 6 }
-        }
-      >
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
-          <Caps size={8.5}>Gjentakende økt</Caps>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Lukk"
-            className="v2-focus"
-            style={{ appearance: "none", cursor: "pointer", background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: 9999, width: 26, height: 26, display: "inline-flex", alignItems: "center", justifyContent: "center", color: T.fg2, flex: "none" }}
-          >
-            <Icon name="x" size={13} />
-          </button>
-        </div>
-        <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 700, color: T.fg, margin: "6px 0 2px" }}>{okt.navn}</div>
-        <div style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut }}>{okt.serie} {okt.kl}</div>
-        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.55, margin: "12px 0 0" }}>
-          Å endre bare denne økta eller alle fremtidige er ikke støttet ennå — kommer.
-        </p>
-        {timeplanHref && (
-          <Link href={timeplanHref} style={{ textDecoration: "none" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12, padding: "9px 0", borderTop: `1px solid ${T.border}` }}>
-              <Icon name="calendar" size={13} style={{ color: T.fg }} />
-              <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}>Se i gruppens timeplan</span>
-            </div>
-          </Link>
-        )}
+    <BunnArk open onClose={onClose} tittel={okt.navn}>
+      <Caps size={8.5}>Gjentakende økt</Caps>
+      <div style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut, marginTop: 6 }}>
+        {okt.serie} {okt.kl}
       </div>
-    </div>
+      <p style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.55, margin: "12px 0 0" }}>
+        Å endre bare denne økta eller alle fremtidige er ikke støttet ennå — kommer.
+      </p>
+      {timeplanHref && (
+        <Link href={timeplanHref} style={{ textDecoration: "none" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12, padding: "9px 0", borderTop: `1px solid ${T.border}` }}>
+            <Icon name="calendar" size={13} style={{ color: T.fg }} />
+            <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}>Se i gruppens timeplan</span>
+          </div>
+        </Link>
+      )}
+    </BunnArk>
   );
 }
 
@@ -609,7 +567,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
         >
           {dagAark && <DagOkterListe dag={dagAark} onSerieClick={serieFraArk} onTreningClick={treningFraArk} onTomLuke={tomLukeFraArk} />}
         </BunnArk>
-        {valgtSerieOkt && <SerieMeny okt={valgtSerieOkt} onClose={() => setValgtSerieOkt(null)} mobile />}
+        {valgtSerieOkt && <SerieMeny okt={valgtSerieOkt} onClose={() => setValgtSerieOkt(null)} />}
         <BunnArk
           open={valgtTreningOkt !== null}
           onClose={() => { setValgtTreningOkt(null); setTreningsDrills(null); }}

@@ -16,6 +16,7 @@ import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
 import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
 import { T, fmtSg, Kort, Icon } from "@/components/v2";
 import { slettKladd } from "@/lib/runde-logg/draft";
+import { TommelSone, PrimaerKnapp } from "./tommel-sone";
 
 type OppsummeringProps = {
   courseId: string;
@@ -145,45 +146,8 @@ export function Oppsummering({
         </div>
       )}
 
-      <button
-        type="button"
-        onClick={lagre}
-        disabled={lagrer || ferdige.length === 0}
-        className="v2-press v2-focus"
-        style={{
-          appearance: "none",
-          cursor: lagrer ? "wait" : "pointer",
-          width: "100%",
-          height: 54,
-          borderRadius: 16,
-          border: "none",
-          background: T.lime,
-          color: T.onLime,
-          fontFamily: T.disp,
-          fontSize: 16,
-          fontWeight: 700,
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 8,
-          opacity: lagrer ? 0.75 : 1,
-          boxShadow: "0 10px 34px color-mix(in srgb, var(--v2-lime) 28%, transparent)",
-        }}
-      >
-        {lagrer
-          ? "Lagrer…"
-          : feil
-            ? "Prøv igjen"
-            : delvis
-              ? `Lagre ${ferdige.length} hull`
-              : "Lagre runden"}
-      </button>
-      {lagrer && (
-        <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, textAlign: "center" }}>
-          Kladden slettes først når lagringen er bekreftet.
-        </div>
-      )}
-
+      {/* GO V2: «tilbake» er den stille veien ut og ligger OVER tommel-sonen —
+          én neste handling (lagre) står alene nederst der tommelen treffer. */}
       <button
         type="button"
         onClick={onTilbake}
@@ -210,6 +174,27 @@ export function Oppsummering({
         <Icon name="arrow-left" size={14} />
         Tilbake til føringen
       </button>
+
+      <TommelSone>
+        <PrimaerKnapp
+          onClick={lagre}
+          disabled={lagrer || ferdige.length === 0}
+          venter={lagrer}
+        >
+          {lagrer
+            ? "Lagrer…"
+            : feil
+              ? "Prøv igjen"
+              : delvis
+                ? `Lagre ${ferdige.length} hull`
+                : "Lagre runden"}
+        </PrimaerKnapp>
+        {lagrer && (
+          <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, textAlign: "center", marginTop: 8 }}>
+            Kladden slettes først når lagringen er bekreftet.
+          </div>
+        )}
+      </TommelSone>
     </div>
   );
 }

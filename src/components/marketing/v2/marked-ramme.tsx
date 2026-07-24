@@ -137,7 +137,15 @@ export function MMobilMeny({ aktiv }: { aktiv: string }) {
   );
 }
 
-export function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
+/** Nav-handlingen. Default er app-sporet; coaching-først-flater sender inn
+ *  sin egen så det ikke står to lime knapper i samme skjermbilde. */
+export interface MNavCta {
+  label: string;
+  href: string;
+}
+const STANDARD_CTA: MNavCta = { label: "Kom i gang gratis", href: "/auth/signup" };
+
+export function MNav({ mobile, aktiv, cta = STANDARD_CTA }: { mobile: boolean; aktiv: string; cta?: MNavCta }) {
   return (
     <div
       style={{
@@ -186,8 +194,8 @@ export function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
         {mobile ? (
           <MMobilMeny aktiv={aktiv} />
         ) : (
-          <MCta small href="/auth/signup">
-            Kom i gang gratis
+          <MCta small href={cta.href}>
+            {cta.label}
           </MCta>
         )}
       </span>
@@ -229,7 +237,7 @@ export function MFot({ mobile }: { mobile: boolean }) {
   );
 }
 
-export function MRamme({ mobile, aktiv, children }: { mobile: boolean; aktiv: string; children: ReactNode }) {
+export function MRamme({ mobile, aktiv, cta, children }: { mobile: boolean; aktiv: string; cta?: MNavCta; children: ReactNode }) {
   return (
     <div
       className="dark"
@@ -243,7 +251,7 @@ export function MRamme({ mobile, aktiv, children }: { mobile: boolean; aktiv: st
         flexDirection: "column",
       }}
     >
-      <MNav mobile={mobile} aktiv={aktiv} />
+      <MNav mobile={mobile} aktiv={aktiv} cta={cta} />
       {/* <main>-landemerket forsvant i v2-porten (a11y-regresjon fanget av
           E2E-testenes locator("main") første gang CI faktisk kjørte) —
           innholdet mellom nav og footer ER sidens main. */}

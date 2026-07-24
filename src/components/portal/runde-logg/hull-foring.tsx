@@ -13,6 +13,7 @@ import { beregnSg } from "@/lib/domain/sg";
 import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
 import { T, fmtSg, Caps, Kort, Icon } from "@/components/v2";
 import { SlagEditor } from "./slag-editor";
+import { TommelSone, PrimaerKnapp } from "./tommel-sone";
 
 const LIE_LABEL: Record<"TEE" | HvileLie, string> = {
   TEE: "Tee",
@@ -342,32 +343,6 @@ export function HullForing({
               </button>
             )}
           </div>
-          <button
-            type="button"
-            onClick={onNesteHull}
-            className="v2-press v2-focus"
-            style={{
-              appearance: "none",
-              cursor: "pointer",
-              width: "100%",
-              height: 54,
-              borderRadius: 16,
-              border: "none",
-              background: T.lime,
-              color: T.onLime,
-              fontFamily: T.disp,
-              fontSize: 16,
-              fontWeight: 700,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-              boxShadow: "0 10px 34px color-mix(in srgb, var(--v2-lime) 28%, transparent)",
-            }}
-          >
-            {ferdigeFor + 1 >= antallHull ? "Til oppsummering" : `Neste hull`}
-            <Icon name="arrow-right" size={16} />
-          </button>
         </div>
       ) : (
         <SlagEditor
@@ -383,10 +358,22 @@ export function HullForing({
         />
       )}
 
+      {/* GO V2: sekundær navigasjon over tommel-sonen. */}
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         {sekundaerKnapp("Hull-oversikt", "layout-dashboard", onVisOversikt)}
         {sekundaerKnapp("SG hittil", "trending-up", onVisSg)}
       </div>
+
+      {/* Tommel-sone: «Neste hull» følger med nederst i skjermen. I slag-modus
+          eier SlagEditor den primære handlingen, så sonen vises kun når hullet
+          er ferdig — aldri to konkurrerende primære. */}
+      {ferdig && (
+        <TommelSone>
+          <PrimaerKnapp onClick={onNesteHull} ikon="arrow-right">
+            {ferdigeFor + 1 >= antallHull ? "Til oppsummering" : "Neste hull"}
+          </PrimaerKnapp>
+        </TommelSone>
+      )}
 
       {/* Skjult caps for skjermlesere: aktiv posisjon */}
       <Caps style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clipPath: "inset(50%)" }}>

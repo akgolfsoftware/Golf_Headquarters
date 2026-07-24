@@ -6,7 +6,8 @@
  * fra loadDailyBrief (Prisma). Bygget utelukkende av v2-komponentbiblioteket
  * (src/components/v2) — ingen ad-hoc UI, ingen rå hex (kun T.*).
  *
- * Desktop-rekkefølge: hode → live → kpi (4) → AI-dispatch → koen «Trenger deg nå» →
+ * Desktop-rekkefølge (GO V3 — NÅ øverst): hode → live → AI-dispatch («Én ting NÅ»)
+ * → koen «Trenger deg nå» → kpi (4) → fokus-spillere → innboks →
  * grid 2-kol (Dagens timer | Stall-uka) → InnsiktChip «Planlegg i Workbench».
  */
 
@@ -372,11 +373,14 @@ export function CockpitV2({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
-      {fokus && <FokusSpillere fokus={fokus} />}
+      {/* GO V3: NÅ øverst. Rekkefølgen er hierarkiet — det som pågår og det som
+          trenger coachen kommer FØR KPI/fokus/innboks (som er kontekst, ikke
+          handling). Cockpiten skal svare «hva gjør jeg nå» på 5 sekunder. */}
       {live}
-      {kpi}
       {aiDispatch && <AiDispatchPanelV2 data={aiDispatch} />}
       {koen}
+      {kpi}
+      {fokus && <FokusSpillere fokus={fokus} />}
       {innboksModul}
       <div className={mobile ? "grid grid-cols-1" : "grid grid-cols-1 lg:grid-cols-2"} style={{ gap: T.gap }}>
         {timer}

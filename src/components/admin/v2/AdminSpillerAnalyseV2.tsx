@@ -14,7 +14,7 @@
 
 import Link from "next/link";
 import { AnalysereV2, type AnalysereData } from "@/components/portal/v2/AnalysereV2";
-import { Caps, Tittel, StatusPill, TilbakeLenke, CTAPill, type StatusTone } from "@/components/v2";
+import { Caps, Tittel, StatusPill, TilbakeLenke, CTAPill, HjelpTips, type StatusTone } from "@/components/v2";
 
 /** Norsk eieform: «Rohjan» → «Rohjans», «Alex» → «Alex'». Holder navnet helt. */
 function eieform(navn: string): string {
@@ -63,7 +63,10 @@ export function AdminSpillerAnalyseV2({ navn, spillerId, data }: AdminSpillerAna
             }}
           >
             <div>
-              <Caps>{eyebrow}</Caps>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                <Caps>{eyebrow}</Caps>
+                {kat && <HjelpTips k="spillerKategori" size={11} />}
+              </span>
               <div style={{ marginTop: 10 }}>
                 <Tittel mobile={mobile} em="analyse">
                   {eieform(navn)}

@@ -198,27 +198,23 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
         )}
       </div>
 
+      {/* GO V2: rett etter lagring er dette en KVITTERING, ikke en handlings-meny.
+          Kortet bekrefter og peker videre — den ene neste handlingen er CTA-pilla
+          under. Import/detalj-redigering ligger fortsatt i den stille sekundær-
+          raden lenger nede (ingen funksjon fjernet, bare avlastet hierarki). */}
       {data.nettoppLagret && data.erEier && (
         <Kort>
-          <p style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, margin: 0 }}>
-            Runden er lagret
-          </p>
-          <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "6px 0 12px" }}>
-            Se Strokes Gained under. Mangler hull-score? Importer fra UpGame (CSV) eller fyll inn detaljer.
-          </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
-            <UpGameImportModal roundId={data.id} />
-            {data.sgTotal != null ? (
-              <StatusPill tone="up">SG klar</StatusPill>
-            ) : (
-              <Link
-                href={`/portal/mal/runder/${data.id}/slag`}
-                style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.forest }}
-              >
-                Legg til mer detalj →
-              </Link>
-            )}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
+            <p style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, margin: 0 }}>
+              Runden er lagret
+            </p>
+            {data.sgTotal != null && <StatusPill tone="up">SG klar</StatusPill>}
           </div>
+          <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "6px 0 0" }}>
+            {data.sgTotal != null
+              ? "Strokes Gained er klar — se tallene under."
+              : "Mangler hull-score for full Strokes Gained. Neste steg står rett under."}
+          </p>
         </Kort>
       )}
 
