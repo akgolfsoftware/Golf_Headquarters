@@ -11,18 +11,8 @@ import { useRef } from "react";
 import { T } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
 
-/* Blink-keyframes for «skriver»-prikkene injiseres én gang. */
-function ensureSamtaleStyles(): void {
-  if (typeof document === "undefined" || document.getElementById("v2-samtale-style")) return;
-  const el = document.createElement("style");
-  el.id = "v2-samtale-style";
-  el.textContent =
-    "@keyframes v2-blink{0%,80%,100%{opacity:0.25}40%{opacity:1}}" +
-    ".v2-blink{animation:v2-blink 1.2s infinite;}" +
-    "@media (prefers-reduced-motion: reduce){.v2-blink{animation:none;opacity:0.6;}}";
-  document.head.appendChild(el);
-}
-if (typeof document !== "undefined") ensureSamtaleStyles();
+/* Blink-keyframes for «skriver»-prikkene (.v2-blink) bor statisk i
+   src/styles/v2/motion.css (FASIT §4b). */
 
 /* AI-avatar — sparkle i mørk skive med lime-prikk (assistent-identitet). */
 function AiSkive({ size = 34 }: { size?: number }) {

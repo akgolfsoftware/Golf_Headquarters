@@ -60,15 +60,8 @@ type SakMedAntall = AdminGodkjenningV2Row & { antall: number; ids: string[] };
 
 const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
 
-/* Hover-understrek for tekstlenker (inline styles kan ikke uttrykke :hover). */
-function ensureLokalStil(): void {
-  if (typeof document === "undefined" || document.getElementById("v2-godkj-style")) return;
-  const el = document.createElement("style");
-  el.id = "v2-godkj-style";
-  el.textContent = ".v2-tekstlenke{text-decoration:none;}.v2-tekstlenke:hover{text-decoration:underline;}";
-  document.head.appendChild(el);
-}
-if (typeof document !== "undefined") ensureLokalStil();
+/* Hover-understrek for tekstlenker (.v2-tekstlenke) bor statisk i
+   src/styles/v2/motion.css — inline styles kan ikke uttrykke :hover. */
 
 /** Sekundærnavigasjon per sak — stille tekstlenke (12px, dempet), aldri knapp. */
 function TekstLenke({ href, children }: { href: string; children: ReactNode }) {

@@ -10,7 +10,6 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { T } from "@/lib/v2/tokens";
-import { EASE } from "@/lib/v2/hooks";
 import { Icon } from "@/components/v2/icon";
 import { Knapp } from "@/components/v2/core";
 
@@ -50,17 +49,7 @@ export function V2Feil({ reset, tilbakeHref, tittel = "Noe gikk galt" }: V2FeilP
 }
 
 /* ── V2Laster ─────────────────────────────────────────── */
-function ensurePulsStyle(): void {
-  if (typeof document === "undefined" || document.getElementById("v2-loading-style")) return;
-  const el = document.createElement("style");
-  el.id = "v2-loading-style";
-  el.textContent =
-    `@keyframes v2Puls{0%,100%{opacity:.55}50%{opacity:1}}` +
-    `.v2-skel{background:${T.panel2};transition:background ${T.dur}ms ${EASE};animation:v2Puls 1.6s ease-in-out infinite;}` +
-    `@media (prefers-reduced-motion: reduce){.v2-skel{animation:none;opacity:.75;}}`;
-  document.head.appendChild(el);
-}
-if (typeof document !== "undefined") ensurePulsStyle();
+/* .v2-skel-pulsen bor statisk i src/styles/v2/motion.css (FASIT §4b). */
 
 const PANEL_STYLE: CSSProperties = { background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard, padding: "18px 20px" };
 
@@ -396,7 +385,6 @@ export interface V2LasterProps {
  *  hele den mørke chromen (bakgrunn + rail-silhuett), ellers vises mørke
  *  klosser på hvit flate ved hver navigering. */
 export function V2Laster({ variant = "kort" }: V2LasterProps) {
-  ensurePulsStyle();
   const inner =
     variant === "liste" ? <ListeSkel />
     : variant === "dashboard" ? <DashboardSkel />

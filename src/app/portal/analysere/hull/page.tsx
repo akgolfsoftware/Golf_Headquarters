@@ -88,7 +88,7 @@ export default async function HullAnalysePage() {
       id: "tee",
       kode: "OTT",
       label: "Tee total",
-      sub: "Off the tee",
+      sub: "Tee-slag",
       sg: latest?.sgOtt ?? null,
       ...trening.TEE_TOTAL,
       trend: trendOf((i) => i.sgOtt),

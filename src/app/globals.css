@@ -619,6 +619,13 @@ body {
  */
 @import "../styles/v2/patterns.css";
 
+/* ---------- V2 motion- og interaksjonskatalog (FASIT §4b) ----------
+ * Én statisk kilde for alle v2-interaksjonsklasser (press/fokus/hover,
+ * drag, inn-animasjoner, skeleton, NPS-grid, markdown) — erstatter
+ * tidligere runtime-injisert CSS fra komponentfilene.
+ */
+@import "../styles/v2/motion.css";
+
 /* ---------- Golfdata-tokens + komponent-CSS (design-handover v13) ----------
  * Scopet token-lag + portert komponent-CSS for golfdata-familien
  * (athletic/golfdata). Verdier portet EKSAKT fra public/design-handover/.
@@ -772,13 +779,15 @@ html[data-v2-tema="light"] {
   --v2-forest: #005840;
   --v2-lime: #005840; /* lys modus: aksenten ER forest — aldri lime-på-lys */
   --v2-on-lime: #ffffff;
-  --v2-up: #1e8a50;
-  --v2-down: #c04a1e;
-  --v2-warn: #96690a;
+  /* Signal-/aksefarger AA-kalibrert 2026-07-24: ≥4.5:1 som normal tekst på
+     ALLE fire lys-flater (bg/panel/panel2/panel3) — målt, ikke antatt. */
+  --v2-up: #1a7745;
+  --v2-down: #b4461c;
+  --v2-warn: #8a6109;
   --v2-info: #1f6cb0;
-  --v2-ax-fys: #1e8a50;
-  --v2-ax-tek: #96690a;
+  --v2-ax-fys: #1a7745;
+  --v2-ax-tek: #8a6109;
   --v2-ax-slag: #1f6cb0;
-  --v2-ax-spill: #647f00;
-  --v2-ax-turn: #c04a1e;
+  --v2-ax-spill: #5a7200;
+  --v2-ax-turn: #b4461c;
 }

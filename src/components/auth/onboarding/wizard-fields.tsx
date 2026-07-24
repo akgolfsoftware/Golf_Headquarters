@@ -17,18 +17,8 @@ import { Check, Info, type LucideIcon } from "lucide-react";
 import { T } from "@/lib/v2/tokens";
 import { cn } from "@/lib/utils";
 
-// Placeholder-farge + siste-rad-regler kan ikke settes inline — injiseres én
-// gang (samme idiom som core.tsx/skjema.tsx sine ensureStyles).
-function ensureFeltStyles(): void {
-  if (typeof document === "undefined" || document.getElementById("v2-obfelt-style")) return;
-  const el = document.createElement("style");
-  el.id = "v2-obfelt-style";
-  el.textContent =
-    `.obf-input::placeholder{color:var(--v2-mut);opacity:1;}` +
-    `.obf-sumrow:last-child{border-bottom:none;padding-bottom:0;}`;
-  document.head.appendChild(el);
-}
-if (typeof document !== "undefined") ensureFeltStyles();
+// Placeholder-farge + siste-rad-regler (.obf-input/.obf-sumrow) bor statisk i
+// src/styles/v2/motion.css — de kan ikke settes inline.
 
 const CAPS: React.CSSProperties = {
   fontFamily: T.mono,

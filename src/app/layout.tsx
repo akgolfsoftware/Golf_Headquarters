@@ -106,8 +106,9 @@ export const viewport = {
   themeColor: "#005840",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  // WCAG 1.4.4: zoom skal aldri sperres (iOS ignorerer uansett user-scalable=no).
+  maximumScale: 5,
+  userScalable: true,
   viewportFit: "cover" as const,
 };
 

@@ -85,33 +85,9 @@ function Waveform() {
   );
 }
 
-// ── CSS-animasjoner (injisert én gang) ────────────────────────────────────────
-
-const STYLE_ID = "mic-button-styles";
-
-function injectStyles() {
-  if (typeof document === "undefined" || document.getElementById(STYLE_ID)) return;
-  const style = document.createElement("style");
-  style.id = STYLE_ID;
-  style.textContent = `
-    @keyframes mic-wave {
-      0%,100% { transform: scaleY(0.6); opacity: 0.5; }
-      50% { transform: scaleY(1.2); opacity: 1; }
-    }
-    @keyframes mic-pulse {
-      0%,100% { box-shadow: 0 0 0 8px rgba(209,248,67,0.20), 0 0 0 16px rgba(209,248,67,0.10); }
-      50% { box-shadow: 0 0 0 12px rgba(209,248,67,0.25), 0 0 0 22px rgba(209,248,67,0.12); }
-    }
-    @keyframes mic-spin {
-      to { transform: rotate(360deg); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .mic-btn-recording { animation: none !important; box-shadow: 0 0 0 8px rgba(209,248,67,0.20) !important; }
-      [class*="mic-wave"] { animation: none !important; }
-    }
-  `;
-  document.head.appendChild(style);
-}
+// ── CSS-animasjoner ────────────────────────────────────────────────────────────
+// mic-wave/mic-pulse/mic-spin + reduced-motion bor statisk i
+// src/styles/v2/motion.css (FASIT §4b).
 
 // ── Props ──────────────────────────────────────────────────────────────────────
 
@@ -144,7 +120,6 @@ export function MicButton({
 
   // Sett opp recognition (hoppes over hvis ikke støttet)
   useEffect(() => {
-    injectStyles();
     const Ctor = window.SpeechRecognition ?? window.webkitSpeechRecognition;
     if (!Ctor) return;
     const r = new Ctor();
