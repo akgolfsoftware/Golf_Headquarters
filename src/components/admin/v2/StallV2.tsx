@@ -6,10 +6,12 @@
  *
  * Desktop: hode + KPI → filtre → grid liste | sammendrag.
  * Mobil: liste + BunnArk for valgt spiller.
+ *
+ * GO V3: rad = detalj (velger spiller, åpner sammendrag), Workbench er CTA-en
+ * derfra. Lista sorterer «trenger deg» øverst, sterkeste signal først.
  */
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   Caps,
@@ -85,6 +87,9 @@ export interface StallV2Data {
 
 const STATUS_FILTRE = ["Trenger deg", "I rute"] as const;
 const BETALING_FILTRE = ["Abonnent", "Skylder"] as const;
+
+/** Sorteringsvekt for signalstyrke — sterkeste øverst i lista (GO V3). */
+const SEV_RANG: Record<SevKey, number> = { sterk: 0, medium: 1, lav: 2, ok: 3 };
 
 function SpillerRadEnkel({
   s,
@@ -205,7 +210,6 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
 
 export function StallV2({ data }: { data: StallV2Data }) {
   const mobile = useMobile();
-  const router = useRouter();
   const [grp, setGrp] = useState<string[]>([]);
   const [sta, setSta] = useState<string[]>([]);
   const [bet, setBet] = useState<string[]>([]);
@@ -241,7 +245,17 @@ export function StallV2({ data }: { data: StallV2Data }) {
   };
   // Aktive/komplette profiler først — aldri-aktiverte bulk-import-rader
   // grupperes bak en egen, kollapsbar «Venter på innlogging»-seksjon.
-  const aktiveRader = filtered.filter((p) => !p.venter);
+  // GO V3: «trenger deg» sorteres øverst, sterkeste signal først — coachen skal
+  // ikke lete etter hvem som haster. Navn er tiebreak så rekkefølgen er stabil.
+  const aktiveRader = filtered
+    .filter((p) => !p.venter)
+    .slice()
+    .sort(
+      (a, b) =>
+        Number(b.trenger) - Number(a.trenger) ||
+        SEV_RANG[a.sev] - SEV_RANG[b.sev] ||
+        a.navn.localeCompare(b.navn, "nb"),
+    );
   const venterRader = filtered.filter((p) => p.venter);
   const valgt =
     aktiveRader.find((p) => p.id === valgtId) ??
@@ -270,6 +284,14 @@ export function StallV2({ data }: { data: StallV2Data }) {
     </div>
   );
 
+  // GO V3: rad = detalj. Klikk på en rad åpner spillersammendraget (desktop:
+  // høyre panel · mobil: BunnArk) — Workbench er CTA-en derfra, ikke en
+  // utilsiktet navigasjon vekk fra lista.
+  const velg = (id: string) => {
+    setValgtId(id);
+    if (mobile) setArkApen(true);
+  };
+
   const aktivListe =
     filtered.length === 0 ? (
       <Kort>
@@ -282,7 +304,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
             key={x.id}
             s={x}
             valgt={valgt?.id === x.id}
-            onClick={() => router.push(`/admin/spillere/${x.id}/workbench`)}
+            onClick={() => velg(x.id)}
             last={i === aktiveRader.length - 1}
           />
         ))}
@@ -305,7 +327,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
               key={x.id}
               s={x}
               valgt={valgt?.id === x.id}
-              onClick={() => router.push(`/admin/spillere/${x.id}/workbench`)}
+              onClick={() => velg(x.id)}
               last={i === venterRader.length - 1}
             />
           ))}

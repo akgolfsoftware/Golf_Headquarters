@@ -392,10 +392,29 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
     </div>
   );
 
-  // B: én primær — masse-godkjenn lav-risiko, ellers vei til stall/innboks
+  // GO V3: primær følger KØEN, ikke skjermen. Rekkefølge:
+  //   1) noe haster → vis haster-saken(e) først  2) lav-risiko → godkjenn samlet
+  //   3) kø med vanlige saker → ingen konkurrerende primær (Godkjenn i kortet ER
+  //      handlingen — innboks blir en stille tekstlenke)  4) tom kø → vei videre.
+  const haasterAktivt = filtre.indexOf("Haster") !== -1;
   const primaerCta =
-    data.lowRiskCount > 0 ? (
+    antallHaster > 0 && !haasterAktivt ? (
+      <button
+        type="button"
+        onClick={() => toggle("Haster")}
+        style={{ all: "unset", cursor: "pointer", display: "block", width: "100%" }}
+        aria-label={`Vis ${antallHaster} som haster`}
+      >
+        <CTAPill icon="alert-circle" full>
+          {`Ta ${pl(antallHaster, "sak", "saker")} som haster`}
+        </CTAPill>
+      </button>
+    ) : data.lowRiskCount > 0 ? (
       <GodkjennLavRisiko count={data.lowRiskCount} />
+    ) : totalt > 0 ? (
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <TekstLenke href="/admin/innboks">Åpne innboks</TekstLenke>
+      </div>
     ) : (
       <Link href="/admin/innboks" style={{ textDecoration: "none", display: "block" }}>
         <CTAPill icon="inbox" full>
