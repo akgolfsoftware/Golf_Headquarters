@@ -328,6 +328,26 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
                   <span style={{ fontFamily: T.ui, fontSize: 11, fontWeight: 700, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     {LPHASE_LABEL[b.lPhase]}
                   </span>
+                  {/* G3: peak-merke for turneringsperioder / høy ukevolum */}
+                  {(b.lPhase === "TURNERING" || (b.weeklyVolMax != null && b.weeklyVolMax >= 600)) && (
+                    <span
+                      style={{
+                        fontFamily: T.mono,
+                        fontSize: 7.5,
+                        fontWeight: 800,
+                        letterSpacing: "0.06em",
+                        textTransform: "uppercase",
+                        color: T.onLime,
+                        background: T.lime,
+                        borderRadius: 4,
+                        padding: "1px 5px",
+                        flex: "none",
+                      }}
+                      title="Peak / konkurranse-nær periode"
+                    >
+                      Peak
+                    </span>
+                  )}
                   {sum > 0 && <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.fg2, flex: "none" }}>{sum}/uke</span>}
                 </button>
               );
@@ -360,6 +380,26 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
             {turneringer.length > 0 && (
               <span style={{ position: "absolute", right: 0, top: 4, fontFamily: T.mono, fontSize: 8, color: T.mut }}>turneringer</span>
             )}
+          </div>
+
+          {/* G3: legende periodetyper + peak + trophy */}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10, alignItems: "center" }}>
+            {(["GRUNN", "SPESIAL", "TURNERING", "FERIE"] as LPhase[]).map((p) => (
+              <span key={p} style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                <span style={{ width: 7, height: 7, borderRadius: 2, background: LPHASE_FARGE[p] }} />
+                <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: T.mut, letterSpacing: "0.04em", textTransform: "uppercase" }}>
+                  {LPHASE_LABEL[p]}
+                </span>
+              </span>
+            ))}
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, marginLeft: 4 }}>
+              <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 800, color: T.onLime, background: T.lime, borderRadius: 3, padding: "1px 4px" }}>Peak</span>
+              <span style={{ fontFamily: T.mono, fontSize: 8, color: T.mut }}>turnering / høy volum</span>
+            </span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+              <Icon name="trophy" size={10} style={{ color: T.warn }} />
+              <span style={{ fontFamily: T.mono, fontSize: 8, color: T.mut }}>turnering i kalender</span>
+            </span>
           </div>
         </div>
       </div>
