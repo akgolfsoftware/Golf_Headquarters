@@ -21,6 +21,7 @@ import type { WeekWindow } from "@/components/admin/v2/AdminAvailabilityWeekGrid
 import type { YearWindow } from "@/components/admin/v2/AdminAvailabilityYearGanttV2";
 import { CalendarSyncSection } from "@/app/admin/(legacy)/settings/calendar/calendar-sync-section";
 import { Caps, T } from "@/components/v2";
+import { KalenderHubNav } from "@/components/admin/v2/agency-hub-subnav";
 
 const REP_TEKST: Record<number, string> = { 2: "annenhver uke", 3: "hver 3. uke", 4: "hver 4. uke" };
 
@@ -151,6 +152,7 @@ export default async function AvailabilityPage({ searchParams }: { searchParams:
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+      <KalenderHubNav />
       <AdminAvailabilityV2 data={data} />
 
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>

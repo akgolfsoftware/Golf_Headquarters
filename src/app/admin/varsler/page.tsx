@@ -9,8 +9,9 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadVarsler } from "@/lib/admin/load-varsler";
 import { VarslerClientV2 } from "@/components/admin/v2/VarslerClientV2";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { KoHubNav } from "@/components/admin/v2/agency-hub-subnav";
 import { T } from "@/lib/v2/tokens";
-import { Caps, Tittel, StatusPill, Icon, TilbakeLenke } from "@/components/v2";
+import { Caps, Tittel, StatusPill, Icon } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +28,7 @@ export default async function VarslerPage() {
 
   return (
     <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/admin/innboks">Innboks</TilbakeLenke>
+      <KoHubNav />
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <span style={{ display: "grid", placeItems: "center", width: 48, height: 48, borderRadius: 16, background: T.lime }}>

@@ -15,6 +15,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { can, Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { KalenderHubNav } from "@/components/admin/v2/agency-hub-subnav";
 import { AdminBookingerV2, type AdminBookingerV2Data, type AdminBookingV2Row } from "@/components/admin/v2/AdminBookingerV2";
 
 export const dynamic = "force-dynamic";
@@ -151,7 +152,8 @@ export default async function V2AdminBookingerPage() {
   };
 
   return (
-    <V2Shell aktiv="bookinger" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <KalenderHubNav />
       <AdminBookingerV2 data={data} />
     </V2Shell>
   );

@@ -11,10 +11,11 @@
  * Server component.
  */
 
-import { TilbakeLenke } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadComplianceData } from "@/lib/admin-compliance/compliance-data";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { InnsiktHubNav } from "@/components/admin/v2/agency-hub-subnav";
+
 import { AdminComplianceV2 } from "@/components/admin/v2/AdminComplianceV2";
 
 export const dynamic = "force-dynamic";
@@ -48,7 +49,7 @@ export default async function V2AdminCompliancePage({ searchParams }: { searchPa
 
   return (
     <V2Shell aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/analysere">Innsikt</TilbakeLenke>
+      <InnsiktHubNav />
       <AdminComplianceV2 data={data} />
     </V2Shell>
   );

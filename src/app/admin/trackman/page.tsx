@@ -15,7 +15,8 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { InnsiktHubNav } from "@/components/admin/v2/agency-hub-subnav";
+
 import {
   AdminTrackmanV2,
   type AdminTrackmanV2Data,
@@ -86,8 +87,8 @@ export default async function V2AdminTrackmanPage() {
   };
 
   return (
-    <V2Shell aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/gjennomfore">Daglig drift</TilbakeLenke>
+    <V2Shell aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <InnsiktHubNav />
       <AdminTrackmanV2 data={data} />
     </V2Shell>
   );

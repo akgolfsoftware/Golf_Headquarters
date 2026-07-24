@@ -13,7 +13,9 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadStallen, type StatusKind, type Axis } from "@/lib/admin/stallen-data";
 import { fmtSg, type AkseKey } from "@/lib/v2/tokens";
+import Link from "next/link";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { CTAPill } from "@/components/v2";
 import { StallV2, type StallV2Data, type StallV2Player } from "@/components/admin/v2/StallV2";
 import type { SevKey } from "@/components/v2";
 
@@ -78,6 +80,11 @@ export default async function V2StallPage() {
 
   return (
     <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 4 }}>
+        <Link href="/admin/planlegge" style={{ textDecoration: "none" }}>
+          <CTAPill icon="target">Workbench · velg spiller</CTAPill>
+        </Link>
+      </div>
       <StallV2 data={data} />
     </V2Shell>
   );
