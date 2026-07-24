@@ -71,12 +71,13 @@
 
 Kun Hjem, Plan/Workbench-spiller, Analyse. Mål: **du** klarer 5-sekunders-testen på telefon uten å tenke.
 
-- [ ] Hero: form-tall + trend + status på 300 ms  
-- [ ] Én lime/forest-CTA, ingen konkurrerende grønne knapper  
-- [ ] Tom tilstand med neste steg på alle tre  
-- [ ] «?» på SG/ARG/nærspill der det trengs  
+- [x] Hero: form-tall + trend + status på 300 ms  
+- [x] Én lime/forest-CTA, ingen konkurrerende grønne knapper  
+- [x] Tom tilstand med neste steg på alle tre  
+- [x] «?» på SG/ARG/nærspill der det trengs  
 
-**Ferdig når:** Du åpner appen og vet «hva nå» før du scroller.
+**Ferdig når:** Du åpner appen og vet «hva nå» før du scroller.  
+**Levert 2026-07-24 (GO V1):** Analysere default SG + Logg runde; Hjem én primær CTA; Plan HjelpTips + tom-uke ghost.
 
 ### Bølge V2 — Live + runde (1 uke)
 

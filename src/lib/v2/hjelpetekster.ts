@@ -325,6 +325,11 @@ const RAW = {
     forklaring:
       "Hver prikk er en dag; fylt prikk betyr at du gjennomførte trening den dagen. Mønsteret viser rytmen din over de siste ukene — jevn aktivitet slår skippertak.",
   },
+  treningsVolum: {
+    tittel: "Treningsvolum",
+    forklaring:
+      "Samlet treningstid siste 30 dager, i timer. Viser hvor mye du har trent — ikke om det var «nok». Anbefalinger er signaler, aldri sperrer.",
+  },
 } as const satisfies Record<string, HjelpTekst>;
 
 export type HjelpNokkel = keyof typeof RAW;

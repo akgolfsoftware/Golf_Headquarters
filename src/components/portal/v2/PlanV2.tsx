@@ -238,8 +238,9 @@ export function PlanV2({ data }: { data: DashboardData }) {
               marginBottom: 6,
             }}
           >
-            <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, fontWeight: 600 }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: T.ui, fontSize: 11.5, color: T.mut, fontWeight: 600 }}>
               Uke-gjennomføring
+              <HjelpTips k="planEtterlevelse" size={11} />
             </span>
             <span style={{ fontFamily: T.mono, fontSize: 11.5, fontWeight: 700, color: T.fg }}>
               {gjennomforPct} %
@@ -396,11 +397,18 @@ export function PlanV2({ data }: { data: DashboardData }) {
 
           {todayAll.length === 0 && dagerMedOkter.length === 0 && !optimalSession && (
             <Kort>
-              <TomTilstand
-                icon="calendar"
-                title="Ingen økter planlagt denne uka"
-                sub="Åpne Workbench for å legge inn økter."
-              />
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <TomTilstand
+                  icon="calendar"
+                  title="Ingen økter planlagt denne uka"
+                  sub="Åpne Workbench for å legge inn økter."
+                />
+                <Link href={WORKBENCH_HREF} style={{ textDecoration: "none", display: "block" }}>
+                  <CTAPill icon="calendar" ghost full>
+                    Åpne Workbench
+                  </CTAPill>
+                </Link>
+              </div>
             </Kort>
           )}
         </div>
@@ -451,7 +459,14 @@ export function PlanV2({ data }: { data: DashboardData }) {
 
           {/* Hvorfor — sekundært (fra SG / optimal) */}
           {optimalSession && (
-            <Kort eyebrow="Fra form (SG)">
+            <Kort
+              eyebrow={
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                  Fra form (SG)
+                  <HjelpTips k="sgTotal" size={11} />
+                </span>
+              }
+            >
               <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, lineHeight: 1.35 }}>
                 {optimalSession.title}
               </div>
