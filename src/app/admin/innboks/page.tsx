@@ -14,6 +14,7 @@ import { loadDailyBrief } from "@/lib/agencyos/daily-brief-data";
 import { loadAppFeedback } from "@/lib/admin/load-app-feedback";
 import { koTelling } from "@/lib/admin/ko-telling";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { KoHubNav } from "@/components/admin/v2/agency-hub-subnav";
 import { TriageV2 } from "@/components/admin/v2/TriageV2";
 
 export const dynamic = "force-dynamic";
@@ -27,6 +28,7 @@ export default async function V2TriagePage() {
   ]);
   return (
     <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <KoHubNav />
       <TriageV2 data={data} feedback={feedback} ko={ko} />
     </V2Shell>
   );

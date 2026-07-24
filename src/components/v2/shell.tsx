@@ -52,9 +52,8 @@ export const PLAYERHQ_NAV: V2NavItem[] = [
 ];
 
 /**
- * AgencyOS primær-nav (v1 lansering): 5 tydelige jobber + shell «Mer»-skuff.
- * Planlegge / Uka / Booking → redirects til Kalender eller Stall (se page.tsx).
- * Økonomi, plan-maler, TrackMan osv. bor under Mer.
+ * AgencyOS primær-nav: 5 jobber. Hub-faner (Kø / Kalender / Innsikt) samler
+ * det som tidligere var 20+ «Mer»-lenker. Se agency-hub-subnav.tsx.
  */
 export const AGENCYOS_NAV: V2NavItem[] = [
   { id: "cockpit", label: "Hjem", icon: "home", href: "/admin/agencyos" },
@@ -64,89 +63,69 @@ export const AGENCYOS_NAV: V2NavItem[] = [
   { id: "innsikt", label: "Innsikt", icon: "bar-chart", href: "/admin/analyse" },
 ];
 
-/** AgencyOS «Mer» — alt som ikke er primærjobb (v1: booking/planer/økonomi hit). */
+/**
+ * AgencyOS «Mer» — kort hale (IA 2026-07-25).
+ * Ikke i Mer: Kø-faner (AI/meldinger/varsler/oppfølging/oppgaver),
+ * Kalender-faner (bookinger/tavle/tilgj.), Innsikt-faner (tester/TrackMan/…).
+ * De nås via hub-faner på primærsidene + Cmd+K-søk.
+ */
 export const AGENCYOS_MER: V2NavGruppe[] = [
   {
     label: "AgenticOS",
     items: [
-      { id: "godkjenninger", label: "Kø (godkjenn AI)", icon: "badge-check", href: "/admin/godkjenninger" },
-      { id: "caddie", label: "Caddie (AI-chat)", icon: "message-circle", href: "/admin/agencyos/caddie", adminOnly: true },
+      { id: "caddie", label: "Caddie", icon: "message-circle", href: "/admin/agencyos/caddie", adminOnly: true },
       { id: "agents", label: "AI-agenter", icon: "bot", href: "/admin/agents" },
       { id: "agent-team", label: "Agent-team", icon: "users", href: "/admin/agent-team" },
       { id: "brief", label: "Daglig brief", icon: "file-text", href: "/admin/brief" },
     ],
   },
   {
-    label: "Kommunikasjon",
+    label: "Plan",
     items: [
-      { id: "meldinger", label: "Meldinger", icon: "inbox", href: "/admin/innboks" },
-      { id: "varsler", label: "Varsler", icon: "bell", href: "/admin/varsler" },
-      { id: "handlingssenter", label: "Handlingssenter", icon: "check-check", href: "/admin/handlingssenter" },
-      { id: "queue", label: "Oppfølgingskø", icon: "list", href: "/admin/queue" },
-      { id: "innboks-epost", label: "E-post (post@)", icon: "mail", href: "/admin/innboks-epost", adminOnly: true },
+      { id: "planlegge", label: "Workbench · velg spiller", icon: "target", href: "/admin/planlegge" },
+      { id: "plan-templates", label: "Plan-maler", icon: "copy", href: "/admin/plan-templates" },
+      { id: "drills", label: "Drills", icon: "dumbbell", href: "/admin/drills" },
+      { id: "tournaments", label: "Turneringer", icon: "trophy", href: "/admin/tournaments" },
+      { id: "teknisk-plan", label: "Teknisk plan", icon: "wrench", href: "/admin/teknisk-plan" },
     ],
   },
   {
-    label: "Stall",
+    label: "Stall+",
     items: [
       { id: "grupper", label: "Grupper", icon: "users", href: "/admin/grupper" },
       { id: "spillere-ny", label: "Ny spiller", icon: "plus", href: "/admin/spillere/ny" },
       { id: "talent-radar", label: "Talent-radar", icon: "star", href: "/admin/talent/radar" },
-      { id: "talent-sammenligning", label: "Talent-sammenligning", icon: "crosshair", href: "/admin/talent/sammenligning" },
-    ],
-  },
-  {
-    label: "Tid og booking",
-    items: [
-      { id: "bookinger", label: "Bookinger (liste)", icon: "calendar-check", href: "/admin/bookinger" },
-      { id: "availability", label: "Tilgjengelighet", icon: "clock", href: "/admin/availability" },
-      { id: "uka", label: "Uka (tavle)", icon: "columns-3", href: "/admin/agencyos/uka" },
-    ],
-  },
-  {
-    label: "Workbench & plan",
-    items: [
-      // G8: Workbench først — velg spiller → ukeplan (ikke 6. primær-nav)
-      { id: "planlegge", label: "Workbench · velg spiller", icon: "target", href: "/admin/planlegge" },
-      { id: "plans", label: "Planer (alle)", icon: "layers", href: "/admin/plans" },
-      { id: "plan-templates", label: "Plan-maler", icon: "copy", href: "/admin/plan-templates" },
-      { id: "teknisk-plan", label: "Teknisk plan", icon: "wrench", href: "/admin/teknisk-plan" },
-      { id: "okter", label: "Økter", icon: "clock", href: "/admin/okter" },
-      { id: "periode-fordeling", label: "Periode-fordeling", icon: "sliders", href: "/admin/settings/periode-fordeling" },
-      { id: "gjennomfore", label: "Gjennomføre", icon: "play", href: "/admin/gjennomfore" },
-      { id: "tournaments", label: "Turneringer", icon: "trophy", href: "/admin/tournaments" },
-      { id: "drills", label: "Drills-bibliotek", icon: "dumbbell", href: "/admin/drills" },
-    ],
-  },
-  {
-    label: "Innsikt",
-    items: [
-      { id: "tester", label: "Tester", icon: "badge-check", href: "/admin/tester" },
-      { id: "reports", label: "Rapporter", icon: "file-text", href: "/admin/reports" },
-      { id: "runder", label: "Runder", icon: "flag", href: "/admin/runder" },
-      { id: "compliance", label: "Plan-etterlevelse", icon: "shield-check", href: "/admin/analysere/compliance" },
-      { id: "audit-log", label: "Audit-log", icon: "shield", href: "/admin/audit-log" },
-      { id: "moderering", label: "Moderering", icon: "eye", href: "/admin/stats/moderering" },
-      { id: "trackman", label: "TrackMan", icon: "target", href: "/admin/trackman" },
-      { id: "live", label: "Live", icon: "monitor", href: "/admin/agencyos/live" },
     ],
   },
   {
     label: "Drift",
     items: [
       { id: "okonomi", label: "Økonomi", icon: "credit-card", href: "/admin/agencyos/okonomi", adminOnly: true },
+      { id: "team", label: "Team", icon: "users", href: "/admin/team" },
+      { id: "settings", label: "Innstillinger", icon: "settings", href: "/admin/settings", adminOnly: true },
+      { id: "integrasjoner", label: "Integrasjoner", icon: "plug", href: "/admin/integrasjoner" },
+      { id: "email-templates", label: "E-postmaler", icon: "mail-check", href: "/admin/email-templates" },
+      { id: "min-profil", label: "Min coach-profil", icon: "id-card", href: "/admin/profile" },
+      { id: "hjelp", label: "Hjelp", icon: "help-circle", href: "/admin/hjelp" },
+    ],
+  },
+  {
+    label: "Avansert",
+    items: [
+      { id: "plans", label: "Planer (alle)", icon: "layers", href: "/admin/plans" },
+      { id: "okter", label: "Økter", icon: "clock", href: "/admin/okter" },
+      { id: "gjennomfore", label: "Gjennomføre", icon: "play", href: "/admin/gjennomfore" },
+      { id: "periode-fordeling", label: "Periode-fordeling", icon: "sliders", href: "/admin/settings/periode-fordeling" },
+      { id: "live", label: "Live", icon: "monitor", href: "/admin/agencyos/live" },
+      { id: "innboks-epost", label: "E-post (post@)", icon: "mail", href: "/admin/innboks-epost", adminOnly: true },
       { id: "workspace", label: "Workspace", icon: "layout-dashboard", href: "/admin/workspace", adminOnly: true },
       { id: "marketing", label: "Marketing", icon: "megaphone", href: "/admin/marketing", adminOnly: true },
-      { id: "team", label: "Team", icon: "users", href: "/admin/team" },
-      { id: "email-templates", label: "E-postmaler", icon: "mail-check", href: "/admin/email-templates" },
-      { id: "kalender-synk", label: "Kalender-synk (Google)", icon: "refresh-cw", href: "/admin/settings/calendar" },
-      { id: "min-profil", label: "Min coach-profil", icon: "id-card", href: "/admin/profile" },
-      { id: "spiller-profil", label: "Min spillerprofil", icon: "user", href: "/portal" },
       { id: "services", label: "Tjenester og priser", icon: "credit-card", href: "/admin/services" },
-      { id: "settings", label: "Innstillinger", icon: "settings", href: "/admin/settings", adminOnly: true },
+      { id: "kalender-synk", label: "Kalender-synk (Google)", icon: "refresh-cw", href: "/admin/settings/calendar" },
       { id: "klubb-innstillinger", label: "Klubb-innstillinger", icon: "building-2", href: "/admin/klubb/innstillinger" },
-      { id: "integrasjoner", label: "Integrasjoner", icon: "plug", href: "/admin/integrasjoner" },
-      { id: "hjelp", label: "Hjelp", icon: "help-circle", href: "/admin/hjelp" },
+      { id: "audit-log", label: "Audit-log", icon: "shield", href: "/admin/audit-log" },
+      { id: "talent-sammenligning", label: "Talent-sammenligning", icon: "crosshair", href: "/admin/talent/sammenligning" },
+      { id: "spiller-profil", label: "Min spillerprofil", icon: "user", href: "/portal" },
     ],
   },
 ];
@@ -553,14 +532,46 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
   const autoAktiv = useMemo(() => {
     if (aktiv) return aktiv;
     const gruppeTilSeksjon: Record<string, string> = {
-      Kommunikasjon: "innboks",
+      AgenticOS: "innboks",
+      Plan: "spillere",
+      "Stall+": "spillere",
       Stall: "spillere",
+      Drift: "cockpit",
+      Avansert: "cockpit",
+      // Eldre labels (fallback hvis custom mer sendes inn)
+      Kommunikasjon: "innboks",
       Planlegging: "kalender",
       "Tid og booking": "kalender",
       Innsikt: "innsikt",
-      Drift: "cockpit",
+      "Workbench & plan": "spillere",
     };
     let best: { id: string; href: string } | undefined;
+    // Hub-ruter utenfor Mer → primær-seksjon (Kø / Kalender / Innsikt).
+    const pathTilSeksjon: Array<{ prefix: string; id: string }> = [
+      { prefix: "/admin/godkjenninger", id: "innboks" },
+      { prefix: "/admin/innboks", id: "innboks" },
+      { prefix: "/admin/varsler", id: "innboks" },
+      { prefix: "/admin/queue", id: "innboks" },
+      { prefix: "/admin/handlingssenter", id: "innboks" },
+      { prefix: "/admin/kalender", id: "kalender" },
+      { prefix: "/admin/bookinger", id: "kalender" },
+      { prefix: "/admin/agencyos/uka", id: "kalender" },
+      { prefix: "/admin/availability", id: "kalender" },
+      { prefix: "/admin/analyse", id: "innsikt" },
+      { prefix: "/admin/tester", id: "innsikt" },
+      { prefix: "/admin/trackman", id: "innsikt" },
+      { prefix: "/admin/runder", id: "innsikt" },
+      { prefix: "/admin/reports", id: "innsikt" },
+      { prefix: "/admin/analysere", id: "innsikt" },
+      { prefix: "/admin/planlegge", id: "spillere" },
+      { prefix: "/admin/spillere", id: "spillere" },
+      { prefix: "/admin/agencyos", id: "cockpit" },
+    ];
+    for (const p of pathTilSeksjon) {
+      if (pathname === p.prefix || pathname.startsWith(p.prefix + "/")) {
+        if (!best || p.prefix.length > best.href.length) best = { id: p.id, href: p.prefix };
+      }
+    }
     for (const it of nav) {
       if (pathname === it.href || pathname.startsWith(it.href + "/")) {
         if (!best || it.href.length > best.href.length) best = it;

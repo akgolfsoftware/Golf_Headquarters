@@ -20,7 +20,7 @@ import { LOW_RISK_ACTION_TYPES } from "@/lib/training/skills";
 import { koTelling } from "@/lib/admin/ko-telling";
 import { caddieDraftTittel } from "@/lib/caddie/draft-labels";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { KoHubNav } from "@/components/admin/v2/agency-hub-subnav";
 import {
   AdminGodkjenningerV2,
   type AdminGodkjenningerV2Data,
@@ -297,7 +297,7 @@ export default async function V2AdminGodkjenningerPage() {
 
   return (
     <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/innboks">Innboks</TilbakeLenke>
+      <KoHubNav />
       <AdminGodkjenningerV2 data={data} />
     </V2Shell>
   );

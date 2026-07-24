@@ -16,7 +16,8 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { InnsiktHubNav } from "@/components/admin/v2/agency-hub-subnav";
+
 import {
   AdminTesterV2,
   type AdminTesterV2Data,
@@ -148,7 +149,7 @@ export default async function V2AdminTesterPage() {
 
   return (
     <V2Shell aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/analyse">Innsikt</TilbakeLenke>
+      <InnsiktHubNav />
       <AdminTesterV2 data={data} />
     </V2Shell>
   );

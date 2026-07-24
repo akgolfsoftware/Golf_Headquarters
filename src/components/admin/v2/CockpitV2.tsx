@@ -132,6 +132,38 @@ export function CockpitV2({
     </div>
   );
 
+  // ── Hurtigstart (Bølge 2): tre faste veier — ikke flere menypunkter ──
+  const hurtig = (
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 8,
+        alignItems: "center",
+      }}
+      aria-label="Hurtigstart"
+    >
+      <Link href="/admin/planlegge" style={{ textDecoration: "none" }}>
+        <CTAPill icon="target">Workbench</CTAPill>
+      </Link>
+      <Link href="/admin/spillere" style={{ textDecoration: "none" }}>
+        <CTAPill ghost icon="users">
+          Stall
+        </CTAPill>
+      </Link>
+      <Link href="/admin/kalender" style={{ textDecoration: "none" }}>
+        <CTAPill ghost icon="calendar">
+          Kalender
+        </CTAPill>
+      </Link>
+      <Link href="/admin/godkjenninger" style={{ textDecoration: "none" }}>
+        <CTAPill ghost icon="inbox">
+          Kø
+        </CTAPill>
+      </Link>
+    </div>
+  );
+
   // ── Live-bar (kun når en økt pågår) ─────────────────────────────
   const live = aktiv ? (
     <Kort pad="12px 16px">
@@ -373,6 +405,7 @@ export function CockpitV2({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
+      {hurtig}
       {/* GO V3: NÅ øverst. Rekkefølgen er hierarkiet — det som pågår og det som
           trenger coachen kommer FØR KPI/fokus/innboks (som er kontekst, ikke
           handling). Cockpiten skal svare «hva gjør jeg nå» på 5 sekunder. */}
