@@ -647,49 +647,161 @@ function BalSeksjon({ label, right, children }: { label: string; right?: React.R
   );
 }
 
-/* ── WB3 (fasit G1): belastningsstripe under canvas ─────────────
-   Ærlig konsekvens-visning av uka coachen bygger: planlagte timer i
-   visningsuka mot kronisk ukesnitt (28 d / 4) + ACWR-kvote med fasit-
-   terskler (>1,4 rød · >1,2 gul) + nedtelling til neste turnering.
-   Rendres kun når det finnes belastningsdata — aldri pynte-tomrom. */
+/* ── G1: kontekst-panel under uke-canvas (fasit zones ContextPanels) ─
+   Belastning + ACWR + turnering + ærlige advarsler. Kun ekte tall. */
 export function WBBelastning({ data }: { data: WorkbenchData }) {
   const b = data.belastning;
-  if (!b) return null;
-  const ukeT = data.summary ? data.summary.plannedHours : Math.round((b.akuttMin / 60) * 10) / 10;
-  const snittT = Math.round((b.kroniskSnittMin / 60) * 10) / 10;
-  const acwrTone = b.acwr == null ? T.mut : b.acwr > 1.4 ? T.down : b.acwr > 1.2 ? T.warn : T.up;
-  const turnering = data.tournaments?.[0];
+  const turneringer = data.tournaments ?? [];
+  const turnering = turneringer[0];
+  const ukeT = data.summary?.plannedHours;
+  const sessionCount = data.summary?.sessionCount ?? 0;
+  // Vis panel når vi har belastning, turnering eller planlagt uke — aldri pynte-tomrom.
+  if (!b && !turnering && (ukeT == null || ukeT === 0) && sessionCount === 0) return null;
+
+  const snittT = b ? Math.round((b.kroniskSnittMin / 60) * 10) / 10 : null;
+  const visUkeT =
+    ukeT != null
+      ? ukeT
+      : b
+        ? Math.round((b.akuttMin / 60) * 10) / 10
+        : null;
+  const acwrTone =
+    b?.acwr == null ? T.mut : b.acwr > 1.4 ? T.down : b.acwr > 1.2 ? T.warn : T.up;
+
+  const advarsler: { tekst: string; tone: string }[] = [];
+  if (b?.acwr != null && b.acwr > 1.4) {
+    advarsler.push({
+      tekst: "Kraftig belastningsøkning (ACWR > 1,4) — vurder å lette uka.",
+      tone: T.down,
+    });
+  } else if (b?.acwr != null && b.acwr > 1.2) {
+    advarsler.push({
+      tekst: "Belastningen øker raskt (ACWR > 1,2) — følg med.",
+      tone: T.warn,
+    });
+  }
+  if (turnering?.soon) {
+    advarsler.push({
+      tekst: `Turnering snart: ${turnering.tn} (${turnering.td}).`,
+      tone: T.warn,
+    });
+  }
+  if (visUkeT != null && snittT != null && snittT > 0 && visUkeT > snittT * 1.35) {
+    advarsler.push({
+      tekst: `Uka er ${fmtTimer(visUkeT)} mot snitt ${fmtTimer(snittT)} — tydelig tyngre.`,
+      tone: T.warn,
+    });
+  }
+
   return (
-    <Kort pad="11px 16px">
-      <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, flex: "none" }}>
-          <Icon name="activity" size={13} style={{ color: T.fg2 }} />
-          <Caps size={8.5}>Belastning</Caps>
-        </span>
-        <span style={{ fontFamily: T.mono, fontSize: 11, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
-          Denne uka <span style={{ fontWeight: 700 }}>{fmtTimer(ukeT)}</span>
-          <span style={{ color: T.mut }}> · snitt 4 uker {fmtTimer(snittT)}</span>
-        </span>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 5, flex: "none" }}>
-          <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", padding: "3px 8px", borderRadius: 9999, color: acwrTone, background: `color-mix(in srgb, ${acwrTone} 12%, transparent)`, border: `1px solid color-mix(in srgb, ${acwrTone} 35%, transparent)` }}>
-            ACWR {b.acwr != null ? b.acwr.toFixed(2).replace(".", ",") : "—"}
-          </span>
-          <HjelpTips k="acwr" size={11} />
-        </span>
-        {b.acwr != null && b.acwr > 1.2 && (
-          <span style={{ fontFamily: T.ui, fontSize: 11, color: acwrTone }}>
-            {b.acwr > 1.4 ? "Kraftig belastningsøkning — vurder å lette uka." : "Belastningen øker raskt — følg med."}
-          </span>
-        )}
-        <span style={{ flex: 1 }} />
-        {turnering && (
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 6, flex: "none" }}>
-            <Icon name="trophy" size={12} style={{ color: turnering.soon ? T.warn : T.mut }} />
-            <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, color: turnering.soon ? T.warn : T.fg2 }}>{turnering.td}</span>
-            <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, maxWidth: 180, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{turnering.tn}</span>
+    <Kort pad="12px 14px">
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+        <Icon name="activity" size={14} style={{ color: T.lime }} />
+        <Caps size={9}>Kontekst · uke</Caps>
+        {sessionCount > 0 && (
+          <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 9, color: T.mut }}>
+            {sessionCount} økter
           </span>
         )}
       </div>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+          gap: 8,
+        }}
+      >
+        <div
+          style={{
+            padding: "9px 11px",
+            borderRadius: 10,
+            background: T.panel2,
+            border: `1px solid ${T.border}`,
+          }}
+        >
+          <div style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: T.mut, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+            Planlagt
+          </div>
+          <div style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, marginTop: 4, fontVariantNumeric: "tabular-nums" }}>
+            {visUkeT != null ? fmtTimer(visUkeT) : "—"}
+          </div>
+          {snittT != null && (
+            <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+              snitt 4 uker {fmtTimer(snittT)}
+            </div>
+          )}
+        </div>
+
+        <div
+          style={{
+            padding: "9px 11px",
+            borderRadius: 10,
+            background: T.panel2,
+            border: `1px solid ${T.border}`,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+            <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: T.mut, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+              ACWR
+            </span>
+            <HjelpTips k="acwr" size={10} />
+          </div>
+          <div style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: acwrTone, marginTop: 4, fontVariantNumeric: "tabular-nums" }}>
+            {b?.acwr != null ? b.acwr.toFixed(2).replace(".", ",") : "—"}
+          </div>
+          <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            {b?.acwr == null ? "Trenger mer historikk" : b.acwr > 1.4 ? "Høy" : b.acwr > 1.2 ? "Økende" : "Trygg sone"}
+          </div>
+        </div>
+
+        <div
+          style={{
+            padding: "9px 11px",
+            borderRadius: 10,
+            background: T.panel2,
+            border: `1px solid ${turnering?.soon ? `color-mix(in srgb, ${T.warn} 40%, ${T.border})` : T.border}`,
+          }}
+        >
+          <div style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: T.mut, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+            Neste turnering
+          </div>
+          {turnering ? (
+            <>
+              <div style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: turnering.soon ? T.warn : T.fg, marginTop: 4 }}>
+                {turnering.td}
+              </div>
+              <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                {turnering.tn}
+              </div>
+            </>
+          ) : (
+            <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 6 }}>Ingen i kalender</div>
+          )}
+        </div>
+      </div>
+
+      {advarsler.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 5, marginTop: 10 }}>
+          {advarsler.map((a, i) => (
+            <div
+              key={i}
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 7,
+                padding: "7px 10px",
+                borderRadius: 9,
+                background: `color-mix(in srgb, ${a.tone} 8%, transparent)`,
+                border: `1px solid color-mix(in srgb, ${a.tone} 28%, transparent)`,
+              }}
+            >
+              <Icon name="alert-triangle" size={12} style={{ color: a.tone, flex: "none", marginTop: 1 }} />
+              <span style={{ fontFamily: T.ui, fontSize: 11.5, color: a.tone, lineHeight: 1.35 }}>{a.tekst}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </Kort>
   );
 }
@@ -1007,6 +1119,265 @@ export function DagNivaa({ dag, valgt, onVelg, dager, onFlytt }: {
           );
         })}
       </div>
+    </Kort>
+  );
+}
+
+/* ── G4: Økt-zoom — drill-tidslinje (fasit workbench-okt) ───
+   Vises når zoom = «Økt» og en plan-økt er valgt. Driller lastes ekte
+   via hentOktKomponist; starttid fordeles fra øktas klokke + minutter
+   (eller jevn rest-tid). Trykk blokk → full rediger-ark. */
+type OktDrillRad = {
+  exerciseId: string;
+  navn: string;
+  minutter: number | null;
+  sett: number | null;
+  reps: number | null;
+  nivaa: string;
+};
+
+function fordelDrillMinutter(
+  drills: OktDrillRad[],
+  totalMin: number,
+): { drill: OktDrillRad; startMin: number; durMin: number }[] {
+  const fixedSum = drills.reduce(
+    (a, d) => a + (d.minutter != null && d.minutter > 0 ? d.minutter : 0),
+    0,
+  );
+  const uten = drills.filter((d) => d.minutter == null || d.minutter <= 0).length;
+  const rest = Math.max(0, totalMin - fixedSum);
+  const share = uten > 0 ? Math.max(5, Math.floor(rest / uten)) : 0;
+  let utenIgjen = uten;
+  let cursor = 0;
+  return drills.map((d) => {
+    let durMin: number;
+    if (d.minutter != null && d.minutter > 0) {
+      durMin = d.minutter;
+    } else if (uten > 0) {
+      utenIgjen -= 1;
+      durMin = utenIgjen === 0 ? Math.max(5, rest - share * (uten - 1)) : share;
+    } else {
+      durMin = Math.max(5, Math.floor(totalMin / Math.max(1, drills.length)));
+    }
+    const startMin = cursor;
+    cursor += durMin;
+    return { drill: d, startMin, durMin };
+  });
+}
+
+function fmtKlokkeFraMin(baseH: number, baseM: number, offsetMin: number): string {
+  const total = baseH * 60 + baseM + offsetMin;
+  const h = Math.floor(total / 60) % 24;
+  const m = total % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+export function OktDrillTidslinje({
+  okt,
+  onRediger,
+}: {
+  okt: WeekEvent;
+  onRediger?: () => void;
+}) {
+  const [drills, setDrills] = useState<OktDrillRad[] | null>(null);
+  const [feil, setFeil] = useState(false);
+  const ak = (okt.eb as AkseKey) || "TEK";
+  const col = T.ax[ak] || T.mut;
+
+  useEffect(() => {
+    let aktiv = true;
+    if (!okt.id || (okt.source ?? "plan") !== "plan") {
+      Promise.resolve().then(() => {
+        if (aktiv) {
+          setDrills([]);
+          setFeil(false);
+        }
+      });
+      return () => {
+        aktiv = false;
+      };
+    }
+    hentOktKomponist(okt.id).then((res) => {
+      if (!aktiv) return;
+      if (res.ok) {
+        setDrills(res.drills ?? []);
+        setFeil(false);
+      } else {
+        setDrills([]);
+        setFeil(true);
+      }
+    });
+    return () => {
+      aktiv = false;
+    };
+  }, [okt]);
+
+  const rader = useMemo(() => {
+    if (!drills || drills.length === 0) return [];
+    return fordelDrillMinutter(drills, okt.durMin);
+  }, [drills, okt.durMin]);
+
+  return (
+    <Kort
+      eyebrow={`${toKl(okt.h, okt.m)} · ${fmtVarighet(okt.durMin)} · ${AKSE_NAVN[ak] ?? okt.eb}`}
+      action={
+        onRediger ? (
+          <button
+            type="button"
+            onClick={onRediger}
+            className="v2-press v2-focus"
+            style={{
+              appearance: "none",
+              cursor: "pointer",
+              background: "transparent",
+              border: 0,
+              fontFamily: T.mono,
+              fontSize: 9,
+              fontWeight: 700,
+              color: T.lime,
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+            }}
+          >
+            Rediger
+          </button>
+        ) : undefined
+      }
+    >
+      <div style={{ marginBottom: 12 }}>
+        <div style={{ fontFamily: T.disp, fontSize: 18, fontWeight: 700, color: T.fg, letterSpacing: "-0.02em" }}>
+          {okt.ttl}
+        </div>
+        <div style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginTop: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+          Drill-tidslinje
+        </div>
+      </div>
+
+      {drills === null ? (
+        <div style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, padding: "12px 0" }}>Henter driller…</div>
+      ) : feil ? (
+        <TomTilstand icon="alert-circle" title="Kunne ikke hente økt" sub="Prøv igjen, eller åpne Rediger." />
+      ) : rader.length === 0 ? (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <TomTilstand icon="dumbbell" title="Ingen driller ennå" sub="Legg inn drills så vises de her i rekkefølge med tid." />
+          {onRediger && (
+            <Knapp icon="plus" full onClick={onRediger}>
+              Legg til driller
+            </Knapp>
+          )}
+        </div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column" }} data-wb-okt-drilltidslinje>
+          {rader.map(({ drill, startMin, durMin }, i) => {
+            const last = i === rader.length - 1;
+            const kl = fmtKlokkeFraMin(okt.h, okt.m ?? 0, startMin);
+            const dose = [
+              durMin > 0 ? `${durMin} min` : null,
+              drill.sett != null && drill.reps != null ? `${drill.sett}×${drill.reps}` : null,
+              drill.nivaa === "uten" ? "uten ball" : drill.nivaa === "lav" ? "lav fart" : null,
+            ]
+              .filter(Boolean)
+              .join(" · ");
+            return (
+              <div key={`${drill.exerciseId}-${i}`} style={{ display: "flex", gap: 12, position: "relative" }}>
+                <div
+                  style={{
+                    width: 44,
+                    flex: "none",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-end",
+                    paddingTop: 2,
+                  }}
+                >
+                  <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+                    {kl}
+                  </span>
+                  <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginTop: 3 }}>{durMin}m</span>
+                </div>
+                <div
+                  style={{
+                    flex: "none",
+                    width: 14,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 11,
+                      height: 11,
+                      borderRadius: 9999,
+                      background: col,
+                      border: `2px solid ${T.panel}`,
+                      boxShadow: `0 0 0 1px ${col}`,
+                      flex: "none",
+                      marginTop: 4,
+                    }}
+                  />
+                  {!last && (
+                    <span style={{ flex: 1, width: 2, background: T.border, marginTop: 2, minHeight: 28 }} />
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={onRediger}
+                  className={onRediger ? "v2-press v2-focus" : undefined}
+                  style={{
+                    appearance: "none",
+                    flex: 1,
+                    minWidth: 0,
+                    marginBottom: last ? 0 : 10,
+                    borderRadius: 12,
+                    overflow: "hidden",
+                    background: `color-mix(in srgb, ${col} 12%, ${T.panel2})`,
+                    border: `1px solid color-mix(in srgb, ${col} 40%, transparent)`,
+                    padding: "10px 12px",
+                    textAlign: "left",
+                    cursor: onRediger ? "pointer" : "default",
+                    color: "inherit",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span
+                      style={{
+                        fontFamily: T.mono,
+                        fontSize: 8.5,
+                        fontWeight: 700,
+                        color: T.mut,
+                        flex: "none",
+                      }}
+                    >
+                      {i + 1}
+                    </span>
+                    <span
+                      style={{
+                        flex: 1,
+                        minWidth: 0,
+                        fontFamily: T.ui,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: T.fg,
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {drill.navn}
+                    </span>
+                  </div>
+                  {dose && (
+                    <div style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginTop: 4, paddingLeft: 22 }}>
+                      {dose}
+                    </div>
+                  )}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </Kort>
   );
 }
@@ -1965,7 +2336,57 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
               />
             </div>
           )}
-          {nivaa === "dag" && <div key="dag" className="v2-fade-in"><DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} dager={dager} onFlytt={actions ? handleDropMove : undefined} /></div>}
+          {nivaa === "dag" && (
+            <div key="dag" className="v2-fade-in" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+              {valgtOkt && (valgtOkt.source ?? "plan") === "plan" && valgtOkt.id ? (
+                <OktDrillTidslinje
+                  okt={valgtOkt}
+                  onRediger={actions ? () => setRedigerOktId(valgtOkt.id!) : undefined}
+                />
+              ) : (
+                <DagNivaa
+                  dag={aktivDag}
+                  valgt={valgtOkt?.id ?? null}
+                  onVelg={velgOgAapne}
+                  dager={dager}
+                  onFlytt={actions ? handleDropMove : undefined}
+                />
+              )}
+              {valgtOkt && aktivDag && aktivDag.events.length > 1 && (
+                <Kort eyebrow="Andre økter samme dag">
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    {aktivDag.events
+                      .filter((e) => e.id && e.id !== valgtOkt.id)
+                      .map((e) => (
+                        <button
+                          key={e.id}
+                          type="button"
+                          onClick={() => e.id && velgOgAapne(e.id)}
+                          className="v2-press v2-focus"
+                          style={{
+                            appearance: "none",
+                            textAlign: "left",
+                            padding: "8px 10px",
+                            borderRadius: 9,
+                            background: T.panel2,
+                            border: `1px solid ${T.border}`,
+                            cursor: "pointer",
+                            color: "inherit",
+                          }}
+                        >
+                          <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.mut }}>
+                            {toKl(e.h, e.m)}
+                          </span>
+                          <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, marginLeft: 8 }}>
+                            {e.ttl}
+                          </span>
+                        </button>
+                      ))}
+                  </div>
+                </Kort>
+              )}
+            </div>
+          )}
           {nivaa === "maned" && <div key="maned" className="v2-fade-in"><MndNivaa data={data} onVelgDato={velgDatoFraMnd} /></div>}
         </div>
         <WBBalanse
@@ -2002,7 +2423,24 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             />
           </div>
         )}
-        {nivaa === "dag" && <div key="dag" className="v2-fade-in"><DagNivaa dag={aktivDag} valgt={valgtOkt?.id ?? null} onVelg={velgOgAapne} dager={dager} onFlytt={actions ? handleDropMove : undefined} /></div>}
+        {nivaa === "dag" && (
+          <div key="dag" className="v2-fade-in" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+            {valgtOkt && (valgtOkt.source ?? "plan") === "plan" && valgtOkt.id ? (
+              <OktDrillTidslinje
+                okt={valgtOkt}
+                onRediger={actions ? () => setRedigerOktId(valgtOkt.id!) : undefined}
+              />
+            ) : (
+              <DagNivaa
+                dag={aktivDag}
+                valgt={valgtOkt?.id ?? null}
+                onVelg={velgOgAapne}
+                dager={dager}
+                onFlytt={actions ? handleDropMove : undefined}
+              />
+            )}
+          </div>
+        )}
         {nivaa === "maned" && <div key="maned" className="v2-fade-in"><MndNivaa data={data} onVelgDato={velgDatoFraMnd} /></div>}
 
         <MobilFold tittel="Bibliotek" ikon="layers">
