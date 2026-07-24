@@ -131,6 +131,11 @@ export type WorkbenchData = {
   planTemplates?: WorkbenchPlanTemplate[];
   /** Standardøkter fra mal-bibliotek (hub-fanen Standardøkter). */
   paletteItems?: WorkbenchPaletteItem[];
+  /**
+   * Lenke til spillerens fysiske plan når den finnes (FysiskPlan ACTIVE/DRAFT).
+   * Coach: admin-visning om den finnes, ellers portal fysisk.
+   */
+  fysPlanHref?: string | null;
   /** Felles gruppetider denne uka (GroupSchedule — tid/sted delt, innhold per spiller). */
   groupSlots?: WorkbenchGroupSlot[];
   /** Om ukedata inkluderer TrainingSessionV2 (lanserings-spor B). */
@@ -265,6 +270,7 @@ export async function loadWorkbenchData(
     skjulteV2MonthIds,
     groupMemberships,
     planTemplates,
+    fysiskPlan,
     monthPlanSessions,
     monthV2SessionsRaw,
   ] = await Promise.all([
@@ -385,7 +391,7 @@ export async function loadWorkbenchData(
     prisma.planTemplate.findMany({
       where: { approved: true },
       orderBy: [{ usageCount: "desc" }, { name: "asc" }],
-      take: 12,
+      take: 20,
       select: {
         id: true,
         name: true,
@@ -395,9 +401,34 @@ export async function loadWorkbenchData(
         effectivenessAvg: true,
         _count: { select: { sessions: true } },
         sessions: {
-          take: 8,
+          take: 16,
           orderBy: [{ ukeNr: "asc" }, { dagNr: "asc" }],
           select: { id: true, title: true, varighetMin: true, pyramidArea: true, skillArea: true },
+        },
+      },
+    }),
+    // Aktiv/utkast fysisk plan — bro fra workbench + FYS-økter i palette.
+    prisma.fysiskPlan.findFirst({
+      where: { userId, status: { in: ["ACTIVE", "DRAFT"] } },
+      orderBy: { updatedAt: "desc" },
+      select: {
+        id: true,
+        status: true,
+        uker: {
+          orderBy: { sortOrder: "asc" },
+          take: 4,
+          select: {
+            okter: {
+              orderBy: { sortOrder: "asc" },
+              take: 8,
+              select: {
+                id: true,
+                navn: true,
+                estimertMinutter: true,
+                type: true,
+              },
+            },
+          },
         },
       },
     }),
@@ -480,9 +511,53 @@ export async function loadWorkbenchData(
     // canvaset trenger seasonBlocks (års-først-flyten starter her).
     (seasonPlan?.periodBlocks.length ?? 0) === 0
   ) {
+    // Bygg palette også ved «tom uke» (coldstart) — coach trenger FYS-brikker.
+    const earlyPalette: WorkbenchPaletteItem[] = [];
+    const earlySeen = new Set<string>();
+    for (const t of planTemplates) {
+      for (const s of t.sessions) {
+        const key = `${s.title}-${s.varighetMin}-${s.pyramidArea}`;
+        if (earlySeen.has(key) || earlyPalette.length >= 24) continue;
+        earlySeen.add(key);
+        earlyPalette.push({
+          pid: `tpl-${s.id}`,
+          title: s.title,
+          dur: s.varighetMin,
+          cat: s.pyramidArea,
+          skillArea: s.skillArea,
+          templateSessionId: s.id,
+        });
+      }
+    }
+    if (earlyPalette.filter((p) => p.cat === "FYS").length < 4) {
+      for (const f of [
+        { title: "FYS · Styrke underkropp", dur: 45 },
+        { title: "FYS · Rotasjon og core", dur: 30 },
+        { title: "FYS · Mobilitet", dur: 25 },
+        { title: "FYS · Kondisjon lett", dur: 40 },
+      ] as const) {
+        if (earlyPalette.filter((p) => p.cat === "FYS").length >= 4) break;
+        if (earlySeen.has(f.title)) continue;
+        earlySeen.add(f.title);
+        earlyPalette.push({
+          pid: `fys-fb-${f.title}`,
+          title: f.title,
+          dur: f.dur,
+          cat: "FYS",
+          skillArea: null,
+          templateSessionId: "",
+        });
+      }
+    }
     return {
       summary: { weekNumber: isoWeek(weekStart), sessionCount: 0, plannedHours: 0 },
       planTemplates: templateRowsEarly.length > 0 ? templateRowsEarly : undefined,
+      paletteItems: earlyPalette.length > 0 ? earlyPalette : undefined,
+      fysPlanHref: fysiskPlan
+        ? opts?.viewer === "player"
+          ? "/portal/fysisk"
+          : `/admin/spillere/${userId}?fane=fysisk`
+        : null,
       groupSlots: groupSlotsEarly.length > 0 ? groupSlotsEarly : undefined,
       usesV2Sessions: false,
       weekOffset: offset,
@@ -709,25 +784,105 @@ export async function loadWorkbenchData(
 
   const templateRows = templateRowsEarly;
 
+  // Palette: prioritér FYS (min. 4 plasser), deretter resten. Cap 24.
+  const PALETTE_CAP = 24;
+  const FYS_MIN = 4;
   const paletteSeen = new Set<string>();
   const paletteItems: WorkbenchPaletteItem[] = [];
+  const pushPalette = (item: WorkbenchPaletteItem, key: string) => {
+    if (paletteSeen.has(key)) return false;
+    if (paletteItems.length >= PALETTE_CAP) return false;
+    paletteSeen.add(key);
+    paletteItems.push(item);
+    return true;
+  };
+
+  // 1) FYS fra PlanTemplate
   for (const t of planTemplates) {
     for (const s of t.sessions) {
-      const key = `${s.title}-${s.varighetMin}-${s.pyramidArea}`;
-      if (paletteSeen.has(key)) continue;
-      paletteSeen.add(key);
-      paletteItems.push({
-        pid: `tpl-${t.id}-${paletteItems.length}`,
-        title: s.title,
-        dur: s.varighetMin,
-        cat: s.pyramidArea,
-        skillArea: s.skillArea,
-        templateSessionId: s.id,
-      });
-      if (paletteItems.length >= 12) break;
+      if (s.pyramidArea !== "FYS") continue;
+      pushPalette(
+        {
+          pid: `tpl-${s.id}`,
+          title: s.title,
+          dur: s.varighetMin,
+          cat: "FYS",
+          skillArea: s.skillArea,
+          templateSessionId: s.id,
+        },
+        `${s.title}-${s.varighetMin}-FYS`,
+      );
     }
-    if (paletteItems.length >= 12) break;
   }
+
+  // 2) FYS fra spillerens FysiskPlan (uten templateSessionId — ingen mal-driller)
+  if (fysiskPlan) {
+    for (const uke of fysiskPlan.uker) {
+      for (const o of uke.okter) {
+        const dur = o.estimertMinutter && o.estimertMinutter > 0 ? o.estimertMinutter : 45;
+        pushPalette(
+          {
+            pid: `fys-${o.id}`,
+            title: o.navn,
+            dur,
+            cat: "FYS",
+            skillArea: null,
+            templateSessionId: "",
+          },
+          `fys-${o.navn}-${dur}`,
+        );
+      }
+    }
+  }
+
+  // 3) Fallback FYS-standardøkter hvis mal-bibliotek er tomt for FYS
+  const fysCount = () => paletteItems.filter((p) => p.cat === "FYS").length;
+  if (fysCount() < FYS_MIN) {
+    const fallbacks: { title: string; dur: number }[] = [
+      { title: "FYS · Styrke underkropp", dur: 45 },
+      { title: "FYS · Rotasjon og core", dur: 30 },
+      { title: "FYS · Mobilitet", dur: 25 },
+      { title: "FYS · Kondisjon lett", dur: 40 },
+    ];
+    for (const f of fallbacks) {
+      if (fysCount() >= FYS_MIN) break;
+      pushPalette(
+        {
+          pid: `fys-fb-${f.title}`,
+          title: f.title,
+          dur: f.dur,
+          cat: "FYS",
+          skillArea: null,
+          templateSessionId: "",
+        },
+        f.title,
+      );
+    }
+  }
+
+  // 4) Øvrige akser fra planmaler
+  for (const t of planTemplates) {
+    for (const s of t.sessions) {
+      if (s.pyramidArea === "FYS") continue;
+      pushPalette(
+        {
+          pid: `tpl-${s.id}`,
+          title: s.title,
+          dur: s.varighetMin,
+          cat: s.pyramidArea,
+          skillArea: s.skillArea,
+          templateSessionId: s.id,
+        },
+        `${s.title}-${s.varighetMin}-${s.pyramidArea}`,
+      );
+    }
+  }
+
+  const fysPlanHref = fysiskPlan
+    ? opts?.viewer === "player"
+      ? "/portal/fysisk"
+      : `/admin/spillere/${userId}?fane=fysisk`
+    : null;
 
   const groupSlots = groupSlotsEarly;
 
@@ -780,6 +935,7 @@ export async function loadWorkbenchData(
     tournamentCalendar: tournamentCalendar.length > 0 ? tournamentCalendar : undefined,
     planTemplates: templateRows.length > 0 ? templateRows : undefined,
     paletteItems: paletteItems.length > 0 ? paletteItems : undefined,
+    fysPlanHref,
     groupSlots: groupSlots.length > 0 ? groupSlots : undefined,
     usesV2Sessions: v2WeekSessions.length > 0,
     weekOffset: offset,

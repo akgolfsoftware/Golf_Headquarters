@@ -33,6 +33,11 @@ import {
   type DragStartEvent,
 } from "@dnd-kit/core";
 import {
+  GRID_START_HOUR,
+  GRID_END_HOUR,
+  PIXEL_PER_HOUR,
+} from "@/lib/calendar/notion-grid";
+import {
   T,
   Caps,
   Kort,
@@ -82,9 +87,10 @@ export const MANEDER = [
   "januar", "februar", "mars", "april", "mai", "juni",
   "juli", "august", "september", "oktober", "november", "desember",
 ];
-const HOUR_H = 44;
-const START_TIME = 5;
-const END_TIME = 23;
+/** Notion-grid fasit — samme motor som AgencyOS Kalender. */
+const HOUR_H = PIXEL_PER_HOUR;
+const START_TIME = GRID_START_HOUR;
+const END_TIME = GRID_END_HOUR;
 
 /** eb (AkseKey, stor bokstav) → ax (Axis, liten bokstav) for optimistiske temp-events. */
 const AKSE_TO_AXIS: Record<AkseKey, WeekEvent["ax"]> = {
@@ -513,6 +519,30 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
           <Caps size={10}>Bibliotek</Caps>
         </div>
       )}
+      {data.fysPlanHref && (
+        <a
+          href={data.fysPlanHref}
+          className="v2-press v2-focus"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            padding: "7px 10px",
+            borderRadius: 8,
+            border: `1px solid ${T.border}`,
+            background: T.panel2,
+            color: T.fg2,
+            fontFamily: T.mono,
+            fontSize: 9,
+            fontWeight: 700,
+            letterSpacing: "0.04em",
+            textTransform: "uppercase",
+            textDecoration: "none",
+          }}
+        >
+          Åpne fysisk plan
+        </a>
+      )}
       <PalettSok value={sok} onChange={setSok} placeholder="Søk…" />
       <div style={{ display: "flex", gap: 4 }}>
         {faner.map(([id, l]) => (
@@ -556,9 +586,21 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
               akse={b.cat as AkseKey}
               durMin={b.dur}
               sub={fmtVarighet(b.dur)}
-              onClick={onVelgOkt ? () => onVelgOkt({ title: b.title, durMin: b.dur, akse: b.cat as AkseKey, templateSessionId: b.templateSessionId }) : undefined}
+              onClick={onVelgOkt ? () => onVelgOkt({ title: b.title, durMin: b.dur, akse: b.cat as AkseKey, templateSessionId: b.templateSessionId || undefined }) : undefined}
             />
-          )) : <TomTilstand icon="search" title="Ingen treff" sub={sok ? "Prøv et annet søk." : "Ingen standardøkter i biblioteket ennå."} />}
+          )) : (
+            <TomTilstand
+              icon="search"
+              title="Ingen treff"
+              sub={
+                sok
+                  ? "Prøv et annet søk."
+                  : akseFilter === "FYS"
+                    ? "Ingen FYS-økter i biblioteket — opprett en FYS-økt manuelt eller legg til maler."
+                    : "Ingen standardøkter i biblioteket ennå."
+              }
+            />
+          )}
         </div>
       )}
       {tab === "driller" && (

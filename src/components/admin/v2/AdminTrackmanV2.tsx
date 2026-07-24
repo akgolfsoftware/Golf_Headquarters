@@ -110,11 +110,16 @@ export function AdminTrackmanV2({ data }: { data: AdminTrackmanV2Data }) {
 
   // B: én primær — hjelp til import / kobling
   const primaerCta = (
-    <Link href="/admin/hjelp" style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="upload" full>
-        Slik importerer du TrackMan
-      </CTAPill>
-    </Link>
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <Link href="/admin/hjelp" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="upload" full>
+          Slik importerer du TrackMan
+        </CTAPill>
+      </Link>
+      <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.45 }}>
+        Ingen økter? Importer CSV fra TrackMan (Multi Group / raw), eller be spilleren gjøre det i PlayerHQ.
+      </p>
+    </div>
   );
 
   // ── KPI-flis ────────────────────────────────────────────────────
@@ -189,7 +194,7 @@ export function AdminTrackmanV2({ data }: { data: AdminTrackmanV2Data }) {
           {synlige.map((r, i) => (
             <Rad
               key={r.key}
-              onClick={() => router.push(`/admin/spillere/${r.spillerId}`)}
+              onClick={() => router.push(`/admin/trackman/${r.key}`)}
               leading={<AvatarInit navn={r.navn} size={34} />}
               title={r.navn}
               sub={

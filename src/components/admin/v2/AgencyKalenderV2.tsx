@@ -25,11 +25,20 @@ import {
   KpiFlis,
   Icon,
   HurtigOpprett,
-  foreslaTid,
   BunnArk,
 } from "@/components/v2";
 import { type AkseKey } from "@/lib/v2/tokens";
 import type { KalenderData, KalDag, KalOkt } from "@/app/admin/kalender/data";
+import {
+  GRID_BODY_PX,
+  GRID_END_HOUR,
+  GRID_START_HOUR,
+  PIXEL_PER_HOUR,
+  foreslaGridTid,
+  gridHours,
+  minutesToPx,
+  durationToPx,
+} from "@/lib/calendar/notion-grid";
 
 /** true på klient etter mount når viewport < 768px (styrer kun layout-tetthet). */
 function useMobile(): boolean {
@@ -71,10 +80,12 @@ function OktBlokk({
   okt,
   onSerieClick,
   onTreningClick,
+  compact,
 }: {
   okt: KalOkt;
   onSerieClick?: (okt: KalOkt) => void;
   onTreningClick?: (okt: KalOkt) => void;
+  compact?: boolean;
 }) {
   const erSerie = Boolean(okt.serie);
   const erTrening = Boolean(okt.treningsSessionId);
@@ -86,26 +97,29 @@ function OktBlokk({
         border: `1px solid ${kant}`,
         boxShadow: erSerie ? SERIE_GLOW : "none",
         borderRadius: T.rRow,
-        padding: "8px 9px",
+        padding: compact ? "4px 6px" : "8px 9px",
         display: "flex",
         flexDirection: "column",
-        gap: 4,
+        gap: compact ? 2 : 4,
         cursor: okt.href || erSerie || erTrening ? "pointer" : "default",
         minWidth: 0,
+        height: compact ? "100%" : undefined,
+        boxSizing: "border-box",
+        overflow: "hidden",
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.fg2, fontVariantNumeric: "tabular-nums" }}>{okt.kl}</span>
+        <span style={{ fontFamily: T.mono, fontSize: compact ? 9 : 10, fontWeight: 700, color: T.fg2, fontVariantNumeric: "tabular-nums" }}>{okt.kl}</span>
         <span style={{ width: 5, height: 5, borderRadius: 9999, background: okt.akse ? T.ax[okt.akse as AkseKey] : T.mut, flex: "none" }} />
-        {okt.naa && <StatusPill tone="down">Live</StatusPill>}
-        {erTrening && <MikroMeta icon="list">Drills</MikroMeta>}
-        {okt.gruppe != null && <MikroMeta icon="users">{okt.gruppe}</MikroMeta>}
+        {!compact && okt.naa && <StatusPill tone="down">Live</StatusPill>}
+        {!compact && erTrening && <MikroMeta icon="list">Drills</MikroMeta>}
+        {!compact && okt.gruppe != null && <MikroMeta icon="users">{okt.gruppe}</MikroMeta>}
       </div>
-      <span style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{okt.navn}</span>
-      {okt.erHendelse && <MikroMeta icon="x-circle">Hendelse</MikroMeta>}
-      {okt.erOppgave && <MikroMeta icon="list">Oppgave-frist</MikroMeta>}
-      {okt.sted && <MikroMeta icon="map-pin">{okt.sted}</MikroMeta>}
-      {okt.serie && <SerieMerke tekst={okt.serie} />}
+      <span style={{ fontFamily: T.ui, fontSize: compact ? 10.5 : 11.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{okt.navn}</span>
+      {!compact && okt.erHendelse && <MikroMeta icon="x-circle">Hendelse</MikroMeta>}
+      {!compact && okt.erOppgave && <MikroMeta icon="list">Oppgave-frist</MikroMeta>}
+      {!compact && okt.sted && <MikroMeta icon="map-pin">{okt.sted}</MikroMeta>}
+      {!compact && okt.serie && <SerieMerke tekst={okt.serie} />}
     </div>
   );
   if (erTrening) {
@@ -215,9 +229,22 @@ function SerieMeny({ okt, onClose, mobile }: { okt: KalOkt; onClose: () => void;
   );
 }
 
-/* ── Dag-kolonne (desktop grid-celle) ── */
+/** Estimert varighet (min) når loader ikke gir slutt-tid — gap til neste, ellers 60. */
+function estimertVarighetMin(okter: KalOkt[], idx: number): number {
+  const cur = okter[idx];
+  // Oppgave-frist (startMin 1440) — kompakt rad nederst
+  if (cur.startMin >= 24 * 60) return 30;
+  const next = okter[idx + 1];
+  if (next && next.startMin > cur.startMin && next.startMin < 24 * 60) {
+    return Math.max(30, Math.min(120, next.startMin - cur.startMin));
+  }
+  return 60;
+}
+
+/* ── Dag-kolonne (desktop): Notion-tidslinje 05–23, absolutt posisjonerte økter ── */
 function DagKolonne({ dag, onSerieClick, onTreningClick, onFlytt, flytterId, onTomLuke }: { dag: KalenderData["dager"][number]; onSerieClick: (okt: KalOkt) => void; onTreningClick: (okt: KalOkt) => void; onFlytt?: (bookingId: string, datoISO: string) => void; flytterId?: string | null; onTomLuke: (datoISO: string, kl: string) => void }) {
   const [over, setOver] = useState(false);
+  const gridOkter = dag.okter.filter((o) => o.startMin < 24 * 60);
   return (
     <div
       onDragOver={onFlytt ? (e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; if (!over) setOver(true); } : undefined}
@@ -228,44 +255,79 @@ function DagKolonne({ dag, onSerieClick, onTreningClick, onFlytt, flytterId, onT
         const id = e.dataTransfer.getData(DND_MIME);
         if (id) onFlytt(id, dag.datoISO);
       } : undefined}
-      style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: 8, borderRadius: 12, padding: 4, margin: -4, background: over ? `color-mix(in srgb, ${T.lime} 6%, transparent)` : "transparent", outline: over ? `1px dashed color-mix(in srgb, ${T.lime} 45%, transparent)` : "none", outlineOffset: -2, transition: "background 80ms" }}
+      style={{ minWidth: 0, display: "flex", flexDirection: "column", borderRadius: 12, background: over ? `color-mix(in srgb, ${T.lime} 6%, transparent)` : T.panel, border: `1px solid ${dag.idag ? T.borderS : T.border}`, outline: over ? `1px dashed color-mix(in srgb, ${T.lime} 45%, transparent)` : "none", outlineOffset: -2, transition: "background 80ms", overflow: "hidden" }}
     >
-      <div style={{ display: "flex", alignItems: "baseline", gap: 6, padding: "2px 2px 6px", borderBottom: `1px solid ${dag.idag ? T.borderS : T.border}` }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 6, padding: "8px 8px 6px", borderBottom: `1px solid ${dag.idag ? T.borderS : T.border}`, flex: "none" }}>
         <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: dag.idag ? T.fg : T.mut }}>{dag.dag}</span>
         <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: dag.idag ? T.fg : T.fg2, fontVariantNumeric: "tabular-nums" }}>{dag.dato}</span>
         {dag.idag && <StatusPill>Nå</StatusPill>}
       </div>
-      {dag.okter.length === 0 ? (
-        <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, padding: "8px 2px" }}>Ingen økter</span>
-      ) : (
-        dag.okter.map((o) =>
-          onFlytt && !o.serie && !o.erOppgave ? (
+      <div
+        style={{ position: "relative", height: GRID_BODY_PX, minHeight: GRID_BODY_PX }}
+        onClick={(e) => {
+          // Klikk på tom luke: map Y → nærmeste 30-min slot
+          if ((e.target as HTMLElement).closest("[data-okt-blokk]")) return;
+          const rect = e.currentTarget.getBoundingClientRect();
+          const y = e.clientY - rect.top;
+          const hours = GRID_START_HOUR + y / PIXEL_PER_HOUR;
+          const totalMin = Math.round((hours * 60) / 30) * 30;
+          const clamped = Math.max(GRID_START_HOUR * 60, Math.min(GRID_END_HOUR * 60, totalMin));
+          const pad = (n: number) => String(n).padStart(2, "0");
+          const kl = `${pad(Math.floor(clamped / 60))}:${pad(clamped % 60)}`;
+          onTomLuke(dag.datoISO, kl);
+        }}
+        role="presentation"
+      >
+        {gridHours().map((h) => (
+          <div
+            key={h}
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: (h - GRID_START_HOUR) * PIXEL_PER_HOUR,
+              height: PIXEL_PER_HOUR,
+              borderTop: `1px solid ${T.border}`,
+              pointerEvents: "none",
+            }}
+          />
+        ))}
+        {gridOkter.map((o, idx) => {
+          const top = minutesToPx(o.startMin);
+          const h = durationToPx(estimertVarighetMin(gridOkter, idx));
+          const body = (
+            <div data-okt-blokk style={{ height: "100%", overflow: "hidden" }}>
+              <OktBlokk okt={o} onSerieClick={onSerieClick} onTreningClick={onTreningClick} compact />
+            </div>
+          );
+          return (
             <div
               key={o.id}
-              draggable
-              onDragStart={(e) => { e.dataTransfer.setData(DND_MIME, o.id); e.dataTransfer.effectAllowed = "move"; }}
-              style={{ cursor: "grab", opacity: flytterId === o.id ? 0.45 : 1 }}
+              style={{
+                position: "absolute",
+                left: 3,
+                right: 3,
+                top,
+                height: h,
+                zIndex: 1,
+                opacity: flytterId === o.id ? 0.45 : 1,
+              }}
             >
-              <OktBlokk okt={o} onSerieClick={onSerieClick} onTreningClick={onTreningClick} />
+              {onFlytt && !o.serie && !o.erOppgave ? (
+                <div
+                  draggable
+                  onDragStart={(e) => { e.dataTransfer.setData(DND_MIME, o.id); e.dataTransfer.effectAllowed = "move"; }}
+                  style={{ cursor: "grab", height: "100%" }}
+                >
+                  {body}
+                </div>
+              ) : (
+                body
+              )}
             </div>
-          ) : (
-            <OktBlokk key={o.id} okt={o} onSerieClick={onSerieClick} onTreningClick={onTreningClick} />
-          ),
-        )
-      )}
-      {/* I1: trykk på tom luke → hurtigvelger (Ny booking / Ny økt) med tid
-          foreslått etter dagens siste økt (09:00 når dagen er tom). */}
-      <button
-        type="button"
-        onClick={() => onTomLuke(dag.datoISO, foreslaTid(dag.okter[dag.okter.length - 1]?.kl))}
-        aria-label={`Ny booking eller økt ${dag.dag} ${dag.dato}`}
-        className="v2-press v2-focus"
-        style={{ appearance: "none", background: "none", flex: 1, minHeight: 44, borderRadius: 10, border: `1px dashed transparent`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "transparent", padding: 0 }}
-        onMouseEnter={(e) => { e.currentTarget.style.borderColor = T.borderS; e.currentTarget.style.color = T.mut; }}
-        onMouseLeave={(e) => { e.currentTarget.style.borderColor = "transparent"; e.currentTarget.style.color = "transparent"; }}
-      >
-        <Icon name="plus" size={14} />
-      </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -288,7 +350,7 @@ function DagOkterListe({ dag, onSerieClick, onTreningClick, onTomLuke }: { dag: 
       {/* I1: tom luke → samme hurtigvelger med tid etter siste økt. */}
       <button
         type="button"
-        onClick={() => onTomLuke(dag.datoISO, foreslaTid(dag.okter[dag.okter.length - 1]?.kl))}
+        onClick={() => onTomLuke(dag.datoISO, foreslaGridTid(dag.okter[dag.okter.length - 1]?.kl))}
         className="v2-press v2-focus"
         style={{ appearance: "none", cursor: "pointer", marginTop: 10, width: "100%", minHeight: 44, borderRadius: 10, border: `1px dashed ${T.border}`, background: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, color: T.mut, fontFamily: T.ui, fontSize: 12, fontWeight: 600 }}
       >
@@ -593,8 +655,29 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   // ── Desktop: Dag / Uke / Måned ──
   let kropp: React.ReactNode;
   if (visning === "uke") {
+    // Notion-uke: tidskolonne 05–23 + 7 dager (absolutt-posisjonerte økter)
     kropp = (
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 10 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "48px repeat(7, 1fr)", gap: 6, alignItems: "start", overflowX: "auto" }}>
+        <div style={{ paddingTop: 34 }}>
+          {gridHours().map((h) => (
+            <div
+              key={h}
+              style={{
+                height: PIXEL_PER_HOUR,
+                fontFamily: T.mono,
+                fontSize: 9,
+                fontWeight: 700,
+                color: T.mut,
+                textAlign: "right",
+                paddingRight: 6,
+                lineHeight: 1,
+                transform: "translateY(-4px)",
+              }}
+            >
+              {String(h).padStart(2, "0")}
+            </div>
+          ))}
+        </div>
         {data.dager.map((d, i) => (
           <DagKolonne key={i} dag={d} onSerieClick={setValgtSerieOkt} onTreningClick={(o) => void apneTrening(o)} onFlytt={onFlytt} flytterId={flytterId} onTomLuke={onTomLuke} />
         ))}
