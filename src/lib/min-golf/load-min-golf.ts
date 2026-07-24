@@ -25,8 +25,19 @@ import {
   SG_BASELINE_NAVN,
   SG_KLARSPRAK,
 } from "./format";
+import type { Prisma } from "@/generated/prisma/client";
 
 type SgAkse = "OTT" | "APP" | "ARG" | "PUTT";
+
+/** Les eksplisitt nivå fra onboarding-quiz (preferences.onboarding.nivaa). */
+function lesOnboardingNivaa(preferences: Prisma.JsonValue | null | undefined): Nivaa | null {
+  if (!preferences || typeof preferences !== "object" || Array.isArray(preferences)) return null;
+  const onboarding = (preferences as Record<string, unknown>).onboarding;
+  if (!onboarding || typeof onboarding !== "object" || Array.isArray(onboarding)) return null;
+  const n = (onboarding as Record<string, unknown>).nivaa;
+  if (n === "nybegynner" || n === "ovet" || n === "elite") return n;
+  return null;
+}
 
 export type MinGolfData = {
   nivaa: Nivaa;
@@ -160,7 +171,10 @@ export async function loadMinGolf(
       },
       take: 2000,
     }),
-    prisma.user.findUnique({ where: { id: userId }, select: { hcp: true } }),
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { hcp: true, preferences: true },
+    }),
   ]);
 
   // SG-status skal vise SAMME vindu som Hjem (getKpiStats: siste 10 runder) — «runder»
@@ -180,11 +194,16 @@ export async function loadMinGolf(
       : null;
   // Ny spiller uten runder: plasser fra HCP (samlet ved onboarding) så progressiv
   // dybde virker fra dag én. Ekte snittscore vinner så snart runder finnes.
+  // Onboarding-nivå-quiz (preferences.onboarding.nivaa) overstyrer HCP-fallback
+  // når spilleren har valgt eksplisitt dybde (selvbetjent 299).
   const fraHcp = snittScore === null && bruker?.hcp != null;
   const effektivSnitt = snittScore ?? (bruker?.hcp != null ? avgScoreFromHcp(bruker.hcp) : null);
   const kategori = effektivSnitt !== null ? kategoriFraSnittscore(effektivSnitt) : null;
+  const quizNivaa = lesOnboardingNivaa(bruker?.preferences);
   const nivaa: Nivaa =
-    overstyrNivaa ?? (kategori ? nivaaFraKategori(kategori.kategori) : "nybegynner");
+    overstyrNivaa ??
+    quizNivaa ??
+    (kategori ? nivaaFraKategori(kategori.kategori) : "nybegynner");
 
   // ---- SG-status ----
   const kategorier = (

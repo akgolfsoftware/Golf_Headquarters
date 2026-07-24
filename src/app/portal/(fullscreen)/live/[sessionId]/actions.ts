@@ -407,7 +407,15 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
   );
   const durationSec = clientDurationSec ?? computedDurationSec;
 
+  const existingSummary =
+    session.completedSummary &&
+    typeof session.completedSummary === "object" &&
+    !Array.isArray(session.completedSummary)
+      ? (session.completedSummary as Record<string, unknown>)
+      : {};
+
   const summary = {
+    ...existingSummary,
     liveSummary: {
       startedAt: startedAt.toISOString(),
       completedAt: new Date().toISOString(),
@@ -427,15 +435,101 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
   });
 
   // Speil tilbake til plan-økta — etterlevelsen (adherence/compliance) leser
-  // plan-sida, ellers telles ikke live-fullførte økter.
+  // plan-sida, ellers telles ikke live-fullførte økter. Skriv også
+  // TrainingPlanSessionLog (totalReps + drillAggregates) for Bølge 5-lesere.
   if (session.generertFra === GENERERT_FRA && session.generertFraId) {
-    await prisma.trainingPlanSession.updateMany({
-      where: { id: session.generertFraId },
-      data: { status: "COMPLETED" },
-    });
+    const drillAggregates = logs.map((l) => ({
+      drillId: l.drillId,
+      repsTotal: l.repsTotal,
+      repsWithoutBall: l.repsWithoutBall,
+      repsLowSpeed: l.repsLowSpeed,
+      repsAutomatic: l.repsAutomatic,
+      repsHit: l.repsHit,
+    }));
+    await prisma.$transaction([
+      prisma.trainingPlanSession.updateMany({
+        where: { id: session.generertFraId },
+        data: { status: "COMPLETED", liveSnapshot: Prisma.DbNull },
+      }),
+      prisma.trainingPlanSessionLog.upsert({
+        where: { sessionId: session.generertFraId },
+        create: {
+          sessionId: session.generertFraId,
+          startedAt,
+          completedAt: new Date(),
+          totalReps,
+          rating: null,
+          drillAggregates: drillAggregates as unknown as Prisma.InputJsonValue,
+        },
+        update: {
+          completedAt: new Date(),
+          totalReps,
+          drillAggregates: drillAggregates as unknown as Prisma.InputJsonValue,
+        },
+      }),
+    ]);
   }
 
   revalidatePath("/portal/planlegge");
   revalidatePath(`/portal/live/${sessionId}`);
   redirect(`/portal/live/${sessionId}/summary`);
+}
+
+/** Spiller-vurdering etter økt → completedSummary.spillerVurdering (write-back). */
+export async function lagreSpillerVurdering(
+  sessionId: string,
+  input: { kvalitet: number; nesteFokus: string; folelse?: string },
+): Promise<{ ok: boolean; error?: string }> {
+  const { user, session } = await verifyAccess(sessionId);
+  if (session.status !== "COMPLETED") {
+    return { ok: false, error: "Økta er ikke fullført ennå" };
+  }
+  if (input.kvalitet < 1 || input.kvalitet > 5) {
+    return { ok: false, error: "Kvalitet må være 1–5" };
+  }
+
+  const existing =
+    session.completedSummary &&
+    typeof session.completedSummary === "object" &&
+    !Array.isArray(session.completedSummary)
+      ? (session.completedSummary as Record<string, unknown>)
+      : {};
+
+  const neste = {
+    ...existing,
+    spillerVurdering: {
+      kvalitet: input.kvalitet,
+      nesteFokus: input.nesteFokus.trim().slice(0, 500),
+      folelse: input.folelse?.trim().slice(0, 200) || null,
+      loggedBy: user.id,
+      loggedAt: new Date().toISOString(),
+    },
+  };
+
+  await prisma.trainingSessionV2.update({
+    where: { id: sessionId },
+    data: { completedSummary: neste as unknown as Prisma.InputJsonValue },
+  });
+
+  // Speil neste fokus inn i plan-økt-loggen (coach ser det).
+  if (session.generertFra === GENERERT_FRA && session.generertFraId && input.nesteFokus.trim()) {
+    const fokus = input.nesteFokus.trim().slice(0, 500);
+    await prisma.trainingPlanSessionLog.upsert({
+      where: { sessionId: session.generertFraId },
+      create: {
+        sessionId: session.generertFraId,
+        startedAt: new Date(),
+        notes: `Spiller-fokus etter økt: ${fokus}`,
+        rating: input.kvalitet,
+      },
+      update: {
+        notes: `Spiller-fokus etter økt: ${fokus}`,
+        rating: input.kvalitet,
+      },
+    });
+  }
+
+  revalidatePath(`/portal/live/${sessionId}/summary`);
+  revalidatePath("/portal/planlegge");
+  return { ok: true };
 }

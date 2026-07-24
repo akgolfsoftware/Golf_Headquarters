@@ -58,10 +58,12 @@ export type SpillerOnboardingData = {
   traningsdager?: string[];
   tidPaaDagen?: string;
   drivkraft?: string[];
-  // Steg 4 — Coach + abonnement
+  // Steg 4 — Nivåplassering (progressiv dybde)
+  nivaa?: "nybegynner" | "ovet" | "elite";
+  // Steg 5 — Coach + abonnement
   selectedCoach?: string;
   selectedTier?: string;
-  // Steg 5 — Avtaler
+  // Steg 6 — Avtaler
   acceptedTerms?: boolean;
   acceptedPrivacy?: boolean;
 };
@@ -269,7 +271,7 @@ export async function completeOnboarding(subscribe?: string): Promise<void> {
     onboarding: {
       ...existing,
       completedAt: new Date().toISOString(),
-      stepCompleted: 5,
+      stepCompleted: 6,
     },
     // Re-onboarding overskriver — nyeste svar vinner.
     trening: treningPrefs,

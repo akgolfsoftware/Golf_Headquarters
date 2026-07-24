@@ -5,11 +5,9 @@
  * Chrome portet til fersk fasit (juni 2026): (historisk juni-fasit, fjernet fra repo)
  * AK Golf HQ Design System/playerhq-app/ph-auth.jsx → AOnboarding
  * (steps-rail, TRINN-eyebrow + AHead, opt-card-valg, CTA-rad m/tilbake).
- * 5-stegs velkomst (state-maskinen i lib/auth/onboarding-state.ts er låst til 5,
- * redusert fra 7 2026-07-16 — GolfBox- og TrackMan-auto-connect-stegene fjernet,
- * ingen ekte integrasjon fantes bak dem, kun «kommer snart»-knapper):
+ * 6-stegs velkomst (nivåplasserings-quiz lagt til 2026-07-24):
  *   1 Velkommen · 2 Om deg + fødselsdato (GDPR <16 gate) · 3 Golf-erfaring ·
- *   4 Coach + abonnement · 5 Siste sjekk (samtykke).
+ *   4 Nivåplassering · 5 Coach + abonnement · 6 Siste sjekk (samtykke).
  *
  * VIKTIG: All steg-logikk og lagre-actions er beholdt uendret fra forrige
  * versjon — kun presentasjonen er portet til mobil-først DS-token-komponenter.
@@ -71,7 +69,7 @@ import {
 // Konstanter
 // ──────────────────────────────────────────────────────────────────────────────
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 6;
 
 const SESONMAAL = [
   "SENKE HCP",
@@ -176,11 +174,14 @@ export function OnboardingWizard({
   const [tidPaaDagen, setTidPaaDagen] = useState("ETTER_SKOLE");
   const [drivkraft, setDrivkraft] = useState<string[]>(["Resultater", "Sosialt"]);
 
-  // Steg 6
+  // Steg 4 — nivåplassering (progressiv dybde)
+  const [nivaa, setNivaa] = useState<"nybegynner" | "ovet" | "elite" | "">("");
+
+  // Steg 5
   const [selectedCoach, setSelectedCoach] = useState("Anders Kristiansen");
   const [selectedTier, setSelectedTier] = useState<"GRATIS" | "PRO">("PRO");
 
-  // Steg 7
+  // Steg 6
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
 
@@ -198,6 +199,7 @@ export function OnboardingWizard({
       traningsdager,
       tidPaaDagen,
       drivkraft,
+      nivaa: nivaa || undefined,
       selectedCoach,
       selectedTier,
       acceptedTerms,
@@ -299,10 +301,11 @@ export function OnboardingWizard({
   // Fasit-format: «TRINN N AV M» som mono-caps eyebrow rett over tittelen.
   const eyebrowFor: Record<number, string> = {
     1: "VELKOMMEN",
-    2: "TRINN 2 AV 5",
-    3: "TRINN 3 AV 5",
-    4: "TRINN 4 AV 5",
-    5: "TRINN 5 AV 5",
+    2: "TRINN 2 AV 6",
+    3: "TRINN 3 AV 6",
+    4: "TRINN 4 AV 6",
+    5: "TRINN 5 AV 6",
+    6: "TRINN 6 AV 6",
   };
 
   return (
@@ -595,11 +598,52 @@ export function OnboardingWizard({
         </StepBody>
       )}
 
-      {/* ── STEG 4 — Coach + abonnement ────────────────────────── */}
+      {/* ── STEG 4 — Nivåplassering (ett spørsmål) ─────────────── */}
       {step === 4 && (
         <StepBody>
           <StepHeading
             eyebrow={eyebrowFor[4]}
+            title="Hvor"
+            emphasis="står du"
+            titleAfter=" i golfspillet?"
+            deck="Én ting — vi tilpasser dybden i analyser og anbefalinger. Du kan alltid endre dette senere."
+          />
+          <div className="flex flex-col gap-2">
+            <OptionRow
+              label="Jeg er i gang"
+              sub="Enkelt og konkret — lite fagkode"
+              selected={nivaa === "nybegynner"}
+              onClick={() => setNivaa("nybegynner")}
+            />
+            <OptionRow
+              label="Jeg trener jevnlig"
+              sub="Mer detalj uten fagkode-flom"
+              selected={nivaa === "ovet"}
+              onClick={() => setNivaa("ovet")}
+            />
+            <OptionRow
+              label="Jeg jakter score og tall"
+              sub="Full SG-dekomponering og fagkoder"
+              selected={nivaa === "elite"}
+              onClick={() => setNivaa("elite")}
+            />
+          </div>
+          <PrimaryCta
+            onClick={neste}
+            disabled={pending || !nivaa}
+            onBack={tilbake}
+            backDisabled={pending}
+          >
+            {pending ? "Lagrer…" : "Neste"}
+          </PrimaryCta>
+        </StepBody>
+      )}
+
+      {/* ── STEG 5 — Coach + abonnement ────────────────────────── */}
+      {step === 5 && (
+        <StepBody>
+          <StepHeading
+            eyebrow={eyebrowFor[5]}
             title="Din"
             emphasis="coach"
             titleAfter=" og ditt opplegg."
@@ -661,11 +705,11 @@ export function OnboardingWizard({
         </StepBody>
       )}
 
-      {/* ── STEG 5 — Siste sjekk (samtykke) ────────────────────── */}
-      {step === 5 && (
+      {/* ── STEG 6 — Siste sjekk (samtykke) ────────────────────── */}
+      {step === 6 && (
         <StepBody>
           <StepHeading
-            eyebrow={eyebrowFor[5]}
+            eyebrow={eyebrowFor[6]}
             title="Nesten"
             emphasis="ferdig"
             titleAfter=" — siste sjekk."
@@ -683,6 +727,18 @@ export function OnboardingWizard({
                   </span>
                 }
               />
+              {nivaa ? (
+                <SummaryRow
+                  label="Nivå"
+                  value={
+                    nivaa === "nybegynner"
+                      ? "Jeg er i gang"
+                      : nivaa === "ovet"
+                        ? "Jeg trener jevnlig"
+                        : "Jeg jakter score og tall"
+                  }
+                />
+              ) : null}
               {homeClub && <SummaryRow label="Hjemmebane" value={homeClub} />}
               {hcp && <SummaryRow label="HCP" value={<span className="font-mono">{hcp}</span>} />}
               {seasonGoals.length > 0 && (

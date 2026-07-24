@@ -2,7 +2,7 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-07-15 (natt-økt: 9 PR-er levert og 8 merget til main — krasj-varsling ble ekte, siste mock i foreldreportalen fjernet, Workbench fikk touch/iPad-støtte, I8-klikkrevisjonen dekker nå 23 av 261 skjermer, fire AgencyOS/PlayerHQ-skjermer portet til v2 [TrackMan, Audit-log, Coach·Ny melding, Coach·Nytt spørsmål], og D1 [live/skjult-beslutningen] er tatt og utført. Se punktene under.)
+**Sist oppdatert:** 2026-07-24 (ferdigstillingsplan: dokumentsynk + Fase A/B-arbeid. Design-GAP i PlayerHQ/AgencyOS/Forelder/Auth = 0. Appen er fortsatt ikke klar for betalende brukere før P0-aktivering.)
 
 ## Levende kilder (én av hver rolle — start her)
 
@@ -13,63 +13,63 @@
 | **Uavklart / parkert / løst** | `docs/AAPNE-SPORSMAAL.md` |
 | **Låste forretningsregler** (fasit) | `docs/platform/BUSINESS-RULES.md` |
 | **Full plattformkontekst** (5 min) | `docs/platform/AGENT-BRIEF.md` |
+| **Design-gap (produkt)** | `docs/design-system/plattform-design-2026-07-21/GJENSTAENDE-SKJERMER.md` |
+| **Ferdigstillingsplan** | Cursor-plan «Ferdigstill AK Golf HQ» (Fase A lansering → Fase B loop) |
 
 Historiske bygg-spor (SKJERM-STATUS, SKJERM-BYGGEPLAN, BYGGELOGG-FLAGG, KONFLIKTER) er flyttet til `docs/arkiv/` — ikke bygg mot dem.
 
 ---
 
 ## Kort sagt
-Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. Kjernen (PlayerHQ + AgencyOS) er bygget, og en stor P2/P3/I0/I3/I8-runde (14. juli) rettet ytelse, en sikkerhetslekkasje i booking-tilgjengelighet, la til kalenderhendelser, og fant/fjernet flere «ser klikkbar ut men gjør ingenting»-knapper på de 10 viktigste skjermene. **Den er IKKE klar for betalende/ekte brukere ennå.** Betaling starter etter plan **1. august** (flyttet fra 1. juli av Anders 2026-06-24) — koden gir bevisst alle PRO gratis frem til da. Booking går midlertidig via **Acuity** (`akgolfgroup.as.me`) til den innebygde HQ-bookingen lanseres.
+Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. PlayerHQ + AgencyOS + Forelder + Auth har **0 design-GAP** (verifisert 23. jul). Coaching-/business-motoren (ukesyklus, godkjenningskø, churn, kapasitet-som-penger, m.m.) er levert i juli. **Den er IKKE klar for betalende/ekte brukere ennå** — største hinder er at registrerte spillere aldri har logget inn, pluss Resend DKIM / DNS / Stripe-panel hos Anders. Betaling starter **1. august** (`BETALING_STARTER` i `feature-flags.ts`) — koden gir alle PRO gratis frem til da.
 
-**Rettet 2026-07-14:** «Delvis mock i AgencyOS»-linjen under var utdatert — Innboks, Godkjenninger, Økonomi og Analytics bruker alle ekte Prisma-data i dag (verifisert direkte i koden), ikke placeholder-tall. Flyttet til «Ferdig/solid».
+Push til `main` deployer automatisk via **Vercel git-integrasjon**. GitHub Actions `deploy.yml` er manuell (`workflow_dispatch`) — kjør ALDRI `vercel deploy --prod` manuelt.
 
 ## Ferdig / solid (verifisert)
-- **Deployet live:** prod på `akgolf-hq.vercel.app`. Push til `main` deployer AUTOMATISK (git-integrasjon fikset 10/7) — kjør ALDRI `vercel deploy --prod` manuelt.
-- **PlayerHQ – 5 hovedskjermer:** mobil-paritet 0 avvik mot fasit (Hjem, Planlegge, Gjennomføre, Analysere, Meg).
-- **PlayerHQ – datatilkobling:** 8 prioriterte skjermer koblet til ekte Prisma-data (SG-Hub, Runder, TrackMan, Statistikk, Booking-hub+ny, Drills, Workbench-sheets, Live-summary).
-- **Workbench (lanserings-hub):** 7 hub-faner (tek/seson/maler/std/gantt/uke/okt), Maler «Bruk» → TrainingPlanSession+V2, publiser DRAFT→PENDING_PLAYER, SeasonPlan+TournamentEntry+TrainingSessionV2 i uke/Gantt, GroupSchedule i innsikt, `/portal/tren/*` redirects, turnerings-fellesmelding → GroupMember. Design-gate 0 udokumenterte avvik. **230/230** tester + tsc + build grønt.
-- **AgencyOS:** Fase 3 desktop (~26 nav-skjermer) på paritet + Fase 4 mobil (M1–M3) flettet inn.
-- **SG-motor:** alle 4 kategorier kalibrert (Broadie OTT/APP/ARG + Team Norway IUP PUTT), 168/168 tester grønne.
-- **Benchmark-autosync:** DataGolf-fasiter auto-oppdateres mandager 08:00, godkjenning på `/admin/tester/benchmarks`.
-- **Testbatteriet ende-til-ende (15. juni, deployet):** server-side scoring-motor (riktig formel per test, PEI=nærhet÷lengde) · fullskjerm scorekort · korrekt progresjon for alle 30 tester · ekte coach-analyse + benchmark-nivåer + FYS-gate + coach-notater · `TestAssignment`-modell (prod-migrasjon kjørt) m/ coach↔spiller-tildeling + varsling · forbedrings-loop (svakeste→drill via `loadWeaknessSignals`). Verifisert: 193/193 lib-tester, tsc, build, røyk-sjekk. Gjenstår: e2e-nettlesertest av 3 coach-test-skjermer (Funker-haken `~`).
-- **Dokumentasjon ryddet (2026-06-14):** én kanon-inngang (`docs/platform/AGENT-BRIEF.md`), utdatert `PLATFORM.md` arkivert, konsept-ordbok flettet, døde brancher slettet.
-- **AgencyOS-datakobling (re-verifisert 2026-07-14):** Innboks (`loadDailyBrief`/`loadInnboksSammendrag`), Godkjenninger (ekte `PlanAction`-kø), Økonomi (ekte `Payment`/`Subscription`-aggregering), Analytics (`/admin/analyse`, 15 ekte Prisma-spørringer) — alle ekte data, ingen placeholder-tall.
-- **14. juli-runden:** query-diett + sikkerhetsfiks i booking-tilgjengelighet, kalenderhendelser (ferie/stengt anlegg blokkerer faktisk booking), full lenke-sveip av hele appen (0 dødlenker), klikk-revisjon av de 10 viktigste skjermene (300+ knapper sjekket, 6 reelle «ser klikkbar ut, gjør ingenting»-feil funnet og rettet, inkl. en falsk «→»-lenke-komponent brukt 20+ steder).
-- **Natt til 15. juli-runden (9 PR-er, 8 merget):** krasj-varsling er nå ekte (UI-teksten «vi har blitt varslet» løy før — global-error/error kaller nå faktisk `logError`→Slack/e-post); siste mock-side i foreldreportalen (`/forelder/coach`) koblet til ekte data (10/11 forelder-ruter nå bekreftet ekte); I8-klikkrevisjonen utvidet fra 10 til 23 av 261 skjermer (2 nye dødlenker funnet og rettet: Kalender «Be om økt», AgencyOS «Ny booking»); Workbench (spiller + coach) migrert fra native HTML5 drag-and-drop til `@dnd-kit` — touch/iPad skal nå fungere (venter på Anders' egen enhetstest, se PR #32); fire skjermer portet fra Claude Design til produksjon (AgencyOS TrackMan + Audit-log, PlayerHQ Coach·Ny melding + Coach·Nytt spørsmål, sistnevnte to fant og fikset 2 til døde knapper på veien); **MASTER-SKJERMPLAN.md verifisert og rettet mot faktisk kode** (flere skjermer var alt ferdige uten at dokumentet fulgte med); **D1 (live/skjult) avklart og utført** — kun 2 av de 16 opprinnelige kandidatene hadde fortsatt et ekte demo-varsel (AgencyOS Live/Mission Control, PlayerHQ Talent), begge nå fjernet fra menyen; nytt funn: `/portal/ny-okt` har INGEN ekte database-lagring (kun midlertidig nettleser-state) — Anders har bedt om at dette bygges som ekte funksjon, egen jobb, ikke startet ennå.
+- **Design/ruter (kjerneprodukter):** 0 GAP i PlayerHQ, AgencyOS, Forelder, Auth (se GJENSTAENDE-SKJERMER 23. jul). Drop-off A (skjermbilder) og B (komponenter) lukket.
+- **Deployet live:** prod på `akgolf-hq.vercel.app`.
+- **PlayerHQ – 5 hovedskjermer + datakobling:** Hjem, Planlegge, Gjennomføre, Analysere, Meg + SG-Hub, Runder, TrackMan, Statistikk, Booking, Drills, Workbench, Live.
+- **Workbench:** `WorkbenchV2` + `@/components/v2` (ikke lenger `workbench-hybrid`/golfdata). Composer, maler, publiser, dupliser uke, periode/dag, CANON-chips.
+- **Live-økt UI:** brief → active → summary med drill-sjekkliste, timer, rep-knapper. **Gjenstår:** offline-synk for drill-reps + DB-persist (ikke bare sessionStorage).
+- **AgencyOS:** cockpit, stall/spillere, innboks, godkjenninger, økonomi, analyse — ekte Prisma-data.
+- **SG-motor:** Broadie OTT/APP/ARG + Team Norway IUP PUTT, kalibrert.
+- **Veikart-motor (juli):** A1 én godkjenningskø · C1 automatisk ukesyklus · B1 kapasitet-som-penger · B2 churn-radar · B3 lead-løype · B4 purring · B5 månedsrapport · C3/C4 test/runde→plan · C5 spiller-loop (push + én-trykks status).
+- **`/portal/ny-okt`:** **LØST 2026-07-17** — `createAdHocSession` skriver ekte `TrainingPlanSession` (se AAPNE D2).
+- **D1 live/skjult:** **LØST 2026-07-15** — Mission Control / PlayerHQ Talent fjernet fra meny.
+- **D6a/b/c:** hull-for-hull, shot-map, live turneringsrunde — **bygget 2026-07-17**.
+- **Foreldreportal:** 11/11 ruter med ekte data (siste mock `/forelder/coach` fikset 15. jul).
+- **Moderering/GDPR-kø:** bygget (D5).
 
-## I arbeid / delvis
-- **Resterende skjermer — tallet «~60» var feil.** Fersk revisjon av det levende Claude Design-prosjektet (natt til 15. juli, `DEKNINGSKART.md`+`SKJERMPLAN-GJENSTAENDE.md` lest direkte) fant at det reelle design-gapet er MYE mindre: av 387 skjermer er nesten alle enten allerede designet eller «dekket via system» (kan bygges direkte av eksisterende komponenter, ingen ny mockup nødvendig). Gjenstår som EKTE nye designoppgaver: 3 PlayerHQ-skjermer (live-tapper, break-tabell, putte-laboratoriet) + en aldri-gjort triage av Marketing (P2/P3, ~59 skjermer) og resten av Auth. Fortsettelses-prompt til Claude Design er skrevet og levert til Anders, men ikke limt inn ennå.
-- **Klikk-testing dekker nå 23 av 261 nåbare skjermer** (utvidet natt til 15. juli, I8 bølge 3 — se PR #30). De resterende ~238 er kun sjekket for døde lenker (adresser), ikke for knapper/skjema som ikke gjør noe.
-- **Foreldreportal (`/forelder`):** 10 av 11 ruter bekreftet ekte data. Siste mock (`/forelder/coach`) fikset natt til 15. juli (PR #31).
-- **AgencyOS-porting til v2 pågår, bølge for bølge:** 6 skjermer portet i natt (Talent-familien var alt ferdig fra før; TrackMan og Audit-log nye; PlayerHQ-siden fikk Coach·Ny melding + Coach·Nytt spørsmål). AgencyOS-sporet er nå tømt for trygge kandidater uten ny design — videre porting venter på Claude Design-fortsettelsen over. PlayerHQ wizard-familien har 7 gjenstående kandidater som IKKE kan porte 1:1 (design matcher ikke faktisk funksjon — se `docs/AAPNE-SPORSMAAL.md`).
-- **`/portal/ny-okt` mangler ekte lagring** — kun midlertidig nettleser-state, ingen Prisma-persistering. Anders har bedt om at dette bygges som ekte funksjon (2026-07-15). Ikke startet.
-- **Kjent regresjon (forenklingsplan 13. juni):** ~~spiller kan ikke starte «dagens økt»~~ **LØST 2026-06-25** — Start økt lenker nå til `/portal/live/…` (V2 + plan-økter fra Workbench i Gjennomføre). Mobil-nav i AgencyOS er ennå ikke samlet med desktop-nav.
+## I arbeid / delvis (ferdigstillingsplan Fase A+B)
+- **P0 lansering:** spiller-aktivering, push-opt-in, e2e-smoke på ★-kjernen (Funker `†` → `✓`).
+- **Bølge 4-rest:** live offline-kø for drills + reps til DB + summary write-back.
+- **Bølge 5:** treningsanalyse-modul + AgencyOS-kalender drill-lesevisning — **ikke startet**.
+- **Bølge 6-rest:** nivåplasserings-quiz i onboarding (profil-wizard finnes; quiz mangler).
+- **Soft-haker i MASTER:** mange skjermer har Design ✓ men Mob/iPad `✓✓–`, Flyt/Data `~`, eller Funker `†`.
+- **Klikk-testing:** ~23 av ~261 skjermer (resten kun dødlenke-sjekket).
 
 ## Blokkert — P0 før ekte/betalende brukere
-Detaljert status: listen under. Betaling åpner **1. august** — koden gir bevisst gratis tilgang til alle frem til da (`gratisForAlle()` i `src/lib/feature-flags.ts`, `BETALING_STARTER = 2026-08-01`, bekreftet fortsatt aktivt 14. juli).
 
-### Nytt, verifisert direkte mot databasen 2026-07-14 — det største hullet
-- **31 spillere registrert, 0 har noensinne logget inn.** (`User.lastLoginAt` er `null` for alle 31 PLAYER-rader.) Ingen kan bruke appen før de faktisk kommer inn — dette er trolig det ENESTE som virkelig hindrer lansering i praksis, uavhengig av kode. Krever: velkomst-e-post/aktiveringsflyt til de 31, og at Resend-leveransen (se under) faktisk fungerer så e-posten kommer frem.
-- **0 push-varsel-abonnement registrert.** Ingen har fått spørsmålet om varsler ennå (motoren er bygget, ingen har samtykket).
-- 31 aktive `Subscription`-rader, 18 spillere med PRO-tier — stemmer med at alle er gratis-PRO frem til 1. august, ikke et avvik.
+### Hos Anders (panel/DNS)
+1. **Resend DKIM** for `send.akgolf.no` (SPF+MX OK; DKIM mangler → spam-risiko).
+2. **`akgolf.no` → Vercel** (peker i dag til Acuity på DNS-nivå).
+3. **Live Stripe-nøkler** verifisert i Vercel (+ webhook).
+4. **Google Calendar** re-koble (`/admin/settings/calendar` — tokens PAUSED).
+5. **Aktiverings-e-post** til registrerte spillere (etter DKIM).
 
-### Løst i kode — trenger kun bekreftelse
-1. ~~**Abonnements-/gratis-logikk**~~ — **LØST.** `resolveTier()` i `src/lib/feature-flags.ts` implementerer alle fire gratis-veiene (lanserings-vindu, coaching-pakke, gruppemedlemskap, 30-dagers prøveperiode). Dekket av tester. Gammel påstand «ingen kode setter PRO» er utdatert.
-2. ~~**PRO-for-alle-kampanjen «kald»**~~ — **IKKE ET PROBLEM.** `gratisForAlle()` gir alle PRO frem til `BETALING_STARTER` (1. august). Ingen «kald vegg» før da. (Dato bekreftet til 1. august av Anders 2026-06-24.)
-4. ~~**Soft-slettet konto kan fortsatt logge inn**~~ — **LØST.** `getCurrentUser.ts:23` returnerer `null` når `deletedAt` er satt.
+### Kode / data (agent)
+- Aktiveringsflyt + at `lastLoginAt` settes ved innlogging.
+- Push-opt-in-prompt ved første PlayerHQ-besøk (motor finnes, 0 abonnementer).
+- Betaling 1. august: `gratisForAlle()` slår av automatisk; verifiser cutover.
 
-### Gjenstår (kode)
-5. ~~**Dataeksport: eksport-stub forvirrende**~~ — **LØST.** `/portal/meg/innstillinger/eksport/page.tsx` redirecter nå til personvern-siden (ekte `exportUserData`-flyt). Ingen «kommer snart»-stub igjen. *(verifisert 2026-06-28)*
-
-### Krever Anders (panel/DNS/beslutning)
-3. **Live Stripe-nøkler** — verifiser at `.env.local` har TEST-nøkler, live kun i Vercel. *(Stripe + Vercel-panel)* — ikke re-verifisert denne økten (miljøfil-tilgang blokkert av sikkerhetsgrunner).
-6. **E-postleveranse** — Resend for `send.akgolf.no` er delvis satt opp: SPF + MX verifisert (2026-07-16), men DKIM mangler ennå — signup/reset kan havne i spam til den er på plass. *(Resend-panel: hent DKIM-CNAME, legg til hos Domeneshop, trykk «Verify»)*
-7. **`akgolf.no` peker IKKE til appen i det hele tatt** — **nytt funn 2026-07-06**: domenet redirecter 100 % til `https://akgolfgroup.as.me/` (Acuity) på DNS-/registrar-nivå, før Vercel/Next.js ser forespørselen (`vercel domains inspect akgolf.no` bekrefter domenet ikke er tilknyttet dette Vercel-prosjektet). Konsistent med at Booking bevisst går via Acuity midlertidig — men betyr at `NEXT_PUBLIC_APP_URL`-verdien i prod ikke kan bekreftes fra utsiden, og at noen må aktivt peke `akgolf.no` til Vercel-prosjektet når dere er klare til å gå live på eget domene. *(DNS/registrar-panel)*
-8. ~~**Deploy-rutinen uavklart**~~ — **AVKLART 2026-07-05.** Deploy er nå eksplisitt manuelt: en tidligere lokal shell-funksjon som auto-deployet til prod på hver `git push` er deaktivert, og GitHub Actions-workflowen (`deploy.yml`) er endret fra automatisk push-trigger til `workflow_dispatch` (manuell trigger fra Actions-fanen eller `gh workflow run`). Push til main deployer ikke lenger noe sted automatisk.
-9. **Spiller-aktivering** — 31 spillere, 0 innlogginger (verifisert 2026-07-14, se over). Trenger en aktiverings-e-post-flyt sendt av deg + at punkt 6 (Resend) er ordnet først, ellers havner e-posten aldri frem. *(din utsendelse + Resend-panel)*
-10. ~~**Live/skjult-beslutning ikke tatt**~~ — **LØST 2026-07-15.** Fersk revisjon fant at kun 2 av de 11 opprinnelige kandidatene fortsatt hadde et ekte demo-varsel (Økonomi/Caddie-AI/«Ny spiller» var alt blitt ekte data siden 14. juli). Live/Mission Control og PlayerHQ Talent fjernet fra menyen (PR #37, ikke merget ennå).
+### Åpne produktbeslutninger (ikke lanseringsblokkere)
+- **A4 Fase 2:** anbefalingsmotor for periode-fordeling (venter data).
+- **D8:** ekte banekart-geometri (blokkert på datakilde).
+- **Elite Fase 2 / talent-dispersion:** bevisst utsatt.
+- **Marketing (~50) + offentlig stats (~40):** egen merkevare-bølge.
+- **Bølge 7 AI Coach:** først etter at loopen produserer gjennomføringsdata.
 
 ## Verifisert vs. antatt
-- **Verifisert** mot fil/kode/database denne økten (2026-07-14): spiller-/push-tall (direkte database-spørring), at Innboks/Godkjenninger/Økonomi/Analytics bruker ekte data, at betalings-vinduet (1. august) fortsatt er aktivt i koden.
-- **Verifisert mot fil/kode tidligere økt (17. juni):** P0-lista for øvrig, SG-kalibrering, deploy-fakta, dokument-hierarkiet, skjermtall fra MASTER-SKJERMPLAN.
-- **Antatt / ikke re-verifisert her:** Stripe-nøkkelstatus og Resend-DNS-status (krever paneltilgang jeg ikke har i denne økten), eksakt ferdig-prosent per resterende skjerm (følg MASTER-SKJERMPLAN), nøyaktig datakvalitet i foreldreportal.
+- **Verifisert 2026-07-24 (kode/docs):** design-GAP = 0 i kjerneprodukter; Workbench = V2; live UI utover 4a; D2/D5/D6 løst; Bolk 2/4/5 i MASTER lukket; veikart C/B/A-punkter levert i statusloggen.
+- **Sist DB-sjekket 2026-07-14:** 31 spillere / 0 innlogginger / 0 push — re-sjekk ved aktivering.
+- **Antatt / panel:** Stripe live, Resend DKIM, Google Calendar, DNS `akgolf.no`.

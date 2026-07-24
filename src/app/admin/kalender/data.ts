@@ -36,6 +36,8 @@ export interface KalOkt {
   erHendelse?: boolean;
   /** B8 (2026-07-16): oppgavefrist fra Kommando-oppgavelisten (/admin/agent-team). */
   erOppgave?: boolean;
+  /** Bølge 5: TrainingSessionV2-id for drill-lesevisning (klikk → drilliste). */
+  treningsSessionId?: string;
 }
 
 export interface KalDag {
@@ -228,6 +230,51 @@ export async function hentAgencyKalenderData(ukeParam?: string, userId?: string)
         erOppgave: true,
       });
     }
+  }
+
+  // 5 · Treningsøkter (TrainingSessionV2) — Bølge 5 drill-lesevisning.
+  // Vises som egne blokker med treningsSessionId (klikk → drilliste i BunnArk).
+  const ukeSlutt = new Date(ukeStart);
+  ukeSlutt.setDate(ukeSlutt.getDate() + 7);
+  const treningsOkter = await prisma.trainingSessionV2.findMany({
+    where: {
+      startTime: { gte: ukeStart, lt: ukeSlutt },
+      ...(userId
+        ? {
+            OR: [
+              { coachId: userId },
+              { hostId: userId },
+            ],
+          }
+        : {}),
+    },
+    select: {
+      id: true,
+      title: true,
+      startTime: true,
+      status: true,
+      drills: { select: { pyramide: true }, take: 1 },
+    },
+    take: 200,
+  });
+  for (const s of treningsOkter) {
+    const dayIndex = ukedagIndex(s.startTime);
+    if (dayIndex < 0 || dayIndex > 6) continue;
+    const startMin = s.startTime.getHours() * 60 + s.startTime.getMinutes();
+    const forsteAkse = s.drills[0]?.pyramide as AkseKort | undefined;
+    dager[dayIndex].okter.push({
+      id: `tren-${s.id}`,
+      kl: hhmm(s.startTime),
+      startMin,
+      navn: s.title,
+      akse: forsteAkse,
+      sted: null,
+      gruppe: null,
+      serie: null,
+      href: `/admin/spillere`,
+      naa: s.status === "IN_PROGRESS",
+      treningsSessionId: s.id,
+    });
   }
 
   // Sorter hver dag på starttid.

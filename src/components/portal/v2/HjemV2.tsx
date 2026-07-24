@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import type { DashboardData } from "@/app/portal/actions";
 import { WorkbenchInngang } from "./WorkbenchInngang";
 import { FortsettRundeCta } from "@/components/portal/runde-logg/fortsett-runde-cta";
+import { PushOptInBanner } from "@/components/portal/push-opt-in-banner";
 import {
   T,
   fmtSg,
@@ -148,6 +149,7 @@ export function HjemV2({ data }: { data: DashboardData }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <PushOptInBanner />
       {/* Hode */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>

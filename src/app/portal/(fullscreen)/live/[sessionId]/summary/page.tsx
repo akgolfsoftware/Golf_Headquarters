@@ -34,15 +34,28 @@ export default async function LiveSummaryPage({
     redirect(`/portal/live/${sessionId}/active`);
   }
 
-  // Les lagret duration fra completedSummary hvis tilgjengelig.
-  const storedSummary =
+  // Les lagret duration + spiller-vurdering fra completedSummary hvis tilgjengelig.
+  const summaryRoot =
     data.completedSummary && typeof data.completedSummary === "object" && !Array.isArray(data.completedSummary)
-      ? (data.completedSummary as Record<string, unknown>).liveSummary
+      ? (data.completedSummary as Record<string, unknown>)
       : null;
+  const storedSummary = summaryRoot?.liveSummary ?? null;
   const storedDurationSec =
     storedSummary && typeof storedSummary === "object" && !Array.isArray(storedSummary)
       ? Number((storedSummary as Record<string, unknown>).durationSec)
       : NaN;
+  const rawVurdering = summaryRoot?.spillerVurdering;
+  const spillerVurdering =
+    rawVurdering && typeof rawVurdering === "object" && !Array.isArray(rawVurdering)
+      ? {
+          kvalitet: Number((rawVurdering as Record<string, unknown>).kvalitet) || 0,
+          nesteFokus: String((rawVurdering as Record<string, unknown>).nesteFokus ?? ""),
+          folelse:
+            typeof (rawVurdering as Record<string, unknown>).folelse === "string"
+              ? ((rawVurdering as Record<string, unknown>).folelse as string)
+              : null,
+        }
+      : null;
 
   // Beregn sammendrag fra loggene.
   const totalReps = data.existingLogs.reduce((sum, l) => sum + l.repsTotal, 0);
@@ -83,7 +96,11 @@ export default async function LiveSummaryPage({
 
   return (
     <LiveSessionShell title={data.title} subtitle="Oppsummering" closeHref="/portal/planlegge">
-      <SessionSummary data={summaryData} nesteOkt={nesteOkt} />
+      <SessionSummary
+        data={summaryData}
+        nesteOkt={nesteOkt}
+        spillerVurdering={spillerVurdering && spillerVurdering.kvalitet >= 1 ? spillerVurdering : null}
+      />
     </LiveSessionShell>
   );
 }
