@@ -24,6 +24,7 @@ export * from "./wb-composer";
 export * from "./samtale";
 export * from "./dropzone";
 export * from "./bunn-ark";
+export * from "./time-grid";
 
 // wb-mobil: eksplisitt re-eksport pga Ark/ArkProps-kollisjon med overlays.
 export {
