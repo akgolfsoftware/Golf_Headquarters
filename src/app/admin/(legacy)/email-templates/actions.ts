@@ -2,16 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 
-async function krevCoach() {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
-  if (user.role !== "COACH" && user.role !== "ADMIN") throw new Error("forbidden");
-  return user;
-}
 
 export type EmailTemplateInput = {
   slug: string;
@@ -22,7 +16,7 @@ export type EmailTemplateInput = {
 };
 
 export async function createTemplate(input: EmailTemplateInput) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const slug = input.slug
     .trim()
     .toLowerCase()
@@ -49,7 +43,7 @@ export async function createTemplate(input: EmailTemplateInput) {
 }
 
 export async function updateTemplate(id: string, input: Omit<EmailTemplateInput, "slug">) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   await prisma.emailTemplate.update({
     where: { id },
     data: {
@@ -64,7 +58,7 @@ export async function updateTemplate(id: string, input: Omit<EmailTemplateInput,
 }
 
 export async function deleteTemplate(id: string) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   await prisma.emailTemplate.delete({ where: { id } });
   await audit({ actorId: user.id, action: "email_template.deleted", target: `EmailTemplate:${id}` });
   revalidatePath("/admin/email-templates");

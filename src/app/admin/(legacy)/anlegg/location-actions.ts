@@ -13,16 +13,10 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 
-async function krevCoach() {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
-  if (user.role !== "COACH" && user.role !== "ADMIN") throw new Error("forbidden");
-  return user;
-}
 
 const lokasjonSchema = z.object({
   name: z.string().trim().min(1).max(200),
@@ -43,7 +37,7 @@ function normaliserPosisjon(lat: number | null, lng: number | null): { latitude:
 }
 
 export async function createLocation(input: LocationInput) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const data = lokasjonSchema.parse(input);
   const { latitude, longitude } = normaliserPosisjon(data.latitude ?? null, data.longitude ?? null);
   const ny = await prisma.location.create({
@@ -58,7 +52,7 @@ export async function createLocation(input: LocationInput) {
 }
 
 export async function updateLocation(id: string, input: LocationInput) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const data = lokasjonSchema.parse(input);
   // Eksplisitt null nullstiller posisjonen (jf. gotcha: `?? undefined` ville
   // latt gammel lat/lng stå urørt).
@@ -73,7 +67,7 @@ export async function updateLocation(id: string, input: LocationInput) {
 
 /** Soft delete/gjenoppretting — aldri hard delete (bookinger/availability refererer lokasjonen). */
 export async function setLocationActive(id: string, active: boolean) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   await prisma.location.update({ where: { id }, data: { active: z.boolean().parse(active) } });
   await audit({
     actorId: user.id,
@@ -100,7 +94,7 @@ const fasilitetSchema = z.object({
 export type FacilityInput = z.input<typeof fasilitetSchema>;
 
 export async function createFacility(locationId: string, input: FacilityInput) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const data = fasilitetSchema.parse(input);
   const ny = await prisma.facility.create({
     data: { locationId: z.string().min(1).parse(locationId), ...data },
@@ -114,7 +108,7 @@ export async function createFacility(locationId: string, input: FacilityInput) {
 }
 
 export async function updateFacility(id: string, input: FacilityInput) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const data = fasilitetSchema.parse(input);
   await prisma.facility.update({ where: { id }, data });
   await audit({ actorId: user.id, action: "facility.updated", target: `Facility:${id}` });
@@ -123,7 +117,7 @@ export async function updateFacility(id: string, input: FacilityInput) {
 
 /** Soft delete/gjenoppretting — aldri hard delete (bookinger refererer fasiliteten). */
 export async function setFacilityActive(id: string, active: boolean) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   await prisma.facility.update({ where: { id }, data: { active: z.boolean().parse(active) } });
   await audit({
     actorId: user.id,

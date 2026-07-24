@@ -2,18 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireAdminActionUser } from "@/lib/auth/action-guards";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
 import { audit } from "@/lib/audit";
 
-async function krevAdmin() {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
-  if (user.role !== "ADMIN") throw new Error("forbidden");
-  return user;
-}
 
 // ----------------- Schemas -----------------
 
@@ -60,7 +54,7 @@ export type KlubbSettingsInput = z.infer<typeof klubbSettingsSchema>;
 // ----------------- Actions -----------------
 
 export async function addClub(raw: unknown) {
-  const user = await krevAdmin();
+  const user = await requireAdminActionUser();
   const parsed = clubInputSchema.safeParse(raw);
   if (!parsed.success) {
     throw new Error(parsed.error.issues[0]?.message ?? "Ugyldig input");
@@ -81,7 +75,7 @@ export async function addClub(raw: unknown) {
 }
 
 export async function updateClubSettings(id: string, raw: unknown) {
-  const user = await krevAdmin();
+  const user = await requireAdminActionUser();
   const parsed = clubSettingsSchema.safeParse(raw);
   if (!parsed.success) {
     throw new Error(parsed.error.issues[0]?.message ?? "Ugyldig input");
@@ -153,7 +147,7 @@ export async function lagreClubSettings(raw: unknown) {
 }
 
 export async function removeClub(id: string) {
-  const user = await krevAdmin();
+  const user = await requireAdminActionUser();
   // Soft-delete via active=false. Hard-delete er destruktivt for booking-historikk.
   await prisma.location.update({
     where: { id },

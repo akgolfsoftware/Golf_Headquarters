@@ -2,7 +2,12 @@
  * E2E: Auth-guards — PLAYER-rolle blokkeres fra /admin.
  *
  * Tester at en innlogget spiller (rolle PLAYER) som forsøker å åpne /admin/*
- * blir redirected til /portal eller /auth/login.
+ * blir redirected til /portal eller /auth/login (layout-guard).
+ *
+ * KS-1 (2026-07-24): server actions beskyttes separat via
+ * `requireCoachActionUser` m.fl. i `src/lib/auth/action-guards.ts` — layout
+ * kjører ikke for actions. Action-nivå dekkes av
+ * `src/lib/auth/action-guards.test.ts` (forbidden for PLAYER).
  *
  * Uten test-spiller-credentials i env: faller tilbake til å verifisere at
  * /admin krever auth (redirect til /auth/login), som dekkes av auth-redirect.spec

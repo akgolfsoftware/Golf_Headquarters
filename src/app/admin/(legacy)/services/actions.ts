@@ -2,16 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 
-async function krevCoach() {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
-  if (user.role !== "COACH" && user.role !== "ADMIN") throw new Error("forbidden");
-  return user;
-}
 
 export type ServiceInput = {
   name: string;
@@ -35,7 +29,7 @@ function lagSlug(name: string): string {
 }
 
 export async function createService(input: ServiceInput) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   let slug = lagSlug(input.name);
   if (!slug) throw new Error("invalid-slug");
 
@@ -68,7 +62,7 @@ export async function createService(input: ServiceInput) {
 }
 
 export async function updateService(id: string, input: ServiceInput) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   await prisma.serviceType.update({
     where: { id },
     data: {
@@ -88,7 +82,7 @@ export async function updateService(id: string, input: ServiceInput) {
 }
 
 export async function deleteService(id: string) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   await prisma.serviceType.delete({ where: { id } });
   await audit({
     actorId: user.id,

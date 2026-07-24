@@ -5,16 +5,11 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import type { Prisma } from "@/generated/prisma/client";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { notify } from "@/lib/notifications";
 
-async function krevCoach() {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
-  if (user.role !== "COACH" && user.role !== "ADMIN") throw new Error("forbidden");
-  return user;
-}
 
 export type TournamentInput = {
   name: string;
@@ -26,7 +21,7 @@ export type TournamentInput = {
 };
 
 export async function createTournament(input: TournamentInput) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const ny = await prisma.tournament.create({
     data: {
       name: input.name.trim(),
@@ -48,7 +43,7 @@ export async function createTournament(input: TournamentInput) {
 }
 
 export async function updateTournament(id: string, input: TournamentInput) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   await prisma.tournament.update({
     where: { id },
     data: {
@@ -70,7 +65,7 @@ export async function updateTournament(id: string, input: TournamentInput) {
 }
 
 export async function deleteTournament(id: string) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   await prisma.tournament.delete({ where: { id } });
   await audit({
     actorId: user.id,
@@ -89,7 +84,7 @@ export type ResultInput = {
 };
 
 export async function addResult(tournamentId: string, input: ResultInput) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   await prisma.tournamentResult.upsert({
     where: {
       tournamentId_userId: { tournamentId, userId: input.userId },
@@ -117,7 +112,7 @@ export async function addResult(tournamentId: string, input: ResultInput) {
 }
 
 export async function deleteResult(tournamentId: string, resultId: string) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   await prisma.tournamentResult.delete({ where: { id: resultId } });
   await audit({
     actorId: user.id,
@@ -147,7 +142,7 @@ export async function meldPaSpillere(
   tournamentId: string,
   players: PaameldingInput[],
 ) {
-  const coach = await krevCoach();
+  const coach = await requireCoachActionUser();
   const turnering = await prisma.tournament.findUnique({
     where: { id: tournamentId },
     select: { id: true, startDate: true, name: true },
@@ -209,7 +204,7 @@ export async function meldPaSpillere(
 }
 
 export async function fjernPamelding(entryId: string) {
-  const coach = await krevCoach();
+  const coach = await requireCoachActionUser();
   const entry = await prisma.tournamentEntry.findUnique({
     where: { id: entryId },
     select: { tournamentId: true },
@@ -228,7 +223,7 @@ export async function fjernPamelding(entryId: string) {
 }
 
 export async function oppdaterPrioritet(entryId: string, priority: string) {
-  const coach = await krevCoach();
+  const coach = await requireCoachActionUser();
   const valgt = valgPrioritet(priority);
   const entry = await prisma.tournamentEntry.update({
     where: { id: entryId },
@@ -313,7 +308,7 @@ export async function mergeTurneringer(input: {
   if (!parsed.success) {
     return { ok: false, feil: parsed.error.issues[0]?.message ?? "Ugyldig input" };
   }
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
 
   if (input.sourceId === input.targetId) {
     return { ok: false, feil: "Kilde og mål kan ikke være samme turnering" };
@@ -396,7 +391,7 @@ export async function mergeTurneringer(input: {
 export async function unmergeTurnering(sourceId: string): Promise<
   { ok: true } | { ok: false; feil: string }
 > {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const t = await prisma.tournament.findUnique({
     where: { id: sourceId },
     select: { id: true, mergedIntoId: true, name: true },
@@ -565,7 +560,7 @@ export async function sendFellesmelding(
       error: parsed.error.issues[0]?.message ?? "Ugyldig input",
     };
   }
-  const coach = await krevCoach();
+  const coach = await requireCoachActionUser();
   const { turneringId, spillerIds, tekst } = parsed.data;
 
   const turnering = await prisma.tournament.findUnique({

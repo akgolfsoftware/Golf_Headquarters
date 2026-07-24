@@ -3,17 +3,18 @@
 import { revalidatePath } from "next/cache";
 
 import { Prisma } from "@/generated/prisma/client";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 
 type ActionResult = { ok: true } | { ok: false; feil: string };
 
 async function krevCoach() {
-  const user = await getCurrentUser();
-  if (!user) return null;
-  if (user.role !== "COACH" && user.role !== "ADMIN") return null;
-  return user;
+  try {
+    return await requireCoachActionUser();
+  } catch {
+    return null;
+  }
 }
 
 /**

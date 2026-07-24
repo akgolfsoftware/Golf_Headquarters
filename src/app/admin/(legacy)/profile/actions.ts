@@ -1,17 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import type { Prisma } from "@/generated/prisma/client";
 
-async function krevCoach() {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
-  if (user.role !== "COACH" && user.role !== "ADMIN") throw new Error("forbidden");
-  return user;
-}
 
 export type OppdaterCoachProfilResult = {
   ok: boolean;
@@ -29,7 +23,7 @@ function parseChips(raw: string): string[] {
 export async function oppdaterCoachProfil(
   formData: FormData,
 ): Promise<OppdaterCoachProfilResult> {
-  const me = await krevCoach();
+  const me = await requireCoachActionUser();
 
   const navn = String(formData.get("navn") ?? "").trim();
   const epost = String(formData.get("epost") ?? "").trim().toLowerCase();

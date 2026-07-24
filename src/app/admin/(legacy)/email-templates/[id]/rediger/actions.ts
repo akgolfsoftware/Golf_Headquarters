@@ -2,18 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
-
-async function krevCoach() {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
-  if (user.role !== "COACH" && user.role !== "ADMIN") {
-    throw new Error("forbidden");
-  }
-  return user;
-}
 
 const saveSchema = z.object({
   name: z.string().trim().min(2, "Navn må være minst 2 tegn"),
@@ -25,7 +16,7 @@ const saveSchema = z.object({
 export type SaveTemplateInput = z.infer<typeof saveSchema>;
 
 export async function saveTemplate(id: string, raw: unknown) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const parsed = saveSchema.safeParse(raw);
   if (!parsed.success) {
     throw new Error(parsed.error.issues[0]?.message ?? "Ugyldig input");
@@ -49,7 +40,7 @@ export async function saveTemplate(id: string, raw: unknown) {
 }
 
 export async function sendTestEmail(id: string) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const tpl = await prisma.emailTemplate.findUnique({ where: { id } });
   if (!tpl) throw new Error("Mal ikke funnet");
 
@@ -70,7 +61,7 @@ export async function sendTestEmail(id: string) {
 }
 
 export async function setAsDefault(id: string) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const tpl = await prisma.emailTemplate.findUnique({ where: { id } });
   if (!tpl) throw new Error("Mal ikke funnet");
 
@@ -90,7 +81,7 @@ export async function setAsDefault(id: string) {
 }
 
 export async function archiveTemplate(id: string) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   await prisma.emailTemplate.update({
     where: { id },
     data: { active: false },

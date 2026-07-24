@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireAdminActionUser, requireCoachActionUser } from "@/lib/auth/action-guards";
 import {
   assertCoachTilgangTilSpiller,
   coachScopedPlayerWhere,
@@ -64,19 +65,13 @@ function repsSetsString(sets?: number, reps?: number): string {
   return "—";
 }
 
-async function krevCoach() {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
-  if (user.role !== "COACH" && user.role !== "ADMIN") throw new Error("forbidden");
-  return user;
-}
 
 /**
  * Flytt en økt til et nytt tidspunkt (drag-and-drop på plan-detalj).
  * Brukes for å endre scheduledAt innenfor samme plan, på tvers av uker/dager.
  */
 export async function flyttOkt(sessionId: string, newScheduledAt: Date) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
 
   const session = await prisma.trainingPlanSession.findUnique({
     where: { id: sessionId },
@@ -116,12 +111,6 @@ export async function flyttOkt(sessionId: string, newScheduledAt: Date) {
   revalidatePath(`/admin/plans/${session.planId}`);
 }
 
-async function krevAdmin() {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
-  if (user.role !== "ADMIN") throw new Error("forbidden");
-  return user;
-}
 
 /**
  * Send plan til spiller for godkjenning — status PENDING_PLAYER.
@@ -129,7 +118,7 @@ async function krevAdmin() {
  * planen før den aktiveres.
  */
 export async function sendTilSpiller(planId: string) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
   await assertCoachTilgangTilSpiller(user, plan.userId);
@@ -157,7 +146,7 @@ export async function sendTilSpiller(planId: string) {
  * Godkjenn plan — settes aktiv og synlig for spilleren.
  */
 export async function godkjennPlan(planId: string) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
   await assertCoachTilgangTilSpiller(user, plan.userId);
@@ -186,7 +175,7 @@ export async function godkjennPlan(planId: string) {
  * Setter status til DRAFT og nullstiller playerComment.
  */
 export async function markerSomNyttUtkast(planId: string) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
   await assertCoachTilgangTilSpiller(user, plan.userId);
@@ -221,7 +210,7 @@ export async function markerSomNyttUtkast(planId: string) {
  * Spilleren kan fortsatt se planen, men nye økter triggers ikke.
  */
 export async function pausePlan(planId: string) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
   await assertCoachTilgangTilSpiller(user, plan.userId);
@@ -248,7 +237,7 @@ export async function pausePlan(planId: string) {
  * Gjenoppta en pauset plan. Settes til status=ACTIVE, isActive=true.
  */
 export async function resumePlan(planId: string) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
   await assertCoachTilgangTilSpiller(user, plan.userId);
@@ -279,7 +268,7 @@ export async function resumePlan(planId: string) {
  * skal ikke arkiveringen rulles tilbake.
  */
 export async function endPlan(planId: string) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
   await assertCoachTilgangTilSpiller(user, plan.userId);
@@ -323,7 +312,7 @@ export async function endPlan(planId: string) {
 export async function markPlanCompleted(
   planId: string,
 ): Promise<{ ok: true } | { ok: false; feil: string }> {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) return { ok: false, feil: "Fant ikke planen." };
   if (!(await harCoachTilgangTilSpiller(user, plan.userId))) {
@@ -382,7 +371,7 @@ export async function rateEffectiveness(input: {
   coachRating?: number | null;
   notes?: string | null;
 }): Promise<{ ok: true } | { ok: false; feil: string }> {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
 
   const eff = await prisma.planEffectiveness.findUnique({
     where: { id: input.effectivenessId },
@@ -438,7 +427,7 @@ export async function rateEffectiveness(input: {
  * ser at den er kansellert.
  */
 export async function cancelSession(sessionId: string) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
 
   const session = await prisma.trainingPlanSession.findUnique({
     where: { id: sessionId },
@@ -482,7 +471,7 @@ export async function cancelSession(sessionId: string) {
  * Arkiver plan — settes inaktiv, beholder data og historikk.
  */
 export async function arkiverPlan(planId: string) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
   await assertCoachTilgangTilSpiller(user, plan.userId);
@@ -509,7 +498,7 @@ export async function arkiverPlan(planId: string) {
  * Slett plan permanent. Kun ADMIN.
  */
 export async function slettPlan(planId: string) {
-  const user = await krevAdmin();
+  const user = await requireAdminActionUser();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
 
@@ -544,7 +533,7 @@ export async function slettPlan(planId: string) {
  * Valider eier-rettighet for en plan — coach må eie planen, eller være ADMIN.
  */
 async function krevPlanRettighet(planId: string) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const plan = await prisma.trainingPlan.findUnique({
     where: { id: planId },
     select: { id: true, createdById: true },
@@ -560,7 +549,7 @@ async function krevPlanRettighet(planId: string) {
  * Oppdater en eksisterende økt — tittel, tid, varighet, pyramide og rasjonale.
  */
 export async function oppdaterOkt(sessionId: string, data: OktData) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
 
   const session = await prisma.trainingPlanSession.findUnique({
     where: { id: sessionId },
@@ -689,7 +678,7 @@ export async function sendOktFeedback(
  * Slett en økt permanent. Drills og log slettes via cascade.
  */
 export async function slettOkt(sessionId: string) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
 
   const session = await prisma.trainingPlanSession.findUnique({
     where: { id: sessionId },
@@ -730,7 +719,7 @@ export async function kopierPlan(
   nyUserId: string,
   nyNavn?: string,
 ): Promise<{ newPlanId: string }> {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
 
   const original = await prisma.trainingPlan.findUnique({
     where: { id: planId },
@@ -861,7 +850,7 @@ export async function opprettExerciseDefinition(data: {
   pyramidArea: PyramidArea;
   lPhase: LPhase;
 }) {
-  await krevCoach();
+  await requireCoachActionUser();
   const navn = data.name.trim();
   if (navn.length < 2) throw new Error("Navn må være minst 2 tegn.");
   const ny = await prisma.exerciseDefinition.create({

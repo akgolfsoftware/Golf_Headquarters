@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { nonEmpty } from "@/lib/validation/schemas";
 
@@ -11,12 +11,6 @@ const SendMeldingSchema = z.object({
   body: nonEmpty(4000),
 });
 
-async function krevCoach() {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
-  if (user.role !== "COACH" && user.role !== "ADMIN") throw new Error("forbidden");
-  return user;
-}
 
 const chatMeldingSchema = z.object({
   role: z.enum(["user", "assistant", "coach"]),
@@ -54,7 +48,7 @@ export async function sendMelding(
 
   let me;
   try {
-    me = await krevCoach();
+    me = await requireCoachActionUser();
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "forbidden" };
   }
@@ -146,7 +140,7 @@ export async function sendMeldingTilSpiller(
 
   let me;
   try {
-    me = await krevCoach();
+    me = await requireCoachActionUser();
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "forbidden" };
   }
