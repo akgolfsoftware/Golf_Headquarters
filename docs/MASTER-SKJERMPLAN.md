@@ -797,6 +797,8 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 
 ## Endringslogg
 
+- 24. juli: **Bilder på markedssider uten foto** — fire Higgsfield-genererte stemningsbilder (webp, ≤285 kB) i ny `public/images/generert/`: PlayerHQ (range i kveldslys), Junior (puttinggreen med coach), Priser (fairway i morgenlys), Booking pauset-flyt (simulatorrom). Ekte akademi-foto beholdes overalt der de finnes — generert brukes KUN der det var tomt. + `docs/design-system/PROMPT-GROK-LANDING-BOOKING.md`: tre ferdige Grok 4.5-prompter (landingsside/booking/tjenester) grunnet i repoets tokens, regler og ekte innhold.
+
 - 24. juli: **Scroll-drevet forside** — `/` fortelles nedover med ekte bilder: parallakse-hero, tjenestekort med akademi-foto, klebrig PlayerHQ-scene som viser ekte app-skjermer bygget av portalens egne v2-komponenter, og «AK Golf Intelligence» med divergerende SG mot PGA Tour-baseline (`SgKategorier`). Ny `src/components/marketing/v2/scroll-animasjon.tsx` (Avslor/Parallaks/useAktivtSteg) + tre klasser i motion-katalogen; alt av bevegelse dør ved prefers-reduced-motion. NB: «AK Golf Intelligence» er et nytt navn utad — legg det i `docs/skjermtekst` hvis det skal være offisielt.
 
 - 24. juli: **Ny forside (coaching-først)** — `/` selger nå coaching, ikke appen: coach i heroen, «slik jobber vi», pakkene, PlayerHQ som verktøy som følger med, bevis, booking-CTA. Én primær handling (Book en samtale) på hele flaten; nav-CTA-en kan nå overstyres per side (`cta`-prop på `MRamme`). Forsiden bruker den delte marketing-rammen i stedet for sin egen kopi. NB: dette avviker bevisst fra M1 i `docs/skjermtekst/skjerm-tekst-hovedskjermer.md` (app-først hero) — skjermteksten bør oppdateres når Anders har sett flaten.

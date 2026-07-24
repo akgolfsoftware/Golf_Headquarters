@@ -182,6 +182,15 @@ export function MarkedPriserV2() {
         </div>
       </Seksjon>
 
+      {/* Higgsfield-generert stemningsbilde (2026-07-24) — siden manglet foto. */}
+      <Seksjon mobile={mobile} style={{ paddingTop: 0, paddingBottom: mobile ? 28 : 48 }}>
+        <div style={{ position: "relative", maxWidth: 820, margin: "0 auto", height: mobile ? 170 : 300, overflow: "hidden", borderRadius: 20, border: `1px solid ${T.borderS}` }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/generert/fairway-morgen.webp" alt="Spiller går fairwayen i morgenlys" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+          <span aria-hidden style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, transparent 45%, color-mix(in srgb, ${T.bg} 72%, transparent) 100%)` }} />
+        </div>
+      </Seksjon>
+
       {/* Pris-kort */}
       <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: T.gap, maxWidth: 820, margin: "0 auto" }}>

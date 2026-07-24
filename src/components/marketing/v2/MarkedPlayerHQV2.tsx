@@ -271,6 +271,15 @@ export function MarkedPlayerHQV2() {
           <div style={{ marginTop: 28 }}><MCta>Prøv gratis i én måned</MCta></div>
         </div>
       </Seksjon>
+
+      {/* Higgsfield-generert stemningsbilde (2026-07-24) — sidene manglet foto. */}
+      <Seksjon mobile={mobile} style={{ paddingTop: 0, paddingBottom: mobile ? 28 : 48 }}>
+        <div style={{ position: "relative", height: mobile ? 200 : 340, overflow: "hidden", borderRadius: 20, border: `1px solid ${T.borderS}` }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/generert/playerhq-range.webp" alt="Spiller sjekker treningsappen på rangen i kveldslys" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+          <span aria-hidden style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, transparent 45%, color-mix(in srgb, ${T.bg} 72%, transparent) 100%)` }} />
+        </div>
+      </Seksjon>
       {/* Feature-seksjoner m/ telefon-mockups */}
       {features.map((f, i) => (
         <Seksjon key={f.eyebrow} mobile={mobile} style={{ paddingTop: mobile ? 28 : 56, paddingBottom: mobile ? 28 : 56 }}>

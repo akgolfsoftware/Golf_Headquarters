@@ -169,6 +169,15 @@ export function MarkedJuniorV2() {
         </div>
       </Seksjon>
 
+      {/* Higgsfield-generert stemningsbilde (2026-07-24) — sidene manglet foto. */}
+      <Seksjon mobile={mobile} style={{ paddingTop: 0, paddingBottom: mobile ? 28 : 48 }}>
+        <div style={{ position: "relative", height: mobile ? 210 : 360, overflow: "hidden", borderRadius: 20, border: `1px solid ${T.borderS}` }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/generert/junior-green.webp" alt="Juniorer på puttinggreen med coach som viser puttelinja" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+          <span aria-hidden style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, transparent 45%, color-mix(in srgb, ${T.bg} 72%, transparent) 100%)` }} />
+        </div>
+      </Seksjon>
+
       {/* Aldersgrupper */}
       <Seksjon mobile={mobile}>
         <Caps>Aldersgrupper</Caps>
