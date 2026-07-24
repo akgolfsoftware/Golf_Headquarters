@@ -177,18 +177,23 @@ export function CockpitV2({
     </div>
   );
 
-  // ── «Trenger deg nå» (kø) — Superhuman/Linear: signal-strek på alert ──
+  // ── G10: Triage = «Trenger deg nå» + AI-kø (AgenticOS) ──
   const koen = (
     <Kort
-      eyebrow="Trenger deg nå"
+      eyebrow="Triage · Trenger deg nå"
       action={
-        data.focus.length > 0 ? (
-          <Link href="/admin/innboks" style={{ textDecoration: "none" }}>
-            <StatusPill tone="warn">{pl(data.focus.length, "sak", "saker")}</StatusPill>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <Link href="/admin/godkjenninger" style={{ textDecoration: "none" }}>
+            <StatusPill tone="lime">AI-kø</StatusPill>
           </Link>
-        ) : (
-          <StatusPill tone="lime">Tom</StatusPill>
-        )
+          {data.focus.length > 0 ? (
+            <Link href="/admin/innboks" style={{ textDecoration: "none" }}>
+              <StatusPill tone="warn">{pl(data.focus.length, "sak", "saker")}</StatusPill>
+            </Link>
+          ) : (
+            <StatusPill tone="lime">Tom</StatusPill>
+          )}
+        </div>
       }
     >
       {data.focus.length === 0 ? (
