@@ -3,16 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
 import { pushBookingToCalendar } from "@/lib/google-calendar";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 
-async function krevCoach() {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
-  if (user.role !== "COACH" && user.role !== "ADMIN") throw new Error("forbidden");
-  return user;
-}
 
 export type OpprettOktInput = {
   spillerId: string;
@@ -32,7 +26,7 @@ export type OpprettOktResult = {
 export async function opprettOktPaaTid(
   data: OpprettOktInput,
 ): Promise<OpprettOktResult> {
-  const aktor = await krevCoach();
+  const aktor = await requireCoachActionUser();
 
   if (!data.spillerId) throw new Error("spillerId mangler");
   if (!data.serviceTypeId) throw new Error("serviceTypeId mangler");
@@ -152,7 +146,7 @@ export async function moveSession(
   bookingId: string,
   newStartAt: Date | string,
 ): Promise<{ ok: true } | { ok: false; feil: string }> {
-  const aktor = await krevCoach();
+  const aktor = await requireCoachActionUser();
 
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },
@@ -226,7 +220,7 @@ export async function createSessionFromCalendar(data: OpprettOktInput) {
 export async function cancelSession(
   bookingId: string,
 ): Promise<{ ok: true } | { ok: false; feil: string }> {
-  const aktor = await krevCoach();
+  const aktor = await requireCoachActionUser();
 
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },

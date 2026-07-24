@@ -13,7 +13,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import type { PeriodeType, PyramidArea } from "@/generated/prisma/client";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { standardFordeling, type OmradeFordeling } from "@/lib/portal/training/periode-fordeling";
@@ -39,16 +39,10 @@ export type PeriodeFordelingRad = {
   erOverstyrt: boolean;
 };
 
-async function krevCoach() {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
-  if (user.role !== "COACH" && user.role !== "ADMIN") throw new Error("forbidden");
-  return user;
-}
 
 /** Last gjeldende fordeling per periode: lagret om satt, ellers default. */
 export async function hentPeriodeFordelinger(): Promise<PeriodeFordelingRad[]> {
-  await krevCoach();
+  await requireCoachActionUser();
   const std = standardFordeling();
   const lagrede = await prisma.periodeFordeling.findMany();
   const perType = new Map(lagrede.map((r) => [r.periodeType, r]));
@@ -82,7 +76,7 @@ export type LagrePeriodeInput = z.input<typeof lagreSchema>;
 
 /** Lagre (upsert) fordelingen for én periode. Håndhever 0–100 og min ≤ maks. */
 export async function lagrePeriodeFordeling(input: LagrePeriodeInput) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const { periodeType, min, max } = lagreSchema.parse(input);
 
   for (const omr of OMRADER) {
@@ -119,7 +113,7 @@ export async function lagrePeriodeFordeling(input: LagrePeriodeInput) {
 
 /** Tilbakestill én periode til default (sletter overstyringen). */
 export async function tilbakestillPeriodeFordeling(periodeType: PeriodeType) {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const t = lagreSchema.shape.periodeType.parse(periodeType);
   await prisma.periodeFordeling.deleteMany({ where: { periodeType: t } });
   await audit({ actorId: user.id, action: "periode_fordeling.tilbakestilt", target: `PeriodeFordeling:${t}` });

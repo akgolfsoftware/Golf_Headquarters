@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { nonEmpty, isoDate } from "@/lib/validation/schemas";
 
@@ -18,16 +18,10 @@ const CreatePlanSchema = z.object({
   endDate: isoDate.optional(),
 });
 
-async function krevCoach() {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
-  if (user.role !== "COACH" && user.role !== "ADMIN") throw new Error("forbidden");
-  return user;
-}
 
 export async function togglePlanActive(planId: string) {
   PlanIdSchema.parse({ planId });
-  await krevCoach();
+  await requireCoachActionUser();
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
   await prisma.trainingPlan.update({
@@ -40,7 +34,7 @@ export async function togglePlanActive(planId: string) {
 
 export async function dupliserPlan(planId: string): Promise<string | null> {
   PlanIdSchema.parse({ planId });
-  await krevCoach();
+  await requireCoachActionUser();
   const original = await prisma.trainingPlan.findUnique({
     where: { id: planId },
     include: { sessions: { include: { drills: true } } },
@@ -90,7 +84,7 @@ export type CreatePlanInput = {
 
 export async function createPlan(input: CreatePlanInput): Promise<string> {
   CreatePlanSchema.parse(input);
-  const coach = await krevCoach();
+  const coach = await requireCoachActionUser();
   const plan = await prisma.trainingPlan.create({
     data: {
       userId: input.userId,
@@ -106,7 +100,7 @@ export async function createPlan(input: CreatePlanInput): Promise<string> {
 }
 
 export async function deletePlan(planId: string) {
-  await krevCoach();
+  await requireCoachActionUser();
   await prisma.trainingPlan.delete({ where: { id: planId } });
   revalidatePath("/admin/plans");
   redirect("/admin/plans");

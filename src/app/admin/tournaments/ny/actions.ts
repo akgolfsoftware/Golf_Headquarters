@@ -14,7 +14,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireCoachActionUser } from "@/lib/auth/action-guards";
 
 const FORMATER = ["STROKE", "MATCH", "STABLEFORD", "SKINS", "FOURSOME"] as const;
 const TYPER = ["INTERN", "EKSTERN"] as const;
@@ -67,18 +67,10 @@ export type CreateTournamentResult =
   | { ok: true; tournamentId: string }
   | { ok: false; error: string; fieldErrors?: Record<string, string> };
 
-async function krevCoach() {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
-  if (user.role !== "COACH" && user.role !== "ADMIN")
-    throw new Error("forbidden");
-  return user;
-}
-
 export async function createTournament(
   raw: unknown,
 ): Promise<CreateTournamentResult> {
-  const user = await krevCoach();
+  const user = await requireCoachActionUser();
   const parsed = ny_turnering_schema.safeParse(raw);
   if (!parsed.success) {
     const fieldErrors: Record<string, string> = {};

@@ -8,18 +8,12 @@
  */
 
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 
-async function krevCoach() {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
-  if (user.role !== "COACH" && user.role !== "ADMIN") throw new Error("forbidden");
-  return user;
-}
 
 export async function bekreftBooking(id: string) {
-  await krevCoach();
+  await requireCoachActionUser();
   await prisma.booking.updateMany({
     where: { id, status: "PENDING" },
     data: { status: "CONFIRMED" },
@@ -28,7 +22,7 @@ export async function bekreftBooking(id: string) {
 }
 
 export async function avvisBooking(id: string) {
-  await krevCoach();
+  await requireCoachActionUser();
   await prisma.booking.updateMany({
     where: { id, status: "PENDING" },
     data: { status: "CANCELLED" },
@@ -37,7 +31,7 @@ export async function avvisBooking(id: string) {
 }
 
 export async function bekreftAllePending() {
-  await krevCoach();
+  await requireCoachActionUser();
   await prisma.booking.updateMany({
     where: { status: "PENDING" },
     data: { status: "CONFIRMED" },
@@ -46,7 +40,7 @@ export async function bekreftAllePending() {
 }
 
 export async function avvisAllePending() {
-  await krevCoach();
+  await requireCoachActionUser();
   await prisma.booking.updateMany({
     where: { status: "PENDING" },
     data: { status: "CANCELLED" },
@@ -55,7 +49,7 @@ export async function avvisAllePending() {
 }
 
 export async function markerAlleConfirmedSomCompleted() {
-  await krevCoach();
+  await requireCoachActionUser();
   await prisma.booking.updateMany({
     where: { status: "CONFIRMED" },
     data: { status: "COMPLETED" },

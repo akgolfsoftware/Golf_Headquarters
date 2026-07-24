@@ -43,6 +43,9 @@ jobs:
       - name: Hex-gate (ingen nye rå hex-farger — opprydding Fase 2)
         run: npm run check:hex
 
+      - name: Action-auth gate (KS-1 — server actions må ha auth-import)
+        run: npm run check:action-auth
+
       - name: Unit tests (node:test + tsx)
         run: npm test
 

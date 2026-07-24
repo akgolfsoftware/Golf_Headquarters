@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { requireAdminActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { FRA_EPOST, resendKlient } from "@/lib/email";
@@ -17,12 +17,6 @@ export type InviterCoachResult =
   | { ok: true; userId: string; epostSendt: boolean }
   | { ok: false; error: string; fieldErrors?: Record<string, string> };
 
-async function krevAdmin() {
-  const user = await getCurrentUser();
-  if (!user) throw new Error("unauthenticated");
-  if (user.role !== "ADMIN") throw new Error("forbidden");
-  return user;
-}
 
 /**
  * Oppretter en ny User med role=COACH og placeholder authId.
@@ -46,7 +40,7 @@ export async function inviterCoach(
 
   let aktor;
   try {
-    aktor = await krevAdmin();
+    aktor = await requireAdminActionUser();
   } catch (err) {
     return {
       ok: false,
