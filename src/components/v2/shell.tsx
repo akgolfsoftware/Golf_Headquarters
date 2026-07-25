@@ -410,7 +410,7 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
           const on = aktiv === n.id;
           return (
             <Link
-              key={n.href}
+              key={n.id}
               href={n.href}
               aria-current={on ? "page" : undefined}
               className="v2-press"
