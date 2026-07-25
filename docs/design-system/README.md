@@ -1,21 +1,24 @@
-# Designsystem — eneste inngang
+# ⛔ UTGÅTT — gammel designkanon (arkivert, ikke i bruk)
 
-| Dokument | Rolle |
-|---|---|
-| **[FASIT.md](./FASIT.md)** | Låst fasit (tokens, tema, navn, familier) |
-| **[TEMA-LYS-MORK.md](./TEMA-LYS-MORK.md)** | **Lys/mørk per produkt** (PlayerHQ alltid lys · AgencyOS mørk default) |
-| **[DESIGN-EVOLUSJON-2026-07-23.md](./DESIGN-EVOLUSJON-2026-07-23.md)** | **Neste steg mot verdensklasse** (bølger V1–V6, Mobbin-mønstre) |
-| **[KOMPONENTSTATUS.md](./KOMPONENTSTATUS.md)** | 124 komponenter i Claude Design |
-| **[plattform-design-2026-07-21/](./plattform-design-2026-07-21/)** | **Komplett designforslag** — wireframe + hi-fi + alle 361 skjermer |
-| **plattform-design … /PLAYERHQ-SKJERM-GATE.md** | PlayerHQ ruter = 0 GAP redesign |
-| **plattform-design … /AGENCYOS-SKJERM-GATE.md** | AgencyOS ruter = 0 GAP redesign |
-| **plattform-design … /GJENSTAENDE-SKJERMER.md** | Hva som gjenstår (marketing/stats/intern) |
-| **plattform-design … /PUNKT-KATALOG-KOMPLETT.md** | Alle produktpunkter + status |
+**Dato: 2026-07-25**
 
-**Åpne plattform-design:** dobbeltklikk `plattform-design-2026-07-21/index.html` (eller `open …/index.html` i Terminal).
+Alt innhold i denne mappen (`docs/design-system/`) er den **gamle
+v2-designkanonen** (FASIT, mockups, tokens, retning C «Presis» m.m.).
+Den er **bevisst tatt ut av bruk** fordi vi bygger et helt nytt designsystem
+i **Open Design** — vi skal ikke jobbe i døden med gamle regler som hemsko.
 
-**Claude Design:** https://claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d
+Dette gjelder:
 
-**Skills:** `akgolf-design-system` (hva) · `ak-designekspert` (hvordan)
-
-**Arkiv (ikke les som fasit):** `docs/arkiv/redesign-v2/`
+- **Ingenting her håndheves lenger.** Alle design-gates er fjernet i samme
+  rydding (2026-07-25): hex-sjekken i CI, eslint-reglene for hex/8pt-grid,
+  hex-blokken i `.claude/hooks/kvalitet.mjs`, regelfilen
+  `.claude/rules/design-system-regel.md` og design-skillene
+  (`ak-designekspert`, `ak-design-evolution`).
+- **Ikke bygg nye skjermer fra disse mockupene.** De dokumenterer hvordan
+  appen så ut på et tidspunkt — ikke hvordan den skal se ut.
+- **Koden er fasit** frem til det nye systemet er godkjent. Nåværende
+  tema-oppførsel (lys standard på app-flatene, mørk via bryter) er beskrevet
+  i `docs/platform/BUSINESS-RULES.md` som ren nåtids-beskrivelse — ikke som
+  låst regel.
+- **Mappen kan slettes / flyttes til `docs/arkiv/`** når Open Design-systemet
+  lander. Den er beholdt inntil videre som historisk referanse.

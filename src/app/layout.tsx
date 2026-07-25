@@ -25,8 +25,9 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-// Familjen Grotesk — display-font (v13-kanon, .claude/rules/design-system-regel.md).
-// Eneste display-font i appen; Inter Tight er fjernet (Fase 3, 2026-07-07).
+// Familjen Grotesk — eneste display-font i appen; Inter Tight er fjernet
+// (Fase 3, 2026-07-07). Merk: design-kanonen er tømt 2026-07-25 — fontvalg
+// står fritt frem til nytt designsystem fra Open Design.
 const familjenGrotesk = Familjen_Grotesk({
   variable: "--font-familjen-grotesk",
   subsets: ["latin"],
@@ -56,14 +57,14 @@ export const metadata: Metadata = {
           "(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)",
       },
       {
-        url: "/splash/apple-splash-1179-2556.png",
-        media:
-          "(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)",
-      },
-      {
         url: "/splash/apple-splash-1170-2532.png",
         media:
           "(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)",
+      },
+      {
+        url: "/splash/apple-splash-1179-2556.png",
+        media:
+          "(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)",
       },
       {
         url: "/splash/apple-splash-828-1792.png",
@@ -132,18 +133,19 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col">
         {/* DS2: v2-tema settes FØR paint fra cookie (ak-v2-tema) — ingen blits.
             Variablene bor i globals.css; veksleren i V2Shell skriver cookien.
-            nonce kreves — CSP blokkerer inline-script uten.
-            B28 (låst, 16. jul): PlayerHQ (/portal/*) er alltid lys, uansett
-            AgencyOS' delte cookie-preferanse — sjekkes FØR cookien slik at et
-            fersk sideinnlastning på /portal aldri blitser mørkt (V2Shell
-            synker samme regel client-side ved SPA-navigasjon, se shell.tsx). */}
+            Tema-oppførsel (25. jul): app-flatene (/portal, /admin, /forelder)
+            er LYS som standard — mørk skjerm er vanskelig å lese utendørs i
+            sollys — med bryter til mørk (cookie ak-v2-tema=dark). Marketing/
+            auth er uendret: mørke som før, lys kun med eksplisitt lys-cookie
+            (V2Shell synker samme regel client-side ved SPA-navigasjon, se
+            shell.tsx). */}
         {/* suppressHydrationWarning: nettlesere nuller nonce-attributtet i DOM
             (sikkerhetsmekanisme) → server/klient-avvik som er forventet. */}
         <script
           nonce={nonce}
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
-            __html: `try{var p=window.location.pathname;var lys=p.indexOf("/portal")===0||document.cookie.split("; ").some(function(c){return c==="ak-v2-tema=light"});if(lys)document.documentElement.setAttribute("data-v2-tema","light")}catch(e){}`,
+            __html: `try{var p=window.location.pathname;var ck=document.cookie.split("; ");var mork=ck.some(function(c){return c==="ak-v2-tema=dark"});var lysCk=ck.some(function(c){return c==="ak-v2-tema=light"});var app=p.indexOf("/portal")===0||p.indexOf("/admin")===0||p.indexOf("/forelder")===0;var lys=app?!mork:lysCk;if(lys)document.documentElement.setAttribute("data-v2-tema","light");else document.documentElement.removeAttribute("data-v2-tema")}catch(e){}`,
           }}
         />
         {children}
