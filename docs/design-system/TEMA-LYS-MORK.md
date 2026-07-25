@@ -1,14 +1,14 @@
 # Tema: lys og mørk (fasit)
 
-**Oppdatert:** 2026-07-25 (korrigert mot faktisk deployet tilstand — kode er fasit)  
-**Kilde i kode:** `src/app/layout.tsx` (før paint), `src/components/v2/shell.tsx` (B28), `src/app/globals.css` (`:root` + `html[data-v2-tema="light"]`).  
+**Oppdatert:** 2026-07-25 (ny temafasit — lys default + mørk-bryter, Anders; opphever B28)  
+**Kilde i kode:** `src/app/layout.tsx` (før paint), `src/components/v2/shell.tsx` (bryter + synk), `src/app/globals.css` (`:root` + `html[data-v2-tema="light"]`).  
 **Forretningsfasit:** `docs/platform/BUSINESS-RULES.md` § Tema per produkt.
 
 ---
 
 ## For deg (én setning)
 
-**PlayerHQ er alltid lys (B28). Alt annet — AgencyOS, Forelder, auth, marketing — er mørkt som standard. Kun AgencyOS har lys-bryter.**
+**Appen (PlayerHQ, AgencyOS, Forelder) er lys som standard — med bryter til mørk for den som vil. Mørk skjerm er vanskelig å lese utendørs i sollys. Marketing og innlogging er fortsatt mørke.**
 
 ---
 
@@ -16,14 +16,14 @@
 
 | Produkt | URL | Default | Kan bytte? |
 |---|---|---|---|
-| **PlayerHQ** | `/portal` | **Lys** | **Nei** — låst (B28) |
-| **AgencyOS** | `/admin` | **Mørk** | **Ja** — sol/måne i shell |
-| **Forelder** | `/forelder` | **Mørk** | Nei (ingen lys-tvang i kode) |
+| **PlayerHQ** | `/portal` | **Lys** | **Ja** — sol/måne i rail + Mer-ark |
+| **AgencyOS** | `/admin` | **Lys** | **Ja** — sol/måne i rail + Mer-ark |
+| **Forelder** | `/forelder` | **Lys** | **Ja** — sol/måne i rail + Mer-ark |
 | **Auth** | `/auth` | **Mørk** | Nei |
 | **Marketing / booking / stats** | `akgolf.no`, `/booking`, `/stats` | **Mørk** | Ikke samme v2-toggle |
 
-> Åpent spørsmål (2026-07-25): marketing-mockups viser mørk PlayerHQ mot B28s lys-lås.
-> B28 gjelder i kode inntil Anders tar stilling.
+> B28 («PlayerHQ alltid lys, ingen bryter») er **opphevet 2026-07-25** (Anders): lys er fortsatt
+> default, men brukeren kan nå bytte til mørk. Mørke mockups i marketing viser bryter-tilstanden.
 
 ---
 
@@ -32,11 +32,13 @@
 1. **CSS-grunnlag:** `:root` = mørke `--v2-*`. Lys = `html[data-v2-tema="light"]`.
 2. **Cookie:** `ak-v2-tema=light|dark` (path `/`, 1 år).  
    *(Gammel `ak-admin-theme` er utgått — ikke skriv den tilbake.)*
-3. **Før paint:** inline-script i rot-layout setter lys hvis  
-   - path starter med `/portal`, **eller**  
-   - cookie er `ak-v2-tema=light`.
-4. **B28 (låst):** i `V2Shell` for PlayerHQ-nav tvinges alltid `data-v2-tema="light"`, selv om coach har mørk cookie fra AgencyOS. Ellers ble spillerappen mørk for trenere.
-5. **Bryter:** kun AgencyOS (og flater som deler AgencyOS-shell). PlayerHQ viser ikke tema-bryter.
+3. **Før paint:** inline-script i rot-layout setter tema etter:
+   - App-flater (`/portal`, `/admin`, `/forelder`): **lys default** — mørk kun hvis cookie er `ak-v2-tema=dark`.
+   - Øvrige flater (marketing/auth): uendret — lys kun med eksplisitt lys-cookie.
+4. **Synk ved SPA-navigasjon:** `V2Shell` leser cookien ved rute-veksling og setter
+   `data-v2-tema` deretter (delt attributt på `<html>`, samme dokument på tvers av flatene).
+5. **Bryter:** synlig på alle v2-flater (sol/måne i IkonRail + i Mer-arket). SSR-snapshot er lys.
+6. **Onboarding** (`/auth/onboarding`): egen lys v2-flate (`VeiviserFlate`) — uendret.
 
 ---
 
@@ -44,11 +46,11 @@
 
 | Feil antakelse | Sannhet |
 |---|---|
-| «Design default er lys overalt» | Nei — CSS og alle flater unntatt PlayerHQ er mørk-først |
-| «PlayerHQ kan toggles til mørk» | Nei — alltid lys (B28, se åpent spørsmål over) |
-| «AgencyOS er alltid mørk» | Nei — standard mørk, men lys er lov |
-| «Forelder og auth er lyse» | Nei — mørke i deployet kode (rettet 2026-07-25) |
-| «To cookies (admin vs portal)» | Nei — én cookie, path-lås for PlayerHQ |
+| «Design default er lys overalt» | Nei — lys default gjelder app-flatene; marketing/auth er mørke |
+| «PlayerHQ kan ikke toggles til mørk» | Kan nå — bryter på alle v2-flater (B28 opphevet 2026-07-25) |
+| «AgencyOS er mørk som standard» | Var — nå lys default med bryter, samme som PlayerHQ |
+| «Forelder og auth er lyse» | Forelder er lys default; auth er mørk |
+| «To cookies (admin vs portal)» | Nei — én cookie (`ak-v2-tema`) for alle app-flater |
 
 ---
 
