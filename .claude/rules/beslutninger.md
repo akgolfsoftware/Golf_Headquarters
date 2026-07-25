@@ -17,15 +17,17 @@ Gjelder til Anders endrer dem.
   plan/regel vises i klarspråk til brukeren; sterkt avvik varsler coach. Aldri skriv «kan ikke
   brytes»-kode eller -tekst — se `plans/skjermplan-master.md` prinsipp 3 for fasit.
 - **App-navn:** Coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt — ikke bruk i ny UI-tekst.
-- **Tema (låst i kode 2026-07, B28):** PlayerHQ **alltid lys** (ingen bryter). AgencyOS **mørk default**
-  med lys/mørk-bryter. Cookie `ak-v2-tema` + `data-v2-tema` på `<html>`. Fasit:
-  `docs/design-system/TEMA-LYS-MORK.md` og `BUSINESS-RULES.md` § Tema. Ikke endre uten Anders' beskjed.
+- **Tema/design (TØMT 2026-07-25):** Alle designlåser (B28, retning C, FASIT, hex-gate, 8pt-grid,
+  Claude Design som kilde, ak-designekspert-dommer) er **bevisst fjernet** — et komplett nytt
+  designsystem utvikles parallelt i Open Design. Inntil det landes finnes ingen låst designkanon:
+  det som er bygget i koden gjelder, og endringer i det gamle utseendet er vedlikehold, ikke
+  kanonarbeid. Ikke gjenopprett gamle designregler uten ny beslutning fra Anders.
 - **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen** — alltid fulle
   navn, gamle demo-navn skal bort. Unntak: ekte coach **«Markus Røinås Pedersen»** på markedssidene,
   ikke bytt ham ut.
-- **Enkelhet og færrest trykk (2026-07-21):** Behold alle funksjoner, men minst mulig trykk og
-  super enkelt UI. Vanskelig å forstå = feil design (ikke «brukeren er dum»). Én primær CTA per
-  skjerm; 5-sekunders-test; tom tilstand med én vei videre. Full tekst: `docs/design-system/FASIT.md` §3.
+- **Enkelhet og færrest trykk (2026-07-21, fortsatt gjeldende produktprinsipp):** Behold alle
+  funksjoner, men minst mulig trykk og super enkelt UI. Vanskelig å forstå = feil design
+  (ikke «brukeren er dum»). Én primær CTA per skjerm; 5-sekunders-test; tom tilstand med én vei videre.
 - **Planlegge → Workbench:** All planlegging går gjennom Workbench. Planlegge er **ett trykkpunkt**
   dit, ikke en meny av 6 kort. Samme i coachens spiller-Workbench.
 - **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner — ikke separate
@@ -36,20 +38,14 @@ Gjelder til Anders endrer dem.
   økter), IKKE app-nivåer. **ELITE finnes ikke** (dødt Prisma-enum — vis aldri i UI).
 - **FYS-resultatformel avventer:** Bygg testskjermer med plassholder-tall. Ikke hardkod
   referanseverdier før Anders gir grønt lys.
-- **Design-kilde (oppdatert 9. juli 2026 — v2-REDESIGN PÅGÅR):** kanon-kilden er fortsatt det LEVENDE
-  Claude Design-prosjektet («AK Golf HQ Design System»,
-  `claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`) via DesignSync — men målbildet er nå
-  **v2-generasjonen** (`ui_kits/v2/` + `tokens/v2/`) som designes per
-  `~/.claude/plans/breezy-forging-brook.md`. **Retning C er valgt (2026-07-11) og fase 6 pågår:**
-  gjenværende skjermer porteres til v2 bølge for bølge, én skjerm per commit, master-skjermplanens
-  haker i samme commit. v13/golfdata (`src/components/athletic/golfdata/`) er OVERGANGS-LAG:
-  vedlikehold OK, nye flater bygges mot godkjent v2-mockup. `public/design-handover/` er stale og
-  skal ikke brukes. Full regel: `.claude/rules/design-system-regel.md`. **Designdommer:**
-  `.claude/skills/ak-designekspert` (gap meldes, ikke improviseres).
+- **Design-kilde (TØMT 2026-07-25):** Claude Design-prosjektet og v2-kanonen er avviklet som
+  design-kilde. Nytt komplett designsystem utvikles i Open Design — det blir ny fasit når Anders
+  godkjenner det. `docs/design-system/` og `docs/redesign-v2/` er merket UTGÅTT (historikk).
 - **Skjermtekst (copy-kilde):** `docs/skjermtekst/` — ekte norsk UI-tekst per hovedskjerm +
   design-brief. Kopier derfra, ikke dikt opp ny tekst.
 - Aldri referer til `wireframe/`, gamle `design-package/` eller `design-files-v2/` i
   produksjonsfiler — disse er slettet fra prosjektet.
 - **Skill-rensing (2026-07-19, Agentic OS):** generiske design-skills (`frontend-design`,
-  `design-vendor`) er fjernet fra repoets `.claude/skills/` — kanon-kollisjon med
-  design-system-regelen. Kun `ak-designekspert` dømmer design; `webapp-testing` beholdes for e2e.
+  `design-vendor`) er fjernet fra repoets `.claude/skills/`. **Oppdatering 2026-07-25:** også
+  `ak-designekspert` og `ak-design-evolution` er fjernet — de var låst til den gamle kanonen.
+  `webapp-testing` beholdes for e2e.

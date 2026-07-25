@@ -1,101 +1,64 @@
-# NORDSTJERNEN — hva AK Golf HQ er og skal være
+# NORDSTJERNE — AK Golf HQ
 
-> Dette er «hvorfor»-dokumentet. `docs/MASTER-SKJERMPLAN.md` er «hva» (hver
-> skjerm + haker), `docs/AGENCYOS-INVENTAR.md` er «hvordan det ser ut nå»,
-> `docs/VEIKART-BESTE-VERKTOY.md` er «veien videre». Ved konflikt om
-> forretningsregler vinner `docs/platform/BUSINESS-RULES.md`.
-> Kvalitetsstandard: produktet skal tåle å selges for millionsum — design,
-> ytelse, datasikkerhet, GDPR og funksjon i alle ledd.
+> **Hva er dette?** Den ene setningen alt skal måles mot. Les denne først — alltid.
+> Ved konflikt: denne fila vinner over all annen dokumentasjon unntatt
+> `docs/platform/BUSINESS-RULES.md` (låste forretningsregler) og
+> `src/lib/ai-coach/kunnskap/canon-invariants-13.md` (metodikk-invarianter).
 
-## Én plattform, fire ansikter, samme sannhet
+---
 
-Én database, ett designsystem, én terminologi (MORAD/CANON, brutto score,
-norsk bokmål med ordboken — «nærspill», aldri «kort spill»).
+## Produktet
 
-### For SPILLEREN (PlayerHQ, /portal) — «min utvikling, bevist»
-Åpne appen og på sekunder vite: hva trener jeg I DAG (plan), hvordan
-gjennomfører jeg det (live-økt, tapper, drills), og blir jeg BEVISELIG bedre
-(SG, tester, TrackMan, runder — alltid ekte tall, aldri fabrikkert). Alt appen
-sier er en ANBEFALING — ingenting sperrer trening (låst prinsipp). Mindreårige
-beskyttes av foreldresamtykke-porten før datainnsamling.
+**AK Golf HQ er et komplett coaching-system for golf — ikke en app med funksjoner,
+men en digital coachvirksomhet som skal tåle å selges for millionsum.**
 
-### For COACHEN (AgencyOS, /admin) — «hvem trenger MEG i dag, og hva godkjenner jeg»
-Kontrolltårnet som lar én coach drive 50+ spillere med kvalitet. Motoren lager
-utkastene (ukeplaner, meldinger, drill-forslag) — coachen BESLUTTER. Alt som
-kan gjøres der du ser det, gjøres der du ser det: trykk en tom luke → book;
-trykk en økt → endre; dra → flytt.
+Fire produkter, én plattform:
+- **PlayerHQ** (`/portal`) — spillerens hjem: plan, økt, analyse, fremgang.
+- **AgencyOS** (`/admin`) — coachens kontrolltårn: stall, kø, kalender, innsikt.
+- **Booking** (`/booking`) — minst mulig trykk fra «vil ha hjelp» til «betalt økt».
+- **Marketing** (`/`) — skal selge coachingen. Én database, ett designsystem, én terminologi.
 
-### For FORELDEREN (/forelder) — trygghet
-Lese-først innsyn i barnets utvikling, økonomi og samtykke. GDPR-flyten er en
-funksjon, ikke et hinder.
+## Det vi aldri gjør
 
-### For FORRETNINGEN (AK Golf Group) — hver time teller
-Kapasitet vist som penger, ett-trykks betaling, churn-vern før spillere
-slutter, purring som går av seg selv, månedstall per selskap
-(Academy/WANG/GFGK/Mulligan). Mål: 500K USD/år fra apper og coachingsystemer —
-appen skal både LEVERE coaching og SELGE den.
+1. **Anbefalinger sperrer aldri.** Ingenting i appen blokkerer trening. Avvik vises
+   i klarspråk; sterkt avvik varsler coach. Dette er CANON-invariant #1 og gjelder
+   all logikk, alle agenter, all UI.
+2. **Vi gjetter ikke på brukeren.** Data kvalifiserer råd — TrackMan-verifisert,
+   GPS-beregnet og selvrapportert er ulike tillitsnivåer og skal merkes slik.
+3. **Vi forvirrer ikke spilleren.** Norsk bokmål, klarspråk (nærspill, ikke ARG),
+   én primær CTA per skjerm. Vanskelig å forstå = feil design.
+4. **Vi bygger ikke to sannheter.** Én SG-beregning, én plan-motor, én kanon per
+   domene. Avledet data regenereres fra kilde — aldri kopier og la dem drive fra hverandre.
 
-## De to loopene (alt i appen mater én av dem)
+## Kvalitetsstandard
 
-- **Coaching-loopen:** Mål → Plan → Gjennomføre → Måle → Justere → (Plan).
-- **Business-loopen:** Lead → Prøvetime → Pakke → Fornyelse/oppsalg → Henvisning.
+God nok er ikke god nok. Hver flate skal tåle gransking fra en krevende coach,
+en krevende spiller og en krevende investor. Ved tvil: ville Anders vist dette
+frem som bevis på at systemet er bedre enn konkurrentene?
 
-En skjerm er bare verdifull hvis den (a) gjør en spiller bedre, (b) gjør en
-time mer lønnsom, eller (c) sparer coachen for tid. Alt annet er støy.
+## Design (åpent — nytt system under arbeid)
 
-## Planleggings-pyramiden (verdensledende coach-tidsbruk)
+Et komplett nytt designsystem utvikles parallelt i Open Design (2026-07-25).
+Den gamle v2-kanonen (retning C «Presis», FASIT, hex-gate, 8pt-grid,
+designdommer) er bevisst avviklet — **ingen designregler er låst** inntil det
+nye systemet er klart og godkjent av Anders. Det som er bygget i koden gjelder
+i mellomtiden; kvalitetsstandarden (skal tåle å selges for millionsum) er uendret.
 
-Planlegging skjer OVENFRA og på GRUPPENIVÅ som standard: årsplan/periodisering
-settes én gang per gruppe fra maler, periodene ruller automatisk, ukene
-genereres i batch, og coachen bruker tiden sin på AVVIKENE — aldri på å taste
-40 like uker. Tidsbudsjett-mål: helt år for 4 grupper/40 spillere < 60 min;
-ny sesongperiode for én gruppe < 10 min; ukejustering per spiller < 1 min;
-ny uke for hele stallen < 15 min (batch-godkjenning).
+## Forretningsramme
 
-## Tilgangsskillet (LÅST forretningsregel)
+- Abonnement: gratis (prøve/pakke/gruppe) eller 299 kr/mnd. Coaching-pakker
+  (Performance / Performance Pro) er økt-credits, ikke app-nivåer. ELITE vises aldri.
+- Betaling slås på 1. august 2026. Før det: produksjonsherding.
+- Detaljer: `docs/platform/BUSINESS-RULES.md`.
 
-En spiller med KUN PlayerHQ-abonnement (299 kr, uten Academy-tilhørighet) er
-SELVBETJENT: ingen coach-tilgang i portalen, og USYNLIG i hele AgencyOS
-(stall, cockpit, køer, motor-batch). Låses opp først ved coaching-pakke
-(Performance / Performance Pro) eller Academy-/gruppe-tilhørighet.
-Selvbetjente møter en «Bli med i AK Golf Academy»-flate (oppsalg), aldri
-en blindgate.
+## Metodikk
 
-## Interaksjonsprinsippene (premium-følelsen, gjelder hver skjerm)
+Coaching-metodikken (AK-metodikken / CANON) er plattformens intellektuelle kjerne:
+A–K-kategorier, pyramide-fordeling, CS-progresjon, 13 invarianter, MORAD P-system.
+Kilde: `src/lib/ai-coach/kunnskap/` + `docs/metode/`. Metodikken endres ikke av
+tekniske hensyn — den endres av Anders.
 
-1. **Handle der du ser:** varsel/rad har handlingen inline — aldri «gå et
-   annet sted for å gjøre noe med dette». Mål: ≤2 trykk fra cockpit for de
-   10 vanligste coach-oppgavene.
-2. **Trykkbar tid:** alle kalendere/tidslinjer oppretter ved trykk på tom
-   luke (booking/økt/hendelse, tid forhåndsutfylt).
-3. **Dra er sant:** vises en drag-affordance, VIRKER den (og lagrer).
-4. **Trykk for å endre:** valgt objekt (økt, periode) redigeres inline —
-   aldri slett-og-lag-ny.
-5. **Aldri blindgate:** hver underside har naturlig tilbake-knapp
-   (TilbakeLenke); tomtilstander sier alltid neste steg.
-6. **Tall → hvorfor → hva nå:** nøkkeltall kan trykkes; HjelpTips forklarer
-   faguttrykk («?»-regelen).
-7. **Null døde knapper.** Én adresse per funksjon.
-8. **Mobil = handling, desktop = analyse.**
+---
 
-## Sikkerhetsprinsippene (gjelder hver pakke — full liste i gjeldende plan)
-
-- Minste tilgang: rolle-guard + capability-gating (CBAC) + coach-scope;
-  tilgangsskillet håndheves av ÉN sentral helper i alle loadere.
-- Penger: trekk kun med eksplisitt lagret-kort-samtykke; server-validerte
-  beløp; idempotens; AuditLog; webhooks er sannheten.
-- Mindreårige/GDPR: samtykke sjekkes før enhver utsendelse; ingen PII i
-  agent-logger; innsyn/retting/sletting fungerer ende-til-ende.
-- AI muterer aldri direkte: alt lander som utkast i godkjenningskøen, og
-  re-valideres mot nå-tilstand ved godkjenning. Kunderettet auto-sending kun
-  etter kø-godkjenning (unntak: purring, maks 2, deretter menneske).
-- All JSON fra databasen zod-valideres ved lesing. Cron bak CRON_SECRET,
-  idempotent, logget.
-
-## Design-kanon
-
-v2 retning C «Presis» — mørk Bloomberg/Linear-presisjon i AK-merkevaren
-(forest `#005840` · lime `#D1F843` · cream · graphite). Kun v2-biblioteket
-(`src/components/v2`), Lucide (aldri emoji), HjelpTips på faguttrykk, ærlige
-tomtilstander. Designdommer (`ak-designekspert`) ≥9/10 på hovedflater før
-lansering. Full regel: `.claude/rules/design-system-regel.md`.
+*Denne fila vedlikeholdes av Anders. Endringsforslag går via PR med hans godkjenning.*
+*Sist oppdatert: 2026-07-19*

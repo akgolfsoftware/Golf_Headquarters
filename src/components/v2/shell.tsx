@@ -159,12 +159,12 @@ export interface V2ShellProps {
   children: ReactNode;
 }
 
-/* ---------- DS2: tema (mørk default, lys for sol) ---------- */
+/* ---------- DS2: tema (lys default på app-flater, mørk via bryter — 25. jul) ---------- */
 
 type V2Tema = "dark" | "light";
 
 function lesTema(): V2Tema {
-  if (typeof document === "undefined") return "dark";
+  if (typeof document === "undefined") return "light";
   return document.documentElement.getAttribute("data-v2-tema") === "light" ? "light" : "dark";
 }
 
@@ -176,11 +176,12 @@ function abonnerTema(cb: () => void) {
 /**
  * Tema-tilstand for v2-flatene. Sannheten bor på <html data-v2-tema> (satt før
  * paint av inline-scriptet i rot-layout) + cookie `ak-v2-tema`; hooken speiler
- * den og synker alle instanser via et vindus-event. SSR-snapshot er alltid
- * mørk (serveren kjenner ikke cookien her) — React retter ved hydration.
+ * den og synker alle instanser via et vindus-event. SSR-snapshot er lys
+ * (app-flatene er lys-først fra 25. jul — mørk kommer kun fra cookie
+ * `ak-v2-tema=dark`, som serveren ikke kjenner her) — React retter ved hydration.
  */
 function useV2Tema() {
-  const tema = useSyncExternalStore<V2Tema>(abonnerTema, lesTema, () => "dark");
+  const tema = useSyncExternalStore<V2Tema>(abonnerTema, lesTema, () => "light");
   const bytt = () => {
     const neste: V2Tema = lesTema() === "light" ? "dark" : "light";
     if (neste === "light") document.documentElement.setAttribute("data-v2-tema", "light");
@@ -379,10 +380,9 @@ function IkonRailNav({ aktiv, nav, mer, navn, avatarUrl, erAgency }: Required<Pi
       )}
       <div style={{ flex: 1, minHeight: 8 }} />
       <ProfilBytteKnapp erAgency={!!erAgency} />
-      {/* B28 (15. jul, låst): PlayerHQ er alltid lys, ingen bryter — knappen
-          styrer et DELT AgencyOS/PlayerHQ-tema-cookie, så den vises kun i
-          AgencyOS. Funnet + fikset 16. jul: spillere fikk denne uten grunn. */}
-      {erAgency && <TemaRailKnapp />}
+      {/* Tema-bryteren vises på ALLE v2-flater (25. jul): lys er standard
+          overalt, mørk er et bevisst valg per bruker. */}
+      <TemaRailKnapp />
       <AvatarFoto src={avatarUrl ?? undefined} navn={navn} size={32} ring />
       {merOpen && mer && <MerPanel grupper={mer} onClose={() => setMerOpen(false)} erAgency={!!erAgency} />}
     </nav>
@@ -589,21 +589,21 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
   }, [aktiv, nav, merGrupper, pathname]);
 
   // DS2: shadcn-scope (.dark/.light) + colorScheme følger v2-temaet, så
-  // skjema-primitiver og scrollbars matcher. SSR er alltid mørk; lys-brukere
-  // rettes ved hydration (suppressHydrationWarning) — v2-fargene er riktige
-  // fra første paint uansett (var(--v2-*) + inline-script i rot-layout).
+  // skjema-primitiver og scrollbars matcher. SSR er lys (standard 25. jul);
+  // mørk-cookie-brukere rettes ved hydration (suppressHydrationWarning) —
+  // v2-fargene er riktige fra første paint uansett (var(--v2-*) + inline-script
+  // i rot-layout).
   const { tema } = useV2Tema();
 
-  // B28 (låst, funnet+fikset 16. jul): `data-v2-tema` er ETT delt attributt på
-  // <html> for BÅDE AgencyOS og PlayerHQ (samme cookie). Uten dette ville en
-  // coach med mørk AgencyOS-preferanse fått mørk PlayerHQ også — og siden
-  // Next-navigasjon mellom /portal og /admin er client-side (samme dokument),
-  // holder det IKKE å bare style om denne komponenten; selve attributtet må
-  // synkes ved hver rute-veksling. AgencyOS beholder cookien uendret — kun
-  // PlayerHQ-visningen låses til lys, uansett hva cookien sier.
+  // Tema-oppførsel (25. jul): ALLE v2-flater (PlayerHQ, AgencyOS, Forelder)
+  // er lys som standard med bryter til mørk. Mørk skjerm er vanskelig å
+  // lese utendørs i sollys. `data-v2-tema` er ETT delt attributt på <html>
+  // (samme cookie), og Next-navigasjon mellom flatene er client-side (samme
+  // dokument), så attributtet synkes ved rute-veksling: mørk KUN hvis
+  // cookien sier dark — ellers alltid lys.
   useEffect(() => {
-    const cookieLys = document.cookie.split("; ").some((c) => c === "ak-v2-tema=light");
-    const onsket: V2Tema = erAgency ? (cookieLys ? "light" : "dark") : "light";
+    const cookieMork = document.cookie.split("; ").some((c) => c === "ak-v2-tema=dark");
+    const onsket: V2Tema = cookieMork ? "dark" : "light";
     if (lesTema() !== onsket) {
       if (onsket === "light") document.documentElement.setAttribute("data-v2-tema", "light");
       else document.documentElement.removeAttribute("data-v2-tema");

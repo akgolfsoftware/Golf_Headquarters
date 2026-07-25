@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 /**
  * PostToolUse-hook — kvalitetsgate nivå 3 (Agentic OS Steg 6).
- * Etter hver Edit/Write på .ts/.tsx: kjør eslint på filen + hex-gaten.
+ * Etter hver Edit/Write på .ts/.tsx: kjør eslint på filen.
  * Feil rapporteres tilbake til Claude (exit 2) så de fikses umiddelbart —
  * samme gate som lint-staged/CI, bare tidligere i loopen.
  * Mangler node_modules (f.eks. fersk container): hopp stille over.
+ * (2026-07-25: hex-gaten er fjernet — gammel designkanon avviklet,
+ * nytt designsystem kommer via Open Design.)
  */
 
 import { execFileSync } from "node:child_process";
@@ -31,16 +33,6 @@ try {
 } catch (err) {
   const ut = `${err.stdout ?? ""}${err.stderr ?? ""}`.trim();
   if (ut) feil.push(`eslint:\n${ut}`);
-}
-
-try {
-  execFileSync("node", ["scripts/check-no-hex.mjs"], {
-    stdio: ["ignore", "pipe", "pipe"],
-    timeout: 60_000,
-  });
-} catch (err) {
-  const ut = `${err.stdout ?? ""}${err.stderr ?? ""}`.trim();
-  if (ut) feil.push(`hex-gate:\n${ut}`);
 }
 
 if (feil.length > 0) {
