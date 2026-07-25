@@ -210,6 +210,11 @@ const RAW = {
     forklaring:
       "Forholdet mellom hvor køllebladet peker (face) og hvor køllen beveger seg (path) i treffet, målt i grader. Face styrer mest av startretningen, forskjellen mellom face og path skaper skruen.",
   },
+  strikeHeatmap: {
+    tittel: "Treffpunkt på køllebladet (beregnet)",
+    forklaring:
+      "Dette er regnet ut, ikke målt. TrackMan rapporterer ikke treffpunkt i filene vi leser, så prikken plasseres ut fra køllebladvinkel (sideveis) og smash factor (opp og ned). Les den som et mønster over mange slag, ikke som fasit på ett enkelt treff. Vil du ha treffpunktet målt, bruk tape eller spray på bladet.",
+  },
   sikkerhetsscore: {
     tittel: "Sikkerhetsscore",
     forklaring:

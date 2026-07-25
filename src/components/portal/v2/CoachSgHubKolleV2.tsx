@@ -146,7 +146,7 @@ export function CoachSgHubKolleV2({ data }: { data: CoachSgHubKolleV2Data }) {
       </Kort>
 
       {/* Strike heatmap */}
-      <Kort eyebrow="Strike heatmap · kontaktpunkt">
+      <Kort eyebrow="Treffpunkt · beregnet" action={<HjelpTips k="strikeHeatmap" />}>
         {!data.advanced && (
           <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "0 0 12px" }}>
             {data.sweetPct} % sweet spot · snitt smash factor {String(data.avgSmash).replace(".", ",")}
