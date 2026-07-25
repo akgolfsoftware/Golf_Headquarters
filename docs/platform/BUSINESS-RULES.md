@@ -9,7 +9,8 @@ Sist oppdatert: 2026-06-14.
 > for full historikk): 3 av 4 daværende «låst opp»-regler er nå **avklart og bygget** — tema-toggle
 > (AgencyOS lys/mørk-bryter), abonnement/pris-modell (299 kr/mnd, ingen årlig — se under) og cockpit
 > stall-SG/plan-etterlevelse. Kun **FYS-formel + A–K-nivåtall** har én gjenstående deltråd: onboarding
-> steg 6 og en beslutning om drill-retag mellom gammelt HCP-basert og nytt snittscore-basert A–K.
+> steg 6 og en beslutning om hvordan gammelt HCP-basert A–K og nytt snittscore-basert A–K skal henge sammen
+> i drill-filtrering (`kategoriFraHcp` vs. `kategoriFraSnittscore` gir ulik bokstav i dag).
 > Seksjonene under i denne fila er oppdatert til å reflektere den faktiske, bygde tilstanden.
 
 ---
@@ -238,19 +239,14 @@ AK Golf Academy bruker en 5-trinns trenings-pyramide:
 
 ## Tema per produkt
 
-| Produkt | Tema | Kan endres av bruker? |
-|---|---|---|
-| PlayerHQ (`/portal`) | Alltid **lyst** | Nei — fast (B28) |
-| AgencyOS (`/admin`) | **Mørk standard**, valgfri lys | Ja — sol/måne i V2Shell |
-| Forelder / auth | **Lyst** | Nei |
+> **Designregler er bevisst tømt 2026-07-25** — et komplett nytt designsystem utvikles i
+> Open Design. Det under er KUN en beskrivelse av nåværende app-oppførsel i kode,
+> ikke en låst regel, og kan endres fritt når det nye systemet landes.
 
-- **Oppdatert 2026-07-23 (kode-fasit):** Ett tema-system for v2:
-  - Cookie: `ak-v2-tema` (`light` \| `dark`) — **ikke** eldre `ak-admin-theme`.
-  - Attributt: `html[data-v2-tema="light"]` (mørk = attributt fraværende; CSS `:root` er mørk).
-  - Før paint: `src/app/layout.tsx` setter lys for `/portal` **eller** cookie `light`.
-  - PlayerHQ **låses til lys** i `V2Shell` (B28) selv om coach har mørk cookie fra AgencyOS.
-  - Tokens: `src/app/globals.css` + speil `src/lib/v2/tokens.ts`.
-- Full forklaring: `docs/design-system/TEMA-LYS-MORK.md`.
+Nåværende oppførsel i kode: PlayerHQ (`/portal`), AgencyOS (`/admin`) og Forelder
+(`/forelder`) er lys som standard med lys/mørk-bryter (cookie `ak-v2-tema=dark` gir mørk).
+Auth og marketing er mørke. Implementasjon: `src/app/layout.tsx` (før-paint-script) +
+`src/components/v2/shell.tsx` (bryter + synk). Historikk: `docs/design-system/` (UTGÅTT).
 
 ---
 
