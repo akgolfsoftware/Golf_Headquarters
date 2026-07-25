@@ -240,20 +240,21 @@ AK Golf Academy bruker en 5-trinns trenings-pyramide:
 
 | Produkt | Tema | Kan endres av bruker? |
 |---|---|---|
-| PlayerHQ (`/portal`) | Alltid **lyst** | Nei — fast (B28) |
-| AgencyOS (`/admin`) | **Mørk standard**, valgfri lys | Ja — sol/måne i V2Shell |
-| Forelder / auth | **Mørkt** | Nei |
-| Marketing / booking | **Mørkt** | Nei |
+| PlayerHQ (`/portal`) | **Lyst default** | Ja — bryter til mørk (rail + Mer-ark) |
+| AgencyOS (`/admin`) | **Lyst default** | Ja — bryter til mørk (rail + Mer-ark) |
+| Forelder (`/forelder`) | **Lyst default** | Ja — bryter til mørk (rail + Mer-ark) |
+| Auth / marketing / booking | **Mørkt** | Nei |
 
-- **Oppdatert 2026-07-23 (kode-fasit):** Ett tema-system for v2:
-  - Cookie: `ak-v2-tema` (`light` \| `dark`) — **ikke** eldre `ak-admin-theme`.
+- **Låst 2026-07-25 (Anders — erstatter B28):** lys default på alle app-flater, mørk er et
+  bevisst valg per bruker. Begrunnelse: mørk skjerm er vanskelig å lese utendørs i sollys —
+  appen brukes på range og bane. Ett tema-system for v2:
+  - Cookie: `ak-v2-tema` (`light` \| `dark`) — **ikke** eldre `ak-admin-theme`. Mørk kun med `dark`.
   - Attributt: `html[data-v2-tema="light"]` (mørk = attributt fraværende; CSS `:root` er mørk).
-  - Før paint: `src/app/layout.tsx` setter lys for `/portal` **eller** cookie `light`.
-  - PlayerHQ **låses til lys** i `V2Shell` (B28) selv om coach har mørk cookie fra AgencyOS.
+  - Før paint: `src/app/layout.tsx` setter lys default for `/portal`, `/admin` og `/forelder`;
+    marketing/auth er uendret (mørke, lys kun med eksplisitt lys-cookie).
+  - Bryter: synlig på alle v2-flater (IkonRail + Mer-ark); `V2Shell` synker attributtet ved
+    SPA-navigasjon. SSR-snapshot er lys.
   - Tokens: `src/app/globals.css` + speil `src/lib/v2/tokens.ts`.
-- **Korrigert 2026-07-25 (kode er fasit):** Forelder og auth er **mørke** i deployet kode
-  (var feilaktig oppført som lyse); kun `/portal` tvinges lys før paint. Åpent spørsmål:
-  marketing-mockups viser mørk PlayerHQ — B28 gjelder inntil Anders tar stilling.
 - Full forklaring: `docs/design-system/TEMA-LYS-MORK.md`.
 
 ---
