@@ -587,10 +587,10 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Cases | `/(marketing)/cases` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | Coacher | `/(marketing)/coacher` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | · Coach-profil | `/(marketing)/coacher/[slug]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedCoachDetaljV2`.
-| Coaching | `/(marketing)/coaching` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedCoachingV2`.
+| Coaching | `/(marketing)/coaching` | ✓ | --- | ✓ | ✓ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedCoachingV2`. **Kjøpsvei koblet 25. juli:** komponentens lokale `MCta` manglet `href` helt — alle salgs-CTA-er rendret som `<span>` (så klikkbare ut, gjorde ingenting). `MCta` gitt `href`-støtte + ekte `<button>`-fallback (tastaturtilgjengelig), og CTA-ene koblet. Flyt ~ → ✓. «Book en samtale» (3 stk) → `/kontakt`.
 | Junior | `/(marketing)/junior` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedJuniorV2`.
-| Priser | `/(marketing)/priser` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedPriserV2`.
-| PlayerHQ (salgsside) | `/(marketing)/playerhq` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedPlayerHQV2`.
+| Priser | `/(marketing)/priser` | ✓ | --- | ✓ | ✓ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedPriserV2`. **Kjøpsvei koblet 25. juli:** komponentens lokale `MCta` manglet `href` helt — alle salgs-CTA-er rendret som `<span>` (så klikkbare ut, gjorde ingenting). `MCta` gitt `href`-støtte + ekte `<button>`-fallback (tastaturtilgjengelig), og CTA-ene koblet. Flyt ~ → ✓. «Velg Pro» og «Kom i gang gratis» → `/auth/signup`.
+| PlayerHQ (salgsside) | `/(marketing)/playerhq` | ✓ | --- | ✓ | ✓ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedPlayerHQV2`. **Kjøpsvei koblet 25. juli:** komponentens lokale `MCta` manglet `href` helt — alle salgs-CTA-er rendret som `<span>` (så klikkbare ut, gjorde ingenting). `MCta` gitt `href`-støtte + ekte `<button>`-fallback (tastaturtilgjengelig), og CTA-ene koblet. Flyt ~ → ✓. «Prøv gratis i én måned» → `/auth/signup`, «Se priser» → `/priser`.
 | Om oss | `/(marketing)/om-oss` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | Kontakt | `/(marketing)/kontakt` | ✓ | --- | ✓ | ~ | ~ | ✓ |
 | Jobb | `/(marketing)/jobb` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `MarkedJobbV2`.
@@ -796,6 +796,20 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 ---
 
 ## Endringslogg
+
+- 25. juli: **Kjøpsveien var fysisk brutt — nå koblet.** `MarkedPriserV2`, `MarkedCoachingV2` og
+  `MarkedPlayerHQV2` har hver sin lokale kopi av `MCta`, og alle tre manglet `href` i signaturen.
+  Uten `href` rendret komponenten en `<span>` med `cursor: pointer` — knappene så klikkbare ut,
+  men kunne ikke navigere, og TypeScript kunne ikke fange det fordi ingen kunne sende `href` inn.
+  Konsekvens: «Velg Pro», «Kom i gang gratis» (4), «Book en samtale» (3), «Prøv gratis i én måned» (2)
+  og «Se priser» var døde — ingen ekstern bruker kunne kjøpe eller be om kontakt, uansett trafikk.
+  De tre kopiene har nå `href`-støtte og faller tilbake til ekte `<button type="button">` i stedet for
+  `<span>` (tastatur- og skjermleser-tilgjengelig). 11 CTA-er koblet etter samme konvensjon som de
+  81 som allerede virket. Samme feil i den delte `marked-ramme`-`MCta`: `<span>`-fallbacken gjorde at
+  «Meld på» i `StatsUkaV2` (nyhetsbrev) ikke kunne sende skjemaet — fallbacken er nå `<button>` med
+  `type`/`disabled`-støtte. Kilde: full repo-gjennomgang 25. juli.
+- 25. juli: **Betaling utsatt til 1. september 2026** (`src/lib/feature-flags.ts`). Sto på 1. august
+  — seks dager unna, med brutt kjøpsvei og null gjennomførte betalinger i prod.
 
 - 24. juli: **Ny forside (coaching-først)** — `/` selger nå coaching, ikke appen: coach i heroen, «slik jobber vi», pakkene, PlayerHQ som verktøy som følger med, bevis, booking-CTA. Én primær handling (Book en samtale) på hele flaten; nav-CTA-en kan nå overstyres per side (`cta`-prop på `MRamme`). Forsiden bruker den delte marketing-rammen i stedet for sin egen kopi. NB: dette avviker bevisst fra M1 i `docs/skjermtekst/skjerm-tekst-hovedskjermer.md` (app-først hero) — skjermteksten bør oppdateres når Anders har sett flaten.
 

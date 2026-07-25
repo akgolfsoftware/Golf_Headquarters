@@ -332,12 +332,16 @@ export function MCta({
   small,
   icon,
   href,
+  type,
+  disabled,
 }: {
   children: ReactNode;
   ghost?: boolean;
   small?: boolean;
   icon?: string;
   href?: string;
+  type?: "button" | "submit";
+  disabled?: boolean;
 }) {
   const style: CSSProperties = {
     display: "inline-flex",
@@ -368,7 +372,11 @@ export function MCta({
       </Link>
     );
   }
-  return <span style={style}>{inner}</span>;
+  return (
+    <button type={type ?? "button"} disabled={disabled} style={{ ...style, appearance: "none" }}>
+      {inner}
+    </button>
+  );
 }
 
 export function Seksjon({ mobile, children, style }: { mobile: boolean; children: ReactNode; style?: CSSProperties }) {
