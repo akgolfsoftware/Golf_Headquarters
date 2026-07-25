@@ -2,8 +2,8 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { resolveTier, gratisForAlle } from "@/lib/feature-flags";
 
-const FOR_BETALING = new Date("2026-06-15T12:00:00+02:00"); // før 1. august
-const ETTER_BETALING = new Date("2026-08-15T12:00:00+02:00"); // etter 1. august
+const FOR_BETALING = new Date("2026-06-15T12:00:00+02:00"); // før 1. september
+const ETTER_BETALING = new Date("2026-09-15T12:00:00+02:00"); // etter 1. september
 
 const ingenTilgang = {
   tier: "GRATIS" as const,
@@ -13,10 +13,10 @@ const ingenTilgang = {
 };
 
 describe("gratisForAlle (lanserings-vindu)", () => {
-  it("er aktivt før 1. august 2026", () => {
+  it("er aktivt før 1. september 2026", () => {
     assert.equal(gratisForAlle(FOR_BETALING), true);
   });
-  it("er av etter 1. august 2026", () => {
+  it("er av etter 1. september 2026", () => {
     assert.equal(gratisForAlle(ETTER_BETALING), false);
   });
 });
@@ -27,7 +27,7 @@ describe("resolveTier — lanserings-vindu", () => {
   });
 });
 
-describe("resolveTier — etter 1. august (reglene gjelder)", () => {
+describe("resolveTier — etter 1. september (reglene gjelder)", () => {
   it("betaler (tier PRO) ⇒ PRO", () => {
     assert.equal(
       resolveTier({ ...ingenTilgang, tier: "PRO", now: ETTER_BETALING }),
@@ -68,7 +68,7 @@ describe("resolveTier — etter 1. august (reglene gjelder)", () => {
     assert.equal(
       resolveTier({
         ...ingenTilgang,
-        createdAt: new Date("2026-08-10T00:00:00+02:00"), // 5 dager før now
+        createdAt: new Date("2026-09-10T00:00:00+02:00"), // 5 dager før now
         now: ETTER_BETALING,
       }),
       "PRO",

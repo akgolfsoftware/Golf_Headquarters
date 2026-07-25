@@ -240,7 +240,7 @@ export function StatsUkaV2({
                 outline: "none",
               }}
             />
-            <MCta small icon="arrow-right">
+            <MCta small icon="arrow-right" type="submit">
               Meld på
             </MCta>
           </form>
