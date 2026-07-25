@@ -156,7 +156,7 @@ export interface AkseChipProps {
 }
 /* Fysisk/Teknikk/Slag/Spill/Turnering m/ kategorifarge-prikk (sentence-case, ingen uppercase) */
 export function AkseChip({ a }: AkseChipProps) {
-  return <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 5, padding: "3px 7px" }}><span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[a] || T.mut }} />{AKSE_NAVN[a] || a}</span>;
+  return <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: T.rTag, padding: "3px 7px" }}><span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[a] || T.mut }} />{AKSE_NAVN[a] || a}</span>;
 }
 
 export interface MikroMetaProps {
@@ -518,7 +518,7 @@ export interface RadProps {
 }
 export function Rad({ leading, title, sub, meta, trailing, naa, last, onClick }: RadProps) {
   return (
-    <div onClick={onClick} className={onClick ? "v2-row-h" : undefined} style={{ display: "flex", alignItems: "center", gap: 12, padding: onClick ? "11px 10px" : "11px 0", margin: onClick ? "0 -10px" : 0, borderRadius: onClick ? 10 : 0, borderBottom: last ? "none" : `1px solid ${T.border}`, cursor: onClick ? "pointer" : "default" }}>
+    <div onClick={onClick} className={onClick ? "v2-row-h" : undefined} style={{ display: "flex", alignItems: "center", gap: 12, padding: onClick ? "11px 10px" : "11px 0", margin: onClick ? "0 -10px" : 0, borderRadius: onClick ? T.rRow : 0, borderBottom: last ? "none" : `1px solid ${T.border}`, cursor: onClick ? "pointer" : "default" }}>
       {leading}
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{title}</div>

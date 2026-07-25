@@ -273,9 +273,15 @@ export function DesignLabV2() {
         />
 
         <Seksjon
-          tittel="Liste-rad · Rad + tom tilstand"
+          tittel="Domain-kjerne · status-tag, liste-rad, metric strip"
           barn={
             <div style={{ display: "grid", gap: T.gap }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                <Tag tone="lime">Status</Tag>
+                <Tag tone="up">I rute</Tag>
+                <Tag tone="warn">Venter</Tag>
+                <Tag tone="down">Avvik</Tag>
+              </div>
               <Kort pad="8px 16px">
                 <Rad
                   leading={<AvatarInit navn="Eksempel Spiller" />}
@@ -303,6 +309,9 @@ export function DesignLabV2() {
                   sub="EmptyState inne i liste-seksjon — anbefaler, sperrer ikke."
                 />
               </Kort>
+              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.5 }}>
+                Metric strip: se StatStrip over. Radius: tag 8 · rad 12 · kort 20.
+              </p>
             </div>
           }
         />
