@@ -242,7 +242,8 @@ AK Golf Academy bruker en 5-trinns trenings-pyramide:
 |---|---|---|
 | PlayerHQ (`/portal`) | Alltid **lyst** | Nei — fast (B28) |
 | AgencyOS (`/admin`) | **Mørk standard**, valgfri lys | Ja — sol/måne i V2Shell |
-| Forelder / auth | **Lyst** | Nei |
+| Forelder / auth | **Mørkt** | Nei |
+| Marketing / booking | **Mørkt** | Nei |
 
 - **Oppdatert 2026-07-23 (kode-fasit):** Ett tema-system for v2:
   - Cookie: `ak-v2-tema` (`light` \| `dark`) — **ikke** eldre `ak-admin-theme`.
@@ -250,6 +251,9 @@ AK Golf Academy bruker en 5-trinns trenings-pyramide:
   - Før paint: `src/app/layout.tsx` setter lys for `/portal` **eller** cookie `light`.
   - PlayerHQ **låses til lys** i `V2Shell` (B28) selv om coach har mørk cookie fra AgencyOS.
   - Tokens: `src/app/globals.css` + speil `src/lib/v2/tokens.ts`.
+- **Korrigert 2026-07-25 (kode er fasit):** Forelder og auth er **mørke** i deployet kode
+  (var feilaktig oppført som lyse); kun `/portal` tvinges lys før paint. Åpent spørsmål:
+  marketing-mockups viser mørk PlayerHQ — B28 gjelder inntil Anders tar stilling.
 - Full forklaring: `docs/design-system/TEMA-LYS-MORK.md`.
 
 ---
