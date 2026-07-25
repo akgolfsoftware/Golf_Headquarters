@@ -17,9 +17,10 @@ Gjelder til Anders endrer dem.
   plan/regel vises i klarspråk til brukeren; sterkt avvik varsler coach. Aldri skriv «kan ikke
   brytes»-kode eller -tekst — se `plans/skjermplan-master.md` prinsipp 3 for fasit.
 - **App-navn:** Coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt — ikke bruk i ny UI-tekst.
-- **Tema (låst i kode 2026-07, B28):** PlayerHQ **alltid lys** (ingen bryter). AgencyOS **mørk default**
-  med lys/mørk-bryter. Cookie `ak-v2-tema` + `data-v2-tema` på `<html>`. Fasit:
-  `docs/design-system/TEMA-LYS-MORK.md` og `BUSINESS-RULES.md` § Tema. Ikke endre uten Anders' beskjed.
+- **Tema (låst 2026-07-25, erstatter B28):** PlayerHQ, AgencyOS og Forelder er **lys default**
+  med lys/mørk-bryter (mørk = cookie `ak-v2-tema=dark`). Begrunnelse: mørk skjerm er vanskelig
+  å lese utendørs i sollys — appen brukes på range/bane. Auth/marketing er fortsatt mørke.
+  Fasit: `docs/design-system/TEMA-LYS-MORK.md` og `BUSINESS-RULES.md` § Tema.
 - **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen** — alltid fulle
   navn, gamle demo-navn skal bort. Unntak: ekte coach **«Markus Røinås Pedersen»** på markedssidene,
   ikke bytt ham ut.
