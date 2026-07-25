@@ -10,7 +10,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { T, fmtSg, type AkseKey } from "@/lib/v2/tokens";
+import { T, fmtSg, TOM_TALL, type AkseKey } from "@/lib/v2/tokens";
 import { useCountUp, useMount, EASE, reduced } from "@/lib/v2/hooks";
 import { Icon } from "@/components/v2/icon";
 import { HjelpTips } from "@/components/v2/hjelp";
@@ -18,7 +18,7 @@ import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
 
 /* Re-eksport av grunnstein-primitivene så søster-familier kan importere fra "./core"
    (samme overflate som mockupens window.V2). */
-export { T, fmtSg } from "@/lib/v2/tokens";
+export { T, fmtSg, TOM_TALL, fmtTall } from "@/lib/v2/tokens";
 export { useCountUp, useMount } from "@/lib/v2/hooks";
 
 /* Interaksjonspolish (press-scale, fokusring, hover-løft/rad, drag-løft/landing,
@@ -128,7 +128,24 @@ export function SevChip({ s }: SevChipProps) {
     ok: { c: T.up, l: "I rute" },
   };
   const m = map[s] || map.lav;
-  return <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: m.c, background: `color-mix(in srgb,${m.c} 12%,transparent)`, borderRadius: 5, padding: "3px 7px", whiteSpace: "nowrap" }}>{m.l}</span>;
+  return (
+    <span
+      style={{
+        fontFamily: T.mono,
+        fontSize: 8.5,
+        fontWeight: 700,
+        letterSpacing: "0.05em",
+        textTransform: "uppercase",
+        color: m.c,
+        background: `color-mix(in srgb,${m.c} 12%,transparent)`,
+        borderRadius: T.rTag,
+        padding: "3px 7px",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {m.l}
+    </span>
+  );
 }
 
 /* Aksenavn i klarspråk — display only, datanøklene (FYS/TEK/SLAG/SPILL/TURN) er uendret. */
@@ -184,7 +201,8 @@ export function Kort({ tint, eyebrow, action, children, pad = "18px 20px", hover
 /* ── Tall ─────────────────────────────────────────────── */
 export interface TallHeroProps {
   label?: ReactNode;
-  value: number | string;
+  /** null/undefined/"" → em-dash (fasit tom tallverdi). */
+  value: number | string | null | undefined;
   unit?: string;
   delta?: string;
   dir?: "up" | "down";
@@ -195,7 +213,9 @@ export interface TallHeroProps {
   hjelp?: HjelpNokkel;
 }
 export function TallHero({ label, value, unit, delta, dir, sub, size = 56, accent, action, hjelp }: TallHeroProps) {
-  const shown = useCountUp(value);
+  const tom = value === null || value === undefined || value === "";
+  const shown = useCountUp(tom ? 0 : (value as number | string));
+  const display = tom ? TOM_TALL : shown;
   return (
     <div>
       {(label || action) && (
@@ -212,9 +232,9 @@ export function TallHero({ label, value, unit, delta, dir, sub, size = 56, accen
         </div>
       )}
       <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginTop: label ? 14 : 0, flexWrap: "wrap", minWidth: 0 }}>
-        <span style={{ fontFamily: T.mono, fontSize: size, fontWeight: 700, color: accent ? T.lime : T.fg, lineHeight: 0.9, letterSpacing: "-0.03em", fontVariantNumeric: "tabular-nums" }}>{shown}</span>
-        {unit && <span style={{ fontFamily: T.mono, fontSize: Math.round(size * 0.3), color: T.mut }}>{unit}</span>}
-        {delta && <DeltaChip v={delta} dir={dir} />}
+        <span style={{ fontFamily: T.mono, fontSize: size, fontWeight: 700, color: accent && !tom ? T.lime : T.fg, lineHeight: 0.9, letterSpacing: "-0.03em", fontVariantNumeric: "tabular-nums" }}>{display}</span>
+        {unit && !tom && <span style={{ fontFamily: T.mono, fontSize: Math.round(size * 0.3), color: T.mut }}>{unit}</span>}
+        {delta && !tom && <DeltaChip v={delta} dir={dir} />}
       </div>
       {sub && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, display: "block", marginTop: 10 }}>{sub}</span>}
     </div>
@@ -222,7 +242,8 @@ export function TallHero({ label, value, unit, delta, dir, sub, size = 56, accen
 }
 export interface KpiFlisProps {
   label?: ReactNode;
-  value: number | string;
+  /** null/undefined/"" → em-dash. */
+  value: number | string | null | undefined;
   delta?: string;
   dir?: "up" | "down";
   tint?: boolean;
@@ -234,8 +255,9 @@ export interface KpiFlisProps {
   instant?: boolean;
 }
 export function KpiFlis({ label, value, delta, dir, tint, varsle, hjelp, instant }: KpiFlisProps) {
-  const animert = useCountUp(value);
-  const shown = instant ? String(value) : animert;
+  const tom = value === null || value === undefined || value === "";
+  const animert = useCountUp(tom ? 0 : (value as number | string));
+  const shown = tom ? TOM_TALL : instant ? String(value) : animert;
   return (
     <Kort tint={tint || varsle}>
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -244,7 +266,7 @@ export function KpiFlis({ label, value, delta, dir, tint, varsle, hjelp, instant
       </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 12, flexWrap: "wrap", minWidth: 0 }}>
         <span style={{ fontFamily: T.mono, fontSize: 38, fontWeight: 700, color: T.fg, lineHeight: 0.9, fontVariantNumeric: "tabular-nums" }}>{shown}</span>
-        {delta && <DeltaChip v={delta} dir={dir} />}
+        {delta && !tom && <DeltaChip v={delta} dir={dir} />}
       </div>
     </Kort>
   );

@@ -15,9 +15,13 @@ import {
   TallHero,
   TomTilstand,
   DeltaChip,
+  KpiFlis,
+  Rad,
+  AvatarInit,
 } from "@/components/v2/core";
 import { Inndata } from "@/components/v2/skjema";
 import { Icon } from "@/components/v2/icon";
+import { StatStrip } from "@/components/v2/spesialviz";
 
 type V2Tema = "dark" | "light";
 
@@ -225,29 +229,79 @@ export function DesignLabV2() {
         />
 
         <Seksjon
-          tittel="Tall (forhåndsvisning KPI)"
+          tittel="KPI / tall · eksempel (ikke produksjonsdata)"
           barn={
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: T.gap }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: T.gap }}>
+                <KpiFlis label="Eksempel SG total" value={0.4} delta="+0,2" dir="up" instant />
+                <KpiFlis label="Eksempel SG putting" value={-0.3} delta="−0,1" dir="down" instant />
+                <KpiFlis label="Mangler data" value={null} />
+              </div>
               <Kort>
-                <TallHero label="Eksempel SG" value={0.4} delta="+0,2" dir="up" size={40} sub="Lab-demo · ikke produksjonsdata" />
+                <TallHero
+                  label="Eksempel hero-tall"
+                  value={74}
+                  unit="slag"
+                  delta="−1,2"
+                  dir="up"
+                  size={40}
+                  sub="Lab-demo · delta bruker --v2-up / --v2-down, aldri lime"
+                />
               </Kort>
-              <Kort>
-                <Caps size={9}>Tom verdi</Caps>
-                <div
-                  style={{
-                    fontFamily: T.mono,
-                    fontSize: 38,
-                    fontWeight: 700,
-                    color: T.fg,
-                    marginTop: 12,
-                    fontVariantNumeric: "tabular-nums",
-                  }}
-                >
-                  {fmtTall(null)}
-                </div>
-                <div style={{ marginTop: 10 }}>
-                  <DeltaChip v="−0,3" dir="down" />
-                </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+                <Caps size={9}>Delta</Caps>
+                <DeltaChip v="+0,4" dir="up" />
+                <DeltaChip v="−0,3" dir="down" />
+                <span style={{ fontFamily: T.mono, fontSize: 12, color: T.mut }}>tom = {fmtTall(null)}</span>
+              </div>
+            </div>
+          }
+        />
+
+        <Seksjon
+          tittel="Metric strip · StatStrip (eksempel)"
+          barn={
+            <StatStrip
+              items={[
+                { l: "Runder", v: "14" },
+                { l: "SG Total", v: "+1,2", delta: "+0,4", dir: "up" },
+                { l: "Putting", v: null },
+                { l: "Nærspill", v: "−0,2", delta: "−0,1", dir: "down" },
+              ]}
+            />
+          }
+        />
+
+        <Seksjon
+          tittel="Liste-rad · Rad + tom tilstand"
+          barn={
+            <div style={{ display: "grid", gap: T.gap }}>
+              <Kort pad="8px 16px">
+                <Rad
+                  leading={<AvatarInit navn="Eksempel Spiller" />}
+                  title="Eksempel spiller"
+                  sub="Lab-rad · ikke produksjonsdata"
+                  meta={<Tag tone="up">I rute</Tag>}
+                  last
+                />
+                <Rad
+                  leading={<AvatarInit navn="Tom Data" />}
+                  title="Uten meta"
+                  sub={`Tom tall: ${fmtTall(null)}`}
+                  trailing={
+                    <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+                      {fmtTall(null)}
+                    </span>
+                  }
+                  last
+                />
+              </Kort>
+              <Kort pad="8px">
+                <TomTilstand
+                  icon="users"
+                  title="Ingen rader i listen"
+                  sub="EmptyState inne i liste-seksjon — anbefaler, sperrer ikke."
+                />
               </Kort>
             </div>
           }
