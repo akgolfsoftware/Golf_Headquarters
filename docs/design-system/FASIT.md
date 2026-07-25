@@ -1,6 +1,6 @@
 # Designsystem-fasit — AK Golf HQ v2
 
-> **Låst 2026-07-20 · korrigert 2026-07-25 («kode er fasit»).** Ved konflikt vinner det som er **bygget og deployet**:
+> **Låst 2026-07-20 · korrigert 2026-07-25 («kode er fasit» + ny temafasit).** Ved konflikt vinner det som er **bygget og deployet**:
 > `src/app/globals.css` (`--v2-*`) + `src/lib/v2/tokens.ts` + tema-logikken i rot-layout. Denne fila beskriver den
 > tilstanden — ikke en eldre plan. Claude Design er historisk referanse, ikke konfliktvinner.
 > Tema-detalj: [`TEMA-LYS-MORK.md`](./TEMA-LYS-MORK.md). Aldri gjett farger eller navn.
@@ -18,19 +18,19 @@
 
 | Produkt | Rute | Tema | Bryter? |
 |---|---|---|---|
-| **PlayerHQ** | `/portal` | **Alltid lys** (B28) — håndhevet i rot-layout + `V2Shell` | Nei |
-| **AgencyOS** | `/admin` | Lys/mørk, **standard mørk** | Ja (cookie `ak-v2-tema`) |
-| **Forelder** | `/forelder` | **Mørk** (V2Shell, ingen lys-tvang i kode) | Nei |
+| **PlayerHQ** | `/portal` | **Lys default** | Ja — bryter til mørk (rail + Mer-ark) |
+| **AgencyOS** | `/admin` | **Lys default** | Ja — bryter til mørk (rail + Mer-ark) |
+| **Forelder** | `/forelder` | **Lys default** | Ja — bryter til mørk (rail + Mer-ark) |
 | **Auth** | `/auth` | **Mørk** | Nei |
 | **Marketing / booking** | `akgolf.no`, `/booking`, `/priser` | **Mørk** | N/A |
 
-- Cookie/attributt: `ak-v2-tema` + `html[data-v2-tema="light"]` — se [`TEMA-LYS-MORK.md`](./TEMA-LYS-MORK.md).
-- «Mørk-først» = v2 CSS `:root` er mørk — **ikke** at PlayerHQ er mørk.
-- PlayerHQ tvinges lys i `V2Shell` selv om coach har mørk preferanse fra AgencyOS.
-
-> **Åpent spørsmål (2026-07-25):** marketing-mockupene viser PlayerHQ i mørk drakt, mens B28
-> håndhever lys `/portal` i kode. Avklar om B28 skal oppheves — inntil avgjort er **lys kode-fasit**,
-> og mockupene bør rettes eller merkes som fremtidig retning.
+- Cookie/attributt: `ak-v2-tema` (`light|dark`) + `html[data-v2-tema="light"]` — se [`TEMA-LYS-MORK.md`](./TEMA-LYS-MORK.md).
+- **Temafasit (Anders, 2026-07-25 — opphever B28):** lys default på alle app-flater; mørk er et
+  bevisst valg per bruker. **Begrunnelse:** mørk skjerm er vanskelig å lese utendørs i sollys —
+  appen brukes på range og bane.
+- «Lys-først» gjelder kun app-flatene (`/portal`, `/admin`, `/forelder`) — marketing og auth er
+  fortsatt mørke og styres ikke av bryteren.
+- Merk: mørke PlayerHQ-mockups i marketing viser nå **bryter-tilstanden**, ikke default.
 
 **Navn (låst):** AgencyOS (aldri «CoachHQ»). PlayerHQ. Presisjonsstrategi (aldri «DECADE» i UI).
 
@@ -299,15 +299,20 @@ Aldri: VibeUI/ekstern stil som kilde. Unntak bare etter ny 3-veis-test med Ander
 
 ## 10. Endringslogg
 
-### 2026-07-25 — «Fasit er ikke fasit»-korrigering (GO Anders i samtale)
+### 2026-07-25 — «Fasit er ikke fasit»-korrigering + ny temafasit (GO Anders i samtale)
 
 - **Prinsipp låst: kode er fasit.** Ved konflikt mellom dette dokumentet og deployet kode
   vinner koden — og dokumentet rettes (ikke omvendt). Claude Design nedgradert til
   historisk referanse.
-- **Tema-tabell rettet mot faktisk deployet tilstand:** Auth og Forelder er **mørke**
-  (var oppført som lyse), og alle marketing-/bookingflater er mørke. PlayerHQ er fortsatt
-  lys (B28 håndheves i rot-layout + V2Shell) — men marketing-mockups viser mørk PlayerHQ:
-  **åpent spørsmål** om B28 skal oppheves. Inntil avgjort: lys er kode-fasit.
+- **NY TEMAFASIT (Anders, samme dag — opphever B28):** PlayerHQ, AgencyOS og Forelder er
+  **lys default med bryter til mørk**. Begrunnelse: mørk skjerm er vanskelig å lese utendørs
+  i sollys — appen brukes på range og bane. Implementert i `src/app/layout.tsx` (før-paint-
+  script: lys default på `/portal`/`/admin`/`/forelder`, mørk kun med `ak-v2-tema=dark`) og
+  `src/components/v2/shell.tsx` (bryter synlig på alle v2-flater; SSR-snapshot lys).
+  Auth/marketing forblir mørke. Mørke marketing-mockups viser nå bryter-tilstanden.
+- **Tema-tabell rettet mot faktisk deployet tilstand:** Auth og Forelder var oppført som
+  lyse; auth er mørk, og Forelder ble i praksis tvunget lys av V2Shell (mørk blits før
+  hydration — fjernet av den nye lys-defaulten i inline-scriptet).
 - **Status oppdatert:** steg 4–7 i utviklingsplanen er gjennomført (0 design-GAP 2026-07-24).
 - **Kjent gjenstående arbeid (steg 8):**
   - Token-konvergens er halvveis — 64 filer på `--v2-*`, 67 filer bruker fortsatt gamle
