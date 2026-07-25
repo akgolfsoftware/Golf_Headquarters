@@ -310,7 +310,7 @@ export function PillTabs({ tabs, value, onChange }: PillTabsProps) {
         {tabs.map((t) => {
           const on = value === t.id;
           return (
-            <button key={t.id} className="v2-press v2-focus" onClick={() => onChange && onChange(t.id)} style={{ appearance: "none", cursor: "pointer", fontFamily: T.ui, fontSize: 13, fontWeight: 600, padding: "8px 15px", borderRadius: 9999, color: on ? T.onLime : T.fg2, background: on ? T.lime : T.panel2, border: `1px solid ${on ? "transparent" : T.border}`, whiteSpace: "nowrap" }}>{t.l}</button>
+            <button key={t.id} className="v2-press v2-focus" onClick={() => onChange && onChange(t.id)} style={{ appearance: "none", cursor: "pointer", fontFamily: T.ui, fontSize: 13, fontWeight: 600, padding: "8px 15px", minHeight: 40, minWidth: 44, borderRadius: T.rPill, color: on ? T.onLime : T.fg2, background: on ? T.lime : T.panel2, border: `1px solid ${on ? "transparent" : T.border}`, whiteSpace: "nowrap" }}>{t.l}</button>
           );
         })}
       </div>
