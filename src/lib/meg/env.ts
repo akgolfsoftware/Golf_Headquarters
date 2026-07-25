@@ -35,35 +35,9 @@ export function readMegEnv(
   };
 }
 
-// Embeddings-env (Fase 2) — valgfri, adskilt fra kjerne-env så semantisk
-// søk kan deaktiveres uten å brekke boten. Default: Voyage voyage-3-lite (512 dim).
-const embeddingsEnvSchema = z.object({
-  MEG_EMBEDDINGS_API_KEY: z.string().min(1),
-  MEG_EMBEDDINGS_MODEL: z.string().default("voyage-3-lite"),
-  MEG_EMBEDDINGS_BASE_URL: z
-    .string()
-    .url()
-    .default("https://api.voyageai.com/v1/embeddings"),
-});
-
-export type MegEmbeddingsEnv = {
-  apiKey: string;
-  model: string;
-  baseUrl: string;
-};
-
-/** Leser embeddings-env defensivt. Returnerer null hvis ikke konfigurert. */
-export function readMegEmbeddingsEnv(
-  source: NodeJS.ProcessEnv | Record<string, string | undefined> = process.env,
-): MegEmbeddingsEnv | null {
-  const parsed = embeddingsEnvSchema.safeParse(source);
-  if (!parsed.success) return null;
-  return {
-    apiKey: parsed.data.MEG_EMBEDDINGS_API_KEY,
-    model: parsed.data.MEG_EMBEDDINGS_MODEL,
-    baseUrl: parsed.data.MEG_EMBEDDINGS_BASE_URL,
-  };
-}
+// Embeddings gikk fra Voyage (egen env) til Supabase Edge Function «embed»
+// 2026-07-25 — trenger kun kjerne-env (URL + service-role), se embeddings.ts.
+// MEG_EMBEDDINGS_* er ikke lenger i bruk.
 
 // Ollama-env (lokal/gratis modell for enkle oppgaver). Valgfri — aktiveres kun
 // når MEG_OLLAMA_URL er satt. Uten den faller alt tilbake til Claude (som i dag).

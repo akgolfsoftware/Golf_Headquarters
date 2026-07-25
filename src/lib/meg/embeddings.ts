@@ -1,51 +1,48 @@
 import "server-only";
-import { readMegEmbeddingsEnv } from "@/lib/meg/env";
+import { readMegEnv } from "@/lib/meg/env";
 
-export const EMBEDDING_DIM = 512;
+// Supabase innebygd gte-small via Edge Function «embed» (supabase-meg/functions/embed).
+// Byttet fra Voyage 2026-07-25 — gratis, og samme modell for query (her) og
+// dokumenter (scripts/meg-index-vaults.ts). Endres dimensjonen, må me_memory/
+// me_knowledge-kolonnene og match-RPC-ene endres (supabase-meg/migrations/0007).
+export const EMBEDDING_DIM = 384;
 
-type VoyageResponse = {
-  data?: { embedding: number[]; index: number }[];
+type EmbedResponse = {
+  embeddings?: number[][];
 };
 
 /**
- * Embedder tekst(er) via Voyage AI. input_type skiller spørringer fra
- * dokumenter (bedre treff). Returnerer null hvis embeddings ikke er
- * konfigurert eller API-et feiler — kallere må håndtere null (fallback til
- * nøkkelord-søk).
+ * Embedder tekst(er) via Meg-Supabase Edge Function «embed» (gte-small).
+ * inputType beholdes for API-kompatibilitet, men gte-small skiller ikke
+ * query/dokument. Returnerer null hvis Meg ikke er konfigurert eller kallet
+ * feiler — kallere må håndtere null (fallback til nøkkelord-søk).
  */
 export async function embed(
   texts: string | string[],
-  inputType: "query" | "document" = "query",
+  _inputType: "query" | "document" = "query",
 ): Promise<number[][] | null> {
-  const env = readMegEmbeddingsEnv();
+  const env = readMegEnv();
   if (!env) return null;
 
   const input = Array.isArray(texts) ? texts : [texts];
   if (input.length === 0) return [];
 
   try {
-    const res = await fetch(env.baseUrl, {
+    const res = await fetch(`${env.supabaseUrl}/functions/v1/embed`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${env.apiKey}`,
+        Authorization: `Bearer ${env.supabaseServiceRoleKey}`,
       },
-      body: JSON.stringify({
-        input,
-        model: env.model,
-        input_type: inputType,
-        output_dimension: EMBEDDING_DIM,
-      }),
+      body: JSON.stringify({ input }),
     });
     if (!res.ok) {
-      console.error("[meg/embeddings] API-feil", res.status, await res.text());
+      console.error("[meg/embeddings] embed-funksjon feilet", res.status, await res.text());
       return null;
     }
-    const json = (await res.json()) as VoyageResponse;
-    if (!json.data) return null;
-    return json.data
-      .sort((a, b) => a.index - b.index)
-      .map((d) => d.embedding);
+    const json = (await res.json()) as EmbedResponse;
+    if (!json.embeddings) return null;
+    return json.embeddings;
   } catch (err) {
     console.error("[meg/embeddings] fetch feilet", err);
     return null;
@@ -62,5 +59,5 @@ export async function embedOne(
 }
 
 export function isEmbeddingsEnabled(): boolean {
-  return readMegEmbeddingsEnv() !== null;
+  return readMegEnv() !== null;
 }

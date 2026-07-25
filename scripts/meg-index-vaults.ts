@@ -2,10 +2,16 @@
  * meg-index-vaults.ts — indekserer kunnskaps-vaultene til Meg-DB (me_knowledge).
  *
  * Kjøres på Mac (IKKE Vercel) via LaunchAgent. Self-contained: leser env via
- * dotenv, snakker direkte med Meg-Supabase + Voyage. Importerer IKKE @/lib/meg/*
+ * dotenv, snakker direkte med Meg-Supabase. Importerer IKKE @/lib/meg/*
  * (de har "server-only" og ville krevd react-server-condition).
  *
- * Indekserer KUN tekst fra ~/Developer/ak-brain + ~/Developer/ak-second-brain.
+ * Embeddings: Supabase Edge Function «embed» (gte-small, 384 dim) — samme modell
+ * som query-siden i src/lib/meg/embeddings.ts. Byttet fra Voyage 2026-07-25.
+ *
+ * Vault-stier: AK_BRAIN_PATH (default ~/ak-brain) og AK_SECOND_BRAIN_PATH
+ * (default ~/Developer/ak-second-brain) — samme konvensjon som
+ * scripts/meg-tilbakeskriving/run.ts.
+ *
  * Hard sperre på secrets/binær/kode. Hopper over uendrede biter via content_hash.
  *
  * Kjør: npx tsx scripts/meg-index-vaults.ts
@@ -17,11 +23,19 @@ import { readFile, readdir, stat } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join, relative, extname } from "node:path";
 
-const EMBEDDING_DIM = 512;
+// Må matche vector(384)-kolonnene i supabase-meg/migrations/0007 og
+// EMBEDDING_DIM i src/lib/meg/embeddings.ts.
+const EMBEDDING_DIM = 384;
+
+// Edge-funksjonen tar maks 64 tekster per kall (se supabase-meg/functions/embed).
+const EMBED_BATCH = 32;
 
 const VAULTS: { name: "ak-brain" | "ak-second-brain"; dir: string }[] = [
-  { name: "ak-brain", dir: join(homedir(), "Developer", "ak-brain") },
-  { name: "ak-second-brain", dir: join(homedir(), "Developer", "ak-second-brain") },
+  { name: "ak-brain", dir: process.env.AK_BRAIN_PATH ?? join(homedir(), "ak-brain") },
+  {
+    name: "ak-second-brain",
+    dir: process.env.AK_SECOND_BRAIN_PATH ?? join(homedir(), "Developer", "ak-second-brain"),
+  },
 ];
 
 // Mapper som ALDRI åpnes (secrets, kode, config, binær-kataloger).
@@ -46,7 +60,10 @@ async function samleFiler(root: string, dir: string): Promise<string[]> {
   let entries;
   try {
     entries = await readdir(dir, { withFileTypes: true });
-  } catch {
+  } catch (err) {
+    // Utilgjengelig undermappe skal ikke velte kjøringen, men heller ikke
+    // forsvinne stille — vault-roten sjekkes separat i main().
+    console.warn(`[index] hopper over utilgjengelig mappe ${dir}:`, (err as Error).message);
     return out;
   }
   for (const e of entries) {
@@ -86,54 +103,79 @@ function hashOf(s: string): string {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+/**
+ * Embedder tekster via Edge Function «embed» i batcher på EMBED_BATCH.
+ * Enkel retry på 429/5xx. Returnerer null ved varig feil.
+ */
 async function embedBatch(
   texts: string[],
-  apiKey: string,
-  model: string,
-  baseUrl: string,
+  supabaseUrl: string,
+  serviceKey: string,
 ): Promise<number[][] | null> {
   if (texts.length === 0) return [];
-  // Voyage gratisnivå uten betalingsmetode = 3 RPM. Vent og prøv igjen på 429
-  // i stedet for å droppe biter, så indekseringen alltid fullfører.
-  const maxForsok = 6;
-  for (let forsok = 1; forsok <= maxForsok; forsok++) {
-    const res = await fetch(baseUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({
-        input: texts,
-        model,
-        input_type: "document",
-        output_dimension: EMBEDDING_DIM,
-      }),
-    });
-    if (res.status === 429 && forsok < maxForsok) {
-      const ventS = 22 * forsok; // 3 RPM → ~20s mellom kall, øker ved gjentatt 429
-      console.log(`[index] 429 ratelimit — venter ${ventS}s (forsøk ${forsok}/${maxForsok})`);
-      await sleep(ventS * 1000);
-      continue;
+  const alle: number[][] = [];
+  for (let start = 0; start < texts.length; start += EMBED_BATCH) {
+    const slice = texts.slice(start, start + EMBED_BATCH);
+    const maxForsok = 3;
+    let vektorer: number[][] | null = null;
+    for (let forsok = 1; forsok <= maxForsok; forsok++) {
+      const res = await fetch(`${supabaseUrl}/functions/v1/embed`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${serviceKey}`,
+        },
+        body: JSON.stringify({ input: slice }),
+      });
+      if ((res.status === 429 || res.status >= 500) && forsok < maxForsok) {
+        const ventS = 5 * forsok;
+        console.log(`[index] ${res.status} fra embed — venter ${ventS}s (forsøk ${forsok}/${maxForsok})`);
+        await sleep(ventS * 1000);
+        continue;
+      }
+      if (!res.ok) {
+        console.error("[index] embed-funksjon feilet", res.status, await res.text());
+        return null;
+      }
+      const json = (await res.json()) as { embeddings?: number[][] };
+      if (!json.embeddings || json.embeddings.length !== slice.length) {
+        console.error("[index] embed-funksjon ga uventet svar");
+        return null;
+      }
+      if (json.embeddings[0]?.length !== EMBEDDING_DIM) {
+        console.error(
+          `[index] embed-dimensjon ${json.embeddings[0]?.length} != forventet ${EMBEDDING_DIM}`,
+        );
+        return null;
+      }
+      vektorer = json.embeddings;
+      break;
     }
-    if (!res.ok) {
-      console.error("[index] Voyage-feil", res.status, await res.text());
-      return null;
-    }
-    const json = (await res.json()) as { data?: { embedding: number[]; index: number }[] };
-    if (!json.data) return null;
-    return json.data.sort((a, b) => a.index - b.index).map((d) => d.embedding);
+    if (!vektorer) return null;
+    alle.push(...vektorer);
   }
-  return null;
+  return alle;
 }
 
 async function main() {
   const url = process.env.MEG_SUPABASE_URL;
   const key = process.env.MEG_SUPABASE_SERVICE_ROLE_KEY;
-  const apiKey = process.env.MEG_EMBEDDINGS_API_KEY;
-  const model = process.env.MEG_EMBEDDINGS_MODEL ?? "voyage-3-lite";
-  const baseUrl = process.env.MEG_EMBEDDINGS_BASE_URL ?? "https://api.voyageai.com/v1/embeddings";
 
-  if (!url || !key || !apiKey) {
-    console.error("Mangler MEG_SUPABASE_URL / MEG_SUPABASE_SERVICE_ROLE_KEY / MEG_EMBEDDINGS_API_KEY");
+  if (!url || !key) {
+    console.error("Mangler MEG_SUPABASE_URL / MEG_SUPABASE_SERVICE_ROLE_KEY");
     process.exit(1);
+  }
+
+  // Feil høyt hvis en vault-rot mangler — en stille tom kjøring ville sett ut
+  // som suksess mens indeksen råtner.
+  for (const vault of VAULTS) {
+    try {
+      const st = await stat(vault.dir);
+      if (!st.isDirectory()) throw new Error("ikke en mappe");
+    } catch {
+      console.error(`[${vault.name}] vault-rot mangler eller er utilgjengelig: ${vault.dir}`);
+      process.exit(1);
+    }
   }
 
   const db = createClient(url, key, { auth: { persistSession: false } });
@@ -143,7 +185,7 @@ async function main() {
 
   for (const vault of VAULTS) {
     const filer = await samleFiler(vault.dir, vault.dir);
-    console.log(`[${vault.name}] ${filer.length} filer`);
+    console.log(`[${vault.name}] ${filer.length} filer (${vault.dir})`);
 
     for (const fil of filer) {
       const relPath = relative(vault.dir, fil);
@@ -180,9 +222,8 @@ async function main() {
 
       const vektorer = await embedBatch(
         tilEmbed.map((t) => t.content),
-        apiKey,
-        model,
-        baseUrl,
+        url,
+        key,
       );
       if (!vektorer) continue;
 
