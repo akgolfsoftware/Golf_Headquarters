@@ -1,14 +1,11 @@
 /**
- * AK Golf HQ v2 — token-speil (retning C «Presis», mørk først).
- * 1:1 med `T`-objektet i mockup-kilden (v2-core.jsx). Komponentene i
- * src/components/v2/ bruker dette for inline styles. DS2 (2026-07-12):
- * fargeverdiene bor som --v2-*-variabler i src/app/globals.css med mørk
- * (default) + lys skala — veksles via data-v2-tema på <html>.
+ * AK Golf HQ v2 — token-speil (Open Design showroom-fasit, Fase F).
+ * Verdiene bor som --v2-* i src/app/globals.css: LYS default på :root,
+ * mørk via html[data-v2-tema="dark"]. Komponenter bruker T for inline styles.
  * Endres kun ved designbeslutning.
  */
 export const T = {
-  // Flater — DS2 (2026-07-12): verdiene bor i globals.css som --v2-* med
-  // mørk (default, lysnet) + lys skala; veksles via data-v2-tema på <html>.
+  // Flater — lys default; mørk via data-v2-tema="dark"
   bg: "var(--v2-bg)",
   panel: "var(--v2-panel)",
   panel2: "var(--v2-panel2)",
@@ -24,8 +21,9 @@ export const T = {
   fg: "var(--v2-fg)",
   fg2: "var(--v2-fg2)",
   mut: "var(--v2-mut)",
-  // Merkevare + signal (lys modus: lime-aksenten blir forest — aldri lime-på-lys)
+  // Merkevare + signal (lys: lime-token = forest — aldri lime-på-lys CTA)
   forest: "var(--v2-forest)",
+  forestSoft: "var(--v2-forest-soft)",
   lime: "var(--v2-lime)",
   onLime: "var(--v2-on-lime)",
   up: "var(--v2-up)",
@@ -71,9 +69,11 @@ export const T = {
   bodySm: 12,
   caps: 10,
   capsSm: 9,
-  // Geometri
+  // Geometri (fasit: tag 8 → input/row 12 → card 20)
+  rTag: 8,
   rCard: 20,
   rRow: 12,
+  rInput: 12,
   rPill: 9999,
   gap: 16,
   maxw: 1120,
@@ -88,4 +88,13 @@ export type AkseKey = keyof typeof T.ax;
 /** SG-formatering: komma-desimal + fortegn (+/−), 1 desimal. Speil av mockupens fmtSg. */
 export function fmtSg(v: number): string {
   return (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1).replace(".", ",");
+}
+
+/** Tom tallverdi i UI — alltid em-dash (fasit). */
+export const TOM_TALL = "—";
+
+/** Returner em-dash for null/undefined/tom streng; ellers verdien. */
+export function fmtTall(v: number | string | null | undefined): string {
+  if (v === null || v === undefined || v === "") return TOM_TALL;
+  return String(v);
 }

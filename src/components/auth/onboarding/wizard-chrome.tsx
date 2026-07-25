@@ -27,8 +27,9 @@ import { LogoAK } from "@/components/v2/core";
 // til "light" så --v2-*-variablene resolver lys skala, uansett cookie.
 export function VeiviserFlate({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    if (document.documentElement.getAttribute("data-v2-tema") !== "light") {
-      document.documentElement.setAttribute("data-v2-tema", "light");
+    // Fase F: lys er CSS-default — fjern dark-attributt (ikke sett light)
+    if (document.documentElement.getAttribute("data-v2-tema") === "dark") {
+      document.documentElement.removeAttribute("data-v2-tema");
       window.dispatchEvent(new Event("ak-v2-tema"));
     }
   }, []);
