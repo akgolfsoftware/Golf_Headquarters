@@ -153,6 +153,9 @@ function BekreftSkjema({
         </div>
       )}
 
+      <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55, margin: 0 }}>
+        Avbestilling senest 24 timer før start gir full refusjon der det er betalt. Nærmere frist kan økten gå tapt — se vilkår i e-postbekreftelsen.
+      </p>
       <Knapp type="submit" full disabled={pending} style={{ minHeight: 48, fontSize: 14 }}>
         {pending ? (
           "Sender til betaling…"
