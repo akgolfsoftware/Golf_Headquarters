@@ -797,6 +797,17 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 
 ## Endringslogg
 
+- 25. juli: **Treffpunkt-kartet merket ærlig (beholdt, ikke slettet — Anders' beslutning).**
+  «Strike heatmap · kontaktpunkt» i coachens SG Hub het og så ut som en måling, men prikkene er
+  beregnet: vannrett fra køllebladvinkel, loddrett fra smash factor. TrackMan rapporterer ikke
+  treffpunkt i filene vi leser. Kortet heter nå «Treffpunkt · beregnet» og har «?»-forklaring
+  (`strikeHeatmap` i `src/lib/v2/hjelpetekster.ts`) som sier rett ut at det er regnet ut, hvordan,
+  og at tape/spray er veien til ekte måling. UÅPNET: `classifyZone()` i
+  `src/lib/sg-hub/strike-pattern.ts` klassifiserer smash > 1,48 som FAT — motsatt av virkeligheten
+  og av appens egen `smashFactor`-hjelpetekst («rundt 1,50 med driver er svært godt»). Sonene er
+  dessuten køllenøytrale, mens smash betyr helt ulike ting for driver (~1,50) og wedge (~1,25).
+  Krever Anders' fagvurdering av terskler per kølle før retting.
+
 - 25. juli: **Kjøpsveien var fysisk brutt — nå koblet.** `MarkedPriserV2`, `MarkedCoachingV2` og
   `MarkedPlayerHQV2` har hver sin lokale kopi av `MCta`, og alle tre manglet `href` i signaturen.
   Uten `href` rendret komponenten en `<span>` med `cursor: pointer` — knappene så klikkbare ut,
