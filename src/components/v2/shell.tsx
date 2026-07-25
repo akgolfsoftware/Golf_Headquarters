@@ -165,7 +165,8 @@ type V2Tema = "dark" | "light";
 
 function lesTema(): V2Tema {
   if (typeof document === "undefined") return "light";
-  return document.documentElement.getAttribute("data-v2-tema") === "light" ? "light" : "dark";
+  // Fase F: CSS default = lys; mørk kun med eksplisitt data-v2-tema="dark"
+  return document.documentElement.getAttribute("data-v2-tema") === "dark" ? "dark" : "light";
 }
 
 function abonnerTema(cb: () => void) {
@@ -184,7 +185,7 @@ function useV2Tema() {
   const tema = useSyncExternalStore<V2Tema>(abonnerTema, lesTema, () => "light");
   const bytt = () => {
     const neste: V2Tema = lesTema() === "light" ? "dark" : "light";
-    if (neste === "light") document.documentElement.setAttribute("data-v2-tema", "light");
+    if (neste === "dark") document.documentElement.setAttribute("data-v2-tema", "dark");
     else document.documentElement.removeAttribute("data-v2-tema");
     document.cookie = `ak-v2-tema=${neste};path=/;max-age=31536000;samesite=lax`;
     window.dispatchEvent(new Event("ak-v2-tema"));
@@ -605,7 +606,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
     const cookieMork = document.cookie.split("; ").some((c) => c === "ak-v2-tema=dark");
     const onsket: V2Tema = cookieMork ? "dark" : "light";
     if (lesTema() !== onsket) {
-      if (onsket === "light") document.documentElement.setAttribute("data-v2-tema", "light");
+      if (onsket === "dark") document.documentElement.setAttribute("data-v2-tema", "dark");
       else document.documentElement.removeAttribute("data-v2-tema");
       window.dispatchEvent(new Event("ak-v2-tema"));
     }

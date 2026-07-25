@@ -727,15 +727,55 @@ em.editorial {
 }
 
 /* ============================================================
- * v2-TEMA (DS2, 2026-07-12) — dobbel skala for v2-flatene.
- * Kilde: lib/v2/tokens.ts leser var(--v2-*) — komponentene røres ikke.
- * Mørk = default (LYSNET vs original retning C: paneler opp, kontrast opp
- * — «for mørk i sol»-fiksen). Lys = cream/hvit med forest som aksent;
- * regel: aldri lime som tekst/aksent på lys flate (lime → forest i lys).
- * Veksles via data-v2-tema på <html> (cookie ak-v2-tema, satt før paint
- * av inline-script i rot-layout + veksleren i V2Shell).
+ * v2-TEMA (Fase F PR1, 2026-07-26) — Open Design showroom-fasit.
+ * LYS = app-default på :root. MØRK = html[data-v2-tema="dark"].
+ * Cookie ak-v2-tema + inline-script i rot-layout (før paint).
+ * Lys: primær-CTA = forest (lime-token remappes til forest).
+ * Mørk: primær-CTA = lime. Delta/opp-ned = --v2-up / --v2-down (aldri lime).
  * ============================================================ */
 :root {
+  /* Lys (app-default) — 1:1 showroom assets/ds.css */
+  --v2-bg: #f2f1ea;
+  --v2-panel: #ffffff;
+  --v2-panel2: #f7f6f0;
+  --v2-panel3: #ecebe2;
+  --v2-tint: linear-gradient(140deg, rgba(0, 88, 64, 0.10) 0%, rgba(255, 255, 255, 0) 55%);
+  --v2-niva-grad: linear-gradient(90deg, #c9d4cc 0%, #005840 45%, #6e9a4e 75%, #a8ca20 100%);
+  --v2-vignett: rgba(0, 88, 64, 0.07);
+  --v2-border: rgba(16, 22, 19, 0.10);
+  --v2-border-s: rgba(16, 22, 19, 0.19);
+  --v2-track: rgba(16, 22, 19, 0.10);
+  --v2-fg: #171b18;
+  --v2-fg2: #4a4f4a;
+  --v2-mut: #62675f;
+  --v2-forest: #005840;
+  --v2-forest-soft: rgba(0, 88, 64, 0.12);
+  --v2-lime: #005840; /* lys: aksenten ER forest — aldri lime-på-lys CTA */
+  --v2-on-lime: #ffffff;
+  --v2-up: #1a7745;
+  --v2-down: #b4461c;
+  --v2-warn: #8a6109;
+  --v2-info: #1f6cb0;
+  --v2-ax-fys: #1a7745;
+  --v2-ax-tek: #8a6109;
+  --v2-ax-slag: #1f6cb0;
+  --v2-ax-spill: #5a7200;
+  --v2-ax-turn: #b4461c;
+  --v2-shadow: 0 18px 48px rgba(23, 27, 24, 0.16);
+  --v2-card-shadow: none;
+  --v2-font-display: "Familjen Grotesk", Inter, system-ui, sans-serif;
+  --v2-font-ui: Inter, system-ui, -apple-system, sans-serif;
+  --v2-font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --v2-r-tag: 8px;
+  --v2-r-input: 12px;
+  --v2-r-row: 12px;
+  --v2-r-card: 20px;
+  --v2-r-panel: 20px;
+  --v2-r-sheet: 28px;
+  --v2-r-pill: 9999px;
+  color-scheme: light;
+}
+html[data-v2-tema="dark"] {
   --v2-bg: #131513;
   --v2-panel: #1c1f1c;
   --v2-panel2: #191c19;
@@ -750,6 +790,7 @@ em.editorial {
   --v2-fg2: #b4b7b0;
   --v2-mut: #8b8e87;
   --v2-forest: #005840;
+  --v2-forest-soft: rgba(0, 88, 64, 0.45);
   --v2-lime: #d1f843;
   --v2-on-lime: #0d0e0d;
   --v2-up: #4fd08a;
@@ -761,33 +802,11 @@ em.editorial {
   --v2-ax-slag: #5aa9f0;
   --v2-ax-spill: #d1f843;
   --v2-ax-turn: #f0683e;
+  --v2-shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
+  --v2-card-shadow: none;
+  color-scheme: dark;
 }
+/* Bakoverkompat: gammel light-attributt → samme som default (lys) */
 html[data-v2-tema="light"] {
-  --v2-bg: #f2f1ea;
-  --v2-panel: #ffffff;
-  --v2-panel2: #f7f6f0;
-  --v2-panel3: #ecebe2;
-  --v2-tint: linear-gradient(140deg, rgba(0, 88, 64, 0.10) 0%, rgba(255, 255, 255, 0) 55%);
-  --v2-niva-grad: linear-gradient(90deg, #c9d4cc 0%, #005840 45%, #6e9a4e 75%, #a8ca20 100%);
-  --v2-vignett: rgba(0, 88, 64, 0.07);
-  --v2-border: rgba(16, 22, 19, 0.10);
-  --v2-border-s: rgba(16, 22, 19, 0.19);
-  --v2-track: rgba(16, 22, 19, 0.10);
-  --v2-fg: #171b18;
-  --v2-fg2: #4a4f4a;
-  --v2-mut: #62675f; /* AA også rett på cream-bg (5.1:1) */
-  --v2-forest: #005840;
-  --v2-lime: #005840; /* lys modus: aksenten ER forest — aldri lime-på-lys */
-  --v2-on-lime: #ffffff;
-  /* Signal-/aksefarger AA-kalibrert 2026-07-24: ≥4.5:1 som normal tekst på
-     ALLE fire lys-flater (bg/panel/panel2/panel3) — målt, ikke antatt. */
-  --v2-up: #1a7745;
-  --v2-down: #b4461c;
-  --v2-warn: #8a6109;
-  --v2-info: #1f6cb0;
-  --v2-ax-fys: #1a7745;
-  --v2-ax-tek: #8a6109;
-  --v2-ax-slag: #1f6cb0;
-  --v2-ax-spill: #5a7200;
-  --v2-ax-turn: #b4461c;
+  color-scheme: light;
 }

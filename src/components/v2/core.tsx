@@ -86,7 +86,33 @@ export interface StatusPillProps {
 /* ● STIGENDE · LIVE · NÅ */
 export function StatusPill({ children, tone = "lime" }: StatusPillProps) {
   const c: string = { lime: T.lime, up: T.up, warn: T.warn, down: T.down, info: T.info }[tone];
-  return <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", color: c, background: `color-mix(in srgb,${c} 10%,transparent)`, borderRadius: 9999, padding: "4px 9px", textTransform: "uppercase" }}><span style={{ width: 5, height: 5, borderRadius: 9999, background: c }} />{children}</span>;
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        fontFamily: T.mono,
+        fontSize: 9,
+        fontWeight: 700,
+        letterSpacing: "0.06em",
+        color: c,
+        background: `color-mix(in srgb,${c} 10%,transparent)`,
+        borderRadius: T.rTag,
+        padding: "4px 9px",
+        textTransform: "uppercase",
+      }}
+    >
+      <span style={{ width: 5, height: 5, borderRadius: 9999, background: c }} />
+      {children}
+    </span>
+  );
+}
+
+/** Tag — core-parity-navn (fasit). Samme stil som StatusPill, radius tag 8. */
+export type TagProps = StatusPillProps;
+export function Tag({ children, tone = "lime" }: TagProps) {
+  return <StatusPill tone={tone}>{children}</StatusPill>;
 }
 
 export type SevKey = "sterk" | "medium" | "lav" | "ok";
@@ -330,7 +356,29 @@ export interface CTAPillProps {
 }
 export function CTAPill({ icon, children, ghost, full, onClick }: CTAPillProps) {
   return (
-    <button type="button" onClick={onClick} className="v2-press v2-focus" style={{ appearance: "none", display: "inline-flex", alignItems: "center", justifyContent: full ? "center" : undefined, gap: 8, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: ghost ? T.fg : T.onLime, background: ghost ? T.panel3 : T.lime, border: ghost ? `1px solid ${T.borderS}` : "none", borderRadius: 9999, padding: "9px 16px", cursor: "pointer", width: full ? "100%" : undefined }}>
+    <button
+      type="button"
+      onClick={onClick}
+      className="v2-press v2-focus"
+      style={{
+        appearance: "none",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: full ? "center" : undefined,
+        gap: 8,
+        fontFamily: T.ui,
+        fontSize: 12.5,
+        fontWeight: 600,
+        color: ghost ? T.fg : T.onLime,
+        background: ghost ? T.panel3 : T.lime,
+        border: ghost ? `1px solid ${T.borderS}` : "none",
+        borderRadius: T.rPill,
+        padding: "10px 16px",
+        minHeight: 44,
+        cursor: "pointer",
+        width: full ? "100%" : undefined,
+      }}
+    >
       {icon && <Icon name={icon} size={14} />}{children}
     </button>
   );
@@ -373,7 +421,26 @@ export function Knapp({ icon, children, ghost, full, disabled, onClick, type = "
       className="v2-press v2-focus"
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
-      style={{ appearance: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: ghost ? T.fg : T.onLime, background: ghost ? T.panel3 : T.lime, border: ghost ? `1px solid ${T.borderS}` : "1px solid transparent", borderRadius: 9999, padding: "10px 18px", cursor: disabled ? "default" : "pointer", opacity: disabled ? 0.4 : 1, width: full ? "100%" : "auto", ...style }}
+      style={{
+        appearance: "none",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 8,
+        fontFamily: T.ui,
+        fontSize: 12.5,
+        fontWeight: 600,
+        color: ghost ? T.fg : T.onLime,
+        background: ghost ? T.panel3 : T.lime,
+        border: ghost ? `1px solid ${T.borderS}` : "1px solid transparent",
+        borderRadius: T.rPill,
+        padding: "10px 18px",
+        minHeight: 44,
+        cursor: disabled ? "default" : "pointer",
+        opacity: disabled ? 0.4 : 1,
+        width: full ? "100%" : "auto",
+        ...style,
+      }}
     >
       {icon && <Icon name={icon} size={14} />}{children}
     </button>

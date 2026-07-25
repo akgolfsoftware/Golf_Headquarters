@@ -9,8 +9,8 @@
  * interaksjon, 200 ms for inn-animasjoner, 600 ms for count-up (JS-hook).
  * ALT honorerer prefers-reduced-motion nederst i fila.
  *
- * Fargene refererer --v2-*-tokens i globals.css (mørk default + lys via
- * html[data-v2-tema="light"]) — aldri rå hex her.
+ * Fargene refererer --v2-*-tokens i globals.css (lys default + mørk via
+ * html[data-v2-tema="dark"]) — aldri rå hex her.
  */
 
 /* ── Interaksjon: trykk, fokus, hover ─────────────────────────────── */

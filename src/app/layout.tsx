@@ -131,21 +131,17 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        {/* DS2: v2-tema settes FØR paint fra cookie (ak-v2-tema) — ingen blits.
-            Variablene bor i globals.css; veksleren i V2Shell skriver cookien.
-            Tema-oppførsel (25. jul): app-flatene (/portal, /admin, /forelder)
-            er LYS som standard — mørk skjerm er vanskelig å lese utendørs i
-            sollys — med bryter til mørk (cookie ak-v2-tema=dark). Marketing/
-            auth er uendret: mørke som før, lys kun med eksplisitt lys-cookie
-            (V2Shell synker samme regel client-side ved SPA-navigasjon, se
-            shell.tsx). */}
+        {/* Fase F PR1: CSS :root = lys. Mørk via data-v2-tema="dark" + cookie.
+            App (/portal|/admin|/forelder): lys default, mørk kun med dark-cookie.
+            Marketing/auth: mørk default (som før), lys kun med light-cookie.
+            V2Shell synker samme regel ved SPA-navigasjon. */}
         {/* suppressHydrationWarning: nettlesere nuller nonce-attributtet i DOM
             (sikkerhetsmekanisme) → server/klient-avvik som er forventet. */}
         <script
           nonce={nonce}
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
-            __html: `try{var p=window.location.pathname;var ck=document.cookie.split("; ");var mork=ck.some(function(c){return c==="ak-v2-tema=dark"});var lysCk=ck.some(function(c){return c==="ak-v2-tema=light"});var app=p.indexOf("/portal")===0||p.indexOf("/admin")===0||p.indexOf("/forelder")===0;var lys=app?!mork:lysCk;if(lys)document.documentElement.setAttribute("data-v2-tema","light");else document.documentElement.removeAttribute("data-v2-tema")}catch(e){}`,
+            __html: `try{var p=window.location.pathname;var ck=document.cookie.split("; ");var mork=ck.some(function(c){return c==="ak-v2-tema=dark"});var lysCk=ck.some(function(c){return c==="ak-v2-tema=light"});var app=p.indexOf("/portal")===0||p.indexOf("/admin")===0||p.indexOf("/forelder")===0;var morkOnsket=app?mork:!lysCk;if(morkOnsket)document.documentElement.setAttribute("data-v2-tema","dark");else document.documentElement.removeAttribute("data-v2-tema")}catch(e){}`,
           }}
         />
         {children}

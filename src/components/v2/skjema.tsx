@@ -20,10 +20,19 @@ import { CTAPill, Caps } from "./core";
 
 /* Delte felt-stiler */
 const FELT: CSSProperties = {
-  width: "100%", boxSizing: "border-box", appearance: "none",
-  background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: 11,
-  padding: "10px 13px", fontFamily: T.ui, fontSize: 13.5, color: T.fg,
-  outline: "none", lineHeight: 1.4,
+  width: "100%",
+  boxSizing: "border-box",
+  appearance: "none",
+  background: T.panel2,
+  border: `1px solid ${T.borderS}`,
+  borderRadius: T.rInput,
+  padding: "10px 13px",
+  minHeight: 44,
+  fontFamily: T.ui,
+  fontSize: 13.5,
+  color: T.fg,
+  outline: "none",
+  lineHeight: 1.4,
 };
 interface EtikettProps {
   children?: ReactNode;

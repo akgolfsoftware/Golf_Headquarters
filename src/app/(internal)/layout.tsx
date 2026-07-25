@@ -15,8 +15,21 @@ export default async function InternalLayout({
   await requirePortalUser({ allow: ["ADMIN"] });
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="border-b border-amber-500/30 bg-amber-50 px-4 py-2 text-center font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-amber-900">
+    <div className="min-h-screen" style={{ background: "var(--v2-bg)" }}>
+      <div
+        style={{
+          borderBottom: "1px solid var(--v2-border)",
+          background: "var(--v2-panel2)",
+          padding: "8px 16px",
+          textAlign: "center",
+          fontFamily: "var(--v2-font-mono, ui-monospace, monospace)",
+          fontSize: 10,
+          fontWeight: 600,
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          color: "var(--v2-mut)",
+        }}
+      >
         INTERN — KUN UTVIKLING · {process.env.NODE_ENV}
       </div>
       {children}
