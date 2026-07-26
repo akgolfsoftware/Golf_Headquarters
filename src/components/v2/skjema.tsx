@@ -501,6 +501,8 @@ export interface SegmentertFanerValg {
 }
 export interface SegmentertFanerProps {
   label?: ReactNode;
+  /** Skjermleser-navn uten synlig etikett (toolbar-bruk, f.eks. kalenderchrome). */
+  ariaLabel?: string;
   options?: SegmentertFanerValg[];
   value?: string;
   defaultValue?: string;
@@ -508,6 +510,7 @@ export interface SegmentertFanerProps {
 }
 export function SegmentertFaner({
   label,
+  ariaLabel,
   options = [
     { id: "uke", label: "Uke" },
     { id: "maned", label: "Måned" },
@@ -524,7 +527,7 @@ export function SegmentertFaner({
       {label && <Etikett>{label}</Etikett>}
       <div
         role="tablist"
-        aria-label={ariaNavn(label) ?? "Segment"}
+        aria-label={ariaLabel ?? ariaNavn(label) ?? "Segment"}
         style={{
           display: "inline-flex",
           flexWrap: "wrap",
@@ -556,8 +559,12 @@ export function SegmentertFaner({
                 padding: "0 16px",
                 border: 0,
                 borderRadius: T.rPill,
-                background: on ? T.lime : "transparent",
-                color: on ? T.onLime : T.fg2,
+                // Fasit (familie-calendar.html): «Segmentert — ikke lime».
+                // Valgt segment løftes med panel + myk skygge, slik at lime-jobben
+                // på skjermen fortsatt tilhører primær-CTA.
+                background: on ? T.panel : "transparent",
+                boxShadow: on ? T.segSkygge : "none",
+                color: on ? T.fg : T.fg2,
                 fontFamily: T.ui,
                 fontSize: 13,
                 fontWeight: on ? 600 : 500,

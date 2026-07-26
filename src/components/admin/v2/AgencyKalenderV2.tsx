@@ -2,7 +2,11 @@
 
 /**
  * AgencyOS Kalender — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
- * T.* only. Mørk AgencyOS. Coach-uke: bookinger + gjentakende serier.
+ * T.* only. Lys default, mørk via bryter. Coach-uke: bookinger + serier.
+ *
+ * Bølge 12 (Open Design-port): toolbaren følger Notion-fasiten i
+ * `familie-calendar.html` .cal-toolbar — «I dag» · piler · periode-tittel ·
+ * segmentert visningsvelger. Segmentet er ikke lime; lime-jobben er «Ny økt».
  */
 
 import { useEffect, useState } from "react";
@@ -17,8 +21,8 @@ import {
   T,
   Caps,
   Tittel,
-  PillVelger,
   CTAPill,
+  SegmentertFaner,
   Kort,
   StatusPill,
   TomTilstand,
@@ -415,14 +419,17 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     if (res.ok) setTreningsDrills({ title: res.title, drills: res.drills });
   }
 
-  // Nav-piler (ekte uke-navigasjon via ?uke=).
+  // Nav-piler (ekte uke-navigasjon via ?uke=). Notion-fasit: 32px firkant m/
+  // radius 8 — 44px på mobil for touch-målet.
+  const navFlate = mobile ? 44 : 32;
   const pil = (href: string, ikon: string, label: string) => (
     <Link
       href={href}
       aria-label={label}
-      style={{ width: 30, height: 30, flex: "none", borderRadius: 9999, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", color: T.fg2 }}
+      className="v2-focus"
+      style={{ width: navFlate, height: navFlate, flex: "none", borderRadius: T.rTag, background: T.panel, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", color: T.fg2 }}
     >
-      <Icon name={ikon} size={14} />
+      <Icon name={ikon} size={16} />
     </Link>
   );
 
@@ -467,38 +474,63 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     </div>
   );
 
+  // Bølge 12: Notion-toolbar i fasit-rekkefølge (familie-calendar.html
+  // .cal-toolbar) — «I dag» · piler · periode-tittel · spacer · segmentert
+  // visningsvelger. Segmentet er bevisst IKKE lime; lime-jobben er «Ny økt».
   const navigasjon = (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-      <PillVelger
+    <div style={{ display: "flex", alignItems: "center", gap: "10px 14px", flexWrap: "wrap" }}>
+      <Link
+        href={data.nav.idag}
+        aria-current={data.nav.erInnevaerende ? "page" : undefined}
+        className="v2-focus"
+        style={{
+          height: navFlate,
+          display: "inline-flex",
+          alignItems: "center",
+          padding: "0 12px",
+          borderRadius: T.rTag,
+          background: T.panel,
+          border: `1px solid ${data.nav.erInnevaerende ? T.borderS : T.border}`,
+          fontFamily: T.ui,
+          fontSize: 13,
+          fontWeight: 500,
+          color: T.fg,
+          textDecoration: "none",
+          flex: "none",
+        }}
+      >
+        I dag
+      </Link>
+      <div style={{ display: "inline-flex", alignItems: "center", gap: 4 }} aria-label="Bytt uke">
+        {pil(data.nav.forrige, "chevron-left", "Forrige uke")}
+        {pil(data.nav.neste, "chevron-right", "Neste uke")}
+      </div>
+      <span style={{ fontFamily: T.disp, fontWeight: 600, fontSize: 18, letterSpacing: "-0.01em", color: T.fg, minWidth: 0 }}>
+        {data.periode}
+      </span>
+      <span style={{ flex: 1 }} />
+      <SegmentertFaner
+        ariaLabel="Kalendervisning"
         options={[
-          { v: "dag", l: "Dag" },
-          { v: "uke", l: "Uke" },
-          { v: "maned", l: "Måned" },
+          { id: "dag", label: "Dag" },
+          { id: "uke", label: "Uke" },
+          { id: "maned", label: "Måned" },
         ]}
         value={visning}
         onChange={setVisning}
       />
-      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        {!data.nav.erInnevaerende && (
-          <Link
-            href={data.nav.idag}
-            style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 9999, padding: "6px 13px", textDecoration: "none" }}
-          >
-            I dag
-          </Link>
-        )}
-        {pil(data.nav.forrige, "chevron-left", "Forrige uke")}
-        {pil(data.nav.neste, "chevron-right", "Neste uke")}
-      </div>
     </div>
   );
 
   // B: uke-status (5s)
   const kpi = (
+    // `instant`: rene opptellinger — 0 er en ekte verdi her, så en tell-opp-fra-0
+    // kan ikke skilles fra «ingen økter denne uka» (og står fast på 0 hvis fanen
+    // lastes i bakgrunnen, der animasjonsframene er suspendert).
     <div className="grid grid-cols-3" style={{ gap: T.gap }}>
-      <KpiFlis label="Økter uke" value={antallOkter} tint={antallOkter > 0} />
-      <KpiFlis label="Serier" value={data.serieOkterAntall} />
-      <KpiFlis label="Live nå" value={liveIDag} varsle={liveIDag > 0} />
+      <KpiFlis label="Økter uke" value={antallOkter} tint={antallOkter > 0} instant />
+      <KpiFlis label="Serier" value={data.serieOkterAntall} instant />
+      <KpiFlis label="Live nå" value={liveIDag} varsle={liveIDag > 0} instant />
     </div>
   );
 
@@ -519,7 +551,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   // ── Mobil (M3, bølge 4): LISTE-først, ikke rutenett. Uke = én seksjon per
   //    ukedag (stablet vertikalt); tap på en dag → dag-detalj i BunnArk. Dag =
   //    én dag ekspandert. All interaksjon er TAP — ingen dra-og-slipp (desktop-
-  //    only). PillVelger, serie-merker og opprett-inngang er tap-baserte. ──
+  //    only). Segmentvelger, serie-merker og opprett-inngang er tap-baserte. ──
   if (mobile) {
     let mobilKropp: React.ReactNode;
     if (visning === "maned") {

@@ -83,14 +83,30 @@ ValideringsChip, Skjelett, Trekkspill, FilterChips og MeldingsTraad fantes fra f
 ---
 
 ### Bølge 12 · Produktflater (dypere enn Fase 3)
-| Flate | Rute | Mål |
-|-------|------|-----|
-| Admin kalender uke | `/admin/kalender` | Notion-grid chrome + v2 tokens |
-| SG / analyse | PlayerHQ analysere | SgTotal + Diagnose v2 |
-| TrackMan detalj | `/portal/mal/trackman/[id]` | Visuelt i tråd med showroom |
-| Booking admin | booking-lister | BookingKort v2 |
+| Flate | Rute | Mål | Status |
+|-------|------|-----|--------|
+| Admin kalender uke | `/admin/kalender` | Notion-grid chrome + v2 tokens | ✅ 12a |
+| SG / analyse | PlayerHQ analysere | SgTotal + Diagnose v2 | ⬜ 12b |
+| TrackMan detalj | `/portal/mal/trackman/[id]` | Visuelt i tråd med showroom | ⬜ 12c |
+| Booking admin | booking-lister | BookingKort v2 | ⬜ 12d |
 
 **Regel:** layout/chrome først — ikke ny forretningslogikk.
+
+#### 12a · Admin kalender (levert)
+Fasit: `familie-calendar.html` `.cal-toolbar` — «Visning først», «Segmentert — ikke lime».
+
+- [x] Toolbar i fasit-rekkefølge: «I dag» · piler · periode-tittel · spacer · segmentert velger
+      (erstatter hjemmesnekret PillVelger-rad uten periode-tittel)
+- [x] Piler/«I dag»: 32px firkant m/ radius 8 som fasit — 44px på mobil for touch
+- [x] `periode` lagt til `KalenderData` («20.–26. juli 2026») — kun chrome-tekst, ingen ny logikk
+- [x] `SegmentertFaner`: valgt segment = panel + `--v2-seg-skygge`, **ikke** lime
+      (fasit `.seg button[aria-selected="true"]`). Lime-jobben er «Ny økt».
+- [x] Nytt token `--v2-seg-skygge` (lys `0 1px 4px rgba(23,27,24,.12)` / mørk `…rgba(0,0,0,.25)`)
+- [x] `ariaLabel` på `SegmentertFaner` — skjermleser-navn uten synlig feltetikett
+- [x] Uke-KPI-ene satt til `instant`: tell-opp-fra-0 var umulig å skille fra ekte 0
+      (og stod fast på 0 hvis fanen lastes i bakgrunnen). Verifisert 5 · 2 · 1.
+- [x] Verifisert lys + mørk + 390px: forest CTA i lys, ingen sidescroll, TimeGrid urørt
+- [ ] Månedsvisning er fortsatt ærlig tom tilstand — krever egen måneds-loader (ikke chrome)
 
 ---
 
@@ -121,8 +137,9 @@ Forside/coaching er delvis levert (PR #139). Rest: priser, kontakt, blogg-chrome
 
 ```
 Ferdig   → Bølge 8–10 (lab + parity)
-Ferdig   → Bølge 11 feedback/structure   ← forrige PR
-Nå       → Bølge 12 én flate om gangen (kalender → SG → TM)
+Ferdig   → Bølge 11 feedback/structure
+Ferdig   → Bølge 12a admin-kalender        ← forrige PR
+Nå       → Bølge 12b SG/analyse → 12c TrackMan → 12d booking
 Sist     → Bølge 13 marketing + 14 hardening
 ```
 
@@ -146,3 +163,4 @@ Sist     → Bølge 13 marketing + 14 hardening
 | 2026-07-26 | Plan skrevet · Bølge 8–10 lab startet på `feat/ds-f-wave8-10-rest-port` |
 | 2026-07-26 | Bølge 8–10 merget (PR #149) |
 | 2026-07-26 | Bølge 11 levert på `feat/ds-f-wave11-feedback-struktur`: `tilbakemelding.tsx`, Stegviser, Skilje, lab-seksjon, emoji-fiks. Neste: Bølge 12 admin-kalender |
+| 2026-07-26 | Bølge 12a levert på `feat/ds-f-wave12a-kalender-toolbar`: Notion-toolbar på `/admin/kalender`, segment ikke lime (`--v2-seg-skygge`), `periode` i KalenderData, KPI `instant`. Neste: 12b SG/analyse |
