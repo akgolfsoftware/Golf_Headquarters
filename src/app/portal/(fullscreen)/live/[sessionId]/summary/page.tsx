@@ -54,6 +54,7 @@ export default async function LiveSummaryPage({
             typeof (rawVurdering as Record<string, unknown>).folelse === "string"
               ? ((rawVurdering as Record<string, unknown>).folelse as string)
               : null,
+          rpe: Number((rawVurdering as Record<string, unknown>).rpe) || null,
         }
       : null;
 

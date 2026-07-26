@@ -16,6 +16,7 @@ import type { LiveV2Drill, LiveV2DrillLog, LiveV2Session } from "@/components/po
 import { triggerLiveSessionAgent } from "@/lib/agents/triggers";
 import { GENERERT_FRA } from "@/lib/workbench/v2-sync";
 import { applyPositionTaskReps } from "@/lib/teknisk-plan/apply-reps";
+import { beregnSRpe } from "@/lib/training/srpe";
 
 export type StartSessionResult =
   | { state: "active" }
@@ -478,7 +479,7 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
 /** Spiller-vurdering etter økt → completedSummary.spillerVurdering (write-back). */
 export async function lagreSpillerVurdering(
   sessionId: string,
-  input: { kvalitet: number; nesteFokus: string; folelse?: string },
+  input: { kvalitet: number; nesteFokus: string; folelse?: string; rpe?: number },
 ): Promise<{ ok: boolean; error?: string }> {
   const { user, session } = await verifyAccess(sessionId);
   if (session.status !== "COMPLETED") {
@@ -486,6 +487,12 @@ export async function lagreSpillerVurdering(
   }
   if (input.kvalitet < 1 || input.kvalitet > 5) {
     return { ok: false, error: "Kvalitet må være 1–5" };
+  }
+  if (
+    input.rpe !== undefined &&
+    (!Number.isInteger(input.rpe) || input.rpe < 1 || input.rpe > 10)
+  ) {
+    return { ok: false, error: "RPE må være et helt tall 1–10" };
   }
 
   const existing =
@@ -495,12 +502,26 @@ export async function lagreSpillerVurdering(
       ? (session.completedSummary as Record<string, unknown>)
       : {};
 
+  // sRPE (Foster): økt-RPE × varighet i minutter = belastningspoeng.
+  // Varighet hentes fra serverens egen liveSummary (skrevet av completeSession),
+  // aldri fra klienten. Uten varighet lagres RPE alene (sRpe = null).
+  const liveSummary =
+    existing.liveSummary && typeof existing.liveSummary === "object"
+      ? (existing.liveSummary as Record<string, unknown>)
+      : null;
+  const durationSec =
+    typeof liveSummary?.durationSec === "number" ? liveSummary.durationSec : null;
+  const { durationMin, sRpe } = beregnSRpe(input.rpe, durationSec);
+
   const neste = {
     ...existing,
     spillerVurdering: {
       kvalitet: input.kvalitet,
       nesteFokus: input.nesteFokus.trim().slice(0, 500),
       folelse: input.folelse?.trim().slice(0, 200) || null,
+      rpe: input.rpe ?? null,
+      durationMin,
+      sRpe,
       loggedBy: user.id,
       loggedAt: new Date().toISOString(),
     },
