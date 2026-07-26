@@ -224,14 +224,14 @@ export function inHoliday(s: string): boolean {
 
 // ---- Økt-typer ---------------------------------------------------------
 
-export type DagType = "teknikk" | "fysisk" | "spill";
+export type DagType = "teknikk" | "test" | "spill";
 
 export const DAYTYPE: Record<
   DagType,
   { icon: string; color: WangFarge; label: string; short: string; card: string }
 > = {
   teknikk: { icon: "target", color: "blue", label: "Golfteknikk", short: "Golfteknikk", card: "teknikk" },
-  fysisk: { icon: "dumbbell", color: "navy", label: "Fysisk trening", short: "Fysisk", card: "styrke" },
+  test: { icon: "clipboard-list", color: "navy", label: "Test og spilløvelser", short: "Test", card: "test" },
   spill: { icon: "flag", color: "teal", label: "Spill og nærspill", short: "Nærspill", card: "utholdenhet" },
 };
 
@@ -284,40 +284,40 @@ export const TEMPLATES: Record<PeriodeKey, Record<DagType, OktMal[]>> = {
         eval: "Notér snittavstand til mål og opplevd kvalitet på treffet.",
       },
     ],
-    fysisk: [
+    test: [
       {
-        title: "Bevegelighet og grunnstyrke",
-        goal: "Bygge bevegelseskontroll og grunnstyrke som fundament for sesongen.",
+        title: "Testbatteri – Golfslag Basic",
+        goal: "Kartlegge baseline i NGFs Golfslag Basic-testbatteri (utslag, innspill, nærspill, putting) som grunnlag for individuell plan.",
         comp: {
-          VG1: "Utføre grunnøvelser med riktig teknikk og kontroll.",
-          VG2: "Øke belastning med opprettholdt teknikk.",
-          VG3: "Selvstendig justere øvelser etter dagsform og mål.",
+          VG1: "Gjennomføre testbatteriet med veiledning.",
+          VG2: "Gjennomføre testbatteriet selvstendig og notere resultat fortløpende.",
+          VG3: "Analysere eget resultat og peke ut svakeste ledd selv.",
         },
-        warmup: "Rullende oppvarming 8 min og aktiveringsøvelser for kjerne og setemuskulatur.",
+        warmup: "Kort, strukturert oppvarming i samme rekkefølge som testprotokollen — for sammenlignbare tall fra gang til gang.",
         main: [
-          "Knebøy og markløft med teknikkfokus, 3×8",
-          "Push- og pull-øvelser for overkropp, 3×10",
-          "Kjernestabilitet: planke-varianter og Pallof press",
+          "Golfslag Basic-testbatteri: utslag, innspill 100 m, nærspill, putting",
+          "Notér rådata fortløpende — ingen «runding» underveis",
+          "Sammenlign mot forrige testrunde der den finnes",
         ],
-        test: "Overhead squat-screening og planke på tid.",
-        eval: "Registrer belastning og opplevd anstrengelse (RPE) i PlayerHQ.",
+        test: "Totalscore Golfslag Basic registreres i PlayerHQ.",
+        eval: "Identifiser svakeste delkategori — tas med til neste ukes teknikkøkt.",
       },
       {
-        title: "Rotasjonskraft og stabilitet",
-        goal: "Utvikle rotasjonskraft og stabilitet som overføres til golfsvingen.",
+        title: "8-ball – blocked og variation",
+        goal: "Etablere baseline i 8-ball-testformatet (blocked og variation) som gruppa bruker gjennom sesongen.",
         comp: {
-          VG1: "Gjennomføre rotasjonsøvelser kontrollert.",
-          VG2: "Koble rotasjon til hofte- og skulderseparasjon.",
-          VG3: "Produsere kraft med god sekvensering fra bakke til kølle.",
+          VG1: "Fullføre begge rundene og forstå scoringen.",
+          VG2: "Holde jevnere resultat mellom blocked og variation.",
+          VG3: "Bruke resultatet til å velge eget fokusområde.",
         },
-        warmup: "Dynamisk mobilitet for brystrygg og aktivering med medisinball.",
+        warmup: "Kort innslåing med hvert kølleslag som inngår i testen.",
         main: [
-          "Medisinball-kast med rotasjon, 4×6 per side",
-          "Enbens balanse og landing, 3×8",
-          "Kabelrotasjoner med kontrollert tempo, 3×10",
+          "8-ball blocked: 8 slag med samme kølle/mål, notér poeng",
+          "8-ball variation: 8 slag med varierende kølle/mål, notér poeng",
+          "Sammenlign blocked vs. variation — hvor er forskjellen størst?",
         ],
-        test: "Rotasjonskast med medisinball – avstand.",
-        eval: "Sammenlign kastavstand mot forrige måling.",
+        test: "Poengsum blocked + variation registreres i PlayerHQ.",
+        eval: "Én setning om hvorfor blocked/variation skiller seg, delt med treneren.",
       },
     ],
     spill: [
@@ -394,40 +394,40 @@ export const TEMPLATES: Record<PeriodeKey, Record<DagType, OktMal[]>> = {
         eval: "Video før og etter, samt egenvurdering av endringen.",
       },
     ],
-    fysisk: [
+    test: [
       {
-        title: "Maksstyrke og eksplosivitet",
-        goal: "Øke maksimal kraft og eksplosivitet i vinterens styrkeblokk.",
+        title: "Testkonkurranse – ukesformat",
+        goal: "Trene testene under konkurranseform (poeng + rangering) for å bygge testrutine under lett press.",
         comp: {
-          VG1: "Utføre tunge basisløft med trygg teknikk.",
-          VG2: "Progrediere belastning systematisk.",
-          VG3: "Periodisere egen belastning mot sesongmål.",
+          VG1: "Gjennomføre testen i konkurranseformat uten å endre rutine.",
+          VG2: "Prestere stabilt uavhengig av plassering underveis.",
+          VG3: "Bruke rangeringen til å sette et konkret mål for neste uke.",
         },
-        warmup: "Grundig ledd-for-ledd oppvarming og rampesett.",
+        warmup: "Samme faste protokoll som testbatteriet, men med tidsfrist (konkurranse-simulering).",
         main: [
-          "Knebøy 4×5 med økende belastning",
-          "Markløft eller hoftehengsel 4×5",
-          "Eksplosivt: hopp og kast, 4×4",
+          "Ukens testøvelse gjennomføres med skåring og løpende rangering",
+          "To tabeller føres: Best resultat + Best resultat etter nivå (VG1/VG2/VG3)",
+          "Kort resultatgjennomgang i gruppa etter økta",
         ],
-        test: "Estimert 3RM knebøy og hopphøyde.",
-        eval: "Registrer løftetall og hopphøyde i PlayerHQ.",
+        test: "Plassering i ukens testkonkurranse (begge tabeller).",
+        eval: "Ett justeringspunkt til neste ukes testkonkurranse.",
       },
       {
-        title: "Kraftutvikling og hurtighet",
-        goal: "Overføre styrke til hastighet i svingrelevant bevegelse.",
+        title: "Spilløvelse med statistikk",
+        goal: "Overføre testresultater til reelle spillsituasjoner med statistikkføring.",
         comp: {
-          VG1: "Gjennomføre hurtighetsøvelser kontrollert.",
-          VG2: "Øke bevegelsesfart med god kvalitet.",
-          VG3: "Koble hurtighet til køllehastighet.",
+          VG1: "Føre enkel statistikk (truffet/ikke truffet) under øvelsen.",
+          VG2: "Bruke statistikk til å justere køllevalg underveis.",
+          VG3: "Sette egne måltall før økta og evaluere mot dem etterpå.",
         },
-        warmup: "Dynamisk oppvarming og hurtighetsstiger.",
+        warmup: "Kort banespesifikk oppvarming — samme køller som brukes i øvelsen.",
         main: [
-          "Speed-swings med treningskølle, 5×5",
-          "Eksplosive medisinballkast, 4×5",
-          "Plyometrisk hopp og landing, 4×5",
+          "Spilløvelse fra utvalgte posisjoner (tee/innspill/nærspill) med poengsystem",
+          "Statistikk føres slag for slag (truffet mål, opp-og-inn, treputt)",
+          "Sammenlign egne tall mot forrige spilløvelse",
         ],
-        test: "Køllehastighet (speed radar) – snitt av fem.",
-        eval: "Sammenlign køllehastighet mot baseline.",
+        test: "Treffprosent på hovedøvelsen (min. 15 forsøk).",
+        eval: "Registrer statistikk og ett læringspunkt i PlayerHQ.",
       },
     ],
     spill: [
@@ -504,40 +504,40 @@ export const TEMPLATES: Record<PeriodeKey, Record<DagType, OktMal[]>> = {
         eval: "Notér hva som fungerte under press.",
       },
     ],
-    fysisk: [
+    test: [
       {
-        title: "Vedlikehold og hurtighet",
-        goal: "Vedlikeholde styrke og prioritere hurtighet i konkurranseperioden.",
+        title: "Testkonkurranse – finaleformat",
+        goal: "Prestere i testformat under høyest mulig press før sesongens turneringer.",
         comp: {
-          VG1: "Gjennomføre vedlikeholdsøkt selvstendig.",
-          VG2: "Balansere belastning mot spilling.",
-          VG3: "Styre egen belastning rundt turneringer.",
+          VG1: "Fullføre finalen med samme rutine som ellers i sesongen.",
+          VG2: "Håndtere rangeringspress uten å endre tempo.",
+          VG3: "Levere blant sesongens beste resultater når det gjelder mest.",
         },
-        warmup: "Effektiv helkroppsaktivering.",
+        warmup: "Full konkurranseoppvarming, identisk med turneringsdag.",
         main: [
-          "Redusert volum basisstyrke, 3×4",
-          "Køllehastighet med speed-protokoll",
-          "Bevegelighet og restitusjon",
+          "Finalerunde i sesongens testkonkurranse — poeng teller til begge tabeller",
+          "Premiering/gjennomgang av resultatet ved felles samling",
+          "Kort refleksjon: hva tar du med inn i turneringssesongen?",
         ],
-        test: "Køllehastighet og kort mobilitetssjekk.",
-        eval: "Registrer belastning og restitusjonsbehov.",
+        test: "Sluttplassering, begge tabeller (Best resultat + etter nivå).",
+        eval: "Notér sesongens testutvikling — start- vs. sluttresultat.",
       },
       {
-        title: "Restitusjon og bevegelighet",
-        goal: "Sikre god restitusjon og bevegelighet mellom turneringer.",
+        title: "Force plate og NGF-testdag-forberedelse",
+        goal: "Forberede gruppa på heldags NGF-testdag (Golfslag Basic, putting, force plate).",
         comp: {
-          VG1: "Utføre mobilitetsrutine korrekt.",
-          VG2: "Kjenne igjen egne restitusjonsbehov.",
-          VG3: "Planlegge restitusjon rundt konkurranseuker.",
+          VG1: "Kjenne testprotokollen på forhånd og vite hva som måles.",
+          VG2: "Gjennomføre en «tørrkjøring» av protokollen uten stress.",
+          VG3: "Sette personlige måltall for NGF-testdagen.",
         },
-        warmup: "Rolig pulsøkning og pustefokus.",
+        warmup: "Gjennomgang av testdagens program og hva hver stasjon måler.",
         main: [
-          "Helkroppsmobilitet 20 min",
-          "Lett stabilitet og balanse",
-          "Puste- og nedtrappingsrutine",
+          "Prøverunde av Golfslag Basic-protokollen mot klokka",
+          "Force plate-forklaring: hva måles og hvorfor (uten utstyr på GFGK)",
+          "Individuell samtale: ett måltall per spiller for testdagen",
         ],
-        test: "Bevegelighetssjekk (sit-and-reach og lignende).",
-        eval: "Egenvurdering av form og søvn siste uke.",
+        test: "Egen prognose for NGF-testdagen notert i PlayerHQ.",
+        eval: "Sammenlignes mot faktisk resultat etter NGF-testdagen (uke 44).",
       },
     ],
     spill: [
@@ -621,13 +621,13 @@ export function akChipsFrom(a: AkVerdier): AkChipData[] {
 
 const AK_BY_OKT: Record<string, AkVerdier> = {
   grunn_teknikk: { pyr: "TEK", fase: "Uten ball", cs: "—", miljo: "M1", press: "Fri", p: "P4" },
-  grunn_fysisk: { pyr: "FYS", fase: "Uten ball", cs: "—", miljo: "M0", press: "Fri", p: "—" },
+  grunn_test: { pyr: "SLAG", fase: "Lav hastighet", cs: "CS60", miljo: "M2", press: "Krav", p: "—" },
   grunn_spill: { pyr: "SPILL", fase: "Lav hastighet", cs: "CS60", miljo: "M2", press: "Krav", p: "—" },
   spes_teknikk: { pyr: "SLAG", fase: "Lav hastighet", cs: "CS70", miljo: "M3", press: "Krav", p: "P7" },
-  spes_fysisk: { pyr: "FYS", fase: "Uten ball", cs: "—", miljo: "M0", press: "Krav", p: "—" },
+  spes_test: { pyr: "SLAG", fase: "Auto", cs: "CS80", miljo: "M3", press: "Utfordring", p: "—" },
   spes_spill: { pyr: "SLAG", fase: "Auto", cs: "CS85", miljo: "M4", press: "Utfordring", p: "—" },
   turn_teknikk: { pyr: "SPILL", fase: "Auto", cs: "CS90", miljo: "M5", press: "Utfordring", p: "—" },
-  turn_fysisk: { pyr: "FYS", fase: "Auto", cs: "—", miljo: "M1", press: "Krav", p: "—" },
+  turn_test: { pyr: "TURN", fase: "Auto", cs: "CS90", miljo: "M4", press: "Konkurranse", p: "—" },
   turn_spill: { pyr: "TURN", fase: "Auto", cs: "CS95", miljo: "M5", press: "Konkurranse", p: "—" },
 };
 
@@ -804,9 +804,9 @@ export const SESSIONS: Okt[] = (() => {
     const wd = cur.getUTCDay();
     const s = iso(cur);
     if ((wd === 1 || wd === 3 || wd === 5) && !inHoliday(s)) {
-      const dagType: DagType = wd === 1 ? "teknikk" : wd === 3 ? "fysisk" : "spill";
+      const dagType: DagType = wd === 1 ? "teknikk" : wd === 3 ? "test" : "spill";
       const pk = periodKey(cur);
-      const locKey: LokKey = dagType === "fysisk" ? "active" : golfLoc(cur);
+      const locKey: LokKey = golfLoc(cur);
       const weeks = Math.floor((cur.getTime() - SPAN_START.getTime()) / (7 * 864e5));
       const tpl = TEMPLATES[pk][dagType][weeks % 2];
       ut.push(buildSession(new Date(cur.getTime()), wd, dagType, pk, locKey, tpl));
