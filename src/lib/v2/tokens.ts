@@ -82,6 +82,8 @@ export const T = {
   rPill: 9999,
   gap: 16,
   maxw: 1120,
+  // Skygge på valgt segment i segmentert kontroll (fasit: ikke lime, men løft)
+  segSkygge: "var(--v2-seg-skygge)",
   // Motion
   ease: "cubic-bezier(0.2,0,0,1)",
   dur: 180,

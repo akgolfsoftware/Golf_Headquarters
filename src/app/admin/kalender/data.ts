@@ -57,6 +57,8 @@ export interface SerieMenyData {
 
 export interface KalenderData {
   ukeLabel: string;
+  /** Notion-toolbar-tittel, f.eks. «20.–26. juli 2026». */
+  periode: string;
   ukeNr: number;
   dager: KalDag[];
   idagIndex: number | null;
@@ -289,9 +291,13 @@ export async function hentAgencyKalenderData(ukeParam?: string, userId?: string)
   const innsikt = byggInnsikt(serieOkterAntall, serieMeny);
 
   const ukeLabel = `Uke ${uke.weekNumber} · ${ukeRange(ukeStart)} · alle spillere`;
+  // Notion-toolbar-tittel (Bølge 12, fasit familie-calendar.html .cal-toolbar .title):
+  // datospenn + år, uten uke-nr og uten «alle spillere».
+  const periode = `${ukeRange(ukeStart)} ${ukeStart.getFullYear()}`;
 
   return {
     ukeLabel,
+    periode,
     ukeNr: uke.weekNumber,
     dager,
     idagIndex: uke.nowDayIndex,
