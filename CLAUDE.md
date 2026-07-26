@@ -159,15 +159,12 @@ Andre nyttige script: `npm run kart` (skjermkart) · `npm run qa:drills` · `npm
   (`PLAYWRIGHT_BASE_URL`).
 
 ## CI/CD
-- **`ci.yml`** (PR + push til main + manuell): `npm ci` → `prisma generate` → `tsc --noEmit` → `eslint` →
-  `check:action-auth` → `npm test` → `npm run build` → Playwright e2e mot lokal `npm start`.
-  Dummy env-verdier, ingen secrets nødvendig. **NB:** e2e-steget her er `continue-on-error: true` — det
-  rapporterer, men feller ikke bygget. Alt før e2e er blokkerende.
-- **`playwright.yml`** (PR + push til main): kjører e2e mot **prod-URL** (`https://akgolf-hq.vercel.app`),
-  chromium + webkit. Jobben er blokkerende, men **tester prod — ikke PR-ens kode**
-  (`base_url`-inputen gjelder kun `workflow_dispatch`, så PR-kjøringer faller alltid til prod).
-  **Konsekvens:** en grønn «Playwright E2E» på en PR sier at prod er frisk, ikke at endringen er
-  e2e-testet. Den reelle kode-gaten på en PR er `verify`-jobben.
+- **`ci.yml`** — PR-gaten. Kjører på **enhver** PR (ingen base-filter, så stablede PR-er dekkes også)
+  + push til main + manuelt: `npm ci` → `prisma generate` → `tsc --noEmit` → `eslint` →
+  `check:action-auth` → `npm test` → `npm run build`. Alle steg blokkerende. Dummy env-verdier, ingen
+  secrets nødvendig.
+- **`playwright.yml`** — prod-røyktest, **ikke** en PR-gate. Kjører etter push til main (og manuelt mot
+  valgfri `base_url`) mot `https://akgolf-hq.vercel.app`, chromium + webkit.
 - **`scrape-golfbox.yml` / `scrape-gjgt.yml`** — planlagte turneringsscrapere.
 - **`deploy.yml`** — finnes fortsatt, men er **kun `workflow_dispatch`** (manuell, siden 2026-07-05). Deploy
   skal være en bevisst handling, ikke en bivirkning.
