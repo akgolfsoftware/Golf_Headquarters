@@ -56,6 +56,7 @@ import { FaneSkole } from "./fane-skole";
 import { AgencyOsHendelser, GruppeRoster } from "./live-seksjoner";
 import { HeroCard, IconChip, Tabs, navPillStyle } from "./primitiver";
 import { OktDetalj } from "./okt-detalj";
+import { HendelseDetalj, type HendelseDetaljData } from "./hendelse-detalj";
 
 export type Fane = "oversikt" | "plan" | "skole" | "foreldre";
 
@@ -84,6 +85,7 @@ export function WangFellesside({ startFane, live = null }: { startFane: Fane; li
 
   const [fane, setFane] = useState<Fane>(startFane);
   const [detaljId, setDetaljId] = useState<string | null>(null);
+  const [hendelseDetalj, setHendelseDetalj] = useState<HendelseDetaljData | null>(null);
   const [planMain, setPlanMain] = useState<"Sesong" | "Kalender" | "Samlinger">("Sesong");
   const [planSub, setPlanSub] = useState<"Årshjul" | "Tidslinje">("Årshjul");
   const [selMonth, setSelMonth] = useState<string>(`${naa.getFullYear()}-${naa.getMonth()}`);
@@ -94,7 +96,13 @@ export function WangFellesside({ startFane, live = null }: { startFane: Fane; li
   const forrigeOkt = detaljIdx > 0 ? SESSIONS[detaljIdx - 1] : null;
   const nesteOkt = detaljIdx >= 0 && detaljIdx < SESSIONS.length - 1 ? SESSIONS[detaljIdx + 1] : null;
   const aapne = (id: string) => {
+    setHendelseDetalj(null);
     setDetaljId(id);
+    if (typeof window !== "undefined") window.scrollTo(0, 0);
+  };
+  const aapneHendelse = (data: HendelseDetaljData) => {
+    setDetaljId(null);
+    setHendelseDetalj(data);
     if (typeof window !== "undefined") window.scrollTo(0, 0);
   };
 
@@ -122,8 +130,9 @@ export function WangFellesside({ startFane, live = null }: { startFane: Fane; li
               onClick={() => {
                 setFane(key);
                 setDetaljId(null);
+                setHendelseDetalj(null);
               }}
-              style={navPillStyle(!detalj && fane === key, true)}
+              style={navPillStyle(!detalj && !hendelseDetalj && fane === key, true)}
             >
               {label}
             </button>
@@ -142,8 +151,10 @@ export function WangFellesside({ startFane, live = null }: { startFane: Fane; li
             forrigeLabel={forrigeOkt?.short}
             nesteLabel={nesteOkt?.short}
           />
+        ) : hendelseDetalj ? (
+          <HendelseDetalj data={hendelseDetalj} onBack={() => setHendelseDetalj(null)} />
         ) : fane === "oversikt" ? (
-          <Oversikt naaIso={naaIso} naa={naa} weekOffset={weekOffset} setWeekOffset={setWeekOffset} onOpen={aapne} goTo={(f) => { setFane(f); setDetaljId(null); }} setPlanMain={setPlanMain} live={live} />
+          <Oversikt naaIso={naaIso} naa={naa} weekOffset={weekOffset} setWeekOffset={setWeekOffset} onOpen={aapne} onOpenHendelse={aapneHendelse} live={live} />
         ) : fane === "plan" ? (
           <Plan
             naaIso={naaIso}
@@ -173,8 +184,7 @@ function Oversikt({
   weekOffset,
   setWeekOffset,
   onOpen,
-  goTo,
-  setPlanMain,
+  onOpenHendelse,
   live,
 }: {
   naaIso: string;
@@ -182,8 +192,7 @@ function Oversikt({
   weekOffset: number;
   setWeekOffset: (fn: (n: number) => number) => void;
   onOpen: (id: string) => void;
-  goTo: (f: Fane) => void;
-  setPlanMain: (v: "Sesong" | "Kalender" | "Samlinger") => void;
+  onOpenHendelse: (data: HendelseDetaljData) => void;
   live: WangLiveData | null;
 }) {
   const neste = SESSIONS.find((s) => s.iso >= naaIso) ?? SESSIONS[SESSIONS.length - 1];
@@ -240,7 +249,21 @@ function Oversikt({
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {actions.slice(0, 3).map((a) => (
-              <div key={a.iso + a.title} className="wang-card wang-pressable" onClick={() => { goTo("plan"); if (a.fane === "samlinger") setPlanMain("Samlinger"); }} style={{ padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}>
+              <div
+                key={a.iso + a.title}
+                className="wang-card wang-pressable"
+                onClick={() =>
+                  onOpenHendelse({
+                    tittel: a.short,
+                    kategori: a.fane === "samlinger" ? "Påmeldingsfrist" : "Foreldremøte",
+                    ikon: a.icon,
+                    farge: "orange",
+                    datoLabel: fmtComp(a.iso),
+                    beskrivelse: a.sub,
+                  })
+                }
+                style={{ padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}
+              >
                 <IconChip icon={a.icon} color="orange" size={42} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 14.5, color: "var(--text-primary)" }}>{a.title}</div>
@@ -256,7 +279,7 @@ function Oversikt({
         </section>
       ) : null}
 
-      <AgencyOsHendelser live={live} naaIso={naaIso} />
+      <AgencyOsHendelser live={live} naaIso={naaIso} onOpen={onOpenHendelse} />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 16 }}>
         <StatKort label="Aktiv periode" prikk={periode.color}>
@@ -326,7 +349,21 @@ function Oversikt({
           <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 17, margin: "2px 2px 12px", color: "var(--text-primary)" }}>Kommende turneringer</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {kommendeComps.map((c) => (
-              <div key={c.iso + c.name} className="wang-card" style={{ padding: "14px 16px", display: "flex", alignItems: "center", gap: 12 }}>
+              <div
+                key={c.iso + c.name}
+                className="wang-card wang-pressable"
+                onClick={() =>
+                  onOpenHendelse({
+                    tittel: c.name,
+                    kategori: "Turnering",
+                    ikon: "trophy",
+                    farge: "orange",
+                    datoLabel: fmtComp(c.iso),
+                    sted: c.place,
+                  })
+                }
+                style={{ padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}
+              >
                 <IconChip icon="trophy" color="orange" size={40} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 14.5, color: "var(--text-primary)" }}>{c.name}</div>
