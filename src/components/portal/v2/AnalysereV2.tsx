@@ -32,7 +32,6 @@ import {
   Trend,
   FordelingRad,
   FordelingHode,
-  InnsiktChip,
   KpiFlis,
   Rad,
   PillTabs,
@@ -43,6 +42,10 @@ import {
   HjelpTips,
   Skjelett,
   CTAPill,
+  SgKategorier,
+  Diagnose,
+  NesteFokus,
+  SlagLekkasje,
   type StatusTone,
 } from "@/components/v2";
 import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
@@ -61,13 +64,6 @@ export type AnalysereData = {
 /* ── Rene hjelpere (norsk bokmål, brutto tall) ─────────────────────── */
 
 const MND = ["jan.", "feb.", "mar.", "apr.", "mai", "jun.", "jul.", "aug.", "sep.", "okt.", "nov.", "des."];
-const SG_NAVN: Record<"OTT" | "APP" | "ARG" | "PUTT", string> = {
-  OTT: "Tee-slag",
-  APP: "Innspill",
-  ARG: "Nærspill",
-  PUTT: "Putting",
-};
-
 function kortDato(d: Date): string {
   return `${d.getDate()}. ${MND[d.getMonth()]}`;
 }
@@ -83,12 +79,6 @@ function trackManOktNavn(s: { recordedAt: Date; primaryClub: string | null }): s
 /** Tall → norsk komma-desimal. */
 function komma(n: number, desimaler = 1): string {
   return n.toFixed(desimaler).replace(".", ",");
-}
-/** SG-verdi med to desimaler («−0,03» / «+0,12») — fmtSg sin 1-desimal avrunder
- *  små forskjeller mellom SG-områdene til «−0,0» på alle fire, som skjuler rangeringen. */
-function fmtSg2(v: number): string {
-  const sign = v > 0 ? "+" : v < 0 ? "−" : "";
-  return `${sign}${Math.abs(v).toFixed(2).replace(".", ",")}`;
 }
 /** Score relativt par: 71 mot 72 → «(−1)», 72 → «(0)». */
 function tilPar(score: number, par: number): string {
@@ -147,12 +137,8 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
     sgDir = sgStatus.trend.startsWith("−") ? "down" : "up";
   }
 
-  const maxAbs = Math.max(0.1, ...sgStatus.kategorier.map((k) => Math.abs(k.sg)));
-  // B-pakke: svakeste område (lavest SG) utheves — matcher analyse-3-retninger B.
-  const svakestAkse =
-    sgStatus.kategorier.length > 0
-      ? sgStatus.kategorier.reduce((a, b) => (b.sg < a.sg ? b : a)).akse
-      : null;
+  // Uthevingen av svakeste område ligger nå i SgKategorier («størst tap»-markør),
+  // som også regner ut sin egen skala — derfor ingen maxAbs/svakestAkse her.
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap }}>
@@ -200,72 +186,65 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
         )}
       </Kort>
 
-      <Kort eyebrow="Per område" action={<span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><HjelpTips k="sgBaseline" size={12} /><HjelpTips k="sgOmrade" /></span>}>
-        {sgStatus.kategorier.length > 0 ? (
-          <>
-            {sgStatus.kategorier.map((k, i) => {
-              const isWeak = k.akse === svakestAkse;
-              return (
-                <FordelingRad
-                  key={k.akse}
-                  label={isWeak ? `${SG_NAVN[k.akse]} · svakest` : SG_NAVN[k.akse]}
-                  signal
-                  pct={(Math.abs(k.sg) / maxAbs) * 100}
-                  value={fmtSg2(k.sg)}
-                  neg={k.sg < 0}
-                  emphasis={isWeak}
-                  last={i === sgStatus.kategorier.length - 1}
-                />
-              );
-            })}
-            {nesteFokus && (
-              <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }}>
-                {/* Bro: SG-gap → resept → Workbench (B-pakke: én primær CTA) */}
-                {nesteFokus.diagnose ? (
-                  <div
-                    style={{
-                      padding: "12px 14px",
-                      borderRadius: 16,
-                      background: T.panel2,
-                      border: `1px solid ${T.border}`,
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 6,
-                    }}
-                  >
-                    <Caps size={9} style={{ color: T.mut }}>
-                      Resept
-                    </Caps>
-                    <div style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, color: T.fg, lineHeight: 1.3 }}>
-                      {nesteFokus.diagnose.symptom}
-                    </div>
-                    <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.4 }}>
-                      {nesteFokus.diagnose.grunnlag}
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2, flexWrap: "wrap" }}>
-                      <AkseChip a={nesteFokus.diagnose.resept.akse as AkseKey} />
-                      <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2 }}>
-                        {nesteFokus.diagnose.resept.tekst}
-                      </span>
-                    </div>
-                  </div>
-                ) : (
-                  <InnsiktChip>
-                    {nesteFokus.omrade} ({nesteFokus.sgTap} per runde). Baseline: {nesteFokus.baseline}.
-                  </InnsiktChip>
-                )}
-                <Link href={nesteFokus.handlingHref} style={{ textDecoration: "none", display: "block" }}>
-                  <CTAPill icon="calendar" full>
-                    Planlegg dette
-                  </CTAPill>
-                </Link>
-              </div>
-            )}
-          </>
-        ) : (
+      {/* Bølge 12b: fasit-komponentene fra familie-golfdata erstatter den
+          hjemmesnekrede nedbrytningen. SgKategorier har nullinje i midten
+          (gevinst høyre / tap venstre) + «størst tap»-markør, som showroomet. */}
+      {sgStatus.kategorier.length > 0 ? (
+        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+          <SgKategorier
+            kategorier={sgStatus.kategorier}
+            baseline={sgStatus.baseline}
+            hjelp="sgOmrade"
+            /* 2 desimaler: ekte per-område-SG ligger så tett at 1 desimal gir
+               «−0,0» på alle fire og skjuler rangeringen. */
+            desimaler={2}
+          />
+          {nesteFokus?.diagnose && (
+            <Diagnose
+              symptom={nesteFokus.diagnose.symptom}
+              /* bevis = null: datakontrakten bærer ingen spiller-vs-baseline-verdi
+                 for symptomet, og fabrikkerte bevis-søyler er verre enn ingen. */
+              bevis={null}
+              grunnlag={nesteFokus.diagnose.grunnlag}
+              resept={{ akse: nesteFokus.diagnose.resept.akse as AkseKey, tekst: nesteFokus.diagnose.resept.tekst }}
+              ctaTekst="Planlegg dette"
+              ctaHref={nesteFokus.handlingHref}
+            />
+          )}
+        </div>
+      ) : (
+        <Kort eyebrow="Per område" action={<HjelpTips k="sgBaseline" size={12} />}>
           <TomTilstand icon="target" title="Mangler nedbrytning" sub="SG per område fyller seg når runder er registrert." />
-        )}
-      </Kort>
+        </Kort>
+      )}
+
+      {nesteFokus && (
+        <div style={{ gridColumn: "1 / -1", display: "grid", gap: T.gap }} className="md:grid-cols-[3fr_2fr]">
+          <NesteFokus
+            omrade={nesteFokus.omrade}
+            akse={nesteFokus.akse}
+            sgTap={nesteFokus.sgTap}
+            baseline={nesteFokus.baseline}
+            begrunnelse={nesteFokus.begrunnelse}
+            formelAkse={nesteFokus.formelAkse}
+            handlingTekst="Legg inn treningsøkt"
+            /* Én primær handling per skjerm: når Diagnose-kortet vises, eier DET
+               CTA-en (samme href) — ellers hadde skjermen fått to like lime-CTA-er
+               til samme mål. Uten diagnose er dette kortets CTA den eneste. */
+            handlingHref={nesteFokus.diagnose ? undefined : nesteFokus.handlingHref}
+          />
+          {/* lekkasjeBaand ble beregnet i loaderen men aldri vist — SlagLekkasje
+              er fasit-kortet for nettopp den kontrakten ({id,label,sg,slag}). */}
+          {nesteFokus.lekkasjeBaand.length > 0 && (
+            <SlagLekkasje
+              baand={nesteFokus.lekkasjeBaand}
+              baseline={nesteFokus.baseline}
+              grunnlag={nesteFokus.grunnlag}
+              desimaler={2}
+            />
+          )}
+        </div>
+      )}
 
       <div className="grid grid-cols-2 md:grid-cols-3" style={{ gridColumn: "1 / -1", gap: T.gap, alignItems: "start" }}>
         {[

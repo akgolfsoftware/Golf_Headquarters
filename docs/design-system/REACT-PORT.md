@@ -18,7 +18,8 @@
 | 10 TrackMan lab | Dispersion, trajectory, sammendrag | ✅ lab |
 | 11 Feedback/structure | AiTipKort, ListeIkon, Stegviser, Skilje + lab | ✅ lab |
 | 12a Admin-kalender | Notion-toolbar, segment ikke lime | ✅ |
-| 12b–d Dype flater | SG-hub, TrackMan-detalj, booking | ⬜ |
+| 12b SG / analyse | SgKategorier, Diagnose, NesteFokus, SlagLekkasje | ✅ |
+| 12c–d Dype flater | TrackMan-detalj, booking-lister | ⬜ |
 | 13 Marketing rest | Priser/kontakt chrome | ⬜ delvis #139 |
 | 14 Hardening | Full reg-test | ⬜ |
 
