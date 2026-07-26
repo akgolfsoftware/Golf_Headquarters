@@ -8,6 +8,7 @@
 import type { WangLiveData } from "../_data/hent-wang-gruppe";
 import { erTurneringstittel } from "../_data/live-sesong";
 import { IconChip } from "./primitiver";
+import type { HendelseDetaljData } from "./hendelse-detalj";
 
 const MND_KORT = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
 
@@ -39,7 +40,15 @@ function SyncStempel({ oppdatertIso }: { oppdatertIso: string }) {
 }
 
 // ---- Kommende hendelser fra AgencyOS (ekte GroupSchedule) ----------------
-export function AgencyOsHendelser({ live, naaIso }: { live: WangLiveData | null; naaIso: string }) {
+export function AgencyOsHendelser({
+  live,
+  naaIso,
+  onOpen,
+}: {
+  live: WangLiveData | null;
+  naaIso: string;
+  onOpen: (data: HendelseDetaljData) => void;
+}) {
   if (!live) return null;
   // Turneringer ekskluderes her — de vises allerede i «Kommende turneringer»
   // lenger ned på Oversikt, og skal aldri dupliseres på tvers av seksjoner.
@@ -61,7 +70,23 @@ export function AgencyOsHendelser({ live, naaIso }: { live: WangLiveData | null;
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {kommende.map((h, i) => (
-            <div key={h.startIso + h.tittel + i} className="wang-card" style={{ padding: "14px 16px", display: "flex", alignItems: "center", gap: 12 }}>
+            <div
+              key={h.startIso + h.tittel + i}
+              className="wang-card wang-pressable"
+              onClick={() =>
+                onOpen({
+                  tittel: h.tittel,
+                  kategori: kindLabel(h.kind),
+                  ikon: h.kind === "HELDAGSSAMLING" || h.kind === "SAMLING" ? "users" : "clipboard-check",
+                  farge: kindFarge(h.kind),
+                  datoLabel: h.sluttIso !== h.startIso ? `${fmtDato(h.startIso)}–${fmtDato(h.sluttIso)}` : fmtDato(h.startIso),
+                  tid: h.startTid,
+                  sted: h.sted,
+                  beskrivelse: h.beskrivelse,
+                })
+              }
+              style={{ padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}
+            >
               <IconChip icon={h.kind === "HELDAGSSAMLING" || h.kind === "SAMLING" ? "users" : "clipboard-check"} color={kindFarge(h.kind)} size={42} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 14.5, color: "var(--text-primary)" }}>{h.tittel}</div>
