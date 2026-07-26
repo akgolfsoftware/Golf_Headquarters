@@ -44,9 +44,28 @@ function Kbd({ children }: KbdProps) {
 
 function LukkKnapp() {
   return (
-    <span style={{ width: 28, height: 28, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flex: "none" }}>
-      <Icon name="x" size={14} style={{ color: T.fg2 }} />
-    </span>
+    <button
+      type="button"
+      aria-label="Lukk"
+      className="v2-press v2-focus"
+      style={{
+        appearance: "none",
+        width: 44,
+        height: 44,
+        borderRadius: T.rRow,
+        background: T.panel2,
+        border: `1px solid ${T.border}`,
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
+        flex: "none",
+        color: "inherit",
+        padding: 0,
+      }}
+    >
+      <Icon name="x" size={16} style={{ color: T.fg2 }} />
+    </button>
   );
 }
 
@@ -66,13 +85,27 @@ export function Modal({
 }: ModalProps) {
   return (
     <Ramme w={w} h={h}>
-      <div style={{ position: "relative", width: 430, background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="v2-modal-title"
+        style={{
+          position: "relative",
+          width: 430,
+          maxWidth: "calc(100% - 24px)",
+          background: T.panel,
+          border: `1px solid ${T.border}`,
+          borderRadius: T.rCard,
+          padding: "20px 22px",
+          boxShadow: "var(--v2-shadow, 0 24px 60px rgba(0,0,0,0.35))",
+        }}
+      >
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
-          <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: T.fg, margin: 0, lineHeight: 1.2 }}>{title}</h2>
+          <h2 id="v2-modal-title" style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: T.fg, margin: 0, lineHeight: 1.2 }}>{title}</h2>
           <LukkKnapp />
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.55, margin: "10px 0 0" }}>{body}</p>
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 22 }}>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 22, flexWrap: "wrap" }}>
           <CTAPill ghost>{avbryt}</CTAPill>
           <CTAPill>{bekreft}</CTAPill>
         </div>
@@ -103,9 +136,21 @@ export function Ark({
 }: ArkProps) {
   return (
     <Ramme w={390} h={h} align="bottom">
-      <div style={{ position: "relative", background: T.panel, border: `1px solid ${T.borderS}`, borderBottom: "none", borderRadius: "20px 20px 0 0", padding: "10px 20px 26px" }}>
-        <span style={{ display: "block", width: 36, height: 4, borderRadius: 9999, background: T.borderS, margin: "0 auto 16px" }} />
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+      <div
+        role="dialog"
+        aria-modal="true"
+        style={{
+          position: "relative",
+          background: T.panel,
+          border: `1px solid ${T.border}`,
+          borderBottom: "none",
+          borderRadius: "28px 28px 0 0",
+          padding: "10px 20px 26px",
+          width: "100%",
+        }}
+      >
+        <span style={{ display: "block", width: 36, height: 4, borderRadius: T.rPill, background: T.borderS, margin: "0 auto 16px" }} aria-hidden />
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4, gap: 8 }}>
           <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>{title}</h2>
           <LukkKnapp />
         </div>
@@ -140,7 +185,22 @@ export function Skuff({
 }: SkuffProps) {
   return (
     <Ramme w={w} h={h} align="right">
-      <div style={{ position: "relative", width: 300, background: T.panel, borderLeft: `1px solid ${T.borderS}`, display: "flex", flexDirection: "column", padding: "18px 20px", boxShadow: "-24px 0 60px rgba(0,0,0,0.45)" }}>
+      <div
+        role="dialog"
+        aria-modal="true"
+        style={{
+          position: "relative",
+          width: 300,
+          maxWidth: "100%",
+          height: "100%",
+          background: T.panel,
+          borderLeft: `1px solid ${T.border}`,
+          display: "flex",
+          flexDirection: "column",
+          padding: "18px 20px",
+          boxShadow: "-24px 0 60px rgba(0,0,0,0.35)",
+        }}
+      >
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
           <div>
             <Caps size={9}>{eyebrow}</Caps>
@@ -188,7 +248,7 @@ export function Popover({
         <CTAPill ghost icon="chevron-down">{trigger}</CTAPill>
         <div style={{ width: 220, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 14, padding: 6, boxShadow: "0 16px 40px rgba(0,0,0,0.45)" }}>
           {items.map((x, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 9, padding: "8px 10px", borderRadius: 9, cursor: "pointer", background: i === 0 ? T.panel2 : "transparent" }}>
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 9, padding: "10px 12px", minHeight: 44, borderRadius: T.rRow, cursor: "pointer", background: i === 0 ? T.panel2 : "transparent" }}>
               <Icon name={x.i} size={14} style={{ color: x.farge || T.fg2 }} />
               <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: x.farge || T.fg }}>{x.t}</span>
             </div>
@@ -235,13 +295,35 @@ export function Toast({ ikon = "check", melding = "Økten er logget — 1,5 t n�
   const c: string = { up: T.up, warn: T.warn, down: T.down, info: T.info, lime: T.lime }[tone];
   return (
     <Ramme w={w} h={h} scrim={false} align="bottom">
-      <div style={{ position: "relative", alignSelf: "center", display: "flex", alignItems: "center", gap: 11, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 14, padding: "11px 14px", margin: "0 0 18px", boxShadow: "0 16px 40px rgba(0,0,0,0.5)" }}>
-        <span style={{ width: 26, height: 26, borderRadius: 9999, background: `color-mix(in srgb,${c} 14%,transparent)`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+      <div
+        role="status"
+        style={{
+          position: "relative",
+          alignSelf: "center",
+          display: "flex",
+          alignItems: "center",
+          gap: 11,
+          minHeight: 52,
+          background: T.panel3,
+          border: `1px solid ${T.border}`,
+          borderRadius: T.rRow,
+          padding: "11px 14px",
+          margin: "0 0 18px",
+          boxShadow: "var(--v2-shadow, 0 16px 40px rgba(0,0,0,0.35))",
+        }}
+      >
+        <span style={{ width: 28, height: 28, borderRadius: T.rPill, background: `color-mix(in srgb,${c} 14%,transparent)`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
           <Icon name={ikon} size={13} style={{ color: c }} />
         </span>
-        <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.fg }}>{melding}</span>
-        {angre && <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.lime, cursor: "pointer", marginLeft: 6 }}>{angre}</span>}
-        <Icon name="x" size={13} style={{ color: T.mut, cursor: "pointer", marginLeft: 2 }} />
+        <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.fg, flex: 1 }}>{melding}</span>
+        {angre && (
+          <button type="button" className="v2-focus" style={{ appearance: "none", fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.lime, cursor: "pointer", background: "transparent", border: "none", minHeight: 44, padding: "0 8px" }}>
+            {angre}
+          </button>
+        )}
+        <button type="button" aria-label="Lukk varsel" className="v2-focus" style={{ appearance: "none", background: "transparent", border: "none", cursor: "pointer", minWidth: 44, minHeight: 44, display: "inline-flex", alignItems: "center", justifyContent: "center", padding: 0 }}>
+          <Icon name="x" size={14} style={{ color: T.mut }} />
+        </button>
       </div>
     </Ramme>
   );
@@ -258,11 +340,31 @@ export interface BannerProps {
 export function Banner({ tone = "info", tekst = "TrackMan-synk pågår — nye slag vises om noen minutter.", cta = "Se status", w = 720 }: BannerProps) {
   const m: { c: string; i: string } = { info: { c: T.info, i: "info" }, advarsel: { c: T.warn, i: "alert-triangle" }, ok: { c: T.up, i: "check" } }[tone] || { c: T.info, i: "info" };
   return (
-    <div style={{ width: w, display: "flex", alignItems: "center", gap: 10, background: `color-mix(in srgb,${m.c} 9%,${T.panel})`, border: `1px solid color-mix(in srgb,${m.c} 30%,transparent)`, borderRadius: 12, padding: "10px 14px" }}>
+    <div
+      role="status"
+      style={{
+        width: w,
+        maxWidth: "100%",
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        minHeight: 48,
+        background: `color-mix(in srgb,${m.c} 9%,${T.panel})`,
+        border: `1px solid color-mix(in srgb,${m.c} 30%,transparent)`,
+        borderRadius: T.rRow,
+        padding: "10px 14px",
+      }}
+    >
       <Icon name={m.i} size={15} style={{ color: m.c, flex: "none" }} />
       <span style={{ flex: 1, fontFamily: T.ui, fontSize: 12.5, color: T.fg, lineHeight: 1.5 }}>{tekst}</span>
-      {cta && <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: m.c, cursor: "pointer", whiteSpace: "nowrap" }}>{cta} →</span>}
-      <Icon name="x" size={13} style={{ color: T.mut, cursor: "pointer" }} />
+      {cta && (
+        <button type="button" className="v2-focus" style={{ appearance: "none", fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: m.c, cursor: "pointer", whiteSpace: "nowrap", background: "transparent", border: "none", minHeight: 44 }}>
+          {cta} →
+        </button>
+      )}
+      <button type="button" aria-label="Lukk banner" className="v2-focus" style={{ appearance: "none", background: "transparent", border: "none", cursor: "pointer", minWidth: 44, minHeight: 44, display: "inline-flex", alignItems: "center", justifyContent: "center", padding: 0 }}>
+        <Icon name="x" size={14} style={{ color: T.mut }} />
+      </button>
     </div>
   );
 }
@@ -314,8 +416,8 @@ export function KommandoPalett({
             <div key={gi} style={{ marginTop: gi ? 6 : 0 }}>
               <Caps size={8.5} style={{ padding: "6px 10px 4px" }}>{g.l}</Caps>
               {g.items.map((x, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 9, background: x.aktiv ? T.panel3 : "transparent", position: "relative", cursor: "pointer" }}>
-                  {x.aktiv && <span style={{ position: "absolute", left: 0, top: 7, bottom: 7, width: 2, borderRadius: 2, background: T.lime }} />}
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", minHeight: 44, borderRadius: T.rRow, background: x.aktiv ? T.panel3 : "transparent", position: "relative", cursor: "pointer" }}>
+                  {x.aktiv && <span style={{ position: "absolute", left: 0, top: 8, bottom: 8, width: 2, borderRadius: 2, background: T.lime }} />}
                   <Icon name={x.i} size={14} style={{ color: x.aktiv ? T.lime : T.fg2 }} />
                   <span style={{ flex: 1, fontFamily: T.ui, fontSize: 13, fontWeight: x.aktiv ? 600 : 500, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{x.t}</span>
                   {x.k && <Kbd>{x.k}</Kbd>}

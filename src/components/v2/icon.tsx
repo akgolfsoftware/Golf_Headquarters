@@ -170,7 +170,7 @@ export interface IconProps {
   strokeWidth?: number;
 }
 
-export function Icon({ name, size = 16, style, className, strokeWidth = 1.75 }: IconProps) {
+export function Icon({ name, size = 16, style, className, strokeWidth = 1.5 }: IconProps) {
   const Cmp = MAP[name] ?? CircleHelp;
   return <Cmp size={size} strokeWidth={strokeWidth} style={style} className={className} aria-hidden />;
 }
