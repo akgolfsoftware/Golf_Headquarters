@@ -3,7 +3,7 @@
  * fra JSON-eksporter i Google Drive.
  *
  * Strategi (Stats Fase 1 STATS-5 — erstatter NGF-stub):
- *   - Les ferdige JSON-eksporter fra ~/My Drive/AK Golf Group/Data/
+ *   - Les ferdige JSON-eksporter fra ~/ak-golf-data/ (-> Drive: AK Golf Group/data)
  *   - Upsert Tournament-rader (sourceOrigin = NGF/SRIXON/OLYO/NGC/OSTLANDS)
  *   - Upsert PublicPlayer-rader (deduplikert på slug)
  *   - Upsert PublicPlayerEntry-rader med rounds-JSON
@@ -30,10 +30,10 @@ loadEnv({ path: ".env.local" });
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
-const DRIVE_BASE = path.join(
-  os.homedir(),
-  "My Drive/AK Golf Group/Data",
-);
+// Kanonisk datamappe: snarveien ~/ak-golf-data peker på
+// Google Drive/AK Golf Group/data. Kan overstyres med AK_GOLF_DATA.
+const DRIVE_BASE =
+  process.env.AK_GOLF_DATA ?? path.join(os.homedir(), "ak-golf-data");
 
 // Importer all tilgjengelig historikk. Tidligste år i datasettet er 2016
 // (Østlandstour). Endre til høyere år hvis du vil ha rasere kjøring.
@@ -188,23 +188,29 @@ async function enrichPlayer(
 // SRIXON TOUR
 // ---------------------------------------------------------------------------
 
-type SrixonRound = { n: number; score: string; par: string };
+// Feltnavnene under følger scraperen i
+// ak-golf-intelligence/pipelines/legacy_scrapers/scrape_srixon_tour.py.
+// Formatet ble lagt om 15. juni 2026 (id/date/fn/ln → competition_id/start_date/
+// first_name/last_name); rundene har i tillegg hull- og statistikkdata vi ikke
+// lagrer her.
+type SrixonRound = { round_number: number; result: string; to_par: string };
 type SrixonPlayer = {
-  pos: number;
-  fn: string;
-  ln: string;
+  position: number;
+  first_name: string;
+  last_name: string;
   club: string;
-  by?: number;
-  total: string;
-  topar?: string;
+  birth_year?: number;
+  result_total: string;
+  result_to_par?: string;
   rounds: SrixonRound[];
 };
-type SrixonClass = { name: string; players: SrixonPlayer[] };
+type SrixonClass = { class_name: string; players: SrixonPlayer[] };
 type SrixonTournament = {
-  id: number;
+  competition_id: number;
   name: string;
   type: string;
-  date: string;
+  start_date: string;
+  end_date?: string;
   classes: SrixonClass[];
 };
 
@@ -222,7 +228,7 @@ async function importSrixon(): Promise<{ tournaments: number; entries: number }>
   let entryCount = 0;
 
   for (const t of data) {
-    const startDate = parseSrixonDate(t.date);
+    const startDate = parseSrixonDate(t.start_date);
     if (!startDate) continue;
     if (startDate.getUTCFullYear() < MIN_YEAR) continue;
 
@@ -236,16 +242,16 @@ async function importSrixon(): Promise<{ tournaments: number; entries: number }>
         name: t.name,
         slug,
         startDate,
-        endDate: startDate, // Srixon = 1-dag
+        endDate: parseSrixonDate(t.end_date ?? "") ?? startDate,
         format: t.type === "StrokePlay" ? "STROKE" : "STROKE",
         sourceOrigin: "NGF",
-        sourceId: `srixon-${t.id}`,
+        sourceId: `srixon-${t.competition_id}`,
         tour: "junior-no",
         country: "NO",
         status: "COMPLETED",
         tier,
         weekStart,
-        notes: JSON.stringify({ tour: "srixon", externalId: t.id }),
+        notes: JSON.stringify({ tour: "srixon", externalId: t.competition_id }),
         lastSyncAt: new Date(),
       },
       update: {
@@ -261,14 +267,21 @@ async function importSrixon(): Promise<{ tournaments: number; entries: number }>
     // Importer deltakere
     for (const cls of t.classes) {
       for (const p of cls.players) {
-        const playerId = await ensurePlayer(p.fn, p.ln, p.club, p.by ?? null);
+        const playerId = await ensurePlayer(
+          p.first_name,
+          p.last_name,
+          p.club,
+          p.birth_year ?? null,
+        );
 
-        const rounds = p.rounds.map((r) => ({
-          n: r.n,
-          score: Number(r.score),
-          par: r.par,
+        // Behold samme rounds-form som før ({n, score, par}) — lesere i appen
+        // er skrevet mot den.
+        const rounds = (p.rounds ?? []).map((r) => ({
+          n: r.round_number,
+          score: Number(r.result),
+          par: r.to_par,
         }));
-        const totalScore = Number(p.total) || null;
+        const totalScore = Number(p.result_total) || null;
 
         await prisma.publicPlayerEntry.upsert({
           where: {
@@ -281,12 +294,12 @@ async function importSrixon(): Promise<{ tournaments: number; entries: number }>
             playerId,
             tournamentId: turnering.id,
             status: "FINISHED",
-            position: p.pos,
+            position: p.position,
             totalScore,
             rounds,
           },
           update: {
-            position: p.pos,
+            position: p.position,
             totalScore,
             rounds,
             status: "FINISHED",
