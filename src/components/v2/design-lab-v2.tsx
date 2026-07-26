@@ -20,6 +20,13 @@ import {
   AvatarInit,
 } from "@/components/v2/core";
 import {
+  SpillerKort,
+  AnbefalingsKort,
+  OektKort,
+  LiveBar,
+} from "@/components/v2/domene";
+import { OppgaveKort } from "@/components/v2/domene2";
+import {
   Inndata,
   TekstOmraade,
   Velger,
@@ -318,6 +325,66 @@ export function DesignLabV2() {
                 { l: "Nærspill", v: "−0,2", delta: "−0,1", dir: "down" },
               ]}
             />
+          }
+        />
+
+        <Seksjon
+          tittel="Domain top 5 · eksempel (ikke produksjonsdata)"
+          barn={
+            <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.5 }}>
+                Parity mot Open Design familie-domain. Alle tall er lab-eksempel.
+              </p>
+              <SpillerKort
+                navn="Emma Nilsen"
+                kategori="Kat A"
+                hcp="4,2"
+                sg="+1,8"
+                sgDelta="+0,4"
+                sgDir="up"
+                runder={12}
+                adherence="87 %"
+                medKpiStripe
+              />
+              <SpillerKort
+                navn="Jonas Hauge"
+                kategori="Kat B"
+                hcp="11,7"
+                sg="-0,6"
+                sgDelta="-0,2"
+                sgDir="down"
+                runder={5}
+                adherence={null}
+                medKpiStripe
+              />
+              <OektKort
+                title="Innspill 120–150 m"
+                time="08:00"
+                duration="60 min"
+                state="planned"
+                meta="I dag · range · 4 drills · eksempel"
+                cta="Start økt"
+                ctaGhost="Rediger"
+              />
+              <OektKort
+                title="Putting 2–6 m"
+                time="16:30"
+                duration="45 min"
+                state="done"
+                meta="I går · green · 3 drills · eksempel"
+                footerTall={
+                  <span style={{ fontFamily: T.mono, fontSize: 12, color: T.fg2 }}>
+                    Adherence <b style={{ color: T.up }}>92 %</b>
+                  </span>
+                }
+                ctaGhost="Se logg"
+              />
+              <OppgaveKort tittel="Godkjenn ukeplan for Emma" sub="Frist i dag · AgencyOS · eksempel" status="aapen" />
+              <OppgaveKort tittel="Send foreldre-oppsummering" sub="Ferdig i går · eksempel" status="fullfort" frist={null} />
+              <AnbefalingsKort />
+              <LiveBar tittel="Innspill · live økt (eksempel)" tid="42:18" cta="Åpne økt" />
+              <LiveBar tittel="Starter om 12 min (eksempel)" tid="07:48" kritisk cta="Gå til økt" />
+            </div>
           }
         />
 
