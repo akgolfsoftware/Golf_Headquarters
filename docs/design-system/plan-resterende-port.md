@@ -63,7 +63,7 @@
 **Kode finnes:** `spesialviz.tsx` + `datavis.tsx`.  
 **DoD:**
 - [x] Lab-seksjon «TrackMan · Fase 10»
-- [ ] Produksjons-TM-side gjenbruker v2-plot (Bølge 12 — rådata-format er annerledes)
+- [x] Produksjons-TM-side gjenbruker v2-plot (levert i Bølge 12c)
 
 ---
 
@@ -89,7 +89,7 @@ ValideringsChip, Skjelett, Trekkspill, FilterChips og MeldingsTraad fantes fra f
 |-------|------|-----|--------|
 | Admin kalender uke | `/admin/kalender` | Notion-grid chrome + v2 tokens | ✅ 12a |
 | SG / analyse | PlayerHQ analysere | SgTotal + Diagnose v2 | ✅ 12b |
-| TrackMan detalj | `/portal/mal/trackman/[id]` | Visuelt i tråd med showroom | ⬜ 12c |
+| TrackMan detalj | `/portal/mal/trackman/[id]` | Visuelt i tråd med showroom | ✅ 12c |
 | Booking admin | booking-lister | BookingKort v2 | ⬜ 12d |
 
 **Regel:** layout/chrome først — ikke ny forretningslogikk.
@@ -141,6 +141,39 @@ CTA den eneste.
 showroomets enklere `SgTotal`-kort. `SgTotal` har ingen trendgraf, og flaten har
 ekte `trendPunkter` — å bytte ville fjernet reelle data for å matche et bilde.
 
+#### 12c · TrackMan-detalj (levert)
+Fasit: `familie-trackman.html`. Lukker DoD-punktet fra Bølge 10
+(«Produksjons-TM-side gjenbruker v2-plot»).
+
+- [x] `TrackmanSammendrag` øverst — slag + KPI-rute (ballfart m/s, smash,
+      carry-snitt, spinn) + lengste slag. Manglende felt → `—`, aldri gjettet
+- [x] `DispersionPlot` (v2) erstatter lokal `dispersion-plot.tsx`
+- [x] `KolleStatKort` erstatter den nakne `Rad`-listen — snitt, ± spredning,
+      snitt side, antall slag
+- [x] Lokal `dispersion-plot.tsx` slettet (kun brukt her)
+- [x] Verifisert lys + mørk + 390px, og med halv økt (manglende felter)
+
+**Hvorfor det gamle plottet måtte bort — to grunner, ikke bare stil:**
+1. Det tegnet med Tailwind/shadcn-tokens (`hsl(var(--primary))`,
+   `fill-muted-foreground`) midt på en v2-flate — en helt annen palett enn alt
+   rundt. Fasit-plottet bruker `T`-tokens, så lime→forest-remappingen i lys
+   modus gjelder også her.
+2. Det blandet **alle køller i samme bilde**. Driver og wedge i samme punktsky
+   gjør «spredningen» til et mål på køllevalg, ikke på treffsikkerhet.
+   Fasit-plottet er per kølle; siden viser kølla med flest plasserbare slag og
+   sier hvilken det er.
+
+**Gjenbruk framfor ny matte:** per-kølle-tallene kommer fra `beregnStabilitet`
+(`snitt`, `stddev`, `meanSide` per kølle er alt regnet ut der) — ingen parallell
+utregning. Faller tilbake til agent-signalene når økta mangler lagrede slag;
+da vises spredning/side som `—`.
+
+**Liten fiks funnet i verifiseringen:** spinn-tallet «2 540» brøt over to linjer
+i KPI-ruten på 390px. Tusenskillet er nå hardt mellomrom (U+00A0).
+
+**Ikke portet:** `stability-seksjon.tsx` (434 linjer tailwind) står urørt —
+egen jobb, ikke chrome.
+
 ---
 
 ### Bølge 13 · Marketing (`familie-marketing.html`)
@@ -172,8 +205,9 @@ Forside/coaching er delvis levert (PR #139). Rest: priser, kontakt, blogg-chrome
 Ferdig   → Bølge 8–10 (lab + parity)
 Ferdig   → Bølge 11 feedback/structure
 Ferdig   → Bølge 12a admin-kalender
-Ferdig   → Bølge 12b SG/analyse            ← forrige PR
-Nå       → Bølge 12c TrackMan → 12d booking
+Ferdig   → Bølge 12b SG/analyse
+Ferdig   → Bølge 12c TrackMan-detalj       ← forrige PR
+Nå       → Bølge 12d booking-lister
 Sist     → Bølge 13 marketing + 14 hardening
 ```
 
@@ -199,3 +233,4 @@ Sist     → Bølge 13 marketing + 14 hardening
 | 2026-07-26 | Bølge 11 levert på `feat/ds-f-wave11-feedback-struktur`: `tilbakemelding.tsx`, Stegviser, Skilje, lab-seksjon, emoji-fiks. Neste: Bølge 12 admin-kalender |
 | 2026-07-26 | Bølge 12a levert på `feat/ds-f-wave12a-kalender-toolbar`: Notion-toolbar på `/admin/kalender`, segment ikke lime (`--v2-seg-skygge`), `periode` i KalenderData, KPI `instant`. Neste: 12b SG/analyse |
 | 2026-07-26 | Bølge 12b levert på `feat/ds-f-wave12b-sg-analyse`: SgKategorier/Diagnose/NesteFokus/SlagLekkasje på `/portal/analysere`, `desimaler`-prop mot «−0,0»-kollaps, ekte CTA-lenker. Neste: 12c TrackMan |
+| 2026-07-26 | Bølge 12c levert på `feat/ds-f-wave12c-trackman`: TrackmanSammendrag/DispersionPlot/KolleStatKort på TM-detalj, lokal tailwind-plot slettet, per-kølle-tall gjenbrukt fra beregnStabilitet. Neste: 12d booking |
