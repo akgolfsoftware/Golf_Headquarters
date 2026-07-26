@@ -1,7 +1,8 @@
 /**
  * v2 — AgencyOS Min coach-profil (retning C). Egen top-level route (utenfor
  * AdminShell) — V2Shell leverer all chrome (IkonRail/BunnNav) i mørk
- * v2-scope. Nav-punktet ligger i AGENCYOS_MER (gruppe "Drift" → "min-profil"),
+ * v2-scope. Nav-punktet lever i Cmd+K-søket («Min coach-profil») etter at Mer ble
+ * kuttet til fem rom 2026-07-26,
  * ikke i hovedrailen — `aktiv` utledes derfor av URL-en (samme mønster som
  * /admin/team/inviter og /admin/settings).
  *

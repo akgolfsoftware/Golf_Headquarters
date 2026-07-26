@@ -42,6 +42,26 @@ export interface V2NavGruppe {
   items: V2NavItem[];
 }
 
+/**
+ * Ett «rom» i AgencyOS-Mer (IA 2026-07-26, Open Design `mer-sheet.html`).
+ * Mer er fem rom — ikke en katalog. Hvert rom er ÉN rad som eier sitt område;
+ * dyp-katalogen nås via Cmd+K-søket (se `global-search-modal.tsx`).
+ */
+export interface V2Rom {
+  id: string;
+  label: string;
+  /** Hva rommet dekker — én linje, ellipse ved overflyt. */
+  beskrivelse: string;
+  /** Kort mono-merkelapp til høyre (AI / Trening / Struktur / Penger / System). */
+  meta: string;
+  icon: string;
+  href: string;
+  /** Skjules for COACH — siden bak er ADMIN-only (server-gated). */
+  adminOnly?: boolean;
+  /** Lime-fremhevet rad. Maks ÉN — ellers ryker «én lime-jobb per skjerm». */
+  pin?: boolean;
+}
+
 /** PlayerHQ-navigasjon (5 faste seksjoner). Rutene er dagens kanoniske adresser. */
 export const PLAYERHQ_NAV: V2NavItem[] = [
   { id: "hjem", label: "Hjem", icon: "home", href: "/portal" },
@@ -64,69 +84,62 @@ export const AGENCYOS_NAV: V2NavItem[] = [
 ];
 
 /**
- * AgencyOS «Mer» — kort hale (IA 2026-07-25).
- * Ikke i Mer: Kø-faner (AI/meldinger/varsler/oppfølging/oppgaver),
- * Kalender-faner (bookinger/tavle/tilgj.), Innsikt-faner (tester/TrackMan/…).
- * De nås via hub-faner på primærsidene + Cmd+K-søk.
+ * AgencyOS «Mer» — FEM ROM (IA 2026-07-26, fasit `mer-sheet.html`).
+ *
+ * Erstatter den gamle katalogen på ~30 lenker i fem grupper, inkludert
+ * «Avansert»-blokken. Regler fra fasiten:
+ *   1. Fem rom, én rad hver — rommet eier sitt område.
+ *   2. Railen vinner ved dublett: Kø, Kalender og Innsikt står IKKE her.
+ *   3. Resten (audit-log, marketing, tjenester, workspace, dyp-katalog) lever
+ *      i Cmd+K-søket. De ble lagt inn i `global-search-modal.tsx` samtidig som
+ *      denne listen ble kuttet — ellers hadde 13 sider mistet all vei inn.
+ *
+ * Plan/Stall+/Drift har ennå ingen egen hub-side (kommer senere). Til da peker
+ * hvert rom på den mest dekkende EKSISTERENDE ruten, slik at ingen rad er død.
  */
-export const AGENCYOS_MER: V2NavGruppe[] = [
+export const AGENCYOS_ROM: V2Rom[] = [
   {
+    id: "agenticos",
     label: "AgenticOS",
-    items: [
-      { id: "caddie", label: "Caddie", icon: "message-circle", href: "/admin/agencyos/caddie", adminOnly: true },
-      { id: "agents", label: "AI-agenter", icon: "bot", href: "/admin/agents" },
-      { id: "agent-team", label: "Agent-team", icon: "users", href: "/admin/agent-team" },
-      { id: "brief", label: "Daglig brief", icon: "file-text", href: "/admin/brief" },
-    ],
+    beskrivelse: "Caddie, AI-agenter, agent-team, daglig brief",
+    meta: "AI",
+    icon: "bot",
+    href: "/admin/agents",
   },
   {
+    id: "plan",
     label: "Plan",
-    items: [
-      { id: "planlegge", label: "Workbench · velg spiller", icon: "target", href: "/admin/planlegge" },
-      { id: "plan-templates", label: "Plan-maler", icon: "copy", href: "/admin/plan-templates" },
-      { id: "drills", label: "Drills", icon: "dumbbell", href: "/admin/drills" },
-      { id: "tournaments", label: "Turneringer", icon: "trophy", href: "/admin/tournaments" },
-      { id: "teknisk-plan", label: "Teknisk plan", icon: "wrench", href: "/admin/teknisk-plan" },
-    ],
+    beskrivelse: "Workbench, maler, drills, turneringer, teknisk",
+    meta: "Trening",
+    icon: "target",
+    href: "/admin/planlegge",
   },
   {
+    id: "stall-pluss",
     label: "Stall+",
-    items: [
-      { id: "grupper", label: "Grupper", icon: "users", href: "/admin/grupper" },
-      { id: "spillere-ny", label: "Ny spiller", icon: "plus", href: "/admin/spillere/ny" },
-      { id: "talent-radar", label: "Talent-radar", icon: "star", href: "/admin/talent/radar" },
-    ],
+    beskrivelse: "Grupper, ny spiller, talent",
+    meta: "Struktur",
+    icon: "user-plus",
+    href: "/admin/grupper",
   },
   {
+    id: "okonomi",
+    label: "Økonomi",
+    beskrivelse: "Belegg, inntekt, abonnement, faktura, rapporter",
+    meta: "Penger",
+    icon: "credit-card",
+    href: "/admin/agencyos/okonomi",
+    adminOnly: true,
+    pin: true,
+  },
+  {
+    id: "drift",
     label: "Drift",
-    items: [
-      { id: "okonomi", label: "Økonomi", icon: "credit-card", href: "/admin/agencyos/okonomi", adminOnly: true },
-      { id: "team", label: "Team", icon: "users", href: "/admin/team" },
-      { id: "settings", label: "Innstillinger", icon: "settings", href: "/admin/settings", adminOnly: true },
-      { id: "integrasjoner", label: "Integrasjoner", icon: "plug", href: "/admin/integrasjoner" },
-      { id: "email-templates", label: "E-postmaler", icon: "mail-check", href: "/admin/email-templates" },
-      { id: "min-profil", label: "Min coach-profil", icon: "id-card", href: "/admin/profile" },
-      { id: "hjelp", label: "Hjelp", icon: "help-circle", href: "/admin/hjelp" },
-    ],
-  },
-  {
-    label: "Avansert",
-    items: [
-      { id: "plans", label: "Planer (alle)", icon: "layers", href: "/admin/plans" },
-      { id: "okter", label: "Økter", icon: "clock", href: "/admin/okter" },
-      { id: "gjennomfore", label: "Gjennomføre", icon: "play", href: "/admin/gjennomfore" },
-      { id: "periode-fordeling", label: "Periode-fordeling", icon: "sliders", href: "/admin/settings/periode-fordeling" },
-      { id: "live", label: "Live", icon: "monitor", href: "/admin/agencyos/live" },
-      { id: "innboks-epost", label: "E-post (post@)", icon: "mail", href: "/admin/innboks-epost", adminOnly: true },
-      { id: "workspace", label: "Workspace", icon: "layout-dashboard", href: "/admin/workspace", adminOnly: true },
-      { id: "marketing", label: "Marketing", icon: "megaphone", href: "/admin/marketing", adminOnly: true },
-      { id: "services", label: "Tjenester og priser", icon: "credit-card", href: "/admin/services" },
-      { id: "kalender-synk", label: "Kalender-synk (Google)", icon: "refresh-cw", href: "/admin/settings/calendar" },
-      { id: "klubb-innstillinger", label: "Klubb-innstillinger", icon: "building-2", href: "/admin/klubb/innstillinger" },
-      { id: "audit-log", label: "Audit-log", icon: "shield", href: "/admin/audit-log" },
-      { id: "talent-sammenligning", label: "Talent-sammenligning", icon: "crosshair", href: "/admin/talent/sammenligning" },
-      { id: "spiller-profil", label: "Min spillerprofil", icon: "user", href: "/portal" },
-    ],
+    beskrivelse: "Innstillinger, team, integrasjoner, sikkerhet",
+    meta: "System",
+    icon: "settings",
+    href: "/admin/settings",
+    adminOnly: true,
   },
 ];
 
@@ -143,8 +156,10 @@ export interface V2ShellProps {
   aktiv?: string;
   /** Navigasjonsoppsett (default PlayerHQ). */
   nav?: V2NavItem[];
-  /** «Mer»-grupper (lang hale). Auto: AGENCYOS_MER når nav er AGENCYOS_NAV. */
+  /** «Mer»-grupper. Brukes av PlayerHQ-bunn-nav for seksjoner som ikke får plass. */
   mer?: V2NavGruppe[];
+  /** «Mer»-rom (AgencyOS). Auto: AGENCYOS_ROM når nav er AGENCYOS_NAV. */
+  rom?: V2Rom[];
   /** Innlogget brukers navn (for avatar-initialer/tittel). */
   navn?: string;
   /** Opplastet profilbilde-URL, hvis satt (ellers init-avatar). */
@@ -258,7 +273,7 @@ function RailLenke({ item, on }: { item: V2NavItem; on: boolean }) {
 /** «Mer»-panelet — grupperte lenker. Desktop: flytende panel ved railen.
  *  mobil: bunn-ark (72vh). mobil+full: full-høyde skuff (kandidat A, godkjent
  *  17. juli for AgencyOS-mobil) — dekker viewporten fra topp til bunn. */
-function MerPanel({ grupper, onClose, mobil, full, erAgency }: { grupper: V2NavGruppe[]; onClose: () => void; mobil?: boolean; full?: boolean; erAgency?: boolean }) {
+function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: V2NavGruppe[]; rom?: V2Rom[]; onClose: () => void; mobil?: boolean; full?: boolean; erAgency?: boolean }) {
   const pathname = usePathname();
   const { tema, bytt } = useV2Tema();
   useEffect(() => {
@@ -290,11 +305,13 @@ function MerPanel({ grupper, onClose, mobil, full, erAgency }: { grupper: V2NavG
             ? full
               ? { position: "fixed", inset: 0, zIndex: 91, overflowY: "auto", background: T.panel, opacity: 1, borderRadius: 0, padding: "calc(14px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom))", boxShadow: "0 -18px 48px rgba(0,0,0,0.5)" }
               : { position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 91, maxHeight: "72vh", overflowY: "auto", background: T.panel, opacity: 1, border: `1px solid ${T.border}`, borderRadius: "18px 18px 0 0", padding: "14px 16px calc(20px + env(safe-area-inset-bottom))", boxShadow: "0 -18px 48px rgba(0,0,0,0.5)" }
-            : { position: "fixed", left: 68, top: 12, bottom: 12, zIndex: 91, width: 560, maxWidth: "calc(100vw - 84px)", overflowY: "auto", background: T.panel, opacity: 1, border: `1px solid ${T.border}`, borderRadius: 16, padding: "18px 20px", boxShadow: "0 24px 64px rgba(0,0,0,0.55)" }
+            : { position: "fixed", left: 68, top: 12, bottom: 12, zIndex: 91, width: rom && rom.length > 0 ? 420 : 560, maxWidth: "calc(100vw - 84px)", overflowY: "auto", background: T.panel, opacity: 1, border: `1px solid ${T.border}`, borderRadius: 16, padding: "18px 20px", boxShadow: "0 24px 64px rgba(0,0,0,0.55)" }
         }
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>Alle flater</span>
+          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
+            {rom && rom.length > 0 ? `Mer · ${rom.length} rom` : "Alle flater"}
+          </span>
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
             {erAgency && (
               // Touch-tilgang til globalt søk (Cmd+K har ingen ekvivalent på
@@ -325,7 +342,7 @@ function MerPanel({ grupper, onClose, mobil, full, erAgency }: { grupper: V2NavG
           </div>
         </div>
         <div style={mobil ? { display: "flex", flexDirection: "column", gap: 14 } : { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px 22px" }}>
-          {grupper.map((g) => (
+          {(grupper ?? []).map((g) => (
             <div key={g.label}>
               <div style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, marginBottom: 6 }}>{g.label}</div>
               <div style={{ display: "flex", flexDirection: "column" }}>
@@ -349,6 +366,64 @@ function MerPanel({ grupper, onClose, mobil, full, erAgency }: { grupper: V2NavG
             </div>
           ))}
         </div>
+
+        {rom && rom.length > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: grupper && grupper.length > 0 ? 16 : 0 }}>
+            {rom.map((r) => {
+              const on = pathname === r.href || pathname.startsWith(r.href + "/");
+              const fremhevet = r.pin || on;
+              return (
+                <Link
+                  key={r.id}
+                  href={r.href}
+                  onClick={onClose}
+                  role="menuitem"
+                  className="v2-press v2-focus"
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "40px 1fr auto",
+                    gap: 12,
+                    alignItems: "center",
+                    padding: 12,
+                    minHeight: 44,
+                    borderRadius: T.rRow,
+                    textDecoration: "none",
+                    color: T.fg,
+                    background: fremhevet ? `color-mix(in srgb, ${T.lime} 8%, transparent)` : "transparent",
+                    border: `1px solid ${fremhevet ? `color-mix(in srgb, ${T.lime} 22%, ${T.border})` : "transparent"}`,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 12,
+                      display: "grid",
+                      placeItems: "center",
+                      flex: "none",
+                      background: fremhevet ? `color-mix(in srgb, ${T.lime} 14%, ${T.panel3})` : T.panel3,
+                      border: `1px solid ${fremhevet ? `color-mix(in srgb, ${T.lime} 28%, ${T.border})` : T.border}`,
+                      color: fremhevet ? T.lime : T.fg2,
+                    }}
+                  >
+                    <Icon name={r.icon} size={18} />
+                  </span>
+                  <span style={{ minWidth: 0 }}>
+                    <span style={{ display: "block", fontFamily: T.disp, fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em", marginBottom: 3 }}>{r.label}</span>
+                    <span style={{ display: "block", fontSize: 12, lineHeight: 1.4, color: T.mut, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.beskrivelse}</span>
+                  </span>
+                  <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.02em", color: fremhevet ? T.lime : T.mut }}>{r.meta}</span>
+                </Link>
+              );
+            })}
+            <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+              <p style={{ margin: 0, fontSize: 11.5, lineHeight: 1.4, color: T.mut }}>
+                Resten (audit-log, marketing, dyp-katalog) lever i søk — ikke her.
+              </p>
+              <kbd style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, padding: "3px 7px", borderRadius: 6, border: `1px solid ${T.border}`, background: T.panel2, color: T.fg2, flex: "none" }}>⌘K</kbd>
+            </div>
+          </div>
+        )}
       </div>
     </>,
     document.body,
@@ -356,7 +431,7 @@ function MerPanel({ grupper, onClose, mobil, full, erAgency }: { grupper: V2NavG
 }
 
 /** Smal ikon-rail (desktop) — ett Link-punkt per seksjon, lime-indikator på aktiv. */
-function IkonRailNav({ aktiv, nav, mer, navn, avatarUrl, erAgency }: Required<Pick<V2ShellProps, "nav" | "navn">> & { aktiv?: string; mer?: V2NavGruppe[]; avatarUrl?: string | null; erAgency?: boolean }) {
+function IkonRailNav({ aktiv, nav, mer, rom, navn, avatarUrl, erAgency }: Required<Pick<V2ShellProps, "nav" | "navn">> & { aktiv?: string; mer?: V2NavGruppe[]; rom?: V2Rom[]; avatarUrl?: string | null; erAgency?: boolean }) {
   const [merOpen, setMerOpen] = useState(false);
   return (
     <nav
@@ -366,7 +441,7 @@ function IkonRailNav({ aktiv, nav, mer, navn, avatarUrl, erAgency }: Required<Pi
     >
       <LogoAK size={26} style={{ marginBottom: 12, flex: "none" }} />
       {nav.map((n) => <RailLenke key={n.id} item={n} on={aktiv === n.id} />)}
-      {mer && mer.length > 0 && (
+      {((mer && mer.length > 0) || (rom && rom.length > 0)) && (
         <button
           onClick={() => setMerOpen(true)}
           title="Mer"
@@ -375,8 +450,8 @@ function IkonRailNav({ aktiv, nav, mer, navn, avatarUrl, erAgency }: Required<Pi
           className="v2-press v2-focus"
           style={{ width: 46, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "7px 0 5px", borderRadius: 12, background: "transparent", border: 0, cursor: "pointer", flex: "none" }}
         >
-          <Icon name="more-horizontal" size={18} style={{ color: T.mut }} strokeWidth={1.5} />
-          <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.mut }}>Mer</span>
+          <Icon name="more-horizontal" size={18} style={{ color: aktiv === "mer" ? T.lime : T.mut }} strokeWidth={1.5} />
+          <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: aktiv === "mer" ? T.fg : T.mut }}>Mer</span>
         </button>
       )}
       <div style={{ flex: 1, minHeight: 8 }} />
@@ -385,7 +460,7 @@ function IkonRailNav({ aktiv, nav, mer, navn, avatarUrl, erAgency }: Required<Pi
           overalt, mørk er et bevisst valg per bruker. */}
       <TemaRailKnapp />
       <AvatarFoto src={avatarUrl ?? undefined} navn={navn} size={32} ring />
-      {merOpen && mer && <MerPanel grupper={mer} onClose={() => setMerOpen(false)} erAgency={!!erAgency} />}
+      {merOpen && <MerPanel grupper={mer} rom={rom} onClose={() => setMerOpen(false)} erAgency={!!erAgency} />}
     </nav>
   );
 }
@@ -443,12 +518,12 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
 /* M1 (17. juli, godkjent): AgencyOS mobil-bunn-nav. Fire kuraterte hovedseksjoner
    + «Mer» — samme tommelvennlige mønster som PlayerHQ-BunnNav (BunnNavLenker),
    men «Mer» åpner en FULL-HØYDE skuff (kandidat A) med resten av seksjonene +
-   AGENCYOS_MER-gruppene, så hele coach-flaten er nåbar. Mørkt tema beholdes
+   AGENCYOS_ROM (fem rom), så hele coach-flaten er nåbar. Mørkt tema beholdes
    (V2Shell holder AgencyOS mørk/lys via cookie som før). PlayerHQ-mobilen bruker
    fortsatt BunnNavLenker uendret. */
 const AGENCY_MOBIL_PRIMÆR = ["cockpit", "innboks", "spillere", "kalender"];
 
-function AgencyBunnNav({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; mer?: V2NavGruppe[] }) {
+function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavItem[]; mer?: V2NavGruppe[]; rom?: V2Rom[] }) {
   const [skuffOpen, setSkuffOpen] = useState(false);
   // Primærseksjoner i kanonisk rekkefølge; hopp over det som ikke finnes i nav-en.
   const primær = AGENCY_MOBIL_PRIMÆR
@@ -495,7 +570,7 @@ function AgencyBunnNav({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
           <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600 }}>Mer</span>
         </button>
       </nav>
-      {skuffOpen && <MerPanel grupper={skuffGrupper} onClose={() => setSkuffOpen(false)} mobil full erAgency />}
+      {skuffOpen && <MerPanel grupper={skuffGrupper} rom={rom} onClose={() => setSkuffOpen(false)} mobil full erAgency />}
     </>
   );
 }
@@ -506,7 +581,7 @@ function AgencyBunnNav({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
  * BunnNav. Innholdet stables med T.gap — skjermkomponentene rendrer bare
  * stacken, shellen leverer chrome.
  */
-export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan", avatarUrl, vekslerData, children }: V2ShellProps) {
+export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind Rohjan", avatarUrl, vekslerData, children }: V2ShellProps) {
   // AgencyOS: auto-koble Mer-menyen uten å måtte endre ~50 kallsteder
   // (alle importerer samme AGENCYOS_NAV-konstant → ref-likhet).
   const erAgency = nav === AGENCYOS_NAV;
@@ -518,13 +593,17 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
     () => (erAdmin ? nav : nav.filter((i) => !i.adminOnly)),
     [nav, erAdmin],
   );
-  const merRaa = mer ?? (erAgency ? AGENCYOS_MER : undefined);
   const merGrupper = useMemo(() => {
-    if (!merRaa || erAdmin) return merRaa;
-    return merRaa
+    if (!mer || erAdmin) return mer;
+    return mer
       .map((g) => ({ ...g, items: g.items.filter((i) => !i.adminOnly) }))
       .filter((g) => g.items.length > 0);
-  }, [merRaa, erAdmin]);
+  }, [mer, erAdmin]);
+  const romRaa = rom ?? (erAgency ? AGENCYOS_ROM : undefined);
+  const romSynlig = useMemo(
+    () => (!romRaa || erAdmin ? romRaa : romRaa.filter((r) => !r.adminOnly)),
+    [romRaa, erAdmin],
+  );
 
   // Uten eksplisitt aktiv-prop (legacy-sidene): utled fra URL-en — lengste
   // href-prefiks-match over hovednav + Mer-gruppene. Treff i en Mer-gruppe
@@ -532,14 +611,10 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
   const pathname = usePathname();
   const autoAktiv = useMemo(() => {
     if (aktiv) return aktiv;
+    // Gjelder kun custom `mer`-grupper (PlayerHQ-bunn-nav + eldre kallsteder).
+    // AgencyOS bruker rom, se romSynlig-løkken lenger ned.
     const gruppeTilSeksjon: Record<string, string> = {
-      AgenticOS: "innboks",
-      Plan: "spillere",
-      "Stall+": "spillere",
       Stall: "spillere",
-      Drift: "cockpit",
-      Avansert: "cockpit",
-      // Eldre labels (fallback hvis custom mer sendes inn)
       Kommunikasjon: "innboks",
       Planlegging: "kalender",
       "Tid og booking": "kalender",
@@ -586,8 +661,15 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
         }
       }
     }
+    // Rom-treff lyser opp «Mer» i railen — rommet ER Mer-inngangen, ikke en
+    // undergruppe av en primærseksjon.
+    for (const r of romSynlig ?? []) {
+      if (pathname === r.href || pathname.startsWith(r.href + "/")) {
+        if (!best || r.href.length > best.href.length) best = { id: "mer", href: r.href };
+      }
+    }
     return best?.id;
-  }, [aktiv, nav, merGrupper, pathname]);
+  }, [aktiv, nav, merGrupper, romSynlig, pathname]);
 
   // DS2: shadcn-scope (.dark/.light) + colorScheme følger v2-temaet, så
   // skjema-primitiver og scrollbars matcher. SSR er lys (standard 25. jul);
@@ -633,7 +715,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
         display: "flex",
       }}
     >
-      <IkonRailNav aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} navn={navn} avatarUrl={avatarUrl} erAgency={erAgency} />
+      <IkonRailNav aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} rom={romSynlig} navn={navn} avatarUrl={avatarUrl} erAgency={erAgency} />
       {/* Topp-luft inkluderer safe-area: i installert PWA på iPhone dekker
           innholdet statuslinje-området — uten env() kolliderer hilsen/avatar
           med klokka (Anders' mobil-funn 2026-07-13). Desktop: env() = 0. */}
@@ -662,7 +744,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, navn = "Øyvind Rohjan
       {/* Mobil-bunnnav: AgencyOS får dedikert nav + full-høyde «Mer»-skuff (M1);
           PlayerHQ/forelder beholder BunnNavLenker uendret. */}
       {erAgency
-        ? <AgencyBunnNav aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} />
+        ? <AgencyBunnNav aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} rom={romSynlig} />
         : <BunnNavLenker aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} />}
       {/* Globalt søk (Cmd+K + «global-search:open»-event fra Mer-panelets
           søkeknapp) — kun montert i AgencyOS. Selv-styrt, rendrer null lukket. */}

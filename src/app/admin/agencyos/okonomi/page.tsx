@@ -61,6 +61,51 @@ const PRO_PRIS_KR = 299;
 
 const ore = (v: number) => v / 100;
 
+/** «HH:MM» → minutter etter midnatt. Null når feltet ikke er et klokkeslett. */
+function klokkeTilMin(t: string): number | null {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(t.trim());
+  if (!m) return null;
+  const timer = Number(m[1]);
+  const min = Number(m[2]);
+  if (timer > 23 || min > 59) return null;
+  return timer * 60 + min;
+}
+
+/**
+ * Belegg denne uka = bookede minutter / tilgjengelige coach-minutter.
+ *
+ * Kapasiteten er summen av CoachAvailability-vinduene som gjelder denne uka
+ * (ukentlige vinduer × 1 + én-gangs-vinduer som faller i uka). Uten vinduer
+ * finnes det ingen ærlig kapasitet å måle mot → null, og KPI-en viser «—»
+ * framfor et tall vi ikke kan stå for.
+ */
+function beregnBeleggPct(
+  bookinger: { startAt: Date; endAt: Date }[],
+  vinduer: { weekday: number | null; date: Date | null; startTime: string; endTime: string }[],
+  ukeStart: Date,
+  ukeSlutt: Date,
+): number | null {
+  let kapasitetMin = 0;
+  for (const v of vinduer) {
+    const fra = klokkeTilMin(v.startTime);
+    const til = klokkeTilMin(v.endTime);
+    if (fra === null || til === null || til <= fra) continue;
+    if (v.date != null) {
+      if (v.date >= ukeStart && v.date < ukeSlutt) kapasitetMin += til - fra;
+    } else if (v.weekday != null) {
+      kapasitetMin += til - fra;
+    }
+  }
+  if (kapasitetMin <= 0) return null;
+
+  let booketMin = 0;
+  for (const b of bookinger) {
+    const min = (b.endAt.getTime() - b.startAt.getTime()) / 60000;
+    if (min > 0) booketMin += min;
+  }
+  return Math.min(100, Math.round((booketMin / kapasitetMin) * 100));
+}
+
 export default async function V2AdminOkonomiPage() {
   const user = await requirePortalUser({ allow: ["ADMIN"] });
 
@@ -69,8 +114,16 @@ export default async function V2AdminOkonomiPage() {
   const mndSlutt = new Date(now.getFullYear(), now.getMonth() + 1, 1);
   const forrigeMndStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
   const femTilbake = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+  // Uke-vindu (man–søn) for belegg. Rå getDay() er nok her: begge grenser
+  // regnes i samme tidssone, og belegg er et grovt ukesnitt — ikke en
+  // tidsstempel-kritisk verdi.
+  const ukeStart = new Date(now);
+  ukeStart.setHours(0, 0, 0, 0);
+  ukeStart.setDate(ukeStart.getDate() - ((ukeStart.getDay() + 6) % 7));
+  const ukeSlutt = new Date(ukeStart);
+  ukeSlutt.setDate(ukeSlutt.getDate() + 7);
 
-  const [denneMnd, forrigeMnd, alleSeks, utestaende, sisteFakturaer, proAktive] = await Promise.all([
+  const [denneMnd, forrigeMnd, alleSeks, utestaende, sisteFakturaer, proAktive, ukasBookinger, tilgjengelighet, gratisSpillere] = await Promise.all([
     prisma.payment.aggregate({
       _sum: { amountOre: true },
       _count: true,
@@ -97,6 +150,14 @@ export default async function V2AdminOkonomiPage() {
     prisma.subscription.count({
       where: { tier: "PRO", status: { in: ["ACTIVE", "TRIALING", "PAST_DUE"] } },
     }),
+    prisma.booking.findMany({
+      where: { status: { in: ["CONFIRMED", "COMPLETED"] }, startAt: { gte: ukeStart, lt: ukeSlutt } },
+      select: { startAt: true, endAt: true },
+    }),
+    prisma.coachAvailability.findMany({
+      select: { weekday: true, date: true, startTime: true, endTime: true },
+    }),
+    prisma.user.count({ where: { subscription: null } }),
   ]);
 
   // Månedlig serie (6 mnd, i kr).
@@ -138,10 +199,14 @@ export default async function V2AdminOkonomiPage() {
     betalinger,
     stripeHref: "https://dashboard.stripe.com",
     oppfolgHref: "/admin/innboks",
+    beleggPct: beregnBeleggPct(ukasBookinger, tilgjengelighet, ukeStart, ukeSlutt),
+    bookingerUka: ukasBookinger.length,
+    gratisSpillere,
+    tjenesterHref: "/admin/services",
   };
 
   return (
-    <V2Shell aktiv="okonomi" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell aktiv="mer" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
       <AdminOkonomiV2 data={data} />
     </V2Shell>

@@ -23,7 +23,7 @@
  * tom liste ved 0 betalinger, «—» der data mangler.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import {
   Caps,
@@ -31,6 +31,7 @@ import {
   Kort,
   Rad,
   KpiFlis,
+  PillTabs,
   TallHero,
   StatusPill,
   CTAPill,
@@ -41,7 +42,7 @@ import {
   Icon,
   type StatusTone,
 } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { T, TOM_TALL } from "@/lib/v2/tokens";
 
 // ── Datakontrakt (mappes fra Prisma i ruten) ────────────────────
 export type BetalingStatusKey =
@@ -75,6 +76,13 @@ export interface AdminOkonomiV2Data {
   betalinger: AdminOkonomiV2Betaling[];
   stripeHref: string;
   oppfolgHref: string;
+  /** Belegg denne uka (bookede min / tilgjengelige coach-min). Null = ingen
+   *  kapasitet registrert → KPI-en viser «—» framfor et tall vi ikke kan stå for. */
+  beleggPct: number | null;
+  bookingerUka: number;
+  /** Spillere uten abonnement (GRATIS). ELITE finnes ikke. */
+  gratisSpillere: number;
+  tjenesterHref: string;
 }
 
 const STATUS: Record<BetalingStatusKey, { label: string; tone: StatusTone }> = {
@@ -153,6 +161,7 @@ function BetalingRad({ b, last, mobile }: { b: AdminOkonomiV2Betaling; last: boo
 
 export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
   const mobile = useMobile();
+  const [fane, setFane] = useState("oversikt");
   const maks = Math.max(1000, ...data.serie.map((m) => m.kr));
   const harTrend = data.serie.length >= 2 && data.serie.some((m) => m.kr > 0);
 
@@ -160,10 +169,13 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>{`Stripe · ${data.periodeLabel} · AgencyOS`}</Caps>
+        <Caps>{`Mer · Økonomi · ${data.periodeLabel}`}</Caps>
         <div style={{ marginTop: 10 }}>
-          <Tittel em="i kontroll" mobile={mobile}>Økonomi</Tittel>
+          <Tittel mobile={mobile}>Økonomi</Tittel>
         </div>
+        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0", maxWidth: "52ch", lineHeight: 1.5 }}>
+          Penger og kapasitet — ikke sportstall. Innsikt eier SG og progresjon.
+        </p>
       </div>
       <a
         href={data.stripeHref}
@@ -184,10 +196,10 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
       : {};
   const kpi = (
     <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
-      <KpiFlis label="MRR · coaching" value={kr(data.mrrKr)} tint />
+      <KpiFlis label="Belegg uke" value={data.beleggPct == null ? null : `${data.beleggPct} %`} instant />
       <KpiFlis label="Innbetalt denne mnd" value={kr(data.innbetaltMndKr)} {...endringChip} />
-      <KpiFlis label="Utestående" value={kr(data.utestaendeKr)} varsle={data.utestaendeKr > 0} />
-      <KpiFlis label="Aktive abonnement" value={data.proAktive} />
+      <KpiFlis label="Åpne fakturaer" value={data.utestaendeAntall} varsle={data.utestaendeAntall > 0} instant />
+      <KpiFlis label="PRO · MRR" value={kr(data.mrrKr)} tint instant />
     </div>
   );
 
@@ -302,6 +314,97 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
       ? `${kr(data.utestaendeKr)} står ute fordelt på ${pl(data.utestaendeAntall, "faktura", "fakturaer")} — følg dem opp for å sikre innbetalingen.`
       : `${pl(data.betalteAntall, "betaling", "betalinger")} innfridd denne måneden. MRR ${kr(data.mrrKr)} løpende fra ${pl(data.proAktive, "PRO-abonnement", "PRO-abonnement")}.`;
 
+  // ── Faner (fasit okonomi.html: seks faner, Oversikt først) ────
+  // Fanene bytter panel lokalt — ingen ny rute, ingen ny meny-rad.
+  const linje = (k: string, v: ReactNode) => (
+    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, padding: "9px 0", borderBottom: `1px solid ${T.border}` }}>
+      <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>{k}</span>
+      <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{v}</span>
+    </div>
+  );
+  const beleggTekst = data.beleggPct == null ? TOM_TALL : `${data.beleggPct} %`;
+
+  const merHer = (
+    <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", paddingTop: 4 }}>
+      <Caps size={9}>Mer her</Caps>
+      <Link href={data.tjenesterHref} style={{ textDecoration: "none" }}>
+        <CTAPill ghost icon="credit-card">Tjenester og priser</CTAPill>
+      </Link>
+      <a href={data.stripeHref} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
+        <CTAPill ghost icon="arrow-up-right">Stripe-dashboard</CTAPill>
+      </a>
+    </div>
+  );
+
+  const paneler: Record<string, ReactNode> = {
+    oversikt: (
+      <>
+        {trendKort}
+        <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
+          {liste}
+          <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+            {mrrKort}
+            {utestaendeKort}
+          </div>
+        </div>
+        <a href={data.stripeHref} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
+          <InnsiktChip cta="Åpne Stripe">{innsiktTekst}</InnsiktChip>
+        </a>
+        {merHer}
+      </>
+    ),
+    belegg: (
+      <Kort eyebrow="Belegg · booking og kapasitet">
+        {linje("Denne uka", beleggTekst)}
+        {linje("Bookinger denne uka", data.bookingerUka)}
+        {data.beleggPct == null && (
+          <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "12px 0 0", lineHeight: 1.5 }}>
+            Belegg krever registrerte tilgjengelighets-vinduer på coach. Uten dem finnes ingen
+            kapasitet å måle mot — derfor {TOM_TALL} og ikke et anslag.
+          </p>
+        )}
+        <div style={{ marginTop: 14 }}>
+          <Link href="/admin/availability" style={{ textDecoration: "none" }}>
+            <CTAPill ghost icon="calendar">Tilgjengelighet</CTAPill>
+          </Link>
+        </div>
+      </Kort>
+    ),
+    inntekt: (
+      <>
+        {trendKort}
+        <Kort eyebrow="Inntekt · måned for måned">
+          {data.serie.map((m) => linje(m.label, kr(m.kr)))}
+        </Kort>
+      </>
+    ),
+    abo: (
+      <Kort eyebrow="Abonnement · GRATIS / PRO">
+        {linje("PRO aktive", data.proAktive)}
+        {linje("MRR", kr(data.mrrKr))}
+        {linje("GRATIS-spillere", data.gratisSpillere)}
+        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "12px 0 0", lineHeight: 1.5 }}>
+          Churn og fornyelser krever abonnementshistorikk som ikke lagres ennå — derfor ikke vist.
+        </p>
+      </Kort>
+    ),
+    faktura: liste,
+    rapport: (
+      <Kort eyebrow="Rapporter">
+        <TomTilstand
+          icon="download"
+          title="Eksport kommer"
+          sub="Månedsrapport, klubb-eksport og CSV. Sjeldent brukt — derfor fane, ikke egen Mer-rad."
+        />
+        <div style={{ marginTop: 6, display: "flex", justifyContent: "center" }}>
+          <a href={data.stripeHref} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
+            <CTAPill ghost icon="arrow-up-right">Eksporter i Stripe</CTAPill>
+          </a>
+        </div>
+      </Kort>
+    ),
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
@@ -318,19 +421,21 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
       </a>
 
       {kpi}
-      {trendKort}
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
-        {liste}
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-          {mrrKort}
-          {utestaendeKort}
-        </div>
-      </div>
+      <PillTabs
+        tabs={[
+          { id: "oversikt", l: "Oversikt" },
+          { id: "belegg", l: "Belegg" },
+          { id: "inntekt", l: "Inntekt" },
+          { id: "abo", l: "Abonnement" },
+          { id: "faktura", l: "Faktura" },
+          { id: "rapport", l: "Rapporter" },
+        ]}
+        value={fane}
+        onChange={setFane}
+      />
 
-      <a href={data.stripeHref} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
-        <InnsiktChip cta="Åpne Stripe">{innsiktTekst}</InnsiktChip>
-      </a>
+      {paneler[fane]}
     </div>
   );
 }

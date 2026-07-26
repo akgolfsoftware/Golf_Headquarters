@@ -7,7 +7,8 @@
  * Prisma-spørringer. Auth via requirePortalUser (COACH/ADMIN), samme som
  * legacy-siden.
  *
- * Server component. "Hjelp" ligger i AGENCYOS_MER (Drift-gruppen) — ikke i
+ * Server component. "Hjelp" nås via Cmd+K-søket (Mer = fem rom fra
+ * 2026-07-26) — ikke i
  * toppnavet — så aktiv-nøkkelen følger presedensen fra /admin/team og
  * /admin/email-templates (andre Drift-siter): "cockpit".
  */
