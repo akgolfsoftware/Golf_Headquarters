@@ -35,9 +35,28 @@ const prisma = new PrismaClient({ adapter });
 const DRIVE_BASE =
   process.env.AK_GOLF_DATA ?? path.join(os.homedir(), "ak-golf-data");
 
-// Importer all tilgjengelig historikk. Tidligste år i datasettet er 2016
-// (Østlandstour). Endre til høyere år hvis du vil ha rasere kjøring.
-const MIN_YEAR = 2016;
+// Importer all tilgjengelig historikk. Tidligste år i datasettet er 2014
+// (Titleist Tour, forgjengeren til Srixon Tour). Endre til høyere år hvis du
+// vil ha raskere kjøring.
+const MIN_YEAR = 2014;
+
+// Krympe-sperre: en kilde som plutselig leverer langt færre rader enn det som
+// allerede ligger i basen er nesten alltid en ødelagt eksport, ikke ekte
+// datatap. (15. juni 2026 halverte en scraper-feil Srixon-eksporten uten at
+// noen oppdaget det.) Sett IMPORT_ALLOW_SHRINK=1 for å importere likevel.
+const SHRINK_THRESHOLD = 0.8;
+const ALLOW_SHRINK = process.env.IMPORT_ALLOW_SHRINK === "1";
+
+function assertNoShrink(source: string, incoming: number, existing: number): void {
+  if (existing === 0 || incoming >= existing * SHRINK_THRESHOLD) return;
+  const pct = Math.round((incoming / existing) * 100);
+  const msg =
+    `[${source}] STOPPET — eksporten har ${incoming} rader, basen har ${existing} (${pct} %). ` +
+    `Under ${SHRINK_THRESHOLD * 100} % tyder på ødelagt eksport. ` +
+    `Sjekk kilden, eller kjør med IMPORT_ALLOW_SHRINK=1 hvis krympingen er reell.`;
+  if (!ALLOW_SHRINK) throw new Error(msg);
+  console.warn(`${msg}\n  → IMPORT_ALLOW_SHRINK=1 satt, fortsetter likevel.`);
+}
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -211,6 +230,8 @@ type SrixonTournament = {
   type: string;
   start_date: string;
   end_date?: string;
+  // Touren het Titleist Tour 2014-2016, Srixon Tour fra 2017 — samme NGF-tour.
+  tour?: string;
   classes: SrixonClass[];
 };
 
@@ -223,6 +244,18 @@ async function importSrixon(): Promise<{ tournaments: number; entries: number }>
 
   const raw = fs.readFileSync(file, "utf-8");
   const data = JSON.parse(raw) as SrixonTournament[];
+
+  const incoming = data
+    .filter(t => {
+      const d = parseSrixonDate(t.start_date);
+      return d !== null && d.getUTCFullYear() >= MIN_YEAR;
+    })
+    .reduce((n, t) => n + t.classes.reduce((m, c) => m + c.players.length, 0), 0);
+  const existing = await prisma.publicPlayerEntry.count({
+    where: { tournament: { sourceId: { startsWith: "srixon-" } } },
+  });
+  assertNoShrink("srixon", incoming, existing);
+  console.log(`[srixon] ${incoming} rader i eksporten, ${existing} allerede i basen`);
 
   let tournamentCount = 0;
   let entryCount = 0;
@@ -251,13 +284,22 @@ async function importSrixon(): Promise<{ tournaments: number; entries: number }>
         status: "COMPLETED",
         tier,
         weekStart,
-        notes: JSON.stringify({ tour: "srixon", externalId: t.competition_id }),
+        notes: JSON.stringify({
+          tour: "srixon",
+          tourName: t.tour ?? "Srixon Tour",
+          externalId: t.competition_id,
+        }),
         lastSyncAt: new Date(),
       },
       update: {
         lastSyncAt: new Date(),
         tier,
         weekStart,
+        notes: JSON.stringify({
+          tour: "srixon",
+          tourName: t.tour ?? "Srixon Tour",
+          externalId: t.competition_id,
+        }),
       },
       select: { id: true },
     });
