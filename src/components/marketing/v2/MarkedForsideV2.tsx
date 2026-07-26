@@ -1,85 +1,129 @@
 "use client";
 
 /**
- * Marketing — Forside v2 (akgolf.no, retning C «Presis», mørk-først).
- *
- * COACHING-FØRST + SCROLL-DREVET (Anders 2026-07-24). Siden fortelles nedover:
- *   1. Hero med ekte foto (parallakse) — coachen og én handling.
- *   2. Coaching-tjenestene vi faktisk tilbyr, med ekte bilder.
- *   3. PlayerHQ i en klebrig scene: ekte app-skjermer bygget av de SAMME
- *      v2-komponentene som portalen bruker (`Skjerm`, `TallHero`, `Trend`,
- *      `FordelingRad`, `Rad`), ikke tegnede mockup-bilder.
- *   4. AK Golf Intelligence — spilleren sammenligner tallene sine mot
- *      PGA Tour-baselinen (DataGolf) og mot norsk nivå.
- *   5. Bevis og booking.
- *
- * Bevegelse: `Avslor`/`Parallaks`/`useAktivtSteg` fra ./scroll-animasjon, som
- * kun styrer NÅR klassene i motion-katalogen slår inn. Redusert bevegelse gir
- * en helt statisk side — alt innhold er der uansett.
- *
- * Én primær handling hele veien: «Book en samtale» (→ /booking).
- *
- * Copy: `docs/skjermtekst` (M1-bevislinje), den godkjente teksten på /coaching,
- * og tjenestebeskrivelsene fra det ekte tjeneste-oppsettet. Ingen priser her —
- * de bor i booking, som leser dem fra databasen. Kanon-coach på markedsflater:
- * Markus Røinås Pedersen. Kun T.*-tokens + rgba/color-mix. Norsk bokmål.
- *
- * NB: «AK Golf Intelligence» er et NYTT navn på datalaget (Anders 2026-07-24).
- * Det står ikke i `docs/skjermtekst` ennå — legg det inn der hvis det skal være
- * offisielt navn utad.
+ * Marketing — Forside v2 (Starlink-rytme, coaching-først).
+ * Én primær handling: «Book en samtale». Ekte foto. Ingen inventerte tall.
  */
 
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import {
   MRamme,
-  Seksjon,
   Eyebrow,
   HeroT,
   SeksT,
   Lede,
   MCta,
   useMobile,
+  M,
 } from "./marked-ramme";
-import { Avslor, Parallaks, useAktivtSteg } from "./scroll-animasjon";
+import { AvslorRoot, useParallaks } from "./scroll-animasjon";
+import { PlayerHqTelefon, type AppSkjermId } from "./forside-app-mock";
 import { T } from "@/lib/v2/tokens";
 import {
   Icon,
   Caps,
   Kort,
-  Rad,
-  Skjerm,
   StatusPill,
   AvatarInit,
-  AkseChip,
-  MikroMeta,
-  TallHero,
-  Trend,
-  FordelingRad,
-  AkseBar,
-  InnsiktChip,
-  DeltaChip,
   SgKategorier,
 } from "@/components/v2";
 
-/* ══════════════════════════════════════════════════════════════
-   Lokale idiomer
-   ══════════════════════════════════════════════════════════════ */
+const TJENESTER: {
+  navn: string;
+  varighet: string;
+  tekst: string;
+  img: string;
+  alt: string;
+}[] = [
+  {
+    navn: "Flex-økt",
+    varighet: "20 / 50 / 90 min",
+    tekst: "Drop-in med coach — ett tema eller dypere, når det passer.",
+    img: "/images/akademy/coaching-tripod.jpg",
+    alt: "Coach filmer sving med stativ",
+  },
+  {
+    navn: "Performance",
+    varighet: "60 min",
+    tekst: "Strukturert økt: TrackMan, analyse og plan inn i PlayerHQ.",
+    img: "/images/akademy/putting-data.jpg",
+    alt: "Putting med måleutstyr",
+  },
+  {
+    navn: "Performance Pro",
+    varighet: "90 min",
+    tekst: "TrackMan, video, spredning og skriftlig plan.",
+    img: "/images/akademy/utslag-fairway.jpg",
+    alt: "Utslag fra fairway",
+  },
+  {
+    navn: "Gruppe-økt",
+    varighet: "60 min · inntil 6",
+    tekst: "Nivåtilpasset trening i gruppe med coach.",
+    img: "/images/akademy/bunker-shot.jpg",
+    alt: "Bunkerslag",
+  },
+];
+
+const PAKKER: { navn: string; okter: string; frem?: boolean; pkt: string[] }[] = [
+  {
+    navn: "Performance",
+    okter: "2 økter per måned",
+    pkt: [
+      "Faste økter med coachen din",
+      "Treningsplan i PlayerHQ",
+      "PlayerHQ inkludert uten månedspris",
+      "Meldingskontakt mellom øktene",
+    ],
+  },
+  {
+    navn: "Performance Pro",
+    okter: "4 økter per måned",
+    frem: true,
+    pkt: [
+      "Alt i Performance",
+      "Dobbelt så mange coach-økter",
+      "TrackMan og videoanalyse",
+      "Oppfølging rundt turneringer",
+    ],
+  },
+];
 
 function Punkt({ children }: { children: ReactNode }) {
   return (
-    <span style={{ display: "flex", gap: 9, alignItems: "flex-start", fontFamily: T.ui, fontSize: 13.5, color: T.fg2, lineHeight: 1.55 }}>
+    <span
+      style={{
+        display: "flex",
+        gap: 9,
+        alignItems: "flex-start",
+        fontFamily: T.ui,
+        fontSize: 13.5,
+        color: T.fg2,
+        lineHeight: 1.55,
+      }}
+    >
       <Icon name="check" size={14} style={{ color: T.lime, flex: "none", marginTop: 3 }} />
       {children}
     </span>
   );
 }
 
-/** «?»-note: klargjør et begrep uten å rope (samme idiom som /coaching). */
 function HjelpNote({ tittel, children }: { tittel?: string; children: ReactNode }) {
   return (
-    <div style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "13px 15px", borderRadius: 14, background: T.panel2, border: `1px solid ${T.border}` }}>
+    <div
+      style={{
+        display: "flex",
+        gap: 10,
+        alignItems: "flex-start",
+        padding: "13px 15px",
+        borderRadius: 14,
+        background: T.panel2,
+        border: `1px solid ${T.border}`,
+      }}
+    >
       <span
+        aria-hidden
         style={{
           width: 20,
           height: 20,
@@ -93,7 +137,6 @@ function HjelpNote({ tittel, children }: { tittel?: string; children: ReactNode 
           fontSize: 11,
           fontWeight: 700,
           color: T.lime,
-          marginTop: 1,
         }}
       >
         ?
@@ -106,561 +149,547 @@ function HjelpNote({ tittel, children }: { tittel?: string; children: ReactNode 
   );
 }
 
-/** Foto med tonet overlegg — brukes i tjenestekortene. */
-function Foto({ src, alt, hoyde }: { src: string; alt: string; hoyde: number }) {
+function FullSeksjon({
+  children,
+  style,
+}: {
+  children: ReactNode;
+  style?: React.CSSProperties;
+}) {
   return (
-    <div style={{ position: "relative", height: hoyde, overflow: "hidden", borderRadius: 16, border: `1px solid ${T.borderS}` }}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt={alt} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-      <span
-        aria-hidden
-        style={{
-          position: "absolute",
-          inset: 0,
-          background: `linear-gradient(180deg, transparent 35%, color-mix(in srgb, ${T.bg} 78%, transparent) 100%)`,
-        }}
-      />
-    </div>
+    <section
+      style={{
+        width: "100%",
+        maxWidth: M.maxw,
+        margin: "0 auto",
+        padding: "0 22px",
+        boxSizing: "border-box",
+        ...style,
+      }}
+    >
+      {children}
+    </section>
   );
 }
 
-/* ══════════════════════════════════════════════════════════════
-   Innhold — alt speiler noe som finnes på ekte
-   ══════════════════════════════════════════════════════════════ */
-
-/** Coaching-tjenestene vi faktisk tilbyr (samme oppsett som booking). */
-const TJENESTER: { navn: string; varighet: string; d: string; foto: string; alt: string }[] = [
-  {
-    navn: "Flex-økt",
-    varighet: "20 · 50 · 90 min",
-    d: "Drop-in med coach når du trenger det. Ett tema, eller dybde-analyse med praksis.",
-    foto: "/images/akademy/utslag-fairway.jpg",
-    alt: "Spiller slår utslag fra fairway",
-  },
-  {
-    navn: "Performance",
-    varighet: "60 min",
-    d: "Strukturert økt med TrackMan, analyse og plan som legges rett i PlayerHQ.",
-    foto: "/images/akademy/coaching-tripod.jpg",
-    alt: "Coach filmer sving med kamera på stativ",
-  },
-  {
-    navn: "Performance Pro",
-    varighet: "90 min",
-    d: "TrackMan, video, dispersjon og skriftlig plan. For deg som jobber mot et konkret mål.",
-    foto: "/images/akademy/putting-data.jpg",
-    alt: "Putting-trening med måleutstyr",
-  },
-  {
-    navn: "Gruppe-økt",
-    varighet: "60 min · inntil 6",
-    d: "Nivåtilpasset trening i gruppe. Samme plan og oppfølging som individuelt.",
-    foto: "/images/akademy/bunker-shot.jpg",
-    alt: "Spiller slår fra bunker",
-  },
-];
-
-/** Abonnementspakkene — antall økter per måned, aldri app-nivå. */
-const PAKKER: { navn: string; okter: string; frem?: boolean; pkt: string[] }[] = [
-  {
-    navn: "Performance",
-    okter: "2 økter per måned",
-    pkt: [
-      "Faste økter med coachen din",
-      "Treningsplan i PlayerHQ, oppdatert etter hver økt",
-      "PlayerHQ inkludert, uten månedspris",
-      "Meldingskontakt mellom øktene",
-    ],
-  },
-  {
-    navn: "Performance Pro",
-    okter: "4 økter per måned",
-    frem: true,
-    pkt: [
-      "Alt i Performance",
-      "Dobbelt så mange økter med coach",
-      "TrackMan-økter og videoanalyse",
-      "Oppfølging rundt turneringer",
-    ],
-  },
-];
-
-const BEVIS: { v: string; l: string }[] = [
-  { v: "120+", l: "Aktive spillere" },
-  { v: "9 500", l: "Økter loggført" },
-  { v: "4 av 5", l: "Senker snittscoren første sesong" },
-];
-
-/* ══════════════════════════════════════════════════════════════
-   PlayerHQ — ekte skjermer, bygget av portalens egne komponenter
-   ══════════════════════════════════════════════════════════════ */
-
-const STEG: { caps: string; t: string; em: string; d: string }[] = [
-  {
-    caps: "Hjem",
-    t: "Én ting å gjøre",
-    em: "nå",
-    d: "Spilleren åpner appen og ser dagens økt og formen sin. Ingen meny å lete i, én knapp videre.",
-  },
-  {
-    caps: "Plan",
-    t: "Uka er lagt av",
-    em: "coachen",
-    d: "Planen kommer fra økta dere hadde, ikke fra en mal. Den justeres når tallene endrer seg.",
-  },
-  {
-    caps: "Analyse",
-    t: "Der slagene",
-    em: "forsvinner",
-    d: "Strokes gained per del av spillet, med en klar anbefaling om hva som skal trenes først.",
-  },
-];
-
-function SkjermHjem() {
-  return (
-    <>
-      <Kort tint eyebrow="I dag">
-        <TallHero value="60" unit="min" size={38} accent sub="Nærspill · Mulligan Indoor" />
-        <div style={{ display: "flex", gap: 6, marginTop: 12, flexWrap: "wrap", alignItems: "center" }}>
-          <AkseChip a="SLAG" />
-          <StatusPill tone="lime">Kl 17:00</StatusPill>
-        </div>
-      </Kort>
-      <div style={{ marginTop: 10 }}>
-        <Kort eyebrow="Formen din">
-          <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-            <span style={{ fontFamily: T.mono, fontSize: 30, fontWeight: 700, color: T.fg }}>+1,8</span>
-            <DeltaChip v="+0,6" dir="up" />
-          </div>
-          <div style={{ marginTop: 10 }}>
-            <Trend series={[-0.4, 0.2, -0.1, 0.8, 0.6, 1.2, 1.8]} height={54} />
-          </div>
-        </Kort>
-      </div>
-      <div style={{ marginTop: 10 }}>
-        <Kort eyebrow="Resten av uka">
-          <Rad leading={<AkseChip a="TEK" />} title="Sving · 45 min" sub="Onsdag · Range" meta={<MikroMeta icon="clock">Planlagt</MikroMeta>} />
-          <Rad leading={<AkseChip a="SPILL" />} title="9 hull med kart" sub="Fredag · GFGK" meta={<MikroMeta icon="clock">Planlagt</MikroMeta>} last />
-        </Kort>
-      </div>
-      <div style={{ marginTop: 10 }}>
-        <InnsiktChip>Nærspill koster deg mest denne måneden.</InnsiktChip>
-      </div>
-    </>
-  );
+function useStickySkjerm(): AppSkjermId {
+  const [id, setId] = useState<AppSkjermId>("hjem");
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const nodes = ["fs-app-hjem", "fs-app-plan", "fs-app-analyse"]
+      .map((i) => document.getElementById(i))
+      .filter(Boolean) as HTMLElement[];
+    if (nodes.length === 0) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        const hit = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!hit) return;
+        const map: Record<string, AppSkjermId> = {
+          "fs-app-hjem": "hjem",
+          "fs-app-plan": "plan",
+          "fs-app-analyse": "analyse",
+        };
+        const next = map[hit.target.id];
+        if (next) setId(next);
+      },
+      { rootMargin: "-35% 0px -35% 0px", threshold: [0.2, 0.5, 0.8] },
+    );
+    nodes.forEach((n) => io.observe(n));
+    return () => io.disconnect();
+  }, []);
+  return id;
 }
-
-function SkjermPlan() {
-  return (
-    <>
-      <Kort eyebrow="Uke 30" action={<Caps size={9}>4 økter</Caps>}>
-        <Rad leading={<AkseChip a="SLAG" />} title="Nærspill · 60 min" sub="Mandag · Mulligan" meta={<MikroMeta icon="check">Gjort</MikroMeta>} />
-        <Rad leading={<AkseChip a="TEK" />} title="Sving · 45 min" sub="Onsdag · Range" meta={<MikroMeta icon="check">Gjort</MikroMeta>} />
-        <Rad leading={<AkseChip a="SPILL" />} title="9 hull med kart" sub="Fredag · GFGK" meta={<MikroMeta icon="clock">Planlagt</MikroMeta>} />
-        <Rad leading={<AkseChip a="FYS" />} title="Styrke · 40 min" sub="Lørdag" meta={<MikroMeta icon="clock">Planlagt</MikroMeta>} last />
-      </Kort>
-      <div style={{ marginTop: 10 }}>
-        <Kort tint eyebrow="Fordeling denne uka">
-          <AkseBar a="SLAG" v={120} m={120} max={160} enhet="min" />
-          <AkseBar a="TEK" v={45} m={60} max={160} enhet="min" />
-          <AkseBar a="SPILL" v={90} m={90} max={160} enhet="min" />
-          <AkseBar a="FYS" v={40} m={80} max={160} enhet="min" last />
-        </Kort>
-      </div>
-    </>
-  );
-}
-
-function SkjermAnalyse() {
-  return (
-    <>
-      <Kort tint eyebrow="Strokes gained · siste 10 runder">
-        <TallHero value="+1,8" unit="SG totalt" delta="+0,6" dir="up" size={38} accent />
-        <div style={{ marginTop: 14 }}>
-          <Trend series={[-0.4, 0.2, -0.1, 0.8, 0.6, 1.2, 1.8]} height={64} xLabels={["MAI", "JUN", "JUL"]} />
-        </div>
-      </Kort>
-      <div style={{ marginTop: 10 }}>
-        <Kort eyebrow="Størst gevinst å hente">
-          <FordelingRad signal code="NÆR" pct={64} value="−1,2" neg />
-          <FordelingRad signal code="PUTT" pct={38} value="−0,5" neg />
-          <FordelingRad signal code="INN" pct={22} value="+0,3" />
-          <FordelingRad signal code="TEE" pct={18} value="+0,4" last />
-        </Kort>
-      </div>
-      <div style={{ marginTop: 10 }}>
-        <InnsiktChip>Planen din prioriterer nærspill de neste tre ukene.</InnsiktChip>
-      </div>
-    </>
-  );
-}
-
-const SKJERMER = [SkjermHjem, SkjermPlan, SkjermAnalyse];
-
-/* ══════════════════════════════════════════════════════════════
-   AK Golf Intelligence — sammenligning mot tour og norsk nivå
-   ══════════════════════════════════════════════════════════════ */
 
 export function MarkedForsideV2() {
   const mobile = useMobile();
-  const { ref: sceneRef, aktivt } = useAktivtSteg(STEG.length);
-  const AktivSkjerm = SKJERMER[Math.min(aktivt, SKJERMER.length - 1)];
+  const parallaxRef = useRef<HTMLDivElement>(null);
+  useParallaks(parallaxRef, 0.2);
+  const aktivSkjerm = useStickySkjerm();
 
   return (
     <MRamme mobile={mobile} aktiv="hjem" cta={{ label: "Book en samtale", href: "/booking" }}>
-      {/* ═══ 1. Hero — foto med parallakse ═══ */}
-      <div style={{ position: "relative", overflow: "hidden", borderBottom: `1px solid ${T.border}` }}>
-        <Parallaks
-          styrke={0.14}
-          style={{ position: "absolute", inset: "-12% 0", zIndex: 0 }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/images/akademy/coach-observerer.jpg"
-            alt=""
-            aria-hidden
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-          />
-        </Parallaks>
-        <span
-          aria-hidden
+      <AvslorRoot>
+        {/* ── 1. Hero full-bleed ── */}
+        <header
           style={{
-            position: "absolute",
-            inset: 0,
-            zIndex: 1,
-            background: `linear-gradient(100deg, ${T.bg} 6%, color-mix(in srgb, ${T.bg} 82%, transparent) 46%, color-mix(in srgb, ${T.bg} 30%, transparent) 100%)`,
-          }}
-        />
-        <div style={{ position: "relative", zIndex: 2 }}>
-          <Seksjon mobile={mobile} style={{ paddingTop: mobile ? 64 : 128, paddingBottom: mobile ? 72 : 132 }}>
-            <div style={{ maxWidth: 640 }}>
-              <Avslor>
-                <Eyebrow>AK Golf · Coaching</Eyebrow>
-                <HeroT mobile={mobile} em="fremgang">
-                  Coaching som gir
-                </HeroT>
-              </Avslor>
-              <Avslor forsink={120}>
-                <Lede style={{ marginTop: 22 }}>
-                  Personlig oppfølging bygget på data, ikke magefølelse. Du får faste økter med din egen
-                  coach, en plan som lever mellom øktene, og tall som viser at det virker.
-                </Lede>
-              </Avslor>
-              <Avslor forsink={220}>
-                <div style={{ marginTop: 26, display: "flex", alignItems: "center", gap: 13 }}>
-                  <AvatarInit navn="Markus Røinås Pedersen" size={42} />
-                  <span>
-                    <span style={{ display: "block", fontFamily: T.ui, fontSize: 15, fontWeight: 600, color: T.fg }}>
-                      Markus Røinås Pedersen
-                    </span>
-                    <span style={{ display: "block", fontFamily: T.ui, fontSize: 12.5, color: T.mut, marginTop: 2 }}>
-                      Head Coach, AK Golf Academy
-                    </span>
-                  </span>
-                </div>
-                <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 28, alignItems: "center" }}>
-                  <MCta href="/booking" icon="arrow-right">
-                    Book en samtale
-                  </MCta>
-                  <MCta ghost href="/coaching">
-                    Se coaching-oppleggene
-                  </MCta>
-                </div>
-              </Avslor>
-            </div>
-          </Seksjon>
-        </div>
-      </div>
-
-      {/* ═══ 2. Tjenestene ═══ */}
-      <Seksjon mobile={mobile}>
-        <Avslor>
-          <Caps>Coaching hos oss</Caps>
-          <div style={{ marginTop: 14 }}>
-            <SeksT mobile={mobile} em="passer deg">
-              Velg formen som
-            </SeksT>
-          </div>
-          <Lede style={{ marginTop: 14 }}>
-            Alt fra en kort drop-in til fast oppfølging hver uke. Samme coach, samme plan, samme tall.
-          </Lede>
-        </Avslor>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: mobile ? "1fr" : "repeat(2, 1fr)",
-            gap: T.gap,
-            marginTop: 26,
+            position: "relative",
+            minHeight: mobile ? "92vh" : "100vh",
+            display: "flex",
+            alignItems: "flex-end",
+            overflow: "hidden",
           }}
         >
-          {TJENESTER.map((t, i) => (
-            <Avslor key={t.navn} forsink={i * 90}>
-              <Kort pad="0" style={{ overflow: "hidden" }}>
-                <Foto src={t.foto} alt={t.alt} hoyde={mobile ? 170 : 190} />
-                <div style={{ padding: "18px 20px 22px" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-                    <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, color: T.fg, letterSpacing: "-0.02em" }}>
-                      {t.navn}
-                    </span>
-                    <MikroMeta icon="clock">{t.varighet}</MikroMeta>
-                  </div>
-                  <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, lineHeight: 1.6, margin: "9px 0 0" }}>{t.d}</p>
-                </div>
-              </Kort>
-            </Avslor>
-          ))}
-        </div>
-
-        <Avslor forsink={120}>
-          <div style={{ marginTop: 26 }}>
-            <Caps>Fast oppfølging</Caps>
-            <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: T.gap, marginTop: 16 }}>
-              {PAKKER.map((p) => (
-                <Kort key={p.navn} tint={p.frem} pad="24px 24px 26px">
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-                    <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 21, color: T.fg, letterSpacing: "-0.02em" }}>
-                      {p.navn}
-                    </span>
-                    {p.frem && <StatusPill>Mest valgt</StatusPill>}
-                  </div>
-                  <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: T.lime, display: "block", marginTop: 8 }}>
-                    {p.okter}
-                  </span>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 18 }}>
-                    {p.pkt.map((x) => (
-                      <Punkt key={x}>{x}</Punkt>
-                    ))}
-                  </div>
-                </Kort>
-              ))}
-            </div>
-            <div style={{ marginTop: T.gap, maxWidth: 640 }}>
-              <HjelpNote tittel="Hva er en coaching-pakke?">
-                Antall økter med coach per måned, ikke et app-nivå. Appen PlayerHQ er den samme for alle, og
-                er inkludert uten månedspris så lenge du har pakke. Pris avtales i samtalen, den avhenger av
-                opplegg og reisevei.
-              </HjelpNote>
-            </div>
-          </div>
-        </Avslor>
-      </Seksjon>
-
-      {/* ═══ 3. PlayerHQ — klebrig scene med ekte app-skjermer ═══ */}
-      {mobile ? (
-        <Seksjon mobile style={{ paddingTop: 0 }}>
-          <Avslor>
-            <Caps>PlayerHQ · inkludert</Caps>
-            <div style={{ marginTop: 14 }}>
-              <SeksT mobile em="i lomma">
-                Coachen din
-              </SeksT>
-            </div>
-            <Lede style={{ marginTop: 14 }}>
-              Planen, tallene og øktene ligger i appen mellom timene. Dette er skjermene slik de faktisk ser
-              ut.
-            </Lede>
-          </Avslor>
-          <div style={{ display: "flex", flexDirection: "column", gap: 32, marginTop: 28 }}>
-            {STEG.map((s, i) => {
-              const Skjermbilde = SKJERMER[i];
-              return (
-                <Avslor key={s.caps}>
-                  <Caps size={9}>{s.caps}</Caps>
-                  <div style={{ marginTop: 8, fontFamily: T.disp, fontWeight: 700, fontSize: 22, color: T.fg, letterSpacing: "-0.02em" }}>
-                    {s.t} <em style={{ fontStyle: "italic", color: T.lime }}>{s.em}</em>
-                  </div>
-                  <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, lineHeight: 1.6, margin: "8px 0 16px" }}>{s.d}</p>
-                  {/* Ekte app-ramme, skalert ned så 390px-skjermen får plass. */}
-                  <div style={{ overflow: "hidden", borderRadius: 28 }}>
-                    <div style={{ transform: "scale(0.82)", transformOrigin: "top left", width: 390, marginBottom: -140 }}>
-                      <Skjerm mobile aktiv={i === 0 ? "hjem" : i === 1 ? "plan" : "analyse"}>
-                        <Skjermbilde />
-                      </Skjerm>
-                    </div>
-                  </div>
-                </Avslor>
-              );
-            })}
-          </div>
-        </Seksjon>
-      ) : (
-        <div ref={sceneRef} style={{ position: "relative" }}>
-          <Seksjon mobile={false} style={{ paddingTop: 0, paddingBottom: 0 }}>
-            <Avslor>
-              <Caps>PlayerHQ · inkludert i coaching-pakken</Caps>
-              <div style={{ marginTop: 14, maxWidth: 620 }}>
-                <SeksT mobile={false} em="i lomma">
-                  Coachen din
-                </SeksT>
-                <Lede style={{ marginTop: 14 }}>
-                  Planen, tallene og øktene ligger i appen mellom timene. Skjermene under er bygget av de
-                  samme komponentene som portalen kjører på — dette er appen, ikke en tegning av den.
-                </Lede>
-              </div>
-            </Avslor>
-
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 390px", gap: 64, marginTop: 40, alignItems: "start" }}>
-              {/* Tekstspalten ruller */}
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                {STEG.map((s, i) => {
-                  const paa = i === aktivt;
-                  return (
-                    <div
-                      key={s.caps}
-                      style={{
-                        minHeight: "58vh",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        opacity: paa ? 1 : 0.34,
-                        transition: "opacity 420ms cubic-bezier(0.2,0.7,0.2,1)",
-                        borderLeft: `2px solid ${paa ? T.lime : T.border}`,
-                        paddingLeft: 22,
-                      }}
-                    >
-                      <Caps size={9}>{s.caps}</Caps>
-                      <div style={{ marginTop: 10, fontFamily: T.disp, fontWeight: 700, fontSize: 34, color: T.fg, letterSpacing: "-0.03em", lineHeight: 1.1 }}>
-                        {s.t} <em style={{ fontStyle: "italic", color: T.lime }}>{s.em}</em>
-                      </div>
-                      <p style={{ fontFamily: T.ui, fontSize: 15, color: T.fg2, lineHeight: 1.65, margin: "12px 0 0", maxWidth: 420 }}>{s.d}</p>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Telefonen står stille */}
-              <div className="m-klebrig" style={{ width: 390 }}>
-                <div style={{ transform: "scale(0.86)", transformOrigin: "top center" }}>
-                  <Skjerm mobile aktiv={aktivt === 0 ? "hjem" : aktivt === 1 ? "plan" : "analyse"}>
-                    <AktivSkjerm />
-                  </Skjerm>
-                </div>
-              </div>
-            </div>
-          </Seksjon>
-        </div>
-      )}
-
-      {/* ═══ 4. AK Golf Intelligence ═══ */}
-      <Seksjon mobile={mobile}>
-        <Avslor>
-          <Caps>AK Golf Intelligence</Caps>
-          <div style={{ marginTop: 14, maxWidth: 620 }}>
-            <SeksT mobile={mobile} em="mot de beste">
-              Se hvor du står
-            </SeksT>
-            <Lede style={{ marginTop: 14 }}>
-              Tallene dine måles mot PGA Tour-baselinen og mot norsk nivå, i samme enhet: slag. Da blir
-              «bli bedre på nærspill» til «du taper 1,2 slag per runde der, og det er den største enkeltposten».
-            </Lede>
-          </div>
-        </Avslor>
-
-        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1.1fr 1fr", gap: T.gap, marginTop: 26, alignItems: "start" }}>
-          <Avslor>
-            <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-              {/* Kanonisk divergerende SG-graf (v2 `SgKategorier`): streken i midten
-                  ER baselinen, stolpe til venstre = tapte slag, til høyre = vunne. */}
-              <SgKategorier
-                baseline="PGA Tour-baseline"
-                hjelp="sgOmrade"
-                kategorier={[
-                  { akse: "OTT", sg: 0.4 },
-                  { akse: "APP", sg: 0.3 },
-                  { akse: "ARG", sg: -1.2 },
-                  { akse: "PUTT", sg: -0.5 },
-                ]}
-              />
-              <InnsiktChip cta="Slik regnes SG" href="/stats/sg-sammenlign">
-                Streken i midten er baselinen. Stolpe til venstre betyr tapte slag der.
-              </InnsiktChip>
-            </div>
-          </Avslor>
-
-          <Avslor forsink={120}>
-            <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-              <Kort eyebrow="Hva du kan sammenligne">
-                <Rad leading={<Icon name="trophy" size={16} style={{ color: T.lime }} />} title="Mot PGA Tour" sub="DataGolf-baseline per del av spillet" />
-                <Rad leading={<Icon name="users" size={16} style={{ color: T.lime }} />} title="Mot norsk nivå" sub="Snittet i din årgang og kategori" />
-                <Rad leading={<Icon name="trending-up" size={16} style={{ color: T.lime }} />} title="Mot deg selv" sub="Utviklingen din gjennom sesongen" last />
-              </Kort>
-              <HjelpNote tittel="Hvor kommer tallene fra?">
-                Rundene du logger, TrackMan-øktene og turneringsresultatene dine. Ingenting gjettes: mangler
-                grunnlaget, står det «mangler» i stedet for et tall.
-              </HjelpNote>
-              <div>
-                <MCta ghost href="/stats/sg-sammenlign" icon="arrow-right">
-                  Prøv SG-sammenligningen
-                </MCta>
-              </div>
-            </div>
-          </Avslor>
-        </div>
-      </Seksjon>
-
-      {/* ═══ 5. Bevis ═══ */}
-      <Seksjon mobile={mobile} style={{ paddingTop: mobile ? 12 : 24, paddingBottom: mobile ? 12 : 24 }}>
-        <Avslor>
           <div
+            ref={parallaxRef}
+            className="m-parallaks"
             style={{
-              borderTop: `1px solid ${T.border}`,
-              borderBottom: `1px solid ${T.border}`,
-              padding: mobile ? "26px 0" : "32px 0",
-              display: "flex",
-              flexDirection: mobile ? "column" : "row",
-              alignItems: mobile ? "flex-start" : "center",
-              gap: mobile ? 22 : 0,
+              position: "absolute",
+              inset: "-8% 0 -8% 0",
+              zIndex: 0,
             }}
           >
-            <span style={{ fontFamily: T.ui, fontSize: 14, color: T.fg2, flex: 1, paddingRight: 24 }}>
-              Brukt av spillere fra junior til aspirerende Tour.
-            </span>
-            <div style={{ display: "flex", gap: mobile ? 28 : 48 }}>
-              {BEVIS.map((b) => (
-                <span key={b.l}>
-                  <span
-                    style={{
-                      display: "block",
-                      fontFamily: T.mono,
-                      fontSize: 26,
-                      fontWeight: 700,
-                      color: T.fg,
-                      letterSpacing: "-0.02em",
-                      fontVariantNumeric: "tabular-nums",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {b.v}
-                  </span>
-                  <Caps size={8.5} style={{ marginTop: 5 }}>
-                    {b.l}
-                  </Caps>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/akademy/coach-observerer.jpg"
+              alt="Coach følger en spiller under trening"
+              fetchPriority="high"
+              decoding="async"
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            />
+          </div>
+          <div
+            aria-hidden
+            style={{
+              position: "absolute",
+              inset: 0,
+              zIndex: 1,
+              background: `linear-gradient(180deg, color-mix(in srgb, ${T.bg} 15%, transparent) 0%, color-mix(in srgb, ${T.bg} 55%, transparent) 45%, color-mix(in srgb, ${T.bg} 92%, transparent) 100%)`,
+            }}
+          />
+          <FullSeksjon
+            style={{
+              position: "relative",
+              zIndex: 2,
+              paddingBottom: mobile ? 48 : 72,
+              paddingTop: mobile ? 120 : 160,
+            }}
+          >
+            <Eyebrow>AK Golf Academy · Fredrikstad</Eyebrow>
+            <HeroT mobile={mobile} em="fremgang">
+              Coaching som gir
+            </HeroT>
+            <Lede style={{ marginTop: 18, maxWidth: 480, color: T.fg }}>
+              Personlig oppfølging med faste økter, en plan som lever mellom øktene, og
+              tall som viser hva som faktisk fungerer. Appen følger med — coachen er
+              hovedsaken.
+            </Lede>
+            <div
+              style={{
+                marginTop: 22,
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+              }}
+            >
+              <AvatarInit navn="Markus Røinås Pedersen" size={40} />
+              <span>
+                <span
+                  style={{
+                    display: "block",
+                    fontFamily: T.ui,
+                    fontSize: 14.5,
+                    fontWeight: 600,
+                    color: T.fg,
+                  }}
+                >
+                  Markus Røinås Pedersen
                 </span>
+                <span
+                  style={{
+                    display: "block",
+                    fontFamily: T.ui,
+                    fontSize: 12.5,
+                    color: T.mut,
+                    marginTop: 2,
+                  }}
+                >
+                  Head Coach, AK Golf Academy
+                </span>
+              </span>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                gap: 14,
+                flexWrap: "wrap",
+                marginTop: 28,
+                alignItems: "center",
+              }}
+            >
+              <MCta href="/booking" icon="arrow-right">
+                Book en samtale
+              </MCta>
+              <Link
+                href="/coaching"
+                className="v2-focus"
+                style={{
+                  fontFamily: T.ui,
+                  fontSize: 14.5,
+                  fontWeight: 600,
+                  color: T.fg2,
+                  textDecoration: "none",
+                  minHeight: 44,
+                  display: "inline-flex",
+                  alignItems: "center",
+                }}
+              >
+                Se oppleggene
+              </Link>
+            </div>
+          </FullSeksjon>
+        </header>
+
+        {/* ── 2. Tjenester ── */}
+        <FullSeksjon style={{ paddingTop: mobile ? 56 : 88, paddingBottom: 24 }}>
+          <div className="m-avslor">
+            <Caps>Hva coaching hos oss er</Caps>
+            <div style={{ marginTop: 12 }}>
+              <SeksT mobile={mobile} em="økt">
+                Fire måter å booke en
+              </SeksT>
+            </div>
+            <Lede style={{ marginTop: 12 }}>
+              Alle økter er med coach. Pris avtales i samtalen — den avhenger av opplegg
+              og reisevei.
+            </Lede>
+          </div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: mobile ? "1fr" : "repeat(2, 1fr)",
+              gap: T.gap,
+              marginTop: 28,
+            }}
+          >
+            {TJENESTER.map((t, i) => (
+              <article
+                key={t.navn}
+                className={`m-avslor m-avslor-d${(i % 4) + 1}`}
+                style={{
+                  borderRadius: 18,
+                  overflow: "hidden",
+                  border: `1px solid ${T.border}`,
+                  background: T.panel,
+                }}
+              >
+                <div style={{ height: mobile ? 160 : 190, overflow: "hidden" }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={t.img}
+                    alt={t.alt}
+                    loading="lazy"
+                    decoding="async"
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
+                </div>
+                <div style={{ padding: "16px 18px 18px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "baseline" }}>
+                    <h3
+                      style={{
+                        fontFamily: T.disp,
+                        fontWeight: 700,
+                        fontSize: 19,
+                        color: T.fg,
+                        margin: 0,
+                        letterSpacing: "-0.02em",
+                      }}
+                    >
+                      {t.navn}
+                    </h3>
+                    <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.mut, flex: "none" }}>
+                      {t.varighet}
+                    </span>
+                  </div>
+                  <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, lineHeight: 1.55, margin: "8px 0 0" }}>
+                    {t.tekst}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div
+            className="m-avslor"
+            style={{
+              display: "grid",
+              gridTemplateColumns: mobile ? "1fr" : "1fr 1fr",
+              gap: T.gap,
+              marginTop: 28,
+            }}
+          >
+            {PAKKER.map((p) => (
+              <Kort key={p.navn} tint={p.frem} pad="22px 22px 24px">
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+                  <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 20, color: T.fg }}>
+                    {p.navn}
+                  </span>
+                  {p.frem && <StatusPill>Mest valgt</StatusPill>}
+                </div>
+                <span
+                  style={{
+                    fontFamily: T.mono,
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: T.lime,
+                    display: "block",
+                    marginTop: 8,
+                  }}
+                >
+                  {p.okter}
+                </span>
+                <div style={{ display: "flex", flexDirection: "column", gap: 9, marginTop: 16 }}>
+                  {p.pkt.map((x) => (
+                    <Punkt key={x}>{x}</Punkt>
+                  ))}
+                </div>
+              </Kort>
+            ))}
+          </div>
+          <div className="m-avslor" style={{ marginTop: 18, maxWidth: 640 }}>
+            <HjelpNote tittel="Hva er en coaching-pakke?">
+              Antall økter med coach per måned — ikke et app-nivå. PlayerHQ er den samme
+              for alle og er inkludert uten egen månedspris så lenge du har pakke.
+            </HjelpNote>
+          </div>
+        </FullSeksjon>
+
+        {/* ── 3. App som bevis ── */}
+        <FullSeksjon style={{ paddingTop: mobile ? 40 : 64, paddingBottom: mobile ? 40 : 72 }}>
+          <div className="m-avslor" style={{ maxWidth: 520 }}>
+            <Caps>Verktøyet følger med</Caps>
+            <div style={{ marginTop: 12 }}>
+              <SeksT mobile={mobile} em="samme tallene">
+                Du og coachen ser
+              </SeksT>
+            </div>
+            <Lede style={{ marginTop: 12 }}>
+              PlayerHQ er ikke et separat produkt du kjøper i stedet for coaching. Det er
+              der planen, øktene og strokes gained lever mellom timene.
+            </Lede>
+          </div>
+
+          {mobile ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 36, marginTop: 32 }}>
+              {(["hjem", "plan", "analyse"] as const).map((id) => (
+                <div key={id} className="m-avslor">
+                  <Caps size={10} style={{ marginBottom: 12 }}>
+                    {id === "hjem" ? "Hjem" : id === "plan" ? "Plan" : "Analyse"}
+                  </Caps>
+                  <PlayerHqTelefon aktiv={id} scale={0.82} />
+                </div>
               ))}
             </div>
+          ) : (
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 400px",
+                gap: 48,
+                marginTop: 40,
+                alignItems: "start",
+              }}
+            >
+              <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+                {(
+                  [
+                    {
+                      id: "fs-app-hjem",
+                      t: "Hjem",
+                      d: "Dagens økt, status og hva coachen har prioritert — uten støy.",
+                    },
+                    {
+                      id: "fs-app-plan",
+                      t: "Plan",
+                      d: "Ukeplan og fordeling på treningsområder. Planen oppdateres etter økt og runde.",
+                    },
+                    {
+                      id: "fs-app-analyse",
+                      t: "Analyse",
+                      d: "Strokes gained viser hvor slagene forsvinner, mot tour, nasjonalt nivå eller din egen historikk.",
+                    },
+                  ] as const
+                ).map((b) => (
+                  <div
+                    key={b.id}
+                    id={b.id}
+                    style={{
+                      minHeight: "70vh",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      padding: "32px 0",
+                    }}
+                  >
+                    <Caps>{b.t}</Caps>
+                    <p
+                      style={{
+                        fontFamily: T.ui,
+                        fontSize: 17,
+                        color: T.fg2,
+                        lineHeight: 1.6,
+                        margin: "14px 0 0",
+                        maxWidth: 420,
+                      }}
+                    >
+                      {b.d}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <div className="m-klebrig">
+                <PlayerHqTelefon aktiv={aktivSkjerm} />
+              </div>
+            </div>
+          )}
+          <div style={{ marginTop: 20 }}>
+            <Link
+              href="/playerhq"
+              className="v2-focus"
+              style={{
+                fontFamily: T.ui,
+                fontSize: 14,
+                fontWeight: 600,
+                color: T.fg2,
+                textDecoration: "none",
+              }}
+            >
+              Les mer om PlayerHQ →
+            </Link>
           </div>
-        </Avslor>
-      </Seksjon>
+        </FullSeksjon>
 
-      {/* ═══ 6. Slutt-CTA ═══ */}
-      <Seksjon mobile={mobile} style={{ paddingTop: mobile ? 36 : 64 }}>
-        <Avslor>
-          <Kort tint pad={mobile ? "26px 22px" : "36px 40px"}>
+        {/* ── 4. SG ── */}
+        <FullSeksjon style={{ paddingTop: 24, paddingBottom: mobile ? 48 : 72 }}>
+          <div
+            className="m-avslor"
+            style={{
+              display: "grid",
+              gridTemplateColumns: mobile ? "1fr" : "1.1fr 0.9fr",
+              gap: 28,
+              alignItems: "start",
+            }}
+          >
+            <div>
+              <Caps>Tallene, sammenlignet</Caps>
+              <div style={{ marginTop: 12 }}>
+                <SeksT mobile={mobile} em="slagene forsvinner">
+                  Se hvor
+                </SeksT>
+              </div>
+              <Lede style={{ marginTop: 12 }}>
+                Midtlinjen er valgt baseline (f.eks. tour eller nasjonalt nivå). Stolpe
+                til venstre betyr slag tapt. Du kan også sammenligne mot din egen
+                historikk.
+              </Lede>
+              <p
+                style={{
+                  fontFamily: T.ui,
+                  fontSize: 12.5,
+                  color: T.mut,
+                  lineHeight: 1.55,
+                  margin: "14px 0 0",
+                  maxWidth: 440,
+                }}
+              >
+                Figuren under er et illustrasjonseksempel. Ekte tall bygger på runder og
+                strokes gained du logger i PlayerHQ eller som coachen har tilgang til.
+              </p>
+              <div style={{ marginTop: 20 }}>
+                <Link
+                  href="/stats/sg-sammenlign"
+                  className="v2-focus"
+                  style={{
+                    fontFamily: T.ui,
+                    fontSize: 14.5,
+                    fontWeight: 600,
+                    color: T.lime,
+                    textDecoration: "none",
+                  }}
+                >
+                  Åpne SG-sammenligning →
+                </Link>
+              </div>
+            </div>
+            <div className="m-avslor m-avslor-d2">
+              <SgKategorier baseline="illustrasjon · scratch" />
+            </div>
+          </div>
+        </FullSeksjon>
+
+        {/* ── 5. Bevis + CTA ── */}
+        <FullSeksjon style={{ paddingTop: 8, paddingBottom: mobile ? 64 : 96 }}>
+          <div className="m-avslor">
+            <Caps>Hvorfor det fungerer</Caps>
+            <p
+              style={{
+                fontFamily: T.disp,
+                fontWeight: 700,
+                fontSize: mobile ? 22 : 28,
+                letterSpacing: "-0.03em",
+                color: T.fg,
+                margin: "12px 0 0",
+                maxWidth: 560,
+                lineHeight: 1.15,
+              }}
+            >
+              Coaching med plan — ikke tilfeldige tips på rangen.
+            </p>
+          </div>
+          <div
+            className="m-avslor"
+            style={{
+              display: "grid",
+              gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)",
+              gap: T.gap,
+              marginTop: 24,
+            }}
+          >
+            {[
+              { t: "TrackMan og video", d: "Vi måler før vi mener." },
+              { t: "Plan i PlayerHQ", d: "Samme tall for deg og coachen." },
+              { t: "Faste økter", d: "2 eller 4 per måned i pakke." },
+            ].map((b) => (
+              <Kort key={b.t} pad="18px 18px">
+                <div style={{ fontFamily: T.ui, fontWeight: 700, fontSize: 15, color: T.fg }}>
+                  {b.t}
+                </div>
+                <div style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, marginTop: 6 }}>
+                  {b.d}
+                </div>
+              </Kort>
+            ))}
+          </div>
+
+          <div className="m-avslor" style={{ marginTop: 32 }}>
+          <Kort
+            tint
+            pad="28px 26px"
+          >
             <div
               style={{
                 display: "flex",
                 flexDirection: mobile ? "column" : "row",
-                alignItems: mobile ? "flex-start" : "center",
                 gap: 20,
+                alignItems: mobile ? "stretch" : "center",
+                justifyContent: "space-between",
               }}
             >
-              <div style={{ flex: 1 }}>
-                <SeksT mobile={mobile} em="samtale">
-                  Start med en
-                </SeksT>
-                <p style={{ fontFamily: T.ui, fontSize: 14, color: T.fg2, lineHeight: 1.6, margin: "10px 0 0", maxWidth: 480 }}>
-                  Uforpliktende prat om spillet ditt og hva du vil oppnå. Så finner vi opplegget som passer.
+              <div>
+                <div
+                  style={{
+                    fontFamily: T.disp,
+                    fontWeight: 700,
+                    fontSize: mobile ? 22 : 26,
+                    color: T.fg,
+                    letterSpacing: "-0.03em",
+                  }}
+                >
+                  Klar for en uforpliktende samtale?
+                </div>
+                <p
+                  style={{
+                    fontFamily: T.ui,
+                    fontSize: 14.5,
+                    color: T.fg2,
+                    margin: "10px 0 0",
+                    maxWidth: 420,
+                    lineHeight: 1.55,
+                  }}
+                >
+                  Vi finner opplegg som passer spillet ditt. Pris avtales i samtalen.
                 </p>
               </div>
               <MCta href="/booking" icon="arrow-right">
@@ -668,15 +697,24 @@ export function MarkedForsideV2() {
               </MCta>
             </div>
           </Kort>
-
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.6, margin: "18px 0 0", textAlign: mobile ? "left" : "center" }}>
-            Vil du bare prøve appen først?{" "}
-            <Link href="/playerhq" className="v2-tekstlenke v2-focus" style={{ color: T.fg2, fontWeight: 600 }}>
-              Se PlayerHQ
+          </div>
+          <div style={{ marginTop: 18, textAlign: mobile ? "left" : "center" }}>
+            <Link
+              href="/playerhq"
+              className="v2-focus"
+              style={{
+                fontFamily: T.ui,
+                fontSize: 13.5,
+                fontWeight: 600,
+                color: T.mut,
+                textDecoration: "none",
+              }}
+            >
+              Bare nysgjerrig på appen? Se PlayerHQ
             </Link>
-          </p>
-        </Avslor>
-      </Seksjon>
+          </div>
+        </FullSeksjon>
+      </AvslorRoot>
     </MRamme>
   );
 }

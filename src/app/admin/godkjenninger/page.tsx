@@ -13,6 +13,7 @@
 
 import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 import { prisma } from "@/lib/prisma";
 import { computeDelta, type PlanContext } from "@/lib/agents/plan-action-executor";
@@ -20,7 +21,7 @@ import { LOW_RISK_ACTION_TYPES } from "@/lib/training/skills";
 import { koTelling } from "@/lib/admin/ko-telling";
 import { caddieDraftTittel } from "@/lib/caddie/draft-labels";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { KoHubNav } from "@/components/admin/v2/agency-hub-subnav";
 import {
   AdminGodkjenningerV2,
   type AdminGodkjenningerV2Data,
@@ -165,11 +166,14 @@ export default async function V2AdminGodkjenningerPage() {
 
   // A1: ÉN kø — fire kilder (PlanAction + CaddieDraft + SessionRequest;
   // e-postutkast bor i innboks-epost-flaten med egen godkjenning der).
-  const [actions, caddieDrafts, sessionRequests, ko] = await Promise.all([
+  const spillerScope = coachScopedPlayerWhere(user);
+
+  const [actions, caddieDraftsRaw, sessionRequests, ko, mineSpillere] = await Promise.all([
     prisma.planAction.findMany({
       where: {
         status: "PENDING",
         OR: [{ coachId: user.id }, { coachId: null }],
+        user: spillerScope,
       },
       include: {
         user: { select: { id: true, name: true } },
@@ -180,17 +184,25 @@ export default async function V2AdminGodkjenningerPage() {
     prisma.caddieDraft.findMany({
       where: { status: "PENDING" },
       orderBy: { createdAt: "desc" },
-      take: 30,
+      take: 50,
       select: { id: true, userId: true, previewText: true, toolName: true, toolInput: true, createdAt: true },
     }),
     prisma.sessionRequest.findMany({
-      where: { status: "PENDING", OR: [{ coachId: user.id }, { coachId: null }] },
+      where: {
+        status: "PENDING",
+        OR: [{ coachId: user.id }, { coachId: null }],
+        user: spillerScope,
+      },
       orderBy: { createdAt: "desc" },
       take: 30,
       select: { id: true, userId: true, reason: true, preferredDate: true, preferredTime: true, createdAt: true, user: { select: { name: true } } },
     }).catch(() => []),
     // FUNN 4: kanonisk kø-telling — samme tall i hodet som på innboks/varsler.
-    koTelling(user.id),
+    koTelling(user.id, user.role),
+    prisma.user.findMany({
+      where: spillerScope,
+      select: { id: true },
+    }),
   ]);
   // CaddieDraft.userId er EIEREN (Anders/ADMIN) — spilleren utkastet gjelder
   // ligger i toolInput (playerId/spillerId). Vis spilleren i køen når den finnes.
@@ -200,6 +212,14 @@ export default async function V2AdminGodkjenningerPage() {
     if (typeof inp?.spillerId === "string") return inp.spillerId;
     return null;
   };
+  const mineIds = new Set(mineSpillere.map((s) => s.id));
+  const caddieDrafts =
+    user.role === "ADMIN"
+      ? caddieDraftsRaw
+      : caddieDraftsRaw.filter((d) => {
+          const spiller = draftSpillerId(d.toolInput);
+          return spiller != null && mineIds.has(spiller);
+        });
   const caddieBrukerIder = [
     ...new Set(
       caddieDrafts.flatMap((d) => {
@@ -297,7 +317,7 @@ export default async function V2AdminGodkjenningerPage() {
 
   return (
     <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/innboks">Innboks</TilbakeLenke>
+      <KoHubNav />
       <AdminGodkjenningerV2 data={data} />
     </V2Shell>
   );

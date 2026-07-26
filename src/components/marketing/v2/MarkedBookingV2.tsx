@@ -1,14 +1,9 @@
 "use client";
 
 /* AK Golf HQ v2 — MARKEDSSIDE: Booking-inngang (/booking, retning C «Presis»).
-   v2-port 16. juli 2026 av (mlegacy)/booking/page.tsx sitt presentasjonslag.
-   BEVISST UENDRET: hele steg-flyten (lokasjon → trener → tjeneste via
-   ?lokasjon/&trener-query-lenker), filtreringspredikatene, prisformatering
-   («Gratis» / «N kr»), all copy og BOOKING_ACTIVE/Acuity-pausen. Prisma-
-   henting + lokasjon/coach-avledning skjer i page.tsx (server) og sendes inn
-   ferdig serialisert. Steg-stripen speiler Veiviser-visualet fra
-   src/components/v2/skjema.tsx (uten Neste/Tilbake-knappene — navigasjonen
-   her er lenkedrevet). Chrome: delt MRamme fra ./marked-ramme. */
+   Steg 1 er tjeneste-først (ett trykk). Valgfri filter: lokasjon (+ trener i URL).
+   Prisformatering («Gratis» / «N kr»), BOOKING_ACTIVE/Acuity-pause, Prisma-henting
+   i page.tsx. Chrome: MRamme fra ./marked-ramme. */
 
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -45,127 +40,6 @@ export interface MarkedBookingV2Props {
 function formaterPris(ore: number): string {
   if (ore === 0) return "Gratis";
   return `${ore / 100} kr`;
-}
-
-/* ── Steg-stripe (Veiviser-visual, lenkedrevet flyt) ───── */
-function BookingSteg({
-  stegNo,
-  lokasjon,
-  trener,
-  mobile,
-}: {
-  stegNo: 1 | 2 | 3;
-  lokasjon: string | null;
-  trener: string | null;
-  mobile: boolean;
-}) {
-  const steg = [
-    { nr: 1, navn: "Lokasjon", verdi: lokasjon },
-    { nr: 2, navn: "Trener", verdi: trener },
-    { nr: 3, navn: "Tjeneste", verdi: null as string | null },
-  ];
-  return (
-    <div style={{ display: "flex", alignItems: "flex-start", gap: 0, maxWidth: 460 }}>
-      {steg.map((s, i) => {
-        const done = s.nr < stegNo;
-        const on = s.nr === stegNo;
-        return (
-          <span key={s.nr} style={{ display: "contents" }}>
-            {i > 0 && (
-              <span
-                style={{
-                  flex: 1,
-                  height: 2,
-                  borderRadius: 2,
-                  background: done || on ? `color-mix(in srgb, ${T.lime} 45%, transparent)` : T.track,
-                  margin: "13px 8px 0",
-                }}
-              />
-            )}
-            <span style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, flex: "none" }}>
-              <span
-                style={{
-                  width: 28,
-                  height: 28,
-                  borderRadius: 9999,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontFamily: T.mono,
-                  fontSize: 11.5,
-                  fontWeight: 700,
-                  fontVariantNumeric: "tabular-nums",
-                  background: done ? T.lime : on ? "transparent" : T.panel2,
-                  border: `2px solid ${done || on ? T.lime : T.borderS}`,
-                  color: done ? T.onLime : on ? T.lime : T.mut,
-                }}
-              >
-                {done ? <Icon name="check" size={13} /> : s.nr}
-              </span>
-              <span style={{ fontFamily: T.ui, fontSize: 10.5, fontWeight: on ? 700 : 500, color: on ? T.fg : T.mut, whiteSpace: "nowrap" }}>
-                {s.navn}
-              </span>
-              {done && s.verdi && !mobile && (
-                <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.fg2, whiteSpace: "nowrap", maxWidth: 150, overflow: "hidden", textOverflow: "ellipsis" }}>
-                  {s.verdi}
-                </span>
-              )}
-            </span>
-          </span>
-        );
-      })}
-    </div>
-  );
-}
-
-/* ── Valgkort (lokasjon/trener) ────────────────────────── */
-function ValgLenkeKort({
-  href,
-  icon,
-  tittel,
-  sub,
-  cta,
-  stiplet,
-}: {
-  href: string;
-  icon: string;
-  tittel: string;
-  sub: string;
-  cta: string;
-  stiplet?: boolean;
-}) {
-  return (
-    <Link href={href} style={{ textDecoration: "none", display: "block" }}>
-      <Kort hover pad="20px 20px 22px" style={stiplet ? { borderStyle: "dashed" } : undefined}>
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
-          <span
-            style={{
-              width: 40,
-              height: 40,
-              flex: "none",
-              borderRadius: 12,
-              background: `color-mix(in srgb, ${T.lime} 10%, transparent)`,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Icon name={icon} size={18} style={{ color: T.lime }} />
-          </span>
-          <div style={{ minWidth: 0 }}>
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.015em", color: T.fg, lineHeight: 1.2 }}>
-              {tittel}
-            </div>
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.55, margin: "6px 0 0" }}>{sub}</p>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 14, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.lime }}>
-              {cta}
-              <Icon name="arrow-right" size={12} />
-            </span>
-          </div>
-        </div>
-      </Kort>
-    </Link>
-  );
 }
 
 /* ── Tjenestekort ──────────────────────────────────────── */
@@ -219,52 +93,38 @@ function StegHode({ tittel, endreHref, endreTekst }: { tittel: string; endreHref
 /* ── «Slik fungerer det» ───────────────────────────────── */
 function SlikFungererDet({ mobile }: { mobile: boolean }) {
   const steg = [
-    {
-      nr: 1,
-      ikon: "calendar",
-      tittel: "Velg tid",
-      beskrivelse: "Finn ledig tid hos din coach. Se tilgjengelighet i sanntid, ingen venteliste.",
-    },
-    {
-      nr: 2,
-      ikon: "credit-card",
-      tittel: "Betal trygt",
-      beskrivelse: "Betal via Stripe med kort. For Academy-kunder trekkes én coaching-credit automatisk.",
-    },
-    {
-      nr: 3,
-      ikon: "badge-check",
-      tittel: "Møt din coach",
-      beskrivelse: "Få en bekreftelse på e-post med alle detaljer. Avbestilling gratis frem til 24 timer før.",
-    },
+    { nr: 1, ikon: "list", tittel: "Velg økt", beskrivelse: "Flex, Performance, Pro eller gruppe — ett trykk." },
+    { nr: 2, ikon: "calendar", tittel: "Velg tid", beskrivelse: "Uke for uke, tid i Europa/Oslo. Tomme dager sier ærlig ifra." },
+    { nr: 3, ikon: "credit-card", tittel: "Bekreft og betal", beskrivelse: "Pris og avbestilling synlig før Stripe." },
+    { nr: 4, ikon: "badge-check", tittel: "Kvittering", beskrivelse: "Bekreftelse på e-post og i kalenderen." },
   ];
   return (
     <Seksjon mobile={mobile} style={{ borderTop: `1px solid ${T.border}` }}>
       <div style={{ textAlign: "center" }}>
         <Eyebrow>Enkelt og trygt</Eyebrow>
-        <SeksT mobile={mobile}>Slik fungerer det</SeksT>
+        <SeksT mobile={mobile}>Fire steg</SeksT>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: T.gap, marginTop: 32 }}>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: T.gap, marginTop: 28 }}>
         {steg.map((s) => (
-          <Kort key={s.nr} pad="22px 22px 24px">
+          <Kort key={s.nr} pad="18px 16px 20px">
             <span
               style={{
-                width: 44,
-                height: 44,
-                borderRadius: 14,
+                width: 40,
+                height: 40,
+                borderRadius: 12,
                 background: `color-mix(in srgb, ${T.lime} 10%, transparent)`,
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <Icon name={s.ikon} size={20} style={{ color: T.lime }} />
+              <Icon name={s.ikon} size={18} style={{ color: T.lime }} />
             </span>
-            <Caps size={9} style={{ marginTop: 16 }}>{`Steg ${s.nr}`}</Caps>
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.015em", color: T.fg, marginTop: 6 }}>
+            <Caps size={9} style={{ marginTop: 14 }}>{`Steg ${s.nr}`}</Caps>
+            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, letterSpacing: "-0.015em", color: T.fg, marginTop: 6 }}>
               {s.tittel}
             </div>
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "8px 0 0" }}>{s.beskrivelse}</p>
+            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.55, margin: "8px 0 0" }}>{s.beskrivelse}</p>
           </Kort>
         ))}
       </div>
@@ -294,33 +154,36 @@ export function MarkedBookingV2({
   paused,
   acuityUrl,
   lokasjonValg = [],
-  trenere = [],
+  // trenere beholdes i props for page.tsx / steg 2 (coach+tid) — ikke brukt i steg 1
   tjenester = [],
   valgtLokasjon = null,
   valgtTrener = null,
 }: MarkedBookingV2Props) {
   const mobile = useMobile();
 
-  /* Pauset flyt (BOOKING_ACTIVE=false) — Acuity-lenken tar over. */
+  /* Pauset flyt (BOOKING_ACTIVE=false) — ærlig Acuity + samtale. */
   if (paused) {
     return (
-      <MRamme mobile={mobile} aktiv="booking">
+      <MRamme mobile={mobile} aktiv="booking" cta={{ label: "Book en samtale", href: "/kontakt" }}>
         <Seksjon mobile={mobile}>
           <div style={{ textAlign: "center", maxWidth: 620, margin: "0 auto" }}>
             <Eyebrow>Booking</Eyebrow>
-            <HeroT mobile={mobile} em="en økt">
-              Book
+            <HeroT mobile={mobile} em="økt">
+              Book en
             </HeroT>
             <Lede style={{ margin: "20px auto 0" }}>
-              Book Pro-time, TrackMan-analyse eller gruppe-økt direkte i bookingkalenderen vår. Velg ledig tid og bekreft på sekunder.
+              Velg tid i kalenderen vår, eller book en uforpliktende samtale først. Avbestilling og pris vises før du betaler.
             </Lede>
-            <div style={{ marginTop: 26 }}>
+            <div style={{ marginTop: 26, display: "flex", flexDirection: "column", gap: 12, alignItems: "center" }}>
               <a href={acuityUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "inline-block" }}>
-                <CTAPill icon="arrow-right">Book time nå</CTAPill>
+                <CTAPill icon="arrow-right">Åpne bookingkalender</CTAPill>
               </a>
+              <Link href="/kontakt" className="v2-focus" style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 600, color: T.fg2, textDecoration: "none", minHeight: 44, display: "inline-flex", alignItems: "center" }}>
+                Eller book en samtale først
+              </Link>
             </div>
-            <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "14px 0 0" }}>
-              Du sendes til bookingsiden vår (akgolfgroup.as.me).
+            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "16px 0 0", lineHeight: 1.5 }}>
+              Du sendes til vår eksterne booking (akgolfgroup.as.me) for tid og betaling. Full HQ-booking med ledighet her på siden er under innfasing.
             </p>
           </div>
         </Seksjon>
@@ -338,107 +201,36 @@ export function MarkedBookingV2({
     );
   }
 
-  /* Samme steg-avledning som originalen. */
-  const stegNo: 1 | 2 | 3 = valgtLokasjon ? (valgtTrener ? 3 : 2) : 1;
-  const lokasjonNavn = valgtLokasjon ? (lokasjonValg.find((l) => l.id === valgtLokasjon)?.navn ?? null) : null;
-  const trenerNavn =
-    valgtTrener === "alle" ? "Gruppe" : valgtTrener ? (trenere.find((t) => t.id === valgtTrener)?.navn ?? null) : null;
-
-  /* Steg 3: samme filtrering + gruppering som originalen. */
+  /* Steg 1 = hva (tjeneste). Valgfri filter: lokasjon + trener i URL. */
   const filtrerte = tjenester.filter((s) => {
-    if (s.lokasjonId !== valgtLokasjon) return false;
+    if (valgtLokasjon && s.lokasjonId !== valgtLokasjon) return false;
     if (valgtTrener === "alle") return s.coachId === null;
-    return s.coachId === valgtTrener;
+    if (valgtTrener) return s.coachId === valgtTrener;
+    return true;
   });
-  const flexTjenester = filtrerte.filter((s) => !s.abonnement);
-  const abonnementTjenester = filtrerte.filter((s) => s.abonnement);
-
-  /* Steg 2: felles-/gruppetilbud på valgt lokasjon? */
-  const harGruppe = tjenester.some((s) => s.coachId === null && s.lokasjonId === valgtLokasjon);
+  const flexTjenester = filtrerte.filter(
+    (s) => !s.abonnement && !s.name.toLowerCase().includes("gruppe"),
+  );
+  const strukturert = filtrerte.filter((s) => s.abonnement);
+  const gruppeTjenester = filtrerte.filter(
+    (s) => s.name.toLowerCase().includes("gruppe") || s.coachId === null,
+  );
 
   return (
     <MRamme mobile={mobile} aktiv="booking">
-      {/* Hero */}
-      <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 24 : 36 }}>
+      <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 20 : 28 }}>
         <div style={{ textAlign: "center", maxWidth: 620, margin: "0 auto" }}>
-          <Eyebrow>Booking</Eyebrow>
-          <HeroT mobile={mobile} em="en økt">
-            Book
+          <Eyebrow>Booking · steg 1 av 4</Eyebrow>
+          <HeroT mobile={mobile} em="økt">
+            Velg
           </HeroT>
-          <Lede style={{ margin: "20px auto 0" }}>
-            Velg lokasjon, trener og tjeneste, finn ledig tid og betal trygt via Stripe. Avbestilling senest 24 timer før gir full refusjon.
+          <Lede style={{ margin: "18px auto 0" }}>
+            Ett trykk på tjenesten. Deretter velger du tid. Pris og avbestilling står tydelig før betaling.
           </Lede>
-        </div>
-        <div style={{ display: "flex", justifyContent: "center", marginTop: mobile ? 30 : 40 }}>
-          <BookingSteg stegNo={stegNo} lokasjon={lokasjonNavn} trener={trenerNavn} mobile={mobile} />
         </div>
       </Seksjon>
 
-      {/* Steg 1: Velg lokasjon */}
-      {!valgtLokasjon && (
-        <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
-          <StegHode tittel="1. Velg lokasjon" />
-          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: T.gap, marginTop: 20 }}>
-            {lokasjonValg.map((l) => (
-              <ValgLenkeKort
-                key={l.id}
-                href={`/booking?lokasjon=${l.id}`}
-                icon="map-pin"
-                tittel={l.navn}
-                sub={l.sted}
-                cta="Velg"
-              />
-            ))}
-          </div>
-        </Seksjon>
-      )}
-
-      {/* Steg 2: Velg trener */}
-      {valgtLokasjon && !valgtTrener && (
-        <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
-          <StegHode tittel="2. Velg trener" endreHref="/booking" endreTekst="Endre lokasjon" />
-          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1fr 1fr", gap: T.gap, marginTop: 20 }}>
-            {trenere.map((c) => {
-              const harTjenester = tjenester.some((s) => s.coachId === c.id && s.lokasjonId === valgtLokasjon);
-              if (!harTjenester) return null;
-              return (
-                <ValgLenkeKort
-                  key={c.id}
-                  href={`/booking?lokasjon=${valgtLokasjon}&trener=${c.id}`}
-                  icon="user"
-                  tittel={c.navn}
-                  sub={c.tittel}
-                  cta="Se tjenester"
-                />
-              );
-            })}
-          </div>
-          {harGruppe && (
-            <div style={{ marginTop: T.gap }}>
-              <ValgLenkeKort
-                href={`/booking?lokasjon=${valgtLokasjon}&trener=alle`}
-                icon="users"
-                tittel="Gruppe-økt"
-                sub="Felles økter med flere spillere, uten valg av spesifikk trener."
-                cta="Se gruppe-tilbud"
-                stiplet
-              />
-            </div>
-          )}
-        </Seksjon>
-      )}
-
-      {/* Steg 3: Velg tjeneste */}
-      {valgtLokasjon && valgtTrener && (
-        <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
-          <StegHode tittel="3. Velg tjeneste" endreHref={`/booking?lokasjon=${valgtLokasjon}`} endreTekst="Endre trener" />
-          <TjenesteGruppe label="Flex" tjenester={flexTjenester} mobile={mobile} />
-          <TjenesteGruppe label="Abonnement" tjenester={abonnementTjenester} mobile={mobile} />
-        </Seksjon>
-      )}
-
-      {/* Ærlig tomtilstand — ingen aktive tjenester i det hele tatt */}
-      {tjenester.length === 0 && (
+      {tjenester.length === 0 ? (
         <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
           <Kort pad="26px 20px">
             <TomTilstand
@@ -456,6 +248,63 @@ export function MarkedBookingV2({
               }
             />
           </Kort>
+        </Seksjon>
+      ) : (
+        <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
+          <StegHode tittel="Hva vil du booke?" />
+          <TjenesteGruppe label="Drop-in · Flex" tjenester={flexTjenester} mobile={mobile} />
+          <TjenesteGruppe label="Strukturert" tjenester={strukturert} mobile={mobile} />
+          <TjenesteGruppe label="Gruppe" tjenester={gruppeTjenester} mobile={mobile} />
+          {lokasjonValg.length > 1 && (
+            <div style={{ marginTop: 28 }}>
+              <Caps>Filtrer på sted (valgfritt)</Caps>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
+                <Link
+                  href="/booking"
+                  className="v2-focus v2-press"
+                  style={{
+                    padding: "10px 14px",
+                    borderRadius: 9999,
+                    border: `1px solid ${!valgtLokasjon ? "transparent" : T.border}`,
+                    background: !valgtLokasjon ? T.lime : T.panel2,
+                    color: !valgtLokasjon ? T.onLime : T.fg2,
+                    fontFamily: T.ui,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    textDecoration: "none",
+                    minHeight: 44,
+                    display: "inline-flex",
+                    alignItems: "center",
+                  }}
+                >
+                  Alle steder
+                </Link>
+                {lokasjonValg.map((l) => (
+                  <Link
+                    key={l.id}
+                    href={`/booking?lokasjon=${l.id}`}
+                    className="v2-focus v2-press"
+                    style={{
+                      padding: "10px 14px",
+                      borderRadius: 9999,
+                      border: `1px solid ${valgtLokasjon === l.id ? "transparent" : T.border}`,
+                      background: valgtLokasjon === l.id ? T.lime : T.panel2,
+                      color: valgtLokasjon === l.id ? T.onLime : T.fg2,
+                      fontFamily: T.ui,
+                      fontSize: 13,
+                      fontWeight: 600,
+                      textDecoration: "none",
+                      minHeight: 44,
+                      display: "inline-flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    {l.navn}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </Seksjon>
       )}
 

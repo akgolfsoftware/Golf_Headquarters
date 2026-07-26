@@ -15,6 +15,8 @@ import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { InnsiktHubNav } from "@/components/admin/v2/agency-hub-subnav";
+
 import {
   AdminAnalyseV2,
   type AnalyseV2Data,
@@ -244,6 +246,7 @@ export default async function V2AdminAnalysePage() {
   const data = await loadStallAnalyse(user);
   return (
     <V2Shell aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <InnsiktHubNav />
       <AdminAnalyseV2 data={data} />
     </V2Shell>
   );

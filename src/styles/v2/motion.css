@@ -260,36 +260,38 @@
   font-weight: 700;
 }
 
-
-/* ── Scroll-avsløring (markedsflater) ─────────────────────────────────
-   Innhold som toner inn når det kommer i viewporten. Klassen settes ved
-   render; `data-inne="ja"` settes av IntersectionObserver i
-   marketing/v2/scroll-animasjon.tsx. Ingen bevegelse før observeren har
-   sagt fra, og ingen bevegelse i det hele tatt ved redusert bevegelse
-   (regelen nederst i fila) — da står innholdet synlig fra første maling. */
+/* ── Marketing: scroll-reveal, parallax, sticky scene ─────────────── */
 .m-avslor {
   opacity: 0;
   transform: translateY(18px);
   transition:
     opacity 620ms cubic-bezier(0.2, 0.7, 0.2, 1),
     transform 620ms cubic-bezier(0.2, 0.7, 0.2, 1);
-  transition-delay: var(--m-forsink, 0ms);
+  will-change: opacity, transform;
 }
-.m-avslor[data-inne="ja"] {
+.m-avslor.m-avslor-synlig {
   opacity: 1;
   transform: translateY(0);
 }
-
-/* Parallakse: --m-skift settes fra scroll-posisjon (rAF) i samme fil. */
+.m-avslor-d1 {
+  transition-delay: 60ms;
+}
+.m-avslor-d2 {
+  transition-delay: 120ms;
+}
+.m-avslor-d3 {
+  transition-delay: 180ms;
+}
+.m-avslor-d4 {
+  transition-delay: 240ms;
+}
 .m-parallaks {
-  transform: translate3d(0, var(--m-skift, 0px), 0) scale(var(--m-skala, 1));
   will-change: transform;
 }
-
-/* Sticky produkt-scene: telefonen står stille mens teksten ruller forbi. */
 .m-klebrig {
   position: sticky;
-  top: calc(50vh - 320px);
+  top: 88px;
+  align-self: start;
 }
 
 /* ── Redusert bevegelse — gjelder HELE katalogen ──────────────────── */
@@ -306,15 +308,6 @@
   .v2-backdrop-in {
     animation: none;
   }
-  /* Markedsflatene: vis alt med én gang, uten inn-toning eller parallakse. */
-  .m-avslor {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-  .m-parallaks {
-    transform: none;
-  }
   .v2-skel {
     animation: none;
     opacity: 0.75;
@@ -329,5 +322,18 @@
   }
   [class*="mic-wave"] {
     animation: none !important;
+  }
+  .m-avslor,
+  .m-avslor.m-avslor-synlig {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .m-parallaks {
+    transform: none !important;
+    will-change: auto;
+  }
+  .m-klebrig {
+    position: static;
   }
 }

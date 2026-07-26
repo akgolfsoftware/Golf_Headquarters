@@ -530,18 +530,17 @@ export async function slettPlan(planId: string) {
 }
 
 /**
- * Valider eier-rettighet for en plan — coach må eie planen, eller være ADMIN.
+ * Valider tilgang til plan via spiller-scope (ikke bare createdById — null
+ * createdById ga tidligere alle coacher full tilgang).
  */
 async function krevPlanRettighet(planId: string) {
   const user = await requireCoachActionUser();
   const plan = await prisma.trainingPlan.findUnique({
     where: { id: planId },
-    select: { id: true, createdById: true },
+    select: { id: true, createdById: true, userId: true },
   });
   if (!plan) throw new Error("not-found");
-  if (user.role !== "ADMIN" && plan.createdById && plan.createdById !== user.id) {
-    throw new Error("forbidden");
-  }
+  await assertCoachTilgangTilSpiller(user, plan.userId);
   return { user, plan };
 }
 
@@ -557,15 +556,12 @@ export async function oppdaterOkt(sessionId: string, data: OktData) {
   });
   if (!session) throw new Error("not-found");
 
-  // Sjekk rettighet via plan-eierskap
   const plan = await prisma.trainingPlan.findUnique({
     where: { id: session.planId },
-    select: { createdById: true },
+    select: { createdById: true, userId: true },
   });
   if (!plan) throw new Error("not-found");
-  if (user.role !== "ADMIN" && plan.createdById && plan.createdById !== user.id) {
-    throw new Error("forbidden");
-  }
+  await assertCoachTilgangTilSpiller(user, plan.userId);
 
   await prisma.trainingPlanSession.update({
     where: { id: sessionId },
@@ -637,11 +633,7 @@ export async function sendOktFeedback(
   if (session.status !== "COMPLETED" || !session.log) {
     return { ok: false, feil: "Økten er ikke fullført ennå." };
   }
-  if (
-    user.role !== "ADMIN" &&
-    session.plan.createdById &&
-    session.plan.createdById !== user.id
-  ) {
+  if (!(await harCoachTilgangTilSpiller(user, session.plan.userId))) {
     return { ok: false, feil: "Du har ikke tilgang til denne planen." };
   }
 
@@ -688,12 +680,10 @@ export async function slettOkt(sessionId: string) {
 
   const plan = await prisma.trainingPlan.findUnique({
     where: { id: session.planId },
-    select: { createdById: true },
+    select: { createdById: true, userId: true },
   });
   if (!plan) throw new Error("not-found");
-  if (user.role !== "ADMIN" && plan.createdById && plan.createdById !== user.id) {
-    throw new Error("forbidden");
-  }
+  await assertCoachTilgangTilSpiller(user, plan.userId);
 
   await prisma.trainingPlanSession.delete({ where: { id: sessionId } });
   await deleteV2ForPlanSession(sessionId);
@@ -1047,11 +1037,7 @@ export async function assignPlanToPlayers(input: {
   });
   if (!original) return { ok: false, feil: "Fant ikke planen." };
 
-  if (
-    user.role !== "ADMIN" &&
-    original.createdById &&
-    original.createdById !== user.id
-  ) {
+  if (!(await harCoachTilgangTilSpiller(user, original.userId))) {
     return { ok: false, feil: "Du har ikke tilgang til denne planen." };
   }
 

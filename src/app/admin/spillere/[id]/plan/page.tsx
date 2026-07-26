@@ -12,6 +12,7 @@
 import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import {
@@ -31,8 +32,8 @@ export default async function SpillerPlanIndeksPage({
 
   // Samme select-kontrakt som den forrige /plan-indeksen.
   const [spiller, planer] = await Promise.all([
-    prisma.user.findUnique({
-      where: { id },
+    prisma.user.findFirst({
+      where: { AND: [coachScopedPlayerWhere(user), { id }] },
       select: { id: true, name: true },
     }),
     prisma.technicalPlan.findMany({

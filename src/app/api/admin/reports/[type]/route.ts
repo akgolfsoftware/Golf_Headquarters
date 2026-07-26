@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
@@ -41,10 +42,12 @@ export async function GET(
 
   let csv: string;
 
+  const spillerScope = coachScopedPlayerWhere(user);
+
   switch (filename) {
     case "spillere": {
       const players = await prisma.user.findMany({
-        where: { role: "PLAYER" },
+        where: spillerScope,
         orderBy: { name: "asc" },
       });
       csv = tilCsv(
@@ -66,7 +69,10 @@ export async function GET(
       const nittiDager = new Date();
       nittiDager.setDate(nittiDager.getDate() - 90);
       const runder = await prisma.round.findMany({
-        where: { playedAt: { gte: nittiDager } },
+        where: {
+          playedAt: { gte: nittiDager },
+          user: spillerScope,
+        },
         include: {
           user: { select: { name: true } },
           course: { select: { name: true, par: true } },
@@ -93,6 +99,9 @@ export async function GET(
 
     case "okter": {
       const logger = await prisma.trainingPlanSessionLog.findMany({
+        where: {
+          session: { plan: { user: spillerScope } },
+        },
         include: {
           session: {
             include: {
@@ -119,6 +128,10 @@ export async function GET(
     }
 
     case "abonnement": {
+      // Stripe-kundedata: kun ADMIN
+      if (user.role !== "ADMIN") {
+        return NextResponse.json({ error: "forbidden" }, { status: 403 });
+      }
       const subs = await prisma.subscription.findMany({
         include: { user: { select: { name: true, email: true } } },
         orderBy: { updatedAt: "desc" },

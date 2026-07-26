@@ -3,6 +3,7 @@
 
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { rateLimit } from "@/lib/rate-limit";
 import { genererPlan } from "@/lib/ai-plan/generate";
 
@@ -43,6 +44,9 @@ export async function POST(req: Request) {
 
   if (typeof body.userId !== "string" || body.userId.length === 0) {
     return NextResponse.json({ error: "manglende-userId" }, { status: 400 });
+  }
+  if (!(await harCoachTilgangTilSpiller(coach, body.userId))) {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
   if (typeof body.brukerPrompt !== "string" || body.brukerPrompt.trim().length < 5) {
     return NextResponse.json({ error: "for-kort-prompt" }, { status: 400 });

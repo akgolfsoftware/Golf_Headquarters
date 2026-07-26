@@ -173,7 +173,19 @@ export async function loadDailyBrief(coach: {
     latestDailyBriefRun,
   ] = await Promise.all([
     prisma.booking.findMany({
-      where: { startAt: { gte: dagStart, lt: dagSlutt }, status: { in: ["CONFIRMED", "PENDING"] } },
+      where: {
+        startAt: { gte: dagStart, lt: dagSlutt },
+        status: { in: ["CONFIRMED", "PENDING"] },
+        ...(coach.role === "ADMIN"
+          ? {}
+          : {
+              OR: [
+                { coachId: coach.id },
+                { serviceType: { coachUserId: coach.id } },
+                { user: coachScopedPlayerWhere(coach) },
+              ],
+            }),
+      },
       orderBy: { startAt: "asc" },
       select: {
         id: true,
@@ -205,7 +217,11 @@ export async function loadDailyBrief(coach: {
       },
     }),
     prisma.planAction.findMany({
-      where: { status: "PENDING" },
+      where: {
+        status: "PENDING",
+        OR: [{ coachId: coach.id }, { coachId: null }],
+        user: coachScopedPlayerWhere(coach),
+      },
       orderBy: { createdAt: "desc" },
       take: 8,
       select: {
@@ -218,7 +234,11 @@ export async function loadDailyBrief(coach: {
       },
     }),
     prisma.sessionRequest.findMany({
-      where: { status: "PENDING" },
+      where: {
+        status: "PENDING",
+        OR: [{ coachId: coach.id }, { coachId: null }],
+        user: coachScopedPlayerWhere(coach),
+      },
       orderBy: { createdAt: "desc" },
       take: 4,
       select: {
@@ -258,12 +278,17 @@ export async function loadDailyBrief(coach: {
     prisma.subscription.findMany({
       where: { tier: "PRO", status: { in: ["ACTIVE", "TRIALING", "PAST_DUE"] } },
       select: { createdAt: true },
+      // Kun count/MRR-formål — hard tak for store klubber
+      take: 5000,
     }),
-    // STALL-SG (Anders 2026-06-22): snitt sgTotal alle runder siste 30 d
-    // (samme definisjon som /admin/runder — «ingen falske tall»).
+    // STALL-SG: snitt sgTotal for coachede spillere siste 30 d (scope, ikke hele DB).
     prisma.round.aggregate({
       _avg: { sgTotal: true },
-      where: { playedAt: { gte: tretti }, sgTotal: { not: null } },
+      where: {
+        playedAt: { gte: tretti },
+        sgTotal: { not: null },
+        user: coachScopedPlayerWhere(coach),
+      },
     }),
     // PLAN-ETTERLEVELSE: planlagte vs fullførte plan-økter siste 30 d (forfalt i vinduet).
     // Én groupBy på status erstatter to counts.

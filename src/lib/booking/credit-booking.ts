@@ -72,7 +72,9 @@ export async function createCreditBooking(
     throw new Error("Ugyldig dato.");
   }
 
-  const ok = await isSlotStillAvailable(service.id, startAt, input.coachId);
+  // Samme coach-id som lagres på bookingen (service-eier, ikke vilkårlig input).
+  const coachForSlot = service.coachUserId ?? input.coachId;
+  const ok = await isSlotStillAvailable(service.id, startAt, coachForSlot);
   if (!ok) {
     throw new Error(
       "Tiden ble dessverre booket av noen andre. Velg en annen tid.",

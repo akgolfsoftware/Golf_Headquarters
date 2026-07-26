@@ -5,6 +5,7 @@
 import { NextResponse } from "next/server";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { assertCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { PlanDocument, type PlanPdfData } from "@/lib/pdf/plan-document";
 
@@ -29,7 +30,7 @@ export async function GET(
   _req: Request,
   { params }: { params: Promise<{ planId: string }> },
 ) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const viewer = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { planId } = await params;
 
   const plan = await prisma.trainingPlan.findUnique({
@@ -59,6 +60,7 @@ export async function GET(
   if (!plan) {
     return NextResponse.json({ error: "not-found" }, { status: 404 });
   }
+  await assertCoachTilgangTilSpiller(viewer, plan.userId);
 
   // Coach = brukeren som opprettet planen (createdById). Ikke FK i v1, så
   // vi slår opp manuelt og tillater null-fallback.

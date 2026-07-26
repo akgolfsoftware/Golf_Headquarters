@@ -32,14 +32,21 @@ export async function cancelBooking(bookingId: string) {
   });
   if (!booking) throw new Error("not-found");
 
-  const erStaff = user.role === "ADMIN" || user.role === "COACH";
-  if (booking.userId !== user.id && !erStaff) {
+  // Eier = spiller som booket. Staff = ADMIN eller COACH som eier bookingen
+  // (coachId / serviceType.coachUserId) — ikke hvilken som helst coach.
+  const erEier = booking.userId === user.id;
+  const erEgenCoachBooking =
+    user.role === "COACH" &&
+    (booking.coachId === user.id || booking.serviceType.coachUserId === user.id);
+  const erAdmin = user.role === "ADMIN";
+  const erStaff = erAdmin || erEgenCoachBooking;
+  if (!erEier && !erStaff) {
     throw new Error("forbidden");
   }
   if (booking.status === "CANCELLED") return;
 
   const tidTilStart = booking.startAt.getTime() - Date.now();
-  // Spillere: 24t-regel. Staff (COACH/ADMIN) kan refundere uansett tid.
+  // Spillere: 24t-regel. Egen coach / admin kan refundere uansett tid.
   const kanRefunderes = erStaff || tidTilStart > 24 * 60 * 60 * 1000;
 
   // Refunder via Stripe hvis berettiget og PaymentIntent finnes.
@@ -198,15 +205,19 @@ export async function rescheduleBooking(input: {
   });
   if (!booking) throw new Error("not-found");
 
-  const erStaff = user.role === "ADMIN" || user.role === "COACH";
-  if (booking.userId !== user.id && !erStaff) {
+  const erEier = booking.userId === user.id;
+  const erEgenCoachBooking =
+    user.role === "COACH" &&
+    (booking.coachId === user.id || booking.serviceType.coachUserId === user.id);
+  const erStaff = user.role === "ADMIN" || erEgenCoachBooking;
+  if (!erEier && !erStaff) {
     throw new Error("forbidden");
   }
   if (booking.status === "CANCELLED") {
     throw new Error("Avbestilt booking kan ikke flyttes — book ny tid.");
   }
 
-  // Sjekk 24t-regel (staff slipper)
+  // Sjekk 24t-regel (egen coach / admin slipper)
   const tidTilStart = booking.startAt.getTime() - Date.now();
   if (!erStaff && tidTilStart <= 24 * 60 * 60 * 1000) {
     throw new Error(

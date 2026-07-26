@@ -2,8 +2,24 @@
 
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { acceptAndApplyPlanAction } from "./accept-plan-action";
+
+/** Spiller eier egen action; coach/admin kun for coachede spillere (+ coachId-match). */
+async function assertPlanActionAccess(
+  user: { id: string; role: string },
+  action: { userId: string; coachId: string | null },
+): Promise<void> {
+  if (action.userId === user.id) return;
+  if (user.role === "ADMIN") return;
+  if (user.role !== "COACH") throw new Error("forbidden");
+  // Tildelt annen coach → nei
+  if (action.coachId && action.coachId !== user.id) throw new Error("forbidden");
+  if (!(await harCoachTilgangTilSpiller(user, action.userId))) {
+    throw new Error("forbidden");
+  }
+}
 
 export async function acceptPlanAction(actionId: string) {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
@@ -12,13 +28,7 @@ export async function acceptPlanAction(actionId: string) {
     where: { id: actionId },
   });
   if (!action) throw new Error("not-found");
-  if (
-    action.userId !== user.id &&
-    user.role !== "ADMIN" &&
-    user.role !== "COACH"
-  ) {
-    throw new Error("forbidden");
-  }
+  await assertPlanActionAccess(user, action);
   if (action.status !== "PENDING") return;
 
   await acceptAndApplyPlanAction(actionId);
@@ -39,13 +49,7 @@ export async function rejectPlanAction(actionId: string) {
     where: { id: actionId },
   });
   if (!action) throw new Error("not-found");
-  if (
-    action.userId !== user.id &&
-    user.role !== "ADMIN" &&
-    user.role !== "COACH"
-  ) {
-    throw new Error("forbidden");
-  }
+  await assertPlanActionAccess(user, action);
 
   await prisma.planAction.update({
     where: { id: actionId },

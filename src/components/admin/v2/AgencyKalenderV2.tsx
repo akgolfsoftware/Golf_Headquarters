@@ -26,19 +26,13 @@ import {
   Icon,
   HurtigOpprett,
   BunnArk,
+  TimeGrid,
+  timeGridBlockStyle,
+  snapYToSlot,
 } from "@/components/v2";
 import { type AkseKey } from "@/lib/v2/tokens";
 import type { KalenderData, KalDag, KalOkt } from "@/app/admin/kalender/data";
-import {
-  GRID_BODY_PX,
-  GRID_END_HOUR,
-  GRID_START_HOUR,
-  PIXEL_PER_HOUR,
-  foreslaGridTid,
-  gridHours,
-  minutesToPx,
-  durationToPx,
-} from "@/lib/calendar/notion-grid";
+import { foreslaGridTid } from "@/lib/calendar/notion-grid";
 
 /** true på klient etter mount når viewport < 768px (styrer kun layout-tetthet). */
 function useMobile(): boolean {
@@ -199,93 +193,93 @@ function estimertVarighetMin(okter: KalOkt[], idx: number): number {
   return 60;
 }
 
-/* ── Dag-kolonne (desktop): Notion-tidslinje 05–23, absolutt posisjonerte økter ── */
-function DagKolonne({ dag, onSerieClick, onTreningClick, onFlytt, flytterId, onTomLuke }: { dag: KalenderData["dager"][number]; onSerieClick: (okt: KalOkt) => void; onTreningClick: (okt: KalOkt) => void; onFlytt?: (bookingId: string, datoISO: string) => void; flytterId?: string | null; onTomLuke: (datoISO: string, kl: string) => void }) {
+/** Innhold i TimeGrid-dag (N1) — booking-blokker + HTML5 DnD mellom dager. */
+function AgencyDagInnhold({
+  dag,
+  onSerieClick,
+  onTreningClick,
+  onFlytt,
+  flytterId,
+  onTomLuke,
+}: {
+  dag: KalenderData["dager"][number];
+  onSerieClick: (okt: KalOkt) => void;
+  onTreningClick: (okt: KalOkt) => void;
+  onFlytt?: (bookingId: string, datoISO: string) => void;
+  flytterId?: string | null;
+  onTomLuke: (datoISO: string, kl: string) => void;
+}) {
   const [over, setOver] = useState(false);
   const gridOkter = dag.okter.filter((o) => o.startMin < 24 * 60);
   return (
     <div
-      onDragOver={onFlytt ? (e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; if (!over) setOver(true); } : undefined}
+      data-agency-dag={dag.datoISO}
+      onDragOver={
+        onFlytt
+          ? (e) => {
+              e.preventDefault();
+              e.dataTransfer.dropEffect = "move";
+              if (!over) setOver(true);
+            }
+          : undefined
+      }
       onDragLeave={onFlytt ? () => setOver(false) : undefined}
-      onDrop={onFlytt ? (e) => {
-        e.preventDefault();
-        setOver(false);
-        const id = e.dataTransfer.getData(DND_MIME);
-        if (id) onFlytt(id, dag.datoISO);
-      } : undefined}
-      style={{ minWidth: 0, display: "flex", flexDirection: "column", borderRadius: 12, background: over ? `color-mix(in srgb, ${T.lime} 6%, transparent)` : T.panel, border: `1px solid ${dag.idag ? T.borderS : T.border}`, outline: over ? `1px dashed color-mix(in srgb, ${T.lime} 45%, transparent)` : "none", outlineOffset: -2, transition: "background 80ms", overflow: "hidden" }}
+      onDrop={
+        onFlytt
+          ? (e) => {
+              e.preventDefault();
+              setOver(false);
+              const id = e.dataTransfer.getData(DND_MIME);
+              if (id) onFlytt(id, dag.datoISO);
+            }
+          : undefined
+      }
+      onClick={(e) => {
+        if (e.target !== e.currentTarget) return;
+        const y = e.clientY - e.currentTarget.getBoundingClientRect().top;
+        const slot = snapYToSlot(y);
+        const pad = (n: number) => String(n).padStart(2, "0");
+        onTomLuke(dag.datoISO, `${pad(slot.hour)}:${pad(slot.minute)}`);
+      }}
+      style={{
+        position: "absolute",
+        inset: 0,
+        background: over ? `color-mix(in srgb, ${T.lime} 8%, transparent)` : "transparent",
+        outline: over ? `1px dashed color-mix(in srgb, ${T.lime} 45%, transparent)` : "none",
+        outlineOffset: -2,
+        transition: "background 80ms",
+      }}
     >
-      <div style={{ display: "flex", alignItems: "baseline", gap: 6, padding: "8px 8px 6px", borderBottom: `1px solid ${dag.idag ? T.borderS : T.border}`, flex: "none" }}>
-        <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: dag.idag ? T.fg : T.mut }}>{dag.dag}</span>
-        <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: dag.idag ? T.fg : T.fg2, fontVariantNumeric: "tabular-nums" }}>{dag.dato}</span>
-        {dag.idag && <StatusPill>Nå</StatusPill>}
-      </div>
-      <div
-        style={{ position: "relative", height: GRID_BODY_PX, minHeight: GRID_BODY_PX }}
-        onClick={(e) => {
-          // Klikk på tom luke: map Y → nærmeste 30-min slot
-          if ((e.target as HTMLElement).closest("[data-okt-blokk]")) return;
-          const rect = e.currentTarget.getBoundingClientRect();
-          const y = e.clientY - rect.top;
-          const hours = GRID_START_HOUR + y / PIXEL_PER_HOUR;
-          const totalMin = Math.round((hours * 60) / 30) * 30;
-          const clamped = Math.max(GRID_START_HOUR * 60, Math.min(GRID_END_HOUR * 60, totalMin));
-          const pad = (n: number) => String(n).padStart(2, "0");
-          const kl = `${pad(Math.floor(clamped / 60))}:${pad(clamped % 60)}`;
-          onTomLuke(dag.datoISO, kl);
-        }}
-        role="presentation"
-      >
-        {gridHours().map((h) => (
+      {gridOkter.map((o, idx) => {
+        const body = (
+          <div data-okt-blokk style={{ height: "100%", overflow: "hidden" }}>
+            <OktBlokk okt={o} onSerieClick={onSerieClick} onTreningClick={onTreningClick} compact />
+          </div>
+        );
+        return (
           <div
-            key={h}
-            style={{
-              position: "absolute",
-              left: 0,
-              right: 0,
-              top: (h - GRID_START_HOUR) * PIXEL_PER_HOUR,
-              height: PIXEL_PER_HOUR,
-              borderTop: `1px solid ${T.border}`,
-              pointerEvents: "none",
-            }}
-          />
-        ))}
-        {gridOkter.map((o, idx) => {
-          const top = minutesToPx(o.startMin);
-          const h = durationToPx(estimertVarighetMin(gridOkter, idx));
-          const body = (
-            <div data-okt-blokk style={{ height: "100%", overflow: "hidden" }}>
-              <OktBlokk okt={o} onSerieClick={onSerieClick} onTreningClick={onTreningClick} compact />
-            </div>
-          );
-          return (
-            <div
-              key={o.id}
-              style={{
-                position: "absolute",
-                left: 3,
-                right: 3,
-                top,
-                height: h,
-                zIndex: 1,
-                opacity: flytterId === o.id ? 0.45 : 1,
-              }}
-            >
-              {onFlytt && !o.serie && !o.erOppgave ? (
-                <div
-                  draggable
-                  onDragStart={(e) => { e.dataTransfer.setData(DND_MIME, o.id); e.dataTransfer.effectAllowed = "move"; }}
-                  style={{ cursor: "grab", height: "100%" }}
-                >
-                  {body}
-                </div>
-              ) : (
-                body
-              )}
-            </div>
-          );
-        })}
-      </div>
+            key={o.id}
+            style={timeGridBlockStyle(o.startMin, estimertVarighetMin(gridOkter, idx), {
+              opacity: flytterId === o.id ? 0.45 : 1,
+            })}
+          >
+            {onFlytt && !o.serie && !o.erOppgave ? (
+              <div
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData(DND_MIME, o.id);
+                  e.dataTransfer.effectAllowed = "move";
+                }}
+                style={{ cursor: "grab", height: "100%" }}
+              >
+                {body}
+              </div>
+            ) : (
+              body
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -613,33 +607,29 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   // ── Desktop: Dag / Uke / Måned ──
   let kropp: React.ReactNode;
   if (visning === "uke") {
-    // Notion-uke: tidskolonne 05–23 + 7 dager (absolutt-posisjonerte økter)
+    // N1: felles Notion TimeGrid (samme motor som Workbench-uke)
     kropp = (
-      <div style={{ display: "grid", gridTemplateColumns: "48px repeat(7, 1fr)", gap: 6, alignItems: "start", overflowX: "auto" }}>
-        <div style={{ paddingTop: 34 }}>
-          {gridHours().map((h) => (
-            <div
-              key={h}
-              style={{
-                height: PIXEL_PER_HOUR,
-                fontFamily: T.mono,
-                fontSize: 9,
-                fontWeight: 700,
-                color: T.mut,
-                textAlign: "right",
-                paddingRight: 6,
-                lineHeight: 1,
-                transform: "translateY(-4px)",
-              }}
-            >
-              {String(h).padStart(2, "0")}
-            </div>
-          ))}
-        </div>
-        {data.dager.map((d, i) => (
-          <DagKolonne key={i} dag={d} onSerieClick={setValgtSerieOkt} onTreningClick={(o) => void apneTrening(o)} onFlytt={onFlytt} flytterId={flytterId} onTomLuke={onTomLuke} />
-        ))}
-      </div>
+      <TimeGrid
+        days={data.dager.map((d, i) => ({
+          id: d.datoISO || `dag-${i}`,
+          dow: d.dag,
+          date: d.dato,
+          today: d.idag,
+        }))}
+        showNowLine
+        timeColWidth={48}
+        bordered
+        renderDay={(i) => (
+          <AgencyDagInnhold
+            dag={data.dager[i]}
+            onSerieClick={setValgtSerieOkt}
+            onTreningClick={(o) => void apneTrening(o)}
+            onFlytt={onFlytt}
+            flytterId={flytterId}
+            onTomLuke={onTomLuke}
+          />
+        )}
+      />
     );
   } else if (visning === "dag") {
     const valgt = data.dager.find((d) => d.idag) ?? data.dager[0];

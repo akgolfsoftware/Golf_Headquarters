@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { headers } from "next/headers";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { stripeKlient } from "@/lib/stripe";
@@ -29,8 +28,10 @@ export async function POST() {
     );
   }
 
-  const h = await headers();
-  const origin = h.get("origin") ?? `https://${h.get("host")}`;
+  const origin = (process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no").replace(
+    /\/$/,
+    "",
+  );
 
   const session = await stripe.billingPortal.sessions.create({
     customer: subscription.stripeCustomerId,
