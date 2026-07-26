@@ -53,6 +53,7 @@ import {
   ProgresjonsBar,
   MiniSpark,
   LaunchWindow,
+  SlagLekkasje,
 } from "@/components/v2/datavis";
 import {
   UkeGrid,
@@ -584,8 +585,11 @@ export function DesignLabV2() {
                   </div>
                 </Kort>
               </div>
-              <Diagnose />
-              <NesteFokus />
+              {/* ctaHref/handlingHref gjør CTA-ene ekte lenker — uten dem rendres
+                  ingen knapp, så labben viser aldri en død kontroll. */}
+              <Diagnose ctaHref="/portal/planlegge/workbench?zoom=uke" />
+              <NesteFokus handlingHref="/portal/planlegge/workbench?zoom=uke" />
+              <SlagLekkasje />
             </div>
           }
         />

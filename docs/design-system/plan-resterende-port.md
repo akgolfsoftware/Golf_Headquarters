@@ -39,7 +39,7 @@
 **Kode finnes:** `src/components/v2/kalender.tsx` (bruker allerede `T` / CSS-vars).  
 **DoD:**
 - [x] Lab-seksjon «Kalender · Fase 8»
-- [ ] Admin `/admin/kalender` bruker v2-toolbar/mønstre (Bølge 12)
+- [x] Admin `/admin/kalender` bruker v2-toolbar/mønstre (levert i Bølge 12a)
 - [x] Komponenter på `T`-tokens (CSS-vars)
 
 **Gren:** `feat/ds-f-wave8-10-rest-port` (denne)
@@ -52,7 +52,9 @@
 **DoD:**
 - [x] Lab-seksjon «Golfdata · SG · Fase 9»
 - [x] Admin stall-analyse (`AdminAnalyseV2`) bruker allerede v2 TallHero/DataTabell
-- [ ] PlayerHQ SG-hub full v2-port (Bølge 12 — bytter athletic → v2)
+- [x] PlayerHQ **analysere** (kanonisk analyse-flate) bruker fasit-kortene (Bølge 12b)
+- [ ] PlayerHQ **SG-hub** under `(legacy)/mal/sg-hub` er fortsatt athletic-basert —
+      egen jobb, ikke dekket av 12b (10+ underruter, `components/portal/sg-hub/`)
 
 ---
 
@@ -86,7 +88,7 @@ ValideringsChip, Skjelett, Trekkspill, FilterChips og MeldingsTraad fantes fra f
 | Flate | Rute | Mål | Status |
 |-------|------|-----|--------|
 | Admin kalender uke | `/admin/kalender` | Notion-grid chrome + v2 tokens | ✅ 12a |
-| SG / analyse | PlayerHQ analysere | SgTotal + Diagnose v2 | ⬜ 12b |
+| SG / analyse | PlayerHQ analysere | SgTotal + Diagnose v2 | ✅ 12b |
 | TrackMan detalj | `/portal/mal/trackman/[id]` | Visuelt i tråd med showroom | ⬜ 12c |
 | Booking admin | booking-lister | BookingKort v2 | ⬜ 12d |
 
@@ -107,6 +109,37 @@ Fasit: `familie-calendar.html` `.cal-toolbar` — «Visning først», «Segmente
       (og stod fast på 0 hvis fanen lastes i bakgrunnen). Verifisert 5 · 2 · 1.
 - [x] Verifisert lys + mørk + 390px: forest CTA i lys, ingen sidescroll, TimeGrid urørt
 - [ ] Månedsvisning er fortsatt ærlig tom tilstand — krever egen måneds-loader (ikke chrome)
+
+#### 12b · SG / analyse (levert)
+Fasit: `familie-golfdata.html`. `/portal/analysere` var alt v2, men brukte hjemmesnekret
+SG-nedbrytning og «Resept»-kort i stedet for fasit-kortene.
+
+- [x] `SgKategorier` erstatter `FordelingRad`-loopen — nullinje i midten
+      (gevinst høyre / tap venstre) + «størst tap»-markør, som showroomet
+- [x] `Diagnose` erstatter det ad-hoc «Resept»-kortet — symptom → bevis → resept
+- [x] `NesteFokus` erstatter `InnsiktChip`-fallbacken
+- [x] `SlagLekkasje` koblet til `nesteFokus.lekkasjeBaand` — data loaderen alt
+      regnet ut, men som aldri ble vist noe sted
+- [x] `bevis={null}` på Diagnose: kontrakten bærer ingen spiller-vs-baseline-verdi,
+      og fabrikkerte bevis-søyler er verre enn ingen
+
+**Presisjon (viktig):** fasit-kortene formaterte SG med 1 desimal. Ekte per-område-SG
+ligger så tett at det gir «−0,0» på alle fire og skjuler rangeringen — nettopp det den
+fjernede `fmtSg2`-hjelperen fanget. `SgKategorier` og `SlagLekkasje` har derfor fått
+`desimaler?: 1 | 2` (default 1 = fasit), og flaten sender 2. I SlagLekkasje pekte
+1-desimal-tallet og heat-fargen i praksis i ulik retning.
+
+**Døde knapper:** `Diagnose`/`NesteFokus` rendret en `CTAPill` uten handling — en ekte
+`<button>` uten onClick. Nye `ctaHref`/`handlingHref` gjør knappen til en lenke; utelates
+de, rendres ingen knapp. Labben sender ekte href.
+
+**Én primær handling:** begge kortene pekte til samme `handlingHref`, altså to like
+lime-CTA-er. Når Diagnose vises eier DEN handlingen; uten diagnose er NesteFokus sin
+CTA den eneste.
+
+**Bevisst avvik fra fasit:** SG-total beholder `TallHero` + `Trend` framfor
+showroomets enklere `SgTotal`-kort. `SgTotal` har ingen trendgraf, og flaten har
+ekte `trendPunkter` — å bytte ville fjernet reelle data for å matche et bilde.
 
 ---
 
@@ -138,8 +171,9 @@ Forside/coaching er delvis levert (PR #139). Rest: priser, kontakt, blogg-chrome
 ```
 Ferdig   → Bølge 8–10 (lab + parity)
 Ferdig   → Bølge 11 feedback/structure
-Ferdig   → Bølge 12a admin-kalender        ← forrige PR
-Nå       → Bølge 12b SG/analyse → 12c TrackMan → 12d booking
+Ferdig   → Bølge 12a admin-kalender
+Ferdig   → Bølge 12b SG/analyse            ← forrige PR
+Nå       → Bølge 12c TrackMan → 12d booking
 Sist     → Bølge 13 marketing + 14 hardening
 ```
 
@@ -164,3 +198,4 @@ Sist     → Bølge 13 marketing + 14 hardening
 | 2026-07-26 | Bølge 8–10 merget (PR #149) |
 | 2026-07-26 | Bølge 11 levert på `feat/ds-f-wave11-feedback-struktur`: `tilbakemelding.tsx`, Stegviser, Skilje, lab-seksjon, emoji-fiks. Neste: Bølge 12 admin-kalender |
 | 2026-07-26 | Bølge 12a levert på `feat/ds-f-wave12a-kalender-toolbar`: Notion-toolbar på `/admin/kalender`, segment ikke lime (`--v2-seg-skygge`), `periode` i KalenderData, KPI `instant`. Neste: 12b SG/analyse |
+| 2026-07-26 | Bølge 12b levert på `feat/ds-f-wave12b-sg-analyse`: SgKategorier/Diagnose/NesteFokus/SlagLekkasje på `/portal/analysere`, `desimaler`-prop mot «−0,0»-kollaps, ekte CTA-lenker. Neste: 12c TrackMan |

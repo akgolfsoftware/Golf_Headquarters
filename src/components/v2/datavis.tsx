@@ -10,6 +10,7 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import { Fragment, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { T, fmtSg, type AkseKey } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
 import { Kort, TallHero, Caps, TomTilstand, CTAPill, AkseChip, InnsiktChip, DeltaChip, AvatarInit, AKSE_NAVN, Rad } from "./core";
@@ -400,8 +401,14 @@ export interface SgKategorierProps {
   baseline?: string;
   fagkoder?: boolean;
   hjelp?: HjelpNokkel;
+  /** Desimaler i SG-tallet. Default 1 (fasit). Bruk 2 når kategoriene ligger tett:
+   *  med 1 desimal avrundes små forskjeller til «−0,0» på alle fire, og da er
+   *  rangeringen — hele poenget med kortet — usynlig. */
+  desimaler?: 1 | 2;
 }
-export function SgKategorier({ kategorier = SGK_DEMO, baseline = "Broadie scratch", fagkoder = false, hjelp }: SgKategorierProps) {
+export function SgKategorier({ kategorier = SGK_DEMO, baseline = "Broadie scratch", fagkoder = false, hjelp, desimaler = 1 }: SgKategorierProps) {
+  const fmt = (v: number): string =>
+    desimaler === 1 ? fmtSg(v) : `${v > 0 ? "+" : v < 0 ? "−" : ""}${Math.abs(v).toFixed(2).replace(".", ",")}`;
   const max = Math.max(0.5, ...kategorier.map((k) => Math.abs(k.sg)));
   const verst = kategorier.reduce((wi, k, i, a) => (k.sg < a[wi].sg ? i : wi), 0);
   return (
@@ -426,7 +433,7 @@ export function SgKategorier({ kategorier = SGK_DEMO, baseline = "Broadie scratc
               <span style={{ position: "absolute", top: 0, height: "100%", borderRadius: 9999, width: `${w}%`, background: gain ? T.up : T.down, ...(gain ? { left: "50%" } : { right: "50%" }) }} />
             </span>
             <span style={{ width: 78, flex: "none", textAlign: "right", ...mono(12, gain ? T.up : T.down) }}>
-              {fmtSg(k.sg)}{i === verst && <span style={{ display: "block", fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.down }}>størst tap</span>}
+              {fmt(k.sg)}{i === verst && <span style={{ display: "block", fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.down }}>størst tap</span>}
             </span>
           </div>
         );
@@ -834,10 +841,15 @@ export interface SlagLekkasjeProps {
   tittel?: ReactNode;
   valgtId?: string | null;
   onVelgBaand?: ((b: SlagBaand) => void) | null;
+  /** Desimaler i SG-tallet. Default 1 (fasit). Bruk 2 for tette ekte verdier —
+   *  ellers viser båndet «−0,0» mens heat-fargen sier noe annet. */
+  desimaler?: 1 | 2;
 }
-export function SlagLekkasje({ baand = SL_DEMO, baseline = "Broadie scratch", grunnlag = "14 runder", tittel = "Hvor slagene forsvinner", valgtId = null, onVelgBaand = null }: SlagLekkasjeProps) {
+export function SlagLekkasje({ baand = SL_DEMO, baseline = "Broadie scratch", grunnlag = "14 runder", tittel = "Hvor slagene forsvinner", valgtId = null, onVelgBaand = null, desimaler = 1 }: SlagLekkasjeProps) {
   const maks = Math.max(0.4, ...baand.map((b) => Math.abs(b.sg ?? 0)));
   const sum = baand.reduce((a, b) => a + (b.sg ?? 0), 0);
+  const fmt = (v: number): string =>
+    desimaler === 1 ? fmtSg(v) : `${v > 0 ? "+" : v < 0 ? "−" : ""}${Math.abs(v).toFixed(2).replace(".", ",")}`;
   return (
     <Kort>
       <Caps>Slaglekkasje</Caps>
@@ -854,13 +866,13 @@ export function SlagLekkasje({ baand = SL_DEMO, baseline = "Broadie scratch", gr
                 <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, display: "block" }}>{b.label}</span>
                 {b.slag != null && <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>{b.slag} slag</span>}
               </span>
-              <span style={{ ...mono(13.5, noytral ? T.mut : sg < 0 ? T.down : T.up) }}>{fmtSg(sg)}</span>
+              <span style={{ ...mono(13.5, noytral ? T.mut : sg < 0 ? T.down : T.up) }}>{fmt(sg)}</span>
             </div>
           );
         })}
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 10 }}>
-        <span style={{ ...mono(10, sum < 0 ? T.down : T.up, 600) }}>Sum {fmtSg(sum)} slag/runde</span>
+        <span style={{ ...mono(10, sum < 0 ? T.down : T.up, 600) }}>Sum {fmt(sum)} slag/runde</span>
         {onVelgBaand && <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut }}>Trykk et bånd for analyse</span>}
       </div>
     </Kort>
@@ -890,8 +902,10 @@ export interface DiagnoseProps {
   grunnlag?: string;
   resept?: DiagnoseResept | null;
   ctaTekst?: ReactNode;
+  /** Rute CTA-en peker til. Utelatt (galleri/lab) → ingen knapp, aldri død kontroll. */
+  ctaHref?: string;
 }
-export function Diagnose({ symptom = "Mister 0,8 slag på innspill 100–150 m", bevis = DG_BEVIS, grunnlag = "14 runder · 62 innspill", resept = DG_RESEPT, ctaTekst = "Planlegg dette" }: DiagnoseProps) {
+export function Diagnose({ symptom = "Mister 0,8 slag på innspill 100–150 m", bevis = DG_BEVIS, grunnlag = "14 runder · 62 innspill", resept = DG_RESEPT, ctaTekst = "Planlegg dette", ctaHref }: DiagnoseProps) {
   const maks = Math.max(Number(bevis?.spiller?.verdi) || 0, Number(bevis?.baseline?.verdi) || 0) * 1.08 || 1;
   const steg = (lbl: ReactNode, siste: boolean, body: ReactNode) => (
     <div style={{ display: "flex", gap: 12 }}>
@@ -926,7 +940,11 @@ export function Diagnose({ symptom = "Mister 0,8 slag på innspill 100–150 m",
         <div>
           {resept?.tekst && <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.55, margin: "0 0 10px" }}>{resept.tekst}</p>}
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <CTAPill icon="calendar-plus">{ctaTekst}</CTAPill>
+            {ctaHref && (
+              <Link href={ctaHref} style={{ textDecoration: "none" }}>
+                <CTAPill icon="calendar-plus">{ctaTekst}</CTAPill>
+              </Link>
+            )}
             {resept?.akse && <AkseChip a={resept.akse} />}
             {resept?.kode && <span style={{ ...mono(9.5, T.mut, 600) }}>{resept.kode}</span>}
           </div>
@@ -945,8 +963,10 @@ export interface NesteFokusProps {
   begrunnelse?: ReactNode;
   handlingTekst?: ReactNode;
   formelAkse?: string | null;
+  /** Rute handlingen peker til. Utelatt (galleri/lab) → ingen knapp, aldri død kontroll. */
+  handlingHref?: string;
 }
-export function NesteFokus({ omrade = "Putting innenfor 6 ft er største lekkasje", akse = "PUTT", sgTap = "−1,2", baseline = "Broadie scratch", begrunnelse = "Innslagsprosenten på 3–6 ft ligger 7 pp under nivåkravet — det koster deg mest per runde.", handlingTekst = "Legg inn treningsøkt", formelAkse = null }: NesteFokusProps) {
+export function NesteFokus({ omrade = "Putting innenfor 6 ft er største lekkasje", akse = "PUTT", sgTap = "−1,2", baseline = "Broadie scratch", begrunnelse = "Innslagsprosenten på 3–6 ft ligger 7 pp under nivåkravet — det koster deg mest per runde.", handlingTekst = "Legg inn treningsøkt", formelAkse = null, handlingHref }: NesteFokusProps) {
   const AKSE: Record<string, string> = { OTT: "Tee-slag", APP: "Innspill", ARG: "Nærspill", PUTT: "Putting" };
   return (
     <Kort tint>
@@ -960,7 +980,11 @@ export function NesteFokus({ omrade = "Putting innenfor 6 ft er største lekkasj
       )}
       {begrunnelse && <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.55, margin: "10px 0 0" }}>{begrunnelse}</p>}
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 14 }}>
-        <CTAPill icon="plus">{handlingTekst}</CTAPill>
+        {handlingHref && (
+          <Link href={handlingHref} style={{ textDecoration: "none" }}>
+            <CTAPill icon="plus">{handlingTekst}</CTAPill>
+          </Link>
+        )}
         {formelAkse && <span style={{ ...mono(9.5, T.mut, 600) }}>Tren {formelAkse}</span>}
       </div>
     </Kort>
