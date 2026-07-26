@@ -19,7 +19,8 @@
 | 11 Feedback/structure | AiTipKort, ListeIkon, Stegviser, Skilje + lab | ✅ lab |
 | 12a Admin-kalender | Notion-toolbar, segment ikke lime | ✅ |
 | 12b SG / analyse | SgKategorier, Diagnose, NesteFokus, SlagLekkasje | ✅ |
-| 12c–d Dype flater | TrackMan-detalj, booking-lister | ⬜ |
+| 12c TrackMan-detalj | Sammendrag, dispersion, kølle-kort | ✅ |
+| 12d Booking admin | BookingKort v2 i lister | ⬜ |
 | 13 Marketing rest | Priser/kontakt chrome | ⬜ delvis #139 |
 | 14 Hardening | Full reg-test | ⬜ |
 
