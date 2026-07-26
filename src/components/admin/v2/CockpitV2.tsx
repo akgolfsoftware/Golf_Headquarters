@@ -24,7 +24,6 @@ import {
   AvatarFoto,
   AvatarInit,
   SevChip,
-  AkseChip,
   AKSE_NAVN,
   TallHero,
   InnsiktChip,
@@ -33,6 +32,7 @@ import {
   HjelpTips,
   type SevKey,
 } from "@/components/v2";
+import { LiveBar, OktKort } from "@/components/v2/domene";
 import { T, type AkseKey } from "@/lib/v2/tokens";
 import type {
   CockpitData,
@@ -164,24 +164,14 @@ export function CockpitV2({
     </div>
   );
 
-  // ── Live-bar (kun når en økt pågår) ─────────────────────────────
+  // ── Live-bar (domain LiveBar — showroom parity) ─────────────────
   const live = aktiv ? (
-    <Kort pad="12px 16px">
-      <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-        <StatusPill tone="down">Live</StatusPill>
-        <span style={{ flex: 1, minWidth: 0, fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-          {AKSE_NAVN[aktiv.axisLabel as AkseKey] || aktiv.axisLabel} · {aktiv.title} — {aktiv.playerName}
-        </span>
-        <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
-          {klokke}
-        </span>
-        {aktiv.href && (
-          <Link href={aktiv.href} style={{ textDecoration: "none" }} className="hidden md:inline-flex">
-            <CTAPill icon="arrow-right">Åpne økt</CTAPill>
-          </Link>
-        )}
-      </div>
-    </Kort>
+    <LiveBar
+      tittel={`${AKSE_NAVN[aktiv.axisLabel as AkseKey] || aktiv.axisLabel} · ${aktiv.title} — ${aktiv.playerName}`}
+      tid={klokke}
+      cta={aktiv.href ? "Åpne økt" : undefined}
+      onClick={aktiv.href ? () => router.push(aktiv.href as string) : undefined}
+    />
   ) : null;
 
   // ── KPI-flis (4) ────────────────────────────────────────────────
@@ -338,37 +328,35 @@ export function CockpitV2({
     </Link>
   ) : null;
 
-  // ── Dagens timer ────────────────────────────────────────────────
+  // ── Dagens timer (OktKort / domain top 5) ───────────────────────
   const timer = (
     <Kort
       eyebrow="Dagens timer"
       action={data.timeline.length > 0 ? <Caps size={9}>{pl(data.timeline.length, "økt", "økter")}</Caps> : undefined}
+      pad={data.timeline.length === 0 ? undefined : "12px"}
     >
       {data.timeline.length === 0 ? (
         <TomTilstand icon="calendar" title="Ingen økter i dag" sub="Dagen er åpen — rom for planlegging." />
       ) : (
-        data.timeline.map((s, i) => {
-          const isNaa = data.now >= s.startMin && data.now < s.startMin + s.durMin;
-          const sted = s.meta.find((m) => m.icon === "map-pin")?.text;
-          const sub = [AKSE_NAVN[s.axisLabel as AkseKey] || s.axisLabel, s.title, sted].filter(Boolean).join(" · ");
-          return (
-            <Rad
-              key={s.id}
-              onClick={s.href ? () => router.push(s.href as string) : undefined}
-              leading={
-                <span style={{ width: 44, flex: "none", fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: isNaa ? T.lime : T.mut, fontVariantNumeric: "tabular-nums" }}>
-                  {s.time}
-                </span>
-              }
-              title={<span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", whiteSpace: "normal" }}>{s.playerName}</span>}
-              sub={sub}
-              meta={<AkseChip a={s.axisLabel as AkseKey} />}
-              naa={isNaa}
-              trailing={null}
-              last={i === data.timeline.length - 1}
-            />
-          );
-        })
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {data.timeline.map((s) => {
+            const isNaa = data.now >= s.startMin && data.now < s.startMin + s.durMin;
+            const sted = s.meta.find((m) => m.icon === "map-pin")?.text;
+            return (
+              <OktKort
+                key={s.id}
+                title={s.playerName}
+                time={s.time}
+                duration={`${s.durMin} min`}
+                axis={(s.axisLabel as AkseKey) || "TEK"}
+                state={isNaa ? "live" : "planned"}
+                naa={isNaa}
+                meta={[AKSE_NAVN[s.axisLabel as AkseKey] || s.axisLabel, s.title, sted].filter(Boolean).join(" · ")}
+                onClick={s.href ? () => router.push(s.href as string) : undefined}
+              />
+            );
+          })}
+        </div>
       )}
     </Kort>
   );

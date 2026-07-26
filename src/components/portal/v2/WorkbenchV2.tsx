@@ -2094,10 +2094,23 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           </Kort>
         )}
 
-      {/* TOPP-BAR — desktop (md+): uendret */}
-      <div className="hidden md:flex" style={{ alignItems: "flex-end", gap: 16, flexWrap: "wrap", paddingBottom: 14, borderBottom: `1px solid ${T.border}` }}>
+      {/* TOPP-BAR — desktop (md+): Open Design workbench-chrome (min 44px) */}
+      <div
+        className="hidden md:flex"
+        style={{
+          alignItems: "center",
+          gap: 16,
+          flexWrap: "wrap",
+          minHeight: 60,
+          padding: "10px 0 14px",
+          borderBottom: `1px solid ${T.border}`,
+          background: `linear-gradient(140deg, color-mix(in srgb, ${T.forest} 12%, transparent) 0%, transparent 55%)`,
+        }}
+      >
         <div style={{ minWidth: 0 }}>
-          <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: T.mut, display: "block" }}>Workbench</span>
+          <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: T.mut, display: "block" }}>
+            {role === "player" ? "PlayerHQ · Workbench" : "AgencyOS · Workbench"}
+          </span>
           <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, letterSpacing: "-0.02em", margin: "3px 0 6px" }}>{playerName}</div>
           <StatusPill tone={st.tone}>{st.l}</StatusPill>
         </div>
@@ -2109,8 +2122,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             onChange={(v) => byttWbMode(v === "standard" ? "standard" : "pro")}
           />
         </Felt>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "6px 14px", borderRadius: 12, background: `color-mix(in srgb, ${harAvvik ? T.warn : T.up} 6%, transparent)`, border: `1px solid color-mix(in srgb, ${harAvvik ? T.warn : T.up} 32%, transparent)`, flex: "none" }}>
-          <span style={{ fontFamily: T.mono, fontSize: 26, fontWeight: 700, color: T.fg, lineHeight: 0.9, fontVariantNumeric: "tabular-nums", flex: "none" }}>{adher != null ? `${adherDisp}%` : "–"}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "6px 14px", minHeight: 44, borderRadius: T.rRow, background: `color-mix(in srgb, ${harAvvik ? T.warn : T.up} 6%, transparent)`, border: `1px solid color-mix(in srgb, ${harAvvik ? T.warn : T.up} 32%, transparent)`, flex: "none" }}>
+          <span style={{ fontFamily: T.mono, fontSize: 26, fontWeight: 700, color: T.fg, lineHeight: 0.9, fontVariantNumeric: "tabular-nums", flex: "none" }}>{adher != null ? `${adherDisp}%` : "—"}</span>
           <div style={{ flex: "none", maxWidth: 150 }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
               <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap" }}>Plan-etterlevelse</span>
@@ -2121,10 +2134,10 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>
           {actions && (
-            <button type="button" onClick={() => setNyOktApen(true)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, height: 38, padding: "0 14px", borderRadius: 10, background: T.panel3, border: `1px solid ${T.borderS}`, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}><Icon name="plus" size={14} />Ny økt</button>
+            <button type="button" onClick={() => setNyOktApen(true)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, minHeight: 44, padding: "0 16px", borderRadius: T.rPill, background: T.panel3, border: `1px solid ${T.border}`, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}><Icon name="plus" size={14} />Ny økt</button>
           )}
           {actions?.suggestWeek && (
-            <button type="button" onClick={handleSuggest} disabled={suggestLoading} title="AI-forslag for uka" className="v2-press v2-focus" style={{ appearance: "none", cursor: suggestLoading ? "default" : "pointer", width: 38, height: 38, borderRadius: 10, background: T.panel3, border: `1px solid ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: suggestLoading ? 0.5 : 1 }}><Icon name="sparkles" size={15} style={{ color: T.lime }} /></button>
+            <button type="button" onClick={handleSuggest} disabled={suggestLoading} title="AI-forslag for uka" className="v2-press v2-focus" style={{ appearance: "none", cursor: suggestLoading ? "default" : "pointer", minWidth: 44, minHeight: 44, borderRadius: T.rPill, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: suggestLoading ? 0.5 : 1 }}><Icon name="sparkles" size={15} style={{ color: T.lime }} /></button>
           )}
           {actions &&
             !(role === "player" && (optimisticStatus ?? planStatus) === "PENDING_PLAYER") && (
