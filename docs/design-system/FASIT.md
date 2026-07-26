@@ -1,7 +1,10 @@
 # Designsystem-fasit — AK Golf HQ v2
 
-> **Låst 2026-07-20 · oppdatert 2026-07-23 (tema-fasit + B-pakke).** Ved konflikt vinner denne fila + `tokens/v2/tokens.css` i Claude Design
-> + `src/lib/v2/tokens.ts` / `--v2-*` i `globals.css`. Tema-detalj: [`TEMA-LYS-MORK.md`](./TEMA-LYS-MORK.md). Aldri gjett farger eller navn.
+> **IKKE LENGER LÅST FASIT (2026-07-25).** Designlåsene er bevisst tømt — nytt designsystem
+> utvikles i Open Design. Ved konflikt vinner `docs/platform/BUSINESS-RULES.md`, deretter
+> koden (`--v2-*` i `globals.css` / `src/lib/v2/tokens.ts`). Denne filen beskriver hva som
+> er bygget, og er rettet 2026-07-26 der den motsa koden.
+> Tema-detalj: [`TEMA-LYS-MORK.md`](./TEMA-LYS-MORK.md). Aldri gjett farger eller navn.
 
 **Claude Design:** https://claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d  
 **Visuell retning:** C «Presis» (valgt 9. juli 2026)  
@@ -14,17 +17,20 @@
 
 ## 1. Produkter og tema
 
+> **Rettet 2026-07-26** mot deployet kode. Tabellen under sto motsatt av virkeligheten
+> etter Fase F (lys ble grunnlaget 25. juli): den sa mørk-først og B28-lås.
+
 | Produkt | Rute | Tema | Bryter? |
 |---|---|---|---|
-| **PlayerHQ** | `/portal` | **Alltid lys** (B28) | Nei |
-| **AgencyOS** | `/admin` | Lys/mørk, **standard mørk** | Ja (cookie `ak-v2-tema`) |
-| **Forelder** | `/forelder` | Lys | Nei |
-| **Marketing** | `akgolf.no` | Begge (hero kan være mørk) | N/A |
-| **Auth** | `/auth` | Lys | Nei |
+| **PlayerHQ** | `/portal` | **Lys** default | Ja |
+| **AgencyOS** | `/admin` | **Lys** default | Ja |
+| **Forelder** | `/forelder` | **Lys** default | Ja |
+| **Marketing** | `akgolf.no` | **Mørk** default | Nei |
+| **Auth** | `/auth` | **Mørk** default | Nei |
 
-- Cookie/attributt: `ak-v2-tema` + `html[data-v2-tema="light"]` — se [`TEMA-LYS-MORK.md`](./TEMA-LYS-MORK.md).
-- «Mørk-først» = v2 CSS `:root` er mørk — **ikke** at PlayerHQ er mørk.
-- PlayerHQ tvinges lys i `V2Shell` selv om coach har mørk preferanse fra AgencyOS.
+- Cookie/attributt: `ak-v2-tema` + `html[data-v2-tema="dark"]` — se [`TEMA-LYS-MORK.md`](./TEMA-LYS-MORK.md).
+- v2 CSS `:root` er **lys**. Mørk kommer kun fra `data-v2-tema="dark"`.
+- **B28-låsen er borte** — PlayerHQ følger brukerens bryter som resten av appen.
 
 **Navn (låst):** AgencyOS (aldri «CoachHQ»). PlayerHQ. Presisjonsstrategi (aldri «DECADE» i UI).
 
@@ -49,7 +55,7 @@
 
 **Mørk canvas:** `#131513` (`--v2-bg`) — ikke gammel `#0A1F18` / `#0A0B0A`.  
 **Lys canvas:** `#F2F1EA` cream. PWA-manifestet (splash/chrome) speiler LYS canvas
-(start_url er `/portal` = alltid lys, B28).
+fordi appen er lys som standard (start_url er `/portal`).
 
 **Typografi:** Familjen Grotesk (display) · Inter (UI) · JetBrains Mono (tall).  
 **Ikoner:** Lucide 1.5px — aldri emoji.  
@@ -126,7 +132,8 @@ i BÅDE mørk og lys skala. Lys `up`/`down`/`warn`/`ax-spill` ble AA-kalibrert 2
 
 ### AgencyOS
 
-Samme idé (oversikt + én hovedhandling + 5s-test), men **mørk standard** og mer makt/detalj tillatt.
+Samme idé (oversikt + én hovedhandling + 5s-test), med mer makt/detalj tillatt.
+Tema: **lys default** som resten av appen (mørk via bryter).
 
 ### Forbudt som hovedretning
 
