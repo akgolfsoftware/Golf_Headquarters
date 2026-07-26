@@ -16,7 +16,7 @@
 | 8 Kalender lab | UkeGrid, måned, agenda, dagstripe | ✅ lab |
 | 9 Golfdata lab | SgTotal, Diagnose, NesteFokus … | ✅ lab |
 | 10 TrackMan lab | Dispersion, trajectory, sammendrag | ✅ lab |
-| 11 Feedback/structure | AiTip, skeleton, filter | ⬜ |
+| 11 Feedback/structure | AiTipKort, ListeIkon, Stegviser, Skilje + lab | ✅ lab |
 | 12 Dype produktflater | Admin-kalender, SG-hub, TM live | ⬜ |
 | 13 Marketing rest | Priser/kontakt chrome | ⬜ delvis #139 |
 | 14 Hardening | Full reg-test | ⬜ |
@@ -35,6 +35,7 @@
 | Golfdata/data | `datavis.tsx` |
 | TrackMan/spesial | `spesialviz.tsx` |
 | Overlays/struktur | `overlays.tsx`, `struktur.tsx` |
+| Feedback | `tilbakemelding.tsx` (+ `struktur.tsx`, `domene.tsx`) |
 
 ## Merk
 

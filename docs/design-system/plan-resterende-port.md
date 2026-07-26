@@ -68,7 +68,17 @@
 ### Bølge 11 · Feedback + structure rest
 **Fasit:** `familie-feedback.html`, `familie-structure.html`  
 **Scope:** AiTipCard, hjelp-boble, stepper, filter-pills, skeleton parity  
-**DoD:** Lab + manglende eksporter i barrel
+**Kode:** ny `src/components/v2/tilbakemelding.tsx` (AiTipKort, TipTall, ListeIkon,
+UlestPrikk, RadMeta) + `Stegviser`/`Skilje` i `struktur.tsx`. HjelpPopover,
+ValideringsChip, Skjelett, Trekkspill, FilterChips og MeldingsTraad fantes fra før.
+
+**DoD:**
+- [x] Lab-seksjon «Feedback · struktur · Bølge 11»
+- [x] Barrel eksporterer `tilbakemelding.tsx`
+- [x] Lime-disiplin: AI-tipsets merke + nøkkeltall er lime-jobben, handlingen er forest
+  (verifisert i nettleser: mørk metrikk `#D1F843`, CTA `#005840`; lys metrikk `#005840`)
+- [x] 44px på AI-tipsets CTA · em-dash for tomt tall · 390px uten sidescroll
+- [x] Emoji fjernet fra lab-statuslisten (invariant 4) — Lucide-ikoner i stedet
 
 ---
 
@@ -110,10 +120,10 @@ Forside/coaching er delvis levert (PR #139). Rest: priser, kontakt, blogg-chrome
 ## Rekkefølge (anbefalt)
 
 ```
-Nå     → Bølge 8–10 (lab + parity)     ← denne PR
-Deretter → Bølge 12 én flate om gangen (kalender → SG → TM)
-Så     → Bølge 11 feedback/structure
-Sist   → Bølge 13 marketing + 14 hardening
+Ferdig   → Bølge 8–10 (lab + parity)
+Ferdig   → Bølge 11 feedback/structure   ← forrige PR
+Nå       → Bølge 12 én flate om gangen (kalender → SG → TM)
+Sist     → Bølge 13 marketing + 14 hardening
 ```
 
 **ADHD-minimal:** 8 → 9 → 10 lab grønn · deretter bare admin-kalender · deretter ferdig for «synlig progress».
@@ -134,3 +144,5 @@ Sist   → Bølge 13 marketing + 14 hardening
 | Dato | Hva |
 |------|-----|
 | 2026-07-26 | Plan skrevet · Bølge 8–10 lab startet på `feat/ds-f-wave8-10-rest-port` |
+| 2026-07-26 | Bølge 8–10 merget (PR #149) |
+| 2026-07-26 | Bølge 11 levert på `feat/ds-f-wave11-feedback-struktur`: `tilbakemelding.tsx`, Stegviser, Skilje, lab-seksjon, emoji-fiks. Neste: Bølge 12 admin-kalender |
