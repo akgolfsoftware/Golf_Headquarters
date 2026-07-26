@@ -46,9 +46,8 @@ function MetaBit({ icon, children }: MetaBitProps) {
   return <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.ui, fontSize: 11.5, color: T.mut }}><Icon name={icon} size={12} />{children}</span>;
 }
 
-/* ── OktKort — økt m/ akse-stripe, tid, sted, status ─────
-   Kontrakt fra golfdata/OektKort: title, axis, time, duration,
-   location, coach, state (live/done/planned/cancelled). */
+/* ── OktKort / OektKort — økt (showroom: tidskolonne + fargekant + CTA) ─
+   Alias OektKort = Open Design-navn (Fase 2 domain top 5). */
 export interface OktKortProps {
   title?: string;
   axis?: AkseKey;
@@ -59,32 +58,145 @@ export interface OktKortProps {
   state?: OktState;
   naa?: boolean;
   onClick?: () => void;
+  cta?: ReactNode;
+  ctaGhost?: ReactNode;
+  onCta?: () => void;
+  onCtaGhost?: () => void;
+  meta?: ReactNode;
+  footerTall?: ReactNode;
 }
 export function OktKort({
-  title = "Teknikk — P4 topp-posisjon", axis = "TEK", time = "07:15", duration = "90 min",
-  location = "Toppgolf Oslo", coach = "Anders Kristiansen", state = "planned", naa = false, onClick,
+  title = "Teknikk — P4 topp-posisjon",
+  axis = "TEK",
+  time = "07:15",
+  duration = "90 min",
+  location = "Toppgolf Oslo",
+  coach = "Anders Kristiansen",
+  state = "planned",
+  naa = false,
+  onClick,
+  cta,
+  ctaGhost,
+  onCta,
+  onCtaGhost,
+  meta,
+  footerTall,
 }: OktKortProps) {
   const st = OKT_STATUS[state] || OKT_STATUS.planned;
+  const kant =
+    state === "done" ? T.up : state === "live" ? T.down : state === "cancelled" ? T.mut : T.forest;
   return (
-    <div onClick={onClick} style={{ position: "relative", background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rRow + 4, padding: "14px 16px 14px 19px", overflow: "hidden", cursor: onClick ? "pointer" : "default" }}>
-      <span style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 3, background: T.ax[axis] || T.mut }} />
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{title}</div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 7 }}>
-            {time && <MetaBit icon="clock"><span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums" }}>{time}</span>{duration && <span> · {duration}</span>}</MetaBit>}
-            {location && <MetaBit icon="map-pin">{location}</MetaBit>}
-            {coach && <MetaBit icon="user">{coach}</MetaBit>}
-          </div>
+    <div
+      onClick={onClick}
+      className={onClick ? "v2-kort-h" : undefined}
+      style={{
+        position: "relative",
+        background: T.panel,
+        border: `1px solid ${T.border}`,
+        borderRadius: T.rCard,
+        padding: 0,
+        overflow: "hidden",
+        cursor: onClick ? "pointer" : "default",
+      }}
+    >
+      <span
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 12,
+          bottom: 12,
+          width: 3,
+          borderRadius: T.rPill,
+          background: kant,
+        }}
+        aria-hidden
+      />
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "72px 1fr",
+          gap: 12,
+          padding: "14px 16px 14px 18px",
+          alignItems: "start",
+        }}
+      >
+        <div
+          style={{
+            fontFamily: T.mono,
+            fontSize: 12,
+            color: T.mut,
+            lineHeight: 1.35,
+            fontVariantNumeric: "tabular-nums",
+          }}
+        >
+          {time && <b style={{ display: "block", color: T.fg, fontWeight: 600 }}>{time}</b>}
+          {duration}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, flex: "none" }}>
-          {axis && <AkseChip a={axis} />}
-          {naa ? <StatusPill>Nå</StatusPill> : <StatusPill tone={st.tone}>{st.l}</StatusPill>}
+        <div style={{ minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
+            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg, lineHeight: 1.2 }}>{title}</div>
+            {naa ? <StatusPill>Nå</StatusPill> : <StatusPill tone={st.tone}>{st.l}</StatusPill>}
+          </div>
+          {(meta || location || coach) && (
+            <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, marginTop: 4 }}>
+              {meta ?? (
+                <>
+                  {location}
+                  {location && coach ? " · " : ""}
+                  {coach}
+                </>
+              )}
+            </div>
+          )}
+          {axis && (
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10 }}>
+              <AkseChip a={axis} />
+            </div>
+          )}
+          {(cta || ctaGhost || footerTall) && (
+            <div
+              style={{
+                marginTop: 14,
+                paddingTop: 12,
+                borderTop: `1px solid ${T.border}`,
+                display: "flex",
+                gap: 8,
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              {footerTall && <span style={{ flex: 1, minWidth: 0 }}>{footerTall}</span>}
+              {cta && (
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onCta?.();
+                  }}
+                >
+                  <CTAPill icon="play">{cta}</CTAPill>
+                </span>
+              )}
+              {ctaGhost && (
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onCtaGhost?.();
+                  }}
+                >
+                  <CTAPill ghost>{ctaGhost}</CTAPill>
+                </span>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 }
+
+/** Open Design-navn — samme som OktKort. */
+export const OektKort = OktKort;
+export type OektKortProps = OktKortProps;
 
 /* ── BookingKort — bestilt time m/ coach, sted, status ── */
 export type BookingStatus = "bekreftet" | "venter" | "avlyst";
@@ -395,34 +507,107 @@ export interface SpillerKortProps {
   navn?: string;
   kategori?: string;
   hcp?: string;
-  sg?: string;
+  sg?: string | null;
   sgDir?: "up" | "down";
   sgDelta?: string;
   status?: SevKey;
   sistAktiv?: string;
   onClick?: () => void;
+  /** KPI-stripe under (showroom). null → —. */
+  runder?: string | number | null;
+  adherence?: string | null;
+  /** Vis KPI-stripe (default true når runder/adherence er satt, ellers compact). */
+  medKpiStripe?: boolean;
 }
 export function SpillerKort({
-  navn = "Øyvind Rohjan", kategori = "Elite junior", hcp = "+1,2",
-  sg = "+2,4", sgDir = "up", sgDelta = "+0,3", status = "ok",
-  sistAktiv = "Trente i går", onClick,
+  navn = "Øyvind Rohjan",
+  kategori = "Elite junior",
+  hcp = "+1,2",
+  sg = "+2,4",
+  sgDir = "up",
+  sgDelta = "+0,3",
+  status = "ok",
+  sistAktiv = "Trente i går",
+  onClick,
+  runder = null,
+  adherence = null,
+  medKpiStripe,
 }: SpillerKortProps) {
+  const stripe = medKpiStripe ?? (runder != null || adherence != null);
+  const sgVis = sg === null || sg === undefined || sg === "" ? "—" : sg;
+  const runderVis = runder === null || runder === undefined || runder === "" ? "—" : String(runder);
+  const adhVis = adherence === null || adherence === undefined || adherence === "" ? "—" : adherence;
   return (
-    <Kort pad="14px 16px" style={{ cursor: onClick ? "pointer" : "default" }}>
+    <Kort
+      pad="14px 16px"
+      hover={Boolean(onClick)}
+      style={{ cursor: onClick ? "pointer" : "default" }}
+    >
       <div onClick={onClick} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <AvatarInit navn={navn} size={38} />
+        <AvatarInit navn={navn} size={40} />
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 700, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{navn}</div>
-          <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 2 }}>{kategori} · Hcp <span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums" }}>{hcp}</span> · {sistAktiv}</div>
-        </div>
-        <div style={{ textAlign: "right", flex: "none" }}>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 6, justifyContent: "flex-end" }}>
-            <span style={{ fontFamily: T.mono, fontSize: 19, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{sg}</span>
-            {sgDelta && <DeltaChip v={sgDelta} dir={sgDir} />}
+          <div
+            style={{
+              fontFamily: T.disp,
+              fontSize: 16,
+              fontWeight: 600,
+              color: T.fg,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {navn}
           </div>
-          <div style={{ marginTop: 5, display: "flex", justifyContent: "flex-end" }}><SevChip s={status} /></div>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 5 }}>
+            <StatusPill tone="info">
+              HCP <span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums" }}>{hcp}</span>
+            </StatusPill>
+            {kategori && <StatusPill tone="lime">{kategori}</StatusPill>}
+          </div>
+          {!stripe && sistAktiv && (
+            <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 6 }}>{sistAktiv}</div>
+          )}
         </div>
+        {!stripe && (
+          <div style={{ textAlign: "right", flex: "none" }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 6, justifyContent: "flex-end" }}>
+              <span style={{ fontFamily: T.mono, fontSize: 19, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{sgVis}</span>
+              {sgDelta && sgVis !== "—" && <DeltaChip v={sgDelta} dir={sgDir} />}
+            </div>
+            <div style={{ marginTop: 5, display: "flex", justifyContent: "flex-end" }}>
+              <SevChip s={status} />
+            </div>
+          </div>
+        )}
       </div>
+      {stripe && (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            borderTop: `1px solid ${T.border}`,
+            marginTop: 14,
+            paddingTop: 14,
+          }}
+        >
+          <div>
+            <Caps size={9}>SG snitt</Caps>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginTop: 4 }}>
+              <span style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 600, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{sgVis}</span>
+              {sgDelta && sgVis !== "—" && <DeltaChip v={sgDelta} dir={sgDir} />}
+            </div>
+          </div>
+          <div style={{ borderLeft: `1px solid ${T.border}`, paddingLeft: 14 }}>
+            <Caps size={9}>Runder</Caps>
+            <span style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 600, color: T.fg, fontVariantNumeric: "tabular-nums", display: "block", marginTop: 4 }}>{runderVis}</span>
+          </div>
+          <div style={{ borderLeft: `1px solid ${T.border}`, paddingLeft: 14 }}>
+            <Caps size={9}>Adherence</Caps>
+            <span style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 600, color: T.fg, fontVariantNumeric: "tabular-nums", display: "block", marginTop: 4 }}>{adhVis}</span>
+          </div>
+        </div>
+      )}
     </Kort>
   );
 }
@@ -475,6 +660,8 @@ export interface AnbefalingsKortProps {
   hvorfor?: ReactNode;
   hva?: ReactNode;
   effekt?: ReactNode;
+  /** Showroom: fjerde felt i anbefalingskontrakten. */
+  hvorforNaa?: ReactNode;
   onBruk?: () => void;
   onAvvis?: () => void;
 }
@@ -487,29 +674,66 @@ function AnbSeksjon({ l, children }: { l: string; children?: ReactNode }) {
   );
 }
 export function AnbefalingsKort({
-  type = "Justér plan", kilde = "AI Caddie · basert på 214 TrackMan-slag siste 14 dager",
+  type = "Justér plan",
+  kilde = "AI Caddie · basert på 214 TrackMan-slag siste 14 dager",
   hvorfor = "Spredningen på 7-jern er nede i 8,4 m (mål: 9,0 m) og har vært stabil i 14 dager. P4-oppgaven er i praksis ferdig.",
   hva = "Marker «P4 — venstre arm parallell» som fullført og flytt fokus til P6 halvveis ned.",
   effekt = "Frigjør ca. 2 timer i uken til nærspill, der SG-gapet er størst.",
-  onBruk, onAvvis,
+  hvorforNaa = "GRUNN-fase: volum før TURN-uke.",
+  onBruk,
+  onAvvis,
 }: AnbefalingsKortProps) {
   return (
-    <Kort pad="16px 18px">
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-          <Icon name="sparkles" size={14} style={{ color: T.lime }} />
-          <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg }}>{type}</span>
+    <Kort pad="0" style={{ overflow: "hidden" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          padding: "12px 16px",
+          borderBottom: `1px solid ${T.border}`,
+        }}
+      >
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut }}>
+          <Icon name="sparkles" size={12} style={{ color: T.lime }} />
+          Anbefaling
         </span>
-        <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut }}>Forslag</span>
+        <span
+          style={{
+            marginLeft: "auto",
+            fontFamily: T.mono,
+            fontSize: 9,
+            color: T.mut,
+            border: `1px solid ${T.border}`,
+            borderRadius: T.rPill,
+            padding: "2px 8px",
+          }}
+        >
+          {type}
+        </span>
       </div>
-      <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, display: "block", marginTop: 4 }}>{kilde}</span>
-      <AnbSeksjon l="Hvorfor">{hvorfor}</AnbSeksjon>
-      <AnbSeksjon l="Hva">{hva}</AnbSeksjon>
-      <AnbSeksjon l="Forventet effekt">{effekt}</AnbSeksjon>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 16 }}>
+      <div style={{ padding: "14px 16px" }}>
+        {kilde && <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, display: "block", marginBottom: 4 }}>{kilde}</span>}
+        <AnbSeksjon l="Hvorfor">{hvorfor}</AnbSeksjon>
+        <AnbSeksjon l="Hva">{hva}</AnbSeksjon>
+        <AnbSeksjon l="Forventet effekt">{effekt}</AnbSeksjon>
+        {hvorforNaa && <AnbSeksjon l="Hvorfor nå">{hvorforNaa}</AnbSeksjon>}
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          padding: "12px 16px",
+          borderTop: `1px solid ${T.border}`,
+          flexWrap: "wrap",
+        }}
+      >
         <span onClick={onBruk}><CTAPill icon="check">Bruk forslag</CTAPill></span>
         <span onClick={onAvvis}><CTAPill ghost>Avvis</CTAPill></span>
-        <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginLeft: "auto" }}>Du bestemmer — planen endres ikke før du velger.</span>
+        <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginLeft: "auto" }}>
+          Du bestemmer — planen endres ikke før du velger.
+        </span>
       </div>
     </Kort>
   );
@@ -522,20 +746,91 @@ export interface LiveBarProps {
   deltakere?: number | null;
   cta?: ReactNode;
   onClick?: () => void;
+  /** kritisk = rød flate (starter snart); default = normal live med lime-prikk */
+  kritisk?: boolean;
 }
 export function LiveBar({
-  tittel = "Teknikk — P4 topp-posisjon", tid = "42:18", deltakere = null, cta = "Åpne økt", onClick,
+  tittel = "Teknikk — P4 topp-posisjon",
+  tid = "42:18",
+  deltakere = null,
+  cta = "Åpne økt",
+  onClick,
+  kritisk = false,
 }: LiveBarProps) {
+  const prikk = kritisk ? T.down : T.lime;
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 12, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 9999, padding: "9px 10px 9px 16px" }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        minHeight: 52,
+        background: kritisk ? T.down : T.panel3,
+        border: `1px solid ${kritisk ? "transparent" : T.borderS}`,
+        borderRadius: T.rPill,
+        padding: "9px 10px 9px 16px",
+        color: kritisk ? "#fff" : undefined,
+      }}
+    >
       <span style={{ display: "inline-flex", alignItems: "center", gap: 7, flex: "none" }}>
-        <span style={{ width: 8, height: 8, borderRadius: 9999, background: T.down, boxShadow: `0 0 0 3px color-mix(in srgb,${T.down} 25%,transparent)` }} />
-        <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", color: T.down }}>LIVE</span>
+        <span
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: T.rPill,
+            background: kritisk ? "#fff" : prikk,
+            boxShadow: kritisk ? undefined : `0 0 0 3px color-mix(in srgb,${prikk} 25%,transparent)`,
+          }}
+        />
+        <span
+          style={{
+            fontFamily: T.mono,
+            fontSize: 9,
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            color: kritisk ? "#fff" : prikk,
+          }}
+        >
+          {kritisk ? "STARTER SNART" : "LIVE"}
+        </span>
       </span>
-      <span style={{ flex: 1, minWidth: 0, fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{tittel}</span>
-      {deltakere != null && <MetaBit icon="users"><span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums" }}>{deltakere}</span></MetaBit>}
-      <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums", flex: "none" }}>{tid}</span>
-      <span onClick={onClick}><CTAPill icon="play">{cta}</CTAPill></span>
+      <span
+        style={{
+          flex: 1,
+          minWidth: 0,
+          fontFamily: T.ui,
+          fontSize: 13,
+          fontWeight: 600,
+          color: kritisk ? "#fff" : T.fg,
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      >
+        {tittel}
+      </span>
+      {deltakere != null && (
+        <MetaBit icon="users">
+          <span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums", color: kritisk ? "#fff" : undefined }}>{deltakere}</span>
+        </MetaBit>
+      )}
+      <span
+        style={{
+          fontFamily: T.mono,
+          fontSize: 14,
+          fontWeight: 700,
+          color: kritisk ? "#fff" : T.fg,
+          fontVariantNumeric: "tabular-nums",
+          flex: "none",
+        }}
+      >
+        {tid}
+      </span>
+      {cta && (
+        <span onClick={onClick}>
+          <CTAPill icon="play">{cta}</CTAPill>
+        </span>
+      )}
     </div>
   );
 }
