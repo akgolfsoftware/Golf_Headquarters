@@ -2,8 +2,8 @@
 
 **Dato:** 2026-07-26
 **Fasit:** Open Design «Designsystem-plan komplett»
-**Bygger på:** `docs/design-system/plan-resterende-port.md` (PR #149) — denne planen viderefører
-den med et verifisert nullpunkt og korrigerte bølger 11–17.
+**Bygger på:** `docs/design-system/plan-resterende-port.md` (PR #149, **merget 26. juli 11:25**) —
+denne planen viderefører den med et verifisert nullpunkt og korrigerte bølger 11–17.
 **Tidsramme:** frem til **1. september 2026** (betalingsstart flyttet fra 1. august).
 
 ---
@@ -83,7 +83,20 @@ Legg begge i lab. Eksporter i `src/components/v2/index.ts`.
 Showroom-familiene `familie-feedback.html` + `familie-structure.html`: AiTipCard, hjelp-boble,
 stepper, filter-pills, skeleton. Komponentene finnes (`hjelp.tsx`, `core.tsx`) — mangler lab-dekning
 og barrel-eksport.
-**DoD:** lab-seksjon «Feedback · struktur» · alle eksportert fra barrel.
+
+**Ta med markedsmotion i samme bølge.** Grok-kjøringen (#139) innførte et motion-lag som ingen
+regel eller lab dekker i dag — `.m-avslor` (+ `-d1`…`-d4` forsinkelser), `.m-parallaks` og
+`.m-klebrig` i `src/styles/v2/motion.css` (linje 264–338), drevet av
+`src/components/marketing/v2/scroll-animasjon.tsx` (`useAvslor`, `useParallaks`, `AvslorRoot`).
+Alle tre nulles korrekt under `prefers-reduced-motion`. Uten lab-dekning finner neste person opp
+mønsteret på nytt.
+
+**DoD:** lab-seksjon «Feedback · struktur» · lab-seksjon «Markedsmotion» som viser avslør, parallakse
+og sticky-scene · alle eksportert fra barrel.
+
+**Merk (ikke blokkerende):** `.m-avslor` setter `will-change: opacity, transform` permanent. På en
+lang forside holder det unødvendig minne etter at animasjonen er ferdig — vurder å fjerne
+`will-change` i `.m-avslor-synlig`.
 
 ### B13 · Legacy-avvikling — 32 filer, tre puljer
 Én PR per pulje. Layout/chrome-bytte, **ingen forretningslogikk endres**.
@@ -126,7 +139,12 @@ Open Design har landet? Planen antar ja.
 **DoD:** `check-no-hex.mjs` kjører mot ny baseline med dokumenterte unntak.
 
 ### B16 · Marketing-rest
-`familie-marketing.html`: priser, kontakt, blogg-chrome. Forside + coaching er levert (#139).
+`familie-marketing.html`: **kun priser, kontakt og blogg-chrome gjenstår.**
+
+Forside, coaching og booking steg 1 er ikke «delvis levert» — de er bygget om fra grunnen i
+Grok-kjøringen bak #139 (1 331 linjer inn / 779 ut over 7 filer), i v2-idiomet med **null rå hex**
+i alle fem TSX-filene. Verifisert 26. juli. Denne bølgen er derfor vesentlig mindre enn antatt.
+
 **Lav prioritet** — kjøres kun hvis B11–B15 er ferdig før 1. september.
 
 ### B17 · Hardening + regresjonsvern
@@ -157,7 +175,7 @@ B15 kan kjøres parallelt med B13.
 
 | Uke | Innhold |
 |---|---|
-| 27. juli – 2. aug | Merge #149 · B11 gap-komponenter · B12 lab-parity |
+| 27. juli – 2. aug | B11 gap-komponenter · B12 lab-parity + markedsmotion |
 | 3. – 9. aug | B13a AgencyOS (10 filer) |
 | 10. – 16. aug | B13b PlayerHQ (10 filer) · B15 hex-disiplin parallelt |
 | 17. – 23. aug | B13c delte (12 filer) · **B14 slett biblioteket** |
@@ -190,3 +208,4 @@ B15 kan kjøres parallelt med B13.
 | Dato | Hva |
 |---|---|
 | 2026-07-26 | Plan skrevet mot verifisert nullpunkt. Bølge 12 i `plan-resterende-port.md` reskopet til legacy-avvikling av 32 navngitte filer. To ekte komponent-gap identifisert (`StatusDot`, `YearPlanGantt`). Tidsramme flyttet til 1. september. |
+| 2026-07-26 | Justert etter gjennomlesing av Grok-kjøringen (#139): **B16 krympet** — forside/coaching/booking steg 1 er fullt ombygget i v2 med null rå hex, kun priser/kontakt/blogg gjenstår. **B12 utvidet** — markedsmotion (`.m-avslor`/`.m-parallaks`/`.m-klebrig` + `scroll-animasjon.tsx`) er et udokumentert lag som må inn i lab. PR #149 merget. |
