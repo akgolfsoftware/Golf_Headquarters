@@ -67,7 +67,7 @@ ikke ferdig før alle 6 er grønne. Oppdater dashboard-tallene + endringsloggen 
 
 ## Mappestruktur
 
-Størrelsesorden: ~449 `page.tsx`-ruter, ~161 filer med server actions, 158 Prisma-modeller, 84 migrasjoner,
+Størrelsesorden: ~449 `page.tsx`-ruter, ~161 filer med server actions, 158 Prisma-modeller, 81 migrasjoner,
 110 enhetstest-filer, 54 agent-filer. Sjekk filsystemet før du oppretter nye ruter — det finnes flere
 top-level-mapper enn de fire «offisielle» produktene.
 
@@ -108,7 +108,7 @@ prisma/
 ├── schema.prisma   # 158 modeller: User · TrainingPlan(+Session) · Round → Shot → HoleScore ·
 │                   # Subscription · Booking · Lead · CoachAvailability · TestDefinition/TestResult ·
 │                   # DrillMal/OktMal · TrackManSession/TrackManShot · SeasonPlan · PeriodBlock · KommandoTask …
-├── migrations/     # 84 kjørte SQL-migrasjoner
+├── migrations/     # 81 kjørte SQL-migrasjoner
 ├── sql/  scripts/  seed-data/
 └── seed.ts · seed-drills.ts · seed-gfgk-facilities.ts …
 scripts/            # Engangs-/driftsscript: seed-screentest*.ts (Øyvind Rohjan) · drill-qa ·
@@ -117,7 +117,7 @@ docs/               # platform/ (NORDSTJERNE, AGENT-BRIEF, BUSINESS-RULES, DATA-
                     # skjermtekst/ (copy-kilde) · design-system/ + redesign-v2/ (UTGÅTT, historikk) ·
                     # gdpr/ · juridisk/ · sikkerhet/ · opprydding/ · arkiv/
 e2e/                # Eldre e2e-suite (9 specs): auth-guard, IDOR, booking, marketing, lansering-smoke
-tests/e2e/          # Nyere smoke-/kvalitetssuite (25 specs): a11y, PWA, ruter, meta/OG, offline, ikoner
+tests/e2e/          # Nyere smoke-/kvalitetssuite (24 specs): a11y, PWA, ruter, meta/OG, offline, ikoner
 ```
 
 ## Arbeidsregler
@@ -164,7 +164,10 @@ Andre nyttige script: `npm run kart` (skjermkart) · `npm run qa:drills` · `npm
   Dummy env-verdier, ingen secrets nødvendig. **NB:** e2e-steget her er `continue-on-error: true` — det
   rapporterer, men feller ikke bygget. Alt før e2e er blokkerende.
 - **`playwright.yml`** (PR + push til main): kjører e2e mot **prod-URL** (`https://akgolf-hq.vercel.app`),
-  chromium + webkit. Dette er den blokkerende e2e-jobben.
+  chromium + webkit. Jobben er blokkerende, men **tester prod — ikke PR-ens kode**
+  (`base_url`-inputen gjelder kun `workflow_dispatch`, så PR-kjøringer faller alltid til prod).
+  **Konsekvens:** en grønn «Playwright E2E» på en PR sier at prod er frisk, ikke at endringen er
+  e2e-testet. Den reelle kode-gaten på en PR er `verify`-jobben.
 - **`scrape-golfbox.yml` / `scrape-gjgt.yml`** — planlagte turneringsscrapere.
 - **`deploy.yml`** — finnes fortsatt, men er **kun `workflow_dispatch`** (manuell, siden 2026-07-05). Deploy
   skal være en bevisst handling, ikke en bivirkning.
