@@ -19,7 +19,16 @@ import {
   Rad,
   AvatarInit,
 } from "@/components/v2/core";
-import { Inndata } from "@/components/v2/skjema";
+import {
+  Inndata,
+  TekstOmraade,
+  Velger,
+  Bryter,
+  Avkryssing,
+  RadioGruppe,
+  SegmentertFaner,
+  SkjemaFelt,
+} from "@/components/v2/skjema";
 import { Icon } from "@/components/v2/icon";
 import { StatStrip } from "@/components/v2/spesialviz";
 
@@ -204,14 +213,54 @@ export function DesignLabV2() {
         />
 
         <Seksjon
-          tittel="Input · Inndata"
+          tittel="Forms · parity (Fase 1)"
           barn={
-            <Kort pad="20px" style={{ maxWidth: 400 }}>
-              <Inndata label="Navn" defaultValue="" placeholder="Skriv navn" />
-              <div style={{ marginTop: 14 }}>
-                <Inndata label="Score (mono)" defaultValue="" placeholder={TOM_TALL} mono />
-              </div>
-            </Kort>
+            <div style={{ display: "grid", gap: T.gap, gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
+              <Kort pad="20px">
+                <Caps size={9} style={{ marginBottom: 12 }}>
+                  Inndata · Velger · Tekst
+                </Caps>
+                <Inndata label="Navn" defaultValue="" placeholder="Skriv navn" />
+                <div style={{ marginTop: 14 }}>
+                  <Inndata label="Score (mono)" defaultValue="" placeholder={TOM_TALL} mono />
+                </div>
+                <div style={{ marginTop: 14 }}>
+                  <Inndata label="Med feil" defaultValue="x" feil="Ugyldig verdi — prøv igjen" />
+                </div>
+                <div style={{ marginTop: 14 }}>
+                  <Inndata label="Deaktivert" defaultValue="Låst" disabled />
+                </div>
+                <div style={{ marginTop: 14 }}>
+                  <Velger label="Treningsområde" />
+                </div>
+                <div style={{ marginTop: 14 }}>
+                  <TekstOmraade label="Notat" defaultValue="" placeholder="Skriv notat" rows={3} />
+                </div>
+              </Kort>
+              <Kort pad="20px">
+                <Caps size={9} style={{ marginBottom: 12 }}>
+                  Bryter · Avkryssing · Radio · Segment
+                </Caps>
+                <Bryter />
+                <div style={{ marginTop: 8 }}>
+                  <Avkryssing />
+                </div>
+                <div style={{ marginTop: 16 }}>
+                  <RadioGruppe />
+                </div>
+                <div style={{ marginTop: 16 }}>
+                  <SegmentertFaner label="Periode" />
+                </div>
+                <div style={{ marginTop: 16 }}>
+                  <SkjemaFelt label="Handicap" hjelp="Bruk komma, f.eks. 4,2.">
+                    <Inndata label={null} defaultValue="4,2" mono />
+                  </SkjemaFelt>
+                </div>
+                <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "14px 0 0", lineHeight: 1.5 }}>
+                  Radius input 12 · touch ≥ 44px · feil = --v2-down · primær on = forest i lys / lime i mørk.
+                </p>
+              </Kort>
+            </div>
           }
         />
 

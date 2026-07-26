@@ -18,22 +18,37 @@ import { CTAPill, Caps } from "./core";
    NPS-skalaen brytes i to rader (0–5 / 6–10) med ≥44px trykkmål på smale
    skjermer; desktop beholder én rad à 11. */
 
-/* Delte felt-stiler */
+/* Delte felt-stiler — parity med showroom .input/.select/.textarea (Fase F forms) */
 const FELT: CSSProperties = {
   width: "100%",
   boxSizing: "border-box",
   appearance: "none",
   background: T.panel2,
-  border: `1px solid ${T.borderS}`,
+  border: `1px solid ${T.border}`,
   borderRadius: T.rInput,
-  padding: "10px 13px",
+  padding: "0 14px",
   minHeight: 44,
   fontFamily: T.ui,
-  fontSize: 13.5,
+  fontSize: 16, // unngår iOS-zoom; desktop kan se litt større ut — OK for a11y
   color: T.fg,
   outline: "none",
   lineHeight: 1.4,
 };
+
+function feltStil(opts?: { disabled?: boolean; error?: boolean; mono?: boolean; extra?: CSSProperties }): CSSProperties {
+  const error = opts?.error;
+  const disabled = opts?.disabled;
+  return {
+    ...FELT,
+    fontFamily: opts?.mono ? T.mono : T.ui,
+    fontVariantNumeric: opts?.mono ? "tabular-nums" : undefined,
+    opacity: disabled ? 0.5 : 1,
+    cursor: disabled ? "not-allowed" : undefined,
+    borderColor: error ? T.down : T.border,
+    boxShadow: error ? `0 0 0 3px color-mix(in srgb, ${T.down} 18%, transparent)` : undefined,
+    ...opts?.extra,
+  };
+}
 interface EtikettProps {
   children?: ReactNode;
   /** Kobler etiketten til kontrollen sin (a11y: `select-name`/`label`-reglene). */
@@ -61,23 +76,62 @@ export interface InndataProps {
   mono?: boolean;
   suffix?: ReactNode;
   onChange?: (value: string) => void;
+  disabled?: boolean;
+  error?: boolean;
+  hint?: ReactNode;
+  feil?: ReactNode;
 }
-export function Inndata({ label = "Navn", value, defaultValue = "Øyvind Rohjan", placeholder, type = "text", mono, suffix, onChange }: InndataProps) {
+export function Inndata({
+  label = "Navn",
+  value,
+  defaultValue = "Øyvind Rohjan",
+  placeholder,
+  type = "text",
+  mono,
+  suffix,
+  onChange,
+  disabled,
+  error,
+  hint,
+  feil,
+}: InndataProps) {
   const [v, setV] = useState(defaultValue);
   const val = value !== undefined ? value : v;
   const id = useId();
+  const isError = Boolean(error || feil);
   return (
     <div>
       {label && <Etikett htmlFor={id}>{label}</Etikett>}
       <div style={{ position: "relative" }}>
         <input
-          id={id} aria-label={label ? ariaNavn(label) : undefined}
-          type={type} value={val} placeholder={placeholder}
-          onChange={(e) => { setV(e.target.value); onChange?.(e.target.value); }}
-          style={{ ...FELT, fontFamily: mono ? T.mono : T.ui, fontVariantNumeric: mono ? "tabular-nums" : undefined, paddingRight: suffix ? 44 : 13 }}
+          id={id}
+          aria-label={label ? ariaNavn(label) : undefined}
+          aria-invalid={isError || undefined}
+          aria-disabled={disabled || undefined}
+          disabled={disabled}
+          type={type}
+          value={val}
+          placeholder={placeholder}
+          onChange={(e) => {
+            if (disabled) return;
+            setV(e.target.value);
+            onChange?.(e.target.value);
+          }}
+          className="v2-focus"
+          style={feltStil({ disabled, error: isError, mono, extra: { paddingRight: suffix ? 44 : 14 } })}
         />
-        {suffix && <span style={{ position: "absolute", right: 13, top: "50%", transform: "translateY(-50%)", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{suffix}</span>}
+        {suffix && (
+          <span style={{ position: "absolute", right: 13, top: "50%", transform: "translateY(-50%)", fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+            {suffix}
+          </span>
+        )}
       </div>
+      {feil && (
+        <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 500, color: T.down, display: "block", marginTop: 6 }}>{feil}</span>
+      )}
+      {hint && !feil && (
+        <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, display: "block", marginTop: 6 }}>{hint}</span>
+      )}
     </div>
   );
 }
@@ -125,26 +179,56 @@ export interface VelgerProps {
   value?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
+  disabled?: boolean;
+  error?: boolean;
+  feil?: ReactNode;
 }
-export function Velger({ label = "Treningsområde", options = ["Nærspill", "Tee-slag", "Innspill 100–150 m", "Putting"], value, defaultValue = "Nærspill", onChange }: VelgerProps) {
+export function Velger({
+  label = "Treningsområde",
+  options = ["Nærspill", "Tee-slag", "Innspill 100–150 m", "Putting"],
+  value,
+  defaultValue = "Nærspill",
+  onChange,
+  disabled,
+  error,
+  feil,
+}: VelgerProps) {
   const [v, setV] = useState(defaultValue);
   const val = value !== undefined ? value : v;
   const norm: VelgerIdValg[] = options.map((o) => (typeof o === "string" ? { value: o, label: o } : o));
   const id = useId();
+  const isError = Boolean(error || feil);
   return (
     <div>
       {label && <Etikett htmlFor={id}>{label}</Etikett>}
       <div style={{ position: "relative" }}>
         <select
-          id={id} aria-label={ariaNavn(label) ?? "Velg"}
+          id={id}
+          aria-label={ariaNavn(label) ?? "Velg"}
+          aria-invalid={isError || undefined}
+          disabled={disabled}
           value={val}
-          onChange={(e) => { setV(e.target.value); onChange?.(e.target.value); }}
-          style={{ ...FELT, paddingRight: 38, cursor: "pointer" }}
+          onChange={(e) => {
+            if (disabled) return;
+            setV(e.target.value);
+            onChange?.(e.target.value);
+          }}
+          className="v2-focus"
+          style={feltStil({ disabled, error: isError, extra: { paddingRight: 38, cursor: disabled ? "not-allowed" : "pointer" } })}
         >
-          {norm.map((o) => <option key={o.value} value={o.value} style={{ background: T.panel3, color: T.fg }}>{o.label}</option>)}
+          {norm.map((o) => (
+            <option key={o.value} value={o.value} style={{ background: T.panel3, color: T.fg }}>
+              {o.label}
+            </option>
+          ))}
         </select>
-        <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none", display: "inline-flex" }}><Icon name="chevron-down" size={14} style={{ color: T.mut }} /></span>
+        <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none", display: "inline-flex" }}>
+          <Icon name="chevron-down" size={14} style={{ color: T.mut }} />
+        </span>
       </div>
+      {feil && (
+        <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 500, color: T.down, display: "block", marginTop: 6 }}>{feil}</span>
+      )}
     </div>
   );
 }
@@ -157,20 +241,51 @@ export interface TekstOmraadeProps {
   rows?: number;
   placeholder?: string;
   onChange?: (value: string) => void;
+  disabled?: boolean;
+  error?: boolean;
+  feil?: ReactNode;
 }
-export function TekstOmraade({ label = "Notat til coach", defaultValue = "Kjente at P4-følelsen satt bedre i dag. Litt stiv i hoftene på slutten.", value, rows = 4, placeholder, onChange }: TekstOmraadeProps) {
+export function TekstOmraade({
+  label = "Notat til coach",
+  defaultValue = "Kjente at P4-følelsen satt bedre i dag. Litt stiv i hoftene på slutten.",
+  value,
+  rows = 4,
+  placeholder,
+  onChange,
+  disabled,
+  error,
+  feil,
+}: TekstOmraadeProps) {
   const [v, setV] = useState(defaultValue);
   const val = value !== undefined ? value : v;
   const id = useId();
+  const isError = Boolean(error || feil);
   return (
     <div>
       {label && <Etikett htmlFor={id}>{label}</Etikett>}
       <textarea
-        id={id} aria-label={label ? ariaNavn(label) : undefined}
-        value={val} rows={rows} placeholder={placeholder}
-        onChange={(e) => { setV(e.target.value); onChange?.(e.target.value); }}
-        style={{ ...FELT, resize: "vertical", lineHeight: 1.55 }}
+        id={id}
+        aria-label={label ? ariaNavn(label) : undefined}
+        aria-invalid={isError || undefined}
+        disabled={disabled}
+        value={val}
+        rows={rows}
+        placeholder={placeholder}
+        onChange={(e) => {
+          if (disabled) return;
+          setV(e.target.value);
+          onChange?.(e.target.value);
+        }}
+        className="v2-focus"
+        style={feltStil({
+          disabled,
+          error: isError,
+          extra: { resize: "vertical", lineHeight: 1.55, minHeight: 96, padding: "12px 14px" },
+        })}
       />
+      {feil && (
+        <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 500, color: T.down, display: "block", marginTop: 6 }}>{feil}</span>
+      )}
     </div>
   );
 }
@@ -186,16 +301,62 @@ export interface BryterProps {
 export function Bryter({ label = "Varsle meg før økter", sub = "Push-varsel 30 minutter før", checked, defaultChecked = true, onChange }: BryterProps) {
   const [on, setOn] = useState(defaultChecked);
   const val = checked !== undefined ? checked : on;
+  const toggle = () => {
+    setOn(!val);
+    onChange?.(!val);
+  };
   return (
-    <div onClick={() => { setOn(!val); onChange?.(!val); }} style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}>
+    <button
+      type="button"
+      role="switch"
+      aria-checked={val}
+      onClick={toggle}
+      className="v2-focus v2-press"
+      style={{
+        appearance: "none",
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        cursor: "pointer",
+        width: "100%",
+        textAlign: "left",
+        background: "transparent",
+        border: "none",
+        padding: "4px 0",
+        minHeight: 44,
+        color: "inherit",
+      }}
+    >
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{label}</div>
         {sub && <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>{sub}</div>}
       </div>
-      <span style={{ width: 42, height: 24, borderRadius: 9999, background: val ? T.lime : T.panel3, border: `1px solid ${val ? "transparent" : T.borderS}`, position: "relative", flex: "none", transition: "background 120ms" }}>
-        <span style={{ position: "absolute", top: 2, left: val ? 20 : 2, width: 18, height: 18, borderRadius: 9999, background: val ? T.onLime : T.fg2, transition: "left 120ms" }} />
+      <span
+        style={{
+          width: 42,
+          height: 24,
+          borderRadius: T.rPill,
+          background: val ? T.lime : T.panel3,
+          border: `1px solid ${val ? "transparent" : T.border}`,
+          position: "relative",
+          flex: "none",
+          transition: "background 120ms",
+        }}
+      >
+        <span
+          style={{
+            position: "absolute",
+            top: 2,
+            left: val ? 20 : 2,
+            width: 18,
+            height: 18,
+            borderRadius: T.rPill,
+            background: val ? T.onLime : T.fg2,
+            transition: "left 120ms",
+          }}
+        />
       </span>
-    </div>
+    </button>
   );
 }
 
@@ -209,13 +370,48 @@ export interface AvkryssingProps {
 export function Avkryssing({ label = "Jeg godtar vilkårene for PlayerHQ", checked, defaultChecked = false, onChange }: AvkryssingProps) {
   const [on, setOn] = useState(defaultChecked);
   const val = checked !== undefined ? checked : on;
+  const toggle = () => {
+    setOn(!val);
+    onChange?.(!val);
+  };
   return (
-    <div onClick={() => { setOn(!val); onChange?.(!val); }} style={{ display: "inline-flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
-      <span style={{ width: 20, height: 20, borderRadius: 6, background: val ? T.lime : T.panel2, border: `1px solid ${val ? "transparent" : T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+    <button
+      type="button"
+      role="checkbox"
+      aria-checked={val}
+      onClick={toggle}
+      className="v2-focus v2-press"
+      style={{
+        appearance: "none",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 10,
+        cursor: "pointer",
+        background: "transparent",
+        border: "none",
+        padding: "10px 0",
+        minHeight: 44,
+        color: "inherit",
+        textAlign: "left",
+      }}
+    >
+      <span
+        style={{
+          width: 20,
+          height: 20,
+          borderRadius: T.rTag,
+          background: val ? T.lime : T.panel2,
+          border: `1px solid ${val ? "transparent" : T.border}`,
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flex: "none",
+        }}
+      >
         {val && <Icon name="check" size={13} style={{ color: T.onLime }} />}
       </span>
       <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>{label}</span>
-    </div>
+    </button>
   );
 }
 
@@ -240,20 +436,138 @@ export function RadioGruppe({
   const [v, setV] = useState(defaultValue);
   const val = value !== undefined ? value : v;
   return (
-    <div>
+    <div role="radiogroup" aria-label={ariaNavn(label) ?? "Valg"}>
       {label && <Etikett>{label}</Etikett>}
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        {options.map((o) => { const on = val === o.v; return (
-          <div key={o.v} onClick={() => { setV(o.v); onChange?.(o.v); }} style={{ display: "flex", alignItems: "center", gap: 11, padding: "10px 13px", borderRadius: 11, background: on ? T.panel3 : T.panel2, border: `1px solid ${on ? T.borderS : T.border}`, cursor: "pointer" }}>
-            <span style={{ width: 18, height: 18, borderRadius: 9999, border: `2px solid ${on ? T.lime : T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-              {on && <span style={{ width: 8, height: 8, borderRadius: 9999, background: T.lime }} />}
-            </span>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: on ? 700 : 500, color: T.fg }}>{o.l}</span>
-              {o.sub && <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginLeft: 8 }}>{o.sub}</span>}
-            </div>
-          </div>
-        ); })}
+        {options.map((o) => {
+          const on = val === o.v;
+          return (
+            <button
+              key={o.v}
+              type="button"
+              role="radio"
+              aria-checked={on}
+              onClick={() => {
+                setV(o.v);
+                onChange?.(o.v);
+              }}
+              className="v2-focus v2-press"
+              style={{
+                appearance: "none",
+                display: "flex",
+                alignItems: "center",
+                gap: 11,
+                padding: "10px 13px",
+                minHeight: 44,
+                borderRadius: T.rInput,
+                background: on ? T.panel3 : T.panel2,
+                border: `1px solid ${on ? T.borderS : T.border}`,
+                cursor: "pointer",
+                textAlign: "left",
+                color: "inherit",
+                width: "100%",
+              }}
+            >
+              <span
+                style={{
+                  width: 18,
+                  height: 18,
+                  borderRadius: T.rPill,
+                  border: `2px solid ${on ? T.lime : T.borderS}`,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flex: "none",
+                }}
+              >
+                {on && <span style={{ width: 8, height: 8, borderRadius: T.rPill, background: T.lime }} />}
+              </span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: on ? 700 : 500, color: T.fg }}>{o.l}</span>
+                {o.sub && <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginLeft: 8 }}>{o.sub}</span>}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ── SegmentertFaner — showroom .seg (forms SegmentedTabs) ─ */
+export interface SegmentertFanerValg {
+  id: string;
+  label: string;
+}
+export interface SegmentertFanerProps {
+  label?: ReactNode;
+  options?: SegmentertFanerValg[];
+  value?: string;
+  defaultValue?: string;
+  onChange?: (id: string) => void;
+}
+export function SegmentertFaner({
+  label,
+  options = [
+    { id: "uke", label: "Uke" },
+    { id: "maned", label: "Måned" },
+    { id: "sesong", label: "Sesong" },
+  ],
+  value,
+  defaultValue,
+  onChange,
+}: SegmentertFanerProps) {
+  const [v, setV] = useState(defaultValue ?? options[0]?.id ?? "");
+  const val = value !== undefined ? value : v;
+  return (
+    <div>
+      {label && <Etikett>{label}</Etikett>}
+      <div
+        role="tablist"
+        aria-label={ariaNavn(label) ?? "Segment"}
+        style={{
+          display: "inline-flex",
+          flexWrap: "wrap",
+          padding: 3,
+          gap: 2,
+          background: T.panel3,
+          borderRadius: T.rPill,
+          border: `1px solid ${T.border}`,
+          maxWidth: "100%",
+        }}
+      >
+        {options.map((o) => {
+          const on = val === o.id;
+          return (
+            <button
+              key={o.id}
+              type="button"
+              role="tab"
+              aria-selected={on}
+              className="v2-press v2-focus"
+              onClick={() => {
+                setV(o.id);
+                onChange?.(o.id);
+              }}
+              style={{
+                appearance: "none",
+                minHeight: 40,
+                minWidth: 44,
+                padding: "0 16px",
+                border: 0,
+                borderRadius: T.rPill,
+                background: on ? T.lime : "transparent",
+                color: on ? T.onLime : T.fg2,
+                fontFamily: T.ui,
+                fontSize: 13,
+                fontWeight: on ? 600 : 500,
+                cursor: "pointer",
+              }}
+            >
+              {o.label}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -462,10 +776,10 @@ export function SkjemaFelt({ label = "Handicap", hjelp = "Bruk komma som desimal
         {label && <Etikett>{label}</Etikett>}
         {feil && <span style={{ fontFamily: T.ui, fontSize: 11, fontWeight: 600, color: T.down }}>{feil}</span>}
       </div>
-      <div style={feil ? { borderRadius: 11, outline: `1px solid ${T.down}` } : undefined}>
+      <div style={feil ? { borderRadius: T.rInput, outline: `1px solid ${T.down}` } : undefined}>
         {children || <Inndata label={null} defaultValue="4,2" mono />}
       </div>
-      {hjelp && !feil && <span style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, display: "block", marginTop: 6 }}>{hjelp}</span>}
+      {hjelp && !feil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, display: "block", marginTop: 6 }}>{hjelp}</span>}
     </div>
   );
 }
