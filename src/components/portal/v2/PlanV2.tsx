@@ -29,6 +29,7 @@ import {
   type StripeDag,
   type StatusTone,
 } from "@/components/v2";
+import { OktKort } from "@/components/v2/domene";
 import type { AkseKey } from "@/lib/v2/tokens";
 import { WORKBENCH_HREF } from "./WorkbenchInngang";
 
@@ -264,6 +265,7 @@ export function PlanV2({ data }: { data: DashboardData }) {
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
           {todayAll.length > 0 ? (
             <Kort
+              pad="12px"
               eyebrow={
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
                   I dag
@@ -273,55 +275,35 @@ export function PlanV2({ data }: { data: DashboardData }) {
                 </span>
               }
             >
-              {todayAll.map((o, j) => {
-                const naa = o.status === "IN_PROGRESS";
-                const statusL =
-                  o.status === "COMPLETED" ? "Fullført" : o.status === "IN_PROGRESS" ? "Pågår" : "Planlagt";
-                return (
-                  <div key={o.id} style={{ marginBottom: j < todayAll.length - 1 ? 10 : 0 }}>
-                    <Rad
-                      leading={
-                        <span
-                          style={{
-                            width: 44,
-                            flex: "none",
-                            fontFamily: T.mono,
-                            fontSize: 11,
-                            fontWeight: 700,
-                            color: naa ? T.lime : T.mut,
-                          }}
-                        >
-                          {toMin(o.startTime)}
-                        </span>
-                      }
-                      title={
-                        <span
-                          style={{
-                            display: "-webkit-box",
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                            whiteSpace: "normal",
-                          }}
-                        >
-                          {o.title}
-                        </span>
-                      }
-                      sub={[varighet(o.durationMin), o.sted].filter(Boolean).join(" · ")}
-                      meta={<AkseChip a={o.pyramidArea as AkseKey} />}
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {todayAll.map((o) => {
+                  const naa = o.status === "IN_PROGRESS";
+                  const ferdig = o.status === "COMPLETED" || o.status === "SKIPPED";
+                  const state = ferdig ? ("done" as const) : naa ? ("live" as const) : ("planned" as const);
+                  return (
+                    <OktKort
+                      key={o.id}
+                      title={o.title}
+                      time={toMin(o.startTime)}
+                      duration={varighet(o.durationMin)}
+                      axis={(o.pyramidArea as AkseKey) || "TEK"}
+                      state={state}
                       naa={naa}
-                      trailing={null}
-                      last
+                      meta={[o.sted, o.drills.length > 0 ? `${o.drills.length} øvelser` : null]
+                        .filter(Boolean)
+                        .join(" · ")}
+                      cta={!ferdig ? "Start økt" : undefined}
+                      onCta={
+                        !ferdig
+                          ? () => {
+                              window.location.href = nesteHandling.href;
+                            }
+                          : undefined
+                      }
                     />
-                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8, paddingLeft: 55 }}>
-                      <StatusPill tone={naa ? "lime" : o.status === "COMPLETED" ? "up" : "info"}>
-                        {statusL}
-                      </StatusPill>
-                      {o.drills.length > 0 && <Caps size={9}>{o.drills.length} øvelser</Caps>}
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </Kort>
           ) : (
             <Kort eyebrow="I dag">

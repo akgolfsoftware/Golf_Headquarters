@@ -329,6 +329,37 @@ export function DesignLabV2() {
         />
 
         <Seksjon
+          tittel="Produktflater · Fase 3"
+          barn={
+            <Kort pad="20px">
+              <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, margin: 0, lineHeight: 1.55 }}>
+                Speil av Open Design workbench-unified / player-plan. Ruter (krever innlogging):
+              </p>
+              <ul style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.7, margin: "12px 0 0", paddingLeft: 18 }}>
+                <li>
+                  <strong>AgencyOS cockpit</strong> —{" "}
+                  <code style={{ fontFamily: T.mono, fontSize: 12 }}>/admin/agencyos</code>
+                  {" · "}LiveBar + OktKort (dagens timer)
+                </li>
+                <li>
+                  <strong>PlayerHQ uke</strong> —{" "}
+                  <code style={{ fontFamily: T.mono, fontSize: 12 }}>/portal/planlegge</code>
+                  {" · "}OktKort for dagens økter + én primær CTA
+                </li>
+                <li>
+                  <strong>Coach workbench</strong> —{" "}
+                  <code style={{ fontFamily: T.mono, fontSize: 12 }}>/admin/spillere/[id]/workbench</code>
+                  {" · "}chrome med AgencyOS-label, 44px kontroller
+                </li>
+              </ul>
+              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "14px 0 0", lineHeight: 1.5 }}>
+                Domain top 5 (over) er byggeklossene. Full grid-paritet er later waves.
+              </p>
+            </Kort>
+          }
+        />
+
+        <Seksjon
           tittel="Domain top 5 · eksempel (ikke produksjonsdata)"
           barn={
             <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
