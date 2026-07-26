@@ -28,10 +28,9 @@ komplett designsystem utvikles i Open Design; ingen designkanon er låst inntil 
 
 ## Harde invarianter (brytes aldri)
 1. **Anbefalinger sperrer aldri:** ingenting i appen blokkerer trening. Aldri «kan ikke brytes»-kode/tekst.
-2. ~~Farger kun fra designtokens~~ **(fjernet 2026-07-25):** designkanonen er avviklet, og hex-gaten er
-   fjernet fra PostToolUse-hooken. **MEN `npm run check:hex` kjører fortsatt i `ci.yml`** mot
-   `scripts/check-no-hex-baseline.json` — den er en ratchet: eksisterende hex er hvitelistet, NYE rå
-   hex-farger i en fil feller CI. Se «Fallgruve» under Verifikasjons-pipeline.
+2. ~~Farger kun fra designtokens~~ **(fjernet 2026-07-25):** designkanonen er avviklet. Hex-gaten er nå
+   fjernet overalt — PostToolUse-hook, `package.json`, `ci.yml` og selve scriptet (opprydding 2026-07-26).
+   Farge- og spacingvalg er fritt inntil Open Design lander. Ikke gjenopprett gaten uten ny beslutning.
 3. **Norsk bokmål i all UI-tekst.**
 4. **Lucide-ikoner** — aldri emoji i UI. Primitiver fra `components/ui/` + `v2/`-mønstre.
 5. **Domenelogikk kun i `src/lib/domain/`** — aldri i komponenter.
@@ -113,7 +112,7 @@ prisma/
 ├── sql/  scripts/  seed-data/
 └── seed.ts · seed-drills.ts · seed-gfgk-facilities.ts …
 scripts/            # Engangs-/driftsscript: seed-screentest*.ts (Øyvind Rohjan) · drill-qa ·
-                    # retag-drill-kategorier · check-action-auth.mjs · check-no-hex.mjs · audit-rls · …
+                    # retag-drill-kategorier · check-action-auth.mjs · audit-rls · …
 docs/               # platform/ (NORDSTJERNE, AGENT-BRIEF, BUSINESS-RULES, DATA-MODEL, PLATFORM-PRD) ·
                     # skjermtekst/ (copy-kilde) · design-system/ + redesign-v2/ (UTGÅTT, historikk) ·
                     # gdpr/ · juridisk/ · sikkerhet/ · opprydding/ · arkiv/
@@ -135,17 +134,16 @@ tests/e2e/          # Nyere smoke-/kvalitetssuite (25 specs): a11y, PWA, ruter, 
 
 ## Verifikasjons-pipeline
 ```bash
-npm run verify     # FULL sjekk før commit
-npm run check:hex  # KJØR OGSÅ DENNE — se fallgruven under
+npm run verify && npm test    # FULL sjekk før commit — dekker hele CI-jobben «verify»
 ```
 `verify` = `prisma validate && prisma generate && tsc --noEmit && eslint --quiet src &&
 node scripts/check-action-auth.mjs && npm run build`.
 `npm run build` = `prisma generate && next build && serwist build serwist.config.mjs` (rekkefølgen er kritisk —
 precache-manifestet globber `.next/`-output).
 
-> **Fallgruve:** `npm run verify` inkluderer **ikke** `check:hex`, men `ci.yml` gjør det. En grønn lokal
-> `verify` kan derfor bli rød i CI hvis du har lagt inn nye rå hex-farger. Kjør `npm run check:hex` i tillegg
-> når du har rørt styling.
+CI-jobben «verify» kjører nøyaktig de samme stegene som `npm run verify`, pluss `npm test` (enhetstester).
+Kjører du begge lokalt har du dekket hele jobben. Hold dem synkronisert: legger du et steg i `ci.yml`, legg det
+i `verify` også (og motsatt). Den gamle hex-gaten var ute av synk på denne måten og er fjernet 2026-07-26.
 
 `npm run dev` skal starte uten warnings.
 
@@ -162,7 +160,7 @@ Andre nyttige script: `npm run kart` (skjermkart) · `npm run qa:drills` · `npm
 
 ## CI/CD
 - **`ci.yml`** (PR + push til main + manuell): `npm ci` → `prisma generate` → `tsc --noEmit` → `eslint` →
-  **`check:hex`** → `check:action-auth` → `npm test` → `npm run build` → Playwright e2e mot lokal `npm start`.
+  `check:action-auth` → `npm test` → `npm run build` → Playwright e2e mot lokal `npm start`.
   Dummy env-verdier, ingen secrets nødvendig. **NB:** e2e-steget her er `continue-on-error: true` — det
   rapporterer, men feller ikke bygget. Alt før e2e er blokkerende.
 - **`playwright.yml`** (PR + push til main): kjører e2e mot **prod-URL** (`https://akgolf-hq.vercel.app`),

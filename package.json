@@ -7,7 +7,6 @@
     "build": "prisma generate && next build && serwist build serwist.config.mjs",
     "start": "next start",
     "lint": "eslint",
-    "check:hex": "node scripts/check-no-hex.mjs",
     "check:action-auth": "node scripts/check-action-auth.mjs",
     "verify": "prisma validate && prisma generate && tsc --noEmit && eslint --quiet src && node scripts/check-action-auth.mjs && npm run build",
     "postinstall": "prisma generate",
