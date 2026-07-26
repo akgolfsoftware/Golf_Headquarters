@@ -17,6 +17,7 @@ export * from "./kalender";
 export * from "./skjema";
 export * from "./overlays";
 export * from "./struktur";
+export * from "./tilbakemelding";
 export * from "./spesialviz";
 export * from "./utviklingsplan";
 export * from "./fysisk";

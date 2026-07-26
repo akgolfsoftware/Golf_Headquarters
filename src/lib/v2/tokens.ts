@@ -24,6 +24,10 @@ export const T = {
   // Merkevare + signal (lys: lime-token = forest — aldri lime-på-lys CTA)
   forest: "var(--v2-forest)",
   forestSoft: "var(--v2-forest-soft)",
+  // Tekst på forest-fyll (showroom: `.btn-forest { color: #fff }`) — hvit i
+  // begge temaer, derfor ikke en CSS-var. Innkapslet her så komponentfilene
+  // forblir hex-frie.
+  onForest: "#FFFFFF",
   lime: "var(--v2-lime)",
   onLime: "var(--v2-on-lime)",
   up: "var(--v2-up)",

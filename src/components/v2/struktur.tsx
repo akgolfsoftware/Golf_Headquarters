@@ -177,6 +177,86 @@ export function Skjelett({ linjer = 3, tall = true }: SkjelettProps) {
   );
 }
 
+/* ── Skilje: strek m/ valgfri mono-etikett (bølge 11) ───
+   Fasit: showroom `familie-structure.html` .div-lbl / .div-v. */
+export interface SkiljeProps {
+  /** Uten etikett = ren strek. */
+  etikett?: string;
+  /** "loddrett" = tynn strek mellom to elementer i en rad. */
+  retning?: "vannrett" | "loddrett";
+}
+export function Skilje({ etikett, retning = "vannrett" }: SkiljeProps) {
+  if (retning === "loddrett") {
+    return <span aria-hidden style={{ width: 1, alignSelf: "stretch", background: T.border, flex: "none" }} />;
+  }
+  if (!etikett) {
+    return <span aria-hidden style={{ display: "block", width: "100%", height: 1, background: T.border }} />;
+  }
+  const linje: CSSProperties = { flex: 1, height: 1, background: T.border };
+  return (
+    <div aria-hidden style={{ display: "flex", alignItems: "center", gap: 12, width: "100%" }}>
+      <span style={linje} />
+      <Caps size={10} style={{ display: "inline", fontWeight: 600, letterSpacing: "0.1em", whiteSpace: "nowrap", flex: "none" }}>{etikett}</Caps>
+      <span style={linje} />
+    </div>
+  );
+}
+
+/* ── Stegviser: veiviser-indikator (bølge 11) ────────────
+   Fasit: showroom .stepper — fullført = lime-sirkel m/ hake, aktivt = lime-ramme,
+   linjen grønnes etter fullført steg. I lys modus mapper lime til forest. */
+export interface StegviserProps {
+  steg?: string[];
+  /** 1-indeksert aktivt steg. Steg før dette regnes som fullført. */
+  aktiv?: number;
+}
+export function Stegviser({ steg = ["Profil", "Målsetting", "Baseline-test", "Plan"], aktiv = 3 }: StegviserProps) {
+  return (
+    <ol style={{ display: "flex", alignItems: "flex-start", listStyle: "none", margin: 0, padding: 0 }}>
+      {steg.map((s, i) => {
+        const nr = i + 1;
+        const ferdig = nr < aktiv;
+        const aktivtSteg = nr === aktiv;
+        const sisteSteg = i === steg.length - 1;
+        return (
+          <li
+            key={s}
+            aria-current={aktivtSteg ? "step" : undefined}
+            style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 6, position: "relative" }}
+          >
+            {!sisteSteg && (
+              <span
+                aria-hidden
+                style={{
+                  position: "absolute", top: 14, left: "calc(50% + 16px)", right: "calc(-50% + 16px)",
+                  height: 1, background: ferdig ? T.lime : T.border,
+                  transition: `background ${T.dur}ms ${T.ease}`,
+                }}
+              />
+            )}
+            <span
+              style={{
+                width: 28, height: 28, borderRadius: T.rPill, display: "flex", alignItems: "center", justifyContent: "center",
+                flex: "none", position: "relative", zIndex: 1,
+                border: `1.5px solid ${ferdig || aktivtSteg ? T.lime : T.borderS}`,
+                background: ferdig ? T.lime : aktivtSteg ? T.panel3 : T.bg,
+                color: ferdig ? T.onLime : aktivtSteg ? T.fg : T.mut,
+                fontFamily: T.mono, fontSize: 11, fontWeight: 700,
+                transition: `border-color ${T.dur}ms ${T.ease}, background ${T.dur}ms ${T.ease}, color ${T.dur}ms ${T.ease}`,
+              }}
+            >
+              {ferdig ? <Icon name="check" size={13} /> : nr}
+            </span>
+            <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 500, textAlign: "center", lineHeight: 1.3, color: aktivtSteg ? T.fg : ferdig ? T.fg2 : T.mut }}>
+              {s}
+            </span>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 /* ── KanbanKolonne: tittel + antall + kort-stabel ─────── */
 export interface KanbanKort {
   t: string;

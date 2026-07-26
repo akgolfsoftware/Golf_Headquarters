@@ -18,6 +18,7 @@ import {
   KpiFlis,
   Rad,
   AvatarInit,
+  FilterChips,
 } from "@/components/v2/core";
 import {
   SpillerKort,
@@ -61,7 +62,16 @@ import {
   VisningsVelger,
 } from "@/components/v2/kalender";
 import { Modal, Ark, Skuff, Toast, Banner } from "@/components/v2/overlays";
-import { FAB } from "@/components/v2/struktur";
+import {
+  FAB,
+  Skilje,
+  Stegviser,
+  Skjelett,
+  Trekkspill,
+  HjelpPopover,
+  ValideringsChip,
+} from "@/components/v2/struktur";
+import { AiTipKort, TipTall, ListeIkon, UlestPrikk, RadMeta } from "@/components/v2/tilbakemelding";
 
 type V2Tema = "dark" | "light";
 
@@ -609,18 +619,118 @@ export function DesignLabV2() {
         />
 
         <Seksjon
+          tittel="Feedback · struktur · Bølge 11 (eksempel)"
+          barn={
+            <div style={{ display: "grid", gap: T.gap }}>
+              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.5 }}>
+                Parity mot Open Design familie-feedback + familie-structure. Alle tall er lab-eksempel.
+                Lime-jobben i AI-tipset er merket og nøkkeltallet — handlingen er forest.
+              </p>
+
+              <AiTipKort
+                eyebrow="AI-Caddie · Oppdatert for 2 timer siden"
+                tittel="Innspillet fra 100–140 meter bærer fremgangen"
+                handling="Se anbefalt økt"
+                maxBredde={520}
+              >
+                Siste 5 runder vinner du <TipTall>+0,8</TipTall> slag per runde på innspill mot ditt nivå.
+                Anbefaling: to korte wedge-økter denne uken — ikke flere.
+              </AiTipKort>
+
+              <AiTipKort eyebrow="AI-Caddie · Oppdatert i dag 07:30" maxBredde={520}>
+                Belastningen er <TipTall>8,5 t</TipTall> denne uken — innenfor anbefalt. Hold fri i morgen
+                hvis kroppen kjennes tung.
+              </AiTipKort>
+
+              <Kort pad="8px 16px">
+                <Rad
+                  leading={<ListeIkon icon="message-square" tone="forest" />}
+                  title="Ny melding fra coach"
+                  sub="Anders Kristiansen · Oppfølging etter helgens runde"
+                  meta={
+                    <RadMeta>
+                      2
+                      <UlestPrikk />
+                    </RadMeta>
+                  }
+                />
+                <Rad
+                  leading={<ListeIkon icon="check" tone="up" />}
+                  title="Booking bekreftet"
+                  sub="Simulator 2 · Mulligan Indoor"
+                  meta={<RadMeta>16:00</RadMeta>}
+                />
+                <Rad
+                  leading={<ListeIkon icon="alert-triangle" tone="down" />}
+                  title="Belastning over anbefalt"
+                  sub="Uke 30 · anbefaling, ikke sperre (eksempel)"
+                  meta={<RadMeta>14:05</RadMeta>}
+                />
+                <Rad
+                  leading={<ListeIkon icon="calendar" />}
+                  title="Ny økt tilgjengelig i planen"
+                  sub="Landingssone wedge · 15 min"
+                  meta={<RadMeta>{TOM_TALL}</RadMeta>}
+                  last
+                />
+              </Kort>
+
+              <Kort pad="20px">
+                <Caps size={9}>Stegviser · steg 3 av 4</Caps>
+                <div style={{ marginTop: 16 }}>
+                  <Stegviser />
+                </div>
+              </Kort>
+
+              <Kort pad="20px">
+                <Caps size={9}>Skilje · filterpiller · validering</Caps>
+                <div style={{ display: "grid", gap: 16, marginTop: 16 }}>
+                  <Skilje etikett="I dag" />
+                  <FilterChips items={["FYS", "TEK", "SLAG", "TURN"]} active={["TEK"]} axis />
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                    <ValideringsChip tone="advarsel" tekst="Uke over anbefalt volum — anbefaling, ikke sperre" />
+                    <Skilje retning="loddrett" />
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.ui, fontSize: 13.5, color: T.fg2 }}>
+                      Strokes Gained
+                      <HjelpPopover />
+                    </span>
+                  </div>
+                  <Skilje />
+                </div>
+              </Kort>
+
+              <div style={{ display: "grid", gap: T.gap, gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))" }}>
+                <Trekkspill />
+                <Skjelett />
+              </div>
+            </div>
+          }
+        />
+
+        <Seksjon
           tittel="Port-status · resterende"
           barn={
             <Kort pad="20px">
               <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, margin: 0, lineHeight: 1.55 }}>
                 Plan: <code style={{ fontFamily: T.mono, fontSize: 12 }}>docs/design-system/plan-resterende-port.md</code>
               </p>
-              <ul style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.7, margin: "12px 0 0", paddingLeft: 18 }}>
-                <li>✅ Fase 0–7: tokens, forms, domain top 5, 3 flater, overlays</li>
-                <li>✅ Fase 8–10 lab: kalender, golfdata, TrackMan</li>
-                <li>⬜ Bølge 11: feedback + structure rest</li>
-                <li>⬜ Bølge 12: dypere produktflater (admin-kalender, SG, TM live)</li>
-                <li>⬜ Bølge 13–14: marketing polish + hardening</li>
+              <ul style={{ listStyle: "none", margin: "12px 0 0", padding: 0, display: "grid", gap: 7 }}>
+                {[
+                  { ferdig: true, tekst: "Fase 0–7: tokens, forms, domain top 5, 3 flater, overlays" },
+                  { ferdig: true, tekst: "Fase 8–10 lab: kalender, golfdata, TrackMan" },
+                  { ferdig: true, tekst: "Bølge 11: feedback + structure rest" },
+                  { ferdig: false, tekst: "Bølge 12: dypere produktflater (admin-kalender, SG, TM live)" },
+                  { ferdig: false, tekst: "Bølge 13–14: marketing polish + hardening" },
+                ].map((r) => (
+                  <li key={r.tekst} style={{ display: "flex", alignItems: "flex-start", gap: 9, fontFamily: T.ui, fontSize: 13, lineHeight: 1.5, color: r.ferdig ? T.fg2 : T.fg }}>
+                    <Icon
+                      name={r.ferdig ? "check-circle" : "circle"}
+                      size={15}
+                      style={{ color: r.ferdig ? T.up : T.mut, flex: "none", marginTop: 2 }}
+                    />
+                    {r.tekst}
+                  </li>
+                ))}
               </ul>
             </Kort>
           }
