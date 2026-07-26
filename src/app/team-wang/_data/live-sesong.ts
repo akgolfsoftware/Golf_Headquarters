@@ -271,6 +271,36 @@ export interface DagHendelse {
   sted?: string | null;
 }
 
+function isoRange(startIso: string, sluttIso: string): string[] {
+  const out: string[] = [];
+  const [sy, sm, sd] = startIso.split("-").map(Number);
+  const [ey, em, ed] = sluttIso.split("-").map(Number);
+  const cur = new Date(Date.UTC(sy, sm - 1, sd));
+  const end = new Date(Date.UTC(ey, em - 1, ed));
+  while (cur.getTime() <= end.getTime()) {
+    out.push(cur.toISOString().slice(0, 10));
+    cur.setUTCDate(cur.getUTCDate() + 1);
+  }
+  return out;
+}
+
+/** Datoer dekket av en samling/heldagssamling (kind SAMLING/HELDAGSSAMLING, ev. flerdagers) —
+ * brukes til å undertrykke den faste man/ons/fre-øktchipen på disse datoene, slik at en
+ * samling aldri vises side om side med en vanlig øktchip samme dag (samme prinsipp som
+ * erTurneringstittel()-eksklusjonen over, bare for okt-vs-samling i stedet for turnering). */
+export function samlingsdatoerFraHendelser(hendelser: WangHendelseDb[]): Set<string> {
+  const datoer = new Set<string>();
+  hendelser
+    .filter((h) => h.kind === "SAMLING" || h.kind === "HELDAGSSAMLING")
+    .forEach((h) => isoRange(h.startIso, h.sluttIso).forEach((d) => datoer.add(d)));
+  return datoer;
+}
+
+const DEMO_SAMLINGSDATOER = new Set<string>([
+  ...TRAINING_CAMPS.map((c) => c.iso),
+  ...FULL_DAY_CAMPS.map((c) => c.iso),
+]);
+
 export function byggLiveKalenderHendelser(
   sessions: Pick<Okt, "iso" | "short" | "timeLabel">[],
   live: WangLiveData | null,
@@ -280,7 +310,10 @@ export function byggLiveKalenderHendelser(
     (out[iso] ??= []).push(h);
   };
 
-  sessions.forEach((s) => push(s.iso, { type: "okt", label: s.short, time: s.timeLabel }));
+  const samlingsdatoer = live ? samlingsdatoerFraHendelser(live.hendelser) : DEMO_SAMLINGSDATOER;
+  sessions.forEach((s) => {
+    if (!samlingsdatoer.has(s.iso)) push(s.iso, { type: "okt", label: s.short, time: s.timeLabel });
+  });
 
   if (live) {
     const turneringer = turneringerFraHendelser(live.hendelser);
