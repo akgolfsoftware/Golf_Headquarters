@@ -1,5 +1,6 @@
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { isEditedSuggestion } from "./canonical-json";
 import { executePlanAction } from "./plan-action-executor";
 
 export type AcceptPlanActionResult = {
@@ -10,10 +11,14 @@ export type AcceptPlanActionResult = {
 
 /**
  * Godkjenner en PlanAction og kjører executor. Ved feil forblir status PENDING.
+ * Ved coach-redigering snapshotes originalforslaget til `originalSuggestion`
+ * og `editedBeforeApproval` settes via kanonisk JSON-diff — grunnlaget for
+ * «godkjent uendret»-metrikken i eval-suiten.
  */
 export async function acceptAndApplyPlanAction(
   actionId: string,
   coachNoteSuggestion?: Record<string, unknown>,
+  decidedById?: string,
 ): Promise<AcceptPlanActionResult> {
   const action = await prisma.planAction.findUnique({
     where: { id: actionId },
@@ -29,8 +34,17 @@ export async function acceptAndApplyPlanAction(
       where: { id: actionId },
       data: {
         status: "ACCEPTED",
+        decidedAt: new Date(),
+        ...(decidedById ? { decidedById } : {}),
         ...(coachNoteSuggestion
-          ? { suggestion: coachNoteSuggestion as Prisma.InputJsonValue }
+          ? {
+              suggestion: coachNoteSuggestion as Prisma.InputJsonValue,
+              originalSuggestion: action.suggestion as Prisma.InputJsonValue,
+              editedBeforeApproval: isEditedSuggestion(
+                action.suggestion,
+                coachNoteSuggestion,
+              ),
+            }
           : {}),
         updatedAt: new Date(),
       },

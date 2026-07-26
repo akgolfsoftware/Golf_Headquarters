@@ -116,10 +116,14 @@ function GodkjennLavRisiko({ count }: { count: number }) {
   );
 }
 
-/** Godkjenn/avvis + lenker for én sak. Mobil: fullbredde 2×2, desktop: inline. */
+/** Godkjenn/avvis + lenker for én sak. Mobil: fullbredde 2×2, desktop: inline.
+ *  Avvis på agent-saker er to-stegs med valgfri grunn (eval-data) — bekreftes
+ *  uansett med tomt felt, så flyten forblir like rask som før. */
 function SakHandlinger({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: boolean }) {
   const router = useRouter();
   const [pending, start] = useTransition();
+  const [avvisModus, setAvvisModus] = useState(false);
+  const [avvisGrunn, setAvvisGrunn] = useState("");
 
   const erAgent = (row.kilde ?? "agent") === "agent";
   // A2: caddie-utkast godkjennes (og UTFØRES med re-validering) rett fra køen.
@@ -130,29 +134,63 @@ function SakHandlinger({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: bo
     else if (row.kilde === "caddie") await godkjennCaddieDraft(row.id);
     router.refresh();
   });
-  const avvis = () => start(async () => {
-    if (erAgent) await rejectPlanAction(row.id);
+  const utforAvvis = () => start(async () => {
+    if (erAgent) await rejectPlanAction(row.id, avvisGrunn.trim() || undefined);
     else if (row.kilde === "caddie") await avvisProaktivtForslag(row.id);
     else if (row.kilde === "forespørsel") await avslaaForespørsel(row.id);
+    setAvvisModus(false);
+    setAvvisGrunn("");
     router.refresh();
   });
+  // Kun agent-saker samler grunn; caddie/forespørsel avvises direkte som før.
+  const avvis = () => (erAgent && !avvisModus ? setAvvisModus(true) : utforAvvis());
 
   const detaljer = erAgent ? `/admin/godkjenninger/${row.id}` : (row.eksternHref ?? "/admin/godkjenninger");
   const profil = `/admin/spillere/${row.playerId}`;
 
+  const avvisGrunnFelt = avvisModus ? (
+    <div style={{ display: "flex", gap: 8, marginTop: 8, alignItems: "center" }}>
+      <input
+        type="text"
+        value={avvisGrunn}
+        onChange={(e) => setAvvisGrunn(e.target.value)}
+        onKeyDown={(e) => { if (e.key === "Enter") utforAvvis(); }}
+        placeholder="Hvorfor avvises forslaget? (valgfritt)"
+        maxLength={500}
+        autoFocus
+        style={{
+          flex: 1,
+          minWidth: 0,
+          borderRadius: 10,
+          border: `1px solid ${T.border}`,
+          background: T.panel2,
+          padding: "10px 14px",
+          fontFamily: T.ui,
+          fontSize: 13,
+          color: T.fg,
+        }}
+      />
+      <Knapp icon="x" ghost style={{ minHeight: 44 }} disabled={pending} onClick={utforAvvis}>Avvis</Knapp>
+      <Knapp ghost style={{ minHeight: 44 }} disabled={pending} onClick={() => { setAvvisModus(false); setAvvisGrunn(""); }}>Angre</Knapp>
+    </div>
+  ) : null;
+
   if (mobile) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 4, marginTop: 14, opacity: pending ? 0.5 : 1 }}>
-        <div style={{ display: "flex", gap: 8 }}>
-          {kanGodkjenneInline && (
+        {!avvisModus && (
+          <div style={{ display: "flex", gap: 8 }}>
+            {kanGodkjenneInline && (
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <Knapp icon="check" full style={{ minHeight: 44 }} disabled={pending} onClick={godkjenn}>Godkjenn</Knapp>
+              </div>
+            )}
             <div style={{ flex: 1, minWidth: 0 }}>
-              <Knapp icon="check" full style={{ minHeight: 44 }} disabled={pending} onClick={godkjenn}>Godkjenn</Knapp>
+              <Knapp icon="x" ghost full style={{ minHeight: 44 }} disabled={pending} onClick={avvis}>Avvis</Knapp>
             </div>
-          )}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <Knapp icon="x" ghost full style={{ minHeight: 44 }} disabled={pending} onClick={avvis}>Avvis</Knapp>
           </div>
-        </div>
+        )}
+        {avvisGrunnFelt}
         <div style={{ display: "flex", gap: 18 }}>
           <TekstLenke href={detaljer}>Detaljer</TekstLenke>
           <TekstLenke href={profil}>Se profil</TekstLenke>
@@ -162,11 +200,14 @@ function SakHandlinger({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: bo
   }
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0 12px", marginTop: 8, opacity: pending ? 0.5 : 1 }}>
-      {kanGodkjenneInline && <Knapp icon="check" style={{ minHeight: 44 }} disabled={pending} onClick={godkjenn}>Godkjenn</Knapp>}
-      <Knapp icon="x" ghost style={{ minHeight: 44 }} disabled={pending} onClick={avvis}>Avvis</Knapp>
-      <TekstLenke href={detaljer}>Detaljer</TekstLenke>
-      <TekstLenke href={profil}>Se profil</TekstLenke>
+    <div style={{ marginTop: 8, opacity: pending ? 0.5 : 1 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0 12px" }}>
+        {kanGodkjenneInline && !avvisModus && <Knapp icon="check" style={{ minHeight: 44 }} disabled={pending} onClick={godkjenn}>Godkjenn</Knapp>}
+        {!avvisModus && <Knapp icon="x" ghost style={{ minHeight: 44 }} disabled={pending} onClick={avvis}>Avvis</Knapp>}
+        <TekstLenke href={detaljer}>Detaljer</TekstLenke>
+        <TekstLenke href={profil}>Se profil</TekstLenke>
+      </div>
+      {avvisGrunnFelt}
     </div>
   );
 }

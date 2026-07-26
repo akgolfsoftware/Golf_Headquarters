@@ -1549,6 +1549,17 @@ model PlanAction {
   // Status: PENDING | ACCEPTED | REJECTED
   status     String   @default("PENDING")
   agentName  String
+  // Beslutningsfangst for AI-evals (speiler PlanSuggestion-mønsteret).
+  // originalSuggestion snapshotes FØR coach-redigering overskriver `suggestion`;
+  // editedBeforeApproval = kanonisk JSON-diff original vs. godkjent versjon.
+  // Kolonnene opprettes kirurgisk via scripts/create-planaction-decision-fields-2026-07-27.ts
+  // (migrate dev/db push er blokkert — se .claude/rules/gotchas.md).
+  decidedAt            DateTime?
+  decidedById          String?
+  rejectReason         String?
+  decisionNote         String?
+  originalSuggestion   Json?
+  editedBeforeApproval Boolean   @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
