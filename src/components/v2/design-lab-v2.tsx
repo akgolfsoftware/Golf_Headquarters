@@ -38,6 +38,8 @@ import {
 } from "@/components/v2/skjema";
 import { Icon } from "@/components/v2/icon";
 import { StatStrip } from "@/components/v2/spesialviz";
+import { Modal, Ark, Skuff, Toast, Banner } from "@/components/v2/overlays";
+import { FAB } from "@/components/v2/struktur";
 
 type V2Tema = "dark" | "light";
 
@@ -325,6 +327,39 @@ export function DesignLabV2() {
                 { l: "Nærspill", v: "−0,2", delta: "−0,1", dir: "down" },
               ]}
             />
+          }
+        />
+
+        <Seksjon
+          tittel="Overlays · nav (Fase 7 / reg-test)"
+          barn={
+            <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.5 }}>
+                Showroom-parity: lukk ≥ 44px, dialog-roller, sheet radius 28, toast/banner a11y. AgencyOS — aldri CoachHQ.
+              </p>
+              <div style={{ overflowX: "auto" }}>
+                <Modal w={520} h={300} />
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "flex-end" }}>
+                <Ark h={360} />
+                <Skuff w={400} h={360} />
+              </div>
+              <Toast />
+              <Banner />
+              <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                <FAB label="Ny økt" />
+                <FAB />
+              </div>
+              <Kort pad="16px">
+                <Caps size={9}>Reg-sjekk</Caps>
+                <ul style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.65, margin: "10px 0 0", paddingLeft: 18 }}>
+                  <li>Lys CTA = forest (lime-token remappet)</li>
+                  <li>Mørk: én primær lime per flate</li>
+                  <li>Delta = up/down · tom tall = —</li>
+                  <li>Ingen «CoachHQ» i v2-lab</li>
+                </ul>
+              </Kort>
+            </div>
           }
         />
 

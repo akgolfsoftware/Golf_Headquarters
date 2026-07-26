@@ -19,15 +19,31 @@ export interface FABProps {
 }
 export function FAB({ icon = "plus", label }: FABProps) {
   return (
-    <span style={{
-      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
-      height: 52, minWidth: 52, padding: label ? "0 22px" : 0, borderRadius: 9999,
-      background: T.lime, color: T.onLime, cursor: "pointer",
-      boxShadow: "0 12px 30px color-mix(in srgb, var(--v2-lime) 24%, transparent), 0 4px 12px rgba(0,0,0,0.4)",
-    }}>
-      <Icon name={icon} size={20} strokeWidth={2} />
+    <button
+      type="button"
+      aria-label={typeof label === "string" ? label : "Hovedhandling"}
+      className="v2-press v2-focus"
+      style={{
+        appearance: "none",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 8,
+        height: 52,
+        minWidth: 52,
+        minHeight: 44,
+        padding: label ? "0 22px" : 0,
+        borderRadius: T.rPill,
+        border: "none",
+        background: T.lime,
+        color: T.onLime,
+        cursor: "pointer",
+        boxShadow: "0 12px 30px color-mix(in srgb, var(--v2-lime) 24%, transparent), 0 4px 12px rgba(0,0,0,0.25)",
+      }}
+    >
+      <Icon name={icon} size={20} strokeWidth={1.5} />
       {label && <span style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 600 }}>{label}</span>}
-    </span>
+    </button>
   );
 }
 
@@ -44,8 +60,8 @@ export function SpillerGruppeVeksler({ modus = "spiller", valgt = "Øyvind Rohja
     <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
       <PillVelger options={[{ v: "spiller", l: "Spiller" }, { v: "gruppe", l: "Gruppe" }]} value={modus} onChange={onChange} />
       <span title="Søk og bytt — skriv for å filtrere" style={{
-        display: "inline-flex", alignItems: "center", gap: 9, height: 38, padding: "0 12px 0 6px",
-        borderRadius: 9999, background: T.panel2, border: `1px solid ${T.borderS}`, cursor: "pointer",
+        display: "inline-flex", alignItems: "center", gap: 9, minHeight: 44, height: 44, padding: "0 12px 0 6px",
+        borderRadius: T.rPill, background: T.panel2, border: `1px solid ${T.border}`, cursor: "pointer",
       }}>
         {erS
           ? <AvatarInit navn={valgt} size={26} />
@@ -72,7 +88,7 @@ interface KnappProps {
 function PagKnapp({ children, on, dis }: KnappProps) {
   return (
     <span style={{
-      minWidth: 32, height: 32, padding: "0 6px", borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center",
+      minWidth: 44, minHeight: 44, height: 44, padding: "0 8px", borderRadius: T.rPill, display: "inline-flex", alignItems: "center", justifyContent: "center",
       fontFamily: T.mono, fontSize: 12, fontWeight: 700, cursor: dis ? "default" : "pointer", fontVariantNumeric: "tabular-nums",
       color: on ? T.bg : dis ? T.mut : T.fg2, background: on ? T.fg : T.panel2, border: `1px solid ${on ? T.fg : T.border}`, opacity: dis ? 0.5 : 1,
     }}>{children}</span>
