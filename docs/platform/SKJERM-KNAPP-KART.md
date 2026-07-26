@@ -26,7 +26,7 @@
 
 ## DEL 1 — Kanonisk navigasjonsfasit (knapp → skjerm)
 
-### PlayerHQ — `/portal` (alltid lys, B28 — se `docs/design-system/TEMA-LYS-MORK.md`). 5 faner: mobil bunn-nav = desktop sidebar.
+### PlayerHQ — `/portal` (lys som standard, bryter til mørk — se `docs/design-system/TEMA-LYS-MORK.md`). 5 faner: mobil bunn-nav = desktop sidebar.
 
 | Fane | Rute | Undersider (sidebar-children / faner) |
 |---|---|---|
