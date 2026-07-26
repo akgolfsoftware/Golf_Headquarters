@@ -69,11 +69,12 @@ export const T = {
   bodySm: 12,
   caps: 10,
   capsSm: 9,
-  // Geometri (fasit: tag 8 → input/row 12 → card 20)
+  // Geometri (fasit: tag 8 → input/row 12 → card 20 → sheet 28)
   rTag: 8,
   rCard: 20,
   rRow: 12,
   rInput: 12,
+  rSheet: 28,
   rPill: 9999,
   gap: 16,
   maxw: 1120,

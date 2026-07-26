@@ -37,7 +37,29 @@ import {
   SkjemaFelt,
 } from "@/components/v2/skjema";
 import { Icon } from "@/components/v2/icon";
-import { StatStrip } from "@/components/v2/spesialviz";
+import {
+  StatStrip,
+  DispersionPlot,
+  TrajectoryPlot,
+  TrackmanSammendrag,
+  KolleStatKort,
+} from "@/components/v2/spesialviz";
+import {
+  SgTotal,
+  SgKategorier,
+  Diagnose,
+  NesteFokus,
+  ProgresjonsBar,
+  MiniSpark,
+  LaunchWindow,
+} from "@/components/v2/datavis";
+import {
+  UkeGrid,
+  MndKalender,
+  DagStripe,
+  AgendaRad,
+  VisningsVelger,
+} from "@/components/v2/kalender";
 import { Modal, Ark, Skuff, Toast, Banner } from "@/components/v2/overlays";
 import { FAB } from "@/components/v2/struktur";
 
@@ -492,9 +514,115 @@ export function DesignLabV2() {
                 />
               </Kort>
               <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.5 }}>
-                Metric strip: se StatStrip over. Radius: tag 8 · rad 12 · kort 20.
+                Metric strip: se StatStrip over. Radius: tag 8 · rad 12 · kort 20 · sheet {T.rSheet}.
               </p>
             </div>
+          }
+        />
+
+        <Seksjon
+          tittel="Kalender · Fase 8 (eksempel)"
+          barn={
+            <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.5 }}>
+                Parity mot Open Design familie-calendar. Alle datoer/økter er lab-eksempel.
+              </p>
+              <VisningsVelger periode="Uke 28 · juli 2026 · eksempel" />
+              <DagStripe />
+              <Kort pad="16px">
+                <Caps size={9}>Uke-grid · eksempel</Caps>
+                <div style={{ marginTop: 12, overflowX: "auto" }}>
+                  <UkeGrid />
+                </div>
+              </Kort>
+              <Kort pad="16px">
+                <Caps size={9}>Måned · eksempel</Caps>
+                <div style={{ marginTop: 12, maxWidth: 360 }}>
+                  <MndKalender />
+                </div>
+              </Kort>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <AgendaRad state="live" title="Live økt · innspill" time="08:00" duration="60 min" />
+                <AgendaRad state="upcoming" title="Putting 3–6 ft" time="16:30" duration="45 min" />
+                <AgendaRad state="done" title="FYS styrke" time="07:00" duration="50 min" />
+              </div>
+            </div>
+          }
+        />
+
+        <Seksjon
+          tittel="Golfdata · SG · Fase 9 (eksempel)"
+          barn={
+            <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.5 }}>
+                Parity mot familie-golfdata / familie-data. Tall er lab-eksempel — ikke produksjons-KPI.
+              </p>
+              <SgTotal />
+              <SgKategorier />
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: T.gap }}>
+                <Kort pad="16px">
+                  <Caps size={9}>Progresjon · eksempel</Caps>
+                  <div style={{ marginTop: 12 }}>
+                    <ProgresjonsBar label="Ukesvolum" value={64} />
+                  </div>
+                </Kort>
+                <Kort pad="16px">
+                  <Caps size={9}>Mini-spark · eksempel</Caps>
+                  <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 12 }}>
+                    <MiniSpark verdier={[0.2, -0.1, 0.4, 0.3, 0.8, 0.5, 1.1]} />
+                    <span style={{ fontFamily: T.mono, fontSize: 12, color: T.fg2 }}>SG trend</span>
+                  </div>
+                </Kort>
+              </div>
+              <Diagnose />
+              <NesteFokus />
+            </div>
+          }
+        />
+
+        <Seksjon
+          tittel="TrackMan · Fase 10 (eksempel)"
+          barn={
+            <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.5 }}>
+                Parity mot familie-trackman. Plottene er SVG-demo med eksempeldata.
+              </p>
+              <TrackmanSammendrag />
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: T.gap }}>
+                <KolleStatKort />
+                <LaunchWindow />
+              </div>
+              <Kort pad="16px">
+                <Caps size={9}>Dispersion · eksempel</Caps>
+                <div style={{ marginTop: 12, overflowX: "auto" }}>
+                  <DispersionPlot />
+                </div>
+              </Kort>
+              <Kort pad="16px">
+                <Caps size={9}>Trajectory · eksempel</Caps>
+                <div style={{ marginTop: 12, overflowX: "auto" }}>
+                  <TrajectoryPlot />
+                </div>
+              </Kort>
+            </div>
+          }
+        />
+
+        <Seksjon
+          tittel="Port-status · resterende"
+          barn={
+            <Kort pad="20px">
+              <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, margin: 0, lineHeight: 1.55 }}>
+                Plan: <code style={{ fontFamily: T.mono, fontSize: 12 }}>docs/design-system/plan-resterende-port.md</code>
+              </p>
+              <ul style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.7, margin: "12px 0 0", paddingLeft: 18 }}>
+                <li>✅ Fase 0–7: tokens, forms, domain top 5, 3 flater, overlays</li>
+                <li>✅ Fase 8–10 lab: kalender, golfdata, TrackMan</li>
+                <li>⬜ Bølge 11: feedback + structure rest</li>
+                <li>⬜ Bølge 12: dypere produktflater (admin-kalender, SG, TM live)</li>
+                <li>⬜ Bølge 13–14: marketing polish + hardening</li>
+              </ul>
+            </Kort>
           }
         />
       </div>
