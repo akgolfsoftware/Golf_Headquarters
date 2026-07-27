@@ -11,6 +11,7 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { AdminSpillerProfilSideV2, type AdminSpillerProfilSideV2Data, type DnaShape } from "@/components/admin/v2/AdminSpillerProfilSideV2";
+import { beregnGoalProgress } from "@/lib/portal/goals/progress";
 
 const NB_LONG = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "long", year: "numeric" });
 const NB_DATE = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", year: "numeric" });
@@ -76,12 +77,18 @@ export default async function SpillerProfilSide({ params }: { params: Promise<{ 
     })),
     dna,
     cohort,
-    maal: player.goals.slice(0, 3).map((g) => ({
-      id: g.id,
-      typeLabel: g.type === "HCP_TARGET" ? "Resultat" : g.type === "SG_AREA" ? "Prosess" : "Atferd",
-      tittel: g.title,
-      fristLabel: g.targetDate ? NB_DATE.format(g.targetDate) : null,
-    })),
+    maal: await Promise.all(
+      player.goals.slice(0, 3).map(async (g) => {
+        const progress = await beregnGoalProgress(g, { hcp: player.hcp });
+        return {
+          id: g.id,
+          typeLabel: g.category === "OUTCOME" ? "Resultat" : "Prosess",
+          tittel: g.title,
+          fristLabel: g.targetDate ? NB_DATE.format(g.targetDate) : null,
+          pct: progress.hasData ? progress.pct : null,
+        };
+      }),
+    ),
     permisjoner: player.leaves.map((l) => ({
       id: l.id,
       aarsak: l.reason,

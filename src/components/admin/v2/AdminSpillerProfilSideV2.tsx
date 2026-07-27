@@ -23,6 +23,8 @@ export interface ProfilMaal {
   typeLabel: string;
   tittel: string;
   fristLabel: string | null;
+  /** null = ingenting relevant logget ennå — vis "ingen data ennå", ikke en fabrikkert 0/50 %. */
+  pct: number | null;
 }
 export interface ProfilPermisjon {
   id: string;
@@ -125,7 +127,14 @@ function RadarChart({ dna, cohort }: { dna: DnaShape; cohort: DnaShape }) {
   );
 }
 
-function ProgressRing({ pct }: { pct: number }) {
+function ProgressRing({ pct }: { pct: number | null }) {
+  if (pct == null) {
+    return (
+      <div style={{ marginTop: 8, fontFamily: T.mono, fontSize: 10.5, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut }}>
+        Ingen data ennå
+      </div>
+    );
+  }
   const size = 56;
   const stroke = 5;
   const r = (size - stroke) / 2;
@@ -234,7 +243,7 @@ export function AdminSpillerProfilSideV2({ data }: { data: AdminSpillerProfilSid
                   {g.typeLabel}
                 </span>
                 <h3 style={{ margin: "8px 0 0", fontSize: 13, fontWeight: 600, lineHeight: 1.4, color: T.fg }}>{g.tittel}</h3>
-                <ProgressRing pct={50} />
+                <ProgressRing pct={g.pct} />
                 {g.fristLabel && <div style={{ marginTop: 8, fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: T.mut }}>Frist: {g.fristLabel}</div>}
               </div>
             ))}

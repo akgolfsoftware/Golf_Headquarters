@@ -21,7 +21,7 @@ import {
   type OptimalSessionHint,
 } from "@/lib/portal/optimal-session";
 import { nesteBesteHandling, finnDagensAktiveOkt } from "@/lib/portal/neste-beste-handling";
-import { beregnMaalFremdrift } from "@/lib/domain/maal-fremdrift";
+import { beregnGoalProgress } from "@/lib/portal/goals/progress";
 
 // ── Types ─────────────────────────────────────────────────────────
 
@@ -339,32 +339,43 @@ export async function getRecentActivity(userId: string, limit = 5): Promise<Rece
 
 export async function getGoals(userId: string, limit = 3): Promise<GoalItem[]> {
   await assertCanViewPlayerData(userId);
-  const goals = await prisma.goal.findMany({
-    where: { userId, status: { in: ["ACTIVE", "ACHIEVED"] } },
-    orderBy: [{ status: "asc" }, { targetDate: "asc" }, { createdAt: "desc" }],
-    take: limit,
-    select: { id: true, type: true, title: true, category: true, status: true, targetValue: true, targetDate: true, createdAt: true },
-  });
+  const [goals, bruker] = await Promise.all([
+    prisma.goal.findMany({
+      where: { userId, status: { in: ["ACTIVE", "ACHIEVED"] } },
+      orderBy: [{ status: "asc" }, { targetDate: "asc" }, { createdAt: "desc" }],
+      take: limit,
+      select: {
+        id: true, userId: true, type: true, title: true, category: true, status: true,
+        targetValue: true, targetDate: true, createdAt: true, payload: true,
+        linkedPyramidArea: true, linkedTestId: true,
+      },
+    }),
+    prisma.user.findUnique({ where: { id: userId }, select: { hcp: true } }),
+  ]);
+  const hcp = bruker?.hcp ?? null;
 
   const now = new Date();
-  return goals.map((g) => {
-    const daysLeft = g.targetDate ? Math.ceil((g.targetDate.getTime() - now.getTime()) / 86_400_000) : null;
-    const { pct: progress } = beregnMaalFremdrift(g, { naa: now });
+  return Promise.all(
+    goals.map(async (g) => {
+      const daysLeft = g.targetDate ? Math.ceil((g.targetDate.getTime() - now.getTime()) / 86_400_000) : null;
+      // Oppnådd mål vises alltid som fullført, uansett hva nåværende tall skulle si.
+      const progress = g.status === "ACHIEVED" ? 100 : (await beregnGoalProgress(g, { hcp })).pct;
 
-    const status = g.status as GoalItem["status"];
+      const status = g.status as GoalItem["status"];
 
-    return {
-      id: g.id,
-      title: g.title,
-      category: g.category,
-      status,
-      targetValue: g.targetValue,
-      progress,
-      deadline: g.targetDate,
-      daysLeft,
-      href: `/portal/mal/goal/${g.id}`,
-    };
-  });
+      return {
+        id: g.id,
+        title: g.title,
+        category: g.category,
+        status,
+        targetValue: g.targetValue,
+        progress,
+        deadline: g.targetDate,
+        daysLeft,
+        href: `/portal/mal/goal/${g.id}`,
+      };
+    }),
+  );
 }
 
 // ── Unread notifications ──────────────────────────────────────────

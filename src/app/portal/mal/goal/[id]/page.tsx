@@ -19,6 +19,8 @@ import {
   type MalDetaljV2Data,
   type MalStigeTrinn,
 } from "@/components/portal/v2/MalDetaljV2";
+import { beregnGoalProgress } from "@/lib/portal/goals/progress";
+import { PYR_LABEL } from "@/lib/pyramide";
 import { lesSgMaal } from "@/lib/domain/maal-fremdrift";
 
 type GoalStatus = "ACTIVE" | "ACHIEVED" | "ABANDONED";
@@ -42,6 +44,8 @@ function goalTypeLabelNorsk(type: string): string {
   if (type === "HCP_TARGET") return "HCP-MÅL";
   if (type === "ROUNDS_PER_MONTH") return "RUNDER/MND";
   if (type === "SG_AREA") return "STROKES GAINED";
+  if (type === "SESSION_FREQUENCY") return "ØKTFREKVENS";
+  if (type === "TEST_SCORE") return "TESTRESULTAT";
   return "MÅL";
 }
 
@@ -49,7 +53,13 @@ function goalTypeUnit(type: string): string {
   if (type === "HCP_TARGET") return "HCP";
   if (type === "ROUNDS_PER_MONTH") return "runder/mnd";
   if (type === "SG_AREA") return "SG";
+  if (type === "SESSION_FREQUENCY") return "økter/uke";
+  if (type === "TEST_SCORE") return "poeng";
   return "";
+}
+
+function formatAchievedDato(d: Date): string {
+  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "long", year: "numeric" });
 }
 
 function buildLadder(currentHcp: number, goalType: string): MalStigeTrinn[] {
@@ -119,37 +129,23 @@ export default async function GoalDetailPage({
 
   const isOwnGoal = goal.userId === user.id;
 
-  const ninetyDaysAgo = new Date(nowMs() - 90 * 24 * 60 * 60 * 1000);
-  const rounds = await prisma.round.findMany({
-    where: { userId: goal.userId, playedAt: { gte: ninetyDaysAgo } },
-    include: { course: { select: { name: true } } },
-    orderBy: { playedAt: "desc" },
-    take: 30,
-  });
+  const [progress, linkedTest, testOptions] = await Promise.all([
+    beregnGoalProgress(goal, { hcp: user.hcp }),
+    goal.linkedTestId
+      ? prisma.testDefinition.findUnique({ where: { id: goal.linkedTestId }, select: { name: true } })
+      : Promise.resolve(null),
+    goal.type === "TEST_SCORE" || isOwnGoal
+      ? prisma.testDefinition.findMany({
+          where: { OR: [{ isCustom: false }, { isCoachApproved: true }] },
+          select: { id: true, name: true },
+          orderBy: { name: "asc" },
+        })
+      : Promise.resolve([]),
+  ]);
 
-  const isResult = goal.type === "HCP_TARGET" || goal.type === "ROUNDS_PER_MONTH";
-
-  const history = rounds.map((r) => ({ value: r.score }));
-
-  const currentValue =
-    goal.type === "HCP_TARGET" && user.hcp != null
-      ? user.hcp
-      : history[0]?.value ?? 0;
-
-  const startValue = history[history.length - 1]?.value ?? currentValue;
   const targetValue = goal.targetValue ?? 0;
 
-  const progressPct = isResult
-    ? Math.max(
-        0,
-        Math.min(
-          100,
-          ((startValue - currentValue) / Math.max(0.001, startValue - targetValue)) * 100,
-        ),
-      )
-    : 0;
-
-  // Simple ETA estimate: weeks at current rate
+  // Simple ETA estimate: weeks until deadline
   let etaWeeks: number | null = null;
   if (goal.targetDate) {
     const ms = goal.targetDate.getTime() - nowMs();
@@ -169,21 +165,32 @@ export default async function GoalDetailPage({
     tittel: goal.title,
     goalType: goal.type,
     status: (goal.status as GoalStatus) ?? "ACTIVE",
-    naaVerdi: currentValue,
+    naaVerdi: progress.value ?? 0,
     maalVerdi: targetValue,
     enhet: goalTypeUnit(goal.type),
-    progressPct,
+    progressPct: progress.pct,
+    hasData: progress.hasData,
+    fremdriftTekst: progress.detail,
     fristTekst: goal.targetDate ? formatDeadline(goal.targetDate) : null,
     etaUker: etaWeeks,
     dagerIgjen: daysUntil(goal.targetDate),
-    stige: buildLadder(currentValue, goal.type),
+    stige: buildLadder(user.hcp ?? 0, goal.type),
     avbruttGrunn: abandonReason,
+    achievedAtTekst: goal.achievedAt
+      ? formatAchievedDato(goal.achievedAt)
+      : goal.status === "ACHIEVED"
+        ? "Dato ukjent"
+        : null,
+    linkedPyramidAreaLabel: goal.linkedPyramidArea ? PYR_LABEL[goal.linkedPyramidArea] : null,
+    linkedTestName: linkedTest?.name ?? null,
     erEget: isOwnGoal,
     initial: {
       title: goal.title,
       type: goal.type,
       targetValue: goal.targetValue,
       targetDate: goal.targetDate ? goal.targetDate.toISOString().slice(0, 10) : null,
+      linkedPyramidArea: goal.linkedPyramidArea,
+      linkedTestId: goal.linkedTestId,
       sgOmrade: lesSgMaal(goal.payload)?.omrade ?? null,
     },
   };
@@ -191,7 +198,7 @@ export default async function GoalDetailPage({
   return (
     <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/mal">Mine mål</TilbakeLenke>
-      <MalDetaljV2 data={data} />
+      <MalDetaljV2 data={data} testOptions={testOptions} />
     </V2Shell>
   );
 }

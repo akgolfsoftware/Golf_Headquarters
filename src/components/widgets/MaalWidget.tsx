@@ -4,7 +4,7 @@
  * Widget-pakke — «Målsetninger» (PlayerHQ).
  *
  * De viktigste aktive målene med fremdrift fra den FELLES beregningen
- * (src/lib/domain/maal-fremdrift.ts) — samme prosent her som på /portal/mal.
+ * (src/lib/portal/goals/progress.ts) — samme prosent her som på /portal/mal.
  * Data fra getMaalWidgetData (src/lib/widgets/maal-widget-data.ts).
  */
 
@@ -26,6 +26,7 @@ const TONE: Record<MaalWidgetMaal["status"], StatusTone> = {
   "on-track": "info",
   behind: "warn",
   achieved: "up",
+  "no-data": "info",
 };
 
 export function MaalWidget({ data }: { data: MaalWidgetData }) {
@@ -86,12 +87,16 @@ export function MaalWidget({ data }: { data: MaalWidgetData }) {
                 </span>
                 <StatusPill tone={TONE[m.status]}>{m.statusLabel}</StatusPill>
               </div>
-              <ProgresjonsBar
-                value={m.pct}
-                max={100}
-                label={<span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.fg2 }}>{m.sub}</span>}
-                color={m.status === "behind" ? T.warn : T.lime}
-              />
+              {m.hasData ? (
+                <ProgresjonsBar
+                  value={m.pct}
+                  max={100}
+                  label={<span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.fg2 }}>{m.sub}</span>}
+                  color={m.status === "behind" ? T.warn : T.lime}
+                />
+              ) : (
+                <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>{m.sub}</span>
+              )}
             </div>
           ))}
         </div>

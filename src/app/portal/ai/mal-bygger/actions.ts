@@ -14,7 +14,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
-import { GoalCategory } from "@/generated/prisma/client";
+import { GoalCategory, PyramidArea } from "@/generated/prisma/client";
 
 const MalSchema = z.object({
   type: z.string().min(1),
@@ -22,6 +22,8 @@ const MalSchema = z.object({
   title: z.string().trim().min(3, "Beskriv målet").max(500),
   targetValue: z.number().nullable().optional(),
   targetDate: z.string().nullable().optional(),
+  linkedPyramidArea: z.nativeEnum(PyramidArea).nullable().optional(),
+  linkedTestId: z.string().nullable().optional(),
 });
 
 const LagreSchema = z.object({
@@ -42,6 +44,8 @@ export async function lagreMalForslag(goals: MalForslagInput[]): Promise<{ count
       title: g.title,
       targetValue: g.targetValue ?? null,
       targetDate: g.targetDate ? new Date(g.targetDate) : null,
+      linkedPyramidArea: g.linkedPyramidArea ?? null,
+      linkedTestId: g.linkedTestId ?? null,
     })),
   });
 
