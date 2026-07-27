@@ -451,28 +451,15 @@ export async function exportTournamentsReport(
   return { success: true, downloadUrl, filename };
 }
 
-/** Fellesmelding til alle spillere i coachens grupper (GroupMember-fan-out). */
-export async function sendTournamentFellesmelding(input: {
-  subject: string;
-  body: string;
-  link?: string;
-}): Promise<{ ok: boolean; count?: number; error?: string }> {
-  const { notifyTournamentToCoachGroups } = await import(
-    "@/lib/workbench/notify-tournament-group"
-  );
-  const result = await notifyTournamentToCoachGroups(input);
-  if (!result.ok) return { ok: false, error: result.error };
-  return { ok: true, count: result.count };
-}
-
 // ============================================================
 // Fellesmelding (D1) — ÉN melding til valgte turneringsdeltakere.
 // Gjenbruker meldings-infrastrukturen: CoachingSession(kind DIRECT) +
 // Notification — samme modell som /portal/coach/melding-trådene og
 // coach→spiller-utsendingen i plan-action-executor. Ingen ny datamodell.
-// Til forskjell fra sendTournamentFellesmelding (gruppe-fan-out via
-// Notification alene) lander DENNE som en ekte melding i hver valgte
-// spillers PlayerHQ-innboks, kun til faktiske deltakere i turneringen.
+// Landet som en ekte melding i hver valgte spillers PlayerHQ-innboks,
+// kun til faktiske deltakere i turneringen. (Den gamle
+// sendTournamentFellesmelding med gruppe-fan-out er fjernet — den sendte
+// til alle spillere i coachens grupper, ikke til deltakerne.)
 // ============================================================
 
 const FellesmeldingSchema = z.object({
