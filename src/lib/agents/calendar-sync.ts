@@ -14,7 +14,7 @@
 // inkrementelle syncToken som garanterer at ingenting hoppes over.
 
 import { prisma } from "@/lib/prisma";
-import { pushBookingToCalendar } from "@/lib/google-calendar";
+import { pushBooking } from "@/lib/google-calendar-kilder";
 import {
   syncSubscriptionEvents,
   type HendelsesEndring,
@@ -71,7 +71,7 @@ export async function runCalendarSync(): Promise<AgentResult> {
 
     for (const b of bookingsUtenEvent) {
       try {
-        const eventId = await pushBookingToCalendar(b.id);
+        const eventId = await pushBooking(b.id);
         if (eventId) pushSynced++;
         else pushFailed++;
       } catch (err) {

@@ -124,6 +124,79 @@ const STEG: Array<{ navn: string; sql: string }> = [
     navn: "subscriptions.mirrorTo",
     sql: `ALTER TABLE "google_calendar_subscriptions" ADD COLUMN IF NOT EXISTS "mirrorTo" TIMESTAMP(3)`,
   },
+  // ── Steg 3: hva vi har pushet UT til Google, og hvor ──────────────────
+  {
+    navn: "pushed_calendar_events",
+    sql: `
+      CREATE TABLE IF NOT EXISTS "pushed_calendar_events" (
+        "id" TEXT NOT NULL,
+        "subscriptionId" TEXT NOT NULL,
+        "googleEventId" TEXT NOT NULL,
+        "kildeType" TEXT NOT NULL,
+        "kildeId" TEXT NOT NULL,
+        "startAt" TIMESTAMP(3) NOT NULL,
+        "endAt" TIMESTAMP(3) NOT NULL,
+        "sistPushetAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT "pushed_calendar_events_pkey" PRIMARY KEY ("id")
+      )`,
+  },
+  {
+    navn: "FK pushed → google_calendar_subscriptions",
+    sql: `
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_constraint WHERE conname = 'pushed_calendar_events_subscriptionId_fkey'
+        ) THEN
+          ALTER TABLE "pushed_calendar_events"
+            ADD CONSTRAINT "pushed_calendar_events_subscriptionId_fkey"
+            FOREIGN KEY ("subscriptionId") REFERENCES "google_calendar_subscriptions"("id")
+            ON DELETE CASCADE ON UPDATE CASCADE;
+        END IF;
+      END $$`,
+  },
+  {
+    navn: "unique (subscriptionId, kildeType, kildeId)",
+    sql: `CREATE UNIQUE INDEX IF NOT EXISTS "pushed_calendar_events_subscriptionId_kildeType_kildeId_key"
+          ON "pushed_calendar_events" ("subscriptionId", "kildeType", "kildeId")`,
+  },
+  {
+    navn: "index (kildeType, kildeId)",
+    sql: `CREATE INDEX IF NOT EXISTS "pushed_calendar_events_kildeType_kildeId_idx"
+          ON "pushed_calendar_events" ("kildeType", "kildeId")`,
+  },
+  {
+    navn: "index (googleEventId)",
+    sql: `CREATE INDEX IF NOT EXISTS "pushed_calendar_events_googleEventId_idx"
+          ON "pushed_calendar_events" ("googleEventId")`,
+  },
+  // Eksisterende bookinger som allerede er pushet: ta med koblingen inn i den
+  // nye tabellen, slik at de oppdateres/slettes riktig framover i stedet for
+  // å bli duplisert ved neste push. Kun push-kalendere, og kun der raden ikke
+  // finnes fra før.
+  {
+    navn: "migrer eksisterende Booking.googleEventId",
+    sql: `
+      INSERT INTO "pushed_calendar_events"
+        ("id", "subscriptionId", "googleEventId", "kildeType", "kildeId", "startAt", "endAt")
+      SELECT
+        gen_random_uuid()::text,
+        s."id",
+        b."googleEventId",
+        'BOOKING',
+        b."id",
+        b."startAt",
+        b."endAt"
+      FROM "bookings" b
+      JOIN "service_types" st ON st."id" = b."serviceTypeId"
+      JOIN "google_calendar_connections" c ON c."userId" = st."coachUserId"
+      JOIN "google_calendar_subscriptions" s
+        ON s."connectionId" = c."id" AND s."syncPush" = true AND s."active" = true
+      WHERE b."googleEventId" IS NOT NULL
+      ON CONFLICT ("subscriptionId", "kildeType", "kildeId") DO NOTHING`,
+  },
 ];
 
 async function main() {

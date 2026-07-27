@@ -2058,8 +2058,9 @@ model GoogleCalendarSubscription {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
-  connection GoogleCalendarConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
-  events     GoogleCalendarEvent[]
+  connection   GoogleCalendarConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  events       GoogleCalendarEvent[]
+  pushedEvents PushedCalendarEvent[]
 
   @@unique([connectionId, googleCalendarId])
   @@index([connectionId, active])
@@ -2115,6 +2116,39 @@ model GoogleCalendarEvent {
   @@index([iCalUid])
   @@index([bookingId])
   @@map("google_calendar_events")
+}
+
+// Hva AgencyOS har pushet UT til Google, og hvor (steg 3, 2026-07-27).
+//
+// Erstatter det skalare Booking.googleEventId, som bare rommet ÉN event-id:
+// hadde coachen flere push-kalendere, ble kun den første lagret, og
+// oppdatering/sletting traff bare den ene. Her får hver (kalender, kilde) sin
+// egen rad, så alt kan holdes i synk og ryddes bort igjen.
+//
+// kildeType: BOOKING | CALENDAR_EVENT | GROUP_SCHEDULE | TRAINING_SESSION
+// Bevisst plain string + kildeId uten @relation: kildene ligger i fire ulike
+// tabeller, og en polymorf FK finnes ikke i Prisma. Opprydding skjer eksplisitt
+// via fjernKildeFraGoogle når kilden slettes.
+model PushedCalendarEvent {
+  id             String   @id @default(cuid())
+  subscriptionId String
+  googleEventId  String
+  kildeType      String
+  kildeId        String
+  // Naiv veggklokke, speiler kildens tid — brukes til å hoppe over push når
+  // ingenting er endret.
+  startAt        DateTime
+  endAt          DateTime
+  sistPushetAt   DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  subscription GoogleCalendarSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@unique([subscriptionId, kildeType, kildeId])
+  @@index([kildeType, kildeId])
+  @@index([googleEventId])
+  @@map("pushed_calendar_events")
 }
 
 // ---------- CoachHQ-modeller (Fase 2.1) ----------

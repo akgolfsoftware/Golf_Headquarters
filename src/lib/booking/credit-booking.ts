@@ -7,7 +7,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { audit } from "@/lib/audit";
-import { pushBookingToCalendar } from "@/lib/google-calendar";
+import { pushBooking } from "@/lib/google-calendar-kilder";
 import { notify } from "@/lib/notifications";
 
 export type CreditBookingInput = {
@@ -164,7 +164,7 @@ export async function createCreditBooking(
 
   // Best-effort: push til coachens Google Calendar (oppdaterer Booking.googleEventId)
   try {
-    await pushBookingToCalendar(result.id);
+    await pushBooking(result.id);
   } catch (err) {
     console.error("[credit-booking] calendar push failed", err);
   }

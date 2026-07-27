@@ -6,6 +6,7 @@ import { Prisma } from "@/generated/prisma/client";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { pushGruppeTime } from "@/lib/google-calendar-kilder";
 
 type ActionResult = { ok: true } | { ok: false; feil: string };
 
@@ -125,8 +126,9 @@ export async function opprettGruppeTrening(
     return { ok: false, feil: "Ugyldig dato/tid." };
   }
 
+  let opprettetId: string;
   try {
-    await prisma.groupSchedule.create({
+    const opprettet = await prisma.groupSchedule.create({
       data: {
         groupId,
         title: data.title,
@@ -138,9 +140,13 @@ export async function opprettGruppeTrening(
         maxParticipants: data.maxParticipants || null,
       },
     });
+    opprettetId = opprettet.id;
   } catch (_e) {
     return { ok: false, feil: "Kunne ikke opprette gruppe trening." };
   }
+
+  // Steg 3: gruppetimer skal også synes i Google-kalenderen.
+  await pushGruppeTime(opprettetId);
 
   await audit({
     actorId: coach.id,
@@ -180,8 +186,9 @@ export async function dupliserGruppeTime(
   const duration = original.endAt.getTime() - original.startAt.getTime();
   const endAt = new Date(startAt.getTime() + duration);
 
+  let duplikatId: string;
   try {
-    await prisma.groupSchedule.create({
+    const duplikat = await prisma.groupSchedule.create({
       data: {
         groupId,
         title: original.title,
@@ -193,9 +200,12 @@ export async function dupliserGruppeTime(
         maxParticipants: original.maxParticipants,
       },
     });
+    duplikatId = duplikat.id;
   } catch (_e) {
     return { ok: false, feil: "Kunne ikke duplisere." };
   }
+
+  await pushGruppeTime(duplikatId);
 
   await audit({
     actorId: coach.id,

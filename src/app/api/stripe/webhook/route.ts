@@ -6,7 +6,7 @@ import {
   creditsForPriceId,
   tierForPriceId,
 } from "@/lib/stripe";
-import { pushBookingToCalendar } from "@/lib/google-calendar";
+import { pushBooking } from "@/lib/google-calendar-kilder";
 import {
   type SubscriptionStatus,
 } from "@/generated/prisma/client";
@@ -286,7 +286,7 @@ export async function POST(req: Request) {
         //   - recordCheckoutSession (6 DB-queries, opp til 15 sek)
         //   - subscription-sync (Stripe API-kall)
         //   - sendBookingConfirmation (Resend, 1-3 sek)
-        //   - pushBookingToCalendar (Google API, 2-5 sek per kalender)
+        //   - pushBooking (Google API, 2-5 sek per kalender)
         //   - notifyCoach (in-app + e-post til coach, B4)
         after(async () => {
           try {
@@ -321,7 +321,7 @@ export async function POST(req: Request) {
               );
             }
             try {
-              await pushBookingToCalendar(bookingId);
+              await pushBooking(bookingId);
             } catch (err) {
               console.error("[stripe-webhook] calendar-push failed", err);
             }

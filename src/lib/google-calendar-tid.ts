@@ -55,6 +55,32 @@ export function tilNaivVeggklokke(instant: Date): Date {
 }
 
 /**
+ * Motsatt vei: naiv veggklokke → streng Google kan tolke som Oslo-tid.
+ *
+ * Returnerer «2026-07-28T15:00:00» UTEN tidssone-suffiks. Den MÅ sendes
+ * sammen med `timeZone: "Europe/Oslo"` i samme start/end-objekt.
+ *
+ * FELLE (dette var en ekte feil i booking-push før 2026-07-27):
+ * `startAt.toISOString()` gir «2026-07-28T15:00:00.000Z» — altså med Z. Når
+ * dateTime har eksplisitt offset, IGNORERER Google `timeZone`-feltet og tolker
+ * tiden som UTC. En booking coachen så som 15:00 havnet dermed 17:00 i Google
+ * om sommeren. Derfor sender vi tid uten offset + timeZone ved siden av.
+ */
+export function fraNaivVeggklokke(naiv: Date): string {
+  const p = (n: number) => String(n).padStart(2, "0");
+  return (
+    `${naiv.getFullYear()}-${p(naiv.getMonth() + 1)}-${p(naiv.getDate())}` +
+    `T${p(naiv.getHours())}:${p(naiv.getMinutes())}:${p(naiv.getSeconds())}`
+  );
+}
+
+/** Heldags-format for Google: «2026-07-28» (start.date/end.date). */
+export function tilHeldagsDato(naiv: Date): string {
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${naiv.getFullYear()}-${p(naiv.getMonth() + 1)}-${p(naiv.getDate())}`;
+}
+
+/**
  * Google leverer heldagshendelser som `start.date` ("2026-07-28"), tidsbestemte
  * som `start.dateTime`. Begge oversettes til naiv veggklokke — se
  * tilNaivVeggklokke for hvorfor.

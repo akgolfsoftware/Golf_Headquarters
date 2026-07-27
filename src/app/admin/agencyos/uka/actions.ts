@@ -10,7 +10,7 @@ import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
-import { pushBookingToCalendar } from "@/lib/google-calendar";
+import { pushBooking } from "@/lib/google-calendar-kilder";
 
 const FlyttSchema = z.object({
   bookingId: z.string().min(1),
@@ -66,7 +66,7 @@ export async function flyttBookingTilDag(
 
   // Hold Google-kalenderen i synk etter flytting (best-effort).
   try {
-    await pushBookingToCalendar(booking.id);
+    await pushBooking(booking.id);
   } catch (err) {
     console.error("[uka] Google-push etter flytting feilet", booking.id, err);
   }
