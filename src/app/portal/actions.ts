@@ -21,6 +21,7 @@ import {
   type OptimalSessionHint,
 } from "@/lib/portal/optimal-session";
 import { nesteBesteHandling, finnDagensAktiveOkt } from "@/lib/portal/neste-beste-handling";
+import { beregnMaalFremdrift } from "@/lib/domain/maal-fremdrift";
 
 // ── Types ─────────────────────────────────────────────────────────
 
@@ -342,21 +343,13 @@ export async function getGoals(userId: string, limit = 3): Promise<GoalItem[]> {
     where: { userId, status: { in: ["ACTIVE", "ACHIEVED"] } },
     orderBy: [{ status: "asc" }, { targetDate: "asc" }, { createdAt: "desc" }],
     take: limit,
-    select: { id: true, title: true, category: true, status: true, targetValue: true, targetDate: true, createdAt: true },
+    select: { id: true, type: true, title: true, category: true, status: true, targetValue: true, targetDate: true, createdAt: true },
   });
 
   const now = new Date();
   return goals.map((g) => {
     const daysLeft = g.targetDate ? Math.ceil((g.targetDate.getTime() - now.getTime()) / 86_400_000) : null;
-    // Progress: forenklet ut fra måltype. Hvis targetDate finnes, regner vi tidsbasert fremdrift.
-    let progress = 0;
-    if (g.targetDate) {
-      const created = g.createdAt.getTime();
-      const total = g.targetDate.getTime() - created;
-      const elapsed = now.getTime() - created;
-      progress = total > 0 ? Math.min(100, Math.max(0, Math.round((elapsed / total) * 100))) : 0;
-    }
-    if (g.status === "ACHIEVED") progress = 100;
+    const { pct: progress } = beregnMaalFremdrift(g, { naa: now });
 
     const status = g.status as GoalItem["status"];
 
