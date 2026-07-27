@@ -161,6 +161,14 @@ export function CockpitV2({
           Kø
         </CTAPill>
       </Link>
+      {/* Opptak: «Mer» er låst til fem rom, så cockpit-hurtigstart er den
+          eneste synlige veien inn (Cmd+K finnes, men virker ikke på mobil —
+          og opptak brukes nettopp fra telefonen på range/bane). */}
+      <Link href="/admin/recording" style={{ textDecoration: "none" }}>
+        <CTAPill ghost icon="mic">
+          Opptak
+        </CTAPill>
+      </Link>
     </div>
   );
 
