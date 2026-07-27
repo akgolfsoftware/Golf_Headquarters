@@ -13,7 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
 import type { PyramidArea, SessionStatusV2 } from "@/generated/prisma/client";
 import type { LiveV2Drill, LiveV2DrillLog, LiveV2Session } from "@/components/portal/live";
-import { triggerLiveSessionAgent } from "@/lib/agents/triggers";
+import { triggerLiveSessionAgent, triggerMemoryWrite } from "@/lib/agents/triggers";
 import { GENERERT_FRA } from "@/lib/workbench/v2-sync";
 import { applyPositionTaskReps } from "@/lib/teknisk-plan/apply-reps";
 
@@ -528,6 +528,13 @@ export async function lagreSpillerVurdering(
       },
     });
   }
+
+  // Fire-and-forget: destiller økta til varige minner (ai_memories).
+  void triggerMemoryWrite({
+    userId: user.id,
+    sessionId,
+    spillerVurdering: { kvalitet: input.kvalitet, nesteFokus: input.nesteFokus },
+  });
 
   revalidatePath(`/portal/live/${sessionId}/summary`);
   revalidatePath("/portal/planlegge");

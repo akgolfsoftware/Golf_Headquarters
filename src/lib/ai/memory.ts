@@ -1,14 +1,16 @@
-// Bruker-spesifikk minne-skjelett for AI-agents.
+// Bruker-spesifikk minne for AI-agents — nå DB-backet (ai_memories).
 //
-// Tanken: hver bruker (Anders som coach, eller en spiller) har persistert
-// kontekst som overlever mellom samtaler — f.eks. preferanser, fokusområder,
-// tidligere coachings-beslutninger.
+// recallMemory henter spillerens varige minner (semantisk/prosedyrisk/
+// episodisk) fra ai_memories via Prisma, og flettes med den gamle in-memory-
+// storen (beholdt som skrive-cache og test-/fallback-lag). ALLE DB-feil
+// degraderer stille til in-memory — minne skal aldri knekke en agent.
 //
-// Foreløpig in-memory-stub. Persistering via Prisma kommer i egen fase
-// (ny modell `AiMemory` eies av Spor 3). Når den landes, swappes denne
-// modulen til å lese/skrive til DB uten endringer i kallerne.
+// Skriveveien for økter ligger i memory-writer.ts (LLM-oppsummering ved
+// øktslutt); konsolidering (episodisk → semantisk) kjøres av cron-agenten
+// memory-consolidation.
 
 import "server-only";
+import { prisma } from "@/lib/prisma";
 
 export type AiMemoryEntry = {
   userId: string;
@@ -17,17 +19,25 @@ export type AiMemoryEntry = {
   updatedAt: Date;
 };
 
-// Midlertidig in-memory-store. Reset ved server-restart — kun for utvikling.
+// In-memory L1 — skrive-cache + fallback (reset ved server-restart).
 const _store = new Map<string, AiMemoryEntry>();
 
 function makeKey(userId: string, key: string): string {
   return `${userId}::${key}`;
 }
 
+const KIND_LABEL: Record<string, string> = {
+  EPISODIC: "tidligere økt",
+  SEMANTIC: "om spilleren",
+  PROCEDURAL: "virker for spilleren",
+};
+
+/** Maks minner injisert i prompt — hold konteksten lett. */
+const RECALL_LIMIT = 12;
+
 /**
- * Lagre eller oppdatere en minne-oppføring for en bruker.
- *
- * TODO: persistering via Prisma (modell AiMemory) — Spor 3 sin fase.
+ * Lagre en minne-oppføring. Skriver til in-memory-cachen umiddelbart og
+ * persisterer som SEMANTIC-minne i ai_memories (best effort).
  */
 export async function rememberFact(opts: {
   userId: string;
@@ -41,23 +51,65 @@ export async function rememberFact(opts: {
     updatedAt: new Date(),
   };
   _store.set(makeKey(opts.userId, opts.key), entry);
+  try {
+    const { writeMemories } = await import("./memory-store");
+    await writeMemories([
+      {
+        playerId: opts.userId,
+        kind: "SEMANTIC",
+        content: `${opts.key}: ${opts.value}`,
+        metadata: { key: opts.key },
+        sourceType: "manual",
+      },
+    ]);
+  } catch {
+    // best effort — cachen har verdien
+  }
   return entry;
 }
 
 /**
- * Hent alle minne-oppføringer for en bruker. Brukes til å bygge system-prompt
- * med bruker-spesifikk kontekst.
+ * Hent minne for prompt-injeksjon: varige minner fra ai_memories (nyeste
+ * først, maks RECALL_LIMIT) flettet med in-memory-oppføringer.
  */
 export async function recallMemory(userId: string): Promise<AiMemoryEntry[]> {
   const out: AiMemoryEntry[] = [];
+  try {
+    const rader = await prisma.aiMemory.findMany({
+      where: { playerId: userId },
+      orderBy: { updatedAt: "desc" },
+      take: RECALL_LIMIT,
+      select: { kind: true, content: true, metadata: true, updatedAt: true },
+    });
+    for (const r of rader) {
+      const meta =
+        r.metadata && typeof r.metadata === "object" && !Array.isArray(r.metadata)
+          ? (r.metadata as Record<string, unknown>)
+          : {};
+      out.push({
+        userId,
+        key:
+          typeof meta.key === "string"
+            ? meta.key
+            : (KIND_LABEL[r.kind] ?? r.kind.toLowerCase()),
+        value: r.content,
+        updatedAt: r.updatedAt,
+      });
+    }
+  } catch {
+    // DB utilgjengelig (f.eks. tester) → kun in-memory
+  }
   for (const entry of _store.values()) {
-    if (entry.userId === userId) out.push(entry);
+    if (entry.userId === userId && !out.some((e) => e.key === entry.key)) {
+      out.push(entry);
+    }
   }
   return out;
 }
 
 /**
- * Slett en minne-oppføring (f.eks. når bruker korrigerer eller saken er løst).
+ * Slett en minne-oppføring fra cachen (DB-sletting håndteres av
+ * konsolidering/admin — bevisst ikke her).
  */
 export async function forgetFact(opts: {
   userId: string;

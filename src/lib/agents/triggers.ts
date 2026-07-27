@@ -94,3 +94,17 @@ export async function triggerSwingVideoAnalyst(opts: {
     console.error("[trigger] swing-video-analyst feilet", err);
   }
 }
+
+/** Fire-and-forget: oppsummer LIVE-økta til varige minner (ai_memories). */
+export async function triggerMemoryWrite(opts: {
+  userId: string;
+  sessionId: string;
+  spillerVurdering?: { kvalitet: number; nesteFokus: string; rpe?: number | null };
+}): Promise<void> {
+  try {
+    const { summarizeSessionToMemories } = await import("@/lib/ai/memory-writer");
+    await summarizeSessionToMemories(opts);
+  } catch (err) {
+    console.error("[trigger] memory-writer feilet", err);
+  }
+}
