@@ -5,13 +5,17 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@/generated/prisma/client";
 import { nonEmpty, isoDate } from "@/lib/validation/schemas";
+import { SG_OMRADER, type SgOmrade } from "@/lib/domain/maal-fremdrift";
+import { hentSgSnittPerOmrade } from "@/lib/portal/sg-omrade-snitt";
 
 const GoalInputSchema = z.object({
   type: z.string().min(1, "Type er påkrevd"),
   title: nonEmpty(500),
   targetValue: z.number().nullable().optional(),
   targetDate: isoDate.nullable().optional(),
+  sgOmrade: z.enum(SG_OMRADER).nullable().optional(),
 });
 
 const GoalIdSchema = z.string().min(1, "Mål-ID er påkrevd");
@@ -25,12 +29,49 @@ export type GoalInput = {
   title: string;
   targetValue?: number | null;
   targetDate?: string | null;
+  /** SG-område for SG_AREA-mål. Kreves for at fremdrift skal kunne måles. */
+  sgOmrade?: SgOmrade | null;
 };
+
+/**
+ * Bygger payload for et SG-mål: området + spillerens SG i området NÅ som
+ * utgangspunkt («baseline»). SG har ikke noe naturlig nullpunkt — et mål kan
+ * gå fra −1,5 til −0,5 — så reisen må måles fra der spilleren faktisk står
+ * når området velges. Baselinen settes bare første gang (eller når området
+ * byttes), ellers ville hver redigering nullstilt fremdriften.
+ */
+async function byggSgPayload(
+  userId: string,
+  eksisterende: Record<string, unknown>,
+  sgOmrade: SgOmrade | null | undefined,
+): Promise<Prisma.InputJsonObject> {
+  // sgOmrade/sgStart bygges alltid på nytt under — alt annet i payloaden
+  // (f.eks. abandonReason) skal bevares.
+  const { sgOmrade: _gammeltOmrade, sgStart: _gammelStart, ...ovrig } = eksisterende;
+  const rest = ovrig as Prisma.InputJsonObject;
+
+  if (!sgOmrade) return rest;
+
+  const uendretOmrade = eksisterende.sgOmrade === sgOmrade;
+  const gammelStart = eksisterende.sgStart;
+  if (uendretOmrade && typeof gammelStart === "number") {
+    return { ...rest, sgOmrade, sgStart: gammelStart };
+  }
+
+  const snitt = await hentSgSnittPerOmrade(userId);
+  const start = snitt[sgOmrade];
+  // Ingen runder ennå → ingen ærlig baseline. Området lagres likevel, og
+  // baselinen settes neste gang målet lagres etter at runder finnes.
+  return start == null ? { ...rest, sgOmrade } : { ...rest, sgOmrade, sgStart: start };
+}
 
 export async function createGoal(input: GoalInput) {
   GoalInputSchema.parse(input);
   const user = await requireConsentingUser();
   if (!input.title.trim()) throw new Error("missing-title");
+
+  const payload =
+    input.type === "SG_AREA" ? await byggSgPayload(user.id, {}, input.sgOmrade) : null;
 
   await prisma.goal.create({
     data: {
@@ -39,6 +80,7 @@ export async function createGoal(input: GoalInput) {
       title: input.title.trim(),
       targetValue: input.targetValue ?? null,
       targetDate: input.targetDate ? new Date(input.targetDate) : null,
+      ...(payload && Object.keys(payload).length > 0 ? { payload } : {}),
     },
   });
 
@@ -120,6 +162,18 @@ export async function endreGoal(goalId: string, input: GoalInput) {
   if (!goal || goal.userId !== user.id) throw new Error("forbidden");
   if (!input.title.trim()) throw new Error("missing-title");
 
+  const eksisterende =
+    goal.payload && typeof goal.payload === "object" && !Array.isArray(goal.payload)
+      ? (goal.payload as Record<string, unknown>)
+      : {};
+
+  // SG-felter fjernes hvis målet ikke lenger er et SG-mål — ellers ville et
+  // gammelt område ligget igjen og gitt fremdrift for feil ting.
+  const payload =
+    input.type === "SG_AREA"
+      ? await byggSgPayload(user.id, eksisterende, input.sgOmrade)
+      : await byggSgPayload(user.id, eksisterende, null);
+
   await prisma.goal.update({
     where: { id: goalId },
     data: {
@@ -127,6 +181,7 @@ export async function endreGoal(goalId: string, input: GoalInput) {
       title: input.title.trim(),
       targetValue: input.targetValue ?? null,
       targetDate: input.targetDate ? new Date(input.targetDate) : null,
+      payload: Object.keys(payload).length > 0 ? payload : Prisma.DbNull,
     },
   });
 

@@ -4,7 +4,13 @@
 
 import test from "node:test";
 import assert from "node:assert/strict";
-import { beregnMaalFremdrift, HCP_START, type MaalFremdriftInput } from "./maal-fremdrift";
+import {
+  beregnMaalFremdrift,
+  lesSgMaal,
+  HCP_START,
+  SG_OMRADE_NAVN,
+  type MaalFremdriftInput,
+} from "./maal-fremdrift";
 
 const D = (iso: string) => new Date(iso);
 
@@ -111,4 +117,109 @@ test("uten målbar kontekst og uten frist: 0 % og kilde ingen", () => {
 
 test("HCP_START er 54 (kontrakten mot gamle /portal/mal-beregningen)", () => {
   assert.equal(HCP_START, 54);
+});
+
+// ── SG_AREA ────────────────────────────────────────────────────────
+
+function sgMaal(over: Partial<MaalFremdriftInput> = {}): MaalFremdriftInput {
+  return maal({ type: "SG_AREA", targetValue: 0.5, ...over });
+}
+
+test("SG_AREA: reise fra baseline til målverdi regnes fra ekte SG", () => {
+  // Baseline −0,5 → mål +0,5 er en reise på 1,0. Nå 0,0 = halvveis.
+  const out = beregnMaalFremdrift(
+    sgMaal({ payload: { sgOmrade: "PUTT", sgStart: -0.5 } }),
+    { sgSnitt: { PUTT: 0 } },
+  );
+  assert.equal(out.kilde, "sg");
+  assert.equal(out.sgOmrade, "PUTT");
+  assert.equal(out.pct, 50);
+  assert.equal(out.status, "on-track");
+});
+
+test("SG_AREA: virker når både baseline og mål er negative", () => {
+  // Fra −1,5 mot −0,5 (reise 1,0). Nå −1,25 = 25 %.
+  const out = beregnMaalFremdrift(
+    sgMaal({ targetValue: -0.5, payload: { sgOmrade: "APP", sgStart: -1.5 } }),
+    { sgSnitt: { APP: -1.25 } },
+  );
+  assert.equal(out.kilde, "sg");
+  assert.equal(out.pct, 25);
+  assert.equal(out.status, "behind");
+});
+
+test("SG_AREA: nådd målverdi gir 100 og achieved", () => {
+  const out = beregnMaalFremdrift(
+    sgMaal({ payload: { sgOmrade: "OTT", sgStart: -0.2 } }),
+    { sgSnitt: { OTT: 0.7 } },
+  );
+  assert.equal(out.pct, 100);
+  assert.equal(out.status, "achieved");
+});
+
+test("SG_AREA: tilbakegang under baseline klemmes til 0, aldri negativ", () => {
+  const out = beregnMaalFremdrift(
+    sgMaal({ payload: { sgOmrade: "ARG", sgStart: 0 } }),
+    { sgSnitt: { ARG: -0.9 } },
+  );
+  assert.equal(out.pct, 0);
+  assert.equal(out.status, "behind");
+});
+
+test("SG_AREA uten område: ingen fabrikkert prosent — tid mot frist + trengerOmrade", () => {
+  const out = beregnMaalFremdrift(
+    sgMaal({ targetDate: D("2026-01-11T00:00:00Z") }),
+    { naa: D("2026-01-06T00:00:00Z"), sgSnitt: { PUTT: 0.4 } },
+  );
+  assert.equal(out.kilde, "tid");
+  assert.equal(out.pct, 50);
+  assert.equal(out.trengerOmrade, true);
+  assert.equal(out.sgOmrade, undefined);
+});
+
+test("SG_AREA uten område og uten frist: 0 %, kilde ingen, trengerOmrade", () => {
+  const out = beregnMaalFremdrift(sgMaal());
+  assert.equal(out.pct, 0);
+  assert.equal(out.kilde, "ingen");
+  assert.equal(out.trengerOmrade, true);
+});
+
+test("SG_AREA med område, men ingen runder ennå: tid mot frist, ikke trengerOmrade", () => {
+  const out = beregnMaalFremdrift(
+    sgMaal({
+      payload: { sgOmrade: "PUTT", sgStart: -0.3 },
+      targetDate: D("2026-01-11T00:00:00Z"),
+    }),
+    { naa: D("2026-01-06T00:00:00Z"), sgSnitt: { PUTT: null } },
+  );
+  assert.equal(out.kilde, "tid");
+  assert.equal(out.sgOmrade, "PUTT");
+  assert.equal(out.trengerOmrade, undefined);
+});
+
+test("SG_AREA der baseline er lik målverdi: ingen deling på null", () => {
+  const out = beregnMaalFremdrift(
+    sgMaal({ targetValue: 0.4, payload: { sgOmrade: "APP", sgStart: 0.4 } }),
+    { sgSnitt: { APP: 0.9 } },
+  );
+  assert.notEqual(out.kilde, "sg");
+  assert.ok(Number.isFinite(out.pct));
+});
+
+test("lesSgMaal tåler søppel i payload uten å kaste", () => {
+  assert.equal(lesSgMaal(null), null);
+  assert.equal(lesSgMaal("PUTT"), null);
+  assert.equal(lesSgMaal([{ sgOmrade: "PUTT" }]), null);
+  assert.equal(lesSgMaal({ sgOmrade: "TULL" }), null);
+  assert.equal(lesSgMaal({ abandonReason: "gikk videre" }), null);
+  assert.deepEqual(lesSgMaal({ sgOmrade: "ARG" }), { omrade: "ARG", start: null });
+  assert.deepEqual(lesSgMaal({ sgOmrade: "ARG", sgStart: "-0.4" }), { omrade: "ARG", start: null });
+  assert.deepEqual(lesSgMaal({ sgOmrade: "ARG", sgStart: -0.4 }), { omrade: "ARG", start: -0.4 });
+});
+
+test("SG-områdenavnene følger AK-fasiten", () => {
+  assert.equal(SG_OMRADE_NAVN.OTT, "Tee Total");
+  assert.equal(SG_OMRADE_NAVN.APP, "Innspill");
+  assert.equal(SG_OMRADE_NAVN.ARG, "Nærspill");
+  assert.equal(SG_OMRADE_NAVN.PUTT, "Putting");
 });

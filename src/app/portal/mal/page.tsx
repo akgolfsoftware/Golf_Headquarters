@@ -14,7 +14,8 @@ import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MalHubV2, type MalHubData, type MalGoalStatus, type MalGoalRad } from "@/components/portal/v2/MalHubV2";
 import type { Goal } from "@/generated/prisma/client";
 import { TilbakeLenke } from "@/components/v2";
-import { beregnMaalFremdrift } from "@/lib/domain/maal-fremdrift";
+import { beregnMaalFremdrift, SG_OMRADE_NAVN } from "@/lib/domain/maal-fremdrift";
+import { hentSgSnittPerOmrade, type SgSnittPerOmrade } from "@/lib/portal/sg-omrade-snitt";
 import { startOfMonth } from "@/lib/uke-helpers";
 
 export const dynamic = "force-dynamic";
@@ -36,12 +37,23 @@ function formatKortDato(d: Date): string {
   return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" });
 }
 
-type FremdriftKtx = { hcp: number | null; runderDenneMnd: number };
+type FremdriftKtx = {
+  hcp: number | null;
+  runderDenneMnd: number;
+  sgSnitt: SgSnittPerOmrade;
+};
+
+/** SG med fortegn og norsk desimalkomma — «+0,35» / «−0,4» / «–» når ukjent. */
+function formatSg(v: number | null | undefined): string {
+  if (v == null) return "–";
+  return `${v < 0 ? "−" : "+"}${Math.abs(v).toFixed(2).replace(".", ",")}`;
+}
 
 function beregnFremdrift(goal: Goal, ktx: FremdriftKtx): { pct: number; status: MalGoalStatus; sub: string } {
-  const { pct, status, kilde } = beregnMaalFremdrift(goal, {
+  const { pct, status, kilde, sgOmrade, trengerOmrade } = beregnMaalFremdrift(goal, {
     hcp: ktx.hcp,
     runderDenneMnd: ktx.runderDenneMnd,
+    sgSnitt: ktx.sgSnitt,
   });
   const fristStr = goal.targetDate ? `Frist: ${formatKortDato(goal.targetDate)}` : "Ingen frist";
 
@@ -54,6 +66,12 @@ function beregnFremdrift(goal: Goal, ktx: FremdriftKtx): { pct: number; status: 
         : `Mål nådd! HCP ${ktx.hcp.toFixed(1)}`;
   } else if (kilde === "runder" && goal.targetValue !== null) {
     sub = `${ktx.runderDenneMnd} av ${goal.targetValue} runder denne måneden`;
+  } else if (kilde === "sg" && sgOmrade && goal.targetValue !== null) {
+    sub = `${SG_OMRADE_NAVN[sgOmrade]}: ${formatSg(ktx.sgSnitt[sgOmrade])} nå · mål ${formatSg(goal.targetValue)} · ${fristStr}`;
+  } else if (trengerOmrade) {
+    sub = "Velg SG-område i målet for å måle fremdrift";
+  } else if (sgOmrade) {
+    sub = `${SG_OMRADE_NAVN[sgOmrade]} · trenger flere registrerte runder · ${fristStr}`;
   } else {
     sub = goal.targetDate ? fristStr : goal.title;
   }
@@ -86,7 +104,7 @@ const ACHIEVEMENT_TITLER: Record<string, string> = {
 export default async function V2MalPreviewPage() {
   const user = await requirePortalUser();
 
-  const [goals, sisteMilepael, runderDenneMnd] = await Promise.all([
+  const [goals, sisteMilepael, runderDenneMnd, sgSnitt] = await Promise.all([
     prisma.goal.findMany({
       where: { userId: user.id, status: "ACTIVE" },
       orderBy: { createdAt: "desc" },
@@ -98,9 +116,10 @@ export default async function V2MalPreviewPage() {
     prisma.round.count({
       where: { userId: user.id, playedAt: { gte: startOfMonth(new Date()) } },
     }),
+    hentSgSnittPerOmrade(user.id),
   ]);
 
-  const ktx: FremdriftKtx = { hcp: user.hcp, runderDenneMnd };
+  const ktx: FremdriftKtx = { hcp: user.hcp, runderDenneMnd, sgSnitt };
 
   const data: MalHubData = {
     antall: goals.length,
