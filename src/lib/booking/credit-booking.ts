@@ -104,6 +104,7 @@ export async function createCreditBooking(
       // advisory-lås — atomisk sammen med credit-trekk og opprettelse.
       await sjekkKollisjon(tx, {
         coachId: service.coachUserId,
+        serviceTypeId: service.id,
         startAt,
         endAt,
       });

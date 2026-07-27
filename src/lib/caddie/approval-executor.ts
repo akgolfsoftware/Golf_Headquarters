@@ -131,6 +131,7 @@ export async function executeApprovedTool(
         booking = await prisma.$transaction(async (tx) => {
           await sjekkKollisjon(tx, {
             coachId: service.coachUserId ?? null,
+            serviceTypeId: service.id,
             startAt: start,
             endAt: end,
           });

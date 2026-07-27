@@ -17,6 +17,7 @@
  */
 
 import { Prisma } from "@/generated/prisma/client";
+import { vurderDeling } from "@/lib/booking/deling";
 
 /** Transaksjonsklient (prisma.$transaction-callback). */
 type Tx = Prisma.TransactionClient;
@@ -32,6 +33,8 @@ export const KOLLISJON_MELDING =
   "Tidspunktet ble nettopp tatt — velg en annen tid.";
 export const FULLT_MELDING =
   "Alle plassene på dette stedet er opptatt i tidsrommet — velg en annen tid.";
+export const DELT_FULLT_MELDING =
+  "Økta er full — alle plassene er tatt.";
 
 /**
  * Kjør INNE i en prisma.$transaction. Tar advisory-lås på coach og fasilitet
@@ -47,9 +50,22 @@ export async function sjekkKollisjon(
     endAt: Date;
     /** Ved flytting: bookingen som flyttes skal ikke telle mot seg selv. */
     ekskluderBookingId?: string;
+    /**
+     * Tjenesten som bookes. Nødvendig for delte økter (2-til-1): kapasiteten
+     * ligger på ServiceType.maxDeltakere. Uten denne behandles alt som
+     * kapasitet 1 — samme oppførsel som før steg 5.
+     */
+    serviceTypeId?: string | null;
   },
 ): Promise<void> {
-  const { coachId, facilityId, startAt, endAt, ekskluderBookingId } = input;
+  const {
+    coachId,
+    facilityId,
+    startAt,
+    endAt,
+    ekskluderBookingId,
+    serviceTypeId,
+  } = input;
 
   // Advisory-låser FØR telling — to samtidige transaksjoner på samme ressurs
   // kjører sjekken etter tur i stedet for parallelt (slippes ved commit/rollback).
@@ -61,7 +77,17 @@ export async function sjekkKollisjon(
   }
 
   if (coachId) {
-    const kollisjon = await tx.booking.findFirst({
+    // Kapasitet fra tjenesten: 1 = vanlig time, >1 = delt økt (f.eks. 2-til-1).
+    let kapasitet = 1;
+    if (serviceTypeId) {
+      const tjeneste = await tx.serviceType.findUnique({
+        where: { id: serviceTypeId },
+        select: { maxDeltakere: true },
+      });
+      kapasitet = tjeneste?.maxDeltakere ?? 1;
+    }
+
+    const overlappende = await tx.booking.findMany({
       where: {
         coachId,
         status: { not: "CANCELLED" },
@@ -69,9 +95,20 @@ export async function sjekkKollisjon(
         endAt: { gt: startAt },
         ...(ekskluderBookingId ? { id: { not: ekskluderBookingId } } : {}),
       },
-      select: { id: true },
+      select: { serviceTypeId: true, startAt: true, endAt: true },
     });
-    if (kollisjon) throw new BookingKollisjon(KOLLISJON_MELDING);
+
+    const vurdering = vurderDeling(
+      overlappende,
+      { serviceTypeId: serviceTypeId ?? "", startAt, endAt },
+      kapasitet,
+    );
+    if (vurdering.utfall === "kollisjon") {
+      throw new BookingKollisjon(KOLLISJON_MELDING);
+    }
+    if (vurdering.utfall === "fullt") {
+      throw new BookingKollisjon(DELT_FULLT_MELDING);
+    }
   }
 
   if (facilityId) {

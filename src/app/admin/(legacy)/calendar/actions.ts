@@ -82,6 +82,7 @@ export async function opprettOktPaaTid(
     booking = await prisma.$transaction(async (tx) => {
       await sjekkKollisjon(tx, {
         coachId: serviceType.coachUserId ?? null,
+        serviceTypeId: serviceType.id,
         facilityId,
         startAt,
         endAt,
@@ -150,7 +151,7 @@ export async function moveSession(
 
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },
-    select: { id: true, startAt: true, endAt: true, status: true, coachId: true, facilityId: true },
+    select: { id: true, startAt: true, endAt: true, status: true, coachId: true, facilityId: true, serviceTypeId: true },
   });
   if (!booking) return { ok: false, feil: "Booking ikke funnet" };
   if (booking.status === "CANCELLED") {
@@ -169,6 +170,7 @@ export async function moveSession(
     await prisma.$transaction(async (tx) => {
       await sjekkKollisjon(tx, {
         coachId: booking.coachId,
+        serviceTypeId: booking.serviceTypeId,
         facilityId: booking.facilityId,
         startAt: start,
         endAt: end,

@@ -251,6 +251,7 @@ export async function rescheduleBooking(input: {
     await prisma.$transaction(async (tx) => {
       await sjekkKollisjon(tx, {
         coachId: input.newCoachId ?? booking.coachId,
+        serviceTypeId: booking.serviceTypeId,
         facilityId: booking.facilityId,
         startAt: newStart,
         endAt: newEnd,

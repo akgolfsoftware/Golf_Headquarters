@@ -138,6 +138,12 @@ const STEG: Array<{ navn: string; sql: string }> = [
           SET "visIKalender" = true
           WHERE "syncPull" = true AND "active" = true AND "visIKalender" = false`,
   },
+  // ── Steg 5: delte økter (2-til-1) ─────────────────────────────────────
+  {
+    navn: "service_types.maxDeltakere",
+    sql: `ALTER TABLE "service_types"
+          ADD COLUMN IF NOT EXISTS "maxDeltakere" INTEGER NOT NULL DEFAULT 1`,
+  },
   // ── Steg 3: hva vi har pushet UT til Google, og hvor ──────────────────
   {
     navn: "pushed_calendar_events",

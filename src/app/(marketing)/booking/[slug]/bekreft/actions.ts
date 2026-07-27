@@ -116,6 +116,7 @@ export async function createBookingCheckout(
       booking = await prisma.$transaction(async (tx) => {
         await sjekkKollisjon(tx, {
           coachId: bookingData.coachId,
+          serviceTypeId: bookingData.serviceTypeId,
           startAt,
           endAt,
         });

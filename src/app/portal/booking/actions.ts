@@ -142,6 +142,7 @@ export async function opprettBookingMedKort(
     booking = await prisma.$transaction(async (tx) => {
       await sjekkKollisjon(tx, {
         coachId: service.coachUserId ?? input.coachId ?? null,
+        serviceTypeId: service.id,
         startAt,
         endAt,
       });

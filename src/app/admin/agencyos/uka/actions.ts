@@ -29,7 +29,7 @@ export async function flyttBookingTilDag(
 
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },
-    select: { id: true, startAt: true, endAt: true, status: true, coachId: true, facilityId: true },
+    select: { id: true, startAt: true, endAt: true, status: true, coachId: true, facilityId: true, serviceTypeId: true },
   });
   if (!booking) return { ok: false, error: "Booking ikke funnet." };
   if (booking.status === "COMPLETED" || booking.status === "CANCELLED") {
@@ -49,6 +49,7 @@ export async function flyttBookingTilDag(
     await prisma.$transaction(async (tx) => {
       await sjekkKollisjon(tx, {
         coachId: booking.coachId,
+        serviceTypeId: booking.serviceTypeId,
         facilityId: booking.facilityId,
         startAt: nyStart,
         endAt: nyEnd,

@@ -724,6 +724,11 @@ model ServiceType {
   name        String
   // Pris i ØRE (Int). Aldri Float for penger. Format i UI: priceOre / 100.
   priceOre    Int
+  // Hvor mange spillere som kan dele samme luke hos samme coach.
+  // 1 = vanlig time. 2 = «2-til-1» (Anders' faste onsdagsøkter). Se
+  // src/lib/booking/deling.ts — overlapp er kun lov ved nøyaktig samme
+  // tjeneste i nøyaktig samme tidsrom.
+  maxDeltakere Int     @default(1)
   durationMin Int
   description String?
   active      Boolean  @default(true)
