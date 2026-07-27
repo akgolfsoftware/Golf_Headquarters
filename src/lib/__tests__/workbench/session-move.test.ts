@@ -90,6 +90,54 @@ describe("weekRefDate", () => {
   });
 });
 
+describe("Oslo-korrekt uke rundt midnatt (gotcha 2026-07-19)", () => {
+  // Instanter der UTC-dagen og Oslo-dagen er ULIKE — rå getDay() på en
+  // UTC-server ga her forrige uke. Assertions leser lokale getters, som per
+  // naiv-veggklokke-konvensjonen gir norsk kalenderdag uansett server-TZ.
+
+  it("vinter: søndag 23:30 UTC = mandag 00:30 Oslo → mandag i NY uke", () => {
+    const instant = new Date("2026-01-04T23:30:00.000Z"); // man 5. jan 00:30 Oslo
+    const mon = mondayOf(instant);
+    assert.equal(mon.getFullYear(), 2026);
+    assert.equal(mon.getMonth(), 0);
+    assert.equal(mon.getDate(), 5);
+    assert.equal(mon.getDay(), 1);
+    assert.equal(mon.getHours(), 0);
+  });
+
+  it("sommer: søndag 22:30 UTC = mandag 00:30 Oslo → mandag i NY uke", () => {
+    const instant = new Date("2026-06-28T22:30:00.000Z"); // man 29. jun 00:30 Oslo
+    const mon = mondayOf(instant);
+    assert.equal(mon.getMonth(), 5);
+    assert.equal(mon.getDate(), 29);
+    assert.equal(mon.getDay(), 1);
+  });
+
+  it("weekRefDate krysser sommertidsskiftet uten å miste mandagen", () => {
+    // Uka man 23. mars 2026; +1 uke krysser DST-start (søn 29. mars).
+    const ref = new Date(2026, 2, 25, 12, 0); // ons 25. mars, lokal
+    const next = weekRefDate(1, ref);
+    assert.equal(next.getDate(), 30);
+    assert.equal(next.getMonth(), 2);
+    assert.equal(next.getDay(), 1);
+    assert.equal(next.getHours(), 0);
+  });
+
+  it("dateForDayIndex treffer søndagen i DST-uka med riktig klokkeslett", () => {
+    const ref = new Date(2026, 2, 25, 12, 0);
+    const sun = dateForDayIndex(6, 18, 0, ref); // søn 29. mars = DST-dagen
+    assert.equal(sun.getDate(), 29);
+    assert.equal(sun.getDay(), 0);
+    assert.equal(sun.getHours(), 18);
+  });
+
+  it("dayIndexFromScheduledAt gir 6 for søndagen i DST-uka", () => {
+    const ref = new Date(2026, 2, 25, 12, 0);
+    const sun = new Date(2026, 2, 29, 18, 0);
+    assert.equal(dayIndexFromScheduledAt(sun, ref), 6);
+  });
+});
+
 describe("parseWeekOffset", () => {
   it("returns 0 for missing/empty/invalid", () => {
     assert.equal(parseWeekOffset(undefined), 0);
