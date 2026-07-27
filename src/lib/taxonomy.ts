@@ -164,6 +164,43 @@ export const M_MILJO = [
   { kode: "M5", label: "Turnering",            beskrivelse: "Reell turneringsrunde" },
 ] as const;
 
+/**
+ * Miljø-gruppering for analyse-filteret (2026-07-27).
+ *
+ * De seks M-kodene er for finkornede å filtrere på i praksis — spilleren vil
+ * vite «hvor mye teknikk har jeg gjort på range vs på bane», ikke skille M1 fra
+ * M2. Denne grupperingen er den ENE kilden for det spørsmålet.
+ *
+ * NB: det finnes tre ulike M0–M5-labelsett i kodebasen (her, portal/
+ * translate-taxonomy.ts og portal-okt/okt-detalj-data.ts) som ikke er enige med
+ * hverandre. De er bevisst ikke rørt her — de driver eksisterende UI-tekst, og
+ * en samkjøring er en egen opprydding.
+ */
+export const MILJO_GRUPPER = ["INNE", "RANGE", "BANE", "TURNERING"] as const;
+export type MiljoGruppe = (typeof MILJO_GRUPPER)[number];
+
+export const MILJO_GRUPPE_LABEL: Record<MiljoGruppe, string> = {
+  INNE: "Innendørs",
+  RANGE: "Range",
+  BANE: "Bane",
+  TURNERING: "Turnering",
+};
+
+const MILJO_TIL_GRUPPE: Record<string, MiljoGruppe> = {
+  M0: "INNE",
+  M1: "RANGE",
+  M2: "RANGE",
+  M3: "BANE",
+  M4: "BANE",
+  M5: "TURNERING",
+};
+
+/** M-kode → grov gruppe. Ukjent/manglende kode gir null (ingen gjetting). */
+export function miljoGruppe(kode: string | null | undefined): MiljoGruppe | null {
+  if (!kode) return null;
+  return MILJO_TIL_GRUPPE[kode] ?? null;
+}
+
 export const PR_PRESS = [
   { kode: "PR1", label: "Ingen press",    beskrivelse: "Fritt utforskende, ingen konsekvens" },
   { kode: "PR2", label: "Lav press",      beskrivelse: "Enkle maal, liten konsekvens" },
