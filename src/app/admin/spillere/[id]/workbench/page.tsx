@@ -77,6 +77,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
       .catch(() => []),
     // 8c.3: gruppevelger — gruppens egen workbench/årsplan.
     prisma.group.findMany({
+      where: user.role === "COACH" ? { coachId: user.id } : {},
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),

@@ -44,8 +44,8 @@ src/app/
 
 src/components/
   ui/              shadcn-primitiver (Button, Dialog, Input, Tabs, etc.)
-  athletic/        Branded AK Golf-komponenter. golfdata/ (v13) er gjeldende kilde;
-                   resten av athletic/ er vedlikeholdsmodus (design-system-regel.md)
+  athletic/        Branded AK Golf-komponenter. golfdata/ (v13) er overgangslag;
+                   resten av athletic/ er vedlikeholdsmodus
   shared/          Utility-komponenter (cookie-banner, cmd-palette, mobile-nav)
   admin*/          AgencyOS-spesifikke komponenter
   portal*/         PlayerHQ-spesifikke komponenter
@@ -71,11 +71,11 @@ wireframe/               ARKIV — ikke les eller importer herfra
 
 - **Tokens:** `src/app/globals.css` — HSL-trippel uten `hsl()`-wrapper, shadcn-konvensjon.
 - **TS-speil for charts:** `src/lib/design-tokens.ts` — kun les herfra.
-- **Komponenter:** bruk `src/components/athletic/golfdata/` (v13) for ny golf-UI; gamle `athletic/` er vedlikeholdsmodus (se `.claude/rules/design-system-regel.md`). Sjekk ALLTID hva som finnes FØR du lager noe nytt.
-- **Spacing:** 8pt-grid. Kun `p-2/4/6/8/10/12/16`. Unntaket er data-tette flater (dashboards, tabeller) som bruker `p-3/gap-3/py-2.5` der design-handover-HTML gjør det.
-- **Fonter:** Inter (`font-sans`), Familjen Grotesk (`font-display`) — Inter Tight er utgående, JetBrains Mono (`font-mono`). INGEN andre fonter. Kanon: `.claude/rules/design-system-regel.md`.
+- **Komponenter:** primitiver fra `src/components/ui/` + `v2/`-mønstre; `athletic/golfdata/` er overgangslag i vedlikeholdsmodus. Sjekk ALLTID hva som finnes FØR du lager noe nytt.
+- **Spacing/farger:** ingen låst kanon per 2026-07-25 — se CLAUDE.md invariant 2. Nytt komplett designsystem utvikles i Open Design. Følg mønsteret i filen du redigerer.
+- **Fonter:** Inter (`font-sans`), Familjen Grotesk (`font-display`), JetBrains Mono (`font-mono`). Inter Tight er FJERNET (Fase 3, 2026-07-07) — ikke gjeninnfør.
 
-**FORBUDT:** hardkode hex-verdier, lage ny `tokens.css`, importere fra `wireframe/`, lage `tokens.ts` i komponent-mapper.
+**FORBUDT:** lage ny `tokens.css`, importere fra `wireframe/`, lage `tokens.ts` i komponent-mapper.
 
 ---
 
