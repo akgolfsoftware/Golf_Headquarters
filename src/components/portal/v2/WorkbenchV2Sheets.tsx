@@ -217,6 +217,17 @@ const inputStyle: CSSProperties = {
 /** Ett av spillerens treningssteder (fra onboarding steg 3). */
 export type SpillerStedValg = { id: string; name: string; isIndoor: boolean };
 
+/** Treff fra øvelsesbanken (sokOvelser) — bærer standard L-trapp og estimat. */
+export type DrillTreff = {
+  id: string;
+  name: string;
+  pyramidArea: string;
+  defaultRepsUtenBall: number | null;
+  defaultRepsLavFart: number | null;
+  defaultRepsAuto: number | null;
+  estimatTekst?: string;
+};
+
 export type OktArkDrill = {
   exerciseId?: string;
   navn: string;
@@ -390,7 +401,7 @@ function OktArkSkjema({
   /** Antall ganger totalt når gjenta er på (inkl. første). */
   const [gjentaAntall, setGjentaAntall] = useState(4);
   const [drillSok, setDrillSok] = useState("");
-  const [drillTreff, setDrillTreff] = useState<{ id: string; name: string; pyramidArea: string }[]>([]);
+  const [drillTreff, setDrillTreff] = useState<DrillTreff[]>([]);
   const [manuellApen, setManuellApen] = useState(false);
   const [manuellNavn, setManuellNavn] = useState("");
   const [manuellAkse, setManuellAkse] = useState<AkseKey>(initial.akse);
@@ -1030,7 +1041,7 @@ function OktArkSkjema({
                 {drillSok.trim().length >= 2 && (
                   <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                     {drillTreff.map((t) => (
-                      <button key={t.id} type="button" className="v2-press" onClick={() => { setDrills([...drills, { exerciseId: t.id, navn: t.name, minutter: null, sett: null, reps: null, nivaa: "vanlig" }]); setDrillSok(""); }} style={{ appearance: "none", textAlign: "left", padding: "7px 10px", borderRadius: 9, background: T.panel2, border: `1px dashed ${T.borderS}`, color: T.fg, fontFamily: T.ui, fontSize: 12, cursor: "pointer" }}>
+                      <button key={t.id} type="button" className="v2-press" onClick={() => { setDrills([...drills, { exerciseId: t.id, navn: t.name, minutter: null, sett: null, reps: null, nivaa: "vanlig", planRepsUtenBall: t.defaultRepsUtenBall, planRepsLavFart: t.defaultRepsLavFart, planRepsAuto: t.defaultRepsAuto, estimatTekst: t.estimatTekst }]); setDrillSok(""); }} style={{ appearance: "none", textAlign: "left", padding: "7px 10px", borderRadius: 9, background: T.panel2, border: `1px dashed ${T.borderS}`, color: T.fg, fontFamily: T.ui, fontSize: 12, cursor: "pointer" }}>
                         + {t.name} <span style={{ color: T.mut, fontFamily: T.mono, fontSize: 9 }}>({t.pyramidArea})</span>
                       </button>
                     ))}

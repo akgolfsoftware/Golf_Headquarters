@@ -12,6 +12,9 @@ export type LiveDrillReps = {
   repsHit: number;
   notes?: string;
   status: "active" | "queued" | "done";
+  /** Medgått tid på drillen (sekunder). Følger med i offline-køen så tiden
+   * ikke går tapt når økta kjøres uten nett. */
+  actualDurationSec?: number;
 };
 
 export type LiveDrillKoRad = {
