@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { Check, X, Play } from "lucide-react";
 import { godkjennDrillForslag, avvisDrillForslag } from "./actions";
+import { safeUrl } from "@/lib/security/safe-url";
 
 export type ForslagRad = {
   id: string;
@@ -73,9 +74,11 @@ export function ForslagListe({ forslag }: { forslag: ForslagRad[] }) {
             <p className="mt-1.5 whitespace-pre-line text-sm text-muted-foreground">
               {d.beskrivelse}
             </p>
-            {d.videoUrl && (
+            {/* safeUrl: denne URL-en er LLM-generert (drill-forslag) — høyest
+                risiko for javascript:/data:. zod .url() slipper dem gjennom. */}
+            {safeUrl(d.videoUrl) && (
               <a
-                href={d.videoUrl}
+                href={safeUrl(d.videoUrl)!}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-2 inline-flex items-center gap-1.5 text-sm text-destructive hover:underline"
