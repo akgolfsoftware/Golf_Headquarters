@@ -10,11 +10,39 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import dotenv from "dotenv";
+import { existsSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
 
-dotenv.config({ path: ".env.local" });
+/**
+ * Finn .env.local ved å gå oppover i katalogtreet.
+ * Kjøres scriptet fra en git-worktree (.claude/worktrees/<gren>/) finnes
+ * ikke .env.local der — den ligger bare i hovedmappa. Uten dette søket
+ * feiler scriptet med «DIRECT_URL mangler» avhengig av hvor du står.
+ */
+function finnEnvFil(): string | null {
+  let katalog = resolve(process.cwd());
+  for (let i = 0; i < 8; i++) {
+    const kandidat = join(katalog, ".env.local");
+    if (existsSync(kandidat)) return kandidat;
+    const forelder = dirname(katalog);
+    if (forelder === katalog) break;
+    katalog = forelder;
+  }
+  return null;
+}
+
+const envFil = finnEnvFil();
+if (envFil) {
+  dotenv.config({ path: envFil });
+  console.log(`Leser miljøvariabler fra: ${envFil}\n`);
+}
 
 const url = process.env.DIRECT_URL ?? process.env.DATABASE_URL;
-if (!url) throw new Error("DIRECT_URL/DATABASE_URL mangler");
+if (!url) {
+  throw new Error(
+    "DIRECT_URL/DATABASE_URL mangler — fant ingen .env.local i denne mappa eller noen mappe over.",
+  );
+}
 
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: url }) });
 
