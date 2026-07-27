@@ -15,7 +15,7 @@
     "kart": "tsx scripts/skjerm-kart.ts",
     "speil:paper": "node scripts/speil-designsystem.mjs",
     "qa:drills": "tsx scripts/drill-qa.ts",
-    "qa:coach": "tsx scripts/coach-eval.ts",
+    "qa:coach": "tsx --conditions=react-server scripts/coach-eval.ts",
     "retag:drills": "tsx scripts/retag-drill-kategorier.ts",
     "retag:drills:apply": "tsx scripts/retag-drill-kategorier.ts --apply",
     "sync:masterbrain": "tsx scripts/sync-masterbrain.ts",

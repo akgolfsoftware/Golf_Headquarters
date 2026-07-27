@@ -2,10 +2,13 @@
 /**
  * Coach-eval — kvalitetsrapport for AI-forslagene (PlanAction-beslutninger).
  *
- *   npx tsx scripts/coach-eval.ts     # rapport til konsoll + docs/coach-eval-rapport.md
+ *   npx tsx scripts/coach-eval.ts             # rapport til konsoll + docs/coach-eval-rapport.md
  *   npm run qa:coach
+ *   npm run qa:coach -- --judge               # + LLM-dommer på siste forslag
  *
- * KUN LESING — gjør ingen endringer i databasen.
+ * KUN LESING uten flagg. Med --judge skrives dommerscoringer til
+ * ai_eval_results (og ingenting annet). Dommerscore er KUN veiledende til
+ * ≥50 ekte coach-beslutninger foreligger som kalibrering (Fable 5-syntesen).
  *
  * Hovedmetrikk (Fable 5-syntesen): «godkjent uendret»-rate ≥ 60 % per agent.
  * Rapporterer også redigert-rate, avvisningsgrunner, beslutningslatens og
@@ -120,6 +123,62 @@ async function main() {
   if (grunner.length > 0) grunner.forEach((g) => log(g));
   else log(`Ingen registrerte grunner ennå — feltet kom 2026-07-27.`);
   log(``);
+  if (process.argv.includes("--judge")) {
+    const { judgeSubject, judgePromptHash } = await import("../src/lib/evals/judge");
+    const kandidater = await prisma.planAction.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 20,
+      select: { id: true, agentName: true, actionType: true, suggestion: true },
+    });
+    const decidedTotalt = totalt.decided;
+    const kalibrert = decidedTotalt >= 50;
+
+    log(``);
+    log(`## LLM-dommer (${kandidater.length} siste forslag · prompt ${judgePromptHash()})`);
+    log(``);
+    log(
+      kalibrert
+        ? `Kalibreringsgrunnlag: ${decidedTotalt} coach-beslutninger.`
+        : `⚠ KUN VEILEDENDE: bare ${decidedTotalt} coach-beslutninger — dommer er ukalibrert til ≥50 foreligger.`,
+    );
+    log(``);
+    log(`| Agent | Type | Metodikk | Ekst. fokus | Alder | Sikkerhet |`);
+    log(`|---|---|---|---|---|---|`);
+
+    const snitt = { metodikkTroskap: 0, eksterntFokus: 0, alderstilpasning: 0, sikkerhet: 0 };
+    let dømte = 0;
+    for (const k of kandidater) {
+      const res = await judgeSubject({
+        subjectType: "plan-action",
+        subjectId: k.id,
+        innhold: JSON.stringify(k.suggestion),
+        kontekst: `agent: ${k.agentName}, handlingstype: ${k.actionType}`,
+      });
+      if (!res.ok) {
+        log(`| ${k.agentName} | ${k.actionType} | – | – | – | – |`);
+        continue;
+      }
+      const r = res.rubrikk;
+      await prisma.$executeRaw`
+        INSERT INTO ai_eval_results (id, "subjectType", "subjectId", rubric, model, "promptHash")
+        VALUES (gen_random_uuid()::text, 'plan-action', ${k.id}, ${JSON.stringify(r)}::jsonb, ${res.model}, ${res.promptHash})
+      `;
+      snitt.metodikkTroskap += r.metodikkTroskap;
+      snitt.eksterntFokus += r.eksterntFokus;
+      snitt.alderstilpasning += r.alderstilpasning;
+      snitt.sikkerhet += r.sikkerhet;
+      dømte++;
+      log(`| ${k.agentName} | ${k.actionType} | ${r.metodikkTroskap} | ${r.eksterntFokus} | ${r.alderstilpasning} | ${r.sikkerhet} |`);
+    }
+    if (dømte > 0) {
+      log(``);
+      log(
+        `Snitt (${dømte} dømt): metodikk ${(snitt.metodikkTroskap / dømte).toFixed(1)} · eksternt fokus ${(snitt.eksterntFokus / dømte).toFixed(1)} · alder ${(snitt.alderstilpasning / dømte).toFixed(1)} · sikkerhet ${(snitt.sikkerhet / dømte).toFixed(1)}`,
+      );
+    }
+    log(``);
+  }
+
   log(`## Slik leses rapporten`);
   log(``);
   log(`Under ${MAAL_GODKJENT_UENDRET * 100} % godkjent-uendret (⚠): les redigeringene og`);
