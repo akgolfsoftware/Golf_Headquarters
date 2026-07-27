@@ -7,7 +7,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { PyramidArea, SkillArea } from "@/generated/prisma/enums";
+import { PyramidArea, SkillArea, NgfKategori } from "@/generated/prisma/enums";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
@@ -16,12 +16,17 @@ import { DRILL_DRAFT_TOOL } from "@/lib/agents/drill-forslag-agent";
 export type ForslagResultat = { ok: true; melding: string } | { ok: false; melding: string };
 
 // Validerer toolInput-blobben fra CaddieDraft (gotcha: JSON-blobs valideres).
+// .nullish() (ikke .optional()) på skillArea/minKategori/maxKategori: disse
+// kan komme som eksplisitt `null` fra fabrikk-agenten (JSON beholder null,
+// i motsetning til undefined), ikke bare være fraværende.
 const DrillInputSchema = z.object({
   name: z.string().min(1),
   description: z.string().optional(),
-  skillArea: z.nativeEnum(SkillArea).optional(),
+  skillArea: z.nativeEnum(SkillArea).nullish(),
   pyramidArea: z.nativeEnum(PyramidArea),
   durationMin: z.number().int().positive().optional(),
+  minKategori: z.nativeEnum(NgfKategori).nullish(),
+  maxKategori: z.nativeEnum(NgfKategori).nullish(),
   videoUrl: z.string().url().nullish(),
 });
 
@@ -56,6 +61,8 @@ export async function godkjennDrillForslag(
         pyramidArea: parsed.data.pyramidArea,
         skillArea: parsed.data.skillArea ?? null,
         durationMin: parsed.data.durationMin ?? null,
+        minKategori: parsed.data.minKategori ?? null,
+        maxKategori: parsed.data.maxKategori ?? null,
         videoUrl: parsed.data.videoUrl ?? null,
         createdBy: user.id,
       },
