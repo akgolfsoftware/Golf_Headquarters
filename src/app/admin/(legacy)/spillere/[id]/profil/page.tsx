@@ -9,6 +9,7 @@
 import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { AdminSpillerProfilSideV2, type AdminSpillerProfilSideV2Data, type DnaShape } from "@/components/admin/v2/AdminSpillerProfilSideV2";
 
@@ -21,11 +22,14 @@ function calcAge(dob: Date | null): number | null {
 }
 
 export default async function SpillerProfilSide({ params }: { params: Promise<{ id: string }> }) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const viewer = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { id } = await params;
 
-  const player = await prisma.user.findUnique({
-    where: { id },
+  // Coach-scoping: en COACH ser KUN egne spillere. Uten porten kunne enhver
+  // coach lese full profil (foreldrekontakt, skadehistorikk, coach-notater)
+  // for en vilkårlig spiller-id — PII om mindreårige.
+  const player = await prisma.user.findFirst({
+    where: { AND: [coachScopedPlayerWhere(viewer), { id }] },
     include: {
       childRelations: {
         include: {
