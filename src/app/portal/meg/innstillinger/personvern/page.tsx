@@ -8,12 +8,18 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { T } from "@/lib/v2/tokens";
 import { Caps, Tittel, Kort, TilbakeLenke, StatusPill, Icon } from "@/components/v2";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { hentSamtykkeStatus } from "@/lib/health/samtykke";
+import { maaHaForesattSamtykke } from "@/lib/health/samtykke-regler";
+import { HelseSamtykkeKort } from "@/components/portal/v2/HelseSamtykkeKort";
 import { PersonvernActions } from "./personvern-actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function PersonvernPage() {
   const user = await requirePortalUser();
+
+  const samtykke = await hentSamtykkeStatus(user.id);
+  const krevesForesatt = maaHaForesattSamtykke(user);
 
   return (
     <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
@@ -40,6 +46,15 @@ export default async function PersonvernPage() {
         </div>
         <StatusPill tone="info">GDPR</StatusPill>
       </div>
+
+      <HelseSamtykkeKort
+        data={{
+          wearable: samtykke.wearable,
+          coachInnsyn: samtykke.coachInnsyn,
+          wearableGittAt: samtykke.wearableGittAt?.toISOString() ?? null,
+          krevesForesatt,
+        }}
+      />
 
       <Kort>
         <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
