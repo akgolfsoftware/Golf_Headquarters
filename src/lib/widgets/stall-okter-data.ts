@@ -6,8 +6,11 @@
  * spillerens gjennomfore-data. Utfyller «Dagens timer» på cockpiten,
  * som kun viser bookinger.
  *
- * Scope: ADMIN ser alle spillere, COACH ser egne (samme where-mønster
- * som cockpit-sidens spillerliste/loadStallen).
+ * Både individuelle økter (studentId) og gruppeøkter (groupId) er med —
+ * en gruppeøkt er ÉN rad for hele gruppa, ikke én per medlem.
+ *
+ * Scope: ADMIN ser alle spillere og grupper, COACH ser egne (samme
+ * where-mønster som cockpit-sidens spillerliste/loadStallen).
  */
 
 import "server-only";
@@ -25,13 +28,19 @@ export type StallOkt = {
   id: string;
   /** "08:00" (Oslo-tid) */
   tid: string;
-  spillerId: string;
-  spillerNavn: string;
+  /** Spiller-id, eller gruppe-id når økten er en gruppeøkt. */
+  deltakerId: string;
+  /** Spillernavn, eller gruppenavn for gruppeøkter. */
+  deltakerNavn: string;
+  /** Gruppeøkt = én økt for flere spillere (TrainingSessionV2.groupId). */
+  erGruppe: boolean;
+  /** Antall medlemmer — kun for gruppeøkter. */
+  antallMedlemmer: number | null;
   tittel: string;
   status: V2OktUiStatus;
   varighet: number;
   pyramidArea: PyramidArea;
-  /** Coach-lenke: spillerens side i stallen. */
+  /** Coach-lenke: spillerens eller gruppens side. */
   href: string;
   kilde: "v2" | "plan";
 };
@@ -40,6 +49,8 @@ export type StallOkterData = {
   antall: number;
   fullfort: number;
   paagaar: number;
+  /** Hvor mange av øktene som er gruppeøkter. */
+  antallGruppe: number;
   okter: StallOkt[];
 };
 
@@ -60,37 +71,57 @@ export async function getStallOkterData(coach: {
   const endOfDay = new Date(startOfDay);
   endOfDay.setDate(endOfDay.getDate() + 1);
 
-  const spillere = await prisma.user
-    .findMany({
-      where: {
-        role: "PLAYER",
-        deletedAt: null,
-        enrollmentsAsPlayer: {
-          some: {
-            endedAt: null,
-            NOT: { program: "PLATFORM_ONLY" as PlayerProgram },
-            ...(isAdmin ? {} : { coachId: coach.id }),
+  // Coachens scope: egne spillere OG egne grupper (ADMIN ser alt).
+  const [spillere, grupper] = await Promise.all([
+    prisma.user
+      .findMany({
+        where: {
+          role: "PLAYER",
+          deletedAt: null,
+          enrollmentsAsPlayer: {
+            some: {
+              endedAt: null,
+              NOT: { program: "PLATFORM_ONLY" as PlayerProgram },
+              ...(isAdmin ? {} : { coachId: coach.id }),
+            },
           },
         },
-      },
-      select: { id: true, name: true },
-      take: 400,
-    })
-    .catch(() => [] as { id: string; name: string | null }[]);
+        select: { id: true, name: true },
+        take: 400,
+      })
+      .catch(() => [] as { id: string; name: string | null }[]),
+    prisma.group
+      .findMany({
+        where: isAdmin ? {} : { coachId: coach.id },
+        select: { id: true, name: true, _count: { select: { members: true } } },
+        take: 200,
+      })
+      .catch(() => [] as { id: string; name: string; _count: { members: number } }[]),
+  ]);
 
-  if (spillere.length === 0) return { antall: 0, fullfort: 0, paagaar: 0, okter: [] };
+  if (spillere.length === 0 && grupper.length === 0) {
+    return { antall: 0, fullfort: 0, paagaar: 0, antallGruppe: 0, okter: [] };
+  }
 
   const spillerIds = spillere.map((s) => s.id);
+  const gruppeIds = grupper.map((g) => g.id);
   const navnMap = new Map(spillere.map((s) => [s.id, s.name ?? "Spiller"]));
+  const gruppeMap = new Map(grupper.map((g) => [g.id, g]));
 
   const [v2Raw, planRaw] = await Promise.all([
     prisma.trainingSessionV2
       .findMany({
-        where: { studentId: { in: spillerIds }, startTime: { gte: startOfDay, lt: endOfDay } },
+        where: {
+          startTime: { gte: startOfDay, lt: endOfDay },
+          OR: [
+            ...(spillerIds.length > 0 ? [{ studentId: { in: spillerIds } }] : []),
+            ...(gruppeIds.length > 0 ? [{ groupId: { in: gruppeIds } }] : []),
+          ],
+        },
         orderBy: { startTime: "asc" },
         select: {
           id: true, title: true, startTime: true, endTime: true,
-          status: true, practiceType: true, studentId: true,
+          status: true, practiceType: true, studentId: true, groupId: true,
         },
         take: 60,
       })
@@ -112,26 +143,48 @@ export async function getStallOkterData(coach: {
       .catch(() => []),
   ]);
 
-  // studentId er nullable (gruppeøkter bruker groupId i stedet). Where-filteret
-  // over utelukker null, men typen er fortsatt string | null — derfor hoppes
-  // null eksplisitt over her. Merk: rene gruppeøkter er ikke med i denne widgeten.
+  // En V2-økt er enten spiller-økt (studentId) eller gruppeøkt (groupId).
+  // Har den ingen av delene, kan vi ikke si hvem den gjelder — da hoppes den
+  // over i stedet for å vises som en økt uten eier.
   const okter: StallOkt[] = [
     ...v2Raw.flatMap((o): { at: number; okt: StallOkt }[] => {
+      const felles = {
+        id: o.id,
+        tid: tid(o.startTime),
+        tittel: o.title,
+        status: (o.status === "COMPLETED" ? "done" : o.status === "IN_PROGRESS" ? "now" : "upcoming") as V2OktUiStatus,
+        varighet: Math.max(0, Math.round((o.endTime.getTime() - o.startTime.getTime()) / 60_000)),
+        pyramidArea: PRACTICE_TO_PYRAMID[o.practiceType] ?? "TEK",
+        kilde: "v2" as const,
+      };
+
+      if (o.groupId !== null) {
+        const gruppe = gruppeMap.get(o.groupId);
+        if (!gruppe) return [];
+        return [{
+          at: o.startTime.getTime(),
+          okt: {
+            ...felles,
+            deltakerId: gruppe.id,
+            deltakerNavn: gruppe.name,
+            erGruppe: true,
+            antallMedlemmer: gruppe._count.members,
+            href: `/admin/grupper/${gruppe.id}`,
+          },
+        }];
+      }
+
       const spillerId = o.studentId;
       if (spillerId === null) return [];
       return [{
         at: o.startTime.getTime(),
         okt: {
-          id: o.id,
-          tid: tid(o.startTime),
-          spillerId,
-          spillerNavn: navnMap.get(spillerId) ?? "Spiller",
-          tittel: o.title,
-          status: o.status === "COMPLETED" ? "done" : o.status === "IN_PROGRESS" ? "now" : "upcoming",
-          varighet: Math.max(0, Math.round((o.endTime.getTime() - o.startTime.getTime()) / 60_000)),
-          pyramidArea: PRACTICE_TO_PYRAMID[o.practiceType] ?? "TEK",
+          ...felles,
+          deltakerId: spillerId,
+          deltakerNavn: navnMap.get(spillerId) ?? "Spiller",
+          erGruppe: false,
+          antallMedlemmer: null,
           href: `/admin/spillere/${spillerId}`,
-          kilde: "v2",
         },
       }];
     }),
@@ -140,8 +193,10 @@ export async function getStallOkterData(coach: {
       okt: {
         id: o.id,
         tid: tid(o.scheduledAt),
-        spillerId: o.plan.userId,
-        spillerNavn: navnMap.get(o.plan.userId) ?? "Spiller",
+        deltakerId: o.plan.userId,
+        deltakerNavn: navnMap.get(o.plan.userId) ?? "Spiller",
+        erGruppe: false,
+        antallMedlemmer: null,
         tittel: o.title,
         status: planSessionUiStatus(
           o.status as "PLANNED" | "ACTIVE" | "PAUSED" | "COMPLETED",
@@ -160,6 +215,7 @@ export async function getStallOkterData(coach: {
     antall: okter.length,
     fullfort: okter.filter((o) => o.status === "done").length,
     paagaar: okter.filter((o) => o.status === "now").length,
+    antallGruppe: okter.filter((o) => o.erGruppe).length,
     okter,
   };
 }

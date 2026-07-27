@@ -19,11 +19,12 @@ import {
   AkseChip,
   TomTilstand,
   AvatarInit,
+  Icon,
 } from "@/components/v2";
 
 export function StallOkterWidget({ data }: { data: StallOkterData }) {
   const router = useRouter();
-  const { antall, fullfort, paagaar, okter } = data;
+  const { antall, fullfort, paagaar, antallGruppe, okter } = data;
 
   return (
     <Kort
@@ -40,9 +41,16 @@ export function StallOkterWidget({ data }: { data: StallOkterData }) {
         />
       ) : (
         <>
-          {paagaar > 0 && (
-            <div style={{ marginBottom: 8 }}>
-              <StatusPill tone="lime">{paagaar === 1 ? "1 økt pågår nå" : `${paagaar} økter pågår nå`}</StatusPill>
+          {(paagaar > 0 || antallGruppe > 0) && (
+            <div style={{ display: "flex", gap: 6, marginBottom: 8, flexWrap: "wrap" }}>
+              {paagaar > 0 && (
+                <StatusPill tone="lime">{paagaar === 1 ? "1 økt pågår nå" : `${paagaar} økter pågår nå`}</StatusPill>
+              )}
+              {antallGruppe > 0 && (
+                <StatusPill tone="info">
+                  {antallGruppe === 1 ? "1 gruppeøkt" : `${antallGruppe} gruppeøkter`}
+                </StatusPill>
+              )}
             </div>
           )}
           {okter.map((o, i) => (
@@ -53,11 +61,27 @@ export function StallOkterWidget({ data }: { data: StallOkterData }) {
                   <span style={{ width: 40, fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: o.status === "now" ? T.lime : T.mut }}>
                     {o.tid}
                   </span>
-                  <AvatarInit navn={o.spillerNavn} size={26} />
+                  {o.erGruppe ? (
+                    <span
+                      style={{
+                        width: 26, height: 26, borderRadius: 9999, flex: "none",
+                        display: "inline-flex", alignItems: "center", justifyContent: "center",
+                        background: T.panel2, border: `1px solid ${T.border}`,
+                      }}
+                    >
+                      <Icon name="users" size={13} style={{ color: T.mut }} />
+                    </span>
+                  ) : (
+                    <AvatarInit navn={o.deltakerNavn} size={26} />
+                  )}
                 </span>
               }
-              title={o.spillerNavn}
-              sub={`${o.tittel} · ${o.varighet} min`}
+              title={o.deltakerNavn}
+              sub={
+                o.erGruppe
+                  ? `${o.tittel} · ${o.varighet} min · ${o.antallMedlemmer ?? 0} i gruppa`
+                  : `${o.tittel} · ${o.varighet} min`
+              }
               meta={
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
                   <AkseChip a={o.pyramidArea} />

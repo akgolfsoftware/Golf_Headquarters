@@ -19,6 +19,7 @@ import {
   type MalDetaljV2Data,
   type MalStigeTrinn,
 } from "@/components/portal/v2/MalDetaljV2";
+import { lesSgMaal } from "@/lib/domain/maal-fremdrift";
 
 type GoalStatus = "ACTIVE" | "ACHIEVED" | "ABANDONED";
 
@@ -183,6 +184,7 @@ export default async function GoalDetailPage({
       type: goal.type,
       targetValue: goal.targetValue,
       targetDate: goal.targetDate ? goal.targetDate.toISOString().slice(0, 10) : null,
+      sgOmrade: lesSgMaal(goal.payload)?.omrade ?? null,
     },
   };
 

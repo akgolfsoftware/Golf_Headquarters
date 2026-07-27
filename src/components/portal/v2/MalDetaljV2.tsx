@@ -29,6 +29,7 @@ import {
   markeerGoalSomOppnaadd,
   type GoalInput,
 } from "@/app/portal/(legacy)/mal/goals-actions";
+import { SG_OMRADER, SG_OMRADE_NAVN, erSgOmrade } from "@/lib/domain/maal-fremdrift";
 
 export type MalStigeTrinn = {
   code: string;
@@ -57,6 +58,8 @@ export type MalDetaljV2Data = {
     type: string;
     targetValue: number | null;
     targetDate: string | null;
+    /** SG-område for SG_AREA-mål (OTT/APP/ARG/PUTT) — null hvis ikke satt. */
+    sgOmrade: string | null;
   };
 };
 
@@ -66,6 +69,12 @@ const GOAL_TYPES: Array<{ value: string; label: string }> = [
   { value: "SG_AREA", label: "SG-område" },
   { value: "FREE_TEXT", label: "Fritekst" },
 ];
+
+/** Fasit-navnene fra AK-formelen (domenet eier listen). */
+const SG_OMRADE_VALG: Array<{ value: string; label: string }> = SG_OMRADER.map((o) => ({
+  value: o,
+  label: SG_OMRADE_NAVN[o],
+}));
 
 const AVBRYT_GRUNNER = [
   "Skade eller helse",
@@ -198,20 +207,29 @@ function EndreModal({
     initial.targetValue != null ? String(initial.targetValue) : "",
   );
   const [targetDate, setTargetDate] = useState<string>(initial.targetDate ?? "");
+  const [sgOmrade, setSgOmrade] = useState<string>(initial.sgOmrade ?? "");
+
+  const erSg = type === "SG_AREA";
 
   const dirty =
     title !== initial.title ||
     type !== initial.type ||
     targetValue !== (initial.targetValue != null ? String(initial.targetValue) : "") ||
-    targetDate !== (initial.targetDate ?? "");
+    targetDate !== (initial.targetDate ?? "") ||
+    (erSg && sgOmrade !== (initial.sgOmrade ?? ""));
+
+  // Et SG-mål uten område kan ikke måles — da blir fremdriften bare «tid som
+  // går». Derfor kreves området før lagring når typen er SG.
+  const manglerOmrade = erSg && !sgOmrade;
 
   function submit() {
-    if (!title.trim()) return;
+    if (!title.trim() || manglerOmrade) return;
     onConfirm({
       type,
       title,
       targetValue: targetValue ? Number(targetValue) : null,
       targetDate: targetDate || null,
+      sgOmrade: erSg && erSgOmrade(sgOmrade) ? sgOmrade : null,
     });
   }
 
@@ -220,6 +238,16 @@ function EndreModal({
       <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 16 }}>
         <Inndata label="Tittel" value={title} onChange={setTitle} />
         <Velger label="Type" options={GOAL_TYPES} value={type} onChange={setType} />
+        {erSg && (
+          <div>
+            <Velger label="SG-område" options={SG_OMRADE_VALG} value={sgOmrade} onChange={setSgOmrade} />
+            <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.55, margin: "8px 0 0" }}>
+              {manglerOmrade
+                ? "Velg område — uten det kan ikke fremdriften måles mot rundene dine."
+                : "Fremdriften måles fra din SG i området nå og frem mot målverdien."}
+            </p>
+          </div>
+        )}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           <Inndata label="Målverdi" type="number" value={targetValue} onChange={setTargetValue} placeholder="—" mono />
           <Inndata label="Frist" type="date" value={targetDate} onChange={setTargetDate} mono />
@@ -227,7 +255,7 @@ function EndreModal({
       </div>
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 20 }}>
         <Knapp ghost onClick={onClose}>Avbryt</Knapp>
-        <Knapp icon="check" disabled={!dirty || pending || !title.trim()} onClick={submit}>
+        <Knapp icon="check" disabled={!dirty || pending || !title.trim() || manglerOmrade} onClick={submit}>
           {pending ? "Lagrer …" : "Lagre endringer"}
         </Knapp>
       </div>
