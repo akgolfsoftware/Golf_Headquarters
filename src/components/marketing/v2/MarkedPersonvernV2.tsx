@@ -268,8 +268,8 @@ export function MarkedPersonvernV2() {
             <JurSection title="4. Databehandlere vi bruker">
               <JurP>Vi deler nødvendige opplysninger med følgende underleverandører, alle med databehandleravtale (DPA) på plass:</JurP>
               <JurUl>
-                <li><strong style={{ color: T.fg }}>Supabase</strong> (EU-region): database, autentisering, fillagring</li>
-                <li><strong style={{ color: T.fg }}>Vercel</strong> (EU-region): hosting og deploy</li>
+                <li><strong style={{ color: T.fg }}>Supabase</strong> (London, Storbritannia): database, autentisering, fillagring</li>
+                <li><strong style={{ color: T.fg }}>Vercel</strong> (London, Storbritannia): hosting og deploy</li>
                 <li><strong style={{ color: T.fg }}>Stripe</strong>: betalingsbehandling</li>
                 <li><strong style={{ color: T.fg }}>Resend</strong>: utsendelse av transaksjons-e-post</li>
                 <li><strong style={{ color: T.fg }}>Anthropic</strong>: AI-coach (Claude). Anthropic lagrer ikke prompts ut over kort retensjonsperiode for misbrukskontroll</li>
