@@ -130,6 +130,10 @@
       "schedule": "15 8 * * 1"
     },
     {
+      "path": "/api/cron/ukesrapport-ovelser",
+      "schedule": "30 8 * * 1"
+    },
+    {
       "path": "/api/cron/availability-gap-filler",
       "schedule": "0 7 * * *"
     },
