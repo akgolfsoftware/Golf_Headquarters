@@ -1398,6 +1398,7 @@ model TestDefinition {
   results  TestResult[]
   sessions TestSession[]
   assignments TestAssignment[]
+  linkedGoals Goal[]
 
   @@index([createdById, isCustom])
   @@index([visibility, isCustom])
@@ -1580,7 +1581,7 @@ model AgentRun {
 model Goal {
   id          String       @id @default(cuid())
   userId      String
-  // Type: HCP_TARGET | ROUNDS_PER_MONTH | SG_AREA | FREE_TEXT
+  // Type: HCP_TARGET | ROUNDS_PER_MONTH | SG_AREA | SESSION_FREQUENCY | TEST_SCORE | FREE_TEXT
   type        String
   // Resultatmål (OUTCOME) vs prosessmål (PROCESS).
   // Alle eksisterende mål defaulter til OUTCOME — kan endres manuelt.
@@ -1594,10 +1595,23 @@ model Goal {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
+  // Dato målet ble markert oppnådd (Fase 1.14b). Null for mål oppnådd før dette
+  // feltet fantes — vi gjetter aldri en historisk dato vi ikke vet.
+  achievedAt DateTime?
+
+  // SESSION_FREQUENCY: hvilket pyramide-område fremdriften telles mot
+  // (fullførte økter siste 7 dager). Null for mål uten øktkobling.
+  linkedPyramidArea PyramidArea?
+
+  // TEST_SCORE: hvilken test fremdriften måles mot (siste TestResult.score).
+  linkedTestId String?
+  linkedTest   TestDefinition? @relation(fields: [linkedTestId], references: [id], onDelete: SetNull)
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, status])
   @@index([userId, category, status])
+  @@index([linkedTestId])
   @@map("goals")
 }
 

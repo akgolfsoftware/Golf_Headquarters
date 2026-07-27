@@ -21,6 +21,7 @@ import {
   SgKategorier,
   AvatarFoto,
   HjelpTips,
+  ProgresjonsBar,
   T,
   fmtSg,
 } from "@/components/v2";
@@ -60,7 +61,8 @@ export type SpillerData = {
     title: string;
     type: string;
     targetValue: number | null;
-    currentValue: number | null;
+    /** null = ingenting relevant logget ennå — vis ikke en fabrikkert bar. */
+    pct: number | null;
     deadline: string | null;
   }[];
   stats: {
@@ -220,6 +222,15 @@ function OversiktTab({ data }: { data: SpillerData }) {
                 <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, lineHeight: 1.4 }}>{m.title}</div>
                 <div style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut, marginTop: 3 }}>
                   {m.deadline ? `Frist ${formatKortDato(m.deadline)}` : m.type}
+                </div>
+                <div style={{ marginTop: 8 }}>
+                  {m.pct != null ? (
+                    <ProgresjonsBar value={m.pct} max={100} label="Fremdrift" />
+                  ) : (
+                    <span style={{ fontFamily: T.mono, fontSize: 9.5, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut }}>
+                      Ingen data ennå
+                    </span>
+                  )}
                 </div>
               </div>
             ))}
