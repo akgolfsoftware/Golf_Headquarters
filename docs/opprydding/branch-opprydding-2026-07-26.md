@@ -98,3 +98,8 @@ chore/designregel-rydding-2026-07-25                         1c0db531   # = PR #
 claude/d3-fokus-spillere                                     e54c16d8   # PR #69 CLOSED; main har alt via PR #66: FokusSpillere.tsx + CoachPinnedPlayer (schema.prisma:4734) + pin-actions. Grenen ville laget duplikat-tabell coach_fokus_pins. Unik rest (inaktivitets-signal 10+ dager + enhetstester) bevisst ikke tatt inn — kan gjenskapes uten grenen.
 claude/agencyos-design-audit-mh9uem                          a2fe0f40   # v13-æra (13. juli). Temafiksene finnes i main via color-mix (core.tsx:709, kalender.tsx:34). Rest til bølge 14 lime-audit: accent-token lys modus (designbeslutning → Open Design), overlays.tsx:274–275 rgb(34,37,34), «Full = lime»-copy (AdminBookingerV2.tsx:333).
 ```
+
+### Innhold reddet inn i ny PR, gren slettet
+```
+claude/d1-fellesmelding                                      0c7beddc   # PR #67 CLOSED. Riktig DIAGNOSE (listens knapp sendte til hele gruppen i stedet for deltakerne), men 263 commits bak og ville erstattet mains nyere FellesmeldingFlyt. Kun rettingen tatt inn → PR #161 (feat/fellesmelding-deltakere).
+```
