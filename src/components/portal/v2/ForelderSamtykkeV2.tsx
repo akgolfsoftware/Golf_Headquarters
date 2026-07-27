@@ -674,7 +674,7 @@ export function ForelderSamtykkeV2({ data }: { data: ForelderSamtykkeData }) {
             lineHeight: 1.55,
           }}
         >
-          <li>Data lagres innenfor EU/EØS via Supabase (Frankfurt-region).</li>
+          <li>Data lagres hos Supabase i London-regionen (Storbritannia).</li>
           <li>Vi deler aldri persondata med tredjepart uten eksplisitt samtykke.</li>
           <li>
             Du kan be om full dataeksport eller sletting når som helst via{" "}

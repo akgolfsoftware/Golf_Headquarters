@@ -9,10 +9,12 @@
 import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { hentSamtykkeStatus } from "@/lib/health/samtykke";
 import { innsynsNivaaFra, maskerLeave } from "@/lib/health/leave-innsyn";
 import { AdminSpillerProfilSideV2, type AdminSpillerProfilSideV2Data, type DnaShape } from "@/components/admin/v2/AdminSpillerProfilSideV2";
+import { beregnGoalProgress } from "@/lib/portal/goals/progress";
 
 const NB_LONG = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "long", year: "numeric" });
 const NB_DATE = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", year: "numeric" });
@@ -23,11 +25,14 @@ function calcAge(dob: Date | null): number | null {
 }
 
 export default async function SpillerProfilSide({ params }: { params: Promise<{ id: string }> }) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const viewer = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { id } = await params;
 
-  const player = await prisma.user.findUnique({
-    where: { id },
+  // Coach-scoping: en COACH ser KUN egne spillere. Uten porten kunne enhver
+  // coach lese full profil (foreldrekontakt, skadehistorikk, coach-notater)
+  // for en vilkårlig spiller-id — PII om mindreårige.
+  const player = await prisma.user.findFirst({
+    where: { AND: [coachScopedPlayerWhere(viewer), { id }] },
     include: {
       childRelations: {
         include: {
@@ -82,12 +87,18 @@ export default async function SpillerProfilSide({ params }: { params: Promise<{ 
     })),
     dna,
     cohort,
-    maal: player.goals.slice(0, 3).map((g) => ({
-      id: g.id,
-      typeLabel: g.type === "HCP_TARGET" ? "Resultat" : g.type === "SG_AREA" ? "Prosess" : "Atferd",
-      tittel: g.title,
-      fristLabel: g.targetDate ? NB_DATE.format(g.targetDate) : null,
-    })),
+    maal: await Promise.all(
+      player.goals.slice(0, 3).map(async (g) => {
+        const progress = await beregnGoalProgress(g, { hcp: player.hcp });
+        return {
+          id: g.id,
+          typeLabel: g.category === "OUTCOME" ? "Resultat" : "Prosess",
+          tittel: g.title,
+          fristLabel: g.targetDate ? NB_DATE.format(g.targetDate) : null,
+          pct: progress.hasData ? progress.pct : null,
+        };
+      }),
+    ),
     permisjoner: player.leaves.map((rad) => {
       const l = maskerLeave(rad, innsyn);
       return {

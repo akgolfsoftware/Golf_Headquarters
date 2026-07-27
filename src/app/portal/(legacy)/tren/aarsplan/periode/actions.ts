@@ -14,6 +14,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { validerPeriodBlock } from "@/lib/taxonomy";
 import type { LPhase } from "@/generated/prisma/client";
@@ -39,7 +40,13 @@ async function seasonPlanAccess(seasonPlanId: string) {
   });
   if (!plan) return { ok: false as const, error: "Sesongplan ikke funnet" };
   const isCoach = user.role === "COACH" || user.role === "ADMIN";
-  if (!isCoach && plan.userId !== user.id) return { ok: false as const, error: "Ingen tilgang" };
+  // Spilleren når kun egen plan. Coach/admin nådde FØR alle planer — rollen
+  // kortsluttet sjekken. Nå må spilleren også være innenfor coachens scope.
+  if (!isCoach) {
+    if (plan.userId !== user.id) return { ok: false as const, error: "Ingen tilgang" };
+  } else if (!(await harCoachTilgangTilSpiller(user, plan.userId))) {
+    return { ok: false as const, error: "Ingen tilgang" };
+  }
   return { ok: true as const, isCoach };
 }
 
@@ -51,7 +58,13 @@ async function periodeAccess(periodeId: string) {
   });
   if (!periode) return { ok: false as const, error: "Periode ikke funnet" };
   const isCoach = user.role === "COACH" || user.role === "ADMIN";
-  if (!isCoach && periode.seasonPlan.userId !== user.id) {
+  // Samme som seasonPlanAccess: rollen alene ga coach skrive- og slettetilgang
+  // til alle spilleres perioder.
+  if (!isCoach) {
+    if (periode.seasonPlan.userId !== user.id) {
+      return { ok: false as const, error: "Ingen tilgang" };
+    }
+  } else if (!(await harCoachTilgangTilSpiller(user, periode.seasonPlan.userId))) {
     return { ok: false as const, error: "Ingen tilgang" };
   }
   return { ok: true as const, periode };

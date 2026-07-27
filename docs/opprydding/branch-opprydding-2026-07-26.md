@@ -98,3 +98,31 @@ chore/designregel-rydding-2026-07-25                         1c0db531   # = PR #
 claude/d3-fokus-spillere                                     e54c16d8   # PR #69 CLOSED; main har alt via PR #66: FokusSpillere.tsx + CoachPinnedPlayer (schema.prisma:4734) + pin-actions. Grenen ville laget duplikat-tabell coach_fokus_pins. Unik rest (inaktivitets-signal 10+ dager + enhetstester) bevisst ikke tatt inn — kan gjenskapes uten grenen.
 claude/agencyos-design-audit-mh9uem                          a2fe0f40   # v13-æra (13. juli). Temafiksene finnes i main via color-mix (core.tsx:709, kalender.tsx:34). Rest til bølge 14 lime-audit: accent-token lys modus (designbeslutning → Open Design), overlays.tsx:274–275 rgb(34,37,34), «Full = lime»-copy (AdminBookingerV2.tsx:333).
 ```
+
+### Innhold reddet inn i ny PR, gren slettet
+```
+claude/d1-fellesmelding                                      0c7beddc   # PR #67 CLOSED. Riktig DIAGNOSE (listens knapp sendte til hele gruppen i stedet for deltakerne), men 263 commits bak og ville erstattet mains nyere FellesmeldingFlyt. Kun rettingen tatt inn → PR #161 (feat/fellesmelding-deltakere).
+```
+
+## Runde 3 — 2026-07-27 (multi-agent verifisering av 18 grener)
+
+Hver gren analysert av én triage-agent + én uavhengig skeptiker med mandat om å MOTBEVISE sletting.
+Metode: patch-id/tre-hash-sammenligning + blob-sjekk fil-for-fil mot dagens main, ikke merge-tree alene.
+
+### Merget i main (verifisert via PR-nummer/squash-commit + blob-identitet)
+```
+claude/avatar-opplasting-fix                                 1759e3e4   # PR #99 MERGED («fix: avatar-opplasting + sveip for alle kjente feilklasser (pending-prefiks, opplast
+claude/fix-lansering-ui-0719                                 30b9f1bd   # PR #93 — MERGED (2026-07-19T12:18:54Z, merge-commit bcac9354)
+claude/playerhq-hjelpetips                                   2e9e987b   # PR #103 MERGED («feat: PlayerHQ «?»-forklaringer — full HjelpTips-dekning på dag-én-skjermene»)
+feat/agencyos-nav-search-fix                                 689d738b   # PR #90 — MERGED (2026-07-19T08:21:29Z, squash-commit c6295ca6)
+feat/meg-dispatch-morgenbrief                                78453515   # ingen PR (gh pr list --search "head:feat/meg-dispatch-morgenbrief" --state all ga tomt resultat — in
+fix/meg-design-gaps                                          56e2dab6   # ingen PR (gh pr list --search "head:fix/meg-design-gaps" --state all → tom); innholdet nådde main so
+redesign/v2                                                  43c9ce63   # ingen PR (gh pr list --search "head:redesign/v2" --state all ga tom liste; bredt søk på headRefName 
+```
+
+### Umerget, verifisert uten effekt
+```
+claude/session-mn3f12                                        d34e94ec   # PR #45 CLOSED (lukket som duplikat av merget PR #44)
+docs/fasit-korrigering-2026-07-25                            d39dd463   # PR #140 CLOSED (ikke merget) 2026-07-25T14:16:27Z — «feat(tema): lys default + mørk-bryter på app-fl
+```
+

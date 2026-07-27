@@ -61,6 +61,7 @@ import {
   Shield,
   Crosshair,
   FileText,
+  Mic,
 } from "lucide-react";
 
 const ICON_STROKE = 1.5;
@@ -145,6 +146,14 @@ const ACTIONS: Action[] = [
     icon: FlaskConical,
     kind: { type: "navigate", href: "/admin/tester" },
   },
+  {
+    id: "ta-opp-okt",
+    label: "Ta opp økt",
+    description: "Spill inn coaching-økt og få AI-sammendrag",
+    keywords: ["opptak", "ta opp", "lyd", "mikrofon", "diktafon", "transkribering", "transkripsjon", "sammendrag", "referat", "voice", "memo", "recording"],
+    icon: Mic,
+    kind: { type: "navigate", href: "/admin/recording" },
+  },
   // --- Hub-handlinger ---
   {
     id: "daily-brief",
@@ -227,6 +236,7 @@ const ACTIONS: Action[] = [
   { id: "s-hjelp", label: "Hjelp", description: "Hjelp og veiledning", keywords: ["hjelp", "support", "veiledning", "help"], icon: CircleHelp, kind: { type: "navigate", href: "/admin/hjelp" } },
   { id: "s-planer-alle", label: "Planer (alle)", description: "Alle treningsplaner", keywords: ["plan", "planer", "alle", "oversikt"], icon: Layers, kind: { type: "navigate", href: "/admin/plans" } },
   { id: "s-okter", label: "Økter", description: "Alle økter", keywords: ["okt", "økt", "okter", "økter", "session"], icon: Clock, kind: { type: "navigate", href: "/admin/okter" } },
+  { id: "s-opptak", label: "Opptak", description: "Opptak av coaching-økter med AI-sammendrag", keywords: ["opptak", "lyd", "mikrofon", "transkribering", "sammendrag", "referat", "recording"], icon: Mic, kind: { type: "navigate", href: "/admin/recording" } },
   { id: "s-gjennomfore", label: "Gjennomføre", description: "Gjennomføring av økter", keywords: ["gjennomfore", "gjennomføre", "utfor", "live"], icon: Play, kind: { type: "navigate", href: "/admin/gjennomfore" } },
   { id: "s-periode", label: "Periode-fordeling", description: "Fordeling per periodetype", keywords: ["periode", "fordeling", "pyramide", "grunn", "spes"], icon: SlidersHorizontal, kind: { type: "navigate", href: "/admin/settings/periode-fordeling" } },
   { id: "s-live", label: "Live", description: "Live-økter nå", keywords: ["live", "na", "nå", "direkte"], icon: Monitor, kind: { type: "navigate", href: "/admin/agencyos/live" } },

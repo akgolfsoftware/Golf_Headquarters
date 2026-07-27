@@ -21,6 +21,7 @@ import {
   TekstOmraade,
   FilterChips,
   HjelpTips,
+  TomTilstand,
 } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import {
@@ -29,12 +30,17 @@ import {
   markeerGoalSomOppnaadd,
   type GoalInput,
 } from "@/app/portal/(legacy)/mal/goals-actions";
+import { PYR_REKKEFOLGE, PYR_LABEL } from "@/lib/pyramide";
+import type { PyramidArea } from "@/generated/prisma/client";
+import { SG_OMRADER, SG_OMRADE_NAVN, erSgOmrade } from "@/lib/domain/maal-fremdrift";
 
 export type MalStigeTrinn = {
   code: string;
   label: string;
   state: "here" | "passed" | "next" | "future";
 };
+
+export type MalTestOption = { id: string; name: string };
 
 export type MalDetaljV2Data = {
   id: string;
@@ -46,17 +52,28 @@ export type MalDetaljV2Data = {
   maalVerdi: number;
   enhet: string;
   progressPct: number;
+  /** false = ingenting relevant logget ennå — vis "ingen data ennå", ikke 0 %. */
+  hasData: boolean;
+  fremdriftTekst: string;
   fristTekst: string | null;
   etaUker: number | null;
   dagerIgjen: number | null;
   stige: MalStigeTrinn[];
   avbruttGrunn: string | null;
+  /** Dato oppnådd. "Dato ukjent" for mål oppnådd før feltet fantes. */
+  achievedAtTekst: string | null;
+  linkedPyramidAreaLabel: string | null;
+  linkedTestName: string | null;
   erEget: boolean;
   initial: {
     title: string;
     type: string;
     targetValue: number | null;
     targetDate: string | null;
+    linkedPyramidArea: PyramidArea | null;
+    linkedTestId: string | null;
+    /** SG-område for SG_AREA-mål (OTT/APP/ARG/PUTT) — null hvis ikke satt. */
+    sgOmrade: string | null;
   };
 };
 
@@ -64,8 +81,18 @@ const GOAL_TYPES: Array<{ value: string; label: string }> = [
   { value: "HCP_TARGET", label: "Handicap-mål" },
   { value: "ROUNDS_PER_MONTH", label: "Runder per måned" },
   { value: "SG_AREA", label: "SG-område" },
+  { value: "SESSION_FREQUENCY", label: "Øktfrekvens" },
+  { value: "TEST_SCORE", label: "Testresultat" },
   { value: "FREE_TEXT", label: "Fritekst" },
 ];
+
+const PYRAMID_OPTIONS = PYR_REKKEFOLGE.map((a) => ({ value: a, label: PYR_LABEL[a] }));
+
+/** Fasit-navnene fra AK-formelen (domenet eier listen). */
+const SG_OMRADE_VALG: Array<{ value: string; label: string }> = SG_OMRADER.map((o) => ({
+  value: o,
+  label: SG_OMRADE_NAVN[o],
+}));
 
 const AVBRYT_GRUNNER = [
   "Skade eller helse",
@@ -122,7 +149,7 @@ function ModalSkall({
 }
 
 /* ── Handlinger (kun egne mål) — samme tre actions som legacy goal-client ── */
-function MalHandlinger({ data }: { data: MalDetaljV2Data }) {
+function MalHandlinger({ data, testOptions }: { data: MalDetaljV2Data; testOptions: MalTestOption[] }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [modal, setModal] = useState<"endre" | "feire" | "avbryt" | null>(null);
@@ -169,7 +196,13 @@ function MalHandlinger({ data }: { data: MalDetaljV2Data }) {
       </div>
 
       {modal === "endre" && (
-        <EndreModal initial={data.initial} pending={pending} onClose={lukk} onConfirm={bekreftEndre} />
+        <EndreModal
+          initial={data.initial}
+          testOptions={testOptions}
+          pending={pending}
+          onClose={lukk}
+          onConfirm={bekreftEndre}
+        />
       )}
       {modal === "feire" && (
         <FeireModal tittel={data.initial.title} pending={pending} onClose={lukk} onConfirm={bekreftOppnadd} />
@@ -183,11 +216,13 @@ function MalHandlinger({ data }: { data: MalDetaljV2Data }) {
 
 function EndreModal({
   initial,
+  testOptions,
   pending,
   onClose,
   onConfirm,
 }: {
   initial: MalDetaljV2Data["initial"];
+  testOptions: MalTestOption[];
   pending: boolean;
   onClose: () => void;
   onConfirm: (input: GoalInput) => void;
@@ -198,20 +233,38 @@ function EndreModal({
     initial.targetValue != null ? String(initial.targetValue) : "",
   );
   const [targetDate, setTargetDate] = useState<string>(initial.targetDate ?? "");
+  const [linkedPyramidArea, setLinkedPyramidArea] = useState<string>(initial.linkedPyramidArea ?? "");
+  const [linkedTestId, setLinkedTestId] = useState<string>(initial.linkedTestId ?? "");
+  const [sgOmrade, setSgOmrade] = useState<string>(initial.sgOmrade ?? "");
+
+  const erSg = type === "SG_AREA";
 
   const dirty =
     title !== initial.title ||
     type !== initial.type ||
     targetValue !== (initial.targetValue != null ? String(initial.targetValue) : "") ||
-    targetDate !== (initial.targetDate ?? "");
+    targetDate !== (initial.targetDate ?? "") ||
+    linkedPyramidArea !== (initial.linkedPyramidArea ?? "") ||
+    linkedTestId !== (initial.linkedTestId ?? "") ||
+    (erSg && sgOmrade !== (initial.sgOmrade ?? ""));
+
+  // Et SG-mål uten område kan ikke måles — da blir fremdriften bare «tid som
+  // går». Derfor kreves området før lagring når typen er SG.
+  const manglerOmrade = erSg && !sgOmrade;
 
   function submit() {
-    if (!title.trim()) return;
+    if (!title.trim() || manglerOmrade) return;
     onConfirm({
       type,
       title,
       targetValue: targetValue ? Number(targetValue) : null,
       targetDate: targetDate || null,
+      linkedPyramidArea:
+        type === "SESSION_FREQUENCY" && linkedPyramidArea
+          ? (linkedPyramidArea as GoalInput["linkedPyramidArea"])
+          : null,
+      linkedTestId: type === "TEST_SCORE" && linkedTestId ? linkedTestId : null,
+      sgOmrade: erSg && erSgOmrade(sgOmrade) ? sgOmrade : null,
     });
   }
 
@@ -220,14 +273,40 @@ function EndreModal({
       <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 16 }}>
         <Inndata label="Tittel" value={title} onChange={setTitle} />
         <Velger label="Type" options={GOAL_TYPES} value={type} onChange={setType} />
+        {erSg && (
+          <div>
+            <Velger label="SG-område" options={SG_OMRADE_VALG} value={sgOmrade} onChange={setSgOmrade} />
+            <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.55, margin: "8px 0 0" }}>
+              {manglerOmrade
+                ? "Velg område — uten det kan ikke fremdriften måles mot rundene dine."
+                : "Fremdriften måles fra din SG i området nå og frem mot målverdien."}
+            </p>
+          </div>
+        )}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           <Inndata label="Målverdi" type="number" value={targetValue} onChange={setTargetValue} placeholder="—" mono />
           <Inndata label="Frist" type="date" value={targetDate} onChange={setTargetDate} mono />
         </div>
+        {type === "SESSION_FREQUENCY" && (
+          <Velger
+            label="Treningskategori"
+            options={PYRAMID_OPTIONS}
+            value={linkedPyramidArea}
+            onChange={setLinkedPyramidArea}
+          />
+        )}
+        {type === "TEST_SCORE" && (
+          <Velger
+            label="Test"
+            options={testOptions.map((t) => ({ value: t.id, label: t.name }))}
+            value={linkedTestId}
+            onChange={setLinkedTestId}
+          />
+        )}
       </div>
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 20 }}>
         <Knapp ghost onClick={onClose}>Avbryt</Knapp>
-        <Knapp icon="check" disabled={!dirty || pending || !title.trim()} onClick={submit}>
+        <Knapp icon="check" disabled={!dirty || pending || !title.trim() || manglerOmrade} onClick={submit}>
           {pending ? "Lagrer …" : "Lagre endringer"}
         </Knapp>
       </div>
@@ -319,7 +398,7 @@ function AvbrytModal({
   );
 }
 
-export function MalDetaljV2({ data }: { data: MalDetaljV2Data }) {
+export function MalDetaljV2({ data, testOptions = [] }: { data: MalDetaljV2Data; testOptions?: MalTestOption[] }) {
   const statusPill =
     data.status === "ACHIEVED" ? (
       <StatusPill tone="up">Oppnådd</StatusPill>
@@ -330,6 +409,9 @@ export function MalDetaljV2({ data }: { data: MalDetaljV2Data }) {
     );
 
   const stigeNaa = data.stige.find((s) => s.state === "here")?.code;
+  const koblingTekst =
+    data.linkedPyramidAreaLabel ??
+    (data.linkedTestName ? `Test: ${data.linkedTestName}` : null);
 
   return (
     <div style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
@@ -349,21 +431,40 @@ export function MalDetaljV2({ data }: { data: MalDetaljV2Data }) {
             {data.etaUker != null && ` · ETA: ~${data.etaUker} uker`}
           </p>
         )}
+        {data.status === "ACHIEVED" && data.achievedAtTekst && (
+          <p style={{ fontFamily: T.mono, fontSize: 11, color: T.up, margin: "6px 0 0", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+            Oppnådd {data.achievedAtTekst}
+          </p>
+        )}
+        {koblingTekst && (
+          <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "6px 0 0" }}>
+            Koblet til: {koblingTekst}
+          </p>
+        )}
       </div>
 
       {/* Fremdrift */}
       <Kort eyebrow="Fremdrift" action={statusPill}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
-          <span style={{ fontFamily: T.mono, fontSize: 36, fontWeight: 700, color: T.fg, lineHeight: 0.9, fontVariantNumeric: "tabular-nums" }}>
-            {fmtVerdi(data.naaVerdi)}
-          </span>
-          <span style={{ fontFamily: T.mono, fontSize: 13, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
-            / {fmtVerdi(data.maalVerdi)} {data.enhet}
-          </span>
-        </div>
-        <div style={{ marginTop: 14 }}>
-          <ProgresjonsBar variant="bar" value={Math.round(data.progressPct)} max={100} label="Av målet" />
-        </div>
+        {data.hasData ? (
+          <>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
+              <span style={{ fontFamily: T.mono, fontSize: 36, fontWeight: 700, color: T.fg, lineHeight: 0.9, fontVariantNumeric: "tabular-nums" }}>
+                {fmtVerdi(data.naaVerdi)}
+              </span>
+              <span style={{ fontFamily: T.mono, fontSize: 13, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+                / {fmtVerdi(data.maalVerdi)} {data.enhet}
+              </span>
+            </div>
+            <div style={{ marginTop: 14 }}>
+              <ProgresjonsBar variant="bar" value={Math.round(data.progressPct)} max={100} label="Av målet" />
+            </div>
+            <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 8, display: "block" }}>
+              {data.fremdriftTekst}
+            </span>
+          </>
+        ) : (
+          <TomTilstand icon="target" title="Ingen data ennå" sub={data.fremdriftTekst} />
+        )}
         {data.dagerIgjen != null && (
           <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 8, display: "block" }}>
             {data.dagerIgjen} dager igjen
@@ -392,7 +493,7 @@ export function MalDetaljV2({ data }: { data: MalDetaljV2Data }) {
       )}
 
       {/* Handlinger — kun på egne mål */}
-      {data.erEget && <MalHandlinger data={data} />}
+      {data.erEget && <MalHandlinger data={data} testOptions={testOptions} />}
     </div>
   );
 }

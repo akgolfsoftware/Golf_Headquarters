@@ -28,11 +28,14 @@ const TOUR_LABEL: Record<string, string> = {
 
 export default async function TurneringDetalj({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ fellesmelding?: string }>;
 }) {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { id } = await params;
+  const { fellesmelding } = await searchParams;
 
   const [tournament, courses, players, entries] = await Promise.all([
     prisma.tournament.findUnique({
@@ -121,6 +124,7 @@ export default async function TurneringDetalj({
                 navn: e.user.name ?? "(uten navn)",
                 status: e.entryStatus,
               }))}
+              autoApen={fellesmelding === "1"}
             />
             <TournamentEnrollModal
               tournamentId={tournament.id}

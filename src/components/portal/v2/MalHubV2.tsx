@@ -22,7 +22,7 @@ import {
 
 /* ── Data-kontrakt (speiler mapGoalRow + siste Achievement fra ekte side) ── */
 
-export type MalGoalStatus = "on-track" | "behind" | "achieved";
+export type MalGoalStatus = "on-track" | "behind" | "achieved" | "no-data";
 
 export interface MalGoalRad {
   id: string;
@@ -32,6 +32,8 @@ export interface MalGoalRad {
   sub: string;
   status: MalGoalStatus;
   statusLabel: string;
+  /** false = ingenting relevant logget ennå — vis aldri en fabrikkert 0 %-bar. */
+  hasData: boolean;
 }
 
 export interface MalHubData {
@@ -45,6 +47,7 @@ export interface MalHubData {
 /** Status → StatusPill-tone. «Nær mål» (on-track ≥80 %) løftes til lime. */
 function tone(status: MalGoalStatus, pct: number): StatusTone {
   if (status === "achieved") return "up";
+  if (status === "no-data") return "info";
   if (status === "behind") return "warn";
   return pct >= 80 ? "lime" : "info";
 }
@@ -52,6 +55,7 @@ function tone(status: MalGoalStatus, pct: number): StatusTone {
 /** Aksent-/fremdriftsfarge per status (venstre-kant + progressbar). */
 function farge(status: MalGoalStatus, pct: number): string {
   if (status === "achieved") return T.up;
+  if (status === "no-data") return T.mut;
   if (status === "behind") return T.warn;
   return pct >= 80 ? T.lime : T.forest;
 }
@@ -132,7 +136,13 @@ export function MalHubV2({ data }: { data: MalHubData }) {
                   </div>
 
                   <div style={{ marginTop: 14 }}>
-                    <ProgresjonsBar value={g.pct} max={100} label="Fremdrift" color={c} />
+                    {g.hasData ? (
+                      <ProgresjonsBar value={g.pct} max={100} label="Fremdrift" color={c} />
+                    ) : (
+                      <span style={{ fontFamily: T.mono, fontSize: 10.5, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut }}>
+                        Ingen data ennå
+                      </span>
+                    )}
                   </div>
 
                   <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, display: "block", marginTop: 10 }}>

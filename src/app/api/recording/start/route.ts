@@ -1,6 +1,9 @@
 // POST /api/recording/start
-// Oppretter en SessionRecording for en booking. Validerer at innlogget bruker
-// er coach på booking.serviceType eller ADMIN. Returnerer { recordingId }.
+// Oppretter en SessionRecording. To modi:
+//   { bookingId } — knytter opptaket til en booking (spiller hentes derfra).
+//   { playerId }  — fritt opptak fra /admin/recording uten booking.
+// Validerer at innlogget bruker er coach på booking.serviceType eller ADMIN.
+// Returnerer { recordingId }.
 
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -9,9 +12,14 @@ import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { rateLimit } from "@/lib/rate-limit";
 
-const Body = z.object({
-  bookingId: z.string().min(1),
-});
+const Body = z
+  .object({
+    bookingId: z.string().min(1).optional(),
+    playerId: z.string().min(1).optional(),
+  })
+  .refine((v) => !!v.bookingId || !!v.playerId, {
+    message: "bookingId eller playerId må oppgis",
+  });
 
 export async function POST(req: Request) {
   const user = await getCurrentUser();
@@ -34,6 +42,36 @@ export async function POST(req: Request) {
   const parsed = Body.safeParse(await req.json().catch(() => ({})));
   if (!parsed.success) {
     return NextResponse.json({ error: "Ugyldig body" }, { status: 400 });
+  }
+
+  // Fritt opptak — spiller valgt direkte i /admin/recording.
+  if (!parsed.data.bookingId) {
+    const playerId = parsed.data.playerId!;
+    const player = await prisma.user.findUnique({
+      where: { id: playerId },
+      select: { id: true, role: true },
+    });
+    if (!player || player.role !== "PLAYER") {
+      return NextResponse.json({ error: "Spiller finnes ikke" }, { status: 404 });
+    }
+
+    const recording = await prisma.sessionRecording.create({
+      data: {
+        uploadedById: user.id,
+        playerId: player.id,
+        status: "RECORDING",
+      },
+      select: { id: true },
+    });
+
+    await audit({
+      actorId: user.id,
+      action: "recording.started",
+      target: `SessionRecording:${recording.id}`,
+      metadata: { playerId: player.id, kilde: "fritt-opptak" },
+    });
+
+    return NextResponse.json({ recordingId: recording.id });
   }
 
   const booking = await prisma.booking.findUnique({
