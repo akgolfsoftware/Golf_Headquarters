@@ -2048,15 +2048,73 @@ model GoogleCalendarSubscription {
   // Cache av siste sync
   lastSyncAt       DateTime?
   lastError        String?
+  // Googles inkrementelle sync-token (steg 1, 2026-07-27). Erstatter
+  // updatedMin-vinduer: Google leverer nøyaktig det som er endret siden sist,
+  // uten hull. Nullstilles ved 410 GONE → full re-sync.
+  syncToken        String?
+  // Speilingsvindu: hvor langt fram/bak vi har hentet hendelser ved full sync.
+  mirrorFrom       DateTime?
+  mirrorTo         DateTime?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
   connection GoogleCalendarConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  events     GoogleCalendarEvent[]
 
   @@unique([connectionId, googleCalendarId])
   @@index([connectionId, active])
   @@index([watchChannelId])
   @@map("google_calendar_subscriptions")
+}
+
+// Lokal speiling av hendelser fra Google-kalendere (steg 1, 2026-07-27).
+//
+// Hvorfor: fram til nå blokkerte Google-hendelser booking via freebusy, men de
+// ble aldri lagret — så de kunne ikke VISES i AgencyOS-kalenderen. Denne
+// tabellen er lese-speilet: Google eier innholdet, vi holder en kopi slik at
+// kalenderflatene kan rendre alt fra én kilde uten API-kall per sidelasting.
+//
+// Synk er inkrementell via Googles syncToken (lagret på subscription). Rader
+// som Google melder som cancelled slettes. Heldagshendelser markeres med
+// allDay + lagres som [00:00, 24:00) i Oslo-tid.
+model GoogleCalendarEvent {
+  id             String   @id @default(cuid())
+  subscriptionId String
+  // Googles event-id (unik innenfor én kalender, ikke på tvers)
+  googleEventId  String
+  // iCalUID — samme hendelse på tvers av kalendere/deltakere. Brukes til
+  // dedupe når samme avtale ligger i flere av Anders' kalendere.
+  iCalUid        String?
+  summary        String
+  description    String?
+  location       String?
+  startAt        DateTime
+  endAt          DateTime
+  allDay         Boolean  @default(false)
+  // Googles egen status: confirmed | tentative (cancelled slettes lokalt)
+  status         String   @default("confirmed")
+  // "opaque" = opptatt (blokkerer), "transparent" = ledig (blokkerer ikke)
+  transparency   String   @default("opaque")
+  // Satt for enkeltforekomster i en gjentakende serie
+  recurringEventId String?
+  htmlLink       String?
+  // Googles updated-tidsstempel — loop-vern: vi skriver kun hvis Googles
+  // versjon er nyere enn den vi allerede har speilet.
+  googleUpdatedAt DateTime?
+  // Satt når hendelsen er en app-booking vi selv har pushet (unngår at
+  // egne bookinger vises dobbelt i kalenderen).
+  bookingId      String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  subscription GoogleCalendarSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@unique([subscriptionId, googleEventId])
+  @@index([subscriptionId, startAt])
+  @@index([startAt, endAt])
+  @@index([iCalUid])
+  @@index([bookingId])
+  @@map("google_calendar_events")
 }
 
 // ---------- CoachHQ-modeller (Fase 2.1) ----------

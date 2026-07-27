@@ -87,19 +87,25 @@ function OktBlokk({
 }) {
   const erSerie = Boolean(okt.serie);
   const erTrening = Boolean(okt.treningsSessionId);
+  const erGoogle = Boolean(okt.erGoogle);
   const kant = okt.naa ? NAA_KANT : erSerie ? SERIE_KANT : T.border;
   const inner = (
     <div
       style={{
         background: erSerie || okt.naa || erTrening ? `${T.tint}, ${T.panel2}` : T.panel2,
         border: `1px solid ${kant}`,
+        // Google-hendelser får kalenderens egen farge som venstrestripe, så
+        // det er umiddelbart synlig hvilken kalender avtalen kommer fra.
+        borderLeft: erGoogle
+          ? `3px solid ${okt.kalenderFarge ?? T.mut}`
+          : `1px solid ${kant}`,
         boxShadow: erSerie ? SERIE_GLOW : "none",
         borderRadius: T.rRow,
         padding: compact ? "4px 6px" : "8px 9px",
         display: "flex",
         flexDirection: "column",
         gap: compact ? 2 : 4,
-        cursor: okt.href || erSerie || erTrening ? "pointer" : "default",
+        cursor: okt.href || erSerie || erTrening || okt.googleLenke ? "pointer" : "default",
         minWidth: 0,
         height: compact ? "100%" : undefined,
         boxSizing: "border-box",
@@ -108,7 +114,7 @@ function OktBlokk({
     >
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
         <span style={{ fontFamily: T.mono, fontSize: compact ? 9 : 10, fontWeight: 700, color: T.fg2, fontVariantNumeric: "tabular-nums" }}>{okt.kl}</span>
-        <span style={{ width: 5, height: 5, borderRadius: 9999, background: okt.akse ? T.ax[okt.akse as AkseKey] : T.mut, flex: "none" }} />
+        <span style={{ width: 5, height: 5, borderRadius: 9999, background: erGoogle ? (okt.kalenderFarge ?? T.mut) : okt.akse ? T.ax[okt.akse as AkseKey] : T.mut, flex: "none" }} />
         {!compact && okt.naa && <StatusPill tone="down">Live</StatusPill>}
         {!compact && erTrening && <MikroMeta icon="list">Drills</MikroMeta>}
         {!compact && okt.gruppe != null && <MikroMeta icon="users">{okt.gruppe}</MikroMeta>}
@@ -116,10 +122,29 @@ function OktBlokk({
       <span style={{ fontFamily: T.ui, fontSize: compact ? 10.5 : 11.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{okt.navn}</span>
       {!compact && okt.erHendelse && <MikroMeta icon="x-circle">Hendelse</MikroMeta>}
       {!compact && okt.erOppgave && <MikroMeta icon="list">Oppgave-frist</MikroMeta>}
+      {!compact && erGoogle && okt.kalenderNavn && (
+        <MikroMeta icon="calendar">{okt.kalenderNavn.trim()}</MikroMeta>
+      )}
       {!compact && okt.sted && <MikroMeta icon="map-pin">{okt.sted}</MikroMeta>}
       {!compact && okt.serie && <SerieMerke tekst={okt.serie} />}
     </div>
   );
+  if (erGoogle) {
+    // Klikk åpner avtalen i Google Calendar. Ny fane: AgencyOS-kalenderen
+    // skal ikke forsvinne under føttene på deg.
+    return okt.googleLenke ? (
+      <a
+        href={okt.googleLenke}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ textDecoration: "none" }}
+      >
+        {inner}
+      </a>
+    ) : (
+      inner
+    );
+  }
   if (erTrening) {
     return (
       <button
@@ -190,6 +215,9 @@ function estimertVarighetMin(okter: KalOkt[], idx: number): number {
   const cur = okter[idx];
   // Oppgave-frist (startMin 1440) — kompakt rad nederst
   if (cur.startMin >= 24 * 60) return 30;
+  // Heldags Google-hendelse (startMin -1) — kompakt rad øverst, ikke en
+  // blokk som strekker seg ned til første avtale.
+  if (cur.heldag) return 30;
   const next = okter[idx + 1];
   if (next && next.startMin > cur.startMin && next.startMin < 24 * 60) {
     return Math.max(30, Math.min(120, next.startMin - cur.startMin));
@@ -267,7 +295,7 @@ function AgencyDagInnhold({
               opacity: flytterId === o.id ? 0.45 : 1,
             })}
           >
-            {onFlytt && !o.serie && !o.erOppgave ? (
+            {onFlytt && !o.serie && !o.erOppgave && !o.erGoogle ? (
               <div
                 draggable
                 onDragStart={(e) => {
