@@ -18,7 +18,7 @@
 > Direkte hurtighandlinger fra Hjem. 
 > AgencyOS: Flate primær-punkter for Planlegge og Kalender&Bookinger, sterk cockpit med "Ett klikk"-bar. Duplikate adresser og dype grupper redusert. Logisk sted å trykke = alltid hovedseksjonene eller synlige hurtigknapper. Se også .claude/rules/arkitektur.md.
 
-**Booking:** Acuity (`akgolfgroup.as.me`) er midlertidig booking frem til HQ-bookingen lanseres. Sett `BOOKING_ACTIVE=true` i Vercel for å aktivere den innebygde flyten.
+**Booking:** Acuity (`akgolfgroup.as.me`) er midlertidig booking frem til HQ-bookingen lanseres — på alle domener. Kun innlogget ADMIN (Anders) ser den innebygde flyten (test). Sett `BOOKING_PUBLIC=true` i Vercel (+ redeploy) for å åpne den for kundene. NB: gamle `BOOKING_ACTIVE` leses ikke lenger (sto =true i prod 2026-07-27 og slapp to ekte kundebookinger gjennom — se `src/lib/booking/offentlig-booking.ts`).
 
 ---
 

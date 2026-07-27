@@ -1,6 +1,7 @@
 /**
  * /booking/[slug] — v2-port 16. juli 2026. Datalogikk gjenbrukt 1:1 fra
- * (mlegacy)/booking/[slug]/page.tsx: BOOKING_ACTIVE-redirect, tjeneste-
+ * (mlegacy)/booking/[slug]/page.tsx: pause-redirect (nå rollestyrt via
+ * kanBrukeInnebygdBooking), tjeneste-
  * oppslag, getAvailableSlots + coach-filtrering (Markus-tjenester skal ikke
  * vise Anders' tider), default «i morgen» og 14-dagers datovelger. Dag- og
  * datotekster formateres her (server, nb-NO — samme som før); presentasjonen
@@ -9,13 +10,12 @@
 import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
 import { getAvailableSlots } from "@/lib/booking/availability";
 import {
   MarkedBookingTjenesteV2,
   type TjenesteDag,
 } from "@/components/marketing/v2/MarkedBookingTjenesteV2";
-
-const BOOKING_ACTIVE = process.env.BOOKING_ACTIVE === "true";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -46,7 +46,8 @@ function toDateInput(d: Date): string {
 }
 
 export default async function ServiceBookingPage({ params, searchParams }: Props) {
-  if (!BOOKING_ACTIVE) redirect("/booking");
+  // Pauset for publikum — landing (/booking) viser Acuity-lenken.
+  if (!(await kanBrukeInnebygdBooking())) redirect("/booking");
 
   const { slug } = await params;
   const { dato } = await searchParams;
