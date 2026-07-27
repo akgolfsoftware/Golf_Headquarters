@@ -63,16 +63,23 @@ export default async function DrillForslagPage() {
       name?: string;
       description?: string;
       svakesteKategori?: string;
+      pyramidArea?: string;
       durationMin?: number;
       videoUrl?: string | null;
+      begrunnelse?: string;
+      kildeNavn?: string;
+      kildeUrl?: string;
     };
     return {
       id: d.id,
       navn: inp.name ?? "Drill",
       beskrivelse: inp.description ?? "",
-      omraade: OMRAADE_LABEL[inp.svakesteKategori ?? ""] ?? "Slag",
+      omraade: OMRAADE_LABEL[inp.svakesteKategori ?? ""] ?? inp.pyramidArea ?? "Slag",
       varighetMin: typeof inp.durationMin === "number" ? inp.durationMin : null,
       videoUrl: typeof inp.videoUrl === "string" ? inp.videoUrl : null,
+      begrunnelse: inp.begrunnelse ?? null,
+      kildeNavn: inp.kildeNavn ?? null,
+      kildeUrl: inp.kildeUrl ?? null,
     };
   });
 

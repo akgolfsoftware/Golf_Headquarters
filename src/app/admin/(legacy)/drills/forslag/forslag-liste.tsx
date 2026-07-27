@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { Check, X, Play } from "lucide-react";
+import { Check, X, Play, CheckCheck, XOctagon } from "lucide-react";
 import { godkjennDrillForslag, avvisDrillForslag } from "./actions";
 
 export type ForslagRad = {
@@ -12,12 +12,16 @@ export type ForslagRad = {
   omraade: string;
   varighetMin: number | null;
   videoUrl: string | null;
+  begrunnelse?: string | null;
+  kildeNavn?: string | null;
+  kildeUrl?: string | null;
 };
 
 export function ForslagListe({ forslag }: { forslag: ForslagRad[] }) {
   const [rader, setRader] = useState(forslag);
   const [pending, startTransition] = useTransition();
   const [aktiv, setAktiv] = useState<string | null>(null);
+  const [bulkPending, setBulkPending] = useState(false);
   const [feil, setFeil] = useState<string | null>(null);
 
   function handle(id: string, godkjenn: boolean) {
@@ -34,6 +38,20 @@ export function ForslagListe({ forslag }: { forslag: ForslagRad[] }) {
       }
       setAktiv(null);
     });
+  }
+
+  async function handleAlle(godkjenn: boolean) {
+    setFeil(null);
+    setBulkPending(true);
+    const idene = rader.map((r) => r.id);
+    const resultater = await Promise.all(
+      idene.map((id) => (godkjenn ? godkjennDrillForslag(id) : avvisDrillForslag(id))),
+    );
+    const feilede = resultater.filter((r) => !r.ok);
+    if (feilede.length > 0) setFeil(`${feilede.length} av ${idene.length} feilet — de resterende ble ${godkjenn ? "godkjent" : "avvist"}.`);
+    const okIder = new Set(idene.filter((_, i) => resultater[i].ok));
+    setRader((r) => r.filter((x) => !okIder.has(x.id)));
+    setBulkPending(false);
   }
 
   if (rader.length === 0) {
@@ -55,6 +73,28 @@ export function ForslagListe({ forslag }: { forslag: ForslagRad[] }) {
           {feil}
         </p>
       )}
+      {rader.length > 1 && (
+        <div className="flex items-center justify-end gap-2">
+          <button
+            type="button"
+            onClick={() => handleAlle(true)}
+            disabled={bulkPending}
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
+          >
+            <CheckCheck className="h-3.5 w-3.5" strokeWidth={2} />
+            Godkjenn alle ({rader.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => handleAlle(false)}
+            disabled={bulkPending}
+            className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary disabled:opacity-60"
+          >
+            <XOctagon className="h-3.5 w-3.5" strokeWidth={2} />
+            Avvis alle
+          </button>
+        </div>
+      )}
       {rader.map((d) => (
         <div
           key={d.id}
@@ -73,6 +113,19 @@ export function ForslagListe({ forslag }: { forslag: ForslagRad[] }) {
             <p className="mt-1.5 whitespace-pre-line text-sm text-muted-foreground">
               {d.beskrivelse}
             </p>
+            {d.begrunnelse && (
+              <p className="mt-1.5 text-xs italic text-muted-foreground">{d.begrunnelse}</p>
+            )}
+            {d.kildeUrl && (
+              <a
+                href={d.kildeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-1 inline-block text-xs text-muted-foreground underline decoration-dotted"
+              >
+                Kilde: {d.kildeNavn ?? d.kildeUrl}
+              </a>
+            )}
             {d.videoUrl && (
               <a
                 href={d.videoUrl}
@@ -89,7 +142,7 @@ export function ForslagListe({ forslag }: { forslag: ForslagRad[] }) {
             <button
               type="button"
               onClick={() => handle(d.id, true)}
-              disabled={pending && aktiv === d.id}
+              disabled={(pending && aktiv === d.id) || bulkPending}
               className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
             >
               <Check className="h-4 w-4" strokeWidth={2} />
@@ -98,7 +151,7 @@ export function ForslagListe({ forslag }: { forslag: ForslagRad[] }) {
             <button
               type="button"
               onClick={() => handle(d.id, false)}
-              disabled={pending && aktiv === d.id}
+              disabled={(pending && aktiv === d.id) || bulkPending}
               className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary disabled:opacity-60"
             >
               <X className="h-4 w-4" strokeWidth={2} />
