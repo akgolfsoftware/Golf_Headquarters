@@ -10,6 +10,11 @@ import { getSpillerTool, execGetSpiller } from "./get-spiller";
 import { getRunderTool, execGetRunder } from "./get-runder";
 import { getSgDataTool, execGetSgData } from "./get-sg-data";
 import { getTreningsplanTool, execGetTreningsplan } from "./get-treningsplan";
+import {
+  searchKnowledgeTool,
+  execSearchKnowledge,
+  type SearchKnowledgeInput,
+} from "./search-knowledge";
 
 export {
   getSpillerTool,
@@ -20,6 +25,8 @@ export {
   execGetSgData,
   getTreningsplanTool,
   execGetTreningsplan,
+  searchKnowledgeTool,
+  execSearchKnowledge,
 };
 
 export const ALL_TOOLS: Tool[] = [
@@ -27,6 +34,7 @@ export const ALL_TOOLS: Tool[] = [
   getRunderTool,
   getSgDataTool,
   getTreningsplanTool,
+  searchKnowledgeTool,
 ];
 
 // Mapping fra tool-navn til exec-funksjon. `input` er det Anthropic returnerer
@@ -45,4 +53,6 @@ export const EXEC_BY_NAME: Record<
     execGetTreningsplan(
       input as { spillerId: string; inkluderArkiverte?: boolean },
     ),
+  search_knowledge: (input) =>
+    execSearchKnowledge(input as SearchKnowledgeInput),
 };
