@@ -79,3 +79,22 @@ claude/test-coverage-analysis-9s94fu                         ce2879c8
 docs/workbench-gotcha-note                                   5efe4f19
 fix/kjopsvei-og-betalingsdato                                e1f12c9f
 ```
+
+## Runde 2 — 2026-07-27 (triage av «parallelle implementasjoner»-grenene)
+
+Full triage-dokumentasjon: hver gren er diff-verifisert mot main (89a30166) fil for fil,
+IKKE bare merge-tree. Beslutning: Anders 2026-07-27 («D3: gjør din anbefaling» + «slett
+unødvendige grener»).
+
+### Innholdet ligger i main (merget under annet PR-nummer)
+```
+claude/workbench-gjenta-okt                                  4fa45d4a   # = PR #101, siden utvidet (gjentaStegUker, WorkbenchV2.tsx:1874)
+claude/workbench-kalender-0523                               5a5fc281   # = PR #96, nå fasit i src/lib/calendar/notion-grid.ts (låst 05–23)
+chore/designregel-rydding-2026-07-25                         1c0db531   # = PR #141 (squash baba5f33); gren-tip ville RULLET TILBAKE Fase F-temaskript + CLAUDE.md (#158)
+```
+
+### Duplikat av funksjon som finnes i main i annen form
+```
+claude/d3-fokus-spillere                                     e54c16d8   # PR #69 CLOSED; main har alt via PR #66: FokusSpillere.tsx + CoachPinnedPlayer (schema.prisma:4734) + pin-actions. Grenen ville laget duplikat-tabell coach_fokus_pins. Unik rest (inaktivitets-signal 10+ dager + enhetstester) bevisst ikke tatt inn — kan gjenskapes uten grenen.
+claude/agencyos-design-audit-mh9uem                          a2fe0f40   # v13-æra (13. juli). Temafiksene finnes i main via color-mix (core.tsx:709, kalender.tsx:34). Rest til bølge 14 lime-audit: accent-token lys modus (designbeslutning → Open Design), overlays.tsx:274–275 rgb(34,37,34), «Full = lime»-copy (AdminBookingerV2.tsx:333).
+```
