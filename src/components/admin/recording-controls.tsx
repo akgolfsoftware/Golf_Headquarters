@@ -1,11 +1,17 @@
 "use client";
 
 /**
- * Voice-memo-kontroller for /admin/recording.
+ * Voice-memo-kontroller for /admin/recording. Flyttet ut av (legacy)
+ * 2026-07-27 sammen med selve siden.
  *
- * Tar opp lyd med MediaRecorder, sender chunks (30 sek) til
- * /api/recording/upload-chunk fortløpende, og kaller /api/recording/complete
- * når coach trykker "Avslutt og analyser". Wake Lock holder skjerm på.
+ * Flyt: coach velger spiller → «Start opptak» oppretter SessionRecording via
+ * /api/recording/start (playerId, ingen booking nødvendig) → MediaRecorder tar
+ * opp og sender chunks (30 sek) til /api/recording/upload-chunk fortløpende →
+ * «Avslutt og analyser» kaller /api/recording/complete, som selv trigger
+ * transkribering og deretter AI-analyse. Wake Lock holder skjerm på.
+ *
+ * Etter complete poller vi status til DONE/FAILED slik at coach ser
+ * sammendraget dukke opp uten å laste siden på nytt.
  *
  * Recovery: hvis recordingId er gitt og status=RECORDING fra serveren, viser
  * vi en banner med "Last opp" / "Forkast" — der "Last opp" prøver complete på
@@ -24,25 +30,33 @@ import {
   Upload,
   X,
 } from "lucide-react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 
-type Mode = "idle" | "recovery" | "recording" | "paused" | "finalizing";
+type Mode = "idle" | "recovery" | "recording" | "paused" | "finalizing" | "behandler";
 
 type Banner = {
   tone: "info" | "success" | "warn" | "error";
   text: string;
 } | null;
 
+export type SpillerValg = { id: string; navn: string };
+
 type Props = {
   recordingId: string | null;
   recoveryRecordingId: string | null;
   recoveryStartedAt: string | null;
+  spillere: SpillerValg[];
   topbar: ReactNode;
   stage: ReactNode;
 };
 
 const CHUNK_MS = 30_000;
+// Poll-intervall mens transkribering + analyse kjører i bakgrunnen.
+const POLL_MS = 5_000;
+// Slutt å polle etter 10 min — Whisper på en 50-min økt tar sjelden lenger,
+// og en evig poller ville holdt fanen opptatt om et jobb-steg døde stille.
+const POLL_TIMEOUT_MS = 600_000;
 
 function formatTimer(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -76,6 +90,7 @@ export function RecordingControls({
   recordingId,
   recoveryRecordingId,
   recoveryStartedAt,
+  spillere,
   topbar,
   stage,
 }: Props) {
@@ -87,10 +102,16 @@ export function RecordingControls({
     if (recoveryRecordingId) return "recovery";
     return "idle";
   });
+  const [valgtSpiller, setValgtSpiller] = useState<string>("");
   const [elapsedSec, setElapsedSec] = useState(0);
   const [chunkInfo, setChunkInfo] = useState<string | null>(null);
   const [batteryWarn, setBatteryWarn] = useState(false);
 
+  // Aktiv recording-ID: enten den serveren ga oss, eller den vi nettopp
+  // opprettet i start-kallet. Ref (ikke state) fordi ID-en kun leses av
+  // upload-køen og complete-kallet — den rendres aldri, og en ref unngår
+  // både stale closures og en unødvendig re-render midt i opptaket.
+  const aktivIdRef = useRef<string | null>(recordingId);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const wakeLockRef = useRef<WakeLockSentinel | null>(null);
@@ -98,6 +119,7 @@ export function RecordingControls({
   const startedAtRef = useRef<number | null>(null);
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const uploadQueueRef = useRef<Promise<void>>(Promise.resolve());
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Live timer
   useEffect(() => {
@@ -145,8 +167,9 @@ export function RecordingControls({
     return () => {
       stopStream();
       releaseWakeLock();
+      if (pollRef.current) clearInterval(pollRef.current);
     };
-     
+
   }, []);
 
   function stopStream() {
@@ -176,12 +199,67 @@ export function RecordingControls({
     }
   }
 
+  /**
+   * Poller status til DONE/FAILED. Transkribering + analyse kjøres
+   * fire-and-forget på serveren, så uten polling ville coach stått igjen med
+   * en tom skjerm til neste manuelle refresh.
+   */
+  const pollStatus = useCallback(
+    (id: string) => {
+      if (pollRef.current) clearInterval(pollRef.current);
+      const startet = Date.now();
+      pollRef.current = setInterval(async () => {
+        if (Date.now() - startet > POLL_TIMEOUT_MS) {
+          if (pollRef.current) clearInterval(pollRef.current);
+          setMode("idle");
+          setBanner({
+            tone: "warn",
+            text: "Behandlingen tar uvanlig lang tid. Last siden på nytt for å se status.",
+          });
+          return;
+        }
+        try {
+          const res = await fetch(`/api/recording/status?recordingId=${encodeURIComponent(id)}`);
+          if (!res.ok) return;
+          const j = (await res.json()) as {
+            status?: string;
+            harTranskripsjon?: boolean;
+            harAnalyse?: boolean;
+          };
+          if (j.status === "DONE") {
+            if (pollRef.current) clearInterval(pollRef.current);
+            setMode("idle");
+            setBanner({ tone: "success", text: "Sammendraget er klart." });
+            router.refresh();
+          } else if (j.status === "FAILED") {
+            if (pollRef.current) clearInterval(pollRef.current);
+            setMode("idle");
+            setBanner({
+              tone: "error",
+              text: j.harTranskripsjon
+                ? "Analysen feilet. Transkripsjonen er lagret — prøv «Analyser på nytt» i historikken."
+                : "Transkriberingen feilet. Lydfilen er lagret — prøv på nytt fra historikken.",
+            });
+            router.refresh();
+          } else if (j.harTranskripsjon) {
+            setBanner({ tone: "info", text: "Transkribert. Lager sammendrag …" });
+            router.refresh();
+          }
+        } catch {
+          // Nettverksglipp — neste tick prøver igjen.
+        }
+      }, POLL_MS);
+    },
+    [router],
+  );
+
   function uploadChunk(idx: number, blob: Blob): Promise<void> {
-    if (!recordingId) return Promise.resolve();
+    const id = aktivIdRef.current;
+    if (!id) return Promise.resolve();
     return new Promise<void>((resolve) => {
       uploadQueueRef.current = uploadQueueRef.current.then(async () => {
         const form = new FormData();
-        form.append("recordingId", recordingId);
+        form.append("recordingId", id);
         form.append("chunkIdx", String(idx));
         form.append("chunk", blob, `chunk-${idx}.webm`);
         try {
@@ -212,17 +290,55 @@ export function RecordingControls({
   }
 
   async function startRecording() {
-    if (!recordingId) {
+    if (!valgtSpiller) {
+      setBanner({ tone: "warn", text: "Velg spiller før du starter opptaket." });
+      return;
+    }
+
+    // Mikrofon FØR opprettelse av recording — ellers ligger det igjen tomme
+    // RECORDING-rader hver gang coach avslår mikrofon-dialogen.
+    let stream: MediaStream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (err) {
+      console.error("[recording] getUserMedia feilet", err);
       setBanner({
         tone: "error",
-        text: "Mangler recording-ID — start fra en booking først.",
+        text: "Klarte ikke å aktivere mikrofon. Sjekk tilganger i nettleseren.",
       });
       return;
     }
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      streamRef.current = stream;
 
+    let id: string;
+    try {
+      const res = await fetch("/api/recording/start", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ playerId: valgtSpiller }),
+      });
+      const j = (await res.json().catch(() => ({}))) as {
+        recordingId?: string;
+        error?: string;
+      };
+      if (!res.ok || !j.recordingId) {
+        stream.getTracks().forEach((t) => t.stop());
+        setBanner({
+          tone: "error",
+          text: `Klarte ikke å starte opptak: ${j.error ?? res.status}`,
+        });
+        return;
+      }
+      id = j.recordingId;
+      aktivIdRef.current = id;
+    } catch (err) {
+      stream.getTracks().forEach((t) => t.stop());
+      console.error("[recording] start feilet", err);
+      setBanner({ tone: "error", text: "Nettverksfeil ved start av opptak." });
+      return;
+    }
+
+    try {
+      streamRef.current = stream;
       const recorder = new MediaRecorder(stream, {
         mimeType: "audio/webm;codecs=opus",
         audioBitsPerSecond: 32000,
@@ -241,13 +357,15 @@ export function RecordingControls({
       startedAtRef.current = Date.now();
       setMode("recording");
       setElapsedSec(0);
-      setBanner({ tone: "info", text: "Opptak startet. Lagrer hvert 30. sekund." });
+      const navn = spillere.find((s) => s.id === valgtSpiller)?.navn ?? "spiller";
+      setBanner({ tone: "info", text: `Opptak startet for ${navn}. Lagrer hvert 30. sekund.` });
       await requestWakeLock();
     } catch (err) {
-      console.error("[recording] getUserMedia feilet", err);
+      stopStream();
+      console.error("[recording] MediaRecorder feilet", err);
       setBanner({
         tone: "error",
-        text: "Klarte ikke å aktivere mikrofon. Sjekk tilganger i nettleseren.",
+        text: "Klarte ikke å starte opptaket i denne nettleseren.",
       });
     }
   }
@@ -267,7 +385,8 @@ export function RecordingControls({
   }
 
   async function stopRecording() {
-    if (!recordingId) return;
+    const id = aktivIdRef.current;
+    if (!id) return;
     const rec = recorderRef.current;
     setMode("finalizing");
 
@@ -284,14 +403,14 @@ export function RecordingControls({
     // Vent på køen — siste chunk skal være lastet opp
     await uploadQueueRef.current;
 
-    setBanner({ tone: "info", text: "Avslutter og merger chunks …" });
+    setBanner({ tone: "info", text: "Avslutter og lagrer opptaket …" });
 
     try {
       const res = await fetch("/api/recording/complete", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          recordingId,
+          recordingId: id,
           durationSec: elapsedSec,
         }),
       });
@@ -305,11 +424,12 @@ export function RecordingControls({
         return;
       }
       setBanner({
-        tone: "success",
-        text: "Opptak lagret. Transkribering og AI-analyse trigges når pipelinen er på.",
+        tone: "info",
+        text: "Opptak lagret. Transkriberer og lager sammendrag — dette tar noen minutter.",
       });
-      setMode("idle");
+      setMode("behandler");
       router.refresh();
+      pollStatus(id);
     } catch (err) {
       console.error("[recording] complete feilet", err);
       setBanner({ tone: "error", text: "Nettverksfeil ved fullføring." });
@@ -338,8 +458,10 @@ export function RecordingControls({
         setMode("recovery");
         return;
       }
-      setBanner({ tone: "success", text: "Opptaket er gjenopprettet." });
+      setBanner({ tone: "info", text: "Opptaket er gjenopprettet. Behandler …" });
+      setMode("behandler");
       router.refresh();
+      pollStatus(recoveryRecordingId);
     } catch (err) {
       console.error("[recording] recovery feilet", err);
       setMode("recovery");
@@ -355,6 +477,7 @@ export function RecordingControls({
         body: JSON.stringify({ recordingId: recoveryRecordingId }),
       });
       setBanner({ tone: "info", text: "Det avbrutte opptaket er forkastet." });
+      setMode("idle");
       router.refresh();
     } catch (err) {
       console.error("[recording] abort feilet", err);
@@ -377,15 +500,16 @@ export function RecordingControls({
   }
 
   const showRecovery = mode === "recovery" && recoveryRecordingId;
-  const canStart = mode === "idle" && !!recordingId;
   const isRecordingActive = mode === "recording" || mode === "paused";
   const isFinalizing = mode === "finalizing";
+  const isBehandler = mode === "behandler";
+  const canStart = mode === "idle" && !!valgtSpiller;
 
   return (
     <div className="space-y-4">
       {batteryWarn && (
         <div className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-[13px] text-destructive">
-          <BatteryLow className="h-4 w-4" strokeWidth={1.75} />
+          <BatteryLow className="h-4 w-4 shrink-0" strokeWidth={1.75} />
           <span>Batteri under 20 %. Koble til lader for å unngå å miste opptaket.</span>
         </div>
       )}
@@ -393,7 +517,7 @@ export function RecordingControls({
       {banner && (
         <div
           role="status"
-          className={`flex items-center justify-between gap-4 rounded-md border px-4 py-4 text-[13px] ${
+          className={`flex flex-wrap items-center justify-between gap-2 rounded-md border px-4 py-4 text-[13px] ${
             banner.tone === "success"
               ? "border-primary/30 bg-primary/10 text-primary"
               : banner.tone === "error"
@@ -405,7 +529,7 @@ export function RecordingControls({
         >
           <span className="flex items-center gap-2">
             {banner.tone === "warn" && (
-              <AlertTriangle className="h-4 w-4" strokeWidth={1.75} />
+              <AlertTriangle className="h-4 w-4 shrink-0" strokeWidth={1.75} />
             )}
             {banner.text}
           </span>
@@ -427,7 +551,7 @@ export function RecordingControls({
               Startet {recoveryStartedAt ?? "tidligere"} — chunks ligger i Storage.
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={recoverUpload}
@@ -447,11 +571,11 @@ export function RecordingControls({
       )}
 
       <div className="overflow-hidden rounded-lg border border-border bg-card">
-        <div className="flex items-center justify-between border-b border-border bg-secondary px-4 py-4">
-          <div className="flex flex-1 items-center gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-secondary px-4 py-4">
+          <div className="flex flex-1 flex-wrap items-center gap-3">
             {topbar}
             {isRecordingActive && (
-              <span className="ml-2 inline-flex items-center gap-2 rounded-full border border-destructive/30 bg-destructive/10 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-destructive">
+              <span className="inline-flex items-center gap-2 rounded-full border border-destructive/30 bg-destructive/10 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-destructive">
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75" />
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-destructive" />
@@ -477,16 +601,41 @@ export function RecordingControls({
 
         {stage}
 
-        <div className="flex items-center gap-4 border-t border-border bg-secondary px-4 py-4">
+        <div className="flex flex-col gap-3 border-t border-border bg-secondary px-4 py-4 sm:flex-row sm:items-end">
+          {!isRecordingActive && (
+            <label className="flex flex-1 flex-col gap-1.5 sm:max-w-[280px]">
+              <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
+                Spiller
+              </span>
+              <select
+                value={valgtSpiller}
+                onChange={(e) => setValgtSpiller(e.target.value)}
+                disabled={isFinalizing || isBehandler}
+                className="w-full rounded-md border border-border bg-card px-3 py-2.5 text-[13px] text-foreground disabled:opacity-50"
+              >
+                <option value="">Velg spiller …</option>
+                {spillere.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.navn}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+
           {!isRecordingActive ? (
             <button
               type="button"
               onClick={startRecording}
-              disabled={!canStart || isFinalizing}
+              disabled={!canStart}
               className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-primary px-4 py-4 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
             >
-              <Mic className="h-4 w-4" strokeWidth={1.75} />
-              {isFinalizing ? "Fullfører …" : "Start opptak"}
+              {isFinalizing || isBehandler ? (
+                <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.75} />
+              ) : (
+                <Mic className="h-4 w-4" strokeWidth={1.75} />
+              )}
+              {isFinalizing ? "Fullfører …" : isBehandler ? "Behandler …" : "Start opptak"}
             </button>
           ) : (
             <>

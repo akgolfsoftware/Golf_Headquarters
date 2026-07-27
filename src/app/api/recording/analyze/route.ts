@@ -162,6 +162,13 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     console.error("[recording/analyze] Claude-feil", err);
+    // Sett FAILED — ellers står opptaket for alltid i PROCESSING og
+    // status-pollingen i /admin/recording får aldri en sluttilstand.
+    // Transkripsjonen er allerede lagret, så «Analyser på nytt» virker.
+    await prisma.sessionRecording.update({
+      where: { id: recording.id },
+      data: { status: "FAILED" },
+    });
     await audit({
       actorId: user.id,
       action: "recording.analyze_failed",

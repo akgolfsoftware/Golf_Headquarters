@@ -90,6 +90,7 @@ export default async function SpillerDetaljPage({ params }: Props) {
       targetDate: true,
       linkedPyramidArea: true,
       linkedTestId: true,
+      payload: true,
     },
   });
 

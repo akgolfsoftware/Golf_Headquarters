@@ -17,6 +17,7 @@ function lagMal(overrides: Partial<GoalForProgress> & { type: string }): GoalFor
     targetValue: null,
     linkedPyramidArea: null,
     linkedTestId: null,
+    payload: null,
     ...overrides,
   };
 }
@@ -27,6 +28,7 @@ test("beregnGoalProgress — HCP_TARGET, ROUNDS_PER_MONTH, SESSION_FREQUENCY, TE
   let sessionCountInWindow = 0;
   let sessionEverExists = false;
   let latestTestResult: { score: number } | null = null;
+  let sgRounds: { sgOtt: number | null; sgApp: number | null; sgArg: number | null; sgPutt: number | null }[] = [];
 
   t.mock.module("@/lib/prisma", {
     namedExports: {
@@ -34,6 +36,7 @@ test("beregnGoalProgress — HCP_TARGET, ROUNDS_PER_MONTH, SESSION_FREQUENCY, TE
         round: {
           count: async () => roundsCountInWindow,
           findFirst: async () => (roundsEverExists ? { id: "r1" } : null),
+          findMany: async () => sgRounds,
         },
         trainingPlanSessionLog: {
           count: async () => sessionCountInWindow,
@@ -167,15 +170,55 @@ test("beregnGoalProgress — HCP_TARGET, ROUNDS_PER_MONTH, SESSION_FREQUENCY, TE
     assert.equal(overMaal.status, "achieved");
   }
 
-  // ── SG_AREA / FREE_TEXT — ingen automatisk beregning bygget ─────────
+  // ── SG_AREA ─────────────────────────────────────────────────────────
   {
-    const sgMal = lagMal({ type: "SG_AREA" });
-    const sg = await beregnGoalProgress(sgMal, { hcp: null });
-    assert.equal(sg.hasData, false);
-    assert.equal(sg.status, "no-data");
+    const ingenOmradeValgt = await beregnGoalProgress(lagMal({ type: "SG_AREA", targetValue: 0.5 }), {
+      hcp: null,
+    });
+    assert.equal(ingenOmradeValgt.hasData, false, "ingen område valgt -> ingen data");
 
+    const ingenBaseline = await beregnGoalProgress(
+      lagMal({ type: "SG_AREA", targetValue: 0.5, payload: { sgOmrade: "PUTT" } }),
+      { hcp: null },
+    );
+    assert.equal(ingenBaseline.hasData, false, "område valgt men ingen baseline ennå -> ingen data");
+
+    const mal = lagMal({
+      type: "SG_AREA",
+      targetValue: 0.5,
+      payload: { sgOmrade: "PUTT", sgStart: -0.5 },
+    });
+
+    sgRounds = [];
+    const ingenRunder = await beregnGoalProgress(mal, { hcp: null });
+    assert.equal(ingenRunder.hasData, false, "baseline finnes, men ingen runder å regne snitt fra -> ingen data");
+
+    // Baseline −0,5 → mål +0,5 er en reise på 1,0. Snitt-SG PUTT nå 0,0 = halvveis.
+    sgRounds = [{ sgOtt: null, sgApp: null, sgArg: null, sgPutt: 0 }];
+    const halvveis = await beregnGoalProgress(mal, { hcp: null });
+    assert.equal(halvveis.hasData, true);
+    assert.equal(halvveis.pct, 50);
+    assert.equal(halvveis.status, "on-track");
+    assert.equal(halvveis.value, 0);
+
+    // Nådd målverdi -> 100 % og oppnådd.
+    sgRounds = [{ sgOtt: null, sgApp: null, sgArg: null, sgPutt: 0.7 }];
+    const oppnaddSg = await beregnGoalProgress(mal, { hcp: null });
+    assert.equal(oppnaddSg.pct, 100);
+    assert.equal(oppnaddSg.status, "achieved");
+
+    // Tilbakegang under baseline klemmes til 0, aldri negativ.
+    sgRounds = [{ sgOtt: null, sgApp: null, sgArg: null, sgPutt: -1.2 }];
+    const bakPlanSg = await beregnGoalProgress(mal, { hcp: null });
+    assert.equal(bakPlanSg.pct, 0);
+    assert.equal(bakPlanSg.status, "behind");
+  }
+
+  // ── FREE_TEXT — ingen automatisk beregning bygget ────────────────────
+  {
     const fritekst = lagMal({ type: "FREE_TEXT" });
     const ft = await beregnGoalProgress(fritekst, { hcp: null });
     assert.equal(ft.hasData, false);
+    assert.equal(ft.status, "no-data");
   }
 });

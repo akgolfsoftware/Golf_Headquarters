@@ -21,6 +21,7 @@ import {
 } from "@/components/portal/v2/MalDetaljV2";
 import { beregnGoalProgress } from "@/lib/portal/goals/progress";
 import { PYR_LABEL } from "@/lib/pyramide";
+import { lesSgMaal } from "@/lib/domain/maal-fremdrift";
 
 type GoalStatus = "ACTIVE" | "ACHIEVED" | "ABANDONED";
 
@@ -190,6 +191,7 @@ export default async function GoalDetailPage({
       targetDate: goal.targetDate ? goal.targetDate.toISOString().slice(0, 10) : null,
       linkedPyramidArea: goal.linkedPyramidArea,
       linkedTestId: goal.linkedTestId,
+      sgOmrade: lesSgMaal(goal.payload)?.omrade ?? null,
     },
   };
 

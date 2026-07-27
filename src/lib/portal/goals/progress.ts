@@ -8,6 +8,8 @@
 import { prisma } from "@/lib/prisma";
 import type { Goal } from "@/generated/prisma/client";
 import { PYR_LABEL } from "@/lib/pyramide";
+import { lesSgMaal, SG_OMRADE_NAVN } from "@/lib/domain/maal-fremdrift";
+import { hentSgSnittPerOmrade } from "@/lib/portal/sg-omrade-snitt";
 
 export type GoalProgressStatus = "on-track" | "behind" | "achieved" | "no-data";
 
@@ -25,7 +27,7 @@ export type GoalProgress = {
 
 export type GoalForProgress = Pick<
   Goal,
-  "userId" | "type" | "targetValue" | "linkedPyramidArea" | "linkedTestId"
+  "userId" | "type" | "targetValue" | "linkedPyramidArea" | "linkedTestId" | "payload"
 >;
 
 export type GoalProgressContext = {
@@ -130,6 +132,43 @@ async function progressSessionFrequency(goal: GoalForProgress, now: Date): Promi
   };
 }
 
+/** SG med fortegn og norsk desimalkomma — «+0,35» / «−0,4». */
+function fmtSg(v: number): string {
+  return `${v < 0 ? "−" : "+"}${Math.abs(v).toFixed(2).replace(".", ",")}`;
+}
+
+async function progressSgArea(goal: GoalForProgress): Promise<GoalProgress> {
+  const sgMaal = lesSgMaal(goal.payload);
+  if (!sgMaal) return ingenData("Velg SG-område for å måle fremdrift");
+
+  const navn = SG_OMRADE_NAVN[sgMaal.omrade];
+  if (sgMaal.start == null) {
+    return ingenData(`${navn} · trenger flere registrerte runder for å sette utgangspunkt`);
+  }
+
+  const snitt = await hentSgSnittPerOmrade(goal.userId);
+  const naaVerdi = snitt[sgMaal.omrade];
+  if (naaVerdi == null) {
+    return ingenData(`${navn} · trenger flere registrerte runder`);
+  }
+
+  const target = goal.targetValue;
+  if (target == null || target === sgMaal.start) {
+    return ingenData(`${navn}: ${fmtSg(naaVerdi)} nå`);
+  }
+
+  // SG har ikke noe naturlig nullpunkt (et mål kan gå fra −1,5 til −0,5) —
+  // reisen måles derfor fra baseline (SG da målet/området ble satt) til målverdi.
+  const pct = clampPct(((naaVerdi - sgMaal.start) / (target - sgMaal.start)) * 100);
+  return {
+    pct,
+    status: statusFromPct(pct),
+    hasData: true,
+    value: naaVerdi,
+    detail: `${navn}: ${fmtSg(naaVerdi)} nå · mål ${fmtSg(target)}`,
+  };
+}
+
 async function progressTestScore(goal: GoalForProgress): Promise<GoalProgress> {
   if (!goal.linkedTestId) return ingenData("Ingen test valgt");
 
@@ -153,9 +192,9 @@ async function progressTestScore(goal: GoalForProgress): Promise<GoalProgress> {
 }
 
 /**
- * Beregn fremdrift for ett mål. SG_AREA og FREE_TEXT har ingen automatisk
- * beregning bygget (spilleren følger selv opp) — returnerer ærlig "ingen data",
- * aldri en oppdiktet prosent.
+ * Beregn fremdrift for ett mål. FREE_TEXT har ingen automatisk beregning
+ * bygget (spilleren følger selv opp) — returnerer ærlig "ingen data", aldri
+ * en oppdiktet prosent.
  */
 export async function beregnGoalProgress(
   goal: GoalForProgress,
@@ -171,6 +210,8 @@ export async function beregnGoalProgress(
       return progressSessionFrequency(goal, now);
     case "TEST_SCORE":
       return progressTestScore(goal);
+    case "SG_AREA":
+      return progressSgArea(goal);
     default:
       return ingenData("Følges opp manuelt");
   }
