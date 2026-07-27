@@ -259,25 +259,6 @@ export async function loadLiveSession(sessionId: string): Promise<AccessResult> 
   return { ok: true, data };
 }
 
-/** Finn pågående økt (IN_PROGRESS) for spilleren. */
-export async function findOngoingSession(userId: string): Promise<{
-  sessionId: string;
-  title: string;
-} | null> {
-  const ongoing = await prisma.trainingSessionV2.findFirst({
-    where: {
-      OR: [
-        { studentId: userId },
-        { participants: { some: { userId, status: { in: ["ACCEPTED", "ATTENDED"] } } } },
-      ],
-      status: "IN_PROGRESS",
-    },
-    orderBy: { updatedAt: "desc" },
-    select: { id: true, title: true },
-  });
-  if (!ongoing) return null;
-  return { sessionId: ongoing.id, title: ongoing.title };
-}
 
 /** Starter økta (PLANNED → IN_PROGRESS). */
 export async function startSession(sessionId: string): Promise<StartSessionResult> {
