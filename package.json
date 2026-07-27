@@ -13,6 +13,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "kart": "tsx scripts/skjerm-kart.ts",
     "qa:drills": "tsx scripts/drill-qa.ts",
+    "qa:coach": "tsx scripts/coach-eval.ts",
     "retag:drills": "tsx scripts/retag-drill-kategorier.ts",
     "retag:drills:apply": "tsx scripts/retag-drill-kategorier.ts --apply",
     "e2e": "playwright test",
