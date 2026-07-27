@@ -75,7 +75,9 @@ export default async function V2ForelderSamtykkePreviewPage() {
       prefs: (r.child.preferences as Record<string, boolean> | null) ?? {},
       helse: {
         wearable: helsePerBarn.get(r.child.id)?.wearable ?? false,
+        manuell: helsePerBarn.get(r.child.id)?.manuell ?? false,
         coachInnsyn: helsePerBarn.get(r.child.id)?.coachInnsyn ?? false,
+        coachDetalj: helsePerBarn.get(r.child.id)?.coachDetalj ?? false,
       },
     })),
     barnNavn,

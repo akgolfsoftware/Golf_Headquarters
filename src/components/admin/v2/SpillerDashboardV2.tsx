@@ -80,6 +80,13 @@ export interface SpillerDashboardV2Data {
     planHref: string;
   };
   helse: {
+    /**
+     * Restitusjon som farge — det spilleren deler som standard. `null` når
+     * spilleren ikke har gitt coach-innsyn i helsedataene sine.
+     */
+    restitusjon: { farge: "GROENN" | "GUL" | "ROED" | "UKJENT"; dato: string | null } | null;
+    /** True når spilleren har valgt å ikke dele tallene bak fargen. */
+    tallSkjult: boolean;
     sparklines: DashSparkline[];
     skader: { tittel: string; sub: string; aktiv: boolean }[];
   };
@@ -155,6 +162,75 @@ function MiniSpark({ serie, accent = T.lime }: { serie: number[]; accent?: strin
     <svg width={w} height={h} style={{ display: "block" }} aria-hidden>
       <polyline points={pts} fill="none" stroke={accent} strokeWidth="2" strokeLinecap="round" />
     </svg>
+  );
+}
+
+/**
+ * Restitusjon som farge — alt coachen ser med mindre spilleren uttrykkelig har
+ * delt tallene. Statusen er selv-relativ (spilleren mot sitt eget normalnivå)
+ * og er en ANBEFALING, aldri en sperre.
+ */
+function Restitusjonsmerke({
+  data,
+}: {
+  data: { farge: "GROENN" | "GUL" | "ROED" | "UKJENT"; dato: string | null } | null;
+}) {
+  if (!data) {
+    return (
+      <TomTilstand
+        icon="lock"
+        title="Spilleren deler ikke helsedata"
+        sub="Restitusjonsstatus vises her hvis spilleren slår på coach-innsyn under Personvern."
+      />
+    );
+  }
+
+  if (data.farge === "UKJENT") {
+    return (
+      <TomTilstand
+        icon="activity"
+        title="For lite data"
+        sub="Statusen krever noen ukers målinger før den sier noe meningsfullt."
+      />
+    );
+  }
+
+  const oppsett = {
+    GROENN: { tone: "up" as const, farge: T.up, tekst: "Normalt", sub: "Ingen avvik fra spillerens eget nivå." },
+    GUL: { tone: "warn" as const, farge: T.warn, tekst: "Følg med", sub: "Ett avvik fra spillerens eget normalnivå." },
+    ROED: { tone: "down" as const, farge: T.down, tekst: "Tilpass", sub: "Tydelig avvik — vurder å redusere belastningen." },
+  }[data.farge];
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+      <span
+        style={{
+          width: 44,
+          height: 44,
+          borderRadius: 9999,
+          background: `color-mix(in srgb, ${oppsett.farge} 18%, transparent)`,
+          border: `2px solid ${oppsett.farge}`,
+          flex: "none",
+        }}
+        aria-hidden
+      />
+      <div style={{ minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <span style={{ fontFamily: T.disp, fontSize: 17, fontWeight: 700, color: T.fg, letterSpacing: "-0.02em" }}>
+            {oppsett.tekst}
+          </span>
+          <StatusPill tone={oppsett.tone}>Restitusjon</StatusPill>
+        </div>
+        <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, marginTop: 4, lineHeight: 1.45 }}>
+          {oppsett.sub}
+        </div>
+        {data.dato && (
+          <div style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginTop: 6 }}>
+            Siste måling {data.dato}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -348,21 +424,32 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
       {/* ── Helse ── */}
       {fane === "helse" && (
         <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
-          <Kort eyebrow="Daglige målinger · siste 7 dager">
-            {data.helse.sparklines.length ? (
-              <div className="grid grid-cols-1 md:grid-cols-3" style={{ gap: 14 }}>
-                {data.helse.sparklines.map((s) => (
-                  <div key={s.label} style={{ padding: "12px 13px", borderRadius: 11, background: T.panel2, border: `1px solid ${T.border}` }}>
-                    <Caps size={8}>{s.label}</Caps>
-                    <div style={{ fontFamily: T.mono, fontSize: 19, fontWeight: 700, color: T.fg, margin: "7px 0" }}>{s.naa}</div>
-                    <MiniSpark serie={s.serie} />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <TomTilstand icon="activity" title="Ingen helsedata" sub="Spilleren logger ikke daglige målinger (søvn, hvilepuls) ennå." />
-            )}
-          </Kort>
+          <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+            <Kort eyebrow="Restitusjon">
+              <Restitusjonsmerke data={data.helse.restitusjon} />
+            </Kort>
+            <Kort eyebrow="Daglige målinger · siste 7 dager">
+              {data.helse.sparklines.length ? (
+                <div className="grid grid-cols-1 md:grid-cols-3" style={{ gap: 14 }}>
+                  {data.helse.sparklines.map((s) => (
+                    <div key={s.label} style={{ padding: "12px 13px", borderRadius: 11, background: T.panel2, border: `1px solid ${T.border}` }}>
+                      <Caps size={8}>{s.label}</Caps>
+                      <div style={{ fontFamily: T.mono, fontSize: 19, fontWeight: 700, color: T.fg, margin: "7px 0" }}>{s.naa}</div>
+                      <MiniSpark serie={s.serie} />
+                    </div>
+                  ))}
+                </div>
+              ) : data.helse.tallSkjult ? (
+                <TomTilstand
+                  icon="lock"
+                  title="Spilleren deler ikke tallene"
+                  sub="Du ser restitusjonsstatusen over. Søvn, puls og HRV er spillerens egne — de deles bare hvis spilleren selv slår det på."
+                />
+              ) : (
+                <TomTilstand icon="activity" title="Ingen helsedata" sub="Spilleren logger ikke daglige målinger (søvn, hvilepuls) ennå." />
+              )}
+            </Kort>
+          </div>
           <Kort eyebrow="Skade og permisjon">
             {data.helse.skader.length ? (
               <div style={{ position: "relative", paddingLeft: 18 }}>
