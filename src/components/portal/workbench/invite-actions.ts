@@ -11,14 +11,22 @@
  *  - inviterSpiller: kun hostId === currentUser.id
  *  - svarPaInvitasjon: kun userId === currentUser.id (deltakeren selv)
  *  - fjernSpiller: host eller deltakeren selv
- *
- * TODO: når lib/notifications/triggers.ts har et invitasjons-trigger, send
- * notifikasjon her i stedet for å la frontend håndtere oppfølging.
  */
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { notify } from "@/lib/notifications";
+
+// Vercel kjører UTC — all visningsformatering må pinnes til Oslo-tid.
+const OSLO_TID_FMT = new Intl.DateTimeFormat("nb-NO", {
+  timeZone: "Europe/Oslo",
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+  hour: "2-digit",
+  minute: "2-digit",
+});
 
 export type InviteSpillerInput = {
   sessionId: string;
@@ -39,6 +47,8 @@ export async function inviterSpiller(
     select: {
       hostId: true,
       coachId: true,
+      title: true,
+      startTime: true,
       maxParticipants: true,
       participants: { select: { id: true, userId: true } },
     },
@@ -73,7 +83,14 @@ export async function inviterSpiller(
     select: { id: true },
   });
 
-  // TODO: Send notifikasjon til invitert spiller via lib/notifications
+  // Varsle invitert spiller (best-effort — notify feiler stille).
+  await notify({
+    userId: opts.userId,
+    type: "plan",
+    title: "Invitasjon til treningsøkt",
+    body: `${me.name ?? "En spiller"} inviterte deg til «${session.title}» ${OSLO_TID_FMT.format(session.startTime)}.`,
+    link: `/portal/tren/${opts.sessionId}`,
+  });
 
   revalidatePath("/portal");
   revalidatePath(`/portal/tren/${opts.sessionId}`);
