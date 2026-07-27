@@ -51,6 +51,7 @@ export default async function V2CockpitPage() {
       take: 400,
     }),
     prisma.group.findMany({
+      where: user.role === "COACH" ? { coachId: user.id } : {},
       select: { id: true, name: true, _count: { select: { members: true } } },
       orderBy: { name: "asc" },
     }),
