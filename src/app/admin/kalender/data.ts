@@ -49,6 +49,13 @@ export interface KalOkt {
   heldag?: boolean;
   /** Lenke til hendelsen i Google Calendar (åpnes i ny fane). */
   googleLenke?: string | null;
+  /** Speilrad-id — nøkkelen som lar hendelsen redigeres (steg 4). */
+  googleMirrorId?: string;
+  /** «YYYY-MM-DDTHH:mm» for datetime-local-felt i redigeringsarket. */
+  startLokal?: string;
+  sluttLokal?: string;
+  /** Beskrivelsen fra Google, redigerbar i arket. */
+  notat?: string | null;
 }
 
 export interface KalDag {
@@ -111,6 +118,19 @@ function hhmm(d: Date): string {
 
 function ukedagIndex(d: Date): number {
   return (d.getDay() + 6) % 7;
+}
+
+/**
+ * «YYYY-MM-DDTHH:mm» for <input type="datetime-local">.
+ * Leser med lokale getters fordi speilede tider er naiv veggklokke — se
+ * google-calendar-tid.ts.
+ */
+function lokalInput(d: Date): string {
+  const p = (n: number) => String(n).padStart(2, "0");
+  return (
+    `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}` +
+    `T${p(d.getHours())}:${p(d.getMinutes())}`
+  );
 }
 
 export async function hentAgencyKalenderData(ukeParam?: string, userId?: string): Promise<KalenderData> {
@@ -321,6 +341,10 @@ export async function hentAgencyKalenderData(ukeParam?: string, userId?: string)
         kalenderFarge: g.kalenderFarge,
         heldag: g.allDay,
         googleLenke: g.htmlLink,
+        googleMirrorId: g.id,
+        startLokal: lokalInput(g.startAt),
+        sluttLokal: lokalInput(g.endAt),
+        notat: g.description,
       });
     }
   }

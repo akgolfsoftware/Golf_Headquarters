@@ -408,6 +408,7 @@ export async function hentSpeiledeHendelser(
   Array<{
     id: string;
     summary: string;
+    description: string | null;
     location: string | null;
     startAt: Date;
     endAt: Date;
@@ -435,6 +436,7 @@ export async function hentSpeiledeHendelser(
       id: true,
       iCalUid: true,
       summary: true,
+      description: true,
       location: true,
       startAt: true,
       endAt: true,
@@ -450,6 +452,7 @@ export async function hentSpeiledeHendelser(
   const ut: Array<{
     id: string;
     summary: string;
+    description: string | null;
     location: string | null;
     startAt: Date;
     endAt: Date;
@@ -472,6 +475,7 @@ export async function hentSpeiledeHendelser(
     ut.push({
       id: r.id,
       summary: r.summary,
+      description: r.description,
       location: r.location,
       startAt: r.startAt,
       endAt: r.endAt,

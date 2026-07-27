@@ -9,10 +9,14 @@
  * segmentert visningsvelger. Segmentet er ikke lime; lime-jobben er «Ny økt».
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { flyttBookingTilDag } from "@/app/admin/agencyos/uka/actions";
 import { hentKalenderDrills } from "@/app/admin/kalender/drill-actions";
+import {
+  oppdaterGoogleHendelse,
+  slettGoogleHendelse,
+} from "@/app/admin/kalender/google-actions";
 
 // I5: samme DnD-mønster som uka-kanbanen — dra booking til ny dag.
 const DND_MIME = "application/x-akgolf-kalender";
@@ -78,11 +82,13 @@ function OktBlokk({
   okt,
   onSerieClick,
   onTreningClick,
+  onGoogleClick,
   compact,
 }: {
   okt: KalOkt;
   onSerieClick?: (okt: KalOkt) => void;
   onTreningClick?: (okt: KalOkt) => void;
+  onGoogleClick?: (okt: KalOkt) => void;
   compact?: boolean;
 }) {
   const erSerie = Boolean(okt.serie);
@@ -130,19 +136,17 @@ function OktBlokk({
     </div>
   );
   if (erGoogle) {
-    // Klikk åpner avtalen i Google Calendar. Ny fane: AgencyOS-kalenderen
-    // skal ikke forsvinne under føttene på deg.
-    return okt.googleLenke ? (
-      <a
-        href={okt.googleLenke}
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ textDecoration: "none" }}
+    // Klikk åpner redigeringsarket (steg 4) — endre tid, tittel og sted uten
+    // å forlate AgencyOS. Arket har lenke videre til Google.
+    return (
+      <button
+        type="button"
+        onClick={() => onGoogleClick?.(okt)}
+        className="v2-focus"
+        style={{ appearance: "none", background: "none", border: "none", padding: 0, textAlign: "left", width: "100%", cursor: "pointer" }}
       >
         {inner}
-      </a>
-    ) : (
-      inner
+      </button>
     );
   }
   if (erTrening) {
@@ -210,6 +214,182 @@ function SerieMeny({ okt, onClose }: { okt: KalOkt; onClose: () => void }) {
   );
 }
 
+/* ── GoogleHendelseArk (steg 4) — endre eller slett en hendelse som ligger i
+   Google, uten å forlate AgencyOS. Skriver til Google og oppdaterer speilet;
+   kalenderen viser endringen med en gang. ── */
+function GoogleHendelseArk({
+  okt,
+  onClose,
+  onLagret,
+}: {
+  okt: KalOkt;
+  onClose: () => void;
+  onLagret: () => void;
+}) {
+  const [tittel, setTittel] = useState(okt.navn);
+  const [start, setStart] = useState(okt.startLokal ?? "");
+  const [slutt, setSlutt] = useState(okt.sluttLokal ?? "");
+  const [sted, setSted] = useState(okt.sted ?? "");
+  const [notat, setNotat] = useState(okt.notat ?? "");
+  const [lagrer, startLagre] = useTransition();
+  const [sletter, startSlett] = useTransition();
+  const [feil, setFeil] = useState<string | null>(null);
+
+  const mirrorId = okt.googleMirrorId;
+  const laast = !mirrorId || okt.heldag;
+
+  function lagre() {
+    if (!mirrorId) return;
+    setFeil(null);
+    startLagre(async () => {
+      const res = await oppdaterGoogleHendelse(mirrorId, {
+        tittel,
+        startAt: start,
+        endAt: slutt,
+        sted: sted || null,
+        notat: notat || null,
+      });
+      if (res.ok) {
+        onLagret();
+        onClose();
+      } else {
+        setFeil(res.feil);
+      }
+    });
+  }
+
+  function slett() {
+    if (!mirrorId) return;
+    setFeil(null);
+    startSlett(async () => {
+      const res = await slettGoogleHendelse(mirrorId);
+      if (res.ok) {
+        onLagret();
+        onClose();
+      } else {
+        setFeil(res.feil);
+      }
+    });
+  }
+
+  const feltStil: React.CSSProperties = {
+    width: "100%",
+    background: T.panel2,
+    border: `1px solid ${T.border}`,
+    borderRadius: T.rRow,
+    padding: "8px 10px",
+    fontFamily: T.ui,
+    fontSize: 12.5,
+    color: T.fg,
+    marginTop: 4,
+    boxSizing: "border-box",
+  };
+  const merkeStil: React.CSSProperties = {
+    fontFamily: T.mono,
+    fontSize: 9,
+    fontWeight: 700,
+    color: T.mut,
+  };
+
+  return (
+    <BunnArk open onClose={onClose} tittel={okt.navn}>
+      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <span
+          style={{
+            width: 6,
+            height: 6,
+            borderRadius: 9999,
+            background: okt.kalenderFarge ?? T.mut,
+            flex: "none",
+          }}
+        />
+        <Caps size={8.5}>{okt.kalenderNavn ?? "Google Calendar"}</Caps>
+      </div>
+
+      {laast ? (
+        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.55, margin: "12px 0 0" }}>
+          {okt.heldag
+            ? "Heldagshendelser redigeres foreløpig i Google."
+            : "Denne hendelsen kan ikke redigeres herfra."}
+        </p>
+      ) : (
+        <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }}>
+          <label style={merkeStil}>
+            Tittel
+            <input style={feltStil} value={tittel} onChange={(e) => setTittel(e.target.value)} />
+          </label>
+          <div style={{ display: "flex", gap: 8 }}>
+            <label style={{ ...merkeStil, flex: 1 }}>
+              Fra
+              <input
+                type="datetime-local"
+                style={feltStil}
+                value={start}
+                onChange={(e) => setStart(e.target.value)}
+              />
+            </label>
+            <label style={{ ...merkeStil, flex: 1 }}>
+              Til
+              <input
+                type="datetime-local"
+                style={feltStil}
+                value={slutt}
+                onChange={(e) => setSlutt(e.target.value)}
+              />
+            </label>
+          </div>
+          <label style={merkeStil}>
+            Sted
+            <input style={feltStil} value={sted} onChange={(e) => setSted(e.target.value)} />
+          </label>
+          <label style={merkeStil}>
+            Notat
+            <textarea
+              style={{ ...feltStil, minHeight: 60, resize: "vertical" }}
+              value={notat}
+              onChange={(e) => setNotat(e.target.value)}
+            />
+          </label>
+
+          {feil && (
+            <div style={{ fontFamily: T.ui, fontSize: 12, color: NAA_KANT }}>{feil}</div>
+          )}
+
+          <div style={{ display: "flex", gap: 8, justifyContent: "space-between", marginTop: 2 }}>
+            <button
+              type="button"
+              onClick={slett}
+              disabled={sletter || lagrer}
+              className="v2-focus"
+              style={{ appearance: "none", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+            >
+              <CTAPill ghost icon="trash">{sletter ? "Sletter …" : "Slett"}</CTAPill>
+            </button>
+            <button
+              type="button"
+              onClick={lagre}
+              disabled={lagrer || sletter}
+              className="v2-focus"
+              style={{ appearance: "none", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+            >
+              <CTAPill icon="check">{lagrer ? "Lagrer …" : "Lagre"}</CTAPill>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {okt.googleLenke && (
+        <a href={okt.googleLenke} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12, padding: "9px 0", borderTop: `1px solid ${T.border}` }}>
+            <Icon name="external-link" size={13} style={{ color: T.fg }} />
+            <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}>Åpne i Google Calendar</span>
+          </div>
+        </a>
+      )}
+    </BunnArk>
+  );
+}
+
 /** Estimert varighet (min) når loader ikke gir slutt-tid — gap til neste, ellers 60. */
 function estimertVarighetMin(okter: KalOkt[], idx: number): number {
   const cur = okter[idx];
@@ -230,6 +410,7 @@ function AgencyDagInnhold({
   dag,
   onSerieClick,
   onTreningClick,
+  onGoogleClick,
   onFlytt,
   flytterId,
   onTomLuke,
@@ -237,6 +418,7 @@ function AgencyDagInnhold({
   dag: KalenderData["dager"][number];
   onSerieClick: (okt: KalOkt) => void;
   onTreningClick: (okt: KalOkt) => void;
+  onGoogleClick: (okt: KalOkt) => void;
   onFlytt?: (bookingId: string, datoISO: string) => void;
   flytterId?: string | null;
   onTomLuke: (datoISO: string, kl: string) => void;
@@ -285,7 +467,7 @@ function AgencyDagInnhold({
       {gridOkter.map((o, idx) => {
         const body = (
           <div data-okt-blokk style={{ height: "100%", overflow: "hidden" }}>
-            <OktBlokk okt={o} onSerieClick={onSerieClick} onTreningClick={onTreningClick} compact />
+            <OktBlokk okt={o} onSerieClick={onSerieClick} onTreningClick={onTreningClick} onGoogleClick={onGoogleClick} compact />
           </div>
         );
         return (
@@ -319,7 +501,7 @@ function AgencyDagInnhold({
 /* ── DagOkterListe — én dags økter som OktBlokk-liste + «Ny booking eller økt»-
    inngang. Delt av desktop dag-visning OG mobilens dag-detalj-BunnArk, så
    opprett-inngangen (tom luke → HurtigOpprett) er identisk begge steder. ── */
-function DagOkterListe({ dag, onSerieClick, onTreningClick, onTomLuke }: { dag: KalDag; onSerieClick: (okt: KalOkt) => void; onTreningClick: (okt: KalOkt) => void; onTomLuke: (datoISO: string, kl: string) => void }) {
+function DagOkterListe({ dag, onSerieClick, onTreningClick, onGoogleClick, onTomLuke }: { dag: KalDag; onSerieClick: (okt: KalOkt) => void; onTreningClick: (okt: KalOkt) => void; onGoogleClick: (okt: KalOkt) => void; onTomLuke: (datoISO: string, kl: string) => void }) {
   return (
     <>
       {dag.okter.length === 0 ? (
@@ -327,7 +509,7 @@ function DagOkterListe({ dag, onSerieClick, onTreningClick, onTomLuke }: { dag: 
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {dag.okter.map((o) => (
-            <OktBlokk key={o.id} okt={o} onSerieClick={onSerieClick} onTreningClick={onTreningClick} />
+            <OktBlokk key={o.id} okt={o} onSerieClick={onSerieClick} onTreningClick={onTreningClick} onGoogleClick={onGoogleClick} />
           ))}
         </div>
       )}
@@ -415,6 +597,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   // Hvilken serie-økt (om noen) er valgt — styrer SerieMeny-panelet (kun ekte
   // klikk på en merket serie-blokk åpner det, aldri statisk synlig).
   const [valgtSerieOkt, setValgtSerieOkt] = useState<KalOkt | null>(null);
+  const [valgtGoogleOkt, setValgtGoogleOkt] = useState<KalOkt | null>(null);
   const [valgtTreningOkt, setValgtTreningOkt] = useState<KalOkt | null>(null);
   const [treningsDrills, setTreningsDrills] = useState<{
     title: string;
@@ -438,6 +621,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   const serieFraArk = (okt: KalOkt) => { setDagArk(null); setValgtSerieOkt(okt); };
   const treningFraArk = (okt: KalOkt) => { setDagArk(null); void apneTrening(okt); };
   const tomLukeFraArk = (dato: string, kl: string) => { setDagArk(null); setTomLuke({ dato, kl }); };
+  const googleFraArk = (okt: KalOkt) => { setDagArk(null); setValgtGoogleOkt(okt); };
 
   async function apneTrening(okt: KalOkt) {
     if (!okt.treningsSessionId) return;
@@ -592,7 +776,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       const valgt = data.dager.find((d) => d.idag) ?? data.dager[0];
       mobilKropp = (
         <Kort eyebrow={`${valgt.dag} ${valgt.dato}${valgt.idag ? " · i dag" : ""}`}>
-          <DagOkterListe dag={valgt} onSerieClick={setValgtSerieOkt} onTreningClick={(o) => void apneTrening(o)} onTomLuke={onTomLuke} />
+          <DagOkterListe dag={valgt} onSerieClick={setValgtSerieOkt} onTreningClick={(o) => void apneTrening(o)} onGoogleClick={setValgtGoogleOkt} onTomLuke={onTomLuke} />
         </Kort>
       );
     } else {
@@ -619,9 +803,16 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
           onClose={() => setDagArk(null)}
           tittel={dagAark ? `${dagAark.dag} ${dagAark.dato}${dagAark.idag ? " · i dag" : ""}` : undefined}
         >
-          {dagAark && <DagOkterListe dag={dagAark} onSerieClick={serieFraArk} onTreningClick={treningFraArk} onTomLuke={tomLukeFraArk} />}
+          {dagAark && <DagOkterListe dag={dagAark} onSerieClick={serieFraArk} onTreningClick={treningFraArk} onGoogleClick={googleFraArk} onTomLuke={tomLukeFraArk} />}
         </BunnArk>
         {valgtSerieOkt && <SerieMeny okt={valgtSerieOkt} onClose={() => setValgtSerieOkt(null)} />}
+        {valgtGoogleOkt && (
+          <GoogleHendelseArk
+            okt={valgtGoogleOkt}
+            onClose={() => setValgtGoogleOkt(null)}
+            onLagret={() => router.refresh()}
+          />
+        )}
         <BunnArk
           open={valgtTreningOkt !== null}
           onClose={() => { setValgtTreningOkt(null); setTreningsDrills(null); }}
@@ -684,6 +875,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
             dag={data.dager[i]}
             onSerieClick={setValgtSerieOkt}
             onTreningClick={(o) => void apneTrening(o)}
+            onGoogleClick={setValgtGoogleOkt}
             onFlytt={onFlytt}
             flytterId={flytterId}
             onTomLuke={onTomLuke}
@@ -695,7 +887,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     const valgt = data.dager.find((d) => d.idag) ?? data.dager[0];
     kropp = (
       <Kort eyebrow={`${valgt.dag} ${valgt.dato}${valgt.idag ? " · i dag" : ""}`}>
-        <DagOkterListe dag={valgt} onSerieClick={setValgtSerieOkt} onTreningClick={(o) => void apneTrening(o)} onTomLuke={onTomLuke} />
+        <DagOkterListe dag={valgt} onSerieClick={setValgtSerieOkt} onTreningClick={(o) => void apneTrening(o)} onGoogleClick={setValgtGoogleOkt} onTomLuke={onTomLuke} />
       </Kort>
     );
   } else {
@@ -717,6 +909,13 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       {visning === "uke" && serieHint}
       {innsikt}
       {valgtSerieOkt && <SerieMeny okt={valgtSerieOkt} onClose={() => setValgtSerieOkt(null)} />}
+      {valgtGoogleOkt && (
+        <GoogleHendelseArk
+          okt={valgtGoogleOkt}
+          onClose={() => setValgtGoogleOkt(null)}
+          onLagret={() => router.refresh()}
+        />
+      )}
       <BunnArk
         open={valgtTreningOkt !== null}
         onClose={() => { setValgtTreningOkt(null); setTreningsDrills(null); }}
