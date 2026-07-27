@@ -16,6 +16,7 @@
     "retag:drills": "tsx scripts/retag-drill-kategorier.ts",
     "retag:drills:apply": "tsx scripts/retag-drill-kategorier.ts --apply",
     "sync:masterbrain": "tsx scripts/sync-masterbrain.ts",
+    "laeringslogg:masterbrain": "tsx scripts/laeringslogg-til-masterbrain.ts",
     "e2e": "playwright test",
     "e2e:headed": "playwright test --headed",
     "test": "tsx --conditions=react-server --experimental-test-module-mocks --test 'src/lib/**/*.test.ts'",
