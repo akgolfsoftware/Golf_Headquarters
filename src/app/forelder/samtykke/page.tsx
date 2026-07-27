@@ -12,6 +12,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, FORELDER_NAV } from "@/components/v2/shell";
+import { hentSamtykkeStatus } from "@/lib/health/samtykke";
 import {
   ForelderSamtykkeV2,
   type ForelderSamtykkeData,
@@ -55,12 +56,27 @@ export default async function V2ForelderSamtykkePreviewPage() {
       ? (relasjoner[0]?.child.name.split(" ")[0] ?? "barnet") + "s"
       : "barnas";
 
+  // Helsedata-samtykkene bor i egen tabell (sporbare rader), ikke i
+  // preferences — hentes derfor per barn.
+  const helsePerBarn = new Map(
+    await Promise.all(
+      relasjoner.map(
+        async (r) =>
+          [r.child.id, await hentSamtykkeStatus(r.child.id)] as const,
+      ),
+    ),
+  );
+
   const data: ForelderSamtykkeData = {
     barn: relasjoner.map((r) => ({
       id: r.child.id,
       name: r.child.name,
       email: r.child.email,
       prefs: (r.child.preferences as Record<string, boolean> | null) ?? {},
+      helse: {
+        wearable: helsePerBarn.get(r.child.id)?.wearable ?? false,
+        coachInnsyn: helsePerBarn.get(r.child.id)?.coachInnsyn ?? false,
+      },
     })),
     barnNavn,
     alleAktive,

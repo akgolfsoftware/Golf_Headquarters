@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { registrerHelseSamtykke } from "@/lib/health/samtykke";
+import { erHelseSamtykkeType } from "@/lib/health/samtykke-regler";
 
 /**
  * Lagre samtykker for et barn. Krever at innloggede bruker er foresatt
@@ -43,6 +45,56 @@ export async function lagreSamtykker(
     target: `User:${childId}`,
     metadata: { samtykker, role: user.role },
   });
+
+  revalidatePath("/forelder/samtykke");
+  revalidatePath(`/admin/spillere/${childId}`);
+
+  return { ok: true };
+}
+
+/**
+ * Foresatt gir eller trekker barnets samtykke til helsedata fra treningsklokke
+ * (GDPR art. 9-2 a, kombinert med art. 8 for mindreårige).
+ *
+ * Egen action — ikke en del av `lagreSamtykker` — fordi dette samtykket ikke
+ * er en bryter i en JSON-blob: hver endring blir en sporbar rad med tidspunkt,
+ * tekstversjon og hvem som klikket, slik dokumentasjonsplikten krever for
+ * særlige kategorier persondata.
+ */
+export async function settHelseSamtykkeForBarn(
+  childId: string,
+  type: string,
+  gitt: boolean,
+): Promise<{ ok: true } | { ok: false; feil: string }> {
+  const user = await requirePortalUser({ allow: ["PARENT", "ADMIN"] });
+
+  if (user.role === "PARENT") {
+    const relasjon = await prisma.parentRelation.findFirst({
+      where: { parentId: user.id, childId, approved: true },
+    });
+    if (!relasjon) {
+      return { ok: false, feil: "Du er ikke godkjent foresatt for dette barnet" };
+    }
+  }
+
+  if (!erHelseSamtykkeType(type)) {
+    return { ok: false, feil: "Ukjent samtykketype." };
+  }
+
+  try {
+    await registrerHelseSamtykke({
+      userId: childId,
+      type,
+      gitt,
+      gittAvUserId: user.id,
+      gittAvRolle: "FORESATT",
+    });
+  } catch (err) {
+    return {
+      ok: false,
+      feil: err instanceof Error ? err.message : "Kunne ikke lagre samtykket.",
+    };
+  }
 
   revalidatePath("/forelder/samtykke");
   revalidatePath(`/admin/spillere/${childId}`);

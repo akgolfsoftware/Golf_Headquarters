@@ -21,7 +21,12 @@ import { Bryter } from "@/components/v2/skjema";
 import {
   lagreSamtykker,
   beOmDataSletting,
+  settHelseSamtykkeForBarn,
 } from "@/app/forelder/samtykke/actions";
+import {
+  HELSE_SAMTYKKE_TEKST,
+  type HelseSamtykkeType,
+} from "@/lib/health/samtykke-regler";
 
 /* ── Datakontrakt (avledet av barnets EKTE Prisma-data) ────────────── */
 
@@ -31,6 +36,12 @@ export type SamtykkeBarn = {
   email: string;
   /** Lagrede preferanser: consent-nøkkel → på/av. Mangler → av. */
   prefs: Record<string, boolean>;
+  /**
+   * Helsedata fra treningsklokke (GDPR art. 9-2 a). Ligger IKKE i `prefs`:
+   * dette samtykket lagres som sporbare rader med tidspunkt og tekstversjon,
+   * fordi særlige kategorier persondata krever at vi kan bevise samtykket.
+   */
+  helse: { wearable: boolean; coachInnsyn: boolean };
 };
 
 export type ForelderSamtykkeData = {
@@ -92,6 +103,115 @@ function formatDato(iso: string): string {
     month: "long",
     year: "numeric",
   });
+}
+
+/* ── Helsedata fra treningsklokke (art. 9 — eget, sporbart samtykke) ─ */
+
+function HelseSamtykkeSeksjon({ barn }: { barn: SamtykkeBarn }) {
+  const [pending, startTransition] = useTransition();
+  const [wearable, setWearable] = useState(barn.helse.wearable);
+  const [coachInnsyn, setCoachInnsyn] = useState(barn.helse.coachInnsyn);
+  const [feil, setFeil] = useState<string | null>(null);
+
+  function endre(type: HelseSamtykkeType, nyVerdi: boolean) {
+    setFeil(null);
+    const forrigeWearable = wearable;
+    const forrigeCoach = coachInnsyn;
+
+    if (type === "WEARABLE_HELSE") {
+      setWearable(nyVerdi);
+      // Uten datainnhenting finnes det ingenting for coachen å se.
+      if (!nyVerdi) setCoachInnsyn(false);
+    } else {
+      setCoachInnsyn(nyVerdi);
+    }
+
+    startTransition(async () => {
+      const svar = await settHelseSamtykkeForBarn(barn.id, type, nyVerdi);
+      if (!svar.ok) {
+        setWearable(forrigeWearable);
+        setCoachInnsyn(forrigeCoach);
+        setFeil(svar.feil);
+      }
+    });
+  }
+
+  return (
+    <div
+      style={{
+        padding: "14px 18px",
+        borderTop: `1px solid ${T.border}`,
+        background: T.panel2,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+        <Icon name="heart" size={13} style={{ color: T.mut }} />
+        <span
+          style={{
+            fontFamily: T.ui,
+            fontSize: 10.5,
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: T.mut,
+          }}
+        >
+          Helsedata fra klokke
+        </span>
+      </div>
+
+      <p
+        style={{
+          fontFamily: T.ui,
+          fontSize: 12,
+          color: T.fg2,
+          lineHeight: 1.5,
+          margin: "0 0 8px",
+        }}
+      >
+        Søvn og restitusjon regnes som helseopplysninger. Er barnet under 16 år,
+        er det bare du som kan si ja til dette. Treningen blir aldri sperret av
+        det du velger her.
+      </p>
+
+      <div style={{ padding: "6px 0" }}>
+        <Bryter
+          label={HELSE_SAMTYKKE_TEKST.WEARABLE_HELSE.tittel}
+          sub={HELSE_SAMTYKKE_TEKST.WEARABLE_HELSE.forklaring}
+          checked={wearable}
+          onChange={(v) => {
+            if (!pending) endre("WEARABLE_HELSE", v);
+          }}
+        />
+      </div>
+
+      {wearable && (
+        <div style={{ padding: "6px 0", borderTop: `1px solid ${T.border}` }}>
+          <Bryter
+            label={HELSE_SAMTYKKE_TEKST.COACH_INNSYN.tittel}
+            sub={HELSE_SAMTYKKE_TEKST.COACH_INNSYN.forklaring}
+            checked={coachInnsyn}
+            onChange={(v) => {
+              if (!pending) endre("COACH_INNSYN", v);
+            }}
+          />
+        </div>
+      )}
+
+      {feil && (
+        <p
+          style={{
+            fontFamily: T.ui,
+            fontSize: 12,
+            color: T.down,
+            margin: "8px 0 0",
+          }}
+        >
+          {feil}
+        </p>
+      )}
+    </div>
+  );
 }
 
 /* ── Per-barn samtykke-kort ────────────────────────────────────────── */
@@ -200,6 +320,10 @@ function BarnSamtykkeKort({ barn }: { barn: SamtykkeBarn }) {
           </div>
         ))}
       </div>
+
+      {/* Helsedata — lagres umiddelbart per bryter, ikke via Lagre-knappen
+          under: hvert klikk er en egen sporbar samtykke-hendelse. */}
+      <HelseSamtykkeSeksjon barn={barn} />
 
       {/* Fot: kvittering + lagre */}
       <div
