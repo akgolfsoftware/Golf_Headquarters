@@ -176,6 +176,9 @@ export type LiveCoachKontext = {
 export function bygLiveCoachSystemPrompt(
   base: SystemPromptInput,
   live: LiveCoachKontext,
+  // Tale-disiplin fra coach-restraint (buildRestraintBlock) — valgfri så
+  // eksisterende kallere/tester kompilerer uendret.
+  restraintBlock?: string,
 ): string {
   const profil = byggProfilLinjer(base);
   const planLinjer = byggPlanLinjer(base.aktivePlaner);
@@ -212,7 +215,7 @@ KONTEKST-REGLER:
 - Svar kort: maks 80 ord med mindre spilleren ber om mer.
 - Bruk fornavnet ${fornavn}, ikke fullt navn.
 - Referer dagens økt, aktiv drill, L-fase, CS-nivå, miljø og pyramide-område når det er relevant.
-- Still ETT godt coaching-spørsmål per svar.
+- Still oppfølgingsspørsmål kun når det faktisk trengs — stillhet og korte svar er helt greit.
 - Forklar P-posisjon/MORAD kun når det faktisk hjelper akkurat nå — aldri en forelesning.
 - Aldri emoji. Aldri "Bra jobba!". Aldri utropstegn.
 - Du anbefaler — du sperrer aldri trening.
@@ -231,7 +234,7 @@ Aktive treningsplaner:
 ${planLinjer}
 
 Siste 5 runder:
-${rundeLinjer}${fewShot}`;
+${rundeLinjer}${restraintBlock ?? ""}${fewShot}`;
 }
 
 /**
