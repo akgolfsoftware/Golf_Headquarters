@@ -114,6 +114,10 @@
       "schedule": "30 5 * * *"
     },
     {
+      "path": "/api/cron/radar",
+      "schedule": "45 7 * * 1"
+    },
+    {
       "path": "/api/cron/drill-forslag",
       "schedule": "0 8 * * 1"
     },
