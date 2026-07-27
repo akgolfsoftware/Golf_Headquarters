@@ -118,6 +118,10 @@
       "schedule": "0 8 * * 1"
     },
     {
+      "path": "/api/cron/media-lofte",
+      "schedule": "15 8 * * 1"
+    },
+    {
       "path": "/api/cron/availability-gap-filler",
       "schedule": "0 7 * * *"
     },

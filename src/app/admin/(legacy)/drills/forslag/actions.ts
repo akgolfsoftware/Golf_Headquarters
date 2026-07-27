@@ -93,3 +93,68 @@ export async function avvisDrillForslag(
   revalidatePath("/admin/drills/forslag");
   return { ok: true, melding: "Avvist" };
 }
+
+/* ─── Video-forslag (media-lofte-agent, toolName "suggestDrillVideo") ──── */
+// Godkjenning setter videoUrl på en EKSISTERENDE ExerciseDefinition (i
+// motsetning til drill-forslag over, som oppretter en helt ny øvelse).
+
+const VideoInputSchema = z.object({
+  exerciseId: z.string().min(1),
+  videoUrl: z.string().url(),
+});
+
+async function hentEgetVideoForslag(draftId: string, userId: string) {
+  return prisma.caddieDraft.findFirst({
+    where: { id: draftId, userId, toolName: "suggestDrillVideo", status: "PENDING" },
+  });
+}
+
+export async function godkjennVideoForslag(
+  draftId: string,
+): Promise<ForslagResultat> {
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const draft = await hentEgetVideoForslag(draftId, user.id);
+  if (!draft) return { ok: false, melding: "Forslag ikke funnet" };
+
+  const parsed = VideoInputSchema.safeParse(draft.toolInput);
+  if (!parsed.success) return { ok: false, melding: "Ugyldig forslag-data" };
+
+  try {
+    await prisma.exerciseDefinition.update({
+      where: { id: parsed.data.exerciseId },
+      data: { videoUrl: parsed.data.videoUrl },
+    });
+    await prisma.caddieDraft.update({
+      where: { id: draft.id },
+      data: { status: "APPROVED", resolvedAt: new Date() },
+    });
+    await audit({
+      actorId: user.id,
+      action: "drill.video-godkjent",
+      target: `ExerciseDefinition:${parsed.data.exerciseId}`,
+      metadata: { kilde: "media-lofte-agent", draftId: draft.id },
+    });
+    revalidatePath("/admin/drills/forslag");
+    revalidatePath("/admin/drills");
+    revalidatePath("/portal/drills");
+    return { ok: true, melding: "Video lagt til" };
+  } catch (err) {
+    console.error("godkjennVideoForslag failed", err);
+    return { ok: false, melding: "Kunne ikke lagre video" };
+  }
+}
+
+export async function avvisVideoForslag(
+  draftId: string,
+): Promise<ForslagResultat> {
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const draft = await hentEgetVideoForslag(draftId, user.id);
+  if (!draft) return { ok: false, melding: "Forslag ikke funnet" };
+
+  await prisma.caddieDraft.update({
+    where: { id: draft.id },
+    data: { status: "REJECTED", resolvedAt: new Date() },
+  });
+  revalidatePath("/admin/drills/forslag");
+  return { ok: true, melding: "Avvist" };
+}
