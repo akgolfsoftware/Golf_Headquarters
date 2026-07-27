@@ -367,7 +367,9 @@ export async function setupWatchForSubscription(
     include: { connection: true },
   });
   if (!sub) return null;
-  if (!sub.syncPull || !sub.active) return null;
+  // Watch trengs både for booking-blokkering (syncPull) og for at speilede
+  // hendelser skal oppdateres umiddelbart i kalenderen (visIKalender).
+  if (!sub.active || (!sub.syncPull && !sub.visIKalender)) return null;
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
   if (!baseUrl) {

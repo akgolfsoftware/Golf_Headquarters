@@ -50,6 +50,7 @@ export default async function KalenderSynkPage({
       color: s.color,
       syncPush: s.syncPush,
       syncPull: s.syncPull,
+      visIKalender: s.visIKalender,
       active: s.active,
       lastError: s.lastError,
     })) ?? [];

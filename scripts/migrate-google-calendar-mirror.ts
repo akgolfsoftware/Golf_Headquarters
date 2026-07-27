@@ -124,6 +124,20 @@ const STEG: Array<{ navn: string; sql: string }> = [
     navn: "subscriptions.mirrorTo",
     sql: `ALTER TABLE "google_calendar_subscriptions" ADD COLUMN IF NOT EXISTS "mirrorTo" TIMESTAMP(3)`,
   },
+  // ── Skille «vis i kalender» fra «blokkér booking» (2026-07-27) ────────
+  {
+    navn: "subscriptions.visIKalender",
+    sql: `ALTER TABLE "google_calendar_subscriptions"
+          ADD COLUMN IF NOT EXISTS "visIKalender" BOOLEAN NOT NULL DEFAULT false`,
+  },
+  {
+    // Kalendere som allerede var pull-aktive ble vist implisitt før skillet —
+    // behold den oppførselen så ingenting forsvinner fra kalenderen.
+    navn: "sett visIKalender for eksisterende pull-kalendere",
+    sql: `UPDATE "google_calendar_subscriptions"
+          SET "visIKalender" = true
+          WHERE "syncPull" = true AND "active" = true AND "visIKalender" = false`,
+  },
   // ── Steg 3: hva vi har pushet UT til Google, og hvor ──────────────────
   {
     navn: "pushed_calendar_events",

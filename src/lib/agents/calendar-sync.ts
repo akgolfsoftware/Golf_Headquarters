@@ -28,8 +28,10 @@ export const AGENT_NAME = "calendar-sync";
 export async function runCalendarSync(): Promise<AgentResult> {
   return runAgent(AGENT_NAME, null, async () => {
     // ─── Pull: Google → speil → Booking ─────────────────────────────────────
+    // Speiler kalendere som skal VISES. syncPull styrer booking-blokkering
+    // (freebusy) og er en separat bryter — se google-calendar-mirror.
     const subs = await prisma.googleCalendarSubscription.findMany({
-      where: { syncPull: true, active: true },
+      where: { visIKalender: true, active: true },
       select: { id: true },
     });
 

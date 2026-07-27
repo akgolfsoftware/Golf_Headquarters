@@ -98,9 +98,10 @@ export async function syncSubscriptionEvents(
     endringer: [],
   };
 
-  // Deaktiverte kalendere speiles ikke — men gamle rader ryddes bort så de
-  // ikke blir liggende og vises i kalenderen etter at coach slo dem av.
-  if (!sub.active) {
+  // Speiling styres av visIKalender (ikke syncPull — den styrer om kalenderen
+  // BLOKKERER booking). Slås visning av, ryddes gamle rader bort så de ikke
+  // blir liggende igjen i kalenderen.
+  if (!sub.active || !sub.visIKalender) {
     const { count } = await prisma.googleCalendarEvent.deleteMany({
       where: { subscriptionId },
     });
@@ -374,7 +375,7 @@ export async function syncAlleKalendereForBruker(
     where: { userId },
     include: {
       subscriptions: {
-        where: { active: true, syncPull: true },
+        where: { active: true, visIKalender: true },
         select: { id: true },
       },
     },
@@ -425,7 +426,7 @@ export async function hentSpeiledeHendelser(
 
   const rader = await prisma.googleCalendarEvent.findMany({
     where: {
-      subscription: { connectionId: conn.id, active: true, syncPull: true },
+      subscription: { connectionId: conn.id, active: true, visIKalender: true },
       startAt: { lt: til },
       endAt: { gt: fra },
       bookingId: null,

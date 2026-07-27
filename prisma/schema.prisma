@@ -2039,7 +2039,13 @@ model GoogleCalendarSubscription {
   color            String?
   // Sync-retning
   syncPush         Boolean   @default(false)
+  // syncPull = kalenderen BLOKKERER booking (freebusy). Bevisst skilt fra
+  // visIKalender siden 2026-07-27: du vil se familie- og kollegakalendere i
+  // AgencyOS uten at de gjør deg utilgjengelig for kundebooking.
   syncPull         Boolean   @default(true)
+  // visIKalender = hendelsene speiles lokalt og VISES i /admin/kalender.
+  // Påvirker ikke booking-tilgjengelighet.
+  visIKalender     Boolean   @default(false)
   active           Boolean   @default(true)
   // Google Push Notifications watch-tilstand (kun ved syncPull=true)
   watchChannelId   String?
