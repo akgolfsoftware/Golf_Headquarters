@@ -2,7 +2,7 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-07-24 (ferdigstillingsplan: dokumentsynk + Fase A/B-arbeid. Design-GAP i PlayerHQ/AgencyOS/Forelder/Auth = 0. Appen er fortsatt ikke klar for betalende brukere før P0-aktivering.)
+**Sist oppdatert:** 2026-07-27 (kode-verifisering av P0-lista: aktiveringsflyt og push-opt-in er LEVERT i kode (PR #124), betalingsstart i koden er 1. SEPTEMBER — se «Kort sagt». 12 åpne PR-er i merge-kø.)
 
 ## Levende kilder (én av hver rolle — start her)
 
@@ -21,7 +21,9 @@ Historiske bygg-spor (SKJERM-STATUS, SKJERM-BYGGEPLAN, BYGGELOGG-FLAGG, KONFLIKT
 ---
 
 ## Kort sagt
-Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. PlayerHQ + AgencyOS + Forelder + Auth har **0 design-GAP** (verifisert 23. jul). Coaching-/business-motoren (ukesyklus, godkjenningskø, churn, kapasitet-som-penger, m.m.) er levert i juli. **Den er IKKE klar for betalende/ekte brukere ennå** — største hinder er at registrerte spillere aldri har logget inn, pluss Resend DKIM / DNS / Stripe-panel hos Anders. Betaling starter **1. august** (`BETALING_STARTER` i `feature-flags.ts`) — koden gir alle PRO gratis frem til da.
+Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. PlayerHQ + AgencyOS + Forelder + Auth har **0 design-GAP** (verifisert 23. jul). Coaching-/business-motoren (ukesyklus, godkjenningskø, churn, kapasitet-som-penger, m.m.) er levert i juli. **Den er IKKE klar for betalende/ekte brukere ennå** — største hinder er at registrerte spillere aldri har logget inn, pluss Resend DKIM / DNS / Stripe-panel hos Anders. Betaling starter **1. september** (`BETALING_STARTER = 2026-09-01` i `feature-flags.ts`, verifisert i kode 27. jul — tidligere versjoner av dette dokumentet sa 1. august) — koden gir alle PRO gratis frem til da.
+
+**Merge-kø 27. jul:** 12 åpne PR-er, hvorav tre stablede kjeder som må inn bunn-først: #162→#167→#170 (eval/beslutningsfangst), #166→#168→#169 (spillerminne/RAG), #164→#165 (restraint-motor); pluss frittstående #163 (sRPE), #161 (fellesmelding), #171 (invitasjons-varsel), #136 (marketing-bilder). DDL for #162/#166 er allerede kjørt mot prod — merge disse kjedene først.
 
 Push til `main` deployer automatisk via **Vercel git-integrasjon**. GitHub Actions `deploy.yml` er manuell (`workflow_dispatch`) — kjør ALDRI `vercel deploy --prod` manuelt.
 
@@ -58,9 +60,9 @@ Push til `main` deployer automatisk via **Vercel git-integrasjon**. GitHub Actio
 5. **Aktiverings-e-post** til registrerte spillere (etter DKIM).
 
 ### Kode / data (agent)
-- Aktiveringsflyt + at `lastLoginAt` settes ved innlogging.
-- Push-opt-in-prompt ved første PlayerHQ-besøk (motor finnes, 0 abonnementer).
-- Betaling 1. august: `gratisForAlle()` slår av automatisk; verifiser cutover.
+- ~~Aktiveringsflyt + `lastLoginAt`~~ **LEVERT (verifisert i kode 27. jul):** `recordLastLogin` kalles i `/auth/etter-innlogging` (alle innloggingsstier), og `scripts/send-aktiverings-epost.ts` finnes med `--dry-run`. Gjenstår kun: kjøre scriptet skarpt (etter DKIM) og bekrefte at `lastLoginAt` faktisk stemples i prod.
+- ~~Push-opt-in-prompt~~ **LEVERT (verifisert i kode 27. jul):** `PushOptInBanner` rendres på PlayerHQ Hjem (`HjemV2`). Gjenstår kun: bekrefte >0 abonnementer i prod etter aktivering.
+- Betaling **1. september**: `gratisForAlle()` slår av automatisk; verifiser cutover + røyk-test Checkout før datoen.
 
 ### Åpne produktbeslutninger (ikke lanseringsblokkere)
 - **A4 Fase 2:** anbefalingsmotor for periode-fordeling (venter data).
@@ -70,6 +72,7 @@ Push til `main` deployer automatisk via **Vercel git-integrasjon**. GitHub Actio
 - **Bølge 7 AI Coach:** først etter at loopen produserer gjennomføringsdata.
 
 ## Verifisert vs. antatt
+- **Verifisert 2026-07-27 (kode):** aktiveringsflyt (`record-last-login.ts` + kall i `/auth/etter-innlogging`), push-opt-in (`PushOptInBanner` på Hjem), aktiverings-script med dry-run, `BETALING_STARTER = 2026-09-01`. `check-action-auth` kjører grønt i verify-pipelinen. IKKE nettleser-verifisert: live offline-kø, push-flyt ende-til-ende.
 - **Verifisert 2026-07-24 (kode/docs):** design-GAP = 0 i kjerneprodukter; Workbench = V2; live UI utover 4a; D2/D5/D6 løst; Bolk 2/4/5 i MASTER lukket; veikart C/B/A-punkter levert i statusloggen.
 - **Sist DB-sjekket 2026-07-14:** 31 spillere / 0 innlogginger / 0 push — re-sjekk ved aktivering.
 - **Antatt / panel:** Stripe live, Resend DKIM, Google Calendar, DNS `akgolf.no`.
