@@ -35,6 +35,7 @@ import {
 import { runCaddieProactive } from "@/lib/agents/caddie-proactive";
 import { triggerTurneringAgent } from "@/lib/agents/triggers";
 import { runDailyBrief } from "@/lib/agents/daily-brief-agent";
+import { runMemoryConsolidation } from "@/lib/agents/memory-consolidation-agent";
 import { runDrillForslag } from "@/lib/agents/drill-forslag-agent";
 import { runBookingOptimizer } from "@/lib/agents/booking-optimizer";
 import { runAvailabilityMonitor } from "@/lib/agents/availability-24-7-monitor";
@@ -92,6 +93,7 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "turnering-agent": triggerTurneringAgent,
   // Selvgående golf-agenter koblet til Mission Control + varsling
   "daily-brief": runDailyBrief,
+  "memory-consolidation": runMemoryConsolidation,
   "drill-forslag": runDrillForslag,
   "booking-optimizer": runBookingOptimizer,
   "availability-24-7-monitor": runAvailabilityMonitor,

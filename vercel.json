@@ -114,6 +114,10 @@
       "schedule": "30 5 * * *"
     },
     {
+      "path": "/api/cron/memory-consolidation",
+      "schedule": "45 3 * * *"
+    },
+    {
       "path": "/api/cron/drill-forslag",
       "schedule": "0 8 * * 1"
     },
