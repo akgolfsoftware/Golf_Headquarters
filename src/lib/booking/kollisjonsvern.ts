@@ -17,6 +17,7 @@
  */
 
 import { Prisma } from "@/generated/prisma/client";
+import { vurderDeling, velgPlassNr } from "@/lib/booking/deling";
 
 /** Transaksjonsklient (prisma.$transaction-callback). */
 type Tx = Prisma.TransactionClient;
@@ -32,6 +33,17 @@ export const KOLLISJON_MELDING =
   "Tidspunktet ble nettopp tatt — velg en annen tid.";
 export const FULLT_MELDING =
   "Alle plassene på dette stedet er opptatt i tidsrommet — velg en annen tid.";
+export const DELT_FULLT_MELDING =
+  "Økta er full — alle plassene er tatt.";
+
+export interface KollisjonsResultat {
+  /**
+   * Plassen bookingen skal opprettes/flyttes til. MÅ skrives til
+   * Booking.plassNr — det er den databasens EXCLUSION-constraint bruker for å
+   * gjøre dobbeltbooking fysisk umulig.
+   */
+  plassNr: number;
+}
 
 /**
  * Kjør INNE i en prisma.$transaction. Tar advisory-lås på coach og fasilitet
@@ -47,9 +59,25 @@ export async function sjekkKollisjon(
     endAt: Date;
     /** Ved flytting: bookingen som flyttes skal ikke telle mot seg selv. */
     ekskluderBookingId?: string;
+    /**
+     * Tjenesten som bookes. Nødvendig for delte økter (2-til-1): kapasiteten
+     * ligger på ServiceType.maxDeltakere. Uten denne behandles alt som
+     * kapasitet 1 — samme oppførsel som før steg 5.
+     */
+    serviceTypeId?: string | null;
   },
-): Promise<void> {
-  const { coachId, facilityId, startAt, endAt, ekskluderBookingId } = input;
+): Promise<KollisjonsResultat> {
+  const {
+    coachId,
+    facilityId,
+    startAt,
+    endAt,
+    ekskluderBookingId,
+    serviceTypeId,
+  } = input;
+
+  // Plass 1 med mindre en delt økt sier noe annet (se velgPlassNr).
+  let plassNr = 1;
 
   // Advisory-låser FØR telling — to samtidige transaksjoner på samme ressurs
   // kjører sjekken etter tur i stedet for parallelt (slippes ved commit/rollback).
@@ -61,7 +89,17 @@ export async function sjekkKollisjon(
   }
 
   if (coachId) {
-    const kollisjon = await tx.booking.findFirst({
+    // Kapasitet fra tjenesten: 1 = vanlig time, >1 = delt økt (f.eks. 2-til-1).
+    let kapasitet = 1;
+    if (serviceTypeId) {
+      const tjeneste = await tx.serviceType.findUnique({
+        where: { id: serviceTypeId },
+        select: { maxDeltakere: true },
+      });
+      kapasitet = tjeneste?.maxDeltakere ?? 1;
+    }
+
+    const overlappende = await tx.booking.findMany({
       where: {
         coachId,
         status: { not: "CANCELLED" },
@@ -69,9 +107,32 @@ export async function sjekkKollisjon(
         endAt: { gt: startAt },
         ...(ekskluderBookingId ? { id: { not: ekskluderBookingId } } : {}),
       },
-      select: { id: true },
+      select: {
+        serviceTypeId: true,
+        startAt: true,
+        endAt: true,
+        plassNr: true,
+      },
     });
-    if (kollisjon) throw new BookingKollisjon(KOLLISJON_MELDING);
+
+    const vurdering = vurderDeling(
+      overlappende,
+      { serviceTypeId: serviceTypeId ?? "", startAt, endAt },
+      kapasitet,
+    );
+    if (vurdering.utfall === "kollisjon") {
+      throw new BookingKollisjon(KOLLISJON_MELDING);
+    }
+    if (vurdering.utfall === "fullt") {
+      throw new BookingKollisjon(DELT_FULLT_MELDING);
+    }
+
+    const plass = velgPlassNr(
+      overlappende.map((b) => b.plassNr),
+      kapasitet,
+    );
+    if (plass === null) throw new BookingKollisjon(DELT_FULLT_MELDING);
+    plassNr = plass;
   }
 
   if (facilityId) {
@@ -91,6 +152,8 @@ export async function sjekkKollisjon(
     });
     if (belegg >= kapasitet) throw new BookingKollisjon(FULLT_MELDING);
   }
+
+  return { plassNr };
 }
 
 /**

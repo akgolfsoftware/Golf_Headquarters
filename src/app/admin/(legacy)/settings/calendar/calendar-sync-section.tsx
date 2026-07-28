@@ -39,6 +39,7 @@ export async function CalendarSyncSection({
       color: s.color,
       syncPush: s.syncPush,
       syncPull: s.syncPull,
+      visIKalender: s.visIKalender,
       active: s.active,
       lastSyncAt: s.lastSyncAt ? s.lastSyncAt.toISOString() : null,
       lastError: s.lastError,

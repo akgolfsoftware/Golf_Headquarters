@@ -42,6 +42,7 @@ export interface KalenderRad {
   color: string | null;
   syncPush: boolean;
   syncPull: boolean;
+  visIKalender: boolean;
   active: boolean;
   lastError: string | null;
 }
@@ -191,9 +192,13 @@ export function AdminKalenderSynkV2({ data }: { data: AdminKalenderSynkV2Data })
   const initialPullIds = new Set(
     subscriptions.filter((r) => r.syncPull && r.active).map((r) => r.id),
   );
+  const initialVisIds = new Set(
+    subscriptions.filter((r) => r.visIKalender && r.active).map((r) => r.id),
+  );
 
   const [pushId, setPushId] = useState(initialPushId);
   const [pullIds, setPullIds] = useState<Set<string>>(initialPullIds);
+  const [visIds, setVisIds] = useState<Set<string>>(initialVisIds);
   const [pending, startLagre] = useTransition();
   const [refreshing, startRefresh] = useTransition();
   const [beskjed, setBeskjed] = useState<Beskjed | null>(null);
@@ -207,13 +212,29 @@ export function AdminKalenderSynkV2({ data }: { data: AdminKalenderSynkV2Data })
     });
   }
 
+  function toggleVis(id: string) {
+    setVisIds((prev) => {
+      const ny = new Set(prev);
+      if (ny.has(id)) ny.delete(id);
+      else ny.add(id);
+      return ny;
+    });
+  }
+
   function handleLagre() {
     setBeskjed(null);
     startLagre(async () => {
       const input = subscriptions.map((r) => {
         const erPush = r.id === pushId;
         const erPull = pullIds.has(r.id);
-        return { id: r.id, syncPush: erPush, syncPull: erPull, active: erPush || erPull };
+        const erVis = visIds.has(r.id);
+        return {
+          id: r.id,
+          syncPush: erPush,
+          syncPull: erPull,
+          visIKalender: erVis,
+          active: erPush || erPull || erVis,
+        };
       });
       const result = await oppdaterSubscriptions(input);
       if (result.ok) {
@@ -391,6 +412,26 @@ export function AdminKalenderSynkV2({ data }: { data: AdminKalenderSynkV2Data })
                     disabled={!!rad.lastError}
                     label={`Nye bookinger til ${rad.calendarName}`}
                     onToggle={() => setPushId(pushId === rad.id ? "" : rad.id)}
+                  />
+                }
+                last={i === subscriptions.length - 1}
+              />
+            ))}
+          </Kort>
+
+          <Kort eyebrow="Hvilke kalendere skal vises i AgencyOS-kalenderen?" pad="4px 20px 6px">
+            {subscriptions.map((rad, i) => (
+              <Rad
+                key={rad.id}
+                leading={<KalenderDot color={rad.color} />}
+                title={rad.calendarName}
+                sub={rad.lastError ? "Tilgang utgått" : undefined}
+                trailing={
+                  <Vippe
+                    on={visIds.has(rad.id)}
+                    disabled={!!rad.lastError}
+                    label={`Vis ${rad.calendarName} i kalenderen`}
+                    onToggle={() => toggleVis(rad.id)}
                   />
                 }
                 last={i === subscriptions.length - 1}

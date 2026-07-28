@@ -782,6 +782,11 @@ model ServiceType {
   name        String
   // Pris i ØRE (Int). Aldri Float for penger. Format i UI: priceOre / 100.
   priceOre    Int
+  // Hvor mange spillere som kan dele samme luke hos samme coach.
+  // 1 = vanlig time. 2 = «2-til-1» (Anders' faste onsdagsøkter). Se
+  // src/lib/booking/deling.ts — overlapp er kun lov ved nøyaktig samme
+  // tjeneste i nøyaktig samme tidsrom.
+  maxDeltakere Int     @default(1)
   durationMin Int
   description String?
   active      Boolean  @default(true)
@@ -837,6 +842,11 @@ model Booking {
   // Google Calendar event-ID hvis booking er pushet til coachens kalender.
   // Brukes til oppdater/slett ved endring/avbestilling. Null hvis Calendar
   // ikke er koblet, eller hvis push feilet (best-effort sync).
+  // Hvilken plass i luka bookingen opptar (1..ServiceType.maxDeltakere).
+  // Sammen med coachId og tidsrommet inngår den i EXCLUSION-constraintet
+  // booking_coach_no_overlap, som gjør dobbeltbooking fysisk umulig —
+  // samtidig som delte økter (2-til-1) er lov fordi de har ulik plass.
+  plassNr            Int       @default(1)
   googleEventId           String?
   // Hvilken fasilitet (rom/range/simulator) bookingen tar opp. Optional —
   // ikke alle bookinger er koblet til en spesifikk fasilitet (drop-in kan
@@ -2123,7 +2133,13 @@ model GoogleCalendarSubscription {
   color            String?
   // Sync-retning
   syncPush         Boolean   @default(false)
+  // syncPull = kalenderen BLOKKERER booking (freebusy). Bevisst skilt fra
+  // visIKalender siden 2026-07-27: du vil se familie- og kollegakalendere i
+  // AgencyOS uten at de gjør deg utilgjengelig for kundebooking.
   syncPull         Boolean   @default(true)
+  // visIKalender = hendelsene speiles lokalt og VISES i /admin/kalender.
+  // Påvirker ikke booking-tilgjengelighet.
+  visIKalender     Boolean   @default(false)
   active           Boolean   @default(true)
   // Google Push Notifications watch-tilstand (kun ved syncPull=true)
   watchChannelId   String?
@@ -2132,15 +2148,107 @@ model GoogleCalendarSubscription {
   // Cache av siste sync
   lastSyncAt       DateTime?
   lastError        String?
+  // Googles inkrementelle sync-token (steg 1, 2026-07-27). Erstatter
+  // updatedMin-vinduer: Google leverer nøyaktig det som er endret siden sist,
+  // uten hull. Nullstilles ved 410 GONE → full re-sync.
+  syncToken        String?
+  // Speilingsvindu: hvor langt fram/bak vi har hentet hendelser ved full sync.
+  mirrorFrom       DateTime?
+  mirrorTo         DateTime?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
-  connection GoogleCalendarConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  connection   GoogleCalendarConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  events       GoogleCalendarEvent[]
+  pushedEvents PushedCalendarEvent[]
 
   @@unique([connectionId, googleCalendarId])
   @@index([connectionId, active])
   @@index([watchChannelId])
   @@map("google_calendar_subscriptions")
+}
+
+// Lokal speiling av hendelser fra Google-kalendere (steg 1, 2026-07-27).
+//
+// Hvorfor: fram til nå blokkerte Google-hendelser booking via freebusy, men de
+// ble aldri lagret — så de kunne ikke VISES i AgencyOS-kalenderen. Denne
+// tabellen er lese-speilet: Google eier innholdet, vi holder en kopi slik at
+// kalenderflatene kan rendre alt fra én kilde uten API-kall per sidelasting.
+//
+// Synk er inkrementell via Googles syncToken (lagret på subscription). Rader
+// som Google melder som cancelled slettes. Heldagshendelser markeres med
+// allDay + lagres som [00:00, 24:00) i Oslo-tid.
+model GoogleCalendarEvent {
+  id             String   @id @default(cuid())
+  subscriptionId String
+  // Googles event-id (unik innenfor én kalender, ikke på tvers)
+  googleEventId  String
+  // iCalUID — samme hendelse på tvers av kalendere/deltakere. Brukes til
+  // dedupe når samme avtale ligger i flere av Anders' kalendere.
+  iCalUid        String?
+  summary        String
+  description    String?
+  location       String?
+  startAt        DateTime
+  endAt          DateTime
+  allDay         Boolean  @default(false)
+  // Googles egen status: confirmed | tentative (cancelled slettes lokalt)
+  status         String   @default("confirmed")
+  // "opaque" = opptatt (blokkerer), "transparent" = ledig (blokkerer ikke)
+  transparency   String   @default("opaque")
+  // Satt for enkeltforekomster i en gjentakende serie
+  recurringEventId String?
+  htmlLink       String?
+  // Googles updated-tidsstempel — loop-vern: vi skriver kun hvis Googles
+  // versjon er nyere enn den vi allerede har speilet.
+  googleUpdatedAt DateTime?
+  // Satt når hendelsen er en app-booking vi selv har pushet (unngår at
+  // egne bookinger vises dobbelt i kalenderen).
+  bookingId      String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  subscription GoogleCalendarSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@unique([subscriptionId, googleEventId])
+  @@index([subscriptionId, startAt])
+  @@index([startAt, endAt])
+  @@index([iCalUid])
+  @@index([bookingId])
+  @@map("google_calendar_events")
+}
+
+// Hva AgencyOS har pushet UT til Google, og hvor (steg 3, 2026-07-27).
+//
+// Erstatter det skalare Booking.googleEventId, som bare rommet ÉN event-id:
+// hadde coachen flere push-kalendere, ble kun den første lagret, og
+// oppdatering/sletting traff bare den ene. Her får hver (kalender, kilde) sin
+// egen rad, så alt kan holdes i synk og ryddes bort igjen.
+//
+// kildeType: BOOKING | CALENDAR_EVENT | GROUP_SCHEDULE | TRAINING_SESSION
+// Bevisst plain string + kildeId uten @relation: kildene ligger i fire ulike
+// tabeller, og en polymorf FK finnes ikke i Prisma. Opprydding skjer eksplisitt
+// via fjernKildeFraGoogle når kilden slettes.
+model PushedCalendarEvent {
+  id             String   @id @default(cuid())
+  subscriptionId String
+  googleEventId  String
+  kildeType      String
+  kildeId        String
+  // Naiv veggklokke, speiler kildens tid — brukes til å hoppe over push når
+  // ingenting er endret.
+  startAt        DateTime
+  endAt          DateTime
+  sistPushetAt   DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  subscription GoogleCalendarSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@unique([subscriptionId, kildeType, kildeId])
+  @@index([kildeType, kildeId])
+  @@index([googleEventId])
+  @@map("pushed_calendar_events")
 }
 
 // ---------- CoachHQ-modeller (Fase 2.1) ----------

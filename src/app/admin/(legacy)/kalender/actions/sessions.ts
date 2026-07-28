@@ -7,6 +7,10 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import {
+  pushTreningsokt,
+  fjernTreningsokt,
+} from "@/lib/google-calendar-kilder";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { genererOkter } from "@/lib/portal/training/session-generator";
 import type {
@@ -86,6 +90,9 @@ export async function opprettOkt(input: z.input<typeof OpprettSchema>): Promise<
     metadata: { studentId: data.studentId, title: data.title },
   });
 
+  // Steg 3: treningsøkter skal også synes i Google-kalenderen.
+  await pushTreningsokt(okt.id);
+
   revalidatePath("/admin/kalender");
   return { ok: true, okt };
 }
@@ -123,6 +130,8 @@ export async function oppdaterOkt(
     metadata: JSON.parse(JSON.stringify(data)),
   });
 
+  await pushTreningsokt(id);
+
   revalidatePath("/admin/kalender");
   return { ok: true, okt };
 }
@@ -130,6 +139,14 @@ export async function oppdaterOkt(
 export async function slettOkt(id: string): Promise<SlettResultat> {
   const bruker = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   try {
+    // Fjern fra Google før lokal sletting — etterpå er eieren borte.
+    const okt = await prisma.trainingSessionV2.findUnique({
+      where: { id },
+      select: { coachId: true, hostId: true },
+    });
+    const eier = okt?.coachId ?? okt?.hostId;
+    if (eier) await fjernTreningsokt(id, eier);
+
     await prisma.trainingSessionV2.delete({ where: { id } });
     await audit({
       actorId: bruker.id,

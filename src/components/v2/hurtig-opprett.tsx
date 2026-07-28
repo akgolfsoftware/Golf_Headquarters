@@ -6,6 +6,10 @@
  * NyOktArk i WorkbenchV2Sheets (fixed overlay, backdrop-klikk lukker,
  * T.*-tokens, aldri rå hex).
  *
+ * Steg 5 (2026-07-28): øverst ligger nå et komplett bookingskjema, så en kunde
+ * kan legges inn direkte i luka uten å bytte visning. Lenkene under er
+ * fortsatt der for de lengre veiene.
+ *
  * Tre valg:
  *  - «Ny booking» → /admin/bookinger/ny?start=<dato>T<klokkeslett>
  *    (wizarden leser ?start= og prefyller Dato & tid).
@@ -15,10 +19,16 @@
  */
 
 import Link from "next/link";
+import { useEffect, useState, useTransition } from "react";
 import { foreslaGridTid, tilStartParam } from "@/lib/calendar/notion-grid";
 import { T } from "@/lib/v2/tokens";
 import { Caps, Knapp } from "./core";
 import { Icon } from "./icon";
+import {
+  hentBookingValg,
+  bookIKalender,
+  type BookingValg,
+} from "@/app/admin/kalender/booking-actions";
 
 export interface HurtigOpprettProps {
   /** ISO-dato «YYYY-MM-DD» fra luken som ble trykket. */
@@ -75,6 +85,146 @@ function Valg({ href, icon, tittel, sub }: { href: string; icon: string; tittel:
       </span>
       <Icon name="chevron-right" size={14} style={{ color: T.mut, marginLeft: "auto", flex: "none" }} />
     </Link>
+  );
+}
+
+
+/* ── HurtigBooking (steg 5) — book en kunde rett i luka. Kollisjonsvernet
+   ligger i server-actionen, så 2-til-1-økter slipper gjennom mens ekte
+   dobbeltbooking avvises med klarspråk. ── */
+function HurtigBooking({
+  dato,
+  klokkeslett,
+  onFerdig,
+}: {
+  dato: string;
+  klokkeslett: string;
+  onFerdig: () => void;
+}) {
+  const [valg, setValg] = useState<BookingValg | null>(null);
+  const [spillerId, setSpillerId] = useState("");
+  const [tjenesteId, setTjenesteId] = useState("");
+  const [stedId, setStedId] = useState("");
+  const [feil, setFeil] = useState<string | null>(null);
+  const [ok, setOk] = useState(false);
+  const [lagrer, startLagre] = useTransition();
+
+  useEffect(() => {
+    let avbrutt = false;
+    hentBookingValg()
+      .then((v) => {
+        if (avbrutt) return;
+        setValg(v);
+        // Forhåndsvelg når det bare finnes ett fornuftig alternativ.
+        if (v.tjenester.length > 0) setTjenesteId(v.tjenester[0].id);
+        if (v.steder.length === 1) setStedId(v.steder[0].id);
+      })
+      .catch(() => {
+        if (!avbrutt) setFeil("Kunne ikke hente tjenester og spillere");
+      });
+    return () => {
+      avbrutt = true;
+    };
+  }, []);
+
+  const valgtTjeneste = valg?.tjenester.find((t) => t.id === tjenesteId);
+  const klar = Boolean(spillerId && tjenesteId && stedId) && !lagrer;
+
+  function book() {
+    setFeil(null);
+    startLagre(async () => {
+      const res = await bookIKalender({
+        spillerId,
+        serviceTypeId: tjenesteId,
+        locationId: stedId,
+        start: `${dato}T${klokkeslett}`,
+      });
+      if (res.ok) {
+        setOk(true);
+        onFerdig();
+      } else {
+        setFeil(res.feil);
+      }
+    });
+  }
+
+  const feltStil: React.CSSProperties = {
+    width: "100%",
+    background: T.panel2,
+    border: `1px solid ${T.border}`,
+    borderRadius: 8,
+    padding: "7px 9px",
+    fontFamily: T.ui,
+    fontSize: 12.5,
+    color: T.fg,
+    marginTop: 3,
+    boxSizing: "border-box",
+  };
+  const merke: React.CSSProperties = {
+    fontFamily: T.mono,
+    fontSize: 9,
+    fontWeight: 700,
+    color: T.mut,
+  };
+
+  if (!valg) {
+    return (
+      <div style={{ marginTop: 14, fontFamily: T.ui, fontSize: 12, color: T.mut }}>
+        {feil ?? "Henter tjenester …"}
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${T.border}` }}>
+      <Caps size={8.5}>Book kunde her</Caps>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
+        <label style={merke}>
+          Spiller
+          <select style={feltStil} value={spillerId} onChange={(e) => setSpillerId(e.target.value)}>
+            <option value="">Velg spiller …</option>
+            {valg.spillere.map((s) => (
+              <option key={s.id} value={s.id}>{s.navn}</option>
+            ))}
+          </select>
+        </label>
+        <label style={merke}>
+          Tjeneste
+          <select style={feltStil} value={tjenesteId} onChange={(e) => setTjenesteId(e.target.value)}>
+            {valg.tjenester.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.navn} · {t.varighetMin} min
+                {t.maxDeltakere > 1 ? ` · ${t.maxDeltakere} plasser` : ""}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label style={merke}>
+          Sted
+          <select style={feltStil} value={stedId} onChange={(e) => setStedId(e.target.value)}>
+            <option value="">Velg sted …</option>
+            {valg.steder.map((s) => (
+              <option key={s.id} value={s.id}>{s.navn}</option>
+            ))}
+          </select>
+        </label>
+
+        {valgtTjeneste && valgtTjeneste.maxDeltakere > 1 && (
+          <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>
+            Delt økt — inntil {valgtTjeneste.maxDeltakere} spillere i samme luke.
+          </div>
+        )}
+        {feil && (
+          <div style={{ fontFamily: T.ui, fontSize: 12, color: T.fg }}>{feil}</div>
+        )}
+
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Knapp icon="check" disabled={!klar} onClick={book}>
+            {lagrer ? "Booker …" : ok ? "Booket" : "Book"}
+          </Knapp>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -140,6 +290,8 @@ export function HurtigOpprett({ dato, klokkeslett, onLukk }: HurtigOpprettProps)
             <Icon name="x" size={14} style={{ color: T.fg2 }} />
           </button>
         </div>
+
+        <HurtigBooking dato={dato} klokkeslett={klokkeslett} onFerdig={onLukk} />
 
         <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 14 }}>
           <Valg

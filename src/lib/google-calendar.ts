@@ -129,17 +129,6 @@ export function getCalendarApi(connection: GoogleCalendarConnection): calendar_v
 }
 
 /**
- * Hent connection for en bruker hvis aktiv, ellers null.
- */
-async function getActiveConnection(userId: string): Promise<GoogleCalendarConnection | null> {
-  const conn = await prisma.googleCalendarConnection.findUnique({
-    where: { userId },
-  });
-  if (!conn || conn.status !== "ACTIVE") return null;
-  return conn;
-}
-
-/**
  * Hent travle tidsperioder fra alle PULL-kalendere coachen har aktivert.
  *
  * Returnerer et CalendarBusyResult som skiller «sjekket OK» fra «klarte IKKE å
@@ -287,146 +276,14 @@ export async function getCalendarBusy(
 }
 
 /**
- * Push booking til ALLE coachens PUSH-kalendere. Oppretter event per kalender,
- * eller oppdaterer hvis Booking.googleEventId allerede er satt.
+ * Push og sletting av bookinger er flyttet til google-calendar-kilder.ts
+ * (steg 3, 2026-07-27). De gamle funksjonene her sendte tid som
+ * toISOString() — altså med Z — sammen med timeZone Oslo, noe som fikk
+ * Google til å tolke tiden som UTC og vise avtalen to timer feil om
+ * sommeren. De lagret dessuten kun første kalenders event-id.
  *
- * Implementasjonsmerknad: I dag lagrer vi kun ÉN event-ID på Booking. Hvis
- * coach har flere PUSH-kalendere skriver vi event-ID fra den FØRSTE som ble
- * opprettet. Endringer/sletting fra app pusher kun til den. Dette er
- * pragmatisk — multi-event-ID per booking krever egen relasjons-tabell, og
- * de fleste coacher har bare én PUSH-kalender (sin egen jobb-kalender).
- *
- * Returnerer event-ID hvis minst én push lyktes, ellers null.
+ * Bruk pushBooking / fjernBooking fra google-calendar-kilder.ts.
  */
-export async function pushBookingToCalendar(bookingId: string): Promise<string | null> {
-  const booking = await prisma.booking.findUnique({
-    where: { id: bookingId },
-    include: {
-      user: { select: { name: true, email: true } },
-      serviceType: {
-        select: { name: true, coachUserId: true, durationMin: true },
-      },
-      location: { select: { name: true, address: true } },
-    },
-  });
-  if (!booking) return null;
-  if (!booking.serviceType.coachUserId) return null;
-
-  const conn = await getActiveConnection(booking.serviceType.coachUserId);
-  if (!conn) return null;
-
-  const pushSubs = await prisma.googleCalendarSubscription.findMany({
-    where: { connectionId: conn.id, syncPush: true, active: true },
-  });
-  if (pushSubs.length === 0) return null;
-
-  const calendar = getCalendarApi(conn);
-
-  // Event-tittel = KUN spillerens fulle navn (Anders' beslutning 2026-07-27).
-  // Gjester (user=null) har navnet i guestName — «Gjest» kun som siste utvei.
-  // Tjeneste/varighet flyttes til beskrivelsen så info ikke går tapt.
-  const userName = booking.user?.name ?? booking.guestName ?? "Gjest";
-  const userEmail = booking.user?.email ?? booking.guestEmail ?? null;
-  const summary = userName;
-  const description = [
-    userEmail ? `Spiller: ${userName} (${userEmail})` : `Spiller: ${userName}`,
-    `Økt: ${booking.serviceType.name} (${booking.serviceType.durationMin} min)`,
-    booking.notes ? `Notater: ${booking.notes}` : null,
-    `Booket via AK Golf Platform`,
-  ]
-    .filter(Boolean)
-    .join("\n");
-
-  const event: calendar_v3.Schema$Event = {
-    summary,
-    description,
-    location: `${booking.location.name}, ${booking.location.address}`,
-    start: { dateTime: booking.startAt.toISOString(), timeZone: "Europe/Oslo" },
-    end: { dateTime: booking.endAt.toISOString(), timeZone: "Europe/Oslo" },
-    // Kun registrerte brukere inviteres — gjeste-epost her ville sendt
-    // Google-invitasjon til kunden uten Anders' godkjenning.
-    attendees: booking.user?.email
-      ? [{ email: booking.user.email, displayName: userName }]
-      : [],
-  };
-
-  let primaryEventId: string | null = booking.googleEventId;
-
-  for (const sub of pushSubs) {
-    try {
-      if (primaryEventId && sub === pushSubs[0]) {
-        // Oppdater eksisterende event i primær push-kalender
-        await calendar.events.update({
-          calendarId: sub.googleCalendarId,
-          eventId: primaryEventId,
-          requestBody: event,
-        });
-      } else {
-        const res = await calendar.events.insert({
-          calendarId: sub.googleCalendarId,
-          requestBody: event,
-        });
-        const id = res.data.id ?? null;
-        // Lagre første event-ID på Booking
-        if (id && !primaryEventId) {
-          primaryEventId = id;
-          await prisma.booking.update({
-            where: { id: booking.id },
-            data: { googleEventId: id },
-          });
-        }
-      }
-    } catch (err) {
-      console.error(
-        `[google-calendar] push failed for ${sub.googleCalendarId}`,
-        err instanceof Error ? err.message : err,
-      );
-      // Fortsett med neste sub — én feilet sub skal ikke blokkere de andre.
-    }
-  }
-
-  return primaryEventId;
-}
-
-/**
- * Slett event fra alle coachens PUSH-kalendere når booking avbestilles.
- * Best-effort — feil per kalender stopper ikke loopen.
- */
-export async function removeFromCalendar(
-  coachUserId: string,
-  googleEventId: string,
-): Promise<boolean> {
-  const conn = await getActiveConnection(coachUserId);
-  if (!conn) return false;
-
-  const pushSubs = await prisma.googleCalendarSubscription.findMany({
-    where: { connectionId: conn.id, syncPush: true, active: true },
-  });
-  if (pushSubs.length === 0) return false;
-
-  const calendar = getCalendarApi(conn);
-  let suksess = false;
-
-  for (const sub of pushSubs) {
-    try {
-      await calendar.events.delete({
-        calendarId: sub.googleCalendarId,
-        eventId: googleEventId,
-      });
-      suksess = true;
-    } catch (err) {
-      // Eventet eksisterer ofte ikke i alle kalendere — det er forventet.
-      const melding = err instanceof Error ? err.message : String(err);
-      if (!melding.includes("Resource has been deleted") && !melding.includes("Not Found")) {
-        console.error(
-          `[google-calendar] delete failed for ${sub.googleCalendarId}`,
-          melding,
-        );
-      }
-    }
-  }
-  return suksess;
-}
 
 /**
  * Hent kalender-liste fra Google og upsert subscriptions.
@@ -510,7 +367,9 @@ export async function setupWatchForSubscription(
     include: { connection: true },
   });
   if (!sub) return null;
-  if (!sub.syncPull || !sub.active) return null;
+  // Watch trengs både for booking-blokkering (syncPull) og for at speilede
+  // hendelser skal oppdateres umiddelbart i kalenderen (visIKalender).
+  if (!sub.active || (!sub.syncPull && !sub.visIKalender)) return null;
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
   if (!baseUrl) {
