@@ -18,6 +18,8 @@ export interface OverlappendeBooking {
   serviceTypeId: string;
   startAt: Date;
   endAt: Date;
+  /** Hvilken plass i økta bookingen opptar (1..maxDeltakere). */
+  plassNr?: number;
 }
 
 export type DelingsVurdering =
@@ -57,4 +59,28 @@ export function vurderDeling(
     return { utfall: "fullt", antall: overlappende.length, kapasitet: tak };
   }
   return { utfall: "ledig" };
+}
+
+/**
+ * Velg hvilken plass en ny booking skal ha i luka.
+ *
+ * Plassnummeret er det som gjør dobbeltbooking FYSISK umulig: databasen har et
+ * EXCLUSION-constraint på (coachId, plassNr, tidsrom), så to bookinger kan
+ * aldri dele samme plass i overlappende tid — uansett hvilken kodevei som
+ * forsøker det, og uansett hvor samtidige forsøkene er.
+ *
+ * Kapasiteten (maxDeltakere) håndheves her: vi tildeler laveste ledige plass,
+ * og returnerer null når økta er full.
+ */
+export function velgPlassNr(
+  opptatte: Array<number | undefined | null>,
+  kapasitet: number,
+): number | null {
+  const tak = Math.max(1, Math.floor(kapasitet));
+  // Manglende plassNr på gamle rader tolkes som plass 1.
+  const brukt = new Set(opptatte.map((p) => p ?? 1));
+  for (let nr = 1; nr <= tak; nr++) {
+    if (!brukt.has(nr)) return nr;
+  }
+  return null;
 }

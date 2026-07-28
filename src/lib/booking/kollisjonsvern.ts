@@ -17,7 +17,7 @@
  */
 
 import { Prisma } from "@/generated/prisma/client";
-import { vurderDeling } from "@/lib/booking/deling";
+import { vurderDeling, velgPlassNr } from "@/lib/booking/deling";
 
 /** Transaksjonsklient (prisma.$transaction-callback). */
 type Tx = Prisma.TransactionClient;
@@ -35,6 +35,15 @@ export const FULLT_MELDING =
   "Alle plassene på dette stedet er opptatt i tidsrommet — velg en annen tid.";
 export const DELT_FULLT_MELDING =
   "Økta er full — alle plassene er tatt.";
+
+export interface KollisjonsResultat {
+  /**
+   * Plassen bookingen skal opprettes/flyttes til. MÅ skrives til
+   * Booking.plassNr — det er den databasens EXCLUSION-constraint bruker for å
+   * gjøre dobbeltbooking fysisk umulig.
+   */
+  plassNr: number;
+}
 
 /**
  * Kjør INNE i en prisma.$transaction. Tar advisory-lås på coach og fasilitet
@@ -57,7 +66,7 @@ export async function sjekkKollisjon(
      */
     serviceTypeId?: string | null;
   },
-): Promise<void> {
+): Promise<KollisjonsResultat> {
   const {
     coachId,
     facilityId,
@@ -66,6 +75,9 @@ export async function sjekkKollisjon(
     ekskluderBookingId,
     serviceTypeId,
   } = input;
+
+  // Plass 1 med mindre en delt økt sier noe annet (se velgPlassNr).
+  let plassNr = 1;
 
   // Advisory-låser FØR telling — to samtidige transaksjoner på samme ressurs
   // kjører sjekken etter tur i stedet for parallelt (slippes ved commit/rollback).
@@ -95,7 +107,12 @@ export async function sjekkKollisjon(
         endAt: { gt: startAt },
         ...(ekskluderBookingId ? { id: { not: ekskluderBookingId } } : {}),
       },
-      select: { serviceTypeId: true, startAt: true, endAt: true },
+      select: {
+        serviceTypeId: true,
+        startAt: true,
+        endAt: true,
+        plassNr: true,
+      },
     });
 
     const vurdering = vurderDeling(
@@ -109,6 +126,13 @@ export async function sjekkKollisjon(
     if (vurdering.utfall === "fullt") {
       throw new BookingKollisjon(DELT_FULLT_MELDING);
     }
+
+    const plass = velgPlassNr(
+      overlappende.map((b) => b.plassNr),
+      kapasitet,
+    );
+    if (plass === null) throw new BookingKollisjon(DELT_FULLT_MELDING);
+    plassNr = plass;
   }
 
   if (facilityId) {
@@ -128,6 +152,8 @@ export async function sjekkKollisjon(
     });
     if (belegg >= kapasitet) throw new BookingKollisjon(FULLT_MELDING);
   }
+
+  return { plassNr };
 }
 
 /**

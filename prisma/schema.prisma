@@ -784,6 +784,11 @@ model Booking {
   // Google Calendar event-ID hvis booking er pushet til coachens kalender.
   // Brukes til oppdater/slett ved endring/avbestilling. Null hvis Calendar
   // ikke er koblet, eller hvis push feilet (best-effort sync).
+  // Hvilken plass i luka bookingen opptar (1..ServiceType.maxDeltakere).
+  // Sammen med coachId og tidsrommet inngår den i EXCLUSION-constraintet
+  // booking_coach_no_overlap, som gjør dobbeltbooking fysisk umulig —
+  // samtidig som delte økter (2-til-1) er lov fordi de har ulik plass.
+  plassNr            Int       @default(1)
   googleEventId           String?
   // Hvilken fasilitet (rom/range/simulator) bookingen tar opp. Optional —
   // ikke alle bookinger er koblet til en spesifikk fasilitet (drop-in kan

@@ -47,7 +47,7 @@ export async function flyttBookingTilDag(
 
   try {
     await prisma.$transaction(async (tx) => {
-      await sjekkKollisjon(tx, {
+      const vern = await sjekkKollisjon(tx, {
         coachId: booking.coachId,
         serviceTypeId: booking.serviceTypeId,
         facilityId: booking.facilityId,
@@ -57,7 +57,7 @@ export async function flyttBookingTilDag(
       });
       await tx.booking.update({
         where: { id: booking.id },
-        data: { startAt: nyStart, endAt: nyEnd },
+        data: { startAt: nyStart, endAt: nyEnd, plassNr: vern.plassNr },
       });
     });
   } catch (e) {

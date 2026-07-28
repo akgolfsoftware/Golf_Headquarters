@@ -48,6 +48,10 @@ const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: url 
 
 const STEG: Array<{ navn: string; sql: string }> = [
   {
+    navn: "extension btree_gist (kreves av overlapp-constraintet)",
+    sql: `CREATE EXTENSION IF NOT EXISTS btree_gist`,
+  },
+  {
     navn: "google_calendar_events",
     sql: `
       CREATE TABLE IF NOT EXISTS "google_calendar_events" (
@@ -143,6 +147,32 @@ const STEG: Array<{ navn: string; sql: string }> = [
     navn: "service_types.maxDeltakere",
     sql: `ALTER TABLE "service_types"
           ADD COLUMN IF NOT EXISTS "maxDeltakere" INTEGER NOT NULL DEFAULT 1`,
+  },
+  {
+    navn: "bookings.plassNr",
+    sql: `ALTER TABLE "bookings" ADD COLUMN IF NOT EXISTS "plassNr" INTEGER NOT NULL DEFAULT 1`,
+  },
+  {
+    // Det harde vernet: to ikke-avlyste bookinger kan aldri dele samme
+    // (coach, plass, tidsrom). Delte økter (2-til-1) er lov fordi de har
+    // ulikt plassNr. Bookinger uten coach (gruppe/WANG) er unntatt.
+    navn: "constraint booking_coach_no_overlap",
+    sql: `
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_constraint WHERE conname = 'booking_coach_no_overlap'
+        ) THEN
+          ALTER TABLE "bookings"
+            ADD CONSTRAINT "booking_coach_no_overlap"
+            EXCLUDE USING gist (
+              "coachId" WITH =,
+              "plassNr" WITH =,
+              tsrange("startAt", "endAt") WITH &&
+            )
+            WHERE (status <> 'CANCELLED' AND "coachId" IS NOT NULL);
+        END IF;
+      END $$`,
   },
   // ── Steg 3: hva vi har pushet UT til Google, og hvor ──────────────────
   {

@@ -249,7 +249,7 @@ export async function rescheduleBooking(input: {
 
   try {
     await prisma.$transaction(async (tx) => {
-      await sjekkKollisjon(tx, {
+      const vern = await sjekkKollisjon(tx, {
         coachId: input.newCoachId ?? booking.coachId,
         serviceTypeId: booking.serviceTypeId,
         facilityId: booking.facilityId,
@@ -262,6 +262,7 @@ export async function rescheduleBooking(input: {
         data: {
           startAt: newStart,
           endAt: newEnd,
+          plassNr: vern.plassNr,
         },
       });
     });

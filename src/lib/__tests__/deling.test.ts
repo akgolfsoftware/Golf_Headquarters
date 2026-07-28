@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { vurderDeling } from "@/lib/booking/deling";
+import { vurderDeling, velgPlassNr } from "@/lib/booking/deling";
 
 const TJENESTE = "svc-2til1";
 const ANNEN = "svc-flex50";
@@ -105,5 +105,39 @@ describe("vurderDeling — robusthet", () => {
       antall: 3,
       kapasitet: 3,
     });
+  });
+});
+
+describe("velgPlassNr — grunnlaget for det harde dobbeltbooking-vernet", () => {
+  it("tom luke gir plass 1", () => {
+    assert.equal(velgPlassNr([], 1), 1);
+    assert.equal(velgPlassNr([], 2), 1);
+  });
+
+  it("vanlig time: plass 1 opptatt betyr fullt", () => {
+    assert.equal(velgPlassNr([1], 1), null);
+  });
+
+  it("2-til-1: andre spiller får plass 2", () => {
+    assert.equal(velgPlassNr([1], 2), 2);
+  });
+
+  it("2-til-1: tredje spiller avvises", () => {
+    assert.equal(velgPlassNr([1, 2], 2), null);
+  });
+
+  it("fyller hull i stedet for å telle videre", () => {
+    // Plass 1 ble avlyst og frigjort — den skal gjenbrukes, ikke hoppes over.
+    assert.equal(velgPlassNr([2], 2), 1);
+  });
+
+  it("rader uten plassNr tolkes som plass 1", () => {
+    assert.equal(velgPlassNr([undefined], 2), 2);
+    assert.equal(velgPlassNr([null], 1), null);
+  });
+
+  it("kapasitet 3 fyller 1, 2, 3 og stopper", () => {
+    assert.equal(velgPlassNr([1, 3], 3), 2);
+    assert.equal(velgPlassNr([1, 2, 3], 3), null);
   });
 });

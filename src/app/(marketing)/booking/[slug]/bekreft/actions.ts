@@ -114,13 +114,15 @@ export async function createBookingCheckout(
     let booking;
     try {
       booking = await prisma.$transaction(async (tx) => {
-        await sjekkKollisjon(tx, {
+        const vern = await sjekkKollisjon(tx, {
           coachId: bookingData.coachId,
           serviceTypeId: bookingData.serviceTypeId,
           startAt,
           endAt,
         });
-        return tx.booking.create({ data: bookingData });
+        return tx.booking.create({
+          data: { ...bookingData, plassNr: vern.plassNr },
+        });
       });
     } catch (e) {
       if (erKollisjonsfeil(e)) {
