@@ -57,7 +57,7 @@ import {
   snapYToSlot,
 } from "@/components/v2";
 import { PalettSok } from "@/components/v2/wb-composer";
-import { ForslagArk, NyOktArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput, type OktArkDrill, type SpillerStedValg } from "./WorkbenchV2Sheets";
+import { ForslagArk, NyOktArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput, type OktArkDrill, type SpillerStedValg, type DrillTreff } from "./WorkbenchV2Sheets";
 import { WorkbenchAarsplan, PeriodePalett, WBPeriodeStrip } from "./WorkbenchAarsplan";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
 import { WBTidslinjeMobil, MobilFold } from "./WorkbenchV2Mobil";
@@ -477,7 +477,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
   const maler = (data.planTemplates ?? []).filter((m) => treff(m.name));
   const okter = (data.paletteItems ?? []).filter((b) => treff(b.title) && (!akseFilter || b.cat === akseFilter));
   // Driller-fanen: øvelsesbanken via server-søk (debounced).
-  const [driller, setDriller] = useState<{ id: string; name: string; pyramidArea: string }[]>([]);
+  const [driller, setDriller] = useState<DrillTreff[]>([]);
   const [drillMelding, setDrillMelding] = useState<string | null>(null);
   useEffect(() => {
     if (tab !== "driller") return;

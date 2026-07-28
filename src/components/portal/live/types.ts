@@ -48,6 +48,8 @@ export type LiveV2Drill = {
   description: string | null;
   /** Planlagt varighet i minutter. */
   durationMinutes: number;
+  /** Faktisk medgått tid fra live-timeren (sekunder). Null før drillen er kjørt. */
+  actualDurationSec: number | null;
   /** Planlagt antall reps (repetitions). */
   plannedReps: number;
   pyramide: PyramidArea;

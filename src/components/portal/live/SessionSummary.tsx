@@ -194,6 +194,9 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering }: SessionSumm
                   </div>
                   <div className="mt-0.5 font-mono text-xs font-semibold text-background/50">
                     {AXIS_LABEL[drill.pyramide] ?? drill.pyramide}
+                    {drill.actualDurationSec != null && drill.actualDurationSec > 0 && (
+                      <> · {fmtMSS(drill.actualDurationSec)}</>
+                    )}
                   </div>
                 </div>
                 <div className="text-right">
