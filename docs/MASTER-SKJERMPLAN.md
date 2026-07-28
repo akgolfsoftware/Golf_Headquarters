@@ -1,6 +1,6 @@
 # Master-skjermplan — AK Golf HQ
 
-> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 27. juli 2026.**
+> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 24. juli 2026.**
 
 > **OPPDATERT KANON (2026-07-08):** Design-kanon er nå UTELUKKENDE det levende Claude Design-
 > prosjektet (`claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`), hentet direkte via
@@ -88,7 +88,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Hjem (Workbench-hjem) ★ | `/portal` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24 GO V1: én primær CTA når ingen økt i dag (Workbench ghost); HjelpTips på dagens pyramide-akse. Complete v13 (golfdata scope + components). **Widget-pakke (27. juli):** «Dagens plan»-kortet erstattet av delt `DagensOkterWidget` (src/components/widgets/) drevet av `getGjennomforeData` — viser nå BEGGE økt-spor (coach-plan + egne økter), så Hjem og Gjør ikke lenger kan vise ulikt antall økter samme dag; start/fortsett-CTA + hurtigstatus («Gjort»/«Hopp over») direkte fra Hjem. Ny `MaalWidget` viser aktive mål (dataene ble hentet men aldri vist før). |
+| Hjem (Workbench-hjem) ★ | `/portal` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24 GO V1: én primær CTA når ingen økt i dag (Workbench ghost); HjelpTips på dagens pyramide-akse. Complete v13 (golfdata scope + components)
 | Varsler ★ | `/portal/varsler` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | v13 golfdata-scope + Eyebrow/Card primitives (full composition)
 
 ### Planlegge
@@ -126,7 +126,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Gjennomføre (I dag/Kalender/Booking) ★ | `/portal/gjennomfore` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ **GO V6 (24. juli):** «?»-forklaring på «Dagens gjennomføring» (plan-etterlevelse) og pyramide-aksen. **Widget-pakke (27. juli):** hurtigstatus-knappene («Gjort»/«Hopp over») flyttet ut av GjorV2 til delt `HurtigStatusKnapper` i widget-pakken — samme kontroll brukes nå fra Hjem. Ingen visuell endring på denne skjermen. |
+| Gjennomføre (I dag/Kalender/Booking) ★ | `/portal/gjennomfore` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ **GO V6 (24. juli):** «?»-forklaring på «Dagens gjennomføring» (plan-etterlevelse) og pyramide-aksen. |
 | · Økt-detalj (V2-økt fra coach) | `/portal/gjennomfore/[id]` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `V2Shell` + `OktV2`. |
 | Kalender | `/portal/kalender` | ✓ | --- | ✓ | ~ | ~ | ✓ | v13 composed (golfdata calendars + scope)
 | Kalender (alt. → redirect) | `/portal/tren/kalender` | ✓ | --- | ✓ | ✓ | – | ✓ | Reconciliation 16. jul: redirect-only via `workbenchRedirectForTrenPath` (`src/proxy.ts`) → `/portal/planlegge/workbench?tab=uke`. `(legacy)/tren/kalender/page.tsx` er utilgjengelig dødkode, ikke en ekte gjenstående design-skjerm.
@@ -311,7 +311,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| **Cockpit (hjem)** ★ | `/admin/agencyos` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | v13 scope + components (full). **D3 Fokus-spiller lagt til 17. jul (godkjent mockup):** pin (maks 3, `CoachPinnedPlayer`) + regelbaserte AI-forslag (plan-etterlevelse <50 % / SG-delta ≤ −0,3 fra eksisterende stall-signaler), ærlige tomtilstander. **D2 spiller↔gruppe-veksler** i toppbaren (navigasjons-dropdown → `/admin/spillere/[id]` · `/admin/grupper/[id]`). **M1 mobil-nav** (bunn-nav + Mer-skuff) gjelder alle AgencyOS-sider via shell. NB: `coach_pinned_players`-migrasjonen er KJØRT mot prod (Supabase MCP 17. jul) — pin virker. **M3 mobil (bølge 1) 17. jul:** ekte `useMobile()`-forgrening — KPI-grid → 2 kol, to-kolonners seksjoner stables, tommelvennlig vertikal stack (D2-veksleren allerede mobil via shell). Mob/Desk/iPad –✓– → ✓✓–. **GO V3 (24. juli):** NÅ øverst — live → AI-dispatch («Én ting NÅ») → Triage-kø FØR KPI/fokus/innboks, så cockpiten svarer «hva gjør jeg nå» på 5 sekunder. **Widget-pakke (27. juli):** ny `StallOkterWidget` («Stallen i dag») under Dagens timer/Stall-uka — dagens TRENINGSØKTER på tvers av stallen fra begge økt-spor (`getStallOkterData`), som utfyller «Dagens timer» (kun bookinger). Scope følger samme ADMIN/COACH-mønster som spillerlista. **Gruppeøkter med 27. juli:** økter på `groupId` vises som ÉN rad for hele gruppa (gruppenavn, medlemstall, users-ikon, lenke til `/admin/grupper/[id]`) — ikke én rad per medlem. Gruppe-scope følger `Group.coachId` (ADMIN ser alle). |
+| **Cockpit (hjem)** ★ | `/admin/agencyos` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | v13 scope + components (full). **D3 Fokus-spiller lagt til 17. jul (godkjent mockup):** pin (maks 3, `CoachPinnedPlayer`) + regelbaserte AI-forslag (plan-etterlevelse <50 % / SG-delta ≤ −0,3 fra eksisterende stall-signaler), ærlige tomtilstander. **D2 spiller↔gruppe-veksler** i toppbaren (navigasjons-dropdown → `/admin/spillere/[id]` · `/admin/grupper/[id]`). **M1 mobil-nav** (bunn-nav + Mer-skuff) gjelder alle AgencyOS-sider via shell. NB: `coach_pinned_players`-migrasjonen er KJØRT mot prod (Supabase MCP 17. jul) — pin virker. **M3 mobil (bølge 1) 17. jul:** ekte `useMobile()`-forgrening — KPI-grid → 2 kol, to-kolonners seksjoner stables, tommelvennlig vertikal stack (D2-veksleren allerede mobil via shell). Mob/Desk/iPad –✓– → ✓✓–. **GO V3 (24. juli):** NÅ øverst — live → AI-dispatch («Én ting NÅ») → Triage-kø FØR KPI/fokus/innboks, så cockpiten svarer «hva gjør jeg nå» på 5 sekunder. |
 | · Uka (kanban) | `/admin/agencyos/uka` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Complete v13 (golfdata scope + cards) |
 | · Spillere (snarvei) | `/admin/agencyos/spillere` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | · Økonomi | `/admin/agencyos/okonomi` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell`+`TilbakeLenke`. **M3 mobil (bølge 5) 17. jul:** `useMobile()` — komprimert tittel, betalingsrader stabler beløp over status-pill for mer plass til kundenavn (KPI-strip alt 2-kol, transaksjoner alt `Rad`). Mob --- → ✓✓–. |
@@ -405,7 +405,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Dubletter (rydd) | `/admin/tournaments/dubletter` | ✓ | ✓–– | ✓ | ~ | ✓ | ~ | 2026-07-13: v2, kun tom-tilstand nettleser-testet (0 dubletter i DB nå)
 | Økter | `/admin/okter` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminOkterV2`. |
 | Videoer | `/admin/videoer` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team F2): `AdminVideoerV2` (KpiFlis + v2-opplastingsskjema + Rad-liste), rute ut av (legacy); upload-/slette-logikk (`src/lib/storage/video.ts`, samme FormData/validering/canDelete) 100 % uendret. Meldt gap: dropzone finnes ikke som v2-primitiv (komponert lokalt av T-tokens). |
-| Opptak | `/admin/recording` | ✓ | ✓ | ✓ | ✓ | ~ | ✓ | 2026-07-27: ut av `(legacy)` → egen `V2Shell`-chrome; `recording-controls.tsx` flyttet til `src/components/admin/`. **Sammendraget vises nå på skjermen** (5 kategorier + coach-analyse + neste økt + hjemmelekse) — lå tidligere kun i DB/Notion mens skjermen viste rå transkripsjon. **Spillervelger** ved start (`/api/recording/start` tar `playerId`, ikke bare `bookingId`) → analysen får riktig kontekst. **Automatisk kjede**: stopp → complete → transcribe → analyze uten manuelle trykk, med status-polling via ny `GET /api/recording/status`. Historikk viser spillernavn + oppsummering. Mobil: pipeline/wave/kontroller reflow, opptakskort stabler på smal skjerm. Rettet to reelle bugs: (1) feilet Claude-analyse lot status stå i `PROCESSING` for alltid → nå `FAILED` + «Analyser på nytt»; (2) `/api/recording/start` opprettet SessionRecording FØR mikrofontilgang → avslått dialog etterlot tomme RECORDING-rader. Vei inn: cockpit-hurtigstart + Cmd+K («Ta opp økt» / «Opptak») — «Mer» er låst til fem rom. Verdi ✓: en 50-min økt blir et strukturert referat uten etterarbeid. Test flyt ~: ikke kjørt ende-til-ende med ekte lyd (krever `OPENAI_API_KEY` + mikrofon). |
+| Opptak | `/admin/recording` | ✓ | --- | ✓ | ~ | ~ | ~ | v2-port 16. jul: `AdminRecordingV2` (Kort/Caps/Tittel/KpiFlis). `RecordingControls` (ekte MediaRecorder/wake-lock/batteri-varsel) + `RecordingAnalyzeButton` urørt. Rettet en reell bug samtidig: varselbanneret sjekket `DEEPGRAM_API_KEY`, men transkribering (`src/lib/transcribe.ts`) bruker OpenAI Whisper og gates på `OPENAI_API_KEY` — feil variabel sjekket før. Copy endret fra "Deepgram" til nøytralt "talegjenkjenning" (Deepgram er aldri integrert — kjent navn/kode-avvik, ikke avklart med Anders). |
 
 ### Gjennomføre (daglig drift)
 
@@ -546,7 +546,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Tilbakestill passord | `/auth/reset-password` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Sjekk e-post | `/auth/check-email` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | BankID ★ | `/auth/bankid` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `BankIDV2` (samme v2-idiomfamilie som LoginV2), portert 10. juli, hake aldri oppdatert |
-| Onboarding (spiller, 6 steg) | `/auth/onboarding` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24: nivåplasserings-quiz (steg 4) setter `preferences.onboarding.nivaa` → progressiv dybde i Min golf. 6 steg totalt. |
+| Onboarding (spiller, 7 steg) | `/auth/onboarding` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24: nivåplasserings-quiz setter `preferences.onboarding.nivaa` → progressiv dybde i Min golf. 2026-07-27: utvidet til 7 steg — steg 2 +skole/skoletrinn, steg 3 navngitte treningssteder (`PlayerFacility`, inne/ute + capabilities), NYTT steg 4 «Dine tall» (snittscore + full SG forrige sesong/hittil i år → `BrukerSgInput`, kan hoppes over), steg 7 +samtykke til deling av egne drills (`User.drillDelingGodtatt`). Nye felter skrives til EKTE kolonner med zod-validering, ikke `preferences`-blobben. |
 | Onboarding (forelder) | `/auth/onboarding/forelder` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul (Team B): arver v2 fra de restylede delte primitivene (`wizard-chrome`/`wizard-fields`) + forelder-spesifikke justeringer i `forelder-wizard.tsx`/`page.tsx`. 4-stegs-logikken og `saveForelderOnboardingStep`/`completeForelderOnboarding` uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–.
 | Foreldresamtykke (token) | `/auth/guardian-consent/[token]` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Samtykke venter | `/auth/samtykke-venter` | ✓ | --- | ✓ | ~ | ~ | ~ |

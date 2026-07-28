@@ -13,7 +13,7 @@
  * rgba/color-mix). Ingen emoji — kun lucide-react.
  */
 
-import { Check, Info, type LucideIcon } from "lucide-react";
+import { Check, Home, Info, Plus, Sun, Trash2, type LucideIcon } from "lucide-react";
 import { T } from "@/lib/v2/tokens";
 import { cn } from "@/lib/utils";
 
@@ -472,6 +472,157 @@ export function FacilityRow({
       </span>
       <CheckCircle selected={selected} />
     </button>
+  );
+}
+
+// ── Spillerens egne, navngitte treningssteder ───────────────────
+// Én rad = ett sted (navn + inne/ute + hva stedet har). Multi-select-chipsene
+// er DrillFasilitet-verdier; etikettene kommer fra kalleren.
+export function PlaceRow({
+  name,
+  isIndoor,
+  capabilities,
+  capabilityOptions,
+  onNameChange,
+  onIndoorChange,
+  onToggleCapability,
+  onRemove,
+}: {
+  name: string;
+  isIndoor: boolean;
+  capabilities: string[];
+  capabilityOptions: { id: string; label: string }[];
+  onNameChange: (verdi: string) => void;
+  onIndoorChange: (inne: boolean) => void;
+  onToggleCapability: (id: string) => void;
+  onRemove: () => void;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 9,
+        borderRadius: 13,
+        padding: 12,
+        background: T.panel2,
+        border: `1px solid ${T.border}`,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <TextField
+          value={name}
+          onChange={(e) => onNameChange(e.target.value)}
+          placeholder="f.eks. Gamle Fredrikstad GK"
+          aria-label="Navn på stedet"
+          style={{ height: 40 }}
+        />
+        <button
+          type="button"
+          onClick={onRemove}
+          aria-label={`Fjern ${name || "stedet"}`}
+          className="v2-press v2-focus"
+          style={{
+            appearance: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 40,
+            height: 40,
+            flexShrink: 0,
+            borderRadius: 11,
+            background: T.panel3,
+            border: `1px solid ${T.borderS}`,
+            color: T.mut,
+            cursor: "pointer",
+          }}
+        >
+          <Trash2 size={15} strokeWidth={1.75} aria-hidden />
+        </button>
+      </div>
+      <div style={{ display: "flex", gap: 6 }}>
+        <PillToggle label="Ute" icon={Sun} selected={!isIndoor} onClick={() => onIndoorChange(false)} />
+        <PillToggle label="Inne" icon={Home} selected={isIndoor} onClick={() => onIndoorChange(true)} />
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+        {capabilityOptions.map((c) => (
+          <PillToggle
+            key={c.id}
+            label={c.label}
+            selected={capabilities.includes(c.id)}
+            onClick={() => onToggleCapability(c.id)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Legg-til-rad (stiplet, sekundær handling) ───────────────────
+export function AddRowButton({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="v2-press v2-focus"
+      style={{
+        appearance: "none",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 7,
+        height: 44,
+        borderRadius: 11,
+        background: "transparent",
+        border: `1px dashed ${T.border}`,
+        color: T.fg2,
+        fontFamily: T.ui,
+        fontSize: 13.5,
+        fontWeight: 600,
+        cursor: "pointer",
+      }}
+    >
+      <Plus size={15} strokeWidth={2} aria-hidden />
+      {label}
+    </button>
+  );
+}
+
+// ── Kompakt tallfelt-rad (SG-tabell i «Dine tall») ──────────────
+export function NumberRow({
+  label,
+  hint,
+  value,
+  onChange,
+  placeholder,
+  id,
+}: {
+  label: string;
+  hint?: string;
+  value: string;
+  onChange: (verdi: string) => void;
+  placeholder?: string;
+  id: string;
+}) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <label
+        htmlFor={id}
+        style={{ ...CAPS, flex: 1, minWidth: 0, textTransform: "none", fontSize: 11 }}
+      >
+        {label}
+        {hint && <span style={{ marginLeft: 6, opacity: 0.8 }}>{hint}</span>}
+      </label>
+      <TextField
+        id={id}
+        mono
+        inputMode="decimal"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        style={{ width: 96, height: 40, textAlign: "right" }}
+      />
+    </div>
   );
 }
 
