@@ -57,7 +57,7 @@ import {
   snapYToSlot,
 } from "@/components/v2";
 import { PalettSok } from "@/components/v2/wb-composer";
-import { ForslagArk, NyOktArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput, type OktArkDrill } from "./WorkbenchV2Sheets";
+import { ForslagArk, NyOktArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput, type OktArkDrill, type SpillerStedValg } from "./WorkbenchV2Sheets";
 import { WorkbenchAarsplan, PeriodePalett, WBPeriodeStrip } from "./WorkbenchAarsplan";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
 import { WBTidslinjeMobil, MobilFold } from "./WorkbenchV2Mobil";
@@ -116,6 +116,8 @@ export interface WorkbenchV2Props {
   actions?: WorkbenchV2Actions;
   /** B40 §3 — Standard/Pro-modus (lesPreferences(user).wbMode). Default "pro". */
   wbMode?: "standard" | "pro";
+  /** Spillerens treningssteder fra onboarding — hurtigvalg for «Hvor» i økt-arket. */
+  steder?: SpillerStedValg[];
 }
 
 /* ── Rene hjelpere ─────────────────────────────────────── */
@@ -1381,7 +1383,7 @@ function Felt({ label, children }: { label: string; children: React.ReactNode })
   );
 }
 /* ── Selve Workbench ───────────────────────────────────── */
-export function WorkbenchV2({ data, insights, playerName, planStatus, actions, wbMode, role }: WorkbenchV2Props) {
+export function WorkbenchV2({ data, insights, playerName, planStatus, actions, wbMode, role, steder }: WorkbenchV2Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -1872,6 +1874,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
       area: input.akse,
       hour: input.hour,
       minute: input.minute,
+      location: input.location,
+      maalsetning: input.maalsetning,
       // Felles økt-ark (2026-07-13): AK-formel + driller følger med fra «Ny økt».
       ...(input.lFase || input.miljo
         ? { akFormel: { lFase: input.lFase, miljo: input.miljo } }
@@ -1881,11 +1885,16 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             drills: input.drills.map((d) => ({
               exerciseId: d.exerciseId,
               nyNavn: d.exerciseId ? undefined : d.navn,
-              nyPyramidArea: d.exerciseId ? undefined : input.akse,
+              nyPyramidArea: d.exerciseId ? undefined : (d.nyPyramidArea ?? input.akse),
+              nyOmraade: d.exerciseId ? undefined : d.nyOmraade,
+              nyBeskrivelse: d.exerciseId ? undefined : d.nyBeskrivelse,
               minutter: d.minutter,
               sett: d.sett,
               reps: d.reps,
               nivaa: d.nivaa,
+              planRepsUtenBall: d.planRepsUtenBall,
+              planRepsLavFart: d.planRepsLavFart,
+              planRepsAuto: d.planRepsAuto,
               positionTaskId: d.positionTaskId,
             })),
           }
@@ -2568,6 +2577,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           dag={redigerDag}
           weekOffset={weekOffset}
           actions={actions}
+          steder={steder}
           onLukk={() => setRedigerOktId(null)}
           onEndret={() => router.refresh()}
         />
@@ -2613,6 +2623,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           defaultAkse={nyOktPrefill?.akse}
           defaultDurMin={nyOktPrefill?.durMin}
           defaultDrills={nyOktPrefill?.drills}
+          steder={steder}
           onLukk={() => {
             setNyOktApen(false);
             setNyOktPrefill(null);

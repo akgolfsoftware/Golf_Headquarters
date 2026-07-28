@@ -46,6 +46,13 @@ export async function syncDrillsToV2(
       repMinutter: d.repMinutter,
       repSett: d.repSett,
       repReps: d.repReps,
+      // Planlagt L-trapp (AK-formel) speiles så live-økta viser samme trapp.
+      planRepsUtenBall: d.planRepsUtenBall,
+      planRepsLavFart: d.planRepsLavFart,
+      planRepsAuto: d.planRepsAuto,
+      // Bibliotek-kobling: gjør at varighetsestimatet kjenner igjen drillen
+      // på tvers av økter, ikke bare på navn.
+      exerciseId: d.exerciseId,
       positionTaskId: d.positionTaskId,
     })),
   });

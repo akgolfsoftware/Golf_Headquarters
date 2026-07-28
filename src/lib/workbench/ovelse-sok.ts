@@ -2,7 +2,8 @@
 
 /**
  * 8c.7 — søk i øvelsesbanken fra økt-komponisten. Read-only; synlighet:
- * SYSTEM-øvelser + egne (spiller/coach). Zod-lett (kun strenger inn).
+ * SYSTEM-øvelser + egne (spiller/coach) + drills andre spillere har delt med
+ * plattformen (PLATFORM, 2026-07-27). Zod-lett (kun strenger inn).
  */
 
 import { z } from "zod";
@@ -20,12 +21,25 @@ export async function sokOvelser(
       AND: [
         q ? { name: { contains: q, mode: "insensitive" } } : {},
         area ? { pyramidArea: area } : {},
-        { OR: [{ source: "SYSTEM" }, { createdBy: user.id }] },
+        {
+          OR: [
+            { source: "SYSTEM" },
+            { createdBy: user.id },
+            { visibility: "PLATFORM" },
+          ],
+        },
       ],
     },
     orderBy: { name: "asc" },
     take: 12,
-    select: { id: true, name: true, pyramidArea: true },
+    select: {
+      id: true,
+      name: true,
+      pyramidArea: true,
+      defaultRepsUtenBall: true,
+      defaultRepsLavFart: true,
+      defaultRepsAuto: true,
+    },
   });
 }
 
@@ -34,7 +48,21 @@ export async function hentOktKomponist(sessionId: string): Promise<{
   ok: boolean;
   lFase?: string | null;
   miljo?: string | null;
-  drills?: { exerciseId: string; navn: string; minutter: number | null; sett: number | null; reps: number | null; nivaa: "uten" | "lav" | "vanlig"; positionTaskId?: string; positionTaskTittel?: string }[];
+  location?: string | null;
+  maalsetning?: string | null;
+  drills?: {
+    exerciseId: string;
+    navn: string;
+    minutter: number | null;
+    sett: number | null;
+    reps: number | null;
+    nivaa: "uten" | "lav" | "vanlig";
+    planRepsUtenBall: number | null;
+    planRepsLavFart: number | null;
+    planRepsAuto: number | null;
+    positionTaskId?: string;
+    positionTaskTittel?: string;
+  }[];
 }> {
   const user = await requirePortalUser();
   const okt = await prisma.trainingPlanSession.findFirst({
@@ -46,6 +74,8 @@ export async function hentOktKomponist(sessionId: string): Promise<{
     select: {
       lFase: true,
       miljo: true,
+      location: true,
+      maalsetning: true,
       drills: {
         orderBy: { orderIndex: "asc" },
         select: {
@@ -57,6 +87,9 @@ export async function hentOktKomponist(sessionId: string): Promise<{
           reps: true,
           repType: true,
           prPress: true,
+          planRepsUtenBall: true,
+          planRepsLavFart: true,
+          planRepsAuto: true,
           exercise: { select: { name: true } },
           positionTaskId: true,
           positionTask: { select: { tittel: true } },
@@ -69,6 +102,8 @@ export async function hentOktKomponist(sessionId: string): Promise<{
     ok: true,
     lFase: okt.lFase,
     miljo: okt.miljo,
+    location: okt.location,
+    maalsetning: okt.maalsetning,
     drills: okt.drills.map((d) => ({
       exerciseId: d.exerciseId,
       navn: d.exercise.name,
@@ -76,6 +111,9 @@ export async function hentOktKomponist(sessionId: string): Promise<{
       sett: d.repSett ?? d.sets,
       reps: d.repReps ?? d.reps,
       nivaa: d.repType === "SVINGER_UTEN_BALL" ? ("uten" as const) : d.prPress === "PR1" ? ("lav" as const) : ("vanlig" as const),
+      planRepsUtenBall: d.planRepsUtenBall,
+      planRepsLavFart: d.planRepsLavFart,
+      planRepsAuto: d.planRepsAuto,
       positionTaskId: d.positionTaskId ?? undefined,
       positionTaskTittel: d.positionTask?.tittel ?? undefined,
     })),

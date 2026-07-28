@@ -23,14 +23,10 @@ import { useRouter } from "next/navigation";
 import {
   Check,
   Coffee,
-  CircleDot,
-  Dumbbell,
   Flag,
-  Hexagon,
   Sun,
   Sunrise,
   Sunset,
-  Target,
   Trophy,
 } from "lucide-react";
 import { T } from "@/lib/v2/tokens";
@@ -62,7 +58,6 @@ import {
   PillToggle,
   ProfileCard,
   ImplicationBanner,
-  FacilityRow,
   PlaceRow,
   AddRowButton,
   NumberRow,
