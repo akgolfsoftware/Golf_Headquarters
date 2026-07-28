@@ -1,11 +1,12 @@
 /**
  * Helsedata-samtykke — data-tilgang (GDPR art. 9-2 a).
  *
- * PORTEN INN TIL WEARABLE-DATA. Ingen kode som henter, lagrer eller viser
- * helsedata fra Whoop/Garmin skal gjøre det uten først å ha spurt
- * `harGyldigHelseSamtykke` (eller `krevHelseSamtykke`) her. Det er dette som
- * gjør at et trukket samtykke faktisk stopper datastrømmen, og ikke bare
- * skrur av en bryter i grensesnittet.
+ * PORTEN INN TIL ALL HELSEDATA. Ingen kode som henter, lagrer eller viser
+ * helsedata skal gjøre det uten først å ha spurt her — enten dataene kommer
+ * fra en treningsklokke (`harGyldigHelseSamtykke`) eller spilleren fyller dem
+ * ut selv (`harManuellHelseSamtykke`). Det er dette som gjør at et trukket
+ * samtykke faktisk stopper datastrømmen, og ikke bare skrur av en bryter i
+ * grensesnittet.
  *
  * Reglene i seg selv (16-årsgrense, hvilken rad som gjelder) ligger i
  * `samtykke-regler.ts` og testes uten database.
@@ -67,18 +68,47 @@ export async function krevHelseSamtykke(userId: string): Promise<void> {
   }
 }
 
+/**
+ * Har spilleren sagt ja til at vi lagrer helsetallene de fyller ut selv?
+ * Dette er sjekken helse-loggen, symptom-loggen og skade-registreringen skal
+ * bruke — de samme opplysningene som klokka gir, bare tastet inn for hånd.
+ */
+export async function harManuellHelseSamtykke(userId: string): Promise<boolean> {
+  const status = await hentSamtykkeStatus(userId);
+  return status.manuell;
+}
+
+/** Som over, men kaster. Bruk i server-actions som skriver helsedata. */
+export async function krevManuellHelseSamtykke(userId: string): Promise<void> {
+  if (!(await harManuellHelseSamtykke(userId))) {
+    throw new ManglerHelseSamtykke(userId);
+  }
+}
+
 /** Kan coachen se restitusjonsstatus for denne spilleren? */
 export async function harCoachInnsyn(userId: string): Promise<boolean> {
   const status = await hentSamtykkeStatus(userId);
   return status.coachInnsyn;
 }
 
+/** Kan coachen se de rå tallene og skadebeskrivelsen for denne spilleren? */
+export async function harCoachDetalj(userId: string): Promise<boolean> {
+  const status = await hentSamtykkeStatus(userId);
+  return status.coachDetalj;
+}
+
 /**
- * Filtrer en liste spillere ned til dem coachen har lov til å se
- * restitusjonsstatus for. Ett DB-kall uansett antall spillere.
+ * Hvilke av disse spillerne har coachen lov til å se noe om? Ett DB-kall
+ * uansett antall spillere — brukes av lister og agenter som ellers ville
+ * gjort ett samtykke-oppslag per spiller.
+ *
+ * Returnerer to sett fordi de er ulike spørsmål: `status` er dem coachen får
+ * se grønn/gul/rød for, `detalj` er delmengden som også har åpnet for tallene.
  */
-export async function filtrerTilCoachInnsyn(userIds: string[]): Promise<Set<string>> {
-  if (userIds.length === 0) return new Set();
+export async function filtrerTilCoachInnsyn(
+  userIds: string[],
+): Promise<{ status: Set<string>; detalj: Set<string> }> {
+  if (userIds.length === 0) return { status: new Set(), detalj: new Set() };
 
   const rader = await prisma.helseSamtykke.findMany({
     where: { userId: { in: userIds } },
@@ -92,11 +122,14 @@ export async function filtrerTilCoachInnsyn(userIds: string[]): Promise<Set<stri
     else perBruker.set(rad.userId, [rad]);
   }
 
-  const tillatt = new Set<string>();
+  const status = new Set<string>();
+  const detalj = new Set<string>();
   for (const [userId, egneRader] of perBruker) {
-    if (beregnSamtykkeStatus(egneRader).coachInnsyn) tillatt.add(userId);
+    const s = beregnSamtykkeStatus(egneRader);
+    if (s.coachInnsyn) status.add(userId);
+    if (s.coachDetalj) detalj.add(userId);
   }
-  return tillatt;
+  return { status, detalj };
 }
 
 /**

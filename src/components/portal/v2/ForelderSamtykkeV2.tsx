@@ -37,11 +37,17 @@ export type SamtykkeBarn = {
   /** Lagrede preferanser: consent-nøkkel → på/av. Mangler → av. */
   prefs: Record<string, boolean>;
   /**
-   * Helsedata fra treningsklokke (GDPR art. 9-2 a). Ligger IKKE i `prefs`:
-   * dette samtykket lagres som sporbare rader med tidspunkt og tekstversjon,
-   * fordi særlige kategorier persondata krever at vi kan bevise samtykket.
+   * Helsedata (GDPR art. 9-2 a) — både fra klokke og manuelt utfylt. Ligger
+   * IKKE i `prefs`: disse samtykkene lagres som sporbare rader med tidspunkt
+   * og tekstversjon, fordi særlige kategorier persondata krever at vi kan
+   * bevise samtykket.
    */
-  helse: { wearable: boolean; coachInnsyn: boolean };
+  helse: {
+    wearable: boolean;
+    manuell: boolean;
+    coachInnsyn: boolean;
+    coachDetalj: boolean;
+  };
 };
 
 export type ForelderSamtykkeData = {
@@ -109,32 +115,38 @@ function formatDato(iso: string): string {
 
 function HelseSamtykkeSeksjon({ barn }: { barn: SamtykkeBarn }) {
   const [pending, startTransition] = useTransition();
-  const [wearable, setWearable] = useState(barn.helse.wearable);
-  const [coachInnsyn, setCoachInnsyn] = useState(barn.helse.coachInnsyn);
+  const [valg, setValg] = useState(barn.helse);
   const [feil, setFeil] = useState<string | null>(null);
+
+  const felt: Record<HelseSamtykkeType, keyof SamtykkeBarn["helse"]> = {
+    WEARABLE_HELSE: "wearable",
+    MANUELL_HELSE: "manuell",
+    COACH_INNSYN: "coachInnsyn",
+    COACH_DETALJ: "coachDetalj",
+  };
 
   function endre(type: HelseSamtykkeType, nyVerdi: boolean) {
     setFeil(null);
-    const forrigeWearable = wearable;
-    const forrigeCoach = coachInnsyn;
+    const forrige = valg;
 
-    if (type === "WEARABLE_HELSE") {
-      setWearable(nyVerdi);
-      // Uten datainnhenting finnes det ingenting for coachen å se.
-      if (!nyVerdi) setCoachInnsyn(false);
-    } else {
-      setCoachInnsyn(nyVerdi);
-    }
+    // Speiler avhengighetene serveren håndhever i beregnSamtykkeStatus:
+    // uten en kilde finnes det ingenting å dele, og detaljer forutsetter status.
+    const neste = { ...valg, [felt[type]]: nyVerdi };
+    const harKilde = neste.wearable || neste.manuell;
+    neste.coachInnsyn = harKilde && neste.coachInnsyn;
+    neste.coachDetalj = neste.coachInnsyn && neste.coachDetalj;
+    setValg(neste);
 
     startTransition(async () => {
       const svar = await settHelseSamtykkeForBarn(barn.id, type, nyVerdi);
       if (!svar.ok) {
-        setWearable(forrigeWearable);
-        setCoachInnsyn(forrigeCoach);
+        setValg(forrige);
         setFeil(svar.feil);
       }
     });
   }
+
+  const harKilde = valg.wearable || valg.manuell;
 
   return (
     <div
@@ -156,7 +168,7 @@ function HelseSamtykkeSeksjon({ barn }: { barn: SamtykkeBarn }) {
             color: T.mut,
           }}
         >
-          Helsedata fra klokke
+          Helsedata
         </span>
       </div>
 
@@ -169,30 +181,46 @@ function HelseSamtykkeSeksjon({ barn }: { barn: SamtykkeBarn }) {
           margin: "0 0 8px",
         }}
       >
-        Søvn og restitusjon regnes som helseopplysninger. Er barnet under 16 år,
-        er det bare du som kan si ja til dette. Treningen blir aldri sperret av
-        det du velger her.
+        Søvn, puls, vekt og skader regnes som helseopplysninger — enten en klokke
+        måler dem eller barnet fyller dem ut selv. Er barnet under 16 år, er det
+        bare du som kan si ja til dette. Treningen blir aldri sperret av det du
+        velger her.
       </p>
 
-      <div style={{ padding: "6px 0" }}>
-        <Bryter
-          label={HELSE_SAMTYKKE_TEKST.WEARABLE_HELSE.tittel}
-          sub={HELSE_SAMTYKKE_TEKST.WEARABLE_HELSE.forklaring}
-          checked={wearable}
-          onChange={(v) => {
-            if (!pending) endre("WEARABLE_HELSE", v);
-          }}
-        />
-      </div>
+      {(["WEARABLE_HELSE", "MANUELL_HELSE"] as const).map((type) => (
+        <div key={type} style={{ padding: "6px 0" }}>
+          <Bryter
+            label={HELSE_SAMTYKKE_TEKST[type].tittel}
+            sub={HELSE_SAMTYKKE_TEKST[type].forklaring}
+            checked={valg[felt[type]]}
+            onChange={(v) => {
+              if (!pending) endre(type, v);
+            }}
+          />
+        </div>
+      ))}
 
-      {wearable && (
+      {harKilde && (
         <div style={{ padding: "6px 0", borderTop: `1px solid ${T.border}` }}>
           <Bryter
             label={HELSE_SAMTYKKE_TEKST.COACH_INNSYN.tittel}
             sub={HELSE_SAMTYKKE_TEKST.COACH_INNSYN.forklaring}
-            checked={coachInnsyn}
+            checked={valg.coachInnsyn}
             onChange={(v) => {
               if (!pending) endre("COACH_INNSYN", v);
+            }}
+          />
+        </div>
+      )}
+
+      {valg.coachInnsyn && (
+        <div style={{ padding: "6px 0", borderTop: `1px solid ${T.border}` }}>
+          <Bryter
+            label={HELSE_SAMTYKKE_TEKST.COACH_DETALJ.tittel}
+            sub={HELSE_SAMTYKKE_TEKST.COACH_DETALJ.forklaring}
+            checked={valg.coachDetalj}
+            onChange={(v) => {
+              if (!pending) endre("COACH_DETALJ", v);
             }}
           />
         </div>

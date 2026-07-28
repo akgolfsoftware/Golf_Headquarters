@@ -12,6 +12,8 @@ import "server-only";
 import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "../client";
 import { ALL_SKILLS } from "../skills";
 import { prisma } from "@/lib/prisma";
+import { harManuellHelseSamtykke } from "@/lib/health/samtykke";
+import { erHelseLeave } from "@/lib/health/leave-innsyn";
 
 const SKILLS_BLOCK = ALL_SKILLS.map(
   (s) => `\n## ${s.name}\n${s.knowledge}`,
@@ -136,10 +138,15 @@ type PlanKontekst = {
     sgPutt: number | null;
     playedAt: Date;
   } | null;
+  /**
+   * Aktiv begrensning — bevisst UTEN diagnose. Modellen trenger å vite at
+   * belastningen må ned og siden når, ikke hva som feiler. Skillet
+   * skade/sykdom er i seg selv en helseopplysning (art. 9), så det sendes
+   * aldri til en ekstern modell.
+   */
   aktivSkade: {
-    reason: string;
+    erHelse: boolean;
     startAt: Date;
-    isInjury: boolean;
   } | null;
   nesteTurnering: {
     navn: string;
@@ -171,22 +178,24 @@ async function samleKontekst(
         })
       : null;
 
-  // Aktiv skade
-  const aktivSkade =
-    trigger === "skade-flagg"
-      ? await prisma.leave.findFirst({
-          where: {
-            userId: spillerId,
-            OR: [{ endAt: null }, { endAt: { gte: now } }],
-          },
-          orderBy: { startAt: "desc" },
-          select: {
-            reason: true,
-            startAt: true,
-            isInjury: true,
-          },
-        })
-      : null;
+  // Aktiv skade/permisjon. Helsedelen krever spillerens art. 9-samtykke —
+  // uten det henter vi den ikke i det hele tatt.
+  const kanBrukeHelse =
+    trigger === "skade-flagg" ? await harManuellHelseSamtykke(spillerId) : false;
+  const aktivSkade = kanBrukeHelse
+    ? await prisma.leave.findFirst({
+        where: {
+          userId: spillerId,
+          OR: [{ endAt: null }, { endAt: { gte: now } }],
+        },
+        orderBy: { startAt: "desc" },
+        select: {
+          reason: true,
+          startAt: true,
+          isInjury: true,
+        },
+      })
+    : null;
 
   // Neste turnering
   const turneringEntry =
@@ -236,9 +245,10 @@ async function samleKontekst(
       : null,
     aktivSkade: aktivSkade
       ? {
-          reason: String(aktivSkade.reason),
+          // Grunnen kastes her, ikke lenger nede: da finnes den ikke i noe
+          // objekt som senere kan havne i en prompt ved et uhell.
+          erHelse: erHelseLeave(aktivSkade),
           startAt: aktivSkade.startAt,
-          isInjury: aktivSkade.isInjury,
         }
       : null,
     nesteTurnering,
@@ -247,15 +257,23 @@ async function samleKontekst(
 
 // ---------- Prompt-bygging ----------
 
+/**
+ * Bygger prompten som sendes til Anthropic.
+ *
+ * ANONYMISERT: spillerens navn skal ALDRI inn her. Prompten forlater våre
+ * systemer, og kombinasjonen navn + helseopplysning er nettopp det art. 9
+ * verner. HCP og SG-tall er det modellen faktisk trenger for å gi råd, og de
+ * peker ikke tilbake på en person hos mottakeren.
+ */
 function byggUserPrompt(
-  plan: { name: string; user: { name: string; hcp: number | null } },
+  plan: { name: string; user: { hcp: number | null } },
   trigger: PlanRevisionTrigger,
   k: PlanKontekst,
   extraContext?: string,
 ): string {
   const linjer: string[] = [
     `Plan: ${plan.name}`,
-    `Spiller: ${plan.user.name} (HCP ${plan.user.hcp ?? "ukjent"})`,
+    `Spiller: HCP ${plan.user.hcp ?? "ukjent"}`,
     `Trigger: ${trigger}`,
     "",
   ];
@@ -269,7 +287,8 @@ function byggUserPrompt(
   }
   if (k.aktivSkade) {
     linjer.push(
-      `Aktiv skade/leave: ${k.aktivSkade.reason} (siden ${k.aktivSkade.startAt.toISOString().slice(0, 10)})`,
+      `${k.aktivSkade.erHelse ? "Aktiv helsebegrensning" : "Aktivt fravær"} ` +
+        `(siden ${k.aktivSkade.startAt.toISOString().slice(0, 10)})`,
     );
   }
   if (k.nesteTurnering) {
@@ -368,7 +387,7 @@ function byggDemoForslag(
     endringer.push({
       endring: "Pause alle FYS-økter umiddelbart",
       pyramideAkser: ["FYS"],
-      rasjonale: `${k.aktivSkade.isInjury ? "Skade" : "Leave"}: ${k.aktivSkade.reason} — unngå overbelastning`,
+      rasjonale: `${k.aktivSkade.erHelse ? "Helsebegrensning" : "Fravær"} registrert — unngå overbelastning`,
       varighet: "til returnedAt er satt",
     });
     endringer.push({

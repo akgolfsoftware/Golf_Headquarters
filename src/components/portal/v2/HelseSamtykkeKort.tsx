@@ -1,12 +1,13 @@
 "use client";
 
 /**
- * Samtykke til helsedata fra treningsklokke (Whoop/Garmin) — GDPR art. 9-2 a.
+ * Samtykke til helsedata — GDPR art. 9-2 a.
  *
- * Vises på /portal/meg/innstillinger/personvern. To uavhengige brytere:
- * hente data i det hele tatt, og la coach se restitusjonsstatus. Teksten
- * hentes fra HELSE_SAMTYKKE_TEKST, samme kilde som versjonen vi lagrer —
- * så det vi viser og det vi kan bevise er alltid det samme.
+ * Vises på /portal/meg/innstillinger/personvern. Fire brytere i to grupper:
+ * hvor dataene kommer fra (klokka, eller utfylt selv), og hvor mye coachen
+ * får se (status, eller tallene bak). Teksten hentes fra
+ * HELSE_SAMTYKKE_TEKST, samme kilde som versjonen vi lagrer — så det vi
+ * viser og det vi kan bevise er alltid det samme.
  *
  * Spillere under 16 ser bryterne, men kan ikke slå dem PÅ selv: da må en
  * foresatt gjøre det i foreldreportalen. Å slå AV skal alltid være mulig
@@ -24,9 +25,11 @@ import { settEgetHelseSamtykke } from "@/app/portal/meg/innstillinger/personvern
 
 export type HelseSamtykkeKortData = {
   wearable: boolean;
+  manuell: boolean;
   coachInnsyn: boolean;
-  /** ISO-dato for når wearable-samtykket sist ble gitt. */
-  wearableGittAt: string | null;
+  coachDetalj: boolean;
+  /** ISO-dato for når et av samtykkene sist ble gitt. */
+  sistGittAt: string | null;
   /** Under 16: kun foresatt kan slå samtykket PÅ. */
   krevesForesatt: boolean;
 };
@@ -74,34 +77,90 @@ function Punktliste({ punkter }: { punkter: string[] }) {
   );
 }
 
+/** Én bryter med forklaring og punktliste. Én kilde til teksten: regel-laget. */
+function Samtykkebryter({
+  type,
+  checked,
+  laastPaa,
+  pending,
+  onEndre,
+}: {
+  type: HelseSamtykkeType;
+  checked: boolean;
+  laastPaa: boolean;
+  pending: boolean;
+  onEndre: (type: HelseSamtykkeType, verdi: boolean) => void;
+}) {
+  const tekst = HELSE_SAMTYKKE_TEKST[type];
+  return (
+    <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${T.border}` }}>
+      <Bryter
+        label={tekst.tittel}
+        sub={tekst.forklaring}
+        checked={checked}
+        onChange={(v) => {
+          if (pending) return;
+          if (laastPaa && v) return; // under 16: kan ikke slå på selv
+          onEndre(type, v);
+        }}
+      />
+      <Punktliste punkter={tekst.punkter} />
+    </div>
+  );
+}
+
+type Valg = {
+  wearable: boolean;
+  manuell: boolean;
+  coachInnsyn: boolean;
+  coachDetalj: boolean;
+};
+
+/**
+ * Speiler avhengighetene serveren håndhever i `beregnSamtykkeStatus`, slik at
+ * bryterne aldri viser en kombinasjon som ikke kan finnes. Serveren er
+ * fasiten — dette er bare for at UI-et ikke skal blinke.
+ */
+function ryddValg(v: Valg): Valg {
+  const harKilde = v.wearable || v.manuell;
+  const coachInnsyn = harKilde && v.coachInnsyn;
+  return {
+    ...v,
+    coachInnsyn,
+    coachDetalj: coachInnsyn && v.coachDetalj,
+  };
+}
+
 export function HelseSamtykkeKort({ data }: { data: HelseSamtykkeKortData }) {
   const [pending, startTransition] = useTransition();
-  const [wearable, setWearable] = useState(data.wearable);
-  const [coachInnsyn, setCoachInnsyn] = useState(data.coachInnsyn);
+  const [valg, setValg] = useState<Valg>({
+    wearable: data.wearable,
+    manuell: data.manuell,
+    coachInnsyn: data.coachInnsyn,
+    coachDetalj: data.coachDetalj,
+  });
   const [feil, setFeil] = useState<string | null>(null);
   const [lagret, setLagret] = useState(false);
+
+  const felt: Record<HelseSamtykkeType, keyof Valg> = {
+    WEARABLE_HELSE: "wearable",
+    MANUELL_HELSE: "manuell",
+    COACH_INNSYN: "coachInnsyn",
+    COACH_DETALJ: "coachDetalj",
+  };
 
   function endre(type: HelseSamtykkeType, nyVerdi: boolean) {
     setFeil(null);
     setLagret(false);
 
     // Optimistisk oppdatering, rullet tilbake hvis serveren avviser.
-    const forrigeWearable = wearable;
-    const forrigeCoach = coachInnsyn;
-    if (type === "WEARABLE_HELSE") {
-      setWearable(nyVerdi);
-      // Skrur du av datainnhentingen, faller coach-innsyn bort med den —
-      // samme regel som serveren håndhever i beregnSamtykkeStatus.
-      if (!nyVerdi) setCoachInnsyn(false);
-    } else {
-      setCoachInnsyn(nyVerdi);
-    }
+    const forrige = valg;
+    setValg(ryddValg({ ...valg, [felt[type]]: nyVerdi }));
 
     startTransition(async () => {
       const svar = await settEgetHelseSamtykke(type, nyVerdi);
       if (!svar.ok) {
-        setWearable(forrigeWearable);
-        setCoachInnsyn(forrigeCoach);
+        setValg(forrige);
         setFeil(svar.feil);
         return;
       }
@@ -111,6 +170,18 @@ export function HelseSamtykkeKort({ data }: { data: HelseSamtykkeKortData }) {
 
   // Under 16 kan ikke slå PÅ selv, men skal alltid kunne slå AV.
   const laastPaa = data.krevesForesatt;
+  const harKilde = valg.wearable || valg.manuell;
+
+  const bryter = (type: HelseSamtykkeType) => (
+    <Samtykkebryter
+      type={type}
+      checked={valg[felt[type]]}
+      // Under 16: bryteren kan slås av, men ikke på.
+      laastPaa={laastPaa}
+      pending={pending}
+      onEndre={endre}
+    />
+  );
 
   return (
     <Kort>
@@ -148,10 +219,10 @@ export function HelseSamtykkeKort({ data }: { data: HelseSamtykkeKortData }) {
                 letterSpacing: "-0.02em",
               }}
             >
-              Helsedata fra klokka
+              Helsedata
             </span>
-            <StatusPill tone={wearable ? "up" : "info"}>
-              {wearable ? "Påkoblet" : "Av"}
+            <StatusPill tone={harKilde ? "up" : "info"}>
+              {harKilde ? "På" : "Av"}
             </StatusPill>
           </div>
           <p
@@ -163,8 +234,9 @@ export function HelseSamtykkeKort({ data }: { data: HelseSamtykkeKortData }) {
               lineHeight: 1.5,
             }}
           >
-            Whoop og Garmin måler søvn og restitusjon. Sier du ja, bruker vi det
-            til å tilpasse treningen din — og du kan ombestemme deg når som helst.
+            Søvn, puls og restitusjon er sensitive opplysninger, enten klokka
+            måler dem eller du fyller dem ut selv. Du bestemmer hva vi lagrer og
+            hva coachen din får se — og kan ombestemme deg når som helst.
           </p>
         </div>
       </div>
@@ -201,49 +273,13 @@ export function HelseSamtykkeKort({ data }: { data: HelseSamtykkeKortData }) {
         </div>
       )}
 
-      {/* Samtykke 1 — hente data i det hele tatt */}
-      <div
-        style={{
-          marginTop: 16,
-          paddingTop: 16,
-          borderTop: `1px solid ${T.border}`,
-        }}
-      >
-        <Bryter
-          label={HELSE_SAMTYKKE_TEKST.WEARABLE_HELSE.tittel}
-          sub={HELSE_SAMTYKKE_TEKST.WEARABLE_HELSE.forklaring}
-          checked={wearable}
-          onChange={(v) => {
-            if (pending) return;
-            if (laastPaa && v) return; // under 16: kan ikke slå på selv
-            endre("WEARABLE_HELSE", v);
-          }}
-        />
-        <Punktliste punkter={HELSE_SAMTYKKE_TEKST.WEARABLE_HELSE.punkter} />
-      </div>
+      {/* Gruppe 1 — hva vi lagrer. To kilder, samme type opplysning. */}
+      {bryter("WEARABLE_HELSE")}
+      {bryter("MANUELL_HELSE")}
 
-      {/* Samtykke 2 — coach-innsyn. Meningsløst uten det første. */}
-      {wearable && (
-        <div
-          style={{
-            marginTop: 16,
-            paddingTop: 16,
-            borderTop: `1px solid ${T.border}`,
-          }}
-        >
-          <Bryter
-            label={HELSE_SAMTYKKE_TEKST.COACH_INNSYN.tittel}
-            sub={HELSE_SAMTYKKE_TEKST.COACH_INNSYN.forklaring}
-            checked={coachInnsyn}
-            onChange={(v) => {
-              if (pending) return;
-              if (laastPaa && v) return;
-              endre("COACH_INNSYN", v);
-            }}
-          />
-          <Punktliste punkter={HELSE_SAMTYKKE_TEKST.COACH_INNSYN.punkter} />
-        </div>
-      )}
+      {/* Gruppe 2 — hva coachen ser. Meningsløst uten en kilde over. */}
+      {harKilde && bryter("COACH_INNSYN")}
+      {valg.coachInnsyn && bryter("COACH_DETALJ")}
 
       {/* Kvittering */}
       <div
@@ -269,8 +305,8 @@ export function HelseSamtykkeKort({ data }: { data: HelseSamtykkeKortData }) {
               ? feil
               : lagret
                 ? "Samtykke lagret. Endringen er logget."
-                : wearable && data.wearableGittAt
-                  ? `Samtykke gitt ${formatDato(data.wearableGittAt)}. Endringer logges.`
+                : harKilde && data.sistGittAt
+                  ? `Samtykke gitt ${formatDato(data.sistGittAt)}. Endringer logges.`
                   : "Endringer logges i revisjonsloggen."}
         </span>
       </div>

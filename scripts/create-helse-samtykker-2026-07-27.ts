@@ -28,7 +28,11 @@ async function main() {
       "tekstVersjon" text NOT NULL,
       "gittAvUserId" text NOT NULL,
       "gittAvRolle"  text NOT NULL,
-      "createdAt"    timestamptz NOT NULL DEFAULT now(),
+      -- timestamp(3), IKKE timestamptz: det er hva Prisma genererer for
+      -- DateTime, og hva alle de andre modell-tabellene i basen bruker.
+      -- En timestamptz-kolonne her ville drevet fra schema.prisma og
+      -- oppført seg annerledes enn resten (se tidssone-gotchaene).
+      "createdAt"    timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
       CONSTRAINT helse_samtykker_user_fk FOREIGN KEY ("userId")
         REFERENCES users(id) ON DELETE CASCADE
     );
@@ -38,6 +42,14 @@ async function main() {
   await prisma.$executeRawUnsafe(
     `CREATE INDEX IF NOT EXISTS helse_samtykker_user_type_idx
        ON helse_samtykker ("userId", type, "createdAt");`,
+  );
+
+  // Samme modell som enable_rls_all_tables: service-role-nøkkelen (som Prisma
+  // bruker) omgår RLS, anon/authenticated får DENY by default. Uten dette
+  // ligger samtykkeloggen åpen for PostgREST — security advisor lint
+  // 0013_rls_disabled_in_public. Idempotent.
+  await prisma.$executeRawUnsafe(
+    `ALTER TABLE public.helse_samtykker ENABLE ROW LEVEL SECURITY;`,
   );
 
   const [{ count }] = await prisma.$queryRawUnsafe<{ count: bigint }[]>(

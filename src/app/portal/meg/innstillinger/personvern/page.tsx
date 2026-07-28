@@ -50,8 +50,16 @@ export default async function PersonvernPage() {
       <HelseSamtykkeKort
         data={{
           wearable: samtykke.wearable,
+          manuell: samtykke.manuell,
           coachInnsyn: samtykke.coachInnsyn,
-          wearableGittAt: samtykke.wearableGittAt?.toISOString() ?? null,
+          coachDetalj: samtykke.coachDetalj,
+          // Nyeste av de to innsamlings-samtykkene — det er det kvitteringen
+          // gjelder («samtykke gitt <dato>»).
+          sistGittAt:
+            [samtykke.wearableGittAt, samtykke.manuellGittAt]
+              .filter((d): d is Date => d !== null)
+              .sort((a, b) => b.getTime() - a.getTime())[0]
+              ?.toISOString() ?? null,
           krevesForesatt,
         }}
       />
