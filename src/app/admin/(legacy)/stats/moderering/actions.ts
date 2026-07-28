@@ -28,6 +28,11 @@ import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { notify } from "@/lib/notifications";
+import {
+  anonymiserBruker,
+  ANONYMISERTE_BRUKERFELTER,
+  ANONYMISERTE_PUBLICPLAYER_FELTER,
+} from "@/lib/gdpr/anonymiser-bruker";
 
 const MODERERING_PATH = "/admin/stats/moderering";
 
@@ -169,61 +174,17 @@ export async function utforGdprSletting(id: string) {
   }
 
   const nå = new Date();
-  const anonymisering = {
-    name: "Slettet bruker",
-    // Deterministisk og unik (email er @unique) — .invalid-domenet kan aldri rutes.
-    email: `slettet-${sak.userId}@gdpr.akgolf.invalid`,
-    phone: null,
-    avatarUrl: null,
-    dateOfBirth: null,
-    // D5 (2026-07-18): sett deletedAt så kontoen faller ut av alle «aktiv bruker»-
-    // filtre (deletedAt: null) uten å røre de ~40 kallstedene. anonymisertAt
-    // markerer at dette er anonymisering, IKKE vanlig soft-delete — hard-delete-
-    // cronen ekskluderer anonymisertAt != null, så raden (avidentifisert historikk)
-    // beholdes i stedet for å kaskade-slettes etter 30 dager.
-    deletedAt: nå,
-    anonymisertAt: nå,
-  };
 
-  // Offentlig turneringsidentitet (PublicPlayer): raden BEHOLDES — turnerings-
-  // resultater (PublicPlayerEntry) refererer den med onDelete: Cascade, så en
-  // sletting ville tatt turneringshistorikken med seg. Men den offentlige
-  // profilen skal ikke lekke navnet på en slettet person: vi anonymiserer de
-  // synlige identitetsfeltene og skjuler raden fra listinger (isActive=false).
-  // Koblingen User.publicPlayerId beholdes (intern, ingen lekkasje).
-  const anonymisererPublicPlayer = Boolean(målBruker?.publicPlayerId);
-  const publicPlayerAnonymisering = {
-    name: "Anonymisert spiller",
-    // slug er ofte navn-derivert (f.eks. «ola-nordmann-2001») og ville lekket
-    // navnet i URL-en etter anonymisering. Bytt til et deterministisk, ikke-navn-
-    // token (unik via publicPlayerId — @unique holder). Gamle URL-er gir 404,
-    // som er personvernmessig ønsket (D5-beslutning 2026-07-17).
-    slug: `slettet-${målBruker?.publicPlayerId ?? "ukjent"}`,
-    bio: null,
-    photoUrl: null,
-    instagramHandle: null,
-    isActive: false,
-  };
+  // Selve avidentifiseringen ligger i én delt modul (2026-07-28) — samme
+  // kode som den automatiske oppryddingsjobben bruker, så de to veiene til
+  // sletting aldri kan komme i utakt. Den vasker også fritekst spilleren har
+  // skrevet (notater, egenvurdering) og stempler snittscore på spilleren.
+  const resultat = await anonymiserBruker(sak.userId, nå);
 
-  await prisma.$transaction([
-    // Brukeren kan allerede være hard-slettet (cron P20) — da er forespørselen
-    // reelt oppfylt, og saken markeres utført med notat i audit-loggen.
-    ...(målBruker
-      ? [prisma.user.update({ where: { id: sak.userId }, data: anonymisering })]
-      : []),
-    ...(anonymisererPublicPlayer
-      ? [
-          prisma.publicPlayer.update({
-            where: { id: målBruker!.publicPlayerId! },
-            data: publicPlayerAnonymisering,
-          }),
-        ]
-      : []),
-    prisma.moderationCase.update({
-      where: { id: sakId },
-      data: { status: "EXECUTED", resolvedById: user.id, resolvedAt: nå },
-    }),
-  ]);
+  await prisma.moderationCase.update({
+    where: { id: sakId },
+    data: { status: "EXECUTED", resolvedById: user.id, resolvedAt: nå },
+  });
 
   await audit({
     actorId: user.id,
@@ -231,13 +192,17 @@ export async function utforGdprSletting(id: string) {
     target: `User:${sak.userId}`,
     metadata: {
       sakId,
-      anonymiserteFelter: ["name", "email", "phone", "avatarUrl", "dateOfBirth"],
-      brukerFantesIkke: !målBruker,
-      publicPlayerAnonymisert: anonymisererPublicPlayer,
-      publicPlayerFelter: anonymisererPublicPlayer
-        ? ["name", "slug", "bio", "photoUrl", "instagramHandle", "isActive"]
+      anonymiserteFelter: [...ANONYMISERTE_BRUKERFELTER],
+      brukerFantesIkke: !resultat.brukerFantes,
+      publicPlayerAnonymisert: resultat.publicPlayerAnonymisert,
+      publicPlayerFelter: resultat.publicPlayerAnonymisert
+        ? [...ANONYMISERTE_PUBLICPLAYER_FELTER]
         : [],
       publicPlayerId: målBruker?.publicPlayerId ?? null,
+      // Beholdt historikk, aggregert til spillernivå.
+      snittScoreStemplet: resultat.snittScore,
+      antallRunder: resultat.antallRunder,
+      fritekstVasket: resultat.vasket,
     },
   });
 
