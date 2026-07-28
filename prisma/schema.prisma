@@ -487,6 +487,9 @@ model User {
   // Helse-logg (H1) — daglige målinger, én rad per dato
   healthEntries HealthEntry[]
 
+  // Samtykker til helsedata fra treningsklokke (GDPR art. 9-2 a)
+  helseSamtykker HelseSamtykke[]
+
   // Talent-modul (M13) — kun for spillere i talent-tracking
   talentTracking TalentTracking?
 
@@ -650,6 +653,46 @@ model HealthEntry {
   @@unique([userId, date])
   @@index([userId, date])
   @@map("health_entries")
+}
+
+/// Samtykke til helsedata fra treningsklokke (Whoop/Garmin) — GDPR art. 9-2 a.
+///
+/// APPEND-ONLY. Et samtykke trekkes tilbake ved å skrive en NY rad med
+/// gitt = false, aldri ved å endre eller slette den gamle. Da beholder vi
+/// beviskjeden dokumentasjonsplikten i art. 7-1 krever: hvem samtykket, når,
+/// og til nøyaktig hvilken tekst. Gjeldende status = nyeste rad per (userId, type).
+///
+/// Cascade på user: sletter vi brukeren, forsvinner samtykkehistorikken med den.
+model HelseSamtykke {
+  id String @id @default(cuid())
+
+  /// Spilleren helsedataene gjelder.
+  userId String
+
+  /// "WEARABLE_HELSE" = hente søvn/restitusjon/puls fra klokka i det hele tatt.
+  /// "COACH_INNSYN"   = coach kan se restitusjonsstatus (grønn/gul/rød).
+  /// Eget samtykke per formål — art. 9 krever spesifikt, ikke samlet, samtykke.
+  type String
+
+  /// true = gitt, false = trukket tilbake.
+  gitt Boolean
+
+  /// Hvilken versjon av samtykketeksten brukeren faktisk fikk se
+  /// (HELSE_SAMTYKKE_VERSJON i src/lib/health/samtykke-regler.ts).
+  tekstVersjon String
+
+  /// Hvem som utførte handlingen — spilleren selv eller en foresatt.
+  gittAvUserId String
+
+  /// "SELV" | "FORESATT". Under 16 år kan kun FORESATT gi samtykket (art. 8).
+  gittAvRolle String
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type, createdAt])
+  @@map("helse_samtykker")
 }
 
 // P14: Permisjon/skade (Leave) per spiller.
@@ -1418,6 +1461,7 @@ model TestDefinition {
   results  TestResult[]
   sessions TestSession[]
   assignments TestAssignment[]
+  linkedGoals Goal[]
 
   @@index([createdById, isCustom])
   @@index([visibility, isCustom])
@@ -1600,7 +1644,7 @@ model AgentRun {
 model Goal {
   id          String       @id @default(cuid())
   userId      String
-  // Type: HCP_TARGET | ROUNDS_PER_MONTH | SG_AREA | FREE_TEXT
+  // Type: HCP_TARGET | ROUNDS_PER_MONTH | SG_AREA | SESSION_FREQUENCY | TEST_SCORE | FREE_TEXT
   type        String
   // Resultatmål (OUTCOME) vs prosessmål (PROCESS).
   // Alle eksisterende mål defaulter til OUTCOME — kan endres manuelt.
@@ -1614,10 +1658,23 @@ model Goal {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
+  // Dato målet ble markert oppnådd (Fase 1.14b). Null for mål oppnådd før dette
+  // feltet fantes — vi gjetter aldri en historisk dato vi ikke vet.
+  achievedAt DateTime?
+
+  // SESSION_FREQUENCY: hvilket pyramide-område fremdriften telles mot
+  // (fullførte økter siste 7 dager). Null for mål uten øktkobling.
+  linkedPyramidArea PyramidArea?
+
+  // TEST_SCORE: hvilken test fremdriften måles mot (siste TestResult.score).
+  linkedTestId String?
+  linkedTest   TestDefinition? @relation(fields: [linkedTestId], references: [id], onDelete: SetNull)
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, status])
   @@index([userId, category, status])
+  @@index([linkedTestId])
   @@map("goals")
 }
 
@@ -4841,4 +4898,25 @@ model DatagolfSyncState {
 
   @@id([endpoint, paramsHash])
   @@map("datagolf_sync_state")
+}
+
+// ---------- Øvelses-motoren (radar → fabrikk, 2026-07-27) ----------
+
+// Rå funn fra radar-agenten (YouTube/RSS-søk etter drill-/test-inspirasjon og
+// utstyrsnyheter). Fabrikk-agenten leser ubehandlede rader herfra og bruker
+// dem + masterbrain-fasiten til å generere øvelse-/test-utkast (CaddieDraft).
+// Bevisst uten @relation (kirurgisk additiv modell, jf. gotchas.md).
+model RadarFunn {
+  id          String    @id @default(cuid())
+  kilde       String // "youtube" | "rss"
+  kildeNavn   String // kanalnavn / feed-/sidenavn
+  tittel      String
+  url         String
+  sammendrag  String?
+  publisertAt DateTime?
+  behandlet   Boolean   @default(false)
+  funnetAt    DateTime  @default(now())
+
+  @@index([behandlet, funnetAt])
+  @@map("radar_funn")
 }

@@ -9,6 +9,7 @@
 import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { AdminSpillerRedigerV2, type AdminSpillerRedigerV2Data } from "@/components/admin/v2/AdminSpillerRedigerV2";
 
@@ -25,11 +26,13 @@ function dateToYmd(d: Date | null | undefined): string {
 const NB_DT = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
 
 export default async function RedigerSpiller({ params }: { params: Promise<{ id: string }> }) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const viewer = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { id } = await params;
 
   const [player, history, parents] = await Promise.all([
-    prisma.user.findUnique({ where: { id } }),
+    // Coach-scoping: uten porten kunne en coach åpne og endre en annen
+    // coachs spiller ved å bytte id-en i URL-en.
+    prisma.user.findFirst({ where: { AND: [coachScopedPlayerWhere(viewer), { id }] } }),
     prisma.auditLog.findMany({
       where: { target: `user:${id}` },
       orderBy: { createdAt: "desc" },

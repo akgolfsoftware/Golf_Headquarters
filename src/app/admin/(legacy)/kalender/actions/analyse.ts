@@ -6,6 +6,7 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import type { PyramidArea, PracticeType, LFase, CSNivaa } from "@/generated/prisma/client";
 
 // ---------------------------------------------------------------------------
@@ -104,7 +105,12 @@ export async function hentOversikt(
   fra: Date,
   til: Date,
 ): Promise<OversiktKpi> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  // Coach-scoping: spilleId kommer fra klienten — rollen alene lot en coach
+  // lese treningsdata for en vilkårlig spiller.
+  if (!(await harCoachTilgangTilSpiller(coach, spilllerId))) {
+    throw new Error("Ingen tilgang til denne spilleren.");
+  }
   const parsed = IntervallSchema.parse({ spilllerId, fra, til });
 
   const okter = await prisma.trainingSessionV2.findMany({
@@ -147,7 +153,12 @@ export async function hentKrysstabell(
   dim1: Dimensjon,
   dim2: Dimensjon,
 ): Promise<KrysstabellCelle[]> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  // Coach-scoping: spilleId kommer fra klienten — rollen alene lot en coach
+  // lese treningsdata for en vilkårlig spiller.
+  if (!(await harCoachTilgangTilSpiller(coach, spilllerId))) {
+    throw new Error("Ingen tilgang til denne spilleren.");
+  }
   const parsed = KrysstabellSchema.parse({ spilllerId, fra, til, dim1, dim2 });
 
   const okter = await prisma.trainingSessionV2.findMany({
@@ -194,7 +205,12 @@ export async function hentTrender(
   fra: Date,
   til: Date,
 ): Promise<TrendPunkt[]> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  // Coach-scoping: spilleId kommer fra klienten — rollen alene lot en coach
+  // lese treningsdata for en vilkårlig spiller.
+  if (!(await harCoachTilgangTilSpiller(coach, spilllerId))) {
+    throw new Error("Ingen tilgang til denne spilleren.");
+  }
   const parsed = IntervallSchema.parse({ spilllerId, fra, til });
 
   const okter = await prisma.trainingSessionV2.findMany({

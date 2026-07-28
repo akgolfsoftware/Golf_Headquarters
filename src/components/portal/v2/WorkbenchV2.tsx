@@ -18,7 +18,7 @@
  * V2Shell (montert i (v2preview)/v2-workbench/page.tsx) eier chrome-en.
  */
 
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
   DndContext,
@@ -1563,6 +1563,31 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
     return res;
   };
 
+  // «Legg i økt» fra den frittstående øvelsesbanken (/portal/drills) navigerer
+  // hit med ?leggTil=<exerciseId>&leggTilNavn=<navn> — legges i valgt/default
+  // økt automatisk (samme skrivevei som Driller-fanen over), så vises melding
+  // og URL-parameteren fjernes. Ref hindrer dobbel-tilføyning når valgtOkt
+  // bytter referanse etter router.refresh() i leggDrillIValgt.
+  const [leggTilMelding, setLeggTilMelding] = useState<string | null>(null);
+  const leggTilKjortRef = useRef<string | null>(null);
+  useEffect(() => {
+    const leggTilId = searchParams.get("leggTil");
+    if (!leggTilId || leggTilKjortRef.current === leggTilId || !valgtOkt) return;
+    leggTilKjortRef.current = leggTilId;
+    const navn = searchParams.get("leggTilNavn") ?? "";
+    (async () => {
+      const res = await leggDrillIValgt({ exerciseId: leggTilId, navn });
+      setLeggTilMelding(res.ok ? `«${navn || "Øvelsen"}» lagt i valgt økt.` : (res.error ?? "Kunne ikke legge til."));
+      window.setTimeout(() => setLeggTilMelding(null), 4000);
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("leggTil");
+      params.delete("leggTilNavn");
+      const qs = params.toString();
+      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, valgtOkt]);
+
   // Skriv zoom/valg til URL med replace (skal ikke forurense historikken).
   const oppdaterUrl = (mut: (p: URLSearchParams) => void) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -2276,6 +2301,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
         <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} proMode={proMode} />
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
           {dupliserMelding && <InnsiktChip>{dupliserMelding}</InnsiktChip>}
+          {leggTilMelding && <InnsiktChip>{leggTilMelding}</InnsiktChip>}
           {insights?.line && <InnsiktChip>{insights.line}</InnsiktChip>}
           {nivaa === "uke" && data.weekStartISO && (
             <WBPeriodeStrip

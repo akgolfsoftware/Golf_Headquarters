@@ -1,7 +1,7 @@
 # Arkitektur — AK Golf HQ
 
-Flyttet fra CLAUDE.md 2026-06-14. Designkanon: `.claude/rules/design-system-regel.md`
-— **v2-redesign pågår (9. juli 2026)**: golfdata/v13-referansene under beskriver
+Flyttet fra CLAUDE.md 2026-06-14. Ingen låst designkanon per 2026-07-25 (CLAUDE.md invariant 2)
+— **v2-redesign pågår**: golfdata/v13-referansene under beskriver
 OVERGANGS-LAGET, ikke målbildet. Komponentanbefalingene gjelder vedlikehold av
 eksisterende skjermer inntil v2-bølgene rekomponerer dem.
 
@@ -48,7 +48,7 @@ akgolf-hq/
 │   │   │                     # golfdata/ (v13, overgangs-laget) og calendars/.
 │   │   │                     # Gamle Hero/FeaturedCard/KpiStrip/data/ er fjernet.
 │   │   ├── v2/                # Delte v2-redesign-primitiver, bl.a. hjelp.tsx
-│   │   │                     # (se «?»-forklaringsregelen i design-system-regel.md)
+│   │   │                     # (hjelp.tsx bærer «?»-forklaringene i v2)
 │   │   ├── shared/           # Funksjonelle utility-komponenter (cookie-banner,
 │   │   │                     # cmd-palette, analytics-loader, mobile-bottom-nav).
 │   │   │                     # NB: Modal/PageHeader/OverviewShell er thin-wrappers
