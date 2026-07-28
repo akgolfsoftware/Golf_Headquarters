@@ -372,6 +372,13 @@ model User {
   // soft-delete, som fortsatt hard-slettes etter 30 dager.
   anonymisertAt DateTime?
 
+  // Snittscore stemplet i det kontoen anonymiseres (Anders' beslutning
+  // 2026-07-28: ved kontosletting beholdes data, aggregert til spillernivå).
+  // Rundene beholdes også — dette er tallet som overlever uansett hva som
+  // senere ryddes bort, så spillerens nivå aldri går tapt.
+  snittScoreVedSletting  Float?
+  antallRunderVedSletting Int?
+
   // GDPR art. 8 — mindreårig + foreldresamtykke (P17).
   // Norge: 16 år er aldersgrense for å samtykke selv til behandling av persondata.
   dateOfBirth             DateTime?

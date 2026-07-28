@@ -1,14 +1,24 @@
 /**
- * Cron-job: permanent slett soft-deleted bruker-konti etter 30 dager.
+ * Cron-job: avidentifiser soft-deleted bruker-konti etter 30 dager.
  * Kjører daglig kl. 03:30.
  *
  * P20 GDPR: brukere som har markert konto for sletting kan angre i 30 dager.
- * Etter det vinduet slettes alle persondata permanent (cascade via Prisma).
+ *
+ * ENDRET 2026-07-28 (Anders' beslutning): etter angrefristen SLETTES ikke
+ * kontoen lenger — den anonymiseres. Treningsdataene beholdes, aggregert til
+ * spillernivå (snittscore stemples), mens alle persondata og all fritekst
+ * spilleren har skrevet vaskes bort.
+ *
+ * Grunnen til at data beholdes: treningshistorikk er grunnlaget for
+ * akademiets utviklingsarbeid, og et slettet årskull ville etterlatt hull i
+ * spillerutviklingen. Grunnen til at det er forsvarlig: etter vasken peker
+ * radene ikke lenger på en person.
  */
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { logError } from "@/lib/error-tracking";
+import { anonymiserBruker } from "@/lib/gdpr/anonymiser-bruker";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -25,31 +35,43 @@ export async function GET(req: Request): Promise<NextResponse> {
   try {
     const cutoff = new Date(Date.now() - RETENTION_DAYS * 24 * 60 * 60 * 1000);
 
-    const usersToDelete = await prisma.user.findMany({
+    const kandidater = await prisma.user.findMany({
       where: {
         deletedAt: { lt: cutoff, not: null },
-        // D5 (2026-07-18): anonymiserte konti setter deletedAt for å falle ut av
-        // aktiv-filtre, men skal ALDRI hard-slettes (avidentifisert historikk
-        // beholdes). Ekskluder dem her.
+        // Allerede anonymiserte konti er ferdigbehandlet — hopp over dem.
         anonymisertAt: null,
       },
       select: { id: true, email: true, deletedAt: true },
       take: 100,
     });
 
-    if (usersToDelete.length === 0) {
-      return NextResponse.json({ ok: true, deleted: 0 });
+    if (kandidater.length === 0) {
+      return NextResponse.json({ ok: true, anonymisert: 0 });
     }
 
-    // Permanent delete (cascade via Prisma onDelete: Cascade på relasjoner)
-    const result = await prisma.user.deleteMany({
-      where: { id: { in: usersToDelete.map((u) => u.id) } },
-    });
+    // Én konto om gangen: en feil på én skal ikke stoppe resten, og hver
+    // anonymisering er idempotent så en delvis kjøring kan trygt gjentas.
+    let anonymisert = 0;
+    const feilet: string[] = [];
+    for (const bruker of kandidater) {
+      try {
+        await anonymiserBruker(bruker.id);
+        anonymisert++;
+      } catch (error) {
+        feilet.push(bruker.id);
+        await logError({
+          context: "cron.cleanup-deleted-accounts.anonymiser",
+          error,
+          userId: bruker.id,
+        });
+      }
+    }
 
     return NextResponse.json({
       ok: true,
-      deleted: result.count,
-      ids: usersToDelete.map((u) => u.id),
+      anonymisert,
+      feilet: feilet.length,
+      ids: kandidater.map((u) => u.id),
     });
   } catch (error) {
     await logError({
