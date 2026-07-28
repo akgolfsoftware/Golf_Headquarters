@@ -145,8 +145,7 @@ export async function proxy(request: NextRequest) {
   const erBeskyttet =
     path.startsWith("/portal") ||
     path.startsWith("/admin") ||
-    path.startsWith("/intern") ||
-    path.startsWith("/dev-banekart");
+    path.startsWith("/intern");
 
   if (erBeskyttet) {
     // Sjekk auth-status via samme cookies som updateSession nettopp refresjet.
