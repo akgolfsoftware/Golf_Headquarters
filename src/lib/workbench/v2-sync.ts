@@ -57,6 +57,9 @@ export async function upsertV2ForPlanSession(input: {
   // TrainingSessionV2). Full formel bor på kanon TrainingPlanSession;
   // drill-nivå-formelen bor på TrainingDrillV2 (egen runde).
   miljo?: MMiljo | null;
+  /** Hvor økten skjer + hva den skal oppnå — speiles så live-økta viser det samme. */
+  location?: string | null;
+  maalsetning?: string | null;
 }): Promise<void> {
   const coachId = await resolveCoachIdForPlayer(input.playerId, input.coachId);
   const endTime = new Date(input.scheduledAt.getTime() + input.durationMin * 60_000);
@@ -75,6 +78,8 @@ export async function upsertV2ForPlanSession(input: {
     startTime: input.scheduledAt,
     endTime,
     miljo: input.miljo ?? "M2",
+    location: input.location ?? null,
+    maalsetning: input.maalsetning ?? null,
     practiceType: PYR_TO_PRACTICE[input.pyramidArea],
     isCoachCreated: coachId !== input.playerId,
     generertFra: GENERERT_FRA,
@@ -113,6 +118,8 @@ export async function syncV2FromPlanSessionId(planSessionId: string): Promise<vo
       durationMin: true,
       pyramidArea: true,
       miljo: true,
+      location: true,
+      maalsetning: true,
       plan: { select: { userId: true, createdById: true } },
     },
   });
@@ -126,6 +133,8 @@ export async function syncV2FromPlanSessionId(planSessionId: string): Promise<vo
     pyramidArea: s.pyramidArea,
     coachId: s.plan.createdById,
     miljo: s.miljo,
+    location: s.location,
+    maalsetning: s.maalsetning,
   });
 }
 

@@ -50,21 +50,27 @@ export async function pushBooking(bookingId: string): Promise<string | null> {
       where: { id: bookingId },
       include: {
         user: { select: { name: true, email: true } },
-        serviceType: { select: { name: true, coachUserId: true } },
+        serviceType: {
+          select: { name: true, coachUserId: true, durationMin: true },
+        },
         location: { select: { name: true, address: true } },
       },
     });
     if (!booking?.serviceType.coachUserId) return null;
 
+    // Event-tittel = KUN spillerens fulle navn (Anders' beslutning 2026-07-27).
+    // Gjester (user=null) har navnet i guestName — «Gjest» kun som siste utvei.
+    // Tjeneste/varighet flyttes til beskrivelsen så info ikke går tapt.
     const navn = booking.user?.name ?? booking.guestName ?? "Gjest";
     const epost = booking.user?.email ?? booking.guestEmail ?? null;
 
     const res = await pushKildeTilGoogle(booking.serviceType.coachUserId, {
       type: "BOOKING",
       id: booking.id,
-      summary: `${booking.serviceType.name} — ${navn}`,
+      summary: navn,
       description: [
         epost ? `Spiller: ${navn} (${epost})` : `Spiller: ${navn}`,
+        `Økt: ${booking.serviceType.name} (${booking.serviceType.durationMin} min)`,
         booking.notes ? `Notater: ${booking.notes}` : null,
         "Booket via AK Golf Platform",
       ]
@@ -73,7 +79,11 @@ export async function pushBooking(bookingId: string): Promise<string | null> {
       location: `${booking.location.name}, ${booking.location.address}`,
       startAt: booking.startAt,
       endAt: booking.endAt,
-      attendee: epost ? { email: epost, navn } : null,
+      // Kun registrerte brukere inviteres — gjeste-epost her ville sendt
+      // Google-invitasjon til kunden uten Anders' godkjenning.
+      attendee: booking.user?.email
+        ? { email: booking.user.email, navn }
+        : null,
     });
     if (res.skrevet === 0) return null;
 

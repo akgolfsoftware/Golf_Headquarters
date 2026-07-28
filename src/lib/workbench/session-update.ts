@@ -18,10 +18,18 @@ export const OktDrillSchema = z.object({
   exerciseId: z.string().min(1).optional(),
   nyNavn: z.string().trim().min(2).max(120).optional(),
   nyPyramidArea: z.enum(["FYS", "TEK", "SLAG", "SPILL", "TURN"]).optional(),
+  /** Egen drill (spiller/coach): område og beskrivelse lagres på øvelsen. */
+  nyOmraade: z.string().trim().max(80).optional(),
+  nyBeskrivelse: z.string().trim().max(1000).optional(),
   minutter: z.number().int().min(1).max(240).nullish(),
   sett: z.number().int().min(1).max(50).nullish(),
   reps: z.number().int().min(1).max(500).nullish(),
   nivaa: z.enum(["uten", "lav", "vanlig"]).default("vanlig"),
+  /** Planlagt L-trapp (AK-formel): reps per læringstrinn. Alle valgfrie —
+   * spilleren starter med «uten ball» og legger til trinn ved behov. */
+  planRepsUtenBall: z.number().int().min(0).max(2000).nullish(),
+  planRepsLavFart: z.number().int().min(0).max(2000).nullish(),
+  planRepsAuto: z.number().int().min(0).max(2000).nullish(),
   /** Kobling til teknisk-plan-oppgave (runde 2 · 2026-07-14) — når satt,
    * logges reps automatisk mot oppgaven når drillen fullføres i live-økt. */
   positionTaskId: z.string().min(1).optional(),
@@ -37,6 +45,10 @@ export const SessionUpdateSchema = z.object({
   /** 8c.7: AK-formel-akser i økt-popupen (valgfritt — aldri sperre). */
   lFase: z.enum(["L_KROPP", "L_ARM", "L_KOLLE", "L_BALL", "L_AUTO"]).nullish(),
   miljo: z.enum(["M0", "M1", "M2", "M3", "M4", "M5"]).nullish(),
+  /** Hvor økten skjer + hva den skal oppnå. Tom streng tømmer feltet
+   * (jf. gotchas: `?? undefined` kan aldri nullstille i Prisma). */
+  location: z.string().trim().max(160).nullish(),
+  maalsetning: z.string().trim().max(300).nullish(),
   /** 8c.7: full drill-liste (replace-semantikk). undefined = ikke rør drills. */
   drills: z.array(OktDrillSchema).max(20).optional(),
 });
@@ -87,6 +99,12 @@ export async function executeSessionUpdate(
       ...(patch.durationMin != null ? { durationMin: patch.durationMin } : {}),
       ...(patch.lFase !== undefined ? { lFase: patch.lFase } : {}),
       ...(patch.miljo !== undefined ? { miljo: patch.miljo } : {}),
+      // Tom streng fra UI betyr «fjern» → null, ikke undefined (gotcha: undefined
+      // lar feltet stå urørt, så lokasjon/mål kunne aldri tømmes igjen).
+      ...(patch.location !== undefined ? { location: patch.location || null } : {}),
+      ...(patch.maalsetning !== undefined
+        ? { maalsetning: patch.maalsetning || null }
+        : {}),
       scheduledAt,
     },
     select: {
@@ -96,6 +114,8 @@ export async function executeSessionUpdate(
       durationMin: true,
       pyramidArea: true,
       miljo: true,
+      location: true,
+      maalsetning: true,
     },
   });
 
@@ -119,6 +139,8 @@ export async function executeSessionUpdate(
     pyramidArea: updated.pyramidArea,
     coachId: input.coachId,
     miljo: updated.miljo,
+    location: updated.location,
+    maalsetning: updated.maalsetning,
   });
 
   return { ok: true };
@@ -151,6 +173,9 @@ export async function skrivSessionDrills(
     repSett: number | null;
     repReps: number | null;
     prPress: "PR1" | "PR3" | null;
+    planRepsUtenBall: number | null;
+    planRepsLavFart: number | null;
+    planRepsAuto: number | null;
     orderIndex: number;
     positionTaskId: string | null;
   }[] = [];
@@ -158,12 +183,28 @@ export async function skrivSessionDrills(
     const d = input.drills[i];
     let exerciseId = d.exerciseId ?? null;
     if (!exerciseId && d.nyNavn) {
+      // Egen drill havner i spillerens bank. Deles med plattformen kun når
+      // spilleren har samtykket i onboardingen — ellers privat.
+      const delerMedPlattform = input.coachId
+        ? false
+        : ((
+            await prisma.user.findUnique({
+              where: { id: input.playerId },
+              select: { drillDelingGodtatt: true },
+            })
+          )?.drillDelingGodtatt ?? false);
       const ny = await prisma.exerciseDefinition.create({
         data: {
           name: d.nyNavn,
+          description: d.nyBeskrivelse || null,
           pyramidArea: (d.nyPyramidArea ?? input.fallbackPyramidArea) as PyramidArea,
           source: input.coachId ? "COACH" : "PLAYER",
+          visibility: delerMedPlattform ? "PLATFORM" : "PRIVATE",
           createdBy: input.coachId ?? input.playerId,
+          defaultRepsUtenBall: d.planRepsUtenBall ?? null,
+          defaultRepsLavFart: d.planRepsLavFart ?? null,
+          defaultRepsAuto: d.planRepsAuto ?? null,
+          ...(d.nyOmraade ? { tags: [d.nyOmraade] } : {}),
         },
         select: { id: true },
       });
@@ -186,6 +227,9 @@ export async function skrivSessionDrills(
       repSett: d.sett ?? null,
       repReps: d.reps ?? null,
       prPress: d.nivaa === "uten" ? null : d.nivaa === "lav" ? "PR1" : "PR3",
+      planRepsUtenBall: d.planRepsUtenBall ?? null,
+      planRepsLavFart: d.planRepsLavFart ?? null,
+      planRepsAuto: d.planRepsAuto ?? null,
       orderIndex: i,
       positionTaskId: d.positionTaskId ?? null,
     });

@@ -549,6 +549,9 @@ export async function addWorkbenchSession(input: {
   akFormel?: AkFormelInput;
   /** Driller fra økt-arket — samme kontrakt som updateSession (replace). */
   drills?: OktDrillInput[];
+  /** Hvor økten skjer + hva den skal oppnå. */
+  location?: string | null;
+  maalsetning?: string | null;
 }): Promise<{ ok: boolean; sessionId?: string; error?: string }> {
   const user = await requirePortalUser();
   if (input.dayIndex < 0 || input.dayIndex > 6) return { ok: false, error: "Ugyldig dag" };
@@ -594,6 +597,8 @@ export async function addWorkbenchSession(input: {
       csNivaa: ak.csNivaa,
       pressureLevel: ak.pressureLevel,
       pPosisjoner: ak.pPosisjoner,
+      location: input.location?.trim().slice(0, 160) || null,
+      maalsetning: input.maalsetning?.trim().slice(0, 300) || null,
       status: "PLANNED",
     },
     select: {
@@ -602,6 +607,8 @@ export async function addWorkbenchSession(input: {
       scheduledAt: true,
       durationMin: true,
       pyramidArea: true,
+      location: true,
+      maalsetning: true,
     },
   });
 
@@ -623,6 +630,8 @@ export async function addWorkbenchSession(input: {
     durationMin: created.durationMin,
     pyramidArea: created.pyramidArea,
     miljo: ak.miljo,
+    location: created.location,
+    maalsetning: created.maalsetning,
   });
 
   revalidatePath("/portal/planlegge/workbench");

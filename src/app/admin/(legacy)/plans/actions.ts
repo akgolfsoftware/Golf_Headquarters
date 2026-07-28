@@ -4,8 +4,24 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { nonEmpty, isoDate } from "@/lib/validation/schemas";
+
+/**
+ * Henter en treningsplan KUN hvis den tilhører en spiller coachen har tilgang
+ * til. Alle actions her tar en planId fra klienten — uten porten kunne en coach
+ * lese, endre, kopiere og SLETTE en annen coachs spillers plan ved å bytte id.
+ */
+async function planIScope(
+  coach: { id: string; role: string },
+  planId: string,
+): Promise<{ id: string; userId: string } | null> {
+  return prisma.trainingPlan.findFirst({
+    where: { id: planId, user: coachScopedPlayerWhere(coach) },
+    select: { id: true, userId: true },
+  });
+}
 
 const PlanIdSchema = z.object({
   planId: z.string().min(1, "Plan-ID er påkrevd"),
@@ -21,7 +37,9 @@ const CreatePlanSchema = z.object({
 
 export async function togglePlanActive(planId: string) {
   PlanIdSchema.parse({ planId });
-  await requireCoachActionUser();
+  const coach = await requireCoachActionUser();
+  const iScope = await planIScope(coach, planId);
+  if (!iScope) throw new Error("not-found");
   const plan = await prisma.trainingPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new Error("not-found");
   await prisma.trainingPlan.update({
@@ -34,7 +52,8 @@ export async function togglePlanActive(planId: string) {
 
 export async function dupliserPlan(planId: string): Promise<string | null> {
   PlanIdSchema.parse({ planId });
-  await requireCoachActionUser();
+  const coach = await requireCoachActionUser();
+  if (!(await planIScope(coach, planId))) return null;
   const original = await prisma.trainingPlan.findUnique({
     where: { id: planId },
     include: { sessions: { include: { drills: true } } },
@@ -85,6 +104,13 @@ export type CreatePlanInput = {
 export async function createPlan(input: CreatePlanInput): Promise<string> {
   CreatePlanSchema.parse(input);
   const coach = await requireCoachActionUser();
+  // Coach-scoping: userId kommer fra klienten — uten porten kunne en coach
+  // opprette en plan på en vilkårlig bruker.
+  const spiller = await prisma.user.findFirst({
+    where: { AND: [coachScopedPlayerWhere(coach), { id: input.userId }] },
+    select: { id: true },
+  });
+  if (!spiller) throw new Error("not-found");
   const plan = await prisma.trainingPlan.create({
     data: {
       userId: input.userId,
@@ -100,7 +126,10 @@ export async function createPlan(input: CreatePlanInput): Promise<string> {
 }
 
 export async function deletePlan(planId: string) {
-  await requireCoachActionUser();
+  const coach = await requireCoachActionUser();
+  // Hadde INGEN eierskapssjekk: enhver coach kunne slette hvilken som helst
+  // spillers treningsplan (kaskade til økter og driller) ved å bytte id.
+  if (!(await planIScope(coach, planId))) throw new Error("not-found");
   await prisma.trainingPlan.delete({ where: { id: planId } });
   revalidatePath("/admin/plans");
   redirect("/admin/plans");

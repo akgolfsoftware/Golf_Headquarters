@@ -43,6 +43,8 @@ import type { FokusData } from "@/lib/agencyos/fokus-spillere";
 import type { AiDispatchData } from "@/lib/agencyos/ai-dispatch-data";
 import { FokusSpillere } from "@/components/admin/v2/FokusSpillere";
 import { AiDispatchPanelV2 } from "@/components/admin/v2/AiDispatchPanelV2";
+import { StallOkterWidget } from "@/components/widgets";
+import type { StallOkterData } from "@/lib/widgets/stall-okter-data";
 
 /* signal.tone → SevChip-kategori (klarspråk, aldri sperre-språk) */
 const SEV_MAP: Record<CockpitFocusPlayer["signal"]["tone"], SevKey> = {
@@ -93,11 +95,13 @@ export function CockpitV2({
   innboks,
   fokus,
   aiDispatch,
+  stallOkter,
 }: {
   data: CockpitData;
   innboks?: InnboksSammendrag;
   fokus?: FokusData;
   aiDispatch?: AiDispatchData;
+  stallOkter?: StallOkterData;
 }) {
   const router = useRouter();
   const mobile = useMobile();
@@ -159,6 +163,14 @@ export function CockpitV2({
       <Link href="/admin/godkjenninger" style={{ textDecoration: "none" }}>
         <CTAPill ghost icon="inbox">
           Kø
+        </CTAPill>
+      </Link>
+      {/* Opptak: «Mer» er låst til fem rom, så cockpit-hurtigstart er den
+          eneste synlige veien inn (Cmd+K finnes, men virker ikke på mobil —
+          og opptak brukes nettopp fra telefonen på range/bane). */}
+      <Link href="/admin/recording" style={{ textDecoration: "none" }}>
+        <CTAPill ghost icon="mic">
+          Opptak
         </CTAPill>
       </Link>
     </div>
@@ -407,6 +419,9 @@ export function CockpitV2({
         {timer}
         {stalluka}
       </div>
+      {/* Widget-pakken: dagens treningsøkter i stallen (begge økt-spor) —
+          «Dagens timer» over viser kun bookinger. */}
+      {stallOkter && <StallOkterWidget data={stallOkter} />}
       {innsikt}
     </div>
   );

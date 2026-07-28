@@ -13,7 +13,7 @@
  */
 import { NextResponse, after } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { genererUtkast } from "@/lib/innboks/actions";
+import { genererUtkast } from "@/lib/innboks/generer-utkast";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

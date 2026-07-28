@@ -19,6 +19,7 @@ import {
   Inbox, CalendarCheck, Columns3, Database,
   Map, Radar, Footprints, Ruler,
   Pause, Printer, Share2, ThumbsUp, ThumbsDown, Headphones, Wifi, Wind, Link2, UserPlus, Coins, Ticket,
+  Mic,
   type LucideIcon,
 } from "lucide-react";
 
@@ -101,6 +102,7 @@ const MAP: Record<string, LucideIcon> = {
   "wrench": Wrench,
   "flag": Flag,
   "list": List,
+  "mic": Mic,
   "grid": LayoutGrid,
   "layout-dashboard": LayoutDashboard,
   "sliders": SlidersHorizontal,

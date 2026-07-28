@@ -84,6 +84,22 @@ export function endOfMonth(date: Date): Date {
   return lokalMidnatt({ aar: k.aar, maned: k.maned + 1, dag: 1 });
 }
 
+export function startOfDay(date: Date): Date {
+  return lokalMidnatt(osloDato(date));
+}
+
+export function endOfDay(date: Date): Date {
+  return lokalMidnatt(leggTilDager(osloDato(date), 1));
+}
+
+export function startOfYear(date: Date): Date {
+  return lokalMidnatt({ aar: osloDato(date).aar, maned: 1, dag: 1 });
+}
+
+export function endOfYear(date: Date): Date {
+  return lokalMidnatt({ aar: osloDato(date).aar + 1, maned: 1, dag: 1 });
+}
+
 export function sammeDag(a: Date, b: Date): boolean {
   return osloDatoFormatter.format(a) === osloDatoFormatter.format(b);
 }

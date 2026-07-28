@@ -43,56 +43,69 @@ export type AnalyseResultat = z.infer<typeof AnalyseResultatSchema>;
 // Prompt
 // ----------------------------------------------------------------------------
 
-const SYSTEM_PROMPT = `Du er en erfaren golf-coach som analyserer en coaching-okt for Anders Kristiansen (AK Golf Academy).
-Du skal strukturere okten i 5 kategorier: Teknisk, Taktisk, Mental, Fysisk, Hjemmelekse.
+const SYSTEM_PROMPT = `Du er en erfaren golf-coach som skriver referat fra en coaching-økt for Anders Kristiansen (AK Golf Academy).
+Du skal strukturere økten i 5 kategorier: Teknisk, Taktisk, Mental, Fysisk, Hjemmelekse.
+
+VIKTIGST — hold deg til det som faktisk ble sagt:
+- Referatet skal bygge KUN på transkripsjonen. Ikke dikt opp øvelser, tall,
+  observasjoner eller fremgang som ikke er nevnt.
+- Ble en kategori ikke berørt: skriv nøyaktig "Ikke spesielt fokus denne økten."
+  Det er et helt greit svar — bedre enn å fylle på med gjetninger.
+- Spiller-konteksten (HCP, plan, siste 4 uker) er BAKGRUNN for å gjøre rådene
+  relevante. Den er ikke innhold fra økten, og skal ikke refereres som noe som
+  skjedde i økten.
+- Er noe uklart i transkripsjonen: skriv at det er uklart, ikke velg en tolkning.
+
+Transkripsjonen kommer fra automatisk tale-til-tekst og inneholder feil:
+navn, tall og fagord kan være feilhørt, og setninger kan mangle punktum.
+Les gjennom feilene og tolk velvillig ut fra golf-sammenhengen. Er et TALL
+(avstand, antall, score) tydelig feilhørt eller usikkert, skriv det uten tallet
+heller enn å gjengi et tall du ikke stoler på.
 
 Stil:
-- Norsk bokmal
-- Direkte og konkret - ingen fluff
-- Bruk fagsprak fra golf der det er relevant (HCP, slope, swing path, low point, kompresjon, fade/draw, divot, lie-vinkel, smash factor, AOA, club path, face angle)
-- Hjemmelekse skal vaere SPESIFIKK og MALBAR (f.eks. "3 sett x 10 putt fra 1.5m hver morgen i 2 uker", ikke "jobb mer med putting")
+- Norsk bokmål med æ, ø og å
+- Direkte og konkret — ingen fluff, ingen skryt uten dekning
+- Bruk fagspråk fra golf der det er relevant (HCP, slope, swing path, low point, kompresjon, fade/draw, divot, lie-vinkel, smash factor, AOA, club path, face angle)
+- Hjemmelekse skal være SPESIFIKK og MÅLBAR (f.eks. "3 sett x 10 putt fra 1,5 m hver morgen i 2 uker", ikke "jobb mer med putting") — men bygg den på det økten faktisk handlet om
 
-For hver kategori:
+Innhold per kategori (teknisk, taktisk, mental, fysisk):
 - Hva ble jobbet med
 - Hva fungerte / hva fungerte ikke
 - Hva er neste steg
+Skriv 2–5 setninger per kategori som ble berørt.
 
-Hvis kategorien IKKE ble berort i okten: skriv "Ikke spesielt fokus denne okten."
+De øvrige feltene:
+- hjemmelekse: konkrete oppgaver til spilleren fram til neste økt
+- coachAnalyse: din faglige vurdering på tvers av kategoriene — hovedbildet, ikke en gjentakelse av listene over
+- nesteOktAnbefaling: hva neste økt bør handle om, og hvorfor
+- oppsummering: MAKS 2 setninger. Denne blir én linje i spillerens logg, så den må stå alene uten resten av referatet.
 
-Bruk spiller-konteksten for a gi relevant veiledning.
+Anbefalinger er alltid råd, aldri krav — skriv aldri at spilleren "må" eller
+"ikke kan" gjøre noe.
 
-Returner KUN JSON med eksakt denne strukturen - ingen prosa rundt:
-{
-  "teknisk": "...",
-  "taktisk": "...",
-  "mental": "...",
-  "fysisk": "...",
-  "hjemmelekse": "...",
-  "coachAnalyse": "...",
-  "nesteOktAnbefaling": "...",
-  "oppsummering": "..."
-}`;
+Returner resultatet gjennom verktøyet lever_okt_analyse.`;
 
 function byggBrukerPrompt(input: AnalyseInput): string {
   const k = input.spillerKontekst;
   const linjer: string[] = [];
-  linjer.push(`SPILLER: ${k.navn}`);
+  linjer.push("BAKGRUNN OM SPILLEREN (kontekst — ikke innhold fra økten):");
+  linjer.push(`Navn: ${k.navn}`);
   linjer.push(`HCP: ${k.hcp ?? "ukjent"}`);
   if (k.alder !== null) linjer.push(`Alder: ${k.alder}`);
   if (k.ambisjon) linjer.push(`Ambisjon: ${k.ambisjon}`);
   if (k.aktivPlan) linjer.push(`Aktiv treningsplan: ${k.aktivPlan}`);
+  linjer.push(`Aktivitet siste 4 uker: ${k.sisteFireUkerSummary}`);
   linjer.push("");
-  linjer.push("AKTIVITET SISTE 4 UKER:");
-  linjer.push(k.sisteFireUkerSummary);
+  linjer.push(`ØKT-VARIGHET: ${input.varighetMin} min`);
   linjer.push("");
-  linjer.push(`OKT-VARIGHET: ${input.varighetMin} min`);
-  linjer.push("");
-  linjer.push("RA-TRANSKRIPSJON FRA COACHING-OKT:");
+  linjer.push("RÅ TRANSKRIPSJON FRA COACHING-ØKTEN (automatisk tale-til-tekst, kan inneholde feil):");
   linjer.push("---");
   linjer.push(input.transkripsjon);
   linjer.push("---");
   linjer.push("");
-  linjer.push("Analyser okten og returner JSON som beskrevet i system-prompten.");
+  linjer.push(
+    "Skriv referatet fra økten over. Bygg kun på det som faktisk ble sagt, og bruk verktøyet lever_okt_analyse.",
+  );
   return linjer.join("\n");
 }
 
@@ -118,18 +131,49 @@ export async function analyserCoachingSesjon(
       {
         name: "lever_okt_analyse",
         description:
-          "Lever strukturert analyse av coaching-okt i 5 kategorier + oppsummering.",
+          "Lever strukturert referat fra coaching-økt i 5 kategorier + coach-analyse, anbefaling og kort oppsummering.",
         input_schema: {
           type: "object",
           properties: {
-            teknisk: { type: "string" },
-            taktisk: { type: "string" },
-            mental: { type: "string" },
-            fysisk: { type: "string" },
-            hjemmelekse: { type: "string" },
-            coachAnalyse: { type: "string" },
-            nesteOktAnbefaling: { type: "string" },
-            oppsummering: { type: "string" },
+            teknisk: {
+              type: "string",
+              description:
+                "Teknisk arbeid i økten: hva ble jobbet med, hva fungerte, neste steg. «Ikke spesielt fokus denne økten.» hvis ikke berørt.",
+            },
+            taktisk: {
+              type: "string",
+              description:
+                "Taktisk arbeid (baneplan, køllevalg, risiko). «Ikke spesielt fokus denne økten.» hvis ikke berørt.",
+            },
+            mental: {
+              type: "string",
+              description:
+                "Mentalt arbeid (rutiner, fokus, press). «Ikke spesielt fokus denne økten.» hvis ikke berørt.",
+            },
+            fysisk: {
+              type: "string",
+              description:
+                "Fysisk arbeid (bevegelighet, styrke, utholdenhet). «Ikke spesielt fokus denne økten.» hvis ikke berørt.",
+            },
+            hjemmelekse: {
+              type: "string",
+              description:
+                "Konkrete, målbare oppgaver til neste økt — bygget på det økten faktisk handlet om.",
+            },
+            coachAnalyse: {
+              type: "string",
+              description:
+                "Faglig vurdering på tvers av kategoriene — hovedbildet, ikke en gjentakelse av listene.",
+            },
+            nesteOktAnbefaling: {
+              type: "string",
+              description: "Hva neste økt bør handle om, og hvorfor.",
+            },
+            oppsummering: {
+              type: "string",
+              description:
+                "Maks 2 setninger. Blir én linje i spillerens logg og må stå alene uten resten av referatet.",
+            },
           },
           required: [
             "teknisk",

@@ -7,6 +7,7 @@
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
 import { AiMalByggerV2 } from "@/components/portal/v2/AiMalByggerV2";
@@ -17,12 +18,21 @@ export default async function MalByggerPage() {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
   const yearEnd = `${new Date().getFullYear()}-12-31`;
 
+  // Kun offisielle/coach-godkjente tester kan kobles til et testresultat-mål —
+  // egne, ikke-godkjente tester gir for usikker fremdrift til å bruke som mål.
+  const testOptions = await prisma.testDefinition.findMany({
+    where: { OR: [{ isCustom: false }, { isCoachApproved: true }] },
+    select: { id: true, name: true },
+    orderBy: { name: "asc" },
+  });
+
   return (
     <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/mal">Mål</TilbakeLenke>
       <AiMalByggerV2
         playerFirstName={(user.name ?? "deg").split(" ")[0]}
         defaultYearEnd={yearEnd}
+        testOptions={testOptions}
       />
     </V2Shell>
   );

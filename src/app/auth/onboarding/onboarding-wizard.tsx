@@ -23,17 +23,19 @@ import { useRouter } from "next/navigation";
 import {
   Check,
   Coffee,
-  CircleDot,
-  Dumbbell,
   Flag,
-  Hexagon,
   Sun,
   Sunrise,
   Sunset,
-  Target,
   Trophy,
 } from "lucide-react";
 import { T } from "@/lib/v2/tokens";
+import {
+  byggSgBaseline,
+  tolkTall,
+  TOMT_SG_SKJEMA,
+  type SgSkjema,
+} from "@/lib/onboarding/sg-baseline";
 import {
   saveSpillerOnboardingStep,
   markStepComplete,
@@ -56,7 +58,9 @@ import {
   PillToggle,
   ProfileCard,
   ImplicationBanner,
-  FacilityRow,
+  PlaceRow,
+  AddRowButton,
+  NumberRow,
   FrequencySegment,
   CoachCard,
   PlanCard,
@@ -69,7 +73,32 @@ import {
 // Konstanter
 // ──────────────────────────────────────────────────────────────────────────────
 
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 7;
+
+// Hva et treningssted kan tilby — DrillFasilitet-verdier med klarspråk-etikett.
+const STED_MULIGHETER = [
+  { id: "DRIVING_RANGE", label: "Range" },
+  { id: "BANE", label: "Bane" },
+  { id: "PUTTING_GREEN_KORT", label: "Putting" },
+  { id: "SHORT_GAME_AREA", label: "Nærspill" },
+  { id: "BUNKER", label: "Bunker" },
+  { id: "RADAR", label: "TrackMan" },
+  { id: "SIMULATOR", label: "Simulator" },
+  { id: "MAT_NET", label: "Matte/nett" },
+  { id: "KAMERA", label: "Video" },
+  { id: "VEKTSTANG", label: "Styrke" },
+  { id: "LOPEBANE", label: "Løping" },
+];
+
+// SG-kategoriene spilleren fyller inn per periode i steg 4.
+const SG_FELT = [
+  { key: "sgOtt" as const, label: "Fra tee", hint: "OTT" },
+  { key: "sgApp" as const, label: "Innspill", hint: "APP" },
+  { key: "sgArg" as const, label: "Nærspill", hint: "ARG" },
+  { key: "sgPutt" as const, label: "Putting", hint: "PUTT" },
+];
+
+type Sted = { id: string; name: string; isIndoor: boolean; capabilities: string[] };
 
 const SESONMAAL = [
   "SENKE HCP",
@@ -99,13 +128,17 @@ const KONKURRANSE_NIVAA = [
   { id: "TOUR", label: "Tour-aspirant", sub: "NM, Korn Ferry, sikte mot proff", icon: Trophy },
 ];
 
-// Fasilitet-valg for steg 4 — speiler design-HTMLs fasilitets-rader.
-const FASILITETER = [
-  { id: "TRACKMAN", navn: "TrackMan", sub: "launch monitor / radar", icon: Target },
-  { id: "MATTE_PUTTING", navn: "Matte / putting", sub: "innendørs vinter", icon: Hexagon },
-  { id: "GRESS_BANE", navn: "Gress-bane", sub: "9 eller 18 hull", icon: CircleDot },
-  { id: "STUDIO", navn: "Treningsstudio", sub: "fysiske økter", icon: Dumbbell },
-];
+// Bro fra stedenes DrillFasilitet-verdier til de gamle fasilitet-id-ene som
+// FacilityPrefs bygges av (src/lib/onboarding/trening-preferanser.ts).
+const MULIGHET_TIL_FASILITET: Record<string, string> = {
+  RADAR: "TRACKMAN",
+  SIMULATOR: "TRACKMAN",
+  BANE: "GRESS_BANE",
+  VEKTSTANG: "STUDIO",
+  LOPEBANE: "STUDIO",
+  PUTTING_GREEN_KORT: "MATTE_PUTTING",
+  MAT_NET: "MATTE_PUTTING",
+};
 
 // Preferanser — ukedager, tid på dagen, hva som driver spilleren.
 const UKEDAGER = ["man", "tir", "ons", "tor", "fre", "lør", "søn"];
@@ -155,11 +188,13 @@ export function OnboardingWizard({
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  // Steg 2 — Kontaktinfo + fødselsdato
+  // Steg 2 — Kontaktinfo + fødselsdato + skole
   const [phone, setPhone] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState(""); // format YYYY-MM-DD
   const [guardianEmail, setGuardianEmail] = useState("");
   const [dobIsMinor, setDobIsMinor] = useState(false);
+  const [school, setSchool] = useState("");
+  const [schoolYear, setSchoolYear] = useState<"" | "VG1" | "VG2" | "VG3">("");
 
   // Steg 3
   const [hcp, setHcp] = useState("");
@@ -169,25 +204,47 @@ export function OnboardingWizard({
   const [seasonGoals, setSeasonGoals] = useState<string[]>([]);
   const [profiltype, setProfiltype] = useState<Profiltype>("KONKURRANSE");
   const [konkurranseNivaa, setKonkurranseNivaa] = useState("KLUBB");
-  const [fasiliteter, setFasiliteter] = useState<string[]>(["TRACKMAN", "MATTE_PUTTING", "GRESS_BANE"]);
+  const [steder, setSteder] = useState<Sted[]>([]);
   const [traningsdager, setTraningsdager] = useState<string[]>(["man", "ons", "tor", "lør"]);
   const [tidPaaDagen, setTidPaaDagen] = useState("ETTER_SKOLE");
   const [drivkraft, setDrivkraft] = useState<string[]>(["Resultater", "Sosialt"]);
 
-  // Steg 4 — nivåplassering (progressiv dybde)
+  // Steg 4 — Dine tall (snittscore + SG-baseline). Kan hoppes over.
+  const [prevSeasonAvgScore, setPrevSeasonAvgScore] = useState("");
+  const [sgApen, setSgApen] = useState(false);
+  const [sgForrige, setSgForrige] = useState<SgSkjema>(TOMT_SG_SKJEMA);
+  const [sgIAar, setSgIAar] = useState<SgSkjema>(TOMT_SG_SKJEMA);
+
+  // Steg 5 — nivåplassering (progressiv dybde)
   const [nivaa, setNivaa] = useState<"nybegynner" | "ovet" | "elite" | "">("");
 
-  // Steg 5
+  // Steg 6
   const [selectedCoach, setSelectedCoach] = useState("Anders Kristiansen");
   const [selectedTier, setSelectedTier] = useState<"GRATIS" | "PRO">("PRO");
 
-  // Steg 6
+  // Steg 7
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+  const [drillDelingGodtatt, setDrillDelingGodtatt] = useState(false);
+
+  function leggTilSted() {
+    setSteder((prev) => [
+      ...prev,
+      { id: `sted-${prev.length + 1}-${prev.length}`, name: "", isIndoor: false, capabilities: [] },
+    ]);
+  }
+
+  function endreSted(id: string, endring: Partial<Sted>) {
+    setSteder((prev) => prev.map((s) => (s.id === id ? { ...s, ...endring } : s)));
+  }
 
   function buildData(): SpillerOnboardingData {
+    const snitt = tolkTall(prevSeasonAvgScore);
+    const gyldigeSteder = steder.filter((s) => s.name.trim());
     return {
       phone: phone || undefined,
+      school: school || undefined,
+      schoolYear: schoolYear || undefined,
       hcp: hcp ? parseFloat(hcp.replace(",", ".")) : undefined,
       homeClub: homeClub || undefined,
       playingYears: playingYears ? parseInt(playingYears, 10) : undefined,
@@ -195,15 +252,32 @@ export function OnboardingWizard({
       seasonGoals,
       profiltype,
       konkurranseNivaa,
-      fasiliteter,
+      // Bakoverkompatibelt: FacilityPrefs bygges fortsatt av de gamle id-ene.
+      fasiliteter: [
+        ...new Set(
+          gyldigeSteder
+            .flatMap((s) => s.capabilities)
+            .map((c) => MULIGHET_TIL_FASILITET[c])
+            .filter((f): f is string => Boolean(f)),
+        ),
+      ],
+      steder: gyldigeSteder.map((s) => ({
+        name: s.name.trim(),
+        isIndoor: s.isIndoor,
+        capabilities: s.capabilities,
+      })),
       traningsdager,
       tidPaaDagen,
       drivkraft,
+      prevSeasonAvgScore: snitt !== undefined ? Math.round(snitt) : undefined,
+      sgForrigeSesong: byggSgBaseline(sgForrige, snitt),
+      sgHittilIAar: byggSgBaseline(sgIAar),
       nivaa: nivaa || undefined,
       selectedCoach,
       selectedTier,
       acceptedTerms,
       acceptedPrivacy,
+      drillDelingGodtatt,
     };
   }
 
@@ -212,8 +286,9 @@ export function OnboardingWizard({
   function nesteSteg2() {
     setError(null);
     if (!dateOfBirth) {
-      // DOB ikke satt — tillat videre (DOB er valgfritt på dette steget)
-      neste();
+      // GDPR art. 8: fødselsdato er obligatorisk her — uten den kan vi ikke
+      // avgjøre om bruker er mindreårig og trenger foreldresamtykke.
+      setError("Fødselsdato er påkrevd for å opprette konto.");
       return;
     }
     startTransition(async () => {
@@ -301,11 +376,12 @@ export function OnboardingWizard({
   // Fasit-format: «TRINN N AV M» som mono-caps eyebrow rett over tittelen.
   const eyebrowFor: Record<number, string> = {
     1: "VELKOMMEN",
-    2: "TRINN 2 AV 6",
-    3: "TRINN 3 AV 6",
-    4: "TRINN 4 AV 6",
-    5: "TRINN 5 AV 6",
-    6: "TRINN 6 AV 6",
+    2: `TRINN 2 AV ${TOTAL_STEPS}`,
+    3: `TRINN 3 AV ${TOTAL_STEPS}`,
+    4: `TRINN 4 AV ${TOTAL_STEPS}`,
+    5: `TRINN 5 AV ${TOTAL_STEPS}`,
+    6: `TRINN 6 AV ${TOTAL_STEPS}`,
+    7: `TRINN 7 AV ${TOTAL_STEPS}`,
   };
 
   return (
@@ -386,7 +462,7 @@ export function OnboardingWizard({
               placeholder="f.eks. 18,4"
             />
           </Field>
-          <Field label="Fødselsdato" hint="brukes for GDPR-samtykke (under 16 år)" htmlFor="ob-dob">
+          <Field label="Fødselsdato" hint="påkrevd — brukes for GDPR-samtykke (under 16 år)" htmlFor="ob-dob">
             <TextField
               id="ob-dob"
               type="date"
@@ -422,6 +498,28 @@ export function OnboardingWizard({
               <strong className="font-semibold">foresatt bekrefte kontoen din</strong>. Du kan
               fortsette gjennom alle steg, men booking og logging åpnes først etter bekreftelse.
             </InfoNote>
+          )}
+          <Field label="Skole" hint="valgfritt" htmlFor="ob-school">
+            <TextField
+              id="ob-school"
+              value={school}
+              onChange={(e) => setSchool(e.target.value)}
+              placeholder="f.eks. WANG Toppidrett Fredrikstad"
+            />
+          </Field>
+          {school.trim() && (
+            <Field label="Klassetrinn">
+              <div className="flex flex-wrap gap-1.5">
+                {(["VG1", "VG2", "VG3"] as const).map((trinn) => (
+                  <PillToggle
+                    key={trinn}
+                    label={trinn}
+                    selected={schoolYear === trinn}
+                    onClick={() => setSchoolYear(schoolYear === trinn ? "" : trinn)}
+                  />
+                ))}
+              </div>
+            </Field>
           )}
           <PrimaryCta
             onClick={nesteSteg2}
@@ -524,19 +622,33 @@ export function OnboardingWizard({
             </>
           )}
 
-          {/* Fasiliteter */}
+          {/* Fasiliteter — navngitte steder med inne/ute og hva stedet har */}
           <FieldGroupLabel>Hvor trener du?</FieldGroupLabel>
+          {steder.length === 0 && (
+            <InfoNote>
+              Legg til stedene du faktisk trener — hjemmebanen, simulatoren, treningssenteret.
+              Da foreslår vi bare øvelser du har utstyr til.
+            </InfoNote>
+          )}
           <div className="flex flex-col gap-2.5">
-            {FASILITETER.map((f) => (
-              <FacilityRow
-                key={f.id}
-                name={f.navn}
-                sub={f.sub}
-                icon={f.icon}
-                selected={fasiliteter.includes(f.id)}
-                onClick={() => setFasiliteter((prev) => toggle(prev, f.id, FASILITETER.length))}
+            {steder.map((sted) => (
+              <PlaceRow
+                key={sted.id}
+                name={sted.name}
+                isIndoor={sted.isIndoor}
+                capabilities={sted.capabilities}
+                capabilityOptions={STED_MULIGHETER}
+                onNameChange={(name) => endreSted(sted.id, { name })}
+                onIndoorChange={(isIndoor) => endreSted(sted.id, { isIndoor })}
+                onToggleCapability={(id) =>
+                  endreSted(sted.id, {
+                    capabilities: toggle(sted.capabilities, id, STED_MULIGHETER.length),
+                  })
+                }
+                onRemove={() => setSteder((prev) => prev.filter((s) => s.id !== sted.id))}
               />
             ))}
+            <AddRowButton label="Legg til sted" onClick={leggTilSted} />
           </div>
 
           {/* Preferanser — ukedager / tid / drivkraft */}
@@ -598,11 +710,79 @@ export function OnboardingWizard({
         </StepBody>
       )}
 
-      {/* ── STEG 4 — Nivåplassering (ett spørsmål) ─────────────── */}
+      {/* ── STEG 4 — Dine tall (snittscore + SG-baseline, kan hoppes over) ── */}
       {step === 4 && (
         <StepBody>
           <StepHeading
             eyebrow={eyebrowFor[4]}
+            title="Hvor står"
+            emphasis="tallene dine"
+            titleAfter=" i dag?"
+            deck="Dette blir utgangspunktet vi måler fremgang mot. Har du ikke tallene nå, hopper du bare over."
+          />
+
+          <Field label="Snittscore forrige sesong" hint="brutto" htmlFor="ob-avg">
+            <TextField
+              id="ob-avg"
+              mono
+              inputMode="numeric"
+              className="text-lg font-bold"
+              value={prevSeasonAvgScore}
+              onChange={(e) => setPrevSeasonAvgScore(e.target.value)}
+              placeholder="f.eks. 76"
+            />
+          </Field>
+
+          {!sgApen ? (
+            <AddRowButton label="Legg til SG-tall" onClick={() => setSgApen(true)} />
+          ) : (
+            <>
+              <InfoNote>
+                Strokes gained viser hvor du vinner og taper slag mot ditt eget nivå.
+                Fyll inn det du har — tomme felt er helt greit.
+              </InfoNote>
+              <FieldGroupLabel>Forrige sesong</FieldGroupLabel>
+              <div className="flex flex-col gap-2">
+                {SG_FELT.map((f) => (
+                  <NumberRow
+                    key={`forrige-${f.key}`}
+                    id={`ob-sg-forrige-${f.key}`}
+                    label={f.label}
+                    hint={f.hint}
+                    value={sgForrige[f.key]}
+                    onChange={(v) => setSgForrige((prev) => ({ ...prev, [f.key]: v }))}
+                    placeholder="0,0"
+                  />
+                ))}
+              </div>
+              <FieldGroupLabel>Hittil i år</FieldGroupLabel>
+              <div className="flex flex-col gap-2">
+                {SG_FELT.map((f) => (
+                  <NumberRow
+                    key={`iaar-${f.key}`}
+                    id={`ob-sg-iaar-${f.key}`}
+                    label={f.label}
+                    hint={f.hint}
+                    value={sgIAar[f.key]}
+                    onChange={(v) => setSgIAar((prev) => ({ ...prev, [f.key]: v }))}
+                    placeholder="0,0"
+                  />
+                ))}
+              </div>
+            </>
+          )}
+
+          <PrimaryCta onClick={neste} disabled={pending} onBack={tilbake} backDisabled={pending}>
+            {pending ? "Lagrer…" : "Neste"}
+          </PrimaryCta>
+        </StepBody>
+      )}
+
+      {/* ── STEG 5 — Nivåplassering (ett spørsmål) ─────────────── */}
+      {step === 5 && (
+        <StepBody>
+          <StepHeading
+            eyebrow={eyebrowFor[5]}
             title="Hvor"
             emphasis="står du"
             titleAfter=" i golfspillet?"
@@ -639,11 +819,11 @@ export function OnboardingWizard({
         </StepBody>
       )}
 
-      {/* ── STEG 5 — Coach + abonnement ────────────────────────── */}
-      {step === 5 && (
+      {/* ── STEG 6 — Coach + abonnement ────────────────────────── */}
+      {step === 6 && (
         <StepBody>
           <StepHeading
-            eyebrow={eyebrowFor[5]}
+            eyebrow={eyebrowFor[6]}
             title="Din"
             emphasis="coach"
             titleAfter=" og ditt opplegg."
@@ -705,11 +885,11 @@ export function OnboardingWizard({
         </StepBody>
       )}
 
-      {/* ── STEG 6 — Siste sjekk (samtykke) ────────────────────── */}
-      {step === 6 && (
+      {/* ── STEG 7 — Siste sjekk (samtykke) ────────────────────── */}
+      {step === 7 && (
         <StepBody>
           <StepHeading
-            eyebrow={eyebrowFor[6]}
+            eyebrow={eyebrowFor[7]}
             title="Nesten"
             emphasis="ferdig"
             titleAfter=" — siste sjekk."
@@ -740,7 +920,20 @@ export function OnboardingWizard({
                 />
               ) : null}
               {homeClub && <SummaryRow label="Hjemmebane" value={homeClub} />}
+              {school && <SummaryRow label="Skole" value={schoolYear ? `${school} · ${schoolYear}` : school} />}
               {hcp && <SummaryRow label="HCP" value={<span className="font-mono">{hcp}</span>} />}
+              {prevSeasonAvgScore && (
+                <SummaryRow
+                  label="Snittscore i fjor"
+                  value={<span className="font-mono">{prevSeasonAvgScore}</span>}
+                />
+              )}
+              {steder.filter((s) => s.name.trim()).length > 0 && (
+                <SummaryRow
+                  label="Treningssteder"
+                  value={steder.filter((s) => s.name.trim()).map((s) => s.name.trim()).join(" · ")}
+                />
+              )}
               {seasonGoals.length > 0 && (
                 <SummaryRow label="Mål" value={seasonGoals.join(" · ")} />
               )}
@@ -759,6 +952,12 @@ export function OnboardingWizard({
               desc="Trenings- og helsedata. Du kan trekke tilbake samtykket når som helst."
               checked={acceptedPrivacy}
               onClick={() => setAcceptedPrivacy(!acceptedPrivacy)}
+            />
+            <AgreeItem
+              title="Egne øvelser jeg lager kan deles med plattformen"
+              desc="Øvelsene dine blir tilgjengelige for andre spillere. Valgfritt — du kan endre dette i Meg senere."
+              checked={drillDelingGodtatt}
+              onClick={() => setDrillDelingGodtatt(!drillDelingGodtatt)}
             />
           </div>
 

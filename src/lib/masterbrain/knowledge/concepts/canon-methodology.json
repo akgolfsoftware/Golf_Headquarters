@@ -1,0 +1,576 @@
+{
+  "id": "canon-methodology",
+  "version": "3.5.0",
+  "created": "2026-06-16",
+  "source": [
+    "AK Golf CANON v3.5 intern metodikk",
+    "MORAD coaching system",
+    "Olympiatoppen LTAD-rammeverk",
+    "Mark Broadie SG-forskning",
+    "TrackMan Academy metodikk"
+  ],
+  "description": "CANON v3.5 — AK Golf sitt komplette coachingframework. Definerer 11 ferdighetsnivåer (A-K), pyramidefordeling av treningstyper, L-fase motorisk læringsmodell, invarianter og periodesystem. Grunnlaget for alle CoachHQ og PlayerHQ beslutninger.",
+  "categories": {
+    "A": {
+      "id": "A",
+      "name": "Kategori A",
+      "handicap_equivalent": "54+",
+      "handicap_min": null,
+      "handicap_max": 54,
+      "description": "Komplett nybegynner. Ingen golferfaring. Fokus på grunnleggende bevegelsesmønstre og glede ved spillet.",
+      "ltad_phase": "foundation",
+      "pyramid_default": {
+        "FYS": 25,
+        "TEK": 50,
+        "SLAG": 15,
+        "SPILL": 7,
+        "TURN": 3
+      },
+      "coaching_notes": "Lek og utforskning i sentrum. Ingen prestasjonskrav. Bygg kjærlighet til spillet.",
+      "l_fase_typical": "L-KROPP"
+    },
+    "B": {
+      "id": "B",
+      "name": "Kategori B",
+      "handicap_equivalent": "45-54",
+      "handicap_min": 45,
+      "handicap_max": 54,
+      "description": "Nybegynner med grunnleggende bevissthet. Kan utføre enkle slag men mangler konsistens.",
+      "ltad_phase": "foundation",
+      "pyramid_default": {
+        "FYS": 20,
+        "TEK": 50,
+        "SLAG": 18,
+        "SPILL": 8,
+        "TURN": 4
+      },
+      "coaching_notes": "Introduksjon til grunnleggende slagtyper. Mye repetisjon med lavt press.",
+      "l_fase_typical": "L-KROPP"
+    },
+    "C": {
+      "id": "C",
+      "name": "Kategori C",
+      "handicap_equivalent": "36-44",
+      "handicap_min": 36,
+      "handicap_max": 44,
+      "description": "Grunnleggende ferdigheter under utvikling. Kan spille hele baner med noe assistanse.",
+      "ltad_phase": "foundation_to_development",
+      "pyramid_default": {
+        "FYS": 20,
+        "TEK": 45,
+        "SLAG": 20,
+        "SPILL": 10,
+        "TURN": 5
+      },
+      "coaching_notes": "Overgang fra lek til strukturert trening. Introdusere grunnleggende slagtyper for alle situasjoner.",
+      "l_fase_typical": "L-KROPP til L-ARM"
+    },
+    "D": {
+      "id": "D",
+      "name": "Kategori D",
+      "handicap_equivalent": "28-35",
+      "handicap_min": 28,
+      "handicap_max": 35,
+      "description": "Elementær kompetanse. Spiller selvstendig, forstår grunnleggende spilleregler.",
+      "ltad_phase": "development",
+      "pyramid_default": {
+        "FYS": 20,
+        "TEK": 40,
+        "SLAG": 22,
+        "SPILL": 12,
+        "TURN": 6
+      },
+      "coaching_notes": "Systematisk arbeid med tekniske grunnprinsipper. Introdusere scoring-bevissthet.",
+      "l_fase_typical": "L-ARM"
+    },
+    "E": {
+      "id": "E",
+      "name": "Kategori E",
+      "handicap_equivalent": "22-27",
+      "handicap_min": 22,
+      "handicap_max": 27,
+      "description": "Mellomliggende grunnlag. Konsistent ballkontakt, forstår kurveslag og situasjonsvalg.",
+      "ltad_phase": "development",
+      "pyramid_default": {
+        "FYS": 20,
+        "TEK": 38,
+        "SLAG": 24,
+        "SPILL": 13,
+        "TURN": 5
+      },
+      "coaching_notes": "Fokus på konsistens og situasjonsforståelse. Begynn å introdusere SG-bevissthet.",
+      "l_fase_typical": "L-ARM til L-KØLLE"
+    },
+    "F": {
+      "id": "F",
+      "name": "Kategori F",
+      "handicap_equivalent": "17-21",
+      "handicap_min": 17,
+      "handicap_max": 21,
+      "description": "Mellomliggende utvikling. Kan score konsistent, begynner å konkurrere lokalt.",
+      "ltad_phase": "development_to_specialization",
+      "pyramid_default": {
+        "FYS": 20,
+        "TEK": 35,
+        "SLAG": 25,
+        "SPILL": 13,
+        "TURN": 7
+      },
+      "coaching_notes": "Overgang til spesialisert trening. Introdusere turnering-spesifikke ferdigheter.",
+      "l_fase_typical": "L-KØLLE"
+    },
+    "G": {
+      "id": "G",
+      "name": "Kategori G",
+      "handicap_equivalent": "12-16",
+      "handicap_min": 12,
+      "handicap_max": 16,
+      "description": "Mid-handicap. Konsistent spill, aktiv turneringsdeltaker på klubbnivå.",
+      "ltad_phase": "specialization",
+      "pyramid_default": {
+        "FYS": 20,
+        "TEK": 30,
+        "SLAG": 25,
+        "SPILL": 15,
+        "TURN": 10
+      },
+      "coaching_notes": "SG-bevissthet viktig. Balanse mellom teknisk utvikling og scoring-fokus.",
+      "l_fase_typical": "L-KØLLE til L-BALL"
+    },
+    "H": {
+      "id": "H",
+      "name": "Kategori H",
+      "handicap_equivalent": "8-11",
+      "handicap_min": 8,
+      "handicap_max": 11,
+      "description": "Lav-handicap. Turneringsklar, scorer konsistent under 80.",
+      "ltad_phase": "specialization",
+      "pyramid_default": {
+        "FYS": 18,
+        "TEK": 27,
+        "SLAG": 25,
+        "SPILL": 18,
+        "TURN": 12
+      },
+      "coaching_notes": "Mer SPILL og TURN, mindre ren TEK. SG viktig diagnose-verktøy.",
+      "l_fase_typical": "L-BALL"
+    },
+    "I": {
+      "id": "I",
+      "name": "Kategori I",
+      "handicap_equivalent": "4-7",
+      "handicap_min": 4,
+      "handicap_max": 7,
+      "description": "Avansert, kompetitiv amatør. Scorer jevnlig i parregionen, aktiv i seriespill.",
+      "ltad_phase": "performance",
+      "pyramid_default": {
+        "FYS": 17,
+        "TEK": 25,
+        "SLAG": 25,
+        "SPILL": 20,
+        "TURN": 13
+      },
+      "coaching_notes": "Mental trening og konkurranseforberedelse prioriteres. SG er primær diagnose.",
+      "l_fase_typical": "L-BALL til L-AUTO"
+    },
+    "J": {
+      "id": "J",
+      "name": "Kategori J",
+      "handicap_equivalent": "+0 til +3",
+      "handicap_min": -3,
+      "handicap_max": 0,
+      "description": "Elite amatør / tidlig profesjonell. Plussh.cap, konkurrerer på nasjonalt og internasjonalt nivå.",
+      "ltad_phase": "performance_to_elite",
+      "pyramid_default": {
+        "FYS": 16,
+        "TEK": 22,
+        "SLAG": 25,
+        "SPILL": 22,
+        "TURN": 15
+      },
+      "coaching_notes": "Finjustering og optimalisering. Turneringsplanlegging er kritisk. Tett agent-støtte.",
+      "l_fase_typical": "L-AUTO"
+    },
+    "K": {
+      "id": "K",
+      "name": "Kategori K",
+      "handicap_equivalent": "+4 eller bedre",
+      "handicap_min": null,
+      "handicap_max": -4,
+      "description": "Profesjonelt tour-nivå. Spiller for livsopphold, DP World Tour / PGA Tour / LIV-nivå.",
+      "ltad_phase": "elite",
+      "pyramid_default": {
+        "FYS": 15,
+        "TEK": 20,
+        "SLAG": 25,
+        "SPILL": 25,
+        "TURN": 15
+      },
+      "coaching_notes": "Svært individualisert. Minimale tekniske endringer. Optimalisering av spesifikke styrker.",
+      "l_fase_typical": "L-AUTO"
+    }
+  },
+  "pyramid_defaults": {
+    "FYS": {
+      "label": "Fysisk",
+      "description": "Fysisk trening: styrke, kondisjon, fleksibilitet, skadeforberedelse",
+      "default_percent": 20
+    },
+    "TEK": {
+      "label": "Teknisk",
+      "description": "Teknisk slagtrening: slagmekanikk, posisjonstrening, MORAD-basert arbeid",
+      "default_percent": 30,
+      "minimum_percent": 15
+    },
+    "SLAG": {
+      "label": "Slag/Ball",
+      "description": "Slagtrening med ball: innspill, kort spill, driving",
+      "default_percent": 25
+    },
+    "SPILL": {
+      "label": "Spilltrening",
+      "description": "Spilltrening: banetrening, situasjonsspill, scoringstrening",
+      "default_percent": 15
+    },
+    "TURN": {
+      "label": "Turneringstid",
+      "description": "Turneringstid og konkurranseforberedelse",
+      "default_percent": 10
+    }
+  },
+  "pyramid_rules": [
+    {
+      "id": "pr_1",
+      "trigger": "L-KROPP",
+      "adjustments": {
+        "TEK": "60-80%",
+        "FYS": "elevated",
+        "SLAG": "minimal",
+        "SG_weight": "Lav"
+      },
+      "description": "L-KROPP: teknisk fokus er absolutt prioritet. Kropp-bevegelse læres uten ball."
+    },
+    {
+      "id": "pr_2",
+      "trigger": "L-ARM",
+      "adjustments": {
+        "TEK": "50-70%",
+        "FYS": "elevated",
+        "SLAG": "lav",
+        "SG_weight": "Lav"
+      },
+      "description": "L-ARM: arm-koordinasjon og posisjon. Begrenset balltrening."
+    },
+    {
+      "id": "pr_3",
+      "trigger": "L-KØLLE",
+      "adjustments": {
+        "TEK": "40-60%",
+        "SLAG": "medium",
+        "SG_weight": "Medium"
+      },
+      "description": "L-KØLLE: køllebane introduseres. Teknisk fokus fortsatt dominant."
+    },
+    {
+      "id": "pr_4",
+      "trigger": "L-BALL",
+      "adjustments": {
+        "TEK": "30-50%",
+        "SLAG": "elevated",
+        "SG_weight": "Høy"
+      },
+      "description": "L-BALL: ballrespons og kontrollert balltrening. SG relevant."
+    },
+    {
+      "id": "pr_5",
+      "trigger": "L-AUTO",
+      "adjustments": {
+        "TEK": "20-40%",
+        "SPILL": "elevated",
+        "TURN": "elevated",
+        "SG_weight": "Høy"
+      },
+      "description": "L-AUTO: automatisering under press. SPILL og TURN økes. Full SG-vekting."
+    },
+    {
+      "id": "pr_6",
+      "trigger": "GRUNN-periode",
+      "adjustments": {
+        "FYS": "elevated",
+        "TEK": "elevated",
+        "SLAG": "standard",
+        "SPILL": "reduced",
+        "TURN": "minimal"
+      },
+      "description": "Grunnlagsperiode: FYS og TEK dominerer. Lite konkurranse."
+    },
+    {
+      "id": "pr_7",
+      "trigger": "SPES-periode",
+      "adjustments": {
+        "SLAG": "elevated",
+        "TEK": "standard",
+        "SPILL": "standard",
+        "TURN": "low"
+      },
+      "description": "Spesialiseringsperiode: SLAG økes. Spesifikke golfferdighetere."
+    },
+    {
+      "id": "pr_8",
+      "trigger": "TURN-periode",
+      "adjustments": {
+        "SPILL": "elevated",
+        "TURN": "elevated",
+        "TEK": "reduced",
+        "FYS": "minimal"
+      },
+      "description": "Turneringsperiode: SPILL og TURN dominerer. Minimalt teknisk endringsarbeid."
+    },
+    {
+      "id": "pr_9",
+      "trigger": "A-C kategorier",
+      "adjustments": {
+        "TEK": "heavy",
+        "FYS": "heavy",
+        "SPILL": "minimal"
+      },
+      "description": "Nybegynnere og basiskategorier: TEK og FYS tung vekting. Minimal spilltrening."
+    },
+    {
+      "id": "pr_10",
+      "trigger": "H-K kategorier",
+      "adjustments": {
+        "TEK": "reduced",
+        "SPILL": "elevated",
+        "TURN": "elevated"
+      },
+      "description": "Avanserte kategorier: mindre TEK, mer SPILL og TURN."
+    }
+  ],
+  "l_faser": {
+    "L-KROPP": {
+      "id": "L-KROPP",
+      "name": "Kroppsfase",
+      "description": "Motorisk læringsfase for kroppsbevegelse. Lærer grunnleggende rotasjon, vektoverføring og ryggrads-posisjon uten kølleinteraksjon.",
+      "sg_vekt": "Lav",
+      "cs_range": "CS20-40",
+      "env_range": "M0-M1",
+      "tek_percent": "60-80",
+      "ball_use": false,
+      "priority_override": "L-KROPP overstyrer ALL annen prioritering. Ingen SG-diagnostikk brukes i denne fasen.",
+      "typical_drills": ["Rotasjonsøvelser uten kølle", "Tyngdeoverføringsdrill", "Korrekt ryggradposisjon i adresse"]
+    },
+    "L-ARM": {
+      "id": "L-ARM",
+      "name": "Armfase",
+      "description": "Motorisk læringsfase for arm-koordinasjon og posisjon. Lærer korrekt armposisjon i alle P-posisjoner.",
+      "sg_vekt": "Lav",
+      "cs_range": "CS20-50",
+      "env_range": "M1-M2",
+      "tek_percent": "50-70",
+      "ball_use": "minimal",
+      "priority_override": "L-ARM overstyrer all SG-prioritering. Teknisk korreksjon er absolutt mål.",
+      "typical_drills": ["P1-P9 posisjonsdrill med speil", "Half-swing med armfokus", "Slow motion video-analyse"]
+    },
+    "L-KØLLE": {
+      "id": "L-KØLLE",
+      "name": "Køllebane-fase",
+      "description": "Introduksjon av korrekt køllebane. Lærer køllehodet å følge korrekt bane gjennom treffpunktet.",
+      "sg_vekt": "Medium",
+      "cs_range": "CS50-70",
+      "env_range": "M2-M3",
+      "tek_percent": "40-60",
+      "ball_use": true,
+      "priority_override": "L-KØLLE: SG brukes som supplement — ikke primær driver.",
+      "typical_drills": ["Køllebane-drilll med gate", "Impact bag-trening", "Køllebane-analyse med TrackMan"]
+    },
+    "L-BALL": {
+      "id": "L-BALL",
+      "name": "Ballfase",
+      "description": "Kontrollert balltrening. Lærer å bruke ballrespons som feedback. Full SG-vekting aktiveres.",
+      "sg_vekt": "Høy",
+      "cs_range": "CS60-80",
+      "env_range": "M3-M4",
+      "tek_percent": "30-50",
+      "ball_use": true,
+      "priority_override": "Ingen L-fase override — full SG-vekting gjelder i L-BALL.",
+      "typical_drills": ["Retningskontroll-driller", "Distansekontroll-driller", "TrackMan-basert feedback"]
+    },
+    "L-AUTO": {
+      "id": "L-AUTO",
+      "name": "Automatiseringsfase",
+      "description": "Automatisering under simulert konkurransepress. Tekniske endringer er ferdig integrert.",
+      "sg_vekt": "Høy",
+      "cs_range": "CS80-100",
+      "env_range": "M4-M5",
+      "tek_percent": "20-40",
+      "ball_use": true,
+      "priority_override": "Ingen L-fase override — full SG-vekting. Fokus på automatisering og pressure-testing.",
+      "typical_drills": ["Pressure-driller (PR4-PR5)", "Bane-simulering", "Turneringsformat trening"]
+    }
+  },
+  "invariants": [
+    {
+      "id": "inv_1",
+      "rule": "TEK minimum 15% av alle økter",
+      "description": "Teknisk trening kan aldri reduseres under 15% — selv i TURN-periode eller L-AUTO.",
+      "severity": "blocking"
+    },
+    {
+      "id": "inv_2",
+      "rule": "CS50 minimum for all balltrening",
+      "description": "All trening med ball krever minimum CS50 (50 mph kølgehastighet). Under CS50 = ren bevegelsesdrill.",
+      "severity": "blocking"
+    },
+    {
+      "id": "inv_3",
+      "rule": "Ukentlige timer ≤ spillerens alder (under-18-regel)",
+      "description": "For spillere under 18 år kan aldri ukentlig treningsvolum overstige spillerens alder i timer. 14 år = max 14 timer/uke.",
+      "severity": "blocking"
+    },
+    {
+      "id": "inv_4",
+      "rule": "L-fase overstyrer alle andre prioriteringer",
+      "description": "Aktiv L-fase er HØYESTE PRIORITET — overstyrer SG-anbefalinger, turneringsplan og coach-input.",
+      "severity": "blocking"
+    },
+    {
+      "id": "inv_5",
+      "rule": "Sum av pyramide = 100%",
+      "description": "FYS + TEK + SLAG + SPILL + TURN må alltid summere til nøyaktig 100%. Ingen unntak.",
+      "severity": "blocking"
+    },
+    {
+      "id": "inv_6",
+      "rule": "Ingen SG-anbefaling uten aktiv TechnicalPlan/PositionTask",
+      "description": "SG-diagnose alene er ikke tilstrekkelig. Det må eksistere en kobling til en aktiv teknisk plan.",
+      "severity": "blocking"
+    },
+    {
+      "id": "inv_7",
+      "rule": "Konfidensverdi under 0.70 = 'retningssignal' kun",
+      "description": "Lave konfidensbaselines vises eksplisitt som retningssignal i UI. Aldri som definitiv diagnose.",
+      "severity": "warning"
+    },
+    {
+      "id": "inv_8",
+      "rule": "Rough-ligge: +0.15-0.25 slag på SG-baseline",
+      "description": "Alle SG APP-beregninger justeres oppover ved rough-ligge. Aldri bruk fairway-baseline for rough.",
+      "severity": "blocking"
+    },
+    {
+      "id": "inv_9",
+      "rule": "Lav readiness → lavere PR-nivå + lavere volum",
+      "description": "Readiness-vurdering (søvn, stress, form) påvirker alltid PR-nivå og treningsvolum. Aldri presse spiller over readiness.",
+      "severity": "blocking"
+    },
+    {
+      "id": "inv_10",
+      "rule": "Alle 5 APP-bånd MÅ ha baselines før produksjon",
+      "description": "SG APP-analyse er blokkert inntil alle 5 distansebånd har verifiserte baselines.",
+      "severity": "blocking"
+    },
+    {
+      "id": "inv_11",
+      "rule": "P-posisjon absolutte metrikker ≠ kvalitative sjekkpunkter (alltid separate)",
+      "description": "Målbare verdier (grader, cm, mph) og visuelle vurderinger er separate datapunkter — aldri blandes.",
+      "severity": "blocking"
+    },
+    {
+      "id": "inv_12",
+      "rule": "MORAD-feil → P-posisjon kobling alltid påkrevd i anbefaling",
+      "description": "Alle tekniske anbefalinger basert på MORAD-feil MÅ inkludere P-posisjon metrikk-kobling.",
+      "severity": "blocking"
+    },
+    {
+      "id": "inv_13",
+      "rule": "Alle anbefalinger: why + what + expected_effect + why_now",
+      "description": "Komplett anbefalingsformat er obligatorisk. Ufullstendige anbefalinger presenteres aldri til spiller.",
+      "severity": "blocking"
+    }
+  ],
+  "periods": {
+    "GRUNN": {
+      "id": "GRUNN",
+      "name": "Grunnlagsperiode",
+      "name_en": "Foundation Period",
+      "description": "Forsesongen. Bygge fysisk og teknisk grunnlag for sesongen.",
+      "typical_timing": "Oktober–januar",
+      "focus": ["FYS", "TEK"],
+      "pyramid_adjustment": "FYS og TEK elevated — SPILL og TURN minimale"
+    },
+    "SPES": {
+      "id": "SPES",
+      "name": "Spesialiseringsperiode",
+      "name_en": "Specialization Period",
+      "description": "Midt-sesong forberedelse. Spesifikke golfspesifikke ferdigheter.",
+      "typical_timing": "Februar–april",
+      "focus": ["SLAG", "TEK"],
+      "pyramid_adjustment": "SLAG elevated — TEK standard, SPILL starter"
+    },
+    "TURN": {
+      "id": "TURN",
+      "name": "Turneringsperiode",
+      "name_en": "Tournament Period",
+      "description": "Konkurransesesongen. Prestere i turneringer.",
+      "typical_timing": "Mai–september",
+      "focus": ["SPILL", "TURN"],
+      "pyramid_adjustment": "SPILL og TURN elevated — TEK og FYS redusert, minimalt endringsarbeid"
+    }
+  },
+  "scale_definitions": {
+    "cs": {
+      "name": "Club Speed",
+      "unit": "mph",
+      "description": "Kølgehastighet i miles per time. Brukes til å kalibrere treningsintensitet og miljø.",
+      "levels": [
+        {"level": "CS20", "value": 20, "context": "Bevegelsesdrill uten ball"},
+        {"level": "CS30", "value": 30, "context": "Langsom teknisk drill"},
+        {"level": "CS40", "value": 40, "context": "Halvfart teknisk drill"},
+        {"level": "CS50", "value": 50, "context": "Minimum for balltrening"},
+        {"level": "CS60", "value": 60, "context": "Moderat balltrening"},
+        {"level": "CS70", "value": 70, "context": "Kontrollert full swing"},
+        {"level": "CS80", "value": 80, "context": "Full swing med kontroll"},
+        {"level": "CS90", "value": 90, "context": "Tour-speed trening"},
+        {"level": "CS100", "value": 100, "context": "Maks hastighet"}
+      ]
+    },
+    "pr": {
+      "name": "Pressure Level",
+      "unit": "nivå 1-5",
+      "description": "Pressurenivå i treningssituasjon. Simulerer konkurransepress progressivt.",
+      "levels": [
+        {"level": "PR1", "value": 1, "context": "Minimalt press — ren teknikk-drill, ingen konsekvens"},
+        {"level": "PR2", "value": 2, "context": "Lett press — mål definert, men ingen konkurranse"},
+        {"level": "PR3", "value": 3, "context": "Moderat press — scoringssystem eller partner involvert"},
+        {"level": "PR4", "value": 4, "context": "Høyt press — simulert turneringsrunde eller økonomi/poeng"},
+        {"level": "PR5", "value": 5, "context": "Maksimalt press — faktisk turneringssituasjon"}
+      ]
+    },
+    "m": {
+      "name": "Environment Level",
+      "unit": "nivå M0-M5",
+      "description": "Trenings-miljøets struktur og kontroll. M0 er mest kontrollert, M5 er konkurranse.",
+      "levels": [
+        {"level": "M0", "value": 0, "context": "Kontrollert range, ingen mål, ingen ball"},
+        {"level": "M1", "value": 1, "context": "Kontrollert range, enkelt mål"},
+        {"level": "M2", "value": 2, "context": "Driving range med definerte mål og distanser"},
+        {"level": "M3", "value": 3, "context": "Baneøving uten konkurranse (greenside, treningsgreen)"},
+        {"level": "M4", "value": 4, "context": "Bane med scoringsfokus, simulert konkurranse"},
+        {"level": "M5", "value": 5, "context": "Faktiske turneringsforhold"}
+      ]
+    }
+  },
+  "session_id_format": {
+    "format": "{KATEGORI}_{SLAGTYPE}_{L-FASE}_{CS-NIVÅ}_{M-NIVÅ}_{PR-NIVÅ}",
+    "example": "TEK_TEE_L-BALL_CS60_M2_PR2",
+    "components": {
+      "KATEGORI": "Treningstype fra pyramide (TEK, FYS, SLAG, SPILL, TURN)",
+      "SLAGTYPE": "Slagtype (TEE, APP, ARG, PUTT, SHORT, LONG)",
+      "L-FASE": "Motorisk læringsfase (L-KROPP, L-ARM, L-KØLLE, L-BALL, L-AUTO)",
+      "CS-NIVÅ": "Kølgehastighet (CS20-CS100)",
+      "M-NIVÅ": "Miljønivå (M0-M5)",
+      "PR-NIVÅ": "Pressurenivå (PR1-PR5)"
+    }
+  }
+}

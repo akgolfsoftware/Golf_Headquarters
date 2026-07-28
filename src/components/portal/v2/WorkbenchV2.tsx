@@ -18,7 +18,7 @@
  * V2Shell (montert i (v2preview)/v2-workbench/page.tsx) eier chrome-en.
  */
 
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
   DndContext,
@@ -57,7 +57,7 @@ import {
   snapYToSlot,
 } from "@/components/v2";
 import { PalettSok } from "@/components/v2/wb-composer";
-import { ForslagArk, NyOktArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput, type OktArkDrill } from "./WorkbenchV2Sheets";
+import { ForslagArk, NyOktArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput, type OktArkDrill, type SpillerStedValg, type DrillTreff } from "./WorkbenchV2Sheets";
 import { WorkbenchAarsplan, PeriodePalett, WBPeriodeStrip } from "./WorkbenchAarsplan";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
 import { WBTidslinjeMobil, MobilFold } from "./WorkbenchV2Mobil";
@@ -116,6 +116,8 @@ export interface WorkbenchV2Props {
   actions?: WorkbenchV2Actions;
   /** B40 §3 — Standard/Pro-modus (lesPreferences(user).wbMode). Default "pro". */
   wbMode?: "standard" | "pro";
+  /** Spillerens treningssteder fra onboarding — hurtigvalg for «Hvor» i økt-arket. */
+  steder?: SpillerStedValg[];
 }
 
 /* ── Rene hjelpere ─────────────────────────────────────── */
@@ -475,7 +477,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
   const maler = (data.planTemplates ?? []).filter((m) => treff(m.name));
   const okter = (data.paletteItems ?? []).filter((b) => treff(b.title) && (!akseFilter || b.cat === akseFilter));
   // Driller-fanen: øvelsesbanken via server-søk (debounced).
-  const [driller, setDriller] = useState<{ id: string; name: string; pyramidArea: string }[]>([]);
+  const [driller, setDriller] = useState<DrillTreff[]>([]);
   const [drillMelding, setDrillMelding] = useState<string | null>(null);
   useEffect(() => {
     if (tab !== "driller") return;
@@ -1381,7 +1383,7 @@ function Felt({ label, children }: { label: string; children: React.ReactNode })
   );
 }
 /* ── Selve Workbench ───────────────────────────────────── */
-export function WorkbenchV2({ data, insights, playerName, planStatus, actions, wbMode, role }: WorkbenchV2Props) {
+export function WorkbenchV2({ data, insights, playerName, planStatus, actions, wbMode, role, steder }: WorkbenchV2Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -1562,6 +1564,31 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
     if (res.ok) router.refresh();
     return res;
   };
+
+  // «Legg i økt» fra den frittstående øvelsesbanken (/portal/drills) navigerer
+  // hit med ?leggTil=<exerciseId>&leggTilNavn=<navn> — legges i valgt/default
+  // økt automatisk (samme skrivevei som Driller-fanen over), så vises melding
+  // og URL-parameteren fjernes. Ref hindrer dobbel-tilføyning når valgtOkt
+  // bytter referanse etter router.refresh() i leggDrillIValgt.
+  const [leggTilMelding, setLeggTilMelding] = useState<string | null>(null);
+  const leggTilKjortRef = useRef<string | null>(null);
+  useEffect(() => {
+    const leggTilId = searchParams.get("leggTil");
+    if (!leggTilId || leggTilKjortRef.current === leggTilId || !valgtOkt) return;
+    leggTilKjortRef.current = leggTilId;
+    const navn = searchParams.get("leggTilNavn") ?? "";
+    (async () => {
+      const res = await leggDrillIValgt({ exerciseId: leggTilId, navn });
+      setLeggTilMelding(res.ok ? `«${navn || "Øvelsen"}» lagt i valgt økt.` : (res.error ?? "Kunne ikke legge til."));
+      window.setTimeout(() => setLeggTilMelding(null), 4000);
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("leggTil");
+      params.delete("leggTilNavn");
+      const qs = params.toString();
+      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, valgtOkt]);
 
   // Skriv zoom/valg til URL med replace (skal ikke forurense historikken).
   const oppdaterUrl = (mut: (p: URLSearchParams) => void) => {
@@ -1847,6 +1874,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
       area: input.akse,
       hour: input.hour,
       minute: input.minute,
+      location: input.location,
+      maalsetning: input.maalsetning,
       // Felles økt-ark (2026-07-13): AK-formel + driller følger med fra «Ny økt».
       ...(input.lFase || input.miljo
         ? { akFormel: { lFase: input.lFase, miljo: input.miljo } }
@@ -1856,11 +1885,16 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             drills: input.drills.map((d) => ({
               exerciseId: d.exerciseId,
               nyNavn: d.exerciseId ? undefined : d.navn,
-              nyPyramidArea: d.exerciseId ? undefined : input.akse,
+              nyPyramidArea: d.exerciseId ? undefined : (d.nyPyramidArea ?? input.akse),
+              nyOmraade: d.exerciseId ? undefined : d.nyOmraade,
+              nyBeskrivelse: d.exerciseId ? undefined : d.nyBeskrivelse,
               minutter: d.minutter,
               sett: d.sett,
               reps: d.reps,
               nivaa: d.nivaa,
+              planRepsUtenBall: d.planRepsUtenBall,
+              planRepsLavFart: d.planRepsLavFart,
+              planRepsAuto: d.planRepsAuto,
               positionTaskId: d.positionTaskId,
             })),
           }
@@ -2276,6 +2310,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
         <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} proMode={proMode} />
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
           {dupliserMelding && <InnsiktChip>{dupliserMelding}</InnsiktChip>}
+          {leggTilMelding && <InnsiktChip>{leggTilMelding}</InnsiktChip>}
           {insights?.line && <InnsiktChip>{insights.line}</InnsiktChip>}
           {nivaa === "uke" && data.weekStartISO && (
             <WBPeriodeStrip
@@ -2542,6 +2577,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           dag={redigerDag}
           weekOffset={weekOffset}
           actions={actions}
+          steder={steder}
           onLukk={() => setRedigerOktId(null)}
           onEndret={() => router.refresh()}
         />
@@ -2587,6 +2623,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           defaultAkse={nyOktPrefill?.akse}
           defaultDurMin={nyOktPrefill?.durMin}
           defaultDrills={nyOktPrefill?.drills}
+          steder={steder}
           onLukk={() => {
             setNyOktApen(false);
             setNyOktPrefill(null);

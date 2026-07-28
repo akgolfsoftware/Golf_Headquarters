@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check } from "lucide-react";
+import { Check, Clock } from "lucide-react";
 import type { LiveV2Drill, LiveV2Session, DrillRepState, LiveCoachPanelData } from "./types";
 import { plannedVolumText } from "./types";
+import { fmtMSS } from "@/lib/portal-live/format";
 import { DrillLogger } from "./DrillLogger";
 import { SessionTimer } from "./SessionTimer";
 import { LiveCoachPanel } from "./LiveCoachPanel";
@@ -291,7 +292,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   // Debounce: lagre lokal utkast + forsøk synk når online.
   const persistTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const persistDrills = useCallback(
-    (neste: DrillState[], sec: number) => {
+    (neste: DrillState[], sec: number, drillVarigheter?: Record<string, number>) => {
       const payload: LiveDrillReps[] = neste.map((d) => ({
         drillId: d.id,
         repsTotal: d.repsTotal,
@@ -301,6 +302,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         repsHit: d.repsHit,
         notes: d.logNotes,
         status: d.status,
+        actualDurationSec: drillVarigheter?.[d.id],
       }));
       if (persistTimer.current) clearTimeout(persistTimer.current);
       persistTimer.current = setTimeout(() => {
@@ -318,6 +320,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
                 repsAutomatic: d.repsAutomatic,
                 repsHit: d.repsHit,
                 notes: d.notes,
+                actualDurationSec: d.actualDurationSec,
               }).catch(() => ({ ok: false }));
               if (!res.ok) return { ok: false };
             }
@@ -409,6 +412,10 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
     setIsCompleting(true);
     vibrate(40);
 
+    // Fanges FØR setDrillSec(0) under — dette er tiden drillen faktisk tok,
+    // og den mater varighetsestimatet neste gang drillen planlegges.
+    const brukteSek = drillSec;
+
     try {
       const res = await completeDrill({
         sessionId: data.sessionId,
@@ -421,6 +428,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         successRate:
           active.repsTotal > 0 ? Math.round((active.repsHit / active.repsTotal) * 100) : 0,
         notes: active.logNotes,
+        actualDurationSec: brukteSek,
       });
       if (!res.ok && typeof navigator !== "undefined" && !navigator.onLine) {
         // Offline: behold lokal state; synk ved online.
@@ -429,12 +437,13 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             d.id === active.id ? { ...d, status: "done" as const } : d,
           ),
           totalSec,
+          { [active.id]: brukteSek },
         );
       }
     } catch (err) {
       console.error("[LiveActive] completeDrill feilet", err);
-      // Offline-fallback: lagre utkast så reps ikke forsvinner.
-      persistDrills(drills, totalSec);
+      // Offline-fallback: lagre utkast så reps og tid ikke forsvinner.
+      persistDrills(drills, totalSec, { [active.id]: brukteSek });
     } finally {
       setIsCompleting(false);
     }
@@ -445,7 +454,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         if (i === activeIdx + 1) return { ...d, status: "active" as const };
         return d;
       });
-      persistDrills(neste, totalSec);
+      persistDrills(neste, totalSec, { [active.id]: brukteSek });
       return neste;
     });
     setDrillSec(0);
@@ -456,7 +465,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
       await completeSession(data.sessionId, totalSec);
       await slettLiveDrillUtkast(data.sessionId);
     }
-  }, [active, activeIdx, data.sessionId, drills, isCompleting, persistDrills, totalSec]);
+  }, [active, activeIdx, data.sessionId, drills, drillSec, isCompleting, persistDrills, totalSec]);
 
   const handleLogRep = useCallback(() => {
     setShowDrillLogger(true);
@@ -483,6 +492,9 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
 
   // Alle drills ferdige — vis ferdigmelding.
   const allDone = completedCount === drills.length && drills.length > 0;
+  /** Over planlagt tid på denne drillen? Kun visning — sperrer aldri noe. */
+  const overPlanlagt =
+    !!active && active.durationMinutes > 0 && drillSec > active.durationMinutes * 60;
 
   if (showDrillLogger && active && activeState) {
     return (
@@ -631,6 +643,24 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             onTogglePause={togglePause}
             label="Økt-tid"
           />
+          {/* Tid på drillen du holder på med, mot det som var planlagt.
+              Ambert når du er over — aldri sperrende, bare til orientering. */}
+          {active && !allDone && (
+            <div
+              className="mt-[8px] flex items-center justify-center gap-[6px] rounded-full px-3 py-[6px] font-mono text-[11px]"
+              style={{
+                background: overPlanlagt ? "var(--amber-100, #fef3c7)" : "var(--panel-2, rgba(255,255,255,0.06))",
+                color: overPlanlagt ? "var(--amber-900, #78350f)" : "inherit",
+              }}
+            >
+              <Clock size={11} aria-hidden />
+              <span>
+                {fmtMSS(drillSec)}
+                {active.durationMinutes > 0 && ` / ${active.durationMinutes} min`}
+              </span>
+              {overPlanlagt && <span className="font-bold">over plan</span>}
+            </div>
+          )}
         </div>
 
         {/* Alle drills ferdige — grønt banner */}

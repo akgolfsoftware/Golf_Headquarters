@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Caps, Tittel, Kort, StatusPill, TomTilstand } from "@/components/v2";
 import { T } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
+import { safeUrl } from "@/lib/security/safe-url";
 
 function Chip({ children, accent }: { children: React.ReactNode; accent?: boolean }) {
   return (
@@ -263,9 +264,11 @@ export function AdminDrillDetaljV2({ data, actions }: { data: AdminDrillDetaljV2
             </Kort>
           )}
 
-          {data.videoUrl && (
+          {/* safeUrl: videoUrl kommer fra DB og kan være javascript:/data: —
+              husets sanitering (S-21) må stå på ALLE href fra databasen. */}
+          {safeUrl(data.videoUrl) && (
             <Kort eyebrow="Video">
-              <a href={data.videoUrl} target="_blank" rel="noopener noreferrer" style={{ fontFamily: T.ui, fontSize: 13, color: T.lime, wordBreak: "break-all" }}>
+              <a href={safeUrl(data.videoUrl)!} target="_blank" rel="noopener noreferrer" style={{ fontFamily: T.ui, fontSize: 13, color: T.lime, wordBreak: "break-all" }}>
                 {data.videoUrl}
               </a>
             </Kort>

@@ -1,0 +1,277 @@
+{
+  "id": "sg-principles",
+  "version": "1.0.0",
+  "created": "2026-06-16",
+  "source": [
+    "Mark Broadie — Every Shot Counts (Columbia Business School)",
+    "DataGolf baseline data",
+    "PGA Tour ShotLink statistics",
+    "AK Golf MasterBrain SG implementation spec"
+  ],
+  "description": "Strokes Gained-prinsipper for AK Golf-plattformen. Definerer kategorier, APP-bånd med baselines, mapping til MORAD-feil, diagnostisk logikk, og ukesoppsummeringsformat. Produksjonsklar implementasjonsstandard.",
+  "categories": {
+    "OTT": {
+      "id": "ott",
+      "name": "Off the Tee",
+      "name_no": "Fra tee",
+      "description": "Drives og tee-slag. Måler verdi skapt fra teested til neste slagposisjon.",
+      "shot_types": ["driver", "3-wood fra tee", "langt jern fra tee", "hybrid fra tee"],
+      "key_metric": "Slag tapt/vunnet fra tee mot referansespiller på samme nivå"
+    },
+    "APP": {
+      "id": "app",
+      "name": "Approach",
+      "name_no": "Innspill",
+      "description": "Fulle slag mot green. Delt inn i 5 distansebånd for granulær analyse.",
+      "shot_types": ["fulle jernslag", "hybridslag mot green", "fairway wood mot green"],
+      "key_metric": "Slag tapt/vunnet per innspill vs. baseline for distanse og ligge"
+    },
+    "ARG": {
+      "id": "arg",
+      "name": "Around the Green",
+      "name_no": "Rundt green",
+      "description": "Chips, pitches og bunkersslag under 50 yards fra flagg.",
+      "shot_types": ["chip", "pitch", "bump-and-run", "bunkerslag"],
+      "key_metric": "Slag tapt/vunnet fra korte innspill og nærspill"
+    },
+    "PUTT": {
+      "id": "putt",
+      "name": "Putting",
+      "name_no": "Putting",
+      "description": "Alle slag på green. Grunnlaget for SG putting er antall forventede slag fra gitt avstand.",
+      "shot_types": ["putting fra alle avstander"],
+      "key_metric": "Slag tapt/vunnet på green vs. tour-gjennomsnitt for samme avstand"
+    }
+  },
+  "app_bands": [
+    {
+      "id": "app_200plus",
+      "label": "200+ yards",
+      "min_yards": 200,
+      "max_yards": 9999,
+      "expected_strokes": 3.50,
+      "confidence": 0.70,
+      "lie": "fairway",
+      "confidence_note": "Under 0.70 — vises kun som retningssignal i UI, ikke som definitiv anbefaling.",
+      "rough_adjustment_min": 0.15,
+      "rough_adjustment_max": 0.25,
+      "ui_display": "retningssignal"
+    },
+    {
+      "id": "app_150_200",
+      "label": "150-200 yards",
+      "min_yards": 150,
+      "max_yards": 200,
+      "expected_strokes": 3.20,
+      "confidence": 0.82,
+      "lie": "fairway",
+      "rough_adjustment_min": 0.15,
+      "rough_adjustment_max": 0.25,
+      "ui_display": "standard"
+    },
+    {
+      "id": "app_100_150",
+      "label": "100-150 yards",
+      "min_yards": 100,
+      "max_yards": 150,
+      "expected_strokes": 2.95,
+      "confidence": 0.85,
+      "lie": "fairway",
+      "rough_adjustment_min": 0.15,
+      "rough_adjustment_max": 0.25,
+      "ui_display": "standard"
+    },
+    {
+      "id": "app_50_100",
+      "label": "50-100 yards",
+      "min_yards": 50,
+      "max_yards": 100,
+      "expected_strokes": 2.70,
+      "confidence": 0.80,
+      "lie": "fairway",
+      "rough_adjustment_min": 0.15,
+      "rough_adjustment_max": 0.25,
+      "ui_display": "standard"
+    },
+    {
+      "id": "app_under_50",
+      "label": "<50 yards",
+      "min_yards": 0,
+      "max_yards": 50,
+      "expected_strokes": 2.40,
+      "confidence": 0.75,
+      "lie": "fairway",
+      "rough_adjustment_min": 0.15,
+      "rough_adjustment_max": 0.25,
+      "ui_display": "standard"
+    }
+  ],
+  "sg_to_morad_faults": {
+    "ott": [
+      "over_the_top",
+      "casting",
+      "insufficient_shoulder_turn",
+      "flat_shoulder_plane",
+      "early_extension"
+    ],
+    "app": [
+      "incorrect_elbow_position",
+      "angle_loss_backswing",
+      "poor_spine_alignment",
+      "left_elbow_stall",
+      "improper_weight_transfer"
+    ],
+    "arg": [
+      "poor_spine_alignment",
+      "casting"
+    ],
+    "putt": []
+  },
+  "diagnostic_logic": {
+    "crisis_threshold": {
+      "value": -1.0,
+      "unit": "SG per band",
+      "description": "Krise-terskel — SG under -1.0 per bånd markeres som høy prioritet og trigger automatisk MORAD-feil kobling.",
+      "action": "Høy prioritet — lenk krisebånd til MORAD-feil og spesifikke driller umiddelbart"
+    },
+    "l_fase_override": {
+      "description": "L-fase overstyrer alltid SG-prioritering i tidlige faser.",
+      "rule": "L-KROPP og L-ARM: SG vekt = Lav, uavhengig av SG-data. L-BALL og L-AUTO: full SG-vekting gjelder.",
+      "phases": {
+        "L-KROPP": "sg_vekt=Lav — teknisk fokus overstyrer all SG-logikk",
+        "L-ARM": "sg_vekt=Lav — teknisk fokus overstyrer all SG-logikk",
+        "L-KØLLE": "sg_vekt=Medium — SG brukes som supplement til teknisk analyse",
+        "L-BALL": "sg_vekt=Høy — full SG-vekting gjelder",
+        "L-AUTO": "sg_vekt=Høy — full SG-vekting gjelder"
+      }
+    },
+    "p_position_separation": {
+      "rule": "P-posisjon absolutte metrikker er ALLTID separate fra kvalitative sjekkpunkter. De skal aldri blandes i anbefalinger eller UI.",
+      "absolute_metrics": "Målbare verdier fra TrackMan/video — f.eks. hofterotasjon i grader, armvinkel ved P3",
+      "qualitative_checkpoints": "Visuelle vurderinger — f.eks. 'rett venstre arm', 'skulderplan parallell med target'"
+    },
+    "data_source_hierarchy": [
+      {
+        "priority": 1,
+        "source": "DataGolf live",
+        "description": "Sanntids tour-data fra DataGolf API — høyeste konfidensbase"
+      },
+      {
+        "priority": 2,
+        "source": "MasterBrain Broadie",
+        "description": "AK Golf interne baselines kalibrert mot Broadie-forskning"
+      },
+      {
+        "priority": 3,
+        "source": "Egen rundedata",
+        "description": "Spillerens egne data — lav konfidensbase ved lite datagrunnlag (<10 runder)"
+      }
+    ],
+    "confidence_rules": {
+      "threshold_for_recommendation": 0.70,
+      "below_threshold_display": "retningssignal",
+      "below_threshold_note": "Konfidensverdi under 0.70 vises som 'retningssignal' i UI — ikke definitiv anbefaling. Kommuniser usikkerheten tydelig til spiller."
+    },
+    "rough_adjustment": {
+      "min": 0.15,
+      "max": 0.25,
+      "unit": "slag over fairway-baseline",
+      "description": "Rough-ligge legger til 0.15-0.25 slag på SG-baseline for alle APP-bånd."
+    }
+  },
+  "weekly_summary_format": {
+    "description": "Standard ukesoppsummeringsformat for SG-rapport til spiller",
+    "header": {
+      "format": "Din uke – [datoer]",
+      "subtitle": "Du tapte X slag mot ditt nivå"
+    },
+    "sections": [
+      {
+        "id": "sg_overview",
+        "name": "SG-oversikt",
+        "content": "Granulær 5-bånd APP-analyse + total SG per kategori (OTT, APP, ARG, PUTT)"
+      },
+      {
+        "id": "crisis_band",
+        "name": "Krisebånd",
+        "content": "Fremhev det svakeste båndet med MORAD-feil-kobling og direkte lenke til relevante driller"
+      },
+      {
+        "id": "recommendations",
+        "name": "Anbefalinger",
+        "content": "2-3 prioriterte anbefalinger basert på SG-analyse og L-fase",
+        "max_count": 3
+      },
+      {
+        "id": "progress",
+        "name": "Fremgang",
+        "content": "Trend per bånd (PlanEffectiveness) — sammenlign mot forrige uke og sesongmål"
+      }
+    ]
+  },
+  "recommendation_format": {
+    "description": "Obligatorisk format for ALLE SG-baserte anbefalinger",
+    "required_fields": [
+      {
+        "field": "why",
+        "description": "SG-bånd + MORAD-feil + TrackMan-data + P-posisjon absolutte metrikker"
+      },
+      {
+        "field": "what",
+        "description": "Spesifikk drill + volum + miljø (M-nivå) + CS-krav + PR-nivå"
+      },
+      {
+        "field": "expected_effect",
+        "description": "Forventet forbedring i SG (+X slag over Y uker)"
+      },
+      {
+        "field": "why_now",
+        "description": "L-fase / treningsperiode / sesongkontekst som begrunner prioriteringen"
+      }
+    ]
+  },
+  "invariants": [
+    {
+      "id": "inv_1",
+      "rule": "Alle 5 APP-bånd MÅ ha baselines før produksjon",
+      "description": "Systemet kan ikke gi SG APP-anbefalinger uten at alle 5 distansebånd har verifiserte baselines.",
+      "severity": "blocking"
+    },
+    {
+      "id": "inv_2",
+      "rule": "L-fase overstyrer SG i tidlige faser",
+      "description": "L-KROPP og L-ARM: teknisk fokus er absolutt prioritet. SG er sekundært.",
+      "severity": "blocking"
+    },
+    {
+      "id": "inv_3",
+      "rule": "P-posisjon absolutte metrikker er alltid separate fra sjekkpunkter (kvalitative)",
+      "description": "Bland aldri målbare verdier med visuelle vurderinger i samme datapunkt.",
+      "severity": "blocking"
+    },
+    {
+      "id": "inv_4",
+      "rule": "Alle anbefalinger MÅ ha: why, what, expected_effect, why_now",
+      "description": "En ufullstendig anbefaling skal aldri presenteres til spiller eller coach.",
+      "severity": "blocking"
+    },
+    {
+      "id": "inv_5",
+      "rule": "Konfidensverdi under 0.70 = 'retningssignal' kun",
+      "description": "Lav konfidensverdi (DataGolf/MasterBrain lite data) vises eksplisitt som retningssignal — ikke som definitiv diagnose.",
+      "severity": "warning"
+    },
+    {
+      "id": "inv_6",
+      "rule": "Rough-ligge: +0.15-0.25 slag på SG-baseline for alle APP-bånd",
+      "description": "Justér alltid baseline oppover ved rough-ligge. Aldri bruk fairway-baseline for rough-slag.",
+      "severity": "blocking"
+    },
+    {
+      "id": "inv_7",
+      "rule": "Ingen SG-anbefaling uten aktiv TechnicalPlan/PositionTask",
+      "description": "SG-diagnose alene er ikke nok — det må eksistere en kobling til en aktiv teknisk plan eller PositionTask.",
+      "severity": "blocking"
+    }
+  ]
+}
