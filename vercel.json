@@ -114,8 +114,24 @@
       "schedule": "30 5 * * *"
     },
     {
+      "path": "/api/cron/radar",
+      "schedule": "45 7 * * 1"
+    },
+    {
+      "path": "/api/cron/fabrikk",
+      "schedule": "50 7 * * 1"
+    },
+    {
       "path": "/api/cron/drill-forslag",
       "schedule": "0 8 * * 1"
+    },
+    {
+      "path": "/api/cron/media-lofte",
+      "schedule": "15 8 * * 1"
+    },
+    {
+      "path": "/api/cron/ukesrapport-ovelser",
+      "schedule": "30 8 * * 1"
     },
     {
       "path": "/api/cron/availability-gap-filler",

@@ -4843,3 +4843,24 @@ model DatagolfSyncState {
   @@id([endpoint, paramsHash])
   @@map("datagolf_sync_state")
 }
+
+// ---------- Øvelses-motoren (radar → fabrikk, 2026-07-27) ----------
+
+// Rå funn fra radar-agenten (YouTube/RSS-søk etter drill-/test-inspirasjon og
+// utstyrsnyheter). Fabrikk-agenten leser ubehandlede rader herfra og bruker
+// dem + masterbrain-fasiten til å generere øvelse-/test-utkast (CaddieDraft).
+// Bevisst uten @relation (kirurgisk additiv modell, jf. gotchas.md).
+model RadarFunn {
+  id          String    @id @default(cuid())
+  kilde       String // "youtube" | "rss"
+  kildeNavn   String // kanalnavn / feed-/sidenavn
+  tittel      String
+  url         String
+  sammendrag  String?
+  publisertAt DateTime?
+  behandlet   Boolean   @default(false)
+  funnetAt    DateTime  @default(now())
+
+  @@index([behandlet, funnetAt])
+  @@map("radar_funn")
+}

@@ -1,0 +1,411 @@
+{
+  "version": "1.0.0",
+  "source": "MORAD System — morad-checkpoints.json",
+  "description": "MORAD P1.0–P10.0 position entity catalog for the AK Golf MasterBrain knowledge system. Each position defines precise upper body, lower body, and clubshaft parameters for a full golf swing.",
+  "updated": "2026-06-16",
+  "tolerances": {
+    "shoulder_rotation_deg": 5,
+    "hip_rotation_deg": 5,
+    "elbow_flexion_deg": 10,
+    "wrist_angle_deg": 10,
+    "l_arm_to_clubshaft_deg": 10,
+    "weight_distribution_pct": 10
+  },
+  "scoring": {
+    "excellent": { "deviation_range": "0–5°", "label": "Excellent" },
+    "good": { "deviation_range": "5–15°", "label": "Good" },
+    "fair": { "deviation_range": "15–30°", "label": "Fair" },
+    "needs_work": { "deviation_range": "30°+", "label": "Needs Work" }
+  },
+  "key_principles": {
+    "left_elbow_straight": {
+      "description": "Left elbow must remain at 180° flexion from P1.0 through P8.0",
+      "positions_active": ["P1.0","P2.0","P3.0","P4.0","P5.0","P6.0","P7.0","P8.0"],
+      "required_value": 180
+    },
+    "forearm_rotation_stops_at_p2": {
+      "description": "Forearm rotation stops at P2.0 and resumes via centrifugal force at P6.0",
+      "stops_at": "P2.0",
+      "resumes_at": "P6.0",
+      "resume_mechanism": "centrifugal_force"
+    },
+    "wrist_release": {
+      "description": "Wrist release occurs via centrifugal force only — not via conscious effort",
+      "mechanism": "centrifugal_force",
+      "conscious_release": false
+    },
+    "hips_lead": {
+      "description": "Hips lead the downswing sequence through impact and follow-through",
+      "sequence_positions": ["P6.0","P7.0","P8.0"]
+    },
+    "left_heel_grounded": {
+      "description": "Left heel stays on the ground through all positions",
+      "positions_active": ["P1.0","P2.0","P3.0","P4.0","P5.0","P6.0","P7.0","P8.0","P9.0","P10.0"]
+    },
+    "right_knee_flex_constant": {
+      "description": "Right knee maintains 20° flexion from P1.0 through P7.0",
+      "positions_active": ["P1.0","P2.0","P3.0","P4.0","P5.0","P6.0","P7.0"],
+      "required_value_deg": 20
+    }
+  },
+  "phases": {
+    "setup": ["P1.0"],
+    "backswing": ["P2.0","P3.0","P4.0"],
+    "downswing": ["P5.0","P6.0"],
+    "impact": ["P7.0"],
+    "follow_through": ["P8.0"],
+    "finish": ["P9.0","P10.0"]
+  },
+  "entities": {
+    "P1.0": {
+      "name": "Address",
+      "phase": "setup",
+      "upper_body": {
+        "shoulder_rotation": 0,
+        "left_elbow_flexion": 180,
+        "right_elbow_flexion": 5,
+        "left_elbow_distance_from_body_inches": 2,
+        "right_elbow_distance_from_body_inches": 2,
+        "distance_between_elbows_inches": 9,
+        "left_elbow_position": 2,
+        "right_elbow_position": 2,
+        "left_forearm_rotation": 45,
+        "right_forearm_rotation": -20,
+        "left_wrist_dorsiflexion": 45,
+        "right_wrist_dorsiflexion": 20
+      },
+      "lower_body": {
+        "hip_rotation": 0,
+        "hip_slide_toward_target_inches": 1,
+        "left_knee_flexion": 20,
+        "right_knee_flexion": 20,
+        "distance_between_knees_inches": 18,
+        "weight_distribution_left": 60,
+        "weight_distribution_right": 40,
+        "left_heel_on_ground": true,
+        "right_heel_on_ground": true
+      },
+      "clubshaft": {
+        "l_arm_to_clubshaft_angle": 135,
+        "clubshaft_to_ground": 45,
+        "forward_press_degrees": 10
+      },
+      "checkpoints": [
+        "20° torso forward tilt",
+        "Arms aligned vertical to ground",
+        "Grip pressure LIGHT",
+        "Left hand 45° prepronated",
+        "Right hand 20° presupinated"
+      ]
+    },
+    "P2.0": {
+      "name": "Clubshaft Parallel Back",
+      "phase": "backswing",
+      "upper_body": {
+        "shoulder_rotation": 20,
+        "left_elbow_flexion": 180,
+        "right_elbow_flexion": 25,
+        "left_elbow_position": 2,
+        "right_elbow_position": 2,
+        "left_forearm_rotation": 90,
+        "right_forearm_rotation": -90,
+        "left_wrist_dorsiflexion": 40,
+        "right_wrist_dorsiflexion": 25
+      },
+      "lower_body": {
+        "hip_rotation": 10,
+        "hip_slide_toward_target_inches": 1,
+        "left_knee_flexion": 25,
+        "right_knee_flexion": 20,
+        "weight_distribution_left": 60,
+        "weight_distribution_right": 40,
+        "left_heel_on_ground": true,
+        "right_heel_on_ground": true
+      },
+      "clubshaft": {
+        "l_arm_to_clubshaft_angle": 100,
+        "clubshaft_to_plane_line": 0
+      },
+      "checkpoints": [
+        "ALL rotation stops at this position",
+        "50% radial deviation of wrists",
+        "Clubshaft parallel to plane line",
+        "Hands near top of right thigh"
+      ]
+    },
+    "P3.0": {
+      "name": "Left Arm Parallel Back",
+      "phase": "backswing",
+      "upper_body": {
+        "shoulder_rotation": 80,
+        "left_elbow_flexion": 180,
+        "right_elbow_flexion": 70,
+        "left_elbow_distance_from_body_inches": 6,
+        "left_elbow_position": 2,
+        "right_elbow_position": 1,
+        "left_forearm_rotation": 90,
+        "right_forearm_rotation": -90
+      },
+      "lower_body": {
+        "hip_rotation": 40,
+        "hip_slide_toward_target_inches": 1,
+        "left_knee_flexion": 30,
+        "right_knee_flexion": 20,
+        "weight_distribution_left": 50,
+        "weight_distribution_right": 50,
+        "left_heel_on_ground": true,
+        "right_heel_on_ground": true
+      },
+      "clubshaft": {
+        "l_arm_to_clubshaft_angle": 90,
+        "clubshaft_to_plane_line": 45
+      },
+      "checkpoints": [
+        "70% radial deviation of wrists",
+        "Left arm 45° inside plane line",
+        "Clubshaft parallel to incline plane",
+        "Right elbow switches to Position #1"
+      ]
+    },
+    "P4.0": {
+      "name": "Top of Backswing",
+      "phase": "backswing",
+      "upper_body": {
+        "shoulder_rotation": 90,
+        "left_elbow_flexion": 180,
+        "right_elbow_flexion": 90,
+        "left_elbow_distance_from_body_inches": 8,
+        "right_elbow_distance_from_body_inches": 5,
+        "distance_between_elbows_inches": 12,
+        "left_elbow_position": 2,
+        "right_elbow_position": 1
+      },
+      "lower_body": {
+        "hip_rotation": 45,
+        "hip_slide_toward_target_inches": 1,
+        "left_knee_flexion": 35,
+        "right_knee_flexion": 20,
+        "weight_distribution_left": 50,
+        "weight_distribution_right": 50,
+        "left_heel_on_ground": true,
+        "right_heel_on_ground": true
+      },
+      "clubshaft": {
+        "l_arm_to_clubshaft_angle": 90,
+        "clubshaft_to_plane_line": 0,
+        "clubshaft_to_ground": 0
+      },
+      "checkpoints": [
+        "Maximum shoulder rotation (90°)",
+        "Maximum hip rotation (45°)",
+        "Right elbow at 90° flexion",
+        "Clubshaft parallel to ground and plane line",
+        "Pass through quietly, passively, gingerly"
+      ]
+    },
+    "P5.0": {
+      "name": "Left Arm Parallel Down",
+      "phase": "downswing",
+      "upper_body": {
+        "shoulder_rotation": 30,
+        "left_elbow_flexion": 180,
+        "right_elbow_flexion": 70,
+        "left_elbow_distance_from_body_inches": 6,
+        "right_elbow_distance_from_body_inches": 1,
+        "left_elbow_position": 2,
+        "right_elbow_position": 1
+      },
+      "lower_body": {
+        "hip_rotation": 5,
+        "hip_slide_toward_target_inches": 4,
+        "left_knee_flexion": 35,
+        "right_knee_flexion": 20,
+        "weight_distribution_left": 60,
+        "weight_distribution_right": 40,
+        "left_heel_on_ground": true,
+        "right_heel_on_ground": true
+      },
+      "clubshaft": {
+        "l_arm_to_clubshaft_angle": 45,
+        "clubshaft_to_plane_line": 45
+      },
+      "checkpoints": [
+        "MAXIMUM wrist cock (45° L-arm to clubshaft)",
+        "100% radial deviation achieved",
+        "Left arm 45° inside plane line",
+        "Hips have shifted 4 inches toward target"
+      ]
+    },
+    "P6.0": {
+      "name": "Clubshaft Parallel Down",
+      "phase": "downswing",
+      "upper_body": {
+        "shoulder_rotation": 5,
+        "shoulder_alignment": "open",
+        "left_elbow_flexion": 180,
+        "right_elbow_flexion": 40,
+        "left_elbow_distance_from_body_inches": 4,
+        "right_elbow_distance_from_body_inches": 2,
+        "distance_between_elbows_inches": 9,
+        "left_elbow_position": 2,
+        "right_elbow_position": 1
+      },
+      "lower_body": {
+        "hip_rotation": 15,
+        "hip_slide_toward_target_inches": 5,
+        "left_knee_flexion": 30,
+        "right_knee_flexion": 20,
+        "weight_distribution_left": 70,
+        "weight_distribution_right": 30,
+        "left_heel_on_ground": true,
+        "right_heel_on_ground": true
+      },
+      "clubshaft": {
+        "l_arm_to_clubshaft_angle": 90,
+        "clubshaft_to_plane_line": 0
+      },
+      "checkpoints": [
+        "NO manual release from here",
+        "Shoulders transition to OPEN",
+        "Clubshaft parallel to plane line",
+        "Centrifugal Force takes over",
+        "Hips rotating upper & lower body"
+      ]
+    },
+    "P7.0": {
+      "name": "Impact",
+      "phase": "impact",
+      "upper_body": {
+        "shoulder_rotation": 15,
+        "shoulder_alignment": "open",
+        "left_elbow_flexion": 180,
+        "right_elbow_flexion": 5,
+        "distance_between_elbows_inches": 8,
+        "left_elbow_position": 2,
+        "right_elbow_position": 1,
+        "left_forearm_rotation": 90,
+        "right_forearm_rotation": -115,
+        "left_wrist_dorsiflexion": 10,
+        "right_wrist_dorsiflexion": 20
+      },
+      "lower_body": {
+        "hip_rotation": 45,
+        "hip_slide_toward_target_inches": 5,
+        "left_knee_flexion": 15,
+        "right_knee_flexion": 20,
+        "weight_distribution_left": 80,
+        "weight_distribution_right": 20,
+        "left_heel_on_ground": true,
+        "right_heel_on_ground": true
+      },
+      "clubshaft": {
+        "l_arm_to_clubshaft_angle": 150,
+        "clubshaft_to_plane_line": 10,
+        "forward_press_degrees": 20
+      },
+      "checkpoints": [
+        "Hips 45° OPEN to target",
+        "Elbows narrowest (8 inches)",
+        "Wrists uncocked via centrifugal force (not conscious)",
+        "Hands as LOW to ground as possible",
+        "Clubshaft forward pressed 20°"
+      ]
+    },
+    "P8.0": {
+      "name": "Clubshaft Parallel Through",
+      "phase": "follow_through",
+      "upper_body": {
+        "shoulder_rotation": 80,
+        "shoulder_alignment": "open",
+        "left_elbow_flexion": 180,
+        "right_elbow_flexion": 180,
+        "distance_between_elbows_inches": 9,
+        "left_elbow_position": 1,
+        "right_elbow_position": 1
+      },
+      "lower_body": {
+        "hip_rotation": 60,
+        "hip_slide_toward_target_inches": 5,
+        "left_knee_flexion": 0,
+        "right_knee_flexion": 30,
+        "weight_distribution_left": 60,
+        "weight_distribution_right": 40,
+        "left_heel_on_ground": true
+      },
+      "clubshaft": {
+        "l_arm_to_clubshaft_angle": 160,
+        "clubshaft_to_plane_line": 0
+      },
+      "checkpoints": [
+        "BOTH elbows straight (only position)",
+        "Maximum extension (160° L-arm to clubshaft)",
+        "Left knee fully extended",
+        "Right heel released 10° off ground",
+        "Arms above plane in vertical line"
+      ]
+    },
+    "P9.0": {
+      "name": "Right Arm Parallel Through",
+      "phase": "finish",
+      "upper_body": {
+        "shoulder_rotation": 100,
+        "left_elbow_flexion": 100,
+        "right_elbow_flexion": 70,
+        "left_elbow_distance_from_body_inches": 12,
+        "distance_between_elbows_inches": 8.5,
+        "left_elbow_position": 1,
+        "right_elbow_position": 1
+      },
+      "lower_body": {
+        "hip_rotation": 90,
+        "left_knee_flexion": 0,
+        "right_knee_flexion": 45,
+        "distance_between_knees_inches": 1,
+        "weight_distribution_left": 20,
+        "weight_distribution_right": 80
+      },
+      "clubshaft": {
+        "l_arm_to_clubshaft_angle": 90,
+        "clubshaft_parallel_to_ears": true
+      },
+      "checkpoints": [
+        "Maximum shoulder rotation (100°)",
+        "Wrists RECOCKED (90° L-arm to clubshaft)",
+        "Knees nearly touching (1 inch apart)",
+        "Right foot vertical to ground",
+        "Clubshaft parallel to ears (behind head)"
+      ]
+    },
+    "P10.0": {
+      "name": "Finish",
+      "phase": "finish",
+      "upper_body": {
+        "shoulder_rotation": 90,
+        "left_elbow_flexion": 20,
+        "right_elbow_flexion": 40,
+        "distance_between_elbows_inches": 13,
+        "left_elbow_position": 2,
+        "right_elbow_position": 2
+      },
+      "lower_body": {
+        "hip_rotation": 90,
+        "left_knee_flexion": 0,
+        "right_knee_flexion": 45,
+        "distance_between_knees_inches": 1,
+        "weight_distribution_left": 20,
+        "weight_distribution_right": 80
+      },
+      "clubshaft": {
+        "l_arm_to_clubshaft_angle": 90,
+        "clubshaft_tilted_to_horizon": 20,
+        "arms_parallel_to_ground": true
+      },
+      "checkpoints": [
+        "Both arms parallel to ground",
+        "Clubshaft tilted 20° to horizon",
+        "Fully balanced",
+        "Facing target"
+      ]
+    }
+  }
+}

@@ -1,0 +1,241 @@
+{
+  "id": "upgame-dimensions",
+  "version": "1.0.0",
+  "created": "2026-06-16",
+  "source": [
+    "UpGame product analysis (AK Golf competitive intelligence)",
+    "TrackMan UpGame marketing materials",
+    "NGF Norway partnership documentation",
+    "AK Golf HQ competitive benchmarking 2025-2026"
+  ],
+  "description": "Konkurranseintelligens og datamodell-dimensjoner for UpGame golf stats-app. IKKE et coachingframework — brukes til produktbenchmarking og strategisk posisjonering for AK Golf HQ og PlayerHQ.",
+  "provider_profile": {
+    "name": "UpGame",
+    "parent_company": "TrackMan A/S",
+    "market_position": "Premium golf stats og analyse-app koblet til TrackMan-økosystemet",
+    "market_reach": {
+      "college_teams": 90,
+      "national_federations": 25,
+      "academies": 20,
+      "notable_federations": ["NGF Norway", "Golf Australia", "R&A affiliated federations"]
+    },
+    "pricing": {
+      "basic": {
+        "tier": "Basic",
+        "price_usd_per_year": 99,
+        "description": "Grunnleggende statistikk og runde-registrering"
+      },
+      "pro": {
+        "tier": "Pro",
+        "price_usd_per_year": 299,
+        "description": "Full analyse-suite med alle dimensjoner"
+      }
+    },
+    "platform_availability": ["iOS (primary)", "Android (secondary, weaker UX)"],
+    "integration": "Native TrackMan data import"
+  },
+  "feature_matrix": [
+    {
+      "id": "data_registration",
+      "name": "Data Registration",
+      "name_no": "Dataregistrering",
+      "description": "Registrering av slag og posisjoner under runden",
+      "ug_capability": "Drag-and-drop-grensesnitt på satellittkart. Automatisk distanse- og ligge-deteksjon.",
+      "ug_strength": "Rask og intuitiv registrering under runden",
+      "ug_weakness": "Krever manuell registrering — ingen automatisk slag-gjenkjenning",
+      "ak_golf_hq_status": "Planlagt med TrackMan-integrasjon for automatisk datainnhenting"
+    },
+    {
+      "id": "sg_analysis",
+      "name": "Strokes Gained Analysis",
+      "name_no": "Strokes Gained-analyse",
+      "description": "Komplett SG-analyse med benchmarking",
+      "ug_capability": "5 SG-kategorier, benchmark mot PGA/LPGA, granulær analyse per distanse/kølle/ligge",
+      "ug_strength": "Solid SG-beregning med tour-benchmarks. Granulær og filtrérbar.",
+      "ug_weakness": "Ingen mapping til årsak (biomekanisk feil). Viser HVA men ikke HVORFOR.",
+      "ak_golf_hq_status": "AK Golf legger til MORAD-feil-lag: SG-diagnose → biomekanisk feil → drill"
+    },
+    {
+      "id": "tee_shot_analysis",
+      "name": "Tee Shot Analysis",
+      "name_no": "Tee-slag-analyse",
+      "description": "Dybdeanalyse av slag fra tee",
+      "ug_capability": "5-kategori sluttresultat, 25/45/65m-soner, dispersjonsoverlay",
+      "ug_strength": "God visualisering av mønster fra tee. Sonebasert analyse er nyttig.",
+      "ug_weakness": "Ingen teknisk forklaring på feilmønster",
+      "ak_golf_hq_status": "Planlagt med TrackMan launch monitor-data for ballistisk analyse"
+    },
+    {
+      "id": "approach_analysis",
+      "name": "Approach Analysis",
+      "name_no": "Innspill-analyse",
+      "description": "Dybdeanalyse av innspill mot green",
+      "ug_capability": "7-siders analyse, target feet vs flag feet, sluttresultat-kategorier",
+      "ug_strength": "Svært granulær — skiller mellom nøyaktighet mot flagg vs. mot planlagt landingssone",
+      "ug_weakness": "Ingen kobling mellom feilmønster og teknisk korreksjon",
+      "ak_golf_hq_status": "Overlegent med MORAD-kobling — APP-bånd → feil → drill → P-posisjon"
+    },
+    {
+      "id": "dispersion_data",
+      "name": "Dispersion Data",
+      "name_no": "Dispersjonsdata",
+      "description": "Visualisering av slagspredning og sikre siktemål",
+      "ug_capability": "Overlay på kart, UpGame Diamonds (sikreste siktemål basert på historisk dispersjon)",
+      "ug_strength": "Unikt og visuelt sterkt — UpGame Diamonds er differensierende feature",
+      "ug_weakness": "Reaktivt verktøy — viser historisk mønster men gir ikke proaktiv coaching",
+      "ak_golf_hq_status": "Ikke planlagt som kjernefeature i v1 — vurder i v2"
+    },
+    {
+      "id": "plan_round",
+      "name": "Plan Round",
+      "name_no": "Planlegg runden",
+      "description": "Pre-runde planleggingsverktøy",
+      "ug_capability": "Dispersjonsoverlay, TrackMan data-import, Shot Tracker",
+      "ug_strength": "Integrasjon med historiske data gjør planlegging datadrevet",
+      "ug_weakness": "Ingen periodisert kontekst — vet ikke om spilleren er i GRUNN/SPES/TURN-periode",
+      "ak_golf_hq_status": "AK Golf integrerer rundeplanlegging med CANON-periode og L-fase"
+    },
+    {
+      "id": "putting_analysis",
+      "name": "Putting Analysis",
+      "name_no": "Putting-analyse",
+      "description": "Omfattende putting-statistikk",
+      "ug_capability": "6 sider: break, hastighet vs. distanse, konverteringsrater, linje, stigningsgrad",
+      "ug_strength": "Mest komplette putting-analyse i kategori. Svært granulær.",
+      "ug_weakness": "Ingen teknisk kobling til slagmekanikk eller driller",
+      "ak_golf_hq_status": "Planlagt med baselines og kobling til putting-spesifikke driller"
+    },
+    {
+      "id": "mental_scoring",
+      "name": "Mental Scoring",
+      "name_no": "Mental skåring",
+      "description": "Subjektiv vurdering av mental prestasjon per slag",
+      "ug_capability": "Per-slag vurdering: Very Poor / Poor / Average / Good / Excellent",
+      "ug_strength": "Enkelt å registrere. Gir innsikt i mental konsistens over tid.",
+      "ug_weakness": "Subjektivt og ustrukturert. Ingen rammeverk for mental intervensjon.",
+      "ak_golf_hq_status": "AK Golf bruker PR-nivå (PR1-PR5) som strukturert pressurenivå — mer handlingsorientert"
+    },
+    {
+      "id": "filtering",
+      "name": "Filtering",
+      "name_no": "Filtrering",
+      "description": "Avansert filtrering av statistikk",
+      "ug_capability": "Filter på: vind, ligge, kølle, retning",
+      "ug_strength": "Fleksibel analyse for spillere med mye data",
+      "ug_weakness": "Kompleksitet kan overvelde amateur-brukere. UX er krevende.",
+      "ak_golf_hq_status": "Planlagt med forenklet filtrering tilpasset CANON-nivå A-K"
+    },
+    {
+      "id": "ai_insights",
+      "name": "AI Insights",
+      "name_no": "AI-innsikt",
+      "description": "Automatisk analyse etter runden",
+      "ug_capability": "Round Insights etter hver runde — topp 3 og verste 3 slag",
+      "ug_strength": "Øyeblikkelig tilbakemelding etter runden. Enkel og tilgjengelig.",
+      "ug_weakness": "Overflatisk — ingen handlingsbar plan. Diagnoserer men foreskriver ikke.",
+      "ak_golf_hq_status": "AK Golf MasterBrain: full agent-generert plan med why/what/expected_effect/why_now"
+    },
+    {
+      "id": "coach_ecosystem",
+      "name": "Coach Ecosystem",
+      "name_no": "Coach-økosystem",
+      "description": "Verktøy for coacher og akademier",
+      "ug_capability": "Roster management, turneringsoppretting, auto-deling, videoanalyse, chat, drill-tildeling, Digi Locker",
+      "ug_strength": "Komplett for akademier og nasjonale forbund. God funksjonell bredde.",
+      "ug_weakness": "Drill-tildeling er manuell og ikke koblet til SG-diagnose. Ingen automatisk planforslag.",
+      "ak_golf_hq_status": "CoachHQ → PlayerHQ workflow med agent-genererte planforslag. OVERLEGENT."
+    },
+    {
+      "id": "practice_library",
+      "name": "Practice Library",
+      "name_no": "Treningsbibliotek",
+      "description": "Treningsspill og øvelser",
+      "ug_capability": "Spill med leaderboards for treningsarenaen",
+      "ug_strength": "Motiverende og engasjerende for grupper",
+      "ug_weakness": "Beskrevet som 'bolted on, not linked to stats' — treningsspill er ikke koblet til statistikk eller planlegging",
+      "ak_golf_hq_status": "AK Golf: statistikk kobler direkte til spesifikke driller og PositionTasks. Ingen silo."
+    }
+  ],
+  "competitive_gaps": [
+    {
+      "id": "gap_1",
+      "gap": "Ingen analyse-til-handling-bro",
+      "severity": "critical",
+      "description": "UpGame diagnostiserer spillet — men foreskriver IKKE fikser. Ingen kobling mellom SG-diagnose og teknisk korreksjon.",
+      "opportunity": "STØRST MULIGHET for AK Golf: MORAD-feil-lag gir direkte vei fra SG-diagnose til drill og P-posisjon"
+    },
+    {
+      "id": "gap_2",
+      "gap": "Treningsverktøy er 'bolted on'",
+      "severity": "high",
+      "description": "Treningsspill og bibliotek er ikke koblet til SG-statistikk. Ingen automatisk planlegging.",
+      "opportunity": "AK Golf: driller og PositionTasks er direkte koblet til SG-analyse og CANON-plan"
+    },
+    {
+      "id": "gap_3",
+      "gap": "Kompleks UX — spesielt på Android",
+      "severity": "medium",
+      "description": "UpGame er funksjonelt kraftig men komplekst. Android-opplevelsen er svakere enn iOS.",
+      "opportunity": "AK Golf kan vinne på enklere UX tilpasset ulike CANON-nivåer"
+    },
+    {
+      "id": "gap_4",
+      "gap": "Pris — $299/år er høyt for amatørmarkedet",
+      "severity": "medium",
+      "description": "Pro-tier til $299/år er en barrière for amatører og juniorspillere.",
+      "opportunity": "AK Golf kan tilby mer verdi til lavere pris for akademi-studenter og juniorspillere"
+    },
+    {
+      "id": "gap_5",
+      "gap": "Ingen MORAD / biomekanisk feil-lag",
+      "severity": "critical",
+      "description": "UpGame har ingen mapping mellom SG-kategori og teknisk/biomekanisk årsak.",
+      "opportunity": "AK Golf MORAD-integrasjon er unik — ingen konkurrenter har dette i 2025"
+    },
+    {
+      "id": "gap_6",
+      "gap": "Ingen periodisert treningsplanlegging",
+      "severity": "high",
+      "description": "UpGame genererer ingen periodiserte treningsplaner. Ingen L-fase eller CANON-periode-bevissthet.",
+      "opportunity": "AK Golf CANON A-K + L-fase + pyramidefordeling er differensierende kjernekompetanse"
+    }
+  ],
+  "ak_golf_advantages": [
+    {
+      "id": "adv_1",
+      "advantage": "MORAD-feil-lag",
+      "description": "SG-diagnose → biomekanisk feil → drill → P-posisjon metrikker. Ingen konkurrent har dette.",
+      "feature": "Komplett analyse-til-handling pipeline"
+    },
+    {
+      "id": "adv_2",
+      "advantage": "Periodiserte planer",
+      "description": "CANON A-K nivåer + L-fase + pyramidefordeling gir automatisk genererte og pedagogisk korrekte treningsplaner.",
+      "feature": "LTAD-basert periodisering"
+    },
+    {
+      "id": "adv_3",
+      "advantage": "Integrert trening",
+      "description": "Statistikk kobler direkte til spesifikke driller og PositionTasks — ingen silo mellom analyse og trening.",
+      "feature": "Stats → Drill → PositionTask pipeline"
+    },
+    {
+      "id": "adv_4",
+      "advantage": "TrackMan sannhetslag",
+      "description": "Ekte launch monitor-data mater SG-beregninger. Ikke estimert — faktisk målt.",
+      "feature": "TrackMan-integrasjon for SG-beregning"
+    },
+    {
+      "id": "adv_5",
+      "advantage": "Coach-til-spiller arbeidsflyt",
+      "description": "CoachHQ → PlayerHQ med agent-genererte planforslag. Coach godkjenner — system implementerer.",
+      "feature": "AI-assistert coach workflow"
+    },
+    {
+      "id": "adv_6",
+      "advantage": "CANON A-K nivåtilpasning",
+      "description": "All analyse, kommunikasjon og planlegging er tilpasset spillerens CANON-nivå — ikke ett generisk grensesnitt.",
+      "feature": "Nivå-adaptiv UX"
+    }
+  ]
+}

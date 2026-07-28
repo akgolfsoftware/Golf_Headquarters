@@ -1,0 +1,300 @@
+{
+  "id": "ltad-framework",
+  "version": "1.0.0",
+  "created": "2026-06-16",
+  "source": [
+    "Dansk ATK 2.0 (Team Danmark)",
+    "Olympiatoppen 2025-2028 strategiplan",
+    "Nordic talent development research",
+    "Long-Term Athlete Development (LTAD) framework"
+  ],
+  "description": "Long-Term Athlete Development rammeverk tilpasset AK Golf. Definerer treningsfaser, volum, fokusområder og mapping til AK Golf CANON-nivåer og AK-stigen.",
+  "phases": [
+    {
+      "id": "foundation",
+      "name": "Foundation",
+      "name_no": "Grunnlag",
+      "age_min": 5,
+      "age_max": 8,
+      "training_hours_per_week_min": 1,
+      "training_hours_per_week_max": 2,
+      "golf_hours_per_week_min": 2,
+      "golf_hours_per_week_max": 4,
+      "physical_focus": [
+        "Grunnleggende bevegelsesmønstre",
+        "Koordinasjon",
+        "Smidighet",
+        "Generell motorikk"
+      ],
+      "technical_focus": [
+        "Basis-teknikk",
+        "Mange repetisjoner",
+        "Nøyaktighet over hastighet",
+        "Lek-basert læring"
+      ],
+      "mental_focus": [
+        "Indre motivasjon",
+        "Glede",
+        "Lek",
+        "Utforskning"
+      ],
+      "coaching_principles": [
+        "Lek og moro i sentrum",
+        "Ingen prestasjonskrav",
+        "Mangfold av bevegelsesaktiviteter",
+        "Positivt læringsmiljø"
+      ]
+    },
+    {
+      "id": "development",
+      "name": "Development",
+      "name_no": "Utvikling",
+      "age_min": 9,
+      "age_max": 14,
+      "training_hours_per_week_min": 3,
+      "training_hours_per_week_max": 6,
+      "golf_hours_per_week_min": 3,
+      "golf_hours_per_week_max": 6,
+      "physical_focus": [
+        "Systematisk fysisk trening",
+        "Egen kroppsvekt",
+        "Smidighet",
+        "Sprint og hurtighet"
+      ],
+      "technical_focus": [
+        "Teknikk i økende tempo",
+        "Presisjonstrening",
+        "Grunnleggende slagtyper"
+      ],
+      "mental_focus": [
+        "Avspenning",
+        "Målsetting",
+        "Visualisering",
+        "Fokus og konsentrasjon"
+      ],
+      "coaching_principles": [
+        "Innføring av strukturert trening",
+        "Dual career bevissthet starter",
+        "RAE-kompensasjon i talentutvelgelse",
+        "Søvn 8-10 timer prioriteres"
+      ]
+    },
+    {
+      "id": "specialization",
+      "name": "Specialization",
+      "name_no": "Spesialisering",
+      "age_min": 14,
+      "age_max": 17,
+      "training_hours_per_week_min": 8,
+      "training_hours_per_week_max": 12,
+      "golf_hours_per_week_min": 10,
+      "golf_hours_per_week_max": 15,
+      "physical_focus": [
+        "Fysisk grunnlagsbygging",
+        "Styrke med vekter (progressivt)",
+        "Skadeforebygging",
+        "Eksplosivitet"
+      ],
+      "technical_focus": [
+        "Anvendt teknikk i høy hastighet",
+        "Spesialisering på golfspesifikke bevegelser",
+        "Posisjonstrening (P1-P9)"
+      ],
+      "mental_focus": [
+        "Selvtillit",
+        "Spenningsregulering",
+        "Prestasjon under press",
+        "Konkurranseintroduktion"
+      ],
+      "coaching_principles": [
+        "Optimal spesialiseringsalder i golf: sjelden før 14-16 år",
+        "Styrketrening med vekter introduseres progressivt",
+        "Skadeforebygging integreres i alle økter",
+        "Dual career (idrett+utdanning) er forutsetning"
+      ]
+    },
+    {
+      "id": "performance",
+      "name": "Performance",
+      "name_no": "Prestasjon",
+      "age_min": 18,
+      "age_max": 21,
+      "training_hours_per_week_min": 12,
+      "training_hours_per_week_max": 18,
+      "golf_hours_per_week_min": 15,
+      "golf_hours_per_week_max": 20,
+      "physical_focus": [
+        "Optimalisering av prestasjonsparametere",
+        "Integrert fysisk trening",
+        "Kraft og hurtighet",
+        "Restitusjon og periodisering"
+      ],
+      "technical_focus": [
+        "Anvendt teknikk i konkurranse",
+        "Finjustering av slagmekanikk",
+        "Situasjonsspesifikk teknikk"
+      ],
+      "mental_focus": [
+        "Konkurransestrategier",
+        "Vinnermentalitet",
+        "Prestasjon under ekstremt press",
+        "Rutiner og ritualer"
+      ],
+      "coaching_principles": [
+        "Konkurranse er treningsarena",
+        "Integrasjon av alle prestasjonsparametere",
+        "Periodisert sesongplan",
+        "Målrettet turneringsseleksjon"
+      ]
+    },
+    {
+      "id": "elite",
+      "name": "Elite",
+      "name_no": "Elite",
+      "age_min": 21,
+      "age_max": 99,
+      "training_hours_per_week_min": 15,
+      "training_hours_per_week_max": 25,
+      "golf_hours_per_week_min": 20,
+      "golf_hours_per_week_max": 25,
+      "physical_focus": [
+        "Toppnivå vedlikehold",
+        "Individualisert fysisk program",
+        "Skadeforebygging og restitusjon",
+        "Langsiktig atletatlevsomhet"
+      ],
+      "technical_focus": [
+        "Konkurranse-nivå finjustering",
+        "Minimal teknisk endring",
+        "Optimalisering av styrker"
+      ],
+      "mental_focus": [
+        "Full konkurransepsykologi",
+        "Prestasjonsrutin-mestring",
+        "Mentalt recovery",
+        "Karriereplanlegging"
+      ],
+      "coaching_principles": [
+        "Svært individualisert tilnærming",
+        "Data-drevet beslutning (TrackMan/SG)",
+        "Integrert støtteapparat",
+        "Tour-level profesjonalisme"
+      ]
+    }
+  ],
+  "key_principles": {
+    "optimal_specialization_age": {
+      "value": "14-16 år",
+      "note": "Optimal spesialiseringsalder i golf er sjelden før 14-16 år. Tidlig spesialisering øker risiko for skade og utbrenthet."
+    },
+    "relative_age_effect": {
+      "acronym": "RAE",
+      "description": "Barn født tidlig på året er overrepresentert i talentprogrammer med opptil 50%.",
+      "implication": "Kompenser aktivt ved talentutvelgelse — vurder biologisk alder, ikke bare kronologisk."
+    },
+    "sleep": {
+      "youth_hours": "8-10 timer",
+      "learning_benefit": "15-20% forbedring i motorisk læring gjennom nevral sirkuitkonsolidering ved tilstrekkelig søvn.",
+      "priority": "Søvn er høyeste prioritet for unge utøvere."
+    },
+    "deliberate_practice": {
+      "principle": "Kvalitet > volum",
+      "description": "Bevisst praksis med full konsentrasjon og umiddelbar tilbakemelding er mer effektivt enn høyt treningsvolum uten fokus."
+    },
+    "dual_career": {
+      "description": "Kombinasjon av idrett og utdanning er forutsetning for langsiktig suksess.",
+      "relevance": "Spesielt kritisk i spesialiseringsfasen (14-17 år) — tilrettelegg for begge deler."
+    },
+    "early_diversification": {
+      "description": "Variert idrettsdeltakelse i ung alder bygger bedre atletisk grunnlag enn tidlig spesialisering.",
+      "golf_application": "Barn under 12 år bør oppmuntres til å spille andre idretter i tillegg til golf."
+    }
+  },
+  "golf_volumes": {
+    "age_6_10": {
+      "label": "6-10 år",
+      "hours_per_week_min": 2,
+      "hours_per_week_max": 4,
+      "phase": "foundation"
+    },
+    "age_11_14": {
+      "label": "11-14 år",
+      "hours_per_week_min": 3,
+      "hours_per_week_max": 6,
+      "phase": "development"
+    },
+    "age_15_18_elite": {
+      "label": "15-18 år (elite junior)",
+      "hours_per_week_min": 10,
+      "hours_per_week_max": 15,
+      "phase": "specialization"
+    },
+    "senior": {
+      "label": "Seniorer (18+)",
+      "hours_per_week_min": 15,
+      "hours_per_week_max": 25,
+      "phase": "performance_or_elite"
+    }
+  },
+  "canon_mapping": {
+    "foundation": {
+      "ltad_phase": "foundation",
+      "ak_stige": ["Mini", "Knøtt"],
+      "canon_categories": ["A", "B", "C"],
+      "description": "Basisinnlæring, lek og utforskning. Fokus på bevegelsesglede og grunnleggende slagmekanikk."
+    },
+    "development": {
+      "ltad_phase": "development",
+      "ak_stige": ["Basis", "Utvikling"],
+      "canon_categories": ["C", "D", "E", "F"],
+      "description": "Systematisk teknisk utvikling. Innføring av strukturert trening og konkurranse."
+    },
+    "specialization": {
+      "ltad_phase": "specialization",
+      "ak_stige": ["Utvikling", "Elite"],
+      "canon_categories": ["F", "G", "H", "I"],
+      "description": "Spesialisert golftrening med høyt volum. Integrert fysisk og teknisk utvikling."
+    },
+    "performance": {
+      "ltad_phase": "performance",
+      "ak_stige": ["Elite"],
+      "canon_categories": ["I", "J", "K"],
+      "description": "Konkurransefokusert trening. Optimalisering av alle prestasjonsparametere."
+    },
+    "elite": {
+      "ltad_phase": "elite",
+      "ak_stige": ["ProElite"],
+      "canon_categories": ["K"],
+      "description": "Tour-nivå vedlikehold og optimalisering. Svært individualisert tilnærming."
+    }
+  },
+  "olympiatoppen_4phase_model": {
+    "description": "Olympiatoppen norsk modell for prestasjonskultur og treningsprosess",
+    "phases": [
+      {
+        "phase": 1,
+        "name": "Målprosess",
+        "components": ["Evaluering", "Konkretisering", "Involvering"],
+        "description": "Definere og forankre mål med utøver og støtteapparat."
+      },
+      {
+        "phase": 2,
+        "name": "Organisering",
+        "components": ["Rolleavklaring", "Kompetansekrav", "Ledelse"],
+        "description": "Strukturere støtteapparat og definere ansvar."
+      },
+      {
+        "phase": 3,
+        "name": "Treningsprosess",
+        "components": ["Daglig treningskvalitet", "Relasjoner", "Konkurranseforberedelser"],
+        "description": "Utføre høykvalitets trening med fokus på relasjoner og konkurranseklargjøring."
+      },
+      {
+        "phase": 4,
+        "name": "Prestasjonskultur",
+        "components": ["Etikk", "Holdninger", "Verdier"],
+        "description": "Bygge og vedlikeholde en kultur som fremmer toppprestasjoner."
+      }
+    ]
+  }
+}
