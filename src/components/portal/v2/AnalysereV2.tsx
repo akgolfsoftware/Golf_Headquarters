@@ -18,6 +18,13 @@ import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import type { MinGolfData } from "@/lib/min-golf/load-min-golf";
 import type { AnalyticsWorkbenchData } from "@/app/portal/analysere/actions";
+import { hentTreningsHistorikkFiltrert } from "@/app/portal/analysere/actions";
+import {
+  AnalyseFilterBar,
+  TOMME_FILTRE,
+  type AnalyseFiltre,
+} from "./AnalyseFilterBar";
+import { MILJO_GRUPPE_LABEL } from "@/lib/taxonomy";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { useMount, EASE } from "@/lib/v2/hooks";
@@ -370,57 +377,89 @@ function TabStatistikk({ data }: { data: AnalysereData }) {
 
 /* ── Fane: Trening ─────────────────────────────────────────────────── */
 
-const ALLE_AKSER: AkseKey[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
+/** Svaret fra hentTreningsHistorikkFiltrert, slik klienten mottar det. */
+type HistorikkSvar = Awaited<ReturnType<typeof hentTreningsHistorikkFiltrert>>;
 
-function TabTrening({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
+function TabTrening({ data, mobile, userId }: { data: AnalysereData; mobile: boolean; userId: string }) {
   const { training } = data.workbench;
-  // Alle akser forhåndsvalgt (ikke bare aksene med registrerte minutter) — så
-  // fordelingskortet viser en fylt graf ved første besøk i stedet for
-  // tom-tilstand, selv når enkelte akser ennå ikke har treningsdata.
-  const [aktive, setAktive] = useState<string[]>(ALLE_AKSER);
 
-  const toggle = (x: string) => setAktive((p) => (p.indexOf(x) !== -1 ? p.filter((y) => y !== x) : [...p, x]));
-  const synlig = training.byAxis.filter((b) => aktive.indexOf(b.axis) !== -1);
-  // Ekte andel av total tid (summerer til 100 %) — kortet heter «andel av
-  // tiden», så prosenten må aldri normaliseres mot største akse.
-  const synligTotalMin = Math.max(1, synlig.reduce((sum, b) => sum + b.minutes, 0));
+  // Filtrert historikk (2026-07-27). Erstatter den gamle 30-dagers-låsen og
+  // akse-filteret som bare skjulte rader i ett kort — nå styrer filteret hele
+  // fanen, og tallene kommer fra faktisk gjennomførte driller.
+  const [filtre, setFiltre] = useState<AnalyseFiltre>(TOMME_FILTRE);
+  const [hist, setHist] = useState<HistorikkSvar | null>(null);
+  const [laster, setLaster] = useState(true);
 
-  // Sekundært innsiktskort under filteret (desktop) — mest trente akse totalt
-  // siste 30 dager. Rene tall som allerede ligger i training.byAxis, ingen ny
-  // datakilde; unngår tom flate uten å duplisere fordelings-listen til høyre.
-  const totalMin = training.byAxis.reduce((s, b) => s + b.minutes, 0);
-  const mestTrent = totalMin > 0 ? training.byAxis.slice().sort((a, b) => b.minutes - a.minutes)[0] : null;
-
-  const filtre = (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      <Kort
-        eyebrow="Filtre · akser i fordelingen"
-        action={
-          <button
-            className="v2-press v2-focus"
-            onClick={() => setAktive(ALLE_AKSER)}
-            style={{ appearance: "none", cursor: "pointer", background: "none", border: "none", padding: 0, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.lime }}
-          >
-            NULLSTILL
-          </button>
+  // Ved filterbytte beholdes forrige resultat til det nye kommer, i stedet for
+  // å blanke ut flaten — mindre blafring, og tallene byttes i ett hopp.
+  useEffect(() => {
+    let aktiv = true;
+    hentTreningsHistorikkFiltrert({
+      userId,
+      periode: filtre.periode,
+      filtre: {
+        kilde: filtre.kilde,
+        pyramide: filtre.akser.length ? filtre.akser : undefined,
+        csNivaa: filtre.csNivaaer.length ? filtre.csNivaaer : undefined,
+        miljoGrupper: filtre.miljoGrupper.length ? filtre.miljoGrupper : undefined,
+      },
+    })
+      .then((res) => {
+        if (aktiv) {
+          setHist(res);
+          setLaster(false);
         }
-      >
-        <Caps size={9} style={{ marginBottom: 7 }}>Akse</Caps>
-        <FilterChips items={ALLE_AKSER} active={aktive} axis onToggle={toggle} />
+      })
+      .catch(() => {
+        if (aktiv) setLaster(false);
+      });
+    return () => {
+      aktiv = false;
+    };
+  }, [userId, filtre]);
+
+  const o = hist?.oppsummering;
+  const mestTrent = o?.perPyramide[0] ?? null;
+
+  const filtrePanel = (
+    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <Kort eyebrow="Vis trening">
+        <AnalyseFilterBar
+          filtre={filtre}
+          onEndre={setFiltre}
+          vinduLabel={hist?.vinduLabel ?? "…"}
+          fallbackVarsel={hist?.ingenAktivPeriode}
+          csNivaaer={hist?.tilgjengeligeCsNivaaer ?? []}
+        />
       </Kort>
-      {/* Vises på ALLE flater — mobil skal ha samme data som desktop
-          (Anders 2026-07-13: all data/historikk/filtre på begge). */}
       {mestTrent && (
-        <Kort eyebrow="Mest trent · siste 30 dager">
-          <AkseChip a={mestTrent.axis as AkseKey} />
+        <Kort eyebrow={`Mest trent · ${hist?.vinduLabel ?? ""}`}>
+          <AkseChip a={mestTrent.akse as AkseKey} />
           <div style={{ marginTop: 12 }}>
             <TallHero
-              value={Math.round((mestTrent.minutes / totalMin) * 100)}
-              unit="% av volumet"
-              sub={`${mestTrent.minutes} min · ${mestTrent.sessions} økter`}
+              value={Math.round(mestTrent.andel * 100)}
+              unit="% av tiden"
+              sub={`${mestTrent.minutter} min`}
               size={38}
             />
           </div>
+        </Kort>
+      )}
+      {/* Hvor treningen skjedde — «teknikk på range vs på bane» i tall. */}
+      {o && o.perMiljoGruppe.length > 0 && (
+        <Kort eyebrow="Hvor treningen skjedde">
+          <FordelingHode kol2="Min" />
+          {o.perMiljoGruppe.map((m, i, arr) => (
+            <FordelingRad
+              key={m.gruppe}
+              code={m.gruppe}
+              label={MILJO_GRUPPE_LABEL[m.gruppe]}
+              pct={m.andel * 100}
+              value={`${m.minutter} min`}
+              kol2
+              last={i === arr.length - 1}
+            />
+          ))}
         </Kort>
       )}
     </div>
@@ -430,14 +469,83 @@ function TabTrening({ data, mobile }: { data: AnalysereData; mobile: boolean }) 
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <Kort tint>
         <TallHero
-          label="Treningsvolum · siste 30 dager"
-          value={komma(training.minutes / 60)}
+          label={`Treningsvolum · ${hist?.vinduLabel ?? ""}`}
+          value={laster ? "…" : komma((o?.totaltMinutter ?? 0) / 60)}
           unit="timer"
-          sub={`${training.sessions} økter · ${training.reps} reps`}
+          sub={
+            o
+              ? `${o.antallOkter} økter · ${o.antallRader} øvelser${
+                  o.andelMaalt > 0 ? ` · ${Math.round(o.andelMaalt * 100)} % målt tid` : ""
+                }`
+              : "Henter …"
+          }
           size={mobile ? 44 : 48}
-          action={<StatusPill tone="up">{training.sessions} økter</StatusPill>}
+          action={o ? <StatusPill tone="up">{o.antallOkter} økter</StatusPill> : undefined}
           hjelp="treningsVolum"
         />
+      </Kort>
+
+      {/* Fordeling per akse — nå fra faktisk gjennomførte driller. */}
+      <Kort eyebrow="Fordeling per område · andel av tiden">
+        {o && o.perPyramide.length > 0 ? (
+          <>
+            <FordelingHode kol2="Min" />
+            {o.perPyramide.map((p, i, arr) => (
+              <FordelingRad
+                key={p.akse}
+                code={p.akse}
+                label={SG_ETIKETT(p.akse as PyramidArea)}
+                pct={p.andel * 100}
+                value={`${p.minutter} min`}
+                kol2
+                last={i === arr.length - 1}
+              />
+            ))}
+          </>
+        ) : laster ? (
+          <TomTilstand icon="activity" title="Henter trening …" sub="Et øyeblikk." />
+        ) : (
+          <TomTilstand
+            icon="activity"
+            title="Ingen trening i dette vinduet"
+            sub="Prøv et lengre tidsrom, eller nullstill filtrene."
+          />
+        )}
+      </Kort>
+
+      {/* Selve historikken — én rad per gjennomført øvelse. */}
+      <Kort eyebrow="Gjennomført trening">
+        {hist && hist.rader.length > 0 ? (
+          hist.rader.slice(0, 40).map((r, i, arr) => (
+            <Rad
+              key={r.id}
+              leading={
+                <span style={{ width: 46, flex: "none", fontFamily: T.mono, fontSize: 10, color: T.mut }}>
+                  {kortDato(new Date(r.dato))}
+                </span>
+              }
+              title={r.navn}
+              sub={[
+                SG_ETIKETT(r.pyramide as PyramidArea),
+                r.omraade,
+                r.miljoGruppe ? MILJO_GRUPPE_LABEL[r.miljoGruppe] : null,
+                `${r.minutter} min${r.maalt ? "" : " (planlagt)"}`,
+              ]
+                .filter(Boolean)
+                .join(" · ")}
+              trailing={r.kilde === "FYS" ? <StatusPill tone="info">Fysisk</StatusPill> : null}
+              last={i === arr.length - 1}
+            />
+          ))
+        ) : laster ? (
+          <TomTilstand icon="activity" title="Henter trening …" sub="Et øyeblikk." />
+        ) : (
+          <TomTilstand
+            icon="activity"
+            title="Ingen økter her"
+            sub="Gjennomførte økter dukker opp så snart de er logget."
+          />
+        )}
       </Kort>
 
       {training.analyse && (
@@ -468,52 +576,6 @@ function TabTrening({ data, mobile }: { data: AnalysereData; mobile: boolean }) 
         </Kort>
       )}
 
-      <Kort eyebrow="Fordeling per akse · andel av tiden">
-        {synlig.length > 0 ? (
-          <>
-            <FordelingHode kol2="Min · Økter" />
-            {synlig
-              .slice()
-              .sort((a, b) => b.minutes - a.minutes)
-              .map((b, i, arr) => (
-                <FordelingRad
-                  key={b.axis}
-                  code={b.axis}
-                  label={SG_ETIKETT(b.axis)}
-                  pct={(b.minutes / synligTotalMin) * 100}
-                  value={`${b.minutes} min · ${b.sessions}`}
-                  kol2
-                  last={i === arr.length - 1}
-                />
-              ))}
-          </>
-        ) : aktive.length === 0 ? (
-          <TomTilstand icon="activity" title="Ingen akser valgt" sub="Slå på minst én akse i filteret." />
-        ) : training.sessions > 0 ? (
-          /* Ærlig tomtilstand: KPI-en over teller økter/timer fra en annen kilde
-             enn per-akse-fordelingen — si det som det er, ikke «ingen data». */
-          <TomTilstand icon="activity" title="Øktene mangler områdefordeling ennå" sub="Øktene dine er logget, men uten fordeling per akse. Fordelingen fylles når økter logges med øvelser per område." />
-        ) : (
-          <TomTilstand icon="activity" title="Ingen treningsdata ennå" sub="Fordelingen fylles når treningsøkter er logget med øvelser." />
-        )}
-      </Kort>
-
-      <Kort eyebrow="Siste økter">
-        {training.recentSessions.length > 0 ? (
-          training.recentSessions.map((s, i, arr) => (
-            <Rad
-              key={s.id}
-              leading={<span style={{ width: 46, flex: "none", fontFamily: T.mono, fontSize: 10, color: T.mut }}>{kortDato(s.date)}</span>}
-              title={s.title}
-              sub={`${s.durationMin} min${s.reps > 0 ? ` · ${s.reps} reps` : ""}`}
-              trailing={null}
-              last={i === arr.length - 1}
-            />
-          ))
-        ) : (
-          <TomTilstand icon="activity" title="Ingen økter" sub="Registrerte treningsøkter vises her." />
-        )}
-      </Kort>
     </div>
   );
 
@@ -521,12 +583,12 @@ function TabTrening({ data, mobile }: { data: AnalysereData; mobile: boolean }) 
     /* Mobil: filterpanelet ØVERST (før innholdet) — samme rekkefølge som
        desktop (venstre/topp), aldri filtre gjemt under lange lister. */
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {filtre}
+      {filtrePanel}
       {resultat}
     </div>
   ) : (
     <div className="grid" style={{ gridTemplateColumns: "2fr 3fr", gap: T.gap, alignItems: "start" }}>
-      {filtre}
+      {filtrePanel}
       {resultat}
     </div>
   );
@@ -745,11 +807,15 @@ const ER_TAB = (v: string | null): v is TabId => !!v && TABS.some((t) => t.id ==
 export function AnalysereV2({
   data,
   header,
+  userId,
 }: {
   data: AnalysereData;
   /** Overstyr default «Din analyse»-hodet (brukes av AgencyOS coach-speilet).
    *  Render-prop får `mobile` så tittelen forblir responsiv. */
   header?: (mobile: boolean) => ReactNode;
+  /** Spilleren analysen gjelder — Trening-fanen henter historikk for denne.
+   *  Coach-speilet sender spillerens id, ikke coachens. */
+  userId: string;
 }) {
   const mobile = useMobile();
   const [tab, setTab] = useState<TabId>("sg");
@@ -792,7 +858,7 @@ export function AnalysereV2({
       <FaneInnhold key={tab}>
         {tab === "sg" && <TabSG data={data} mobile={mobile} />}
         {tab === "statistikk" && <TabStatistikk data={data} />}
-        {tab === "trening" && <TabTrening data={data} mobile={mobile} />}
+        {tab === "trening" && <TabTrening data={data} mobile={mobile} userId={userId} />}
         {tab === "trackman" && <TabTrackman data={data} mobile={mobile} />}
         {tab === "tester" && <TabTester data={data} mobile={mobile} />}
       </FaneInnhold>
