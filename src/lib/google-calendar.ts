@@ -322,11 +322,15 @@ export async function pushBookingToCalendar(bookingId: string): Promise<string |
 
   const calendar = getCalendarApi(conn);
 
-  const userName = booking.user?.name ?? "Gjest";
-  const userEmail = booking.user?.email ?? null;
-  const summary = `${booking.serviceType.name} — ${userName}`;
+  // Event-tittel = KUN spillerens fulle navn (Anders' beslutning 2026-07-27).
+  // Gjester (user=null) har navnet i guestName — «Gjest» kun som siste utvei.
+  // Tjeneste/varighet flyttes til beskrivelsen så info ikke går tapt.
+  const userName = booking.user?.name ?? booking.guestName ?? "Gjest";
+  const userEmail = booking.user?.email ?? booking.guestEmail ?? null;
+  const summary = userName;
   const description = [
     userEmail ? `Spiller: ${userName} (${userEmail})` : `Spiller: ${userName}`,
+    `Økt: ${booking.serviceType.name} (${booking.serviceType.durationMin} min)`,
     booking.notes ? `Notater: ${booking.notes}` : null,
     `Booket via AK Golf Platform`,
   ]
@@ -339,7 +343,11 @@ export async function pushBookingToCalendar(bookingId: string): Promise<string |
     location: `${booking.location.name}, ${booking.location.address}`,
     start: { dateTime: booking.startAt.toISOString(), timeZone: "Europe/Oslo" },
     end: { dateTime: booking.endAt.toISOString(), timeZone: "Europe/Oslo" },
-    attendees: userEmail ? [{ email: userEmail, displayName: userName }] : [],
+    // Kun registrerte brukere inviteres — gjeste-epost her ville sendt
+    // Google-invitasjon til kunden uten Anders' godkjenning.
+    attendees: booking.user?.email
+      ? [{ email: booking.user.email, displayName: userName }]
+      : [],
   };
 
   let primaryEventId: string | null = booking.googleEventId;

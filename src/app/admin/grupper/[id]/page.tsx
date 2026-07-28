@@ -7,6 +7,7 @@
 
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import {
@@ -56,8 +57,11 @@ export default async function GruppeDetaljPage({
   const { id } = await params;
   const { trinn } = await searchParams;
 
-  const gruppe = await prisma.group.findUnique({
-    where: { id },
+  // Eierskap: uten filteret kunne en coach åpne en annen coachs gruppe og se
+  // medlemmenes navn, handicap og planstatus — og alle knappene ville feilet
+  // uansett, siden actions nå håndhever eierskap. notFound() nedenfor tar null.
+  const gruppe = await prisma.group.findFirst({
+    where: { id, ...(user.role === "COACH" ? { coachId: user.id } : {}) },
     include: {
       coach: { select: { id: true, name: true, email: true, avatarUrl: true } },
       members: {
@@ -106,8 +110,10 @@ export default async function GruppeDetaljPage({
   const runderMap = new Map(runderPerMedlem.map((r) => [r.userId, r]));
   const planMap = new Map(planerPerMedlem.map((p) => [p.userId, p]));
 
+  // Coach-scoping: uten porten listet «legg til medlem» HELE spillerregisteret
+  // som kandidater — inkludert andre coachers spillere og selvbetjente (I0).
   const kandidaterRaw = await prisma.user.findMany({
-    where: { role: "PLAYER", deletedAt: null, id: { notIn: memberIds } },
+    where: { AND: [coachScopedPlayerWhere(user), { id: { notIn: memberIds } }] },
     select: { id: true, name: true, hcp: true, homeClub: true },
     orderBy: { name: "asc" },
   });

@@ -10,6 +10,7 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { notify } from "@/lib/notifications";
 
@@ -30,7 +31,12 @@ export async function tildelTest(
   const { spillerId, testId, note, dueDate } = parsed.data;
 
   const [player, test] = await Promise.all([
-    prisma.user.findFirst({ where: { id: spillerId, deletedAt: null }, select: { id: true } }),
+    // Coach-scoping: rolle-sjekk alene lot en coach tildele test — og sende
+    // varsel — til en hvilken som helst bruker-id.
+    prisma.user.findFirst({
+      where: { AND: [coachScopedPlayerWhere(coach), { id: spillerId }] },
+      select: { id: true },
+    }),
     prisma.testDefinition.findUnique({ where: { id: testId }, select: { id: true, name: true } }),
   ]);
   if (!player || !test) return { ok: false, error: "Fant ikke spiller eller test." };

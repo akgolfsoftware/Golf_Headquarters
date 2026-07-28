@@ -9,6 +9,7 @@
 
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { hentSpillerAkKategori } from "@/lib/domain/spiller-kategori";
 import { AdminTildelTestV2, type AdminTildelTestV2Data } from "@/components/admin/v2/AdminTildelTestV2";
@@ -20,12 +21,14 @@ export default async function TildelTestPage({
 }: {
   params: Promise<{ spillerId: string }>;
 }) {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const viewer = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { spillerId } = await params;
 
   const [spiller, tester, totalt, fullforte] = await Promise.all([
-    prisma.user.findUnique({
-      where: { id: spillerId },
+    // Coach-scoping: uten porten lakk skjermen navn, handicap og AK-kategori
+    // for en vilkårlig bruker-id.
+    prisma.user.findFirst({
+      where: { AND: [coachScopedPlayerWhere(viewer), { id: spillerId }] },
       select: { id: true, name: true, hcp: true },
     }),
     prisma.testDefinition

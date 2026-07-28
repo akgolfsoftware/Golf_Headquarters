@@ -6,8 +6,9 @@
  * flyttet 1:1 uendret. Presentasjon + skjema bor i MarkedBookingBekreftV2
  * (v2, MRamme).
  */
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { MarkedBookingBekreftV2 } from "@/components/marketing/v2/MarkedBookingBekreftV2";
 
@@ -17,6 +18,10 @@ type Props = {
 };
 
 export default async function BekreftPage({ params, searchParams }: Props) {
+  // Pauset for publikum: sperren må også stå her — siden kan nås med
+  // direktelenke utenom landing/tjenesteside.
+  if (!(await kanBrukeInnebygdBooking())) redirect("/booking");
+
   const { slug } = await params;
   const { start, coach } = await searchParams;
 

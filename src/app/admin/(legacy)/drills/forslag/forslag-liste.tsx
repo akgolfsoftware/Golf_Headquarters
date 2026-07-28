@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { Check, X, Play, CheckCheck, XOctagon } from "lucide-react";
 import { godkjennDrillForslag, avvisDrillForslag } from "./actions";
+import { safeUrl } from "@/lib/security/safe-url";
 
 export type ForslagRad = {
   id: string;
@@ -116,9 +117,11 @@ export function ForslagListe({ forslag }: { forslag: ForslagRad[] }) {
             {d.begrunnelse && (
               <p className="mt-1.5 text-xs italic text-muted-foreground">{d.begrunnelse}</p>
             )}
-            {d.kildeUrl && (
+            {/* safeUrl: kildeUrl kommer fra eksterne RSS-/YouTube-kilder (radar-agenten)
+                — samme javascript:/data:-risiko som videoUrl under. */}
+            {safeUrl(d.kildeUrl) && (
               <a
-                href={d.kildeUrl}
+                href={safeUrl(d.kildeUrl)!}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-1 inline-block text-xs text-muted-foreground underline decoration-dotted"
@@ -126,9 +129,11 @@ export function ForslagListe({ forslag }: { forslag: ForslagRad[] }) {
                 Kilde: {d.kildeNavn ?? d.kildeUrl}
               </a>
             )}
-            {d.videoUrl && (
+            {/* safeUrl: denne URL-en er LLM-generert (drill-forslag) — høyest
+                risiko for javascript:/data:. zod .url() slipper dem gjennom. */}
+            {safeUrl(d.videoUrl) && (
               <a
-                href={d.videoUrl}
+                href={safeUrl(d.videoUrl)!}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-2 inline-flex items-center gap-1.5 text-sm text-destructive hover:underline"

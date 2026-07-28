@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { krevManuellHelseSamtykke } from "@/lib/health/samtykke";
 
 // ISO date-streng (YYYY-MM-DD). Lagres i Postgres som DATE (uten klokkeslett).
 const InputSchema = z.object({
@@ -21,6 +22,13 @@ export type HelseInput = z.infer<typeof InputSchema>;
 
 export async function lagreHelseEntry(input: HelseInput) {
   const user = await requirePortalUser();
+
+  // Hvilepuls, HRV, søvn og vekt er «særlig kategori» (GDPR art. 9) — samme
+  // opplysninger som en treningsklokke gir, bare tastet inn for hånd. At
+  // spilleren fyller ut skjemaet er ikke i seg selv et uttrykkelig samtykke,
+  // så porten står her og ikke bare i grensesnittet.
+  await krevManuellHelseSamtykke(user.id);
+
   const parsed = InputSchema.parse(input);
 
   // Postgres DATE — bruk midnight UTC for å unngå tz-drift.

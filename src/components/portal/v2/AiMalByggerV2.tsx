@@ -15,11 +15,18 @@ import {
   Knapp,
   ValgKort,
   Inndata,
+  Velger,
   InnsiktChip,
   StatusPill,
 } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { lagreMalForslag, type MalForslagInput } from "@/app/portal/ai/mal-bygger/actions";
+import { PYR_REKKEFOLGE, PYR_LABEL } from "@/lib/pyramide";
+import type { PyramidArea } from "@/generated/prisma/client";
+
+export type MalTestOption = { id: string; name: string };
+
+const PYRAMID_SELECT_OPTIONS = PYR_REKKEFOLGE.map((a) => ({ value: a, label: PYR_LABEL[a] }));
 
 type Horizon = "SESONG" | "KVARTAL" | "MANED";
 type Focus = "RESULTAT" | "PROSESS" | "BALANSERT";
@@ -45,9 +52,15 @@ type Template = {
   title: string;
   fields: { key: string; label: string; placeholder: string }[];
   hint: string;
+  /** Ekstra dropdown-felt for kobling (treningskategori eller test) — valgfritt. */
+  selectField?: {
+    key: string;
+    label: string;
+    options: { value: string; label: string }[];
+  };
 };
 
-const TEMPLATES: Template[] = [
+const BASIS_TEMPLATES: Template[] = [
   {
     id: "hcp",
     type: "HCP_TARGET",
@@ -87,12 +100,48 @@ const TEMPLATES: Template[] = [
     ],
     hint: "Tester gir deg en baseline og viser om treningen virker.",
   },
+  {
+    id: "session-frequency",
+    type: "SESSION_FREQUENCY",
+    category: "PROCESS",
+    categoryLabel: "Prosess",
+    title: "Gjennomføre {antall} {kategori}-økter i uka",
+    fields: [{ key: "antall", label: "Økter / uke", placeholder: "f.eks. 3" }],
+    selectField: { key: "kategori", label: "Treningskategori", options: PYRAMID_SELECT_OPTIONS },
+    hint: "Fremdriften telles automatisk fra fullførte økter i denne kategorien — ingen egen logging.",
+  },
 ];
+
+function testScoreTemplate(testOptions: MalTestOption[]): Template {
+  return {
+    id: "test-score",
+    type: "TEST_SCORE",
+    category: "OUTCOME",
+    categoryLabel: "Resultat",
+    title: "Nå {poeng} poeng på {test}",
+    fields: [{ key: "poeng", label: "Målpoeng", placeholder: "f.eks. 8" }],
+    selectField: {
+      key: "test",
+      label: "Test",
+      options: testOptions.map((t) => ({ value: t.id, label: t.name })),
+    },
+    hint: "Fremdriften oppdateres automatisk hver gang du tar testen på nytt.",
+  };
+}
+
+/** Legger inn label for et selectField (kategori/test) i verdiene som fyller tittelen. */
+function medValgtLabel(g: { template: Template; values: Record<string, string>; selectValue: string }): Record<string, string> {
+  if (!g.template.selectField) return g.values;
+  const label = g.template.selectField.options.find((o) => o.value === g.selectValue)?.label ?? "";
+  return { ...g.values, [g.template.selectField.key]: label };
+}
 
 type SelectedGoal = {
   template: Template;
   values: Record<string, string>;
   targetDate: string;
+  /** Valgt verdi for template.selectField (kategori-kode eller test-id). */
+  selectValue: string;
 };
 
 function fillTitle(template: Template, values: Record<string, string>): string {
@@ -103,7 +152,9 @@ function fillTitle(template: Template, values: Record<string, string>): string {
 }
 
 function isComplete(g: SelectedGoal): boolean {
-  return g.template.fields.every((f) => (g.values[f.key]?.trim().length ?? 0) > 0);
+  const feltOk = g.template.fields.every((f) => (g.values[f.key]?.trim().length ?? 0) > 0);
+  const valgOk = !g.template.selectField || g.selectValue.trim().length > 0;
+  return feltOk && valgOk;
 }
 
 /** Liten kategori-tag (Resultat/Prosess) i mal-kortene. */
@@ -144,9 +195,11 @@ function StegRad({ aktiv }: { aktiv: 1 | 2 | 3 }) {
 export function AiMalByggerV2({
   playerFirstName,
   defaultYearEnd,
+  testOptions,
 }: {
   playerFirstName: string;
   defaultYearEnd: string;
+  testOptions: MalTestOption[];
 }) {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -156,11 +209,17 @@ export function AiMalByggerV2({
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
+  // Testresultat-malen vises kun når det finnes en godkjent test å koble til.
+  const TEMPLATES = useMemo(
+    () => (testOptions.length > 0 ? [...BASIS_TEMPLATES, testScoreTemplate(testOptions)] : BASIS_TEMPLATES),
+    [testOptions],
+  );
+
   const visibleTemplates = useMemo(() => {
     if (focus === "RESULTAT") return TEMPLATES.filter((t) => t.category === "OUTCOME");
     if (focus === "PROSESS") return TEMPLATES.filter((t) => t.category === "PROCESS");
     return TEMPLATES;
-  }, [focus]);
+  }, [focus, TEMPLATES]);
 
   const chosen = Object.values(selected);
   const readyCount = chosen.filter(isComplete).length;
@@ -175,6 +234,7 @@ export function AiMalByggerV2({
           template,
           values: {},
           targetDate: defaultYearEnd,
+          selectValue: "",
         };
       }
       return next;
@@ -192,6 +252,10 @@ export function AiMalByggerV2({
     setSelected((prev) => ({ ...prev, [id]: { ...prev[id], targetDate: value } }));
   }
 
+  function setSelectValue(id: string, value: string) {
+    setSelected((prev) => ({ ...prev, [id]: { ...prev[id], selectValue: value } }));
+  }
+
   function save() {
     setError(null);
     const payload: MalForslagInput[] = chosen.filter(isComplete).map((g) => {
@@ -202,9 +266,12 @@ export function AiMalByggerV2({
       return {
         type: g.template.type,
         category: g.template.category === "OUTCOME" ? "OUTCOME" : "PROCESS",
-        title: fillTitle(g.template, g.values),
+        title: fillTitle(g.template, medValgtLabel(g)),
         targetValue: Number.isFinite(rawNum) ? rawNum : null,
         targetDate: g.targetDate || null,
+        linkedPyramidArea:
+          g.template.type === "SESSION_FREQUENCY" ? (g.selectValue as PyramidArea) : null,
+        linkedTestId: g.template.type === "TEST_SCORE" ? g.selectValue : null,
       };
     });
     if (payload.length === 0) {
@@ -297,7 +364,7 @@ export function AiMalByggerV2({
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <KategoriTag category={t.category} label={t.categoryLabel} />
                       <div style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 600, color: T.fg, marginTop: 6, lineHeight: 1.4 }}>
-                        {open ? fillTitle(t, sel.values) : t.title.replace(/\{(\w+)\}/g, "…")}
+                        {open ? fillTitle(t, medValgtLabel(sel)) : t.title.replace(/\{(\w+)\}/g, "…")}
                       </div>
                       <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 4, lineHeight: 1.5 }}>{t.hint}</div>
                     </div>
@@ -315,6 +382,16 @@ export function AiMalByggerV2({
                           mono
                         />
                       ))}
+                      {t.selectField && (
+                        <div style={{ gridColumn: "1 / -1" }}>
+                          <Velger
+                            label={t.selectField.label}
+                            options={t.selectField.options}
+                            value={sel.selectValue}
+                            onChange={(v) => setSelectValue(t.id, v)}
+                          />
+                        </div>
+                      )}
                       <div style={{ gridColumn: "1 / -1" }}>
                         <Inndata
                           label="Frist"
@@ -355,7 +432,7 @@ export function AiMalByggerV2({
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <KategoriTag category={g.template.category} label={g.template.categoryLabel} />
                     <div style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 600, color: T.fg, marginTop: 6, lineHeight: 1.4 }}>
-                      {fillTitle(g.template, g.values)}
+                      {fillTitle(g.template, medValgtLabel(g))}
                     </div>
                     <div style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut, marginTop: 5, textTransform: "uppercase", letterSpacing: "0.04em" }}>
                       Frist{" "}

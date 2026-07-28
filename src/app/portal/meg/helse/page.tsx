@@ -7,8 +7,10 @@
  * Datoer formateres her (nb-NO) så klientkomponenten forblir serialiserbar.
  */
 
-import { TilbakeLenke } from "@/components/v2";
+import Link from "next/link";
+import { TilbakeLenke, Kort, Icon, T } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { harManuellHelseSamtykke } from "@/lib/health/samtykke";
 import { prisma } from "@/lib/prisma";
 import { hentFysScore } from "@/lib/fys-data";
 import { hentBelastning } from "@/lib/health/belastning";
@@ -22,8 +24,65 @@ function formatDatoKort(d: Date): string {
   return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short" });
 }
 
+/**
+ * Vises i stedet for helse-loggen når spilleren ikke har samtykket til at vi
+ * lagrer helsetall (GDPR art. 9). Én vei videre, og ingen skyldfølelse:
+ * treningen går som før uansett hva spilleren velger.
+ */
+function HelseSamtykkeMangler() {
+  return (
+    <Kort>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+        <Icon name="heart" size={16} style={{ color: T.fg2 }} />
+        <span style={{ fontFamily: T.disp, fontSize: 17, fontWeight: 700, color: T.fg, letterSpacing: "-0.02em" }}>
+          Helse-loggen er avslått
+        </span>
+      </div>
+      <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, margin: 0, lineHeight: 1.55, maxWidth: "48ch" }}>
+        Søvn, puls, vekt og skader er sensitive opplysninger, så vi lagrer dem
+        ikke før du sier ja. Slår du det på, kan du føre dem her og bruke dem til
+        å tilpasse treningen din. Treningen din går helt som før uansett hva du
+        velger.
+      </p>
+      <div style={{ marginTop: 16 }}>
+        <Link
+          href="/portal/meg/innstillinger/personvern"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "10px 16px",
+            borderRadius: 11,
+            background: T.forest,
+            color: "#fff",
+            fontFamily: T.ui,
+            fontSize: 13.5,
+            fontWeight: 600,
+            textDecoration: "none",
+          }}
+        >
+          Slå på helse-loggen
+          <Icon name="arrow-right" size={14} />
+        </Link>
+      </div>
+    </Kort>
+  );
+}
+
 export default async function HelsePage() {
   const user = await requirePortalUser();
+
+  // Uten art. 9-samtykke lagrer vi ingenting her, og da skal skjemaet heller
+  // ikke stå framme og invitere til å fylle det ut. Serveren avviser uansett
+  // (se actions.ts) — dette er den ærlige forklaringen på hvorfor.
+  if (!(await harManuellHelseSamtykke(user.id))) {
+    return (
+      <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+        <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
+        <HelseSamtykkeMangler />
+      </V2Shell>
+    );
+  }
 
   // Siste 14 dagers logg, nyest først (identisk med tidligere /portal/meg/helse).
   const since = new Date();
