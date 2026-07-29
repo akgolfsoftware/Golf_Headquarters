@@ -40,7 +40,7 @@ export interface HurtigOpprettProps {
 
 /**
  * Foreslå klokkeslett for en tom luke: neste 30-min slot etter forrige
- * aktivitet. Klemmes til Notion-grid 05:00–23:00.
+ * aktivitet. Klemmes til Notion-grid 04:00–23:00.
  */
 export function foreslaTid(sisteStartKl?: string, varighetMin = 60): string {
   return foreslaGridTid(sisteStartKl, varighetMin);

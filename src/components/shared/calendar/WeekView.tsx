@@ -1,6 +1,6 @@
 "use client";
 
-// WeekView — 7-dagers timegrid (Notion Calendar-fasit: 05:00–23:00, 30 min).
+// WeekView — 7-dagers timegrid (Notion Calendar-fasit: 04:00–23:00, 20 min).
 //
 // - Første kolonne er tid (64px)
 // - PIXEL_PER_HOUR fra notion-grid
