@@ -24,6 +24,8 @@ import {
   syncLiveLeaderboards,
   syncNgfSchedule,
 } from "@/lib/turneringer/sync";
+import { runDedupePlayerNames } from "@/lib/turneringer/dedupe-player-names";
+import { prisma } from "@/lib/prisma";
 import { syncPgaSkillRatings, syncPgaPuttDistance, syncPgaApproach } from "@/lib/stats/pga-sync";
 import {
   runMorgenbrief,
@@ -80,6 +82,8 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "turneringer-players": syncNorwegianPlayers,
   "turneringer-live": syncLiveLeaderboards,
   "turneringer-ngf": syncNgfSchedule,
+  // Navnevask PublicPlayer — kun formateringsvarianter (apply). Middelnavn = manuell.
+  "dedupe-player-names": () => runDedupePlayerNames(prisma, { apply: true }),
   // /stats/pga sync (Fase 2 — ukentlig)
   "pga-skill-ratings": syncPgaSkillRatings,
   "pga-putt-distance": syncPgaPuttDistance,
