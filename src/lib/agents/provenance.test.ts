@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { byggProvenance } from "./provenance";
+import { byggProvenance, provenanceLesbarTekst } from "./provenance";
 
 test("byggProvenance: gyldig input gir strukturert provenance", () => {
   const p = byggProvenance({
@@ -46,4 +46,35 @@ test("byggProvenance: ugyldig kilde gir undefined uten å kaste", () => {
     regel: "test",
   });
   assert.equal(p, undefined);
+});
+
+test("provenanceLesbarTekst: formaterer full struktur norsk og lesbart", () => {
+  const p = byggProvenance({
+    kilde: "RUNDER",
+    rader: [{ id: "r1", dato: "2026-07-20" }],
+    regel: "SG APP under terskel -0.35",
+    terskel: -0.35,
+    maaltVerdi: -0.42,
+  });
+  const tekst = provenanceLesbarTekst(p);
+  assert.equal(
+    tekst,
+    "SG APP under terskel -0.35, grense -0.35, målt -0.42 — kilde: runder (1 rad)",
+  );
+});
+
+test("provenanceLesbarTekst: null/ugyldig input gir null (skjuler seksjon)", () => {
+  assert.equal(provenanceLesbarTekst(null), null);
+  assert.equal(provenanceLesbarTekst(undefined), null);
+  assert.equal(provenanceLesbarTekst({ ugyldig: true }), null);
+});
+
+test("provenanceLesbarTekst: uten rader utelater rad-antall", () => {
+  const p = byggProvenance({
+    kilde: "PLAN",
+    rader: [],
+    regel: "avvik over terskel",
+  });
+  const tekst = provenanceLesbarTekst(p);
+  assert.equal(tekst, "avvik over terskel — kilde: plan");
 });

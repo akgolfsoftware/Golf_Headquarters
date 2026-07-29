@@ -63,3 +63,33 @@ export function byggProvenance(input: {
   });
   return parsed.success ? parsed.data : undefined;
 }
+
+const KILDE_LABEL: Record<ProvenanceKilde, string> = {
+  RUNDER: "runder",
+  TRACKMAN: "TrackMan",
+  TESTER: "tester",
+  PLAN: "plan",
+  PAMELDING: "påmelding",
+  INNLOGGING: "innlogging",
+};
+
+/**
+ * Norsk, lesbar ett-linjes forklaring av en provenance-struktur — til bruk i
+ * AgencyOS-godkjenninger («Hvorfor dette forslaget»). Tar imot ukjent/ugyldig
+ * input (f.eks. rå Prisma Json) og returnerer `null` i stedet for å kaste,
+ * slik at eldre rader uten provenance rett og slett skjuler seksjonen.
+ */
+export function provenanceLesbarTekst(raw: unknown): string | null {
+  const parsed = provenanceSchema.safeParse(raw);
+  if (!parsed.success) return null;
+  const p = parsed.data;
+
+  const deler: string[] = [p.regel];
+  if (p.terskel != null) deler.push(`grense ${p.terskel}`);
+  if (p.maaltVerdi != null) deler.push(`målt ${p.maaltVerdi}`);
+
+  const kilde = KILDE_LABEL[p.kilde];
+  const antall = p.rader.length > 0 ? ` (${p.rader.length} rad${p.rader.length === 1 ? "" : "er"})` : "";
+
+  return `${deler.join(", ")} — kilde: ${kilde}${antall}`;
+}

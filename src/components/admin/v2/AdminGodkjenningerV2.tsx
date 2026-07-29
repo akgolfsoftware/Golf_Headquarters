@@ -47,6 +47,9 @@ export interface AdminGodkjenningV2Row {
   kilde?: "agent" | "caddie" | "forespørsel";
   /** A1: kilder uten inline godkjenn-action lenker til sin flate. */
   eksternHref?: string | null;
+  /** Punkt 5: lesbar forklaring fra PlanAction.provenance. Skjules når null
+   *  (eldre saker uten strukturert kilde-sporing). */
+  hvorfor?: string | null;
 }
 export interface AdminGodkjenningerV2Data {
   rows: AdminGodkjenningV2Row[];
@@ -275,6 +278,21 @@ function SakKort({ row, mobile }: { row: SakMedAntall; mobile: boolean }) {
                 {row.signalValue != null ? ` = ${row.signalValue}` : ""}
                 <HjelpTips k="signalVerdi" size={11} />
               </span>
+            </div>
+          )}
+
+          {row.hvorfor && (
+            <div
+              style={{
+                fontFamily: T.ui,
+                fontSize: 11,
+                lineHeight: 1.5,
+                color: T.mut,
+                marginTop: 6,
+              }}
+            >
+              <span style={{ fontWeight: 700 }}>Hvorfor dette forslaget: </span>
+              {row.hvorfor}
             </div>
           )}
 
