@@ -1,6 +1,6 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
-import { periodeTypeFraNavn, ukjenteNavn } from "./periode-navn";
+import { periodeTypeFraNavn, periodeTypeFraNavnMedEkstra, ukjenteNavn } from "./periode-navn";
 
 describe("periodeTypeFraNavn", () => {
   // De fem navnene som faktisk ligger i prod 2026-07-29.
@@ -33,5 +33,30 @@ describe("periodeTypeFraNavn", () => {
       "Sommersamling",
     ]);
     assert.deepEqual(ukjenteNavn(["GRUNN", "SPES"]), []);
+  });
+});
+
+// Coach-lagte mappinger (PeriodeNavnMapping) supplerer ordboken uten kodeendring.
+describe("periodeTypeFraNavnMedEkstra", () => {
+  test("hardkodet ordbok slår alltid ekstra-mappinger", () => {
+    assert.equal(periodeTypeFraNavnMedEkstra("GRUNN", { grunn: "FERIE" }), "GRUNN");
+  });
+
+  test("ukjent navn løses via ekstra-mappingen, normalisert", () => {
+    assert.equal(
+      periodeTypeFraNavnMedEkstra("  Sommersamling ", { sommersamling: "TURNERING" }),
+      "TURNERING",
+    );
+  });
+
+  test("fortsatt ukjent uten treff i noen av kildene", () => {
+    assert.equal(periodeTypeFraNavnMedEkstra("Vintersamling", { sommersamling: "TURNERING" }), null);
+  });
+
+  test("ukjenteNavn respekterer ekstra-mappinger", () => {
+    assert.deepEqual(
+      ukjenteNavn(["GRUNN", "Sommersamling"], { sommersamling: "TURNERING" }),
+      [],
+    );
   });
 });

@@ -5014,6 +5014,21 @@ model PeriodeFordeling {
   @@map("periode_fordelinger")
 }
 
+// Coach-lagt oversettelse fra fritekst periodenavn (TrainingPeriod.name) til
+// PeriodeType — supplerer den hardkodede ordboken i periode-navn.ts uten
+// kodeendring. `navn` lagres trim+lowercase-normalisert (periodeTypeFraNavn
+// sin normalisering), så oppslag er case-insensitivt uten funksjonell indeks.
+// Additiv (ingen enum-drift), plain felt, ingen @relation, per gotcha-regelen.
+model PeriodeNavnMapping {
+  id            String   @id @default(cuid())
+  navn          String   @unique
+  periodeType   String
+  oppdatertAvId String?
+  oppdatertAt   DateTime @default(now()) @updatedAt
+
+  @@map("periode_navn_mappinger")
+}
+
 /// Sync-state for DataGolf-endepunkter. Skrives ikke av denne appen i dag,
 /// men beholdes fordi ak-golf-intelligence-tjenesten kan bruke tabellen.
 /// (Reconciliert fra pre-eksisterende prod-drift 2026-07-18; ligger i den nye

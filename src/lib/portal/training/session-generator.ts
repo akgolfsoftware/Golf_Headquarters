@@ -30,8 +30,9 @@ import type {
   MMiljo,
 } from "@/generated/prisma/client";
 import { validateSessionConstraints, type Periode } from "./periode-constraints";
-import { periodeTypeFraNavn } from "./periode-navn";
+import { periodeTypeFraNavnMedEkstra } from "./periode-navn";
 import { hentEffektivePeriodeConstraints } from "./periode-fordeling";
+import { hentEkstraPeriodeNavn } from "./periode-navn-mapping";
 
 // ---------------------------------------------------------------------------
 // Typer
@@ -79,8 +80,17 @@ export async function genererOkter(input: GenererInput): Promise<GenererResultat
   const { planId, startDato, sluttDato, spilllerId } = input;
 
   // Hent alt vi trenger i parallell.
-  const [plan, ankere, mønstre, oppskrift, regler, eksisterendeOkter, spillerGrupper, effektiveConstraints] =
-    await Promise.all([
+  const [
+    plan,
+    ankere,
+    mønstre,
+    oppskrift,
+    regler,
+    eksisterendeOkter,
+    spillerGrupper,
+    effektiveConstraints,
+    ekstraPeriodeNavn,
+  ] = await Promise.all([
       prisma.trainingPlan.findUniqueOrThrow({
         where: { id: planId },
         select: { id: true, userId: true, createdById: true },
@@ -114,6 +124,7 @@ export async function genererOkter(input: GenererInput): Promise<GenererResultat
         select: { groupId: true },
       }),
       hentEffektivePeriodeConstraints(),
+      hentEkstraPeriodeNavn(),
     ]);
 
   // Perioder for validering: spillerens grupper + gruppeuavhengige perioder,
@@ -128,7 +139,7 @@ export async function genererOkter(input: GenererInput): Promise<GenererResultat
   });
   const perioder: Periode[] = periodeRader
     .map((p) => {
-      const type = periodeTypeFraNavn(p.name);
+      const type = periodeTypeFraNavnMedEkstra(p.name, ekstraPeriodeNavn);
       return type ? { type, startDato: p.startDate, sluttDato: p.endDate } : null;
     })
     .filter((p): p is Periode => p !== null);

@@ -29,12 +29,29 @@ const NAVN_TIL_TYPE: Record<string, PeriodeType> = {
   ferie: "FERIE",
 };
 
+/** Normalisert nøkkel for et periodenavn — samme normalisering brukes ved lagring i DB. */
+export function normaliserNavn(navn: string): string {
+  return navn.trim().toLowerCase();
+}
+
 /** PeriodeType for et periodenavn, eller null hvis navnet er ukjent. */
 export function periodeTypeFraNavn(navn: string): PeriodeType | null {
-  return NAVN_TIL_TYPE[navn.trim().toLowerCase()] ?? null;
+  return NAVN_TIL_TYPE[normaliserNavn(navn)] ?? null;
+}
+
+/**
+ * Som periodeTypeFraNavn, men slår i tillegg opp i coach-lagte mappinger
+ * (PeriodeNavnMapping, hentet via periode-navn-mapping.ts sin
+ * hentEkstraPeriodeNavn()). `ekstra` er nøkkelnormalisert på samme måte.
+ */
+export function periodeTypeFraNavnMedEkstra(
+  navn: string,
+  ekstra: Record<string, PeriodeType>,
+): PeriodeType | null {
+  return periodeTypeFraNavn(navn) ?? ekstra[normaliserNavn(navn)] ?? null;
 }
 
 /** Navn som ikke lar seg oversette — for synlig varsling i UI, ikke stille frafall. */
-export function ukjenteNavn(navn: string[]): string[] {
-  return [...new Set(navn.filter((n) => periodeTypeFraNavn(n) === null))];
+export function ukjenteNavn(navn: string[], ekstra: Record<string, PeriodeType> = {}): string[] {
+  return [...new Set(navn.filter((n) => periodeTypeFraNavnMedEkstra(n, ekstra) === null))];
 }
