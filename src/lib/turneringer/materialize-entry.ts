@@ -55,16 +55,35 @@ export type MirrorTournamentResultInput = {
   /** Prefer scoreToPar (til par); fallback totalScore. */
   scoreToPar: number | null;
   totalScore: number | null;
+  /**
+   * PublicPlayerEntry.status (REGISTERED | TEED_OFF | CUT | WITHDREW | FINISHED).
+   * Brukes til TournamentEntry.entryStatus.
+   */
+  publicEntryStatus?: string | null;
 };
 
+/** Map public leaderboard-status → PlayerHQ TournamentEntryStatus. */
+export function mapPublicStatusToEntryStatus(
+  publicStatus: string | null | undefined,
+): "PLANNED" | "CONFIRMED" | "WITHDRAWN" | "COMPLETED" | "DNF" {
+  const s = (publicStatus ?? "").toUpperCase();
+  if (s === "CUT" || s === "WITHDREW") return "DNF";
+  if (s === "FINISHED") return "COMPLETED";
+  if (s === "TEED_OFF") return "CONFIRMED";
+  if (s === "REGISTERED") return "PLANNED";
+  // Har vi resultat uten status → regn som gjennomført
+  return "COMPLETED";
+}
+
 /**
- * Hvis PublicPlayer har linkedUser (User.publicPlayerId), upsert TournamentResult
- * så PlayerHQ-profil (Analysere) får automatisk historikk.
+ * Hvis PublicPlayer har linkedUser (User.publicPlayerId):
+ * 1) upsert TournamentResult
+ * 2) sørg for TournamentEntry (Analysere-listen baserer seg på entry)
  */
 export async function mirrorTournamentResultForLinkedUser(
   prisma: PrismaClient,
   input: MirrorTournamentResultInput,
-): Promise<{ mirrored: boolean; userId?: string }> {
+): Promise<{ mirrored: boolean; userId?: string; entryEnsured?: boolean }> {
   const user = await prisma.user.findFirst({
     where: { publicPlayerId: input.publicPlayerId, deletedAt: null },
     select: { id: true },
@@ -97,7 +116,29 @@ export async function mirrorTournamentResultForLinkedUser(
     },
   });
 
-  return { mirrored: true, userId: user.id };
+  const entryStatus = mapPublicStatusToEntryStatus(input.publicEntryStatus);
+  const existingEntry = await prisma.tournamentEntry.findFirst({
+    where: { userId: user.id, tournamentId: input.tournamentId },
+    select: { id: true },
+  });
+
+  if (existingEntry) {
+    await prisma.tournamentEntry.update({
+      where: { id: existingEntry.id },
+      data: { entryStatus },
+    });
+  } else {
+    await prisma.tournamentEntry.create({
+      data: {
+        userId: user.id,
+        tournamentId: input.tournamentId,
+        entryStatus,
+        notes: "Automatisk fra turneringsresultat",
+      },
+    });
+  }
+
+  return { mirrored: true, userId: user.id, entryEnsured: true };
 }
 
 /**

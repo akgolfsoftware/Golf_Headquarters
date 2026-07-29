@@ -256,6 +256,7 @@ export async function syncGolfBoxLeaderboards(
         position: e.position,
         scoreToPar: e.toParValue,
         totalScore: null,
+        publicEntryStatus: entryStatus(e, completed),
       });
       if (mir.mirrored) resultsMirrored++;
     }
