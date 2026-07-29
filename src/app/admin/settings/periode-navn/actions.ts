@@ -17,30 +17,9 @@ import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { normaliserNavn, ukjenteNavn } from "@/lib/portal/training/periode-navn";
+import { PERIODE_LABEL, type PeriodeNavnOversikt } from "./labels";
 
 const PATH = "/admin/settings/periode-navn";
-
-const PERIODE_LABEL: Record<PeriodeType, string> = {
-  GRUNN: "Grunnperiode",
-  SPESIALISERING: "Spesialisering",
-  TURNERING: "Turneringsfase",
-  EVALUERING: "Evaluering",
-  FERIE: "Ferie",
-};
-
-export type PeriodeNavnLabel = { verdi: PeriodeType; navn: string };
-export const PERIODE_NAVN_LABELS: PeriodeNavnLabel[] = (
-  Object.keys(PERIODE_LABEL) as PeriodeType[]
-).map((verdi) => ({ verdi, navn: PERIODE_LABEL[verdi] }));
-
-export type LagretPeriodeNavn = { navn: string; periodeType: PeriodeType; periodeTypeLabel: string };
-
-export type PeriodeNavnOversikt = {
-  /** Coach-lagte mappinger — kan slettes. */
-  lagrede: LagretPeriodeNavn[];
-  /** Navn funnet i faktiske TrainingPeriod-rader som ikke gjenkjennes ennå. */
-  ukjente: string[];
-};
 
 /** Last gjeldende mappinger + navn som fortsatt ikke er gjenkjent. */
 export async function hentPeriodeNavnOversikt(): Promise<PeriodeNavnOversikt> {
