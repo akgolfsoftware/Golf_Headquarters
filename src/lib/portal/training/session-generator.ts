@@ -21,6 +21,7 @@ import {
 import { prisma } from "@/lib/prisma";
 import type {
   TrainingSessionV2,
+  TrainingDrillV2,
   LockedAnchor,
   PeriodVolumeRecipe,
   PeriodRecipeOkt,
@@ -29,6 +30,8 @@ import type {
   PracticeType,
   MMiljo,
 } from "@/generated/prisma/client";
+import { validateSessionConstraints, type Periode } from "./periode-constraints";
+import { tilPeriodeType } from "@/lib/canon/valider-plan";
 
 // ---------------------------------------------------------------------------
 // Typer
@@ -76,7 +79,7 @@ export async function genererOkter(input: GenererInput): Promise<GenererResultat
   const { planId, startDato, sluttDato, spilllerId } = input;
 
   // Hent alt vi trenger i parallell.
-  const [plan, ankere, mønstre, oppskrift, regler, eksisterendeOkter] = await Promise.all([
+  const [plan, ankere, mønstre, oppskrift, regler, eksisterendeOkter, seasonPlans] = await Promise.all([
     prisma.trainingPlan.findUniqueOrThrow({
       where: { id: planId },
       select: { id: true, userId: true, createdById: true },
@@ -105,7 +108,19 @@ export async function genererOkter(input: GenererInput): Promise<GenererResultat
       },
       select: { id: true, startTime: true, endTime: true },
     }),
+    prisma.seasonPlan.findMany({
+      where: { userId: spilllerId },
+      select: { periodBlocks: { select: { lPhase: true, startDate: true, endDate: true } } },
+    }),
   ]);
+
+  const perioder: Periode[] = seasonPlans
+    .flatMap((sp) => sp.periodBlocks)
+    .map((pb) => {
+      const type = tilPeriodeType(pb.lPhase);
+      return type ? { type, startDato: pb.startDate, sluttDato: pb.endDate } : null;
+    })
+    .filter((p): p is Periode => p !== null);
 
   const coachId = plan.createdById ?? plan.userId;
   const hoppetOver: HoppetOver[] = [];
@@ -270,7 +285,29 @@ export async function genererOkter(input: GenererInput): Promise<GenererResultat
   });
   const okter = etter.filter((o) => !førSet.has(o.id));
 
-  return { okter, hoppetOver, regelBrudd: [] };
+  // periode-constraints (pyramide-maks per økt + volum-tak per uke) — samme
+  // regelsett UI-et advarer coach med. Merk: genererte økter har ingen drills
+  // ennå (kun coach-nivå blokk-planlegging), så drill-baserte prosenter blir
+  // 0 % inntil en drill-fordeling legges til denne genereringsveien — ærlig
+  // «ingen brudd», ikke en fasit på at planen er balansert.
+  const okterMedDrills: (TrainingSessionV2 & { drills: TrainingDrillV2[] })[] = okter.map((o) => ({
+    ...o,
+    drills: [],
+  }));
+  const { bruddBeskrivelser: regelBrudd } = validateSessionConstraints(okterMedDrills, perioder);
+
+  if (regelBrudd.length > 0) {
+    await Promise.all(
+      regelBrudd.map((b) =>
+        prisma.trainingSessionV2.update({
+          where: { id: b.sessionId },
+          data: { regelBrudd: b.brudd, trengerOppmerksomhet: true },
+        }),
+      ),
+    );
+  }
+
+  return { okter, hoppetOver, regelBrudd };
 }
 
 // ---------------------------------------------------------------------------
