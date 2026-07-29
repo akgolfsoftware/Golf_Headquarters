@@ -43,6 +43,8 @@ test("runSgAnalyseEkspert — hovedløp og duplikatsperre", async (t) => {
   // dermed skal velges som primary-område.
   const runder = [
     {
+      id: "round-1",
+      playedAt: new Date("2026-07-01"),
       score: 82,
       sgTotal: -0.4,
       sgOtt: 0.1,

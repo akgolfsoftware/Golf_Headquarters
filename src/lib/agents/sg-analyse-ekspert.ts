@@ -7,6 +7,7 @@ import { mapSgBandToFault } from "@/lib/training/skills/morad-fault";
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { varsleVedPlanAction } from "./notify-plan-action";
+import { byggProvenance } from "./provenance";
 
 export const AGENT_NAME = "sg-analyse-ekspert";
 
@@ -87,6 +88,13 @@ export async function runSgAnalyseEkspert(
             runder: runder.length,
           },
         },
+        provenance: byggProvenance({
+          kilde: "RUNDER",
+          rader: runder.map((r) => ({ id: r.id, dato: r.playedAt.toISOString() })),
+          regel: `SG ${primary} under terskel ${SG_TERSKEL}`,
+          terskel: SG_TERSKEL,
+          maaltVerdi: sgValue,
+        }),
       },
     });
 

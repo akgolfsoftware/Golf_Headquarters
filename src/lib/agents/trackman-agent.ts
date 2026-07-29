@@ -7,6 +7,7 @@ import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { mapSgBandToFault } from "@/lib/training/skills/morad-fault";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { varsleVedPlanAction } from "./notify-plan-action";
+import { byggProvenance } from "./provenance";
 
 export const AGENT_NAME = "trackman-agent";
 
@@ -169,6 +170,18 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
                   metric: "smash_factor",
                 },
               },
+              provenance: byggProvenance({
+                kilde: "TRACKMAN",
+                rader: [
+                  {
+                    id: sisteSesjon.id,
+                    dato: sisteSesjon.recordedAt.toISOString(),
+                  },
+                ],
+                regel: "smash factor-snitt under 1.38",
+                terskel: 1.38,
+                maaltVerdi: snitt,
+              }),
             },
           });
           planActionsWritten++;
