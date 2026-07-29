@@ -1626,6 +1626,9 @@ model Signal {
   kind       String
   value      Float?
   payload    Json?
+  // Sporbarhet: hvilke rader/regler/terskler som utløste signalet. Nullbar —
+  // gamle signaler har ingen provenance.
+  provenance Json?
   computedAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -1647,6 +1650,9 @@ model PlanAction {
   // Status: PENDING | ACCEPTED | REJECTED
   status     String   @default("PENDING")
   agentName  String
+  // Sporbarhet: hvilke rader/regler/terskler som utløste forslaget. Nullbar —
+  // gamle forslag har ingen provenance.
+  provenance Json?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
