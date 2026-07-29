@@ -9,7 +9,8 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
-import { hentPeriodeNavnOversikt, PERIODE_NAVN_LABELS } from "./actions";
+import { hentPeriodeNavnOversikt } from "./actions";
+import { PERIODE_NAVN_LABELS } from "./labels";
 import { PeriodeNavnV2 } from "@/components/admin/v2/PeriodeNavnV2";
 
 export const dynamic = "force-dynamic";

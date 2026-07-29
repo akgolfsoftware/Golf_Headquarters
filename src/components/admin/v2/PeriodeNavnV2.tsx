@@ -16,9 +16,9 @@ import type { PeriodeType } from "@/generated/prisma/client";
 import {
   leggTilPeriodeNavnMapping,
   slettPeriodeNavnMapping,
-  type PeriodeNavnLabel,
   type PeriodeNavnOversikt,
 } from "@/app/admin/settings/periode-navn/actions";
+import type { PeriodeNavnLabel } from "@/app/admin/settings/periode-navn/labels";
 
 export function PeriodeNavnV2({
   oversikt,
