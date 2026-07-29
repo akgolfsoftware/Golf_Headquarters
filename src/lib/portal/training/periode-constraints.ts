@@ -112,8 +112,29 @@ export function getPeriodeConstraints(periodeType: PeriodeType): PeriodeConstrai
 // Validering
 // ---------------------------------------------------------------------------
 
+/**
+ * Perioden en dato hører til. Ved overlapp vinner den SMALESTE.
+ *
+ * Perioder overlapper i praksis: testuka 19.–25. okt 2026 ligger inne i
+ * grunnperioden 1. okt – 15. mars. Tidligere brukte denne `find`, som
+ * returnerer første treff — og rekkefølgen kom fra databasen uten `orderBy`.
+ * Samme økt kunne da valideres mot GRUNN (TEK min 25 %) eller EVALUERING
+ * (TEK min 0, TURN min 30) fra gang til gang.
+ *
+ * En testuke lagt inn inni en grunnperiode er en presisering av de sju dagene,
+ * ikke en konkurrent til de fem månedene. Samme regel gjelder automatisk for
+ * samlinger og ferier som legges inn på samme måte.
+ */
 function finnPeriode(dato: Date, perioder: Periode[]): Periode | null {
-  return perioder.find((p) => dato >= p.startDato && dato <= p.sluttDato) ?? null;
+  const treff = perioder.filter((p) => dato >= p.startDato && dato <= p.sluttDato);
+  if (treff.length === 0) return null;
+  return treff.reduce((smalest, p) =>
+    varighet(p) < varighet(smalest) ? p : smalest,
+  );
+}
+
+function varighet(p: Periode): number {
+  return p.sluttDato.getTime() - p.startDato.getTime();
 }
 
 function summerPyramideMinutter(session: SessionMedDrills): Record<PyramidArea, number> {
