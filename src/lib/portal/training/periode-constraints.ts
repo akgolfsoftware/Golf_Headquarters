@@ -134,9 +134,10 @@ function totalMinutter(fordeling: Record<PyramidArea, number>): number {
 function validerEnkeltOkt(
   session: SessionMedDrills,
   periode: Periode,
+  effektive?: Record<PeriodeType, PeriodeConstraints>,
 ): string[] {
   const brudd: string[] = [];
-  const constraints = getPeriodeConstraints(periode.type);
+  const constraints = (effektive ?? PERIODE_CONSTRAINTS)[periode.type];
   const fordeling = summerPyramideMinutter(session);
   const total = totalMinutter(fordeling);
 
@@ -164,6 +165,15 @@ function validerEnkeltOkt(
 export function validateSessionConstraints(
   sessions: SessionMedDrills[],
   perioder: Periode[],
+  /**
+   * Effektive constraints — coach-satte andeler flettet på defaultene, fra
+   * `hentEffektivePeriodeConstraints()`. Utelates → hardkodede defaults, så
+   * eksisterende kallere er uendret.
+   *
+   * Uten denne målte valideringen mot defaultene selv når en coach hadde satt
+   * egne tall i PeriodeFordeling — altså mot noe ingen hadde valgt.
+   */
+  effektive?: Record<PeriodeType, PeriodeConstraints>,
 ): ValideringsResultat {
   const bruddBeskrivelser: BruddBeskrivelse[] = [];
 
@@ -171,7 +181,7 @@ export function validateSessionConstraints(
   for (const session of sessions) {
     const periode = finnPeriode(session.startTime, perioder);
     if (!periode) continue;
-    const brudd = validerEnkeltOkt(session, periode);
+    const brudd = validerEnkeltOkt(session, periode, effektive);
     if (brudd.length > 0) {
       bruddBeskrivelser.push({ sessionId: session.id, brudd });
     }
@@ -195,7 +205,7 @@ export function validateSessionConstraints(
   }
 
   for (const [, ukeData] of ukeBucket) {
-    const constraints = getPeriodeConstraints(ukeData.periode.type);
+    const constraints = (effektive ?? PERIODE_CONSTRAINTS)[ukeData.periode.type];
     if (ukeData.total > constraints.volumPerUke.maxMin) {
       for (const sid of ukeData.sessionIds) {
         const eks = bruddBeskrivelser.find((b) => b.sessionId === sid);
