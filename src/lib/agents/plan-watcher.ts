@@ -6,6 +6,7 @@ import { aggregateByArea, prosentPerArea, PYR_LABEL, PYR_REKKEFOLGE } from "@/li
 import { parseTargetAllocation } from "@/lib/training/target-allocation";
 import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
 import { runAgent, type AgentResult } from "./agent-runner";
+import { byggProvenance } from "./provenance";
 
 export const AGENT_NAME = "plan-watcher";
 
@@ -59,6 +60,20 @@ export async function runPlanWatcher(): Promise<AgentResult> {
             planId: plan.id,
             actionType: "PYRAMID_ADJUST",
             agentName: AGENT_NAME,
+            provenance: byggProvenance({
+              kilde: "OKT",
+              regel: `${PYR_LABEL[omr]} lå mer enn 8 prosentpoeng under planens mål forrige uke`,
+              datapunkter: plan.sessions.map((s) => ({
+                id: s.id,
+                dato: s.scheduledAt,
+                etikett: s.title,
+              })),
+              terskel: mal,
+              maaltVerdi: faktisk,
+              enhet: "%",
+              fraDato: forrigeStart,
+              tilDato: forrigeSlutt,
+            }),
             suggestion: {
               omrade: omr,
               omradeNavn: PYR_LABEL[omr],

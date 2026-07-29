@@ -40,6 +40,12 @@ export interface AdminGodkjenningV2Row {
   signalKind: string | null;
   signalValue: string | null;
   diffPreview: string | null;
+  /**
+   * «Hvorfor dette forslaget» — ferdig formulerte norske linjer fra
+   * PlanAction.provenance. null for rader uten registrert datagrunnlag
+   * (alt skrevet før 29. juli 2026, og drifts-agentene).
+   */
+  grunnlag?: string[] | null;
   when: string;
   urgent: boolean;
   lowRisk: boolean;
@@ -304,6 +310,53 @@ function SakKort({ row, mobile }: { row: SakMedAntall; mobile: boolean }) {
               >
                 {row.diffPreview}
               </span>
+            </div>
+          )}
+
+          {row.grunnlag && row.grunnlag.length > 0 && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 8,
+                marginTop: 10,
+                padding: "8px 11px",
+                borderRadius: 10,
+                background: T.panel2,
+                border: `1px solid ${T.border}`,
+              }}
+            >
+              <Icon
+                name="info"
+                size={13}
+                style={{ color: T.mut, flex: "none", marginTop: 2 }}
+              />
+              <div style={{ minWidth: 0 }}>
+                <div
+                  style={{
+                    fontSize: 10,
+                    letterSpacing: 0.4,
+                    textTransform: "uppercase",
+                    color: T.mut,
+                    marginBottom: 3,
+                  }}
+                >
+                  Hvorfor dette forslaget
+                </div>
+                {row.grunnlag.map((linje) => (
+                  <div
+                    key={linje}
+                    style={{
+                      fontSize: 11.5,
+                      lineHeight: 1.55,
+                      color: T.fg2,
+                      overflowWrap: "anywhere",
+                    }}
+                  >
+                    {linje}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 

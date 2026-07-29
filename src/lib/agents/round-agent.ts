@@ -12,6 +12,7 @@ import {
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { varsleVedPlanAction } from "./notify-plan-action";
+import { byggProvenance } from "./provenance";
 
 export const AGENT_NAME = "round-agent";
 
@@ -37,6 +38,15 @@ export async function runRoundAgent(userId: string): Promise<AgentResult> {
     if (sg.arg != null) signals.push({ kind: "SG_ARG", value: sg.arg });
     if (sg.putt != null) signals.push({ kind: "SG_PUTT", value: sg.putt });
 
+    const rundeProvenance = byggProvenance({
+      kilde: "RUNDE",
+      regel: "SG-snitt beregnet fra runder siste 30 dager",
+      datapunkter: runder.map((r) => ({ id: r.id, dato: r.playedAt })),
+      fraDato: tretti,
+      tilDato: computedAt,
+      beregnetAt: computedAt,
+    });
+
     if (signals.length > 0) {
       await prisma.signal.createMany({
         data: signals.map((s) => ({
@@ -45,6 +55,7 @@ export async function runRoundAgent(userId: string): Promise<AgentResult> {
           value: s.value,
           computedAt,
           payload: { rundeAntall: sg.rundeAntall },
+          provenance: rundeProvenance,
         })),
       });
     }
@@ -107,6 +118,16 @@ export async function runRoundAgent(userId: string): Promise<AgentResult> {
             planId: plan?.id ?? null,
             actionType: "FOCUS_CHANGE",
             agentName: AGENT_NAME,
+            provenance: byggProvenance({
+              kilde: "RUNDE",
+              regel: `SG ${weakness.primarySgArea} er svakeste område og under terskel`,
+              datapunkter: runder.map((r) => ({ id: r.id, dato: r.playedAt })),
+              terskel: SG_TERSKEL,
+              maaltVerdi: weakness.sgValue,
+              enhet: "SG",
+              fraDato: tretti,
+              tilDato: computedAt,
+            }),
             suggestion: {
               drillPakke,
               skillArea: SG_TO_SKILL[weakness.primarySgArea],

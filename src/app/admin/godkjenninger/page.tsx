@@ -17,6 +17,7 @@ import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 import { prisma } from "@/lib/prisma";
 import { computeDelta, type PlanContext } from "@/lib/agents/plan-action-executor";
+import { lesProvenance, provenanceLinjer } from "@/lib/agents/provenance";
 import { LOW_RISK_ACTION_TYPES } from "@/lib/training/skills";
 import { koTelling } from "@/lib/admin/ko-telling";
 import { caddieDraftTittel } from "@/lib/caddie/draft-labels";
@@ -243,6 +244,9 @@ export default async function V2AdminGodkjenningerPage() {
     actions.map(async (a) => {
       const parsed = suggestionSchema.safeParse(a.suggestion);
       const sugg = parsed.success ? parsed.data : null;
+      // Datagrunnlag finnes kun på rader skrevet etter 29. juli 2026 og kun
+      // fra de faglige agentene — mangler det, vises seksjonen ikke.
+      const prov = lesProvenance(a.provenance);
       const diffPreview = await buildDiffPreview(
         a.actionType,
         a.suggestion,
@@ -268,6 +272,7 @@ export default async function V2AdminGodkjenningerPage() {
             ? String(sugg.signalSnapshot.value)
             : null,
         diffPreview,
+        grunnlag: prov ? provenanceLinjer(prov) : null,
         when: nårTekst(a.createdAt),
         urgent: erHaster(a.actionType),
         lowRisk: LOW_RISK_ACTION_TYPES.has(a.actionType),

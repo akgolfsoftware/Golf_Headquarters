@@ -17,6 +17,7 @@ import { prisma } from "@/lib/prisma";
 import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { generateWeekSuggestions } from "@/lib/ai-plan/week-suggest";
 import { parseSessionBudget, budsjettSum } from "@/lib/workbench/perioder";
+import { byggProvenance } from "./provenance";
 
 function nesteMandag(): Date {
   const d = new Date();
@@ -116,6 +117,25 @@ export async function runWeeklyPlanProposals(): Promise<{
           agentName: "weekly-plan-proposals",
           actionType: "WEEKLY_PROPOSAL",
           status: "PENDING",
+          provenance: byggProvenance({
+            kilde: "PLAN",
+            regel: aktivPeriode
+              ? `Ukeforslag valgt ut fra periode ${aktivPeriode.lPhase}${maalOkter > 0 ? ` og øktbudsjett på ${maalOkter} økter` : ""}`
+              : "Ukeforslag valgt uten aktiv periode (standard-variant)",
+            datapunkter: aktivPeriode
+              ? [
+                  {
+                    id: aktivPeriode.id,
+                    dato: aktivPeriode.startDate,
+                    etikett: `Periode ${aktivPeriode.lPhase}`,
+                  },
+                ]
+              : [],
+            terskel: maalOkter > 0 ? maalOkter : undefined,
+            maaltVerdi: valgt.totalSessions,
+            enhet: "økter",
+            fraDato: weekStart,
+          }),
           suggestion: {
             tittel: `Ukeforslag uke ${isoUke(weekStart)} · ${valgt.variant}`,
             forklaring: `${valgt.focusBlend}${aktivPeriode ? ` · periode: ${aktivPeriode.lPhase}` : ""}${maalOkter > 0 ? ` · budsjett ${maalOkter} økter/uke` : ""}`,

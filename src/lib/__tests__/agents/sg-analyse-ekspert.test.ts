@@ -41,8 +41,12 @@ type PlanActionCreateArgs = {
 test("runSgAnalyseEkspert — hovedløp og duplikatsperre", async (t) => {
   // Runder der ARG er klart svakest (-0.6, under SG_TERSKEL -0.35) og
   // dermed skal velges som primary-område.
+  // id + playedAt er med fordi agenten registrerer datagrunnlaget
+  // (provenance) på forslaget — ekte Round-rader har alltid begge.
   const runder = [
     {
+      id: "runde-1",
+      playedAt: new Date("2026-07-20T10:00:00.000Z"),
       score: 82,
       sgTotal: -0.4,
       sgOtt: 0.1,

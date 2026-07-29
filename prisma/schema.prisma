@@ -1626,6 +1626,8 @@ model Signal {
   kind       String
   value      Float?
   payload    Json?
+  // Datagrunnlag: hvilke rader/regel/terskel signalet kom fra (se lib/agents/provenance.ts)
+  provenance Json?
   computedAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -1644,6 +1646,8 @@ model PlanAction {
   //       | PEER_COMPARE | RECOVERY_ADD
   actionType String
   suggestion Json
+  // Datagrunnlag: hvilke rader/regel/terskel forslaget kom fra (se lib/agents/provenance.ts)
+  provenance Json?
   // Status: PENDING | ACCEPTED | REJECTED
   status     String   @default("PENDING")
   agentName  String

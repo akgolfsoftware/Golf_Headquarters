@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { varsleVedPlanAction } from "./notify-plan-action";
+import { byggProvenance } from "./provenance";
 
 export const AGENT_NAME = "plan-effectiveness-agent";
 
@@ -51,6 +52,27 @@ export async function runPlanEffectivenessAgent(): Promise<AgentResult> {
         ? `Plan «${row.plan.name}»: bare ${Math.round(row.completionRate * 100)} % økter fullført — vurder revisjon.`
         : `Plan «${row.plan.name}»: SG-total ${row.sgTotalDelta?.toFixed(2)} etter plan — vurder justering.`;
 
+      const provenance = byggProvenance({
+        kilde: "PLAN",
+        regel: lavCompletion
+          ? "Andel fullførte økter under terskel"
+          : "SG-total etter plan under terskel",
+        datapunkter: [
+          {
+            id: row.planId,
+            dato: row.computedAt,
+            etikett: `Plan «${row.plan.name}»`,
+          },
+        ],
+        terskel: lavCompletion ? COMPLETION_TERSKEL : SG_DELTA_TERSKEL,
+        maaltVerdi: lavCompletion
+          ? row.completionRate
+          : (row.sgTotalDelta ?? undefined),
+        enhet: lavCompletion ? undefined : "SG",
+        fraDato: seksti,
+        tilDato: row.computedAt,
+      });
+
       const created = await prisma.planAction.create({
         data: {
           userId: row.userId,
@@ -58,6 +80,7 @@ export async function runPlanEffectivenessAgent(): Promise<AgentResult> {
           planId: row.planId,
           actionType: "PYRAMID_ADJUST",
           agentName: AGENT_NAME,
+          provenance,
           suggestion: {
             forklaring,
             signalSnapshot: {
@@ -86,6 +109,7 @@ export async function runPlanEffectivenessAgent(): Promise<AgentResult> {
             planId: row.planId,
             completionRate: row.completionRate,
           },
+          provenance,
         },
       });
       signalsWritten++;

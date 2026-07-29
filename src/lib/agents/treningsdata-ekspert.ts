@@ -6,6 +6,7 @@ import { SG_TO_SKILL } from "@/lib/training/skills";
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { varsleVedPlanAction } from "./notify-plan-action";
+import { byggProvenance } from "./provenance";
 
 export const AGENT_NAME = "treningsdata-ekspert";
 
@@ -59,6 +60,15 @@ export async function runTreningsdataEkspert(
         planId: plan?.id ?? null,
         actionType: "FOCUS_CHANGE",
         agentName: AGENT_NAME,
+        provenance: byggProvenance({
+          kilde: "RUNDE",
+          regel: `Treningsvolum mot SG ${negativ.sgArea} korrelerer negativt over 12 uker`,
+          datapunkter: runder.map((r) => ({ id: r.id, dato: r.playedAt })),
+          maaltVerdi: negativ.r ?? undefined,
+          enhet: "r",
+          fraDato: tretti,
+          tilDato: new Date(),
+        }),
         suggestion: {
           skillArea: SG_TO_SKILL[negativ.sgArea],
           forklaring,

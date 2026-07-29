@@ -22,6 +22,7 @@
 import { prisma } from "@/lib/prisma";
 import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { isAwaitingGuardianConsent } from "@/lib/auth/minor";
+import { byggProvenance } from "./provenance";
 
 const INAKTIV_DAGER = 14;
 const DEDUP_DAGER = 14;
@@ -112,12 +113,30 @@ export async function runChurnRadar(): Promise<{
       );
       const utkast = churnMeldingsutkast(spiller.name, dager);
 
+      const provenance = byggProvenance({
+        kilde: "AKTIVITET",
+        regel: `Ingen innlogging på ${INAKTIV_DAGER} dager eller mer`,
+        datapunkter: [
+          {
+            id: spiller.id,
+            dato: spiller.lastLoginAt,
+            etikett: "Siste innlogging",
+          },
+        ],
+        terskel: INAKTIV_DAGER,
+        maaltVerdi: dager,
+        enhet: "dager",
+        tilDato: now,
+        beregnetAt: now,
+      });
+
       await prisma.signal.create({
         data: {
           userId: spiller.id,
           kind: "CHURN_ALERT",
           value: dager,
           payload: { grunn: "inaktiv", dagerSidenInnlogging: dager },
+          provenance,
         },
       });
 
@@ -128,6 +147,7 @@ export async function runChurnRadar(): Promise<{
           agentName: "churn-radar",
           actionType: "CHURN_MESSAGE",
           status: "PENDING",
+          provenance,
           suggestion: {
             tittel: `Frafalls-varsel: ${dager} dager uten aktivitet`,
             forklaring:

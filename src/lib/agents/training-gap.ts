@@ -15,6 +15,7 @@ import { prisma } from "@/lib/prisma";
 import { hentTreningsVolum } from "@/lib/training/volum";
 import type { SgCategory } from "@/generated/prisma/client";
 import { runAgent, type AgentResult } from "./agent-runner";
+import { byggProvenance } from "./provenance";
 
 export const AGENT_NAME = "training-gap";
 
@@ -51,7 +52,14 @@ export async function runTrainingGap(): Promise<AgentResult> {
           playedAt: { gte: sgGrense },
           sgTotal: { not: null },
         },
-        select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
+        select: {
+          id: true,
+          playedAt: true,
+          sgOtt: true,
+          sgApp: true,
+          sgArg: true,
+          sgPutt: true,
+        },
       });
       if (runder.length < MIN_RUNDER) continue;
 
@@ -125,6 +133,15 @@ export async function runTrainingGap(): Promise<AgentResult> {
           userId: spiller.id,
           actionType: "TRAINING_GAP",
           agentName: AGENT_NAME,
+          provenance: byggProvenance({
+            kilde: "RUNDE",
+            regel: `${OMRAADE_LABEL[svakest]} er svakeste SG-område siste ${UKER_SG} uker, men får under ${Math.round(TERSKEL_ANDEL * 100)} % av treningstiden siste ${UKER_TRENING} uker`,
+            datapunkter: runder.map((r) => ({ id: r.id, dato: r.playedAt })),
+            terskel: TERSKEL_ANDEL,
+            maaltVerdi: andel,
+            fraDato: sgGrense,
+            tilDato: new Date(),
+          }),
           suggestion: {
             svakestOmraade: svakest,
             svakestLabel: OMRAADE_LABEL[svakest],

@@ -7,6 +7,7 @@ import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { varsleVedPlanAction } from "./notify-plan-action";
 import { proposeTmBaselinesFromTest } from "@/lib/teknisk-plan/test-to-tm-baseline";
+import { byggProvenance } from "./provenance";
 
 export const AGENT_NAME = "test-agent";
 
@@ -43,7 +44,12 @@ export async function runTestAgent(userId: string): Promise<AgentResult> {
     }
 
     const computedAt = new Date();
-    const signaler: { kind: string; value: number; payload: object }[] = [];
+    const signaler: {
+      kind: string;
+      value: number;
+      payload: object;
+      provenance: ReturnType<typeof byggProvenance>;
+    }[] = [];
     let planActionsWritten = 0;
 
     for (const [testId, rad] of perTest.entries()) {
@@ -55,6 +61,12 @@ export async function runTestAgent(userId: string): Promise<AgentResult> {
       const delta = siste.score - snitt;
       const relativ = snitt !== 0 ? delta / Math.abs(snitt) : 0;
 
+      const testDatapunkter = [siste, ...tidligere].map((r) => ({
+        id: r.id,
+        dato: r.takenAt,
+        etikett: `${r.test.name}: ${r.score}`,
+      }));
+
       signaler.push({
         kind: "TEST_TREND",
         value: delta,
@@ -64,6 +76,13 @@ export async function runTestAgent(userId: string): Promise<AgentResult> {
           latest: siste.score,
           baseline: snitt,
         },
+        provenance: byggProvenance({
+          kilde: "TEST",
+          regel: `${siste.test.name}: siste resultat mot snitt av inntil 3 forrige`,
+          datapunkter: testDatapunkter,
+          maaltVerdi: delta,
+          beregnetAt: computedAt,
+        }),
       });
 
       if (
@@ -106,6 +125,20 @@ export async function runTestAgent(userId: string): Promise<AgentResult> {
               planId: plan?.id ?? null,
               actionType,
               agentName: AGENT_NAME,
+              provenance: byggProvenance({
+                kilde: "TEST",
+                regel:
+                  relativ >= FORBEDRING_TERSKEL
+                    ? `${siste.test.name} forbedret mer enn ${Math.round(FORBEDRING_TERSKEL * 100)} % mot snittet`
+                    : `${siste.test.name} tilbake mer enn ${Math.round(Math.abs(TILBAKE_TERSKEL) * 100)} % mot snittet`,
+                datapunkter: testDatapunkter,
+                terskel:
+                  relativ >= FORBEDRING_TERSKEL
+                    ? FORBEDRING_TERSKEL
+                    : TILBAKE_TERSKEL,
+                maaltVerdi: relativ,
+                beregnetAt: computedAt,
+              }),
               suggestion: {
                 drillPakke,
                 testId,
@@ -141,6 +174,7 @@ export async function runTestAgent(userId: string): Promise<AgentResult> {
           value: s.value,
           computedAt,
           payload: s.payload,
+          provenance: s.provenance,
         })),
       });
     }

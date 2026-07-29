@@ -7,6 +7,7 @@ import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { mapSgBandToFault } from "@/lib/training/skills/morad-fault";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { varsleVedPlanAction } from "./notify-plan-action";
+import { byggProvenance } from "./provenance";
 
 export const AGENT_NAME = "trackman-agent";
 
@@ -87,11 +88,27 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
     }
 
     const computedAt = new Date();
+
+    const sesjonProvenance = (regel: string, antallSlag: number) =>
+      byggProvenance({
+        kilde: "TRACKMAN",
+        regel,
+        datapunkter: [
+          {
+            id: sisteSesjon.id,
+            dato: sisteSesjon.recordedAt,
+            etikett: `TrackMan-økt, ${antallSlag} slag`,
+          },
+        ],
+        beregnetAt: computedAt,
+      });
+
     const signaler: Array<{
       userId: string;
       kind: string;
       value: number;
       payload: Prisma.InputJsonValue;
+      provenance: Prisma.InputJsonValue;
       computedAt: Date;
     }> = Array.from(perKolle.entries()).map(([klubb, distanser]) => ({
       userId,
@@ -102,6 +119,10 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
         antallSlag: distanser.length,
         sessionId: sisteSesjon.id,
       },
+      provenance: sesjonProvenance(
+        `Snittdistanse for ${klubb} fra siste TrackMan-økt`,
+        distanser.length,
+      ),
       computedAt,
     }));
 
@@ -124,6 +145,10 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
             moradFaultId,
             antallSlag: faceToPathValues.length,
           },
+          provenance: sesjonProvenance(
+            "Snitt face to path fra siste TrackMan-økt",
+            faceToPathValues.length,
+          ),
           computedAt,
         });
       }
@@ -160,6 +185,20 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
               planId: plan?.id ?? null,
               actionType: "INTENSITY_ADJUST",
               agentName: AGENT_NAME,
+              provenance: byggProvenance({
+                kilde: "TRACKMAN",
+                regel: "Smash factor under terskel på siste TrackMan-økt",
+                datapunkter: [
+                  {
+                    id: sisteSesjon.id,
+                    dato: sisteSesjon.recordedAt,
+                    etikett: `TrackMan-økt, ${smashValues.length} slag med smash factor`,
+                  },
+                ],
+                terskel: 1.38,
+                maaltVerdi: snitt,
+                beregnetAt: computedAt,
+              }),
               suggestion: {
                 csTarget: 60,
                 forklaring,
