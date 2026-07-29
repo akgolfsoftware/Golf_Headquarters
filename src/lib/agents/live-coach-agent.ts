@@ -9,7 +9,7 @@
 import "server-only";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "@/lib/ai/client";
+import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "@/lib/ai/client";
 import { notify } from "@/lib/notifications";
 import { aggregateSg } from "@/lib/sg";
 import { runAgent, type AgentResult } from "./agent-runner";
@@ -149,7 +149,7 @@ TONE:
 
   try {
     const respons = await anthropic.messages.create({
-      model: AI_MODEL,
+      model: modelFor(AGENT_NAME),
       max_tokens: AI_MAX_TOKENS,
       system,
       messages: [

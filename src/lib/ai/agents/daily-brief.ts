@@ -8,7 +8,7 @@
 // brief generert fra Prisma-data uten Claude-kall.
 
 import "server-only";
-import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "../client";
+import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "../client";
 import { ALL_SKILLS } from "../skills";
 import { prisma } from "@/lib/prisma";
 import { filtrerTilCoachInnsyn } from "@/lib/health/samtykke";
@@ -86,7 +86,7 @@ export async function genererDailyBrief(opts: {
 
   const userPrompt = byggUserPrompt(metrics);
   const response = await anthropic.messages.create({
-    model: AI_MODEL,
+    model: modelFor("daily-brief"),
     max_tokens: AI_MAX_TOKENS,
     system: DAILY_BRIEF_SYSTEM,
     messages: [{ role: "user", content: userPrompt }],

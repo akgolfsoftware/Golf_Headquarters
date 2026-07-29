@@ -10,7 +10,7 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { runAgent, type AgentResult } from "./agent-runner";
-import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "@/lib/ai/client";
+import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "@/lib/ai/client";
 import { PyramidArea, SkillArea, NgfKategori } from "@/generated/prisma/enums";
 import { DRILL_DRAFT_TOOL } from "./drill-forslag-agent";
 import { masterbrain } from "@/lib/masterbrain";
@@ -126,7 +126,7 @@ export async function runFabrikk(): Promise<AgentResult> {
     for (const f of funn) {
       try {
         const res = await anthropic.messages.create({
-          model: AI_MODEL,
+          model: modelFor(AGENT_NAME),
           max_tokens: AI_MAX_TOKENS,
           system: SYSTEM,
           messages: [
