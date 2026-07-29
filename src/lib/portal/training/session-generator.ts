@@ -29,6 +29,9 @@ import type {
   PracticeType,
   MMiljo,
 } from "@/generated/prisma/client";
+import { validateSessionConstraints, type Periode } from "./periode-constraints";
+import { periodeTypeFraNavn } from "./periode-navn";
+import { hentEffektivePeriodeConstraints } from "./periode-fordeling";
 
 // ---------------------------------------------------------------------------
 // Typer
@@ -76,36 +79,59 @@ export async function genererOkter(input: GenererInput): Promise<GenererResultat
   const { planId, startDato, sluttDato, spilllerId } = input;
 
   // Hent alt vi trenger i parallell.
-  const [plan, ankere, mønstre, oppskrift, regler, eksisterendeOkter] = await Promise.all([
-    prisma.trainingPlan.findUniqueOrThrow({
-      where: { id: planId },
-      select: { id: true, userId: true, createdById: true },
-    }),
-    prisma.lockedAnchor.findMany({
-      where: { studentId: spilllerId },
-    }),
-    prisma.recurringPattern.findMany({
-      where: { studentId: spilllerId },
-    }),
-    prisma.periodVolumeRecipe.findUnique({
-      where: { trainingPlanId: planId },
-      include: { okter: true },
-    }),
-    prisma.conditionalRule.findMany({
-      where: {
-        OR: [{ studentId: spilllerId }, { trainingPlanId: planId }],
-        aktiv: true,
-      },
-      orderBy: { prioritet: "desc" },
-    }),
-    prisma.trainingSessionV2.findMany({
-      where: {
-        studentId: spilllerId,
-        startTime: { gte: startDato, lte: sluttDato },
-      },
-      select: { id: true, startTime: true, endTime: true },
-    }),
-  ]);
+  const [plan, ankere, mønstre, oppskrift, regler, eksisterendeOkter, spillerGrupper, effektiveConstraints] =
+    await Promise.all([
+      prisma.trainingPlan.findUniqueOrThrow({
+        where: { id: planId },
+        select: { id: true, userId: true, createdById: true },
+      }),
+      prisma.lockedAnchor.findMany({
+        where: { studentId: spilllerId },
+      }),
+      prisma.recurringPattern.findMany({
+        where: { studentId: spilllerId },
+      }),
+      prisma.periodVolumeRecipe.findUnique({
+        where: { trainingPlanId: planId },
+        include: { okter: true },
+      }),
+      prisma.conditionalRule.findMany({
+        where: {
+          OR: [{ studentId: spilllerId }, { trainingPlanId: planId }],
+          aktiv: true,
+        },
+        orderBy: { prioritet: "desc" },
+      }),
+      prisma.trainingSessionV2.findMany({
+        where: {
+          studentId: spilllerId,
+          startTime: { gte: startDato, lte: sluttDato },
+        },
+        select: { id: true, startTime: true, endTime: true },
+      }),
+      prisma.groupMember.findMany({
+        where: { userId: spilllerId },
+        select: { groupId: true },
+      }),
+      hentEffektivePeriodeConstraints(),
+    ]);
+
+  // Perioder for validering: spillerens grupper + gruppeuavhengige perioder,
+  // avgrenset til det genererte tidsrommet. Ukjente periodenavn (se
+  // periode-navn.ts) filtreres bort her — de valideres rett og slett ikke.
+  const periodeRader = await prisma.trainingPeriod.findMany({
+    where: {
+      OR: [{ groupId: null }, { groupId: { in: spillerGrupper.map((g) => g.groupId) } }],
+      startDate: { lte: sluttDato },
+      endDate: { gte: startDato },
+    },
+  });
+  const perioder: Periode[] = periodeRader
+    .map((p) => {
+      const type = periodeTypeFraNavn(p.name);
+      return type ? { type, startDato: p.startDate, sluttDato: p.endDate } : null;
+    })
+    .filter((p): p is Periode => p !== null);
 
   const coachId = plan.createdById ?? plan.userId;
   const hoppetOver: HoppetOver[] = [];
@@ -267,10 +293,14 @@ export async function genererOkter(input: GenererInput): Promise<GenererResultat
 
   const etter = await prisma.trainingSessionV2.findMany({
     where: { studentId: spilllerId, startTime: { gte: startDato, lte: sluttDato } },
+    include: { drills: true },
   });
   const okter = etter.filter((o) => !førSet.has(o.id));
 
-  return { okter, hoppetOver, regelBrudd: [] };
+  // Anbefaling, aldri sperre: brudd flagges til coach, genereringen stoppes ikke.
+  const { bruddBeskrivelser } = validateSessionConstraints(okter, perioder, effektiveConstraints);
+
+  return { okter, hoppetOver, regelBrudd: bruddBeskrivelser };
 }
 
 // ---------------------------------------------------------------------------
