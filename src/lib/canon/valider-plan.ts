@@ -45,7 +45,7 @@ const HARD_VEKT = 15;
 const MYK_VEKT = 5;
 
 /** PeriodBlock.lPhase (GRUNN|SPESIAL|TURNERING) → PeriodeType for constraint-oppslag. */
-function tilPeriodeType(l: LPhase): PeriodeType | null {
+export function tilPeriodeType(l: LPhase): PeriodeType | null {
   switch (l) {
     case "GRUNN":
       return "GRUNN";
@@ -58,7 +58,7 @@ function tilPeriodeType(l: LPhase): PeriodeType | null {
   }
 }
 
-function alderFra(dateOfBirth: Date | null, naa: Date): number | null {
+export function alderFra(dateOfBirth: Date | null, naa: Date): number | null {
   if (!dateOfBirth) return null;
   let alder = naa.getUTCFullYear() - dateOfBirth.getUTCFullYear();
   const m = naa.getUTCMonth() - dateOfBirth.getUTCMonth();
