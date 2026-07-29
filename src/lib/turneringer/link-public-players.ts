@@ -10,6 +10,7 @@
 
 import type { PrismaClient } from "@/generated/prisma/client";
 import { normalizePlayerName } from "@/lib/scrapers/player-resolve";
+import { mirrorTournamentResultForLinkedUser } from "@/lib/turneringer/materialize-entry";
 
 export type LinkPublicPlayersResult = {
   scannedUsers: number;
@@ -101,8 +102,8 @@ export async function linkPublicPlayersByExactName(
 }
 
 /**
- * For alle allerede-koblede brukere: speil eksisterende PublicPlayerEntry → TournamentResult
- * der resultat mangler. Brukes av cron etter link.
+ * For alle allerede-koblede brukere: speil eksisterende PublicPlayerEntry →
+ * TournamentResult + TournamentEntry. Brukes av cron etter link.
  */
 export async function backfillTournamentResultsForLinkedUsers(
   prisma: PrismaClient,
@@ -125,6 +126,7 @@ export async function backfillTournamentResultsForLinkedUsers(
         position: true,
         scoreToPar: true,
         totalScore: true,
+        status: true,
       },
     });
     for (const e of entries) {
@@ -137,25 +139,15 @@ export async function backfillTournamentResultsForLinkedUsers(
       // Kun speil når vi har noe resultat
       if (e.position == null && score == null) continue;
 
-      await prisma.tournamentResult.upsert({
-        where: {
-          tournamentId_userId: {
-            tournamentId: e.tournamentId,
-            userId: u.id,
-          },
-        },
-        create: {
-          tournamentId: e.tournamentId,
-          userId: u.id,
-          position: e.position,
-          score,
-        },
-        update: {
-          position: e.position,
-          score,
-        },
+      const r = await mirrorTournamentResultForLinkedUser(prisma, {
+        tournamentId: e.tournamentId,
+        publicPlayerId: u.publicPlayerId,
+        position: e.position,
+        scoreToPar: e.scoreToPar,
+        totalScore: e.totalScore,
+        publicEntryStatus: e.status,
       });
-      mirrored++;
+      if (r.mirrored) mirrored++;
     }
   }
 

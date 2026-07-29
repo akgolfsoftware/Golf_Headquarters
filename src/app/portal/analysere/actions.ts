@@ -392,6 +392,7 @@ export async function getTournamentResults(
   await assertCanViewPlayerData(userId);
   const from = startOfPeriod(period);
 
+  // 1) Påmeldinger (sesongplan / manuell / auto fra resultat-sync)
   const entries = await prisma.tournamentEntry.findMany({
     where: {
       userId,
@@ -405,18 +406,35 @@ export async function getTournamentResults(
     orderBy: { createdAt: "desc" },
   });
 
-  const tournamentIds = entries.map((e) => e.tournamentId).filter(Boolean) as string[];
+  // 2) Alle speilede resultater (inkl. de uten entry — legacy / race)
+  const allResults = await prisma.tournamentResult.findMany({
+    where: {
+      userId,
+      ...(from
+        ? {
+            OR: [
+              { createdAt: { gte: from } },
+              { tournament: { startDate: { gte: from } } },
+            ],
+          }
+        : {}),
+    },
+    select: {
+      id: true,
+      tournamentId: true,
+      position: true,
+      score: true,
+      createdAt: true,
+      tournament: { select: { id: true, name: true, startDate: true } },
+    },
+  });
 
-  const results = tournamentIds.length
-    ? await prisma.tournamentResult.findMany({
-        where: { userId, tournamentId: { in: tournamentIds } },
-        select: { tournamentId: true, position: true, score: true },
-      })
-    : [];
+  const resultMap = new Map(allResults.map((r) => [r.tournamentId, r]));
+  const entryTournamentIds = new Set(
+    entries.map((e) => e.tournamentId).filter((id): id is string => Boolean(id)),
+  );
 
-  const resultMap = new Map(results.map((r) => [r.tournamentId, r]));
-
-  return entries.map((e) => ({
+  const fromEntries: TournamentListItem[] = entries.map((e) => ({
     id: e.id,
     name: e.tournament?.name ?? e.manualName ?? "Ukjent turnering",
     startDate: e.tournament?.startDate ?? e.manualDate ?? e.createdAt,
@@ -424,6 +442,22 @@ export async function getTournamentResults(
     score: resultMap.get(e.tournamentId ?? "")?.score ?? null,
     status: e.entryStatus,
   }));
+
+  // Resultater uten TournamentEntry (skal ikke skje etter sync-fix, men vis dem likevel)
+  const fromResultsOnly: TournamentListItem[] = allResults
+    .filter((r) => !entryTournamentIds.has(r.tournamentId))
+    .map((r) => ({
+      id: r.id,
+      name: r.tournament?.name ?? "Ukjent turnering",
+      startDate: r.tournament?.startDate ?? r.createdAt,
+      position: r.position,
+      score: r.score,
+      status: "COMPLETED",
+    }));
+
+  return [...fromEntries, ...fromResultsOnly].sort(
+    (a, b) => b.startDate.getTime() - a.startDate.getTime(),
+  );
 }
 
 // ── Test results ────────────────────────────────────────────────────────────
