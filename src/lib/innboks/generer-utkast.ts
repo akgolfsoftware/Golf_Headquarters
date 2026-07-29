@@ -10,7 +10,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { anthropic, AI_MODEL, isAiEnabled } from "@/lib/ai/client";
+import { anthropic, modelFor, isAiEnabled } from "@/lib/ai/client";
 
 const UTKAST_SYSTEM = `
 Du er e-post-assistent for Anders Kristiansen, daglig leder i AK Golf Group.
@@ -61,7 +61,7 @@ E-postens innhold:
 ${epost.brodtekst}
 `.trim();
       const response = await anthropic.messages.create({
-        model: AI_MODEL,
+        model: modelFor("innboks-utkast"),
         max_tokens: 500,
         system: UTKAST_SYSTEM,
         messages: [{ role: "user", content: userPrompt }],

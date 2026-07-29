@@ -9,7 +9,7 @@
 // Demo-modus genererer deterministisk forslag fra data.
 
 import "server-only";
-import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "../client";
+import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "../client";
 import { ALL_SKILLS } from "../skills";
 import { prisma } from "@/lib/prisma";
 import { harManuellHelseSamtykke } from "@/lib/health/samtykke";
@@ -92,7 +92,7 @@ export async function foreslaPlanRevisjon(opts: {
 
   const userPrompt = byggUserPrompt(plan, opts.trigger, kontekst, opts.context);
   const response = await anthropic.messages.create({
-    model: AI_MODEL,
+    model: modelFor("plan-revisjon"),
     max_tokens: AI_MAX_TOKENS,
     system: PLAN_REVISION_SYSTEM,
     messages: [{ role: "user", content: userPrompt }],

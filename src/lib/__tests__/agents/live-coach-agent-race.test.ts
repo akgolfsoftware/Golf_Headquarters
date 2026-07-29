@@ -49,7 +49,7 @@ test("runLiveCoachAgent — to samtidige kall på samme økt gir ingen uhåndter
   t.mock.module("@/lib/ai/client", {
     namedExports: {
       anthropic: null,
-      AI_MODEL: "test-modell",
+      modelFor: () => "test-modell",
       AI_MAX_TOKENS: 100,
       isAiEnabled: () => false,
     },
