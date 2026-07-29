@@ -458,6 +458,7 @@ model User {
   // AI-genererte planer (Spor 2)
   aiGenerationsAsUser  AiPlanGeneration[] @relation("AiGenUser")
   aiGenerationsAsCoach AiPlanGeneration[] @relation("AiGenCoach")
+  aiMemory             AiMemory[]
 
   // Foreldreportal — invitasjoner (Spor 3)
   playerInvitations   ParentInvitation[] @relation("PlayerInvitations")
@@ -993,6 +994,22 @@ model AiPlanGeneration {
   @@index([coachId, createdAt])
   @@index([iterationOf])
   @@map("ai_plan_generations")
+}
+
+// Bruker-spesifikk minne-lagring for AI-agenter (Spor 3). Erstatter
+// in-memory-stubben i src/lib/ai/memory.ts — nøkkel/verdi-par per bruker.
+model AiMemory {
+  id        String   @id @default(cuid())
+  userId    String
+  key       String
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, key])
+  @@map("ai_memory")
 }
 
 model TrainingPlanSession {
