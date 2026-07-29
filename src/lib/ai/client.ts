@@ -19,9 +19,17 @@ export const anthropic: Anthropic | null = apiKey
   ? new Anthropic({ apiKey })
   : null;
 
-// Standard-modell for nye AI-agents. Eksisterende `src/lib/anthropic.ts` bruker
-// samme modell-streng (COACH_MODEL). Holdes synkronisert manuelt.
-export const AI_MODEL = "claude-sonnet-4-6";
+// Modellvalg bor i `modeller.ts` — én kilde for både denne klienten og
+// `src/lib/anthropic.ts`. Tidligere hardkodet begge samme streng og skulle
+// «holdes synkronisert manuelt».
+export { modelFor, nivaaFor, MODELL, type ModellNivaa } from "./modeller";
+import { MODELL } from "./modeller";
+
+/**
+ * Standardmodell når ingen agent er oppgitt.
+ * Foretrekk `modelFor(agentId)` i ny kode — den gir riktig nivå per agent.
+ */
+export const AI_MODEL: string = MODELL.sonnet;
 
 // Meg-assistenten — modell-bryter via env.
 export const MEG_MODEL_SMART = process.env.MEG_MODEL_SMART ?? "claude-sonnet-4-6";

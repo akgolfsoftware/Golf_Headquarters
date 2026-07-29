@@ -4,6 +4,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { User, Round, TrainingPlan, CourseDefinition } from "@/generated/prisma/client";
 import { bygCoachSystemPrompt } from "@/lib/ai-plan/coach-prompt";
+import { MODELL } from "@/lib/ai/modeller";
 
 let _klient: Anthropic | null = null;
 
@@ -17,7 +18,12 @@ export function anthropicKlient(): Anthropic {
   return _klient;
 }
 
-export const COACH_MODEL = "claude-sonnet-4-6";
+/**
+ * AI-coachens modell. Hentes fra `lib/ai/modeller` — var tidligere en egen
+ * hardkodet streng her, med en kommentar i client.ts om at de to skulle holdes
+ * synkronisert for hånd. Dobbeltkilden er fjernet 2026-07-29.
+ */
+export const COACH_MODEL: string = MODELL.sonnet;
 
 type RoundMedBane = Round & { course: CourseDefinition };
 
