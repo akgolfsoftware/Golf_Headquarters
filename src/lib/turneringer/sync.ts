@@ -17,7 +17,11 @@ import {
   type DGLiveStatsRow,
 } from "@/lib/datagolf/client";
 import { iso3to2 } from "@/lib/datagolf/country";
-import { scrapeNgfSchedule } from "@/lib/scrapers/ngf";
+import { syncGolfBoxSchedules } from "@/lib/turneringer/golfbox-sync";
+import {
+  linkPublicPlayersByExactName,
+  backfillTournamentResultsForLinkedUsers,
+} from "@/lib/turneringer/link-public-players";
 
 // ---------------------------------------------------------------------------
 // Utility
@@ -416,38 +420,32 @@ function parsePosition(p: string | undefined): number | "CUT" | "WD" | null {
 }
 
 // ---------------------------------------------------------------------------
-// 4) NGF schedule sync — daglig (STUB)
+// 4) NGF / GolfBox schedule sync — daglig
 // ---------------------------------------------------------------------------
 
-export async function syncNgfSchedule(): Promise<{ events: number }> {
-  const tournaments = await scrapeNgfSchedule();
-  for (const t of tournaments) {
-    const slug = `${slugify(t.name)}-${t.startDate.getFullYear()}`;
-    await prisma.tournament.upsert({
-      where: { slug },
-      create: {
-        name: t.name,
-        slug,
-        startDate: t.startDate,
-        endDate: t.endDate,
-        sourceOrigin: "NGF",
-        sourceId: t.sourceId,
-        tour: "amateur-no",
-        country: "NO",
-        location: t.location,
-        status: "UPCOMING",
-        officialUrl: t.officialUrl,
-        lastSyncAt: new Date(),
-      },
-      update: {
-        name: t.name,
-        startDate: t.startDate,
-        endDate: t.endDate,
-        location: t.location,
-        officialUrl: t.officialUrl,
-        lastSyncAt: new Date(),
-      },
-    });
-  }
-  return { events: tournaments.length };
+/**
+ * Henter norsk turneringskalender fra GolfBox (NGF, Srixon, Olyo, Østlandstour m.fl.),
+ * auto-kobler PlayerHQ-brukere til PublicPlayer (eksakt navn), og speiler
+ * eksisterende resultater til TournamentResult for koblede brukere.
+ *
+ * Leaderboards kjøres av GitHub Actions (`scrape-golfbox.ts`) — samme delte modul.
+ */
+export async function syncNgfSchedule(): Promise<{
+  customers: number;
+  events: number;
+  upcoming: number;
+  linked: number;
+  resultsMirrored: number;
+}> {
+  const schedule = await syncGolfBoxSchedules(prisma);
+  const link = await linkPublicPlayersByExactName(prisma);
+  const backfill = await backfillTournamentResultsForLinkedUsers(prisma);
+
+  return {
+    customers: schedule.customers,
+    events: schedule.events,
+    upcoming: schedule.upcoming,
+    linked: link.linked,
+    resultsMirrored: backfill.mirrored,
+  };
 }
