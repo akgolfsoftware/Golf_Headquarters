@@ -132,6 +132,14 @@ export default async function SpillerProfilPage({
       createdAt: true,
       dateOfBirth: true,
       lastLoginAt: true,
+      publicPlayerId: true,
+      publicPlayer: {
+        select: {
+          id: true,
+          name: true,
+          _count: { select: { entries: true } },
+        },
+      },
       groupMemberships: {
         select: { group: { select: { name: true } } },
         orderBy: { joinedAt: "asc" },
@@ -539,6 +547,19 @@ export default async function SpillerProfilPage({
             ptsAvg: ekstra.wagr.ptsAvg.toFixed(2).replace(".", ","),
           }
         : null,
+      kobling: player.publicPlayer
+        ? {
+            status: player.publicPlayer.name,
+            sub: `Koblet · ${player.publicPlayer._count.entries} turneringer i basen`,
+            href: `/admin/spillere/${player.id}/turnering-kobling`,
+            tone: "lime" as const,
+          }
+        : {
+            status: "Ikke koblet til turneringsidentitet",
+            sub: "Koble for at GolfBox-resultater skal lande på profilen",
+            href: `/admin/spillere/${player.id}/turnering-kobling`,
+            tone: "warn" as const,
+          },
     },
 
     logg: {
