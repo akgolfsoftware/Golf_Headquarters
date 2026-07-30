@@ -94,6 +94,13 @@ export interface SpillerDashboardV2Data {
     kommende: DashRadItem[];
     resultater: DashRadItem[];
     wagr: { rank: string; endring: string | null; ptsAvg: string } | null;
+    /** Kobling til offentlig turneringsspiller (PublicPlayer). */
+    kobling: {
+      status: string;
+      sub: string;
+      href: string;
+      tone: "lime" | "warn";
+    };
   };
   logg: {
     varsler: DashRadItem[];
@@ -495,6 +502,36 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
             ) : (
               <TomTilstand icon="globe" title="Ikke i WAGR" sub="Verdensranking vises når spilleren er registrert." />
             )}
+          </Kort>
+          <Kort
+            eyebrow="Turneringsidentitet"
+            action={
+              <Link href={data.turnering.kobling.href} style={{ textDecoration: "none" }}>
+                <Caps size={9}>
+                  {data.turnering.kobling.tone === "lime" ? "Endre →" : "Koble →"}
+                </Caps>
+              </Link>
+            }
+          >
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+              <Icon
+                name="link"
+                size={16}
+                style={{
+                  color: data.turnering.kobling.tone === "lime" ? T.lime : T.warn,
+                  marginTop: 2,
+                  flex: "none",
+                }}
+              />
+              <div>
+                <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+                  {data.turnering.kobling.status}
+                </div>
+                <div style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut, marginTop: 4, lineHeight: 1.4 }}>
+                  {data.turnering.kobling.sub}
+                </div>
+              </div>
+            </div>
           </Kort>
         </div>
       )}
