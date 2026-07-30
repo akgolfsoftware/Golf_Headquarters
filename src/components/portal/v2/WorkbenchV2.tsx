@@ -668,6 +668,17 @@ export function WBBelastning({ data }: { data: WorkbenchData }) {
       tone: T.warn,
     });
   }
+  const canon = data.canonBudsjett;
+  if (canon) {
+    if (canon.overstyrt) {
+      advarsler.push({ tekst: `CANON ${canon.pass}/${canon.total} · overstyrt`, tone: T.mut });
+    } else if (canon.meldinger.length > 0) {
+      advarsler.push({
+        tekst: `CANON ${canon.pass}/${canon.total} · ${canon.meldinger.join(" · ")}`,
+        tone: T.warn,
+      });
+    }
+  }
 
   return (
     <Kort pad="12px 14px">

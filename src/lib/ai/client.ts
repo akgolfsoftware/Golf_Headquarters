@@ -19,17 +19,40 @@ export const anthropic: Anthropic | null = apiKey
   ? new Anthropic({ apiKey })
   : null;
 
-// Modellvalg bor i `modeller.ts` — én kilde for både denne klienten og
-// `src/lib/anthropic.ts`. Tidligere hardkodet begge samme streng og skulle
-// «holdes synkronisert manuelt».
-export { modelFor, nivaaFor, MODELL, type ModellNivaa } from "./modeller";
-import { MODELL } from "./modeller";
+// Modell-tier per agent (AgencyOS-designfasit-ordren, punkt 2). Ukjente
+// agent-id-er faller til sonnet — samme modell alle agenter brukte før
+// registeret fantes, så en glemt/ny agentId aldri ender opp dyrere eller
+// tregere enn før.
+const OPUS_MODEL = "claude-opus-4-8";
+const SONNET_MODEL = "claude-sonnet-4-6";
+const HAIKU_MODEL = "claude-haiku-4-5-20251001";
 
-/**
- * Standardmodell når ingen agent er oppgitt.
- * Foretrekk `modelFor(agentId)` i ny kode — den gir riktig nivå per agent.
- */
-export const AI_MODEL: string = MODELL.sonnet;
+const OPUS_AGENTS = new Set([
+  "plan-revisjon",
+  "sg-interpretation",
+  "performance-peaking",
+  "swing-video-analyst",
+  "plan-effectiveness",
+  "ai-code-reviewer",
+]);
+
+const HAIKU_AGENTS = new Set([
+  "notion-sync",
+  "calendar-sync",
+  "wagr-sync",
+  "betalings-purring",
+  "lead-oppfolging",
+  "booking-conflict-monitor",
+  "availability-24-7-monitor",
+  "meg-loftesjekk",
+  "meg-crm-nudge",
+]);
+
+export function modelFor(agentId: string): string {
+  if (OPUS_AGENTS.has(agentId)) return OPUS_MODEL;
+  if (HAIKU_AGENTS.has(agentId)) return HAIKU_MODEL;
+  return SONNET_MODEL;
+}
 
 // Meg-assistenten — modell-bryter via env.
 export const MEG_MODEL_SMART = process.env.MEG_MODEL_SMART ?? "claude-sonnet-4-6";
