@@ -40,6 +40,25 @@ export const metadata: Metadata = {
     title: "WANG Golf",
     statusBarStyle: "default",
   },
+  // Lenke-forhåndsvisning (iMessage/SoMe) skal vise WANG-identiteten,
+  // ikke arve AK Golf-appens globale OG-bilde fra rot-layoutet.
+  openGraph: {
+    type: "website",
+    locale: "nb_NO",
+    url: "https://akgolf-hq.vercel.app/team-wang",
+    siteName: "WANG Toppidrett Fredrikstad",
+    title: "WANG Toppidrett Fredrikstad Årsplan",
+    description:
+      "Årsplan, kalender og samlinger for golfgruppa ved WANG Toppidrett Fredrikstad.",
+    images: [{ url: "/team-wang/icon-512.png", width: 512, height: 512 }],
+  },
+  twitter: {
+    card: "summary",
+    title: "WANG Toppidrett Fredrikstad Årsplan",
+    description:
+      "Årsplan, kalender og samlinger for golfgruppa ved WANG Toppidrett Fredrikstad.",
+    images: ["/team-wang/icon-512.png"],
+  },
 };
 
 export default function TeamWangLayout({
