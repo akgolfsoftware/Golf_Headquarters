@@ -1626,6 +1626,9 @@ model Signal {
   kind       String
   value      Float?
   payload    Json?
+  // Sporbarhet: hvilke rader/regler/terskler som utløste signalet. Nullbar —
+  // gamle signaler har ingen provenance.
+  provenance Json?
   computedAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -1647,6 +1650,9 @@ model PlanAction {
   // Status: PENDING | ACCEPTED | REJECTED
   status     String   @default("PENDING")
   agentName  String
+  // Sporbarhet: hvilke rader/regler/terskler som utløste forslaget. Nullbar —
+  // gamle forslag har ingen provenance.
+  provenance Json?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -5012,6 +5018,21 @@ model PeriodeFordeling {
   oppdatertAt   DateTime @default(now()) @updatedAt
 
   @@map("periode_fordelinger")
+}
+
+// Coach-lagt oversettelse fra fritekst periodenavn (TrainingPeriod.name) til
+// PeriodeType — supplerer den hardkodede ordboken i periode-navn.ts uten
+// kodeendring. `navn` lagres trim+lowercase-normalisert (periodeTypeFraNavn
+// sin normalisering), så oppslag er case-insensitivt uten funksjonell indeks.
+// Additiv (ingen enum-drift), plain felt, ingen @relation, per gotcha-regelen.
+model PeriodeNavnMapping {
+  id            String   @id @default(cuid())
+  navn          String   @unique
+  periodeType   String
+  oppdatertAvId String?
+  oppdatertAt   DateTime @default(now()) @updatedAt
+
+  @@map("periode_navn_mappinger")
 }
 
 /// Sync-state for DataGolf-endepunkter. Skrives ikke av denne appen i dag,

@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Notion Calendar-fasit — én kilde (05:00–23:00, 30 min).
+// Notion Calendar-fasit — én kilde (04:00–23:00, 20 min).
 import {
   GRID_START_HOUR as START_HOUR,
   GRID_END_HOUR as END_HOUR,

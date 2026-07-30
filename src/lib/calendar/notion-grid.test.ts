@@ -15,22 +15,23 @@ import {
 } from "./notion-grid";
 
 describe("notion-grid fasit", () => {
-  it("spenner 05–23 inkl.", () => {
-    assert.equal(GRID_START_HOUR, 5);
+  it("spenner 04–23 inkl.", () => {
+    assert.equal(GRID_START_HOUR, 4);
     assert.equal(GRID_END_HOUR, 23);
-    assert.equal(GRID_SLOT_MIN, 30);
+    assert.equal(GRID_SLOT_MIN, 20);
     const hours = gridHours();
-    assert.equal(hours[0], 5);
+    assert.equal(hours[0], 4);
     assert.equal(hours[hours.length - 1], 23);
   });
 
-  it("har 30-min slots", () => {
+  it("har 20-min slots", () => {
     const slots = gridTimeSlots();
-    assert.ok(slots.includes("05:00"));
-    assert.ok(slots.includes("05:30"));
+    assert.ok(slots.includes("04:00"));
+    assert.ok(slots.includes("04:20"));
+    assert.ok(slots.includes("04:40"));
     assert.ok(slots.includes("09:00"));
     assert.ok(slots.includes("23:00"));
-    assert.ok(!slots.includes("23:30"));
+    assert.ok(!slots.includes("23:20"));
   });
 
   it("foreslår tid innen grid", () => {
@@ -44,10 +45,10 @@ describe("notion-grid fasit", () => {
   });
 
   it("regner px for tid og varighet", () => {
-    assert.equal(timeToPx(5, 0), 0);
-    assert.equal(timeToPx(6, 0), PIXEL_PER_HOUR);
-    assert.equal(minutesToPx(5 * 60), 0);
-    assert.equal(minutesToPx(6 * 60), PIXEL_PER_HOUR);
+    assert.equal(timeToPx(4, 0), 0);
+    assert.equal(timeToPx(5, 0), PIXEL_PER_HOUR);
+    assert.equal(minutesToPx(4 * 60), 0);
+    assert.equal(minutesToPx(5 * 60), PIXEL_PER_HOUR);
     assert.equal(durationToPx(60), PIXEL_PER_HOUR);
     assert.ok(durationToPx(15) >= 20);
   });

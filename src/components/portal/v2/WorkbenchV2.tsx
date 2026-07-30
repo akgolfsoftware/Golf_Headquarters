@@ -35,6 +35,7 @@ import {
 import {
   GRID_START_HOUR,
   GRID_END_HOUR,
+  GRID_SLOT_MIN,
   PIXEL_PER_HOUR,
 } from "@/lib/calendar/notion-grid";
 import {
@@ -148,16 +149,17 @@ type WbDragData =
   | { kind: "mal"; templateId: string; name: string; sessionCount: number; varighetUker: number };
 
 /** Pointer-Y (skjermkoordinat ved slipp) → {hour, minute} snappet til nærmeste
- *  halvtime, relativt til toppen av dag-kolonnen den slippes i. Erstatter
+ *  GRID_SLOT_MIN, relativt til toppen av dag-kolonnen den slippes i. Erstatter
  *  native `e.clientY` — dnd-kit gir ikke rå pointer-koordinater i onDragEnd,
  *  men activatorEvent (start-posisjon) + delta (bevegelse) gir samme tall. */
 function tidFraPointerY(pointerY: number, kolonneTop: number): { hour: number; minute: number } {
   const y = pointerY - kolonneTop;
-  const raa = START_TIME + y / HOUR_H;
-  const snappet = Math.round(raa * 2) / 2;
-  // Siste gyldige start er 30 min før stengetid (22:30 → 23:00-slutt).
-  const klemt = Math.max(START_TIME, Math.min(END_TIME - 0.5, snappet));
-  return { hour: Math.floor(klemt), minute: klemt % 1 === 0.5 ? 30 : 0 };
+  const raaMin = (START_TIME + y / HOUR_H) * 60;
+  const snappetMin = Math.round(raaMin / GRID_SLOT_MIN) * GRID_SLOT_MIN;
+  // Siste gyldige start er én slot før stengetid.
+  const maxMin = END_TIME * 60 - GRID_SLOT_MIN;
+  const klemtMin = Math.max(START_TIME * 60, Math.min(maxMin, snappetMin));
+  return { hour: Math.floor(klemtMin / 60), minute: klemtMin % 60 };
 }
 
 /* ── Tidslinje-blokk ───────────────────────────────────── */

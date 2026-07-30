@@ -629,7 +629,7 @@ function OktArkSkjema({
             </Felt>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               <Felt label="Klokkeslett">
-                {/* Notion-grid 05:00–23:00 i 30-min slots — samme fasit som tidslinja */}
+                {/* Notion-grid 04:00–23:00 i 20-min slots — samme fasit som tidslinja */}
                 <select
                   value={tid}
                   onChange={(e) => setTid(e.target.value)}

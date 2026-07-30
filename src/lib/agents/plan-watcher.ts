@@ -6,6 +6,7 @@ import { aggregateByArea, prosentPerArea, PYR_LABEL, PYR_REKKEFOLGE } from "@/li
 import { parseTargetAllocation } from "@/lib/training/target-allocation";
 import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
 import { runAgent, type AgentResult } from "./agent-runner";
+import { byggProvenance } from "./provenance";
 
 export const AGENT_NAME = "plan-watcher";
 
@@ -72,6 +73,17 @@ export async function runPlanWatcher(): Promise<AgentResult> {
                 malProsent: mal,
               },
             },
+            provenance: byggProvenance({
+              kilde: "PLAN",
+              rader: plan.sessions.map((s) => ({
+                id: s.id,
+                dato: s.scheduledAt.toISOString(),
+              })),
+              regel: `avvik fra måltildeling på ${omr} over 8 prosentpoeng`,
+              terskel: 8,
+              maaltVerdi: avvik,
+              tidsvindu: { fra: forrigeStart, til: forrigeSlutt },
+            }),
           },
         });
         opprettet++;
