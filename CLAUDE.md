@@ -22,15 +22,15 @@ Sju filer, alle aktive: `arkitektur.md` (produkter, ruter, mappestruktur) · `go
 ikke kode).
 
 `beslutninger.md` dekker: invarianter-aldri-sperrer, AgencyOS-navnet, navne-kanon, Workbench-planlegging,
-analyse-samling, abonnement 299/gratis, FYS-avventing. **Designlåser er bevisst tømt 2026-07-25** — nytt
-komplett designsystem utvikles i Open Design; ingen designkanon er låst inntil videre. Ved konflikt vinner
-`docs/platform/BUSINESS-RULES.md`.
+analyse-samling, abonnement 299/gratis, FYS-avventing. **Design (LÅST 2026-07-31):** app/pilot = C, smalt
+(v2 + kun `--handling` `#D97757`); Claude Paper = designfasit i Open Design/speil; full port etter pilot
+(`docs/gjenstaaende-plan-2026-07-31.md` §1.1). Ved konflikt vinner `docs/platform/BUSINESS-RULES.md`.
 
 ## Harde invarianter (brytes aldri)
 1. **Anbefalinger sperrer aldri:** ingenting i appen blokkerer trening. Aldri «kan ikke brytes»-kode/tekst.
-2. ~~Farger kun fra designtokens~~ **(fjernet 2026-07-25):** designkanonen er avviklet. Hex-gaten er nå
-   fjernet overalt — PostToolUse-hook, `package.json`, `ci.yml` og selve scriptet (opprydding 2026-07-26).
-   Farge- og spacingvalg er fritt inntil Open Design lander. Ikke gjenopprett gaten uten ny beslutning.
+2. **Design tidsplan (2026-07-31):** App = C, smalt (v2-tokens; innfør `--handling` `#D97757` for «Én ting
+   nå», maks én per skjerm). Paper-design i OD/speil er OK. Full Paper-port til `src/` først etter pilot.
+   Hex-gaten for Presis forblir borte — ikke gjenopprett uten ny beslutning.
 3. **Norsk bokmål i all UI-tekst.**
 4. **Lucide-ikoner** — aldri emoji i UI. Primitiver fra `components/ui/` + `v2/`-mønstre.
 5. **Domenelogikk kun i `src/lib/domain/`** — aldri i komponenter.
