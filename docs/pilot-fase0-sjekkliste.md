@@ -12,13 +12,18 @@
 - [x] sjekkpunkt settes ved PlanAction-godkjenning
 
 ## Krever deg (panel/DNS/person)
-- [ ] **DKIM** for `send.akgolf.no` (Resend) — blokkerer ekte foresatt-e-post
+- [ ] **DKIM** for `send.akgolf.no` (Resend) — **utsatt til etter lanseringsdemo**
 - [ ] **Vercel** `DIRECT_URL` / `DATABASE_URL` etter eventuelle passordbytter + redeploy
 - [ ] **Stripe** live-nøkler / cutover-dato
 - [ ] **Google Calendar** re-koble
 - [ ] **Aktiver** spillere uten innlogging (e-post etter DKIM)
-- [ ] **Ja til merge** av `feature/schema-runde-sloyfe-v2` → main
+- [x] Schema-runde + FØR/UNDER/ETTER i main (flere PR-er 2026-07-31)
 - [ ] **Juridisk** gjennomgang av personvern-utkast (lyd/mindreårige)
+
+## Demo (uten Resend)
+- [x] Manuell lydsamtykke på `/admin/recording`
+- [x] Demo-sjekkliste: `docs/pilot-demo-sjekkliste.md`
+- [x] Røyktest-script: `npm run pilot:flyt-smoke`
 
 ## Ikke i denne runden (bevisst)
 - Paper-port til `src/`
