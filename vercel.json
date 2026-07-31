@@ -70,6 +70,10 @@
       "schedule": "0 5 * * 0"
     },
     {
+      "path": "/api/cron/norge-mandag-sync",
+      "schedule": "0 6 * * 1"
+    },
+    {
       "path": "/api/cron/notion-sync",
       "schedule": "*/5 * * * *"
     },

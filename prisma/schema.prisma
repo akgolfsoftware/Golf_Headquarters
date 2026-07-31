@@ -59,8 +59,9 @@ enum SessionStatusV2 {
 // Påmeldingsstatus for TournamentEntry. Erstatter notes-prefiks-hack i
 // withdrawFromTournament.
 enum TournamentEntryStatus {
-  PLANNED // meldt på
-  CONFIRMED // bekreftet av spiller
+  PLANNED // på planen, ikke påmeldt ennå
+  CLAIMED_REGISTERED // trykket «meldt på» — venter dobbel bekreftelse
+  CONFIRMED // dobbel bekreftelse: spiller hevder påmelding er gjort
   WITHDRAWN // trukket
   COMPLETED // gjennomført
   DNF // started, men trakk
@@ -2306,6 +2307,16 @@ model Tournament {
   officialUrl  String?
   lastSyncAt   DateTime?
 
+  // Turneringsplanlegger (i dag + fremtid) — synk/import
+  // Påmeldingsfrist (UTC). GolfBox EntryCloses der kjent.
+  entryCloses       DateTime?
+  // Extern påmeldingslenke (GolfBox/NGF/arrangør). App verifiserer IKKE påmelding.
+  registrationUrl   String?
+  // Eksplisitte rundedatoer YYYY-MM-DD der kjent; ellers avled fra start/end.
+  roundDates        Json?
+  // Anbefalt nivå: fritekst eller JSON { hcpMin, hcpMax, ak, label }
+  recommendedLevel  String?
+
   // --- Stats Fase 1: utvidelser for /turneringer + manuell innlegg + merge ---
   // Kort visningsnavn (f.eks. "WGC-FedEx" istedenfor "World Golf Championships - FedEx St. Jude Invitational")
   shortName       String?
@@ -2681,7 +2692,12 @@ model TournamentEntry {
   // Felles
   category        String? // "A-rekke", "Åpen NM", "Kretsmesterskap"
   priority        String                @default("NORMAL") // MAJOR | NORMAL | LOCAL
+  // Plan A (hovedmål) / B (backup) / C (utvikling)
+  planTier        String                @default("B")
   entryStatus     TournamentEntryStatus @default(PLANNED)
+  // Dobbel påmeldingsbekreftelse (spilleransvar — app verifiserer ikke hos arrangør)
+  playerClaimedRegisteredAt   DateTime?
+  playerConfirmedRegisteredAt DateTime?
   withdrawnAt     DateTime?
   withdrawnReason String?
   notes           String?
@@ -2695,6 +2711,7 @@ model TournamentEntry {
   @@index([userId])
   @@index([seasonPlanId])
   @@index([tournamentId])
+  @@index([userId, entryStatus])
   @@map("tournament_entries")
 }
 
