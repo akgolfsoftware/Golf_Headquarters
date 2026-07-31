@@ -329,7 +329,37 @@ export default async function V2AdminGodkjenningerPage() {
   }));
   const alleRows = [...rows.map((r) => ({ ...r, kilde: "agent" as const })), ...caddieRows, ...requestRows];
 
-  const data: AdminGodkjenningerV2Data = { rows: alleRows, lowRiskCount, totalt: ko.totalt };
+  // Løst: nylig godkjente sjekkpunkter (ETTER → FØR-tråd).
+  const lostRader = await prisma.planAction.findMany({
+    where: {
+      status: "ACCEPTED",
+      sjekkpunkt: { not: null },
+      user: spillerScope,
+    },
+    orderBy: { updatedAt: "desc" },
+    take: 12,
+    select: {
+      id: true,
+      sjekkpunkt: true,
+      updatedAt: true,
+      user: { select: { name: true } },
+    },
+  });
+  const lostSjekkpunkter = lostRader
+    .filter((r) => r.sjekkpunkt?.trim())
+    .map((r) => ({
+      id: r.id,
+      who: r.user.name ?? "Spiller",
+      sjekkpunkt: r.sjekkpunkt!.trim(),
+      when: nårTekst(r.updatedAt),
+    }));
+
+  const data: AdminGodkjenningerV2Data = {
+    rows: alleRows,
+    lowRiskCount,
+    totalt: ko.totalt,
+    lostSjekkpunkter,
+  };
 
   return (
     <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>

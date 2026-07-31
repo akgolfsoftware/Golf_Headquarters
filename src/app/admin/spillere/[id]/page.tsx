@@ -29,6 +29,7 @@ import {
   type DashRadItem,
 } from "@/components/admin/v2/SpillerDashboardV2";
 import type { AkseKey } from "@/lib/v2/tokens";
+import { hentSisteSjekkpunkt } from "@/lib/recording/sjekkpunkt";
 
 export const dynamic = "force-dynamic";
 
@@ -389,10 +390,25 @@ export default async function SpillerProfilPage({
   const aktivSkade = ekstra.leaves.find((l) => l.erHelse && !l.returnedAt && (!l.endAt || l.endAt >= now));
   if (aktivSkade) heroBadges.push({ label: "Skadet · rehab", tone: "down" });
 
+  const sisteSjekkpunkt = await hentSisteSjekkpunkt(player.id);
+  const forKort: SpillerDashboardV2Data["forKort"] = sisteSjekkpunkt
+    ? {
+        sjekkpunkt: sisteSjekkpunkt.sjekkpunkt,
+        godkjentLabel: sisteSjekkpunkt.godkjentAt.toLocaleString("nb-NO", {
+          day: "2-digit",
+          month: "short",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        godkjenningsHref: "/admin/godkjenninger",
+      }
+    : null;
+
   const dash: SpillerDashboardV2Data = {
     profil: data,
     heroBadges,
     heroMeta: [eyebrow, meta].filter(Boolean).join(" · "),
+    forKort,
     kpi: [
       { label: "HCP", verdi: fmtHcp(player.hcp), hjelp: "hcp" },
       {
