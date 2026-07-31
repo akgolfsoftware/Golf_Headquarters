@@ -41,46 +41,102 @@ async function avvisUtenLydSamtykke(playerId: string) {
 }
 
 export async function POST(req: Request) {
-  const user = await getCurrentUser();
-  if (!user) {
-    return NextResponse.json({ error: "Ikke innlogget" }, { status: 401 });
-  }
-  if (user.role !== "COACH" && user.role !== "ADMIN") {
-    return NextResponse.json({ error: "Mangler tilgang" }, { status: 403 });
-  }
-
-  // Rate-limit: 5 opptak-starter per time per coach.
-  const rl = await rateLimit({ key: `recording-start:${user.id}`, max: 5, windowMs: 3_600_000 });
-  if (!rl.ok) {
-    return NextResponse.json(
-      { error: "rate-limited" },
-      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } }
-    );
-  }
-
-  const parsed = Body.safeParse(await req.json().catch(() => ({})));
-  if (!parsed.success) {
-    return NextResponse.json({ error: "Ugyldig body" }, { status: 400 });
-  }
-
-  // Fritt opptak — spiller valgt direkte i /admin/recording.
-  if (!parsed.data.bookingId) {
-    const playerId = parsed.data.playerId!;
-    const player = await prisma.user.findUnique({
-      where: { id: playerId },
-      select: { id: true, role: true },
-    });
-    if (!player || player.role !== "PLAYER") {
-      return NextResponse.json({ error: "Spiller finnes ikke" }, { status: 404 });
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: "Ikke innlogget" }, { status: 401 });
+    }
+    if (user.role !== "COACH" && user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Mangler tilgang" }, { status: 403 });
     }
 
-    const sperre = await avvisUtenLydSamtykke(player.id);
+    // Rate-limit: 5 opptak-starter per time per coach.
+    const rl = await rateLimit({
+      key: `recording-start:${user.id}`,
+      max: 5,
+      windowMs: 3_600_000,
+    });
+    if (!rl.ok) {
+      return NextResponse.json(
+        { error: "rate-limited" },
+        { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+      );
+    }
+
+    const parsed = Body.safeParse(await req.json().catch(() => ({})));
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Ugyldig body" }, { status: 400 });
+    }
+
+    // Fritt opptak — spiller valgt direkte i /admin/recording.
+    if (!parsed.data.bookingId) {
+      const playerId = parsed.data.playerId!;
+      const player = await prisma.user.findUnique({
+        where: { id: playerId },
+        select: { id: true, role: true },
+      });
+      if (!player || player.role !== "PLAYER") {
+        return NextResponse.json({ error: "Spiller finnes ikke" }, { status: 404 });
+      }
+
+      const sperre = await avvisUtenLydSamtykke(player.id);
+      if (sperre) return sperre;
+
+      const recording = await prisma.sessionRecording.create({
+        data: {
+          uploadedById: user.id,
+          playerId: player.id,
+          status: "RECORDING",
+        },
+        select: { id: true },
+      });
+
+      await audit({
+        actorId: user.id,
+        action: "recording.started",
+        target: `SessionRecording:${recording.id}`,
+        metadata: { playerId: player.id, kilde: "fritt-opptak" },
+      });
+
+      return NextResponse.json({ recordingId: recording.id });
+    }
+
+    const booking = await prisma.booking.findUnique({
+      where: { id: parsed.data.bookingId },
+      select: {
+        id: true,
+        userId: true,
+        serviceType: { select: { coachUserId: true } },
+      },
+    });
+    if (!booking) {
+      return NextResponse.json({ error: "Booking finnes ikke" }, { status: 404 });
+    }
+
+    const coachId = booking.serviceType.coachUserId;
+    if (user.role !== "ADMIN" && coachId && coachId !== user.id) {
+      return NextResponse.json(
+        { error: "Du er ikke coach på denne booking" },
+        { status: 403 },
+      );
+    }
+
+    const playerId = booking.userId;
+    if (!playerId) {
+      return NextResponse.json(
+        { error: "Booking mangler spiller" },
+        { status: 400 },
+      );
+    }
+
+    const sperre = await avvisUtenLydSamtykke(playerId);
     if (sperre) return sperre;
 
     const recording = await prisma.sessionRecording.create({
       data: {
+        bookingId: booking.id,
         uploadedById: user.id,
-        playerId: player.id,
+        playerId,
         status: "RECORDING",
       },
       select: { id: true },
@@ -90,59 +146,16 @@ export async function POST(req: Request) {
       actorId: user.id,
       action: "recording.started",
       target: `SessionRecording:${recording.id}`,
-      metadata: { playerId: player.id, kilde: "fritt-opptak" },
+      metadata: { bookingId: booking.id, playerId },
     });
 
     return NextResponse.json({ recordingId: recording.id });
-  }
-
-  const booking = await prisma.booking.findUnique({
-    where: { id: parsed.data.bookingId },
-    select: {
-      id: true,
-      userId: true,
-      serviceType: { select: { coachUserId: true } },
-    },
-  });
-  if (!booking) {
-    return NextResponse.json({ error: "Booking finnes ikke" }, { status: 404 });
-  }
-
-  const coachId = booking.serviceType.coachUserId;
-  if (user.role !== "ADMIN" && coachId && coachId !== user.id) {
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Ukjent feil";
+    console.error("[recording/start]", err);
     return NextResponse.json(
-      { error: "Du er ikke coach på denne booking" },
-      { status: 403 },
+      { error: "server-error", message },
+      { status: 500 },
     );
   }
-
-  const playerId = booking.userId;
-  if (!playerId) {
-    return NextResponse.json(
-      { error: "Booking mangler spiller" },
-      { status: 400 },
-    );
-  }
-
-  const sperre = await avvisUtenLydSamtykke(playerId);
-  if (sperre) return sperre;
-
-  const recording = await prisma.sessionRecording.create({
-    data: {
-      bookingId: booking.id,
-      uploadedById: user.id,
-      playerId,
-      status: "RECORDING",
-    },
-    select: { id: true },
-  });
-
-  await audit({
-    actorId: user.id,
-    action: "recording.started",
-    target: `SessionRecording:${recording.id}`,
-    metadata: { bookingId: booking.id, playerId },
-  });
-
-  return NextResponse.json({ recordingId: recording.id });
 }
