@@ -1,0 +1,4263 @@
+{
+  "generatedAt": "2026-07-31T02:48:12.064Z",
+  "routeCount": 330,
+  "routes": [
+    "/admin",
+    "/admin/agencyos",
+    "/admin/agencyos/caddie",
+    "/admin/agencyos/caddie/aktivitet",
+    "/admin/agencyos/caddie/dashbord",
+    "/admin/agencyos/live",
+    "/admin/agencyos/okonomi",
+    "/admin/agencyos/spillere",
+    "/admin/agencyos/uka",
+    "/admin/agent-team",
+    "/admin/agenter",
+    "/admin/agents",
+    "/admin/agents/[agentId]",
+    "/admin/ai",
+    "/admin/analyse",
+    "/admin/analysere",
+    "/admin/analysere/compliance",
+    "/admin/anlegg",
+    "/admin/approvals",
+    "/admin/approvals/[id]",
+    "/admin/audit-log",
+    "/admin/availability",
+    "/admin/board",
+    "/admin/bookinger",
+    "/admin/bookinger/[id]",
+    "/admin/bookinger/ny",
+    "/admin/brief",
+    "/admin/caddie",
+    "/admin/calendar",
+    "/admin/calendar/maned",
+    "/admin/coach-workbench",
+    "/admin/drills",
+    "/admin/drills/[id]",
+    "/admin/drills/[id]/rediger",
+    "/admin/drills/forslag",
+    "/admin/drills/ny",
+    "/admin/email-templates",
+    "/admin/email-templates/[id]/rediger",
+    "/admin/finance",
+    "/admin/foresporsler",
+    "/admin/gjennomfore",
+    "/admin/gjennomfore/okter/[id]",
+    "/admin/godkjenninger",
+    "/admin/godkjenninger/[id]",
+    "/admin/grupper",
+    "/admin/grupper/[id]",
+    "/admin/grupper/[id]/arsplan",
+    "/admin/grupper/[id]/arsplan/skoledata",
+    "/admin/grupper/[id]/timeplan",
+    "/admin/grupper/[id]/workbench",
+    "/admin/handlingssenter",
+    "/admin/hjelp",
+    "/admin/innboks",
+    "/admin/innboks-epost",
+    "/admin/integrasjoner",
+    "/admin/kalender",
+    "/admin/kalender/hendelse/[id]",
+    "/admin/kalender/hendelse/ny",
+    "/admin/kalender/maned",
+    "/admin/kalender/uke",
+    "/admin/kapasitet",
+    "/admin/klubb/innstillinger",
+    "/admin/kommunikasjon",
+    "/admin/lag-snitt",
+    "/admin/live/[sessionId]/active",
+    "/admin/live/[sessionId]/brief",
+    "/admin/live/[sessionId]/summary",
+    "/admin/marketing",
+    "/admin/mer",
+    "/admin/messages",
+    "/admin/okonomi",
+    "/admin/okter",
+    "/admin/oppfolging",
+    "/admin/organisasjon",
+    "/admin/plan-templates",
+    "/admin/plan-templates/[id]",
+    "/admin/plan-templates/[id]/effectiveness",
+    "/admin/plan-templates/[id]/rediger",
+    "/admin/plan-templates/ny",
+    "/admin/planlegge",
+    "/admin/plans",
+    "/admin/plans/[planId]",
+    "/admin/plans/new",
+    "/admin/plans/templates",
+    "/admin/plans/templates/[id]/effectiveness",
+    "/admin/plans/templates/[id]/rediger",
+    "/admin/plans/templates/ny",
+    "/admin/profile",
+    "/admin/prosjekter",
+    "/admin/queue",
+    "/admin/reach",
+    "/admin/recording",
+    "/admin/reports",
+    "/admin/risiko",
+    "/admin/runder",
+    "/admin/services",
+    "/admin/settings",
+    "/admin/settings/api",
+    "/admin/settings/calendar",
+    "/admin/settings/periode-fordeling",
+    "/admin/settings/periode-navn",
+    "/admin/settings/security",
+    "/admin/settings/tilgang",
+    "/admin/spillere",
+    "/admin/spillere/[id]",
+    "/admin/spillere/[id]/analyse",
+    "/admin/spillere/[id]/fremgang",
+    "/admin/spillere/[id]/plan",
+    "/admin/spillere/[id]/plan/[planId]",
+    "/admin/spillere/[id]/profil",
+    "/admin/spillere/[id]/rediger",
+    "/admin/spillere/[id]/tester",
+    "/admin/spillere/[id]/tildel-test",
+    "/admin/spillere/[id]/turnering-kobling",
+    "/admin/spillere/[id]/workbench",
+    "/admin/spillere/ny",
+    "/admin/stall",
+    "/admin/stats/moderering",
+    "/admin/stats/overview",
+    "/admin/talent",
+    "/admin/talent/discovery",
+    "/admin/talent/kohort",
+    "/admin/talent/radar",
+    "/admin/talent/region",
+    "/admin/talent/ressurser",
+    "/admin/talent/sammenligning",
+    "/admin/talent/wagr-benchmark",
+    "/admin/talent/wagr-import",
+    "/admin/team",
+    "/admin/team/inviter",
+    "/admin/teknisk-plan",
+    "/admin/teknisk-plan/[spillerId]",
+    "/admin/tester",
+    "/admin/tester/benchmarks",
+    "/admin/tester/foreslatte",
+    "/admin/tester/tildel",
+    "/admin/tester/tildel/[spillerId]",
+    "/admin/tilstander",
+    "/admin/tournaments",
+    "/admin/tournaments/[id]",
+    "/admin/tournaments/dubletter",
+    "/admin/tournaments/ny",
+    "/admin/trackman",
+    "/admin/trackman/[sessionId]",
+    "/admin/turnering-kart",
+    "/admin/uka",
+    "/admin/varsler",
+    "/admin/videoer",
+    "/admin/workspace",
+    "/admin/workspace/notion",
+    "/admin/workspace/oppgaver",
+    "/admin/workspace/prosjekter",
+    "/admin/workspace/tildelt-meg",
+    "/forelder",
+    "/forelder/barn",
+    "/forelder/barn/[childId]",
+    "/forelder/bookinger",
+    "/forelder/coach",
+    "/forelder/fakturaer",
+    "/forelder/innstillinger",
+    "/forelder/okonomi",
+    "/forelder/samtykke",
+    "/forelder/ukerapport",
+    "/forelder/varsler",
+    "/portal",
+    "/portal/agent-pipeline",
+    "/portal/ai/foresla-drill",
+    "/portal/ai/foresla-turnering",
+    "/portal/ai/mal-bygger",
+    "/portal/analyse",
+    "/portal/analysere",
+    "/portal/analysere/hull",
+    "/portal/baneguide",
+    "/portal/baneguide/[baneId]",
+    "/portal/baneguide/[baneId]/hull/[nr]",
+    "/portal/booking",
+    "/portal/booking/[bookingId]",
+    "/portal/booking/anlegg/[anleggId]",
+    "/portal/booking/bekreftet",
+    "/portal/booking/coach/[coachId]",
+    "/portal/booking/ny",
+    "/portal/booking/ny/bekreft",
+    "/portal/coach",
+    "/portal/coach/[coachId]",
+    "/portal/coach/ai",
+    "/portal/coach/melding",
+    "/portal/coach/melding/[id]",
+    "/portal/coach/melding/[id]/vedlegg",
+    "/portal/coach/melding/ny",
+    "/portal/coach/notes",
+    "/portal/coach/notes/[noteId]",
+    "/portal/coach/ovelser",
+    "/portal/coach/ovelser/[id]/rediger",
+    "/portal/coach/ovelser/ny",
+    "/portal/coach/plans",
+    "/portal/coach/plans/[planId]",
+    "/portal/coach/plans/[planId]/ny-okt",
+    "/portal/coach/plans/perioder",
+    "/portal/coach/sg-hub",
+    "/portal/coach/sporsmal",
+    "/portal/coach/sporsmal/[id]",
+    "/portal/coach/sporsmal/ny",
+    "/portal/coach/videoer",
+    "/portal/datagolf",
+    "/portal/drills",
+    "/portal/drills/[id]",
+    "/portal/fysisk",
+    "/portal/gameplan",
+    "/portal/gameplan/[baneId]",
+    "/portal/gameplan/[baneId]/hull/[nr]",
+    "/portal/gjennomfore",
+    "/portal/gjennomfore/[id]",
+    "/portal/kalender",
+    "/portal/live/[sessionId]",
+    "/portal/live/[sessionId]/active",
+    "/portal/live/[sessionId]/brief",
+    "/portal/live/[sessionId]/logger",
+    "/portal/live/[sessionId]/summary",
+    "/portal/live/[sessionId]/tapper",
+    "/portal/mal",
+    "/portal/mal/bygger",
+    "/portal/mal/goal/[id]",
+    "/portal/mal/leaderboard",
+    "/portal/mal/milepaeler",
+    "/portal/mal/runder",
+    "/portal/mal/runder/[id]",
+    "/portal/mal/runder/[id]/fullfor",
+    "/portal/mal/runder/[id]/hull",
+    "/portal/mal/runder/[id]/shot-by-shot",
+    "/portal/mal/runder/[id]/slag",
+    "/portal/mal/runder/ny",
+    "/portal/mal/sg-hub",
+    "/portal/mal/sg-hub/[club]",
+    "/portal/mal/sg-hub/benchmark",
+    "/portal/mal/sg-hub/best-vs-now",
+    "/portal/mal/sg-hub/coach/[spillerId]",
+    "/portal/mal/sg-hub/coach/[spillerId]/[club]",
+    "/portal/mal/sg-hub/coach/[spillerId]/equipment",
+    "/portal/mal/sg-hub/conditions",
+    "/portal/mal/sg-hub/equipment",
+    "/portal/mal/sg-hub/strategy",
+    "/portal/mal/sg-hub/yardage",
+    "/portal/mal/statistikk",
+    "/portal/mal/trackman",
+    "/portal/mal/trackman/[id]",
+    "/portal/meg",
+    "/portal/meg/abonnement",
+    "/portal/meg/abonnement/avbestill",
+    "/portal/meg/abonnement/faktura/[id]",
+    "/portal/meg/abonnement/kort/ny",
+    "/portal/meg/abonnement/oppgrader",
+    "/portal/meg/abonnement/oppgrader/flyt",
+    "/portal/meg/bookinger",
+    "/portal/meg/bookinger/reschedule/[bookingId]",
+    "/portal/meg/dokumenter",
+    "/portal/meg/feedback",
+    "/portal/meg/foreldre",
+    "/portal/meg/help",
+    "/portal/meg/help/artikkel/[slug]",
+    "/portal/meg/help/kategori/[slug]",
+    "/portal/meg/help/kontakt",
+    "/portal/meg/helse",
+    "/portal/meg/helse/symptom/ny",
+    "/portal/meg/innstillinger",
+    "/portal/meg/innstillinger/ai-coach",
+    "/portal/meg/innstillinger/anlegg",
+    "/portal/meg/innstillinger/eksport",
+    "/portal/meg/innstillinger/integrasjoner",
+    "/portal/meg/innstillinger/okter",
+    "/portal/meg/innstillinger/personvern",
+    "/portal/meg/innstillinger/sikkerhet",
+    "/portal/meg/innstillinger/sprak",
+    "/portal/meg/innstillinger/varsler",
+    "/portal/meg/profil",
+    "/portal/meg/sikkerhet",
+    "/portal/meg/sikkerhet/2fa",
+    "/portal/meg/utstyrsbag",
+    "/portal/ny-okt",
+    "/portal/onskeligokt",
+    "/portal/onskeligokt/bekreftet",
+    "/portal/planlegge",
+    "/portal/planlegge/bygger",
+    "/portal/planlegge/workbench",
+    "/portal/reach",
+    "/portal/runde/live",
+    "/portal/runde/logg",
+    "/portal/spiller/[spillerId]",
+    "/portal/statistikk",
+    "/portal/statistikk/[metric]",
+    "/portal/statistikk/runder/[runId]/del",
+    "/portal/stats",
+    "/portal/talent",
+    "/portal/talent/min-plan",
+    "/portal/talent/mitt-niva",
+    "/portal/talent/roadmap",
+    "/portal/talent/sammenligning",
+    "/portal/trackman",
+    "/portal/trackman/[sessionId]",
+    "/portal/tren",
+    "/portal/tren/[sessionId]",
+    "/portal/tren/[sessionId]/planlagt",
+    "/portal/tren/aarsplan",
+    "/portal/tren/aarsplan/periode/[id]/rediger",
+    "/portal/tren/aarsplan/periode/ny",
+    "/portal/tren/feiring/[planId]",
+    "/portal/tren/fys-plan",
+    "/portal/tren/fys-plan/[planId]",
+    "/portal/tren/kalender",
+    "/portal/tren/ovelser",
+    "/portal/tren/ovelser/[id]",
+    "/portal/tren/teknisk-plan/[planId]",
+    "/portal/tren/tester",
+    "/portal/tren/tester/[testId]",
+    "/portal/tren/tester/[testId]/gjennomfor",
+    "/portal/tren/tester/katalog",
+    "/portal/tren/tester/ny",
+    "/portal/tren/tester/ny/egen",
+    "/portal/tren/turneringer",
+    "/portal/tren/turneringer/[id]",
+    "/portal/tren/turneringer/ny",
+    "/portal/trening/break-tabell",
+    "/portal/trening/logg",
+    "/portal/trening/putte-laboratoriet",
+    "/portal/utfordringer",
+    "/portal/utfordringer/[id]",
+    "/portal/utfordringer/ny",
+    "/portal/utviklingsplan",
+    "/portal/varsler",
+    "/portal/venner",
+    "/portal/venner/[spillerId]"
+  ],
+  "edges": [
+    {
+      "from": "/admin",
+      "to": "/admin/agencyos",
+      "count": 2
+    },
+    {
+      "from": "/admin/agencyos",
+      "to": "/admin/agencyos/live",
+      "count": 1
+    },
+    {
+      "from": "/admin/agencyos",
+      "to": "/admin/agencyos/uka",
+      "count": 1
+    },
+    {
+      "from": "/admin/agencyos",
+      "to": "/admin/spillere",
+      "count": 2
+    },
+    {
+      "from": "/admin/agencyos",
+      "to": "/admin/agencyos/okonomi",
+      "count": 1
+    },
+    {
+      "from": "/admin/agencyos",
+      "to": "/admin/agencyos/caddie",
+      "count": 1
+    },
+    {
+      "from": "/admin/agencyos",
+      "to": "/admin/grupper/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/agencyos/caddie",
+      "to": "/admin/agencyos",
+      "count": 2
+    },
+    {
+      "from": "/admin/agencyos/caddie/aktivitet",
+      "to": "/admin/agencyos/caddie",
+      "count": 2
+    },
+    {
+      "from": "/admin/agencyos/caddie/dashbord",
+      "to": "/admin/godkjenninger",
+      "count": 2
+    },
+    {
+      "from": "/admin/agencyos/caddie/dashbord",
+      "to": "/admin/agencyos/caddie",
+      "count": 2
+    },
+    {
+      "from": "/admin/agencyos/live",
+      "to": "/admin/agencyos",
+      "count": 2
+    },
+    {
+      "from": "/admin/agencyos/okonomi",
+      "to": "/admin/agencyos",
+      "count": 2
+    },
+    {
+      "from": "/admin/agencyos/okonomi",
+      "to": "/admin/innboks",
+      "count": 1
+    },
+    {
+      "from": "/admin/agencyos/okonomi",
+      "to": "/admin/services",
+      "count": 1
+    },
+    {
+      "from": "/admin/agencyos/spillere",
+      "to": "/admin/spillere",
+      "count": 1
+    },
+    {
+      "from": "/admin/agencyos/uka",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/admin/agencyos/uka",
+      "to": "/admin/bookinger",
+      "count": 1
+    },
+    {
+      "from": "/admin/agencyos/uka",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/agent-team",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/agent-team",
+      "to": "/admin/agents",
+      "count": 1
+    },
+    {
+      "from": "/admin/agenter",
+      "to": "/admin/agents",
+      "count": 1
+    },
+    {
+      "from": "/admin/agents",
+      "to": "/admin/agencyos",
+      "count": 2
+    },
+    {
+      "from": "/admin/agents",
+      "to": "/admin/agents/[agentId]",
+      "count": 1
+    },
+    {
+      "from": "/admin/agents",
+      "to": "/admin/godkjenninger",
+      "count": 1
+    },
+    {
+      "from": "/admin/agents/[agentId]",
+      "to": "/admin/agents",
+      "count": 2
+    },
+    {
+      "from": "/admin/agents/[agentId]",
+      "to": "/admin/godkjenninger",
+      "count": 1
+    },
+    {
+      "from": "/admin/ai",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/ai",
+      "to": "/admin/agents",
+      "count": 1
+    },
+    {
+      "from": "/admin/analyse",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/analysere",
+      "to": "/admin/analyse",
+      "count": 1
+    },
+    {
+      "from": "/admin/analysere/compliance",
+      "to": "/admin/analyse",
+      "count": 1
+    },
+    {
+      "from": "/admin/approvals",
+      "to": "/admin/approvals/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/approvals",
+      "to": "/admin/godkjenninger",
+      "count": 8
+    },
+    {
+      "from": "/admin/approvals",
+      "to": "/admin/godkjenninger/[id]",
+      "count": 3
+    },
+    {
+      "from": "/admin/approvals",
+      "to": "/portal/agent-pipeline",
+      "count": 1
+    },
+    {
+      "from": "/admin/approvals",
+      "to": "/admin/spillere/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/approvals/[id]",
+      "to": "/admin/godkjenninger/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/audit-log",
+      "to": "/admin/analyse",
+      "count": 1
+    },
+    {
+      "from": "/admin/board",
+      "to": "/admin/spillere",
+      "count": 1
+    },
+    {
+      "from": "/admin/bookinger",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/admin/bookinger",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/bookinger",
+      "to": "/admin/spillere/[id]/plan/[planId]",
+      "count": 1
+    },
+    {
+      "from": "/admin/bookinger",
+      "to": "/admin/bookinger/ny",
+      "count": 1
+    },
+    {
+      "from": "/admin/bookinger/[id]",
+      "to": "/admin/bookinger",
+      "count": 1
+    },
+    {
+      "from": "/admin/brief",
+      "to": "/admin/bookinger/ny",
+      "count": 1
+    },
+    {
+      "from": "/admin/brief",
+      "to": "/admin/innboks",
+      "count": 2
+    },
+    {
+      "from": "/admin/brief",
+      "to": "/admin/spillere/[id]",
+      "count": 2
+    },
+    {
+      "from": "/admin/brief",
+      "to": "/admin/settings",
+      "count": 1
+    },
+    {
+      "from": "/admin/brief",
+      "to": "/admin/godkjenninger",
+      "count": 1
+    },
+    {
+      "from": "/admin/caddie",
+      "to": "/admin/agencyos/caddie/dashbord",
+      "count": 1
+    },
+    {
+      "from": "/admin/calendar",
+      "to": "/admin/kalender",
+      "count": 4
+    },
+    {
+      "from": "/admin/calendar",
+      "to": "/admin/bookinger",
+      "count": 3
+    },
+    {
+      "from": "/admin/calendar/maned",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/admin/coach-workbench",
+      "to": "/admin/planlegge",
+      "count": 1
+    },
+    {
+      "from": "/admin/drills",
+      "to": "/admin/drills/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/drills/[id]",
+      "to": "/admin/drills/[id]/rediger",
+      "count": 2
+    },
+    {
+      "from": "/admin/drills/[id]",
+      "to": "/admin/drills",
+      "count": 1
+    },
+    {
+      "from": "/admin/drills/forslag",
+      "to": "/admin/drills",
+      "count": 3
+    },
+    {
+      "from": "/admin/drills/forslag",
+      "to": "/portal/drills",
+      "count": 1
+    },
+    {
+      "from": "/admin/drills/forslag",
+      "to": "/admin/agents",
+      "count": 1
+    },
+    {
+      "from": "/admin/drills/ny",
+      "to": "/admin/drills/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/drills/ny",
+      "to": "/admin/drills",
+      "count": 2
+    },
+    {
+      "from": "/admin/email-templates",
+      "to": "/admin/agencyos",
+      "count": 2
+    },
+    {
+      "from": "/admin/email-templates/[id]/rediger",
+      "to": "/admin/email-templates",
+      "count": 4
+    },
+    {
+      "from": "/admin/finance",
+      "to": "/admin/agencyos/okonomi",
+      "count": 1
+    },
+    {
+      "from": "/admin/gjennomfore",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/gjennomfore",
+      "to": "/admin/gjennomfore/okter/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/gjennomfore",
+      "to": "/admin/kalender/uke",
+      "count": 1
+    },
+    {
+      "from": "/admin/gjennomfore",
+      "to": "/admin/bookinger",
+      "count": 1
+    },
+    {
+      "from": "/admin/gjennomfore",
+      "to": "/admin",
+      "count": 1
+    },
+    {
+      "from": "/admin/gjennomfore",
+      "to": "/admin/availability",
+      "count": 1
+    },
+    {
+      "from": "/admin/gjennomfore",
+      "to": "/admin/kapasitet",
+      "count": 1
+    },
+    {
+      "from": "/admin/gjennomfore",
+      "to": "/admin/services",
+      "count": 1
+    },
+    {
+      "from": "/admin/gjennomfore",
+      "to": "/admin/trackman",
+      "count": 1
+    },
+    {
+      "from": "/admin/gjennomfore",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/admin/gjennomfore",
+      "to": "/admin/planlegge",
+      "count": 1
+    },
+    {
+      "from": "/admin/gjennomfore/okter/[id]",
+      "to": "/portal/booking",
+      "count": 1
+    },
+    {
+      "from": "/admin/gjennomfore/okter/[id]",
+      "to": "/admin/gjennomfore",
+      "count": 2
+    },
+    {
+      "from": "/admin/gjennomfore/okter/[id]",
+      "to": "/admin/bookinger",
+      "count": 3
+    },
+    {
+      "from": "/admin/gjennomfore/okter/[id]",
+      "to": "/admin/live/[sessionId]/summary",
+      "count": 2
+    },
+    {
+      "from": "/admin/gjennomfore/okter/[id]",
+      "to": "/admin/live/[sessionId]/brief",
+      "count": 1
+    },
+    {
+      "from": "/admin/godkjenninger",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/godkjenninger",
+      "to": "/admin/agencyos/caddie/dashbord",
+      "count": 1
+    },
+    {
+      "from": "/admin/godkjenninger",
+      "to": "/admin/foresporsler",
+      "count": 1
+    },
+    {
+      "from": "/admin/grupper",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/grupper",
+      "to": "/admin/grupper/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/grupper",
+      "to": "/admin/spillere",
+      "count": 1
+    },
+    {
+      "from": "/admin/grupper/[id]",
+      "to": "/admin/grupper/[id]/timeplan",
+      "count": 5
+    },
+    {
+      "from": "/admin/grupper/[id]",
+      "to": "/admin/bookinger/ny",
+      "count": 1
+    },
+    {
+      "from": "/admin/grupper/[id]",
+      "to": "/admin/grupper",
+      "count": 1
+    },
+    {
+      "from": "/admin/grupper/[id]/arsplan",
+      "to": "/admin/grupper/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/grupper/[id]/arsplan/skoledata",
+      "to": "/admin/grupper/[id]/arsplan",
+      "count": 2
+    },
+    {
+      "from": "/admin/grupper/[id]/timeplan",
+      "to": "/admin/grupper/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/grupper/[id]/workbench",
+      "to": "/admin/grupper/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/grupper/[id]/workbench",
+      "to": "/admin/grupper/[id]/timeplan",
+      "count": 1
+    },
+    {
+      "from": "/admin/handlingssenter",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/hjelp",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/innboks",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/innboks-epost",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/innboks-epost",
+      "to": "/admin/innboks",
+      "count": 1
+    },
+    {
+      "from": "/admin/integrasjoner",
+      "to": "/admin/settings/calendar",
+      "count": 1
+    },
+    {
+      "from": "/admin/integrasjoner",
+      "to": "/admin/finance",
+      "count": 1
+    },
+    {
+      "from": "/admin/integrasjoner",
+      "to": "/admin/agents",
+      "count": 1
+    },
+    {
+      "from": "/admin/integrasjoner",
+      "to": "/admin/email-templates",
+      "count": 1
+    },
+    {
+      "from": "/admin/integrasjoner",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/kalender",
+      "to": "/admin/grupper/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/kalender",
+      "to": "/admin/kalender/hendelse/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/kalender",
+      "to": "/admin/agent-team",
+      "count": 1
+    },
+    {
+      "from": "/admin/kalender",
+      "to": "/admin/spillere",
+      "count": 1
+    },
+    {
+      "from": "/admin/kalender",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/kalender/hendelse/[id]",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/admin/kalender/hendelse/ny",
+      "to": "/admin/kalender",
+      "count": 2
+    },
+    {
+      "from": "/admin/kalender/uke",
+      "to": "/admin/kalender",
+      "count": 2
+    },
+    {
+      "from": "/admin/kapasitet",
+      "to": "/admin/bookinger",
+      "count": 1
+    },
+    {
+      "from": "/admin/klubb/innstillinger",
+      "to": "/admin/settings",
+      "count": 1
+    },
+    {
+      "from": "/admin/kommunikasjon",
+      "to": "/admin/innboks",
+      "count": 1
+    },
+    {
+      "from": "/admin/live/[sessionId]/active",
+      "to": "/admin/live/[sessionId]/brief",
+      "count": 1
+    },
+    {
+      "from": "/admin/live/[sessionId]/active",
+      "to": "/admin/live/[sessionId]/summary",
+      "count": 1
+    },
+    {
+      "from": "/admin/live/[sessionId]/brief",
+      "to": "/admin/spillere/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/live/[sessionId]/brief",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/live/[sessionId]/brief",
+      "to": "/admin/live/[sessionId]/active",
+      "count": 1
+    },
+    {
+      "from": "/admin/live/[sessionId]/summary",
+      "to": "/admin/spillere/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/live/[sessionId]/summary",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/marketing",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/mer",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/messages",
+      "to": "/admin/analysere/compliance",
+      "count": 1
+    },
+    {
+      "from": "/admin/messages",
+      "to": "/admin/innboks",
+      "count": 1
+    },
+    {
+      "from": "/admin/okonomi",
+      "to": "/admin/agencyos/okonomi",
+      "count": 1
+    },
+    {
+      "from": "/admin/okter",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/okter",
+      "to": "/admin/planlegge",
+      "count": 1
+    },
+    {
+      "from": "/admin/oppfolging",
+      "to": "/admin/queue",
+      "count": 1
+    },
+    {
+      "from": "/admin/organisasjon",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/organisasjon",
+      "to": "/admin/settings",
+      "count": 1
+    },
+    {
+      "from": "/admin/plan-templates",
+      "to": "/admin/plan-templates/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/plan-templates",
+      "to": "/admin/plan-templates/[id]/rediger",
+      "count": 1
+    },
+    {
+      "from": "/admin/plan-templates",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/plan-templates",
+      "to": "/admin/planlegge",
+      "count": 1
+    },
+    {
+      "from": "/admin/plan-templates/[id]",
+      "to": "/admin/plan-templates",
+      "count": 1
+    },
+    {
+      "from": "/admin/plan-templates/[id]/effectiveness",
+      "to": "/admin/plan-templates",
+      "count": 1
+    },
+    {
+      "from": "/admin/plan-templates/[id]/rediger",
+      "to": "/admin/plan-templates/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/plan-templates/ny",
+      "to": "/admin/plan-templates",
+      "count": 1
+    },
+    {
+      "from": "/admin/planlegge",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/plans",
+      "to": "/admin/plans/[planId]",
+      "count": 1
+    },
+    {
+      "from": "/admin/plans",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/plans",
+      "to": "/admin/spillere/[id]/workbench",
+      "count": 1
+    },
+    {
+      "from": "/admin/plans",
+      "to": "/admin/spillere",
+      "count": 1
+    },
+    {
+      "from": "/admin/plans",
+      "to": "/admin/planlegge",
+      "count": 1
+    },
+    {
+      "from": "/admin/plans/[planId]",
+      "to": "/portal/tren/[sessionId]",
+      "count": 3
+    },
+    {
+      "from": "/admin/plans/[planId]",
+      "to": "/admin/plans",
+      "count": 12
+    },
+    {
+      "from": "/admin/plans/[planId]",
+      "to": "/portal/spiller/[spillerId]",
+      "count": 2
+    },
+    {
+      "from": "/admin/plans/[planId]",
+      "to": "/portal/coach/plans/[planId]",
+      "count": 1
+    },
+    {
+      "from": "/admin/plans/[planId]",
+      "to": "/portal/tren/feiring/[planId]",
+      "count": 1
+    },
+    {
+      "from": "/admin/plans/[planId]",
+      "to": "/portal/tren",
+      "count": 1
+    },
+    {
+      "from": "/admin/plans/[planId]",
+      "to": "/admin/spillere/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/plans/[planId]",
+      "to": "/admin/plan-templates",
+      "count": 1
+    },
+    {
+      "from": "/admin/plans/new",
+      "to": "/admin/planlegge",
+      "count": 1
+    },
+    {
+      "from": "/admin/plans/templates",
+      "to": "/admin/plan-templates",
+      "count": 1
+    },
+    {
+      "from": "/admin/plans/templates/[id]/effectiveness",
+      "to": "/admin/plan-templates",
+      "count": 1
+    },
+    {
+      "from": "/admin/plans/templates/[id]/rediger",
+      "to": "/admin/plan-templates",
+      "count": 1
+    },
+    {
+      "from": "/admin/plans/templates/ny",
+      "to": "/admin/plan-templates",
+      "count": 1
+    },
+    {
+      "from": "/admin/profile",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/prosjekter",
+      "to": "/admin/agent-team",
+      "count": 1
+    },
+    {
+      "from": "/admin/queue",
+      "to": "/admin/spillere/[id]",
+      "count": 2
+    },
+    {
+      "from": "/admin/queue",
+      "to": "/admin/innboks",
+      "count": 1
+    },
+    {
+      "from": "/admin/queue",
+      "to": "/admin/bookinger/ny",
+      "count": 1
+    },
+    {
+      "from": "/admin/queue",
+      "to": "/admin/settings",
+      "count": 1
+    },
+    {
+      "from": "/admin/recording",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/reports",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/risiko",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/runder",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/settings",
+      "to": "/admin",
+      "count": 1
+    },
+    {
+      "from": "/admin/settings",
+      "to": "/admin/organisasjon",
+      "count": 1
+    },
+    {
+      "from": "/admin/settings",
+      "to": "/admin/settings/tilgang",
+      "count": 1
+    },
+    {
+      "from": "/admin/settings",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/settings/api",
+      "to": "/admin/settings",
+      "count": 1
+    },
+    {
+      "from": "/admin/settings/calendar",
+      "to": "/admin/settings",
+      "count": 1
+    },
+    {
+      "from": "/admin/settings/periode-fordeling",
+      "to": "/admin/settings",
+      "count": 1
+    },
+    {
+      "from": "/admin/settings/periode-navn",
+      "to": "/admin/settings",
+      "count": 1
+    },
+    {
+      "from": "/admin/settings/security",
+      "to": "/admin/settings",
+      "count": 1
+    },
+    {
+      "from": "/admin/settings/tilgang",
+      "to": "/admin/settings",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere",
+      "to": "/admin/planlegge",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]",
+      "to": "/admin/spillere",
+      "count": 3
+    },
+    {
+      "from": "/admin/spillere/[id]",
+      "to": "/admin/spillere/[id]/workbench",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]",
+      "to": "/admin/innboks",
+      "count": 4
+    },
+    {
+      "from": "/admin/spillere/[id]",
+      "to": "/admin/plans",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]",
+      "to": "/admin/godkjenninger",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]",
+      "to": "/admin/bookinger/ny",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]",
+      "to": "/admin/tournaments",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]",
+      "to": "/admin/spillere/[id]/analyse",
+      "count": 2
+    },
+    {
+      "from": "/admin/spillere/[id]",
+      "to": "/admin/spillere/[id]/fremgang",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]",
+      "to": "/admin/spillere/[id]/tester",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]",
+      "to": "/admin/spillere/[id]/plan",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]",
+      "to": "/admin/spillere/[id]/turnering-kobling",
+      "count": 2
+    },
+    {
+      "from": "/admin/spillere/[id]",
+      "to": "/admin/spillere/[id]/rediger",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]/analyse",
+      "to": "/admin/spillere",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]/fremgang",
+      "to": "/admin/spillere",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]/plan",
+      "to": "/admin/spillere",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]/plan/[planId]",
+      "to": "/portal/ai/foresla-drill",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]/plan/[planId]",
+      "to": "/admin/spillere/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]/rediger",
+      "to": "/admin/spillere/[id]",
+      "count": 3
+    },
+    {
+      "from": "/admin/spillere/[id]/rediger",
+      "to": "/admin/spillere/[id]/profil",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]/rediger",
+      "to": "/admin/spillere",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]/tester",
+      "to": "/admin/spillere",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]/tildel-test",
+      "to": "/admin/tester/tildel/[spillerId]",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]/tildel-test",
+      "to": "/admin/spillere/[id]/tester",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]/turnering-kobling",
+      "to": "/admin/spillere/[id]",
+      "count": 3
+    },
+    {
+      "from": "/admin/spillere/[id]/turnering-kobling",
+      "to": "/admin/spillere/[id]/analyse",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/[id]/workbench",
+      "to": "/admin/spillere",
+      "count": 1
+    },
+    {
+      "from": "/admin/spillere/ny",
+      "to": "/admin/spillere",
+      "count": 3
+    },
+    {
+      "from": "/admin/spillere/ny",
+      "to": "/admin/spillere/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/stall",
+      "to": "/admin/spillere",
+      "count": 1
+    },
+    {
+      "from": "/admin/talent",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/talent",
+      "to": "/admin/talent/radar",
+      "count": 1
+    },
+    {
+      "from": "/admin/talent/discovery",
+      "to": "/admin/talent",
+      "count": 2
+    },
+    {
+      "from": "/admin/talent/discovery",
+      "to": "/admin/talent/radar",
+      "count": 1
+    },
+    {
+      "from": "/admin/talent/kohort",
+      "to": "/admin/talent/radar",
+      "count": 1
+    },
+    {
+      "from": "/admin/talent/radar",
+      "to": "/admin/talent",
+      "count": 1
+    },
+    {
+      "from": "/admin/talent/radar",
+      "to": "/admin/spillere",
+      "count": 1
+    },
+    {
+      "from": "/admin/talent/region",
+      "to": "/admin/talent/radar",
+      "count": 1
+    },
+    {
+      "from": "/admin/talent/ressurser",
+      "to": "/admin/talent/radar",
+      "count": 1
+    },
+    {
+      "from": "/admin/talent/sammenligning",
+      "to": "/admin/spillere/[id]",
+      "count": 2
+    },
+    {
+      "from": "/admin/talent/sammenligning",
+      "to": "/admin/talent",
+      "count": 1
+    },
+    {
+      "from": "/admin/talent/sammenligning",
+      "to": "/admin/talent/radar",
+      "count": 1
+    },
+    {
+      "from": "/admin/talent/wagr-benchmark",
+      "to": "/admin/talent/radar",
+      "count": 1
+    },
+    {
+      "from": "/admin/talent/wagr-import",
+      "to": "/admin/talent/wagr-benchmark",
+      "count": 4
+    },
+    {
+      "from": "/admin/talent/wagr-import",
+      "to": "/admin/talent",
+      "count": 2
+    },
+    {
+      "from": "/admin/team",
+      "to": "/admin/agencyos",
+      "count": 2
+    },
+    {
+      "from": "/admin/team",
+      "to": "/admin/team/inviter",
+      "count": 1
+    },
+    {
+      "from": "/admin/team/inviter",
+      "to": "/admin/team",
+      "count": 1
+    },
+    {
+      "from": "/admin/teknisk-plan",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/teknisk-plan",
+      "to": "/admin/planlegge",
+      "count": 1
+    },
+    {
+      "from": "/admin/teknisk-plan/[spillerId]",
+      "to": "/admin/spillere/[id]/plan",
+      "count": 1
+    },
+    {
+      "from": "/admin/tester",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/tester/benchmarks",
+      "to": "/admin/tester",
+      "count": 2
+    },
+    {
+      "from": "/admin/tester/foreslatte",
+      "to": "/portal/tren/tester/[testId]",
+      "count": 1
+    },
+    {
+      "from": "/admin/tester/foreslatte",
+      "to": "/portal/tren/tester",
+      "count": 2
+    },
+    {
+      "from": "/admin/tester/foreslatte",
+      "to": "/portal/tren/tester/katalog",
+      "count": 2
+    },
+    {
+      "from": "/admin/tester/foreslatte",
+      "to": "/admin/tester",
+      "count": 1
+    },
+    {
+      "from": "/admin/tester/tildel",
+      "to": "/admin/tester",
+      "count": 1
+    },
+    {
+      "from": "/admin/tester/tildel/[spillerId]",
+      "to": "/portal/tren/tester/[testId]",
+      "count": 1
+    },
+    {
+      "from": "/admin/tester/tildel/[spillerId]",
+      "to": "/admin/tester",
+      "count": 2
+    },
+    {
+      "from": "/admin/tester/tildel/[spillerId]",
+      "to": "/admin/spillere/[id]/tester",
+      "count": 1
+    },
+    {
+      "from": "/admin/tester/tildel/[spillerId]",
+      "to": "/admin/spillere/[id]/tildel-test",
+      "count": 1
+    },
+    {
+      "from": "/admin/tilstander",
+      "to": "/admin/gjennomfore",
+      "count": 1
+    },
+    {
+      "from": "/admin/tournaments",
+      "to": "/admin/tournaments/[id]",
+      "count": 9
+    },
+    {
+      "from": "/admin/tournaments",
+      "to": "/admin/agencyos",
+      "count": 2
+    },
+    {
+      "from": "/admin/tournaments",
+      "to": "/admin/tournaments/dubletter",
+      "count": 2
+    },
+    {
+      "from": "/admin/tournaments",
+      "to": "/portal/tren/turneringer",
+      "count": 1
+    },
+    {
+      "from": "/admin/tournaments",
+      "to": "/portal/coach/melding/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/tournaments/[id]",
+      "to": "/admin/tournaments",
+      "count": 1
+    },
+    {
+      "from": "/admin/tournaments/[id]",
+      "to": "/admin/spillere/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/tournaments/dubletter",
+      "to": "/admin/tournaments",
+      "count": 1
+    },
+    {
+      "from": "/admin/tournaments/ny",
+      "to": "/admin/tournaments",
+      "count": 2
+    },
+    {
+      "from": "/admin/trackman/[sessionId]",
+      "to": "/admin/spillere/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/trackman/[sessionId]",
+      "to": "/portal/mal/trackman/[id]",
+      "count": 1
+    },
+    {
+      "from": "/admin/trackman/[sessionId]",
+      "to": "/admin/trackman",
+      "count": 1
+    },
+    {
+      "from": "/admin/turnering-kart",
+      "to": "/admin/spillere",
+      "count": 1
+    },
+    {
+      "from": "/admin/uka",
+      "to": "/admin/agencyos/uka",
+      "count": 1
+    },
+    {
+      "from": "/admin/varsler",
+      "to": "/admin/godkjenninger",
+      "count": 2
+    },
+    {
+      "from": "/admin/varsler",
+      "to": "/admin/agencyos",
+      "count": 1
+    },
+    {
+      "from": "/admin/workspace",
+      "to": "/admin/agencyos",
+      "count": 2
+    },
+    {
+      "from": "/admin/workspace/notion",
+      "to": "/admin/workspace",
+      "count": 1
+    },
+    {
+      "from": "/admin/workspace/oppgaver",
+      "to": "/admin/handlingssenter",
+      "count": 1
+    },
+    {
+      "from": "/admin/workspace/prosjekter",
+      "to": "/admin/workspace",
+      "count": 1
+    },
+    {
+      "from": "/admin/workspace/tildelt-meg",
+      "to": "/admin/godkjenninger",
+      "count": 1
+    },
+    {
+      "from": "/admin/workspace/tildelt-meg",
+      "to": "/admin/foresporsler",
+      "count": 1
+    },
+    {
+      "from": "/admin/workspace/tildelt-meg",
+      "to": "/admin/plans/[planId]",
+      "count": 1
+    },
+    {
+      "from": "/admin/workspace/tildelt-meg",
+      "to": "/admin/handlingssenter",
+      "count": 1
+    },
+    {
+      "from": "/forelder/barn/[childId]",
+      "to": "/forelder/barn",
+      "count": 1
+    },
+    {
+      "from": "/forelder/samtykke",
+      "to": "/admin/spillere/[id]",
+      "count": 2
+    },
+    {
+      "from": "/portal",
+      "to": "/portal/mal/goal/[id]",
+      "count": 1
+    },
+    {
+      "from": "/portal",
+      "to": "/portal/varsler",
+      "count": 1
+    },
+    {
+      "from": "/portal",
+      "to": "/portal/coach/melding/[id]",
+      "count": 1
+    },
+    {
+      "from": "/portal",
+      "to": "/portal/tren/turneringer/[id]",
+      "count": 1
+    },
+    {
+      "from": "/portal",
+      "to": "/portal/tren/turneringer",
+      "count": 1
+    },
+    {
+      "from": "/portal",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/ai/foresla-drill",
+      "to": "/portal/drills",
+      "count": 1
+    },
+    {
+      "from": "/portal/ai/foresla-turnering",
+      "to": "/portal/tren/turneringer/[id]",
+      "count": 2
+    },
+    {
+      "from": "/portal/ai/foresla-turnering",
+      "to": "/portal/tren/turneringer",
+      "count": 1
+    },
+    {
+      "from": "/portal/ai/mal-bygger",
+      "to": "/portal/mal",
+      "count": 2
+    },
+    {
+      "from": "/portal/analyse",
+      "to": "/portal/analysere",
+      "count": 1
+    },
+    {
+      "from": "/portal/analysere",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/analysere/hull",
+      "to": "/portal/analysere",
+      "count": 1
+    },
+    {
+      "from": "/portal/baneguide",
+      "to": "/portal/gameplan",
+      "count": 1
+    },
+    {
+      "from": "/portal/baneguide/[baneId]",
+      "to": "/portal/gameplan/[baneId]",
+      "count": 1
+    },
+    {
+      "from": "/portal/booking/[bookingId]",
+      "to": "/portal/meg/bookinger",
+      "count": 1
+    },
+    {
+      "from": "/portal/booking/anlegg/[anleggId]",
+      "to": "/portal/booking",
+      "count": 1
+    },
+    {
+      "from": "/portal/booking/coach/[coachId]",
+      "to": "/portal/booking/ny",
+      "count": 1
+    },
+    {
+      "from": "/portal/booking/coach/[coachId]",
+      "to": "/portal/booking",
+      "count": 1
+    },
+    {
+      "from": "/portal/booking/coach/[coachId]",
+      "to": "/portal/coach/melding",
+      "count": 1
+    },
+    {
+      "from": "/portal/booking/ny",
+      "to": "/portal/booking",
+      "count": 3
+    },
+    {
+      "from": "/portal/booking/ny/bekreft",
+      "to": "/portal/booking/ny",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach",
+      "to": "/portal/coach/plans",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach",
+      "to": "/portal/coach/plans/perioder",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach",
+      "to": "/portal/coach/ovelser",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach",
+      "to": "/portal/coach/videoer",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach",
+      "to": "/portal/coach/sg-hub",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach",
+      "to": "/portal/coach/melding",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach",
+      "to": "/portal/onskeligokt",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach",
+      "to": "/portal/booking",
+      "count": 2
+    },
+    {
+      "from": "/portal/coach",
+      "to": "/portal/coach/ai",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach",
+      "to": "/portal/meg",
+      "count": 2
+    },
+    {
+      "from": "/portal/coach/[coachId]",
+      "to": "/portal/coach",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/ai",
+      "to": "/portal/coach",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/melding",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/melding",
+      "to": "/portal/coach",
+      "count": 2
+    },
+    {
+      "from": "/portal/coach/melding/[id]",
+      "to": "/portal/coach/melding",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/melding/[id]",
+      "to": "/portal/coach/melding/[id]/vedlegg",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/melding/[id]/vedlegg",
+      "to": "/portal/coach/melding",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/melding/ny",
+      "to": "/portal/coach/melding",
+      "count": 3
+    },
+    {
+      "from": "/portal/coach/melding/ny",
+      "to": "/portal/coach/melding/[id]",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/melding/ny",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/notes",
+      "to": "/portal/coach",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/notes/[noteId]",
+      "to": "/portal/coach",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/ovelser",
+      "to": "/portal/tren/ovelser",
+      "count": 3
+    },
+    {
+      "from": "/portal/coach/ovelser",
+      "to": "/portal/coach",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/ovelser/[id]/rediger",
+      "to": "/portal/coach/ovelser",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/ovelser/ny",
+      "to": "/portal/coach/ovelser",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/plans",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/plans",
+      "to": "/portal/coach",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/plans/[planId]",
+      "to": "/admin/plans/[planId]",
+      "count": 3
+    },
+    {
+      "from": "/portal/coach/plans/[planId]",
+      "to": "/portal/coach/plans",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/plans/[planId]/ny-okt",
+      "to": "/portal/planlegge/workbench",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/plans/perioder",
+      "to": "/portal/planlegge/workbench",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/sg-hub",
+      "to": "/portal/mal/sg-hub/equipment",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/sg-hub",
+      "to": "/portal/mal/sg-hub",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/sg-hub",
+      "to": "/portal/coach",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/sporsmal",
+      "to": "/portal/coach/sporsmal/[id]",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/sporsmal",
+      "to": "/portal/coach",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/sporsmal/[id]",
+      "to": "/portal/coach/sporsmal",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/sporsmal/ny",
+      "to": "/portal/coach/sporsmal",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/sporsmal/ny",
+      "to": "/portal/coach/melding",
+      "count": 1
+    },
+    {
+      "from": "/portal/coach/videoer",
+      "to": "/portal/coach",
+      "count": 1
+    },
+    {
+      "from": "/portal/datagolf",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/datagolf",
+      "to": "/portal/analysere",
+      "count": 1
+    },
+    {
+      "from": "/portal/drills",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/drills",
+      "to": "/portal/gjennomfore",
+      "count": 1
+    },
+    {
+      "from": "/portal/drills/[id]",
+      "to": "/portal/drills",
+      "count": 4
+    },
+    {
+      "from": "/portal/drills/[id]",
+      "to": "/portal/planlegge/workbench",
+      "count": 1
+    },
+    {
+      "from": "/portal/fysisk",
+      "to": "/portal/analysere",
+      "count": 2
+    },
+    {
+      "from": "/portal/fysisk",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/fysisk",
+      "to": "/portal/gjennomfore",
+      "count": 1
+    },
+    {
+      "from": "/portal/gameplan",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/gameplan",
+      "to": "/portal/analysere",
+      "count": 1
+    },
+    {
+      "from": "/portal/gameplan/[baneId]",
+      "to": "/portal/gameplan",
+      "count": 1
+    },
+    {
+      "from": "/portal/gameplan/[baneId]",
+      "to": "/portal/gameplan/[baneId]/hull/[nr]",
+      "count": 1
+    },
+    {
+      "from": "/portal/gameplan/[baneId]/hull/[nr]",
+      "to": "/portal/gameplan/[baneId]",
+      "count": 1
+    },
+    {
+      "from": "/portal/gjennomfore",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/gjennomfore/[id]",
+      "to": "/portal/planlegge/workbench",
+      "count": 1
+    },
+    {
+      "from": "/portal/gjennomfore/[id]",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/gjennomfore/[id]",
+      "to": "/portal/gjennomfore",
+      "count": 1
+    },
+    {
+      "from": "/portal/kalender",
+      "to": "/portal/planlegge",
+      "count": 1
+    },
+    {
+      "from": "/portal/live/[sessionId]",
+      "to": "/portal/live/[sessionId]/summary",
+      "count": 6
+    },
+    {
+      "from": "/portal/live/[sessionId]",
+      "to": "/portal/planlegge",
+      "count": 3
+    },
+    {
+      "from": "/portal/live/[sessionId]",
+      "to": "/portal/live/[sessionId]/active",
+      "count": 2
+    },
+    {
+      "from": "/portal/live/[sessionId]",
+      "to": "/portal/meg/abonnement",
+      "count": 1
+    },
+    {
+      "from": "/portal/live/[sessionId]",
+      "to": "/portal/planlegge/workbench",
+      "count": 3
+    },
+    {
+      "from": "/portal/live/[sessionId]",
+      "to": "/portal/live/[sessionId]/brief",
+      "count": 2
+    },
+    {
+      "from": "/portal/live/[sessionId]",
+      "to": "/portal/tren/[sessionId]",
+      "count": 1
+    },
+    {
+      "from": "/portal/live/[sessionId]",
+      "to": "/portal/live/[sessionId]/tapper",
+      "count": 1
+    },
+    {
+      "from": "/portal/live/[sessionId]/active",
+      "to": "/portal/meg/abonnement",
+      "count": 1
+    },
+    {
+      "from": "/portal/live/[sessionId]/active",
+      "to": "/portal/planlegge",
+      "count": 2
+    },
+    {
+      "from": "/portal/live/[sessionId]/active",
+      "to": "/portal/live/[sessionId]/summary",
+      "count": 1
+    },
+    {
+      "from": "/portal/live/[sessionId]/active",
+      "to": "/portal/live/[sessionId]/brief",
+      "count": 1
+    },
+    {
+      "from": "/portal/live/[sessionId]/brief",
+      "to": "/portal/planlegge/workbench",
+      "count": 1
+    },
+    {
+      "from": "/portal/live/[sessionId]/brief",
+      "to": "/portal/planlegge",
+      "count": 1
+    },
+    {
+      "from": "/portal/live/[sessionId]/logger",
+      "to": "/portal/live/[sessionId]/active",
+      "count": 1
+    },
+    {
+      "from": "/portal/live/[sessionId]/summary",
+      "to": "/portal/planlegge",
+      "count": 2
+    },
+    {
+      "from": "/portal/live/[sessionId]/summary",
+      "to": "/portal/live/[sessionId]/active",
+      "count": 1
+    },
+    {
+      "from": "/portal/live/[sessionId]/tapper",
+      "to": "/portal/planlegge/workbench",
+      "count": 1
+    },
+    {
+      "from": "/portal/live/[sessionId]/tapper",
+      "to": "/portal/live/[sessionId]",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal",
+      "to": "/portal/mal/goal/[id]",
+      "count": 5
+    },
+    {
+      "from": "/portal/mal",
+      "to": "/portal/mal/runder",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal",
+      "to": "/portal/mal/statistikk",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal",
+      "to": "/portal/mal/milepaeler",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal",
+      "to": "/portal/mal/trackman",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal",
+      "to": "/portal/mal/sg-hub",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal",
+      "to": "/portal/mal/leaderboard",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal",
+      "to": "/portal/meg",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/bygger",
+      "to": "/portal/mal",
+      "count": 3
+    },
+    {
+      "from": "/portal/mal/goal/[id]",
+      "to": "/portal/mal",
+      "count": 3
+    },
+    {
+      "from": "/portal/mal/leaderboard",
+      "to": "/portal/mal",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/milepaeler",
+      "to": "/portal/talent",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/runder",
+      "to": "/portal/mal",
+      "count": 2
+    },
+    {
+      "from": "/portal/mal/runder",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/runder/[id]",
+      "to": "/admin/spillere/[id]",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/runder/[id]",
+      "to": "/portal/mal/runder",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/runder/[id]/fullfor",
+      "to": "/portal/mal/runder/[id]",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/runder/[id]/hull",
+      "to": "/portal/mal/runder/[id]",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/runder/[id]/shot-by-shot",
+      "to": "/portal/mal/runder/[id]",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/runder/[id]/slag",
+      "to": "/portal/mal/runder/[id]",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/runder/[id]/slag",
+      "to": "/portal/runde/logg",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/runder/ny",
+      "to": "/portal/mal/runder",
+      "count": 3
+    },
+    {
+      "from": "/portal/mal/runder/ny",
+      "to": "/portal/runde/logg",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/sg-hub",
+      "to": "/portal/coach/sg-hub",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/sg-hub/[club]",
+      "to": "/portal/coach/sg-hub",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/sg-hub/benchmark",
+      "to": "/portal/coach/sg-hub",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/sg-hub/best-vs-now",
+      "to": "/portal/coach/sg-hub",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/sg-hub/coach/[spillerId]",
+      "to": "/portal/mal/sg-hub",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/sg-hub/coach/[spillerId]/[club]",
+      "to": "/portal/mal/sg-hub/coach/[spillerId]",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/sg-hub/coach/[spillerId]/equipment",
+      "to": "/portal/mal/sg-hub/coach/[spillerId]",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/sg-hub/conditions",
+      "to": "/portal/coach/sg-hub",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/sg-hub/equipment",
+      "to": "/portal/mal/sg-hub",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/sg-hub/strategy",
+      "to": "/portal/coach/sg-hub",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/sg-hub/yardage",
+      "to": "/portal/coach/sg-hub",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/statistikk",
+      "to": "/portal/analysere",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/trackman",
+      "to": "/portal/planlegge/workbench",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/trackman",
+      "to": "/portal/tren/[sessionId]",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/trackman",
+      "to": "/admin/spillere/[id]",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/trackman",
+      "to": "/admin/spillere/[id]/workbench",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/trackman",
+      "to": "/portal/mal",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/trackman",
+      "to": "/portal/mal/trackman/[id]",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/trackman",
+      "to": "/portal/coach/melding",
+      "count": 1
+    },
+    {
+      "from": "/portal/mal/trackman/[id]",
+      "to": "/portal/mal/trackman",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg",
+      "to": "/portal/meg/innstillinger",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/abonnement",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/abonnement",
+      "to": "/portal/meg",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/abonnement/avbestill",
+      "to": "/portal/meg/abonnement",
+      "count": 3
+    },
+    {
+      "from": "/portal/meg/abonnement/faktura/[id]",
+      "to": "/portal/meg/abonnement",
+      "count": 2
+    },
+    {
+      "from": "/portal/meg/abonnement/kort/ny",
+      "to": "/portal/meg/abonnement",
+      "count": 2
+    },
+    {
+      "from": "/portal/meg/abonnement/oppgrader",
+      "to": "/portal/meg/abonnement/oppgrader/flyt",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/abonnement/oppgrader/flyt",
+      "to": "/portal/meg/abonnement",
+      "count": 3
+    },
+    {
+      "from": "/portal/meg/bookinger",
+      "to": "/admin/bookinger",
+      "count": 2
+    },
+    {
+      "from": "/portal/meg/bookinger",
+      "to": "/admin/kalender",
+      "count": 2
+    },
+    {
+      "from": "/portal/meg/bookinger",
+      "to": "/portal/meg/bookinger/reschedule/[bookingId]",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/bookinger",
+      "to": "/portal/meg",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/bookinger",
+      "to": "/portal/booking/ny",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/bookinger/reschedule/[bookingId]",
+      "to": "/portal/meg/bookinger",
+      "count": 4
+    },
+    {
+      "from": "/portal/meg/dokumenter",
+      "to": "/portal/meg",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/feedback",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/feedback",
+      "to": "/portal/meg",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/foreldre",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/foreldre",
+      "to": "/portal/meg",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/help",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/help",
+      "to": "/portal/meg",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/help/artikkel/[slug]",
+      "to": "/portal/meg/help",
+      "count": 3
+    },
+    {
+      "from": "/portal/meg/help/artikkel/[slug]",
+      "to": "/portal/coach/melding/ny",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/help/kategori/[slug]",
+      "to": "/portal/meg/help",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/help/kontakt",
+      "to": "/portal/meg/help",
+      "count": 2
+    },
+    {
+      "from": "/portal/meg/helse",
+      "to": "/portal/meg/innstillinger/personvern",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/helse",
+      "to": "/portal/meg",
+      "count": 2
+    },
+    {
+      "from": "/portal/meg/helse/symptom/ny",
+      "to": "/portal/meg/helse",
+      "count": 3
+    },
+    {
+      "from": "/portal/meg/innstillinger",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/innstillinger",
+      "to": "/portal/meg",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/innstillinger/ai-coach",
+      "to": "/portal/meg/innstillinger",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/innstillinger/ai-coach",
+      "to": "/portal/meg/help",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/innstillinger/anlegg",
+      "to": "/portal/meg/innstillinger",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/innstillinger/eksport",
+      "to": "/portal/meg/innstillinger/personvern",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/innstillinger/integrasjoner",
+      "to": "/portal/meg/innstillinger",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/innstillinger/okter",
+      "to": "/portal/meg/innstillinger",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/innstillinger/personvern",
+      "to": "/portal/meg/innstillinger/integrasjoner",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/innstillinger/personvern",
+      "to": "/portal/meg/helse",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/innstillinger/personvern",
+      "to": "/portal/meg/innstillinger",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/innstillinger/sikkerhet",
+      "to": "/portal/meg/innstillinger",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/innstillinger/sprak",
+      "to": "/portal/meg/innstillinger",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/innstillinger/varsler",
+      "to": "/portal/meg/innstillinger",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/profil",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/profil",
+      "to": "/portal/meg",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/sikkerhet",
+      "to": "/portal/meg/innstillinger/sikkerhet",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/sikkerhet/2fa",
+      "to": "/portal/meg/innstillinger/sikkerhet",
+      "count": 1
+    },
+    {
+      "from": "/portal/meg/utstyrsbag",
+      "to": "/portal/meg",
+      "count": 1
+    },
+    {
+      "from": "/portal/ny-okt",
+      "to": "/portal/tren",
+      "count": 2
+    },
+    {
+      "from": "/portal/ny-okt",
+      "to": "/portal/planlegge/workbench",
+      "count": 1
+    },
+    {
+      "from": "/portal/ny-okt",
+      "to": "/portal/gjennomfore",
+      "count": 2
+    },
+    {
+      "from": "/portal/onskeligokt",
+      "to": "/portal/gjennomfore",
+      "count": 1
+    },
+    {
+      "from": "/portal/onskeligokt/bekreftet",
+      "to": "/portal/gjennomfore",
+      "count": 2
+    },
+    {
+      "from": "/portal/onskeligokt/bekreftet",
+      "to": "/portal/onskeligokt",
+      "count": 1
+    },
+    {
+      "from": "/portal/planlegge",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/planlegge/bygger",
+      "to": "/portal/planlegge",
+      "count": 2
+    },
+    {
+      "from": "/portal/planlegge/bygger",
+      "to": "/portal/planlegge/workbench",
+      "count": 1
+    },
+    {
+      "from": "/portal/planlegge/bygger",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/planlegge/workbench",
+      "to": "/portal/planlegge",
+      "count": 1
+    },
+    {
+      "from": "/portal/planlegge/workbench",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/statistikk",
+      "to": "/portal/analysere",
+      "count": 1
+    },
+    {
+      "from": "/portal/statistikk/[metric]",
+      "to": "/portal/coach/melding",
+      "count": 1
+    },
+    {
+      "from": "/portal/statistikk/[metric]",
+      "to": "/portal/gjennomfore",
+      "count": 1
+    },
+    {
+      "from": "/portal/statistikk/[metric]",
+      "to": "/portal/analysere",
+      "count": 2
+    },
+    {
+      "from": "/portal/stats",
+      "to": "/portal/analysere",
+      "count": 1
+    },
+    {
+      "from": "/portal/talent",
+      "to": "/portal/meg",
+      "count": 1
+    },
+    {
+      "from": "/portal/talent/min-plan",
+      "to": "/portal/talent",
+      "count": 2
+    },
+    {
+      "from": "/portal/talent/mitt-niva",
+      "to": "/portal/talent",
+      "count": 2
+    },
+    {
+      "from": "/portal/talent/roadmap",
+      "to": "/portal/talent",
+      "count": 2
+    },
+    {
+      "from": "/portal/talent/sammenligning",
+      "to": "/portal/talent",
+      "count": 2
+    },
+    {
+      "from": "/portal/trackman",
+      "to": "/portal/mal/trackman",
+      "count": 1
+    },
+    {
+      "from": "/portal/trackman/[sessionId]",
+      "to": "/portal/mal/trackman/[id]",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren",
+      "to": "/portal/planlegge/workbench",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren",
+      "to": "/portal/tren/teknisk-plan/[planId]",
+      "count": 7
+    },
+    {
+      "from": "/portal/tren",
+      "to": "/portal/tren/[sessionId]",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren",
+      "to": "/admin/godkjenninger",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren",
+      "to": "/admin/spillere/[id]",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/[sessionId]",
+      "to": "/portal/live/[sessionId]",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/[sessionId]/planlagt",
+      "to": "/portal/tren",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/aarsplan",
+      "to": "/portal/planlegge/workbench",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/aarsplan",
+      "to": "/portal/coach/plans/perioder",
+      "count": 2
+    },
+    {
+      "from": "/portal/tren/aarsplan/periode/[id]/rediger",
+      "to": "/portal/tren/aarsplan",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/aarsplan/periode/ny",
+      "to": "/portal/tren/aarsplan",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/feiring/[planId]",
+      "to": "/portal/tren",
+      "count": 2
+    },
+    {
+      "from": "/portal/tren/fys-plan",
+      "to": "/portal/tren/fys-plan/[planId]",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/fys-plan",
+      "to": "/portal/planlegge",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/fys-plan",
+      "to": "/portal/tren",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/fys-plan/[planId]",
+      "to": "/portal/fysisk",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/kalender",
+      "to": "/portal/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/ovelser",
+      "to": "/portal/drills",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/ovelser/[id]",
+      "to": "/portal/drills/[id]",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/teknisk-plan/[planId]",
+      "to": "/portal/tren/[sessionId]",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/tester",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/tester",
+      "to": "/portal/analysere",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/tester/[testId]",
+      "to": "/portal/tren/tester",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/tester/[testId]",
+      "to": "/portal/coach/melding",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/tester/[testId]",
+      "to": "/portal/tren/[sessionId]",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/tester/[testId]",
+      "to": "/portal/tren/tester/[testId]/gjennomfor",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/tester/[testId]/gjennomfor",
+      "to": "/admin/tester",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/tester/[testId]/gjennomfor",
+      "to": "/portal/tren/tester/[testId]",
+      "count": 4
+    },
+    {
+      "from": "/portal/tren/tester/[testId]/gjennomfor",
+      "to": "/portal/tren/tester",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/tester/katalog",
+      "to": "/portal/tren/tester",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/tester/ny",
+      "to": "/portal/tren/tester",
+      "count": 2
+    },
+    {
+      "from": "/portal/tren/tester/ny",
+      "to": "/portal/tren/tester/[testId]",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/tester/ny/egen",
+      "to": "/portal/tren/tester",
+      "count": 2
+    },
+    {
+      "from": "/portal/tren/tester/ny/egen",
+      "to": "/admin/tester/foreslatte",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/turneringer",
+      "to": "/portal/tren/aarsplan",
+      "count": 5
+    },
+    {
+      "from": "/portal/tren/turneringer",
+      "to": "/portal/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/turneringer",
+      "to": "/portal/tren/turneringer/[id]",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/turneringer",
+      "to": "/admin/tournaments",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/turneringer",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/tren/turneringer/[id]",
+      "to": "/portal/mal/runder/[id]/hull",
+      "count": 2
+    },
+    {
+      "from": "/portal/tren/turneringer/[id]",
+      "to": "/portal/tren/turneringer",
+      "count": 3
+    },
+    {
+      "from": "/portal/tren/turneringer/ny",
+      "to": "/portal/tren/turneringer",
+      "count": 2
+    },
+    {
+      "from": "/portal/trening/logg",
+      "to": "/portal/gjennomfore",
+      "count": 1
+    },
+    {
+      "from": "/portal/utfordringer",
+      "to": "/portal/utfordringer/[id]",
+      "count": 6
+    },
+    {
+      "from": "/portal/utfordringer",
+      "to": "/portal/meg",
+      "count": 1
+    },
+    {
+      "from": "/portal/utfordringer/ny",
+      "to": "/portal/utfordringer/[id]",
+      "count": 2
+    },
+    {
+      "from": "/portal/utfordringer/ny",
+      "to": "/portal/utfordringer",
+      "count": 2
+    },
+    {
+      "from": "/portal/utviklingsplan",
+      "to": "/admin/kalender",
+      "count": 1
+    },
+    {
+      "from": "/portal/utviklingsplan",
+      "to": "/portal/planlegge",
+      "count": 1
+    },
+    {
+      "from": "/portal/varsler",
+      "to": "/portal/meg",
+      "count": 1
+    },
+    {
+      "from": "/portal/venner",
+      "to": "/portal/venner/[spillerId]",
+      "count": 1
+    },
+    {
+      "from": "/portal/venner",
+      "to": "/portal/meg/innstillinger",
+      "count": 1
+    },
+    {
+      "from": "/portal/venner/[spillerId]",
+      "to": "/portal/venner",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/admin/agencyos",
+      "count": 10
+    },
+    {
+      "from": "shared",
+      "to": "/admin/spillere",
+      "count": 13
+    },
+    {
+      "from": "shared",
+      "to": "/admin/planlegge",
+      "count": 13
+    },
+    {
+      "from": "shared",
+      "to": "/admin/bookinger",
+      "count": 8
+    },
+    {
+      "from": "shared",
+      "to": "/admin/kalender",
+      "count": 16
+    },
+    {
+      "from": "shared",
+      "to": "/admin/grupper",
+      "count": 5
+    },
+    {
+      "from": "shared",
+      "to": "/admin/talent",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/drills",
+      "count": 6
+    },
+    {
+      "from": "shared",
+      "to": "/admin/tournaments",
+      "count": 4
+    },
+    {
+      "from": "shared",
+      "to": "/admin/tester",
+      "count": 6
+    },
+    {
+      "from": "shared",
+      "to": "/admin/analysere",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/innboks",
+      "count": 17
+    },
+    {
+      "from": "shared",
+      "to": "/admin/agenter",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/workspace",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/anlegg",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/availability",
+      "count": 7
+    },
+    {
+      "from": "shared",
+      "to": "/admin/gjennomfore",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/reports",
+      "count": 4
+    },
+    {
+      "from": "shared",
+      "to": "/admin/okonomi",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/settings",
+      "count": 5
+    },
+    {
+      "from": "shared",
+      "to": "/admin/team",
+      "count": 4
+    },
+    {
+      "from": "shared",
+      "to": "/admin/agencyos/caddie",
+      "count": 5
+    },
+    {
+      "from": "shared",
+      "to": "/admin/varsler",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/spillere/[id]",
+      "count": 34
+    },
+    {
+      "from": "shared",
+      "to": "/admin/plans/[planId]",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/bookinger/[id]",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/settings/calendar",
+      "count": 7
+    },
+    {
+      "from": "shared",
+      "to": "/admin/workspace/notion",
+      "count": 4
+    },
+    {
+      "from": "shared",
+      "to": "/portal/planlegge/workbench",
+      "count": 37
+    },
+    {
+      "from": "shared",
+      "to": "/portal/gjennomfore",
+      "count": 12
+    },
+    {
+      "from": "shared",
+      "to": "/portal/analysere",
+      "count": 18
+    },
+    {
+      "from": "shared",
+      "to": "/portal/mal/sg-hub",
+      "count": 4
+    },
+    {
+      "from": "shared",
+      "to": "/portal/mal/runder",
+      "count": 5
+    },
+    {
+      "from": "shared",
+      "to": "/portal/mal/trackman",
+      "count": 6
+    },
+    {
+      "from": "shared",
+      "to": "/portal/tren/tester",
+      "count": 6
+    },
+    {
+      "from": "shared",
+      "to": "/portal/kalender",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/portal/ny-okt",
+      "count": 6
+    },
+    {
+      "from": "shared",
+      "to": "/portal/statistikk",
+      "count": 5
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/bookinger",
+      "count": 5
+    },
+    {
+      "from": "shared",
+      "to": "/portal/booking/ny",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/portal/coach",
+      "count": 5
+    },
+    {
+      "from": "shared",
+      "to": "/portal/venner",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/mal",
+      "count": 10
+    },
+    {
+      "from": "shared",
+      "to": "/portal/drills",
+      "count": 14
+    },
+    {
+      "from": "shared",
+      "to": "/portal/tren/aarsplan",
+      "count": 6
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg",
+      "count": 12
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/abonnement",
+      "count": 21
+    },
+    {
+      "from": "shared",
+      "to": "/portal/utviklingsplan",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/varsler",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/help",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/portal/tren/[sessionId]",
+      "count": 11
+    },
+    {
+      "from": "shared",
+      "to": "/portal/booking/[bookingId]",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal",
+      "count": 5
+    },
+    {
+      "from": "shared",
+      "to": "/admin/agent-team",
+      "count": 7
+    },
+    {
+      "from": "shared",
+      "to": "/portal/mal/runder/ny",
+      "count": 7
+    },
+    {
+      "from": "shared",
+      "to": "/admin",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/forelder",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/gjennomfore/okter/[id]",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/grupper/[id]/timeplan",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/agencyos/caddie/aktivitet",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/spillere/[id]/plan",
+      "count": 7
+    },
+    {
+      "from": "shared",
+      "to": "/admin/foresporsler",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/admin/spillere/[id]/tildel-test",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/bookinger/ny",
+      "count": 10
+    },
+    {
+      "from": "shared",
+      "to": "/admin/plans/new",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/admin/spillere/ny",
+      "count": 7
+    },
+    {
+      "from": "shared",
+      "to": "/admin/messages",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/admin/recording",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/brief",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/admin/godkjenninger",
+      "count": 19
+    },
+    {
+      "from": "shared",
+      "to": "/admin/trackman",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/talent/wagr-benchmark",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/plan-templates",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/admin/teknisk-plan",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/talent/radar",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/admin/talent/sammenligning",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/agencyos/okonomi",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/admin/services",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/integrasjoner",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/email-templates",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/innboks-epost",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/profile",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/hjelp",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/admin/plans",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/admin/okter",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/settings/periode-fordeling",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/settings/periode-navn",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/agencyos/live",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/marketing",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/klubb/innstillinger",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/audit-log",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/kalender/maned",
+      "count": 4
+    },
+    {
+      "from": "shared",
+      "to": "/admin/spillere/[id]/workbench",
+      "count": 6
+    },
+    {
+      "from": "shared",
+      "to": "/admin/spillere/[id]/rediger",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/spillere/[id]/fremgang",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/spillere/[id]/tester",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/stall",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/admin/godkjenninger/[id]",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/drills/[id]",
+      "count": 6
+    },
+    {
+      "from": "shared",
+      "to": "/admin/drills/[id]/rediger",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/drills/ny",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/email-templates/[id]/rediger",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/plan-templates/[id]",
+      "count": 4
+    },
+    {
+      "from": "shared",
+      "to": "/admin/plan-templates/[id]/rediger",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/plan-templates/[id]/effectiveness",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/plan-templates/ny",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/lag-snitt",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/analyse",
+      "count": 5
+    },
+    {
+      "from": "shared",
+      "to": "/admin/spillere/[id]/plan/[planId]",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/spillere/[id]/profil",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/admin/tester/tildel/[spillerId]",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/stats/moderering",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/admin/talent/discovery",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/admin/tester/tildel",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/tester/foreslatte",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/tester/benchmarks",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/trackman/[sessionId]",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/tournaments/ny",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/agents",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/admin/grupper/[id]/workbench",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/grupper/[id]/arsplan",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/grupper/[id]",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/tournaments/[id]",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/queue",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/admin/handlingssenter",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/agencyos/uka",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/admin/runder",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/admin/analysere/compliance",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/agencyos/caddie/dashbord",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/coach-workbench",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/forelder/barn",
+      "count": 6
+    },
+    {
+      "from": "shared",
+      "to": "/forelder/bookinger",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/forelder/okonomi",
+      "count": 4
+    },
+    {
+      "from": "shared",
+      "to": "/forelder/coach",
+      "count": 4
+    },
+    {
+      "from": "shared",
+      "to": "/forelder/ukerapport",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/forelder/fakturaer",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/forelder/varsler",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/forelder/samtykke",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/forelder/innstillinger",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/tren/fys-plan/[planId]",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/planlegge",
+      "count": 10
+    },
+    {
+      "from": "shared",
+      "to": "/portal/onskeligokt",
+      "count": 7
+    },
+    {
+      "from": "shared",
+      "to": "/portal/booking",
+      "count": 10
+    },
+    {
+      "from": "shared",
+      "to": "/portal/tren",
+      "count": 11
+    },
+    {
+      "from": "shared",
+      "to": "/portal/tren/turneringer",
+      "count": 6
+    },
+    {
+      "from": "shared",
+      "to": "/portal/tren/ovelser",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/utfordringer",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/live/[sessionId]/summary",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/live/[sessionId]/active",
+      "count": 4
+    },
+    {
+      "from": "shared",
+      "to": "/portal/live/[sessionId]/tapper",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/portal/runde/live",
+      "count": 11
+    },
+    {
+      "from": "shared",
+      "to": "/portal/runde/logg",
+      "count": 4
+    },
+    {
+      "from": "shared",
+      "to": "/portal/mal/runder/[id]",
+      "count": 6
+    },
+    {
+      "from": "shared",
+      "to": "/portal/mal/sg-hub/[club]",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/tren/kalender",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/trackman",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/talent",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/analysere/hull",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/gameplan",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/datagolf",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/tren/tester/ny",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/portal/booking/bekreftet",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/coach/melding",
+      "count": 5
+    },
+    {
+      "from": "shared",
+      "to": "/portal/coach/[coachId]",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/coach/melding/[id]",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/coach/melding/ny",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/coach/sporsmal/ny",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/coach/ovelser/ny",
+      "count": 4
+    },
+    {
+      "from": "shared",
+      "to": "/portal/drills/[id]",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/portal/coach/plans/[planId]",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/coach/sporsmal/[id]",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/forelder/barn/[childId]",
+      "count": 4
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/innstillinger/sikkerhet",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/portal/gameplan/[baneId]",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/fysisk",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/help/kontakt",
+      "count": 10
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/sikkerhet/2fa",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/profil",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/innstillinger/anlegg",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/innstillinger/integrasjoner",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/innstillinger/sprak",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/innstillinger/personvern",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/portal/gjennomfore/[id]",
+      "count": 11
+    },
+    {
+      "from": "shared",
+      "to": "/portal/mal/leaderboard",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/spiller/[spillerId]",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/mal/bygger",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/mal/goal/[id]",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/abonnement/oppgrader/flyt",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/dokumenter",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/abonnement/kort/ny",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/abonnement/avbestill",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/abonnement/faktura/[id]",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/help/kategori/[slug]",
+      "count": 5
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/help/artikkel/[slug]",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/feedback",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/helse/symptom/ny",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/helse",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/utstyrsbag",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/foreldre",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/innstillinger",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/meg/innstillinger/varsler",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/tren/tester/[testId]",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/planlegge/bygger",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/mal/runder/[id]/fullfor",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/mal/runder/[id]/hull",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/portal/mal/runder/[id]/slag",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/statistikk/runder/[runId]/del",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/talent/sammenligning",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/talent/mitt-niva",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/talent/min-plan",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/talent/roadmap",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/tren/turneringer/[id]",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/utfordringer/[id]",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/utfordringer/ny",
+      "count": 2
+    },
+    {
+      "from": "shared",
+      "to": "/portal/mal/sg-hub/coach/[spillerId]/[club]",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/mal/sg-hub/yardage",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/tren/fys-plan",
+      "count": 3
+    },
+    {
+      "from": "shared",
+      "to": "/admin/kalender/hendelse/ny",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/workspace/prosjekter",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/admin/workspace/tildelt-meg",
+      "count": 1
+    },
+    {
+      "from": "shared",
+      "to": "/portal/live/[sessionId]",
+      "count": 4
+    }
+  ],
+  "redirectOnlyRoutes": [
+    "/admin",
+    "/admin/agencyos/spillere",
+    "/admin/agenter",
+    "/admin/ai",
+    "/admin/analysere",
+    "/admin/approvals",
+    "/admin/approvals/[id]",
+    "/admin/board",
+    "/admin/calendar",
+    "/admin/calendar/maned",
+    "/admin/coach-workbench",
+    "/admin/finance",
+    "/admin/kapasitet",
+    "/admin/mer",
+    "/admin/messages",
+    "/admin/okonomi",
+    "/admin/oppfolging",
+    "/admin/organisasjon",
+    "/admin/plan-templates/[id]/effectiveness",
+    "/admin/plans/new",
+    "/admin/plans/templates",
+    "/admin/plans/templates/[id]/effectiveness",
+    "/admin/plans/templates/[id]/rediger",
+    "/admin/plans/templates/ny",
+    "/admin/prosjekter",
+    "/admin/risiko",
+    "/admin/stall",
+    "/admin/talent",
+    "/admin/talent/kohort",
+    "/admin/talent/region",
+    "/admin/talent/ressurser",
+    "/admin/talent/wagr-benchmark",
+    "/admin/teknisk-plan/[spillerId]",
+    "/admin/tester/tildel",
+    "/admin/tilstander",
+    "/admin/uka",
+    "/admin/workspace/oppgaver",
+    "/portal/agent-pipeline",
+    "/portal/analyse",
+    "/portal/baneguide",
+    "/portal/baneguide/[baneId]",
+    "/portal/baneguide/[baneId]/hull/[nr]",
+    "/portal/coach/[coachId]",
+    "/portal/coach/melding/[id]",
+    "/portal/coach/melding/[id]/vedlegg",
+    "/portal/coach/notes",
+    "/portal/coach/notes/[noteId]",
+    "/portal/coach/ovelser/[id]/rediger",
+    "/portal/coach/ovelser/ny",
+    "/portal/coach/plans/[planId]",
+    "/portal/coach/plans/[planId]/ny-okt",
+    "/portal/coach/plans/perioder",
+    "/portal/live/[sessionId]/logger",
+    "/portal/mal/milepaeler",
+    "/portal/mal/runder/[id]/fullfor",
+    "/portal/mal/runder/[id]/shot-by-shot",
+    "/portal/mal/sg-hub",
+    "/portal/mal/sg-hub/[club]",
+    "/portal/mal/sg-hub/benchmark",
+    "/portal/mal/sg-hub/best-vs-now",
+    "/portal/mal/sg-hub/conditions",
+    "/portal/mal/sg-hub/strategy",
+    "/portal/mal/sg-hub/yardage",
+    "/portal/mal/statistikk",
+    "/portal/meg/abonnement/oppgrader",
+    "/portal/meg/innstillinger/eksport",
+    "/portal/meg/sikkerhet",
+    "/portal/ny-okt",
+    "/portal/reach",
+    "/portal/statistikk",
+    "/portal/stats",
+    "/portal/trackman",
+    "/portal/trackman/[sessionId]",
+    "/portal/tren",
+    "/portal/tren/[sessionId]",
+    "/portal/tren/aarsplan",
+    "/portal/tren/fys-plan/[planId]",
+    "/portal/tren/kalender",
+    "/portal/tren/ovelser",
+    "/portal/tren/ovelser/[id]",
+    "/portal/tren/tester/katalog",
+    "/portal/tren/turneringer/ny",
+    "/portal/utfordringer/ny"
+  ],
+  "orphanRoutes": [
+    "/admin/drills/forslag",
+    "/admin/grupper/[id]/arsplan/skoledata",
+    "/admin/settings/api",
+    "/admin/settings/security",
+    "/admin/stats/overview",
+    "/admin/talent/wagr-import",
+    "/portal/ai/foresla-turnering",
+    "/portal/ai/mal-bygger",
+    "/portal/booking/anlegg/[anleggId]",
+    "/portal/booking/coach/[coachId]",
+    "/portal/booking/ny/bekreft",
+    "/portal/mal/sg-hub/coach/[spillerId]/equipment",
+    "/portal/meg/innstillinger/ai-coach",
+    "/portal/meg/innstillinger/okter",
+    "/portal/onskeligokt/bekreftet",
+    "/portal/statistikk/[metric]",
+    "/portal/tren/[sessionId]/planlagt",
+    "/portal/tren/aarsplan/periode/[id]/rediger",
+    "/portal/tren/aarsplan/periode/ny",
+    "/portal/tren/tester/ny/egen",
+    "/portal/trening/break-tabell",
+    "/portal/trening/logg",
+    "/portal/trening/putte-laboratoriet"
+  ]
+}
