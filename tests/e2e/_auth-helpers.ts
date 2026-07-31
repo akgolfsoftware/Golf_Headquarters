@@ -44,18 +44,35 @@ export function hasCoachAuth(): boolean {
   return coachCredentials() !== null;
 }
 
+/** Cookie-banner kan dekke hele body i headless — lukk den hvis den vises. */
+export async function dismissCookieBanner(page: Page): Promise<void> {
+  const btn = page
+    .getByRole("button", { name: /Kun nødvendige|Godta alle/i })
+    .first();
+  try {
+    if (await btn.isVisible({ timeout: 2_500 })) {
+      await btn.click();
+      await btn.waitFor({ state: "hidden", timeout: 5_000 }).catch(() => undefined);
+    }
+  } catch {
+    // Banner finnes ikke — greit.
+  }
+}
+
 async function loginWith(
   page: Page,
   email: string,
   password: string,
 ): Promise<void> {
   await page.goto("/auth/login");
+  await dismissCookieBanner(page);
   await page.locator('input[type="email"]').fill(email);
   await page.locator('input[type="password"]').fill(password);
   await page.locator('button[type="submit"]').click();
   await page.waitForURL(/\/(portal|auth\/etter-innlogging|forelder|admin)/, {
     timeout: 25_000,
   });
+  await dismissCookieBanner(page);
 }
 
 /** Logg inn som coach (AgencyOS). */

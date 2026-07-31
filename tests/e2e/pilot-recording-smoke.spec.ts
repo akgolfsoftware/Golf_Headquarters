@@ -10,7 +10,11 @@
  */
 
 import { test, expect } from "@playwright/test";
-import { hasCoachAuth, loginAsCoach } from "./_auth-helpers";
+import {
+  dismissCookieBanner,
+  hasCoachAuth,
+  loginAsCoach,
+} from "./_auth-helpers";
 
 const PILOT_GATED = [
   "/admin/recording",
@@ -41,6 +45,7 @@ test.describe("Pilot-smoke — coach (krever E2E_COACH_*)", () => {
     await loginAsCoach(page);
 
     const res = await page.goto("/admin/recording");
+    await dismissCookieBanner(page);
     const status = res?.status() ?? 0;
     expect(
       status === 200 || (status >= 300 && status < 400),
@@ -71,6 +76,7 @@ test.describe("Pilot-smoke — coach (krever E2E_COACH_*)", () => {
     await loginAsCoach(page);
 
     const res = await page.goto("/admin/godkjenninger");
+    await dismissCookieBanner(page);
     const status = res?.status() ?? 0;
     expect(
       status === 200 || (status >= 300 && status < 400),
@@ -93,6 +99,7 @@ test.describe("Pilot-smoke — coach (krever E2E_COACH_*)", () => {
     await loginAsCoach(page);
 
     await page.goto("/admin/spillere");
+    await dismissCookieBanner(page);
     await expect(page).not.toHaveURL(/\/auth\/login/);
     await expect(page.locator("body")).not.toContainText(
       /Application error|Internal Server Error/i,
@@ -108,7 +115,11 @@ test.describe("Pilot-smoke — coach (krever E2E_COACH_*)", () => {
     const count = await spillerLenke.count();
     test.skip(count === 0, "Ingen spillere i stallen — kan ikke sjekke Før-kort");
 
-    await spillerLenke.click();
+    const href = await spillerLenke.getAttribute("href");
+    // Naviger direkte — mer stabilt enn click under overlay/layout-shift
+    await page.goto(href ?? "/admin/spillere");
+    await dismissCookieBanner(page);
+
     await expect(page).toHaveURL(/\/admin\/spillere\/[^/]+/);
     await expect(page.locator("body")).not.toContainText(
       /Application error|Internal Server Error/i,
