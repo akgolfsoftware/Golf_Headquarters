@@ -140,13 +140,15 @@ export async function opprettBookingMedKort(
   let booking: { id: string };
   try {
     booking = await prisma.$transaction(async (tx) => {
-      await sjekkKollisjon(tx, {
+      const vern = await sjekkKollisjon(tx, {
         coachId: service.coachUserId ?? input.coachId ?? null,
+        serviceTypeId: service.id,
         startAt,
         endAt,
       });
       return tx.booking.create({
         data: {
+          plassNr: vern.plassNr,
           userId: user.id,
           serviceTypeId: service.id,
           locationId: lokasjon.id,

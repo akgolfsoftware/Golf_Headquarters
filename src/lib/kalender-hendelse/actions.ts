@@ -14,6 +14,10 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { nonEmpty } from "@/lib/validation/schemas";
+import {
+  pushKalenderHendelse,
+  fjernKalenderHendelse,
+} from "@/lib/google-calendar-kilder";
 
 const OpprettHendelseSchema = z
   .object({
@@ -38,7 +42,7 @@ export async function opprettHendelse(input: OpprettHendelseInput) {
   const parsed = OpprettHendelseSchema.parse(input);
   const coach = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
-  await prisma.calendarEvent.create({
+  const hendelse = await prisma.calendarEvent.create({
     data: {
       coachId: coach.id,
       title: parsed.title.trim(),
@@ -47,6 +51,10 @@ export async function opprettHendelse(input: OpprettHendelseInput) {
       notes: parsed.notes?.trim() || null,
     },
   });
+
+  // Steg 3: ferie/stengt/møte skal også synes i Google-kalenderen, ikke bare
+  // blokkere booking internt. Best-effort — hendelsen er allerede lagret.
+  await pushKalenderHendelse(hendelse.id);
 
   revalidatePath("/admin/kalender");
   redirect("/admin/kalender");
@@ -63,6 +71,9 @@ export async function slettHendelse(id: string) {
   if (coach.role !== "ADMIN" && hendelse.coachId !== coach.id) {
     throw new Error("Du har ikke tilgang til å slette denne hendelsen");
   }
+
+  // Fjern fra Google FØR lokal sletting — etterpå er coachId borte.
+  await fjernKalenderHendelse(id, hendelse.coachId);
 
   await prisma.calendarEvent.delete({ where: { id } });
 

@@ -12,6 +12,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { DashboardData } from "@/app/portal/actions";
+import type { GjennomforeData } from "@/lib/portal-gjennomfore/gjennomfore-data";
+import type { MaalWidgetData } from "@/lib/widgets/maal-widget-data";
+import { DagensOkterWidget, MaalWidget } from "@/components/widgets";
 import { WorkbenchInngang } from "./WorkbenchInngang";
 import { FortsettRundeCta } from "@/components/portal/runde-logg/fortsett-runde-cta";
 import { PushOptInBanner } from "@/components/portal/push-opt-in-banner";
@@ -54,12 +57,6 @@ function datoLinje(weekNumber: number): string {
   return `${dag[0].toUpperCase()}${dag.slice(1)} ${d.getDate()}. ${MANEDER[d.getMonth()]} · uke ${weekNumber}`;
 }
 
-function toMin(dato: Date): string {
-  const h = String(dato.getHours()).padStart(2, "0");
-  const m = String(dato.getMinutes()).padStart(2, "0");
-  return `${h}:${m}`;
-}
-
 /** Varighet i minutter → «1,5 t» (≥60) eller «45 min». */
 function varighet(min: number): string {
   if (min >= 60) return `${(min / 60).toFixed(1).replace(".", ",")} t`;
@@ -81,10 +78,18 @@ function useMobile(): boolean {
 
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
-export function HjemV2({ data }: { data: DashboardData }) {
+export function HjemV2({
+  data,
+  gjennomfore,
+  maal,
+}: {
+  data: DashboardData;
+  gjennomfore: GjennomforeData;
+  maal: MaalWidgetData;
+}) {
   const mobile = useMobile();
   const router = useRouter();
-  const { user, greeting, weekNumber, today, todayAll, week, kpiStats, weekProgress, trainingHeatmap, coachMessage, nesteHandling, optimalSession } = data;
+  const { user, greeting, weekNumber, week, kpiStats, weekProgress, trainingHeatmap, coachMessage, nesteHandling, optimalSession } = data;
 
   // SG-form (kpiStats — snitt SG total siste 10 runder). Badgen under er eneste
   // retningssignal her (10-runders trend) — en egen per-runde-delta ble fjernet
@@ -116,20 +121,6 @@ export function HjemV2({ data }: { data: DashboardData }) {
     };
   });
   const aktivDag = week.find((d) => d.isToday)?.dayNumber ?? null;
-
-  // Dagens fokus — dagens (første) økt. Ingen fabrikkert «hvorfor»-tekst (gap): bygget av ekte felter.
-  const fokusStatus: { l: string; tone: StatusTone } | null = today
-    ? today.status === "IN_PROGRESS"
-      ? { l: "Pågår", tone: "lime" }
-      : today.status === "COMPLETED"
-        ? { l: "Fullført", tone: "up" }
-        : { l: "Planlagt", tone: "info" }
-    : null;
-  const fokusDetalj = today
-    ? [today.sted, varighet(today.durationMin), today.drills.length > 0 ? `${today.drills.length} øvelser` : null]
-        .filter(Boolean)
-        .join(" · ")
-    : "";
 
   // KPI — Streak (uker på rad med trening, avledet av heatmap) + uke-gjennomføring
   const streak = beregnStreak(trainingHeatmap.values);
@@ -190,48 +181,12 @@ export function HjemV2({ data }: { data: DashboardData }) {
           )}
         </Kort>
 
-        {/* Dagens plan — dagens første/pågående økt vist med detalj øverst
-            (tidligere eget «Dagens fokus»-kort viste samme økt igjen rett
-            under; slått sammen til ett kort, se gap). Resten av dagens
-            økter (om flere) listes kompakt under. */}
-        <Kort eyebrow="Dagens plan" action={todayAll.length > 0 ? <Caps size={9}>{todayAll.length} økter</Caps> : undefined}>
-          {today ? (
-            <>
-              <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, lineHeight: 1.3 }}>{today.title}</div>
-              {fokusDetalj && (
-                <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "8px 0 0" }}>{fokusDetalj}</p>
-              )}
-              <div style={{ display: "flex", gap: 6, marginTop: 12, alignItems: "center", flexWrap: "wrap" }}>
-                <AkseChip a={today.pyramidArea} />
-                <HjelpTips k="pyramideAkse" size={11} />
-                {fokusStatus && <StatusPill tone={fokusStatus.tone}>{fokusStatus.l}</StatusPill>}
-              </div>
-              {todayAll.length > 1 && (
-                <div style={{ marginTop: 14 }}>
-                  {todayAll.slice(1).map((o, i, arr) => {
-                    const naa = o.status === "IN_PROGRESS";
-                    const sub = [o.sted, varighet(o.durationMin)].filter(Boolean).join(" · ");
-                    return (
-                      <Rad
-                        key={o.id}
-                        leading={
-                          <span style={{ width: 44, flex: "none", fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: naa ? T.lime : T.mut }}>
-                            {toMin(o.startTime)}
-                          </span>
-                        }
-                        title={o.title}
-                        sub={sub}
-                        meta={<AkseChip a={o.pyramidArea} />}
-                        naa={naa}
-                        trailing={null}
-                        last={i === arr.length - 1}
-                      />
-                    );
-                  })}
-                </div>
-              )}
-            </>
-          ) : (
+        {/* Dagens økter — widget-pakken (DagensOkterWidget). Samme datakilde
+            som Gjør-fanen (begge økt-spor), så antallet aldri spriker mellom
+            Hjem og Gjør. Tom dag beholder SG-anbefaling/Workbench-inngangen. */}
+        <DagensOkterWidget
+          data={gjennomfore}
+          tomInnhold={
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {optimalSession ? (
                 <>
@@ -293,8 +248,8 @@ export function HjemV2({ data }: { data: DashboardData }) {
                 </>
               )}
             </div>
-          )}
-        </Kort>
+          }
+        />
       </div>
 
       {/* Mobil-CTA — «Start dagens økt» fullbredde under dagens økt-kort (desktop har den i hodet). */}
@@ -353,6 +308,9 @@ export function HjemV2({ data }: { data: DashboardData }) {
           </Kort>
         </div>
       </div>
+
+      {/* Målsetninger — widget-pakken (felles fremdriftsberegning med /portal/mal) */}
+      <MaalWidget data={maal} />
 
       {/* AI/coach-innsikt */}
       {coachMessage && (

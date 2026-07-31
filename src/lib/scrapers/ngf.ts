@@ -1,20 +1,15 @@
 /**
- * NGF/Golfbox-scraper — turneringskalender for norske amatør-turneringer.
+ * NGF/GolfBox-scraper — turneringskalender for norske amatør-turneringer.
  *
- * STATUS: Live-scraping er STUB. Cron-baserte sync er erstattet av manuell
- * import via `scripts/import-norske-turneringer.ts` som leser ferdige
- * JSON-eksporter fra `~/My Drive/AK Golf Group/Data/` (Srixon, OLYO,
- * Norges Cup, Østlandstour).
+ * Live-kilde: scores.golfbox.dk ScheduleHandler (offentlig JSON).
+ * Se docs/turnering-datakilder.md (§ VERIFISERT) og golfbox-customers.ts.
  *
- * For å oppdatere norsk turneringsdata i DB:
- *   npx tsx scripts/import-norske-turneringer.ts
- *
- * Senere migrering: når akgolf-pipelines-repo er klart, byttes til
- * cron-pipeline med Playwright + automatisk Drive/Storage-sync.
- *
- * Golfbox er kompleks å scrape live (JS-rendret, cookie-basert, ingen
- * offentlig API), så manuell import er pragmatisk inntil pipeline-repo finnes.
+ * Prefer `syncGolfBoxSchedules` (src/lib/turneringer/golfbox-sync.ts) for
+ * full upsert. Denne funksjonen returnerer et tynt DTO for bakoverkompatibilitet.
  */
+
+import { getSchedule } from "@/lib/scrapers/golfbox";
+import { NO_TOUR_CUSTOMERS } from "@/lib/scrapers/golfbox-customers";
 
 export type NgfTournament = {
   sourceId: string;
@@ -24,12 +19,53 @@ export type NgfTournament = {
   course?: string;
   location?: string;
   officialUrl?: string;
+  /** ISO-dato YYYY-MM-DD når GolfBox har EntryCloses. */
+  entryCloses?: string;
 };
 
+/**
+ * Hent kommende + historiske events fra alle kuraterte norske GolfBox-kunder.
+ * Filtrerer onlyMatching (Olyo-regioner). Krever startDate.
+ */
 export async function scrapeNgfSchedule(): Promise<NgfTournament[]> {
-  // Live-scraping er ikke aktivert. Bruk import-scriptet for full norsk import.
+  const out: NgfTournament[] = [];
+  const seen = new Set<string>(); // competitionId — unngå dublett på tvers av kunder
+
+  for (const src of NO_TOUR_CUSTOMERS) {
+    let sched;
+    try {
+      sched = await getSchedule(src.customerId);
+    } catch (err) {
+      console.error(
+        `[ngf-scraper] GetSchedule feilet for ${src.label} (${src.customerId}):`,
+        err instanceof Error ? err.message : err,
+      );
+      continue;
+    }
+
+    for (const e of sched) {
+      if (!e.startDate) continue;
+      if (src.onlyMatching && !src.onlyMatching.test(e.name)) continue;
+      const sourceId = String(e.competitionId);
+      if (seen.has(sourceId)) continue;
+      seen.add(sourceId);
+
+      out.push({
+        sourceId,
+        name: e.name,
+        startDate: e.startDate,
+        endDate: e.endDate ?? undefined,
+        course: e.venue ?? undefined,
+        location: e.venue ?? undefined,
+        entryCloses: e.entryCloses
+          ? e.entryCloses.toISOString().slice(0, 10)
+          : undefined,
+      });
+    }
+  }
+
   console.info(
-    "[ngf-scraper] Live-scraping ikke aktivert — bruk `npx tsx scripts/import-norske-turneringer.ts`",
+    `[ngf-scraper] Hentet ${out.length} events fra ${NO_TOUR_CUSTOMERS.length} GolfBox-kunder`,
   );
-  return [];
+  return out;
 }

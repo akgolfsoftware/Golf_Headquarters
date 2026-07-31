@@ -10,6 +10,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUserRaw as getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { lesRaaPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
+import { DrillFasilitet } from "@/generated/prisma/enums";
 import { isMinor } from "@/lib/auth/minor";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { emailLayout, primaryButton } from "@/lib/email/templates/shared";
@@ -36,15 +37,60 @@ const ResendInvitationSchema = z.object({
   guardianEmail: email,
 });
 
+// Nye profilfelter fra onboarding (2026-07-27) — skrives til ekte User-kolonner.
+const OnboardingProfilFelterSchema = z.object({
+  school: optStr(200),
+  schoolYear: z.enum(["VG1", "VG2", "VG3"]).optional(),
+  prevSeasonAvgScore: z.number().int().min(50).max(200).optional(),
+});
+
+// Ett navngitt treningssted. capabilities valideres mot DrillFasilitet-enumet.
+const SpillerFasilitetSchema = z.object({
+  name: z.string().trim().min(1).max(120),
+  isIndoor: z.boolean(),
+  capabilities: z.array(z.enum(DrillFasilitet)).max(20),
+});
+
+// SG-baseline per periode. Alle felt valgfrie — steget kan hoppes over.
+const SgBaselineSchema = z.object({
+  sgOtt: z.number().min(-20).max(20).optional(),
+  sgApp: z.number().min(-20).max(20).optional(),
+  sgArg: z.number().min(-20).max(20).optional(),
+  sgPutt: z.number().min(-20).max(20).optional(),
+  sgTotal: z.number().min(-40).max(40).optional(),
+  snittScore: z.number().min(50).max(200).optional(),
+  antallRunder: z.number().int().min(0).max(500).optional(),
+});
+
 // ──────────────────────────────────────────────────────────────────────────────
 // Typer
 // ──────────────────────────────────────────────────────────────────────────────
 
+/** Ett navngitt treningssted spilleren har tilgang til (steg 3). */
+export type SpillerFasilitet = {
+  name: string;
+  isIndoor: boolean;
+  capabilities: string[];
+};
+
+/** SG-baseline for én periode (steg 4). Alle felt valgfrie — steget kan hoppes over. */
+export type SgBaselineInput = {
+  sgOtt?: number;
+  sgApp?: number;
+  sgArg?: number;
+  sgPutt?: number;
+  sgTotal?: number;
+  snittScore?: number;
+  antallRunder?: number;
+};
+
 export type SpillerOnboardingData = {
   // Steg 1 — Velkommen (ingen data)
-  // Steg 2 — Om deg
+  // Steg 2 — Om deg (+ skole/klubb)
   name?: string;
   phone?: string;
+  school?: string;
+  schoolYear?: string;
   // Steg 3 — Golf-erfaring + profil + fasiliteter + preferanser
   hcp?: number;
   homeClub?: string;
@@ -55,17 +101,25 @@ export type SpillerOnboardingData = {
   profiltype?: string;
   konkurranseNivaa?: string;
   fasiliteter?: string[];
+  /** Navngitte treningssteder — erstatter den grove fasiliteter-listen. */
+  steder?: SpillerFasilitet[];
   traningsdager?: string[];
   tidPaaDagen?: string;
   drivkraft?: string[];
-  // Steg 4 — Nivåplassering (progressiv dybde)
+  // Steg 4 — Dine tall (snittscore + SG-baseline)
+  prevSeasonAvgScore?: number;
+  sgForrigeSesong?: SgBaselineInput;
+  sgHittilIAar?: SgBaselineInput;
+  // Steg 5 — Nivåplassering (progressiv dybde)
   nivaa?: "nybegynner" | "ovet" | "elite";
-  // Steg 5 — Coach + abonnement
+  // Steg 6 — Coach + abonnement
   selectedCoach?: string;
   selectedTier?: string;
-  // Steg 6 — Avtaler
+  // Steg 7 — Avtaler
   acceptedTerms?: boolean;
   acceptedPrivacy?: boolean;
+  /** Samtykke: egne drills kan deles med plattformen. */
+  drillDelingGodtatt?: boolean;
 };
 
 export type ForelderOnboardingData = {
@@ -135,6 +189,13 @@ export async function saveSpillerOnboardingStep(
     },
   };
 
+  // Nye felter (2026-07-27) skrives til EKTE kolonner, ikke preferences-blobben.
+  const profil = OnboardingProfilFelterSchema.parse({
+    school: data.school,
+    schoolYear: data.schoolYear,
+    prevSeasonAvgScore: data.prevSeasonAvgScore,
+  });
+
   await prisma.user.update({
     where: { id: user.id },
     data: {
@@ -142,6 +203,10 @@ export async function saveSpillerOnboardingStep(
       hcp: data.hcp ?? user.hcp,
       homeClub: data.homeClub ?? user.homeClub,
       playingYears: data.playingYears ?? user.playingYears,
+      school: profil.school ?? user.school,
+      schoolYear: profil.schoolYear ?? user.schoolYear,
+      prevSeasonAvgScore: profil.prevSeasonAvgScore ?? user.prevSeasonAvgScore,
+      drillDelingGodtatt: data.drillDelingGodtatt ?? user.drillDelingGodtatt,
       preferences: updatedPrefs,
     },
   });
@@ -217,6 +282,88 @@ async function fullforOnboardingSideEffekter(
     await logError({ context: "onboarding.complete.facility-prefs", error, userId });
   }
 
+  // 1b) PlayerFacility — spillerens navngitte treningssteder. Create-only per navn
+  // (idempotent ved re-onboarding). Union av capabilities speiles til
+  // User.tilgjengeligeFasiliteter så eksisterende drill-filtrering virker.
+  try {
+    const parsed = z.array(SpillerFasilitetSchema).safeParse(onboarding.steder);
+    const steder = parsed.success ? parsed.data : [];
+    if (steder.length > 0) {
+      const finnes = await prisma.playerFacility.findMany({
+        where: { userId },
+        select: { name: true },
+      });
+      const finnesSet = new Set(finnes.map((f) => f.name.toLowerCase()));
+      const nye = steder.filter((s) => !finnesSet.has(s.name.toLowerCase()));
+      if (nye.length > 0) {
+        await prisma.playerFacility.createMany({
+          data: nye.map((s, i) => ({
+            userId,
+            name: s.name,
+            isIndoor: s.isIndoor,
+            capabilities: s.capabilities,
+            sortOrder: finnes.length + i,
+          })),
+        });
+      }
+      const alle = [...new Set(steder.flatMap((s) => s.capabilities))];
+      if (alle.length > 0) {
+        await prisma.user.update({
+          where: { id: userId },
+          data: { tilgjengeligeFasiliteter: alle },
+        });
+      }
+    }
+  } catch (error) {
+    await logError({ context: "onboarding.complete.player-facilities", error, userId });
+  }
+
+  // 1c) SG-baseline — én BrukerSgInput-rad per periode (forrige sesong + hittil i år).
+  // Create-only per kilde, så re-onboarding ikke dupliserer.
+  try {
+    const iAar = new Date().getUTCFullYear();
+    const perioder = [
+      {
+        kilde: "ONBOARDING_SESONG",
+        input: onboarding.sgForrigeSesong,
+        fra: new Date(Date.UTC(iAar - 1, 0, 1)),
+        til: new Date(Date.UTC(iAar - 1, 11, 31)),
+        kommentar: "Baseline fra onboarding — forrige sesong",
+      },
+      {
+        kilde: "ONBOARDING_YTD",
+        input: onboarding.sgHittilIAar,
+        fra: new Date(Date.UTC(iAar, 0, 1)),
+        til: null,
+        kommentar: "Baseline fra onboarding — hittil i år",
+      },
+    ];
+    for (const p of perioder) {
+      const parsed = SgBaselineSchema.safeParse(p.input);
+      if (!parsed.success) continue;
+      const verdier = parsed.data;
+      // Tom rad gir ingen verdi — spilleren hoppet over steget.
+      if (Object.values(verdier).every((v) => v === undefined)) continue;
+      const finnes = await prisma.brukerSgInput.findFirst({
+        where: { userId, kilde: p.kilde },
+        select: { id: true },
+      });
+      if (finnes) continue;
+      await prisma.brukerSgInput.create({
+        data: {
+          userId,
+          kilde: p.kilde,
+          periodeFra: p.fra,
+          periodeTil: p.til,
+          kommentar: p.kommentar,
+          ...verdier,
+        },
+      });
+    }
+  } catch (error) {
+    await logError({ context: "onboarding.complete.sg-baseline", error, userId });
+  }
+
   // 2) Goal-rader fra sesongmål — idempotent (kun titler brukeren ikke har fra før).
   try {
     const seasonGoals = Array.isArray(onboarding.seasonGoals)
@@ -271,7 +418,7 @@ export async function completeOnboarding(subscribe?: string): Promise<void> {
     onboarding: {
       ...existing,
       completedAt: new Date().toISOString(),
-      stepCompleted: 6,
+      stepCompleted: 7,
     },
     // Re-onboarding overskriver — nyeste svar vinner.
     trening: treningPrefs,

@@ -5,8 +5,10 @@
  * T.* only. Lys PlayerHQ.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { duplicateDrillForPlayer } from "@/lib/portal-drills/duplicate-drill";
 import type { DrillDetail } from "@/lib/portal-drills/drills-data";
 import type { AkseKey } from "@/lib/v2/tokens";
 import {
@@ -455,6 +457,27 @@ function DetaljPanel({ o, mobile, onLukk }: { o: DrillDetail; mobile?: boolean; 
   const type = drillType(o);
   const metaLinje = [type, varigh, o.skillArea ? SKILL_NB[o.skillArea] : null].filter(Boolean).join(" · ");
   const spenn = nivaSpenn(o);
+  const router = useRouter();
+  const [dupliserPending, startDupliser] = useTransition();
+  const [dupliserFeil, setDupliserFeil] = useState<string | null>(null);
+
+  /** Naviger til Workbench med øvelsen som query-param — legges i valgt/default
+   * økt der (samme append-logikk som Driller-fanen), se WorkbenchV2.tsx. */
+  const leggIOkt = () => {
+    router.push(
+      `/portal/planlegge/workbench?leggTil=${encodeURIComponent(o.id)}&leggTilNavn=${encodeURIComponent(o.title)}`,
+    );
+  };
+
+  const dupliser = () => {
+    setDupliserFeil(null);
+    startDupliser(async () => {
+      const res = await duplicateDrillForPlayer(o.id);
+      if (res.ok) router.push(`/portal/drills/${res.drillId}`);
+      else setDupliserFeil(res.error);
+    });
+  };
+
   return (
     <Kort pad="0" style={{ overflow: "hidden", position: mobile ? "relative" : "sticky", top: mobile ? 0 : 16 }}>
       <HeroBilde o={o} h={mobile ? 170 : 190} stor />
@@ -590,21 +613,28 @@ function DetaljPanel({ o, mobile, onLukk }: { o: DrillDetail; mobile?: boolean; 
 
         {/* B: én primær handling */}
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <CTAPill icon="plus" full>
+          <CTAPill icon="plus" full onClick={leggIOkt}>
             Legg i økt
           </CTAPill>
           <span
+            onClick={dupliserPending ? undefined : dupliser}
             style={{
               textAlign: "center",
               fontFamily: T.ui,
               fontSize: 12,
               fontWeight: 600,
               color: T.mut,
-              cursor: "pointer",
+              cursor: dupliserPending ? "default" : "pointer",
+              opacity: dupliserPending ? 0.6 : 1,
             }}
           >
-            Dupliser →
+            {dupliserPending ? "Dupliserer …" : "Dupliser →"}
           </span>
+          {dupliserFeil && (
+            <span style={{ textAlign: "center", fontFamily: T.ui, fontSize: 11, color: T.down }}>
+              {dupliserFeil}
+            </span>
+          )}
         </div>
       </div>
     </Kort>

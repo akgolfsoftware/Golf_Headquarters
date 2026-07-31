@@ -146,37 +146,3 @@ export async function fjernSpiller(
   revalidatePath(`/portal/tren/${p.sessionId}`);
   return { ok: true };
 }
-
-/**
- * Hjelper for Workbench/PlayerHQ Hjem: hent kommende delte økter denne uka
- * der bruker enten er host eller deltaker.
- */
-export async function getDelteOkterDenneUka(userId: string) {
-  const now = new Date();
-  const startOfWeek = new Date(now);
-  startOfWeek.setHours(0, 0, 0, 0);
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(endOfWeek.getDate() + 7);
-
-  const sessions = await prisma.trainingSessionV2.findMany({
-    where: {
-      isShared: true,
-      startTime: { gte: startOfWeek, lt: endOfWeek },
-      OR: [
-        { hostId: userId },
-        { participants: { some: { userId } } },
-      ],
-    },
-    include: {
-      host: { select: { id: true, name: true, avatarUrl: true } },
-      participants: {
-        include: {
-          user: { select: { id: true, name: true, avatarUrl: true, hcp: true } },
-        },
-      },
-    },
-    orderBy: { startTime: "asc" },
-  });
-
-  return sessions;
-}

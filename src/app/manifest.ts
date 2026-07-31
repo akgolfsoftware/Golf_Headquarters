@@ -9,8 +9,8 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     orientation: "portrait",
     // Web manifest krever literal hex (kan ikke referere CSS-variabler).
-    // start_url er /portal (PlayerHQ = alltid LYS, B28) — splash + chrome
-    // speiler derfor LYS --v2-bg (cream) i src/app/globals.css.
+    // start_url er /portal, og app-flatene er LYS som standard — splash +
+    // chrome speiler derfor LYS --v2-bg (cream) i src/app/globals.css.
     background_color: "#F2F1EA",
     theme_color: "#F2F1EA",
     lang: "nb",

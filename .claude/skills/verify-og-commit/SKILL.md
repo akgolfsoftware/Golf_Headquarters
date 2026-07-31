@@ -14,13 +14,13 @@ Du sikrer at ingenting ukontrollert når repoet. Rekkefølgen er låst.
    arbeidsgren — ALDRI på main (main er Anders' port, se CLAUDE.md §Git-arbeidsflyt).
 2. **Kjør gaten:** `npm run verify`
    (= `prisma validate` → `prisma generate` → `tsc --noEmit` → `eslint --quiet src`
-   → `node scripts/check-no-hex.mjs` → `npm run build`).
+   → `node scripts/check-action-auth.mjs` → `npm run build`).
+   Dette er nøyaktig samme sekvens som `ci.yml` kjører — grønn `verify` = grønn CI-verify-jobb.
 3. **Tolk feil med gotcha-lista** (`.claude/rules/gotchas.md`) FØR du fikser:
 
    | Symptom | Sannsynlig årsak (gotcha) |
    |---|---|
    | `PrismaClientValidationError` / «Unknown argument» i dev | Foreldet Prisma-klient — RESTART dev-server etter `prisma generate` |
-   | Hex-gate feiler | Rå hex-farge — bruk Tailwind-tokens/CSS-vars; baseline i `scripts/check-no-hex-baseline.json` utvides ALDRI for ny kode |
    | `migrate dev`/`db push` foreslått av feilmelding | BEGGE er blokkert — additive endringer går via kirurgisk `db execute` (gotchas.md §Schema-endringer) |
    | DB-feil i `tsx`-script | Manglende `import "./_env"` FØR `@/lib/prisma` |
    | eslint `no-restricted-imports` | Gammelt athletic-bibliotek — bruk golfdata/ eller ui/ |

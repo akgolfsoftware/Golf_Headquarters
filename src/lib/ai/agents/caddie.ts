@@ -11,7 +11,7 @@
 
 import "server-only";
 import type { MessageParam } from "@anthropic-ai/sdk/resources/messages";
-import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "../client";
+import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "../client";
 import { ALL_SKILLS } from "../skills";
 import { ALL_TOOLS, EXEC_BY_NAME } from "../tools";
 import { recallMemory, formatMemoryForPrompt } from "../memory";
@@ -109,7 +109,7 @@ export async function chatCaddie(
 
   for (let i = 0; i < maxIter; i++) {
     const response = await anthropic.messages.create({
-      model: AI_MODEL,
+      model: modelFor("caddie"),
       max_tokens: AI_MAX_TOKENS,
       system: systemPrompt,
       messages: conversation,

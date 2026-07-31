@@ -2,31 +2,66 @@
 
 /**
  * 8c.7 — søk i øvelsesbanken fra økt-komponisten. Read-only; synlighet:
- * SYSTEM-øvelser + egne (spiller/coach). Zod-lett (kun strenger inn).
+ * SYSTEM-øvelser + egne (spiller/coach) + drills andre spillere har delt med
+ * plattformen (PLATFORM, 2026-07-27). Zod-lett (kun strenger inn).
  */
 
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { hentDrillEstimater, drillNoekkel } from "@/lib/portal-drills/drill-estimat-data";
 
 export async function sokOvelser(
   query: string,
   area?: "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN",
-): Promise<{ id: string; name: string; pyramidArea: string }[]> {
+): Promise<
+  {
+    id: string;
+    name: string;
+    pyramidArea: string;
+    /** Standard L-trapp fra biblioteket — forhåndsutfylling ved valg. */
+    defaultRepsUtenBall: number | null;
+    defaultRepsLavFart: number | null;
+    defaultRepsAuto: number | null;
+    /** «Sist: ~12 min» når spilleren har kjørt drillen før. */
+    estimatTekst?: string;
+  }[]
+> {
   const user = await requirePortalUser();
   const q = query.trim().slice(0, 80);
-  return prisma.exerciseDefinition.findMany({
-    where: {
-      AND: [
-        q ? { name: { contains: q, mode: "insensitive" } } : {},
-        area ? { pyramidArea: area } : {},
-        { OR: [{ source: "SYSTEM" }, { createdBy: user.id }] },
-      ],
-    },
-    orderBy: { name: "asc" },
-    take: 12,
-    select: { id: true, name: true, pyramidArea: true },
-  });
+  const [treff, estimater] = await Promise.all([
+    prisma.exerciseDefinition.findMany({
+      where: {
+        AND: [
+          q ? { name: { contains: q, mode: "insensitive" } } : {},
+          area ? { pyramidArea: area } : {},
+          {
+            OR: [
+              { source: "SYSTEM" },
+              { createdBy: user.id },
+              { visibility: "PLATFORM" },
+            ],
+          },
+        ],
+      },
+      orderBy: { name: "asc" },
+      take: 12,
+      select: {
+        id: true,
+        name: true,
+        pyramidArea: true,
+        defaultRepsUtenBall: true,
+        defaultRepsLavFart: true,
+        defaultRepsAuto: true,
+      },
+    }),
+    hentDrillEstimater(user.id),
+  ]);
+
+  return treff.map((t) => ({
+    ...t,
+    estimatTekst: estimater.get(drillNoekkel({ exerciseId: t.id })),
+  }));
 }
 
 /** Nåtilstand for økt-komponisten: formel-akser + drill-liste. */
@@ -34,7 +69,23 @@ export async function hentOktKomponist(sessionId: string): Promise<{
   ok: boolean;
   lFase?: string | null;
   miljo?: string | null;
-  drills?: { exerciseId: string; navn: string; minutter: number | null; sett: number | null; reps: number | null; nivaa: "uten" | "lav" | "vanlig"; positionTaskId?: string; positionTaskTittel?: string }[];
+  location?: string | null;
+  maalsetning?: string | null;
+  drills?: {
+    exerciseId: string;
+    navn: string;
+    minutter: number | null;
+    sett: number | null;
+    reps: number | null;
+    nivaa: "uten" | "lav" | "vanlig";
+    planRepsUtenBall: number | null;
+    planRepsLavFart: number | null;
+    planRepsAuto: number | null;
+    /** «Sist: ~12 min» fra spillerens egen historikk. */
+    estimatTekst?: string;
+    positionTaskId?: string;
+    positionTaskTittel?: string;
+  }[];
 }> {
   const user = await requirePortalUser();
   const okt = await prisma.trainingPlanSession.findFirst({
@@ -46,6 +97,9 @@ export async function hentOktKomponist(sessionId: string): Promise<{
     select: {
       lFase: true,
       miljo: true,
+      location: true,
+      maalsetning: true,
+      plan: { select: { userId: true } },
       drills: {
         orderBy: { orderIndex: "asc" },
         select: {
@@ -57,6 +111,9 @@ export async function hentOktKomponist(sessionId: string): Promise<{
           reps: true,
           repType: true,
           prPress: true,
+          planRepsUtenBall: true,
+          planRepsLavFart: true,
+          planRepsAuto: true,
           exercise: { select: { name: true } },
           positionTaskId: true,
           positionTask: { select: { tittel: true } },
@@ -65,10 +122,17 @@ export async function hentOktKomponist(sessionId: string): Promise<{
     },
   });
   if (!okt) return { ok: false };
+  // Estimatene gjelder spillerens egen historikk. Ser en coach på økta, er det
+  // fortsatt spilleren som eier tallene — derfor plan-eieren, ikke innlogget bruker.
+  const estimater = await hentDrillEstimater(
+    user.role === "PLAYER" ? user.id : (okt.plan?.userId ?? user.id),
+  );
   return {
     ok: true,
     lFase: okt.lFase,
     miljo: okt.miljo,
+    location: okt.location,
+    maalsetning: okt.maalsetning,
     drills: okt.drills.map((d) => ({
       exerciseId: d.exerciseId,
       navn: d.exercise.name,
@@ -76,6 +140,12 @@ export async function hentOktKomponist(sessionId: string): Promise<{
       sett: d.repSett ?? d.sets,
       reps: d.repReps ?? d.reps,
       nivaa: d.repType === "SVINGER_UTEN_BALL" ? ("uten" as const) : d.prPress === "PR1" ? ("lav" as const) : ("vanlig" as const),
+      estimatTekst: estimater.get(
+        drillNoekkel({ exerciseId: d.exerciseId, name: d.exercise.name }),
+      ),
+      planRepsUtenBall: d.planRepsUtenBall,
+      planRepsLavFart: d.planRepsLavFart,
+      planRepsAuto: d.planRepsAuto,
       positionTaskId: d.positionTaskId ?? undefined,
       positionTaskTittel: d.positionTask?.tittel ?? undefined,
     })),

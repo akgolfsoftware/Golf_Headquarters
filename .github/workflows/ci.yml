@@ -1,8 +1,11 @@
 name: CI
 
 on:
+  # Ingen base-filter på pull_request: med `branches: [main]` kjørte CI ALDRI på
+  # stablede PR-er (PR mot en feature-gren). 2026-07-26 ble tre slike merget der
+  # verify/e2e aldri hadde kjørt — de så grønne ut fordi bare Vercel-bygget hadde
+  # rapportert. Enhver PR skal gjennom denne jobben.
   pull_request:
-    branches: [main]
   push:
     branches: [main]
   # Manuell kjøring fra Actions-fanen — lagt til 2026-07-19 for å kunne teste
@@ -40,9 +43,6 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Hex-gate (ingen nye rå hex-farger — opprydding Fase 2)
-        run: npm run check:hex
-
       - name: Action-auth gate (KS-1 — server actions må ha auth-import)
         run: npm run check:action-auth
 
@@ -64,38 +64,13 @@ jobs:
           STRIPE_PRICE_ID_PRO: price_dummy
           CRON_SECRET: dummy
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-
-      - name: Start app in background
-        run: npm start &
-        env:
-          DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy?pgbouncer=true
-          DIRECT_URL: postgresql://dummy:dummy@localhost:5432/dummy
-          NEXT_PUBLIC_SUPABASE_URL: https://dummy.supabase.co
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: dummy
-          ANTHROPIC_API_KEY: dummy
-          STRIPE_SECRET_KEY: sk_test_dummy
-          STRIPE_WEBHOOK_SECRET: whsec_dummy
-          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_dummy
-          STRIPE_PRICE_ID_PRO: price_dummy
-          CRON_SECRET: dummy
-
-      - name: Wait for app to respond
-        run: npx wait-on http://localhost:3000 -t 60000
-        continue-on-error: true
-
-      - name: E2E tests (Playwright)
-        run: npx playwright test
-        env:
-          CI: "true"
-          PLAYWRIGHT_BASE_URL: http://localhost:3000
-        continue-on-error: true
-
-      - name: Upload Playwright report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 7
+      # E2E er BEVISST fjernet herfra (2026-07-26). Blokket startet appen med
+      # dummy-DB/Supabase-verdier og kjørte hele suiten (206 tester) mot den:
+      # auth-guard-testene feilet fordi ingen redirect er mulig uten Supabase,
+      # og `continue-on-error: true` svelget alt. Resultatet var ~6 minutter per
+      # kjøring uten dekning — verre enn ingen test, fordi det så ut som en gate.
+      #
+      # Ekte e2e på PR krever en Postgres-service + seed + Supabase-stub. Til det
+      # finnes er PR-gaten stegene over (tsc, lint, action-auth, enhetstester,
+      # build) — alle blokkerende. `playwright.yml` er prod-røyktest etter deploy,
+      # ikke en PR-gate.

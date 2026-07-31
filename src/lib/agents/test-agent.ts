@@ -6,6 +6,7 @@ import { resolveDrillPakke } from "./plan-action-executor";
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { varsleVedPlanAction } from "./notify-plan-action";
+import { byggProvenance } from "./provenance";
 import { proposeTmBaselinesFromTest } from "@/lib/teknisk-plan/test-to-tm-baseline";
 
 export const AGENT_NAME = "test-agent";
@@ -119,6 +120,20 @@ export async function runTestAgent(userId: string): Promise<AgentResult> {
                   testNavn: siste.test.name,
                 },
               },
+              provenance: byggProvenance({
+                kilde: "TESTER",
+                rader: [siste, ...tidligere].map((r) => ({
+                  id: r.id,
+                  dato: r.takenAt.toISOString(),
+                })),
+                regel:
+                  relativ <= TILBAKE_TERSKEL
+                    ? `testresultat tilbake ${TILBAKE_TERSKEL * -100}% eller mer`
+                    : `testresultat forbedret ${FORBEDRING_TERSKEL * 100}% eller mer`,
+                terskel:
+                  relativ <= TILBAKE_TERSKEL ? TILBAKE_TERSKEL : FORBEDRING_TERSKEL,
+                maaltVerdi: relativ,
+              }),
             },
           });
           planActionsWritten++;

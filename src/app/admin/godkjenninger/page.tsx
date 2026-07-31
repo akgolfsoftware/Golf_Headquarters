@@ -19,6 +19,7 @@ import { prisma } from "@/lib/prisma";
 import { computeDelta, type PlanContext } from "@/lib/agents/plan-action-executor";
 import { LOW_RISK_ACTION_TYPES } from "@/lib/training/skills";
 import { koTelling } from "@/lib/admin/ko-telling";
+import { provenanceLesbarTekst } from "@/lib/agents/provenance";
 import { caddieDraftTittel } from "@/lib/caddie/draft-labels";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { KoHubNav } from "@/components/admin/v2/agency-hub-subnav";
@@ -271,6 +272,7 @@ export default async function V2AdminGodkjenningerPage() {
         when: nårTekst(a.createdAt),
         urgent: erHaster(a.actionType),
         lowRisk: LOW_RISK_ACTION_TYPES.has(a.actionType),
+        hvorfor: provenanceLesbarTekst(a.provenance),
       };
     }),
   );
