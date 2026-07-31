@@ -40,7 +40,8 @@ Gjelder til Anders endrer dem.
   referanseverdier før Anders gir grønt lys.
 - **Design-kilde (TØMT 2026-07-25):** Claude Design-prosjektet og v2-kanonen er avviklet som
   design-kilde. Nytt komplett designsystem utvikles i Open Design — det blir ny fasit når Anders
-  godkjenner det. `docs/design-system/` og `docs/redesign-v2/` er merket UTGÅTT (historikk).
+  godkjenner det. `docs/design-system/` og `docs/redesign-v2/` er SLETTET 2026-07-31 (lever i git-historikken);
+  kun `docs/design-system/TEMA-LYS-MORK.md` står igjen som tema-fasit.
 - **Skjermtekst (copy-kilde):** `docs/skjermtekst/` — ekte norsk UI-tekst per hovedskjerm +
   design-brief. Kopier derfra, ikke dikt opp ny tekst.
 - Aldri referer til `wireframe/`, gamle `design-package/` eller `design-files-v2/` i

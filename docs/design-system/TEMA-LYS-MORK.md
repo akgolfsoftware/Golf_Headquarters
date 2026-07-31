@@ -66,12 +66,12 @@ Mørk skjerm er vanskelig å lese utendørs i sollys — derfor er lys default i
 
 Fram til 24. juli var `:root` mørk, PlayerHQ var låst lys (B28) og AgencyOS var mørk som
 standard. Fase F (25. juli) snudde grunnlaget til lys og fjernet låsen. Gamle beskrivelser
-i `docs/design-system/` er merket UTGÅTT.
+i `docs/design-system/` er slettet 2026-07-31 (lever i git-historikken).
 
 ---
 
 ## Se også
 
 - `docs/platform/BUSINESS-RULES.md` § Tema per produkt (forretningsfasit)
-- `docs/design-system/FASIT.md` §1
+- `docs/platform/BUSINESS-RULES.md` § Tema
 - `.claude/rules/beslutninger.md`
