@@ -65,6 +65,8 @@ C, slik jeg definerer det:
    ene primærhandling. Verdi `#D97757` (Claude Papers accent). Den er varm og
    står i tydelig kontrast til lime, så «én ting nå» blir umiddelbart lesbar
    uten å røre noe eksisterende.
+   **I kode (2026-07-31):** `--v2-handling` + alias `--handling` i `globals.css`,
+   `T.handling` i `src/lib/v2/tokens.ts`.
 4. **Regel:** `--handling` får forekomme maksimalt én gang per skjerm. Håndheves
    av en ESLint-regel eller en enkel gate i `npm run verify` — ellers forfaller
    den til nok en merkevarefarge innen tre uker.

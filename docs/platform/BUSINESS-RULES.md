@@ -243,6 +243,11 @@ AK Golf Academy bruker en 5-trinns trenings-pyramide:
 > for «Én ting nå»). Claude Paper = designfasit i Open Design/speil; full port til `src/`
 > etter pilot. Se `docs/gjenstaaende-plan-2026-07-31.md` §1.1.
 >
+> **Token i kode:** `--v2-handling` / alias `--handling` i `src/app/globals.css`,
+> speilet som `T.handling` i `src/lib/v2/tokens.ts`. Bruk: `var(--handling)` eller
+> `T.handling`. Maks én primærhandling per skjerm. Lime/forest uendret for merkevare
+> og vanlige CTA-er.
+>
 > Det under er beskrivelse av nåværende tema-oppførsel i kode (lys default + bryter),
 > ikke en konkurrerende designkanon.
 
