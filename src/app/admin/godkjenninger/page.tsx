@@ -259,10 +259,24 @@ export default async function V2AdminGodkjenningerPage() {
           sugg?.title ??
           sugg?.tittel ??
           handlingstypeLabel(a.actionType),
-        detail:
-          sugg?.forklaring ??
-          sugg?.detail ??
-          (a.plan ? `Gjelder planen «${a.plan.name}».` : ""),
+        detail: (() => {
+          const base =
+            sugg?.forklaring ??
+            sugg?.detail ??
+            (a.plan ? `Gjelder planen «${a.plan.name}».` : "");
+          // Foreslått sjekkpunkt i suggestion (skrives til PlanAction.sjekkpunkt ved godkjenning).
+          const sp =
+            typeof (sugg as { sjekkpunkt?: unknown } | null)?.sjekkpunkt ===
+            "string"
+              ? String((sugg as { sjekkpunkt: string }).sjekkpunkt)
+              : null;
+          if (sp?.trim()) {
+            return [base, `Sjekkpunkt (foreslått): ${sp.trim()}`]
+              .filter(Boolean)
+              .join(" · ");
+          }
+          return base;
+        })(),
         signalKind: sugg?.signalSnapshot?.kind ?? null,
         signalValue:
           sugg?.signalSnapshot?.value != null

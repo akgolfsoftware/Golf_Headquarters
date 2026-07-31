@@ -32,6 +32,13 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import { LydSamtykkePilotPanel } from "@/components/admin/lyd-samtykke-pilot-panel";
+import {
+  antallVentendeChunks,
+  fjernChunkFraKo,
+  leggChunkIKo,
+  tomChunkKo,
+} from "@/lib/offline-queue/recording-chunk-queue";
 
 type Mode = "idle" | "recovery" | "recording" | "paused" | "finalizing" | "behandler";
 
@@ -258,38 +265,67 @@ export function RecordingControls({
     [router],
   );
 
+  async function lastOppChunkHttp(
+    recordingId: string,
+    idx: number,
+    blob: Blob,
+  ): Promise<{ ok: boolean }> {
+    const form = new FormData();
+    form.append("recordingId", recordingId);
+    form.append("chunkIdx", String(idx));
+    form.append("chunk", blob, `chunk-${idx}.webm`);
+    try {
+      const res = await fetch("/api/recording/upload-chunk", {
+        method: "POST",
+        body: form,
+      });
+      return { ok: res.ok };
+    } catch {
+      return { ok: false };
+    }
+  }
+
   function uploadChunk(idx: number, blob: Blob): Promise<void> {
     const id = aktivIdRef.current;
     if (!id) return Promise.resolve();
     return new Promise<void>((resolve) => {
       uploadQueueRef.current = uploadQueueRef.current.then(async () => {
-        const form = new FormData();
-        form.append("recordingId", id);
-        form.append("chunkIdx", String(idx));
-        form.append("chunk", blob, `chunk-${idx}.webm`);
+        // 1) Lokal kø først — mistet dekning skal ikke miste biten.
         try {
-          const res = await fetch("/api/recording/upload-chunk", {
-            method: "POST",
-            body: form,
-          });
-          if (!res.ok) {
-            const j = (await res.json().catch(() => ({}))) as { error?: string };
-            setBanner({
-              tone: "warn",
-              text: `Klarte ikke å lagre chunk ${idx} — prøver igjen ved neste. (${j.error ?? res.status})`,
-            });
-          } else {
-            setChunkInfo(`Lagret chunk ${idx + 1} (${formatTimer(elapsedSec)})`);
-          }
+          await leggChunkIKo(id, idx, blob);
         } catch (err) {
-          console.error("[recording] upload feilet", err);
+          console.error("[recording] IDB-kø feilet", err);
+        }
+        // 2) Prøv nett
+        const res = await lastOppChunkHttp(id, idx, blob);
+        if (res.ok) {
+          await fjernChunkFraKo(id, idx).catch(() => undefined);
+          setChunkInfo(`Lagret chunk ${idx + 1} (${formatTimer(elapsedSec)})`);
+        } else {
+          const vent = await antallVentendeChunks(id).catch(() => 0);
           setBanner({
             tone: "warn",
-            text: "Kobling avbrutt — prøver igjen automatisk.",
+            text:
+              vent > 0
+                ? `${vent} lydbiter venter på opplasting — prøver igjen automatisk.`
+                : "Kobling avbrutt — prøver igjen automatisk.",
           });
-        } finally {
-          resolve();
         }
+        // 3) Tøm resten av køen for denne recording
+        try {
+          const flush = await tomChunkKo(id, lastOppChunkHttp);
+          if (flush.gjenstaar > 0) {
+            setBanner({
+              tone: flush.gittOpp ? "error" : "warn",
+              text: flush.gittOpp
+                ? `${flush.gjenstaar} lydbiter kunne ikke lastes opp. Sjekk nett og prøv «Avslutt» på nytt.`
+                : `${flush.gjenstaar} lydbiter venter på opplasting.`,
+            });
+          }
+        } catch {
+          /* ignorer flush-feil */
+        }
+        resolve();
       });
     });
   }
@@ -657,16 +693,14 @@ export function RecordingControls({
             </label>
           )}
 
-          {visSamtykkeMelding && (
-            <div className="flex flex-1 flex-col gap-1 rounded-md border border-border bg-card px-4 py-3">
-              <p className="text-[13px] font-medium text-foreground">
-                Venter på samtykke fra foresatt
-              </p>
-              <p className="text-[12px] text-muted-foreground">
-                Opptak kan ikke starte før lydsamtykke er registrert som GITT.
-                Send purring til foresatt (kommer i neste steg).
-              </p>
-            </div>
+          {visSamtykkeMelding && valgtSpiller && (
+            <LydSamtykkePilotPanel
+              playerId={valgtSpiller}
+              playerNavn={
+                spillere.find((s) => s.id === valgtSpiller)?.navn ?? "Spiller"
+              }
+              harGitt={false}
+            />
           )}
 
           {(visStartKnapp || isFinalizing || isBehandler) && !isRecordingActive && (
