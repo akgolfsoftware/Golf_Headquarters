@@ -196,6 +196,32 @@ export async function POST(req: Request) {
     metadata: { playerId: spillerId, varighetMin },
   });
 
+  // 2b) PlanAction i godkjenningskø (sjekkpunkt + fangstId) — best-effort.
+  let planActionId: string | null = null;
+  if (recording.playerId) {
+    try {
+      const { opprettFangstSjekkpunktPlanAction } = await import(
+        "@/lib/recording/fangst-plan-action"
+      );
+      planActionId = await opprettFangstSjekkpunktPlanAction({
+        playerId: recording.playerId,
+        recordingId: recording.id,
+        analyse,
+        coachUserId: user.id,
+      });
+      if (planActionId) {
+        await audit({
+          actorId: user.id,
+          action: "recording.plan_action_created",
+          target: `PlanAction:${planActionId}`,
+          metadata: { recordingId: recording.id, playerId: recording.playerId },
+        });
+      }
+    } catch (err) {
+      console.error("[recording/analyze] PlanAction feilet", err);
+    }
+  }
+
   // 3) Notion-sync (best-effort - logger feil men lar fortsatt klienten fa
   //    suksess for selve analysen).
   let notionPageId: string | null = null;
@@ -261,6 +287,7 @@ export async function POST(req: Request) {
   return NextResponse.json({
     ok: true,
     recordingId: recording.id,
+    planActionId,
     notionPageId,
     notionUrl,
   });

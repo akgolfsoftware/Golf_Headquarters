@@ -12,9 +12,10 @@ Kort guide for hvordan kjøre tester lokalt og hva som dekkes.
 ## Kommandoer
 
 ```bash
-npm test          # Kjør alle unit-tester (node:test)
-npm run test:e2e  # Kjør Playwright E2E (auto-starter dev-server lokalt)
-npm run test:all  # Kjør begge sett etter hverandre
+npm test               # Kjør alle unit-tester (node:test)
+npm run test:e2e       # Kjør Playwright E2E (auto-starter dev-server lokalt)
+npm run test:e2e:pilot # Pilot-smoke: opptak + Før/Etter (chromium)
+npm run test:all       # Kjør begge sett etter hverandre
 ```
 
 Playwright-aliaser som finnes fra før:
@@ -53,9 +54,23 @@ Dekker:
 | `PLAYWRIGHT_BASE_URL` | `http://localhost:3000` | URL Playwright kjører mot. Bytt til `:3002` hvis port 3000 er opptatt. |
 | `E2E_TEST_USER_EMAIL` | — | Email til seedet test-PLAYER. Settes for å slå på credit-booking og PLAYER-redirect-tester. |
 | `E2E_TEST_USER_PASSWORD` | — | Passord til samme bruker. |
+| `E2E_COACH_EMAIL` | — | Coach/admin for AgencyOS pilot-smoke (`npm run test:e2e:pilot`). |
+| `E2E_COACH_PASSWORD` | — | Passord til coach-brukeren. |
 | `CI` | — | I CI-modus auto-starter ikke dev-server. |
 
-Hvis `E2E_TEST_USER_*` ikke er satt: testene som krever innlogget spiller skip-er seg selv automatisk. Vil ikke gjøre suiten rød.
+Hvis `E2E_TEST_USER_*` / `E2E_COACH_*` ikke er satt: testene som krever innlogging skip-er seg selv automatisk. Vil ikke gjøre suiten rød.
+
+### Pilot-smoke (opptak + Før/Etter)
+
+```bash
+# I .env.local (eller eksportert i shell):
+# E2E_COACH_EMAIL=coach@example.com
+# E2E_COACH_PASSWORD=...
+
+npm run test:e2e:pilot
+```
+
+Dekker: uinnlogget redirect på `/admin/recording`, `/admin/godkjenninger`, `/admin/spillere`; med coach — at opptak-UI (spiller-valg), godkjenninger og Før-kort på spillerdashboard laster uten krasj.
 
 ### Seed test-bruker
 

@@ -23,6 +23,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
+    "test:e2e:pilot": "playwright test tests/e2e/pilot-recording-smoke.spec.ts --project=chromium",
     "test:all": "npm test && npm run test:e2e",
     "prepare": "husky",
     "meg:tilbakeskriv": "tsx scripts/meg-tilbakeskriving/run.ts",

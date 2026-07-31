@@ -65,6 +65,15 @@ export interface SpillerDashboardV2Data {
   kpi: DashKpi[];
   wbHref: string;
   analyseHref: string;
+  /**
+   * FØR-kort: siste godkjente sjekkpunkt (ETTER → neste FØR).
+   * null = ingen tråd ennå.
+   */
+  forKort: {
+    sjekkpunkt: string;
+    godkjentLabel: string;
+    godkjenningsHref: string;
+  } | null;
 
   utvikling: {
     fysTester: DashRadItem[];
@@ -309,6 +318,57 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
           </div>
         ))}
       </div>
+
+      {/* FØR-kort: tråd fra sist godkjente fangst/plan-action */}
+      {data.forKort ? (
+        <Kort
+          style={{
+            borderColor: `color-mix(in srgb, ${T.handling} 35%, ${T.border})`,
+            background: `color-mix(in srgb, ${T.handling} 6%, ${T.panel})`,
+          }}
+        >
+          <Caps size={9}>Før neste økt · sjekkpunkt</Caps>
+          <p
+            style={{
+              margin: "8px 0 0",
+              fontFamily: T.ui,
+              fontSize: 14,
+              fontWeight: 600,
+              color: T.fg,
+              lineHeight: 1.45,
+            }}
+          >
+            {data.forKort.sjekkpunkt}
+          </p>
+          <div
+            style={{
+              marginTop: 10,
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 10,
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+              Godkjent {data.forKort.godkjentLabel}
+            </span>
+            <Link href={data.forKort.godkjenningsHref} style={{ textDecoration: "none" }}>
+              <CTAPill ghost icon="list-checks">
+                Se i kø
+              </CTAPill>
+            </Link>
+          </div>
+        </Kort>
+      ) : (
+        <Kort>
+          <Caps size={9}>Før neste økt</Caps>
+          <p style={{ margin: "8px 0 0", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+            Ingen godkjent sjekkpunkt ennå. Etter fangst og godkjenning i køen
+            dukker tråden til neste økt opp her.
+          </p>
+        </Kort>
+      )}
 
       {/* B: én primær (Workbench) · øvrige ghost */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
