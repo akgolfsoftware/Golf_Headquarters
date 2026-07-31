@@ -8,6 +8,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { rateLimit } from "@/lib/rate-limit";
@@ -50,10 +51,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Mangler tilgang" }, { status: 403 });
     }
 
-    // Rate-limit: 5 opptak-starter per time per coach.
+    // Rate-limit: 20 opptak-starter per time per coach (demo-vennlig, #12).
     const rl = await rateLimit({
       key: `recording-start:${user.id}`,
-      max: 5,
+      max: 20,
       windowMs: 3_600_000,
     });
     if (!rl.ok) {
@@ -77,6 +78,14 @@ export async function POST(req: Request) {
       });
       if (!player || player.role !== "PLAYER") {
         return NextResponse.json({ error: "Spiller finnes ikke" }, { status: 404 });
+      }
+
+      // #1: coach kan kun starte for egne spillere (ADMIN: alle coachede)
+      if (!(await harCoachTilgangTilSpiller(user, player.id))) {
+        return NextResponse.json(
+          { error: "Du har ikke tilgang til denne spilleren" },
+          { status: 403 },
+        );
       }
 
       const sperre = await avvisUtenLydSamtykke(player.id);
@@ -151,10 +160,13 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ recordingId: recording.id });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Ukjent feil";
+    // #7: ikke lek interne feilmeldinger til klient
     console.error("[recording/start]", err);
     return NextResponse.json(
-      { error: "server-error", message },
+      {
+        error: "server-error",
+        message: "Noe gikk galt. Prøv igjen.",
+      },
       { status: 500 },
     );
   }

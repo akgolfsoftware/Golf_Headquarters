@@ -1690,7 +1690,9 @@ model LydSamtykke {
   // en tekst som kan endres i ettertid.
   ordlyd        String
   // Magisk lenke til foresatt (null etter GITT/TRUKKET eller uten e-postflyt).
+  // token = legacy (klartekst, fases ut). tokenHash = sha256 av rå token i e-post.
   token           String?   @unique
+  tokenHash       String?   @unique
   tokenExpiresAt  DateTime?
   createdAt     DateTime  @default(now())
 

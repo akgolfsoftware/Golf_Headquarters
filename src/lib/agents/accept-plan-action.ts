@@ -1,5 +1,9 @@
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import {
+  fangstIdFraSuggestion,
+  sjekkpunktFraSuggestion,
+} from "@/lib/recording/fangst-suggestion";
 import { executePlanAction } from "./plan-action-executor";
 
 export type AcceptPlanActionResult = {
@@ -26,25 +30,12 @@ export async function acceptAndApplyPlanAction(
   try {
     const exec = await executePlanAction(actionId);
 
-    // FØR/UNDER/ETTER: sjekkpunkt + fangstId fra suggestion-JSON ved godkjenning.
-    const sug = (
-      coachNoteSuggestion ??
-      (action.suggestion as Record<string, unknown> | null)
-    ) as Record<string, unknown> | null;
+    // FØR/UNDER/ETTER: sjekkpunkt + fangstId fra suggestion (zod, #9).
+    const rawSug = coachNoteSuggestion ?? action.suggestion;
     const sjekkpunkt =
-      typeof sug?.sjekkpunkt === "string" && sug.sjekkpunkt.trim()
-        ? sug.sjekkpunkt.trim().slice(0, 2000)
-        : typeof sug?.checkpoint === "string" && sug.checkpoint.trim()
-          ? sug.checkpoint.trim().slice(0, 2000)
-          : exec.summary?.trim()
-            ? exec.summary.trim().slice(0, 2000)
-            : null;
-    const fangstId =
-      typeof sug?.fangstId === "string" && sug.fangstId.trim()
-        ? sug.fangstId.trim()
-        : typeof sug?.recordingId === "string" && sug.recordingId.trim()
-          ? sug.recordingId.trim()
-          : null;
+      sjekkpunktFraSuggestion(rawSug, exec.summary) ??
+      (exec.summary?.trim() ? exec.summary.trim().slice(0, 2000) : null);
+    const fangstId = fangstIdFraSuggestion(rawSug);
 
     await prisma.planAction.update({
       where: { id: actionId },

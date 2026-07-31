@@ -27,6 +27,17 @@ Mentalt - hvordan foltes det her i dag? Du har vaert litt frustrert pa de fa hul
 Avslutning: jeg vil at du jobber 15 min hver dag denne uken med alignment-stick-drillen pa rangen, 5 sett med 8 slag. Skriv ned felt fairways pa neste runde - jeg vil se tallene.`;
 
 export async function POST(req: Request) {
+  // #2: aldri åpen i prod uten eksplisitt flagg
+  const tillatt =
+    process.env.ALLOW_DUMMY_TRANSCRIPT === "1" ||
+    process.env.NODE_ENV !== "production";
+  if (!tillatt) {
+    return NextResponse.json(
+      { error: "Dummy-transkripsjon er av i dette miljøet." },
+      { status: 403 },
+    );
+  }
+
   const user = await getCurrentUser();
   if (!user) {
     return NextResponse.json({ error: "Ikke innlogget" }, { status: 401 });

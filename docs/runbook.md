@@ -1,7 +1,16 @@
 # AK Golf HQ — Backup & Disaster Recovery Runbook
 
 > Operativ håndbok for produksjons-incidents og gjenoppretting. Hold denne
-> oppdatert når infrastruktur eller integrasjoner endres. Sist revidert: 2026-05-25.
+> oppdatert når infrastruktur eller integrasjoner endres. Sist revidert: 2026-07-31.
+
+---
+
+## 0. Rate-limit (Upstash)
+
+- Env: `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` i Vercel (prod).
+- Uten Redis: **fail-open** med soft in-memory limit per instance (se `src/lib/rate-limit.ts`).
+- Hard fail-closed (kaster hvis Redis mangler): sett `RATE_LIMIT_FAIL_CLOSED=1` **kun** når Upstash er permanent på plass.
+- Dummy-transkripsjon i prod: kun med `ALLOW_DUMMY_TRANSCRIPT=1` (skal normalt **ikke** stå i prod).
 
 ---
 
