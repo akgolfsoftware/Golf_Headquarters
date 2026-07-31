@@ -3,8 +3,8 @@
  *
  * Uten credentials: sjekker at beskyttede ruter redirecter til login
  * (ingen 500/404).
- * Med E2E_COACH_EMAIL/PASSWORD: røyktest av recording-UI, godkjenninger
- * og Før-kort på spillerdashboard.
+ * Med coach-credentials (E2E_COACH_* eller SCREENTEST_PASSWORD): røyktest
+ * av recording-UI, godkjenninger og Før-kort på spillerdashboard.
  *
  * Kjør: npm run test:e2e:pilot
  */
@@ -31,7 +31,7 @@ test.describe("Pilot-smoke — coach (krever E2E_COACH_*)", () => {
   test.beforeEach(({}, testInfo) => {
     testInfo.skip(
       !hasCoachAuth(),
-      "Krever E2E_COACH_EMAIL og E2E_COACH_PASSWORD",
+      "Krever E2E_COACH_* eller SCREENTEST_PASSWORD i .env.local",
     );
   });
 

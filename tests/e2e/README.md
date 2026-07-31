@@ -77,10 +77,10 @@ De fleste smoke-testene kjører **uten innlogging**. Ruter som krever auth (`/po
 
 | Env | Bruk |
 |---|---|
-| `E2E_COACH_EMAIL` | Coach/admin i Supabase (AgencyOS) |
-| `E2E_COACH_PASSWORD` | Passord til samme bruker |
+| `SCREENTEST_PASSWORD` | Enklest — logger inn som `coachtest@akgolf.test` |
+| `E2E_COACH_EMAIL` + `E2E_COACH_PASSWORD` | Valgfri annen coach (overstyrer) |
 
-Uten coach-credentials: bare redirect-testene kjører; innloggede tester skip-er seg selv (suiten blir ikke rød).
+Uten passord: bare redirect-testene kjører. Seed coach første gang: `npx tsx scripts/seed-screentest-coach.ts`.
 
 ## CI
 

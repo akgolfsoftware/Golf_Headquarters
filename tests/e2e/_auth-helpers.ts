@@ -1,19 +1,35 @@
 /**
  * Innlogging for e2e-smoke.
  *
- * Coach: E2E_COACH_EMAIL + E2E_COACH_PASSWORD
+ * Coach (prioritet):
+ *  1. E2E_COACH_EMAIL + E2E_COACH_PASSWORD
+ *  2. coachtest@akgolf.test + SCREENTEST_PASSWORD (samme som seed-screentest-coach)
+ *
  * Spiller: E2E_TEST_USER_EMAIL + E2E_TEST_USER_PASSWORD
  *
+ * Laster .env.local her — Playwright leser ikke den filen selv.
  * Uten credentials skal tester bruke test.skip — ikke feile suiten.
  */
 
+import { config as loadEnv } from "dotenv";
 import type { Page } from "@playwright/test";
+
+loadEnv({ path: ".env.local" });
+
+const SCREENTEST_COACH_EMAIL = "coachtest@akgolf.test";
 
 export function coachCredentials(): { email: string; password: string } | null {
   const email = process.env.E2E_COACH_EMAIL?.trim() ?? "";
   const password = process.env.E2E_COACH_PASSWORD?.trim() ?? "";
-  if (!email || !password) return null;
-  return { email, password };
+  if (email && password) return { email, password };
+
+  // Samme konto som scripts/seed-screentest-coach.ts og e2e/i0-selvbetjent-gate
+  const screentestPw = process.env.SCREENTEST_PASSWORD?.trim() ?? "";
+  if (screentestPw) {
+    return { email: SCREENTEST_COACH_EMAIL, password: screentestPw };
+  }
+
+  return null;
 }
 
 export function playerCredentials(): { email: string; password: string } | null {
@@ -42,12 +58,12 @@ async function loginWith(
   });
 }
 
-/** Logg inn som coach (AgencyOS). Krever E2E_COACH_*. */
+/** Logg inn som coach (AgencyOS). */
 export async function loginAsCoach(page: Page): Promise<void> {
   const creds = coachCredentials();
   if (!creds) {
     throw new Error(
-      "loginAsCoach kalt uten E2E_COACH_EMAIL/PASSWORD — bruk hasCoachAuth() + test.skip",
+      "loginAsCoach: mangler credentials. Sett E2E_COACH_EMAIL/PASSWORD eller SCREENTEST_PASSWORD i .env.local",
     );
   }
   await loginWith(page, creds.email, creds.password);
