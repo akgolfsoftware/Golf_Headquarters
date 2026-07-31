@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style data-omelette-injected>html,body{background:transparent}</style><script data-omelette-injected>(()=>{{const W=new URLSearchParams(location.search).get("theme");if(W==="light"||W==="dark"){document.documentElement.dataset.theme=W}}{if(new URLSearchParams(location.search).get("_omthumb")==="1"){const W=(q)=>{const X=q.focus;if(!X)return;q.focus=function(H){X.call(this,{...H,preventScroll:true})}};W(HTMLElement.prototype);W(SVGElement.prototype);if(typeof MathMLElement!=="undefined"){W(MathMLElement.prototype)}const $=(q)=>{q.removeAttribute("autofocus");q.inert=true;if(!(q instanceof HTMLElement))q.removeAttribute("tabindex")};const z=(q)=>{if(q.hasAttribute("autofocus"))$(q);for(const X of q.querySelectorAll("[autofocus]")){$(X)}};z(document.documentElement);new MutationObserver((q)=>{for(const X of q){for(const H of X.addedNodes){if(H.nodeType===1)z(H)}}}).observe(document,{childList:true,subtree:true})}}{const W=()=>{try{if(document.querySelector('meta[name="color-scheme"]'))return;const $=getComputedStyle(document.documentElement).getPropertyValue("color-scheme").trim();if($&&$!=="normal")return;const z=(j)=>{if(!j)return null;const F=getComputedStyle(j).backgroundColor.match(/^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+%?))?\s*\)$/);if(!F)return null;const G=F[4]==null?1:parseFloat(F[4])/(F[4].endsWith("%")?100:1);if(G<0.99)return null;return[+F[1],+F[2],+F[3]]};const q=z(document.body)||z(document.documentElement);if(!q)return;const X=(j)=>{const F=j/255;return F<=0.04045?F/12.92:((F+0.055)/1.055)**2.4};const H=0.2126*X(q[0])+0.7152*X(q[1])+0.0722*X(q[2]);document.documentElement.style.setProperty("color-scheme",H<0.4?"dark":"light")}catch{}};if(document.readyState==="complete")W();else window.addEventListener("load",W)}var b=["https://claude.ai","https://preview.claude.ai","https://605a48cc-81e8-44bd-94d2-07d50a97370a.claudeusercontent.com"];var p=true;var u=30000;var d=3000;document.addEventListener("DOMContentLoaded",()=>{const W=window.Babel;const $="om-src-id";if(W&&W.registerPlugin&&!(W.availablePlugins&&W.availablePlugins[$])){W.registerPlugin($,({types:H})=>({visitor:{JSXOpeningElement(j,F){const G=j.node;if(G.name&&G.name.type==="JSXMemberExpression")return;for(let Q=0;Q<G.attributes.length;Q++){const V=G.attributes[Q];if(V.type==="JSXAttribute"&&V.name&&V.name.name==="data-om-id")return}const P=F.file&&F.file.opts&&F.file.opts.filename||"?";const R=G.loc&&G.loc.start;const J=`jsx:${P}:${G.start??0}:${R?R.line:0}:${R?R.column+1:0}`;G.attributes.push(H.jsxAttribute(H.jsxIdentifier("data-om-id"),H.stringLiteral(J)))}}}))}const z="om-text-extract";let q=false;if(p&&W&&W.registerPlugin&&!(W.availablePlugins&&W.availablePlugins[z])){const H=window.React;if(H&&H.useSyncExternalStore&&H.createElement){q=true;const j={};const F=new Set;let G=0;window.__omTextO=j;window.__omTextSet=(J)=>{for(const Q in J){const V=J[Q];if(V==null)delete j[Q];else j[Q]=V}G++;F.forEach((Q)=>Q())};const P=(J)=>{F.add(J);return()=>F.delete(J)};const R=()=>G;window.__OmT=function J(Q){H.useSyncExternalStore(P,R,R);return H.createElement("span",{"data-om-text":Q.i,className:"__om-t"},Q.i in j?j[Q.i]:Q.children)};W.registerPlugin(z,({types:J})=>{const Q={style:1,script:1,noscript:1,textarea:1,title:1,option:1,text:1,tspan:1,textPath:1};const V={placeholder:1,alt:1,title:1,label:1,"aria-label":1,"aria-description":1,"aria-placeholder":1};const Y=(K,M)=>J.logicalExpression("??",J.memberExpression(J.logicalExpression("||",J.memberExpression(J.identifier("window"),J.identifier("__omTextO")),J.objectExpression([])),J.stringLiteral(K),true),M);const Z=(K)=>K.file&&K.file.opts&&K.file.opts.filename||"?";const B=(K)=>K.file&&K.file.code||"";const U=(K,M)=>{const L=(D)=>D&&D.start!=null&&D.end!=null&&(D.type==="StringLiteral"||D.type==="TemplateLiteral"&&D.expressions.length===0)?[D.start,D.end]:null;const N=L(M);if(N)return N;if(M&&M.type==="Identifier"){const D=K.scope.getBinding(M.name);if(D&&D.constant&&D.path.node.type==="VariableDeclarator"){return L(D.path.node.init)}}return null};const x=(K,M,L)=>{const N=K.node;let D=false;const f=(w,A)=>{D=true;return J.jsxElement(J.jsxOpeningElement(J.jsxIdentifier("__OmT"),[J.jsxAttribute(J.jsxIdentifier("i"),J.stringLiteral(w))],false),J.jsxClosingElement(J.jsxIdentifier("__OmT")),[A],false)};const C=N.children.map((w)=>{if(w.type==="JSXText"){if(w.start==null||w.end==null)return w;const A=L.slice(w.start,w.end);const S=A.length-A.trimStart().length;const O=A.length-A.trimEnd().length;if(S+O>=A.length)return w;return f(`txt:${M}:${w.start+S}:${w.end-O}`,w)}if(w.type==="JSXExpressionContainer"){const A=U(K,w.expression);if(A)return f(`str:${M}:${A[0]}:${A[1]}`,w)}return w});if(D)N.children=C};return{visitor:{JSXOpeningElement(K,M){const L=K.node;const N=Z(M);const D={};for(let f=0;f<L.attributes.length;f++){const C=L.attributes[f];if(C.type!=="JSXAttribute"||!C.name)continue;const w=C.name.name;if(!V[w])continue;if(!C.value||C.value.type!=="StringLiteral")continue;if(C.value.start==null||C.value.end==null)continue;const A=`txt:${N}:${C.value.start}:${C.value.end}`;D[w]=A;C.value=J.jsxExpressionContainer(Y(A,J.stringLiteral(C.value.value)))}if(Object.keys(D).length){L.attributes.push(J.jsxAttribute(J.jsxIdentifier("data-om-text-attrs"),J.stringLiteral(JSON.stringify(D))))}},JSXElement(K,M){const L=K.node.openingElement;const N=L&&L.name&&L.name.name;if(N==="__OmT")return;if(typeof N==="string"&&Q[N])return;x(K,Z(M),B(M))},JSXFragment(K,M){x(K,Z(M),B(M))}}}})}}const X=q?["transform-react-jsx-source",$,z]:["transform-react-jsx-source",$];document.querySelectorAll('script[type="text/babel"],script[type="text/jsx"]').forEach((H,j)=>{const F=H.getAttribute("data-plugins")||"";const G=X.filter((P)=>F.indexOf(P)<0);if(G.length){H.setAttribute("data-plugins",F?`${F},${G.join(",")}`:G.join(","))}if(!H.hasAttribute("data-filename")){H.setAttribute("data-filename",H.getAttribute("src")||`inline-${j}`)}})});var I=window.parent;var g="not editable here — open the project in the Claude Design editor to save";var n=()=>Promise.resolve({persisted:false,noHost:true,reason:g});var k=n;var v="data/storage.json";var l=()=>{try{const W=new URL(document.baseURI);const $=W.pathname.match(/\/projects\/([^/]+)\/serve\//);if($)return $[1];return W.hostname.split(".")[0]||""}catch{return location.hostname.split(".")[0]||""}};var o=()=>{try{const W=new URL(document.baseURI);const $=W.pathname.indexOf("/serve/");if($>=0)return W.origin+W.pathname.slice(0,$+"/serve/".length)+v}catch{}return"./"+v};var E=null;var _=()=>{if(!E){E=fetch(o(),{cache:"no-store"}).then((W)=>{if(W.ok)return W.text();return W.status===404?"":null}).catch(()=>null).then((W)=>{if(W===null){E=null;return null}const $=new Map;if(!W)return $;let z;try{z=JSON.parse(W)}catch{console.warn("[omelette.storage] "+v+" is not valid JSON; treating the store as unreadable so a save cannot overwrite the "+"hand-edited bytes. Fix the JSON (or delete the file) to re-enable persistence.");E=null;return null}if(z===null||typeof z!=="object"||Array.isArray(z)){console.warn("[omelette.storage] "+v+" doesn't hold a JSON object; treating the store as unreadable so a save cannot "+"overwrite the hand-edited bytes. Make the top level a JSON object to re-enable persistence.");E=null;return null}const q=z;if("data"in q){const X=q.data;if(X===null||typeof X!=="object"||Array.isArray(X)){console.warn("[omelette.storage] "+v+' has a "data" field that is not a JSON object; treating the store as unreadable so a '+'save cannot overwrite the hand-edited bytes. Make "data" a JSON object to re-enable persistence.');E=null;return null}const H=q._meta;const j=H!==null&&typeof H==="object"?H.project:undefined;if(typeof j==="string"&&j!==""&&j!==l())return $;for(const F of Object.keys(X))$.set(F,X[F]);return $}for(const X of Object.keys(q)){if(X!=="_meta")$.set(X,q[X])}return $})}return E};var y=(W)=>k(v,JSON.stringify({_meta:{project:l(),version:1},data:Object.fromEntries(W)},null,2));var m=Promise.resolve();var T=(W)=>{const $=m.then(W);m=$.then(()=>{return},()=>{return});return $};var s=/sk-(?:ant-)?[A-Za-z0-9_-]{16,}|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9]{20,}|xox[a-z]-[A-Za-z0-9][A-Za-z0-9-]{9,}|AIza[0-9A-Za-z_-]{30,}|-----BEGIN [A-Z ]*PRIVATE KEY-----/;var a=/password|passwd|secret|api[_-]?key|access[_-]?token|auth[_-]?token|credential/i;var r=(W,$,z)=>{if(s.test($)||a.test(W)&&typeof z==="string"&&z.length>=8){console.warn('[omelette.storage] the value for "'+W+'" looks like a credential. The storage file is a plaintext project file — visible to '+"everyone with project access and copied when the project is duplicated. Do not store secrets here.")}};var c={persisted:false,reason:"could not load the existing store — not overwriting it"};var i={persisted:false,reason:"stored value changed since a failed read — re-read this key before saving"};var h=new Set;var t={get:(W)=>{if(typeof W!=="string"){return Promise.reject(new TypeError("storage.get: key must be a string"))}return T(_).then(($)=>{if($===null){h.add(W);return null}h.delete(W);if(!$.has(W))return null;const z=$.get(W);return z==null?null:JSON.parse(JSON.stringify(z))})},set:(W,$)=>{if(typeof W!=="string"){return Promise.reject(new TypeError("storage.set: key must be a string"))}let z;try{z=JSON.stringify($)}catch(X){return Promise.reject(new TypeError("storage.set: value must be JSON-serializable ("+String(X)+")"))}if(z===undefined){return Promise.reject(new TypeError("storage.set: value must be JSON-serializable"))}r(W,z,$);const q=JSON.parse(z);return T(()=>_().then((X)=>{if(X===null)return c;if(h.has(W)){if(X.has(W))return i;h.delete(W)}X.set(W,q);return y(X)}))},delete:(W)=>{if(typeof W!=="string"){return Promise.reject(new TypeError("storage.delete: key must be a string"))}return T(()=>_().then(($)=>{if($===null)return c;if(h.has(W)){if($.has(W))return i;h.delete(W)}$.delete(W);return y($)}))},keys:()=>T(_).then((W)=>W===null?[]:Array.from(W.keys()))};window.omelette={writeFile:(W,$)=>k(W,$).then((z)=>{if(!z.persisted&&!z.noHost){throw new Error(z.reason||"write failed")}}),storage:t};if(I&&I!==window){const W=(J,Q)=>{try{I.postMessage({__omelette_log:true,type:J,data:Q},"*")}catch{}};["log","warn","error"].forEach((J)=>{const Q=console[J];console[J]=(...V)=>{const Y=V.map((Z)=>{try{return typeof Z==="object"?JSON.stringify(Z):String(Z)}catch{try{return String(Z)}catch{return"[unstringifiable]"}}}).join(" ");W(J,Y);Q.apply(console,V)}});window.addEventListener("error",(J)=>{const Q=J.target;if(Q&&Q!==window&&Q.tagName){const V=Q.src||Q.href||"";W("resource_error",`${Q.tagName} failed to load: ${V}`)}else{W("error",`${J.message||"Unknown error"} at ${J.filename||"?"}:${J.lineno||0}:${J.colno||0}`)}},true);window.addEventListener("unhandledrejection",(J)=>{const Q=J.reason;const V=Q instanceof Error?`${Q.message} ${Q.stack}`:String(Q);W("error",`Unhandled rejection: ${V}`)});window.addEventListener("click",(J)=>{if(J.defaultPrevented||J.button!==0)return;if(J.metaKey||J.ctrlKey||J.shiftKey||J.altKey)return;const Q=J.composedPath?J.composedPath():[];const V=["button","input","select","textarea","summary","label"];let Y=null;for(const x of Q){if(!(x instanceof Element))continue;if(x.localName==="a"){if(!(x instanceof HTMLAnchorElement))return;Y=x;break}if(V.indexOf(x.localName)!==-1)return}if(!Y)return;if(Y.isContentEditable)return;const Z=Y.closest("[contenteditable]");if(Z&&Z.getAttribute("contenteditable")!=="false")return;const B=(Y.getAttribute("target")||"_self").toLowerCase();if(B!=="_self"&&B!=="_top"&&B!=="_parent")return;let U;try{U=new URL(Y.href)}catch{return}if(U.protocol!=="http:"&&U.protocol!=="https:")return;if(location.origin==="null")return;if(U.origin===location.origin)return;J.preventDefault();window.open(U.href,"_blank","noopener,noreferrer")});const $=()=>{try{I.postMessage({type:"omelette:height",height:document.documentElement.scrollHeight},"*")}catch{}};if(window.ResizeObserver)new ResizeObserver($).observe(document.documentElement);const z=()=>{$();if(!document.querySelector('script[type="text/babel"],script[type="text/jsx"]'))return;const J=()=>document.getElementById("root")||document.querySelector("body > div[id]");const Q=J()?.firstElementChild??null;let V=0;const Y=()=>{const Z=J();if(Z&&Z.firstElementChild!==Q||++V>30){$();return}setTimeout(Y,100)};setTimeout(Y,100)};if(document.readyState==="complete")z();else window.addEventListener("load",z);const q={};let X=0;const H=(J)=>new Promise((Q,V)=>{if(!b.length){V(new Error("claude.complete: no parent origin"));return}const Y=`c${++X}`;const Z=()=>setTimeout(()=>{delete q[Y];V(new Error(`claude.complete: no data for ${u/1000}s`))},u);const B=Z();q[Y]={resolve:Q,reject:V,text:"",t:B,arm:Z};try{for(const U of b){I.postMessage({__om_api:true,id:Y,body:J},U)}}catch(U){clearTimeout(B);delete q[Y];V(U)}});const j=8;const F=async(J,Q)=>{if(!Array.isArray(J.messages)){throw new Error("claude.complete: tools require a messages array")}const V=J.messages.slice();const Y={...J,tools:J.tools.map((U)=>{if(U===null||typeof U!=="object")return U;const x={};for(const K of Object.keys(U)){if(typeof U[K]!=="function")x[K]=U[K]}return x})};const Z=Y.tool_choice;const B=Z!=null&&(Z.type==="any"||Z.type==="tool")?{...Y,tool_choice:Z.disable_parallel_tool_use!==undefined?{type:"auto",disable_parallel_tool_use:Z.disable_parallel_tool_use}:{type:"auto"}}:Y;for(let U=0;U<j;U++){const x=await H({...U===0?Y:B,messages:V});const K=x.message;const M=K&&Array.isArray(K.content)?K.content:null;const L=M?M.filter((D)=>D?.type==="tool_use"):[];if(K?.stop_reason!=="tool_use"||L.length===0){return x.text}const N=[];for(const D of L){const f=Q.get(D.name);if(!f){N.push({type:"tool_result",tool_use_id:D.id,content:`no handler for tool "${D.name}"`,is_error:true});continue}try{const C=await f(D.input);const w=typeof C==="string"?C:R(C)??"";N.push({type:"tool_result",tool_use_id:D.id,content:w})}catch(C){N.push({type:"tool_result",tool_use_id:D.id,content:String(C?.message??C??"tool handler failed"),is_error:true})}}V.push({role:"assistant",content:M},{role:"user",content:N})}throw new Error(`claude.complete: exceeded ${j} tool turns`)};window.claude={complete(J){const Q=J;if(Q!==null&&typeof Q==="object"&&Array.isArray(Q.tools)&&Q.tools.some((V)=>V!==null&&typeof V==="object"&&typeof V.run==="function")){const V=new Map;for(const Y of Q.tools){if(Y!==null&&typeof Y==="object"&&typeof Y.run==="function"){V.set(String(Y.name),Y.run)}}return F(Q,V)}return H(J).then((V)=>V.text)}};const G={};let P=0;k=(J,Q)=>new Promise((V)=>{if(!b.length){V({persisted:false,noHost:true,reason:g});return}const Y=`f${++P}`;const Z=setTimeout(()=>{delete G[Y];V({persisted:false,noHost:true,reason:g})},d);G[Y]={settle:V,t:Z};try{for(const B of b){I.postMessage({__om_file:true,id:Y,op:"write",path:J,content:Q},B)}}catch{clearTimeout(Z);delete G[Y];V({persisted:false,noHost:true,reason:g})}});const R=(J)=>{try{return JSON.stringify(J)}catch{return JSON.stringify(String(J))}};window.addEventListener("message",(J)=>{if(b.indexOf(J.origin)<0)return;if(J.source!==I)return;const Q=J.data;if(!Q)return;if(Q.type==="omelette-preview-refresh"){if(typeof Q.token!=="string"||!/^[0-9a-f.-]+(\.(rc|pr-[0-9]+))?(\.[0-9]+\.[0-9a-f]{16})?$/.test(Q.token))return;const Z=Math.max(1,Math.floor((Q.expiresAt||0)-Date.now()/1000));document.cookie="__Host-omelette-preview="+Q.token+"; Path=/; Secure; SameSite=None; Partitioned; Max-Age="+Z;return}if(Q.__om_file_r){const Z=G[Q.id];if(!Z)return;clearTimeout(Z.t);delete G[Q.id];Z.settle(Q.ok?{persisted:true}:{persisted:false,reason:Q.error||"write failed"});return}if(Q.__om_api_r){const Z=q[Q.id];if(!Z)return;if(Q.error!=null){clearTimeout(Z.t);delete q[Q.id];Z.reject(new Error(Q.error));return}if(Q.chunk!=null){clearTimeout(Z.t);Z.t=Z.arm();Z.text+=Q.chunk;return}if(Q.done){clearTimeout(Z.t);delete q[Q.id];Z.resolve({text:Q.text!=null?Q.text:Z.text,message:Q.message});return}return}if(!Q.__om_eval)return;const V=Q;const Y=(Z)=>{J.source.postMessage({...Z,__om_eval_r:1,id:V.id},J.origin)};try{const Z=(0,eval)(V.code);if(Z&&typeof Z.then==="function"){Z.then((B)=>Y({ok:1,v:R(B)}),(B)=>Y({ok:0,e:String(B)}))}else{Y({ok:1,v:R(Z)})}}catch(Z){Y({ok:0,e:String(Z)})}})}})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="AgencyOS · Kø" description="Produktets hjerte: blandet kø av coaching og drift, med proveniens per rad, snooze med synlig utsatt-tilstand, artefaktpanel og festet komponist." -->
+<helmet><script src="./ds-base.js"></script><style>html,body{margin:0;padding:0}body{background:var(--bg)}a{color:var(--fg)}a:hover{color:var(--accent-fg)}[data-rsp=rail]{display:flex;flex:none}[data-rsp=panel]{display:flex}[data-rsp=tab]{display:none}@media(max-width:1180px){[data-rsp=panel]{display:none}}@media(max-width:880px){[data-rsp=rail]{display:none}[data-rsp=pad]{padding:16px 14px 24px}[data-rsp=tab]{display:block}[data-rsp=sbar]{display:none}}</style></helmet>
+<div style="display:flex;min-height:100vh;background:var(--bg);color:var(--fg);font-family:var(--ui);font-size:13.5px;-webkit-font-smoothing:antialiased">
+<div data-rsp="rail"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Rail" items="{{ railItems }}" current="{{ nav }}" onNavigate="{{ go }}" initials="AK" hint-size="64px,100vh"></x-import></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Topbar" theme="{{ theme }}" onToggleTheme="{{ toggleTheme }}" searchPlaceholder="Søk i køen, stallen og økter" hint-size="100%,56px"></x-import>
+<div style="flex:1;min-width:0;display:flex;align-items:stretch">
+<main data-rsp="pad" style="flex:1;min-width:0;padding:24px 28px 32px;display:flex;flex-direction:column;gap:14px">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.PageHeader" kicker="Onsdag 30. juli · 11:04" title="Kø" lead="Sju saker, sortert på hva som taper mest på å vente. Coaching og drift i samme liste — det er samme menneske med samme oppmerksomhet." meta="{{ headerMeta }}" actions="{{ headerActions }}" dataOdId="page-header" hint-size="100%,120px"></x-import>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.SegmentControl" options="{{ filtre }}" value="{{ filter }}" onChange="{{ setFilter }}" dataOdId="nav-ko-filter" hint-size="320px,44px"></x-import>
+<div style="display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ saker }}" as="s" hint-placeholder-count="5">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.QueueCard" first="{{ s.first }}" sender="{{ s.sender }}" kind="{{ s.kind }}" age="{{ s.age }}" status="{{ s.status }}" statusTone="{{ s.statusTone }}" title="{{ s.title }}" primaryLabel="{{ s.primaryLabel }}" onPrimary="{{ s.onPrimary }}" secondaryLabel="{{ s.secondaryLabel }}" onSecondary="{{ s.onSecondary }}" onSnooze="{{ s.onSnooze }}" snoozedUntil="{{ s.snoozedUntil }}" onUnsnooze="{{ s.onUnsnooze }}" provenance="{{ s.provenance }}" provenanceOpen="{{ s.provenanceOpen }}" state="{{ dataState }}" dataOdId="queue-card" hint-size="100%,140px">{{ s.body }}</x-import>
+</sc-for>
+</div>
+<sc-if value="{{ ingenTreff }}" hint-placeholder-val="{{ false }}">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.EmptyState" title="Ingen saker i dette filteret" align="start" hint-size="100%,140px">Bytt til «Alle» for å se hele køen — eller lukk skjermen med god samvittighet.</x-import>
+</sc-if>
+</main>
+<aside data-rsp="panel" style="width:320px;flex:none;border-left:1px solid var(--border);background:var(--surface);padding:16px;flex-direction:column;gap:12px;box-sizing:border-box">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span style="font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">artefakt · ukeplan</span><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Button" variant="ghost" size="sm" dataOdId="cta-panel-close" hint-size="60px,44px">Lukk</x-import></div>
+<div><h2 style="font-family:var(--disp);font-size:16px;font-weight:600;letter-spacing:-.01em;margin:0 0 6px;line-height:1.25">Uke 31 · Emma Sæther</h2><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.StatusBadge" tone="info" dot="{{ true }}" hint-size="140px,20px">venter godkjenning</x-import></div>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.KeyValueGrid" items="{{ planPairs }}" columns="{{ 1 }}" hint-size="100%,140px"></x-import>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Divider" label="øktene" align="start" hint-size="100%,24px"></x-import>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.ListGroup" as="div" dataOdId="list-okter" hint-size="100%,200px">
+<sc-for list="{{ okter }}" as="o" hint-placeholder-count="4">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.ListRow" as="div" leading="none" title="{{ o.title }}" meta="{{ o.meta }}" trailing="value" value="{{ o.right }}" dataOdId="row-okt" hint-size="100%,56px"></x-import>
+</sc-for>
+</x-import>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:8px"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.ProvenanceDisclosure" agent="Plan-vakten" data="Periode P3 SPES · testlogg 12.07 · ukevolum 6 t forrige uke" rule="Aldersregel 15 år: maks 8 t/uke. Invariant 7: TEK 30–45 %." run="{{ planRun }}" hint-size="100%,40px"></x-import><div style="display:flex;gap:8px;flex-wrap:wrap"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Button" variant="primary" size="sm" onClick="{{ godkjenn }}" dataOdId="cta-panel-godkjenn" hint-size="96px,44px">Godkjenn</x-import><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Button" variant="ghost" size="sm" dataOdId="cta-panel-alt" hint-size="86px,44px">Åpne alt</x-import></div></div>
+</aside>
+</div>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Composer" context="{{ kontekst }}" onContextToggle="{{ toggleCtx }}" onSubmit="{{ spor }}" placeholder="Spør om en sak i køen — «hvorfor foreslo Plan-vakten dette?»" hint-size="100%,72px"></x-import>
+<div data-rsp="sbar"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.StatusBar" items="{{ statusPunkter }}" hint-size="100%,26px"></x-import></div>
+<div data-rsp="tab"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.TabBar" items="{{ tabItems }}" current="{{ tab }}" onNavigate="{{ setTab }}" hint-size="100%,56px"></x-import></div>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:860},&quot;dataState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;content&quot;,&quot;loading&quot;,&quot;empty&quot;,&quot;error&quot;],&quot;default&quot;:&quot;content&quot;,&quot;tsType&quot;:&quot;\&quot;content\&quot; | \&quot;loading\&quot; | \&quot;empty\&quot; | \&quot;error\&quot;&quot;,&quot;section&quot;:&quot;Demo&quot;},&quot;apneProveniens&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Kø&quot;},&quot;initialTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;\&quot;light\&quot; | \&quot;dark\&quot;&quot;,&quot;section&quot;:&quot;Tema&quot;}}">
+class Component extends DCLogic {
+  state = { theme: "light", nav: "ko", tab: "ko", filter: "Alle 7", ctx: { emma: true }, utsatt: { markus: "fredag 08:00" }, gjort: {} };
+
+  componentDidMount() {
+    let t = null;
+    try { t = localStorage.getItem("akhq-theme-agencyos"); } catch (e) {}
+    this.applyTheme(t || this.props.initialTheme || "light", false);
+    this.waitNs(0);
+  }
+
+  waitNs(n) {
+    const ns = window.AKGolfHQClaudePaper_605a48;
+    if (ns && ns.RailIcons && ns.QueueCard) { this.forceUpdate(); return; }
+    if (n < 60) setTimeout(() => this.waitNs(n + 1), 100);
+  }
+
+  applyTheme(t, persist) {
+    const v = t === "dark" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", v);
+    if (persist) { try { localStorage.setItem("akhq-theme-agencyos", v); } catch (e) {} }
+    this.setState({ theme: v });
+  }
+
+  /* Snooze skjuler ikke: saken beholder plassen sin med synlig «utsatt til».
+     Beslutning [natt 1], 30.07 — en rad som forsvinner stille blir ikke stolt på. */
+  utsett(id, til) { this.setState((s) => ({ utsatt: Object.assign({}, s.utsatt, { [id]: til }) })); }
+  hentTilbake(id) { this.setState((s) => { const u = Object.assign({}, s.utsatt); delete u[id]; return { utsatt: u }; }); }
+  fullfor(id) { this.setState((s) => ({ gjort: Object.assign({}, s.gjort, { [id]: true }) })); }
+
+  kilde() {
+    return [
+      { id: "emma", sender: "Plan-vakten", kind: "coaching", age: "4 t", title: "Godkjenn ukeplan for Emma Sæther",
+        body: "Uke 31 · 4 økter · 6,5 t · TEK 38 % · invariantene grønne",
+        primaryLabel: "Godkjenn", secondaryLabel: "Avvis", provenanceOpen: true,
+        provenance: { agent: "Plan-vakten", data: "Periode P3 SPES · testlogg 12.07 · ukevolum 6 t forrige uke", rule: "Aldersregel 15 år: maks 8 t/uke. Invariant 7: TEK 30–45 %.", run: { at: "04:02", duration: "1,8 s", id: "kj-8841" } } },
+      { id: "wang", sender: "Faktura-vakten", kind: "drift", age: "12 d", status: "over forfall", statusTone: "warn",
+        title: "WANG-fakturaen er 12 dager over forfall — 48 400 kr",
+        body: "Purring nr. 2 er skrevet og klar til sending",
+        primaryLabel: "Send purring", secondaryLabel: "Åpne faktura",
+        provenance: { agent: "Faktura-vakten", data: "Faktura 2026-0412 · forfall 18.07 · purring 1 sendt 24.07", rule: "Purring 2 sendes 10 dager etter forfall.", run: { at: "04:12", duration: "0,4 s", id: "kj-8842" } } },
+      { id: "markus", sender: "Markus", kind: "coaching", age: "2 d", title: "Øktforespørsel: junior gruppe 3, torsdag 16:00",
+        body: "3 deltakere · Mulligan sim 2 · kollisjon med gruppetime",
+        primaryLabel: "Godkjenn", secondaryLabel: "Avvis" },
+      { id: "attest", sender: "Compliance-vakten", kind: "drift", age: "3 d", title: "Politiattest mangler for ny trener (Sofie L.)",
+        body: "Kan ikke settes på økter med mindreårige før attesten er registrert",
+        primaryLabel: "Send krav", secondaryLabel: "Åpne sak",
+        provenance: { agent: "Compliance-vakten", data: "Ansatt 12.07 · attest ikke registrert · 4 økter planlagt", rule: "Attest kreves før første økt med mindreårige.", run: { at: "04:14", duration: "0,3 s", id: "kj-8843" } } },
+      { id: "caddie", sender: "Caddie", kind: "coaching", age: "1 d", title: "Utkast til periodeplan for Jonas Hveem — les gjennom",
+        body: "P4 TURNERING · 6 uker · bygget på testloggen 12.07 og turneringskalenderen",
+        primaryLabel: "Åpne utkast", secondaryLabel: "Avvis",
+        provenance: { agent: "Caddie", data: "Testlogg 12.07 · WAGR-kalender · lastavvik +1,5 t", rule: "Periodeskifte foreslås 6 uker før første turnering." } },
+      { id: "samtykke", sender: "Compliance-vakten", kind: "drift", age: "5 d", title: "Samtykke for Mia Berg utløper 14. august",
+        body: "Bilde- og videobruk i treningsanalyse · foresatt varslet 25.07",
+        primaryLabel: "Send påminnelse", secondaryLabel: "Åpne samtykke",
+        provenance: { agent: "Compliance-vakten", data: "Signert 14.08.2025 · varsel sendt 25.07", rule: "Samtykke varsles 30 dager før utløp." } },
+      { id: "gfgk", sender: "Anders", kind: "drift", age: "1 d", title: "Ring GFGK om klubbavtalen for 2027",
+        body: "Lagt inn manuelt fra møtereferat 29.07", primaryLabel: "Marker gjort", provenance: {} }
+    ];
+  }
+
+  renderVals() {
+    const ns = window.AKGolfHQClaudePaper_605a48 || {};
+    const I = ns.RailIcons || {};
+    const B = ns.Button;
+    const filter = this.state.filter;
+    const alle = this.kilde().filter((s) => !this.state.gjort[s.id]);
+    const antall = { coaching: alle.filter((s) => s.kind === "coaching").length, drift: alle.filter((s) => s.kind === "drift").length };
+    const filtre = ["Alle " + alle.length, "Coaching " + antall.coaching, "Drift " + antall.drift, "Utsatt " + Object.keys(this.state.utsatt).length];
+    const valgt = filtre.indexOf(filter) === -1 ? filtre[0] : filter;
+    const utsattId = (id) => this.state.utsatt[id];
+    let liste = alle;
+    if (valgt.indexOf("Coaching") === 0) liste = alle.filter((s) => s.kind === "coaching");
+    else if (valgt.indexOf("Drift") === 0) liste = alle.filter((s) => s.kind === "drift");
+    else if (valgt.indexOf("Utsatt") === 0) liste = alle.filter((s) => utsattId(s.id));
+    /* Utsatte saker synker til bunnen, men forlater aldri lista. */
+    liste = liste.slice().sort((a, b) => (utsattId(a.id) ? 1 : 0) - (utsattId(b.id) ? 1 : 0));
+    const saker = liste.map((s, i) => Object.assign({}, s, {
+      first: i === 0 && !utsattId(s.id),
+      snoozedUntil: utsattId(s.id),
+      provenanceOpen: !!s.provenanceOpen && i === 0 && !utsattId(s.id) && this.props.apneProveniens !== false,
+      onPrimary: () => this.fullfor(s.id),
+      onSecondary: () => this.fullfor(s.id),
+      onSnooze: () => this.utsett(s.id, "fredag 08:00"),
+      onUnsnooze: () => this.hentTilbake(s.id)
+    }));
+    const lenke = (id, tekst) => B ? React.createElement(B, { variant: "ghost", size: "sm", dataOdId: "cta-" + id }, tekst) : null;
+    return {
+      theme: this.state.theme,
+      nav: this.state.nav,
+      tab: this.state.tab,
+      dataState: this.props.dataState || "content",
+      filter: valgt,
+      filtre: filtre,
+      saker: saker,
+      ingenTreff: saker.length === 0,
+      headerMeta: alle.length + " saker",
+      headerActions: lenke("ko-historikk", "Historikk"),
+      setFilter: (v) => this.setState({ filter: v }),
+      toggleTheme: () => this.applyTheme(this.state.theme === "dark" ? "light" : "dark", true),
+      go: (id) => this.setState({ nav: id }),
+      setTab: (id) => this.setState({ tab: id }),
+      godkjenn: () => this.fullfor("emma"),
+      spor: () => {},
+      toggleCtx: (id) => this.setState((s) => ({ ctx: Object.assign({}, s.ctx, { [id]: !s.ctx[id] }) })),
+      kontekst: [
+        { id: "emma", label: "Emma S.", active: !!this.state.ctx.emma },
+        { id: "u31", label: "uke 31", active: !!this.state.ctx.u31 },
+        { id: "ko", label: "køen", active: !!this.state.ctx.ko }
+      ],
+      railItems: [
+        { id: "hjem", label: "Hjem", icon: I.hjem },
+        { id: "ko", label: "Kø", icon: I.ko },
+        { id: "stall", label: "Stall", icon: I.stall },
+        { id: "kalender", label: "Kalender", icon: I.idag },
+        { id: "plan", label: "Workbench", icon: I.plan },
+        { id: "alt", label: "Alt", icon: I.analyse }
+      ],
+      tabItems: [
+        { id: "hjem", label: "Hjem", icon: I.hjem },
+        { id: "ko", label: "Kø", icon: I.ko },
+        { id: "stall", label: "Stall", icon: I.stall },
+        { id: "ai", label: "Agenter", icon: I.ai },
+        { id: "alt", label: "Alt", icon: I.analyse }
+      ],
+      statusPunkter: [
+        { label: "v2.4 · P3 SPES" },
+        { label: "agentfeil", value: 1, tone: "dn", onClick: () => {} },
+        { label: "MRR", value: "184 200", onClick: () => {} },
+        { label: "innsikter", value: 6, onClick: () => {} },
+        { label: "CANON", value: "✓", tone: "up" }
+      ],
+      planPairs: [
+        { key: "Periode", value: "P3 SPESIALISERING" },
+        { key: "Ukevolum", value: "6,5 t av 5–8 t", mono: true },
+        { key: "TEK-andel", value: "38 % (30–45)", mono: true },
+        { key: "Aldersregel", value: "innenfor · 15 år" }
+      ],
+      planRun: { at: "04:02", duration: "1,8 s", id: "kj-8841" },
+      okter: [
+        { title: "TEK tee", meta: "man 31.07 · 07:00 · 90 min · låst anker", right: "90m" },
+        { title: "SLAG nærspill", meta: "ons 02.08 · 16:00 · gjentakende", right: "60m" },
+        { title: "SPILL 9 hull", meta: "tor 03.08 · 15:00 · 3 deltakere", right: "120m" },
+        { title: "FYS styrke", meta: "fre 04.08 · 17:00", right: "60m" }
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>
