@@ -25,6 +25,7 @@ import {
   syncNgfSchedule,
 } from "@/lib/turneringer/sync";
 import { runDedupePlayerNames } from "@/lib/turneringer/dedupe-player-names";
+import { runNorgeMandagSync } from "@/lib/turneringer/norge-mandag-sync";
 import { prisma } from "@/lib/prisma";
 import { syncPgaSkillRatings, syncPgaPuttDistance, syncPgaApproach } from "@/lib/stats/pga-sync";
 import {
@@ -84,6 +85,8 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "turneringer-ngf": syncNgfSchedule,
   // Navnevask PublicPlayer — kun formateringsvarianter (apply). Middelnavn = manuell.
   "dedupe-player-names": () => runDedupePlayerNames(prisma, { apply: true }),
+  // Mandag: NOR-spillerliste + GolfBox-kalender + link + dedupe
+  "norge-mandag-sync": runNorgeMandagSync,
   // /stats/pga sync (Fase 2 — ukentlig)
   "pga-skill-ratings": syncPgaSkillRatings,
   "pga-putt-distance": syncPgaPuttDistance,
