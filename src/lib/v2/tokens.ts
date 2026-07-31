@@ -3,6 +3,9 @@
  * Verdiene bor som --v2-* i src/app/globals.css: LYS default på :root,
  * mørk via html[data-v2-tema="dark"]. Komponenter bruker T for inline styles.
  * Endres kun ved designbeslutning.
+ *
+ * C smalt (2026-07-31): T.handling = «Én ting nå»-monopolet (#D97757).
+ * Maks én gang per skjerm. Ikke bytt ut forest/lime for vanlige knapper.
  */
 export const T = {
   // Flater — lys default; mørk via data-v2-tema="dark"
@@ -30,6 +33,10 @@ export const T = {
   onForest: "#FFFFFF",
   lime: "var(--v2-lime)",
   onLime: "var(--v2-on-lime)",
+  // Primærhandling-monopol («Én ting nå») — C smalt, låst 2026-07-31
+  handling: "var(--v2-handling)",
+  onHandling: "var(--v2-on-handling)",
+  handlingSoft: "var(--v2-handling-soft)",
   up: "var(--v2-up)",
   down: "var(--v2-down)",
   warn: "var(--v2-warn)",

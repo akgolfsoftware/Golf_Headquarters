@@ -25,6 +25,27 @@ export async function acceptAndApplyPlanAction(
 
   try {
     const exec = await executePlanAction(actionId);
+
+    // FØR/UNDER/ETTER: sjekkpunkt + fangstId fra suggestion-JSON ved godkjenning.
+    const sug = (
+      coachNoteSuggestion ??
+      (action.suggestion as Record<string, unknown> | null)
+    ) as Record<string, unknown> | null;
+    const sjekkpunkt =
+      typeof sug?.sjekkpunkt === "string" && sug.sjekkpunkt.trim()
+        ? sug.sjekkpunkt.trim().slice(0, 2000)
+        : typeof sug?.checkpoint === "string" && sug.checkpoint.trim()
+          ? sug.checkpoint.trim().slice(0, 2000)
+          : exec.summary?.trim()
+            ? exec.summary.trim().slice(0, 2000)
+            : null;
+    const fangstId =
+      typeof sug?.fangstId === "string" && sug.fangstId.trim()
+        ? sug.fangstId.trim()
+        : typeof sug?.recordingId === "string" && sug.recordingId.trim()
+          ? sug.recordingId.trim()
+          : null;
+
     await prisma.planAction.update({
       where: { id: actionId },
       data: {
@@ -32,6 +53,8 @@ export async function acceptAndApplyPlanAction(
         ...(coachNoteSuggestion
           ? { suggestion: coachNoteSuggestion as Prisma.InputJsonValue }
           : {}),
+        ...(sjekkpunkt ? { sjekkpunkt } : {}),
+        ...(fangstId ? { fangstId } : {}),
         updatedAt: new Date(),
       },
     });

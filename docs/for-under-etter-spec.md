@@ -37,7 +37,12 @@ Ting briefen ikke nevner, som jeg fant:
 
 ## 2. Designsystem-beslutning: C, smalt definert
 
+**LÅST 2026-07-31 av Anders** (samme beslutning som `docs/gjenstaaende-plan-2026-07-31.md` §1.1).
+
 **Valget er C (hybrid), men med en mye smalere migrering enn briefen legger opp til.**
+
+Claude Paper er designfasit i Open Design / speil — men **appen** får kun det som står under
+punkt 1–5 her til piloten er evaluert. Full Paper-port til `src/` er en senere beslutning.
 
 Begrunnelse:
 
@@ -60,6 +65,8 @@ C, slik jeg definerer det:
    ene primærhandling. Verdi `#D97757` (Claude Papers accent). Den er varm og
    står i tydelig kontrast til lime, så «én ting nå» blir umiddelbart lesbar
    uten å røre noe eksisterende.
+   **I kode (2026-07-31):** `--v2-handling` + alias `--handling` i `globals.css`,
+   `T.handling` i `src/lib/v2/tokens.ts`.
 4. **Regel:** `--handling` får forekomme maksimalt én gang per skjerm. Håndheves
    av en ESLint-regel eller en enkel gate i `npm run verify` — ellers forfaller
    den til nok en merkevarefarge innen tre uker.

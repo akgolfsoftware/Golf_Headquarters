@@ -1654,6 +1654,11 @@ model PlanAction {
   // Sporbarhet: hvilke rader/regler/terskler som utløste forslaget. Nullbar —
   // gamle forslag har ingen provenance.
   provenance Json?
+  // Sjekkpunktet er tråden mellom ETTER og neste FØR — skrives ved godkjenning,
+  // leses av Før-kortet. Nullbar: gamle forslag har ingen.
+  sjekkpunkt String?
+  // Hvilken fangst (opptak) forslaget kom fra. Nullbar av samme grunn.
+  fangstId   String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -1664,6 +1669,41 @@ model PlanAction {
   @@index([userId, status, createdAt])
   @@index([coachId, status, createdAt])
   @@map("plan_actions")
+}
+
+// Samtykke til lydopptak. Hard gate: uten status GITT kan ingen fangst starte.
+// Bevisst uten @relation til User (jf. gotchas: nye modeller holdes isolerte) —
+// fremmednøkkelen mot users(id) med ON DELETE CASCADE ligger i databasen.
+model LydSamtykke {
+  id            String    @id @default(cuid())
+  // Spilleren opptaket gjelder.
+  userId        String
+  // GITT | TRUKKET | VENTER
+  status        String    @default("VENTER")
+  // SELV (myndig) | FORESATT
+  gittAv        String
+  // Verifisert e-post til foresatt. Null når gittAv = SELV.
+  foresattEpost String?
+  gittAt        DateTime?
+  trukketAt     DateTime?
+  // Ordlyden det faktisk ble sagt ja til, lagret som kopi. Aldri en peker til
+  // en tekst som kan endres i ettertid.
+  ordlyd        String
+  createdAt     DateTime  @default(now())
+
+  @@unique([userId])
+  @@map("lyd_samtykker")
+}
+
+// «Sist sjekket av meg» — skrives kun når Tråd-fanen åpnes, ikke profilen.
+model TradApning {
+  id        String   @id @default(cuid())
+  coachId   String
+  spillerId String
+  apnetAt   DateTime @default(now())
+
+  @@unique([coachId, spillerId])
+  @@map("trad_apninger")
 }
 
 model AgentRun {
@@ -2721,6 +2761,9 @@ model Group {
   // A1 | A2 | A3 | A4 | A5
   level           String?
   coachId         String?
+  // kontrakt | program | adhoc — datakilde for GroupCards tre varianter.
+  // NB: GroupSchedule.kind er et annet, urelatert felt (SAMLING/HELDAGSSAMLING).
+  kind            String   @default("adhoc")
   maxParticipants Int?     // max deltagere for gruppe-treninger
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt

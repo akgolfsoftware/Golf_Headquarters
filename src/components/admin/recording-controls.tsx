@@ -32,6 +32,13 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import { LydSamtykkePilotPanel } from "@/components/admin/lyd-samtykke-pilot-panel";
+import {
+  antallVentendeChunks,
+  fjernChunkFraKo,
+  leggChunkIKo,
+  tomChunkKo,
+} from "@/lib/offline-queue/recording-chunk-queue";
 
 type Mode = "idle" | "recovery" | "recording" | "paused" | "finalizing" | "behandler";
 
@@ -40,7 +47,12 @@ type Banner = {
   text: string;
 } | null;
 
-export type SpillerValg = { id: string; navn: string };
+export type SpillerValg = {
+  id: string;
+  navn: string;
+  /** true bare når LydSamtykke.status = GITT. Uten → Start-knapp skjules. */
+  lydSamtykkeGitt: boolean;
+};
 
 type Props = {
   recordingId: string | null;
@@ -253,38 +265,67 @@ export function RecordingControls({
     [router],
   );
 
+  async function lastOppChunkHttp(
+    recordingId: string,
+    idx: number,
+    blob: Blob,
+  ): Promise<{ ok: boolean }> {
+    const form = new FormData();
+    form.append("recordingId", recordingId);
+    form.append("chunkIdx", String(idx));
+    form.append("chunk", blob, `chunk-${idx}.webm`);
+    try {
+      const res = await fetch("/api/recording/upload-chunk", {
+        method: "POST",
+        body: form,
+      });
+      return { ok: res.ok };
+    } catch {
+      return { ok: false };
+    }
+  }
+
   function uploadChunk(idx: number, blob: Blob): Promise<void> {
     const id = aktivIdRef.current;
     if (!id) return Promise.resolve();
     return new Promise<void>((resolve) => {
       uploadQueueRef.current = uploadQueueRef.current.then(async () => {
-        const form = new FormData();
-        form.append("recordingId", id);
-        form.append("chunkIdx", String(idx));
-        form.append("chunk", blob, `chunk-${idx}.webm`);
+        // 1) Lokal kø først — mistet dekning skal ikke miste biten.
         try {
-          const res = await fetch("/api/recording/upload-chunk", {
-            method: "POST",
-            body: form,
-          });
-          if (!res.ok) {
-            const j = (await res.json().catch(() => ({}))) as { error?: string };
-            setBanner({
-              tone: "warn",
-              text: `Klarte ikke å lagre chunk ${idx} — prøver igjen ved neste. (${j.error ?? res.status})`,
-            });
-          } else {
-            setChunkInfo(`Lagret chunk ${idx + 1} (${formatTimer(elapsedSec)})`);
-          }
+          await leggChunkIKo(id, idx, blob);
         } catch (err) {
-          console.error("[recording] upload feilet", err);
+          console.error("[recording] IDB-kø feilet", err);
+        }
+        // 2) Prøv nett
+        const res = await lastOppChunkHttp(id, idx, blob);
+        if (res.ok) {
+          await fjernChunkFraKo(id, idx).catch(() => undefined);
+          setChunkInfo(`Lagret chunk ${idx + 1} (${formatTimer(elapsedSec)})`);
+        } else {
+          const vent = await antallVentendeChunks(id).catch(() => 0);
           setBanner({
             tone: "warn",
-            text: "Kobling avbrutt — prøver igjen automatisk.",
+            text:
+              vent > 0
+                ? `${vent} lydbiter venter på opplasting — prøver igjen automatisk.`
+                : "Kobling avbrutt — prøver igjen automatisk.",
           });
-        } finally {
-          resolve();
         }
+        // 3) Tøm resten av køen for denne recording
+        try {
+          const flush = await tomChunkKo(id, lastOppChunkHttp);
+          if (flush.gjenstaar > 0) {
+            setBanner({
+              tone: flush.gittOpp ? "error" : "warn",
+              text: flush.gittOpp
+                ? `${flush.gjenstaar} lydbiter kunne ikke lastes opp. Sjekk nett og prøv «Avslutt» på nytt.`
+                : `${flush.gjenstaar} lydbiter venter på opplasting.`,
+            });
+          }
+        } catch {
+          /* ignorer flush-feil */
+        }
+        resolve();
       });
     });
   }
@@ -292,6 +333,15 @@ export function RecordingControls({
   async function startRecording() {
     if (!valgtSpiller) {
       setBanner({ tone: "warn", text: "Velg spiller før du starter opptaket." });
+      return;
+    }
+
+    const spiller = spillere.find((s) => s.id === valgtSpiller);
+    if (spiller && !spiller.lydSamtykkeGitt) {
+      setBanner({
+        tone: "warn",
+        text: "Venter på samtykke fra foresatt. Opptak kan ikke starte.",
+      });
       return;
     }
 
@@ -319,12 +369,19 @@ export function RecordingControls({
       const j = (await res.json().catch(() => ({}))) as {
         recordingId?: string;
         error?: string;
+        message?: string;
       };
       if (!res.ok || !j.recordingId) {
         stream.getTracks().forEach((t) => t.stop());
+        const samtykkeFeil =
+          j.error === "lyd-samtykke-mangler"
+            ? (j.message ?? "Venter på samtykke fra foresatt. Opptak kan ikke starte.")
+            : null;
         setBanner({
           tone: "error",
-          text: `Klarte ikke å starte opptak: ${j.error ?? res.status}`,
+          text:
+            samtykkeFeil ??
+            `Klarte ikke å starte opptak: ${j.error ?? res.status}`,
         });
         return;
       }
@@ -503,7 +560,20 @@ export function RecordingControls({
   const isRecordingActive = mode === "recording" || mode === "paused";
   const isFinalizing = mode === "finalizing";
   const isBehandler = mode === "behandler";
-  const canStart = mode === "idle" && !!valgtSpiller;
+  const valgtHarSamtykke =
+    !!valgtSpiller &&
+    (spillere.find((s) => s.id === valgtSpiller)?.lydSamtykkeGitt ?? false);
+  // Spec §4: Start-knapp vises ikke uten GITT — ikke bare disabled.
+  const canStart = mode === "idle" && valgtHarSamtykke;
+  const visStartKnapp =
+    !isRecordingActive &&
+    mode === "idle" &&
+    (!valgtSpiller || valgtHarSamtykke);
+  const visSamtykkeMelding =
+    !isRecordingActive &&
+    mode === "idle" &&
+    !!valgtSpiller &&
+    !valgtHarSamtykke;
 
   return (
     <div className="space-y-4">
@@ -623,11 +693,21 @@ export function RecordingControls({
             </label>
           )}
 
-          {!isRecordingActive ? (
+          {visSamtykkeMelding && valgtSpiller && (
+            <LydSamtykkePilotPanel
+              playerId={valgtSpiller}
+              playerNavn={
+                spillere.find((s) => s.id === valgtSpiller)?.navn ?? "Spiller"
+              }
+              harGitt={false}
+            />
+          )}
+
+          {(visStartKnapp || isFinalizing || isBehandler) && !isRecordingActive && (
             <button
               type="button"
               onClick={startRecording}
-              disabled={!canStart}
+              disabled={!canStart || isFinalizing || isBehandler}
               className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-primary px-4 py-4 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
             >
               {isFinalizing || isBehandler ? (
@@ -637,7 +717,9 @@ export function RecordingControls({
               )}
               {isFinalizing ? "Fullfører …" : isBehandler ? "Behandler …" : "Start opptak"}
             </button>
-          ) : (
+          )}
+
+          {isRecordingActive && (
             <>
               <button
                 type="button"

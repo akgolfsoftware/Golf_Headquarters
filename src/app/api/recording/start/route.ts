@@ -11,6 +11,11 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { rateLimit } from "@/lib/rate-limit";
+import {
+  hentLydSamtykkeStatus,
+  lydSamtykkeMelding,
+  LYD_SAMTYKKE_MANGLER,
+} from "@/lib/recording/lyd-samtykke";
 
 const Body = z
   .object({
@@ -20,6 +25,20 @@ const Body = z
   .refine((v) => !!v.bookingId || !!v.playerId, {
     message: "bookingId eller playerId må oppgis",
   });
+
+/** Hard gate: uten LydSamtykke status GITT → 403. Klient kan ikke omgå. */
+async function avvisUtenLydSamtykke(playerId: string) {
+  const sjekk = await hentLydSamtykkeStatus(playerId);
+  if (sjekk.tillatt) return null;
+  return NextResponse.json(
+    {
+      error: LYD_SAMTYKKE_MANGLER,
+      message: lydSamtykkeMelding(sjekk),
+      status: sjekk.status,
+    },
+    { status: 403 },
+  );
+}
 
 export async function POST(req: Request) {
   const user = await getCurrentUser();
@@ -54,6 +73,9 @@ export async function POST(req: Request) {
     if (!player || player.role !== "PLAYER") {
       return NextResponse.json({ error: "Spiller finnes ikke" }, { status: 404 });
     }
+
+    const sperre = await avvisUtenLydSamtykke(player.id);
+    if (sperre) return sperre;
 
     const recording = await prisma.sessionRecording.create({
       data: {
@@ -94,11 +116,22 @@ export async function POST(req: Request) {
     );
   }
 
+  const playerId = booking.userId;
+  if (!playerId) {
+    return NextResponse.json(
+      { error: "Booking mangler spiller" },
+      { status: 400 },
+    );
+  }
+
+  const sperre = await avvisUtenLydSamtykke(playerId);
+  if (sperre) return sperre;
+
   const recording = await prisma.sessionRecording.create({
     data: {
       bookingId: booking.id,
       uploadedById: user.id,
-      playerId: booking.userId,
+      playerId,
       status: "RECORDING",
     },
     select: { id: true },
@@ -108,7 +141,7 @@ export async function POST(req: Request) {
     actorId: user.id,
     action: "recording.started",
     target: `SessionRecording:${recording.id}`,
-    metadata: { bookingId: booking.id, playerId: booking.userId },
+    metadata: { bookingId: booking.id, playerId },
   });
 
   return NextResponse.json({ recordingId: recording.id });

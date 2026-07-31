@@ -171,7 +171,7 @@ export type AdminRecordingV2Data = {
   activeRecordingId: string | null;
   recoveryRecordingId: string | null;
   recoveryStartedAtLabel: string | null;
-  spillere: { id: string; navn: string }[];
+  spillere: { id: string; navn: string; lydSamtykkeGitt: boolean }[];
   aktiv: {
     id: string;
     status: string;
