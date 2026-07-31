@@ -239,9 +239,12 @@ AK Golf Academy bruker en 5-trinns trenings-pyramide:
 
 ## Tema per produkt
 
-> **Designregler er bevisst tømt 2026-07-25** — et komplett nytt designsystem utvikles i
-> Open Design. Det under er KUN en beskrivelse av nåværende app-oppførsel i kode,
-> ikke en låst regel, og kan endres fritt når det nye systemet landes.
+> **Design (LÅST 2026-07-31):** App/pilot = C, smalt (v2-tokens + kun `--handling` `#D97757`
+> for «Én ting nå»). Claude Paper = designfasit i Open Design/speil; full port til `src/`
+> etter pilot. Se `docs/gjenstaaende-plan-2026-07-31.md` §1.1.
+>
+> Det under er beskrivelse av nåværende tema-oppførsel i kode (lys default + bryter),
+> ikke en konkurrerende designkanon.
 
 Nåværende oppførsel i kode: PlayerHQ (`/portal`), AgencyOS (`/admin`) og Forelder
 (`/forelder`) er lys som standard med lys/mørk-bryter (cookie `ak-v2-tema=dark` gir mørk).

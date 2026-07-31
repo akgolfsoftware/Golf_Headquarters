@@ -13,30 +13,32 @@ side.
 
 ## Rekkefølgen i én setning
 
-Designsystem-konflikten avgjøres → schema-runden kjøres → Fase 0 (DKIM først) → spor A og B
-bygges parallelt. Designsystem-sporet går videre i eget løp, avhengig av beslutning 1.
+Designsystem er LÅST (C, smalt + Paper design) → schema-runden kjøres → Fase 0 (DKIM først) →
+spor A og B bygges parallelt. Designsystem-sporet (Paper) går videre i Open Design / speil-gren
+uten full port til `src/` før pilot er evaluert.
 
 ---
 
 ## 1 · Beslutninger som venter på Anders
 
-### 1.1 Designsystem-konflikten — viktigst, blokkerer begge spor
+### 1.1 Designsystem — LÅST 2026-07-31 (Anders)
 
-De to sporene sier motsatt ting:
+**Beslutning: C, smalt i app + Claude Paper som designspor.** Konflikten er avgjort.
 
-| Spor | Anbefaling |
+| Spor | Status etter lås |
 |---|---|
-| Claude Design (`605a48cc`) | Bygger Claude Paper for fullt — 90/151 komponenter ferdig |
-| `docs/for-under-etter-spec.md` | IKKE migrer appen til Paper nå. Lån kun oransje-monopolet som ett nytt token `--handling` (#D97757), behold Inter/Familjen Grotesk/JetBrains Mono |
+| **App / pilot (nå)** | **C, smalt** — behold Inter + Familjen Grotesk + JetBrains Mono og eksisterende v2-tokens i `globals.css` / `src/lib/v2/tokens.ts`. Innfør **kun** ett nytt token: `--handling` `#D97757` (oransje) med monopol på skjermens ene primærhandling («Én ting nå»). Maks én forekomst per skjerm. |
+| **Design (parallelt)** | **Claude Paper** fortsetter fullt ut i Open Design (`be6bdcb8-…` / Claude Design `605a48cc`) + repo-speil `designsystem/paper/` på gren `chore/paper-speil-lokal`. 90+ komponenter er reell verdi. |
+| **Full migrering Paper → `src/`** | **Ikke nå.** Tas på nytt **etter** at FØR/UNDER/ETTER-piloten er evaluert. |
 
-Begrunnelsen i spesifikasjonen: lime er i dag merkevare + signal + status + CTA samtidig, så
-regel 1 er ikke håndhevbar. Ett token med monopol på skjermens ene primærhandling løser det uten
-en full migrering før piloten.
+Begrunnelse (uendret fra `docs/for-under-etter-spec.md` §2): lime er i dag merkevare + signal +
+status + CTA samtidig, så «én ting nå» ikke er håndhevbar uten egen farge — men full palett-/
+fontbytte på 450+ sider før pilot er for stor risiko.
 
-**Anbefaling: behold begge, men skill dem i tid.** Paper fortsetter som designspor — 90
-komponenter er reell verdi som ikke forsvinner. Appen migreres først etter at piloten er
-evaluert. Da vinner piloten på tid uten at designarbeidet kastes. Konflikten handler egentlig om
-*når*, ikke om *hvilket*.
+**Håndheving for agenter:**
+- Bygg pilot og app-UI mot **v2 + `--handling`**. Ikke bytt fonter eller rull ut Paper-tokens i prod uten ny beslutning.
+- Fortsett Paper-komponenter/skjermer i OD/speil. Ikke port Paper-komponentbiblioteket inn i `src/components` før post-pilot.
+- Speil-gren: `chore/paper-speil-lokal` (merge inn når det trengs for offline speil — ikke det samme som prod-migrering).
 
 ### 1.2 Schema-runden krever ja
 

@@ -37,7 +37,12 @@ Ting briefen ikke nevner, som jeg fant:
 
 ## 2. Designsystem-beslutning: C, smalt definert
 
+**LÅST 2026-07-31 av Anders** (samme beslutning som `docs/gjenstaaende-plan-2026-07-31.md` §1.1).
+
 **Valget er C (hybrid), men med en mye smalere migrering enn briefen legger opp til.**
+
+Claude Paper er designfasit i Open Design / speil — men **appen** får kun det som står under
+punkt 1–5 her til piloten er evaluert. Full Paper-port til `src/` er en senere beslutning.
 
 Begrunnelse:
 

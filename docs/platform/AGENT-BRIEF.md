@@ -72,7 +72,7 @@ wireframe/               ARKIV — ikke les eller importer herfra
 - **Tokens:** `src/app/globals.css` — HSL-trippel uten `hsl()`-wrapper, shadcn-konvensjon.
 - **TS-speil for charts:** `src/lib/design-tokens.ts` — kun les herfra.
 - **Komponenter:** primitiver fra `src/components/ui/` + `v2/`-mønstre; `athletic/golfdata/` er overgangslag i vedlikeholdsmodus. Sjekk ALLTID hva som finnes FØR du lager noe nytt.
-- **Spacing/farger:** ingen låst kanon per 2026-07-25 — se CLAUDE.md invariant 2. Nytt komplett designsystem utvikles i Open Design. Følg mønsteret i filen du redigerer.
+- **Spacing/farger (LÅST 2026-07-31):** App = C, smalt (v2 + kun `--handling` `#D97757` for «Én ting nå»). Claude Paper = designfasit i Open Design/speil; full port etter pilot. Se `docs/gjenstaaende-plan-2026-07-31.md` §1.1. I app-kode: følg mønsteret i filen du redigerer.
 - **Fonter:** Inter (`font-sans`), Familjen Grotesk (`font-display`), JetBrains Mono (`font-mono`). Inter Tight er FJERNET (Fase 3, 2026-07-07) — ikke gjeninnfør.
 
 **FORBUDT:** lage ny `tokens.css`, importere fra `wireframe/`, lage `tokens.ts` i komponent-mapper.
