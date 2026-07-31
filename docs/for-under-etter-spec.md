@@ -383,8 +383,18 @@ termer — ikke å bytte modell.
 
 ## 10. Spillere-flaten
 
-Bygges **etter** at sløyfen er i pilot. Anatomien under er låst, ikke til diskusjon —
-den er allerede kritikk-passert.
+Bygges **parallelt med** sløyfen (besluttet av Anders 2026-07-31). Anatomien under er
+låst, ikke til diskusjon — den er allerede kritikk-passert.
+
+Parallellkjøringen er trygg fordi sporene ikke deler avhengigheter: Spillere rører
+hverken `LydSamtykke`, opptakskøen eller `PlanAction`. De eneste schema-endringene
+Spillere trenger (`TradApning`, `Group.kind`) er additive og uavhengige av sløyfens
+endringer, så de kan kjøres i samme `db execute`-runde uten å vente.
+
+Den ekte flaskehalsen er Anders' oppmerksomhet, ikke koden: piloten krever daglig
+godkjenning i to uker samtidig som Spillere trenger designavgjørelser.
+**Prioriteringsregel ved kollisjon: piloten vinner.** Den har en klokke som går —
+Spillere har ikke.
 
 ### Hva finnes
 
@@ -478,35 +488,41 @@ mekanisme som gjør at innsikten dør i dag.
 
 ## 12. Prioritert komponentrekkefølge
 
-Rekkefølgen er valgt slik at hvert steg kan testes alene, og slik at det som kan
-miste data kommer før det som bare ser pent ut.
+To spor som går parallelt. Innenfor hvert spor er rekkefølgen valgt slik at hvert
+steg kan testes alene, og slik at det som kan miste data kommer før det som bare
+ser pent ut.
 
-**Fase 1 — forutsetninger**
+**Felles først — én runde schema-endringer**
 
-1. `LydSamtykke`-modell + gating i `/api/recording/start` (blokkerer alt)
+Alle fire additive endringene kjøres i samme `db execute`-runde, så vi rører
+databasen én gang i stedet for fire:
+`LydSamtykke` · `PlanAction.sjekkpunkt` + `.fangstId` · `TradApning` · `Group.kind`
+
+### Spor A — sløyfen (har klokke, vinner ved kollisjon)
+
+1. Samtykkegating i `/api/recording/start` (blokkerer all fangst)
 2. AK-glossar i `transcribe.ts` (strengendring, gjør før spike)
-3. `PlanAction` utvidet med `sjekkpunkt` + `fangstId`
-4. `--handling`-token + gate i `verify`
-5. Talegjenkjenning-spike, 10 ekte opptak
+3. `--handling`-token + gate i `verify` (deles med spor B — gjør her)
+4. Talegjenkjenning-spike, 10 ekte opptak
+5. IndexedDB-kø for lydbiter (høyest risiko — gjør tidlig)
+6. Fangst-skjermen, redesignet
+7. Godkjenningskortet i `/admin/queue`
+8. Før-kortet i `/admin/innboks`
+9. Instrumentering
+10. Pilot bølge 1
 
-**Fase 2 — sløyfen**
+### Spor B — Spillere (ingen klokke, ingen avhengighet til spor A)
 
-6. IndexedDB-kø for lydbiter (høyest risiko — gjør tidlig)
-7. Fangst-skjermen, redesignet
-8. Godkjenningskortet i `/admin/queue`
-9. Før-kortet i `/admin/innboks`
-10. Instrumentering
-11. Pilot bølge 1
+11. `ListRow.trailing`
+12. Generalisert `VisningsVelger` + `ListGroup`
+13. Spillere-flaten, fanen «Alle spillere»
+14. `GroupCard`, tre varianter
+15. Spillere-flaten, fanen «Alle grupper»
 
-**Fase 3 — Spillere**
+Eneste berøringspunkt mellom sporene er `--handling`-tokenet (punkt 3). Det gjøres
+i spor A fordi sløyfen trenger det først, og spor B arver det.
 
-12. `ListRow.trailing`
-13. `TradApning`-modell + `Group.kind`
-14. Generalisert `VisningsVelger` + `ListGroup`
-15. Spillere-flaten
-16. `GroupCard`, tre varianter
-
-Alt etter punkt 16 venter på pilotresultatet. Bevisst.
+Alt etter punkt 15 venter på pilotresultatet. Bevisst.
 
 ---
 
