@@ -47,6 +47,10 @@ const MNAV: { id: string; l: string; href: string }[] = [
   { id: "priser", l: "Priser", href: "/priser" },
 ];
 
+/** TalentHQ (talent/scouting) — egen app; innlogging via landing. */
+export const TALENTHQ_LOGIN_URL =
+  "https://ak-golf-intelligence.vercel.app/innlogging";
+
 /**
  * Ekte mobilmeny (hamburger → fullskjerms-panel). Erstatter det tidligere rene
  * pynte-ikonet: åpner nav-lenkene + Logg inn + Kom i gang gratis. Låser
@@ -120,8 +124,16 @@ export function MMobilMeny({ aktiv }: { aktiv: string }) {
               className="v2-press"
               style={{ display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.ui, fontSize: 15, fontWeight: 600, color: T.fg, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 9999, padding: "14px 28px", textDecoration: "none" }}
             >
-              Logg inn
+              Logg inn (PlayerHQ)
             </Link>
+            <a
+              href={TALENTHQ_LOGIN_URL}
+              onClick={() => setOpen(false)}
+              className="v2-press"
+              style={{ display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.ui, fontSize: 15, fontWeight: 600, color: T.fg, background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: 9999, padding: "14px 28px", textDecoration: "none" }}
+            >
+              Logg inn (TalentHQ)
+            </a>
             <Link
               href="/auth/signup"
               onClick={() => setOpen(false)}
@@ -182,14 +194,22 @@ export function MNav({ mobile, aktiv, cta = STANDARD_CTA }: { mobile: boolean; a
           ))}
         </div>
       )}
-      <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 14 }}>
         {!mobile && (
-          <Link
-            href="/auth/login"
-            style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg2, textDecoration: "none" }}
-          >
-            Logg inn
-          </Link>
+          <>
+            <Link
+              href="/auth/login"
+              style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg2, textDecoration: "none" }}
+            >
+              Logg inn
+            </Link>
+            <a
+              href={TALENTHQ_LOGIN_URL}
+              style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg2, textDecoration: "none" }}
+            >
+              TalentHQ
+            </a>
+          </>
         )}
         {mobile ? (
           <MMobilMeny aktiv={aktiv} />
@@ -232,6 +252,12 @@ export function MFot({ mobile }: { mobile: boolean }) {
             {f.l}
           </Link>
         ))}
+        <a
+          href={TALENTHQ_LOGIN_URL}
+          style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, textDecoration: "none" }}
+        >
+          TalentHQ
+        </a>
       </div>
     </div>
   );
