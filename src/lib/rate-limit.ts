@@ -73,13 +73,22 @@ async function rateLimitAsync({
   max,
   windowMs,
 }: RateLimitOptions): Promise<RateLimitResult> {
-  // S-8 / H6: deferred error — kast nå når vi faktisk kjøres i produksjon
-  // uten Upstash-konfigurasjon (init-koden over fant ikke env-vars).
-  if (initError) throw new Error(initError);
+  // S-8 / H6: manglende Upstash skal ikke ta ned hele API-et (500 på opptak,
+  // caddie, lead, m.m.). Logg hardt og slipp gjennom — fail-open til Redis
+  // er konfigurert. Hard fail-closed kan slås på med RATE_LIMIT_FAIL_CLOSED=1.
+  if (initError) {
+    if (process.env.RATE_LIMIT_FAIL_CLOSED === "1") {
+      throw new Error(initError);
+    }
+    console.error(
+      `${initError} Request slipper gjennom (RATE_LIMIT_FAIL_CLOSED ikke satt). key=${key}`,
+    );
+    return { ok: true, remaining: max, resetAt: Date.now() + windowMs };
+  }
 
   const limiter = getLimiter(max, windowMs);
 
-  // No-op fallback når Upstash ikke er konfigurert (kun dev/test).
+  // No-op fallback når Upstash ikke er konfigurert (dev/test).
   if (!limiter) {
     return { ok: true, remaining: max - 1, resetAt: Date.now() + windowMs };
   }
