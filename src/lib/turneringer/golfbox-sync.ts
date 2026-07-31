@@ -43,6 +43,29 @@ export type SyncSchedulesResult = {
   upcoming: number;
 };
 
+/** YYYY-MM-DD per dag i [start, end] (inkl.). Max 7 dager for å unngå støy. */
+export function deriveRoundDates(start: Date, end: Date | null): string[] {
+  const out: string[] = [];
+  const dayMs = 24 * 60 * 60 * 1000;
+  const endT = (end ?? start).getTime();
+  let t = Date.UTC(
+    start.getUTCFullYear(),
+    start.getUTCMonth(),
+    start.getUTCDate(),
+  );
+  const endDay = Date.UTC(
+    new Date(endT).getUTCFullYear(),
+    new Date(endT).getUTCMonth(),
+    new Date(endT).getUTCDate(),
+  );
+  for (let i = 0; i < 7 && t <= endDay; i++) {
+    const d = new Date(t);
+    out.push(d.toISOString().slice(0, 10));
+    t += dayMs;
+  }
+  return out;
+}
+
 function buildNotes(opts: {
   region?: string;
   entryCloses: Date | null;
@@ -92,6 +115,10 @@ export async function syncGolfBoxSchedules(
 
       if (status === "UPCOMING") upcoming++;
 
+      // Avled rundedatoer (én per dag i vindu) for planlegger-visning.
+      const roundDates = deriveRoundDates(e.startDate, e.endDate);
+      const registrationUrl = `https://scores.golfbox.dk/Components/Pages/Competition.aspx?CompetitionId=${e.competitionId}`;
+
       await prisma.tournament.upsert({
         where: { slug },
         create: {
@@ -107,6 +134,9 @@ export async function syncGolfBoxSchedules(
           location: e.venue,
           status,
           notes,
+          entryCloses: e.entryCloses,
+          registrationUrl,
+          roundDates,
           lastSyncAt: now,
         },
         update: {
@@ -121,6 +151,9 @@ export async function syncGolfBoxSchedules(
           status,
           // notes: always refresh when we have structured data
           ...(notes !== undefined ? { notes } : {}),
+          entryCloses: e.entryCloses,
+          registrationUrl,
+          roundDates,
           lastSyncAt: now,
         },
       });

@@ -4,11 +4,14 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { audit } from "@/lib/audit";
 import { isoDate, optStr } from "@/lib/validation/schemas";
 
 const TurnPrioritySchema = z.enum(["MAJOR", "NORMAL", "LOCAL"], {
   error: "Ugyldig prioritet",
 });
+
+const PlanTierSchema = z.enum(["A", "B", "C"]);
 
 const LeggTilTurneringSchema = z.object({
   seasonPlanId: z.string().min(1).optional(),
@@ -18,6 +21,7 @@ const LeggTilTurneringSchema = z.object({
   manualEndDate: isoDate.optional(),
   category: optStr(200),
   priority: TurnPrioritySchema,
+  planTier: PlanTierSchema.optional(),
   notes: optStr(1000),
 });
 
@@ -25,6 +29,15 @@ const EntryIdSchema = z.string().min(1, "Påmeldings-ID er påkrevd");
 const TournamentIdSchema = z.string().min(1, "Turnerings-ID er påkrevd");
 
 export type TurnPriority = "MAJOR" | "NORMAL" | "LOCAL";
+export type PlanTier = "A" | "B" | "C";
+
+function revalTurneringer(tournamentId?: string) {
+  revalidatePath("/portal/tren/turneringer");
+  revalidatePath("/portal/tren/aarsplan");
+  revalidatePath("/portal");
+  revalidatePath("/portal/kalender");
+  if (tournamentId) revalidatePath(`/portal/tren/turneringer/${tournamentId}`);
+}
 
 export async function leggTilTurnering(input: {
   seasonPlanId?: string;
@@ -34,6 +47,7 @@ export async function leggTilTurnering(input: {
   manualEndDate?: string;
   category?: string;
   priority: TurnPriority;
+  planTier?: PlanTier;
   notes?: string;
 }): Promise<{ ok: true; id: string } | { ok: false; feil: string }> {
   const zodResult = LeggTilTurneringSchema.safeParse(input);
@@ -55,6 +69,14 @@ export async function leggTilTurnering(input: {
     if (!plan) return { ok: false, feil: "Sesongplan ikke funnet" };
   }
 
+  if (input.tournamentId) {
+    const eksisterende = await prisma.tournamentEntry.findFirst({
+      where: { userId: user.id, tournamentId: input.tournamentId },
+      select: { id: true },
+    });
+    if (eksisterende) return { ok: true, id: eksisterende.id };
+  }
+
   const entry = await prisma.tournamentEntry.create({
     data: {
       userId: user.id,
@@ -65,13 +87,13 @@ export async function leggTilTurnering(input: {
       manualEndDate: input.manualEndDate ? new Date(input.manualEndDate) : null,
       category: input.category ?? null,
       priority: input.priority,
+      planTier: input.planTier ?? "B",
       notes: input.notes ?? null,
     },
     select: { id: true },
   });
 
-  revalidatePath("/portal/tren/turneringer");
-  revalidatePath("/portal/tren/aarsplan");
+  revalTurneringer(input.tournamentId);
   return { ok: true, id: entry.id };
 }
 
@@ -145,14 +167,141 @@ export async function meldDegPa(
       tournamentId,
       seasonPlanId: sesongplan?.id ?? null,
       priority: "NORMAL",
+      planTier: "B",
+      entryStatus: "PLANNED",
     },
     select: { id: true },
   });
 
-  revalidatePath("/portal/tren/turneringer");
-  revalidatePath("/portal/tren/aarsplan");
-  revalidatePath("/portal");
-  revalidatePath("/portal/kalender");
+  revalTurneringer(tournamentId);
+  return { ok: true, id: entry.id };
+}
+
+/**
+ * Sett plan A/B/C på en entry spilleren eier.
+ */
+export async function settPlanTier(
+  entryId: string,
+  planTier: PlanTier,
+): Promise<{ ok: true } | { ok: false; feil: string }> {
+  const parsed = PlanTierSchema.safeParse(planTier);
+  if (!parsed.success) return { ok: false, feil: "Ugyldig plan-nivå" };
+  const user = await requirePortalUser();
+  const entry = await prisma.tournamentEntry.findFirst({
+    where: { id: entryId, userId: user.id },
+    select: { id: true, tournamentId: true },
+  });
+  if (!entry) return { ok: false, feil: "Ikke funnet" };
+  await prisma.tournamentEntry.update({
+    where: { id: entryId },
+    data: { planTier: parsed.data },
+  });
+  revalTurneringer(entry.tournamentId ?? undefined);
+  return { ok: true };
+}
+
+/**
+ * Steg 1 i dobbel bekreftelse: spilleren hevder å ha meldt seg på hos arrangør.
+ * Setter CLAIMED_REGISTERED — IKKE endelig bekreftet.
+ */
+export async function claimPaamelding(
+  tournamentId: string,
+): Promise<{ ok: true; id: string } | { ok: false; feil: string }> {
+  const zodResult = TournamentIdSchema.safeParse(tournamentId);
+  if (!zodResult.success) {
+    return { ok: false, feil: "Ugyldig turnerings-ID" };
+  }
+  const user = await requirePortalUser();
+
+  let entry = await prisma.tournamentEntry.findFirst({
+    where: { userId: user.id, tournamentId },
+    select: { id: true, entryStatus: true },
+  });
+
+  if (!entry) {
+    const created = await meldDegPa(tournamentId);
+    if (!created.ok) return created;
+    entry = { id: created.id, entryStatus: "PLANNED" };
+  }
+
+  if (entry.entryStatus === "CONFIRMED") {
+    return { ok: true, id: entry.id };
+  }
+
+  await prisma.tournamentEntry.update({
+    where: { id: entry.id },
+    data: {
+      entryStatus: "CLAIMED_REGISTERED",
+      playerClaimedRegisteredAt: new Date(),
+    },
+  });
+
+  await audit({
+    actorId: user.id,
+    action: "TOURNAMENT_REGISTRATION_CLAIMED",
+    target: `tournament:${tournamentId}`,
+    metadata: { entryId: entry.id },
+  });
+
+  revalTurneringer(tournamentId);
+  return { ok: true, id: entry.id };
+}
+
+/**
+ * Steg 2 i dobbel bekreftelse: spilleren bekrefter eksplisitt at de er påmeldt.
+ * Appen verifiserer IKKE hos arrangør — ansvaret er spillerens.
+ */
+export async function confirmPaamelding(
+  tournamentId: string,
+): Promise<{ ok: true; id: string } | { ok: false; feil: string }> {
+  const zodResult = TournamentIdSchema.safeParse(tournamentId);
+  if (!zodResult.success) {
+    return { ok: false, feil: "Ugyldig turnerings-ID" };
+  }
+  const user = await requirePortalUser();
+
+  const entry = await prisma.tournamentEntry.findFirst({
+    where: { userId: user.id, tournamentId },
+    select: { id: true, entryStatus: true, playerClaimedRegisteredAt: true },
+  });
+  if (!entry) {
+    return { ok: false, feil: "Legg turneringen i plan først" };
+  }
+  if (entry.entryStatus === "CONFIRMED") {
+    return { ok: true, id: entry.id };
+  }
+  // Krev at steg 1 er tatt (claim) — ellers tving claim først
+  if (
+    entry.entryStatus !== "CLAIMED_REGISTERED" &&
+    !entry.playerClaimedRegisteredAt
+  ) {
+    return {
+      ok: false,
+      feil: "Trykk først «Jeg har meldt meg på», deretter bekreft.",
+    };
+  }
+
+  await prisma.tournamentEntry.update({
+    where: { id: entry.id },
+    data: {
+      entryStatus: "CONFIRMED",
+      playerConfirmedRegisteredAt: new Date(),
+      playerClaimedRegisteredAt: entry.playerClaimedRegisteredAt ?? new Date(),
+    },
+  });
+
+  await audit({
+    actorId: user.id,
+    action: "TOURNAMENT_REGISTRATION_CONFIRMED_BY_PLAYER",
+    target: `tournament:${tournamentId}`,
+    metadata: {
+      entryId: entry.id,
+      disclaimer:
+        "Spiller bekreftet selv. App verifiserer ikke påmelding hos arrangør.",
+    },
+  });
+
+  revalTurneringer(tournamentId);
   return { ok: true, id: entry.id };
 }
 

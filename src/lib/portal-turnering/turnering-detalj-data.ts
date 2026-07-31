@@ -124,9 +124,11 @@ export type EntryState = {
 function entryState(status: TournamentEntryStatus): EntryState {
   switch (status) {
     case "CONFIRMED":
-      return { label: "Påmeldt", tone: "ok", active: true };
+      return { label: "Bekreftet av spiller", tone: "ok", active: true };
+    case "CLAIMED_REGISTERED":
+      return { label: "Venter bekreftelse", tone: "warn", active: true };
     case "PLANNED":
-      return { label: "Planlagt", tone: "neutral", active: true };
+      return { label: "På planen", tone: "neutral", active: true };
     case "COMPLETED":
       return { label: "Gjennomført", tone: "neutral", active: false };
     case "WITHDRAWN":
@@ -162,6 +164,11 @@ export type TurneringDetalj = {
   tour: string | null;
   status: TurneringStatus;
   officialUrl: string | null;
+  entryCloses: Date | null;
+  entryClosesLabel: string | null;
+  registrationUrl: string | null;
+  recommendedLevel: string | null;
+  roundDates: string[];
   /** Spillerens påmelding (null = ikke påmeldt). */
   entry: {
     state: EntryState;
@@ -171,6 +178,7 @@ export type TurneringDetalj = {
     notes: string | null;
     /** Påmeldt-dato. */
     registeredLong: string;
+    planTier: "A" | "B" | "C";
   } | null;
   /** Spillerens tidligere resultater (tom = card utelates). */
   history: HistoricResult[];
@@ -222,6 +230,10 @@ export async function loadTurneringDetalj(
       tour: true,
       status: true,
       officialUrl: true,
+      entryCloses: true,
+      registrationUrl: true,
+      recommendedLevel: true,
+      roundDates: true,
       course: { select: { name: true } },
       entries: {
         where: { userId },
@@ -232,12 +244,19 @@ export async function loadTurneringDetalj(
           category: true,
           notes: true,
           createdAt: true,
+          planTier: true,
         },
       },
     },
   });
 
   if (!tournament) return null;
+
+  const roundDates = Array.isArray(tournament.roundDates)
+    ? (tournament.roundDates as unknown[]).filter(
+        (x): x is string => typeof x === "string",
+      )
+    : [];
 
   // Historikk: spillerens egne resultater. I praksis tomt i dag (0 rader),
   // men strukturen er ekte og fylles automatisk når resultater registreres.
@@ -305,12 +324,23 @@ export async function loadTurneringDetalj(
     tour: tournament.tour,
     status: tournamentStatus(tournament.status),
     officialUrl: tournament.officialUrl,
+    entryCloses: tournament.entryCloses,
+    entryClosesLabel: tournament.entryCloses
+      ? dateLong(tournament.entryCloses)
+      : null,
+    registrationUrl: tournament.registrationUrl,
+    recommendedLevel: tournament.recommendedLevel,
+    roundDates,
     entry: entryRow
       ? {
           state: entryState(entryRow.entryStatus),
           category: entryRow.category,
           notes: entryRow.notes,
           registeredLong: dateLong(entryRow.createdAt),
+          planTier:
+            entryRow.planTier === "A" || entryRow.planTier === "C"
+              ? entryRow.planTier
+              : "B",
         }
       : null,
     history: results.map((r) => ({
