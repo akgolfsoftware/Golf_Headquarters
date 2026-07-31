@@ -10,6 +10,9 @@
  *   npx tsx scripts/scrape-golfbox.ts --mode=schedule
  *   npx tsx scripts/scrape-golfbox.ts --mode=leaderboards
  *   npx tsx scripts/scrape-golfbox.ts --limit=5       # MVP-test (færre events)
+ *   npx tsx scripts/scrape-golfbox.ts --mode=leaderboards --siden=alt
+ *       # engangs-backfill: løfter 7-dagers-grensen, henter ALLE fullførte
+ *       # turneringer uansett alder. Bruk for historikk, ikke i den daglige jobben.
  *
  * Idempotent. Logger hver kjøring til AgentRun (mater CoachHQ Datakilder-siden).
  */
@@ -43,6 +46,7 @@ const MODE =
     | "all"
     | undefined) ?? "all";
 const LIMIT = Number(args.find((a) => a.startsWith("--limit="))?.split("=")[1]) || 0;
+const SIDEN_ALT = args.find((a) => a.startsWith("--siden="))?.split("=")[1] === "alt";
 
 const NOW = new Date();
 
@@ -130,7 +134,9 @@ async function syncSchedules(): Promise<{ customers: number; events: number }> {
 }
 
 // ---------------------------------------------------------------------------
-// Leaderboard sync — kun pågående + nylig fullførte (begrenser API-kall)
+// Leaderboard sync — normalt kun pågående + nylig fullførte (begrenser
+// API-kall). Med --siden=alt løftes 7-dagers-grensen for en engangs-backfill
+// av historikken; daglig kjøring uten flagget er upåvirket.
 // ---------------------------------------------------------------------------
 
 function entryStatus(
@@ -144,37 +150,55 @@ function entryStatus(
   return "TEED_OFF";
 }
 
+/** Brutto totalscore = sum av spilte runder. Null hvis ingen runde er registrert. */
+function totalScoreFromRounds(roundScores: (number | null)[]): number | null {
+  const played = roundScores.filter((s): s is number => typeof s === "number");
+  if (played.length === 0) return null;
+  return played.reduce((sum, s) => sum + s, 0);
+}
+
 async function syncLeaderboards(): Promise<{
   tournaments: number;
+  tournamentsTomtResultat: number;
   entries: number;
+  roundsRows: number;
   playersCreated: number;
 }> {
   const sevenDaysAgo = new Date(NOW.getTime() - 7 * 24 * 60 * 60 * 1000);
 
   // Turneringer fra GolfBox-kildene som er live eller nylig ferdige.
+  // --siden=alt: fjern endDate-grensen og ta med ALLE fullførte, uansett alder.
   const origins = ["GOLFBOX", "SRIXON", "NORGESCUP", "OLYO", "MIDAM", "SENIOR", "NM"];
   let tournaments = await prisma.tournament.findMany({
     where: {
       sourceOrigin: { in: origins },
       sourceId: { not: null },
-      OR: [
-        { status: "IN_PROGRESS" },
-        { status: "COMPLETED", endDate: { gte: sevenDaysAgo } },
-      ],
+      OR: SIDEN_ALT
+        ? [{ status: "IN_PROGRESS" }, { status: "COMPLETED" }]
+        : [
+            { status: "IN_PROGRESS" },
+            { status: "COMPLETED", endDate: { gte: sevenDaysAgo } },
+          ],
     },
     orderBy: { startDate: "desc" },
   });
   if (LIMIT > 0) tournaments = tournaments.slice(0, LIMIT);
 
   let entries = 0;
+  let roundsRows = 0;
   let playersCreated = 0;
+  let tournamentsTomtResultat = 0;
 
   for (const t of tournaments) {
     const competitionId = Number(t.sourceId);
     if (!competitionId) continue;
 
     const lb = await getLeaderboard(competitionId);
-    if (!lb || lb.entries.length === 0) continue;
+    if (!lb || lb.entries.length === 0) {
+      // Ekte datamangel hos GolfBox (aldri scoret digitalt) — ikke gjett, bare tell.
+      if (SIDEN_ALT) tournamentsTomtResultat++;
+      continue;
+    }
 
     const cls = classifyTour(t.name, t.tour === "junior-no" ? "junior-no" : "amateur-no");
     const completed = t.status === "COMPLETED";
@@ -202,8 +226,9 @@ async function syncLeaderboards(): Promise<{
         roundNames: lb.roundNames,
         roundScores: e.roundScores,
       };
+      const totalScore = totalScoreFromRounds(e.roundScores);
 
-      await prisma.publicPlayerEntry.upsert({
+      const entry = await prisma.publicPlayerEntry.upsert({
         where: { playerId_tournamentId: { playerId: player.id, tournamentId: t.id } },
         create: {
           playerId: player.id,
@@ -211,16 +236,38 @@ async function syncLeaderboards(): Promise<{
           status: entryStatus(e, completed),
           position: e.position,
           scoreToPar: e.toParValue,
+          totalScore,
           rounds,
         },
         update: {
           status: entryStatus(e, completed),
           position: e.position,
           scoreToPar: e.toParValue,
+          totalScore,
           rounds,
         },
       });
       entries++;
+
+      // Runde-for-runde (kun brutto-score fra GolfBox — ingen SG/driving-stats her).
+      for (let i = 0; i < e.roundScores.length; i++) {
+        const score = e.roundScores[i];
+        if (score === null) continue;
+        await prisma.publicPlayerRound.upsert({
+          where: { entryId_roundNumber: { entryId: entry.id, roundNumber: i + 1 } },
+          create: {
+            entryId: entry.id,
+            roundNumber: i + 1,
+            score,
+            source: t.sourceOrigin,
+          },
+          update: {
+            score,
+            source: t.sourceOrigin,
+          },
+        });
+        roundsRows++;
+      }
     }
 
     await prisma.tournament.update({
@@ -229,7 +276,13 @@ async function syncLeaderboards(): Promise<{
     });
   }
 
-  return { tournaments: tournaments.length, entries, playersCreated };
+  return {
+    tournaments: tournaments.length,
+    tournamentsTomtResultat,
+    entries,
+    roundsRows,
+    playersCreated,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -237,7 +290,7 @@ async function syncLeaderboards(): Promise<{
 // ---------------------------------------------------------------------------
 
 async function main() {
-  console.log(`[golfbox] mode=${MODE} limit=${LIMIT || "—"}`);
+  console.log(`[golfbox] mode=${MODE} limit=${LIMIT || "—"} siden=${SIDEN_ALT ? "alt" : "7d"}`);
 
   if (MODE === "schedule" || MODE === "all") {
     const start = Date.now();

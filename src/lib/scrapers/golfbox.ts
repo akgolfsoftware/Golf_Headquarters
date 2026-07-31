@@ -316,10 +316,15 @@ type RawLeaderboard = {
 export async function getLeaderboard(
   competitionId: number,
 ): Promise<GolfBoxLeaderboard | null> {
-  const raw = await fetchHandler<{ Classes?: Record<string, unknown> }>(
+  const raw = await fetchHandler<{
+    Classes?: Record<string, unknown>;
+    CompetitionData?: { Classes?: Record<string, unknown> };
+  }>(
     `/Handlers/LeaderboardHandler/GetLeaderboard/CompetitionId/${competitionId}/language/${LANG_EN}`,
   );
-  const classes = raw?.Classes;
+  // Noen turneringer legger klasselisten på CompetitionData.Classes i stedet
+  // for toppnivå Classes — sjekk begge før vi konkluderer med at det mangler.
+  const classes = raw?.Classes ?? raw?.CompetitionData?.Classes;
   if (!classes) return null;
 
   let roundNames: string[] = [];
