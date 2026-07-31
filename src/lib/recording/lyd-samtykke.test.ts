@@ -5,6 +5,12 @@ import {
   kanStarteFangst,
   lydSamtykkeMelding,
 } from "./lyd-samtykke";
+import {
+  erLydSamtykkeTokenGyldig,
+  lagLydSamtykkeToken,
+  lydSamtykkeTokenUtloper,
+} from "./lyd-samtykke-token";
+import { byggLydSamtykkeForesattEpost } from "./lyd-samtykke-email";
 
 describe("lyd-samtykke (hard gate)", () => {
   it("kanStarteFangst bare ved GITT", () => {
@@ -60,5 +66,71 @@ describe("lyd-samtykke (hard gate)", () => {
       gittAt: null,
     });
     assert.match(mT, /trukket/i);
+  });
+});
+
+describe("lyd-samtykke token + e-post", () => {
+  it("lagLydSamtykkeToken er unik og lang nok", () => {
+    const a = lagLydSamtykkeToken();
+    const b = lagLydSamtykkeToken();
+    assert.notEqual(a, b);
+    assert.ok(a.length >= 32);
+  });
+
+  it("erLydSamtykkeTokenGyldig respekterer status og utløp", () => {
+    const naa = new Date("2026-07-31T12:00:00Z");
+    const ok = erLydSamtykkeTokenGyldig({
+      token: "abc",
+      tokenExpiresAt: new Date("2026-08-10T12:00:00Z"),
+      status: "VENTER",
+      naa,
+    });
+    assert.equal(ok, true);
+
+    assert.equal(
+      erLydSamtykkeTokenGyldig({
+        token: "abc",
+        tokenExpiresAt: new Date("2026-07-01T12:00:00Z"),
+        status: "VENTER",
+        naa,
+      }),
+      false,
+    );
+
+    assert.equal(
+      erLydSamtykkeTokenGyldig({
+        token: "abc",
+        tokenExpiresAt: new Date("2026-08-10T12:00:00Z"),
+        status: "GITT",
+        naa,
+      }),
+      false,
+    );
+
+    assert.equal(
+      erLydSamtykkeTokenGyldig({
+        token: null,
+        tokenExpiresAt: new Date("2026-08-10T12:00:00Z"),
+        status: "VENTER",
+        naa,
+      }),
+      false,
+    );
+  });
+
+  it("lydSamtykkeTokenUtloper er i fremtiden", () => {
+    const fra = new Date("2026-07-31T00:00:00Z");
+    const ut = lydSamtykkeTokenUtloper(fra, 14);
+    assert.equal(ut.getTime() - fra.getTime(), 14 * 24 * 60 * 60 * 1000);
+  });
+
+  it("byggLydSamtykkeForesattEpost inneholder navn og lenke", () => {
+    const e = byggLydSamtykkeForesattEpost({
+      spillerNavn: "Ola Nordmann",
+      consentUrl: "https://akgolf.no/auth/lyd-samtykke/tok123",
+    });
+    assert.match(e.subject, /Ola Nordmann/);
+    assert.match(e.html, /lyd-samtykke\/tok123/);
+    assert.match(e.html, /samtykke/i);
   });
 });

@@ -22,6 +22,11 @@
 
 ## Ikke i denne runden (bevisst)
 - Paper-port til `src/`
-- Foresatt-e-post med magisk lenke
 - Whisper range-spike (10 opptak på rangen)
 - Full Spillere-flate (Group.kind UI kan utvides senere)
+
+## Foresatt-e-post (kode levert — krever DKIM + SQL)
+- [x] Magisk lenke `/auth/lyd-samtykke/[token]` + send fra `/admin/recording`
+- [ ] Kjør SQL: `prisma/sql/2026-07-31-lyd-samtykke-token.sql` mot prod DIRECT_URL
+- [ ] DKIM grønn for `send.akgolf.no` (se `docs/LANSERING-P0-ANDERS.md` #1–4)
+- [ ] Test: send til egen innboks → åpne lenke → GITT

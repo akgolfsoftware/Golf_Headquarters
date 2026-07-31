@@ -1689,6 +1689,9 @@ model LydSamtykke {
   // Ordlyden det faktisk ble sagt ja til, lagret som kopi. Aldri en peker til
   // en tekst som kan endres i ettertid.
   ordlyd        String
+  // Magisk lenke til foresatt (null etter GITT/TRUKKET eller uten e-postflyt).
+  token           String?   @unique
+  tokenExpiresAt  DateTime?
   createdAt     DateTime  @default(now())
 
   @@unique([userId])
