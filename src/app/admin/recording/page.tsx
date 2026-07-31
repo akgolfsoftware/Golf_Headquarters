@@ -20,6 +20,7 @@ import {
   type AdminRecordingV2Data,
   type AdminRecordingRad,
 } from "@/components/admin/v2/AdminRecordingV2";
+import { hentLydSamtykkeKart } from "@/lib/recording/lyd-samtykke";
 
 type SearchParams = Promise<{ id?: string }>;
 
@@ -46,6 +47,9 @@ export default async function RecordingAdmin({ searchParams }: { searchParams?: 
       orderBy: { name: "asc" },
     }),
   ]);
+
+  // Hard gate for UI: Start-knapp skjules uten GITT (server avviser uansett).
+  const lydSamtykkeKart = await hentLydSamtykkeKart(spillere.map((s) => s.id));
 
   // Recovery: status=RECORDING for innlogget coach, startet >5 min siden,
   // ikke samme som aktiv recordingId i URL. valueOf() unngår react-compiler
@@ -143,7 +147,11 @@ export default async function RecordingAdmin({ searchParams }: { searchParams?: 
     recoveryStartedAtLabel: recovery
       ? recovery.startedAt.toLocaleString("nb-NO", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })
       : null,
-    spillere: spillere.map((s) => ({ id: s.id, navn: s.name })),
+    spillere: spillere.map((s) => ({
+      id: s.id,
+      navn: s.name,
+      lydSamtykkeGitt: lydSamtykkeKart[s.id] === true,
+    })),
     aktiv: aktivt
       ? {
           id: aktivt.id,

@@ -40,7 +40,12 @@ type Banner = {
   text: string;
 } | null;
 
-export type SpillerValg = { id: string; navn: string };
+export type SpillerValg = {
+  id: string;
+  navn: string;
+  /** true bare når LydSamtykke.status = GITT. Uten → Start-knapp skjules. */
+  lydSamtykkeGitt: boolean;
+};
 
 type Props = {
   recordingId: string | null;
@@ -295,6 +300,15 @@ export function RecordingControls({
       return;
     }
 
+    const spiller = spillere.find((s) => s.id === valgtSpiller);
+    if (spiller && !spiller.lydSamtykkeGitt) {
+      setBanner({
+        tone: "warn",
+        text: "Venter på samtykke fra foresatt. Opptak kan ikke starte.",
+      });
+      return;
+    }
+
     // Mikrofon FØR opprettelse av recording — ellers ligger det igjen tomme
     // RECORDING-rader hver gang coach avslår mikrofon-dialogen.
     let stream: MediaStream;
@@ -319,12 +333,19 @@ export function RecordingControls({
       const j = (await res.json().catch(() => ({}))) as {
         recordingId?: string;
         error?: string;
+        message?: string;
       };
       if (!res.ok || !j.recordingId) {
         stream.getTracks().forEach((t) => t.stop());
+        const samtykkeFeil =
+          j.error === "lyd-samtykke-mangler"
+            ? (j.message ?? "Venter på samtykke fra foresatt. Opptak kan ikke starte.")
+            : null;
         setBanner({
           tone: "error",
-          text: `Klarte ikke å starte opptak: ${j.error ?? res.status}`,
+          text:
+            samtykkeFeil ??
+            `Klarte ikke å starte opptak: ${j.error ?? res.status}`,
         });
         return;
       }
@@ -503,7 +524,20 @@ export function RecordingControls({
   const isRecordingActive = mode === "recording" || mode === "paused";
   const isFinalizing = mode === "finalizing";
   const isBehandler = mode === "behandler";
-  const canStart = mode === "idle" && !!valgtSpiller;
+  const valgtHarSamtykke =
+    !!valgtSpiller &&
+    (spillere.find((s) => s.id === valgtSpiller)?.lydSamtykkeGitt ?? false);
+  // Spec §4: Start-knapp vises ikke uten GITT — ikke bare disabled.
+  const canStart = mode === "idle" && valgtHarSamtykke;
+  const visStartKnapp =
+    !isRecordingActive &&
+    mode === "idle" &&
+    (!valgtSpiller || valgtHarSamtykke);
+  const visSamtykkeMelding =
+    !isRecordingActive &&
+    mode === "idle" &&
+    !!valgtSpiller &&
+    !valgtHarSamtykke;
 
   return (
     <div className="space-y-4">
@@ -623,11 +657,23 @@ export function RecordingControls({
             </label>
           )}
 
-          {!isRecordingActive ? (
+          {visSamtykkeMelding && (
+            <div className="flex flex-1 flex-col gap-1 rounded-md border border-border bg-card px-4 py-3">
+              <p className="text-[13px] font-medium text-foreground">
+                Venter på samtykke fra foresatt
+              </p>
+              <p className="text-[12px] text-muted-foreground">
+                Opptak kan ikke starte før lydsamtykke er registrert som GITT.
+                Send purring til foresatt (kommer i neste steg).
+              </p>
+            </div>
+          )}
+
+          {(visStartKnapp || isFinalizing || isBehandler) && !isRecordingActive && (
             <button
               type="button"
               onClick={startRecording}
-              disabled={!canStart}
+              disabled={!canStart || isFinalizing || isBehandler}
               className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-primary px-4 py-4 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
             >
               {isFinalizing || isBehandler ? (
@@ -637,7 +683,9 @@ export function RecordingControls({
               )}
               {isFinalizing ? "Fullfører …" : isBehandler ? "Behandler …" : "Start opptak"}
             </button>
-          ) : (
+          )}
+
+          {isRecordingActive && (
             <>
               <button
                 type="button"
