@@ -114,7 +114,7 @@ prisma/
 scripts/            # Engangs-/driftsscript: seed-screentest*.ts (Øyvind Rohjan) · drill-qa ·
                     # retag-drill-kategorier · check-action-auth.mjs · audit-rls · …
 docs/               # platform/ (NORDSTJERNE, AGENT-BRIEF, BUSINESS-RULES, DATA-MODEL, PLATFORM-PRD) ·
-                    # skjermtekst/ (copy-kilde) · design-system/ + redesign-v2/ (UTGÅTT, historikk) ·
+                    # skjermtekst/ (copy-kilde) · design-system/TEMA-LYS-MORK.md (tema-fasit) ·
                     # gdpr/ · juridisk/ · sikkerhet/ · opprydding/ · arkiv/
 e2e/                # Eldre e2e-suite (9 specs): auth-guard, IDOR, booking, marketing, lansering-smoke
 tests/e2e/          # Nyere smoke-/kvalitetssuite (24 specs): a11y, PWA, ruter, meta/OG, offline, ikoner
