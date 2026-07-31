@@ -81,6 +81,15 @@ Dekker: uinnlogget redirect på `/admin/recording`, `/admin/godkjenninger`, `/ad
 
 **Merk:** Playwright leser ikke `.env.local` selv — `tests/e2e/_auth-helpers.ts` laster den.
 
+### Full pilot-flyt (prod, uten mikrofon)
+
+```bash
+# E2E_COACH_EMAIL + E2E_COACH_PASSWORD i .env.local
+npm run pilot:flyt-smoke
+```
+
+Script: `scripts/pilot-flyt-smoke.mjs` — login → manuell lydsamtykke → start/complete/dummy/analyze → godkjenn → Før-kort. Demo-sjekkliste: `docs/pilot-demo-sjekkliste.md`.
+
 ### Seed test-bruker
 
 Når du vil kjøre credit-booking-testen lokalt:
