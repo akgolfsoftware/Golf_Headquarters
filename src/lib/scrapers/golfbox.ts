@@ -110,6 +110,16 @@ export async function getCustomer(
 // GetSchedule — terminliste per kunde (sesong → måned → events)
 // ---------------------------------------------------------------------------
 
+const SignupInformationSchema = z
+  .object({
+    EnableOnlineEntry: z.boolean().optional(),
+    EntryOpens: z.string().nullable().optional(),
+    EntryCloses: z.string().nullable().optional(),
+    EntryWindowOpen: z.boolean().optional(),
+  })
+  .nullable()
+  .optional();
+
 const ScheduleEntrySchema = z.object({
   ID: z.number(),
   Name: z.string(),
@@ -117,6 +127,7 @@ const ScheduleEntrySchema = z.object({
   StartDate: z.string().optional(),
   EndDate: z.string().optional(),
   VenueName: z.string().nullable().optional(),
+  SignupInformation: SignupInformationSchema,
 });
 
 export type GolfBoxScheduleEvent = {
@@ -126,6 +137,9 @@ export type GolfBoxScheduleEvent = {
   startDate: Date | null;
   endDate: Date | null;
   venue: string | null;
+  /** Påmeldingsfrist (UTC midnatt for datoen i feeden). */
+  entryCloses: Date | null;
+  entryOpens: Date | null;
 };
 
 // GolfBox-datoformat: "20260214T000000"
@@ -167,6 +181,8 @@ export async function getSchedule(
           startDate: parseGolfBoxDate(e.StartDate),
           endDate: parseGolfBoxDate(e.EndDate),
           venue: e.VenueName ?? null,
+          entryCloses: parseGolfBoxDate(e.SignupInformation?.EntryCloses),
+          entryOpens: parseGolfBoxDate(e.SignupInformation?.EntryOpens),
         });
       }
     }

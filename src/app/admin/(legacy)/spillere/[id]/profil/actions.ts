@@ -9,6 +9,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { emailLayout, primaryButton } from "@/lib/email/templates/shared";
 import type { ParentLinkRelation } from "@/generated/prisma/client";
@@ -26,15 +27,18 @@ export async function inviterForelderForSpiller(input: {
   email: string;
   relation: ParentLinkRelation;
 }): Promise<{ ok: true } | { ok: false; error: string }> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const actor = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   const email = input.email.trim().toLowerCase();
   if (!email || !email.includes("@")) {
     return { ok: false, error: "Ugyldig e-postadresse." };
   }
 
-  const player = await prisma.user.findUnique({
-    where: { id: input.playerId },
+  // Coach-scoping FØR skriving: rolle-sjekk alene er ikke nok. Uten porten
+  // kunne en coach koble en vilkårlig e-post som forelder til en hvilken som
+  // helst spiller — og invitasjonen sendes faktisk ut på e-post.
+  const player = await prisma.user.findFirst({
+    where: { AND: [coachScopedPlayerWhere(actor), { id: input.playerId }] },
     select: { id: true, name: true, role: true },
   });
   if (!player || player.role !== "PLAYER") {

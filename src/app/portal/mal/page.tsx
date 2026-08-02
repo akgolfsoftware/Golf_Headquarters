@@ -14,15 +14,18 @@ import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MalHubV2, type MalHubData, type MalGoalStatus, type MalGoalRad } from "@/components/portal/v2/MalHubV2";
 import type { Goal } from "@/generated/prisma/client";
 import { TilbakeLenke } from "@/components/v2";
+import { beregnGoalProgress } from "@/lib/portal/goals/progress";
 
 export const dynamic = "force-dynamic";
 
-// ── Mapping (speil av ekte side) ─────────────────────────────────────
+// ── Mapping ────────────────────────────────────────────────────────
 
 const TYPE_LABELS: Record<string, string> = {
   HCP_TARGET: "HCP",
   ROUNDS_PER_MONTH: "RUNDER",
   SG_AREA: "SG",
+  SESSION_FREQUENCY: "ØKTER",
+  TEST_SCORE: "TEST",
   FREE_TEXT: "MÅL",
 };
 
@@ -34,38 +37,28 @@ function formatKortDato(d: Date): string {
   return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" });
 }
 
-function beregnFremdrift(goal: Goal, hcp: number | null): { pct: number; status: MalGoalStatus; sub: string } {
-  const { type, targetValue, targetDate } = goal;
+const STATUS_LABELS: Record<MalGoalStatus, string> = {
+  "on-track": "På sporet",
+  behind: "Bak plan",
+  achieved: "Oppnådd",
+  "no-data": "Ingen data ennå",
+};
 
-  // HCP-mål: reise fra 54 → målverdi
-  if (type === "HCP_TARGET" && targetValue !== null && hcp !== null) {
-    const start = 54;
-    const range = Math.max(0.1, start - targetValue);
-    const reise = Math.max(0, start - hcp);
-    const pct = Math.min(100, Math.round((reise / range) * 100));
-    const fristStr = targetDate ? `Frist: ${formatKortDato(targetDate)}` : "Ingen frist";
-    const delta = +(hcp - targetValue).toFixed(1);
-    const sub =
-      delta > 0
-        ? `${hcp.toFixed(1)} nå · trenger ${delta.toFixed(1)} til · ${fristStr}`
-        : `Mål nådd! HCP ${hcp.toFixed(1)}`;
-    const status: MalGoalStatus = pct >= 100 ? "achieved" : pct >= 50 ? "on-track" : "behind";
-    return { pct, status, sub };
-  }
-
-  // Fallback — ingen kalkulerbar fremdrift
-  const sub = targetDate ? `Frist: ${formatKortDato(targetDate)}` : goal.title;
-  return { pct: 0, status: "on-track", sub };
-}
-
-function mapGoalRow(goal: Goal, hcp: number | null): MalGoalRad {
-  const { pct, status, sub } = beregnFremdrift(goal, hcp);
-  const STATUS_LABELS: Record<MalGoalStatus, string> = {
-    "on-track": pct >= 80 ? "Nær mål" : "På sporet",
-    behind: "Bak plan",
-    achieved: "Oppnådd",
+async function mapGoalRow(goal: Goal, hcp: number | null): Promise<MalGoalRad> {
+  const progress = await beregnGoalProgress(goal, { hcp });
+  const fristStr = goal.targetDate ? `Frist: ${formatKortDato(goal.targetDate)}` : "Ingen frist";
+  const statusLabel =
+    progress.status === "on-track" && progress.pct >= 80 ? "Nær mål" : STATUS_LABELS[progress.status];
+  return {
+    id: goal.id,
+    type: typeLabel(goal.type),
+    title: goal.title,
+    pct: progress.pct,
+    sub: progress.hasData ? `${progress.detail} · ${fristStr}` : fristStr,
+    status: progress.status,
+    statusLabel,
+    hasData: progress.hasData,
   };
-  return { id: goal.id, type: typeLabel(goal.type), title: goal.title, pct, sub, status, statusLabel: STATUS_LABELS[status] };
 }
 
 const ACHIEVEMENT_TITLER: Record<string, string> = {
@@ -97,7 +90,7 @@ export default async function V2MalPreviewPage() {
 
   const data: MalHubData = {
     antall: goals.length,
-    goals: goals.map((g) => mapGoalRow(g, user.hcp)),
+    goals: await Promise.all(goals.map((g) => mapGoalRow(g, user.hcp))),
     milepael: sisteMilepael
       ? {
           tittel: ACHIEVEMENT_TITLER[sisteMilepael.kind] ?? sisteMilepael.kind,

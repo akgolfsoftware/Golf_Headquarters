@@ -17,6 +17,7 @@ import { prisma } from "@/lib/prisma";
 import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { generateWeekSuggestions } from "@/lib/ai-plan/week-suggest";
 import { parseSessionBudget, budsjettSum } from "@/lib/workbench/perioder";
+import { byggProvenance } from "./provenance";
 
 function nesteMandag(): Date {
   const d = new Date();
@@ -121,6 +122,12 @@ export async function runWeeklyPlanProposals(): Promise<{
             forklaring: `${valgt.focusBlend}${aktivPeriode ? ` · periode: ${aktivPeriode.lPhase}` : ""}${maalOkter > 0 ? ` · budsjett ${maalOkter} økter/uke` : ""}`,
             sessions,
           },
+          provenance: byggProvenance({
+            kilde: "PLAN",
+            rader: aktivPeriode ? [{ id: aktivPeriode.id, dato: aktivPeriode.startDate.toISOString() }] : [],
+            regel: "ukentlig automatisk ukeforslag (søndagsjobb)",
+            tidsvindu: { fra: aktivPeriode?.startDate ?? weekStart, til: aktivPeriode?.endDate ?? weekStart },
+          }),
         },
       });
       forslag++;

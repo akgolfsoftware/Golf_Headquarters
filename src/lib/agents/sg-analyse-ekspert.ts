@@ -3,10 +3,11 @@
 import { prisma } from "@/lib/prisma";
 import { aggregateSg } from "@/lib/sg";
 import { SG_TO_PYRAMID, SG_TO_SKILL } from "@/lib/training/skills";
-import { mapSgBandToFault } from "@/lib/training/skills/morad-fault";
+import { sgBandFaultKandidater } from "@/lib/training/skills/morad-fault";
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { varsleVedPlanAction } from "./notify-plan-action";
+import { byggProvenance } from "./provenance";
 
 export const AGENT_NAME = "sg-analyse-ekspert";
 
@@ -47,7 +48,7 @@ export async function runSgAnalyseEkspert(
       return { signalsWritten: 0, planActionsWritten: 0 };
     }
 
-    const moradFaultId = mapSgBandToFault(primary);
+    const faultKandidater = sgBandFaultKandidater(primary);
     const plan = await prisma.trainingPlan.findFirst({
       where: { userId, isActive: true },
       select: { id: true },
@@ -65,9 +66,12 @@ export async function runSgAnalyseEkspert(
     }
 
     const coachId = await resolveCoachIdForPlayer(userId);
-    const forklaring = moradFaultId
-      ? `SG ${primary} ${sgValue.toFixed(2)} — MORAD-funn ${moradFaultId}. Prioriter ${SG_TO_SKILL[primary]}.`
-      : `SG ${primary} ${sgValue.toFixed(2)} — prioriter ${SG_TO_SKILL[primary]} neste uke.`;
+    // SG er hypotese, ikke diagnose: kandidatene er likestilte, og ingen av dem
+    // skal formuleres som et funn før video, sikte og køllevalg er sjekket.
+    const forklaring =
+      faultKandidater.length > 0
+        ? `SG ${primary} ${sgValue.toFixed(2)} — peker mot ${faultKandidater.join(", ")}. Må bekreftes med video, sikte og køllevalg. Prioriter ${SG_TO_SKILL[primary]}.`
+        : `SG ${primary} ${sgValue.toFixed(2)} — prioriter ${SG_TO_SKILL[primary]} neste uke.`;
 
     const created = await prisma.planAction.create({
       data: {
@@ -79,7 +83,7 @@ export async function runSgAnalyseEkspert(
         suggestion: {
           skillArea: SG_TO_SKILL[primary],
           pyramidArea: SG_TO_PYRAMID[primary],
-          moradFaultId,
+          moradFaultKandidater: faultKandidater,
           forklaring,
           signalSnapshot: {
             kind: `SG_${primary}`,
@@ -87,6 +91,13 @@ export async function runSgAnalyseEkspert(
             runder: runder.length,
           },
         },
+        provenance: byggProvenance({
+          kilde: "RUNDER",
+          rader: runder.map((r) => ({ id: r.id, dato: r.playedAt.toISOString() })),
+          regel: `SG ${primary} under terskel ${SG_TERSKEL}`,
+          terskel: SG_TERSKEL,
+          maaltVerdi: sgValue,
+        }),
       },
     });
 

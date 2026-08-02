@@ -14,8 +14,8 @@
 | **Behandlingsgrunnlag** | Avtale (GDPR art. 6(1)(b)) |
 | **Kategorier av personopplysninger** | Navn, e-postadresse, telefonnummer, passord-hash (Supabase), fødselsdato (for mindreårige), profilbilde |
 | **Oppbevaringslengde** | Slettes 30 dager etter kontoslett-forespørsel |
-| **Mottakere / databehandlere** | Supabase Inc. (EU-region), Vercel Inc. (infrastruktur) |
-| **Overføring til tredjeland** | Ja — Supabase og Vercel (USA). DPA på plass med begge. |
+| **Mottakere / databehandlere** | Supabase Inc. (data lagres i London, Storbritannia), Vercel Inc. (infrastruktur, London) |
+| **Overføring til tredjeland** | Ja — data lagres i Storbritannia, og både Supabase og Vercel er USA-baserte selskaper. DPA på plass med begge. |
 | **Automatiserte avgjørelser** | Nei |
 
 ---

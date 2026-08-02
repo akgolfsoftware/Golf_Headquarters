@@ -51,7 +51,11 @@ export default async function V2GrupperPage() {
   });
   const coaches = coachesRaw.map((c) => ({ id: c.id, name: c.name ?? "Ukjent" }));
 
+  // Coach-scoping: en COACH ser kun grupper hun eier (Group.coachId) — samme
+  // eierskapsmodell som coachScopedPlayerWhere allerede bygger på. ADMIN ser
+  // alle, inkludert grupper uten tildelt coach.
   const groups = await prisma.group.findMany({
+    where: user.role === "COACH" ? { coachId: user.id } : {},
     select: {
       id: true,
       name: true,

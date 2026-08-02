@@ -7,7 +7,7 @@
 // For kortere vindu komprimeres modellen — siste 2 uker er alltid TAPER.
 
 import "server-only";
-import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "../client";
+import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "../client";
 import { bompaSkill } from "../skills/bompa-perioder";
 import { pyramideSkill } from "../skills/pyramide-taksonomi";
 import { prisma } from "@/lib/prisma";
@@ -122,7 +122,7 @@ export async function foreslaPeakingPlan(opts: {
   const userPrompt = byggUserPrompt(spiller, tournament, ukerTilTurnering, fasePerUke);
   try {
     const response = await anthropic.messages.create({
-      model: AI_MODEL,
+      model: modelFor("performance-peaking"),
       max_tokens: AI_MAX_TOKENS,
       system: PERFORMANCE_PEAKING_SYSTEM,
       messages: [{ role: "user", content: userPrompt }],

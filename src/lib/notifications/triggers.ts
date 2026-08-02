@@ -107,6 +107,13 @@ export const TRIGGERS = {
     emailSlug: "plan-tildelt",
     priority: "high",
   },
+  SESSION_INVITE: {
+    key: "session-invite",
+    label: "Invitasjon til å trene sammen",
+    category: "spiller",
+    channels: ["in-app", "push"],
+    priority: "normal",
+  },
   COACH_MESSAGE: {
     key: "coach-message",
     label: "Ny melding fra coach",

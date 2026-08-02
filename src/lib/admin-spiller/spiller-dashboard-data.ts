@@ -12,8 +12,16 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { hentSamtykkeStatus } from "@/lib/health/samtykke";
+import { hentRestitusjonsstatus, type Restitusjonsstatus } from "@/lib/health/restitusjonsstatus";
+import { innsynsNivaaFra, maskerLeaves, type SettLeave } from "@/lib/health/leave-innsyn";
 
 export interface SpillerDashboardEkstra {
+  /**
+   * Rå helsetall — KUN når spilleren har gitt COACH_DETALJ. Uten det er lista
+   * tom, og `restitusjon` under er alt coachen får se. Se
+   * src/lib/health/samtykke.ts.
+   */
   helse: {
     date: Date;
     restingHr: number | null;
@@ -21,14 +29,14 @@ export interface SpillerDashboardEkstra {
     sleepHours: number | null;
     weightKg: number | null;
   }[];
-  leaves: {
-    reason: string;
-    startAt: Date;
-    endAt: Date | null;
-    isInjury: boolean;
-    returnedAt: Date | null;
-    description: string | null;
-  }[];
+  /**
+   * Grønn/gul/rød, det coachen ser som standard. `null` når spilleren ikke har
+   * gitt coach-innsyn i det hele tatt — da skal skjermen si det ærlig, ikke
+   * late som det ikke finnes data.
+   */
+  restitusjon: Restitusjonsstatus | null;
+  /** Maskert etter samtykke — helsedelen kan være holdt tilbake. */
+  leaves: SettLeave[];
   abonnement: {
     tier: string;
     status: string;
@@ -95,9 +103,15 @@ export interface SpillerDashboardEkstra {
 export async function loadSpillerDashboardEkstra(playerId: string): Promise<SpillerDashboardEkstra> {
   const now = new Date();
 
+  // Samtykket avgjør hva av helsedataene under som i det hele tatt når fram
+  // til coachen. Hentes først, så filtreringen er umulig å hoppe over.
+  const samtykkeStatus = await hentSamtykkeStatus(playerId);
+  const nivaa = innsynsNivaaFra(samtykkeStatus);
+
   const [
-    helse,
-    leaves,
+    helseRaa,
+    restitusjon,
+    leavesRaa,
     abonnement,
     betalinger,
     bookingerKommende,
@@ -121,12 +135,19 @@ export async function loadSpillerDashboardEkstra(playerId: string): Promise<Spil
     caddieSiste,
     varsler,
   ] = await Promise.all([
-    prisma.healthEntry.findMany({
-      where: { userId: playerId },
-      orderBy: { date: "desc" },
-      take: 7,
-      select: { date: true, restingHr: true, hrv: true, sleepHours: true, weightKg: true },
-    }),
+    // Rå tall hentes bare når coachen faktisk har lov å se dem — ikke hentet
+    // og deretter forkastet, men aldri lest ut av databasen i det hele tatt.
+    nivaa === "DETALJ"
+      ? prisma.healthEntry.findMany({
+          where: { userId: playerId },
+          orderBy: { date: "desc" },
+          take: 7,
+          select: { date: true, restingHr: true, hrv: true, sleepHours: true, weightKg: true },
+        })
+      : Promise.resolve([]),
+    samtykkeStatus.coachInnsyn
+      ? hentRestitusjonsstatus(playerId, now)
+      : Promise.resolve(null),
     prisma.leave.findMany({
       where: { userId: playerId },
       orderBy: { startAt: "desc" },
@@ -278,8 +299,9 @@ export async function loadSpillerDashboardEkstra(playerId: string): Promise<Spil
   ]);
 
   return {
-    helse: helse.slice().reverse(), // eldst→nyest for sparklines
-    leaves,
+    helse: helseRaa.slice().reverse(), // eldst→nyest for sparklines
+    restitusjon,
+    leaves: maskerLeaves(leavesRaa, nivaa),
     abonnement,
     betalinger,
     bookingerKommende: bookingerKommende.map((b) => ({

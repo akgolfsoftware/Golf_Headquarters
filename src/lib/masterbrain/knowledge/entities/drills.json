@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0",
+  "status": "TOM — SKAL BYGGES PÅ NYTT",
+  "source": "Tømt 2026-07-31 etter beslutning fra Anders Kristiansen.",
+  "updated": "2026-07-31",
+  "description": "Drill-katalog for AK Golf Masterbrain. Katalogen er med vilje tom. Ingen agent skal foreslå drills før den er fylt på nytt.",
+  "begrunnelse": {
+    "hvorfor": "Den gamle banken hadde 9 drills, alle fullsving, og 5 drills det ble pekt på som aldri fantes. CS-spenn og pyramideområde motsa hverandre mellom drills.json og morad-drill-bank-core.md for 7 av 9. Å beholde den ville gitt agenten motstridende tall.",
+    "beslutning": "Hele banken (alle 14 navn) tas ut. Drills må utvikles først.",
+    "besluttet_av": "Anders Kristiansen, 2026-07-31",
+    "arkivert_kopi": "archive/from-akgolf-hq-2026-07-27/ og git-historikk før commit på fase1-rydd-fasiten"
+  },
+  "agent_regel": "Så lenge entities er tom: agenten skal si at drill-banken er under oppbygging, og aldri finne på en drill selv.",
+  "skjema_for_ny_drill": {
+    "name": "Visningsnavn",
+    "purpose": "Hva drillen retter",
+    "pyramid_area": "FYS | TEK | SLAG | SPILL | TURN",
+    "cs_min": "Laveste CS-nivå drillen kjøres på",
+    "cs_max": "Høyeste CS-nivå drillen kjøres på",
+    "target_faults": "Feil-ID-er fra entities/faults.json",
+    "p_positions_trained": "P1.0–P10.0",
+    "setup": "Liste med oppsett-steg",
+    "execution": "Liste med gjennomføringssteg",
+    "feel": "Følelsesbeskrivelse til spilleren",
+    "duration_minutes": "Varighet",
+    "reps": "Antall repetisjoner"
+  },
+  "fjernede_navn": {
+    "fantes_med_innhold": [
+      "hip_lead_drill",
+      "humeral_scapula_activation",
+      "knock_down_shot",
+      "lag_retention_drill",
+      "left_elbow_adduction",
+      "pump_drill",
+      "right_arm_angle_maintenance",
+      "spine_alignment_setup",
+      "three_momentum_transfer"
+    ],
+    "kun_referert_aldri_definert": [
+      "hip_rotation_drill",
+      "posture_maintenance",
+      "shoulder_tilt_drill",
+      "shoulder_turn_drill",
+      "x_factor_drill"
+    ]
+  },
+  "entities": {}
+}

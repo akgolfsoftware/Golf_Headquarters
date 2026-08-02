@@ -47,12 +47,22 @@ export interface AdminGodkjenningV2Row {
   kilde?: "agent" | "caddie" | "forespørsel";
   /** A1: kilder uten inline godkjenn-action lenker til sin flate. */
   eksternHref?: string | null;
+  /** Punkt 5: lesbar forklaring fra PlanAction.provenance. Skjules når null
+   *  (eldre saker uten strukturert kilde-sporing). */
+  hvorfor?: string | null;
 }
 export interface AdminGodkjenningerV2Data {
   rows: AdminGodkjenningV2Row[];
   lowRiskCount: number;
   /** Kanonisk kø-telling (koTelling) — samme tall som innboks-banner/varsler. */
   totalt?: number;
+  /** Nylig godkjente saker med sjekkpunkt (Løst / ETTER→FØR). */
+  lostSjekkpunkter?: {
+    id: string;
+    who: string;
+    sjekkpunkt: string;
+    when: string;
+  }[];
 }
 
 /** Dedupliseret sak: første rad + alle id-ene bak («×N»). Handlinger bruker
@@ -278,6 +288,21 @@ function SakKort({ row, mobile }: { row: SakMedAntall; mobile: boolean }) {
             </div>
           )}
 
+          {row.hvorfor && (
+            <div
+              style={{
+                fontFamily: T.ui,
+                fontSize: 11,
+                lineHeight: 1.5,
+                color: T.mut,
+                marginTop: 6,
+              }}
+            >
+              <span style={{ fontWeight: 700 }}>Hvorfor dette forslaget: </span>
+              {row.hvorfor}
+            </div>
+          )}
+
           {row.diffPreview && (
             <div
               style={{
@@ -477,6 +502,38 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
               Vis flere ({skjulteSaker})
             </Knapp>
           )}
+        </div>
+      )}
+
+      {(data.lostSjekkpunkter?.length ?? 0) > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <Caps>Løst · sjekkpunkt (ETTER → FØR)</Caps>
+          {data.lostSjekkpunkter!.map((l) => (
+            <Kort key={l.id}>
+              <div
+                style={{
+                  fontFamily: T.mono,
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: T.mut,
+                  letterSpacing: "0.04em",
+                }}
+              >
+                {l.who} · {l.when}
+              </div>
+              <p
+                style={{
+                  margin: "8px 0 0",
+                  fontFamily: T.ui,
+                  fontSize: 13,
+                  lineHeight: 1.5,
+                  color: T.fg,
+                }}
+              >
+                {l.sjekkpunkt}
+              </p>
+            </Kort>
+          ))}
         </div>
       )}
 

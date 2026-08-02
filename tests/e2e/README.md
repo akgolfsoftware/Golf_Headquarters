@@ -14,6 +14,9 @@ npm run test:e2e:ui
 # Headed (synlig browser)
 npm run test:e2e:headed
 
+# Pilot-smoke (opptak + Før/Etter — chromium)
+npm run test:e2e:pilot
+
 # Mot produksjon (Vercel)
 PLAYWRIGHT_BASE_URL=https://akgolf-hq.vercel.app npm run test:e2e
 ```
@@ -49,6 +52,7 @@ PLAYWRIGHT_BASE_URL=https://akgolf-hq.vercel.app npm run test:e2e
 | `splash-screens.spec.ts` | Minst én apple-splash returnerer 200 |
 | `robots-sitemap.spec.ts` | robots.txt + sitemap.xml svarer (200 eller 404, ikke 500) |
 | `https-redirect.spec.ts` | HSTS + X-Content-Type-Options på prod (skipper lokalt) |
+| `pilot-recording-smoke.spec.ts` | Pilot: auth-redirect + (med coach) opptak-UI, godkjenninger, Før-kort |
 
 ## Helpers
 
@@ -59,11 +63,24 @@ PLAYWRIGHT_BASE_URL=https://akgolf-hq.vercel.app npm run test:e2e
 - `screenshotOnFailure(page, name)` — manuell screenshot
 - `isOkOrRedirect(status)` — true ved 200 eller 3xx
 
+`_auth-helpers.ts` — innlogging for tester som trenger det:
+
+- `loginAsCoach(page)` — krever `E2E_COACH_EMAIL` + `E2E_COACH_PASSWORD`
+- `loginAsPlayer(page)` — krever `E2E_TEST_USER_EMAIL` + `E2E_TEST_USER_PASSWORD`
+- `hasCoachAuth()` — true når coach-credentials er satt
+
 ## Auth-strategi
 
-Disse smoke-testene kjører **uten innlogging**. Ruter som krever auth (`/portal`, `/admin`, `/coachhq`) verifiseres bare ved at de redirecter til `/auth/login` — det er en gyldig assertion.
+De fleste smoke-testene kjører **uten innlogging**. Ruter som krever auth (`/portal`, `/admin`) verifiseres ved at de redirecter til `/auth/login`.
 
-Full auth-flyt (innlogging, opprettelse av spiller, booking-flyt) implementeres i **fase 2** og krever en test-bruker i Supabase + en strategi for å mocke eller seede databasen.
+**Pilot-smoke** (`pilot-recording-smoke.spec.ts` / `npm run test:e2e:pilot`):
+
+| Env | Bruk |
+|---|---|
+| `SCREENTEST_PASSWORD` | Enklest — logger inn som `coachtest@akgolf.test` |
+| `E2E_COACH_EMAIL` + `E2E_COACH_PASSWORD` | Valgfri annen coach (overstyrer) |
+
+Uten passord: bare redirect-testene kjører. Seed coach første gang: `npx tsx scripts/seed-screentest-coach.ts`.
 
 ## CI
 

@@ -27,9 +27,19 @@ type TranscribeResultat = {
   durationSec?: number;
 };
 
-// Glossar gir Whisper kontekst → færre feiltranskripsjoner på golf-fagspråk.
-const GOLF_PROMPT =
-  "Norsk coaching-økt om golf. Faguttrykk: HCP, slope, swing path, low point, kompresjon, fade, draw, divot, lie-vinkel, smash factor, AOA, club path, face angle, putting, chip, pitch, bunker, range, fairway, green, hazard, bogey, par, birdie, eagle.";
+/**
+ * Whisper prompt/glossar (norsk). OpenAI begrenser prompt-lengde (~224 tokens) —
+ * hold tett og prioriter AK/MORAD over generiske engelske svingtermer.
+ *
+ * Eksport for enhetstest: bekreft at kanon-termer er med før range-spike.
+ */
+export const GOLF_PROMPT =
+  "Norsk golfcoaching-økt. AK/MORAD: P1.0 P2.0 P3.0 P4.0 P5.0 P6.0 P7.0 P8.0 P9.0 P10.0. " +
+  "CS20 CS40 CS50 CS60 CS80 CS100. L-KROPP L-ARM L-KØLLE L-BALL L-AUTO. " +
+  "M0 M1 M2 M3 M4 M5. PR1 PR2 PR3 PR4 PR5. " +
+  "Kategori A B C D E F G H I J K. Mini Knøtt Basis Utvikling Elite. " +
+  "Pyramide FYS TEK SLAG SPILL TURN. Periode GRUNN SPESIALISERING TURNERING. " +
+  "HCP slope fade draw divot bunker chip pitch putting fairway green range kompresjon.";
 
 export async function transkriber(
   input: TranscribeInput,

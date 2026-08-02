@@ -7,7 +7,7 @@ import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { stripeKlient } from "@/lib/stripe";
 import { audit } from "@/lib/audit";
-import { pushBookingToCalendar, removeFromCalendar } from "@/lib/google-calendar";
+import { pushBooking, fjernBooking } from "@/lib/google-calendar-kilder";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { notify } from "@/lib/notifications";
 import { isoDate } from "@/lib/validation/schemas";
@@ -111,9 +111,9 @@ export async function cancelBooking(bookingId: string) {
   // Slett event fra Google Calendar hvis pushet (best-effort)
   if (booking.googleEventId && booking.serviceType.coachUserId) {
     try {
-      await removeFromCalendar(
+      await fjernBooking(
         booking.serviceType.coachUserId,
-        booking.googleEventId,
+        booking.id,
       );
     } catch (err) {
       console.error("[cancel-booking] calendar-remove failed", err);
@@ -249,8 +249,9 @@ export async function rescheduleBooking(input: {
 
   try {
     await prisma.$transaction(async (tx) => {
-      await sjekkKollisjon(tx, {
+      const vern = await sjekkKollisjon(tx, {
         coachId: input.newCoachId ?? booking.coachId,
+        serviceTypeId: booking.serviceTypeId,
         facilityId: booking.facilityId,
         startAt: newStart,
         endAt: newEnd,
@@ -261,6 +262,7 @@ export async function rescheduleBooking(input: {
         data: {
           startAt: newStart,
           endAt: newEnd,
+          plassNr: vern.plassNr,
         },
       });
     });
@@ -274,7 +276,7 @@ export async function rescheduleBooking(input: {
   // Oppdater Google Calendar-event (push bruker eksisterende googleEventId)
   if (booking.googleEventId) {
     try {
-      await pushBookingToCalendar(booking.id);
+      await pushBooking(booking.id);
     } catch (err) {
       console.error("[reschedule] calendar push failed", err);
     }

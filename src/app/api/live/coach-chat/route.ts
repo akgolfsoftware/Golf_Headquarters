@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
-import { anthropic, AI_MODEL, isAiEnabled } from "@/lib/ai/client";
+import { anthropic, modelFor, isAiEnabled } from "@/lib/ai/client";
 import { recallMemory, formatMemoryForPrompt } from "@/lib/ai/memory";
 import { hentLiveCoachKontext } from "@/lib/ai/live-coach-context";
 import { bygLiveCoachSystemPrompt, type SystemPromptInput } from "@/lib/ai-plan/coach-prompt";
@@ -223,7 +223,7 @@ export async function POST(req: Request) {
       let fullSvar = "";
       try {
         const respons = await anthropic!.messages.stream({
-          model: AI_MODEL,
+          model: modelFor("live-coach-chat"),
           max_tokens: 512,
           system: systemPrompt,
           messages: apiMessages,

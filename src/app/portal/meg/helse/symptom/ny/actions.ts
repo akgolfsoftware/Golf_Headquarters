@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
+import { krevManuellHelseSamtykke } from "@/lib/health/samtykke";
 
 export type LogSymptomInput = {
   region: string;
@@ -22,7 +23,13 @@ export type LogSymptomInput = {
  * dersom skjemaet utvides). For nå brukes en stub som validerer auth.
  */
 export async function logSymptom(input: LogSymptomInput) {
-  await requireConsentingUser();
+  const user = await requireConsentingUser();
+
+  // Smerte, kroppsregion og ønske om fysio er helseopplysninger (art. 9) —
+  // porten må stå her allerede nå, ellers er den glemt den dagen stubben
+  // under byttes ut med en ekte skriving.
+  await krevManuellHelseSamtykke(user.id);
+
   void input;
   // I produksjon: prisma.symptomLog.create({ ... })
   revalidatePath("/portal/meg/helse");

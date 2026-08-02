@@ -22,6 +22,7 @@
 import { prisma } from "@/lib/prisma";
 import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { isAwaitingGuardianConsent } from "@/lib/auth/minor";
+import { byggProvenance } from "./provenance";
 
 const INAKTIV_DAGER = 14;
 const DEDUP_DAGER = 14;
@@ -136,6 +137,18 @@ export async function runChurnRadar(): Promise<{
               `og ta kontakt på egen måte.`,
             melding: utkast,
           },
+          provenance: byggProvenance({
+            kilde: "INNLOGGING",
+            rader: [
+              {
+                id: spiller.id,
+                dato: (spiller.lastLoginAt as Date).toISOString(),
+              },
+            ],
+            regel: `dager siden innlogging over terskel ${INAKTIV_DAGER}`,
+            terskel: INAKTIV_DAGER,
+            maaltVerdi: dager,
+          }),
         },
       });
       varsler++;

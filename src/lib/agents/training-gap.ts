@@ -15,6 +15,7 @@ import { prisma } from "@/lib/prisma";
 import { hentTreningsVolum } from "@/lib/training/volum";
 import type { SgCategory } from "@/generated/prisma/client";
 import { runAgent, type AgentResult } from "./agent-runner";
+import { byggProvenance } from "./provenance";
 
 export const AGENT_NAME = "training-gap";
 
@@ -134,6 +135,14 @@ export async function runTrainingGap(): Promise<AgentResult> {
             svakestMinutterSiste4Uker: svakestMinutter,
             forklaring: `${OMRAADE_LABEL[svakest]} er svakeste SG-område siste ${UKER_SG} uker (snitt ${snitt[svakest].toFixed(2)}), men får bare ${Math.round(andel * 100)} % av treningstid siste ${UKER_TRENING} uker.`,
           },
+          provenance: byggProvenance({
+            kilde: "RUNDER",
+            rader: [],
+            regel: `andel treningstid på svakeste SG-område under terskel ${TERSKEL_ANDEL}`,
+            terskel: TERSKEL_ANDEL,
+            maaltVerdi: andel,
+            tidsvindu: { fra: sgGrense, til: new Date() },
+          }),
         },
       });
       varsler++;

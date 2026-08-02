@@ -736,6 +736,23 @@ export async function executePlanAction(actionId: string): Promise<ExecuteResult
     };
   }
 
+  // Fangst-sjekkpunkt: godkjenning lukker ETTER og lagrer tråd til neste FØR
+  // (sjekkpunkt-felt settes i acceptAndApplyPlanAction).
+  if (action.actionType === "FANGST_SJEKKPUNKT") {
+    const sug = action.suggestion as { sjekkpunkt?: string; forklaring?: string };
+    const tekst =
+      (typeof sug?.sjekkpunkt === "string" && sug.sjekkpunkt.trim()) ||
+      (typeof sug?.forklaring === "string" && sug.forklaring.trim()) ||
+      "Sjekkpunkt godkjent";
+    return {
+      applied: true,
+      summary: tekst.slice(0, 500),
+      sessionsAdded: 0,
+      sessionsRemoved: 0,
+      sessionsModified: 0,
+    };
+  }
+
   // Test → full sving TM-baseline (godkjenn = skriv baselineValue)
   if (action.actionType === "TM_BASELINE_PROPOSE") {
     const s = action.suggestion as {

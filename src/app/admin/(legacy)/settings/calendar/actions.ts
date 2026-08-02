@@ -43,6 +43,7 @@ const oppdaterInputSchema = z.array(
     id: z.string().min(1),
     syncPush: z.boolean(),
     syncPull: z.boolean(),
+    visIKalender: z.boolean(),
     active: z.boolean(),
   }),
 );
@@ -50,9 +51,15 @@ const oppdaterInputSchema = z.array(
 export type OppdaterSubscriptionInput = z.infer<typeof oppdaterInputSchema>;
 
 /**
- * Oppdater push/pull/active for et sett med subscriptions.
- * Setter også opp watch (hvis pull går fra false → true) eller stopper
- * watch (hvis pull går fra true → false eller active går til false).
+ * Oppdater push/pull/vis/active for et sett med subscriptions.
+ *
+ * syncPull  = kalenderen blokkerer booking (freebusy)
+ * visIKalender = hendelsene speiles og vises i /admin/kalender
+ * De to er bevisst adskilt: familie- og kollegakalendere skal kunne vises
+ * uten å gjøre coachen utilgjengelig for kundebooking.
+ *
+ * Watch settes opp når kalenderen trenger varsler (pull ELLER vis), og
+ * stoppes når ingen av delene lenger gjelder.
  */
 export async function oppdaterSubscriptions(input: OppdaterSubscriptionInput) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
@@ -82,7 +89,7 @@ export async function oppdaterSubscriptions(input: OppdaterSubscriptionInput) {
     const naa = conn.subscriptions.find((s) => s.id === item.id);
     if (!naa) continue;
 
-    const skalHaWatch = item.syncPull && item.active;
+    const skalHaWatch = (item.syncPull || item.visIKalender) && item.active;
     const harWatch = !!naa.watchChannelId;
 
     await prisma.googleCalendarSubscription.update({
@@ -90,6 +97,7 @@ export async function oppdaterSubscriptions(input: OppdaterSubscriptionInput) {
       data: {
         syncPush: item.syncPush,
         syncPull: item.syncPull,
+        visIKalender: item.visIKalender,
         active: item.active,
       },
     });

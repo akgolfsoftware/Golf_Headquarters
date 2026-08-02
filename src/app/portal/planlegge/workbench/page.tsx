@@ -24,6 +24,7 @@ import { WorkbenchV2, type WorkbenchV2Actions } from "@/components/portal/v2/Wor
 import { applyWorkbenchTemplate } from "@/lib/workbench/apply-template-actions";
 import { addWorkbenchSession, moveWorkbenchSession, updateWorkbenchSession, removeWorkbenchSession, duplicateWorkbenchWeek, suggestWeekWithCaddie, applySuggestedWeek, lagreWorkbenchPeriode, slettWorkbenchPeriode, duplicateWorkbenchSession } from "./actions";
 import { sokTekniskOppgaver } from "@/lib/workbench/teknisk-oppgave-sok";
+import { hentSpillerSteder } from "@/lib/workbench/spiller-steder";
 import { lesPreferences } from "@/lib/preferences";
 
 export const dynamic = "force-dynamic";
@@ -38,6 +39,8 @@ export default async function V2WorkbenchPreviewPage({ searchParams }: Props) {
   const weekOffset = parseWeekOffset((await searchParams).uke);
   const ctx = await loadWorkbenchContext(user.id, weekOffset, { viewer: "player" });
   const { wbMode } = lesPreferences(user);
+  // Treningsstedene fra onboarding — hurtigvalg for «Hvor» i økt-arket.
+  const steder = await hentSpillerSteder(user.id);
 
   const actions: WorkbenchV2Actions = {
     addSession: addWorkbenchSession,
@@ -70,6 +73,7 @@ export default async function V2WorkbenchPreviewPage({ searchParams }: Props) {
         planStatus={ctx?.planStatus ?? null}
         actions={actions}
         wbMode={wbMode}
+        steder={steder}
       />
     </V2Shell>
   );

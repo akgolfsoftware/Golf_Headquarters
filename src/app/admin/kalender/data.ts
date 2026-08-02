@@ -18,6 +18,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { loadWeekCalendar } from "@/lib/admin-kalender/week-data";
+import { hentSpeiledeHendelser } from "@/lib/google-calendar-mirror";
 
 export type AkseKort = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
 
@@ -38,6 +39,23 @@ export interface KalOkt {
   erOppgave?: boolean;
   /** Bølge 5: TrainingSessionV2-id for drill-lesevisning (klikk → drilliste). */
   treningsSessionId?: string;
+  /** Steg 1 (2026-07-27): speilet hendelse fra Google Calendar. */
+  erGoogle?: boolean;
+  /** Navn på Google-kalenderen hendelsen kommer fra (vises som kilde). */
+  kalenderNavn?: string;
+  /** Googles egen farge på kalenderen (hex), brukes som prikk/stripe. */
+  kalenderFarge?: string | null;
+  /** Heldagshendelse — vises uten klokkeslett. */
+  heldag?: boolean;
+  /** Lenke til hendelsen i Google Calendar (åpnes i ny fane). */
+  googleLenke?: string | null;
+  /** Speilrad-id — nøkkelen som lar hendelsen redigeres (steg 4). */
+  googleMirrorId?: string;
+  /** «YYYY-MM-DDTHH:mm» for datetime-local-felt i redigeringsarket. */
+  startLokal?: string;
+  sluttLokal?: string;
+  /** Beskrivelsen fra Google, redigerbar i arket. */
+  notat?: string | null;
 }
 
 export interface KalDag {
@@ -100,6 +118,19 @@ function hhmm(d: Date): string {
 
 function ukedagIndex(d: Date): number {
   return (d.getDay() + 6) % 7;
+}
+
+/**
+ * «YYYY-MM-DDTHH:mm» for <input type="datetime-local">.
+ * Leser med lokale getters fordi speilede tider er naiv veggklokke — se
+ * google-calendar-tid.ts.
+ */
+function lokalInput(d: Date): string {
+  const p = (n: number) => String(n).padStart(2, "0");
+  return (
+    `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}` +
+    `T${p(d.getHours())}:${p(d.getMinutes())}`
+  );
 }
 
 export async function hentAgencyKalenderData(ukeParam?: string, userId?: string): Promise<KalenderData> {
@@ -277,6 +308,45 @@ export async function hentAgencyKalenderData(ukeParam?: string, userId?: string)
       naa: s.status === "IN_PROGRESS",
       treningsSessionId: s.id,
     });
+  }
+
+  // 6 · Speilede Google-hendelser (steg 1, 2026-07-27) — kun for innlogget
+  // coach: Google-tilkoblingen er personlig, og private avtaler skal ikke
+  // lekke til andre coacher. Hendelser som speiler en app-booking utelates
+  // av loaderen (de tegnes allerede fra Booking-kilden over).
+  if (userId) {
+    const googleHendelser = await hentSpeiledeHendelser(
+      userId,
+      ukeStart,
+      ukeSluttForHendelser,
+    );
+    for (const g of googleHendelser) {
+      const dayIndex = ukedagIndex(g.startAt);
+      if (dayIndex < 0 || dayIndex > 6) continue;
+      dager[dayIndex].okter.push({
+        id: `gcal-${g.id}`,
+        // Heldagshendelser sorteres først i dagen (startMin -1) og vises
+        // uten klokkeslett — samme uttrykk som i Google/Apple Calendar.
+        kl: g.allDay ? "Hele dagen" : hhmm(g.startAt),
+        startMin: g.allDay ? -1 : g.startAt.getHours() * 60 + g.startAt.getMinutes(),
+        navn: g.summary,
+        akse: undefined,
+        sted: g.location,
+        gruppe: null,
+        serie: null,
+        href: undefined,
+        naa: false,
+        erGoogle: true,
+        kalenderNavn: g.kalenderNavn,
+        kalenderFarge: g.kalenderFarge,
+        heldag: g.allDay,
+        googleLenke: g.htmlLink,
+        googleMirrorId: g.id,
+        startLokal: lokalInput(g.startAt),
+        sluttLokal: lokalInput(g.endAt),
+        notat: g.description,
+      });
+    }
   }
 
   // Sorter hver dag på starttid.

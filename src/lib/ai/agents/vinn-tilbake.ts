@@ -6,7 +6,7 @@
 // og coachens navn — slik at den føles personlig og ekte.
 
 import "server-only";
-import { anthropic, AI_MODEL, isAiEnabled } from "../client";
+import { anthropic, modelFor, isAiEnabled } from "../client";
 import { prisma } from "@/lib/prisma";
 
 export const VINN_TILBAKE_SYSTEM = `
@@ -180,7 +180,7 @@ Avslutt med en konkret invitasjon (booke time, planlegge runde, etc.).
 
   try {
     const response = await anthropic.messages.create({
-      model: AI_MODEL,
+      model: modelFor("caddie-proactive"),
       max_tokens: 300,
       system: VINN_TILBAKE_SYSTEM,
       messages: [{ role: "user", content: userPrompt }],

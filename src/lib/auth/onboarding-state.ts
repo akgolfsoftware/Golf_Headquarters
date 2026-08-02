@@ -1,8 +1,10 @@
 /**
  * Onboarding state-machine (P7 fra master-plan).
  *
- * Spiller-onboarding har 6 steg (nivåplasserings-quiz lagt til 2026-07-24
- * mellom golf-erfaring og coach/abonnement — ett spørsmål per skjerm).
+ * Spiller-onboarding har 7 steg («Dine tall» lagt til 2026-07-27 mellom
+ * golf-erfaring og nivåplassering — snittscore + SG-baseline, kan hoppes over.
+ * Nivåplasserings-quiz kom 2026-07-24). Må holdes i synk med TOTAL_STEPS i
+ * src/app/auth/onboarding/onboarding-wizard.tsx.
  * State lagres i User.preferences.onboarding. Forelder-onboarding har 4 steg.
  *
  * Bruker kan resume fra siste fullførte steg + 1 hvis de mister tilkobling.
@@ -21,7 +23,7 @@
 import { lesRaaPreferences } from "@/lib/preferences";
 import type { Prisma } from "@/generated/prisma/client";
 
-export const SPILLER_TOTAL_STEPS = 6;
+export const SPILLER_TOTAL_STEPS = 7;
 export const FORELDER_TOTAL_STEPS = 4;
 
 export type OnboardingStepState = {
