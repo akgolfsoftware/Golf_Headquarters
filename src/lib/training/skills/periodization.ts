@@ -1,4 +1,4 @@
-import { handhevTekMinimum } from "@/lib/training/invariants";
+import { tekAnbefalingsVarsel } from "@/lib/training/invariants";
 import { z } from "zod";
 
 export const periodTypeSchema = z.enum([
@@ -35,14 +35,17 @@ export type PeriodizationOutput = {
 };
 
 /**
- * CANON inv_1 (TEK ≥ 15 %) håndheves på vei ut: uansett hvilken gren som treffer,
- * kan denne skillen aldri levere en pyramide med for lite teknikk.
+ * Skillen foreslår en pyramidefordeling. Den låser den ikke: ligger TEK under
+ * CANON-anbefalingen, legges det et varsel i `begrensninger` — verdiene står.
  */
 export function runPeriodizationSkill(
   input: PeriodizationInput,
 ): PeriodizationOutput {
   const ut = beregnPeriodisering(input);
-  return { ...ut, pyramidOverride: handhevTekMinimum(ut.pyramidOverride) };
+  const varsel = tekAnbefalingsVarsel(ut.pyramidOverride);
+  return varsel
+    ? { ...ut, begrensninger: [...ut.begrensninger, varsel] }
+    : ut;
 }
 
 function beregnPeriodisering(
@@ -55,7 +58,7 @@ function beregnPeriodisering(
     return {
       weekType: "INJURY_MODIFIED",
       tillatTekniskeEndringer: false,
-      pyramidOverride: { FYS: 40, TEK: 15, SLAG: 15, SPILL: 20, TURN: 10 },
+      pyramidOverride: { FYS: 40, TEK: 10, SLAG: 20, SPILL: 20, TURN: 10 },
       begrensninger: ["Skade aktiv — reduser volum og intensitet."],
     };
   }
@@ -65,7 +68,7 @@ function beregnPeriodisering(
     return {
       weekType: "PRE_TOURNAMENT",
       tillatTekniskeEndringer: false,
-      pyramidOverride: { FYS: 10, TEK: 15, SLAG: 20, SPILL: 35, TURN: 20 },
+      pyramidOverride: { FYS: 10, TEK: 10, SLAG: 25, SPILL: 35, TURN: 20 },
       begrensninger: [
         `Turnering om ${dager} dager — vedlikehold og scoring.`,
       ],
@@ -77,7 +80,7 @@ function beregnPeriodisering(
     return {
       weekType: "TOURNAMENT",
       tillatTekniskeEndringer: false,
-      pyramidOverride: { FYS: 10, TEK: 15, SLAG: 25, SPILL: 30, TURN: 20 },
+      pyramidOverride: { FYS: 10, TEK: 10, SLAG: 30, SPILL: 30, TURN: 20 },
       begrensninger,
     };
   }
@@ -86,7 +89,7 @@ function beregnPeriodisering(
     return {
       weekType: "PERIOD_END",
       tillatTekniskeEndringer: false,
-      pyramidOverride: { FYS: 45, TEK: 15, SLAG: 15, SPILL: 15, TURN: 10 },
+      pyramidOverride: { FYS: 50, TEK: 10, SLAG: 15, SPILL: 15, TURN: 10 },
       begrensninger: ["Overgang/hvile — lav intensitet."],
     };
   }

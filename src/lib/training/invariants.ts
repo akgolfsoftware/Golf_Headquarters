@@ -37,46 +37,32 @@ export function validateExecutorDelta(
 
   return { ok: true };
 }
-// ---------- CANON inv_1: TEK-minimum ----------
+// ---------- CANON inv_1: TEK-anbefaling (varsel, ikke sperre) ----------
 
 /**
- * CANON v3.5, invariant 1: teknikk skal alltid utgjøre minst 15 % av pyramiden.
- * Periodiserings-skillen kunne tidligere returnere TEK = 10 % (skade, pre-turnering,
- * turneringsuke og periodeslutt) — maskinelt brudd på en invariant som aldri skal
- * kunne brytes. Verdiene er rettet ved kilden, og denne funksjonen er nettet under:
- * enhver pyramide som passerer her får TEK løftet til minimum.
+ * CANON v3.5, invariant 1: teknikk bør utgjøre minst 15 % av pyramiden.
  *
- * Merk: dette SPERRER ingenting for spilleren (jf. husets invariant «anbefalinger
- * sperrer aldri») — den justerer en foreslått fordeling før den blir til en plan.
+ * Dette er en ANBEFALING, ikke en sperre. Fordelingen er ikke låst — spilleren
+ * (og coachen) setter sine egne verdier, og koden skal aldri skrive dem om i
+ * stillhet. Vi sier bare fra i klartekst når en foreslått fordeling ligger under
+ * CANON-nivået, slik at avviket er synlig og valgt, ikke usett.
+ *
+ * Jf. husets invariant 1: anbefalinger sperrer aldri.
  */
-export const MIN_TEK_PROSENT = 15;
+export const ANBEFALT_MIN_TEK_PROSENT = 15;
 
 export type Pyramide = Partial<
   Record<"FYS" | "TEK" | "SLAG" | "SPILL" | "TURN", number>
 >;
 
 /**
- * Løfter TEK til minimum 15 % og tar differansen fra det største andre området,
- * slik at summen holder seg uendret. Returnerer pyramiden urørt hvis den allerede
- * oppfyller minimumet (eller er null/tom).
+ * Returnerer en varseltekst hvis TEK ligger under CANON-anbefalingen, ellers null.
+ * Kalleren legger teksten i `begrensninger` (eller viser den i UI). Verdiene
+ * røres ikke.
  */
-export function handhevTekMinimum<T extends Pyramide | null>(pyramide: T): T {
-  if (!pyramide) return pyramide;
+export function tekAnbefalingsVarsel(pyramide: Pyramide | null): string | null {
+  if (!pyramide) return null;
   const tek = pyramide.TEK ?? 0;
-  if (tek >= MIN_TEK_PROSENT) return pyramide;
-
-  const mangler = MIN_TEK_PROSENT - tek;
-  const andre = (["FYS", "SLAG", "SPILL", "TURN"] as const).filter(
-    (k) => (pyramide[k] ?? 0) > 0,
-  );
-  if (andre.length === 0) return pyramide;
-
-  const storst = andre.reduce((a, b) =>
-    (pyramide[b] ?? 0) > (pyramide[a] ?? 0) ? b : a,
-  );
-  return {
-    ...pyramide,
-    TEK: MIN_TEK_PROSENT,
-    [storst]: Math.max(0, (pyramide[storst] ?? 0) - mangler),
-  };
+  if (tek >= ANBEFALT_MIN_TEK_PROSENT) return null;
+  return `Teknikk ligger på ${tek} % denne uka — CANON anbefaler minst ${ANBEFALT_MIN_TEK_PROSENT} %. Fordelingen er din, men avviket er verdt å være klar over.`;
 }

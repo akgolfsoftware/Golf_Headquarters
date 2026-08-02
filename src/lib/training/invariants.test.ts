@@ -1,30 +1,35 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { MIN_TEK_PROSENT, handhevTekMinimum } from "./invariants";
+import { ANBEFALT_MIN_TEK_PROSENT, tekAnbefalingsVarsel } from "./invariants";
 import { runPeriodizationSkill } from "./skills/periodization";
 
-// CANON v3.5 invariant 1: TEK skal aldri kunne bli mindre enn 15 % av pyramiden.
+// CANON v3.5 invariant 1: TEK bør være minst 15 %. Det er en ANBEFALING —
+// fordelingen er ikke låst, og koden skal aldri skrive den om i stillhet.
 
-test("handhevTekMinimum løfter TEK og bevarer summen", () => {
-  const ut = handhevTekMinimum({ FYS: 40, TEK: 10, SLAG: 20, SPILL: 20, TURN: 10 });
-  assert.equal(ut.TEK, MIN_TEK_PROSENT);
-  const sum = Object.values(ut).reduce((a, b) => a + b, 0);
-  assert.equal(sum, 100, "summen skal være uendret");
+test("tekAnbefalingsVarsel sier fra når TEK er under anbefalingen", () => {
+  const varsel = tekAnbefalingsVarsel({ FYS: 40, TEK: 10, SLAG: 20, SPILL: 20, TURN: 10 });
+  assert.ok(varsel, "det skal komme et varsel");
+  assert.match(varsel, /10 %/);
+  assert.match(varsel, new RegExp(`${ANBEFALT_MIN_TEK_PROSENT} %`));
 });
 
-test("handhevTekMinimum rører ikke en pyramide som allerede oppfyller kravet", () => {
-  const inn = { FYS: 20, TEK: 30, SLAG: 20, SPILL: 20, TURN: 10 };
-  assert.deepEqual(handhevTekMinimum(inn), inn);
+test("tekAnbefalingsVarsel er stille når anbefalingen er oppfylt", () => {
+  assert.equal(
+    tekAnbefalingsVarsel({ FYS: 20, TEK: 30, SLAG: 20, SPILL: 20, TURN: 10 }),
+    null,
+  );
+  assert.equal(tekAnbefalingsVarsel({ TEK: ANBEFALT_MIN_TEK_PROSENT }), null);
 });
 
-test("handhevTekMinimum tåler null", () => {
-  assert.equal(handhevTekMinimum(null), null);
+test("tekAnbefalingsVarsel tåler null", () => {
+  assert.equal(tekAnbefalingsVarsel(null), null);
 });
 
-test("ingen periodiserings-gren kan gi TEK under 15 %", () => {
+test("periodiseringen endrer aldri fordelingen — den varsler bare", () => {
   const perioder = ["GRUNN", "SPES", "TURN", "HVILE", "OVERGANG"] as const;
   const dager = [null, 0, 3, 7, 14, 60];
   const ukeStart = new Date("2026-08-03T00:00:00.000Z");
+  let settLavTek = 0;
 
   for (const periodType of perioder) {
     for (const skadeAktiv of [false, true]) {
@@ -39,15 +44,25 @@ test("ingen periodiserings-gren kan gi TEK under 15 %", () => {
             totaleUker: 12,
           });
           if (ut.pyramidOverride === null) continue;
-          const tek = ut.pyramidOverride.TEK ?? 0;
-          assert.ok(
-            tek >= MIN_TEK_PROSENT,
-            `${periodType}/skade=${skadeAktiv}/dager=${dagerTilTurnering} ga TEK ${tek}`,
-          );
+
           const sum = Object.values(ut.pyramidOverride).reduce((a, b) => a + b, 0);
           assert.equal(sum, 100, `${periodType} ga sum ${sum}, ikke 100`);
+
+          const tek = ut.pyramidOverride.TEK ?? 0;
+          const harVarsel = ut.begrensninger.some((b) => b.includes("Teknikk ligger på"));
+          if (tek < ANBEFALT_MIN_TEK_PROSENT) {
+            settLavTek++;
+            assert.ok(
+              harVarsel,
+              `${periodType}/skade=${skadeAktiv} har TEK ${tek} uten varsel`,
+            );
+          } else {
+            assert.ok(!harVarsel, `${periodType} varslet unødig på TEK ${tek}`);
+          }
         }
       }
     }
   }
+
+  assert.ok(settLavTek > 0, "testen skal faktisk ha truffet minst én lav-TEK-gren");
 });
