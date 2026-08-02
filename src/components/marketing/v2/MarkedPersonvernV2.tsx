@@ -284,6 +284,7 @@ export function MarkedPersonvernV2() {
                 <li><strong style={{ color: T.fg }}>Sletting av konto:</strong> ved forespørsel om sletting deaktiveres kontoen umiddelbart, med 30 dagers angrefrist. Deretter anonymiseres kontoen: personopplysninger (navn, e-post, telefon, bilde, fødselsdato) og all fritekst du selv har skrevet fjernes, mens avidentifisert treningshistorikk kan beholdes for akademiets utviklingsarbeid</li>
                 <li><strong style={{ color: T.fg }}>Regnskapsdata (fakturaer, betalinger):</strong> 5 år iht. bokføringsloven</li>
                 <li><strong style={{ color: T.fg }}>Coaching-opptak (lyd):</strong> lydfilen slettes automatisk etter 90 dager</li>
+                <li><strong style={{ color: T.fg }}>Feillogger:</strong> slettes automatisk etter 90 dager</li>
                 <li><strong style={{ color: T.fg }}>AI-chat-historikk:</strong> du kan be om sletting når som helst, og den slettes uansett ved konto-sletting</li>
               </JurUl>
             </JurSection>
