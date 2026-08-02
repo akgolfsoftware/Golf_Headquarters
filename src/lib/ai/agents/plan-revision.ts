@@ -11,6 +11,8 @@
 import "server-only";
 import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "../client";
 import { ALL_SKILLS } from "../skills";
+import { kjorGuards } from "@/lib/agenticos";
+import { loggInteraksjon } from "@/lib/agenticos/logg";
 import { prisma } from "@/lib/prisma";
 import { harManuellHelseSamtykke } from "@/lib/health/samtykke";
 import { erHelseLeave } from "@/lib/health/leave-innsyn";
@@ -54,7 +56,19 @@ export type PlanRevisionForslag = {
   spillerNavn: string;
   endringer: PlanRevisionEndring[];
   samletAnbefaling: string;
+  /**
+   * AgenticOS-interaksjonen som produserte forslaget. Null når demo-fallbacken
+   * kjørte — da fantes det ikke noe modellkall å måle.
+   */
+  interaksjonId?: string | null;
 };
+
+/**
+ * Versjon av Plan Revision-prompten. Logges på hver AiInteraksjon.
+ * BUMP ved enhver endring i PLAN_REVISION_SYSTEM eller i skills-blokken.
+ */
+export const PLAN_REVISION_PROMPT_ID = "plan-revisjon";
+export const PLAN_REVISION_PROMPT_VERSJON = 1;
 
 export async function foreslaPlanRevisjon(opts: {
   planId: string;
@@ -91,18 +105,50 @@ export async function foreslaPlanRevisjon(opts: {
   }
 
   const userPrompt = byggUserPrompt(plan, opts.trigger, kontekst, opts.context);
+  const modell = modelFor("plan-revisjon");
+  const start = Date.now();
   const response = await anthropic.messages.create({
-    model: modelFor("plan-revisjon"),
+    model: modell,
     max_tokens: AI_MAX_TOKENS,
     system: PLAN_REVISION_SYSTEM,
     messages: [{ role: "user", content: userPrompt }],
   });
+  const latencyMs = Date.now() - start;
 
   const text = response.content
     .filter((b) => b.type === "text")
     .map((b) => (b.type === "text" ? b.text : ""))
     .join("\n")
     .trim();
+
+  // AgenticOS-loggen. Kun her, ikke i demo-grenen over — der finnes det ikke
+  // noe modellkall å måle, og en rad uten modell ville forurenset kost-per-svar.
+  // Konteksten er spillerdata (plan, økter, runder, helse) limt inn i
+  // brukermeldingen; ingen masterbrain-oppslag ennå.
+  const interaksjonId = await loggInteraksjon({
+    prompt: {
+      promptId: PLAN_REVISION_PROMPT_ID,
+      promptVersjon: PLAN_REVISION_PROMPT_VERSJON,
+      system: PLAN_REVISION_SYSTEM,
+      kontekstKilder: ["SPILLERDATA"],
+    },
+    klassifisering: {
+      // Dedikert flate med kjent formål — ruteren brukes ikke her.
+      intent: "plan",
+      domene: "PLAN",
+      rolle: "COACH",
+      mindreaarig: false,
+      confidence: 1,
+    },
+    modell,
+    tokensInn: response.usage?.input_tokens,
+    tokensUt: response.usage?.output_tokens,
+    latencyMs,
+    kontekstKilder: ["SPILLERDATA"],
+    guardTreff: kjorGuards(text),
+    userId: plan.userId,
+    agentNavn: "plan-revisjon",
+  });
 
   // Parsing: Vi prøver å lese strukturert JSON fra svaret. Hvis Claude returnerer
   // markdown/prosa, fall tilbake til demo-forslag og bruk Claude-teksten som
@@ -116,6 +162,7 @@ export async function foreslaPlanRevisjon(opts: {
       spillerNavn: plan.user.name,
       endringer: parsed,
       samletAnbefaling: text,
+      interaksjonId,
     };
   }
 
@@ -123,6 +170,9 @@ export async function foreslaPlanRevisjon(opts: {
   return {
     ...demo,
     samletAnbefaling: text || demo.samletAnbefaling,
+    // Modellen kjørte, men svaret var ikke parsbart — interaksjonen er reell og
+    // skal fortsatt kobles til forslagene.
+    interaksjonId,
   };
 }
 

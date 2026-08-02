@@ -46,7 +46,18 @@ await settUtfall({ interaksjonId: id, utfall: "AVVIST", begrunnelse: "feil perio
 |---|---|
 | `ai-plan/generate.ts` | **Koblet.** Logger promptversjon, modell, tokens, kost, latency, kontekstkilder og guard-treff. `lagrePlanForslagCore` setter `GODKJENT` når forslaget lagres som plan. |
 | Caddie (`/api/caddie/chat`) | **Koblet.** Én interaksjon per tur, klassifisert med ruteren (åpen chat). `CaddieDraft.interaksjonId` peker tilbake, så godkjenning/avvisning setter utfallet. |
-| Agentenes `PlanAction`-løp | Ikke koblet. |
+| `plan-revisjon` (`src/lib/ai/agents/plan-revision.ts`) | **Koblet.** Eneste LLM-drevne agent som skriver `PlanAction`. `PlanAction.interaksjonId` peker tilbake; `acceptPlanAction`/`rejectPlanAction` setter utfallet. |
+| Øvrige ~23 agenter som skriver `PlanAction` | **Bevisst ikke koblet** — deterministiske regler uten modellkall. Se under. |
+
+### Hvorfor de fleste agentene ikke logger
+
+`AiInteraksjon` måler AI-interaksjoner: promptversjon, modell, tokens, kost. De aller fleste agentene i
+`src/lib/agents/` er rene regler — `round-agent`, `plan-watcher`, `training-gap`, `sg-analyse-ekspert`,
+`booking-*` og resten kaller ingen modell. Rader for dem ville hatt tom modell og null kost, og forurenset
+både «kost per nyttig svar» og godkjenningsraten per promptversjon.
+
+De har allerede sin egen sporbarhet: `AgentRun` for kjøringer og `provenance` for hvorfor. Bruk de kildene
+til regelagenter, og `AiInteraksjon` til modellkall.
 
 En flate som ikke bruker `MALER` (som `ai-plan`, med egen system-prompt) konstruerer `BygdPrompt` selv med
 en egen `promptId` og en versjonskonstant som må bumpes ved tekstendringer.

@@ -5,6 +5,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { acceptAndApplyPlanAction } from "./accept-plan-action";
+import { settUtfall } from "@/lib/agenticos/logg";
 
 /** Spiller eier egen action; coach/admin kun for coachede spillere (+ coachId-match). */
 async function assertPlanActionAccess(
@@ -32,6 +33,7 @@ export async function acceptPlanAction(actionId: string) {
   if (action.status !== "PENDING") return;
 
   await acceptAndApplyPlanAction(actionId);
+  await lukkLaeringslokke(action.interaksjonId, "GODKJENT");
 
   revalidatePath("/portal");
   revalidatePath("/portal/agent-pipeline");
@@ -55,8 +57,30 @@ export async function rejectPlanAction(actionId: string) {
     where: { id: actionId },
     data: { status: "REJECTED" },
   });
+  await lukkLaeringslokke(action.interaksjonId, "AVVIST");
 
   revalidatePath("/portal");
   revalidatePath("/portal/agent-pipeline");
   revalidatePath("/admin/godkjenninger");
+}
+
+/**
+ * Melder utfallet tilbake til AgenticOS-loggen.
+ *
+ * Kun LLM-drevne agenter setter `interaksjonId` — de fleste agentene er
+ * deterministiske regler uten modellkall, og har ingenting å melde tilbake.
+ *
+ * Ett modellkall kan produsere flere forslag som behandles hver for seg.
+ * settUtfall rører kun rader som fortsatt står PENDING, så det FØRSTE
+ * forslaget som avgjøres setter interaksjonens utfall — en senere godkjenning
+ * overskriver ikke en tidligere avvisning. Samme regel som for Caddie-utkast.
+ *
+ * mindreaarig: vi lagrer ingen fritekst her, så porten er ikke i spill.
+ */
+async function lukkLaeringslokke(
+  interaksjonId: string | null,
+  utfall: "GODKJENT" | "AVVIST",
+): Promise<void> {
+  if (!interaksjonId) return;
+  await settUtfall({ interaksjonId, utfall, mindreaarig: false });
 }

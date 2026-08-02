@@ -1659,6 +1659,10 @@ model PlanAction {
   sjekkpunkt String?
   // Hvilken fangst (opptak) forslaget kom fra. Nullbar av samme grunn.
   fangstId   String?
+  // AgenticOS-interaksjonen som produserte forslaget. Kun satt for LLM-drevne
+  // agenter — de fleste agentene er deterministiske regler uten modellkall, og
+  // skal ikke forurense AI-loggen. Nullbar av samme grunn.
+  interaksjonId String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 

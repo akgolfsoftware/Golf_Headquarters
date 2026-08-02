@@ -103,6 +103,9 @@ export async function persistRevisionForslag(
         actionType,
         agentName: "plan-revision",
         suggestion,
+        // Kobler forslaget til modellkallet som produserte det, så en
+        // godkjenning eller avvisning kan lukke læringsløkken.
+        interaksjonId: forslag.interaksjonId ?? null,
       },
     });
     const forklaring =

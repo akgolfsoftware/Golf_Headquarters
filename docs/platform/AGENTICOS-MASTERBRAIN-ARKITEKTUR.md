@@ -608,13 +608,37 @@ og estimert kost — det som manglet var koblingen mellom promptversjon, guard-t
 
 DDL: `scripts/add-caddie-draft-interaksjon-2026-08-02.ts` (kjørt mot `dcnxoztjtdqoidaekxry`).
 
-### Gjenstår i fase 1
+### Tredje flate koblet på: agentenes `PlanAction`-løp
 
-- **Agentenes `PlanAction`-løp** skriver ennå ikke til loggen. Det er den siste store kilden, og den har
-  allerede ACCEPTED/REJECTED som ferdig utfallssignal.
-- **`FASIT` som kontekstlag.** Verken `ai-plan` eller Caddie henter fra masterbrain i dag, selv om
-  `sg-principles.json` og `canon-methodology.json` er direkte relevante. Ingen av flatene rapporterer
+Her viste kartleggingen noe verdt å vite: **av de ~24 filene som skriver `PlanAction`, er bare én
+LLM-drevet.** `plan-revision-actions.ts` (via `foreslaPlanRevisjon`) kaller en modell. Resten —
+`round-agent`, `plan-watcher`, `training-gap`, `sg-analyse-ekspert`, `periodiserings-agent`, hele
+`booking-*`-familien — er deterministiske regler.
+
+**Bare den ene er koblet på, og det er med vilje.** `AiInteraksjon` måler AI-interaksjoner: promptversjon,
+modell, tokens, kost. Rader for regelagenter ville hatt tom modell og null kost, og forurenset både «kost per
+nyttig svar» og godkjenningsraten per promptversjon. Regelagentene har allerede sin egen sporbarhet i
+`AgentRun` og `provenance` — det er riktig sted for dem.
+
+- `foreslaPlanRevisjon` logger **kun når modellen faktisk kjørte**. Demo-fallbacken (uten `ANTHROPIC_API_KEY`)
+  er deterministisk og logges ikke. Kjørte modellen men var svaret ikke parsbart, logges interaksjonen
+  likevel — kallet var reelt og kostet penger.
+- `PlanAction.interaksjonId` (ny nullbar kolonne) kobler forslaget til modellkallet.
+  `acceptPlanAction`/`rejectPlanAction` setter `GODKJENT`/`AVVIST`. Samme førstemann-vinner-regel som for
+  Caddie-utkast.
+- `PLAN_REVISION_PROMPT_ID`/`VERSJON` i `plan-revision.ts`.
+
+DDL: `scripts/add-plan-action-interaksjon-2026-08-02.ts` (kjørt mot `dcnxoztjtdqoidaekxry`).
+
+### Gjenstår
+
+- **`FASIT` som kontekstlag.** Ingen av de tre koblede flatene henter fra masterbrain, selv om
+  `sg-principles.json` og `canon-methodology.json` er direkte relevante for alle tre. Ingen rapporterer
   `FASIT` — det er nå synlig i dataene i stedet for skjult, og er den tydeligste forbedringen som venter.
+- **Øvrige LLM-agenter:** `drill-forslag`, `fabrikk`, `caddie-proactive`, `daily-brief`, `peaking` og
+  `live-coach` kaller modeller uten å logge. De skriver `CaddieDraft` eller ren tekst, ikke `PlanAction`.
+- **«Hvorfor avvist»-feltet** i godkjenningskøen, som mater `settUtfall` med den mest verdifulle
+  datakilden i hele systemet.
 - **SG-tolkning for spilleren** som første helt nye flate. Merk at den må formuleres som hypotese, og ikke
   kan foreskrive navngitte drills før drill-banken er bygget på nytt.
 - **«Hvorfor avvist»-feltet** i godkjenningskøen, som mater `settUtfall` med den mest verdifulle
