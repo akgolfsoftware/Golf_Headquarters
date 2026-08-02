@@ -12,7 +12,7 @@ type UpdateArgs = { where: { id: string }; data: Record<string, unknown> };
 type SettUtfallArgs = {
   interaksjonId: string;
   utfall: string;
-  mindreaarig: boolean;
+  begrunnelse?: string;
 };
 
 test("avgjorDraft setter status OG melder utfall i én operasjon", async (t) => {
@@ -47,11 +47,8 @@ test("avgjorDraft setter status OG melder utfall i én operasjon", async (t) => 
   assert.equal(draftUpdates[0].where.id, "d1");
   assert.equal(draftUpdates[0].data.status, "APPROVED");
   assert.ok(draftUpdates[0].data.resolvedAt instanceof Date);
-  assert.deepEqual(utfallKall[0], {
-    interaksjonId: "int-1",
-    utfall: "GODKJENT",
-    mindreaarig: false,
-  });
+  assert.equal(utfallKall[0].interaksjonId, "int-1");
+  assert.equal(utfallKall[0].utfall, "GODKJENT");
 
   // Avvisning → REJECTED / AVVIST.
   await avgjorDraft({ draftId: "d2", interaksjonId: "int-2", status: "REJECTED" });
@@ -69,12 +66,13 @@ test("avgjorDraft setter status OG melder utfall i én operasjon", async (t) => 
     "skal ikke kalle settUtfall når utkastet ikke er koblet til en interaksjon",
   );
 
-  // Mindreårig-flagget føres videre til GDPR-porten i loggen.
+  // Avvisningsgrunn føres videre til loggen. GDPR-porten står i settUtfall,
+  // ikke her — denne modulen skal ikke kjenne til alder.
   await avgjorDraft({
     draftId: "d4",
     interaksjonId: "int-4",
     status: "REJECTED",
-    mindreaarig: true,
+    begrunnelse: "Feil periode",
   });
-  assert.equal(utfallKall[2].mindreaarig, true);
+  assert.equal(utfallKall[2].begrunnelse, "Feil periode");
 });

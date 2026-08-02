@@ -13,6 +13,7 @@ import {
   avvisCaddieDraft,
   godkjennOgUtforCaddieDraft,
 } from "@/lib/caddie/draft-godkjenning";
+import { AVVIS_GRUNNER, erAvvisGrunn, type AvvisGrunn } from "@/lib/agenticos";
 
 /** Kjør den proaktive Caddie-agenten nå (manuell trigger). ADMIN-only. */
 export async function kjorCaddieProaktiv() {
@@ -23,9 +24,11 @@ export async function kjorCaddieProaktiv() {
 }
 
 /** Avvis et proaktivt forslag (PENDING → REJECTED). ADMIN-only. */
-export async function avvisProaktivtForslag(draftId: string) {
+export async function avvisProaktivtForslag(draftId: string, grunn?: AvvisGrunn) {
   const user = await requirePortalUser({ allow: ["ADMIN"] });
-  const res = await avvisCaddieDraft(draftId, user.id);
+  // Kun kjente koder — fritekst fra klienten slippes aldri rett inn i loggen.
+  const begrunnelse = grunn && erAvvisGrunn(grunn) ? AVVIS_GRUNNER[grunn] : undefined;
+  const res = await avvisCaddieDraft(draftId, user.id, begrunnelse);
   revalidatePath("/admin/agencyos/caddie/dashbord");
   revalidatePath("/admin/godkjenninger");
   return { ok: res.ok };

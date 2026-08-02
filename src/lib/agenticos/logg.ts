@@ -11,6 +11,7 @@
 
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import { isMinor } from "@/lib/auth/minor";
 import type { GuardTreff } from "./guards";
 import type { BygdPrompt } from "./prompt-bygger";
 import type { Klassifisering, KontekstKilde, Utfall } from "./typer";
@@ -72,22 +73,56 @@ export type UtfallInput = {
   interaksjonId: string;
   utfall: Utfall;
   rating?: 1 | -1;
-  /** Hvorfor avvist. Ignoreres for mindreårige — se GDPR-merknaden øverst. */
+  /**
+   * Hvorfor avvist. Lagres ALDRI når interaksjonen gjelder en mindreårig —
+   * porten står i denne modulen, ikke hos kalleren.
+   */
   begrunnelse?: string;
-  /** Gjelder interaksjonen en mindreårig spiller? Kalleren MÅ oppgi dette. */
-  mindreaarig: boolean;
 };
+
+/**
+ * Avgjør om fritekst kan lagres for en interaksjon.
+ *
+ * Porten lå tidligere som et `mindreaarig`-flagg hvert kallsted måtte sette
+ * riktig. Det var en felle: flagget sto hardkodet til `false` overalt fordi
+ * ingen flate lagret fritekst ennå. Nå slås det opp her, én gang, mot
+ * interaksjonens egen spiller — da kan det ikke settes feil.
+ *
+ * Ved tvil lagres ingenting: mangler brukeren, eller feiler oppslaget, faller
+ * vi til «behandle som mindreårig».
+ */
+async function kanLagreFritekst(interaksjonId: string): Promise<boolean> {
+  try {
+    const rad = await prisma.aiInteraksjon.findUnique({
+      where: { id: interaksjonId },
+      select: { userId: true },
+    });
+    // Ingen spiller knyttet til interaksjonen (f.eks. stall-brede agenter):
+    // ingen mindreårig kan identifiseres, og friteksten er om systemet.
+    if (!rad?.userId) return true;
+
+    const bruker = await prisma.user.findUnique({
+      where: { id: rad.userId },
+      select: { dateOfBirth: true, requiresGuardianConsent: true },
+    });
+    if (!bruker) return false;
+    return !isMinor(bruker.dateOfBirth) && !bruker.requiresGuardianConsent;
+  } catch (err) {
+    console.error("[agenticos] kunne ikke avgjøre mindreårig-status", err);
+    return false;
+  }
+}
 
 /**
  * Sett utfallet på en interaksjon. Dette er læringssignalet: koblingen mellom
  * «hvilken prompt ble brukt» og «var svaret godt nok til å bli brukt».
  */
 export async function settUtfall(input: UtfallInput): Promise<void> {
-  // Fritekst fra eller om mindreårige lagres ikke. Utfall og rating er koder og
-  // tall, og er trygge.
-  const begrunnelse = input.mindreaarig
-    ? null
-    : (input.begrunnelse?.trim().slice(0, 1000) || null);
+  const oenskerTekst = (input.begrunnelse ?? "").trim();
+  const begrunnelse =
+    oenskerTekst && (await kanLagreFritekst(input.interaksjonId))
+      ? oenskerTekst.slice(0, 1000)
+      : null;
 
   try {
     await prisma.aiInteraksjon.update({
@@ -116,20 +151,16 @@ export async function settUtfallForReferanse(input: {
   referanseId: string;
   utfall: Utfall;
   rating?: 1 | -1;
-  begrunnelse?: string;
-  mindreaarig: boolean;
 }): Promise<void> {
-  const begrunnelse = input.mindreaarig
-    ? null
-    : (input.begrunnelse?.trim().slice(0, 1000) || null);
-
+  // Bevisst uten `begrunnelse`: dette er en updateMany som kan treffe flere
+  // rader, og GDPR-porten må avgjøres per interaksjon. Trengs fritekst her,
+  // hent radene først og bruk settUtfall per id.
   try {
     await prisma.aiInteraksjon.updateMany({
       where: { referanseId: input.referanseId, utfall: "PENDING" },
       data: {
         utfall: input.utfall,
         rating: input.rating ?? null,
-        begrunnelse,
         resolvedAt: new Date(),
       },
     });

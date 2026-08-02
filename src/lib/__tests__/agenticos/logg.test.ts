@@ -1,23 +1,33 @@
-// Tester GDPR-porten i AgenticOS-loggen: fritekst skal ALDRI lagres for en
-// mindreårig. Porten står i skriveveien, ikke hos hver kaller — derfor testes
-// den her.
+// Låser GDPR-porten i AgenticOS-loggen: fritekst lagres ALDRI når
+// interaksjonen gjelder en mindreårig.
 //
-// Mønster: t.mock.module for "@/lib/prisma". VIKTIG (samme fallgruve som i
-// sg-analyse-ekspert.test.ts): modulen under test importeres KUN ÉN gang per
-// fil — Node re-evaluerer ikke et allerede lastet ES-modul ved senere
-// import()-kall. Derfor ett mock-oppsett med muterbar tilstand
-// (createSkalFeile), og alle scenarioer kjørt sekvensielt i samme test.
+// Porten lå tidligere som et `mindreaarig`-flagg hvert kallsted måtte sette
+// riktig — og som sto hardkodet til `false` overalt fordi ingen flate lagret
+// fritekst ennå. Nå slår `settUtfall` det opp selv mot interaksjonens spiller.
+// Denne testen låser at oppslaget faktisk skjer, og at tvil faller til «ikke
+// lagre».
+//
+// Mønster: ett t.mock.module-oppsett med muterbar tilstand. Modulen under test
+// importeres kun én gang per fil (Node re-evaluerer ikke en lastet ES-modul).
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import type { LoggInput } from "@/lib/agenticos/logg";
 
 type UpdateArgs = { where: unknown; data: Record<string, unknown> };
+type Bruker = { dateOfBirth: Date | null; requiresGuardianConsent: boolean };
 
-test("AgenticOS-loggen — GDPR-port på fritekst og best-effort-skriving", async (t) => {
+const VOKSEN: Bruker = { dateOfBirth: new Date("1985-05-05"), requiresGuardianConsent: false };
+const BARN: Bruker = { dateOfBirth: new Date("2014-05-05"), requiresGuardianConsent: false };
+const VENTER_SAMTYKKE: Bruker = { dateOfBirth: null, requiresGuardianConsent: true };
+
+test("AgenticOS-loggen — GDPR-port, utfall og best-effort-skriving", async (t) => {
   const updateKall: UpdateArgs[] = [];
   const updateManyKall: UpdateArgs[] = [];
   let createSkalFeile = false;
+  // Hvilken spiller interaksjonen peker på, og hvem den spilleren er.
+  let interaksjonUserId: string | null = "spiller-1";
+  let bruker: Bruker | null = VOKSEN;
 
   t.mock.module("@/lib/prisma", {
     namedExports: {
@@ -27,6 +37,7 @@ test("AgenticOS-loggen — GDPR-port på fritekst og best-effort-skriving", asyn
             if (createSkalFeile) throw new Error("tabellen finnes ikke ennå");
             return { id: "int-1" };
           },
+          findUnique: async () => ({ userId: interaksjonUserId }),
           update: async (args: UpdateArgs) => {
             updateKall.push(args);
             return { id: "int-1" };
@@ -36,6 +47,9 @@ test("AgenticOS-loggen — GDPR-port på fritekst og best-effort-skriving", asyn
             return { count: 1 };
           },
         },
+        user: {
+          findUnique: async () => bruker,
+        },
       },
     },
   });
@@ -44,23 +58,22 @@ test("AgenticOS-loggen — GDPR-port på fritekst og best-effort-skriving", asyn
     "@/lib/agenticos/logg"
   );
 
-  // Voksen: begrunnelsen lagres.
+  // Voksen spiller: begrunnelsen lagres.
   await settUtfall({
     interaksjonId: "int-1",
     utfall: "AVVIST",
-    begrunnelse: "feil periode",
-    mindreaarig: false,
+    begrunnelse: "Feil periode",
   });
-  assert.equal(updateKall[0].data.begrunnelse, "feil periode");
+  assert.equal(updateKall[0].data.begrunnelse, "Feil periode");
   assert.equal(updateKall[0].data.utfall, "AVVIST");
   assert.ok(updateKall[0].data.resolvedAt instanceof Date);
 
-  // Mindreårig: samme kall, men fritekst skrives ikke.
+  // Mindreårig: utfallet lagres, friteksten ikke.
+  bruker = BARN;
   await settUtfall({
     interaksjonId: "int-2",
     utfall: "AVVIST",
-    begrunnelse: "noe om en 13-åring",
-    mindreaarig: true,
+    begrunnelse: "Feil nivå for spilleren",
   });
   assert.equal(
     updateKall[1].data.begrunnelse,
@@ -69,27 +82,47 @@ test("AgenticOS-loggen — GDPR-port på fritekst og best-effort-skriving", asyn
   );
   assert.equal(updateKall[1].data.utfall, "AVVIST", "utfallet lagres fortsatt");
 
-  // Tom begrunnelse blir null, ikke tom streng.
+  // Venter på foreldresamtykke teller også som mindreårig, uansett fødselsdato.
+  bruker = VENTER_SAMTYKKE;
   await settUtfall({
     interaksjonId: "int-3",
-    utfall: "ENDRET",
-    begrunnelse: "   ",
-    mindreaarig: false,
+    utfall: "AVVIST",
+    begrunnelse: "Dårlig begrunnelse",
   });
   assert.equal(updateKall[2].data.begrunnelse, null);
 
-  // Referanse-varianten har samme port, og rører kun PENDING-rader.
-  await settUtfallForReferanse({
-    referanseId: "gen-1",
-    utfall: "GODKJENT",
-    begrunnelse: "hemmelig",
-    mindreaarig: true,
+  // Ukjent bruker → tvil faller til «ikke lagre».
+  bruker = null;
+  await settUtfall({
+    interaksjonId: "int-4",
+    utfall: "AVVIST",
+    begrunnelse: "Noe tekst",
   });
-  assert.equal(updateManyKall[0].data.begrunnelse, null);
+  assert.equal(updateKall[3].data.begrunnelse, null, "ved tvil lagres ingenting");
+
+  // Interaksjon uten spiller (stall-brede agenter): ingen mindreårig kan
+  // identifiseres, og friteksten handler om systemet — da lagres den.
+  interaksjonUserId = null;
+  bruker = VOKSEN;
+  await settUtfall({
+    interaksjonId: "int-5",
+    utfall: "AVVIST",
+    begrunnelse: "Ikke relevant nå",
+  });
+  assert.equal(updateKall[4].data.begrunnelse, "Ikke relevant nå");
+
+  // Tom begrunnelse blir null, ikke tom streng — og trigger ingen oppslag.
+  await settUtfall({ interaksjonId: "int-6", utfall: "ENDRET", begrunnelse: "   " });
+  assert.equal(updateKall[5].data.begrunnelse, null);
+
+  // Referanse-varianten rører kun PENDING-rader og lagrer aldri fritekst:
+  // updateMany kan treffe flere interaksjoner med ulik spiller.
+  await settUtfallForReferanse({ referanseId: "gen-1", utfall: "GODKJENT" });
   assert.deepEqual(updateManyKall[0].where, {
     referanseId: "gen-1",
     utfall: "PENDING",
   });
+  assert.equal(updateManyKall[0].data.begrunnelse, undefined);
 
   // Skriving er best-effort: feiler tabellen (f.eks. før DDL-scriptet er kjørt),
   // returnerer loggen null i stedet for å velte svaret brukeren venter på.

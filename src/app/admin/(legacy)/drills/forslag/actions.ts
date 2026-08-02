@@ -13,6 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { DRILL_DRAFT_TOOL } from "@/lib/agents/drill-forslag-agent";
 import { avgjorDraft } from "@/lib/caddie/draft-status";
+import { AVVIS_GRUNNER, erAvvisGrunn, type AvvisGrunn } from "@/lib/agenticos";
 
 export type ForslagResultat = { ok: true; melding: string } | { ok: false; melding: string };
 
@@ -90,6 +91,7 @@ export async function godkjennDrillForslag(
 
 export async function avvisDrillForslag(
   draftId: string,
+  grunn?: AvvisGrunn,
 ): Promise<ForslagResultat> {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const draft = await hentEgetForslag(draftId, user.id);
@@ -99,6 +101,7 @@ export async function avvisDrillForslag(
     draftId: draft.id,
     interaksjonId: draft.interaksjonId,
     status: "REJECTED",
+    begrunnelse: grunn && erAvvisGrunn(grunn) ? AVVIS_GRUNNER[grunn] : undefined,
   });
   revalidatePath("/admin/drills/forslag");
   return { ok: true, melding: "Avvist" };
@@ -157,6 +160,7 @@ export async function godkjennVideoForslag(
 
 export async function avvisVideoForslag(
   draftId: string,
+  grunn?: AvvisGrunn,
 ): Promise<ForslagResultat> {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const draft = await hentEgetVideoForslag(draftId, user.id);
@@ -166,6 +170,7 @@ export async function avvisVideoForslag(
     draftId: draft.id,
     interaksjonId: draft.interaksjonId,
     status: "REJECTED",
+    begrunnelse: grunn && erAvvisGrunn(grunn) ? AVVIS_GRUNNER[grunn] : undefined,
   });
   revalidatePath("/admin/drills/forslag");
   return { ok: true, melding: "Avvist" };

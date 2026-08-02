@@ -35,8 +35,8 @@ export async function avgjorDraft(input: {
   draftId: string;
   interaksjonId: string | null;
   status: DraftUtfall;
-  /** Gjelder utkastet en mindreårig? Styrer om fritekst kan lagres. */
-  mindreaarig?: boolean;
+  /** Hvorfor avvist. GDPR-porten håndteres i settUtfall, ikke her. */
+  begrunnelse?: string;
 }): Promise<void> {
   await prisma.caddieDraft.update({
     where: { id: input.draftId },
@@ -48,7 +48,7 @@ export async function avgjorDraft(input: {
   await settUtfall({
     interaksjonId: input.interaksjonId,
     utfall: TIL_AGENTICOS[input.status],
-    mindreaarig: input.mindreaarig ?? false,
+    begrunnelse: input.begrunnelse,
   });
 }
 
@@ -65,7 +65,7 @@ export async function avgjorDraftViaToolCall(input: {
   userId: string;
   toolCallId: string;
   status: DraftUtfall;
-  mindreaarig?: boolean;
+  begrunnelse?: string;
 }): Promise<void> {
   const draft = await prisma.caddieDraft.findFirst({
     where: { userId: input.userId, toolCallId: input.toolCallId, status: "PENDING" },
@@ -77,6 +77,6 @@ export async function avgjorDraftViaToolCall(input: {
     draftId: draft.id,
     interaksjonId: draft.interaksjonId,
     status: input.status,
-    mindreaarig: input.mindreaarig,
+    begrunnelse: input.begrunnelse,
   });
 }

@@ -745,15 +745,34 @@ kaller en modell uten å logge. Sveipen over er kommandoen som verifiserer det.
 Alle demo-/fallback-grener er bevisst utelatt: uten modellkall finnes det ingenting å måle, og en rad uten
 modell ville forurenset kost per svar.
 
-#### 1.4 «Hvorfor avvist» i godkjenningskøen
+#### 1.4 «Hvorfor avvist» i godkjenningskøen — **utført 2026-08-02**
 
-Ett valgfritt felt ved avvisning: tre forhåndsvalg (feil periode / feil nivå / dårlig begrunnelse) pluss
-fritekst, inn i `settUtfall`. Ett ekstra klikk, og den mest verdifulle datakilden i systemet.
-GDPR-porten står allerede i skriveveien.
+Avvisning tar nå en valgfri grunn, som havner i `AiInteraksjon.begrunnelse`.
 
-Flatene som trenger feltet: `AdminGodkjenningerV2.tsx` (PlanAction), `approval-actions.tsx`,
-`caddie/dashbord/actions.ts` og `drills/forslag`. Gjør 1.2 først, ellers bygges feltet inn i en vei som
-uansett ikke lukker løkka.
+**Faste koder, ikke ren fritekst.** `AVVIS_GRUNNER` i `agenticos/typer.ts`: feil periode, feil nivå, dårlig
+begrunnelse, ikke relevant nå. Da blir «hvilken promptversjon får flest FEIL_PERIODE?» et SQL-spørsmål.
+Koden valideres server-side med `erAvvisGrunn` — klienten kan ikke sende vilkårlig tekst inn i loggen.
+
+UI: trykk på Avvis viser en rad med grunn-knapper pluss «Hopp over» og «Avbryt». Hopper man over, er
+avvisningen nøyaktig som før. Ett ekstra trykk, valgfritt.
+
+Koblet i alle fire avvisningsveiene: `rejectPlanAction`, `avvisProaktivtForslag`, `avvisDrillForslag` og
+`avvisVideoForslag`.
+
+**GDPR-porten flyttet — den viktigste endringen her.** Fram til nå lå `mindreaarig` som et flagg hvert
+kallsted måtte sette, og det sto hardkodet til `false` overalt fordi ingen flate faktisk lagret fritekst.
+Idet 1.4 gjør fritekst reell, ville det vært en lekkasje som ventet på å skje.
+
+Flagget er fjernet fra API-et. `settUtfall` slår nå opp selv, mot interaksjonens egen spiller, og sjekker
+både `dateOfBirth` (via `isMinor`) og `requiresGuardianConsent`. Ved tvil — ukjent bruker eller feilet
+oppslag — lagres ingenting. Interaksjoner uten spiller (stall-brede agenter) får lagre, siden ingen
+mindreårig kan identifiseres og teksten handler om systemet.
+
+`settUtfallForReferanse` tar bevisst ikke begrunnelse: den er en `updateMany` som kan treffe flere
+interaksjoner med ulik spiller, og porten må avgjøres per rad.
+
+Testen låser alle grenene: voksen lagres, mindreårig ikke, venter-på-samtykke ikke, ukjent bruker ikke,
+uten spiller lagres.
 
 ---
 
@@ -839,7 +858,7 @@ Disse er ikke tekniske oppgaver. De står i veien for konkrete steg over.
 1.1 FASIT-kontekst             ✔ utført 2026-08-02
 1.2 tett hullene i løkka       ✔ utført 2026-08-02
 1.3 agenter på loggen          ✔ utført 2026-08-02
-1.4 «hvorfor avvist»           ← åpner den beste datakilden
+1.4 «hvorfor avvist»           ✔ utført 2026-08-02
 2.1 knowledge_chunks           ← gjør rag-corpus reell
 2.2 prompt-eval                ← porten mot forfall
 2.3 destillering  2.4 kostnad  ← lukker løkken
@@ -859,9 +878,12 @@ Verifisert 2026-08-02, så planen bygger på tilstand og ikke hukommelse:
 | Tabeller i produksjon | `ai_interaksjoner` (RLS på), `caddie_drafts.interaksjonId`, `plan_actions.interaksjonId` |
 | Promptversjoner | `ai-plan@2`, `caddie-chat@2`, `plan-revisjon@2` |
 
-**Tallene er nå dekkende.** Godkjenningsraten er riktig etter 1.2, og alle modellkall logges etter 1.3, så
-kost per bruker og per promptversjon kan leses direkte. Det som fortsatt mangler for full læring er
-begrunnelsen bak avvisninger (1.4).
+**Fase 1 er ferdig.** Godkjenningsraten er riktig (1.2), alle modellkall logges (1.3), fasiten er i
+konteksten (1.1), og avvisninger bærer en kodet grunn (1.4). Loggen kan nå svare på hva AI-en koster, hvilken
+promptversjon som fungerer, og hvorfor forslag blir avvist.
+
+Neste flaskehals er ikke flere data, men **evaluering**: uten porten i 2.2 kan vi måle at noe endret seg,
+men ikke garantere at det ble bedre.
 - **SG-tolkning for spilleren** som første helt nye flate. Merk at den må formuleres som hypotese, og ikke
   kan foreskrive navngitte drills før drill-banken er bygget på nytt.
 - **«Hvorfor avvist»-feltet** i godkjenningskøen, som mater `settUtfall` med den mest verdifulle

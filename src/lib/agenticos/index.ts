@@ -36,6 +36,8 @@ export {
   KONTEKST_KILDER,
   TIERS,
   UTFALL,
+  AVVIS_GRUNNER,
+  erAvvisGrunn,
   TERSKEL_LAV_CONFIDENCE,
   klassifiseringSchema,
 } from "./typer";
@@ -47,4 +49,5 @@ export type {
   Tier,
   Klassifisering,
   Utfall,
+  AvvisGrunn,
 } from "./typer";

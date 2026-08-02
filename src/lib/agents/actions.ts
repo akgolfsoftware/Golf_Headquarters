@@ -6,6 +6,7 @@ import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { acceptAndApplyPlanAction } from "./accept-plan-action";
 import { settUtfall } from "@/lib/agenticos/logg";
+import { AVVIS_GRUNNER, erAvvisGrunn, type AvvisGrunn } from "@/lib/agenticos";
 
 /** Spiller eier egen action; coach/admin kun for coachede spillere (+ coachId-match). */
 async function assertPlanActionAccess(
@@ -44,7 +45,7 @@ export async function acceptPlanAction(actionId: string) {
   revalidatePath("/portal/mal/trackman");
 }
 
-export async function rejectPlanAction(actionId: string) {
+export async function rejectPlanAction(actionId: string, grunn?: AvvisGrunn) {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
 
   const action = await prisma.planAction.findUnique({
@@ -57,7 +58,7 @@ export async function rejectPlanAction(actionId: string) {
     where: { id: actionId },
     data: { status: "REJECTED" },
   });
-  await lukkLaeringslokke(action.interaksjonId, "AVVIST");
+  await lukkLaeringslokke(action.interaksjonId, "AVVIST", grunn);
 
   revalidatePath("/portal");
   revalidatePath("/portal/agent-pipeline");
@@ -75,12 +76,15 @@ export async function rejectPlanAction(actionId: string) {
  * forslaget som avgjøres setter interaksjonens utfall — en senere godkjenning
  * overskriver ikke en tidligere avvisning. Samme regel som for Caddie-utkast.
  *
- * mindreaarig: vi lagrer ingen fritekst her, så porten er ikke i spill.
+ * GDPR-porten står i settUtfall: begrunnelsen lagres aldri for en mindreårig.
  */
 async function lukkLaeringslokke(
   interaksjonId: string | null,
   utfall: "GODKJENT" | "AVVIST",
+  grunn?: AvvisGrunn,
 ): Promise<void> {
   if (!interaksjonId) return;
-  await settUtfall({ interaksjonId, utfall, mindreaarig: false });
+  // Kun kjente koder lagres — fritekst fra klienten slippes aldri rett inn.
+  const begrunnelse = grunn && erAvvisGrunn(grunn) ? AVVIS_GRUNNER[grunn] : undefined;
+  await settUtfall({ interaksjonId, utfall, begrunnelse });
 }

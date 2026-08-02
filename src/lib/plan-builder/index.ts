@@ -505,7 +505,6 @@ export async function lagrePlanForslagCore(
   await settUtfallForReferanse({
     referanseId: input.generationId,
     utfall: "GODKJENT",
-    mindreaarig: false,
   });
 
   return { planId: plan.id };

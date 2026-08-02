@@ -66,6 +66,7 @@ export async function godkjennOgUtforCaddieDraft(
 export async function avvisCaddieDraft(
   draftId: string,
   adminUserId: string,
+  begrunnelse?: string,
 ): Promise<DraftGodkjenningResult> {
   const draft = await prisma.caddieDraft.findUnique({ where: { id: draftId } });
   if (!draft || draft.status !== "PENDING") {
@@ -76,6 +77,7 @@ export async function avvisCaddieDraft(
     draftId: draft.id,
     interaksjonId: draft.interaksjonId,
     status: "REJECTED",
+    begrunnelse,
   });
   await persistAudit(adminUserId, draft.conversationId, {
     toolCallId: draft.toolCallId,

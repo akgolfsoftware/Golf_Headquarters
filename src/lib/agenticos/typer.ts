@@ -53,3 +53,24 @@ export const TERSKEL_LAV_CONFIDENCE = 0.5;
 /** Utfall av en interaksjon — speiler AiInteraksjon.utfall. */
 export const UTFALL = ["PENDING", "GODKJENT", "AVVIST", "ENDRET", "IGNORERT"] as const;
 export type Utfall = (typeof UTFALL)[number];
+
+/**
+ * Hvorfor et forslag ble avvist. Faste koder framfor ren fritekst, slik at
+ * avvisningsmønstre kan aggregeres per promptversjon — «hvilken prompt får flest
+ * FEIL_PERIODE?» er et SQL-spørsmål, «hvorfor er folk misfornøyde?» er det ikke.
+ *
+ * Lagres i `AiInteraksjon.begrunnelse` og går gjennom GDPR-porten som all annen
+ * fritekst: aldri lagret for en mindreårig spiller.
+ */
+export const AVVIS_GRUNNER = {
+  FEIL_PERIODE: "Feil periode",
+  FEIL_NIVAA: "Feil nivå for spilleren",
+  DAARLIG_BEGRUNNELSE: "Dårlig begrunnelse",
+  IKKE_RELEVANT: "Ikke relevant nå",
+} as const;
+
+export type AvvisGrunn = keyof typeof AVVIS_GRUNNER;
+
+export function erAvvisGrunn(v: unknown): v is AvvisGrunn {
+  return typeof v === "string" && v in AVVIS_GRUNNER;
+}

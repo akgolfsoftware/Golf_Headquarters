@@ -25,6 +25,7 @@ import {
   T,
 } from "@/components/v2";
 import { acceptPlanAction, rejectPlanAction } from "@/lib/agents/actions";
+import { AVVIS_GRUNNER, type AvvisGrunn } from "@/lib/agenticos";
 import { avvisProaktivtForslag, godkjennCaddieDraft } from "@/app/admin/agencyos/caddie/dashbord/actions";
 import { avslaaForespørsel, markerSomPlanlagt } from "@/app/admin/(legacy)/foresporsler/actions";
 import { batchApproveLowRisk } from "@/app/admin/(legacy)/approvals/actions";
@@ -126,6 +127,86 @@ function GodkjennLavRisiko({ count }: { count: number }) {
   );
 }
 
+/** Valg av avvisningsgrunn. Vises først etter trykk på Avvis, så den vanlige
+ *  flyten er uendret for den som bare vil bli ferdig. */
+function AvvisGrunnValg({
+  onVelg,
+  onAvbryt,
+  pending,
+}: {
+  onVelg: (grunn?: AvvisGrunn) => void;
+  onAvbryt: () => void;
+  pending: boolean;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        gap: 8,
+        marginTop: 10,
+        opacity: pending ? 0.5 : 1,
+      }}
+    >
+      <span style={{ fontSize: 13, color: "var(--muted-foreground)" }}>Hvorfor?</span>
+      {(Object.keys(AVVIS_GRUNNER) as AvvisGrunn[]).map((g) => (
+        <button
+          key={g}
+          type="button"
+          disabled={pending}
+          onClick={() => onVelg(g)}
+          style={{
+            minHeight: 36,
+            padding: "6px 12px",
+            borderRadius: 999,
+            border: "1px solid var(--border)",
+            background: "var(--card)",
+            color: "var(--foreground)",
+            fontSize: 13,
+            cursor: pending ? "default" : "pointer",
+          }}
+        >
+          {AVVIS_GRUNNER[g]}
+        </button>
+      ))}
+      <button
+        type="button"
+        disabled={pending}
+        onClick={() => onVelg(undefined)}
+        style={{
+          minHeight: 36,
+          padding: "6px 8px",
+          border: "none",
+          background: "none",
+          color: "var(--muted-foreground)",
+          fontSize: 13,
+          textDecoration: "underline",
+          cursor: pending ? "default" : "pointer",
+        }}
+      >
+        Hopp over
+      </button>
+      <button
+        type="button"
+        disabled={pending}
+        onClick={onAvbryt}
+        style={{
+          minHeight: 36,
+          padding: "6px 8px",
+          border: "none",
+          background: "none",
+          color: "var(--muted-foreground)",
+          fontSize: 13,
+          cursor: pending ? "default" : "pointer",
+        }}
+      >
+        Avbryt
+      </button>
+    </div>
+  );
+}
+
 /** Godkjenn/avvis + lenker for én sak. Mobil: fullbredde 2×2, desktop: inline. */
 function SakHandlinger({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: boolean }) {
   const router = useRouter();
@@ -140,10 +221,14 @@ function SakHandlinger({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: bo
     else if (row.kilde === "caddie") await godkjennCaddieDraft(row.id);
     router.refresh();
   });
-  const avvis = () => start(async () => {
-    if (erAgent) await rejectPlanAction(row.id);
-    else if (row.kilde === "caddie") await avvisProaktivtForslag(row.id);
+  // «Hvorfor avvist» er den mest verdifulle datakilden i loggen, og koster ett
+  // ekstra trykk. Grunnen er valgfri: Hopp over gir samme avvisning som før.
+  const [visGrunn, setVisGrunn] = useState(false);
+  const avvis = (grunn?: AvvisGrunn) => start(async () => {
+    if (erAgent) await rejectPlanAction(row.id, grunn);
+    else if (row.kilde === "caddie") await avvisProaktivtForslag(row.id, grunn);
     else if (row.kilde === "forespørsel") await avslaaForespørsel(row.id);
+    setVisGrunn(false);
     router.refresh();
   });
 
@@ -160,9 +245,12 @@ function SakHandlinger({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: bo
             </div>
           )}
           <div style={{ flex: 1, minWidth: 0 }}>
-            <Knapp icon="x" ghost full style={{ minHeight: 44 }} disabled={pending} onClick={avvis}>Avvis</Knapp>
+            <Knapp icon="x" ghost full style={{ minHeight: 44 }} disabled={pending} onClick={() => setVisGrunn(true)}>Avvis</Knapp>
           </div>
         </div>
+        {visGrunn && (
+          <AvvisGrunnValg onVelg={avvis} onAvbryt={() => setVisGrunn(false)} pending={pending} />
+        )}
         <div style={{ display: "flex", gap: 18 }}>
           <TekstLenke href={detaljer}>Detaljer</TekstLenke>
           <TekstLenke href={profil}>Se profil</TekstLenke>
@@ -174,9 +262,14 @@ function SakHandlinger({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: bo
   return (
     <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0 12px", marginTop: 8, opacity: pending ? 0.5 : 1 }}>
       {kanGodkjenneInline && <Knapp icon="check" style={{ minHeight: 44 }} disabled={pending} onClick={godkjenn}>Godkjenn</Knapp>}
-      <Knapp icon="x" ghost style={{ minHeight: 44 }} disabled={pending} onClick={avvis}>Avvis</Knapp>
+      <Knapp icon="x" ghost style={{ minHeight: 44 }} disabled={pending} onClick={() => setVisGrunn(true)}>Avvis</Knapp>
       <TekstLenke href={detaljer}>Detaljer</TekstLenke>
       <TekstLenke href={profil}>Se profil</TekstLenke>
+      {visGrunn && (
+        <div style={{ flexBasis: "100%" }}>
+          <AvvisGrunnValg onVelg={avvis} onAvbryt={() => setVisGrunn(false)} pending={pending} />
+        </div>
+      )}
     </div>
   );
 }
