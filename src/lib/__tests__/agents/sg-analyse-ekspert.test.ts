@@ -31,7 +31,7 @@ type PlanActionCreateArgs = {
     suggestion: {
       skillArea: string;
       pyramidArea: string;
-      moradFaultId: string | null;
+      moradFaultKandidater: string[];
       forklaring: string;
       signalSnapshot: { kind: string; value: number; runder: number };
     };
@@ -114,7 +114,10 @@ test("runSgAnalyseEkspert — hovedløp og duplikatsperre", async (t) => {
   // ARG er svakest og under terskel -> skillArea/pyramidArea skal følge ARG.
   assert.equal(data.suggestion.skillArea, "AROUND_GREEN");
   assert.equal(data.suggestion.pyramidArea, "SPILL");
-  assert.equal(data.suggestion.moradFaultId, "poor_spine_alignment");
+  assert.deepEqual(data.suggestion.moradFaultKandidater, [
+    "poor_spine_alignment",
+    "casting",
+  ]);
   assert.match(data.suggestion.forklaring, /SG ARG -0[.,]60/);
   assert.match(data.suggestion.forklaring, /AROUND_GREEN/);
 

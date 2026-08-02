@@ -2,7 +2,11 @@ import "server-only";
 import { readFileSync, readdirSync } from "fs";
 import { join } from "path";
 
-const KUNNSKAP_DIR = join(process.cwd(), "src/lib/ai-coach/kunnskap");
+// Leser den synkede Masterbrain-kopien, ikke en egen kopi i denne mappa.
+// Den gamle kopien under ai-coach/kunnskap/ var frosset før Fase 1-oppryddingen
+// 31. juli og foreskrev fortsatt de 9 drillene som ble tatt ut av fasiten.
+// Oppdateres med `npm run sync:masterbrain` — aldri ved å redigere filene her.
+const KUNNSKAP_DIR = join(process.cwd(), "src/lib/masterbrain/rag-corpus/morad");
 const MAX_CHARS = 8000;
 
 const TAG_MAP: Record<string, string[]> = {
