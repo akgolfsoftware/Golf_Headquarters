@@ -830,11 +830,37 @@ Utvid `scripts/laeringslogg-til-masterbrain.ts` fra å lese to tool-navn i `Cadd
 `training-data/`, og forslag til promptendringer. **Anders leser og committer** — kunnskapskilden utvider
 seg aldri selv.
 
-#### 2.4 Kostnadsoversikt
+#### 2.4 Kostnadsoversikt — **utført 2026-08-02**
 
-Med loggen på plass er dette SQL, ikke gjetning. Tre spørringer holder: kost per bruker per måned, kost per
-promptversjon, og godkjenningsrate per promptversjon. Legg dem på `/admin/agents` framfor å bygge et nytt
-dashboard.
+`src/lib/agenticos/kostnad.ts` + en seksjon nederst på `/admin/agents`. Tre spørsmål: hva koster AI-en per
+måned, hvilken promptversjon fungerer, og hvorfor blir forslag avvist.
+
+**Det viktigste valget var å ikke pynte tallet.** Bare `ai-plan` regner ut og lagrer `kostUsd`. De øvrige
+åtte flatene logger tokens, men ikke kost. En naiv `sum(kostUsd)` ville gitt et tall som SER ut som totalen,
+men er én flates forbruk — verre enn ingen tall.
+
+Løsningen: kost utledes fra tokens via en `PRISER`-tabell. Den er seedet med den **eneste** satsen som
+allerede var forankret i repoet (Sonnet 4.5: $3/$15 per Mtok, fra `ai-plan/generate.ts`). Modeller uten en
+sats vi kan stå inne for rapporteres som **«ukjent pris» med tokens synlig** — aldri som 0, aldri med en
+gjettet sats. UI-et sier eksplisitt at summen er et gulv, ikke totalen, og lister hvilke modeller som mangler
+pris.
+
+> **Til Anders:** legg inn satsene for Opus 4.8, Sonnet 4.6 og Haiku 4.5 i `PRISER`, så blir kostnadstallet
+> komplett. Det er ett objekt i én fil.
+
+Andre valg verdt å kjenne:
+
+- **Måned bøttes i Oslo-tid**, ikke UTC. Vercel kjører UTC, og en interaksjon 1. august kl. 01:00 norsk tid
+  hører til august.
+- **Godkjenningsrate regnes av avgjorte forslag**, ikke av totalen. Flater uten godkjenningsflyt
+  (`daily-brief`, `live-coach`, `peaking`) står alltid `PENDING` — en rate på 0 % der ville vært direkte
+  misvisende. De vises med tom rate.
+- **Siden laster selv om loggtabellen mangler.** `hentAgenticOsOversikt` returnerer null i stedet for å
+  kaste, så `/admin/agents` fungerer i et miljø der DDL-scriptet ikke er kjørt.
+
+Alle tre spørringene er kjørt direkte mot produksjonsdatabasen (tomt resultat, som ventet), og
+aggregeringslogikken er dekket av tester: bøtting per måned, ukjent pris → null og ikke 0, gratis lokal
+modell → 0, og rate → tom når ingenting er avgjort.
 
 ---
 
@@ -875,7 +901,8 @@ Disse er ikke tekniske oppgaver. De står i veien for konkrete steg over.
 1.4 «hvorfor avvist»           ✔ utført 2026-08-02
 2.1 knowledge_chunks           ← gjør rag-corpus reell
 2.2 eval-porten                ✔ utført 2026-08-02
-2.3 destillering  2.4 kostnad  ← lukker løkken
+2.3 destillering               ← siste post i fase 2
+2.4 kostnadsoversikt           ✔ utført 2026-08-02
 3.x bredde                     ← etter pilot
 ```
 

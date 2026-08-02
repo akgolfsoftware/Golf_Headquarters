@@ -14,6 +14,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
+import { AgenticOsKostnadV2 } from "@/components/admin/v2/AgenticOsKostnadV2";
+import { hentAgenticOsOversikt } from "@/lib/agenticos/kostnad";
 import {
   AdminAgenterV2,
   type AdminAgenterV2Data,
@@ -117,13 +119,21 @@ export default async function V2AdminAgenterPage() {
   const idag = new Date();
   idag.setHours(0, 0, 0, 0);
 
-  const [signalsCount, planActionsCount, recentRuns, pendingCount, forslagIdag] =
-    await Promise.all([
+  const [
+    signalsCount,
+    planActionsCount,
+    recentRuns,
+    pendingCount,
+    forslagIdag,
+    agenticOsOversikt,
+  ] = await Promise.all([
       prisma.signal.count(),
       prisma.planAction.count(),
       prisma.agentRun.findMany({ orderBy: { createdAt: "desc" }, take: 30 }),
       prisma.planAction.count({ where: { status: "PENDING" } }),
       prisma.planAction.count({ where: { createdAt: { gte: idag } } }),
+      // Tåler at loggtabellen ikke finnes ennå — returnerer null i stedet for å kaste.
+      hentAgenticOsOversikt(),
     ]);
 
   // Aggreger per agent (fra siste 30 kjøringer).
@@ -187,6 +197,7 @@ export default async function V2AdminAgenterPage() {
     <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
       <AdminAgenterV2 data={data} />
+      <AgenticOsKostnadV2 data={agenticOsOversikt} />
     </V2Shell>
   );
 }
