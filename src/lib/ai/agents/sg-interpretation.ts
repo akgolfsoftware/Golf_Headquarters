@@ -7,7 +7,24 @@
 import "server-only";
 import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "../client";
 import { sgInterpretationSkill } from "../skills/sg-interpretation";
+import {
+  formatMasterbrainBlokk,
+  hentMasterbrainKunnskap,
+} from "@/lib/masterbrain";
 import { prisma } from "@/lib/prisma";
+
+/**
+ * Tegnbudsjett for Masterbrain-blokken. sg-diagnose er SG-prinsipper (4 318)
+ * + svingfeil (8 144) + posisjoner (17 035). 13 000 tar de to første — det er
+ * dem tolkningen trenger, inkludert hypotese-regelen. Posisjonskatalogen ryker,
+ * og utelatelsen navngis i prompten: agenten skriver et sammendrag på 2-3
+ * setninger, ikke en posisjonsanalyse.
+ */
+const MASTERBRAIN_MAKS_TEGN = 13_000;
+
+const masterbrainFasit = hentMasterbrainKunnskap("sg-diagnose", {
+  maksTegn: MASTERBRAIN_MAKS_TEGN,
+});
 
 export const SG_INTERPRETATION_SYSTEM = `
 Du er SG Interpretation-agent for AK Golf HQ.
@@ -18,13 +35,22 @@ For hver SG-kategori, vurder:
 - Trend (OPP / FLAT / NED) basert på lineær regresjon over siste runder
 - En 1-setnings tolkning
 
-Til slutt: identifiser svakeste kategori og foreslå 3-5 navngitte drills.
+Til slutt: identifiser svakeste kategori.
+
+DRILLS: du får en liste med aktuelle drills i brukermeldingen. Bruk KUN navn
+derfra. Finn aldri på et drill-navn. Er lista tom, beskriv hva som bør trenes
+(pyramideområde, P-posisjon) uten å navngi en drill.
 
 Norsk bokmål, profesjonell tone, ingen emoji, ingen utropstegn.
 
 KUNNSKAP:
 ${sgInterpretationSkill.knowledge}
+${formatMasterbrainBlokk(masterbrainFasit)}
 `.trim();
+
+/** Hvilken fasit-versjon denne agenten kjører på — for logging og feilsøking. */
+export const SG_INTERPRETATION_MASTERBRAIN_VERSJON =
+  masterbrainFasit.versjonsnokkel;
 
 export type SgTrend = "OPP" | "FLAT" | "NED";
 export type SgKategoriKode = "OTT" | "APP" | "ARG" | "PUTT";
@@ -99,7 +125,13 @@ export async function tolkSg(
     };
   }
 
-  const userPrompt = byggUserPrompt(spiller.name, runder.length, perKategori, svakesteKategori);
+  const userPrompt = byggUserPrompt(
+    spiller.name,
+    runder.length,
+    perKategori,
+    svakesteKategori,
+    anbefalteDrills,
+  );
   const response = await anthropic.messages.create({
     model: modelFor("sg-interpretation"),
     max_tokens: AI_MAX_TOKENS,
@@ -298,7 +330,17 @@ function byggUserPrompt(
     putt: SgKategoriTolkning;
   },
   svakeste: SgKategoriKode | null,
+  drills: string[],
 ): string {
+  // Drill-lista kommer fra ExerciseDefinition (foreslaDrills). Uten den i
+  // prompten sto systemprompten og ba om navngitte drills uten å gi noen —
+  // da fant modellen dem på, og oppdiktede navn havnet i sammendraget coachen
+  // leser.
+  const drillBlokk =
+    drills.length > 0
+      ? `Aktuelle drills (bruk KUN disse navnene):\n${drills.map((d) => `- ${d}`).join("\n")}`
+      : "Ingen drills tilgjengelig. Ikke navngi noen — beskriv hva som bør trenes.";
+
   return `
 Tolk SG-data for ${navn} (siste ${runderTatt} runder).
 
@@ -308,6 +350,8 @@ ARG: ${perKategori.arg.verdi ?? "n/a"} (trend ${perKategori.arg.trend})
 PUTT: ${perKategori.putt.verdi ?? "n/a"} (trend ${perKategori.putt.trend})
 
 Svakeste: ${svakeste ?? "ingen data"}
+
+${drillBlokk}
 
 Skriv et sammendrag på 2-3 setninger som forklarer hovedmønsteret.
 `.trim();
