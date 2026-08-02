@@ -1632,7 +1632,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
   const weekNumber = data?.summary?.weekNumber ?? 0;
   // Server-data, ikke `new Date()`: unngår hydreringsmismatch mellom UTC-serveren
   // og Oslo-klienten når man leser år/måned for brødsmulen (React #418, 2026-08-03).
-  const visningsDato = data.weekStartISO ? new Date(data.weekStartISO) : new Date();
+  const visningsDato = data?.weekStartISO ? new Date(data.weekStartISO) : new Date();
   const weekOffset = data?.weekOffset ?? 0;
   const st = statusLabel(optimisticStatus ?? planStatus);
   const adher = data?.adherencePct;
