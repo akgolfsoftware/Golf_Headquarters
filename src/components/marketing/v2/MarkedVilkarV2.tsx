@@ -147,7 +147,6 @@ function MFot({ mobile }: { mobile: boolean }) {
 function MRamme({ mobile, aktiv, children }: { mobile: boolean; aktiv: string; children: ReactNode }) {
   return (
     <div
-      className="dark"
       style={{
         minHeight: "100vh",
         colorScheme: "dark",

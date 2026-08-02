@@ -5,7 +5,7 @@
  * Brukt av katalogsidene (coacher/anlegg/turneringer/blogg, liste + detalj) —
  * IKKE av de fire M1–M4-sidene (Forside/Coaching/PlayerHQ/Priser), som
  * bevisst beholder sin egen lokale kopi (mockup-fasit-diff). Denne fila
- * speiler MarkedForsideV2 sin MRamme (ekte Link-navigasjon, `className="dark"`)
+ * speiler MarkedForsideV2 sin MRamme (ekte Link-navigasjon, tema fra `data-v2-tema`)
  * 1:1 — eneste kanoniske chrome for nye markedssider fremover, unngår at
  * MNav/MFot dupliseres en 5.–8. gang.
  */
@@ -80,7 +80,6 @@ export function MMobilMeny({ aktiv }: { aktiv: string }) {
       </button>
       {open && (
         <div
-          className="dark"
           style={{ position: "fixed", inset: 0, zIndex: 80, background: `color-mix(in srgb, ${T.bg} 96%, transparent)`, backdropFilter: "blur(14px)", display: "flex", flexDirection: "column", padding: "16px 22px calc(24px + env(safe-area-inset-bottom))", colorScheme: "dark" }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -266,7 +265,6 @@ export function MFot({ mobile }: { mobile: boolean }) {
 export function MRamme({ mobile, aktiv, cta, children }: { mobile: boolean; aktiv: string; cta?: MNavCta; children: ReactNode }) {
   return (
     <div
-      className="dark"
       style={{
         minHeight: "100vh",
         colorScheme: "dark",

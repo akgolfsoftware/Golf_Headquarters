@@ -397,7 +397,6 @@ export function V2Laster({ variant = "kort" }: V2LasterProps) {
     : <KortSkel />;
   return (
     <div
-      className="dark"
       style={{
         minHeight: "100vh",
         background: `radial-gradient(1100px 460px at 24% -8%, var(--v2-vignett), transparent 62%), ${T.bg}`,

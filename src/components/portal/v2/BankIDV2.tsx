@@ -261,7 +261,6 @@ function BankIDKort() {
 export function BankIDV2() {
   return (
     <div
-      className="dark"
       style={{
         minHeight: "100vh",
         display: "flex",

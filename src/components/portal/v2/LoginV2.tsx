@@ -512,7 +512,6 @@ function LoginKort() {
 export function LoginV2() {
   return (
     <div
-      className="dark"
       style={{
         minHeight: "100vh",
         display: "flex",

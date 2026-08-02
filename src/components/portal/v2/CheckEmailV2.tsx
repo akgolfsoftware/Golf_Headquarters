@@ -273,7 +273,6 @@ function CheckEmailKort() {
 export function CheckEmailV2() {
   return (
     <div
-      className="dark"
       style={{
         minHeight: "100vh",
         display: "flex",

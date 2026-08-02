@@ -548,25 +548,14 @@ export function PortalGlobalSearchModal({
         }
         case "toggle-theme": {
           closeModal();
-          // Toggle .dark-klassen på <html>-elementet og persister i localStorage.
-          // Samme mekanisme som ThemeToggle-komponenten bruker.
+          // Én tema-mekanisme: data-v2-tema på <html> + cookie ak-v2-tema.
+          // Samme kode som railens sol/måne-knapp (v2/shell.tsx useV2Tema).
           const root = document.documentElement;
-          const isDark = root.classList.contains("dark");
-          if (isDark) {
-            root.classList.remove("dark");
-            try {
-              localStorage.setItem("akgolf-theme", "light");
-            } catch {
-              // Ignorer hvis storage er blokkert (private mode etc.)
-            }
-          } else {
-            root.classList.add("dark");
-            try {
-              localStorage.setItem("akgolf-theme", "dark");
-            } catch {
-              // Ignorer hvis storage er blokkert
-            }
-          }
+          const nesteErMork = root.getAttribute("data-v2-tema") !== "dark";
+          if (nesteErMork) root.setAttribute("data-v2-tema", "dark");
+          else root.removeAttribute("data-v2-tema");
+          document.cookie = `ak-v2-tema=${nesteErMork ? "dark" : "light"};path=/;max-age=31536000;samesite=lax`;
+          window.dispatchEvent(new Event("ak-v2-tema"));
           return;
         }
         case "logout": {

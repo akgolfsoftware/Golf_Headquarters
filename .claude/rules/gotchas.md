@@ -149,3 +149,22 @@ plukker ikke opp ny generert klient. Regel: RESTART dev-serveren etter hver
   per lagring fra lokal maskin. Truffet i gruppe-workbench periode-lagring (17.8 ble 16.8).
 - Regel: dags-strenger parses med `new Date(Date.UTC(y, m-1, d))`. Lesing tilbake med lokale
   getters er trygt i Oslo (øst for UTC). Fikset i `gruppe-periode-actions.ts` + `periode-core.ts`.
+
+### Tema: `data-v2-tema` på `<html>` er ENESTE mekanisme (ryddet 2026-08-03, designport steg 3)
+- Før: fire parallelle mekanismer (`data-v2-tema`, hardkodet `className="dark"` i 25 filer,
+  `[data-theme="dark"]` som aldri ble satt, og en Cmd+K-toggle som skrev til
+  `localStorage["akgolf-theme"]` — en nøkkel ingen leste). Konsekvensen var målt i
+  `docs/port/fase2-morketema-avklaring.md` §3.1: i `/portal` og `/admin/(legacy)` ble chromet
+  mørkt mens innholdsflaten forble lys, fordi `html[data-v2-tema="dark"]` og `.golfdata-scope`
+  rører helt disjunkte variabelfamilier (snitt = 0 navn).
+- Nå: `html[data-v2-tema="dark"]` er lagt inn i alle tre mørk-blokkene (`globals.css` hsl-triplett
+  + DS-navn, `golfdata-tokens.css` scope-blokken), Cmd+K-toggle bruker samme cookie som railen
+  (`ak-v2-tema`), og alle `className="dark"` er fjernet.
+- Regel: sett aldri `className="dark"` for å låse en flate mørk, og introduser ingen ny
+  tema-mekanisme. Trenger en flate fast palett, gjør det med egne scope-tokens (mønster:
+  `wang-tokens.css`), ikke med tema-klassen.
+- Kjente unntak som SKAL stå: `wizard-chrome.tsx` fjerner `data-v2-tema` bevisst (onboarding er
+  låst lys). `.wang-tp` og `.gfgk-jr` har ingen mørk-gren — de 9 rutene er enpalett med vilje.
+- Default per path (`src/app/layout.tsx` inline-script): `/portal|/admin|/forelder` = lys,
+  alt annet = mørk. Ikke rør scriptet uten å teste hard reload på marketing — det er eneste
+  beskyttelse mot lys-blink før paint.

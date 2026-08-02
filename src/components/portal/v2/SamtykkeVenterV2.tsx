@@ -438,7 +438,6 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
 export function SamtykkeVenterV2({ spillerNavn, invitasjonEmail }: Props) {
   return (
     <div
-      className="dark"
       style={{
         minHeight: "100vh",
         display: "flex",

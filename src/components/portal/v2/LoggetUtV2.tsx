@@ -295,7 +295,6 @@ export function LoggetUtV2({
 }: LoggetUtV2Props = {}) {
   return (
     <div
-      className="dark"
       style={{
         minHeight: "100vh",
         display: "flex",
