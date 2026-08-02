@@ -49,8 +49,8 @@ npm run build
 - **`docs/AAPNE-SPORSMAAL.md`** — uavklarte beslutninger (ÅPEN / LØST / PARKERT)
 - **`CLAUDE.md`** — arbeidsregler, designsystem, gotchas
 - **`SECURITY.md`** — sikkerhetsprinsipper og RLS
-- **`docs/go-live-sjekkliste.md`** + `LAUNCH-CHECKLIST.md` — go-live
-- Historikk og superseterte planer: **`docs/_arkiv/`** (inkl. tidligere `PLATFORM.md`)
+- **`docs/go-live-sjekkliste.md`** — go-live
+- Historikk og superseterte planer: **`docs/arkiv/`**
 
 ## Test
 

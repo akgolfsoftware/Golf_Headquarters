@@ -14,10 +14,31 @@ De er **utdaterte** og beholdt kun for historikk. Ikke bygg mot dem.
 | `workbench-diff-audit-2026-06-30.md` | Punkt-i-tid Workbench-audit (read-only, 30. juni) | `docs/redesign-v2/workbench-fasit-analyse-2026-07-12.md` |
 | `workbench-statusrapport-2026-06-30.md` | Samme batch/punkt-i-tid som diff-audit | `docs/redesign-v2/workbench-fasit-analyse-2026-07-12.md` |
 
+> Merk (2026-08-02): «Erstattet av»-kolonnen over er historisk — flere av målene
+> (`PLAN-GJENSTAENDE.md`, `docs/redesign-v2/`, `design-system-regel.md`) er senere
+> selv slettet eller flyttet. Fasit i dag er alltid listen nederst i denne fila.
+
+## 2026-08-02-docs-rydding/ — stor docs-opprydding
+
+Arkivert 2026-08-02 etter bevis-sveip (null levende referanser per fil):
+
+| Undermappe/fil | Var |
+|---|---|
+| `opprydding/` (9 filer) | Kjørebøker og gap-register fra juli-oppryddingen — gjennomført |
+| `plans/` (9 filer) | Arbeidsplaner juli 2026 (redesign, kvalitet, feilfiks) — gjennomført. `plans/` i rot beholder kun levende planer |
+| `flyt-inventar/` (5 filer) | Flyt-inventar 17.06 — avløst av `docs/platform/user-flows.md` |
+| `user-flows/` (3 html) | Genererte flyt-visualiseringer — ikke lenket fra levende docs |
+| `design-bestillinger/` (2 filer) | D2/D3-bestillinger til Claude Design — levert 27.07 |
+| `rot/` (3 filer) | `WORKLOG.md` (avløst av ak-brain), `LAUNCH-CHECKLIST.md` (mai-launch gjennomført), `SYNC.md` (dekket av globale regler) |
+| Enkeltfiler i rot av mappen | AgencyOS-/plattform-visjoner, workbench-fasit (30.06), handoffs og planer — alle avløst av `docs/platform/` + MASTER-SKJERMPLAN |
+
+Samtidig ble 10 dokumenter slettet helt (innhold dekket av levende fasit-filer) —
+se commit `chore(docs): slett 10 utdaterte dokumenter` for listen.
+
 ## De levende kildene (én av hver rolle)
 
 - **`docs/STATUS-NÅ.md`** — snapshot: hvor plattformen står akkurat nå.
 - **`docs/MASTER-SKJERMPLAN.md`** — autoritativ skjerm-liste + 6 haker per skjerm.
 - **`docs/AAPNE-SPORSMAAL.md`** — register over alt uavklart/parkert/løst.
-- **`docs/PLAN-GJENSTAENDE.md`** — prioritert liste over gjenstående arbeid.
 - **`docs/platform/BUSINESS-RULES.md`** — låste forretningsregler (fasit).
+- **`docs/gjenstaaende-plan-2026-07-31.md`** — prioritert liste over gjenstående arbeid.
