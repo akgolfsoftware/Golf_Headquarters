@@ -112,8 +112,29 @@ export function getPeriodeConstraints(periodeType: PeriodeType): PeriodeConstrai
 // Validering
 // ---------------------------------------------------------------------------
 
+/**
+ * Perioden en dato hører til. Ved overlapp vinner den SMALESTE.
+ *
+ * Perioder overlapper i praksis: testuka 19.–25. okt 2026 ligger inne i
+ * grunnperioden 1. okt – 15. mars. Tidligere brukte denne `find`, som
+ * returnerer første treff — og rekkefølgen kom fra databasen uten `orderBy`.
+ * Samme økt kunne da valideres mot GRUNN (TEK min 25 %) eller EVALUERING
+ * (TEK min 0, TURN min 30) fra gang til gang.
+ *
+ * En testuke lagt inn inni en grunnperiode er en presisering av de sju dagene,
+ * ikke en konkurrent til de fem månedene. Samme regel gjelder automatisk for
+ * samlinger og ferier som legges inn på samme måte.
+ */
 function finnPeriode(dato: Date, perioder: Periode[]): Periode | null {
-  return perioder.find((p) => dato >= p.startDato && dato <= p.sluttDato) ?? null;
+  const treff = perioder.filter((p) => dato >= p.startDato && dato <= p.sluttDato);
+  if (treff.length === 0) return null;
+  return treff.reduce((smalest, p) =>
+    varighet(p) < varighet(smalest) ? p : smalest,
+  );
+}
+
+function varighet(p: Periode): number {
+  return p.sluttDato.getTime() - p.startDato.getTime();
 }
 
 function summerPyramideMinutter(session: SessionMedDrills): Record<PyramidArea, number> {
@@ -134,9 +155,10 @@ function totalMinutter(fordeling: Record<PyramidArea, number>): number {
 function validerEnkeltOkt(
   session: SessionMedDrills,
   periode: Periode,
+  effektive?: Record<PeriodeType, PeriodeConstraints>,
 ): string[] {
   const brudd: string[] = [];
-  const constraints = getPeriodeConstraints(periode.type);
+  const constraints = (effektive ?? PERIODE_CONSTRAINTS)[periode.type];
   const fordeling = summerPyramideMinutter(session);
   const total = totalMinutter(fordeling);
 
@@ -164,6 +186,15 @@ function validerEnkeltOkt(
 export function validateSessionConstraints(
   sessions: SessionMedDrills[],
   perioder: Periode[],
+  /**
+   * Effektive constraints — coach-satte andeler flettet på defaultene, fra
+   * `hentEffektivePeriodeConstraints()`. Utelates → hardkodede defaults, så
+   * eksisterende kallere er uendret.
+   *
+   * Uten denne målte valideringen mot defaultene selv når en coach hadde satt
+   * egne tall i PeriodeFordeling — altså mot noe ingen hadde valgt.
+   */
+  effektive?: Record<PeriodeType, PeriodeConstraints>,
 ): ValideringsResultat {
   const bruddBeskrivelser: BruddBeskrivelse[] = [];
 
@@ -171,7 +202,7 @@ export function validateSessionConstraints(
   for (const session of sessions) {
     const periode = finnPeriode(session.startTime, perioder);
     if (!periode) continue;
-    const brudd = validerEnkeltOkt(session, periode);
+    const brudd = validerEnkeltOkt(session, periode, effektive);
     if (brudd.length > 0) {
       bruddBeskrivelser.push({ sessionId: session.id, brudd });
     }
@@ -195,7 +226,7 @@ export function validateSessionConstraints(
   }
 
   for (const [, ukeData] of ukeBucket) {
-    const constraints = getPeriodeConstraints(ukeData.periode.type);
+    const constraints = (effektive ?? PERIODE_CONSTRAINTS)[ukeData.periode.type];
     if (ukeData.total > constraints.volumPerUke.maxMin) {
       for (const sid of ukeData.sessionIds) {
         const eks = bruddBeskrivelser.find((b) => b.sessionId === sid);

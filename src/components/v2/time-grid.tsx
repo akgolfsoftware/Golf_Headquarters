@@ -6,7 +6,7 @@
  * Én motor for tidskolonne + dag-headers + time-/halvtime-linjer + nå-linje.
  * Dag-innhold (økter, droppable, booking-blokker) leveres via `renderDay`.
  *
- * Fasit: src/lib/calendar/notion-grid.ts (05:00–23:00, 30 min).
+ * Fasit: src/lib/calendar/notion-grid.ts (04:00–23:00, 20 min).
  */
 
 import { type CSSProperties, type ReactNode, useEffect, useMemo, useState } from "react";
@@ -51,7 +51,7 @@ type Props = {
   style?: CSSProperties;
 };
 
-/** Snap Y i grid-body til 30-min slot innenfor 05:00–(23:00−30min). */
+/** Snap Y i grid-body til 20-min slot innenfor 04:00–(23:00−20min). */
 export function snapYToSlot(y: number): Omit<TimeGridSlot, "dayIndex"> {
   const hours = GRID_START_HOUR + y / PIXEL_PER_HOUR;
   let totalMin = Math.round((hours * 60) / GRID_SLOT_MIN) * GRID_SLOT_MIN;

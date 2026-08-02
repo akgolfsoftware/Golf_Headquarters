@@ -12,6 +12,7 @@ import {
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { varsleVedPlanAction } from "./notify-plan-action";
+import { byggProvenance } from "./provenance";
 
 export const AGENT_NAME = "round-agent";
 
@@ -117,6 +118,13 @@ export async function runRoundAgent(userId: string): Promise<AgentResult> {
                 value: weakness.sgValue,
               },
             },
+            provenance: byggProvenance({
+              kilde: "RUNDER",
+              rader: runder.map((r) => ({ id: r.id, dato: r.playedAt.toISOString() })),
+              regel: `SG ${weakness.primarySgArea} under terskel ${SG_TERSKEL}`,
+              terskel: SG_TERSKEL,
+              maaltVerdi: weakness.sgValue,
+            }),
           },
         });
         planActionsWritten++;

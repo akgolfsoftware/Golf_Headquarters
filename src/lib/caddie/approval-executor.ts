@@ -129,13 +129,15 @@ export async function executeApprovedTool(
       try {
         // Kollisjonsvern (A-pakken): sjekk + opprettelse i samme transaksjon.
         booking = await prisma.$transaction(async (tx) => {
-          await sjekkKollisjon(tx, {
+          const vern = await sjekkKollisjon(tx, {
             coachId: service.coachUserId ?? null,
+            serviceTypeId: service.id,
             startAt: start,
             endAt: end,
           });
           return tx.booking.create({
             data: {
+              plassNr: vern.plassNr,
               userId: input.playerId,
               serviceTypeId: service.id,
               locationId: location.id,

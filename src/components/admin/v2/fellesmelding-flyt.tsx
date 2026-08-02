@@ -15,6 +15,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { T, Caps, AvatarInit, StatusPill, TomTilstand, type StatusTone } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { TurneringModal, ModalFeil, useMobile } from "@/components/admin/v2/turnering-ui";
@@ -61,14 +62,25 @@ export function FellesmeldingFlyt({
   turneringId,
   turneringNavn,
   deltakere,
+  autoApen = false,
 }: {
   turneringId: string;
   turneringNavn: string;
   deltakere: FellesmeldingDeltaker[];
+  /** Åpne panelet direkte ved innlasting (?fellesmelding=1 fra turneringslisten). */
+  autoApen?: boolean;
 }) {
   const mobile = useMobile();
-  const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const [open, setOpen] = useState(autoApen && deltakere.length > 0);
   const tom = deltakere.length === 0;
+
+  const lukk = () => {
+    setOpen(false);
+    // Rens ?fellesmelding=1 så en refresh/tilbake-navigasjon ikke gjenåpner panelet.
+    if (autoApen) router.replace(pathname, { scroll: false });
+  };
 
   return (
     <>
@@ -105,7 +117,7 @@ export function FellesmeldingFlyt({
           turneringId={turneringId}
           turneringNavn={turneringNavn}
           deltakere={deltakere}
-          onLukk={() => setOpen(false)}
+          onLukk={lukk}
         />
       )}
     </>

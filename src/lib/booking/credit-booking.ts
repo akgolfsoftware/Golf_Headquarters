@@ -7,7 +7,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { audit } from "@/lib/audit";
-import { pushBookingToCalendar } from "@/lib/google-calendar";
+import { pushBooking } from "@/lib/google-calendar-kilder";
+import { varsleNyBooking } from "@/lib/booking/varsle-ny-booking";
 import { notify } from "@/lib/notifications";
 
 export type CreditBookingInput = {
@@ -102,8 +103,9 @@ export async function createCreditBooking(
     .$transaction(async (tx) => {
       // Kollisjonsvern (A-pakken): sjekk INNE i transaksjonen med
       // advisory-lås — atomisk sammen med credit-trekk og opprettelse.
-      await sjekkKollisjon(tx, {
+      const vern = await sjekkKollisjon(tx, {
         coachId: service.coachUserId,
+        serviceTypeId: service.id,
         startAt,
         endAt,
       });
@@ -124,6 +126,7 @@ export async function createCreditBooking(
       // = null) tillates fortsatt med flere deltakere.
       const booking = await tx.booking.create({
         data: {
+          plassNr: vern.plassNr,
           userId: user.id,
           serviceTypeId: service.id,
           coachId: service.coachUserId,
@@ -164,7 +167,7 @@ export async function createCreditBooking(
 
   // Best-effort: push til coachens Google Calendar (oppdaterer Booking.googleEventId)
   try {
-    await pushBookingToCalendar(result.id);
+    await pushBooking(result.id);
   } catch (err) {
     console.error("[credit-booking] calendar push failed", err);
   }
@@ -190,6 +193,10 @@ export async function createCreditBooking(
     body: `${tidStr}. Trukket fra månedlig saldo (${subscription.creditsRemaining - 1} igjen).`,
     link: "/portal/meg/bookinger",
   });
+
+  // Coach/admin skal også vite om abonnements-bookinger — de gikk tidligere
+  // helt stille forbi (kun spilleren ble varslet).
+  await varsleNyBooking(result.id, "abonnement");
 
   revalidatePath("/portal/meg/bookinger");
   revalidatePath("/portal");

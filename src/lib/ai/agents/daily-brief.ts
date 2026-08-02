@@ -8,9 +8,11 @@
 // brief generert fra Prisma-data uten Claude-kall.
 
 import "server-only";
-import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "../client";
+import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "../client";
 import { ALL_SKILLS } from "../skills";
 import { prisma } from "@/lib/prisma";
+import { filtrerTilCoachInnsyn } from "@/lib/health/samtykke";
+import { hentRestitusjonsstatusForFlere } from "@/lib/health/restitusjonsstatus";
 
 const SKILLS_BLOCK = ALL_SKILLS.map(
   (s) => `\n## ${s.name}\n${s.knowledge}`,
@@ -84,7 +86,7 @@ export async function genererDailyBrief(opts: {
 
   const userPrompt = byggUserPrompt(metrics);
   const response = await anthropic.messages.create({
-    model: AI_MODEL,
+    model: modelFor("daily-brief"),
     max_tokens: AI_MAX_TOKENS,
     system: DAILY_BRIEF_SYSTEM,
     messages: [{ role: "user", content: userPrompt }],
@@ -178,39 +180,31 @@ async function samleMetrics(
     }
   }
 
-  // Flagg 2: HRV/HR-anomali siste 7 dager (resting HR > 75 eller søvn < 6).
-  const syvDager = new Date(dato);
-  syvDager.setDate(syvDager.getDate() - 7);
-  for (const id of spillereIds) {
-    const senesteHelse = await prisma.healthEntry.findMany({
-      where: { userId: id, date: { gte: syvDager } },
-      orderBy: { date: "desc" },
-      take: 7,
-      select: { restingHr: true, sleepHours: true, date: true },
+  // Flagg 2: restitusjon under spillerens eget normalnivå.
+  //
+  // To ting er endret her (2026-07-28): flagget går KUN til coacher spilleren
+  // har gitt innsyn til (GDPR art. 9), og meldingen sier farge i stedet for
+  // rå tall. De gamle tersklene («resting HR > 75», «søvn < 6t») var både et
+  // personverninnsyn coachen ikke hadde samtykke til, og hardkodede
+  // referanseverdier — som repoet ellers ikke bruker, jf. FYS-score og
+  // belastning. Statusen er selv-relativ; se lib/health/restitusjonsstatus.ts.
+  const { status: medInnsyn } = await filtrerTilCoachInnsyn(spillereIds);
+  const restitusjon = await hentRestitusjonsstatusForFlere(
+    Array.from(medInnsyn),
+    dato,
+  );
+  for (const [id, status] of restitusjon) {
+    if (status.farge !== "GUL" && status.farge !== "ROED") continue;
+    flagg.push({
+      spillerId: id,
+      spillerNavn: navnMap.get(id) ?? "Ukjent",
+      type: "HRV_ANOMALI",
+      severity: status.farge === "ROED" ? 3 : 2,
+      melding:
+        status.farge === "ROED"
+          ? "Restitusjon klart under eget normalnivå — vurder redusert belastning"
+          : "Restitusjon noe under eget normalnivå",
     });
-    const hoyHR = senesteHelse.find(
-      (h) => h.restingHr !== null && h.restingHr > 75,
-    );
-    const lavSovn = senesteHelse.find(
-      (h) => h.sleepHours !== null && h.sleepHours < 6,
-    );
-    if (hoyHR) {
-      flagg.push({
-        spillerId: id,
-        spillerNavn: navnMap.get(id) ?? "Ukjent",
-        type: "HRV_ANOMALI",
-        severity: 3,
-        melding: `Resting HR ${hoyHR.restingHr} (anbefalt < 65)`,
-      });
-    } else if (lavSovn) {
-      flagg.push({
-        spillerId: id,
-        spillerNavn: navnMap.get(id) ?? "Ukjent",
-        type: "HRV_ANOMALI",
-        severity: 2,
-        melding: `Søvn ${lavSovn.sleepHours}t — under 6t flere ganger`,
-      });
-    }
   }
 
   // Flagg 3: Overdue test (definerer her som "ingen TestResult siste 60 dager"

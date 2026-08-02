@@ -43,6 +43,14 @@ og lydopptak av coaching-økter med transkripsjon og AI-analyse. Lydfiler
 slettes automatisk etter en fastsatt periode; [FYLL INN: hva som gjelder for
 transkript — i dag beholdes de uten tidsgrense, se AVKLAR-punkt 2].
 
+**Lydopptak av mindreårige (pilot FØR/UNDER/ETTER):** Coaching-lyd tas bare opp
+når det finnes et **uttrykkelig lydsamtykke** (`LydSamtykke` med status GITT) for
+spilleren. For spillere under 16 år gis samtykket av **foresatt**. Ordlyden som
+det ble sagt ja til, lagres som kopi (kan ikke endres i ettertid uten nytt
+samtykke). Uten GITT blokkerer systemet all start av opptak (hard server-sperre).
+Samtykke kan trekkes; da stoppes nye opptak umiddelbart. E-postflyt til foresatt
+krever at e-postleveranse (DKIM/Resend) er verifisert.
+
 **Meldinger:** dialog med coach, spørsmål og svar, vedlegg, og samtaler med
 AI-hjelperen i appen.
 

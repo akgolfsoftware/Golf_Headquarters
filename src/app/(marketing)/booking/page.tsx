@@ -1,13 +1,15 @@
 /**
  * /booking — v2-port 16. juli 2026. Datalogikk gjenbrukt 1:1 fra
- * (mlegacy)/booking/page.tsx: BOOKING_ACTIVE-flagget (Acuity-pause),
- * Prisma-spørringen (aktive tjenester med pris > 0), lokasjon-mapping
+ * (mlegacy)/booking/page.tsx: Acuity-pause (nå rollestyrt via
+ * kanBrukeInnebygdBooking), Prisma-spørringen (aktive tjenester med
+ * pris > 0), lokasjon-mapping
  * (Trackman → Mulligan, ellers GFGK), coach-bios og abonnement-grupperingen
  * («performance» i navnet). Presentasjonen bor i MarkedBookingV2 (v2, MRamme
  * — flyttet ut av (mlegacy)-chromen som resten av markedssidene).
  */
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { BOOKING_ACUITY_URL, kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
 import {
   MarkedBookingV2,
   type BookingLokasjon,
@@ -57,15 +59,6 @@ const LOCATIONS: Record<string, { id: string; navn: string; sted: string }> = {
   },
 };
 
-// Feature-flag: skru av offentlig booking inntil Google Calendar 2-way sync
-// er på plass. Forhindrer dobbel-booking mot Anders sin private kalender.
-// Sett BOOKING_ACTIVE=true i Vercel når sync er live.
-const BOOKING_ACTIVE = process.env.BOOKING_ACTIVE === "true";
-
-// Frem til AK Golf HQ-bookingen lanseres bookes alt via Acuity (akgolfgroup.as.me).
-// Når BOOKING_ACTIVE=true settes i Vercel, overtar den innebygde flyten automatisk.
-const BOOKING_ACUITY_URL = process.env.NEXT_PUBLIC_ACUITY_URL ?? "https://akgolfgroup.as.me";
-
 export default async function BookingLanding({
   searchParams,
 }: {
@@ -73,7 +66,9 @@ export default async function BookingLanding({
 }) {
   const { lokasjon, trener } = await searchParams;
 
-  if (!BOOKING_ACTIVE) {
+  // Pauset for publikum: alle domener sendes til Acuity. Kun ADMIN ser flyten
+  // (til BOOKING_PUBLIC=true) — se src/lib/booking/offentlig-booking.ts.
+  if (!(await kanBrukeInnebygdBooking())) {
     return <MarkedBookingV2 paused acuityUrl={BOOKING_ACUITY_URL} />;
   }
 

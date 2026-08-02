@@ -38,7 +38,11 @@ type PlanActionCreateArgs = {
 
 test("runTreningsdataEkspert — hovedløp og duplikatsperre", async (t) => {
   // Minst 3 runder kreves for å komme forbi den første sjekken.
-  const runder = [{ id: "r1" }, { id: "r2" }, { id: "r3" }];
+  const runder = [
+    { id: "r1", playedAt: new Date("2026-06-01") },
+    { id: "r2", playedAt: new Date("2026-06-15") },
+    { id: "r3", playedAt: new Date("2026-07-01") },
+  ];
 
   const korrelasjon = [
     { sgArea: "PUTT", r: -0.5, datapunkter: 5, tolkning: "negativ" as const },

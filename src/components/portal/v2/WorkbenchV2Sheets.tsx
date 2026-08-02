@@ -214,6 +214,20 @@ const inputStyle: CSSProperties = {
    Samme felter i begge moduser: tittel, dag, tid, varighet, pyramide-område,
    L-fase, miljø og driller (søk i banken + minutter/sett/reps/nivå). */
 
+/** Ett av spillerens treningssteder (fra onboarding steg 3). */
+export type SpillerStedValg = { id: string; name: string; isIndoor: boolean };
+
+/** Treff fra øvelsesbanken (sokOvelser) — bærer standard L-trapp og estimat. */
+export type DrillTreff = {
+  id: string;
+  name: string;
+  pyramidArea: string;
+  defaultRepsUtenBall: number | null;
+  defaultRepsLavFart: number | null;
+  defaultRepsAuto: number | null;
+  estimatTekst?: string;
+};
+
 export type OktArkDrill = {
   exerciseId?: string;
   navn: string;
@@ -221,9 +235,19 @@ export type OktArkDrill = {
   sett: number | null;
   reps: number | null;
   nivaa: "uten" | "lav" | "vanlig";
+  /** Planlagt L-trapp (AK-formel): reps per læringstrinn. Null = trinnet er ikke i bruk. */
+  planRepsUtenBall?: number | null;
+  planRepsLavFart?: number | null;
+  planRepsAuto?: number | null;
+  /** Egen drill: settes kun når spilleren oppretter den her og nå. */
+  nyOmraade?: string;
+  nyBeskrivelse?: string;
+  nyPyramidArea?: AkseKey;
   /** Kobling til teknisk-plan-oppgave — reps logges automatisk mot den ved fullføring. */
   positionTaskId?: string;
   positionTaskTittel?: string;
+  /** «Sist: ~12 min» fra historikk. Kun visning — sendes aldri til serveren. */
+  estimatTekst?: string;
 };
 
 export interface NyOktInput {
@@ -235,6 +259,8 @@ export interface NyOktInput {
   durMin: number;
   lFase: string | null;
   miljo: string | null;
+  location: string | null;
+  maalsetning: string | null;
   drills: OktArkDrill[];
   /** Totalt antall forekomster (1 = kun denne uka). */
   gjentaUker: number;
@@ -254,9 +280,11 @@ export interface NyOktArkProps {
   onLukk: () => void;
   onOpprett: (input: NyOktInput) => Promise<{ ok: boolean; error?: string }>;
   searchTeknisk?: (query: string) => Promise<{ id: string; tittel: string; pNummer: string }[]>;
+  /** Spillerens treningssteder fra onboarding — hurtigvalg for «Hvor». */
+  steder?: SpillerStedValg[];
 }
 
-export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAkse, defaultDurMin, defaultDrills, onLukk, onOpprett, searchTeknisk }: NyOktArkProps) {
+export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAkse, defaultDurMin, defaultDrills, onLukk, onOpprett, searchTeknisk, steder }: NyOktArkProps) {
   return (
     <OktArkSkjema
       overskrift="Ny økt"
@@ -264,6 +292,7 @@ export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAks
       lagrerLabel="Oppretter…"
       submitIcon="plus"
       searchTeknisk={searchTeknisk}
+      steder={steder}
       initial={{
         title: defaultTitle ?? "",
         dayIndex: defaultDayIndex,
@@ -272,6 +301,8 @@ export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAks
         akse: defaultAkse ?? "TEK",
         lFase: null,
         miljo: null,
+        location: null,
+        maalsetning: null,
         drills: defaultDrills ?? [],
       }}
       tittelPlaceholder="F.eks. Wedge 60–100 m"
@@ -287,6 +318,8 @@ export function NyOktArk({ defaultDayIndex, defaultTid, defaultTitle, defaultAks
           durMin: s.durMin,
           lFase: s.lFase,
           miljo: s.miljo,
+          location: s.location,
+          maalsetning: s.maalsetning,
           drills: s.drills,
           gjentaUker: s.gjentaUker,
           gjentaStegUker: s.gjentaStegUker,
@@ -304,10 +337,28 @@ type OktArkState = {
   akse: AkseKey;
   lFase: string | null;
   miljo: string | null;
+  location: string | null;
+  maalsetning: string | null;
   drills: OktArkDrill[];
 };
 
 const MILJOER = ["M0", "M1", "M2", "M3", "M4", "M5"] as const;
+
+/**
+ * AK-trappen på en drill: reps per læringstrinn, i rekkefølge.
+ * «Uten ball» står alltid — de to neste legges til ved behov, så en enkel
+ * drill forblir enkel. Labels speiler FASE_STEG (ak-formel-visning).
+ */
+const AK_TRAPP = [
+  { felt: "planRepsUtenBall", label: "Uten ball", kort: "uten ball", alltid: true },
+  { felt: "planRepsLavFart", label: "Lav hastighet", kort: "lav fart", alltid: false },
+  { felt: "planRepsAuto", label: "Auto", kort: "auto", alltid: false },
+] as const satisfies readonly {
+  felt: "planRepsUtenBall" | "planRepsLavFart" | "planRepsAuto";
+  label: string;
+  kort: string;
+  alltid: boolean;
+}[];
 
 function OktArkSkjema({
   overskrift,
@@ -320,6 +371,7 @@ function OktArkSkjema({
   onLukk,
   onSubmit,
   searchTeknisk,
+  steder,
 }: {
   overskrift: string;
   submitLabel: string;
@@ -332,6 +384,7 @@ function OktArkSkjema({
   onLukk: () => void;
   onSubmit: (state: OktArkState & { hour: number; minute: number; gjentaUker: number; gjentaStegUker: number }) => Promise<{ ok: boolean; error?: string }>;
   searchTeknisk?: (query: string) => Promise<{ id: string; tittel: string; pNummer: string }[]>;
+  steder?: SpillerStedValg[];
 }) {
   const [title, setTitle] = useState(initial.title);
   const [dayIndex, setDayIndex] = useState(initial.dayIndex);
@@ -340,15 +393,20 @@ function OktArkSkjema({
   const [akse, setAkse] = useState<AkseKey>(initial.akse);
   const [lFase, setLFase] = useState<string | null>(initial.lFase);
   const [miljo, setMiljo] = useState<string | null>(initial.miljo);
+  const [location, setLocation] = useState<string>(initial.location ?? "");
+  const [maalsetning, setMaalsetning] = useState<string>(initial.maalsetning ?? "");
   const [drills, setDrills] = useState<OktArkDrill[]>(initial.drills);
   /** Av | hver uke | annenhver uke (Apple/Notion-mønster). */
   const [gjentaModus, setGjentaModus] = useState<"av" | "uke" | "2uker">("av");
   /** Antall ganger totalt når gjenta er på (inkl. første). */
   const [gjentaAntall, setGjentaAntall] = useState(4);
   const [drillSok, setDrillSok] = useState("");
-  const [drillTreff, setDrillTreff] = useState<{ id: string; name: string; pyramidArea: string }[]>([]);
+  const [drillTreff, setDrillTreff] = useState<DrillTreff[]>([]);
   const [manuellApen, setManuellApen] = useState(false);
   const [manuellNavn, setManuellNavn] = useState("");
+  const [manuellAkse, setManuellAkse] = useState<AkseKey>(initial.akse);
+  const [manuellOmraade, setManuellOmraade] = useState("");
+  const [manuellBeskrivelse, setManuellBeskrivelse] = useState("");
   const [manuellMin, setManuellMin] = useState<number | "">("");
   const [manuellSett, setManuellSett] = useState<number | "">("");
   const [manuellReps, setManuellReps] = useState<number | "">("");
@@ -413,6 +471,8 @@ function OktArkSkjema({
       akse,
       lFase,
       miljo,
+      location: location.trim() || null,
+      maalsetning: maalsetning.trim() || null,
       drills,
       hour,
       minute,
@@ -434,9 +494,15 @@ function OktArkSkjema({
         sett: manuellSett === "" ? null : Number(manuellSett),
         reps: manuellReps === "" ? null : Number(manuellReps),
         nivaa: "vanlig",
+        nyOmraade: manuellOmraade.trim() || undefined,
+        nyBeskrivelse: manuellBeskrivelse.trim() || undefined,
+        nyPyramidArea: manuellAkse,
       },
     ]);
     setManuellNavn("");
+    setManuellOmraade("");
+    setManuellBeskrivelse("");
+    setManuellAkse(akse);
     setManuellMin("");
     setManuellSett("");
     setManuellReps("");
@@ -563,7 +629,7 @@ function OktArkSkjema({
             </Felt>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               <Felt label="Klokkeslett">
-                {/* Notion-grid 05:00–23:00 i 30-min slots — samme fasit som tidslinja */}
+                {/* Notion-grid 04:00–23:00 i 20-min slots — samme fasit som tidslinja */}
                 <select
                   value={tid}
                   onChange={(e) => setTid(e.target.value)}
@@ -592,6 +658,58 @@ function OktArkSkjema({
                 ))}
               </span>
             </div>
+
+            <Felt label="Hvor">
+              {steder && steder.length > 0 && (
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 6 }}>
+                  {steder.map((sted) => {
+                    const valgt = location.trim() === sted.name;
+                    return (
+                      <button
+                        key={sted.id}
+                        type="button"
+                        onClick={() => setLocation(valgt ? "" : sted.name)}
+                        className="v2-press"
+                        style={{
+                          appearance: "none",
+                          cursor: "pointer",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 4,
+                          fontSize: 11,
+                          fontWeight: 600,
+                          padding: "5px 10px",
+                          borderRadius: 9999,
+                          background: valgt ? T.lime : T.panel2,
+                          border: `1px solid ${valgt ? "transparent" : T.border}`,
+                          color: valgt ? T.onLime : T.fg2,
+                        }}
+                      >
+                        <Icon name={sted.isIndoor ? "home" : "sun"} size={11} />
+                        {sted.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+              <input
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder={steder && steder.length > 0 ? "… eller skriv et annet sted" : "F.eks. Gamle Fredrikstad GK"}
+                aria-label="Hvor økten skjer"
+                style={inputStyle}
+              />
+            </Felt>
+
+            <Felt label="Målsetning">
+              <input
+                value={maalsetning}
+                onChange={(e) => setMaalsetning(e.target.value)}
+                placeholder="Hva skal økten oppnå?"
+                aria-label="Målsetning for økten"
+                style={inputStyle}
+              />
+            </Felt>
 
             {visGjenta && (
               <Felt label="Gjenta" hjelp="gjentaOkt">
@@ -746,6 +864,61 @@ function OktArkSkjema({
                         <Icon name="x" size={13} />
                       </button>
                     </div>
+                    {/* AK-trapp: reps per læringstrinn. «Uten ball» står alltid;
+                        de to neste trinnene legges til ved behov. */}
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", paddingLeft: 4 }}>
+                      {AK_TRAPP.map((trinn) => {
+                        const verdi = d[trinn.felt];
+                        const aktiv = verdi !== null && verdi !== undefined;
+                        if (!aktiv && !trinn.alltid) {
+                          return (
+                            <button
+                              key={trinn.felt}
+                              type="button"
+                              className="v2-press"
+                              onClick={() => setDrills(drills.map((x, j) => (j === i ? { ...x, [trinn.felt]: 0 } : x)))}
+                              style={{ appearance: "none", display: "inline-flex", alignItems: "center", gap: 3, background: "transparent", border: `1px dashed ${T.borderS}`, borderRadius: 9999, padding: "3px 8px", cursor: "pointer", fontFamily: T.mono, fontSize: 9, color: T.mut }}
+                            >
+                              <Icon name="plus" size={9} />
+                              {trinn.kort}
+                            </button>
+                          );
+                        }
+                        return (
+                          <span key={trinn.felt} style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                            <input
+                              type="number"
+                              min={0}
+                              max={2000}
+                              value={verdi ?? ""}
+                              onChange={(e) =>
+                                setDrills(drills.map((x, j) => (j === i ? { ...x, [trinn.felt]: e.target.value ? Number(e.target.value) : null } : x)))
+                              }
+                              aria-label={`Reps ${trinn.label.toLowerCase()}`}
+                              style={{ ...inputStyle, width: 48, padding: "4px 6px", fontSize: 10.5 }}
+                            />
+                            <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>{trinn.kort}</span>
+                            {!trinn.alltid && (
+                              <button
+                                type="button"
+                                className="v2-press"
+                                aria-label={`Fjern ${trinn.label.toLowerCase()}`}
+                                onClick={() => setDrills(drills.map((x, j) => (j === i ? { ...x, [trinn.felt]: null } : x)))}
+                                style={{ appearance: "none", background: "transparent", border: 0, color: T.mut, cursor: "pointer", padding: 0 }}
+                              >
+                                <Icon name="x" size={9} />
+                              </button>
+                            )}
+                          </span>
+                        );
+                      })}
+                      {d.estimatTekst && (
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 3, marginLeft: "auto", fontFamily: T.mono, fontSize: 9, color: T.mut }}>
+                          <Icon name="clock" size={9} />
+                          {d.estimatTekst}
+                        </span>
+                      )}
+                    </div>
                     {searchTeknisk && (
                       <div style={{ display: "flex", alignItems: "center", gap: 6, paddingLeft: 4 }}>
                         <button
@@ -805,7 +978,7 @@ function OktArkSkjema({
                       border: `1px solid color-mix(in srgb, ${T.lime} 35%, transparent)`,
                     }}
                   >
-                    <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 700, color: T.fg }}>Ny manuell øvelse</span>
+                    <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 700, color: T.fg }}>Egen øvelse</span>
                     <input
                       value={manuellNavn}
                       onChange={(e) => setManuellNavn(e.target.value)}
@@ -814,11 +987,43 @@ function OktArkSkjema({
                       onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); leggTilManuell(); } }}
                       style={inputStyle}
                     />
+                    {/* Pyramide-område: starter på øktas akse, kan endres. */}
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                      {AKSER.map((a) => {
+                        const valgt = manuellAkse === a.v;
+                        return (
+                          <button
+                            key={a.v}
+                            type="button"
+                            onClick={() => setManuellAkse(a.v)}
+                            className="v2-press"
+                            style={{ appearance: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 9, fontWeight: 700, padding: "5px 9px", borderRadius: 9999, background: valgt ? T.lime : T.panel3, border: `1px solid ${valgt ? "transparent" : T.borderS}`, color: valgt ? T.onLime : T.fg2 }}
+                          >
+                            {a.l}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <input
+                      value={manuellOmraade}
+                      onChange={(e) => setManuellOmraade(e.target.value)}
+                      placeholder="Område (f.eks. wedge 60–100 m)"
+                      style={inputStyle}
+                    />
+                    <input
+                      value={manuellBeskrivelse}
+                      onChange={(e) => setManuellBeskrivelse(e.target.value)}
+                      placeholder="Hva går øvelsen ut på? (valgfritt)"
+                      style={inputStyle}
+                    />
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
                       <input type="number" min={1} max={240} placeholder="Min" value={manuellMin} onChange={(e) => setManuellMin(e.target.value ? Number(e.target.value) : "")} style={inputStyle} />
                       <input type="number" min={1} max={50} placeholder="Sett" value={manuellSett} onChange={(e) => setManuellSett(e.target.value ? Number(e.target.value) : "")} style={inputStyle} />
                       <input type="number" min={1} max={500} placeholder="Reps" value={manuellReps} onChange={(e) => setManuellReps(e.target.value ? Number(e.target.value) : "")} style={inputStyle} />
                     </div>
+                    <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut }}>
+                      Øvelsen lagres i din egen øvelsesbank.
+                    </span>
                     <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
                       <Knapp ghost onClick={() => setManuellApen(false)}>Avbryt</Knapp>
                       <Knapp icon="plus" onClick={leggTilManuell} disabled={!manuellNavn.trim()}>Legg til</Knapp>
@@ -836,7 +1041,7 @@ function OktArkSkjema({
                 {drillSok.trim().length >= 2 && (
                   <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                     {drillTreff.map((t) => (
-                      <button key={t.id} type="button" className="v2-press" onClick={() => { setDrills([...drills, { exerciseId: t.id, navn: t.name, minutter: null, sett: null, reps: null, nivaa: "vanlig" }]); setDrillSok(""); }} style={{ appearance: "none", textAlign: "left", padding: "7px 10px", borderRadius: 9, background: T.panel2, border: `1px dashed ${T.borderS}`, color: T.fg, fontFamily: T.ui, fontSize: 12, cursor: "pointer" }}>
+                      <button key={t.id} type="button" className="v2-press" onClick={() => { setDrills([...drills, { exerciseId: t.id, navn: t.name, minutter: null, sett: null, reps: null, nivaa: "vanlig", planRepsUtenBall: t.defaultRepsUtenBall, planRepsLavFart: t.defaultRepsLavFart, planRepsAuto: t.defaultRepsAuto, estimatTekst: t.estimatTekst }]); setDrillSok(""); }} style={{ appearance: "none", textAlign: "left", padding: "7px 10px", borderRadius: 9, background: T.panel2, border: `1px dashed ${T.borderS}`, color: T.fg, fontFamily: T.ui, fontSize: 12, cursor: "pointer" }}>
                         + {t.name} <span style={{ color: T.mut, fontFamily: T.mono, fontSize: 9 }}>({t.pyramidArea})</span>
                       </button>
                     ))}
@@ -1420,13 +1625,14 @@ export function ValgtOktSeksjon({
    chippen SYKLER (Fysisk → Teknikk → Slag → Spill → Turnering) ved trykk
    (Anders: «trykk på pyramide, så switcher den bare»). Lagre = updateSession
    (+ moveSession ved dagbytte). Samme overlay-språk som Ny økt. */
-export function RedigerOktArk({ okt, dag, weekOffset, actions, onLukk, onEndret }: {
+export function RedigerOktArk({ okt, dag, weekOffset, actions, onLukk, onEndret, steder }: {
   okt: WeekEvent;
   dag: number;
   weekOffset: number;
   actions: WorkbenchV2Actions;
   onLukk: () => void;
   onEndret: () => void;
+  steder?: SpillerStedValg[];
 }) {
   // Nåtilstanden (AK-formel + driller) lastes FØR skjemaet vises, så
   // hent-svaret aldri kan overskrive noe brukeren har trykket på (race-vernet
@@ -1445,6 +1651,8 @@ export function RedigerOktArk({ okt, dag, weekOffset, actions, onLukk, onEndret 
         akse: (okt.ax?.toUpperCase() as AkseKey) ?? "TEK",
         lFase: res.ok ? (res.lFase ?? null) : null,
         miljo: res.ok ? (res.miljo ?? null) : null,
+        location: res.ok ? (res.location ?? null) : null,
+        maalsetning: res.ok ? (res.maalsetning ?? null) : null,
         drills: res.ok ? (res.drills ?? []).map((d) => ({ ...d })) : [],
       });
     });
@@ -1470,6 +1678,7 @@ export function RedigerOktArk({ okt, dag, weekOffset, actions, onLukk, onEndret 
       submitIcon="check"
       initial={initial}
       searchTeknisk={actions.searchTeknisk}
+      steder={steder}
       onLukk={onLukk}
       onSubmit={async (s) => {
         if (!okt.id || !actions.updateSession) return { ok: false, error: "Ingen skrivetilgang." };
@@ -1481,14 +1690,21 @@ export function RedigerOktArk({ okt, dag, weekOffset, actions, onLukk, onEndret 
           durationMin: s.durMin,
           lFase: (s.lFase ?? null) as never,
           miljo: (s.miljo ?? null) as never,
+          location: s.location,
+          maalsetning: s.maalsetning,
           drills: s.drills.map((d) => ({
             exerciseId: d.exerciseId,
             nyNavn: d.exerciseId ? undefined : d.navn,
-            nyPyramidArea: d.exerciseId ? undefined : s.akse,
+            nyPyramidArea: d.exerciseId ? undefined : (d.nyPyramidArea ?? s.akse),
+            nyOmraade: d.exerciseId ? undefined : d.nyOmraade,
+            nyBeskrivelse: d.exerciseId ? undefined : d.nyBeskrivelse,
             minutter: d.minutter,
             sett: d.sett,
             reps: d.reps,
             nivaa: d.nivaa,
+            planRepsUtenBall: d.planRepsUtenBall,
+            planRepsLavFart: d.planRepsLavFart,
+            planRepsAuto: d.planRepsAuto,
             positionTaskId: d.positionTaskId,
           })),
         });

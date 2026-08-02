@@ -15,8 +15,16 @@ import "server-only";
  * Kontrakt: ak-golf-intelligence/docs/public-api.md.
  */
 
-const BASE = process.env.INTELLIGENCE_API_URL?.replace(/\/$/, "") ?? "";
-const KEY = process.env.INTELLIGENCE_API_KEY ?? "";
+// Lest lazily (ikke ved modul-last) slik at env kan settes etter import —
+// viktig for tester og for serverless-kontekster der env kan populeres sent.
+function baseUrl(): string {
+  // Tåler whitespace + ett eller flere trailing slashes.
+  return (process.env.INTELLIGENCE_API_URL ?? "").trim().replace(/\/+$/, "");
+}
+
+function apiKey(): string {
+  return (process.env.INTELLIGENCE_API_KEY ?? "").trim();
+}
 
 export type IntelOptions = {
   /** Cache-levetid i sekunder (Next.js fetch revalidate). Default 1 t. 0 = ingen cache. */
@@ -38,11 +46,11 @@ export class IntelligenceApiError extends Error {
 
 /** Er API-et konfigurert? Bruk for å falle tilbake til HQ-lokal data i overgangsfasen. */
 export function intelligenceConfigured(): boolean {
-  return BASE.length > 0 && KEY.length > 0;
+  return baseUrl().length > 0 && apiKey().length > 0;
 }
 
 function buildUrl(path: string, params?: Record<string, string | number | undefined>): string {
-  const url = new URL(`${BASE}/api/v1${path.startsWith("/") ? path : `/${path}`}`);
+  const url = new URL(`${baseUrl()}/api/v1${path.startsWith("/") ? path : `/${path}`}`);
   if (params) {
     for (const [k, v] of Object.entries(params)) {
       if (v !== undefined && v !== null && v !== "") url.searchParams.set(k, String(v));
@@ -68,7 +76,7 @@ export async function intelGet<T>(
     );
   }
   const res = await fetch(buildUrl(path, params), {
-    headers: { authorization: `Bearer ${KEY}`, accept: "application/json" },
+    headers: { authorization: `Bearer ${apiKey()}`, accept: "application/json" },
     signal: opts.signal,
     next: { revalidate: opts.revalidateSeconds ?? 3600 },
   });
@@ -91,15 +99,20 @@ export async function intelGet<T>(
 // (Record/partial) der HQ ikke trenger streng typing — valider med zod på
 // forbrukssiden hvis en verdi er forretningskritisk.
 
+/**
+ * Rad fra `GET /sg/benchmarks` (HCP × kategori, Broadie-basert).
+ * Formen speiler `dashboard.sg_benchmarks` i Intelligence (Drizzle-serialisering:
+ * camelCase, og `numeric`-kolonner kommer som strenger over JSON).
+ */
 export type SgBenchmark = {
+  id: number;
   handicapLevel: number;
+  /** 'OTT' | 'APP' | 'ARG' | 'PUTT' */
   category: string;
-  otAvg: number | null;
-  appAvg: number | null;
-  argAvg: number | null;
-  puttAvg: number | null;
-  t2gAvg: number | null;
-  confidence: string | null;
+  expectedStrokes: string | number | null;
+  pgaTourEquivalent: string | number | null;
+  avgScore72: string | number | null;
+  createdAt?: string;
 };
 
 export type WagrPlayer = {

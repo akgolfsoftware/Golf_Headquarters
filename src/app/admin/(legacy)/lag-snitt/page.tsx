@@ -18,9 +18,10 @@ export const dynamic = "force-dynamic";
 const AKSER: readonly AkseKey[] = ["TURN", "SPILL", "SLAG", "TEK", "FYS"];
 
 export default async function LagSnittPage() {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   const grupper = await prisma.group.findMany({
+    where: user.role === "COACH" ? { coachId: user.id } : {},
     select: { id: true, name: true, members: { select: { userId: true } } },
     orderBy: { name: "asc" },
   });

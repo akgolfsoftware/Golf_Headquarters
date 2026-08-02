@@ -24,6 +24,7 @@ type Rad = {
   planId: string;
   completionRate: number;
   sgTotalDelta: number | null;
+  computedAt: Date;
   plan: { id: string; name: string; userId: string; isActive: boolean };
   user: { name: string };
 };
@@ -59,6 +60,7 @@ test("runPlanEffectivenessAgent — hovedløp og duplikatsperre", async (t) => {
       planId: "plan-1",
       completionRate: 0.3,
       sgTotalDelta: -0.1,
+      computedAt: new Date("2026-07-20"),
       plan: { id: "plan-1", name: "Uke 12 plan", userId: "user-1", isActive: true },
       user: { name: "Øyvind Rohjan" },
     },
@@ -152,6 +154,7 @@ test("runPlanEffectivenessAgent — hovedløp og duplikatsperre", async (t) => {
       planId: "plan-1",
       completionRate: 0.2,
       sgTotalDelta: -0.2,
+      computedAt: new Date("2026-07-20"),
       plan: { id: "plan-1", name: "Uke 12 plan", userId: "user-1", isActive: true },
       user: { name: "Øyvind Rohjan" },
     },

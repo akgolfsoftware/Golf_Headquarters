@@ -3,7 +3,7 @@
 > **Dato:** 2026-06-27
 > **Mål (Anders):** All stats, SG, DataGolf, testresultater osv. skal samles i ÉN kilde —
 > **AK Golf Intelligence** — og **AK Golf HQ skal lenke til** den kilden, ikke ha sin egen duplikat-kopi.
-> **Status:** Kartlegging ferdig. Delbar Intelligence-API (v1) bygget + pushet (2026-06-27). Datakobling fra HQ gjenstår.
+> **Status:** Kartlegging ferdig. Delbar Intelligence-API (v1) bygget + pushet (2026-06-27). **Datakobling fra HQ påbegynt (2026-07-31): `sg_benchmarks` hentes nå via `/api/v1` (se under).** Resten av domenene gjenstår.
 
 ---
 
@@ -29,6 +29,7 @@
 **Gjenstår (kode — egne runder, når master-schemaet er fylt):**
 - [x] Bygg tynn HQ-klient (`src/lib/intelligence/client.ts`) som henter fra `/api/v1/*` med nøkkel — ✅ bygget (server-only, typede wrappere, `intelligenceConfigured()`-fallback). Nøkkel i HQ `.env.local`; `INTELLIGENCE_API_URL` må fylles med Intelligence-deployment-URL.
 - [ ] Bytt HQ-leserne over til Intel-API, ett domene om gangen: WAGR → DataGolf-benchmarks → turnering/proff → kohort → college
+  - [x] **SG-benchmarks (2026-07-31):** `src/lib/intelligence/benchmark-provider.ts` henter nå fra `/api/v1/sg/benchmarks` via `client.ts` — den siste direkte SQL-lesingen av `dashboard.*` er fjernet. Ukonfigurert/nede API gir tom fallback (tom-tilstand i UI), samme som før.
 - [ ] Fjern HQ sin egen DataGolf/WAGR-synk + arkiver de duplikate Prisma-modellene (se §4) når de ikke lenger leses/skrives
 - [ ] Konsolider SG-benchmark-kalibrering til én kilde (HQ «Team Norway IUP» vs Intel «Broadie HCP» — §6.4)
 

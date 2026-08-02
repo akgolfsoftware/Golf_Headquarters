@@ -29,6 +29,7 @@ import {
   type DashRadItem,
 } from "@/components/admin/v2/SpillerDashboardV2";
 import type { AkseKey } from "@/lib/v2/tokens";
+import { hentSisteSjekkpunkt } from "@/lib/recording/sjekkpunkt";
 
 export const dynamic = "force-dynamic";
 
@@ -132,6 +133,14 @@ export default async function SpillerProfilPage({
       createdAt: true,
       dateOfBirth: true,
       lastLoginAt: true,
+      publicPlayerId: true,
+      publicPlayer: {
+        select: {
+          id: true,
+          name: true,
+          _count: { select: { entries: true } },
+        },
+      },
       groupMemberships: {
         select: { group: { select: { name: true } } },
         orderBy: { joinedAt: "asc" },
@@ -376,13 +385,30 @@ export default async function SpillerProfilPage({
         ? { label: "Samtykke gitt", tone: "lime" }
         : { label: "Samtykke mangler", tone: "warn" },
     );
-  const aktivSkade = ekstra.leaves.find((l) => l.isInjury && !l.returnedAt && (!l.endAt || l.endAt >= now));
+  // `erHelse` er false når spilleren ikke deler helsedelen — da skal det heller
+  // ikke stå «skadet» i toppen av profilen.
+  const aktivSkade = ekstra.leaves.find((l) => l.erHelse && !l.returnedAt && (!l.endAt || l.endAt >= now));
   if (aktivSkade) heroBadges.push({ label: "Skadet · rehab", tone: "down" });
+
+  const sisteSjekkpunkt = await hentSisteSjekkpunkt(player.id);
+  const forKort: SpillerDashboardV2Data["forKort"] = sisteSjekkpunkt
+    ? {
+        sjekkpunkt: sisteSjekkpunkt.sjekkpunkt,
+        godkjentLabel: sisteSjekkpunkt.godkjentAt.toLocaleString("nb-NO", {
+          day: "2-digit",
+          month: "short",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        godkjenningsHref: "/admin/godkjenninger",
+      }
+    : null;
 
   const dash: SpillerDashboardV2Data = {
     profil: data,
     heroBadges,
     heroMeta: [eyebrow, meta].filter(Boolean).join(" · "),
+    forKort,
     kpi: [
       { label: "HCP", verdi: fmtHcp(player.hcp), hjelp: "hcp" },
       {
@@ -469,6 +495,15 @@ export default async function SpillerProfilPage({
     },
 
     helse: {
+      restitusjon: ekstra.restitusjon
+        ? {
+            farge: ekstra.restitusjon.farge,
+            dato: ekstra.restitusjon.sisteMaaling ? datoKort(ekstra.restitusjon.sisteMaaling) : null,
+          }
+        : null,
+      // Spilleren deler status, men ikke tallene bak: da skal skjermen si det
+      // rett ut i stedet for å vise «ingen data», som ville vært misvisende.
+      tallSkjult: ekstra.restitusjon !== null && ekstra.helse.length === 0,
       sparklines: (() => {
         if (!ekstra.helse.length) return [];
         const ut: SpillerDashboardV2Data["helse"]["sparklines"] = [];
@@ -484,7 +519,9 @@ export default async function SpillerProfilPage({
         return ut;
       })(),
       skader: ekstra.leaves.map((l) => ({
-        tittel: l.description ?? (l.isInjury ? "Skade" : `Permisjon (${l.reason})`),
+        // `description` er null uten detalj-samtykke, og `reason` er da
+        // maskert til HELSEBEGRENSNING/FRAVAER — se lib/health/leave-innsyn.ts.
+        tittel: l.description ?? (l.erHelse ? "Helsebegrensning" : `Permisjon (${l.reason})`),
         sub: `${datoKort(l.startAt)}${l.endAt ? ` – ${datoKort(l.endAt)}` : " → pågår"}${l.returnedAt ? ` · tilbake ${datoKort(l.returnedAt)}` : ""}`,
         aktiv: !l.returnedAt && (!l.endAt || l.endAt >= now),
       })),
@@ -526,6 +563,19 @@ export default async function SpillerProfilPage({
             ptsAvg: ekstra.wagr.ptsAvg.toFixed(2).replace(".", ","),
           }
         : null,
+      kobling: player.publicPlayer
+        ? {
+            status: player.publicPlayer.name,
+            sub: `Koblet · ${player.publicPlayer._count.entries} turneringer i basen`,
+            href: `/admin/spillere/${player.id}/turnering-kobling`,
+            tone: "lime" as const,
+          }
+        : {
+            status: "Ikke koblet til turneringsidentitet",
+            sub: "Koble for at GolfBox-resultater skal lande på profilen",
+            href: `/admin/spillere/${player.id}/turnering-kobling`,
+            tone: "warn" as const,
+          },
     },
 
     logg: {

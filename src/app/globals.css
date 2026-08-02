@@ -336,6 +336,9 @@
   --color-forest-deep: var(--forest-deep);
   --color-lime: var(--lime);
   --color-ink: var(--ink);
+  /* C smalt: «Én ting nå» — bg-handling / text-on-handling (maks én per skjerm) */
+  --color-handling: var(--v2-handling);
+  --color-on-handling: var(--v2-on-handling);
   --color-destructive: hsl(var(--destructive));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
   --color-success: hsl(var(--success));
@@ -732,6 +735,10 @@ em.editorial {
  * Cookie ak-v2-tema + inline-script i rot-layout (før paint).
  * Lys: primær-CTA = forest (lime-token remappes til forest).
  * Mørk: primær-CTA = lime. Delta/opp-ned = --v2-up / --v2-down (aldri lime).
+ *
+ * --handling (LÅST 2026-07-31, C smalt): oransje #D97757 kun for skjermens
+ * ÉNE primærhandling («Én ting nå»). Maks én forekomst per skjerm. Ikke
+ * merkevare, ikke status, ikke generelle knapper — det er lime/forest.
  * ============================================================ */
 :root {
   /* Lys (app-default) — 1:1 showroom assets/ds.css */
@@ -752,6 +759,12 @@ em.editorial {
   --v2-forest-soft: rgba(0, 88, 64, 0.12);
   --v2-lime: #005840; /* lys: aksenten ER forest — aldri lime-på-lys CTA */
   --v2-on-lime: #ffffff;
+  /* C smalt: monopol på «Én ting nå» — samme verdi i lys og mørk */
+  --v2-handling: #d97757;
+  --v2-on-handling: #141413;
+  --v2-handling-soft: rgba(217, 119, 87, 0.14);
+  --handling: var(--v2-handling);
+  --on-handling: var(--v2-on-handling);
   --v2-up: #1a7745;
   --v2-down: #b4461c;
   --v2-warn: #8a6109;
@@ -795,6 +808,7 @@ html[data-v2-tema="dark"] {
   --v2-forest-soft: rgba(0, 88, 64, 0.45);
   --v2-lime: #d1f843;
   --v2-on-lime: #0d0e0d;
+  /* --v2-handling uendret i mørk (#D97757) — oransje er tema-uavhengig monopol */
   --v2-up: #4fd08a;
   --v2-down: #f0683e;
   --v2-warn: #e8b43c;

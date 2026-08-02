@@ -6,6 +6,7 @@ import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { stripeKlient } from "@/lib/stripe";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { audit } from "@/lib/audit";
 import { nonEmpty, isoDate, email, phone } from "@/lib/validation/schemas";
@@ -39,6 +40,15 @@ export async function createBookingCheckout(
   input: BookingFormInput,
 ): Promise<BookingResult> {
   try {
+    // Pauset for publikum: server-actionen er siste forsvarslinje — UI-sperrene
+    // over kan omgås med direkte kall.
+    if (!(await kanBrukeInnebygdBooking())) {
+      return {
+        ok: false,
+        error: "Online booking er ikke åpnet ennå. Book via akgolfgroup.as.me.",
+      };
+    }
+
     const parsed = BookingCheckoutSchema.safeParse(input);
     if (!parsed.success) {
       return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig input" };
@@ -114,12 +124,15 @@ export async function createBookingCheckout(
     let booking;
     try {
       booking = await prisma.$transaction(async (tx) => {
-        await sjekkKollisjon(tx, {
+        const vern = await sjekkKollisjon(tx, {
           coachId: bookingData.coachId,
+          serviceTypeId: bookingData.serviceTypeId,
           startAt,
           endAt,
         });
-        return tx.booking.create({ data: bookingData });
+        return tx.booking.create({
+          data: { ...bookingData, plassNr: vern.plassNr },
+        });
       });
     } catch (e) {
       if (erKollisjonsfeil(e)) {

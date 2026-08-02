@@ -7,10 +7,10 @@
  */
 
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { Caps, Kort, Rad, StatusPill, TomTilstand, Tittel, T, CTAPill, type StatusTone } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { useMobile } from "./turnering-ui";
-import { FellesmeldingKnapp } from "@/app/admin/tournaments/fellesmelding-knapp";
 
 export type TurneringChipTone = "ok" | "warn" | "neu" | "lime";
 
@@ -35,6 +35,26 @@ const TONE_MAP: Record<TurneringChipTone, StatusTone> = {
   neu: "info",
   lime: "lime",
 };
+
+/** Pillestil for fellesmelding-inngangen — aktiv lenke eller nedtonet «ikke tilgjengelig». */
+function fellesmeldingPille(mobile: boolean, nedtonet: boolean): CSSProperties {
+  return {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 6,
+    borderRadius: 9999,
+    padding: mobile ? "8px 12px" : "6px 12px",
+    fontFamily: T.ui,
+    fontSize: 11.5,
+    fontWeight: 600,
+    color: nedtonet ? T.mut : T.fg,
+    background: T.panel3,
+    border: `1px solid ${T.borderS}`,
+    whiteSpace: "nowrap",
+    opacity: nedtonet ? 0.5 : 1,
+    cursor: nedtonet ? "default" : "pointer",
+  };
+}
 
 function TurneringIkon() {
   return (
@@ -121,9 +141,35 @@ export function AdminTurneringerV2({ data }: { data: AdminTurneringerV2Data }) {
             meta={
               <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
                 {r.chip && <StatusPill tone={TONE_MAP[r.chip.tone]}>{r.chip.label}</StatusPill>}
-                <span onClick={(e) => e.stopPropagation()}>
-                  <FellesmeldingKnapp navn={r.navn} mottakere={r.paameldte} />
-                </span>
+                {/* D1: åpner fellesmelding-flyten (3 steg) på turneringsdetaljen —
+                    den sender kun til faktiske deltakere, med mottakervalg.
+                    Rader uten detaljside (manuelt registrerte) eller uten påmeldte
+                    viser en ærlig nedtonet tilstand i stedet for å skjule knappen. */}
+                {r.href && r.paameldte > 0 ? (
+                  <Link
+                    href={`${r.href}?fellesmelding=1`}
+                    onClick={(e) => e.stopPropagation()}
+                    aria-label={`Send fellesmelding · ${r.navn}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <span className="v2-press v2-focus" style={fellesmeldingPille(mobile, false)}>
+                      <Icon name="send" size={13} />
+                      {!mobile && "Fellesmelding"}
+                    </span>
+                  </Link>
+                ) : (
+                  <span
+                    title={
+                      r.paameldte === 0
+                        ? "Ingen påmeldte deltakere å sende til"
+                        : "Ikke tilgjengelig for manuelt registrerte turneringer"
+                    }
+                    style={fellesmeldingPille(mobile, true)}
+                  >
+                    <Icon name="send" size={13} />
+                    {!mobile && "Fellesmelding"}
+                  </span>
+                )}
               </span>
             }
             trailing={null}

@@ -6,7 +6,8 @@ import {
   creditsForPriceId,
   tierForPriceId,
 } from "@/lib/stripe";
-import { pushBookingToCalendar } from "@/lib/google-calendar";
+import { pushBooking } from "@/lib/google-calendar-kilder";
+import { varsleNyBooking } from "@/lib/booking/varsle-ny-booking";
 import {
   type SubscriptionStatus,
 } from "@/generated/prisma/client";
@@ -48,8 +49,6 @@ async function notifyCoachOnBooking(bookingId: string): Promise<void> {
     timeStyle: "short",
     timeZone: "Europe/Oslo",
   });
-  const tidStr = `${spillerNavn} · ${booking.serviceType.name} · ${dato}`;
-
   // Hvem skal varsles:
   // 1. Coachen knyttet til tjenesten (hvis finnes)
   // 2. Alle ADMIN-brukere (backup — Anders er admin)
@@ -66,16 +65,8 @@ async function notifyCoachOnBooking(bookingId: string): Promise<void> {
     mottakere.add(a.id);
   }
 
-  // In-app-varsling til alle mottakere
-  for (const userId of mottakere) {
-    await notify({
-      userId,
-      type: "booking",
-      title: "Ny booking bekreftet",
-      body: tidStr,
-      link: "/admin/bookinger",
-    });
-  }
+  // In-app-varsling til coach/admin — rik tekst (hvem, hva, når, hvor, betaling).
+  await varsleNyBooking(booking.id, "stripe");
 
   // Varsle spilleren selv (kun innlogget, ikke gjest) med spiller-vendt tekst/lenke.
   if (booking.userId && !mottakere.has(booking.userId)) {
@@ -286,7 +277,7 @@ export async function POST(req: Request) {
         //   - recordCheckoutSession (6 DB-queries, opp til 15 sek)
         //   - subscription-sync (Stripe API-kall)
         //   - sendBookingConfirmation (Resend, 1-3 sek)
-        //   - pushBookingToCalendar (Google API, 2-5 sek per kalender)
+        //   - pushBooking (Google API, 2-5 sek per kalender)
         //   - notifyCoach (in-app + e-post til coach, B4)
         after(async () => {
           try {
@@ -321,7 +312,7 @@ export async function POST(req: Request) {
               );
             }
             try {
-              await pushBookingToCalendar(bookingId);
+              await pushBooking(bookingId);
             } catch (err) {
               console.error("[stripe-webhook] calendar-push failed", err);
             }

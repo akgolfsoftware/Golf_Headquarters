@@ -8,10 +8,12 @@
  * 1:1 fra den tidligere legacy-siden — kun visuelt portert til v2.
  */
 
+import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { startOfWeek } from "@/lib/uke-helpers";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { Caps } from "@/components/v2";
 import { AdminTurneringerV2, type AdminTurneringV2Row, type TurneringChipTone } from "@/components/admin/v2/AdminTurneringerV2";
 
 export const dynamic = "force-dynamic";
@@ -112,6 +114,11 @@ export default async function TurneringerPage() {
 
   return (
     <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <div style={{ marginBottom: 12 }}>
+        <Link href="/admin/turnering-kart" style={{ textDecoration: "none" }}>
+          <Caps size={10}>Norge-data · dekning og toppliste →</Caps>
+        </Link>
+      </div>
       <AdminTurneringerV2 data={{ sesong: now.getFullYear(), rader }} />
     </V2Shell>
   );

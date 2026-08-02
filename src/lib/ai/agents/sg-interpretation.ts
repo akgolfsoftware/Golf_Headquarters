@@ -5,7 +5,7 @@
 // på svakeste kategori.
 
 import "server-only";
-import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "../client";
+import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "../client";
 import { sgInterpretationSkill } from "../skills/sg-interpretation";
 import { prisma } from "@/lib/prisma";
 
@@ -101,7 +101,7 @@ export async function tolkSg(
 
   const userPrompt = byggUserPrompt(spiller.name, runder.length, perKategori, svakesteKategori);
   const response = await anthropic.messages.create({
-    model: AI_MODEL,
+    model: modelFor("sg-interpretation"),
     max_tokens: AI_MAX_TOKENS,
     system: SG_INTERPRETATION_SYSTEM,
     messages: [{ role: "user", content: userPrompt }],

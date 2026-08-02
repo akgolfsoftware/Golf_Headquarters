@@ -2,7 +2,7 @@
 
 Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekker, legg gotcha-en til her.
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
-Designkanon: `.claude/rules/design-system-regel.md` (v13/golfdata).
+Ingen låst designkanon per 2026-07-25 — nytt system utvikles i Open Design (CLAUDE.md invariant 2).
 
 ### Workbench-datomatte (session-move-math.ts) — Oslo-korrekt siden 2026-07-27 (oppdaget 2026-07-19)
 - **Var:** `mondayOf`/`dateForDayIndex`/`weekRefDate` regnet uke/dag fra `new Date()` med rå

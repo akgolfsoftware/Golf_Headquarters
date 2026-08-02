@@ -4,17 +4,18 @@
  * Én kilde for tidslinje, oppløsning og uke — brukes av shared/calendar,
  * workbench-grid og øktplanlegger (tid-velger). Endre her, ikke i tre steder.
  *
- * Låst 2026-07-23: 05:00–23:00, 30 min, man først.
+ * Oppdatert 2026-07-29 (AgencyOS-kodeordre punkt 6): 04:00–23:00, 20 min,
+ * man først. Utvidet fra 05:00 for tidlige morgenøkter (WANG/GFGK før skole).
  */
 
 /** Første time i grid (inkl.). */
-export const GRID_START_HOUR = 5;
+export const GRID_START_HOUR = 4;
 
 /** Siste time i grid (inkl. — siste rad er denne timen). */
 export const GRID_END_HOUR = 23;
 
 /** Slot-oppløsning i minutter. */
-export const GRID_SLOT_MIN = 30;
+export const GRID_SLOT_MIN = 20;
 
 /** Uke starter mandag (date-fns weekStartsOn). */
 export const WEEK_STARTS_ON = 1 as const;
@@ -33,13 +34,16 @@ export function gridHours(): number[] {
   return Array.from({ length: GRID_HOUR_COUNT }, (_, i) => GRID_START_HOUR + i);
 }
 
-/** Alle 30-min slots som "HH:MM" fra start til (men ikke forbi) slutt-time. */
+/** Alle GRID_SLOT_MIN-slots som "HH:MM" fra start til og med slutt-time. */
 export function gridTimeSlots(): string[] {
   const out: string[] = [];
   const pad = (n: number) => String(n).padStart(2, "0");
-  for (let h = GRID_START_HOUR; h <= GRID_END_HOUR; h++) {
-    out.push(`${pad(h)}:00`);
-    if (h < GRID_END_HOUR) out.push(`${pad(h)}:30`);
+  for (
+    let min = GRID_START_HOUR * 60;
+    min <= GRID_END_HOUR * 60;
+    min += GRID_SLOT_MIN
+  ) {
+    out.push(`${pad(Math.floor(min / 60))}:${pad(min % 60)}`);
   }
   return out;
 }
