@@ -17,6 +17,7 @@ import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { KalenderV2 } from "@/components/portal/v2/KalenderV2";
 import { hentKalenderData } from "./data";
 import { TilbakeLenke } from "@/components/v2";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +40,16 @@ export default async function V2KalenderPreviewPage({ searchParams }: Props) {
     <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={data.spillerNavn} avatarUrl={data.avatarUrl}>
       <TilbakeLenke href="/portal/planlegge">Plan</TilbakeLenke>
       <KalenderV2 data={data} />
+      {/* Egne avtaler ligger på egen side — de er opptatt tid planleggeren må
+          respektere, ikke økter som hører hjemme i selve kalendervisningen. */}
+      <div style={{ marginTop: 24 }}>
+        <Link
+          href="/portal/kalender/opptatt"
+          style={{ fontSize: 13, textDecoration: "underline" }}
+        >
+          Opptatt tid — egne avtaler
+        </Link>
+      </div>
     </V2Shell>
   );
 }
