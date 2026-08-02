@@ -20,7 +20,6 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { T } from "@/lib/v2/tokens";
 import {
-  Caps,
   Tittel,
   Kort,
   TallHero,
