@@ -630,15 +630,150 @@ nyttig svar» og godkjenningsraten per promptversjon. Regelagentene har allerede
 
 DDL: `scripts/add-plan-action-interaksjon-2026-08-02.ts` (kjørt mot `dcnxoztjtdqoidaekxry`).
 
-### Gjenstår
+---
 
-- **`FASIT` som kontekstlag.** Ingen av de tre koblede flatene henter fra masterbrain, selv om
-  `sg-principles.json` og `canon-methodology.json` er direkte relevante for alle tre. Ingen rapporterer
-  `FASIT` — det er nå synlig i dataene i stedet for skjult, og er den tydeligste forbedringen som venter.
-- **Øvrige LLM-agenter:** `drill-forslag`, `fabrikk`, `caddie-proactive`, `daily-brief`, `peaking` og
-  `live-coach` kaller modeller uten å logge. De skriver `CaddieDraft` eller ren tekst, ikke `PlanAction`.
-- **«Hvorfor avvist»-feltet** i godkjenningskøen, som mater `settUtfall` med den mest verdifulle
-  datakilden i hele systemet.
+## 8. Plan for resterende steg
+
+Oppdatert 2026-08-02, etter at fase 1 landet. Rekkefølgen er valgt etter verdi delt på innsats, ikke etter
+hvor gøy det er å bygge.
+
+### Steg 0 — CI-gaten (før noe annet)
+
+**Problem:** åtte commits på grenen, én CI-kjøring. `verify`-jobben har ikke fyrt på noen commit etter den
+første. Vercel-deployene er grønne og `npm run verify` er kjørt lokalt før hver push, men PR-gaten er reelt
+sett av.
+
+**Hvorfor først:** alt under skal gjennom den porten. En port som ikke lukker er verdiløs uansett hva vi
+bygger bak den.
+
+**Gjøres:** finn ut om det er kø-begrensning, en `paths`-filter, eller at `pull_request`-triggeren ikke
+fyrer på `synchronize`. Anders sjekker Actions-fanen; dette er ikke noe en agent bør gjette på.
+
+---
+
+### Fase 1 — resten (1–2 uker)
+
+#### 1.1 `FASIT` som kontekstlag — størst kvalitetsgevinst, null marginalkost
+
+Ingen av de tre koblede flatene gjør masterbrain-oppslag. Alle tre logger `FASIT` som fraværende, og det er
+nå synlig i dataene i stedet for skjult.
+
+| Flate | Hva den skal slå opp |
+|---|---|
+| `ai-plan` | `canon-methodology.categories[nivå]` for øktbudsjett og pyramidefordeling, `mikroperiodisering-og-tidsdimensjon` for 4-ukers syklus |
+| Caddie | `sg-principles.bands` + `faults.entities` ved SG-spørsmål, `positions.entities` ved teknikkspørsmål |
+| `plan-revisjon` | `canon-methodology.periods` + L-fase-tabellen, i stedet for å be modellen huske dem |
+
+Oppslag, ikke søk — `faults[faultId]`, ikke embeddings. Deterministisk, gratis, ingen hallusinasjon.
+Bygg en liten `kontekst.ts` i `src/lib/agenticos/` som tar en `Klassifisering` og returnerer riktig
+fasit-blokk, så de tre flatene deler logikken.
+
+**Merk:** periodenavn i CANON (GRUNN/SPES/TURN) er ikke de samme strengene som Prisma-enumene
+(GRUNN/SPESIAL/TURNERING). Bruk `periodenavn_oversettelsestabell` i
+`mikroperiodisering-og-tidsdimensjon.json` — aldri CANON-strengen rått mot databasen.
+
+#### 1.2 De seks LLM-agentene som ikke logger
+
+`drill-forslag`, `fabrikk`, `caddie-proactive`, `daily-brief`, `peaking`, `live-coach`. De kaller modeller
+og koster penger uten å bli målt. Fire av dem skriver `CaddieDraft`, som allerede har `interaksjonId` —
+koblingen er derfor billig. `daily-brief` og `peaking` produserer ren tekst uten utfallssignal; de logges
+med `utfall = PENDING` og gir kostnadsdata, ikke kvalitetsdata.
+
+#### 1.3 «Hvorfor avvist» i godkjenningskøen
+
+Ett valgfritt felt ved avvisning: tre forhåndsvalg (feil periode / feil nivå / dårlig begrunnelse) pluss
+fritekst, inn i `settUtfall`. Ett ekstra klikk, og den mest verdifulle datakilden i systemet.
+GDPR-porten står allerede i skriveveien.
+
+---
+
+### Fase 2 — læringsløkken lukkes (3–4 uker)
+
+#### 2.1 `knowledge_chunks` + ekte semantisk søk
+
+`rag-corpus` er synket (100 filer), men ingenting søker i det. `rag-select.ts` gjør fortsatt
+substring-matching på filnavn i `morad/`-undermappen — de øvrige 84 filene er utilgjengelige.
+
+Rekkefølge: pgvector-tabell (additiv `db execute`) → embedding-script over `rag-corpus/` → `sok_kunnskap`-tool
+→ bytt ut `rag-select.ts`. Bruk `index.json` som allerede finnes i korpuset (chunk_id, tags, topics,
+relevance, word_count) til å filtrere før embedding.
+
+**Kjent avvik å håndtere:** MANIFEST-et oppgir 99 tekstfiler på disk mot 96 i indeksen —
+`sg-trackman-021.md`, `sg-trackman-040.md` og `treningsvolum-004.md` er uindekserte og vil ellers aldri bli
+funnet.
+
+#### 2.2 Prompt-eval — porten mot forfall
+
+**Viktig avklaring:** masterbrains `scripts/eval-holdout.py` finnes allerede, men måler noe annet enn det vi
+trenger. Den sjekker **om fasiten inneholder det som skal til** for å svare, og kjører ingen språkmodell.
+Grønt der betyr «kunnskapen finnes og er entydig», ikke «agenten svarte riktig».
+
+Vi trenger en **andre** eval: kjør våre faktiske prompts gjennom modellen mot `holdout-15.jsonl`, og score
+output mot `RUBRIC.md`. Fem dimensjoner à 5 poeng. Tre av dem (`pyramid_sum=100`, `l_fase_respect`,
+`drill_exists`) er deterministisk sjekkbare i kode; `primary_weakness_correct` og `confidence_honest`
+trenger en dommer. Spesialcasene (`negative_guard`, `junior_volume_cap`, `readiness_cap`, `retningssignal`,
+`PERIOD_SWITCH`) er rene assertions.
+
+**Tak å være klar over:** `drill_exists` gir nødvendigvis 0 så lenge drill-banken er tom. Maks oppnåelig er
+20/25. Ikke tolk det som regresjon.
+
+Gate: en promptversjon rulles ikke ut med lavere score enn den forrige. Kjøres i CI ved endring i
+`MALER`, `AI_COACH_SYSTEM_PROMPT`, `CADDIE_SYSTEM_PROMPT` eller `PLAN_REVISION_SYSTEM`.
+
+#### 2.3 Ukentlig destillering
+
+Utvid `scripts/laeringslogg-til-masterbrain.ts` fra å lese to tool-navn i `CaddieDraft` til å lese hele
+`AiInteraksjon`. Produserer tre ting: avvisningsmønstre per promptversjon, kandidat-eksempler til
+`training-data/`, og forslag til promptendringer. **Anders leser og committer** — kunnskapskilden utvider
+seg aldri selv.
+
+#### 2.4 Kostnadsoversikt
+
+Med loggen på plass er dette SQL, ikke gjetning. Tre spørringer holder: kost per bruker per måned, kost per
+promptversjon, og godkjenningsrate per promptversjon. Legg dem på `/admin/agents` framfor å bygge et nytt
+dashboard.
+
+---
+
+### Fase 3 — bredde (etter pilot)
+
+| # | Hva | Hvorfor vente |
+|---|---|---|
+| 3.1 | **SG-tolkning for spilleren** — flaggskip-flaten fra §2 | Krever 1.1 (FASIT) for å være verdt å bygge |
+| 3.2 | Caddie åpnet for COACH med `coached.ts`-scoping | Lav risiko, men vent til loggen har volum |
+| 3.3 | Godkjenningskøen som samtale («hvorfor foreslo du dette?») | Trenger 1.3 for å gi mening |
+| 3.4 | Live-økt-dialog med cues fra `drills.json` | Blokkert: drill-banken er tom |
+| 3.5 | Dynamisk few-shot etter likhet med spørsmålet | Trenger 2.1 (embeddings) |
+| 3.6 | Prompt-A/B med utfallsmåling | Trenger volum i `AiInteraksjon` først |
+
+---
+
+### Beslutninger som blokkerer — Anders
+
+Disse er ikke tekniske oppgaver. De står i veien for konkrete steg over.
+
+1. **Drill-banken er tom** (tømt 31. juli, bevisst). Blokkerer 3.4, kapper eval-taket til 20/25, og lar
+   `drill-forslag`/`fabrikk`/`media-lofte` generere forslag uten fasit å validere mot. Hva er planen for å
+   fylle den?
+2. **Putting mangler kunnskapskilde.** `sg_to_morad_faults.putt` er tom — korrekt, siden MORAD er et
+   posisjonssystem for fullsving. Men putting er ~40 % av slagene, og systemet kan ikke si noe kvalifisert
+   om det. Trenger sitt eget rammeverk.
+3. **Attribusjonsfeilen Malaska/O'Grady** er ute av appen (fila ble slettet), men lever fortsatt i
+   `ak-second-brain/wiki/sources/2026-05-18-morad-ordbok-v2.md`.
+4. **Ordboka er 7 % destillert** — 75 av 1 081 kildesegmenter. Masterbrain har parkert videre arbeid.
+
+### Rekkefølge, kort
+
+```
+0. CI-gaten                    ← blokkerer alt
+1.1 FASIT-kontekst             ← størst kvalitet per innsats
+1.2 seks agenter på loggen     ← stopper målefri pengebruk
+1.3 «hvorfor avvist»           ← åpner den beste datakilden
+2.1 knowledge_chunks           ← gjør rag-corpus reell
+2.2 prompt-eval                ← porten mot forfall
+2.3 destillering  2.4 kostnad  ← lukker løkken
+3.x bredde                     ← etter pilot
+```
 - **SG-tolkning for spilleren** som første helt nye flate. Merk at den må formuleres som hypotese, og ikke
   kan foreskrive navngitte drills før drill-banken er bygget på nytt.
 - **«Hvorfor avvist»-feltet** i godkjenningskøen, som mater `settUtfall` med den mest verdifulle
