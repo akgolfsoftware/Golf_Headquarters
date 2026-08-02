@@ -53,3 +53,24 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 14
+
+      # Rød prod-røyktest sto uvarslet i to døgn (31. juli–2. aug) mens /turneringer
+      # ga 500 til brukerne. Dette steget sier fra i Telegram samme minutt.
+      # Secrets settes med samme navn som Meg-boten bruker lokalt.
+      - name: Varsle Telegram ved rød kjøring
+        if: failure()
+        continue-on-error: true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.MEG_TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.MEG_TELEGRAM_ALLOWED_CHAT_ID }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+            echo "::warning::Telegram-secrets mangler (MEG_TELEGRAM_BOT_TOKEN / MEG_TELEGRAM_ALLOWED_CHAT_ID) — ingen varsel sendt."
+            exit 0
+          fi
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode chat_id="${TELEGRAM_CHAT_ID}" \
+            --data-urlencode text="Prod-røyktesten er RØD (akgolf-hq). Produksjonen kan ha en feil brukerne ser. Kjøring: ${RUN_URL}" \
+            > /dev/null
+          echo "Telegram-varsel sendt."
