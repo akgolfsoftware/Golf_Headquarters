@@ -10,8 +10,8 @@
  */
 
 import { defaultCache } from "@serwist/next/worker";
-import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
-import { Serwist } from "serwist";
+import type { PrecacheEntry, SerwistGlobalConfig, RuntimeCaching } from "serwist";
+import { Serwist, NetworkOnly } from "serwist";
 
 // ServiceWorker-typene ligger i 'webworker'-lib som ikke er aktivert i prosjektets
 // tsconfig (vi har 'dom' for app-koden). Bruk minimal type-skisse i stedet.
@@ -30,12 +30,37 @@ type SwScope = {
 
 declare const self: SwScope;
 
+/**
+ * Personvern (GDPR): autentiserte flater skal ALDRI havne i Cache Storage.
+ * Serwists `defaultCache` cacher `/api/*`, RSC-payloads og HTML med NetworkFirst
+ * i inntil 24t — det ville lagre spiller-/helse-/booking-data på enheten, som er
+ * en reell lekkasje på delte/familie-enheter (appen har forelder/junior-bruk).
+ * Vi legger derfor en NetworkOnly-regel FØRST (Serwist bruker første treff) for
+ * alt under /portal, /admin og /api, inkludert deres RSC- og _next/data-varianter.
+ */
+const authNetworkOnly: RuntimeCaching = {
+  matcher: ({ url, sameOrigin }) => {
+    if (!sameOrigin) return false;
+    const p = url.pathname;
+    if (p.startsWith("/api/")) return true;
+    if (p.startsWith("/portal") || p.startsWith("/admin")) return true;
+    // Next.js data-payloads for de samme sidene (/_next/data/<build>/portal…json).
+    if (
+      p.startsWith("/_next/data/") &&
+      (p.includes("/portal") || p.includes("/admin"))
+    )
+      return true;
+    return false;
+  },
+  handler: new NetworkOnly(),
+};
+
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  runtimeCaching: defaultCache,
+  runtimeCaching: [authNetworkOnly, ...defaultCache],
   fallbacks: {
     entries: [
       {
@@ -48,6 +73,30 @@ const serwist = new Serwist({
 });
 
 serwist.addEventListeners();
+
+// Cache-tømming ved logout: klienten (post-logout-siden) sender
+// { type: "CLEAR_CACHES" }. Vi sletter ALLE runtime-cacher slik at ingen
+// autentisert data (fra før denne SW-versjonen) kan serveres offline etter at en
+// bruker logger ut på en delt enhet. Precache (statiske assets) er ikke sensitivt
+// og trenger ikke slettes, men vi tømmer alt for å være på den sikre siden.
+type MessageEv = Event & {
+  data?: { type?: string };
+  waitUntil?(p: Promise<unknown>): void;
+};
+type CacheStorageLike = {
+  keys(): Promise<string[]>;
+  delete(key: string): Promise<boolean>;
+};
+self.addEventListener("message", (event) => {
+  const msg = event as MessageEv;
+  if (msg.data?.type !== "CLEAR_CACHES") return;
+  const caches = (self as unknown as { caches?: CacheStorageLike }).caches;
+  if (!caches) return;
+  const job = caches
+    .keys()
+    .then((keys) => Promise.all(keys.map((k) => caches.delete(k))));
+  msg.waitUntil?.(job);
+});
 
 // Minimale typer for SW-spesifikke event-egenskaper (webworker-lib er ikke aktivert)
 type PushEv = Event & {

@@ -8,6 +8,7 @@
 
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { LiveSnapshotSchema } from "@/lib/portal-live/data";
 import { Prisma } from "@/generated/prisma/client";
@@ -36,9 +37,16 @@ export async function POST(
   });
   if (!session) return new NextResponse(null, { status: 404 });
 
+  // IDOR-port: rolle-sjekk alene er ikke nok — en COACH skal ikke kunne skrive
+  // liveSnapshot på en annen coachs spiller-økt via en gjettet sessionId. Eier
+  // slipper alltid gjennom; coach/admin kun for spillere de faktisk har tilgang
+  // til (samme mønster som resten av coach-scope-porten, jf. coached.ts).
   const isOwner = session.plan.userId === user.id;
-  if (!isOwner && user.role !== "ADMIN" && user.role !== "COACH") {
-    return new NextResponse(null, { status: 403 });
+  if (!isOwner) {
+    const harTilgang =
+      (user.role === "ADMIN" || user.role === "COACH") &&
+      (await harCoachTilgangTilSpiller(user, session.plan.userId));
+    if (!harTilgang) return new NextResponse(null, { status: 403 });
   }
 
   // Lagre kun mens økta er aktiv eller pauset.

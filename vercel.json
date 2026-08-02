@@ -50,6 +50,10 @@
       "schedule": "30 3 * * *"
     },
     {
+      "path": "/api/cron/webhook-failures-alert",
+      "schedule": "0 * * * *"
+    },
+    {
       "path": "/api/cron/turneringer-schedule",
       "schedule": "0 4 * * *"
     },

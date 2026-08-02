@@ -11,6 +11,7 @@ import { notify } from "@/lib/notifications";
 import { sendPush } from "@/lib/push/send";
 import { readMegEnv } from "@/lib/meg/env";
 import { sendTelegramMessage } from "@/lib/meg/telegram";
+import { APP_URL } from "@/lib/app-url";
 
 export type AgentVarsel = {
   /** Coachen som eier funnet — mottar in-app + push. */
@@ -47,14 +48,24 @@ export async function varsleAgentFunn(v: AgentVarsel): Promise<void> {
   }
 
   // Telegram-speil til Anders.
+  //
+  // GDPR (art. 5/9): Telegram er en tredjepart uten databehandleravtale, og
+  // `v.tekst` inneholder ofte spillernavn + sensitivt flagg (skade, frafall,
+  // severity) — potensielt særlige kategorier om mindreårige. Vi speiler derfor
+  // ALDRI detalj-teksten dit. Anders får kun et innholdsfattig varsel («det
+  // finnes et nytt funn») + en lenke inn i AgencyOS, der selve dataene ligger
+  // bak innlogging. Detaljene når coachen via in-app + push over egne systemer.
   if (v.telegram !== false) {
     const env = readMegEnv();
     if (env) {
+      const url = v.lenke
+        ? `${APP_URL}${v.lenke.startsWith("/") ? "" : "/"}${v.lenke}`
+        : `${APP_URL}/admin`;
       try {
         await sendTelegramMessage(
           env.telegramBotToken,
           env.allowedChatId,
-          `${v.tittel}\n\n${v.tekst}`,
+          `Nytt agent-funn i AgencyOS — åpne for detaljer:\n${url}`,
         );
       } catch (err) {
         console.error("[agent-notify] Telegram feilet:", err);
