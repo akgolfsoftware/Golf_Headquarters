@@ -53,7 +53,7 @@ import { FaneForeldre } from "./fane-foreldre";
 import { FaneKalender } from "./fane-kalender";
 import { FaneSamlinger } from "./fane-samlinger";
 import { FaneSkole } from "./fane-skole";
-import { AgencyOsHendelser, GruppeRoster } from "./live-seksjoner";
+import { AgencyOsHendelser } from "./live-seksjoner";
 import { HeroCard, IconChip, Tabs, navPillStyle } from "./primitiver";
 import { OktDetalj } from "./okt-detalj";
 import { HendelseDetalj, type HendelseDetaljData } from "./hendelse-detalj";

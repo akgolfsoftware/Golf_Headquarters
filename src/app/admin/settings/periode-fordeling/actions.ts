@@ -16,7 +16,7 @@ import type { PeriodeType, PyramidArea } from "@/generated/prisma/client";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
-import { standardFordeling, type OmradeFordeling } from "@/lib/portal/training/periode-fordeling";
+import { standardFordeling } from "@/lib/portal/training/periode-fordeling";
 
 const PATH = "/admin/settings/periode-fordeling";
 
