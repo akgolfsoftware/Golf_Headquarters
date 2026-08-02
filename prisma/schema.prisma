@@ -3534,7 +3534,14 @@ model KnowledgeChunk {
 // Tabellen opprettes kirurgisk via scripts/create-ai-memories-2026-07-27.ts.
 // playerId er plain String (FK med ON DELETE CASCADE ligger i DDL — GDPR:
 // bruker-sletting fjerner alt minne). Leses/skrives via src/lib/ai/memory-store.ts.
-model AiMemory {
+//
+// NAVN (2026-08-02): het opprinnelig AiMemory, men det navnet var allerede
+// tatt av nøkkel/verdi-modellen over (tabell `ai_memory`). To modeller med
+// samme navn får ikke Prisma til å validere, og main sto rød fra #166 til
+// dette ble rettet. Tabellnavnet `ai_memories` er urørt, og all lesing/
+// skriving går uansett via rå SQL i memory-store.ts — ingen kode brukte
+// modellnavnet.
+model AiSpillerminne {
   id         String                       @id
   playerId   String
   kind       String // EPISODIC | SEMANTIC | PROCEDURAL
