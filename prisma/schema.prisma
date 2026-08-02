@@ -390,6 +390,7 @@ model User {
   // P14: spiller-status (permisjon, skade, return-to-play)
   userStatus UserStatus @default(AKTIV)
   leaves     Leave[]
+  busyBlocks PlayerBusyBlock[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -727,6 +728,43 @@ model Leave {
   @@index([userId, startAt])
   @@index([userId, endAt])
   @@map("leaves")
+}
+
+// Spillerens egen opptatte tid — det som ikke ligger i noen annen tabell.
+//
+// Fire kilder gjør en spiller utilgjengelig: gruppetimeplan (GroupSchedule),
+// skolerute (SchoolScheduleEntry, per klassetrinn), fravær/skade (Leave) og
+// personlige avtaler. De tre første fantes allerede; denne dekker den fjerde
+// — «mandag 16.30 tannlege» hadde ingen plass i databasen.
+//
+// Planleggeren trekker all opptatt tid fra døgnet for å finne ledige luker,
+// slik at en generert treningsplan havner i timer spilleren faktisk har.
+model PlayerBusyBlock {
+  id      String @id @default(cuid())
+  userId  String
+  title   String
+  startAt DateTime
+  endAt   DateTime
+  // SKOLE | JOBB | AVTALE | REISE | ANNET — fritekst-enum som GroupSchedule.kind,
+  // ikke Prisma-enum: kategoriene er en visnings- og filtreringsdetalj, og en ny
+  // kategori skal ikke kreve migrasjon.
+  kind    String @default("AVTALE")
+  // WEEKLY | NONE. Samme enkle mønster som GroupSchedule.recurring — skole er
+  // ukentlig, tannlege er én gang. Ingen full gjentakelsesmotor (ingen unntak,
+  // ingen sluttdato-serie); trengs det, er det en egen sak.
+  recurring String? @default("NONE")
+  // Skjuler tittelen for alle andre enn spilleren selv. En tannlegetime kan
+  // røpe helseopplysninger, og flere av spillerne er under 18 — coachen skal
+  // se at tiden er opptatt, ikke hva den går til. Tiden er aldri privat.
+  isPrivate Boolean  @default(false)
+  note      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, startAt])
+  @@map("player_busy_blocks")
 }
 
 // Foreldre-invitasjons-relasjon (V2 Spor 3).
