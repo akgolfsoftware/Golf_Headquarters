@@ -30,6 +30,7 @@ const IKON: Record<string, string> = {
   betaling: "credit-card",
   faktura: "file-text",
   ai: "sparkles",
+  "session-invite": "users",
   system: "bell",
 };
 
