@@ -69,6 +69,10 @@ const eslintConfig = defineConfig([
     // Fasit-referanser (ekstraherte Claude Design-eksports) — kun lesestoff,
     // importeres aldri av appen og skal aldri lintes.
     "docs/**",
+    // Paper-speilet (steg 1 i designporten): verbatim kopi av Claude Design-
+    // prosjektet 605a48cc. Fasit å måle mot, ikke appkode — standalone .jsx uten
+    // imports, egen støtte-runtime. Importeres aldri av src/ og skal aldri lintes.
+    "designsystem/**",
   ]),
 ]);
 
