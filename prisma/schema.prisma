@@ -5136,3 +5136,61 @@ model RadarFunn {
   @@index([behandlet, funnetAt])
   @@map("radar_funn")
 }
+
+// ---------- AgenticOS — én logg for alle AI-interaksjoner (2026-08-02) ----------
+
+// Én rad per AI-interaksjon, uansett flate: Caddie, plangenerering,
+// agent-forslag, godkjenningskø. Formålet er å gjøre kvalitet og kostnad
+// målbare per promptversjon — før denne tabellen lå utfallet spredt på
+// PlanAction.status, CaddieDraft.status og AuditLog.metadata.rating, og
+// kostnaden fantes bare på AiPlanGeneration.
+//
+// Bevisst uten @relation (kirurgisk additiv modell, jf. gotchas.md).
+//
+// GDPR: `begrunnelse` er det eneste fritekstfeltet. Det skrives ALDRI for en
+// mindreårig spiller — se loggInteraksjon() i src/lib/agenticos/logg.ts, som
+// er eneste tillatte skrivevei. Resten av feltene er id-er, koder og tall.
+model AiInteraksjon {
+  id             String   @id @default(cuid())
+  // Hvilken promptmal som ble brukt, og hvilken versjon. Nøkkelen til å svare
+  // på «ble svarene dårligere etter at vi endret prompten?».
+  promptId       String
+  promptVersjon  Int
+  // Ruterens klassifisering.
+  intent         String
+  domene         String
+  rolle          String
+  // Modellvalg og forbruk.
+  modell         String
+  tokensInn      Int?
+  tokensUt       Int?
+  kostUsd        Float?
+  latencyMs      Int?
+  // Hvilke kontekstlag som faktisk ble fylt: ["FASIT","SPILLERDATA","RAG"].
+  kontekstKilder String[]
+  // Guards som slo ut etter generering (invariant, junior, periodisering, fasit).
+  guardTreff     String[]
+  // Eskalerte vi et tier opp på lav confidence?
+  eskalert       Boolean  @default(false)
+
+  // Hvem interaksjonen gjaldt. Plain FK, ingen @relation.
+  userId         String?
+  agentNavn      String?
+  // Peker til PlanAction/CaddieDraft når interaksjonen ble et forslag.
+  referanseId    String?
+
+  // Utfall: PENDING | GODKJENT | AVVIST | ENDRET | IGNORERT
+  utfall         String   @default("PENDING")
+  // Tommel opp/ned: 1 | -1
+  rating         Int?
+  // Hvorfor avvist. Aldri satt for mindreårige.
+  begrunnelse    String?
+
+  createdAt      DateTime  @default(now())
+  resolvedAt     DateTime?
+
+  @@index([promptId, promptVersjon, createdAt])
+  @@index([utfall, createdAt])
+  @@index([userId, createdAt])
+  @@map("ai_interaksjoner")
+}

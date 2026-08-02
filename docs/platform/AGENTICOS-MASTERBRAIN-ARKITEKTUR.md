@@ -545,12 +545,37 @@ signalet uten svingfeil framfor å gjette.
 `processed/rules` synkes ikke lenger. MANIFEST-et er tydelig på at `processed/` er råmateriale og aldri
 fasit, og nettopp de filene var kilden til dobbeltfasiten.
 
+### `AiInteraksjon` og `src/lib/agenticos/` — bygget
+
+**`AiInteraksjon`** (`ai_interaksjoner`) er lagt inn i `schema.prisma` med DDL i
+`scripts/create-ai-interaksjoner-2026-08-02.ts`. Én rad per AI-interaksjon på tvers av alle flater, med
+`promptId` + `promptVersjon`, modell, tokens, `kostUsd`, latency, hvilke kontekstlag som ble brukt,
+guard-treff, og utfall (`PENDING`/`GODKJENT`/`AVVIST`/`ENDRET`/`IGNORERT`) med rating og begrunnelse.
+Dermed er «hvilken promptversjon får flest avvisninger» og «hva koster AI-en per abonnent» SQL-spørsmål.
+
+> **Må kjøres før deploy:** `npx tsx scripts/create-ai-interaksjoner-2026-08-02.ts` mot `DIRECT_URL`.
+> Kirurgisk `CREATE TABLE IF NOT EXISTS` — `migrate dev` og `db push` er begge blokkert (gotchas).
+> Fram til den er kjørt logger `loggInteraksjon` en feil og returnerer null; ingenting annet stopper.
+
+**`src/lib/agenticos/`** er fem filer, ikke et nytt rammeverk:
+
+| Fil | Ansvar |
+|---|---|
+| `ruter.ts` | Klassifiserer intent/domene/rolle deterministisk før noe koster penger. Norsk bøyning håndteres med en endelsesliste; sammensetninger står eksplisitt. Ingen treff → `fritekst` med lav confidence, og kalleren velger generell prompt framfor å gjette. |
+| `prompt-bygger.ts` | Bygger fire lag: rolle, tone, invarianter, kontekst, svarformat. Versjonert register per intent. Kontekstbudsjett per lag — aldri «lim inn alt». |
+| `modell.ts` | Velger modell på **oppgave**, ikke agent-id. Opus kun for plan (treffer flere uker), Haiku for drift, Sonnet standard, lokal ved PII om mindreårige. Eskalering ett tier, maks én gang. |
+| `guards.ts` | Kjører etter generering: fanger sperrespråk, SG-påstander formulert som diagnose, foreskrevne øvelser mens banken er tom, og fault-id-er som ikke finnes i fasiten. Blokkerer aldri — invariant 1 gjelder også våre egne kontroller. |
+| `logg.ts` | Eneste skrivevei til `AiInteraksjon`. GDPR-porten står her: fritekst lagres aldri for mindreårige. Server-only, bevisst ikke re-eksportert fra `index.ts`. |
+
+32 nye enhetstester dekker ruting, modellvalg, promptbygging og guards. Se `src/lib/agenticos/README.md`.
+
 ### Gjenstår i fase 1
 
-- `AiInteraksjon`-tabellen med kostnadssporing (additiv, `db execute` — `migrate dev`/`db push` er blokkert).
-- `src/lib/agenticos/` med ruter, prompt-bygger og modellvalg.
-- SG-tolkning for spilleren som første flate — merk at den nå må formuleres som hypotese, og at den ikke kan
-  foreskrive navngitte drills før drill-banken er bygget på nytt.
+- **Koble flatene på.** Caddie, `ai-plan` og agentene skriver ennå ikke til loggen — AgenticOS er bygget,
+  men ikke tatt i bruk. Naturlig første kobling er `ai-plan/generate.ts`, som allerede har tokens og kost.
+- **SG-tolkning for spilleren** som første ekte flate. Merk at den nå må formuleres som hypotese, og ikke
+  kan foreskrive navngitte drills før drill-banken er bygget på nytt.
+- **«Hvorfor avvist»-feltet** i godkjenningskøen, som mater `settUtfall`.
 
 ### To ting Anders bør ta stilling til
 
