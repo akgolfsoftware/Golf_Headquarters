@@ -1,5 +1,12 @@
 -- PlayerBusyBlock: spillerens egen opptatte tid.
 --
+-- MERK — IKKE kjør `prisma migrate deploy` i dette prosjektet. Se
+-- .claude/rules/gotchas.md: migrasjonsmappa er delvis rekonstruert med
+-- stub-filer, og en replay fra bunnen stopper på
+-- 20260510000001_add_parent_role_and_tier_enum («type Tier already exists»).
+-- Denne fila er en RECORD av endringen. Den faktiske DDL-en kjøres kirurgisk
+-- med scripts/add-player-busy-blocks-2026-08-02.ts mot DIRECT_URL.
+--
 -- Bakgrunn: fire ting gjør en spiller utilgjengelig — gruppetimeplan
 -- (group_schedules), skolerute (school_schedule_entries, per klassetrinn),
 -- fravær/skade (leaves) og personlige avtaler. De tre første fantes allerede
