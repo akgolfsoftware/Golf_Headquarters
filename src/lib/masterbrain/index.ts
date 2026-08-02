@@ -39,3 +39,22 @@ export const masterbrain = {
  */
 export const periodenavnOversettelse =
   mikroperiodisering.periodenavn_oversettelsestabell;
+
+/**
+ * Foretrukket inngang for agenter. Velger riktig del av fasiten ut fra hva
+ * agenten faktisk skal gjøre, i stedet for at hver kaller plukker felt fra
+ * `masterbrain`-objektet over og selv må huske reglene fra MANIFEST.
+ *
+ * Utfyller `selectKnowledgeFiles` i ai-coach/rag-select.ts — den henter
+ * fritekst fra rag-corpus per SG-område, denne henter de strukturerte
+ * reglene (invarianter, pyramide, L-faser, hypotese-regel) per oppgavetype.
+ */
+export {
+  hentMasterbrainKunnskap,
+  oppgavetypeForAksjon,
+  formatMasterbrainBlokk,
+  type Oppgavetype,
+  type MasterbrainKunnskap,
+  type HentOptions,
+  type Kilde,
+} from "./hent-kunnskap";
