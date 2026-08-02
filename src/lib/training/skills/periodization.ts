@@ -1,3 +1,4 @@
+import { handhevTekMinimum } from "@/lib/training/invariants";
 import { z } from "zod";
 
 export const periodTypeSchema = z.enum([
@@ -33,7 +34,18 @@ export type PeriodizationOutput = {
   begrensninger: string[];
 };
 
+/**
+ * CANON inv_1 (TEK ≥ 15 %) håndheves på vei ut: uansett hvilken gren som treffer,
+ * kan denne skillen aldri levere en pyramide med for lite teknikk.
+ */
 export function runPeriodizationSkill(
+  input: PeriodizationInput,
+): PeriodizationOutput {
+  const ut = beregnPeriodisering(input);
+  return { ...ut, pyramidOverride: handhevTekMinimum(ut.pyramidOverride) };
+}
+
+function beregnPeriodisering(
   input: PeriodizationInput,
 ): PeriodizationOutput {
   const parsed = periodizationInputSchema.parse(input);
@@ -43,7 +55,7 @@ export function runPeriodizationSkill(
     return {
       weekType: "INJURY_MODIFIED",
       tillatTekniskeEndringer: false,
-      pyramidOverride: { FYS: 40, TEK: 10, SLAG: 20, SPILL: 20, TURN: 10 },
+      pyramidOverride: { FYS: 40, TEK: 15, SLAG: 15, SPILL: 20, TURN: 10 },
       begrensninger: ["Skade aktiv — reduser volum og intensitet."],
     };
   }
@@ -53,7 +65,7 @@ export function runPeriodizationSkill(
     return {
       weekType: "PRE_TOURNAMENT",
       tillatTekniskeEndringer: false,
-      pyramidOverride: { FYS: 10, TEK: 10, SLAG: 25, SPILL: 35, TURN: 20 },
+      pyramidOverride: { FYS: 10, TEK: 15, SLAG: 20, SPILL: 35, TURN: 20 },
       begrensninger: [
         `Turnering om ${dager} dager — vedlikehold og scoring.`,
       ],
@@ -65,7 +77,7 @@ export function runPeriodizationSkill(
     return {
       weekType: "TOURNAMENT",
       tillatTekniskeEndringer: false,
-      pyramidOverride: { FYS: 10, TEK: 10, SLAG: 30, SPILL: 30, TURN: 20 },
+      pyramidOverride: { FYS: 10, TEK: 15, SLAG: 25, SPILL: 30, TURN: 20 },
       begrensninger,
     };
   }
@@ -74,7 +86,7 @@ export function runPeriodizationSkill(
     return {
       weekType: "PERIOD_END",
       tillatTekniskeEndringer: false,
-      pyramidOverride: { FYS: 50, TEK: 10, SLAG: 15, SPILL: 15, TURN: 10 },
+      pyramidOverride: { FYS: 45, TEK: 15, SLAG: 15, SPILL: 15, TURN: 10 },
       begrensninger: ["Overgang/hvile — lav intensitet."],
     };
   }

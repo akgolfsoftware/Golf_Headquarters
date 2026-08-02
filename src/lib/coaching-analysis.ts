@@ -89,7 +89,10 @@ function byggBrukerPrompt(input: AnalyseInput): string {
   const k = input.spillerKontekst;
   const linjer: string[] = [];
   linjer.push("BAKGRUNN OM SPILLEREN (kontekst — ikke innhold fra økten):");
-  linjer.push(`Navn: ${k.navn}`);
+  // ANONYMISERT (GDPR art. 9): spillerens navn sendes ALDRI til Anthropic.
+  // Kombinasjonen navn + helse-/prestasjonskontekst + rå transkripsjon er
+  // sensitiv personopplysning om en (ofte mindreårig) person. HCP/alder/plan er
+  // fagkonteksten modellen faktisk trenger, og peker ikke tilbake på personen.
   linjer.push(`HCP: ${k.hcp ?? "ukjent"}`);
   if (k.alder !== null) linjer.push(`Alder: ${k.alder}`);
   if (k.ambisjon) linjer.push(`Ambisjon: ${k.ambisjon}`);

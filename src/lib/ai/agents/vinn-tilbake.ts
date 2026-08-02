@@ -163,12 +163,14 @@ async function byggMelding(opts: {
     return byggDemoMelding(opts);
   }
 
+  // ANONYMISERT (GDPR art. 9): kun fornavn sendes til Anthropic (nødvendig for
+  // personlig tiltale i meldingen), aldri fullt navn eller coach-navn. Meldingen
+  // gjelder ofte mindreårige — fullt navn + inaktivitet/frafall er sensitivt.
   const fornavn = opts.spillerNavn.split(" ")[0];
   const userPrompt = `
 Skriv en personlig oppfølgings-melding på maks 80 ord.
 
-Spiller: ${fornavn} (full: ${opts.spillerNavn})
-Coach: ${opts.coachNavn}
+Spiller: ${fornavn}
 Dager inaktiv: ${opts.dagerInaktiv}
 ${opts.sisteFokus ? `Sist trent på: ${opts.sisteFokus}` : ""}
 ${opts.sisteMaalTitle ? `Aktivt mål: ${opts.sisteMaalTitle}` : ""}

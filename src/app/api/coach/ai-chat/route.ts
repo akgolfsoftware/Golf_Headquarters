@@ -8,6 +8,7 @@ import {
   COACH_MODEL,
   type ChatMelding,
 } from "@/lib/anthropic";
+import { pseudonymForId } from "@/lib/ai/anonymiser";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -84,8 +85,14 @@ export async function POST(req: Request) {
     }),
   ]);
 
+  // GDPR-tiltak 2026-07-27: spillerens ekte navn sendes aldri til Anthropic —
+  // bygSystemPrompt() leser user.name internt, så vi bytter navnet med et
+  // deterministisk pseudonym FØR kallet. Dette er spillerens egen samtale om
+  // seg selv (streaming), og "spiller"-system-prompten instruerer aldri
+  // modellen om å gjenta navnet i svaret — derfor trengs ingen reverse-
+  // substitusjon her (se pseudonym.ts for mønsteret der det faktisk trengs).
   const systemPrompt = bygSystemPrompt({
-    user,
+    user: { ...user, name: pseudonymForId(user.id) },
     aktivePlaner,
     sisteRunder,
   });

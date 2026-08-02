@@ -12,6 +12,7 @@ import {
   hentMasterbrainKunnskap,
 } from "@/lib/masterbrain";
 import { prisma } from "@/lib/prisma";
+import { pseudonymForId, substituerPseudonym } from "../anonymiser";
 
 /**
  * Tegnbudsjett for Masterbrain-blokken. sg-diagnose er SG-prinsipper (4 318)
@@ -125,8 +126,11 @@ export async function tolkSg(
     };
   }
 
+  // GDPR-tiltak: prompten til Anthropic bruker et pseudonym for spilleren —
+  // ekte navn byttes tilbake i sammendraget under, før det returneres til appen.
+  const spillerPseudonym = pseudonymForId(spiller.id);
   const userPrompt = byggUserPrompt(
-    spiller.name,
+    spillerPseudonym,
     runder.length,
     perKategori,
     svakesteKategori,
@@ -139,11 +143,12 @@ export async function tolkSg(
     messages: [{ role: "user", content: userPrompt }],
   });
 
-  const text = response.content
+  const rawText = response.content
     .filter((b) => b.type === "text")
     .map((b) => (b.type === "text" ? b.text : ""))
     .join("\n")
     .trim();
+  const text = rawText ? substituerPseudonym(rawText, spillerPseudonym, spiller.name) : rawText;
 
   return {
     spillerId: spiller.id,
@@ -321,7 +326,7 @@ function generiskeDrills(kategori: SgKategoriKode): string[] {
 // ---------- Prompts og demo ----------
 
 function byggUserPrompt(
-  navn: string,
+  spillerPseudonym: string,
   runderTatt: number,
   perKategori: {
     ott: SgKategoriTolkning;
@@ -342,7 +347,7 @@ function byggUserPrompt(
       : "Ingen drills tilgjengelig. Ikke navngi noen — beskriv hva som bør trenes.";
 
   return `
-Tolk SG-data for ${navn} (siste ${runderTatt} runder).
+Tolk SG-data for ${spillerPseudonym} (siste ${runderTatt} runder).
 
 OTT: ${perKategori.ott.verdi ?? "n/a"} (trend ${perKategori.ott.trend})
 APP: ${perKategori.app.verdi ?? "n/a"} (trend ${perKategori.app.trend})

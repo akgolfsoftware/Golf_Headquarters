@@ -254,8 +254,11 @@ function byggUserPrompt(
     (u) =>
       `Uke ${u.uke}: ${u.bompaFase} | vol ${u.volum} | int ${u.intensitet} | FYS ${u.pyramidFokus.fys}% TEK ${u.pyramidFokus.tek}% SLAG ${u.pyramidFokus.slag}% SPILL ${u.pyramidFokus.spill}% TURN ${u.pyramidFokus.turn}%`,
   );
+  // ANONYMISERT (GDPR art. 9): spillernavn sendes ikke til Anthropic — HCP er
+  // det modellen trenger, og peker ikke tilbake på personen. (Turneringsnavn er
+  // offentlig og ikke personopplysning.)
   return `
-Spiller: ${spiller.name} (HCP ${spiller.hcp ?? "ukjent"})
+Spiller: (HCP ${spiller.hcp ?? "ukjent"})
 Turnering: ${tournament.name} (${tournament.startDate.toISOString().slice(0, 10)})
 Uker til turnering: ${ukerTil}
 
