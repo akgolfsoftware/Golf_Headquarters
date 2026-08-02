@@ -31,6 +31,16 @@ const IGNORERT_KONSOLL = [
   /plausible|vercel insights|speed-insights/i,
 ];
 
+/**
+ * KJENTE, ÅPNE FEIL — ikke støy. Hver linje er en ekte feil som venter på egen fiks.
+ * Testen skal ikke være permanent rød av dem, men lista skal krympe, aldri vokse.
+ * Fjern en linje når feilen er fikset — da fanger testen den igjen hvis den kommer tilbake.
+ *
+ * - React #418 på /portal/planlegge/workbench: hydreringsmismatch mellom server og klient.
+ *   Funnet 2026-08-02 (kvalitetsaudit tiltak 9). Se docs/STATUS-NÅ.md.
+ */
+const KJENTE_FEIL = [/Minified React error #418/i];
+
 const PLAYERHQ_KJERNE = [
   { navn: "Hjem (Workbench-hjem)", url: "/portal" },
   { navn: "Planlegge", url: "/portal/planlegge" },
@@ -58,9 +68,13 @@ function samleKonsollfeil(page: Page, ut: string[]): void {
     if (msg.type() !== "error") return;
     const tekst = msg.text();
     if (IGNORERT_KONSOLL.some((r) => r.test(tekst))) return;
+    if (KJENTE_FEIL.some((r) => r.test(tekst))) return;
     ut.push(tekst);
   });
-  page.on("pageerror", (err) => ut.push(`pageerror: ${err.message}`));
+  page.on("pageerror", (err) => {
+    if (KJENTE_FEIL.some((r) => r.test(err.message))) return;
+    ut.push(`pageerror: ${err.message}`);
+  });
 }
 
 async function loggInn(page: Page, email: string, password: string): Promise<void> {

@@ -4,15 +4,26 @@
 //
 // Aksepterer optional nonce-string slik at CSP-nonce kan inkluderes
 // i x-nonce request-header — lesbar via headers() i Server Components.
+//
+// Aksepterer også hele CSP-strengen. Den MÅ settes på request-headerne, ikke bare
+// på responsen: Next.js finner nonce-en sin ved å lese `Content-Security-Policy` fra
+// request og setter den så på script-taggene den genererer. Uten dette mangler noen
+// script-tagger nonce, og siden CSP-en vår bruker 'strict-dynamic' (som slår av
+// 'self'), blir de blokkert. Symptom før fiks: en app-chunk avvist på /admin/spillere.
 
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-export async function updateSession(request: NextRequest, nonce?: string) {
+export async function updateSession(
+  request: NextRequest,
+  nonce?: string,
+  csp?: string,
+) {
   // Bygg request-headers med optional nonce så RSCs kan lese den via headers().
   function buildReqHeaders(): Headers {
     const h = new Headers(request.headers);
     if (nonce) h.set("x-nonce", nonce);
+    if (csp) h.set("Content-Security-Policy", csp);
     return h;
   }
 
