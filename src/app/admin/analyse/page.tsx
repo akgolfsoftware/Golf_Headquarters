@@ -101,16 +101,18 @@ async function loadStallAnalyse(viewer: { id: string; role: string }): Promise<A
     }),
     prisma.user.count({
       where: {
-        role: "PLAYER",
-        deletedAt: null,
-        OR: [{ lastLoginAt: null }, { lastLoginAt: { lt: d7 } }],
+        AND: [
+          coachScopedPlayerWhere(viewer),
+          { deletedAt: null, OR: [{ lastLoginAt: null }, { lastLoginAt: { lt: d7 } }] },
+        ],
       },
     }),
     prisma.user.count({
       where: {
-        role: "PLAYER",
-        deletedAt: null,
-        OR: [{ lastLoginAt: null }, { lastLoginAt: { lt: d14 } }],
+        AND: [
+          coachScopedPlayerWhere(viewer),
+          { deletedAt: null, OR: [{ lastLoginAt: null }, { lastLoginAt: { lt: d14 } }] },
+        ],
       },
     }),
     prisma.trainingPlanSession.groupBy({
@@ -119,6 +121,7 @@ async function loadStallAnalyse(viewer: { id: string; role: string }): Promise<A
       where: { status: "COMPLETED", ...spillerOkter },
     }),
     prisma.group.findMany({
+      where: viewer.role === "COACH" ? { coachId: viewer.id } : {},
       select: { id: true, name: true, members: { select: { userId: true } } },
       orderBy: { name: "asc" },
     }),

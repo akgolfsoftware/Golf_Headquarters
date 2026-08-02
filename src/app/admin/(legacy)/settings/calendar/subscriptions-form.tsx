@@ -20,6 +20,7 @@ export type SubscriptionRow = {
   color: string | null;
   syncPush: boolean;
   syncPull: boolean;
+  visIKalender: boolean;
   active: boolean;
   lastSyncAt: string | null;
   lastError: string | null;
@@ -73,6 +74,8 @@ export function SubscriptionsForm({ rows }: { rows: SubscriptionRow[] }) {
           id: r.id,
           syncPush: erPush,
           syncPull: erPull,
+          // Legacy-skjemaet har ingen egen vis-bryter; behold gjeldende verdi.
+          visIKalender: r.visIKalender,
           active: erPush || erPull,
         };
       });

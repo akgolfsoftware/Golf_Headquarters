@@ -88,11 +88,3 @@ export function readMegOllamaEnv(
     model: parsed.data.MEG_OLLAMA_MODEL,
   };
 }
-
-/** Secret for helse-inntak-endepunktet (Fase 3b). Returnerer null hvis ikke satt. */
-export function readMegHealthIngestSecret(
-  source: NodeJS.ProcessEnv | Record<string, string | undefined> = process.env,
-): string | null {
-  const v = source.MEG_HEALTH_INGEST_SECRET;
-  return typeof v === "string" && v.length > 0 ? v : null;
-}

@@ -4,6 +4,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { User, Round, TrainingPlan, CourseDefinition } from "@/generated/prisma/client";
 import { bygCoachSystemPrompt } from "@/lib/ai-plan/coach-prompt";
+import { modelFor } from "@/lib/ai/client";
 
 let _klient: Anthropic | null = null;
 
@@ -17,7 +18,7 @@ export function anthropicKlient(): Anthropic {
   return _klient;
 }
 
-export const COACH_MODEL = "claude-sonnet-4-6";
+export const COACH_MODEL = modelFor("coach-ai");
 
 type RoundMedBane = Round & { course: CourseDefinition };
 

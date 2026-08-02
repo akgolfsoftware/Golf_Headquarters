@@ -97,3 +97,14 @@ test("coachScopedPlayerWhere: COACH har deletedAt null + coachId-filter", () => 
   };
   assert.equal(enr.enrollmentsAsPlayer.some.coachId, "c1");
 });
+
+test("coachScopedPlayerWhere: ADMIN har ikke coachId-filter (ser alle coachede)", () => {
+  const w = coachScopedPlayerWhere({ id: "admin-1", role: "ADMIN" });
+  assert.equal(w.role, "PLAYER");
+  assert.equal(w.deletedAt, null);
+  const enr = (w.OR ?? []).find((g) => "enrollmentsAsPlayer" in g) as {
+    enrollmentsAsPlayer: { some: { coachId?: string } };
+  };
+  // ADMIN scope = coachedPlayerWhere — ingen coachId-lås
+  assert.equal(enr.enrollmentsAsPlayer.some.coachId, undefined);
+});

@@ -1,9 +1,10 @@
 "use client";
 
 // Klient-knapp som trigger AI-analyse + Notion-sync for et opptak.
-// Vises kun nar SessionRecording.status === "PROCESSING".
-// Inkluderer ogsa en "Sett dummy-transkripsjon"-knapp for testing fram til
-// V2-transkribering er klar.
+// FALLBACK: analysen kjøres normalt automatisk etter transkribering
+// (complete → transcribe → analyze). Denne knappen brukes når kjeden har
+// feilet, så coach kan kjøre analysen på nytt uten å ta opp økten igjen.
+// "Sett dummy-transkripsjon" er et testverktøy for opptak uten lyd-transkript.
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -97,7 +98,7 @@ export function RecordingAnalyzeButton({ recordingId, harTranskripsjon }: Props)
           ) : (
             <Sparkles className="h-3 w-3" strokeWidth={1.75} />
           )}
-          Analyser nå
+          Analyser på nytt
         </button>
       ) : (
         <button

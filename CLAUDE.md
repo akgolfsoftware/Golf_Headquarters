@@ -22,15 +22,15 @@ Sju filer, alle aktive: `arkitektur.md` (produkter, ruter, mappestruktur) · `go
 ikke kode).
 
 `beslutninger.md` dekker: invarianter-aldri-sperrer, AgencyOS-navnet, navne-kanon, Workbench-planlegging,
-analyse-samling, abonnement 299/gratis, FYS-avventing. **Designlåser er bevisst tømt 2026-07-25** — nytt
-komplett designsystem utvikles i Open Design; ingen designkanon er låst inntil videre. Ved konflikt vinner
-`docs/platform/BUSINESS-RULES.md`.
+analyse-samling, abonnement 299/gratis, FYS-avventing. **Design (LÅST 2026-07-31):** app/pilot = C, smalt
+(v2 + kun `--handling` `#D97757`); Claude Paper = designfasit i Open Design/speil; full port etter pilot
+(`docs/gjenstaaende-plan-2026-07-31.md` §1.1). Ved konflikt vinner `docs/platform/BUSINESS-RULES.md`.
 
 ## Harde invarianter (brytes aldri)
 1. **Anbefalinger sperrer aldri:** ingenting i appen blokkerer trening. Aldri «kan ikke brytes»-kode/tekst.
-2. ~~Farger kun fra designtokens~~ **(fjernet 2026-07-25):** designkanonen er avviklet. Hex-gaten er nå
-   fjernet overalt — PostToolUse-hook, `package.json`, `ci.yml` og selve scriptet (opprydding 2026-07-26).
-   Farge- og spacingvalg er fritt inntil Open Design lander. Ikke gjenopprett gaten uten ny beslutning.
+2. **Design tidsplan (2026-07-31):** App = C, smalt (v2-tokens; innfør `--handling` `#D97757` for «Én ting
+   nå», maks én per skjerm). Paper-design i OD/speil er OK. Full Paper-port til `src/` først etter pilot.
+   Hex-gaten for Presis forblir borte — ikke gjenopprett uten ny beslutning.
 3. **Norsk bokmål i all UI-tekst.**
 4. **Lucide-ikoner** — aldri emoji i UI. Primitiver fra `components/ui/` + `v2/`-mønstre.
 5. **Domenelogikk kun i `src/lib/domain/`** — aldri i komponenter.
@@ -114,8 +114,8 @@ prisma/
 scripts/            # Engangs-/driftsscript: seed-screentest*.ts (Øyvind Rohjan) · drill-qa ·
                     # retag-drill-kategorier · check-action-auth.mjs · audit-rls · …
 docs/               # platform/ (NORDSTJERNE, AGENT-BRIEF, BUSINESS-RULES, DATA-MODEL, PLATFORM-PRD) ·
-                    # skjermtekst/ (copy-kilde) · design-system/ + redesign-v2/ (UTGÅTT, historikk) ·
-                    # gdpr/ · juridisk/ · sikkerhet/ · opprydding/ · arkiv/
+                    # skjermtekst/ (copy-kilde) · design-system/TEMA-LYS-MORK.md (tema-fasit) ·
+                    # gdpr/ · juridisk/ · sikkerhet/ · arkiv/
 e2e/                # Eldre e2e-suite (9 specs): auth-guard, IDOR, booking, marketing, lansering-smoke
 tests/e2e/          # Nyere smoke-/kvalitetssuite (24 specs): a11y, PWA, ruter, meta/OG, offline, ikoner
 ```
@@ -159,15 +159,12 @@ Andre nyttige script: `npm run kart` (skjermkart) · `npm run qa:drills` · `npm
   (`PLAYWRIGHT_BASE_URL`).
 
 ## CI/CD
-- **`ci.yml`** (PR + push til main + manuell): `npm ci` → `prisma generate` → `tsc --noEmit` → `eslint` →
-  `check:action-auth` → `npm test` → `npm run build` → Playwright e2e mot lokal `npm start`.
-  Dummy env-verdier, ingen secrets nødvendig. **NB:** e2e-steget her er `continue-on-error: true` — det
-  rapporterer, men feller ikke bygget. Alt før e2e er blokkerende.
-- **`playwright.yml`** (PR + push til main): kjører e2e mot **prod-URL** (`https://akgolf-hq.vercel.app`),
-  chromium + webkit. Jobben er blokkerende, men **tester prod — ikke PR-ens kode**
-  (`base_url`-inputen gjelder kun `workflow_dispatch`, så PR-kjøringer faller alltid til prod).
-  **Konsekvens:** en grønn «Playwright E2E» på en PR sier at prod er frisk, ikke at endringen er
-  e2e-testet. Den reelle kode-gaten på en PR er `verify`-jobben.
+- **`ci.yml`** — PR-gaten. Kjører på **enhver** PR (ingen base-filter, så stablede PR-er dekkes også)
+  + push til main + manuelt: `npm ci` → `prisma generate` → `tsc --noEmit` → `eslint` →
+  `check:action-auth` → `npm test` → `npm run build`. Alle steg blokkerende. Dummy env-verdier, ingen
+  secrets nødvendig.
+- **`playwright.yml`** — prod-røyktest, **ikke** en PR-gate. Kjører etter push til main (og manuelt mot
+  valgfri `base_url`) mot `https://akgolf-hq.vercel.app`, chromium + webkit.
 - **`scrape-golfbox.yml` / `scrape-gjgt.yml`** — planlagte turneringsscrapere.
 - **`deploy.yml`** — finnes fortsatt, men er **kun `workflow_dispatch`** (manuell, siden 2026-07-05). Deploy
   skal være en bevisst handling, ikke en bivirkning.

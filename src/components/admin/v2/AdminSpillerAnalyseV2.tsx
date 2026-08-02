@@ -50,6 +50,9 @@ export function AdminSpillerAnalyseV2({ navn, spillerId, data }: AdminSpillerAna
   return (
     <AnalysereV2
       data={data}
+      /* Spillerens historikk, ikke coachens — tilgangen håndheves server-side
+         av assertCanViewPlayerData i hentTreningsHistorikkFiltrert. */
+      userId={spillerId}
       header={(mobile) => (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <TilbakeLenke href={`/admin/spillere/${spillerId}`}>Tilbake til {navn}</TilbakeLenke>

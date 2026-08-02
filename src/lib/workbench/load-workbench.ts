@@ -30,6 +30,9 @@ import { parseSessionBudget } from "@/lib/workbench/perioder";
 import { beregnSgGap } from "@/lib/workbench/sg-gap";
 import { findActivePeriod } from "@/lib/workbench/period-lookup";
 import { canonDeviationChip } from "@/lib/workbench/canon-period-adjustment";
+import { kjorInvarianter, INVARIANTER, type KanonOkt, type KanonPeriode } from "@/lib/canon/invarianter";
+import { tilPeriodeType, alderFra } from "@/lib/canon/valider-plan";
+import { hentEffektivePeriodeConstraints } from "@/lib/portal/training/periode-fordeling";
 import {
   mergeWeekSessions,
   type V2WeekSessionInput,
@@ -107,6 +110,16 @@ export type WorkbenchData = {
   activePeriodLPhase?: LPhase | null;
   /** CANON-avvikstekst for aktiv periode (anbefaling, ikke sperre) — null når alt stemmer. */
   canonChip?: string | null;
+  /** CANON-invariant-budsjett for uka (9 regler, anbefaling — aldri sperre).
+   *  Null når det ikke er noe å vise (ingen brudd, ingen overstyring). */
+  canonBudsjett?: {
+    pass: number;
+    total: number;
+    /** true når ALLE denne ukas brudd har en aktiv InvariantOverride. */
+    overstyrt: boolean;
+    /** Meldinger for aktive (ikke-overstyrte) brudd. */
+    meldinger: string[];
+  } | null;
   /** Sesong-perioder fra SeasonPlan.periodBlocks (Gantt/Årsplan).
    *  lPhase dekker alle 7 periodetypene etter 8c.1. */
   seasonBlocks?: {
@@ -206,6 +219,7 @@ const SESSION_SELECT = {
   environment: true,
   status: true,
   lFase: true,
+  csNivaa: true,
   miljo: true,
   _count: { select: { drills: true } },
 } as const;
@@ -273,6 +287,7 @@ export async function loadWorkbenchData(
     fysiskPlan,
     monthPlanSessions,
     monthV2SessionsRaw,
+    periodeConstraints,
   ] = await Promise.all([
     prisma.trainingPlanSession.findMany({
       where: { plan: planFilter, scheduledAt: { gte: weekStart, lt: weekEnd } },
@@ -311,7 +326,7 @@ export async function loadWorkbenchData(
         tournament: { select: { name: true, startDate: true, location: true } },
       },
     }),
-    prisma.user.findUnique({ where: { id: userId }, select: { hcp: true } }),
+    prisma.user.findUnique({ where: { id: userId }, select: { hcp: true, dateOfBirth: true } }),
     prisma.seasonPlan.findFirst({
       where: { userId, year },
       include: { periodBlocks: { orderBy: { startDate: "asc" } } },
@@ -450,6 +465,10 @@ export async function loadWorkbenchData(
         practiceType: true,
       },
     }),
+    // Coach-satt pyramide-fordeling (fase 1) — samme kilde CANON-invariantene
+    // bruker (canon/valider-plan.ts), så «ukens CANON-budsjett» matcher det en
+    // levende validerPlan()-kall ville gitt.
+    hentEffektivePeriodeConstraints(),
   ]);
 
   // Filtrer bort V2-speil av coach-utkast for spiller-visning.
@@ -707,6 +726,49 @@ export async function loadWorkbenchData(
     ? canonDeviationChip(pyramidPctByArea, activePeriodBlock.lPhase)
     : null;
 
+  // CANON-invariant-budsjett for uka (9 kode-verifiserte regler fra
+  // src/lib/canon/, samme motor som validerPlan/validerOkt) — anbefaling,
+  // aldri sperre. Overstyrte brudd (InvariantOverride) telles ikke som aktive.
+  const canonOkter: KanonOkt[] = weekSessions.map((s) => ({
+    id: s.id,
+    dato: s.scheduledAt,
+    varighetMin: s.durationMin,
+    pyramide: s.pyramidArea,
+    lFase: s.lFase,
+    csNivaa: s.csNivaa,
+  }));
+  const canonPerioder: KanonPeriode[] = (seasonPlan?.periodBlocks ?? [])
+    .map((pb) => {
+      const type = tilPeriodeType(pb.lPhase);
+      return type ? { type, startDato: pb.startDate, sluttDato: pb.endDate } : null;
+    })
+    .filter((p): p is KanonPeriode => p !== null);
+  const canonTreff = kjorInvarianter({
+    okter: canonOkter,
+    perioder: canonPerioder,
+    spillerAlder: alderFra(player?.dateOfBirth ?? null, now),
+    constraints: periodeConstraints,
+  });
+  let canonBudsjett: WorkbenchData["canonBudsjett"] = null;
+  if (canonTreff.length > 0) {
+    const bruddSessionIds = canonTreff.flatMap((t) => t.resultat.sessionIds ?? []);
+    const overstyringer =
+      bruddSessionIds.length > 0
+        ? await prisma.invariantOverride.findMany({
+            where: { sessionId: { in: bruddSessionIds } },
+            select: { invariantId: true },
+          })
+        : [];
+    const overstyrteIds = new Set(overstyringer.map((o) => o.invariantId));
+    const aktive = canonTreff.filter((t) => !overstyrteIds.has(t.invariant.id));
+    canonBudsjett = {
+      pass: INVARIANTER.length - canonTreff.length,
+      total: INVARIANTER.length,
+      overstyrt: aktive.length === 0,
+      meldinger: aktive.map((t) => t.resultat.melding),
+    };
+  }
+
   // ── Turneringer (sidebar) ───────────────────────────────────────
   const tournaments = entries
     .map((e) => {
@@ -932,6 +994,7 @@ export async function loadWorkbenchData(
     seasonBlocks,
     activePeriodLPhase: activePeriodBlock?.lPhase ?? null,
     canonChip,
+    canonBudsjett,
     tournamentCalendar: tournamentCalendar.length > 0 ? tournamentCalendar : undefined,
     planTemplates: templateRows.length > 0 ? templateRows : undefined,
     paletteItems: paletteItems.length > 0 ? paletteItems : undefined,

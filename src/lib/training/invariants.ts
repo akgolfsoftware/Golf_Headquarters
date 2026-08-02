@@ -37,3 +37,32 @@ export function validateExecutorDelta(
 
   return { ok: true };
 }
+// ---------- CANON inv_1: TEK-anbefaling (varsel, ikke sperre) ----------
+
+/**
+ * CANON v3.5, invariant 1: teknikk bør utgjøre minst 15 % av pyramiden.
+ *
+ * Dette er en ANBEFALING, ikke en sperre. Fordelingen er ikke låst — spilleren
+ * (og coachen) setter sine egne verdier, og koden skal aldri skrive dem om i
+ * stillhet. Vi sier bare fra i klartekst når en foreslått fordeling ligger under
+ * CANON-nivået, slik at avviket er synlig og valgt, ikke usett.
+ *
+ * Jf. husets invariant 1: anbefalinger sperrer aldri.
+ */
+export const ANBEFALT_MIN_TEK_PROSENT = 15;
+
+export type Pyramide = Partial<
+  Record<"FYS" | "TEK" | "SLAG" | "SPILL" | "TURN", number>
+>;
+
+/**
+ * Returnerer en varseltekst hvis TEK ligger under CANON-anbefalingen, ellers null.
+ * Kalleren legger teksten i `begrensninger` (eller viser den i UI). Verdiene
+ * røres ikke.
+ */
+export function tekAnbefalingsVarsel(pyramide: Pyramide | null): string | null {
+  if (!pyramide) return null;
+  const tek = pyramide.TEK ?? 0;
+  if (tek >= ANBEFALT_MIN_TEK_PROSENT) return null;
+  return `Teknikk ligger på ${tek} % denne uka — CANON anbefaler minst ${ANBEFALT_MIN_TEK_PROSENT} %. Fordelingen er din, men avviket er verdt å være klar over.`;
+}

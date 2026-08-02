@@ -153,7 +153,9 @@ const nextConfig: NextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           {
             key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=()",
+            // self er påkrevd for lydopptak i coaching-piloten (recording) og
+            // kamera i appen — microphone=() blokkerte ALT opptak i prod.
+            value: "camera=(self), microphone=(self), geolocation=()",
           },
           {
             key: "Strict-Transport-Security",

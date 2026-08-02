@@ -16,6 +16,18 @@ import type {
 } from "@/generated/prisma/client";
 import { assertCanViewPlayerData } from "@/lib/auth/assert-own-or-coached";
 import { hentTreningsanalyse } from "@/lib/portal-analyse/treningsanalyse-data";
+import {
+  hentTreningsHistorikk,
+  filtrerRader,
+  oppsummer,
+  type TreningsRad,
+  type TreningsFiltre,
+  type HistorikkOppsummering,
+} from "@/lib/portal-analyse/trenings-historikk";
+import {
+  beregnPeriodeVindu,
+  type PeriodeValg,
+} from "@/lib/portal-analyse/periode-vindu";
 
 function startOfPeriod(period: "7d" | "30d" | "90d" | "1y" | "all"): Date | null {
   const now = new Date();
@@ -380,6 +392,7 @@ export async function getTournamentResults(
   await assertCanViewPlayerData(userId);
   const from = startOfPeriod(period);
 
+  // 1) Påmeldinger (sesongplan / manuell / auto fra resultat-sync)
   const entries = await prisma.tournamentEntry.findMany({
     where: {
       userId,
@@ -393,18 +406,35 @@ export async function getTournamentResults(
     orderBy: { createdAt: "desc" },
   });
 
-  const tournamentIds = entries.map((e) => e.tournamentId).filter(Boolean) as string[];
+  // 2) Alle speilede resultater (inkl. de uten entry — legacy / race)
+  const allResults = await prisma.tournamentResult.findMany({
+    where: {
+      userId,
+      ...(from
+        ? {
+            OR: [
+              { createdAt: { gte: from } },
+              { tournament: { startDate: { gte: from } } },
+            ],
+          }
+        : {}),
+    },
+    select: {
+      id: true,
+      tournamentId: true,
+      position: true,
+      score: true,
+      createdAt: true,
+      tournament: { select: { id: true, name: true, startDate: true } },
+    },
+  });
 
-  const results = tournamentIds.length
-    ? await prisma.tournamentResult.findMany({
-        where: { userId, tournamentId: { in: tournamentIds } },
-        select: { tournamentId: true, position: true, score: true },
-      })
-    : [];
+  const resultMap = new Map(allResults.map((r) => [r.tournamentId, r]));
+  const entryTournamentIds = new Set(
+    entries.map((e) => e.tournamentId).filter((id): id is string => Boolean(id)),
+  );
 
-  const resultMap = new Map(results.map((r) => [r.tournamentId, r]));
-
-  return entries.map((e) => ({
+  const fromEntries: TournamentListItem[] = entries.map((e) => ({
     id: e.id,
     name: e.tournament?.name ?? e.manualName ?? "Ukjent turnering",
     startDate: e.tournament?.startDate ?? e.manualDate ?? e.createdAt,
@@ -412,6 +442,22 @@ export async function getTournamentResults(
     score: resultMap.get(e.tournamentId ?? "")?.score ?? null,
     status: e.entryStatus,
   }));
+
+  // Resultater uten TournamentEntry (skal ikke skje etter sync-fix, men vis dem likevel)
+  const fromResultsOnly: TournamentListItem[] = allResults
+    .filter((r) => !entryTournamentIds.has(r.tournamentId))
+    .map((r) => ({
+      id: r.id,
+      name: r.tournament?.name ?? "Ukjent turnering",
+      startDate: r.tournament?.startDate ?? r.createdAt,
+      position: r.position,
+      score: r.score,
+      status: "COMPLETED",
+    }));
+
+  return [...fromEntries, ...fromResultsOnly].sort(
+    (a, b) => b.startDate.getTime() - a.startDate.getTime(),
+  );
 }
 
 // ── Test results ────────────────────────────────────────────────────────────
@@ -605,4 +651,74 @@ export async function loadAnalyticsWorkbenchData(
   ]);
 
   return { training, rounds, tournaments, tests, trackman, goals, courses, sgBreakdown };
+}
+
+// ── Samlet treningshistorikk (2026-07-27) ───────────────────────────────────
+
+/**
+ * Gjennomført trening — golf og fysisk — i valgt tidsvindu, med aggregater.
+ * Kalles fra Analyse → Trening hver gang spilleren endrer et filter.
+ *
+ * Erstatter de gamle snarveiene i getTrainingStats (hardkodet «SPILL»-akse og
+ * `* 0.2`-fordeling av minutter): her kommer akse og tid fra selve drillene,
+ * og faktisk målt tid brukes når den finnes.
+ */
+export async function hentTreningsHistorikkFiltrert(input: {
+  userId: string;
+  periode: PeriodeValg;
+  filtre?: TreningsFiltre;
+}): Promise<{
+  rader: TreningsRad[];
+  oppsummering: HistorikkOppsummering;
+  vinduLabel: string;
+  ingenAktivPeriode: boolean;
+  /** CS-nivåer som faktisk forekommer i vinduet — mater belastningsfilteret. */
+  tilgjengeligeCsNivaaer: string[];
+}> {
+  await assertCanViewPlayerData(input.userId);
+
+  // Aktiv treningsperiode fra årsplanen, når «Periode» er valgt.
+  const naa = new Date();
+  const periodeBlokk =
+    input.periode === "periode"
+      ? await prisma.periodBlock.findFirst({
+          where: {
+            seasonPlan: { userId: input.userId },
+            startDate: { lte: naa },
+            endDate: { gte: naa },
+          },
+          select: { startDate: true, endDate: true, focus: true, lPhase: true },
+          orderBy: { startDate: "desc" },
+        })
+      : null;
+
+  const vindu = beregnPeriodeVindu(
+    input.periode,
+    naa,
+    periodeBlokk
+      ? {
+          startDate: periodeBlokk.startDate,
+          endDate: periodeBlokk.endDate,
+          navn: periodeBlokk.focus ?? periodeBlokk.lPhase,
+        }
+      : null,
+  );
+
+  // Alt i vinduet hentes én gang; filtrene brukes på resultatet, slik at
+  // belastningsvalgene kan vise hva som FINNES uten å bli tomme av seg selv.
+  const alle = await hentTreningsHistorikk({
+    userId: input.userId,
+    fra: vindu.fra,
+    til: vindu.til,
+  });
+  const rader = filtrerRader(alle, input.filtre);
+
+  return {
+    rader,
+    oppsummering: oppsummer(rader),
+    vinduLabel: vindu.label,
+    ingenAktivPeriode: vindu.fallback === "ingen-periode",
+    tilgjengeligeCsNivaaer: [...new Set(alle.map((r) => r.csNivaa).filter(Boolean))]
+      .sort() as string[],
+  };
 }

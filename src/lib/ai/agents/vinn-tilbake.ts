@@ -6,7 +6,7 @@
 // og coachens navn — slik at den føles personlig og ekte.
 
 import "server-only";
-import { anthropic, AI_MODEL, isAiEnabled } from "../client";
+import { anthropic, modelFor, isAiEnabled } from "../client";
 import { prisma } from "@/lib/prisma";
 
 export const VINN_TILBAKE_SYSTEM = `
@@ -163,12 +163,14 @@ async function byggMelding(opts: {
     return byggDemoMelding(opts);
   }
 
+  // ANONYMISERT (GDPR art. 9): kun fornavn sendes til Anthropic (nødvendig for
+  // personlig tiltale i meldingen), aldri fullt navn eller coach-navn. Meldingen
+  // gjelder ofte mindreårige — fullt navn + inaktivitet/frafall er sensitivt.
   const fornavn = opts.spillerNavn.split(" ")[0];
   const userPrompt = `
 Skriv en personlig oppfølgings-melding på maks 80 ord.
 
-Spiller: ${fornavn} (full: ${opts.spillerNavn})
-Coach: ${opts.coachNavn}
+Spiller: ${fornavn}
 Dager inaktiv: ${opts.dagerInaktiv}
 ${opts.sisteFokus ? `Sist trent på: ${opts.sisteFokus}` : ""}
 ${opts.sisteMaalTitle ? `Aktivt mål: ${opts.sisteMaalTitle}` : ""}
@@ -180,7 +182,7 @@ Avslutt med en konkret invitasjon (booke time, planlegge runde, etc.).
 
   try {
     const response = await anthropic.messages.create({
-      model: AI_MODEL,
+      model: modelFor("caddie-proactive"),
       max_tokens: 300,
       system: VINN_TILBAKE_SYSTEM,
       messages: [{ role: "user", content: userPrompt }],

@@ -1,0 +1,2412 @@
+[
+  {
+    "chunk_id": "sg-baselines-001",
+    "file_path": "rag-corpus/sg-baselines/sg-baselines-001.md",
+    "source": "strokes-gained-authoritative-kb.md",
+    "section": "(Preamble) (del 1)",
+    "tags": [
+      "baseline",
+      "pga-tour",
+      "sg"
+    ],
+    "topics": [
+      "implementasjon",
+      "pga-snitt",
+      "sg-baseline"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 512
+  },
+  {
+    "chunk_id": "sg-baselines-002",
+    "file_path": "rag-corpus/sg-baselines/sg-baselines-002.md",
+    "source": "strokes-gained-authoritative-kb.md",
+    "section": "(Preamble) (del 2)",
+    "tags": [
+      "amatør",
+      "app",
+      "baseline",
+      "handicap",
+      "pga-tour",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "implementasjon",
+      "pga-snitt",
+      "putting",
+      "sg-baseline"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 569
+  },
+  {
+    "chunk_id": "sg-baselines-003",
+    "file_path": "rag-corpus/sg-baselines/sg-baselines-003.md",
+    "source": "strokes-gained-authoritative-kb.md",
+    "section": "(Preamble) (del 3)",
+    "tags": [
+      "amatør",
+      "app",
+      "handicap",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "implementasjon"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 415
+  },
+  {
+    "chunk_id": "sg-baselines-004",
+    "file_path": "rag-corpus/sg-baselines/sg-baselines-004.md",
+    "source": "strokes-gained-authoritative-kb.md",
+    "section": "## 2.1 Origins and Problem Statement",
+    "tags": [
+      "broadie",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "broadie",
+      "putting"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg"
+    ],
+    "word_count": 588
+  },
+  {
+    "chunk_id": "sg-baselines-005",
+    "file_path": "rag-corpus/sg-baselines/sg-baselines-005.md",
+    "source": "strokes-gained-authoritative-kb.md",
+    "section": "## 2.2 The Four SG Components and Their Computational Definitions",
+    "tags": [
+      "app",
+      "baseline",
+      "ott",
+      "sg"
+    ],
+    "topics": [
+      "implementasjon"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 565
+  },
+  {
+    "chunk_id": "sg-baselines-006",
+    "file_path": "rag-corpus/sg-baselines/sg-baselines-006.md",
+    "source": "strokes-gained-authoritative-kb.md",
+    "section": "## SG:Total = SG:Off-the-Tee + SG:Approach-the-Green + SG:Around-the-Green + (del 1)",
+    "tags": [
+      "app",
+      "broadie",
+      "ott",
+      "pga-tour",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "broadie",
+      "implementasjon",
+      "pga-snitt",
+      "putting"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 578
+  },
+  {
+    "chunk_id": "sg-baselines-007",
+    "file_path": "rag-corpus/sg-baselines/sg-baselines-007.md",
+    "source": "strokes-gained-authoritative-kb.md",
+    "section": "## SG:Total = SG:Off-the-Tee + SG:Approach-the-Green + SG:Around-the-Green + (del 2)",
+    "tags": [
+      "app",
+      "benchmarking",
+      "broadie",
+      "ott",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "benchmarking",
+      "broadie",
+      "implementasjon",
+      "putting"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "diagnostiserSg"
+    ],
+    "word_count": 590
+  },
+  {
+    "chunk_id": "sg-baselines-008",
+    "file_path": "rag-corpus/sg-baselines/sg-baselines-008.md",
+    "source": "strokes-gained-authoritative-kb.md",
+    "section": "## SG:Total = SG:Off-the-Tee + SG:Approach-the-Green + SG:Around-the-Green + (del 3)",
+    "tags": [
+      "app",
+      "baseline",
+      "benchmarking",
+      "ott",
+      "sg"
+    ],
+    "topics": [
+      "benchmarking",
+      "implementasjon"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "diagnostiserSg",
+      "forventetSg"
+    ],
+    "word_count": 555
+  },
+  {
+    "chunk_id": "sg-baselines-009",
+    "file_path": "rag-corpus/sg-baselines/sg-baselines-009.md",
+    "source": "strokes-gained-authoritative-kb.md",
+    "section": "## SG:Total = SG:Off-the-Tee + SG:Approach-the-Green + SG:Around-the-Green + (del 4)",
+    "tags": [
+      "app",
+      "baseline",
+      "broadie",
+      "ott",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "implementasjon",
+      "putting",
+      "sg-baseline"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 569
+  },
+  {
+    "chunk_id": "sg-baselines-010",
+    "file_path": "rag-corpus/sg-baselines/sg-baselines-010.md",
+    "source": "strokes-gained-authoritative-kb.md",
+    "section": "## SG:Total = SG:Off-the-Tee + SG:Approach-the-Green + SG:Around-the-Green + (del 5)",
+    "tags": [
+      "app",
+      "ball-data",
+      "club-data",
+      "ott",
+      "sg",
+      "trackman"
+    ],
+    "topics": [
+      "implementasjon",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "beregnSg"
+    ],
+    "word_count": 562
+  },
+  {
+    "chunk_id": "sg-baselines-011",
+    "file_path": "rag-corpus/sg-baselines/sg-baselines-011.md",
+    "source": "strokes-gained-authoritative-kb.md",
+    "section": "## SG:Total = SG:Off-the-Tee + SG:Approach-the-Green + SG:Around-the-Green + (del 6)",
+    "tags": [
+      "app",
+      "baseline",
+      "club-data",
+      "ott",
+      "putt",
+      "sg",
+      "trackman"
+    ],
+    "topics": [
+      "implementasjon",
+      "putting",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 559
+  },
+  {
+    "chunk_id": "sg-baselines-012",
+    "file_path": "rag-corpus/sg-baselines/sg-baselines-012.md",
+    "source": "strokes-gained-authoritative-kb.md",
+    "section": "## SG:Total = SG:Off-the-Tee + SG:Approach-the-Green + SG:Around-the-Green + (del 7)",
+    "tags": [
+      "app",
+      "ott",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "implementasjon",
+      "putting"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg"
+    ],
+    "word_count": 595
+  },
+  {
+    "chunk_id": "sg-baselines-013",
+    "file_path": "rag-corpus/sg-baselines/sg-baselines-013.md",
+    "source": "strokes-gained-authoritative-kb.md",
+    "section": "## SG:Total = SG:Off-the-Tee + SG:Approach-the-Green + SG:Around-the-Green + (del 8)",
+    "tags": [
+      "app",
+      "benchmarking",
+      "ott",
+      "pga-tour",
+      "sg"
+    ],
+    "topics": [
+      "implementasjon"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "diagnostiserSg",
+      "forventetSg"
+    ],
+    "word_count": 541
+  },
+  {
+    "chunk_id": "sg-baselines-014",
+    "file_path": "rag-corpus/sg-baselines/sg-baselines-014.md",
+    "source": "strokes-gained-authoritative-kb.md",
+    "section": "## SG:Total = SG:Off-the-Tee + SG:Approach-the-Green + SG:Around-the-Green + (del 9)",
+    "tags": [
+      "app",
+      "ott",
+      "pga-tour",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "implementasjon",
+      "putting"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 149
+  },
+  {
+    "chunk_id": "sg-baselines-015",
+    "file_path": "rag-corpus/sg-baselines/sg-baselines-015.md",
+    "source": "strokes-gained-authoritative-kb.md",
+    "section": "## 7.2 Luck vs. Skill Decomposition",
+    "tags": [
+      "app",
+      "ball-data",
+      "kort-spill",
+      "sg",
+      "trackman"
+    ],
+    "topics": [
+      "kortspill"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "beregnSg"
+    ],
+    "word_count": 583
+  },
+  {
+    "chunk_id": "sg-trackman-001",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-001.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "### Merk om tallformat: Tekniske parametere og tabeller bruker punktum som",
+    "tags": [
+      "app",
+      "baseline",
+      "broadie",
+      "formule",
+      "kategori",
+      "ott",
+      "pga-tour",
+      "putt",
+      "sg",
+      "trackman"
+    ],
+    "topics": [
+      "beregning",
+      "broadie",
+      "pga-snitt",
+      "putting",
+      "sg-baseline",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 582
+  },
+  {
+    "chunk_id": "sg-trackman-002",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-002.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "### Innhold og pedagogikk: De forklarende avsnittene gir grunnlag for å skrive norskspråklige",
+    "tags": [
+      "sg",
+      "trackman"
+    ],
+    "topics": [
+      "implementasjon",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "beregnSg"
+    ],
+    "word_count": 377
+  },
+  {
+    "chunk_id": "sg-trackman-003",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-003.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## 2.2 Mark Broadie og opphavet (del 1)",
+    "tags": [
+      "app",
+      "broadie",
+      "pga-tour",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "broadie",
+      "pga-snitt"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 580
+  },
+  {
+    "chunk_id": "sg-trackman-004",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-004.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## 2.2 Mark Broadie og opphavet (del 2)",
+    "tags": [
+      "app",
+      "baseline",
+      "broadie",
+      "formule",
+      "kategori",
+      "kort-spill",
+      "pga-tour",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "broadie",
+      "kortspill",
+      "pga-snitt",
+      "putting",
+      "sg-baseline",
+      "sg-kategorier"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 588
+  },
+  {
+    "chunk_id": "sg-trackman-005",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-005.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## 2.2 Mark Broadie og opphavet (del 3)",
+    "tags": [
+      "app",
+      "baseline",
+      "broadie",
+      "kategori",
+      "ott",
+      "pga-tour",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "broadie",
+      "implementasjon",
+      "pga-snitt",
+      "putting",
+      "sg-baseline",
+      "sg-kategorier"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 211
+  },
+  {
+    "chunk_id": "sg-trackman-006",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-006.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## Offisiell PGA Tour-definisjon: Måler spillerens prestasjon på innspillslag som ikke inngår i",
+    "tags": [
+      "app",
+      "broadie",
+      "kategori",
+      "pga-tour",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "implementasjon",
+      "pga-snitt",
+      "putting",
+      "sg-kategorier"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 605
+  },
+  {
+    "chunk_id": "sg-trackman-007",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-007.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## 5.1 Full tabell: avstand × lie (10–600 yards, alle lie-typer) — PGA Tour (del 1)",
+    "tags": [
+      "broadie",
+      "pga-tour"
+    ],
+    "topics": [
+      "broadie",
+      "pga-snitt"
+    ],
+    "relevance": [
+      "RAG",
+      "SgBaseline",
+      "forventetSg"
+    ],
+    "word_count": 526
+  },
+  {
+    "chunk_id": "sg-trackman-008",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-008.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## 5.1 Full tabell: avstand × lie (10–600 yards, alle lie-typer) — PGA Tour (del 2)",
+    "tags": [
+      "baseline",
+      "broadie",
+      "pga-tour",
+      "putt"
+    ],
+    "topics": [
+      "pga-snitt"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 581
+  },
+  {
+    "chunk_id": "sg-trackman-009",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-009.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## 5.1 Full tabell: avstand × lie (10–600 yards, alle lie-typer) — PGA Tour (del 3)",
+    "tags": [
+      "amatør",
+      "baseline",
+      "broadie",
+      "handicap",
+      "kategori",
+      "pga-tour",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "broadie",
+      "pga-snitt",
+      "putting",
+      "sg-baseline",
+      "sg-kategorier"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 311
+  },
+  {
+    "chunk_id": "sg-trackman-010",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-010.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "# 6.2 150–200 yards-båndet (74% korrelasjon med Total SG)",
+    "tags": [
+      "app",
+      "broadie",
+      "pga-tour",
+      "sg"
+    ],
+    "topics": [
+      "broadie",
+      "pga-snitt"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 392
+  },
+  {
+    "chunk_id": "sg-trackman-011",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-011.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## Korrelasjons-curiosum: Korrelasjonen mellom puttings SG og langspillets SG på tvers av (del 1)",
+    "tags": [
+      "amatør",
+      "broadie",
+      "kort-spill",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "amator-data",
+      "broadie",
+      "putting"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 581
+  },
+  {
+    "chunk_id": "sg-trackman-012",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-012.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## Korrelasjons-curiosum: Korrelasjonen mellom puttings SG og langspillets SG på tvers av (del 2)",
+    "tags": [
+      "amatør",
+      "baseline",
+      "broadie",
+      "handicap",
+      "ott",
+      "pga-tour",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "amator-data",
+      "broadie",
+      "implementasjon",
+      "pga-snitt",
+      "putting",
+      "sg-baseline"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 494
+  },
+  {
+    "chunk_id": "sg-trackman-013",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-013.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "### TheGrint, 18Birdies, Golf Pad, SwingU implementerer SG med Tour-baserte baselines,",
+    "tags": [
+      "amatør",
+      "baseline",
+      "handicap",
+      "sg",
+      "trackman"
+    ],
+    "topics": [
+      "implementasjon",
+      "sg-baseline"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 558
+  },
+  {
+    "chunk_id": "sg-trackman-014",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-014.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## Trackman 4 (Nåværende flaggskip — dual radar) (del 1)",
+    "tags": [
+      "club-data",
+      "putt",
+      "trackman"
+    ],
+    "topics": [
+      "putting",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "RAG",
+      "TrackMan"
+    ],
+    "word_count": 561
+  },
+  {
+    "chunk_id": "sg-trackman-015",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-015.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## Trackman 4 (Nåværende flaggskip — dual radar) (del 2)",
+    "tags": [
+      "amatør",
+      "club-data",
+      "lpga",
+      "pga-tour",
+      "trackman"
+    ],
+    "topics": [
+      "amator-data",
+      "lpga-snitt",
+      "pga-snitt",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "forventetSg"
+    ],
+    "word_count": 409
+  },
+  {
+    "chunk_id": "sg-trackman-016",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-016.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## Definisjon: Retningen kølleflaten peker ved kontaktpunktets senter mellom kølle og ball ved",
+    "tags": [
+      "amatør",
+      "club-data",
+      "d-plane",
+      "trackman"
+    ],
+    "topics": [
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "forventetSg"
+    ],
+    "word_count": 379
+  },
+  {
+    "chunk_id": "sg-trackman-017",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-017.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## spinnfrekvens. Det skiller seg fra statisk/stemplet loft fordi det tar hensyn til hvordan kølla",
+    "tags": [
+      "amatør",
+      "club-data",
+      "lpga",
+      "pga-tour",
+      "trackman"
+    ],
+    "topics": [
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "forventetSg"
+    ],
+    "word_count": 555
+  },
+  {
+    "chunk_id": "sg-trackman-018",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-018.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## Definisjon: Avstanden fra køllehodets geometriske senter til det laveste punktet på (del 1)",
+    "tags": [
+      "club-data",
+      "trackman"
+    ],
+    "topics": [
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "RAG",
+      "TrackMan"
+    ],
+    "word_count": 597
+  },
+  {
+    "chunk_id": "sg-trackman-019",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-019.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## Definisjon: Avstanden fra køllehodets geometriske senter til det laveste punktet på (del 2)",
+    "tags": [
+      "club-data",
+      "kort-spill",
+      "trackman"
+    ],
+    "topics": [
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "RAG",
+      "TrackMan"
+    ],
+    "word_count": 597
+  },
+  {
+    "chunk_id": "sg-trackman-020",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-020.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## Definisjon: Avstanden fra køllehodets geometriske senter til det laveste punktet på (del 3)",
+    "tags": [
+      "club-data",
+      "trackman"
+    ],
+    "topics": [
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "RAG",
+      "TrackMan"
+    ],
+    "word_count": 477
+  },
+  {
+    "chunk_id": "sg-trackman-021a",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-021a.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "10.8–10.10 Balldata: Total avstand, Side og Apex Height",
+    "tags": [
+      "ball-data",
+      "pga-tour",
+      "trackman"
+    ],
+    "topics": [
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "RAG",
+      "TrackMan"
+    ],
+    "word_count": 677
+  },
+  {
+    "chunk_id": "sg-trackman-021b",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-021b.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "10.11–11.2 Balldata (Landing Angle, Curve) og kortspill/putt-parametere",
+    "tags": [
+      "ball-data",
+      "kort-spill",
+      "putt",
+      "trackman"
+    ],
+    "topics": [
+      "kortspill",
+      "putting",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "RAG",
+      "TrackMan"
+    ],
+    "word_count": 541
+  },
+  {
+    "chunk_id": "sg-trackman-022",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-022.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "### Nøkkelputte-innsikter fra Trackman-forskning: - Face Angle ved impakt er den mest (del 1)",
+    "tags": [
+      "d-plane",
+      "putt",
+      "trackman"
+    ],
+    "topics": [
+      "putting",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "RAG",
+      "TrackMan"
+    ],
+    "word_count": 596
+  },
+  {
+    "chunk_id": "sg-trackman-023",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-023.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "### Nøkkelputte-innsikter fra Trackman-forskning: - Face Angle ved impakt er den mest (del 2)",
+    "tags": [
+      "club-data",
+      "lpga",
+      "optimizer",
+      "pga-tour",
+      "putt",
+      "trackman"
+    ],
+    "topics": [
+      "lpga-snitt",
+      "optimizer",
+      "pga-snitt",
+      "putting",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "forventetSg"
+    ],
+    "word_count": 542
+  },
+  {
+    "chunk_id": "sg-trackman-024",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-024.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "### Nøkkelputte-innsikter fra Trackman-forskning: - Face Angle ved impakt er den mest (del 3)",
+    "tags": [
+      "ball-data",
+      "putt",
+      "trackman"
+    ],
+    "topics": [
+      "putting",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "RAG",
+      "TrackMan"
+    ],
+    "word_count": 576
+  },
+  {
+    "chunk_id": "sg-trackman-025",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-025.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "### Nøkkelputte-innsikter fra Trackman-forskning: - Face Angle ved impakt er den mest (del 4)",
+    "tags": [
+      "pga-tour",
+      "putt",
+      "trackman"
+    ],
+    "topics": [
+      "putting",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "forventetSg"
+    ],
+    "word_count": 572
+  },
+  {
+    "chunk_id": "sg-trackman-026",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-026.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "### Nøkkelputte-innsikter fra Trackman-forskning: - Face Angle ved impakt er den mest (del 5)",
+    "tags": [
+      "amatør",
+      "ball-data",
+      "d-plane",
+      "putt",
+      "trackman"
+    ],
+    "topics": [
+      "ballflukt-fysikk",
+      "implementasjon",
+      "putting",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "forventetSg"
+    ],
+    "word_count": 598
+  },
+  {
+    "chunk_id": "sg-trackman-027",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-027.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "### Nøkkelputte-innsikter fra Trackman-forskning: - Face Angle ved impakt er den mest (del 6)",
+    "tags": [
+      "ball-data",
+      "lpga",
+      "pga-tour",
+      "putt",
+      "trackman"
+    ],
+    "topics": [
+      "lpga-snitt",
+      "pga-snitt",
+      "putting",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "forventetSg"
+    ],
+    "word_count": 355
+  },
+  {
+    "chunk_id": "sg-trackman-028",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-028.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## Driver (Trackman Combine): - Kjørehastigheten: ~100–104 mph \\| Ball Speed: 147 mph \\| (del 1)",
+    "tags": [
+      "amatør",
+      "ball-data",
+      "handicap",
+      "putt",
+      "sg",
+      "trackman"
+    ],
+    "topics": [
+      "implementasjon",
+      "putting",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 540
+  },
+  {
+    "chunk_id": "sg-trackman-029",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-029.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## Driver (Trackman Combine): - Kjørehastigheten: ~100–104 mph \\| Ball Speed: 147 mph \\| (del 2)",
+    "tags": [
+      "amatør",
+      "ball-data",
+      "club-data",
+      "handicap",
+      "kategori",
+      "trackman"
+    ],
+    "topics": [
+      "sg-kategorier",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "forventetSg"
+    ],
+    "word_count": 544
+  },
+  {
+    "chunk_id": "sg-trackman-030",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-030.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## 17.1 Hvordan range-data oversettes til scoring (del 1)",
+    "tags": [
+      "baseline",
+      "broadie",
+      "club-data",
+      "formule",
+      "sg",
+      "trackman"
+    ],
+    "topics": [
+      "broadie",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 582
+  },
+  {
+    "chunk_id": "sg-trackman-031",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-031.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## 17.1 Hvordan range-data oversettes til scoring (del 2)",
+    "tags": [
+      "amatør",
+      "benchmarking",
+      "handicap",
+      "kort-spill",
+      "pga-tour",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "benchmarking",
+      "kortspill"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "diagnostiserSg",
+      "forventetSg"
+    ],
+    "word_count": 593
+  },
+  {
+    "chunk_id": "sg-trackman-032",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-032.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## 17.1 Hvordan range-data oversettes til scoring (del 3)",
+    "tags": [
+      "amatør",
+      "app",
+      "baseline",
+      "benchmarking",
+      "handicap",
+      "sg",
+      "trackman"
+    ],
+    "topics": [
+      "benchmarking",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "beregnSg",
+      "diagnostiserSg",
+      "forventetSg"
+    ],
+    "word_count": 559
+  },
+  {
+    "chunk_id": "sg-trackman-033",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-033.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## 17.1 Hvordan range-data oversettes til scoring (del 4)",
+    "tags": [
+      "amatør",
+      "broadie",
+      "handicap",
+      "lpga",
+      "pga-tour",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "implementasjon",
+      "lpga-snitt",
+      "pga-snitt",
+      "putting"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 594
+  },
+  {
+    "chunk_id": "sg-trackman-034",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-034.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## 17.1 Hvordan range-data oversettes til scoring (del 5)",
+    "tags": [
+      "club-data",
+      "lpga",
+      "pga-tour"
+    ],
+    "topics": [
+      "lpga-snitt",
+      "pga-snitt"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "forventetSg"
+    ],
+    "word_count": 505
+  },
+  {
+    "chunk_id": "sg-trackman-035",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-035.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## 17.1 Hvordan range-data oversettes til scoring (del 6)",
+    "tags": [
+      "amatør",
+      "handicap",
+      "lpga",
+      "pga-tour"
+    ],
+    "topics": [
+      "lpga-snitt",
+      "pga-snitt"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "forventetSg"
+    ],
+    "word_count": 351
+  },
+  {
+    "chunk_id": "sg-trackman-036",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-036.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## 17.1 Hvordan range-data oversettes til scoring (del 7)",
+    "tags": [
+      "lpga",
+      "pga-tour"
+    ],
+    "topics": [
+      "lpga-snitt",
+      "pga-snitt"
+    ],
+    "relevance": [
+      "RAG",
+      "SgBaseline",
+      "forventetSg"
+    ],
+    "word_count": 566
+  },
+  {
+    "chunk_id": "sg-trackman-037",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-037.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## 17.1 Hvordan range-data oversettes til scoring (del 8)",
+    "tags": [
+      "amatør",
+      "baseline",
+      "formule",
+      "handicap",
+      "kategori",
+      "sg"
+    ],
+    "topics": [
+      "implementasjon"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 209
+  },
+  {
+    "chunk_id": "sg-trackman-038",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-038.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## Practical mapping-algoritme:",
+    "tags": [
+      "amatør",
+      "baseline",
+      "formule",
+      "handicap",
+      "kategori",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "beregning",
+      "implementasjon",
+      "putting",
+      "sg-baseline",
+      "sg-kategorier"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 602
+  },
+  {
+    "chunk_id": "sg-trackman-039",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-039.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "## 20.1 Lie-forenkling",
+    "tags": [
+      "baseline",
+      "kategori",
+      "kort-spill",
+      "sg",
+      "trackman"
+    ],
+    "topics": [
+      "sg-baseline",
+      "sg-kategorier"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 596
+  },
+  {
+    "chunk_id": "sg-trackman-040a",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-040a.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "20.5 Tolkningsfeller + 21. Ordliste (del 1)",
+    "tags": [
+      "amatør",
+      "baseline",
+      "handicap",
+      "kategori",
+      "pga-tour",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "amator-data",
+      "begrensninger",
+      "implementasjon",
+      "pga-snitt",
+      "putting",
+      "sg-baseline"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "diagnostiserSg"
+    ],
+    "word_count": 195
+  },
+  {
+    "chunk_id": "sg-trackman-040b",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-040b.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "21. Ordliste norsk-engelsk golfterminologi (del 1)",
+    "tags": [
+      "baseline",
+      "kategori",
+      "sg",
+      "trackman"
+    ],
+    "topics": [
+      "implementasjon",
+      "sg-baseline",
+      "sg-kategorier"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline"
+    ],
+    "word_count": 535
+  },
+  {
+    "chunk_id": "sg-trackman-040c",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-040c.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "21. Ordliste norsk-engelsk golfterminologi (del 2)",
+    "tags": [
+      "baseline",
+      "kategori",
+      "sg",
+      "trackman"
+    ],
+    "topics": [
+      "implementasjon",
+      "sg-baseline",
+      "sg-kategorier"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline"
+    ],
+    "word_count": 394
+  },
+  {
+    "chunk_id": "sg-trackman-041",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-041.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "### Felle 1 — Sammenligning med feil baseline: En amatørs negative SG-tall vs. PGA Tour- (del 2)",
+    "tags": [
+      "amatør",
+      "baseline",
+      "broadie",
+      "formule",
+      "handicap",
+      "pga-tour",
+      "putt",
+      "sg"
+    ],
+    "topics": [
+      "amator-data",
+      "broadie",
+      "pga-snitt",
+      "putting",
+      "sg-baseline"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 320
+  },
+  {
+    "chunk_id": "sg-trackman-042",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-042.md",
+    "source": "masterdokument-strokes-gained-trackman.md",
+    "section": "# 22.4 Trackman — Teknologi og parametere",
+    "tags": [
+      "ball-data",
+      "club-data",
+      "kort-spill",
+      "lpga",
+      "optimizer",
+      "pga-tour",
+      "trackman"
+    ],
+    "topics": [
+      "kortspill",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "forventetSg"
+    ],
+    "word_count": 537
+  },
+  {
+    "chunk_id": "sg-trackman-043",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-043.md",
+    "source": "sg-trackman-complete-research-report.md",
+    "section": "## Komplett Research Document: Strokes Gained, Trackman & D-Plane 1",
+    "tags": [
+      "d-plane",
+      "kategori",
+      "sg",
+      "trackman"
+    ],
+    "topics": [
+      "d-plane",
+      "implementasjon",
+      "sg-kategorier",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "SgBaseline",
+      "TrackMan",
+      "beregnSg"
+    ],
+    "word_count": 583
+  },
+  {
+    "chunk_id": "sg-trackman-044",
+    "file_path": "rag-corpus/sg-trackman/sg-trackman-044.md",
+    "source": "sg-trackman-complete-research-report.md",
+    "section": "## 2\\. Trackman & D-Plane-fysikk (med matematikk)",
+    "tags": [
+      "ball-data",
+      "club-data",
+      "d-plane",
+      "drill",
+      "kategori",
+      "pga-tour",
+      "sg",
+      "trackman"
+    ],
+    "topics": [
+      "d-plane",
+      "implementasjon",
+      "pga-snitt",
+      "sg-kategorier",
+      "trackman-parametere"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "ExerciseDefinition",
+      "RAG",
+      "SgBaseline",
+      "TechnicalPlan",
+      "TrackMan",
+      "beregnSg",
+      "forventetSg"
+    ],
+    "word_count": 227
+  },
+  {
+    "chunk_id": "treningsvolum-001",
+    "file_path": "rag-corpus/treningsvolum/treningsvolum-001.md",
+    "source": "evidensbasert-treningsvolum-kvalitet.md",
+    "section": "(Preamble)",
+    "tags": [
+      "amatør",
+      "handicap",
+      "volum"
+    ],
+    "topics": [
+      "implementasjon",
+      "treningsvolum"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "TechnicalPlan",
+      "forventetSg"
+    ],
+    "word_count": 535
+  },
+  {
+    "chunk_id": "treningsvolum-002",
+    "file_path": "rag-corpus/treningsvolum/treningsvolum-002.md",
+    "source": "evidensbasert-treningsvolum-kvalitet.md",
+    "section": "## 1.2 Klubbspiller (HCP 80)",
+    "tags": [
+      "amatør",
+      "club-data",
+      "handicap",
+      "volum"
+    ],
+    "topics": [
+      "treningsvolum"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "TechnicalPlan",
+      "TrackMan",
+      "forventetSg"
+    ],
+    "word_count": 313
+  },
+  {
+    "chunk_id": "treningsvolum-003",
+    "file_path": "rag-corpus/treningsvolum/treningsvolum-003.md",
+    "source": "evidensbasert-treningsvolum-kvalitet.md",
+    "section": "## Generated by Kimi.ai",
+    "tags": [
+      "amatør",
+      "club-data",
+      "handicap",
+      "volum"
+    ],
+    "topics": [
+      "amator-data",
+      "treningsvolum"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "SgBaseline",
+      "TechnicalPlan",
+      "TrackMan",
+      "forventetSg"
+    ],
+    "word_count": 546
+  },
+  {
+    "chunk_id": "treningsvolum-004a",
+    "file_path": "rag-corpus/treningsvolum/treningsvolum-004a.md",
+    "source": "evidensbasert-treningsvolum-kvalitet.md",
+    "section": "1.3–1.4 Treningsvolum: Videregående og elite junior (del 1)",
+    "tags": [
+      "amatør",
+      "handicap",
+      "ltad",
+      "volum"
+    ],
+    "topics": [
+      "amator-data",
+      "treningsvolum"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "TechnicalPlan"
+    ],
+    "word_count": 394
+  },
+  {
+    "chunk_id": "treningsvolum-004b",
+    "file_path": "rag-corpus/treningsvolum/treningsvolum-004b.md",
+    "source": "evidensbasert-treningsvolum-kvalitet.md",
+    "section": "1.4–1.5 Treningsvolum: Elite junior og periodisering (del 2)",
+    "tags": [
+      "amatør",
+      "handicap",
+      "ltad",
+      "periodisering",
+      "volum"
+    ],
+    "topics": [
+      "amator-data",
+      "periodisering",
+      "treningsvolum"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "PlayerHQ",
+      "RAG",
+      "TechnicalPlan"
+    ],
+    "word_count": 358
+  },
+  {
+    "chunk_id": "treningsvolum-005",
+    "file_path": "rag-corpus/treningsvolum/treningsvolum-005.md",
+    "source": "evidensbasert-treningsvolum-kvalitet.md",
+    "section": "## 1.6 Sammenligning med andre tekniske idretter",
+    "tags": [
+      "volum"
+    ],
+    "topics": [
+      "treningsvolum"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "TechnicalPlan"
+    ],
+    "word_count": 393
+  },
+  {
+    "chunk_id": "treningsvolum-006",
+    "file_path": "rag-corpus/treningsvolum/treningsvolum-006.md",
+    "source": "evidensbasert-treningsvolum-kvalitet.md",
+    "section": "## Generated by Kimi.ai",
+    "tags": [
+      "volum"
+    ],
+    "topics": [
+      "treningsvolum"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "TechnicalPlan"
+    ],
+    "word_count": 379
+  },
+  {
+    "chunk_id": "treningsvolum-007",
+    "file_path": "rag-corpus/treningsvolum/treningsvolum-007.md",
+    "source": "evidensbasert-treningsvolum-kvalitet.md",
+    "section": "## 2.1 Definisjon og teoretisk rammeverk",
+    "tags": [
+      "volum"
+    ],
+    "topics": [
+      "treningsvolum"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "TechnicalPlan"
+    ],
+    "word_count": 352
+  },
+  {
+    "chunk_id": "treningsvolum-008",
+    "file_path": "rag-corpus/treningsvolum/treningsvolum-008.md",
+    "source": "evidensbasert-treningsvolum-kvalitet.md",
+    "section": "## Generated by Kimi.ai",
+    "tags": [
+      "volum"
+    ],
+    "topics": [
+      "treningsvolum"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "TechnicalPlan"
+    ],
+    "word_count": 504
+  },
+  {
+    "chunk_id": "treningsvolum-009",
+    "file_path": "rag-corpus/treningsvolum/treningsvolum-009.md",
+    "source": "evidensbasert-treningsvolum-kvalitet.md",
+    "section": "## Generated by Kimi.ai (del 1)",
+    "tags": [
+      "volum"
+    ],
+    "topics": [
+      "treningsvolum"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "TechnicalPlan"
+    ],
+    "word_count": 574
+  },
+  {
+    "chunk_id": "treningsvolum-010",
+    "file_path": "rag-corpus/treningsvolum/treningsvolum-010.md",
+    "source": "evidensbasert-treningsvolum-kvalitet.md",
+    "section": "## Generated by Kimi.ai (del 2)",
+    "tags": [
+      "kategori",
+      "volum"
+    ],
+    "topics": [
+      "treningsvolum"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "TechnicalPlan"
+    ],
+    "word_count": 571
+  },
+  {
+    "chunk_id": "treningsvolum-011",
+    "file_path": "rag-corpus/treningsvolum/treningsvolum-011.md",
+    "source": "evidensbasert-treningsvolum-kvalitet.md",
+    "section": "## Generated by Kimi.ai (del 3)",
+    "tags": [
+      "volum"
+    ],
+    "topics": [
+      "treningsvolum"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "TechnicalPlan"
+    ],
+    "word_count": 184
+  },
+  {
+    "chunk_id": "treningsvolum-012",
+    "file_path": "rag-corpus/treningsvolum/treningsvolum-012.md",
+    "source": "evidensbasert-treningsvolum-kvalitet.md",
+    "section": "## Nivå Deliberate practice Deliberate play/Baneplay Kommentar",
+    "tags": [
+      "club-data",
+      "drill",
+      "volum"
+    ],
+    "topics": [
+      "implementasjon",
+      "treningsvolum"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "ExerciseDefinition",
+      "RAG",
+      "TechnicalPlan",
+      "TrackMan"
+    ],
+    "word_count": 543
+  },
+  {
+    "chunk_id": "treningsvolum-013",
+    "file_path": "rag-corpus/treningsvolum/treningsvolum-013.md",
+    "source": "evidensbasert-treningsvolum-kvalitet.md",
+    "section": "## 3.3 Oppmerksomhetsspenn og fokus-kvalitet",
+    "tags": [
+      "volum"
+    ],
+    "topics": [
+      "treningsvolum"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "TechnicalPlan"
+    ],
+    "word_count": 297
+  },
+  {
+    "chunk_id": "morad-001",
+    "file_path": "rag-corpus/morad/morad-p1-setup.md",
+    "source": "knowledge/entities + processed/rules",
+    "section": "P1.0 Address — MORAD setup",
+    "tags": [
+      "morad",
+      "p1",
+      "setup",
+      "tek"
+    ],
+    "topics": [
+      "position",
+      "checkpoint"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "MORAD"
+    ],
+    "word_count": 122
+  },
+  {
+    "chunk_id": "morad-002",
+    "file_path": "rag-corpus/morad/morad-p4-top.md",
+    "source": "knowledge/entities + processed/rules",
+    "section": "P4.0 Top of Backswing",
+    "tags": [
+      "morad",
+      "p4",
+      "top",
+      "backswing"
+    ],
+    "topics": [
+      "position",
+      "angle",
+      "lag"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "MORAD"
+    ],
+    "word_count": 116
+  },
+  {
+    "chunk_id": "morad-003",
+    "file_path": "rag-corpus/morad/morad-p7-impact.md",
+    "source": "knowledge/entities + processed/rules",
+    "section": "P7.0 Impact",
+    "tags": [
+      "morad",
+      "p7",
+      "impact",
+      "tek"
+    ],
+    "topics": [
+      "position",
+      "elbow",
+      "compression"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "MORAD"
+    ],
+    "word_count": 113
+  },
+  {
+    "chunk_id": "morad-004",
+    "file_path": "rag-corpus/morad/morad-fault-face-open.md",
+    "source": "knowledge/entities + processed/rules",
+    "section": "Feil: Åpen clubface (incorrect_elbow_position)",
+    "tags": [
+      "morad",
+      "fault",
+      "face",
+      "app"
+    ],
+    "topics": [
+      "incorrect_elbow_position",
+      "diagnose"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "MORAD"
+    ],
+    "word_count": 97
+  },
+  {
+    "chunk_id": "morad-005",
+    "file_path": "rag-corpus/morad/morad-fault-early-extension.md",
+    "source": "knowledge/entities + processed/rules",
+    "section": "Feil: Early Extension",
+    "tags": [
+      "morad",
+      "fault",
+      "ott",
+      "hip"
+    ],
+    "topics": [
+      "early_extension",
+      "diagnose"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "MORAD"
+    ],
+    "word_count": 90
+  },
+  {
+    "chunk_id": "morad-006",
+    "file_path": "rag-corpus/morad/morad-fault-casting.md",
+    "source": "knowledge/entities + processed/rules",
+    "section": "Feil: Casting",
+    "tags": [
+      "morad",
+      "fault",
+      "lag",
+      "ott"
+    ],
+    "topics": [
+      "casting",
+      "diagnose"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "MORAD"
+    ],
+    "word_count": 81
+  },
+  {
+    "chunk_id": "morad-007",
+    "file_path": "rag-corpus/morad/morad-fault-sway.md",
+    "source": "knowledge/entities + processed/rules",
+    "section": "Feil: Sway / Improper Weight Transfer",
+    "tags": [
+      "morad",
+      "fault",
+      "sway",
+      "weight"
+    ],
+    "topics": [
+      "improper_weight_transfer",
+      "sway"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "MORAD"
+    ],
+    "word_count": 86
+  },
+  {
+    "chunk_id": "morad-008",
+    "file_path": "rag-corpus/morad/morad-fault-over-top.md",
+    "source": "knowledge/entities + processed/rules",
+    "section": "Feil: Over the Top",
+    "tags": [
+      "morad",
+      "fault",
+      "ott",
+      "path"
+    ],
+    "topics": [
+      "over_the_top",
+      "diagnose"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "MORAD"
+    ],
+    "word_count": 87
+  },
+  {
+    "chunk_id": "morad-009",
+    "file_path": "rag-corpus/morad/morad-drill-bank-core.md",
+    "source": "knowledge/entities + processed/rules",
+    "section": "MORAD Drill Bank — tom, under oppbygging",
+    "tags": [
+      "morad",
+      "drill",
+      "bank",
+      "tom"
+    ],
+    "topics": [
+      "drill",
+      "prescription"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "MORAD"
+    ],
+    "word_count": 148
+  },
+  {
+    "chunk_id": "morad-010",
+    "file_path": "rag-corpus/morad/canon-invariants-13.md",
+    "source": "knowledge/entities + processed/rules",
+    "section": "CANON — 13 invarianter",
+    "tags": [
+      "canon",
+      "invariant",
+      "rules"
+    ],
+    "topics": [
+      "invariant",
+      "blocking"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "MORAD"
+    ],
+    "word_count": 109
+  },
+  {
+    "chunk_id": "morad-011",
+    "file_path": "rag-corpus/morad/canon-l-fase-overrides.md",
+    "source": "knowledge/entities + processed/rules",
+    "section": "L-fase overrides",
+    "tags": [
+      "canon",
+      "l-fase",
+      "override"
+    ],
+    "topics": [
+      "l-fase",
+      "motorisk"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "MORAD"
+    ],
+    "word_count": 124
+  },
+  {
+    "chunk_id": "morad-012",
+    "file_path": "rag-corpus/morad/canon-pyramide-ak-formel.md",
+    "source": "knowledge/entities + processed/rules",
+    "section": "Pyramide AK-formel",
+    "tags": [
+      "canon",
+      "pyramide",
+      "period"
+    ],
+    "topics": [
+      "pyramide",
+      "periodisering"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "MORAD"
+    ],
+    "word_count": 105
+  },
+  {
+    "chunk_id": "morad-013",
+    "file_path": "rag-corpus/morad/sg-to-morad-mapping.md",
+    "source": "knowledge/entities + processed/rules",
+    "section": "SG → MORAD fault mapping (hypotese, krever bekreftelse)",
+    "tags": [
+      "sg",
+      "morad",
+      "mapping",
+      "hypotese"
+    ],
+    "topics": [
+      "sg",
+      "fault",
+      "diagnose"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "MORAD"
+    ],
+    "word_count": 196
+  },
+  {
+    "chunk_id": "morad-014",
+    "file_path": "rag-corpus/morad/truth-layer-prioritet.md",
+    "source": "knowledge/entities + processed/rules",
+    "section": "Truth layer prioritet",
+    "tags": [
+      "truth",
+      "prioritet",
+      "data"
+    ],
+    "topics": [
+      "truth-layer",
+      "signal"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "MORAD"
+    ],
+    "word_count": 88
+  },
+  {
+    "chunk_id": "morad-015",
+    "file_path": "rag-corpus/morad/confidence-bands-coaching.md",
+    "source": "knowledge/entities + processed/rules",
+    "section": "Confidence bands i coaching",
+    "tags": [
+      "confidence",
+      "coaching",
+      "ui"
+    ],
+    "topics": [
+      "confidence",
+      "retningssignal"
+    ],
+    "relevance": [
+      "AiPlanGeneration",
+      "CoachHQ",
+      "RAG",
+      "MORAD"
+    ],
+    "word_count": 126
+  },
+  {
+    "chunk_id": "live-001",
+    "file_path": "rag-corpus/live/live-welcome-tone.md",
+    "source": "live-coach-agent tone spec",
+    "section": "velkomst",
+    "tags": [
+      "live",
+      "tone",
+      "coaching"
+    ],
+    "topics": [
+      "velkomst",
+      "dialog"
+    ],
+    "relevance": [
+      "LiveCoach",
+      "CoachHQ",
+      "RAG"
+    ],
+    "word_count": 40
+  },
+  {
+    "chunk_id": "live-002",
+    "file_path": "rag-corpus/live/live-mid-session-correction.md",
+    "source": "live-coach-agent tone spec",
+    "section": "p7",
+    "tags": [
+      "live",
+      "correction",
+      "morad"
+    ],
+    "topics": [
+      "p7",
+      "elbow"
+    ],
+    "relevance": [
+      "LiveCoach",
+      "CoachHQ",
+      "RAG"
+    ],
+    "word_count": 56
+  },
+  {
+    "chunk_id": "live-003",
+    "file_path": "rag-corpus/live/live-readiness-check.md",
+    "source": "live-coach-agent tone spec",
+    "section": "readiness",
+    "tags": [
+      "live",
+      "readiness",
+      "volum"
+    ],
+    "topics": [
+      "readiness",
+      "pr1"
+    ],
+    "relevance": [
+      "LiveCoach",
+      "CoachHQ",
+      "RAG"
+    ],
+    "word_count": 40
+  },
+  {
+    "chunk_id": "live-004",
+    "file_path": "rag-corpus/live/live-tournament-week.md",
+    "source": "live-coach-agent tone spec",
+    "section": "turnering",
+    "tags": [
+      "live",
+      "turnering",
+      "mental"
+    ],
+    "topics": [
+      "turnering",
+      "vedlikehold"
+    ],
+    "relevance": [
+      "LiveCoach",
+      "CoachHQ",
+      "RAG"
+    ],
+    "word_count": 35
+  },
+  {
+    "chunk_id": "live-005",
+    "file_path": "rag-corpus/live/live-junior-guard.md",
+    "source": "live-coach-agent tone spec",
+    "section": "junior",
+    "tags": [
+      "live",
+      "junior",
+      "guard"
+    ],
+    "topics": [
+      "junior",
+      "volum-cap"
+    ],
+    "relevance": [
+      "LiveCoach",
+      "CoachHQ",
+      "RAG"
+    ],
+    "word_count": 36
+  }
+]

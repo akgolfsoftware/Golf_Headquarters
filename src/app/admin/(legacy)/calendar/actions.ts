@@ -2,7 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
-import { pushBookingToCalendar } from "@/lib/google-calendar";
+import { pushBooking } from "@/lib/google-calendar-kilder";
+import { varsleNyBooking } from "@/lib/booking/varsle-ny-booking";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
@@ -80,14 +81,16 @@ export async function opprettOktPaaTid(
     // Kollisjonsvern (A-pakken): coach- og fasilitets-sjekk i samme
     // transaksjon som opprettelsen — dobbeltbooking er umulig.
     booking = await prisma.$transaction(async (tx) => {
-      await sjekkKollisjon(tx, {
+      const vern = await sjekkKollisjon(tx, {
         coachId: serviceType.coachUserId ?? null,
+        serviceTypeId: serviceType.id,
         facilityId,
         startAt,
         endAt,
       });
       return tx.booking.create({
         data: {
+          plassNr: vern.plassNr,
           userId: spiller.id,
           serviceTypeId: serviceType.id,
           locationId: location.id,
@@ -112,10 +115,13 @@ export async function opprettOktPaaTid(
   // C8 (booking-trygging): skriv til coachens Google-kalender med én gang —
   // før hang dette på 15-min-cronen. Best-effort: feil stopper aldri bookingen.
   try {
-    await pushBookingToCalendar(booking.id);
+    await pushBooking(booking.id);
   } catch (err) {
     console.error("[calendar] Google-push feilet for", booking.id, err);
   }
+
+  // Varsle coach/admin — også manuelt lagte økter skal dukke opp i varsel-lista.
+  await varsleNyBooking(booking.id, "manuell");
 
   await audit({
     actorId: aktor.id,
@@ -150,7 +156,7 @@ export async function moveSession(
 
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },
-    select: { id: true, startAt: true, endAt: true, status: true, coachId: true, facilityId: true },
+    select: { id: true, startAt: true, endAt: true, status: true, coachId: true, facilityId: true, serviceTypeId: true },
   });
   if (!booking) return { ok: false, feil: "Booking ikke funnet" };
   if (booking.status === "CANCELLED") {
@@ -167,8 +173,9 @@ export async function moveSession(
 
   try {
     await prisma.$transaction(async (tx) => {
-      await sjekkKollisjon(tx, {
+      const vern = await sjekkKollisjon(tx, {
         coachId: booking.coachId,
+        serviceTypeId: booking.serviceTypeId,
         facilityId: booking.facilityId,
         startAt: start,
         endAt: end,
@@ -176,7 +183,7 @@ export async function moveSession(
       });
       await tx.booking.update({
         where: { id: bookingId },
-        data: { startAt: start, endAt: end },
+        data: { startAt: start, endAt: end, plassNr: vern.plassNr },
       });
     });
   } catch (e) {
@@ -185,7 +192,7 @@ export async function moveSession(
   }
 
   try {
-    await pushBookingToCalendar(bookingId);
+    await pushBooking(bookingId);
   } catch (err) {
     console.error("[calendar] Google-push etter flytting feilet", bookingId, err);
   }

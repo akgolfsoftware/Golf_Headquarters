@@ -7,7 +7,7 @@
 // For kortere vindu komprimeres modellen — siste 2 uker er alltid TAPER.
 
 import "server-only";
-import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "../client";
+import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "../client";
 import { bompaSkill } from "../skills/bompa-perioder";
 import { pyramideSkill } from "../skills/pyramide-taksonomi";
 import { prisma } from "@/lib/prisma";
@@ -122,7 +122,7 @@ export async function foreslaPeakingPlan(opts: {
   const userPrompt = byggUserPrompt(spiller, tournament, ukerTilTurnering, fasePerUke);
   try {
     const response = await anthropic.messages.create({
-      model: AI_MODEL,
+      model: modelFor("performance-peaking"),
       max_tokens: AI_MAX_TOKENS,
       system: PERFORMANCE_PEAKING_SYSTEM,
       messages: [{ role: "user", content: userPrompt }],
@@ -254,8 +254,11 @@ function byggUserPrompt(
     (u) =>
       `Uke ${u.uke}: ${u.bompaFase} | vol ${u.volum} | int ${u.intensitet} | FYS ${u.pyramidFokus.fys}% TEK ${u.pyramidFokus.tek}% SLAG ${u.pyramidFokus.slag}% SPILL ${u.pyramidFokus.spill}% TURN ${u.pyramidFokus.turn}%`,
   );
+  // ANONYMISERT (GDPR art. 9): spillernavn sendes ikke til Anthropic — HCP er
+  // det modellen trenger, og peker ikke tilbake på personen. (Turneringsnavn er
+  // offentlig og ikke personopplysning.)
   return `
-Spiller: ${spiller.name} (HCP ${spiller.hcp ?? "ukjent"})
+Spiller: (HCP ${spiller.hcp ?? "ukjent"})
 Turnering: ${tournament.name} (${tournament.startDate.toISOString().slice(0, 10)})
 Uker til turnering: ${ukerTil}
 

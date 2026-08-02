@@ -18,7 +18,7 @@
 > Direkte hurtighandlinger fra Hjem. 
 > AgencyOS: Flate primær-punkter for Planlegge og Kalender&Bookinger, sterk cockpit med "Ett klikk"-bar. Duplikate adresser og dype grupper redusert. Logisk sted å trykke = alltid hovedseksjonene eller synlige hurtigknapper. Se også .claude/rules/arkitektur.md.
 
-**Booking:** Acuity (`akgolfgroup.as.me`) er midlertidig booking frem til HQ-bookingen lanseres. Sett `BOOKING_ACTIVE=true` i Vercel for å aktivere den innebygde flyten.
+**Booking:** Acuity (`akgolfgroup.as.me`) er midlertidig booking frem til HQ-bookingen lanseres — på alle domener. Kun innlogget ADMIN (Anders) ser den innebygde flyten (test). Sett `BOOKING_PUBLIC=true` i Vercel (+ redeploy) for å åpne den for kundene. NB: gamle `BOOKING_ACTIVE` leses ikke lenger (sto =true i prod 2026-07-27 og slapp to ekte kundebookinger gjennom — se `src/lib/booking/offentlig-booking.ts`).
 
 ---
 
@@ -96,7 +96,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
 | Planlegge (= Workbench mobil) ★ | `/portal/planlegge` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24 GO V1: HjelpTips på uke-% + «Fra form (SG)»; tom uke med ghost-CTA til Workbench. Complete v13 (golfdata scope + OektKort etc)
-| **Workbench (planlegging)** ★ | `/portal/planlegge/workbench` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14 dok-verifisering: samme delte `WorkbenchV2`-komponent som coach-siden — Del 8c (periodetype-grunnmur, årsplan-canvas, periodestrip, Cmd+D-duplisering, universell økt-popup, full økt-komponist, Driller-fane) + WB1–WB5 (belastningsstripe, publiser-diff, øktas driller i inspektøren) er alle levert og koblet til ekte server actions (`lib/workbench/*`). Design rettet – → ✓ for å matche faktisk kode |
+| **Workbench (planlegging)** ★ | `/portal/planlegge/workbench` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14 dok-verifisering: samme delte `WorkbenchV2`-komponent som coach-siden — Del 8c (periodetype-grunnmur, årsplan-canvas, periodestrip, Cmd+D-duplisering, universell økt-popup, full økt-komponist, Driller-fane) + WB1–WB5 (belastningsstripe, publiser-diff, øktas driller i inspektøren) er alle levert og koblet til ekte server actions (`lib/workbench/*`). Design rettet – → ✓ for å matche faktisk kode. 2026-07-27 (fase 2): økta har nå **Hvor** (hurtigvalg fra spillerens treningssteder + fritekst) og **Målsetning**; hver drill har **AK-trapp** (reps uten ball · lav fart · auto — de to siste legges til ved behov) med estimat-badge «Sist: ~X min» fra historikk; «Egen øvelse» tar pyramide, område og beskrivelse og lagres i spillerens egen bank (`source: PLAYER`, delt med plattformen kun ved samtykke fra onboarding). Alt speiles til live-økta (`TrainingSessionV2`/`TrainingDrillV2`) |
 | · Plan-bygger (v2 wizard) | `/portal/planlegge/bygger` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2 2026-07-10: 5-stegs wizard per godkjent mockup (phq-plan-bygger); deler kjerner med legacy mal/bygger via lib/plan-builder
 | Årsplan | `/portal/tren/aarsplan` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `Aarsplan`-komponenten importerer golfdata `Button/Card/Eyebrow`. |
 | · Rediger periode | `/portal/tren/aarsplan/periode/[id]/rediger` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 18. jul: delt `PeriodeFormV2` (V2Shell/Kort/Caps/Tittel/Inndata/TekstOmraade, periodetype som lime-piller, CANON-constraints som chips, HjelpTips på L-fase/periodetype/ukevolum). Datalogikk + actions (`oppdaterPeriode`/`slettPeriode`) uendret. Gammel v13 `periode-form.tsx` slettet (foreldreløs). Design ~ → ✓, Mob/Desk/iPad --- → ✓✓–, Funker ~ → ✓. |
@@ -107,9 +107,9 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | · Fys-plan detalj/bygger | `/portal/tren/fys-plan/[planId]` | ✓ | --- | ✓ | ~ | ~ | ✓ | Design rettet – → ✓ 16. jul: `KPICard` (ui/) + `fys-plan`-modulen bruker `Input`/`ProgressBar` fra ui/. |
 | Drills (bibliotek) | `/portal/drills` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `OvelsesbankV2` i `V2Shell`. |
 | · Drill-detalj | `/portal/drills/[id]` | ✓ | ✓✓– | ✓ | ~ | ✓ | ✓ | v2-port 17. jul (Team D1): `DrillDetaljV2` (V2Shell/Kort/TomTilstand/CTAPill), ruten flyttet ut av (legacy) — gammel v10 pixel-port slettet. `loadDrillDetalj`-loaderen, auth-guard (PLAYER+PARENT) og ærlige tomtilstander («Media kommer», aldri fabrikerte tall) uendret. Design – → ✓. |
-| Mål-hub | `/portal/mal` | ✓ | --- | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — `MalHubV2` inni `V2Shell` (@/components/portal/v2/MalHubV2).
+| Mål-hub | `/portal/mal` | ✓ | --- | ✓ | ✓ | ~ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — `MalHubV2` inni `V2Shell` (@/components/portal/v2/MalHubV2). **27. jul (mål-progresjon — to grener konsolidert):** all fremdrift går nå via delt `beregnGoalProgress` (`src/lib/portal/goals/progress.ts`) — eneste kilde, erstatter både den gamle ad-hoc-utregningen og en parallelt bygget `beregnMaalFremdrift` (src/lib/domain/maal-fremdrift.ts, som beholdes for sine SG-hjelpere). Dekker HCP, runder/mnd (faktisk antall, fikser en bug der siste rundes SCORE ble brukt som «nå-verdi»), SG-område (koblet via `Goal.payload.sgOmrade`/`sgStart`, baseline snapshotet når området velges), øktfrekvens (nytt, koblet til treningskategori) og testresultat (nytt, koblet til en godkjent test). Viser ærlig «ingen data ennå»/«velg område» i stedet for en fabrikkert prosent der noe mangler. Ektedata – → ✓.
 | · Mål-bygger (wizard) | `/portal/mal/bygger` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `MalByggerV2` — ruten flyttet ut av (legacy), ny tynn page (`V2Shell aktiv="meg"` + `TilbakeLenke`) + presentasjonskomponent på v2-primitiver; all wizard-/lagringslogikk (anbefalMal → generer m/ valgtTemplateId → lagre/sendTilGodkjenning, GRATIS-gating) uendret via `actions.ts` flyttet byte-identisk. Disciplin-farger nå T.ax-aksefarger (var rå hex), HjelpTips på SG-svakhet/L-fase/SG-Total. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
-| · Mål-detalj | `/portal/mal/goal/[id]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `MalDetaljV2` (Kort/StatusPill/ProgresjonsBar/NivaStige + tre v2-modaler for endre/oppnådd/avbryt) erstatter hybrid-designet (page + goal-client), ruten flyttet ut av (legacy). Eierskaps-sjekk, fremdrifts-/ETA-utregning, A–K-stigen og `goals-actions` (endreGoal/markeerGoalSomOppnaadd/avbrytGoal) uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
+| · Mål-detalj | `/portal/mal/goal/[id]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `MalDetaljV2` (Kort/StatusPill/ProgresjonsBar/NivaStige + tre v2-modaler for endre/oppnådd/avbryt) erstatter hybrid-designet (page + goal-client), ruten flyttet ut av (legacy). Eierskaps-sjekk, fremdrifts-/ETA-utregning, A–K-stigen og `goals-actions` (endreGoal/markeerGoalSomOppnaadd/avbrytGoal) uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. **27. jul (mål-progresjon):** to nye måltyper (Øktfrekvens koblet til treningskategori, Testresultat koblet til en godkjent test), «dato oppnådd» vises (eller «dato ukjent» for gamle oppnådde mål), delt fremdriftsberegning erstatter den gamle ad-hoc-utregningen, ærlig «ingen data ennå» der ingenting er logget. |
 | · Milepæler | `/portal/mal/milepaeler` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header importerer golfdata `Eyebrow`.
 | · Leaderboard | `/portal/mal/leaderboard` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `LeaderboardV2` (V2Shell/Kort/AvatarInit) erstatter wireframe-designet, ruten flyttet ut av (legacy). Feature-gate (FEATURES.LEADERBOARD), Prisma-queries og rangeringslogikken (snitt-SG per felt siste 30 dager, topp 25) uendret. Delta-rang/badges fortsatt ikke bygget (TODO i original) — vises ikke i stedet for plassholdere. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | Turneringer (mine) ★ | `/portal/tren/turneringer` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: v2-forhåndsvisning (retning C) allerede portert, hake aldri oppdatert |
@@ -118,7 +118,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Utfordringer | `/portal/utfordringer` | ✓ | --- | ✓ | ~ | ~ | ~ | Fase 2 spot-check 17. jul: FLIPPET ~ → ✓. Verifisert i kode: både lista (`UtfordringerV2`) og detalj (`UtfordringDetaljV2`) rendres i `V2Shell` — fullt v2-komponert, «~» var stale. |
 | · Ny utfordring (wizard) | `/portal/utfordringer/ny` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET — `PlayerHero`-header (golfdata `Eyebrow`).
 | · Utfordring-detalj | `/portal/utfordringer/[id]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
-| AI: mål-bygger | `/portal/ai/mal-bygger` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `AiMalByggerV2` (Kort/Knapp/ValgKort/Inndata) erstatter mal-bygger-wizard (v10), ruten flyttet ut av (legacy) — `actions.ts` (lagreMalForslag) flyttet uendret med. 3-stegs SMART-wizard-logikken uendret; ingen oppdiktede tall. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
+| AI: mål-bygger | `/portal/ai/mal-bygger` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `AiMalByggerV2` (Kort/Knapp/ValgKort/Inndata) erstatter mal-bygger-wizard (v10), ruten flyttet ut av (legacy) — `actions.ts` (lagreMalForslag) flyttet uendret med. 3-stegs SMART-wizard-logikken uendret; ingen oppdiktede tall. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. **27. jul (mål-progresjon):** to nye SMART-maler — «Gjennomføre X {kategori}-økter i uka» (velger treningskategori) og «Nå X poeng på {test}» (velger blant coach-godkjente/offisielle tester, vises kun når minst én finnes). |
 | AI: foreslå drill | `/portal/ai/foresla-drill` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `ForeslaDrillV2` (Kort/AkseChip/CTAPill/InnsiktChip/TomTilstand) erstatter foresla-drill-screen (v10), ruten flyttet ut av (legacy). Svakhets-signaler (`loadWeaknessSignals`) og den ærlige match-scoren (akse-overlapp, aldri oppdiktede tall) uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | AI: foreslå turnering | `/portal/ai/foresla-turnering` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D1): `ForeslaTurneringV2` (Kort/CTAPill/StatusPill/InnsiktChip/TomTilstand) erstatter foresla-turnering-screen (v10), ruten flyttet ut av (legacy). Rangeringslogikken (påmeldinger + katalog, ingen oppdiktede sannsynligheter) uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 
@@ -137,8 +137,8 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 | Ønsket økt (be coach) | `/portal/onskeligokt` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `OnskeligOktV2`. |
 | · Ønsket økt bekreftet | `/portal/onskeligokt/bekreftet` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D2): `OnskeligOktBekreftetV2` — siste SessionRequest, reason-parsing og status-drevet tidslinje uendret; ærlig tomtilstand uten request. Delte `actions.ts`/`form.tsx` urørt (brukes av OnskeligOktV2). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | Live-økt: brief † | `/portal/(fullscreen)/live/[sessionId]/brief` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: lagt til akse-farget chip (`--axis-*`-tokens, matcher phq-live.jsx sin PyrChips) + `HjelpTips` (pyramideAkse/lFase). Rettet samtidig en pre-eksisterende feil: `L_PHASE_LABEL` viste GRUNN/SPESIAL/TURNERING (feil enum, LPhase) for `drill.lFase` (som faktisk er LFase — L-Kropp/Arm/Kølle/Ball/Auto); nå hentet fra `L_FASER` i `@/lib/taxonomy`. Egen `LiveSessionShell` beholdt (fullskjerm mørk, samme visuelle intensjon som mockupen).
-| Live-økt: aktiv † | `/portal/(fullscreen)/live/[sessionId]/active` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24: IndexedDB offline-kø for drill-reps (`live-drill-queue`) + debounced `logDrillReps`-synk; gjenopprett ved refresh. | v2-port 16. jul: `DrillLogger` grener nå til ny `FysDrillLogger` for FYS-drills (SettRepsLogger/PulsSoneVelger/Stegteller, m/ `MicButton`-notat) i stedet for golf-only RepCounter-grid; golf-flyten uendret. Lagt til "Neste opp"-hint (matcher phq-live.jsx) + fikset FYS-progressbar (falt tilbake til repSett når plannedReps=0). Egenbygd fargepalett (18 hex, egen godkjent baseline) beholdt — dette er merkevarens forest/lime-primitiver, ikke tema-avhengige aliaser, og AI-Caddie-chat (LiveCoachPanel) dekker mockupens "AI-tip"-idé allerede reelt.
-| Live-økt: oppsummering † | `/portal/(fullscreen)/live/[sessionId]/summary` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24: spiller-vurdering (kvalitet 1–5 + neste fokus + følelse) via `lagreSpillerVurdering` → `completedSummary.spillerVurdering` + speil til plan-notes. Offline-kø for drill-reps + write-back lukket Bølge 4-rest. **GO V2 (24. juli):** oppsummeringen har ÉN neste handling — er det en økt igjen i dag er den primær, ellers «Tilbake til hjem» med «Planlegg i Workbench» som eneste stille lenke (tre likeverdige knapper fjernet). |
+| Live-økt: aktiv † | `/portal/(fullscreen)/live/[sessionId]/active` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24: IndexedDB offline-kø for drill-reps (`live-drill-queue`) + debounced `logDrillReps`-synk; gjenopprett ved refresh. | v2-port 16. jul: `DrillLogger` grener nå til ny `FysDrillLogger` for FYS-drills (SettRepsLogger/PulsSoneVelger/Stegteller, m/ `MicButton`-notat) i stedet for golf-only RepCounter-grid; golf-flyten uendret. Lagt til "Neste opp"-hint (matcher phq-live.jsx) + fikset FYS-progressbar (falt tilbake til repSett når plannedReps=0). Egenbygd fargepalett (18 hex, egen godkjent baseline) beholdt — dette er merkevarens forest/lime-primitiver, ikke tema-avhengige aliaser, og AI-Caddie-chat (LiveCoachPanel) dekker mockupens "AI-tip"-idé allerede reelt. **2026-07-27 (fase 3):** per-drill-timer vises under økt-timeren (medgått / planlagt, ambert når over — aldri sperrende), og medgått tid persisteres til `TrainingDrillV2.actualDurationSec` ved drill-fullføring. Skriver kun oppover (en pause-runde kan ikke kutte registrert tid) med 12-timers tak. Tiden følger med i offline-køen. Mater varighetsestimatet «Sist: ~X min» i Workbench.
+| Live-økt: oppsummering † | `/portal/(fullscreen)/live/[sessionId]/summary` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24: spiller-vurdering (kvalitet 1–5 + neste fokus + følelse) via `lagreSpillerVurdering` → `completedSummary.spillerVurdering` + speil til plan-notes. Offline-kø for drill-reps + write-back lukket Bølge 4-rest. **GO V2 (24. juli):** oppsummeringen har ÉN neste handling — er det en økt igjen i dag er den primær, ellers «Tilbake til hjem» med «Planlegg i Workbench» som eneste stille lenke (tre likeverdige knapper fjernet). 2026-07-27 (fase 3): hver drill viser faktisk medgått tid ved siden av aksen. |
 | Live-økt: drill-logger | `/portal/(fullscreen)/live/[sessionId]/logger` | ✓ | ✓✓– | ✓ | ~ | ~ | ✓ | Ren redirect-alias til /active (uendret) — arver v2-porten derfra.
 | Live-økt: score-tapper | `/portal/(fullscreen)/live/[sessionId]/tapper` | ✓ | ✓✓– | ✓ | ~ | ~ | ✓ | Reconciliation 16. jul (Fase 0): BEKREFTET — `TapperShell` komponerer `LiveCoachPanel` som importerer fra @/components/v2.
 | Tren (fullskjerm) | `/portal/(fullscreen)/tren` | ✓ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `redirect("/portal/planlegge/workbench")` — ikke en egen skjerm.
@@ -150,7 +150,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Analysere = «Min golf» (6 faner: SG · Fokus · Runder · Baggen · Putting · Nivå — v13 golfdata, bølge 1 2026-07-04) ★ | `/portal/analysere` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24 GO V1: default-fane SG først; tom SG med «Logg runde»; skjul OTT/APP/ARG-koder; HjelpTips treningsvolum/etterlevelse; TrackMan/Tester tom+CTA. Bølge 5 treningsanalyse; Mob/iPad ✓✓✓; lanserings-smoke e2e. |
+| Analysere = «Min golf» (5 faner: SG · Statistikk · Trening · TrackMan · Tester) ★ | `/portal/analysere` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24 GO V1: default-fane SG først; tom SG med «Logg runde»; skjul OTT/APP/ARG-koder; HjelpTips treningsvolum/etterlevelse; TrackMan/Tester tom+CTA. Bølge 5 treningsanalyse; Mob/iPad ✓✓✓; **2026-07-27 (fase 4):** Trening-fanen har fått filterbar — tid (År · Periode · Måned · Uke · Dag) × type (Alt/Golf/Fysisk) × område i pyramiden × hvor (Innendørs/Range/Bane/Turnering) × belastning. Fysisk trening vises nå i SAMME tidslinje som golf (via `FysOkt.gjennomfortAt`, stemplet av ny `loggFysOkt`). Tallene kommer fra faktisk gjennomførte driller — de to gamle snarveiene er borte: hardkodet «SPILL»-akse på øktnivå og `* 0.2`-fordelingen av minutter. Målt tid fra live-timeren brukes når den finnes, ellers planlagt (merket «(planlagt)»). Nytt kort «Hvor treningen skjedde» svarer på teknikk-på-range-vs-bane direkte. Fanetallet rettet 6 → 5 (stale tekst). lanserings-smoke e2e. |
 | · Hull-analyse | `/portal/analysere/hull` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 17. jul (Team F2): hele skjermen (begge faner) rekomponert til v2 — `AnalysereHullV2` (PillTabs/SgKategorier/Scorekort/MiniSpark); queries og fane-logikk uendret; SG per hull vises ærlig som «—» (ikke beregnet i datagrunnlaget). **Varmekart 19. jul:** `VarmekartKort` i «Hull for hull»-fanen — v2 `VarmeKart`-primitiven (`src/components/v2/datavis.tsx`) farget med `T.down`, snitt avvik fra par per hull aggregert på tvers av ALLE spillerens runder (`aggregerHullVarme`, `src/lib/domain/hole-heatmap.ts`), tom-tilstand under 3 runder. Flyt ~ → ✓. **Sone-kart-diagram 19. jul** (samme dag, etter Anders' svar på `docs/design-bestillinger/v2-sonekart-hull-analyse.md`): drop-off-gapet er lukket — `SoneDiagram`/`SoneDiagramBlokk` i `AnalysereHullV2.tsx` (`SoneFane`) tegner et illustrativt, bane-uavhengig «vei mot green»-diagram (tee → innspill → nærspill → putt) som et nytt lag OVER de eksisterende `SgKategorier`/`Rad`-detaljene (fjernet ingenting). Tap/hover-popover er en 1:1-kopi av `VarmeKartCelle`-mønsteret (ekte hover åpner ved museover, touch åpner/lukker ved trykk, Escape/fokus-tap lukker); popover viser SG (`fmtSg`), `MiniSpark`-trend og økter/minutter siste 30 dager — samme tall som Rad-listen. Tom-tilstand (0 SG-registreringer): alle soner nøytrale `T.mut`, aldri fabrikkert tall. Ny HjelpTips-nøkkel `soneDiagram` i `src/lib/v2/hjelpetekster.ts`. Design/Flyt fortsatt ✓ (ingen nye queries, kun ny visning av data skjermen allerede hadde). |
 | Statistikk (oversikt) | `/portal/statistikk` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Fase 2 spot-check 17. jul: FLIPPET ~ → ✓. `StatistikkHub` (via statistikk-hybrid) er fullt golfdata-komponert — overgangs-laget teller som kanon per design-system-regelen. Rekomponeres til v2 når hub-bølgen tas; underruten `[metric]` er alt v2 (Team D3). |
 | · Metrikk-detalj | `/portal/statistikk/[metric]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D3): `StatistikkMetrikkV2` — metric-oppslag (5 pyramide + 4 SG + aliaser), queries og trend-buckets uendret. Falsk (disabled) periode-velger erstattet med ærlig «Siste 90 d»-badge; fortegn mot kategori-snitt vises nå korrekt; HjelpTips på SG/pyramide/kategori-snitt. A1-benchmark fortsatt statisk proxy, merket «(referanse)». Design – → ✓. |
@@ -289,7 +289,7 @@ Disse finnes i appen, men er enten eldre kortadresser som peker videre, eller sm
 | Analyse (alt. → redirect) | `/portal/analyse` | ✓ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `permanentRedirect("/portal/analysere")` — ikke en egen skjerm.
 | Reach (oppsøk-verktøy) | `/portal/reach` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET (tynn) — `PlayerHero`-header; resten er ren tom-tilstand (ingen datamodell for reach ennå).
 | Agent-pipeline (AI internt) | `/portal/agent-pipeline` | ✓ | --- | ✓ | ~ | ~ | ~ | Reconciliation 16. jul (Fase 0): BEKREFTET (tynn) — `PlayerHero`-header; signal/plan-action/agent-run-tabellene er hand-bygget Tailwind, bør sees nærmere på.
-| Se annen spiller | `/portal/spiller/[spillerId]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D3): `SpillerDetaljV2` (PillTabs, SgKategorier, DataTabell m/mobilkort) — queries og snitt-utregninger uendret; HjelpTips på HCP/SG. Mål-progresjonsbar ærlig utelatt (loaderen gir alltid `currentValue: null` — baren var aldri synlig). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
+| Se annen spiller | `/portal/spiller/[spillerId]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D3): `SpillerDetaljV2` (PillTabs, SgKategorier, DataTabell m/mobilkort) — queries og snitt-utregninger uendret; HjelpTips på HCP/SG. Mål-progresjonsbar var ærlig utelatt (loaderen ga alltid `currentValue: null` — baren var aldri synlig). **27. jul (mål-progresjon):** fikset — loaderen bruker nå delt `beregnGoalProgress`, ekte fremdriftsbar vises per mål (eller «ingen data ennå»). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | Venner (B39, ny 16. jul) | `/portal/venner` | ✓ | --- | ✓ | ✓ | ✓ | ✓ |
 | · Venn-profil (økt-feed) | `/portal/venner/[spillerId]` | ✓ | --- | ✓ | ✓ | ✓ | ✓ |
 | Øvelser (alt. → redirect) | `/portal/tren/ovelser` | ✓ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET — `proxy.ts`/`workbenchRedirectForTrenPath` redirecter til `/portal/planlegge/workbench?tab=std`. NB: dokumentets tidligere notat om mål `/portal/drills` var feil/foreldet — rettet her.
@@ -350,7 +350,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | · Ny spiller | `/admin/spillere/ny` | ✓ | --- | ✓ | ✓ | ~ | ~ | 2026-07-14 dok-verifisering (funn under legacy-porterings-sjekk): `AdminNySpillerV2` — ekte `createSpiller`-server-action, router til ny spillers profil. Design rettet – → ✓, Flyt ~ → ✓ (skjema uten loader — Data-haken forblir ~, ikke relevant for et opprett-skjema) |
 | **Spiller-detalj** ★ | `/admin/spillere/[id]` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-14 dok-verifisering: «100 % spillerinfo på én skjerm» levert — `SpillerDashboardV2` (7 faner: Oversikt/Utvikling/Plan/Helse/Turnering/Logg/Administrasjon), hero+KPI-strip m/ HjelpTips, én aggregert loader (`spiller-dashboard-data.ts`, 24 select-minimerte spørringer), kun ekte data + ærlige tomtilstander. Design rettet – → ✓. **M3 mobil (bølge 2) 17. jul:** de 7 fanene rendres som `PillTabs` (horisontal scroll) på mobil, hero + KPI-strip komprimert, fane-innhold stables til én kolonne. Desktop-fanelinja uendret. Mob ~ → ✓. |
 | · **Analyse (coach-dybde)** = golfdata elite-visning (v13, bølge 1 2026-07-04) ★ | `/admin/spillere/[id]/analyse` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24: arver Bølge 5 treningsanalyse via AnalysereV2. |
-| · Profil | `/admin/spillere/[id]/profil` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminSpillerProfilSideV2` (T-tokens; navnet er bevisst forskjellig fra den allerede v2-portede `AdminSpillerProfilV2` — Profil-fanen på `/admin/spillere/[id]`, en annen skjerm). Samme datagrunnlag uendret. Kjent, uendret begrensning: mål-fremdriftsring viser fast 50 % (Goal-modellen mangler et reelt fremdriftsfelt — ikke en regresjon). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
+| · Profil | `/admin/spillere/[id]/profil` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 16. jul: `AdminSpillerProfilSideV2` (T-tokens; navnet er bevisst forskjellig fra den allerede v2-portede `AdminSpillerProfilV2` — Profil-fanen på `/admin/spillere/[id]`, en annen skjerm). Samme datagrunnlag uendret. **27. jul (mål-progresjon):** tidligere kjent begrensning — mål-fremdriftsringen viste fast 50 % uansett mål (Goal-modellen manglet et reelt fremdriftsfelt) — er fikset. Ringen bruker nå delt `beregnGoalProgress`; viser «Ingen data ennå» i stedet for et tall når ingenting er logget. `typeLabel` bruker nå `goal.category` direkte (var tidligere gjettet fra `type`). Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
 | · **Workbench (coach-i-spiller)** ★ | `/admin/spillere/[id]/workbench` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-12: månedsvisning (ekte grid) + drag-and-drop (blokk→dag, bibliotek→klokkeslett) |
 | · Plan-detalj | `/admin/spillere/[id]/plan/[planId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-14: drills-panel viser automatisk repslogging + bilde/video fra spillerens live-økter
 | · Fremgang (trening vs SG) † | `/admin/spillere/[id]/fremgang` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminSpillerFremgangV2`. |
@@ -472,6 +472,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Team | `/admin/team` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Inviter | `/admin/team/inviter` | ✓ | --- | ✓ | ✓ | – | † | 2026-07-16: v2 (`AdminInviterCoachV2`), samme `inviterCoach`-action. `(legacy)` fjernet. |
 | Audit-log | `/admin/audit-log` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminAuditLogV2`) — samme AuditLog-spørring/kind-status-utledning som legacy, KpiFlis+Rad-liste, ærlig tomtilstand. Lagt i Innsikt-mer-gruppen (var uten menylenke). `(legacy)/audit-log` slettet. |
+| Feillogg | `/admin/feillogg` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-08-02 (tiltak 6): ny v2-flate (`AdminFeilloggV2`) som leser `ErrorLog` — kontekst, melding, stack trace bak klikk, KPI for kritiske siste døgn. Alvorlig feil gir Telegram-melding samtidig (`error-tracking.ts`). Loggen ryddes etter 90 dager. Kun ADMIN. |
 | AI-agenter | `/admin/agents` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminAgenterV2`. |
 | · Agent-detalj | `/admin/agents/[agentId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | E-postmaler | `/admin/email-templates` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminEmailV2`. |
@@ -546,7 +547,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Tilbakestill passord | `/auth/reset-password` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Sjekk e-post | `/auth/check-email` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | BankID ★ | `/auth/bankid` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `BankIDV2` (samme v2-idiomfamilie som LoginV2), portert 10. juli, hake aldri oppdatert |
-| Onboarding (spiller, 6 steg) | `/auth/onboarding` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24: nivåplasserings-quiz (steg 4) setter `preferences.onboarding.nivaa` → progressiv dybde i Min golf. 6 steg totalt. |
+| Onboarding (spiller, 7 steg) | `/auth/onboarding` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24: nivåplasserings-quiz setter `preferences.onboarding.nivaa` → progressiv dybde i Min golf. 2026-07-27: utvidet til 7 steg — steg 2 +skole/skoletrinn, steg 3 navngitte treningssteder (`PlayerFacility`, inne/ute + capabilities), NYTT steg 4 «Dine tall» (snittscore + full SG forrige sesong/hittil i år → `BrukerSgInput`, kan hoppes over), steg 7 +samtykke til deling av egne drills (`User.drillDelingGodtatt`). Nye felter skrives til EKTE kolonner med zod-validering, ikke `preferences`-blobben. |
 | Onboarding (forelder) | `/auth/onboarding/forelder` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul (Team B): arver v2 fra de restylede delte primitivene (`wizard-chrome`/`wizard-fields`) + forelder-spesifikke justeringer i `forelder-wizard.tsx`/`page.tsx`. 4-stegs-logikken og `saveForelderOnboardingStep`/`completeForelderOnboarding` uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–.
 | Foreldresamtykke (token) | `/auth/guardian-consent/[token]` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Samtykke venter | `/auth/samtykke-venter` | ✓ | --- | ✓ | ~ | ~ | ~ |
@@ -796,6 +797,70 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 ---
 
 ## Endringslogg
+
+- 27. juli (kveld, konsolidering): **To parallelle mål-fremdrift-grener slått sammen.**
+  Denne grenen (mål-progresjon: øktfrekvens/testresultat/dato oppnådd) og en annen gren
+  (widget-pakke + SG-mål-fremdrift, se de to loggpostene under) ble bygget samtidig og traff
+  de samme filene. Løsning etter avtale med Anders: `beregnGoalProgress`
+  (`src/lib/portal/goals/progress.ts`) er nå den ENE kilden til mål-fremdrift i hele appen —
+  `src/lib/domain/maal-fremdrift.ts` er BEHOLDT, men kun for sine SG-spesifikke hjelpere
+  (`SG_OMRADER`, `SG_OMRADE_NAVN`, `erSgOmrade`, `lesSgMaal`) som `beregnGoalProgress` nå bruker
+  til å regne SG-område-fremdrift selv — `beregnMaalFremdrift`-orkestreringen er fjernet fra
+  bruk. `MaalWidget`/`getMaalWidgetData` (Hjem) er oppdatert til samme funksjon, så mål-hub,
+  mål-detalj og Hjem-widgeten aldri kan vise ulik prosent for samme mål igjen.
+
+- 27. juli: **Mål-progresjon — komponenter som faktisk måler fremdrift på målsetninger.**
+  Ny delt modul `src/lib/portal/goals/progress.ts` (`beregnGoalProgress`) er nå eneste kilde til
+  mål-fremdrift på tvers av appen — erstatter tre spredte, delvis inkonsistente utregninger
+  (mål-hub, mål-detalj, og to steder som enten viste fast 50 % eller `null`/aldri en bar).
+  Nytt: to måltyper — **Øktfrekvens** (koblet til en treningskategori, fremdrift = fullførte
+  økter siste 7 dager) og **Testresultat** (koblet til en coach-godkjent/offisiell test,
+  fremdrift = siste testresultat). Samtidig fikset en reell bug: `ROUNDS_PER_MONTH`-mål brukte
+  tidligere siste rundes SCORE som «nå-verdi» i stedet for antall spilte runder. `Goal`-modellen
+  har tre nye felt (`achievedAt`, `linkedPyramidArea`, `linkedTestId`) — kirurgisk DB-migrasjon,
+  se `scripts/add-goal-progress-fields-2026-07-27.ts`. «Dato oppnådd» settes nå automatisk ved
+  «marker som oppnådd» (gamle oppnådde mål viser ærlig «dato ukjent», ingen gjettet dato). Det
+  ferdigdefinerte men aldri utløste `GOAL_ACHIEVED`-varselet er koblet på — spiller og coach
+  varsles nå faktisk, jf. teksten i «marker som oppnådd»-dialogen som lenge har lovet dette.
+  Overalt der data ikke finnes ennå vises ærlig «ingen data ennå» — aldri en fabrikkert prosent.
+  Berørte skjermer: Mål-hub, Mål-detalj, AI mål-bygger, Se annen spiller, Admin spiller-profil
+  (se radene under). Enhetstester i `src/lib/portal/goals/progress.test.ts`.
+
+- 27. juli (samme dag, oppfølging): **De to bevisste hullene fra widget-pakken er tettet.**
+  **SG-mål måles nå på ekte.** Rot-årsaken var at `SG_AREA` aldri lagret HVILKET område målet
+  gjaldt — området lå bare i fritekst-tittelen, så ingen kode kunne regne fremdrift uten å gjette.
+  Området lagres nå strukturert i `Goal.payload` som `sgOmrade` (OTT/APP/ARG/PUTT) sammen med
+  `sgStart` — spillerens SG i området da målet ble satt. Baselinen er nødvendig fordi SG ikke har
+  noe naturlig nullpunkt: et mål kan gå fra −1,5 til −0,5. Fremdrift = reisen fra baseline til
+  målverdi, målt mot snitt-SG siste 10 runder (`hentSgSnittPerOmrade` — samme vindu som
+  Hjem-heroen, så «form» og «mål» ikke spriker). Området velges i «Endre mål»-modalen og er
+  påkrevd for SG-mål. Gamle SG-mål uten område viser «Velg SG-område for å måle fremdrift» —
+  ærlig, ikke en tom bar. Baselinen settes kun når området velges eller byttes, så redigering av
+  tittel/frist ikke nullstiller fremdriften.
+  **Gruppeøkter er med i «Stallen i dag».** Cockpit-widgeten så bare økter med `studentId` og
+  hoppet over hele `groupId`-sporet. Nå hentes begge: en gruppeøkt vises som ÉN rad for gruppa
+  (navn, medlemstall, lenke til gruppesiden), ikke én per medlem. Gruppe-scope følger
+  `Group.coachId` på samme måte som spiller-scope.
+  Verifisert: 661 enhetstester grønne (10 nye for SG-fremdrift), tsc/eslint/action-auth rene.
+
+- 27. juli: **Widget-pakke innført — og to ekte dataavvik lukket på veien.**
+  Ny gjenbrukbar kort-pakke: `src/components/widgets/` (utseende) + `src/lib/widgets/` (datahenting),
+  ett par per widget — loader returnerer ett typet objekt, komponenten tar det som eneste data-prop
+  og henter aldri selv. Bygget på v2-primitivene (`Kort`/`Rad`/`StatusPill`), lenker alltid fra
+  `session-hrefs`. Tre widgets: `DagensOkterWidget`, `MaalWidget` (PlayerHQ) og `StallOkterWidget`
+  (AgencyOS-cockpit).
+  **Avvik 1 — Hjem og Gjør kunne vise ulikt antall økter samme dag.** Hjem brukte
+  `getAllTodaysSessions` (kun `TrainingSessionV2`), mens Gjør brukte `getGjennomforeData` (begge
+  spor). En spiller med en egen plan-økt så den på Gjør, men ikke på Hjem. Hjem er nå på samme
+  loader — én kilde, samme tall.
+  **Avvik 2 — mål viste to ulike prosenter avhengig av skjerm.** `/portal/mal` regnet HCP-reise og
+  ga 0 % for alle andre måltyper; `getGoals` (Hjem) regnet tid mot frist. Begge går nå gjennom
+  `beregnMaalFremdrift` (`src/lib/domain/maal-fremdrift.ts`, 12 enhetstester): HCP og
+  runder-per-måned regnes fra ekte tall, resten faller ærlig tilbake på tid mot frist (og settes
+  aldri til «bak plan» bare fordi kalenderen går). `ROUNDS_PER_MONTH` har dermed ekte fremdrift for
+  første gang. Målene vises nå også på Hjem — dataene ble hentet der fra før, men aldri brukt.
+  Kjent begrensning: `SG_AREA` mangler fortsatt en billig fremdriftskilde og følger tid mot frist;
+  `StallOkterWidget` tar ikke med rene gruppeøkter (uten `studentId`).
 
 - 25. juli: **Treffpunkt-kartet merket ærlig (beholdt, ikke slettet — Anders' beslutning).**
   «Strike heatmap · kontaktpunkt» i coachens SG Hub het og så ut som en måling, men prikkene er

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
+import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { triggerTrackManAgent } from "@/lib/agents/triggers";
 import {
@@ -295,8 +296,11 @@ async function resolveTargetUserId(
   if (user.role !== "COACH" && user.role !== "ADMIN") {
     throw new Error("Kun coach kan importere på vegne av spiller.");
   }
-  const target = await prisma.user.findUnique({
-    where: { id: onBehalfOfUserId },
+  // Coach-scoping: rollen alene holdt ikke — import skriver økter, slag og
+  // TM-mål inn på kontoen, så uten porten kunne en coach skrive data til en
+  // annen coachs spiller (eller en vilkårlig bruker-id).
+  const target = await prisma.user.findFirst({
+    where: { AND: [coachScopedPlayerWhere(user), { id: onBehalfOfUserId }] },
     select: { id: true },
   });
   if (!target) throw new Error("Spiller ikke funnet.");

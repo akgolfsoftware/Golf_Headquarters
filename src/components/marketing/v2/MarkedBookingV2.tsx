@@ -2,7 +2,7 @@
 
 /* AK Golf HQ v2 — MARKEDSSIDE: Booking-inngang (/booking, retning C «Presis»).
    Steg 1 er tjeneste-først (ett trykk). Valgfri filter: lokasjon (+ trener i URL).
-   Prisformatering («Gratis» / «N kr»), BOOKING_ACTIVE/Acuity-pause, Prisma-henting
+   Prisformatering («Gratis» / «N kr»), Acuity-pause (kanBrukeInnebygdBooking), Prisma-henting
    i page.tsx. Chrome: MRamme fra ./marked-ramme. */
 
 import Link from "next/link";
@@ -161,7 +161,7 @@ export function MarkedBookingV2({
 }: MarkedBookingV2Props) {
   const mobile = useMobile();
 
-  /* Pauset flyt (BOOKING_ACTIVE=false) — ærlig Acuity + samtale. */
+  /* Pauset flyt (publikum uten BOOKING_PUBLIC) — ærlig Acuity + samtale. */
   if (paused) {
     return (
       <MRamme mobile={mobile} aktiv="booking" cta={{ label: "Book en samtale", href: "/kontakt" }}>

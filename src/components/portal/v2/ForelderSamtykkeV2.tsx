@@ -21,7 +21,12 @@ import { Bryter } from "@/components/v2/skjema";
 import {
   lagreSamtykker,
   beOmDataSletting,
+  settHelseSamtykkeForBarn,
 } from "@/app/forelder/samtykke/actions";
+import {
+  HELSE_SAMTYKKE_TEKST,
+  type HelseSamtykkeType,
+} from "@/lib/health/samtykke-regler";
 
 /* ── Datakontrakt (avledet av barnets EKTE Prisma-data) ────────────── */
 
@@ -31,6 +36,18 @@ export type SamtykkeBarn = {
   email: string;
   /** Lagrede preferanser: consent-nøkkel → på/av. Mangler → av. */
   prefs: Record<string, boolean>;
+  /**
+   * Helsedata (GDPR art. 9-2 a) — både fra klokke og manuelt utfylt. Ligger
+   * IKKE i `prefs`: disse samtykkene lagres som sporbare rader med tidspunkt
+   * og tekstversjon, fordi særlige kategorier persondata krever at vi kan
+   * bevise samtykket.
+   */
+  helse: {
+    wearable: boolean;
+    manuell: boolean;
+    coachInnsyn: boolean;
+    coachDetalj: boolean;
+  };
 };
 
 export type ForelderSamtykkeData = {
@@ -92,6 +109,137 @@ function formatDato(iso: string): string {
     month: "long",
     year: "numeric",
   });
+}
+
+/* ── Helsedata fra treningsklokke (art. 9 — eget, sporbart samtykke) ─ */
+
+function HelseSamtykkeSeksjon({ barn }: { barn: SamtykkeBarn }) {
+  const [pending, startTransition] = useTransition();
+  const [valg, setValg] = useState(barn.helse);
+  const [feil, setFeil] = useState<string | null>(null);
+
+  const felt: Record<HelseSamtykkeType, keyof SamtykkeBarn["helse"]> = {
+    WEARABLE_HELSE: "wearable",
+    MANUELL_HELSE: "manuell",
+    COACH_INNSYN: "coachInnsyn",
+    COACH_DETALJ: "coachDetalj",
+  };
+
+  function endre(type: HelseSamtykkeType, nyVerdi: boolean) {
+    setFeil(null);
+    const forrige = valg;
+
+    // Speiler avhengighetene serveren håndhever i beregnSamtykkeStatus:
+    // uten en kilde finnes det ingenting å dele, og detaljer forutsetter status.
+    const neste = { ...valg, [felt[type]]: nyVerdi };
+    const harKilde = neste.wearable || neste.manuell;
+    neste.coachInnsyn = harKilde && neste.coachInnsyn;
+    neste.coachDetalj = neste.coachInnsyn && neste.coachDetalj;
+    setValg(neste);
+
+    startTransition(async () => {
+      const svar = await settHelseSamtykkeForBarn(barn.id, type, nyVerdi);
+      if (!svar.ok) {
+        setValg(forrige);
+        setFeil(svar.feil);
+      }
+    });
+  }
+
+  const harKilde = valg.wearable || valg.manuell;
+
+  return (
+    <div
+      style={{
+        padding: "14px 18px",
+        borderTop: `1px solid ${T.border}`,
+        background: T.panel2,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+        <Icon name="heart" size={13} style={{ color: T.mut }} />
+        <span
+          style={{
+            fontFamily: T.ui,
+            fontSize: 10.5,
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: T.mut,
+          }}
+        >
+          Helsedata
+        </span>
+      </div>
+
+      <p
+        style={{
+          fontFamily: T.ui,
+          fontSize: 12,
+          color: T.fg2,
+          lineHeight: 1.5,
+          margin: "0 0 8px",
+        }}
+      >
+        Søvn, puls, vekt og skader regnes som helseopplysninger — enten en klokke
+        måler dem eller barnet fyller dem ut selv. Er barnet under 16 år, er det
+        bare du som kan si ja til dette. Treningen blir aldri sperret av det du
+        velger her.
+      </p>
+
+      {(["WEARABLE_HELSE", "MANUELL_HELSE"] as const).map((type) => (
+        <div key={type} style={{ padding: "6px 0" }}>
+          <Bryter
+            label={HELSE_SAMTYKKE_TEKST[type].tittel}
+            sub={HELSE_SAMTYKKE_TEKST[type].forklaring}
+            checked={valg[felt[type]]}
+            onChange={(v) => {
+              if (!pending) endre(type, v);
+            }}
+          />
+        </div>
+      ))}
+
+      {harKilde && (
+        <div style={{ padding: "6px 0", borderTop: `1px solid ${T.border}` }}>
+          <Bryter
+            label={HELSE_SAMTYKKE_TEKST.COACH_INNSYN.tittel}
+            sub={HELSE_SAMTYKKE_TEKST.COACH_INNSYN.forklaring}
+            checked={valg.coachInnsyn}
+            onChange={(v) => {
+              if (!pending) endre("COACH_INNSYN", v);
+            }}
+          />
+        </div>
+      )}
+
+      {valg.coachInnsyn && (
+        <div style={{ padding: "6px 0", borderTop: `1px solid ${T.border}` }}>
+          <Bryter
+            label={HELSE_SAMTYKKE_TEKST.COACH_DETALJ.tittel}
+            sub={HELSE_SAMTYKKE_TEKST.COACH_DETALJ.forklaring}
+            checked={valg.coachDetalj}
+            onChange={(v) => {
+              if (!pending) endre("COACH_DETALJ", v);
+            }}
+          />
+        </div>
+      )}
+
+      {feil && (
+        <p
+          style={{
+            fontFamily: T.ui,
+            fontSize: 12,
+            color: T.down,
+            margin: "8px 0 0",
+          }}
+        >
+          {feil}
+        </p>
+      )}
+    </div>
+  );
 }
 
 /* ── Per-barn samtykke-kort ────────────────────────────────────────── */
@@ -200,6 +348,10 @@ function BarnSamtykkeKort({ barn }: { barn: SamtykkeBarn }) {
           </div>
         ))}
       </div>
+
+      {/* Helsedata — lagres umiddelbart per bryter, ikke via Lagre-knappen
+          under: hvert klikk er en egen sporbar samtykke-hendelse. */}
+      <HelseSamtykkeSeksjon barn={barn} />
 
       {/* Fot: kvittering + lagre */}
       <div
@@ -522,7 +674,7 @@ export function ForelderSamtykkeV2({ data }: { data: ForelderSamtykkeData }) {
             lineHeight: 1.55,
           }}
         >
-          <li>Data lagres innenfor EU/EØS via Supabase (Frankfurt-region).</li>
+          <li>Data lagres hos Supabase i London-regionen (Storbritannia).</li>
           <li>Vi deler aldri persondata med tredjepart uten eksplisitt samtykke.</li>
           <li>
             Du kan be om full dataeksport eller sletting når som helst via{" "}

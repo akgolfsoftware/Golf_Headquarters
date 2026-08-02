@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
-import { anthropic, AI_MODEL, isAiEnabled } from "@/lib/ai/client";
+import { anthropic, modelFor, isAiEnabled } from "@/lib/ai/client";
 import { recallMemory, formatMemoryForPrompt } from "@/lib/ai/memory";
 import { hentLiveCoachKontext } from "@/lib/ai/live-coach-context";
 import { hentRestraintPromptData } from "@/lib/coach-restraint/context";
@@ -180,9 +180,17 @@ export async function POST(req: Request) {
     sisteTester,
     ...live
   } = kontekst;
+  // GDPR-tiltak 2026-07-27: bygLiveCoachSystemPrompt adresserer spilleren
+  // direkte ved fornavn i sanntid mens økta pågår (ekte streaming — modellen
+  // SKAL produsere navnet i selve svaret). Full pseudonym+reverse-substitusjon
+  // (som i daily-brief.ts) er ikke trygt å hacke inn på en strømmende respons,
+  // så vi lar ikke navnet stå ureflektert: prompten trenger uansett kun
+  // fornavnet (se "Bruk fornavnet, ikke fullt navn" i bygLiveCoachSystemPrompt),
+  // så etternavnet kuttes her for å minimere hva som sendes til Anthropic.
+  const fornavnKun = spillerNavn.split(" ")[0] || spillerNavn;
   const base: SystemPromptInput = {
     mottaker,
-    spillerNavn,
+    spillerNavn: fornavnKun,
     hcp,
     ambition,
     homeClub,
@@ -228,7 +236,7 @@ export async function POST(req: Request) {
       let fullSvar = "";
       try {
         const respons = await anthropic!.messages.stream({
-          model: AI_MODEL,
+          model: modelFor("live-coach-chat"),
           max_tokens: 512,
           system: systemPrompt,
           messages: apiMessages,

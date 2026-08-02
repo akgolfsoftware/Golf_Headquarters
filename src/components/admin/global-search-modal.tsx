@@ -61,6 +61,9 @@ import {
   Shield,
   Crosshair,
   FileText,
+  Mic,
+  Tag,
+  AlertTriangle,
 } from "lucide-react";
 
 const ICON_STROKE = 1.5;
@@ -145,6 +148,14 @@ const ACTIONS: Action[] = [
     icon: FlaskConical,
     kind: { type: "navigate", href: "/admin/tester" },
   },
+  {
+    id: "ta-opp-okt",
+    label: "Ta opp økt",
+    description: "Spill inn coaching-økt og få AI-sammendrag",
+    keywords: ["opptak", "ta opp", "lyd", "mikrofon", "diktafon", "transkribering", "transkripsjon", "sammendrag", "referat", "voice", "memo", "recording"],
+    icon: Mic,
+    kind: { type: "navigate", href: "/admin/recording" },
+  },
   // --- Hub-handlinger ---
   {
     id: "daily-brief",
@@ -181,10 +192,12 @@ const ACTIONS: Action[] = [
   {
     id: "wagr",
     label: "WAGR-benchmark",
-    description: "Sammenlign spillere mot World Amateur ranking",
+    description: "Sammenlign spillere mot World Amateur ranking — i Talent-radar",
     keywords: ["wagr", "ranking", "benchmark", "amatør", "amateur", "talent"],
     icon: TrendingUp,
-    kind: { type: "navigate", href: "/admin/talent/wagr-benchmark" },
+    // WAGR-benchmark er slått sammen i Talent-radar; /admin/talent/wagr-benchmark
+    // er nå kun en redirect dit. Pek direkte, så slipper søket et ekstra hopp.
+    kind: { type: "navigate", href: "/admin/talent/radar" },
   },
   {
     id: "export-report",
@@ -227,14 +240,17 @@ const ACTIONS: Action[] = [
   { id: "s-hjelp", label: "Hjelp", description: "Hjelp og veiledning", keywords: ["hjelp", "support", "veiledning", "help"], icon: CircleHelp, kind: { type: "navigate", href: "/admin/hjelp" } },
   { id: "s-planer-alle", label: "Planer (alle)", description: "Alle treningsplaner", keywords: ["plan", "planer", "alle", "oversikt"], icon: Layers, kind: { type: "navigate", href: "/admin/plans" } },
   { id: "s-okter", label: "Økter", description: "Alle økter", keywords: ["okt", "økt", "okter", "økter", "session"], icon: Clock, kind: { type: "navigate", href: "/admin/okter" } },
+  { id: "s-opptak", label: "Opptak", description: "Opptak av coaching-økter med AI-sammendrag", keywords: ["opptak", "lyd", "mikrofon", "transkribering", "sammendrag", "referat", "recording"], icon: Mic, kind: { type: "navigate", href: "/admin/recording" } },
   { id: "s-gjennomfore", label: "Gjennomføre", description: "Gjennomføring av økter", keywords: ["gjennomfore", "gjennomføre", "utfor", "live"], icon: Play, kind: { type: "navigate", href: "/admin/gjennomfore" } },
   { id: "s-periode", label: "Periode-fordeling", description: "Fordeling per periodetype", keywords: ["periode", "fordeling", "pyramide", "grunn", "spes"], icon: SlidersHorizontal, kind: { type: "navigate", href: "/admin/settings/periode-fordeling" } },
+  { id: "s-periode-navn", label: "Periodenavn", description: "Koble ukjente periodenavn til periodetype", keywords: ["periode", "navn", "ukjent", "grunn", "spes", "turn"], icon: Tag, kind: { type: "navigate", href: "/admin/settings/periode-navn" } },
   { id: "s-live", label: "Live", description: "Live-økter nå", keywords: ["live", "na", "nå", "direkte"], icon: Monitor, kind: { type: "navigate", href: "/admin/agencyos/live" } },
   { id: "s-workspace", label: "Workspace", description: "Arbeidsflate", keywords: ["workspace", "arbeid", "flate"], icon: LayoutDashboard, kind: { type: "navigate", href: "/admin/workspace" } },
   { id: "s-marketing", label: "Marketing", description: "Markedsføring og kampanjer", keywords: ["marketing", "marked", "kampanje", "annonse"], icon: Megaphone, kind: { type: "navigate", href: "/admin/marketing" } },
   { id: "s-kalender-synk", label: "Kalender-synk (Google)", description: "Google Calendar-kobling", keywords: ["kalender", "synk", "google", "sync"], icon: RefreshCw, kind: { type: "navigate", href: "/admin/settings/calendar" } },
   { id: "s-klubb", label: "Klubb-innstillinger", description: "Klubbens oppsett", keywords: ["klubb", "innstilling", "anlegg", "bane"], icon: Building2, kind: { type: "navigate", href: "/admin/klubb/innstillinger" } },
   { id: "s-audit", label: "Audit-log", description: "Hendelseslogg", keywords: ["audit", "log", "logg", "historikk", "sikkerhet"], icon: Shield, kind: { type: "navigate", href: "/admin/audit-log" } },
+  { id: "s-feillogg", label: "Feillogg", description: "Feil i produksjon med stack trace", keywords: ["feil", "feillogg", "error", "krasj", "stack", "drift"], icon: AlertTriangle, kind: { type: "navigate", href: "/admin/feillogg" } },
   // --- System ---
   {
     id: "view-mode-player",

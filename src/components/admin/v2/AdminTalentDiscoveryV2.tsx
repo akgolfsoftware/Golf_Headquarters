@@ -27,7 +27,7 @@ import {
 import {
   leggTilITalent,
   type LeggTilState,
-} from "@/app/admin/(legacy)/talent/discovery/actions";
+} from "@/app/admin/talent/discovery/actions";
 
 // ── Datakontrakt (mappes fra loaderen i ruten) ──────────────────
 export interface TalentKandidat {

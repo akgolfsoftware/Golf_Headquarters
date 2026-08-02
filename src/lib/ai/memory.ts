@@ -1,14 +1,11 @@
-// Bruker-spesifikk minne-skjelett for AI-agents.
+// Bruker-spesifikk minne for AI-agents.
 //
 // Tanken: hver bruker (Anders som coach, eller en spiller) har persistert
 // kontekst som overlever mellom samtaler — f.eks. preferanser, fokusområder,
-// tidligere coachings-beslutninger.
-//
-// Foreløpig in-memory-stub. Persistering via Prisma kommer i egen fase
-// (ny modell `AiMemory` eies av Spor 3). Når den landes, swappes denne
-// modulen til å lese/skrive til DB uten endringer i kallerne.
+// tidligere coachings-beslutninger. Persistert via Prisma-modellen `AiMemory`.
 
 import "server-only";
+import { prisma } from "@/lib/prisma";
 
 export type AiMemoryEntry = {
   userId: string;
@@ -17,31 +14,20 @@ export type AiMemoryEntry = {
   updatedAt: Date;
 };
 
-// Midlertidig in-memory-store. Reset ved server-restart — kun for utvikling.
-const _store = new Map<string, AiMemoryEntry>();
-
-function makeKey(userId: string, key: string): string {
-  return `${userId}::${key}`;
-}
-
 /**
  * Lagre eller oppdatere en minne-oppføring for en bruker.
- *
- * TODO: persistering via Prisma (modell AiMemory) — Spor 3 sin fase.
  */
 export async function rememberFact(opts: {
   userId: string;
   key: string;
   value: string;
 }): Promise<AiMemoryEntry> {
-  const entry: AiMemoryEntry = {
-    userId: opts.userId,
-    key: opts.key,
-    value: opts.value,
-    updatedAt: new Date(),
-  };
-  _store.set(makeKey(opts.userId, opts.key), entry);
-  return entry;
+  const row = await prisma.aiMemory.upsert({
+    where: { userId_key: { userId: opts.userId, key: opts.key } },
+    create: { userId: opts.userId, key: opts.key, value: opts.value },
+    update: { value: opts.value },
+  });
+  return row;
 }
 
 /**
@@ -49,11 +35,7 @@ export async function rememberFact(opts: {
  * med bruker-spesifikk kontekst.
  */
 export async function recallMemory(userId: string): Promise<AiMemoryEntry[]> {
-  const out: AiMemoryEntry[] = [];
-  for (const entry of _store.values()) {
-    if (entry.userId === userId) out.push(entry);
-  }
-  return out;
+  return prisma.aiMemory.findMany({ where: { userId } });
 }
 
 /**
@@ -63,7 +45,10 @@ export async function forgetFact(opts: {
   userId: string;
   key: string;
 }): Promise<boolean> {
-  return _store.delete(makeKey(opts.userId, opts.key));
+  const result = await prisma.aiMemory
+    .delete({ where: { userId_key: { userId: opts.userId, key: opts.key } } })
+    .catch(() => null);
+  return result !== null;
 }
 
 /**

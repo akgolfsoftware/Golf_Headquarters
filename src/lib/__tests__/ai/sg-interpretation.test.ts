@@ -29,9 +29,14 @@ describe("SG Interpretation — system-prompt", () => {
     assert.ok(SG_INTERPRETATION_SYSTEM.includes("NED"));
   });
 
-  it("krever drill-anbefalinger (3-5)", () => {
-    assert.ok(SG_INTERPRETATION_SYSTEM.includes("3-5"));
+  it("binder drill-navn til lista i brukermeldingen", () => {
+    // Erstatter en tidligere test som krevde «foreslå 3-5 navngitte drills».
+    // Den instruksen sto uten at noen drill-liste ble sendt med i prompten,
+    // så modellen fant navnene på — og oppdiktede drills havnet i sammendraget
+    // coachen leser. Drill-lista kommer nå fra ExerciseDefinition og sendes med.
     assert.ok(SG_INTERPRETATION_SYSTEM.includes("drills"));
+    assert.ok(!SG_INTERPRETATION_SYSTEM.includes("foreslå 3-5 navngitte drills"));
+    assert.ok(SG_INTERPRETATION_SYSTEM.includes("Finn aldri på et drill-navn"));
   });
 
   it("inneholder sg-interpretation skill-kunnskap", () => {

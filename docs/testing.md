@@ -12,9 +12,10 @@ Kort guide for hvordan kjøre tester lokalt og hva som dekkes.
 ## Kommandoer
 
 ```bash
-npm test          # Kjør alle unit-tester (node:test)
-npm run test:e2e  # Kjør Playwright E2E (auto-starter dev-server lokalt)
-npm run test:all  # Kjør begge sett etter hverandre
+npm test               # Kjør alle unit-tester (node:test)
+npm run test:e2e       # Kjør Playwright E2E (auto-starter dev-server lokalt)
+npm run test:e2e:pilot # Pilot-smoke: opptak + Før/Etter (chromium)
+npm run test:all       # Kjør begge sett etter hverandre
 ```
 
 Playwright-aliaser som finnes fra før:
@@ -53,9 +54,41 @@ Dekker:
 | `PLAYWRIGHT_BASE_URL` | `http://localhost:3000` | URL Playwright kjører mot. Bytt til `:3002` hvis port 3000 er opptatt. |
 | `E2E_TEST_USER_EMAIL` | — | Email til seedet test-PLAYER. Settes for å slå på credit-booking og PLAYER-redirect-tester. |
 | `E2E_TEST_USER_PASSWORD` | — | Passord til samme bruker. |
+| `E2E_COACH_EMAIL` | — | Valgfri coach for pilot-smoke. Ellers brukes `coachtest@akgolf.test`. |
+| `E2E_COACH_PASSWORD` | — | Passord hvis du setter `E2E_COACH_EMAIL`. |
+| `SCREENTEST_PASSWORD` | — | Passord for `coachtest@akgolf.test` (seed-screentest-coach). Nok alene for pilot-smoke. |
 | `CI` | — | I CI-modus auto-starter ikke dev-server. |
 
-Hvis `E2E_TEST_USER_*` ikke er satt: testene som krever innlogget spiller skip-er seg selv automatisk. Vil ikke gjøre suiten rød.
+Hvis coach-/spiller-credentials ikke er satt: testene som krever innlogging skip-er seg selv. Vil ikke gjøre suiten rød.
+
+### Pilot-smoke (opptak + Før/Etter)
+
+**Enkleste oppsett** (samme som resten av AgencyOS e2e):
+
+```bash
+# I .env.local — bare denne hvis coachtest allerede er seedet:
+SCREENTEST_PASSWORD=ditt-testpassord
+
+# Første gang (oppretter coachtest@akgolf.test + demo-stall):
+npx tsx scripts/seed-screentest-coach.ts
+
+npm run test:e2e:pilot
+```
+
+Alternativ: sett `E2E_COACH_EMAIL` + `E2E_COACH_PASSWORD` til en annen coach-konto.
+
+Dekker: uinnlogget redirect på `/admin/recording`, `/admin/godkjenninger`, `/admin/spillere`; med coach — at opptak-UI, godkjenninger og Før-kort laster uten krasj.
+
+**Merk:** Playwright leser ikke `.env.local` selv — `tests/e2e/_auth-helpers.ts` laster den.
+
+### Full pilot-flyt (prod, uten mikrofon)
+
+```bash
+# E2E_COACH_EMAIL + E2E_COACH_PASSWORD i .env.local
+npm run pilot:flyt-smoke
+```
+
+Script: `scripts/pilot-flyt-smoke.mjs` — login → manuell lydsamtykke → start/complete/dummy/analyze → godkjenn → Før-kort. Demo-sjekkliste: `docs/pilot-demo-sjekkliste.md`.
 
 ### Seed test-bruker
 

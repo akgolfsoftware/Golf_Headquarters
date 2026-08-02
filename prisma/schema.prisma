@@ -59,8 +59,9 @@ enum SessionStatusV2 {
 // Påmeldingsstatus for TournamentEntry. Erstatter notes-prefiks-hack i
 // withdrawFromTournament.
 enum TournamentEntryStatus {
-  PLANNED // meldt på
-  CONFIRMED // bekreftet av spiller
+  PLANNED // på planen, ikke påmeldt ennå
+  CLAIMED_REGISTERED // trykket «meldt på» — venter dobbel bekreftelse
+  CONFIRMED // dobbel bekreftelse: spiller hevder påmelding er gjort
   WITHDRAWN // trukket
   COMPLETED // gjennomført
   DNF // started, men trakk
@@ -113,6 +114,7 @@ enum ExerciseSource {
 enum ExerciseVisibility {
   PRIVATE        // Kun skaperen + tildelt coach
   COACH_PLAYERS  // Alle coachens spillere (kun for COACH-source)
+  PLATFORM       // Delt med hele plattformen (PLAYER-source med drillDelingGodtatt)
 }
 
 // P14: spiller-status for permisjon, skade, retur til spill
@@ -352,6 +354,13 @@ model User {
   // Brukes for å filtrere drills slik at spilleren kun ser øvelser de kan gjøre.
   tilgjengeligeFasiliteter DrillFasilitet[] @default([])
 
+  // Samtykke fra onboarding: egne drills spilleren lager kan deles med plattformen
+  // (styrer visibility på ExerciseDefinition med source=PLAYER: PLATFORM vs PRIVATE).
+  drillDelingGodtatt Boolean @default(false)
+
+  // Spillerens navngitte treningssteder (onboarding steg 3).
+  playerFacilities PlayerFacility[]
+
   // GDPR soft-delete (P20). Bruker markeres som deletedAt = now() ved kontosletting.
   // Cron /api/cron/cleanup-deleted-accounts sletter permanent etter 30 dager.
   deletedAt DateTime?
@@ -364,6 +373,13 @@ model User {
   // soft-delete, som fortsatt hard-slettes etter 30 dager.
   anonymisertAt DateTime?
 
+  // Snittscore stemplet i det kontoen anonymiseres (Anders' beslutning
+  // 2026-07-28: ved kontosletting beholdes data, aggregert til spillernivå).
+  // Rundene beholdes også — dette er tallet som overlever uansett hva som
+  // senere ryddes bort, så spillerens nivå aldri går tapt.
+  snittScoreVedSletting  Float?
+  antallRunderVedSletting Int?
+
   // GDPR art. 8 — mindreårig + foreldresamtykke (P17).
   // Norge: 16 år er aldersgrense for å samtykke selv til behandling av persondata.
   dateOfBirth             DateTime?
@@ -374,6 +390,7 @@ model User {
   // P14: spiller-status (permisjon, skade, return-to-play)
   userStatus UserStatus @default(AKTIV)
   leaves     Leave[]
+  busyBlocks PlayerBusyBlock[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -443,6 +460,7 @@ model User {
   // AI-genererte planer (Spor 2)
   aiGenerationsAsUser  AiPlanGeneration[] @relation("AiGenUser")
   aiGenerationsAsCoach AiPlanGeneration[] @relation("AiGenCoach")
+  aiMemory             AiMemory[]
 
   // Foreldreportal — invitasjoner (Spor 3)
   playerInvitations   ParentInvitation[] @relation("PlayerInvitations")
@@ -478,6 +496,9 @@ model User {
 
   // Helse-logg (H1) — daglige målinger, én rad per dato
   healthEntries HealthEntry[]
+
+  // Samtykker til helsedata fra treningsklokke (GDPR art. 9-2 a)
+  helseSamtykker HelseSamtykke[]
 
   // Talent-modul (M13) — kun for spillere i talent-tracking
   talentTracking TalentTracking?
@@ -644,6 +665,46 @@ model HealthEntry {
   @@map("health_entries")
 }
 
+/// Samtykke til helsedata fra treningsklokke (Whoop/Garmin) — GDPR art. 9-2 a.
+///
+/// APPEND-ONLY. Et samtykke trekkes tilbake ved å skrive en NY rad med
+/// gitt = false, aldri ved å endre eller slette den gamle. Da beholder vi
+/// beviskjeden dokumentasjonsplikten i art. 7-1 krever: hvem samtykket, når,
+/// og til nøyaktig hvilken tekst. Gjeldende status = nyeste rad per (userId, type).
+///
+/// Cascade på user: sletter vi brukeren, forsvinner samtykkehistorikken med den.
+model HelseSamtykke {
+  id String @id @default(cuid())
+
+  /// Spilleren helsedataene gjelder.
+  userId String
+
+  /// "WEARABLE_HELSE" = hente søvn/restitusjon/puls fra klokka i det hele tatt.
+  /// "COACH_INNSYN"   = coach kan se restitusjonsstatus (grønn/gul/rød).
+  /// Eget samtykke per formål — art. 9 krever spesifikt, ikke samlet, samtykke.
+  type String
+
+  /// true = gitt, false = trukket tilbake.
+  gitt Boolean
+
+  /// Hvilken versjon av samtykketeksten brukeren faktisk fikk se
+  /// (HELSE_SAMTYKKE_VERSJON i src/lib/health/samtykke-regler.ts).
+  tekstVersjon String
+
+  /// Hvem som utførte handlingen — spilleren selv eller en foresatt.
+  gittAvUserId String
+
+  /// "SELV" | "FORESATT". Under 16 år kan kun FORESATT gi samtykket (art. 8).
+  gittAvRolle String
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type, createdAt])
+  @@map("helse_samtykker")
+}
+
 // P14: Permisjon/skade (Leave) per spiller.
 // Når en Leave er aktiv (endAt null eller > now), Subscription pauses.
 // Coach varsles ved opprettelse og return-to-play-modal aktiveres.
@@ -667,6 +728,43 @@ model Leave {
   @@index([userId, startAt])
   @@index([userId, endAt])
   @@map("leaves")
+}
+
+// Spillerens egen opptatte tid — det som ikke ligger i noen annen tabell.
+//
+// Fire kilder gjør en spiller utilgjengelig: gruppetimeplan (GroupSchedule),
+// skolerute (SchoolScheduleEntry, per klassetrinn), fravær/skade (Leave) og
+// personlige avtaler. De tre første fantes allerede; denne dekker den fjerde
+// — «mandag 16.30 tannlege» hadde ingen plass i databasen.
+//
+// Planleggeren trekker all opptatt tid fra døgnet for å finne ledige luker,
+// slik at en generert treningsplan havner i timer spilleren faktisk har.
+model PlayerBusyBlock {
+  id      String @id @default(cuid())
+  userId  String
+  title   String
+  startAt DateTime
+  endAt   DateTime
+  // SKOLE | JOBB | AVTALE | REISE | ANNET — fritekst-enum som GroupSchedule.kind,
+  // ikke Prisma-enum: kategoriene er en visnings- og filtreringsdetalj, og en ny
+  // kategori skal ikke kreve migrasjon.
+  kind    String @default("AVTALE")
+  // WEEKLY | NONE. Samme enkle mønster som GroupSchedule.recurring — skole er
+  // ukentlig, tannlege er én gang. Ingen full gjentakelsesmotor (ingen unntak,
+  // ingen sluttdato-serie); trengs det, er det en egen sak.
+  recurring String? @default("NONE")
+  // Skjuler tittelen for alle andre enn spilleren selv. En tannlegetime kan
+  // røpe helseopplysninger, og flere av spillerne er under 18 — coachen skal
+  // se at tiden er opptatt, ikke hva den går til. Tiden er aldri privat.
+  isPrivate Boolean  @default(false)
+  note      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, startAt])
+  @@map("player_busy_blocks")
 }
 
 // Foreldre-invitasjons-relasjon (V2 Spor 3).
@@ -724,6 +822,11 @@ model ServiceType {
   name        String
   // Pris i ØRE (Int). Aldri Float for penger. Format i UI: priceOre / 100.
   priceOre    Int
+  // Hvor mange spillere som kan dele samme luke hos samme coach.
+  // 1 = vanlig time. 2 = «2-til-1» (Anders' faste onsdagsøkter). Se
+  // src/lib/booking/deling.ts — overlapp er kun lov ved nøyaktig samme
+  // tjeneste i nøyaktig samme tidsrom.
+  maxDeltakere Int     @default(1)
   durationMin Int
   description String?
   active      Boolean  @default(true)
@@ -779,6 +882,11 @@ model Booking {
   // Google Calendar event-ID hvis booking er pushet til coachens kalender.
   // Brukes til oppdater/slett ved endring/avbestilling. Null hvis Calendar
   // ikke er koblet, eller hvis push feilet (best-effort sync).
+  // Hvilken plass i luka bookingen opptar (1..ServiceType.maxDeltakere).
+  // Sammen med coachId og tidsrommet inngår den i EXCLUSION-constraintet
+  // booking_coach_no_overlap, som gjør dobbeltbooking fysisk umulig —
+  // samtidig som delte økter (2-til-1) er lov fordi de har ulik plass.
+  plassNr            Int       @default(1)
   googleEventId           String?
   // Hvilken fasilitet (rom/range/simulator) bookingen tar opp. Optional —
   // ikke alle bookinger er koblet til en spesifikk fasilitet (drop-in kan
@@ -927,6 +1035,22 @@ model AiPlanGeneration {
   @@map("ai_plan_generations")
 }
 
+// Bruker-spesifikk minne-lagring for AI-agenter (Spor 3). Erstatter
+// in-memory-stubben i src/lib/ai/memory.ts — nøkkel/verdi-par per bruker.
+model AiMemory {
+  id        String   @id @default(cuid())
+  userId    String
+  key       String
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, key])
+  @@map("ai_memory")
+}
+
 model TrainingPlanSession {
   id            String              @id @default(cuid())
   planId        String
@@ -945,6 +1069,10 @@ model TrainingPlanSession {
   miljo         MMiljo?
   csNivaa       CSNivaa?
   pPosisjoner   String[]
+  // Hvor økten skjer (fritekst eller navn fra PlayerFacility) + hva den skal oppnå.
+  // Speiles mot TrainingSessionV2.location/maalsetning.
+  location      String?
+  maalsetning   String?
   status        SessionStatus       @default(PLANNED)
   liveSnapshot  Json? // Løpende live-fremdrift (reps/tid per drill). Nulles ved completeSession.
   createdAt     DateTime            @default(now())
@@ -1004,6 +1132,10 @@ model ExerciseDefinition {
   defaultSets        Int?
   defaultReps        Int?
   csTargetByKategori Json? // {A:95,B:90,...} per NGF-kategori
+  // Planlagt L-trapp-default (AK-formel): prefill for reps per læringsfase.
+  defaultRepsUtenBall Int?
+  defaultRepsLavFart  Int?
+  defaultRepsAuto     Int?
 
   // Egendefinerte øvelser (COACH/PLAYER-source)
   source       ExerciseSource      @default(SYSTEM)
@@ -1049,6 +1181,10 @@ model SessionDrill {
   repMinutter Int? // minutter (TID)
   repSett     Int? // sett (SETT_REPS)
   repReps     Int? // reps per sett (SETT_REPS)
+  // Planlagt L-trapp (AK-formel): reps per læringsfase. Speiler TrainingDrillV2.
+  planRepsUtenBall Int?
+  planRepsLavFart  Int?
+  planRepsAuto     Int?
   pPosisjoner String[]
   notes      String?
   orderIndex Int     @default(0)
@@ -1398,6 +1534,7 @@ model TestDefinition {
   results  TestResult[]
   sessions TestSession[]
   assignments TestAssignment[]
+  linkedGoals Goal[]
 
   @@index([createdById, isCustom])
   @@index([visibility, isCustom])
@@ -1528,6 +1665,9 @@ model Signal {
   kind       String
   value      Float?
   payload    Json?
+  // Sporbarhet: hvilke rader/regler/terskler som utløste signalet. Nullbar —
+  // gamle signaler har ingen provenance.
+  provenance Json?
   computedAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -1549,6 +1689,14 @@ model PlanAction {
   // Status: PENDING | ACCEPTED | REJECTED
   status     String   @default("PENDING")
   agentName  String
+  // Sporbarhet: hvilke rader/regler/terskler som utløste forslaget. Nullbar —
+  // gamle forslag har ingen provenance.
+  provenance Json?
+  // Sjekkpunktet er tråden mellom ETTER og neste FØR — skrives ved godkjenning,
+  // leses av Før-kortet. Nullbar: gamle forslag har ingen.
+  sjekkpunkt String?
+  // Hvilken fangst (opptak) forslaget kom fra. Nullbar av samme grunn.
+  fangstId   String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -1559,6 +1707,46 @@ model PlanAction {
   @@index([userId, status, createdAt])
   @@index([coachId, status, createdAt])
   @@map("plan_actions")
+}
+
+// Samtykke til lydopptak. Hard gate: uten status GITT kan ingen fangst starte.
+// Bevisst uten @relation til User (jf. gotchas: nye modeller holdes isolerte) —
+// fremmednøkkelen mot users(id) med ON DELETE CASCADE ligger i databasen.
+model LydSamtykke {
+  id            String    @id @default(cuid())
+  // Spilleren opptaket gjelder.
+  userId        String
+  // GITT | TRUKKET | VENTER
+  status        String    @default("VENTER")
+  // SELV (myndig) | FORESATT
+  gittAv        String
+  // Verifisert e-post til foresatt. Null når gittAv = SELV.
+  foresattEpost String?
+  gittAt        DateTime?
+  trukketAt     DateTime?
+  // Ordlyden det faktisk ble sagt ja til, lagret som kopi. Aldri en peker til
+  // en tekst som kan endres i ettertid.
+  ordlyd        String
+  // Magisk lenke til foresatt (null etter GITT/TRUKKET eller uten e-postflyt).
+  // token = legacy (klartekst, fases ut). tokenHash = sha256 av rå token i e-post.
+  token           String?   @unique
+  tokenHash       String?   @unique
+  tokenExpiresAt  DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@unique([userId])
+  @@map("lyd_samtykker")
+}
+
+// «Sist sjekket av meg» — skrives kun når Tråd-fanen åpnes, ikke profilen.
+model TradApning {
+  id        String   @id @default(cuid())
+  coachId   String
+  spillerId String
+  apnetAt   DateTime @default(now())
+
+  @@unique([coachId, spillerId])
+  @@map("trad_apninger")
 }
 
 model AgentRun {
@@ -1580,7 +1768,7 @@ model AgentRun {
 model Goal {
   id          String       @id @default(cuid())
   userId      String
-  // Type: HCP_TARGET | ROUNDS_PER_MONTH | SG_AREA | FREE_TEXT
+  // Type: HCP_TARGET | ROUNDS_PER_MONTH | SG_AREA | SESSION_FREQUENCY | TEST_SCORE | FREE_TEXT
   type        String
   // Resultatmål (OUTCOME) vs prosessmål (PROCESS).
   // Alle eksisterende mål defaulter til OUTCOME — kan endres manuelt.
@@ -1594,10 +1782,23 @@ model Goal {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
+  // Dato målet ble markert oppnådd (Fase 1.14b). Null for mål oppnådd før dette
+  // feltet fantes — vi gjetter aldri en historisk dato vi ikke vet.
+  achievedAt DateTime?
+
+  // SESSION_FREQUENCY: hvilket pyramide-område fremdriften telles mot
+  // (fullførte økter siste 7 dager). Null for mål uten øktkobling.
+  linkedPyramidArea PyramidArea?
+
+  // TEST_SCORE: hvilken test fremdriften måles mot (siste TestResult.score).
+  linkedTestId String?
+  linkedTest   TestDefinition? @relation(fields: [linkedTestId], references: [id], onDelete: SetNull)
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, status])
   @@index([userId, category, status])
+  @@index([linkedTestId])
   @@map("goals")
 }
 
@@ -2039,7 +2240,13 @@ model GoogleCalendarSubscription {
   color            String?
   // Sync-retning
   syncPush         Boolean   @default(false)
+  // syncPull = kalenderen BLOKKERER booking (freebusy). Bevisst skilt fra
+  // visIKalender siden 2026-07-27: du vil se familie- og kollegakalendere i
+  // AgencyOS uten at de gjør deg utilgjengelig for kundebooking.
   syncPull         Boolean   @default(true)
+  // visIKalender = hendelsene speiles lokalt og VISES i /admin/kalender.
+  // Påvirker ikke booking-tilgjengelighet.
+  visIKalender     Boolean   @default(false)
   active           Boolean   @default(true)
   // Google Push Notifications watch-tilstand (kun ved syncPull=true)
   watchChannelId   String?
@@ -2048,15 +2255,107 @@ model GoogleCalendarSubscription {
   // Cache av siste sync
   lastSyncAt       DateTime?
   lastError        String?
+  // Googles inkrementelle sync-token (steg 1, 2026-07-27). Erstatter
+  // updatedMin-vinduer: Google leverer nøyaktig det som er endret siden sist,
+  // uten hull. Nullstilles ved 410 GONE → full re-sync.
+  syncToken        String?
+  // Speilingsvindu: hvor langt fram/bak vi har hentet hendelser ved full sync.
+  mirrorFrom       DateTime?
+  mirrorTo         DateTime?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
-  connection GoogleCalendarConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  connection   GoogleCalendarConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  events       GoogleCalendarEvent[]
+  pushedEvents PushedCalendarEvent[]
 
   @@unique([connectionId, googleCalendarId])
   @@index([connectionId, active])
   @@index([watchChannelId])
   @@map("google_calendar_subscriptions")
+}
+
+// Lokal speiling av hendelser fra Google-kalendere (steg 1, 2026-07-27).
+//
+// Hvorfor: fram til nå blokkerte Google-hendelser booking via freebusy, men de
+// ble aldri lagret — så de kunne ikke VISES i AgencyOS-kalenderen. Denne
+// tabellen er lese-speilet: Google eier innholdet, vi holder en kopi slik at
+// kalenderflatene kan rendre alt fra én kilde uten API-kall per sidelasting.
+//
+// Synk er inkrementell via Googles syncToken (lagret på subscription). Rader
+// som Google melder som cancelled slettes. Heldagshendelser markeres med
+// allDay + lagres som [00:00, 24:00) i Oslo-tid.
+model GoogleCalendarEvent {
+  id             String   @id @default(cuid())
+  subscriptionId String
+  // Googles event-id (unik innenfor én kalender, ikke på tvers)
+  googleEventId  String
+  // iCalUID — samme hendelse på tvers av kalendere/deltakere. Brukes til
+  // dedupe når samme avtale ligger i flere av Anders' kalendere.
+  iCalUid        String?
+  summary        String
+  description    String?
+  location       String?
+  startAt        DateTime
+  endAt          DateTime
+  allDay         Boolean  @default(false)
+  // Googles egen status: confirmed | tentative (cancelled slettes lokalt)
+  status         String   @default("confirmed")
+  // "opaque" = opptatt (blokkerer), "transparent" = ledig (blokkerer ikke)
+  transparency   String   @default("opaque")
+  // Satt for enkeltforekomster i en gjentakende serie
+  recurringEventId String?
+  htmlLink       String?
+  // Googles updated-tidsstempel — loop-vern: vi skriver kun hvis Googles
+  // versjon er nyere enn den vi allerede har speilet.
+  googleUpdatedAt DateTime?
+  // Satt når hendelsen er en app-booking vi selv har pushet (unngår at
+  // egne bookinger vises dobbelt i kalenderen).
+  bookingId      String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  subscription GoogleCalendarSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@unique([subscriptionId, googleEventId])
+  @@index([subscriptionId, startAt])
+  @@index([startAt, endAt])
+  @@index([iCalUid])
+  @@index([bookingId])
+  @@map("google_calendar_events")
+}
+
+// Hva AgencyOS har pushet UT til Google, og hvor (steg 3, 2026-07-27).
+//
+// Erstatter det skalare Booking.googleEventId, som bare rommet ÉN event-id:
+// hadde coachen flere push-kalendere, ble kun den første lagret, og
+// oppdatering/sletting traff bare den ene. Her får hver (kalender, kilde) sin
+// egen rad, så alt kan holdes i synk og ryddes bort igjen.
+//
+// kildeType: BOOKING | CALENDAR_EVENT | GROUP_SCHEDULE | TRAINING_SESSION
+// Bevisst plain string + kildeId uten @relation: kildene ligger i fire ulike
+// tabeller, og en polymorf FK finnes ikke i Prisma. Opprydding skjer eksplisitt
+// via fjernKildeFraGoogle når kilden slettes.
+model PushedCalendarEvent {
+  id             String   @id @default(cuid())
+  subscriptionId String
+  googleEventId  String
+  kildeType      String
+  kildeId        String
+  // Naiv veggklokke, speiler kildens tid — brukes til å hoppe over push når
+  // ingenting er endret.
+  startAt        DateTime
+  endAt          DateTime
+  sistPushetAt   DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  subscription GoogleCalendarSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@unique([subscriptionId, kildeType, kildeId])
+  @@index([kildeType, kildeId])
+  @@index([googleEventId])
+  @@map("pushed_calendar_events")
 }
 
 // ---------- CoachHQ-modeller (Fase 2.1) ----------
@@ -2090,6 +2389,16 @@ model Tournament {
   winnerName   String?
   officialUrl  String?
   lastSyncAt   DateTime?
+
+  // Turneringsplanlegger (i dag + fremtid) — synk/import
+  // Påmeldingsfrist (UTC). GolfBox EntryCloses der kjent.
+  entryCloses       DateTime?
+  // Extern påmeldingslenke (GolfBox/NGF/arrangør). App verifiserer IKKE påmelding.
+  registrationUrl   String?
+  // Eksplisitte rundedatoer YYYY-MM-DD der kjent; ellers avled fra start/end.
+  roundDates        Json?
+  // Anbefalt nivå: fritekst eller JSON { hcpMin, hcpMax, ak, label }
+  recommendedLevel  String?
 
   // --- Stats Fase 1: utvidelser for /turneringer + manuell innlegg + merge ---
   // Kort visningsnavn (f.eks. "WGC-FedEx" istedenfor "World Golf Championships - FedEx St. Jude Invitational")
@@ -2466,7 +2775,12 @@ model TournamentEntry {
   // Felles
   category        String? // "A-rekke", "Åpen NM", "Kretsmesterskap"
   priority        String                @default("NORMAL") // MAJOR | NORMAL | LOCAL
+  // Plan A (hovedmål) / B (backup) / C (utvikling)
+  planTier        String                @default("B")
   entryStatus     TournamentEntryStatus @default(PLANNED)
+  // Dobbel påmeldingsbekreftelse (spilleransvar — app verifiserer ikke hos arrangør)
+  playerClaimedRegisteredAt   DateTime?
+  playerConfirmedRegisteredAt DateTime?
   withdrawnAt     DateTime?
   withdrawnReason String?
   notes           String?
@@ -2480,6 +2794,7 @@ model TournamentEntry {
   @@index([userId])
   @@index([seasonPlanId])
   @@index([tournamentId])
+  @@index([userId, entryStatus])
   @@map("tournament_entries")
 }
 
@@ -2489,6 +2804,9 @@ model Group {
   // A1 | A2 | A3 | A4 | A5
   level           String?
   coachId         String?
+  // kontrakt | program | adhoc — datakilde for GroupCards tre varianter.
+  // NB: GroupSchedule.kind er et annet, urelatert felt (SAMLING/HELDAGSSAMLING).
+  kind            String   @default("adhoc")
   maxParticipants Int?     // max deltagere for gruppe-treninger
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -2850,6 +3168,9 @@ model TrainingSessionV2 {
   practiceType         PracticeType
   status               SessionStatusV2        @default(PLANNED)
   notes                String?
+  // Hvor økten skjer + hva den skal oppnå. Speiles mot TrainingPlanSession.
+  location             String?
+  maalsetning          String?
   isCoachCreated       Boolean                @default(true)
   rrule                String?
   recurringGroupId     String?
@@ -2951,6 +3272,14 @@ model TrainingDrillV2 {
   repMinutter         Int? // minutter (TID)
   repSett             Int? // sett (SETT_REPS)
   repReps             Int? // reps per sett (SETT_REPS)
+  // Planlagt L-trapp (AK-formel): reps per læringsfase. Kanonisk kontrakt delt med SessionDrill.
+  planRepsUtenBall    Int?
+  planRepsLavFart     Int?
+  planRepsAuto        Int?
+  // Faktisk medgått tid (live-timer) + kobling til bibliotek-drill for varighetsestimat.
+  // exerciseId er bevisst uten @relation (kirurgisk additiv endring, jf. gotchas).
+  actualDurationSec   Int?
+  exerciseId          String?
   pPosisjoner         String[]
   lifeKode            String?
   componentFocus      String?
@@ -3176,6 +3505,57 @@ model ClubsPracticed {
   @@index([sessionId])
   @@index([club, createdAt])
   @@map("clubs_practiced")
+}
+
+// Kunnskapsbase (RAG) — MasterBrain rag-corpus med pgvector-embeddings.
+// Tabellen opprettes kirurgisk via scripts/create-knowledge-chunks-2026-07-27.ts
+// (migrate dev/db push er blokkert — se .claude/rules/gotchas.md). Seedes fra
+// ~/Developer/Masterbrain/rag-corpus via scripts/seed-rag-corpus-2026-07-27.ts.
+// Spørres via src/lib/ai/rag.ts ($queryRaw — Prisma kan ikke lese vector-felt).
+model KnowledgeChunk {
+  id        String                       @id // chunk_id fra MasterBrain (f.eks. "sg-baselines-001")
+  corpus    String // sg-trackman | sg-baselines | treningsvolum | morad | live
+  content   String
+  source    String? // kildedokument (fra frontmatter)
+  section   String? // seksjon i kildedokumentet
+  tags      String[]                     @default([])
+  topics    String[]                     @default([])
+  relevance String[]                     @default([])
+  wordCount Int                          @default(0)
+  embedding Unsupported("vector(1536)")? // openai/text-embedding-3-small via AI Gateway
+  createdAt DateTime                     @default(now())
+  updatedAt DateTime                     @updatedAt
+
+  @@index([corpus])
+  @@map("knowledge_chunks")
+}
+
+// Spillerminne for AI-agentene — episodisk/semantisk/prosedyrisk per spiller.
+// Tabellen opprettes kirurgisk via scripts/create-ai-memories-2026-07-27.ts.
+// playerId er plain String (FK med ON DELETE CASCADE ligger i DDL — GDPR:
+// bruker-sletting fjerner alt minne). Leses/skrives via src/lib/ai/memory-store.ts.
+//
+// NAVN (2026-08-02): het opprinnelig AiMemory, men det navnet var allerede
+// tatt av nøkkel/verdi-modellen over (tabell `ai_memory`). To modeller med
+// samme navn får ikke Prisma til å validere, og main sto rød fra #166 til
+// dette ble rettet. Tabellnavnet `ai_memories` er urørt, og all lesing/
+// skriving går uansett via rå SQL i memory-store.ts — ingen kode brukte
+// modellnavnet.
+model AiSpillerminne {
+  id         String                       @id
+  playerId   String
+  kind       String // EPISODIC | SEMANTIC | PROCEDURAL
+  content    String
+  metadata   Json                         @default("{}")
+  embedding  Unsupported("vector(1536)")?
+  sourceType String // coaching-session | coach-note | plan-action | consolidation
+  sourceId   String?
+  strength   Float                        @default(1)
+  createdAt  DateTime                     @default(now())
+  updatedAt  DateTime                     @updatedAt
+
+  @@index([playerId, kind, updatedAt])
+  @@map("ai_memories")
 }
 
 // PGA Tour benchmark-data fra Data Golf — ukentlig cron-sync.
@@ -3747,6 +4127,28 @@ model FacilityPrefs {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("facility_prefs")
+}
+
+// PlayerFacility — spillerens egne, navngitte treningsfasiliteter (fra onboarding).
+// Erstatter de grove FacilityPrefs-booleans for nye flater: hver rad er ett sted
+// («Hjemmebane», «Garasje-simulator» …) med inne/ute og hva stedet har.
+// Cascade er påkrevd: radene er persondata og må forsvinne med brukeren (GDPR).
+// Union av capabilities speiles til User.tilgjengeligeFasiliteter ved lagring.
+model PlayerFacility {
+  id           String           @id @default(cuid())
+  userId       String
+  name         String
+  isIndoor     Boolean          @default(false)
+  capabilities DrillFasilitet[] @default([])
+  notes        String?
+  sortOrder    Int              @default(0)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("player_facilities")
 }
 
 // PlanSession — workbench-spesifikke sessions med drag-drop-persistering (Sprint 6)
@@ -4327,6 +4729,9 @@ model FysOkt {
   sortOrder        Int
   estimertMinutter Int?
   type             String? // styrke | rotasjon | mobilitet | kondisjon (v2 fysisk-logging)
+  // Gjennomføring (stemples av loggFysOkt) — gir fys-økter en dato i felles treningshistorikk.
+  gjennomfortAt    DateTime?
+  faktiskMinutter  Int?
 
   uke   FysUke         @relation(fields: [ukeId], references: [id], onDelete: Cascade)
   rader FysOvelseRad[]
@@ -4769,6 +5174,21 @@ model PeriodeFordeling {
   @@map("periode_fordelinger")
 }
 
+// Coach-lagt oversettelse fra fritekst periodenavn (TrainingPeriod.name) til
+// PeriodeType — supplerer den hardkodede ordboken i periode-navn.ts uten
+// kodeendring. `navn` lagres trim+lowercase-normalisert (periodeTypeFraNavn
+// sin normalisering), så oppslag er case-insensitivt uten funksjonell indeks.
+// Additiv (ingen enum-drift), plain felt, ingen @relation, per gotcha-regelen.
+model PeriodeNavnMapping {
+  id            String   @id @default(cuid())
+  navn          String   @unique
+  periodeType   String
+  oppdatertAvId String?
+  oppdatertAt   DateTime @default(now()) @updatedAt
+
+  @@map("periode_navn_mappinger")
+}
+
 /// Sync-state for DataGolf-endepunkter. Skrives ikke av denne appen i dag,
 /// men beholdes fordi ak-golf-intelligence-tjenesten kan bruke tabellen.
 /// (Reconciliert fra pre-eksisterende prod-drift 2026-07-18; ligger i den nye
@@ -4785,4 +5205,25 @@ model DatagolfSyncState {
 
   @@id([endpoint, paramsHash])
   @@map("datagolf_sync_state")
+}
+
+// ---------- Øvelses-motoren (radar → fabrikk, 2026-07-27) ----------
+
+// Rå funn fra radar-agenten (YouTube/RSS-søk etter drill-/test-inspirasjon og
+// utstyrsnyheter). Fabrikk-agenten leser ubehandlede rader herfra og bruker
+// dem + masterbrain-fasiten til å generere øvelse-/test-utkast (CaddieDraft).
+// Bevisst uten @relation (kirurgisk additiv modell, jf. gotchas.md).
+model RadarFunn {
+  id          String    @id @default(cuid())
+  kilde       String // "youtube" | "rss"
+  kildeNavn   String // kanalnavn / feed-/sidenavn
+  tittel      String
+  url         String
+  sammendrag  String?
+  publisertAt DateTime?
+  behandlet   Boolean   @default(false)
+  funnetAt    DateTime  @default(now())
+
+  @@index([behandlet, funnetAt])
+  @@map("radar_funn")
 }

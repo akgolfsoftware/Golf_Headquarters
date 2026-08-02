@@ -16,6 +16,7 @@ import type { LiveV2Drill, LiveV2DrillLog, LiveV2Session } from "@/components/po
 import { triggerLiveSessionAgent } from "@/lib/agents/triggers";
 import { GENERERT_FRA } from "@/lib/workbench/v2-sync";
 import { applyPositionTaskReps } from "@/lib/teknisk-plan/apply-reps";
+import { beregnSRpe } from "@/lib/training/srpe";
 
 export type StartSessionResult =
   | { state: "active" }
@@ -32,6 +33,9 @@ export type CompleteDrillInput = {
   repsHit: number;
   successRate?: number;
   notes?: string;
+  /** Medgått tid på drillen (sekunder), fra live-timeren. Mater
+   * varighetsestimatet neste gang drillen planlegges. */
+  actualDurationSec?: number;
 };
 
 type AccessResult =
@@ -110,6 +114,7 @@ function mapDrill(drill: {
   name: string;
   description: string | null;
   durationMinutes: number;
+  actualDurationSec: number | null;
   repetitions: number | null;
   pyramide: PyramidArea;
   lFase: string | null;
@@ -139,6 +144,7 @@ function mapDrill(drill: {
     name: drill.name,
     description: drill.description,
     durationMinutes: drill.durationMinutes,
+    actualDurationSec: drill.actualDurationSec,
     plannedReps: drill.repetitions ?? 0,
     pyramide: drill.pyramide,
     lFase: drill.lFase,
@@ -259,25 +265,6 @@ export async function loadLiveSession(sessionId: string): Promise<AccessResult> 
   return { ok: true, data };
 }
 
-/** Finn pågående økt (IN_PROGRESS) for spilleren. */
-export async function findOngoingSession(userId: string): Promise<{
-  sessionId: string;
-  title: string;
-} | null> {
-  const ongoing = await prisma.trainingSessionV2.findFirst({
-    where: {
-      OR: [
-        { studentId: userId },
-        { participants: { some: { userId, status: { in: ["ACCEPTED", "ATTENDED"] } } } },
-      ],
-      status: "IN_PROGRESS",
-    },
-    orderBy: { updatedAt: "desc" },
-    select: { id: true, title: true },
-  });
-  if (!ongoing) return null;
-  return { sessionId: ongoing.id, title: ongoing.title };
-}
 
 /** Starter økta (PLANNED → IN_PROGRESS). */
 export async function startSession(sessionId: string): Promise<StartSessionResult> {
@@ -348,6 +335,23 @@ export async function logDrillReps(input: CompleteDrillInput): Promise<{ ok: boo
       loggedAt: new Date(),
     },
   });
+
+  // Faktisk medgått tid på drillen (2026-07-27). Skrives kun oppover: en
+  // pause-og-fortsett-runde skal ikke kunne kutte tiden som alt er registrert,
+  // og en 0-verdi fra en avbrutt drill skal aldri overskrive ekte tid.
+  if (input.actualDurationSec !== undefined && input.actualDurationSec > 0) {
+    const sek = Math.min(Math.round(input.actualDurationSec), 12 * 60 * 60);
+    const forrige = await prisma.trainingDrillV2.findUnique({
+      where: { id: input.drillId },
+      select: { actualDurationSec: true },
+    });
+    if (sek > (forrige?.actualDurationSec ?? 0)) {
+      await prisma.trainingDrillV2.update({
+        where: { id: input.drillId },
+        data: { actualDurationSec: sek },
+      });
+    }
+  }
 
   // Runde 2 (2026-07-14): drill koblet til en teknisk oppgave? Logg reps
   // automatisk mot den — uten ball → dry, lav fart → lav, truffet → fullt.
@@ -478,7 +482,7 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
 /** Spiller-vurdering etter økt → completedSummary.spillerVurdering (write-back). */
 export async function lagreSpillerVurdering(
   sessionId: string,
-  input: { kvalitet: number; nesteFokus: string; folelse?: string },
+  input: { kvalitet: number; nesteFokus: string; folelse?: string; rpe?: number },
 ): Promise<{ ok: boolean; error?: string }> {
   const { user, session } = await verifyAccess(sessionId);
   if (session.status !== "COMPLETED") {
@@ -486,6 +490,12 @@ export async function lagreSpillerVurdering(
   }
   if (input.kvalitet < 1 || input.kvalitet > 5) {
     return { ok: false, error: "Kvalitet må være 1–5" };
+  }
+  if (
+    input.rpe !== undefined &&
+    (!Number.isInteger(input.rpe) || input.rpe < 1 || input.rpe > 10)
+  ) {
+    return { ok: false, error: "RPE må være et helt tall 1–10" };
   }
 
   const existing =
@@ -495,12 +505,26 @@ export async function lagreSpillerVurdering(
       ? (session.completedSummary as Record<string, unknown>)
       : {};
 
+  // sRPE (Foster): økt-RPE × varighet i minutter = belastningspoeng.
+  // Varighet hentes fra serverens egen liveSummary (skrevet av completeSession),
+  // aldri fra klienten. Uten varighet lagres RPE alene (sRpe = null).
+  const liveSummary =
+    existing.liveSummary && typeof existing.liveSummary === "object"
+      ? (existing.liveSummary as Record<string, unknown>)
+      : null;
+  const durationSec =
+    typeof liveSummary?.durationSec === "number" ? liveSummary.durationSec : null;
+  const { durationMin, sRpe } = beregnSRpe(input.rpe, durationSec);
+
   const neste = {
     ...existing,
     spillerVurdering: {
       kvalitet: input.kvalitet,
       nesteFokus: input.nesteFokus.trim().slice(0, 500),
       folelse: input.folelse?.trim().slice(0, 200) || null,
+      rpe: input.rpe ?? null,
+      durationMin,
+      sRpe,
       loggedBy: user.id,
       loggedAt: new Date().toISOString(),
     },

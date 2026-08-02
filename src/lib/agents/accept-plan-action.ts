@@ -1,5 +1,9 @@
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import {
+  fangstIdFraSuggestion,
+  sjekkpunktFraSuggestion,
+} from "@/lib/recording/fangst-suggestion";
 import { executePlanAction } from "./plan-action-executor";
 
 export type AcceptPlanActionResult = {
@@ -25,6 +29,14 @@ export async function acceptAndApplyPlanAction(
 
   try {
     const exec = await executePlanAction(actionId);
+
+    // FØR/UNDER/ETTER: sjekkpunkt + fangstId fra suggestion (zod, #9).
+    const rawSug = coachNoteSuggestion ?? action.suggestion;
+    const sjekkpunkt =
+      sjekkpunktFraSuggestion(rawSug, exec.summary) ??
+      (exec.summary?.trim() ? exec.summary.trim().slice(0, 2000) : null);
+    const fangstId = fangstIdFraSuggestion(rawSug);
+
     await prisma.planAction.update({
       where: { id: actionId },
       data: {
@@ -32,6 +44,8 @@ export async function acceptAndApplyPlanAction(
         ...(coachNoteSuggestion
           ? { suggestion: coachNoteSuggestion as Prisma.InputJsonValue }
           : {}),
+        ...(sjekkpunkt ? { sjekkpunkt } : {}),
+        ...(fangstId ? { fangstId } : {}),
         updatedAt: new Date(),
       },
     });

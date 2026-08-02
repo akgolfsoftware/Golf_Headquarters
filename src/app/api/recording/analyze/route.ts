@@ -103,8 +103,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Ikke innlogget" }, { status: 401 });
   }
 
-  // Rate-limit: 10 Claude-analyser per time per bruker (dyr AI-operasjon).
-  const rl = await rateLimit({ key: `recording-analyze:${user.id}`, max: 10, windowMs: 3_600_000 });
+  // Rate-limit: 15 Claude-analyser per time per bruker (#12 demo-vennlig).
+  const rl = await rateLimit({ key: `recording-analyze:${user.id}`, max: 15, windowMs: 3_600_000 });
   if (!rl.ok) {
     return NextResponse.json(
       { error: "rate-limited" },
@@ -162,6 +162,13 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     console.error("[recording/analyze] Claude-feil", err);
+    // Sett FAILED — ellers står opptaket for alltid i PROCESSING og
+    // status-pollingen i /admin/recording får aldri en sluttilstand.
+    // Transkripsjonen er allerede lagret, så «Analyser på nytt» virker.
+    await prisma.sessionRecording.update({
+      where: { id: recording.id },
+      data: { status: "FAILED" },
+    });
     await audit({
       actorId: user.id,
       action: "recording.analyze_failed",
@@ -188,6 +195,32 @@ export async function POST(req: Request) {
     target: `SessionRecording:${recording.id}`,
     metadata: { playerId: spillerId, varighetMin },
   });
+
+  // 2b) PlanAction i godkjenningskø (sjekkpunkt + fangstId) — best-effort.
+  let planActionId: string | null = null;
+  if (recording.playerId) {
+    try {
+      const { opprettFangstSjekkpunktPlanAction } = await import(
+        "@/lib/recording/fangst-plan-action"
+      );
+      planActionId = await opprettFangstSjekkpunktPlanAction({
+        playerId: recording.playerId,
+        recordingId: recording.id,
+        analyse,
+        coachUserId: user.id,
+      });
+      if (planActionId) {
+        await audit({
+          actorId: user.id,
+          action: "recording.plan_action_created",
+          target: `PlanAction:${planActionId}`,
+          metadata: { recordingId: recording.id, playerId: recording.playerId },
+        });
+      }
+    } catch (err) {
+      console.error("[recording/analyze] PlanAction feilet", err);
+    }
+  }
 
   // 3) Notion-sync (best-effort - logger feil men lar fortsatt klienten fa
   //    suksess for selve analysen).
@@ -254,6 +287,7 @@ export async function POST(req: Request) {
   return NextResponse.json({
     ok: true,
     recordingId: recording.id,
+    planActionId,
     notionPageId,
     notionUrl,
   });

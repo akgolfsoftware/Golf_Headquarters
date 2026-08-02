@@ -57,11 +57,19 @@ test("kollisjonsmelding: alt annet faller tilbake til standard KOLLISJON_MELDING
 
 // --- sjekkKollisjon: fake tx som implementerer akkurat det funksjonen bruker ---
 
-type BookingRow = { id: string; startAt: Date; endAt: Date; status: string };
+type BookingRow = {
+  id: string;
+  startAt: Date;
+  endAt: Date;
+  status: string;
+  serviceTypeId?: string;
+};
 
 function lagFakeTx(opts: {
   bookinger?: BookingRow[];
   facilityCapacity?: number | null;
+  /** maxDeltakere på tjenesten som bookes. Udefinert = ingen tjeneste-oppslag. */
+  maxDeltakere?: number;
 }) {
   const bookinger = opts.bookinger ?? [];
   const overlapper = (b: BookingRow, startAt: Date, endAt: Date) =>
@@ -70,14 +78,18 @@ function lagFakeTx(opts: {
   return {
     $executeRaw: async () => 0,
     booking: {
-      findFirst: async ({ where }: { where: { coachId?: string; startAt: { lt: Date }; endAt: { gt: Date }; id?: { not: string } } }) => {
-        const match = bookinger.find(
-          (b) =>
-            overlapper(b, where.endAt.gt, where.startAt.lt) &&
-            (!where.id || b.id !== where.id.not),
-        );
-        return match ? { id: match.id } : null;
-      },
+      findMany: async ({ where }: { where: { coachId?: string; startAt: { lt: Date }; endAt: { gt: Date }; id?: { not: string } } }) =>
+        bookinger
+          .filter(
+            (b) =>
+              overlapper(b, where.endAt.gt, where.startAt.lt) &&
+              (!where.id || b.id !== where.id.not),
+          )
+          .map((b) => ({
+            serviceTypeId: b.serviceTypeId ?? "svc-standard",
+            startAt: b.startAt,
+            endAt: b.endAt,
+          })),
       count: async ({ where }: { where: { startAt: { lt: Date }; endAt: { gt: Date }; id?: { not: string } } }) =>
         bookinger.filter(
           (b) =>
@@ -88,6 +100,10 @@ function lagFakeTx(opts: {
     facility: {
       findUnique: async () =>
         opts.facilityCapacity === undefined ? null : { capacity: opts.facilityCapacity },
+    },
+    serviceType: {
+      findUnique: async () =>
+        opts.maxDeltakere === undefined ? null : { maxDeltakere: opts.maxDeltakere },
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
@@ -210,6 +226,75 @@ test("sjekkKollisjon: manglende facility.capacity faller tilbake til 1 (range/si
         facilityId: "fac-1",
         startAt: new Date("2026-07-20T10:15:00Z"),
         endAt: new Date("2026-07-20T10:45:00Z"),
+      }),
+    BookingKollisjon,
+  );
+});
+
+// --- Delte økter (2-til-1) — steg 5, 2026-07-28 -----------------------------
+
+test("sjekkKollisjon: spiller nr. 2 slipper inn i 2-til-1-økt", async () => {
+  const start = new Date("2026-08-05T13:00:00Z");
+  const slutt = new Date("2026-08-05T14:30:00Z");
+  const tx = lagFakeTx({
+    maxDeltakere: 2,
+    bookinger: [
+      { id: "b1", startAt: start, endAt: slutt, status: "CONFIRMED", serviceTypeId: "svc-2til1" },
+    ],
+  });
+
+  await assert.doesNotReject(() =>
+    sjekkKollisjon(tx, {
+      coachId: "coach-1",
+      serviceTypeId: "svc-2til1",
+      startAt: start,
+      endAt: slutt,
+    }),
+  );
+});
+
+test("sjekkKollisjon: spiller nr. 3 avvises når 2-til-1-økta er full", async () => {
+  const start = new Date("2026-08-05T13:00:00Z");
+  const slutt = new Date("2026-08-05T14:30:00Z");
+  const tx = lagFakeTx({
+    maxDeltakere: 2,
+    bookinger: [
+      { id: "b1", startAt: start, endAt: slutt, status: "CONFIRMED", serviceTypeId: "svc-2til1" },
+      { id: "b2", startAt: start, endAt: slutt, status: "CONFIRMED", serviceTypeId: "svc-2til1" },
+    ],
+  });
+
+  await assert.rejects(
+    () =>
+      sjekkKollisjon(tx, {
+        coachId: "coach-1",
+        serviceTypeId: "svc-2til1",
+        startAt: start,
+        endAt: slutt,
+      }),
+    BookingKollisjon,
+  );
+});
+
+test("sjekkKollisjon: annen tjeneste inni 2-til-1-luka er ekte kollisjon", async () => {
+  const start = new Date("2026-08-05T13:00:00Z");
+  const slutt = new Date("2026-08-05T14:30:00Z");
+  const tx = lagFakeTx({
+    maxDeltakere: 2,
+    bookinger: [
+      { id: "b1", startAt: start, endAt: slutt, status: "CONFIRMED", serviceTypeId: "svc-2til1" },
+    ],
+  });
+
+  // Flex 50 forsøker å legge seg inni parøkta — skal avvises selv om det er
+  // ledig «plass» i antall.
+  await assert.rejects(
+    () =>
+      sjekkKollisjon(tx, {
+        coachId: "coach-1",
+        serviceTypeId: "svc-flex50",
+        startAt: new Date("2026-08-05T13:30:00Z"),
+        endAt: new Date("2026-08-05T14:20:00Z"),
       }),
     BookingKollisjon,
   );

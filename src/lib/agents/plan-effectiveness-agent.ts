@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { varsleVedPlanAction } from "./notify-plan-action";
+import { byggProvenance } from "./provenance";
 
 export const AGENT_NAME = "plan-effectiveness-agent";
 
@@ -65,6 +66,17 @@ export async function runPlanEffectivenessAgent(): Promise<AgentResult> {
               sgTotalDelta: row.sgTotalDelta,
             },
           },
+          provenance: byggProvenance({
+            kilde: "PLAN",
+            rader: [{ id: row.id, dato: row.computedAt.toISOString() }],
+            regel: lavCompletion
+              ? `completionRate under terskel ${COMPLETION_TERSKEL}`
+              : `sgTotalDelta under terskel ${SG_DELTA_TERSKEL}`,
+            terskel: lavCompletion ? COMPLETION_TERSKEL : SG_DELTA_TERSKEL,
+            maaltVerdi: lavCompletion
+              ? row.completionRate
+              : (row.sgTotalDelta ?? undefined),
+          }),
         },
       });
       planActionsWritten++;

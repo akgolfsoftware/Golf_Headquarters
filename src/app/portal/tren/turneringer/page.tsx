@@ -1,54 +1,45 @@
 /**
- * v2-forhåndsvisning — PlayerHQ Turneringer (retning C). Egen top-level route-
- * group (v2preview) som IKKE arver PortalShell — kun root-layout. V2Shell leverer
- * chrome-en (IkonRail/BunnNav), TurneringerV2 rendrer innholds-stacken.
- *
- * Auth + dataloader gjenbrukt 1:1 fra den ekte siden
- * (src/app/portal/tren/turneringer/page.tsx).
+ * PlayerHQ Turneringsplanlegger — i dag + fremtid.
+ * Katalog, plan A/B/C, dobbel påmeldingsbekreftelse (spilleransvar).
  */
 
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TurneringerV2 } from "@/components/portal/v2/TurneringerV2";
 import { TilbakeLenke } from "@/components/v2";
+import {
+  loadPlanleggerKatalog,
+  loadMinTurneringsplan,
+} from "@/lib/portal-turnering/planlegger-data";
+import { TurneringPlanleggerV2 } from "@/components/portal/v2/TurneringPlanleggerV2";
 
 export const dynamic = "force-dynamic";
 
-const MND = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
-
-export default async function V2TurneringerPreviewPage() {
+export default async function TurneringerPage() {
   const user = await requirePortalUser();
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  const aar = new Date().getFullYear();
-
-  const entries = await prisma.tournamentEntry.findMany({
-    where: { userId: user.id, entryStatus: { in: ["PLANNED", "CONFIRMED"] } },
-    include: { tournament: { select: { name: true, startDate: true, location: true } } },
-    orderBy: [{ tournament: { startDate: "asc" } }, { manualDate: "asc" }],
-    take: 30,
-  });
-
-  const rader = entries
-    .map((e) => {
-      const dato = e.tournament?.startDate ?? e.manualDate ?? null;
-      return {
-        id: e.id,
-        navn: e.tournament?.name ?? e.manualName ?? "Turnering",
-        dato: dato ? `${dato.getDate()}. ${MND[dato.getMonth()]}` : "—",
-        kategori: e.category ?? e.tournament?.location ?? "Turnering",
-        bekreftet: e.entryStatus === "CONFIRMED",
-      };
-    })
-    .filter((r) => r.dato !== "—");
+  const [katalog, minPlan] = await Promise.all([
+    loadPlanleggerKatalog(user.id),
+    loadMinTurneringsplan(user.id),
+  ]);
 
   return (
-    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
-      <TurneringerV2 data={{ rader, aar }} />
+    <V2Shell
+      aktiv="analyse"
+      nav={PLAYERHQ_NAV}
+      navn={user.name}
+      avatarUrl={user.avatarUrl}
+    >
+      <TilbakeLenke href="/portal">Hjem</TilbakeLenke>
+      <div style={{ maxWidth: 720, margin: "0 auto", width: "100%" }}>
+        <TurneringPlanleggerV2
+          katalog={katalog}
+          minPlan={minPlan}
+          spillerNavn={user.name}
+        />
+      </div>
     </V2Shell>
   );
 }

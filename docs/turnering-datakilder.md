@@ -20,7 +20,7 @@ er aggregert i fire plattformer:
 | Anker | Dekker | Status hos oss | Tilgang |
 |---|---|---|---|
 | **DataGolf** | Herre-proff (5 tourer live, 22 historisk) | ✅ integrert | Betalt API ($30/mnd Scratch Plus) |
-| **GolfBox** | Europeisk amatør-scoring: **alt norsk** (NGF, Olyo, Srixon, Garmin NC, regioner) + R&A + EGA + Nordic League | manuell import finnes | Offentlig widget-endepunkt (ToS-gråsone) eller offisielt API via avtale |
+| **GolfBox** | Europeisk amatør-scoring: **alt norsk** (NGF, Olyo, Srixon, Garmin NC, regioner) + R&A + EGA + Nordic League | LIVE (GH Actions + Vercel cron `turneringer-ngf`) | Offentlig JSON på scores.golfbox.dk (ToS-gråsone) eller offisielt API via avtale |
 | **WAGR (R&A)** | Amatør-ranking + identitet + counting events globalt (~4 300/år, 8 300+ spillere) | manuell import finnes | Udokumentert backend-API + CSV-eksport i UI (lisens uavklart) |
 | **Clippd** | College: NCAA D1/2/3 + NAIA + NJCAA (offisiell fra 2023) | stub finnes | Lukket partner-API (Next.js/Supabase-SPA) |
 
@@ -81,7 +81,7 @@ men lister **kun sertifiserte counting events** (~4 300/år) — ikke alle amat�
 
 | Tour | Hvor data bor | Eksisterende verktøy |
 |---|---|---|
-| NGF-turneringer (NM m.m.) | `golfbox.no/app_livescoring/` | 1167 importert manuelt |
+| NGF-turneringer (NM m.m.) | GolfBox-kunde 18 | **LIVE** via `golfbox-sync` / cron `turneringer-ngf` |
 | Olyo Tour (6 regioner) | GolfBox-kunder 873–878 (én per region) | **LIVE** via `scrape-golfbox.ts` (kartlagt 2026-07-18) |
 | Srixon Tour (WAGR-tellende) | GolfBox via NGF (customer 18) | **LIVE** via `scrape-golfbox.ts` |
 | Garmin Norgescup | GolfBox via NGF (customer 18) | **LIVE** via `scrape-golfbox.ts` |

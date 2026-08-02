@@ -5,6 +5,7 @@
 // Returnerer et strukturert objekt som serialiseres inn i AI-prompten.
 
 import { prisma } from "@/lib/prisma";
+import { pseudonymForId } from "@/lib/ai/anonymiser";
 import type {
   DrillFasilitet,
   LPhase,
@@ -14,6 +15,7 @@ import type {
   SkillArea,
 } from "@/generated/prisma/client";
 import { hentTreningsVolum, type UkeVolum } from "../training/volum";
+import { finnLedigeLuker } from "@/lib/portal/tilgjengelighet";
 import { lesTreningPreferanser } from "@/lib/onboarding/trening-preferanser";
 import {
   beregnKorrelasjon,
@@ -155,6 +157,22 @@ export type SpillerKontekst = {
   treningsVolum: UkeVolum[];
   /** Korrelasjon mellom treningsvolum og SG neste uke, per SG-område. */
   korrelasjon: KorrelasjonsResultat[];
+  /**
+   * Spillerens faktisk ledige tid de neste 14 dagene, etter at skole,
+   * gruppetrening, fravær, egne avtaler og allerede planlagt trening er
+   * trukket fra. Uten dette la planleggeren økter i timer spilleren ikke har.
+   */
+  ledigeLuker: LedigLukeKontekst[];
+};
+
+export type LedigLukeKontekst = {
+  /** "2026-08-03" */
+  dato: string;
+  /** "07:00" */
+  fra: string;
+  /** "08:00" */
+  til: string;
+  minutter: number;
 };
 
 // HCP → gammel NGF A–L-skala. @deprecated — bruk hentSpillerAkKategori (snittscore A–K).
@@ -497,10 +515,27 @@ export async function byggSpillerKontekst(
       ? tilgjengeligeDrills.slice(0, 80)
       : tilgjengeligeDrills;
 
+  // Ledige luker de neste 14 dagene. Planen skal legges i timer spilleren
+  // faktisk har — ikke oppå skole, gruppetrening, fravær eller egne avtaler.
+  const naa = new Date();
+  const omToUker = new Date(naa.getTime() + 14 * 24 * 60 * 60 * 1000);
+  const luker = await finnLedigeLuker(userId, naa, omToUker);
+  const ledigeLuker: LedigLukeKontekst[] = luker.map((l) => ({
+    dato: `${l.start.getFullYear()}-${String(l.start.getMonth() + 1).padStart(2, "0")}-${String(l.start.getDate()).padStart(2, "0")}`,
+    fra: `${String(l.start.getHours()).padStart(2, "0")}:${String(l.start.getMinutes()).padStart(2, "0")}`,
+    til: `${String(l.slutt.getHours()).padStart(2, "0")}:${String(l.slutt.getMinutes()).padStart(2, "0")}`,
+    minutter: l.minutter,
+  }));
+
   return {
     spiller: {
       id: user.id,
-      navn: user.name,
+      // GDPR-tiltak 2026-07-27: ekte navn sendes aldri til AI-leverandøren —
+      // SpillerKontekst går rett inn i Anthropic-prompten (coach-prompt.ts).
+      // Modellen trenger ikke navnet for å foreslå en plan; kallere som
+      // trenger ekte navn i tekst tilbake til bruker kjører
+      // substituerPseudonym() på AI-svaret (se src/lib/ai/pseudonym.ts).
+      navn: pseudonymForId(user.id),
       hcp: user.hcp,
       rolle: user.role,
       tier: user.tier,
@@ -557,6 +592,7 @@ export async function byggSpillerKontekst(
     forrigeEffektivitet,
     treningsVolum,
     korrelasjon,
+    ledigeLuker,
     treningPreferanser: (() => {
       const p = lesTreningPreferanser(user.preferences);
       return p ? { okterPerUke: p.okterPerUke, foretrukneDagerNr: p.dager } : null;

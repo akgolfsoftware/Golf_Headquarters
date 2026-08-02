@@ -19,6 +19,7 @@ import { prisma } from "@/lib/prisma";
 import { computeDelta, type PlanContext } from "@/lib/agents/plan-action-executor";
 import { LOW_RISK_ACTION_TYPES } from "@/lib/training/skills";
 import { koTelling } from "@/lib/admin/ko-telling";
+import { provenanceLesbarTekst } from "@/lib/agents/provenance";
 import { caddieDraftTittel } from "@/lib/caddie/draft-labels";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { KoHubNav } from "@/components/admin/v2/agency-hub-subnav";
@@ -258,10 +259,24 @@ export default async function V2AdminGodkjenningerPage() {
           sugg?.title ??
           sugg?.tittel ??
           handlingstypeLabel(a.actionType),
-        detail:
-          sugg?.forklaring ??
-          sugg?.detail ??
-          (a.plan ? `Gjelder planen «${a.plan.name}».` : ""),
+        detail: (() => {
+          const base =
+            sugg?.forklaring ??
+            sugg?.detail ??
+            (a.plan ? `Gjelder planen «${a.plan.name}».` : "");
+          // Foreslått sjekkpunkt i suggestion (skrives til PlanAction.sjekkpunkt ved godkjenning).
+          const sp =
+            typeof (sugg as { sjekkpunkt?: unknown } | null)?.sjekkpunkt ===
+            "string"
+              ? String((sugg as { sjekkpunkt: string }).sjekkpunkt)
+              : null;
+          if (sp?.trim()) {
+            return [base, `Sjekkpunkt (foreslått): ${sp.trim()}`]
+              .filter(Boolean)
+              .join(" · ");
+          }
+          return base;
+        })(),
         signalKind: sugg?.signalSnapshot?.kind ?? null,
         signalValue:
           sugg?.signalSnapshot?.value != null
@@ -271,6 +286,7 @@ export default async function V2AdminGodkjenningerPage() {
         when: nårTekst(a.createdAt),
         urgent: erHaster(a.actionType),
         lowRisk: LOW_RISK_ACTION_TYPES.has(a.actionType),
+        hvorfor: provenanceLesbarTekst(a.provenance),
       };
     }),
   );
@@ -313,7 +329,37 @@ export default async function V2AdminGodkjenningerPage() {
   }));
   const alleRows = [...rows.map((r) => ({ ...r, kilde: "agent" as const })), ...caddieRows, ...requestRows];
 
-  const data: AdminGodkjenningerV2Data = { rows: alleRows, lowRiskCount, totalt: ko.totalt };
+  // Løst: nylig godkjente sjekkpunkter (ETTER → FØR-tråd).
+  const lostRader = await prisma.planAction.findMany({
+    where: {
+      status: "ACCEPTED",
+      sjekkpunkt: { not: null },
+      user: spillerScope,
+    },
+    orderBy: { updatedAt: "desc" },
+    take: 12,
+    select: {
+      id: true,
+      sjekkpunkt: true,
+      updatedAt: true,
+      user: { select: { name: true } },
+    },
+  });
+  const lostSjekkpunkter = lostRader
+    .filter((r) => r.sjekkpunkt?.trim())
+    .map((r) => ({
+      id: r.id,
+      who: r.user.name ?? "Spiller",
+      sjekkpunkt: r.sjekkpunkt!.trim(),
+      when: nårTekst(r.updatedAt),
+    }));
+
+  const data: AdminGodkjenningerV2Data = {
+    rows: alleRows,
+    lowRiskCount,
+    totalt: ko.totalt,
+    lostSjekkpunkter,
+  };
 
   return (
     <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>

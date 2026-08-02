@@ -25,12 +25,9 @@ import {
   getSgDataTool,
   getTreningsplanTool,
 } from "@/lib/ai/tools";
-import {
-  rememberFact,
-  recallMemory,
-  forgetFact,
-  formatMemoryForPrompt,
-} from "@/lib/ai/memory";
+// Memory-testene mocker "@/lib/prisma" (samme mønster som
+// src/lib/portal/goals/progress.test.ts) og importerer "@/lib/ai/memory"
+// dynamisk ETTER mock-oppsettet — se describe("Memory") under.
 
 describe("Skills", () => {
   it("har 3 Skills i ALL_SKILLS", () => {
@@ -75,8 +72,8 @@ describe("Skills", () => {
 });
 
 describe("Tools", () => {
-  it("har 4 Tools i ALL_TOOLS", () => {
-    assert.equal(ALL_TOOLS.length, 4);
+  it("har 5 Tools i ALL_TOOLS", () => {
+    assert.equal(ALL_TOOLS.length, 5);
   });
 
   it("alle Tools har name + description + input_schema", () => {
@@ -114,8 +111,13 @@ describe("Tools", () => {
     assert.equal(getTreningsplanTool.name, "get_treningsplan");
   });
 
-  it("alle Tools krever spillerId", () => {
+  it("alle spiller-Tools krever spillerId (search_knowledge krever query)", () => {
     for (const tool of ALL_TOOLS) {
+      if (tool.name === "search_knowledge") {
+        const schema = tool.input_schema as { required?: string[] };
+        assert.ok(schema.required?.includes("query"));
+        continue;
+      }
       const schema = tool.input_schema as {
         required?: string[];
       };
@@ -128,40 +130,70 @@ describe("Tools", () => {
 });
 
 describe("Memory", () => {
-  it("rememberFact lagrer og recall returnerer den", async () => {
-    const userId = `test-${Date.now()}`;
-    await rememberFact({
-      userId,
-      key: "favoritt-fokus",
-      value: "FYS-styrke",
+  it("rememberFact/recallMemory/forgetFact/formatMemoryForPrompt (mocket Prisma)", async (t) => {
+    type Row = { userId: string; key: string; value: string; updatedAt: Date };
+    const store = new Map<string, Row>();
+    const storeKey = (userId: string, key: string) => `${userId}::${key}`;
+
+    t.mock.module("@/lib/prisma", {
+      namedExports: {
+        prisma: {
+          aiMemory: {
+            upsert: async ({
+              where,
+              create,
+              update,
+            }: {
+              where: { userId_key: { userId: string; key: string } };
+              create: { userId: string; key: string; value: string };
+              update: { value: string };
+            }) => {
+              const existing = store.get(storeKey(where.userId_key.userId, where.userId_key.key));
+              const row: Row = existing
+                ? { ...existing, value: update.value, updatedAt: new Date() }
+                : { userId: create.userId, key: create.key, value: create.value, updatedAt: new Date() };
+              store.set(storeKey(row.userId, row.key), row);
+              return row;
+            },
+            findMany: async ({ where }: { where: { userId: string } }) =>
+              [...store.values()].filter((entry) => entry.userId === where.userId),
+            delete: async ({
+              where,
+            }: {
+              where: { userId_key: { userId: string; key: string } };
+            }) => {
+              const k = storeKey(where.userId_key.userId, where.userId_key.key);
+              const existing = store.get(k);
+              if (!existing) throw new Error("Record not found");
+              store.delete(k);
+              return existing;
+            },
+          },
+        },
+      },
     });
+
+    const { rememberFact, recallMemory, forgetFact, formatMemoryForPrompt } = await import(
+      "@/lib/ai/memory"
+    );
+
+    const userId = "test-user";
+    await rememberFact({ userId, key: "favoritt-fokus", value: "FYS-styrke" });
     const entries = await recallMemory(userId);
     assert.equal(entries.length, 1);
     assert.equal(entries[0].key, "favoritt-fokus");
     assert.equal(entries[0].value, "FYS-styrke");
-  });
 
-  it("forgetFact fjerner entry", async () => {
-    const userId = `test-forget-${Date.now()}`;
-    await rememberFact({ userId, key: "a", value: "1" });
-    const ok = await forgetFact({ userId, key: "a" });
+    const ok = await forgetFact({ userId, key: "favoritt-fokus" });
     assert.equal(ok, true);
-    const entries = await recallMemory(userId);
-    assert.equal(entries.length, 0);
-  });
+    assert.equal((await recallMemory(userId)).length, 0);
 
-  it("formatMemoryForPrompt returnerer tom streng for tom liste", () => {
+    const okUkjent = await forgetFact({ userId, key: "finnes-ikke" });
+    assert.equal(okUkjent, false);
+
     assert.equal(formatMemoryForPrompt([]), "");
-  });
-
-  it("formatMemoryForPrompt formaterer entries som bullet-liste", () => {
     const out = formatMemoryForPrompt([
-      {
-        userId: "u",
-        key: "fokus",
-        value: "putting",
-        updatedAt: new Date(),
-      },
+      { userId: "u", key: "fokus", value: "putting", updatedAt: new Date() },
     ]);
     assert.ok(out.includes("- fokus: putting"));
     assert.ok(out.includes("BRUKER-MINNE"));

@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { anthropicKlient, COACH_MODEL } from "@/lib/anthropic";
 import { rateLimit } from "@/lib/rate-limit";
 import { bygCoachSystemPrompt } from "@/lib/ai-plan/coach-prompt";
+import { pseudonymForId } from "@/lib/ai/anonymiser";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -27,9 +28,17 @@ type RequestBody = {
 };
 
 function bygSystemPrompt(playerName: string, ctx: PlayerContext): string {
+  // GDPR-tiltak 2026-07-27: spillerens ekte navn sendes aldri til Anthropic i
+  // fritekst-prompten. Denne ruten mangler en stabil spiller-id (playerContext
+  // kommer ferdigbygget fra klienten — egen, kjent sikkerhetssvakhet som IKKE
+  // fikses her), så pseudonymet hashes fra selve navnet i stedet for en id.
+  // Streaming + "coach"-system-prompten ber aldri modellen gjenta navnet i
+  // svaret (coachen har allerede valgt spilleren og ser navnet andre steder i
+  // UI-et), så vi reverserer ikke pseudonymet i streamen.
+  const pseudonym = pseudonymForId(playerName);
   return bygCoachSystemPrompt({
     mottaker: "coach",
-    spillerNavn: playerName,
+    spillerNavn: pseudonym,
     hcp: ctx.hcp,
     ambition: ctx.ambition,
     homeClub: ctx.homeClub,

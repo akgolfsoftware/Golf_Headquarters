@@ -10,7 +10,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { runAgent, type AgentResult } from "./agent-runner";
-import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "@/lib/ai/client";
+import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "@/lib/ai/client";
 import { isYoutubeEnabled, searchYoutube, type YoutubeVideo } from "./youtube-search";
 
 export const AGENT_NAME = "drill-forslag";
@@ -204,7 +204,7 @@ async function genererDriller(
     : "\n\nIngen YouTube-videoer tilgjengelig — sett videoUrl til null.";
 
   const res = await anthropic.messages.create({
-    model: AI_MODEL,
+    model: modelFor(AGENT_NAME),
     max_tokens: AI_MAX_TOKENS,
     system: SYSTEM,
     messages: [

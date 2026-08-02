@@ -11,24 +11,23 @@
  *   npx tsx scripts/scrape-golfbox.ts --mode=leaderboards
  *   npx tsx scripts/scrape-golfbox.ts --limit=5       # MVP-test (færre events)
  *
- * Idempotent. Logger hver kjøring til AgentRun (mater CoachHQ Datakilder-siden).
+ * Delbar logikk: src/lib/turneringer/golfbox-sync.ts
+ * (samme kode som Vercel cron turneringer-ngf for schedule).
+ *
+ * Idempotent. Logger hver kjøring til AgentRun.
  */
 
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { config as loadEnv } from "dotenv";
 import {
-  getSchedule,
-  getLeaderboard,
-  type GolfBoxLeaderboardEntry,
-} from "../src/lib/scrapers/golfbox";
+  syncGolfBoxSchedules,
+  syncGolfBoxLeaderboards,
+} from "../src/lib/turneringer/golfbox-sync";
 import {
-  NO_TOUR_CUSTOMERS,
-  classifyTour,
-  golfboxSlugify,
-  deriveStatus,
-} from "../src/lib/scrapers/golfbox-customers";
-import { resolvePlayer } from "../src/lib/scrapers/player-resolve";
+  linkPublicPlayersByExactName,
+  backfillTournamentResultsForLinkedUsers,
+} from "../src/lib/turneringer/link-public-players";
 
 loadEnv({ path: ".env.local" });
 
@@ -42,13 +41,8 @@ const MODE =
     | "leaderboards"
     | "all"
     | undefined) ?? "all";
-const LIMIT = Number(args.find((a) => a.startsWith("--limit="))?.split("=")[1]) || 0;
-
-const NOW = new Date();
-
-// ---------------------------------------------------------------------------
-// AgentRun-logging
-// ---------------------------------------------------------------------------
+const LIMIT =
+  Number(args.find((a) => a.startsWith("--limit="))?.split("=")[1]) || 0;
 
 async function logRun(
   agentName: string,
@@ -62,179 +56,12 @@ async function logRun(
       status: error ? "ERROR" : "OK",
       duration: Date.now() - start,
       output: error ? undefined : (result as object),
-      error: error ? String(error instanceof Error ? error.message : error) : null,
+      error: error
+        ? String(error instanceof Error ? error.message : error)
+        : null,
     },
   });
 }
-
-// ---------------------------------------------------------------------------
-// Schedule sync
-// ---------------------------------------------------------------------------
-
-async function syncSchedules(): Promise<{ customers: number; events: number }> {
-  let events = 0;
-
-  for (const src of NO_TOUR_CUSTOMERS) {
-    const sched = await getSchedule(src.customerId);
-    for (const e of sched) {
-      if (!e.startDate) continue;
-      // Region-kunder lister også Region Tour-kval o.l. — ta kun de matchende.
-      if (src.onlyMatching && !src.onlyMatching.test(e.name)) continue;
-      const cls = classifyTour(e.name, src.defaultTour);
-      const year = e.startDate.getUTCFullYear();
-      const slug = `${golfboxSlugify(e.name)}-${year}`;
-      const status = deriveStatus(e.startDate, e.endDate, NOW);
-      const format = e.type === "MatchPlay" ? "MATCH" : "STROKE";
-      // Fest region på Olyo-turneringer så de kan filtreres per region.
-      // undefined = ikke rør notes-feltet (gjelder ikke-region-kunder).
-      const notes = src.region
-        ? JSON.stringify({ tour: "olyo", krets: src.region })
-        : undefined;
-
-      await prisma.tournament.upsert({
-        where: { slug },
-        create: {
-          name: e.name,
-          slug,
-          startDate: e.startDate,
-          endDate: e.endDate,
-          format,
-          sourceOrigin: cls.sourceOrigin,
-          sourceId: String(e.competitionId),
-          tour: cls.tour,
-          country: "NO",
-          location: e.venue,
-          status,
-          notes,
-          lastSyncAt: NOW,
-        },
-        update: {
-          name: e.name,
-          startDate: e.startDate,
-          endDate: e.endDate,
-          format,
-          sourceOrigin: cls.sourceOrigin,
-          sourceId: String(e.competitionId),
-          tour: cls.tour,
-          location: e.venue,
-          status,
-          notes,
-          lastSyncAt: NOW,
-        },
-      });
-      events++;
-    }
-  }
-
-  return { customers: NO_TOUR_CUSTOMERS.length, events };
-}
-
-// ---------------------------------------------------------------------------
-// Leaderboard sync — kun pågående + nylig fullførte (begrenser API-kall)
-// ---------------------------------------------------------------------------
-
-function entryStatus(
-  e: GolfBoxLeaderboardEntry,
-  tournamentCompleted: boolean,
-): string {
-  const p = (e.positionText ?? "").toUpperCase();
-  if (p.includes("CUT")) return "CUT";
-  if (p.includes("WD") || p.includes("DQ") || p.includes("RET")) return "WITHDREW";
-  if (tournamentCompleted) return "FINISHED";
-  return "TEED_OFF";
-}
-
-async function syncLeaderboards(): Promise<{
-  tournaments: number;
-  entries: number;
-  playersCreated: number;
-}> {
-  const sevenDaysAgo = new Date(NOW.getTime() - 7 * 24 * 60 * 60 * 1000);
-
-  // Turneringer fra GolfBox-kildene som er live eller nylig ferdige.
-  const origins = ["GOLFBOX", "SRIXON", "NORGESCUP", "OLYO", "MIDAM", "SENIOR", "NM"];
-  let tournaments = await prisma.tournament.findMany({
-    where: {
-      sourceOrigin: { in: origins },
-      sourceId: { not: null },
-      OR: [
-        { status: "IN_PROGRESS" },
-        { status: "COMPLETED", endDate: { gte: sevenDaysAgo } },
-      ],
-    },
-    orderBy: { startDate: "desc" },
-  });
-  if (LIMIT > 0) tournaments = tournaments.slice(0, LIMIT);
-
-  let entries = 0;
-  let playersCreated = 0;
-
-  for (const t of tournaments) {
-    const competitionId = Number(t.sourceId);
-    if (!competitionId) continue;
-
-    const lb = await getLeaderboard(competitionId);
-    if (!lb || lb.entries.length === 0) continue;
-
-    const cls = classifyTour(t.name, t.tour === "junior-no" ? "junior-no" : "amateur-no");
-    const completed = t.status === "COMPLETED";
-    let norske = 0;
-
-    for (const e of lb.entries) {
-      const fullName = `${e.firstName} ${e.lastName}`.trim();
-      if (!fullName) continue;
-      const country = (e.nationality ?? "").toUpperCase() || "XX";
-      if (country === "NO") norske++;
-
-      // Match mot eksisterende profil (navn + fødselsår) for å unngå dubletter.
-      const { player, created } = await resolvePlayer(prisma, {
-        name: fullName,
-        country,
-        tier: cls.playerTier,
-        birthYear: e.birthYear ?? null,
-      });
-      if (created) playersCreated++;
-
-      const rounds = {
-        today: e.todayText,
-        thru: e.thru,
-        thruText: e.thruText,
-        roundNames: lb.roundNames,
-        roundScores: e.roundScores,
-      };
-
-      await prisma.publicPlayerEntry.upsert({
-        where: { playerId_tournamentId: { playerId: player.id, tournamentId: t.id } },
-        create: {
-          playerId: player.id,
-          tournamentId: t.id,
-          status: entryStatus(e, completed),
-          position: e.position,
-          scoreToPar: e.toParValue,
-          rounds,
-        },
-        update: {
-          status: entryStatus(e, completed),
-          position: e.position,
-          scoreToPar: e.toParValue,
-          rounds,
-        },
-      });
-      entries++;
-    }
-
-    await prisma.tournament.update({
-      where: { id: t.id },
-      data: { norskeAntall: norske, lastSyncAt: NOW },
-    });
-  }
-
-  return { tournaments: tournaments.length, entries, playersCreated };
-}
-
-// ---------------------------------------------------------------------------
-// Main
-// ---------------------------------------------------------------------------
 
 async function main() {
   console.log(`[golfbox] mode=${MODE} limit=${LIMIT || "—"}`);
@@ -242,7 +69,7 @@ async function main() {
   if (MODE === "schedule" || MODE === "all") {
     const start = Date.now();
     try {
-      const r = await syncSchedules();
+      const r = await syncGolfBoxSchedules(prisma);
       console.log("[golfbox] schedule:", r);
       await logRun("golfbox-schedule", start, r);
     } catch (err) {
@@ -254,12 +81,29 @@ async function main() {
   if (MODE === "leaderboards" || MODE === "all") {
     const start = Date.now();
     try {
-      const r = await syncLeaderboards();
+      const r = await syncGolfBoxLeaderboards(prisma, {
+        limit: LIMIT || undefined,
+      });
       console.log("[golfbox] leaderboards:", r);
       await logRun("golfbox-leaderboards", start, r);
     } catch (err) {
       console.error("[golfbox] leaderboards FEIL:", err);
       await logRun("golfbox-leaderboards", start, null, err);
+    }
+  }
+
+  // Etter data: eksakt navne-link + speil resultater til PlayerHQ-profiler
+  if (MODE === "all" || MODE === "leaderboards") {
+    const start = Date.now();
+    try {
+      const link = await linkPublicPlayersByExactName(prisma);
+      const backfill = await backfillTournamentResultsForLinkedUsers(prisma);
+      const r = { link, backfill };
+      console.log("[golfbox] link+backfill:", r);
+      await logRun("golfbox-link-backfill", start, r);
+    } catch (err) {
+      console.error("[golfbox] link+backfill FEIL:", err);
+      await logRun("golfbox-link-backfill", start, null, err);
     }
   }
 

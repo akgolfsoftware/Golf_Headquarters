@@ -15,6 +15,7 @@ import {
   SpillerDetaljV2,
   type SpillerData,
 } from "@/components/portal/v2/SpillerDetaljV2";
+import { beregnGoalProgress } from "@/lib/portal/goals/progress";
 
 type Props = {
   params: Promise<{ spillerId: string }>;
@@ -82,10 +83,14 @@ export default async function SpillerDetaljPage({ params }: Props) {
     take: 5,
     select: {
       id: true,
+      userId: true,
       title: true,
       type: true,
       targetValue: true,
       targetDate: true,
+      linkedPyramidArea: true,
+      linkedTestId: true,
+      payload: true,
     },
   });
 
@@ -131,14 +136,19 @@ export default async function SpillerDetaljPage({ params }: Props) {
       summary: null,
       coachNavn: s.coach.name,
     })),
-    mal: goals.map((g) => ({
-      id: g.id,
-      title: g.title,
-      type: g.type,
-      targetValue: g.targetValue ?? null,
-      currentValue: null,
-      deadline: g.targetDate?.toISOString() ?? null,
-    })),
+    mal: await Promise.all(
+      goals.map(async (g) => {
+        const progress = await beregnGoalProgress(g, { hcp: spiller.hcp });
+        return {
+          id: g.id,
+          title: g.title,
+          type: g.type,
+          targetValue: g.targetValue ?? null,
+          pct: progress.hasData ? progress.pct : null,
+          deadline: g.targetDate?.toISOString() ?? null,
+        };
+      }),
+    ),
     stats: {
       antallRunder: rounds.length,
       snittScore: snittScore !== null ? Math.round(snittScore * 10) / 10 : null,

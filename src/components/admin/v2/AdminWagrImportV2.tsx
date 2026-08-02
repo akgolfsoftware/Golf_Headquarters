@@ -11,7 +11,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { Caps, Tittel, Kort, Knapp, StatusPill, AvatarInit, TomTilstand, T } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
-import { synkWagrNaa } from "@/app/admin/(legacy)/talent/wagr-import/actions";
+import { synkWagrNaa } from "@/app/admin/talent/wagr-import/actions";
 
 export interface WagrKobletRad {
   id: string;

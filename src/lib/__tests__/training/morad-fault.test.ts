@@ -1,14 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { mapSgBandToFault } from "@/lib/training/skills/morad-fault";
+import { sgBandFaultKandidater } from "@/lib/training/skills/morad-fault";
 
-test("mapSgBandToFault returnerer fault for APP", () => {
-  const fault = mapSgBandToFault("APP");
-  assert.ok(fault);
-  assert.equal(typeof fault, "string");
+test("sgBandFaultKandidater returnerer hypotese-kandidater for APP", () => {
+  const kandidater = sgBandFaultKandidater("APP");
+  assert.ok(kandidater.length > 0);
+  assert.ok(kandidater.every((k) => typeof k === "string"));
 });
 
-test("mapSgBandToFault returnerer null for PUTT uten mapping", () => {
-  const fault = mapSgBandToFault("PUTT");
-  assert.equal(fault, null);
+test("sgBandFaultKandidater returnerer tom liste for PUTT — MORAD dekker ikke putting", () => {
+  assert.deepEqual(sgBandFaultKandidater("PUTT"), []);
 });
