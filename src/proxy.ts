@@ -140,10 +140,7 @@ export async function proxy(request: NextRequest) {
   // Generer per-request nonce — base64-encodet UUID, kryptografisk tilfeldig.
   // Sendes til updateSession slik at x-nonce-headeren er tilgjengelig i RSCs.
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
-  // CSP-en må følge med på REQUEST-headerne også — det er der Next.js leter etter
-  // nonce-en når den skal stemple sine egne script-tagger. Se src/lib/supabase/proxy.ts.
-  const csp = buildCsp(nonce);
-  const response = await updateSession(request, nonce, csp);
+  const response = await updateSession(request, nonce);
 
   // /team-wang/logg-inn er selve innloggingssiden — unntas fra sperren for å
   // unngå redirect-loop. Resten av /team-wang (elevdata om mindreårige) krever
@@ -186,7 +183,7 @@ export async function proxy(request: NextRequest) {
   // Rolle-sjekk for /admin/* gjøres i src/app/admin/layout.tsx (RSC) via
   // requirePortalUser({ allow: ["ADMIN","COACH"] }) for å unngå Prisma-kall
   // her i proxy-laget. Proxy-en stopper kun uautentiserte requests.
-  response.headers.set("Content-Security-Policy", csp);
+  response.headers.set("Content-Security-Policy", buildCsp(nonce));
   return response;
 }
 
