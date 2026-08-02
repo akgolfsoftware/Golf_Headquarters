@@ -35,11 +35,30 @@ test("versjonsnokkel navngir hver kilde med versjon", () => {
   );
 });
 
-test("tom drill-bank gir eksplisitt forbud, ikke stillhet", () => {
+test("tom MORAD-drill-bank gir eksplisitt forbud, ikke stillhet", () => {
   const k = hentMasterbrainKunnskap("drill-forslag");
   const tekst = k.blokker.join("\n");
-  assert.match(tekst, /Drill-banken er TOM/);
+  assert.match(tekst, /MORAD drill-banken i fasiten er TOM/);
   assert.match(tekst, /aldri/i);
+});
+
+test("drill-blokken skiller MORAD-banken fra appens egen katalog", () => {
+  // Uten dette skillet motsier blokken systempromptens «bruk kun drill-navn
+  // fra listen», siden appen leverer ExerciseDefinition-katalogen separat.
+  const tekst = hentMasterbrainKunnskap("drill-forslag").blokker.join("\n");
+  assert.match(tekst, /ExerciseDefinition/);
+  assert.match(tekst, /tilgjengeligeDrills/);
+});
+
+test("plan-generering injiserer ikke MORAD-drill-banken", () => {
+  // Plan-generering får appens egen katalog i konteksten. Å si «banken er tom»
+  // der ville vært en direkte motsigelse.
+  const k = hentMasterbrainKunnskap("plan-generering");
+  assert.ok(
+    !k.kilder.some((kilde) => kilde.fil.endsWith("drills.json")),
+    "drills.json skal ikke rutes til plan-generering",
+  );
+  assert.doesNotMatch(k.blokker.join("\n"), /drill-banken i fasiten er TOM/i);
 });
 
 test("sg-diagnose bærer med seg hypotese-regelen", () => {
@@ -63,6 +82,24 @@ test("plan-generering inkluderer invariantene", () => {
   const tekst = k.blokker.join("\n");
   assert.match(tekst, /inv_5/);
   assert.match(tekst, /inv_3/);
+});
+
+test("plan-generering rommer alle tre kildene innenfor budsjettet i generate.ts", () => {
+  // Speiler MASTERBRAIN_MAKS_TEGN i ai-plan/generate.ts. Vokser fasiten forbi
+  // dette, ryker LTAD — og da forsvinner volumtakene for juniorer stille ut av
+  // plan-genereringen. Denne testen gjør det til en rød test i stedet.
+  const BUDSJETT_I_GENERATE = 16_000;
+  const k = hentMasterbrainKunnskap("plan-generering", {
+    maksTegn: BUDSJETT_I_GENERATE,
+  });
+  assert.equal(
+    k.utelatt.length,
+    0,
+    `fasiten har vokst forbi budsjettet — utelatt: ${k.utelatt.map((u) => u.fil).join(", ")}`,
+  );
+  assert.equal(k.kilder.length, 3);
+  // Volumtakene må faktisk være med, ikke bare fila.
+  assert.match(k.blokker.join("\n"), /age_15_18_elite/);
 });
 
 test("oppgavetypeForAksjon mapper kjente actionTypes", () => {
