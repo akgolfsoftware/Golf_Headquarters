@@ -106,6 +106,15 @@ export async function exportUserData(): Promise<{
       healthEntries,
       equipmentBag,
       messages,
+      // Tidligere utelatt (GDPR art. 15/20 — skal med i innsyn/portabilitet):
+      coachNotes,
+      coachingSessions,
+      sessionRecordings,
+      leaves,
+      talentTracking,
+      documents,
+      trainingLogs,
+      swingVideos,
     ] = await Promise.all([
       prisma.goal.findMany({ where: { userId: user.id } }),
       prisma.round.findMany({ where: { userId: user.id } }),
@@ -119,7 +128,31 @@ export async function exportUserData(): Promise<{
       prisma.healthEntry.findMany({ where: { userId: user.id } }).catch(() => []),
       prisma.equipmentBag.findMany({ where: { userId: user.id } }).catch(() => []),
       prisma.caddieMessage.findMany({ where: { userId: user.id } }).catch(() => []),
+      // Coach-notater OM brukeren — deres personopplysning, omfattes av innsyn.
+      prisma.coachNote.findMany({ where: { playerId: user.id } }).catch(() => []),
+      prisma.coachingSession.findMany({ where: { userId: user.id } }).catch(() => []),
+      prisma.sessionRecording.findMany({ where: { playerId: user.id } }).catch(() => []),
+      prisma.leave.findMany({ where: { userId: user.id } }).catch(() => []),
+      prisma.talentTracking.findMany({ where: { userId: user.id } }).catch(() => []),
+      prisma.document.findMany({ where: { userId: user.id } }).catch(() => []),
+      prisma.trainingLog.findMany({ where: { userId: user.id } }).catch(() => []),
+      prisma.playerSwingVideo.findMany({ where: { userId: user.id } }).catch(() => []),
     ]);
+
+    // Fil-manifest (art. 20): lagrede filer ligger i Supabase Storage og kan
+    // ikke bakes inn i JSON-en. Vi lister referansene så bruker vet hva som
+    // finnes og kan be om utlevering av selve filene.
+    const storageFiler = [
+      ...documents.map((d) => ({ type: "document", url: d.url, title: d.title })),
+      ...sessionRecordings
+        .filter((r) => r.audioUrl)
+        .map((r) => ({ type: "opptak", url: r.audioUrl, id: r.id })),
+      ...swingVideos.map((v) => ({
+        type: "swing-video",
+        url: v.storagePath ?? v.videoUrl,
+        id: v.id,
+      })),
+    ];
 
     const exportPayload = {
       exportedAt: new Date().toISOString(),
@@ -136,9 +169,20 @@ export async function exportUserData(): Promise<{
       healthEntries,
       equipmentBag,
       messages,
+      coachNotes,
+      coachingSessions,
+      sessionRecordings,
+      leaves,
+      talentTracking,
+      documents,
+      trainingLogs,
+      swingVideos,
+      _storageFiler: storageFiler,
       _note:
         "Dette er en komplett eksport av dine personlige data fra AK Golf HQ per dato. " +
-        "Iht. GDPR artikkel 15 (rett til innsyn). Spørsmål: post@akgolf.no",
+        "Iht. GDPR artikkel 15 (rett til innsyn) og art. 20 (dataportabilitet). " +
+        "Lagrede filer (opptak, videoer, dokumenter) er listet under _storageFiler — " +
+        "be om utlevering av selve filene på post@akgolf.no. Spørsmål: post@akgolf.no",
     };
 
     // E-post-bekreftelse + kopi til support
@@ -154,7 +198,7 @@ export async function exportUserData(): Promise<{
             heading: `Hei ${user.name ?? "der"},`,
             body: `
               <p style="margin:0 0 16px 0;">Du har lastet ned en komplett eksport av dine data fra AK Golf HQ.</p>
-              <p style="margin:0 0 16px 0;">Eksporten inkluderer: profil, runder, økter, mål, betalinger, varsler, helse-loggføringer, utstyr, meldinger.</p>
+              <p style="margin:0 0 16px 0;">Eksporten inkluderer: profil, runder, økter, mål, betalinger, varsler, helse-loggføringer, utstyr, meldinger, coach-notater, coaching-økter, opptak, permisjoner/skader, talentvurdering, dokumenter, treningslogg og videoer (med fil-manifest).</p>
               <p style="margin:0 0 16px 0;">Tidspunkt: ${new Date().toLocaleString("nb-NO")}</p>
               <p style="margin:0;">Hvis dette ikke var deg, kontakt oss umiddelbart på post@akgolf.no.</p>
             `,
