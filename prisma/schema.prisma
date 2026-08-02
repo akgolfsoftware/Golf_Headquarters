@@ -113,6 +113,7 @@ enum ExerciseSource {
 enum ExerciseVisibility {
   PRIVATE        // Kun skaperen + tildelt coach
   COACH_PLAYERS  // Alle coachens spillere (kun for COACH-source)
+  PLATFORM       // Delt med hele plattformen (PLAYER-source med drillDelingGodtatt)
 }
 
 // P14: spiller-status for permisjon, skade, retur til spill
@@ -351,6 +352,13 @@ model User {
   // Tilgjengelige fasiliteter og utstyr (settes under onboarding/innstillinger).
   // Brukes for å filtrere drills slik at spilleren kun ser øvelser de kan gjøre.
   tilgjengeligeFasiliteter DrillFasilitet[] @default([])
+
+  // Samtykke fra onboarding: egne drills spilleren lager kan deles med plattformen
+  // (styrer visibility på ExerciseDefinition med source=PLAYER: PLATFORM vs PRIVATE).
+  drillDelingGodtatt Boolean @default(false)
+
+  // Spillerens navngitte treningssteder (onboarding steg 3).
+  playerFacilities PlayerFacility[]
 
   // GDPR soft-delete (P20). Bruker markeres som deletedAt = now() ved kontosletting.
   // Cron /api/cron/cleanup-deleted-accounts sletter permanent etter 30 dager.
@@ -945,6 +953,10 @@ model TrainingPlanSession {
   miljo         MMiljo?
   csNivaa       CSNivaa?
   pPosisjoner   String[]
+  // Hvor økten skjer (fritekst eller navn fra PlayerFacility) + hva den skal oppnå.
+  // Speiles mot TrainingSessionV2.location/maalsetning.
+  location      String?
+  maalsetning   String?
   status        SessionStatus       @default(PLANNED)
   liveSnapshot  Json? // Løpende live-fremdrift (reps/tid per drill). Nulles ved completeSession.
   createdAt     DateTime            @default(now())
@@ -1004,6 +1016,10 @@ model ExerciseDefinition {
   defaultSets        Int?
   defaultReps        Int?
   csTargetByKategori Json? // {A:95,B:90,...} per NGF-kategori
+  // Planlagt L-trapp-default (AK-formel): prefill for reps per læringsfase.
+  defaultRepsUtenBall Int?
+  defaultRepsLavFart  Int?
+  defaultRepsAuto     Int?
 
   // Egendefinerte øvelser (COACH/PLAYER-source)
   source       ExerciseSource      @default(SYSTEM)
@@ -1049,6 +1065,10 @@ model SessionDrill {
   repMinutter Int? // minutter (TID)
   repSett     Int? // sett (SETT_REPS)
   repReps     Int? // reps per sett (SETT_REPS)
+  // Planlagt L-trapp (AK-formel): reps per læringsfase. Speiler TrainingDrillV2.
+  planRepsUtenBall Int?
+  planRepsLavFart  Int?
+  planRepsAuto     Int?
   pPosisjoner String[]
   notes      String?
   orderIndex Int     @default(0)
@@ -2850,6 +2870,9 @@ model TrainingSessionV2 {
   practiceType         PracticeType
   status               SessionStatusV2        @default(PLANNED)
   notes                String?
+  // Hvor økten skjer + hva den skal oppnå. Speiles mot TrainingPlanSession.
+  location             String?
+  maalsetning          String?
   isCoachCreated       Boolean                @default(true)
   rrule                String?
   recurringGroupId     String?
@@ -2951,6 +2974,14 @@ model TrainingDrillV2 {
   repMinutter         Int? // minutter (TID)
   repSett             Int? // sett (SETT_REPS)
   repReps             Int? // reps per sett (SETT_REPS)
+  // Planlagt L-trapp (AK-formel): reps per læringsfase. Kanonisk kontrakt delt med SessionDrill.
+  planRepsUtenBall    Int?
+  planRepsLavFart     Int?
+  planRepsAuto        Int?
+  // Faktisk medgått tid (live-timer) + kobling til bibliotek-drill for varighetsestimat.
+  // exerciseId er bevisst uten @relation (kirurgisk additiv endring, jf. gotchas).
+  actualDurationSec   Int?
+  exerciseId          String?
   pPosisjoner         String[]
   lifeKode            String?
   componentFocus      String?
@@ -3749,6 +3780,28 @@ model FacilityPrefs {
   @@map("facility_prefs")
 }
 
+// PlayerFacility — spillerens egne, navngitte treningsfasiliteter (fra onboarding).
+// Erstatter de grove FacilityPrefs-booleans for nye flater: hver rad er ett sted
+// («Hjemmebane», «Garasje-simulator» …) med inne/ute og hva stedet har.
+// Cascade er påkrevd: radene er persondata og må forsvinne med brukeren (GDPR).
+// Union av capabilities speiles til User.tilgjengeligeFasiliteter ved lagring.
+model PlayerFacility {
+  id           String           @id @default(cuid())
+  userId       String
+  name         String
+  isIndoor     Boolean          @default(false)
+  capabilities DrillFasilitet[] @default([])
+  notes        String?
+  sortOrder    Int              @default(0)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("player_facilities")
+}
+
 // PlanSession — workbench-spesifikke sessions med drag-drop-persistering (Sprint 6)
 model PlanSession {
   id        String   @id @default(cuid())
@@ -4327,6 +4380,9 @@ model FysOkt {
   sortOrder        Int
   estimertMinutter Int?
   type             String? // styrke | rotasjon | mobilitet | kondisjon (v2 fysisk-logging)
+  // Gjennomføring (stemples av loggFysOkt) — gir fys-økter en dato i felles treningshistorikk.
+  gjennomfortAt    DateTime?
+  faktiskMinutter  Int?
 
   uke   FysUke         @relation(fields: [ukeId], references: [id], onDelete: Cascade)
   rader FysOvelseRad[]

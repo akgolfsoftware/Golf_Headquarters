@@ -546,7 +546,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Tilbakestill passord | `/auth/reset-password` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Sjekk e-post | `/auth/check-email` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | BankID ★ | `/auth/bankid` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `BankIDV2` (samme v2-idiomfamilie som LoginV2), portert 10. juli, hake aldri oppdatert |
-| Onboarding (spiller, 6 steg) | `/auth/onboarding` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24: nivåplasserings-quiz (steg 4) setter `preferences.onboarding.nivaa` → progressiv dybde i Min golf. 6 steg totalt. |
+| Onboarding (spiller, 7 steg) | `/auth/onboarding` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24: nivåplasserings-quiz setter `preferences.onboarding.nivaa` → progressiv dybde i Min golf. 2026-07-27: utvidet til 7 steg — steg 2 +skole/skoletrinn, steg 3 navngitte treningssteder (`PlayerFacility`, inne/ute + capabilities), NYTT steg 4 «Dine tall» (snittscore + full SG forrige sesong/hittil i år → `BrukerSgInput`, kan hoppes over), steg 7 +samtykke til deling av egne drills (`User.drillDelingGodtatt`). Nye felter skrives til EKTE kolonner med zod-validering, ikke `preferences`-blobben. |
 | Onboarding (forelder) | `/auth/onboarding/forelder` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 16. jul (Team B): arver v2 fra de restylede delte primitivene (`wizard-chrome`/`wizard-fields`) + forelder-spesifikke justeringer i `forelder-wizard.tsx`/`page.tsx`. 4-stegs-logikken og `saveForelderOnboardingStep`/`completeForelderOnboarding` uendret. Design – → ✓, Mob/Desk/iPad --- → ✓✓–.
 | Foreldresamtykke (token) | `/auth/guardian-consent/[token]` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | Samtykke venter | `/auth/samtykke-venter` | ✓ | --- | ✓ | ~ | ~ | ~ |

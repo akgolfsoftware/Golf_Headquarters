@@ -5,6 +5,10 @@
 //
 // Returnerer kun de feltene som er trygge å vise til en agent. Sensitiv
 // data (auth-id, preferences-JSON osv.) ekskluderes bevisst.
+//
+// GDPR-tiltak 2026-07-27: kontaktinfo (e-post, telefon) fjernet fra det som
+// sendes til Anthropic — modellen trenger dem ikke for coaching-resonnement
+// (samme linje som src/lib/caddie/tools/read.ts sin getPlayer).
 
 import "server-only";
 import { prisma } from "@/lib/prisma";
@@ -13,7 +17,8 @@ import type { Tool } from "@anthropic-ai/sdk/resources/messages";
 export const getSpillerTool: Tool = {
   name: "get_spiller",
   description:
-    "Henter full spiller-profil (navn, e-post, HCP, rolle, tier, hjemmeklubb) basert på spiller-ID.",
+    "Henter spiller-profil (navn, HCP, rolle, tier, hjemmeklubb) basert på spiller-ID. " +
+    "Kontaktinfo (e-post, telefon) er bevisst utelatt.",
   input_schema: {
     type: "object",
     properties: {
@@ -33,7 +38,6 @@ export type GetSpillerOutput =
       spiller: {
         id: string;
         name: string;
-        email: string;
         hcp: number | null;
         role: string;
         tier: string;
@@ -53,7 +57,6 @@ export async function execGetSpiller(
     select: {
       id: true,
       name: true,
-      email: true,
       hcp: true,
       role: true,
       tier: true,

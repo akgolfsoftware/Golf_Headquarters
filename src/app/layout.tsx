@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { Familjen_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { InstallPrompt } from "@/components/portal/install-prompt";
 import { SwRegister } from "@/components/sw-register";
 // S-14: CookieBanner + AnalyticsLoader erstatter hardkodet Plausible <Script>.
 // Plausible lastes nå kun etter eksplisitt samtykke fra bruker.
 import { CookieBanner } from "@/components/shared/cookie-banner";
 import { AnalyticsLoader } from "@/components/shared/analytics-loader";
+// GDPR-fiks 2026-07-27: Vercel Analytics/SpeedInsights lastet før uten samtykke,
+// i strid med personvernerklæringen. Samme samtykke-gate som Plausible.
+import { VercelAnalyticsGated } from "@/components/shared/vercel-analytics-gated";
 import "./globals.css";
 
 // Inter — UI og brødtekst (variable font)
@@ -147,8 +148,7 @@ export default async function RootLayout({
         {children}
         <InstallPrompt />
         <SwRegister />
-        <Analytics />
-        <SpeedInsights />
+        <VercelAnalyticsGated />
         {/* S-14: cookie-samtykke + betinget Plausible-lasting */}
         <CookieBanner />
         {process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (

@@ -28,7 +28,8 @@ function periodToSince(period: "30d" | "90d" | "season"): Date {
 export const buildReadTools = (viewer: { id: string; role: string }) => ({
   searchPlayers: tool({
     description:
-      "Søk etter spillere via navn eller e-post (delvis match). Returnerer id, navn, e-post, HCP og tier.",
+      "Søk etter spillere via navn eller e-post (delvis match). Returnerer id, navn, HCP og tier " +
+      "(e-post brukes kun til å søke i, sendes ikke tilbake — GDPR-minimering av det AI-modellen ser).",
     inputSchema: z.object({
       query: z.string().describe("Navn eller e-post (delvis match, case-insensitive)"),
       limit: z.number().int().min(1).max(50).default(10),
@@ -46,7 +47,6 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
           select: {
             id: true,
             name: true,
-            email: true,
             hcp: true,
             tier: true,
           },
@@ -65,7 +65,10 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
 
   getPlayer: tool({
     description:
-      "Hent full profil for én spiller: HCP, tier, plan-status, abonnement og siste login.",
+      "Hent full profil for én spiller: HCP, tier, plan-status og siste login. " +
+      "(Kontaktinfo og abonnement/Stripe-detaljer er bevisst utelatt — ikke nødvendig for " +
+      "coaching-resonnement, og skal ikke sendes til AI-modellen. Bruk getActiveSubscriptions " +
+      "hvis abonnementsstatus faktisk trengs.)",
     inputSchema: z.object({
       id: z.string().describe("Spiller-ID (cuid)"),
     }),
@@ -76,8 +79,6 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
           select: {
             id: true,
             name: true,
-            email: true,
-            phone: true,
             role: true,
             tier: true,
             hcp: true,
@@ -86,15 +87,6 @@ export const buildReadTools = (viewer: { id: string; role: string }) => ({
             homeClub: true,
             lastLoginAt: true,
             createdAt: true,
-            subscription: {
-              select: {
-                tier: true,
-                status: true,
-                currentPeriodEnd: true,
-                monthlyCredits: true,
-                creditsRemaining: true,
-              },
-            },
             trainingPlans: {
               where: { isActive: true },
               select: {

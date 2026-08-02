@@ -8,6 +8,7 @@ import "server-only";
 import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "../client";
 import { sgInterpretationSkill } from "../skills/sg-interpretation";
 import { prisma } from "@/lib/prisma";
+import { pseudonymForId, substituerPseudonym } from "../pseudonym";
 
 export const SG_INTERPRETATION_SYSTEM = `
 Du er SG Interpretation-agent for AK Golf HQ.
@@ -99,7 +100,11 @@ export async function tolkSg(
     };
   }
 
-  const userPrompt = byggUserPrompt(spiller.name, runder.length, perKategori, svakesteKategori);
+  // GDPR-tiltak 2026-07-27: prompten til Anthropic bruker et pseudonym for
+  // spilleren — ekte navn byttes tilbake i sammendraget under, før det
+  // returneres til appen.
+  const spillerPseudonym = pseudonymForId(spiller.id);
+  const userPrompt = byggUserPrompt(spillerPseudonym, runder.length, perKategori, svakesteKategori);
   const response = await anthropic.messages.create({
     model: AI_MODEL,
     max_tokens: AI_MAX_TOKENS,
@@ -107,11 +112,12 @@ export async function tolkSg(
     messages: [{ role: "user", content: userPrompt }],
   });
 
-  const text = response.content
+  const rawText = response.content
     .filter((b) => b.type === "text")
     .map((b) => (b.type === "text" ? b.text : ""))
     .join("\n")
     .trim();
+  const text = rawText ? substituerPseudonym(rawText, spillerPseudonym, spiller.name) : rawText;
 
   return {
     spillerId: spiller.id,
@@ -289,7 +295,7 @@ function generiskeDrills(kategori: SgKategoriKode): string[] {
 // ---------- Prompts og demo ----------
 
 function byggUserPrompt(
-  navn: string,
+  spillerPseudonym: string,
   runderTatt: number,
   perKategori: {
     ott: SgKategoriTolkning;
@@ -300,7 +306,7 @@ function byggUserPrompt(
   svakeste: SgKategoriKode | null,
 ): string {
   return `
-Tolk SG-data for ${navn} (siste ${runderTatt} runder).
+Tolk SG-data for ${spillerPseudonym} (siste ${runderTatt} runder).
 
 OTT: ${perKategori.ott.verdi ?? "n/a"} (trend ${perKategori.ott.trend})
 APP: ${perKategori.app.verdi ?? "n/a"} (trend ${perKategori.app.trend})

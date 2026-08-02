@@ -8,6 +8,7 @@
 import "server-only";
 import { anthropic, AI_MODEL, isAiEnabled } from "../client";
 import { prisma } from "@/lib/prisma";
+import { pseudonymForId, substituerPseudonymer } from "../pseudonym";
 
 export const VINN_TILBAKE_SYSTEM = `
 Du er Vinn Tilbake-agent for AK Golf HQ.
@@ -124,7 +125,9 @@ export async function identifiserInaktiveSpillere(
     const sisteFokus = sisteOkt?.title ?? null;
 
     const melding = await byggMelding({
+      spillerId: sp.id,
       spillerNavn: sp.name,
+      coachId,
       coachNavn,
       dagerInaktiv,
       sisteFokus,
@@ -151,7 +154,9 @@ export async function identifiserInaktiveSpillere(
 // ---------- Melding-bygging ----------
 
 async function byggMelding(opts: {
+  spillerId: string;
   spillerNavn: string;
+  coachId: string;
   coachNavn: string;
   dagerInaktiv: number;
   sisteFokus: string | null;
@@ -163,12 +168,17 @@ async function byggMelding(opts: {
     return byggDemoMelding(opts);
   }
 
-  const fornavn = opts.spillerNavn.split(" ")[0];
+  // GDPR-tiltak 2026-07-27: prompten til Anthropic bruker pseudonymer for
+  // spiller og coach — ekte navn byttes tilbake i svaret under, før
+  // meldingen returneres til appen. Verken spillerens eller coachens navn
+  // forlater denne serveren i selve prompt-teksten.
+  const spillerPseudonym = pseudonymForId(opts.spillerId);
+  const coachPseudonym = pseudonymForId(opts.coachId);
   const userPrompt = `
 Skriv en personlig oppfølgings-melding på maks 80 ord.
 
-Spiller: ${fornavn} (full: ${opts.spillerNavn})
-Coach: ${opts.coachNavn}
+Spiller: ${spillerPseudonym}
+Coach: ${coachPseudonym}
 Dager inaktiv: ${opts.dagerInaktiv}
 ${opts.sisteFokus ? `Sist trent på: ${opts.sisteFokus}` : ""}
 ${opts.sisteMaalTitle ? `Aktivt mål: ${opts.sisteMaalTitle}` : ""}
@@ -185,11 +195,20 @@ Avslutt med en konkret invitasjon (booke time, planlegge runde, etc.).
       system: VINN_TILBAKE_SYSTEM,
       messages: [{ role: "user", content: userPrompt }],
     });
-    const text = response.content
+    const rawText = response.content
       .filter((b) => b.type === "text")
       .map((b) => (b.type === "text" ? b.text : ""))
       .join("\n")
       .trim();
+    const text = rawText
+      ? substituerPseudonymer(
+          rawText,
+          new Map([
+            [spillerPseudonym, opts.spillerNavn],
+            [coachPseudonym, opts.coachNavn],
+          ]),
+        )
+      : rawText;
     return text || byggDemoMelding(opts);
   } catch {
     return byggDemoMelding(opts);

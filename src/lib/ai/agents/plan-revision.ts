@@ -12,6 +12,7 @@ import "server-only";
 import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "../client";
 import { ALL_SKILLS } from "../skills";
 import { prisma } from "@/lib/prisma";
+import { pseudonymForId, substituerPseudonym } from "../pseudonym";
 
 const SKILLS_BLOCK = ALL_SKILLS.map(
   (s) => `\n## ${s.name}\n${s.knowledge}`,
@@ -88,7 +89,12 @@ export async function foreslaPlanRevisjon(opts: {
     return byggDemoForslag(plan, opts.trigger, kontekst);
   }
 
-  const userPrompt = byggUserPrompt(plan, opts.trigger, kontekst, opts.context);
+  // GDPR-tiltak 2026-07-27: prompten bruker et pseudonym for spilleren —
+  // navn (og for skade-triggeren: skadeårsak i fritekst) skal ikke kunne
+  // knyttes til en identifiserbar person hos Anthropic. Pseudonymet byttes
+  // tilbake til ekte navn i svaret før det lagres/vises (se under).
+  const pseudonym = pseudonymForId(plan.userId);
+  const userPrompt = byggUserPrompt(plan, opts.trigger, kontekst, pseudonym, opts.context);
   const response = await anthropic.messages.create({
     model: AI_MODEL,
     max_tokens: AI_MAX_TOKENS,
@@ -96,11 +102,13 @@ export async function foreslaPlanRevisjon(opts: {
     messages: [{ role: "user", content: userPrompt }],
   });
 
-  const text = response.content
+  const rawText = response.content
     .filter((b) => b.type === "text")
     .map((b) => (b.type === "text" ? b.text : ""))
     .join("\n")
     .trim();
+
+  const text = rawText ? substituerPseudonym(rawText, pseudonym, plan.user.name) : rawText;
 
   // Parsing: Vi prøver å lese strukturert JSON fra svaret. Hvis Claude returnerer
   // markdown/prosa, fall tilbake til demo-forslag og bruk Claude-teksten som
@@ -251,11 +259,12 @@ function byggUserPrompt(
   plan: { name: string; user: { name: string; hcp: number | null } },
   trigger: PlanRevisionTrigger,
   k: PlanKontekst,
+  spillerPseudonym: string,
   extraContext?: string,
 ): string {
   const linjer: string[] = [
     `Plan: ${plan.name}`,
-    `Spiller: ${plan.user.name} (HCP ${plan.user.hcp ?? "ukjent"})`,
+    `Spiller: ${spillerPseudonym} (HCP ${plan.user.hcp ?? "ukjent"})`,
     `Trigger: ${trigger}`,
     "",
   ];

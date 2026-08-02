@@ -10,6 +10,7 @@ import "server-only";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "@/lib/ai/client";
+import { pseudonymForId, substituerPseudonym } from "@/lib/ai/pseudonym";
 import { notify } from "@/lib/notifications";
 import { aggregateSg } from "@/lib/sg";
 import { runAgent, type AgentResult } from "./agent-runner";
@@ -110,8 +111,16 @@ function statiskVelkomst(oktInfo: OktInfo): string {
   return `Nå kjører vi «${oktInfo.title}».${drillDel} Si ifra underveis hvis noe føles rart, så tar vi det sammen.`;
 }
 
-/** Genererer en varm, kort velkomstmelding via Claude — faller tilbake til statisk tekst. */
+/**
+ * Genererer en varm, kort velkomstmelding via Claude — faller tilbake til statisk tekst.
+ *
+ * GDPR-tiltak 2026-07-27: spillerens ekte navn sendes aldri til Anthropic —
+ * prompten bruker et deterministisk pseudonym (pseudonymForId) som byttes
+ * tilbake til det ekte navnet i svaret før det lagres/vises (samme mønster
+ * som daily-brief.ts/plan-revision.ts).
+ */
 async function genererVelkomst(
+  userId: string,
   spillerNavn: string,
   oktInfo: OktInfo,
   planNavn: string | null,
@@ -121,8 +130,9 @@ async function genererVelkomst(
     return statiskVelkomst(oktInfo);
   }
 
+  const pseudonym = pseudonymForId(userId);
   const kontekstLinjer = [
-    `Spiller: ${spillerNavn}`,
+    `Spiller: ${pseudonym}`,
     `Dagens økt: ${oktInfo.title}`,
     oktInfo.pyramidArea ? `Pyramideområde: ${oktInfo.pyramidArea}` : null,
     oktInfo.drillNavn.length > 0 ? `Driller i økta: ${oktInfo.drillNavn.join(", ")}` : null,
@@ -159,11 +169,12 @@ TONE:
         },
       ],
     });
-    const tekst = respons.content
+    const rawTekst = respons.content
       .filter((b) => b.type === "text")
       .map((b) => (b.type === "text" ? b.text : ""))
       .join("\n")
       .trim();
+    const tekst = rawTekst ? substituerPseudonym(rawTekst, pseudonym, spillerNavn) : rawTekst;
     return tekst || statiskVelkomst(oktInfo);
   } catch (err) {
     console.error("[live-coach-agent] Claude-kall feilet, bruker statisk fallback", err);
@@ -229,7 +240,7 @@ export async function runLiveCoachAgent(opts: {
     const sg = aggregateSg(sisteRunder);
     const spillerNavn = spiller?.name ?? "spilleren";
 
-    const velkomst = await genererVelkomst(spillerNavn, oktInfo, aktivPlan?.name ?? null, {
+    const velkomst = await genererVelkomst(userId, spillerNavn, oktInfo, aktivPlan?.name ?? null, {
       total: sg.total,
       rundeAntall: sg.rundeAntall,
     });

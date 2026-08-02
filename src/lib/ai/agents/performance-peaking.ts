@@ -11,6 +11,7 @@ import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "../client";
 import { bompaSkill } from "../skills/bompa-perioder";
 import { pyramideSkill } from "../skills/pyramide-taksonomi";
 import { prisma } from "@/lib/prisma";
+import { pseudonymForId, substituerPseudonym } from "../pseudonym";
 
 export const PERFORMANCE_PEAKING_SYSTEM = `
 Du er Performance Peaking-agent for AK Golf HQ.
@@ -118,8 +119,11 @@ export async function foreslaPeakingPlan(opts: {
     };
   }
 
-  // Med Claude — be om generell råd som tekst (planen er deterministisk).
-  const userPrompt = byggUserPrompt(spiller, tournament, ukerTilTurnering, fasePerUke);
+  // GDPR-tiltak 2026-07-27: prompten til Anthropic bruker et pseudonym for
+  // spilleren — ekte navn byttes tilbake i "generellRad" under, før den
+  // returneres til appen.
+  const spillerPseudonym = pseudonymForId(spiller.id);
+  const userPrompt = byggUserPrompt(spillerPseudonym, spiller.hcp, tournament, ukerTilTurnering, fasePerUke);
   try {
     const response = await anthropic.messages.create({
       model: AI_MODEL,
@@ -127,11 +131,12 @@ export async function foreslaPeakingPlan(opts: {
       system: PERFORMANCE_PEAKING_SYSTEM,
       messages: [{ role: "user", content: userPrompt }],
     });
-    const text = response.content
+    const rawText = response.content
       .filter((b) => b.type === "text")
       .map((b) => (b.type === "text" ? b.text : ""))
       .join("\n")
       .trim();
+    const text = rawText ? substituerPseudonym(rawText, spillerPseudonym, spiller.name) : rawText;
     return {
       spillerId: spiller.id,
       spillerNavn: spiller.name,
@@ -245,7 +250,8 @@ function byggFasePlan(ukerTil: number): FaseUke[] {
 // ---------- Prompts og demo-tekst ----------
 
 function byggUserPrompt(
-  spiller: { name: string; hcp: number | null },
+  spillerPseudonym: string,
+  hcp: number | null,
   tournament: { name: string; startDate: Date },
   ukerTil: number,
   fasePerUke: FaseUke[],
@@ -255,7 +261,7 @@ function byggUserPrompt(
       `Uke ${u.uke}: ${u.bompaFase} | vol ${u.volum} | int ${u.intensitet} | FYS ${u.pyramidFokus.fys}% TEK ${u.pyramidFokus.tek}% SLAG ${u.pyramidFokus.slag}% SPILL ${u.pyramidFokus.spill}% TURN ${u.pyramidFokus.turn}%`,
   );
   return `
-Spiller: ${spiller.name} (HCP ${spiller.hcp ?? "ukjent"})
+Spiller: ${spillerPseudonym} (HCP ${hcp ?? "ukjent"})
 Turnering: ${tournament.name} (${tournament.startDate.toISOString().slice(0, 10)})
 Uker til turnering: ${ukerTil}
 

@@ -6,6 +6,7 @@
 
 import { z } from "zod";
 import { anthropicKlient, COACH_MODEL } from "./anthropic";
+import { pseudonymForId, substituerPseudonym } from "./ai/pseudonym";
 
 // ----------------------------------------------------------------------------
 // Typer
@@ -73,10 +74,14 @@ Returner KUN JSON med eksakt denne strukturen - ingen prosa rundt:
   "oppsummering": "..."
 }`;
 
-function byggBrukerPrompt(input: AnalyseInput): string {
+// GDPR-tiltak 2026-07-27: spillerens ekte navn skal aldri sendes til
+// Anthropic. Prompten bruker et deterministisk pseudonym (se
+// src/lib/ai/pseudonym.ts) — ekte navn byttes tilbake i AI-svaret i
+// analyserCoachingSesjon for etterpa.
+function byggBrukerPrompt(input: AnalyseInput, pseudonym: string): string {
   const k = input.spillerKontekst;
   const linjer: string[] = [];
-  linjer.push(`SPILLER: ${k.navn}`);
+  linjer.push(`SPILLER: ${pseudonym}`);
   linjer.push(`HCP: ${k.hcp ?? "ukjent"}`);
   if (k.alder !== null) linjer.push(`Alder: ${k.alder}`);
   if (k.ambisjon) linjer.push(`Ambisjon: ${k.ambisjon}`);
@@ -108,7 +113,9 @@ export async function analyserCoachingSesjon(
   input: AnalyseInput,
 ): Promise<AnalyseResultat> {
   const klient = anthropicKlient();
-  const brukerPrompt = byggBrukerPrompt(input);
+  const ektNavn = input.spillerKontekst.navn;
+  const pseudonym = pseudonymForId(ektNavn);
+  const brukerPrompt = byggBrukerPrompt(input, pseudonym);
 
   const respons = await klient.messages.create({
     model: COACH_MODEL,
@@ -161,5 +168,14 @@ export async function analyserCoachingSesjon(
       `Claude-respons matchet ikke forventet schema: ${parsed.error.message}`,
     );
   }
-  return parsed.data;
+
+  // Bytt pseudonymet tilbake til ekte navn hvis Claude har gjentatt det i
+  // fritekst-feltene, for analysen returneres til kalleren.
+  const resultat = parsed.data;
+  return Object.fromEntries(
+    Object.entries(resultat).map(([felt, verdi]) => [
+      felt,
+      substituerPseudonym(verdi, pseudonym, ektNavn),
+    ]),
+  ) as AnalyseResultat;
 }

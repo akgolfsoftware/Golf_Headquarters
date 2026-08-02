@@ -8,6 +8,14 @@
 // Eksisterende `src/lib/caddie/` er den gamle Caddie-implementasjonen
 // (med approval-executor). Denne fila er ny foundation under `src/lib/ai/`
 // som kan migrere/erstatte den når Spor 5 lander UI.
+//
+// GDPR-vurdering 2026-07-27: denne fila bygger aldri spillerdata inn i
+// fritekst-prompten selv — chatCaddie() sender kun system-prompt + samtalen
+// videre, og modellen henter spillerdata via tools (get_spiller m.fl.).
+// Pseudonymiserings-mønsteret fra daily-brief.ts/plan-revision.ts er derfor
+// ikke aktuelt her. Spillernavn kan likevel komme tilbake i tool_result-JSON
+// fra get_spiller — det er bevisst beholdt (coachen kjenner allerede navnet
+// fra egen forespørsel), mens kontaktinfo er fjernet i get-spiller.ts.
 
 import "server-only";
 import type { MessageParam } from "@anthropic-ai/sdk/resources/messages";

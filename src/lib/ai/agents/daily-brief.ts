@@ -11,6 +11,7 @@ import "server-only";
 import { anthropic, AI_MODEL, AI_MAX_TOKENS, isAiEnabled } from "../client";
 import { ALL_SKILLS } from "../skills";
 import { prisma } from "@/lib/prisma";
+import { pseudonymForId, substituerPseudonymer } from "../pseudonym";
 
 const SKILLS_BLOCK = ALL_SKILLS.map(
   (s) => `\n## ${s.name}\n${s.knowledge}`,
@@ -82,6 +83,21 @@ export async function genererDailyBrief(opts: {
     };
   }
 
+  // GDPR-tiltak 2026-07-27: prompten til Anthropic bruker pseudonymer i stedet
+  // for ekte navn (helsedata som hvilepuls/søvn er art. 9-kategori — skal ikke
+  // kunne knyttes til en identifiserbar person hos en ekstern AI-leverandør).
+  // Kartet under bytter pseudonymene tilbake til ekte navn i teksten FØR den
+  // vises til coach — det ekte navnet forlater aldri denne serveren.
+  const pseudonymKart = new Map<string, string>();
+  for (const f of metrics.flagg) {
+    pseudonymKart.set(pseudonymForId(f.spillerId), f.spillerNavn);
+  }
+  if (metrics.nesteTurnering) {
+    for (const s of metrics.nesteTurnering.spillere) {
+      pseudonymKart.set(pseudonymForId(s.id), s.navn);
+    }
+  }
+
   const userPrompt = byggUserPrompt(metrics);
   const response = await anthropic.messages.create({
     model: AI_MODEL,
@@ -90,11 +106,13 @@ export async function genererDailyBrief(opts: {
     messages: [{ role: "user", content: userPrompt }],
   });
 
-  const text = response.content
+  const rawText = response.content
     .filter((b) => b.type === "text")
     .map((b) => (b.type === "text" ? b.text : ""))
     .join("\n")
     .trim();
+
+  const text = rawText ? substituerPseudonymer(rawText, pseudonymKart) : rawText;
 
   return {
     brief: text || byggDemoBrief(metrics),
@@ -312,11 +330,13 @@ async function samleMetrics(
 // ---------- Prompt-bygging ----------
 
 function byggUserPrompt(m: DailyBriefMetrics): string {
+  // Pseudonymer i stedet for ekte navn — se substituerPseudonymer-kallet i
+  // genererDailyBrief som bytter dem tilbake før coach ser brief-teksten.
   const flaggBlock = m.flagg.length
     ? m.flagg
         .map(
           (f, i) =>
-            `${i + 1}. ${f.spillerNavn} — ${f.type} (severity ${f.severity}): ${f.melding}`,
+            `${i + 1}. ${pseudonymForId(f.spillerId)} — ${f.type} (severity ${f.severity}): ${f.melding}`,
         )
         .join("\n")
     : "Ingen flagg.";
@@ -324,7 +344,7 @@ function byggUserPrompt(m: DailyBriefMetrics): string {
   const turneringBlock = m.nesteTurnering
     ? `${m.nesteTurnering.navn} om ${m.nesteTurnering.dagerTil} dager (${
         m.nesteTurnering.spillere.length
-      } spiller(e): ${m.nesteTurnering.spillere.map((s) => s.navn).join(", ")})`
+      } spiller(e): ${m.nesteTurnering.spillere.map((s) => pseudonymForId(s.id)).join(", ")})`
     : "Ingen kommende turneringer.";
 
   return `

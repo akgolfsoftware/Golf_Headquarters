@@ -5,6 +5,7 @@
 // Returnerer et strukturert objekt som serialiseres inn i AI-prompten.
 
 import { prisma } from "@/lib/prisma";
+import { pseudonymForId } from "@/lib/ai/pseudonym";
 import type {
   DrillFasilitet,
   LPhase,
@@ -500,7 +501,12 @@ export async function byggSpillerKontekst(
   return {
     spiller: {
       id: user.id,
-      navn: user.name,
+      // GDPR-tiltak 2026-07-27: ekte navn sendes aldri til AI-leverandøren —
+      // SpillerKontekst går rett inn i Anthropic-prompten (coach-prompt.ts).
+      // Modellen trenger ikke navnet for å foreslå en plan; kallere som
+      // trenger ekte navn i tekst tilbake til bruker kjører
+      // substituerPseudonym() på AI-svaret (se src/lib/ai/pseudonym.ts).
+      navn: pseudonymForId(user.id),
       hcp: user.hcp,
       rolle: user.role,
       tier: user.tier,
