@@ -35,7 +35,8 @@ export type StabilitetData = {
 // ── Stabilitetsgrenser (stddev per parameter → 5-nivå skala) ────────────────
 // Tersklene er representative for HCP 0-10 spiller. v=1=best, v=5=verst.
 
-const PARAM_THRESHOLDS: Record<ParamKey, [number, number, number, number]> = {
+// Eksportert: gjenbrukes som gulv/tak for personlige feilbånd i coach-restraint.
+export const PARAM_THRESHOLDS: Record<ParamKey, [number, number, number, number]> = {
   carry:       [4,   7,   10,  14],  // meter
   side:        [2.5, 5,   8,   11],  // meter
   ballSpeed:   [0.8, 1.5, 2.5, 3.5], // m/s

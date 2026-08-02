@@ -72,8 +72,8 @@ describe("Skills", () => {
 });
 
 describe("Tools", () => {
-  it("har 4 Tools i ALL_TOOLS", () => {
-    assert.equal(ALL_TOOLS.length, 4);
+  it("har 5 Tools i ALL_TOOLS", () => {
+    assert.equal(ALL_TOOLS.length, 5);
   });
 
   it("alle Tools har name + description + input_schema", () => {
@@ -111,8 +111,13 @@ describe("Tools", () => {
     assert.equal(getTreningsplanTool.name, "get_treningsplan");
   });
 
-  it("alle Tools krever spillerId", () => {
+  it("alle spiller-Tools krever spillerId (search_knowledge krever query)", () => {
     for (const tool of ALL_TOOLS) {
+      if (tool.name === "search_knowledge") {
+        const schema = tool.input_schema as { required?: string[] };
+        assert.ok(schema.required?.includes("query"));
+        continue;
+      }
       const schema = tool.input_schema as {
         required?: string[];
       };

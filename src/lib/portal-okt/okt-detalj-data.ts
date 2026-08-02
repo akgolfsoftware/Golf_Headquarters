@@ -205,7 +205,7 @@ export async function getOktDetaljData(
 
   // Drill-status: fullført = har minst én logg (eller hele økta er fullført).
   // I pågående økt markeres første ikke-fullførte drill som «nå».
-  const drills = okt.drills as unknown as DrillRow[];
+  const drills: DrillRow[] = okt.drills;
   let naaSatt = false;
   const mappedeDrills: OktDrill[] = drills.map((d) => {
     const fullfort = uiStatus === "done" || d._count.logs > 0;

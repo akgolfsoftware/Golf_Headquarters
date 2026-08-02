@@ -27,6 +27,9 @@ npm run pilot:flyt-smoke
 
 Kjører mot prod (`akgolf-hq.vercel.app`) med manuell samtykke + API-flyt (uten ekte mikrofon).
 
+**Merk:** Smoke er ikke ekte complete med lydbiter (`complete` kan gi 400).  
+`dummy-transcript` er **av i prod** med mindre `ALLOW_DUMMY_TRANSCRIPT=1` — smoke hopper til transcribe eller fortsetter ærlig.
+
 ## Ikke i demo
 
 - Foresatt-e-post / magisk lenke (kode finnes, venter på DKIM)

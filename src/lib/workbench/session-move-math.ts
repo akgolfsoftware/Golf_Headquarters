@@ -1,4 +1,17 @@
-/** Pure date math for Workbench week drag-drop (no server imports). */
+/**
+ * Pure date math for Workbench week drag-drop (no server imports —
+ * uke-helpers er også ren og delt klient+server).
+ *
+ * Tidssone: «hvilken uke/dag er nå» regnes mot norsk kalenderdag via
+ * uke-helpers (Intl, Europe/Oslo). Returverdiene følger samme konvensjon som
+ * uke-helpers: midnatt i SERVERENS lokale tid på den norske kalenderdagen
+ * (naiv veggklokke) — så setDate()/setHours()-aritmetikken og Prisma-grensene
+ * hos konsumentene er uendret. Før 2026-07 brukte denne filen rå getDay()/
+ * setHours() på new Date(); på Vercel (UTC) pekte det på feil dag/uke i
+ * vinduet rundt norsk midnatt (se gotchas).
+ */
+
+import { startOfWeek } from "@/lib/uke-helpers";
 
 /** Hvor langt fram/tilbake uke-navigasjonen tillates (±1 år). */
 export const WEEK_OFFSET_MIN = -52;
@@ -16,13 +29,9 @@ export function parseWeekOffset(raw: string | string[] | undefined | null): numb
   return Math.max(WEEK_OFFSET_MIN, Math.min(WEEK_OFFSET_MAX, Math.trunc(n)));
 }
 
-/** Mandag 00:00 i uka som inneholder `d` (mandag = indeks 0). */
+/** Mandag 00:00 (lokal tid) i den norske uka som inneholder `d` (mandag = indeks 0). */
 export function mondayOf(d: Date): Date {
-  const x = new Date(d);
-  const dow = (x.getDay() + 6) % 7;
-  x.setHours(0, 0, 0, 0);
-  x.setDate(x.getDate() - dow);
-  return x;
+  return startOfWeek(d);
 }
 
 /**
@@ -66,5 +75,6 @@ export function dayIndexFromScheduledAt(scheduledAt: Date, refDate: Date = new D
   const mon = mondayOf(refDate);
   const day = new Date(scheduledAt);
   day.setHours(0, 0, 0, 0);
+  // Math.round tåler 23-/25-timersdøgn ved sommertidsskifte.
   return Math.round((day.getTime() - mon.getTime()) / 86_400_000);
 }

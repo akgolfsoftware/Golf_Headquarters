@@ -1728,7 +1728,9 @@ model LydSamtykke {
   // en tekst som kan endres i ettertid.
   ordlyd        String
   // Magisk lenke til foresatt (null etter GITT/TRUKKET eller uten e-postflyt).
+  // token = legacy (klartekst, fases ut). tokenHash = sha256 av rå token i e-post.
   token           String?   @unique
+  tokenHash       String?   @unique
   tokenExpiresAt  DateTime?
   createdAt     DateTime  @default(now())
 
@@ -3503,6 +3505,50 @@ model ClubsPracticed {
   @@index([sessionId])
   @@index([club, createdAt])
   @@map("clubs_practiced")
+}
+
+// Kunnskapsbase (RAG) — MasterBrain rag-corpus med pgvector-embeddings.
+// Tabellen opprettes kirurgisk via scripts/create-knowledge-chunks-2026-07-27.ts
+// (migrate dev/db push er blokkert — se .claude/rules/gotchas.md). Seedes fra
+// ~/Developer/Masterbrain/rag-corpus via scripts/seed-rag-corpus-2026-07-27.ts.
+// Spørres via src/lib/ai/rag.ts ($queryRaw — Prisma kan ikke lese vector-felt).
+model KnowledgeChunk {
+  id        String                       @id // chunk_id fra MasterBrain (f.eks. "sg-baselines-001")
+  corpus    String // sg-trackman | sg-baselines | treningsvolum | morad | live
+  content   String
+  source    String? // kildedokument (fra frontmatter)
+  section   String? // seksjon i kildedokumentet
+  tags      String[]                     @default([])
+  topics    String[]                     @default([])
+  relevance String[]                     @default([])
+  wordCount Int                          @default(0)
+  embedding Unsupported("vector(1536)")? // openai/text-embedding-3-small via AI Gateway
+  createdAt DateTime                     @default(now())
+  updatedAt DateTime                     @updatedAt
+
+  @@index([corpus])
+  @@map("knowledge_chunks")
+}
+
+// Spillerminne for AI-agentene — episodisk/semantisk/prosedyrisk per spiller.
+// Tabellen opprettes kirurgisk via scripts/create-ai-memories-2026-07-27.ts.
+// playerId er plain String (FK med ON DELETE CASCADE ligger i DDL — GDPR:
+// bruker-sletting fjerner alt minne). Leses/skrives via src/lib/ai/memory-store.ts.
+model AiMemory {
+  id         String                       @id
+  playerId   String
+  kind       String // EPISODIC | SEMANTIC | PROCEDURAL
+  content    String
+  metadata   Json                         @default("{}")
+  embedding  Unsupported("vector(1536)")?
+  sourceType String // coaching-session | coach-note | plan-action | consolidation
+  sourceId   String?
+  strength   Float                        @default(1)
+  createdAt  DateTime                     @default(now())
+  updatedAt  DateTime                     @updatedAt
+
+  @@index([playerId, kind, updatedAt])
+  @@map("ai_memories")
 }
 
 // PGA Tour benchmark-data fra Data Golf — ukentlig cron-sync.

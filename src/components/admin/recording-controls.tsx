@@ -569,9 +569,10 @@ export function RecordingControls({
     !isRecordingActive &&
     mode === "idle" &&
     (!valgtSpiller || valgtHarSamtykke);
+  // #6: vis også under recovery (ellers skjules panel mens mode !== idle)
   const visSamtykkeMelding =
     !isRecordingActive &&
-    mode === "idle" &&
+    (mode === "idle" || mode === "recovery") &&
     !!valgtSpiller &&
     !valgtHarSamtykke;
 
@@ -619,6 +620,7 @@ export function RecordingControls({
             <div className="font-semibold">Avbrutt opptak funnet</div>
             <div className="text-muted-foreground">
               Startet {recoveryStartedAt ?? "tidligere"} — chunks ligger i Storage.
+              For å starte nytt opptak: trykk Forkast først.
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">

@@ -7,7 +7,10 @@
 
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { erLydSamtykkeTokenGyldig } from "@/lib/recording/lyd-samtykke-token";
+import {
+  erLydSamtykkeTokenGyldig,
+  hashLydSamtykkeToken,
+} from "@/lib/recording/lyd-samtykke-token";
 import { LydSamtykkeForm } from "./lyd-samtykke-form";
 
 type Props = {
@@ -33,16 +36,23 @@ function StatusBoks({
   );
 }
 
+async function finnRad(rawToken: string) {
+  const tokenHash = hashLydSamtykkeToken(rawToken);
+  const viaHash = await prisma.lydSamtykke.findUnique({
+    where: { tokenHash },
+  });
+  if (viaHash) return viaHash;
+  return prisma.lydSamtykke.findUnique({
+    where: { token: rawToken },
+  });
+}
+
 export default async function LydSamtykkeTokenPage({ params }: Props) {
   const { token } = await params;
   if (!token || token.length < 16) notFound();
 
-  const rad = await prisma.lydSamtykke.findUnique({
-    where: { token },
-  });
+  const rad = await finnRad(token);
 
-  // Token nullstilles etter GITT — finn også nylig gitt via userId? Nei: uten
-  // token i URL etter bruk. Hvis rad mangler: ugyldig/brukt.
   if (!rad) {
     return (
       <StatusBoks
@@ -70,6 +80,7 @@ export default async function LydSamtykkeTokenPage({ params }: Props) {
   if (
     !erLydSamtykkeTokenGyldig({
       token: rad.token,
+      tokenHash: rad.tokenHash,
       tokenExpiresAt: rad.tokenExpiresAt,
       status: rad.status,
     })

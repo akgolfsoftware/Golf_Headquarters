@@ -20,6 +20,7 @@ import {
 } from "@/lib/training/period-allocation";
 import { validateExecutorDelta } from "@/lib/training/invariants";
 import { deleteV2ForPlanSession, syncV2FromPlanSessionId } from "@/lib/workbench/v2-sync";
+import { sjekkpunktFraSuggestion } from "@/lib/recording/fangst-suggestion";
 
 const churnMessageSchema = z.object({
   tittel: z.string().optional(),
@@ -739,11 +740,8 @@ export async function executePlanAction(actionId: string): Promise<ExecuteResult
   // Fangst-sjekkpunkt: godkjenning lukker ETTER og lagrer tråd til neste FØR
   // (sjekkpunkt-felt settes i acceptAndApplyPlanAction).
   if (action.actionType === "FANGST_SJEKKPUNKT") {
-    const sug = action.suggestion as { sjekkpunkt?: string; forklaring?: string };
     const tekst =
-      (typeof sug?.sjekkpunkt === "string" && sug.sjekkpunkt.trim()) ||
-      (typeof sug?.forklaring === "string" && sug.forklaring.trim()) ||
-      "Sjekkpunkt godkjent";
+      sjekkpunktFraSuggestion(action.suggestion) || "Sjekkpunkt godkjent";
     return {
       applied: true,
       summary: tekst.slice(0, 500),

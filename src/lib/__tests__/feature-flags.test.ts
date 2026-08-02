@@ -21,6 +21,38 @@ describe("gratisForAlle (lanserings-vindu)", () => {
   });
 });
 
+describe("cutover-grensen — nøyaktig midnatt 1. september 2026 (Europe/Oslo)", () => {
+  const CUTOVER = new Date("2026-09-01T00:00:00.000+02:00");
+  const RETT_FOR = new Date(CUTOVER.getTime() - 1);
+
+  it("siste millisekund før midnatt er fortsatt gratis", () => {
+    assert.equal(gratisForAlle(RETT_FOR), true);
+  });
+
+  it("nøyaktig midnatt er IKKE gratis — betaling gjelder fra første tick", () => {
+    assert.equal(gratisForAlle(CUTOVER), false);
+  });
+
+  it("resolveTier ved nøyaktig cutover: bruker uten gratis-vei må betale", () => {
+    assert.equal(resolveTier({ ...ingenTilgang, now: CUTOVER }), "GRATIS");
+  });
+
+  it("resolveTier ved nøyaktig cutover: gratis-veiene (pakke/gruppe) overlever cutover", () => {
+    assert.equal(
+      resolveTier({
+        ...ingenTilgang,
+        subscription: { status: "ACTIVE", monthlyCredits: 2 },
+        now: CUTOVER,
+      }),
+      "PRO",
+    );
+    assert.equal(
+      resolveTier({ ...ingenTilgang, groupMembershipsCount: 1, now: CUTOVER }),
+      "PRO",
+    );
+  });
+});
+
 describe("resolveTier — lanserings-vindu", () => {
   it("gir ALLE PRO før betaling starter, uansett tier/pakke/gruppe", () => {
     assert.equal(resolveTier({ ...ingenTilgang, now: FOR_BETALING }), "PRO");
