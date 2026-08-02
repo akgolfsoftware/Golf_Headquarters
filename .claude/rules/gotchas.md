@@ -78,11 +78,14 @@ Ingen låst designkanon per 2026-07-25 — nytt system utvikles i Open Design (C
 ### JSON-blobs MÅ valideres med zod
 Alle `as unknown as <Type>` på JSON-felter fra Prisma er forbudt for forretningskritiske data. Bruk zod `safeParse` ved read.
 
-### Schema-endringer: `migrate dev` og `db push` er BEGGE blokkert — bruk kirurgisk `db execute`
-Oppdaget 2026-06-22 ved tillegg av 3 tabeller. To feller:
-- **`prisma migrate dev` feiler** på shadow-DB-replay: en gammel migrasjon (`20260510..._add_parent_role_and_tier_enum`) feiler når alle 80 migrasjoner replayes fra bunnen («type UserRole does not exist», P3018). Prod-DB er fin (`migrate status` = up to date), men shadow-replayen er ødelagt.
+### Schema-endringer: `migrate dev`, `db push` OG `migrate deploy` er ALLE blokkert — bruk kirurgisk `db execute`
+Oppdaget 2026-06-22 ved tillegg av 3 tabeller. Utvidet 2026-08-02 med `migrate deploy`. Tre feller:
+- **`prisma migrate dev` feiler** på shadow-DB-replay: en gammel migrasjon (`20260510..._add_parent_role_and_tier_enum`) feiler når alle 80 migrasjoner replayes fra bunnen («type UserRole does not exist», P3018). Prod-DB er fin, men shadow-replayen er ødelagt.
 - **`prisma db push` vil DROPPE data**: prod har en `datagolf_sync_state`-tabell som ikke finnes i `schema.prisma` (pre-eksisterende drift), så push krever `--accept-data-loss` og ville slettet den.
-- **Trygg vei for ADDITIVE endringer:** legg modellen i `schema.prisma`, og kjør `CREATE TABLE IF NOT EXISTS ...` direkte via tsx + `PrismaPg`-adapter (`prisma.$executeRawUnsafe`) mot `DIRECT_URL`. Da rører du KUN dine egne tabeller. Deretter `npx prisma generate`. Bruk plain `userId String` (ingen `@relation`) i nye modeller så du slipper å redigere `User` og holder endringen isolert.
+- **`prisma migrate deploy` feiler på SAMME migrasjon** (lært 2026-08-02, mot prod). Prod-historikken er *baselinet*: `_prisma_migrations` inneholder kun `0_baseline` pluss et par stubs, ikke de ~80 gamle. Deploy tolker de manglende radene som «ikke anvendt» og prøver å spille dem av fra bunnen mot en base som allerede har skjemaet → `P3018`, «type "Tier" already exists». Merk at `migrate status` derfor VISER 80+ ikke-anvendte migrasjoner — det er forventet og normaltilstand, ikke et problem som skal «fikses» ved å kjøre deploy.
+- **Kommer du til å ha kjørt deploy likevel:** den etterlater en feilet rad som blokkerer alle senere `prisma migrate`-kommandoer. Rydd med `npx prisma migrate resolve --rolled-back <migrasjonsnavn>`. Det skriver kun til `_prisma_migrations`, ikke til skjema eller data. Migrasjoner som feiler på `CREATE TYPE` feiler atomisk, så det er ingenting å rulle tilbake i praksis.
+- **Trygg vei for ADDITIVE endringer:** legg modellen i `schema.prisma`, og kjør `CREATE TABLE IF NOT EXISTS ...` direkte via tsx + `PrismaPg`-adapter (`prisma.$executeRawUnsafe`) mot `DIRECT_URL`. Da rører du KUN dine egne tabeller. Deretter `npx prisma generate`. Bruk plain `userId String` (ingen `@relation`) i nye modeller så du slipper å redigere `User` og holder endringen isolert. Eksempler: `scripts/add-goal-progress-fields-2026-07-27.ts`, `scripts/add-player-busy-blocks-2026-08-02.ts`.
+- **Migrasjonsfila er en RECORD, ikke noe som kjøres.** Skriv den gjerne for sporbarhet, men merk øverst at DDL-en kjøres med skriptet.
 
 ### Prisma 7 — connection-strings i `prisma.config.ts`, ikke `schema.prisma`
 - Schema har bare `provider = "postgresql"`. Url ligger i `prisma.config.ts` → `datasource.url = env("DIRECT_URL")`.
