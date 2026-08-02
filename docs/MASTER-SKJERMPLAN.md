@@ -1,6 +1,6 @@
 # Master-skjermplan — AK Golf HQ
 
-> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 24. juli 2026.**
+> Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 2. august 2026.**
 
 > **OPPDATERT KANON (2026-07-08):** Design-kanon er nå UTELUKKENDE det levende Claude Design-
 > prosjektet (`claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`), hentet direkte via
@@ -796,6 +796,20 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 ---
 
 ## Endringslogg
+
+- 2. august (kvalitetsaudit tiltak 9): **AgencyOS-delen av ★-kjernen klikk-testet mot prod.**
+  Ny varig test `tests/e2e/kjerne-klikk.spec.ts` kjører kjernekjeden på 390px og 1280px, i to spor
+  (coach og spiller) med hver sine credentials, og feiler på HTTP-status, utkast til login, feilside
+  og konsollfeil. Kjørt mot `https://akgolf-hq.vercel.app` med coach-innlogging:
+  `/admin/agencyos`, `/admin/innboks`, `/admin/spillere`, `/admin/tournaments`, `/admin/bookinger`,
+  `/admin/kalender`, `/admin/godkjenninger` svarer alle 200 med ekte innhold (856–3 126 tegn synlig
+  tekst), 2,1–2,8 s til `networkidle`, null skjelett-elementer igjen etter lasting, ingen feilside.
+  **Funker-haken står likevel urørt** for disse radene: testen dekker lasting + navigasjon, ikke de
+  seks hakenes fulle krav (Flyt/Data per skjerm er ikke re-verifisert i denne runden).
+  **PlayerHQ-sporet er IKKE kjørt** — `screentest@akgolf.test` avvises i prod og `E2E_TEST_USER_*`
+  mangler, så ★-kjernen i portalen er fortsatt uverifisert. To funn skrevet inn i
+  `docs/STATUS-NÅ.md`: CSP blokkerer en app-chunk på `/admin/spillere` (reproduserbart 3/3), og
+  lokal dev kan ikke startes fordi `.env.local` har 23 sensurerte verdier.
 
 - 27. juli (kveld, konsolidering): **To parallelle mål-fremdrift-grener slått sammen.**
   Denne grenen (mål-progresjon: øktfrekvens/testresultat/dato oppnådd) og en annen gren

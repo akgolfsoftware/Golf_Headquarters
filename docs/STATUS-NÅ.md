@@ -2,7 +2,7 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-07-24 (ferdigstillingsplan: dokumentsynk + Fase A/B-arbeid. Design-GAP i PlayerHQ/AgencyOS/Forelder/Auth = 0. Appen er fortsatt ikke klar for betalende brukere før P0-aktivering.)
+**Sist oppdatert:** 2026-08-02 (kvalitetsaudit tiltak 9: klikk-test av ★-kjernen mot prod + dokumentsynk. Betalingsdato rettet 1. aug → 1. sep. Design-GAP i PlayerHQ/AgencyOS/Forelder/Auth = 0. Appen er fortsatt ikke klar for betalende brukere før P0-aktivering.)
 
 ## Levende kilder (én av hver rolle — start her)
 
@@ -21,7 +21,7 @@ Historiske bygg-spor (SKJERM-STATUS, SKJERM-BYGGEPLAN, BYGGELOGG-FLAGG, KONFLIKT
 ---
 
 ## Kort sagt
-Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. PlayerHQ + AgencyOS + Forelder + Auth har **0 design-GAP** (verifisert 23. jul). Coaching-/business-motoren (ukesyklus, godkjenningskø, churn, kapasitet-som-penger, m.m.) er levert i juli. **Den er IKKE klar for betalende/ekte brukere ennå** — største hinder er at registrerte spillere aldri har logget inn, pluss Resend DKIM / DNS / Stripe-panel hos Anders. Betaling starter **1. august** (`BETALING_STARTER` i `feature-flags.ts`) — koden gir alle PRO gratis frem til da.
+Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. PlayerHQ + AgencyOS + Forelder + Auth har **0 design-GAP** (verifisert 23. jul). Coaching-/business-motoren (ukesyklus, godkjenningskø, churn, kapasitet-som-penger, m.m.) er levert i juli. **Den er IKKE klar for betalende/ekte brukere ennå** — største hinder er at registrerte spillere aldri har logget inn, pluss Resend DKIM / DNS / Stripe-panel hos Anders. Betaling starter **1. september 2026** (`BETALING_STARTER` i `src/lib/feature-flags.ts:18`, verifisert 2026-08-02) — koden gir alle PRO gratis frem til da. Dette dokumentet sa tidligere 1. august; datoen i koden er fasit.
 
 Push til `main` deployer automatisk via **Vercel git-integrasjon**. GitHub Actions `deploy.yml` er manuell (`workflow_dispatch`) — kjør ALDRI `vercel deploy --prod` manuelt.
 
@@ -46,7 +46,7 @@ Push til `main` deployer automatisk via **Vercel git-integrasjon**. GitHub Actio
 - **Bølge 5:** treningsanalyse-modul + AgencyOS-kalender drill-lesevisning — **ikke startet**.
 - **Bølge 6-rest:** nivåplasserings-quiz i onboarding (profil-wizard finnes; quiz mangler).
 - **Soft-haker i MASTER:** mange skjermer har Design ✓ men Mob/iPad `✓✓–`, Flyt/Data `~`, eller Funker `†`.
-- **Klikk-testing:** ~23 av ~261 skjermer (resten kun dødlenke-sjekket).
+- **Klikk-testing:** ~23 av ~261 skjermer (resten kun dødlenke-sjekket). **2026-08-02:** AgencyOS-delen av ★-kjernen klikk-testet mot prod på 390px og 1280px (`tests/e2e/kjerne-klikk.spec.ts`) — cockpit, innboks, spillere, turneringer, bookinger, kalender, godkjenninger: alle 200, ekte innhold, 2–3 s til `networkidle`, ingen feilside. **PlayerHQ-delen står igjen** — testbrukeren `screentest@akgolf.test` finnes ikke i prod, og `E2E_TEST_USER_*` mangler i `.env.local`.
 
 ## Blokkert — P0 før ekte/betalende brukere
 
@@ -60,7 +60,21 @@ Push til `main` deployer automatisk via **Vercel git-integrasjon**. GitHub Actio
 ### Kode / data (agent)
 - Aktiveringsflyt + at `lastLoginAt` settes ved innlogging.
 - Push-opt-in-prompt ved første PlayerHQ-besøk (motor finnes, 0 abonnementer).
-- Betaling 1. august: `gratisForAlle()` slår av automatisk; verifiser cutover.
+- Betaling 1. september: `gratisForAlle()` slår av automatisk; verifiser cutover.
+
+### Funnet i klikk-testen 2026-08-02 (nytt, ikke lukket)
+- **CSP blokkerer en app-chunk i prod:** på `/admin/spillere` blir
+  `/_next/static/chunks/0vgmow81h3vwc.js` (Lucide-ikoner: `Menu`, `chevron-left`) avvist av
+  `script-src`-direktivet i `src/proxy.ts:65` — `'strict-dynamic'` slår av `'self'`, og denne
+  script-taggen har ingen nonce. Reproduserbart 3/3 mot prod. Ikonene rendres likevel (hentes på
+  nytt ad annen vei), så synlig skade er liten, men det er en ekte blokkering med konsollstøy og
+  ekstra last. Egen fiks — ikke rørt her.
+- **Lokal dev kan ikke startes på MacBook Air:** `.env.local` har 23 av 77 verdier satt til
+  `[SENSURERT]`, blant dem `NEXT_PUBLIC_SUPABASE_URL`, anon-key og `DATABASE_URL`. `next dev` dør i
+  `instrumentation.ts` på env-validering. All lokal verifisering må derfor kjøres mot prod
+  (`PLAYWRIGHT_BASE_URL`) til fila er gjenopprettet.
+- **Ingen spiller-testbruker i prod:** `screentest@akgolf.test` avvises med «Feil e-post eller
+  passord». Uten den (eller `E2E_TEST_USER_*`) kan PlayerHQ-kjeden ikke røyk-testes automatisk.
 
 ### Åpne produktbeslutninger (ikke lanseringsblokkere)
 - **A4 Fase 2:** anbefalingsmotor for periode-fordeling (venter data).
