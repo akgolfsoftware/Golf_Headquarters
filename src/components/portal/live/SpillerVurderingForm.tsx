@@ -14,11 +14,13 @@ type Props = {
     kvalitet: number;
     nesteFokus: string;
     folelse?: string | null;
+    rpe?: number | null;
   } | null;
 };
 
 export function SpillerVurderingForm({ sessionId, eksisterende }: Props) {
   const [kvalitet, setKvalitet] = useState(eksisterende?.kvalitet ?? 0);
+  const [rpe, setRpe] = useState(eksisterende?.rpe ?? 0);
   const [nesteFokus, setNesteFokus] = useState(eksisterende?.nesteFokus ?? "");
   const [folelse, setFolelse] = useState(eksisterende?.folelse ?? "");
   const [lagret, setLagret] = useState(Boolean(eksisterende));
@@ -33,6 +35,7 @@ export function SpillerVurderingForm({ sessionId, eksisterende }: Props) {
         </div>
         <p className="mt-2 text-sm text-background">
           Kvalitet: {kvalitet || eksisterende?.kvalitet}/5
+          {(rpe || eksisterende?.rpe) ? ` · RPE ${rpe || eksisterende?.rpe}/10` : ""}
           {(folelse || eksisterende?.folelse) ? ` · ${folelse || eksisterende?.folelse}` : ""}
         </p>
         {(nesteFokus || eksisterende?.nesteFokus) ? (
@@ -49,12 +52,17 @@ export function SpillerVurderingForm({ sessionId, eksisterende }: Props) {
       setFeil("Velg kvalitet 1–5");
       return;
     }
+    if (rpe < 1) {
+      setFeil("Velg hvor hard økta var (1–10)");
+      return;
+    }
     setFeil(null);
     startTransition(async () => {
       const res = await lagreSpillerVurdering(sessionId, {
         kvalitet,
         nesteFokus,
         folelse: folelse || undefined,
+        rpe,
       });
       if (!res.ok) {
         setFeil(res.error ?? "Kunne ikke lagre");
@@ -83,6 +91,25 @@ export function SpillerVurderingForm({ sessionId, eksisterende }: Props) {
               kvalitet === n ? "bg-accent text-accent-foreground" : "border border-background/15 bg-background/10 text-background/75"
             }`}
             aria-label={`Kvalitet ${n}`}
+          >
+            {n}
+          </button>
+        ))}
+      </div>
+
+      <label className="mb-1 block font-mono text-[9.5px] font-bold uppercase tracking-[0.06em] text-background/50">
+        Hvor hard var økta? (1 = veldig lett · 10 = maksimal)
+      </label>
+      <div className="mb-3 flex flex-wrap gap-1.5">
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+          <button
+            key={n}
+            type="button"
+            onClick={() => setRpe(n)}
+            className={`grid h-9 w-9 place-items-center rounded-full font-mono text-[12px] font-bold ${
+              rpe === n ? "bg-accent text-accent-foreground" : "border border-background/15 bg-background/10 text-background/75"
+            }`}
+            aria-label={`Anstrengelse ${n} av 10`}
           >
             {n}
           </button>
