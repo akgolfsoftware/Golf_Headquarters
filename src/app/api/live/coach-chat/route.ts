@@ -10,6 +10,8 @@ import { rateLimit } from "@/lib/rate-limit";
 import { anthropic, modelFor, isAiEnabled } from "@/lib/ai/client";
 import { recallMemory, formatMemoryForPrompt } from "@/lib/ai/memory";
 import { hentLiveCoachKontext } from "@/lib/ai/live-coach-context";
+import { hentRestraintPromptData } from "@/lib/coach-restraint/context";
+import { buildRestraintBlock } from "@/lib/coach-restraint/prompt";
 import { bygLiveCoachSystemPrompt, type SystemPromptInput } from "@/lib/ai-plan/coach-prompt";
 import type { LiveSessionKind } from "@/lib/agents/live-coach-agent";
 import type { Prisma } from "@/generated/prisma/client";
@@ -198,7 +200,10 @@ export async function POST(req: Request) {
     sisteRunder,
     sisteTester,
   };
-  let systemPrompt = bygLiveCoachSystemPrompt(base, live);
+  // Restraint-kontekst (fase A: baller i økta + bånd fra siste TrackMan-import).
+  // Degraderer til tom kontekst ved feil — knekker aldri chatten.
+  const restraintData = await hentRestraintPromptData(user.id, body.sessionId, body.kind);
+  let systemPrompt = bygLiveCoachSystemPrompt(base, live, buildRestraintBlock(restraintData));
   const memory = await recallMemory(user.id);
   systemPrompt += formatMemoryForPrompt(memory);
 
