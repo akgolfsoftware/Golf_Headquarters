@@ -34,6 +34,7 @@ await settUtfall({ interaksjonId: id, utfall: "AVVIST", begrunnelse: "feil perio
 | Fil | Ansvar |
 |---|---|
 | `ruter.ts` | Klassifiserer oppgaven (intent, domene, rolle) før noe koster penger. Deterministisk — nøkkelord med norsk bøyning + rollen fra sesjonen. Treffer ikke regelen, blir det `fritekst` med lav confidence, og kalleren velger den generelle prompten framfor å gjette. |
+| `kontekst.ts` | Slår opp riktig del av masterbrain-fasiten for domenet. **Oppslag, ikke søk** — `faults[id]`, aldri embeddings. Gratis, deterministisk, ingen hallusinasjon. Returnerer `null` når fasiten ikke har noe å bidra med. |
 | `prompt-bygger.ts` | Setter sammen fire lag: rolle, tone, invarianter, kontekst, svarformat. Versjonert register — **bump `versjon` ved enhver tekstendring**, ellers blir loggen løgn. |
 | `modell.ts` | Velger modell på **oppgave**, ikke på agent-identitet. Opus kun der en feil treffer flere uker. `krevLokal` for PII om mindreårige. |
 | `guards.ts` | Kjører **etter** generering. Prompten er en anmodning, guarden er en kontroll. Blokkerer aldri — returnerer treff som logges. |

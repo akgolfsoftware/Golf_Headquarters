@@ -27,4 +27,6 @@ KONTEKST:
  * eller dårligere.
  */
 export const CADDIE_PROMPT_ID = "caddie-chat";
-export const CADDIE_PROMPT_VERSJON = 1;
+// v2 (2026-08-02): FASIT-blokk fra masterbrain legges på per tur, styrt av
+// ruterens domene-klassifisering.
+export const CADDIE_PROMPT_VERSJON = 2;

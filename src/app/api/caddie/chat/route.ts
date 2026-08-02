@@ -15,7 +15,12 @@ import {
   CADDIE_SYSTEM_PROMPT,
 } from "@/lib/caddie/system-prompt";
 import { buildCaddieTools } from "@/lib/caddie/tools";
-import { kjorGuards, klassifiser } from "@/lib/agenticos";
+import {
+  byggFasitKontekst,
+  kjorGuards,
+  klassifiser,
+  KONTEKST_BUDSJETT,
+} from "@/lib/agenticos";
 import { loggInteraksjon } from "@/lib/agenticos/logg";
 import type { KontekstKilde } from "@/lib/agenticos";
 
@@ -127,13 +132,24 @@ export async function POST(req: Request) {
     });
   }
 
+  // FASIT-oppslag styrt av klassifiseringen. Caddie er åpen chat, så domenet —
+  // og dermed hvilken del av masterbrain som er relevant — varierer per tur.
+  // Gratis oppslag, ingen hallusinasjonsrisiko; legges FØRST i konteksten.
+  const fasit = byggFasitKontekst(klassifisering);
+  const systemPrompt = fasit
+    ? `${CADDIE_SYSTEM_PROMPT}\n\n<fasit>\n${fasit.innhold.slice(
+        0,
+        KONTEKST_BUDSJETT.FASIT,
+      )}\n</fasit>`
+    : CADDIE_SYSTEM_PROMPT;
+
   const start = Date.now();
 
   const modelMessages = await convertToModelMessages(messages);
 
   const result = streamText({
     model: anthropic(MODEL_ID),
-    system: CADDIE_SYSTEM_PROMPT,
+    system: systemPrompt,
     messages: modelMessages,
     tools: buildCaddieTools(user),
     // La modellen fortsette etter at et lese-verktøy er kjørt, så den faktisk
@@ -147,14 +163,15 @@ export async function POST(req: Request) {
       // kostnad og kvalitet måles også for tråder uten conversationId.
       // Caddie henter data via tools underveis i stedet for å få kontekst limt
       // inn på forhånd — SPILLERDATA settes derfor når et verktøy faktisk kjørte.
-      const kontekstKilder: KontekstKilde[] =
-        (toolCalls?.length ?? 0) > 0 ? ["SPILLERDATA"] : [];
+      const kontekstKilder: KontekstKilde[] = [];
+      if (fasit) kontekstKilder.push("FASIT");
+      if ((toolCalls?.length ?? 0) > 0) kontekstKilder.push("SPILLERDATA");
 
       const interaksjonId = await loggInteraksjon({
         prompt: {
           promptId: CADDIE_PROMPT_ID,
           promptVersjon: CADDIE_PROMPT_VERSJON,
-          system: CADDIE_SYSTEM_PROMPT,
+          system: systemPrompt,
           kontekstKilder,
         },
         klassifisering,

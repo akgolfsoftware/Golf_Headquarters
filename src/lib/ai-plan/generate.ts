@@ -24,7 +24,7 @@ import {
 } from "./schema";
 import { selectKnowledgeFiles } from "@/lib/ai-coach/rag-select";
 import { formatFewShotBlock, loadFewShotExamples } from "@/lib/ai-coach/few-shot";
-import { kjorGuards } from "@/lib/agenticos";
+import { byggFasitKontekst, kjorGuards, KONTEKST_BUDSJETT } from "@/lib/agenticos";
 import { loggInteraksjon } from "@/lib/agenticos/logg";
 import type { Klassifisering, KontekstKilde, Rolle } from "@/lib/agenticos";
 import type { SpillerKontekst } from "./context";
@@ -62,12 +62,33 @@ function byggSystemPromptMedKunnskap(ctx: SpillerKontekst): {
       ? `\n\n<kunnskap>\n${chunks.join("\n\n")}\n</kunnskap>`
       : "";
 
+  // FASIT først: pyramidefordeling, perioder og mikrosyklus slås opp direkte i
+  // masterbrain i stedet for å be modellen huske dem. Gratis og deterministisk.
+  const fasit = byggFasitKontekst(
+    {
+      intent: "plan",
+      domene: "PLAN",
+      rolle: "COACH",
+      mindreaarig: false,
+      confidence: 1,
+    },
+    { akKategori: ctx.spiller.akKategori ?? undefined },
+  );
+  const fasitBlokk = fasit
+    ? `\n\n<fasit>\n${fasit.innhold.slice(0, KONTEKST_BUDSJETT.FASIT)}\n</fasit>`
+    : "";
+
   // Spillerkonteksten limes inn i brukermeldingen (byggBrukerMeldingMedMal), så
   // SPILLERDATA er alltid med. RAG kun når rag-select faktisk fant noe.
-  const kontekstKilder: KontekstKilde[] = ["SPILLERDATA"];
+  const kontekstKilder: KontekstKilde[] = [];
+  if (fasit) kontekstKilder.push("FASIT");
+  kontekstKilder.push("SPILLERDATA");
   if (chunks.length > 0) kontekstKilder.push("RAG");
 
-  return { system: `${AI_COACH_SYSTEM_PROMPT}${kunnskap}${fewShot}`, kontekstKilder };
+  return {
+    system: `${AI_COACH_SYSTEM_PROMPT}${fasitBlokk}${kunnskap}${fewShot}`,
+    kontekstKilder,
+  };
 }
 
 export const AI_PLAN_MODEL = "claude-sonnet-4-5-20250514";
@@ -81,7 +102,10 @@ export const AI_PLAN_MODEL = "claude-sonnet-4-5-20250514";
  * eller dårligere.
  */
 export const AI_PLAN_PROMPT_ID = "ai-plan";
-export const AI_PLAN_PROMPT_VERSJON = 1;
+// v2 (2026-08-02): FASIT-blokk fra masterbrain lagt til — CANON-kategori med
+// pyramidefordeling, perioder og 4-ukers mikrosyklus slås nå opp i stedet for
+// å bli husket av modellen.
+export const AI_PLAN_PROMPT_VERSJON = 2;
 
 // Sonnet 4.5: $3/M input tokens, $15/M output tokens.
 const SONNET_INPUT_USD_PER_MTOK = 3;

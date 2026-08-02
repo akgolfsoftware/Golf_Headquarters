@@ -653,24 +653,34 @@ fyrer på `synchronize`. Anders sjekker Actions-fanen; dette er ikke noe en agen
 
 ### Fase 1 — resten (1–2 uker)
 
-#### 1.1 `FASIT` som kontekstlag — størst kvalitetsgevinst, null marginalkost
+#### 1.1 `FASIT` som kontekstlag — **utført 2026-08-02**
 
-Ingen av de tre koblede flatene gjør masterbrain-oppslag. Alle tre logger `FASIT` som fraværende, og det er
-nå synlig i dataene i stedet for skjult.
+`src/lib/agenticos/kontekst.ts` slår opp riktig del av masterbrain-fasiten for domenet, og alle tre flatene
+deler logikken. Oppslag, ikke søk — `faults[id]`, aldri embeddings.
 
-| Flate | Hva den skal slå opp |
+| Domene | Hva som hentes |
 |---|---|
-| `ai-plan` | `canon-methodology.categories[nivå]` for øktbudsjett og pyramidefordeling, `mikroperiodisering-og-tidsdimensjon` for 4-ukers syklus |
-| Caddie | `sg-principles.bands` + `faults.entities` ved SG-spørsmål, `positions.entities` ved teknikkspørsmål |
-| `plan-revisjon` | `canon-methodology.periods` + L-fase-tabellen, i stedet for å be modellen huske dem |
+| `SG` | SG-kategorier, APP-bånd med forventet slagtall, og kandidatfeil for området |
+| `TEKNIKK` | MORAD-svingfeil med deteksjonsposisjon og korreksjon, pluss P1–P10 |
+| `TRACKMAN` | Begge de over |
+| `PLAN` | CANON-kategori med pyramidefordeling, perioder og 4-ukers mikrosyklus |
+| `BOOKING`, `OKONOMI` | Ingenting — returnerer `null` framfor en tom blokk |
 
-Oppslag, ikke søk — `faults[faultId]`, ikke embeddings. Deterministisk, gratis, ingen hallusinasjon.
-Bygg en liten `kontekst.ts` i `src/lib/agenticos/` som tar en `Klassifisering` og returnerer riktig
-fasit-blokk, så de tre flatene deler logikken.
+Blokkene er 134–3634 tegn, godt under budsjettet på 6000, så ingenting kuttes.
 
-**Merk:** periodenavn i CANON (GRUNN/SPES/TURN) er ikke de samme strengene som Prisma-enumene
-(GRUNN/SPESIAL/TURNERING). Bruk `periodenavn_oversettelsestabell` i
-`mikroperiodisering-og-tidsdimensjon.json` — aldri CANON-strengen rått mot databasen.
+**Tre regler bakt inn i konteksten, låst med tester:**
+
+1. **SG er hypotese.** Kandidatfeil leveres alltid med «likestilte HYPOTESER, ikke en rangering og ikke en
+   diagnose — må bekreftes med videoanalyse, sikte og køllevalg».
+2. **Periodenavn-fella.** CANON bruker GRUNN/SPES/TURN, databasen GRUNN/SPESIAL/TURNERING. Advarselen står
+   eksplisitt i PLAN-blokka, så modellen ikke skriver CANON-strengen rått som periodeverdi.
+3. **Tom drill-bank.** Meldes i alle metodikk-domener, aldri i booking/økonomi.
+
+`PUTT` sier eksplisitt at MORAD er et posisjonssystem for fullsving og ikke dekker putting — at lista er tom
+er korrekt, ikke en mangel.
+
+Promptversjonene er bumpet til v2 i alle tre flatene (`ai-plan`, `caddie-chat`, `plan-revisjon`), så
+loggen kan skille før og etter.
 
 #### 1.2 De seks LLM-agentene som ikke logger
 

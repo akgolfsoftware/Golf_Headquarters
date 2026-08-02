@@ -22,6 +22,8 @@
 
 export { klassifiser, erUsikker } from "./ruter";
 export { byggPrompt, MALER, KONTEKST_BUDSJETT } from "./prompt-bygger";
+export { byggFasitKontekst } from "./kontekst";
+export type { FasitOpts } from "./kontekst";
 export type { BygdPrompt, KontekstBlokk, PromptMal } from "./prompt-bygger";
 export { velgModell, eskaler, MODELLER } from "./modell";
 export type { ModellValg } from "./modell";

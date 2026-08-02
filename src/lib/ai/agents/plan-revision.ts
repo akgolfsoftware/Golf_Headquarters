@@ -11,7 +11,8 @@
 import "server-only";
 import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "../client";
 import { ALL_SKILLS } from "../skills";
-import { kjorGuards } from "@/lib/agenticos";
+import { byggFasitKontekst, kjorGuards, KONTEKST_BUDSJETT } from "@/lib/agenticos";
+import type { Klassifisering, KontekstKilde } from "@/lib/agenticos";
 import { loggInteraksjon } from "@/lib/agenticos/logg";
 import { prisma } from "@/lib/prisma";
 import { harManuellHelseSamtykke } from "@/lib/health/samtykke";
@@ -68,7 +69,8 @@ export type PlanRevisionForslag = {
  * BUMP ved enhver endring i PLAN_REVISION_SYSTEM eller i skills-blokken.
  */
 export const PLAN_REVISION_PROMPT_ID = "plan-revisjon";
-export const PLAN_REVISION_PROMPT_VERSJON = 1;
+// v2 (2026-08-02): FASIT-blokk fra masterbrain lagt til.
+export const PLAN_REVISION_PROMPT_VERSJON = 2;
 
 export async function foreslaPlanRevisjon(opts: {
   planId: string;
@@ -104,13 +106,33 @@ export async function foreslaPlanRevisjon(opts: {
     return byggDemoForslag(plan, opts.trigger, kontekst);
   }
 
+  // FASIT: CANON-perioder, pyramidefordeling og mikrosyklus slås opp i
+  // masterbrain i stedet for å bli husket av modellen. Gratis og deterministisk.
+  const klassifisering: Klassifisering = {
+    intent: "plan",
+    domene: "PLAN",
+    rolle: "COACH",
+    mindreaarig: false,
+    confidence: 1,
+  };
+  const fasit = byggFasitKontekst(klassifisering);
+  const systemPrompt = fasit
+    ? `${PLAN_REVISION_SYSTEM}\n\n<fasit>\n${fasit.innhold.slice(
+        0,
+        KONTEKST_BUDSJETT.FASIT,
+      )}\n</fasit>`
+    : PLAN_REVISION_SYSTEM;
+  const kontekstKilder: KontekstKilde[] = fasit
+    ? ["FASIT", "SPILLERDATA"]
+    : ["SPILLERDATA"];
+
   const userPrompt = byggUserPrompt(plan, opts.trigger, kontekst, opts.context);
   const modell = modelFor("plan-revisjon");
   const start = Date.now();
   const response = await anthropic.messages.create({
     model: modell,
     max_tokens: AI_MAX_TOKENS,
-    system: PLAN_REVISION_SYSTEM,
+    system: systemPrompt,
     messages: [{ role: "user", content: userPrompt }],
   });
   const latencyMs = Date.now() - start;
@@ -123,28 +145,20 @@ export async function foreslaPlanRevisjon(opts: {
 
   // AgenticOS-loggen. Kun her, ikke i demo-grenen over — der finnes det ikke
   // noe modellkall å måle, og en rad uten modell ville forurenset kost-per-svar.
-  // Konteksten er spillerdata (plan, økter, runder, helse) limt inn i
-  // brukermeldingen; ingen masterbrain-oppslag ennå.
   const interaksjonId = await loggInteraksjon({
     prompt: {
       promptId: PLAN_REVISION_PROMPT_ID,
       promptVersjon: PLAN_REVISION_PROMPT_VERSJON,
-      system: PLAN_REVISION_SYSTEM,
-      kontekstKilder: ["SPILLERDATA"],
+      system: systemPrompt,
+      kontekstKilder,
     },
-    klassifisering: {
-      // Dedikert flate med kjent formål — ruteren brukes ikke her.
-      intent: "plan",
-      domene: "PLAN",
-      rolle: "COACH",
-      mindreaarig: false,
-      confidence: 1,
-    },
+    // Dedikert flate med kjent formål — ruteren brukes ikke her.
+    klassifisering,
     modell,
     tokensInn: response.usage?.input_tokens,
     tokensUt: response.usage?.output_tokens,
     latencyMs,
-    kontekstKilder: ["SPILLERDATA"],
+    kontekstKilder,
     guardTreff: kjorGuards(text),
     userId: plan.userId,
     agentNavn: "plan-revisjon",
