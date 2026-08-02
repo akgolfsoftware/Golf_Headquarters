@@ -1,0 +1,1199 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Workbench mobil · AgencyOS · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══ akhq-tokens.css v3.1 — KOPIERT VERBATIM. Eneste tokenkilde. ═══ */
+/* ─────────────────────────────────────────────────────────────
+   AK Golf HQ · Claude Paper tokens v3
+   Anthropic-justert (offentlige kilder) + AK produktregler
+
+   Én kilde. Kopier verbatim inn i hver HTML/skjerm, eller @import.
+   Se SCOPE.md for hva «offisiell» betyr (vi er JUSTERT, ikke Anthropic).
+
+   Kilder:
+   - Anthropic brand-guidelines: ink/paper/mid/light + clay/sky/olive
+   - anthropic.com DESIGN.md (shadcn reverse-eng): full 21-farge + 8 aksenter
+   - Fase 1 (2026-07/08): chat-først, radius 12 for tett app, Én ting nå
+
+   v3.1 · 2026-08-01 (Bølge 1)
+   - --rail-hover / --rail-active løftet inn (var lokale i Fase 1-filene)
+   - Ingen andre verdiendringer. --muted er #5e5d59 (vinner over Fase 1 #5F5B53)
+
+   v3 · 2026-08-01
+   - Full Anthropic surface + accent ladder
+   - Radius-stige: sm 8 · app 12 · md 16 · lg 24 · pill
+   - Type-tokens for marketing + produkt
+   - Motion, z-index, tap-targets, hairline
+   - Dark theme (produkt; marketing er primært lys)
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* ─── Surfaces (Anthropic cream ladder) ─── */
+  --bg: #faf9f5;                    /* canvas / ivory */
+  --surface: #ffffff;               /* elevated white (produkt-kort) */
+  --soft: #f0eee6;                  /* surface-secondary — kort uten skygge */
+  --soft-hover: #e8e6dc;            /* surface-secondary-hover */
+  --surface-warm: #e3dacc;          /* oat */
+  --surface-manilla: #ebdbbc;
+  --surface-kraft: #d4a27f;
+  --border: #e8e6dc;                /* light gray (brand skill) */
+  --hairline: #d1cfc5;              /* finere skille enn --border */
+  --inverse: #000000;               /* full-bleed marketing-bånd */
+
+  /* ─── Text (Anthropic slate ladder) ─── */
+  --fg: #141413;                    /* ink — primær tekst + CTA-fill */
+  --ink-soft: #3d3d3a;              /* hover på primærknapp */
+  --muted: #5e5d59;                 /* text-muted (brand skill ~ #5f5b53; Anthropic #5e5d59) */
+  --mid: #b0aea5;                   /* text-secondary / cloud medium — IKKE brødtekst i lys */
+  --text-tertiary: #87867f;
+
+  /* ─── Rail (produkt, alltid mørk) ─── */
+  --rail: #141413;
+  --rail-fg: #b0aea5;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.08);   /* v3.1 — løftet fra Fase 1 */
+  --rail-active: rgba(250, 249, 245, 0.14);  /* v3.1 — løftet fra Fase 1 */
+
+  /* ─── Actions ─── */
+  --cta: #141413;                   /* Anthropic: CTA er blekk, ikke farge */
+  --on-cta: #faf9f5;
+  --cta-hover: #3d3d3a;
+
+  /* Clay = sterkeste kromatiske aksent (Anthropic clay) */
+  --accent: #d97757;                /* kun «Én ting nå» + focus i app */
+  --accent-soft: rgba(217, 119, 87, 0.12);
+  --accent-fg: #b85c3d;             /* AA-tekst på paper */
+  --on-accent: #141413;             /* tekst på fylt clay — sparsomt */
+  --accent-deep: #c6613f;           /* burnt sienna */
+
+  /* ─── Dormant accent swatches (Anthropic research palette)
+       Brukes sparsomt: chart, kategori, badges — aldri som primær CTA ─── */
+  --accent-coral: #ebcece;
+  --accent-fig: #c46686;
+  --accent-cactus: #bcd1ca;
+  --accent-olive: #788c5d;
+  --accent-sky: #6a9bcc;
+  --accent-heather: #cbcadb;
+
+  /* ─── Datasemantikk (produkt — mørknede for AA-tekst) ─── */
+  --up: #63784a;                    /* olive mørknet for tekst */
+  --up-raw: #788c5d;                /* olive rå — fyll/sparkline */
+  --dn: #a85536;                    /* leire av clay — aldri ren rød */
+  --info: #46719f;                  /* sky mørknet for tekst */
+  --info-raw: #6a9bcc;
+
+  /* ─── Typography families
+       Anthropic proprietary (Serif/Sans/Mono) er IKKE offentlige.
+       Brand skill: Poppins + Lora. Mono: IBM Plex Mono (produkt-tall). ─── */
+  --font-sans: "Poppins", Arial, system-ui, sans-serif;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Aliases brukt i eksisterende skjermer */
+  --disp: var(--font-sans);
+  --ui: var(--font-sans);
+  --body: var(--font-serif);
+  --mono: var(--font-mono);
+
+  /* ─── Type scale · Produkt (tett) ─── */
+  --text-display: 32px;
+  --text-title: 22px;
+  --text-card: 16px;
+  --text-panel: 14.5px;
+  --text-body-agency: 13.5px;       /* AgencyOS desktop */
+  --text-body-player: 14px;         /* PlayerHQ mobil */
+  --text-label: 10px;               /* versaler + tracking */
+  --text-kpi: 40px;                 /* mono */
+
+  /* ─── Type scale · Marketing (editorial, Anthropic-rytme) ─── */
+  --text-hero: 56px;                /* nedskalert fra 88 — web-vennlig */
+  --text-section: 40px;             /* nedskalert fra 90 */
+  --text-prose: 18px;               /* serif body marketing */
+  --text-prose-lg: 22px;
+  --text-nav: 16px;
+  --text-eyebrow: 12px;
+
+  /* ─── Spacing · 4px base (Anthropic 4/8/12/16/24/32/48/96) ─── */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+  --s9: 96px;                       /* section padding marketing */
+
+  /* ─── Radius
+       Anthropic marketing: sm 8 · md 16 · lg 24
+       AK produkt (Fase 1 låst): app 12 for kort/composer ─── */
+  --r-none: 0px;
+  --r-sm: 8px;                      /* knapper, inputs, chips */
+  --r: 12px;                        /* app-default (Fase 1) */
+  --r-md: 16px;                     /* editorial cards / marketing */
+  --r-lg: 24px;                     /* store flater, pille-CTA unntak */
+  --r-pill: 999px;
+
+  /* ─── Elevation
+       Anthropic marketing: NULL shadow — flater via cream-steg
+       Produkt: én myk skygge tillatt (valgfri) ─── */
+  --shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
+  --shadow-none: none;
+  --scrim: rgba(20, 20, 19, 0.4);
+
+  /* ─── Interaction ─── */
+  --focus: #d97757;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 160ms;
+  --dur-slow: 280ms;
+
+  /* Tap targets */
+  --tap: 44px;
+  --tap-lg: 48px;
+  --tap-capture: 60px;              /* fangst-mikrofon mobil */
+
+  /* ─── Logo (AK Golf — ikke Anthropic) ─── */
+  --logo-mark: #141413;
+  --logo-dot: #b85c3d;
+
+  /* ─── Z-index ─── */
+  --z-sticky: 10;
+  --z-rail: 20;
+  --z-sheet: 40;
+  --z-modal: 50;
+  --z-toast: 100;
+  --z-command: 110;
+}
+
+/* ─── Dark (produkt) ─── */
+[data-theme="dark"] {
+  color: #faf9f5;
+  --bg: #141413;
+  --surface: #1d1c1a;
+  --soft: #26241f;
+  --soft-hover: #2e2c28;
+  --surface-warm: #2a2824;
+  --border: rgba(250, 249, 245, 0.10);
+  --hairline: rgba(250, 249, 245, 0.08);
+  --inverse: #000000;
+
+  --fg: #faf9f5;
+  --ink-soft: #e8e6dc;
+  --muted: #b0aea5;
+  --mid: #6b675e;
+  --text-tertiary: #87867f;
+
+  --rail: #0e0d0c;
+  --rail-fg: #97938a;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.06);
+  --rail-active: rgba(250, 249, 245, 0.12);
+
+  --cta: #faf9f5;
+  --on-cta: #141413;
+  --cta-hover: #e8e6dc;
+
+  --accent: #d97757;
+  --accent-soft: rgba(217, 119, 87, 0.18);
+  --accent-fg: #e5a184;
+  --on-accent: #141413;
+
+  --up: #9db284;
+  --up-raw: #788c5d;
+  --dn: #de9e82;
+  --info: #93b7dc;
+  --info-raw: #6a9bcc;
+
+  --shadow: none;
+  --focus: #d97757;
+
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+[data-theme="light"] {
+  color: #141413;
+}
+
+/* Rail always dark */
+.rail {
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+/* Aksentflate — marketing/innlogging sparsomt */
+.on-accent-surface {
+  --logo-mark: #141413;
+  --logo-dot: #141413;
+}
+
+/* Full-bleed inverse band (marketing) */
+.band-inverse {
+  background: var(--inverse);
+  color: var(--bg);
+}
+
+/* Skriftimport — lim i <head> på alle skjermer:
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+*/
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Gulvregel: min treffmål på touch */
+@media (pointer: coarse) {
+  :root {
+    --floor: var(--tap);
+  }
+}
+
+:root{ --softer:#f6f4ee; --border-soft:#efede4; }
+[data-theme="dark"]{ --softer:#1a1917; --border-soft:rgba(250,249,245,.06); }
+/* ═══ Workbench · AgencyOS · MOBIL ═══
+   LOKASJON rettet 02.08.2026: Mulligan Indoor er active = false i locations og skal ikke vises ved lansering. Erstattet med Gamle Fredrikstad GK, som er eneste synlige lokasjon.
+   Alle funksjoner, ingen reduksjon — men tenkt på nytt for tommelen.
+   Kalender og lerret har EGNE komponenter her, ikke skalerte desktop-varianter:
+   desktop har et sju-kolonners tidsrutenett, mobil har dagpiller + vertikal
+   tidsakse for ÉN dag. Sju kolonner à 124px krever 1000px. Det finnes ikke.
+   Enheter: ≤640 er denne fila. 641+ styrer workbench-desktop.html. */
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; }
+body{
+  background:var(--bg); color:var(--fg);
+  font-family:var(--ui); font-size:var(--text-body-player); line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+[hidden]{ display:none !important; }
+button{ font:inherit; color:inherit; }
+.num{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.eyebrow{ font-family:var(--mono); font-size:var(--text-label); font-weight:500;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+:where(a,button,input,select,textarea,[tabindex]):focus-visible{
+  outline:2px solid var(--focus); outline-offset:2px; border-radius:var(--r-sm); }
+
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
+  min-height:var(--tap-lg); padding:0 var(--s4); font-size:14px; font-weight:500;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; white-space:nowrap; }
+.btn.ink{ background:var(--cta); color:var(--on-cta); border-color:var(--cta); }
+.btn.now{ background:var(--accent); color:var(--on-accent); border-color:var(--accent);
+  font-weight:600; min-height:56px; }
+.btn.sm{ min-height:var(--tap); font-size:13px; padding:0 var(--s3); }
+.btn.full{ width:100%; }
+.chip{ display:inline-flex; align-items:center; min-height:var(--tap);
+  padding:0 var(--s4); font-size:13px; background:var(--surface);
+  border:1px solid var(--border); border-radius:var(--r-pill); cursor:pointer; }
+.chip[aria-pressed="true"]{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+
+/* Telefonramme — demo-chrome, forsvinner under 641px */
+.phone{ width:430px; max-width:100%; height:920px; margin:0 auto; position:relative;
+  overflow:hidden; background:var(--bg); border:1px solid var(--border);
+  border-radius:var(--r-lg); display:flex; flex-direction:column; }
+@media (max-width:640px){
+  body{ background:var(--bg); }
+  .phone{ width:100%; height:100dvh; max-width:none; border:0; border-radius:0; }
+  .framehint{ display:none; }
+}
+.framehint{ text-align:center; font-size:11px; color:var(--muted); padding:var(--s3); }
+.phone .scrim,.phone .sheet{ position:absolute; }
+
+/* ── Topp ────────────────────────────────────────────────────── */
+.top{ flex:none; display:flex; align-items:center; gap:var(--s2);
+  padding:calc(var(--s2) + env(safe-area-inset-top)) var(--s3) var(--s2);
+  border-bottom:1px solid var(--border); background:var(--surface); }
+.top h1{ margin:0; font-family:var(--disp); font-size:15px; font-weight:600; }
+.top .sub{ display:block; font-family:var(--mono); font-size:10px; color:var(--muted);
+  letter-spacing:.06em; text-transform:uppercase; }
+.iconbtn{ flex:none; width:var(--tap); height:var(--tap); display:grid; place-items:center;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r); cursor:pointer; }
+.iconbtn svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.7; }
+
+/* ── Zoom som sveipbar pille-rad ─────────────────────────────── */
+.zooms{ flex:none; display:flex; gap:var(--s2); padding:var(--s2) var(--s3);
+  overflow-x:auto; border-bottom:1px solid var(--border-soft); background:var(--softer);
+  scrollbar-width:none; }
+.zooms::-webkit-scrollbar{ display:none; }
+.zooms button{ flex:none; min-height:var(--tap); padding:0 var(--s4); font-size:13px;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r-pill);
+  color:var(--muted); cursor:pointer; }
+.zooms button[aria-current="true"]{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+
+/* ── Dagpiller — mobilens egen kalenderkomponent ─────────────── */
+.daystrip{ flex:none; display:flex; gap:var(--s2); padding:var(--s3);
+  overflow-x:auto; scrollbar-width:none; border-bottom:1px solid var(--border); }
+.daystrip::-webkit-scrollbar{ display:none; }
+.dpill{ flex:none; width:52px; min-height:64px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:2px; padding:var(--s2) 0;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; }
+.dpill .dw{ font-family:var(--mono); font-size:9.5px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--muted); }
+.dpill .dd{ font-family:var(--mono); font-size:15px; font-weight:600; }
+.dpill .dot{ width:5px; height:5px; border-radius:var(--r-pill); background:var(--mid); }
+.dpill[aria-current="true"]{ background:var(--fg); border-color:var(--fg); }
+.dpill[aria-current="true"] .dw,.dpill[aria-current="true"] .dd{ color:var(--bg); }
+.dpill[aria-current="true"] .dot{ background:var(--bg); }
+.dpill.idag .dd{ text-decoration:underline; text-underline-offset:3px; }
+
+/* ── Dagens tidsakse — vertikal, én dag ──────────────────────── */
+.dagbody{ flex:1; min-height:0; overflow-y:auto;
+  padding:0 var(--s3) calc(var(--s6) + env(safe-area-inset-bottom)); }
+.dagmeta{ display:flex; align-items:baseline; gap:var(--s2); padding:var(--s3) 0 var(--s2); }
+.dagmeta .d{ font-family:var(--disp); font-size:15px; font-weight:600; }
+.dagmeta .t{ margin-left:auto; font-family:var(--mono); font-size:12px; color:var(--muted); }
+
+.tid{ position:relative; }
+.trad{ display:grid; grid-template-columns:52px minmax(0,1fr); align-items:start;
+  min-height:22px; }
+.trad .kl{ font-family:var(--mono); font-size:10px; color:var(--muted);
+  padding-top:0; transform:translateY(-5px); }
+.trad .sp{ border-top:1px solid var(--border-soft); height:100%; }
+.trad.hel .kl{ color:var(--fg); font-weight:500; }
+.trad.hel .sp{ border-top-color:var(--hairline); }
+.tlag{ position:absolute; left:52px; right:0; top:0; bottom:0; pointer-events:none; }
+.tlag > *{ pointer-events:auto; }
+
+.mbusy{ position:absolute; left:0; right:0; border-radius:var(--r-sm);
+  background:var(--soft); border:1px dashed var(--border);
+  font-size:10.5px; color:var(--muted); padding:3px 6px; overflow:hidden; }
+.mokt{ position:absolute; left:0; right:0; text-align:left; padding:6px 8px;
+  border-radius:var(--r-sm); background:var(--surface);
+  border:1px solid var(--border); border-left:3px solid var(--mid);
+  cursor:pointer; overflow:hidden; }
+.mokt .t{ display:block; font-size:13px; font-weight:600; line-height:1.25;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.mokt .m{ display:block; font-family:var(--mono); font-size:10px; color:var(--muted); }
+.mokt.done{ opacity:.6; } .mokt.done .t{ text-decoration:line-through; }
+.mnow{ position:absolute; left:0; right:0; border-top:1px solid var(--fg); }
+.mnow::before{ content:""; position:absolute; left:-3px; top:-3px; width:6px; height:6px;
+  border-radius:var(--r-pill); background:var(--fg); }
+.mnow span{ position:absolute; right:0; top:-14px; font-family:var(--mono);
+  font-size:9px; background:var(--bg); padding:0 3px; }
+
+.ax-FYS{ border-left-color:var(--accent-sky); }
+.ax-TEK{ border-left-color:var(--accent-olive); }
+.ax-SLAG{ border-left-color:var(--accent-fig); }
+.ax-SPILL{ border-left-color:var(--accent-cactus); }
+.ax-TURN{ border-left-color:var(--accent-heather); }
+
+/* ── Bunnlinje: målinger + Én ting nå ────────────────────────── */
+.bunn{ flex:none; border-top:1px solid var(--border); background:var(--surface);
+  padding:var(--s2) var(--s3) calc(var(--s3) + env(safe-area-inset-bottom)); }
+.maal{ display:flex; gap:var(--s4); overflow-x:auto; padding-bottom:var(--s2);
+  scrollbar-width:none; }
+.maal::-webkit-scrollbar{ display:none; }
+.maal div{ flex:none; }
+.maal .k{ display:block; font-family:var(--mono); font-size:9px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--muted); }
+.maal .v{ display:block; font-family:var(--mono); font-size:15px; font-weight:600; }
+.statusnote{ font-size:10.5px; color:var(--muted); margin:0 0 var(--s2); }
+
+/* ── Ark ─────────────────────────────────────────────────────── */
+.scrim{ position:fixed; inset:0; background:var(--scrim); z-index:var(--z-sheet); display:none; }
+.scrim.on{ display:block; }
+.sheet{ position:fixed; left:0; right:0; bottom:0; z-index:calc(var(--z-sheet) + 1);
+  max-height:92%; background:var(--surface); border-top:1px solid var(--border);
+  border-radius:var(--r-lg) var(--r-lg) 0 0; display:none; flex-direction:column;
+  padding-bottom:env(safe-area-inset-bottom); }
+.sheet.on{ display:flex; }
+.grab{ flex:none; width:36px; height:4px; border-radius:var(--r-pill);
+  background:var(--border); margin:var(--s3) auto var(--s2); }
+.shead{ flex:none; display:flex; align-items:center; gap:var(--s2);
+  padding:0 var(--s4) var(--s3); border-bottom:1px solid var(--border); }
+.shead h2{ margin:0; font-family:var(--disp); font-size:15px; font-weight:600; }
+.sbody{ flex:1; min-height:0; overflow-y:auto; padding:var(--s4); }
+.sfoot{ flex:none; display:flex; gap:var(--s2); padding:var(--s3) var(--s4);
+  border-top:1px solid var(--border); }
+.sfoot .btn{ flex:1; }
+
+/* ── Felt og seksjoner ───────────────────────────────────────── */
+.field{ margin-bottom:var(--s4); }
+.field label,.flab{ display:block; font-family:var(--mono); font-size:var(--text-label);
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-bottom:var(--s2); }
+.field input,.field textarea{ width:100%; min-height:var(--tap-lg);
+  padding:var(--s3); background:var(--bg); color:var(--fg);
+  border:1px solid var(--border); border-radius:var(--r-sm); font:inherit; font-size:15px; }
+.field textarea{ min-height:76px; font-family:var(--body); resize:vertical; }
+.hint{ font-size:12px; color:var(--muted); margin:var(--s1) 0 0; font-family:var(--body); }
+
+.sek{ margin-bottom:var(--s5); }
+.sekhead{ display:flex; align-items:center; gap:var(--s2); margin-bottom:var(--s2); }
+.sekhead .flab{ margin-bottom:0; }
+.sekn{ margin-left:auto; font-family:var(--mono); font-size:12px; color:var(--muted); }
+
+.drill{ border:1px solid var(--border); border-radius:var(--r); margin-bottom:var(--s2);
+  background:var(--bg); overflow:hidden; }
+.dsum{ display:flex; align-items:center; gap:var(--s2); min-height:var(--tap-lg);
+  padding:var(--s2) var(--s3); cursor:pointer; list-style:none; }
+.dsum::-webkit-details-marker{ display:none; }
+.drill[open] .dsum{ border-bottom:1px solid var(--border); background:var(--soft); }
+.dn{ font-size:13.5px; font-weight:600; min-width:0; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap; }
+.dtyp{ flex:none; font-family:var(--mono); font-size:9px; letter-spacing:.05em;
+  text-transform:uppercase; padding:2px 6px; border-radius:var(--r-pill);
+  border:1px solid var(--border); color:var(--muted); }
+.dtyp.golf{ color:var(--up); } .dtyp.fys{ color:var(--info); } .dtyp.test{ color:var(--accent-fg); }
+.dtid{ margin-left:auto; flex:none; font-family:var(--mono); font-size:12px; }
+.dbody{ padding:var(--s3); }
+.dformel{ padding:var(--s2) var(--s3); margin-bottom:var(--s3); background:var(--softer);
+  border:1px solid var(--border-soft); border-radius:var(--r-sm); }
+.dformel code{ display:block; font-family:var(--mono); font-size:11px; word-break:break-all; }
+
+/* Slot-velger på mobil: fullbreddes rader, ikke chips i klynge.
+   En 18-verdis liste som chips gir 40px treffmål og feilklikk med tommel. */
+.slot{ display:flex; flex-direction:column; gap:var(--s1); }
+.slot .gsep{ font-family:var(--mono); font-size:9px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--mid); margin:var(--s2) 0 2px; }
+.srad{ display:flex; align-items:center; gap:var(--s2); width:100%; text-align:left;
+  min-height:var(--tap-lg); padding:0 var(--s3); background:var(--surface);
+  border:1px solid var(--border); border-radius:var(--r-sm); cursor:pointer; font-size:14px; }
+.srad[aria-pressed="true"]{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+.srad .mark{ margin-left:auto; font-family:var(--mono); font-size:11px; opacity:.7; }
+
+.testrad{ display:flex; align-items:center; gap:var(--s2); width:100%; text-align:left;
+  min-height:var(--tap-lg); padding:0 var(--s3); margin-bottom:var(--s1);
+  background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm);
+  cursor:pointer; font-size:14px; }
+.testrad .tk{ margin-left:auto; font-family:var(--mono); font-size:10px; color:var(--muted); }
+
+.toast{ position:fixed; left:50%; bottom:96px; transform:translateX(-50%);
+  z-index:var(--z-toast); background:var(--fg); color:var(--bg);
+  padding:var(--s3) var(--s4); border-radius:var(--r); font-size:13px; }
+
+button,.chip,summary,input,textarea,[role="button"]{ min-height:var(--tap); }
+.dtyp,.num,.eyebrow,.maal .v{ min-height:0; }
+
+</style>
+</head>
+<body>
+<p class="framehint">Workbench mobil · 430 px. Under 641 px fyller den skjermen.</p>
+<!-- Telefonramme = demo-chrome, skal bort ved integrasjon -->
+<div class="phone" data-demo-only="true">
+
+  <header class="top">
+    <button class="iconbtn" id="backThread" aria-label="Tilbake til tråden" data-od-id="wbm-back">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div style="min-width:0">
+      <h1>Workbench</h1>
+      <span class="sub">Øyvind Rohjan · uke <span class="num">32</span></span>
+    </div>
+    <span style="flex:1"></span>
+    <button class="iconbtn" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="wbm-theme">
+      <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </header>
+
+  <!-- Zoom: sveipbar pille-rad. Samme nivåer som desktop, egen komponent. -->
+  <div class="zooms" role="group" aria-label="Zoom-nivå">
+    <button data-zoom="ar" aria-current="false" data-od-id="wbm-zoom-ar">Årsplan</button>
+    <button data-zoom="maned" aria-current="false" data-od-id="wbm-zoom-maned">Måned</button>
+    <button data-zoom="uke" aria-current="false" data-od-id="wbm-zoom-uke">Uke</button>
+    <button data-zoom="dag" aria-current="true" data-od-id="wbm-zoom-dag">Dag</button>
+  </div>
+
+  <!-- Dagpiller: mobilens egen kalenderkomponent. Ikke sju kolonner. -->
+  <div class="daystrip" id="daystrip" role="tablist" aria-label="Velg dag"></div>
+
+  <main class="dagbody" id="dagbody"></main>
+
+  <div class="bunn">
+    <p class="statusnote">Regler og låser er midlertidig ute. Ingenting er validert.</p>
+    <div class="maal" id="maal"></div>
+    <button class="btn now full" id="nowBtn" data-od-id="wbm-one-thing-now">Publiser uke 32 til Øyvind</button>
+  </div>
+
+  <div class="scrim" id="scrim"></div>
+
+  <!-- Øktarket: hele øktredigereren, ingen funksjoner fjernet -->
+  <section class="sheet" id="sheetOkt" role="dialog" aria-modal="true" aria-labelledby="oktTitle">
+    <div class="grab"></div>
+    <div class="shead">
+      <h2 id="oktTitle">Økt</h2>
+      <span style="flex:1"></span>
+      <button class="iconbtn" data-sheet-close="1" aria-label="Lukk" data-od-id="wbm-okt-lukk">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="sbody" id="oktBody"></div>
+    <div class="sfoot">
+      <button class="btn" data-sheet-close="1" data-od-id="wbm-okt-ferdig">Ferdig</button>
+      <button class="btn ink" id="startOkt" data-od-id="wbm-start-okt">Start økta</button>
+    </div>
+  </section>
+
+  <!-- Slot-velger: fullbreddes rader, ikke chips -->
+  <section class="sheet" id="sheetSlot" role="dialog" aria-modal="true" aria-labelledby="slotTitle">
+    <div class="grab"></div>
+    <div class="shead">
+      <h2 id="slotTitle">Velg</h2>
+      <span style="flex:1"></span>
+      <button class="iconbtn" data-sheet-close="1" aria-label="Lukk" data-od-id="wbm-slot-lukk">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="sbody" id="slotBody"></div>
+  </section>
+
+  <!-- Testvelger -->
+  <section class="sheet" id="sheetTest" role="dialog" aria-modal="true" aria-labelledby="testTitle">
+    <div class="grab"></div>
+    <div class="shead">
+      <h2 id="testTitle">Testbatteriet</h2>
+      <span style="flex:1"></span>
+      <button class="iconbtn" data-sheet-close="1" aria-label="Lukk" data-od-id="wbm-test-lukk">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="sbody" id="testBody"></div>
+  </section>
+</div>
+
+<div class="toast" id="toast" hidden role="status"></div>
+<div class="sr" id="live" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+/* ── AK-formelens taksonomi (Anders 01.08.2026) ─────────────────
+   Fem slots: Pyramide · Område · Motorikk · Belastning · Press.
+   Motorikk erstatter CS-nivå. M0–M5 er erstattet av Belastning, PR1–PR5 av Press.
+   L-FASENE ER DØDE (Anders 01.08.2026) — ikke gjeninnfør dem noe sted.
+   Ingen betingede slots — alle fem gjelder alltid, for alle områder. */
+
+var PYRAMIDE = [
+  {k:'FYS',   n:'Fysisk'},
+  {k:'TEK',   n:'Teknikk'},
+  {k:'SLAG',  n:'Golfslag'},
+  {k:'SPILL', n:'Spill'},
+  {k:'TURN',  n:'Turnering'}
+];
+
+var OMRADE = [
+  {k:'TEE_TOTAL',      n:'Tee Total',        g:'Tee'},
+  {k:'INNSPILL_200',   n:'Innspill 200+',    g:'Innspill'},
+  {k:'INNSPILL_150',   n:'Innspill 150–200', g:'Innspill'},
+  {k:'INNSPILL_100',   n:'Innspill 100–150', g:'Innspill'},
+  {k:'INNSPILL_50',    n:'Innspill 50–100',  g:'Innspill'},
+  /* Innspill 0–50 finnes IKKE (Anders 01.08.2026). Alt under 50 m er
+     nærspill: pitch, chip, lob eller bunker. Ikke gjeninnfør båndet. */
+  {k:'PITCH',          n:'Pitch',            g:'Nærspill'},
+  {k:'BUNKER',         n:'Bunker',           g:'Nærspill'},
+  {k:'LOB',            n:'Lob',              g:'Nærspill'},
+  {k:'CHIP',           n:'Chip',             g:'Nærspill'},
+  /* Putt lagres og oppgis i FOT. Meter står i parentes som lesehjelp
+     (Anders 01.08.2026). 1 ft = 0,3048 m — parentesen er avledet, aldri lagret. */
+  {k:'PUTT_40',        n:'Putt 40+ ft (12,2 m+)',        g:'Putt'},
+  {k:'PUTT_25_40',     n:'Putt 25–40 ft (7,6–12,2 m)',   g:'Putt'},
+  {k:'PUTT_15_25',     n:'Putt 15–25 ft (4,6–7,6 m)',    g:'Putt'},
+  {k:'PUTT_10_15',     n:'Putt 10–15 ft (3,0–4,6 m)',    g:'Putt'},
+  {k:'PUTT_5_10',      n:'Putt 5–10 ft (1,5–3,0 m)',     g:'Putt'},
+  {k:'PUTT_3_5',       n:'Putt 3–5 ft (0,9–1,5 m)',      g:'Putt'},
+  {k:'PUTT_0_3',       n:'Putt 0–3 ft (0–0,9 m)',        g:'Putt'},
+  /* Spill beholdes som område (Anders 01.08.2026) — simulert spill og
+     banespill som ikke lar seg plassere i ett slagområde. */
+  {k:'SPILL',          n:'Spill',                        g:'Spill'}
+];
+
+var MOTORIKK   = [{k:'UTEN_BALL',n:'Uten ball'},{k:'LAV_HAST',n:'Lav hastighet'},{k:'AUTO',n:'Auto'}];
+var BELASTNING = [{k:'INNENDORS',n:'Innendørs'},{k:'TRENINGSOMRADE',n:'Treningsområde'},
+                  {k:'BANE',n:'Bane'},{k:'KONKURRANSE',n:'Konkurranse'}];
+var PRESS      = [{k:'ALENE',n:'Alene'},{k:'OBSERVERT',n:'Observert'},
+                  {k:'KONKURRANSE',n:'Konkurranse'},{k:'TURNERING',n:'Turnering'}];
+
+/* CS-nivå er ERSTATTET av Motorikk (Anders 01.08.2026).
+   Motorikk gjelder alle områder — også nærspill og putt, der CS aldri ga mening.
+   Putteavstander er ALLTID i fot (ordliste B23). */
+
+function navn(liste, k){
+  for (var i=0;i<liste.length;i++) if (liste[i].k === k) return liste[i].n;
+  return k;
+}
+
+/* Testbatteriet — ekte koder fra prisma/seed-data/ngf-test-battery.json.
+   Utdrag av de 20; hele lista hentes fra basen ved integrasjon. */
+var TESTBATTERI = [
+  {k:'driver_basic',         n:'Driver Basic',            omr:'Utslag'},
+  {k:'driver_gate',          n:'Driver Gate',             omr:'Utslag'},
+  {k:'inspill_basic',        n:'Inspill Basic',           omr:'Innspill'},
+  {k:'inspill_120',          n:'Inspill 120 m',           omr:'Innspill'},
+  {k:'inspill_160',          n:'Inspill 160 m',           omr:'Innspill'},
+  {k:'inspill_variation',    n:'Inspill Variation',       omr:'Innspill'},
+  {k:'wedge_variation',      n:'Wedge Variation',         omr:'Wedge'},
+  {k:'wedge_gate',           n:'Wedge Gate',              omr:'Wedge'},
+  {k:'eight_ball_variation', n:'8-Ball Variation',        omr:'Nærspill'},
+  {k:'naerspill_gate',       n:'Nærspill Gate',           omr:'Nærspill'},
+  {k:'visa_express',         n:'VISA Express',            omr:'Nærspill'},
+  {k:'putt_1_3m',            n:'Putt 1–3 m',              omr:'Putting'},
+  {k:'putt_gate',            n:'Putt Gate',               omr:'Putting'},
+  {k:'putt_speed',           n:'Putt Speed Control',      omr:'Putting'},
+  {k:'chs',                  n:'Clubhead Speed (CHS)',    omr:'Golfspesifikk'},
+  {k:'pei_bane',             n:'PEI Test Bane',           omr:'Bane'},
+  {k:'trapbar_deadlift',     n:'Trapbarmarkløft',         omr:'Styrke'},
+  {k:'bench_press',          n:'Benkpress',               omr:'Styrke'},
+  {k:'standing_long_jump',   n:'Stille lengde',           omr:'Eksplosivitet'},
+  {k:'ball_throw_kneeling',  n:'Ballkast knestående',     omr:'Eksplosivitet'}
+];
+
+function erGolf(d){ return d.type === 'golf'; }
+function erTest(d){ return d.type === 'test'; }
+function formelStr(f){
+  return [f.pyramide, f.omrade, f.motorikk, f.belastning, f.press].join('_');
+}
+function sumTid(o){ return o.drills.reduce(function(s,d){ return s + d.tidMin; }, 0); }
+function tid(min){
+  var t = Math.floor(min/60), m = min%60;
+  if (!t) return m + ' min';
+  return m ? t + ' t ' + m + ' min' : t + ' t';
+}
+function komma(n){ return String(n).replace('.', ','); }
+
+var DAGER = [
+  {dw:'man', dd:'3.8'}, {dw:'tir', dd:'4.8'}, {dw:'ons', dd:'5.8'},
+  {dw:'tor', dd:'6.8'}, {dw:'fre', dd:'7.8'}, {dw:'lør', dd:'8.8'}, {dw:'søn', dd:'9.8'}
+];
+
+/* Bakgrunnsvirkelighet: tid som allerede er opptatt. Ikke plan, men finnes.
+   Planen tegnes inn i tiden som faktisk er ledig. */
+var OPPTATT = {
+  0:[{navn:'Skole', start:'08:00', slutt:'14:00'}],
+  1:[{navn:'Skole', start:'08:00', slutt:'14:00'}],
+  2:[{navn:'Skole', start:'08:00', slutt:'14:00'}],
+  3:[{navn:'Skole', start:'08:00', slutt:'14:00'}],
+  4:[{navn:'Skole', start:'08:00', slutt:'14:00'},
+     {navn:'Gamle Fredrikstad GK booket', start:'11:00', slutt:'12:00'}],
+  5:[], 6:[]
+};
+
+/* ── Tidsakse ────────────────────────────────────────────────────
+   05:00–23:00 i 30-minutters intervaller (beslutning Anders 01.08.2026).
+   36 luker. Alt posisjoneres mot denne aksen — ingen kortstabling. */
+var T_START = 5 * 60, T_SLUTT = 23 * 60, SLOT = 30, SLOT_H = 22;
+var N_SLOT = (T_SLUTT - T_START) / SLOT;
+function minutter(hhmm){ var p = String(hhmm).split(':'); return (+p[0]) * 60 + (+p[1]); }
+function klokke(min){
+  var t = Math.floor(min / 60), m = min % 60;
+  return (t < 10 ? '0' : '') + t + ':' + (m < 10 ? '0' : '') + m;
+}
+function yFor(min){ return (min - T_START) / SLOT * SLOT_H; }
+
+var OKTER = [
+  { id:'o1', dag:0, start:'16:00', navn:'Styrke · underkropp', dato:'2026-08-03', sted:'Treningsrom',
+    maal:'Holde maks-styrke gjennom spesialiseringsperioden.', akse:'FYS', done:false,
+    drills:[
+      { type:'fysisk', navn:'Knebøy',       sett:4, reps:5, tidMin:25, logget:null },
+      { type:'fysisk', navn:'Hoftehengsel', sett:3, reps:8, tidMin:20, logget:null }
+    ] },
+  { id:'o2', dag:1, start:'15:00', navn:'Innspill · lengdekontroll', dato:'2026-08-04', sted:'Gamle Fredrikstad GK',
+    maal:'Ni av tolv innenfor fire meter fra 50–100 m.', akse:'TEK', done:false,
+    drills:[
+      /* Tre drills i samme økt, tre ULIKE formler. Motorikk og press stiger. */
+      { type:'golf', navn:'Halv sving · kalibrering', formel:{pyramide:'TEK',omrade:'INNSPILL_50',motorikk:'UTEN_BALL',belastning:'INNENDORS',press:'ALENE'},
+        reps:15, tidMin:30, logget:null },
+      { type:'golf', navn:'Avstandsstige 50–100 m', formel:{pyramide:'TEK',omrade:'INNSPILL_50',motorikk:'LAV_HAST',belastning:'TRENINGSOMRADE',press:'ALENE'},
+        reps:30, tidMin:35, logget:null },
+      { type:'golf', navn:'Én ball · én sjanse', formel:{pyramide:'SLAG',omrade:'INNSPILL_100',motorikk:'AUTO',belastning:'BANE',press:'KONKURRANSE'},
+        reps:12, tidMin:25, logget:null }
+    ] },
+  { id:'o3', dag:3, start:'16:00', navn:'Nærspill · landingspunkt', dato:'2026-08-06', sted:'Gamle Fredrikstad GK · nærspillsområde',
+    maal:'Treffe landingspunktet på åtte av ti chip.', akse:'TEK', done:false,
+    drills:[
+      /* Ingen CS her: NÆRSPILL er ikke et CS-område. Feltet finnes ikke. */
+      { type:'golf', navn:'Landingsflekk · chip', formel:{pyramide:'TEK',omrade:'CHIP',motorikk:'LAV_HAST',belastning:'TRENINGSOMRADE',press:'ALENE'},
+        reps:20, tidMin:30, logget:null },
+      { type:'golf', navn:'Portputt 3–5 ft', formel:{pyramide:'TEK',omrade:'PUTT_3_5',motorikk:'AUTO',belastning:'TRENINGSOMRADE',press:'OBSERVERT'},
+        reps:30, tidMin:20, logget:null },
+      { type:'test', navn:'Putt Gate', testK:'putt_gate', omr:'Putting', tidMin:15, logget:null }
+    ] },
+  { id:'o4', dag:4, start:'06:30', navn:'Spenst og hurtighet', dato:'2026-08-07', sted:'Treningsrom',
+    maal:'RFD framfor 1RM. Kvalitet over volum.', akse:'FYS', done:false,
+    drills:[
+      { type:'fysisk', navn:'Hoppserie', sett:5, reps:3, tidMin:25, logget:null }
+    ] },
+  { id:'o5', dag:5, start:'09:00', navn:'Testrunde · 18 hull', dato:'2026-08-08', sted:'Hovedbanen',
+    maal:'Spille etter gameplan. Kun brutto score.', akse:'TURN', done:false,
+    drills:[
+      { type:'golf', navn:'18 hull · turneringsmodus', formel:{pyramide:'TURN',omrade:'TEE_TOTAL',motorikk:'AUTO',belastning:'KONKURRANSE',press:'TURNERING'},
+        reps:0, tidMin:240, logget:null }
+    ] }
+];
+
+var LIB = {
+  maler: [
+    {n:'Spesialisering · uke A', f:'3 golf · 2 fysisk · 14,5 t'},
+    {n:'Turneringsuke · nedtrapping', f:'2 golf · 1 fysisk · 8,0 t'},
+    {n:'Grunnperiode · volumuke', f:'4 golf · 3 fysisk · 16,0 t'}
+  ],
+  okter: [
+    {n:'Innspill · lengdekontroll', f:'TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_ALENE'},
+    {n:'Putt · startlinje', f:'TEK_PUTT_3_5_AUTO_TRENINGSOMRADE_OBSERVERT'},
+    {n:'Tee · ballhastighet', f:'SLAG_TEE_TOTAL_AUTO_TRENINGSOMRADE_ALENE'}
+  ],
+  drills: [
+    {n:'Avstandsstige 50–100 m', f:'TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_ALENE'},
+    {n:'Landingsflekk · chip', f:'TEK_CHIP_LAV_HAST_TRENINGSOMRADE_ALENE'},
+    {n:'Portputt 3–5 ft', f:'TEK_PUTT_3_5_AUTO_TRENINGSOMRADE_OBSERVERT'},
+    /* Fysisk drill har INGEN AK-formel — den har sett, reps og tid. */
+    {n:'Knebøy', f:'fysisk · 4 × 5'},
+    {n:'Hoppserie', f:'fysisk · 5 × 3'}
+  ],
+  /* Turneringer er ankerpunktene i årsplanen. De dras inn på lerretet
+     som alle andre elementer og skriver til samme plan-kilde. */
+  turneringer: [
+    {n:'NM Junior · Losby',      f:'14.–16.08 · prio A · påmeldt'},
+    {n:'Regionstour 4 · Onsøy',  f:'23.08 · prio B · frist 16.08'},
+    {n:'Klubbmesterskap · GFGK', f:'30.–31.08 · prio C · ikke påmeldt'}
+  ]
+};
+
+
+/* Regler og låser er ute (se desktop-fila). Kun målinger. */
+function erTurnering(d){ return erGolf(d) && d.formel.pyramide === 'TURN'; }
+function maal(){
+  var treningMin = 0, turneringMin = 0, drills = 0;
+  OKTER.forEach(function(o){ o.drills.forEach(function(d){
+    drills++;
+    if (erTurnering(d)) turneringMin += d.tidMin; else treningMin += d.tidMin;
+  }); });
+  return { treningMin:treningMin, turneringMin:turneringMin, drills:drills, okter:OKTER.length };
+}
+
+/* ── Mobil-spesifikk visning. Datamodell og taksonomi er DELT med desktop
+      (samme blokk over) — én sannhet, to presentasjoner. ────────────── */
+
+var valgtDag = 0, valgtId = null, aktivtArk = null, sisteFokus = null;
+
+var live = document.getElementById('live');
+function si(t){ live.textContent = t; }
+var toastEl = document.getElementById('toast'), toastT;
+function toast(t){
+  toastEl.textContent = t; toastEl.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.hidden = true; }, 2600);
+}
+function el(tag, cls, txt){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt != null) e.textContent = txt;
+  return e;
+}
+
+/* ── Ark ─────────────────────────────────────────────────────── */
+var scrim = document.getElementById('scrim');
+function apne(id){
+  if (aktivtArk) document.getElementById(aktivtArk).classList.remove('on');
+  else sisteFokus = document.activeElement;
+  document.getElementById(id).classList.add('on');
+  scrim.classList.add('on');
+  aktivtArk = id;
+  var f = document.getElementById(id).querySelector('button, input, textarea, [tabindex]:not([tabindex="-1"])');
+  if (f) f.focus();
+}
+function lukk(){
+  if (!aktivtArk) return;
+  document.getElementById(aktivtArk).classList.remove('on');
+  scrim.classList.remove('on');
+  aktivtArk = null;
+  if (sisteFokus && sisteFokus.focus) sisteFokus.focus();
+}
+scrim.addEventListener('click', lukk);
+document.querySelectorAll('[data-sheet-close]').forEach(function(b){
+  b.addEventListener('click', lukk);
+});
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape' && aktivtArk){ e.preventDefault(); lukk(); }
+});
+document.querySelectorAll('.sheet').forEach(function(sh){
+  sh.addEventListener('keydown', function(e){
+    if (e.key !== 'Tab' || aktivtArk !== sh.id) return;
+    var f = sh.querySelectorAll('button:not([disabled]), input, textarea, [tabindex]:not([tabindex="-1"])');
+    if (!f.length) return;
+    var first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  });
+  /* Sveip ned lukker */
+  var y0 = null;
+  sh.addEventListener('touchstart', function(e){ y0 = e.touches[0].clientY; }, {passive:true});
+  sh.addEventListener('touchend', function(e){
+    if (y0 == null) return;
+    if (e.changedTouches[0].clientY - y0 > 80) lukk();
+    y0 = null;
+  }, {passive:true});
+});
+
+/* ── Dagpiller ───────────────────────────────────────────────── */
+function renderDaystrip(){
+  var s = document.getElementById('daystrip');
+  s.innerHTML = '';
+  DAGER.forEach(function(d, i){
+    var b = el('button', 'dpill' + (i === 0 ? ' idag' : ''));
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-current', i === valgtDag ? 'true' : 'false');
+    b.dataset.odId = 'wbm-dag-' + i;
+    b.appendChild(el('span', 'dw', d.dw));
+    b.appendChild(el('span', 'dd', d.dd.split('.')[0]));
+    var n = OKTER.filter(function(o){ return o.dag === i; }).length;
+    var dot = el('span', 'dot');
+    if (!n) dot.style.visibility = 'hidden';
+    b.appendChild(dot);
+    b.setAttribute('aria-label', d.dw + ' ' + d.dd + ', ' + n + ' økter');
+    b.addEventListener('click', function(){ valgtDag = i; renderAlt(); });
+    s.appendChild(b);
+  });
+}
+
+/* ── Dagens tidsakse — vertikal, én dag ──────────────────────── */
+function renderDag(){
+  var body = document.getElementById('dagbody');
+  body.innerHTML = '';
+
+  var dagens = OKTER.filter(function(o){ return o.dag === valgtDag; });
+  var mins = dagens.reduce(function(s, o){ return s + sumTid(o); }, 0);
+
+  var meta = el('div', 'dagmeta');
+  meta.appendChild(el('span', 'd', DAGER[valgtDag].dw + ' ' + DAGER[valgtDag].dd));
+  meta.appendChild(el('span', 't num', mins ? tid(mins) + ' · ' + dagens.length + ' økter' : 'ingen økter'));
+  body.appendChild(meta);
+
+  var tidW = el('div', 'tid');
+  for (var k = 0; k <= N_SLOT; k++){
+    var min = T_START + k * SLOT;
+    var r = el('div', 'trad' + (min % 60 === 0 ? ' hel' : ''));
+    r.appendChild(el('span', 'kl', klokke(min)));
+    r.appendChild(el('span', 'sp'));
+    tidW.appendChild(r);
+  }
+  var lag = el('div', 'tlag');
+
+  (OPPTATT[valgtDag] || []).forEach(function(bz){
+    var e = el('div', 'mbusy', bz.navn + ' ' + bz.start + '–' + bz.slutt);
+    e.style.top = yFor(minutter(bz.start)) + 'px';
+    e.style.height = ((minutter(bz.slutt) - minutter(bz.start)) / SLOT * SLOT_H - 2) + 'px';
+    lag.appendChild(e);
+  });
+
+  dagens.forEach(function(o){
+    var fra = minutter(o.start), varighet = sumTid(o);
+    var b = el('button', 'mokt ax-' + o.akse + (o.done ? ' done' : ''));
+    b.dataset.odId = 'wbm-okt-' + o.id;
+    b.style.top = yFor(fra) + 'px';
+    b.style.height = Math.max(44, varighet / SLOT * SLOT_H - 2) + 'px';
+    b.appendChild(el('span', 't', o.navn));
+    b.appendChild(el('span', 'm', o.start + '–' + klokke(fra + varighet) + ' · ' +
+      tid(varighet) + ' · ' + o.drills.length + ' drills'));
+    b.addEventListener('click', function(){ valgtId = o.id; apneOkt(); });
+    lag.appendChild(b);
+  });
+
+  if (valgtDag === 0){
+    var nu = el('div', 'mnow');
+    nu.style.top = yFor(9 * 60 + 12) + 'px';
+    nu.appendChild(el('span', null, 'nå 09:12'));
+    lag.appendChild(nu);
+  }
+
+  tidW.appendChild(lag);
+  body.appendChild(tidW);
+
+  var add = el('button', 'btn full', '+ Ny økt denne dagen');
+  add.dataset.odId = 'wbm-ny-okt';
+  add.style.marginTop = 'var(--s4)';
+  add.addEventListener('click', function(){
+    var id = 'n' + OKTER.length;
+    OKTER.push({ id:id, dag:valgtDag, start:'16:00', navn:'Ny økt',
+      dato:'2026-08-0' + (3 + valgtDag), sted:'', maal:'', akse:'TEK', done:false,
+      drills:[{ type:'golf', navn:'Ny golfdrill',
+        formel:{pyramide:'TEK',omrade:'INNSPILL_50',motorikk:'LAV_HAST',
+                belastning:'TRENINGSOMRADE',press:'ALENE'},
+        reps:0, tidMin:20, logget:null }] });
+    valgtId = id; renderAlt(); apneOkt();
+    si('Ny økt lagt til ' + DAGER[valgtDag].dw + '.');
+  });
+  body.appendChild(add);
+}
+
+/* ── Målinger ────────────────────────────────────────────────── */
+function renderMaal(){
+  var m = maal(), w = document.getElementById('maal');
+  w.innerHTML = '';
+  [['trening', tid(m.treningMin)], ['turnering', m.turneringMin ? tid(m.turneringMin) : '—'],
+   ['økter', m.okter], ['drills', m.drills]].forEach(function(p){
+    var d = el('div');
+    d.appendChild(el('span', 'k', p[0]));
+    d.appendChild(el('span', 'v num', p[1]));
+    w.appendChild(d);
+  });
+}
+
+/* ── Slot-velger som eget ark ────────────────────────────────── */
+function apneSlot(tittel, liste, gjeldende, gruppert, velg){
+  document.getElementById('slotTitle').textContent = tittel;
+  var b = document.getElementById('slotBody');
+  b.innerHTML = '';
+  var wrap = el('div', 'slot'), forrigeG = null;
+  liste.forEach(function(v){
+    if (gruppert && v.g !== forrigeG){ forrigeG = v.g; wrap.appendChild(el('div', 'gsep', v.g)); }
+    var r = el('button', 'srad');
+    r.setAttribute('aria-pressed', String(v.k === gjeldende));
+    r.dataset.odId = 'wbm-slot-' + v.k.toLowerCase();
+    r.appendChild(el('span', null, v.n));
+    if (v.k === gjeldende) r.appendChild(el('span', 'mark', 'valgt'));
+    r.addEventListener('click', function(){ velg(v.k); lukk(); apneOkt(); });
+    wrap.appendChild(r);
+  });
+  b.appendChild(wrap);
+  apne('sheetSlot');
+}
+
+/* ── Øktarket ────────────────────────────────────────────────── */
+function apneOkt(){
+  var o = OKTER.filter(function(x){ return x.id === valgtId; })[0];
+  if (!o) return;
+  document.getElementById('oktTitle').textContent = o.navn;
+  var b = document.getElementById('oktBody');
+  b.innerHTML = '';
+
+  [['Navn','navn','text'],['Dato','dato','date'],['Starttid','start','time'],['Sted','sted','text']]
+  .forEach(function(f){
+    var d = el('div', 'field');
+    var l = el('label', null, f[0]); l.setAttribute('for', 'm-' + f[1]);
+    var inp = document.createElement('input');
+    inp.type = f[2]; inp.id = 'm-' + f[1]; inp.value = o[f[1]] || '';
+    inp.dataset.odId = 'wbm-fld-' + f[1];
+    if (f[2] === 'time') inp.step = 1800;
+    inp.addEventListener('input', function(){
+      o[f[1]] = inp.value;
+      if (f[1] === 'navn') document.getElementById('oktTitle').textContent = inp.value;
+      renderDag(); renderMaal();
+    });
+    d.appendChild(l); d.appendChild(inp); b.appendChild(d);
+  });
+  var dm = el('div', 'field');
+  var lm = el('label', null, 'Målsetning'); lm.setAttribute('for', 'm-maal');
+  var tm = document.createElement('textarea');
+  tm.id = 'm-maal'; tm.value = o.maal || ''; tm.dataset.odId = 'wbm-fld-maal';
+  tm.placeholder = 'Hva skal denne økta oppnå?';
+  tm.addEventListener('input', function(){ o.maal = tm.value; });
+  dm.appendChild(lm); dm.appendChild(tm); b.appendChild(dm);
+
+  function tegnDrill(d, i){
+    var box = el('details', 'drill');
+    box.dataset.odId = 'wbm-drill-' + i;
+    var sum = el('summary', 'dsum');
+    sum.appendChild(el('span', 'dn', d.navn));
+    sum.appendChild(el('span', 'dtyp ' + (erGolf(d) ? 'golf' : (erTest(d) ? 'test' : 'fys')),
+      erGolf(d) ? 'golf' : (erTest(d) ? 'test' : 'fysisk')));
+    sum.appendChild(el('span', 'dtid num', tid(d.tidMin)));
+    box.appendChild(sum);
+    var inner = el('div', 'dbody');
+
+    function felt(tit, key, type, attrs){
+      var f = el('div', 'field');
+      var l = el('label', null, tit); l.setAttribute('for', 'md' + i + '-' + key);
+      var inp = document.createElement('input');
+      inp.type = type || 'text'; inp.id = 'md' + i + '-' + key; inp.value = d[key];
+      inp.dataset.odId = 'wbm-drill-' + key + '-' + i;
+      if (attrs) Object.keys(attrs).forEach(function(a){ inp[a] = attrs[a]; });
+      inp.addEventListener('input', function(){
+        d[key] = (type === 'number') ? (parseInt(inp.value, 10) || 0) : inp.value;
+        if (key === 'navn') sum.querySelector('.dn').textContent = inp.value;
+        if (key === 'tidMin'){ sum.querySelector('.dtid').textContent = tid(d.tidMin);
+          renderDag(); renderMaal(); }
+      });
+      f.appendChild(l); f.appendChild(inp); inner.appendChild(f);
+    }
+    felt('Navn', 'navn');
+    felt('Tid i minutter', 'tidMin', 'number', {min:'5', step:'5'});
+
+    if (erGolf(d)){
+      var f = d.formel;
+      var strip = el('div', 'dformel');
+      var c = document.createElement('code'); c.textContent = formelStr(f);
+      strip.appendChild(c); inner.appendChild(strip);
+
+      /* På mobil åpner hver slot et eget ark med fullbreddes rader.
+         18 chips i en klynge gir 40px treffmål og feilklikk med tommel. */
+      [['Pyramide', PYRAMIDE, 'pyramide', false],
+       ['Område', OMRADE, 'omrade', true],
+       ['Motorikk', MOTORIKK, 'motorikk', false],
+       ['Belastning', BELASTNING, 'belastning', false],
+       ['Press', PRESS, 'press', false]].forEach(function(sl){
+        var w = el('div', 'field');
+        w.appendChild(el('span', 'flab', sl[0]));
+        var btn = el('button', 'srad', navn(sl[1], f[sl[2]]));
+        btn.dataset.odId = 'wbm-slot-open-' + sl[2] + '-' + i;
+        btn.appendChild(el('span', 'mark', 'endre'));
+        btn.addEventListener('click', function(){
+          apneSlot(sl[0], sl[1], f[sl[2]], sl[3], function(k){ f[sl[2]] = k; });
+        });
+        w.appendChild(btn); inner.appendChild(w);
+      });
+      felt('Reps', 'reps', 'number', {min:'0'});
+      inner.appendChild(el('p', 'hint', 'Repsene kjøres på motorikk-nivået i formelen: ' +
+        navn(MOTORIKK, f.motorikk).toLowerCase() + '. To nivåer i samme drill = to drills.'));
+
+    } else if (erTest(d)){
+      inner.appendChild(el('p', 'hint',
+        'Test fra testbatteriet. Hverken AK-formel eller reps — protokollen bestemmer utførelsen.'));
+      var tw = el('div', 'dformel');
+      var tc = document.createElement('code'); tc.textContent = d.testK + ' · ' + d.omr;
+      tw.appendChild(tc); inner.appendChild(tw);
+    } else {
+      inner.appendChild(el('p', 'hint',
+        'Fysisk drill. Ingen AK-formel — sett, reps og tid er hele beskrivelsen.'));
+      felt('Sett', 'sett', 'number', {min:'1'});
+      felt('Reps', 'reps', 'number', {min:'1'});
+    }
+
+    if (d.logget != null){
+      inner.appendChild(el('p', 'hint', 'logget: ' + tid(d.logget) + ' · planlagt ' + tid(d.tidMin)));
+    }
+    var del = el('button', 'btn sm full', 'Fjern');
+    del.dataset.odId = 'wbm-drill-fjern-' + i;
+    del.addEventListener('click', function(){
+      o.drills.splice(o.drills.indexOf(d), 1); renderAlt(); apneOkt(); si('Fjernet fra økta.');
+    });
+    inner.appendChild(del);
+    box.appendChild(inner);
+    return box;
+  }
+
+  function seksjon(tittel, filt, tom, knapp){
+    var sec = el('div', 'sek');
+    var h = el('div', 'sekhead');
+    var liste = o.drills.filter(filt);
+    h.appendChild(el('span', 'flab', tittel));
+    h.appendChild(el('span', 'sekn', liste.length));
+    sec.appendChild(h);
+    if (!liste.length) sec.appendChild(el('p', 'hint', tom));
+    liste.forEach(function(d){ sec.appendChild(tegnDrill(d, o.drills.indexOf(d))); });
+    sec.appendChild(knapp);
+    b.appendChild(sec);
+  }
+
+  var kG = el('button', 'btn sm full', '+ Golfdrill');
+  kG.dataset.odId = 'wbm-add-golf';
+  kG.addEventListener('click', function(){
+    o.drills.push({ type:'golf', navn:'Ny golfdrill',
+      formel:{pyramide:'TEK',omrade:'INNSPILL_50',motorikk:'LAV_HAST',
+              belastning:'TRENINGSOMRADE',press:'ALENE'},
+      reps:0, tidMin:20, logget:null });
+    renderAlt(); apneOkt(); si('Golfdrill lagt til.');
+  });
+  var kF = el('button', 'btn sm full', '+ Fysisk drill');
+  kF.dataset.odId = 'wbm-add-fys';
+  kF.addEventListener('click', function(){
+    o.drills.push({ type:'fysisk', navn:'Ny fysisk drill', sett:3, reps:8, tidMin:20, logget:null });
+    renderAlt(); apneOkt(); si('Fysisk drill lagt til.');
+  });
+  var kT = el('button', 'btn sm full', '+ Test fra testbatteriet');
+  kT.dataset.odId = 'wbm-add-test';
+  kT.addEventListener('click', function(){ apneTest(o); });
+
+  seksjon('Golf', erGolf, 'Ingen golfdrills ennå.', kG);
+  seksjon('Fysisk', function(d){ return d.type === 'fysisk'; }, 'Ingen fysiske drills ennå.', kF);
+  seksjon('Tester', erTest, 'Ingen tester i denne økta.', kT);
+
+  var sum = el('div', 'field');
+  sum.appendChild(el('span', 'flab', 'totaltid'));
+  var sv = el('p'); sv.style.margin = '0';
+  sv.innerHTML = '<span class="num" style="font-size:20px;font-weight:600">' + tid(sumTid(o)) + '</span>';
+  sum.appendChild(sv);
+  sum.appendChild(el('p', 'hint', 'Summen av drill-tidene. Kan ikke skrives inn direkte.'));
+  b.appendChild(sum);
+
+  /* FØR → UNDER. «Start økta» går til fangstflata — det er der økta faktisk
+     gjennomføres. Formelen til første golfdrill sendes med, slik at fangsten
+     kan avlede riktige chips uten å gjette. */
+  var forsteGolf = o.drills.filter(erGolf)[0];
+  var start = document.getElementById('startOkt');
+  start.textContent = o.done ? 'Åpne fangst igjen' : 'Start økta';
+  start.onclick = function(){
+    location.href = 'fangstsheet.html?okt=' + encodeURIComponent(o.id) +
+      (forsteGolf ? '&formel=' + encodeURIComponent(formelStr(forsteGolf.formel)) : '');
+  };
+
+  apne('sheetOkt');
+}
+
+/* ── Testvelger ──────────────────────────────────────────────── */
+function apneTest(o){
+  var b = document.getElementById('testBody');
+  b.innerHTML = '';
+  b.appendChild(el('p', 'hint',
+    'Tjue standardiserte protokoller. Testen måles mot kravet for spillerens kategori.'));
+  var grupper = {};
+  TESTBATTERI.forEach(function(t){ (grupper[t.omr] = grupper[t.omr] || []).push(t); });
+  Object.keys(grupper).forEach(function(g){
+    b.appendChild(el('div', 'gsep', g));
+    grupper[g].forEach(function(t){
+      var r = el('button', 'testrad');
+      r.dataset.odId = 'wbm-test-' + t.k;
+      r.appendChild(el('span', null, t.n));
+      r.appendChild(el('span', 'tk', t.k));
+      r.addEventListener('click', function(){
+        o.drills.push({ type:'test', navn:t.n, testK:t.k, omr:t.omr, tidMin:15, logget:null });
+        lukk(); renderAlt(); apneOkt();
+        si(t.n + ' lagt til i økta som test.');
+      });
+      b.appendChild(r);
+    });
+  });
+  apne('sheetTest');
+}
+
+/* ── Én ting nå ──────────────────────────────────────────────── */
+var published = false;
+var nowBtn = document.getElementById('nowBtn');
+nowBtn.addEventListener('click', function(){
+  if (published) return;
+  published = true;
+  var m = maal();
+  nowBtn.className = 'btn ink full';
+  nowBtn.textContent = 'Publisert 09:12 · se diff';
+  si('Uke 32 er publisert til Øyvind: ' + m.okter + ' økter, ' + m.drills + ' drills.');
+  toast('Publisert til Øyvind');
+});
+
+document.getElementById('backThread').addEventListener('click', function(){
+  toast('Går tilbake til tråden i Konsoll.');
+});
+
+/* ── Tema: lys default ───────────────────────────────────────── */
+var KEY = 'akhq-theme-agencyos';
+var saved = localStorage.getItem(KEY);
+if (saved) document.documentElement.dataset.theme = saved;
+document.getElementById('themeBtn').addEventListener('click', function(){
+  var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem(KEY, next);
+  this.setAttribute('aria-label', next === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
+});
+
+document.querySelectorAll('.zooms button').forEach(function(x){
+  x.addEventListener('click', function(){
+    document.querySelectorAll('.zooms button').forEach(function(y){ y.setAttribute('aria-current','false'); });
+    x.setAttribute('aria-current','true');
+    if (x.dataset.zoom !== 'dag') toast(x.textContent + '-zoom er ikke tegnet ennå.');
+  });
+});
+
+function renderAlt(){ renderDaystrip(); renderDag(); renderMaal(); }
+renderAlt();
+
+})();
+</script>
+</body>
+</html>

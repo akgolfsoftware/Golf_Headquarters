@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Spillere · AgencyOS · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══ akhq-tokens.css v3.1 — KOPIERT VERBATIM. Eneste tokenkilde. ═══ */
+/* ─────────────────────────────────────────────────────────────
+   AK Golf HQ · Claude Paper tokens v3
+   Anthropic-justert (offentlige kilder) + AK produktregler
+
+   Én kilde. Kopier verbatim inn i hver HTML/skjerm, eller @import.
+   Se SCOPE.md for hva «offisiell» betyr (vi er JUSTERT, ikke Anthropic).
+
+   Kilder:
+   - Anthropic brand-guidelines: ink/paper/mid/light + clay/sky/olive
+   - anthropic.com DESIGN.md (shadcn reverse-eng): full 21-farge + 8 aksenter
+   - Fase 1 (2026-07/08): chat-først, radius 12 for tett app, Én ting nå
+
+   v3.1 · 2026-08-01 (Bølge 1)
+   - --rail-hover / --rail-active løftet inn (var lokale i Fase 1-filene)
+   - Ingen andre verdiendringer. --muted er #5e5d59 (vinner over Fase 1 #5F5B53)
+
+   v3 · 2026-08-01
+   - Full Anthropic surface + accent ladder
+   - Radius-stige: sm 8 · app 12 · md 16 · lg 24 · pill
+   - Type-tokens for marketing + produkt
+   - Motion, z-index, tap-targets, hairline
+   - Dark theme (produkt; marketing er primært lys)
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* ─── Surfaces (Anthropic cream ladder) ─── */
+  --bg: #faf9f5;                    /* canvas / ivory */
+  --surface: #ffffff;               /* elevated white (produkt-kort) */
+  --soft: #f0eee6;                  /* surface-secondary — kort uten skygge */
+  --soft-hover: #e8e6dc;            /* surface-secondary-hover */
+  --surface-warm: #e3dacc;          /* oat */
+  --surface-manilla: #ebdbbc;
+  --surface-kraft: #d4a27f;
+  --border: #e8e6dc;                /* light gray (brand skill) */
+  --hairline: #d1cfc5;              /* finere skille enn --border */
+  --inverse: #000000;               /* full-bleed marketing-bånd */
+
+  /* ─── Text (Anthropic slate ladder) ─── */
+  --fg: #141413;                    /* ink — primær tekst + CTA-fill */
+  --ink-soft: #3d3d3a;              /* hover på primærknapp */
+  --muted: #5e5d59;                 /* text-muted (brand skill ~ #5f5b53; Anthropic #5e5d59) */
+  --mid: #b0aea5;                   /* text-secondary / cloud medium — IKKE brødtekst i lys */
+  --text-tertiary: #87867f;
+
+  /* ─── Rail (produkt, alltid mørk) ─── */
+  --rail: #141413;
+  --rail-fg: #b0aea5;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.08);   /* v3.1 — løftet fra Fase 1 */
+  --rail-active: rgba(250, 249, 245, 0.14);  /* v3.1 — løftet fra Fase 1 */
+
+  /* ─── Actions ─── */
+  --cta: #141413;                   /* Anthropic: CTA er blekk, ikke farge */
+  --on-cta: #faf9f5;
+  --cta-hover: #3d3d3a;
+
+  /* Clay = sterkeste kromatiske aksent (Anthropic clay) */
+  --accent: #d97757;                /* kun «Én ting nå» + focus i app */
+  --accent-soft: rgba(217, 119, 87, 0.12);
+  --accent-fg: #b85c3d;             /* AA-tekst på paper */
+  --on-accent: #141413;             /* tekst på fylt clay — sparsomt */
+  --accent-deep: #c6613f;           /* burnt sienna */
+
+  /* ─── Dormant accent swatches (Anthropic research palette)
+       Brukes sparsomt: chart, kategori, badges — aldri som primær CTA ─── */
+  --accent-coral: #ebcece;
+  --accent-fig: #c46686;
+  --accent-cactus: #bcd1ca;
+  --accent-olive: #788c5d;
+  --accent-sky: #6a9bcc;
+  --accent-heather: #cbcadb;
+
+  /* ─── Datasemantikk (produkt — mørknede for AA-tekst) ─── */
+  --up: #63784a;                    /* olive mørknet for tekst */
+  --up-raw: #788c5d;                /* olive rå — fyll/sparkline */
+  --dn: #a85536;                    /* leire av clay — aldri ren rød */
+  --info: #46719f;                  /* sky mørknet for tekst */
+  --info-raw: #6a9bcc;
+
+  /* ─── Typography families
+       Anthropic proprietary (Serif/Sans/Mono) er IKKE offentlige.
+       Brand skill: Poppins + Lora. Mono: IBM Plex Mono (produkt-tall). ─── */
+  --font-sans: "Poppins", Arial, system-ui, sans-serif;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Aliases brukt i eksisterende skjermer */
+  --disp: var(--font-sans);
+  --ui: var(--font-sans);
+  --body: var(--font-serif);
+  --mono: var(--font-mono);
+
+  /* ─── Type scale · Produkt (tett) ─── */
+  --text-display: 32px;
+  --text-title: 22px;
+  --text-card: 16px;
+  --text-panel: 14.5px;
+  --text-body-agency: 13.5px;       /* AgencyOS desktop */
+  --text-body-player: 14px;         /* PlayerHQ mobil */
+  --text-label: 10px;               /* versaler + tracking */
+  --text-kpi: 40px;                 /* mono */
+
+  /* ─── Type scale · Marketing (editorial, Anthropic-rytme) ─── */
+  --text-hero: 56px;                /* nedskalert fra 88 — web-vennlig */
+  --text-section: 40px;             /* nedskalert fra 90 */
+  --text-prose: 18px;               /* serif body marketing */
+  --text-prose-lg: 22px;
+  --text-nav: 16px;
+  --text-eyebrow: 12px;
+
+  /* ─── Spacing · 4px base (Anthropic 4/8/12/16/24/32/48/96) ─── */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+  --s9: 96px;                       /* section padding marketing */
+
+  /* ─── Radius
+       Anthropic marketing: sm 8 · md 16 · lg 24
+       AK produkt (Fase 1 låst): app 12 for kort/composer ─── */
+  --r-none: 0px;
+  --r-sm: 8px;                      /* knapper, inputs, chips */
+  --r: 12px;                        /* app-default (Fase 1) */
+  --r-md: 16px;                     /* editorial cards / marketing */
+  --r-lg: 24px;                     /* store flater, pille-CTA unntak */
+  --r-pill: 999px;
+
+  /* ─── Elevation
+       Anthropic marketing: NULL shadow — flater via cream-steg
+       Produkt: én myk skygge tillatt (valgfri) ─── */
+  --shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
+  --shadow-none: none;
+  --scrim: rgba(20, 20, 19, 0.4);
+
+  /* ─── Interaction ─── */
+  --focus: #d97757;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 160ms;
+  --dur-slow: 280ms;
+
+  /* Tap targets */
+  --tap: 44px;
+  --tap-lg: 48px;
+  --tap-capture: 60px;              /* fangst-mikrofon mobil */
+
+  /* ─── Logo (AK Golf — ikke Anthropic) ─── */
+  --logo-mark: #141413;
+  --logo-dot: #b85c3d;
+
+  /* ─── Z-index ─── */
+  --z-sticky: 10;
+  --z-rail: 20;
+  --z-sheet: 40;
+  --z-modal: 50;
+  --z-toast: 100;
+  --z-command: 110;
+}
+
+/* ─── Dark (produkt) ─── */
+[data-theme="dark"] {
+  color: #faf9f5;
+  --bg: #141413;
+  --surface: #1d1c1a;
+  --soft: #26241f;
+  --soft-hover: #2e2c28;
+  --surface-warm: #2a2824;
+  --border: rgba(250, 249, 245, 0.10);
+  --hairline: rgba(250, 249, 245, 0.08);
+  --inverse: #000000;
+
+  --fg: #faf9f5;
+  --ink-soft: #e8e6dc;
+  --muted: #b0aea5;
+  --mid: #6b675e;
+  --text-tertiary: #87867f;
+
+  --rail: #0e0d0c;
+  --rail-fg: #97938a;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.06);
+  --rail-active: rgba(250, 249, 245, 0.12);
+
+  --cta: #faf9f5;
+  --on-cta: #141413;
+  --cta-hover: #e8e6dc;
+
+  --accent: #d97757;
+  --accent-soft: rgba(217, 119, 87, 0.18);
+  --accent-fg: #e5a184;
+  --on-accent: #141413;
+
+  --up: #9db284;
+  --up-raw: #788c5d;
+  --dn: #de9e82;
+  --info: #93b7dc;
+  --info-raw: #6a9bcc;
+
+  --shadow: none;
+  --focus: #d97757;
+
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+[data-theme="light"] {
+  color: #141413;
+}
+
+/* Rail always dark */
+.rail {
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+/* Aksentflate — marketing/innlogging sparsomt */
+.on-accent-surface {
+  --logo-mark: #141413;
+  --logo-dot: #141413;
+}
+
+/* Full-bleed inverse band (marketing) */
+.band-inverse {
+  background: var(--inverse);
+  color: var(--bg);
+}
+
+/* Skriftimport — lim i <head> på alle skjermer:
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+*/
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Gulvregel: min treffmål på touch */
+@media (pointer: coarse) {
+  :root {
+    --floor: var(--tap);
+  }
+}
+
+/* v3.1-tillegg foreslått fra agencyoshq.html — mellomtrinn i cream-stigen.
+   Skal inn i tokens-fila hvis Anders godkjenner. */
+:root{ --softer:#f6f4ee; --border-soft:#efede4; }
+[data-theme="dark"]{ --softer:#1a1917; --border-soft:rgba(250,249,245,.06); }
+
+/* ═══ Spillere · AgencyOS · mobil ═══
+   Stallen på telefon. Tre forskjeller fra desktop:
+   1. Søk er synlig, ikke gjemt. På telefon er scrolling dyrere enn tasting.
+   2. Profilen er et ark — samme innhold som sidepanelet, én spiller av gangen.
+   3. Raden viser SG og dager siden siste økt i samme linje; ingen kolonner
+      som forsvinner i det stille.
+   Gruppene (Trenger deg nå · Følger planen · Hviler) er de samme, og
+   tallene regnes alltid fra lista — aldri skrevet for hånd. */
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; }
+body{ background:var(--bg); color:var(--fg); font-family:var(--ui);
+  font-size:var(--text-body-player); line-height:1.5; -webkit-font-smoothing:antialiased; }
+[hidden]{ display:none !important; }
+button,input{ font:inherit; color:inherit; }
+.num{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.eyebrow{ font-family:var(--mono); font-size:var(--text-label); font-weight:500;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+:where(a,button,input,summary,[tabindex]):focus-visible{
+  outline:2px solid var(--focus); outline-offset:2px; border-radius:var(--r-sm); }
+
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
+  min-height:var(--tap-lg); padding:0 var(--s4); font-size:14px; font-weight:500;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; white-space:nowrap; text-decoration:none; color:inherit; }
+.btn:hover{ background:var(--soft); border-color:var(--mid); }
+.btn:active{ transform:translateY(1px); }
+.btn.ink{ background:var(--cta); color:var(--on-cta); border-color:var(--cta); }
+.btn.now{ background:var(--accent); color:var(--on-accent); border-color:var(--accent);
+  font-weight:600; min-height:56px; }
+.btn.full{ width:100%; }
+.btn.sm{ min-height:var(--tap); font-size:13px; padding:0 var(--s3); }
+.chip{ display:inline-flex; align-items:center; gap:var(--s2); min-height:var(--tap);
+  padding:0 var(--s4); font-size:13px; background:var(--surface); flex:none;
+  border:1px solid var(--border); border-radius:var(--r-pill); cursor:pointer; }
+.chip[aria-pressed="true"]{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+.chip .n{ font-family:var(--mono); font-size:11px; opacity:.7; }
+
+.phone{ width:430px; max-width:100%; height:932px; margin:0 auto; position:relative;
+  overflow:hidden; background:var(--bg); border:1px solid var(--border);
+  border-radius:var(--r-lg); display:flex; flex-direction:column; }
+@media (max-width:640px){
+  .phone{ width:100%; height:100dvh; max-width:none; border:0; border-radius:0; }
+  .framehint{ display:none; }
+}
+.framehint{ text-align:center; font-size:11px; color:var(--muted); padding:var(--s3); }
+.phone .scrim,.phone .ark{ position:absolute; }
+
+.topp{ flex:none; display:flex; align-items:center; gap:var(--s3);
+  padding:calc(var(--s4) + env(safe-area-inset-top)) var(--s4) var(--s3);
+  border-bottom:1px solid var(--border); background:var(--surface); }
+.topp h1{ margin:0; font-family:var(--disp); font-size:20px; font-weight:600; }
+.topp .sub{ display:block; font-family:var(--mono); font-size:11px; color:var(--muted); }
+.ikon{ flex:none; width:var(--tap); height:var(--tap); display:grid; place-items:center;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r); cursor:pointer; }
+.ikon svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.7;
+  stroke-linecap:round; stroke-linejoin:round; }
+
+/* Søk: synlig, ikke bak en lupe. Tømmeknapp fordi tomt søk på telefon
+   ellers krever like mange trykk som selve søket. */
+.sokrad{ flex:none; display:flex; align-items:center; gap:var(--s2);
+  padding:var(--s3) var(--s4) 0; }
+.sok{ flex:1; min-width:0; display:flex; align-items:center; gap:var(--s2);
+  min-height:var(--tap); padding:0 var(--s3); background:var(--surface);
+  border:1px solid var(--border); border-radius:var(--r); }
+.sok svg{ width:17px; height:17px; flex:none; fill:none; stroke:var(--muted);
+  stroke-width:1.7; stroke-linecap:round; }
+.sok input{ flex:1; min-width:0; border:0; outline:0; background:transparent;
+  font-size:15px; min-height:var(--tap); }
+.sok input::placeholder{ color:var(--mid); }
+.tomsok{ flex:none; width:32px; height:32px; display:grid; place-items:center; border:0;
+  background:transparent; border-radius:var(--r-sm); cursor:pointer; color:var(--muted); }
+
+.filtre{ flex:none; display:flex; gap:var(--s2); padding:var(--s3) var(--s4);
+  overflow-x:auto; scrollbar-width:none; border-bottom:1px solid var(--border-soft);
+  background:var(--softer); }
+.filtre::-webkit-scrollbar{ display:none; }
+
+.liste{ flex:1; min-height:0; overflow-y:auto; padding:var(--s3) var(--s4) var(--s5); }
+
+.grp{ margin-bottom:var(--s5); }
+.grphead{ display:flex; align-items:center; gap:var(--s2); margin-bottom:var(--s1); }
+.grphead .n{ font-family:var(--mono); font-size:11px; color:var(--muted); }
+.grpnote{ margin:0 0 var(--s3); font-family:var(--body); font-size:12.5px; color:var(--muted); }
+
+.rad{ display:grid; grid-template-columns:44px minmax(0,1fr) auto; gap:var(--s3);
+  width:100%; text-align:left; padding:var(--s3) var(--s4); margin-bottom:var(--s2);
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; align-items:center; }
+.rad:active{ background:var(--soft); }
+.rad .av{ width:44px; height:44px; display:grid; place-items:center; border-radius:var(--r-pill);
+  background:var(--soft); font-family:var(--mono); font-size:14px; font-weight:600;
+  color:var(--muted); }
+.rad .t{ display:block; font-size:14px; font-weight:600; }
+.rad .s{ display:block; font-family:var(--body); font-size:12.5px; color:var(--muted); }
+.rad .kol{ display:flex; flex-direction:column; align-items:flex-end; }
+.rad .kol .k{ font-family:var(--mono); font-size:9px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--mid); }
+.rad .kol .v{ font-family:var(--mono); font-size:14px; }
+.rad .kol .v.pos{ color:var(--up); } .rad .kol .v.neg{ color:var(--dn); }
+
+.tom{ display:flex; flex-direction:column; align-items:flex-start; gap:var(--s3);
+  padding:var(--s6) var(--s4); background:var(--soft); border:1px dashed var(--border);
+  border-radius:var(--r); }
+.tom h2{ margin:0; font-family:var(--disp); font-size:16px; font-weight:600; }
+.tom p{ margin:0; font-family:var(--body); font-size:13.5px; color:var(--muted); }
+
+.bunn{ flex:none; padding:var(--s3) var(--s4) calc(var(--s3) + env(safe-area-inset-bottom));
+  border-top:1px solid var(--border); background:var(--surface); }
+.bunn .hint{ display:block; font-family:var(--body); font-size:12px; color:var(--muted);
+  margin-bottom:var(--s2); }
+
+.faner{ flex:none; display:flex; background:var(--rail); z-index:var(--z-rail);
+  padding-bottom:env(safe-area-inset-bottom); }
+.faner a{ flex:1; min-height:56px; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:3px; color:var(--rail-fg); text-decoration:none;
+  font-size:10px; position:relative; }
+.faner a svg{ width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.6;
+  stroke-linecap:round; stroke-linejoin:round; }
+.faner a[aria-current="page"]{ color:var(--rail-on); }
+.faner a[aria-current="page"]::before{ content:""; position:absolute; top:0; left:24%; right:24%;
+  height:2px; background:var(--rail-on); border-radius:var(--r-pill); }
+.faner .badge{ position:absolute; top:8px; right:50%; margin-right:-24px;
+  font-family:var(--mono); font-size:9px; min-width:16px; height:16px; display:grid;
+  place-items:center; border-radius:var(--r-pill); background:var(--rail-on); color:var(--rail); }
+
+/* ── Profilarket ─────────────────────────────────────────────── */
+.scrim{ position:fixed; inset:0; background:var(--scrim); z-index:var(--z-sheet); display:none; }
+.scrim.on{ display:block; }
+.ark{ position:fixed; left:0; right:0; bottom:0; z-index:calc(var(--z-sheet) + 1);
+  height:92%; background:var(--surface); border-top:1px solid var(--border);
+  border-radius:var(--r-lg) var(--r-lg) 0 0; display:none; flex-direction:column;
+  padding-bottom:env(safe-area-inset-bottom); }
+.ark.on{ display:flex; }
+.grab{ flex:none; width:36px; height:4px; border-radius:var(--r-pill);
+  background:var(--border); margin:var(--s3) auto var(--s2); }
+.ahead{ flex:none; display:flex; align-items:flex-start; gap:var(--s2);
+  padding:0 var(--s4) var(--s3); border-bottom:1px solid var(--border); }
+.ahead h2{ margin:0; font-family:var(--disp); font-size:17px; font-weight:600; }
+.ahead .sub{ display:block; font-family:var(--mono); font-size:11px; color:var(--muted); }
+.abody{ flex:1; min-height:0; overflow-y:auto; padding:var(--s4); }
+.afoot{ flex:none; display:flex; gap:var(--s2); padding:var(--s3) var(--s4);
+  border-top:1px solid var(--border); }
+.afoot .btn{ flex:1; }
+
+.kpirad{ display:grid; grid-template-columns:1fr 1fr; gap:var(--s2); margin-bottom:var(--s3); }
+.kpi{ background:var(--soft); border:1px solid var(--border-soft); border-radius:var(--r);
+  padding:var(--s3); }
+.kpi .k{ display:block; font-family:var(--mono); font-size:9px; letter-spacing:.07em;
+  text-transform:uppercase; color:var(--muted); }
+.kpi .v{ display:block; font-family:var(--mono); font-size:24px; line-height:1.2; margin:2px 0; }
+.kpi .v.pos{ color:var(--up); } .kpi .v.neg{ color:var(--dn); }
+.kpi .w{ display:block; font-family:var(--body); font-size:11.5px; color:var(--muted); }
+
+.why{ border:1px solid var(--border); border-radius:var(--r); margin-bottom:var(--s4);
+  background:var(--softer); }
+.why summary{ padding:var(--s3) var(--s4); cursor:pointer; font-size:13px;
+  display:flex; align-items:center; min-height:var(--tap); }
+.why ul{ margin:0; padding:0 var(--s4) var(--s3) var(--s5); }
+.why li{ font-family:var(--body); font-size:12.5px; color:var(--muted); margin-bottom:var(--s1); }
+
+.blokk{ margin-bottom:var(--s4); }
+.blokk .flab{ display:block; font-family:var(--mono); font-size:var(--text-label);
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-bottom:var(--s2); }
+.blokk p{ margin:0; font-family:var(--body); font-size:13.5px; }
+.linje{ display:flex; align-items:center; gap:var(--s3); padding:var(--s3) 0;
+  border-bottom:1px solid var(--border-soft); font-size:13.5px; }
+.linje:last-child{ border-bottom:0; }
+.linje .v{ margin-left:auto; font-family:var(--mono); font-size:12.5px; color:var(--muted);
+  text-align:right; }
+
+.demolapp{ font-family:var(--body); font-size:12px; color:var(--muted);
+  padding:var(--s2) var(--s3); background:var(--soft); border-radius:var(--r-sm);
+  margin-bottom:var(--s3); }
+
+.toast{ position:fixed; left:50%; bottom:96px; transform:translateX(-50%);
+  z-index:var(--z-toast); background:var(--fg); color:var(--bg);
+  padding:var(--s3) var(--s4); border-radius:var(--r); font-size:13px; }
+button,.btn,.chip,summary,a.btn,input{ min-height:var(--tap); }
+.num,.eyebrow,.kpi .v,.kpi .k,.kpi .w,.rad .kol .v,.rad .kol .k,.grphead .n{ min-height:0; }
+
+</style>
+</head>
+<body>
+<p class="framehint">AgencyOS · Spillere mobil · 430 px. Under 641 px fyller den skjermen.</p>
+<!-- Telefonramme = demo-chrome, skal bort ved integrasjon -->
+<div class="phone" data-demo-only="true">
+
+  <header class="topp">
+    <div style="min-width:0">
+      <h1>Spillere</h1>
+      <span class="sub"><span class="num" id="spCount">7</span> av <span class="num" id="spTotal">7</span> ·
+        <span class="num" id="spTrenger">2</span> trenger deg</span>
+    </div>
+    <span style="flex:1"></span>
+    <button class="ikon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="spm-theme">
+      <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </header>
+
+  <div class="sokrad">
+    <label class="sok" for="sok">
+      <span class="sr">Søk etter spiller</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
+      <input id="sok" type="search" placeholder="Søk på navn eller kategori" autocomplete="off" data-od-id="spm-sok">
+      <button class="tomsok" id="tomSok" type="button" aria-label="Tøm søket" hidden data-od-id="spm-tom-sok">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </label>
+  </div>
+
+  <div class="filtre" id="filtre" role="group" aria-label="Filtre"></div>
+
+  <main class="liste" id="liste" aria-label="Spillere"></main>
+
+  <div class="bunn" id="bunn"></div>
+
+  <nav class="faner" aria-label="Hovednavigasjon">
+    <a href="agencyos-konsoll-mobil.html" data-od-id="spm-fane-konsoll">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 9h8M8 13h5M9 18v2h6v-2"/></svg>
+      Konsoll</a>
+    <a href="agencyos-innboks-mobil.html" data-od-id="spm-fane-innboks">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+      Innboks<span class="badge num">7</span></a>
+    <a href="agencyos-spillere-mobil.html" aria-current="page" data-od-id="spm-fane-spillere">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6"/></svg>
+      Spillere</a>
+    <a href="agencyos-kalender-mobil.html" data-od-id="spm-fane-kalender">
+      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+      Kalender</a>
+  </nav>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+
+<section class="ark" id="ark" role="dialog" aria-modal="true" aria-labelledby="arkTitle" hidden>
+  <div class="grab"></div>
+  <div class="ahead">
+    <div style="min-width:0">
+      <h2 id="arkTitle">—</h2>
+      <span class="sub" id="arkSub">—</span>
+    </div>
+    <span style="flex:1"></span>
+    <button class="ikon" data-lukk="1" aria-label="Lukk" data-od-id="spm-ark-lukk">
+      <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="abody" id="arkBody"></div>
+  <div class="afoot" id="arkFoot"></div>
+</section>
+
+<div class="toast" id="toast" hidden role="status"></div>
+<div class="sr" id="live" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ═══ Spillere · AgencyOS · mobil ═══
+   SPILLERE, GRUPPER og FILTRE er kopiert verbatim fra agencyos-spillere.html.
+   Én datamodell, to flater. */
+
+var SPILLERE = [
+  { id:'p1', navn:'Øyvind Rohjan', demo:false, kat:'D', alder:16, sg:2.92, dagerSiden:0,
+    gruppe:'trenger', sisteOkt:'i dag 16:00', selskap:'AK Golf Academy',
+    hvorfor:'Ukeplan uke 32 venter på godkjenning, og sjekkpunktet 14.08 er om to uker.',
+    tester:[['Inspill Basic','7 av 12 innenfor 4 m','30.07'],
+            ['Putt Gate','24 av 30','28.07'],
+            ['Clubhead Speed','—','ikke tatt']] },
+  { id:'p2', navn:'Spiller B', demo:true, kat:'C', alder:17, sg:0.88, dagerSiden:9,
+    gruppe:'trenger', sisteOkt:'22.07', selskap:'WANG Toppidrett',
+    hvorfor:'Ingen logget økt på ni dager. Ingen fangst, ingen runde.',
+    tester:[['Driver Basic','—','ikke tatt'],['Putt Speed Control','18 av 24','15.07']] },
+  { id:'p3', navn:'Spiller C', demo:true, kat:'B', alder:18, sg:-1.15, dagerSiden:1,
+    gruppe:'planen', sisteOkt:'i går', selskap:'AK Golf Academy',
+    hvorfor:'Følger uke 32 som planlagt. Fire av fem økter gjennomført.',
+    tester:[['Inspill 160 m','9 av 12','29.07'],['Trapbarmarkløft','120 kg','24.07']] },
+  { id:'p4', navn:'Spiller D', demo:true, kat:'D', alder:15, sg:1.40, dagerSiden:2,
+    gruppe:'planen', sisteOkt:'29.07', selskap:'GFGK Junior',
+    hvorfor:'På plan. Neste økt tirsdag.',
+    tester:[['Nærspill Gate','15 av 20','26.07']] },
+  { id:'p5', navn:'Spiller E', demo:true, kat:'E', alder:14, sg:-0.30, dagerSiden:3,
+    gruppe:'planen', sisteOkt:'28.07', selskap:'GFGK Junior',
+    hvorfor:'På plan. Fysisk program to ganger i uka.',
+    tester:[['Stille lengde','2,05 m','20.07']] },
+  { id:'p6', navn:'Spiller F', demo:true, kat:'C', alder:17, sg:0.10, dagerSiden:21,
+    gruppe:'hviler', sisteOkt:'10.07', selskap:'WANG Toppidrett',
+    hvorfor:'Planlagt pause etter sesongslutt. Tilbake 12. august.',
+    tester:[] },
+  { id:'p7', navn:'Spiller G', demo:true, kat:'D', alder:16, sg:0.55, dagerSiden:16,
+    gruppe:'hviler', sisteOkt:'15.07', selskap:'AK Golf Academy',
+    hvorfor:'Skade i håndledd. Retur-til-spill fra 5. august.',
+    tester:[] }
+];
+
+var GRUPPER = [
+  { k:'trenger', n:'Trenger deg nå',
+    note:'Noe venter på deg, eller spilleren har vært stille for lenge.' },
+  { k:'planen',  n:'Følger planen',
+    note:'Logger som avtalt. Ingen handling nødvendig.' },
+  { k:'hviler',  n:'Hviler',
+    note:'Planlagt pause eller retur-til-spill. Teller ikke som stille.' }
+];
+
+var FILTRE = [
+  { k:'alle',    n:'Alle',              f:function(){ return true; } },
+  { k:'akademi', n:'AK Golf Academy',   f:function(s){ return s.selskap === 'AK Golf Academy'; } },
+  { k:'wang',    n:'WANG Toppidrett',   f:function(s){ return s.selskap === 'WANG Toppidrett'; } },
+  { k:'gfgk',    n:'GFGK Junior',       f:function(s){ return s.selskap === 'GFGK Junior'; } },
+  { k:'stille',  n:'Stille over 7 dager', f:function(s){ return s.dagerSiden >= 7 && s.gruppe !== 'hviler'; } }
+];
+
+
+var valgtId = null, filter = 'alle', sok = '';
+var tilstand = 'fylt';   /* fylt · tom · laster · feil — demo-stillas */
+
+var live = document.getElementById('live');
+function si(t){ live.textContent = t; }
+var toastEl = document.getElementById('toast'), toastT;
+function toast(t){ toastEl.textContent = t; toastEl.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.hidden = true; }, 2600); }
+function el(tag, cls, txt){ var e = document.createElement(tag);
+  if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+function komma(n){ return String(n).replace('.', ','); }
+function sgTekst(v){ return (v > 0 ? '+' : v < 0 ? '−' : '') + komma(Math.abs(v).toFixed(2)); }
+function init(n){ return n.split(' ').map(function(x){ return x[0]; }).join('').slice(0,2).toUpperCase(); }
+function spiller(id){ return SPILLERE.filter(function(x){ return x.id === id; })[0]; }
+
+/* Søk og filter i samme sil. Overskriftstallene regnes fra denne — aldri
+   skrevet for hånd. Reviewen 31.07 fant «18 spillere» i en overskrift og
+   7 i lista; det kan ikke skje så lenge alt kommer herfra. */
+function synlige(){
+  var f = FILTRE.filter(function(x){ return x.k === filter; })[0].f;
+  var q = sok.trim().toLowerCase();
+  return SPILLERE.filter(function(s){
+    if (!f(s)) return false;
+    if (!q) return true;
+    return (s.navn + ' ' + s.kat + ' ' + s.selskap).toLowerCase().indexOf(q) > -1;
+  });
+}
+
+/* ── Søkefelt ────────────────────────────────────────────────── */
+var sokFelt = document.getElementById('sok'), tomSok = document.getElementById('tomSok');
+sokFelt.addEventListener('input', function(){
+  sok = this.value; tomSok.hidden = !sok; renderAlt();
+  si(synlige().length + ' spillere treffer søket.');
+});
+tomSok.addEventListener('click', function(){
+  sok = ''; sokFelt.value = ''; this.hidden = true; renderAlt(); sokFelt.focus();
+});
+
+/* ── Filtre ──────────────────────────────────────────────────── */
+function renderFiltre(){
+  var w = document.getElementById('filtre'); w.innerHTML = '';
+  FILTRE.forEach(function(f){
+    var c = el('button','chip'); c.type = 'button';
+    c.setAttribute('aria-pressed', String(f.k === filter));
+    c.dataset.odId = 'spm-filter-' + f.k;
+    c.appendChild(el('span', null, f.n));
+    c.appendChild(el('span','n', SPILLERE.filter(f.f).length));
+    c.addEventListener('click', function(){ filter = f.k; renderAlt();
+      si(f.n + ': ' + synlige().length + ' spillere.'); });
+    w.appendChild(c);
+  });
+}
+
+/* ── Liste ───────────────────────────────────────────────────── */
+function renderListe(){
+  var w = document.getElementById('liste'); w.innerHTML = '';
+
+  if (tilstand === 'laster'){
+    var l = el('div','tom');
+    l.appendChild(el('h2', null, 'Henter stallen'));
+    l.appendChild(el('p', null, 'Henter spillerne fra AgencyOS. Det tar sjelden mer enn et par sekunder.'));
+    w.appendChild(l); w.appendChild(demobryter()); return;
+  }
+  if (tilstand === 'feil'){
+    var f2 = el('div','tom');
+    f2.appendChild(el('h2', null, 'Fikk ikke kontakt'));
+    f2.appendChild(el('p', null, 'Vi fikk ikke hentet stallen. Ingen data er tapt — dette er kun visningen.'));
+    var pr = el('button','btn','Prøv på nytt'); pr.type = 'button';
+    pr.dataset.odId = 'spm-prov-igjen';
+    pr.addEventListener('click', function(){ tilstand = 'laster'; renderAlt();
+      setTimeout(function(){ tilstand = 'fylt'; renderAlt(); si('Stallen er hentet.'); }, 700); });
+    f2.appendChild(pr);
+    w.appendChild(f2); w.appendChild(demobryter()); return;
+  }
+
+  var vis = tilstand === 'tom' ? [] : synlige();
+
+  if (!vis.length){
+    var e = el('div','tom');
+    if (tilstand === 'tom'){
+      e.appendChild(el('h2', null, 'Ingen spillere ennå'));
+      e.appendChild(el('p', null,
+        'Stallen er tom. Første spiller kommer inn når du oppretter en profil, ' +
+        'eller når en prøvetime blir til et abonnement.'));
+      var nyb = el('button','btn','Åpne Innboks'); nyb.type = 'button';
+      nyb.dataset.odId = 'spm-tom-innboks';
+      nyb.addEventListener('click', function(){ location.href = 'agencyos-innboks-mobil.html'; });
+      e.appendChild(nyb);
+    } else {
+      e.appendChild(el('h2', null, sok ? 'Ingen treff på «' + sok + '»' : 'Ingen spillere i dette filteret'));
+      e.appendChild(el('p', null, 'Stallen har ' + SPILLERE.length + ' spillere totalt.'));
+      var b = el('button','btn', sok ? 'Tøm søket' : 'Vis alle'); b.type = 'button';
+      b.dataset.odId = 'spm-tom-nullstill';
+      b.addEventListener('click', function(){
+        sok = ''; sokFelt.value = ''; tomSok.hidden = true; filter = 'alle'; renderAlt(); });
+      e.appendChild(b);
+    }
+    w.appendChild(e); w.appendChild(demobryter()); return;
+  }
+
+  GRUPPER.forEach(function(g){
+    var rader = vis.filter(function(s){ return s.gruppe === g.k; });
+    if (!rader.length) return;
+    var grp = el('div','grp');
+    var h = el('div','grphead');
+    h.appendChild(el('span','eyebrow', g.n));
+    h.appendChild(el('span','n', rader.length));
+    grp.appendChild(h);
+    grp.appendChild(el('p','grpnote', g.note));
+    rader.forEach(function(s){
+      var r = el('button','rad'); r.type = 'button';
+      r.dataset.odId = 'spm-rad-' + s.id;
+      r.appendChild(el('span','av', init(s.navn)));
+      var mid = el('span');
+      mid.appendChild(el('span','t', s.navn));
+      mid.appendChild(el('span','s', 'kat. ' + s.kat + ' · ' + s.alder + ' år · ' +
+        (s.dagerSiden === 0 ? 'økt i dag' : 'siste økt ' + s.dagerSiden + ' d siden')));
+      r.appendChild(mid);
+      var k = el('span','kol');
+      k.appendChild(el('span','k','sg total'));
+      k.appendChild(el('span','v ' + (s.sg >= 0 ? 'pos' : 'neg'), sgTekst(s.sg)));
+      r.appendChild(k);
+      r.addEventListener('click', function(){ apneProfil(s.id); });
+      grp.appendChild(r);
+    });
+    w.appendChild(grp);
+  });
+
+  w.appendChild(demobryter());
+}
+
+/* Demo-stillas: bytt datatilstand. Skal bort ved integrasjon. */
+function demobryter(){
+  var d = el('div','tom');
+  d.dataset.demoOnly = 'true';
+  d.appendChild(el('span','eyebrow','Demo · datatilstand'));
+  var rekke = el('div');
+  rekke.style.display = 'flex'; rekke.style.gap = 'var(--s2)'; rekke.style.flexWrap = 'wrap';
+  ['fylt','tom','laster','feil'].forEach(function(t){
+    var b = el('button','btn sm', t); b.type = 'button';
+    b.dataset.odId = 'spm-demo-' + t;
+    b.setAttribute('aria-pressed', String(t === tilstand));
+    b.addEventListener('click', function(){ tilstand = t; renderAlt(); si('Viser tilstand ' + t + '.'); });
+    rekke.appendChild(b);
+  });
+  d.appendChild(rekke);
+  return d;
+}
+
+/* ── Bunn: Én ting nå ────────────────────────────────────────── */
+function forsteTrenger(){
+  var a = synlige().filter(function(s){ return s.gruppe === 'trenger'; });
+  return a.length ? a[0] : null;
+}
+function renderBunn(){
+  var w = document.getElementById('bunn'); w.innerHTML = '';
+  if (tilstand !== 'fylt'){ w.hidden = true; return; }
+  w.hidden = false;
+  var s = forsteTrenger();
+  if (!s){
+    w.appendChild(el('span','hint','Ingen spiller venter på deg i dette utvalget.'));
+    var kal = el('button','btn full','Åpne kalenderen'); kal.type = 'button';
+    kal.dataset.odId = 'spm-bunn-kalender';
+    kal.addEventListener('click', function(){ location.href = 'agencyos-kalender.html'; });
+    w.appendChild(kal);
+    return;
+  }
+  w.appendChild(el('span','hint','Øverst i «Trenger deg nå»: ' + s.navn + '.'));
+  var b = el('button','btn now full','Åpne ' + s.navn.split(' ')[0]); b.type = 'button';
+  b.dataset.odId = 'spm-one-thing-now';
+  b.addEventListener('click', function(){ apneProfil(s.id); });
+  w.appendChild(b);
+}
+
+/* ── Profilarket ─────────────────────────────────────────────── */
+var ark = document.getElementById('ark'), scrim = document.getElementById('scrim'),
+    arkBody = document.getElementById('arkBody'), arkFoot = document.getElementById('arkFoot'),
+    sisteFokus = null;
+
+function apneProfil(id){
+  valgtId = id;
+  sisteFokus = document.activeElement;
+  renderArk();
+  ark.hidden = false; scrim.hidden = false;
+  ark.classList.add('on'); scrim.classList.add('on');
+  var f = ark.querySelector('button'); if (f) f.focus();
+  si('Åpnet profilen til ' + spiller(id).navn + '.');
+}
+function lukkArk(){
+  ark.classList.remove('on'); scrim.classList.remove('on');
+  ark.hidden = true; scrim.hidden = true;
+  if (sisteFokus && sisteFokus.isConnected) sisteFokus.focus();
+}
+scrim.addEventListener('click', lukkArk);
+ark.querySelector('[data-lukk]').addEventListener('click', lukkArk);
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape' && !ark.hidden){ e.preventDefault(); lukkArk(); }
+  if (e.key === 'Tab' && !ark.hidden){
+    var f = ark.querySelectorAll('button, [href], summary, [tabindex]:not([tabindex="-1"])');
+    if (!f.length) return;
+    var forste = f[0], siste = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === forste){ e.preventDefault(); siste.focus(); }
+    else if (!e.shiftKey && document.activeElement === siste){ e.preventDefault(); forste.focus(); }
+  }
+});
+
+function renderArk(){
+  var s = spiller(valgtId);
+  if (!s) return;
+  document.getElementById('arkTitle').textContent = s.navn;
+  document.getElementById('arkSub').textContent =
+    'kat. ' + s.kat + ' · ' + s.alder + ' år · ' + s.selskap;
+  arkBody.innerHTML = ''; arkFoot.innerHTML = '';
+
+  if (s.demo){
+    var d = el('p','demolapp');
+    d.dataset.demoOnly = 'true';
+    d.textContent = 'Demo-navn. Kun Øyvind Rohjan er kanon — resten byttes mot reell stall før pilot.';
+    arkBody.appendChild(d);
+  }
+
+  var kp = el('div','kpirad');
+  [['sg total', sgTekst(s.sg), 'siste 10 runder', s.sg >= 0 ? 'pos' : 'neg'],
+   ['kategori', s.kat, 'A–K · ' + s.alder + ' år', ''],
+   ['siste økt', s.dagerSiden === 0 ? 'i dag' : s.dagerSiden + ' d', s.sisteOkt, ''],
+   ['tester', String(s.tester.length), 'registrert', '']].forEach(function(p){
+    var c = el('div','kpi');
+    c.appendChild(el('span','k', p[0]));
+    c.appendChild(el('span','v ' + p[3], p[1]));
+    c.appendChild(el('span','w', p[2]));
+    kp.appendChild(c);
+  });
+  arkBody.appendChild(kp);
+
+  var why = el('details','why'); why.dataset.odId = 'spm-why-sg';
+  why.appendChild(el('summary', null, 'Hvorfor dette tallet'));
+  var ul = document.createElement('ul');
+  ['Kilde: siste 10 registrerte runder, brutto score.',
+   'Beregning: SG total mot kat. ' + s.kat + '-referansen. Positivt tall = slag spart mot referansen, ikke mot par.',
+   'Forbehold: runder uten puttdata gjør SG putt til anslag, og SG total bærer anslaget.']
+   .forEach(function(t){ ul.appendChild(el('li', null, t)); });
+  why.appendChild(ul);
+  arkBody.appendChild(why);
+
+  var st = el('div','blokk');
+  st.appendChild(el('span','flab','hvorfor han står her'));
+  st.appendChild(el('p', null, s.hvorfor));
+  arkBody.appendChild(st);
+
+  var te = el('div','blokk');
+  te.appendChild(el('span','flab','siste tester'));
+  if (!s.tester.length){
+    te.appendChild(el('p', null, 'Ingen tester registrert i pausen. Første test etter retur.'));
+  } else {
+    s.tester.forEach(function(t){
+      var l = el('div','linje');
+      l.appendChild(el('span', null, t[0]));
+      l.appendChild(el('span','v', t[1] + ' · ' + t[2]));
+      te.appendChild(l);
+    });
+  }
+  arkBody.appendChild(te);
+
+  var full = el('button','btn','Full profil'); full.type = 'button';
+  full.dataset.odId = 'spm-full-profil';
+  full.addEventListener('click', function(){ location.href = 'spillerprofil.html'; });
+  var plan = el('button','btn ink','Åpne i Workbench'); plan.type = 'button';
+  plan.dataset.odId = 'spm-workbench';
+  plan.addEventListener('click', function(){ location.href = 'workbench-mobil.html'; });
+  arkFoot.appendChild(full); arkFoot.appendChild(plan);
+}
+
+/* ── Tema ────────────────────────────────────────────────────── */
+var KEY = 'akhq-theme-agencyos';
+var saved = localStorage.getItem(KEY);
+if (saved) document.documentElement.dataset.theme = saved;
+document.getElementById('themeBtn').addEventListener('click', function(){
+  var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem(KEY, next);
+  this.setAttribute('aria-label', next === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
+});
+
+function renderAlt(){
+  renderFiltre(); renderListe(); renderBunn();
+  var vis = tilstand === 'fylt' ? synlige() : [];
+  document.getElementById('spCount').textContent = vis.length;
+  document.getElementById('spTotal').textContent = tilstand === 'fylt' ? SPILLERE.length : 0;
+  document.getElementById('spTrenger').textContent =
+    vis.filter(function(s){ return s.gruppe === 'trenger'; }).length;
+}
+renderAlt();
+})();
+
+</script>
+</body>
+</html>

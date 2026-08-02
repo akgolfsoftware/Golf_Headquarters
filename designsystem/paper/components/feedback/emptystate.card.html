@@ -1,0 +1,54 @@
+<!-- @dsCard group="Fundament" viewport="980x3400" name="EmptyState" subtitle="«Ingen data ennå» — legitim datatilstand. «Ikke bygget ennå» har bevisst ingen komponent." -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}</style></head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { EmptyState, Panel, Button, SectionLabel, Icon, ListGroup, ListRow } = window.AKGolfHQClaudePaper_605a48;
+function Width({ px, note, children }) {
+  return (<div style={{display:"grid",gap:"var(--s2)",justifyItems:"start"}}>
+    <SectionLabel as="div">Container {px} px{note ? " · " + note : ""}</SectionLabel>
+    <div className="cw" style={{width:px}}>{children}</div>
+  </div>);
+}
+const Runder = () => (<Panel title="Runder" dataOdId="panel-runder">
+  <EmptyState title="Ingen runder logget ennå" icon={<Icon name="analyse" />}
+    action={<Button dataOdId="cta-logg-runde">Logg første runde</Button>}>
+    Når du legger inn en runde, ser du snittscore og SG-utvikling her.
+  </EmptyState>
+</Panel>);
+const Ko = () => (<Panel title="Godkjenninger" dataOdId="panel-ko">
+  <EmptyState title="Ingenting venter på deg">Køen er tom. Caddie legger nye forslag her når de kommer.</EmptyState>
+</Panel>);
+function Specimen() {
+  return (<div style={{display:"grid",gap:"var(--s5)"}}>
+    <Width px={860} note="hovedspalte · wrapper ≈822 — over 420, basis 34/24">
+      <Runder />
+    </Width>
+    <Width px={500} note="to-kolonnepanel · wrapper ≈462 — fortsatt over terskelen">
+      <Ko />
+    </Width>
+    <Width px={430} note="PlayerHQ-kolonne · wrapper ≈397 — under 420, 26/16">
+      <div style={{display:"grid",gap:"var(--s4)"}}><Runder /><Ko /></div>
+    </Width>
+    <Width px={430} note="align=start · sidespalte og inspektør">
+      <Panel title="Uke 31" density="sm" dataOdId="panel-uke">
+        <EmptyState align="start" density="sm" title="Ingen økter planlagt">Legg inn en økt, eller la Caddie foreslå ut fra periodemålet.</EmptyState>
+      </Panel>
+    </Width>
+    <div style={{display:"grid",gap:"var(--s3)"}}>
+      <SectionLabel as="div">Grensen mot Region · komponentnivå får én linje, ikke tittel og CTA</SectionLabel>
+      <Panel title="Belastning" flush dataOdId="panel-region">
+        <ListGroup dataOdId="list-r">
+          <ListRow leading="status" status="todo" title="Uke 32" meta="Ingen tall registrert" trailing="value" value="–" />
+        </ListGroup>
+      </Panel>
+    </div>
+  </div>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+</script></body></html>

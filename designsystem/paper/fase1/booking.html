@@ -1,0 +1,1047 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Book en time · AK Golf Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+/* ═══ akhq-tokens.css v3.1 — KOPIERT VERBATIM. Eneste tokenkilde. ═══ */
+/* ─────────────────────────────────────────────────────────────
+   AK Golf HQ · Claude Paper tokens v3
+   Anthropic-justert (offentlige kilder) + AK produktregler
+
+   Én kilde. Kopier verbatim inn i hver HTML/skjerm, eller @import.
+   Se SCOPE.md for hva «offisiell» betyr (vi er JUSTERT, ikke Anthropic).
+
+   Kilder:
+   - Anthropic brand-guidelines: ink/paper/mid/light + clay/sky/olive
+   - anthropic.com DESIGN.md (shadcn reverse-eng): full 21-farge + 8 aksenter
+   - Fase 1 (2026-07/08): chat-først, radius 12 for tett app, Én ting nå
+
+   v3.1 · 2026-08-01 (Bølge 1)
+   - --rail-hover / --rail-active løftet inn (var lokale i Fase 1-filene)
+   - Ingen andre verdiendringer. --muted er #5e5d59 (vinner over Fase 1 #5F5B53)
+
+   v3 · 2026-08-01
+   - Full Anthropic surface + accent ladder
+   - Radius-stige: sm 8 · app 12 · md 16 · lg 24 · pill
+   - Type-tokens for marketing + produkt
+   - Motion, z-index, tap-targets, hairline
+   - Dark theme (produkt; marketing er primært lys)
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* ─── Surfaces (Anthropic cream ladder) ─── */
+  --bg: #faf9f5;                    /* canvas / ivory */
+  --surface: #ffffff;               /* elevated white (produkt-kort) */
+  --soft: #f0eee6;                  /* surface-secondary — kort uten skygge */
+  --soft-hover: #e8e6dc;            /* surface-secondary-hover */
+  --surface-warm: #e3dacc;          /* oat */
+  --surface-manilla: #ebdbbc;
+  --surface-kraft: #d4a27f;
+  --border: #e8e6dc;                /* light gray (brand skill) */
+  --hairline: #d1cfc5;              /* finere skille enn --border */
+  --inverse: #000000;               /* full-bleed marketing-bånd */
+
+  /* ─── Text (Anthropic slate ladder) ─── */
+  --fg: #141413;                    /* ink — primær tekst + CTA-fill */
+  --ink-soft: #3d3d3a;              /* hover på primærknapp */
+  --muted: #5e5d59;                 /* text-muted (brand skill ~ #5f5b53; Anthropic #5e5d59) */
+  --mid: #b0aea5;                   /* text-secondary / cloud medium — IKKE brødtekst i lys */
+  --text-tertiary: #87867f;
+
+  /* ─── Rail (produkt, alltid mørk) ─── */
+  --rail: #141413;
+  --rail-fg: #b0aea5;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.08);   /* v3.1 — løftet fra Fase 1 */
+  --rail-active: rgba(250, 249, 245, 0.14);  /* v3.1 — løftet fra Fase 1 */
+
+  /* ─── Actions ─── */
+  --cta: #141413;                   /* Anthropic: CTA er blekk, ikke farge */
+  --on-cta: #faf9f5;
+  --cta-hover: #3d3d3a;
+
+  /* Clay = sterkeste kromatiske aksent (Anthropic clay) */
+  --accent: #d97757;                /* kun «Én ting nå» + focus i app */
+  --accent-soft: rgba(217, 119, 87, 0.12);
+  --accent-fg: #b85c3d;             /* AA-tekst på paper */
+  --on-accent: #141413;             /* tekst på fylt clay — sparsomt */
+  --accent-deep: #c6613f;           /* burnt sienna */
+
+  /* ─── Dormant accent swatches (Anthropic research palette)
+       Brukes sparsomt: chart, kategori, badges — aldri som primær CTA ─── */
+  --accent-coral: #ebcece;
+  --accent-fig: #c46686;
+  --accent-cactus: #bcd1ca;
+  --accent-olive: #788c5d;
+  --accent-sky: #6a9bcc;
+  --accent-heather: #cbcadb;
+
+  /* ─── Datasemantikk (produkt — mørknede for AA-tekst) ─── */
+  --up: #63784a;                    /* olive mørknet for tekst */
+  --up-raw: #788c5d;                /* olive rå — fyll/sparkline */
+  --dn: #a85536;                    /* leire av clay — aldri ren rød */
+  --info: #46719f;                  /* sky mørknet for tekst */
+  --info-raw: #6a9bcc;
+
+  /* ─── Typography families
+       Anthropic proprietary (Serif/Sans/Mono) er IKKE offentlige.
+       Brand skill: Poppins + Lora. Mono: IBM Plex Mono (produkt-tall). ─── */
+  --font-sans: "Poppins", Arial, system-ui, sans-serif;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Aliases brukt i eksisterende skjermer */
+  --disp: var(--font-sans);
+  --ui: var(--font-sans);
+  --body: var(--font-serif);
+  --mono: var(--font-mono);
+
+  /* ─── Type scale · Produkt (tett) ─── */
+  --text-display: 32px;
+  --text-title: 22px;
+  --text-card: 16px;
+  --text-panel: 14.5px;
+  --text-body-agency: 13.5px;       /* AgencyOS desktop */
+  --text-body-player: 14px;         /* PlayerHQ mobil */
+  --text-label: 10px;               /* versaler + tracking */
+  --text-kpi: 40px;                 /* mono */
+
+  /* ─── Type scale · Marketing (editorial, Anthropic-rytme) ─── */
+  --text-hero: 56px;                /* nedskalert fra 88 — web-vennlig */
+  --text-section: 40px;             /* nedskalert fra 90 */
+  --text-prose: 18px;               /* serif body marketing */
+  --text-prose-lg: 22px;
+  --text-nav: 16px;
+  --text-eyebrow: 12px;
+
+  /* ─── Spacing · 4px base (Anthropic 4/8/12/16/24/32/48/96) ─── */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+  --s9: 96px;                       /* section padding marketing */
+
+  /* ─── Radius
+       Anthropic marketing: sm 8 · md 16 · lg 24
+       AK produkt (Fase 1 låst): app 12 for kort/composer ─── */
+  --r-none: 0px;
+  --r-sm: 8px;                      /* knapper, inputs, chips */
+  --r: 12px;                        /* app-default (Fase 1) */
+  --r-md: 16px;                     /* editorial cards / marketing */
+  --r-lg: 24px;                     /* store flater, pille-CTA unntak */
+  --r-pill: 999px;
+
+  /* ─── Elevation
+       Anthropic marketing: NULL shadow — flater via cream-steg
+       Produkt: én myk skygge tillatt (valgfri) ─── */
+  --shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
+  --shadow-none: none;
+  --scrim: rgba(20, 20, 19, 0.4);
+
+  /* ─── Interaction ─── */
+  --focus: #d97757;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 160ms;
+  --dur-slow: 280ms;
+
+  /* Tap targets */
+  --tap: 44px;
+  --tap-lg: 48px;
+  --tap-capture: 60px;              /* fangst-mikrofon mobil */
+
+  /* ─── Logo (AK Golf — ikke Anthropic) ─── */
+  --logo-mark: #141413;
+  --logo-dot: #b85c3d;
+
+  /* ─── Z-index ─── */
+  --z-sticky: 10;
+  --z-rail: 20;
+  --z-sheet: 40;
+  --z-modal: 50;
+  --z-toast: 100;
+  --z-command: 110;
+}
+
+/* ─── Dark (produkt) ─── */
+[data-theme="dark"] {
+  color: #faf9f5;
+  --bg: #141413;
+  --surface: #1d1c1a;
+  --soft: #26241f;
+  --soft-hover: #2e2c28;
+  --surface-warm: #2a2824;
+  --border: rgba(250, 249, 245, 0.10);
+  --hairline: rgba(250, 249, 245, 0.08);
+  --inverse: #000000;
+
+  --fg: #faf9f5;
+  --ink-soft: #e8e6dc;
+  --muted: #b0aea5;
+  --mid: #6b675e;
+  --text-tertiary: #87867f;
+
+  --rail: #0e0d0c;
+  --rail-fg: #97938a;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.06);
+  --rail-active: rgba(250, 249, 245, 0.12);
+
+  --cta: #faf9f5;
+  --on-cta: #141413;
+  --cta-hover: #e8e6dc;
+
+  --accent: #d97757;
+  --accent-soft: rgba(217, 119, 87, 0.18);
+  --accent-fg: #e5a184;
+  --on-accent: #141413;
+
+  --up: #9db284;
+  --up-raw: #788c5d;
+  --dn: #de9e82;
+  --info: #93b7dc;
+  --info-raw: #6a9bcc;
+
+  --shadow: none;
+  --focus: #d97757;
+
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+[data-theme="light"] {
+  color: #141413;
+}
+
+/* Rail always dark */
+.rail {
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+/* Aksentflate — marketing/innlogging sparsomt */
+.on-accent-surface {
+  --logo-mark: #141413;
+  --logo-dot: #141413;
+}
+
+/* Full-bleed inverse band (marketing) */
+.band-inverse {
+  background: var(--inverse);
+  color: var(--bg);
+}
+
+/* Skriftimport — lim i <head> på alle skjermer:
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+*/
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Gulvregel: min treffmål på touch */
+@media (pointer: coarse) {
+  :root {
+    --floor: var(--tap);
+  }
+}
+
+:root{ --softer:#f6f4ee; --border-soft:#efede4; }
+[data-theme="dark"]{ --softer:#1a1917; --border-soft:rgba(250,249,245,.06); }
+
+/* ═══ Booking · offentlig landingsside ═══
+   Inngangen for noen som ikke har konto. Eneste flate i settet en fremmed
+   ser før innlogging, derfor marketing-typografien (Lora prosa, større
+   skala) — men den er et SKJEMA, ikke en brosjyre. Alt over folden skal
+   svare på «kan jeg booke en time, når, og hva koster det».
+
+   LÅST (Anders 01.08.2026): booking gjelder KUN coachingtjenester.
+   Simulatortid selges ikke og skal aldri vises som bookbar ressurs.
+   Ressursen er coachens tid — derfor én tidsliste, ikke én per rom.
+
+   Priser og ledige tider skal leses fra agencyos-innstillinger.html
+   (Product · CoachAvailability), ikke skrives inn her. */
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; }
+body{ background:var(--bg); color:var(--fg); font-family:var(--ui);
+  font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased; }
+[hidden]{ display:none !important; }
+button,input,select,textarea{ font:inherit; color:inherit; }
+.num{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.prose{ font-family:var(--body); }
+.eyebrow{ font-family:var(--mono); font-size:var(--text-eyebrow); font-weight:500;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+:where(a,button,input,select,textarea,summary,[tabindex]):focus-visible{
+  outline:2px solid var(--focus); outline-offset:2px; border-radius:var(--r-sm); }
+
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
+  min-height:var(--tap-lg); padding:0 var(--s5); font-size:15px; font-weight:500;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; white-space:nowrap; text-decoration:none; color:inherit; }
+.btn:hover{ background:var(--soft); border-color:var(--mid); }
+.btn:active{ transform:translateY(1px); }
+.btn[aria-disabled="true"]{ opacity:.45; cursor:not-allowed; }
+.btn.ink{ background:var(--cta); color:var(--on-cta); border-color:var(--cta); }
+.btn.now{ background:var(--accent); color:var(--on-accent); border-color:var(--accent);
+  font-weight:600; min-height:56px; font-size:16px; }
+.btn.sm{ min-height:var(--tap); padding:0 var(--s3); font-size:13.5px; }
+.btn.full{ width:100%; }
+.tag{ display:inline-flex; align-items:center; padding:4px var(--s3); border-radius:var(--r-pill);
+  font-family:var(--mono); font-size:11px; letter-spacing:.04em; text-transform:uppercase;
+  background:var(--soft); color:var(--muted); border:1px solid var(--border); }
+.tag.up{ color:var(--up); }
+
+.wrap{ max-width:1080px; margin:0 auto; padding:0 var(--s5); }
+@media (max-width:640px){ .wrap{ padding:0 var(--s4); } }
+
+/* ── Topp ────────────────────────────────────────────────────── */
+.topp{ border-bottom:1px solid var(--border); background:var(--surface); position:sticky; top:0;
+  z-index:var(--z-sticky); padding-top:env(safe-area-inset-top); }
+.toppin{ display:flex; align-items:center; gap:var(--s4); min-height:68px; }
+.logo{ display:inline-flex; align-items:center; min-height:var(--tap); font-family:var(--disp); font-size:19px; font-weight:700; color:var(--logo-mark);
+  text-decoration:none; }
+.logo span{ color:var(--logo-dot); }
+.topp nav{ margin-left:auto; display:flex; gap:var(--s2); align-items:center; }
+@media (max-width:560px){ .topp nav .skjul{ display:none; } }
+
+/* ── Hero ────────────────────────────────────────────────────── */
+.hero{ padding:var(--s8) 0 var(--s6); border-bottom:1px solid var(--border); }
+.hero h1{ margin:var(--s3) 0 var(--s4); font-family:var(--disp);
+  font-size:clamp(30px, 5.2vw, var(--text-hero)); line-height:1.08; font-weight:600;
+  letter-spacing:-.02em; max-width:16ch; }
+.hero .ingress{ margin:0 0 var(--s5); font-family:var(--body); font-size:var(--text-prose);
+  color:var(--muted); max-width:56ch; }
+.herofakta{ display:flex; gap:var(--s5); flex-wrap:wrap; margin-top:var(--s5);
+  padding-top:var(--s5); border-top:1px solid var(--border-soft); }
+.herofakta div{ min-width:132px; }
+.herofakta .k{ display:block; font-family:var(--mono); font-size:10px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--muted); }
+.herofakta .v{ display:block; font-family:var(--mono); font-size:22px; margin-top:2px; }
+.herofakta .w{ display:block; font-family:var(--body); font-size:13px; color:var(--muted); }
+
+/* ── Seksjon ─────────────────────────────────────────────────── */
+.seksjon{ padding:var(--s7) 0; border-bottom:1px solid var(--border); }
+.seksjon h2{ margin:var(--s2) 0 var(--s3); font-family:var(--disp);
+  font-size:clamp(22px, 3vw, 32px); font-weight:600; letter-spacing:-.01em; }
+.seksjon > .prose{ margin:0 0 var(--s5); font-size:var(--text-prose); color:var(--muted);
+  max-width:60ch; }
+
+/* ── Tjenestekort ────────────────────────────────────────────── */
+.tjenester{ display:grid; grid-template-columns:repeat(auto-fit, minmax(268px,1fr));
+  gap:var(--s3); }
+.tj{ display:flex; flex-direction:column; align-items:flex-start; gap:var(--s2);
+  text-align:left; background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r-md); padding:var(--s5); cursor:pointer; }
+.tj:hover{ border-color:var(--mid); }
+.tj[aria-pressed="true"]{ border-color:var(--fg); box-shadow:inset 0 0 0 1px var(--fg); }
+.tj h3{ margin:0; font-family:var(--disp); font-size:17px; font-weight:600; }
+.tj .pris{ font-family:var(--mono); font-size:24px; }
+.tj .prose{ margin:0; font-size:14px; color:var(--muted); }
+.tj .varighet{ font-family:var(--mono); font-size:11.5px; color:var(--muted); }
+
+/* ── Steg ────────────────────────────────────────────────────── */
+.steg{ display:flex; gap:var(--s2); flex-wrap:wrap; margin-bottom:var(--s5); }
+.steg li{ display:flex; align-items:center; gap:var(--s2); list-style:none;
+  font-family:var(--mono); font-size:11.5px; color:var(--mid); }
+.steg li::before{ content:attr(data-n); width:22px; height:22px; display:grid;
+  place-items:center; border-radius:var(--r-pill); border:1px solid var(--border);
+  font-size:10px; color:var(--muted); }
+.steg li[aria-current="step"]{ color:var(--fg); }
+.steg li[aria-current="step"]::before{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+.steg li.ferdig::before{ content:"✓"; background:var(--soft); color:var(--up); }
+.steg ol{ display:contents; }
+
+/* ── Tider ───────────────────────────────────────────────────── */
+.dager{ display:flex; gap:var(--s2); overflow-x:auto; scrollbar-width:none;
+  padding-bottom:var(--s2); margin-bottom:var(--s4); }
+.dager::-webkit-scrollbar{ display:none; }
+.dag{ flex:none; min-width:76px; min-height:72px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:2px; background:var(--surface);
+  border:1px solid var(--border); border-radius:var(--r); cursor:pointer; }
+.dag .dw{ font-family:var(--mono); font-size:10px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--muted); }
+.dag .dd{ font-family:var(--mono); font-size:17px; font-weight:600; }
+.dag .n{ font-family:var(--mono); font-size:10px; color:var(--muted); }
+.dag[aria-pressed="true"]{ background:var(--fg); border-color:var(--fg); }
+.dag[aria-pressed="true"] .dw,.dag[aria-pressed="true"] .dd,.dag[aria-pressed="true"] .n{ color:var(--bg); }
+.dag[aria-disabled="true"]{ opacity:.4; cursor:not-allowed; }
+
+.tider{ display:grid; grid-template-columns:repeat(auto-fill, minmax(112px,1fr)); gap:var(--s2); }
+.tid{ min-height:var(--tap-lg); display:flex; flex-direction:column; align-items:center;
+  justify-content:center; background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r); cursor:pointer; font-family:var(--mono); font-size:15px; }
+.tid small{ font-family:var(--body); font-size:11px; color:var(--muted); }
+.tid:hover{ border-color:var(--mid); }
+.tid[aria-pressed="true"]{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+.tid[aria-pressed="true"] small{ color:var(--bg); opacity:.8; }
+
+/* ── Skjema ──────────────────────────────────────────────────── */
+.skjema{ max-width:560px; }
+.felt{ margin-bottom:var(--s4); }
+.felt label{ display:block; font-size:14px; font-weight:500; margin-bottom:var(--s1); }
+.felt input,.felt select,.felt textarea{ width:100%; min-height:var(--tap-lg);
+  padding:var(--s2) var(--s3); background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r-sm); font-size:16px; }
+.felt textarea{ min-height:92px; resize:vertical; }
+.felt input:hover,.felt select:hover{ border-color:var(--mid); }
+.felt .hjelp{ display:block; font-family:var(--body); font-size:13px; color:var(--muted);
+  margin-top:var(--s1); }
+.felt.feil input,.felt.feil select{ border-color:var(--dn); }
+.felt .feilmelding{ display:block; font-size:13px; color:var(--dn); margin-top:var(--s1); }
+.duo{ display:grid; grid-template-columns:1fr 1fr; gap:var(--s3); }
+@media (max-width:520px){ .duo{ grid-template-columns:1fr; } }
+.avkryss{ display:flex; gap:var(--s3); align-items:flex-start; min-height:var(--tap);
+  padding:var(--s2) 0; }
+.avkryss input{ width:22px; height:22px; min-height:22px; margin-top:2px; flex:none; }
+.avkryss span{ font-family:var(--body); font-size:14px; color:var(--muted); }
+
+/* ── Oppsummering ────────────────────────────────────────────── */
+.oppsum{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);
+  padding:var(--s5); margin-bottom:var(--s4); }
+.oppsum .rad{ display:flex; align-items:baseline; gap:var(--s3); padding:var(--s3) 0;
+  border-bottom:1px solid var(--border-soft); font-size:15px; }
+.oppsum .rad:last-of-type{ border-bottom:0; }
+.oppsum .rad .v{ margin-left:auto; font-family:var(--mono); text-align:right; }
+.oppsum .sum{ border-top:1px solid var(--border); margin-top:var(--s2); padding-top:var(--s3);
+  display:flex; align-items:baseline; }
+.oppsum .sum .v{ margin-left:auto; font-family:var(--mono); font-size:24px; }
+
+.kvitto{ background:var(--accent-soft); border:1px solid var(--border);
+  border-left:3px solid var(--accent); border-radius:var(--r-md); padding:var(--s5); }
+.kvitto h2{ margin:var(--s2) 0 var(--s3); font-family:var(--disp); font-size:22px; font-weight:600; }
+.kvitto .prose{ margin:0 0 var(--s4); font-size:15px; }
+
+/* ── Info ────────────────────────────────────────────────────── */
+.merk{ display:flex; gap:var(--s3); padding:var(--s4); background:var(--soft);
+  border:1px solid var(--border); border-radius:var(--r); margin-bottom:var(--s4); }
+.merk svg{ width:18px; height:18px; flex:none; margin-top:2px; fill:none;
+  stroke:var(--muted); stroke-width:1.7; }
+.merk p{ margin:0; font-family:var(--body); font-size:14px; color:var(--muted); }
+
+.faq details{ border-bottom:1px solid var(--border); }
+.faq summary{ display:flex; align-items:center; min-height:var(--tap-lg); cursor:pointer;
+  font-size:16px; font-weight:500; list-style:none; padding:var(--s2) 0; }
+.faq summary::-webkit-details-marker{ display:none; }
+.faq summary::after{ content:"+"; margin-left:auto; font-family:var(--mono); color:var(--muted); }
+.faq details[open] summary::after{ content:"−"; }
+.faq p{ margin:0 0 var(--s4); font-family:var(--body); font-size:15px; color:var(--muted);
+  max-width:60ch; }
+
+.bunnlinje{ display:flex; gap:var(--s3); align-items:center; flex-wrap:wrap;
+  padding:var(--s6) 0 calc(var(--s7) + env(safe-area-inset-bottom)); }
+.bunnlinje .prose{ margin:0; font-size:13.5px; color:var(--muted); }
+
+/* Sticky handlingslinje på mobil — booking uten scrolling til bunns */
+.dokk{ position:sticky; bottom:0; z-index:var(--z-sticky);
+  padding:var(--s3) 0 calc(var(--s3) + env(safe-area-inset-bottom));
+  background:linear-gradient(to top, var(--bg) 74%, transparent); }
+.dokkin{ display:flex; gap:var(--s3); align-items:center; }
+.dokkin .oppsum-mini{ font-family:var(--mono); font-size:12.5px; color:var(--muted); min-width:0; }
+.dokkin .btn{ margin-left:auto; flex:none; }
+@media (max-width:560px){ .dokkin{ flex-direction:column; align-items:stretch; }
+  .dokkin .btn{ margin-left:0; width:100%; } }
+
+.toast{ position:fixed; left:50%; bottom:var(--s5); transform:translateX(-50%);
+  z-index:var(--z-toast); background:var(--fg); color:var(--bg);
+  padding:var(--s3) var(--s4); border-radius:var(--r); font-size:14px; }
+button,.btn,summary,input,select,textarea,.tj,.dag,.tid{ min-height:var(--tap); }
+.tag,.num,.eyebrow,.tj .pris,.tj .varighet,.herofakta .v,.herofakta .k,.herofakta .w,
+.oppsum .rad .v,.dag .dw,.dag .dd,.dag .n,.steg li{ min-height:0; }
+.avkryss input{ min-height:22px; }
+
+</style>
+</head>
+<body>
+
+<header class="topp">
+  <div class="wrap toppin">
+    <a class="logo" href="booking.html" data-od-id="bk-logo">AK Golf<span>.</span></a>
+    <nav aria-label="Meny">
+      <a class="btn sm skjul" href="booking.html#priser" data-od-id="bk-nav-priser">Priser</a>
+      <a class="btn sm skjul" href="booking.html#sporsmal" data-od-id="bk-nav-faq">Spørsmål</a>
+      <a class="btn sm" href="playerhq-chat-mobil.html" data-od-id="bk-nav-logginn">Logg inn</a>
+    </nav>
+  </div>
+</header>
+
+<main id="hoved">
+
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow">AK Golf Academy · Fredrikstad</span>
+      <h1>Book en time med Anders Kristiansen</h1>
+      <p class="ingress prose">Personlig coaching for spillere som vil ned i score.
+        Første time er en kartlegging: vi måler, ser på hva som faktisk koster deg slag,
+        og du går derfra med en plan — uansett om du fortsetter eller ikke.</p>
+      <a class="btn now" href="booking.html#book" data-od-id="bk-hero-cta">Se ledige tider</a>
+      <div class="herofakta">
+        <div><span class="k">Første time</span><span class="v" id="fakta-pris">—</span>
+          <span class="w">kartlegging med TrackMan</span></div>
+        <div><span class="k">Neste ledige</span><span class="v" id="fakta-neste">—</span>
+          <span class="w" id="fakta-neste-sted">—</span></div>
+        <div><span class="k">Svar</span><span class="v">48 t</span>
+          <span class="w">du får bekreftelse på e-post</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="seksjon" id="priser">
+    <div class="wrap">
+      <span class="eyebrow">steg 1</span>
+      <h2>Hva vil du booke?</h2>
+      <p class="prose">Alle prisene gjelder coaching med meg. Jeg leier ikke ut simulatortid —
+        anlegget er der vi jobber, ikke et produkt du kjøper.</p>
+      <div class="tjenester" id="tjenester" role="group" aria-label="Velg tjeneste"></div>
+    </div>
+  </section>
+
+  <section class="seksjon" id="book">
+    <div class="wrap">
+      <ul class="steg" id="steg" aria-label="Framdrift"></ul>
+      <h2 id="stegTittel">Velg tid</h2>
+      <p class="prose" id="stegSub">—</p>
+      <div id="stegInnhold"></div>
+    </div>
+  </section>
+
+  <section class="seksjon" id="sporsmal">
+    <div class="wrap">
+      <span class="eyebrow">før du booker</span>
+      <h2>Spørsmål</h2>
+      <div class="faq">
+        <details data-od-id="bk-faq-1">
+          <summary>Kan jeg leie simulatoren uten coaching?</summary>
+          <p>Nei. Mulligan Indoor er stedet vi jobber, ikke et produkt jeg selger.
+            Booking hos meg er alltid coachingtid.</p>
+        </details>
+        <details data-od-id="bk-faq-2">
+          <summary>Hva skjer på første time?</summary>
+          <p>Vi måler på TrackMan, går gjennom de siste rundene dine hvis du har dem,
+            og finner ut hvilket område som faktisk koster deg flest slag. Du går derfra
+            med en plan skrevet ned — ikke en følelse.</p>
+        </details>
+        <details data-od-id="bk-faq-3">
+          <summary>Er dette for juniorer?</summary>
+          <p>Ja. Er spilleren under 18 år, må en foresatt bekrefte bookingen og signere
+            samtykke før første time. Du får lenken på e-post.</p>
+        </details>
+        <details data-od-id="bk-faq-4">
+          <summary>Kan jeg avbestille?</summary>
+          <p>Ja, fram til 24 timer før. Da belastes ingenting. Senere enn det
+            faktureres timen.</p>
+        </details>
+      </div>
+      <div class="bunnlinje">
+        <p class="prose">AK Golf Academy · en del av AK Golf Group AS · Fredrikstad</p>
+        <span style="flex:1"></span>
+        <a class="btn sm" href="playerhq-chat-mobil.html" data-od-id="bk-bunn-logginn">Allerede spiller? Logg inn</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="dokk" id="dokk" hidden>
+  <div class="wrap dokkin">
+    <span class="oppsum-mini" id="dokkTekst">—</span>
+    <button class="btn now" id="dokkBtn" data-od-id="bk-one-thing-now">Neste</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden role="status"></div>
+<div class="sr" id="live" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ═══ Booking · offentlig landingsside ═══
+   Kilder: service_types · locations · coach_availability · bookings · users
+
+   HENTET FRA SUPABASE 02.08.2026 (Golf_Headquarters, dcnxoztjtdqoidaekxry).
+   Tidligere versjon av denne fila hadde oppdiktede tjenester — «Kartlegging
+   800 kr» og «Pro 299 kr/mnd» finnes ikke og har aldri gjort det. Tallene
+   under er de faktiske radene i service_types der active = true.
+
+   LÅST: kun coachingtjenester. Simulatortid selges ikke.
+
+   LOKASJON: bare Gamle Fredrikstad GK er synlig ved lansering. Miklagard og
+   Mulligan Indoor er satt active = false i locations — de skal ikke vises,
+   og de skal ikke ligge her som «skjult, men i koden». WANG Toppidrett er
+   intern kontraktscoaching og bookes ikke herfra.
+
+   TO ULIKE TING PÅ SAMME SIDE:
+   - Engangsøkt: du velger en luke og sender forespørsel. Anders svarer.
+   - Abonnement: du tegner et månedsabonnement. Du booker INGEN luke her —
+     øktene bookes etterpå i PlayerHQ, mot saldoen din. Derfor har de to
+     ulike handlinger, ikke samme knapp med ulik pris. */
+
+var TJENESTER = [
+  { k:'anders-flex-20', n:'Flex 20 min', coach:'Anders', pris:600,  enhet:'kr', min:20,
+    d:'Kort fokusøkt. Ett tema, raskt inn og ut.' },
+  { k:'anders-flex-50', n:'Flex 50 min', coach:'Anders', pris:1500, enhet:'kr', min:50,
+    d:'Standard coachingøkt. Teknikk, taktikk eller mentalt.' },
+  { k:'anders-flex-90', n:'Flex 90 min', coach:'Anders', pris:2500, enhet:'kr', min:90,
+    d:'Utvidet økt. Dybdeanalyse og praksis.' },
+  { k:'anders-2til1-90', n:'2-til-1 90 min', coach:'Anders', pris:1350, enhet:'kr per spiller', min:90,
+    d:'Delt økt for to spillere. 2 700 kr totalt.' },
+  { k:'markus-flex-20', n:'Flex 20 min', coach:'Markus', pris:300, enhet:'kr', min:20,
+    d:'Kort fokusøkt. Ett tema, raskt inn og ut.' },
+  { k:'markus-flex-50', n:'Flex 50 min', coach:'Markus', pris:800, enhet:'kr', min:50,
+    d:'Standard drop-in-økt. Teknikk eller spill.' },
+  /* Gruppe-økt har ingen fast deltakerkapasitet. Antallet bestemmes når økta
+     opprettes, og bor på training_sessions_v2.maxParticipants — én verdi per
+     økt. maxDeltakere = null i service_types betyr nettopp «ikke bestemt her»,
+     og flata skal si det i stedet for å oppgi et tall den ikke har. */
+  { k:'gruppe-oekt', n:'Gruppe-økt', coach:null, pris:390, enhet:'kr per spiller', min:60,
+    maksAapen:true,
+    d:'Nivåtilpasset trening i gruppe. Antallet avhenger av økta.' }
+];
+
+/* Abonnement. Prisen er per måned, og øktene er 20 minutter — ikke summen av
+   dem. «2 × 20 min» er noe annet enn «40 min», og skal aldri slås sammen. */
+var ABONNEMENT = [
+  { k:'anders-performance', n:'Performance', coach:'Anders', pris:1300, okter:2,
+    d:'2 × 20 min med Anders hver måned, og PlayerHQ inkludert.' },
+  { k:'anders-performance-pro', n:'Performance Pro', coach:'Anders', pris:2300, okter:4,
+    d:'4 × 20 min med Anders hver måned, og PlayerHQ inkludert.' }
+];
+
+var LOKASJON = 'Gamle Fredrikstad GK';
+
+/* Ledige luker fra coach_availability minus allerede bookede avtaler. */
+var DAGER = [
+  { dw:'man', dd:'4.8',  n:'Mandag 4. august',   tider:['12:00','13:00','15:00'] },
+  { dw:'tir', dd:'5.8',  n:'Tirsdag 5. august',  tider:['13:00','14:00'] },
+  { dw:'ons', dd:'6.8',  n:'Onsdag 6. august',   tider:[] },
+  { dw:'tor', dd:'7.8',  n:'Torsdag 7. august',  tider:['13:00','14:00','15:00'] },
+  { dw:'fre', dd:'8.8',  n:'Fredag 8. august',   tider:['10:00','11:00'] },
+  { dw:'lør', dd:'9.8',  n:'Lørdag 9. august',   tider:[] },
+  { dw:'søn', dd:'10.8', n:'Søndag 10. august',  tider:[] }
+];
+/* Én lokasjon ved lansering, så stedet er ikke et oppslag per klokkeslett. */
+function stedFor(){ return LOKASJON; }
+
+var STEG = [
+  { k:'tjeneste', n:'Tjeneste' },
+  { k:'tid',      n:'Tid' },
+  { k:'deg',      n:'Deg' },
+  { k:'bekreft',  n:'Bekreft' }
+];
+
+var valg = { tjeneste:null, dag:null, tid:null,
+             navn:'', epost:'', tlf:'', alder:'', hcp:'', notat:'',
+             foresatt:false, vilkar:false };
+var steg = 'tjeneste', sendt = false, feil = {};
+
+var live = document.getElementById('live');
+function si(t){ live.textContent = t; }
+var toastEl = document.getElementById('toast'), toastT;
+function toast(t){ toastEl.textContent = t; toastEl.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.hidden = true; }, 2800); }
+function el(tag, cls, txt){ var e = document.createElement(tag);
+  if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+function kr(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+function tj(){ return TJENESTER.filter(function(t){ return t.k === valg.tjeneste; })[0]; }
+function dag(){ return DAGER.filter(function(d){ return d.dd === valg.dag; })[0]; }
+function erUngdom(){ var a = parseInt(valg.alder, 10); return !isNaN(a) && a < 18; }
+
+/* ── Fakta i heroen: regnet, ikke skrevet ────────────────────── */
+(function hero(){
+  /* Fra-pris regnes, ikke skrives. Legges det inn en billigere økt i basen,
+     endrer heroen seg uten at noen rører denne fila. */
+  var lavest = TJENESTER.reduce(function(a,b){ return b.pris < a.pris ? b : a; });
+  document.getElementById('fakta-pris').textContent = 'fra ' + kr(lavest.pris) + ' kr';
+  var f = DAGER.filter(function(d){ return d.tider.length; })[0];
+  if (f){
+    document.getElementById('fakta-neste').textContent = f.dw + ' ' + f.tider[0];
+    document.getElementById('fakta-neste-sted').textContent = stedFor() || '';
+  } else {
+    document.getElementById('fakta-neste').textContent = '—';
+    document.getElementById('fakta-neste-sted').textContent = 'ingen ledige tider';
+  }
+})();
+
+/* ── Tjenestekort ────────────────────────────────────────────── */
+function renderTjenester(){
+  var w = document.getElementById('tjenester'); w.innerHTML = '';
+  TJENESTER.forEach(function(t){
+    var b = el('button','tj'); b.type = 'button';
+    b.dataset.odId = 'bk-tj-' + t.k;
+    b.setAttribute('aria-pressed', String(valg.tjeneste === t.k));
+    b.appendChild(el('h3', null, t.n + (t.coach ? ' · ' + t.coach : '')));
+    b.appendChild(el('span','pris num', kr(t.pris) + ' ' + t.enhet));
+    if (t.maksAapen) b.appendChild(el('span','varighet', 'antall settes per økt'));
+    if (t.min) b.appendChild(el('span','varighet', t.min + ' min'));
+    b.appendChild(el('p','prose', t.d));
+    b.addEventListener('click', function(){
+      valg.tjeneste = t.k;
+      steg = 'tid';
+      render();
+      document.getElementById('book').scrollIntoView({behavior:'smooth', block:'start'});
+      si(t.n + ' valgt. Velg tid.');
+    });
+    w.appendChild(b);
+  });
+}
+
+/* ── Steglinje ───────────────────────────────────────────────── */
+function renderSteg(){
+  var w = document.getElementById('steg'); w.innerHTML = '';
+  var i = STEG.map(function(s){ return s.k; }).indexOf(steg);
+  STEG.forEach(function(s, n){
+    var li = el('li', n < i || sendt ? 'ferdig' : '', s.n);
+    li.dataset.n = String(n + 1);
+    if (s.k === steg && !sendt) li.setAttribute('aria-current','step');
+    w.appendChild(li);
+  });
+}
+
+/* ── Innhold per steg ────────────────────────────────────────── */
+function felt(id, label, type, verdi, hjelp, onInput){
+  var f = el('div','felt' + (feil[id] ? ' feil' : ''));
+  var l = el('label', null, label); l.setAttribute('for','f-'+id); f.appendChild(l);
+  var inp = document.createElement(type === 'textarea' ? 'textarea' : 'input');
+  if (type !== 'textarea') inp.type = type;
+  inp.id = 'f-'+id; inp.value = verdi; inp.dataset.odId = 'bk-felt-'+id;
+  if (feil[id]) inp.setAttribute('aria-invalid','true');
+  inp.addEventListener('input', function(){ onInput(inp.value); delete feil[id]; renderDokk(); });
+  f.appendChild(inp);
+  if (feil[id]) f.appendChild(el('span','feilmelding', feil[id]));
+  else if (hjelp) f.appendChild(el('span','hjelp', hjelp));
+  return f;
+}
+
+function renderInnhold(){
+  var w = document.getElementById('stegInnhold'); w.innerHTML = '';
+  var t = document.getElementById('stegTittel'), sub = document.getElementById('stegSub');
+
+  if (sendt){
+    t.textContent = 'Forespørselen er sendt';
+    sub.textContent = 'Du trenger ikke gjøre noe mer nå.';
+    var kv = el('div','kvitto');
+    kv.appendChild(el('span','eyebrow','bekreftet'));
+    kv.appendChild(el('h2', null, 'Takk, ' + (valg.navn.split(' ')[0] || 'da sees vi')));
+    kv.appendChild(el('p','prose',
+      'Forespørselen ligger nå i innboksen til Anders. Han svarer innen 48 timer, ' +
+      'og du får bekreftelse på ' + valg.epost + '. Timen er ikke låst før han har svart — ' +
+      'derfor står den som forespørsel og ikke som avtale.'));
+    var o = el('div','oppsum');
+    o.appendChild(radlinje('Tjeneste', tj().n));
+    o.appendChild(radlinje('Tid', dag().n + ' kl. ' + valg.tid));
+    o.appendChild(radlinje('Sted', stedFor()));
+    if (erUngdom()) o.appendChild(radlinje('Foresatt', 'får samtykkelenke på e-post'));
+    kv.appendChild(o);
+    var ny = el('button','btn','Book en time til'); ny.type = 'button';
+    ny.dataset.odId = 'bk-ny';
+    ny.addEventListener('click', function(){
+      valg = { tjeneste:null, dag:null, tid:null, navn:'', epost:'', tlf:'', alder:'', hcp:'',
+               notat:'', foresatt:false, vilkar:false };
+      sendt = false; steg = 'tjeneste'; feil = {}; render();
+      document.getElementById('priser').scrollIntoView({behavior:'smooth'});
+      si('Ny booking startet.');
+    });
+    kv.appendChild(ny);
+    w.appendChild(kv);
+    return;
+  }
+
+  if (steg === 'tjeneste'){
+    t.textContent = 'Velg tjeneste først';
+    sub.textContent = 'Velg et av kortene over, så viser jeg deg de ledige tidene.';
+    var tf = el('div','merk');
+    tf.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>';
+    tf.appendChild(el('p', null,
+      'Er du usikker, velg Flex 50 min. Det er den økta som gir nok tid til å ' +
+      'måle, se på tallene og legge en plan — og du er ikke bundet til noe etterpå.'));
+    w.appendChild(tf);
+
+    /* Abonnementene står under engangsøktene, ikke ved siden av dem. De er
+       ikke et dyrere alternativ til én time — de er en annen avtale, og de
+       booker ingen luke her. Derfor egen overskrift og egen handling. */
+    var ao = el('div','kort');
+    ao.appendChild(document.createComment(' kilde: service_types, billingInterval = MONTH '));
+    ao.appendChild(el('span','eyebrow','Abonnement'));
+    ao.appendChild(el('h2', null, 'Eller fast oppfølging hver måned'));
+    ao.appendChild(el('p', null,
+      'Du booker ingen tid nå. Øktene ligger som saldo du bruker når det ' +
+      'passer, og de bookes i PlayerHQ.'));
+    ABONNEMENT.forEach(function(a){
+      var r = el('div','rad');
+      var d = el('div');
+      d.appendChild(document.createTextNode(a.n + ' · ' + a.coach));
+      d.appendChild(el('small', null,
+        a.okter + ' × 20 min per måned · PlayerHQ inkludert'));
+      r.appendChild(d);
+      r.appendChild(el('span','v num', kr(a.pris) + ' kr/mnd'));
+      ao.appendChild(r);
+    });
+    var ab = el('button','btn full','Start abonnement');
+    ab.type = 'button'; ab.dataset.odId = 'bk-abonnement';
+    ab.style.marginTop = 'var(--s3)';
+    ab.addEventListener('click', function(){
+      toast('Abonnement settes opp med Anders direkte.');
+      si('Abonnement tegnes ikke her ennå. Send en forespørsel om en enkelt ' +
+         'økt, eller ta kontakt, så setter Anders det opp.');
+    });
+    ao.appendChild(ab);
+    w.appendChild(ao);
+    return;
+  }
+
+  if (steg === 'tid'){
+    t.textContent = 'Velg tid';
+    sub.textContent = tj().n + ' · ' + (tj().min ? tj().min + ' minutter · ' : '') +
+      'ledige tider de neste sju dagene.';
+
+    var dw = el('div','dager'); dw.setAttribute('role','group');
+    dw.setAttribute('aria-label','Velg dag');
+    DAGER.forEach(function(d){
+      var b = el('button','dag'); b.type = 'button';
+      b.dataset.odId = 'bk-dag-' + d.dd;
+      b.setAttribute('aria-pressed', String(valg.dag === d.dd));
+      if (!d.tider.length) b.setAttribute('aria-disabled','true');
+      b.appendChild(el('span','dw', d.dw));
+      b.appendChild(el('span','dd', d.dd));
+      b.appendChild(el('span','n', d.tider.length ? d.tider.length + ' ledig' : 'opptatt'));
+      b.setAttribute('aria-label', d.n + ' · ' +
+        (d.tider.length ? d.tider.length + ' ledige tider' : 'ingen ledige tider'));
+      b.addEventListener('click', function(){
+        if (!d.tider.length){ toast('Ingen ledige tider ' + d.n.toLowerCase() + '.'); return; }
+        valg.dag = d.dd; valg.tid = null; render(); si(d.n + ' valgt.');
+      });
+      dw.appendChild(b);
+    });
+    w.appendChild(dw);
+
+    if (!valg.dag){
+      var v = el('div','merk');
+      v.innerHTML = '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+      v.appendChild(el('p', null, 'Velg en dag over. Grå dager er fullbooket.'));
+      w.appendChild(v);
+      return;
+    }
+    var d2 = dag();
+    if (!d2.tider.length){
+      var tomd = el('div','merk');
+      tomd.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+      tomd.appendChild(el('p', null,
+        'Ingen ledige tider ' + d2.n.toLowerCase() + '. Prøv en annen dag, eller ' +
+        'send en forespørsel så finner vi noe.'));
+      w.appendChild(tomd);
+      return;
+    }
+    var tw = el('div','tider'); tw.setAttribute('role','group');
+    tw.setAttribute('aria-label','Velg klokkeslett ' + d2.n);
+    d2.tider.forEach(function(kl){
+      var b = el('button','tid'); b.type = 'button';
+      b.dataset.odId = 'bk-tid-' + kl.replace(':','');
+      b.setAttribute('aria-pressed', String(valg.tid === kl));
+      b.appendChild(document.createTextNode(kl));
+      b.appendChild(el('small', null, stedFor()));
+      b.addEventListener('click', function(){
+        valg.tid = kl; render();
+        si(kl + ' valgt på ' + (stedFor()) + '.');
+      });
+      tw.appendChild(b);
+    });
+    w.appendChild(tw);
+    return;
+  }
+
+  if (steg === 'deg'){
+    t.textContent = 'Om deg';
+    sub.textContent = 'Fire felt. Resten tar vi på timen.';
+    var s = el('div','skjema');
+    s.appendChild(felt('navn','Navn','text', valg.navn, null, function(v){ valg.navn = v; }));
+    var d3 = el('div','duo');
+    d3.appendChild(felt('epost','E-post','email', valg.epost, 'Bekreftelsen kommer hit.', function(v){ valg.epost = v; }));
+    d3.appendChild(felt('tlf','Telefon','tel', valg.tlf, 'Kun ved endringer samme dag.', function(v){ valg.tlf = v; }));
+    s.appendChild(d3);
+    var d4 = el('div','duo');
+    d4.appendChild(felt('alder','Alder','number', valg.alder, 'Under 18 krever samtykke fra foresatt.', function(v){ valg.alder = v; render(); }));
+    d4.appendChild(felt('hcp','Handicap','text', valg.hcp, 'Vet du det ikke, la det stå tomt.', function(v){ valg.hcp = v; }));
+    s.appendChild(d4);
+    s.appendChild(felt('notat','Hva vil du jobbe med?','textarea', valg.notat,
+      'Valgfritt. Skriver du noe her, har jeg lest det før du kommer.', function(v){ valg.notat = v; }));
+
+    if (erUngdom()){
+      var fs = el('div','avkryss');
+      var fi = document.createElement('input');
+      fi.type = 'checkbox'; fi.id = 'f-foresatt'; fi.checked = valg.foresatt;
+      fi.dataset.odId = 'bk-foresatt';
+      fi.addEventListener('change', function(){ valg.foresatt = fi.checked; delete feil.foresatt; renderDokk(); });
+      var fl = document.createElement('label'); fl.setAttribute('for','f-foresatt');
+      fl.appendChild(el('span', null,
+        'Jeg er under 18, og en foresatt får samtykkelenke på e-post før første time.'));
+      fs.appendChild(fi); fs.appendChild(fl);
+      if (feil.foresatt) fs.appendChild(el('span','feilmelding', feil.foresatt));
+      s.appendChild(fs);
+    }
+
+    var vs = el('div','avkryss');
+    var vi = document.createElement('input');
+    vi.type = 'checkbox'; vi.id = 'f-vilkar'; vi.checked = valg.vilkar;
+    vi.dataset.odId = 'bk-vilkar';
+    vi.addEventListener('change', function(){ valg.vilkar = vi.checked; delete feil.vilkar; renderDokk(); });
+    var vl = document.createElement('label'); vl.setAttribute('for','f-vilkar');
+    vl.appendChild(el('span', null,
+      'Jeg godtar at opplysningene lagres for å gjennomføre timen, og at ' +
+      'avbestilling senere enn 24 timer før faktureres.'));
+    vs.appendChild(vi); vs.appendChild(vl);
+    if (feil.vilkar) vs.appendChild(el('span','feilmelding', feil.vilkar));
+    s.appendChild(vs);
+    w.appendChild(s);
+    return;
+  }
+
+  /* bekreft */
+  t.textContent = 'Se over';
+  sub.textContent = 'Ingenting er sendt før du trykker nederst.';
+  var o2 = el('div','oppsum');
+  o2.appendChild(radlinje('Tjeneste', tj().n));
+  o2.appendChild(radlinje('Tid', dag().n + ' kl. ' + valg.tid));
+  o2.appendChild(radlinje('Sted', stedFor()));
+  o2.appendChild(radlinje('Varighet', tj().min ? tj().min + ' min' : 'løpende'));
+  o2.appendChild(radlinje('Navn', valg.navn));
+  o2.appendChild(radlinje('E-post', valg.epost));
+  if (valg.hcp) o2.appendChild(radlinje('Handicap', valg.hcp));
+  if (valg.notat) o2.appendChild(radlinje('Ønske', valg.notat));
+  var sum = el('div','sum');
+  sum.appendChild(el('span', null, tj().enhet === 'kr/mnd' ? 'Månedspris' : 'Å betale etter timen'));
+  sum.appendChild(el('span','v', kr(tj().pris) + ' ' + tj().enhet));
+  o2.appendChild(sum);
+  w.appendChild(o2);
+
+  var m = el('div','merk');
+  m.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>';
+  m.appendChild(el('p', null,
+    'Du betaler ikke nå. Timen faktureres etter gjennomføring, og du kan avbestille ' +
+    'gratis fram til 24 timer før.'));
+  w.appendChild(m);
+  if (erUngdom()){
+    var mf = el('div','merk');
+    mf.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 3v18M5 10l7-7 7 7"/></svg>';
+    mf.appendChild(el('p', null,
+      'Foresatt får en samtykkelenke på e-post. Timen kan ikke gjennomføres før den er signert.'));
+    w.appendChild(mf);
+  }
+}
+
+function radlinje(k, v){
+  var r = el('div','rad');
+  r.appendChild(el('span', null, k));
+  r.appendChild(el('span','v', v));
+  return r;
+}
+
+/* ── Handlingslinje: Én ting nå ──────────────────────────────── */
+/* Én clay om gangen. Hero-knappen er «den ene handlingen» helt til dokken
+   dukker opp; fra da av er dokken det. Målt 02.08 på 1440 px: begge sto
+   oransje samtidig så snart en tjeneste var valgt. */
+function synkHeroCta(){
+  var h = document.querySelector('[data-od-id="bk-hero-cta"]');
+  if (!h) return;
+  var dokkSynlig = !sendt && steg !== 'tjeneste';
+  h.classList.toggle('now', !dokkSynlig);
+}
+
+function renderDokk(){
+  var d = document.getElementById('dokk');
+  var tx = document.getElementById('dokkTekst');
+  var b = document.getElementById('dokkBtn');
+  if (sendt || steg === 'tjeneste'){ d.hidden = true; return; }
+  d.hidden = false;
+
+  var deler = [];
+  if (valg.tjeneste) deler.push(tj().n);
+  if (valg.dag && valg.tid) deler.push(dag().dw + ' ' + valg.dag + ' ' + valg.tid);
+  else if (valg.dag) deler.push(dag().dw + ' ' + valg.dag);
+  tx.textContent = deler.join(' · ') || '—';
+
+  if (steg === 'tid'){
+    /* Aldri deaktivert. En grå primærknapp forteller deg at du ikke kommer
+       videre, men ikke hvorfor — og med aria-disabled er den heller ikke
+       klikkbar, så forklaringen når aldri fram. Knappen sier i stedet hva
+       som mangler, og tar deg til stedet der du fikser det. */
+    b.textContent = valg.tid ? 'Videre til dine opplysninger'
+                   : valg.dag ? 'Velg et klokkeslett' : 'Velg en dag';
+    b.setAttribute('aria-disabled','false');
+  } else if (steg === 'deg'){
+    b.textContent = 'Se over før du sender';
+    b.setAttribute('aria-disabled','false');
+  } else {
+    b.textContent = 'Send forespørselen';
+    b.setAttribute('aria-disabled','false');
+  }
+}
+
+document.getElementById('dokkBtn').addEventListener('click', function(){
+  if (steg === 'tid'){
+    if (!valg.dag){
+      var d0 = document.querySelector('.dager');
+      if (d0){ d0.scrollIntoView({behavior:'smooth', block:'center'});
+               var f0 = d0.querySelector('button'); if (f0) f0.focus(); }
+      toast('Velg en dag først.'); si('Velg en dag i rekka over.');
+      return;
+    }
+    if (!valg.tid){
+      var t0 = document.querySelector('.tider');
+      if (t0){ t0.scrollIntoView({behavior:'smooth', block:'center'});
+               var f1 = t0.querySelector('button'); if (f1) f1.focus(); }
+      toast('Velg et klokkeslett.'); si('Velg et klokkeslett for ' + dag().n.toLowerCase() + '.');
+      return;
+    }
+    steg = 'deg'; render();
+    document.getElementById('book').scrollIntoView({behavior:'smooth', block:'start'});
+    si('Fyll ut opplysningene dine.');
+    return;
+  }
+  if (steg === 'deg'){
+    feil = {};
+    if (!valg.navn.trim()) feil.navn = 'Skriv inn navnet ditt.';
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(valg.epost)) feil.epost = 'Skriv en e-postadresse jeg kan svare på.';
+    if (erUngdom() && !valg.foresatt) feil.foresatt = 'Kryss av, så sender jeg samtykkelenken til foresatt.';
+    if (!valg.vilkar) feil.vilkar = 'Du må godta vilkårene for å sende forespørselen.';
+    var n = Object.keys(feil).length;
+    if (n){
+      render();
+      var f = document.querySelector('.felt.feil input, .felt.feil textarea, .avkryss input');
+      if (f) f.focus();
+      si(n === 1 ? 'Ett felt mangler.' : n + ' felt mangler.');
+      toast(n === 1 ? 'Ett felt mangler' : n + ' felt mangler');
+      return;
+    }
+    steg = 'bekreft'; render();
+    document.getElementById('book').scrollIntoView({behavior:'smooth', block:'start'});
+    si('Se over før du sender.');
+    return;
+  }
+  /* Send: dette blir en sak i Anders' innboks, ikke en låst avtale. */
+  sendt = true; render();
+  document.getElementById('book').scrollIntoView({behavior:'smooth', block:'start'});
+  si('Forespørselen er sendt. Anders svarer innen 48 timer, og du får bekreftelse på e-post.');
+  toast('Sendt · du får svar innen 48 timer');
+});
+
+function render(){ renderTjenester(); renderSteg(); renderInnhold(); renderDokk(); synkHeroCta(); }
+render();
+})();
+
+
+</script>
+</body>
+</html>

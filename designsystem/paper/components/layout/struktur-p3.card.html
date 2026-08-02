@@ -1,0 +1,150 @@
+<!-- @dsCard group="Struktur" viewport="980x2900" name="Struktur bølge P3 — FilterPills, Pagination, Stepper, KanbanKolonne" subtitle="Fire komponenter mot samme anatomi. Begge moduser × alle tilstander × to containerbredder, med målt gulv" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:var(--s2)}.blokk{display:flex;flex-direction:column;gap:var(--s5)}.assert{font-family:var(--mono);font-size:10px;line-height:1.55;white-space:pre-wrap;margin-top:var(--s5)}.ok{color:var(--up)}.bad{color:var(--dn)}.kort{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-family:var(--ui);font-size:12.5px}</style>
+</head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { FilterPills, Pagination, Stepper, KanbanKolonne } = window.AKGolfHQClaudePaper_605a48;
+
+const OMR = [
+  { value: "fys", label: "FYS", count: 4 },
+  { value: "tek", label: "TEK", count: 11 },
+  { value: "slag", label: "SLAG", count: 7 },
+  { value: "spill", label: "SPILL", count: 3 },
+  { value: "turn", label: "TURN", count: 2 }
+];
+const STEG = [
+  { id: "a", label: "Velg spillere" },
+  { id: "b", label: "Sett periode" },
+  { id: "c", label: "Fordel volum" },
+  { id: "d", label: "Bekreft og publiser" }
+];
+
+function Specimen({ bredde }) {
+  const [omr, setOmr] = React.useState(["tek", "slag"]);
+  const [tomFilter, setTomFilter] = React.useState([]);
+  const [side, setSide] = React.useState(4);
+  const smal = bredde === 430;
+  return (
+    <div className="blokk">
+      <div>
+        <span className="lab">{bredde} px container — {smal ? "PlayerHQ-kolonnen" : "AgencyOS hovedspalte"}</span>
+
+        <div className="cw" style={{ width: bredde }} data-rot>
+          <span className="lab">filterpills · to valgt (nullstill synlig) og ingen valgt (nullstill borte)</span>
+          <FilterPills label="Pyramideområde" options={OMR} value={omr} onChange={setOmr} dataOdId="cta-filter-omraade" />
+          <div style={{ height: 16 }} />
+          <FilterPills label="Uten valg" options={OMR.slice(0, 3)} value={tomFilter} onChange={setTomFilter} dataOdId="cta-filter-tomt" />
+
+          <div style={{ height: 24 }} />
+          <span className="lab">pagination · midt i settet, første side, én side</span>
+          <Pagination page={side} pageCount={12} onChange={setSide} totalLabel="248 økter · side 4 av 12" dataOdId="nav-pag-midt" />
+          <div style={{ height: 12 }} />
+          <Pagination page={1} pageCount={3} onChange={() => {}} dataOdId="nav-pag-forste" />
+          <div style={{ height: 12 }} />
+          <Pagination page={1} pageCount={1} onChange={() => {}} totalLabel="6 økter · én side" dataOdId="nav-pag-en" />
+
+          <div style={{ height: 24 }} />
+          <span className="lab">stepper · steg 3 av 4, og helt i starten</span>
+          <Stepper steps={STEG} current={2} dataOdId="nav-steg-midt" />
+          <div style={{ height: 16 }} />
+          <Stepper steps={STEG} current={0} dataOdId="nav-steg-start" />
+
+          <div style={{ height: 24 }} />
+          <span className="lab">kanbankolonne · innenfor taket, over taket, tom</span>
+          <div style={{ display: "grid", gridTemplateColumns: smal ? "1fr" : "1fr 1fr 1fr", gap: 12, alignItems: "start" }}>
+            <KanbanKolonne title="Til godkjenning" limit={5} dataOdId="panel-kan-ok">
+              <div className="kort">Emma Sæther · ukeplan 32</div>
+              <div className="kort">Jonas Five · ukeplan 32</div>
+            </KanbanKolonne>
+            <KanbanKolonne title="Under arbeid" limit={2} dataOdId="panel-kan-over">
+              <div className="kort">Mia Torp · periodeplan</div>
+              <div className="kort">Aksel Rønning · testuke</div>
+              <div className="kort">GFGK U13 · høstplan</div>
+            </KanbanKolonne>
+            <KanbanKolonne title="Publisert" emptyText="Ingenting er publisert denne uken ennå." dataOdId="panel-kan-tom" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen bredde={860} />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen bredde={430} />);
+
+/* ASSERTIONER — skal ses feile først. Forfalskninger kjørt 31.07 mot en rigg
+   som serverer bundelen med de fire kildene injisert (kompilatoren var ikke
+   tilgjengelig i den økta):
+     (1) pillegulvet klemt til 20 px  -> 1 rød, 22 uberørte grønne
+     (2) valgt pille tvunget til oransje flate -> 2 røde (fargedisiplin dekkes
+         bevisst av to predikater), 21 uberørte grønne
+
+   TELLENDE ASSERTIONER SKOPES TIL LYS-HALVDELEN (LYS.querySelectorAll).
+   Kortet rendrer to spesimen; alt som telles dobles ellers. */
+window.requestAnimationFrame(() => setTimeout(() => {
+  const res = []; const push = (ok, t) => res.push((ok ? "✓ " : "✗ ") + t);
+  const LYS = document.getElementById("light");
+
+  // Gulv ved grov peker — klone i coarse-merket wrapper
+  const wrap = document.createElement("div"); wrap.setAttribute("data-coarse-test", ""); document.body.appendChild(wrap);
+  const gulv = (sel, min, navn) => {
+    const n = LYS.querySelector(sel);
+    if (!n) { push(false, navn + " ikke funnet — instrumentsvikt, ikke funn"); return; }
+    const p = n.cloneNode(true); wrap.appendChild(p);
+    const h = p.getBoundingClientRect().height;
+    push(h >= min - 0.01, navn + " " + h.toFixed(1) + " px ≥ " + min + " ved grov peker (synlig " + n.getBoundingClientRect().height.toFixed(1) + " px)");
+  };
+  gulv(".akhq-fpill-p", 44, "filterpille");
+  gulv(".akhq-fpill-nullstill", 44, "nullstill");
+  gulv(".akhq-pag-b", 44, "sideknapp");
+  wrap.remove();
+
+  // FilterPills: valgte piller, antall, og at nullstill bare finnes når noe er valgt
+  const valgte = [...LYS.querySelectorAll('[data-od-id="cta-filter-omraade"] .akhq-fpill-p[aria-pressed="true"]')];
+  push(valgte.length === 2, "to piller er valgt (" + valgte.length + ")");
+  push(LYS.querySelectorAll('[data-od-id="cta-filter-omraade"] .akhq-fpill-n').length === 5, "alle fem pillene viser antall");
+  push(!!LYS.querySelector('[data-od-id="cta-filter-omraade-nullstill"]'), "nullstill finnes når noe er valgt");
+  push(!LYS.querySelector('[data-od-id="cta-filter-tomt-nullstill"]'), "nullstill finnes IKKE når ingenting er valgt");
+  const vf = valgte.length ? getComputedStyle(valgte[0]) : null;
+  push(!!vf && /20, ?20, ?19/.test(vf.backgroundColor), "valgt pille er blekkfylt (" + (vf ? vf.backgroundColor : "-") + "), ikke oransje");
+
+  // Pagination: aria-current, ytterpunkter deaktivert, utelatelse markert
+  const pagMidt = LYS.querySelector('[data-od-id="nav-pag-midt"]');
+  push(pagMidt.querySelectorAll('[aria-current="page"]').length === 1, "nøyaktig én side har aria-current=page");
+  push(pagMidt.querySelector('[aria-current="page"]').textContent.trim() === "4", "aria-current står på side 4");
+  push(pagMidt.querySelectorAll(".akhq-pag-hopp").length === 2, "12 sider gir to markerte utelatelser");
+  push(LYS.querySelector('[data-od-id="nav-pag-forste-forrige"]').disabled, "«forrige» er deaktivert på første side");
+  const en = LYS.querySelector('[data-od-id="nav-pag-en"]');
+  push(en.querySelector('[data-od-id="nav-pag-en-forrige"]').disabled && en.querySelector('[data-od-id="nav-pag-en-neste"]').disabled, "med én side er begge retninger deaktivert");
+  push(pagMidt.querySelector(".akhq-pag-b").getAttribute("aria-label") === "Forrige side", "retningsknappene har tekstlig navn, ikke bare ikon");
+
+  // Stepper: gjeldende steg annonsert, og ferdig/kommer skilt
+  const steg = LYS.querySelector('[data-od-id="nav-steg-midt"]');
+  const naa = [...steg.querySelectorAll('[aria-current="step"]')];
+  push(naa.length === 1 && naa[0].querySelector(".akhq-step-tx").textContent === "Fordel volum", "nøyaktig ett steg er aria-current=step, og det er «Fordel volum»");
+  push(/Steg 3 av 4/.test(naa[0].textContent), "gjeldende steg annonseres tekstlig («Steg 3 av 4»)");
+  push(steg.querySelectorAll('[data-tilstand="ferdig"]').length === 2 && steg.querySelectorAll('[data-tilstand="kommer"]').length === 1, "to ferdige, ett kommende");
+  push(steg.querySelectorAll("button,a[href],[tabindex]").length === 0, "stigen navigerer ikke — ingen knapper eller lenker");
+
+  // KanbanKolonne: antall, over-taket som anbefaling, tom tilstand
+  push(LYS.querySelector('[data-od-id="panel-kan-ok"] .akhq-kan-n').textContent === "2/5", "kolonnen viser antall mot tak (2/5)");
+  const over = LYS.querySelector('[data-od-id="panel-kan-over"]');
+  push(over.classList.contains("akhq-kan--over") && !!over.querySelector(".akhq-kan-merk"), "over taket gir merknad");
+  push(over.querySelectorAll("[disabled],[aria-disabled=true]").length === 0, "over taket sperrer ingenting — anbefaling, ikke sperre");
+  const tomKol = LYS.querySelector('[data-od-id="panel-kan-tom"] .akhq-kan-tom');
+  push(!!tomKol && !/Ingen data/.test(tomKol.textContent) && tomKol.textContent.length > 20, "tom kolonne har ekte norsk tomtekst");
+
+  // Fargedisiplin: oransje er reservert
+  const alle = [...LYS.querySelectorAll(".akhq-fpill-p,.akhq-pag-b,.akhq-step-nr,.akhq-kan,.akhq-kan-tom")];
+  push(alle.every((e) => !/217, ?119, ?87/.test(getComputedStyle(e).backgroundColor)), "ingen av de fire komponentene bruker oransje som flate (" + alle.length + " elementer)");
+
+  const ut = document.createElement("div"); ut.className = "assert";
+  ut.innerHTML = res.map((r) => '<div class="' + (r[0] === "✓" ? "ok" : "bad") + '">' + r + "</div>").join("");
+  LYS.appendChild(ut);
+  window.__assert = res;
+}, 120));
+</script></body></html>

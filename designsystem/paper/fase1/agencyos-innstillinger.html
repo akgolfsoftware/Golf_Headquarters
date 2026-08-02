@@ -1,0 +1,1073 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Innstillinger · AgencyOS · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+/* ═══ akhq-tokens.css v3.1 — KOPIERT VERBATIM. Eneste tokenkilde. ═══ */
+/* ─────────────────────────────────────────────────────────────
+   AK Golf HQ · Claude Paper tokens v3
+   Anthropic-justert (offentlige kilder) + AK produktregler
+
+   Én kilde. Kopier verbatim inn i hver HTML/skjerm, eller @import.
+   Se SCOPE.md for hva «offisiell» betyr (vi er JUSTERT, ikke Anthropic).
+
+   Kilder:
+   - Anthropic brand-guidelines: ink/paper/mid/light + clay/sky/olive
+   - anthropic.com DESIGN.md (shadcn reverse-eng): full 21-farge + 8 aksenter
+   - Fase 1 (2026-07/08): chat-først, radius 12 for tett app, Én ting nå
+
+   v3.1 · 2026-08-01 (Bølge 1)
+   - --rail-hover / --rail-active løftet inn (var lokale i Fase 1-filene)
+   - Ingen andre verdiendringer. --muted er #5e5d59 (vinner over Fase 1 #5F5B53)
+
+   v3 · 2026-08-01
+   - Full Anthropic surface + accent ladder
+   - Radius-stige: sm 8 · app 12 · md 16 · lg 24 · pill
+   - Type-tokens for marketing + produkt
+   - Motion, z-index, tap-targets, hairline
+   - Dark theme (produkt; marketing er primært lys)
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* ─── Surfaces (Anthropic cream ladder) ─── */
+  --bg: #faf9f5;                    /* canvas / ivory */
+  --surface: #ffffff;               /* elevated white (produkt-kort) */
+  --soft: #f0eee6;                  /* surface-secondary — kort uten skygge */
+  --soft-hover: #e8e6dc;            /* surface-secondary-hover */
+  --surface-warm: #e3dacc;          /* oat */
+  --surface-manilla: #ebdbbc;
+  --surface-kraft: #d4a27f;
+  --border: #e8e6dc;                /* light gray (brand skill) */
+  --hairline: #d1cfc5;              /* finere skille enn --border */
+  --inverse: #000000;               /* full-bleed marketing-bånd */
+
+  /* ─── Text (Anthropic slate ladder) ─── */
+  --fg: #141413;                    /* ink — primær tekst + CTA-fill */
+  --ink-soft: #3d3d3a;              /* hover på primærknapp */
+  --muted: #5e5d59;                 /* text-muted (brand skill ~ #5f5b53; Anthropic #5e5d59) */
+  --mid: #b0aea5;                   /* text-secondary / cloud medium — IKKE brødtekst i lys */
+  --text-tertiary: #87867f;
+
+  /* ─── Rail (produkt, alltid mørk) ─── */
+  --rail: #141413;
+  --rail-fg: #b0aea5;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.08);   /* v3.1 — løftet fra Fase 1 */
+  --rail-active: rgba(250, 249, 245, 0.14);  /* v3.1 — løftet fra Fase 1 */
+
+  /* ─── Actions ─── */
+  --cta: #141413;                   /* Anthropic: CTA er blekk, ikke farge */
+  --on-cta: #faf9f5;
+  --cta-hover: #3d3d3a;
+
+  /* Clay = sterkeste kromatiske aksent (Anthropic clay) */
+  --accent: #d97757;                /* kun «Én ting nå» + focus i app */
+  --accent-soft: rgba(217, 119, 87, 0.12);
+  --accent-fg: #b85c3d;             /* AA-tekst på paper */
+  --on-accent: #141413;             /* tekst på fylt clay — sparsomt */
+  --accent-deep: #c6613f;           /* burnt sienna */
+
+  /* ─── Dormant accent swatches (Anthropic research palette)
+       Brukes sparsomt: chart, kategori, badges — aldri som primær CTA ─── */
+  --accent-coral: #ebcece;
+  --accent-fig: #c46686;
+  --accent-cactus: #bcd1ca;
+  --accent-olive: #788c5d;
+  --accent-sky: #6a9bcc;
+  --accent-heather: #cbcadb;
+
+  /* ─── Datasemantikk (produkt — mørknede for AA-tekst) ─── */
+  --up: #63784a;                    /* olive mørknet for tekst */
+  --up-raw: #788c5d;                /* olive rå — fyll/sparkline */
+  --dn: #a85536;                    /* leire av clay — aldri ren rød */
+  --info: #46719f;                  /* sky mørknet for tekst */
+  --info-raw: #6a9bcc;
+
+  /* ─── Typography families
+       Anthropic proprietary (Serif/Sans/Mono) er IKKE offentlige.
+       Brand skill: Poppins + Lora. Mono: IBM Plex Mono (produkt-tall). ─── */
+  --font-sans: "Poppins", Arial, system-ui, sans-serif;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Aliases brukt i eksisterende skjermer */
+  --disp: var(--font-sans);
+  --ui: var(--font-sans);
+  --body: var(--font-serif);
+  --mono: var(--font-mono);
+
+  /* ─── Type scale · Produkt (tett) ─── */
+  --text-display: 32px;
+  --text-title: 22px;
+  --text-card: 16px;
+  --text-panel: 14.5px;
+  --text-body-agency: 13.5px;       /* AgencyOS desktop */
+  --text-body-player: 14px;         /* PlayerHQ mobil */
+  --text-label: 10px;               /* versaler + tracking */
+  --text-kpi: 40px;                 /* mono */
+
+  /* ─── Type scale · Marketing (editorial, Anthropic-rytme) ─── */
+  --text-hero: 56px;                /* nedskalert fra 88 — web-vennlig */
+  --text-section: 40px;             /* nedskalert fra 90 */
+  --text-prose: 18px;               /* serif body marketing */
+  --text-prose-lg: 22px;
+  --text-nav: 16px;
+  --text-eyebrow: 12px;
+
+  /* ─── Spacing · 4px base (Anthropic 4/8/12/16/24/32/48/96) ─── */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+  --s9: 96px;                       /* section padding marketing */
+
+  /* ─── Radius
+       Anthropic marketing: sm 8 · md 16 · lg 24
+       AK produkt (Fase 1 låst): app 12 for kort/composer ─── */
+  --r-none: 0px;
+  --r-sm: 8px;                      /* knapper, inputs, chips */
+  --r: 12px;                        /* app-default (Fase 1) */
+  --r-md: 16px;                     /* editorial cards / marketing */
+  --r-lg: 24px;                     /* store flater, pille-CTA unntak */
+  --r-pill: 999px;
+
+  /* ─── Elevation
+       Anthropic marketing: NULL shadow — flater via cream-steg
+       Produkt: én myk skygge tillatt (valgfri) ─── */
+  --shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
+  --shadow-none: none;
+  --scrim: rgba(20, 20, 19, 0.4);
+
+  /* ─── Interaction ─── */
+  --focus: #d97757;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 160ms;
+  --dur-slow: 280ms;
+
+  /* Tap targets */
+  --tap: 44px;
+  --tap-lg: 48px;
+  --tap-capture: 60px;              /* fangst-mikrofon mobil */
+
+  /* ─── Logo (AK Golf — ikke Anthropic) ─── */
+  --logo-mark: #141413;
+  --logo-dot: #b85c3d;
+
+  /* ─── Z-index ─── */
+  --z-sticky: 10;
+  --z-rail: 20;
+  --z-sheet: 40;
+  --z-modal: 50;
+  --z-toast: 100;
+  --z-command: 110;
+}
+
+/* ─── Dark (produkt) ─── */
+[data-theme="dark"] {
+  color: #faf9f5;
+  --bg: #141413;
+  --surface: #1d1c1a;
+  --soft: #26241f;
+  --soft-hover: #2e2c28;
+  --surface-warm: #2a2824;
+  --border: rgba(250, 249, 245, 0.10);
+  --hairline: rgba(250, 249, 245, 0.08);
+  --inverse: #000000;
+
+  --fg: #faf9f5;
+  --ink-soft: #e8e6dc;
+  --muted: #b0aea5;
+  --mid: #6b675e;
+  --text-tertiary: #87867f;
+
+  --rail: #0e0d0c;
+  --rail-fg: #97938a;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.06);
+  --rail-active: rgba(250, 249, 245, 0.12);
+
+  --cta: #faf9f5;
+  --on-cta: #141413;
+  --cta-hover: #e8e6dc;
+
+  --accent: #d97757;
+  --accent-soft: rgba(217, 119, 87, 0.18);
+  --accent-fg: #e5a184;
+  --on-accent: #141413;
+
+  --up: #9db284;
+  --up-raw: #788c5d;
+  --dn: #de9e82;
+  --info: #93b7dc;
+  --info-raw: #6a9bcc;
+
+  --shadow: none;
+  --focus: #d97757;
+
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+[data-theme="light"] {
+  color: #141413;
+}
+
+/* Rail always dark */
+.rail {
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+/* Aksentflate — marketing/innlogging sparsomt */
+.on-accent-surface {
+  --logo-mark: #141413;
+  --logo-dot: #141413;
+}
+
+/* Full-bleed inverse band (marketing) */
+.band-inverse {
+  background: var(--inverse);
+  color: var(--bg);
+}
+
+/* Skriftimport — lim i <head> på alle skjermer:
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+*/
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Gulvregel: min treffmål på touch */
+@media (pointer: coarse) {
+  :root {
+    --floor: var(--tap);
+  }
+}
+
+:root{ --softer:#f6f4ee; --border-soft:#efede4; }
+[data-theme="dark"]{ --softer:#1a1917; --border-soft:rgba(250,249,245,.06); }
+
+/* ═══ Innstillinger · AgencyOS ═══
+   LOKASJON rettet 02.08.2026: Mulligan Indoor er active = false i locations og skal ikke vises ved lansering. Erstattet med Gamle Fredrikstad GK, som er eneste synlige lokasjon.
+   Én responsiv fil, ikke to. Innstillinger er master-detail i sin natur:
+   seksjonsliste + innhold. På desktop står de side ved side, på mobil er
+   lista siden og innholdet en full visning med tilbake. Å splitte den i to
+   filer ville gitt to kopier av ti skjemaseksjoner som skled fra hverandre.
+
+   Dette er kilden. Prisene som vises i PlayerHQ Meg, tilgjengeligheten
+   kalenderen regner belegg mot, og selskapslista Spillere filtrerer på
+   skal alle leses HERFRA — ikke skrives inn i hver enkelt fil. */
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; }
+body{ background:var(--bg); color:var(--fg); font-family:var(--ui);
+  font-size:var(--text-body-agency); line-height:1.5; -webkit-font-smoothing:antialiased; }
+[hidden]{ display:none !important; }
+button,input,select,textarea{ font:inherit; color:inherit; }
+.num{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.eyebrow{ font-family:var(--mono); font-size:var(--text-label); font-weight:500;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+:where(a,button,input,select,textarea,summary,[tabindex]):focus-visible{
+  outline:2px solid var(--focus); outline-offset:2px; border-radius:var(--r-sm); }
+
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
+  min-height:var(--tap); padding:0 var(--s4); font-size:13px; font-weight:500;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; white-space:nowrap; text-decoration:none; color:inherit; }
+.btn:hover{ background:var(--soft); border-color:var(--mid); }
+.btn:active{ transform:translateY(1px); }
+.btn:disabled,.btn[aria-disabled="true"]{ opacity:.45; cursor:not-allowed; }
+.btn.ink{ background:var(--cta); color:var(--on-cta); border-color:var(--cta); }
+.btn.now{ background:var(--accent); color:var(--on-accent); border-color:var(--accent);
+  min-height:var(--tap-lg); font-weight:600; padding:0 var(--s5); }
+.btn.sm{ min-height:var(--tap); padding:0 var(--s3); font-size:12.5px; }
+.btn.icon{ width:var(--tap); padding:0; }
+.btn.full{ width:100%; }
+.btn.farlig{ color:var(--dn); border-color:var(--dn); }
+.tag{ display:inline-flex; align-items:center; padding:3px var(--s2); border-radius:var(--r-pill);
+  font-family:var(--mono); font-size:10px; letter-spacing:.04em; text-transform:uppercase;
+  background:var(--soft); color:var(--muted); border:1px solid var(--border); }
+.tag.up{ color:var(--up); } .tag.dn{ color:var(--dn); } .tag.info{ color:var(--info); }
+
+/* ── Skall ───────────────────────────────────────────────────── */
+.app{ display:grid; grid-template-columns:64px 268px minmax(0,1fr); height:100vh; }
+.rail{ background:var(--rail); display:flex; flex-direction:column; align-items:center;
+  gap:var(--s1); padding:var(--s3) 0; z-index:var(--z-rail); }
+.logo{ font-family:var(--disp); font-size:15px; font-weight:700; color:var(--rail-on);
+  margin-bottom:var(--s4); }
+.logo span{ color:var(--logo-dot); }
+.rbtn{ width:52px; min-height:52px; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:3px; background:transparent; border:0; border-radius:var(--r);
+  color:var(--rail-fg); font-size:9px; cursor:pointer; position:relative; }
+.rbtn:hover{ background:var(--rail-hover); color:var(--rail-on); }
+.rbtn[aria-current="page"]{ background:var(--rail-active); color:var(--rail-on); }
+.rbtn svg{ width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.6;
+  stroke-linecap:round; stroke-linejoin:round; }
+.rbtn .cnt{ position:absolute; top:4px; right:6px; font-family:var(--mono); font-size:9px;
+  min-width:15px; height:15px; display:grid; place-items:center; border-radius:var(--r-pill);
+  background:var(--rail-on); color:var(--rail); }
+
+/* ── Seksjonsliste ───────────────────────────────────────────── */
+.nav{ display:flex; flex-direction:column; min-height:0; border-right:1px solid var(--border);
+  background:var(--softer); }
+.navhead{ flex:none; padding:var(--s4) var(--s4) var(--s3); border-bottom:1px solid var(--border); }
+.navhead h1{ margin:0; font-family:var(--disp); font-size:17px; font-weight:600; }
+.navhead .sub{ display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted);
+  margin-top:2px; }
+.navlist{ flex:1; min-height:0; overflow-y:auto; padding:var(--s2); }
+.navgrp{ font-family:var(--mono); font-size:9px; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--mid); padding:var(--s3) var(--s3) var(--s1); }
+.navbtn{ display:flex; align-items:center; gap:var(--s3); width:100%; text-align:left;
+  min-height:var(--tap); padding:0 var(--s3); background:transparent; border:0;
+  border-radius:var(--r); cursor:pointer; font-size:13.5px; }
+.navbtn:hover{ background:var(--soft); }
+.navbtn[aria-current="true"]{ background:var(--surface); box-shadow:inset 2px 0 0 var(--fg);
+  font-weight:600; }
+.navbtn svg{ width:17px; height:17px; flex:none; fill:none; stroke:currentColor;
+  stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+/* Prikken er blekk, ikke clay. Clay-monopolet gjelder flater OG markører:
+   en clay-prikk i lista og en clay-knapp i panelet konkurrerer om det samme
+   blikket, og da peker ingen av dem entydig lenger. */
+.navbtn .prikk{ margin-left:auto; width:6px; height:6px; border-radius:var(--r-pill);
+  background:var(--fg); flex:none; }
+
+/* ── Innhold ─────────────────────────────────────────────────── */
+.panel{ display:flex; flex-direction:column; min-width:0; min-height:0; background:var(--bg); }
+.phead{ flex:none; display:flex; align-items:center; gap:var(--s3);
+  padding:var(--s4); border-bottom:1px solid var(--border); background:var(--surface); }
+.phead h2{ margin:0; font-family:var(--disp); font-size:17px; font-weight:600; }
+.phead .sub{ display:block; font-family:var(--body); font-size:12.5px; color:var(--muted); }
+.pbody{ flex:1; min-height:0; overflow-y:auto; padding:var(--s5) var(--s4)
+  calc(var(--s6) + env(safe-area-inset-bottom)); }
+.pbody > *{ max-width:760px; }
+#tilbake{ display:none; }
+
+.kort{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  padding:var(--s4); margin-bottom:var(--s4); }
+.kort > .eyebrow{ display:block; margin-bottom:var(--s1); }
+.kilde{ display:block; font-family:var(--mono); font-size:9px; color:var(--mid);
+  letter-spacing:.04em; margin-bottom:var(--s3); }
+.kort h3{ margin:0 0 var(--s2); font-family:var(--disp); font-size:14.5px; font-weight:600; }
+.kort p{ margin:0 0 var(--s3); font-family:var(--body); font-size:13px; color:var(--muted); }
+
+/* Skjemafelt */
+.felt{ margin-bottom:var(--s3); }
+.felt label{ display:block; font-size:12.5px; font-weight:500; margin-bottom:var(--s1); }
+.felt .hjelp{ display:block; font-family:var(--body); font-size:12px; color:var(--muted);
+  margin-top:var(--s1); }
+.felt input,.felt select,.felt textarea{ width:100%; min-height:var(--tap);
+  padding:var(--s2) var(--s3); background:var(--bg); border:1px solid var(--border);
+  border-radius:var(--r-sm); font-size:14px; }
+.felt textarea{ min-height:88px; resize:vertical; }
+.felt input:hover,.felt select:hover{ border-color:var(--mid); }
+.felt input:disabled{ opacity:.5; }
+.duo{ display:grid; grid-template-columns:1fr 1fr; gap:var(--s3); }
+@media (max-width:520px){ .duo{ grid-template-columns:1fr; } }
+
+/* Rader */
+.rad{ display:flex; align-items:center; gap:var(--s3); padding:var(--s3) 0;
+  border-bottom:1px solid var(--border-soft); min-height:var(--tap); font-size:13.5px; }
+.rad:last-of-type{ border-bottom:0; }
+.rad .k{ min-width:0; }
+.rad .k small{ display:block; font-family:var(--body); font-size:12px; color:var(--muted); }
+.rad .v{ margin-left:auto; font-family:var(--mono); font-size:13px; text-align:right; flex:none; }
+.rad .v.pos{ color:var(--up); } .rad .v.neg{ color:var(--dn); }
+.radhandling{ margin-left:auto; flex:none; }
+
+/* Bryter — 44px treffområde selv om sporet er mindre */
+.bryter{ margin-left:auto; flex:none; width:52px; height:var(--tap); padding:0; border:0;
+  background:transparent; cursor:pointer; display:grid; place-items:center; }
+.bryter i{ display:block; width:44px; height:26px; border-radius:var(--r-pill);
+  background:var(--soft); border:1px solid var(--border); position:relative;
+  transition:background var(--dur) var(--ease); }
+.bryter i::after{ content:""; position:absolute; top:2px; left:2px; width:20px; height:20px;
+  border-radius:var(--r-pill); background:var(--surface); border:1px solid var(--border);
+  transition:transform var(--dur) var(--ease); }
+.bryter[aria-pressed="true"] i{ background:var(--fg); border-color:var(--fg); }
+.bryter[aria-pressed="true"] i::after{ transform:translateX(18px); border-color:var(--fg); }
+
+/* Én ting nå */
+.nowblock{ background:var(--accent-soft); border:1px solid var(--border);
+  border-left:3px solid var(--accent); border-radius:var(--r);
+  padding:var(--s4); margin-bottom:var(--s4); }
+.nowblock .eyebrow{ color:var(--accent-fg); }
+.nowblock h3{ margin:var(--s1) 0 var(--s2); font-family:var(--disp); font-size:15px; font-weight:600; }
+.nowblock p{ margin:0 0 var(--s3); font-family:var(--body); font-size:13px; color:var(--muted); }
+
+/* Hvor verdien brukes — poenget med hele flata */
+.brukt{ background:var(--softer); border:1px solid var(--border-soft); border-radius:var(--r);
+  padding:var(--s3) var(--s4); margin-bottom:var(--s4); }
+.brukt .flab{ display:block; font-family:var(--mono); font-size:9.5px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:var(--s2); }
+.brukt ul{ margin:0; padding:0; list-style:none; }
+.brukt li{ font-family:var(--mono); font-size:11.5px; color:var(--muted); margin-bottom:4px; }
+
+.tomflate{ display:flex; flex-direction:column; align-items:flex-start; gap:var(--s3);
+  padding:var(--s6) var(--s4); background:var(--soft); border:1px dashed var(--border);
+  border-radius:var(--r); }
+.tomflate h3{ margin:0; font-family:var(--disp); font-size:15px; font-weight:600; }
+.tomflate p{ margin:0; max-width:52ch; font-family:var(--body); font-size:13.5px; color:var(--muted); }
+
+.liste{ border:1px solid var(--border); border-radius:var(--r); overflow:hidden; margin-bottom:var(--s3); }
+.liste .lrad{ display:flex; align-items:center; gap:var(--s3); padding:var(--s3) var(--s4);
+  border-bottom:1px solid var(--border-soft); min-height:var(--tap); font-size:13.5px;
+  background:var(--surface); }
+.liste .lrad:last-child{ border-bottom:0; }
+.liste .lrad small{ display:block; font-family:var(--body); font-size:12px; color:var(--muted); }
+
+.status{ display:inline-flex; align-items:center; gap:6px; font-family:var(--mono);
+  font-size:11px; color:var(--muted); }
+.status::before{ content:""; width:7px; height:7px; border-radius:var(--r-pill);
+  background:var(--mid); }
+.status.ok::before{ background:var(--up-raw); }
+.status.feil::before{ background:var(--dn); }
+
+.lagre{ flex:none; display:flex; align-items:center; gap:var(--s3);
+  padding:var(--s3) var(--s4); border-top:1px solid var(--border); background:var(--surface);
+  padding-bottom:calc(var(--s3) + env(safe-area-inset-bottom)); }
+.lagre .eyebrow{ margin-right:auto; }
+
+/* ── iPad og mobil: lista er siden, innholdet en full visning ── */
+@media (max-width:1100px){
+  .app{ grid-template-columns:64px minmax(0,1fr); }
+  .nav{ border-right:0; }
+  .panel{ display:none; }
+  body.vis-panel .nav{ display:none; }
+  body.vis-panel .panel{ display:flex; }
+  #tilbake{ display:inline-flex; }
+}
+@media (max-width:640px){
+  .app{ grid-template-columns:1fr; grid-template-rows:minmax(0,1fr) auto; height:100dvh; }
+  .rail{ grid-row:2; flex-direction:row; justify-content:space-around; padding:0;
+    padding-bottom:env(safe-area-inset-bottom); }
+  .logo{ display:none; }
+  .rbtn{ flex:1; min-height:56px; border-radius:0; }
+  .navhead{ padding-top:calc(var(--s4) + env(safe-area-inset-top)); }
+  .phead{ padding-top:calc(var(--s4) + env(safe-area-inset-top)); }
+}
+
+.toast{ position:fixed; left:50%; bottom:var(--s5); transform:translateX(-50%);
+  z-index:var(--z-toast); background:var(--fg); color:var(--bg);
+  padding:var(--s3) var(--s4); border-radius:var(--r); font-size:12.5px; }
+@media (max-width:640px){ .toast{ bottom:76px; } }
+button,.btn,summary,input,select,textarea,.navbtn,.bryter{ min-height:var(--tap); }
+.tag,.num,.eyebrow,.kilde,.rad .v,.status,.brukt li{ min-height:0; }
+
+</style>
+</head>
+<body>
+<div class="app">
+
+  <nav class="rail" aria-label="Hovednavigasjon">
+    <div class="logo">AK<span>.</span></div>
+    <button class="rbtn" data-od-id="rail-konsoll" onclick="location.href='agencyos-konsoll-desktop.html'">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Konsoll</button>
+    <button class="rbtn" data-od-id="rail-innboks" onclick="location.href='agencyos-innboks.html'">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Innboks
+      <span class="cnt num">7</span></button>
+    <button class="rbtn" data-od-id="rail-spillere" onclick="location.href='agencyos-spillere.html'">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Spillere</button>
+    <button class="rbtn" data-od-id="rail-kalender" onclick="location.href='agencyos-kalender.html'">
+      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Kalender</button>
+    <button class="rbtn" data-od-id="rail-agenticos" onclick="location.href='agencyos-agenticos.html'">
+      <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg>AgenticOS</button>
+    <button class="rbtn" data-od-id="rail-okonomi" onclick="location.href='agencyos-okonomi.html'">
+      <svg viewBox="0 0 24 24"><path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Økonomi</button>
+    <button class="rbtn" aria-current="page" data-od-id="rail-innstillinger">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 3.6 15a1.7 1.7 0 0 0-1.56-1H2a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 3.6 9a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 8 4.6h.09A1.7 1.7 0 0 0 9 3.04V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9v.09a1.7 1.7 0 0 0 1.56 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z"/></svg>Innstillinger</button>
+  </nav>
+
+  <div class="nav">
+    <div class="navhead">
+      <h1>Innstillinger</h1>
+      <span class="sub">AK Golf Group AS · <span class="num" id="uloste">1</span> ting trenger deg</span>
+    </div>
+    <div class="navlist" id="navlist" role="tablist" aria-label="Seksjoner"></div>
+  </div>
+
+  <main class="panel" id="panel">
+    <header class="phead">
+      <button class="btn icon" id="tilbake" aria-label="Tilbake til seksjonene" data-od-id="st-tilbake">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div style="min-width:0">
+        <h2 id="pTittel">—</h2>
+        <span class="sub" id="pSub">—</span>
+      </div>
+      <span style="flex:1"></span>
+      <button class="btn icon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="st-theme">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </header>
+    <div class="pbody" id="pBody"></div>
+    <div class="lagre" id="pLagre"></div>
+  </main>
+</div>
+
+<div class="toast" id="toast" hidden role="status"></div>
+<div class="sr" id="live" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ═══ Innstillinger · AgencyOS ═══
+   Kilder: User · Company · Product · Subscription · Payment ·
+   CoachAvailability · Facility · TeamMember · Integration ·
+   NotificationPreference · CanonVersion
+
+   MERK: flere av modellnavnene over er IKKE verifisert mot schema.prisma.
+   Seksjoner med uverifisert kilde er merket `data-demo-only="true"` og sier
+   det i UI. Å tegne en seksjon som ser ferdig ut uten å vite at modellen
+   finnes, er å bestille en migrasjon i skjul.
+
+   Hele poenget med flata: verdiene her er ÉN kilde. I dag står prisen i
+   playerhq-meg.html, tilgjengeligheten i agencyos-kalender.html og
+   selskapslista i agencyos-spillere.html — tre steder, tre sannheter.
+   Hver seksjon viser derfor hvor verdien brukes. */
+
+var S = {
+  konto: { navn:'Anders Kristiansen', epost:'akgolfgroup@gmail.com',
+           telefon:'', rolle:'Eier og hovedcoach', tema:'lys' },
+
+  selskaper: [
+    { n:'AK Golf Academy',            org:'—', rolle:'1:1 coaching',        spillere:4  },
+    { n:'AK Golf Junior Academy',     org:'—', rolle:'juniorprogram',       spillere:0  },
+    { n:'WANG Toppidrett Fredrikstad',org:'—', rolle:'kontrakts-coaching',  spillere:11 },
+    { n:'Gamle Fredrikstad GK',       org:'—', rolle:'Trackman-fasilitet',  spillere:0  },
+    { n:'Skarpnord Golf Products AS', org:'—', rolle:'treningsutstyr',      spillere:0  }
+  ],
+
+  produkter: [
+    { n:'Pro',        pris:299,  enhet:'kr/mnd',  aktiv:true,  ant:4 },
+    { n:'Basis',      pris:149,  enhet:'kr/mnd',  aktiv:true,  ant:0 },
+    { n:'Enkelttime', pris:800,  enhet:'kr/time', aktiv:true,  ant:0 },
+    { n:'Testrunde',  pris:1200, enhet:'kr',      aktiv:false, ant:0 }
+  ],
+
+  /* Tilgjengelighet er IKKE satt. Dette er Én ting nå.
+     Kalenderen regner belegg mot 05:00–23:00 fordi den ikke har noe annet. */
+  tilgjengelighet: { satt:false, fra:'08:00', til:'18:00',
+                     dager:{man:true,tir:true,ons:true,tor:true,fre:true,lor:false,son:false} },
+
+  anlegg: [
+    { n:'Gamle Fredrikstad GK', type:'Innendørs · TrackMan', sted:'Fredrikstad' },
+    { n:'Gamle Fredrikstad GK', type:'Bane og treningsområde', sted:'Fredrikstad' },
+    { n:'WANG Toppidrett',      type:'Treningsrom',           sted:'Fredrikstad' }
+  ],
+
+  team: [
+    { n:'Anders Kristiansen',      r:'Eier og hovedcoach',        ser:'alt' },
+    { n:'Markus Røinås Pedersen',  r:'Sportslig leder junior',    ser:'juniorspillere' },
+    { n:'Espen Kjølberg',          r:'Juniorleder GFGK',          ser:'juniorspillere' }
+  ],
+
+  integrasjoner: [
+    { n:'Stripe',           s:'ok',   d:'Betaling og abonnement · webhook aktiv' },
+    { n:'Notion',           s:'ok',   d:'Master-hub · synk hvert 15. min' },
+    { n:'TrackMan',         s:'av',   d:'Ikke koblet ennå' },
+    { n:'Google Calendar',  s:'ok',   d:'Toveis · sist synk 09:04' },
+    { n:'GitHub',           s:'ok',   d:'akgolf-hq · deploy via Vercel' }
+  ],
+
+  varsler: { spillerendring:true, fangst:true, betaling:true, agentfeil:true, booking:false },
+
+  fasit: [
+    { n:'CANON v3.5',        v:'3.5',  d:'Metodikk-masterdokument' },
+    { n:'AK-formel',         v:'v2',   d:'Pyramide_Område_Motorikk_Belastning_Press · 17 områder' },
+    { n:'Ordlista',          v:'506',  d:'termer · stavefasit for all UI-tekst' },
+    { n:'Regler og låser',   v:'ute',  d:'Tatt ut 01.08.2026. Systemet viser målinger, ikke dommer.' }
+  ]
+};
+
+var SEKSJONER = [
+  {k:'konto',      n:'Konto',                 g:'Deg',        ikon:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'},
+  {k:'varsler',    n:'Varsler',               g:'Deg',        ikon:'<path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>'},
+  {k:'selskaper',  n:'Konsern og selskaper',  g:'Drift',      ikon:'<rect x="3" y="8" width="18" height="13" rx="2"/><path d="M8 8V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3"/>'},
+  {k:'produkter',  n:'Produkter og priser',   g:'Drift',      ikon:'<path d="M20 7H4M20 12H4M20 17H4"/>'},
+  {k:'betaling',   n:'Betaling',              g:'Drift',      ikon:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>'},
+  {k:'tilgjeng',   n:'Tilgjengelighet',       g:'Coaching',   ikon:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'},
+  {k:'anlegg',     n:'Anlegg',                g:'Coaching',   ikon:'<path d="M3 21h18M5 21V8l7-5 7 5v13"/>'},
+  {k:'team',       n:'Team og roller',        g:'Coaching',   ikon:'<path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>'},
+  {k:'integr',     n:'Integrasjoner',         g:'System',     ikon:'<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>'},
+  {k:'fasit',      n:'Fasit og terminologi',  g:'System',     ikon:'<path d="M4 19.5V5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-2z"/><path d="M8 7h8M8 11h6"/>'}
+];
+
+var valgt = 'konto', endret = false;
+
+var live = document.getElementById('live');
+function si(t){ live.textContent = t; }
+var toastEl = document.getElementById('toast'), toastT;
+function toast(t){ toastEl.textContent = t; toastEl.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.hidden = true; }, 2600); }
+function el(tag, cls, txt){ var e = document.createElement(tag);
+  if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+function kr(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+
+/* Uløste ting. I dag én: tilgjengeligheten er ikke satt. */
+function uloste(){ return S.tilgjengelighet.satt ? [] : ['tilgjeng']; }
+
+/* ── Seksjonsliste ───────────────────────────────────────────── */
+function renderNav(){
+  var w = document.getElementById('navlist'); w.innerHTML = '';
+  var u = uloste();
+  var forrigeGruppe = null;
+  SEKSJONER.forEach(function(s){
+    if (s.g !== forrigeGruppe){ w.appendChild(el('div','navgrp', s.g)); forrigeGruppe = s.g; }
+    var b = el('button','navbtn'); b.type = 'button';
+    b.setAttribute('role','tab');
+    b.setAttribute('aria-current', String(s.k === valgt));
+    b.dataset.odId = 'st-nav-' + s.k;
+    var ic = document.createElement('span');
+    ic.innerHTML = '<svg viewBox="0 0 24 24">' + s.ikon + '</svg>';
+    b.appendChild(ic.firstChild);
+    b.appendChild(el('span', null, s.n));
+    if (u.indexOf(s.k) > -1){
+      b.appendChild(el('span','prikk'));
+      b.setAttribute('aria-label', s.n + ' — trenger deg');
+    }
+    b.addEventListener('click', function(){ velg(s.k); });
+    w.appendChild(b);
+  });
+  document.getElementById('uloste').textContent = u.length;
+}
+
+function velg(k){
+  valgt = k;
+  document.body.classList.add('vis-panel');
+  renderNav(); renderPanel();
+  var s = SEKSJONER.filter(function(x){ return x.k === k; })[0];
+  si(s.n + ' åpnet.');
+  document.getElementById('pBody').scrollTop = 0;
+}
+
+document.getElementById('tilbake').addEventListener('click', function(){
+  document.body.classList.remove('vis-panel');
+  var b = document.querySelector('[data-od-id="st-nav-' + valgt + '"]');
+  if (b) b.focus();
+  si('Tilbake til seksjonene.');
+});
+
+/* ── Byggeklosser ────────────────────────────────────────────── */
+function kort(tittel, kilde, uverifisert){
+  var k = el('section','kort');
+  k.appendChild(document.createComment(' kilde: ' + kilde + ' '));
+  if (tittel) k.appendChild(el('span','eyebrow', tittel));
+  k.appendChild(el('span','kilde','kilde: ' + kilde));
+  if (uverifisert){
+    k.dataset.demoOnly = 'true';
+    var p = el('p', null, 'Modellkilden er ikke verifisert mot schema.prisma. ' +
+      'Må bekreftes før koding — ikke anta at modellen finnes.');
+    k.appendChild(p);
+  }
+  return k;
+}
+function felt(label, type, verdi, hjelp, odId, onInput){
+  var f = el('div','felt');
+  var id = 'f-' + odId;
+  var l = el('label', null, label); l.setAttribute('for', id);
+  f.appendChild(l);
+  var inp = document.createElement(type === 'textarea' ? 'textarea' : 'input');
+  if (type !== 'textarea') inp.type = type;
+  inp.id = id; inp.value = verdi == null ? '' : verdi;
+  inp.dataset.odId = odId;
+  inp.addEventListener('input', function(){ endret = true; renderLagre();
+    if (onInput) onInput(inp.value); });
+  f.appendChild(inp);
+  if (hjelp) f.appendChild(el('span','hjelp', hjelp));
+  return f;
+}
+function rad(k, v, sub){
+  var r = el('div','rad');
+  var kd = el('div','k'); kd.appendChild(document.createTextNode(k));
+  if (sub) kd.appendChild(el('small', null, sub));
+  r.appendChild(kd);
+  if (v != null) r.appendChild(el('div','v num', v));
+  return r;
+}
+function bryter(navn, forklaring, obj, nokkel, odId){
+  var r = el('div','rad');
+  var d = el('div','k'); d.appendChild(document.createTextNode(navn));
+  if (forklaring) d.appendChild(el('small', null, forklaring));
+  r.appendChild(d);
+  var b = el('button','bryter'); b.type = 'button';
+  b.dataset.odId = odId;
+  b.setAttribute('aria-pressed', String(!!obj[nokkel]));
+  b.setAttribute('aria-label', navn);
+  b.appendChild(el('i'));
+  b.addEventListener('click', function(){
+    obj[nokkel] = !obj[nokkel];
+    b.setAttribute('aria-pressed', String(obj[nokkel]));
+    toast(navn + (obj[nokkel] ? ' er på.' : ' er av.'));
+    si(navn + (obj[nokkel] ? ' er på.' : ' er av.'));
+  });
+  r.appendChild(b);
+  return r;
+}
+/* Hvor verdien brukes. Uten dette ser Innstillinger ut som en parkeringsplass. */
+function brukt(liste){
+  var b = el('div','brukt');
+  b.appendChild(el('span','flab','brukes av'));
+  var ul = document.createElement('ul');
+  liste.forEach(function(t){ ul.appendChild(el('li', null, t)); });
+  b.appendChild(ul);
+  return b;
+}
+
+/* ── Panelinnhold ────────────────────────────────────────────── */
+var BYGG = {
+
+konto: function(b){
+  var k = kort('Om deg', 'User');
+  k.appendChild(felt('Navn','text', S.konto.navn, null, 'st-navn', function(v){ S.konto.navn = v; }));
+  k.appendChild(felt('E-post','email', S.konto.epost, 'Brukes til innlogging og kvitteringer.', 'st-epost', function(v){ S.konto.epost = v; }));
+  k.appendChild(felt('Telefon','tel', S.konto.telefon, 'Tomt felt. Spillere ser aldri dette nummeret.', 'st-tlf', function(v){ S.konto.telefon = v; }));
+  var rf = el('div','felt');
+  var rl = el('label', null, 'Rolle'); rl.setAttribute('for','f-st-rolle'); rf.appendChild(rl);
+  var ri = document.createElement('input');
+  ri.id = 'f-st-rolle'; ri.value = S.konto.rolle; ri.disabled = true;
+  ri.dataset.odId = 'st-rolle';
+  rf.appendChild(ri);
+  rf.appendChild(el('span','hjelp','Eierrollen kan ikke endres herfra. Team og roller styrer resten.'));
+  k.appendChild(rf);
+  b.appendChild(k);
+  b.appendChild(brukt(['agencyos-konsoll · avsendernavn i tråden',
+                       'playerhq-* · «Anders» i all spillertekst',
+                       'e-post og kvitteringer']));
+},
+
+varsler: function(b){
+  var k = kort('Hva du varsles om', 'NotificationPreference', true);
+  k.appendChild(bryter('Spilleren endrer planen sin','Varsling, ikke godkjenning — spilleren eier planen', S.varsler, 'spillerendring', 'st-v-endring'));
+  k.appendChild(bryter('Ny fangst fra spiller','Når noen fanger en observasjon', S.varsler, 'fangst', 'st-v-fangst'));
+  k.appendChild(bryter('Betaling og faktura','Forfall, feilet trekk, ny betaling', S.varsler, 'betaling', 'st-v-betaling'));
+  k.appendChild(bryter('Agentfeil','Når en agent stopper eller feiler', S.varsler, 'agentfeil', 'st-v-agent'));
+  k.appendChild(bryter('Ny bookingforespørsel','Prøvetimer fra nye spillere', S.varsler, 'booking', 'st-v-booking'));
+  b.appendChild(k);
+  b.appendChild(brukt(['agencyos-innboks · hvilke saker som havner der',
+                       'push og e-post']));
+},
+
+selskaper: function(b){
+  var h = kort('Konsern', 'Company');
+  h.appendChild(rad('AK Golf Group AS','holding','Skarpnord Invest AS er eier'));
+  b.appendChild(h);
+
+  var k = kort('Driftsselskaper', 'Company, PlayerEnrollment');
+  var l = el('div','liste');
+  S.selskaper.forEach(function(s, i){
+    var r = el('div','lrad');
+    var d = el('div');
+    d.appendChild(document.createTextNode(s.n));
+    d.appendChild(el('small', null, s.rolle + ' · org.nr ' + s.org));
+    r.appendChild(d);
+    var t = el('span','tag', s.spillere + (s.spillere === 1 ? ' spiller' : ' spillere'));
+    t.style.marginLeft = 'auto';
+    r.appendChild(t);
+    var e = el('button','btn sm','Rediger'); e.type = 'button';
+    e.dataset.odId = 'st-selskap-' + i;
+    e.addEventListener('click', function(){
+      toast('Åpner ' + s.n + '. Org.nr og fakturaadresse mangler.');
+      si(s.n + ' åpnet for redigering.');
+    });
+    r.appendChild(e);
+    l.appendChild(r);
+  });
+  k.appendChild(l);
+  var ny = el('button','btn','Legg til selskap'); ny.type = 'button';
+  ny.dataset.odId = 'st-nytt-selskap';
+  ny.addEventListener('click', function(){ toast('Nytt selskap — navn og org.nr først.'); });
+  k.appendChild(ny);
+  b.appendChild(k);
+
+  b.appendChild(brukt(['agencyos-spillere · filterrekka Akademi · WANG · GFGK',
+                       'agencyos-kalender · selskap per avtale',
+                       'faktura · hvilket selskap som sender']));
+},
+
+produkter: function(b){
+  var k = kort('Produkter', 'Product, Subscription');
+  var l = el('div','liste');
+  S.produkter.forEach(function(p, i){
+    var r = el('div','lrad');
+    var d = el('div');
+    d.appendChild(document.createTextNode(p.n));
+    d.appendChild(el('small', null, p.ant + ' aktive abonnenter'));
+    r.appendChild(d);
+    var v = el('span','num'); v.style.marginLeft = 'auto';
+    v.textContent = kr(p.pris) + ' ' + p.enhet;
+    r.appendChild(v);
+    r.appendChild(el('span','tag' + (p.aktiv ? ' up' : ''), p.aktiv ? 'til salgs' : 'skjult'));
+    var e = el('button','btn sm','Endre'); e.type = 'button';
+    e.dataset.odId = 'st-produkt-' + i;
+    e.addEventListener('click', function(){
+      var ny = prompt('Ny pris for ' + p.n + ' (' + p.enhet + ')', p.pris);
+      if (ny === null) return;
+      var n = parseInt(ny, 10);
+      if (isNaN(n)){ toast('Prisen må være et tall.'); return; }
+      p.pris = n; renderPanel();
+      si(p.n + ' er satt til ' + n + ' ' + p.enhet + '. PlayerHQ viser den nye prisen.');
+      toast(p.n + ' · ' + kr(n) + ' ' + p.enhet);
+    });
+    r.appendChild(e);
+    l.appendChild(r);
+  });
+  k.appendChild(l);
+  b.appendChild(k);
+  b.appendChild(brukt(['playerhq-meg · abonnementskortet leser prisen herfra',
+                       'booking · pris på prøvetime',
+                       'Stripe · produktkatalog']));
+},
+
+betaling: function(b){
+  var k = kort('Stripe', 'Payment, Subscription');
+  k.appendChild(rad('Kobling','aktiv','webhook svarer'));
+  k.appendChild(rad('Utbetalingskonto','ikke satt','kreves før første utbetaling'));
+  k.appendChild(rad('Mva','ikke satt','avklares med regnskapsfører'));
+  k.appendChild(rad('Utestående','800 kr','1 forfalt faktura'));
+  var a = el('button','btn','Åpne Stripe-portalen'); a.type = 'button';
+  a.dataset.odId = 'st-stripe';
+  a.addEventListener('click', function(){ toast('Åpner Stripe. Ingen endring skjer før du bekrefter der.'); });
+  k.appendChild(a);
+  b.appendChild(k);
+  b.appendChild(brukt(['playerhq-meg · betalingshistorikk',
+                       'agencyos-innboks · «Faktura forfalt»-saker']));
+},
+
+tilgjeng: function(b){
+  /* Én ting nå — og den eneste clay-flata på skjermen.
+     Kalenderen regner belegg mot 05:00–23:00 fordi ingen har sagt noe annet.
+     Det gjør belegget systematisk for lavt. */
+  if (!S.tilgjengelighet.satt){
+    var v = el('div','nowblock');
+    v.appendChild(el('span','eyebrow','Én ting nå'));
+    v.appendChild(el('h3', null, 'Arbeidsuka er ikke satt'));
+    v.appendChild(el('p', null,
+      'Kalenderen regner belegg mot hele døgnet fra 05:00 til 23:00, fordi ' +
+      'ingen har sagt noe annet. Med 18 timer i nevneren blir belegget ' +
+      'systematisk for lavt — torsdag viser 35 % der den reelt er nær full.'));
+    var b2 = el('button','btn now','Sett arbeidsuka til 08:00–18:00, man–fre');
+    b2.type = 'button'; b2.dataset.odId = 'st-one-thing-now';
+    b2.addEventListener('click', function(){
+      S.tilgjengelighet.satt = true;
+      renderNav(); renderPanel();
+      si('Arbeidsuka er satt til 08:00–18:00 mandag til fredag. Kalenderen regner belegg mot 50 timer i uka.');
+      toast('Arbeidsuka er satt · kalenderen regner på nytt');
+    });
+    v.appendChild(b2);
+    b.appendChild(v);
+  }
+
+  var k = kort('Arbeidsuke', 'CoachAvailability');
+  var d = el('div','duo');
+  d.appendChild(felt('Fra','time', S.tilgjengelighet.fra, null, 'st-fra', function(x){ S.tilgjengelighet.fra = x; }));
+  d.appendChild(felt('Til','time', S.tilgjengelighet.til, null, 'st-til', function(x){ S.tilgjengelighet.til = x; }));
+  k.appendChild(d);
+  [['man','Mandag'],['tir','Tirsdag'],['ons','Onsdag'],['tor','Torsdag'],
+   ['fre','Fredag'],['lor','Lørdag'],['son','Søndag']].forEach(function(p){
+    k.appendChild(bryter(p[1], null, S.tilgjengelighet.dager, p[0], 'st-dag-' + p[0]));
+  });
+  b.appendChild(k);
+
+  var t = kort('Slik regnes belegget', 'CoachAvailability, Booking');
+  if (S.tilgjengelighet.satt){
+    var timer = 0;
+    var fra = S.tilgjengelighet.fra.split(':'), til = S.tilgjengelighet.til.split(':');
+    var perDag = (+til[0]*60 + +til[1] - (+fra[0]*60 + +fra[1])) / 60;
+    Object.keys(S.tilgjengelighet.dager).forEach(function(d2){
+      if (S.tilgjengelighet.dager[d2]) timer += perDag; });
+    t.appendChild(rad('Tilgjengelig per uke', timer.toString().replace('.', ',') + ' t'));
+    t.appendChild(rad('Tilgjengelig per dag', perDag.toString().replace('.', ',') + ' t'));
+    t.appendChild(rad('Sperret egen tid','trekkes fra','settes per dag i kalenderen'));
+  } else {
+    var tf = el('div','tomflate');
+    tf.appendChild(el('h3', null, 'Ingen arbeidsuke satt'));
+    tf.appendChild(el('p', null,
+      'Uten en arbeidsuke bruker kalenderen 05:00–23:00 som nevner. ' +
+      'Sett tidene over, så regner den mot de timene du faktisk jobber.'));
+    t.appendChild(tf);
+  }
+  b.appendChild(t);
+  b.appendChild(brukt(['agencyos-kalender · nevneren i beleggsprosenten',
+                       'booking · hvilke luker som kan legges ut',
+                       'workbench · hvor økter kan plasseres']));
+},
+
+anlegg: function(b){
+  var k = kort('Anlegg', 'User (homeClub), Booking');
+  k.appendChild(el('p', null,
+    'Anlegg er STED, ikke ressurs. Coachens tid er ressursen — derfor ' +
+    'har kalenderen én kolonne, ikke én per rom. Simulatortid selges ikke.'));
+  var l = el('div','liste');
+  S.anlegg.forEach(function(a, i){
+    var r = el('div','lrad');
+    var d = el('div');
+    d.appendChild(document.createTextNode(a.n));
+    d.appendChild(el('small', null, a.type + ' · ' + a.sted));
+    r.appendChild(d);
+    var e = el('button','btn sm','Rediger'); e.type = 'button';
+    e.dataset.odId = 'st-anlegg-' + i;
+    e.style.marginLeft = 'auto';
+    e.addEventListener('click', function(){ toast('Åpner ' + a.n + '.'); });
+    r.appendChild(e);
+    l.appendChild(r);
+  });
+  k.appendChild(l);
+  b.appendChild(k);
+  b.appendChild(brukt(['agencyos-kalender · sted per avtale',
+                       'playerhq-plan · hvor økta er']));
+},
+
+team: function(b){
+  var k = kort('Team og roller', 'TeamMember', true);
+  var l = el('div','liste');
+  S.team.forEach(function(t, i){
+    var r = el('div','lrad');
+    var d = el('div');
+    d.appendChild(document.createTextNode(t.n));
+    d.appendChild(el('small', null, t.r));
+    r.appendChild(d);
+    var s = el('span','tag', 'ser ' + t.ser); s.style.marginLeft = 'auto';
+    r.appendChild(s);
+    if (i > 0){
+      var e = el('button','btn sm','Endre tilgang'); e.type = 'button';
+      e.dataset.odId = 'st-team-' + i;
+      e.addEventListener('click', function(){ toast('Tilgang for ' + t.n + '.'); });
+      r.appendChild(e);
+    }
+    l.appendChild(r);
+  });
+  k.appendChild(l);
+  b.appendChild(k);
+  b.appendChild(brukt(['agencyos-spillere · hvem som er synlig for hvem',
+                       'innlogging · hvilken flate en rolle havner på']));
+},
+
+integr: function(b){
+  var k = kort('Integrasjoner', 'Integration', true);
+  var l = el('div','liste');
+  S.integrasjoner.forEach(function(g, i){
+    var r = el('div','lrad');
+    var d = el('div');
+    d.appendChild(document.createTextNode(g.n));
+    d.appendChild(el('small', null, g.d));
+    r.appendChild(d);
+    var st = el('span','status ' + (g.s === 'ok' ? 'ok' : g.s === 'feil' ? 'feil' : ''),
+      g.s === 'ok' ? 'tilkoblet' : g.s === 'feil' ? 'feiler' : 'ikke koblet');
+    st.style.marginLeft = 'auto';
+    r.appendChild(st);
+    var e = el('button','btn sm', g.s === 'ok' ? 'Koble fra' : 'Koble til'); e.type = 'button';
+    e.dataset.odId = 'st-integr-' + i;
+    e.addEventListener('click', function(){
+      g.s = g.s === 'ok' ? 'av' : 'ok'; renderPanel();
+      si(g.n + ' er ' + (g.s === 'ok' ? 'koblet til' : 'koblet fra') + '.');
+      toast(g.n + ' · ' + (g.s === 'ok' ? 'tilkoblet' : 'frakoblet'));
+    });
+    r.appendChild(e);
+    l.appendChild(r);
+  });
+  k.appendChild(l);
+  b.appendChild(k);
+  b.appendChild(brukt(['agencyos-kalender · Google Calendar toveis',
+                       'betaling · Stripe',
+                       'spillerprofil · TrackMan-økter']));
+},
+
+fasit: function(b){
+  var k = kort('Fasit', 'CanonVersion', true);
+  k.appendChild(el('p', null,
+    'Dette er lesetilgang. Endringer i fasiten skjer i ak-second-brain og ' +
+    'i repoet, ikke her — men versjonen må være synlig, ellers vet ingen ' +
+    'hva systemet faktisk kjører på.'));
+  S.fasit.forEach(function(f){ k.appendChild(rad(f.n, f.v, f.d)); });
+  b.appendChild(k);
+
+  var a = kort('Åpne spørsmål før kodemigrasjon', 'ingen — dette er prosjektstatus');
+  ['Putt-rader uten distanceToPin: hvordan migreres meter til fot',
+   'PR1–PR5 → fire pressverdier: hvilken mapping',
+   'TEK-andel: regnes av treningstid eller av all tid',
+   '/admin/queue: behold med redirect, eller fjern'].forEach(function(t, i){
+    a.appendChild(rad((i+1) + '. ' + t, 'ubesvart'));
+  });
+  b.appendChild(a);
+  b.appendChild(brukt(['workbench · AK-formelens slots og verdier',
+                       'fangstsheet · chip-avledning',
+                       'all UI-tekst · ordlista er stavefasit']));
+}
+};
+
+function renderPanel(){
+  var s = SEKSJONER.filter(function(x){ return x.k === valgt; })[0];
+  document.getElementById('pTittel').textContent = s.n;
+  document.getElementById('pSub').textContent = s.g;
+  var b = document.getElementById('pBody'); b.innerHTML = '';
+  BYGG[s.k](b);
+  renderLagre();
+}
+
+function renderLagre(){
+  var w = document.getElementById('pLagre'); w.innerHTML = '';
+  w.appendChild(el('span','eyebrow', endret ? 'ulagrede endringer' : 'alt er lagret 09:12'));
+  var avbryt = el('button','btn','Forkast'); avbryt.type = 'button';
+  avbryt.dataset.odId = 'st-forkast';
+  if (!endret) avbryt.setAttribute('aria-disabled','true');
+  avbryt.addEventListener('click', function(){
+    if (!endret) return;
+    endret = false; renderPanel();
+    si('Endringene er forkastet.'); toast('Forkastet');
+  });
+  var lagre = el('button','btn ink','Lagre'); lagre.type = 'button';
+  lagre.dataset.odId = 'st-lagre';
+  if (!endret) lagre.setAttribute('aria-disabled','true');
+  lagre.addEventListener('click', function(){
+    if (!endret) return;
+    endret = false; renderLagre();
+    si('Lagret. Endringen slår gjennom på alle flater som leser denne verdien.');
+    toast('Lagret · slår gjennom overalt');
+  });
+  w.appendChild(avbryt); w.appendChild(lagre);
+}
+
+/* ── Tema ────────────────────────────────────────────────────── */
+var KEY = 'akhq-theme-agencyos';
+var saved = localStorage.getItem(KEY);
+if (saved) document.documentElement.dataset.theme = saved;
+document.getElementById('themeBtn').addEventListener('click', function(){
+  var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem(KEY, next);
+  this.setAttribute('aria-label', next === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
+});
+
+/* Ankomst: står noe uløst, åpner flata på det. Ellers på Konto.
+   En innstillingsflate som alltid åpner på samme sted, tvinger deg til å
+   lete etter det ene som faktisk trenger deg. */
+(function ankomst(){
+  var u = uloste();
+  valgt = u.length ? u[0] : 'konto';
+  renderNav(); renderPanel();
+  if (window.matchMedia('(min-width:1101px)').matches) document.body.classList.add('vis-panel');
+})();
+})();
+
+</script>
+</body>
+</html>
+

@@ -1,0 +1,54 @@
+<!-- @dsCard group="Fundament" viewport="980x3700" name="ListRow og ListGroup" subtitle="Fire leading-varianter, seks haler — verifisert i tre containerbredder rundt 420px-terskelen" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}</style></head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { ListRow, ListGroup, Panel, Icon, SectionLabel } = window.AKGolfHQClaudePaper_605a48;
+function Stall() {
+  return (<Panel title="Stall · trenger øye" action={<a href="#" style={{font:"600 12.5px/1 var(--ui)",color:"var(--muted)",textDecoration:"none"}}>Alle →</a>} flush dataOdId="panel-stall">
+    <ListGroup dataOdId="list-stall">
+      <ListRow leading="avatar" avatar={{name:"Emma Berg"}} title="Emma Berg" titleBadge={{kind:"tag",text:"SPESIALISERING"}} meta="Wedge 40–70 m · avvik siste tre runder" trailing="value" value="▲ +1,4" href="#emma" dataOdId="stall-emma" />
+      <ListRow leading="avatar" avatar={{name:"Jonas Hult"}} title="Jonas Hult" meta="Putting under krav to økter" trailing="badge" badge={{tone:"warn",text:"Avvik",dot:true}} href="#jonas" dataOdId="stall-jonas" />
+    </ListGroup>
+  </Panel>);
+}
+function Kontroll({ state, set }) {
+  return (<Panel title="Kilder" density="sm" flush dataOdId="panel-kilder">
+    <ListGroup dataOdId="list-kilder">
+      <ListRow leading="status" status="done" title="Oppvarming · 15 slag" meta="Fullført 08:14" trailing="value" value="15/15" />
+      <ListRow leading="icon" icon={<Icon name="plan" />} title="Google Calendar" meta="Sist synkronisert 07:40" trailing="toggle" toggleChecked={state} onToggle={set} dataOdId="kilde-gcal" />
+      <ListRow leading="icon" icon={<Icon name="ai" />} title="Caddie-forslag" titleBadge={{tone:"ny",text:"Ny"}} trailing="action" actionLabel="Koble til" dataOdId="kilde-caddie" />
+    </ListGroup>
+  </Panel>);
+}
+function Bleed() {
+  return (<Panel title="flush + bleed" flush bleed dataOdId="panel-bleed">
+    <ListGroup dataOdId="list-bleed">
+      <ListRow leading="avatar" avatar={{name:"Emma Berg"}} title="Emma Berg" meta="Gruppe ≈428 — over terskelen, bevisst" trailing="value" value="▲ +1,4" href="#b1" dataOdId="bleed-emma" />
+      <ListRow leading="status" status="active" title="Wedge-stige 40–70 m" meta="Full spaltebredde, trenger ikke strammere polstring" trailing="value" value="60 %" />
+    </ListGroup>
+  </Panel>);
+}
+function Width({ px, note, children }) {
+  return (<div style={{display:"grid",gap:"var(--s2)",justifyItems:"start"}}>
+    <SectionLabel as="div">Container {px} px{note ? " · " + note : ""}</SectionLabel>
+    <div className="cw" style={{width:px}}>{children}</div>
+  </div>);
+}
+function Specimen() {
+  const [gcal, setGcal] = React.useState(true);
+  const rows = (<div style={{display:"grid",gap:"var(--s4)"}}><Stall /><Kontroll state={gcal} set={setGcal} /></div>);
+  return (<div style={{display:"grid",gap:"var(--s5)"}}>
+    <Width px={860} note="AgencyOS hovedspalte · pad-x 6, gap 12">{rows}</Width>
+    <Width px={500} note="over terskelen · gruppe ≈462, uendret">{rows}</Width>
+    <Width px={430} note="PlayerHQ-kolonne · gruppe ≈392 → pad-x 0, gap 10">{rows}</Width>
+    <Width px={430} note="unntaket: flush+bleed · gruppe ≈428, fyrer ikke"><Bleed /></Width>
+  </div>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+</script></body></html>

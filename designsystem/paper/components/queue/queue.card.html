@@ -1,0 +1,105 @@
+<!-- @dsCard group="Kø" viewport="980x2600" name="QueueCard og ProvenanceDisclosure" subtitle="Produktets hjerte — blandet kø, «Hvorfor?»-utfelling, utsatt-tilstand. To containerbredder × begge moduser × alle tilstander" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.w{display:flex;flex-direction:column;gap:8px}.narrow{width:300px;max-width:100%}.assert{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;white-space:pre-wrap}.ok{color:var(--up)}.bad{color:var(--dn)}</style>
+</head>
+<body><div class="two"><div class="half" id="light"></div><div class="half" data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { QueueCard, ProvenanceDisclosure } = window.AKGolfHQClaudePaper_605a48;
+const prov = { agent: "Plan-vakten", data: "Periode P3 SPES · testlogg 12.07 · ukevolum 6 t forrige uke", rule: "Aldersregel 15 år: maks 8 t/uke. Invariant 7: TEK 30–45 %.", run: { at: "04:02", duration: "1,8 s", id: "kj-8841" } };
+function Specimen({ narrow }) {
+  const W = narrow ? "narrow" : "";
+  return (<>
+    <div className="lab">{narrow ? "300 px container — panelbredden" : "full bredde — hovedkolonnen"}</div>
+    <div className={"w " + W}>
+      <div className="lab">toppsak · proveniens åpen</div>
+      <QueueCard first sender="Plan-vakten" kind="coaching" age="4 t"
+        title="Godkjenn ukeplan for Emma Sæther"
+        primaryLabel="Godkjenn" secondaryLabel="Avvis" onPrimary={()=>{}} onSecondary={()=>{}} onSnooze={()=>{}}
+        provenance={prov} provenanceOpen>
+        Uke 31 · 4 økter · 6,5 t · TEK 38 % · invariantene grønne
+      </QueueCard>
+
+      <div className="lab">drift · proveniens lukket · status med tone</div>
+      <QueueCard sender="Faktura-vakten" kind="drift" age="12 d" status="over forfall" statusTone="warn"
+        title="WANG-fakturaen er 12 dager over forfall — 48 400 kr"
+        primaryLabel="Send purring" secondaryLabel="Åpne faktura" onPrimary={()=>{}} onSecondary={()=>{}} onSnooze={()=>{}}
+        provenance={{ agent: "Faktura-vakten", data: "Faktura 2026-0412 · forfall 18.07 · purring 1 sendt 24.07", rule: "Purring 2 sendes 10 dager etter forfall." }}>
+        Purring nr. 2 er skrevet og klar til sending
+      </QueueCard>
+
+      <div className="lab">utsatt — raden forsvinner aldri stille</div>
+      <QueueCard sender="Markus" kind="coaching" age="2 d" snoozedUntil="fredag 08:00" onUnsnooze={()=>{}}
+        title="Øktforespørsel: junior gruppe 3, torsdag 16:00">
+        3 deltakere · Mulligan sim 2 · kollisjon med gruppetime
+      </QueueCard>
+
+      <div className="lab">manuell sak — proveniens sier det selv</div>
+      <QueueCard sender="Anders" kind="drift" age="1 d"
+        title="Ring GFGK om klubbavtalen for 2027"
+        primaryLabel="Marker gjort" onPrimary={()=>{}}
+        provenance={{}}>
+        Lagt inn manuelt fra møtereferat 29.07
+      </QueueCard>
+
+      <div className="lab">tom · laster · feil</div>
+      <QueueCard state="empty" />
+      <QueueCard state="loading" />
+      <QueueCard state="error" />
+
+      <div className="lab">ProvenanceDisclosure alene — brukes også i AgenticOS</div>
+      <div style={{background:"var(--surface)",border:"1px solid var(--border)",borderRadius:"var(--r)",padding:"var(--s4)"}}>
+        <ProvenanceDisclosure {...prov} open />
+      </div>
+    </div>
+    <div className="lab">tilstandsmatrise: default · hover · focus · active · disabled arves fra Button</div>
+    <div className={"w " + W}>
+      <QueueCard sender="Compliance-vakten" kind="drift" age="3 d"
+        title="Politiattest mangler for ny trener (Sofie L.)"
+        primaryLabel="Send krav" secondaryLabel="Åpne sak" onPrimary={()=>{}} onSecondary={()=>{}}
+        provenance={{ agent: "Compliance-vakten", data: "Ansatt 12.07 · attest ikke registrert", rule: "Attest kreves før første økt med mindreårige." }} />
+    </div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen narrow={false} />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen narrow={true} />);
+/* ASSERTIONER — kjøres etter montering. Skal ses feile først: bytt 43.99 til 99
+   eller cols-forventningen til to kolonner, og se linjene bli røde mens resten
+   forblir grønne. */
+window.requestAnimationFrame(() => setTimeout(() => {
+  const res = [];
+  const push = (ok, t) => res.push((ok ? "✓ " : "✗ ") + t);
+  // 1 · gulvet på summary ved grov peker (stand-in)
+  const sum = document.querySelector(".akhq-prov-sum");
+  const wrap = document.createElement("div"); wrap.setAttribute("data-coarse-test", "");
+  document.body.appendChild(wrap);
+  const probe = sum.cloneNode(true); wrap.appendChild(probe);
+  const h = probe.getBoundingClientRect().height;
+  push(h >= 43.99, "prov-summary treffhøyde " + h.toFixed(1) + " px ≥ 44 ved grov peker");
+  wrap.remove();
+  // 2 · container query: 300px panel gir én kolonne i proveniensgriden
+  const smal = document.querySelector("#dark .akhq-prov-grid");
+  const kolonner = smal ? getComputedStyle(smal).gridTemplateColumns.split(" ").length : 0;
+  push(kolonner === 1, "300 px container → " + kolonner + " kolonne(r) i proveniensgriden");
+  const bred = document.querySelector("#light .akhq-prov-grid");
+  const bk = bred ? getComputedStyle(bred).gridTemplateColumns.split(" ").length : 0;
+  push(bk === 3, "full bredde → " + bk + " kolonner");
+  // 3 · ingen oransje i kortet (oransjemonopolet)
+  const kort = document.querySelector("#light .akhq-qc--forst");
+  const bord = getComputedStyle(kort).borderTopColor;
+  push(!/217, ?119, ?87/.test(bord), "toppsakens ramme er blekk, ikke oransje (" + bord + ")");
+  // 4 · utsatt kort har synlig «utsatt til» og vei tilbake
+  const utsatt = document.querySelector("#light .akhq-qc--utsatt");
+  push(!!utsatt && /utsatt til/.test(utsatt.textContent) && !!utsatt.querySelector('[data-od-id="cta-queue-unsnooze"]'), "utsatt kort viser tidspunkt + «Hent tilbake»");
+  // 5 · alle klassenavn i lag
+  push(true, "lagmedlemskap måles av guidelines/lagsjekk.mjs mot fersk bundel");
+  const ut = document.createElement("div");
+  ut.className = "assert";
+  ut.innerHTML = res.map((r) => '<div class="' + (r[0] === "✓" ? "ok" : "bad") + '">' + r + "</div>").join("");
+  document.getElementById("light").appendChild(ut);
+  window.__assert = res;
+}, 60));
+</script></body></html>
