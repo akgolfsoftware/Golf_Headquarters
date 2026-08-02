@@ -3534,7 +3534,12 @@ model KnowledgeChunk {
 // Tabellen opprettes kirurgisk via scripts/create-ai-memories-2026-07-27.ts.
 // playerId er plain String (FK med ON DELETE CASCADE ligger i DDL — GDPR:
 // bruker-sletting fjerner alt minne). Leses/skrives via src/lib/ai/memory-store.ts.
-model AiMemory {
+//
+// NB: heter AiPlayerMemory, ikke AiMemory. `AiMemory` (tabell `ai_memory`) er en
+// eldre, urelatert nøkkel/verdi-modell lenger oppe i filen — de to ble utviklet
+// på hver sin gren og kolliderte ved merge. Tabellnavnet `ai_memories` er uendret,
+// og all tilgang går uansett via rå SQL i memory-store.ts (pgvector).
+model AiPlayerMemory {
   id         String                       @id
   playerId   String
   kind       String // EPISODIC | SEMANTIC | PROCEDURAL
