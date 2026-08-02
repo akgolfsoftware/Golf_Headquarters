@@ -9,6 +9,8 @@
 
 import "server-only";
 import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "../client";
+import { kjorGuards } from "@/lib/agenticos";
+import { loggInteraksjon } from "@/lib/agenticos/logg";
 import { ALL_SKILLS } from "../skills";
 import { prisma } from "@/lib/prisma";
 import { filtrerTilCoachInnsyn } from "@/lib/health/samtykke";
@@ -17,6 +19,10 @@ import { hentRestitusjonsstatusForFlere } from "@/lib/health/restitusjonsstatus"
 const SKILLS_BLOCK = ALL_SKILLS.map(
   (s) => `\n## ${s.name}\n${s.knowledge}`,
 ).join("\n");
+
+/** Versjon av prompten. BUMP ved endring i DAILY_BRIEF_SYSTEM. */
+export const DAILY_BRIEF_PROMPT_ID = "daily-brief";
+export const DAILY_BRIEF_PROMPT_VERSJON = 1;
 
 export const DAILY_BRIEF_SYSTEM = `
 Du er Daily Brief-agent for AK Golf HQ.
@@ -85,18 +91,46 @@ export async function genererDailyBrief(opts: {
   }
 
   const userPrompt = byggUserPrompt(metrics);
+  const modell = modelFor("daily-brief");
+  const start = Date.now();
   const response = await anthropic.messages.create({
-    model: modelFor("daily-brief"),
+    model: modell,
     max_tokens: AI_MAX_TOKENS,
     system: DAILY_BRIEF_SYSTEM,
     messages: [{ role: "user", content: userPrompt }],
   });
+  const latencyMs = Date.now() - start;
 
   const text = response.content
     .filter((b) => b.type === "text")
     .map((b) => (b.type === "text" ? b.text : ""))
     .join("\n")
     .trim();
+
+  // Briefen har ingen godkjenn/avvis-flyt, så utfallet forblir PENDING. Verdien
+  // her er kostnadsdata: uten den er «hva koster AI-en per måned» ufullstendig.
+  await loggInteraksjon({
+    prompt: {
+      promptId: DAILY_BRIEF_PROMPT_ID,
+      promptVersjon: DAILY_BRIEF_PROMPT_VERSJON,
+      system: DAILY_BRIEF_SYSTEM,
+      kontekstKilder: ["SPILLERDATA"],
+    },
+    klassifisering: {
+      intent: "drift",
+      domene: "GENERELT",
+      rolle: "ADMIN",
+      mindreaarig: false,
+      confidence: 1,
+    },
+    modell,
+    tokensInn: response.usage?.input_tokens,
+    tokensUt: response.usage?.output_tokens,
+    latencyMs,
+    kontekstKilder: ["SPILLERDATA"],
+    guardTreff: kjorGuards(text),
+    agentNavn: "daily-brief",
+  });
 
   return {
     brief: text || byggDemoBrief(metrics),

@@ -7,6 +7,8 @@
 
 import "server-only";
 import { anthropic, modelFor, isAiEnabled } from "../client";
+import { kjorGuards } from "@/lib/agenticos";
+import { loggInteraksjon } from "@/lib/agenticos/logg";
 import { prisma } from "@/lib/prisma";
 
 export const VINN_TILBAKE_SYSTEM = `
@@ -32,7 +34,16 @@ export type InaktivSpillerForslag = {
   foreslattMelding: string;
   sisteFokus: string | null;
   sisteMaal: string | null;
+  /**
+   * AgenticOS-interaksjonen som skrev meldingen. Null når demo-fallbacken
+   * kjørte, eller når modellkallet feilet — da fantes det ikke noe å måle.
+   */
+  interaksjonId?: string | null;
 };
+
+/** Versjon av vinn-tilbake-prompten. BUMP ved endring i VINN_TILBAKE_SYSTEM. */
+export const VINN_TILBAKE_PROMPT_ID = "vinn-tilbake";
+export const VINN_TILBAKE_PROMPT_VERSJON = 1;
 
 export async function identifiserInaktiveSpillere(
   coachId: string,
@@ -123,13 +134,14 @@ export async function identifiserInaktiveSpillere(
 
     const sisteFokus = sisteOkt?.title ?? null;
 
-    const melding = await byggMelding({
+    const { melding, interaksjonId } = await byggMelding({
       spillerNavn: sp.name,
       coachNavn,
       dagerInaktiv,
       sisteFokus,
       sisteMaalTitle: sisteMaal?.title ?? sp.ambition ?? null,
       hcp: sp.hcp,
+      spillerId: sp.id,
     });
 
     forslag.push({
@@ -140,6 +152,7 @@ export async function identifiserInaktiveSpillere(
       foreslattMelding: melding,
       sisteFokus,
       sisteMaal: sisteMaal?.title ?? null,
+      interaksjonId,
     });
   }
 
@@ -150,6 +163,8 @@ export async function identifiserInaktiveSpillere(
 
 // ---------- Melding-bygging ----------
 
+type MeldingResultat = { melding: string; interaksjonId: string | null };
+
 async function byggMelding(opts: {
   spillerNavn: string;
   coachNavn: string;
@@ -157,10 +172,11 @@ async function byggMelding(opts: {
   sisteFokus: string | null;
   sisteMaalTitle: string | null;
   hcp: number | null;
-}): Promise<string> {
+  spillerId: string;
+}): Promise<MeldingResultat> {
   // Demo-fallback uten Claude.
   if (!isAiEnabled() || !anthropic) {
-    return byggDemoMelding(opts);
+    return { melding: byggDemoMelding(opts), interaksjonId: null };
   }
 
   const fornavn = opts.spillerNavn.split(" ")[0];
@@ -179,20 +195,50 @@ Avslutt med en konkret invitasjon (booke time, planlegge runde, etc.).
 `.trim();
 
   try {
+    const modell = modelFor("caddie-proactive");
+    const start = Date.now();
     const response = await anthropic.messages.create({
-      model: modelFor("caddie-proactive"),
+      model: modell,
       max_tokens: 300,
       system: VINN_TILBAKE_SYSTEM,
       messages: [{ role: "user", content: userPrompt }],
     });
+    const latencyMs = Date.now() - start;
     const text = response.content
       .filter((b) => b.type === "text")
       .map((b) => (b.type === "text" ? b.text : ""))
       .join("\n")
       .trim();
-    return text || byggDemoMelding(opts);
+
+    // Meldingen går til en spiller, så domenet er ikke golfmetodikk — ingen
+    // FASIT-oppslag er relevant her.
+    const interaksjonId = await loggInteraksjon({
+      prompt: {
+        promptId: VINN_TILBAKE_PROMPT_ID,
+        promptVersjon: VINN_TILBAKE_PROMPT_VERSJON,
+        system: VINN_TILBAKE_SYSTEM,
+        kontekstKilder: ["SPILLERDATA"],
+      },
+      klassifisering: {
+        intent: "fritekst",
+        domene: "GENERELT",
+        rolle: "ADMIN",
+        mindreaarig: false,
+        confidence: 1,
+      },
+      modell,
+      tokensInn: response.usage?.input_tokens,
+      tokensUt: response.usage?.output_tokens,
+      latencyMs,
+      kontekstKilder: ["SPILLERDATA"],
+      guardTreff: kjorGuards(text),
+      userId: opts.spillerId,
+      agentNavn: "caddie-proactive",
+    });
+
+    return { melding: text || byggDemoMelding(opts), interaksjonId };
   } catch {
-    return byggDemoMelding(opts);
+    return { melding: byggDemoMelding(opts), interaksjonId: null };
   }
 }
 

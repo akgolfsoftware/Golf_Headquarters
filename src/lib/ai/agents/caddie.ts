@@ -12,6 +12,8 @@
 import "server-only";
 import type { MessageParam } from "@anthropic-ai/sdk/resources/messages";
 import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "../client";
+import { kjorGuards } from "@/lib/agenticos";
+import { loggInteraksjon } from "@/lib/agenticos/logg";
 import { ALL_SKILLS } from "../skills";
 import { ALL_TOOLS, EXEC_BY_NAME } from "../tools";
 import { recallMemory, formatMemoryForPrompt } from "../memory";
@@ -19,6 +21,10 @@ import { recallMemory, formatMemoryForPrompt } from "../memory";
 const SKILLS_BLOCK = ALL_SKILLS.map(
   (s) => `\n## ${s.name}\n${s.knowledge}`,
 ).join("\n");
+
+/** Versjon av denne Caddie-foundation-prompten. BUMP ved endring. */
+export const CADDIE_FOUNDATION_PROMPT_ID = "caddie-foundation";
+export const CADDIE_FOUNDATION_PROMPT_VERSJON = 1;
 
 export const CADDIE_SYSTEM_PROMPT = `
 Du er Caddie, AI-assistent for golfcoachen Anders Kristiansen i AK Golf HQ.
@@ -108,12 +114,45 @@ export async function chatCaddie(
   const toolCalls: ToolCallLog[] = [];
 
   for (let i = 0; i < maxIter; i++) {
+    const modell = modelFor("caddie");
+    const start = Date.now();
     const response = await anthropic.messages.create({
-      model: modelFor("caddie"),
+      model: modell,
       max_tokens: AI_MAX_TOKENS,
       system: systemPrompt,
       messages: conversation,
       tools: ALL_TOOLS,
+    });
+
+    // Én interaksjon per runde i tool-loopen — hver runde er et eget
+    // modellkall som koster penger.
+    await loggInteraksjon({
+      prompt: {
+        promptId: CADDIE_FOUNDATION_PROMPT_ID,
+        promptVersjon: CADDIE_FOUNDATION_PROMPT_VERSJON,
+        system: systemPrompt,
+        kontekstKilder: ["SPILLERDATA"],
+      },
+      klassifisering: {
+        intent: "fritekst",
+        domene: "GENERELT",
+        rolle: "ADMIN",
+        mindreaarig: false,
+        confidence: 1,
+      },
+      modell,
+      tokensInn: response.usage?.input_tokens,
+      tokensUt: response.usage?.output_tokens,
+      latencyMs: Date.now() - start,
+      kontekstKilder: ["SPILLERDATA"],
+      guardTreff: kjorGuards(
+        response.content
+          .filter((b) => b.type === "text")
+          .map((b) => (b.type === "text" ? b.text : ""))
+          .join("\n"),
+      ),
+      userId: opts.userId,
+      agentNavn: "caddie-foundation",
     });
 
     // Hvis modellen er ferdig (ingen tool_use), returner tekst.

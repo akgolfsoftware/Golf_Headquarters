@@ -11,6 +11,8 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "@/lib/ai/client";
+import { kjorGuards } from "@/lib/agenticos";
+import { loggInteraksjon } from "@/lib/agenticos/logg";
 import { PyramidArea, SkillArea, NgfKategori } from "@/generated/prisma/enums";
 import { DRILL_DRAFT_TOOL } from "./drill-forslag-agent";
 import { masterbrain } from "@/lib/masterbrain";
@@ -36,6 +38,13 @@ function canonSammendrag(): string {
     })
     .join("\n");
 }
+
+/**
+ * Versjon av fabrikk-prompten. BUMP ved endring i SYSTEM eller i
+ * masterbrain-fasiten prompten bygger på.
+ */
+export const FABRIKK_PROMPT_ID = "fabrikk";
+export const FABRIKK_PROMPT_VERSJON = 1;
 
 const SYSTEM = `
 Du er Fabrikk-agent for AK Golf HQ. Du får en kort tittel + sammendrag fra en
@@ -125,8 +134,10 @@ export async function runFabrikk(): Promise<AgentResult> {
 
     for (const f of funn) {
       try {
+        const modell = modelFor(AGENT_NAME);
+        const start = Date.now();
         const res = await anthropic.messages.create({
-          model: modelFor(AGENT_NAME),
+          model: modell,
           max_tokens: AI_MAX_TOKENS,
           system: SYSTEM,
           messages: [
@@ -136,11 +147,39 @@ export async function runFabrikk(): Promise<AgentResult> {
             },
           ],
         });
+        const latencyMs = Date.now() - start;
         const tekst = res.content
           .filter((b) => b.type === "text")
           .map((b) => (b.type === "text" ? b.text : ""))
           .join("\n")
           .trim();
+
+        // Ett modellkall per radar-funn, så én interaksjon per funn. Logges før
+        // parsing: kallet kostet penger uansett om svaret var brukbart.
+        const interaksjonId = await loggInteraksjon({
+          prompt: {
+            promptId: FABRIKK_PROMPT_ID,
+            promptVersjon: FABRIKK_PROMPT_VERSJON,
+            system: SYSTEM,
+            kontekstKilder: ["FASIT"],
+          },
+          klassifisering: {
+            intent: "drill",
+            domene: "TEKNIKK",
+            rolle: "ADMIN",
+            mindreaarig: false,
+            confidence: 1,
+          },
+          modell,
+          tokensInn: res.usage?.input_tokens,
+          tokensUt: res.usage?.output_tokens,
+          latencyMs,
+          kontekstKilder: ["FASIT"],
+          guardTreff: kjorGuards(tekst),
+          agentNavn: AGENT_NAME,
+          referanseId: f.id,
+        });
+
         const parsed = parseForslag(tekst);
         if (!parsed) {
           feilet++;
@@ -172,6 +211,7 @@ export async function runFabrikk(): Promise<AgentResult> {
                 begrunnelse: parsed.begrunnelse,
                 radarFunnId: f.id,
               },
+              interaksjonId,
               previewText: `${parsed.navn} — inspirert av «${f.tittel}» (${f.kildeNavn})`,
               status: "PENDING",
             },

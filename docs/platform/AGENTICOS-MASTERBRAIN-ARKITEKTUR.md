@@ -711,18 +711,39 @@ hullet kan ikke gjenoppstå ved at noen glemmer det andre kallet. Låst med test
 **Lærdom:** når en løkke lukkes ett sted, søk etter alle skrivere av statusfeltet — og les treffene nøye.
 Å gjøre de to operasjonene til én er sterkere enn å huske å kalle begge.
 
-#### 1.3 De seks LLM-agentene som ikke logger
+#### 1.3 LLM-agentene som ikke logget — **utført 2026-08-02**
 
-`drill-forslag`, `fabrikk`, `caddie-proactive` (skriver `CaddieDraft`) og `daily-brief`, `live-coach`,
-`peaking` (ren tekst). De kaller modeller og koster penger uten å bli målt.
+Planen sa seks agenter. En systematisk sveip — «hvilke filer kaller `messages.create` eller `streamText`
+uten å kalle `loggInteraksjon`» — ga et mer presist bilde:
 
-De tre første er billige å koble: `CaddieDraft.interaksjonId` finnes allerede, så de trenger bare
-`loggInteraksjon` + stemple id-en. De tre siste har ingen utfallssignal — de logges med `utfall = PENDING`
-og gir kostnadsdata, ikke kvalitetsdata. Det er fortsatt verdt det: uten dem er «hva koster AI-en per
-abonnent» ufullstendig.
+| Agent | Logger nå | Utfall |
+|---|---|---|
+| `drill-forslag` | ja, med `interaksjonId` på hvert utkast | GODKJENT/AVVIST via 1.2 |
+| `fabrikk` | ja, én interaksjon per radar-funn | GODKJENT/AVVIST via 1.2 |
+| `caddie-proactive` | ja — kallet ligger i `vinn-tilbake.byggMelding`, én per spiller | GODKJENT/AVVIST via 1.2 |
+| `daily-brief` | ja | PENDING (ingen godkjenningsflyt) |
+| `performance-peaking` | ja | PENDING (vises inline) |
+| `live-coach` | ja | PENDING (går rett til spiller) |
+| `sg-interpretation` | ja, **med FASIT** | PENDING |
+| `caddie-foundation` (`ai/agents/caddie.ts`) | ja, én per runde i tool-loopen | PENDING |
 
-Rekkefølge etter verdi: `drill-forslag` og `fabrikk` først (de har utfall og kjører ukentlig),
-`caddie-proactive` deretter, så de tre tekst-agentene.
+**To korreksjoner planen trengte:**
+
+1. `caddie-proactive` kaller ingen modell selv. Modellkallet ligger et lag ned, i
+   `vinn-tilbake.byggMelding`. Loggingen hører hjemme der, og `interaksjonId` tres opp gjennom
+   `InaktivSpillerForslag`.
+2. Sveipen fant **to agenter planen ikke nevnte**: `sg-interpretation` og `caddie-foundation`. Begge er
+   foundation-lag som ennå ikke kalles fra noen rute, men begge ville blitt usynlige kostnader den dagen de
+   tas i bruk. De er koblet på nå, så regelen holder uten unntak.
+
+`sg-interpretation` fikk også FASIT-kontekst — den tolker SG-tall, som er nettopp der bånd, kandidatfeil og
+hypotese-formuleringen skal komme fra fasiten framfor modellens hukommelse.
+
+**Invarianten er nå sjekkbar:** ingen fil i `src/lib/agents/`, `src/lib/ai/agents/` eller `src/app/api/`
+kaller en modell uten å logge. Sveipen over er kommandoen som verifiserer det.
+
+Alle demo-/fallback-grener er bevisst utelatt: uten modellkall finnes det ingenting å måle, og en rad uten
+modell ville forurenset kost per svar.
 
 #### 1.4 «Hvorfor avvist» i godkjenningskøen
 
@@ -817,7 +838,7 @@ Disse er ikke tekniske oppgaver. De står i veien for konkrete steg over.
 0.  CI-gaten                   ← blokkerer alt. Ikke en agent-oppgave.
 1.1 FASIT-kontekst             ✔ utført 2026-08-02
 1.2 tett hullene i løkka       ✔ utført 2026-08-02
-1.3 seks agenter på loggen     ← stopper målefri pengebruk
+1.3 agenter på loggen          ✔ utført 2026-08-02
 1.4 «hvorfor avvist»           ← åpner den beste datakilden
 2.1 knowledge_chunks           ← gjør rag-corpus reell
 2.2 prompt-eval                ← porten mot forfall
@@ -834,12 +855,13 @@ Verifisert 2026-08-02, så planen bygger på tilstand og ikke hukommelse:
 | Skriver til `AiInteraksjon` | `ai-plan`, `caddie-chat`, `plan-revisjon` |
 | Lukker utfall | `ai-plan` (ved lagring), `plan-revisjon` (ved godkjenning/avvisning), Caddie via alle tre veier etter 1.2 |
 | Rapporterer `FASIT` | alle tre, etter 1.1 |
-| Kaller modell uten å logge | 6 agenter (se 1.3) |
+| Kaller modell uten å logge | ingen — verifisert med sveip |
 | Tabeller i produksjon | `ai_interaksjoner` (RLS på), `caddie_drafts.interaksjonId`, `plan_actions.interaksjonId` |
 | Promptversjoner | `ai-plan@2`, `caddie-chat@2`, `plan-revisjon@2` |
 
-**Tolk kostnadstallene med forbehold.** Godkjenningsraten er riktig etter 1.2, men kost per abonnent er
-fortsatt ufullstendig så lenge seks LLM-agenter ikke logger (1.3).
+**Tallene er nå dekkende.** Godkjenningsraten er riktig etter 1.2, og alle modellkall logges etter 1.3, så
+kost per bruker og per promptversjon kan leses direkte. Det som fortsatt mangler for full læring er
+begrunnelsen bak avvisninger (1.4).
 - **SG-tolkning for spilleren** som første helt nye flate. Merk at den må formuleres som hypotese, og ikke
   kan foreskrive navngitte drills før drill-banken er bygget på nytt.
 - **«Hvorfor avvist»-feltet** i godkjenningskøen, som mater `settUtfall` med den mest verdifulle

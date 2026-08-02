@@ -8,9 +8,15 @@
 
 import "server-only";
 import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "../client";
+import { kjorGuards } from "@/lib/agenticos";
+import { loggInteraksjon } from "@/lib/agenticos/logg";
 import { bompaSkill } from "../skills/bompa-perioder";
 import { pyramideSkill } from "../skills/pyramide-taksonomi";
 import { prisma } from "@/lib/prisma";
+
+/** Versjon av prompten. BUMP ved endring i PERFORMANCE_PEAKING_SYSTEM. */
+export const PERFORMANCE_PEAKING_PROMPT_ID = "performance-peaking";
+export const PERFORMANCE_PEAKING_PROMPT_VERSJON = 1;
 
 export const PERFORMANCE_PEAKING_SYSTEM = `
 Du er Performance Peaking-agent for AK Golf HQ.
@@ -121,17 +127,46 @@ export async function foreslaPeakingPlan(opts: {
   // Med Claude — be om generell råd som tekst (planen er deterministisk).
   const userPrompt = byggUserPrompt(spiller, tournament, ukerTilTurnering, fasePerUke);
   try {
+    const modell = modelFor("performance-peaking");
+    const start = Date.now();
     const response = await anthropic.messages.create({
-      model: modelFor("performance-peaking"),
+      model: modell,
       max_tokens: AI_MAX_TOKENS,
       system: PERFORMANCE_PEAKING_SYSTEM,
       messages: [{ role: "user", content: userPrompt }],
     });
+    const latencyMs = Date.now() - start;
     const text = response.content
       .filter((b) => b.type === "text")
       .map((b) => (b.type === "text" ? b.text : ""))
       .join("\n")
       .trim();
+
+    // Vises inline for coachen og skriver ingen PlanAction, så utfallet forblir
+    // PENDING. Kostnadsdata er poenget her.
+    await loggInteraksjon({
+      prompt: {
+        promptId: PERFORMANCE_PEAKING_PROMPT_ID,
+        promptVersjon: PERFORMANCE_PEAKING_PROMPT_VERSJON,
+        system: PERFORMANCE_PEAKING_SYSTEM,
+        kontekstKilder: ["SPILLERDATA"],
+      },
+      klassifisering: {
+        intent: "plan",
+        domene: "PLAN",
+        rolle: "COACH",
+        mindreaarig: false,
+        confidence: 1,
+      },
+      modell,
+      tokensInn: response.usage?.input_tokens,
+      tokensUt: response.usage?.output_tokens,
+      latencyMs,
+      kontekstKilder: ["SPILLERDATA"],
+      guardTreff: kjorGuards(text),
+      userId: spiller.id,
+      agentNavn: "performance-peaking",
+    });
     return {
       spillerId: spiller.id,
       spillerNavn: spiller.name,

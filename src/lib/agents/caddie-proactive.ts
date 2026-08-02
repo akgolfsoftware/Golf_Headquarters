@@ -53,6 +53,8 @@ export async function runCaddieProactive(): Promise<CaddieProactiveResult> {
     }
     await prisma.caddieDraft.create({
       data: {
+        // Kobler utkastet til modellkallet som skrev meldingen (vinn-tilbake).
+        interaksjonId: sp.interaksjonId ?? null,
         userId: admin.id,
         conversationId: "proactive",
         toolCallId: `proactive_${sp.spillerId}`,

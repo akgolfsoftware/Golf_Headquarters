@@ -10,10 +10,16 @@ import "server-only";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "@/lib/ai/client";
+import { kjorGuards } from "@/lib/agenticos";
+import { loggInteraksjon } from "@/lib/agenticos/logg";
 import { notify } from "@/lib/notifications";
 import { aggregateSg } from "@/lib/sg";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { Prisma } from "@/generated/prisma/client";
+
+/** Versjon av live-coach-prompten. BUMP ved endring i systemteksten. */
+export const LIVE_COACH_PROMPT_ID = "live-coach";
+export const LIVE_COACH_PROMPT_VERSJON = 1;
 
 export const AGENT_NAME = "live-coach-agent";
 
@@ -148,8 +154,10 @@ TONE:
 `.trim();
 
   try {
+    const modell = modelFor(AGENT_NAME);
+    const start = Date.now();
     const respons = await anthropic.messages.create({
-      model: modelFor(AGENT_NAME),
+      model: modell,
       max_tokens: AI_MAX_TOKENS,
       system,
       messages: [
@@ -159,11 +167,39 @@ TONE:
         },
       ],
     });
+    const latencyMs = Date.now() - start;
     const tekst = respons.content
       .filter((b) => b.type === "text")
       .map((b) => (b.type === "text" ? b.text : ""))
       .join("\n")
       .trim();
+
+    // Velkomstmeldingen sendes direkte til spilleren uten godkjenning, så
+    // utfallet forblir PENDING. Guardene er ekstra viktige her: dette er den
+    // eneste flaten der modelltekst når en spiller uten et menneske imellom.
+    await loggInteraksjon({
+      prompt: {
+        promptId: LIVE_COACH_PROMPT_ID,
+        promptVersjon: LIVE_COACH_PROMPT_VERSJON,
+        system,
+        kontekstKilder: ["SPILLERDATA"],
+      },
+      klassifisering: {
+        intent: "fritekst",
+        domene: "GENERELT",
+        rolle: "SPILLER",
+        mindreaarig: false,
+        confidence: 1,
+      },
+      modell,
+      tokensInn: respons.usage?.input_tokens,
+      tokensUt: respons.usage?.output_tokens,
+      latencyMs,
+      kontekstKilder: ["SPILLERDATA"],
+      guardTreff: kjorGuards(tekst),
+      agentNavn: AGENT_NAME,
+    });
+
     return tekst || statiskVelkomst(oktInfo);
   } catch (err) {
     console.error("[live-coach-agent] Claude-kall feilet, bruker statisk fallback", err);

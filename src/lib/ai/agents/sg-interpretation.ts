@@ -6,8 +6,14 @@
 
 import "server-only";
 import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "../client";
+import { byggFasitKontekst, kjorGuards, KONTEKST_BUDSJETT } from "@/lib/agenticos";
+import { loggInteraksjon } from "@/lib/agenticos/logg";
 import { sgInterpretationSkill } from "../skills/sg-interpretation";
 import { prisma } from "@/lib/prisma";
+
+/** Versjon av SG-tolkningsprompten. BUMP ved endring i systemteksten. */
+export const SG_INTERPRETATION_PROMPT_ID = "sg-interpretation";
+export const SG_INTERPRETATION_PROMPT_VERSJON = 1;
 
 export const SG_INTERPRETATION_SYSTEM = `
 Du er SG Interpretation-agent for AK Golf HQ.
@@ -100,18 +106,58 @@ export async function tolkSg(
   }
 
   const userPrompt = byggUserPrompt(spiller.name, runder.length, perKategori, svakesteKategori);
+  // SG-tolkning er nettopp der fasiten hører hjemme: bånd, kandidatfeil og
+  // hypotese-formuleringen kommer fra masterbrain, ikke fra modellens hukommelse.
+  const klassifisering = {
+    intent: "tolk-tall",
+    domene: "SG",
+    rolle: "COACH",
+    mindreaarig: false,
+    confidence: 1,
+  } as const;
+  const fasit = byggFasitKontekst(klassifisering, {
+    sgOmrade: svakesteKategori ?? undefined,
+  });
+  const systemPrompt = fasit
+    ? `${SG_INTERPRETATION_SYSTEM}\n\n<fasit>\n${fasit.innhold.slice(0, KONTEKST_BUDSJETT.FASIT)}\n</fasit>`
+    : SG_INTERPRETATION_SYSTEM;
+  const kontekstKilder = fasit
+    ? (["FASIT", "SPILLERDATA"] as const)
+    : (["SPILLERDATA"] as const);
+
+  const modell = modelFor("sg-interpretation");
+  const start = Date.now();
   const response = await anthropic.messages.create({
-    model: modelFor("sg-interpretation"),
+    model: modell,
     max_tokens: AI_MAX_TOKENS,
-    system: SG_INTERPRETATION_SYSTEM,
+    system: systemPrompt,
     messages: [{ role: "user", content: userPrompt }],
   });
+  const latencyMs = Date.now() - start;
 
   const text = response.content
     .filter((b) => b.type === "text")
     .map((b) => (b.type === "text" ? b.text : ""))
     .join("\n")
     .trim();
+
+  await loggInteraksjon({
+    prompt: {
+      promptId: SG_INTERPRETATION_PROMPT_ID,
+      promptVersjon: SG_INTERPRETATION_PROMPT_VERSJON,
+      system: systemPrompt,
+      kontekstKilder: [...kontekstKilder],
+    },
+    klassifisering,
+    modell,
+    tokensInn: response.usage?.input_tokens,
+    tokensUt: response.usage?.output_tokens,
+    latencyMs,
+    kontekstKilder: [...kontekstKilder],
+    guardTreff: kjorGuards(text),
+    userId: spiller.id,
+    agentNavn: "sg-interpretation",
+  });
 
   return {
     spillerId: spiller.id,

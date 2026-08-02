@@ -11,6 +11,8 @@
 import { prisma } from "@/lib/prisma";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "@/lib/ai/client";
+import { kjorGuards } from "@/lib/agenticos";
+import { loggInteraksjon } from "@/lib/agenticos/logg";
 import { isYoutubeEnabled, searchYoutube, type YoutubeVideo } from "./youtube-search";
 
 export const AGENT_NAME = "drill-forslag";
@@ -116,7 +118,7 @@ export async function runDrillForslag(): Promise<AgentResult> {
       ? await searchYoutube(YT_QUERY[svakeste])
       : [];
 
-    const driller = await genererDriller(
+    const { driller, interaksjonId } = await genererDriller(
       svakeste,
       svakesteVerdi,
       runder.length,
@@ -157,6 +159,7 @@ export async function runDrillForslag(): Promise<AgentResult> {
               svakesteKategori: svakeste,
               videoUrl: d.videoUrl,
             },
+            interaksjonId,
             previewText: `${d.navn} — ${LABEL[svakeste]} (${d.varighetMin} min)${
               d.videoUrl ? " · video" : ""
             }`,
@@ -184,14 +187,24 @@ export async function runDrillForslag(): Promise<AgentResult> {
   });
 }
 
+/** Versjon av drill-forslag-prompten. BUMP ved endring i SYSTEM. */
+export const DRILL_FORSLAG_PROMPT_ID = "drill-forslag";
+export const DRILL_FORSLAG_PROMPT_VERSJON = 1;
+
+type DrillGenerering = {
+  driller: DrillForslag[];
+  /** Null når demo-grenen kjørte — da fantes det ikke noe modellkall å måle. */
+  interaksjonId: string | null;
+};
+
 async function genererDriller(
   kode: SgKode,
   verdi: number,
   antallRunder: number,
   videoer: YoutubeVideo[],
-): Promise<DrillForslag[]> {
+): Promise<DrillGenerering> {
   if (!isAiEnabled() || !anthropic) {
-    return demoDriller(kode);
+    return { driller: demoDriller(kode), interaksjonId: null };
   }
 
   const videoBlokk = videoer.length
@@ -203,8 +216,10 @@ async function genererDriller(
         .join("\n")}`
     : "\n\nIngen YouTube-videoer tilgjengelig — sett videoUrl til null.";
 
+  const modell = modelFor(AGENT_NAME);
+  const start = Date.now();
   const res = await anthropic.messages.create({
-    model: modelFor(AGENT_NAME),
+    model: modell,
     max_tokens: AI_MAX_TOKENS,
     system: SYSTEM,
     messages: [
@@ -216,12 +231,39 @@ async function genererDriller(
       },
     ],
   });
+  const latencyMs = Date.now() - start;
   const tekst = res.content
     .filter((b) => b.type === "text")
     .map((b) => (b.type === "text" ? b.text : ""))
     .join("\n")
     .trim();
-  return parseDriller(tekst, kode, videoer);
+
+  // AgenticOS-loggen. Kun her, ikke i demo-grenen — en rad uten modell ville
+  // forurenset kost per svar.
+  const interaksjonId = await loggInteraksjon({
+    prompt: {
+      promptId: DRILL_FORSLAG_PROMPT_ID,
+      promptVersjon: DRILL_FORSLAG_PROMPT_VERSJON,
+      system: SYSTEM,
+      kontekstKilder: ["SPILLERDATA"],
+    },
+    klassifisering: {
+      intent: "drill",
+      domene: "TEKNIKK",
+      rolle: "ADMIN",
+      mindreaarig: false,
+      confidence: 1,
+    },
+    modell,
+    tokensInn: res.usage?.input_tokens,
+    tokensUt: res.usage?.output_tokens,
+    latencyMs,
+    kontekstKilder: ["SPILLERDATA"],
+    guardTreff: kjorGuards(tekst),
+    agentNavn: AGENT_NAME,
+  });
+
+  return { driller: parseDriller(tekst, kode, videoer), interaksjonId };
 }
 
 // Defensiv parsing: trekk ut JSON-arrayen og valider hvert felt. videoUrl
