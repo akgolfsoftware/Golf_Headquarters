@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 
 import { CoachArsplan } from "./coach-arsplan";
 import { hentWangGruppe } from "../_data/hent-wang-gruppe";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 
-// WANG Årsplan (Coach) – trenerverktøy. ÅPEN tilgang pr nå (Anders' beslutning:
-// innloggingskravet fjernet midlertidig for demo/deling). Fortsatt noindex.
-// Kobler ekte perioder og elevliste fra AgencyOS-gruppa oppå skjermtekst-demoen;
-// live-henting er try/catch-pakket, så bygg krever aldri nåbar database.
+// WANG Årsplan (Coach) – trenerverktøy. Krever innlogget COACH/ADMIN (proxy.ts
+// sperrer allerede uinnloggede; her innsnevres det til trenerrollen). Fortsatt
+// noindex. Kobler ekte perioder og elevliste fra AgencyOS-gruppa oppå
+// skjermtekst-demoen; live-henting er try/catch-pakket, så bygg krever aldri
+// nåbar database.
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
@@ -16,6 +18,7 @@ export const metadata: Metadata = {
 };
 
 export default async function WangCoachPage() {
+  await requirePortalUser({ allow: ["ADMIN", "COACH"], redirectTo: "/team-wang/logg-inn" });
   const live = await hentWangGruppe();
   return <CoachArsplan live={live} />;
 }

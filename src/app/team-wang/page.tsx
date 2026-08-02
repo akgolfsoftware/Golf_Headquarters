@@ -1,12 +1,13 @@
 import { WangFellesside, type Fane } from "./_components/wang-fellesside";
 import { hentWangGruppe } from "./_data/hent-wang-gruppe";
 
-// Fellesside for WANG Toppidrett Fredrikstad – golfgruppa. ÅPEN tilgang pr nå
-// (Anders' beslutning: innloggingskravet fjernet midlertidig for demo/deling).
-// Fortsatt noindex (layout) — elevdata om mindreårige holdes utenfor søkemotorer.
-// Kobler ekte gruppedata fra AgencyOS (elevliste, perioder, samlinger) oppå
-// skjermtekst-demoen; live-henting er try/catch-pakket, så bygg krever aldri
-// nåbar database. force-dynamic gir ferske DB-data per forespørsel.
+// Fellesside for WANG Toppidrett Fredrikstad – golfgruppa. Krever innlogget
+// bruker (proxy.ts sperrer /team-wang siden 2026-08-02 — elevdata om
+// mindreårige skal aldri være åpent tilgjengelig). Fortsatt noindex (layout)
+// — elevdata om mindreårige holdes utenfor søkemotorer. Kobler ekte gruppedata
+// fra AgencyOS (elevliste, perioder, samlinger) oppå skjermtekst-demoen;
+// live-henting er try/catch-pakket, så bygg krever aldri nåbar database.
+// force-dynamic gir ferske DB-data per forespørsel.
 export const dynamic = "force-dynamic";
 
 const FANER: Fane[] = ["oversikt", "plan", "skole", "foreldre"];
