@@ -569,13 +569,34 @@ Dermed er «hvilken promptversjon får flest avvisninger» og «hva koster AI-en
 
 32 nye enhetstester dekker ruting, modellvalg, promptbygging og guards. Se `src/lib/agenticos/README.md`.
 
+### Første flate koblet på: `ai-plan`
+
+`ai-plan/generate.ts` skriver nå til loggen. Den var riktig sted å begynne fordi den allerede hadde tokens
+og estimert kost — det som manglet var koblingen mellom promptversjon, guard-treff og utfall.
+
+- **Promptversjon:** `AI_PLAN_PROMPT_ID` / `AI_PLAN_PROMPT_VERSJON` i `generate.ts`. **Bump versjonen** ved
+  enhver endring i `AI_COACH_SYSTEM_PROMPT`, kunnskapsutvalget eller few-shot-blokken.
+- **Kontekstkilder:** `byggSystemPromptMedKunnskap` rapporterer nå hva den faktisk fylte — `SPILLERDATA`
+  alltid, `RAG` bare når `rag-select` fant noe. Ingen `FASIT` ennå: denne flaten gjør fortsatt ingen
+  masterbrain-oppslag, og det er en reell forbedring som venter.
+- **Guards:** kjøres på de menneskelesbare feltene i forslaget (navn, beskrivelse, fokusområder, øktfokus,
+  drill-notater) — ikke på hele JSON-en. Treffene logges, de blokkerer ingenting.
+- **Utfall:** `lagrePlanForslagCore` kaller `settUtfallForReferanse(generationId, "GODKJENT")` når forslaget
+  faktisk lagres som en plan. Det er den sterkeste bekreftelsen vi har på at genereringen var god nok å
+  bruke, og den koster ingen ekstra klikk. Oppslag på `referanseId` slipper å tre en ny id gjennom UI-laget.
+- **Rolle:** `genererPlan` tar nå `rolle`. Spillerens egen plan-bygger sender `SPILLER`, AgencyOS-rutene
+  bruker standardverdien `COACH`, så loggen skiller de to bruksmønstrene.
+
 ### Gjenstår i fase 1
 
-- **Koble flatene på.** Caddie, `ai-plan` og agentene skriver ennå ikke til loggen — AgenticOS er bygget,
-  men ikke tatt i bruk. Naturlig første kobling er `ai-plan/generate.ts`, som allerede har tokens og kost.
-- **SG-tolkning for spilleren** som første ekte flate. Merk at den nå må formuleres som hypotese, og ikke
+- **Flere flater på loggen.** Caddie og agentenes `PlanAction`-løp skriver ennå ikke. Caddie er neste
+  naturlige, siden `CaddieDraft` allerede har APPROVED/REJECTED som ferdig utfallssignal.
+- **`FASIT` som kontekstlag i `ai-plan`.** Flaten henter ikke fra masterbrain i dag, selv om
+  `sg-principles.json` og `canon-methodology.json` er direkte relevante for plangenerering.
+- **SG-tolkning for spilleren** som første helt nye flate. Merk at den må formuleres som hypotese, og ikke
   kan foreskrive navngitte drills før drill-banken er bygget på nytt.
-- **«Hvorfor avvist»-feltet** i godkjenningskøen, som mater `settUtfall`.
+- **«Hvorfor avvist»-feltet** i godkjenningskøen, som mater `settUtfall` med den mest verdifulle
+  datakilden i hele systemet.
 
 ### To ting Anders bør ta stilling til
 

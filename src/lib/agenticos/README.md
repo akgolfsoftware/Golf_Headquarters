@@ -40,6 +40,17 @@ await settUtfall({ interaksjonId: id, utfall: "AVVIST", begrunnelse: "feil perio
 | `logg.ts` | Eneste skrivevei til `AiInteraksjon`. **Server-only** — eksporteres bevisst ikke fra `index.ts`. |
 | `typer.ts` | Delte typer. Trygg for klient. |
 
+## Hvem er koblet på
+
+| Flate | Status |
+|---|---|
+| `ai-plan/generate.ts` | **Koblet.** Logger promptversjon, modell, tokens, kost, latency, kontekstkilder og guard-treff. `lagrePlanForslagCore` setter `GODKJENT` når forslaget lagres som plan. |
+| Caddie (`/api/caddie/chat`) | Ikke koblet. `CaddieDraft` har allerede APPROVED/REJECTED — naturlig neste. |
+| Agentenes `PlanAction`-løp | Ikke koblet. |
+
+En flate som ikke bruker `MALER` (som `ai-plan`, med egen system-prompt) konstruerer `BygdPrompt` selv med
+en egen `promptId` og en versjonskonstant som må bumpes ved tekstendringer.
+
 ## Regler
 
 1. **Bump promptversjon ved enhver endring.** `promptId` + `promptVersjon` er hele grunnlaget for å svare på

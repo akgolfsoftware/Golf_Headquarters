@@ -15,6 +15,7 @@
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { genererPlan } from "@/lib/ai-plan/generate";
+import { settUtfallForReferanse } from "@/lib/agenticos/logg";
 import { akTilNgfKategori, hentSpillerAkKategori } from "@/lib/domain/spiller-kategori";
 import { upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
 import {
@@ -369,6 +370,7 @@ export async function genererPlanForslagCore(
     userId: user.id,
     coachId: user.id,
     brukerPrompt,
+    rolle: "SPILLER",
   });
 
   return {
@@ -496,6 +498,15 @@ export async function lagrePlanForslagCore(
       miljo: null,
     });
   }
+
+  // Læringssignalet: forslaget ble faktisk lagret som en plan. Det er den
+  // sterkeste bekreftelsen vi har på at genereringen var god nok å bruke.
+  // Best-effort — en feil her skal ikke velte en lagret plan.
+  await settUtfallForReferanse({
+    referanseId: input.generationId,
+    utfall: "GODKJENT",
+    mindreaarig: false,
+  });
 
   return { planId: plan.id };
 }

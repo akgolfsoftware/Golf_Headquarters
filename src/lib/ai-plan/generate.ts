@@ -24,6 +24,9 @@ import {
 } from "./schema";
 import { selectKnowledgeFiles } from "@/lib/ai-coach/rag-select";
 import { formatFewShotBlock, loadFewShotExamples } from "@/lib/ai-coach/few-shot";
+import { kjorGuards } from "@/lib/agenticos";
+import { loggInteraksjon } from "@/lib/agenticos/logg";
+import type { Klassifisering, KontekstKilde, Rolle } from "@/lib/agenticos";
 import type { SpillerKontekst } from "./context";
 
 const SG_KIND_TO_AREA: Record<string, string> = {
@@ -45,7 +48,10 @@ function deriveSgArea(ctx: SpillerKontekst): string | undefined {
   return worst ? SG_KIND_TO_AREA[worst.kind] : undefined;
 }
 
-function byggSystemPromptMedKunnskap(ctx: SpillerKontekst): string {
+function byggSystemPromptMedKunnskap(ctx: SpillerKontekst): {
+  system: string;
+  kontekstKilder: KontekstKilde[];
+} {
   const sgArea = deriveSgArea(ctx);
   const chunks = selectKnowledgeFiles({ sgArea });
   const fewShot = formatFewShotBlock(
@@ -55,10 +61,27 @@ function byggSystemPromptMedKunnskap(ctx: SpillerKontekst): string {
     chunks.length > 0
       ? `\n\n<kunnskap>\n${chunks.join("\n\n")}\n</kunnskap>`
       : "";
-  return `${AI_COACH_SYSTEM_PROMPT}${kunnskap}${fewShot}`;
+
+  // Spillerkonteksten limes inn i brukermeldingen (byggBrukerMeldingMedMal), så
+  // SPILLERDATA er alltid med. RAG kun når rag-select faktisk fant noe.
+  const kontekstKilder: KontekstKilde[] = ["SPILLERDATA"];
+  if (chunks.length > 0) kontekstKilder.push("RAG");
+
+  return { system: `${AI_COACH_SYSTEM_PROMPT}${kunnskap}${fewShot}`, kontekstKilder };
 }
 
 export const AI_PLAN_MODEL = "claude-sonnet-4-5-20250514";
+
+/**
+ * Versjon av promptoppsettet i denne flaten (AI_COACH_SYSTEM_PROMPT +
+ * kunnskapsblokk + few-shot). Logges på hver AiInteraksjon.
+ *
+ * BUMP DENNE ved enhver endring i system-prompten, kunnskapsutvalget eller
+ * few-shot-blokken — ellers kan vi ikke se om en endring gjorde svarene bedre
+ * eller dårligere.
+ */
+export const AI_PLAN_PROMPT_ID = "ai-plan";
+export const AI_PLAN_PROMPT_VERSJON = 1;
 
 // Sonnet 4.5: $3/M input tokens, $15/M output tokens.
 const SONNET_INPUT_USD_PER_MTOK = 3;
@@ -77,6 +100,11 @@ export type GenererPlanInput = {
   brukerPrompt: string;
   iterationOf?: string;
   feedback?: string;
+  /**
+   * Hvem som utløste genereringen. Flaten brukes både fra AgencyOS (coach) og
+   * fra spillerens egen plan-bygger. Logges på interaksjonen.
+   */
+  rolle?: Rolle;
 };
 
 export type GenererPlanResultat = {
@@ -84,7 +112,25 @@ export type GenererPlanResultat = {
   generationId: string;
   /** ID på baseline-mal som ble brukt, eller null hvis ingen ble matchet. */
   templateId: string | null;
+  /** AiInteraksjon-id, eller null hvis loggingen feilet. Brukes til settUtfall(). */
+  interaksjonId: string | null;
 };
+
+/**
+ * Teksten guardene skal se på. Forslaget er strukturert JSON, så vi plukker ut
+ * de menneskelesbare feltene — det er de som havner foran en coach eller spiller.
+ */
+function menneskeleseligTekst(f: PlanForslag): string {
+  const biter: string[] = [f.navn, f.beskrivelse, ...f.fokusOmrader];
+  for (const okt of f.okter) {
+    biter.push(okt.fokus);
+    for (const d of okt.drills) {
+      if (d.notes) biter.push(d.notes);
+      if (d.notat) biter.push(d.notat);
+    }
+  }
+  return biter.filter(Boolean).join("\n");
+}
 
 export async function genererPlan(
   input: GenererPlanInput,
@@ -127,10 +173,11 @@ export async function genererPlan(
     forrigeForslag,
   );
 
-  const systemPrompt = byggSystemPromptMedKunnskap(ctx);
+  const { system: systemPrompt, kontekstKilder } = byggSystemPromptMedKunnskap(ctx);
 
   // 3) Kall Anthropic med tool_use for tvunget JSON
   const klient = anthropicKlient();
+  const start = Date.now();
   const respons = await klient.messages.create({
     model: AI_PLAN_MODEL,
     max_tokens: 8192,
@@ -146,6 +193,7 @@ export async function genererPlan(
     tool_choice: { type: "tool", name: "lever_planforslag" },
     messages: [{ role: "user", content: brukerMelding }],
   });
+  const latencyMs = Date.now() - start;
 
   // 4) Plukk ut tool_use-blokken
   const toolBlock = respons.content.find(
@@ -192,9 +240,46 @@ export async function genererPlan(
     });
   }
 
+  // 7) AgenticOS-loggen. Kjør guardene på det coachen faktisk får se, og skriv
+  //    én AiInteraksjon som kobler promptversjon, modell og kost til utfallet.
+  //    Best-effort: loggInteraksjon svelger sine egne feil, og guardene kan
+  //    aldri stoppe et forslag (invariant 1 gjelder også våre egne kontroller).
+  const klassifisering: Klassifisering = {
+    // Flaten ER planlegging — vi ruter ikke på fritekst her. Ruteren finnes for
+    // åpne spørsmål, ikke for dedikerte flater med kjent formål.
+    intent: "plan",
+    domene: "PLAN",
+    rolle: input.rolle ?? "COACH",
+    mindreaarig: false,
+    confidence: 1,
+  };
+
+  const guardTreff = kjorGuards(menneskeleseligTekst(forslag));
+
+  const interaksjonId = await loggInteraksjon({
+    prompt: {
+      promptId: AI_PLAN_PROMPT_ID,
+      promptVersjon: AI_PLAN_PROMPT_VERSJON,
+      system: systemPrompt,
+      kontekstKilder,
+    },
+    klassifisering,
+    modell: AI_PLAN_MODEL,
+    tokensInn: tokensInput,
+    tokensUt: tokensOutput,
+    kostUsd: costUsd,
+    latencyMs,
+    kontekstKilder,
+    guardTreff,
+    userId,
+    agentNavn: "ai-plan",
+    referanseId: generation.id,
+  });
+
   return {
     forslag,
     generationId: generation.id,
     templateId: template?.templateId ?? null,
+    interaksjonId,
   };
 }

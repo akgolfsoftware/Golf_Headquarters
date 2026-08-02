@@ -103,3 +103,37 @@ export async function settUtfall(input: UtfallInput): Promise<void> {
     console.error("[agenticos] kunne ikke sette utfall", err);
   }
 }
+
+/**
+ * Sett utfall via `referanseId` i stedet for interaksjons-id.
+ *
+ * Lar en flate lukke løkken uten å tre en ny id gjennom UI-laget: den kjenner
+ * allerede sin egen referanse (AiPlanGeneration-id, PlanAction-id, CaddieDraft-id).
+ * Oppdaterer kun rader som fortsatt står PENDING, så en godkjenning ikke
+ * overskriver en tidligere avvisning.
+ */
+export async function settUtfallForReferanse(input: {
+  referanseId: string;
+  utfall: Utfall;
+  rating?: 1 | -1;
+  begrunnelse?: string;
+  mindreaarig: boolean;
+}): Promise<void> {
+  const begrunnelse = input.mindreaarig
+    ? null
+    : (input.begrunnelse?.trim().slice(0, 1000) || null);
+
+  try {
+    await prisma.aiInteraksjon.updateMany({
+      where: { referanseId: input.referanseId, utfall: "PENDING" },
+      data: {
+        utfall: input.utfall,
+        rating: input.rating ?? null,
+        begrunnelse,
+        resolvedAt: new Date(),
+      },
+    });
+  } catch (err) {
+    console.error("[agenticos] kunne ikke sette utfall for referanse", err);
+  }
+}
