@@ -142,11 +142,16 @@ export async function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const response = await updateSession(request, nonce);
 
+  // /team-wang/logg-inn er selve innloggingssiden — unntas fra sperren for å
+  // unngå redirect-loop. Resten av /team-wang (elevdata om mindreårige) krever
+  // innlogging siden 2026-08-02 (tidligere bevisst åpnet for demo/deling).
+  const erTeamWangLogin = path === "/team-wang/logg-inn" || path.startsWith("/team-wang/logg-inn/");
   const erBeskyttet =
     path.startsWith("/portal") ||
     path.startsWith("/admin") ||
     path.startsWith("/intern") ||
-    path.startsWith("/dev-banekart");
+    path.startsWith("/dev-banekart") ||
+    (path.startsWith("/team-wang") && !erTeamWangLogin);
 
   if (erBeskyttet) {
     // Sjekk auth-status via samme cookies som updateSession nettopp refresjet.
@@ -168,7 +173,7 @@ export async function proxy(request: NextRequest) {
 
     if (!user) {
       const url = request.nextUrl.clone();
-      url.pathname = "/auth/login";
+      url.pathname = path.startsWith("/team-wang") ? "/team-wang/logg-inn" : "/auth/login";
       url.searchParams.set("next", path);
       return NextResponse.redirect(url);
     }
