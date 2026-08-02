@@ -7,6 +7,7 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import type { Prisma } from "@/generated/prisma/client";
+import { logError } from "@/lib/error-tracking";
 
 const BUCKET = "coaching-recordings";
 
@@ -110,7 +111,7 @@ export async function POST(req: Request) {
       upsert: true,
     });
   if (uploadErr) {
-    console.error("[recording] upload-chunk feilet", uploadErr);
+    await logError({ context: "recording.upload-chunk", error: uploadErr, meta: { recordingId: recording.id, chunkIdx } });
     return NextResponse.json(
       { error: "Noe gikk galt under opplasting. Prøv igjen." },
       { status: 500 },

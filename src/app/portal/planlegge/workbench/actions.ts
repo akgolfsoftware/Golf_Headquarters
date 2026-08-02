@@ -18,6 +18,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { dateForDayIndex, executeSessionMove, mondayOf, weekRefDate } from "@/lib/workbench/session-move";
+import { logError } from "@/lib/error-tracking";
 import { generateWeekSuggestions, VariantSchema, type WeekSuggestion } from "@/lib/ai-plan/week-suggest";
 import { deleteV2ForPlanSession, upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
 import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel";
@@ -200,8 +201,12 @@ export async function suggestWeekWithCaddie(weekOffset?: number): Promise<{
     const weekStart = mondayOf(weekRefDate(weekOffset ?? 0));
     const { suggestions, usedAi } = await generateWeekSuggestions(user.id, weekStart);
     return { ok: true, suggestions, usedAi };
-  } catch (e) {
-    console.error("[workbench] suggestWeekWithCaddie feilet", e);
+  } catch (error) {
+    await logError({
+      context: "workbench.suggestWeekWithCaddie",
+      error,
+      meta: { userId: user.id, weekOffset },
+    });
     return { ok: false, message: "Kunne ikke lage ukeforslag akkurat nå." };
   }
 }

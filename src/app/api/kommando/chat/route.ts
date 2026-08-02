@@ -9,6 +9,7 @@ import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 import { resolveKommandoModel } from "@/lib/kommando/providers";
 import { DEFAULT_MODEL, isKommandoModelId } from "@/lib/kommando/models";
+import { logError } from "@/lib/error-tracking";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -110,9 +111,9 @@ export async function POST(req: Request) {
         await prisma.kommandoMessage.create({
           data: { userId: user.id, conversationId, role: "assistant", content: text, model: modelId },
         });
-      } catch (err) {
+      } catch (error) {
         // Persistering må aldri ta ned stream-responsen — logg og fortsett.
-        console.error("[kommando] kunne ikke persistere assistant-melding", err);
+        await logError({ context: "kommando.chat.persister-assistant-melding", error, severity: "warn", meta: { conversationId, userId: user.id } });
       }
     },
   });

@@ -14,6 +14,7 @@ import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled, tekstFra } from "@/lib
 import { PyramidArea, SkillArea, NgfKategori } from "@/generated/prisma/enums";
 import { DRILL_DRAFT_TOOL } from "./drill-forslag-agent";
 import { masterbrain } from "@/lib/masterbrain";
+import { logError } from "@/lib/error-tracking";
 
 export const AGENT_NAME = "fabrikk";
 
@@ -174,8 +175,13 @@ export async function runFabrikk(): Promise<AgentResult> {
           });
         }
         forslagLagret++;
-      } catch (err) {
-        console.error("fabrikk-agent: generering feilet for", f.id, err);
+      } catch (error) {
+        await logError({
+          context: "agents.fabrikk.generering",
+          error,
+          meta: { radarFunnId: f.id },
+          severity: "warn",
+        });
         feilet++;
       }
     }

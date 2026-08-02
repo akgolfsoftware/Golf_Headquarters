@@ -14,6 +14,7 @@
 import { NextResponse, after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { genererUtkast } from "@/lib/innboks/generer-utkast";
+import { logError } from "@/lib/error-tracking";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -80,8 +81,8 @@ export async function POST(request: Request) {
   after(async () => {
     try {
       await genererUtkast(epost.id);
-    } catch (err) {
-      console.error("[innboks] genererUtkast feilet:", err instanceof Error ? err.message : String(err));
+    } catch (error) {
+      await logError({ context: "innboks.generer-utkast", error, severity: "warn", meta: { epostId: epost.id } });
     }
   });
 

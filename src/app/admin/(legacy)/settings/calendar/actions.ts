@@ -5,6 +5,7 @@ import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { logError } from "@/lib/error-tracking";
 import {
   setupWatchForSubscription,
   stopWatchForSubscription,
@@ -110,8 +111,8 @@ export async function oppdaterSubscriptions(input: OppdaterSubscriptionInput) {
       } else if (!skalHaWatch && harWatch) {
         await stopWatchForSubscription(item.id);
       }
-    } catch (err) {
-      console.error("[oppdaterSubscriptions] watch-håndtering feilet", err);
+    } catch (error) {
+      await logError({ context: "admin.settings.calendar.watch", error, meta: { subscriptionId: item.id }, severity: "warn" });
     }
   }
 

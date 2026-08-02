@@ -14,6 +14,7 @@ import { runPlanRevisionAgent } from "./plan-revision-actions";
 import { runLiveCoachAgent, type LiveSessionKind } from "./live-coach-agent";
 import { runTreningsdataEkspert } from "./treningsdata-ekspert";
 import { runSwingVideoAnalyst } from "./swing-video-analyst";
+import { logError } from "@/lib/error-tracking";
 
 export async function triggerRoundAgent(userId: string): Promise<void> {
   try {
@@ -31,8 +32,13 @@ export async function triggerRoundAgent(userId: string): Promise<void> {
     }
     await runAchievementAgent(userId);
     await runTreningsdataEkspert(userId);
-  } catch (err) {
-    console.error("[trigger] round-agent feilet", err);
+  } catch (error) {
+    await logError({
+      context: "agents.trigger.roundAgent",
+      error,
+      meta: { userId },
+      severity: "warn",
+    });
   }
 }
 
@@ -41,32 +47,51 @@ export async function triggerTestAgent(userId: string): Promise<void> {
     await runTestAgent(userId);
     await runAchievementAgent(userId);
     await runTreningsdataEkspert(userId);
-  } catch (err) {
-    console.error("[trigger] test-agent feilet", err);
+  } catch (error) {
+    await logError({
+      context: "agents.trigger.testAgent",
+      error,
+      meta: { userId },
+      severity: "warn",
+    });
   }
 }
 
 export async function triggerTrackManAgent(userId: string): Promise<void> {
   try {
     await runTrackManAgent(userId);
-  } catch (err) {
-    console.error("[trigger] trackman-agent feilet", err);
+  } catch (error) {
+    await logError({
+      context: "agents.trigger.trackmanAgent",
+      error,
+      meta: { userId },
+      severity: "warn",
+    });
   }
 }
 
 export async function triggerPeriodiseringsAgent(planId: string): Promise<void> {
   try {
     await runPeriodiseringsAgent(planId);
-  } catch (err) {
-    console.error("[trigger] periodiseringsagent feilet", err);
+  } catch (error) {
+    await logError({
+      context: "agents.trigger.periodiseringsAgent",
+      error,
+      meta: { planId },
+      severity: "warn",
+    });
   }
 }
 
 export async function triggerTurneringAgent(): Promise<void> {
   try {
     await runTurneringAgent();
-  } catch (err) {
-    console.error("[trigger] turnering-agent feilet", err);
+  } catch (error) {
+    await logError({
+      context: "agents.trigger.turneringAgent",
+      error,
+      severity: "warn",
+    });
   }
 }
 
@@ -77,8 +102,13 @@ export async function triggerLiveSessionAgent(opts: {
 }): Promise<void> {
   try {
     await runLiveCoachAgent(opts);
-  } catch (err) {
-    console.error("[trigger] live-coach-agent feilet", err);
+  } catch (error) {
+    await logError({
+      context: "agents.trigger.liveCoachAgent",
+      error,
+      meta: { userId: opts.userId, sessionId: opts.sessionId, kind: opts.kind },
+      severity: "warn",
+    });
   }
 }
 
@@ -90,7 +120,12 @@ export async function triggerSwingVideoAnalyst(opts: {
 }): Promise<void> {
   try {
     await runSwingVideoAnalyst(opts);
-  } catch (err) {
-    console.error("[trigger] swing-video-analyst feilet", err);
+  } catch (error) {
+    await logError({
+      context: "agents.trigger.swingVideoAnalyst",
+      error,
+      meta: { userId: opts.userId, sessionId: opts.sessionId },
+      severity: "warn",
+    });
   }
 }

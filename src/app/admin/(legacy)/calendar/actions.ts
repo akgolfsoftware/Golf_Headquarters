@@ -7,6 +7,7 @@ import { varsleNyBooking } from "@/lib/booking/varsle-ny-booking";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { logError } from "@/lib/error-tracking";
 
 
 export type OpprettOktInput = {
@@ -116,8 +117,8 @@ export async function opprettOktPaaTid(
   // før hang dette på 15-min-cronen. Best-effort: feil stopper aldri bookingen.
   try {
     await pushBooking(booking.id);
-  } catch (err) {
-    console.error("[calendar] Google-push feilet for", booking.id, err);
+  } catch (error) {
+    await logError({ context: "admin.calendar.pushBooking", error, meta: { bookingId: booking.id }, severity: "warn" });
   }
 
   // Varsle coach/admin — også manuelt lagte økter skal dukke opp i varsel-lista.
@@ -193,8 +194,8 @@ export async function moveSession(
 
   try {
     await pushBooking(bookingId);
-  } catch (err) {
-    console.error("[calendar] Google-push etter flytting feilet", bookingId, err);
+  } catch (error) {
+    await logError({ context: "admin.calendar.pushBooking.move", error, meta: { bookingId }, severity: "warn" });
   }
 
   await audit({

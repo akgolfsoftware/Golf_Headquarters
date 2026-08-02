@@ -10,6 +10,7 @@ import { hullSchema } from "@/lib/runde-logg/schema";
 import { byggShotRader } from "@/lib/runde-logg/bygg-shot-rader";
 import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
 import { ShotLie, ShotType, WindDir } from "@/generated/prisma/client";
+import { logError } from "@/lib/error-tracking";
 
 export type ShareVisibility = "privat" | "coach" | "offentlig";
 export type ShareFormat = "story" | "post" | "pdf" | "link";
@@ -178,8 +179,12 @@ async function recomputeRoundSg(roundId: string): Promise<void> {
         },
       });
     }
-  } catch (e) {
-    console.error("recomputeRoundSg feilet:", e);
+  } catch (error) {
+    await logError({
+      context: "runder.recomputeRoundSg",
+      error,
+      meta: { roundId },
+    });
   }
 }
 

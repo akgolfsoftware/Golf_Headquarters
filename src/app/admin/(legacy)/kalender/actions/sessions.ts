@@ -7,6 +7,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { logError } from "@/lib/error-tracking";
 import {
   pushTreningsokt,
   fjernTreningsokt,
@@ -155,8 +156,8 @@ export async function slettOkt(id: string): Promise<SlettResultat> {
     });
     revalidatePath("/admin/kalender");
     return { ok: true };
-  } catch (err) {
-    console.error("[sessions.slettOkt]", err);
+  } catch (error) {
+    await logError({ context: "admin.kalender.slettOkt", error, meta: { id } });
     return { ok: false, feil: "Kunne ikke slette økt" };
   }
 }

@@ -6,6 +6,7 @@ import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { stripeKlient } from "@/lib/stripe";
+import { logError } from "@/lib/error-tracking";
 
 // Returnerer { ok: false, error } ved feil — throw ville gitt generisk
 // error-boundary (og prod maskerer Error-meldinger fra server actions),
@@ -37,8 +38,12 @@ export async function cancelPro(): Promise<{ ok: boolean; error?: string }> {
       await stripe.subscriptions.update(sub.stripeSubscriptionId, {
         cancel_at_period_end: true,
       });
-    } catch (err) {
-      console.error("[cancelPro] Stripe-kansellering feilet", err);
+    } catch (error) {
+      await logError({
+        context: "abonnement.cancelPro",
+        error,
+        meta: { userId: user.id, subscriptionId: sub.id },
+      });
       return {
         ok: false,
         error:

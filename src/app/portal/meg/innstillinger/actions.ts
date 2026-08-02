@@ -9,6 +9,7 @@ import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { emailLayout } from "@/lib/email/templates/shared";
 import { prisma } from "@/lib/prisma";
 import type { DrillFasilitet } from "@/generated/prisma/client";
+import { logError } from "@/lib/error-tracking";
 
 const LagreFasilitetProfilSchema = z.object({
   fasiliteter: z.array(z.string().min(1)).max(20, "For mange fasiliteter"),
@@ -205,8 +206,13 @@ export async function exportUserData(): Promise<{
           }),
         });
       }
-    } catch (err) {
-      console.error("[gdpr-eksport] e-post feilet", err);
+    } catch (error) {
+      await logError({
+        context: "gdpr.export.epost",
+        error,
+        meta: { userId: user.id },
+        severity: "warn",
+      });
     }
 
     await audit({
@@ -218,7 +224,6 @@ export async function exportUserData(): Promise<{
 
     return { ok: true, data: exportPayload };
   } catch (error) {
-    const { logError } = await import("@/lib/error-tracking");
     await logError({ context: "gdpr.export", error, userId: user.id });
     return { ok: false, error: "Eksport feilet. Prøv igjen eller kontakt support." };
   }
@@ -288,8 +293,13 @@ export async function deleteUserAccount(
           `,
         }),
       });
-    } catch (err) {
-      console.error("[gdpr-sletting] e-post feilet", err);
+    } catch (error) {
+      await logError({
+        context: "gdpr.delete-account.epost",
+        error,
+        meta: { userId: user.id },
+        severity: "warn",
+      });
     }
 
     await audit({
@@ -301,7 +311,6 @@ export async function deleteUserAccount(
 
     return { ok: true };
   } catch (error) {
-    const { logError } = await import("@/lib/error-tracking");
     await logError({ context: "gdpr.delete-account", error, userId: user.id });
     return { ok: false, error: "Sletting feilet. Kontakt support." };
   }

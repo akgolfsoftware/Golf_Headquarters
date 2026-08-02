@@ -10,6 +10,7 @@ import { supabaseAdmin } from "@/lib/supabase/admin";
 import { audit } from "@/lib/audit";
 import type { AgentResult } from "./agent-runner";
 import { runAgent } from "./agent-runner";
+import { logError } from "@/lib/error-tracking";
 
 export const AGENT_NAME = "cleanup-recordings";
 
@@ -97,9 +98,14 @@ export async function runCleanupRecordings(): Promise<AgentResult> {
         });
 
         slettet++;
-      } catch (err) {
-        const melding = err instanceof Error ? err.message : String(err);
-        console.error("[cleanup-recordings] feil for", rec.id, melding);
+      } catch (error) {
+        const melding = error instanceof Error ? error.message : String(error);
+        await logError({
+          context: "agents.cleanupRecordings",
+          error,
+          meta: { recordingId: rec.id },
+          severity: "warn",
+        });
         feilDetaljer.push({ id: rec.id, feil: melding });
         feilet++;
       }

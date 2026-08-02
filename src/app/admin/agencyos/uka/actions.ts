@@ -11,6 +11,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
 import { pushBooking } from "@/lib/google-calendar-kilder";
+import { logError } from "@/lib/error-tracking";
 
 const FlyttSchema = z.object({
   bookingId: z.string().min(1),
@@ -68,8 +69,8 @@ export async function flyttBookingTilDag(
   // Hold Google-kalenderen i synk etter flytting (best-effort).
   try {
     await pushBooking(booking.id);
-  } catch (err) {
-    console.error("[uka] Google-push etter flytting feilet", booking.id, err);
+  } catch (error) {
+    await logError({ context: "agencyos.uka.google-push-etter-flytting", error, severity: "warn", meta: { bookingId: booking.id } });
   }
 
   revalidatePath("/admin/agencyos/uka");

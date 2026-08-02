@@ -10,6 +10,7 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { transkriber } from "@/lib/transcribe";
 import { audit } from "@/lib/audit";
+import { logError } from "@/lib/error-tracking";
 
 export const runtime = "nodejs";
 export const maxDuration = 300; // Whisper kan ta tid for 50-min økter
@@ -119,11 +120,11 @@ export async function POST(request: Request) {
           cookie: request.headers.get("cookie") ?? "",
         },
         body: JSON.stringify({ recordingId }),
-      }).catch((e) => {
-        console.error("[transcribe] kunne ikke trigge analyze:", e);
+      }).catch((error) => {
+        void logError({ context: "recording.transcribe.trigger-analyze", error, severity: "warn", meta: { recordingId } });
       });
-    } catch (e) {
-      console.error("[transcribe] feil ved trigging av analyze:", e);
+    } catch (error) {
+      await logError({ context: "recording.transcribe.trigger-analyze", error, severity: "warn", meta: { recordingId } });
     }
 
     return NextResponse.json({

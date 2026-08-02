@@ -11,6 +11,7 @@
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { sendBookingReminder } from "@/lib/email/booking-emails";
+import { logError } from "@/lib/error-tracking";
 
 export async function runBookingReminders() {
   const now = new Date();
@@ -51,8 +52,13 @@ export async function runBookingReminders() {
         target: `Booking:${b.id}`,
       });
       sent++;
-    } catch (err) {
-      console.error("[booking-reminders] feil ved sending", b.id, err);
+    } catch (error) {
+      await logError({
+        context: "agents.bookingReminders.sending",
+        error,
+        meta: { bookingId: b.id },
+        severity: "warn",
+      });
       failed++;
     }
   }

@@ -150,8 +150,13 @@ export async function confirmGuardianConsent({
             <p>Velkommen!<br/>AK Golf Group</p>`,
         });
       }
-    } catch (err) {
-      console.error("[guardian-consent] e-post feilet", err);
+    } catch (error) {
+      await logError({
+        context: "guardian-consent.epost",
+        error,
+        severity: "warn",
+        meta: { token: token.slice(0, 8) + "..." },
+      });
     }
 
     return { ok: true };

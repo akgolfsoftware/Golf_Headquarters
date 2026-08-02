@@ -4,6 +4,7 @@
 import "server-only";
 import { z } from "zod";
 import { megSupabase } from "@/lib/meg/supabase";
+import { logError } from "@/lib/error-tracking";
 
 export type PendingAction = {
   id: string;
@@ -60,7 +61,12 @@ async function setStatus(id: string, status: "done" | "cancelled"): Promise<void
   const db = megSupabase();
   if (!db) return;
   const { error } = await db.from("me_pending_action").update({ status }).eq("id", id);
-  if (error) console.error("[meg/pending] setStatus feilet", error.message);
+  if (error)
+    await logError({
+      context: "meg.pending.setStatus",
+      error: error.message,
+      meta: { id, status },
+    });
 }
 
 export const markDone = (id: string) => setStatus(id, "done");

@@ -15,6 +15,7 @@ import { notify } from "@/lib/notifications";
 import { aggregateSg } from "@/lib/sg";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { Prisma } from "@/generated/prisma/client";
+import { logError } from "@/lib/error-tracking";
 
 export const AGENT_NAME = "live-coach-agent";
 
@@ -172,8 +173,13 @@ TONE:
     const rawTekst = tekstFra(respons);
     const tekst = rawTekst ? substituerPseudonym(rawTekst, pseudonym, spillerNavn) : rawTekst;
     return tekst || statiskVelkomst(oktInfo);
-  } catch (err) {
-    console.error("[live-coach-agent] Claude-kall feilet, bruker statisk fallback", err);
+  } catch (error) {
+    await logError({
+      context: "agents.liveCoach.velkomst",
+      error,
+      meta: { oktTittel: oktInfo.title, coachId: oktInfo.coachId },
+      severity: "warn",
+    });
     return statiskVelkomst(oktInfo);
   }
 }

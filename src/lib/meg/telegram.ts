@@ -2,6 +2,7 @@
 // Telegram-verifisering og sendMessage-helper for Meg-boten.
 import "server-only";
 import { timingSafeEqual } from "node:crypto";
+import { logError } from "@/lib/error-tracking";
 
 export type AuthInput = { headerSecret: string | null; chatId: number | null };
 export type AuthConfig = { webhookSecret: string; allowedChatId: string };
@@ -43,6 +44,11 @@ export async function sendTelegramMessage(
   });
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    console.error("[meg/telegram] sendMessage feilet", res.status, body.slice(0, 200));
+    await logError({
+      context: "meg.telegram.sendMessage",
+      error: `Telegram sendMessage feilet (${res.status})`,
+      meta: { status: res.status, body: body.slice(0, 200) },
+      severity: "warn",
+    });
   }
 }

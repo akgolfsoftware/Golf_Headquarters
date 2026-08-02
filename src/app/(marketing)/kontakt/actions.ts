@@ -1,6 +1,7 @@
 "use server";
 
 import { resendKlient, FRA_EPOST } from "@/lib/email";
+import { logError } from "@/lib/error-tracking";
 
 export type KontaktFormState =
   | { status: "idle" }
@@ -90,13 +91,10 @@ export async function sendKontaktMelding(
       melding:
         "Takk for henvendelsen. Vi svarer som regel innen 1 virkedag.",
     };
-  } catch (err) {
+  } catch (error) {
     // Logg kun feilmelding/stack — IKKE brukerdata. Resend-feil eller
     // konfig-feil må fanges opp i logs uten PII-lekkasje.
-    console.error(
-      "[kontakt] e-postutsending feilet:",
-      err instanceof Error ? err.message : String(err),
-    );
+    await logError({ context: "kontakt.sendMelding", error });
     return {
       status: "feil",
       melding:

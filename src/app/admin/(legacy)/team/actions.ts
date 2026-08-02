@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { FRA_EPOST, resendKlient } from "@/lib/email";
 import { nonEmpty, email } from "@/lib/validation/schemas";
+import { logError } from "@/lib/error-tracking";
 
 const InviterCoachSchema = z.object({
   email: email,
@@ -92,8 +93,8 @@ export async function inviterCoach(
 </body></html>`,
       });
       epostSendt = true;
-    } catch (err) {
-      console.error("[inviterCoach] Resend-feil", err);
+    } catch (error) {
+      await logError({ context: "admin.team.inviterCoach.epost", error, severity: "warn" });
     }
   }
 

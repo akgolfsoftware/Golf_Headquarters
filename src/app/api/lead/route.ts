@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { sendVelkomstEpost } from "@/lib/email";
 import { rateLimit } from "@/lib/rate-limit";
 import { requireSameOrigin, getClientIp } from "@/lib/security/same-origin";
+import { logError } from "@/lib/error-tracking";
 
 export const runtime = "nodejs";
 
@@ -78,8 +79,8 @@ export async function POST(req: Request) {
       email,
       name: body.name,
       source: body.source ?? "newsletter",
-    }).catch((err) => {
-      console.error("[lead] velkomst-epost feilet", err);
+    }).catch((error) => {
+      void logError({ context: "lead.velkomst-epost", error, severity: "warn", meta: { source: body.source ?? "newsletter" } });
     });
   }
 

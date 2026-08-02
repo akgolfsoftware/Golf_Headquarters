@@ -12,6 +12,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { emailLayout, primaryButton } from "@/lib/email/templates/shared";
+import { logError } from "@/lib/error-tracking";
 import type { ParentLinkRelation } from "@/generated/prisma/client";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no";
@@ -83,9 +84,9 @@ export async function inviterForelderForSpiller(input: {
       subject: `Du er invitert som ${rel} til ${navn} i AK Golf-portalen`,
       html: bygInviteHtml({ navn, rel, lenke }),
     });
-  } catch (err) {
+  } catch (error) {
     // Logg, men ikke rull tilbake — invitasjonen finnes og kan resendes.
-    console.error("[inviterForelderForSpiller] e-post feilet", err);
+    await logError({ context: "admin.spillere.inviterForelder.epost", error, meta: { playerId: player.id }, severity: "warn" });
   }
 
   revalidatePath(`/admin/spillere/${player.id}/profil`);

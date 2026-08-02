@@ -14,6 +14,7 @@ import {
   fjernKildeFraGoogle,
   type PushResultat,
 } from "@/lib/google-calendar-push";
+import { logError } from "@/lib/error-tracking";
 
 const INGEN: PushResultat = { skrevet: 0, feilet: 0, hoppetOver: true };
 
@@ -99,11 +100,13 @@ export async function pushBooking(bookingId: string): Promise<string | null> {
       });
     }
     return rad?.googleEventId ?? null;
-  } catch (err) {
-    console.error(
-      `[gcal-kilder] pushBooking(${bookingId}) feilet`,
-      err instanceof Error ? err.message : err,
-    );
+  } catch (error) {
+    await logError({
+      context: "google-calendar-kilder.pushBooking",
+      error,
+      meta: { bookingId },
+      severity: "warn",
+    });
     return null;
   }
 }
@@ -115,11 +118,13 @@ export async function fjernBooking(
 ): Promise<number> {
   try {
     return await fjernKildeFraGoogle(coachUserId, "BOOKING", bookingId);
-  } catch (err) {
-    console.error(
-      `[gcal-kilder] fjernBooking(${bookingId}) feilet`,
-      err instanceof Error ? err.message : err,
-    );
+  } catch (error) {
+    await logError({
+      context: "google-calendar-kilder.fjernBooking",
+      error,
+      meta: { bookingId },
+      severity: "warn",
+    });
     return 0;
   }
 }
@@ -156,11 +161,13 @@ export async function pushKalenderHendelse(
       endAt: h.endAt,
       heldag,
     });
-  } catch (err) {
-    console.error(
-      `[gcal-kilder] pushKalenderHendelse(${calendarEventId}) feilet`,
-      err instanceof Error ? err.message : err,
-    );
+  } catch (error) {
+    await logError({
+      context: "google-calendar-kilder.pushKalenderHendelse",
+      error,
+      meta: { calendarEventId },
+      severity: "warn",
+    });
     return INGEN;
   }
 }
@@ -173,11 +180,13 @@ export async function fjernKalenderHendelse(
     const userId = coachId ?? (await finnEierUserId());
     if (!userId) return;
     await fjernKildeFraGoogle(userId, "CALENDAR_EVENT", calendarEventId);
-  } catch (err) {
-    console.error(
-      `[gcal-kilder] fjernKalenderHendelse(${calendarEventId}) feilet`,
-      err instanceof Error ? err.message : err,
-    );
+  } catch (error) {
+    await logError({
+      context: "google-calendar-kilder.fjernKalenderHendelse",
+      error,
+      meta: { calendarEventId },
+      severity: "warn",
+    });
   }
 }
 
@@ -206,11 +215,13 @@ export async function pushGruppeTime(
       startAt: s.startAt,
       endAt: s.endAt,
     });
-  } catch (err) {
-    console.error(
-      `[gcal-kilder] pushGruppeTime(${groupScheduleId}) feilet`,
-      err instanceof Error ? err.message : err,
-    );
+  } catch (error) {
+    await logError({
+      context: "google-calendar-kilder.pushGruppeTime",
+      error,
+      meta: { groupScheduleId },
+      severity: "warn",
+    });
     return INGEN;
   }
 }
@@ -223,11 +234,13 @@ export async function fjernGruppeTime(
     const userId = coachId ?? (await finnEierUserId());
     if (!userId) return;
     await fjernKildeFraGoogle(userId, "GROUP_SCHEDULE", groupScheduleId);
-  } catch (err) {
-    console.error(
-      `[gcal-kilder] fjernGruppeTime(${groupScheduleId}) feilet`,
-      err instanceof Error ? err.message : err,
-    );
+  } catch (error) {
+    await logError({
+      context: "google-calendar-kilder.fjernGruppeTime",
+      error,
+      meta: { groupScheduleId },
+      severity: "warn",
+    });
   }
 }
 
@@ -271,11 +284,13 @@ export async function pushTreningsokt(
       startAt: s.startTime,
       endAt: s.endTime,
     });
-  } catch (err) {
-    console.error(
-      `[gcal-kilder] pushTreningsokt(${sessionId}) feilet`,
-      err instanceof Error ? err.message : err,
-    );
+  } catch (error) {
+    await logError({
+      context: "google-calendar-kilder.pushTreningsokt",
+      error,
+      meta: { sessionId },
+      severity: "warn",
+    });
     return INGEN;
   }
 }
@@ -286,10 +301,12 @@ export async function fjernTreningsokt(
 ): Promise<void> {
   try {
     await fjernKildeFraGoogle(coachUserId, "TRAINING_SESSION", sessionId);
-  } catch (err) {
-    console.error(
-      `[gcal-kilder] fjernTreningsokt(${sessionId}) feilet`,
-      err instanceof Error ? err.message : err,
-    );
+  } catch (error) {
+    await logError({
+      context: "google-calendar-kilder.fjernTreningsokt",
+      error,
+      meta: { sessionId },
+      severity: "warn",
+    });
   }
 }

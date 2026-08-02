@@ -14,6 +14,7 @@ import { Prisma } from "@/generated/prisma/client";
 import { ExerciseSource, ExerciseVisibility } from "@/generated/prisma/enums";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { logError } from "@/lib/error-tracking";
 
 export type DuplicateDrillResult =
   | { ok: true; drillId: string }
@@ -73,8 +74,12 @@ export async function duplicateDrillForPlayer(id: string): Promise<DuplicateDril
     });
     revalidatePath("/portal/drills");
     return { ok: true, drillId: kopi.id };
-  } catch (err) {
-    console.error("duplicateDrillForPlayer failed", err);
+  } catch (error) {
+    await logError({
+      context: "portal-drills.duplicateDrillForPlayer",
+      error,
+      meta: { drillId: id, userId: user.id },
+    });
     return { ok: false, error: "Kunne ikke duplisere øvelsen" };
   }
 }

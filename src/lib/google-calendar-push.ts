@@ -17,6 +17,7 @@ import { prisma } from "@/lib/prisma";
 import { getCalendarApi } from "@/lib/google-calendar";
 import type { GoogleCalendarConnection } from "@/generated/prisma/client";
 import { fraNaivVeggklokke, tilHeldagsDato } from "@/lib/google-calendar-tid";
+import { logError } from "@/lib/error-tracking";
 
 export type PushKildeType =
   | "BOOKING"
@@ -177,12 +178,14 @@ export async function pushKildeTilGoogle(
         },
       });
       skrevet++;
-    } catch (err) {
+    } catch (error) {
       feilet++;
-      console.error(
-        `[gcal-push] ${kilde.type}:${kilde.id} → ${sub.googleCalendarId} feilet`,
-        err instanceof Error ? err.message : err,
-      );
+      await logError({
+        context: "google-calendar-push.pushKilde",
+        error,
+        meta: { kildeType: kilde.type, kildeId: kilde.id, googleCalendarId: sub.googleCalendarId },
+        severity: "warn",
+      });
       // Fortsett til neste kalender — én feilende kalender skal ikke
       // blokkere de andre.
     }
@@ -260,10 +263,12 @@ export async function fjernKildeFraGoogle(
       // Allerede borte i Google er et greit utfall — vi skal uansett fjerne
       // koblingen lokalt.
       if (!/404|410|Not Found|deleted/i.test(melding)) {
-        console.error(
-          `[gcal-push] sletting feilet for ${type}:${kildeId}`,
-          melding,
-        );
+        await logError({
+          context: "google-calendar-push.fjernKilde",
+          error: err,
+          meta: { kildeType: type, kildeId },
+          severity: "warn",
+        });
       }
     }
     await prisma.pushedCalendarEvent.delete({ where: { id: rad.id } });

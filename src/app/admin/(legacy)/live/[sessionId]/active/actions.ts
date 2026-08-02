@@ -13,6 +13,7 @@ import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { hasRole } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
+import { logError } from "@/lib/error-tracking";
 
 const MeldingSchema = z.object({
   sessionId: z.string().min(1, "Økt-ID er påkrevd"),
@@ -73,8 +74,8 @@ export async function sendLiveMelding(
       where: { id: parsed.data.sessionId },
       data: { completedSummary: oppdatert as object },
     });
-  } catch (err) {
-    console.error("[live/active] sendLiveMelding feilet", err);
+  } catch (error) {
+    await logError({ context: "admin.live.sendLiveMelding", error, meta: { sessionId: parsed.data.sessionId } });
     return { ok: false, error: "Kunne ikke sende melding" };
   }
 

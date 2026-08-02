@@ -14,6 +14,7 @@ import {
 } from "@/lib/gfgk-junior/bootstrap";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { logError } from "@/lib/error-tracking";
 
 export type ActionResult<T = void> =
   | { success: true; data?: T }
@@ -66,8 +67,8 @@ export async function createGroup(
     });
     revalidatePath("/admin/grupper");
     return { success: true, data: { groupId: gruppe.id } };
-  } catch (err) {
-    console.error("createGroup failed", err);
+  } catch (error) {
+    await logError({ context: "admin.grupper.createGroup", error });
     return { error: "Kunne ikke opprette gruppe" };
   }
 }
@@ -93,8 +94,8 @@ export async function deleteGroup(
 
   try {
     await prisma.group.delete({ where: { id: groupId } });
-  } catch (err) {
-    console.error("deleteGroup failed", err);
+  } catch (error) {
+    await logError({ context: "admin.grupper.deleteGroup", error, meta: { groupId } });
     return { error: "Kunne ikke slette gruppen" };
   }
 
@@ -137,8 +138,8 @@ export async function bootstrapGfgkJuniorGrupper(): Promise<
     revalidatePath("/admin/grupper");
     revalidatePath("/gfgk-junior");
     return { success: true, data: resultat };
-  } catch (err) {
-    console.error("bootstrapGfgkJuniorGrupper failed", err);
+  } catch (error) {
+    await logError({ context: "admin.grupper.bootstrapGfgkJunior", error });
     return { error: "Kunne ikke opprette GFGK Junior-gruppene" };
   }
 }

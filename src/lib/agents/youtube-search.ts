@@ -7,6 +7,7 @@
 // kvote-enheter; gratis-kvoten er 10 000/dag — langt mer enn agenten bruker.
 
 import "server-only";
+import { logError } from "@/lib/error-tracking";
 
 export type YoutubeVideo = {
   videoId: string;
@@ -40,13 +41,22 @@ export async function searchYoutube(
   try {
     const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
     if (!res.ok) {
-      console.error(`[youtube] søk feilet: HTTP ${res.status}`);
+      await logError({
+        context: "agents.youtube.sok",
+        error: new Error(`HTTP ${res.status}`),
+        meta: { status: res.status },
+        severity: "warn",
+      });
       return [];
     }
     const data: unknown = await res.json();
     return parseVideos(data);
-  } catch (err) {
-    console.error("[youtube] søk feilet:", err);
+  } catch (error) {
+    await logError({
+      context: "agents.youtube.sok",
+      error,
+      severity: "warn",
+    });
     return [];
   }
 }

@@ -9,6 +9,7 @@ import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { notify } from "@/lib/notifications";
+import { logError } from "@/lib/error-tracking";
 
 
 export type TournamentInput = {
@@ -583,8 +584,8 @@ export async function sendFellesmelding(
     try {
       await leverCoachMelding(coach.id, playerId, melding, turnering.name);
       sendt++;
-    } catch (err) {
-      console.error("[fellesmelding] kunne ikke levere til", playerId, err);
+    } catch (error) {
+      await logError({ context: "admin.tournaments.sendFellesmelding", error, meta: { playerId }, severity: "warn" });
       feilet.push({ userId: playerId, navn });
     }
   }

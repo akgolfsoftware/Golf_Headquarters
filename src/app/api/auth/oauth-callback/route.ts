@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { safeRedirectPath } from "@/lib/security/safe-redirect";
+import { logError } from "@/lib/error-tracking";
 
 export const runtime = "nodejs";
 
@@ -78,10 +79,10 @@ export async function GET(req: NextRequest) {
         });
       }
     }
-  } catch (linkErr) {
+  } catch (error) {
     // Logg, men ikke blokker login — brukeren kan fortsatt komme inn.
     // Manuell DB-fiks kan utføres senere.
-    console.error("[oauth-callback] auto-link feilet:", linkErr);
+    await logError({ context: "auth.oauth-callback.auto-link", error, severity: "warn" });
   }
 
   // next er allerede validert som relativ path — new URL er trygt her

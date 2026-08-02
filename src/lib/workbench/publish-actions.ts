@@ -6,6 +6,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { sendPush } from "@/lib/push/send";
+import { logError } from "@/lib/error-tracking";
 import type { PlanStatus } from "@/generated/prisma/client";
 
 /** Coach kan sende første gang (DRAFT/REJECTED) og sende oppdatering (ACTIVE/ACCEPTED). */
@@ -200,8 +201,13 @@ export async function publishWorkbenchPlan(
       link: "/portal/planlegge/workbench",
       tag: "plan-publisert",
     });
-  } catch (err) {
-    console.error("[workbench] Kunne ikke opprette plan-varsel", err);
+  } catch (error) {
+    await logError({
+      context: "workbench.publish.planVarsel",
+      error,
+      meta: { planId: plan.id, targetUserId },
+      severity: "warn",
+    });
   }
 
   revalidateWorkbench(targetUserId);

@@ -179,7 +179,12 @@ export async function getCalendarBusy(
       if (errors.length > 0) {
         feiletAntall++;
         sisteFeil = errors.map((e) => e.reason ?? "unknown").join(", ");
-        console.error(`[google-calendar] freebusy error for ${sub.googleCalendarId}`, sisteFeil);
+        await logError({
+          context: "google-calendar.freebusy",
+          error: sisteFeil,
+          meta: { googleCalendarId: sub.googleCalendarId },
+          severity: "warn",
+        });
         await prisma.googleCalendarSubscription.update({
           where: { id: sub.id },
           data: { lastError: sisteFeil.slice(0, 500) },
@@ -197,11 +202,15 @@ export async function getCalendarBusy(
         data: { lastSyncAt: now, lastError: null },
       });
     }
-  } catch (err) {
+  } catch (error) {
     // Hele batch-kallet feilet (auth/nettverk) — alle subscriptions regnes som feilet.
     feiletAntall = subs.length;
-    sisteFeil = err instanceof Error ? err.message : "unknown";
-    console.error(`[google-calendar] freebusy batch failed`, sisteFeil);
+    sisteFeil = error instanceof Error ? error.message : "unknown";
+    await logError({
+      context: "google-calendar.freebusyBatch",
+      error,
+      severity: "warn",
+    });
     await prisma.googleCalendarSubscription.updateMany({
       where: { id: { in: subs.map((s) => s.id) } },
       data: { lastError: sisteFeil.slice(0, 500) },
@@ -373,7 +382,11 @@ export async function setupWatchForSubscription(
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
   if (!baseUrl) {
-    console.error("[google-calendar] NEXT_PUBLIC_APP_URL mangler — kan ikke registrere watch");
+    await logError({
+      context: "google-calendar.watch",
+      error: "NEXT_PUBLIC_APP_URL mangler — kan ikke registrere watch",
+      severity: "warn",
+    });
     return null;
   }
   // Google krever https for webhook-adresse
@@ -401,7 +414,12 @@ export async function setupWatchForSubscription(
     const resourceId = res.data.resourceId ?? null;
     const expiration = res.data.expiration ? Number(res.data.expiration) : expirationMs;
     if (!resourceId) {
-      console.error(`[google-calendar] watch returnerte ingen resourceId for ${sub.googleCalendarId}`);
+      await logError({
+        context: "google-calendar.watch",
+        error: "watch returnerte ingen resourceId",
+        meta: { googleCalendarId: sub.googleCalendarId },
+        severity: "warn",
+      });
       return null;
     }
     const expiresAt = new Date(expiration);
@@ -416,9 +434,14 @@ export async function setupWatchForSubscription(
     });
 
     return { channelId, resourceId, expiresAt };
-  } catch (err) {
-    const melding = err instanceof Error ? err.message : "unknown";
-    console.error(`[google-calendar] watch.insert failed for ${sub.googleCalendarId}`, melding);
+  } catch (error) {
+    const melding = error instanceof Error ? error.message : "unknown";
+    await logError({
+      context: "google-calendar.watchInsert",
+      error,
+      meta: { googleCalendarId: sub.googleCalendarId },
+      severity: "warn",
+    });
     await prisma.googleCalendarSubscription.update({
       where: { id: sub.id },
       data: { lastError: melding.slice(0, 500) },

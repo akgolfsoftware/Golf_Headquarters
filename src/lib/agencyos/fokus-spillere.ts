@@ -16,6 +16,7 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import { loadStallen, type StallenRow } from "@/lib/admin/stallen-data";
+import { logError } from "@/lib/error-tracking";
 
 // ── Terskler for regelbasert utvelgelse (dokumentert, ingen skjulte tall) ──
 /** Maks antall festede spillere (brief: «0–3 kort»). */
@@ -121,8 +122,13 @@ export async function loadFokusSpillere(coach: {
       select: { playerId: true },
     });
     pinIds = pins.map((p) => p.playerId);
-  } catch (err) {
-    console.error("[fokus] kunne ikke lese pin-liste (tabell mangler?)", err);
+  } catch (error) {
+    await logError({
+      context: "agencyos.fokus.lesPinListe",
+      error,
+      meta: { coachId: coach.id },
+      severity: "warn",
+    });
     pinIds = [];
   }
   const pinnetSet = new Set(pinIds);

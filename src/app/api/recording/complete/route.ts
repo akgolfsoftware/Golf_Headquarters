@@ -9,6 +9,7 @@ import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { audit } from "@/lib/audit";
+import { logError } from "@/lib/error-tracking";
 
 const BUCKET = "coaching-recordings";
 const RETENTION_DAYS = 90;
@@ -76,7 +77,7 @@ export async function POST(req: Request) {
   for (const c of sorted) {
     const { data, error } = await admin.storage.from(BUCKET).download(c.path);
     if (error || !data) {
-      console.error("[recording] kunne ikke laste chunk", c.path, error);
+      await logError({ context: "recording.complete.last-chunk", error, meta: { recordingId: recording.id, chunkIdx: c.idx, chunkPath: c.path } });
       return NextResponse.json(
         { error: `Mangler chunk ${c.idx}` },
         { status: 500 },
@@ -95,7 +96,7 @@ export async function POST(req: Request) {
       upsert: true,
     });
   if (uploadErr) {
-    console.error("[recording] final upload feilet", uploadErr);
+    await logError({ context: "recording.complete.final-upload", error: uploadErr, meta: { recordingId: recording.id } });
     return NextResponse.json(
       { error: `Storage-feil: ${uploadErr.message}` },
       { status: 500 },
@@ -144,11 +145,11 @@ export async function POST(req: Request) {
         cookie: req.headers.get("cookie") ?? "",
       },
       body: JSON.stringify({ recordingId: recording.id }),
-    }).catch((e) => {
-      console.error("[complete] kunne ikke trigge transcribe:", e);
+    }).catch((error) => {
+      void logError({ context: "recording.complete.trigger-transcribe", error, severity: "warn", meta: { recordingId: recording.id } });
     });
-  } catch (e) {
-    console.error("[complete] feil ved trigging av transcribe:", e);
+  } catch (error) {
+    await logError({ context: "recording.complete.trigger-transcribe", error, severity: "warn", meta: { recordingId: recording.id } });
   }
 
   return NextResponse.json({ ok: true, recordingId: recording.id });

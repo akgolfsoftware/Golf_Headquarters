@@ -13,6 +13,7 @@ import {
   syncCalendarList,
   setupWatchForSubscription,
 } from "@/lib/google-calendar";
+import { logError } from "@/lib/error-tracking";
 
 export const runtime = "nodejs";
 
@@ -96,11 +97,8 @@ export async function GET(req: Request) {
     // Hent kalender-liste og opprett subscriptions med default-toggler
     try {
       await syncCalendarList(connection.id);
-    } catch (err) {
-      console.error(
-        "[google-calendar/callback] kalender-liste-sync feilet",
-        err instanceof Error ? err.message : err,
-      );
+    } catch (error) {
+      await logError({ context: "google-calendar.callback.kalender-liste-sync", error, severity: "warn", meta: { connectionId: connection.id } });
     }
 
     // Sett opp watch for hver aktiv pull-subscription (best-effort)
@@ -112,11 +110,8 @@ export async function GET(req: Request) {
       await Promise.allSettled(
         pullSubs.map((s) => setupWatchForSubscription(s.id)),
       );
-    } catch (err) {
-      console.error(
-        "[google-calendar/callback] watch-oppsett feilet",
-        err instanceof Error ? err.message : err,
-      );
+    } catch (error) {
+      await logError({ context: "google-calendar.callback.watch-oppsett", error, severity: "warn", meta: { connectionId: connection.id } });
     }
 
     return NextResponse.redirect(

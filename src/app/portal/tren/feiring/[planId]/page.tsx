@@ -12,6 +12,7 @@ import { notFound, redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { computeEffectiveness } from "@/lib/ai-plan/effectiveness";
+import { logError } from "@/lib/error-tracking";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { FeiringV2 } from "@/components/portal/v2/FeiringV2";
 
@@ -57,8 +58,13 @@ export default async function PlanFeiring({ params }: { params: Params }) {
   if (!eff) {
     try {
       eff = await computeEffectiveness(planId);
-    } catch (err) {
-      console.error("[feiring] computeEffectiveness failed", err);
+    } catch (error) {
+      await logError({
+        context: "feiring.computeEffectiveness",
+        error,
+        meta: { planId },
+        severity: "warn",
+      });
     }
   }
 
