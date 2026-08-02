@@ -12,6 +12,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { DRILL_DRAFT_TOOL } from "@/lib/agents/drill-forslag-agent";
+import { avgjorDraft } from "@/lib/caddie/draft-status";
 
 export type ForslagResultat = { ok: true; melding: string } | { ok: false; melding: string };
 
@@ -67,9 +68,10 @@ export async function godkjennDrillForslag(
         createdBy: user.id,
       },
     });
-    await prisma.caddieDraft.update({
-      where: { id: draft.id },
-      data: { status: "APPROVED", resolvedAt: new Date() },
+    await avgjorDraft({
+      draftId: draft.id,
+      interaksjonId: draft.interaksjonId,
+      status: "APPROVED",
     });
     await audit({
       actorId: user.id,
@@ -93,9 +95,10 @@ export async function avvisDrillForslag(
   const draft = await hentEgetForslag(draftId, user.id);
   if (!draft) return { ok: false, melding: "Forslag ikke funnet" };
 
-  await prisma.caddieDraft.update({
-    where: { id: draft.id },
-    data: { status: "REJECTED", resolvedAt: new Date() },
+  await avgjorDraft({
+    draftId: draft.id,
+    interaksjonId: draft.interaksjonId,
+    status: "REJECTED",
   });
   revalidatePath("/admin/drills/forslag");
   return { ok: true, melding: "Avvist" };
@@ -131,9 +134,10 @@ export async function godkjennVideoForslag(
       where: { id: parsed.data.exerciseId },
       data: { videoUrl: parsed.data.videoUrl },
     });
-    await prisma.caddieDraft.update({
-      where: { id: draft.id },
-      data: { status: "APPROVED", resolvedAt: new Date() },
+    await avgjorDraft({
+      draftId: draft.id,
+      interaksjonId: draft.interaksjonId,
+      status: "APPROVED",
     });
     await audit({
       actorId: user.id,
@@ -158,9 +162,10 @@ export async function avvisVideoForslag(
   const draft = await hentEgetVideoForslag(draftId, user.id);
   if (!draft) return { ok: false, melding: "Forslag ikke funnet" };
 
-  await prisma.caddieDraft.update({
-    where: { id: draft.id },
-    data: { status: "REJECTED", resolvedAt: new Date() },
+  await avgjorDraft({
+    draftId: draft.id,
+    interaksjonId: draft.interaksjonId,
+    status: "REJECTED",
   });
   revalidatePath("/admin/drills/forslag");
   return { ok: true, melding: "Avvist" };

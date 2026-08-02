@@ -9,6 +9,7 @@ import { z } from "zod";
 import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
 import { prisma } from "@/lib/prisma";
 import { executeApprovedTool } from "@/lib/caddie/approval-executor";
+import { avgjorDraftViaToolCall } from "@/lib/caddie/draft-status";
 
 export const runtime = "nodejs";
 
@@ -119,10 +120,9 @@ async function resolveDraft(
   status: "APPROVED" | "REJECTED",
 ): Promise<void> {
   try {
-    await prisma.caddieDraft.updateMany({
-      where: { userId, toolCallId, status: "PENDING" },
-      data: { status, resolvedAt: new Date() },
-    });
+    // Går via draft-status så utfallet også meldes til AgenticOS-loggen.
+    // Å sette status direkte her ville latt interaksjonen bli stående PENDING.
+    await avgjorDraftViaToolCall({ userId, toolCallId, status });
   } catch (err) {
     // Kø-synk må aldri ta ned API-responsen.
     console.error("[caddie/approve] kunne ikke lukke CaddieDraft", err);

@@ -682,24 +682,34 @@ er korrekt, ikke en mangel.
 Promptversjonene er bumpet til v2 i alle tre flatene (`ai-plan`, `caddie-chat`, `plan-revisjon`), så
 loggen kan skille før og etter.
 
-#### 1.2 Tett hullene i Caddies læringsløkke — **rettelse, gjør denne først**
+#### 1.2 Tett hullene i Caddies læringsløkke — **utført 2026-08-02**
 
-Da `CaddieDraft.interaksjonId` ble innført, ble utfallet lukket i `draft-godkjenning.ts`. Ved gjennomgang
-2026-08-02 viser det seg at **det ikke er den eneste veien et utkast avgjøres**:
+Da `CaddieDraft.interaksjonId` ble innført, ble utfallet lukket i `draft-godkjenning.ts`. Det var **ikke**
+den eneste veien et utkast avgjøres. Gjennomgangen fant tre:
 
-| Vei | Setter APPROVED/REJECTED | Lukker løkka |
+| Vei | Lukket løkka før | Nå |
 |---|---|---|
-| `src/lib/caddie/draft-godkjenning.ts` | ja | **ja** |
-| `src/app/admin/(legacy)/drills/forslag/actions.ts` | ja, på **fire** steder | **nei** |
-| `src/app/api/caddie/approve/route.ts` | nei (kaller `executeApprovedTool` direkte, rører ikke draft-rader) | ikke aktuelt |
+| `src/lib/caddie/draft-godkjenning.ts` | ja | via `avgjorDraft` |
+| `src/app/admin/(legacy)/drills/forslag/actions.ts` (4 steder) | **nei** | via `avgjorDraft` |
+| `src/app/api/caddie/approve/route.ts` → `resolveDraft` | **nei** | via `avgjorDraftViaToolCall` |
 
-Konsekvensen er at forslag godkjent eller avvist fra drill-forslagssiden blir stående `PENDING` i
-`AiInteraksjon`, og godkjenningsraten per promptversjon blir systematisk for lav. Fire `settUtfall`-kall,
-eller aller helst: la `drills/forslag/actions.ts` gå gjennom `godkjennOgUtforCaddieDraft`/`avvisCaddieDraft`
-i stedet for å oppdatere rader selv. Da finnes det bare én vei, og hullet kan ikke oppstå igjen.
+Forslag behandlet fra drill-forslagssiden eller direkte i chatten ble stående `PENDING` i `AiInteraksjon`,
+og godkjenningsraten per promptversjon ble systematisk for lav.
 
-**Lærdom å ta med:** når en løkke lukkes ett sted, søk etter alle skrivere av statusfeltet før den regnes
-som lukket. `grep -rn "caddieDraft.update"` var nok til å avdekke dette.
+**To ting planen tok feil om, verifisert i koden:**
+
+1. Planen foreslo å rute drill-forslagene gjennom `godkjennOgUtforCaddieDraft`. Det ville brutt dem:
+   `approval-executor.ts` kjenner ikke `createDrillSuggestion` eller `suggestDrillVideo`, og har dessuten
+   ingen av den bespoke logikken (opprette `ExerciseDefinition`, sette `videoUrl`).
+2. Planen slo fast at `approve/route.ts` ikke rørte draft-rader. Den gjør det — via `updateMany` i
+   `resolveDraft`, som første grep leste feil.
+
+**Løsningen ble bedre enn den planlagte:** `src/lib/caddie/draft-status.ts` gjør statusendring og
+utfallsmelding til **én operasjon**. Ingen andre steder i kodebasen skriver `caddieDraft.status` lenger, så
+hullet kan ikke gjenoppstå ved at noen glemmer det andre kallet. Låst med test.
+
+**Lærdom:** når en løkke lukkes ett sted, søk etter alle skrivere av statusfeltet — og les treffene nøye.
+Å gjøre de to operasjonene til én er sterkere enn å huske å kalle begge.
 
 #### 1.3 De seks LLM-agentene som ikke logger
 
@@ -806,7 +816,7 @@ Disse er ikke tekniske oppgaver. De står i veien for konkrete steg over.
 ```
 0.  CI-gaten                   ← blokkerer alt. Ikke en agent-oppgave.
 1.1 FASIT-kontekst             ✔ utført 2026-08-02
-1.2 tett hullene i løkka       ← rettelse. Data er feil til dette er gjort.
+1.2 tett hullene i løkka       ✔ utført 2026-08-02
 1.3 seks agenter på loggen     ← stopper målefri pengebruk
 1.4 «hvorfor avvist»           ← åpner den beste datakilden
 2.1 knowledge_chunks           ← gjør rag-corpus reell
@@ -822,14 +832,14 @@ Verifisert 2026-08-02, så planen bygger på tilstand og ikke hukommelse:
 | | Status |
 |---|---|
 | Skriver til `AiInteraksjon` | `ai-plan`, `caddie-chat`, `plan-revisjon` |
-| Lukker utfall | `ai-plan` (ved lagring), `plan-revisjon` (ved godkjenning/avvisning), Caddie **kun via `draft-godkjenning.ts`** |
+| Lukker utfall | `ai-plan` (ved lagring), `plan-revisjon` (ved godkjenning/avvisning), Caddie via alle tre veier etter 1.2 |
 | Rapporterer `FASIT` | alle tre, etter 1.1 |
 | Kaller modell uten å logge | 6 agenter (se 1.3) |
 | Tabeller i produksjon | `ai_interaksjoner` (RLS på), `caddie_drafts.interaksjonId`, `plan_actions.interaksjonId` |
 | Promptversjoner | `ai-plan@2`, `caddie-chat@2`, `plan-revisjon@2` |
 
-**Tolk ikke tallene ennå.** Godkjenningsraten er for lav så lenge 1.2 står åpen, og kost per abonnent er
-ufullstendig så lenge seks agenter ikke logger. Vent med å trekke konklusjoner til 1.2 og 1.3 er gjort.
+**Tolk kostnadstallene med forbehold.** Godkjenningsraten er riktig etter 1.2, men kost per abonnent er
+fortsatt ufullstendig så lenge seks LLM-agenter ikke logger (1.3).
 - **SG-tolkning for spilleren** som første helt nye flate. Merk at den må formuleres som hypotese, og ikke
   kan foreskrive navngitte drills før drill-banken er bygget på nytt.
 - **«Hvorfor avvist»-feltet** i godkjenningskøen, som mater `settUtfall` med den mest verdifulle

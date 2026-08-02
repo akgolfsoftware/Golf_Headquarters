@@ -7,7 +7,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { executeApprovedTool } from "@/lib/caddie/approval-executor";
-import { settUtfall } from "@/lib/agenticos/logg";
+import { avgjorDraft } from "@/lib/caddie/draft-status";
 
 export type DraftGodkjenningResult = {
   ok: boolean;
@@ -38,9 +38,10 @@ export async function godkjennOgUtforCaddieDraft(
   try {
     const exec = await executeApprovedTool(draft.toolName, toolInput, adminUserId);
 
-    await prisma.caddieDraft.update({
-      where: { id: draft.id },
-      data: { status: "APPROVED", resolvedAt: new Date() },
+    await avgjorDraft({
+      draftId: draft.id,
+      interaksjonId: draft.interaksjonId,
+      status: "APPROVED",
     });
 
     await persistAudit(adminUserId, draft.conversationId, {
@@ -48,8 +49,6 @@ export async function godkjennOgUtforCaddieDraft(
       toolName: draft.toolName,
       result: { status: exec.status, summary: exec.summary, details: exec.details ?? null },
     });
-
-    await lukkLaeringslokke(draft.interaksjonId, "GODKJENT");
 
     return { ok: true, status: exec.status, summary: exec.summary };
   } catch (err) {
@@ -73,9 +72,10 @@ export async function avvisCaddieDraft(
     return { ok: false, status: "not-found", summary: "Utkastet er allerede behandlet." };
   }
 
-  await prisma.caddieDraft.update({
-    where: { id: draft.id },
-    data: { status: "REJECTED", resolvedAt: new Date() },
+  await avgjorDraft({
+    draftId: draft.id,
+    interaksjonId: draft.interaksjonId,
+    status: "REJECTED",
   });
   await persistAudit(adminUserId, draft.conversationId, {
     toolCallId: draft.toolCallId,
@@ -83,29 +83,9 @@ export async function avvisCaddieDraft(
     result: { status: "rejected", summary: `Forslaget for ${draft.toolName} ble avvist.` },
   });
 
-  await lukkLaeringslokke(draft.interaksjonId, "AVVIST");
-
   return { ok: true, status: "rejected", summary: "Forslaget ble avvist." };
 }
 
-/**
- * Melder utfallet tilbake til AgenticOS-loggen.
- *
- * Én Caddie-tur kan produsere flere utkast som behandles hver for seg. settUtfall
- * rører kun rader som fortsatt står PENDING, så det FØRSTE utkastet som avgjøres
- * setter turens utfall — en senere godkjenning overskriver ikke en avvisning.
- * Grov, men entydig: turen regnes som brukt så snart noe fra den ble behandlet.
- *
- * mindreaarig er alltid false — Caddie er ADMIN-only, og vi lagrer uansett ingen
- * fritekst her.
- */
-async function lukkLaeringslokke(
-  interaksjonId: string | null,
-  utfall: "GODKJENT" | "AVVIST",
-): Promise<void> {
-  if (!interaksjonId) return;
-  await settUtfall({ interaksjonId, utfall, mindreaarig: false });
-}
 
 async function persistAudit(
   userId: string,
