@@ -12,13 +12,25 @@
  *  - svarPaInvitasjon: kun userId === currentUser.id (deltakeren selv)
  *  - fjernSpiller: host eller deltakeren selv
  *
- * TODO: når lib/notifications/triggers.ts har et invitasjons-trigger, send
- * notifikasjon her i stedet for å la frontend håndtere oppfølging.
+ * Ved invitasjon sendes TRIGGERS.SESSION_INVITE (in-app + push) til den
+ * inviterte. Varslingen er best-effort — feiler den, står invitasjonen
+ * fortsatt i databasen.
  */
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { TRIGGERS } from "@/lib/notifications/triggers";
+import { sendPush } from "@/lib/push/send";
+
+const OSLO_TID_FMT = new Intl.DateTimeFormat("nb-NO", {
+  timeZone: "Europe/Oslo",
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+  hour: "2-digit",
+  minute: "2-digit",
+});
 
 export type InviteSpillerInput = {
   sessionId: string;
@@ -40,6 +52,8 @@ export async function inviterSpiller(
       hostId: true,
       coachId: true,
       maxParticipants: true,
+      title: true,
+      startTime: true,
       participants: { select: { id: true, userId: true } },
     },
   });
@@ -73,7 +87,30 @@ export async function inviterSpiller(
     select: { id: true },
   });
 
-  // TODO: Send notifikasjon til invitert spiller via lib/notifications
+  // Varsle den inviterte (in-app + push). Best-effort: invitasjonen er
+  // allerede lagret, så en feilende varsling skal ikke velte handlingen.
+  const naar = OSLO_TID_FMT.format(session.startTime);
+  const vertsnavn = me.name?.trim() || "En spiller";
+  const lenke = `/portal/tren/${opts.sessionId}`;
+  try {
+    await prisma.notification.create({
+      data: {
+        userId: opts.userId,
+        type: TRIGGERS.SESSION_INVITE.key,
+        title: `${vertsnavn} inviterte deg til å trene sammen`,
+        body: `«${session.title}» — ${naar}. Svar ja eller nei i økten.`,
+        link: lenke,
+      },
+    });
+    await sendPush(opts.userId, {
+      title: "Invitasjon til å trene sammen",
+      body: `${vertsnavn} inviterte deg til «${session.title}» — ${naar}.`,
+      link: lenke,
+      tag: `session-invite-${opts.sessionId}`,
+    });
+  } catch (err) {
+    console.error("[invite-actions] varsling av invitert spiller feilet", err);
+  }
 
   revalidatePath("/portal");
   revalidatePath(`/portal/tren/${opts.sessionId}`);
