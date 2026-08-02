@@ -1630,6 +1630,9 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
   };
 
   const weekNumber = data?.summary?.weekNumber ?? 0;
+  // Server-data, ikke `new Date()`: unngår hydreringsmismatch mellom UTC-serveren
+  // og Oslo-klienten når man leser år/måned for brødsmulen (React #418, 2026-08-03).
+  const visningsDato = data?.weekStartISO ? new Date(data.weekStartISO) : new Date();
   const weekOffset = data?.weekOffset ?? 0;
   const st = statusLabel(optimisticStatus ?? planStatus);
   const adher = data?.adherencePct;
@@ -2273,7 +2276,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
       {/* BRØDSMULE + insight-linje — desktop (md+): uendret */}
       <div className="hidden md:flex" style={{ alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {[["ar", `Sesong ${new Date().getFullYear()}`, "circle"], ["maned", MANEDER[new Date().getMonth()][0].toUpperCase() + MANEDER[new Date().getMonth()].slice(1), "circle-dot"], ["uke", `Uke ${weekNumber}`, "calendar"]].map(([v, l, ic], i, arr) => (
+          {[["ar", `Sesong ${visningsDato.getFullYear()}`, "circle"], ["maned", MANEDER[visningsDato.getMonth()][0].toUpperCase() + MANEDER[visningsDato.getMonth()].slice(1), "circle-dot"], ["uke", `Uke ${weekNumber}`, "calendar"]].map(([v, l, ic], i, arr) => (
             <span key={v} style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
               <button type="button" onClick={() => setNivaa(v)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, padding: "6px 11px", borderRadius: 9999, border: `1px solid ${nivaa === v ? `color-mix(in srgb, ${T.lime} 30%, transparent)` : "transparent"}`, background: nivaa === v ? `color-mix(in srgb, ${T.lime} 7%, transparent)` : "transparent", fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: nivaa === v ? T.fg : T.fg2 }}>
                 <Icon name={ic} size={13} style={{ color: nivaa === v ? T.lime : T.mut }} />{l}
@@ -2304,7 +2307,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
       <div className="flex md:hidden" style={{ alignItems: "center", gap: 8 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <ZoomBrodsmule
-            sti={[`Sesong ${new Date().getFullYear()}`, MANEDER[new Date().getMonth()][0].toUpperCase() + MANEDER[new Date().getMonth()].slice(1), `Uke ${weekNumber}`]}
+            sti={[`Sesong ${visningsDato.getFullYear()}`, MANEDER[visningsDato.getMonth()][0].toUpperCase() + MANEDER[visningsDato.getMonth()].slice(1), `Uke ${weekNumber}`]}
             onHopp={(i) => setNivaa((["ar", "maned", "uke"] as const)[i])}
           />
         </div>

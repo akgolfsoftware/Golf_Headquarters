@@ -4531,6 +4531,24 @@ model PlanSuggestion {
 // Da slipper Stripe å spam-retry, og vi kan reprosessere manuelt eller via
 // cron-job senere. Status går PENDING → RETRYING → RESOLVED | DEAD.
 
+/// Kvittering for webhook-events vi allerede har behandlet ferdig.
+/// Stripe garanterer «minst én gang»-levering og kan sende samme event flere ganger
+/// (retry, manuell replay fra dashbordet). Uten denne kjørte hele handleren på nytt —
+/// inkludert e-post, kalender-push og coach-varsel. Raden settes inn FØR behandling og
+/// slettes igjen hvis behandlingen feiler, slik at en reprosessering får lov å prøve på nytt.
+/// DDL kjørt med scripts/add-processed-webhook-events-2026-08-02.ts (se gotchas: prisma migrate er blokkert her).
+model ProcessedWebhookEvent {
+  id          String   @id @default(cuid())
+  source      String // "stripe" | "google-cal" | annet
+  eventId     String
+  eventType   String
+  processedAt DateTime @default(now())
+
+  @@unique([source, eventId])
+  @@index([processedAt])
+  @@map("processed_webhook_events")
+}
+
 model WebhookFailure {
   id            String    @id @default(cuid())
   webhookSource String // "stripe" | "google-cal" | annet
