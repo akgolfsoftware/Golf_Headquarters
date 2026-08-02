@@ -288,15 +288,8 @@ Avhengigheter:
 
 | UTC/CEST | Bølge | Punkt | Status | Commit |
 |----------|-------|-------|--------|--------|
-| | A | #1 | pending | |
-| | A | #2 | pending | |
-| | B | #6 #5 #7 #8 | pending | |
-| | C | #3 #12 | pending | |
-| | D | #4 #11 | pending | |
-| | E | #9 #10 | pending | |
-| | F | #13 #15 | pending | |
-| | G | #14 | pending | |
-| | H | PR | pending | |
+| 2026-07-31 ~23:50 | A–G | #1–#15 | done (batch) | se PR |
+| | H | PR | in_progress | |
 
 ---
 

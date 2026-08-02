@@ -174,16 +174,45 @@ async function main() {
     if (!recordingId) throw new Error("ingen recordingId: " + JSON.stringify(startRes.json));
     steps.push({ step: "recording-start", ok: true, recordingId });
 
-    // Complete without chunks? may fail - try dummy path after creating empty
+    // Complete uten chunks → forventet 400 (ikke ekte mikrofon) — #15
     log("POST complete");
     const completeRes = await api(page, "/api/recording/complete", { recordingId });
     log(`complete status=${completeRes.status}`);
-    steps.push({ step: "complete", ok: completeRes.status < 500, status: completeRes.status, json: completeRes.json });
+    const completeExpected =
+      completeRes.status < 400 ||
+      (completeRes.status === 400 &&
+        /ugyldig|chunk|body/i.test(JSON.stringify(completeRes.json ?? "")));
+    steps.push({
+      step: "complete",
+      ok: completeExpected,
+      expectedEmpty: completeRes.status === 400,
+      status: completeRes.status,
+      json: completeRes.json,
+    });
 
+    // Dummy kun når ALLOW_DUMMY_TRANSCRIPT=1 i miljøet (#2)
     log("POST dummy-transcript");
     const dummyRes = await api(page, "/api/recording/dummy-transcript", { recordingId });
     log(`dummy status=${dummyRes.status}`);
-    steps.push({ step: "dummy-transcript", ok: dummyRes.status < 400, status: dummyRes.status, json: dummyRes.json });
+    if (dummyRes.status === 403) {
+      log("dummy av i miljø — prøver transcribe");
+      steps.push({ step: "dummy-transcript", ok: true, skipped: true, status: 403 });
+      const tr = await api(page, "/api/recording/transcribe", { recordingId });
+      log(`transcribe status=${tr.status}`);
+      steps.push({
+        step: "transcribe",
+        ok: tr.status < 500,
+        status: tr.status,
+        json: tr.json,
+      });
+    } else {
+      steps.push({
+        step: "dummy-transcript",
+        ok: dummyRes.status < 400,
+        status: dummyRes.status,
+        json: dummyRes.json,
+      });
+    }
 
     log("POST analyze (kan ta tid)");
     const analyzeRes = await api(page, "/api/recording/analyze", { recordingId });

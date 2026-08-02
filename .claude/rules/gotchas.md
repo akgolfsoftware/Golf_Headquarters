@@ -4,21 +4,14 @@ Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekk
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
 Ingen låst designkanon per 2026-07-25 — nytt system utvikles i Open Design (CLAUDE.md invariant 2).
 
-### Workbench-datomatte (session-move-math.ts) bruker rå getDay()/setHours() — ikke Oslo-korrekt (oppdaget 2026-07-19, IKKE fikset)
-- **Symptom (potensielt):** `mondayOf`/`dateForDayIndex`/`weekRefDate` i `src/lib/workbench/session-move-math.ts`
-  regner uke/dag fra `new Date()` med rå `.getDay()`/`.setHours(0,0,0,0)`/`.setDate()` — akkurat
-  mønsteret `uke-helpers.ts`-gotchaen forbyr. Filen er bevisst «pure date math, no server imports»
-  (delt klient+server for drag-drop), så den går IKKE via `uke-helpers.ts`.
-- **Årsak:** Vercel kjører UTC. Nær midnatt i Oslo (23:00–01:00 ca., avhengig av sommer/vintertid)
-  kan server (UTC) og klient (Oslo) uenes om hvilken dag/uke «nå» er → en økt lagt til eller flyttet
-  i det vinduet kan havne på feil dag/uke.
-- **Ikke fikset 2026-07-19** (kvelden før lansering — for risikabelt å endre kjernematte i
-  `moveWorkbenchSession`/`addWorkbenchSession`/coach-Workbench uten regresjonstid). Testet
-  ende-til-ende via direkte DB-skrivning/lesning (samme kontrakt som koden) — funker for
-  dagtid-bruk, som er alt 30-spiller-testen i morgen trenger.
-- **Fiks (gjør etter lansering):** flytt logikken til å bruke `Intl.DateTimeFormat` med
-  `timeZone: "Europe/Oslo"` (samme mønster som `uke-helpers.ts`), eller re-eksporter derfra hvis
-  «no server imports»-kravet kan lempes. Test grundig rundt midnatt.
+### Workbench-datomatte (session-move-math.ts) — Oslo-korrekt siden 2026-07-27 (oppdaget 2026-07-19)
+- **Var:** `mondayOf`/`dateForDayIndex`/`weekRefDate` regnet uke/dag fra `new Date()` med rå
+  `.getDay()`/`.setHours(0,0,0,0)` — på Vercel (UTC) kunne en økt lagt til/flyttet nær norsk
+  midnatt havne på feil dag/uke.
+- **Fikset 2026-07-27:** `mondayOf` delegerer nå til `startOfWeek` fra `uke-helpers.ts` (Intl,
+  Europe/Oslo) — `uke-helpers.ts` er ren og delt klient+server, så «no server imports»-kravet
+  holdes. Regresjonstester for midnattsvinduet (vinter/sommer/DST-uka) ligger i
+  `src/lib/__tests__/workbench/session-move.test.ts`. Ikke gjeninnfør rå getDay()-matte her.
 
 ### dedupe-tournament-data foretrekker NGF som merge-target — feil for ferske scraper-kilder (oppdaget 2026-07-18)
 - `dedupeTournaments()` velger target med regelen «behold NGF-raden» (den historiske

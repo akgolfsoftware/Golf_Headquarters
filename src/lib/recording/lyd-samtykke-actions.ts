@@ -1,7 +1,7 @@
 "use server";
 
 /**
- * Lydsamtykke: coach-registrering (pilot/nød), e-post til foresatt, trekk.
+ * Lydsamtykke: coach-registrering (pilot/nød), e-post til foresatt, trekk, kopier lenke.
  * Bekreft via token ligger i auth-ruten (offentlig, same-origin).
  */
 
@@ -9,13 +9,16 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
+import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { audit } from "@/lib/audit";
 import { logError } from "@/lib/error-tracking";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { APP_URL } from "@/lib/app-url";
+import { isSameOriginAction } from "@/lib/security/same-origin";
 import { LYD_SAMTYKKE_ORDLYD, LYD_SAMTYKKE_ORDLYD_VERSJON } from "./lyd-samtykke-ordlyd";
 import { byggLydSamtykkeForesattEpost } from "./lyd-samtykke-email";
 import {
+  hashLydSamtykkeToken,
   lagLydSamtykkeToken,
   lydSamtykkeTokenUtloper,
 } from "./lyd-samtykke-token";
@@ -35,9 +38,33 @@ const SendForesattSchema = z.object({
   foresattEpost: z.string().email(),
 });
 
+const PlayerIdSchema = z.object({
+  playerId: z.string().min(1),
+});
+
 export type LydSamtykkeActionResult =
-  | { ok: true; message?: string }
-  | { ok: false; error: string };
+  | { ok: true; message?: string; consentUrl?: string }
+  | { ok: false; error: string; consentUrl?: string };
+
+async function guardCoachSpiller(
+  coach: { id: string; role: string },
+  playerId: string,
+): Promise<LydSamtykkeActionResult | null> {
+  if (!(await isSameOriginAction())) {
+    return { ok: false, error: "Avvist: forespørselen kom fra feil opphav." };
+  }
+  const player = await prisma.user.findUnique({
+    where: { id: playerId },
+    select: { id: true, role: true },
+  });
+  if (!player || player.role !== "PLAYER") {
+    return { ok: false, error: "Spiller finnes ikke" };
+  }
+  if (!(await harCoachTilgangTilSpiller(coach, playerId))) {
+    return { ok: false, error: "Du har ikke tilgang til denne spilleren" };
+  }
+  return null;
+}
 
 /**
  * Registrer status GITT med låst ordlyd-kopi (myndig SELV, eller manuell pilot/nød).
@@ -60,13 +87,8 @@ export async function registrerLydSamtykkeGitt(
     foresattEpost = null;
   }
 
-  const player = await prisma.user.findUnique({
-    where: { id: playerId },
-    select: { id: true, role: true },
-  });
-  if (!player || player.role !== "PLAYER") {
-    return { ok: false, error: "Spiller finnes ikke" };
-  }
+  const denied = await guardCoachSpiller(coach, playerId);
+  if (denied) return denied;
 
   const now = new Date();
   await prisma.lydSamtykke.upsert({
@@ -80,6 +102,7 @@ export async function registrerLydSamtykkeGitt(
       trukketAt: null,
       ordlyd: LYD_SAMTYKKE_ORDLYD,
       token: null,
+      tokenHash: null,
       tokenExpiresAt: null,
     },
     update: {
@@ -90,6 +113,7 @@ export async function registrerLydSamtykkeGitt(
       trukketAt: null,
       ordlyd: LYD_SAMTYKKE_ORDLYD,
       token: null,
+      tokenHash: null,
       tokenExpiresAt: null,
     },
   });
@@ -125,11 +149,14 @@ export async function sendLydSamtykkeForesattEpost(
   const playerId = parsed.data.playerId;
   const foresattEpost = parsed.data.foresattEpost.trim().toLowerCase();
 
+  const denied = await guardCoachSpiller(coach, playerId);
+  if (denied) return denied;
+
   const player = await prisma.user.findUnique({
     where: { id: playerId },
-    select: { id: true, role: true, name: true },
+    select: { id: true, name: true },
   });
-  if (!player || player.role !== "PLAYER") {
+  if (!player) {
     return { ok: false, error: "Spiller finnes ikke" };
   }
 
@@ -144,7 +171,8 @@ export async function sendLydSamtykkeForesattEpost(
     };
   }
 
-  const token = lagLydSamtykkeToken();
+  const rawToken = lagLydSamtykkeToken();
+  const tokenHash = hashLydSamtykkeToken(rawToken);
   const tokenExpiresAt = lydSamtykkeTokenUtloper();
 
   await prisma.lydSamtykke.upsert({
@@ -157,7 +185,8 @@ export async function sendLydSamtykkeForesattEpost(
       gittAt: null,
       trukketAt: null,
       ordlyd: LYD_SAMTYKKE_ORDLYD,
-      token,
+      token: null,
+      tokenHash,
       tokenExpiresAt,
     },
     update: {
@@ -167,12 +196,13 @@ export async function sendLydSamtykkeForesattEpost(
       gittAt: null,
       trukketAt: null,
       ordlyd: LYD_SAMTYKKE_ORDLYD,
-      token,
+      token: null,
+      tokenHash,
       tokenExpiresAt,
     },
   });
 
-  const consentUrl = `${APP_URL}/auth/lyd-samtykke/${token}`;
+  const consentUrl = `${APP_URL}/auth/lyd-samtykke/${rawToken}`;
   const epost = byggLydSamtykkeForesattEpost({
     spillerNavn: player.name,
     consentUrl,
@@ -196,7 +226,8 @@ export async function sendLydSamtykkeForesattEpost(
     return {
       ok: false,
       error:
-        "Kunne ikke sende e-post. Sjekk at RESEND er satt opp, og at DKIM er grønn. Lenken er lagret — prøv igjen.",
+        "Kunne ikke sende e-post. Lenken er lagret — bruk «Kopier lenke» eller prøv igjen.",
+      consentUrl,
     };
   }
 
@@ -216,6 +247,78 @@ export async function sendLydSamtykkeForesattEpost(
   return {
     ok: true,
     message: `E-post sendt til ${foresattEpost}. Opptak er sperret til foresatt har bekreftet.`,
+    consentUrl,
+  };
+}
+
+/**
+ * #5: Ny magisk lenke for coach (uten Resend) — for kopier/deling.
+ */
+export async function hentLydSamtykkeLenke(
+  input: z.infer<typeof PlayerIdSchema>,
+): Promise<LydSamtykkeActionResult> {
+  const coach = await requireCoachActionUser();
+  const parsed = PlayerIdSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: "Ugyldig input" };
+  }
+  const { playerId } = parsed.data;
+
+  const denied = await guardCoachSpiller(coach, playerId);
+  if (denied) return denied;
+
+  const existing = await prisma.lydSamtykke.findUnique({
+    where: { userId: playerId },
+    select: { status: true, foresattEpost: true },
+  });
+  if (existing?.status === "GITT") {
+    return { ok: false, error: "Samtykke er allerede gitt." };
+  }
+
+  const rawToken = lagLydSamtykkeToken();
+  const tokenHash = hashLydSamtykkeToken(rawToken);
+  const tokenExpiresAt = lydSamtykkeTokenUtloper();
+  const foresattEpost = existing?.foresattEpost ?? null;
+
+  await prisma.lydSamtykke.upsert({
+    where: { userId: playerId },
+    create: {
+      userId: playerId,
+      status: "VENTER",
+      gittAv: "FORESATT",
+      foresattEpost,
+      gittAt: null,
+      trukketAt: null,
+      ordlyd: LYD_SAMTYKKE_ORDLYD,
+      token: null,
+      tokenHash,
+      tokenExpiresAt,
+    },
+    update: {
+      status: "VENTER",
+      gittAv: "FORESATT",
+      token: null,
+      tokenHash,
+      tokenExpiresAt,
+      gittAt: null,
+      trukketAt: null,
+      ordlyd: LYD_SAMTYKKE_ORDLYD,
+    },
+  });
+
+  const consentUrl = `${APP_URL}/auth/lyd-samtykke/${rawToken}`;
+  await audit({
+    actorId: coach.id,
+    action: "lyd-samtykke.lenke-generert",
+    target: `User:${playerId}`,
+    metadata: { tokenExpiresAt: tokenExpiresAt.toISOString() },
+  });
+
+  revalidatePath("/admin/recording");
+  return {
+    ok: true,
+    message: "Lenke klar — lim inn til foresatt.",
+    consentUrl,
   };
 }
 
@@ -232,6 +335,9 @@ export async function trekkLydSamtykke(
   }
   const { playerId } = parsed.data;
 
+  const denied = await guardCoachSpiller(coach, playerId);
+  if (denied) return denied;
+
   const existing = await prisma.lydSamtykke.findUnique({
     where: { userId: playerId },
   });
@@ -245,6 +351,7 @@ export async function trekkLydSamtykke(
       status: "TRUKKET",
       trukketAt: new Date(),
       token: null,
+      tokenHash: null,
       tokenExpiresAt: null,
     },
   });

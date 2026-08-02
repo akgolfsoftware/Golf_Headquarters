@@ -3,8 +3,11 @@
  *
  * Logger feil til:
  *  1. console.error (Vercel Logs fanger automatisk)
- *  2. ErrorLog-tabell i Prisma (for historikk + UI-visning)
+ *  2. ErrorLog-tabell i Prisma (for historikk + UI-visning på /admin/feillogg)
  *  3. Slack-webhook ved fatal/critical (via slack-alert.ts)
+ *  4. Telegram til Anders ved fatal/error (samme mønster som benchmark-sync),
+ *     strupet til én melding per kontekst per 15. minutt så en løpsk løkke
+ *     ikke fyller telefonen.
  *
  * S-20: PII-sanitering — e-postadresser, telefonnumre, kortdata og
  * passord-relaterte felter strippes fra meta og message før logging.
@@ -88,6 +91,48 @@ function sanitizeMessage(msg: string): string {
 }
 
 export type ErrorSeverity = "fatal" | "error" | "warn" | "info";
+
+// ---------------------------------------------------------------------------
+// Telegram-varsel ved alvorlig feil
+// ---------------------------------------------------------------------------
+
+/** Struping: én melding per kontekst per 15. minutt. */
+export const VARSEL_STRUPE_MS = 15 * 60 * 1000;
+
+/**
+ * Ren avgjørelse: skal denne konteksten varsles nå?
+ *
+ * `sistSendt` er tidspunktet forrige varsel for samme kontekst gikk ut (eller
+ * undefined om det aldri har gått ut noe). Skilt ut som ren funksjon så den
+ * kan testes uten nettverk eller klokke-triksing.
+ */
+export function skalVarsle(sistSendt: number | undefined, naa: number): boolean {
+  if (sistSendt === undefined) return true;
+  return naa - sistSendt >= VARSEL_STRUPE_MS;
+}
+
+/** Siste varsel per kontekst i denne prosessen. Nullstilles ved kaldstart. */
+const sisteVarsel = new Map<string, number>();
+
+async function varsleTelegram(tekst: string, kontekst: string): Promise<void> {
+  const token = process.env.MEG_TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.MEG_TELEGRAM_ALLOWED_CHAT_ID;
+  if (!token || !chatId) return;
+
+  const naa = Date.now();
+  if (!skalVarsle(sisteVarsel.get(kontekst), naa)) return;
+  sisteVarsel.set(kontekst, naa);
+
+  try {
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text: tekst }),
+    });
+  } catch {
+    // Varsel-fail skal aldri velte flyten som feilet i utgangspunktet.
+  }
+}
 
 export type LogErrorInput = {
   context: string;
@@ -173,6 +218,16 @@ export async function logError({
     } catch {
       // Slack-fail skal ikke krasje hele flyten
     }
+
+    // 4. Telegram til Anders — sanitert tekst, strupet per kontekst.
+    await varsleTelegram(
+      [
+        `[${severity.toUpperCase()}] ${context}`,
+        message.slice(0, 400),
+        "Se /admin/feillogg for detaljer.",
+      ].join("\n"),
+      context,
+    );
   }
 }
 
