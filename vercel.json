@@ -58,6 +58,10 @@
       "schedule": "0 4 * * *"
     },
     {
+      "path": "/api/cron/cleanup-guest-bookings",
+      "schedule": "30 4 * * 1"
+    },
+    {
       "path": "/api/cron/turneringer-schedule",
       "schedule": "0 4 * * *"
     },
