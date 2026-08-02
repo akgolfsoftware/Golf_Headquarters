@@ -51,10 +51,24 @@ export function validateEnv(): void {
   if (process.env.NODE_ENV === "production") {
     const mangler = ANBEFALTE.filter((k) => !process.env[k]);
     if (mangler.length > 0) {
-      console.error(
-        `[env] Advarsel: anbefalte miljøvariabler mangler i produksjon: ${mangler.join(", ")}. ` +
-          `Betaling/e-post kan være utilgjengelig.`,
-      );
+      const melding =
+        `[env] Anbefalte miljøvariabler mangler i produksjon: ${mangler.join(", ")}. ` +
+        `Betaling/e-post/kryptering kan svikte stille.`;
+      console.error(melding);
+      // Escaler til en faktisk alarm — en manglende secret i prod som kun ga
+      // console.error var i praksis usynlig. Lazy import for å unngå
+      // boot-tids-sirkularitet (slack-alert → email → …). Best-effort.
+      void import("@/lib/slack-alert")
+        .then(({ sendSlackAlert }) =>
+          sendSlackAlert({
+            title: "Manglende miljøvariabler i produksjon",
+            message: melding,
+            meta: { mangler: mangler.join(", ") },
+          }),
+        )
+        .catch(() => {
+          /* alarmering er best-effort — console.error over er fallback */
+        });
     }
   }
 }

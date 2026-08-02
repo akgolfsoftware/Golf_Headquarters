@@ -15,10 +15,47 @@
  */
 
 import "server-only";
+import { Redis } from "@upstash/redis";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 
 const RATE_LIMIT_WINDOW_MS = 5 * 60 * 1000; // 5 min
+// In-memory fallback (kun dev / uten Redis). På serverless er hver lambda-
+// instans sin egen prosess, så denne dedup-en virker IKKE på tvers av
+// instanser — derfor Redis i produksjon (se dedupOk under).
 const lastSent = new Map<string, number>();
+
+// Delt dedup-lager: samme (title+message) fra flere lambdaer under én incident
+// skal gi ÉN e-post, ikke én per instans. Bruker samme Upstash som rate-limit.
+const _redisUrl = process.env.UPSTASH_REDIS_REST_URL;
+const _redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+const redis =
+  _redisUrl && _redisToken
+    ? new Redis({ url: _redisUrl, token: _redisToken })
+    : null;
+
+/**
+ * Returnerer true hvis denne alerten skal sendes (ikke sett innenfor vinduet).
+ * Redis SET NX PX er atomisk og deles av alle instanser; uten Redis faller vi
+ * tilbake til per-instans-mappen.
+ */
+async function dedupOk(key: string): Promise<boolean> {
+  if (redis) {
+    try {
+      const res = await redis.set(`alert:${key}`, "1", {
+        nx: true,
+        px: RATE_LIMIT_WINDOW_MS,
+      });
+      return res === "OK";
+    } catch {
+      // Redis nede → ikke svelg alarmen; fall tilbake til in-memory.
+    }
+  }
+  const now = Date.now();
+  const last = lastSent.get(key);
+  if (last && now - last < RATE_LIMIT_WINDOW_MS) return false;
+  lastSent.set(key, now);
+  return true;
+}
 
 const ALERT_RECIPIENT = process.env.ALERT_EMAIL ?? "akgolfgroup@gmail.com";
 
@@ -33,14 +70,12 @@ export async function sendSlackAlert({
   message,
   meta,
 }: SlackAlert): Promise<void> {
-  // Rate-limit
+  // Dedup (delt via Redis, fallback in-memory) — unngår e-poststorm ved at
+  // mange lambda-instanser alarmer på samme feil under én incident.
   const key = `${title}::${message.slice(0, 200)}`;
-  const now = Date.now();
-  const last = lastSent.get(key);
-  if (last && now - last < RATE_LIMIT_WINDOW_MS) {
+  if (!(await dedupOk(key))) {
     return;
   }
-  lastSent.set(key, now);
 
   const env = process.env.VERCEL_ENV ?? "development";
 
