@@ -1,14 +1,24 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { mapSgBandToFault } from "@/lib/training/skills/morad-fault";
+import { beskrivKandidatFeil, sgKandidatFeil } from "@/lib/training/skills/morad-fault";
 
-test("mapSgBandToFault returnerer fault for APP", () => {
-  const fault = mapSgBandToFault("APP");
-  assert.ok(fault);
-  assert.equal(typeof fault, "string");
+test("sgKandidatFeil returnerer kandidater for APP", () => {
+  const kandidater = sgKandidatFeil("APP");
+  assert.ok(Array.isArray(kandidater));
+  assert.ok(kandidater.length > 0);
+  for (const k of kandidater) assert.equal(typeof k, "string");
 });
 
-test("mapSgBandToFault returnerer null for PUTT uten mapping", () => {
-  const fault = mapSgBandToFault("PUTT");
-  assert.equal(fault, null);
+test("sgKandidatFeil returnerer tom liste for PUTT — MORAD dekker ikke putting", () => {
+  assert.deepEqual(sgKandidatFeil("PUTT"), []);
+});
+
+test("beskrivKandidatFeil formulerer funnet som hypotese som må bekreftes", () => {
+  const tekst = beskrivKandidatFeil("APP");
+  assert.ok(tekst);
+  assert.match(tekst, /må bekreftes med video, sikte og køllevalg/);
+});
+
+test("beskrivKandidatFeil returnerer null når fasiten ikke har kandidater", () => {
+  assert.equal(beskrivKandidatFeil("PUTT"), null);
 });

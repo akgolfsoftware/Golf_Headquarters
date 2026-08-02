@@ -64,13 +64,10 @@ const KILDER: readonly Kilde[] = [
     rekursivt: true,
     hensikt: "RAG-tekster — må embeddes til knowledge_chunks separat",
   },
-  {
-    fra: "processed/rules",
-    til: "processed/rules",
-    endelser: [".json", ".md"],
-    rekursivt: false,
-    hensikt: "MORAD-ordbok, terminologi og diagnostiske regler",
-  },
+  // MERK: `processed/rules` synkes IKKE. Masterbrains MANIFEST.md er tydelig på at
+  // `processed/` er råmateriale og aldri fasit — de gamle MORAD-filene der er
+  // utdaterte kopier som ble arkivert 2026-07-31. Å kopiere dem inn i src/ ville
+  // gjenopprette nøyaktig den dobbeltfasiten vi ryddet bort. Fasiten er knowledge/.
   {
     fra: "training-data",
     til: "training-data",

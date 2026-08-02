@@ -5,7 +5,7 @@
 // "@/lib/prisma" (dekker også agent-runner.ts sitt AgentRun-kall, siden
 // modulen deles), "@/lib/workbench/v2-sync" (resolveCoachIdForPlayer) og
 // "@/lib/agents/notify-plan-action" (varsling er best-effort og testes ikke
-// her — kun at den blir kalt/ikke kalt). aggregateSg, mapSgBandToFault og
+// her — kun at den blir kalt/ikke kalt). aggregateSg, sgKandidatFeil og
 // SG_TO_SKILL/SG_TO_PYRAMID kjører ekte (rene funksjoner/lookup-tabeller).
 //
 // VIKTIG (samme fallgruve som i live-coach-agent.test.ts): modulen under
@@ -31,7 +31,8 @@ type PlanActionCreateArgs = {
     suggestion: {
       skillArea: string;
       pyramidArea: string;
-      moradFaultId: string | null;
+      moradKandidater: string[];
+      erHypotese: boolean;
       forklaring: string;
       signalSnapshot: { kind: string; value: number; runder: number };
     };
@@ -114,9 +115,16 @@ test("runSgAnalyseEkspert — hovedløp og duplikatsperre", async (t) => {
   // ARG er svakest og under terskel -> skillArea/pyramidArea skal følge ARG.
   assert.equal(data.suggestion.skillArea, "AROUND_GREEN");
   assert.equal(data.suggestion.pyramidArea, "SPILL");
-  assert.equal(data.suggestion.moradFaultId, "poor_spine_alignment");
+  // Kandidatene er likestilte hypoteser — hele listen følger med, ikke én «primær».
+  assert.deepEqual(data.suggestion.moradKandidater, ["poor_spine_alignment", "casting"]);
+  assert.equal(data.suggestion.erHypotese, true);
   assert.match(data.suggestion.forklaring, /SG ARG -0[.,]60/);
   assert.match(data.suggestion.forklaring, /AROUND_GREEN/);
+  assert.match(
+    data.suggestion.forklaring,
+    /må bekreftes med video, sikte og køllevalg/,
+    "forslaget skal aldri presentere SG-koblingen som en diagnose",
+  );
 
   assert.deepEqual(data.suggestion.signalSnapshot, {
     kind: "SG_ARG",

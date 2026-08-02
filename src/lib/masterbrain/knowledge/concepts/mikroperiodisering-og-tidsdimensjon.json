@@ -1,0 +1,106 @@
+{
+  "id": "mikroperiodisering-og-tidsdimensjon",
+  "version": "1.0.0",
+  "status": "FASIT — begge tidligere åpne spørsmål er nå oppklart mot faktisk kildekode, se de to siste seksjonene",
+  "created": "2026-07-31",
+  "source": "akgolf-hq src/lib/ai-plan/system-prompt.ts — allerede godkjent og i produksjon. Formalisert her fordi Masterbrain manglet enhver tidsdimensjon (hull #3 og #4 i MANIFEST). Ingen ny golfmetodikk er lagt til i denne filen — kun eksisterende, driftende logikk strukturert.",
+  "description": "Ukentlig og fireukers tidsstruktur for treningsplaner: sesjonsantall, volumfordeling per spillernivå, mikrosyklus og fasilitets-/sesongregler. Fyller hull #3 (tidsdimensjon) og #4 (mikroperiodisering) fra MANIFEST.md delvis — se apne_sporsmal for hva som gjenstår.",
+
+  "mikrosyklus_4_uker": {
+    "kilde": "system-prompt.ts, seksjon PERIODISERING-REGLER, linje ~53",
+    "struktur": ["build", "peak", "deload", "test"],
+    "beskrivelse": "Hver 4-ukers blokk følger denne rytmen. Attribuert til Mac O'Grady-prinsipper i kildekoden (kvalitet over kvantitet, blokk-periodisering)."
+  },
+
+  "okt_antall_regler": {
+    "kilde": "system-prompt.ts, linje 58-59",
+    "regler": [
+      { "regel": "min_1_putting_okt_per_uke", "beskrivelse": "Minst 1 putting-økt per uke uansett spillernivå — ingen unntak." },
+      { "regel": "maks_6_okter_per_uke", "beskrivelse": "Aldri mer enn 6 økter per uke i normale uker." },
+      { "regel": "deload_maks_4_okter", "beskrivelse": "I deload-uker (del av 4-ukers mikrosyklusen over): maks 4 økter." }
+    ]
+  },
+
+  "volumfordeling_per_spillernivaa": {
+    "kilde": "system-prompt.ts, linje 55-57",
+    "status": "FASIT. Vokabularet (range/nærspill/putting/spill) er en egen skuddtype-akse, ikke en omskriving av pyramideaksene — se volumfordeling_er_egen_akse_ikke_konflikt.",
+    "brackets": [
+      {
+        "gruppe": "Junior under HCP 5 / kategori K-L",
+        "merk_kategori": "K/L er NGF-skalaens laveste bånd. AK Golf sin egen A-K-skala har ingen 'L' — koden kollapser NGF-L til AK-K (src/lib/domain/spiller-kategori.ts:40).",
+        "range_pct": 60, "naerspill_pluss_putting_pct": 30, "spill_pct": 10
+      },
+      {
+        "gruppe": "Junior HCP 5-15 / kategori H-J",
+        "range_pct": 40, "naerspill_pct": 30, "putting_pct": 20, "spill_pct": 10
+      },
+      {
+        "gruppe": "Voksen HCP 0-10 / kategori E-G",
+        "range_pct": 30, "naerspill_pct": 30, "putting_pct": 20, "spill_pct": 20
+      },
+      {
+        "gruppe": "Elite kategori A-D",
+        "range_pct": 25, "naerspill_pct": 25, "putting_pct": 20, "spill_pluss_turneringsprep_pct": 30
+      }
+    ],
+    "verifisert": "Alle fire brackets summerer til 100%."
+  },
+
+  "fasilitet_og_sesong_regler": {
+    "kilde": "system-prompt.ts, seksjon FASILITET OG SESONG + FASILITETSBEGRENSNINGER, linje ~65-77",
+    "sesong": {
+      "regel": "Generer aldri økter med environment BANE om vinteren (november-mars) med mindre spilleren eksplisitt har tilgang til simulator eller innendørs bane. Bruk STUDIO/SIMULATOR/HJEM i stedet."
+    },
+    "absolutte_tak": [
+      { "felt": "maxPuttM", "regel": "Planlegg aldri lengre putt-drill enn dette målet." },
+      { "felt": "maxChipM", "regel": "Planlegg aldri lengre chip/pitch/nærspill-slag enn dette målet." },
+      { "felt": "maxWedgeM", "regel": "Planlegg aldri lengre wedge-slag fra gress enn dette målet." }
+    ],
+    "fasilitetsporter": [
+      { "felt": "hasBunker", "regel": "false → aldri planlegg bunker-drills." },
+      { "felt": "hasNetAndMat", "regel": "false → aldri planlegg HJEM-miljø med ballslag." },
+      { "felt": "hasTrackman", "regel": "false (mangler Trackman/simulator) → aldri planlegg STUDIO/SIMULATOR-miljø." }
+    ],
+    "alvorlighet": "Disse er fysiske begrensninger, ikke preferanser — kildekoden merker dem 'ALDRI'/'OBLIGATORISK'."
+  },
+
+  "okt_tagging_dimensjoner": {
+    "kilde": "system-prompt.ts, seksjon OBLIGATORISK TAGGING PER ØKT, linje ~92-110",
+    "beskrivelse": "Hver økt merkes med tre dimensjoner i tillegg til pyramide-typen (FYS/TEK/SLAG/SPILL/TURN).",
+    "skillArea": ["TEE_TOTAL", "TILNAERMING", "AROUND_GREEN", "PUTTING", "SPILL"],
+    "environment": ["RANGE", "BANE", "STUDIO", "HJEM", "SIMULATOR"],
+    "lPhase_i_appen": ["GRUNN", "SPESIAL", "TURNERING"],
+    "lPhase_merk": "Dette navnesettet stemmer ikke ord-for-ord med CANON sine periode-ID-er — se periodenavn_oversettelsestabell for hvordan de to henger sammen."
+  },
+
+  "sg_diagnose_protokoll": {
+    "kilde": "system-prompt.ts, seksjon SG-DIAGNOSE, linje ~78-84",
+    "regel": "Ved negativt SG-tall i et område: generer alltid tre diagnose-hypoteser (TEKNIKK, STRATEGI, MENTAL), merket eksplisitt som hypoteser for coach-bekreftelse, aldri som konklusjon.",
+    "sammenheng": "Samme prinsipp som diagnose_regel i knowledge/entities/faults.json — SG alene bekrefter ingenting."
+  },
+
+  "volumfordeling_er_egen_akse_ikke_konflikt": {
+    "status": "OPPKLART 31. juli 2026 — var listet som åpent spørsmål, nå verifisert mot kode.",
+    "kilde": "akgolf-hq src/lib/taxonomy.ts, TRENINGSOMRADER (linje 97-114) og SGKategori-typen (linje 95).",
+    "konklusjon": "range/nærspill/putting/spill er IKKE et forsøk på å dele opp de samme fem pyramideaksene (FYS/TEK/SLAG/SPILL/TURN) på nytt. Det er en egen, smalere akse — skuddtype/SG-kategori (TEE, TILNAERMING, KORT_SPILL, PUTTING, SPILL) — som beskriver HVORDAN tiden innenfor TEK+SLAG(+SPILL) brukes. FYS og TURN styres av pyramideaksene alene og er ikke del av denne fordelingen. Samme mønster som skillArea/environment/lPhase i okt_tagging_dimensjoner over — flere uavhengige tagger på samme økt, ikke konkurrerende versjoner av én taksonomi.",
+    "gjenstaende_uklarhet": "Nøyaktig kvantitativt forhold mellom f.eks. '60% range' og pyramidens TEK-prosent er ikke en fast omregningsformel noe sted — de to aksene kalibreres uavhengig (jf. kommentar i canon-period-adjustment.ts: 'faktiske prosenter bor i PlanTemplate.disciplinFordeling og kalibreres uavhengig'). Dette er ikke en feil, bare en påminnelse om at en agent ikke skal utlede den ene prosenten fra den andre."
+  },
+
+  "periodenavn_oversettelsestabell": {
+    "status": "OPPKLART 31. juli 2026 — var listet som udokumentert avvik, er faktisk et kjent og allerede håndtert mønster.",
+    "kilde": "akgolf-hq src/lib/workbench/canon-period-adjustment.ts, egen kildekode-kommentar: 'Masterbrain er en kunnskaps-database, ikke en tjeneste appen kan spørre live... Endres CANON-reglene i Masterbrain, må denne filen oppdateres manuelt — det finnes ingen automatisk synk.' Samme advarsel står i Masterbrain README.md.",
+    "konklusjon": "Dette er IKKE en uoppdaget bug. Det er det etablerte, dokumenterte mønsteret i akgolf-hq for alt CANON-materiale: en manuelt vedlikeholdt TypeScript-speiling, aldri en live-spørring mot Masterbrain. canon-period-adjustment.ts er selve beviset — den reimplementerer CANON sine pr_6/pr_7/pr_8-regler (pyramid_rules i canon-methodology.json), men med LPhase sin egen stavemåte som nøkler, ikke CANONs.",
+    "oversettelse_fra_faktisk_kode": [
+      { "canon_periode_id": "GRUNN", "lphase_sesjon": "GRUNN", "periodetype_plan": "GRUNN" },
+      { "canon_periode_id": "SPES", "lphase_sesjon": "SPESIAL", "periodetype_plan": "SPESIALISERING" },
+      { "canon_periode_id": "TURN", "lphase_sesjon": "TURNERING", "periodetype_plan": "TURNERING" }
+    ],
+    "regel_for_agent": "En agent som har lest CANON sin periode-ID og skal skrive den til en Prisma-database, skal ALDRI skrive CANON-strengen rått. Slå opp i oversettelsestabellen over først. LPhase har i tillegg fire verdier CANON ikke kjenner (TESTUKE/FERIE/TRENINGSSAMLING/HELDAGSSAMLING) — CANON sier ingenting om pyramidejustering for disse (canon-period-adjustment.ts setter dem til 'lik' / ingen justering, jf. kommentar '8c.1 — nye periodetyper: CANON sier ingenting om disse ennå')."
+  },
+
+  "beslektet_men_separat_navnedrift": {
+    "status": "Ikke løst — separat fra periodisering, nevnes fordi den ble funnet i samme gjennomgang.",
+    "funn": "Prisma-enumet SkillArea (TEE_TOTAL/TILNAERMING/AROUND_GREEN/PUTTING/SPILL, brukt i system-prompt.ts) og TS-typen SGKategori (TEE/TILNAERMING/KORT_SPILL/PUTTING/SPILL, definert i src/lib/taxonomy.ts) beskriver samme akse med to av fem verdier stavet ulikt (TEE vs TEE_TOTAL, AROUND_GREEN vs KORT_SPILL).",
+    "handling": "Kun flagget her. Ikke undersøkt om det finnes en oversettelsesfunksjon mellom dem — det var utenfor det Anders ba om å se på (periodiseringsregelverket)."
+  }
+}

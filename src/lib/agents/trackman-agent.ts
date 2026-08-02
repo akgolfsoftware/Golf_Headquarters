@@ -4,7 +4,6 @@
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
-import { mapSgBandToFault } from "@/lib/training/skills/morad-fault";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { varsleVedPlanAction } from "./notify-plan-action";
 import { byggProvenance } from "./provenance";
@@ -109,13 +108,12 @@ export async function runTrackManAgent(userId: string): Promise<AgentResult> {
     if (faceToPathValues.length >= 3) {
       const snittFtp =
         faceToPathValues.reduce((a, b) => a + b, 0) / faceToPathValues.length;
+      // Er face-to-path tydelig, ER dette et målt funn og navngis. Er den nøytral,
+      // skrives signalet uten svingfeil — vi gjettet tidligere via SG-koblingen,
+      // som er en hypotese og ikke holder som grunnlag her.
       const moradFaultId =
-        Math.abs(snittFtp) > 4
-          ? snittFtp > 0
-            ? "face_open"
-            : "over_the_top"
-          : mapSgBandToFault("OTT");
-      if (moradFaultId) {
+        Math.abs(snittFtp) > 4 ? (snittFtp > 0 ? "face_open" : "over_the_top") : null;
+      {
         signaler.push({
           userId,
           kind: "TRACKMAN_FACE_TO_PATH",

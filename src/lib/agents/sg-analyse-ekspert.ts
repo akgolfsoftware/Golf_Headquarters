@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { aggregateSg } from "@/lib/sg";
 import { SG_TO_PYRAMID, SG_TO_SKILL } from "@/lib/training/skills";
-import { mapSgBandToFault } from "@/lib/training/skills/morad-fault";
+import { beskrivKandidatFeil, sgKandidatFeil } from "@/lib/training/skills/morad-fault";
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { varsleVedPlanAction } from "./notify-plan-action";
@@ -48,7 +48,10 @@ export async function runSgAnalyseEkspert(
       return { signalsWritten: 0, planActionsWritten: 0 };
     }
 
-    const moradFaultId = mapSgBandToFault(primary);
+    // Kandidatene er likestilte hypoteser — aldri én «funnet» feil. Se
+    // morad-fault.ts og masterbrains MANIFEST.md (beslutning 2026-07-31).
+    const moradKandidater = sgKandidatFeil(primary);
+    const kandidatTekst = beskrivKandidatFeil(primary);
     const plan = await prisma.trainingPlan.findFirst({
       where: { userId, isActive: true },
       select: { id: true },
@@ -66,8 +69,8 @@ export async function runSgAnalyseEkspert(
     }
 
     const coachId = await resolveCoachIdForPlayer(userId);
-    const forklaring = moradFaultId
-      ? `SG ${primary} ${sgValue.toFixed(2)} — MORAD-funn ${moradFaultId}. Prioriter ${SG_TO_SKILL[primary]}.`
+    const forklaring = kandidatTekst
+      ? `SG ${primary} ${sgValue.toFixed(2)} — ${kandidatTekst}. Prioriter ${SG_TO_SKILL[primary]}.`
       : `SG ${primary} ${sgValue.toFixed(2)} — prioriter ${SG_TO_SKILL[primary]} neste uke.`;
 
     const created = await prisma.planAction.create({
@@ -80,7 +83,8 @@ export async function runSgAnalyseEkspert(
         suggestion: {
           skillArea: SG_TO_SKILL[primary],
           pyramidArea: SG_TO_PYRAMID[primary],
-          moradFaultId,
+          moradKandidater,
+          erHypotese: moradKandidater.length > 0,
           forklaring,
           signalSnapshot: {
             kind: `SG_${primary}`,

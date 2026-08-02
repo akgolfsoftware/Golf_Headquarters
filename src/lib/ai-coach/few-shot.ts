@@ -2,7 +2,10 @@ import "server-only";
 import { readFileSync } from "fs";
 import { join } from "path";
 
-const EXAMPLES_DIR = join(process.cwd(), "src/lib/ai-coach/examples");
+// Eksemplene leses fra den synkede masterbrain-kopien. Den lokale kopien under
+// ai-coach/examples/ var identisk og ble fjernet 2026-08-02 for å holde én kilde.
+// Her ligger også holdout-settet og rubrikken som eval-porten skal bruke.
+const EXAMPLES_DIR = join(process.cwd(), "src/lib/masterbrain/training-data/examples");
 
 type DialogLine = {
   context?: string;

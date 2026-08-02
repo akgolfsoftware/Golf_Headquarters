@@ -2,7 +2,16 @@ import "server-only";
 import { readFileSync, readdirSync } from "fs";
 import { join } from "path";
 
-const KUNNSKAP_DIR = join(process.cwd(), "src/lib/ai-coach/kunnskap");
+// Kunnskapen leses fra den synkede masterbrain-kopien, ikke fra en egen kopi i
+// ai-coach/. `src/lib/ai-coach/kunnskap/` var en parallell fasit med utdatert
+// innhold (foreskrev drills fra en bank som er tømt, og framstilte SG→feil som
+// diagnose i stedet for hypotese) og ble fjernet 2026-08-02.
+//
+// Vi peker bevisst på `rag-corpus/morad/` alene — de 15 filene som tilsvarer den
+// gamle mappa. Resten av korpuset (99 filer) krever ekte semantisk søk mot
+// knowledge_chunks; substring-matchingen under ville bare returnert vilkårlige
+// filer alfabetisk. Utvid først når embedding-søket finnes.
+const KUNNSKAP_DIR = join(process.cwd(), "src/lib/masterbrain/rag-corpus/morad");
 const MAX_CHARS = 8000;
 
 const TAG_MAP: Record<string, string[]> = {
