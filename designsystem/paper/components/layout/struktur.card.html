@@ -1,0 +1,67 @@
+<!-- @dsCard group="Fundament" viewport="980x3000" name="CardGrid, ProgressBar, Accordion, Tabs" subtitle="Rutenett, andelsmåler, sammenlegg og faner — Tabs har understrek, SegmentControl har spor" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}a{color:var(--muted)}a:hover{color:var(--fg)}</style></head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { CardGrid, ProgressBar, Accordion, Tabs, TabPanel, Panel, SectionLabel, SegmentControl } = window.AKGolfHQClaudePaper_605a48;
+function Width({ px, note, children }) {
+  return (<div style={{display:"grid",gap:"var(--s2)",justifyItems:"start"}}>
+    <SectionLabel as="div">Container {px} px{note ? " · " + note : ""}</SectionLabel>
+    <div className="cw" style={{width:px}}>{children}</div>
+  </div>);
+}
+const kort = ["Økter", "Serier", "Slag"].map((t, i) => (
+  <Panel key={t} title={t} density="sm" dataOdId={"panel-" + i}>
+    <ProgressBar label="Denne uken" value={[4,6,120][i]} max={[5,10,150][i]} valueText={["4 av 5","6 av 10","120 av 150"][i]} tone={i === 1 ? "warn" : "ink"} />
+  </Panel>
+));
+function Faner() {
+  const [f, setF] = React.useState("resultat");
+  const tekst = { resultat: "Resultatregnskapet hører i LedgerTable, ikke KeyValueGrid.", budsjett: "Tre avvik over terskel denne måneden.", konto: "Kontobevegelser er en DataTable med sortering." };
+  return (<div>
+    <Tabs label="Økonomi" value={f} onChange={setF} dataOdId="nav-okonomi" tabs={[
+      { id: "resultat", label: "Resultat" },
+      { id: "budsjett", label: "Budsjett", count: 3 },
+      { id: "konto", label: "Kontobevegelser" }
+    ]} />
+    <div style={{paddingTop:"var(--s4)"}}>
+      <TabPanel tabsId="akhq-tabs1" id={f} active>
+        <p style={{margin:0,font:"400 12.5px/1.55 var(--body)",color:"var(--muted)"}}>{tekst[f]} Skjulte faner rendres ikke — de er ute av tilgjengelighetstreet, ikke bare visuelt borte.</p>
+      </TabPanel>
+    </div>
+  </div>);
+}
+function Specimen() {
+  return (<div style={{display:"grid",gap:"var(--s5)"}}>
+    <Width px={860} note="CardGrid auto-fill · to kolonner ved 860, tredje kort på egen rad">
+      <CardGrid dataOdId="grid-kpi">{kort}</CardGrid>
+    </Width>
+    <Width px={430} note="samme CardGrid · én kolonne, ingen media query">
+      <CardGrid dataOdId="grid-kpi-smal">{kort}</CardGrid>
+    </Width>
+    <Width px={860} note="Tabs = 2px understrek, ingen spor">
+      <Panel dataOdId="panel-faner"><Faner /></Panel>
+    </Width>
+    <Width px={860} note="SegmentControl til sammenligning = --soft-spor">
+      <Panel title="Eksklusivt valg, ikke navigasjon" density="sm" dataOdId="panel-seg">
+        <SegmentControl options={["Uke", "Måned", "År"]} value="Uke" dataOdId="nav-seg-demo" />
+      </Panel>
+    </Width>
+    <Width px={860} note="Accordion · eksklusiv gruppe via details name">
+      <Panel title="Posisjoner P1–P10" dataOdId="panel-pos">
+        <Accordion name="pos" items={[
+          { id:"p1", title:"P1 · Adresse", meta:"har fasit", defaultOpen:true, body:"Ballposisjon, vektfordeling og skulderlinje. Fasiten er filmet forfra og fra siden." },
+          { id:"p2", title:"P2 · Takeaway", body:"Klubbhodet utenfor hendene, ingen tidlig rotasjon i underarmene." },
+          { id:"p3", title:"P3 · Halvveis opp", meta:"mangler fasit", body:"Skaftet peker mot ballinjen. Ingen referanseklipp lastet opp ennå." }
+        ]} />
+      </Panel>
+    </Width>
+  </div>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+</script></body></html>

@@ -1,0 +1,65 @@
+<!-- @dsCard group="Fundament" viewport="980x2800" name="SectionHeader og KeyValueGrid" subtitle="Seksjonstittel med teller · label/verdi-par for spesifikasjoner — ikke for finanstabeller" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}a{color:var(--muted);text-decoration:none;font:600 12.5px/1 var(--ui)}a:hover{color:var(--fg)}</style></head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { SectionHeader, KeyValueGrid, Panel, Button, SectionLabel, ListGroup, ListRow } = window.AKGolfHQClaudePaper_605a48;
+const spec = [
+  { key: "Periodetype", value: "Spesialisering", mono: false },
+  { key: "Varighet", value: "6 uker" },
+  { key: "Økter per uke", value: "4" },
+  { key: "Startet", value: "16.06.2026" },
+  { key: "Hovedakse", value: "SLAG · wedge", mono: false },
+  { key: "Sist endret", value: "27.07.2026" }
+];
+const meta = [
+  { key: "Organisasjonsnummer", value: "918 472 331" },
+  { key: "Fakturaadresse", value: "Storgata 14, 0155 Oslo", mono: false }
+];
+function Width({ px, note, children }) {
+  return (<div style={{display:"grid",gap:"var(--s2)",justifyItems:"start"}}>
+    <SectionLabel as="div">Container {px} px{note ? " · " + note : ""}</SectionLabel>
+    <div className="cw" style={{width:px}}>{children}</div>
+  </div>);
+}
+const Spesifikasjon = () => (<Panel title="Periodedetaljer" dataOdId="panel-spec">
+  <KeyValueGrid items={spec} dataOdId="kv-spec" />
+</Panel>);
+function Specimen() {
+  return (<div style={{display:"grid",gap:"var(--s5)"}}>
+    <Width px={860} note="to kolonner · SectionHeader over en gruppe paneler">
+      <div>
+        <SectionHeader title="Spillere som trenger øye" count={4} action={<a href="#alle">Alle 12 →</a>} dataOdId="section-stall" />
+        <div style={{display:"grid",gap:"var(--s4)"}}>
+          <Spesifikasjon />
+          <Panel title="Fakturering" density="sm" dataOdId="panel-meta">
+            <KeyValueGrid items={meta} layout="stack" columns={2} dividers={false} dataOdId="kv-meta" />
+          </Panel>
+        </div>
+      </div>
+    </Width>
+    <Width px={430} note="PlayerHQ-kolonne · én kolonne fra @container">
+      <div>
+        <SectionHeader title="Perioden" count={6} level={3} dataOdId="section-periode" />
+        <Spesifikasjon />
+      </div>
+    </Width>
+    <div style={{display:"grid",gap:"var(--s3)"}}>
+      <SectionLabel as="div">Grensen: dette er IKKE KeyValueGrid</SectionLabel>
+      <Panel title="Hører i Familie 4" footnote="Resultatregnskap med hierarki → LedgerTable. Budsjettavvik med fargekodet prosent → BudgetVarianceRow. Kontobevegelser → DataTable. KeyValueGrid utvides ikke til å dekke dem." flush dataOdId="panel-grense">
+        <ListGroup dataOdId="list-grense">
+          <ListRow title="Sum driftsinntekter" meta="is-total · nivå og summering" trailing="badge" badge={{kind:"tag",text:"LEDGERTABLE"}} />
+          <ListRow title="Lønn · 94 % av budsjett" meta="fargekodet avvik etter terskel" trailing="badge" badge={{kind:"tag",text:"VARIANCEROW"}} />
+          <ListRow title="Kontobevegelser" meta="dato · tekst · beløp · saldo, sorterbart" trailing="badge" badge={{kind:"tag",text:"DATATABLE"}} />
+        </ListGroup>
+      </Panel>
+    </div>
+  </div>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+</script></body></html>

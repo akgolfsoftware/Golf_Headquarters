@@ -1,0 +1,762 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Logg inn · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+/* ═══ akhq-tokens.css v3.1 — KOPIERT VERBATIM. Eneste tokenkilde. ═══ */
+/* ─────────────────────────────────────────────────────────────
+   AK Golf HQ · Claude Paper tokens v3
+   Anthropic-justert (offentlige kilder) + AK produktregler
+
+   Én kilde. Kopier verbatim inn i hver HTML/skjerm, eller @import.
+   Se SCOPE.md for hva «offisiell» betyr (vi er JUSTERT, ikke Anthropic).
+
+   Kilder:
+   - Anthropic brand-guidelines: ink/paper/mid/light + clay/sky/olive
+   - anthropic.com DESIGN.md (shadcn reverse-eng): full 21-farge + 8 aksenter
+   - Fase 1 (2026-07/08): chat-først, radius 12 for tett app, Én ting nå
+
+   v3.1 · 2026-08-01 (Bølge 1)
+   - --rail-hover / --rail-active løftet inn (var lokale i Fase 1-filene)
+   - Ingen andre verdiendringer. --muted er #5e5d59 (vinner over Fase 1 #5F5B53)
+
+   v3 · 2026-08-01
+   - Full Anthropic surface + accent ladder
+   - Radius-stige: sm 8 · app 12 · md 16 · lg 24 · pill
+   - Type-tokens for marketing + produkt
+   - Motion, z-index, tap-targets, hairline
+   - Dark theme (produkt; marketing er primært lys)
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* ─── Surfaces (Anthropic cream ladder) ─── */
+  --bg: #faf9f5;                    /* canvas / ivory */
+  --surface: #ffffff;               /* elevated white (produkt-kort) */
+  --soft: #f0eee6;                  /* surface-secondary — kort uten skygge */
+  --soft-hover: #e8e6dc;            /* surface-secondary-hover */
+  --surface-warm: #e3dacc;          /* oat */
+  --surface-manilla: #ebdbbc;
+  --surface-kraft: #d4a27f;
+  --border: #e8e6dc;                /* light gray (brand skill) */
+  --hairline: #d1cfc5;              /* finere skille enn --border */
+  --inverse: #000000;               /* full-bleed marketing-bånd */
+
+  /* ─── Text (Anthropic slate ladder) ─── */
+  --fg: #141413;                    /* ink — primær tekst + CTA-fill */
+  --ink-soft: #3d3d3a;              /* hover på primærknapp */
+  --muted: #5e5d59;                 /* text-muted (brand skill ~ #5f5b53; Anthropic #5e5d59) */
+  --mid: #b0aea5;                   /* text-secondary / cloud medium — IKKE brødtekst i lys */
+  --text-tertiary: #87867f;
+
+  /* ─── Rail (produkt, alltid mørk) ─── */
+  --rail: #141413;
+  --rail-fg: #b0aea5;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.08);   /* v3.1 — løftet fra Fase 1 */
+  --rail-active: rgba(250, 249, 245, 0.14);  /* v3.1 — løftet fra Fase 1 */
+
+  /* ─── Actions ─── */
+  --cta: #141413;                   /* Anthropic: CTA er blekk, ikke farge */
+  --on-cta: #faf9f5;
+  --cta-hover: #3d3d3a;
+
+  /* Clay = sterkeste kromatiske aksent (Anthropic clay) */
+  --accent: #d97757;                /* kun «Én ting nå» + focus i app */
+  --accent-soft: rgba(217, 119, 87, 0.12);
+  --accent-fg: #b85c3d;             /* AA-tekst på paper */
+  --on-accent: #141413;             /* tekst på fylt clay — sparsomt */
+  --accent-deep: #c6613f;           /* burnt sienna */
+
+  /* ─── Dormant accent swatches (Anthropic research palette)
+       Brukes sparsomt: chart, kategori, badges — aldri som primær CTA ─── */
+  --accent-coral: #ebcece;
+  --accent-fig: #c46686;
+  --accent-cactus: #bcd1ca;
+  --accent-olive: #788c5d;
+  --accent-sky: #6a9bcc;
+  --accent-heather: #cbcadb;
+
+  /* ─── Datasemantikk (produkt — mørknede for AA-tekst) ─── */
+  --up: #63784a;                    /* olive mørknet for tekst */
+  --up-raw: #788c5d;                /* olive rå — fyll/sparkline */
+  --dn: #a85536;                    /* leire av clay — aldri ren rød */
+  --info: #46719f;                  /* sky mørknet for tekst */
+  --info-raw: #6a9bcc;
+
+  /* ─── Typography families
+       Anthropic proprietary (Serif/Sans/Mono) er IKKE offentlige.
+       Brand skill: Poppins + Lora. Mono: IBM Plex Mono (produkt-tall). ─── */
+  --font-sans: "Poppins", Arial, system-ui, sans-serif;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Aliases brukt i eksisterende skjermer */
+  --disp: var(--font-sans);
+  --ui: var(--font-sans);
+  --body: var(--font-serif);
+  --mono: var(--font-mono);
+
+  /* ─── Type scale · Produkt (tett) ─── */
+  --text-display: 32px;
+  --text-title: 22px;
+  --text-card: 16px;
+  --text-panel: 14.5px;
+  --text-body-agency: 13.5px;       /* AgencyOS desktop */
+  --text-body-player: 14px;         /* PlayerHQ mobil */
+  --text-label: 10px;               /* versaler + tracking */
+  --text-kpi: 40px;                 /* mono */
+
+  /* ─── Type scale · Marketing (editorial, Anthropic-rytme) ─── */
+  --text-hero: 56px;                /* nedskalert fra 88 — web-vennlig */
+  --text-section: 40px;             /* nedskalert fra 90 */
+  --text-prose: 18px;               /* serif body marketing */
+  --text-prose-lg: 22px;
+  --text-nav: 16px;
+  --text-eyebrow: 12px;
+
+  /* ─── Spacing · 4px base (Anthropic 4/8/12/16/24/32/48/96) ─── */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+  --s9: 96px;                       /* section padding marketing */
+
+  /* ─── Radius
+       Anthropic marketing: sm 8 · md 16 · lg 24
+       AK produkt (Fase 1 låst): app 12 for kort/composer ─── */
+  --r-none: 0px;
+  --r-sm: 8px;                      /* knapper, inputs, chips */
+  --r: 12px;                        /* app-default (Fase 1) */
+  --r-md: 16px;                     /* editorial cards / marketing */
+  --r-lg: 24px;                     /* store flater, pille-CTA unntak */
+  --r-pill: 999px;
+
+  /* ─── Elevation
+       Anthropic marketing: NULL shadow — flater via cream-steg
+       Produkt: én myk skygge tillatt (valgfri) ─── */
+  --shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
+  --shadow-none: none;
+  --scrim: rgba(20, 20, 19, 0.4);
+
+  /* ─── Interaction ─── */
+  --focus: #d97757;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 160ms;
+  --dur-slow: 280ms;
+
+  /* Tap targets */
+  --tap: 44px;
+  --tap-lg: 48px;
+  --tap-capture: 60px;              /* fangst-mikrofon mobil */
+
+  /* ─── Logo (AK Golf — ikke Anthropic) ─── */
+  --logo-mark: #141413;
+  --logo-dot: #b85c3d;
+
+  /* ─── Z-index ─── */
+  --z-sticky: 10;
+  --z-rail: 20;
+  --z-sheet: 40;
+  --z-modal: 50;
+  --z-toast: 100;
+  --z-command: 110;
+}
+
+/* ─── Dark (produkt) ─── */
+[data-theme="dark"] {
+  color: #faf9f5;
+  --bg: #141413;
+  --surface: #1d1c1a;
+  --soft: #26241f;
+  --soft-hover: #2e2c28;
+  --surface-warm: #2a2824;
+  --border: rgba(250, 249, 245, 0.10);
+  --hairline: rgba(250, 249, 245, 0.08);
+  --inverse: #000000;
+
+  --fg: #faf9f5;
+  --ink-soft: #e8e6dc;
+  --muted: #b0aea5;
+  --mid: #6b675e;
+  --text-tertiary: #87867f;
+
+  --rail: #0e0d0c;
+  --rail-fg: #97938a;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.06);
+  --rail-active: rgba(250, 249, 245, 0.12);
+
+  --cta: #faf9f5;
+  --on-cta: #141413;
+  --cta-hover: #e8e6dc;
+
+  --accent: #d97757;
+  --accent-soft: rgba(217, 119, 87, 0.18);
+  --accent-fg: #e5a184;
+  --on-accent: #141413;
+
+  --up: #9db284;
+  --up-raw: #788c5d;
+  --dn: #de9e82;
+  --info: #93b7dc;
+  --info-raw: #6a9bcc;
+
+  --shadow: none;
+  --focus: #d97757;
+
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+[data-theme="light"] {
+  color: #141413;
+}
+
+/* Rail always dark */
+.rail {
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+/* Aksentflate — marketing/innlogging sparsomt */
+.on-accent-surface {
+  --logo-mark: #141413;
+  --logo-dot: #141413;
+}
+
+/* Full-bleed inverse band (marketing) */
+.band-inverse {
+  background: var(--inverse);
+  color: var(--bg);
+}
+
+/* Skriftimport — lim i <head> på alle skjermer:
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+*/
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Gulvregel: min treffmål på touch */
+@media (pointer: coarse) {
+  :root {
+    --floor: var(--tap);
+  }
+}
+
+:root{ --softer:#f6f4ee; --border-soft:#efede4; }
+[data-theme="dark"]{ --softer:#1a1917; --border-soft:rgba(250,249,245,.06); }
+
+/* ═══ Innlogging · AK Golf HQ ═══
+   Tre inngangsporter til tre ulike systemer. Coach til AgencyOS, spiller til
+   PlayerHQ, foresatt til Foreldreportalen.
+
+   ROLLEN VELGES IKKE AV BRUKEREN. Det er ett skjema, og kontoen avgjør hvor
+   du havner. En rollevelger ville vært en gjettelek — og verre: den ville
+   fortalt en fremmed hvilke roller som finnes. Skjermen forklarer at de tre
+   portene finnes, men den lar deg ikke plukke en.
+
+   FEILMELDINGEN LEKKER IKKE. «Finner ingen konto på denne e-posten» røper om
+   adressen er registrert. Én melding for begge tilfeller. */
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; min-height:100%; }
+body{ background:var(--bg); color:var(--fg); font-family:var(--ui);
+  font-size:var(--text-body-player); line-height:1.55; -webkit-font-smoothing:antialiased; }
+[hidden]{ display:none !important; }
+button,input,select{ font:inherit; color:inherit; }
+.num{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.eyebrow{ font-family:var(--mono); font-size:var(--text-label); font-weight:500;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+.prose{ font-family:var(--body); }
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+:where(a,button,input,summary,[tabindex]):focus-visible{
+  outline:2px solid var(--focus); outline-offset:2px; border-radius:var(--r-sm); }
+
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
+  min-height:var(--tap-lg); padding:0 var(--s4); font-size:14px; font-weight:500;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; white-space:nowrap; text-decoration:none; color:inherit; }
+.btn:hover{ background:var(--soft); border-color:var(--mid); }
+.btn:active{ transform:translateY(1px); }
+.btn.ink{ background:var(--cta); color:var(--on-cta); border-color:var(--cta); }
+.btn.now{ background:var(--accent); color:var(--on-accent); border-color:var(--accent);
+  font-weight:600; min-height:56px; }
+.btn.full{ width:100%; }
+.btn.sm{ min-height:var(--tap); font-size:13px; padding:0 var(--s3); }
+.btn[aria-busy="true"]{ opacity:.7; }
+
+.side{ min-height:100dvh; display:flex; flex-direction:column; }
+.topp{ flex:none; display:flex; align-items:center; gap:var(--s3);
+  padding:calc(var(--s5) + env(safe-area-inset-top)) var(--s5) var(--s4); }
+.logo{ display:inline-flex; align-items:center; min-height:var(--tap);
+  font-family:var(--disp); font-size:19px; font-weight:700; color:var(--logo-mark);
+  text-decoration:none; }
+.logo span{ color:var(--logo-dot); }
+.ikon{ flex:none; width:var(--tap); height:var(--tap); display:grid; place-items:center;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r); cursor:pointer; }
+.ikon svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.7;
+  stroke-linecap:round; stroke-linejoin:round; }
+
+.midt{ flex:1; display:flex; align-items:center; justify-content:center;
+  padding:var(--s4) var(--s5) var(--s7); }
+.boks{ width:100%; max-width:400px; }
+.boks h1{ margin:0 0 var(--s2); font-family:var(--disp); font-size:26px;
+  font-weight:600; letter-spacing:-.01em; }
+.boks .ingress{ margin:0 0 var(--s5); font-family:var(--body); font-size:15px;
+  color:var(--muted); }
+
+.felt{ margin-bottom:var(--s4); }
+.felt label{ display:block; font-size:13px; font-weight:500; margin-bottom:var(--s1); }
+.felt input{ width:100%; min-height:var(--tap-lg); padding:0 var(--s3);
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  font-size:16px; }
+.felt input:focus{ border-color:var(--mid); }
+.felt.feil input{ border-color:var(--dn); }
+.felt .hjelp{ display:block; font-family:var(--body); font-size:12.5px;
+  color:var(--muted); margin-top:var(--s1); }
+.felt .feilmelding{ display:block; font-size:12.5px; color:var(--dn); margin-top:var(--s1); }
+.passordrad{ position:relative; }
+.passordrad input{ padding-right:76px; }
+.vis{ position:absolute; right:var(--s1); top:50%; transform:translateY(-50%);
+  min-height:var(--tap); padding:0 var(--s3); background:transparent; border:0;
+  font-size:12.5px; color:var(--muted); cursor:pointer; border-radius:var(--r-sm); }
+.vis:hover{ color:var(--fg); }
+
+.varsel{ display:flex; gap:var(--s3); padding:var(--s3) var(--s4); border-radius:var(--r);
+  margin-bottom:var(--s4); background:var(--soft); border:1px solid var(--border); }
+.varsel.avvist{ border-color:var(--dn); }
+.varsel svg{ width:16px; height:16px; flex:none; margin-top:2px; fill:none;
+  stroke:currentColor; stroke-width:1.7; }
+.varsel p{ margin:0; font-family:var(--body); font-size:13px; }
+.varsel.avvist p{ color:var(--dn); }
+
+.lenkerekke{ display:flex; flex-wrap:wrap; gap:var(--s2); margin-top:var(--s4); }
+.lenke{ display:inline-flex; align-items:center; min-height:var(--tap);
+  padding:0 var(--s2); font-size:13px; color:var(--muted); text-decoration:underline;
+  text-underline-offset:3px; background:transparent; border:0; cursor:pointer;
+  border-radius:var(--r-sm); }
+.lenke:hover{ color:var(--fg); }
+
+.porter{ margin-top:var(--s6); padding-top:var(--s5); border-top:1px solid var(--border); }
+.porter > .eyebrow{ display:block; margin-bottom:var(--s3); }
+.port{ display:flex; align-items:flex-start; gap:var(--s3); padding:var(--s3) 0;
+  border-bottom:1px solid var(--border-soft); font-size:13px; }
+.port:last-child{ border-bottom:0; }
+.port svg{ width:17px; height:17px; flex:none; margin-top:2px; fill:none;
+  stroke:var(--muted); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.port b{ font-weight:600; }
+.port small{ display:block; font-family:var(--body); font-size:12.5px; color:var(--muted); }
+
+.bunn{ flex:none; padding:var(--s4) var(--s5) calc(var(--s5) + env(safe-area-inset-bottom));
+  font-family:var(--body); font-size:12px; color:var(--muted); text-align:center; }
+
+@media (min-width:900px){
+  .side{ display:grid; grid-template-columns:1fr 460px; grid-template-rows:auto 1fr auto;
+    min-height:100vh; }
+  .topp{ grid-column:1 / -1; }
+  .midt{ grid-column:2; grid-row:2; align-items:flex-start; padding-top:var(--s5); }
+  .bunn{ grid-column:2; grid-row:3; text-align:left; }
+  .flanke{ grid-column:1; grid-row:2 / span 2; display:flex; flex-direction:column;
+    justify-content:flex-end; padding:var(--s7) var(--s7) var(--s8) var(--s7);
+    background:var(--soft); border-right:1px solid var(--border); }
+}
+.flanke{ display:none; }
+@media (min-width:900px){ .flanke{ display:flex; } }
+.flanke h2{ margin:0 0 var(--s3); font-family:var(--disp); font-size:30px;
+  font-weight:600; letter-spacing:-.01em; max-width:16ch; }
+.flanke p{ margin:0; font-family:var(--body); font-size:16px; color:var(--muted);
+  max-width:44ch; }
+.flanke .sitat{ margin-top:var(--s6); padding-top:var(--s5);
+  border-top:1px solid var(--border); font-family:var(--mono); font-size:11px;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+
+.toast{ position:fixed; left:50%; bottom:var(--s5); transform:translateX(-50%);
+  z-index:var(--z-toast); background:var(--fg); color:var(--bg);
+  padding:var(--s3) var(--s4); border-radius:var(--r); font-size:13px; }
+button,.btn,.lenke,input,summary{ min-height:var(--tap); }
+.eyebrow,.num,.port small,.flanke .sitat,.felt .hjelp,.felt .feilmelding{ min-height:0; }
+
+</style>
+</head>
+<body>
+<div class="side">
+
+  <header class="topp">
+    <a class="logo" href="innlogging.html" data-od-id="in-logo">AK Golf<span>.</span></a>
+    <span style="flex:1"></span>
+    <button class="ikon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="in-theme">
+      <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </header>
+
+  <aside class="flanke">
+    <h2>Én konto. Riktig sted.</h2>
+    <p class="prose">Coach, spiller og foresatt logger inn med samme skjema.
+      Kontoen din avgjør hvor du havner — du trenger ikke vite hva systemene heter.</p>
+    <div class="sitat">AK Golf Academy · Fredrikstad</div>
+  </aside>
+
+  <main class="midt">
+    <div class="boks" id="boks"></div>
+  </main>
+
+  <footer class="bunn">
+    AK Golf Academy · en del av AK Golf Group AS
+  </footer>
+</div>
+
+<div class="toast" id="toast" hidden role="status"></div>
+<div class="sr" id="live" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ═══ Innlogging · AK Golf HQ ═══
+   Kilder: users (role: ADMIN, COACH, PLAYER, GUEST) · parent_relations ·
+   parent_invitations · audit_logs
+
+   FIRE TING SOM IKKE ER KOSMETIKK:
+
+   1. ROLLEN VELGES IKKE. Ett skjema, og kontoen avgjør målet. En rollevelger
+      hadde vært en gjettelek for brukeren, og et kart over systemet for en
+      fremmed. Portene forklares nederst — men de kan ikke plukkes.
+
+   2. FEILMELDINGEN LEKKER IKKE. «Finner ingen konto» forteller en fremmed om
+      adressen er registrert hos oss. Samme melding uansett hva som var galt.
+
+   3. FØRSTE INNLOGGING BYTTER PASSORD. Beta-kontiene har midlertidige passord
+      som ligger i et Notion-dokument. Uten tvungen bytte lever de videre.
+
+   4. INVITASJON HAR EGEN INNGANG. En foresatt som får lenke fra coachen har
+      ingen konto ennå. Sender du hen til vanlig innlogging, står hen fast. */
+
+var KONTOER = [
+  { epost:'anders@akgolf.no',      passord:'Beta2026Anders', rolle:'COACH',
+    navn:'Anders Kristiansen', mal:'agencyos-konsoll-desktop.html', maSette:false },
+  { epost:'markus@akgolf.no',      passord:'Beta2026Markus', rolle:'COACH',
+    navn:'Markus Røinås Pedersen', mal:'agencyos-konsoll-desktop.html', maSette:true },
+  { epost:'oyvind@example.no',     passord:'Beta2026Oyvind', rolle:'PLAYER',
+    navn:'Øyvind Rohjan', mal:'playerhq-chat-mobil.html', maSette:false },
+  { epost:'foresatt@example.no',   passord:'Beta2026Foresatt', rolle:'GUARDIAN',
+    navn:'Foresatt', mal:'foreldreportal.html', maSette:false }
+];
+
+var MAAL = {
+  COACH:    { n:'AgencyOS',        d:'Hele driften: innboks, spillere, kalender, økonomi.' },
+  PLAYER:   { n:'PlayerHQ',        d:'Planen din, øktene dine, analysene dine.' },
+  GUARDIAN: { n:'Foreldreportalen', d:'Samtykker, betaling og innsyn i planen.' }
+};
+
+var steg = 'logginn';   /* logginn · glemt · sendt · nyttpassord · velkommen */
+var epost = '', passord = '', nyttA = '', nyttB = '';
+var visPassord = false, jobber = false, feil = {}, avvist = '';
+var innlogget = null;
+
+var live = document.getElementById('live');
+function si(t){ live.textContent = t; }
+var toastEl = document.getElementById('toast'), toastT;
+function toast(t){ toastEl.textContent = t; toastEl.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.hidden = true; }, 2800); }
+function el(tag, cls, txt){ var e = document.createElement(tag);
+  if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+function gyldigEpost(v){ return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v); }
+
+function felt(id, label, type, verdi, hjelp, onInput, extra){
+  var f = el('div','felt' + (feil[id] ? ' feil' : ''));
+  var l = el('label', null, label); l.setAttribute('for','f-'+id); f.appendChild(l);
+  var wrap = extra === 'passord' ? el('div','passordrad') : f;
+  var inp = document.createElement('input');
+  inp.type = extra === 'passord' && visPassord ? 'text' : type;
+  inp.id = 'f-'+id; inp.value = verdi; inp.dataset.odId = 'in-felt-'+id;
+  inp.autocomplete = id === 'epost' ? 'email'
+                   : id === 'passord' ? 'current-password'
+                   : id.indexOf('nytt') === 0 ? 'new-password' : 'off';
+  if (feil[id]) inp.setAttribute('aria-invalid','true');
+  inp.addEventListener('input', function(){ onInput(inp.value); delete feil[id]; avvist = ''; });
+  wrap.appendChild(inp);
+  if (extra === 'passord'){
+    var v = el('button','vis', visPassord ? 'Skjul' : 'Vis');
+    v.type = 'button'; v.dataset.odId = 'in-vis-'+id;
+    v.setAttribute('aria-label', visPassord ? 'Skjul passordet' : 'Vis passordet');
+    v.addEventListener('click', function(){ visPassord = !visPassord; render();
+      var n = document.getElementById('f-'+id); if (n){ n.focus();
+        n.setSelectionRange(n.value.length, n.value.length); } });
+    wrap.appendChild(v);
+    f.appendChild(wrap);
+  }
+  if (feil[id]) f.appendChild(el('feilmelding' === 1 ? 'span' : 'span','feilmelding', feil[id]));
+  else if (hjelp) f.appendChild(el('span','hjelp', hjelp));
+  return f;
+}
+
+function avvistBlokk(w){
+  if (!avvist) return;
+  var v = el('div','varsel avvist');
+  v.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>';
+  v.appendChild(el('p', null, avvist));
+  w.appendChild(v);
+}
+
+/* ── Skjermene ───────────────────────────────────────────────── */
+var VIS = {
+
+logginn: function(w){
+  w.appendChild(el('h1', null, 'Logg inn'));
+  w.appendChild(el('p','ingress',
+    'Samme skjema for alle. Kontoen din bestemmer hvor du havner.'));
+  avvistBlokk(w);
+
+  w.appendChild(felt('epost','E-post','email', epost, null, function(v){ epost = v; }));
+  w.appendChild(felt('passord','Passord','password', passord, null, function(v){ passord = v; }, 'passord'));
+
+  var b = el('button','btn now full', jobber ? 'Logger inn …' : 'Logg inn');
+  b.type = 'button'; b.dataset.odId = 'in-one-thing-now';
+  b.setAttribute('aria-busy', String(jobber));
+  b.addEventListener('click', loggInn);
+  w.appendChild(b);
+
+  var r = el('div','lenkerekke');
+  var g = el('button','lenke','Glemt passord'); g.type = 'button';
+  g.dataset.odId = 'in-glemt';
+  g.addEventListener('click', function(){ steg = 'glemt'; feil = {}; avvist = ''; render();
+    si('Glemt passord. Skriv e-postadressen din.'); });
+  r.appendChild(g);
+  var i = el('button','lenke','Jeg har fått en invitasjon'); i.type = 'button';
+  i.dataset.odId = 'in-invitasjon';
+  i.addEventListener('click', function(){
+    toast('Invitasjonslenken går rett hit med en engangskode.');
+    si('En invitasjon fra coachen inneholder en lenke med engangskode. ' +
+       'Åpner du den, oppretter du passordet ditt uten å logge inn først.');
+  });
+  r.appendChild(i);
+  w.appendChild(r);
+
+  /* Portene forklares — de kan ikke velges. */
+  var p = el('div','porter');
+  p.appendChild(document.createComment(' kilde: users.role '));
+  p.appendChild(el('span','eyebrow','Hvor du havner'));
+  [['COACH','M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8'],
+   ['PLAYER','M12 2v20M5 9l7-5 7 5'],
+   ['GUARDIAN','M20 21v-2a4 4 0 0 0-3-3.87M4 21v-2a4 4 0 0 1 3-3.87M12 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8']
+  ].forEach(function(par){
+    var m = MAAL[par[0]];
+    var rad = el('div','port');
+    rad.innerHTML = '<svg viewBox="0 0 24 24"><path d="' + par[1] + '"/></svg>';
+    var d = document.createElement('div');
+    var b2 = el('b', null, m.n); d.appendChild(b2);
+    d.appendChild(el('small', null, m.d));
+    rad.appendChild(d);
+    p.appendChild(rad);
+  });
+  var note = el('p','hjelp',
+    'Du velger ikke selv. Kontoen avgjør, og du sendes rett dit etter innlogging.');
+  note.style.marginTop = 'var(--s3)';
+  p.appendChild(note);
+  w.appendChild(p);
+},
+
+glemt: function(w){
+  w.appendChild(el('h1', null, 'Glemt passord'));
+  w.appendChild(el('p','ingress',
+    'Skriv e-postadressen din, så sender vi en lenke for å lage nytt passord.'));
+  avvistBlokk(w);
+  w.appendChild(felt('epost','E-post','email', epost, null, function(v){ epost = v; }));
+  var b = el('button','btn ink full', jobber ? 'Sender …' : 'Send lenke');
+  b.type = 'button'; b.dataset.odId = 'in-send-lenke';
+  b.setAttribute('aria-busy', String(jobber));
+  b.addEventListener('click', function(){
+    feil = {};
+    if (!gyldigEpost(epost)){ feil.epost = 'Skriv en gyldig e-postadresse.'; render();
+      var f = document.getElementById('f-epost'); if (f) f.focus();
+      si('E-postadressen ser ikke gyldig ut.'); return; }
+    jobber = true; render();
+    setTimeout(function(){ jobber = false; steg = 'sendt'; render();
+      si('Er adressen registrert, ligger det en lenke i innboksen om et minutt.'); }, 600);
+  });
+  w.appendChild(b);
+  w.appendChild(tilbakerekke());
+},
+
+sendt: function(w){
+  w.appendChild(el('h1', null, 'Sjekk innboksen'));
+  /* Bekreftelsen sier ikke om adressen finnes. Gjorde den det, ville denne
+     skjermen vært et oppslagsverk over hvem som er kunde. */
+  w.appendChild(el('p','ingress',
+    'Er ' + epost + ' registrert hos oss, ligger det en lenke der om et minutt. ' +
+    'Lenken varer i to timer.'));
+  var v = el('div','varsel');
+  v.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+  v.appendChild(el('p', null,
+    'Finner du den ikke, sjekk søppelpost. Kommer den fortsatt ikke, ' +
+    'har du kanskje en annen adresse registrert.'));
+  w.appendChild(v);
+  var b = el('button','btn full','Tilbake til innlogging'); b.type = 'button';
+  b.dataset.odId = 'in-tilbake-fra-sendt';
+  b.addEventListener('click', function(){ steg = 'logginn'; render(); si('Logg inn.'); });
+  w.appendChild(b);
+},
+
+nyttpassord: function(w){
+  w.appendChild(el('h1', null, 'Lag ditt eget passord'));
+  w.appendChild(el('p','ingress',
+    'Du logget inn med et midlertidig passord. Det byttes nå, og det gamle ' +
+    'slutter å virke med én gang.'));
+  avvistBlokk(w);
+  w.appendChild(felt('nyttA','Nytt passord','password', nyttA,
+    'Minst ti tegn.', function(v){ nyttA = v; }, 'passord'));
+  w.appendChild(felt('nyttB','Gjenta passordet','password', nyttB, null,
+    function(v){ nyttB = v; }));
+  var b = el('button','btn now full','Lagre og fortsett'); b.type = 'button';
+  b.dataset.odId = 'in-one-thing-now';
+  b.addEventListener('click', function(){
+    feil = {};
+    if (nyttA.length < 10) feil.nyttA = 'Minst ti tegn.';
+    else if (nyttA === innlogget.passord) feil.nyttA = 'Velg noe annet enn det midlertidige.';
+    if (nyttB !== nyttA) feil.nyttB = 'De to feltene er ikke like.';
+    var n = Object.keys(feil).length;
+    if (n){ render();
+      var f = document.querySelector('.felt.feil input'); if (f) f.focus();
+      si(n === 1 ? 'Ett felt må rettes.' : n + ' felt må rettes.'); return; }
+    innlogget.maSette = false;
+    steg = 'velkommen'; render();
+    si('Passordet er byttet. Du sendes til ' + MAAL[innlogget.rolle].n + '.');
+    toast('Passordet er byttet');
+  });
+  w.appendChild(b);
+},
+
+velkommen: function(w){
+  var m = MAAL[innlogget.rolle];
+  w.appendChild(el('h1', null, 'Hei, ' + innlogget.navn.split(' ')[0]));
+  w.appendChild(el('p','ingress',
+    'Kontoen din hører til ' + m.n + '. ' + m.d));
+  var b = el('button','btn now full','Gå til ' + m.n); b.type = 'button';
+  b.dataset.odId = 'in-one-thing-now';
+  b.addEventListener('click', function(){ location.href = innlogget.mal; });
+  w.appendChild(b);
+  var u = el('button','lenke','Ikke deg? Logg ut'); u.type = 'button';
+  u.dataset.odId = 'in-ikke-deg';
+  u.addEventListener('click', function(){
+    innlogget = null; epost = ''; passord = ''; nyttA = ''; nyttB = '';
+    steg = 'logginn'; render(); si('Logget ut.');
+  });
+  var r = el('div','lenkerekke'); r.appendChild(u);
+  w.appendChild(r);
+}
+};
+
+function tilbakerekke(){
+  var r = el('div','lenkerekke');
+  var t = el('button','lenke','Tilbake til innlogging'); t.type = 'button';
+  t.dataset.odId = 'in-tilbake';
+  t.addEventListener('click', function(){ steg = 'logginn'; feil = {}; avvist = ''; render();
+    si('Logg inn.'); });
+  r.appendChild(t);
+  return r;
+}
+
+function loggInn(){
+  feil = {}; avvist = '';
+  if (!gyldigEpost(epost)) feil.epost = 'Skriv en gyldig e-postadresse.';
+  if (!passord) feil.passord = 'Skriv passordet ditt.';
+  if (Object.keys(feil).length){
+    render();
+    var f = document.querySelector('.felt.feil input'); if (f) f.focus();
+    si('Fyll ut begge feltene.'); return;
+  }
+  jobber = true; render();
+  setTimeout(function(){
+    jobber = false;
+    var k = KONTOER.filter(function(x){
+      return x.epost.toLowerCase() === epost.trim().toLowerCase() && x.passord === passord; })[0];
+    if (!k){
+      /* Samme melding uansett om det var e-posten eller passordet som var
+         galt. Skilte vi, ville skjermen bekreftet hvilke adresser som finnes. */
+      avvist = 'E-post eller passord stemmer ikke. Prøv igjen, eller lag nytt passord.';
+      render();
+      var f2 = document.getElementById('f-passord'); if (f2) f2.focus();
+      si(avvist); return;
+    }
+    innlogget = k;
+    if (k.maSette){
+      steg = 'nyttpassord'; render();
+      si('Du logget inn med et midlertidig passord. Lag ditt eget nå.');
+      return;
+    }
+    steg = 'velkommen'; render();
+    si('Innlogget som ' + k.navn + '. Kontoen hører til ' + MAAL[k.rolle].n + '.');
+  }, 500);
+}
+
+/* ── Tema ────────────────────────────────────────────────────── */
+var KEY = 'akhq-theme-innlogging';
+var saved = localStorage.getItem(KEY);
+if (saved) document.documentElement.dataset.theme = saved;
+document.getElementById('themeBtn').addEventListener('click', function(){
+  var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem(KEY, next);
+  this.setAttribute('aria-label', next === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
+});
+
+function render(){
+  var w = document.getElementById('boks'); w.innerHTML = '';
+  VIS[steg](w);
+  /* Enter sender skjemaet fra hvilket som helst felt. */
+  w.querySelectorAll('input').forEach(function(inp){
+    inp.addEventListener('keydown', function(e){
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      var b = w.querySelector('.btn.now, .btn.ink');
+      if (b) b.click();
+    });
+  });
+}
+render();
+
+/* Demo-stillas: kontoene over er beta-konti. Skal bort ved integrasjon —
+   ekte innlogging går mot users og Supabase Auth. */
+(function demo(){
+  var d = document.createElement('div');
+  d.dataset.demoOnly = 'true';
+  d.className = 'porter';
+  d.appendChild(el('span','eyebrow','Demo · prøv en konto'));
+  KONTOER.forEach(function(k){
+    var b = el('button','btn sm', k.rolle.toLowerCase() +
+      (k.maSette ? ' · midlertidig passord' : ''));
+    b.type = 'button'; b.dataset.odId = 'in-demo-' + k.rolle.toLowerCase();
+    b.style.margin = '0 var(--s2) var(--s2) 0';
+    b.addEventListener('click', function(){
+      epost = k.epost; passord = k.passord; steg = 'logginn'; feil = {}; avvist = '';
+      render(); si('Fylt inn ' + k.epost + '.');
+    });
+    d.appendChild(b);
+  });
+  document.getElementById('boks').appendChild(d);
+  var mo = new MutationObserver(function(){
+    var boks = document.getElementById('boks');
+    if (boks && !boks.contains(d)) boks.appendChild(d);
+  });
+  mo.observe(document.getElementById('boks'), { childList:true });
+})();
+})();
+
+</script>
+</body>
+</html>

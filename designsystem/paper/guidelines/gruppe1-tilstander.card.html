@@ -1,0 +1,143 @@
+<!-- @dsCard group="Prosess" viewport="1180x4980" name="Gruppe 1 — tilstander og containerbredder" subtitle="14 filer migrert: Region-tilstandene, Chips gulv, og de to konverterte i to containerbredder" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr}.stack>div{padding:var(--s5) var(--s6);background:var(--bg);color:var(--fg)}h1{font:600 24px/1.15 var(--disp);margin:0 0 6px}.k{font:600 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}.lead{font:400 14px/1.55 var(--body);color:var(--muted);max-width:62ch;margin:0 0 22px;text-wrap:pretty}.gl{font:600 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}.grp{margin:0 0 24px}.row{display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px 16px}.cell{display:flex;flex-direction:column;gap:5px}.cl{font:500 9px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mid)}.cw{border:1px dashed var(--border);border-radius:var(--r);padding:12px;box-sizing:border-box}.four{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}</style></head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const NS = window.AKGolfHQClaudePaper_605a48;
+const { KpiStripe, OneThingNow, Chip, Button, KpiCard, NowNext, AiRecap, StatusCircleRow, GoalProgress, PercentileGauge, DotMatrix, ScoreGauge, PersonalBest, ProgramLadder, SectionLabel, Tabs, ThemeToggle, DropdownMenu, QuickLinkBar, Breadcrumbs, Banner } = NS;
+function Grp({ label, children }) { return <div className="grp"><p className="gl">{label}</p>{children}</div>; }
+function Cell({ label, children }) { return <div className="cell"><span className="cl">{label}</span>{children}</div>; }
+const kpiItems = [{ label: "Snitt SG", value: 1.4, delta: 0.3, window: "8 uker" }, { label: "Økter", value: 34, delta: 4, window: "mnd" }, { label: "Timer", value: 41.5, unit: "t", delta: -2.1 }, { label: "Runder", value: 9, delta: 1 }];
+const states = [["content", "fylt"], ["empty", "tom"], ["loading", "laster"], ["error", "feil"]];
+function Kort() {
+  return (<div>
+    <p className="k">Gruppe 1 · lagmigrering · 28.07.2026</p>
+    <h1>Tilstander og containerbredder</h1>
+    <p className="lead">14 filer migrert. Alle bruker <code style={{font:"500 12px var(--mono)"}}>Region</code>, så null visuell endring måles i alle fire datatilstander — ikke bare i fylt. Chips berøringsgulv og de to <code style={{font:"500 12px var(--mono)"}}>@container</code>-konverteringene har egne seksjoner.</p>
+
+    <SectionLabel as="div" dataOdId="lab-seksjon">Migrert 28.07.2026 · 14 filer · 0 klasser utenfor lag</SectionLabel>
+    <div style={{ height: 18 }}></div>
+    <Grp label="Region — fire tilstander, målt på KpiStripe og NowNext">
+      <div className="four">
+        {states.map(([s, n]) => <div className="cell" key={s}><span className="cl">{n}</span><KpiStripe items={kpiItems.slice(0, 2)} state={s} dataOdId={"kpi-" + s} /></div>)}
+      </div>
+    </Grp>
+
+    <Grp label="Chip — gulvet gjelder treffmål, ikke etiketter">
+      <div className="row">
+        <Cell label="default 28"><Chip dataOdId="chip-d">Putting</Chip></Cell>
+        <Cell label="selected"><Chip selected dataOdId="chip-s">Nærspill</Chip></Cell>
+        <Cell label="hover"><Chip data-state="hover" dataOdId="chip-h">Driver</Chip></Cell>
+        <Cell label="focus"><Chip data-state="focus" dataOdId="chip-f">Wedge</Chip></Cell>
+        <Cell label="static 22 (etikett)"><Chip static dataOdId="chip-st">M3</Chip></Cell>
+        <Cell label="coarse-stand-in → 44"><span data-coarse-test><Chip dataOdId="chip-fl">Gulv</Chip></span></Cell>
+        <Cell label="static + coarse → 22"><span data-coarse-test><Chip static dataOdId="chip-st-fl">PR2</Chip></span></Cell>
+      </div>
+      <p className="lead" style={{ marginTop: 12, marginBottom: 6, fontFamily: "var(--mono)", fontSize: 11.5 }} id="floor-assert">måler …</p>
+      <p className="lead" style={{ marginTop: 0, marginBottom: 0 }}>Siste celle er poenget: <code style={{font:"500 12px var(--mono)"}}>--static</code> nuller gulvet bevisst og skal bli <strong>22 px</strong> selv med gulvet aktivt. Stand-in-en mates fra en regel i <code style={{font:"500 12px var(--mono)"}}>@layer akhq-container</code> med samme vekt som <code style={{font:"500 12px var(--mono)"}}>pointer: coarse</code> — ikke inline, som ville slått alle lag og målt inline-presedens i stedet for lagforholdet. Den er <code style={{font:"500 12px var(--mono)"}}>cursor: default</code> — en etikett, ikke et treffmål. Første tilfelle der tilgjengelighetsgulvet skal kunne slås av av en modifikator — og linjen over er assertionen som holder betingelsen: <strong>ethvert</strong> element med <code style={{font:"500 12px var(--mono)"}}>--floor: 0</code> må mangle alle interaktive kjennetegn (href, aktiverende rolle, tabindex ≥ 0, <code style={{font:"500 12px var(--mono)"}}>cursor: pointer</code>, interaktiv tag). Uten den er nullingen en fri variabel neste person griper for tettere rader.</p>
+    </Grp>
+
+    <Grp label="KpiStripe — @container 520px (var @media 640px)">
+      <div style={{ display: "grid", gap: 14 }}>
+        <div className="cell"><span className="cl">Container 860 — kolonner</span><div className="cw" style={{ width: 860 }}><KpiStripe items={kpiItems} dataOdId="kpi-860" /></div></div>
+        <div className="cell"><span className="cl">Container 430 — stablet</span><div className="cw" style={{ width: 430 }}><KpiStripe items={kpiItems} dataOdId="kpi-430" /></div></div>
+      </div>
+    </Grp>
+
+    <Grp label="OneThingNow — @container 520px, oransje-monopolet urørt">
+      <div style={{ display: "grid", gap: 14 }}>
+        <div className="cell"><span className="cl">Container 860 — handling til høyre</span><div className="cw" style={{ width: 860 }}><OneThingNow title="Logg gårsdagens økt" actions={<Button size="sm" dataOdId="cta-logg">Logg nå</Button>} dataOdId="now-860">Tre spillere mangler registrering fra i går.</OneThingNow></div></div>
+        <div className="cell"><span className="cl">Container 430 — handling under</span><div className="cw" style={{ width: 430 }}><OneThingNow title="Logg gårsdagens økt" actions={<Button size="sm" dataOdId="cta-logg2">Logg nå</Button>} dataOdId="now-430">Tre spillere mangler registrering.</OneThingNow></div></div>
+      </div>
+    </Grp>
+
+    <Grp label="Rettet 29.07.2026 — floor 0 → 44 på cursor:pointer-elementer">
+      <div className="row">
+        <Cell label="Tabs (var 38,0)"><span data-coarse-test><Tabs tabs={[{ id: "a", label: "Uke" }, { id: "b", label: "Måned" }]} value="a" onChange={() => {}} dataOdId="tabs-fl" /></span></Cell>
+        <Cell label="ThemeToggle (var 32,0)"><span data-coarse-test><ThemeToggle storageKey="akhq-theme-demo-fl" dataOdId="cta-tema-fl" /></span></Cell>
+        <Cell label="DropdownMenu-element (var 32,0)"><span data-coarse-test><DropdownMenu defaultOpen trigger={<Button size="sm" dataOdId="cta-dd-fl">Meny</Button>} items={[{ id: "a", text: "Rediger" }]} dataOdId="dd-fl" /></span></Cell>
+        <Cell label="QuickLinkBar (var 31,1)"><span data-coarse-test><QuickLinkBar links={[{ id: "a", text: "Se alle" }]} dataOdId="qlink-fl" /></span></Cell>
+        <Cell label="Breadcrumbs-lenke (var 12,8 — manglet floor helt)"><span data-coarse-test><Breadcrumbs items={[{ label: "AgencyOS", href: "#" }, { label: "I dag" }]} dataOdId="crumbs-fl" /></span></Cell>
+        <Cell label="Banner-lukk (var 28,0 — manglet floor helt)"><span data-coarse-test style={{ display: "block", width: 260 }}><Banner tone="info" closable dataOdId="banner-fl">Kort tekst.</Banner></span></Cell>
+      </div>
+    </Grp>
+
+    <Grp label="Øvrige migrerte — fylt tilstand, begge moduser">
+      <div className="four">
+        <Cell label="KpiCard"><KpiCard label="Snitt SG putting" value={1.42} delta={0.31} window="8 uker" dataOdId="kpi-card" /></Cell>
+        <Cell label="GoalProgress"><GoalProgress value={34} target={48} label="Økter i perioden" dataOdId="goal" /></Cell>
+        <Cell label="PercentileGauge"><PercentileGauge value={72} label="SG totalt" cohort="18–21 år" dataOdId="pctile" /></Cell>
+        <Cell label="PersonalBest"><PersonalBest value={288} unit="m" label="Lengste drive" date="14. juni" dataOdId="pb" /></Cell>
+        <Cell label="ScoreGauge"><ScoreGauge value={71} label="Snittscore" subs={[{ label: "Ute", value: 35 }, { label: "Hjem", value: 36 }]} max={90} dataOdId="gauge" /></Cell>
+        <Cell label="DotMatrix"><DotMatrix rows={[{ label: "Putting", values: [0,1,2,2,1,2,0,1] }, { label: "Wedge", values: [1,0,1,2,1,0,2,1] }]} dataOdId="dots" /></Cell>
+        <Cell label="NowNext"><NowNext now={{ title: "Putting 3–6 m", meta: "45 min", progress: 0.62 }} next={{ title: "Wedge 40–70 m", meta: "30 min" }} dataOdId="nn" /></Cell>
+        <Cell label="StatusCircleRow"><StatusCircleRow items={[{ status: "done", title: "Putting 3–6 m", meta: "12 × 10 baller", right: "72 %" }, { status: "active", title: "Wedge 40–70 m", meta: "8 × 6 baller", right: "—" }, { status: "todo", title: "Driver kontroll", meta: "10 slag", right: "—" }]} dataOdId="srow" /></Cell>
+        <Cell label="ProgramLadder"><ProgramLadder steps={[{ status: "done", title: "M1 Grunnform", meta: "fullført 12. mai" }, { status: "active", title: "M2 Kontroll", meta: "pågår · uke 3 av 6" }, { status: "todo", title: "M3 Spesialisering", meta: "ikke startet" }]} xp={{ value: 620, max: 900 }} dataOdId="ladder" /></Cell>
+        <Cell label="AiRecap"><AiRecap deltas={[{ label: "SG putting", value: 0.31, basis: "8 uker" }, { label: "SG nærspill", value: -0.12, basis: "8 uker" }]} dataOdId="recap">Putting har løftet seg jevnt siden mai. Nærspillet står stille.</AiRecap></Cell>
+      </div>
+    </Grp>
+  </div>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Kort />);
+/* ASSERTION: berøringsgulvet kan bare nulles der elementet er ikke-interaktivt.
+   --floor: 0 er ellers en fri variabel neste person griper for tettere rader,
+   og WCAG-gulvet blir arkitektonisk mulig å underskride. Betingelsen som
+   maskinsjekk: ethvert element med --floor: 0px må mangle alle interaktive
+   kjennetegn (href, onclick, aktiverende rolle, tabindex ≥ 0, form-tag). */
+setTimeout(() => {
+  const AKTIV = new Set(["button","a","input","select","textarea","summary","label"]);
+  const AKTIVROLLE = new Set(["button","link","menuitem","menuitemcheckbox","menuitemradio","tab","option","checkbox","radio","switch"]);
+  /* SELVTEST FØRST: en assertion som ikke kan skille «riggen virker ikke» fra
+     «regelbrudd» peker på komponenten når feilen ligger i bundelen. Minst ett
+     INTERAKTIVT element i [data-coarse-test] må ha --floor > 0 — er det ikke
+     tilfelle, mangler container-regelen (typisk stale bundle) og tellingen
+     under ville gitt falske positiver. Samme prinsipp som måleriggens selvtest. */
+  const riggElementer = [...document.querySelectorAll('[data-coarse-test] [class^="akhq-"],[data-coarse-test] [class*=" akhq-"]')];
+  const riggOk = riggElementer.some((el) => {
+    const f = parseFloat((getComputedStyle(el).getPropertyValue("--floor") || "0").trim());
+    const interaktiv = ["button", "a", "input", "select", "textarea"].includes(el.tagName.toLowerCase());
+    return interaktiv && f > 0;
+  });
+  const brudd = [];
+  let sjekket = 0;
+  /* Bare elementer der nullingen er EKSPLISITT: gulvet er aktivt i konteksten
+     (en container/media-regel setter det > 0) OG elementet har likevel 0.
+     Uten den betingelsen flagges hver knapp på en musepeker-enhet, der 0 er
+     base-standarden — en sjekk som aldri kan bli grønn er like verdiløs som
+     en som aldri kan bli rød. Scope til akhq-klasser, ellers telles vertens
+     editor-noder (__om-t) som brudd. */
+  for (const el of document.querySelectorAll('[class^="akhq-"],[class*=" akhq-"]')) {
+    const cs = getComputedStyle(el);
+    const floor = (cs.getPropertyValue("--floor") || "").trim();
+    if (!floor || parseFloat(floor) !== 0) continue;
+    if (!el.closest("[data-coarse-test]")) continue;
+    sjekket++;
+    const tag = el.tagName.toLowerCase();
+    const rolle = (el.getAttribute("role") || "").toLowerCase();
+    const ti = el.getAttribute("tabindex");
+    const grunner = [];
+    if (AKTIV.has(tag) && !(tag === "a" && !el.hasAttribute("href"))) grunner.push("tag=" + tag);
+    if (AKTIVROLLE.has(rolle)) grunner.push("role=" + rolle);
+    if (el.hasAttribute("href")) grunner.push("href");
+    if (ti !== null && parseInt(ti, 10) >= 0) grunner.push("tabindex=" + ti);
+    if (cs.cursor === "pointer") grunner.push("cursor:pointer");
+    if (grunner.length) brudd.push({ tag, klasse: el.className, odId: el.dataset.odId, grunner, høyde: el.getBoundingClientRect().height });
+  }
+  window.__floorAssert = riggOk
+    ? { riggOk, sjekket, brudd, ok: sjekket > 0 && brudd.length === 0, merknad: sjekket === 0 ? "ingen eksplisitt nullet element funnet — sjekken målte ingenting" : undefined }
+    : { riggOk: false, ok: false, merknad: "RIGGEN VIRKER IKKE — ingen interaktivt element i [data-coarse-test] har --floor > 0, så container-regelen er ikke lastet (typisk stale bundle). Tellingen ville gitt falske positiver og er hoppet over.", riggElementer: riggElementer.length };
+  const n = document.getElementById("floor-assert");
+  const ok = riggOk && sjekket > 0 && brudd.length === 0;
+  if (n && !riggOk) { n.textContent = "⚠ riggen virker ikke — container-regelen [data-coarse-test] er ikke lastet (stale bundle). Ingen brudd telt."; n.style.color = "var(--dn)"; return; }
+  if (n) { n.textContent = sjekket === 0
+    ? "✗ sjekken målte ingenting — ingen eksplisitt nullet element i DOM"
+    : ok ? "✓ " + sjekket + " element(er) nuller gulvet eksplisitt — alle ikke-interaktive"
+    : "✗ " + brudd.length + " av " + sjekket + " brudd: " + brudd.map((b) => (b.odId || b.klasse) + " (" + b.grunner.join(", ") + ")").join(" · ");
+    n.style.color = ok ? "var(--up)" : "var(--dn)"; }
+}, 500);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Kort />);
+</script></body></html>

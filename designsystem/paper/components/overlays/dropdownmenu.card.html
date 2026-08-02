@@ -1,0 +1,64 @@
+<!-- @dsCard group="Fundament" viewport="980x1800" name="DropdownMenu" subtitle="Fokuskontrakten som delt kode — fokusfelle, Escape, retur til utløser, klikk utenfor, piltaster" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}</style></head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { DropdownMenu, Button, Panel, SectionLabel, PageHeader, KeyValueGrid } = window.AKGolfHQClaudePaper_605a48;
+const items = (log) => ([
+  { type: "label", text: "Økt" },
+  { id: "okt", text: "Ny økt", note: "⌘N", onSelect: () => log("Ny økt") },
+  { id: "serie", text: "Ny serie", onSelect: () => log("Ny serie") },
+  { type: "separator" },
+  { type: "label", text: "Plan" },
+  { id: "uke", text: "Ukeplan fra mal", onSelect: () => log("Ukeplan fra mal") },
+  { id: "periode", text: "Ny periode", disabled: true },
+  { type: "separator" },
+  { id: "slett", text: "Slett utkast", tone: "dn", onSelect: () => log("Slett utkast") }
+]);
+function Width({ px, note, children }) {
+  return (<div style={{display:"grid",gap:"var(--s2)",justifyItems:"start"}}>
+    <SectionLabel as="div">Container {px} px{note ? " · " + note : ""}</SectionLabel>
+    <div className="cw" style={{width:px}}>{children}</div>
+  </div>);
+}
+function Specimen() {
+  const [siste, setSiste] = React.useState("—");
+  return (<div style={{display:"grid",gap:"var(--s5)"}}>
+    <Width px={860} note="align=auto · utløser ved høyre kant, menyen forankres innover">
+      <div style={{minHeight:330}}>
+        <PageHeader kicker="Mandag 27. juli · uke 31" title="Workbench" lead="Menyen er åpen for å vise laget. Escape lukker, fokus går tilbake til knappen."
+          actions={<DropdownMenu dataOdId="opprett" trigger={<Button>Opprett</Button>} items={items(setSiste)} defaultOpen />} dataOdId="page-header-wb" />
+        <Panel title="Sist valgt" density="sm" dataOdId="panel-valg">
+          <KeyValueGrid items={[{ key: "Handling", value: siste, mono: false }]} columns={1} dividers={false} dataOdId="kv-valg" />
+        </Panel>
+      </div>
+    </Width>
+    <Width px={430} note="PlayerHQ-kolonne · eksplisitt align=right">
+      <Panel title="Uke 31" action={<DropdownMenu dataOdId="uke" align="right" label="Ukevalg" trigger={<Button variant="ghost" size="sm">Mer</Button>} items={items(setSiste)} defaultOpen />} dataOdId="panel-uke">
+        <p style={{margin:0,font:"400 12.5px/1.55 var(--body)",color:"var(--muted)"}}>Menyen forankres til høyre når utløseren står i panelhodet.</p>
+      </Panel>
+    </Width>
+    <div style={{display:"grid",gap:"var(--s3)"}}>
+      <SectionLabel as="div">Kontrakten — delt kode i overlay-focus.jsx, ikke per komponent</SectionLabel>
+      <Panel dataOdId="panel-kontrakt">
+        <KeyValueGrid dataOdId="kv-kontrakt" items={[
+          { key: "Utløser", value: "aria-haspopup + aria-expanded", mono: false },
+          { key: "Ved åpning", value: "fokus til første valg", mono: false },
+          { key: "Tab / Shift+Tab", value: "sykler i menyen", mono: false },
+          { key: "Piltast / Home / End", value: "flytter mellom valg", mono: false },
+          { key: "Escape", value: "lukker alltid", mono: false },
+          { key: "Ved lukking", value: "fokus tilbake til utløser", mono: false },
+          { key: "Klikk utenfor", value: "lukker", mono: false },
+          { key: "Arves av", value: "ConfirmDialog, Modal, BottomSheet, CommandPalette, ContextMenu, FlyoutPanel", mono: false }
+        ]} />
+      </Panel>
+    </div>
+  </div>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+</script></body></html>

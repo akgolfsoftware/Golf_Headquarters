@@ -1,0 +1,1674 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>I dag · PlayerHQ · Øyvind Rohjan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   AK Golf HQ · Fase 1-fundament · Claude Paper
+   Kopieres VERBATIM inn i <style> i hver fil. Ingen hex utenfor :root.
+   Endring 31.07.2026 (Anders): --r 8px → 12px. Lukker konflikten
+   mellom tokens/akhq-tokens.css og Paper-fasiten.
+   Endring 31.07.2026 (Anders): primærhandlingen ER «Én ting nå» og
+   fylles med --accent. Alle andre knapper er blekk eller ghost.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ═══ akhq-tokens.css v3.1 — KOPIERT VERBATIM. Eneste tokenkilde. ═══ */
+/* ─────────────────────────────────────────────────────────────
+   AK Golf HQ · Claude Paper tokens v3
+   Anthropic-justert (offentlige kilder) + AK produktregler
+
+   Én kilde. Kopier verbatim inn i hver HTML/skjerm, eller @import.
+   Se SCOPE.md for hva «offisiell» betyr (vi er JUSTERT, ikke Anthropic).
+
+   Kilder:
+   - Anthropic brand-guidelines: ink/paper/mid/light + clay/sky/olive
+   - anthropic.com DESIGN.md (shadcn reverse-eng): full 21-farge + 8 aksenter
+   - Fase 1 (2026-07/08): chat-først, radius 12 for tett app, Én ting nå
+
+   v3.1 · 2026-08-01 (Bølge 1)
+   - --rail-hover / --rail-active løftet inn (var lokale i Fase 1-filene)
+   - Ingen andre verdiendringer. --muted er #5e5d59 (vinner over Fase 1 #5F5B53)
+
+   v3 · 2026-08-01
+   - Full Anthropic surface + accent ladder
+   - Radius-stige: sm 8 · app 12 · md 16 · lg 24 · pill
+   - Type-tokens for marketing + produkt
+   - Motion, z-index, tap-targets, hairline
+   - Dark theme (produkt; marketing er primært lys)
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* ─── Surfaces (Anthropic cream ladder) ─── */
+  --bg: #faf9f5;                    /* canvas / ivory */
+  --surface: #ffffff;               /* elevated white (produkt-kort) */
+  --soft: #f0eee6;                  /* surface-secondary — kort uten skygge */
+  --soft-hover: #e8e6dc;            /* surface-secondary-hover */
+  --surface-warm: #e3dacc;          /* oat */
+  --surface-manilla: #ebdbbc;
+  --surface-kraft: #d4a27f;
+  --border: #e8e6dc;                /* light gray (brand skill) */
+  --hairline: #d1cfc5;              /* finere skille enn --border */
+  --inverse: #000000;               /* full-bleed marketing-bånd */
+
+  /* ─── Text (Anthropic slate ladder) ─── */
+  --fg: #141413;                    /* ink — primær tekst + CTA-fill */
+  --ink-soft: #3d3d3a;              /* hover på primærknapp */
+  --muted: #5e5d59;                 /* text-muted (brand skill ~ #5f5b53; Anthropic #5e5d59) */
+  --mid: #b0aea5;                   /* text-secondary / cloud medium — IKKE brødtekst i lys */
+  --text-tertiary: #87867f;
+
+  /* ─── Rail (produkt, alltid mørk) ─── */
+  --rail: #141413;
+  --rail-fg: #b0aea5;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.08);   /* v3.1 — løftet fra Fase 1 */
+  --rail-active: rgba(250, 249, 245, 0.14);  /* v3.1 — løftet fra Fase 1 */
+
+  /* ─── Actions ─── */
+  --cta: #141413;                   /* Anthropic: CTA er blekk, ikke farge */
+  --on-cta: #faf9f5;
+  --cta-hover: #3d3d3a;
+
+  /* Clay = sterkeste kromatiske aksent (Anthropic clay) */
+  --accent: #d97757;                /* kun «Én ting nå» + focus i app */
+  --accent-soft: rgba(217, 119, 87, 0.12);
+  --accent-fg: #b85c3d;             /* AA-tekst på paper */
+  --on-accent: #141413;             /* tekst på fylt clay — sparsomt */
+  --accent-deep: #c6613f;           /* burnt sienna */
+
+  /* ─── Dormant accent swatches (Anthropic research palette)
+       Brukes sparsomt: chart, kategori, badges — aldri som primær CTA ─── */
+  --accent-coral: #ebcece;
+  --accent-fig: #c46686;
+  --accent-cactus: #bcd1ca;
+  --accent-olive: #788c5d;
+  --accent-sky: #6a9bcc;
+  --accent-heather: #cbcadb;
+
+  /* ─── Datasemantikk (produkt — mørknede for AA-tekst) ─── */
+  --up: #63784a;                    /* olive mørknet for tekst */
+  --up-raw: #788c5d;                /* olive rå — fyll/sparkline */
+  --dn: #a85536;                    /* leire av clay — aldri ren rød */
+  --info: #46719f;                  /* sky mørknet for tekst */
+  --info-raw: #6a9bcc;
+
+  /* ─── Typography families
+       Anthropic proprietary (Serif/Sans/Mono) er IKKE offentlige.
+       Brand skill: Poppins + Lora. Mono: IBM Plex Mono (produkt-tall). ─── */
+  --font-sans: "Poppins", Arial, system-ui, sans-serif;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Aliases brukt i eksisterende skjermer */
+  --disp: var(--font-sans);
+  --ui: var(--font-sans);
+  --body: var(--font-serif);
+  --mono: var(--font-mono);
+
+  /* ─── Type scale · Produkt (tett) ─── */
+  --text-display: 32px;
+  --text-title: 22px;
+  --text-card: 16px;
+  --text-panel: 14.5px;
+  --text-body-agency: 13.5px;       /* AgencyOS desktop */
+  --text-body-player: 14px;         /* PlayerHQ mobil */
+  --text-label: 10px;               /* versaler + tracking */
+  --text-kpi: 40px;                 /* mono */
+
+  /* ─── Type scale · Marketing (editorial, Anthropic-rytme) ─── */
+  --text-hero: 56px;                /* nedskalert fra 88 — web-vennlig */
+  --text-section: 40px;             /* nedskalert fra 90 */
+  --text-prose: 18px;               /* serif body marketing */
+  --text-prose-lg: 22px;
+  --text-nav: 16px;
+  --text-eyebrow: 12px;
+
+  /* ─── Spacing · 4px base (Anthropic 4/8/12/16/24/32/48/96) ─── */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+  --s9: 96px;                       /* section padding marketing */
+
+  /* ─── Radius
+       Anthropic marketing: sm 8 · md 16 · lg 24
+       AK produkt (Fase 1 låst): app 12 for kort/composer ─── */
+  --r-none: 0px;
+  --r-sm: 8px;                      /* knapper, inputs, chips */
+  --r: 12px;                        /* app-default (Fase 1) */
+  --r-md: 16px;                     /* editorial cards / marketing */
+  --r-lg: 24px;                     /* store flater, pille-CTA unntak */
+  --r-pill: 999px;
+
+  /* ─── Elevation
+       Anthropic marketing: NULL shadow — flater via cream-steg
+       Produkt: én myk skygge tillatt (valgfri) ─── */
+  --shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
+  --shadow-none: none;
+  --scrim: rgba(20, 20, 19, 0.4);
+
+  /* ─── Interaction ─── */
+  --focus: #d97757;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 160ms;
+  --dur-slow: 280ms;
+
+  /* Tap targets */
+  --tap: 44px;
+  --tap-lg: 48px;
+  --tap-capture: 60px;              /* fangst-mikrofon mobil */
+
+  /* ─── Logo (AK Golf — ikke Anthropic) ─── */
+  --logo-mark: #141413;
+  --logo-dot: #b85c3d;
+
+  /* ─── Z-index ─── */
+  --z-sticky: 10;
+  --z-rail: 20;
+  --z-sheet: 40;
+  --z-modal: 50;
+  --z-toast: 100;
+  --z-command: 110;
+}
+
+/* ─── Dark (produkt) ─── */
+[data-theme="dark"] {
+  color: #faf9f5;
+  --bg: #141413;
+  --surface: #1d1c1a;
+  --soft: #26241f;
+  --soft-hover: #2e2c28;
+  --surface-warm: #2a2824;
+  --border: rgba(250, 249, 245, 0.10);
+  --hairline: rgba(250, 249, 245, 0.08);
+  --inverse: #000000;
+
+  --fg: #faf9f5;
+  --ink-soft: #e8e6dc;
+  --muted: #b0aea5;
+  --mid: #6b675e;
+  --text-tertiary: #87867f;
+
+  --rail: #0e0d0c;
+  --rail-fg: #97938a;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.06);
+  --rail-active: rgba(250, 249, 245, 0.12);
+
+  --cta: #faf9f5;
+  --on-cta: #141413;
+  --cta-hover: #e8e6dc;
+
+  --accent: #d97757;
+  --accent-soft: rgba(217, 119, 87, 0.18);
+  --accent-fg: #e5a184;
+  --on-accent: #141413;
+
+  --up: #9db284;
+  --up-raw: #788c5d;
+  --dn: #de9e82;
+  --info: #93b7dc;
+  --info-raw: #6a9bcc;
+
+  --shadow: none;
+  --focus: #d97757;
+
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+[data-theme="light"] {
+  color: #141413;
+}
+
+/* Rail always dark */
+.rail {
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+/* Aksentflate — marketing/innlogging sparsomt */
+.on-accent-surface {
+  --logo-mark: #141413;
+  --logo-dot: #141413;
+}
+
+/* Full-bleed inverse band (marketing) */
+.band-inverse {
+  background: var(--inverse);
+  color: var(--bg);
+}
+
+/* Skriftimport — lim i <head> på alle skjermer:
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+*/
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Gulvregel: min treffmål på touch */
+@media (pointer: coarse) {
+  :root {
+    --floor: var(--tap);
+  }
+}
+
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; }
+body{
+  background:var(--bg); color:var(--fg);
+  font-family:var(--ui); font-size:var(--base,13.5px); line-height:1.5;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+.prose{ font-family:var(--body); font-size:14.5px; line-height:1.62; color:var(--fg); }
+.num{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1; }
+.eyebrow{
+  font-family:var(--mono); font-size:10px; font-weight:500;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted);
+}
+.sr{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+
+:where(a,button,input,textarea,select,[tabindex]):focus-visible{
+  outline:2px solid var(--focus); outline-offset:2px; border-radius:var(--r-sm);
+}
+
+/* ── Knapper ─────────────────────────────────────────────────────
+   .btn            ghost/sekundær — blekkkant, transparent
+   .btn.ink        blekkfylt — bekreftende, men ikke «Én ting nå»
+   .btn.now        ACCENT-FYLT — maks ÉN per skjerm. Dette er «Én ting nå».
+   ────────────────────────────────────────────────────────────── */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
+  min-height:var(--tap); padding:0 var(--s4);
+  font-family:var(--ui); font-size:13px; font-weight:500; line-height:1;
+  color:var(--fg); background:transparent;
+  border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; text-decoration:none; white-space:nowrap;
+  transition:background var(--dur) var(--ease), border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.btn:hover{ background:var(--soft); border-color:var(--mid); }
+.btn:active{ transform:translateY(1px); }
+.btn[disabled],.btn[aria-disabled="true"]{ opacity:.45; cursor:not-allowed; pointer-events:none; }
+.btn.ink{ background:var(--cta); color:var(--on-cta); border-color:var(--cta); }
+.btn.ink:hover{ background:var(--cta); opacity:.88; }
+.btn.now{
+  background:var(--accent); color:var(--on-accent); border-color:var(--accent);
+  min-height:var(--tap-lg); font-weight:600; padding:0 var(--s5);
+}
+.btn.now:hover{ background:var(--accent); filter:brightness(1.04); }
+.btn.sm{ min-height:36px; padding:0 var(--s3); font-size:12px; }
+@media (pointer:coarse){ .btn.sm{ min-height:var(--tap); } }
+.btn.icon{ width:var(--tap); min-height:var(--tap); padding:0; }
+
+/* ── Flater ──────────────────────────────────────────────────── */
+.panel{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r); }
+.chip{
+  display:inline-flex; align-items:center; gap:var(--s1);
+  min-height:36px; padding:0 var(--s3);
+  font-family:var(--ui); font-size:12.5px; color:var(--fg);
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r-pill);
+  cursor:pointer;
+}
+@media (pointer:coarse){ .chip{ min-height:var(--tap); padding:0 var(--s4); } }
+.chip[aria-pressed="true"]{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+.tag{
+  display:inline-flex; align-items:center; gap:var(--s1);
+  padding:3px var(--s2); border-radius:var(--r-pill);
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; text-transform:uppercase;
+  background:var(--soft); color:var(--muted); border:1px solid var(--border);
+}
+.tag.up{ color:var(--up); } .tag.dn{ color:var(--dn); } .tag.info{ color:var(--info); }
+
+/* ── Tomtilstand — aldri en tom flate uten neste steg ─────────── */
+.empty{
+  display:flex; flex-direction:column; align-items:flex-start; gap:var(--s3);
+  padding:var(--s6) var(--s5); background:var(--soft);
+  border:1px dashed var(--border); border-radius:var(--r);
+}
+.empty h3{ margin:0; font-family:var(--disp); font-size:15px; font-weight:600; }
+.empty p{ margin:0; max-width:46ch; font-family:var(--body); font-size:14px; color:var(--muted); }
+
+/* ── Skjelett ────────────────────────────────────────────────── */
+.skel{ background:var(--soft); border-radius:var(--r-sm); animation:pulse 1.6s var(--ease) infinite; }
+@keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.55} }
+
+/* ── Scrim + ark ─────────────────────────────────────────────── */
+.scrim{ position:fixed; inset:0; background:var(--scrim); z-index:var(--z-sheet); }
+.sheet{
+  position:fixed; left:0; right:0; bottom:0; z-index:calc(var(--z-sheet) + 1);
+  background:var(--surface); border-top:1px solid var(--border);
+  border-radius:var(--r) var(--r) 0 0; box-shadow:var(--shadow);
+  padding:var(--s3) var(--s4) calc(var(--s5) + env(safe-area-inset-bottom));
+  max-height:88vh; overflow:auto;
+}
+.sheet-grab{ width:36px; height:4px; border-radius:var(--r-pill); background:var(--border); margin:0 auto var(--s3); }
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important; animation-iteration-count:1 !important;
+    transition-duration:.01ms !important; scroll-behavior:auto !important;
+  }
+}
+/* ═══════════════════════════════════════════════════════════════
+   Skjermspesifikk CSS · PlayerHQ chat · MOBIL (430 × 932)
+   PlayerHQ er mobil-først. Body 14px — Øyvind er 16 år og står på
+   range med én hånd ledig. Telefonrammen er kun visningsramme for
+   desktop-vurdering; innholdet er ekte responsiv mobil-CSS.
+   ═══════════════════════════════════════════════════════════════ */
+:root{ --base:14px; }
+/* Optiske finjusteringer i px (kontrakt §2, begrunnet unntak):
+   gap 2–3px i rail-/faneknapper og loop-etiketter, padding 3px på
+   arbeidslinjer og meldingstekst, calc(28px + var(--s3)) = avatarbredde
+   + kolonneluft. Alt annet spacing går via --s1…--s8. */
+[hidden]{ display:none !important; }
+button{ font:inherit; }
+
+/* ── Papirbakgrunn + telefonramme ────────────────────────────── */
+body{ background:var(--soft); display:grid; place-items:center; min-height:100dvh; padding:var(--s5) var(--s4); }
+.phone{
+  /* 430px = iPhone 16 Pro Max logisk bredde, 932px = høyden. Layoutmål. */
+  width:430px; height:932px; max-width:100%;
+  position:relative; overflow:hidden;
+  background:var(--bg); border:1px solid var(--border);
+  border-radius:var(--r); box-shadow:var(--shadow);
+  container-type:inline-size; container-name:screen;
+  display:flex; flex-direction:column;
+}
+@media (max-width:640px){
+  body{ padding:0; display:block; background:var(--bg); }
+  .phone{ width:100%; height:100dvh; max-width:none; border:0; border-radius:0; box-shadow:none; }
+}
+.framehint{ position:fixed; left:var(--s4); bottom:var(--s3); font-family:var(--mono); font-size:10px; color:var(--mid); }
+@media (max-width:640px){ .framehint{ display:none; } }
+.phone .scrim, .phone .sheet{ position:absolute; }
+
+.skip{
+  position:absolute; left:var(--s3); top:-200px; z-index:var(--z-toast);
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  padding:var(--s3) var(--s4); color:var(--fg); text-decoration:none;
+}
+.skip:focus{ top:var(--s3); }
+
+/* ── Toppbar ─────────────────────────────────────────────────── */
+.top{
+  flex:none; display:flex; align-items:center; gap:var(--s2);
+  padding:calc(var(--s2) + env(safe-area-inset-top)) var(--s4) var(--s2);
+  border-bottom:1px solid var(--border); background:var(--bg);
+}
+.top .title{ font-family:var(--disp); font-weight:600; font-size:15px; }
+.top .when{ font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:.06em; }
+.top .sp{ flex:1; }
+.iconbtn{
+  width:var(--tap); height:var(--tap); min-height:var(--tap);
+  display:grid; place-items:center; border:0; border-radius:var(--r-sm);
+  background:transparent; color:var(--muted); cursor:pointer;
+}
+.iconbtn:hover{ background:var(--soft); color:var(--fg); }
+.iconbtn svg{ width:19px; height:19px; stroke:currentColor; stroke-width:1.6; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+
+/* ── Sløyfe-indikator · FØR → UNDER → ETTER ──────────────────── */
+.loop{
+  flex:none; display:flex; align-items:center; gap:var(--s1);
+  padding:var(--s2) var(--s4); border-bottom:1px solid var(--border); background:var(--bg);
+}
+.loop a{
+  flex:1; min-height:var(--tap); display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:2px;
+  text-decoration:none; color:var(--muted); border-radius:var(--r-sm);
+  font-family:var(--mono); font-size:10px; letter-spacing:.09em; text-transform:uppercase;
+}
+.loop a small{ font-family:var(--ui); font-size:10px; letter-spacing:0; text-transform:none; color:var(--mid); }
+.loop a:hover{ background:var(--soft); color:var(--fg); }
+.loop a[aria-current="step"]{ background:var(--soft); color:var(--fg); box-shadow:inset 0 -2px 0 0 var(--fg); }
+.loop .arw{ flex:none; color:var(--mid); font-size:12px; }
+
+/* ── Demo-tilstandsrad (fjernes før produksjon) ──────────────── */
+.state-switch{
+  flex:none; display:flex; align-items:center; gap:var(--s2);
+  padding:var(--s2) var(--s4); border-bottom:1px dashed var(--border);
+  background:var(--soft); overflow-x:auto; scrollbar-width:none;
+}
+.state-switch::-webkit-scrollbar{ display:none; }
+.state-switch .eyebrow{ flex:none; }
+.state-switch .chip{ flex:none; }
+
+/* ── Modusflater ─────────────────────────────────────────────── */
+.mode{ flex:1; min-height:0; display:flex; flex-direction:column; }
+
+/* ── Tråd ────────────────────────────────────────────────────── */
+.thread{ flex:1; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:var(--s4) var(--s4) var(--s5); }
+.turn{ margin-bottom:var(--s5); }
+.you{ display:flex; justify-content:flex-end; margin-bottom:var(--s3); }
+.you .msg{
+  background:var(--soft); border:1px solid var(--border); border-radius:var(--r);
+  padding:var(--s2) var(--s3); font-size:14px; max-width:86%;
+}
+.ai{ display:block; }
+.work{ margin:0 0 var(--s3); }
+.work > summary{
+  list-style:none; cursor:pointer; display:inline-flex; align-items:center; gap:var(--s2);
+  min-height:var(--tap); font-family:var(--mono); font-size:11px; color:var(--muted);
+}
+.work > summary::-webkit-details-marker{ display:none; }
+.work > summary::before{ content:"›"; font-size:15px; display:inline-block; transition:transform var(--dur) var(--ease); }
+.work[open] > summary::before{ transform:rotate(90deg); }
+.steps{ list-style:none; margin:0 0 var(--s2); padding:0; }
+.steps li{ display:flex; align-items:flex-start; gap:var(--s2); font-family:var(--mono); font-size:11px; color:var(--muted); padding:3px 0; }
+.steps li svg{ width:12px; height:12px; margin-top:3px; stroke:var(--up); stroke-width:2.2; fill:none; flex:none; }
+.steps li .t{ color:var(--mid); margin-left:auto; padding-left:var(--s2); flex:none; }
+
+.say{ font-family:var(--body); font-size:14.5px; line-height:1.62; margin:0; }
+.say + .say{ margin-top:var(--s3); }
+.say b{ font-family:var(--ui); font-weight:600; font-size:13.5px; }
+
+/* Artefaktkort — inngang til bunn-arket */
+.artcard{
+  display:flex; align-items:center; gap:var(--s3); width:100%; text-align:left;
+  margin-top:var(--s3); padding:var(--s3); min-height:var(--tap-lg);
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; font:inherit; color:inherit;
+}
+.artcard:hover{ background:var(--soft); }
+.artcard .ic{ width:36px; height:36px; flex:none; display:grid; place-items:center; border-radius:var(--r-sm); background:var(--soft); }
+.artcard .ic svg{ width:17px; height:17px; stroke:var(--muted); stroke-width:1.6; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.artcard .tx{ flex:1; min-width:0; }
+.artcard .tx strong{ display:block; font-family:var(--disp); font-size:13px; font-weight:600; }
+.artcard .tx small{ display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); margin-top:2px; word-break:break-all; }
+.artcard .go{ flex:none; color:var(--muted); font-size:16px; }
+
+/* Kvittering på fangst — Øyvind eier observasjonen */
+.saved{
+  display:flex; align-items:flex-start; gap:var(--s2); margin-top:var(--s3);
+  padding:var(--s3); border:1px solid var(--border); border-radius:var(--r);
+  background:var(--soft); font-size:12.5px; color:var(--muted);
+}
+.saved svg{ width:14px; height:14px; margin-top:2px; stroke:var(--up); stroke-width:2.2; fill:none; flex:none; }
+.saved b{ font-family:var(--ui); font-weight:600; color:var(--fg); }
+
+/* Godkjenningslinje — det som endrer planen går til Anders */
+.gate{
+  display:flex; align-items:flex-start; gap:var(--s2); margin-top:var(--s3);
+  padding:var(--s3); border:1px dashed var(--border); border-radius:var(--r);
+  background:var(--surface); font-size:12.5px; color:var(--muted);
+}
+.gate svg{ width:14px; height:14px; margin-top:2px; stroke:var(--info); stroke-width:2; fill:none; flex:none; }
+.gate b{ font-family:var(--ui); font-weight:600; color:var(--fg); }
+
+/* Utkast til kort økt */
+.draft{ margin-top:var(--s3); border:1px solid var(--border); border-radius:var(--r); background:var(--surface); overflow:hidden; }
+.draft .dh{ display:flex; align-items:center; gap:var(--s2); padding:var(--s3); border-bottom:1px solid var(--border); background:var(--soft); }
+.draft .dh strong{ font-family:var(--disp); font-size:13px; font-weight:600; }
+.draft .dh .tag{ margin-left:auto; }
+.drill{ display:flex; gap:var(--s3); padding:var(--s3); border-bottom:1px solid var(--border); }
+.drill:last-of-type{ border-bottom:0; }
+.drill .no{ font-family:var(--mono); font-size:11px; color:var(--mid); flex:none; width:2ch; }
+.drill .tx{ flex:1; min-width:0; }
+.drill .tx strong{ display:block; font-family:var(--disp); font-size:13px; font-weight:600; }
+.drill .fx{ display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); margin-top:2px; word-break:break-all; }
+.drill .mt{ display:block; font-family:var(--mono); font-size:10.5px; color:var(--mid); margin-top:2px; }
+.draft .df{ padding:var(--s3); border-top:1px solid var(--border); display:flex; flex-direction:column; gap:var(--s2); }
+
+/* Økt knyttet til sjekkpunkt — forklaring, ikke sperre. Spilleren kan endre knapp */
+.locked{
+  display:flex; align-items:flex-start; gap:var(--s2); margin-top:var(--s2);
+  padding:var(--s3); border:1px solid var(--border); border-radius:var(--r); background:var(--soft);
+  font-size:12.5px; color:var(--muted);
+}
+.locked svg{ width:15px; height:15px; margin-top:2px; stroke:var(--muted); stroke-width:1.8; fill:none; flex:none; }
+.locked b{ font-family:var(--ui); font-weight:600; color:var(--fg); }
+
+/* «Én ting nå»-blokk — eneste sted --accent-soft brukes som flate */
+.nowblock{ background:var(--accent-soft); border:1px solid var(--border); border-radius:var(--r); padding:var(--s4); }
+.nowblock h2{ margin:var(--s2) 0 var(--s1); font-family:var(--disp); font-size:16px; font-weight:600; line-height:1.3; }
+.nowblock p{ margin:0; font-family:var(--body); font-size:14px; color:var(--muted); }
+.nowblock .acts{ display:flex; gap:var(--s2); margin-top:var(--s3); flex-wrap:wrap; }
+.nowblock .acts .btn{ flex:1 1 auto; }
+.turnacts{ display:flex; gap:var(--s2); margin-top:var(--s3); flex-wrap:wrap; }
+.turnacts .btn{ flex:1 1 auto; }
+
+/* ── Composer ────────────────────────────────────────────────── */
+.composer{ flex:none; border-top:1px solid var(--border); background:var(--bg); padding:var(--s2) var(--s3) var(--s3); }
+.ctxline{
+  display:flex; align-items:center; gap:var(--s2); width:100%;
+  min-height:var(--tap); margin-bottom:var(--s2); padding:0 var(--s2);
+  background:none; border:0; border-radius:var(--r-sm);
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--muted); cursor:pointer; text-align:left;
+}
+.ctxline:hover{ background:var(--soft); }
+.ctxline .go{ margin-left:auto; font-size:13px; }
+.crow{ display:flex; align-items:flex-end; gap:var(--s2); }
+.cbox{ flex:1; min-width:0; background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:var(--s2) var(--s3); }
+.cbox:focus-within{ border-color:var(--fg); }
+.cbox textarea{
+  width:100%; display:block; resize:none; border:0; outline:none; background:transparent;
+  color:var(--fg); font-family:var(--ui); font-size:15px; line-height:1.45;
+  /* 15px × 1.45 ≈ 22px per linje. min 1 linje, maks 5 linjer — layoutmål. */
+  min-height:22px; max-height:110px; overflow-y:auto;
+}
+.cbox textarea::placeholder{ color:var(--mid); }
+.cmini{ display:flex; gap:var(--s1); margin-top:var(--s1); }
+.cmini button{
+  width:var(--tap); height:var(--tap); min-height:var(--tap);
+  display:grid; place-items:center; border:0; border-radius:var(--r-sm);
+  background:transparent; color:var(--muted); font-family:var(--mono); font-size:14px; cursor:pointer;
+}
+.cmini button:hover{ background:var(--soft); color:var(--fg); }
+.cmini button svg{ width:17px; height:17px; stroke:currentColor; stroke-width:1.7; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+
+/* Mikrofon = «Én ting nå» på mobil. Se HTML-kommentaren over knappen. */
+/* «Hvorfor dette tallet» — påkrevd på regnede tall. Manglet i PlayerHQ
+   før 01.08. På mobil er summary ≥44px fordi den er en trykkflate. */
+.why{ margin:var(--s3) 0 var(--s4); border:1px solid var(--border); border-radius:var(--r); background:var(--surface); }
+.why summary{
+  display:flex; align-items:center; min-height:var(--tap);
+  padding:0 var(--s4); cursor:pointer; list-style:none;
+  font-family:var(--ui); font-size:12.5px; font-weight:500; color:var(--muted);
+}
+.why summary::-webkit-details-marker{ display:none; }
+.why summary::after{ content:"\203A"; margin-left:auto; transition:transform var(--dur) var(--ease); }
+.why[open] summary::after{ transform:rotate(90deg); }
+.why[open] summary{ border-bottom:1px solid var(--border); color:var(--fg); }
+.why ul{ margin:0; padding:var(--s3) var(--s4) var(--s4) var(--s5); font-family:var(--body); font-size:13.5px; color:var(--muted); }
+.why li{ margin-bottom:var(--s2); }
+.why li:last-child{ margin-bottom:0; }
+
+/* Clay-monopol: når fangst-arket er åpent eier den store mikrofonen i arket
+   aksenten. Composer-mikrofonen bak scrimen faller til blekk. */
+body:has(#sheetCapture.on) .btn.now.mic{
+  background:transparent; color:var(--fg); border-color:var(--border);
+}
+.btn.now.mic{
+  width:var(--tap-capture); height:var(--tap-capture); min-height:var(--tap-capture);
+  flex:none; padding:0; border-radius:var(--r-pill);
+}
+.btn.now.mic svg{ width:24px; height:24px; stroke:currentColor; stroke-width:1.7; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.sendbtn{
+  width:var(--tap); height:var(--tap); min-height:var(--tap); flex:none;
+  display:grid; place-items:center; border-radius:var(--r);
+  background:var(--cta); color:var(--on-cta); border:1px solid var(--cta); cursor:pointer;
+}
+.sendbtn:hover{ opacity:.88; }
+.sendbtn svg{ width:17px; height:17px; stroke:currentColor; stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+
+/* ── Bunnfaner — fire flater ─────────────────────────────────── */
+.tabs{
+  flex:none; display:grid; grid-template-columns:repeat(4,1fr);
+  background:var(--rail); border-top:1px solid var(--border);
+  padding-bottom:env(safe-area-inset-bottom); z-index:var(--z-rail);
+}
+.tabs button{
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+  min-height:var(--tap); padding:var(--s2) 0; border:0; background:transparent;
+  color:var(--rail-fg); position:relative; cursor:pointer;
+  font-family:var(--ui); font-size:10px; font-weight:500;
+}
+.tabs button svg{ width:20px; height:20px; stroke:currentColor; stroke-width:1.6; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.tabs button[aria-current="page"]{ color:var(--rail-on); }
+.tabs button[aria-current="page"]::before{ content:""; position:absolute; top:0; left:22%; right:22%; height:2px; background:var(--rail-on); border-radius:var(--r-pill); }
+
+/* ── UNDER: live-økt ─────────────────────────────────────────── */
+.live{ flex:1; min-height:0; overflow-y:auto; padding:var(--s5) var(--s4) var(--s5); display:flex; flex-direction:column; gap:var(--s4); }
+.livehead{ text-align:center; }
+.livehead h2{ margin:var(--s2) 0 var(--s1); font-family:var(--disp); font-size:18px; font-weight:600; }
+.livehead p{ margin:0; font-family:var(--body); font-size:14px; color:var(--muted); }
+.clock{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:46px; letter-spacing:-.03em; line-height:1; }
+.livelist{ list-style:none; margin:0; padding:0; display:grid; gap:var(--s2); }
+.livelist li{ display:flex; gap:var(--s3); align-items:flex-start; padding:var(--s3); border:1px solid var(--border); border-radius:var(--r); background:var(--surface); }
+.livelist li[data-done="true"]{ background:var(--soft); }
+.livelist .nm{ flex:1; min-width:0; }
+.livelist .nm strong{ display:block; font-family:var(--disp); font-size:13px; font-weight:600; }
+.livelist .nm small{ display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); margin-top:2px; word-break:break-all; }
+.livelist .tick{ flex:none; width:var(--tap); height:var(--tap); min-height:var(--tap); border:1px solid var(--border); border-radius:var(--r-sm); background:transparent; color:var(--muted); cursor:pointer; display:grid; place-items:center; }
+.livelist .tick svg{ width:16px; height:16px; stroke:currentColor; stroke-width:2.2; fill:none; }
+.livelist li[data-done="true"] .tick{ color:var(--up); border-color:var(--up); }
+.liveacts{ display:flex; flex-direction:column; gap:var(--s2); margin-top:auto; }
+
+/* ── ETTER: etter økta ───────────────────────────────────────── */
+.after{ flex:1; min-height:0; overflow-y:auto; padding:var(--s5) var(--s4) var(--s5); display:flex; flex-direction:column; gap:var(--s4); }
+.after h2{ margin:0; font-family:var(--disp); font-size:18px; font-weight:600; }
+.sumcard{ border:1px solid var(--border); border-radius:var(--r); background:var(--surface); padding:var(--s4); }
+.sumcard .row{ display:flex; align-items:baseline; gap:var(--s3); padding:var(--s2) 0; border-bottom:1px solid var(--border); font-size:12.5px; }
+.sumcard .row:last-child{ border-bottom:0; }
+.sumcard .row .k{ flex:1; color:var(--muted); }
+.quote{ font-family:var(--body); font-style:italic; font-size:14.5px; line-height:1.6; margin:0; padding-left:var(--s3); border-left:2px solid var(--border); color:var(--fg); }
+
+/* ── Tilstander ──────────────────────────────────────────────── */
+.skelrow{ display:grid; gap:var(--s2); margin-bottom:var(--s5); }
+.errbox{ padding:var(--s4); border:1px solid var(--dn); border-radius:var(--r); background:var(--surface); }
+.errbox h3{ margin:0 0 var(--s2); font-family:var(--disp); font-size:15px; font-weight:600; color:var(--dn); }
+.errbox p{ margin:0 0 var(--s3); font-family:var(--body); font-size:14px; color:var(--muted); }
+.errbox .acts, .empty .acts{ display:flex; gap:var(--s2); flex-wrap:wrap; }
+.empty .acts .btn{ flex:1 1 auto; }
+
+/* ── Ark ─────────────────────────────────────────────────────── */
+.scrim{ display:none; }
+.scrim.on{ display:block; }
+.sheet{ display:none; flex-direction:column; }
+.sheet.on{ display:flex; }
+.sheet.tall{ max-height:94%; height:94%; }
+.sheet-head{ flex:none; display:flex; align-items:center; gap:var(--s2); padding-bottom:var(--s3); border-bottom:1px solid var(--border); }
+.sheet-head h2{ margin:0; font-family:var(--disp); font-size:15px; font-weight:600; }
+.sheet-body{ flex:1; min-height:0; overflow-y:auto; padding:var(--s3) 0; }
+.sheet-foot{ flex:none; display:flex; gap:var(--s2); padding-top:var(--s3); border-top:1px solid var(--border); }
+.sheet-foot .btn{ flex:1; }
+.optlist{ list-style:none; margin:0; padding:0; }
+.optlist button{
+  width:100%; display:flex; align-items:center; gap:var(--s3); text-align:left;
+  min-height:var(--tap-lg); padding:var(--s2); background:none; border:0;
+  border-radius:var(--r-sm); color:var(--fg); font:inherit; cursor:pointer;
+}
+.optlist button:hover{ background:var(--soft); }
+.optlist .c{ font-family:var(--mono); font-size:12.5px; color:var(--muted); flex:none; width:88px; }
+.optlist .d{ display:block; font-size:11.5px; color:var(--muted); }
+.grp{ font-family:var(--mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--mid); padding:var(--s3) var(--s2) var(--s1); }
+.ctxlist{ list-style:none; margin:0; padding:0; font-family:var(--body); font-size:14px; color:var(--muted); }
+.ctxlist li{ padding:var(--s2) 0; border-bottom:1px solid var(--border); }
+.ctxlist li:last-child{ border-bottom:0; }
+
+/* Planinnhold i artefaktarket */
+.pcard{ border:1px solid var(--border); border-radius:var(--r); margin-bottom:var(--s3); overflow:hidden; }
+.pcard .ch{ display:flex; align-items:center; gap:var(--s2); padding:var(--s2) var(--s3); background:var(--soft); border-bottom:1px solid var(--border); }
+.pcard .ch .day{ font-family:var(--mono); font-size:10.5px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; }
+.pcard .ch .fx{ margin-left:auto; font-family:var(--mono); font-size:9.5px; color:var(--muted); }
+.pcard .cb{ padding:var(--s3); display:grid; gap:var(--s2); }
+.ex{ display:flex; gap:var(--s3); align-items:baseline; font-size:12.5px; }
+.ex .nm{ flex:1; }
+.ex .vol{ font-family:var(--mono); font-size:11.5px; color:var(--muted); flex:none; }
+.inv{ display:flex; align-items:flex-start; gap:var(--s2); font-family:var(--mono); font-size:10.5px; color:var(--up); padding:var(--s1) 0; }
+.inv svg{ width:12px; height:12px; margin-top:2px; stroke:currentColor; stroke-width:2.2; fill:none; flex:none; }
+
+/* ── FangstSheet ─────────────────────────────────────────────── */
+.capture{ display:flex; flex-direction:column; align-items:center; gap:var(--s3); padding:var(--s3) 0 var(--s4); }
+.micwrap{ position:relative; display:grid; place-items:center; width:104px; height:104px; }
+.micring{ position:absolute; inset:16px; border-radius:var(--r-pill); border:2px solid var(--accent); opacity:0; }
+.capture.rec .micring{ animation:ring 1.8s var(--ease) infinite; }
+@keyframes ring{ 0%{ transform:scale(1); opacity:.55 } 100%{ transform:scale(1.42); opacity:0 } }
+.bigmic{
+  /* 72px sentrert fangstknapp — over --tap-capture (60px) med vilje. */
+  width:72px; height:72px; min-height:72px; border-radius:var(--r-pill);
+  display:grid; place-items:center; cursor:pointer; position:relative;
+  background:var(--cta); color:var(--on-cta); border:1px solid var(--cta);
+}
+.capture.rec .bigmic{ background:var(--accent); color:var(--on-accent); border-color:var(--accent); }
+.bigmic svg{ width:28px; height:28px; stroke:currentColor; stroke-width:1.7; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.timer{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:26px; letter-spacing:-.02em; }
+.capstat{ font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.transcript{
+  width:100%; min-height:96px; padding:var(--s3);
+  background:var(--soft); border:1px solid var(--border); border-radius:var(--r);
+  font-family:var(--body); font-size:14.5px; line-height:1.6; color:var(--fg);
+}
+.transcript .ph{ color:var(--mid); font-style:italic; }
+.chiprow{ display:flex; flex-wrap:wrap; gap:var(--s2); }
+.savedline{ display:flex; align-items:center; gap:var(--s2); font-family:var(--mono); font-size:10.5px; color:var(--muted); }
+.savedline svg{ width:13px; height:13px; stroke:var(--up); stroke-width:2.2; fill:none; flex:none; }
+.goalline{ display:flex; align-items:center; gap:var(--s2); font-size:12px; color:var(--muted); }
+.goalline .num{ font-size:13px; color:var(--fg); }
+
+.linkrow{ display:flex; flex-wrap:wrap; gap:var(--s2); margin-top:var(--s5); padding-top:var(--s4); border-top:1px solid var(--border); }
+.linkrow a{
+  font-family:var(--mono); font-size:11px; color:var(--muted); text-decoration:none;
+  min-height:var(--tap); display:inline-flex; align-items:center; padding:0 var(--s3);
+  border:1px solid var(--border); border-radius:var(--r-pill);
+}
+.linkrow a:hover{ background:var(--soft); color:var(--fg); }
+
+/* ── Trykkflategulv ──────────────────────────────────────────────
+   Skjermen er alltid touch, også i telefonrammen på en desktop med
+   mus. Derfor heves alt til var(--tap) uavhengig av pointer-type. */
+.btn.sm, .chip{ min-height:var(--tap); }
+
+/* ── Trykkflate-gulv · 31.07.2026 (Anders: alle interaktive elementer ≥ 44px) ──
+   Gjelder uansett pekertype, ikke bare pointer:coarse. Siste regel i fila
+   slik at den vinner over skjermspesifikke overstyringer.
+   Unntak: elementer merket data-demo-only, som uansett skal ut. */
+.btn, .btn.sm, .chip, button, [role="button"],
+a.btn, summary, select, input:not([type="hidden"]), textarea {
+  min-height: var(--tap);
+}
+textarea { padding-top: var(--s2); padding-bottom: var(--s2); }
+.tag, .num, .eyebrow { min-height: 0; }
+[data-demo-only="true"] .chip,
+[data-demo-only="true"] .btn { min-height: 36px; }
+
+textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap) !important; }
+</style>
+</head>
+<body>
+
+<div class="framehint">Telefonramme 430 × 932 · åpnes fila på telefon fyller skjermen</div>
+
+<!-- Telefonrammen er demo-chrome. Under 641px slipper den til fullskjerm.
+     Over 640px styrer playerhq-chat-desktop.html. Skal bort ved integrasjon. -->
+<div class="phone" id="phone" data-demo-only="true">
+<a class="skip" href="#thread" data-od-id="skip-to-thread">Hopp til samtalen</a>
+
+  <!-- ═══════════ TOPPBAR ═══════════ -->
+  <header class="top">
+    <div>
+      <div class="title" id="surfaceTitle">I dag</div>
+      <div class="when">Øyvind Rohjan · kat. D · SG total <span class="num">+2,92</span></div>
+    </div>
+    <span class="sp"></span>
+    <button class="iconbtn" id="themeToggle" data-od-id="toggle-theme" aria-label="Bytt mellom lyst og mørkt tema">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>
+    </button>
+  </header>
+
+  <!-- ═══════════ SLØYFEN · FØR → UNDER → ETTER ═══════════ -->
+  <nav class="loop" id="loopNav" aria-label="Sløyfen før, under og etter økta">
+    <a href="playerhq-chat-mobil.html?steg=for" data-step="for" aria-current="step" data-od-id="loop-for">FØR<small>planlegg</small></a>
+    <span class="arw" aria-hidden="true">→</span>
+    <a href="playerhq-chat-mobil.html?steg=under" data-step="under" data-od-id="loop-under">UNDER<small>live-økt</small></a>
+    <span class="arw" aria-hidden="true">→</span>
+    <a href="playerhq-chat-mobil.html?steg=etter" data-step="etter" data-od-id="loop-etter">ETTER<small>oppsummer</small></a>
+  </nav>
+
+  <!-- ═══════════ DEMO-TILSTAND · fjernes før produksjon ═══════════ -->
+  <div class="state-switch" data-demo-only="true" role="group" aria-label="Demo-tilstand">
+    <span class="eyebrow">demo-tilstand</span>
+    <button class="chip" data-od-id="demo-state-ok" data-state="ok" aria-pressed="true">Suksess</button>
+    <button class="chip" data-od-id="demo-state-empty" data-state="empty" aria-pressed="false">Tom</button>
+    <button class="chip" data-od-id="demo-state-load" data-state="load" aria-pressed="false">Laster</button>
+    <button class="chip" data-od-id="demo-state-error" data-state="error" aria-pressed="false">Feil</button>
+  </div>
+
+  <!-- ═══════════ MODUS: FØR ═══════════ -->
+  <div class="mode" id="mode-for">
+
+    <main class="thread" id="thread" role="log" aria-live="polite" aria-label="Samtale med PlayerHQ" tabindex="-1">
+
+      <!-- ── SUKSESS ── -->
+      <div id="state-ok">
+        <div id="turns">
+
+          <!-- TUR 1 -->
+          <article class="turn">
+            <div class="you"><p class="msg">Hva skal jeg trene i dag?</p></div>
+            <div class="ai">
+              <details class="work">
+                <summary data-od-id="toggle-work-1">viste 3 steg · <span class="num">1,4 s</span></summary>
+                <ul class="steps">
+                  <li><svg viewBox="0 0 24 24"><path d="m4 12 6 6L20 6"/></svg>Leste ukeplan uke 31 · publisert av Anders<span class="t num">0,3 s</span></li>
+                  <li><svg viewBox="0 0 24 24"><path d="m4 12 6 6L20 6"/></svg>Sjekket sist økt · <span class="num">30.07</span>, innspill<span class="t num">0,6 s</span></li>
+                  <li><svg viewBox="0 0 24 24"><path d="m4 12 6 6L20 6"/></svg>Hentet sjekkpunkt <span class="num">14.08</span><span class="t num">0,5 s</span></li>
+                </ul>
+              </details>
+              <p class="say">Du har innspill i dag, <b>16:00–17:30</b> på Gamle Fredrikstad GK. Samme tema som mandag: <b>50–100 m</b>, med lengdekontroll som mål. Anders har knyttet økta til sjekkpunktet <span class="num">14.08</span>.</p>
+              <p class="say">Sist gang traff du <span class="num">7 av 12</span> innenfor <span class="num">4 m</span>. I dag er målet <span class="num">9 av 12</span> — <span class="num">+2</span> vs forrige økt.</p>
+              <details class="why" data-od-id="why-maal-9av12">
+                <summary>Hvorfor dette tallet</summary>
+                <ul>
+                  <li>Kilde: økta <span class="num">30.07</span>, innspill 50–100 m. <span class="num">12</span> slag, <span class="num">7</span> innenfor <span class="num">4 m</span>.</li>
+                  <li>Beregning: forrige resultat <span class="num">+2</span>. Steget er satt av Anders i sjekkpunktet <span class="num">14.08</span>, ikke av modellen.</li>
+                  <li>Forbehold: gjelder kun samme avstandsbånd og samme formel.</li>
+                </ul>
+              </details>
+              <button class="artcard" data-od-id="open-artifact-today" data-sheet-open="sheetArtifact">
+                <span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>
+                <span class="tx"><strong>Dagens økt · 16:00–17:30 · Gamle Fredrikstad GK</strong><small>TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_OBSERVERT · innspill 50–100 m</small></span>
+                <span class="go" aria-hidden="true">›</span>
+              </button>
+              <div class="locked">
+                <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
+                <span><b>Knyttet til sjekkpunkt.</b> Økta henger i sjekkpunktet <span class="num">14.08</span>. Du kan flytte den selv om du trenger en annen tid — Anders får beskjed, og sjekkpunktet står fast.</span>
+              </div>
+              <div class="turnacts">
+                <button class="btn sm" data-od-id="flytt-okt">Flytt økta</button>
+                <button class="btn sm" data-suggest="Lag en 25-minutters økt" data-od-id="suggest-short">Jeg rekker bare 25 min</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- TUR 2 · fangst i chatten -->
+          <article class="turn">
+            <div class="you"><p class="msg">Wedgen føltes tung etter slag 12</p></div>
+            <div class="ai">
+              <p class="say">Fanget.</p>
+              <div class="saved">
+                <svg viewBox="0 0 24 24"><path d="m4 12 6 6L20 6"/></svg>
+                <span><b>Lagret <span class="num">09:12</span></b> i økt <span class="num">30.07</span> · Anders ser det i innboksen sin.<br>
+                Din observasjon, dine ord. Jeg tolker den ikke for deg.</span>
+              </div>
+              <div class="turnacts">
+                <button class="btn sm" data-od-id="capture-add-detail">Legg til mer</button>
+                <button class="btn sm" data-sheet-open="sheetCapture" data-od-id="capture-open-from-turn">Si det heller</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- TUR 3 · 25-minutters økt -->
+          <article class="turn" id="turnDraft">
+            <div class="you"><p class="msg">Lag en 25-minutters økt</p></div>
+            <div class="ai">
+              <details class="work">
+                <summary data-od-id="toggle-work-3">viste 3 steg · <span class="num">2,1 s</span></summary>
+                <ul class="steps">
+                  <li><svg viewBox="0 0 24 24"><path d="m4 12 6 6L20 6"/></svg>Beholdt tema fra ukeplanen · innspill<span class="t num">0,4 s</span></li>
+                  <li><svg viewBox="0 0 24 24"><path d="m4 12 6 6L20 6"/></svg>Valgte drills du har kjørt før · <span class="num">3 av 9</span><span class="t num">0,9 s</span></li>
+                  <li><svg viewBox="0 0 24 24"><path d="m4 12 6 6L20 6"/></svg>Kuttet volum til <span class="num">25 min</span>, holdt PR-nivået<span class="t num">0,8 s</span></li>
+                </ul>
+              </details>
+              <p class="say">Her er <b>25 minutter</b> som holder samme tema. presset er uendret, bare volumet er kuttet.</p>
+              <div class="draft">
+                <div class="dh"><strong>Kort økt · 25 min</strong><span class="tag">Utkast</span></div>
+                <div class="drill">
+                  <span class="no num">1</span>
+                  <span class="tx"><strong>Stigetrapp 50 → 100 m</strong>
+                    <span class="fx num">TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_OBSERVERT</span>
+                    <span class="mt num">10 min · lav hastighet</span></span>
+                </div>
+                <div class="drill">
+                  <span class="no num">2</span>
+                  <span class="tx"><strong>Landingskontroll 75 m</strong>
+                    <span class="fx num">TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_OBSERVERT</span>
+                    <span class="mt num">8 min · lav hastighet</span></span>
+                </div>
+                <div class="drill">
+                  <span class="no num">3</span>
+                  <span class="tx"><strong>Én ball, ett mål</strong>
+                    <span class="fx num">SPILL_CHIP_AUTO_BANE_KONKURRANSE</span>
+                    <span class="mt num">7 min · auto</span></span>
+                </div>
+                <div class="df">
+                  <button class="btn ink" id="startShort" data-od-id="start-short-session">Start økta</button>
+                  <span class="eyebrow">kortversjoner endrer ikke ukeplanen · derfor ingen godkjenning</span>
+                </div>
+              </div>
+              <div class="gate">
+                <svg viewBox="0 0 24 24"><path d="M12 3v10M8 9l4 4 4-4"/><path d="M4 17v3h16v-3"/></svg>
+                <span><b>Vil du bytte tema?</b> Du kan bytte selv, med én gang. Anders får varsling — han skal ikke godkjenne.
+                  <br><button class="btn sm" style="margin-top:var(--s2)" id="proposeBtn" data-od-id="propose-to-anders">Send forslag til Anders</button></span>
+              </div>
+            </div>
+          </article>
+
+          <!-- TUR 4 · systemet, uoppfordret -->
+          <article class="turn" id="turnNow">
+            <div class="ai">
+              <div class="eyebrow" style="margin-bottom:var(--s2)">systemet, uoppfordret · <span class="num">09:12</span></div>
+              <div class="nowblock" id="nowBlock">
+                <div class="eyebrow">Én ting nå</div>
+                <h2>Dagens økt starter om <span class="num" id="untilStart">6 t 48 min</span></h2>
+                <p>Gamle Fredrikstad GK er booket <span class="num">16:00–17:30</span>. Ta med wedgene og en flaske vann. Du trenger ikke gjøre noe før du står der.</p>
+                <div class="acts">
+                  <button class="btn ink" id="startFull" data-od-id="start-planned-session">Start økta</button>
+                  <button class="btn" data-sheet-open="sheetArtifact" data-od-id="now-see-plan">Se hva som står i den</button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- ── TOM · ny spiller uten publisert plan ── -->
+      <div id="state-empty" hidden>
+        <div class="empty">
+          <h3>Anders har ikke publisert uke 31 ennå</h3>
+          <p>Du har ingen økt i dag. Det betyr ikke at du står stille — her er tre ting du kan gjøre uansett.</p>
+          <div class="acts">
+            <button class="btn" data-sheet-open="sheetCapture" data-od-id="empty-capture">Fang en observasjon</button>
+            <button class="btn" data-suggest="Lag en 25-minutters økt" data-od-id="empty-short">Lag en 25-min økt selv</button>
+            <button class="btn" data-suggest="Vis forrige uke" data-od-id="empty-lastweek">Se forrige uke</button>
+          </div>
+        </div>
+        <div class="linkrow">
+          <a href="fangstsheet.html" data-od-id="empty-link-fangst">Full fangst</a>
+          <a href="agencyos-kalender-mobil.html" data-od-id="empty-link-kalender">Kalender</a>
+        </div>
+      </div>
+
+      <!-- ── LASTER ── -->
+      <div id="state-load" hidden>
+        <article class="turn">
+          <div class="you"><p class="msg">Hva skal jeg trene i dag?</p></div>
+          <div class="ai">
+            <ul class="steps">
+              <li><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>Leser ukeplan uke 31<span class="t num">0,3 s</span></li>
+              <li><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>Sjekker sist økt<span class="t num">…</span></li>
+            </ul>
+            <div class="skelrow">
+              <div class="skel" style="height:14px;width:94%"></div>
+              <div class="skel" style="height:14px;width:80%"></div>
+              <div class="skel" style="height:14px;width:62%"></div>
+              <div class="skel" style="height:64px;margin-top:var(--s3)"></div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- ── FEIL ── -->
+      <div id="state-error" hidden>
+        <article class="turn">
+          <div class="you"><p class="msg">Hva skal jeg trene i dag?</p></div>
+          <div class="ai">
+            <div class="errbox">
+              <h3>Fikk ikke tak i ukeplanen</h3>
+              <p>Telefonen er offline. Dagens økt ligger lagret fra i går kveld: <span class="num">16:00–17:30</span>, Gamle Fredrikstad GK, innspill. Fangst virker uansett — den lagres lokalt og sendes når du får nett.</p>
+              <div class="acts">
+                <button class="btn ink" id="retryBtn" data-od-id="retry-load-plan">Prøv igjen</button>
+                <button class="btn" data-sheet-open="sheetCapture" data-od-id="error-capture">Fang likevel</button>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+    </main>
+
+    <!-- ═══════════ COMPOSER ═══════════ -->
+    <div class="composer">
+      <button class="ctxline" id="ctxBtn" data-sheet-open="sheetCtx" data-od-id="toggle-context" aria-haspopup="dialog">
+        Ser: min plan · uke 31 · sjekkpunkt 14.08 <span class="go" aria-hidden="true">›</span>
+      </button>
+      <div class="crow">
+        <div class="cbox">
+          <label class="sr" for="ta">Skriv til PlayerHQ</label>
+          <textarea id="ta" rows="1" placeholder="Spør om hva som helst. / for kommandoer, @ for øvelse." data-od-id="composer-input"></textarea>
+          <div class="cmini">
+            <button id="slashBtn" data-od-id="toggle-slash" aria-label="Kommandoer" aria-haspopup="dialog">/</button>
+            <button id="atBtn" data-od-id="toggle-at" aria-label="Øvelser og drills" aria-haspopup="dialog">@</button>
+          </div>
+        </div>
+        <!-- Kontrakt §3: mikrofonen er skjermens ene aksenthandling på mobil.
+             Øyvind står på range med én hånd ledig. Fangst er den ene handlingen
+             som må virke uten at hun tenker — alt annet kan vente til hun sitter.
+             «Start økta» er derfor .btn.ink, ikke .btn.now. -->
+        <button class="btn now mic" id="micBtn" data-sheet-open="sheetCapture" data-od-id="open-capture" aria-label="Fang en observasjon med stemmen" aria-haspopup="dialog">
+          <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="10" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        </button>
+        <button class="sendbtn" id="sendBtn" data-od-id="send-message" aria-label="Send melding">
+          <svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+      <div class="eyebrow" style="margin-top:var(--s2)">enter sender · shift+enter ny linje</div>
+    </div>
+  </div>
+
+  <!-- ═══════════ MODUS: UNDER · live-økt ═══════════ -->
+  <div class="mode" id="mode-under" hidden>
+    <div class="live">
+      <div class="livehead">
+        <div class="eyebrow">pågår · Gamle Fredrikstad GK · innspill 50–100 m</div>
+        <div class="clock num" id="liveClock">00:00</div>
+        <h2>Dagens økt</h2>
+        <p class="prose"><span class="num">TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_OBSERVERT</span></p>
+      </div>
+      <ul class="livelist" id="liveList">
+        <li data-done="false">
+          <span class="nm"><strong>Stigetrapp 50 → 100 m</strong><small>10 min · lav hastighet</small></span>
+          <button class="tick" data-od-id="live-tick-1" aria-pressed="false" aria-label="Merk stigetrapp som ferdig">
+            <svg viewBox="0 0 24 24"><path d="m4 12 6 6L20 6"/></svg></button>
+        </li>
+        <li data-done="false">
+          <span class="nm"><strong>Landingskontroll 75 m</strong><small>8 min · lav hastighet</small></span>
+          <button class="tick" data-od-id="live-tick-2" aria-pressed="false" aria-label="Merk landingskontroll som ferdig">
+            <svg viewBox="0 0 24 24"><path d="m4 12 6 6L20 6"/></svg></button>
+        </li>
+        <li data-done="false">
+          <span class="nm"><strong>Én ball, ett mål</strong><small>7 min · auto</small></span>
+          <button class="tick" data-od-id="live-tick-3" aria-pressed="false" aria-label="Merk én ball ett mål som ferdig">
+            <svg viewBox="0 0 24 24"><path d="m4 12 6 6L20 6"/></svg></button>
+        </li>
+      </ul>
+      <div class="saved">
+        <svg viewBox="0 0 24 24"><path d="m4 12 6 6L20 6"/></svg>
+        <span><b>Fangst går rett inn.</b> Ingen godkjenning, ingen venting. Anders leser den etterpå.</span>
+      </div>
+      <div class="liveacts">
+        <!-- Kontrakt §3: i live-modus er fangst skjermens ene aksenthandling.
+             Composeren er skjult; det eneste Øyvind skal rekke midt i en økt
+             er å si hva som skjedde. -->
+        <button class="btn now" data-sheet-open="sheetCapture" data-od-id="live-capture">Fang det som skjedde</button>
+        <button class="btn ink" id="endSession" data-od-id="end-session">Avslutt økt</button>
+        <a class="btn" href="playerhq-chat-mobil.html?steg=for" data-step="for" data-od-id="live-back-for">Tilbake til FØR</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ MODUS: ETTER ═══════════ -->
+  <div class="mode" id="mode-etter" hidden>
+    <div class="after">
+      <div>
+        <div class="eyebrow">etter økta · <span class="num">31.07</span> · Gamle Fredrikstad GK</div>
+        <h2>Økta er logget</h2>
+      </div>
+      <div class="sumcard">
+        <div class="row"><span class="k">Varighet</span><span class="num" id="afterDur">1 t 30 min</span></div>
+        <div class="row"><span class="k">Formel</span><span class="num">TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_OBSERVERT</span></div>
+        <div class="row"><span class="k">Innenfor 4 m</span><span class="num">9 av 12</span></div>
+        <div class="row"><span class="k">Mot forrige økt</span><span class="num">+2 vs 30.07</span></div>
+        <div class="row"><span class="k">Fangster</span><span class="num" id="afterCaps">2 stk.</span></div>
+      </div>
+      <details class="why" data-od-id="why-etter-resultat">
+        <summary>Hvorfor dette tallet</summary>
+        <ul>
+          <li>Kilde: <span class="num">12</span> slag logget, avstand målt av TrackMan på Gamle Fredrikstad GK.</li>
+          <li>Beregning: <span class="num">9 av 12</span> innenfor <span class="num">4 m</span>. Forrige økt <span class="num">30.07</span> ga <span class="num">7 av 12</span> — differansen er <span class="num">+2</span>.</li>
+          <li>Forbehold: to slag ble kastet fordi TrackMan mistet ballen. De teller ikke i noen av retningene.</li>
+        </ul>
+      </details>
+      <div>
+        <div class="eyebrow" style="margin-bottom:var(--s2)">dine ord, uendret</div>
+        <p class="quote">Wedgen føltes tung etter slag 12. Ble bedre da jeg kortet ned baksvingen.</p>
+      </div>
+      <div class="gate">
+        <svg viewBox="0 0 24 24"><path d="M12 3v10M8 9l4 4 4-4"/><path d="M4 17v3h16v-3"/></svg>
+        <span><b>Sendt til Anders <span class="num">17:32</span>.</b> Han ser fangsten i innboksen sin. Neste økt står som planlagt til han eventuelt endrer den.</span>
+      </div>
+      <div class="liveacts">
+        <!-- Kontrakt §3: i etter-modus er neste runde skjermens ene aksenthandling. -->
+        <a class="btn now" href="playerhq-chat-mobil.html?steg=for&amp;etter=1" data-step="for" data-fresh="1" data-od-id="after-next-for">Neste FØR · med ny kontekst</a>
+        <button class="btn" data-sheet-open="sheetCapture" data-od-id="after-capture">Legg til en fangst</button>
+        <a class="btn" href="fangstsheet.html" data-od-id="after-link-fangst">Åpne full fangst</a>
+      </div>
+      <div class="linkrow">
+        <a href="playerhq-chat-desktop.html" data-od-id="after-link-desktop">Samme skjerm på desktop</a>
+        <a href="agencyos-konsoll-mobil.html" data-od-id="after-link-agencyos">Slik Anders ser det</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ BUNNFANER ═══════════ -->
+  <nav class="tabs" aria-label="Hovednavigasjon">
+    <button aria-current="page" data-surface="I dag" data-od-id="tab-idag">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h9"/></svg>I dag</button>
+    <button data-surface="Plan" data-od-id="tab-plan">
+      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Plan</button>
+    <button data-surface="Analyse" data-od-id="tab-analyse">
+      <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Analyse</button>
+    <button data-surface="Meg" data-od-id="tab-meg">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6"/></svg>Meg</button>
+  </nav>
+
+  <!-- ═══════════ ARK ═══════════ -->
+  <div class="scrim" id="scrim" data-od-id="scrim-close"></div>
+
+  <!-- Artefakt: dagens økt -->
+  <div class="sheet tall" id="sheetArtifact" role="dialog" aria-modal="true" aria-labelledby="artTitle" hidden>
+    <div class="sheet-grab" aria-hidden="true"></div>
+    <div class="sheet-head">
+      <h2 id="artTitle">Dagens økt</h2>
+      <span class="tag">Godkjent</span>
+      <span style="flex:1"></span>
+      <button class="iconbtn" data-sheet-close="sheetArtifact" data-od-id="close-artifact" aria-label="Lukk dagens økt">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="sheet-body">
+      <div class="chiprow" style="margin-bottom:var(--s3)">
+        <span class="tag">Uke 31</span><span class="tag">Kat. D</span><span class="tag">Gamle Fredrikstad GK</span><span class="tag num">16:00–17:30</span>
+      </div>
+      <div class="pcard">
+        <div class="ch"><span class="day">Fre 31.07</span><span class="fx num">TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_OBSERVERT</span></div>
+        <div class="cb">
+          <div class="ex"><span class="nm">Stigetrapp 50 → 100 m</span><span class="vol num">10 min · lav hastighet</span></div>
+          <div class="ex"><span class="nm">Landingskontroll 75 m</span><span class="vol num">8 min · lav hastighet</span></div>
+          <div class="ex"><span class="nm">Én ball, ett mål</span><span class="vol num">7 min · auto</span></div>
+          <div class="ex"><span class="nm">Blokk 50–100 m, 12 baller × 4</span><span class="vol num">55 min · lav hastighet</span></div>
+        </div>
+      </div>
+      <div class="locked">
+        <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
+        <span><b>Knyttet til sjekkpunkt.</b> Den henger sammen med sjekkpunktet <span class="num">14.08</span>. Du kan flytte den selv — Anders får varsel om endringen.</span>
+      </div>
+      <div style="margin-top:var(--s4)">
+        <div class="eyebrow" style="margin-bottom:var(--s2)">sjekkpunkt-status</div>
+        <div class="inv"><svg viewBox="0 0 24 24"><path d="m4 12 6 6L20 6"/></svg>Innspill 50–100 m · <span class="num">3 av 4</span> økter kjørt</div>
+        <div class="inv"><svg viewBox="0 0 24 24"><path d="m4 12 6 6L20 6"/></svg>Neste måling <span class="num">14.08</span> · <span class="num">14 dager</span> igjen</div>
+        <div class="inv"><svg viewBox="0 0 24 24"><path d="m4 12 6 6L20 6"/></svg>Press <span class="num">observert</span> holdt hele uka</div>
+      </div>
+      <p class="say" style="margin-top:var(--s4);color:var(--muted)">Anders godkjente <span class="num">30.07</span> kl. <span class="num">21:40</span>.</p>
+    </div>
+    <div class="sheet-foot">
+      <a class="btn ink" href="playerhq-chat-mobil.html?steg=under" data-step="under" data-od-id="artifact-start">Start økta</a>
+      <button class="btn" data-sheet-close="sheetArtifact" data-od-id="artifact-later">Senere</button>
+    </div>
+  </div>
+
+  <!-- FangstSheet -->
+  <div class="sheet tall" id="sheetCapture" role="dialog" aria-modal="true" aria-labelledby="capTitle" hidden>
+    <div class="sheet-grab" aria-hidden="true"></div>
+    <div class="sheet-head">
+      <h2 id="capTitle">Fangst</h2>
+      <span class="tag">Går rett inn</span>
+      <span style="flex:1"></span>
+      <button class="iconbtn" data-sheet-close="sheetCapture" data-od-id="close-capture" aria-label="Lukk fangst">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="sheet-body">
+      <div class="capture" id="captureBox">
+        <div class="micwrap">
+          <span class="micring" aria-hidden="true"></span>
+          <button class="bigmic" id="bigMic" data-od-id="capture-record" aria-pressed="false" aria-label="Start opptak">
+            <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="10" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+          </button>
+        </div>
+        <div class="timer num" id="capTimer">0 s</div>
+        <div class="capstat" id="capStat">trykk for å snakke</div>
+      </div>
+      <div class="transcript" id="capText"><span class="ph">Det du sier havner her, ord for ord.</span></div>
+      <div class="eyebrow" style="margin:var(--s3) 0 var(--s2)">avledet av TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_OBSERVERT</div>
+      <div class="chiprow" role="group" aria-label="Foreslåtte etiketter">
+        <button class="chip" aria-pressed="true" data-od-id="cap-chip-tek">TEK</button>
+        <button class="chip" aria-pressed="true" data-od-id="cap-chip-omrade">Innspill 50–100</button>
+        <button class="chip" aria-pressed="true" data-od-id="cap-chip-motorikk">Lav hastighet</button>
+        <button class="chip" aria-pressed="false" data-od-id="cap-chip-belastning">Treningsområde</button>
+        <button class="chip" aria-pressed="false" data-od-id="cap-chip-press">Observert</button>
+      </div>
+      <div class="savedline" style="margin-top:var(--s3)" id="capSaved">
+        <svg viewBox="0 0 24 24"><path d="m4 12 6 6L20 6"/></svg>lagret automatisk · <span class="num">31.07 09:12</span>
+      </div>
+      <div class="goalline" style="margin-top:var(--s2)">
+        Mål: under <span class="num">20 s</span> fra trykk til lagret. Din tid: <span class="num" id="capGoal">–</span>
+      </div>
+    </div>
+    <div class="sheet-foot">
+      <button class="btn ink" id="capInsert" data-od-id="capture-insert">Legg i tråden</button>
+      <a class="btn" href="fangstsheet.html" data-od-id="capture-full">Full fangst</a>
+    </div>
+  </div>
+
+  <!-- Slash-ark -->
+  <div class="sheet" id="sheetSlash" role="dialog" aria-modal="true" aria-labelledby="slashTitle" hidden>
+    <div class="sheet-grab" aria-hidden="true"></div>
+    <div class="sheet-head"><h2 id="slashTitle">Kommandoer</h2><span style="flex:1"></span>
+      <button class="iconbtn" data-sheet-close="sheetSlash" data-od-id="close-slash" aria-label="Lukk kommandoer">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="sheet-body">
+      <ul class="optlist" id="slashList"></ul>
+    </div>
+  </div>
+
+  <!-- @-ark: øvelser og drills -->
+  <div class="sheet" id="sheetAt" role="dialog" aria-modal="true" aria-labelledby="atTitle" hidden>
+    <div class="sheet-grab" aria-hidden="true"></div>
+    <div class="sheet-head"><h2 id="atTitle">Øvelser og drills</h2><span style="flex:1"></span>
+      <button class="iconbtn" data-sheet-close="sheetAt" data-od-id="close-at" aria-label="Lukk øvelser">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="sheet-body">
+      <ul class="optlist" id="atList"></ul>
+    </div>
+  </div>
+
+  <!-- Kontekst-ark -->
+  <div class="sheet" id="sheetCtx" role="dialog" aria-modal="true" aria-labelledby="ctxTitle" hidden>
+    <div class="sheet-grab" aria-hidden="true"></div>
+    <div class="sheet-head"><h2 id="ctxTitle">Dette ser modellen</h2><span style="flex:1"></span>
+      <button class="iconbtn" data-sheet-close="sheetCtx" data-od-id="close-ctx" aria-label="Lukk kontekst">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="sheet-body">
+      <ul class="ctxlist">
+        <li>Min plan · uke 31, publisert av Anders <span class="num">30.07 21:40</span></li>
+        <li>Sjekkpunkt <span class="num">14.08</span> · innspill 50–100 m</li>
+        <li>Mine <span class="num">18</span> siste økter · siste <span class="num">30.07</span></li>
+        <li>Mine fangster · <span class="num">11</span> stk. siste <span class="num">30 dager</span></li>
+        <li>SG total <span class="num">+2,92</span> · kat. D · AK-stigen P4.0</li>
+      </ul>
+      <p class="say" style="margin-top:var(--s3);color:var(--muted)">Anders ser det samme. Det du fanger, ser han i innboksen sin.</p>
+    </div>
+    <div class="sheet-foot">
+      <button class="btn" data-sheet-close="sheetCtx" data-od-id="ctx-ok" style="flex:1">Lukk</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var root = document.documentElement;
+  var KEY = 'akhq-theme-playerhq';
+
+  /* ── Tema ─────────────────────────────────────────────── */
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch(e){}
+  if (!saved) saved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  root.setAttribute('data-theme', saved);
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem(KEY, next); } catch(e){}
+  });
+
+  var ta = document.getElementById('ta');
+  var thread = document.getElementById('thread');
+  var turns = document.getElementById('turns');
+  var stateSwitch = document.querySelector('.state-switch');
+
+  /* ── Sløyfen: FØR → UNDER → ETTER ─────────────────────
+     Hvert steg er en ekte lenke med href. Klikk fanges opp og bytter
+     DOM i samme fil; direkte åpning av ?steg=under virker også. */
+  var modes = { 'for':'mode-for', 'under':'mode-under', 'etter':'mode-etter' };
+  var titles = { 'for':'I dag', 'under':'Økt pågår', 'etter':'Etter økta' };
+  var liveInt = null, liveSecs = 0;
+
+  function setStep(step, opts){
+    if (!modes[step]) step = 'for';
+    if (openId) closeSheet(openId);
+    Object.keys(modes).forEach(function(k){
+      document.getElementById(modes[k]).hidden = (k !== step);
+    });
+    document.querySelectorAll('#loopNav a').forEach(function(a){
+      if (a.dataset.step === step) a.setAttribute('aria-current','step');
+      else a.removeAttribute('aria-current');
+    });
+    document.getElementById('surfaceTitle').textContent = titles[step];
+    stateSwitch.hidden = (step !== 'for');
+    if (step === 'under') startLive(); else stopLive();
+    if (step === 'for' && opts && opts.fresh) freshContext();
+    var f = document.querySelector('#' + modes[step] + ' button, #' + modes[step] + ' a');
+    if (opts && opts.focus && f) f.focus();
+  }
+  function startLive(){
+    if (liveInt) return;
+    liveInt = setInterval(function(){
+      liveSecs++;
+      var m = Math.floor(liveSecs/60), s = liveSecs % 60;
+      document.getElementById('liveClock').textContent =
+        String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    }, 1000);
+  }
+  function stopLive(){ clearInterval(liveInt); liveInt = null; }
+
+  document.querySelectorAll('[data-step]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      var fresh = a.dataset.fresh === '1';
+      try { history.pushState({}, '', a.getAttribute('href')); } catch(err){}
+      setStep(a.dataset.step, { focus:true, fresh:fresh });
+    });
+  });
+  window.addEventListener('popstate', function(){
+    setStep(new URLSearchParams(location.search).get('steg') || 'for', {});
+  });
+
+  /* Ny kontekst etter en fullført runde */
+  var freshDone = false;
+  function freshContext(){
+    if (freshDone) return;
+    freshDone = true;
+    showOk();
+    var art = document.createElement('article');
+    art.className = 'turn';
+    art.innerHTML =
+      '<div class="ai"><div class="eyebrow" style="margin-bottom:var(--s2)">systemet, uoppfordret · <span class="num">17:35</span></div>' +
+      '<p class="say">Runden er lukket. Økta <span class="num">31.07</span> er logget med <span class="num">9 av 12</span> innenfor <span class="num">4 m</span> og <span class="num">2</span> fangster — <span class="num">+2 vs 30.07</span>.</p>' +
+      '<p class="say">Neste økt står <span class="num">mandag 3.8</span>, samme tema. Anders leser fangsten din før den tid.</p>' +
+      '<div class="turnacts"><button class="btn sm" data-suggest="Hva skal jeg trene mandag?" data-od-id="fresh-ask-monday">Hva skal jeg trene mandag?</button></div></div>';
+    turns.appendChild(art);
+    bindSuggest(art);
+    thread.scrollTop = thread.scrollHeight;
+    document.getElementById('ctxBtn').firstChild.nodeValue =
+      '\n        Ser: min plan · uke 31 · økt 31.07 logget ';
+  }
+
+  /* ── Demo-tilstander ──────────────────────────────────── */
+  var states = { ok:'state-ok', empty:'state-empty', load:'state-load', error:'state-error' };
+  document.querySelectorAll('.state-switch .chip').forEach(function(c){
+    c.addEventListener('click', function(){
+      document.querySelectorAll('.state-switch .chip').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
+      c.setAttribute('aria-pressed','true');
+      Object.keys(states).forEach(function(k){
+        document.getElementById(states[k]).hidden = (k !== c.dataset.state);
+      });
+    });
+  });
+  function showOk(){
+    Object.keys(states).forEach(function(k){ document.getElementById(states[k]).hidden = (k !== 'ok'); });
+    document.querySelectorAll('.state-switch .chip').forEach(function(x){
+      x.setAttribute('aria-pressed', x.dataset.state === 'ok' ? 'true' : 'false');
+    });
+  }
+  document.getElementById('retryBtn').addEventListener('click', function(){
+    document.getElementById('state-error').hidden = true;
+    document.getElementById('state-load').hidden = false;
+    document.querySelectorAll('.state-switch .chip').forEach(function(x){
+      x.setAttribute('aria-pressed', x.dataset.state === 'load' ? 'true' : 'false');
+    });
+    setTimeout(function(){ showOk(); say('Ukeplanen kom inn. Dagens økt står 16:00–17:30 på Gamle Fredrikstad GK.'); }, 1400);
+  });
+
+  /* ── Tråd-hjelpere ────────────────────────────────────── */
+  function say(text){
+    var art = document.createElement('article');
+    art.className = 'turn';
+    var ai = document.createElement('div'); ai.className = 'ai';
+    var p = document.createElement('p'); p.className = 'say'; p.textContent = text;
+    ai.appendChild(p); art.appendChild(ai); turns.appendChild(art);
+    thread.scrollTop = thread.scrollHeight;
+  }
+  function bindSuggest(scope){
+    scope.querySelectorAll('[data-suggest]').forEach(function(b){
+      if (b.dataset.bound === '1') return;
+      b.dataset.bound = '1';
+      b.addEventListener('click', function(){
+        showOk(); ta.value = b.dataset.suggest; grow(); send();
+      });
+    });
+  }
+
+  /* ── Composer ─────────────────────────────────────────── */
+  function grow(){ ta.style.height='auto'; ta.style.height = Math.min(ta.scrollHeight, 110) + 'px'; }
+  ta.addEventListener('input', function(){
+    grow();
+    if (/^\/$/.test(ta.value)) openSheet('sheetSlash');
+    if (/@$/.test(ta.value)) openSheet('sheetAt');
+  });
+  grow();
+
+  function send(){
+    var text = ta.value.trim();
+    if (!text) return;
+    showOk();
+    ta.value = ''; grow();
+
+    var art = document.createElement('article');
+    art.className = 'turn';
+    art.innerHTML = '<div class="you"><p class="msg"></p></div>' +
+      '<div class="ai"><ul class="steps"></ul><div class="bd"></div></div>';
+    art.querySelector('.msg').textContent = text;
+    turns.appendChild(art);
+    thread.scrollTop = thread.scrollHeight;
+
+    var isCapture = /føltes|kjentes|vondt|tung|stiv|bra|dårlig/i.test(text);
+    var steps = isCapture
+      ? [['Lagret ordrett i økt 30.07','0,2 s']]
+      : [['Leste ukeplan uke 31','0,3 s'],
+         ['Sjekket sist økt · 30.07','0,6 s'],
+         ['Hentet sjekkpunkt 14.08','0,5 s']];
+    var ul = art.querySelector('.steps'), i = 0;
+    (function next(){
+      if (i >= steps.length){
+        var b = art.querySelector('.bd');
+        if (isCapture){
+          b.innerHTML = '<p class="say">Fanget.</p>' +
+            '<div class="saved"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><path d="m4 12 6 6L20 6"/></svg>' +
+            '<span><b>Lagret <span class="num">' + klokke() + '</span></b> i økt <span class="num">30.07</span> · Anders ser det i innboksen sin.<br>Din observasjon, dine ord. Jeg tolker den ikke for deg.</span></div>';
+        } else {
+          b.innerHTML = '<p class="say">Temaet står fast: innspill <b>50–100 m</b>, <span class="num">TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_OBSERVERT</span>. Du kan endre den selv om du vil.</p>' +
+            '<div class="gate"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M12 3v10M8 9l4 4 4-4"/><path d="M4 17v3h16v-3"/></svg>' +
+            '<span><b>Skal noe endres i ukeplanen?</b> Endre det selv. Anders får varsling, ikke en forespørsel.</span></div>' +
+            '<div class="turnacts"><button class="btn sm" data-suggest="Lag en 25-minutters økt" data-od-id="reply-short">Lag en 25-min økt</button></div>';
+          bindSuggest(b);
+        }
+        thread.scrollTop = thread.scrollHeight;
+        return;
+      }
+      var s = steps[i++];
+      var li = document.createElement('li');
+      li.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 6 6L20 6"/></svg><span class="lbl"></span><span class="t num"></span>';
+      li.querySelector('.lbl').textContent = s[0];
+      li.querySelector('.t').textContent = s[1];
+      ul.appendChild(li);
+      thread.scrollTop = thread.scrollHeight;
+      setTimeout(next, 520);
+    })();
+  }
+  function klokke(){
+    var d = new Date();
+    return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+  }
+  document.getElementById('sendBtn').addEventListener('click', send);
+  ta.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); send(); }
+  });
+  bindSuggest(document);
+
+  /* ── Slash og @ ───────────────────────────────────────── */
+  var SLASH = [
+    ['/okt','Lag eller åpne en økt','Lag en 25-minutters økt'],
+    ['/fangst','Si det som skjedde','__capture__'],
+    ['/plan','Min uke','__artifact__'],
+    ['/analyse','Mine tall · SG, treff, spredning','Vis mine tall for innspill'],
+    ['/coach','Spør Anders om noe','Kan du se på wedgen min?']
+  ];
+  var AT = [
+    ['@stigetrapp','Stigetrapp 50 → 100 m · lav hastighet'],
+    ['@landingskontroll','Landingskontroll 75 m · lav hastighet'],
+    ['@enballettmaal','Én ball, ett mål · auto'],
+    ['@klokkedrill','Klokkedrill chip · lav hastighet'],
+    ['@portputt','Portputt 5 ft (1,5 m) · lav hastighet']
+  ];
+  var slashList = document.getElementById('slashList'), atList = document.getElementById('atList');
+  SLASH.forEach(function(it){
+    var li = document.createElement('li');
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.dataset.odId = 'slash-' + it[0].replace('/','');
+    b.innerHTML = '<span class="c"></span><span><span class="lb"></span><span class="d"></span></span>';
+    b.querySelector('.c').textContent = it[0];
+    b.querySelector('.lb').textContent = it[1];
+    b.querySelector('.d').textContent = it[0] === '/fangst' ? 'åpner fangst · ingen godkjenning' : 'fyller feltet for deg';
+    b.addEventListener('click', function(){
+      closeSheet('sheetSlash');
+      if (it[2] === '__capture__'){ openSheet('sheetCapture'); return; }
+      if (it[2] === '__artifact__'){ openSheet('sheetArtifact'); return; }
+      ta.value = it[2]; grow(); ta.focus();
+    });
+    li.appendChild(b); slashList.appendChild(li);
+  });
+  AT.forEach(function(it){
+    var li = document.createElement('li');
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.dataset.odId = 'at-' + it[0].replace('@','');
+    b.innerHTML = '<span class="c"></span><span><span class="lb"></span></span>';
+    b.querySelector('.c').textContent = '@';
+    b.querySelector('.lb').textContent = it[1];
+    b.addEventListener('click', function(){
+      closeSheet('sheetAt');
+      ta.value = ta.value.replace(/@$/, '') + it[0] + ' ';
+      grow(); ta.focus();
+    });
+    li.appendChild(b); atList.appendChild(li);
+  });
+  document.getElementById('slashBtn').addEventListener('click', function(){ openSheet('sheetSlash'); });
+  document.getElementById('atBtn').addEventListener('click', function(){ openSheet('sheetAt'); });
+
+  /* ── Ark: åpne, lukke, fokusfelle ─────────────────────── */
+  var scrim = document.getElementById('scrim');
+  var openId = null, lastFocus = null;
+
+  function openSheet(id){
+    if (openId) closeSheet(openId, true);
+    var s = document.getElementById(id);
+    if (!s) return;
+    lastFocus = document.activeElement;
+    s.hidden = false; s.classList.add('on'); scrim.classList.add('on');
+    openId = id;
+    var f = s.querySelector('button, a, input, [tabindex]:not([tabindex="-1"])');
+    if (f) f.focus();
+    s.addEventListener('keydown', trap);
+  }
+  function closeSheet(id, quiet){
+    var s = document.getElementById(id || openId);
+    if (!s) return;
+    s.classList.remove('on'); s.hidden = true;
+    s.removeEventListener('keydown', trap);
+    if (!quiet){ scrim.classList.remove('on'); openId = null;
+      if (lastFocus && lastFocus.focus) lastFocus.focus(); }
+  }
+  function trap(e){
+    if (e.key !== 'Tab') return;
+    var s = e.currentTarget;
+    var f = s.querySelectorAll('button:not([disabled]), a[href], input, [tabindex]:not([tabindex="-1"])');
+    if (!f.length) return;
+    var first = f[0], last = f[f.length-1];
+    if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  }
+  document.querySelectorAll('[data-sheet-open]').forEach(function(b){
+    b.addEventListener('click', function(){ openSheet(b.dataset.sheetOpen); });
+  });
+  document.querySelectorAll('[data-sheet-close]').forEach(function(b){
+    b.addEventListener('click', function(){ closeSheet(b.dataset.sheetClose); });
+  });
+  scrim.addEventListener('click', function(){ if (openId) closeSheet(openId); });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && openId) closeSheet(openId);
+  });
+
+  /* ── FangstSheet · simulert transkripsjon ─────────────── */
+  var ORD = ('Wedgen føltes tung etter slag 12 . Ble bedre da jeg kortet ned baksvingen , ' +
+             'men lengden ble kortere på 55 metere .').split(' ');
+  var capBox = document.getElementById('captureBox'), bigMic = document.getElementById('bigMic'),
+      capTimer = document.getElementById('capTimer'), capStat = document.getElementById('capStat'),
+      capText = document.getElementById('capText'), capGoal = document.getElementById('capGoal');
+  var capInt = null, capSecs = 0, wordInt = null, wordIx = 0, capStart = 0, capOn = false;
+
+  function capReset(){
+    clearInterval(capInt); clearInterval(wordInt);
+    capOn = false; capSecs = 0; wordIx = 0;
+    capBox.classList.remove('rec');
+    bigMic.setAttribute('aria-pressed','false');
+    bigMic.setAttribute('aria-label','Start opptak');
+    capTimer.textContent = '0 s';
+    capStat.textContent = 'trykk for å snakke';
+    capText.innerHTML = '<span class="ph">Det du sier havner her, ord for ord.</span>';
+    capGoal.textContent = '–';
+  }
+  function capStartRec(){
+    capOn = true; capStart = Date.now(); capSecs = 0; wordIx = 0;
+    capBox.classList.add('rec');
+    bigMic.setAttribute('aria-pressed','true');
+    bigMic.setAttribute('aria-label','Stopp opptak og lagre');
+    capStat.textContent = 'hører deg';
+    capText.textContent = '';
+    capInt = setInterval(function(){
+      capSecs++; capTimer.textContent = capSecs + ' s';
+    }, 1000);
+    wordInt = setInterval(function(){
+      if (wordIx >= ORD.length){ clearInterval(wordInt); return; }
+      capText.textContent += (wordIx ? ' ' : '') + ORD[wordIx++];
+    }, 230);
+  }
+  function capStop(){
+    clearInterval(capInt); clearInterval(wordInt);
+    capOn = false;
+    capBox.classList.remove('rec');
+    bigMic.setAttribute('aria-pressed','false');
+    bigMic.setAttribute('aria-label','Start opptak');
+    capStat.textContent = 'lagret';
+    var secs = Math.max(1, Math.round((Date.now() - capStart)/1000));
+    capGoal.textContent = secs + ' s' + (secs <= 20 ? ' · innenfor målet' : ' · over målet');
+  }
+  bigMic.addEventListener('click', function(){ capOn ? capStop() : capStartRec(); });
+
+  /* Ett trykk går rett i opptak — ingen meny først (agent-flate.md §2, §5).
+     Uten dette åpner fangst-arket i hvile, den store mikrofonen er blekk,
+     og skjermen har NULL clay i det øyeblikket fangst er hele jobben.
+     Samme kontrakt som agencyos-konsoll-mobil, slik at FangstSheet kan
+     bygges én gang og brukes begge steder. */
+  document.getElementById('micBtn').addEventListener('click', function(){
+    if (!capOn) capStartRec();
+  });
+  document.querySelectorAll('#sheetCapture .chip').forEach(function(c){
+    c.addEventListener('click', function(){
+      c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+    });
+  });
+  document.getElementById('capInsert').addEventListener('click', function(){
+    var txt = capText.textContent.trim();
+    var chips = Array.prototype.slice.call(document.querySelectorAll('#sheetCapture .chip[aria-pressed="true"]'))
+      .map(function(c){ return c.textContent; }).join('_');
+    closeSheet('sheetCapture');
+    if (document.getElementById('mode-etter').hidden === false){
+      var caps = document.getElementById('afterCaps');
+      caps.textContent = (parseInt(caps.textContent, 10) + 1) + ' stk.';
+      return;
+    }
+    setStep('for', {});
+    showOk();
+    var art = document.createElement('article');
+    art.className = 'turn';
+    art.innerHTML = '<div class="you"><p class="msg"></p></div><div class="ai"><p class="say">Fanget.</p>' +
+      '<div class="saved"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><path d="m4 12 6 6L20 6"/></svg>' +
+      '<span><b>Lagret <span class="num">' + klokke() + '</span></b> i økt <span class="num">30.07</span> · Anders ser det i innboksen sin.<br>Etiketter: <span class="num">' + (chips || 'ingen') + '</span></span></div></div>';
+    art.querySelector('.msg').textContent = txt || 'Fangst uten tekst';
+    turns.appendChild(art);
+    thread.scrollTop = thread.scrollHeight;
+    capReset();
+  });
+
+  /* ── Start økt / avslutt økt ──────────────────────────── */
+  function goLive(){
+    try { history.pushState({}, '', 'playerhq-chat-mobil.html?steg=under'); } catch(e){}
+    setStep('under', { focus:true });
+  }
+  document.getElementById('startFull').addEventListener('click', goLive);
+  document.getElementById('startShort').addEventListener('click', goLive);
+  document.getElementById('endSession').addEventListener('click', function(){
+    document.getElementById('afterDur').textContent =
+      Math.floor(liveSecs/60) + ' min ' + (liveSecs % 60) + ' s';
+    stopLive();
+    try { history.pushState({}, '', 'playerhq-chat-mobil.html?steg=etter'); } catch(e){}
+    setStep('etter', { focus:true });
+  });
+  document.querySelectorAll('#liveList .tick').forEach(function(b){
+    b.addEventListener('click', function(){
+      var on = b.getAttribute('aria-pressed') !== 'true';
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.closest('li').setAttribute('data-done', on ? 'true' : 'false');
+    });
+  });
+
+  /* ── Øvrige handlere ──────────────────────────────────── */
+  document.querySelector('[data-od-id="flytt-okt"]').addEventListener('click', function(){
+    /* Spilleren eier planen sin (Anders 01.08.2026). Flyttingen skjer med én
+       gang — ingen godkjenning. Anders får varsling, ikke en forespørsel. */
+    say('Flyttet til fredag 07:00. Planen er oppdatert nå. Anders har fått varsel om endringen — du trenger ikke vente på svar.');
+  });
+  document.querySelector('[data-od-id="capture-add-detail"]').addEventListener('click', function(){
+    ta.value = 'Wedgen føltes tung etter slag 12 — '; grow(); ta.focus();
+  });
+  document.getElementById('proposeBtn').addEventListener('click', function(){
+    var b = document.getElementById('proposeBtn');
+    b.textContent = 'Sendt til Anders · ' + klokke();
+    b.setAttribute('aria-disabled','true');
+    say('Forslaget ligger i innboksen til Anders. Du trener som planlagt til han svarer.');
+  });
+  document.querySelectorAll('.tabs button[data-surface]').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.tabs button').forEach(function(x){ x.removeAttribute('aria-current'); });
+      b.setAttribute('aria-current','page');
+      if (b.dataset.surface !== 'I dag'){
+        setStep('for', {});
+        say('Flate: ' + b.dataset.surface + '. Denne prototypen viser I dag.');
+      }
+    });
+  });
+
+  /* ── Nedtelling til økta ──────────────────────────────── */
+  (function countdown(){
+    var el = document.getElementById('untilStart');
+    var now = new Date(2026, 6, 31, 9, 12, 0);
+    var start = new Date(2026, 6, 31, 16, 0, 0);
+    setInterval(function(){
+      now = new Date(now.getTime() + 1000);
+      var d = Math.max(0, Math.floor((start - now)/1000));
+      el.textContent = Math.floor(d/3600) + ' t ' + Math.floor((d%3600)/60) + ' min';
+    }, 1000);
+  })();
+
+  /* ── Åpningssteg fra URL ──────────────────────────────── */
+  setStep(new URLSearchParams(location.search).get('steg') || 'for', {});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Innboks · AgencyOS · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══ akhq-tokens.css v3.1 — KOPIERT VERBATIM. Eneste tokenkilde. ═══ */
+/* ─────────────────────────────────────────────────────────────
+   AK Golf HQ · Claude Paper tokens v3
+   Anthropic-justert (offentlige kilder) + AK produktregler
+
+   Én kilde. Kopier verbatim inn i hver HTML/skjerm, eller @import.
+   Se SCOPE.md for hva «offisiell» betyr (vi er JUSTERT, ikke Anthropic).
+
+   Kilder:
+   - Anthropic brand-guidelines: ink/paper/mid/light + clay/sky/olive
+   - anthropic.com DESIGN.md (shadcn reverse-eng): full 21-farge + 8 aksenter
+   - Fase 1 (2026-07/08): chat-først, radius 12 for tett app, Én ting nå
+
+   v3.1 · 2026-08-01 (Bølge 1)
+   - --rail-hover / --rail-active løftet inn (var lokale i Fase 1-filene)
+   - Ingen andre verdiendringer. --muted er #5e5d59 (vinner over Fase 1 #5F5B53)
+
+   v3 · 2026-08-01
+   - Full Anthropic surface + accent ladder
+   - Radius-stige: sm 8 · app 12 · md 16 · lg 24 · pill
+   - Type-tokens for marketing + produkt
+   - Motion, z-index, tap-targets, hairline
+   - Dark theme (produkt; marketing er primært lys)
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* ─── Surfaces (Anthropic cream ladder) ─── */
+  --bg: #faf9f5;                    /* canvas / ivory */
+  --surface: #ffffff;               /* elevated white (produkt-kort) */
+  --soft: #f0eee6;                  /* surface-secondary — kort uten skygge */
+  --soft-hover: #e8e6dc;            /* surface-secondary-hover */
+  --surface-warm: #e3dacc;          /* oat */
+  --surface-manilla: #ebdbbc;
+  --surface-kraft: #d4a27f;
+  --border: #e8e6dc;                /* light gray (brand skill) */
+  --hairline: #d1cfc5;              /* finere skille enn --border */
+  --inverse: #000000;               /* full-bleed marketing-bånd */
+
+  /* ─── Text (Anthropic slate ladder) ─── */
+  --fg: #141413;                    /* ink — primær tekst + CTA-fill */
+  --ink-soft: #3d3d3a;              /* hover på primærknapp */
+  --muted: #5e5d59;                 /* text-muted (brand skill ~ #5f5b53; Anthropic #5e5d59) */
+  --mid: #b0aea5;                   /* text-secondary / cloud medium — IKKE brødtekst i lys */
+  --text-tertiary: #87867f;
+
+  /* ─── Rail (produkt, alltid mørk) ─── */
+  --rail: #141413;
+  --rail-fg: #b0aea5;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.08);   /* v3.1 — løftet fra Fase 1 */
+  --rail-active: rgba(250, 249, 245, 0.14);  /* v3.1 — løftet fra Fase 1 */
+
+  /* ─── Actions ─── */
+  --cta: #141413;                   /* Anthropic: CTA er blekk, ikke farge */
+  --on-cta: #faf9f5;
+  --cta-hover: #3d3d3a;
+
+  /* Clay = sterkeste kromatiske aksent (Anthropic clay) */
+  --accent: #d97757;                /* kun «Én ting nå» + focus i app */
+  --accent-soft: rgba(217, 119, 87, 0.12);
+  --accent-fg: #b85c3d;             /* AA-tekst på paper */
+  --on-accent: #141413;             /* tekst på fylt clay — sparsomt */
+  --accent-deep: #c6613f;           /* burnt sienna */
+
+  /* ─── Dormant accent swatches (Anthropic research palette)
+       Brukes sparsomt: chart, kategori, badges — aldri som primær CTA ─── */
+  --accent-coral: #ebcece;
+  --accent-fig: #c46686;
+  --accent-cactus: #bcd1ca;
+  --accent-olive: #788c5d;
+  --accent-sky: #6a9bcc;
+  --accent-heather: #cbcadb;
+
+  /* ─── Datasemantikk (produkt — mørknede for AA-tekst) ─── */
+  --up: #63784a;                    /* olive mørknet for tekst */
+  --up-raw: #788c5d;                /* olive rå — fyll/sparkline */
+  --dn: #a85536;                    /* leire av clay — aldri ren rød */
+  --info: #46719f;                  /* sky mørknet for tekst */
+  --info-raw: #6a9bcc;
+
+  /* ─── Typography families
+       Anthropic proprietary (Serif/Sans/Mono) er IKKE offentlige.
+       Brand skill: Poppins + Lora. Mono: IBM Plex Mono (produkt-tall). ─── */
+  --font-sans: "Poppins", Arial, system-ui, sans-serif;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Aliases brukt i eksisterende skjermer */
+  --disp: var(--font-sans);
+  --ui: var(--font-sans);
+  --body: var(--font-serif);
+  --mono: var(--font-mono);
+
+  /* ─── Type scale · Produkt (tett) ─── */
+  --text-display: 32px;
+  --text-title: 22px;
+  --text-card: 16px;
+  --text-panel: 14.5px;
+  --text-body-agency: 13.5px;       /* AgencyOS desktop */
+  --text-body-player: 14px;         /* PlayerHQ mobil */
+  --text-label: 10px;               /* versaler + tracking */
+  --text-kpi: 40px;                 /* mono */
+
+  /* ─── Type scale · Marketing (editorial, Anthropic-rytme) ─── */
+  --text-hero: 56px;                /* nedskalert fra 88 — web-vennlig */
+  --text-section: 40px;             /* nedskalert fra 90 */
+  --text-prose: 18px;               /* serif body marketing */
+  --text-prose-lg: 22px;
+  --text-nav: 16px;
+  --text-eyebrow: 12px;
+
+  /* ─── Spacing · 4px base (Anthropic 4/8/12/16/24/32/48/96) ─── */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+  --s9: 96px;                       /* section padding marketing */
+
+  /* ─── Radius
+       Anthropic marketing: sm 8 · md 16 · lg 24
+       AK produkt (Fase 1 låst): app 12 for kort/composer ─── */
+  --r-none: 0px;
+  --r-sm: 8px;                      /* knapper, inputs, chips */
+  --r: 12px;                        /* app-default (Fase 1) */
+  --r-md: 16px;                     /* editorial cards / marketing */
+  --r-lg: 24px;                     /* store flater, pille-CTA unntak */
+  --r-pill: 999px;
+
+  /* ─── Elevation
+       Anthropic marketing: NULL shadow — flater via cream-steg
+       Produkt: én myk skygge tillatt (valgfri) ─── */
+  --shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
+  --shadow-none: none;
+  --scrim: rgba(20, 20, 19, 0.4);
+
+  /* ─── Interaction ─── */
+  --focus: #d97757;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 160ms;
+  --dur-slow: 280ms;
+
+  /* Tap targets */
+  --tap: 44px;
+  --tap-lg: 48px;
+  --tap-capture: 60px;              /* fangst-mikrofon mobil */
+
+  /* ─── Logo (AK Golf — ikke Anthropic) ─── */
+  --logo-mark: #141413;
+  --logo-dot: #b85c3d;
+
+  /* ─── Z-index ─── */
+  --z-sticky: 10;
+  --z-rail: 20;
+  --z-sheet: 40;
+  --z-modal: 50;
+  --z-toast: 100;
+  --z-command: 110;
+}
+
+/* ─── Dark (produkt) ─── */
+[data-theme="dark"] {
+  color: #faf9f5;
+  --bg: #141413;
+  --surface: #1d1c1a;
+  --soft: #26241f;
+  --soft-hover: #2e2c28;
+  --surface-warm: #2a2824;
+  --border: rgba(250, 249, 245, 0.10);
+  --hairline: rgba(250, 249, 245, 0.08);
+  --inverse: #000000;
+
+  --fg: #faf9f5;
+  --ink-soft: #e8e6dc;
+  --muted: #b0aea5;
+  --mid: #6b675e;
+  --text-tertiary: #87867f;
+
+  --rail: #0e0d0c;
+  --rail-fg: #97938a;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.06);
+  --rail-active: rgba(250, 249, 245, 0.12);
+
+  --cta: #faf9f5;
+  --on-cta: #141413;
+  --cta-hover: #e8e6dc;
+
+  --accent: #d97757;
+  --accent-soft: rgba(217, 119, 87, 0.18);
+  --accent-fg: #e5a184;
+  --on-accent: #141413;
+
+  --up: #9db284;
+  --up-raw: #788c5d;
+  --dn: #de9e82;
+  --info: #93b7dc;
+  --info-raw: #6a9bcc;
+
+  --shadow: none;
+  --focus: #d97757;
+
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+[data-theme="light"] {
+  color: #141413;
+}
+
+/* Rail always dark */
+.rail {
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+/* Aksentflate — marketing/innlogging sparsomt */
+.on-accent-surface {
+  --logo-mark: #141413;
+  --logo-dot: #141413;
+}
+
+/* Full-bleed inverse band (marketing) */
+.band-inverse {
+  background: var(--inverse);
+  color: var(--bg);
+}
+
+/* Skriftimport — lim i <head> på alle skjermer:
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+*/
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Gulvregel: min treffmål på touch */
+@media (pointer: coarse) {
+  :root {
+    --floor: var(--tap);
+  }
+}
+
+:root{ --softer:#f6f4ee; --border-soft:#efede4; }
+[data-theme="dark"]{ --softer:#1a1917; --border-soft:rgba(250,249,245,.06); }
+/* ═══ Innboks · AgencyOS · desktop + iPad ═══
+   Flaten der godkjenningsløkka bor. «Systemet forfatter, mennesket godkjenner»
+   er hele produktløftet — hvis en godkjenning ikke endrer noe her, betyr
+   knappen ingenting noe sted.
+   Tidligere het flaten «Kø». Anders 01.08.2026: den heter Innboks. */
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; }
+body{ background:var(--bg); color:var(--fg); font-family:var(--ui);
+  font-size:var(--text-body-agency); line-height:1.5; -webkit-font-smoothing:antialiased; }
+[hidden]{ display:none !important; }
+button{ font:inherit; color:inherit; }
+.num{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.eyebrow{ font-family:var(--mono); font-size:var(--text-label); font-weight:500;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+:where(a,button,input,select,textarea,[tabindex]):focus-visible{
+  outline:2px solid var(--focus); outline-offset:2px; border-radius:var(--r-sm); }
+
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
+  min-height:var(--tap); padding:0 var(--s4); font-size:13px; font-weight:500;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; white-space:nowrap; text-decoration:none; }
+.btn:hover{ background:var(--soft); border-color:var(--mid); }
+.btn.ink{ background:var(--cta); color:var(--on-cta); border-color:var(--cta); }
+.btn.now{ background:var(--accent); color:var(--on-accent); border-color:var(--accent);
+  min-height:var(--tap-lg); font-weight:600; padding:0 var(--s5); }
+.btn.sm{ min-height:var(--tap); padding:0 var(--s3); font-size:12px; }
+.btn.icon{ width:var(--tap); padding:0; }
+.chip{ display:inline-flex; align-items:center; gap:var(--s2); min-height:var(--tap);
+  padding:0 var(--s4); font-size:12.5px; background:var(--surface);
+  border:1px solid var(--border); border-radius:var(--r-pill); cursor:pointer; }
+.chip[aria-pressed="true"]{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+.chip .n{ font-family:var(--mono); font-size:11px; opacity:.7; }
+.tag{ display:inline-flex; align-items:center; padding:3px var(--s2); border-radius:var(--r-pill);
+  font-family:var(--mono); font-size:10px; letter-spacing:.04em; text-transform:uppercase;
+  background:var(--soft); color:var(--muted); border:1px solid var(--border); }
+.tag.up{ color:var(--up); } .tag.dn{ color:var(--dn); } .tag.info{ color:var(--info); }
+
+/* ── Skall ───────────────────────────────────────────────────── */
+.app{ display:grid; grid-template-columns:64px minmax(0,1fr) 380px; height:100vh; }
+.stage{ display:flex; flex-direction:column; min-width:0; min-height:0; overflow:hidden;
+  border-right:1px solid var(--border); }
+
+/* ── Rail ────────────────────────────────────────────────────── */
+.rail{ background:var(--rail); display:flex; flex-direction:column; align-items:center;
+  gap:var(--s1); padding:var(--s3) 0; z-index:var(--z-rail); }
+.logo{ font-family:var(--disp); font-size:15px; font-weight:700; color:var(--rail-on);
+  margin-bottom:var(--s4); }
+.logo span{ color:var(--logo-dot); }
+.rbtn{ width:52px; min-height:52px; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:3px; background:transparent; border:0; border-radius:var(--r);
+  color:var(--rail-fg); font-size:9px; cursor:pointer; position:relative; }
+.rbtn:hover{ background:var(--rail-hover); color:var(--rail-on); }
+.rbtn[aria-current="page"]{ background:var(--rail-active); color:var(--rail-on); }
+.rbtn svg{ width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.6;
+  stroke-linecap:round; stroke-linejoin:round; }
+.rbtn .cnt{ position:absolute; top:4px; right:6px; font-family:var(--mono); font-size:9px;
+  min-width:15px; height:15px; display:grid; place-items:center; border-radius:var(--r-pill);
+  background:var(--rail-on); color:var(--rail); }
+
+/* ── Topp og filtre ──────────────────────────────────────────── */
+.top{ flex:none; display:flex; align-items:center; gap:var(--s3);
+  padding:var(--s3) var(--s4); border-bottom:1px solid var(--border); background:var(--surface); }
+.top h1{ margin:0; font-family:var(--disp); font-size:17px; font-weight:600; }
+.filters{ flex:none; display:flex; gap:var(--s2); padding:var(--s3) var(--s4);
+  border-bottom:1px solid var(--border-soft); background:var(--softer);
+  overflow-x:auto; scrollbar-width:none; }
+.filters::-webkit-scrollbar{ display:none; }
+
+/* ── Liste ───────────────────────────────────────────────────── */
+.list{ flex:1; min-height:0; overflow-y:auto; padding:var(--s4); }
+.row{ display:grid; grid-template-columns:34px minmax(0,1fr) auto; gap:var(--s3);
+  width:100%; text-align:left; padding:var(--s3) var(--s4); margin-bottom:var(--s2);
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; align-items:start; }
+.row:hover{ border-color:var(--mid); }
+.row[aria-current="true"]{ border-color:var(--fg); box-shadow:inset 3px 0 0 var(--fg); }
+.row.lost{ opacity:.62; }
+.row.lost .t{ text-decoration:line-through; }
+.row .ic{ width:34px; height:34px; display:grid; place-items:center; border-radius:var(--r-sm);
+  background:var(--soft); }
+.row .ic svg{ width:16px; height:16px; fill:none; stroke:var(--muted); stroke-width:1.7;
+  stroke-linecap:round; stroke-linejoin:round; }
+.row .t{ font-size:13.5px; font-weight:600; margin-bottom:2px; }
+.row .s{ font-family:var(--body); font-size:12.5px; color:var(--muted); }
+.row .meta{ display:flex; gap:var(--s2); align-items:center; margin-top:var(--s2); flex-wrap:wrap; }
+.row .side{ display:flex; flex-direction:column; align-items:flex-end; gap:var(--s2); }
+.row .frist{ font-family:var(--mono); font-size:11px; color:var(--muted); }
+.row .frist.snart{ color:var(--dn); }
+
+.empty{ display:flex; flex-direction:column; align-items:flex-start; gap:var(--s3);
+  padding:var(--s6) var(--s5); background:var(--soft); border:1px dashed var(--border);
+  border-radius:var(--r); }
+.empty h3{ margin:0; font-family:var(--disp); font-size:15px; font-weight:600; }
+.empty p{ margin:0; max-width:44ch; font-family:var(--body); font-size:13.5px; color:var(--muted); }
+
+/* ── Detaljpanel — bundet til valgt rad, aldri hardkodet ─────── */
+.detail{ display:flex; flex-direction:column; min-width:0; min-height:0; background:var(--bg); }
+.dhead{ flex:none; display:flex; align-items:center; gap:var(--s2);
+  padding:var(--s3) var(--s4); border-bottom:1px solid var(--border); }
+.dhead .t{ font-family:var(--disp); font-size:13.5px; font-weight:600; }
+.dbody{ flex:1; min-height:0; overflow-y:auto; padding:var(--s4); }
+.dfoot{ flex:none; display:flex; gap:var(--s2); padding:var(--s3) var(--s4);
+  border-top:1px solid var(--border); background:var(--surface);
+  padding-bottom:calc(var(--s3) + env(safe-area-inset-bottom)); }
+.dfoot .btn{ flex:1; }
+
+.blokk{ margin-bottom:var(--s4); }
+.blokk .flab{ display:block; font-family:var(--mono); font-size:var(--text-label);
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-bottom:var(--s2); }
+.blokk p{ margin:0; font-family:var(--body); font-size:13.5px; }
+
+/* Anbefalingskontrakten: fire deler, alltid i samme rekkefølge.
+   Hvorfor · Hva · Forventet effekt · Hvorfor nå. Uten alle fire er
+   forslaget noe eier må undersøke selv — og da har det kostet mer enn det ga. */
+.kontrakt{ border:1px solid var(--border); border-radius:var(--r); overflow:hidden;
+  margin-bottom:var(--s4); }
+.kontrakt div{ padding:var(--s3) var(--s4); border-bottom:1px solid var(--border-soft); }
+.kontrakt div:last-child{ border-bottom:0; }
+.kontrakt .k{ display:block; font-family:var(--mono); font-size:9.5px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:3px; }
+.kontrakt .v{ font-family:var(--body); font-size:13px; }
+
+/* Proveniens: hvor kom dette fra. Per sak, ikke per skjerm. */
+.prov{ background:var(--softer); border:1px solid var(--border-soft); border-radius:var(--r);
+  padding:var(--s3) var(--s4); margin-bottom:var(--s4); }
+.prov li{ font-family:var(--mono); font-size:11.5px; color:var(--muted); margin-bottom:4px;
+  list-style:none; }
+.prov ul{ margin:0; padding:0; }
+
+.angre{ display:flex; align-items:center; gap:var(--s3); padding:var(--s3) var(--s4);
+  background:var(--accent-soft); border:1px solid var(--border); border-left:3px solid var(--accent);
+  border-radius:var(--r); margin-bottom:var(--s4); font-size:12.5px; }
+.angre .btn{ margin-left:auto; }
+
+/* ── iPad: detaljpanelet blir ark, forsvinner aldri ──────────── */
+#detOpen{ display:none; }
+#detScrim{ display:none; position:fixed; inset:0; background:var(--scrim); z-index:var(--z-sheet); }
+@media (max-width:1180px){
+  .app{ grid-template-columns:64px minmax(0,1fr); }
+  #detOpen{ display:inline-flex; }
+  .detail{ position:fixed; left:0; right:0; bottom:0; z-index:calc(var(--z-sheet) + 1);
+    max-height:88vh; height:auto; background:var(--surface);
+    border-top:1px solid var(--border); border-radius:var(--r) var(--r) 0 0;
+    box-shadow:var(--shadow); transform:translateY(100%);
+    transition:transform var(--dur-slow) var(--ease); padding-bottom:env(safe-area-inset-bottom); }
+  .detail::before{ content:""; display:block; width:36px; height:4px; flex:none;
+    border-radius:var(--r-pill); background:var(--border); margin:var(--s3) auto var(--s1); }
+  body.det-open .detail{ transform:translateY(0); }
+  body.det-open #detScrim{ display:block; }
+  .dbody{ max-height:56vh; }
+}
+@media (min-width:1181px){ .detail{ transform:none !important; } }
+
+.toast{ position:fixed; left:50%; bottom:var(--s5); transform:translateX(-50%);
+  z-index:var(--z-toast); background:var(--fg); color:var(--bg);
+  padding:var(--s3) var(--s4); border-radius:var(--r); font-size:12.5px; }
+
+.btn,.chip,button,[role="button"],summary,input,textarea{ min-height:var(--tap); }
+.tag,.num,.eyebrow,.row .frist{ min-height:0; }
+
+</style>
+</head>
+<body>
+<div class="app">
+
+  <nav class="rail" aria-label="Hovednavigasjon">
+    <div class="logo">AK<span>.</span></div>
+    <button class="rbtn" data-od-id="rail-konsoll" onclick="location.href='agencyos-konsoll-desktop.html'">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Konsoll</button>
+    <button class="rbtn" aria-current="page" data-od-id="rail-innboks">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Innboks
+      <span class="cnt num" id="railCount">7</span></button>
+    <button class="rbtn" data-od-id="rail-spillere" onclick="location.href='agencyos-spillere.html'">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Spillere</button>
+    <button class="rbtn" data-od-id="rail-kalender" onclick="location.href='agencyos-kalender.html'">
+      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Kalender</button>
+    <button class="rbtn" data-od-id="rail-workbench" onclick="location.href='workbench-desktop.html'">
+      <svg viewBox="0 0 24 24"><path d="M4 4h16v6H4zM4 14h7v6H4zM15 14h5v6h-5z"/></svg>Workbench</button>
+    <button class="rbtn" data-od-id="rail-agenticos" onclick="location.href='agencyos-agenticos.html'">
+      <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg>AgenticOS</button>
+    <button class="rbtn" data-od-id="rail-okonomi" onclick="location.href='agencyos-okonomi.html'">
+      <svg viewBox="0 0 24 24"><path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Økonomi</button>
+    <button class="rbtn" data-od-id="rail-innstillinger" onclick="location.href='agencyos-innstillinger.html'">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 3.6 15a1.7 1.7 0 0 0-1.56-1H2a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 3.6 9a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 8 4.6h.09A1.7 1.7 0 0 0 9 3.04V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9v.09a1.7 1.7 0 0 0 1.56 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z"/></svg>Innstillinger</button>
+  </nav>
+
+  <main class="stage">
+    <header class="top">
+      <div>
+        <h1>Innboks</h1>
+        <div class="eyebrow"><span class="num" id="innCount">7</span> åpne saker · fredag 31. juli <span class="num">09:12</span></div>
+      </div>
+      <span style="flex:1"></span>
+      <button class="btn sm" id="detOpen" aria-controls="detail" aria-expanded="false" data-od-id="inn-open-sheet">Se grunnlaget</button>
+      <button class="btn icon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="inn-theme">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    </header>
+
+    <div class="filters" id="filters" role="group" aria-label="Filtre"></div>
+    <div class="list" id="list" role="list" aria-label="Saker"></div>
+  </main>
+
+  <div id="detScrim" data-od-id="inn-scrim"></div>
+  <aside class="detail" id="detail" aria-label="Grunnlag">
+    <div class="dhead"><span class="t" id="dTitle">—</span></div>
+    <div class="dbody" id="dBody"></div>
+    <div class="dfoot" id="dFoot"></div>
+  </aside>
+</div>
+
+<div class="toast" id="toast" hidden role="status"></div>
+<div class="sr" id="live" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ═══ Innboks · datamodell ═══
+   Sju saker. Fire typer:
+     forslag     — AI har skrevet noe som venter på godkjenning
+     forespørsel — spiller eller forelder ber om noe
+     drift       — økonomi, booking, utstyr
+     varsel      — systemet melder fra om seg selv
+
+   Kun `forslag` bærer anbefalingskontrakten (hvorfor/hva/effekt/hvorfor nå).
+   De andre har proveniens, men ikke et forslag å godkjenne. */
+
+var SAKER = [
+  { id:'s1', type:'forslag', tittel:'Ukeplan uke 32 · Øyvind Rohjan',
+    sub:'Agenten har skrevet et utkast. Ingenting er sendt til Øyvind.',
+    hvem:'Øyvind Rohjan', frist:'i dag 16:00', snart:true, lost:false,
+    kontrakt:{
+      hvorfor:'SG innspill er Øyvinds svakeste område over de ti siste rundene.',
+      hva:'Fem økter, 3 t 45 min trening pluss testrunde lørdag. Tre av øktene er innspill.',
+      effekt:'Innspill får mest tid av alle områder denne uka, uten at totalvolumet øker.',
+      hvorforNa:'Sjekkpunktet 14.08 måler nettopp innspill. Det er to uker igjen.'
+    },
+    prov:['Kilde: 142 loggede økter siste 90 dager',
+          'Kilde: kalender uke 32 · 3 låste ankere',
+          'Kilde: sjekkpunkt 14.08 · innspill 50–100 m',
+          'Skrevet 09:04 · Claude · 4,7 s'] },
+
+  /* Spilleren endret selv. Dette er en VARSLING, ikke en godkjenning.
+     Anders skal vite hva som skjedde — han skal ikke si ja. */
+  { id:'s2', type:'varsel', tittel:'Øyvind flyttet torsdagsøkta til fredag',
+    sub:'Han endret selv i PlayerHQ. Planen er allerede oppdatert.',
+    hvem:'Øyvind Rohjan', frist:'til orientering', snart:false, lost:false,
+    prov:['Kilde: PlayerHQ · Plan · endret 31.07 08:12',
+          'Fra: torsdag 16:00 · Til: fredag 07:00',
+          'Grunn oppgitt: heldagsprøve torsdag',
+          'Volum og innhold er uendret'] },
+
+  { id:'s3', type:'forespørsel', tittel:'Lydsamtykke mangler · forelder',
+    sub:'Videoanalyse kan ikke deles før samtykket er signert.',
+    hvem:'Forelder · Øyvind Rohjan', frist:'ingen frist', snart:false, lost:false,
+    prov:['Kilde: GDPR-modul · samtykke ikke registrert',
+          'Sendt 28.07 · ikke besvart'] },
+
+  { id:'s4', type:'forespørsel', tittel:'Øyvind ber om ekstra økt lørdag',
+    sub:'«Kan jeg få en putt-økt før testrunden?»',
+    hvem:'Øyvind Rohjan', frist:'i dag', snart:true, lost:false,
+    prov:['Kilde: PlayerHQ-tråd 31.07 08:12',
+          'Kilde: kalender lørdag · testrunde 09:00'] },
+
+  { id:'s5', type:'drift', tittel:'Faktura forfalt · 800 kr',
+    sub:'Coachingtimer juli. Purring er ikke sendt.',
+    hvem:'Forelder · Øyvind Rohjan', frist:'forfalt 5 dager', snart:true, lost:false,
+    prov:['Kilde: Stripe · faktura 2026-07-114',
+          'Forfall 27.07 · ingen purring sendt'] },
+
+  { id:'s6', type:'drift', tittel:'Booking-forespørsel · ny spiller',
+    sub:'Prøvetime, ønsker tirsdag ettermiddag.',
+    hvem:'Ekstern', frist:'svar innen 48 t', snart:false, lost:false,
+    prov:['Kilde: booking-skjema akgolf-hq.vercel.app',
+          'Mottatt 31.07 07:40'] },
+
+  { id:'s7', type:'varsel', tittel:'Agentfeil · Faktura-vakten 03:14',
+    sub:'Kjøringen stoppet. Neste kjøring er i natt.',
+    hvem:'System', frist:'ingen frist', snart:false, lost:false,
+    prov:['Kilde: AgenticOS · Agenter · Faktura-vakten',
+          'Feil: tidsavbrudd mot Stripe etter 30 s'] }
+];
+
+var FILTRE = [
+  { k:'alle',      n:'Alle',                f:function(){ return true; } },
+  { k:'godkjenn',  n:'Trenger godkjenning', f:function(s){ return s.type === 'forslag' && !s.lost; } },
+  { k:'spiller',   n:'Fra spiller',         f:function(s){ return s.type === 'forespørsel' && !s.lost; } },
+  { k:'drift',     n:'Drift',               f:function(s){ return (s.type === 'drift' || s.type === 'varsel') && !s.lost; } },
+  { k:'lost',      n:'Løst',                f:function(s){ return s.lost; } }
+];
+
+var IKON = {
+  forslag:'<path d="M12 3v18M5 10l7-7 7 7"/>',
+  'forespørsel':'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  drift:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  varsel:'<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/>'
+};
+
+var valgtId = 's1', filter = 'alle', angreTimer = null, sisteAngre = null;
+
+var live = document.getElementById('live');
+function si(t){ live.textContent = t; }
+var toastEl = document.getElementById('toast'), toastT;
+function toast(t){ toastEl.textContent = t; toastEl.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.hidden = true; }, 2600); }
+function el(tag, cls, txt){ var e = document.createElement(tag);
+  if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+function apne(){ return SAKER.filter(function(s){ return !s.lost; }).length; }
+
+/* ── Filtre ──────────────────────────────────────────────────── */
+function renderFiltre(){
+  var w = document.getElementById('filters');
+  w.innerHTML = '';
+  FILTRE.forEach(function(f){
+    var n = SAKER.filter(f.f).length;
+    var c = el('button', 'chip');
+    c.setAttribute('aria-pressed', String(f.k === filter));
+    c.dataset.odId = 'inn-filter-' + f.k;
+    c.appendChild(el('span', null, f.n));
+    c.appendChild(el('span', 'n', n));
+    c.addEventListener('click', function(){ filter = f.k; renderAlt(); });
+    w.appendChild(c);
+  });
+}
+
+/* ── Liste ───────────────────────────────────────────────────── */
+function renderListe(){
+  var w = document.getElementById('list');
+  w.innerHTML = '';
+  var f = FILTRE.filter(function(x){ return x.k === filter; })[0];
+  var rader = SAKER.filter(f.f);
+
+  if (!rader.length){
+    var e = el('div', 'empty');
+    e.appendChild(el('h3', null, filter === 'lost' ? 'Ingenting er løst ennå' : 'Ingenting her'));
+    e.appendChild(el('p', null, filter === 'lost'
+      ? 'Saker du godkjenner eller avviser havner her, med tidsstempel.'
+      : 'Ingen saker treffer dette filteret akkurat nå. Prøv «Alle» — det ligger ' +
+        apne() + ' åpne saker i innboksen.'));
+    var b = el('button', 'btn', 'Vis alle');
+    b.dataset.odId = 'inn-empty-alle';
+    b.addEventListener('click', function(){ filter = 'alle'; renderAlt(); });
+    e.appendChild(b);
+    w.appendChild(e);
+    return;
+  }
+
+  rader.forEach(function(s){
+    var r = el('button', 'row' + (s.lost ? ' lost' : ''));
+    r.dataset.odId = 'inn-rad-' + s.id;
+    r.setAttribute('aria-current', s.id === valgtId ? 'true' : 'false');
+
+    var ic = el('span', 'ic');
+    ic.innerHTML = '<svg viewBox="0 0 24 24">' + IKON[s.type] + '</svg>';
+    r.appendChild(ic);
+
+    var mid = el('span');
+    mid.appendChild(el('span', 't', s.tittel));
+    mid.appendChild(el('span', 's', s.sub));
+    var meta = el('span', 'meta');
+    meta.appendChild(el('span', 'tag', s.type));
+    meta.appendChild(el('span', 'tag', s.hvem));
+    if (s.lost) meta.appendChild(el('span', 'tag up', s.lostTekst || 'løst'));
+    mid.appendChild(meta);
+    r.appendChild(mid);
+
+    var side = el('span', 'side');
+    side.appendChild(el('span', 'frist num' + (s.snart && !s.lost ? ' snart' : ''), s.frist));
+    r.appendChild(side);
+
+    r.addEventListener('click', function(){
+      valgtId = s.id;
+      renderAlt();
+      if (window.matchMedia('(max-width:1180px)').matches) apneDet();
+    });
+    w.appendChild(r);
+  });
+}
+
+/* ── Detaljpanel — alltid bundet til valgt rad ───────────────── */
+function renderDetalj(){
+  var s = SAKER.filter(function(x){ return x.id === valgtId; })[0];
+  var head = document.getElementById('dTitle');
+  var b = document.getElementById('dBody');
+  var foot = document.getElementById('dFoot');
+  b.innerHTML = ''; foot.innerHTML = '';
+
+  if (!s){
+    head.textContent = 'Ingen sak valgt';
+    var e = el('div', 'empty');
+    e.appendChild(el('h3', null, 'Velg en sak'));
+    e.appendChild(el('p', null, 'Klikk en rad i lista for å se grunnlaget og handle på den.'));
+    b.appendChild(e);
+    return;
+  }
+  head.textContent = s.tittel;
+
+  if (sisteAngre && sisteAngre.id === s.id){
+    var a = el('div', 'angre');
+    a.appendChild(el('span', null, sisteAngre.tekst));
+    var ab = el('button', 'btn sm', 'Angre');
+    ab.dataset.odId = 'inn-angre';
+    ab.addEventListener('click', function(){
+      s.lost = false; delete s.lostTekst;
+      clearTimeout(angreTimer); sisteAngre = null;
+      renderAlt(); si('Angret. Saken er tilbake i innboksen.');
+    });
+    a.appendChild(ab);
+    b.appendChild(a);
+  }
+
+  var hv = el('div', 'blokk');
+  hv.appendChild(el('span', 'flab', 'gjelder'));
+  hv.appendChild(el('p', null, s.hvem + ' · ' + s.frist));
+  b.appendChild(hv);
+
+  if (s.kontrakt){
+    var k = el('div', 'kontrakt');
+    [['hvorfor','Hvorfor'],['hva','Hva'],['effekt','Forventet effekt'],['hvorforNa','Hvorfor nå']]
+    .forEach(function(p){
+      var d = el('div');
+      d.appendChild(el('span', 'k', p[1]));
+      d.appendChild(el('span', 'v', s.kontrakt[p[0] === 'effekt' ? 'effekt' : p[0]]));
+      k.appendChild(d);
+    });
+    b.appendChild(k);
+  } else {
+    var n = el('div', 'blokk');
+    n.appendChild(el('span', 'flab', 'hva dette er'));
+    n.appendChild(el('p', null, s.sub));
+    b.appendChild(n);
+  }
+
+  var p = el('div', 'prov');
+  var pl = el('span', 'flab', 'grunnlag'); pl.style.marginBottom = 'var(--s2)';
+  p.appendChild(pl);
+  var ul = document.createElement('ul');
+  s.prov.forEach(function(x){ ul.appendChild(el('li', null, x)); });
+  p.appendChild(ul);
+  b.appendChild(p);
+
+  if (s.lost){
+    /* Sløyfen må ikke stoppe her. Når en sak er løst, peker foten på den
+       neste — ellers står eier igjen med en ferdig sak og null vei videre. */
+    foot.appendChild(el('span', 'eyebrow', s.lostTekst || 'løst'));
+    var neste = forsteApne();
+    if (neste){
+      var nb = el('button', 'btn ink', 'Neste sak');
+      nb.dataset.odId = 'inn-neste';
+      nb.addEventListener('click', function(){ valgtId = neste; renderAlt(); });
+      foot.appendChild(nb);
+    } else {
+      foot.appendChild(el('span', 'eyebrow', 'innboksen er tom'));
+    }
+    return;
+  }
+
+  /* Agentfeil har nå en flate å peke til. Uten denne lenken var saken en
+     blindvei: du fikk vite at Faktura-vakten stoppet, men ikke hvor du
+     kunne se på den. */
+  if (s.type === 'varsel' && /[Aa]gentfeil/.test(s.tittel)){
+    var ag = el('a', 'btn', 'Åpne i AgenticOS');
+    ag.href = 'agencyos-agenticos.html?fane=agent';
+    ag.dataset.odId = 'inn-agenticos';
+    foot.appendChild(ag);
+  }
+
+  /* Godkjenn er clay kun for den ene saken som er «Én ting nå».
+     For resten er den blekk — ellers er oransjen bare en knappefarge. */
+  var erEnTingNa = s.id === forsteApne();
+  var ok = el('button', 'btn ' + (erEnTingNa ? 'now' : 'ink'),
+    s.type === 'forslag' ? 'Godkjenn og send' : 'Kvitter ut');
+  ok.dataset.odId = 'inn-godkjenn';
+  ok.addEventListener('click', function(){ loes(s, s.type === 'forslag' ? 'godkjent' : 'løst'); });
+
+  var av = el('button', 'btn', s.type === 'forslag' ? 'Avvis' : 'Utsett');
+  av.dataset.odId = 'inn-avvis';
+  av.addEventListener('click', function(){
+    if (s.type === 'forslag') loes(s, 'avvist');
+    else { toast('Utsatt til i morgen. Saken blir liggende.'); si('Saken er utsatt til i morgen.'); }
+  });
+
+  foot.appendChild(av);
+  foot.appendChild(ok);
+}
+
+function forsteApne(){
+  var a = SAKER.filter(function(s){ return !s.lost; });
+  return a.length ? a[0].id : null;
+}
+
+/* Godkjenning endrer faktisk tilstand: saken går til Løst, telleren i
+   rail-en går ned, og angre reverserer i ti sekunder. */
+function loes(s, hva){
+  s.lost = true;
+  s.lostTekst = hva + ' 09:12';
+  sisteAngre = { id:s.id, tekst: hva === 'avvist'
+    ? 'Avvist. Ingenting er sendt til ' + s.hvem.split(' ')[0] + '.'
+    : 'Godkjent og sendt. ' + s.hvem.split(' ')[0] + ' ser det i PlayerHQ nå.' };
+  clearTimeout(angreTimer);
+  angreTimer = setTimeout(function(){ sisteAngre = null; renderDetalj(); }, 10000);
+  renderAlt();
+  si(hva + '. Innboksen er nede i ' + apne() + ' saker. Du kan angre i ti sekunder.');
+  toast(hva === 'avvist' ? 'Avvist' : 'Godkjent · sendt');
+}
+
+/* ── Detaljark på iPad ───────────────────────────────────────── */
+var detEl = document.getElementById('detail'), detScrim = document.getElementById('detScrim'),
+    detBtn = document.getElementById('detOpen'), detFokus = null;
+function erArk(){ return window.matchMedia('(max-width:1180px)').matches; }
+function apneDet(){
+  if (!erArk()) return;
+  detFokus = document.activeElement;
+  document.body.classList.add('det-open');
+  detBtn.setAttribute('aria-expanded','true');
+  detEl.setAttribute('role','dialog'); detEl.setAttribute('aria-modal','true');
+  var f = detEl.querySelector('button, a, [tabindex]:not([tabindex="-1"])'); if (f) f.focus();
+}
+function lukkDet(){
+  document.body.classList.remove('det-open');
+  detBtn.setAttribute('aria-expanded','false');
+  detEl.removeAttribute('role'); detEl.removeAttribute('aria-modal');
+  if (detFokus && detFokus.focus) detFokus.focus();
+}
+detBtn.addEventListener('click', function(){
+  document.body.classList.contains('det-open') ? lukkDet() : apneDet();
+});
+detScrim.addEventListener('click', lukkDet);
+detEl.addEventListener('keydown', function(e){
+  if (e.key !== 'Tab' || !document.body.classList.contains('det-open')) return;
+  var f = detEl.querySelectorAll('button, a, [tabindex]:not([tabindex="-1"])');
+  if (!f.length) return;
+  var first = f[0], last = f[f.length-1];
+  if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+});
+window.addEventListener('resize', function(){
+  if (!erArk() && document.body.classList.contains('det-open')) lukkDet();
+});
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape' && document.body.classList.contains('det-open')){ e.preventDefault(); lukkDet(); }
+});
+
+/* ── Tema: lys default ───────────────────────────────────────── */
+var KEY = 'akhq-theme-agencyos';
+var saved = localStorage.getItem(KEY);
+if (saved) document.documentElement.dataset.theme = saved;
+document.getElementById('themeBtn').addEventListener('click', function(){
+  var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem(KEY, next);
+  this.setAttribute('aria-label', next === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
+});
+
+function renderAlt(){
+  renderFiltre(); renderListe(); renderDetalj();
+  document.getElementById('railCount').textContent = apne();
+  document.getElementById('innCount').textContent = apne();
+}
+renderAlt();
+})();
+
+</script>
+</body>
+</html>

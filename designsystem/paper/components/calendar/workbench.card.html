@@ -1,0 +1,113 @@
+<!-- @dsCard group="Kalender" viewport="980x2800" name="SessionCard og BudgetBar" subtitle="Workbench-underlaget: øktkort i alle tilstander og budsjettlinjen med invariantbrudd som anbefaling. To containerbredder × begge moduser" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.w{display:flex;flex-direction:column;gap:10px}.narrow{width:300px;max-width:100%}.kol{width:132px}.kol2{width:104px}.assert{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;white-space:pre-wrap}.ok{color:var(--up)}.bad{color:var(--dn)}</style>
+</head>
+<body><div class="two"><div class="half" id="light"></div><div class="half" data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { SessionCard, BudgetBar, Button } = window.AKGolfHQClaudePaper_605a48;
+function Specimen({ narrow }) {
+  const W = narrow ? "narrow" : "";
+  return (<>
+    <div className="lab">{narrow ? "300 px container — sidestolpen" : "full bredde — hovedkolonnen"}</div>
+    <div className={"w " + W}>
+
+      <div className="lab">øktkort · fem pyramideområder</div>
+      <SessionCard time="09:00–10:30" area="TEK" title="Teknikk tee — P5 til P7" formula="TEK_TEE_L-BALL_CS60_M2_PR2" duration="90 min" note="Mulligan 3" onClick={()=>{}} dataOdId="okt-tek" />
+      <SessionCard time="07:00–07:45" area="FYS" title="Styrke underkropp" duration="45 min" note="WANG hall" onClick={()=>{}} dataOdId="okt-fys" />
+      <SessionCard time="11:00–12:00" area="SLAG" title="Wedge 40–90 m, hit-rate" formula="SLAG_WEDGE_CS70_M3_PR1" duration="60 min" onClick={()=>{}} dataOdId="okt-slag" />
+      <SessionCard time="13:00–15:00" area="SPILL" title="Ni hull med scorekort" duration="120 min" onClick={()=>{}} dataOdId="okt-spill" />
+      <SessionCard time="lør 08:00" area="TURN" title="Srixon Tour #4 — runde 1" duration="dagsøkt" onClick={()=>{}} dataOdId="okt-turn" />
+
+      <div className="lab">tilstander · låst anker · gjentakende · delt økt · valgt · utkast · kompakt</div>
+      <SessionCard time="16:00–17:00" area="TEK" title="Fast ukesøkt — Emma" formula="TEK_TEE_L-BALL_CS60_M2_PR2" locked recurring duration="60 min" onClick={()=>{}} dataOdId="okt-laast" />
+      <SessionCard time="17:00–18:30" area="SLAG" title="Gruppetime junior" participants={6} duration="90 min" note="Markus" onClick={()=>{}} dataOdId="okt-delt" />
+      <SessionCard time="10:00–11:00" area="TEK" title="Valgt økt (åpen i editoren)" formula="TEK_ARG_CS50_M1_PR3" selected duration="60 min" onClick={()=>{}} dataOdId="okt-valgt" />
+      <SessionCard time="14:00–15:00" area="SPILL" title="Caddie-utkast: putting under press" draft duration="60 min" note="ikke lagt inn" onClick={()=>{}} dataOdId="okt-utkast" />
+      <SessionCard time="08:00" area="FYS" title="Kompakt variant" compact duration="30 min" onClick={()=>{}} dataOdId="okt-kompakt" />
+
+      <div className="lab">ukelerretets kolonnebredde · 132 px (formel faller bort) og 104 px (også område)</div>
+      <div className="kol"><SessionCard time="09:00" area="TEK" title="Teknikk tee — P5 til P7" formula="TEK_TEE_L-BALL_CS60_M2_PR2" duration="90 min" onClick={()=>{}} dataOdId="okt-smal" /></div>
+      <div className="kol2"><SessionCard time="09:00" area="TEK" title="Teknikk tee — P5 til P7" formula="TEK_TEE_L-BALL_CS60_M2_PR2" duration="90 min" onClick={()=>{}} dataOdId="okt-smalest" /></div>
+
+      <div className="lab">budsjettlinje · innenfor vinduet, ingen brudd</div>
+      <BudgetBar hours={6.5} min={5} max={8}
+        distribution={[{area:"FYS",hours:1},{area:"TEK",hours:2.5},{area:"SLAG",hours:1.5},{area:"SPILL",hours:1.5}]}
+        keyFigures={[{value:"38 %",label:"TEK-andel",tone:"up"},{value:"6,5 t",label:"denne uken"},{value:"15 år",label:"aldersregel ok",tone:"up"}]}
+        dataOdId="budsjett-ok" />
+
+      <div className="lab">budsjettlinje · over taket, to brudd som anbefaling</div>
+      <BudgetBar hours={9.5} min={5} max={8}
+        distribution={[{area:"FYS",hours:1},{area:"TEK",hours:5},{area:"SLAG",hours:2},{area:"SPILL",hours:1.5}]}
+        keyFigures={[{value:"53 %",label:"TEK-andel",tone:"dn"},{value:"9,5 t",label:"denne uken",tone:"dn"},{value:"15 år",label:"aldersregel brutt",tone:"dn"}]}
+        onOverride={()=>{}}
+        violations={[
+          { id:"v7", title:"TEK-andelen er 53 % — invariant 7 sier 30–45 %", body:"Fem av ni timer er teknikk. Forslag: flytt 60 min fra TEK tirsdag til SLAG torsdag, da lander andelen på 43 %.", actions:<Button size="sm" variant="ghost" dataOdId="bb-flytt">Flytt 60 min til SLAG</Button> },
+          { id:"alder", title:"Ukevolum 9,5 t over aldersregelens 8 t for 15 år", body:"Regelen er et tak for sesongen, ikke for enkeltuker. Er dette en turneringsuke, er overstyring riktig — og begrunnelsen blir stående på perioden." }
+        ]}
+        dataOdId="budsjett-brudd" />
+
+      <div className="lab">budsjettlinje · under minimum, tom fordeling</div>
+      <BudgetBar hours={3} min={5} max={8} keyFigures={[{value:"3 t",label:"denne uken",tone:"dn"},{value:"—",label:"TEK-andel"}]} dataOdId="budsjett-under" />
+
+    </div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen narrow={false} />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen narrow={true} />);
+/* ASSERTIONER. Skal ses feile først: forvent formelen synlig i 132 px-kolonnen,
+   eller sett gulvet til 99 px — begge blir røde alene. Falsifisering kjørt
+   31.07 mot bundelen: formelen tvunget synlig og over-taket-fyllet tvunget til
+   ren rød ga 1 rød hver, resten uberørt grønne. */
+window.requestAnimationFrame(() => setTimeout(() => {
+  const res = []; const push = (ok, t) => res.push((ok ? "✓ " : "✗ ") + t);
+  /* Kortet rendrer TO spesimen (lys + mørk). Tellende assertioner skopes til
+     lys-halvdelen — ellers teller de dobbelt. Målt 31.07: 4 bruddkort der
+     kontrakten sier 2. */
+  const LYS = document.getElementById("light");
+  const kort = document.querySelector('[data-od-id="cta-okt-tek"]');
+  push(!!kort && kort.getBoundingClientRect().height >= 44, "øktkortet er sitt eget treffmål, " + (kort ? kort.getBoundingClientRect().height.toFixed(1) : "?") + " px");
+  push(!!kort && kort.querySelectorAll("button,a[href],input").length === 0, "øktkortet har ingen knapper inni — ett treffmål, ikke fem");
+  // Container query: formelen ryker først, tittelen står
+  const smal = document.querySelector('[data-od-id="cta-okt-smal"]');
+  const f1 = smal && smal.querySelector(".akhq-sc-formel");
+  push(!!f1 && getComputedStyle(f1).display === "none", "132 px kolonne → formelen er skjult");
+  push(!!smal && /Teknikk tee/.test(smal.textContent), "132 px kolonne → tittelen står");
+  const smalest = document.querySelector('[data-od-id="cta-okt-smalest"]');
+  const o1 = smalest && smalest.querySelector(".akhq-sc-omr");
+  push(!!o1 && getComputedStyle(o1).display === "none", "104 px kolonne → også områdemerket er skjult");
+  // Merker er informasjon, ikke knapper — og de finnes som tekst for skjermleser
+  const laast = document.querySelector('[data-od-id="cta-okt-laast"]');
+  push(!!laast && /Låst anker/.test(laast.textContent) && /Gjentakende/.test(laast.textContent), "låst + gjentakende annonseres som tekst");
+  // Pyramidefargene er de samme i kort og budsjettlinje
+  const kant = getComputedStyle(document.querySelector('[data-od-id="cta-okt-fys"]')).borderLeftColor;
+  const del = document.querySelector('[data-od-id="budsjett-ok"] .akhq-bb-del');
+  push(!!del && getComputedStyle(del).backgroundColor === kant, "FYS har samme farge i øktkort og fordeling (" + kant + ")");
+  // Brudd er anbefaling: overstyring finnes, ingenting er disabled
+  const brudd = [...LYS.querySelectorAll('[data-od-id="budsjett-brudd"] .akhq-bb-brudd')];
+  const overstyr = LYS.querySelectorAll('[data-od-id^="cta-budsjett-brudd-overstyr"]');
+  push(brudd.length === 2 && overstyr.length === 2, "to brudd, hvert med «Overstyr med begrunnelse»");
+  push([...LYS.querySelectorAll('[data-od-id="budsjett-brudd"] button')].every((b) => !b.disabled), "ingen handling er sperret av et invariantbrudd");
+  push(brudd.every((b) => b.getAttribute("role") === "status"), "bruddkortene er role=status og annonseres ved slipp");
+  // Sporene har tekstlig sammendrag
+  const spor = document.querySelector('[data-od-id="budsjett-brudd"] .akhq-bb-spor');
+  push(!!spor && spor.getAttribute("role") === "img" && /over taket/.test(spor.getAttribute("aria-label")), "volumsporet har tekstlig sammendrag med tilstand");
+  // Fargedisiplin
+  const alleKort = [...document.querySelectorAll(".akhq-sc")];
+  push(alleKort.every((k) => !/217, ?119, ?87/.test(getComputedStyle(k).borderLeftColor + getComputedStyle(k).backgroundColor)), "ingen oransje i øktkortene");
+  const fyll = document.querySelector('[data-od-id="budsjett-brudd"] .akhq-bb-fyll');
+  push(!!fyll && /168, ?85, ?54/.test(getComputedStyle(fyll).backgroundColor), "over taket fylles med --dn leire, ikke rød");
+  // Grov peker: overstyringsknappen
+  const wrap = document.createElement("div"); wrap.setAttribute("data-coarse-test", ""); document.body.appendChild(wrap);
+  const ov = document.querySelector(".akhq-bb-overstyr");
+  if (ov) { const p = ov.cloneNode(true); wrap.appendChild(p); const h = Math.max(p.getBoundingClientRect().height, parseFloat(getComputedStyle(p, "::after").height) || 0); push(h >= 43.99, "overstyringsknapp " + h.toFixed(1) + " px ved grov peker"); }
+  wrap.remove();
+  const ut = document.createElement("div"); ut.className = "assert";
+  ut.innerHTML = res.map((r) => '<div class="' + (r[0] === "✓" ? "ok" : "bad") + '">' + r + "</div>").join("");
+  document.getElementById("light").appendChild(ut);
+  window.__assert = res;
+}, 90));
+</script></body></html>

@@ -1,0 +1,26 @@
+<!-- @dsCard group="Datakomponenter" viewport="700x400" name="SG og trend" subtitle="SgBreakdown (senter-null) · HoleStrip · TrendBand med PB · Sparkline · PuttLab" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script></head>
+<body><div class="two"><div class="half" id="light"></div><div class="half" data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { SgBreakdown, HoleStrip, TrendBand, Sparkline, PuttLab } = window.AKGolfHQClaudePaper_605a48;
+ReactDOM.createRoot(document.getElementById("light")).render(<>
+  <SgBreakdown total={2.92} window="siste 5 runder" items={[
+    { label: "OTT", value: 0.8 }, { label: "APP", value: 1.9 },
+    { label: "ARG", value: 0.6 }, { label: "PUTT", value: -0.4 },
+  ]} />
+  <HoleStrip window="Miklagard · 12. juli · brutto 68" holes={[0.3,-0.8,0.1,0.6,-0.2,0,0.4,-1.1,0.2,0.5,0,-0.3,0.7,0.1,-0.5,0.9,0,0.3].map((sg, i) => ({ hole: i + 1, sg }))} />
+</>);
+ReactDOM.createRoot(document.getElementById("dark")).render(<>
+  <TrendBand data={[74, 72, 73, 70, 71, 68, 70]} band={{ min: 70, max: 73 }} pbIndex={5} unit="slag" window="siste 7 runder" />
+  <div style={{display:"flex",alignItems:"center",gap:"var(--s3)"}}><Sparkline data={[71,73,70,72,69,68]} color="up" /><span style={{fontFamily:"var(--mono)",fontSize:12,color:"var(--up)",fontWeight:600}}>68 <span style={{color:"var(--muted)",fontWeight:400}}>slag · siste runde</span></span></div>
+  <PuttLab window="siste 30 dager" buckets={[
+    { range: "0–1 m", pct: 96, attempts: 48 },
+    { range: "1–2 m", pct: 71, attempts: 62 },
+    { range: "2–3 m", pct: 44, attempts: 39 },
+  ]} />
+</>);
+</script></body></html>

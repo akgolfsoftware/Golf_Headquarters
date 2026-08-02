@@ -1,0 +1,73 @@
+<!-- @dsCard group="Skjema" viewport="980x3582" name="Skjema · bolk A" subtitle="FormField som eneste anatomi + fem nakne kontroller — samme sett i to containerbredder, alle tilstander" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}</style></head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { FormField, FieldMessage, TextInput, Textarea, Checkbox, SearchField, SectionLabel, SegmentControl } = window.AKGolfHQClaudePaper_605a48;
+
+function Width({ px, note, children }) {
+  return (<div style={{display:"grid",gap:"var(--s2)",justifyItems:"start"}}>
+    <SectionLabel as="div">Container {px} px{note ? " · " + note : ""}</SectionLabel>
+    <div className="cw" style={{width:px}}>{children}</div>
+  </div>);
+}
+
+function Sett() {
+  return (<div style={{display:"grid",gap:"var(--s4)"}}>
+    <SearchField placeholder="Søk etter spiller, økt eller drill" dataOdId="felt-sok" />
+
+    <FormField label="Spillernavn" hint="Fullt navn som i turneringspåmeldingen." dataOdId="felt-navn">
+      <TextInput defaultValue="Øyvind Rohjan" />
+    </FormField>
+
+    <FormField label="Handicap" required error="Må være mellom -10 og 54." dataOdId="felt-hcp">
+      <TextInput defaultValue="72" />
+    </FormField>
+
+    <FormField label="Periode" hint="Styrer hvilke runder som telles i analysen." dataOdId="felt-periode">
+      <SegmentControl options={["Uke","Måned","År"]} value="Måned" onChange={()=>{}} />
+    </FormField>
+
+    <FormField label="Notat fra økten" dataOdId="felt-notat">
+      <Textarea rows={3} defaultValue="Slår høyre-venstre på lange jern. Følg opp P6 neste økt." />
+    </FormField>
+
+    <FormField label="Varsler" hint="Gjelder kun denne spilleren." dataOdId="felt-varsler">
+      <div style={{display:"grid",gap:"6px"}}>
+        <Checkbox label="Varsle ved nytt testresultat" defaultChecked dataOdId="felt-cb-test" />
+        <Checkbox label="Varsle ved avvik fra ukeplan" dataOdId="felt-cb-avvik" />
+        <Checkbox label="Låst av coach" disabled dataOdId="felt-cb-laast" />
+      </div>
+    </FormField>
+
+    <FormField label="Låst felt" hint="Settes av coach, ikke av spiller." dataOdId="felt-laast">
+      <TextInput defaultValue="Performance Pro" disabled />
+    </FormField>
+
+    <FormField label="Tett variant" density="sm" dataOdId="felt-tett">
+      <TextInput density="sm" defaultValue="sm — 30px basishøyde" />
+    </FormField>
+
+    <FieldMessage tone="feil" dataOdId="felt-oppsummering">
+      Skjemaet har én feil som må rettes før det kan lagres.
+    </FieldMessage>
+  </div>);
+}
+
+function Specimen() {
+  return (<div style={{display:"grid",gap:"var(--s5)"}}>
+    <Width px={430} note="PlayerHQ-kolonne · alle tilstander">
+      <Sett />
+    </Width>
+    <Width px={860} note="AgencyOS hovedspalte · anatomien legger ikke om — den arver bredden">
+      <Sett />
+    </Width>
+  </div>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+</script></body></html>

@@ -1,0 +1,25 @@
+<!-- @dsCard group="Navigasjon" viewport="700x330" name="AgencyOS-rail og topbar" subtitle="64px mørk skinne med tokenized-logo · sticky topbar med søk, brødsmuler og tema-toggle" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{margin:0}.shell{display:flex;min-height:100vh}.body{flex:1;background:var(--bg);min-width:0;display:flex;flex-direction:column}.pad{padding:var(--s4);color:var(--fg);font-family:var(--ui);font-size:13.5px}</style></head>
+<body><div id="root"></div>
+<script type="text/babel">
+const { Rail, Topbar, Breadcrumbs, Button, Icon } = window.AKGolfHQClaudePaper_605a48;
+const items = ["hjem","stall","cockpit","ko","plan","ai"].map(id => ({ id, label: { hjem:"Hjem", stall:"Stall", cockpit:"Cockpit", ko:"Kø", plan:"Plan", ai:"AI" }[id], icon: <Icon name={id} /> }));
+function Demo({ theme }) {
+  const [cur, setCur] = React.useState("hjem");
+  return (
+    <div className="shell" data-theme={theme === "dark" ? "dark" : undefined} style={{background:"var(--bg)"}}>
+      <Rail items={items} current={cur} onNavigate={setCur} initials="AK" />
+      <div className="body">
+        <Topbar theme={theme} left={<Breadcrumbs items={[{ label: "AgencyOS", href: "#" }, { label: "Stall", href: "#" }, { label: "Emma Berg" }]} />} actions={<Button size="sm" dataOdId="cta-ko">3 i kø</Button>} />
+        <div className="pad">Aktiv rad: <strong>{cur}</strong> · skinnen er alltid mørk, uansett tema</div>
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<><Demo theme="light" /><Demo theme="dark" /></>);
+</script></body></html>

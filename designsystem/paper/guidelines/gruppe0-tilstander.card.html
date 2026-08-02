@@ -1,0 +1,46 @@
+<!-- @dsCard group="Prosess" viewport="1180x2100" name="Gruppe 0 — tilstandsmatrise" subtitle="Null visuell endring etter lagmigrering, målt på tilstander og ikke bare standardtilstanden" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr}.stack>div{padding:var(--s5) var(--s6);background:var(--bg);color:var(--fg)}h1{font:600 24px/1.15 var(--disp);margin:0 0 6px}.k{font:600 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}.lead{font:400 14px/1.55 var(--body);color:var(--muted);max-width:60ch;margin:0 0 22px;text-wrap:pretty}.grp{margin:0 0 22px}.gl{font:600 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}.row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}.cell{display:flex;flex-direction:column;gap:5px}.cl{font:500 9px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mid)}</style></head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { Button, StatusBadge, Avatar, SectionLabel } = window.AKGolfHQClaudePaper_605a48;
+function Cell({ label, children }) { return <div className="cell"><span className="cl">{label}</span>{children}</div>; }
+function Grp({ label, children }) { return <div className="grp"><p className="gl">{label}</p><div className="row">{children}</div></div>; }
+const btnStates = [["default", {}], ["hover", { "data-state": "hover" }], ["focus", { "data-state": "focus" }], ["active", { "data-state": "active" }], ["disabled", { disabled: true }]];
+function Matrise() {
+  return (<div>
+    <p className="k">Gruppe 0 · lagmigrering · 28.07.2026</p>
+    <h1>Tilstandsmatrise</h1>
+    <p className="lead">Null visuell endring måles på tilstander, ikke bare på standardtilstanden. Lagflytting endrer spesifisitetsforhold, og de viser seg i hover, focus og disabled — samme usynlighetsklasse som flush-buggen.</p>
+    <p className="lead">Berøringsgulvet testes i begge ender: <code style={{font:"500 12px var(--mono)"}}>sm</code> skal løftes til 44 px under <code style={{font:"500 12px var(--mono)"}}>pointer: coarse</code>, og cellen «--h 56» skal <em>beholde</em> 56 px. Består bare den ene, kan gulvet være hardkodet i stedet for å komme fra <code style={{font:"500 12px var(--mono)"}}>max()</code> — utfallet ville sett likt ut.</p>
+    <p className="lead">Gulvsiden er målbar uten å emulere berøring: cellen «sm + coarse-stand-in» ligger i <code style={{font:"500 12px var(--mono)"}}>[data-coarse-test]</code>, som mates av en regel i <code style={{font:"500 12px var(--mono)"}}>@layer akhq-container</code> med <em>samme vekt</em> som <code style={{font:"500 12px var(--mono)"}}>pointer: coarse</code>-spørringen. Den skal gi <strong>40 px</strong> (gulvet for <code style={{font:"500 12px var(--mono)"}}>--sm</code>) selv om <code style={{font:"500 12px var(--mono)"}}>--sm</code> setter <code style={{font:"500 12px var(--mono)"}}>--h: 32px</code> i et senere lag. En inline <code style={{font:"500 12px var(--mono)"}}>--floor</code> ville bestått av feil grunn: inline slår alle lag, så testen målte inline-presedens og ikke at container-laget når gjennom.</p>
+    {["ghost", "primary", "danger"].map((v) => (
+      <Grp label={"Button — " + v} key={v}>
+        {btnStates.map(([n, p]) => <Cell label={n} key={n}><Button variant={v} {...p} dataOdId={"cta-" + v + "-" + n}>Bekreft</Button></Cell>)}
+        <Cell label="sm"><Button variant={v} size="sm" dataOdId={"cta-" + v + "-sm"}>Bekreft</Button></Cell>
+        {v === "ghost" && <Cell label="--h 56 → 56"><Button variant={v} style={{ "--h": "56px" }} dataOdId="cta-h56">Høy</Button></Cell>}
+        {v === "ghost" && <Cell label="sm + coarse-stand-in → 40"><span data-coarse-test><Button variant={v} size="sm" dataOdId="cta-floor44">Gulv</Button></span></Cell>}
+      </Grp>
+    ))}
+    <Grp label="StatusBadge — alle seks toner">
+      {[["up", "På vei"], ["warn", "Bak plan"], ["info", "Ny data"], ["mut", "Utsatt"], ["ny", "Ny"]].map(([t, tx]) => <Cell label={t} key={t}><StatusBadge tone={t} dot dataOdId={"badge-" + t}>{tx}</StatusBadge></Cell>)}
+      <Cell label="tag (fargeløs)"><StatusBadge kind="tag" dataOdId="badge-tag">SPESIALISERING</StatusBadge></Cell>
+      <Cell label="tag"><StatusBadge kind="tag" dataOdId="badge-tag2">M3</StatusBadge></Cell>
+    </Grp>
+    <Grp label="Avatar — tre størrelser × tre toner">
+      {["sm", "md", "lg"].map((s) => <Cell label={s} key={s}><Avatar name="Markus Roinas Pedersen" size={s} dataOdId={"avatar-" + s} /></Cell>)}
+      <Cell label="ink"><Avatar name="Anders Kristiansen" tone="ink" dataOdId="avatar-ink" /></Cell>
+      <Cell label="outline"><Avatar name="Ida Sørgård" tone="outline" dataOdId="avatar-outline" /></Cell>
+      <Cell label="æøå"><Avatar name="Øyvind Åsheim" dataOdId="avatar-aeoa" /></Cell>
+      <Cell label="ett navn"><Avatar name="Solveig" dataOdId="avatar-ett" /></Cell>
+    </Grp>
+    <Grp label="SectionLabel"><Cell label="base"><SectionLabel>Denne uken</SectionLabel></Cell></Grp>
+  </div>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Matrise />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Matrise />);
+</script></body></html>

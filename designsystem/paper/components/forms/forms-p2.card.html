@@ -1,0 +1,152 @@
+<!-- @dsCard group="Skjema" viewport="980x3200" name="Skjema bølge P2 — Select, Combobox, Radio, Slider, DatePicker, CodeInput" subtitle="Seks kontroller mot FormField-anatomien. Begge moduser × alle tilstander × to containerbredder, med målt gulv" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.w{display:flex;flex-direction:column;gap:10px}.narrow{width:300px;max-width:100%}.rom{padding-bottom:330px}.assert{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;white-space:pre-wrap}.ok{color:var(--up)}.bad{color:var(--dn)}</style>
+</head>
+<body><div class="two"><div class="half" id="light"></div><div class="half" data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { Select, Combobox, Radio, RadioGroup, Slider, DatePicker, CodeInput, FormField } = window.AKGolfHQClaudePaper_605a48;
+const spillere = [
+  { value: "emma", label: "Emma Sæther", note: "kat. C" },
+  { value: "jonas", label: "Jonas Five", note: "kat. B" },
+  { value: "mia", label: "Mia Torp", note: "kat. E" },
+  { value: "aksel", label: "Aksel Rønning", note: "kat. A" }
+];
+function Specimen({ narrow }) {
+  const [cb, setCb] = React.useState("");
+  const [cb2, setCb2] = React.useState("zzz");
+  const [vol, setVol] = React.useState(6.5);
+  const [rad, setRad] = React.useState("uke");
+  const [dato, setDato] = React.useState("2026-08-03");
+  const [kode, setKode] = React.useState("4821");
+  const W = narrow ? "narrow" : "";
+  return (<>
+    <div className="lab">{narrow ? "300 px container — panelbredden" : "full bredde — hovedkolonnen"}</div>
+    <div className={"w " + W}>
+
+      <div className="lab">select · standard, sm, disabled, feil</div>
+      <FormField label="Fasilitet" htmlFor="s1" hint="Styrer hvilke drills som er mulige">
+        <Select id="s1" options={["Mulligan Sandvika", "GFGK utendørs", "WANG hall"]} placeholder="Velg fasilitet" dataOdId="felt-fasilitet" />
+      </FormField>
+      <FormField label="Periode" htmlFor="s2"><Select id="s2" density="sm" options={[{value:"grunn",label:"GRUNN"},{value:"spes",label:"SPESIALISERING"},{value:"turn",label:"TURNERING"}]} defaultValue="spes" /></FormField>
+      <FormField label="Selskap" htmlFor="s3"><Select id="s3" disabled options={["AK Golf Academy"]} /></FormField>
+      <FormField label="Coach" htmlFor="s4" error="Velg en coach før du publiserer"><Select id="s4" options={["Anders", "Markus"]} placeholder="Ikke valgt" /></FormField>
+
+      <div className="lab">combobox · tomt filter, treff med notat, ingen treff</div>
+      <FormField label="Spiller" htmlFor="c1" hint="Skriv for å filtrere stallen">
+        <Combobox id="c1" options={spillere} value={cb} onChange={setCb} placeholder="Søk i stallen" dataOdId="felt-spiller" />
+      </FormField>
+      <div className="rom">
+        <FormField label="Spiller — uten treff" htmlFor="c2">
+          <Combobox id="c2" options={spillere} value={cb2} onChange={setCb2} emptyText="Ingen spillere matcher «zzz»" dataOdId="felt-spiller-tom" autoFocus />
+        </FormField>
+      </div>
+
+      <div className="lab">radio · kolonne med notat, rad, disabled</div>
+      <FormField label="Publiser til" hint="Spilleren varsles ved publisering">
+        <RadioGroup label="Publiser til" value={rad} onChange={setRad} dataOdId="felt-publiser"
+          options={[
+            { value: "uke", label: "Denne uken", note: "uke 31 · 4 økter" },
+            { value: "neste", label: "Neste uke", note: "uke 32 · utkast" },
+            { value: "ingen", label: "Ikke publiser ennå", note: "blir liggende som utkast" }
+          ]} />
+      </FormField>
+      <FormField label="Visning">
+        <RadioGroup row value="dag" onChange={()=>{}} options={["Dag", "Uke", "Måned"]} dataOdId="felt-visning" />
+      </FormField>
+      <FormField label="Delegering" hint="Krever CBAC-rolle">
+        <RadioGroup value="eier" onChange={()=>{}} dataOdId="felt-delegering"
+          options={[{ value: "eier", label: "Kun eier" }, { value: "markus", label: "Markus (junior)", disabled: true, note: "rolle mangler" }]} />
+      </FormField>
+
+      <div className="lab">slider · standard, med tone, disabled</div>
+      <FormField label="Ukevolum" htmlFor="sl1">
+        <Slider id="sl1" min={0} max={12} step={0.5} value={vol} unit="t" onChange={setVol} note="Periodens min 5 t · maks 8 t" dataOdId="felt-volum" />
+      </FormField>
+      <FormField label="TEK-andel" htmlFor="sl2">
+        <Slider id="sl2" min={0} max={100} step={5} value={52} unit="%" tone="dn" onChange={()=>{}} note="Invariant 7: 30–45 %. 52 % er over taket" dataOdId="felt-tek" />
+      </FormField>
+      <FormField label="Intensitet" htmlFor="sl3"><Slider id="sl3" min={1} max={5} value={3} disabled onChange={()=>{}} scale={["rolig","maks"]} /></FormField>
+
+      <div className="lab">datepicker · lukket med uke, åpen, sperret område</div>
+      <FormField label="Startdato" htmlFor="d1"><DatePicker value={dato} onChange={setDato} dataOdId="felt-start" /></FormField>
+      <div className="rom">
+        <FormField label="Publiseres" hint="Åpen tilstand — piltaster flytter, Enter velger">
+          <DatePicker defaultOpen value="2026-08-03" min="2026-07-31" max="2026-08-21" onChange={()=>{}} dataOdId="felt-publiseres" />
+        </FormField>
+      </div>
+      <FormField label="Frist" htmlFor="d3" error="Fristen kan ikke være i fortiden"><DatePicker value="" invalid onChange={()=>{}} placeholder="Velg frist" /></FormField>
+
+      <div className="lab">codeinput · delvis fylt, feil, fire siffer</div>
+      <FormField label="Engangskode" hint="Seks siffer fra SMS. Liming fordeler seg selv">
+        <CodeInput value={kode} onChange={setKode} dataOdId="felt-otp" />
+      </FormField>
+      <FormField label="Engangskode" error="Koden er utløpt. Be om en ny"><CodeInput value="120493" invalid onChange={()=>{}} dataOdId="felt-otp-feil" /></FormField>
+      <FormField label="PIN"><CodeInput length={4} value="07" onChange={()=>{}} dataOdId="felt-pin" /></FormField>
+
+    </div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen narrow={false} />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen narrow={true} />);
+/* ASSERTIONER. Skal ses feile først: sett forventet gulv til 99 px, eller
+   forvent at kombobokslisten har tabbbare noder — begge blir røde alene.
+   Falsifisering kjørt 31.07 mot bundelen: gulvet klemt til 20 px og
+   feilrammen tvunget til ren rød ga 1 rød hver, resten uberørt grønne. */
+window.requestAnimationFrame(() => setTimeout(() => {
+  const res = []; const push = (ok, t) => res.push((ok ? "✓ " : "✗ ") + t);
+  /* Kortet rendrer TO spesimen (lys + mørk). Tellende assertioner MÅ skopes til
+     ett av dem — ellers teller de dobbelt og kan aldri bli grønne. Målt 31.07:
+     12 koderuter og 2 tabbbare dager der kontrakten sier 6 og 1. */
+  const LYS = document.getElementById("light");
+  const wrap = document.createElement("div"); wrap.setAttribute("data-coarse-test", ""); document.body.appendChild(wrap);
+  const gulv = (sel, min, navn) => {
+    const n = document.querySelector(sel); if (!n) { push(false, navn + " ikke funnet"); return; }
+    const p = n.cloneNode(true); wrap.appendChild(p);
+    const r = p.getBoundingClientRect();
+    const sone = parseFloat(getComputedStyle(p, "::after").height) || 0;
+    const h = Math.max(r.height, sone);
+    push(h >= min - 0.01, navn + " " + h.toFixed(1) + " px ≥ " + min + " ved grov peker (synlig " + r.height.toFixed(1) + " px)");
+  };
+  gulv(".akhq-sel", 44, "select");
+  gulv(".akhq-rad", 44, "radio-label");
+  gulv(".akhq-sld-in", 44, "slider");
+  gulv(".akhq-cmb-in", 44, "combobox-felt");
+  gulv(".akhq-dp-trig", 44, "datovelger-utløser");
+  gulv(".akhq-dp-dag", 44, "datovelger-dag");
+  gulv(".akhq-code-in", 44, "koderute");
+  wrap.remove();
+  // Radio: treffmottakeren er labelen, ikke den skjulte inputen
+  const rin = document.querySelector(".akhq-rad-in");
+  push(!!rin && rin.getBoundingClientRect().width <= 1 && !!rin.closest("label"), "radio-input er visuelt skjult og ligger i sin label");
+  // Combobox: ARIA-mønsteret, og ingen tabbbare noder i lista (ingen felle å skrive)
+  const cbi = document.querySelector('[data-od-id="felt-spiller-tom-in"]') || document.querySelector(".akhq-cmb-in");
+  push(!!cbi && cbi.getAttribute("role") === "combobox" && cbi.getAttribute("aria-expanded") !== null, "combobox har role og aria-expanded");
+  const lst = document.querySelector(".akhq-cmb-lst");
+  push(!lst || lst.querySelectorAll('a[href],button,input,[tabindex]:not([tabindex="-1"])').length === 0, "kombobokslisten har ingen tabbbare noder — fokus blir i feltet");
+  // DatePicker: mandag først, ukenummer, roving tabindex
+  const uketopp = document.querySelector(".akhq-dp-uketopp");
+  push(!!uketopp && uketopp.firstElementChild.textContent.trim() === "ma", "kalenderen starter på mandag");
+  push(/uke \d+/.test(document.body.textContent), "ukenummer er synlig");
+  const dager = [...LYS.querySelectorAll(".akhq-dp-dag")];
+  push(dager.filter((d) => d.getAttribute("tabindex") === "0").length === 1, "rutenettet har nøyaktig én tabbbar dag (roving tabindex)");
+  // CodeInput: gruppe med navn, per-rute-etikett, autocomplete på første
+  const grp = document.querySelector(".akhq-code");
+  const ruter = [...LYS.querySelectorAll('[data-od-id="felt-otp"] .akhq-code-in')];
+  push(!!grp && grp.getAttribute("role") === "group" && !!grp.getAttribute("aria-labelledby"), "koderutene er en navngitt gruppe");
+  push(ruter.length === 6 && ruter[0].getAttribute("autocomplete") === "one-time-code" && /Siffer 1 av 6/.test(ruter[0].getAttribute("aria-label")), "seks ruter, first har one-time-code og «Siffer 1 av 6»");
+  // Fargedisiplin: ingen oransje i skjemakontrollene, feil er --dn
+  const feil = document.querySelector('.akhq-code[data-invalid=true] .akhq-code-in');
+  const fc = feil ? getComputedStyle(feil).borderTopColor : "";
+  push(/168, ?85, ?54/.test(fc), "feilramme er --dn leire (" + fc + "), ikke rød");
+  const alle = [...document.querySelectorAll(".akhq-sel,.akhq-cmb-in,.akhq-dp-trig,.akhq-code-in,.akhq-rad-mark")];
+  push(alle.every((e) => !/217, ?119, ?87/.test(getComputedStyle(e).backgroundColor)), "ingen skjemakontroll bruker oransje som flate");
+  const ut = document.createElement("div"); ut.className = "assert";
+  ut.innerHTML = res.map((r) => '<div class="' + (r[0] === "✓" ? "ok" : "bad") + '">' + r + "</div>").join("");
+  document.getElementById("light").appendChild(ut);
+  window.__assert = res;
+}, 90));
+</script></body></html>
