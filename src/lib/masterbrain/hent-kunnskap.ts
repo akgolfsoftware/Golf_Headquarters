@@ -210,22 +210,28 @@ const DRILLS: Fasitfil = {
   blokk: () => {
     const antall = Object.keys(drills.entities ?? {}).length;
     if (antall === 0) {
-      // Tom bank er en bevisst beslutning, ikke en feil. Agenten må få vite
-      // det eksplisitt — ellers finner den på drill-navn.
+      // Tom bank er en bevisst beslutning, ikke en feil. Blokken må si tydelig
+      // at dette gjelder MORAD-banken — appens egen ExerciseDefinition-katalog
+      // er noe annet og leveres separat i konteksten. Uten den presiseringen
+      // motsier blokken systempromptens «bruk kun drill-navn fra listen».
       return [
-        "## Drill-banken er TOM — under oppbygging",
+        "## MORAD drill-banken i fasiten er TOM — under oppbygging",
         "",
-        felt(drills, "agent_regel", "Ikke foreslå navngitte drills."),
+        "Dette gjelder MORAD-drillene i Masterbrain. Appens egen øvelseskatalog",
+        "(ExerciseDefinition) er en separat kilde og leveres eventuelt i",
+        "konteksten som «tilgjengeligeDrills» — får du en slik liste, bruk den.",
         "",
-        "Begrunnelse:",
+        felt(drills, "agent_regel", "Ikke foreslå navngitte MORAD-drills."),
+        "",
+        "Begrunnelse for at MORAD-banken ble tømt:",
         json(drills.begrunnelse),
         "",
-        "Du skal beskrive HVA som bør trenes (pyramideområde, P-posisjon),",
-        "men aldri oppgi et drill-navn. Finn aldri på en drill selv.",
+        "Uten en katalog i konteksten: beskriv HVA som bør trenes",
+        "(pyramideområde, P-posisjon), men finn aldri på et drill-navn.",
       ].join("\n");
     }
     return [
-      `## Drill-bank (${antall} drills)`,
+      `## MORAD drill-bank (${antall} drills)`,
       "",
       "Bruk KUN navn herfra. Finn aldri på nye.",
       json(drills.entities),
@@ -260,24 +266,46 @@ const LTAD: Fasitfil = {
   fil: "knowledge/concepts/ltad-framework.json",
   versjon: felt(ltadFramework, "version", "ukjent"),
   status: "FASIT",
-  blokk: () =>
-    [
+  blokk: () => {
+    // Kun det planlegging trenger: volumtak og aldersspenn. Fasenes
+    // prosa-lister (physical_focus, mental_focus, coaching_principles) er
+    // ~4 000 tegn og hører hjemme i en samtale om utviklingsfilosofi, ikke i
+    // en plan-generering som skal treffe riktig timetall.
+    const faser = ltadFramework.phases.map((f) => ({
+      id: f.id,
+      navn: f.name_no,
+      alder: `${f.age_min}-${f.age_max}`,
+      golftimer_uke: `${f.golf_hours_per_week_min}-${f.golf_hours_per_week_max}`,
+      treningstimer_uke: `${f.training_hours_per_week_min}-${f.training_hours_per_week_max}`,
+    }));
+    return [
       "## LTAD — aldersfaser og volumtak",
       "",
-      "Volumtak per alder (se også invariant inv_3: ukentlige timer ≤ alder for under 18):",
+      "Volumtak per alder. Se også invariant inv_3: for spillere under 18 kan",
+      "ukentlig volum aldri overstige spillerens alder i timer.",
       json(ltadFramework.golf_volumes),
       "",
-      "Faser:",
-      json(ltadFramework.phases),
-    ].join("\n"),
+      "Faser (aldersspenn og timetall):",
+      json(faser),
+    ].join("\n");
+  },
 };
 
 // ---------------------------------------------------------------------------
 // Rutingtabell — oppgavetype til fasitfiler
 // ---------------------------------------------------------------------------
 
+/**
+ * Rutingtabell. Rekkefølgen er prioritet — mest oppgavekritiske fil først,
+ * fordi tegnbudsjettet dropper fra slutten.
+ *
+ * Merk at DRILLS bevisst IKKE er med i plan-generering: der leverer appen sin
+ * egen ExerciseDefinition-katalog i konteksten (`tilgjengeligeDrills`), og
+ * MORAD-bankens «den er tom»-melding ville stått rett mot systempromptens
+ * «bruk kun drill-navn fra listen». De to katalogene er ulike ting.
+ */
 const RUTING: Record<Oppgavetype, Fasitfil[]> = {
-  "plan-generering": [CANON, MIKROPERIODISERING, LTAD, DRILLS],
+  "plan-generering": [CANON, MIKROPERIODISERING, LTAD],
   "sg-diagnose": [SG_PRINSIPPER, FEIL, POSISJONER],
   "drill-forslag": [DRILLS, FEIL, CANON],
   periodisering: [CANON, MIKROPERIODISERING],
