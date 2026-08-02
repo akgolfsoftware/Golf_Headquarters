@@ -19,6 +19,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { logError } from "@/lib/error-tracking";
 import { anonymiserBruker } from "@/lib/gdpr/anonymiser-bruker";
+import { slettGamleFeillogger } from "@/lib/gdpr/slett-gamle-feillogger";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,6 +34,15 @@ export async function GET(req: Request): Promise<NextResponse> {
   }
 
   try {
+    // Feillogg-retensjon (90 dager) kjører uansett om det finnes konti å
+    // anonymisere — den er en egen forpliktelse fra personvernerklæringen.
+    let feilloggSlettet = 0;
+    try {
+      feilloggSlettet = await slettGamleFeillogger();
+    } catch (error) {
+      await logError({ context: "cron.cleanup-deleted-accounts.feillogg", error });
+    }
+
     const cutoff = new Date(Date.now() - RETENTION_DAYS * 24 * 60 * 60 * 1000);
 
     const kandidater = await prisma.user.findMany({
@@ -46,7 +56,7 @@ export async function GET(req: Request): Promise<NextResponse> {
     });
 
     if (kandidater.length === 0) {
-      return NextResponse.json({ ok: true, anonymisert: 0 });
+      return NextResponse.json({ ok: true, anonymisert: 0, feilloggSlettet });
     }
 
     // Én konto om gangen: en feil på én skal ikke stoppe resten, og hver
@@ -70,6 +80,7 @@ export async function GET(req: Request): Promise<NextResponse> {
     return NextResponse.json({
       ok: true,
       anonymisert,
+      feilloggSlettet,
       feilet: feilet.length,
       ids: kandidater.map((u) => u.id),
     });

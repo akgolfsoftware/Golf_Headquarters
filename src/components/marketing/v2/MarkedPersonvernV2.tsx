@@ -188,7 +188,7 @@ function JurUl({ children }: { children: ReactNode }) {
 
 const A_STYLE = { color: T.lime, textDecoration: "underline" as const };
 
-const SIST_OPPDATERT = "12. mai 2026";
+const SIST_OPPDATERT = "2. august 2026";
 
 /* ════════════════════════════════════════════════════════
    M-PERSONVERN (/personvern)
@@ -250,6 +250,7 @@ export function MarkedPersonvernV2() {
                 <li><strong style={{ color: T.fg }}>Spillerprofil:</strong> handicap, alder, antall års spilling, ambisjon.</li>
                 <li><strong style={{ color: T.fg }}>Trenings- og spilldata:</strong> runder, tester, drills, Trackman-import, AI-chat-historikk.</li>
                 <li><strong style={{ color: T.fg }}>Helse-relatert data (frivillig):</strong> hvilepuls, søvn, kun hvis du selv registrerer.</li>
+                <li><strong style={{ color: T.fg }}>Lydopptak av coaching-økter:</strong> kun når du (eller foresatt) har sagt ja på forhånd. Se punkt 8.</li>
                 <li><strong style={{ color: T.fg }}>Tekniske data:</strong> IP-adresse, nettleser, pålogging-tidspunkt, feillogger.</li>
                 <li><strong style={{ color: T.fg }}>Betalingsdata:</strong> håndteres av Stripe. Vi lagrer kun ID og status, ikke kortinformasjon.</li>
               </JurUl>
@@ -273,17 +274,25 @@ export function MarkedPersonvernV2() {
                 <li><strong style={{ color: T.fg }}>Stripe</strong>: betalingsbehandling</li>
                 <li><strong style={{ color: T.fg }}>Resend</strong>: utsendelse av transaksjons-e-post</li>
                 <li><strong style={{ color: T.fg }}>Anthropic</strong>: AI-coach (Claude). Anthropic lagrer ikke prompts ut over kort retensjonsperiode for misbrukskontroll</li>
-                <li><strong style={{ color: T.fg }}>Sentry</strong>: feilrapportering (PII filtrert ut)</li>
+                <li><strong style={{ color: T.fg }}>OpenAI</strong>: talegjenkjenning av lydopptak (Whisper) og enkelte AI-funksjoner</li>
+                <li><strong style={{ color: T.fg }}>Google</strong>: kalender- og e-postsynkronisering, kun for brukere som selv kobler til kontoen sin</li>
+                <li><strong style={{ color: T.fg }}>Notion</strong>: synkronisering av coaching-notater, kun for brukere som selv kobler til</li>
+                <li><strong style={{ color: T.fg }}>Upstash</strong>: teknisk trafikkbegrensning (lagrer IP-adresse kortvarig)</li>
+                <li><strong style={{ color: T.fg }}>Vercel Analytics og Speed Insights</strong>: anonym besøks- og ytelsesmåling, ingen profilering</li>
+                <li><strong style={{ color: T.fg }}>Mapbox</strong>: banekart. Kartet lastes i nettleseren din; vi sender ikke spillerdata dit</li>
               </JurUl>
             </JurSection>
 
             <JurSection title="5. Lagringstid">
               <JurUl>
                 <li><strong style={{ color: T.fg }}>Aktive konto-data:</strong> så lenge kontoen er aktiv</li>
-                <li><strong style={{ color: T.fg }}>Inaktive kontoer:</strong> slettes etter 36 måneder uten innlogging</li>
+                <li>
+                  <strong style={{ color: T.fg }}>Ber du om sletting:</strong> du har 30 dagers angrefrist. Deretter avidentifiseres kontoen automatisk: navn, e-post, telefon, fødselsdato, bilde og all fritekst du selv har skrevet vaskes bort. Treningstallene beholdes, men de peker ikke lenger på deg
+                </li>
                 <li><strong style={{ color: T.fg }}>Regnskapsdata (fakturaer, betalinger):</strong> 5 år iht. bokføringsloven</li>
-                <li><strong style={{ color: T.fg }}>Feillogger:</strong> 90 dager</li>
-                <li><strong style={{ color: T.fg }}>AI-chat-historikk:</strong> kan slettes av deg når som helst, slettes uansett ved konto-sletting</li>
+                <li><strong style={{ color: T.fg }}>Lydopptak:</strong> 90 dager, deretter slettes lydfilen automatisk. Transkripsjon og sammendrag beholdes som del av treningsjournalen</li>
+                <li><strong style={{ color: T.fg }}>Feillogger:</strong> 90 dager, deretter slettes de automatisk</li>
+                <li><strong style={{ color: T.fg }}>AI-chat-historikk:</strong> lagres sammen med kontoen din. Vil du ha den slettet før du sletter kontoen, ber du oss om det på personvern@akgolf.no</li>
               </JurUl>
             </JurSection>
 
@@ -313,16 +322,34 @@ export function MarkedPersonvernV2() {
               <JurP>
                 For brukere under 16 år må forelder eller foresatt opprette og forvalte kontoen. Vi behandler ikke data om mindreårige uten gyldig samtykke fra foresatt.
               </JurP>
+              <JurP>
+                Inntil foresatt har bekreftet samtykke, får spilleren ikke tilgang til treningsdataene sine i appen. Foresatt kan når som helst trekke samtykket tilbake, be om innsyn eller be om sletting på vegne av barnet.
+              </JurP>
             </JurSection>
 
-            <JurSection title="8. Cookies og analytics">
+            <JurSection title="8. Lydopptak av coaching-økter">
+              <JurP>
+                Vi kan ta opp lyd under en coaching-økt for å dokumentere den, lage sammendrag og sjekkpunkter til neste økt. Opptak skjer <strong style={{ color: T.fg }}>kun</strong> når samtykke er registrert på forhånd.
+              </JurP>
+              <JurUl>
+                <li><strong style={{ color: T.fg }}>Er spilleren under 16 år, er det foresatt som gir samtykket</strong>, via en egen lenke på e-post. Spilleren kan ikke gi det selv.</li>
+                <li>Opptaket transkriberes med talegjenkjenning (OpenAI Whisper), og coach bruker transkripsjon og AI-sammendrag til treningsplanlegging.</li>
+                <li>Lydfilen slettes automatisk etter 90 dager. Transkripsjon og sammendrag beholdes som del av treningsjournalen inntil kontoen slettes eller samtykket trekkes.</li>
+                <li>Samtykket kan trekkes når som helst. Da stoppes nye opptak umiddelbart.</li>
+              </JurUl>
+            </JurSection>
+
+            <JurSection title="9. Cookies og analytics">
               <JurP>
                 Vi bruker minimalt med cookies, kun det som er nødvendig for innlogging og sikkerhet. For analytics bruker vi <strong style={{ color: T.fg }}>Plausible</strong>, som er cookie-fri og GDPR-vennlig.
+              </JurP>
+              <JurP>
+                I tillegg måler <strong style={{ color: T.fg }}>Vercel Analytics</strong> og <strong style={{ color: T.fg }}>Speed Insights</strong> besøk og sidelastetid uten cookies og uten å profilere deg.
               </JurP>
               <JurP>Vi bruker ikke Google Analytics, Facebook Pixel eller tilsvarende tredjepart-tracking på marketing-sidene.</JurP>
             </JurSection>
 
-            <JurSection title="9. Endringer">
+            <JurSection title="10. Endringer">
               <JurP>
                 Vi kan oppdatere denne erklæringen. Vesentlige endringer varsles på e-post til registrerte brukere. Datoen for siste oppdatering står øverst på siden.
               </JurP>

@@ -63,6 +63,7 @@ import {
   FileText,
   Mic,
   Tag,
+  AlertTriangle,
 } from "lucide-react";
 
 const ICON_STROKE = 1.5;
@@ -249,6 +250,7 @@ const ACTIONS: Action[] = [
   { id: "s-kalender-synk", label: "Kalender-synk (Google)", description: "Google Calendar-kobling", keywords: ["kalender", "synk", "google", "sync"], icon: RefreshCw, kind: { type: "navigate", href: "/admin/settings/calendar" } },
   { id: "s-klubb", label: "Klubb-innstillinger", description: "Klubbens oppsett", keywords: ["klubb", "innstilling", "anlegg", "bane"], icon: Building2, kind: { type: "navigate", href: "/admin/klubb/innstillinger" } },
   { id: "s-audit", label: "Audit-log", description: "Hendelseslogg", keywords: ["audit", "log", "logg", "historikk", "sikkerhet"], icon: Shield, kind: { type: "navigate", href: "/admin/audit-log" } },
+  { id: "s-feillogg", label: "Feillogg", description: "Feil i produksjon med stack trace", keywords: ["feil", "feillogg", "error", "krasj", "stack", "drift"], icon: AlertTriangle, kind: { type: "navigate", href: "/admin/feillogg" } },
   // --- System ---
   {
     id: "view-mode-player",

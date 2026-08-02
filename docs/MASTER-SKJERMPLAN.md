@@ -472,6 +472,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 | Team | `/admin/team` | ✓ | --- | ✓ | ~ | ~ | ~ |
 | · Inviter | `/admin/team/inviter` | ✓ | --- | ✓ | ✓ | – | † | 2026-07-16: v2 (`AdminInviterCoachV2`), samme `inviterCoach`-action. `(legacy)` fjernet. |
 | Audit-log | `/admin/audit-log` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-07-15: portet til v2 (`AdminAuditLogV2`) — samme AuditLog-spørring/kind-status-utledning som legacy, KpiFlis+Rad-liste, ærlig tomtilstand. Lagt i Innsikt-mer-gruppen (var uten menylenke). `(legacy)/audit-log` slettet. |
+| Feillogg | `/admin/feillogg` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † | 2026-08-02 (tiltak 6): ny v2-flate (`AdminFeilloggV2`) som leser `ErrorLog` — kontekst, melding, stack trace bak klikk, KPI for kritiske siste døgn. Alvorlig feil gir Telegram-melding samtidig (`error-tracking.ts`). Loggen ryddes etter 90 dager. Kun ADMIN. |
 | AI-agenter | `/admin/agents` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminAgenterV2`. |
 | · Agent-detalj | `/admin/agents/[agentId]` | ✓ | ✓✓– | ✓ | ✓ | ✓ | † |
 | E-postmaler | `/admin/email-templates` | ✓ | --- | ✓ | ~ | ~ | ~ | Design rettet – → ✓ 16. jul: `V2Shell` + `AdminEmailV2`. |
