@@ -244,7 +244,14 @@ const DOMENER_UTEN_DRILL: ReadonlySet<Domene> = new Set<Domene>(["BOOKING", "OKO
 const DOMENE_TIL_SEKSJONER: Record<Domene, (o: FasitOpts) => string[]> = {
   SG: (o) => sgSeksjon(o.sgOmrade),
   TRACKMAN: (o) => [...sgSeksjon(o.sgOmrade), ...teknikkSeksjon(o.faultId)],
-  TEKNIKK: (o) => teknikkSeksjon(o.faultId),
+  // Teknikkspørsmål som springer ut av et SG-tall må bære SG-forbeholdet med
+  // seg. Uten dette mistet TEKNIKK-grenen hypotese-språket, og en svingfeil
+  // utledet fra tall kunne presenteres som et funn — nøyaktig framstillingen
+  // beslutningen 2026-07-31 forbyr. Funnet av eval-porten, ikke av en leser.
+  TEKNIKK: (o) => [
+    ...teknikkSeksjon(o.faultId),
+    ...(o.sgOmrade ? sgSeksjon(o.sgOmrade) : []),
+  ],
   PLAN: (o) => planSeksjon(o.akKategori),
   BOOKING: () => [],
   OKONOMI: () => [],

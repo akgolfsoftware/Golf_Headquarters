@@ -791,23 +791,37 @@ relevance, word_count) til å filtrere før embedding.
 `sg-trackman-021.md`, `sg-trackman-040.md` og `treningsvolum-004.md` er uindekserte og vil ellers aldri bli
 funnet.
 
-#### 2.2 Prompt-eval — porten mot forfall
+#### 2.2 Eval-porten — **utført 2026-08-02**
 
-**Viktig avklaring:** masterbrains `scripts/eval-holdout.py` finnes allerede, men måler noe annet enn det vi
-trenger. Den sjekker **om fasiten inneholder det som skal til** for å svare, og kjører ingen språkmodell.
-Grønt der betyr «kunnskapen finnes og er entydig», ikke «agenten svarte riktig».
+`npm run eval:prompts`, i `verify` og i CI.
 
-Vi trenger en **andre** eval: kjør våre faktiske prompts gjennom modellen mot `holdout-15.jsonl`, og score
-output mot `RUBRIC.md`. Fem dimensjoner à 5 poeng. Tre av dem (`pyramid_sum=100`, `l_fase_respect`,
-`drill_exists`) er deterministisk sjekkbare i kode; `primary_weakness_correct` og `confidence_honest`
-trenger en dommer. Spesialcasene (`negative_guard`, `junior_volume_cap`, `readiness_cap`, `retningssignal`,
-`PERIOD_SWITCH`) er rene assertions.
+**Hva den måler, og hva den ikke måler.** Masterbrains `eval-holdout.py` sjekker om *fasiten* inneholder det
+som trengs. Denne sjekker om **konteksten appen faktisk injiserer** (`byggFasitKontekst`) bærer de samme
+fakta fram til modellen. Fasiten kan være komplett samtidig som vårt kontekstlag mister noe på veien — og
+det var nøyaktig feilen den fant.
 
-**Tak å være klar over:** `drill_exists` gir nødvendigvis 0 så lenge drill-banken er tom. Maks oppnåelig er
-20/25. Ikke tolk det som regresjon.
+Per holdout-case bygges konteksten, og det sjekkes at den navngir forventet svingfeil, omtaler SG-båndet og
+bærer hypotese-språket. Gaten sammenligner **andel** mot `eval/baseline.json`, ikke absolutte tall, så
+sjekker kan utvides uten falske utslag. Lavere dekning enn baseline → exit 1.
 
-Gate: en promptversjon rulles ikke ut med lavere score enn den forrige. Kjøres i CI ved endring i
-`MALER`, `AI_COACH_SYSTEM_PROMPT`, `CADDIE_SYSTEM_PROMPT` eller `PLAN_REVISION_SYSTEM`.
+**To lag.** Lag 1 (standard) kjører uten språkmodell, uten API-nøkkel og uten kostnad — derfor kan den stå i
+CI, som ikke har `ANTHROPIC_API_KEY`. Lag 2 (`--med-modell`) skal kjøre de ekte promptene og score mot
+rubrikken; den er ikke implementert ennå og feiler med en tydelig melding framfor å late som.
+
+**Den fant en ekte feil med én gang.** `TEKNIKK`-grenen i `kontekst.ts` returnerte kun MORAD-feil og
+P-posisjoner — uten SG-seksjonen. Et teknikkspørsmål som sprang ut av et SG-tall mistet dermed forbeholdet
+«må bekreftes med video, sikte og køllevalg», og svingfeilen kunne presenteres som et funn. Nøyaktig
+framstillingen beslutningen 31. juli forbyr. Dekningen gikk fra 27/39 til 35/38 etter fiksen.
+
+**Én av «feilene» var i sjekken, ikke i koden.** ho-002 har en svingfeil uten SG-bånd — den er observert på
+video, ikke utledet fra statistikk. Å kreve SG-forbeholdet der ville vært å teste feil ting. Sjekken krever
+det nå bare når et SG-bånd faktisk er i spill.
+
+**Kjent tak:** `drill_finnes` gir 0 for de tre casene som etterspør en navngitt drill, så lenge banken er
+tom. 35/38 er dagens maksimum, ikke en regresjon.
+
+Porten er verifisert ved å gjeninnføre regresjonen med vilje: dekningen falt til 71,1 % og gaten feilet med
+exit 1.
 
 #### 2.3 Ukentlig destillering
 
@@ -860,7 +874,7 @@ Disse er ikke tekniske oppgaver. De står i veien for konkrete steg over.
 1.3 agenter på loggen          ✔ utført 2026-08-02
 1.4 «hvorfor avvist»           ✔ utført 2026-08-02
 2.1 knowledge_chunks           ← gjør rag-corpus reell
-2.2 prompt-eval                ← porten mot forfall
+2.2 eval-porten                ✔ utført 2026-08-02
 2.3 destillering  2.4 kostnad  ← lukker løkken
 3.x bredde                     ← etter pilot
 ```

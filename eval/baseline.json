@@ -1,0 +1,104 @@
+{
+  "kjort": "2026-08-02T15:31:45.713Z",
+  "totalScore": 35,
+  "totalMaks": 38,
+  "drillBankTom": true,
+  "caser": [
+    {
+      "id": "ho-001",
+      "score": 3,
+      "maks": 3,
+      "feilet": []
+    },
+    {
+      "id": "ho-002",
+      "score": 3,
+      "maks": 3,
+      "feilet": []
+    },
+    {
+      "id": "ho-003",
+      "score": 5,
+      "maks": 6,
+      "feilet": [
+        "drill_finnes (drill-banken er tom (kjent tak))"
+      ]
+    },
+    {
+      "id": "ho-004",
+      "score": 5,
+      "maks": 6,
+      "feilet": [
+        "drill_finnes (drill-banken er tom (kjent tak))"
+      ]
+    },
+    {
+      "id": "ho-005",
+      "score": 5,
+      "maks": 5,
+      "feilet": []
+    },
+    {
+      "id": "ho-006",
+      "score": 1,
+      "maks": 1,
+      "feilet": []
+    },
+    {
+      "id": "ho-007",
+      "score": 1,
+      "maks": 1,
+      "feilet": []
+    },
+    {
+      "id": "ho-008",
+      "score": 1,
+      "maks": 1,
+      "feilet": []
+    },
+    {
+      "id": "ho-009",
+      "score": 1,
+      "maks": 1,
+      "feilet": []
+    },
+    {
+      "id": "ho-010",
+      "score": 5,
+      "maks": 6,
+      "feilet": [
+        "drill_finnes (drill-banken er tom (kjent tak))"
+      ]
+    },
+    {
+      "id": "ho-011",
+      "score": 1,
+      "maks": 1,
+      "feilet": []
+    },
+    {
+      "id": "ho-012",
+      "score": 1,
+      "maks": 1,
+      "feilet": []
+    },
+    {
+      "id": "ho-013",
+      "score": 1,
+      "maks": 1,
+      "feilet": []
+    },
+    {
+      "id": "ho-014",
+      "score": 1,
+      "maks": 1,
+      "feilet": []
+    },
+    {
+      "id": "ho-015",
+      "score": 1,
+      "maks": 1,
+      "feilet": []
+    }
+  ]
+}

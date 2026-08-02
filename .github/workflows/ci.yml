@@ -46,6 +46,9 @@ jobs:
       - name: Action-auth gate (KS-1 — server actions må ha auth-import)
         run: npm run check:action-auth
 
+      - name: Eval-port (fasit-dekning mot holdout)
+        run: npm run eval:prompts
+
       - name: Unit tests (node:test + tsx)
         run: npm test
 

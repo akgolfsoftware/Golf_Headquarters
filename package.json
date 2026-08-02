@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "check:action-auth": "node scripts/check-action-auth.mjs",
-    "verify": "prisma validate && prisma generate && tsc --noEmit && eslint --quiet src && node scripts/check-action-auth.mjs && npm run build",
+    "verify": "prisma validate && prisma generate && tsc --noEmit && eslint --quiet src && node scripts/check-action-auth.mjs && npm run eval:prompts && npm run build",
     "postinstall": "prisma generate",
     "db:seed": "tsx prisma/seed.ts",
     "kart": "tsx scripts/skjerm-kart.ts",
@@ -29,7 +29,8 @@
     "prepare": "husky",
     "meg:tilbakeskriv": "tsx scripts/meg-tilbakeskriving/run.ts",
     "meg:morgen": "tsx scripts/meg-tilbakeskriving/morgen.ts",
-    "mulligan:triage": "tsx scripts/mulligan-triage/run.ts"
+    "mulligan:triage": "tsx scripts/mulligan-triage/run.ts",
+    "eval:prompts": "tsx scripts/eval-prompts.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.85",
