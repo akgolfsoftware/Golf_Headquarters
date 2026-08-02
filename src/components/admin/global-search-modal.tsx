@@ -191,10 +191,12 @@ const ACTIONS: Action[] = [
   {
     id: "wagr",
     label: "WAGR-benchmark",
-    description: "Sammenlign spillere mot World Amateur ranking",
+    description: "Sammenlign spillere mot World Amateur ranking — i Talent-radar",
     keywords: ["wagr", "ranking", "benchmark", "amatør", "amateur", "talent"],
     icon: TrendingUp,
-    kind: { type: "navigate", href: "/admin/talent/wagr-benchmark" },
+    // WAGR-benchmark er slått sammen i Talent-radar; /admin/talent/wagr-benchmark
+    // er nå kun en redirect dit. Pek direkte, så slipper søket et ekstra hopp.
+    kind: { type: "navigate", href: "/admin/talent/radar" },
   },
   {
     id: "export-report",
