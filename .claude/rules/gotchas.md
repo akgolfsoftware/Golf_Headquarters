@@ -4,6 +4,34 @@ Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekk
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
 Ingen låst designkanon per 2026-07-25 — nytt system utvikles i Open Design (CLAUDE.md invariant 2).
 
+### Mørkt tema: tre mekanismer, én kanonisk — `[data-theme]` er død selektor (fastslått 2026-08-03)
+- **Var uklart:** tre mekanismer slår på mørkt tema i CSS-en, og det fantes ingen beslutning om
+  hvilken som gjelder. Ny kode koblet seg tilfeldig på hvilken som helst av dem.
+- **Fastslått (målt 03.08.2026, designport steg 3):**
+  1. **`html[data-v2-tema="dark"]`** (`globals.css:793`) er den KANONISKE bryteren. Den er det
+     eneste som faktisk veksler tema i drift: satt av inline-scriptet i `src/app/layout.tsx:144`
+     (leser `ak-v2-tema`-cookien) og av sol/måne-knappen i `src/components/v2/shell.tsx:203`.
+     Alt nytt tema-arbeid kobles hit.
+  2. **`.dark`-klassen** lever fortsatt: 26 forekomster i 25 `.tsx`-filer (marketing/auth/v2-flater
+     som alltid skal være mørke), pluss Cmd+K-kommandoen `toggle-theme` i
+     `src/components/portal/global-search-modal.tsx:554` som legger til/fjerner `.dark` på `<html>`
+     og skriver `localStorage["akgolf-theme"]`. Den er altså ikke død, men den er heller ikke
+     kanonisk — den skal konsolideres inn i `data-v2-tema` i en egen, senere jobb.
+  3. **`[data-theme="dark"]` er DØD SELEKTOR.** Attributtet `data-theme` settes aldri av noen kode:
+     null treff i `*.ts`/`*.tsx` i hele `src/`. De to eneste forekomstene i repoet er selve
+     CSS-selektorene, `src/app/globals.css:261` og `src/styles/golfdata-tokens.css:165`. Begge er
+     nå kommentert på stedet.
+- **Presisering som er lett å ta feil av:** `docs/port/fase1-token-beslutning.md` §2.2 skrev
+  «94 deklarasjoner i to blokker som aldri kan aktiveres» (44 + 50). Det er **selektoren** som er
+  død, ikke deklarasjonene. Begge blokkene er selektorlister der `[data-theme="dark"]` deler
+  regelblokk med `.dark`-varianter (`.dark, [data-theme="dark"] { … }` og
+  `.dark .golfdata-scope, .golfdata-scope.dark, .golfdata-scope .dark, .golfdata-scope [data-theme="dark"] { … }`).
+  Alle 94 deklarasjonene er i full bruk via `.dark`. Sletter du blokkene, mister hver mørk flate
+  temaet sitt. Det som trygt kan slettes senere (steg 10), er de to `[data-theme="dark"]`-LINJENE.
+- **Advarsel for steg 4 og senere:** ikke koble nye tokens (Paper-settet) til `[data-theme]`. Et
+  tokensett hengt på den selektoren ser riktig ut i CSS-en og aktiveres aldri i nettleseren.
+  Mørk-varianter av nye tokens hører under `html[data-v2-tema="dark"]`.
+
 ### Workbench-datomatte (session-move-math.ts) — Oslo-korrekt siden 2026-07-27 (oppdaget 2026-07-19)
 - **Var:** `mondayOf`/`dateForDayIndex`/`weekRefDate` regnet uke/dag fra `new Date()` med rå
   `.getDay()`/`.setHours(0,0,0,0)` — på Vercel (UTC) kunne en økt lagt til/flyttet nær norsk

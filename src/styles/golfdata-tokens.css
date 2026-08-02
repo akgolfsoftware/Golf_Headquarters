@@ -158,6 +158,19 @@
    MØRK — DS-ens :root/.dark-aliaser. Treffer både AgencyOS
    (.dark på forelder) og mørke data-hero-innfellinger nested
    inne i et lyst golfdata-scope.
+
+   `.golfdata-scope [data-theme="dark"]` er DØD SELEKTOR (verifisert 03.08.2026,
+   designport steg 3): attributtet `data-theme` settes aldri av noen kode — null treff
+   i `*.ts`/`*.tsx` i hele `src/`. Den andre forekomsten er `src/app/globals.css:261`.
+
+   MERK — de 50 deklarasjonene under er IKKE døde. De aktiveres av de tre
+   `.dark`-selektorene over, som deler regelblokk med den døde. Fase 1
+   (`docs/port/fase1-token-beslutning.md` §2.2) skrev «94 deklarasjoner som aldri kan
+   aktiveres»; det er selektoren, ikke deklarasjonene, som er død. Fjern kun
+   `[data-theme="dark"]`-linjen når filen avvikles (steg 10).
+
+   Kanonisk mørk-bryter er `html[data-v2-tema="dark"]` (globals.css:793). Nye tokens
+   skal aldri kobles til `[data-theme]`. Se `.claude/rules/gotchas.md`.
    ============================================================ */
 .dark .golfdata-scope,
 .golfdata-scope.dark,

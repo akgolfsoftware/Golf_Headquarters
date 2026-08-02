@@ -257,6 +257,23 @@
   --phase-peak: oklch(0.9 0.19 122);
 }
 
+/* MØRK — semantiske aliaser.
+ *
+ * `[data-theme="dark"]` er DØD SELEKTOR (verifisert 03.08.2026, designport steg 3):
+ * attributtet `data-theme` settes aldri av noen kode — null treff i `*.ts`/`*.tsx` i
+ * hele `src/`. De to eneste forekomstene i repoet er denne selektoren og
+ * `src/styles/golfdata-tokens.css:165`.
+ *
+ * MERK — de 44 deklarasjonene under er IKKE døde. De aktiveres av `.dark`, som deler
+ * regelblokk med den døde selektoren. Fase 1 (`docs/port/fase1-token-beslutning.md`
+ * §2.2) skrev «94 deklarasjoner som aldri kan aktiveres»; det er selektoren, ikke
+ * deklarasjonene, som er død. Fjern kun `[data-theme="dark"]`-linjen når den tid
+ * kommer (steg 10) — sletting av blokken endrer mørkt tema på hver flate som bruker
+ * `.dark`.
+ *
+ * Kanonisk mørk-bryter er `html[data-v2-tema="dark"]` (linje 793). Nye tokens skal
+ * aldri kobles til `[data-theme]`. Se `.claude/rules/gotchas.md`.
+ */
 .dark,
 [data-theme="dark"] {
   /* Semantiske aliaser — MØRK */

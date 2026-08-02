@@ -75,10 +75,21 @@ koden som skal matche den, og tilgjengelig fra enhver maskin og enhver økt.
 fra bunnen fordi Paper ikke har tegnet dem. Dette er grunnlaget for å tallfeste steg 7–9.
 **Endrer ingen skjerm.**
 
-### Steg 3 — Rydd mørk-tema-mekanismene
+### Steg 3 — Rydd mørk-tema-mekanismene ✔ FERDIG 03.08.2026
 Tre parallelle systemer, ett dødt (94 deklarasjoner som aldri aktiveres). Velg én mekanisme
 (`data-v2-tema` er kandidaten per fase 1 §5). Må skje før nye farger kobles på, ellers arves
 feilen inn i det nye settet.
+
+**Utfall:** `html[data-v2-tema="dark"]` er bekreftet som den kanoniske mørk-bryteren.
+`[data-theme="dark"]` er verifisert som død selektor (attributtet settes aldri av kode — null
+treff i `*.ts`/`*.tsx`) og er markert på stedet i `src/app/globals.css:261` og
+`src/styles/golfdata-tokens.css:165`. Beslutningen og advarselen mot å koble nye tokens til
+`[data-theme]` ligger i `.claude/rules/gotchas.md`.
+**Korreksjon til fase 1 §2.2:** det er selektoren som er død, ikke de 94 deklarasjonene — de deler
+regelblokk med `.dark` og er i full bruk. Selve linjene slettes derfor først i steg 10, sammen med
+`golfdata-tokens.css`. `.dark` (26 forekomster i 25 filer + Cmd+K-toggle) står igjen som en aktiv,
+ikke-kanonisk mekanisme som skal konsolideres i en egen jobb.
+**Endrer ingen skjerm.**
 
 ### Steg 4 — Paper-tokens inn ved siden av dagens
 Farger, avstander, radius, skygger og fonter fra Paper som eget sett. Dagens sett røres ikke.
