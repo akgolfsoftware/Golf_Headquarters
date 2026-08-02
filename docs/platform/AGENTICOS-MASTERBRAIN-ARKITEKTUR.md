@@ -9,6 +9,11 @@ uten å bli dyrere eller dårligere.
 
 ---
 
+> **Oppdatering 2026-08-02 — fase 1 er utført.** Delene av dokumentet som beskrev manglende sync og
+> dobbeltfasit er historikk nå. Full sync er kjørt mot `akgolfsoftware/masterbrain` (115 filer), og de to
+> parallelle kunnskapskopiene i appen er fjernet. Se «Fase 1 — utført» nederst for hva som faktisk ble
+> gjort og hva som gjenstår. Analysen under er beholdt fordi den forklarer hvorfor.
+
 ## 0. MASTERBRAIN-status
 
 **Fant du mappen? Ja — men bare halve.**
@@ -414,10 +419,8 @@ masterbrain/                          (eget repo — Anders' kunnskapskilde)
 
 Dette er MVP. Alt her er lav risiko og bruker eksisterende mønstre.
 
-1. **Kjør full MASTERBRAIN-sync** og få `MANIFEST.md`, `processed/rules`, `rag-corpus` og `training-data`
-   inn i appen. Uten dette er alt annet gjetting.
-2. **Rydd dobbeltfasiten.** Bestem om `src/lib/ai-coach/kunnskap/` skal inn i masterbrain eller avvikles.
-   Én kilde.
+1. ~~**Kjør full MASTERBRAIN-sync**~~ — **utført 2026-08-02**, se §7.
+2. ~~**Rydd dobbeltfasiten.**~~ — **utført 2026-08-02**, se §7.
 3. **`AiInteraksjon`-tabellen** (additiv, `CREATE TABLE IF NOT EXISTS` via `db execute`). La Caddie,
    `ai-plan`, plan-revisjon og agent-feedback skrive til den. Flytt agent-tommelen ut av `AuditLog`.
 4. **`src/lib/agenticos/` med ruter + prompt-bygger + modellvalg.** Start med **én** flate:
@@ -489,3 +492,71 @@ lønnsom på.
 2. **Eval-score mot frosset sett** — måles ved hver promptendring. Skal aldri gå ned.
 3. **Kost per nyttig svar** — `costUsd` delt på antall interaksjoner med utfall GODKJENT. Fanger både
    kvalitetsfall og modellsløsing i ett tall.
+
+---
+
+## 7. Fase 1 — utført 2026-08-02
+
+Punkt 1 og 2 i veikartet er gjennomført. Full `verify` og alle 829 enhetstester er grønne.
+
+### Full sync kjørt
+
+`npm run sync:masterbrain` mot `akgolfsoftware/masterbrain` hentet inn 115 filer. Appens kopi var fra
+**2026-06-16** og hadde gått glipp av hele sammenslåingen 31. juli:
+
+| | Før | Etter |
+|---|---|---|
+| `positions.json`, `faults.json`, `drills.json` | v1.0.0 | v2.0.0 |
+| `ordbok.json` (75 MORAD-begreper, 347 sitater) | manglet | v2.1.0 |
+| `mikroperiodisering-og-tidsdimensjon.json` | manglet | v1.0.0 |
+| `rag-corpus/` | manglet | 100 filer |
+| `training-data/` (55 eksempler, 15 holdout-caser, rubrikk) | manglet | 5 filer |
+| `MANIFEST.md` | manglet | på plass |
+
+`MANIFEST.md` er nå i repoet og er kartet enhver agent skal lese først. Den dokumenterer også ni bevisste
+kunnskapshull — blant annet at **drill-banken er tom med vilje** (tømt 31. juli fordi den ikke var til å
+stole på) og at **putting mangler egen kunnskapskilde**, som er ~40 % av slagene.
+
+### Dobbeltfasiten ryddet
+
+Repoet hadde tre parallelle kopier av samme MORAD/CANON-kunnskap. To er fjernet:
+
+- **`src/lib/ai-coach/kunnskap/`** (15 md) hadde samme filnavn som masterbrains `rag-corpus/morad/`.
+  Ni var identiske; **seks hadde driftet fra fasiten** — de foreskrev navngitte drills fra den tømte banken
+  og framstilte SG→feil som diagnose. `rag-select.ts` leser nå den synkede kopien.
+- **`src/lib/domain/rules/`** var byte-identisk med materiale masterbrain arkiverte som utdatert
+  2026-07-31. Fem av seks filer var ubrukt kode; den sjette er erstattet av fasiten.
+- **`ai-coach/examples/`** var identisk med `training-data/examples/`.
+
+### Rettet: SG→feil var diagnose, skal være hypotese
+
+Den viktigste konsekvensen av at appen lå på juni-kunnskapen. `mapSgBandToFault()` returnerte
+«primær MORAD fault-id (første i listen)» — fra en liste MANIFEST-et eksplisitt sier **ikke er en
+rangering**. `sg-analyse-ekspert` sendte det videre til coachen som `MORAD-funn <id>`.
+
+Erstattet med `sgKandidatFeil()` (hele listen, likestilte kandidater) og `beskrivKandidatFeil()`, som
+formulerer det som Anders bestemte 31. juli: *«SG peker mot X eller Y — må bekreftes med video, sikte og
+køllevalg.»* Forslaget bærer nå `moradKandidater` og `erHypotese` i stedet for én `moradFaultId`, og en test
+låser formuleringen. `trackman-agent` gjettet en SG-basert feil når face-to-path var nøytral; den skriver nå
+signalet uten svingfeil framfor å gjette.
+
+### Sync-scriptet endret
+
+`processed/rules` synkes ikke lenger. MANIFEST-et er tydelig på at `processed/` er råmateriale og aldri
+fasit, og nettopp de filene var kilden til dobbeltfasiten.
+
+### Gjenstår i fase 1
+
+- `AiInteraksjon`-tabellen med kostnadssporing (additiv, `db execute` — `migrate dev`/`db push` er blokkert).
+- `src/lib/agenticos/` med ruter, prompt-bygger og modellvalg.
+- SG-tolkning for spilleren som første flate — merk at den nå må formuleres som hypotese, og at den ikke kan
+  foreskrive navngitte drills før drill-banken er bygget på nytt.
+
+### To ting Anders bør ta stilling til
+
+1. **Drill-banken er tom.** Agenter som foreslår driller (`drill-forslag`, `fabrikk`, `media-lofte`) står
+   uten fasit å sjekke mot. De kan fortsatt generere forslag, men ingenting validerer dem mot en katalog.
+2. **`morad-ordbok-v2.json` hadde en attribusjonsfeil** — innholdet er Mac O'Gradys, men var tilskrevet
+   «Mac Malaska», en forveksling med instruktøren Mike Malaska. Masterbrain rettet dette 31. juli og noterte
+   at appfila fortsatt var feil. Fila er nå slettet fra appen som del av oppryddingen, så feilen er ute av
+   koden — men den lever fortsatt i `ak-second-brain/wiki/sources/2026-05-18-morad-ordbok-v2.md`.
