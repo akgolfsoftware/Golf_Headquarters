@@ -3,11 +3,13 @@
 /**
  * Lydsamtykke på /admin/recording:
  * 1) Primær: send e-post til foresatt (VENTER til de bekrefter)
- * 2) Manuelt GITT for myndig (SELV) eller nødstilfelle
+ * 2) Kopier lenke (uten Resend)
+ * 3) Manuell GITT for myndig / nød
  */
 
 import { useState, useTransition } from "react";
 import {
+  hentLydSamtykkeLenke,
   registrerLydSamtykkeGitt,
   sendLydSamtykkeForesattEpost,
   trekkLydSamtykke,
@@ -43,9 +45,36 @@ export function LydSamtykkePilotPanel({
       });
       if (!res.ok) {
         setFeil(res.error);
+        if (res.consentUrl) {
+          try {
+            await navigator.clipboard.writeText(res.consentUrl);
+            setOk("E-post feilet — lenke kopiert til utklippstavle.");
+          } catch {
+            setOk(`Lenke (kopier manuelt): ${res.consentUrl}`);
+          }
+        }
         return;
       }
       setOk(res.message ?? "E-post sendt.");
+      router.refresh();
+    });
+  }
+
+  function kopierLenke() {
+    setFeil(null);
+    setOk(null);
+    start(async () => {
+      const res = await hentLydSamtykkeLenke({ playerId });
+      if (!res.ok || !res.consentUrl) {
+        setFeil(res.ok ? "Ingen lenke" : res.error);
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(res.consentUrl);
+        setOk(res.message ?? "Lenke kopiert.");
+      } catch {
+        setOk(`Kopier denne: ${res.consentUrl}`);
+      }
       router.refresh();
     });
   }
@@ -108,8 +137,8 @@ export function LydSamtykkePilotPanel({
         Venter på samtykke — {playerNavn}
       </p>
       <p className="text-[12px] text-muted-foreground">
-        Send e-post til foresatt. De åpner lenken og sier ja. Opptak starter
-        først da. (DKIM må være grønn så e-posten ikke havner i spam.)
+        Send e-post til foresatt, eller kopier lenke. Opptak starter først når
+        de har sagt ja.
       </p>
 
       <label className="flex flex-col gap-1 text-[12px]">
@@ -126,14 +155,24 @@ export function LydSamtykkePilotPanel({
         />
       </label>
 
-      <button
-        type="button"
-        onClick={sendEpost}
-        disabled={pending || !epost.trim()}
-        className="inline-flex items-center justify-center rounded-md bg-primary px-3 py-2 text-[13px] font-semibold text-primary-foreground disabled:opacity-50"
-      >
-        {pending ? "Sender …" : "Send samtykke til foresatt"}
-      </button>
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={sendEpost}
+          disabled={pending || !epost.trim()}
+          className="inline-flex items-center justify-center rounded-md bg-primary px-3 py-2 text-[13px] font-semibold text-primary-foreground disabled:opacity-50"
+        >
+          {pending ? "Sender …" : "Send samtykke til foresatt"}
+        </button>
+        <button
+          type="button"
+          onClick={kopierLenke}
+          disabled={pending}
+          className="inline-flex items-center justify-center rounded-md border border-border bg-background px-3 py-2 text-[13px] font-medium text-foreground disabled:opacity-50"
+        >
+          Kopier lenke
+        </button>
+      </div>
 
       <button
         type="button"
@@ -145,6 +184,10 @@ export function LydSamtykkePilotPanel({
 
       {visManuell && (
         <div className="flex flex-col gap-2 border-t border-border pt-2">
+          <p className="text-[11px] text-muted-foreground">
+            Kun for myndig spiller eller nød. Logger at coach registrerte
+            manuelt — erstatter ikke ekte foresatt-samtykke når det kreves.
+          </p>
           <label className="flex flex-col gap-1 text-[12px]">
             <span className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground">
               Gitt av

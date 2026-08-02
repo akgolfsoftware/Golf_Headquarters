@@ -1,11 +1,8 @@
 // Rate-limit på Upstash Redis (sliding window). Multi-instance-safe.
 //
 // Krever env-variabler UPSTASH_REDIS_REST_URL og UPSTASH_REDIS_REST_TOKEN.
-// I produksjon feiler kallet (ikke modul-initialiseringen) hvis disse mangler —
-// stille no-op er ikke akseptabelt i produksjonsmiljø (H6 security audit).
-// Feilen utsettes til rateLimit() kalles for å unngå at Next.js-build feiler
-// (npm run build kjøres i NODE_ENV=production uten kjøre-miljø-secrets).
-// I utvikling/test logges én advarsel og alle requests slipper gjennom.
+// I produksjon: fail-open (logg + in-memory soft limit per instance) med mindre
+// RATE_LIMIT_FAIL_CLOSED=1 er satt. Bygg feiler ikke uten secrets.
 
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
@@ -28,10 +25,6 @@ const IS_PROD = process.env.NODE_ENV === "production";
 
 let redis: Redis | null = null;
 
-// S-8 / H6: manglende config i produksjon → deferred error (ikke module-init throw).
-// Årsak: module-level throw krasjer Next.js-build fordi build-fasen kjøres med
-// NODE_ENV=production men uten kjøre-miljø-secrets. Feilen kastes istedet fra
-// rateLimit() når den faktisk kalles i kjørende produksjonsmiljø.
 let initError: string | null = null;
 
 if (REST_URL && REST_TOKEN) {
@@ -41,11 +34,9 @@ if (REST_URL && REST_TOKEN) {
     "[rate-limit] UPSTASH_REDIS_REST_URL og/eller UPSTASH_REDIS_REST_TOKEN mangler i produksjon. " +
     "Legg til disse som Vercel Environment Variables.";
 } else {
-  // Kun i dev/test: vis én advarsel og fall tilbake til no-op.
   console.warn("[rate-limit] UPSTASH_REDIS_REST_URL/TOKEN ikke satt — rate-limit er no-op i dev.");
 }
 
-// Cache per (max, windowMs) — Ratelimit-instanser er rimelig å gjenbruke.
 const limiterCache = new Map<string, Ratelimit>();
 
 function getLimiter(max: number, windowMs: number): Ratelimit | null {
@@ -64,6 +55,29 @@ function getLimiter(max: number, windowMs: number): Ratelimit | null {
   return limiter;
 }
 
+/** Best-effort per process — ikke multi-instance. Brukes når Redis mangler. */
+const memoryWindows = new Map<string, number[]>();
+let lastFailOpenLogAt = 0;
+
+function memoryLimit(key: string, max: number, windowMs: number): RateLimitResult {
+  const now = Date.now();
+  const cutoff = now - windowMs;
+  const prev = memoryWindows.get(key) ?? [];
+  const kept = prev.filter((t) => t > cutoff);
+  if (kept.length >= max) {
+    const resetAt = (kept[0] ?? now) + windowMs;
+    memoryWindows.set(key, kept);
+    return { ok: false, remaining: 0, resetAt };
+  }
+  kept.push(now);
+  memoryWindows.set(key, kept);
+  return {
+    ok: true,
+    remaining: Math.max(0, max - kept.length),
+    resetAt: now + windowMs,
+  };
+}
+
 export function rateLimit(opts: RateLimitOptions): Promise<RateLimitResult> {
   return rateLimitAsync(opts);
 }
@@ -73,24 +87,25 @@ async function rateLimitAsync({
   max,
   windowMs,
 }: RateLimitOptions): Promise<RateLimitResult> {
-  // S-8 / H6: manglende Upstash skal ikke ta ned hele API-et (500 på opptak,
-  // caddie, lead, m.m.). Logg hardt og slipp gjennom — fail-open til Redis
-  // er konfigurert. Hard fail-closed kan slås på med RATE_LIMIT_FAIL_CLOSED=1.
   if (initError) {
     if (process.env.RATE_LIMIT_FAIL_CLOSED === "1") {
       throw new Error(initError);
     }
-    console.error(
-      `${initError} Request slipper gjennom (RATE_LIMIT_FAIL_CLOSED ikke satt). key=${key}`,
-    );
-    return { ok: true, remaining: max, resetAt: Date.now() + windowMs };
+    // Logg maks én gang per minutt (unngå spam)
+    const now = Date.now();
+    if (now - lastFailOpenLogAt > 60_000) {
+      lastFailOpenLogAt = now;
+      console.error(
+        `${initError} Soft in-memory limit brukes (RATE_LIMIT_FAIL_CLOSED ikke satt). key=${key}`,
+      );
+    }
+    return memoryLimit(key, max, windowMs);
   }
 
   const limiter = getLimiter(max, windowMs);
 
-  // No-op fallback når Upstash ikke er konfigurert (dev/test).
   if (!limiter) {
-    return { ok: true, remaining: max - 1, resetAt: Date.now() + windowMs };
+    return memoryLimit(key, max, windowMs);
   }
 
   const result = await limiter.limit(key);

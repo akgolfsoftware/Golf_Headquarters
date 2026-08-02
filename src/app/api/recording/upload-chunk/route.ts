@@ -112,7 +112,7 @@ export async function POST(req: Request) {
   if (uploadErr) {
     console.error("[recording] upload-chunk feilet", uploadErr);
     return NextResponse.json(
-      { error: `Storage-feil: ${uploadErr.message}` },
+      { error: "Noe gikk galt under opplasting. Prøv igjen." },
       { status: 500 },
     );
   }
@@ -123,9 +123,12 @@ export async function POST(req: Request) {
   const next: ChunkEntry[] = [...filtered, { idx: chunkIdx, path, size: chunkBuffer.length }];
   next.sort((a, b) => a.idx - b.idx);
 
+  // #10: serialiser via JSON for Prisma Json uten as unknown as
+  const chunksJson = JSON.parse(JSON.stringify(next)) as Prisma.InputJsonValue;
+
   await prisma.sessionRecording.update({
     where: { id: recording.id },
-    data: { chunks: next as unknown as Prisma.InputJsonValue },
+    data: { chunks: chunksJson },
   });
 
   return NextResponse.json({ ok: true, path });

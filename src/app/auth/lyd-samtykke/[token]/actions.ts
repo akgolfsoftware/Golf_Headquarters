@@ -14,7 +14,10 @@ import {
   LYD_SAMTYKKE_ORDLYD,
   LYD_SAMTYKKE_ORDLYD_VERSJON,
 } from "@/lib/recording/lyd-samtykke-ordlyd";
-import { erLydSamtykkeTokenGyldig } from "@/lib/recording/lyd-samtykke-token";
+import {
+  erLydSamtykkeTokenGyldig,
+  hashLydSamtykkeToken,
+} from "@/lib/recording/lyd-samtykke-token";
 
 const BekreftSchema = z.object({
   token: z.string().min(16),
@@ -23,6 +26,18 @@ const BekreftSchema = z.object({
 export type BekreftLydSamtykkeResult =
   | { ok: true }
   | { ok: false; error: string };
+
+async function finnLydSamtykkeViaToken(rawToken: string) {
+  const tokenHash = hashLydSamtykkeToken(rawToken);
+  // Prefer hash; fallback legacy klartekst-token
+  const viaHash = await prisma.lydSamtykke.findUnique({
+    where: { tokenHash },
+  });
+  if (viaHash) return viaHash;
+  return prisma.lydSamtykke.findUnique({
+    where: { token: rawToken },
+  });
+}
 
 export async function bekreftLydSamtykkeViaToken(
   input: z.infer<typeof BekreftSchema>,
@@ -38,9 +53,7 @@ export async function bekreftLydSamtykkeViaToken(
   const { token } = parsed.data;
 
   try {
-    const rad = await prisma.lydSamtykke.findUnique({
-      where: { token },
-    });
+    const rad = await finnLydSamtykkeViaToken(token);
 
     if (!rad) {
       return { ok: false, error: "Lenken er ugyldig eller allerede brukt." };
@@ -53,6 +66,7 @@ export async function bekreftLydSamtykkeViaToken(
     if (
       !erLydSamtykkeTokenGyldig({
         token: rad.token,
+        tokenHash: rad.tokenHash,
         tokenExpiresAt: rad.tokenExpiresAt,
         status: rad.status,
       })
@@ -71,9 +85,9 @@ export async function bekreftLydSamtykkeViaToken(
         gittAv: "FORESATT",
         gittAt: now,
         trukketAt: null,
-        // Lås ordlyden som ble tilbudt (rad.ordlyd), fallback til kanonisk.
         ordlyd: rad.ordlyd?.trim() ? rad.ordlyd : LYD_SAMTYKKE_ORDLYD,
         token: null,
+        tokenHash: null,
         tokenExpiresAt: null,
       },
     });

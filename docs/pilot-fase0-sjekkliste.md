@@ -25,10 +25,11 @@
 - [x] Demo-sjekkliste: `docs/pilot-demo-sjekkliste.md`
 - [x] Røyktest-script: `npm run pilot:flyt-smoke`
 
-## Ikke i denne runden (bevisst)
+## Ikke i denne runden (bevisst) — #14 backlog post-demo
 - Paper-port til `src/`
 - Whisper range-spike (10 opptak på rangen)
-- Full Spillere-flate (Group.kind UI kan utvides senere)
+- Full Spillere-flate (`Group.kind` UI) — schema klar, ikke bug
+- `TradApning` («sist sjekket») UI — schema klar, ikke bug
 
 ## Foresatt-e-post (kode levert — krever DKIM + SQL)
 - [x] Magisk lenke `/auth/lyd-samtykke/[token]` + send fra `/admin/recording`

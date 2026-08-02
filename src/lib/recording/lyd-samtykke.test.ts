@@ -7,10 +7,15 @@ import {
 } from "./lyd-samtykke";
 import {
   erLydSamtykkeTokenGyldig,
+  hashLydSamtykkeToken,
   lagLydSamtykkeToken,
   lydSamtykkeTokenUtloper,
 } from "./lyd-samtykke-token";
 import { byggLydSamtykkeForesattEpost } from "./lyd-samtykke-email";
+import {
+  fangstIdFraSuggestion,
+  sjekkpunktFraSuggestion,
+} from "./fangst-suggestion";
 
 describe("lyd-samtykke (hard gate)", () => {
   it("kanStarteFangst bare ved GITT", () => {
@@ -116,6 +121,36 @@ describe("lyd-samtykke token + e-post", () => {
       }),
       false,
     );
+
+    assert.equal(
+      erLydSamtykkeTokenGyldig({
+        token: null,
+        tokenHash: "abc",
+        tokenExpiresAt: new Date("2026-08-10T12:00:00Z"),
+        status: "VENTER",
+        naa,
+      }),
+      true,
+    );
+
+    assert.equal(
+      erLydSamtykkeTokenGyldig({
+        tokenHash: "abc",
+        tokenExpiresAt: new Date("2026-08-10T12:00:00Z"),
+        status: "TRUKKET",
+        naa,
+      }),
+      false,
+    );
+  });
+
+  it("hashLydSamtykkeToken er stabil og ulik rå token", () => {
+    const t = lagLydSamtykkeToken();
+    const h1 = hashLydSamtykkeToken(t);
+    const h2 = hashLydSamtykkeToken(t);
+    assert.equal(h1, h2);
+    assert.notEqual(h1, t);
+    assert.equal(h1.length, 64);
   });
 
   it("lydSamtykkeTokenUtloper er i fremtiden", () => {
@@ -132,5 +167,17 @@ describe("lyd-samtykke token + e-post", () => {
     assert.match(e.subject, /Ola Nordmann/);
     assert.match(e.html, /lyd-samtykke\/tok123/);
     assert.match(e.html, /samtykke/i);
+  });
+});
+
+describe("fangst-suggestion zod", () => {
+  it("sjekkpunktFraSuggestion leser felt trygt", () => {
+    assert.equal(
+      sjekkpunktFraSuggestion({ sjekkpunkt: "  Jobb med P6  " }),
+      "Jobb med P6",
+    );
+    assert.equal(sjekkpunktFraSuggestion({ foo: 1 }, "fallback"), "fallback");
+    assert.equal(fangstIdFraSuggestion({ fangstId: "rec1" }), "rec1");
+    assert.equal(sjekkpunktFraSuggestion(null), null);
   });
 });
