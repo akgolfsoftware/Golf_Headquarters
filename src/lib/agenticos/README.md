@@ -45,7 +45,7 @@ await settUtfall({ interaksjonId: id, utfall: "AVVIST", begrunnelse: "feil perio
 | Flate | Status |
 |---|---|
 | `ai-plan/generate.ts` | **Koblet.** Logger promptversjon, modell, tokens, kost, latency, kontekstkilder og guard-treff. `lagrePlanForslagCore` setter `GODKJENT` når forslaget lagres som plan. |
-| Caddie (`/api/caddie/chat`) | Ikke koblet. `CaddieDraft` har allerede APPROVED/REJECTED — naturlig neste. |
+| Caddie (`/api/caddie/chat`) | **Koblet.** Én interaksjon per tur, klassifisert med ruteren (åpen chat). `CaddieDraft.interaksjonId` peker tilbake, så godkjenning/avvisning setter utfallet. |
 | Agentenes `PlanAction`-løp | Ikke koblet. |
 
 En flate som ikke bruker `MALER` (som `ai-plan`, med egen system-prompt) konstruerer `BygdPrompt` selv med

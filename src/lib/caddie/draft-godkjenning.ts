@@ -7,6 +7,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { executeApprovedTool } from "@/lib/caddie/approval-executor";
+import { settUtfall } from "@/lib/agenticos/logg";
 
 export type DraftGodkjenningResult = {
   ok: boolean;
@@ -48,6 +49,8 @@ export async function godkjennOgUtforCaddieDraft(
       result: { status: exec.status, summary: exec.summary, details: exec.details ?? null },
     });
 
+    await lukkLaeringslokke(draft.interaksjonId, "GODKJENT");
+
     return { ok: true, status: exec.status, summary: exec.summary };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
@@ -79,7 +82,29 @@ export async function avvisCaddieDraft(
     toolName: draft.toolName,
     result: { status: "rejected", summary: `Forslaget for ${draft.toolName} ble avvist.` },
   });
+
+  await lukkLaeringslokke(draft.interaksjonId, "AVVIST");
+
   return { ok: true, status: "rejected", summary: "Forslaget ble avvist." };
+}
+
+/**
+ * Melder utfallet tilbake til AgenticOS-loggen.
+ *
+ * Én Caddie-tur kan produsere flere utkast som behandles hver for seg. settUtfall
+ * rører kun rader som fortsatt står PENDING, så det FØRSTE utkastet som avgjøres
+ * setter turens utfall — en senere godkjenning overskriver ikke en avvisning.
+ * Grov, men entydig: turen regnes som brukt så snart noe fra den ble behandlet.
+ *
+ * mindreaarig er alltid false — Caddie er ADMIN-only, og vi lagrer uansett ingen
+ * fritekst her.
+ */
+async function lukkLaeringslokke(
+  interaksjonId: string | null,
+  utfall: "GODKJENT" | "AVVIST",
+): Promise<void> {
+  if (!interaksjonId) return;
+  await settUtfall({ interaksjonId, utfall, mindreaarig: false });
 }
 
 async function persistAudit(

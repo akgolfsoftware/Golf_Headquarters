@@ -587,12 +587,34 @@ og estimert kost — det som manglet var koblingen mellom promptversjon, guard-t
 - **Rolle:** `genererPlan` tar nå `rolle`. Spillerens egen plan-bygger sender `SPILLER`, AgencyOS-rutene
   bruker standardverdien `COACH`, så loggen skiller de to bruksmønstrene.
 
+### Andre flate koblet på: Caddie
+
+`/api/caddie/chat` logger nå én interaksjon per tur.
+
+- **Ruteren brukes her**, i motsetning til `ai-plan`. Caddie er åpen chat, så intent og domene er ikke kjent
+  på forhånd — det er nettopp tilfellet ruteren finnes for. `mindreaarig` er alltid `false`: Caddie er
+  ADMIN-only bak `canAccessMissionControl`.
+- **Kontekstkilder** settes fra faktisk verktøybruk. Caddie får ikke kontekst limt inn på forhånd, den henter
+  data via tools underveis — `SPILLERDATA` markeres derfor når minst ett verktøy kjørte.
+- **Loggen skrives uansett** om samtalen persisteres, slik at kostnad og kvalitet måles også for tråder uten
+  `conversationId`.
+- **Læringsløkken lukkes** via en ny nullbar kolonne `CaddieDraft.interaksjonId`. Godkjenning og avvisning i
+  `draft-godkjenning.ts` setter `GODKJENT`/`AVVIST` på turen som produserte utkastet.
+
+> **Valgt regel:** én tur kan produsere flere utkast som behandles hver for seg. `settUtfall` rører kun rader
+> som fortsatt står `PENDING`, så det **første** utkastet som avgjøres setter turens utfall — en senere
+> godkjenning overskriver ikke en tidligere avvisning. Grovt, men entydig: turen regnes som brukt så snart
+> noe fra den ble behandlet.
+
+DDL: `scripts/add-caddie-draft-interaksjon-2026-08-02.ts` (kjørt mot `dcnxoztjtdqoidaekxry`).
+
 ### Gjenstår i fase 1
 
-- **Flere flater på loggen.** Caddie og agentenes `PlanAction`-løp skriver ennå ikke. Caddie er neste
-  naturlige, siden `CaddieDraft` allerede har APPROVED/REJECTED som ferdig utfallssignal.
-- **`FASIT` som kontekstlag i `ai-plan`.** Flaten henter ikke fra masterbrain i dag, selv om
-  `sg-principles.json` og `canon-methodology.json` er direkte relevante for plangenerering.
+- **Agentenes `PlanAction`-løp** skriver ennå ikke til loggen. Det er den siste store kilden, og den har
+  allerede ACCEPTED/REJECTED som ferdig utfallssignal.
+- **`FASIT` som kontekstlag.** Verken `ai-plan` eller Caddie henter fra masterbrain i dag, selv om
+  `sg-principles.json` og `canon-methodology.json` er direkte relevante. Ingen av flatene rapporterer
+  `FASIT` — det er nå synlig i dataene i stedet for skjult, og er den tydeligste forbedringen som venter.
 - **SG-tolkning for spilleren** som første helt nye flate. Merk at den må formuleres som hypotese, og ikke
   kan foreskrive navngitte drills før drill-banken er bygget på nytt.
 - **«Hvorfor avvist»-feltet** i godkjenningskøen, som mater `settUtfall` med den mest verdifulle

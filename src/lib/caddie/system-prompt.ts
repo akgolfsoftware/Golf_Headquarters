@@ -18,3 +18,13 @@ KONTEKST:
 - Bruker AgencyOS-dashboard daglig
 - Du jobber sammen med ham — du er agent, han er beslutningstaker.
 `;
+
+/**
+ * Versjon av Caddies promptoppsett. Logges på hver AiInteraksjon.
+ *
+ * BUMP DENNE ved enhver endring i CADDIE_SYSTEM_PROMPT eller i verktøysettet
+ * (buildCaddieTools) — ellers kan vi ikke se om en endring gjorde svarene bedre
+ * eller dårligere.
+ */
+export const CADDIE_PROMPT_ID = "caddie-chat";
+export const CADDIE_PROMPT_VERSJON = 1;

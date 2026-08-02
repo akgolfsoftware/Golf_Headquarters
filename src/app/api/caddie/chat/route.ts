@@ -9,8 +9,15 @@ import { createAnthropic } from "@ai-sdk/anthropic";
 import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
-import { CADDIE_SYSTEM_PROMPT } from "@/lib/caddie/system-prompt";
+import {
+  CADDIE_PROMPT_ID,
+  CADDIE_PROMPT_VERSJON,
+  CADDIE_SYSTEM_PROMPT,
+} from "@/lib/caddie/system-prompt";
 import { buildCaddieTools } from "@/lib/caddie/tools";
+import { kjorGuards, klassifiser } from "@/lib/agenticos";
+import { loggInteraksjon } from "@/lib/agenticos/logg";
+import type { KontekstKilde } from "@/lib/agenticos";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -97,21 +104,30 @@ export async function POST(req: Request) {
       : null;
 
   const messages = body.messages;
+  const userText = extractLastUserText(messages);
+
+  // Caddie er åpen chat — dette er nettopp der ruteren hører hjemme, i motsetning
+  // til dedikerte flater som ai-plan der formålet er kjent på forhånd.
+  // Mindreårig er alltid false: Caddie er ADMIN-only (canAccessMissionControl).
+  const klassifisering = klassifiser({
+    tekst: userText ?? "",
+    rolle: "ADMIN",
+    mindreaarig: false,
+  });
 
   // Persister siste bruker-melding hvis vi har en samtale-id
-  if (conversationId) {
-    const userText = extractLastUserText(messages);
-    if (userText && userText.length > 0) {
-      await prisma.caddieMessage.create({
-        data: {
-          userId: user.id,
-          conversationId,
-          role: "user",
-          content: userText,
-        },
-      });
-    }
+  if (conversationId && userText && userText.length > 0) {
+    await prisma.caddieMessage.create({
+      data: {
+        userId: user.id,
+        conversationId,
+        role: "user",
+        content: userText,
+      },
+    });
   }
+
+  const start = Date.now();
 
   const modelMessages = await convertToModelMessages(messages);
 
@@ -125,6 +141,33 @@ export async function POST(req: Request) {
     stopWhen: stepCountIs(5),
     maxRetries: 2,
     onFinish: async ({ text, usage, toolCalls, toolResults, steps }) => {
+      const latencyMs = Date.now() - start;
+
+      // AgenticOS-loggen. Skrives uansett om samtalen persisteres, slik at
+      // kostnad og kvalitet måles også for tråder uten conversationId.
+      // Caddie henter data via tools underveis i stedet for å få kontekst limt
+      // inn på forhånd — SPILLERDATA settes derfor når et verktøy faktisk kjørte.
+      const kontekstKilder: KontekstKilde[] =
+        (toolCalls?.length ?? 0) > 0 ? ["SPILLERDATA"] : [];
+
+      const interaksjonId = await loggInteraksjon({
+        prompt: {
+          promptId: CADDIE_PROMPT_ID,
+          promptVersjon: CADDIE_PROMPT_VERSJON,
+          system: CADDIE_SYSTEM_PROMPT,
+          kontekstKilder,
+        },
+        klassifisering,
+        modell: MODEL_ID,
+        tokensInn: usage?.inputTokens ?? undefined,
+        tokensUt: usage?.outputTokens ?? undefined,
+        latencyMs,
+        kontekstKilder,
+        guardTreff: kjorGuards(text),
+        userId: user.id,
+        agentNavn: "caddie",
+      });
+
       if (!conversationId) return;
       try {
         await prisma.caddieMessage.create({
@@ -172,6 +215,9 @@ export async function POST(req: Request) {
               toolInput: { ...(r.input as Record<string, unknown>), ...forslag } as unknown as object,
               previewText: typeof previewText === "string" ? previewText : "",
               status: "PENDING",
+              // Kobler utkastet til turen som produserte det, så en godkjenning
+              // eller avvisning kan lukke læringsløkken på riktig interaksjon.
+              interaksjonId,
             },
           });
         }

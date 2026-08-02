@@ -3739,6 +3739,10 @@ model CaddieDraft {
   previewText    String    @db.Text
   // "PENDING" | "APPROVED" | "REJECTED"
   status         String    @default("PENDING")
+  // AgenticOS-interaksjonen som produserte utkastet. Lar en godkjenning eller
+  // avvisning lukke læringsløkken på riktig Caddie-tur. Nullbar: utkast fra før
+  // 2026-08-02 har ingen, og loggingen er best-effort.
+  interaksjonId  String?
   createdAt      DateTime  @default(now())
   resolvedAt     DateTime?
 
