@@ -56,7 +56,15 @@ async function main() {
        ON ai_interaksjoner ("userId", "createdAt");`,
   );
 
-  console.log("ai_interaksjoner: OK (idempotent)");
+  // RLS på, null policies — samme mønster som plan_actions, caddie_drafts,
+  // radar_funn og ai_plan_generations: full sperre for anon/authenticated,
+  // mens appen når tabellen via Prisma med en rolle som omgår RLS. Tabellen
+  // inneholder userId, så den skal aldri være lesbar med anon-nøkkelen.
+  await prisma.$executeRawUnsafe(
+    `ALTER TABLE ai_interaksjoner ENABLE ROW LEVEL SECURITY;`,
+  );
+
+  console.log("ai_interaksjoner: OK (idempotent, RLS på)");
 }
 
 main()
