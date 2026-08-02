@@ -21,8 +21,8 @@ word_count: 73
 Hoften må rotere, ikke gli mot ballen. Hips lead shoulders P4.1→P5.0.
 
 ## Drills
-1. `hip_lead_drill`
-2. `spine_alignment_setup` (vedlikehold spine angle)
+Drill-banken er tom og under oppbygging (31. juli 2026). Beskriv hva som bør
+trenes — pyramideområde og P-posisjon — men foreskriv ingen navngitt drill.
 
 ## Video+TrackMan fusion
 Video P5.5 + club_path negativ → confidence 0.7+. Kun TrackMan → retningssignal.

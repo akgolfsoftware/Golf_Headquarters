@@ -21,8 +21,8 @@ word_count: 67
 Hofter må åpne skuldre fra P4.1. Lower body leder nedsving.
 
 ## Drills
-1. `three_momentum_transfer`
-2. `hip_lead_drill`
+Drill-banken er tom og under oppbygging (31. juli 2026). Beskriv hva som bør
+trenes — pyramideområde og P-posisjon — men foreskriv ingen navngitt drill.
 
 ## Ofte sammen med
-`insufficient_shoulder_turn` i backswing — adresser begge i samme drill-serie.
+`insufficient_shoulder_turn` i backswing — adresser begge i samme treningsbolk.

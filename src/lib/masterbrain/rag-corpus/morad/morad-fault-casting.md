@@ -21,8 +21,8 @@ word_count: 61
 Bevar vinkel P4→P6. Release kun via centrifugal force ved P6–P7.
 
 ## Drills
-1. `lag_retention_drill`
-2. `pump_drill`
+Drill-banken er tom og under oppbygging (31. juli 2026). Beskriv hva som bør
+trenes — pyramideområde og P-posisjon — men foreskriv ingen navngitt drill.
 
 ## ARG-variant
 Chip/pitch casting: samme fault, SPILL-pyramide, CS høyere PR.

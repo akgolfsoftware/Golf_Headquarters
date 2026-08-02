@@ -20,8 +20,9 @@ word_count: 68
 ## Korreksjon
 Tre momentum transfers koordinert: P3 elbow, hip COG, peak ved impact.
 
-## Drill
-`three_momentum_transfer` — primær for alle vekttransfer-feil
+## Drills
+Drill-banken er tom og under oppbygging (31. juli 2026). Beskriv hva som bør
+trenes — pyramideområde og P-posisjon — men foreskriv ingen navngitt drill.
 
 ## Periode
 TURNERING: vedlikeholds-volum, ikke full teknisk ombygging.

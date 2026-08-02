@@ -20,9 +20,9 @@ word_count: 86
 ## Korreksjon
 Adduction *location*, ikke bare vinkel. Venstre albue mot kroppens medianlinje.
 
-## Drills (prioritet)
-1. `knock_down_shot` — Seve-stil, tvinger elbow inn
-2. `left_elbow_adduction` — P5–P7 fokus
+## Drills
+Drill-banken er tom og under oppbygging (31. juli 2026). Beskriv hva som bør
+trenes — pyramideområde og P-posisjon — men foreskriv ingen navngitt drill.
 
 ## SG-mapping
 APP primær. OTT sekundær hvis face_to_path dominerer over path.
