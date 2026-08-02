@@ -13,6 +13,7 @@ import { ALL_SKILLS } from "../skills";
 import { prisma } from "@/lib/prisma";
 import { filtrerTilCoachInnsyn } from "@/lib/health/samtykke";
 import { hentRestitusjonsstatusForFlere } from "@/lib/health/restitusjonsstatus";
+import { byggPseudonymMap, anonymiser, deanonymiser } from "../anonymiser";
 
 const SKILLS_BLOCK = ALL_SKILLS.map(
   (s) => `\n## ${s.name}\n${s.knowledge}`,
@@ -84,7 +85,13 @@ export async function genererDailyBrief(opts: {
     };
   }
 
-  const userPrompt = byggUserPrompt(metrics);
+  // ANONYMISERT (GDPR art. 9): spillernavn skal ALDRI sendes til Anthropic —
+  // kombinasjonen navn + flagg (skade/frafall/severity) er nettopp sensitiv
+  // personopplysning om (ofte mindreårige) spillere. Vi bytter navn med stabile
+  // pseudonymer i prompten og mapper dem tilbake til ekte navn i svaret, slik at
+  // coachen fortsatt ser navn uten at de forlater systemene våre.
+  const pseudonymMap = byggPseudonymMap(samleSpillernavn(metrics));
+  const userPrompt = anonymiser(byggUserPrompt(metrics), pseudonymMap);
   const response = await anthropic.messages.create({
     model: modelFor("daily-brief"),
     max_tokens: AI_MAX_TOKENS,
@@ -92,16 +99,29 @@ export async function genererDailyBrief(opts: {
     messages: [{ role: "user", content: userPrompt }],
   });
 
-  const text = response.content
+  const rawText = response.content
     .filter((b) => b.type === "text")
     .map((b) => (b.type === "text" ? b.text : ""))
     .join("\n")
     .trim();
+  const text = deanonymiser(rawText, pseudonymMap);
 
   return {
     brief: text || byggDemoBrief(metrics),
     metrics,
   };
+}
+
+// ---------- Anonymisering (art. 9) ----------
+
+/** Alle spillernavn som forekommer i metrikkene (flagg + neste turnering). */
+function samleSpillernavn(m: DailyBriefMetrics): string[] {
+  const navn: string[] = [];
+  for (const f of m.flagg) if (f.spillerNavn) navn.push(f.spillerNavn);
+  if (m.nesteTurnering) {
+    for (const s of m.nesteTurnering.spillere) if (s.navn) navn.push(s.navn);
+  }
+  return navn;
 }
 
 // ---------- Datasamling ----------
