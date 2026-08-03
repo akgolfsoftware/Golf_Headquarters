@@ -42,7 +42,17 @@ function Kbd({ children }: KbdProps) {
   return <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, color: T.mut, background: T.panel3, border: `1px solid ${T.border}`, borderRadius: 5, padding: "2px 6px", whiteSpace: "nowrap" }}>{children}</span>;
 }
 
-function LukkKnapp() {
+/* Paper-radiusskala (designsystem/paper/tokens/akhq-tokens.css): r-sm 8 · r
+   (app-default) 12 · r-pill 999. T fra ./core dekker allerede disse tallene
+   (rTag=8, rRow=12, rPill=9999) — gjenbrukt her under Paper-navn for
+   lesbarhet i denne filen. Ingen nye tokens innført, ingen verdier endret. */
+const PAPER_R_SM = T.rTag; // 8 — Paper --r-sm (lukkeknapper, chips, verktøytips)
+const PAPER_R = T.rRow; // 12 — Paper --r (app-default: modal, ark-topp, popover)
+
+/* Lukkeknapp — størrelse/radius følger Paper sin spesifikasjon per lag
+   (Ark-håndtaket ER lukkeknappen i Paper, Modal lukkes kun via handlingsraden
+   — begge bruker derfor ikke denne lenger; Skuff sin er 32 px/r-sm). */
+function LukkKnapp({ size = 44, radius = PAPER_R, iconSize = 16 }: { size?: number; radius?: number | string; iconSize?: number }) {
   return (
     <button
       type="button"
@@ -50,9 +60,9 @@ function LukkKnapp() {
       className="v2-press v2-focus"
       style={{
         appearance: "none",
-        width: 44,
-        height: 44,
-        borderRadius: T.rRow,
+        width: size,
+        height: size,
+        borderRadius: radius,
         background: T.panel2,
         border: `1px solid ${T.border}`,
         display: "inline-flex",
@@ -64,12 +74,13 @@ function LukkKnapp() {
         padding: 0,
       }}
     >
-      <Icon name="x" size={16} style={{ color: T.fg2 }} />
+      <Icon name="x" size={iconSize} style={{ color: T.fg2 }} />
     </button>
   );
 }
 
-/* ── Modal: r20-panel m/ tittel, lukk og footer-knapper ── */
+/* ── Modal: r12-panel m/ tittel, body og footer-knapper (Paper Modal —
+   ingen hjørne-X; dialogen lukkes kun via handlingsraden) ── */
 export interface ModalProps {
   title?: ReactNode;
   body?: ReactNode;
@@ -91,21 +102,21 @@ export function Modal({
         aria-labelledby="v2-modal-title"
         style={{
           position: "relative",
-          width: 430,
+          width: 420,
           maxWidth: "calc(100% - 24px)",
           background: T.panel,
           border: `1px solid ${T.border}`,
-          borderRadius: T.rCard,
-          padding: "20px 22px",
-          boxShadow: "var(--v2-shadow, 0 24px 60px rgba(0,0,0,0.35))",
+          borderRadius: PAPER_R,
+          padding: 24,
+          display: "flex",
+          flexDirection: "column",
+          gap: 16,
+          boxShadow: "var(--v2-shadow)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
-          <h2 id="v2-modal-title" style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: T.fg, margin: 0, lineHeight: 1.2 }}>{title}</h2>
-          <LukkKnapp />
-        </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.55, margin: "10px 0 0" }}>{body}</p>
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 22, flexWrap: "wrap" }}>
+        <h2 id="v2-modal-title" style={{ fontFamily: T.disp, fontWeight: 500, fontSize: 16, color: T.fg, margin: 0 }}>{title}</h2>
+        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5, margin: 0 }}>{body}</p>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, flexWrap: "wrap" }}>
           <CTAPill ghost>{avbryt}</CTAPill>
           <CTAPill>{bekreft}</CTAPill>
         </div>
@@ -144,19 +155,23 @@ export function Ark({
           background: T.panel,
           border: `1px solid ${T.border}`,
           borderBottom: "none",
-          borderRadius: "28px 28px 0 0",
-          padding: "10px 20px 26px",
+          borderRadius: `${PAPER_R}px ${PAPER_R}px 0 0`,
+          padding: "12px 16px 24px",
           width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          gap: 12,
         }}
       >
-        <span style={{ display: "block", width: 36, height: 4, borderRadius: T.rPill, background: T.borderS, margin: "0 auto 16px" }} aria-hidden />
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4, gap: 8 }}>
-          <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>{title}</h2>
-          <LukkKnapp />
+        {/* Håndtaket ER lukkeknappen i Paper (BottomSheet.prompt.md) — ingen
+            separat hjørne-X ved siden av tittelen. */}
+        <span style={{ display: "block", width: 36, height: 4, borderRadius: T.rPill, background: T.borderS, margin: "0 auto" }} aria-hidden />
+        <h2 style={{ fontFamily: T.disp, fontWeight: 500, fontSize: 16, color: T.fg, margin: 0 }}>{title}</h2>
+        <div>
+          {items.map((x, i) => (
+            <Rad key={i} title={x.t} sub={x.s} meta={<AkseChip a={x.a} />} last={i === items.length - 1} />
+          ))}
         </div>
-        {items.map((x, i) => (
-          <Rad key={i} title={x.t} sub={x.s} meta={<AkseChip a={x.a} />} last={i === items.length - 1} />
-        ))}
       </div>
     </Ramme>
   );
@@ -185,30 +200,30 @@ export function Skuff({
 }: SkuffProps) {
   return (
     <Ramme w={w} h={h} align="right">
+      {/* Paper Drawer: tre regioner (header/body/footer), border-left uten
+          skygge, 420 px standardbredde. Fotraden ligger utenfor skrollområdet. */}
       <div
         role="dialog"
         aria-modal="true"
         style={{
           position: "relative",
-          width: 300,
+          width: 420,
           maxWidth: "100%",
           height: "100%",
           background: T.panel,
           borderLeft: `1px solid ${T.border}`,
           display: "flex",
           flexDirection: "column",
-          padding: "18px 20px",
-          boxShadow: "-24px 0 60px rgba(0,0,0,0.35)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
-          <div>
-            <Caps size={9}>{eyebrow}</Caps>
-            <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, letterSpacing: "-0.02em", color: T.fg, margin: "6px 0 0" }}>{title}</h2>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "16px 16px 12px", borderBottom: `1px solid ${T.border}` }}>
+          <div style={{ flex: 1 }}>
+            <Caps size={9} style={{ marginBottom: 2 }}>{eyebrow}</Caps>
+            <h2 style={{ fontFamily: T.disp, fontWeight: 500, fontSize: 17, lineHeight: 1.25, color: T.fg, margin: 0 }}>{title}</h2>
           </div>
-          <LukkKnapp />
+          <LukkKnapp size={32} radius={PAPER_R_SM} iconSize={14} />
         </div>
-        <div style={{ marginTop: 14, flex: 1 }}>
+        <div style={{ flex: 1, minHeight: 0, overflow: "auto", padding: 16 }}>
           {rows.map((r, i) => (
             <div key={i} style={{ display: "flex", justifyContent: "space-between", gap: 10, padding: "10px 0", borderBottom: i === rows.length - 1 ? "none" : `1px solid ${T.border}` }}>
               <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>{r.l}</span>
@@ -216,7 +231,9 @@ export function Skuff({
             </div>
           ))}
         </div>
-        <CTAPill icon="arrow-right">{cta}</CTAPill>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, padding: "12px 16px", borderTop: `1px solid ${T.border}` }}>
+          <CTAPill icon="arrow-right">{cta}</CTAPill>
+        </div>
       </div>
     </Ramme>
   );
@@ -246,7 +263,10 @@ export function Popover({
     <Ramme w={w} h={h} scrim={false}>
       <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 8 }}>
         <CTAPill ghost icon="chevron-down">{trigger}</CTAPill>
-        <div style={{ width: 220, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 14, padding: 6, boxShadow: "0 16px 40px rgba(0,0,0,0.45)" }}>
+        {/* Paper Popover-laget (akhq-pop-lay): 288 px, r(12), s3-padding, delt
+            skygge-token. Radraden under er AK-eget menyinnhold — Paper har
+            ikke tegnet menyanatomien her (se PR-beskrivelsen). */}
+        <div style={{ width: 288, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: PAPER_R, padding: 12, boxShadow: "var(--v2-shadow)" }}>
           {items.map((x, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 9, padding: "10px 12px", minHeight: 44, borderRadius: T.rRow, cursor: "pointer", background: i === 0 ? T.panel2 : "transparent" }}>
               <Icon name={x.i} size={14} style={{ color: x.farge || T.fg2 }} />
@@ -270,10 +290,11 @@ export interface VerktoytipsProps {
 export function Verktoytips({ tekst = "SG mot CS100-referansen, siste 8 runder", trigger = "SG totalt", verdi = "+1,8", w = 360, h = 170 }: VerktoytipsProps) {
   return (
     <Ramme w={w} h={h} scrim={false}>
-      <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 7 }}>
-        <span style={{ maxWidth: 230, textAlign: "center", fontFamily: T.ui, fontSize: 11.5, color: T.fg, lineHeight: 1.5, background: "rgb(34,37,34)", border: `1px solid ${T.borderS}`, borderRadius: 9, padding: "8px 11px", boxShadow: "0 10px 26px rgba(0,0,0,0.4)" }}>{tekst}</span>
-        <span style={{ width: 9, height: 9, background: "rgb(34,37,34)", borderRight: `1px solid ${T.borderS}`, borderBottom: `1px solid ${T.borderS}`, transform: "rotate(45deg)", marginTop: -12 }} />
-        <span style={{ display: "inline-flex", alignItems: "baseline", gap: 8, background: T.panel2, border: `1px dashed ${T.borderS}`, borderRadius: 10, padding: "7px 13px", marginTop: 4 }}>
+      {/* Paper Tooltip: mono 11px, r-sm(8), 6px 8px-padding, ingen kant, ingen
+          pil — kun 6 px luft ned mot utløseren (Tooltip.jsx). */}
+      <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+        <span style={{ maxWidth: 240, textAlign: "left", fontFamily: T.mono, fontSize: 11, letterSpacing: "0.01em", color: T.fg, lineHeight: 1.35, background: "rgb(34,37,34)", borderRadius: PAPER_R_SM, padding: "6px 8px", boxShadow: "var(--v2-shadow)" }}>{tekst}</span>
+        <span style={{ display: "inline-flex", alignItems: "baseline", gap: 8, background: T.panel2, border: `1px dashed ${T.borderS}`, borderRadius: 10, padding: "7px 13px" }}>
           <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2 }}>{trigger}</span>
           <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: T.fg }}>{verdi}</span>
         </span>
@@ -282,19 +303,21 @@ export function Verktoytips({ tekst = "SG mot CS100-referansen, siste 8 runder",
   );
 }
 
-/* ── Toast: nederst m/ ikon, melding og angre ─────────── */
+/* ── Toast: blekkflate m/ 6px tone-prikk, melding og angre ─────────── */
 export interface ToastProps {
-  ikon?: string;
   melding?: ReactNode;
   angre?: ReactNode;
   tone?: StatusTone;
   w?: number;
   h?: number;
 }
-export function Toast({ ikon = "check", melding = "Økten er logget — 1,5 t nærspill", angre = "Angre", tone = "up", w = 560, h = 170 }: ToastProps) {
+export function Toast({ melding = "Økten er logget — 1,5 t nærspill", angre = "Angre", tone = "up", w = 560, h = 170 }: ToastProps) {
   const c: string = { up: T.up, warn: T.warn, down: T.down, info: T.info, lime: T.lime }[tone];
   return (
     <Ramme w={w} h={h} scrim={false} align="bottom">
+      {/* Paper Toast (Toast.prompt.md): «fargen ligger i prikken, ikke
+          flaten» — 6px prikk, ingen ikon-sirkel. Ingen dismiss-X (den
+          forsvinner selv); «Angre» er AK sin egen handling, ikke i Paper. */}
       <div
         role="status"
         style={{
@@ -302,28 +325,22 @@ export function Toast({ ikon = "check", melding = "Økten er logget — 1,5 t n�
           alignSelf: "center",
           display: "flex",
           alignItems: "center",
-          gap: 11,
-          minHeight: 52,
+          gap: 9,
           background: T.panel3,
           border: `1px solid ${T.border}`,
-          borderRadius: T.rRow,
-          padding: "11px 14px",
-          margin: "0 0 18px",
-          boxShadow: "var(--v2-shadow, 0 16px 40px rgba(0,0,0,0.35))",
+          borderRadius: PAPER_R_SM,
+          padding: "12px 16px",
+          margin: "0 0 24px",
+          boxShadow: "var(--v2-shadow)",
         }}
       >
-        <span style={{ width: 28, height: 28, borderRadius: T.rPill, background: `color-mix(in srgb,${c} 14%,transparent)`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-          <Icon name={ikon} size={13} style={{ color: c }} />
-        </span>
-        <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.fg, flex: 1 }}>{melding}</span>
+        <span style={{ width: 6, height: 6, borderRadius: T.rPill, background: c, flex: "none" }} aria-hidden />
+        <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, flex: 1 }}>{melding}</span>
         {angre && (
           <button type="button" className="v2-focus" style={{ appearance: "none", fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.lime, cursor: "pointer", background: "transparent", border: "none", minHeight: 44, padding: "0 8px" }}>
             {angre}
           </button>
         )}
-        <button type="button" aria-label="Lukk varsel" className="v2-focus" style={{ appearance: "none", background: "transparent", border: "none", cursor: "pointer", minWidth: 44, minHeight: 44, display: "inline-flex", alignItems: "center", justifyContent: "center", padding: 0 }}>
-          <Icon name="x" size={14} style={{ color: T.mut }} />
-        </button>
       </div>
     </Ramme>
   );
