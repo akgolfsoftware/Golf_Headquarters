@@ -750,34 +750,46 @@ em.editorial {
  * merkevare, ikke status, ikke generelle knapper — det er lime/forest.
  * ============================================================ */
 :root {
-  /* Lys (app-default) — 1:1 showroom assets/ds.css */
-  --v2-bg: #f2f1ea;
-  --v2-panel: #ffffff;
-  --v2-panel2: #f7f6f0;
-  --v2-panel3: #ecebe2;
-  --v2-tint: linear-gradient(140deg, rgba(0, 88, 64, 0.10) 0%, rgba(255, 255, 255, 0) 55%);
+  /* ── Paper-port steg 5A (03.08.2026): flater, tekst, kant og CTA peker nå på
+   *    Paper-settet i src/styles/paper-tokens.css. Verdiene er IKKE oppfunnet her —
+   *    de er Paper v3.1, hentet via --p-*. Rull tilbake ved å erstatte var(--p-*)
+   *    med hex-verdiene i git-historikken for denne blokken.
+   *
+   *    IKKE portet (ingen Paper-fasit finnes): --v2-warn og de fem --v2-ax-*
+   *    pyramide-aksene. Paper har kun tre datafarger (opp/ned/info), se
+   *    designsystem/paper/guidelines/farger-data.html. Aksefargene er AK-domene
+   *    og krever Anders' beslutning — de står urørt til den er tatt. ── */
+  --v2-bg: var(--p-bg);
+  --v2-panel: var(--p-surface);
+  --v2-panel2: var(--p-soft);
+  --v2-panel3: var(--p-soft-hover);
+  --v2-tint: linear-gradient(140deg, rgba(217, 119, 87, 0.10) 0%, rgba(255, 255, 255, 0) 55%);
   --v2-niva-grad: linear-gradient(90deg, #c9d4cc 0%, #005840 45%, #6e9a4e 75%, #a8ca20 100%);
-  --v2-vignett: rgba(0, 88, 64, 0.07);
-  --v2-border: rgba(16, 22, 19, 0.10);
-  --v2-border-s: rgba(16, 22, 19, 0.19);
-  --v2-track: rgba(16, 22, 19, 0.10);
-  --v2-fg: #171b18;
-  --v2-fg2: #4a4f4a;
-  --v2-mut: #62675f;
-  --v2-forest: #005840;
-  --v2-forest-soft: rgba(0, 88, 64, 0.12);
-  --v2-lime: #005840; /* lys: aksenten ER forest — aldri lime-på-lys CTA */
-  --v2-on-lime: #ffffff;
-  /* C smalt: monopol på «Én ting nå» — samme verdi i lys og mørk */
-  --v2-handling: #d97757;
-  --v2-on-handling: #141413;
-  --v2-handling-soft: rgba(217, 119, 87, 0.14);
+  --v2-vignett: rgba(217, 119, 87, 0.07);
+  --v2-border: var(--p-border);
+  --v2-border-s: var(--p-hairline);
+  --v2-track: var(--p-border);
+  --v2-fg: var(--p-fg);
+  --v2-fg2: var(--p-ink-soft);
+  --v2-mut: var(--p-muted);
+  /* Primær-CTA: Paper bruker blekk på papir, ikke forest. «forest»/«lime» beholder
+   * navnene sine fordi 708 filer leser dem — verdien er nå Paper sin CTA. */
+  --v2-forest: var(--p-cta);
+  --v2-forest-soft: var(--p-soft);
+  --v2-lime: var(--p-cta);
+  --v2-on-lime: var(--p-on-cta);
+  /* C smalt: monopol på «Én ting nå». Paper sin accent er samme oransje — nå via token. */
+  --v2-handling: var(--p-accent);
+  --v2-on-handling: var(--p-on-accent);
+  --v2-handling-soft: var(--p-accent-soft);
   --handling: var(--v2-handling);
   --on-handling: var(--v2-on-handling);
-  --v2-up: #1a7745;
-  --v2-down: #b4461c;
+  --v2-up: var(--p-up);
+  --v2-down: var(--p-dn);
+  --v2-info: var(--p-info);
+  /* IKKE portet — Paper har ingen warn-farge og ingen 5-akse datapalett.
+   * Beholder dagens verdier til Anders har bestemt aksefargene. */
   --v2-warn: #8a6109;
-  --v2-info: #1f6cb0;
   --v2-ax-fys: #1a7745;
   --v2-ax-tek: #8a6109;
   --v2-ax-slag: #1f6cb0;
@@ -787,9 +799,12 @@ em.editorial {
   --v2-card-shadow: none;
   /* Valgt segment i .seg (showroom-fasit: segmentert løftes med skygge, ikke lime) */
   --v2-seg-skygge: 0 1px 4px rgba(23, 27, 24, 0.12);
-  --v2-font-display: "Familjen Grotesk", Inter, system-ui, sans-serif;
-  --v2-font-ui: Inter, system-ui, -apple-system, sans-serif;
-  --v2-font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  /* Paper-typografi: Poppins (display + UI), IBM Plex Mono (tall/etiketter).
+   * Lora (--p-body) er Paper sin brødtekst-serif og innføres per komponent i
+   * steg 5B — ikke som global UI-font. */
+  --v2-font-display: var(--p-disp);
+  --v2-font-ui: var(--p-ui);
+  --v2-font-mono: var(--p-mono);
   --v2-r-tag: 8px;
   --v2-r-input: 12px;
   --v2-r-row: 12px;
@@ -800,28 +815,32 @@ em.editorial {
   color-scheme: light;
 }
 html[data-v2-tema="dark"] {
-  --v2-bg: #131513;
-  --v2-panel: #1c1f1c;
-  --v2-panel2: #191c19;
-  --v2-panel3: #232623;
-  --v2-tint: linear-gradient(140deg, rgba(0, 88, 64, 0.38) 0%, rgba(28, 31, 28, 0) 55%);
+  /* Paper-port steg 5A — mørk. Alle verdier fra Paper v3.1 sin mørk-blokk via
+   * --p-*. Se kommentaren i :root over for hva som bevisst IKKE er portet. */
+  --v2-bg: var(--p-bg);
+  --v2-panel: var(--p-surface);
+  --v2-panel2: var(--p-soft);
+  --v2-panel3: var(--p-soft-hover);
+  --v2-tint: linear-gradient(140deg, rgba(217, 119, 87, 0.20) 0%, rgba(29, 28, 26, 0) 55%);
   --v2-niva-grad: linear-gradient(90deg, #26332b 0%, #005840 45%, #6e9a4e 75%, #d1f843 100%);
-  --v2-vignett: rgba(0, 88, 64, 0.16);
-  --v2-border: rgba(255, 255, 255, 0.11);
-  --v2-border-s: rgba(255, 255, 255, 0.19);
-  --v2-track: rgba(255, 255, 255, 0.11);
-  --v2-fg: #f3f5f1;
-  --v2-fg2: #b4b7b0;
-  --v2-mut: #8b8e87;
-  --v2-forest: #005840;
-  --v2-forest-soft: rgba(0, 88, 64, 0.45);
-  --v2-lime: #d1f843;
-  --v2-on-lime: #0d0e0d;
+  --v2-vignett: rgba(217, 119, 87, 0.12);
+  --v2-border: var(--p-border);
+  --v2-border-s: var(--p-hairline);
+  --v2-track: var(--p-border);
+  --v2-fg: var(--p-fg);
+  --v2-fg2: var(--p-ink-soft);
+  --v2-mut: var(--p-muted);
+  /* Paper snur CTA i mørk: papirhvit flate med blekk-tekst, ikke lime. */
+  --v2-forest: var(--p-cta);
+  --v2-forest-soft: var(--p-soft);
+  --v2-lime: var(--p-cta);
+  --v2-on-lime: var(--p-on-cta);
   /* --v2-handling uendret i mørk (#D97757) — oransje er tema-uavhengig monopol */
-  --v2-up: #4fd08a;
-  --v2-down: #f0683e;
+  --v2-up: var(--p-up);
+  --v2-down: var(--p-dn);
+  --v2-info: var(--p-info);
+  /* IKKE portet — se :root. */
   --v2-warn: #e8b43c;
-  --v2-info: #5aa9f0;
   --v2-ax-fys: #3dbe78;
   --v2-ax-tek: #e8b43c;
   --v2-ax-slag: #5aa9f0;
