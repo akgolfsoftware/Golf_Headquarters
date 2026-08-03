@@ -91,9 +91,23 @@ Bare nodejs runtime, ikke edge.
 ### Supabase Connect — bruk Shared Pooler (IPv4) for konsistens
 Transaction pooler + IPv4-toggle på. Da får du `aws-0-REGION.pooler.supabase.com` på begge porter.
 
-### .dark-tema — primary=accent er samme farge (skjørt)
-I `.dark`-klassen er `primary` og `accent` begge lime. Par som `bg-primary text-accent` rendres
-riktig i dag, men er flaks — ny kode skal bruke `-foreground`-parene (`bg-primary text-primary-foreground`).
+### .dark-tema — primary=accent er samme farge (flaksen tok slutt 2026-08-03)
+I mørkt tema er `primary` og `accent` begge lime (`#D1F843`). Par som `bg-primary text-accent` gir
+derfor 1:1 kontrast — teksten blir usynlig. Gjelder begge kanaler: Tailwind (`--color-primary`
+→ `--signal`, `--color-accent` → `--signal-fill`, begge lime i mørk) og inline
+`hsl(var(--primary))` / `hsl(var(--accent))`.
+- **Var:** parene rendret riktig fordi mørkt tema bare gjaldt en indre `.dark`-boks, mens
+  `<html>` beholdt de lyse verdiene (`--primary` = mørkegrønn `#005840`). Komponenter utenfor
+  boksen leste lys primary + lime accent = lesbart.
+- **Ble utløst av designport steg 3:** når `html[data-v2-tema="dark"]` kom inn i hsl-triplett-
+  blokken, arvet hele dokumentet mørkt, og alle parene kollapset samtidig. Fanget i preview før
+  merge: cookie-bannerets «Godta alle» var helt usynlig på forsiden (målt 1:1).
+- **Ryddet:** 24 forekomster rettet til `-foreground`-paret — 16 Tailwind (`text-accent` →
+  `text-primary-foreground`) i 11 filer, 7 inline på `(marketing)/stats/*` + `global-error.tsx`,
+  og `shared/cookie-banner.tsx`. Etter dette: null gjenstående par (verifisert med grep).
+- **Regel:** bruk ALLTID `-foreground`-paret på en primary-flate — `bg-primary text-primary-foreground`,
+  eller `hsl(var(--primary-foreground))` inline. Aldri `accent` som tekstfarge på `primary`.
+  `--primary-foreground` er hvit i lys og nær-svart i mørk, så den holder i begge.
 
 <!-- Mal for nye gotchas:
 ### <Kort tittel>
@@ -149,3 +163,22 @@ plukker ikke opp ny generert klient. Regel: RESTART dev-serveren etter hver
   per lagring fra lokal maskin. Truffet i gruppe-workbench periode-lagring (17.8 ble 16.8).
 - Regel: dags-strenger parses med `new Date(Date.UTC(y, m-1, d))`. Lesing tilbake med lokale
   getters er trygt i Oslo (øst for UTC). Fikset i `gruppe-periode-actions.ts` + `periode-core.ts`.
+
+### Tema: `data-v2-tema` på `<html>` er ENESTE mekanisme (ryddet 2026-08-03, designport steg 3)
+- Før: fire parallelle mekanismer (`data-v2-tema`, hardkodet `className="dark"` i 25 filer,
+  `[data-theme="dark"]` som aldri ble satt, og en Cmd+K-toggle som skrev til
+  `localStorage["akgolf-theme"]` — en nøkkel ingen leste). Konsekvensen var målt i
+  `docs/port/fase2-morketema-avklaring.md` §3.1: i `/portal` og `/admin/(legacy)` ble chromet
+  mørkt mens innholdsflaten forble lys, fordi `html[data-v2-tema="dark"]` og `.golfdata-scope`
+  rører helt disjunkte variabelfamilier (snitt = 0 navn).
+- Nå: `html[data-v2-tema="dark"]` er lagt inn i alle tre mørk-blokkene (`globals.css` hsl-triplett
+  + DS-navn, `golfdata-tokens.css` scope-blokken), Cmd+K-toggle bruker samme cookie som railen
+  (`ak-v2-tema`), og alle `className="dark"` er fjernet.
+- Regel: sett aldri `className="dark"` for å låse en flate mørk, og introduser ingen ny
+  tema-mekanisme. Trenger en flate fast palett, gjør det med egne scope-tokens (mønster:
+  `wang-tokens.css`), ikke med tema-klassen.
+- Kjente unntak som SKAL stå: `wizard-chrome.tsx` fjerner `data-v2-tema` bevisst (onboarding er
+  låst lys). `.wang-tp` og `.gfgk-jr` har ingen mørk-gren — de 9 rutene er enpalett med vilje.
+- Default per path (`src/app/layout.tsx` inline-script): `/portal|/admin|/forelder` = lys,
+  alt annet = mørk. Ikke rør scriptet uten å teste hard reload på marketing — det er eneste
+  beskyttelse mot lys-blink før paint.

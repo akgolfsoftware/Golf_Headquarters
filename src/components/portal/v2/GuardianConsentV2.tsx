@@ -713,7 +713,6 @@ function ConsentKort({
 export function GuardianConsentV2(props: GuardianConsentV2Props) {
   return (
     <div
-      className="dark"
       style={{
         minHeight: "100vh",
         display: "flex",

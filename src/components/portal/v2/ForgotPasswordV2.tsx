@@ -445,7 +445,6 @@ function ForgotKort() {
 export function ForgotPasswordV2() {
   return (
     <div
-      className="dark"
       style={{
         minHeight: "100vh",
         display: "flex",

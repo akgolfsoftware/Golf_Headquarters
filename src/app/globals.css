@@ -62,8 +62,9 @@
   --radius: 16px;
 }
 
+html[data-v2-tema="dark"],
 .dark {
-  --background: 90 5% 7.8%;        /* #141513 = DS --bg (graphite-0, v14 variant B «løftet») */
+  --background: 90 5% 7.8%;     /* #141513 = DS --bg (graphite-0, v14 variant B «løftet») */
   --foreground: 0 0% 94.1%;        /* #F0F0F0 = DS --text (graphite-900) */
   --card: 120 1.5% 12.7%;          /* #202120 = DS --surface (graphite-50) */
   --card-foreground: 0 0% 94.1%;
@@ -257,6 +258,7 @@
   --phase-peak: oklch(0.9 0.19 122);
 }
 
+html[data-v2-tema="dark"],
 .dark,
 [data-theme="dark"] {
   /* Semantiske aliaser — MØRK */

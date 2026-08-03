@@ -159,6 +159,7 @@
    (.dark på forelder) og mørke data-hero-innfellinger nested
    inne i et lyst golfdata-scope.
    ============================================================ */
+html[data-v2-tema="dark"] .golfdata-scope,
 .dark .golfdata-scope,
 .golfdata-scope.dark,
 .golfdata-scope .dark,

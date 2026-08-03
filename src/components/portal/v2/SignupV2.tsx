@@ -832,7 +832,6 @@ export function SignupV2({
 }: { defaultEmail?: string; subscribe?: string } = {}) {
   return (
     <div
-      className="dark"
       style={{
         minHeight: "100vh",
         display: "flex",

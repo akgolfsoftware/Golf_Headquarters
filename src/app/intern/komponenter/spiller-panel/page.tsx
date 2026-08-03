@@ -53,7 +53,7 @@ export default function PanelDemo() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="inline-flex items-center rounded-lg bg-primary px-4 py-2 font-mono text-[11px] font-extrabold uppercase tracking-[0.10em] text-accent"
+          className="inline-flex items-center rounded-lg bg-primary px-4 py-2 font-mono text-[11px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground"
         >
           Åpne spiller-panel
         </button>

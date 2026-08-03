@@ -418,7 +418,6 @@ function ResetKort() {
 export function ResetPasswordV2() {
   return (
     <div
-      className="dark"
       style={{
         minHeight: "100vh",
         display: "flex",

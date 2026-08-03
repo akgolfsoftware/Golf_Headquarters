@@ -34,7 +34,7 @@ const KONTAKT = [
 
 export function MarketingFooter() {
   return (
-    <footer className="dark bg-background pb-8 pt-16 text-foreground/70">
+    <footer className="bg-background pb-8 pt-16 text-foreground/70">
       <div className="mx-auto max-w-7xl px-6 md:px-8">
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr_1fr]">
           <div>
