@@ -338,6 +338,7 @@ Sentrale modeller og ALLE status-enums fra `prisma/schema.prisma` (komplett per 
 | Innsiktskategori | `InsightCategory` | DISTANCE_GAPPING, CONSISTENCY_LEAK, TRAINING_GAP, D_PLANE_DRIFT, STRIKE_QUALITY, FATIGUE_PATTERN, EQUIPMENT_FIT, TEMPO_VARIANCE, PROGRESSION_TREND, SAME_DISTANCE_OPPORTUNITY (jf. §12). |
 | Teknisk plan-status | `TechPlanStatus` | DRAFT, ACTIVE, ARCHIVED. |
 | Arbeidsoppgave-status | `PositionTaskStatus` | PENDING, ACTIVE (logger reps), DONE, ARCHIVED. |
+| Oppgave-kategori | `TaskKategori` | TEKNISK, TAKTISK, MENTALT, SOSIALT — eget klassifiseringsfelt på `PositionTask` ved siden av pyramide-aksen (runde 2 · 2026-07-14, Anders: «Begge — legg til som eget felt»). Nullable — aldri en sperre. |
 | Spor-status (teknisk mål) | `TrackStatus` | PAA_VEI (begge spor positive), STAGNERER, FERDIG, INAKTIV (ingen reps > 14 d), AVSLAATT. |
 | TM-mål-type | `TmGoalType` | PRIMARY, SECONDARY, CAUSAL, HIT_RATE (jf. §14 TrackMan-mål). |
 | TM-mål-protokoll | `TmGoalProtocol` | ROLLING_WINDOW, BEST_OF_N, STREAK, SESSION_GATE — hvordan målet måles. |
