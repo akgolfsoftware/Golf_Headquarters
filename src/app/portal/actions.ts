@@ -36,6 +36,8 @@ export type TodaySession = {
   durationMin: number;
   /** Treningsmiljø (Sted) — null hvis ikke satt på økten. */
   sted: string | null;
+  /** Hva økten skal oppnå — null hvis ikke satt av coach/spiller. */
+  maalsetning: string | null;
   drills: { id: string; name: string; durationMinutes: number }[];
   href: string;
 };
@@ -45,15 +47,7 @@ export type WeekDay = {
   dayLabel: string;
   dayNumber: number;
   isToday: boolean;
-  sessions: {
-    id: string;
-    title: string;
-    startTime: Date;
-    endTime: Date;
-    status: SessionStatusV2;
-    pyramidArea: PyramidArea;
-    href: string;
-  }[];
+  sessions: TodaySession[];
 };
 
 export type RecentActivityItem = {
@@ -209,6 +203,7 @@ export async function getTodaysSession(userId: string): Promise<TodaySession | n
       status: true,
       practiceType: true,
       miljo: true,
+      maalsetning: true,
       drills: { select: { id: true, name: true, durationMinutes: true }, orderBy: { sortOrder: "asc" } },
     },
     take: 1,
@@ -227,6 +222,7 @@ export async function getTodaysSession(userId: string): Promise<TodaySession | n
     pyramidArea: PRACTICE_TO_PYRAMID[s.practiceType] ?? "TEK",
     durationMin: Math.max(0, Math.round((s.endTime.getTime() - s.startTime.getTime()) / 60_000)),
     sted: s.miljo ? translateMiljo(s.miljo) : null,
+    maalsetning: s.maalsetning,
     drills: s.drills,
     href: v2DbSessionHref(s.id, s.status),
   };
@@ -250,6 +246,9 @@ export async function getWeekOverview(userId: string): Promise<WeekDay[]> {
       endTime: true,
       status: true,
       practiceType: true,
+      miljo: true,
+      maalsetning: true,
+      drills: { select: { id: true, name: true, durationMinutes: true }, orderBy: { sortOrder: "asc" } },
     },
   });
 
@@ -274,7 +273,12 @@ export async function getWeekOverview(userId: string): Promise<WeekDay[]> {
       startTime: s.startTime,
       endTime: s.endTime,
       status: s.status,
+      practiceType: s.practiceType,
       pyramidArea: PRACTICE_TO_PYRAMID[s.practiceType] ?? "TEK",
+      durationMin: Math.max(0, Math.round((s.endTime.getTime() - s.startTime.getTime()) / 60_000)),
+      sted: s.miljo ? translateMiljo(s.miljo) : null,
+      maalsetning: s.maalsetning,
+      drills: s.drills,
       href: v2DbSessionHref(s.id, s.status),
     });
   }
@@ -698,6 +702,7 @@ export async function getAllTodaysSessions(userId: string): Promise<TodaySession
       status: true,
       practiceType: true,
       miljo: true,
+      maalsetning: true,
       drills: { select: { id: true, name: true, durationMinutes: true }, orderBy: { sortOrder: "asc" } },
     },
   });
@@ -712,6 +717,7 @@ export async function getAllTodaysSessions(userId: string): Promise<TodaySession
     pyramidArea: PRACTICE_TO_PYRAMID[s.practiceType] ?? "TEK",
     durationMin: Math.max(0, Math.round((s.endTime.getTime() - s.startTime.getTime()) / 60_000)),
     sted: s.miljo ? translateMiljo(s.miljo) : null,
+    maalsetning: s.maalsetning,
     drills: s.drills,
     href: v2DbSessionHref(s.id, s.status),
   }));
