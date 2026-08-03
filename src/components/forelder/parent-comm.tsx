@@ -67,7 +67,7 @@ export function MessageComposer({
                 aria-pressed={on}
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[9px] font-extrabold uppercase tracking-[0.08em]",
-                  on ? "border-primary bg-primary text-accent" : "border-border bg-card text-muted-foreground hover:bg-secondary",
+                  on ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-muted-foreground hover:bg-secondary",
                 )}
               >
                 <Icon className="h-3 w-3" strokeWidth={1.5} />{channelMeta[c].label}

@@ -400,7 +400,7 @@ function ChainStap({
         <span
           className={cn(
             "inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full font-mono text-[9px] font-extrabold",
-            aktiv ? "bg-accent text-primary" : "bg-primary text-accent",
+            aktiv ? "bg-accent text-primary" : "bg-primary text-primary-foreground",
           )}
         >
           {num}

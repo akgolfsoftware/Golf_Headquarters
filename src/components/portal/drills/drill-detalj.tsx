@@ -260,7 +260,7 @@ export function DrillDetalj({ data }: { data: DrillDetaljData }) {
                       className={cn(
                         "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-[12px] font-extrabold transition-colors",
                         done
-                          ? "bg-primary text-accent"
+                          ? "bg-primary text-primary-foreground"
                           : "border-2 border-border text-muted-foreground",
                       )}
                     >

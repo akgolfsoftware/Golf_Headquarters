@@ -288,7 +288,7 @@ export function TesterList({ rows }: { rows: TestRow[] }) {
               className={cn(
                 "inline-flex h-[22px] items-center rounded-full px-2 font-mono text-[9px] font-bold uppercase tracking-[0.10em] transition-colors",
                 filter === f.key
-                  ? "bg-primary text-accent"
+                  ? "bg-primary text-primary-foreground"
                   : "bg-secondary text-muted-foreground hover:text-foreground",
               )}
               aria-pressed={filter === f.key}

@@ -516,7 +516,7 @@ export function PlayerWorkbench({ data }: { data: PlayerWorkbenchData }) {
                 className={cn(
                   "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.08em]",
                   p.active
-                    ? "border-primary bg-primary text-accent"
+                    ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-card text-muted-foreground",
                 )}
               >
@@ -537,7 +537,7 @@ export function PlayerWorkbench({ data }: { data: PlayerWorkbenchData }) {
               aria-current={z === "Uke" ? "page" : undefined}
               className={cn(
                 "cursor-default rounded-full px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.08em]",
-                z === "Uke" ? "bg-primary text-accent" : "text-muted-foreground",
+                z === "Uke" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
               )}
             >
               {z}
