@@ -798,6 +798,22 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 
 ## Endringslogg
 
+- 3. august (kvalitetsaudit tiltak 9+10, fullføring): **PR #253 merget, hydreringsfeil fikset og
+  verifisert, DDL bekreftet i prod, Stripe-sjekkliste levert.**
+  - `processed_webhook_events` bekreftet i prod: 5 kolonner, unik indeks (source, eventId), RLS på,
+    null policies. Tiltak 10 (Stripe event-dedup + sideeffekt-gate + retry-konsument) er dermed
+    fullt utrullet — kun Anders' egen 5-minutters sjekk i Stripe-dashbordet gjenstår (se STATUS-NÅ.md).
+  - React #418 på `/portal/planlegge/workbench` (funnet 2. august) fikset: brødsmulen leste
+    år/måned fra `new Date()` i render i stedet for fra `data.weekStartISO`. Verifisert med
+    kontrollert før/etter-måling og 3/3 ekte kjøringer mot prod uten konsollfeil. `KJENTE_FEIL`
+    i `tests/e2e/kjerne-klikk.spec.ts` tømt i eget PR #261 (fulgte PR #253 som allerede var merget).
+  - CSP-funnet på `/admin/spillere` (samme dato) står fortsatt åpent — ingen ny fikse-runde, siden
+    forrige forsøk allerede er målt og forkastet (se STATUS-NÅ.md). Ikonene rendres uansett.
+  - **Sikkerhetshendelse under arbeidet:** `SCREENTEST_PASSWORD` ble utilsiktet eksponert i klartekst
+    i samtaleloggen (Playwright-feilsøkingsartefakt). Ny testbruker `demo@akgolf.test` opprettet for
+    å unngå å jobbe videre med en potensielt kompromittert konto — se STATUS-NÅ.md for detaljer og
+    hva som gjenstår (avklare `screentest@akgolf.test` og `coachtest@akgolf.test` sine passord).
+
 - 2. august (kvalitetsaudit tiltak 9): **AgencyOS-delen av ★-kjernen klikk-testet mot prod.**
   Ny varig test `tests/e2e/kjerne-klikk.spec.ts` kjører kjernekjeden på 390px og 1280px, i to spor
   (coach og spiller) med hver sine credentials, og feiler på HTTP-status, utkast til login, feilside
