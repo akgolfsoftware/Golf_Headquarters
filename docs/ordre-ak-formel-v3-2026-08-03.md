@@ -3,8 +3,13 @@
 **Fra:** Cowork-sporet (Anders + Claude), 3. august 2026
 **Til:** design-sporet i Claude Design-prosjektet `605a48cc` («AK Golf HQ — Claude Paper») og kodesporet i akgolf-hq
 **Status:** Struktur besluttet av Anders. **Ikke kjørt i kode.** Ingen migrasjon startet.
-**Referansefil:** `~/Treningsplanlegger/ak-formel-struktur.html` (interaktiv, viser hele treet).
-Merk: den fila finnes **ikke** på denne maskinen (sjekket 03.08) — hentes fra Anders' maskin før den brukes som referanse.
+**Oppdatert 03.08 kveld:** fem av ti åpne punkter lukket av Anders og innarbeidet i §2
+(se §4 for beslutningstabellen). Formelvelgeren fra §8.2 er bygget — `AkFormelVelger` i
+`designsystem/paper/components/forms/`.
+**Referansefil:** funnet 03.08 kveld i
+`~/My Drive/claude-cowork/Artifacts/ak-formel-struktur/index.html` (Cowork-artefakt, ikke
+`~/Treningsplanlegger/` som tidligere antatt — den stien finnes ikke). Interaktiv, viser hele
+treet, og er kilden strukturen i §2 er verifisert mot.
 
 ---
 
@@ -60,6 +65,8 @@ ned: TEK på innspill får en slot som TEK på putt ikke har.
 STYRKE · KONDISJON · SPENST · BEVEGELIGHET
 ```
 
+**FYS har delferdighet** (Anders 03.08, §4.1 lukket) — se §2.3.
+
 **TEK og SLAG — 17 områder, samme sett, fire grupper**
 
 Gruppa er Strokes Gained-aksen. Området er det drillen peker på.
@@ -71,6 +78,12 @@ Nærspill   PITCH · CHIP · LOB · BUNKER
 Putt       PUTT_0_3 · PUTT_3_5 · PUTT_5_10 · PUTT_10_15 · PUTT_15_25 · PUTT_25_40 · PUTT_40
 ```
 
+**Enhet for putt-tallene: FOT** (Anders 03.08, §4.5 lukket). Justeres mot CANON v3.5, som
+bruker fot for putting. **All eksisterende kode lagrer meter** — avviket er dermed reelt og
+krever datamigrering (m → ft) før tallene kan vises som fot. Migreringen er IKKE besluttet
+kjørt og skal ikke gjøres som del av designarbeidet. Til den er kjørt: vis enhet eksplisitt
+i UI, aldri et bart tall.
+
 **Endring:** `SPILL` er fjernet herfra. Var med i v2s 18-liste, hører ikke hjemme
 under Teknikk (Anders 03.08). 18 → 17.
 
@@ -79,6 +92,12 @@ under Teknikk (Anders 03.08). 18 → 17.
 ```
 BANE · TEST · SCORING · INNSPILL
 ```
+
+**`BANE` beholdes** (Anders 03.08, §4.3 lukket). Begrunnelse: banespill er en egen
+trenings*form* — hva du trener — mens `BANE` under Belastning beskriver *hvor* økten
+foregår. To ulike akser med samme ord. **Konsekvens for UI:** de to må aldri stå
+uetikettert ved siden av hverandre; skriv «Område: Bane» og «Belastning: Bane», aldri
+bare «Bane · Bane».
 
 **TURN — 3 områder (turneringstypene)**
 
@@ -116,7 +135,19 @@ OPPSTILLING · GREP · SIKTE · BALLSTART · SKRU · LENGDEKONTROLL
 FORBEREDELSER · STRATEGI_TAKTIKK · MENTAL
 ```
 
-**FYS → ikke definert.** Åpent punkt, se §4.
+**FYS → JA, eget nivå** (Anders 03.08, §4.1 lukket). Sett/reps/kg/tid er øktdata og dekker
+ikke *hva* egenskapen er. Begrunnet i AK-grunnlaget «RFD > 1RM» — skal det prinsippet kunne
+styre trening, må egenskapen være et felt, ikke en kommentar.
+
+**STYRKE → tre**
+
+```
+RFD · MAKSSTYRKE · UTHOLDENHET
+```
+
+**KONDISJON, SPENST og BEVEGELIGHET → ikke definert ennå.** Beslutningen dekket STYRKE. De
+tre øvrige står åpne — se §4.1b. Ikke finn på verdier: en FYS-formel på disse tre har fire
+slots der delferdighet er tom, ikke tre slots.
 
 ### 2.4 P-posisjon — betinget slot, kun TEK på tee og innspill
 
@@ -166,13 +197,18 @@ Press        ALENE · OBSERVERT · KONKURRANSE · TURNERING       (erstatter PRP
 
 | Pyramide | Slots |
 |---|---|
-| FYS | pyramide · område · belastning **(3)** |
+| FYS | pyramide · område · delferdighet · belastning **(4)** |
 | TEK på tee/innspill | pyramide · område · **P-posisjon** · delferdighet · motorikk · belastning · press **(7)** |
 | TEK på nærspill/putt | pyramide · område · delferdighet · motorikk · belastning · press **(6)** |
 | SLAG · SPILL · TURN | pyramide · område · delferdighet · motorikk · belastning · press **(6)** |
 
 Slot-antallet varierer altså med både pyramide og område. Rendring må være datadrevet,
 ikke en fast rekke felt.
+
+**FYS har verken motorikk eller press** (Anders 03.08, §4.2 lukket). Begge er golf-språk:
+«uten ball / lav hastighet / auto» og «alene / observert / konkurranse» beskriver
+slagtrening, ikke en styrkeøkt. FYS-formelen stopper på belastning. Delferdighet kom
+likevel inn (§4.1) — FYS er derfor 4 slots, ikke 3 og ikke 6.
 
 ### 2.7 Praksisform — eget felt, IKKE en slot
 
@@ -192,6 +228,11 @@ varierer      OMRADE · DELFERDIGHET · KOLLE · UNDERLAG · MAL   (flervalg, ku
 | `BLOKK` | Samme slag om og om igjen. Alt fast. |
 | `SERIELL` | Fast rotasjon i kjent rekkefølge — A, B, C, A, B, C. |
 | `VARIABEL` | Aldri to like slag etter hverandre. Uforutsigbart. |
+
+**`SERIELL` beholdes som egen verdi** (Anders 03.08, §4.7 lukket). Den er ikke en svak
+variant av `VARIABEL`, men en egen mellomting: rekkefølgen er kjent og forutsigbar, så
+spilleren kan forberede seg — det bygger automatisering trygt før uforutsigbarheten settes
+på. Nyttig nettopp i overgangen fra å lære til å stabilisere. Tre verdier, ikke to.
 
 Eksempler fra Anders' egen ukeplan:
 
@@ -252,15 +293,32 @@ FYS_SPENST_INNENDORS                                        + BLOKK
 
 ---
 
-## 4. Åpne punkter — ikke implementer disse
+## 4. Åpne punkter
 
-Spør Anders. Ikke gjett.
+**Fem av ti ble lukket 03.08 kveld** (Anders, i økt). De står nedenfor med sitt svar og er
+innarbeidet i §2. De øvrige fem er fortsatt åpne — spør Anders, ikke gjett.
 
-1. **Delferdighet for FYS.** Ikke definert. Sett/reps/kg/tid dekker mye, men trenger
-   styrke f.eks. RFD / maksstyrke / utholdenhet som eget nivå?
-2. **Motorikk og press for FYS.** Golf-språk. Gjelder de fysisk trening, eller stopper
-   formelen på belastning?
-3. **`BANE` under SPILL.** Sto der fra før v3. Behold eller fjern?
+### Lukket 03.08
+
+| # | Punkt | Svar | Innarbeidet |
+|---|---|---|---|
+| 1 | Delferdighet for FYS | **Ja** — STYRKE får `RFD · MAKSSTYRKE · UTHOLDENHET` | §2.3 |
+| 2 | Motorikk og press for FYS | **Nei** — FYS stopper på belastning (4 slots) | §2.6 |
+| 3 | `BANE` under SPILL | **Behold** — form vs. sted er to akser | §2.2 |
+| 5 | Enhet for putt | **Fot** — juster mot CANON; krever migrering m → ft | §2.2 |
+| 7 | `SERIELL` som praksisform | **Behold** — egen verdi, ikke slå sammen | §2.7 |
+
+**1b. Nytt delpunkt som følger av svar 1:** delferdighet er definert for `STYRKE`, men ikke
+for `KONDISJON`, `SPENST` og `BEVEGELIGHET`. Disse tre må avklares før FYS-formelen er
+komplett. Ikke finn på verdier.
+
+**Merk på svar 5:** beslutningen gjelder *enhet*, ikke *bøttegrensene*. Grensene er fortsatt
+et åpent kodefunn (§6.5 — koden har seks bøtter, strukturen sju). Fot-vedtaket gjør den
+konflikten viktigere, ikke mindre: bytter man enhet uten å avklare grensene, flytter man to
+ting samtidig og kan ikke se hvilken som brakk.
+
+### Fortsatt åpne
+
 4. **Putt under TEK/SLAG.** Anders skrev «Tee total og innspill og nærspill er knyttet til
    Teknikk og Golfslag» — putt ble ikke nevnt eksplisitt. Antatt inkludert i begge.
    **Bekreft.**
@@ -502,9 +560,14 @@ umulig å rekonstruere senere. Gjelder også `PositionTaskLog` og alle øktrader
 ## 8. Hva design-sesjonen bør gjøre nå
 
 1. **Ikke migrer.** v3 er ikke ferdig — ti åpne punkter i §4, pluss tre til fra §6.
-2. **Bygg UI-et mot strukturen i §2** der du trenger en formelvelger. Kaskaden i §5.2
-   er ferdig spesifisert og endrer seg ikke av de åpne punktene. Komponenten finnes ikke
-   i biblioteket i dag (§6.3) — det er den konkrete jobben.
+2. ~~**Bygg UI-et mot strukturen i §2** der du trenger en formelvelger.~~ **Gjort 03.08 kveld.**
+   `AkFormelVelger` + `AkFormelLinje` ligger i `designsystem/paper/components/forms/` med
+   filtrippel og spesimenkort (`ak-formel.card.html`). Kaskaden fra §5.2 er implementert:
+   pyramiden bytter områdelista, området bytter delferdighetene, P-steget finnes kun på TEK
+   tee/innspill, og nullstillingskartet river alt under et endret steg. Strukturen er
+   eksportert som `AK_STRUKTUR` så den kan gjenbrukes uten å duplisere lista.
+   **Ikke i `_ds_bundle.js` ennå** — må kompileres i Claude Design før kortet rendrer
+   (samme tilstand som DataTable/FilterPills hadde 31.07, se readme).
 3. **Bruk `ak-formel-struktur.html` som referanse** for hvordan valgene henger sammen —
    ikke som designfasit. Den er et forklaringsverktøy, ikke en produksjonsskjerm.
    Merk at fila ikke ligger på denne maskinen (§6.8).
