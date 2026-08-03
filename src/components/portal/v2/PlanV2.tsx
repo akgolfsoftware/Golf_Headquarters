@@ -17,7 +17,6 @@ import {
   Caps,
   Tittel,
   Kort,
-  Rad,
   AkseChip,
   AkseBar,
   StatusPill,
@@ -26,10 +25,12 @@ import {
   DagStripe,
   TomTilstand,
   HjelpTips,
+  Icon,
   type StripeDag,
   type StatusTone,
 } from "@/components/v2";
 import { OktKort } from "@/components/v2/domene";
+import { BunnArk } from "@/components/v2/bunn-ark";
 import type { AkseKey } from "@/lib/v2/tokens";
 import { WORKBENCH_HREF } from "./WorkbenchInngang";
 
@@ -124,7 +125,17 @@ export function PlanV2({ data }: { data: DashboardData }) {
       state: forbi && alleFullfort ? "done" : undefined,
     };
   });
-  const aktivDag = week.find((d) => d.isToday)?.dayNumber ?? null;
+  const aktivDag = week.find((d) => d.isToday)?.dayNumber ?? week[0]?.dayNumber ?? null;
+
+  // Dag-navigasjon (Paper-fasit: playerhq-plan.html) — velg én dag, se dens økter.
+  const [valgtDagDato, setValgtDagDato] = useState<number | null>(aktivDag);
+  const valgtDagObj = week.find((d) => d.dayNumber === valgtDagDato) ?? week.find((d) => d.isToday) ?? week[0];
+
+  const [apentOktId, setApentOktId] = useState<string | null>(null);
+  const apenOkt = apentOktId
+    ? week.flatMap((d) => d.sessions).find((o) => o.id === apentOktId)
+    : null;
+  const apenOktDag = apenOkt ? week.find((d) => d.sessions.some((s) => s.id === apenOkt.id)) : null;
 
   const planlagtTot = timer(weekProgress.plannedMin);
   const fullfortTot = timer(weekProgress.completedMin);
@@ -144,9 +155,6 @@ export function PlanV2({ data }: { data: DashboardData }) {
     m: timer(weekProgress.plannedByAxis[a as PyramidArea]),
   })).filter((r) => r.m > 0 || r.v > 0);
   const akseMax = Math.max(5, Math.ceil(Math.max(...akseRader.map((r) => Math.max(r.v, r.m)), 0)));
-
-  // I dag: bruk todayAll (full detalj). Resten av uka: week-rader.
-  const dagerMedOkter = week.filter((d) => d.sessions.length > 0 && !d.isToday);
 
   const statusTone: StatusTone =
     gjennomforPct >= 80 ? "up" : gjennomforPct >= 40 ? "info" : weekProgress.plannedMin > 0 ? "warn" : "info";
@@ -248,10 +256,65 @@ export function PlanV2({ data }: { data: DashboardData }) {
             </span>
           </div>
           <ProgresjonsBar variant="bar" value={gjennomforPct} max={100} showValue={false} label="" />
+          <details style={{ margin: "10px 0 0", border: `1px solid ${T.border}`, borderRadius: T.rCard, background: T.panel }}>
+            <summary
+              style={{
+                display: "flex",
+                alignItems: "center",
+                minHeight: 40,
+                padding: "0 14px",
+                cursor: "pointer",
+                listStyle: "none",
+                fontFamily: T.ui,
+                fontSize: 12,
+                fontWeight: 500,
+                color: T.mut,
+              }}
+            >
+              Hvorfor dette tallet
+            </summary>
+            <ul style={{ margin: 0, padding: "10px 14px 14px 22px", fontSize: 12.5, color: T.mut, lineHeight: 1.6 }}>
+              <li style={{ marginBottom: 6 }}>
+                <strong style={{ color: T.fg, fontWeight: 500 }}>Kilde: </strong>
+                denne ukas planlagte og gjennomførte økter, beregnet nå.
+              </li>
+              <li style={{ marginBottom: 6 }}>
+                <strong style={{ color: T.fg, fontWeight: 500 }}>Beregning: </strong>
+                gjennomført tid delt på planlagt tid. Bare økter markert som fullført teller.
+              </li>
+              <li>
+                <strong style={{ color: T.fg, fontWeight: 500 }}>Forbehold: </strong>
+                en økt du starter men ikke fullfører teller ikke før den er logget ferdig.
+              </li>
+            </ul>
+          </details>
         </div>
       )}
 
-      <DagStripe days={stripeDager} value={aktivDag} />
+      {/* Eierskap — spilleren eier planen sin (Workbench: flytt/endre uten godkjenning). */}
+      <div
+        style={{
+          display: "flex",
+          gap: 10,
+          padding: "10px 14px",
+          borderRadius: T.rCard,
+          background: T.panel2,
+          border: `1px solid ${T.border}`,
+        }}
+      >
+        <Icon name="shield" size={16} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
+        <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.5 }}>
+          Planen er din. Du kan flytte og endre øktene selv i Workbench, med én gang — ingen godkjenning trengs.
+        </p>
+      </div>
+
+      <Link href="/portal/booking" style={{ textDecoration: "none", display: "block" }}>
+        <CTAPill icon="calendar-plus" ghost full>
+          Book coachingtime
+        </CTAPill>
+      </Link>
+
+      <DagStripe days={stripeDager} value={valgtDagDato} onChange={(dato) => setValgtDagDato(dato)} />
 
       {/* Primær CTA — én grønn jobb */}
       <Link href={primaerHref} style={{ textDecoration: "none", display: "block" }}>
@@ -263,51 +326,52 @@ export function PlanV2({ data }: { data: DashboardData }) {
       <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
         {/* Tidslinje / dager */}
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-          {todayAll.length > 0 ? (
+          {valgtDagObj && (
             <Kort
               pad="12px"
               eyebrow={
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                  I dag
-                  <Caps size={9}>
-                    {todayAll.length} økt{todayAll.length === 1 ? "" : "er"}
-                  </Caps>
+                  {valgtDagObj.isToday ? "I dag" : dagEtikett(valgtDagObj.date)}
+                  {valgtDagObj.sessions.length > 0 && (
+                    <Caps size={9}>
+                      {valgtDagObj.sessions.length} økt{valgtDagObj.sessions.length === 1 ? "" : "er"}
+                    </Caps>
+                  )}
                 </span>
               }
             >
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {todayAll.map((o) => {
-                  const naa = o.status === "IN_PROGRESS";
-                  const ferdig = o.status === "COMPLETED" || o.status === "SKIPPED";
-                  const state = ferdig ? ("done" as const) : naa ? ("live" as const) : ("planned" as const);
-                  return (
-                    <OktKort
-                      key={o.id}
-                      title={o.title}
-                      time={toMin(o.startTime)}
-                      duration={varighet(o.durationMin)}
-                      axis={(o.pyramidArea as AkseKey) || "TEK"}
-                      state={state}
-                      naa={naa}
-                      meta={[o.sted, o.drills.length > 0 ? `${o.drills.length} øvelser` : null]
-                        .filter(Boolean)
-                        .join(" · ")}
-                      cta={!ferdig ? "Start økt" : undefined}
-                      onCta={
-                        !ferdig
-                          ? () => {
-                              window.location.href = nesteHandling.href;
-                            }
-                          : undefined
-                      }
-                    />
-                  );
-                })}
-              </div>
-            </Kort>
-          ) : (
-            <Kort eyebrow="I dag">
-              {optimalSession ? (
+              {valgtDagObj.sessions.length > 0 ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {valgtDagObj.sessions.map((o) => {
+                    const naa = o.status === "IN_PROGRESS";
+                    const ferdig = o.status === "COMPLETED" || o.status === "SKIPPED";
+                    const state = ferdig ? ("done" as const) : naa ? ("live" as const) : ("planned" as const);
+                    return (
+                      <OktKort
+                        key={o.id}
+                        title={o.title}
+                        time={toMin(o.startTime)}
+                        duration={varighet(o.durationMin)}
+                        axis={(o.pyramidArea as AkseKey) || "TEK"}
+                        state={state}
+                        naa={naa}
+                        onClick={() => setApentOktId(o.id)}
+                        meta={[o.sted, o.drills.length > 0 ? `${o.drills.length} øvelser` : null]
+                          .filter(Boolean)
+                          .join(" · ")}
+                        cta={!ferdig ? "Start økt" : undefined}
+                        onCta={
+                          !ferdig
+                            ? () => {
+                                window.location.href = o.href;
+                              }
+                            : undefined
+                        }
+                      />
+                    );
+                  })}
+                </div>
+              ) : valgtDagObj.isToday && optimalSession ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   <Caps>Anbefalt (fra form)</Caps>
                   <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>
@@ -324,60 +388,14 @@ export function PlanV2({ data }: { data: DashboardData }) {
               ) : (
                 <TomTilstand
                   icon="calendar"
-                  title="Ingen økt i dag"
-                  sub="Hviledag — eller legg inn økter i Workbench."
+                  title="Hviledag"
+                  sub="Ingen økt denne dagen — eller legg inn en i Workbench."
                 />
               )}
             </Kort>
           )}
 
-          {dagerMedOkter.map((d) => (
-            <Kort key={d.date.toISOString()} eyebrow={dagEtikett(d.date)}>
-              {d.sessions.map((o, j) => {
-                const naa = o.status === "IN_PROGRESS";
-                const varMin = Math.max(0, Math.round((o.endTime.getTime() - o.startTime.getTime()) / 60_000));
-                return (
-                  <Rad
-                    key={o.id}
-                    leading={
-                      <span
-                        style={{
-                          width: 44,
-                          flex: "none",
-                          fontFamily: T.mono,
-                          fontSize: 11,
-                          fontWeight: 700,
-                          color: naa ? T.lime : T.mut,
-                        }}
-                      >
-                        {toMin(o.startTime)}
-                      </span>
-                    }
-                    title={
-                      <span
-                        style={{
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                          whiteSpace: "normal",
-                        }}
-                      >
-                        {o.title}
-                      </span>
-                    }
-                    sub={varighet(varMin)}
-                    meta={<AkseChip a={o.pyramidArea as AkseKey} />}
-                    naa={naa}
-                    trailing={null}
-                    last={j === d.sessions.length - 1}
-                  />
-                );
-              })}
-            </Kort>
-          ))}
-
-          {todayAll.length === 0 && dagerMedOkter.length === 0 && !optimalSession && (
+          {week.every((d) => d.sessions.length === 0) && !optimalSession && (
             <Kort>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 <TomTilstand
@@ -481,6 +499,78 @@ export function PlanV2({ data }: { data: DashboardData }) {
           </Link>
         </div>
       </div>
+
+      {/* Øktdetalj — tap på et OktKort åpner denne (fasit: playerhq-plan.html .ark) */}
+      <BunnArk open={apenOkt != null} onClose={() => setApentOktId(null)} tittel={apenOkt?.title}>
+        {apenOkt && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {[
+                ["Når", `${apenOktDag ? dagEtikett(apenOktDag.date) : ""} ${toMin(apenOkt.startTime)}`],
+                ["Sted", apenOkt.sted ?? "—"],
+                ["Varighet", varighet(apenOkt.durationMin)],
+                ["Pyramide", AKSE_KORT[(apenOkt.pyramidArea as AkseKey) || "TEK"]],
+              ].map(([l, v]) => (
+                <div key={l} style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, fontFamily: T.ui, color: T.mut }}>
+                  <span>{l}</span>
+                  <span style={{ fontFamily: T.mono, color: T.fg }}>{v}</span>
+                </div>
+              ))}
+            </div>
+
+            {apenOkt.maalsetning && (
+              <div>
+                <Caps size={9}>Målsetning</Caps>
+                <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+                  {apenOkt.maalsetning}
+                </p>
+              </div>
+            )}
+
+            {apenOkt.drills.length > 0 && (
+              <div>
+                <Caps size={9}>{`Drills · ${apenOkt.drills.length}`}</Caps>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 8 }}>
+                  {apenOkt.drills.map((d) => (
+                    <div
+                      key={d.id}
+                      style={{
+                        border: `1px solid ${T.border}`,
+                        borderRadius: T.rCard,
+                        padding: "8px 12px",
+                        background: T.bg,
+                        display: "flex",
+                        justifyContent: "space-between",
+                        gap: 8,
+                      }}
+                    >
+                      <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>{d.name}</span>
+                      <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, flex: "none" }}>{d.durationMinutes} min</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.5 }}>
+              Vil du flytte økta til en annen dag eller tid? Gjør det i Workbench — endringen gjelder med én gang.
+            </p>
+
+            <div style={{ display: "flex", gap: 8 }}>
+              <Link href={WORKBENCH_HREF} style={{ textDecoration: "none", flex: 1 }}>
+                <CTAPill icon="calendar" ghost full>
+                  Flytt i Workbench
+                </CTAPill>
+              </Link>
+              <Link href={apenOkt.href} style={{ textDecoration: "none", flex: 1 }}>
+                <CTAPill icon={apenOkt.status === "COMPLETED" ? "eye" : "play"} full>
+                  {apenOkt.status === "COMPLETED" ? "Se loggen" : "Start økt"}
+                </CTAPill>
+              </Link>
+            </div>
+          </div>
+        )}
+      </BunnArk>
     </div>
   );
 }
