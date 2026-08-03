@@ -5,7 +5,16 @@
    (Anders' mandat 9. juli: skreddersy komponenter for dataene — aldri ad-hoc
    i skjermfiler). Port av ui_kits/v2/v2-core.jsx → produksjons-TSX (diff-null).
    Delt grunnstein: T/fmtSg (@/lib/v2/tokens), useCountUp/useMount/EASE/reduced
-   (@/lib/v2/hooks), Icon (@/components/v2/icon). */
+   (@/lib/v2/hooks), Icon (@/components/v2/icon).
+
+   Designport steg 5B «core» (2026-08, docs/port/plan-designport-alle-skjermer.md
+   + docs/port/steg5-kontroll.md): radius/avstand/typografi rettet mot Paper-
+   fasiten i designsystem/paper/components/{actions,primitives,data,feedback,
+   navigation,layout,forms}/. Farger/tone-systemet (T.lime m.fl.) er IKKE rørt —
+   kun form. Komponenter uten dedikert Paper-fasit (LogoAK, MikroMeta,
+   FordelingHode/-Rad, AkseBar, Prikker, NivaSkala, Trend, InnsiktChip, Rad,
+   AmbientBakgrunn, Skjerm, PillTabs, TilbakeLenke) er IKKE endret i dette
+   steget — se PR-beskrivelsen for begrunnelse per komponent. */
 
 import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
@@ -55,17 +64,23 @@ export interface CapsProps {
   children?: ReactNode;
   style?: CSSProperties;
 }
+/* Paper-fasit: primitives/SectionLabel (mono 10/600, sporing .1em, versaler,
+   muted, line-height 1). `size`-propen beholdes (mange skjermer setter 9px i
+   tette KPI-etiketter) — kun vekt/sporing/line-height rettet mot fasiten. */
 export function Caps({ size = 10, color = T.mut, children, style }: CapsProps) {
-  return <span style={{ fontFamily: T.mono, fontSize: size, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color, display: "block", ...style }}>{children}</span>;
+  return <span style={{ fontFamily: T.mono, fontSize: size, fontWeight: 600, letterSpacing: "0.1em", lineHeight: 1, textTransform: "uppercase", color, display: "block", ...style }}>{children}</span>;
 }
 export interface TittelProps {
   children?: ReactNode;
   mobile?: boolean;
   em?: string;
 }
-/* skjermtittel m/ valgfri kursiv lime-aksent */
+/* skjermtittel m/ valgfri kursiv lime-aksent. Paper-fasit: type-display.html
+   «sidetittel» 32/600, sporing -.01em — skriftfamilien (Familjen Grotesk) er
+   uendret (CLAUDE.md invariant 2, C smalt beholder Inter/Familjen Grotesk/
+   JetBrains Mono til etter piloten). */
 export function Tittel({ children, mobile, em }: TittelProps) {
-  return <h1 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: mobile ? 30 : 36, letterSpacing: "-0.03em", color: T.fg, margin: 0, lineHeight: 1.04 }}>{children}{em && <> <em style={{ fontStyle: "italic", color: T.lime }}>{em}</em></>}</h1>;
+  return <h1 style={{ fontFamily: T.disp, fontWeight: 600, fontSize: mobile ? 27 : 32, letterSpacing: "-0.01em", color: T.fg, margin: 0, lineHeight: 1.1 }}>{children}{em && <> <em style={{ fontStyle: "italic", color: T.lime }}>{em}</em></>}</h1>;
 }
 
 /* ── Chips + status ───────────────────────────────────── */
@@ -73,9 +88,12 @@ export interface DeltaChipProps {
   v: string;
   dir?: "up" | "down";
 }
+/* Paper-fasit: data/KpiCard sin .akhq-kpi-delta — ren mono-tekst m/ retningsfarge,
+   ingen pille-bakgrunn og ikke ikon (retning bæres av fortegn + farge, ikke pil).
+   Strukturell forenkling (2026-08 steg 5B) — samme prop-API. */
 export function DeltaChip({ v, dir }: DeltaChipProps) {
   const c = dir === "down" ? T.down : T.up;
-  return <span style={{ display: "inline-flex", alignItems: "center", gap: 3, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: c, background: `color-mix(in srgb,${c} 13%,transparent)`, borderRadius: 5, padding: "3px 6px", whiteSpace: "nowrap" }}><Icon name={dir === "down" ? "trending-down" : "trending-up"} size={10} />{v}</span>;
+  return <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 600, color: c, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{v}</span>;
 }
 
 export type StatusTone = "lime" | "up" | "warn" | "down" | "info";
@@ -83,7 +101,10 @@ export interface StatusPillProps {
   children?: ReactNode;
   tone?: StatusTone;
 }
-/* ● STIGENDE · LIVE · NÅ */
+/* ● STIGENDE · LIVE · NÅ
+   Paper-fasit: primitives/StatusBadge — 20px høy, r-pill, mono 10/600 versaler,
+   border i samme tone (26%) rundt den 10%-tonede fyllen. rTag(8) var feil radius
+   for et merke (den er reservert Knapp, se Button.prompt.md) — retter til rPill. */
 export function StatusPill({ children, tone = "lime" }: StatusPillProps) {
   const c: string = { lime: T.lime, up: T.up, warn: T.warn, down: T.down, info: T.info }[tone];
   return (
@@ -91,19 +112,24 @@ export function StatusPill({ children, tone = "lime" }: StatusPillProps) {
       style={{
         display: "inline-flex",
         alignItems: "center",
-        gap: 6,
+        gap: 5,
+        height: 20,
+        boxSizing: "border-box",
         fontFamily: T.mono,
-        fontSize: 9,
-        fontWeight: 700,
+        fontSize: 10,
+        fontWeight: 600,
         letterSpacing: "0.06em",
+        lineHeight: 1,
         color: c,
         background: `color-mix(in srgb,${c} 10%,transparent)`,
-        borderRadius: T.rTag,
-        padding: "4px 9px",
+        border: `1px solid color-mix(in srgb,${c} 26%,transparent)`,
+        borderRadius: T.rPill,
+        padding: "0 8px",
         textTransform: "uppercase",
+        whiteSpace: "nowrap",
       }}
     >
-      <span style={{ width: 5, height: 5, borderRadius: 9999, background: c }} />
+      <span style={{ width: 5, height: 5, borderRadius: 9999, background: c, flex: "none" }} />
       {children}
     </span>
   );
@@ -119,7 +145,8 @@ export type SevKey = "sterk" | "medium" | "lav" | "ok";
 export interface SevChipProps {
   s: SevKey;
 }
-/* alvorlighet i kø-rader — klarspråk, aldri sperre-språk */
+/* alvorlighet i kø-rader — klarspråk, aldri sperre-språk.
+   Paper-fasit: samme StatusBadge-geometri som StatusPill (20px, r-pill). */
 export function SevChip({ s }: SevChipProps) {
   const map: Record<string, { c: string; l: string }> = {
     sterk: { c: T.down, l: "Sterkt avvik" },
@@ -131,15 +158,21 @@ export function SevChip({ s }: SevChipProps) {
   return (
     <span
       style={{
+        display: "inline-flex",
+        alignItems: "center",
+        height: 20,
+        boxSizing: "border-box",
         fontFamily: T.mono,
-        fontSize: 8.5,
-        fontWeight: 700,
-        letterSpacing: "0.05em",
+        fontSize: 10,
+        fontWeight: 600,
+        letterSpacing: "0.06em",
+        lineHeight: 1,
         textTransform: "uppercase",
         color: m.c,
         background: `color-mix(in srgb,${m.c} 12%,transparent)`,
-        borderRadius: T.rTag,
-        padding: "3px 7px",
+        border: `1px solid color-mix(in srgb,${m.c} 26%,transparent)`,
+        borderRadius: T.rPill,
+        padding: "0 8px",
         whiteSpace: "nowrap",
       }}
     >
@@ -154,9 +187,15 @@ export const AKSE_NAVN: Record<AkseKey, string> = { FYS: "Fysisk", TEK: "Teknikk
 export interface AkseChipProps {
   a: AkseKey;
 }
-/* Fysisk/Teknikk/Slag/Spill/Turnering m/ kategorifarge-prikk (sentence-case, ingen uppercase) */
+/* Fysisk/Teknikk/Slag/Spill/Turnering m/ kategorifarge-prikk (sentence-case, ingen uppercase).
+   Paper-fasit: samme StatusBadge-geometri (20px, r-pill) — AK-spesifikk, ingen
+   dedikert Paper-komponent, men badge-formen den bruker er felles med StatusPill/SevChip. */
 export function AkseChip({ a }: AkseChipProps) {
-  return <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: T.rTag, padding: "3px 7px" }}><span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[a] || T.mut }} />{AKSE_NAVN[a] || a}</span>;
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, height: 20, boxSizing: "border-box", fontFamily: T.mono, fontSize: 10, fontWeight: 600, lineHeight: 1, color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: T.rPill, padding: "0 8px" }}>
+      <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[a] || T.mut, flex: "none" }} />{AKSE_NAVN[a] || a}
+    </span>
+  );
 }
 
 export interface MikroMetaProps {
@@ -173,9 +212,16 @@ export function MikroMeta({ icon, children }: MikroMetaProps) {
 }
 
 /* ── Flater ───────────────────────────────────────────── */
-/* Dybdesystem (kvalitetsplan §12): innvendig topp-highlight + myk stor skygge —
-   kortene skal føles lagdelt på mørk flate, aldri flate rektangler. */
-const DYBDE = "inset 0 1px 0 rgba(255,255,255,0.045), 0 12px 32px rgba(0,0,0,0.35)";
+/* Paper-fasit: layout/Panel (.akhq-panel) — radius var(--r) 12px, padding
+   16/18/18, box-shadow var(--p-shadow) (myk i lys, INGEN skygge i mørk — flaten
+   skiller seg med --p-surface/--p-border der, ikke med skygge). T.rCard i
+   tokens.ts er fortsatt 20 (delt av andre v2-familier); Kort bruker en lokal
+   Paper-radius her fremfor å endre det delte tallet utenfor denne filens scope
+   (steg 5B core). R_CARD/SHADOW_CARD bør flyttes inn i T når hele porten
+   konvergerer. Erstatter den gamle "dybde"-skyggen (inset-highlight + stor
+   mørk skygge) som ikke har noe motstykke i Paper. */
+const R_CARD = 12;
+const SHADOW_CARD = "var(--p-shadow)";
 export interface KortProps {
   tint?: boolean;
   eyebrow?: ReactNode;
@@ -185,11 +231,11 @@ export interface KortProps {
   hover?: boolean;
   style?: CSSProperties;
 }
-export function Kort({ tint, eyebrow, action, children, pad = "18px 20px", hover, style }: KortProps) {
+export function Kort({ tint, eyebrow, action, children, pad = "16px 18px 18px", hover, style }: KortProps) {
   return (
-    <div className={hover ? "v2-kort-h" : undefined} style={{ background: tint ? `${T.tint}, ${T.panel}` : T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard, padding: pad, minWidth: 0, display: "flex", flexDirection: "column", boxShadow: DYBDE, transition: `transform 180ms ${EASE}, border-color 180ms ${EASE}`, ...(hover ? { cursor: "pointer" } : null), ...style }}>
+    <div className={hover ? "v2-kort-h" : undefined} style={{ background: tint ? `${T.tint}, ${T.panel}` : T.panel, border: `1px solid ${T.border}`, borderRadius: R_CARD, padding: pad, minWidth: 0, display: "flex", flexDirection: "column", boxShadow: SHADOW_CARD, transition: `transform 180ms ${EASE}, border-color 180ms ${EASE}`, ...(hover ? { cursor: "pointer" } : null), ...style }}>
       {(eyebrow || action) && (
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 14 }}>
           {eyebrow ? <Caps>{eyebrow}</Caps> : <span />}{action}
         </div>
       )}
@@ -232,7 +278,8 @@ export function TallHero({ label, value, unit, delta, dir, sub, size = 56, accen
         </div>
       )}
       <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginTop: label ? 14 : 0, flexWrap: "wrap", minWidth: 0 }}>
-        <span style={{ fontFamily: T.mono, fontSize: size, fontWeight: 700, color: accent && !tom ? T.lime : T.fg, lineHeight: 0.9, letterSpacing: "-0.03em", fontVariantNumeric: "tabular-nums" }}>{display}</span>
+        {/* Paper-fasit: type-mono.html «hero-val» — vekt 500 (ikke 700), sporing -.02em. */}
+        <span style={{ fontFamily: T.mono, fontSize: size, fontWeight: 500, color: accent && !tom ? T.lime : T.fg, lineHeight: 0.9, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" }}>{display}</span>
         {unit && !tom && <span style={{ fontFamily: T.mono, fontSize: Math.round(size * 0.3), color: T.mut }}>{unit}</span>}
         {delta && !tom && <DeltaChip v={delta} dir={dir} />}
       </div>
@@ -254,18 +301,21 @@ export interface KpiFlisProps {
    *  i overgangen (0 → mål) i de første rammene etter montering. */
   instant?: boolean;
 }
+/* Paper-fasit: data/KpiCard — akhq-card (16px uniform padding, ikke Panels
+   asymmetriske 16/18/18), verdi clamp(24px,2.4vw,28px)/600/sporing -.03em
+   (var 38/700, mye større enn Paper sin tette KPI-flis). */
 export function KpiFlis({ label, value, delta, dir, tint, varsle, hjelp, instant }: KpiFlisProps) {
   const tom = value === null || value === undefined || value === "";
   const animert = useCountUp(tom ? 0 : (value as number | string));
   const shown = tom ? TOM_TALL : instant ? String(value) : animert;
   return (
-    <Kort tint={tint || varsle}>
+    <Kort tint={tint || varsle} pad="16px">
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
         <Caps size={9}>{label}</Caps>
         {hjelp && <HjelpTips k={hjelp} size={11} />}
       </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 12, flexWrap: "wrap", minWidth: 0 }}>
-        <span style={{ fontFamily: T.mono, fontSize: 38, fontWeight: 700, color: T.fg, lineHeight: 0.9, fontVariantNumeric: "tabular-nums" }}>{shown}</span>
+        <span style={{ fontFamily: T.mono, fontSize: "clamp(24px, 2.4vw, 28px)", fontWeight: 600, letterSpacing: "-0.03em", color: T.fg, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{shown}</span>
         {delta && !tom && <DeltaChip v={delta} dir={dir} />}
       </div>
     </Kort>
@@ -329,14 +379,16 @@ export interface PillVelgerProps {
   value: string;
   onChange?: (v: string) => void;
 }
-/* periodevelger — aktiv = lys pille */
+/* periodevelger — aktiv = lys pille.
+   Paper-fasit: forms/SegmentControl (.akhq-seg) — wrapper-padding 2px (var 3),
+   knapp-høyde 28px fast, sporing/vekt 12/500 (var 12.5/600). */
 export function PillVelger({ options, value, onChange }: PillVelgerProps) {
   return (
-    <div style={{ display: "flex", gap: 2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 9999, padding: 3, width: "fit-content" }}>
+    <div style={{ display: "flex", gap: 2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 9999, padding: 2, width: "fit-content" }}>
       {options.map((o) => {
         const on = value === o.v;
         return (
-          <button key={o.v} className="v2-press v2-focus" onClick={() => onChange && onChange(o.v)} style={{ appearance: "none", cursor: "pointer", fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, padding: "6px 13px", borderRadius: 9999, color: on ? T.bg : T.fg2, background: on ? T.fg : "transparent", border: "none", whiteSpace: "nowrap" }}>{o.l}</button>
+          <button key={o.v} className="v2-press v2-focus" onClick={() => onChange && onChange(o.v)} style={{ appearance: "none", cursor: "pointer", fontFamily: T.ui, fontSize: 12, fontWeight: 500, height: 28, padding: "0 16px", borderRadius: 9999, color: on ? T.bg : T.fg2, background: on ? T.fg : "transparent", border: "none", whiteSpace: "nowrap" }}>{o.l}</button>
         );
       })}
     </div>
@@ -357,7 +409,7 @@ export function FilterChips({ items, active = [], onToggle, axis }: FilterChipsP
       {items.map((x, i) => {
         const on = active.indexOf(x) !== -1;
         return (
-          <button key={i} className="v2-press v2-focus" onClick={() => onToggle && onToggle(x)} style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, height: 30, padding: "0 12px", borderRadius: 9999, background: on ? T.lime : T.panel3, border: `1px solid ${on ? "transparent" : T.borderS}`, color: on ? T.onLime : T.fg, fontFamily: T.ui, fontSize: 12.5, fontWeight: on ? 600 : 500 }}>
+          <button key={i} className="v2-press v2-focus" onClick={() => onToggle && onToggle(x)} style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, height: 32, padding: "0 12px", borderRadius: 9999, background: on ? T.lime : T.panel3, border: `1px solid ${on ? "transparent" : T.borderS}`, color: on ? T.onLime : T.fg, fontFamily: T.ui, fontSize: 12.5, fontWeight: 500 }}>
             {on && <Icon name="check" size={12} />}
             {axis && T.ax[x as AkseKey] && <span style={{ width: 7, height: 7, borderRadius: 9999, background: T.ax[x as AkseKey] }} />}
             {axis ? AKSE_NAVN[x as AkseKey] || x : x}
@@ -376,6 +428,13 @@ export interface CTAPillProps {
   /** DS-GAP fikset 2026-07-19: CTAPill manglet onClick — var kun dekorativ. */
   onClick?: () => void;
 }
+/* Paper-fasit: actions/Button — "Radius --r-sm (målt mot referanse-dashboardet);
+   --r-pill er for chips/tags/dag-velgere." CTAPill er funksjonelt en knapp
+   (har onClick), ikke en chip — radius rettes fra full pille til r-sm, som
+   deler tallverdi med T.rTag (8px) selv om navnet i tokens.ts ikke er endret.
+   Høyde/padding (44px berøringsmål) er BEHOLDT uendret — Paper sin 36px-høyde
+   forutsetter en egen coarse-pointer-gulv-mekanisme (se Button.d.ts) som ikke
+   er bygget her; å krympe synlig høyde uten den ville svekket touch-målet. */
 export function CTAPill({ icon, children, ghost, full, onClick }: CTAPillProps) {
   return (
     <button
@@ -394,7 +453,7 @@ export function CTAPill({ icon, children, ghost, full, onClick }: CTAPillProps) 
         color: ghost ? T.fg : T.onLime,
         background: ghost ? T.panel3 : T.lime,
         border: ghost ? `1px solid ${T.borderS}` : "none",
-        borderRadius: T.rPill,
+        borderRadius: T.rTag,
         padding: "10px 16px",
         minHeight: 44,
         cursor: "pointer",
@@ -435,7 +494,9 @@ export interface KnappProps {
   style?: CSSProperties;
 }
 /* Interaktiv CTA-pille (ekte <button>): onClick + full-bredde + disabled.
-   CTAPill er den statiske varianten; Knapp brukes i flerstegs-flyter. */
+   CTAPill er den statiske varianten; Knapp brukes i flerstegs-flyter.
+   Paper-fasit: actions/Button — samme r-sm-radius-retting og samme begrunnelse
+   for å beholde 44px berøringsmål som i CTAPill over. */
 export function Knapp({ icon, children, ghost, full, disabled, onClick, type = "button", style }: KnappProps) {
   return (
     <button
@@ -455,7 +516,7 @@ export function Knapp({ icon, children, ghost, full, disabled, onClick, type = "
         color: ghost ? T.fg : T.onLime,
         background: ghost ? T.panel3 : T.lime,
         border: ghost ? `1px solid ${T.borderS}` : "1px solid transparent",
-        borderRadius: T.rPill,
+        borderRadius: T.rTag,
         padding: "10px 18px",
         minHeight: 44,
         cursor: disabled ? "default" : "pointer",
@@ -474,8 +535,13 @@ export interface AvatarInitProps {
   navn: string;
   size?: number;
 }
+/* Paper-fasit: primitives/Avatar — sirkel uten kant (kun tone="outline" har
+   border), mono 600, sporing .02em. Radstandarden er 36px; default (30px) er
+   IKKE endret her — 82 filer bruker komponenten uten eksplisitt size, og en
+   default-endring uten skjerm-for-skjerm-gjennomgang er utenfor denne PR-ens
+   scope (flagget i PR-beskrivelsen). */
 export function AvatarInit({ navn, size = 30 }: AvatarInitProps) {
-  return <span style={{ width: size, height: size, borderRadius: 9999, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: size * 0.33, fontWeight: 700, color: T.fg2, flex: "none" }}>{navn.split(" ").map((x) => x[0]).join("").slice(0, 2)}</span>;
+  return <span style={{ width: size, height: size, borderRadius: 9999, background: T.panel3, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: size * 0.33, fontWeight: 600, letterSpacing: "0.02em", color: T.fg2, flex: "none" }}>{navn.split(" ").map((x) => x[0]).join("").slice(0, 2)}</span>;
 }
 export interface AvatarFotoProps {
   src?: string | null;
@@ -487,7 +553,7 @@ export function AvatarFoto({ src, navn = PROFIL.navn, size = 30, ring }: AvatarF
   const kilde = src !== undefined ? src : PROFIL.src;
   if (!kilde) return <AvatarInit navn={navn} size={size} />;
   return (
-    <span style={{ width: size, height: size, borderRadius: 9999, overflow: "hidden", flex: "none", display: "inline-block", border: `1px solid ${T.borderS}`, boxShadow: ring ? `0 0 0 2px ${T.bg}, 0 0 0 3.5px color-mix(in srgb,${T.lime} 55%,transparent)` : "none" }}>
+    <span style={{ width: size, height: size, borderRadius: 9999, overflow: "hidden", flex: "none", display: "inline-block", boxShadow: ring ? `0 0 0 2px ${T.bg}, 0 0 0 3.5px color-mix(in srgb,${T.lime} 55%,transparent)` : "none" }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={kilde} alt={navn} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
     </span>
@@ -757,13 +823,20 @@ export interface TomTilstandProps {
   title?: ReactNode;
   sub?: ReactNode;
 }
+/* Paper-fasit: feedback/EmptyState (.akhq-estate) — ikonsirkel 32px (var 44,
+   avrundet firkant), ingen kant rundt sirkelen, tittel 14.5/600/1.3,
+   forklaring 12.5/1.55 maks 44ch. `action`-plassen i fasiten (CTA under
+   teksten) er IKKE lagt til her — det er en API-utvidelse, ikke en geometri-
+   retting, og TomTilstand brukes i ~208 filer; utsatt til egen beslutning.
+   Beskrivelsesteksten holder Inter (T.ui), ikke Paper sin serif --body — se
+   CLAUDE.md invariant 2 (ingen nye skriftfamilier før etter piloten). */
 export function TomTilstand({ icon = "circle", title, sub }: TomTilstandProps) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, textAlign: "center", padding: "26px 16px" }}>
-      <span style={{ width: 44, height: 44, borderRadius: 14, background: T.panel2, border: `1px dashed ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}><Icon name={icon} size={19} style={{ color: T.mut }} /></span>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, textAlign: "center", padding: "34px 24px" }}>
+      <span style={{ width: 32, height: 32, borderRadius: 9999, background: T.panel2, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 4 }}><Icon name={icon} size={16} style={{ color: T.mut }} /></span>
       <div>
-        <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg }}>{title}</div>
-        {sub && <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.6, margin: "6px 0 0" }}>{sub}</p>}
+        <div style={{ fontFamily: T.disp, fontWeight: 600, fontSize: 14.5, lineHeight: 1.3, color: T.fg }}>{title}</div>
+        {sub && <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55, margin: "6px 0 0", maxWidth: "44ch" }}>{sub}</p>}
       </div>
     </div>
   );
@@ -785,19 +858,23 @@ export interface IkonRailProps {
   navn?: string;
 }
 /* IkonRail — moderne smal sidenav (Anders 9. juli: ingen bred sidemeny).
-   60px ikon-rail m/ mikro-labels, lime-indikator, ⌘K nederst + avatar.
-   Mobbin-mønster: Fabric/Hootsuite-rail + Fey/Vapi-kommandopalett. */
+   Mobbin-mønster: Fabric/Hootsuite-rail + Fey/Vapi-kommandopalett.
+   Paper-fasit: navigation/Rail — 64px bred (var 60), item 48×44 med r=12
+   (allerede riktig), mikro-label mono 9px (var 7.5, for smått til å lese).
+   Fargen på skinnen (alltid mørk i Paper, uansett tema) er IKKE hentet inn —
+   det er en fargebeslutning (utenfor scope), ikke geometri; skinnen følger
+   fortsatt appens tema her. */
 export function IkonRail({ aktiv, navn = "Øyvind Rohjan" }: IkonRailProps) {
   return (
-    <div style={{ width: 60, flex: "none", borderRight: `1px solid ${T.border}`, display: "flex", flexDirection: "column", alignItems: "center", padding: "16px 0 14px", gap: 2 }}>
-      <LogoAK size={26} style={{ marginBottom: 16 }} />
+    <div style={{ width: 64, flex: "none", borderRight: `1px solid ${T.border}`, display: "flex", flexDirection: "column", alignItems: "center", padding: "16px 0 14px", gap: 2 }}>
+      <span style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14, flex: "none" }}><LogoAK size={26} /></span>
       {NAV.map((n) => {
         const on = aktiv === n.id;
         return (
-          <div key={n.id} title={n.l} className="v2-press v2-focus" tabIndex={0} style={{ width: 46, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "8px 0 6px", borderRadius: 12, background: on ? "color-mix(in srgb, var(--v2-lime) 9%, transparent)" : "transparent", cursor: "pointer", position: "relative" }}>
+          <div key={n.id} title={n.l} className="v2-press v2-focus" tabIndex={0} style={{ width: 48, minHeight: 44, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "8px 0 6px", borderRadius: 12, background: on ? "color-mix(in srgb, var(--v2-lime) 9%, transparent)" : "transparent", cursor: "pointer", position: "relative" }}>
             {on && <span style={{ position: "absolute", left: -7, top: 12, bottom: 12, width: 2, borderRadius: 2, background: T.lime }} />}
             <Icon name={n.i} size={18} style={{ color: on ? T.lime : T.mut }} strokeWidth={on ? 2 : 1.5} />
-            <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: on ? T.fg : T.mut }}>{n.l}</span>
+            <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: on ? T.fg : T.mut }}>{n.l}</span>
           </div>
         );
       })}
@@ -814,14 +891,17 @@ export const Sidebar = IkonRail;
 export interface BunnNavProps {
   aktiv?: string;
 }
+/* Paper-fasit: navigation/TabBar (.akhq-tab) — 44px berøringsmål per fane,
+   gap 3, 10px/500 hvilende → 600 aktiv (var alltid 600). Bakgrunn/blur er en
+   fargebeslutning (utenfor scope) og er ikke rørt her. */
 export function BunnNav({ aktiv }: BunnNavProps) {
   return (
     <div style={{ flex: "none", display: "flex", justifyContent: "space-around", padding: "8px 8px 16px", borderTop: `1px solid ${T.border}`, background: `color-mix(in srgb,${T.bg} 82%,transparent)`, backdropFilter: "blur(10px)" }}>
       {NAV.map((n) => {
         const on = aktiv === n.id;
         return (
-          <div key={n.id} className="v2-press" style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "4px 0", color: on ? T.lime : T.mut }}>
-            <Icon name={n.i} size={20} strokeWidth={on ? 2 : 1.5} /><span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600 }}>{n.l}</span>
+          <div key={n.id} className="v2-press" style={{ flex: 1, minHeight: 44, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", borderRadius: T.rTag, color: on ? T.lime : T.mut }}>
+            <Icon name={n.i} size={20} strokeWidth={on ? 2 : 1.5} /><span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: on ? 600 : 500 }}>{n.l}</span>
           </div>
         );
       })}
