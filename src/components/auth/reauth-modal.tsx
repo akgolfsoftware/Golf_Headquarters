@@ -4,7 +4,14 @@ import { Button } from "@/components/athletic/golfdata";
 import { useEffect, useState } from "react";
 import { KeyRound, Loader2, ShieldAlert } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { Modal } from "@/components/shared/modal";
+import {
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type ReauthModalProps = {
   /**
@@ -125,23 +132,25 @@ export function ReauthModal({
   }
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      size="sm"
-      title={
-        <span className="inline-flex items-center gap-2">
-          <ShieldAlert
-            className="h-5 w-5 text-destructive"
-            strokeWidth={1.75}
-            aria-hidden
-          />
-          Bekreft passord
-        </span>
-      }
-      description="For sikkerhets skyld må du bekrefte passordet ditt for å fortsette."
-    >
-      <form onSubmit={bekreft} className="space-y-6">
+    <Dialog open={open} onOpenChange={(next) => !next && onClose()}>
+      <DialogContent size="sm">
+        <DialogHeader>
+          <DialogTitle>
+            <span className="inline-flex items-center gap-2">
+              <ShieldAlert
+                className="h-5 w-5 text-destructive"
+                strokeWidth={1.75}
+                aria-hidden
+              />
+              Bekreft passord
+            </span>
+          </DialogTitle>
+          <DialogDescription>
+            For sikkerhets skyld må du bekrefte passordet ditt for å fortsette.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogBody>
+          <form onSubmit={bekreft} className="space-y-6">
         <div className="flex items-start gap-2 rounded-md border border-border bg-secondary/40 px-4 py-2 text-sm text-foreground">
           <KeyRound
             className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground"
@@ -215,8 +224,10 @@ export function ReauthModal({
             )}
           </Button>
         </div>
-      </form>
-    </Modal>
+          </form>
+        </DialogBody>
+      </DialogContent>
+    </Dialog>
   );
 }
 
