@@ -7,7 +7,7 @@
 // For kortere vindu komprimeres modellen — siste 2 uker er alltid TAPER.
 
 import "server-only";
-import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "../client";
+import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled, tekstFra } from "../client";
 import { bompaSkill } from "../skills/bompa-perioder";
 import { pyramideSkill } from "../skills/pyramide-taksonomi";
 import { prisma } from "@/lib/prisma";
@@ -127,11 +127,7 @@ export async function foreslaPeakingPlan(opts: {
       system: PERFORMANCE_PEAKING_SYSTEM,
       messages: [{ role: "user", content: userPrompt }],
     });
-    const text = response.content
-      .filter((b) => b.type === "text")
-      .map((b) => (b.type === "text" ? b.text : ""))
-      .join("\n")
-      .trim();
+    const text = tekstFra(response);
     return {
       spillerId: spiller.id,
       spillerNavn: spiller.name,

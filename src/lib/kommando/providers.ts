@@ -3,15 +3,11 @@
 // Gemini/Grok/Ollama via OpenAI-kompatible endepunkter. Nøkler i .env.local, aldri i kode.
 
 import "server-only";
-import { createAnthropic } from "@ai-sdk/anthropic";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
+import { anthropicProvider } from "@/lib/ai/client";
 import { getKommandoModel, type KommandoModelId } from "./models";
 
-const ANTHROPIC_BASE = (process.env.ANTHROPIC_BASE_URL ?? "https://api.anthropic.com").replace(/\/+$/, "");
-const anthropic = createAnthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-  baseURL: ANTHROPIC_BASE.endsWith("/v1") ? ANTHROPIC_BASE : `${ANTHROPIC_BASE}/v1`,
-});
+const anthropic = anthropicProvider();
 
 // Returtypen utledes (union av provider-modellene). Vi annoterer den IKKE med
 // `ai`-pakkens `LanguageModel`, som er smalere (V2/V3) enn provider-modellene (V4)

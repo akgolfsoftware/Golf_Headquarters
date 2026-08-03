@@ -1,6 +1,6 @@
 import "server-only";
 import type { MessageParam } from "@anthropic-ai/sdk/resources/messages";
-import { anthropic, MEG_MODEL_SMART, AI_MAX_TOKENS, isAiEnabled } from "@/lib/ai/client";
+import { anthropic, MEG_MODEL_SMART, AI_MAX_TOKENS, isAiEnabled, tekstFra } from "@/lib/ai/client";
 import { megExecutorsFor } from "@/lib/meg/tools";
 import { toolsForRolle, type Rolle } from "@/lib/meg/access";
 import { storeConversation } from "@/lib/meg/store";
@@ -77,11 +77,7 @@ export async function runMegAgent(opts: {
     });
 
     if (response.stop_reason === "end_turn" || response.stop_reason === "stop_sequence") {
-      const text = response.content
-        .filter((b) => b.type === "text")
-        .map((b) => (b.type === "text" ? b.text : ""))
-        .join("\n")
-        .trim();
+      const text = tekstFra(response);
       await storeConversation("assistant", text, opts.subject);
       return { ok: true, text };
     }
@@ -123,11 +119,7 @@ export async function runMegAgent(opts: {
     }
 
     // max_tokens eller annet — returner det vi har
-    const text = response.content
-      .filter((b) => b.type === "text")
-      .map((b) => (b.type === "text" ? b.text : ""))
-      .join("\n")
-      .trim();
+    const text = tekstFra(response);
     if (text) {
       await storeConversation("assistant", text, opts.subject);
       return { ok: true, text };

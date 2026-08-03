@@ -8,17 +8,15 @@
 // brief generert fra Prisma-data uten Claude-kall.
 
 import "server-only";
-import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "../client";
-import { ALL_SKILLS } from "../skills";
+import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled, tekstFra } from "../client";
 import { prisma } from "@/lib/prisma";
 import { filtrerTilCoachInnsyn } from "@/lib/health/samtykke";
 import { hentRestitusjonsstatusForFlere } from "@/lib/health/restitusjonsstatus";
 import { byggPseudonymMap, anonymiser, deanonymiser } from "../anonymiser";
 
-const SKILLS_BLOCK = ALL_SKILLS.map(
-  (s) => `\n## ${s.name}\n${s.knowledge}`,
-).join("\n");
-
+// Bevisst UTEN skills-kunnskapsblokk (forenkling bølge 3): en 200-ords brief
+// over ferdig beregnede flagg trenger ikke pyramide-/periodiserings-teori i
+// prompten — den bare kostet tokens på hvert kall.
 export const DAILY_BRIEF_SYSTEM = `
 Du er Daily Brief-agent for AK Golf HQ.
 Generer en kort dagsbrief (maks 200 ord) til coach.
@@ -31,9 +29,6 @@ Struktur:
 
 Tone: konsis, ikke fluff. Aktiv stemme. Norsk bokmål.
 Aldri emoji. Aldri utropstegn. Bruk "Solid", "Sterkt" — ikke "Bra jobba!".
-
-KUNNSKAP:
-${SKILLS_BLOCK}
 `.trim();
 
 export type DailyBriefMetrics = {
@@ -99,11 +94,7 @@ export async function genererDailyBrief(opts: {
     messages: [{ role: "user", content: userPrompt }],
   });
 
-  const rawText = response.content
-    .filter((b) => b.type === "text")
-    .map((b) => (b.type === "text" ? b.text : ""))
-    .join("\n")
-    .trim();
+  const rawText = tekstFra(response);
   const text = deanonymiser(rawText, pseudonymMap);
 
   return {

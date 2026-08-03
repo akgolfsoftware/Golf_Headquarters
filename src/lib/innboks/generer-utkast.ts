@@ -10,7 +10,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { anthropic, modelFor, isAiEnabled } from "@/lib/ai/client";
+import { anthropic, modelFor, isAiEnabled, tekstFra } from "@/lib/ai/client";
 
 const UTKAST_SYSTEM = `
 Du er e-post-assistent for Anders Kristiansen, daglig leder i AK Golf Group.
@@ -66,11 +66,7 @@ ${epost.brodtekst}
         system: UTKAST_SYSTEM,
         messages: [{ role: "user", content: userPrompt }],
       });
-      const text = response.content
-        .filter((b) => b.type === "text")
-        .map((b) => (b.type === "text" ? b.text : ""))
-        .join("\n")
-        .trim();
+      const text = tekstFra(response);
       utkast = text || byggDemoUtkast(epost.fraNavn, epost.emne);
     } catch {
       utkast = byggDemoUtkast(epost.fraNavn, epost.emne);

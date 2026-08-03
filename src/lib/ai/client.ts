@@ -9,6 +9,7 @@
 
 import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
+import { createAnthropic } from "@ai-sdk/anthropic";
 
 const apiKey = process.env.ANTHROPIC_API_KEY;
 if (!apiKey) {
@@ -49,4 +50,79 @@ export const AI_MAX_TOKENS = 2048;
 
 export function isAiEnabled(): boolean {
   return anthropic !== null;
+}
+
+// ── Delt AI-rørlegging (forenkling bølge 3, 2026-08-03) ──
+// Én kilde for de tre mønstrene som lå kopiert rundt i kodebasen:
+// provider-oppsett for AI SDK, tekst-uttrekk fra svar, og stream-kropp.
+
+/**
+ * Anthropic-provider for AI SDK (`@ai-sdk/anthropic`) med /v1-normalisert
+ * baseURL. ANTHROPIC_BASE_URL i miljøet mangler "/v1" — raw @anthropic-ai/sdk
+ * legger den på selv, men @ai-sdk/anthropic bruker verdien som-den-er og
+ * treffer 404 uten normaliseringen (jf. gotchas.md §AI Caddie).
+ */
+export function anthropicProvider() {
+  const base = (process.env.ANTHROPIC_BASE_URL ?? "https://api.anthropic.com").replace(/\/+$/, "");
+  return createAnthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY,
+    baseURL: base.endsWith("/v1") ? base : `${base}/v1`,
+  });
+}
+
+/** All tekst fra et Anthropic-svar — text-blokkene joinet med linjeskift, trimmet. */
+export function tekstFra(response: Anthropic.Message): string {
+  return response.content
+    .filter((b) => b.type === "text")
+    .map((b) => (b.type === "text" ? b.text : ""))
+    .join("\n")
+    .trim();
+}
+
+/**
+ * Streamer et Anthropic-svar som ren tekst (text_delta-events) til en
+ * ReadableStream. Feil underveis skrives inn i streamen som «[Feil: …]»
+ * slik chat-rutene alltid har gjort — responsen tas aldri ned.
+ * `onFerdig` kjører etter fullført stream (persistering); kaster den, går
+ * også det til [Feil]-linja.
+ */
+export function streamAnthropicTekst(opts: {
+  klient: Anthropic;
+  model: string;
+  maxTokens: number;
+  system: string;
+  messages: Anthropic.MessageParam[];
+  onFerdig?: (fullSvar: string) => Promise<void>;
+}): ReadableStream<Uint8Array> {
+  const encoder = new TextEncoder();
+  return new ReadableStream({
+    async start(controller) {
+      let fullSvar = "";
+      try {
+        const respons = await opts.klient.messages.stream({
+          model: opts.model,
+          max_tokens: opts.maxTokens,
+          system: opts.system,
+          messages: opts.messages,
+        });
+
+        for await (const event of respons) {
+          if (
+            event.type === "content_block_delta" &&
+            event.delta.type === "text_delta"
+          ) {
+            fullSvar += event.delta.text;
+            controller.enqueue(encoder.encode(event.delta.text));
+          }
+        }
+
+        await opts.onFerdig?.(fullSvar);
+      } catch (err) {
+        const melding = err instanceof Error ? err.message : "AI-feil. Prøv igjen.";
+        controller.enqueue(encoder.encode(`\n\n[Feil: ${melding}]`));
+      } finally {
+        controller.close();
+      }
+    },
+  });
 }

@@ -6,7 +6,7 @@
 // og coachens navn — slik at den føles personlig og ekte.
 
 import "server-only";
-import { anthropic, modelFor, isAiEnabled } from "../client";
+import { anthropic, modelFor, isAiEnabled, tekstFra } from "../client";
 import { prisma } from "@/lib/prisma";
 
 export const VINN_TILBAKE_SYSTEM = `
@@ -187,11 +187,7 @@ Avslutt med en konkret invitasjon (booke time, planlegge runde, etc.).
       system: VINN_TILBAKE_SYSTEM,
       messages: [{ role: "user", content: userPrompt }],
     });
-    const text = response.content
-      .filter((b) => b.type === "text")
-      .map((b) => (b.type === "text" ? b.text : ""))
-      .join("\n")
-      .trim();
+    const text = tekstFra(response);
     return text || byggDemoMelding(opts);
   } catch {
     return byggDemoMelding(opts);

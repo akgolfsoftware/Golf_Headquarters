@@ -9,6 +9,7 @@
 // PlanEffectiveness.
 
 import { anthropicKlient } from "@/lib/anthropic";
+import { modelFor } from "@/lib/ai/client";
 import { prisma } from "@/lib/prisma";
 import { AI_COACH_SYSTEM_PROMPT } from "./system-prompt";
 import {
@@ -89,9 +90,10 @@ function byggSystemPromptMedKunnskap(ctx: SpillerKontekst): {
   };
 }
 
-// Samme id som src/lib/ai/client.ts — "claude-sonnet-4-5-20250514" finnes ikke
-// hos api.anthropic.com og ga 404 på hvert kall (plangenerering virket aldri i prod).
-export const AI_PLAN_MODEL = "claude-sonnet-4-6";
+// Én modell-kilde: registeret i src/lib/ai/client.ts. (Historikk: en hardkodet
+// "claude-sonnet-4-5-20250514" fantes ikke hos api.anthropic.com og ga 404 på
+// hvert kall — plangenerering virket aldri i prod.)
+export const AI_PLAN_MODEL = modelFor("ai-plan");
 
 // Sonnet: $3/M input tokens, $15/M output tokens.
 const SONNET_INPUT_USD_PER_MTOK = 3;

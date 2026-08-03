@@ -4,6 +4,7 @@ import { anthropicKlient, COACH_MODEL } from "@/lib/anthropic";
 import { rateLimit } from "@/lib/rate-limit";
 import { bygCoachSystemPrompt } from "@/lib/ai-plan/coach-prompt";
 import { pseudonymForId } from "@/lib/ai/anonymiser";
+import { streamAnthropicTekst } from "@/lib/ai/client";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -101,33 +102,13 @@ export async function POST(req: Request) {
     .map((m) => ({ role: m.role, content: m.content }));
 
   const systemPrompt = bygSystemPrompt(body.playerName, body.playerContext);
-  const encoder = new TextEncoder();
 
-  const stream = new ReadableStream({
-    async start(controller) {
-      try {
-        const respons = await klient.messages.stream({
-          model: COACH_MODEL,
-          max_tokens: 1024,
-          system: systemPrompt,
-          messages: apiMessages,
-        });
-        for await (const event of respons) {
-          if (
-            event.type === "content_block_delta" &&
-            event.delta.type === "text_delta"
-          ) {
-            controller.enqueue(encoder.encode(event.delta.text));
-          }
-        }
-      } catch (err) {
-        const melding =
-          err instanceof Error ? err.message : "AI-feil. Prøv igjen.";
-        controller.enqueue(encoder.encode(`\n\n[Feil: ${melding}]`));
-      } finally {
-        controller.close();
-      }
-    },
+  const stream = streamAnthropicTekst({
+    klient,
+    model: COACH_MODEL,
+    maxTokens: 1024,
+    system: systemPrompt,
+    messages: apiMessages,
   });
 
   return new Response(stream, {

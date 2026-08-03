@@ -3,7 +3,7 @@
 // Notion + en lett AgencyOS-snapshot, lar Sonnet komponere en kort tekst,
 // sender den via Telegram og lagrer i me_brief (vises i /meg-dashboard).
 import "server-only";
-import { anthropic, MEG_MODEL_SMART, AI_MAX_TOKENS, isAiEnabled } from "@/lib/ai/client";
+import { anthropic, MEG_MODEL_SMART, AI_MAX_TOKENS, isAiEnabled, tekstFra } from "@/lib/ai/client";
 import { readMegEnv } from "@/lib/meg/env";
 import { megSupabase } from "@/lib/meg/supabase";
 import { sendTelegramMessage } from "@/lib/meg/telegram";
@@ -33,11 +33,7 @@ async function komponer(instruks: string, kontekst: string): Promise<string | nu
     system: BRIEF_SYSTEM,
     messages: [{ role: "user", content: `${instruks}\n\nKontekst:\n${kontekst}` }],
   });
-  const text = res.content
-    .filter((b) => b.type === "text")
-    .map((b) => (b.type === "text" ? b.text : ""))
-    .join("\n")
-    .trim();
+  const text = tekstFra(res);
   return text || null;
 }
 

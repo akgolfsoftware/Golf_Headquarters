@@ -7,9 +7,9 @@
 // eller hvis AI-kallet feiler — så UI-en aldri henger på AI.
 
 import { generateObject } from "ai";
-import { createAnthropic } from "@ai-sdk/anthropic";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { anthropicProvider } from "@/lib/ai/client";
 import { kategoriFraHcp } from "@/lib/ai-plan/context";
 import { hentPlayerSignals } from "@/lib/plan-engine/load-signals";
 import {
@@ -226,15 +226,6 @@ function buildPrompt(ctx: PlayerContext, weekStart: Date, ekstra: string[]): str
     "Titler i norsk klarspråk uten fagkoder. Skriv «nærspill», aldri «kort spill». Minst én putting-økt per uke.",
   );
   return lines.join("\n");
-}
-
-/** Anthropic-provider med /v1-normalisert baseURL (env-en mangler /v1 — gotcha). */
-function anthropicProvider() {
-  const base = process.env.ANTHROPIC_BASE_URL;
-  return createAnthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY,
-    ...(base ? { baseURL: base.endsWith("/v1") ? base : `${base.replace(/\/$/, "")}/v1` } : {}),
-  });
 }
 
 /**

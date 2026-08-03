@@ -15,6 +15,7 @@ import { EksportTrigger } from "@/components/shared/eksport-trigger";
 import { AgentStrip } from "@/components/coachhq/agent-strip";
 import { getBriefData, bygBriefSystemPrompt, bygBriefUserPrompt } from "@/lib/admin-brief";
 import { anthropicKlient, COACH_MODEL } from "@/lib/anthropic";
+import { tekstFra } from "@/lib/ai/client";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
 import { Caps, Tittel, Kort, KpiFlis, StatusPill, CTAPill, TomTilstand, Icon, TilbakeLenke } from "@/components/v2";
@@ -69,7 +70,7 @@ export default async function DagligBrief() {
       system: bygBriefSystemPrompt(),
       messages: [{ role: "user", content: bygBriefUserPrompt(data) }],
     });
-    aiBrief = respons.content.filter((b) => b.type === "text").map((b) => (b.type === "text" ? b.text : "")).join("");
+    aiBrief = tekstFra(respons);
   } catch (err) {
     aiFeil = err instanceof Error ? err.message : "AI-brief utilgjengelig.";
   }
