@@ -308,7 +308,7 @@ Auth og marketing er mørke. Implementasjon: `src/app/layout.tsx` (før-paint-sc
 
 ## CANON-invariantene — de 13 (metodikk)
 
-> Navngitt kanonisk liste (A4, forankret 2026-07-18). Kilde: `src/lib/ai-coach/kunnskap/canon-invariants-13.md`
+> Navngitt kanonisk liste (A4, forankret 2026-07-18). Kilde: `src/lib/masterbrain/rag-corpus/morad/canon-invariants-13.md`
 > (CANON v3.5). **Invariantene er ANBEFALINGER som varsler ved avvik — aldri harde sperrer.**
 > Ingenting i appen blokkerer trening; sterkt avvik vises i klarspråk og kan varsle coach.
 > Pyramide-fordelingen (#1, #5) er coach-redigerbar per periode (`/admin/settings/periode-fordeling`).

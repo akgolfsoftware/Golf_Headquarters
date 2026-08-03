@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
-import { anthropic, modelFor, isAiEnabled } from "@/lib/ai/client";
+import { anthropic, modelFor, isAiEnabled, streamAnthropicTekst } from "@/lib/ai/client";
 import { recallMemory, formatMemoryForPrompt } from "@/lib/ai/memory";
 import { hentLiveCoachKontext } from "@/lib/ai/live-coach-context";
 import { hentRestraintPromptData } from "@/lib/coach-restraint/context";
@@ -230,48 +230,26 @@ export async function POST(req: Request) {
     .filter((m) => m.role === "user" || m.role === "assistant")
     .map((m) => ({ role: m.role, content: m.content }));
 
-  const encoder = new TextEncoder();
-  const stream = new ReadableStream({
-    async start(controller) {
-      let fullSvar = "";
-      try {
-        const respons = await anthropic!.messages.stream({
-          model: modelFor("live-coach-chat"),
-          max_tokens: 512,
-          system: systemPrompt,
-          messages: apiMessages,
-        });
-
-        for await (const event of respons) {
-          if (
-            event.type === "content_block_delta" &&
-            event.delta.type === "text_delta"
-          ) {
-            const tekst = event.delta.text;
-            fullSvar += tekst;
-            controller.enqueue(encoder.encode(tekst));
-          }
-        }
-
-        const nowISO = new Date().toISOString();
-        const oppdatertHistorikk: MeldingRad[] = [
-          ...body.messages.map((m) => ({
-            role: m.role,
-            content: m.content,
-            ts: m.ts ?? nowISO,
-          })),
-          { role: "assistant" as const, content: fullSvar, ts: nowISO },
-        ];
-        await prisma.coachingSession.update({
-          where: { id: threadId },
-          data: { messages: oppdatertHistorikk as unknown as Prisma.InputJsonValue },
-        });
-      } catch (err) {
-        const melding = err instanceof Error ? err.message : "AI-feil. Prøv igjen.";
-        controller.enqueue(encoder.encode(`\n\n[Feil: ${melding}]`));
-      } finally {
-        controller.close();
-      }
+  const stream = streamAnthropicTekst({
+    klient: anthropic,
+    model: modelFor("live-coach-chat"),
+    maxTokens: 512,
+    system: systemPrompt,
+    messages: apiMessages,
+    onFerdig: async (fullSvar) => {
+      const nowISO = new Date().toISOString();
+      const oppdatertHistorikk: MeldingRad[] = [
+        ...body.messages.map((m) => ({
+          role: m.role,
+          content: m.content,
+          ts: m.ts ?? nowISO,
+        })),
+        { role: "assistant" as const, content: fullSvar, ts: nowISO },
+      ];
+      await prisma.coachingSession.update({
+        where: { id: threadId },
+        data: { messages: oppdatertHistorikk as unknown as Prisma.InputJsonValue },
+      });
     },
   });
 

@@ -3,7 +3,7 @@
 > **Hva er dette?** Den ene setningen alt skal måles mot. Les denne først — alltid.
 > Ved konflikt: denne fila vinner over all annen dokumentasjon unntatt
 > `docs/platform/BUSINESS-RULES.md` (låste forretningsregler) og
-> `src/lib/ai-coach/kunnskap/canon-invariants-13.md` (metodikk-invarianter).
+> `src/lib/masterbrain/rag-corpus/morad/canon-invariants-13.md` (metodikk-invarianter).
 
 ---
 
@@ -55,7 +55,7 @@ i mellomtiden; kvalitetsstandarden (skal tåle å selges for millionsum) er uend
 
 Coaching-metodikken (AK-metodikken / CANON) er plattformens intellektuelle kjerne:
 A–K-kategorier, pyramide-fordeling, CS-progresjon, 13 invarianter, MORAD P-system.
-Kilde: `src/lib/ai-coach/kunnskap/` + `docs/metode/`. Metodikken endres ikke av
+Kilde: `src/lib/masterbrain/` (knowledge/ + rag-corpus/, vendored fra Masterbrain-repoet). Metodikken endres ikke av
 tekniske hensyn — den endres av Anders.
 
 ---

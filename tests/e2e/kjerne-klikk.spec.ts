@@ -36,10 +36,9 @@ const IGNORERT_KONSOLL = [
  * Testen skal ikke være permanent rød av dem, men lista skal krympe, aldri vokse.
  * Fjern en linje når feilen er fikset — da fanger testen den igjen hvis den kommer tilbake.
  *
- * - React #418 på /portal/planlegge/workbench: hydreringsmismatch mellom server og klient.
- *   Funnet 2026-08-02 (kvalitetsaudit tiltak 9). Se docs/STATUS-NÅ.md.
+ * (tom — React #418 på /portal/planlegge/workbench fikset 2026-08-03, se docs/STATUS-NÅ.md)
  */
-const KJENTE_FEIL = [/Minified React error #418/i];
+const KJENTE_FEIL: RegExp[] = [];
 
 const PLAYERHQ_KJERNE = [
   { navn: "Hjem (Workbench-hjem)", url: "/portal" },

@@ -1,12 +1,11 @@
 /**
  * CANON-periodejustering — speiler AK Golf CANON v3.5 sine periode→pyramide-regler.
  *
- * Masterbrain (`~/Developer/Masterbrain/knowledge/concepts/canon-methodology.json`,
+ * Masterbrain (`src/lib/masterbrain/knowledge/concepts/canon-methodology.json`,
  * `pyramid_rules` pr_6/pr_7/pr_8) er FASIT-KILDEN for disse retningene. Denne filen
- * er en manuelt vedlikeholdt TS-speiling (samme mønster som `src/lib/design-tokens.ts`
- * speiler `globals.css`) — Masterbrain er en kunnskaps-database, ikke en tjeneste
- * appen kan spørre live. Endres CANON-reglene i Masterbrain, må denne filen
- * oppdateres manuelt — det finnes ingen automatisk synk.
+ * er en manuelt vedlikeholdt TS-speiling — Masterbrain er en kunnskaps-database,
+ * ikke en tjeneste appen kan spørre live. Endres CANON-reglene i Masterbrain,
+ * må denne filen oppdateres manuelt — det finnes ingen automatisk synk.
  *
  * Kun RETNING (opp/ned/lik) uttrykkes her, aldri prosenttall — faktiske prosenter
  * bor i `PlanTemplate.disciplinFordeling` og kalibreres uavhengig. Dette er en

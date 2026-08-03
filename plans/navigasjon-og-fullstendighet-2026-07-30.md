@@ -63,7 +63,7 @@ En auto-generert navigasjonsgraf (`scripts/rute-graf.mjs`, 330 ruter, 763 kanter
 | 22 | `/admin/talent/wagr-import` | Legacy — sjekk mot `/admin/talent/*`; hvis død: 🔶 KILL |
 | 23 | `/forelder/barn/[childId]` | Verifiser inngang fra `/forelder`-oversikten (dynamisk id) |
 
-**Regel for LINK-fikser:** Én beskrivende lenke fra nærmeste logiske forelder-side, i eksisterende design-system (se `docs/design-system/FASIT.md` §3 — «minst mulig trykk»). Ikke opprett nye navigasjonselementer i hovednav-en for disse.
+**Regel for LINK-fikser:** Én beskrivende lenke fra nærmeste logiske forelder-side, i eksisterende design-system (se `.claude/rules/beslutninger.md` §Enkelhet — «minst mulig trykk»; FASIT.md er slettet). Ikke opprett nye navigasjonselementer i hovednav-en for disse.
 
 ## 3. Del B — Verifiser de 21 portal→admin-kryss-lenkene
 

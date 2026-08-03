@@ -265,6 +265,7 @@
     ],
     "TournamentEntryStatus": [
       "PLANNED",
+      "CLAIMED_REGISTERED",
       "CONFIRMED",
       "WITHDRAWN",
       "COMPLETED",
@@ -280,7 +281,11 @@
     "LPhase": [
       "GRUNN",
       "SPESIAL",
-      "TURNERING"
+      "TURNERING",
+      "TESTUKE",
+      "FERIE",
+      "TRENINGSSAMLING",
+      "HELDAGSSAMLING"
     ],
     "SkillArea": [
       "TEE_TOTAL",
@@ -304,7 +309,8 @@
     ],
     "ExerciseVisibility": [
       "PRIVATE",
-      "COACH_PLAYERS"
+      "COACH_PLAYERS",
+      "PLATFORM"
     ],
     "UserStatus": [
       "AKTIV",
@@ -418,6 +424,12 @@
       "PR3",
       "PR4",
       "PR5"
+    ],
+    "TaskKategori": [
+      "TEKNISK",
+      "TAKTISK",
+      "MENTALT",
+      "SOSIALT"
     ],
     "RepType": [
       "SVINGER_UTEN_BALL",

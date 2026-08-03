@@ -49,7 +49,7 @@ const sessions = [
   },
   {
     time: "11:00", dur: "60 m", ax: "SLAG" as Axis, status: "active" as const,
-    initials: "ØR", avatar: "bg-primary text-accent", name: "Øyvind Rohjan",
+    initials: "ØR", avatar: "bg-primary text-primary-foreground", name: "Øyvind Rohjan",
     title: "Innspill 50–80 m · presisjon",
     meta: [
       { icon: User, text: "1-til-1" },
@@ -80,7 +80,7 @@ const sessions = [
 ];
 
 const inbox = [
-  { initials: "ØR", avatar: "bg-primary text-accent", name: "Øyvind Rohjan", type: "GODKJENN", typeCls: "bg-pyr-spill-track text-primary", preview: "Foreslår å bytte fre-økt til lørdag før Srixon Tour #2", when: "07:42", unread: true },
+  { initials: "ØR", avatar: "bg-primary text-primary-foreground", name: "Øyvind Rohjan", type: "GODKJENN", typeCls: "bg-pyr-spill-track text-primary", preview: "Foreslår å bytte fre-økt til lørdag før Srixon Tour #2", when: "07:42", unread: true },
   { initials: "SK", avatar: "bg-secondary text-foreground", name: "Sofie K.", type: "FORESPØRSEL", typeCls: "bg-pyr-slag-track text-info-foreground", preview: "Kan jeg booke ekstra TrackMan-time tirsdag?", when: "06:18", unread: true },
   { initials: "KL", avatar: "bg-accent text-primary", name: "Karl Ludvig", type: "MELDING", typeCls: "bg-secondary text-muted-foreground", preview: "Sender video fra runden i går — ser noe på driveren", when: "i går 21:14", unread: true },
   { initials: "EB", avatar: "bg-secondary text-foreground", name: "Emilie B.", type: "MELDING", typeCls: "bg-secondary text-muted-foreground", preview: "Takk for økten — føles bra med ny gripp", when: "i går 18:02", unread: false },
@@ -235,7 +235,7 @@ export default function R35BriefDemo() {
                   </div>
                   {tasks.map((t, i) => (
                     <div key={i} className="grid grid-cols-[18px_1fr_auto] items-center gap-x-2.5 rounded-md px-2 py-[7px]">
-                      <span className={`inline-flex h-4 w-4 items-center justify-center rounded ${t.done ? "border-primary bg-primary text-accent" : "border-[1.5px] border-input bg-card text-transparent"}`}>
+                      <span className={`inline-flex h-4 w-4 items-center justify-center rounded ${t.done ? "border-primary bg-primary text-primary-foreground" : "border-[1.5px] border-input bg-card text-transparent"}`}>
                         {t.done && <Check className="h-[11px] w-[11px]" strokeWidth={2.5} />}
                       </span>
                       <span className={`text-xs leading-[1.3] tracking-[-0.005em] ${t.done ? "text-muted-foreground line-through" : "text-foreground"}`}>{t.label}</span>
@@ -254,7 +254,7 @@ export default function R35BriefDemo() {
               <div className="flex flex-col gap-2.5 p-3.5">
                 {/* Øyvind — alert */}
                 <FocusCard
-                  alert avatarCls="bg-primary text-accent" initials="ØR" name="Øyvind Rohjan"
+                  alert avatarCls="bg-primary text-primary-foreground" initials="ØR" name="Øyvind Rohjan"
                   meta="WANG · KONK · 12 DG TIL SRIXON #2"
                   signal={{ icon: AlertTriangle, text: "2 ØKTER BAK", cls: "bg-destructive/10 text-destructive" }}
                   reason={<>Taper <b className="font-bold">−0,42 SG i innspill</b>, men kun <em className="not-italic mx-0.5 rounded-[3px] bg-secondary px-1.5 py-px font-mono text-[10px] font-bold tracking-[0.04em] text-muted-foreground">2 av 6 t</em> SLAG-trening denne uka. Foreslå tilleggs-økt før helgen.</>}
@@ -332,7 +332,7 @@ function FocusCard({
       <div className="px-3 pb-2.5 text-xs leading-[1.45] tracking-[-0.005em] text-foreground">{reason}</div>
       <div className="flex gap-1.5 px-3 pb-3">
         {actions.map((a, i) => (
-          <button key={i} className={`inline-flex h-[30px] items-center gap-1.5 rounded-lg px-2.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] ${a.pri ? "border border-primary bg-primary text-accent" : "border border-border bg-card text-foreground"}`}>
+          <button key={i} className={`inline-flex h-[30px] items-center gap-1.5 rounded-lg px-2.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] ${a.pri ? "border border-primary bg-primary text-primary-foreground" : "border border-border bg-card text-foreground"}`}>
             <a.icon className="h-[11px] w-[11px]" strokeWidth={1.5} />{a.label}
           </button>
         ))}

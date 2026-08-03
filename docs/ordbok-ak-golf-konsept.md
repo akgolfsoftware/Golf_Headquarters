@@ -2,7 +2,12 @@
 
 Autoritativ referanse for alle fagbegreper, koder og systemord i AK Golf-konseptet. Felles språk for utviklere, trenere og AI-agenter. **Del A** = hva begrepene betyr. **Del B** = hvordan ord staves i UI.
 
-**Kilde-hierarki:** 1) MasterBrain CANON v3.5 (`~/Developer/Masterbrain/knowledge/concepts/canon-methodology.json`, 2026-06-16) + `l-faser.json` — fasit for konsept-verdier; harde regler er versjonert der og kan endres av Anders. 2) Intelligence-taksonomien (`ak-golf-intelligence/shared/training/ak-taxonomy.ts`) — enheter: putting i **fot**, innspill i yards. 3) Kodebasen (`src/lib/taxonomy.ts`, `prisma/schema.prisma` m.fl.) — fasit for kode-identifiere; avviker koden fra canon i VERDIER, vinner canon (flagget «Kode-status»).
+> **To ulike ordbøker (notis 2026-08-03):** denne fila er ordboken for **konsept- og
+> UI-vokabular** (genererer `docs/ordbok.json` via `scripts/ordbok-json.ts`). Den må ikke
+> forveksles med **fagkunnskaps-ordboken** i `src/lib/masterbrain/knowledge/entities/ordbok.json`
+> (+ `morad-ordbok-v2.json` i masterbrain-arkivet) som AI-laget bruker. Ulike roller — hold dem adskilt.
+
+**Kilde-hierarki:** 1) MasterBrain CANON v3.5 (vendored kopi: `src/lib/masterbrain/knowledge/concepts/canon-methodology.json`, 2026-06-16) + `l-faser.json` — fasit for konsept-verdier; harde regler er versjonert der og kan endres av Anders. 2) Intelligence-taksonomien (`ak-golf-intelligence/shared/training/ak-taxonomy.ts`) — enheter: putting i **fot**, innspill i yards. 3) Kodebasen (`src/lib/taxonomy.ts`, `prisma/schema.prisma` m.fl.) — fasit for kode-identifiere; avviker koden fra canon i VERDIER, vinner canon (flagget «Kode-status»).
 
 > **Tre forvekslinger å passe på:**
 > 1. **Læringsfase (`LFase`: L_KROPP…L_AUTO) ≠ periodiseringsfase (`LPhase`: GRUNN/SPESIAL/TURNERING).**
@@ -338,6 +343,7 @@ Sentrale modeller og ALLE status-enums fra `prisma/schema.prisma` (komplett per 
 | Innsiktskategori | `InsightCategory` | DISTANCE_GAPPING, CONSISTENCY_LEAK, TRAINING_GAP, D_PLANE_DRIFT, STRIKE_QUALITY, FATIGUE_PATTERN, EQUIPMENT_FIT, TEMPO_VARIANCE, PROGRESSION_TREND, SAME_DISTANCE_OPPORTUNITY (jf. §12). |
 | Teknisk plan-status | `TechPlanStatus` | DRAFT, ACTIVE, ARCHIVED. |
 | Arbeidsoppgave-status | `PositionTaskStatus` | PENDING, ACTIVE (logger reps), DONE, ARCHIVED. |
+| Oppgave-kategori | `TaskKategori` | TEKNISK, TAKTISK, MENTALT, SOSIALT — eget klassifiseringsfelt på `PositionTask` ved siden av pyramide-aksen (runde 2 · 2026-07-14, Anders: «Begge — legg til som eget felt»). Nullable — aldri en sperre. |
 | Spor-status (teknisk mål) | `TrackStatus` | PAA_VEI (begge spor positive), STAGNERER, FERDIG, INAKTIV (ingen reps > 14 d), AVSLAATT. |
 | TM-mål-type | `TmGoalType` | PRIMARY, SECONDARY, CAUSAL, HIT_RATE (jf. §14 TrackMan-mål). |
 | TM-mål-protokoll | `TmGoalProtocol` | ROLLING_WINDOW, BEST_OF_N, STREAK, SESSION_GATE — hvordan målet måles. |
@@ -1061,4 +1067,4 @@ ALLTID uppercase og i rekkefølgen `FYS · TEK · SLAG · SPILL · TURN` (dot-se
 3. Verifiser: `npx tsc --noEmit && npm run build`
 4. Commit: `chore(ordliste): "X" → "Y"`
 
-**Sist oppdatert:** 2026-07-03 — renskrevet fra 1629 til denne versjonen uten terminologitap (SLETTET/DEDUPE-lister i `docs/ordbok-evaluering-2026-07.md`). Synket mot MasterBrain CANON v3.5. Del B var opprinnelig egen fil (`ordliste-ak-golf.md`). Demo-kanon: Øyvind Rohjan.
+**Sist oppdatert:** 2026-07-03 — renskrevet fra 1629 til denne versjonen uten terminologitap (SLETTET/DEDUPE-lister i `docs/arkiv/2026-08-03-forenkling-bolge2/ordbok-evaluering-2026-07.md`). Synket mot MasterBrain CANON v3.5. Del B var opprinnelig egen fil (`ordliste-ak-golf.md`). Demo-kanon: Øyvind Rohjan.

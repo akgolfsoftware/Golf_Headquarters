@@ -6,7 +6,8 @@
  * HSL-trippel uten hsl()-wrapper. Tailwind v4 mapper dem til utilities
  * via @theme inline lenger nede. Endres ALDRI uten eksplisitt beslutning.
  *
- * Lyst tema er default. Mørkt aktiveres via .dark-klasse på html-element.
+ * Lyst tema er default. Mørkt aktiveres via data-v2-tema="dark" på <html>
+ * (eneste mekanisme siden designport steg 3, 2026-08-03).
  */
 
 /* Fase 1 token-konvergens (2026-07-08, docs/opprydding/03-opprydding-plan.md):
@@ -45,14 +46,6 @@
   --info: 221 83% 53%;             /* #2563EB — DS har ikke info-token; = --axis-slag (lys) */
   --info-foreground: 0 0% 100%;
 
-  /* Chart-tokens (data-viz) — speiler DS --axis-* (lys) */
-  --chart-1: 163.6 100% 17.3%;     /* #005840 — FYS = --axis-fys */
-  --chart-2: 38.5 62.8% 44.3%;     /* #B8852A — TEK = --axis-tek */
-  --chart-3: 221 83% 53%;          /* #2563EB — SLAG = --axis-slag */
-  --chart-4: 72.9 92.8% 61.8%;     /* #D1F843 — SPILL = --axis-spill */
-  --chart-5: 0 57% 41%;            /* #A32D2D — TURN = --axis-turn */
-  --chart-6: 43 4% 35%;            /* #5E5C57 — benchmark/neutral (utenfor DS) */
-
   /* Form og fokus — DS --border er rgba(0,0,0,.08); trippel m/ alfa gir samme farge */
   --border: 0 0% 0% / 0.08;
   --input: 0 0% 0% / 0.08;
@@ -62,8 +55,7 @@
   --radius: 16px;
 }
 
-html[data-v2-tema="dark"],
-.dark {
+html[data-v2-tema="dark"] {
   --background: 90 5% 7.8%;     /* #141513 = DS --bg (graphite-0, v14 variant B «løftet») */
   --foreground: 0 0% 94.1%;        /* #F0F0F0 = DS --text (graphite-900) */
   --card: 120 1.5% 12.7%;          /* #202120 = DS --surface (graphite-50) */
@@ -90,44 +82,17 @@ html[data-v2-tema="dark"],
   --info: 208 83% 65%;             /* #5AA9F0 — DS har ikke info-token */
   --info-foreground: 157 53% 8%;
 
-  --chart-1: 156.8 48.9% 55.5%;    /* #56C59A = --axis-fys (mørk) */
-  --chart-2: 35.8 78.8% 57.5%;     /* #E8A33D = --axis-tek (mørk) */
-  --chart-3: 222 100% 75.9%;       /* #84A9FF = --axis-slag (mørk) */
-  --chart-4: 72.9 92.8% 61.8%;     /* #D1F843 = --axis-spill (mørk) */
-  --chart-5: 2.4 79.7% 74.9%;      /* #F2908C = --axis-turn (mørk) */
-  --chart-6: 280 60% 65%;          /* utenfor DS */
-
   --border: 0 0% 100% / 0.08;      /* DS --border (mørk) = rgba(255,255,255,.08) */
   --input: 0 0% 100% / 0.08;
   --ring: 72.9 92.8% 61.8%;
 
-  /* ---- Terminal mørk stack — AgencyOS (.dark på html)
-   * Retunet til handoverens varme nær-svarte rampe (2026-06-26):
-   * dybde fra hårlinjer, ikke skygger; aldri grønt. ---- */
-  --t-bg:        #0A0B0A;
-  --t-bg-1:      #101110;
-  --t-bg-2:      #141513;
-  --t-bg-3:      #171817;
-  --t-bg-4:      #1E1F1D;
-  --t-line:      #262725;
-  --t-line-2:    #313230;
-  --t-line-soft: rgba(240,240,240,.035);
-  --t-fg:        #F0F0F0;
-  --t-fg-2:      #A6A8A3;
-  --t-fg-3:      #7E807A;
-  --t-fg-4:      #5A5B56;
-  --t-up:        #4FD08A;
-  --t-up-bg:     rgba(79,208,138,.10);
-  --t-down:      #F0683E;
-  --t-down-bg:   rgba(240,104,62,.10);
-  --t-warn:      #E8B43C;
-  --t-info:      #5AA9F0;
-  --lime-bg:     rgba(209,248,67,.08);
-  --lime-bg-2:   rgba(209,248,67,.14);
-  --paper:       var(--t-bg-3);
-  --border-soft: var(--t-line);
-  --ink:         var(--t-fg);
-  --muted-2:     var(--t-fg-3);
+  /* ---- Mørk-overstyringer for DS-aliasene (varm nær-svart rampe, 2026-06-26).
+   * («Terminal»-stacken --t-* er slettet 2026-08-03 — kun disse fire verdiene
+   * var i bruk, via aliasene under.) ---- */
+  --paper:       #171817;
+  --border-soft: #262725;
+  --ink:         #F0F0F0;
+  --muted-2:     #7E807A;
   --forest:      #00684A;
   --forest-deep: #004D37;
   --lime:        #D1F843;
@@ -258,9 +223,7 @@ html[data-v2-tema="dark"],
   --phase-peak: oklch(0.9 0.19 122);
 }
 
-html[data-v2-tema="dark"],
-.dark,
-[data-theme="dark"] {
+html[data-v2-tema="dark"] {
   /* Semantiske aliaser — MØRK */
   --bg: var(--graphite-0);
   --surface: var(--graphite-50);
@@ -349,12 +312,6 @@ html[data-v2-tema="dark"],
   --color-warning-foreground: hsl(var(--warning-foreground));
   --color-info: hsl(var(--info));
   --color-info-foreground: hsl(var(--info-foreground));
-  --color-chart-1: var(--axis-fys);
-  --color-chart-2: var(--axis-tek);
-  --color-chart-3: var(--axis-slag);
-  --color-chart-4: var(--axis-spill);
-  --color-chart-5: var(--axis-turn);
-  --color-chart-6: hsl(var(--chart-6));
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: var(--signal);
@@ -460,9 +417,9 @@ html[data-v2-tema="dark"],
   --color-line: #E5E3DD;
   --color-line-soft: #EFEDE6;
 
-  --color-success: hsl(var(--success));
+  /* --color-success/--color-warning er deklarert én gang lenger opp —
+   * duplikatene her er fjernet 2026-08-03 (samme verdi, siste vant stille). */
   --color-success-bg: #E5F1EA;
-  --color-warning: hsl(var(--warning));
   --color-warning-bg: #FFF0D6;
   --color-danger: #A32D2D;
   --color-danger-bg: #FAE3E3;
@@ -609,7 +566,7 @@ body {
   background: rgba(212, 247, 69, 0.4);
 }
 
-.dark ::selection {
+html[data-v2-tema="dark"] ::selection {
   color: #f6f6f4;
   background: rgba(212, 247, 69, 0.3);
 }
@@ -796,22 +753,12 @@ em.editorial {
   --v2-ax-spill: #5a7200;
   --v2-ax-turn: #b4461c;
   --v2-shadow: 0 18px 48px rgba(23, 27, 24, 0.16);
-  --v2-card-shadow: none;
   /* Valgt segment i .seg (showroom-fasit: segmentert løftes med skygge, ikke lime) */
   --v2-seg-skygge: 0 1px 4px rgba(23, 27, 24, 0.12);
-  /* Paper-typografi: Poppins (display + UI), IBM Plex Mono (tall/etiketter).
-   * Lora (--p-body) er Paper sin brødtekst-serif og innføres per komponent i
-   * steg 5B — ikke som global UI-font. */
-  --v2-font-display: var(--p-disp);
-  --v2-font-ui: var(--p-ui);
-  --v2-font-mono: var(--p-mono);
-  --v2-r-tag: 8px;
-  --v2-r-input: 12px;
-  --v2-r-row: 12px;
-  --v2-r-card: 20px;
-  --v2-r-panel: 20px;
-  --v2-r-sheet: 28px;
-  --v2-r-pill: 9999px;
+  /* Radius/typografi eies av TS-speilet T (src/lib/v2/tokens.ts) — de døde
+   * CSS-duplikatene (--v2-r-*, --v2-font-display/-ui, --v2-card-shadow) er
+   * slettet 2026-08-03. --v2-font-mono beholdes (i bruk via var()). */
+  --v2-font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
   color-scheme: light;
 }
 html[data-v2-tema="dark"] {
@@ -847,7 +794,6 @@ html[data-v2-tema="dark"] {
   --v2-ax-spill: #d1f843;
   --v2-ax-turn: #f0683e;
   --v2-shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
-  --v2-card-shadow: none;
   --v2-seg-skygge: 0 1px 4px rgba(0, 0, 0, 0.25);
   color-scheme: dark;
 }

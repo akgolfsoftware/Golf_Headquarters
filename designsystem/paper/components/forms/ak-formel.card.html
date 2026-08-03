@@ -1,0 +1,76 @@
+<!-- @dsCard group="Skjema" viewport="980x3000" name="AkFormelVelger — AK-formel v3" subtitle="Kaskaden: pyramiden bytter områdelista, området bytter delferdighetene. Fire slot-varianter × begge temaer + påstander som kan bli røde" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:14px}.w{display:flex;flex-direction:column;gap:8px}.assert{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.6;white-space:pre-wrap;margin-top:14px}.ok{color:var(--up)}.bad{color:var(--dn)}</style>
+</head>
+<body><div class="two"><div class="half" id="light"></div><div class="half" data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const B = window.AKGolfHQClaudePaper_605a48 || {};
+const { AkFormelVelger, AkFormelLinje, AK_STRUKTUR, delferdighetsListe, harPPosisjon, pEkspandert, formelSlots, formelStreng } = B;
+
+/* Fire verdier som dekker hver sin slot-variant. */
+const V_FYS   = { pyr:"FYS",  omr:"STYRKE",    del:"RFD",       bel:"INNENDORS" };
+const V_FYS_A = { pyr:"FYS",  omr:"BEVEGELIGHET" };                       /* åpen delferdighet */
+const V_TEE   = { pyr:"TEK",  omr:"TEE_TOTAL", pValg:["P5.0","P8.0"], pModus:"INTERVALL", del:"SKRU", mot:"LAV_HASTIGHET", bel:"TRENINGSOMRADE", press:"ALENE" };
+const V_PUTT  = { pyr:"TEK",  omr:"PUTT_5_10", del:"GREENLESNING", mot:"AUTO", bel:"BANE", press:"OBSERVERT" };
+const V_TURN  = { pyr:"TURN", omr:"PRESTASJON", del:"MENTAL", mot:"AUTO", bel:"KONKURRANSE", press:"TURNERING" };
+
+function Levende() {
+  const [f, setF] = React.useState({ pyr:"SLAG", omr:"CHIP" });
+  return <AkFormelVelger verdi={f} onChange={setF} />;
+}
+
+/* Påstandene MÅ kunne bli røde. Hver har en kjent riktig verdi utledet av strukturen. */
+function assertions() {
+  if (!AkFormelVelger || !AK_STRUKTUR) return [{ n:"bundelen inneholder AkFormelVelger", ok:false, fikk:"ikke kompilert" }];
+  const a = [];
+  a.push({ n:"FYS har 4 slots (ikke 3, ikke 6)", ok: formelSlots(V_FYS).length === 4, fikk: formelSlots(V_FYS).join("_") });
+  a.push({ n:"FYS har verken motorikk eller press", ok: !formelSlots(V_FYS).includes("mot") && !formelSlots(V_FYS).includes("press"), fikk: formelSlots(V_FYS).join(",") });
+  a.push({ n:"TEK på tee har 7 slots med P etter område", ok: formelSlots(V_TEE).length === 7 && formelSlots(V_TEE)[2] === "p", fikk: formelSlots(V_TEE).join("_") });
+  a.push({ n:"TEK på putt har ingen P-slot", ok: !harPPosisjon(V_PUTT), fikk: String(harPPosisjon(V_PUTT)) });
+  a.push({ n:"putt-området gir 4 delferdigheter", ok: (delferdighetsListe(V_PUTT)||[]).length === 4, fikk: String((delferdighetsListe(V_PUTT)||[]).length) });
+  a.push({ n:"tee-området gir 6 delferdigheter", ok: (delferdighetsListe(V_TEE)||[]).length === 6, fikk: String((delferdighetsListe(V_TEE)||[]).length) });
+  a.push({ n:"intervall P5.0-P8.0 ekspanderer til 4 punkter", ok: pEkspandert(V_TEE).length === 4, fikk: pEkspandert(V_TEE).join("+") });
+  a.push({ n:"STYRKE har delferdighet, BEVEGELIGHET ikke (åpent punkt)", ok: !!delferdighetsListe(V_FYS) && !delferdighetsListe(V_FYS_A), fikk: String(!!delferdighetsListe(V_FYS_A)) });
+  a.push({ n:"TEK/SLAG deler områdesett (17 områder)", ok: AK_STRUKTUR.TEK.omrader === AK_STRUKTUR.SLAG.omrader && AK_STRUKTUR.TEK.omrader.reduce((s,g)=>s+g.items.length,0) === 17, fikk: String(AK_STRUKTUR.TEK.omrader.reduce((s,g)=>s+g.items.length,0)) });
+  a.push({ n:"SPILL beholder BANE", ok: AK_STRUKTUR.SPILL.omrader[0].items.some(i=>i.k==="BANE"), fikk: AK_STRUKTUR.SPILL.omrader[0].items.map(i=>i.k).join(",") });
+  /* Selvtest: en påstand som SKAL være rød. Er den grønn, måler ikke riggen. */
+  a.push({ n:"SELVTEST (skal være rød): FYS har press", ok: formelSlots(V_FYS).includes("press"), fikk: "forventet false" });
+  return a;
+}
+
+function Specimen() {
+  const a = assertions();
+  const feil = a.filter(x => !x.ok).length;
+  return (<>
+    <div className="lab">levende — trykk deg gjennom, kaskaden nullstiller under seg</div>
+    <Levende />
+
+    <div className="lab">FYS · 4 slots — ingen motorikk, ingen press</div>
+    <AkFormelVelger verdi={V_FYS} onChange={()=>{}} />
+
+    <div className="lab">FYS bevegelighet · delferdighet er et åpent punkt, ikke oppdiktet</div>
+    <AkFormelVelger verdi={V_FYS_A} onChange={()=>{}} />
+
+    <div className="lab">TEK tee · 7 slots med P-intervall</div>
+    <AkFormelVelger verdi={V_TEE} onChange={()=>{}} />
+
+    <div className="lab">TEK putt · P finnes ikke her, og delferdighet er de fire kausale</div>
+    <AkFormelVelger verdi={V_PUTT} onChange={()=>{}} />
+
+    <div className="lab">formellinja alene — som oppsummering på et drill-kort</div>
+    <div className="w"><AkFormelLinje verdi={V_TURN} /><AkFormelLinje verdi={{ pyr:"SPILL" }} /></div>
+
+    <div className="assert">
+      {a.map((x,i) => <div key={i} className={x.ok ? "ok" : "bad"}>{x.ok ? "GRØNN" : "RØD  "} · {x.n} · fikk: {x.fikk}</div>)}
+      {"\n"}{feil === 1 ? "1 rød = kun selvtesten. Riggen måler." : feil === 0 ? "0 røde — selvtesten slo ikke ut, riggen måler IKKE." : feil + " røde — se over."}
+    </div>
+  </>);
+}
+
+["light","dark"].forEach(id => ReactDOM.createRoot(document.getElementById(id)).render(<Specimen />));
+</script>
+</body></html>

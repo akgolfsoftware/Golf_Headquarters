@@ -254,44 +254,18 @@ export function byggBrukerMeldingMedMal(
     return kontekstSomBrukerMelding(ctx, brukerPrompt, feedback, forrigeForslag);
   }
 
-  const linjer: string[] = [];
-  linjer.push("KONTEKST OM SPILLEREN (JSON):");
-  linjer.push("```json");
-  linjer.push(JSON.stringify(ctx, null, 2));
-  linjer.push("```");
-  linjer.push("");
-  linjer.push(
+  const malBlokk = [
     `BASELINE-MAL (PlanTemplate "${template.navn}" — matchet på kategori ${
       ctx.spiller.ngfKategori ?? "?"
     } × ${ctx.aktivLPhase ?? "?"}):`,
-  );
-  linjer.push("```json");
-  linjer.push(JSON.stringify(template, null, 2));
-  linjer.push("```");
-  linjer.push("");
-  linjer.push(
+    "```json",
+    JSON.stringify(template, null, 2),
+    "```",
+    "",
     "Bruk malen som utgangspunkt. JUSTER drills, volum og fokus basert på",
-  );
-  linjer.push(
     "spillerens individuelle SG-data, aktive mål og forrige PlanEffectiveness.",
-  );
-  linjer.push("IKKE kopier malen 1:1. Tilpass den.");
-  linjer.push("");
-  linjer.push("COACH SIN INSTRUKS:");
-  linjer.push(brukerPrompt);
-  if (forrigeForslag && feedback) {
-    linjer.push("");
-    linjer.push("FORRIGE FORSLAG (revider basert på feedback):");
-    linjer.push("```json");
-    linjer.push(JSON.stringify(forrigeForslag, null, 2));
-    linjer.push("```");
-    linjer.push("");
-    linjer.push("FEEDBACK FRA COACH:");
-    linjer.push(feedback);
-  }
-  linjer.push("");
-  linjer.push(
-    'Lag en treningsplan tilpasset spilleren. Kall verktøyet "lever_planforslag" med en gang.',
-  );
-  return linjer.join("\n");
+    "IKKE kopier malen 1:1. Tilpass den.",
+  ].join("\n");
+
+  return kontekstSomBrukerMelding(ctx, brukerPrompt, feedback, forrigeForslag, malBlokk);
 }

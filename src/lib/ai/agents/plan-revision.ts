@@ -9,15 +9,18 @@
 // Demo-modus genererer deterministisk forslag fra data.
 
 import "server-only";
-import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "../client";
-import { ALL_SKILLS } from "../skills";
+import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled, tekstFra } from "../client";
+import { pyramideSkill, bompaSkill } from "../skills";
 import { prisma } from "@/lib/prisma";
 import { harManuellHelseSamtykke } from "@/lib/health/samtykke";
 import { erHelseLeave } from "@/lib/health/leave-innsyn";
 
-const SKILLS_BLOCK = ALL_SKILLS.map(
-  (s) => `\n## ${s.name}\n${s.knowledge}`,
-).join("\n");
+// Eksplisitte skills (forenkling bølge 3): plan-justeringer trenger pyramide-
+// taksonomi og periodisering — ikke hele ALL_SKILLS (SG-tolkning dekkes av
+// SG-tallene som allerede står ferdig tolket i prompten).
+const SKILLS_BLOCK = [pyramideSkill, bompaSkill]
+  .map((s) => `\n## ${s.name}\n${s.knowledge}`)
+  .join("\n");
 
 export const PLAN_REVISION_SYSTEM = `
 Du er Plan Revision-agent for AK Golf HQ.
@@ -98,11 +101,7 @@ export async function foreslaPlanRevisjon(opts: {
     messages: [{ role: "user", content: userPrompt }],
   });
 
-  const text = response.content
-    .filter((b) => b.type === "text")
-    .map((b) => (b.type === "text" ? b.text : ""))
-    .join("\n")
-    .trim();
+  const text = tekstFra(response);
 
   // Parsing: Vi prøver å lese strukturert JSON fra svaret. Hvis Claude returnerer
   // markdown/prosa, fall tilbake til demo-forslag og bruk Claude-teksten som

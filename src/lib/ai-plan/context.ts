@@ -605,6 +605,8 @@ export function kontekstSomBrukerMelding(
   brukerPrompt: string,
   feedback?: string,
   forrigeForslag?: unknown,
+  /** Valgfri blokk (f.eks. baseline-mal) som settes inn mellom kontekst og instruks. */
+  ekstraBlokk?: string,
 ): string {
   const linjer: string[] = [];
   linjer.push("KONTEKST OM SPILLEREN (JSON):");
@@ -612,6 +614,10 @@ export function kontekstSomBrukerMelding(
   linjer.push(JSON.stringify(ctx, null, 2));
   linjer.push("```");
   linjer.push("");
+  if (ekstraBlokk) {
+    linjer.push(ekstraBlokk);
+    linjer.push("");
+  }
   linjer.push("COACH SIN INSTRUKS:");
   linjer.push(brukerPrompt);
   if (forrigeForslag && feedback) {

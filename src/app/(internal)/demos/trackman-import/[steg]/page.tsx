@@ -113,7 +113,7 @@ function Stepper({ current }: { current: Steg }) {
           state === "active"
             ? "bg-accent text-primary border-primary ring-4 ring-primary/10"
             : state === "done"
-              ? "bg-primary text-accent border-primary"
+              ? "bg-primary text-primary-foreground border-primary"
               : "bg-card text-muted-foreground border-border";
         const label =
           state === "active"

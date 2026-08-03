@@ -9,6 +9,7 @@ import {
   type ChatMelding,
 } from "@/lib/anthropic";
 import { pseudonymForId } from "@/lib/ai/anonymiser";
+import { streamAnthropicTekst } from "@/lib/ai/client";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -134,45 +135,22 @@ export async function POST(req: Request) {
     .filter((m) => m.role === "user" || m.role === "assistant")
     .map((m) => ({ role: m.role, content: m.content }));
 
-  const encoder = new TextEncoder();
-  const stream = new ReadableStream({
-    async start(controller) {
-      let fullSvar = "";
-      try {
-        const respons = await klient.messages.stream({
-          model: COACH_MODEL,
-          max_tokens: 1024,
-          system: systemPrompt,
-          messages: apiMessages,
-        });
-
-        for await (const event of respons) {
-          if (
-            event.type === "content_block_delta" &&
-            event.delta.type === "text_delta"
-          ) {
-            const tekst = event.delta.text;
-            fullSvar += tekst;
-            controller.enqueue(encoder.encode(tekst));
-          }
-        }
-
-        // Persistér hele samtalen
-        const oppdatertHistorikk: ChatMelding[] = [
-          ...body.messages,
-          { role: "assistant", content: fullSvar },
-        ];
-        await prisma.coachingSession.update({
-          where: { id: sessionId! },
-          data: { messages: oppdatertHistorikk },
-        });
-      } catch (err) {
-        const melding =
-          err instanceof Error ? err.message : "AI-feil. Prøv igjen.";
-        controller.enqueue(encoder.encode(`\n\n[Feil: ${melding}]`));
-      } finally {
-        controller.close();
-      }
+  const stream = streamAnthropicTekst({
+    klient,
+    model: COACH_MODEL,
+    maxTokens: 1024,
+    system: systemPrompt,
+    messages: apiMessages,
+    // Persistér hele samtalen etter fullført stream
+    onFerdig: async (fullSvar) => {
+      const oppdatertHistorikk: ChatMelding[] = [
+        ...body.messages,
+        { role: "assistant", content: fullSvar },
+      ];
+      await prisma.coachingSession.update({
+        where: { id: sessionId! },
+        data: { messages: oppdatertHistorikk },
+      });
     },
   });
 

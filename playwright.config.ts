@@ -4,9 +4,9 @@ const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";
 const isCI = !!process.env.CI;
 
 export default defineConfig({
-  // Begge mappene scannes — `e2e/` er eldre tester, `tests/e2e/` er ny smoke-suite.
-  testDir: ".",
-  testMatch: ["e2e/*.spec.ts", "tests/e2e/*.spec.ts"],
+  // Én e2e-mappe siden 2026-08-03 — gamle `e2e/` er slått inn i `tests/e2e/`.
+  testDir: "tests/e2e",
+  testMatch: ["*.spec.ts"],
   testIgnore: [
     "**/node_modules/**",
     "**/.next/**",

@@ -5,7 +5,7 @@ Repo-spesifikke gotchas for syncen. Les FØR re-sync.
 ## SCOPE-BESLUTNING 2026-07-06 (Anders)
 - Sync KUN `src/components/athletic/golfdata/` (v13, 25 komponenter) — `cfg.srcDir` er oppdatert.
 - Det gamle athletic-biblioteket (rot + calendars/data/patterns/…) er i vedlikeholdsmodus og skal
-  IKKE til Claude Design (jf. `.claude/rules/design-system-regel.md`).
+  IKKE til Claude Design (jf. `.claude/rules/beslutninger.md` §Tema/design — design-system-regel.md er slettet).
 - NB: golfdata-komponenter kan importere fra `../hooks` eller delte filer utenfor golfdata —
   bygget vil vise om srcDir-scoping holder, ellers bruk componentSrcMap/exclusions.
 - Tokens for v13: `golfdata-tokens.css` (i tillegg til globals.css) — sjekk at cssEntry-kompileringen

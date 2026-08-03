@@ -35,6 +35,21 @@ Arkivert 2026-08-02 etter bevis-sveip (null levende referanser per fil):
 Samtidig ble 10 dokumenter slettet helt (innhold dekket av levende fasit-filer) —
 se commit `chore(docs): slett 10 utdaterte dokumenter` for listen.
 
+## 2026-08-03-forenkling-bolge2/ — pekere og dokument-råte (forenklings-bølge 2)
+
+Arkivert 2026-08-03. Alle innlenker fra levende filer er pekt hit i samme commit:
+
+| Fil | Var | Levende erstatning |
+|---|---|---|
+| `pilot-status-autonom-2026-07-31.md` + `-for-etter.md` | Pilot-status-duplikater | `docs/STATUS-NÅ.md` |
+| `funksjonsinventar-2026-07-29.md` | Funksjonsinventar-snapshot (se RETTELSE øverst i fila) | `docs/MASTER-SKJERMPLAN.md` |
+| `designdekning-2026-07-29.md` | Designdeknings-snapshot | `docs/MASTER-SKJERMPLAN.md` |
+| `AGENCYOS-INVENTAR.md` | Skjerm-/funksjonsinventar 2026-07-12 | `docs/MASTER-SKJERMPLAN.md` |
+| `komponentinventar-gammelt-designsystem-2026-07-31.md` | Komponentinventar-snapshot | `docs/MASTER-SKJERMPLAN.md` |
+| `legacy-portering-prioritet.md` | Porteringsliste (historisk 17.07); åpent punkt flyttet til `docs/AAPNE-SPORSMAAL.md` B5 | `docs/MASTER-SKJERMPLAN.md` |
+| `design-forbedring-plattform-2026-07-24.md` | Gjennomført designplan (GO V1–V3) | MASTER-SKJERMPLAN endringslogg |
+| `ordbok-evaluering-2026-07.md` + `ak-ordliste-gjennomgang.html` | Ordbok-evaluering juli | `docs/ordbok-ak-golf-konsept.md` |
+
 ## De levende kildene (én av hver rolle)
 
 - **`docs/STATUS-NÅ.md`** — snapshot: hvor plattformen står akkurat nå.

@@ -50,7 +50,7 @@ Følelsen: **Spiller** = «jeg vet på 5 sekunder hva jeg skal gjøre i dag og h
 
 **Lime-regelen (kritisk):** lime er krydder, ikke tapet. **Aldri lime tekst alene på lys bakgrunn** (mørk tekst på lime, aldri lime på lime). På mørkt tema er lime tekst OK.
 
-**Typografi:** Inter (UI/brødtekst) · **Familjen Grotesk** (display/hero, editorial italic-aksent — Inter Tight er utgående, se `.claude/rules/design-system-regel.md`) · **JetBrains Mono** (ALLE tall, eyebrows, KPI-labels, tabular-nums alltid). Norsk tallformat: komma-desimal, mellomrom som tusenskille, % etter mellomrom, 24t klokke. Signert delta: ▲▼ + farge.
+**Typografi:** Inter (UI/brødtekst) · **Familjen Grotesk** (display/hero, editorial italic-aksent — Inter Tight er fjernet, se `.claude/rules/beslutninger.md` §Tema/design) · **JetBrains Mono** (ALLE tall, eyebrows, KPI-labels, tabular-nums alltid). Norsk tallformat: komma-desimal, mellomrom som tusenskille, % etter mellomrom, 24t klokke. Signert delta: ▲▼ + farge.
 
 **Komponenter (gjenbruk disse — de finnes i designsystemet):** Avatar, Badge, Button (lime/forest/ghost), Eyebrow, KpiCard, KpiRing, PyramidProgress, SgBar, StatTable, EmptyState, Skeleton, StatusPill, MasteryRing, StreakTracker.
 

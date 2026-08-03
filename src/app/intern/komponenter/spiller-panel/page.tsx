@@ -9,7 +9,7 @@ const player: PlayerDetail = {
   name: "Øyvind Rohjan",
   meta: "WANG · KONK · 12 dg til Srixon #2",
   presence: "online",
-  avatarClass: "bg-primary text-accent",
+  avatarClass: "bg-primary text-primary-foreground",
   status: [
     { tone: "behind", label: "2 økter bak" },
     { tone: "active", label: "Aktiv" },
