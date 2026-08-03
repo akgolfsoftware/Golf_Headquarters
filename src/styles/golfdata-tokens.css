@@ -7,13 +7,12 @@
    Verdier er kopiert EKSAKT fra public/design-handover/tokens/
    {colors,typography,spacing,data-viz}.css — aldri oppfunnet her.
 
-   Tema-mapping (invers av DS-defaulten, i tråd med appens system):
+   Tema-mapping (i tråd med appens system, én mekanisme siden steg 3):
    appens :root er lys → .golfdata-scope bærer DS-ens .light-verdier.
-   appens/DS-ens .dark → DS-ens dark-aliaser (både forelder-.dark og
-   nested mørk innfelling: data-hero på lys flate).
+   html[data-v2-tema="dark"] → DS-ens dark-aliaser.
 
-   Kun tokens som faktisk konsumeres av golfdata-familien + dens
-   4 avhengigheter (HeroTall, DeltaIndikator, Skeleton, Icon).
+   Kun tokens som faktisk konsumeres av golfdata-familien + interne
+   avhengigheter (Icon, DataPreview, Skeleton).
    ============================================================ */
 
 .golfdata-scope {
@@ -155,15 +154,10 @@
 }
 
 /* ============================================================
-   MØRK — DS-ens :root/.dark-aliaser. Treffer både AgencyOS
-   (.dark på forelder) og mørke data-hero-innfellinger nested
-   inne i et lyst golfdata-scope.
+   MØRK — DS-ens dark-aliaser. Aktiveres av html[data-v2-tema="dark"]
+   (eneste tema-mekanisme siden designport steg 3).
    ============================================================ */
-html[data-v2-tema="dark"] .golfdata-scope,
-.dark .golfdata-scope,
-.golfdata-scope.dark,
-.golfdata-scope .dark,
-.golfdata-scope [data-theme="dark"] {
+html[data-v2-tema="dark"] .golfdata-scope {
   --surface: var(--graphite-50);
   --surface-2: var(--graphite-100);
   --surface-hover: var(--graphite-200);
