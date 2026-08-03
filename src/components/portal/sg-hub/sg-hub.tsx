@@ -176,7 +176,7 @@ function SgTotalHero({ data }: { data: SgHubData }) {
   return (
     <section
       aria-label="SG total"
-      className="relative flex min-h-[300px] flex-col overflow-hidden rounded-[20px] bg-primary p-6 text-accent shadow-[0_20px_48px_-16px_rgba(10,31,23,0.35)] sm:p-7"
+      className="relative flex min-h-[300px] flex-col overflow-hidden rounded-[20px] bg-primary p-6 text-primary-foreground shadow-[0_20px_48px_-16px_rgba(10,31,23,0.35)] sm:p-7"
     >
       {/* Topp-rad: vindu-eyebrow + TrackMan-pill (fylt lysere grønn) */}
       <div className="flex items-start justify-between gap-3">

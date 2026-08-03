@@ -75,7 +75,11 @@ export function CookieBanner() {
         ikon: "hsl(var(--primary))",
         lenke: "hsl(var(--primary))",
         knappBg: "hsl(var(--primary))",
-        knappFg: "hsl(var(--accent))",
+        // MÅ være --primary-foreground, ikke --accent: i mørkt tema er --primary og
+        // --accent samme lime (se .claude/rules/gotchas.md «primary=accent»), så
+        // accent-på-primary ga 1:1 kontrast — knappen var usynlig. Lys: hvit på grønn.
+        // Mørk: nær-svart på lime.
+        knappFg: "hsl(var(--primary-foreground))",
         knapp2Fg: "hsl(var(--muted-foreground))",
         knapp2Border: "hsl(var(--border))",
       };

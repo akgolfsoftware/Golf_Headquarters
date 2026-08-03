@@ -729,7 +729,7 @@ export default async function SgResultatPage({ params }: Props) {
                           fontFamily: "var(--font-mono)",
                           fontSize: 12,
                           fontWeight: 600,
-                          color: "hsl(var(--accent))",
+                          color: "hsl(var(--primary-foreground))",
                           background: "hsl(var(--primary))",
                           padding: "3px 9px",
                           borderRadius: 5,

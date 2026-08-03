@@ -71,7 +71,7 @@ export default function GlobalError({
                 marginTop: 24,
                 padding: "10px 20px",
                 background: "hsl(var(--primary))",
-                color: "hsl(var(--accent))",
+                color: "hsl(var(--primary-foreground))",
                 borderRadius: 8,
                 fontSize: 14,
                 fontWeight: 600,

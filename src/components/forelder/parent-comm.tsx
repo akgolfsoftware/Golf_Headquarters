@@ -75,7 +75,7 @@ export function MessageComposer({
             );
           })}
         </div>
-        <button type="button" onClick={onSend} className="ml-auto inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-accent">
+        <button type="button" onClick={onSend} className="ml-auto inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground">
           <Send className="h-3 w-3" strokeWidth={1.5} />Send
         </button>
       </div>

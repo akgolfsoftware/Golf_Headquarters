@@ -673,7 +673,7 @@ function Steg4() {
               label="Coach"
               value={
                 <span className="inline-flex items-center gap-2">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary font-mono text-[10px] font-semibold text-accent">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary font-mono text-[10px] font-semibold text-primary-foreground">
                     AK
                   </span>
                   Anders Kristiansen

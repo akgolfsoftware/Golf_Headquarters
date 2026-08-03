@@ -301,7 +301,7 @@ function Drawer({
       >
         {/* Header */}
         <div className="flex items-center gap-2 border-b border-border px-4 py-3.5">
-          <span className="relative inline-flex h-7 w-7 items-center justify-center rounded-lg bg-primary font-display text-[13px] font-bold tracking-[-0.02em] text-accent">
+          <span className="relative inline-flex h-7 w-7 items-center justify-center rounded-lg bg-primary font-display text-[13px] font-bold tracking-[-0.02em] text-primary-foreground">
             ak
             <span className="absolute right-[5px] top-[5px] h-1 w-1 rounded-full bg-accent" />
           </span>
@@ -501,7 +501,7 @@ export function PlayerWorkbench({ data }: { data: PlayerWorkbenchData }) {
           <Link
             href="/portal/planlegge"
             aria-label="Ny økt"
-            className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-accent hover:opacity-90"
+            className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground hover:opacity-90"
           >
             <Plus className="h-5 w-5" strokeWidth={2.5} aria-hidden />
           </Link>
@@ -579,7 +579,7 @@ export function PlayerWorkbench({ data }: { data: PlayerWorkbenchData }) {
             </p>
             <Link
               href="/portal/planlegge"
-              className="mt-4 inline-flex h-10 items-center justify-center gap-1.5 rounded-full bg-primary px-5 font-mono text-[11px] font-extrabold uppercase tracking-[0.10em] text-accent hover:opacity-90"
+              className="mt-4 inline-flex h-10 items-center justify-center gap-1.5 rounded-full bg-primary px-5 font-mono text-[11px] font-extrabold uppercase tracking-[0.10em] text-primary-foreground hover:opacity-90"
             >
               <Plus className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />
               Legg til økt

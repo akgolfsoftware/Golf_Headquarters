@@ -45,7 +45,7 @@ export function MarketingHeader() {
           </Link>
           <Link
             href="/booking"
-            className="inline-flex h-9 items-center justify-center rounded-full bg-primary px-4 text-xs font-bold text-accent transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="inline-flex h-9 items-center justify-center rounded-full bg-primary px-4 text-xs font-bold text-primary-foreground transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             Book tid
           </Link>

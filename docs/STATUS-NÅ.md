@@ -2,7 +2,7 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-07-24 (ferdigstillingsplan: dokumentsynk + Fase A/B-arbeid. Design-GAP i PlayerHQ/AgencyOS/Forelder/Auth = 0. Appen er fortsatt ikke klar for betalende brukere før P0-aktivering.)
+**Sist oppdatert:** 2026-08-02 (kvalitetsaudit tiltak 9: klikk-test av ★-kjernen mot prod + dokumentsynk. Betalingsdato rettet 1. aug → 1. sep. Design-GAP i PlayerHQ/AgencyOS/Forelder/Auth = 0. Appen er fortsatt ikke klar for betalende brukere før P0-aktivering.)
 
 ## Levende kilder (én av hver rolle — start her)
 
@@ -21,7 +21,7 @@ Historiske bygg-spor (SKJERM-STATUS, SKJERM-BYGGEPLAN, BYGGELOGG-FLAGG, KONFLIKT
 ---
 
 ## Kort sagt
-Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. PlayerHQ + AgencyOS + Forelder + Auth har **0 design-GAP** (verifisert 23. jul). Coaching-/business-motoren (ukesyklus, godkjenningskø, churn, kapasitet-som-penger, m.m.) er levert i juli. **Den er IKKE klar for betalende/ekte brukere ennå** — største hinder er at registrerte spillere aldri har logget inn, pluss Resend DKIM / DNS / Stripe-panel hos Anders. Betaling starter **1. august** (`BETALING_STARTER` i `feature-flags.ts`) — koden gir alle PRO gratis frem til da.
+Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. PlayerHQ + AgencyOS + Forelder + Auth har **0 design-GAP** (verifisert 23. jul). Coaching-/business-motoren (ukesyklus, godkjenningskø, churn, kapasitet-som-penger, m.m.) er levert i juli. **Den er IKKE klar for betalende/ekte brukere ennå** — største hinder er at registrerte spillere aldri har logget inn, pluss Resend DKIM / DNS / Stripe-panel hos Anders. Betaling starter **1. september 2026** (`BETALING_STARTER` i `src/lib/feature-flags.ts:18`, verifisert 2026-08-02) — koden gir alle PRO gratis frem til da. Dette dokumentet sa tidligere 1. august; datoen i koden er fasit.
 
 Push til `main` deployer automatisk via **Vercel git-integrasjon**. GitHub Actions `deploy.yml` er manuell (`workflow_dispatch`) — kjør ALDRI `vercel deploy --prod` manuelt.
 
@@ -46,7 +46,12 @@ Push til `main` deployer automatisk via **Vercel git-integrasjon**. GitHub Actio
 - **Bølge 5:** treningsanalyse-modul + AgencyOS-kalender drill-lesevisning — **ikke startet**.
 - **Bølge 6-rest:** nivåplasserings-quiz i onboarding (profil-wizard finnes; quiz mangler).
 - **Soft-haker i MASTER:** mange skjermer har Design ✓ men Mob/iPad `✓✓–`, Flyt/Data `~`, eller Funker `†`.
-- **Klikk-testing:** ~23 av ~261 skjermer (resten kun dødlenke-sjekket).
+- **Klikk-testing:** ~23 av ~261 skjermer (resten kun dødlenke-sjekket). **2026-08-02:** hele
+  ★-kjernen klikk-testet mot prod på 390px og 1280px (`tests/e2e/kjerne-klikk.spec.ts`).
+  AgencyOS: cockpit, innboks, spillere, turneringer, bookinger, kalender, godkjenninger.
+  PlayerHQ: hjem, planlegge, workbench, gjennomføre, analysere, meg — alle 200 med ekte innhold og
+  ærlige tomtilstander, ingen feilside. Testspilleren ble opprettet med
+  `scripts/opprett-e2e-testspiller-2026-08-02.ts`. Én åpen feil funnet: hydreringsfeil på Workbench.
 
 ## Blokkert — P0 før ekte/betalende brukere
 
@@ -57,10 +62,46 @@ Push til `main` deployer automatisk via **Vercel git-integrasjon**. GitHub Actio
 4. **Google Calendar** re-koble (`/admin/settings/calendar` — tokens PAUSED).
 5. **Aktiverings-e-post** til registrerte spillere (etter DKIM).
 
+### Stripe-herding 2026-08-02 (kvalitetsaudit tiltak 10) — kode klar, DDL gjenstår
+- **Event-dedup:** ny tabell `processed_webhook_events`. Webhooken markerer eventet som behandlet
+  FØR den kjører, og slipper kvitteringen igjen hvis behandlingen feiler. Replay fra Stripe-dashbordet
+  gir nå «duplicate» i stedet for ny e-post.
+- **Sideeffekter betinget på `result.count`:** bekreftelses-e-post, kalender-push og coach-varsel
+  kjører kun når bookingen faktisk gikk PENDING → CONFIRMED. Før hang de bare på at eventet kom —
+  det var den ekte dobbel-e-post-bugen.
+- **`WebhookFailure` har fått en konsument:** `/api/cron/webhook-retry` (hver 30. min) kjører feilede
+  events på nytt og varsler når et event gir opp etter 5 forsøk. Tabellen ble tidligere kun skrevet til.
+- **GJENSTÅR:** `npx tsx scripts/add-processed-webhook-events-2026-08-02.ts` må kjøres mot prod FØR
+  denne koden merges. Uten tabellen feiler dedup-sjekken, og hvert event havner i retry-køen.
+- **GJENSTÅR (Anders):** verifiser i Stripe-dashbordet at webhook-endepunktet abonnerer på de event-typene
+  koden håndterer, og kjør én testbetaling som ender som Payment-rad.
+
 ### Kode / data (agent)
 - Aktiveringsflyt + at `lastLoginAt` settes ved innlogging.
 - Push-opt-in-prompt ved første PlayerHQ-besøk (motor finnes, 0 abonnementer).
-- Betaling 1. august: `gratisForAlle()` slår av automatisk; verifiser cutover.
+- Betaling 1. september: `gratisForAlle()` slår av automatisk; verifiser cutover.
+
+### Funnet i klikk-testen 2026-08-02 (nytt, ikke lukket)
+- **CSP blokkerer en app-chunk i prod:** på `/admin/spillere` blir
+  `/_next/static/chunks/0vgmow81h3vwc.js` (Lucide-ikoner: `Menu`, `chevron-left`) avvist av
+  `script-src`-direktivet i `src/proxy.ts:65` — `'strict-dynamic'` slår av `'self'`.
+  Reproduserbart 3/3 mot prod. Ikonene rendres likevel (23 lucide-svg i DOM), så synlig skade er
+  liten, men det er en ekte blokkering med konsollstøy og ekstra last.
+  **Forsøkt fikset 2026-08-02 og rullet tilbake:** hypotesen var at CSP-headeren måtte ligge på
+  request (der Next leter etter nonce-en). Måling avkreftet den — `/auth/login` serverte 44
+  script-tagger, alle med nonce, både med og uten endringen. Årsaken ligger sannsynligvis i
+  Turbopacks dynamiske chunk-lasting etter hydrering, ikke i server-rendret HTML. Symptomet lar
+  seg ikke reprodusere lokalt (siden krever innlogging, og lokal dev kan ikke startes — se under).
+- **Hydreringsfeil på Workbench:** `/portal/planlegge/workbench` kaster React #418
+  (server-HTML matcher ikke klienten) i prod. Ligger i `KJENTE_FEIL` i
+  `tests/e2e/kjerne-klikk.spec.ts` så røyktesten ikke er permanent rød — fjern linja når den fikses.
+- **Lokal dev kan ikke startes på MacBook Air:** `.env.local` har 23 av 77 verdier satt til
+  `[SENSURERT]`, blant dem `NEXT_PUBLIC_SUPABASE_URL`, anon-key og `DATABASE_URL`. `next dev` dør i
+  `instrumentation.ts` på env-validering. All lokal verifisering må derfor kjøres mot prod
+  (`PLAYWRIGHT_BASE_URL`) til fila er gjenopprettet.
+- **Spiller-testbruker:** `screentest@akgolf.test` manglet i prod og ble opprettet 2026-08-02 med
+  `scripts/opprett-e2e-testspiller-2026-08-02.ts` (ren SQL, siden service-role-nøkkelen er
+  sensurert). Tom spiller uten demo-data — god for å teste tomtilstandene.
 
 ### Åpne produktbeslutninger (ikke lanseringsblokkere)
 - **A4 Fase 2:** anbefalingsmotor for periode-fordeling (venter data).
