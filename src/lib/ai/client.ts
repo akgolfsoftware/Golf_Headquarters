@@ -27,36 +27,22 @@ const OPUS_MODEL = "claude-opus-4-8";
 const SONNET_MODEL = "claude-sonnet-4-6";
 const HAIKU_MODEL = "claude-haiku-4-5-20251001";
 
+// Kun agenter som faktisk kaller modelFor med disse id-ene står her —
+// registeret skal aldri liste agenter som ikke finnes eller ikke kaller AI.
 const OPUS_AGENTS = new Set([
   "plan-revisjon",
   "sg-interpretation",
   "performance-peaking",
-  "swing-video-analyst",
-  "plan-effectiveness",
-  "ai-code-reviewer",
-]);
-
-const HAIKU_AGENTS = new Set([
-  "notion-sync",
-  "calendar-sync",
-  "wagr-sync",
-  "betalings-purring",
-  "lead-oppfolging",
-  "booking-conflict-monitor",
-  "availability-24-7-monitor",
-  "meg-loftesjekk",
-  "meg-crm-nudge",
 ]);
 
 export function modelFor(agentId: string): string {
   if (OPUS_AGENTS.has(agentId)) return OPUS_MODEL;
-  if (HAIKU_AGENTS.has(agentId)) return HAIKU_MODEL;
   return SONNET_MODEL;
 }
 
 // Meg-assistenten — modell-bryter via env.
-export const MEG_MODEL_SMART = process.env.MEG_MODEL_SMART ?? "claude-sonnet-4-6";
-export const MEG_MODEL_FAST = process.env.MEG_MODEL_FAST ?? "claude-haiku-4-5-20251001";
+export const MEG_MODEL_SMART = process.env.MEG_MODEL_SMART ?? SONNET_MODEL;
+export const MEG_MODEL_FAST = process.env.MEG_MODEL_FAST ?? HAIKU_MODEL;
 
 // Max tokens for ett chat-svar fra agent (uten streaming).
 export const AI_MAX_TOKENS = 2048;

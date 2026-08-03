@@ -12,7 +12,7 @@
  * seedet av scripts/seed-screentest-coach.ts). Uten begge: testen hoppes over.
  */
 
-import "../scripts/_env";
+import "../../scripts/_env";
 import { readFileSync } from "node:fs";
 import { test, expect } from "@playwright/test";
 

@@ -116,8 +116,8 @@ scripts/            # Engangs-/driftsscript: seed-screentest*.ts (Øyvind Rohjan
 docs/               # platform/ (NORDSTJERNE, AGENT-BRIEF, BUSINESS-RULES, DATA-MODEL, PLATFORM-PRD) ·
                     # skjermtekst/ (copy-kilde) · design-system/TEMA-LYS-MORK.md (tema-fasit) ·
                     # gdpr/ · juridisk/ · sikkerhet/ · arkiv/
-e2e/                # Eldre e2e-suite (9 specs): auth-guard, IDOR, booking, marketing, lansering-smoke
-tests/e2e/          # Nyere smoke-/kvalitetssuite (24 specs): a11y, PWA, ruter, meta/OG, offline, ikoner
+tests/e2e/          # Én samlet e2e-suite (32 specs, siden 2026-08-03): a11y, PWA, ruter, meta/OG,
+                    # offline, ikoner + auth-guard, IDOR, booking, workbench (fra gamle e2e/)
 ```
 
 ## Arbeidsregler
@@ -153,8 +153,8 @@ Andre nyttige script: `npm run kart` (skjermkart) · `npm run qa:drills` · `npm
 ## Tester
 - **Enhetstester:** `npm test` — `tsx --conditions=react-server --experimental-test-module-mocks --test
   'src/lib/**/*.test.ts'` (110 filer): domenelogikk (sg, hcp, ak-kategori, fys-score, plan-builder m.fl.).
-- **e2e:** `npm run test:e2e` (Playwright). Configen scanner **begge** mappene — `e2e/*.spec.ts` (eldre:
-  auth-guard, IDOR, booking, marketing) og `tests/e2e/*.spec.ts` (nyere smoke: a11y, PWA, ruter, meta/OG).
+- **e2e:** `npm run test:e2e` (Playwright). Én mappe siden 2026-08-03: `tests/e2e/*.spec.ts` (32 specs —
+  smoke: a11y, PWA, ruter, meta/OG + auth-guard, IDOR, booking, workbench fra gamle `e2e/`).
   Prosjekter: chromium + webkit. Lokalt auto-startes dev-serveren; i CI antas appen å kjøre allerede
   (`PLAYWRIGHT_BASE_URL`).
 

@@ -1,13 +1,7 @@
 // Eksporterer alle AI-agents fra ett sentralt punkt.
 //
-// Nye agents legges til her etter mønsteret fra caddie. Hver agent har sin
-// egen system-prompt og chat-funksjon, men deler client/skills/tools/memory.
-
-export { chatCaddie, CADDIE_SYSTEM_PROMPT } from "./caddie";
-export type { CaddieMessage, ChatCaddieOpts, ChatCaddieResult, ToolCallLog } from "./caddie";
-
-export { chatCaddieMedSpiller } from "./caddie-with-spiller";
-export type { ChatCaddieMedSpillerOpts } from "./caddie-with-spiller";
+// Hver agent har sin egen system-prompt og chat-funksjon, men deler
+// client/skills/memory. (Caddie bor i src/lib/caddie/ — ikke her.)
 
 export { genererDailyBrief, DAILY_BRIEF_SYSTEM } from "./daily-brief";
 export type { DailyBriefMetrics, DailyBriefResult } from "./daily-brief";

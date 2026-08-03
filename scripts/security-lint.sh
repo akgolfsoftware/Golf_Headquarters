@@ -41,7 +41,6 @@ echo ""
 #   - turneringer/sync.ts           — Prisma JSON stats-felt
 #   - transcribe.ts                — tredjeparts Whisper-SDK respons
 #   - notion/                      — Notion SDK respons-typer
-#   - ai-plan/json-schemas.ts      — legacy-kommentar
 # ---------------------------------------------------------------------------
 DOUBLE_CAST=$(grep -rn "as unknown as" "$SRC" \
   --include="*.ts" --include="*.tsx" \
@@ -57,7 +56,6 @@ DOUBLE_CAST=$(grep -rn "as unknown as" "$SRC" \
     -e "turneringer/sync" \
     -e "transcribe\.ts" \
     -e "notion/" \
-    -e "ai-plan/json-schemas" \
     | wc -l | tr -d ' ' || true)
 
 if [ "$DOUBLE_CAST" -gt 0 ]; then
@@ -75,8 +73,7 @@ if [ "$DOUBLE_CAST" -gt 0 ]; then
       -e "caddie/" \
       -e "turneringer/sync" \
       -e "transcribe\.ts" \
-      -e "notion/" \
-      -e "ai-plan/json-schemas"
+      -e "notion/"
 else
   pass "Ingen ulovlige dobbel-cast (as unknown as)"
 fi

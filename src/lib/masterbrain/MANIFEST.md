@@ -157,15 +157,14 @@ AK Golf HQ (`akgolf-hq`) henter fra Masterbrain på tre måter:
 | Vei | Kilde her | Havner i appen som | Synkes automatisk |
 |---|---|---|---|
 | Sync-skript | `knowledge/` | `src/lib/masterbrain/knowledge/` | Ja — `npm run sync:masterbrain` |
-| Manuell kopi | `processed/rules/` | `src/lib/domain/rules/` | **Nei** |
 | Embedding | `rag-corpus/` | `knowledge_chunks` i Supabase (pgvector) | **Nei** — eget seed-skript |
 
 Sync-skriptet er `scripts/sync-masterbrain.ts` i akgolf-hq. Sti overstyres med
 `MASTERBRAIN_PATH`, ellers antas søsken-mappa `../masterbrain`.
 
-**Konsekvens å være klar over:** `src/lib/domain/rules/` i appen er en manuell
-kopi som ikke synkes. Den kan drifte fra fasiten. Etter endringer her må
-rag-corpus også embeddes på nytt for at agentene skal se dem.
+(Den gamle manuelle kopien `src/lib/domain/rules/` er slettet 2026-08-03 —
+ingen kode importerte den, og den kunne kun drifte fra fasiten. Etter endringer
+i `rag-corpus/` må korpuset embeddes på nytt for at agentene skal se dem.)
 
 Appen speiler i tillegg enkelte CANON-regler manuelt i TypeScript
 (f.eks. `src/lib/workbench/canon-period-adjustment.ts`). Endres `knowledge/`,
@@ -220,12 +219,13 @@ Rettet 31. juli 2026 med grunnlag i Anders' egen ingest-rapport
 konkluderte at dette var en pipeline-feil og anbefalte retting — en anbefaling som
 aldri ble utført.
 
-**Fortsatt feil to steder:**
+**Fortsatt feil ett sted:**
 
-1. `akgolf-hq/src/lib/domain/rules/morad-ordbok-v2.json` — den levende appfila.
-   Ikke rørt, venter på beslutning.
-2. `ak-second-brain/wiki/sources/2026-05-18-morad-ordbok-v2.md` — hevder de er to
+1. `ak-second-brain/wiki/sources/2026-05-18-morad-ordbok-v2.md` — hevder de er to
    ulike personer. Samme pipeline-feil kjørt om igjen, uten belegg.
+
+(`akgolf-hq/src/lib/domain/rules/` er slettet 2026-08-03 — den gamle app-kopien
+av ordboka fantes ikke lenger der, og resten av mappa var død kode.)
 
 Hull 1–8 er Fase 2 i planen. Se `~/.claude/plans/legg-til-i-planen-cheerful-nova.md`.
 

@@ -9,12 +9,6 @@ import assert from "node:assert/strict";
 import * as Agents from "@/lib/ai/agents";
 
 describe("Agents barrel-export", () => {
-  it("eksporterer Caddie-funksjoner", () => {
-    assert.equal(typeof Agents.chatCaddie, "function");
-    assert.equal(typeof Agents.chatCaddieMedSpiller, "function");
-    assert.ok(typeof Agents.CADDIE_SYSTEM_PROMPT === "string");
-  });
-
   it("eksporterer Daily Brief-funksjoner", () => {
     assert.equal(typeof Agents.genererDailyBrief, "function");
     assert.ok(typeof Agents.DAILY_BRIEF_SYSTEM === "string");
