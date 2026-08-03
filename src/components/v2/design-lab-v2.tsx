@@ -368,7 +368,7 @@ export function DesignLabV2() {
           barn={
             <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
               <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.5 }}>
-                Showroom-parity: lukk ≥ 44px, dialog-roller, sheet radius 28, toast/banner a11y. AgencyOS — aldri CoachHQ.
+                Paper-port steg 5B: modal/popover r12, ark-topp r12, lukk ≥ 44px (skuff 32px/r-sm), dialog-roller, toast/banner a11y. AgencyOS — aldri CoachHQ.
               </p>
               <div style={{ overflowX: "auto" }}>
                 <Modal w={520} h={300} />

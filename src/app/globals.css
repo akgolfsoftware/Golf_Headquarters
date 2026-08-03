@@ -752,7 +752,10 @@ em.editorial {
   --v2-ax-slag: #1f6cb0;
   --v2-ax-spill: #5a7200;
   --v2-ax-turn: #b4461c;
-  --v2-shadow: 0 18px 48px rgba(23, 27, 24, 0.16);
+  /* Paper-port steg 5B (03.08.2026): kun overlays.tsx bruker --v2-shadow i
+   * dag (verifisert med grep — 0 andre konsumenter), så repeking her endrer
+   * ingenting utenfor Modal/Popover/Verktøytips/Toast. Verdi = Paper --p-shadow. */
+  --v2-shadow: var(--p-shadow);
   /* Valgt segment i .seg (showroom-fasit: segmentert løftes med skygge, ikke lime) */
   --v2-seg-skygge: 0 1px 4px rgba(23, 27, 24, 0.12);
   /* Radius/typografi eies av TS-speilet T (src/lib/v2/tokens.ts) — de døde
@@ -793,7 +796,9 @@ html[data-v2-tema="dark"] {
   --v2-ax-slag: #5aa9f0;
   --v2-ax-spill: #d1f843;
   --v2-ax-turn: #f0683e;
-  --v2-shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
+  /* Paper-port steg 5B: Paper sin mørke --p-shadow er "none" (flate mørke
+   * kort løftes ikke med skygge i Paper) — se src/styles/paper-tokens.css. */
+  --v2-shadow: var(--p-shadow);
   --v2-seg-skygge: 0 1px 4px rgba(0, 0, 0, 0.25);
   color-scheme: dark;
 }
