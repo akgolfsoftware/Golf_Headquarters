@@ -297,34 +297,19 @@ function GodkjenningerSkel() {
   );
 }
 
-/** /portal — HjemV2: hode m/avatar+CTA · dagstripe · (SG-hero+trend | dagens plan) · snarveier · KPI-rad. */
+/** /portal — PortalChatHjem (designport steg 7): topplinje · tråd med melding-bobler · composer-linje. */
 function HjemSkel() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      <HodeSkel avatar cta />
-      <div style={{ display: "flex", gap: 8 }}>
-        {Array.from({ length: 7 }).map((_, i) => (
-          <SkelBlock key={i} h={54} r={12} style={{ flex: 1, width: "auto" }} />
-        ))}
+    <div style={{ display: "flex", flexDirection: "column", gap: T.gap, height: "100%" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <SkelBlock w={70} h={14} />
+        <SkelBlock w={140} h={10} style={{ marginLeft: "auto" }} />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
-        <HeroPanelSkel trend />
-        <div style={PANEL_STYLE}>
-          <SkelBlock w={90} h={9} r={4} />
-          <SkelBlock w="70%" h={16} style={{ marginTop: 14 }} />
-          <SkelBlock w="90%" h={10} style={{ marginTop: 10 }} />
-          <SkelBlock w="60%" h={10} style={{ marginTop: 6 }} />
-          <div style={{ display: "flex", gap: 6, marginTop: 12 }}>
-            <SkelBlock w={56} h={20} r={9999} />
-            <SkelBlock w={72} h={20} r={9999} />
-          </div>
-        </div>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 16, marginTop: 8 }}>
+        <SkelBlock w="60%" h={38} r={16} />
+        <SkelBlock w="72%" h={64} r={16} style={{ alignSelf: "flex-end" }} />
       </div>
-      <div style={{ ...PANEL_STYLE, padding: "8px 20px" }}>
-        <RadSkel leading="dott" />
-        <RadSkel leading="dott" last />
-      </div>
-      <KpiRadSkel antall={3} cls="grid grid-cols-2 md:grid-cols-3" />
+      <SkelBlock h={44} r={12} />
     </div>
   );
 }
