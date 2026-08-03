@@ -968,7 +968,7 @@ export function SgStartSkjema({
                 gap: 8,
                 padding: "14px 28px",
                 background: "hsl(var(--primary))",
-                color: "hsl(var(--accent))",
+                color: "hsl(var(--primary-foreground))",
                 border: "none",
                 borderRadius: 999,
                 fontFamily: "var(--font-sans)",

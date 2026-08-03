@@ -214,7 +214,7 @@ function Boble({
   }
   return (
     <div className="grid grid-cols-[36px_1fr] gap-4">
-      <div className="grid h-9 w-9 place-items-center rounded-full bg-primary text-accent">
+      <div className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground">
         <Sparkles size={16} strokeWidth={1.5} fill="currentColor" />
       </div>
       <div>

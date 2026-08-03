@@ -319,7 +319,7 @@ export function DrillDetalj({ data }: { data: DrillDetaljData }) {
           <SectionLabel>Coach-notat</SectionLabel>
           <div className="flex gap-[11px] rounded-xl border border-border border-l-[3px] border-l-accent bg-card p-3.5">
             <span
-              className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full bg-primary font-display text-[11px] font-bold text-accent"
+              className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full bg-primary font-display text-[11px] font-bold text-primary-foreground"
               aria-hidden
             >
               {data.coachInitials ?? "AK"}
@@ -342,7 +342,7 @@ export function DrillDetalj({ data }: { data: DrillDetaljData }) {
         </button>
         <Link
           href={data.hrefs.leggTilIPlan}
-          className="inline-flex h-[50px] flex-1 items-center justify-center gap-2 rounded-xl bg-primary font-mono text-[11px] font-extrabold uppercase tracking-[0.08em] text-accent shadow-[0_8px_20px_rgba(0,88,64,0.18)] transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="inline-flex h-[50px] flex-1 items-center justify-center gap-2 rounded-xl bg-primary font-mono text-[11px] font-extrabold uppercase tracking-[0.08em] text-primary-foreground shadow-[0_8px_20px_rgba(0,88,64,0.18)] transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <CalendarPlus className="h-[15px] w-[15px]" strokeWidth={2} aria-hidden />
           Legg til i plan

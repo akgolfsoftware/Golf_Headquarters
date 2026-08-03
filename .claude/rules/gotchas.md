@@ -91,9 +91,23 @@ Bare nodejs runtime, ikke edge.
 ### Supabase Connect — bruk Shared Pooler (IPv4) for konsistens
 Transaction pooler + IPv4-toggle på. Da får du `aws-0-REGION.pooler.supabase.com` på begge porter.
 
-### .dark-tema — primary=accent er samme farge (skjørt)
-I `.dark`-klassen er `primary` og `accent` begge lime. Par som `bg-primary text-accent` rendres
-riktig i dag, men er flaks — ny kode skal bruke `-foreground`-parene (`bg-primary text-primary-foreground`).
+### .dark-tema — primary=accent er samme farge (flaksen tok slutt 2026-08-03)
+I mørkt tema er `primary` og `accent` begge lime (`#D1F843`). Par som `bg-primary text-accent` gir
+derfor 1:1 kontrast — teksten blir usynlig. Gjelder begge kanaler: Tailwind (`--color-primary`
+→ `--signal`, `--color-accent` → `--signal-fill`, begge lime i mørk) og inline
+`hsl(var(--primary))` / `hsl(var(--accent))`.
+- **Var:** parene rendret riktig fordi mørkt tema bare gjaldt en indre `.dark`-boks, mens
+  `<html>` beholdt de lyse verdiene (`--primary` = mørkegrønn `#005840`). Komponenter utenfor
+  boksen leste lys primary + lime accent = lesbart.
+- **Ble utløst av designport steg 3:** når `html[data-v2-tema="dark"]` kom inn i hsl-triplett-
+  blokken, arvet hele dokumentet mørkt, og alle parene kollapset samtidig. Fanget i preview før
+  merge: cookie-bannerets «Godta alle» var helt usynlig på forsiden (målt 1:1).
+- **Ryddet:** 24 forekomster rettet til `-foreground`-paret — 16 Tailwind (`text-accent` →
+  `text-primary-foreground`) i 11 filer, 7 inline på `(marketing)/stats/*` + `global-error.tsx`,
+  og `shared/cookie-banner.tsx`. Etter dette: null gjenstående par (verifisert med grep).
+- **Regel:** bruk ALLTID `-foreground`-paret på en primary-flate — `bg-primary text-primary-foreground`,
+  eller `hsl(var(--primary-foreground))` inline. Aldri `accent` som tekstfarge på `primary`.
+  `--primary-foreground` er hvit i lys og nær-svart i mørk, så den holder i begge.
 
 <!-- Mal for nye gotchas:
 ### <Kort tittel>

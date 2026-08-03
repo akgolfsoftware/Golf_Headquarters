@@ -193,7 +193,7 @@ export function UtstyrsbagForm({ initial, onAvbryt }: Props) {
         <button
           type="submit"
           disabled={pending}
-          className="inline-flex h-[46px] items-center gap-2 rounded-[12px] bg-primary px-5 font-mono text-[11px] font-extrabold uppercase tracking-[0.08em] text-accent transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:opacity-50"
+          className="inline-flex h-[46px] items-center gap-2 rounded-[12px] bg-primary px-5 font-mono text-[11px] font-extrabold uppercase tracking-[0.08em] text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:opacity-50"
         >
           <Save className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
           {pending ? "Lagrer" : "Lagre"}

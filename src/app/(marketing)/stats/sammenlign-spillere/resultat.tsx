@@ -193,7 +193,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
                 height: 40,
                 borderRadius: "50%",
                 background: "hsl(var(--primary))",
-                color: "hsl(var(--accent))",
+                color: "hsl(var(--primary-foreground))",
                 display: "grid",
                 placeItems: "center",
                 fontFamily: "var(--font-mono)",

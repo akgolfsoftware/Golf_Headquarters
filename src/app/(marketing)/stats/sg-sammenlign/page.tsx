@@ -209,7 +209,7 @@ export default async function SgSammenlignLanding() {
                       fontFamily: "var(--font-mono)",
                       fontSize: 13,
                       fontWeight: 600,
-                      color: "hsl(var(--accent))",
+                      color: "hsl(var(--primary-foreground))",
                       background: "hsl(var(--primary))",
                       padding: "4px 10px",
                       borderRadius: 6,

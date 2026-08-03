@@ -210,7 +210,7 @@ export function AddExerciseSheet({
           {/* Bilde upload */}
           <Field label="Bilde / screenshot" optional>
             <button type="button" className="w-full rounded-2xl border-2 border-dashed border-border bg-secondary/30 py-6 flex flex-col items-center gap-2.5 hover:border-primary/40 hover:bg-primary/5 transition-colors">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-accent">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground">
                 <Camera size={20} aria-hidden />
               </div>
               <div className="text-center">
@@ -248,7 +248,7 @@ export function AddExerciseSheet({
             type="button"
             onClick={handleLagre}
             disabled={!navn.trim() || isPending}
-            className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-[15px] font-semibold text-accent shadow-lg shadow-primary/20 transition-opacity disabled:opacity-50"
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-[15px] font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-opacity disabled:opacity-50"
           >
             <Check size={15} aria-hidden />
             {lagret ? "Lagret!" : isPending ? "Lagrer …" : "Lagre øvelse"}
