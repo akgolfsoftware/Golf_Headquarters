@@ -1,5 +1,11 @@
 # Funksjonsinventar — AK Golf HQ (2026-07-29)
 
+> **RETTELSE 2026-08-03 (arkivert samme dag):** `src/lib/ai-coach/kunnskap/` som omtales og
+> anbefales gjenopplivet i dette dokumentet (bl.a. anbefaling #7) er **slettet** i forenklings-
+> bølge 1 (PR #264). Fagkunnskapens fasit er `src/lib/masterbrain/` (knowledge/ + rag-corpus/).
+> Skal AgencyOS-agenter løftes til samme kunnskapsdybde, kobles de til masterbrain — ikke til
+> den slettede mappa. Tallene ellers er et øyeblikksbilde fra 29. juli og vedlikeholdes ikke.
+
 Tellings- og lesejobb. Ingen kode er endret. Hver rad i tabellene er verifisert av en agent som har lest filen(e) den viser til — filstier er beviset. Der noe er anslått uten direkte lesing er det merket `[antatt]`. Metodikk: 13 parallelle research-agenter, hver med eget avgrenset område, deretter samlet i dette dokumentet. Alle stier er relative til repo-roten `~/Developer/akgolf-hq` (GitHub: `akgolfsoftware/Golf_Headquarters`).
 
 **Avgrensning:** Marketing (`src/app/(marketing)/`, 72 sider) er ikke talt her — brukerens oppdrag definerte "fire produkter" som PlayerHQ, AgencyOS, Foreldreportal og klubbflatene, og marketing hører ikke naturlig til noen av dem. Auth/onboarding og interne verktøy (kommando, meg-toppnivå, intern, (internal), onboard, inviter) er tatt med som et femte, mindre avsnitt siden de er reell, adressbar kode i repoet, men de er ikke ett av de fire hovedproduktene.

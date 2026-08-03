@@ -11,7 +11,7 @@ description: >
 
 ## Hva
 Mobbin = 600k+ **ekte** skjermer. Bruk for struktur og flyt — **ikke** kopier farger.
-AK-fasit: `akgolf-design-system` / FASIT / v2 tokens. AgencyOS = mørk, lime kun på NÅ.
+AK-fasit: `.claude/rules/beslutninger.md` §Tema/design (v2-tokens + C smalt; Claude Paper i Open Design). AgencyOS = mørk, lime kun på NÅ.
 
 ## Auth (hvis MCP feiler)
 Claude: `/mcp` → mobbin → Authenticate → logg inn.  

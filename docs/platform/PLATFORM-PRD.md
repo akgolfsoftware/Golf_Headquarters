@@ -1,4 +1,4 @@
-> STATUS: skrevet før designsystem-revisjonen juli 2026 — gjeldende kanon: `.claude/rules/design-system-regel.md`
+> STATUS: skrevet før designsystem-revisjonen juli 2026 — design-beslutninger i dag: `.claude/rules/beslutninger.md` §Tema/design (design-system-regel.md er slettet)
 
 # AK Golf HQ — Platform PRD
 

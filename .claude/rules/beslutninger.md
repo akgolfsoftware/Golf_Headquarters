@@ -3,8 +3,11 @@
 Flyttet fra rot-CLAUDE.md 2026-07-19 (modulariserings-beslutning, Agentic OS Steg 2).
 Gjelder til Anders endrer dem.
 
-> **Fasit-kilde:** `docs/platform/BUSINESS-RULES.md`. Listen under er sammendrag — ved konflikt
-> vinner BUSINESS-RULES.md. Ikke dupliser nye regler hit.
+> **Eierskap (avklart av Anders 2026-08-03):** `docs/platform/BUSINESS-RULES.md` eier
+> **produkt- og forretningsregler** — for slike er listen under sammendrag, og ved konflikt
+> vinner BUSINESS-RULES.md. Denne fila eier **arbeids- og designprosess-beslutninger**
+> (bl.a. Enkelhet/færrest trykk, Skjermtekst som copy-kilde, design-tidsplanen, skill-rensing)
+> — de står KUN her og har ingen motpart i BUSINESS-RULES. Ikke dupliser regler på tvers.
 
 > ⚠ **Oppdatert 2026-07-06** (historikk: `docs/REGLER-OPPLAST-2026-06-22.md`): av de 4 regel-klyngene
 > som ble låst opp 2026-06-22 er 3 nå **avklart og bygget** — tema-toggle (AgencyOS lys/mørk-bryter),

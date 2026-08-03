@@ -2,8 +2,8 @@
  * Lag 3 av terminologi-systemet: genererer docs/ordbok.json (maskinlesbar ordbok)
  * og VALIDERER underveis:
  *   1. Alle Prisma-enums (navn + verdier) hentes rett fra prisma/schema.prisma (fasit).
- *   2. Hvis MasterBrain CANON finnes lokalt, kryssjekkes CS-nivåer og L-faser mot canon
- *      (avvik → exit 1). Mangler canon-fila (annen maskin), hoppes sjekken over med varsel.
+ *   2. CS-nivåer og L-faser kryssjekkes mot den vendorede CANON-kopien i
+ *      src/lib/masterbrain/ (avvik → exit 1) — maskinuavhengig, ingen $HOME-sti.
  *   3. Ordboken (docs/ordbok-ak-golf-konsept.md) må nevne hvert enum-navn — ellers exit 1.
  *
  * Kjør: npx tsx scripts/ordbok-json.ts
@@ -19,8 +19,8 @@ const SCHEMA = join(ROT, "prisma/schema.prisma");
 const ORDBOK = join(ROT, "docs/ordbok-ak-golf-konsept.md");
 const UT = join(ROT, "docs/ordbok.json");
 const CANON = join(
-  process.env.HOME ?? "",
-  "Developer/Masterbrain/knowledge/concepts/canon-methodology.json",
+  ROT,
+  "src/lib/masterbrain/knowledge/concepts/canon-methodology.json",
 );
 
 // ── 1. Prisma-enums fra schema (fasit for kode-vokabular) ──────────
