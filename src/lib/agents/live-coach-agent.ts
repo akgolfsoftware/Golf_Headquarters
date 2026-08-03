@@ -9,7 +9,7 @@
 import "server-only";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "@/lib/ai/client";
+import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled, tekstFra } from "@/lib/ai/client";
 import { pseudonymForId, substituerPseudonym } from "@/lib/ai/anonymiser";
 import { notify } from "@/lib/notifications";
 import { aggregateSg } from "@/lib/sg";
@@ -169,11 +169,7 @@ TONE:
         },
       ],
     });
-    const rawTekst = respons.content
-      .filter((b) => b.type === "text")
-      .map((b) => (b.type === "text" ? b.text : ""))
-      .join("\n")
-      .trim();
+    const rawTekst = tekstFra(respons);
     const tekst = rawTekst ? substituerPseudonym(rawTekst, pseudonym, spillerNavn) : rawTekst;
     return tekst || statiskVelkomst(oktInfo);
   } catch (err) {

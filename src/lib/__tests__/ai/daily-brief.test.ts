@@ -31,11 +31,12 @@ describe("Daily Brief — system-prompt", () => {
     assert.ok(/[Aa]ldri\s+emoji/.test(DAILY_BRIEF_SYSTEM));
   });
 
-  it("inneholder kunnskaps-blokk fra skills", () => {
-    assert.ok(DAILY_BRIEF_SYSTEM.includes("KUNNSKAP"));
-    // ALL_SKILLS injiseres - minst én av skills-navnene må være med.
+  it("har IKKE skills-kunnskapsblokk (fjernet bevisst, forenkling bølge 3)", () => {
+    // En 200-ords brief over ferdig beregnede flagg trenger ikke pyramide-/
+    // periodiserings-teori i prompten — blokka kostet bare tokens per kall.
+    assert.ok(!DAILY_BRIEF_SYSTEM.includes("KUNNSKAP"));
     assert.ok(
-      /pyramide-taksonomi|bompa-perioder|sg-interpretation/.test(
+      !/pyramide-taksonomi|bompa-perioder|sg-interpretation/.test(
         DAILY_BRIEF_SYSTEM,
       ),
     );

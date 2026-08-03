@@ -5,26 +5,19 @@
 // CaddieMessage. Krever ADMIN-rolle (canAccessMissionControl).
 
 import { streamText, convertToModelMessages, stepCountIs, type UIMessage } from "ai";
-import { createAnthropic } from "@ai-sdk/anthropic";
 import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
+import { anthropicProvider, modelFor } from "@/lib/ai/client";
 import { CADDIE_SYSTEM_PROMPT } from "@/lib/caddie/system-prompt";
 import { buildCaddieTools } from "@/lib/caddie/tools";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-const MODEL_ID = "claude-sonnet-4-6" as const;
+const MODEL_ID = modelFor("caddie-chat");
 
-// ANTHROPIC_BASE_URL i miljøet peker på host uten "/v1" (funker for raw
-// @anthropic-ai/sdk, men @ai-sdk/anthropic forventer at baseURL inkluderer
-// "/v1"). Normaliser så provideren treffer riktig endepunkt.
-const ANTHROPIC_BASE = (process.env.ANTHROPIC_BASE_URL ?? "https://api.anthropic.com").replace(/\/+$/, "");
-const anthropic = createAnthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-  baseURL: ANTHROPIC_BASE.endsWith("/v1") ? ANTHROPIC_BASE : `${ANTHROPIC_BASE}/v1`,
-});
+const anthropic = anthropicProvider();
 
 type ChatRequestBody = {
   messages?: unknown;

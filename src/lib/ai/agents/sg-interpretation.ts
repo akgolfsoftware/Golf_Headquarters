@@ -5,7 +5,7 @@
 // på svakeste kategori.
 
 import "server-only";
-import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "../client";
+import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled, tekstFra } from "../client";
 import { sgInterpretationSkill } from "../skills/sg-interpretation";
 import {
   formatMasterbrainBlokk,
@@ -143,11 +143,7 @@ export async function tolkSg(
     messages: [{ role: "user", content: userPrompt }],
   });
 
-  const rawText = response.content
-    .filter((b) => b.type === "text")
-    .map((b) => (b.type === "text" ? b.text : ""))
-    .join("\n")
-    .trim();
+  const rawText = tekstFra(response);
   const text = rawText ? substituerPseudonym(rawText, spillerPseudonym, spiller.name) : rawText;
 
   return {

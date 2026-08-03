@@ -10,7 +10,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { runAgent, type AgentResult } from "./agent-runner";
-import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled } from "@/lib/ai/client";
+import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled, tekstFra } from "@/lib/ai/client";
 import { isYoutubeEnabled, searchYoutube, type YoutubeVideo } from "./youtube-search";
 
 export const AGENT_NAME = "drill-forslag";
@@ -216,11 +216,7 @@ async function genererDriller(
       },
     ],
   });
-  const tekst = res.content
-    .filter((b) => b.type === "text")
-    .map((b) => (b.type === "text" ? b.text : ""))
-    .join("\n")
-    .trim();
+  const tekst = tekstFra(res);
   return parseDriller(tekst, kode, videoer);
 }
 
