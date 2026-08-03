@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { Familjen_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import {
+  Familjen_Grotesk,
+  IBM_Plex_Mono,
+  Inter,
+  JetBrains_Mono,
+  Lora,
+  Poppins,
+} from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { InstallPrompt } from "@/components/portal/install-prompt";
@@ -30,6 +37,31 @@ const jetbrainsMono = JetBrains_Mono({
 // står fritt frem til nytt designsystem fra Open Design.
 const familjenGrotesk = Familjen_Grotesk({
   variable: "--font-familjen-grotesk",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+// ---------- Claude Paper-fontene (designport steg 4) ----------
+// Lastes som CSS-variabler slik at --p-font-* i paper-tokens.css peker på ekte
+// fonter etter hvert som komponenter portes. Fontene over (Inter/Familjen
+// Grotesk/JetBrains Mono) blir stående til siste skjerm er portet, og fjernes
+// i steg 10 sammen med det gamle tokensettet.
+const poppins = Poppins({
+  variable: "--font-poppins",
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const lora = Lora({
+  variable: "--font-lora",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-ibm-plex-mono",
+  weight: ["400", "500", "600"],
   subsets: ["latin"],
   display: "swap",
 });
@@ -127,7 +159,7 @@ export default async function RootLayout({
   return (
     <html
       lang="nb"
-      className={`${inter.variable} ${jetbrainsMono.variable} ${familjenGrotesk.variable} h-full antialiased`}
+      className={`${inter.variable} ${jetbrainsMono.variable} ${familjenGrotesk.variable} ${poppins.variable} ${lora.variable} ${ibmPlexMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">

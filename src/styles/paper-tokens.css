@@ -1,0 +1,202 @@
+/* ─────────────────────────────────────────────────────────────
+   AK Golf HQ · Claude Paper-tokens — PRODUKSJONSSPEIL
+   Kilde: designsystem/paper/tokens/akhq-tokens.css (Paper v3.1)
+
+   Designport steg 4 (docs/port/plan-designport-alle-skjermer.md).
+
+   TO BEVISSTE AVVIK FRA KILDEN — begge nødvendige, ingen verdiendring:
+
+   1. ALLE navn har prefikset `--p-`. Paper bruker generiske navn
+      (--bg, --surface, --border, --fg, --muted) som ALLEREDE finnes i
+      globals.css og golfdata-tokens.css med andre verdier. Uten prefiks
+      ville denne fila malt om hele appen i det øyeblikket den importeres.
+      Prefikset er det som gjør at det nye settet kan leve ved siden av
+      det gamle mens skjermene migreres én for én (fase 1 §5, vei b).
+
+   2. Mørk-blokken bruker `html[data-v2-tema="dark"]`, ikke Paper sin
+      `[data-theme="dark"]`. Appen har ÉN tema-mekanisme etter steg 3 —
+      se .claude/rules/gotchas.md. `data-theme` settes aldri av noen kode.
+
+   REGEL FOR DENNE FILA (fase 2 §6): kun variabeldeklarasjoner. Ingen
+   selektorregler som setter color/background/border, ingen @layer.
+   Blandes tokens og komponentregler i en ulaget fil, slår den ut alle
+   Tailwind-border-utilities.
+
+   AVVIKLINGSBETINGELSE for det GAMLE settet: golfdata-tokens.css slettes
+   når siste av de 209 rutene som henger på den er migrert (steg 10).
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* ─── Flater (Anthropic cream ladder) ─── */
+  --p-bg: #faf9f5;                    /* canvas / ivory */
+  --p-surface: #ffffff;               /* elevated white (produkt-kort) */
+  --p-soft: #f0eee6;                  /* kort uten skygge */
+  --p-soft-hover: #e8e6dc;
+  --p-surface-warm: #e3dacc;          /* oat */
+  --p-surface-manilla: #ebdbbc;
+  --p-surface-kraft: #d4a27f;
+  --p-border: #e8e6dc;
+  --p-hairline: #d1cfc5;              /* finere skille enn --p-border */
+  --p-inverse: #000000;               /* full-bleed marketing-bånd */
+
+  /* ─── Tekst (Anthropic slate ladder) ─── */
+  --p-fg: #141413;                    /* blekk — primærtekst + CTA-fyll */
+  --p-ink-soft: #3d3d3a;              /* hover på primærknapp */
+  --p-muted: #5e5d59;
+  --p-mid: #b0aea5;                   /* IKKE brødtekst i lys */
+  --p-text-tertiary: #87867f;
+
+  /* ─── Rail (produkt, alltid mørk) ─── */
+  --p-rail: #141413;
+  --p-rail-fg: #b0aea5;
+  --p-rail-on: #faf9f5;
+  --p-rail-hover: rgba(250, 249, 245, 0.08);
+  --p-rail-active: rgba(250, 249, 245, 0.14);
+
+  /* ─── Handling ─── */
+  --p-cta: #141413;                   /* CTA er blekk, ikke farge */
+  --p-on-cta: #faf9f5;
+  --p-cta-hover: #3d3d3a;
+
+  /* Clay = sterkeste kromatiske aksent. Kun «Én ting nå» + fokus. */
+  --p-accent: #d97757;
+  --p-accent-soft: rgba(217, 119, 87, 0.12);
+  --p-accent-fg: #b85c3d;             /* AA-tekst på paper */
+  --p-on-accent: #141413;
+  --p-accent-deep: #c6613f;
+
+  /* ─── Hvilende aksenter — chart/kategori/merkelapp, aldri primær CTA ─── */
+  --p-accent-coral: #ebcece;
+  --p-accent-fig: #c46686;
+  --p-accent-cactus: #bcd1ca;
+  --p-accent-olive: #788c5d;
+  --p-accent-sky: #6a9bcc;
+  --p-accent-heather: #cbcadb;
+
+  /* ─── Datasemantikk (mørknet for AA-tekst) ─── */
+  --p-up: #63784a;
+  --p-up-raw: #788c5d;
+  --p-dn: #a85536;                    /* leire av clay — aldri ren rød */
+  --p-info: #46719f;
+  --p-info-raw: #6a9bcc;
+
+  /* ─── Skriftfamilier ─── */
+  --p-font-sans: var(--font-poppins), Arial, system-ui, sans-serif;
+  --p-font-serif: var(--font-lora), Georgia, "Times New Roman", serif;
+  --p-font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
+
+  --p-disp: var(--p-font-sans);
+  --p-ui: var(--p-font-sans);
+  --p-body: var(--p-font-serif);
+  --p-mono: var(--p-font-mono);
+
+  /* ─── Typeskala · produkt (tett) ─── */
+  --p-text-display: 32px;
+  --p-text-title: 22px;
+  --p-text-card: 16px;
+  --p-text-panel: 14.5px;
+  --p-text-body-agency: 13.5px;       /* AgencyOS desktop */
+  --p-text-body-player: 14px;         /* PlayerHQ mobil */
+  --p-text-label: 10px;               /* versaler + tracking */
+  --p-text-kpi: 40px;                 /* mono */
+
+  /* ─── Typeskala · marketing (editorial) ─── */
+  --p-text-hero: 56px;
+  --p-text-section: 40px;
+  --p-text-prose: 18px;
+  --p-text-prose-lg: 22px;
+  --p-text-nav: 16px;
+  --p-text-eyebrow: 12px;
+
+  /* ─── Avstand · 4px-base ─── */
+  --p-s1: 4px;
+  --p-s2: 8px;
+  --p-s3: 12px;
+  --p-s4: 16px;
+  --p-s5: 24px;
+  --p-s6: 32px;
+  --p-s7: 48px;
+  --p-s8: 64px;
+  --p-s9: 96px;                       /* seksjonsluft marketing */
+
+  /* ─── Radius ─── */
+  --p-r-none: 0px;
+  --p-r-sm: 8px;                      /* knapper, felter, chips */
+  --p-r: 12px;                        /* app-default */
+  --p-r-md: 16px;                     /* editorial cards / marketing */
+  --p-r-lg: 24px;
+  --p-r-pill: 999px;
+
+  /* ─── Elevasjon — marketing er flatt, produkt har én myk skygge ─── */
+  --p-shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
+  --p-shadow-none: none;
+  --p-scrim: rgba(20, 20, 19, 0.4);
+
+  /* ─── Interaksjon ─── */
+  --p-focus: #d97757;
+  --p-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --p-dur: 160ms;
+  --p-dur-slow: 280ms;
+
+  /* Treffmål */
+  --p-tap: 44px;
+  --p-tap-lg: 48px;
+  --p-tap-capture: 60px;              /* fangst-mikrofon mobil */
+
+  /* ─── Logo (AK Golf) ─── */
+  --p-logo-mark: #141413;
+  --p-logo-dot: #b85c3d;
+
+  /* ─── Z-index ─── */
+  --p-z-sticky: 10;
+  --p-z-rail: 20;
+  --p-z-sheet: 40;
+  --p-z-modal: 50;
+  --p-z-toast: 100;
+  --p-z-command: 110;
+}
+
+/* ─── Mørk (produkt). Marketing er primært lys. ─── */
+html[data-v2-tema="dark"] {
+  --p-bg: #141413;
+  --p-surface: #1d1c1a;
+  --p-soft: #26241f;
+  --p-soft-hover: #2e2c28;
+  --p-surface-warm: #2a2824;
+  --p-border: rgba(250, 249, 245, 0.10);
+  --p-hairline: rgba(250, 249, 245, 0.08);
+  --p-inverse: #000000;
+
+  --p-fg: #faf9f5;
+  --p-ink-soft: #e8e6dc;
+  --p-muted: #b0aea5;
+  --p-mid: #6b675e;
+  --p-text-tertiary: #87867f;
+
+  --p-rail: #0e0d0c;
+  --p-rail-fg: #97938a;
+  --p-rail-on: #faf9f5;
+  --p-rail-hover: rgba(250, 249, 245, 0.06);
+  --p-rail-active: rgba(250, 249, 245, 0.12);
+
+  --p-cta: #faf9f5;
+  --p-on-cta: #141413;
+  --p-cta-hover: #e8e6dc;
+
+  --p-accent: #d97757;
+  --p-accent-soft: rgba(217, 119, 87, 0.18);
+  --p-accent-fg: #e5a184;
+  --p-on-accent: #141413;
+
+  --p-up: #9db284;
+  --p-up-raw: #788c5d;
+  --p-dn: #de9e82;
+  --p-info: #93b7dc;
+  --p-info-raw: #6a9bcc;
+
+  --p-shadow: none;
+  --p-focus: #d97757;
+
+  --p-logo-mark: #faf9f5;
+  --p-logo-dot: #d97757;
+}

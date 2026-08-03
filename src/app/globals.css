@@ -636,6 +636,13 @@ body {
  * (athletic/golfdata). Verdier portet EKSAKT fra public/design-handover/.
  */
 @import "../styles/golfdata-tokens.css";
+
+/* ---------- Claude Paper-tokens (designport steg 4, 2026-08-03) ----------
+ * Nytt tokensett ved siden av det gamle. ALLE navn er prefikset --p-, så
+ * denne importen endrer null piksler før en komponent tar dem i bruk.
+ * Se src/styles/paper-tokens.css for avviklingsbetingelsen for det gamle settet.
+ */
+@import "../styles/paper-tokens.css";
 @import "../components/athletic/golfdata/golfdata.css";
 
 /* ---------- AK Golf type helpers ----------
