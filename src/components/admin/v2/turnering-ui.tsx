@@ -44,7 +44,7 @@ export function TurneringModal({
   const mobile = useMobile();
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 80, display: "flex", alignItems: mobile ? "flex-end" : "center", justifyContent: "center", padding: mobile ? 0 : 16 }}>
-      <div onClick={busy ? undefined : onLukk} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
+      <div onClick={busy ? undefined : onLukk} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
       <div
         style={{
           position: "relative",
@@ -56,7 +56,7 @@ export function TurneringModal({
           border: `1px solid ${T.borderS}`,
           borderRadius: mobile ? "20px 20px 0 0" : 20,
           padding: mobile ? "10px 20px 24px" : "22px 24px",
-          boxShadow: "0 24px 60px rgba(0,0,0,0.5)",
+          boxShadow: `0 24px 60px ${T.farge.svartA50}`,
         }}
       >
         {mobile && <span style={{ display: "block", width: 36, height: 4, borderRadius: 9999, background: T.borderS, margin: "0 auto 14px" }} />}

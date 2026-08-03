@@ -143,7 +143,7 @@ export function SpillerVeksler({ data }: { data: VekslerData }) {
           role="menu"
           aria-label="Bytt kontekst"
           className="v2-fade-in"
-          style={{ position: "absolute", top: "calc(100% + 6px)", left: 0, zIndex: 80, width: 320, maxWidth: "calc(100vw - 32px)", maxHeight: "min(460px, 70vh)", overflowY: "auto", background: T.panel, border: `1px solid ${T.border}`, borderRadius: 14, boxShadow: "0 24px 64px rgba(0,0,0,0.5)" }}
+          style={{ position: "absolute", top: "calc(100% + 6px)", left: 0, zIndex: 80, width: 320, maxWidth: "calc(100vw - 32px)", maxHeight: "min(460px, 70vh)", overflowY: "auto", background: T.panel, border: `1px solid ${T.border}`, borderRadius: 14, boxShadow: `0 24px 64px ${T.farge.svartA50}` }}
         >
           {/* Søk */}
           <div style={{ position: "sticky", top: 0, background: T.panel, padding: "10px 10px 8px", borderBottom: `1px solid ${T.border}` }}>

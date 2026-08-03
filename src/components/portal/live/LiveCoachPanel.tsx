@@ -236,7 +236,7 @@ function FloatingShell({
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
-          boxShadow: "0 12px 28px rgba(0,0,0,0.4)",
+          boxShadow: `0 12px 28px ${T.farge.svartA40}`,
         }}
       >
         <Icon name="sparkles" size={22} style={{ color: T.lime }} />
@@ -261,7 +261,7 @@ function FloatingShell({
         background: T.panel,
         border: `1px solid ${T.border}`,
         borderRadius: 20,
-        boxShadow: "0 24px 60px rgba(0,0,0,0.55)",
+        boxShadow: `0 24px 60px ${T.farge.svartA55}`,
         overflow: "hidden",
       }}
     >

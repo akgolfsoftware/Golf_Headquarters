@@ -1,3 +1,4 @@
+import { T } from "@/lib/v2/tokens";
 /**
  * SgTrainingScatter — «Trener vi det riktige?»
  *
@@ -391,7 +392,7 @@ export function SgTrainingScatter({ data }: { data: SgScatterPayload }) {
               ].map(({ dot, label, isLine, isRect }) => (
                 <div key={label} className="grid grid-cols-[14px_1fr] items-center gap-2 font-mono text-[10px] font-bold text-foreground tracking-[0.04em]">
                   {isLine ? (
-                    <span className="block h-0.5 w-3 rounded-full" style={{ background: "#003A2A" }} />
+                    <span className="block h-0.5 w-3 rounded-full" style={{ background: T.farge.illuForestMork }} />
                   ) : isRect ? (
                     <span className="block h-2 w-3 rounded-sm bg-[rgba(0,88,64,0.20)]" />
                   ) : (

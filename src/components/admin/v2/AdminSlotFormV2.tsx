@@ -161,7 +161,7 @@ export function SlotFormV2({ locations, initial, defaultWeekday, triggerLabel, t
       <dialog
         ref={dialogRef}
         onClose={() => setOpen(false)}
-        style={{ borderRadius: T.rCard, border: `1px solid ${T.borderS}`, background: T.panel, padding: 0, boxShadow: "0 24px 60px rgba(0,0,0,0.5)", maxWidth: 400, width: "100%", color: T.fg }}
+        style={{ borderRadius: T.rCard, border: `1px solid ${T.borderS}`, background: T.panel, padding: 0, boxShadow: `0 24px 60px ${T.farge.svartA50}`, maxWidth: 400, width: "100%", color: T.fg }}
       >
         <form onSubmit={lagre} style={{ padding: 22 }}>
           <Caps>{initial ? "Endre" : "Nytt"} tidsvindu</Caps>

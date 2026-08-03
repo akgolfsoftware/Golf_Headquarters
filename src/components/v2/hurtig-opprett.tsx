@@ -255,7 +255,7 @@ export function HurtigOpprett({ dato, klokkeslett, onLukk }: HurtigOpprettProps)
           border: `1px solid ${T.borderS}`,
           borderRadius: T.rCard,
           padding: "18px 20px 20px",
-          boxShadow: "0 24px 60px rgba(0,0,0,0.5)",
+          boxShadow: `0 24px 60px ${T.farge.svartA50}`,
         }}
       >
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>

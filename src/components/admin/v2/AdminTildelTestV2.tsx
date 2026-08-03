@@ -95,7 +95,7 @@ export function AdminTildelTestV2({ data }: { data: AdminTildelTestV2Data }) {
       onClick={(e) => {
         if (e.target === e.currentTarget) lukk();
       }}
-      style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: "rgba(0,0,0,0.55)", padding: 16 }}
+      style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: T.farge.svartA55, padding: 16 }}
     >
       <div
         style={{
@@ -106,7 +106,7 @@ export function AdminTildelTestV2({ data }: { data: AdminTildelTestV2Data }) {
           borderRadius: T.rCard,
           background: T.panel,
           border: `1px solid ${T.borderS}`,
-          boxShadow: "0 24px 60px rgba(0,0,0,0.5)",
+          boxShadow: `0 24px 60px ${T.farge.svartA50}`,
         }}
       >
         <div style={{ position: "sticky", top: 0, background: T.panel, padding: "18px 22px 14px", borderBottom: `1px solid ${T.border}`, display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, zIndex: 1 }}>

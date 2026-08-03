@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -158,7 +159,7 @@ export function KlubbWizard({
           <div
             className="ob-illust"
             style={{
-              background: "linear-gradient(160deg, #003A2A 0%, #006C50 100%)",
+              background: `linear-gradient(160deg, ${T.farge.illuForestMork} 0%, ${T.farge.illuForestLys} 100%)`,
             }}
           >
             <svg viewBox="0 0 520 180">
@@ -311,7 +312,7 @@ export function KlubbWizard({
           <div
             className="ob-illust"
             style={{
-              background: "linear-gradient(160deg, #88B45A 0%, #5E8538 100%)",
+              background: `linear-gradient(160deg, ${T.farge.illuOlivenLys} 0%, ${T.farge.illuOlivenMork} 100%)`,
             }}
           >
             <svg viewBox="0 0 520 180">
@@ -437,7 +438,7 @@ export function KlubbWizard({
           <div
             className="ob-illust"
             style={{
-              background: "linear-gradient(160deg, #F1EEE5 0%, #E5E3DD 100%)",
+              background: `linear-gradient(160deg, ${T.farge.sandMerke} 0%, ${T.farge.linjeMerke} 100%)`,
             }}
           >
             <svg viewBox="0 0 520 180">
@@ -568,7 +569,7 @@ export function KlubbWizard({
                 style={{
                   fontFamily: "var(--font-jetbrains-mono)",
                   fontSize: 10,
-                  color: "#908D86",
+                  color: T.farge.noytralGra,
                   letterSpacing: "0.06em",
                 }}
               >
@@ -602,7 +603,7 @@ export function KlubbWizard({
           <div
             className="ob-illust"
             style={{
-              background: "linear-gradient(160deg, #003A2A 0%, #006C50 100%)",
+              background: `linear-gradient(160deg, ${T.farge.illuForestMork} 0%, ${T.farge.illuForestLys} 100%)`,
             }}
           >
             <svg viewBox="0 0 520 180">
@@ -692,7 +693,7 @@ export function KlubbWizard({
               style={{
                 fontFamily: "var(--font-jetbrains-mono)",
                 fontSize: 10,
-                color: "#908D86",
+                color: T.farge.noytralGra,
                 letterSpacing: "0.06em",
               }}
             >
@@ -725,7 +726,7 @@ export function KlubbWizard({
           <div
             className="ob-illust"
             style={{
-              background: "linear-gradient(160deg, #88B45A 0%, #5E8538 100%)",
+              background: `linear-gradient(160deg, ${T.farge.illuOlivenLys} 0%, ${T.farge.illuOlivenMork} 100%)`,
             }}
           >
             <svg viewBox="0 0 520 180">
@@ -834,7 +835,7 @@ export function KlubbWizard({
               style={{
                 fontFamily: "var(--font-jetbrains-mono)",
                 fontSize: 10,
-                color: "#908D86",
+                color: T.farge.noytralGra,
               }}
             >
               Vi sender konfigurasjons-instrukser etter onboarding.

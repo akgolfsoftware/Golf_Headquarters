@@ -209,7 +209,7 @@ function BrandPanel() {
         position: "relative",
         overflow: "hidden",
         borderRight: `1px solid ${T.border}`,
-        background: `radial-gradient(560px 460px at 28% 24%, rgba(0,88,64,0.55), transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--v2-lime) 7%, transparent), transparent 60%), ${T.bg}`,
+        background: `radial-gradient(560px 460px at 28% 24%, ${T.farge.forestMerkeA55}, transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--v2-lime) 7%, transparent), transparent 60%), ${T.bg}`,
         flexDirection: "column",
         padding: "34px 40px 44px",
       }}
@@ -343,7 +343,7 @@ function ResetKort() {
           display: "flex",
           flexDirection: "column",
           gap: 14,
-          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.045), 0 12px 32px rgba(0,0,0,0.35)",
+          boxShadow: `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${T.farge.svartA35}`,
         }}
       >
         <Felt
@@ -436,7 +436,7 @@ export function ResetPasswordV2() {
           alignItems: "center",
           justifyContent: "center",
           padding: "48px 22px",
-          background: `radial-gradient(700px 420px at 60% -12%, rgba(0,88,64,0.14), transparent 62%), ${T.bg}`,
+          background: `radial-gradient(700px 420px at 60% -12%, ${T.farge.forestMerkeA14}, transparent 62%), ${T.bg}`,
         }}
       >
         <ResetKort />

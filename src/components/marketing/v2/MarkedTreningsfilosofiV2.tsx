@@ -99,7 +99,7 @@ function MFot({ mobile }: { mobile: boolean }) {
 
 function MRamme({ mobile, aktiv, children }: { mobile: boolean; aktiv: string; children: ReactNode }) {
   return (
-    <div style={{ minHeight: "100vh", colorScheme: "dark", color: T.fg, fontFamily: T.ui, background: `radial-gradient(1100px 520px at 30% -10%, rgba(0,88,64,0.20), transparent 62%), ${T.bg}`, display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", colorScheme: "dark", color: T.fg, fontFamily: T.ui, background: `radial-gradient(1100px 520px at 30% -10%, ${T.farge.forestMerkeA20}, transparent 62%), ${T.bg}`, display: "flex", flexDirection: "column" }}>
       <MNav mobile={mobile} aktiv={aktiv} />
       {/* <main>-landemerke — samme a11y-fiks som delt marked-ramme.tsx. */}
       <main style={{ flex: 1 }}>{children}</main>
@@ -142,7 +142,7 @@ function Foto({ src, alt, mobile }: { src: string; alt: string; mobile: boolean 
   return (
     <div style={{ position: "relative", width: "100%", height: mobile ? 220 : 380, borderRadius: 24, overflow: "hidden", border: `1px solid ${T.borderS}` }}>
       <Image src={src} alt={alt} fill sizes="(max-width: 860px) 100vw, 1040px" style={{ objectFit: "cover" }} />
-      <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(13,14,13,0) 55%, rgba(13,14,13,0.55) 100%)" }} />
+      <div aria-hidden style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, ${T.farge.grafittMerkeA0} 55%, ${T.farge.grafittMerkeA55} 100%)` }} />
     </div>
   );
 }

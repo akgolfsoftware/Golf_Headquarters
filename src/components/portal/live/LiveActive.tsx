@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -77,9 +78,9 @@ function ConfirmOverlay({ show, onConfirm, onCancel }: ConfirmOverlayProps) {
   return (
     <div
       className="absolute inset-0 z-50 flex items-center justify-center p-5"
-      style={{ background: "rgba(10, 31, 23, 0.70)", backdropFilter: "blur(4px)" }}
+      style={{ background: T.farge.inkMerkeA70, backdropFilter: "blur(4px)" }}
     >
-      <div className="w-full max-w-[320px] rounded-[20px] border border-background/10 p-6" style={{ background: "#12271E" }}>
+      <div className="w-full max-w-[320px] rounded-[20px] border border-background/10 p-6" style={{ background: T.farge.liveBgKant }}>
         <div className="font-display text-[18px] font-bold text-background">
           Avslutt økt?
         </div>
@@ -188,7 +189,7 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
           style={{
             width: `${isDone ? 100 : progressPct}%`,
             background: isDone
-              ? "linear-gradient(90deg, #1A7D56, var(--forest-700))"
+              ? `linear-gradient(90deg, ${T.farge.okMerke}, var(--forest-700))`
               : "linear-gradient(90deg, var(--forest-700), var(--lime-500))",
           }}
         />
@@ -200,7 +201,7 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
           className="font-mono text-[10px] uppercase tracking-[0.06em]"
           style={{
             // Lys status-tekst på den mørke forest-flata.
-            color: isActive ? "var(--lime-500)" : isDone ? "rgba(247,247,244,0.65)" : "rgba(247,247,244,0.45)",
+            color: isActive ? "var(--lime-500)" : isDone ? T.farge.offwhiteMerkeA65 : T.farge.offwhiteMerkeA45,
           }}
         >
           {isActive ? "Pågår" : isDone ? "Fullført" : isQueued ? "Venter" : ""}
@@ -219,7 +220,7 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
 
         {isDone && (
           // Lys suksess-grønn (DS mørk-verdi) — .dark-klassen finnes ikke her.
-          <span className="flex items-center gap-[5px] font-mono text-[10px] font-bold" style={{ color: "#84D2A5" }}>
+          <span className="flex items-center gap-[5px] font-mono text-[10px] font-bold" style={{ color: T.farge.suksessLys }}>
             <Check className="h-[13px] w-[13px]" strokeWidth={2.5} aria-hidden />
             Fullført
           </span>
@@ -649,8 +650,8 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             <div
               className="mt-[8px] flex items-center justify-center gap-[6px] rounded-full px-3 py-[6px] font-mono text-[11px]"
               style={{
-                background: overPlanlagt ? "var(--amber-100, #fef3c7)" : "var(--panel-2, rgba(255,255,255,0.06))",
-                color: overPlanlagt ? "var(--amber-900, #78350f)" : "inherit",
+                background: overPlanlagt ? `var(--amber-100, ${T.farge.varselBakgrunn})` : `var(--panel-2, ${T.farge.hvitA6})`,
+                color: overPlanlagt ? `var(--amber-900, ${T.farge.varselTekst})` : "inherit",
               }}
             >
               <Clock size={11} aria-hidden />
@@ -738,7 +739,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
           className="flex-shrink-0 border-t border-background/10 px-4 pt-3"
           style={{
             paddingBottom: "max(env(safe-area-inset-bottom), 16px)",
-            background: "rgba(10, 31, 23, 0.92)",
+            background: T.farge.inkMerkeA92,
             backdropFilter: "blur(8px)",
           }}
         >

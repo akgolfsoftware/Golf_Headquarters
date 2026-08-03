@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 // Øktdetalj — full visning av én treningsøkt (oppvarming, hoveddel med
 // AK-drills, test, evaluering). Portert fra designets detaljpanel.
@@ -101,7 +102,7 @@ export function OktDetalj({
         <h1 style={{ margin: "0 0 12px", fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: "clamp(22px,4vw,30px)", lineHeight: 1.15 }}>
           {okt.title}
         </h1>
-        <p style={{ margin: 0, fontFamily: "var(--font-body)", fontSize: 15, lineHeight: 1.55, color: "rgba(255,255,255,0.9)", maxWidth: 660 }}>
+        <p style={{ margin: 0, fontFamily: "var(--font-body)", fontSize: 15, lineHeight: 1.55, color: T.farge.hvitA90, maxWidth: 660 }}>
           {okt.goal}
         </p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16 }}>
@@ -270,7 +271,7 @@ function StatusBadge({ farge, children }: { farge: "mint" | "hvit" | "dempet"; c
 
 function Pill({ children }: { children: React.ReactNode }) {
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", height: 32, padding: "0 14px", borderRadius: 999, background: "rgba(255,255,255,0.1)", color: "var(--white)", fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 13 }}>
+    <span style={{ display: "inline-flex", alignItems: "center", height: 32, padding: "0 14px", borderRadius: 999, background: T.farge.hvitA10, color: "var(--white)", fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 13 }}>
       {children}
     </span>
   );

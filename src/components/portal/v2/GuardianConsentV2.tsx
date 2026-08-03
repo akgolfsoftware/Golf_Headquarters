@@ -245,7 +245,7 @@ function BrandPanel() {
         position: "relative",
         overflow: "hidden",
         borderRight: `1px solid ${T.border}`,
-        background: `radial-gradient(560px 460px at 28% 24%, rgba(0,88,64,0.55), transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--v2-lime) 7%, transparent), transparent 60%), ${T.bg}`,
+        background: `radial-gradient(560px 460px at 28% 24%, ${T.farge.forestMerkeA55}, transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--v2-lime) 7%, transparent), transparent 60%), ${T.bg}`,
         flexDirection: "column",
         padding: "34px 40px 44px",
       }}
@@ -282,7 +282,7 @@ function BrandPanel() {
             alignItems: "center",
             justifyContent: "center",
             marginBottom: 22,
-            background: "rgba(0,88,64,0.22)",
+            background: T.farge.forestMerkeA22,
             border: `1px solid ${T.borderS}`,
           }}
         >
@@ -331,8 +331,8 @@ function Feilboks({ children }: { children: ReactNode }) {
         gap: 9,
         padding: "11px 14px",
         borderRadius: 12,
-        background: "rgba(240,104,62,0.10)",
-        border: `1px solid rgba(240,104,62,0.30)`,
+        background: T.farge.korallMerkeA10,
+        border: `1px solid ${T.farge.korallMerkeA30}`,
       }}
     >
       <Icon name="triangle-alert" size={15} style={{ color: T.down, flex: "none", marginTop: 1 }} />
@@ -360,7 +360,7 @@ function Hode({ playerName, playerAge }: { playerName: string; playerAge: number
             alignItems: "center",
             justifyContent: "center",
             marginBottom: 14,
-            background: "rgba(0,88,64,0.22)",
+            background: T.farge.forestMerkeA22,
             border: `1px solid ${T.borderS}`,
           }}
         >
@@ -432,8 +432,8 @@ function ExpiredKort({ email }: { email: string }) {
         maxWidth: 440,
         textAlign: "center",
         borderRadius: T.rCard,
-        background: "rgba(232,180,60,0.10)",
-        border: `1px solid rgba(232,180,60,0.30)`,
+        background: T.farge.varselMerkeA10,
+        border: `1px solid ${T.farge.varselMerkeA30}`,
         padding: 26,
         display: "flex",
         flexDirection: "column",
@@ -462,8 +462,8 @@ function SuccessKort({ playerName }: { playerName: string }) {
         maxWidth: 440,
         textAlign: "center",
         borderRadius: T.rCard,
-        background: "rgba(79,208,138,0.10)",
-        border: `1px solid rgba(79,208,138,0.30)`,
+        background: T.farge.myntLysA10,
+        border: `1px solid ${T.farge.myntLysA30}`,
         padding: 26,
         display: "flex",
         flexDirection: "column",
@@ -574,7 +574,7 @@ function ConsentKort({
           flexDirection: "column",
           gap: 16,
           boxShadow:
-            "inset 0 1px 0 rgba(255,255,255,0.045), 0 12px 32px rgba(0,0,0,0.35)",
+            `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${T.farge.svartA35}`,
         }}
       >
         {/* Spiller-kort */}
@@ -733,7 +733,7 @@ export function GuardianConsentV2(props: GuardianConsentV2Props) {
           justifyContent: "center",
           gap: 22,
           padding: "48px 22px",
-          background: `radial-gradient(700px 420px at 60% -12%, rgba(0,88,64,0.14), transparent 62%), ${T.bg}`,
+          background: `radial-gradient(700px 420px at 60% -12%, ${T.farge.forestMerkeA14}, transparent 62%), ${T.bg}`,
         }}
       >
         <Hode playerName={props.playerName} playerAge={props.playerAge} />

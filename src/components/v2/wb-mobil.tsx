@@ -23,7 +23,7 @@ export interface ArkProps {
 }
 export function Ark({ tittel, under, children, onLukk }: ArkProps) {
   return (
-    <div style={{ background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: "24px 24px 0 0", padding: "10px 18px 22px", boxShadow: "0 -18px 48px rgba(0,0,0,0.45)" }}>
+    <div style={{ background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: "24px 24px 0 0", padding: "10px 18px 22px", boxShadow: `0 -18px 48px ${T.farge.svartA45}` }}>
       <span style={{ display: "block", width: 38, height: 4, borderRadius: 9999, background: T.borderS, margin: "0 auto 12px" }} />
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
         <div style={{ minWidth: 0 }}>

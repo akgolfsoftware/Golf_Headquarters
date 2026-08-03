@@ -162,7 +162,7 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
             display: "flex",
             flexDirection: "column",
             padding: 22,
-            boxShadow: "0 18px 44px rgba(0,0,0,0.4)",
+            boxShadow: `0 18px 44px ${T.farge.svartA40}`,
           }}
         >
           {/* Bakgrunnsdekor (kun story/post) */}
@@ -372,7 +372,7 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
             borderRadius: 9999,
             background: T.panel,
             border: `1px solid ${T.borderS}`,
-            boxShadow: "0 12px 32px rgba(0,0,0,0.45)",
+            boxShadow: `0 12px 32px ${T.farge.svartA45}`,
             padding: "10px 20px",
             fontFamily: T.ui,
             fontSize: 13,

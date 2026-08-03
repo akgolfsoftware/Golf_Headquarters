@@ -3,6 +3,7 @@ import type { LiveV2Drill, DrillRepState } from "./types";
 import { RepCounter } from "./RepCounter";
 import { FysDrillLogger } from "./FysDrillLogger";
 import { L_FASER } from "@/lib/taxonomy";
+import { T } from "@/lib/v2/tokens";
 
 export type DrillLoggerProps = {
   drill: LiveV2Drill;
@@ -178,7 +179,7 @@ export function DrillLogger({
         type="button"
         onClick={onComplete}
         className="mt-2 flex h-16 w-full items-center justify-center gap-2 rounded-full bg-accent font-mono text-base font-extrabold uppercase tracking-[0.06em] text-foreground active:scale-[0.98]"
-        style={{ boxShadow: "0 4px 18px rgba(209, 248, 67, 0.28)" }}
+        style={{ boxShadow: `0 4px 18px ${T.farge.limeMerkeA28}` }}
       >
         <Check className="h-5 w-5" strokeWidth={2.5} aria-hidden />
         {isLast ? "Fullfør økt" : "Fullfør drill"}

@@ -225,11 +225,11 @@ function ModalSkall({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      style={{ position: "fixed", inset: 0, zIndex: 90, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px", background: "rgba(0,0,0,0.55)" }}
+      style={{ position: "fixed", inset: 0, zIndex: 90, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px", background: T.farge.svartA55 }}
     >
       <div
         className="v2-sheet-in"
-        style={{ width: "100%", maxWidth: 440, background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)", maxHeight: "86vh", overflowY: "auto" }}
+        style={{ width: "100%", maxWidth: 440, background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: `0 24px 60px ${T.farge.svartA50}`, maxHeight: "86vh", overflowY: "auto" }}
       >
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
           <div>
@@ -1024,11 +1024,11 @@ function OktRedigerDialog({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: "rgba(0,0,0,0.55)", padding: 16 }}
+      style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: T.farge.svartA55, padding: 16 }}
     >
       <div
         className="v2-sheet-in"
-        style={{ width: "100%", maxWidth: 640, maxHeight: "92vh", overflowY: "auto", borderRadius: T.rCard, background: T.panel, border: `1px solid ${T.borderS}`, padding: 22, boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}
+        style={{ width: "100%", maxWidth: 640, maxHeight: "92vh", overflowY: "auto", borderRadius: T.rCard, background: T.panel, border: `1px solid ${T.borderS}`, padding: 22, boxShadow: `0 24px 60px ${T.farge.svartA50}` }}
       >
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
           <h2 style={{ margin: 0, fontFamily: T.disp, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: T.fg }}>

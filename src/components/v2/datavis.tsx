@@ -207,7 +207,7 @@ function VarmeKartCelle({ verdi, tekst, color, cell, align }: VarmeKartCelleProp
             border: `1px solid ${T.border}`,
             borderRadius: 10,
             padding: "7px 10px",
-            boxShadow: "0 12px 32px rgba(0,0,0,0.45)",
+            boxShadow: `0 12px 32px ${T.farge.svartA45}`,
             fontFamily: T.ui,
             fontSize: 11.5,
             color: T.fg,

@@ -98,7 +98,7 @@ function MFot({ mobile }: { mobile: boolean }) {
 
 function MRamme({ mobile, aktiv, children }: { mobile: boolean; aktiv: string; children: ReactNode }) {
   return (
-    <div style={{ minHeight: "100vh", colorScheme: "dark", color: T.fg, fontFamily: T.ui, background: `radial-gradient(1100px 520px at 30% -10%, rgba(0,88,64,0.20), transparent 62%), ${T.bg}`, display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", colorScheme: "dark", color: T.fg, fontFamily: T.ui, background: `radial-gradient(1100px 520px at 30% -10%, ${T.farge.forestMerkeA20}, transparent 62%), ${T.bg}`, display: "flex", flexDirection: "column" }}>
       <MNav mobile={mobile} aktiv={aktiv} />
       {/* <main>-landemerke — samme a11y-fiks som delt marked-ramme.tsx. */}
       <main style={{ flex: 1 }}>{children}</main>
@@ -154,7 +154,7 @@ function CaseKort({ c }: { c: Case }) {
         <span style={{ position: "absolute", right: 16, top: 14, width: 34, height: 34, borderRadius: 9999, background: T.lime, color: T.onLime, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
           <Icon name="trending-down" size={16} />
         </span>
-        <div style={{ position: "absolute", bottom: 8, right: 16, fontFamily: T.mono, fontSize: 30, fontWeight: 700, color: "rgba(255,255,255,0.14)", lineHeight: 1 }}>-{forbedring}</div>
+        <div style={{ position: "absolute", bottom: 8, right: 16, fontFamily: T.mono, fontSize: 30, fontWeight: 700, color: T.farge.hvitA14, lineHeight: 1 }}>-{forbedring}</div>
       </div>
       <div style={{ padding: "22px 22px 24px" }}>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: T.mut }}>
@@ -230,7 +230,7 @@ export function MarkedCasesV2({ tournaments }: { tournaments: CasesTournament[] 
                   <div style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 700, color: T.fg }}>{t.name}</div>
                   <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, marginTop: 2 }}>{t.venue} · {t.format}</div>
                 </div>
-                <span style={{ flex: "none", borderRadius: 9999, padding: "5px 12px", fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, background: t.pagar ? "rgba(90,169,240,0.14)" : "rgba(209,248,67,0.12)", color: t.pagar ? T.info : T.lime }}>
+                <span style={{ flex: "none", borderRadius: 9999, padding: "5px 12px", fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, background: t.pagar ? T.farge.himmelBlaA14 : T.farge.limeMerkeA12, color: t.pagar ? T.info : T.lime }}>
                   {t.pagar ? "Pågår" : "Kommende"}
                 </span>
               </div>

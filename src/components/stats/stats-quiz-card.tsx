@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 /**
  * StatsQuizCard — Buzzfeed-stil quiz spørsmål-card med instant feedback
@@ -93,9 +94,9 @@ export function StatsQuizCard({ sporsmal, onSvar }: StatsQuizCardProps) {
         <div style={{
           padding: "20px 24px",
           borderRadius: 12,
-          background: sporsmal.valg[valgt]?.korrekt ? "hsl(var(--accent))" : "#FEE2E2",
-          border: `1px solid ${sporsmal.valg[valgt]?.korrekt ? "#B8E020" : "#F87171"}`,
-          color: sporsmal.valg[valgt]?.korrekt ? "hsl(var(--foreground))" : "#7F1D1D",
+          background: sporsmal.valg[valgt]?.korrekt ? "hsl(var(--accent))" : T.farge.feilBakgrunn,
+          border: `1px solid ${sporsmal.valg[valgt]?.korrekt ? "${T.farge.limeMerke2}" : "${T.farge.feilLys}"}`,
+          color: sporsmal.valg[valgt]?.korrekt ? "hsl(var(--foreground))" : T.farge.feilTekstMork,
           animation: "stats-quiz-fadein 0.3s ease",
         }}>
           <div style={{

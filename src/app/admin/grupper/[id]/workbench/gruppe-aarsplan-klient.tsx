@@ -60,8 +60,8 @@ export function GruppeAarsplanKlient({ gruppeNavn, medlemmer, seasonBlocks, onLa
       )}
       {rullBekreft && (
         <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-          <div onClick={ruller ? undefined : () => setRullBekreft(false)} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
-          <div role="dialog" aria-label="Bekreft utrulling" style={{ position: "relative", width: "min(420px, 100%)", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+          <div onClick={ruller ? undefined : () => setRullBekreft(false)} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
+          <div role="dialog" aria-label="Bekreft utrulling" style={{ position: "relative", width: "min(420px, 100%)", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: `0 24px 60px ${T.farge.svartA50}` }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <Icon name="users" size={16} style={{ color: T.lime }} />
               <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>Rull ut årsplanen</h2>

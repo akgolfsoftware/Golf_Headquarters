@@ -371,12 +371,12 @@ export function ForelderWizard() {
                 fontWeight: 700,
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                color: "rgba(255,255,255,0.75)",
+                color: T.farge.hvitA75,
               }}
             >
               Abonnement
             </span>
-            <span style={{ fontFamily: T.disp, fontSize: 18, fontWeight: 700, color: "rgba(255,255,255,0.96)" }}>
+            <span style={{ fontFamily: T.disp, fontSize: 18, fontWeight: 700, color: T.farge.hvitA96 }}>
               AK Golf Academy PRO
             </span>
             <span
@@ -387,14 +387,14 @@ export function ForelderWizard() {
                 lineHeight: 1,
                 letterSpacing: "-0.01em",
                 fontVariantNumeric: "tabular-nums",
-                color: "rgba(255,255,255,0.96)",
+                color: T.farge.hvitA96,
               }}
             >
               299 kr/mnd
             </span>
             <span
               className="mt-1"
-              style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.04em", color: "rgba(255,255,255,0.65)" }}
+              style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.04em", color: T.farge.hvitA65 }}
             >
               Avsluttes når som helst · 30 dagers oppsigelse
             </span>

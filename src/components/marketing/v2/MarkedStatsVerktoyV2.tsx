@@ -205,7 +205,7 @@ export function AvstandV2() {
             </button>
             <div>
               <Caps style={{ textAlign: "center", marginBottom: 8 }}>{retning === "ym" ? "Meter" : "Yards"}</Caps>
-              <div style={{ fontFamily: T.mono, fontSize: 40, fontWeight: 500, padding: "10px 14px", border: `2px solid ${T.lime}`, borderRadius: T.rRow, textAlign: "center", background: "rgba(209,248,67,0.06)", color: T.lime, fontVariantNumeric: "tabular-nums" }}>
+              <div style={{ fontFamily: T.mono, fontSize: 40, fontWeight: 500, padding: "10px 14px", border: `2px solid ${T.lime}`, borderRadius: T.rRow, textAlign: "center", background: T.farge.limeMerkeA6, color: T.lime, fontVariantNumeric: "tabular-nums" }}>
                 {resultat.toFixed(1)}
               </div>
             </div>

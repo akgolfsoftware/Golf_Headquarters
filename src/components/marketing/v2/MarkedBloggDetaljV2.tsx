@@ -19,7 +19,7 @@ export function MarkedBloggDetaljV2({ post }: { post: BlogPost }) {
       {/* Hero-bilde */}
       <div style={{ position: "relative", aspectRatio: mobile ? "4 / 3" : "16 / 7", width: "100%", background: T.panel2 }}>
         <Image src={post.bilde} alt={post.tittel} fill priority sizes="100vw" style={{ objectFit: "cover" }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(13,14,13,0.15) 0%, rgba(13,14,13,0.85) 100%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, ${T.farge.grafittMerkeA15} 0%, ${T.farge.grafittMerkeA85} 100%)` }} />
       </div>
 
       <Seksjon mobile={mobile} style={{ paddingTop: mobile ? 24 : 40 }}>

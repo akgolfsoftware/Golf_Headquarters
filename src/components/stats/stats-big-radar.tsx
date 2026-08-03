@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 /**
  * StatsBigRadar — 4-axis radar chart with two overlapping polygons.
@@ -54,13 +55,13 @@ function RadarTooltip({
   return (
     <div
       style={{
-        background: "#FFFFFF",
-        border: "1px solid #E5E3DD",
+        background: T.onForest,
+        border: `1px solid ${T.farge.linjeMerke}`,
         borderRadius: 8,
         padding: "10px 14px",
         fontSize: 12,
         fontFamily: "var(--font-mono)",
-        boxShadow: "0 2px 8px rgba(10,31,23,0.08)",
+        boxShadow: `0 2px 8px ${T.farge.inkMerkeA8}`,
       }}
     >
       <div
@@ -79,7 +80,7 @@ function RadarTooltip({
           ? (duRaw >= 0 ? "+" : "") + duRaw.toFixed(2)
           : "—"}
       </div>
-      <div style={{ color: "#8A9940" }}>
+      <div style={{ color: T.farge.diagramOliven }}>
         {themLabel}:{" "}
         {refRaw !== undefined
           ? (refRaw >= 0 ? "+" : "") + refRaw.toFixed(2)

@@ -114,8 +114,8 @@ export function MarkedAnleggDetaljV2({ data }: { data: AnleggData }) {
                 fontWeight: 700,
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                color: "#fff",
-                background: "rgba(0,0,0,0.55)",
+                color: T.onForest,
+                background: T.farge.svartA55,
                 borderRadius: 8,
                 padding: "6px 12px",
               }}

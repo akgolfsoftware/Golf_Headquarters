@@ -1,3 +1,4 @@
+import { T } from "@/lib/v2/tokens";
 /**
  * PILOT — AgencyOS Plan-bygger · Steg 4 (Pyramide-allokasjon)
  * Bygd direkte fra wireframe/design-files-v2/coachhq-A/02-plan-bygger.html
@@ -46,7 +47,7 @@ export default function PlanByggerDemo() {
           className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-4"
           style={{
             backgroundImage:
-              "linear-gradient(135deg, rgba(0,88,64,0.06) 0%, color-mix(in srgb, var(--v2-lime) 10%, transparent) 100%)",
+              `linear-gradient(135deg, ${T.farge.forestMerkeA6} 0%, color-mix(in srgb, var(--v2-lime) 10%, transparent) 100%)`,
           }}
         >
           <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--brand-primary,#005840)] font-mono text-[11px] font-bold text-[var(--brand-accent,#D1F843)]">
@@ -341,7 +342,7 @@ function PhaseCard({
           className="h-full"
           style={{
             width: `${progress}%`,
-            background: barColor ?? "var(--brand-primary,#005840)",
+            background: barColor ?? `var(--brand-primary,${T.farge.forestMerke})`,
           }}
         />
       </div>

@@ -1,3 +1,4 @@
+import { T } from "@/lib/v2/tokens";
 /**
  * /stats/sg-sammenlign/resultat/[id] — magazine-spread resultat-side
  * Pixel-perfect port av design 09 fra design-handoff-stats-2026-05-25.
@@ -334,7 +335,7 @@ export default async function SgResultatPage({ params }: Props) {
             </div>
             <div
               className="stats-kpi-sub"
-              style={{ color: "rgba(0,88,64,0.7)" }}
+              style={{ color: T.farge.forestMerkeA70 }}
             >
               du må ta inn
             </div>
@@ -808,7 +809,7 @@ export default async function SgResultatPage({ params }: Props) {
                 fontSize: 16,
                 lineHeight: 1.55,
                 marginTop: 20,
-                color: "rgba(250,250,247,0.85)",
+                color: T.farge.sandLysA85,
                 maxWidth: 440,
               }}
             >
@@ -827,7 +828,7 @@ export default async function SgResultatPage({ params }: Props) {
               <Link
                 href="/stats/sg-sammenlign/start"
                 className="stats-btn stats-btn-ghost stats-btn-lg"
-                style={{ textDecoration: "none", color: "rgba(250,250,247,0.8)" }}
+                style={{ textDecoration: "none", color: T.farge.sandLysA80 }}
               >
                 <RotateCcw size={15} />
                 <span>Ny sammenligning</span>
@@ -837,7 +838,7 @@ export default async function SgResultatPage({ params }: Props) {
 
           <div
             style={{
-              background: "rgba(255,255,255,0.06)",
+              background: T.farge.hvitA6,
               border: "1px solid color-mix(in srgb, var(--v2-lime) 20%, transparent)",
               borderRadius: 14,
               padding: 24,
@@ -857,7 +858,7 @@ export default async function SgResultatPage({ params }: Props) {
                   alignItems: "flex-start",
                   marginBottom: 12,
                   fontSize: 14,
-                  color: "rgba(250,250,247,0.88)",
+                  color: T.farge.sandLysA88,
                 }}
               >
                 <span

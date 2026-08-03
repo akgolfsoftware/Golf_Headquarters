@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -165,7 +166,7 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
         className="pointer-events-none absolute left-1/2 top-[38%] h-[900px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{
           background:
-            "radial-gradient(circle, color-mix(in srgb, var(--v2-lime) 5%, transparent) 0%, rgba(209,248,67,0) 60%)",
+            `radial-gradient(circle, color-mix(in srgb, var(--v2-lime) 5%, transparent) 0%, ${T.farge.limeMerkeA0} 60%)`,
         }}
       />
 
@@ -316,7 +317,7 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
           disabled={paused}
           className="flex h-[120px] w-full flex-col items-center justify-center gap-1 rounded-[20px] text-foreground transition-transform active:scale-[0.985] disabled:opacity-50"
           style={{
-            background: "linear-gradient(180deg, #D1F843 0%, #C2EE2F 100%)",
+            background: `linear-gradient(180deg, ${T.farge.limeMerke} 0%, ${T.farge.limeHover} 100%)`,
             boxShadow:
               "0 0 0 1px color-mix(in srgb, var(--v2-lime) 50%, transparent), 0 18px 40px color-mix(in srgb, var(--v2-lime) 22%, transparent)",
           }}
@@ -329,7 +330,7 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
           </span>
           <span
             className="font-sans font-medium"
-            style={{ color: "rgba(10,31,24,0.62)", fontSize: 13 }}
+            style={{ color: T.farge.inkMerke2A62, fontSize: 13 }}
           >
             {paused ? "trykk pause for å fortsette" : "for å logge én ball"}
           </span>

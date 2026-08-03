@@ -60,9 +60,9 @@ function InviteModal({ playerId, playerName, onClose }: { playerId: string; play
       aria-modal="true"
       aria-label="Inviter forelder"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-      style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: "rgba(0,0,0,0.55)", padding: 16 }}
+      style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: T.farge.svartA55, padding: 16 }}
     >
-      <div style={{ width: "100%", maxWidth: 420, borderRadius: T.rCard, background: T.panel, border: `1px solid ${T.borderS}`, padding: 22, boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+      <div style={{ width: "100%", maxWidth: 420, borderRadius: T.rCard, background: T.panel, border: `1px solid ${T.borderS}`, padding: 22, boxShadow: `0 24px 60px ${T.farge.svartA50}` }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
           <div>
             <Caps>AgencyOS · Foreldre</Caps>

@@ -71,7 +71,7 @@ export function HjelpTips({ k, size = 13, align = "left" }: HjelpTipsProps) {
             border: `1px solid ${T.border}`,
             borderRadius: 12,
             padding: "11px 13px",
-            boxShadow: "0 12px 32px rgba(0,0,0,0.45)",
+            boxShadow: `0 12px 32px ${T.farge.svartA45}`,
           }}
         >
           <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 700, color: T.fg }}>{tekst.tittel}</div>

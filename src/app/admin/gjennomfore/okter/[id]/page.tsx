@@ -313,19 +313,19 @@ function LiveProgressStrip({ drills }: { drills: typeof SESSION_DRILLS }) {
         overflow: "hidden",
         borderRadius: 16,
         padding: 20,
-        color: "#fff",
+        color: T.onForest,
         background: `linear-gradient(135deg, ${T.bg} 0%, ${T.forest} 130%)`,
       }}
     >
       <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
         <StatusPill tone="lime">Aktiv nå</StatusPill>
-        <span style={{ fontFamily: T.mono, fontSize: 10.5, textTransform: "uppercase", color: "rgba(255,255,255,0.7)" }}>
+        <span style={{ fontFamily: T.mono, fontSize: 10.5, textTransform: "uppercase", color: T.farge.hvitA70 }}>
           14:08 · 8 min gått
         </span>
       </div>
       <div style={{ position: "relative", display: "grid", gridTemplateColumns: "1fr auto", alignItems: "end", gap: 20 }}>
         <div>
-          <div style={{ fontFamily: T.mono, fontSize: 9.5, textTransform: "uppercase", color: "rgba(255,255,255,0.55)" }}>
+          <div style={{ fontFamily: T.mono, fontSize: 9.5, textTransform: "uppercase", color: T.farge.hvitA55 }}>
             Nåværende drill · {done}/{drills.length}
           </div>
           <div style={{ fontFamily: T.disp, fontSize: 17, fontWeight: 700, marginTop: 4 }}>Lag-på-lag stige 1m → 3m</div>
@@ -335,7 +335,7 @@ function LiveProgressStrip({ drills }: { drills: typeof SESSION_DRILLS }) {
           <button
             type="button"
             aria-label="Pause"
-            style={{ display: "grid", placeItems: "center", width: 34, height: 34, borderRadius: 9999, background: "rgba(255,255,255,0.1)", border: "none", color: "#fff" }}
+            style={{ display: "grid", placeItems: "center", width: 34, height: 34, borderRadius: 9999, background: T.farge.hvitA10, border: "none", color: T.onForest }}
           >
             <Pause size={14} />
           </button>
@@ -365,7 +365,7 @@ function LiveProgressStrip({ drills }: { drills: typeof SESSION_DRILLS }) {
         {drills.map((d, i) => {
           const pct = d.target > 0 ? (d.done / d.target) * 100 : 0;
           return (
-            <div key={i} style={{ height: 5, flex: 1, borderRadius: 9999, background: "rgba(255,255,255,0.1)", overflow: "hidden" }}>
+            <div key={i} style={{ height: 5, flex: 1, borderRadius: 9999, background: T.farge.hvitA10, overflow: "hidden" }}>
               <div style={{ height: "100%", background: T.lime, width: `${Math.min(100, pct)}%` }} />
             </div>
           );

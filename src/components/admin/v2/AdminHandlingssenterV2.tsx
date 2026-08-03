@@ -333,9 +333,9 @@ export function AdminHandlingssenterV2({ data, meg }: { data: AdminHandlingssent
       <div className="lg:hidden" style={{ position: "fixed", inset: 0, zIndex: 60, display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
         <div
           onClick={() => setArkAapen(false)}
-          style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.62)", backdropFilter: "blur(2px)" }}
+          style={{ position: "absolute", inset: 0, background: T.farge.svartA62, backdropFilter: "blur(2px)" }}
         />
-        <div style={{ position: "relative", background: T.panel, borderTop: `1px solid ${T.borderS}`, borderRadius: "20px 20px 0 0", padding: "10px 18px calc(18px + env(safe-area-inset-bottom))", maxHeight: "84vh", overflowY: "auto", boxShadow: "0 -24px 60px rgba(0,0,0,0.5)" }}>
+        <div style={{ position: "relative", background: T.panel, borderTop: `1px solid ${T.borderS}`, borderRadius: "20px 20px 0 0", padding: "10px 18px calc(18px + env(safe-area-inset-bottom))", maxHeight: "84vh", overflowY: "auto", boxShadow: `0 -24px 60px ${T.farge.svartA50}` }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
             <span style={{ width: 36, height: 4, borderRadius: 9999, background: T.borderS }} />
             <button

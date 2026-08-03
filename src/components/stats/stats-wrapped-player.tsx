@@ -113,10 +113,10 @@ export function StatsWrappedPlayer({ slides, delLenke }: StatsWrappedPlayerProps
               height: 3,
               borderRadius: 999,
               background: i < current
-                ? (isDark ? "rgba(250,250,247,0.9)" : "rgba(10,31,23,0.7)")
+                ? (isDark ? T.farge.sandLysA90 : T.farge.inkMerkeA70)
                 : i === current
                 ? (isDark ? T.lime : T.forest)
-                : (isDark ? "rgba(250,250,247,0.3)" : "rgba(10,31,23,0.2)"),
+                : (isDark ? T.farge.sandLysA30 : T.farge.inkMerkeA20),
               border: "none",
               cursor: "pointer",
               padding: 0,
@@ -217,7 +217,7 @@ export function StatsWrappedPlayer({ slides, delLenke }: StatsWrappedPlayerProps
             left: 16,
             bottom: 24,
             zIndex: 10,
-            background: "rgba(255,255,255,0.15)",
+            background: T.farge.hvitA15,
             border: "none",
             cursor: "pointer",
             color: uiColor,
@@ -239,7 +239,7 @@ export function StatsWrappedPlayer({ slides, delLenke }: StatsWrappedPlayerProps
             right: 16,
             bottom: 24,
             zIndex: 10,
-            background: "rgba(255,255,255,0.15)",
+            background: T.farge.hvitA15,
             border: "none",
             cursor: "pointer",
             color: uiColor,

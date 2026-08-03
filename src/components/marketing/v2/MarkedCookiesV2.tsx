@@ -151,7 +151,7 @@ function MRamme({ mobile, aktiv, children }: { mobile: boolean; aktiv: string; c
         colorScheme: "dark",
         color: T.fg,
         fontFamily: T.ui,
-        background: `radial-gradient(1100px 520px at 30% -10%, rgba(0,88,64,0.20), transparent 62%), ${T.bg}`,
+        background: `radial-gradient(1100px 520px at 30% -10%, ${T.farge.forestMerkeA20}, transparent 62%), ${T.bg}`,
         display: "flex",
         flexDirection: "column",
       }}

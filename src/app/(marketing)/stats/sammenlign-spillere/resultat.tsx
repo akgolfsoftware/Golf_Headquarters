@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 /**
  * SammenlignResultat — client-side resultat-visning for head-to-head sammenligning.
@@ -172,7 +173,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
           background: "var(--paper)",
           borderBottom: "1px solid var(--color-line)",
           padding: "12px 40px",
-          boxShadow: "0 2px 8px rgba(10,31,23,0.05)",
+          boxShadow: `0 2px 8px ${T.farge.inkMerkeA5}`,
         }}
       >
         <div

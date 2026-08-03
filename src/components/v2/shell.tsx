@@ -296,7 +296,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
   // (post-hydrering), så document finnes alltid her.
   return createPortal(
     <>
-      <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 90, background: "rgba(0,0,0,0.55)" }} aria-hidden />
+      <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 90, background: T.farge.svartA55 }} aria-hidden />
       <div
         role="menu"
         aria-label="Mer"

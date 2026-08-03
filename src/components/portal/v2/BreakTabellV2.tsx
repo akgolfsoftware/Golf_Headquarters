@@ -138,7 +138,7 @@ function RefCard() {
     <div style={{ border: `1px solid ${T.border}`, borderRadius: 12, overflow: "hidden", background: T.panel2, display: "flex", flexDirection: "column" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 14px", background: T.forest, borderBottom: `3px solid ${T.lime}` }}>
         <Icon name="ruler" size={14} style={{ color: T.lime }} />
-        <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14.5, color: "rgba(255,255,255,0.95)" }}>Referanse</span>
+        <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14.5, color: T.farge.hvitA95 }}>Referanse</span>
       </div>
       <div style={{ padding: 14, display: "flex", flexDirection: "column", gap: 12, flex: 1 }}>
         <RefRow icon="circle-dot" label="Hullkant" value="5,4 cm" />
@@ -225,12 +225,12 @@ function KalkulatorView() {
           {/* Svar-panel */}
           <div style={{ background: T.forest, borderRadius: 16, padding: 22, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
             <Caps size={10} color={T.lime}>Sikt utenfor hullet</Caps>
-            <div style={{ fontFamily: T.mono, fontWeight: 700, lineHeight: 0.9, letterSpacing: "-0.04em", fontSize: 76, color: "rgba(255,255,255,0.96)", fontVariantNumeric: "tabular-nums", marginTop: 10 }}>
+            <div style={{ fontFamily: T.mono, fontWeight: 700, lineHeight: 0.9, letterSpacing: "-0.04em", fontSize: 76, color: T.farge.hvitA96, fontVariantNumeric: "tabular-nums", marginTop: 10 }}>
               {adj}
               <span style={{ fontSize: 28, fontWeight: 600, color: T.lime }}>&#8239;cm</span>
             </div>
             <DeltaBadge dCm={dCm} dPct={dPct} dir={g.dir} />
-            <div style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: "rgba(255,255,255,0.82)", letterSpacing: "0.02em", marginTop: 12 }}>
+            <div style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: T.farge.hvitA82, letterSpacing: "0.02em", marginTop: 12 }}>
               {C.LEN[len].m} · {C.SLOPES[slope]} fall · stimp {base}
               {g.dir !== 0 ? ` · ${g.dir > 0 ? "ned" : "opp"} ${C.nb(g.pct)} %` : ""}
             </div>
@@ -254,7 +254,7 @@ function DeltaBadge({ dCm, dPct, dir }: { dCm: number; dPct: number; dir: number
   const felles: React.CSSProperties = { marginTop: 12, display: "inline-flex", alignItems: "center", gap: 6, height: 28, padding: "0 12px", borderRadius: 9999, fontFamily: T.mono, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.02em", alignSelf: "flex-start" };
   if (dir === 0) {
     return (
-      <div style={{ ...felles, background: "rgba(255,255,255,0.10)", color: "rgba(255,255,255,0.7)" }}>
+      <div style={{ ...felles, background: T.farge.hvitA10, color: T.farge.hvitA70 }}>
         <Icon name="minus" size={13} strokeWidth={2.5} />flat putt · ingen fart-justering
       </div>
     );
@@ -267,7 +267,7 @@ function DeltaBadge({ dCm, dPct, dir }: { dCm: number; dPct: number; dir: number
     );
   }
   return (
-    <div style={{ ...felles, background: "rgba(255,255,255,0.14)", color: "rgba(255,255,255,0.95)" }}>
+    <div style={{ ...felles, background: T.farge.hvitA14, color: T.farge.hvitA95 }}>
       <Icon name="trending-down" size={13} strokeWidth={2.5} />{dCm} cm · {dPct} % vs flatt
     </div>
   );
@@ -294,8 +294,8 @@ function EffText({ base, g, effStimp }: { base: number; g: (typeof GRADES)[numbe
 function ConvBlock({ n, label }: { n: string; label: string }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <span style={{ fontFamily: T.mono, fontSize: 21, fontWeight: 700, color: "rgba(255,255,255,0.96)", fontVariantNumeric: "tabular-nums", lineHeight: 1 }}>{n}</span>
-      <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(255,255,255,0.6)" }}>{label}</span>
+      <span style={{ fontFamily: T.mono, fontSize: 21, fontWeight: 700, color: T.farge.hvitA96, fontVariantNumeric: "tabular-nums", lineHeight: 1 }}>{n}</span>
+      <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.farge.hvitA60 }}>{label}</span>
     </div>
   );
 }

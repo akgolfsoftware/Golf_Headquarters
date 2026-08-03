@@ -175,7 +175,7 @@ function CoachCard({ c }: { c: CoachKort }) {
           )}
           <div
             aria-hidden
-            style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, transparent 45%, rgba(0,0,0,0.75) 100%)" }}
+            style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, transparent 45%, ${T.farge.svartA75} 100%)` }}
           />
           <span
             style={{

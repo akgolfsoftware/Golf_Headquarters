@@ -38,7 +38,7 @@ export function FAB({ icon = "plus", label }: FABProps) {
         background: T.lime,
         color: T.onLime,
         cursor: "pointer",
-        boxShadow: "0 12px 30px color-mix(in srgb, var(--v2-lime) 24%, transparent), 0 4px 12px rgba(0,0,0,0.25)",
+        boxShadow: `0 12px 30px color-mix(in srgb, var(--v2-lime) 24%, transparent), 0 4px 12px ${T.farge.svartA25}`,
       }}
     >
       <Icon name={icon} size={18} strokeWidth={1.5} />
@@ -306,7 +306,7 @@ export function HjelpPopover({ tittel = "Hva er SG?", tekst = "Strokes Gained sa
       <span style={{ width: 28, height: 28, borderRadius: 9999, background: T.panel2, border: `1px solid ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
         <Icon name="help-circle" size={14} style={{ color: T.fg2 }} />
       </span>
-      <div style={{ width: w, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: T.rRow, padding: 12, boxShadow: "var(--v2-shadow, 0 16px 40px rgba(0,0,0,0.35))" }}>
+      <div style={{ width: w, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: T.rRow, padding: 12, boxShadow: `var(--v2-shadow, 0 16px 40px ${T.farge.svartA35})` }}>
         <div style={{ fontFamily: T.ui, fontWeight: 600, fontSize: 13, color: T.fg }}>{tittel}</div>
         <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5, margin: "6px 0 0" }}>{tekst}</p>
       </div>
@@ -363,7 +363,7 @@ export function DataForhaandsvisning({ dato = "24. jun", verdi = "+1,8", enhet =
         <line x1={hx} y1={12} x2={hx} y2={h - 6} stroke={T.borderS} strokeWidth="1" strokeDasharray="3 3" />
         <circle cx={hx} cy={hy} r="5" fill={T.lime} stroke={T.panel} strokeWidth="2.5" />
       </svg>
-      <div style={{ position: "absolute", left: 150, top: 10, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: T.rTag, padding: "8px 10px", boxShadow: "var(--v2-shadow, 0 10px 26px rgba(0,0,0,0.4))" }}>
+      <div style={{ position: "absolute", left: 150, top: 10, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: T.rTag, padding: "8px 10px", boxShadow: `var(--v2-shadow, 0 10px 26px ${T.farge.svartA40})` }}>
         <Caps size={9}>{dato}</Caps>
         <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{verdi}<span style={{ fontSize: 9.5, color: T.mut, marginLeft: 4 }}>{enhet}</span></span>
       </div>

@@ -252,7 +252,7 @@ export function NyTestEgenV2({ rolle }: Props) {
       </Kort>
 
       {/* Footer-navigasjon */}
-      <div style={{ position: "sticky", bottom: 12, zIndex: 10, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, borderRadius: 16, border: `1px solid ${T.border}`, background: T.panel, padding: "12px 14px", boxShadow: "0 12px 32px rgba(0,0,0,0.35)" }}>
+      <div style={{ position: "sticky", bottom: 12, zIndex: 10, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, borderRadius: 16, border: `1px solid ${T.border}`, background: T.panel, padding: "12px 14px", boxShadow: `0 12px 32px ${T.farge.svartA35}` }}>
         <Knapp
           ghost
           icon="chevron-left"

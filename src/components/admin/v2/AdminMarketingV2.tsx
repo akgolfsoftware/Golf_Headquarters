@@ -153,7 +153,7 @@ function NyPostPopup({ onLukk }: { onLukk: () => void }) {
         position: "fixed",
         inset: 0,
         zIndex: 60,
-        background: "rgba(0,0,0,0.62)",
+        background: T.farge.svartA62,
         backdropFilter: "blur(4px)",
         display: "flex",
         alignItems: "flex-start",

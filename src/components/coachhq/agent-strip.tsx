@@ -1,4 +1,5 @@
 import { Sparkles } from "lucide-react";
+import { T } from "@/lib/v2/tokens";
 
 /**
  * AgentStrip — AI-coach hint banner.
@@ -21,7 +22,7 @@ export function AgentStrip({
       className="flex items-center gap-4 rounded-2xl border border-l-[4px] border-primary/20 border-l-primary px-4 py-4"
       style={{
         background:
-          "linear-gradient(135deg, rgba(0,88,64,0.06) 0%, rgba(209,248,67,0.10) 100%)",
+          `linear-gradient(135deg, ${T.farge.forestMerkeA6} 0%, ${T.farge.limeMerkeA10} 100%)`,
       }}
     >
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary font-mono text-[11px] font-bold leading-none text-primary-foreground">

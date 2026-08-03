@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { GfgkData } from "../data";
@@ -455,7 +456,7 @@ export function Presentation({ data }: { data: GfgkData }) {
               </h3>
               <p
                 className="lead on-dark"
-                style={{ marginTop: 18, maxWidth: "60ch", color: "rgba(245,244,238,0.85)" }}
+                style={{ marginTop: 18, maxWidth: "60ch", color: T.farge.kremMerkeA85 }}
               >
                 Spørsmål er alltid velkomne — før, under og etter sesongen. Vi er
                 på samme lag.

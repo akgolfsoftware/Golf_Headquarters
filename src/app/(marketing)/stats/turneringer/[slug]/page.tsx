@@ -1,3 +1,4 @@
+import { T } from "@/lib/v2/tokens";
 /**
  * /stats/turneringer/[slug] — Stats-branded turneringsdetalj
  *
@@ -352,8 +353,8 @@ export default async function StatsTurneringDetalj({ params }: Props) {
                 gap: 8,
                 padding: "4px 14px",
                 borderRadius: 4,
-                border: "1px solid rgba(0,88,64,0.25)",
-                background: "rgba(0,88,64,0.05)",
+                border: `1px solid ${T.farge.forestMerkeA25}`,
+                background: T.farge.forestMerkeA5,
                 fontSize: 13,
                 fontWeight: 500,
               }}
@@ -378,7 +379,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
                 textDecoration: "none",
                 padding: "4px 12px",
                 borderRadius: 4,
-                border: "1px solid rgba(0,88,64,0.25)",
+                border: `1px solid ${T.farge.forestMerkeA25}`,
                 fontWeight: 500,
                 letterSpacing: "0.06em",
               }}
@@ -909,7 +910,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
                   textDecoration: "none",
                   fontWeight: 500,
                   padding: "10px 20px",
-                  border: "1px solid rgba(0,88,64,0.25)",
+                  border: `1px solid ${T.farge.forestMerkeA25}`,
                   borderRadius: 999,
                 }}
               >
@@ -1143,7 +1144,7 @@ export default async function StatsTurneringDetalj({ params }: Props) {
                 ? "Sammenlign deg med spillerne i feltet"
                 : "Klar til å spille i lignende turneringer?"}
             </h2>
-            <p style={{ fontSize: 15, lineHeight: 1.55, color: "rgba(250,250,247,0.78)", margin: 0 }}>
+            <p style={{ fontSize: 15, lineHeight: 1.55, color: T.farge.sandLysA78, margin: 0 }}>
               {erProTour
                 ? "Se din SG-profil opp mot spillerne i dette feltet. Finn de eksakte gapene som skiller deg fra toppnivå."
                 : "PlayerHQ logger runder, SG-statistikk og gir deg treningsplaner som forbereder deg til konkurranse."}

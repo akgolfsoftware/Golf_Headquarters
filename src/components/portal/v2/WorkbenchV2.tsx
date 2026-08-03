@@ -244,7 +244,7 @@ function WBDragOverlayInnhold({ data }: { data: WbDragData }) {
     const kompakt = h < 42;
     const col = T.ax[o.eb as AkseKey] || T.mut;
     return (
-      <div style={{ width: 200, borderRadius: 8, padding: kompakt ? "2px 7px" : "5px 8px", background: `color-mix(in srgb, ${col} 15%, ${T.panel3})`, border: `1px solid ${T.borderS}`, borderLeft: `3px solid ${col}`, boxShadow: "0 10px 28px rgba(0,0,0,0.4)", cursor: "grabbing" }}>
+      <div style={{ width: 200, borderRadius: 8, padding: kompakt ? "2px 7px" : "5px 8px", background: `color-mix(in srgb, ${col} 15%, ${T.panel3})`, border: `1px solid ${T.borderS}`, borderLeft: `3px solid ${col}`, boxShadow: `0 10px 28px ${T.farge.svartA40}`, cursor: "grabbing" }}>
         <TLBlokkInnhold o={o} kompakt={kompakt} h={h} col={col} />
       </div>
     );
@@ -253,7 +253,7 @@ function WBDragOverlayInnhold({ data }: { data: WbDragData }) {
   const tittel = data.kind === "add" ? data.title : data.name;
   const sub = data.kind === "add" ? fmtVarighet(data.durMin) : `${data.sessionCount} økter · ${data.varighetUker} uker`;
   return (
-    <div style={{ width: 200, display: "flex", flexDirection: "column", gap: 4, padding: "8px 10px", borderRadius: 10, background: T.panel2, border: `1px dashed ${T.borderS}`, boxShadow: "0 10px 28px rgba(0,0,0,0.4)", cursor: "grabbing" }}>
+    <div style={{ width: 200, display: "flex", flexDirection: "column", gap: 4, padding: "8px 10px", borderRadius: 10, background: T.panel2, border: `1px dashed ${T.borderS}`, boxShadow: `0 10px 28px ${T.farge.svartA40}`, cursor: "grabbing" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
         {akse && <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[akse] || T.mut, flex: "none" }} />}
         <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{tittel}</span>
@@ -2499,8 +2499,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
 
       {pubDiff && (
         <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-          <div onClick={() => setPubDiff(null)} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
-          <div role="dialog" aria-label="Bekreft publisering" className="v2-sheet-in" style={{ position: "relative", width: "min(460px, 100%)", maxHeight: "85vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+          <div onClick={() => setPubDiff(null)} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
+          <div role="dialog" aria-label="Bekreft publisering" className="v2-sheet-in" style={{ position: "relative", width: "min(460px, 100%)", maxHeight: "85vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: `0 24px 60px ${T.farge.svartA50}` }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <Icon name="send" size={16} style={{ color: T.lime }} />
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -2601,8 +2601,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
 
       {malBekreft && (
         <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-          <div onClick={malLegger ? undefined : () => setMalBekreft(null)} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
-          <div role="dialog" aria-label="Legg inn mal" className="v2-sheet-in" style={{ position: "relative", width: "min(400px, 100%)", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+          <div onClick={malLegger ? undefined : () => setMalBekreft(null)} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
+          <div role="dialog" aria-label="Legg inn mal" className="v2-sheet-in" style={{ position: "relative", width: "min(400px, 100%)", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: `0 24px 60px ${T.farge.svartA50}` }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <Icon name="layers" size={16} style={{ color: T.lime }} />
               <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>Legg inn mal</h2>

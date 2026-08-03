@@ -1,3 +1,4 @@
+import { T } from "@/lib/v2/tokens";
 /**
  * PILOT — PlayerHQ Ny-økt-wizard (6 steg)
  * Dynamic route: /demos/ny-okt/[1..6] (under (internal) → ADMIN-only)
@@ -225,8 +226,8 @@ function Step1() {
         <div
           className="flex items-start gap-4 rounded-xl border bg-card px-6 py-4"
           style={{
-            background: "rgba(0,88,64,0.04)",
-            borderColor: "rgba(0,88,64,0.18)",
+            background: T.farge.forestMerkeA4,
+            borderColor: T.farge.forestMerkeA18,
           }}
         >
           <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-[var(--brand-primary,#005840)] text-white">
@@ -329,7 +330,7 @@ function Chip({
       <button
         className="inline-flex items-center rounded-full px-4 py-2 text-[12.5px] font-semibold leading-none ring-2 ring-[var(--brand-primary,#005840)] ring-offset-2 ring-offset-[var(--surface,#FAFAF7)]"
         style={{
-          background: tone ? toneBg[tone] : "var(--surface-alt,#F1EEE5)",
+          background: tone ? toneBg[tone] : `var(--surface-alt,${T.farge.sandMerke})`,
           color: tone ? toneColor[tone] : undefined,
         }}
       >
@@ -640,8 +641,8 @@ function Step4() {
               <div
                 className="flex items-start gap-2.5 rounded-md border px-4 py-2.5"
                 style={{
-                  background: "rgba(216,57,57,0.08)",
-                  borderColor: "rgba(216,57,57,0.25)",
+                  background: T.farge.rodMerkeA8,
+                  borderColor: T.farge.rodMerkeA25,
                 }}
               >
                 <TriangleAlert
@@ -759,7 +760,7 @@ function Step5() {
       <section>
         <div
           className="flex items-center justify-between rounded-xl border border-dashed border-border px-6 py-4"
-          style={{ background: "var(--surface-alt,#F1EEE5)" }}
+          style={{ background: `var(--surface-alt,${T.farge.sandMerke})` }}
         >
           <div>
             <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">

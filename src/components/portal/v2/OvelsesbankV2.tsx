@@ -169,7 +169,7 @@ function NivaBadge({ spenn }: { spenn: string }) {
         fontWeight: 700,
         letterSpacing: "0.06em",
         color: T.fg,
-        background: "rgba(13,14,13,0.72)",
+        background: T.farge.grafittMerkeA72,
         border: `1px solid ${T.borderS}`,
         borderRadius: 5,
         padding: "3px 7px",
@@ -241,7 +241,7 @@ function HeroBilde({ o, h = 118, stor }: { o: DrillDetail; h?: number; stor?: bo
         background: harMedia
           ? `linear-gradient(140deg, ${T.panel3}, ${T.bg})`
           : `linear-gradient(140deg, color-mix(in srgb, ${akseFarge} 22%, transparent), color-mix(in srgb, ${akseFarge} 5%, transparent) 65%, ${T.bg})`,
-        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
+        boxShadow: `inset 0 1px 0 ${T.farge.hvitA4}`,
         position: "relative",
         display: "flex",
         alignItems: "center",
@@ -286,7 +286,7 @@ function HeroBilde({ o, h = 118, stor }: { o: DrillDetail; h?: number; stor?: bo
             letterSpacing: "0.08em",
             textTransform: "uppercase",
             color: T.fg2,
-            background: "rgba(13,14,13,0.72)",
+            background: T.farge.grafittMerkeA72,
             border: `1px solid ${T.border}`,
             borderRadius: 5,
             padding: "3px 7px",
@@ -314,7 +314,7 @@ function HeroBilde({ o, h = 118, stor }: { o: DrillDetail; h?: number; stor?: bo
             fontSize: 9,
             fontWeight: 700,
             color: T.fg2,
-            background: "rgba(13,14,13,0.72)",
+            background: T.farge.grafittMerkeA72,
             borderRadius: 5,
             padding: "3px 7px",
           }}

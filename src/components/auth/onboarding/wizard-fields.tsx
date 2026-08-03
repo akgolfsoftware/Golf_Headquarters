@@ -122,7 +122,7 @@ export function HeroIllo({ label }: { label: string }) {
           opacity: 0.07,
           pointerEvents: "none",
           backgroundImage:
-            "repeating-linear-gradient(135deg, transparent 0 12px, rgba(255,255,255,0.9) 12px 24px)",
+            `repeating-linear-gradient(135deg, transparent 0 12px, ${T.farge.hvitA90} 12px 24px)`,
         }}
       />
       <span
@@ -135,11 +135,11 @@ export function HeroIllo({ label }: { label: string }) {
           width: 28,
           height: 28,
           borderRadius: 8,
-          background: "rgba(255,255,255,0.14)",
+          background: T.farge.hvitA14,
           fontFamily: T.disp,
           fontSize: 13,
           fontWeight: 700,
-          color: "rgba(255,255,255,0.95)",
+          color: T.farge.hvitA95,
         }}
       >
         ak
@@ -154,7 +154,7 @@ export function HeroIllo({ label }: { label: string }) {
           fontWeight: 700,
           letterSpacing: "0.12em",
           textTransform: "uppercase",
-          color: "rgba(255,255,255,0.75)",
+          color: T.farge.hvitA75,
         }}
       >
         {label}

@@ -349,7 +349,7 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
               key={t.n}
               style={{
                 display: "inline-flex", alignItems: "center", gap: 9, borderRadius: 9999,
-                border: `1px solid color-mix(in srgb, ${T.lime} 45%, transparent)`, background: "rgba(0,0,0,0.2)",
+                border: `1px solid color-mix(in srgb, ${T.lime} 45%, transparent)`, background: T.farge.svartA20,
                 padding: "10px 16px 10px 12px", fontFamily: T.disp, fontSize: 15, fontWeight: 700, color: T.fg,
               }}
             >
@@ -575,7 +575,7 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
       {/* drawer */}
       {drawer && (
         <div className="fixed inset-0 z-[60] flex justify-end">
-          <div onClick={() => setDrawer(null)} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
+          <div onClick={() => setDrawer(null)} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
           <DrawerBody drawer={drawer} onClose={() => setDrawer(null)} onReadEmail={readEmail} onReadMessage={readMessage} />
         </div>
       )}
@@ -586,7 +586,7 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
           className="fixed z-[70]"
           style={{
             right: 18, top: 18, display: "flex", alignItems: "center", gap: 8, borderRadius: 12, background: T.lime,
-            padding: "12px 16px", fontFamily: T.disp, fontSize: 13, fontWeight: 700, color: T.onLime, boxShadow: "0 12px 28px rgba(0,0,0,0.35)",
+            padding: "12px 16px", fontFamily: T.disp, fontSize: 13, fontWeight: 700, color: T.onLime, boxShadow: `0 12px 28px ${T.farge.svartA35}`,
           }}
         >
           <Icon name="check" size={15} strokeWidth={2.4} /> {toast}
@@ -672,7 +672,7 @@ function DrawerBody({
     <div
       style={{
         position: "relative", width: 420, maxWidth: "88%", height: "100%", display: "flex", flexDirection: "column",
-        background: T.panel, borderLeft: `1px solid ${T.borderS}`, boxShadow: "-20px 0 60px rgba(0,0,0,0.4)",
+        background: T.panel, borderLeft: `1px solid ${T.borderS}`, boxShadow: `-20px 0 60px ${T.farge.svartA40}`,
       }}
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", borderBottom: `1px solid ${T.border}` }}>

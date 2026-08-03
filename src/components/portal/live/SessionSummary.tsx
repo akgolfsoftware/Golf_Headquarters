@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { LiveV2Summary } from "./types";
 import { HjelpTips } from "@/components/v2/hjelp";
 import { SpillerVurderingForm } from "./SpillerVurderingForm";
+import { T } from "@/lib/v2/tokens";
 
 export type SessionSummaryProps = {
   data: LiveV2Summary;
@@ -229,7 +230,7 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering }: SessionSumm
         <Link
           href={nesteOkt ? nesteOkt.href : "/portal"}
           className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-accent font-mono text-sm font-extrabold uppercase tracking-[0.06em] text-foreground active:scale-[0.98]"
-          style={{ boxShadow: "0 4px 18px rgba(209, 248, 67, 0.28)" }}
+          style={{ boxShadow: `0 4px 18px ${T.farge.limeMerkeA28}` }}
         >
           {nesteOkt ? nesteOkt.tekst : "Tilbake til hjem"}
           {nesteOkt && <ArrowRight className="h-4 w-4" strokeWidth={2.5} aria-hidden />}

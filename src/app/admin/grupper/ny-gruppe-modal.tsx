@@ -108,7 +108,7 @@ export function NyGruppeModal({
         border: `1px solid ${T.borderS}`,
         borderRadius: 20,
         background: T.panel,
-        boxShadow: "0 24px 60px rgba(0,0,0,0.5)",
+        boxShadow: `0 24px 60px ${T.farge.svartA50}`,
         width: "min(480px, calc(100vw - 32px))",
         color: T.fg,
       }}

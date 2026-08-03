@@ -295,7 +295,7 @@ export function FysOktKort({
   const t = FYS_TYPER[type] || FYS_TYPER.styrke;
   return (
     <div onClick={onClick} style={{ display: "flex", alignItems: "center", gap: 11, background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rRow + 4, padding: "12px 14px", cursor: "grab",
-      ...(loftet ? { transform: "scale(1.03) rotate(2deg)", boxShadow: "0 18px 40px rgba(0,0,0,0.5)", borderColor: T.borderS } : null),
+      ...(loftet ? { transform: "scale(1.03) rotate(2deg)", boxShadow: `0 18px 40px ${T.farge.svartA50}`, borderColor: T.borderS } : null),
       transition: "transform 180ms cubic-bezier(0.2,0,0,1), box-shadow 180ms" }}>
       <Icon name="grip-vertical" size={14} style={{ color: T.mut, flex: "none" }} />
       <span style={{ width: 36, height: 36, flex: "none", borderRadius: 10, background: `color-mix(in srgb,${T.ax.FYS} 13%,transparent)`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
