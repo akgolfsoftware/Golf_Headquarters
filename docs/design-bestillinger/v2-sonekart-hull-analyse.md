@@ -1,6 +1,6 @@
 # Claude Design-bestilling — Sone-kart, «Hvor taper du» (Hull-analyse)
 
-> Skrevet 2026-07-19. Gap-regel (`.claude/rules/beslutninger.md` → design-system-regel.md):
+> Skrevet 2026-07-19. Gap-regel (`.claude/rules/beslutninger.md` §Tema/design — design-system-regel.md er slettet):
 > finnes ikke mønsteret i v2-kanon, skal gapet meldes formelt — ikke improviseres. Dette gapet er
 > nevnt løst i prosa flere ganger i `docs/MASTER-SKJERMPLAN.md` (rad 154, 676, 837) siden 17. juli,
 > men har frem til nå manglet en faktisk bestilling. Denne filen er det.
@@ -22,7 +22,7 @@ ble to eksisterende «top-down banekart»-mønstre i kodebasen vurdert og forkas
    interaksjonen «Sone-kart» skal ha — men komponenten er kun brukt i komponent-galleriet
    (`/intern/komponenter/hull-analyse`) med hardkodede demo-data. Den er ALDRI koblet til ekte
    spillerdata, har ingen v2-motpart, og er golfdata/v13 (overgangs-laget) — å bygge en ny stor
-   flate mot v13-kitet er eksplisitt utenfor mandatet nå (`design-system-regel.md`).
+   flate mot v13-kitet er eksplisitt utenfor mandatet nå (`.claude/rules/beslutninger.md` §Tema/design).
 2. **`CourseMap`** (`src/components/gameplan/course-map.tsx`, Mapbox GL, bygget for Gameplan/B30
    + slag-wizard D6b). Ekte satellittkart med GeoJSON-banegeometri og ekte GPS (`teeLat/teeLng`,
    `Shot.startX/Y/endX/Y` tolket som WGS84 i `src/lib/gameplan/shot-coords.ts`). Denne dekker IKKE

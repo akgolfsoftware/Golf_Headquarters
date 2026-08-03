@@ -67,7 +67,7 @@ warning #B8852A · info #2563EB · border #E5E3DD`. Bruk alltid klassene (`bg-pr
 ## 3. Typografi per begrepsbruk
 
 Inter (`font-sans`) = UI/brødtekst · Familjen Grotesk (`font-display`) = display/hero (editorial
-italic på nøkkelord) — Inter Tight er utgående (se `.claude/rules/design-system-regel.md`) ·
+italic på nøkkelord) — Inter Tight er fjernet (design-beslutninger: `.claude/rules/beslutninger.md` §Tema/design) ·
 JetBrains Mono (`font-mono`) = KPI-tall, tabulære tall, eyebrows,
 koder (CS80, M2, PR3, P4.0). Ingen andre fonter.
 

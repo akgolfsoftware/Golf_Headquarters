@@ -6,7 +6,7 @@ import { GlobalSearchModal } from "@/components/admin/global-search-modal";
 // AgencyOS-chrome som de porterte sidene: ikon-rail med etiketter + Mer-meny +
 // full bredde) i stedet for gamle AdminShell (sidebar/topbar med scope-velger).
 // Innholdet er allerede retunet mørkt (golfdata-scope beholdes for tokens);
-// selve flatene rekomponeres til v2 bølgevis per plans/legacy-portering-prioritet.md.
+// selve flatene rekomponeres til v2 bølgevis per docs/arkiv/2026-08-03-forenkling-bolge2/legacy-portering-prioritet.md.
 // Global Cmd+K-søk beholdes (selvstendig klient-modal).
 // Auth-guarden ligger i src/app/admin/layout.tsx (toppen).
 export default async function AdminLegacyLayout({

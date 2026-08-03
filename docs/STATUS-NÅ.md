@@ -16,7 +16,7 @@ i PlayerHQ/AgencyOS/Forelder/Auth = 0. Appen er fortsatt ikke klar for betalende
 | **Uavklart / parkert / løst** | `docs/AAPNE-SPORSMAAL.md` |
 | **Låste forretningsregler** (fasit) | `docs/platform/BUSINESS-RULES.md` |
 | **Full plattformkontekst** (5 min) | `docs/platform/AGENT-BRIEF.md` |
-| **Design-gap (produkt)** | `docs/designdekning-2026-07-29.md` + Claude Paper `kart/status-til-komplett-2026-07-31.md` |
+| **Design-gap (produkt)** | `docs/arkiv/2026-08-03-forenkling-bolge2/designdekning-2026-07-29.md` + Claude Paper `kart/status-til-komplett-2026-07-31.md` |
 | **Ferdigstillingsplan** | Cursor-plan «Ferdigstill AK Golf HQ» (Fase A lansering → Fase B loop) |
 
 Historiske bygg-spor (SKJERM-STATUS, SKJERM-BYGGEPLAN, BYGGELOGG-FLAGG, KONFLIKTER) er flyttet til `docs/arkiv/` — ikke bygg mot dem.

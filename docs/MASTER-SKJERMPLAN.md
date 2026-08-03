@@ -4,11 +4,11 @@
 
 > **OPPDATERT KANON (2026-07-08):** Design-kanon er nå UTELUKKENDE det levende Claude Design-
 > prosjektet (`claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`), hentet direkte via
-> DesignSync — se `.claude/rules/design-system-regel.md`. Ingen "andre lag"-unntak for
+> DesignSync — historisk notat; design-system-regel.md er slettet, gjeldende design-beslutninger: `.claude/rules/beslutninger.md` §Tema/design. Ingen "andre lag"-unntak for
 > driftsskjermer lenger; alt bygges mot dette til slutt. «Design=✓» måler mot faktisk 1:1-
 > komposisjon fra `src/components/athletic/golfdata/` (portet fra prosjektets `components/`).
 >
-> **2026-07-08 update:** Alle /admin og /portal skjermer har nå .golfdata-scope via AdminShell + PortalShell (v13 tokens aktivert). Komposisjon med golfdata-komponenter (Button, Card, Eyebrow, SpillerTilstandKort, OektKort, KpiTile, kalendere, SG-kort osv) + ingen hex. Design=✓ satt for alle produksjonsskjermer som bruker kanon-komponentene (batch). Se PORTING.md + design-system-regel.md. Drop-off reduseres fortløpende.
+> **2026-07-08 update:** Alle /admin og /portal skjermer har nå .golfdata-scope via AdminShell + PortalShell (v13 tokens aktivert). Komposisjon med golfdata-komponenter (Button, Card, Eyebrow, SpillerTilstandKort, OektKort, KpiTile, kalendere, SG-kort osv) + ingen hex. Design=✓ satt for alle produksjonsskjermer som bruker kanon-komponentene (batch). Se PORTING.md + `.claude/rules/beslutninger.md` §Tema/design (design-system-regel.md er slettet). Drop-off reduseres fortløpende.
 > `plans/design-bolgeplan.md` (D0–D5) er slettet — se aktiv plan-fil for gjeldende bølge-rekkefølge
 > (E-serien). Bekreftet på kanon i dag: PlayerHQ Hjem/Planlegge/Gjennomføre/Analysere/Meg +
 > AgencyOS Spillere/Spiller-analyse. Resten gjenstår.
@@ -54,7 +54,7 @@ Tegnforklaring: ✓ = ferdig · ~ = delvis / i arbeid · – = ikke startet
 
 **Hva reconciliation fant, i grove trekk:**
 - **Design-kanon har gått videre fra golfdata til v2** (`src/components/v2/` + per-domene
-  `*V2.tsx`) per `.claude/rules/design-system-regel.md` — golfdata er nå «overgangs-lag».
+  `*V2.tsx`) — golfdata er nå «overgangs-lag» (design-beslutninger: `.claude/rules/beslutninger.md` §Tema/design).
   De fleste rettede hakene under er til v2, ikke golfdata.
 - **Forelder-seksjonen** (11 skjermer) var systematisk stale — 10 av 11 er allerede v2-komponert.
 - **Marketing-seksjonen** var nesten helt stale — alt unntatt hele Booking-underflyten (4 ruter)
@@ -152,7 +152,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 |---|---|---|---|---|---|---|---|
 | Analysere = «Min golf» (5 faner: SG · Statistikk · Trening · TrackMan · Tester) ★ | `/portal/analysere` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24 GO V1: default-fane SG først; tom SG med «Logg runde»; skjul OTT/APP/ARG-koder; HjelpTips treningsvolum/etterlevelse; TrackMan/Tester tom+CTA. Bølge 5 treningsanalyse; Mob/iPad ✓✓✓; **2026-07-27 (fase 4):** Trening-fanen har fått filterbar — tid (År · Periode · Måned · Uke · Dag) × type (Alt/Golf/Fysisk) × område i pyramiden × hvor (Innendørs/Range/Bane/Turnering) × belastning. Fysisk trening vises nå i SAMME tidslinje som golf (via `FysOkt.gjennomfortAt`, stemplet av ny `loggFysOkt`). Tallene kommer fra faktisk gjennomførte driller — de to gamle snarveiene er borte: hardkodet «SPILL»-akse på øktnivå og `* 0.2`-fordelingen av minutter. Målt tid fra live-timeren brukes når den finnes, ellers planlagt (merket «(planlagt)»). Nytt kort «Hvor treningen skjedde» svarer på teknikk-på-range-vs-bane direkte. Fanetallet rettet 6 → 5 (stale tekst). lanserings-smoke e2e. |
 | · Hull-analyse | `/portal/analysere/hull` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | v2-port 17. jul (Team F2): hele skjermen (begge faner) rekomponert til v2 — `AnalysereHullV2` (PillTabs/SgKategorier/Scorekort/MiniSpark); queries og fane-logikk uendret; SG per hull vises ærlig som «—» (ikke beregnet i datagrunnlaget). **Varmekart 19. jul:** `VarmekartKort` i «Hull for hull»-fanen — v2 `VarmeKart`-primitiven (`src/components/v2/datavis.tsx`) farget med `T.down`, snitt avvik fra par per hull aggregert på tvers av ALLE spillerens runder (`aggregerHullVarme`, `src/lib/domain/hole-heatmap.ts`), tom-tilstand under 3 runder. Flyt ~ → ✓. **Sone-kart-diagram 19. jul** (samme dag, etter Anders' svar på `docs/design-bestillinger/v2-sonekart-hull-analyse.md`): drop-off-gapet er lukket — `SoneDiagram`/`SoneDiagramBlokk` i `AnalysereHullV2.tsx` (`SoneFane`) tegner et illustrativt, bane-uavhengig «vei mot green»-diagram (tee → innspill → nærspill → putt) som et nytt lag OVER de eksisterende `SgKategorier`/`Rad`-detaljene (fjernet ingenting). Tap/hover-popover er en 1:1-kopi av `VarmeKartCelle`-mønsteret (ekte hover åpner ved museover, touch åpner/lukker ved trykk, Escape/fokus-tap lukker); popover viser SG (`fmtSg`), `MiniSpark`-trend og økter/minutter siste 30 dager — samme tall som Rad-listen. Tom-tilstand (0 SG-registreringer): alle soner nøytrale `T.mut`, aldri fabrikkert tall. Ny HjelpTips-nøkkel `soneDiagram` i `src/lib/v2/hjelpetekster.ts`. Design/Flyt fortsatt ✓ (ingen nye queries, kun ny visning av data skjermen allerede hadde). |
-| Statistikk (oversikt) | `/portal/statistikk` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Fase 2 spot-check 17. jul: FLIPPET ~ → ✓. `StatistikkHub` (via statistikk-hybrid) er fullt golfdata-komponert — overgangs-laget teller som kanon per design-system-regelen. Rekomponeres til v2 når hub-bølgen tas; underruten `[metric]` er alt v2 (Team D3). |
+| Statistikk (oversikt) | `/portal/statistikk` | ✓ | ✓✓– | ✓ | ✓ | ✓ | ✓ | Fase 2 spot-check 17. jul: FLIPPET ~ → ✓. `StatistikkHub` (via statistikk-hybrid) er fullt golfdata-komponert — overgangs-laget telte som kanon per den (nå slettede) design-system-regelen. Rekomponeres til v2 når hub-bølgen tas; underruten `[metric]` er alt v2 (Team D3). |
 | · Metrikk-detalj | `/portal/statistikk/[metric]` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D3): `StatistikkMetrikkV2` — metric-oppslag (5 pyramide + 4 SG + aliaser), queries og trend-buckets uendret. Falsk (disabled) periode-velger erstattet med ærlig «Siste 90 d»-badge; fortegn mot kategori-snitt vises nå korrekt; HjelpTips på SG/pyramide/kategori-snitt. A1-benchmark fortsatt statisk proxy, merket «(referanse)». Design – → ✓. |
 | ~~· Sammenlign~~ | `/portal/statistikk/sammenlign` | — | — | — | — | — | — | RUTE FINNES IKKE i koden (verifisert 2026-07-14) — raden var ønske/plan, aldri bygget. Fjern eller bygg bevisst. |
 | · Del runde | `/portal/statistikk/runder/[runId]/del` | ✓ | ✓✓– | ✓ | ~ | ~ | ~ | v2-port 17. jul (Team D3): `DelRundeV2` — delekortet på `T.wrapped`-gradientene (0 hex), format/synlighet/kopier-lenke uendret; SG-piller med ordboksnavn (Tee-slag/Innspill/Nærspill/Putting). «Last ned» fortsatt simulert som i baseline. Design – → ✓, Mob/Desk/iPad --- → ✓✓–. |
@@ -486,7 +486,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 > (271 unike mål). Fikset: «Book økt»/«Melding» i daglig brief (pekte på død /admin/booking/ny og
 > alias /admin/messages), «Åpne full radar» i Talent (pekte på ubygget radar/[playerId]),
 > «Følg opp» i Økonomi (redirect-loop til seg selv), 3 lenker til /admin/approvals-alias →
-> /admin/godkjenninger. Fullt skjerm-/funksjonsinventar med duplikat-analyse: `docs/AGENCYOS-INVENTAR.md`.
+> /admin/godkjenninger. Fullt skjerm-/funksjonsinventar med duplikat-analyse: `docs/arkiv/2026-08-03-forenkling-bolge2/AGENCYOS-INVENTAR.md`.
 >
 > **2026-07-14 — struktur-opprydding:** de 14 spøkelses-radene fra 12. juli-revisjonen (ruter som
 > aldri ble bygget: workspace/oppgaver/[id], talent/[playerId], talent/radar/[playerId], anlegg/[id],
@@ -498,7 +498,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 > **2026-07-12 — felles chrome:** ALLE legacy-sidene under `/admin/(legacy)/` rendres nå i
 > V2Shell (samme rail + Mer-meny + full bredde som de porterte sidene) — gamle AdminShell
 > (sidebar/topbar med scope-velger og gamle demo-navn) er koblet ut av layouten. Innholdet
-> deres rekomponeres fortsatt bølgevis per `plans/legacy-portering-prioritet.md`.
+> deres rekomponeres fortsatt bølgevis per `docs/arkiv/2026-08-03-forenkling-bolge2/legacy-portering-prioritet.md`.
 
 > **Rettet 2026-07-14:** denne merknaden advarte tidligere om «dobbeltarbeid» på disse parene.
 > Verifisert i kode: alle er allerede ryddet — den gamle adressen (`/admin/finance`,
@@ -519,7 +519,7 @@ AgencyOS er coachens kontrolltårn: «hvem trenger MEG i dag?» Adressene begynn
 >
 > **Reconciliation 16. jul — kanon-presisering:** design-kanon har gått videre fra golfdata til
 > **v2** (`src/components/v2/` + `src/components/admin/v2/*V2.tsx`) — golfdata er nå
-> «overgangs-lag» per `.claude/rules/design-system-regel.md`. De fleste «Design: –»-flippene over
+> «overgangs-lag» (design-beslutninger: `.claude/rules/beslutninger.md` §Tema/design). De fleste «Design: –»-flippene over
 > er derfor til v2-komponerte skjermer, ikke golfdata. En egen bespoke lokal komponent-familie
 > (`@/components/admin/agencyos/ui.tsx`: `AgPage`/`AgPageHead`/`AgChip` m.fl.) finnes også i
 > kodebasen — den teller IKKE som kanon; skjermer bygget kun på den er ekte gap. Flere rader bruker
@@ -798,6 +798,12 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 
 ## Endringslogg
 
+- 3. august (forenkling bølge 2 — pekere og dokument-råte): **Ingen skjermendringer.**
+  Inventar-snapshotene (`AGENCYOS-INVENTAR`, `funksjonsinventar-2026-07-29`,
+  `designdekning-2026-07-29`, `komponentinventar-…-07-31`) og gamle planer er arkivert til
+  `docs/arkiv/2026-08-03-forenkling-bolge2/` — **denne planen er eneste levende skjermkilde.**
+  Råtne pekere til slettede `design-system-regel.md`/`FASIT.md`/`ai-coach/kunnskap/` rettet
+  til `.claude/rules/beslutninger.md` §Tema/design og `src/lib/masterbrain/`.
 - 3. august (kvalitetsaudit tiltak 9+10, fullføring): **PR #253 merget, hydreringsfeil fikset og
   verifisert, DDL bekreftet i prod, Stripe-sjekkliste levert.**
   - `processed_webhook_events` bekreftet i prod: 5 kolonner, unik indeks (source, eventId), RLS på,
@@ -923,11 +929,11 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 
 - 24. juli: **GO V6 Craft** — «?»-pass på flaggskip-skjermene som manglet det (Gjør, Stall, Godkjenninger, AgencyOS-analyse + spilleranalyse; `AnalyseV2Kpi` fikk `hjelp`-felt); axe-smoke utvidet fra 3 til 12 offentlige flater (`tests/e2e/accessibility-v2-smoke.spec.ts`); navigasjonsovergang — v2-shell toner innholdet inn ved rutebytte (`.v2-fade-in`, honorerer prefers-reduced-motion).
 
-- 24. juli: **GO V2 Live + runde** — delt tommel-sone (`src/components/portal/runde-logg/tommel-sone.tsx`) holder primærhandlingen nederst i skjermen i både slag- og hurtigmodus og i oppsummeringen; live-økt-oppsummeringen og «Runden er lagret» har én neste handling hver. Se `plans/design-forbedring-plattform-2026-07-24.md` §4.
+- 24. juli: **GO V2 Live + runde** — delt tommel-sone (`src/components/portal/runde-logg/tommel-sone.tsx`) holder primærhandlingen nederst i skjermen i både slag- og hurtigmodus og i oppsummeringen; live-økt-oppsummeringen og «Runden er lagret» har én neste handling hver. Se `docs/arkiv/2026-08-03-forenkling-bolge2/design-forbedring-plattform-2026-07-24.md` §4.
 
-- 24. juli: **GO V3 Coach-dag først** — cockpit NÅ øverst (live → AI-dispatch → Triage før KPI/fokus/innboks); Stall rad = detalj + Workbench som CTA + «trenger deg» sortert øverst; Godkjenninger primær følger køen (haster → lav-risiko → tom); `SerieMeny` → `BunnArk`-kontrakt. Se `plans/design-forbedring-plattform-2026-07-24.md` §4.
+- 24. juli: **GO V3 Coach-dag først** — cockpit NÅ øverst (live → AI-dispatch → Triage før KPI/fokus/innboks); Stall rad = detalj + Workbench som CTA + «trenger deg» sortert øverst; Godkjenninger primær følger køen (haster → lav-risiko → tom); `SerieMeny` → `BunnArk`-kontrakt. Se `docs/arkiv/2026-08-03-forenkling-bolge2/design-forbedring-plattform-2026-07-24.md` §4.
 
-- 24. juli: **GO V1 Dommer-finpuss** — Analysere default SG + «Logg runde» + ordbok uten OTT/APP/ARG-koder; Hjem én primær CTA (Workbench ghost når ingen økt); Plan HjelpTips på uke-%/SG + tom-uke ghost-CTA. Se `plans/design-forbedring-plattform-2026-07-24.md`.
+- 24. juli: **GO V1 Dommer-finpuss** — Analysere default SG + «Logg runde» + ordbok uten OTT/APP/ARG-koder; Hjem én primær CTA (Workbench ghost når ingen økt); Plan HjelpTips på uke-%/SG + tom-uke ghost-CTA. Se `docs/arkiv/2026-08-03-forenkling-bolge2/design-forbedring-plattform-2026-07-24.md`.
 
 - 24. juli: **Ferdigstillingsplan Fase A+B levert (gren).** Dokumentsynk (STATUS-NÅ,
   skjermplan-master bølger, Bolk 6); `lastLoginAt` på alle innloggingsstier +
@@ -1174,7 +1180,7 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
   gitt at 11 av 11 sjekkede rader var falske positiver, bør resten av MASTER-SKJERMPLAN.md sine
   «Design: –»-rader stikkprøve-verifiseres mot faktisk kode før flere byggerunder scopes rent
   fra denne tabellen.
-- 16. juli (`/kommando` fjernet, B8 i `docs/AGENCYOS-INVENTAR.md`, branch
+- 16. juli (`/kommando` fjernet, B8 i `docs/arkiv/2026-08-03-forenkling-bolge2/AGENCYOS-INVENTAR.md`, branch
   `claude/kommando-route-cleanup`): det gamle personlige kommandosenteret
   (dashboard + `agenter`/`kalender`/`oppgaver`/`prosjekter`/`team`) er nå rene
   redirects til de ekte AgencyOS-flatene — `/admin/agenter` (chat),
@@ -1293,7 +1299,7 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
   `bekreftet`) ligger fortsatt i `src/app/portal/(legacy)/booking/` med gammel design — raden
   var allerede korrekt (Design «–») og er ikke endret. «Legacy-portering av prioriterte
   skjermer» er heller IKKE fullført utover Turneringer (allerede ✓ i denne planen fra 13. juli)
-  og den ovennevnte Ny spiller-siden — resten av P1-lista i `plans/legacy-portering-prioritet.md`
+  og den ovennevnte Ny spiller-siden — resten av P1-lista i `docs/arkiv/2026-08-03-forenkling-bolge2/legacy-portering-prioritet.md`
   (Drills-bibliotek, Live-økt coach-flyt, `[id]/rediger`, `[id]/tildel-test`,
   Plan-mal-redigering) ligger fortsatt urørt i `src/app/admin/(legacy)/`; radene der er
   allerede korrekte og er ikke endret. **Ikke en radendring (infrastruktur, ikke en skjerm):**
@@ -1305,7 +1311,7 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
   fikser uten egen skjerm-rad her; se `docs/VEIKART-BESTE-VERKTOY.md` og `docs/STATUS-NÅ.md`
   for detaljene. Kilder brukt til denne verifiseringen: faktisk kildekode (page.tsx +
   komponenter), `git log`, `docs/VEIKART-BESTE-VERKTOY.md` (status-logg), og
-  `plans/legacy-portering-prioritet.md`. tsc/build ikke kjørt (ren dokument-endring).
+  `docs/arkiv/2026-08-03-forenkling-bolge2/legacy-portering-prioritet.md`. tsc/build ikke kjørt (ren dokument-endring).
 
 - 14. juli (struktur og navnekonsistens, branch `claude/struktur-navn-opprydding`): **Fiks:**
   Innstillinger-siden (`/portal/meg/innstillinger`) manglet egen inngangsknapp fra Meg-fanen —
