@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 // WANG Årsplan (Coach) — trenerens periodiserte årsplan. Desktop-skall
 // (navy sidebar + topbar) + Årsplan-oversikt og Periode-detalj. Portert fra
@@ -64,7 +65,7 @@ export function CoachArsplan({ live = null }: { live?: WangLiveData | null }) {
                 {g.items.map((it) => {
                   const aktiv = it.key === "arsplan";
                   return (
-                    <span key={it.key} style={{ display: "flex", alignItems: "center", gap: 11, height: 40, padding: "0 12px", borderRadius: 12, fontFamily: "var(--font-brand)", fontWeight: 600, fontSize: 13.5, cursor: "default", background: aktiv ? "rgba(255,255,255,0.14)" : "transparent", color: aktiv ? "var(--white)" : "var(--text-on-dark-dim)" }}>
+                    <span key={it.key} style={{ display: "flex", alignItems: "center", gap: 11, height: 40, padding: "0 12px", borderRadius: 12, fontFamily: "var(--font-brand)", fontWeight: 600, fontSize: 13.5, cursor: "default", background: aktiv ? T.farge.hvitA14 : "transparent", color: aktiv ? "var(--white)" : "var(--text-on-dark-dim)" }}>
                       <Ikon name={it.icon} size={17} />{it.label}
                     </span>
                   );
@@ -73,7 +74,7 @@ export function CoachArsplan({ live = null }: { live?: WangLiveData | null }) {
             </div>
           ))}
         </nav>
-        <div style={{ padding: 16, borderTop: "1px solid rgba(255,255,255,0.12)", display: "flex", alignItems: "center", gap: 11 }}>
+        <div style={{ padding: 16, borderTop: `1px solid ${T.farge.hvitA12}`, display: "flex", alignItems: "center", gap: 11 }}>
           <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 38, height: 38, borderRadius: 999, background: "var(--wang-mint)", color: "var(--navy-deep)", fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: 14 }}>AK</span>
           <div style={{ minWidth: 0 }}>
             <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 13, color: "var(--white)" }}>{COACH_USER.name}</div>
@@ -116,13 +117,13 @@ function Oversikt({ perioder, live, onOpen }: { perioder: CoachPeriode[]; live: 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap", marginBottom: 10 }}>
           <div className="t-label" style={{ color: "var(--wang-mint)" }}>Årsplan · Sesong 2026–2027</div>
           {live ? (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 24, padding: "0 11px", borderRadius: 999, background: "rgba(73,202,159,0.18)", color: "var(--wang-mint)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 11, whiteSpace: "nowrap" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 24, padding: "0 11px", borderRadius: 999, background: T.farge.myntGronnA18, color: "var(--wang-mint)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 11, whiteSpace: "nowrap" }}>
               <span style={{ width: 7, height: 7, borderRadius: 999, background: "var(--wang-mint)" }} />Ekte datoer synket fra AgencyOS
             </span>
           ) : null}
         </div>
         <h1 style={{ margin: "0 0 8px", fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: "clamp(24px,4vw,32px)", lineHeight: 1.12 }}>Periodisert årsplan – golfgruppa</h1>
-        <p style={{ margin: 0, fontFamily: "var(--font-body)", fontSize: 14.5, lineHeight: 1.55, color: "rgba(255,255,255,0.9)", maxWidth: 620 }}>
+        <p style={{ margin: 0, fontFamily: "var(--font-body)", fontSize: 14.5, lineHeight: 1.55, color: T.farge.hvitA90, maxWidth: 620 }}>
           Fire perioder fra august til juni. Hver periode har sin egen treningsfordeling (pyramide), læringsfase-fokus og mål. Trykk på en periode for detaljer.
         </p>
       </section>

@@ -318,7 +318,7 @@ export function AdminCaddieAktivitetV2({
                           leading={
                             <span
                               aria-hidden
-                              style={{ width: 28, height: 28, flex: "none", borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: "#fff", background: avatarBg(ev.playerName) }}
+                              style={{ width: 28, height: 28, flex: "none", borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.onForest, background: avatarBg(ev.playerName) }}
                             >
                               {ev.playerInitials}
                             </span>
@@ -397,7 +397,7 @@ export function AdminCaddieAktivitetV2({
                     leading={
                       <span
                         aria-hidden
-                        style={{ width: 26, height: 26, flex: "none", borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: "#fff", background: avatarBg(p.name) }}
+                        style={{ width: 26, height: 26, flex: "none", borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.onForest, background: avatarBg(p.name) }}
                       >
                         {p.initials}
                       </span>
@@ -474,7 +474,7 @@ function MetaFelt({ k, v }: { k: string; v: string }) {
 function NokkeltallRad({ k, v, last }: { k: string; v: string; last?: boolean }) {
   return (
     <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", padding: "9px 0", borderBottom: last ? "none" : `1px solid color-mix(in srgb, var(--v2-lime) 10%, transparent)` }}>
-      <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(238,240,236,0.65)" }}>{k}</span>
+      <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: T.farge.taakeMerkeA65 }}>{k}</span>
       <span style={{ fontFamily: T.mono, fontSize: 20, fontWeight: 800, letterSpacing: "-0.01em", color: T.lime }}>{v}</span>
     </div>
   );

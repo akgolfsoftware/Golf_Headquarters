@@ -104,7 +104,7 @@ function MFot({ mobile }: { mobile: boolean }) {
 
 function MRamme({ mobile, aktiv, children }: { mobile: boolean; aktiv: string; children: ReactNode }) {
   return (
-    <div style={{ width: "100%", minHeight: "100vh", background: `radial-gradient(1100px 520px at 30% -10%, rgba(0,88,64,0.20), transparent 62%), ${T.bg}`, display: "flex", flexDirection: "column" }}>
+    <div style={{ width: "100%", minHeight: "100vh", background: `radial-gradient(1100px 520px at 30% -10%, ${T.farge.forestMerkeA20}, transparent 62%), ${T.bg}`, display: "flex", flexDirection: "column" }}>
       <MNav mobile={mobile} aktiv={aktiv} />
       {/* <main>-landemerke — samme a11y-fiks som delt marked-ramme.tsx. */}
       <main style={{ flex: 1 }}>{children}</main>
@@ -148,7 +148,7 @@ function Seksjon({ mobile, children, style }: { mobile: boolean; children: React
 function TelefonMock({ mobile, children, label }: { mobile: boolean; children: ReactNode; label?: string }) {
   return (
     <div style={{ width: mobile ? 230 : 260, flex: "none", margin: "0 auto" }}>
-      <div style={{ borderRadius: 34, border: `1px solid ${T.borderS}`, background: T.panel, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05), 0 20px 48px rgba(0,0,0,0.45)", overflow: "hidden" }}>
+      <div style={{ borderRadius: 34, border: `1px solid ${T.borderS}`, background: T.panel, boxShadow: `inset 0 1px 0 ${T.farge.hvitA5}, 0 20px 48px ${T.farge.svartA45}`, overflow: "hidden" }}>
         <div style={{ display: "flex", justifyContent: "center", padding: "10px 0 2px" }}>
           <span style={{ width: 70, height: 5, borderRadius: 9999, background: T.panel3 }} />
         </div>

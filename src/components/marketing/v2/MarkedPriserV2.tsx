@@ -98,7 +98,7 @@ function MFot({ mobile }: { mobile: boolean }) {
 
 function MRamme({ mobile, aktiv, children }: { mobile: boolean; aktiv: string; children: ReactNode }) {
   return (
-    <div style={{ minHeight: "100vh", background: `radial-gradient(1100px 520px at 30% -10%, rgba(0,88,64,0.20), transparent 62%), ${T.bg}`, display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", background: `radial-gradient(1100px 520px at 30% -10%, ${T.farge.forestMerkeA20}, transparent 62%), ${T.bg}`, display: "flex", flexDirection: "column" }}>
       <MNav mobile={mobile} aktiv={aktiv} />
       {/* <main>-landemerke — samme a11y-fiks som delt marked-ramme.tsx. */}
       <main style={{ flex: 1 }}>{children}</main>
@@ -198,7 +198,7 @@ export function MarkedPriserV2() {
             <div style={{ marginTop: 22 }}><MCta ghost small href="/auth/signup">Kom i gang gratis</MCta></div>
           </Kort>
 
-          <Kort tint pad="26px 26px 28px" style={{ borderColor: "rgba(209,248,67,0.35)" }}>
+          <Kort tint pad="26px 26px 28px" style={{ borderColor: T.farge.limeMerkeA35 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
               <Caps color={T.lime}>Pro</Caps>
               <StatusPill>Full tilgang</StatusPill>
@@ -229,7 +229,7 @@ export function MarkedPriserV2() {
       <Seksjon mobile={mobile} style={{ paddingTop: mobile ? 28 : 48 }}>
         <div style={{ maxWidth: 680, margin: "0 auto" }}>
           <Caps>Ofte stilt</Caps>
-          <div style={{ marginTop: 14, background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard, padding: "4px 20px", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.045), 0 12px 32px rgba(0,0,0,0.35)" }}>
+          <div style={{ marginTop: 14, background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard, padding: "4px 20px", boxShadow: `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${T.farge.svartA35}` }}>
             {FAQ.map((f, i) => {
               const on = open === i;
               return (

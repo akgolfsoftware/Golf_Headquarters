@@ -240,7 +240,7 @@ export function MegToastProvider({ children }: { children: ReactNode }) {
       {children}
       {msg && (
         <div role="status" style={{ position: "absolute", left: 0, right: 0, bottom: 18, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 40 }}>
-          <span style={{ maxWidth: "88%", padding: "10px 15px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.borderS}`, boxShadow: "0 12px 32px rgba(0,0,0,.4)", fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.4 }}>{msg}</span>
+          <span style={{ maxWidth: "88%", padding: "10px 15px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.borderS}`, boxShadow: `0 12px 32px ${T.farge.svartA40}`, fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.4 }}>{msg}</span>
         </div>
       )}
     </ToastCtx.Provider>

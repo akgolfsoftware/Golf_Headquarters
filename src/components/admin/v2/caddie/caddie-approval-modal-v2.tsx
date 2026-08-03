@@ -79,7 +79,7 @@ export function CaddieApprovalModalV2({ toolCall, onApprove, onReject, onClose }
       aria-modal="true"
       aria-labelledby="caddie-approval-title-v2"
       className="fixed inset-0 z-[80] flex items-center justify-center px-4"
-      style={{ background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }}
+      style={{ background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }}
       onClick={() => {
         if (!isBusy) onClose();
       }}
@@ -88,7 +88,7 @@ export function CaddieApprovalModalV2({ toolCall, onApprove, onReject, onClose }
         ref={dialogRef}
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
-        style={{ width: "100%", maxWidth: 520, borderRadius: 20, border: `1px solid ${T.borderS}`, background: T.panel, boxShadow: "0 24px 60px rgba(0,0,0,0.5)", outline: "none" }}
+        style={{ width: "100%", maxWidth: 520, borderRadius: 20, border: `1px solid ${T.borderS}`, background: T.panel, boxShadow: `0 24px 60px ${T.farge.svartA50}`, outline: "none" }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8, borderBottom: `1px solid ${T.border}`, padding: "16px 22px" }}>
           <Icon name="mail" size={16} style={{ color: T.lime }} />

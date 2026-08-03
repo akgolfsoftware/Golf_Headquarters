@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 import { useState, useSyncExternalStore } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -94,7 +95,7 @@ export function TreningsplanerInnhold({
           </h1>
           <p
             className="mt-4 max-w-[620px] text-[16px] leading-relaxed sm:text-lg"
-            style={{ color: "rgba(255,255,255,0.85)" }}
+            style={{ color: T.farge.hvitA85 }}
           >
             Fra årsplan til den enkelte økten. Velg gruppe – hele siden oppdaterer seg etter
             alder og nivå.
@@ -109,9 +110,9 @@ export function TreningsplanerInnhold({
                 className="cursor-pointer rounded-full px-4 py-2.5 text-[15px] font-bold transition-all sm:px-5"
                 style={{
                   fontFamily: "var(--font-jr-sans)",
-                  border: `1.5px solid ${k === gKey ? "var(--gfgk-white)" : "rgba(255,255,255,0.35)"}`,
+                  border: `1.5px solid ${k === gKey ? "var(--gfgk-white)" : "${T.farge.hvitA35}"}`,
                   background: k === gKey ? "var(--gfgk-white)" : "transparent",
-                  color: k === gKey ? "var(--ink)" : "rgba(255,255,255,0.85)",
+                  color: k === gKey ? "var(--ink)" : T.farge.hvitA85,
                 }}
               >
                 <span className="hidden sm:inline">
@@ -122,16 +123,16 @@ export function TreningsplanerInnhold({
             ))}
           </div>
         </div>
-        <div style={{ background: "rgba(255,255,255,0.06)", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+        <div style={{ background: T.farge.hvitA6, borderTop: `1px solid ${T.farge.hvitA10}` }}>
           <div className="mx-auto flex max-w-[1200px] flex-wrap items-baseline gap-x-7 gap-y-1.5 px-5 py-4 sm:px-7">
             <span className="text-xl font-bold text-white">{g.navn}</span>
             <span
               className="text-[13.5px]"
-              style={{ fontFamily: "var(--font-jr-mono)", color: "rgba(255,255,255,0.65)" }}
+              style={{ fontFamily: "var(--font-jr-mono)", color: T.farge.hvitA65 }}
             >
               {g.alder} · {g.kat}
             </span>
-            <span className="text-[14.5px]" style={{ color: "rgba(255,255,255,0.75)" }}>
+            <span className="text-[14.5px]" style={{ color: T.farge.hvitA75 }}>
               {g.motto}
             </span>
             <Link
@@ -316,12 +317,12 @@ export function TreningsplanerInnhold({
                     <div className="text-[14px] font-medium sm:text-[15px]" style={{ fontFamily: "var(--font-jr-mono)", color: farge }}>
                       {fase.kode}
                     </div>
-                    <div className="text-[13px]" style={{ color: "rgba(255,255,255,0.6)" }}>
+                    <div className="text-[13px]" style={{ color: T.farge.hvitA60 }}>
                       {fase.navn}
                     </div>
                   </div>
                   <div>
-                    <div className="relative h-5 overflow-hidden rounded-full" style={{ background: "rgba(255,255,255,0.08)" }}>
+                    <div className="relative h-5 overflow-hidden rounded-full" style={{ background: T.farge.hvitA8 }}>
                       <div className="flex h-full items-center rounded-full transition-all duration-300" style={{ width: `${fase.pct}%`, background: farge }}>
                         {fase.pct > 15 ? (
                           <span className="ml-auto pr-2 text-[11px] font-bold tabular-nums" style={{ fontFamily: "var(--font-jr-mono)", color: "var(--ink)" }}>
@@ -332,13 +333,13 @@ export function TreningsplanerInnhold({
                       {fase.pct <= 15 ? (
                         <span
                           className="absolute top-1/2 -translate-y-1/2 text-[11px] font-bold tabular-nums"
-                          style={{ fontFamily: "var(--font-jr-mono)", color: "rgba(255,255,255,0.7)", left: `calc(${fase.pct}% + 8px)` }}
+                          style={{ fontFamily: "var(--font-jr-mono)", color: T.farge.hvitA70, left: `calc(${fase.pct}% + 8px)` }}
                         >
                           {fase.pct} %
                         </span>
                       ) : null}
                     </div>
-                    <p className="mb-0 mt-2 text-[13.5px] leading-normal" style={{ color: "rgba(255,255,255,0.7)" }}>
+                    <p className="mb-0 mt-2 text-[13.5px] leading-normal" style={{ color: T.farge.hvitA70 }}>
                       {fase.tekst}
                     </p>
                   </div>
@@ -346,7 +347,7 @@ export function TreningsplanerInnhold({
               );
             })}
           </div>
-          <p className="mb-0 mt-6 text-[12.5px]" style={{ fontFamily: "var(--font-jr-mono)", color: "rgba(255,255,255,0.5)" }}>
+          <p className="mb-0 mt-6 text-[12.5px]" style={{ fontFamily: "var(--font-jr-mono)", color: T.farge.hvitA50 }}>
             Andel av treningstiden over hele året – {gKey} · {g.kat}
           </p>
         </div>
@@ -416,7 +417,7 @@ export function TreningsplanerInnhold({
             <span className="text-[15px] font-bold">
               {g.navn} – {g.alder} – {okter.length} økter/uke
             </span>
-            <span className="text-[12.5px]" style={{ fontFamily: "var(--font-jr-mono)", color: "rgba(255,255,255,0.6)" }}>
+            <span className="text-[12.5px]" style={{ fontFamily: "var(--font-jr-mono)", color: T.farge.hvitA60 }}>
               {gKey} · {g.kat}
             </span>
           </div>
@@ -478,7 +479,7 @@ export function TreningsplanerInnhold({
               <div className="flex items-center justify-between gap-2.5 px-5 py-4 text-white sm:px-6" style={{ background: "var(--ink)" }}>
                 <div>
                   <div className="text-[17px] font-bold">{okt.tittel}</div>
-                  <div className="mt-0.5 text-[12.5px]" style={{ fontFamily: "var(--font-jr-mono)", color: "rgba(255,255,255,0.6)" }}>
+                  <div className="mt-0.5 text-[12.5px]" style={{ fontFamily: "var(--font-jr-mono)", color: T.farge.hvitA60 }}>
                     {okt.meta}
                   </div>
                 </div>

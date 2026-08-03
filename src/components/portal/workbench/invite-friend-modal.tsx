@@ -122,11 +122,11 @@ export function InviteFriendModal({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      style={{ position: "fixed", inset: 0, zIndex: 90, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px", background: "rgba(0,0,0,0.55)" }}
+      style={{ position: "fixed", inset: 0, zIndex: 90, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px", background: T.farge.svartA55 }}
     >
       <div
         className="v2-sheet-in"
-        style={{ width: "100%", maxWidth: 480, maxHeight: "86vh", display: "flex", flexDirection: "column", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, boxShadow: "0 24px 60px rgba(0,0,0,0.5)", overflow: "hidden" }}
+        style={{ width: "100%", maxWidth: 480, maxHeight: "86vh", display: "flex", flexDirection: "column", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, boxShadow: `0 24px 60px ${T.farge.svartA50}`, overflow: "hidden" }}
       >
         {/* Header */}
         <div style={{ flex: "none", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, padding: "18px 20px 14px", borderBottom: `1px solid ${T.border}` }}>

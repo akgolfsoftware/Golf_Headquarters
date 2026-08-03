@@ -147,7 +147,7 @@ function MRamme({ mobile, aktiv, children }: { mobile: boolean; aktiv: string; c
         colorScheme: "dark",
         color: T.fg,
         fontFamily: T.ui,
-        background: `radial-gradient(1100px 520px at 30% -10%, rgba(0,88,64,0.20), transparent 62%), ${T.bg}`,
+        background: `radial-gradient(1100px 520px at 30% -10%, ${T.farge.forestMerkeA20}, transparent 62%), ${T.bg}`,
         display: "flex",
         flexDirection: "column",
       }}
@@ -312,7 +312,7 @@ function FaqAccordion({ kategori, punkter }: { kategori: string; punkter: Sporsm
           border: `1px solid ${T.border}`,
           borderRadius: T.rCard,
           padding: "4px 20px",
-          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.045), 0 12px 32px rgba(0,0,0,0.35)",
+          boxShadow: `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${T.farge.svartA35}`,
         }}
       >
         {punkter.map((p, i) => {
@@ -389,7 +389,7 @@ export function MarkedFaqV2() {
           <SeksT mobile={mobile} em="svar">
             Fant du ikke
           </SeksT>
-          <p style={{ fontFamily: T.ui, fontSize: 14, color: "rgba(238,240,236,0.85)", lineHeight: 1.6, margin: "14px auto 0", maxWidth: 440 }}>
+          <p style={{ fontFamily: T.ui, fontSize: 14, color: T.farge.taakeMerkeA85, lineHeight: 1.6, margin: "14px auto 0", maxWidth: 440 }}>
             Skriv til oss, så svarer vi som regel samme dag.
           </p>
           <div style={{ marginTop: 24, display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>

@@ -293,7 +293,7 @@ function SlideBeste({ slide, accentColor, mutedColor }: { slide: BesteSlide; acc
         BESTE RUNDE
       </div>
       <div style={{
-        background: "rgba(255,255,255,0.12)",
+        background: T.farge.hvitA12,
         borderRadius: 16,
         padding: "32px 40px",
         display: "inline-block",
@@ -340,7 +340,7 @@ function SlideKlubber({ slide, accentColor, mutedColor }: { slide: KlubberSlide;
             textTransform: "uppercase",
             padding: "6px 12px",
             borderRadius: 999,
-            background: "rgba(255,255,255,0.15)",
+            background: T.farge.hvitA15,
             color: "inherit",
           }}>
             {k}
@@ -436,7 +436,7 @@ function SlideRanking({ slide, accentColor, mutedColor, isActive }: { slide: Ran
       <div style={{ fontFamily: "var(--font-mono)", fontSize: 18, color: mutedColor, marginTop: 12 }}>
         av {slide.totalNasjon.toLocaleString("nb-NO")} norske spillere
       </div>
-      <div style={{ marginTop: 32, background: "rgba(255,255,255,0.12)", borderRadius: 12, padding: "16px 24px", display: "inline-block" }}>
+      <div style={{ marginTop: 32, background: T.farge.hvitA12, borderRadius: 12, padding: "16px 24px", display: "inline-block" }}>
         <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: mutedColor, marginBottom: 8 }}>
           {slide.fodselsAar}-ÅRSKULLET
         </div>
@@ -526,7 +526,7 @@ function SlideAvslutning({ slide, accentColor, mutedColor, delLenke }: { slide: 
             gap: 8,
             padding: "12px 24px",
             borderRadius: 999,
-            background: "rgba(255,255,255,0.15)",
+            background: T.farge.hvitA15,
             color: "inherit",
             fontSize: 14,
             fontFamily: "inherit",

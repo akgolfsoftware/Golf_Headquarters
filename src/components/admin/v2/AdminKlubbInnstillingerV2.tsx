@@ -602,7 +602,7 @@ function V2ModalRamme({
         if (!pending) onClose();
       }}
       className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center"
-      style={{ background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }}
+      style={{ background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }}
     >
       <div
         ref={panelRef}
@@ -616,7 +616,7 @@ function V2ModalRamme({
           border: `1px solid ${T.borderS}`,
           borderRadius: "20px 20px 0 0",
           padding: "20px 22px calc(20px + env(safe-area-inset-bottom))",
-          boxShadow: "0 24px 60px rgba(0,0,0,0.5)",
+          boxShadow: `0 24px 60px ${T.farge.svartA50}`,
           outline: "none",
         }}
       >

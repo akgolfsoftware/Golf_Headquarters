@@ -1,3 +1,4 @@
+import { T } from "@/lib/v2/tokens";
 /**
  * /stats/sammenlign-spillere — head-to-head sammenligning av 2 norske spillere
  * Pixel-perfect port av design 10 fra design-handoff-stats-2026-05-25.
@@ -268,7 +269,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                 fontSize: 16,
                 lineHeight: 1.55,
                 marginTop: 16,
-                color: "rgba(250,250,247,0.8)",
+                color: T.farge.sandLysA80,
                 maxWidth: 440,
               }}
             >
@@ -286,7 +287,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
           </div>
           <div
             style={{
-              background: "rgba(255,255,255,0.06)",
+              background: T.farge.hvitA6,
               border: "1px solid color-mix(in srgb, var(--v2-lime) 20%, transparent)",
               borderRadius: 14,
               padding: 24,
@@ -305,7 +306,7 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
                   gap: 10,
                   marginBottom: 12,
                   fontSize: 14,
-                  color: "rgba(250,250,247,0.88)",
+                  color: T.farge.sandLysA88,
                 }}
               >
                 <span

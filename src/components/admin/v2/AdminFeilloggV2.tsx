@@ -114,7 +114,7 @@ function FeilRad({ rad, last }: { rad: AdminFeilloggV2Rad; last: boolean }) {
                 padding: 12,
                 borderRadius: 10,
                 border: `1px solid ${T.border}`,
-                background: "rgba(0,0,0,0.18)",
+                background: T.farge.svartA18,
                 fontFamily: T.mono,
                 fontSize: 11,
                 color: T.fg2,

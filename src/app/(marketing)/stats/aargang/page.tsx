@@ -1,3 +1,4 @@
+import { T } from "@/lib/v2/tokens";
 /**
  * /stats/aargang — Kohort-explorer index
  * Visuell tidslinje 2000-2012, klikk → /stats/aargang/[aar]
@@ -172,7 +173,7 @@ export default async function AargangIndexPage() {
                         fontSize: 11,
                         letterSpacing: "0.08em",
                         color: k.aar === 2009 ? "color-mix(in srgb, var(--v2-lime) 70%, transparent)" : "var(--s-muted-fg)",
-                        background: k.aar === 2009 ? "rgba(255,255,255,0.1)" : "var(--s-secondary)",
+                        background: k.aar === 2009 ? T.farge.hvitA10 : "var(--s-secondary)",
                         padding: "3px 8px",
                         borderRadius: 99,
                       }}

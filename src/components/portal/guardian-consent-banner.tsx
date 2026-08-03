@@ -6,6 +6,7 @@
  */
 
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 import { useState, useTransition } from "react";
 import { AlertCircle, Check, Mail } from "lucide-react";
@@ -42,7 +43,7 @@ export function GuardianConsentBanner({ pendingInvitationEmail }: Props) {
     <div
       role="alert"
       className="border-b border-warn/30 bg-warn/10 px-4 py-2 md:px-8"
-      style={{ background: "rgba(184, 133, 42, 0.10)", borderColor: "rgba(184, 133, 42, 0.30)" }}
+      style={{ background: T.farge.gullMerkeA10, borderColor: T.farge.gullMerkeA30 }}
     >
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="flex items-start gap-2">
@@ -75,7 +76,7 @@ export function GuardianConsentBanner({ pendingInvitationEmail }: Props) {
           type="button"
           onClick={() => setShowResend((v) => !v)}
           className="font-mono shrink-0 rounded-full border border-warn/40 bg-card px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-foreground hover:bg-warn/10"
-          style={{ borderColor: "rgba(184, 133, 42, 0.40)" }}
+          style={{ borderColor: T.farge.gullMerkeA40 }}
         >
           {pendingInvitationEmail ? "Send ny invitasjon" : "Legg til forelder"}
         </button>

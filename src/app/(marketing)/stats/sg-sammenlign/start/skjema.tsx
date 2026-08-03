@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 /**
  * SgStartSkjema — 2-stegs wizard for SG-sammenligning onboarding.
@@ -179,8 +180,8 @@ export function SgStartSkjema({
             display: "flex",
             alignItems: "flex-start",
             gap: 10,
-            background: "rgba(163,45,45,0.08)",
-            border: "1px solid rgba(163,45,45,0.3)",
+            background: T.farge.feilMerkeA8,
+            border: `1px solid ${T.farge.feilMerkeA30}`,
             borderRadius: 10,
             padding: "12px 16px",
             marginBottom: 24,
@@ -262,7 +263,7 @@ export function SgStartSkjema({
                 border: "1.5px solid var(--s-border)",
                 borderRadius: 12,
                 padding: "12px 16px",
-                boxShadow: "0 1px 3px rgba(10,31,23,0.06)",
+                boxShadow: `0 1px 3px ${T.farge.inkMerkeA6}`,
                 transition: "border-color 0.15s",
               }}
             >
@@ -289,7 +290,7 @@ export function SgStartSkjema({
                     color: "hsl(var(--primary))",
                     fontWeight: 600,
                     letterSpacing: "0.04em",
-                    background: "rgba(0,88,64,0.08)",
+                    background: T.farge.forestMerkeA8,
                     padding: "2px 8px",
                     borderRadius: 4,
                   }}
@@ -310,7 +311,7 @@ export function SgStartSkjema({
                   background: "var(--paper)",
                   border: "1px solid var(--s-border)",
                   borderRadius: 10,
-                  boxShadow: "0 8px 24px rgba(10,31,23,0.1)",
+                  boxShadow: `0 8px 24px ${T.farge.inkMerkeA10}`,
                   zIndex: 50,
                   overflow: "hidden",
                   marginTop: 4,
@@ -332,7 +333,7 @@ export function SgStartSkjema({
                       border: "none",
                       background:
                         refSpiller.dgPlayerId === s.dgPlayerId
-                          ? "rgba(0,88,64,0.06)"
+                          ? T.farge.forestMerkeA6
                           : "transparent",
                       cursor: "pointer",
                       textAlign: "left",
@@ -428,7 +429,7 @@ export function SgStartSkjema({
                     transition: "all 0.18s",
                     transform: selected ? "scale(1.02)" : "scale(1)",
                     boxShadow: selected
-                      ? "0 4px 12px rgba(0,88,64,0.2)"
+                      ? `0 4px 12px ${T.farge.forestMerkeA20}`
                       : "none",
                   }}
                 >
@@ -603,7 +604,7 @@ export function SgStartSkjema({
                     background: modus === id ? "hsl(var(--primary))" : "transparent",
                     color: modus === id ? "hsl(var(--accent))" : "hsl(var(--muted-foreground))",
                     boxShadow:
-                      modus === id ? "0 2px 6px rgba(0,88,64,0.25)" : "none",
+                      modus === id ? `0 2px 6px ${T.farge.forestMerkeA25}` : "none",
                   }}
                 >
                   {label}

@@ -54,7 +54,7 @@ function HelseSamtykkeMangler() {
             padding: "10px 16px",
             borderRadius: 11,
             background: T.forest,
-            color: "#fff",
+            color: T.onForest,
             fontFamily: T.ui,
             fontSize: 13.5,
             fontWeight: 600,

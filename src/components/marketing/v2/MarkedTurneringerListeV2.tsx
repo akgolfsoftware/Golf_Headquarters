@@ -158,7 +158,7 @@ export function MarkedTurneringerListeV2({
                     fontSize: 10,
                     fontWeight: 700,
                     color: aktiv ? T.onLime : T.mut,
-                    background: aktiv ? "rgba(13,14,13,0.18)" : T.panel3,
+                    background: aktiv ? T.farge.grafittMerkeA18 : T.panel3,
                     borderRadius: 9999,
                     padding: "2px 7px",
                   }}

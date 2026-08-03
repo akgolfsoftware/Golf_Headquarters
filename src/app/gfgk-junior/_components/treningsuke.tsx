@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 import { useState } from "react";
 
@@ -64,7 +65,7 @@ export function Treningsuke({
           </span>
           <span
             className="text-[12.5px]"
-            style={{ fontFamily: "var(--font-jr-mono)", color: "rgba(255,255,255,0.6)" }}
+            style={{ fontFamily: "var(--font-jr-mono)", color: T.farge.hvitA60 }}
           >
             {valgt} · {g.kat}
           </span>

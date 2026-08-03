@@ -429,7 +429,7 @@ function DirGreenen() {
               <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 20, lineHeight: 1.2, letterSpacing: "-0.02em", color: result.make ? T.lime : T.fg }}>
                 {result.make ? "I hull" : result.tooShort ? "Kom ikke fram" : result.tooLong ? "Løp forbi" : Math.abs(result.missCm) > result.capCm * 1.8 ? `Bommet ${result.missCm > 0 ? "høyre" : "venstre"}` : "Lipp-out"}
               </div>
-              <div style={{ fontFamily: T.ui, fontSize: 12.5, lineHeight: 1.55, marginTop: 8, color: result.make ? "rgba(255,255,255,0.85)" : T.mut }}>
+              <div style={{ fontFamily: T.ui, fontSize: 12.5, lineHeight: 1.55, marginTop: 8, color: result.make ? T.farge.hvitA85 : T.mut }}>
                 {result.make && `Perfekt kjede: lest ${Math.round(result.sideBreakCm)} cm break, siktet riktig og doserte farten i sonen.`}
                 {!result.make && result.tooShort && <><strong>Lengde.</strong> For løs — putten døde før hullet og tok mer break på veien. Slå den forbi, ikke til.</>}
                 {!result.make && result.tooLong && <><strong>Lengde.</strong> For hard — ballen tok lite break og fór over. Mindre fart gir både snillere kant og mer fall.</>}
@@ -539,10 +539,10 @@ function DirKjeden() {
             <Caps size={10} color={T.lime}>Make-sannsynlighet</Caps>
             <HjelpTips k="makeProsent" size={11} />
           </span>
-          <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 68, lineHeight: 1, letterSpacing: "-0.03em", marginTop: 10, color: "rgba(255,255,255,0.96)", fontVariantNumeric: "tabular-nums" }}>
+          <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 68, lineHeight: 1, letterSpacing: "-0.03em", marginTop: 10, color: T.farge.hvitA96, fontVariantNumeric: "tabular-nums" }}>
             {Math.round(make * 100)}<small style={{ fontSize: 26, fontWeight: 600, color: T.lime }}> %</small>
           </div>
-          <p style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: "rgba(255,255,255,0.8)", margin: "10px 0 0", lineHeight: 1.5 }}>
+          <p style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: T.farge.hvitA80, margin: "10px 0 0", lineHeight: 1.5 }}>
             Perfekt utført topper på <strong style={{ color: T.lime }}>{Math.round(geom * C.FLAX * 100)} %</strong> for denne putten — selv proffer bommer {C.LEN[len].m}. Flaks-taket spiser de siste {Math.round((1 - C.FLAX) * 100)} %.
           </p>
         </div>

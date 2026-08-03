@@ -4,6 +4,7 @@ import type { LiveSessionData } from "@/lib/portal-live/types";
 import { AXIS_LABEL, formatDateTimeEyebrow } from "@/lib/portal-live/format";
 import { LiveSessionShell } from "./LiveSessionShell";
 import { startPlanSession } from "@/lib/portal-live/actions";
+import { T } from "@/lib/v2/tokens";
 
 const L_PHASE_LABEL: Record<string, string> = {
   GRUNN: "Grunnperiode",
@@ -23,7 +24,7 @@ export function PlanSessionBrief({ data, canStart, blockReason }: PlanSessionBri
       <button
         type="submit"
         className="flex h-16 w-full items-center justify-center gap-2 rounded-full bg-accent font-mono text-[13px] font-bold uppercase tracking-[0.04em] text-accent-foreground active:scale-[0.98]"
-        style={{ boxShadow: "0 4px 18px rgba(209, 248, 67, 0.28)" }}
+        style={{ boxShadow: `0 4px 18px ${T.farge.limeMerkeA28}` }}
       >
         <Play className="h-[17px] w-[17px]" fill="currentColor" strokeWidth={0} aria-hidden />
         Start økt

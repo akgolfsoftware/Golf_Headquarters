@@ -1,3 +1,4 @@
+import { T } from "@/lib/v2/tokens";
 /**
  * /stats/sg-sammenlign — landingsside (offentlig)
  * Pixel-perfect port av design 07 fra design-handoff-stats-2026-05-25.
@@ -467,7 +468,7 @@ export default async function SgSammenlignLanding() {
                   fontSize: 17,
                   lineHeight: 1.55,
                   marginTop: 20,
-                  color: "rgba(250,250,247,0.8)",
+                  color: T.farge.sandLysA80,
                   maxWidth: 480,
                 }}
               >
@@ -488,7 +489,7 @@ export default async function SgSammenlignLanding() {
           <Reveal delay={100}>
             <div
               style={{
-                background: "rgba(255,255,255,0.06)",
+                background: T.farge.hvitA6,
                 border: "1px solid color-mix(in srgb, var(--v2-lime) 25%, transparent)",
                 borderRadius: 16,
                 padding: 28,
@@ -508,7 +509,7 @@ export default async function SgSammenlignLanding() {
                     alignItems: "flex-start",
                     marginBottom: 14,
                     fontSize: 14,
-                    color: "rgba(250,250,247,0.9)",
+                    color: T.farge.sandLysA90,
                     lineHeight: 1.4,
                   }}
                 >

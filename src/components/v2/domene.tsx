@@ -324,7 +324,7 @@ export function MeldingsTraad({
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       {meldinger.map((m, i) => (
         <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: m.meg ? "flex-end" : "flex-start" }}>
-          <div style={{ maxWidth: "78%", padding: "10px 13px", borderRadius: 14, borderBottomRightRadius: m.meg ? 4 : 14, borderBottomLeftRadius: m.meg ? 14 : 4, background: m.meg ? "rgba(0,88,64,0.45)" : T.panel2, border: `1px solid ${m.meg ? "rgba(0,88,64,0.6)" : T.border}` }}>
+          <div style={{ maxWidth: "78%", padding: "10px 13px", borderRadius: 14, borderBottomRightRadius: m.meg ? 4 : 14, borderBottomLeftRadius: m.meg ? 14 : 4, background: m.meg ? T.farge.forestMerkeA45 : T.panel2, border: `1px solid ${m.meg ? "${T.farge.forestMerkeA60}" : T.border}` }}>
             {!m.meg && m.fra && <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, display: "block", marginBottom: 4 }}>{m.fra}</span>}
             <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.55 }}>{m.tekst}</span>
           </div>
@@ -769,7 +769,7 @@ export function LiveBar({
         border: `1px solid ${kritisk ? "transparent" : T.borderS}`,
         borderRadius: T.rPill,
         padding: "9px 10px 9px 16px",
-        color: kritisk ? "#fff" : undefined,
+        color: kritisk ? T.onForest : undefined,
       }}
     >
       <span style={{ display: "inline-flex", alignItems: "center", gap: 7, flex: "none" }}>
@@ -778,7 +778,7 @@ export function LiveBar({
             width: 8,
             height: 8,
             borderRadius: T.rPill,
-            background: kritisk ? "#fff" : prikk,
+            background: kritisk ? T.onForest : prikk,
             boxShadow: kritisk ? undefined : `0 0 0 3px color-mix(in srgb,${prikk} 25%,transparent)`,
           }}
         />
@@ -788,7 +788,7 @@ export function LiveBar({
             fontSize: 9,
             fontWeight: 700,
             letterSpacing: "0.08em",
-            color: kritisk ? "#fff" : prikk,
+            color: kritisk ? T.onForest : prikk,
           }}
         >
           {kritisk ? "STARTER SNART" : "LIVE"}
@@ -801,7 +801,7 @@ export function LiveBar({
           fontFamily: T.ui,
           fontSize: 13,
           fontWeight: 600,
-          color: kritisk ? "#fff" : T.fg,
+          color: kritisk ? T.onForest : T.fg,
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -811,7 +811,7 @@ export function LiveBar({
       </span>
       {deltakere != null && (
         <MetaBit icon="users">
-          <span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums", color: kritisk ? "#fff" : undefined }}>{deltakere}</span>
+          <span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums", color: kritisk ? T.onForest : undefined }}>{deltakere}</span>
         </MetaBit>
       )}
       <span
@@ -819,7 +819,7 @@ export function LiveBar({
           fontFamily: T.mono,
           fontSize: 14,
           fontWeight: 700,
-          color: kritisk ? "#fff" : T.fg,
+          color: kritisk ? T.onForest : T.fg,
           fontVariantNumeric: "tabular-nums",
           flex: "none",
         }}

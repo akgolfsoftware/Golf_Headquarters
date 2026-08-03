@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 /**
  * S-14: GDPR-cookie-banner.
@@ -133,7 +134,7 @@ export function CookieBanner() {
           border: `1px solid ${farger.kortBorder}`,
           borderRadius: "16px 16px 0 0",
           padding: "20px 24px",
-          boxShadow: "0 -4px 24px rgba(0,0,0,0.10)",
+          boxShadow: `0 -4px 24px ${T.farge.svartA10}`,
           display: "flex",
           flexDirection: "column",
           gap: 12,

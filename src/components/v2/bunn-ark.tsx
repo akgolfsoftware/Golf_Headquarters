@@ -87,7 +87,7 @@ export function BunnArk({ open, onClose, tittel, maxHeight = "82vh", children }:
         onClick={onClose}
         aria-hidden
         className="v2-backdrop-in"
-        style={{ position: "fixed", inset: 0, zIndex: 90, background: "rgba(0,0,0,0.55)" }}
+        style={{ position: "fixed", inset: 0, zIndex: 90, background: T.farge.svartA55 }}
       />
       <div
         ref={arkRef}
@@ -109,7 +109,7 @@ export function BunnArk({ open, onClose, tittel, maxHeight = "82vh", children }:
           border: `1px solid ${T.border}`,
           borderRadius: "18px 18px 0 0",
           padding: "10px 16px calc(20px + env(safe-area-inset-bottom))",
-          boxShadow: "0 -18px 48px rgba(0,0,0,0.5)",
+          boxShadow: `0 -18px 48px ${T.farge.svartA50}`,
         }}
       >
         {/* Drag-håndtak-hint (rent visuelt, ikke interaktivt) */}

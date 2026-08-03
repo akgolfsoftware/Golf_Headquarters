@@ -151,7 +151,7 @@ function DraftPanelV2({ draft }: { draft: CoAgentDraft }) {
             </span>
             <div style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 800, textTransform: "uppercase", lineHeight: 1.3, color: T.lime }}>
               FRA <span style={{ color: T.fg }}>{draft.agentName}</span>
-              <span style={{ marginTop: 1, display: "block", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: "rgba(238,240,236,0.6)" }}>co-agent · alfa</span>
+              <span style={{ marginTop: 1, display: "block", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.farge.taakeMerkeA60 }}>co-agent · alfa</span>
             </div>
           </div>
 

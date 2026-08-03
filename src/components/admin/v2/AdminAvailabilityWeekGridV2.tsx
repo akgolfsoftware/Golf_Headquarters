@@ -163,8 +163,8 @@ export function AvailabilityWeekGridV2({ locations, windows }: { locations: Loca
       )}
 
       {bekreft && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: "rgba(0,0,0,0.55)", padding: 16 }}>
-          <div style={{ width: "100%", maxWidth: 380, borderRadius: T.rCard, border: `1px solid ${T.borderS}`, background: T.panel, padding: 22, boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+        <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: T.farge.svartA55, padding: 16 }}>
+          <div style={{ width: "100%", maxWidth: 380, borderRadius: T.rCard, border: `1px solid ${T.borderS}`, background: T.panel, padding: 22, boxShadow: `0 24px 60px ${T.farge.svartA50}` }}>
             <h3 style={{ margin: 0, fontFamily: T.disp, fontWeight: 700, fontSize: 18, color: T.fg }}>
               Tilgjengelig <em style={{ fontStyle: "italic", fontWeight: 400, color: T.lime }}>{DAGER[bekreft.dag]} {bekreft.start}–{bekreft.end}</em>?
             </h3>

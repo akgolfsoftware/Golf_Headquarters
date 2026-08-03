@@ -160,7 +160,7 @@ function BrandPanel() {
         position: "relative",
         overflow: "hidden",
         borderRight: `1px solid ${T.border}`,
-        background: `radial-gradient(560px 460px at 28% 24%, rgba(0,88,64,0.55), transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--v2-lime) 7%, transparent), transparent 60%), ${T.bg}`,
+        background: `radial-gradient(560px 460px at 28% 24%, ${T.farge.forestMerkeA55}, transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--v2-lime) 7%, transparent), transparent 60%), ${T.bg}`,
         flexDirection: "column",
         padding: "34px 40px 44px",
       }}
@@ -270,7 +270,7 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
             width: 60,
             height: 60,
             borderRadius: 16,
-            background: `radial-gradient(120% 120% at 30% 20%, rgba(0,88,64,0.55), rgba(21,23,21,0) 70%), ${T.panel3}`,
+            background: `radial-gradient(120% 120% at 30% 20%, ${T.farge.forestMerkeA55}, ${T.farge.grafittMerke2A0} 70%), ${T.panel3}`,
             border: `1px solid ${T.borderS}`,
             color: T.lime,
           }}
@@ -285,7 +285,7 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
             gap: 6,
             borderRadius: 9999,
             padding: "4px 11px",
-            background: "rgba(232,180,60,0.14)",
+            background: T.farge.varselMerkeA14,
             fontFamily: T.mono,
             fontSize: 9,
             fontWeight: 800,
@@ -325,7 +325,7 @@ function VenterKort({ spillerNavn, invitasjonEmail }: Props) {
           border: `1px solid ${T.border}`,
           borderRadius: T.rCard,
           padding: 18,
-          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.045), 0 12px 32px rgba(0,0,0,0.35)",
+          boxShadow: `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${T.farge.svartA35}`,
         }}
       >
         <Caps size={9}>Status</Caps>
@@ -456,7 +456,7 @@ export function SamtykkeVenterV2({ spillerNavn, invitasjonEmail }: Props) {
           alignItems: "center",
           justifyContent: "center",
           padding: "48px 22px",
-          background: `radial-gradient(700px 420px at 60% -12%, rgba(0,88,64,0.14), transparent 62%), ${T.bg}`,
+          background: `radial-gradient(700px 420px at 60% -12%, ${T.farge.forestMerkeA14}, transparent 62%), ${T.bg}`,
         }}
       >
         <VenterKort spillerNavn={spillerNavn} invitasjonEmail={invitasjonEmail} />

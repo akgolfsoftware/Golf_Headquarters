@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 // WANG Treningsplattform — Fellesside for golfgruppa (elever + foreldre).
 // Portert fra Claude Design-skjermen «WANG Toppidrett Fredrikstad Golf v2».
@@ -230,13 +231,13 @@ function Oversikt({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
       <HeroCard label={`Neste økt · ${neste.dateLabel}`} title={neste.title}>
-        <p style={{ margin: "0 0 16px", fontFamily: "var(--font-body)", fontSize: 15, lineHeight: 1.55, color: "rgba(255,255,255,0.9)", maxWidth: 660 }}>{neste.goal}</p>
+        <p style={{ margin: "0 0 16px", fontFamily: "var(--font-body)", fontSize: 15, lineHeight: 1.55, color: T.farge.hvitA90, maxWidth: 660 }}>{neste.goal}</p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 8, height: 34, padding: "0 14px", borderRadius: 999, background: "rgba(73,202,159,0.18)", color: "var(--wang-mint)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 13.5 }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 8, height: 34, padding: "0 14px", borderRadius: 999, background: T.farge.myntGronnA18, color: "var(--wang-mint)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 13.5 }}>
             <span style={{ width: 9, height: 9, borderRadius: 999, background: "var(--wang-mint)" }} />{neste.timeLabel}
           </span>
-          <span style={{ display: "inline-flex", alignItems: "center", height: 34, padding: "0 14px", borderRadius: 999, background: "rgba(255,255,255,0.1)", color: "var(--white)", fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 13 }}>{neste.locName}</span>
-          <span style={{ display: "inline-flex", alignItems: "center", height: 34, padding: "0 14px", borderRadius: 999, background: "rgba(255,255,255,0.1)", color: "var(--white)", fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 13 }}>{neste.periodName} · uke {uke} av {TOTAL_WEEKS}</span>
+          <span style={{ display: "inline-flex", alignItems: "center", height: 34, padding: "0 14px", borderRadius: 999, background: T.farge.hvitA10, color: "var(--white)", fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 13 }}>{neste.locName}</span>
+          <span style={{ display: "inline-flex", alignItems: "center", height: 34, padding: "0 14px", borderRadius: 999, background: T.farge.hvitA10, color: "var(--white)", fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 13 }}>{neste.periodName} · uke {uke} av {TOTAL_WEEKS}</span>
           <button onClick={() => onOpen(neste.id)} className="wang-pressable" style={{ display: "inline-flex", alignItems: "center", height: 34, padding: "0 18px", borderRadius: 999, border: "none", cursor: "pointer", background: "var(--white)", color: "var(--wang-navy)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 13 }}>Se full økt →</button>
         </div>
       </HeroCard>

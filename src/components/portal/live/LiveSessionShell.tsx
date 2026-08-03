@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { X } from "lucide-react";
+import { T } from "@/lib/v2/tokens";
 
 export type LiveSessionShellProps = {
   title?: string;
@@ -90,7 +91,7 @@ export function LiveSessionShell({
     <div
       className="fixed inset-0 z-50 flex flex-col text-background"
       style={{
-        background: "radial-gradient(120% 80% at 50% 0%, #0d2218, #0A1F17 70%)",
+        background: `radial-gradient(120% 80% at 50% 0%, ${T.farge.liveBgTopp}, ${T.farge.inkMerke} 70%)`,
         isolation: "isolate",
       }}
     >

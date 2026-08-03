@@ -163,7 +163,7 @@ function DialogSkall({
     <dialog
       ref={dialogRef}
       onClose={onClose}
-      style={{ borderRadius: T.rCard, border: `1px solid ${T.borderS}`, background: T.panel, padding: 0, boxShadow: "0 24px 60px rgba(0,0,0,0.5)", maxWidth: 420, width: "100%", color: T.fg }}
+      style={{ borderRadius: T.rCard, border: `1px solid ${T.borderS}`, background: T.panel, padding: 0, boxShadow: `0 24px 60px ${T.farge.svartA50}`, maxWidth: 420, width: "100%", color: T.fg }}
     >
       <div style={{ padding: 22 }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 18 }}>

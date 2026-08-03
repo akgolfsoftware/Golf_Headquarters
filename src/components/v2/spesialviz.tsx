@@ -698,8 +698,8 @@ export function FeaturedCard({
 }: FeaturedCardProps) {
   return (
     <div style={{ background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard, overflow: "hidden", maxWidth: 400 }}>
-      <div style={{ position: "relative", height: 150, background: bilde ? `url(${bilde}) center/cover` : `linear-gradient(140deg, rgba(0,88,64,0.55) 0%, ${T.panel3} 70%)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        {!bilde && <Icon name="image" size={26} style={{ color: "rgba(255,255,255,0.22)" }} />}
+      <div style={{ position: "relative", height: 150, background: bilde ? `url(${bilde}) center/cover` : `linear-gradient(140deg, ${T.farge.forestMerkeA55} 0%, ${T.panel3} 70%)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {!bilde && <Icon name="image" size={26} style={{ color: T.farge.hvitA22 }} />}
         {badge && <span style={{ position: "absolute", top: 12, left: 12, fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.onLime, background: T.lime, borderRadius: 9999, padding: "4px 9px" }}>{badge}</span>}
       </div>
       <div style={{ padding: "16px 18px 18px" }}>

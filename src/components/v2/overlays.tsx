@@ -29,7 +29,7 @@ function Ramme({ w = 560, h = 360, scrim = true, align = "center", children }: R
   };
   return (
     <div style={{ position: "relative", width: w, height: h, background: T.bg, border: `1px solid ${T.border}`, borderRadius: T.rCard, overflow: "hidden", display: "flex", ...al[align] }}>
-      {scrim && <div style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />}
+      {scrim && <div style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />}
       {children}
     </div>
   );
@@ -293,7 +293,7 @@ export function Verktoytips({ tekst = "SG mot CS100-referansen, siste 8 runder",
       {/* Paper Tooltip: mono 11px, r-sm(8), 6px 8px-padding, ingen kant, ingen
           pil — kun 6 px luft ned mot utløseren (Tooltip.jsx). */}
       <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-        <span style={{ maxWidth: 240, textAlign: "left", fontFamily: T.mono, fontSize: 11, letterSpacing: "0.01em", color: T.fg, lineHeight: 1.35, background: "rgb(34,37,34)", borderRadius: PAPER_R_SM, padding: "6px 8px", boxShadow: "var(--v2-shadow)" }}>{tekst}</span>
+        <span style={{ maxWidth: 240, textAlign: "left", fontFamily: T.mono, fontSize: 11, letterSpacing: "0.01em", color: T.fg, lineHeight: 1.35, background: T.farge.grafittPanel, borderRadius: PAPER_R_SM, padding: "6px 8px", boxShadow: "var(--v2-shadow)" }}>{tekst}</span>
         <span style={{ display: "inline-flex", alignItems: "baseline", gap: 8, background: T.panel2, border: `1px dashed ${T.borderS}`, borderRadius: 10, padding: "7px 13px" }}>
           <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2 }}>{trigger}</span>
           <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: T.fg }}>{verdi}</span>
@@ -422,7 +422,7 @@ export function KommandoPalett({
 }: KommandoPalettProps) {
   return (
     <Ramme w={w} h={h}>
-      <div style={{ position: "relative", width: 520, background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 16, overflow: "hidden", boxShadow: "0 28px 70px rgba(0,0,0,0.55)" }}>
+      <div style={{ position: "relative", width: 520, background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 16, overflow: "hidden", boxShadow: `0 28px 70px ${T.farge.svartA55}` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "13px 16px", borderBottom: `1px solid ${T.border}` }}>
           <Icon name="search" size={15} style={{ color: T.mut, flex: "none" }} />
           <span style={{ flex: 1, fontFamily: T.ui, fontSize: 14, color: T.mut }}>{sok}</span>

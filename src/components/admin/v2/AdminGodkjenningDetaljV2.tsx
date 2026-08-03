@@ -155,7 +155,7 @@ export function ApprovalDetailClient({ detail }: { detail: ApprovalDetail }) {
       </Kort>
 
       {isPending ? (
-        <div style={{ position: "sticky", bottom: 16, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, borderRadius: T.rCard, background: T.panel, border: `1px solid ${T.borderS}`, padding: 16, boxShadow: "0 12px 32px rgba(0,0,0,0.35)" }}>
+        <div style={{ position: "sticky", bottom: 16, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, borderRadius: T.rCard, background: T.panel, border: `1px solid ${T.borderS}`, padding: 16, boxShadow: `0 12px 32px ${T.farge.svartA35}` }}>
           {/* B: én primær = Godkjenn; resten ghost */}
           <Knapp icon="check" disabled={pending} onClick={godkjenn}>Godkjenn</Knapp>
           <Knapp icon="x" ghost disabled={pending} onClick={() => { setMode("decline"); setComment(""); setError(null); }}>Avslå med begrunnelse</Knapp>
@@ -175,9 +175,9 @@ export function ApprovalDetailClient({ detail }: { detail: ApprovalDetail }) {
           role="dialog"
           aria-modal="true"
           onClick={(e) => { if (e.target === e.currentTarget) reset(); }}
-          style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: "rgba(0,0,0,0.5)", padding: 16 }}
+          style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: T.farge.svartA50, padding: 16 }}
         >
-          <div style={{ width: "100%", maxWidth: 420, borderRadius: T.rCard, background: T.panel, border: `1px solid ${T.borderS}`, padding: 20, boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+          <div style={{ width: "100%", maxWidth: 420, borderRadius: T.rCard, background: T.panel, border: `1px solid ${T.borderS}`, padding: 20, boxShadow: `0 24px 60px ${T.farge.svartA50}` }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <Caps>{mode === "decline" ? "Avslå med begrunnelse" : "Be om mer info"}</Caps>
               <button onClick={reset} aria-label="Lukk" style={{ display: "grid", placeItems: "center", width: 28, height: 28, borderRadius: 8, background: "transparent", border: "none", color: T.mut, cursor: "pointer" }}>

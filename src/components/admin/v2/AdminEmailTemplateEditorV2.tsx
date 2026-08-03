@@ -246,8 +246,8 @@ export function AdminEmailTemplateEditorV2({ template, testRecipient }: Props) {
             <FeltVis label="Til" value={`${PREVIEW_DATA.spillerNavn} <markus@eksempel.no>`} />
             <FeltVis label="Emne" value={previewSubject || "—"} accent />
 
-            <div style={{ borderRadius: 11, border: `1px solid ${T.border}`, background: "#fff", padding: 16 }}>
-              <pre style={{ margin: 0, whiteSpace: "pre-wrap", fontFamily: T.ui, fontSize: 13, lineHeight: 1.6, color: "#111" }}>
+            <div style={{ borderRadius: 11, border: `1px solid ${T.border}`, background: T.onForest, padding: 16 }}>
+              <pre style={{ margin: 0, whiteSpace: "pre-wrap", fontFamily: T.ui, fontSize: 13, lineHeight: 1.6, color: T.farge.svartKode }}>
                 {previewBody || "—"}
               </pre>
             </div>

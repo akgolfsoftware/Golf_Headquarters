@@ -356,7 +356,7 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
             {/* Dato-boble under drag (Anders: live dato som følger markøren) */}
             {boble && (
               <div style={{ position: "absolute", left: `${boble.pct}%`, top: -2, transform: "translate(-50%, -100%)", pointerEvents: "none", zIndex: 5 }}>
-                <div style={{ background: T.lime, color: T.onLime, fontFamily: T.mono, fontSize: 10, fontWeight: 700, borderRadius: 8, padding: "4px 9px", whiteSpace: "nowrap", boxShadow: "0 6px 18px rgba(0,0,0,0.35)" }}>
+                <div style={{ background: T.lime, color: T.onLime, fontFamily: T.mono, fontSize: 10, fontWeight: 700, borderRadius: 8, padding: "4px 9px", whiteSpace: "nowrap", boxShadow: `0 6px 18px ${T.farge.svartA35}` }}>
                   {boble.tekst}
                 </div>
                 <div style={{ width: 2, height: 10, background: T.lime, margin: "0 auto" }} />
@@ -407,8 +407,8 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
       {/* Periode-popup (ny/rediger) — Anders-logikken: alt justerbart, så Bekreft */}
       {popup && (
         <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-          <div onClick={lagrer ? undefined : () => setPopup(null)} style={{ position: "absolute", inset: 0, background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }} />
-          <div role="dialog" aria-label={popup.periodeId ? "Rediger periode" : "Ny periode"} className="v2-sheet-in" style={{ position: "relative", width: "min(440px, 100%)", maxHeight: "88vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+          <div onClick={lagrer ? undefined : () => setPopup(null)} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
+          <div role="dialog" aria-label={popup.periodeId ? "Rediger periode" : "Ny periode"} className="v2-sheet-in" style={{ position: "relative", width: "min(440px, 100%)", maxHeight: "88vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: `0 24px 60px ${T.farge.svartA50}` }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ width: 10, height: 10, borderRadius: 3, background: LPHASE_FARGE[popup.lPhase] }} />
               <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>

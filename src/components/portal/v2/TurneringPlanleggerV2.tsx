@@ -371,7 +371,7 @@ export function TurneringPlanleggerV2({
             position: "fixed",
             inset: 0,
             zIndex: 80,
-            background: "rgba(0,0,0,0.55)",
+            background: T.farge.svartA55,
             display: "grid",
             placeItems: "center",
             padding: 20,

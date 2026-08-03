@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 /**
  * StatsRangeSlider — styled range input matching design bundle aesthetics.
@@ -37,7 +38,7 @@ export function StatsRangeSlider({
           appearance: "none",
           height: 6,
           borderRadius: 3,
-          background: `linear-gradient(to right, #005840 ${pct}%, #E5E3DD ${pct}%)`,
+          background: `linear-gradient(to right, ${T.farge.forestMerke} ${pct}%, ${T.farge.linjeMerke} ${pct}%)`,
           outline: "none",
           cursor: "pointer",
         }}

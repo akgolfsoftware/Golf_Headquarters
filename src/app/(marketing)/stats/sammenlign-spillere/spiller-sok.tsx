@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 /**
  * SpillerSok — client component for the player search panel.
@@ -83,7 +84,7 @@ export function SpillerSok({ name, label, suggested, currentSlug }: SpillerSokPr
               alignItems: "center",
               gap: 10,
               padding: "8px 10px",
-              background: s.slug === currentSlug ? "rgba(0,88,64,0.06)" : "transparent",
+              background: s.slug === currentSlug ? T.farge.forestMerkeA6 : "transparent",
               border: "1px solid transparent",
               borderRadius: 8,
               cursor: "pointer",

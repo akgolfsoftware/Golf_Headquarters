@@ -567,8 +567,8 @@ export function AmbientBakgrunn() {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={PROFIL.src} alt="" style={{ position: "absolute", top: "-20%", left: "-10%", width: "120%", height: "70%", objectFit: "cover",
         filter: "blur(90px) saturate(1.25) brightness(0.55)", opacity: 0.38,
-        maskImage: "linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 55%, transparent 90%)",
-        WebkitMaskImage: "linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 55%, transparent 90%)" }} />
+        maskImage: `linear-gradient(180deg, ${T.farge.svart} 0%, ${T.farge.svartA50} 55%, transparent 90%)`,
+        WebkitMaskImage: `linear-gradient(180deg, ${T.farge.svart} 0%, ${T.farge.svartA50} 55%, transparent 90%)` }} />
     </div>
   );
 }
@@ -928,7 +928,7 @@ export function Skjerm({ aktiv, mobile, children }: SkjermProps) {
   );
   return (
     /* Vignett (§12) + ambient profilbilde-glød (Spotify-idiomet) */
-    <div style={{ width: 1280, background: `radial-gradient(1100px 460px at 24% -8%, rgba(0,88,64,0.16), transparent 62%), ${T.bg}`, borderRadius: 20, border: `1px solid ${T.borderS}`, overflow: "hidden", display: "flex", position: "relative" }}>
+    <div style={{ width: 1280, background: `radial-gradient(1100px 460px at 24% -8%, ${T.farge.forestMerkeA16}, transparent 62%), ${T.bg}`, borderRadius: 20, border: `1px solid ${T.borderS}`, overflow: "hidden", display: "flex", position: "relative" }}>
       <AmbientBakgrunn />
       <div style={{ position: "relative", display: "flex", width: "100%" }}>
         <Sidebar aktiv={aktiv} />

@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -174,7 +175,7 @@ export function CoachWizard({
         <div className="ob-step-body">
           <div
             className="ob-illust"
-            style={{ background: "linear-gradient(160deg, #003A2A 0%, #006C50 100%)" }}
+            style={{ background: `linear-gradient(160deg, ${T.farge.illuForestMork} 0%, ${T.farge.illuForestLys} 100%)` }}
           >
             <svg viewBox="0 0 520 180">
               <rect x="160" y="40" width="200" height="100" rx="12" fill="#FAFAF7" />
@@ -290,7 +291,7 @@ export function CoachWizard({
           <div
             className="ob-illust"
             style={{
-              background: "linear-gradient(160deg, #F1EEE5 0%, #E5E3DD 100%)",
+              background: `linear-gradient(160deg, ${T.farge.sandMerke} 0%, ${T.farge.linjeMerke} 100%)`,
             }}
           >
             <svg viewBox="0 0 520 180">
@@ -375,7 +376,7 @@ export function CoachWizard({
         <div className="ob-step-body">
           <div
             className="ob-illust"
-            style={{ background: "linear-gradient(160deg, #88B45A 0%, #5E8538 100%)" }}
+            style={{ background: `linear-gradient(160deg, ${T.farge.illuOlivenLys} 0%, ${T.farge.illuOlivenMork} 100%)` }}
           >
             <svg viewBox="0 0 520 180">
               <ShieldCheckIllust />
@@ -460,7 +461,7 @@ export function CoachWizard({
         <div className="ob-step-body">
           <div
             className="ob-illust"
-            style={{ background: "linear-gradient(160deg, #003A2A 0%, #006C50 100%)" }}
+            style={{ background: `linear-gradient(160deg, ${T.farge.illuForestMork} 0%, ${T.farge.illuForestLys} 100%)` }}
           >
             <svg viewBox="0 0 520 180">
               <rect x="160" y="30" width="200" height="120" rx="12" fill="#FAFAF7" />
@@ -552,7 +553,7 @@ export function CoachWizard({
               style={{
                 fontFamily: "var(--font-jetbrains-mono)",
                 fontSize: 10,
-                color: "#908D86",
+                color: T.farge.noytralGra,
                 letterSpacing: "0.06em",
               }}
             >

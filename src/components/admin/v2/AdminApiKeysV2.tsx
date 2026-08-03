@@ -186,14 +186,14 @@ function NyNokkelModal({ onClose }: { onClose: () => void }) {
       aria-modal="true"
       aria-labelledby="ny-api-nokkel-tittel"
       className="fixed inset-0 z-[80] flex items-center justify-center px-4"
-      style={{ background: "rgba(6,7,6,0.62)", backdropFilter: "blur(2px)" }}
+      style={{ background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }}
       onClick={() => {
         if (!pending) onClose();
       }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        style={{ width: "100%", maxWidth: 440, borderRadius: 20, border: `1px solid ${T.borderS}`, background: T.panel, boxShadow: "0 24px 60px rgba(0,0,0,0.5)", padding: "20px 22px" }}
+        style={{ width: "100%", maxWidth: 440, borderRadius: 20, border: `1px solid ${T.borderS}`, background: T.panel, boxShadow: `0 24px 60px ${T.farge.svartA50}`, padding: "20px 22px" }}
       >
         {secret ? (
           <>

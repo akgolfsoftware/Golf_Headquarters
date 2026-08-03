@@ -44,9 +44,9 @@ export function AdminSlettSpillerKnappV2({ spillerId, spillerNavn }: { spillerId
           aria-modal="true"
           aria-label="Slett spiller"
           onClick={(e) => { if (e.target === e.currentTarget && !pending) setOpen(false); }}
-          style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: "rgba(0,0,0,0.55)", padding: 16 }}
+          style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: T.farge.svartA55, padding: 16 }}
         >
-          <div style={{ width: "100%", maxWidth: 420, borderRadius: T.rCard, background: T.panel, border: `1px solid ${T.borderS}`, padding: 22, boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+          <div style={{ width: "100%", maxWidth: 420, borderRadius: T.rCard, background: T.panel, border: `1px solid ${T.borderS}`, padding: 22, boxShadow: `0 24px 60px ${T.farge.svartA50}` }}>
             <Caps>Slett spiller</Caps>
             <h2 style={{ margin: "6px 0 0", fontFamily: T.disp, fontWeight: 700, fontSize: 20, color: T.fg }}>{spillerNavn}</h2>
             <p style={{ marginTop: 14, fontSize: 13, lineHeight: 1.55, color: T.fg }}>
@@ -55,7 +55,7 @@ export function AdminSlettSpillerKnappV2({ spillerId, spillerNavn }: { spillerId
             {error && <p style={{ marginTop: 10, fontSize: 13, color: T.down }}>{error}</p>}
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 20 }}>
               <Knapp ghost disabled={pending} onClick={() => setOpen(false)}>Avbryt</Knapp>
-              <Knapp disabled={pending} onClick={bekreftSlett} style={{ background: T.down, color: "#fff" }}>
+              <Knapp disabled={pending} onClick={bekreftSlett} style={{ background: T.down, color: T.onForest }}>
                 {pending ? "Sletter…" : "Slett spiller"}
               </Knapp>
             </div>
