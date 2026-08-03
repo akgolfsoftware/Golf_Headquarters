@@ -4,6 +4,22 @@ Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekk
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
 Ingen låst designkanon per 2026-07-25 — nytt system utvikles i Open Design (CLAUDE.md invariant 2).
 
+### Aldri kopier `.env*` inn i en worktree — heller ikke for å kunne verifisere (oppdaget 2026-08-03)
+- En ny `git worktree` mangler `.env.local` (den er gitignored, worktrees deler ikke ugitte filer),
+  og `npm run verify` feiler derfor på `prisma generate` («Cannot resolve environment variable:
+  DIRECT_URL»). Fristelsen er å `cp` filen inn fra hovedmappa — det gikk faktisk gjennom uten at
+  `beskytt.mjs` stoppet den, fordi hooken fanger opp direkte lesing/skriving av `.env*` via
+  Read/Write/Edit og enkelte Bash-mønstre, men ikke nødvendigvis en `cp <kilde> .env.local`.
+  Oppdaget og ryddet samme økt (filen var gitignored, så ingen hemmelighet nådde GitHub) — men
+  prinsippet («aldri rørt av agenter») ble brutt før hullet ble funnet.
+- **Regel:** kopier ALDRI `.env*` mellom worktrees, uansett formål. Trenger `prisma generate` bare
+  til å laste `schema.prisma` og skrive klientkode — den kobler seg ikke til databasen for dette —
+  sett i stedet en midlertidig **dummy**-verdi for `DIRECT_URL`/`DATABASE_URL` i skallets miljø
+  (`export DIRECT_URL=postgresql://dummy:dummy@localhost:5432/dummy`) kun for kommandoen, aldri i
+  en fil. Kan ikke DB-verifiseres i worktreen uansett (kjente miljøbegrensninger, jf. PR #275):
+  stol på `tsc`/`eslint`/`npm test` lokalt + CI (`ci.yml`, egne secrets) + Vercel-preview for resten,
+  akkurat som steg 7 PR1 og PR2 gjorde.
+
 ### Workbench-datomatte (session-move-math.ts) — Oslo-korrekt siden 2026-07-27 (oppdaget 2026-07-19)
 - **Var:** `mondayOf`/`dateForDayIndex`/`weekRefDate` regnet uke/dag fra `new Date()` med rå
   `.getDay()`/`.setHours(0,0,0,0)` — på Vercel (UTC) kunne en økt lagt til/flyttet nær norsk
