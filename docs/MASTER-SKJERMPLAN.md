@@ -88,7 +88,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Hjem (Workbench-hjem) ★ | `/portal` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | 2026-07-24 GO V1: én primær CTA når ingen økt i dag (Workbench ghost); HjelpTips på dagens pyramide-akse. Complete v13 (golfdata scope + components)
+| Hjem (chat-først) ★ | `/portal` | ✓ | ✓✓✓ | ✓ |  | ✓ |  | 2026-08-03 designport steg 7 PR1: bygget om fra HjemV2-dashboard til chat-først mot Paper-fasiten (playerhq-chat-desktop/-mobil.html) — spiller-vendte AI-tools (hentUkeplan/hentDagensOkt/hentSisteOkt), ekte steg-liste m/tidsmåling, «hvorfor dette tallet», artefaktpanel for dagens økt. FØR/UNDER/ETTER er IKKE moduser i samme skjerm ennå (lenker til eksisterende live-økt-ruter). Flyt/Funker avventer manuell browser-verifisering før merge.
 | Varsler ★ | `/portal/varsler` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | v13 golfdata-scope + Eyebrow/Card primitives (full composition)
 
 ### Planlegge
