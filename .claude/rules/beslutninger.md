@@ -20,13 +20,14 @@ Gjelder til Anders endrer dem.
   plan/regel vises i klarspråk til brukeren; sterkt avvik varsler coach. Aldri skriv «kan ikke
   brytes»-kode eller -tekst — se `plans/skjermplan-master.md` prinsipp 3 for fasit.
 - **App-navn:** Coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt — ikke bruk i ny UI-tekst.
-- **Tema/design (TØMT 2026-07-25, tidsplan LÅST 2026-07-31):** Gamle Presis/FASIT-låser er
-  fortsatt avviklet. **Ny tidsplan (Anders 2026-07-31):** (1) **App/pilot nå = C, smalt** —
-  behold Inter/Familjen Grotesk/JetBrains Mono og v2-tokens; innfør kun `--handling` `#D97757`
-  for «Én ting nå» (maks én per skjerm). (2) **Claude Paper** er designfasit i Open Design +
-  speil (`designsystem/paper/` på `chore/paper-speil-lokal`) — bygg videre der. (3) **Full
-  Paper-port til `src/`** først etter at FØR/UNDER/ETTER-piloten er evaluert. Se
-  `docs/gjenstaaende-plan-2026-07-31.md` §1.1 og `docs/for-under-etter-spec.md` §2.
+- **Tema/design (TØMT 2026-07-25, tidsplan LÅST 2026-07-31, OVERSTYRT 2026-08-03):** Gamle
+  Presis/FASIT-låser er fortsatt avviklet. Tidsplanen fra 31.07 sa full Paper-port til `src/`
+  skulle vente til FØR/UNDER/ETTER-piloten var evaluert — **Anders overstyrte dette eksplisitt
+  2026-08-03** etter at steg 1–6 + steg 7 PR1 allerede var merget på løpende «ja» per PR.
+  Full skjermport kjører nå aktivt per `docs/port/plan-designport-alle-skjermer.md` (10 steg,
+  én PR per skjerm/steg, aldri merge til main uten Anders' «ja»). `designsystem/paper/` ligger
+  hentet ned i repoet (ikke lenger kun på `chore/paper-speil-lokal`). Se også
+  `docs/gjenstaaende-plan-2026-07-31.md` §1.1 og `docs/for-under-etter-spec.md` §2 for historikken.
 - **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen** — alltid fulle
   navn, gamle demo-navn skal bort. Unntak: ekte coach **«Markus Røinås Pedersen»** på markedssidene,
   ikke bytt ham ut.

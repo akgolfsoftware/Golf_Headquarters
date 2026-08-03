@@ -1,6 +1,6 @@
 # Plan — port alle skjermer til Claude Paper
 
-**Skrevet:** 02.08.2026 · **Status:** VENTER PÅ ANDERS (to svar, se nederst)
+**Skrevet:** 02.08.2026 · **Status:** GODKJENT OG I GANG (Anders 2026-08-03) — se svar nederst
 **Gjelder:** hele appen — PlayerHQ, AgencyOS, marketing, booking, foreldreportal, WANG, GFGK
 
 Dette er planen for at appens skjermer faktisk skal se ut som Claude Design-prosjektet
@@ -129,11 +129,31 @@ fordi skjermantallet ikke er kjent før steg 2.
 
 ---
 
-## Venter på Anders — to svar
+## Svar fra Anders (2026-08-03)
 
-1. **Overstyres invariant 2?** Full Paper-port startes nå, før pilotevalueringen er ferdig.
-2. **Kjøres steg 1 og 2?** (hent Paper ned + lag fasit-listen). Begge er ufarlige — ingen skjerm
-   endres — og de gjør at steg 7–9 kan tallfestes ordentlig.
+1. **Overstyres invariant 2? Ja.** Bekreftet eksplisitt 2026-08-03 kveld etter at steg 1–6 og
+   steg 7 PR1 (PR #275) allerede var merget til main på løpende «ja» per PR — denne bekreftelsen
+   formaliserer det som i praksis allerede var i gang. `CLAUDE.md` invariant 2 og
+   `.claude/rules/beslutninger.md` er oppdatert til å vise dette.
+2. **Kjøres steg 1 og 2?** Ja — begge gjort. Paper ligger i `designsystem/paper/` (25
+   fasitfiler i `fase1/`), fasit-listen er `docs/port/fasit-liste-paper.md` (19 av 343 skjermer
+   har fasit).
+
+## Status per steg (oppdatert 2026-08-03 kveld)
+
+| Steg | Status |
+|---|---|
+| 1 — Hent Paper ned | Ferdig |
+| 2 — Fasit-listen | Ferdig |
+| 3 — Rydd mørk-tema | Ferdig (PR #256) |
+| 4 — Paper-tokens ved siden av | Ferdig (PR #260) |
+| 5A — Farger inn i `--v2-*` | Ferdig (PR #262) |
+| 5B — Form: radius/avstand/typografi | Ferdig (PR #270–273) |
+| 6 — Fjern 419 hardkodede farger | Ferdig (PR #274) |
+| 7 — Bølge 1: PlayerHQ | I gang — PR1 (Hjem) merget (#275), 4–5 PR-er igjen |
+| 8 — Bølge 2: AgencyOS | Ikke startet |
+| 9 — Bølge 3: resten | Ikke startet |
+| 10 — Steng døra (lint-gate) | Ikke startet |
 
 ## Fortsett fra en annen maskin
 

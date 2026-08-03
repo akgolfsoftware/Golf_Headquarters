@@ -28,9 +28,10 @@ analyse-samling, abonnement 299/gratis, FYS-avventing. **Design (LÅST 2026-07-3
 
 ## Harde invarianter (brytes aldri)
 1. **Anbefalinger sperrer aldri:** ingenting i appen blokkerer trening. Aldri «kan ikke brytes»-kode/tekst.
-2. **Design tidsplan (2026-07-31):** App = C, smalt (v2-tokens; innfør `--handling` `#D97757` for «Én ting
-   nå», maks én per skjerm). Paper-design i OD/speil er OK. Full Paper-port til `src/` først etter pilot.
-   Hex-gaten for Presis forblir borte — ikke gjenopprett uten ny beslutning.
+2. **Design tidsplan (2026-07-31, OVERSTYRT 2026-08-03):** Anders overstyrte eksplisitt «full Paper-port
+   først etter pilot» — full porten kjører nå, skjerm for skjerm, per `docs/port/plan-designport-alle-skjermer.md`
+   (steg 1–6 + steg 7 PR1 i main, steg 7 PR2+ pågår). Hex-gaten for Presis forblir borte — ikke gjenopprett
+   uten ny beslutning.
 3. **Norsk bokmål i all UI-tekst.**
 4. **Lucide-ikoner** — aldri emoji i UI. Primitiver fra `components/ui/` + `v2/`-mønstre.
 5. **Domenelogikk kun i `src/lib/domain/`** — aldri i komponenter.
