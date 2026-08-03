@@ -2,7 +2,10 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-08-02 (kvalitetsaudit tiltak 9: klikk-test av ★-kjernen mot prod + dokumentsynk. Betalingsdato rettet 1. aug → 1. sep. Design-GAP i PlayerHQ/AgencyOS/Forelder/Auth = 0. Appen er fortsatt ikke klar for betalende brukere før P0-aktivering.)
+**Sist oppdatert:** 2026-08-03 (kvalitetsaudit tiltak 9+10 fullført: hydreringsfeilen på Workbench fikset og
+verifisert 3/3 mot prod (React #418 fjernet fra `KJENTE_FEIL`), `processed_webhook_events` finnes i prod
+med RLS, PR #253 merget. CSP-funnet på `/admin/spillere` står fortsatt åpent, dokumentert under. Design-GAP
+i PlayerHQ/AgencyOS/Forelder/Auth = 0. Appen er fortsatt ikke klar for betalende brukere før P0-aktivering.)
 
 ## Levende kilder (én av hver rolle — start her)
 
@@ -62,46 +65,58 @@ Push til `main` deployer automatisk via **Vercel git-integrasjon**. GitHub Actio
 4. **Google Calendar** re-koble (`/admin/settings/calendar` — tokens PAUSED).
 5. **Aktiverings-e-post** til registrerte spillere (etter DKIM).
 
-### Stripe-herding 2026-08-02 (kvalitetsaudit tiltak 10) — kode klar, DDL gjenstår
-- **Event-dedup:** ny tabell `processed_webhook_events`. Webhooken markerer eventet som behandlet
-  FØR den kjører, og slipper kvitteringen igjen hvis behandlingen feiler. Replay fra Stripe-dashbordet
-  gir nå «duplicate» i stedet for ny e-post.
+### Stripe-herding 2026-08-02/03 (kvalitetsaudit tiltak 10) — kode og tabell i prod, kun Anders' sjekk gjenstår
+- **Event-dedup:** tabellen `processed_webhook_events` finnes i prod (verifisert 2026-08-03: 5 kolonner,
+  unik indeks på (source, eventId), RLS på, null policies — deny-by-default mot PostgREST). Webhooken
+  markerer eventet som behandlet FØR den kjører, og slipper kvitteringen igjen hvis behandlingen feiler.
+  Replay fra Stripe-dashbordet gir nå «duplicate» i stedet for ny e-post.
 - **Sideeffekter betinget på `result.count`:** bekreftelses-e-post, kalender-push og coach-varsel
   kjører kun når bookingen faktisk gikk PENDING → CONFIRMED. Før hang de bare på at eventet kom —
   det var den ekte dobbel-e-post-bugen.
 - **`WebhookFailure` har fått en konsument:** `/api/cron/webhook-retry` (hver 30. min) kjører feilede
   events på nytt og varsler når et event gir opp etter 5 forsøk. Tabellen ble tidligere kun skrevet til.
-- **GJENSTÅR:** `npx tsx scripts/add-processed-webhook-events-2026-08-02.ts` må kjøres mot prod FØR
-  denne koden merges. Uten tabellen feiler dedup-sjekken, og hvert event havner i retry-køen.
-- **GJENSTÅR (Anders):** verifiser i Stripe-dashbordet at webhook-endepunktet abonnerer på de event-typene
-  koden håndterer, og kjør én testbetaling som ender som Payment-rad.
+- **GJENSTÅR (Anders, under 5 min):** verifiser i Stripe-dashbordet at webhook-endepunktet abonnerer på de
+  13 event-typene koden håndterer i `src/lib/stripe/handle-event.ts` (subscription created/updated/deleted,
+  checkout.session completed/expired, payment_intent succeeded/payment_failed/canceled, invoice
+  paid/payment_succeeded/payment_failed/finalized, charge.refunded), og kjør én testbetaling som ender som
+  ny rad i `Payment`-tabellen.
 
 ### Kode / data (agent)
 - Aktiveringsflyt + at `lastLoginAt` settes ved innlogging.
 - Push-opt-in-prompt ved første PlayerHQ-besøk (motor finnes, 0 abonnementer).
 - Betaling 1. september: `gratisForAlle()` slår av automatisk; verifiser cutover.
 
-### Funnet i klikk-testen 2026-08-02 (nytt, ikke lukket)
-- **CSP blokkerer en app-chunk i prod:** på `/admin/spillere` blir
-  `/_next/static/chunks/0vgmow81h3vwc.js` (Lucide-ikoner: `Menu`, `chevron-left`) avvist av
-  `script-src`-direktivet i `src/proxy.ts:65` — `'strict-dynamic'` slår av `'self'`.
-  Reproduserbart 3/3 mot prod. Ikonene rendres likevel (23 lucide-svg i DOM), så synlig skade er
-  liten, men det er en ekte blokkering med konsollstøy og ekstra last.
+### Funnet i klikk-testen 2026-08-02 — status 2026-08-03
+- **CSP blokkerer en app-chunk i prod — fortsatt åpent, bevisst ikke fikset videre:** på
+  `/admin/spillere` blir `/_next/static/chunks/0vgmow81h3vwc.js` (Lucide-ikoner: `Menu`,
+  `chevron-left`) avvist av `script-src`-direktivet i `src/proxy.ts:65` — `'strict-dynamic'` slår
+  av `'self'`. Reproduserbart 3/3 mot prod. Ikonene rendres likevel (23 lucide-svg i DOM), så synlig
+  skade er liten, men det er en ekte blokkering med konsollstøy og ekstra last.
   **Forsøkt fikset 2026-08-02 og rullet tilbake:** hypotesen var at CSP-headeren måtte ligge på
   request (der Next leter etter nonce-en). Måling avkreftet den — `/auth/login` serverte 44
   script-tagger, alle med nonce, både med og uten endringen. Årsaken ligger sannsynligvis i
-  Turbopacks dynamiske chunk-lasting etter hydrering, ikke i server-rendret HTML. Symptomet lar
-  seg ikke reprodusere lokalt (siden krever innlogging, og lokal dev kan ikke startes — se under).
-- **Hydreringsfeil på Workbench:** `/portal/planlegge/workbench` kaster React #418
-  (server-HTML matcher ikke klienten) i prod. Ligger i `KJENTE_FEIL` i
-  `tests/e2e/kjerne-klikk.spec.ts` så røyktesten ikke er permanent rød — fjern linja når den fikses.
-- **Lokal dev kan ikke startes på MacBook Air:** `.env.local` har 23 av 77 verdier satt til
-  `[SENSURERT]`, blant dem `NEXT_PUBLIC_SUPABASE_URL`, anon-key og `DATABASE_URL`. `next dev` dør i
-  `instrumentation.ts` på env-validering. All lokal verifisering må derfor kjøres mot prod
-  (`PLAYWRIGHT_BASE_URL`) til fila er gjenopprettet.
-- **Spiller-testbruker:** `screentest@akgolf.test` manglet i prod og ble opprettet 2026-08-02 med
-  `scripts/opprett-e2e-testspiller-2026-08-02.ts` (ren SQL, siden service-role-nøkkelen er
-  sensurert). Tom spiller uten demo-data — god for å teste tomtilstandene.
+  Turbopacks dynamiske chunk-lasting etter hydrering, ikke i server-rendret HTML. En fiks her ville
+  kreve å røre CSP uten bevist effekt — ikke gjort 2026-08-03 av samme grunn.
+- **Hydreringsfeil på Workbench — FIKSET 2026-08-03 (PR #253 + #261):** brødsmulen i `WorkbenchV2.tsx`
+  leste år/måned med `new Date()` direkte i render — ulikt resultat på server (UTC) og klient (Oslo)
+  nær et månedsskifte, som ga React #418. Fikset ved å lese fra `data.weekStartISO` (stabil serverdata,
+  samme mønster som resten av komponenten) i stedet. Verifisert med kontrollert før/etter-måling
+  (server=UTC/klient=Oslo på samme simulerte tidspunkt: mismatch før, identisk etter) og med 3/3 ekte
+  kjøringer mot prod uten konsollfeil. `KJENTE_FEIL`-lista i `tests/e2e/kjerne-klikk.spec.ts` er tom igjen.
+- **Lokal dev — Mac Mini løst, MacBook Air fortsatt sensurert:** Mac Mini har intakt `.env.local` i
+  hovedrepoet; symlinket inn i denne øktens git-worktree 2026-08-03 (`ln -sf`, ingen hemmeligheter
+  kopiert). MacBook Air har fortsatt 23 av 77 verdier som `[SENSURERT]` og kan ikke kjøre `next dev`.
+- **Spiller-testbrukere:** `screentest@akgolf.test` (opprettet 2026-08-02) fikk et passord-mismatch
+  mellom `.env.local` og Supabase under denne økten (uklart om SQL- eller dashbord-oppdateringen
+  faktisk traff riktig konto) — ikke løst, status ukjent. Ny bruker `demo@akgolf.test` opprettet
+  2026-08-03 (rolle PLAYER, tier PRO, «Øyvind Rohjan») og brukt til å verifisere hydreringsfiksen.
+  `coachtest@akgolf.test` (AgencyOS-sporet) er upåvirket av dette, men lokal `.env.local` sin
+  `SCREENTEST_PASSWORD` stemmer trolig ikke lenger med den kontoen heller — CI/prod-røyktesten bruker
+  egne GitHub-secrets og er upåvirket.
+  **NB — sikkerhetshendelse:** `SCREENTEST_PASSWORD`s daværende verdi ble utilsiktet eksponert i
+  klartekst i en Claude Code-samtale 2026-08-03 (Playwright-feilsøkingsartefakt som fanget
+  passordfeltet). Artefaktene ble slettet lokalt, men verdien bør regnes som kompromittert uansett
+  hva den til slutt endte opp som.
 
 ### Åpne produktbeslutninger (ikke lanseringsblokkere)
 - **A4 Fase 2:** anbefalingsmotor for periode-fordeling (venter data).
