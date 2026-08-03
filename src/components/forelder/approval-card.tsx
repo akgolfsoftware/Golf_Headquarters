@@ -52,7 +52,7 @@ export function ApprovalCard({
       </div>
 
       <div className="flex items-center gap-2">
-        <button type="button" onClick={onApprove} className={cn(btn, "bg-primary text-accent")}>
+        <button type="button" onClick={onApprove} className={cn(btn, "bg-primary text-primary-foreground")}>
           <Check className="h-3 w-3" strokeWidth={2} />Godkjenn
         </button>
         {request.kind === "video" && (

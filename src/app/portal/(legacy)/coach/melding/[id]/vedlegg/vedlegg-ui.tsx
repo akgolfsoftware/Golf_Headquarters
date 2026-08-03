@@ -282,7 +282,7 @@ function AttachmentCard({ v }: { v: VedleggItem }) {
             type === "pdf"
               ? "bg-destructive text-destructive-foreground"
               : type === "audio"
-                ? "bg-primary text-accent"
+                ? "bg-primary text-primary-foreground"
                 : "bg-card/85 text-foreground"
           }`}
         >

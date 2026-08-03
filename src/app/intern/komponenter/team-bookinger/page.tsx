@@ -6,7 +6,7 @@ import { InlineBookingForm, type AcOption } from "@/components/admin/bookings/bo
 // Bolk 2b-demo: Team/Drift-kit + Bookinger-form-kit.
 
 const members: TeamMember[] = [
-  { id: "1", initials: "AK", name: "Andreas Kragerud", email: "andreas@akgolf.no", presence: "online", roles: ["EIER", "HEAD_COACH"], scope: "Hele akademiet", lastSeen: "Nå", avatarClass: "bg-primary text-accent" },
+  { id: "1", initials: "AK", name: "Andreas Kragerud", email: "andreas@akgolf.no", presence: "online", roles: ["EIER", "HEAD_COACH"], scope: "Hele akademiet", lastSeen: "Nå", avatarClass: "bg-primary text-primary-foreground" },
   { id: "2", initials: "MH", name: "Maria Holt", email: "maria@akgolf.no", presence: "online", roles: ["FYS"], scope: "GFGK junior", lastSeen: "12 min siden" },
   { id: "3", initials: "TE", name: "Tom Eide", email: "tom@akgolf.no", presence: "away", roles: ["COACH"], scope: "WANG", lastSeen: "2 t siden" },
   { id: "4", initials: "LB", name: "Lisa Berg", email: "lisa@akgolf.no", presence: "offline", roles: ["ASSISTENT", "BILLING"], scope: "Admin", lastSeen: "i går" },
@@ -19,7 +19,7 @@ const maler: PlanMal[] = [
 ];
 
 const players: AcOption[] = [
-  { id: "mb", initials: "ØR", name: "Øyvind Rohjan", sub: "4 cr.", avatarClass: "bg-primary text-accent" },
+  { id: "mb", initials: "ØR", name: "Øyvind Rohjan", sub: "4 cr.", avatarClass: "bg-primary text-primary-foreground" },
   { id: "sk", initials: "SK", name: "Sofie K.", sub: "2 cr." },
   { id: "kl", initials: "KL", name: "Karl Ludvig", sub: "12 cr.", avatarClass: "bg-accent text-primary" },
   { id: "eb", initials: "EB", name: "Emilie B.", sub: "6 cr." },

@@ -789,7 +789,7 @@ function CheckRow({
       <span
         className={`mt-0.5 flex h-5 w-5 items-center justify-center rounded-md ${
           checked
-            ? "bg-primary text-accent"
+            ? "bg-primary text-primary-foreground"
             : "border-2 border-border bg-card"
         }`}
       >
