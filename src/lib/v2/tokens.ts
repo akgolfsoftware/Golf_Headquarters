@@ -84,7 +84,10 @@ export const T = {
   rTag: 8,
   rCard: 20,
   rRow: 12,
-  rInput: 12,
+  // rInput = Paper --r-sm (8px, «knapper, felter, chips» — designport steg 5B).
+  // Eneste konsument er src/components/v2/skjema.tsx (verifisert 03.08.2026),
+  // så endringen er trygt avgrenset til skjema-familien.
+  rInput: 8,
   rSheet: 28,
   rPill: 9999,
   gap: 16,
