@@ -3,14 +3,26 @@
 /**
  * PlayerHQ Meg — v2 Presis + B-pakke (oversikt først, konto-liste etter).
  * Ekte data: profil, mål, sesongtall. Én grønn hovedhandling øverst.
+ *
+ * Steg 7 PR4 (Paper-port, designsystem/paper/fase1/playerhq-meg.html): lagt
+ * til «Om deg» (identitet), «Coach og program» og et abonnements-sammendrag
+ * som egne kort, pluss varsel-brytere direkte på skjermen — samme rytme som
+ * fasiten, men bygget på de v2-primitivene appen allerede har (Rad/Bryter),
+ * ikke Papers egen CSS. Personvern/GDPR og Stripe-styring er bevisst IKKE
+ * lagt inn her: de ekte flytene (coach-godkjent sletting, Stripe-portal) bor
+ * i /portal/meg/innstillinger/personvern og /portal/meg/abonnement og er
+ * allerede reelle — å bygge en ny, forenklet variant av dem inline her ville
+ * dupliserte tested logikk uten sikkerhetsnett.
  */
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import type { Tier } from "@/generated/prisma/client";
+import type { PlayerProgram } from "@/generated/prisma/client";
 import type { GoalItem } from "@/app/portal/actions";
+import type { UserPreferences } from "@/lib/preferences";
 import { logout } from "@/lib/auth/logout";
+import { oppdaterPreferences } from "@/app/portal/meg/actions";
 import { uploadAvatar } from "@/lib/storage/avatar";
 import { skalerAvatar } from "@/lib/klient/skaler-avatar";
 import { useCountUp } from "@/lib/v2/hooks";
@@ -22,6 +34,7 @@ import {
   Kort,
   StatusPill,
   Rad,
+  Bryter,
   ProgresjonsBar,
   AvatarFoto,
   TomTilstand,
@@ -38,7 +51,6 @@ export type MegData = {
   avatarUrl: string | null;
   hcp: number | null;
   homeClub: string | null;
-  tier: Tier;
   goals: GoalItem[];
   /** Sesongen i tall — brutto score, avledet av alle Round-rader. */
   sesong: {
@@ -47,7 +59,51 @@ export type MegData = {
     snittScore: number | null;
     sgSnitt: number | null;
   };
+  /** «Om deg» — ekte felt på User, kun de som faktisk er fylt ut vises. */
+  identitet: {
+    school: string | null;
+    schoolYear: string | null;
+    playingYears: number | null;
+    ambition: string | null;
+    prevSeasonAvgScore: number | null;
+    dateOfBirth: Date | null;
+    fasiliteter: string[];
+  };
+  /** Nyeste aktive PlayerEnrollment med en ekte coach (null for PLATFORM_ONLY / ingen). */
+  program: { coachNavn: string; program: PlayerProgram; enrolledAt: Date } | null;
+  abo: {
+    erPro: boolean;
+    /** Pakkenavn (credits) — vinner over ren Pro, samme utledning som abonnement-siden. */
+    planNavn: "Performance" | "Performance Pro" | null;
+    status: string | null;
+    nesteTrekk: Date | null;
+  };
+  notif: UserPreferences["notif"];
 };
+
+const PROGRAM_LABEL: Record<PlayerProgram, string> = {
+  WANG_TOPPIDRETT: "WANG Toppidrett Fredrikstad",
+  WANG_UNG: "WANG Ung Fredrikstad",
+  GFGK_MINI: "GFGK — Mini",
+  GFGK_BREDDE: "GFGK — Bredde/Utvikling",
+  GFGK_JENTER: "GFGK — Jenter",
+  GFGK_ELITE: "GFGK — Elite",
+  AK_ACADEMY: "AK Golf Academy",
+  AK_ACADEMY_JUNIOR: "AK Golf Academy Junior",
+  PLATFORM_ONLY: "Selvbetjent",
+};
+
+const ABO_STATUS_LABEL: Record<string, string> = {
+  ACTIVE: "Aktiv",
+  PAST_DUE: "Betaling feilet",
+  CANCELLED: "Avsluttet",
+  TRIALING: "Prøveperiode",
+};
+
+function formatDato(d: Date | null): string | null {
+  if (!d) return null;
+  return new Date(d).toLocaleDateString("nb-NO", { day: "numeric", month: "long", year: "numeric" });
+}
 
 /* ── Rene hjelpere (norsk bokmål) ──────────────────────────────────── */
 
@@ -59,11 +115,6 @@ function hcpTekst(hcp: number | null): string {
 function snittTekst(v: number | null): string {
   if (v == null) return "–";
   return v.toLocaleString("nb-NO", { maximumFractionDigits: 1 });
-}
-
-function tierSub(tier: Tier): string {
-  // ELITE er dødt enum — behandles som gratis. Kun to nivåer: gratis / 299 kr/mnd.
-  return tier === "PRO" ? "PlayerHQ Pro · 299 kr/mnd" : "PlayerHQ Gratis";
 }
 
 /** Nedtellings-/status-pill for det primære (nærmeste) målet. */
@@ -108,6 +159,63 @@ function SesongTallVerdi({ value }: { value: string }) {
   );
 }
 
+/** Inline varsel-brytere — de 3 nærmest fasitens («ny plan», «påminnelse»,
+ *  «tilbakemelding fra coach»). Resten (kanaler, ukesrapport, turnering,
+ *  språk) bor fortsatt bak «Flere valg» — samme lagringsflyt (oppdaterPreferences)
+ *  som InnstillingerVarslerV2, ikke en egen kopi av den logikken. */
+function VarslerMini({ notif }: { notif: UserPreferences["notif"] }) {
+  const router = useRouter();
+  const [verdier, setVerdier] = useState(notif);
+  const [, startLagring] = useTransition();
+
+  function sett(felt: keyof UserPreferences["notif"], v: boolean) {
+    setVerdier((prev) => ({ ...prev, [felt]: v }));
+    startLagring(async () => {
+      await oppdaterPreferences({ notif: { ...verdier, [felt]: v } });
+      router.refresh();
+    });
+  }
+
+  return (
+    <Kort eyebrow="Varsler">
+      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        <Bryter
+          label="Ny plan fra Anders"
+          sub="Når uka er publisert"
+          checked={verdier.treningsplanOppdatert}
+          onChange={(v) => sett("treningsplanOppdatert", v)}
+        />
+        <Bryter
+          label="Påminnelse før økt"
+          sub="Push i forkant"
+          checked={verdier.paaminnelse}
+          onChange={(v) => sett("paaminnelse", v)}
+        />
+        <Bryter
+          label="Melding fra coach"
+          sub="Tilbakemelding og beskjeder"
+          checked={verdier.nyMeldingFraCoach}
+          onChange={(v) => sett("nyMeldingFraCoach", v)}
+        />
+      </div>
+      <Link
+        href="/portal/meg/innstillinger/varsler"
+        style={{
+          display: "block",
+          marginTop: 10,
+          fontFamily: T.ui,
+          fontSize: 12,
+          fontWeight: 600,
+          color: T.mut,
+          textDecoration: "none",
+        }}
+      >
+        Flere varslingsvalg →
+      </Link>
+    </Kort>
+  );
+}
+
 /* ── Konto-rader (ekte adresser) ───────────────────────────────────── */
 
 type KontoRad = { ic: string; l: string; sub?: string; href: string };
@@ -117,7 +225,7 @@ type KontoRad = { ic: string; l: string; sub?: string; href: string };
 export function MegV2({ data }: { data: MegData }) {
   const mobile = useMobile();
   const router = useRouter();
-  const { navn, hcp, homeClub, tier, goals, sesong } = data;
+  const { navn, hcp, homeClub, goals, sesong, identitet, program, abo, notif } = data;
 
   // Avatar direkte klikkbar her (Anders-krav: bytt bilde skal ikke kreve
   // omvei via Profil og innstillinger) — samme uploadAvatar-action og
@@ -172,11 +280,30 @@ export function MegV2({ data }: { data: MegData }) {
     { ic: "briefcase", l: "Utstyrsbag", sub: "Køller, ball, bag", href: "/portal/meg/utstyrsbag" },
     { ic: "users", l: "Foresatte", sub: "Registrerte foreldre/verger", href: "/portal/meg/foreldre" },
     { ic: "activity", l: "Venner", sub: "Legg til venner, se at de har trent", href: "/portal/venner" },
-    { ic: "credit-card", l: "Abonnement", sub: tierSub(tier), href: "/portal/meg/abonnement" },
     { ic: "settings", l: "Innstillinger", sub: "Varsler, personvern, anlegg, språk", href: "/portal/meg/innstillinger" },
-    { ic: "bell", l: "Varsler", sub: "Push og e-post", href: "/portal/meg/innstillinger/varsler" },
     { ic: "shield", l: "Personvern og samtykke", href: "/portal/meg/innstillinger/personvern" },
   ];
+
+  // «Om deg» — kun rader med ekte verdi. Skjul hele kortet hvis alt mangler.
+  const fodt = formatDato(identitet.dateOfBirth);
+  const skole = identitet.school
+    ? identitet.school + (identitet.schoolYear ? ` · ${identitet.schoolYear}` : "")
+    : null;
+  const identitetsrader: { l: string; v: string }[] = [
+    ...(fodt ? [{ l: "Født", v: fodt }] : []),
+    ...(skole ? [{ l: "Skole", v: skole }] : []),
+    ...(identitet.playingYears != null ? [{ l: "År med golf", v: String(identitet.playingYears) }] : []),
+    ...(identitet.prevSeasonAvgScore != null
+      ? [{ l: "Snittscore forrige sesong", v: String(identitet.prevSeasonAvgScore) }]
+      : []),
+    ...(identitet.ambition ? [{ l: "Ambisjon", v: identitet.ambition }] : []),
+    ...(identitet.fasiliteter.length > 0 ? [{ l: "Treningssted", v: identitet.fasiliteter.join(" · ") }] : []),
+  ];
+
+  const programStart = program ? formatDato(program.enrolledAt) : null;
+  const aboPlan = abo.planNavn ?? (abo.erPro ? "PlayerHQ Pro" : "PlayerHQ Gratis");
+  const aboStatus = abo.status ? ABO_STATUS_LABEL[abo.status] ?? abo.status : null;
+  const aboNesteTrekk = formatDato(abo.nesteTrekk);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
@@ -222,6 +349,26 @@ export function MegV2({ data }: { data: MegData }) {
           {avatarFeil && <Caps style={{ marginTop: 8, color: T.down }}>{avatarFeil}</Caps>}
         </div>
       </div>
+
+      {/* Om deg — kun ekte, utfylte felt */}
+      {identitetsrader.length > 0 && (
+        <Kort eyebrow="Om deg">
+          {identitetsrader.map((r, i) => (
+            <Rad key={r.l} title={r.l} trailing={<span style={{ fontFamily: T.mono, fontSize: 13 }}>{r.v}</span>} last={i === identitetsrader.length - 1} />
+          ))}
+        </Kort>
+      )}
+
+      {/* Coach og program — kun for spillere med en aktiv coach-tilknytning */}
+      {program && (
+        <Kort eyebrow="Coach og program">
+          <Rad title="Coach" trailing={<span style={{ fontFamily: T.mono, fontSize: 13 }}>{program.coachNavn}</span>} />
+          <Rad title="Program" trailing={<span style={{ fontFamily: T.mono, fontSize: 13 }}>{PROGRAM_LABEL[program.program]}</span>} />
+          {programStart && (
+            <Rad title="Startet" trailing={<span style={{ fontFamily: T.mono, fontSize: 13 }}>{programStart}</span>} last />
+          )}
+        </Kort>
+      )}
 
       {/* B: form/status først — kompakte sesongtall */}
       <div className="grid grid-cols-2 md:grid-cols-4" style={{ gap: 8 }}>
@@ -281,6 +428,22 @@ export function MegV2({ data }: { data: MegData }) {
           </div>
         </Kort>
       )}
+
+      <VarslerMini notif={notif} />
+
+      <Kort eyebrow="Abonnement">
+        <Rad title="Plan" trailing={<span style={{ fontFamily: T.mono, fontSize: 13 }}>{aboPlan}</span>} />
+        {aboStatus && <Rad title="Status" trailing={<span style={{ fontFamily: T.mono, fontSize: 13 }}>{aboStatus}</span>} />}
+        {aboNesteTrekk && <Rad title="Neste trekk" trailing={<span style={{ fontFamily: T.mono, fontSize: 13 }}>{aboNesteTrekk}</span>} />}
+        <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+          <Rad
+            leading={<Icon name="credit-card" size={16} style={{ color: T.mut }} />}
+            title="Fakturaer og betalingsmåte"
+            sub="Oppgrader, endre kort eller avbestill"
+            last
+          />
+        </Link>
+      </Kort>
 
       <Kort
         eyebrow={

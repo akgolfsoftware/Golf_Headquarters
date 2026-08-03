@@ -5,6 +5,12 @@
  *
  * Auth + dataloader gjenbruker den ekte /portal/meg-siden: hentProfil for profil,
  * getGoals for sesongmål, Round-aggregat for «Sesongen i tall» (brutto score).
+ *
+ * Steg 7 PR4 (Paper-port, designsystem/paper/fase1/playerhq-meg.html): lagt til
+ * identitet (school/playingYears/ambition/prevSeasonAvgScore/dateOfBirth,
+ * playerFacilities), aktiv coach/program (PlayerEnrollment) og et
+ * abonnements-sammendrag (getAbonnementData) — alt lest direkte fra
+ * eksisterende felt, ingen nye modeller.
  */
 
 import { redirect } from "next/navigation";
@@ -12,6 +18,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentProfil } from "@/app/portal/meg/actions";
 import { getGoals } from "@/app/portal/actions";
 import { prisma } from "@/lib/prisma";
+import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MegV2, type MegData } from "@/components/portal/v2/MegV2";
 
@@ -22,7 +29,7 @@ export default async function V2MegPreviewPage() {
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  const [profil, goals, agg] = await Promise.all([
+  const [profil, goals, agg, identitet, aktivEnrollment, abo] = await Promise.all([
     hentProfil(),
     getGoals(user.id, 3),
     prisma.round.aggregate({
@@ -31,6 +38,26 @@ export default async function V2MegPreviewPage() {
       _min: { score: true },
       _avg: { score: true, sgTotal: true },
     }),
+    prisma.user.findUnique({
+      where: { id: user.id },
+      select: {
+        school: true,
+        schoolYear: true,
+        playingYears: true,
+        ambition: true,
+        prevSeasonAvgScore: true,
+        dateOfBirth: true,
+        playerFacilities: { select: { name: true }, orderBy: { sortOrder: "asc" } },
+      },
+    }),
+    // Nyeste aktive enrollering med en ekte coach — PLATFORM_ONLY har ingen
+    // coach og skal ikke gi et «Coach og program»-kort.
+    prisma.playerEnrollment.findFirst({
+      where: { userId: user.id, endedAt: null, coachId: { not: null } },
+      orderBy: { enrolledAt: "desc" },
+      select: { program: true, enrolledAt: true, coach: { select: { name: true } } },
+    }),
+    getAbonnementData(user.id),
   ]);
 
   const data: MegData = {
@@ -38,7 +65,6 @@ export default async function V2MegPreviewPage() {
     avatarUrl: profil.user.avatarUrl,
     hcp: profil.user.hcp,
     homeClub: profil.user.homeClub,
-    tier: user.tier,
     goals,
     sesong: {
       runder: agg._count._all,
@@ -46,6 +72,30 @@ export default async function V2MegPreviewPage() {
       snittScore: agg._avg.score,
       sgSnitt: agg._avg.sgTotal,
     },
+    identitet: {
+      school: identitet?.school ?? null,
+      schoolYear: identitet?.schoolYear ?? null,
+      playingYears: identitet?.playingYears ?? null,
+      ambition: identitet?.ambition ?? null,
+      prevSeasonAvgScore: identitet?.prevSeasonAvgScore ?? null,
+      dateOfBirth: identitet?.dateOfBirth ?? null,
+      fasiliteter: identitet?.playerFacilities.map((f) => f.name) ?? [],
+    },
+    program: aktivEnrollment
+      ? {
+          coachNavn: aktivEnrollment.coach!.name,
+          program: aktivEnrollment.program,
+          enrolledAt: aktivEnrollment.enrolledAt,
+        }
+      : null,
+    abo: {
+      erPro: abo.erPro,
+      // Samme utledning som /portal/meg/abonnement/page.tsx — pakke (credits) vinner over ren Pro.
+      planNavn: abo.monthlyCredits >= 4 ? "Performance Pro" : abo.monthlyCredits > 0 ? "Performance" : null,
+      status: abo.status,
+      nesteTrekk: abo.nesteTrekk,
+    },
+    notif: profil.preferences.notif,
   };
 
   return (

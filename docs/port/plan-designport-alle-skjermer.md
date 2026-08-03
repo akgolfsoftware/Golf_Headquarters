@@ -150,7 +150,7 @@ fordi skjermantallet ikke er kjent før steg 2.
 | 5A — Farger inn i `--v2-*` | Ferdig (PR #262) |
 | 5B — Form: radius/avstand/typografi | Ferdig (PR #270–273) |
 | 6 — Fjern 419 hardkodede farger | Ferdig (PR #274) |
-| 7 — Bølge 1: PlayerHQ | I gang — PR1 (Hjem) merget (#275), PR2 (Planlegge) merget (#276), PR3 (Analysere) klar, 2–3 PR-er igjen |
+| 7 — Bølge 1: PlayerHQ | I gang — PR1 Hjem (#275), PR2 Planlegge (#276), PR3 Analysere (#277) merget. PR4 Meg klar. 2 PR-er igjen (Booking, Workbench mobil) + de 145 skjermene uten fasit |
 | 8 — Bølge 2: AgencyOS | Ikke startet |
 | 9 — Bølge 3: resten | Ikke startet |
 | 10 — Steng døra (lint-gate) | Ikke startet |

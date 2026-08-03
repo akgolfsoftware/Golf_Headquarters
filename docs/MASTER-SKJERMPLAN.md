@@ -223,7 +223,7 @@ PlayerHQ er spillerens eget verktøy: «hva skal JEG gjøre i dag?» Adressene b
 
 | Skjerm | Adresse | Design | Mob/Desk/iPad | Adresse-ok | Flyt | Data | Funker |
 |---|---|---|---|---|---|---|---|
-| Meg (profil) ★ | `/portal/meg` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ |
+| Meg (profil) ★ | `/portal/meg` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | **03.08.2026 (steg 7 PR4, Paper-port):** strukturelt tettere på `designsystem/paper/fase1/playerhq-meg.html` — nye kort «Om deg» (school/schoolYear/playingYears/ambition/prevSeasonAvgScore/dateOfBirth/playerFacilities, kun utfylte felt) og «Coach og program» (nyeste aktive `PlayerEnrollment` med ekte coach), inline varsel-brytere (3 av 8 reelle notif-felt, `Bryter`/`oppdaterPreferences` — samme lagringsflyt som `InnstillingerVarslerV2`, ikke en kopi) og et abonnements-sammendrag (`getAbonnementData`). Personvern/GDPR-sletting og Stripe-styring bevisst IKKE flyttet inn — de ekte flytene (coach-godkjent sletting, Stripe-portal) bor i egne, allerede reelle undersider og er ikke duplisert. `tier`-feltet i `MegData` fjernet (dødt etter at `abo` overtok). |
 | Rediger profil ★ | `/portal/meg/profil` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MinProfilV2` (v2 retning C), portert 10. juli, hake aldri oppdatert |
 | Abonnement ★ | `/portal/meg/abonnement` | ✓ | ✓✓✓ | ✓ | ✓ | ✓ | ✓ | Design rettet – → ✓ 16. jul: `MegAbonnementV2` (v2 retning C), hake aldri oppdatert |
 | · Oppgrader | `/portal/meg/abonnement/oppgrader` | ✓ | --- | ↪︎ | ↪︎ | ↪︎ | ↪︎ | Reconciliation 16. jul (Fase 0): BEKREFTET ren `redirect("/portal/meg/abonnement/oppgrader/flyt")` — ikke en egen skjerm.
