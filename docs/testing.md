@@ -6,8 +6,8 @@ Kort guide for hvordan kjøre tester lokalt og hva som dekkes.
 
 | Type | Verktøy | Hvor | Antall |
 |---|---|---|---|
-| Unit | `node:test` + `tsx` | `src/lib/__tests__/*.test.ts` | 12 |
-| E2E | Playwright (Chromium) | `e2e/*.spec.ts` | 18 (12 grønne, 6 skip-betingede) |
+| Unit | `node:test` + `tsx` | `src/lib/**/*.test.ts` | 110 filer |
+| E2E | Playwright (chromium + webkit) | `tests/e2e/*.spec.ts` (én mappe siden 2026-08-03) | 32 specs / 104 tester |
 
 ## Kommandoer
 

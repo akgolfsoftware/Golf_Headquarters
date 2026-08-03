@@ -8,7 +8,7 @@
  * Krever samme seed som i0 (coachtest + selvbetjent fixture) der det trengs.
  */
 
-import "../scripts/_env";
+import "../../scripts/_env";
 import { readFileSync } from "node:fs";
 import { test, expect } from "@playwright/test";
 
