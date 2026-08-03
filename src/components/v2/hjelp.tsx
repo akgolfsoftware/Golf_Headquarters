@@ -86,3 +86,51 @@ export function HjelpTips({ k, size = 13, align = "left" }: HjelpTipsProps) {
     </span>
   );
 }
+
+/** HvorforDette — «Hvorfor dette tallet»-utvidelsen fra Paper-fasiten
+ *  (`.why` i designsystem/paper/fase1/playerhq-analyse.html): kilde /
+ *  beregning / forbehold under et regnet tall. Generisk versjon av
+ *  PortalHvorforDette (som er bundet til portal-chat sine verktøykall) —
+ *  denne tar innholdet direkte som props, for bruk i alle v2-skjermer. */
+export interface HvorforDetteProps {
+  kilde: string;
+  beregning: string;
+  forbehold: string;
+}
+
+export function HvorforDette({ kilde, beregning, forbehold }: HvorforDetteProps) {
+  return (
+    <details style={{ margin: "12px 0 0", border: `1px solid ${T.border}`, borderRadius: T.rCard, background: T.panel }}>
+      <summary
+        style={{
+          display: "flex",
+          alignItems: "center",
+          minHeight: 44,
+          padding: "0 16px",
+          cursor: "pointer",
+          listStyle: "none",
+          fontFamily: T.ui,
+          fontSize: 12.5,
+          fontWeight: 500,
+          color: T.mut,
+        }}
+      >
+        Hvorfor dette tallet
+      </summary>
+      <ul style={{ margin: 0, padding: "12px 16px 16px 24px", fontSize: 13.5, color: T.mut, lineHeight: 1.6 }}>
+        <li style={{ marginBottom: 8 }}>
+          <strong style={{ color: T.fg, fontWeight: 500 }}>Kilde: </strong>
+          {kilde}
+        </li>
+        <li style={{ marginBottom: 8 }}>
+          <strong style={{ color: T.fg, fontWeight: 500 }}>Beregning: </strong>
+          {beregning}
+        </li>
+        <li>
+          <strong style={{ color: T.fg, fontWeight: 500 }}>Forbehold: </strong>
+          {forbehold}
+        </li>
+      </ul>
+    </details>
+  );
+}

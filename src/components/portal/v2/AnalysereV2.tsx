@@ -47,6 +47,7 @@ import {
   AkseChip,
   Icon,
   HjelpTips,
+  HvorforDette,
   Skjelett,
   CTAPill,
   SgKategorier,
@@ -147,6 +148,12 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
   // Uthevingen av svakeste område ligger nå i SgKategorier («størst tap»-markør),
   // som også regner ut sin egen skala — derfor ingen maxAbs/svakestAkse her.
 
+  // Score-trend (Paper-fasit playerhq-analyse.html): brutto score over de
+  // siste registrerte rundene, eldste til venstre. rounds.rounds kommer desc
+  // (nyeste først) — snus for lesbar kronologi i grafen.
+  const scoreSerie = rounds.rounds.slice(0, 10).reverse().map((r) => r.score);
+  const harScoreSerie = scoreSerie.length >= 2;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap }}>
       <Kort tint>
@@ -167,6 +174,11 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
                 <Trend series={tp.map((p) => p.sg)} yMin={Math.min(-1, ...tp.map((p) => p.sg))} />
               </div>
             )}
+            <HvorforDette
+              kilde={`Dine ${sgStatus.runder} siste registrerte runder, brutto score.`}
+              beregning={`SG måler slag spart mot ${sgStatus.baseline}, ikke mot par. Delene summerer til totalen.`}
+              forbehold={`Baseline er ${sgStatus.baseline} — et annet nivå ville gitt et annet tall for akkurat disse rundene.`}
+            />
           </>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -251,6 +263,22 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
             />
           )}
         </div>
+      )}
+
+      {harScoreSerie && (
+        <Kort eyebrow={`Score · siste ${scoreSerie.length} runder`} style={{ gridColumn: "1 / -1" }}>
+          <Trend series={scoreSerie} baseline={null} fmt={(v) => String(v)} />
+          <div style={{ display: "flex", gap: 12, marginTop: 8, fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
+            <span>beste {Math.min(...scoreSerie)}</span>
+            <span>snitt {komma(scoreSerie.reduce((a, b) => a + b, 0) / scoreSerie.length)}</span>
+            <span style={{ marginLeft: "auto" }}>siste {scoreSerie[scoreSerie.length - 1]}</span>
+          </div>
+          <HvorforDette
+            kilde={`Brutto score fra de ${scoreSerie.length} siste registrerte rundene. Eldste til venstre.`}
+            beregning="Ingen justering for banevanskelighet — tallene vises slik de ble spilt."
+            forbehold="Uten course rating er en score på en lett bane og samme score på en vanskelig bane samme punkt i grafen."
+          />
+        </Kort>
       )}
 
       <div className="grid grid-cols-2 md:grid-cols-3" style={{ gridColumn: "1 / -1", gap: T.gap, alignItems: "start" }}>
@@ -501,6 +529,11 @@ function TabTrening({ data, mobile, userId }: { data: AnalysereData; mobile: boo
                 last={i === arr.length - 1}
               />
             ))}
+            <HvorforDette
+              kilde={`${o.antallOkter} loggede ${o.antallOkter === 1 ? "økt" : "økter"} ${hist?.vinduLabel ?? ""}. Bare økter markert som ferdige teller.`}
+              beregning="Andel av samlet treningstid per pyramideakse, regnet på hver enkelt øvelse i vinduet."
+              forbehold="En økt med øvelser fra flere akser fordeles på øvelsens egen tid, ikke på øktas hovedakse."
+            />
           </>
         ) : laster ? (
           <TomTilstand icon="activity" title="Henter trening …" sub="Et øyeblikk." />
@@ -787,6 +820,11 @@ function TabTester({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
             last={i === tests.length - 1}
           />
         ))}
+        <HvorforDette
+          kilde={`TestResult — dine ${tests.length} siste registrerte ${tests.length === 1 ? "test" : "tester"}.`}
+          beregning="Ingen omregning. Resultatene vises slik de ble målt."
+          forbehold="Referanseverdier per kategori og nivå er ikke låst ennå — resultatet står, vurderingen mangler."
+        />
       </Kort>
     </div>
   );

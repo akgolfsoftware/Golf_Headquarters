@@ -9,7 +9,7 @@
  * chat: tall skal spores til en ekte kilde, aldri en påstand.
  */
 
-import { T } from "@/lib/v2/tokens";
+import { HvorforDette } from "@/components/v2";
 import type { PortalToolCall } from "./types";
 
 type HvorforInnhold = { kilde: string; beregning: string; forbehold: string };
@@ -70,37 +70,8 @@ export function PortalHvorforDette({ toolCall }: { toolCall: PortalToolCall }) {
   if (!innhold) return null;
 
   return (
-    <details style={{ margin: "12px 0 16px", border: `1px solid ${T.border}`, borderRadius: T.rCard, background: T.panel }}>
-      <summary
-        style={{
-          display: "flex",
-          alignItems: "center",
-          minHeight: 44,
-          padding: "0 16px",
-          cursor: "pointer",
-          listStyle: "none",
-          fontFamily: T.ui,
-          fontSize: 12.5,
-          fontWeight: 500,
-          color: T.mut,
-        }}
-      >
-        Hvorfor dette tallet
-      </summary>
-      <ul style={{ margin: 0, padding: "12px 16px 16px 24px", fontSize: 13.5, color: T.mut, lineHeight: 1.6 }}>
-        <li style={{ marginBottom: 8 }}>
-          <strong style={{ color: T.fg, fontWeight: 500 }}>Kilde: </strong>
-          {innhold.kilde}
-        </li>
-        <li style={{ marginBottom: 8 }}>
-          <strong style={{ color: T.fg, fontWeight: 500 }}>Beregning: </strong>
-          {innhold.beregning}
-        </li>
-        <li>
-          <strong style={{ color: T.fg, fontWeight: 500 }}>Forbehold: </strong>
-          {innhold.forbehold}
-        </li>
-      </ul>
-    </details>
+    <div style={{ marginBottom: 16 }}>
+      <HvorforDette kilde={innhold.kilde} beregning={innhold.beregning} forbehold={innhold.forbehold} />
+    </div>
   );
 }
