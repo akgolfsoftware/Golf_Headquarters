@@ -2,10 +2,12 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-08-03 (kvalitetsaudit tiltak 9+10 fullført: hydreringsfeilen på Workbench fikset og
+**Sist oppdatert:** 2026-08-04 natt (designport steg 7-status oppdatert — se linje under. Forrige:
+2026-08-03 kvalitetsaudit tiltak 9+10 fullført: hydreringsfeilen på Workbench fikset og
 verifisert 3/3 mot prod (React #418 fjernet fra `KJENTE_FEIL`), `processed_webhook_events` finnes i prod
 med RLS, PR #253 merget. CSP-funnet på `/admin/spillere` står fortsatt åpent, dokumentert under. Design-GAP
-i PlayerHQ/AgencyOS/Forelder/Auth = 0. Appen er fortsatt ikke klar for betalende brukere før P0-aktivering.)
+i PlayerHQ/AgencyOS/Forelder/Auth = 0 (v2/Presis-æraen, egen målestokk fra Paper-porten under). Appen er
+fortsatt ikke klar for betalende brukere før P0-aktivering.)
 
 ## Levende kilder (én av hver rolle — start her)
 
@@ -44,6 +46,13 @@ Push til `main` deployer automatisk via **Vercel git-integrasjon**. GitHub Actio
 - **Moderering/GDPR-kø:** bygget (D5).
 
 ## I arbeid / delvis (ferdigstillingsplan Fase A+B)
+- **Designport steg 7 (PlayerHQ mot Claude Paper):** de 6 fasit-dekkede rutene er avklart —
+  4 merget (Hjem/Planlegge/Analysere/Meg), Booking [PR #281](https://github.com/akgolfsoftware/Golf_Headquarters/pull/281)
+  åpen (venter godkjenning), Workbench mobil trengte ingen endring (allerede ferdig fra juli).
+  Kartlegging av de 145 skjermene uten fasit ([PR #280](https://github.com/akgolfsoftware/Golf_Headquarters/pull/280),
+  åpen): 113/167 PlayerHQ-sider bruker allerede v2-komponenter. Lint-porten mot nye
+  hardkodede farger bygget ([PR #279](https://github.com/akgolfsoftware/Golf_Headquarters/pull/279), åpen).
+  Full status: `docs/port/plan-designport-alle-skjermer.md`.
 - **P0 lansering:** spiller-aktivering, push-opt-in, e2e-smoke på ★-kjernen (Funker `†` → `✓`).
 - **Bølge 4-rest:** live offline-kø for drills + reps til DB + summary write-back.
 - **Bølge 5:** treningsanalyse-modul + AgencyOS-kalender drill-lesevisning — **ikke startet**.
