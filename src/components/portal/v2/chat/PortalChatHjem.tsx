@@ -106,6 +106,8 @@ function DagensOktInnhold({ gjennomfore }: { gjennomfore: GjennomforeData }) {
           ))}
         </ul>
       )}
+      {/* Artefaktpanel: ink/sekundær (fasit .btn.ink). Oransje «Én ting nå»
+          lever kun i trådens NowBlock — aldri to accent-CTA samtidig. */}
       <Link
         href={okt.href}
         className="v2-press v2-focus"
@@ -115,8 +117,8 @@ function DagensOktInnhold({ gjennomfore }: { gjennomfore: GjennomforeData }) {
           justifyContent: "center",
           minHeight: 44,
           borderRadius: 10,
-          background: T.handling,
-          color: T.onHandling,
+          background: T.fg,
+          color: T.bg,
           fontFamily: T.ui,
           fontSize: 13,
           fontWeight: 600,
@@ -130,11 +132,14 @@ function DagensOktInnhold({ gjennomfore }: { gjennomfore: GjennomforeData }) {
 }
 
 /** «Én ting nå» — systemet, uoppfordret. Fasit-mønster: KUN én accent-fylt
- * handling per skjermtilstand (KONTRAKT §3). Vises kun når det faktisk finnes
- * en kommende (ikke-startet) økt i dag — ellers ingenting å starte. */
+ * handling per skjermtilstand (KONTRAKT §3). Vises for kommende (upcoming)
+ * ELLER aktiv (now) økt — ellers ærlig tom tilstand uten oransje CTA.
+ * (Fix 2026-08-04: status "now" ble filtrert bort → 0 orange CTA på mobil når
+ * økt allerede er startet; desktop fant knappen bare i artefaktpanelet.) */
 function NowBlock({ gjennomfore, onSeMer }: { gjennomfore: GjennomforeData; onSeMer: () => void }) {
   const okt = gjennomfore.nesteOkt;
-  if (!okt || okt.status !== "upcoming") return null;
+  if (!okt || (okt.status !== "upcoming" && okt.status !== "now")) return null;
+  const erAktiv = okt.status === "now";
   return (
     <div
       style={{
@@ -148,7 +153,7 @@ function NowBlock({ gjennomfore, onSeMer }: { gjennomfore: GjennomforeData; onSe
         Én ting nå
       </div>
       <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
-        Dagens økt starter {okt.relTidTekst}
+        {erAktiv ? "Økta er i gang" : `Dagens økt starter ${okt.relTidTekst}`}
       </h3>
       <p style={{ margin: "0 0 16px", fontFamily: T.ui, fontSize: 14, color: T.mut, maxWidth: "52ch" }}>
         {okt.sted} · {okt.tid}. {okt.tittel}.
@@ -171,7 +176,7 @@ function NowBlock({ gjennomfore, onSeMer }: { gjennomfore: GjennomforeData; onSe
             textDecoration: "none",
           }}
         >
-          Start økta
+          {erAktiv ? "Fortsett økta" : "Start økta"}
         </Link>
         <button
           type="button"

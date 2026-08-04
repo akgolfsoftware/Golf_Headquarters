@@ -1,12 +1,13 @@
 # Plan — port alle skjermer til Claude Paper
 
 **Skrevet:** 02.08.2026 · **Status:** GODKJENT OG I GANG (Anders 2026-08-03) — se svar nederst
+**Sperre-lås (2026-08-04):** `docs/port/sperre-og-beslutninger.md` — P0/KOMMER, `/traad`, tokens.
 **Gjelder:** hele appen — PlayerHQ, AgencyOS, marketing, booking, foreldreportal, WANG, GFGK
 
 Dette er planen for at appens skjermer faktisk skal se ut som Claude Design-prosjektet
 **«AK Golf HQ — Claude Paper»** (`claude.ai/design/p/605a48cc-81e8-44bd-94d2-07d50a97370a`).
 
-Ingen kode er endret. Ingen token-fil er rørt. Planen er ikke godkjent.
+Planen er godkjent og i gang. Sperre-opprydding 2026-08-04: se `sperre-og-beslutninger.md`.
 
 ---
 

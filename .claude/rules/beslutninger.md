@@ -16,12 +16,25 @@ Gjelder til Anders endrer dem.
 
 ## Beslutningene (august 2026)
 
+- **Sperre-opprydding (Anders 2026-08-04):** operativ lås for det som stoppet Paper-porten —
+  én design-sannhet, P0 vs KOMMER konsoll-kommandoer, eierskap `/traad`/teknisk plan, schema-hull.
+  **Les før AgencyOS-konsoll eller nye tokens:** `docs/port/sperre-og-beslutninger.md`.
 - **Design-fasit er Claude Paper 1:1 (Anders 2026-08-04):** skjermene skal bli **slik de er
   designet i Claude Design** (`designsystem/paper/fase1/`) — layout, informasjonsarkitektur og
-  interaksjonsmønster, ikke bare farger/tokens. Bakgrunn: steg 7 PR1–PR4 ble merget med riktige
-  tokens men feil skall («Én ting nå» manglet på alle fire, Hjem manglet artefaktkolonne/tom
-  tilstand, Planlegge hadde 5 konkurrerende CTA-er). Full avviksliste og ombyggingsplan:
-  `docs/port/plan-designport-alle-skjermer.md` §Avvik.
+  interaksjonsmønster, ikke bare farger/tokens. **Pilot-unntaket («bare v2 + oransje») er
+  opphevet for designport-arbeid** — full Paper-port gjelder. Bakgrunn: steg 7 PR1–PR4 ble merget
+  med riktige tokens men feil skall («Én ting nå» manglet på alle fire, Hjem manglet
+  artefaktkolonne/tom tilstand, Planlegge hadde 5 konkurrerende CTA-er). Full avviksliste og
+  ombyggingsplan: `docs/port/plan-designport-alle-skjermer.md` §Avvik.
+- **Teknisk plan / `/traad` (Anders 2026-08-04):** kanonisk writer =
+  PlayerHQ `/portal/planlegge/workbench?tab=tek` (+ admin `AdminTekniskPlanV2` på samme data).
+  Konsoll-kommandoen `/traad` er **deep-link/read only** — ingen tredje writer. Detalj:
+  `docs/port/sperre-og-beslutninger.md` §3.
+- **Konsoll C-kommandoer (Anders 2026-08-04):** P0 på eksisterende data (`/plan`, `/spiller`,
+  `/kalender`, `/godkjenn`, `/fangst`, `/analyser`, `/sg`, `/booking`, `/traad` deep-link).
+  **KOMMER** (ikke bygg uten modell-epic): `/faktura`, timeliste, politiattest, varelager,
+  økonomi-per-selskap, ak-brain som øvelseskilde. Se `docs/port/sperre-og-beslutninger.md` §2
+  og `designsystem/paper/guidelines/kodeordre-agencyos.md`.
 - **Skjermbilde-gate (Anders 2026-08-04, FAST REGEL — presisert samme dag):** ingen skjerm-PR
   i designporten merges uten at Anders har SETT skjermen. Konkret leveranse per ferdig skjerm:
   (1) faktisk skjermbilde av den kjørende appen (Vercel-preview, innlogget testbruker med ekte

@@ -6,8 +6,9 @@
 (stack, prosjektkart, sannhets-hierarki) på 5 min. **Les den før du rører kode.** Deretter:
 `docs/STATUS-NÅ.md` (hvor vi er) og `docs/MASTER-SKJERMPLAN.md` (før skjermarbeid).
 
-Design: se `.claude/rules/beslutninger.md` §Tema/design — appen følger v2-tokens + C smalt;
-Claude Paper er designfasit i Open Design; full port etter pilot.
+**Design:** Claude Paper 1:1 (`designsystem/paper/fase1/`) — se `.claude/rules/beslutninger.md`.  
+**Sperre-lås (P0/KOMMER, `/traad`, tokens):** [`docs/port/sperre-og-beslutninger.md`](docs/port/sperre-og-beslutninger.md).  
+**Port-plan:** [`docs/port/plan-designport-alle-skjermer.md`](docs/port/plan-designport-alle-skjermer.md).
 
 **Ikke stol på** `docs/arkiv/` (historikk). Ved tvil vinner `AGENT-BRIEF.md`.
 

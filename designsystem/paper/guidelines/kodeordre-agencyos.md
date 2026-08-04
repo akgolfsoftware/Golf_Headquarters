@@ -45,6 +45,21 @@ token-systemer før Open Design er avklart — alt under er logikk og struktur.
 - Statuslinje nederst på desktop: versjon · uke · periode | agentfeil | MRR | innsikter | CANON-status. Alle klikkbare.
 
 ## Ikke i denne ordren
-- Tokens/Claude Paper — venter på Open Design-beslutningen.
-- Varelager/faktura/timeliste — trenger datamodellbeslutning først.
+- Tokens/Claude Paper — **opphevet 2026-08-04:** Paper 1:1 er fasit; se `docs/port/sperre-og-beslutninger.md`.
+- Varelager/faktura/timeliste — trenger datamodellbeslutning først (**KOMMER**).
 - P0-listen (DKIM, DNS, Stripe live, Google-reauth) — manuelle oppgaver, ikke kode.
+
+## Konsoll-kommandoer — P0 vs KOMMER (LÅST 2026-08-04)
+
+Full lås: `docs/port/sperre-og-beslutninger.md` §2–3.
+
+**P0 (bygg mot eksisterende data):** `/plan` · `/spiller` · `/kalender` · `/godkjenn` ·
+`/fangst` · `/analyser` · `/sg` · `/booking` · `/traad` (**deep-link** til kanonisk teknisk
+plan — PlayerHQ `workbench?tab=tek` / admin teknisk plan; ingen tredje writer).
+
+**KOMMER (ikke implementer uten modell-epic + Anders-ja):** `/faktura` · timeliste/ansatt ·
+politiattest · varelager · økonomi-per-selskap (regnskap) · ak-brain som øvelseskilde i konsoll ·
+LIFE som Prisma-enum (i dag kun `src/lib/taxonomy.ts` + `LPhase`).
+
+I fasit-HTML: merk KOMMER med `(kommer)` i kommandopalett. Desktop og mobil skal ha **samme**
+P0-sett (ikke to ulike slash-lister).

@@ -1076,17 +1076,25 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
         <li><button data-od-id="pal-plan" data-fill="/plan "><span class="c">/plan</span><span>Lag treningsplan<span class="d">Spiller · uke · periode</span></span></button></li>
         <li><button data-od-id="pal-oyvind" data-fill="@Øyvind Rohjan "><span class="c">@oyvind</span><span>Øyvind Rohjan<span class="d">Kat. D · SG total +2,92 · venter godkjenning</span></span></button></li>
       </ul>
-      <div class="grp">Coaching</div>
+      <div class="grp">Coaching · P0</div>
       <ul class="optlist">
         <li><button data-od-id="pal-okt" data-fill="/okt "><span class="c">/okt</span><span>Ny økt på AK-formelen<span class="d">TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_OBSERVERT</span></span></button></li>
         <li><button data-od-id="pal-test" data-fill="/test "><span class="c">/test</span><span>Kjør testprotokoll<span class="d">1 av 20 · mot kategorikrav A–K</span></span></button></li>
-        <li><button data-od-id="pal-traad" data-fill="/traad "><span class="c">/traad</span><span>Vis teknisk tråd<span class="d">Kronologisk observasjonslinje</span></span></button></li>
+        <li><button data-od-id="pal-traad" data-fill="/traad "><span class="c">/traad</span><span>Teknisk plan · deep-link<span class="d">read · workbench?tab=tek</span></span></button></li>
         <li><button data-od-id="pal-sg" data-fill="/sg "><span class="c">/sg</span><span>Strokes Gained mot baseline<span class="d">Brutto score · Team Norway 2026</span></span></button></li>
+        <li><button data-od-id="pal-analyser" data-fill="/analyser "><span class="c">/analyser</span><span>Kjør analyser<span class="d">SG · dispersion · test</span></span></button></li>
+        <li><button data-od-id="pal-godkjenn" data-fill="/godkjenn "><span class="c">/godkjenn</span><span>Godkjenningskø<span class="d">ventende</span></span></button></li>
+        <li><button data-od-id="pal-fangst" data-fill="/fangst "><span class="c">/fangst</span><span>Fang observasjon<span class="d">rå notat</span></span></button></li>
+        <li><button data-od-id="pal-spiller" data-fill="/spiller "><span class="c">/spiller</span><span>Åpne spiller<span class="d">søk</span></span></button></li>
+        <li><button data-od-id="pal-kalender" data-fill="/kalender "><span class="c">/kalender</span><span>Kalender og bookinger<span class="d"></span></span></button></li>
       </ul>
-      <div class="grp">Drift</div>
+      <div class="grp">Drift · P0</div>
       <ul class="optlist">
         <li><button data-od-id="pal-booking" data-fill="/booking "><span class="c">/booking</span><span>Ny booking<span class="d">Gamle Fredrikstad GK</span></span></button></li>
-        <li><button data-od-id="pal-faktura" data-fill="/faktura "><span class="c">/faktura</span><span>Lag fakturagrunnlag<span class="d">Selskap · periode · timelogg</span></span></button></li>
+      </ul>
+      <div class="grp">Kommer · krever datamodell</div>
+      <ul class="optlist">
+        <li><button data-od-id="pal-faktura" data-fill="/faktura " disabled aria-disabled="true"><span class="c">/faktura</span><span>Lag fakturagrunnlag <em>(kommer)</em><span class="d">Selskap · periode · timelogg · krever modell</span></span></button></li>
       </ul>
     </div>
   </section>
@@ -1101,11 +1109,20 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
         <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     </div>
     <div class="sheet-body">
+      <!-- P0 LÅST 2026-08-04 — speiler desktop slashItems + mobil palett -->
       <ul class="optlist">
         <li><button data-od-id="slash-plan" data-fill="/plan "><span class="c">/plan</span><span>Lag treningsplan<span class="d">Spiller · uke</span></span></button></li>
+        <li><button data-od-id="slash-analyser" data-fill="/analyser "><span class="c">/analyser</span><span>Kjør analyser<span class="d">SG · dispersion · test</span></span></button></li>
+        <li><button data-od-id="slash-godkjenn" data-fill="/godkjenn "><span class="c">/godkjenn</span><span>Godkjenningskø<span class="d">ventende</span></span></button></li>
+        <li><button data-od-id="slash-fangst" data-fill="/fangst "><span class="c">/fangst</span><span>Fang observasjon<span class="d">rå notat</span></span></button></li>
+        <li><button data-od-id="slash-spiller" data-fill="/spiller "><span class="c">/spiller</span><span>Åpne spiller<span class="d">søk</span></span></button></li>
+        <li><button data-od-id="slash-kalender" data-fill="/kalender "><span class="c">/kalender</span><span>Kalender og bookinger<span class="d"></span></span></button></li>
         <li><button data-od-id="slash-okt" data-fill="/okt "><span class="c">/okt</span><span>Ny økt<span class="d">Spiller · øktformel</span></span></button></li>
         <li><button data-od-id="slash-test" data-fill="/test "><span class="c">/test</span><span>Testprotokoll<span class="d">Spiller · protokoll 1–20</span></span></button></li>
+        <li><button data-od-id="slash-sg" data-fill="/sg "><span class="c">/sg</span><span>SG-status<span class="d">read</span></span></button></li>
         <li><button data-od-id="slash-booking" data-fill="/booking "><span class="c">/booking</span><span>Ny booking<span class="d">Spiller · tid · Gamle Fredrikstad GK</span></span></button></li>
+        <li><button data-od-id="slash-traad" data-fill="/traad "><span class="c">/traad</span><span>Teknisk plan · deep-link<span class="d">read · workbench</span></span></button></li>
+        <li><button data-od-id="slash-faktura" data-fill="/faktura " disabled aria-disabled="true"><span class="c">/faktura</span><span>Fakturagrunnlag <em>(kommer)</em><span class="d">krever modell</span></span></button></li>
       </ul>
     </div>
   </section>

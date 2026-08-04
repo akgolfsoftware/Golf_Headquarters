@@ -1270,13 +1270,20 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
   document.getElementById('sendBtn').addEventListener('click', send);
 
   /* ── Slash- og @-menyer ───────────────────────────────── */
+  /* P0-sett LÅST 2026-08-04 — samme kjerne som mobil. KOMMER (/faktura) ikke her.
+     docs/port/sperre-og-beslutninger.md §2 */
   var slashItems = [
     ['/plan','Lag treningsplan · spiller, uke'],
     ['/analyser','Analyser tall · SG, dispersion, test'],
     ['/godkjenn','Godkjenn det som venter i innboksen'],
     ['/fangst','Start fangst · diktat på anlegget'],
     ['/spiller','Åpne spiller · profil og tråd'],
-    ['/kalender','Kalender · finn og lås tid']
+    ['/kalender','Kalender · finn og lås tid'],
+    ['/okt','Ny økt · øktformel'],
+    ['/test','Testprotokoll · 1–20'],
+    ['/sg','SG-status · read'],
+    ['/booking','Booking-flate'],
+    ['/traad','Teknisk plan · deep-link (read)']
   ];
   var atItems = [
     ['Øyvind Rohjan','kat. D · SG total +2,92'],
