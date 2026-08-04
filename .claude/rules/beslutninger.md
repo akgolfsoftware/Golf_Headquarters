@@ -40,6 +40,17 @@ Gjelder til Anders endrer dem.
   D1 2026-07-15). Sync-koblingen TestResult → TalentHQ finnes ikke i kode i dag og må bygges.
   Uavklart: hvilke av de 36 testprotokollene i DB spilleren skal se (Anders nevner 21, CANON
   sier 20) — spør før noe ryddes.
+- **AI-laget samles på ÉN adresse (Anders 2026-08-04, Fase 1):** fasiten
+  `agencyos-agenticos.html` bygges som ny samleflate som erstatter spredningen over
+  `/admin/agent-team`, `/admin/agents`, `/admin/godkjenninger` og AI-panelet på konsollen —
+  de gamle adressene blir redirects dit. Kun redesign av agent-team alene er IKKE beslutningen.
+- **Turneringsplanlegging inn i Workbench (Anders 2026-08-04, Fase 1):** fasiten
+  `workbench-turnering.html` bygges som del av `WorkbenchV2` (coach planlegger turnering samme
+  sted som trening) — ikke som ombygging av `/admin/tournaments`.
+- **Fase 2 av designporten kjøres i ny økt med Sonnet 5 (Anders 2026-08-04):** token-effektivt,
+  uten irrelevante skills/plugins/gammel kontekst. Fase 1-plan + rekkefølge:
+  `docs/port/plan-designport-alle-skjermer.md` §Fase 1-planlegging. Mønsterdokument for skjermer
+  uten fasit: `docs/port/monsterdokument-paper.md`.
 - **DataGolf-skjermene skal inn i PlayerHQ (Anders 2026-08-04):** i dag ligger de under
   marketing (`/stats/*` — spillere, turneringer, sg-sammenlign, verktøy m.fl.); `/portal/stats`
   er kun en redirect ut av portalen, og `/portal/datagolf` er én enkelt side. Skjermene skal
