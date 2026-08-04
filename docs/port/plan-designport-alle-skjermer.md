@@ -157,16 +157,68 @@ fordi skjermantallet ikke er kjent før steg 2.
 
 ### Steg 7 delstatus (PlayerHQ, 151 skjermer)
 
-**De 6 fasit-dekkede rutene — alle 6 avklart:**
+> ⚠ **AVVIK FUNNET 2026-08-04 (Anders så skjermene selv):** PR1–PR4 er merget med riktige
+> tokens, men **skjermene matcher ikke fasitens layout og interaksjonsmønster.** «Merget» i
+> tabellen under betyr IKKE ferdig — se §Avviksliste og §Revidert steg 7-plan lenger ned.
+> Rotårsak: ingen av PR-ene ble visuelt sammenlignet mot fasit før merge (PR1 sa det til og
+> med selv i beskrivelsen). Ny FAST regel (beslutninger.md 2026-08-04): **skjermbilde-gate** —
+> ingen skjerm-PR merges uten app/fasit side om side i PR-beskrivelsen.
+
+**De 6 fasit-dekkede rutene:**
 
 | Rute | Status |
 |---|---|
-| `/portal` (Hjem) | Merget (PR #275) |
-| `/portal/planlegge` | Merget (PR #276) |
-| `/portal/analysere` | Merget (PR #277) |
-| `/portal/meg` | Merget (PR #278) |
+| `/portal` (Hjem) | Merget (PR #275) — **må ombygges, se avviksliste A1** |
+| `/portal/planlegge` | Merget (PR #276) — **må ombygges, se avviksliste A2** |
+| `/portal/analysere` | Merget (PR #277) — mangler «Én ting nå» (A3); full visuell kontroll gjenstår |
+| `/portal/meg` | Merget (PR #278) — mangler «Én ting nå»/lydsamtykke (A4); full visuell kontroll gjenstår |
 | `/portal/booking` | [PR #281](https://github.com/akgolfsoftware/Golf_Headquarters/pull/281) åpnet 2026-08-04, IKKE merget — bygget om til timer/credits-oversikt som landing (Anders' instruks), ikke restyling av den gamle 4-stegs veiviseren |
-| `/portal/planlegge/workbench` (Workbench mobil) | **Ingen PR nødvendig** — MASTER-SKJERMPLAN rad viser alle 6 haker grønne siden juli. Bruker delte `T.*`-tokens og arvet Paper-paletten automatisk via steg 5–6. Undersøkt 2026-08-04 (feilaktig først meldt som manglende mobiltilpasning — rettelse: mobilflaten `WorkbenchV2Mobil.tsx` finnes og er ferdig) |
+| `/portal/planlegge/workbench` (Workbench mobil) | Mobilflaten `WorkbenchV2Mobil.tsx` finnes og er ferdig — men fasitens **Testbatteri-ark** (`sheetTest`, Tester-seksjon per økt) er IKKE bygget, se ny beslutning under |
+
+### Avviksliste (verifisert mot fasit + kode 2026-08-04)
+
+**Systemisk (alle 4 portede skjermer):** «Én ting nå»-mønsteret — fasitenes kjerne, den ENE
+oransje handlingen (#D97757) som endrer tilstand — er ikke implementert på noen av dem.
+Tokenet finnes (`T.handling`, låst 2026-07-31); det brukes bare ikke slik fasitene krever.
+
+- **A1 — Hjem `/portal` (størst):** (1) layout — fasit er `rail 64px + tråd 720px +
+  artefaktpanel 360px` fast kolonne med composer festet nederst; koden mangler høyrekolonnen
+  og composer flyter. (2) «Én ting nå»-systeminnlegget (uoppfordret «Dagens økt starter om …»
+  + «Start økta») mangler. (3) Tom tilstand («Anders har ikke publisert uke N ennå» + 3 veier
+  videre) mangler. (4) Toppheader-kontekst (navn · kat · SG · dato) mangler. (5) Fangst-knapp
+  i topplinja mangler.
+- **A2 — Planlegge:** (1) full skjermbredde i stedet for fasitens 720px-kolonne. (2) FEM
+  konkurrerende CTA-er (tre til Workbench) — bryter Enkelhet-regelen «én primær CTA»; fasiten
+  har én aksenthandling (dokken «Start [økta] · 16:00»). (3) Tre døde KPI-tankestreker som
+  hovedoppslag. (4) Gammelt v2-typografispråk («Din *uke*») i stedet for fasitens kompakte
+  topplinje. (5) Kjempehøye dagpiller + enorme tomtilstandskort.
+- **A3 — Analysere:** «Én ting nå» («Legg inn [område]-økt denne uka» — følger av analysen)
+  mangler; NesteFokus-kortet finnes men uten handlings-mønsteret. 5 faner vs fasitens 3 er
+  dokumentert bevisst (behold alle funksjoner) — avklaringspunkt, ikke feil.
+- **A4 — Meg:** «Én ting nå: Gi lydsamtykke» mangler — `LydSamtykke`-modellen FINNES i
+  Prisma, så datamodell-unnskyldning gjelder ikke. Detalj-ark-mønsteret må sjekkes visuelt.
+
+### Revidert steg 7-plan (2026-08-04, én PR per skjerm, skjermbilde-gate på alle)
+
+1. **PR-A — Hjem:** skallet (3 kolonner, composer nederst) + «Én ting nå» + tom tilstand +
+   toppheader + fangst.
+2. **PR-B — Planlegge:** 720px-kolonne, én aksenthandling (dokk), stram dagstripe + agenda,
+   fjern KPI-lik og CTA-kaos.
+3. **PR-C — Analysere** mot fasit (inkl. «Én ting nå»).
+4. **PR-D — Meg** mot fasit (inkl. lydsamtykke).
+5. **PR-E — Testbatteriet i Workbench** (Anders 2026-08-04): tester planlegges som del av
+   økter i Workbench — fasiten `workbench-mobil.html` har designet dette ferdig (`sheetTest`,
+   `erTest`, Tester-seksjon per økt). Resultat fra gjennomført test
+   (`/portal/tren/tester/[testId]/gjennomfor` — én av de 8 uportede) skal synce direkte til
+   TalentHQ (`/portal/talent/*`, 5 skjermer, live men skjult fra meny siden D1 2026-07-15).
+   Uavklart før bygging: hvilke av DBs 36 testprotokoller spilleren skal se (Anders: 21,
+   CANON: 20) + om TalentHQ skal tilbake i menyen.
+6. **PR-F — DataGolf inn i PlayerHQ** (Anders 2026-08-04): `/stats/*`-skjermene ligger i dag
+   kun under marketing; `/portal/stats` er en ren redirect UT av portalen. Omfang/plassering
+   (egen flate vs. Analyse-faner) avklares med Anders før bygging.
+7. **Deretter:** de 8 uportede Gjennomføre/live-skjermene (må komponeres — ingen fasit
+   tegnet), så steg 8 (AgencyOS — konsollen er samme klasse ombygging som Hjem: chat-først
+   fasit vs. dashbord-kode) og steg 9.
 
 **De 145 skjermene uten fasit — kartlagt, tallet korrigert 2026-08-04 natt** ([PR #280](https://github.com/akgolfsoftware/Golf_Headquarters/pull/280), `scripts/paper-port-triage.mjs`, IKKE merget):
 

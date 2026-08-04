@@ -14,6 +14,31 @@ Gjelder til Anders endrer dem.
 > abonnement/pris (299 kr/mnd, ingen årlig) og cockpit stall-SG/plan-etterlevelse. Kun **FYS-formel +
 > A–K-nivåtall** har gjenstående deltråder (onboarding steg 6 + drill-retag) — ikke håndhev den som låst.
 
+## Beslutningene (august 2026)
+
+- **Design-fasit er Claude Paper 1:1 (Anders 2026-08-04):** skjermene skal bli **slik de er
+  designet i Claude Design** (`designsystem/paper/fase1/`) — layout, informasjonsarkitektur og
+  interaksjonsmønster, ikke bare farger/tokens. Bakgrunn: steg 7 PR1–PR4 ble merget med riktige
+  tokens men feil skall («Én ting nå» manglet på alle fire, Hjem manglet artefaktkolonne/tom
+  tilstand, Planlegge hadde 5 konkurrerende CTA-er). Full avviksliste og ombyggingsplan:
+  `docs/port/plan-designport-alle-skjermer.md` §Avvik.
+- **Skjermbilde-gate (Anders 2026-08-04, FAST REGEL):** ingen skjerm-PR i designporten merges
+  uten skjermbilde av appen og fasiten side om side i PR-beskrivelsen. CI måler typer og bygg —
+  ikke layout. Dette tetter hullet som lot PR1–PR4 passere som «ferdige».
+- **Tester planlegges i Workbench, resultat syncer til TalentHQ (Anders 2026-08-04):** spilleren
+  legger tester inn i planen sin via Workbench (fasiten `workbench-mobil.html` har allerede
+  «Testbatteriet» som eget ark med egen Tester-seksjon per økt — design finnes, kode mangler).
+  Når en test gjennomføres og logges (`/portal/tren/tester/[testId]/gjennomfor`), skal resultatet
+  synces direkte til TalentHQ (`/portal/talent/*` — 5 skjermer, live men skjult fra meny siden
+  D1 2026-07-15). Sync-koblingen TestResult → TalentHQ finnes ikke i kode i dag og må bygges.
+  Uavklart: hvilke av de 36 testprotokollene i DB spilleren skal se (Anders nevner 21, CANON
+  sier 20) — spør før noe ryddes.
+- **DataGolf-skjermene skal inn i PlayerHQ (Anders 2026-08-04):** i dag ligger de under
+  marketing (`/stats/*` — spillere, turneringer, sg-sammenlign, verktøy m.fl.); `/portal/stats`
+  er kun en redirect ut av portalen, og `/portal/datagolf` er én enkelt side. Skjermene skal
+  finnes i PlayerHQ. Omfang/plassering (egen flate vs. faner i Analyse) er ikke avgjort — legges
+  inn i porteringsplanens steg 7-omfang som egen avklaring.
+
 ## Beslutningene (juni–juli 2026)
 
 - **Invarianter er anbefalinger, aldri sperrer:** ingenting i appen blokkerer trening. Avvik fra
