@@ -1,26 +1,29 @@
 "use client";
 
 /**
- * PortalChatHjem — PlayerHQ "I dag", chat-først (designport steg 7 PR1).
- * Erstatter HjemV2 som innhold på /portal. V2Shell (rail/bunn-nav) er uendret
- * rundt denne komponenten — se src/app/portal/page.tsx.
+ * PortalChatHjem — PlayerHQ "I dag", chat-først (designport steg 7 PR-A, mot
+ * Paper-fasiten designsystem/paper/fase1/playerhq-chat-desktop.html/-mobil.html).
+ * V2Shell (rail/bunn-nav) er uendret rundt denne komponenten.
  *
- * Matcher Paper-fasiten (designsystem/paper/fase1/playerhq-chat-desktop.html)
- * strukturelt: tråd + composer + artefaktpanel + FØR/UNDER/ETTER-løkke. Bygget
- * med EKSISTERENDE v2-primitiver (SamtaleBoble/Skrivefelt/ForslagRad fra
- * components/v2/samtale.tsx, BunnArk) i stedet for å kopiere Paper sin egen
- * rå CSS — appen står fortsatt på v2-tokens (CLAUDE.md invariant 2).
+ * Matcher fasitens skall: hovedkolonne (tråd + composer, maks 720px lesebredde)
+ * + fast artefaktkolonne 360px på desktop (≥1121px), som blir bunnark under
+ * det. Se ArtefaktPanel/use-er-kompakt for grensen.
  *
- * FØR/UNDER/ETTER er IKKE bygget om til moduser i denne skjermen ennå (se
- * plan-designport-alle-skjermer.md steg 7 PR1, punkt 9) — løkken lenker til
- * dagens faktiske live-økt-ruter når de finnes, i stedet for å late som en
- * modus-veksling som ikke er bygget.
+ * Bygget med EKSISTERENDE v2-primitiver (SamtaleBoble/Skrivefelt/ForslagRad fra
+ * components/v2/samtale.tsx) i stedet for å kopiere Paper sin egen rå CSS —
+ * appen står fortsatt på v2-tokens (CLAUDE.md invariant 2).
+ *
+ * FØR/UNDER/ETTER er ekte lenker til dagens faktiske live-økt-ruter (ikke
+ * inline modus-veksling som i fasiten) — de rutene finnes allerede og eier
+ * sin egen sannhet; å bygge en parallell inline-tilstand ville duplisert den.
  */
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Mic } from "lucide-react";
 import { T } from "@/lib/v2/tokens";
+import { formatSg } from "@/lib/sg";
+import { kategoriFraSnittscore } from "@/lib/domain/ak-kategori";
 import { SamtaleBoble, SamtaleSkriver, SamtaleFeil, Skrivefelt, ForslagRad } from "@/components/v2/samtale";
 import { MicButton } from "@/components/shared/mic-button";
 import type { DashboardData } from "@/app/portal/actions";
@@ -29,6 +32,8 @@ import { usePortalChat } from "./use-portal-chat";
 import { PortalStegListe } from "./PortalStegListe";
 import { PortalHvorforDette } from "./PortalHvorforDette";
 import { ArtefaktPanel } from "./ArtefaktPanel";
+import { FangstModal } from "./FangstModal";
+import { useErKompakt } from "./use-er-kompakt";
 import type { PortalChatMessage } from "./types";
 
 const FORSLAG = ["Hva skal jeg trene i dag?", "Hva var resultatet sist?", "Hva står på ukeplanen?"];
@@ -124,17 +129,159 @@ function DagensOktInnhold({ gjennomfore }: { gjennomfore: GjennomforeData }) {
   );
 }
 
+/** «Én ting nå» — systemet, uoppfordret. Fasit-mønster: KUN én accent-fylt
+ * handling per skjermtilstand (KONTRAKT §3). Vises kun når det faktisk finnes
+ * en kommende (ikke-startet) økt i dag — ellers ingenting å starte. */
+function NowBlock({ gjennomfore, onSeMer }: { gjennomfore: GjennomforeData; onSeMer: () => void }) {
+  const okt = gjennomfore.nesteOkt;
+  if (!okt || okt.status !== "upcoming") return null;
+  return (
+    <div
+      style={{
+        background: T.handlingSoft,
+        border: `1px solid ${T.border}`,
+        borderRadius: 12,
+        padding: 16,
+      }}
+    >
+      <div style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.09em", textTransform: "uppercase", color: T.mut, marginBottom: 8 }}>
+        Én ting nå
+      </div>
+      <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+        Dagens økt starter {okt.relTidTekst}
+      </h3>
+      <p style={{ margin: "0 0 16px", fontFamily: T.ui, fontSize: 14, color: T.mut, maxWidth: "52ch" }}>
+        {okt.sted} · {okt.tid}. {okt.tittel}.
+      </p>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <Link
+          href={okt.href}
+          className="v2-press v2-focus"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            minHeight: 48,
+            padding: "0 24px",
+            borderRadius: 10,
+            background: T.handling,
+            color: T.onHandling,
+            fontFamily: T.ui,
+            fontSize: 13,
+            fontWeight: 600,
+            textDecoration: "none",
+          }}
+        >
+          Start økta
+        </Link>
+        <button
+          type="button"
+          onClick={onSeMer}
+          className="v2-press v2-focus"
+          style={{
+            minHeight: 44,
+            padding: "0 16px",
+            borderRadius: 10,
+            border: `1px solid ${T.border}`,
+            background: "transparent",
+            color: T.fg,
+            fontFamily: T.ui,
+            fontSize: 13,
+            fontWeight: 500,
+            cursor: "pointer",
+          }}
+        >
+          Se hva som står i den
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/** Ærlig tom tilstand — coach har ikke publisert uken ennå. Aldri en blank
+ * flate: alltid minst én reell vei videre (Enkelhet-regelen). */
+function TomUkeState({
+  ukenummer,
+  onFangst,
+  onForesla,
+}: {
+  ukenummer: number;
+  onFangst: () => void;
+  onForesla: (tekst: string) => void;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        gap: 12,
+        padding: "24px 20px",
+        background: T.panel2,
+        border: `1px dashed ${T.border}`,
+        borderRadius: 12,
+      }}
+    >
+      <h3 style={{ margin: 0, fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+        Anders har ikke publisert uke {ukenummer} ennå
+      </h3>
+      <p style={{ margin: 0, maxWidth: "46ch", fontFamily: T.ui, fontSize: 14, color: T.mut }}>
+        Du har ingen økt i dag. Det betyr ikke at du står stille — her er tre ting du kan gjøre uansett.
+      </p>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <button
+          type="button"
+          onClick={onFangst}
+          className="v2-press v2-focus"
+          style={{
+            minHeight: 48,
+            padding: "0 20px",
+            borderRadius: 10,
+            border: `1px solid ${T.handling}`,
+            background: T.handling,
+            color: T.onHandling,
+            fontFamily: T.ui,
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
+        >
+          Fang en observasjon
+        </button>
+        <button
+          type="button"
+          onClick={() => onForesla("Lag en 25-minutters økt")}
+          className="v2-press v2-focus"
+          style={{ minHeight: 44, padding: "0 16px", borderRadius: 10, border: `1px solid ${T.border}`, background: "transparent", color: T.fg, fontFamily: T.ui, fontSize: 13, fontWeight: 500, cursor: "pointer" }}
+        >
+          Lag en 25-min økt selv
+        </button>
+        <Link
+          href="/portal/planlegge"
+          className="v2-press v2-focus"
+          style={{ display: "inline-flex", alignItems: "center", minHeight: 44, padding: "0 16px", borderRadius: 10, border: `1px solid ${T.border}`, color: T.fg, fontFamily: T.ui, fontSize: 13, fontWeight: 500, textDecoration: "none" }}
+        >
+          Se forrige uke
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 export function PortalChatHjem({
   data,
   gjennomfore,
+  naaTekst,
 }: {
   data: DashboardData;
   gjennomfore: GjennomforeData;
+  naaTekst: string;
 }) {
   const { messages, status, error, sendMessage } = usePortalChat();
   const [input, setInput] = useState("");
   const [artefaktApen, setArtefaktApen] = useState(false);
+  const [fangstApen, setFangstApen] = useState(false);
   const trådRef = useRef<HTMLDivElement>(null);
+  const kompakt = useErKompakt();
   const busy = status === "streaming" || status === "submitted";
 
   useEffect(() => {
@@ -146,113 +293,151 @@ export function PortalChatHjem({
     await sendMessage(tekst);
   }
 
+  const kategori = data.kpiStats.avgScore != null ? kategoriFraSnittscore(data.kpiStats.avgScore).kategori : null;
+  const ukeHarOkter = data.week.some((d) => d.sessions.length > 0);
+  const visTomUke = ukeHarOkter === false && messages.length === 0;
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
-      {/* ── Topplinje ── */}
-      <header
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 16,
-          padding: "12px 20px",
-          borderBottom: `1px solid ${T.border}`,
-          background: T.bg,
-        }}
-      >
-        <div>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>I dag</h1>
-          <div style={{ fontFamily: T.mono, fontSize: 10.5, letterSpacing: "0.04em", color: T.mut, marginTop: 2 }}>
-            {data.greeting} · uke {data.weekNumber}
-          </div>
-        </div>
-        <LoopNav gjennomfore={gjennomfore} />
-        <button
-          type="button"
-          onClick={() => setArtefaktApen(true)}
-          className="v2-press v2-focus"
+    <div style={{ display: "flex", height: "100%", minHeight: 0 }}>
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", minHeight: 0 }}>
+        {/* ── Topplinje ── */}
+        <header
           style={{
-            minHeight: 36,
-            padding: "0 12px",
-            borderRadius: 8,
-            border: `1px solid ${T.border}`,
-            background: "transparent",
-            color: T.fg,
-            fontFamily: T.ui,
-            fontSize: 12,
-            fontWeight: 500,
-            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 16,
+            padding: "12px 20px",
+            borderBottom: `1px solid ${T.border}`,
+            background: T.bg,
           }}
         >
-          Dagens økt
-        </button>
-      </header>
-
-      {/* ── Tråd ── */}
-      <div ref={trådRef} style={{ flex: 1, minHeight: 0, overflow: "auto", padding: "20px" }}>
-        <div style={{ maxWidth: 640, margin: "0 auto", display: "flex", flexDirection: "column", gap: 20 }}>
-          {messages.length === 0 && (
-            <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "flex-start" }}>
-              <div
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "8px 14px",
-                  borderRadius: 999,
-                  background: T.panel2,
-                  border: `1px solid ${T.border}`,
-                  fontFamily: T.ui,
-                  fontSize: 12.5,
-                  color: T.mut,
-                }}
-              >
-                <Sparkles size={14} style={{ color: T.lime }} />
-                Spør meg om treningen din — jeg henter ekte tall fra planen og loggen din.
-              </div>
-              <ForslagRad items={FORSLAG} onPick={send} />
+          <div>
+            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>I dag</h1>
+            <div style={{ fontFamily: T.mono, fontSize: 10.5, letterSpacing: "0.04em", color: T.mut, marginTop: 2 }}>
+              {data.user.name}
+              {kategori ? ` · kat. ${kategori}` : ""} · SG total {formatSg(data.kpiStats.sgTotal)} · {naaTekst}
             </div>
-          )}
-
-          {messages.map((m) => {
-            if (m.role !== "user" && m.role !== "assistant") return null;
-            const tekst = meldingTekst(m);
-            const toolCalls = m.parts.filter((p) => p.type === "tool-call").map((p) => p.toolCall);
-            return (
-              <SamtaleBoble key={m.id} rolle={m.role} initialer={data.user.name.slice(0, 2).toUpperCase()}>
-                {m.role === "assistant" && toolCalls.length > 0 && <PortalStegListe steg={toolCalls} />}
-                {tekst || (busy && m.role === "assistant" ? "…" : "")}
-                {m.role === "assistant" &&
-                  toolCalls
-                    .filter((tc) => tc.state === "result")
-                    .map((tc) => <PortalHvorforDette key={tc.id} toolCall={tc} />)}
-              </SamtaleBoble>
-            );
-          })}
-
-          {busy && messages.at(-1)?.role === "user" && <SamtaleSkriver />}
-          {error && <SamtaleFeil>Kunne ikke svare akkurat nå. Prøv igjen om litt.</SamtaleFeil>}
-        </div>
-      </div>
-
-      {/* ── Composer ── */}
-      <div style={{ borderTop: `1px solid ${T.border}`, background: T.panel, padding: "12px 20px 16px" }}>
-        <div style={{ maxWidth: 640, margin: "0 auto", display: "flex", gap: 8, alignItems: "flex-end" }}>
-          <div style={{ flex: 1 }}>
-            <Skrivefelt
-              value={input}
-              onChange={setInput}
-              onSend={() => send(input)}
-              sender={busy}
-              placeholder="Spør om treningen din …"
-            />
           </div>
-          <MicButton variant="suffix" onResult={(tekst) => setInput((v) => (v ? `${v} ${tekst}` : tekst))} disabled={busy} />
+          <LoopNav gjennomfore={gjennomfore} />
+          {kompakt && (
+            <button
+              type="button"
+              onClick={() => setArtefaktApen(true)}
+              className="v2-press v2-focus"
+              style={{
+                minHeight: 36,
+                padding: "0 12px",
+                borderRadius: 8,
+                border: `1px solid ${T.border}`,
+                background: "transparent",
+                color: T.fg,
+                fontFamily: T.ui,
+                fontSize: 12,
+                fontWeight: 500,
+                cursor: "pointer",
+              }}
+            >
+              Dagens økt
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setFangstApen(true)}
+            aria-label="Fang en observasjon"
+            className="v2-press v2-focus"
+            style={{
+              width: 44,
+              height: 44,
+              display: "grid",
+              placeItems: "center",
+              borderRadius: 10,
+              border: `1px solid ${T.border}`,
+              background: "transparent",
+              color: T.fg,
+              cursor: "pointer",
+            }}
+          >
+            <Mic size={17} />
+          </button>
+        </header>
+
+        {/* ── Tråd ── */}
+        <div ref={trådRef} style={{ flex: 1, minHeight: 0, overflow: "auto", padding: "20px" }}>
+          <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: 20 }}>
+            {visTomUke ? (
+              <TomUkeState ukenummer={data.weekNumber} onFangst={() => setFangstApen(true)} onForesla={send} />
+            ) : (
+              <>
+                {messages.length === 0 && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "flex-start" }}>
+                    <div
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 8,
+                        padding: "8px 14px",
+                        borderRadius: 999,
+                        background: T.panel2,
+                        border: `1px solid ${T.border}`,
+                        fontFamily: T.ui,
+                        fontSize: 12.5,
+                        color: T.mut,
+                      }}
+                    >
+                      <Sparkles size={14} style={{ color: T.lime }} />
+                      Spør meg om treningen din — jeg henter ekte tall fra planen og loggen din.
+                    </div>
+                    <ForslagRad items={FORSLAG} onPick={send} />
+                  </div>
+                )}
+
+                {messages.map((m) => {
+                  if (m.role !== "user" && m.role !== "assistant") return null;
+                  const tekst = meldingTekst(m);
+                  const toolCalls = m.parts.filter((p) => p.type === "tool-call").map((p) => p.toolCall);
+                  return (
+                    <SamtaleBoble key={m.id} rolle={m.role} initialer={data.user.name.slice(0, 2).toUpperCase()}>
+                      {m.role === "assistant" && toolCalls.length > 0 && <PortalStegListe steg={toolCalls} />}
+                      {tekst || (busy && m.role === "assistant" ? "…" : "")}
+                      {m.role === "assistant" &&
+                        toolCalls
+                          .filter((tc) => tc.state === "result")
+                          .map((tc) => <PortalHvorforDette key={tc.id} toolCall={tc} />)}
+                    </SamtaleBoble>
+                  );
+                })}
+
+                {busy && messages.at(-1)?.role === "user" && <SamtaleSkriver />}
+                {error && <SamtaleFeil>Kunne ikke svare akkurat nå. Prøv igjen om litt.</SamtaleFeil>}
+
+                {!busy && <NowBlock gjennomfore={gjennomfore} onSeMer={() => setArtefaktApen(true)} />}
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* ── Composer ── */}
+        <div style={{ borderTop: `1px solid ${T.border}`, background: T.panel, padding: "12px 20px 16px" }}>
+          <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", gap: 8, alignItems: "flex-end" }}>
+            <div style={{ flex: 1 }}>
+              <Skrivefelt
+                value={input}
+                onChange={setInput}
+                onSend={() => send(input)}
+                sender={busy}
+                placeholder="Spør om treningen din …"
+              />
+            </div>
+            <MicButton variant="suffix" onResult={(tekst) => setInput((v) => (v ? `${v} ${tekst}` : tekst))} disabled={busy} />
+          </div>
         </div>
       </div>
 
       <ArtefaktPanel open={artefaktApen} onClose={() => setArtefaktApen(false)} tittel="Dagens økt">
         <DagensOktInnhold gjennomfore={gjennomfore} />
       </ArtefaktPanel>
+
+      <FangstModal open={fangstApen} onClose={() => setFangstApen(false)} />
     </div>
   );
 }

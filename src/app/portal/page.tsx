@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getDashboardData } from "@/app/portal/actions";
 import { getGjennomforeData } from "@/lib/portal-gjennomfore/gjennomfore-data";
+import { korteDatoKlokke } from "@/lib/portal/korte-dato-klokke";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { PortalChatHjem } from "@/components/portal/v2/chat/PortalChatHjem";
 
@@ -26,9 +27,13 @@ export default async function PortalHjemPage() {
     getGjennomforeData(user.id),
   ]);
 
+  // Beregnet server-side (ikke i klienten) for å unngå SSR/hydrerings-avvik —
+  // "nå" er pr. definisjon ulik mellom serverrender og klient-mount.
+  const naaTekst = korteDatoKlokke(new Date());
+
   return (
     <V2Shell aktiv="hjem" nav={PLAYERHQ_NAV} navn={data.user.name} avatarUrl={data.user.avatarUrl}>
-      <PortalChatHjem data={data} gjennomfore={gjennomfore} />
+      <PortalChatHjem data={data} gjennomfore={gjennomfore} naaTekst={naaTekst} />
     </V2Shell>
   );
 }
