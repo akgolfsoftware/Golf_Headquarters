@@ -22,9 +22,16 @@ Gjelder til Anders endrer dem.
   tokens men feil skall («Én ting nå» manglet på alle fire, Hjem manglet artefaktkolonne/tom
   tilstand, Planlegge hadde 5 konkurrerende CTA-er). Full avviksliste og ombyggingsplan:
   `docs/port/plan-designport-alle-skjermer.md` §Avvik.
-- **Skjermbilde-gate (Anders 2026-08-04, FAST REGEL):** ingen skjerm-PR i designporten merges
-  uten skjermbilde av appen og fasiten side om side i PR-beskrivelsen. CI måler typer og bygg —
-  ikke layout. Dette tetter hullet som lot PR1–PR4 passere som «ferdige».
+- **Skjermbilde-gate (Anders 2026-08-04, FAST REGEL — presisert samme dag):** ingen skjerm-PR
+  i designporten merges uten at Anders har SETT skjermen. Konkret leveranse per ferdig skjerm:
+  (1) faktisk skjermbilde av den kjørende appen (Vercel-preview, innlogget testbruker med ekte
+  data) — **sendes direkte i samtalen** slik at det er synlig fra iPhone (Anders jobber ofte
+  remote fra mobil; en GitHub-lenke alene er ikke nok), (2) mobil **390px** ALLTID (det er
+  førsteinntrykket på iPhone) + desktop 1280px, (3) lys OG mørk modus (kjent felle:
+  primary=accent-kollisjonen), (4) fasitens tilsvarende skjerm ved siden av. CI måler typer og
+  bygg — ikke layout. Dette tetter hullet som lot PR1–PR4 passere som «ferdige».
+  Ferdig-definisjonen per skjerm står i `docs/port/plan-designport-alle-skjermer.md`
+  §Ferdig-definisjon.
 - **Tester planlegges i Workbench, resultat syncer til TalentHQ (Anders 2026-08-04):** spilleren
   legger tester inn i planen sin via Workbench (fasiten `workbench-mobil.html` har allerede
   «Testbatteriet» som eget ark med egen Tester-seksjon per økt — design finnes, kode mangler).
