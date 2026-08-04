@@ -198,6 +198,28 @@ Tokenet finnes (`T.handling`, låst 2026-07-31); det brukes bare ikke slik fasit
 - **A4 — Meg:** «Én ting nå: Gi lydsamtykke» mangler — `LydSamtykke`-modellen FINNES i
   Prisma, så datamodell-unnskyldning gjelder ikke. Detalj-ark-mønsteret må sjekkes visuelt.
 
+### Ferdig-definisjon per skjerm (2026-08-04 — dette betyr «ferdig» fra nå av)
+
+En skjerm er ferdig når ALLE punktene under er vist og godkjent — ikke når CI er grønn:
+
+1. **Skjermbilde sendt Anders i samtalen** (synlig fra iPhone — ikke bare GitHub-lenke):
+   mobil **390px** alltid først, deretter desktop 1280px. Tatt av kjørende app
+   (Vercel-preview), innlogget testbruker med ekte data (Øyvind Rohjan / `demo@akgolf.test`).
+2. **Lys OG mørk modus** — begge fotograferes (kjent felle: primary=accent-kollisjonen som
+   ga usynlig tekst 24 steder i steg 3).
+3. **Fasit ved siden av** — samme utsnitt fra `designsystem/paper/fase1/`-fila.
+4. **Alle fasit-tilstander finnes:** Suksess / Tom / Laster / Feil — fasitene har eksplisitt
+   tilstandsbryter for alle fire; koden må ha ærlig tom tilstand med én vei videre (regel),
+   ikke blank flate (det var Hjem-feilen).
+5. **«Én ting nå»-monopolet:** maks ÉN oransje handling (#D97757) synlig — tell dem på
+   skjermbildet.
+6. **Copy fra `docs/skjermtekst/`** — ikke diktet tekst; norsk bokmål; «Hvorfor dette
+   tallet»-utvidelse på tall fasiten har det på.
+7. **Klikk-verifisert, ikke bare fotografert:** ark/sheets åpner, primærhandlingen gjør noe,
+   ingen konsollfeil (samme krav som `kjerne-klikk.spec.ts` stiller).
+8. **MASTER-SKJERMPLAN-raden oppdateres i samme commit** (prosjektregel), og hakene settes
+   først når punktene over er godkjent av Anders — aldri før.
+
 ### Revidert steg 7-plan (2026-08-04, én PR per skjerm, skjermbilde-gate på alle)
 
 1. **PR-A — Hjem:** skallet (3 kolonner, composer nederst) + «Én ting nå» + tom tilstand +
