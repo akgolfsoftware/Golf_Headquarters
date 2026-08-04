@@ -24,6 +24,14 @@ function* walk(dir) {
 
 const V2_IMPORT = /from\s+["']@\/components\/(?:v2|portal\/v2)\//;
 const LEGACY_SIGNAL = /from\s+["']@\/components\/athletic\//;
+// 2026-08-04-lærdom: 51 av 54 "ingen v2-import"-treff i første kjøring var rene
+// redirect-stubber til allerede porta ruter, ikke skjermer i det hele tatt — talt
+// som gjenstående arbeid før noen faktisk åpnet filene. Ekskluder dem mekanisk nå.
+// Linjegrense (20) er bevisst — en ekte skjerm med en auth-guard-redirect øverst
+// (f.eks. `if (!user) redirect(...)`) skal IKKE regnes som stubbe; alle 51 bekreftede
+// stubber var 4-15 linjer, en ekte porta side i denne kodebasen er typisk 30+.
+const REDIRECT_CALL = /redirect\(\s*["'`]/;
+const STUB_MAKS_LINJER = 20;
 
 const rows = [];
 for (const file of walk(ROOT)) {
@@ -31,22 +39,29 @@ for (const file of walk(ROOT)) {
   const src = readFileSync(file, "utf8");
   const brukerV2 = V2_IMPORT.test(src);
   const brukerLegacy = LEGACY_SIGNAL.test(src);
-  rows.push({ rel, brukerV2, brukerLegacy });
+  const linjer = src.split("\n").length;
+  const erRedirect = REDIRECT_CALL.test(src) && linjer <= STUB_MAKS_LINJER;
+  rows.push({ rel, brukerV2, brukerLegacy, erRedirect });
 }
 
 rows.sort((a, b) => a.rel.localeCompare(b.rel));
 
 const ok = rows.filter((r) => r.brukerV2 && !r.brukerLegacy);
 const blandet = rows.filter((r) => r.brukerV2 && r.brukerLegacy);
-const legacy = rows.filter((r) => !r.brukerV2);
+const utenV2 = rows.filter((r) => !r.brukerV2);
+const redirects = utenV2.filter((r) => r.erRedirect);
+const reellGjenstaende = utenV2.filter((r) => !r.erRedirect);
 
 console.log(`Skannet ${rows.length} page.tsx under ${ROOT}\n`);
 console.log(`Allerede v2 (ingen athletic-import): ${ok.length}`);
 console.log(`Blandet (v2 + athletic i samme side): ${blandet.length}`);
-console.log(`Ingen v2-import ennå: ${legacy.length}\n`);
+console.log(`Ingen v2-import: ${utenV2.length} (${redirects.length} redirect-stubber, ${reellGjenstaende.length} reelt uportede)\n`);
 
 console.log("── Blandet — sjekk disse først ──");
 for (const r of blandet) console.log(`  ${r.rel}`);
 
-console.log("\n── Ingen v2-import ──");
-for (const r of legacy) console.log(`  ${r.rel}`);
+console.log("\n── Reelt uportede (ingen v2-import, ikke redirect) ──");
+for (const r of reellGjenstaende) console.log(`  ${r.rel}`);
+
+console.log("\n── Redirect-stubber (informativt — IKKE gjenstående arbeid) ──");
+for (const r of redirects) console.log(`  ${r.rel}`);
