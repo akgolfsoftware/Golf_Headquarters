@@ -139,7 +139,7 @@ fordi skjermantallet ikke er kjent før steg 2.
    fasitfiler i `fase1/`), fasit-listen er `docs/port/fasit-liste-paper.md` (19 av 343 skjermer
    har fasit).
 
-## Status per steg (oppdatert 2026-08-03 kveld)
+## Status per steg (oppdatert 2026-08-04 natt)
 
 | Steg | Status |
 |---|---|
@@ -150,10 +150,33 @@ fordi skjermantallet ikke er kjent før steg 2.
 | 5A — Farger inn i `--v2-*` | Ferdig (PR #262) |
 | 5B — Form: radius/avstand/typografi | Ferdig (PR #270–273) |
 | 6 — Fjern 419 hardkodede farger | Ferdig (PR #274) |
-| 7 — Bølge 1: PlayerHQ | I gang — PR1 Hjem (#275), PR2 Planlegge (#276), PR3 Analysere (#277) merget. PR4 Meg klar. 2 PR-er igjen (Booking, Workbench mobil) + de 145 skjermene uten fasit |
-| 8 — Bølge 2: AgencyOS | Ikke startet |
-| 9 — Bølge 3: resten | Ikke startet |
-| 10 — Steng døra (lint-gate) | Ikke startet |
+| 7 — Bølge 1: PlayerHQ | I gang — se delstatus under |
+| 8 — Bølge 2: AgencyOS | Ikke startet — venter på 2 avklaringer (§ Åpne punkter i fasit-listen) |
+| 9 — Bølge 3: resten | Ikke startet — venter på at WANG/GFGK legges inn i MASTER-SKJERMPLAN |
+| 10 — Steng døra (lint-gate) | `scripts/check-token-gap.mjs` bygget og koblet inn i verify+CI — [PR #279](https://github.com/akgolfsoftware/Golf_Headquarters/pull/279), IKKE merget ennå |
+
+### Steg 7 delstatus (PlayerHQ, 151 skjermer)
+
+**De 6 fasit-dekkede rutene — alle 6 avklart:**
+
+| Rute | Status |
+|---|---|
+| `/portal` (Hjem) | Merget (PR #275) |
+| `/portal/planlegge` | Merget (PR #276) |
+| `/portal/analysere` | Merget (PR #277) |
+| `/portal/meg` | Merget (PR #278) |
+| `/portal/booking` | [PR #281](https://github.com/akgolfsoftware/Golf_Headquarters/pull/281) åpnet 2026-08-04, IKKE merget — bygget om til timer/credits-oversikt som landing (Anders' instruks), ikke restyling av den gamle 4-stegs veiviseren |
+| `/portal/planlegge/workbench` (Workbench mobil) | **Ingen PR nødvendig** — MASTER-SKJERMPLAN rad viser alle 6 haker grønne siden juli. Bruker delte `T.*`-tokens og arvet Paper-paletten automatisk via steg 5–6. Undersøkt 2026-08-04 (feilaktig først meldt som manglende mobiltilpasning — rettelse: mobilflaten `WorkbenchV2Mobil.tsx` finnes og er ferdig) |
+
+**De 145 skjermene uten fasit — kartlagt, ikke bygget** ([PR #280](https://github.com/akgolfsoftware/Golf_Headquarters/pull/280), `scripts/paper-port-triage.mjs`, IKKE merget):
+
+| Kategori | Antall | Merknad |
+|---|---:|---|
+| Bruker allerede v2-komponenter | 113 | Arver trolig Paper-paletten automatisk (steg 5–6 er globale) — sannsynligvis lite/ikke gjenstående arbeid, ikke visuelt bekreftet skjerm for skjerm |
+| `(fullscreen)/live/*` + `/runde/*` + `/tren` | 10 | PlayerHQ Gjennomføre — kjent udekket, ingen Paper-fasit tegnet |
+| `(legacy)/*` | 31 | **Ikke dødt** — verifisert 2026-08-04: flere er lenket fra sidemeny og aktive v2-komponenter (f.eks. `ny-okt` fra `sidebar.tsx`, `utfordringer/ny` fra `UtfordringerV2.tsx`). Reelt gjenstående portearbeid |
+| Andre enkeltsider (baneguide, meg/sikkerhet, stats, trackman, tren/ovelser m.fl.) | 13 | Ikke undersøkt enkeltvis ennå |
+| **Sum uten v2-import** | **54** | |
 
 ## Fortsett fra en annen maskin
 
