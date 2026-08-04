@@ -46,6 +46,9 @@ jobs:
       - name: Action-auth gate (KS-1 — server actions må ha auth-import)
         run: npm run check:action-auth
 
+      - name: Token-gap gate (designport steg 10 — ingen nye hardkodede farger)
+        run: npm run check:token-gap
+
       - name: Unit tests (node:test + tsx)
         run: npm test
 

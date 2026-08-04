@@ -76,7 +76,7 @@ export function ArtefaktPanel({
           background: T.panel,
           border: `1px solid ${T.border}`,
           borderRadius: T.rCard,
-          boxShadow: "0 24px 64px rgba(0,0,0,0.35)",
+          boxShadow: `0 24px 64px ${T.farge.svartA35}`,
           display: "flex",
           flexDirection: "column",
         }}
