@@ -180,14 +180,23 @@ Kun **3 er reelle, uportede skjermer:**
 | Kategori | Antall | Merknad |
 |---|---:|---|
 | Bruker allerede v2-komponenter | 113 | Arver trolig Paper-paletten automatisk (steg 5–6 er globale) — sannsynligvis lite/ikke gjenstående arbeid, ikke visuelt bekreftet skjerm for skjerm |
-| Rene redirect-stubber (`(legacy)/*` + resten av «13 andre») | 51 | **Ikke skjermer.** Peker til kanoniske v2-ruter (`/portal/analysere`, `/portal/coach`, `/portal/planlegge/workbench` m.fl.) — samme lærdom som Analysere-falsk-alarmen: verifiser før noe meldes som gjenstående arbeid |
-| **Reelt uportede skjermer** | **3** | `(fullscreen)/runde/live/page.tsx`, `(fullscreen)/runde/logg/page.tsx`, `(fullscreen)/tren/tester/[testId]/gjennomfor/page.tsx` — PlayerHQ Gjennomføre/live-økt, ingen Paper-fasit tegnet |
+| Rene redirect-stubber (`(legacy)/*` + resten av «13 andre») | 46 | **Ikke skjermer.** 4–15 linjer, kun `redirect("/portal/…")` til kanoniske v2-ruter — samme lærdom som Analysere-falsk-alarmen: verifiser før noe meldes som gjenstående arbeid |
+| **Reelt uportede skjermer** | **8** | Alle under `(fullscreen)/live/[sessionId]/{active,brief,page,summary,tapper}`, `(fullscreen)/runde/{live,logg}`, `(fullscreen)/tren/tester/[testId]/gjennomfor` — PlayerHQ Gjennomføre/live-økt, ingen Paper-fasit tegnet |
 | **Sum uten v2-import** | **54** | |
 
-**Konsekvens:** steg 7 sitt reelle gjenstående omfang er trolig MYE mindre enn «145 skjermer» antyder —
-mange rader i `docs/MASTER-SKJERMPLAN.md` er sannsynligvis fortsatt gamle URL-er som nå bare redirecter.
-`MASTER-SKJERMPLAN.md` er ikke krysssjekket mot dette funnet ennå — bør gjøres før steg 8/9 planlegges
-på samme antatte skala.
+**To rettelser i tallet samme natt — begge dokumentert i git-historikken, ikke skjult:** først meldt
+«31 (legacy)-skjermer er reelt arbeid» (feil — de er redirect-stubber). Så meldt «kun 3 reelt uportede»
+(også feil — skriptets første redirect-sjekk hadde ingen linjegrense, så 5 ekte skjermer på 64–107
+linjer under `(fullscreen)/live/[sessionId]/` ble telt bort fordi de har ÉN `redirect()`-linje som
+auth-guard øverst i en ellers reell side). Skriptet (`scripts/paper-port-triage.mjs`) fikk en
+linjegrense (`STUB_MAKS_LINJER=20`) for å skille ekte auth-guard-redirects fra rene stubber.
+
+**Konsekvens:** de 8 reelle skjermene er alle i Gjennomføre/live-økt — matcher godt med
+`docs/port/fasit-liste-paper.md` sitt opprinnelige «PlayerHQ Gjennomføre: 0 fasit, 18 uten fasit»
+(MASTER-SKJERMPLAN teller trolig flere tilstander/faner per rute som egne rader). `(legacy)`-mappa
+og de andre redirect-stubbene er derimot IKKE gjenstående arbeid — `docs/MASTER-SKJERMPLAN.md` er
+ikke krysssjekket mot dette funnet ennå og har sannsynligvis stale rader for disse, bør ryddes før
+steg 8/9 planlegges på samme antatte skala som steg 7.
 
 ## Fortsett fra en annen maskin
 
