@@ -250,6 +250,41 @@ og de andre redirect-stubbene er derimot IKKE gjenstående arbeid — `docs/MAST
 ikke krysssjekket mot dette funnet ennå og har sannsynligvis stale rader for disse, bør ryddes før
 steg 8/9 planlegges på samme antatte skala som steg 7.
 
+## Fase 1-planlegging 2026-08-04 (Fable 5-økt) — GODKJENT av Anders samme dag
+
+Anders godkjente Fase 1-planen 2026-08-04 med føring: **Fase 2 kjøres i NY økt med Sonnet 5**,
+token-effektivt (ingen irrelevante skills/plugins/gammel kontekst). Låst rekkefølge:
+
+1. PlayerHQ Hjem (PR-A) → 2. Planlegge (PR-B) → 3. Analysere (PR-C) → 4. Meg (PR-D)
+2. De 8 Gjennomføre/live-skjermene (mønsterdokument — ingen fasit finnes)
+3. AgencyOS-konsollen (`/admin/agencyos`) → de 9 øvrige fasit-skjermene (én PR hver)
+4. AgencyOS-bølgene (~111 uten fasit): Stall → Planlegge/Gjennomføre → Oversikt/Innsikt →
+   Admin/Meg. De 28 reelt uportede (triage 2026-08-04: mest `(legacy)` — drills, kalender,
+   live coach-side, spillerredigering, godkjenninger, talent-import) tas først i hver bølge.
+
+**Leveranser fra Fase 1 (denne grenen):**
+- `docs/port/monsterdokument-paper.md` — destillert fra alle 25 fasit-filer + guidelines.
+  ENESTE designkilde for skjermer uten fasit. Dekker den ikke → stopp og spør Anders.
+- MASTER-SKJERMPLAN ryddet: 37 rader merket REDIRECT (30 portal + 7 admin, verifisert fil
+  for fil). 12 stub-ruter uten rad skal ikke få rad.
+- Triage-tall AgencyOS (nytt): 154 sider — 89 v2, 37 redirect-stubber, **28 reelt uportede**.
+
+**To rute-beslutninger fra Anders 2026-08-04 (lukker §Åpne punkter 1–2 i fasit-listen):**
+1. `agencyos-agenticos.html` = **ny samleflate**: hele AI-laget samles på ÉN adresse;
+   `/admin/agent-team`, `/admin/agents` og `/admin/godkjenninger` blir redirects dit.
+   (Adresseforslag: `/admin/agenticos` — bekreftes i PR-en.)
+2. `workbench-turnering.html` = **inne i Workbench**: turneringsplanlegging blir en del av
+   `WorkbenchV2`, ikke en ombygging av `/admin/tournaments`.
+
+**Fortsatt uavklart (blokkerer kun enkelt-PRer):** testprotokoller 21 vs 20 + TalentHQ i meny
+(blokkerer test-gjennomføringsskjermen og PR-E) · DataGolf-plassering (PR-F) · nav-navn-spriket
+og panelbredder i mønsterdokumentets §Uavklart (avklares første gang de treffes).
+
+**Per-skjerm-prosess (FAST, fra Anders' Fase 1-brief):** bygg 1:1 mot fasit-HTML (eller
+mønsterdokumentet) → `npm run verify && npm test` grønt → 4 skjermbilder (390px lys/mørk,
+1280px lys/mørk) side om side med fasit, sendt I CHATTEN → «Venter på ditt ja» → først etter
+ja: PR + MASTER-SKJERMPLAN-haker i samme commit. Aldri merge uten eksplisitt ja.
+
 ## Fortsett fra en annen maskin
 
 ```
