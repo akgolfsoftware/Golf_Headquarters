@@ -798,6 +798,18 @@ hullene under er reelle og uendret fra før portingen (ingen regresjon):
 
 ## Endringslogg
 
+- 4. august (designport steg 7 — avvik funnet, Anders så skjermene selv): **Design-hakene for
+  `/portal` (Hjem), `/portal/planlegge`, `/portal/analysere` og `/portal/meg` skal IKKE regnes
+  som grønne mot Paper-fasiten** selv om PR #275–#278 er merget — tokens er riktige, men layout/
+  interaksjonsmønster avviker (bl.a. mangler «Én ting nå» på alle fire, Hjem mangler
+  artefaktkolonne + tom tilstand, Planlegge har 5 konkurrerende CTA-er). Full avviksliste og
+  ombyggingsplan (PR-A–F): `docs/port/plan-designport-alle-skjermer.md` §Avviksliste.
+  Nye beslutninger fra Anders samme dag (`.claude/rules/beslutninger.md` §august 2026):
+  (1) design-fasit er Claude Paper 1:1, (2) skjermbilde-gate før merge av skjerm-PR-er,
+  (3) tester planlegges i Workbench og resultat syncer til TalentHQ, (4) DataGolf-skjermene
+  (`/stats/*`) skal inn i PlayerHQ. Merk også: 46 av portal-radene i denne planen kan være
+  stale — `scripts/paper-port-triage.mjs` fant at 46 gamle portal-URL-er nå er rene
+  redirect-stubber (4–15 linjer) til kanoniske v2-ruter; kryssjekk raden mot koden før bygging.
 - 3. august (forenkling bølge 2 — pekere og dokument-råte): **Ingen skjermendringer.**
   Inventar-snapshotene (`AGENCYOS-INVENTAR`, `funksjonsinventar-2026-07-29`,
   `designdekning-2026-07-29`, `komponentinventar-…-07-31`) og gamle planer er arkivert til

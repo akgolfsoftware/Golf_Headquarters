@@ -46,13 +46,17 @@ Push til `main` deployer automatisk via **Vercel git-integrasjon**. GitHub Actio
 - **Moderering/GDPR-kø:** bygget (D5).
 
 ## I arbeid / delvis (ferdigstillingsplan Fase A+B)
-- **Designport steg 7 (PlayerHQ mot Claude Paper):** de 6 fasit-dekkede rutene er avklart —
-  4 merget (Hjem/Planlegge/Analysere/Meg), Booking [PR #281](https://github.com/akgolfsoftware/Golf_Headquarters/pull/281)
-  åpen (venter godkjenning), Workbench mobil trengte ingen endring (allerede ferdig fra juli).
-  Kartlegging av de 145 skjermene uten fasit ([PR #280](https://github.com/akgolfsoftware/Golf_Headquarters/pull/280),
-  åpen): 113/167 PlayerHQ-sider bruker allerede v2-komponenter. Lint-porten mot nye
-  hardkodede farger bygget ([PR #279](https://github.com/akgolfsoftware/Golf_Headquarters/pull/279), åpen).
-  Full status: `docs/port/plan-designport-alle-skjermer.md`.
+- **Designport steg 7 (PlayerHQ mot Claude Paper) — AVVIK FUNNET 2026-08-04:** PR #275–#278
+  (Hjem/Planlegge/Analysere/Meg) er merget med riktige tokens, men **matcher ikke fasitens
+  layout/interaksjon** (Anders verifiserte selv med skjermbilder). Alle fire mangler
+  «Én ting nå»; Hjem mangler artefaktkolonne og tom tilstand; Planlegge har 5 konkurrerende
+  CTA-er. Ombyggingsplan PR-A–F + full avviksliste:
+  `docs/port/plan-designport-alle-skjermer.md` §Avviksliste. Ny fast regel: skjermbilde-gate
+  (app/fasit side om side) før merge av enhver skjerm-PR. Nye produktbeslutninger 2026-08-04:
+  tester planlegges i Workbench med resultat-sync til TalentHQ; DataGolf-skjermene skal inn i
+  PlayerHQ (`.claude/rules/beslutninger.md` §august 2026). Åpne PR-er: [#279](https://github.com/akgolfsoftware/Golf_Headquarters/pull/279)
+  (lint-gate), [#280](https://github.com/akgolfsoftware/Golf_Headquarters/pull/280) (triage-skript),
+  [#281](https://github.com/akgolfsoftware/Golf_Headquarters/pull/281) (Booking-oversikt).
 - **P0 lansering:** spiller-aktivering, push-opt-in, e2e-smoke på ★-kjernen (Funker `†` → `✓`).
 - **Bølge 4-rest:** live offline-kø for drills + reps til DB + summary write-back.
 - **Bølge 5:** treningsanalyse-modul + AgencyOS-kalender drill-lesevisning — **ikke startet**.
