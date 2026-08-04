@@ -168,15 +168,26 @@ fordi skjermantallet ikke er kjent før steg 2.
 | `/portal/booking` | [PR #281](https://github.com/akgolfsoftware/Golf_Headquarters/pull/281) åpnet 2026-08-04, IKKE merget — bygget om til timer/credits-oversikt som landing (Anders' instruks), ikke restyling av den gamle 4-stegs veiviseren |
 | `/portal/planlegge/workbench` (Workbench mobil) | **Ingen PR nødvendig** — MASTER-SKJERMPLAN rad viser alle 6 haker grønne siden juli. Bruker delte `T.*`-tokens og arvet Paper-paletten automatisk via steg 5–6. Undersøkt 2026-08-04 (feilaktig først meldt som manglende mobiltilpasning — rettelse: mobilflaten `WorkbenchV2Mobil.tsx` finnes og er ferdig) |
 
-**De 145 skjermene uten fasit — kartlagt, ikke bygget** ([PR #280](https://github.com/akgolfsoftware/Golf_Headquarters/pull/280), `scripts/paper-port-triage.mjs`, IKKE merget):
+**De 145 skjermene uten fasit — kartlagt, tallet korrigert 2026-08-04 natt** ([PR #280](https://github.com/akgolfsoftware/Golf_Headquarters/pull/280), `scripts/paper-port-triage.mjs`, IKKE merget):
+
+Første gjennomgang (samme kveld) meldte «31 `(legacy)`-skjermer, reelt gjenstående arbeid» — det var
+feil, rettet under samme natt før noe ble bygget på feil grunnlag. Alle 54 filene i «ingen v2-import»-
+bøtta ble sjekket individuelt for linjetall og innhold: **51 av 54 er 4–15 linjer lange redirect-
+stubber** (`redirect("/portal/…")`, samme mønster/kommentar «Legacy → moderne PlayerHQ-rute (B / v2)»
+i alle), som peker videre til allerede-porta v2-ruter. Ikke skjermer i det hele tatt — ingen UI å porte.
+Kun **3 er reelle, uportede skjermer:**
 
 | Kategori | Antall | Merknad |
 |---|---:|---|
 | Bruker allerede v2-komponenter | 113 | Arver trolig Paper-paletten automatisk (steg 5–6 er globale) — sannsynligvis lite/ikke gjenstående arbeid, ikke visuelt bekreftet skjerm for skjerm |
-| `(fullscreen)/live/*` + `/runde/*` + `/tren` | 10 | PlayerHQ Gjennomføre — kjent udekket, ingen Paper-fasit tegnet |
-| `(legacy)/*` | 31 | **Ikke dødt** — verifisert 2026-08-04: flere er lenket fra sidemeny og aktive v2-komponenter (f.eks. `ny-okt` fra `sidebar.tsx`, `utfordringer/ny` fra `UtfordringerV2.tsx`). Reelt gjenstående portearbeid |
-| Andre enkeltsider (baneguide, meg/sikkerhet, stats, trackman, tren/ovelser m.fl.) | 13 | Ikke undersøkt enkeltvis ennå |
+| Rene redirect-stubber (`(legacy)/*` + resten av «13 andre») | 51 | **Ikke skjermer.** Peker til kanoniske v2-ruter (`/portal/analysere`, `/portal/coach`, `/portal/planlegge/workbench` m.fl.) — samme lærdom som Analysere-falsk-alarmen: verifiser før noe meldes som gjenstående arbeid |
+| **Reelt uportede skjermer** | **3** | `(fullscreen)/runde/live/page.tsx`, `(fullscreen)/runde/logg/page.tsx`, `(fullscreen)/tren/tester/[testId]/gjennomfor/page.tsx` — PlayerHQ Gjennomføre/live-økt, ingen Paper-fasit tegnet |
 | **Sum uten v2-import** | **54** | |
+
+**Konsekvens:** steg 7 sitt reelle gjenstående omfang er trolig MYE mindre enn «145 skjermer» antyder —
+mange rader i `docs/MASTER-SKJERMPLAN.md` er sannsynligvis fortsatt gamle URL-er som nå bare redirecter.
+`MASTER-SKJERMPLAN.md` er ikke krysssjekket mot dette funnet ennå — bør gjøres før steg 8/9 planlegges
+på samme antatte skala.
 
 ## Fortsett fra en annen maskin
 
