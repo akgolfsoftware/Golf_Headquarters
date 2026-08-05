@@ -26,7 +26,7 @@ function Levende() {
     </Panel>
     <ConfirmDialog open={åpen} triggerRef={trigger}
       kicker="Slett økt" title="Slette torsdagens økt?"
-      body="Økten fjernes fra kalenderen og fra Emmas ukeplan."
+      body="Økten fjernes fra kalenderen og fra Øyvinds ukeplan."
       consequence="3 loggede serier og 2 videoklipp slettes permanent"
       confirmLabel="Slett økten"
       onConfirm={() => { setStatus("Økten er slettet"); setÅpen(false); }}
@@ -39,15 +39,15 @@ function Specimen() {
       <Levende />
     </Width>
     <Width px={430} note="destruktiv · --dn tekst og ramme, aldri fylt rødt">
-      <ConfirmDialog preview open kicker="Fjern spiller" title="Fjerne Emma fra stallen?"
-          body="Emma mister tilgang til PlayerHQ og forsvinner fra alle lister."
+      <ConfirmDialog preview open kicker="Fjern spiller" title="Fjerne Øyvind fra stallen?"
+          body="Øyvind mister tilgang til PlayerHQ og forsvinner fra alle lister."
           consequence="14 økter, 6 tester og all historikk beholdes i 90 dager"
-          confirmLabel="Fjern Emma" onCancel={() => {}} onConfirm={() => {}} />
+          confirmLabel="Fjern Øyvind" onCancel={() => {}} onConfirm={() => {}} />
     </Width>
     <Width px={430} note="busy · knappene disabled, Escape og klikk utenfor sperret">
       <ConfirmDialog preview open busy kicker="Avpubliser" title="Avpublisere ukeplanen?"
-          body="Planen forsvinner fra Emmas PlayerHQ til den publiseres igjen."
-          consequence="Emma har allerede logget 2 av 5 økter denne uken"
+          body="Planen forsvinner fra Øyvinds PlayerHQ til den publiseres igjen."
+          consequence="Øyvind har allerede logget 2 av 5 økter denne uken"
           confirmLabel="Avpubliser" onCancel={() => {}} onConfirm={() => {}} />
     </Width>
     <Width px={330} note="under 340 px · handlingene stables, bekreft nederst">
@@ -56,8 +56,8 @@ function Specimen() {
           confirmLabel="Slett drillen" onCancel={() => {}} onConfirm={() => {}} />
     </Width>
     <Width px={430} note="destructive=false · vanlig primærhandling i blekk">
-      <ConfirmDialog preview open destructive={false} kicker="Publiser" title="Publisere planen til Emma?"
-          body="Emma får varsel og ser planen i PlayerHQ umiddelbart."
+      <ConfirmDialog preview open destructive={false} kicker="Publiser" title="Publisere planen til Øyvind?"
+          body="Øyvind får varsel og ser planen i PlayerHQ umiddelbart."
           confirmLabel="Publiser planen" onCancel={() => {}} onConfirm={() => {}} />
     </Width>
   </div>);

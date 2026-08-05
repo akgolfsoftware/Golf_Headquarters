@@ -17,8 +17,8 @@ const punkter = [
   { label: "CANON", value: "✓", tone: "up" }
 ];
 const funksjoner = [
-  { id: "emma-plan", label: "Emma Sæther · ukeplan", group: "artefakter", meta: "uke 31", level: 2 },
-  { id: "emma-prof", label: "Emma Sæther · spillerprofil", group: "artefakter", meta: "fem faner", level: 2 },
+  { id: "oyvind-plan", label: "Øyvind Rohjan · ukeplan", group: "artefakter", meta: "uke 31", level: 2 },
+  { id: "oyvind-prof", label: "Øyvind Rohjan · spillerprofil", group: "artefakter", meta: "fem faner", level: 2 },
   { id: "periode", label: "Periodeplan P3 SPESIALISERING", group: "artefakter", level: 2 },
   { id: "wb", label: "Planlegg uke i Workbench", group: "flater", meta: "krever bredde", level: 3, keywords: "workbench dra økter" },
   { id: "kal", label: "Kalender", group: "flater", meta: "uke · dag · år", level: 3 },
@@ -27,9 +27,9 @@ const funksjoner = [
 ];
 function Specimen({ narrow, cmdkOpen }) {
   const [tekst, setTekst] = React.useState("");
-  const [ctx, setCtx] = React.useState({ emma: true });
+  const [ctx, setCtx] = React.useState({ oyvind: true });
   const kontekst = [
-    { id: "emma", label: "Emma S.", active: !!ctx.emma },
+    { id: "oyvind", label: "Øyvind R.", active: !!ctx.oyvind },
     { id: "u31", label: "uke 31", active: !!ctx.u31 },
     { id: "p3", label: "P3 SPES", active: !!ctx.p3 }
   ];
@@ -41,7 +41,7 @@ function Specimen({ narrow, cmdkOpen }) {
         <Composer value={tekst} onChange={setTekst} context={kontekst} onContextToggle={(id) => setCtx((s) => ({ ...s, [id]: !s[id] }))} onSubmit={() => setTekst("")} />
       </div>
       <div className="lab">Composer · med tekst (send aktiv) og disabled</div>
-      <div className="frame"><Composer value="Hvordan ligger Emma an mot kategorikravene?" onChange={()=>{}} /></div>
+      <div className="frame"><Composer value="Hvordan ligger Øyvind an mot kategorikravene?" onChange={()=>{}} /></div>
       <div className="frame"><Composer disabled placeholder="Komponisten er av i fullskjerm" /></div>
 
       <div className="lab">StatusBar — mono, tre klikkbare celler, skjult under 880 px vindu</div>

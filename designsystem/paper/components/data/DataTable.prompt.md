@@ -14,8 +14,8 @@ const [sort, setSort] = React.useState({ key: "sg", dir: "desc" });
     { key: "sg", label: "SG totalt", align: "end", sortable: true, tone: (r) => (r.sgTall >= 0 ? "up" : "dn") }
   ]}
   rows={[
-    { id: 1, navn: "Emma Sæther", kat: "C", runder: 5, snitt: "74,2", sg: "+2,92", sgTall: 2.92 },
-    { id: 2, navn: "Jonas Five", kat: "B", runder: 4, snitt: "71,8", sg: "−0,41", sgTall: -0.41 }
+    { id: 1, navn: "Øyvind Rohjan", kat: "D", runder: 5, snitt: "74,2", sg: "+2,92", sgTall: 2.92 },
+    { id: 2, navn: "Jonas Hveem", kat: "C", runder: 4, snitt: "71,8", sg: "−0,41", sgTall: -0.41 }
   ]} />
 ```
 
