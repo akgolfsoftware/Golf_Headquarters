@@ -28,7 +28,7 @@
 | TURN | `#A32D2D` (rød) | `#F2908C` |
 
 Bruk utility-klassene `bg-pyr-fys`, `text-pyr-tek` osv. på lyse flater — aldri hex direkte.
-TS-speil for charts: `pyramidColors` i `src/lib/design-tokens.ts`. Track-varianter
+TS-speil for charts: `T` i `src/lib/v2/tokens.ts` (`src/lib/design-tokens.ts` er slettet). Track-varianter
 (`--color-pyr-*-track`) for lette bakgrunner. **NB lys-regel:** aldri lime-på-lys som
 tekst/ikon — lime er flate/aksent (jf. theme-light-dark-regelen).
 

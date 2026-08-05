@@ -350,7 +350,7 @@ FEILVEIER:
 - **Stripe:** to oppgraderingsveier (mailto vs ekte checkout).
 - **Live:** to fulle implementasjoner av samme økt-flyt.
 
-### Designsystem-avvik (mot `.claude/rules/design-porting-gate.md` + `docs/design-system-lint.md`)
+### Designsystem-avvik (vurdert mot regelfilene slik de var da — se merknad nederst i seksjonen)
 
 Designsystemet håndheves av ESLint (`no-restricted-syntax`: hardkodet hex, off-grid spacing,
 `font-serif`). De strukturelle funnene over er IA-avvik, ikke token-avvik — token-disiplinen er i
@@ -358,9 +358,12 @@ hovedsak intakt (warn-scope, ~320 kjente drift-warnings under opprydding). De ko
 *innholds*-avvikene som bryter prosjektregler: hardkodede demonavn i `admin/tilstander` (navne-kanon),
 stub-data i `stats/moderering` («aldri liksom-tall»). Disse er ført som tom-/feiltilstand-funn over.
 
-> Merk: regelfila Anders refererte til (`.claude/rules/design-system.md`) finnes ikke — den faktiske
-> designsystem-fasiten er CLAUDE.md-tokenseksjonen + `docs/design-system-lint.md` +
-> `.claude/rules/design-porting-gate.md`. Vurdert mot disse.
+> Merk (oppdatert 2026-08-05): de tre regelfilene denne vurderingen ble gjort mot —
+> `.claude/rules/design-system.md`, `docs/design-system-lint.md` og
+> `.claude/rules/design-porting-gate.md` — finnes ikke lenger. Gjeldende designfasit er
+> **Claude Paper** (Claude Design `605a48cc`); regler i `.claude/rules/beslutninger.md`
+> §Tema/design og `docs/port/monsterdokument-paper.md`. Funnene under er fra Presis-æraen
+> og skal leses som historikk.
 
 ---
 

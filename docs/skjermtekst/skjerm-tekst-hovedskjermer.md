@@ -16,7 +16,8 @@ Coach ser kode + navn (`TEK · INN150 · L-BALL · CS70 · M2 · PR2`). Markedsf
 ekte coach **Markus Røinås Pedersen** (aldri demo-spilleren), humanisert tekst uten em-strek.
 
 ## Fasit-regler brukt her (fra ordboken)
-- **Demo-spiller:** Øyvind Rohjan · HCP **+3,5** · **Kategori A** (A = beste, tour-nær — governing beslutning i `public/design-handover/CLAUDE.md`; ordbokens «A=nybegynner» er forkastet).
+- **Demo-spiller:** Øyvind Rohjan · HCP **+3,5** · **Kategori A** (A = beste, tour-nær — governing beslutning fra design-handoveren i juni 2026 — mappa `public/design-handover/` er siden
+slettet, beslutningen står ved lag; ordbokens «A=nybegynner» er forkastet).
 - **SG:** fortegn ALLTID (+/−), komma, ekte minus «−», klarspråk-label: Tee-slag · Innspill · Nærspill · Putting.
 - **Avstander:** innspill i **meter**, putting i **fot (ft)**.
 - **Tall:** komma-desimal, mellomrom-tusenskille, `73 %` (mellomrom før %), 24-t klokke, tankestrek i perioder.

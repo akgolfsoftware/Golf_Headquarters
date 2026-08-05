@@ -16,8 +16,10 @@ tegnet oppå ekte satellitt-banekart, og coachen ser det samme per spiller som a
 ## 1. Nåtilstand (hva vi bygger på)
 
 **Finnes og gjenbrukes:**
-- Komponenter: `src/components/athletic/data/shot-map.tsx` (σ-spredningsplott), `src/app/portal/mal/trackman/[id]/dispersion-plot.tsx`, `src/components/sg-hub/SgTrainingScatter.tsx`.
-- Designet `DispersionTool` ligger i arkiv: `public/design-handover/_arkiv-handover-2026-06-20/dispersion-*.jsx` (porteres til skjerm 5).
+- Komponenter: `src/app/portal/mal/trackman/[id]/dispersion-plot.tsx`, `src/components/sg-hub/SgTrainingScatter.tsx`.
+  (`src/components/athletic/data/shot-map.tsx` er slettet siden planen ble skrevet.)
+- Det gamle `DispersionTool`-designet lå i `public/design-handover/`, som er slettet. Designet
+  hentes nå fra Paper-fasiten (Claude Design `605a48cc`), ev. `docs/port/monsterdokument-paper.md`.
 - SG-motor ferdig kalibrert (168/168 tester grønne).
 - Datamodell: `Shot` har allerede `startX/startY/endX/endY` (Float?) — men fylles aldri i dag. `TrackManShot.side` = meter offline. `Round`, `HoleScore`, `TrackManSession` finnes.
 
@@ -72,7 +74,7 @@ Nye/endrede modeller (additive — følg gotcha: `CREATE TABLE IF NOT EXISTS` vi
 | 8 | Coach dispersion-verktøy (analyse + benchmark) | `/admin/spillere/[id]/dispersion` | Ny — Claude Design |
 | 9 | Banedata-admin + rette-editor | `/admin/baner` (+ `/[id]`) | Ny — verktøy-UI |
 
-Alle skjermer portes via design-porting-gate (adversarial diff til 0 avvik) og måles mot ferdig-definisjonen i `docs/port/plan-designport-alle-skjermer.md` §Ferdig-definisjon per skjerm.
+Alle skjermer portes mot Paper-fasiten med adversarial diff til 0 avvik, og måles mot ferdig-definisjonen i `docs/port/plan-designport-alle-skjermer.md` §Ferdig-definisjon per skjerm. (Den gamle regelfila `design-porting-gate.md` finnes ikke lenger — prosessen står i ferdig-definisjonen.)
 
 ---
 
