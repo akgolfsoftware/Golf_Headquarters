@@ -125,14 +125,39 @@ er at hver bølge krymper i steg 1.
 - Oppdatert rad i `fasit-liste-paper.md` (dekningsregnskapet vokser fra 25 → mot 343)
 - Konsolideringsvedtak dokumentert (hvilke skjermer utgikk/slås sammen, med Anders' ja)
 
-### Åpne valg Anders må ta før W1 starter
+### Valgene — låst av Anders 2026-08-05
 
-1. **Fidelitet:** full Paper-komposisjon (som fase1 — anbefalt: komponentbiblioteket finnes,
-   full komposisjon er nesten like raskt som gråbokser og gir direkte brukbar fasit til
-   skjermbilde-gaten) — eller enklere gråboks-wireframes først, Paper-versjon etterpå?
-2. **Godkjenning per batch** (anbefalt) eller per skjerm?
-3. **Konsolideringsmandat:** kan design-øktene foreslå sammenslåinger/kutt aktivt (anbefalt,
-   med ditt ja per område), eller skal alle 318 tegnes 1:1 mot dagens ruter?
+1. **Fidelitet: full Paper-komposisjon** (som fase1) — komponentbiblioteket brukes, wireframen
+   ER fasiten når den er godkjent. Ingen gråboks-mellomrunde.
+2. **Godkjenning per batch** — Anders godkjenner bølgens wireframes samlet, ikke per skjerm.
+3. **Aktivt konsolideringsmandat** — design-øktene foreslår sammenslåinger/kutt per område;
+   Anders sier ja/nei per område før tegning.
+
+### W1 — konkret skjermliste (verifisert mot kode 05.08.2026)
+
+Stubber og rutere er filtrert bort (`live/[sessionId]/page.tsx` er en dispatcher,
+`(fullscreen)/tren/page.tsx` og `tren/kalender/page.tsx` er redirect-stubber — ikke skjermer).
+**18 reelle skjermer**, ned fra anslaget 35:
+
+**Gjennomføre-rest (4):**
+| Rute | Merknad |
+|---|---|
+| `/portal/gjennomfore` | Gjør-oversikten (GjorV2). **Konsolideringskandidat #1:** «Gjør»-fanen utgår (fire-faner-beslutningen) — består denne som skjerm nådd fra Hjem/Plan, eller dekkes den av Hjem + Plan? |
+| `/portal/gjennomfore/[id]` | Økt-detalj (OktV2, TrainingSessionV2 Spor B) |
+| `/portal/(fullscreen)/live/[sessionId]/logger` | Live-logging |
+| `/portal/(fullscreen)/live/[sessionId]/tapper` | Live-tapper |
+
+**Planlegge-rest (14):**
+| Rute | Merknad |
+|---|---|
+| `/portal/planlegge/bygger` | 5-stegs plan-bygger-wizard (Mål→Mal→Generer→Juster→Lagre) |
+| `/portal/tren/[sessionId]/planlagt` | Planlagt økt-visning |
+| `/portal/tren/feiring/[planId]` | Plan-feiring |
+| `/portal/tren/fys-plan` | FYS-plan (NB: FYS-formel avventer — plassholdertall) |
+| `/portal/tren/ovelser` + `/[id]` | Øvelsesbank, liste + detalj (2 skjermer) |
+| `/portal/tren/teknisk-plan/[planId]` | Teknisk plan |
+| `/portal/tren/tester` + `/[testId]` + `/ny` + `/ny/egen` | Testflater, 4 skjermer. **Konsolideringskandidat #2:** tester planlegges i Workbench (beslutning 04.08) — hvor mye av denne familien består? Deler PR-E-avklaringen (20/21/25 protokoller) |
+| `/portal/tren/turneringer` + `/[id]` | Turneringer, liste + detalj (2 skjermer) |
 
 ---
 
