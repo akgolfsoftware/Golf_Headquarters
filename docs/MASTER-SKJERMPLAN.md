@@ -2,11 +2,18 @@
 
 > Autoritativ oversikt over alle skjermer i plattformen. Én plass å se alt. **Sist oppdatert: 2. august 2026.**
 
-> **OPPDATERT KANON (2026-07-08):** Design-kanon er nå UTELUKKENDE det levende Claude Design-
-> prosjektet (`claude.ai/design/p/bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`), hentet direkte via
-> DesignSync — historisk notat; design-system-regel.md er slettet, gjeldende design-beslutninger: `.claude/rules/beslutninger.md` §Tema/design. Ingen "andre lag"-unntak for
-> driftsskjermer lenger; alt bygges mot dette til slutt. «Design=✓» måler mot faktisk 1:1-
-> komposisjon fra `src/components/athletic/golfdata/` (portet fra prosjektets `components/`).
+> **OPPDATERT KANON (2026-07-08, SELV UTDATERT — se under):** Denne linja pekte opprinnelig til
+> `bb9b2b1d` («AK Golf HQ Design System»)-prosjektet via DesignSync. **Det er ikke lenger
+> kanon.** Gjeldende design-fasit siden 2026-08-04 er Claude Design-prosjektet **«AK Golf HQ —
+> Claude Paper»** (`605a48cc`, hentet via `claude-design`-MCP), skjermer i `fase1/` — se
+> `.claude/rules/beslutninger.md` §Tema/design og `docs/port/fasit-liste-paper.md` for hvilke
+> 25 av 343 ruter som har en fasitskjerm der. **Viktig for haker satt før 2026-08-04:** en rad
+> merket «Design=✓» her målte mot DEN GAMLE kanonen (`bb9b2b1d`/`athletic/golfdata/`), ikke mot
+> Paper-fasiten. Steg 7 PR1–PR4 (Hjem/Planlegge/Analysere/Meg) viste at «Design=✓» av den grunn
+> IKKE betydde riktig mot Paper — se avviksliste A1–A4 i `beslutninger.md`. En eksisterende
+> grønn hake er derfor IKKE bevis på at skjermen matcher Paper 1:1; kun skjermer som er
+> skjermbilde-verifisert mot `fase1/` etter 2026-08-04 kan stoles på. Ingen "andre lag"-unntak
+> for driftsskjermer lenger; alt bygges mot Paper til slutt.
 >
 > **2026-07-08 update:** Alle /admin og /portal skjermer har nå .golfdata-scope via AdminShell + PortalShell (v13 tokens aktivert). Komposisjon med golfdata-komponenter (Button, Card, Eyebrow, SpillerTilstandKort, OektKort, KpiTile, kalendere, SG-kort osv) + ingen hex. Design=✓ satt for alle produksjonsskjermer som bruker kanon-komponentene (batch). Se PORTING.md + `.claude/rules/beslutninger.md` §Tema/design (design-system-regel.md er slettet). Drop-off reduseres fortløpende.
 > `plans/design-bolgeplan.md` (D0–D5) er slettet — se aktiv plan-fil for gjeldende bølge-rekkefølge

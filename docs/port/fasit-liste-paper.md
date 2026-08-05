@@ -1,9 +1,14 @@
 # Steg 2 — fasit-listen: Paper-skjerm ↔ ekte rute
 
-**Skrevet:** 02.08.2026 · **Gjelder:** steg 2 i `docs/port/plan-designport-alle-skjermer.md`
+**Skrevet:** 02.08.2026 · **Oppdatert:** 05.08.2026 (re-kjørt mot Claude Design-prosjektet
+`605a48cc`, som nå er ENESTE kilde — ikke en lokal speil-mappe, se `README.md` i denne mappa).
+**Gjelder:** steg 2 i `docs/port/plan-designport-alle-skjermer.md`.
 **Endrer ingen skjerm.** Dette er kun en opptelling.
 
-Kilder: `designsystem/paper/fase1/` (hentet i steg 1) og `docs/MASTER-SKJERMPLAN.md`.
+Kilder: Claude Design-prosjektet `605a48cc` → `fase1/` (hentet via `claude-design`-MCP,
+sist listet 05.08.2026) og `docs/MASTER-SKJERMPLAN.md`. Designprosjektets `templates/`,
+`kart/wf/` og `uploads/` er IKKE kilde — designeren har selv merket dem historikk/utgått
+(`templates/_UTGÅTT.md`, 01.08.2026).
 
 ---
 
@@ -14,19 +19,36 @@ Kilder: `designsystem/paper/fase1/` (hentet i steg 1) og `docs/MASTER-SKJERMPLAN
 | Ekte skjermer i appen (redirect og utgåtte rader trukket fra) | **343** |
 | Rader i MASTER-SKJERMPLAN totalt | 375 |
 | …av disse ren redirect eller utgått | 32 |
-| Paper-fasitskjermer på disk | **25** |
-| Ekte ruter disse 25 dekker (mobil + desktop av samme rute teller én gang) | **19** |
-| Skjermer som må designes uten fasit | **324** |
+| Paper-fasitskjermer på disk | **33** (opp fra 25 — 8 nye siden 02.08, se under) |
+| Ekte ruter disse 32 dekker (mobil + desktop av samme rute teller én gang; 2 filer uten rute trukket fra) | **25** |
+| Skjermer som må designes uten fasit | **318** |
 
-**Dekningsgrad: 19 av 343 skjermer — 5,5 %.**
+**Dekningsgrad: 25 av 343 skjermer — 7,3 %.**
 
-Planen anslo 19 fasitskjermer. Det reelle tallet er 25 HTML-filer, men flere er mobil- og
-desktop-versjoner av samme rute, så det dekker 19 ruter. Anslaget traff altså tilfeldigvis riktig
-tall på feil grunnlag.
+**Endring siden 02.08.2026:** 8 nye fasitskjermer levert av designeren — 6 i PlayerHQ
+Gjennomføre/live-økt-familien (som sto med **0 fasit** i tabellen under §Hva som IKKE har
+fasit) + AgencyOS AK-stigen og Live-session:
+
+| Ny Paper-fil | Ekte rute | Levert |
+|---|---|---|
+| `playerhq-live-brief.html` | `/portal/(fullscreen)/live/[sessionId]/brief` | 04.08.2026 |
+| `playerhq-live-okt.html` | `/portal/(fullscreen)/live/[sessionId]/active` | 04.08.2026 |
+| `playerhq-live-summary.html` | `/portal/(fullscreen)/live/[sessionId]/summary` | 04.08.2026 |
+| `playerhq-runde-live.html` | `/portal/(fullscreen)/runde/live` | 04.08.2026 |
+| `playerhq-runde-logg.html` | `/portal/(fullscreen)/runde/logg` | 04.08.2026 |
+| `playerhq-test-gjennomfor.html` | `/portal/(fullscreen)/tren/tester/[testId]/gjennomfor` | 04.08.2026 |
+| `agencyos-ak-stigen.html` | Ingen ekte rute ennå — ny flate, ikke i MASTER-SKJERMPLAN | ~03.08.2026 |
+| `agencyos-live-session.html` | Ingen ekte rute ennå — trolig coach-siden av live-økt, ikke bekreftet mot kode | ~03.08.2026 |
+
+De seks første lukker **6 av 8** skjermer i «PlayerHQ · Gjennomføre»-raden som tidligere hadde
+0 fasit (se tabell §Hva som IKKE har fasit — oppdatert under). Gjenstår uten fasit i den
+familien: `logger` og `tapper`-rutene under `live/[sessionId]/` (ingen fasit tegnet ennå).
+De to siste (ak-stigen, live-session) har ingen tilsvarende rute i appen i dag — avklares
+som del av steg 8/9-planlegging, ikke rutet inn her på gjetning.
 
 ---
 
-## De 25 fasitskjermene og rutene de svarer til
+## De 33 fasitskjermene og rutene de svarer til
 
 ### PlayerHQ (5 filer → 5 ruter)
 
@@ -75,17 +97,39 @@ PlayerHQ Planlegge og AgencyOS Planlegge.
 | `foreldreportal.html` | `/forelder` |
 | `booking.html` | `/booking` (marketing) |
 
+### PlayerHQ Gjennomføre/live-økt (6 filer → 6 ruter, nye 04.08.2026)
+
+| Paper-fil | Ekte rute |
+|---|---|
+| `playerhq-live-brief.html` | `/portal/(fullscreen)/live/[sessionId]/brief` |
+| `playerhq-live-okt.html` | `/portal/(fullscreen)/live/[sessionId]/active` |
+| `playerhq-live-summary.html` | `/portal/(fullscreen)/live/[sessionId]/summary` |
+| `playerhq-runde-live.html` | `/portal/(fullscreen)/runde/live` |
+| `playerhq-runde-logg.html` | `/portal/(fullscreen)/runde/logg` |
+| `playerhq-test-gjennomfor.html` | `/portal/(fullscreen)/tren/tester/[testId]/gjennomfor` |
+
+`/portal/(fullscreen)/live/[sessionId]/logger` og `/tapper` har fortsatt ingen fasit.
+
 ### Ikke en skjerm (1 fil)
 
 | Paper-fil | Hva det er |
 |---|---|
 | `fangstsheet.html` | Komponentkort, ikke en rute. Hører til steg 5 (byggeklosser), ikke steg 7–9 |
 
+### Uten ekte rute i dag (2 filer)
+
+| Paper-fil | Merknad |
+|---|---|
+| `agencyos-ak-stigen.html` | Ny flate (juniorvisning AK-stigen), ikke i MASTER-SKJERMPLAN eller kode i dag |
+| `agencyos-live-session.html` | Trolig coach-siden av live-økt; ingen tilsvarende rute funnet i `src/app/admin` |
+
 ---
 
-## Hva som IKKE har fasit — de 324
+## Hva som IKKE har fasit — de 318
 
-Per seksjon, ekte skjermer uten en tegnet Paper-skjerm:
+Per seksjon, ekte skjermer uten en tegnet Paper-skjerm (oppdatert 05.08.2026 — kun
+PlayerHQ Gjennomføre-raden er endret, resten er ikke re-kartlagt mot kode og kan selv
+være noe stale):
 
 | Område | Ekte skjermer | Har fasit | Uten fasit |
 |---|---:|---:|---:|
@@ -93,7 +137,7 @@ Per seksjon, ekte skjermer uten en tegnet Paper-skjerm:
 | PlayerHQ · Meg | 28 | 1 | 27 |
 | PlayerHQ · Planlegge | 25 | 2 | 23 |
 | PlayerHQ · Coach | 20 | 0 | 20 |
-| PlayerHQ · Gjennomføre | 18 | 0 | 18 |
+| PlayerHQ · Gjennomføre | 18 | **6** | **12** |
 | PlayerHQ · Booking | 7 | 1 | 6 |
 | PlayerHQ · Talent | 5 | 0 | 5 |
 | PlayerHQ · Aliaser | 5 | 0 | 5 |
@@ -110,10 +154,11 @@ Per seksjon, ekte skjermer uten en tegnet Paper-skjerm:
 | Forelder | 12 | 1 | 11 |
 | Auth | 11 | 1 | 10 |
 | System og interne | 7 | 0 | 7 |
-| **Sum** | **343** | **19** | **324** |
+| **Sum** | **343** | **25** | **318** |
 
-Fire områder har null fasit i det hele tatt: **PlayerHQ Coach** (20), **PlayerHQ Gjennomføre**
-inkludert hele live-økten (18), **AgencyOS Innsikt** (14) og **AgencyOS Min uke** (4).
+Tre områder har fortsatt null fasit i det hele tatt: **PlayerHQ Coach** (20),
+**AgencyOS Innsikt** (14) og **AgencyOS Min uke** (4). **PlayerHQ Gjennomføre** har ikke
+lenger null — 6 av 18 er dekket siden 04.08.2026 (se §PlayerHQ Gjennomføre/live-økt over).
 
 WANG (`team-wang`) og GFGK (`gfgk-junior`) er ikke egne rader i MASTER-SKJERMPLAN i dag og
 mangler både fasit og oppføring.
@@ -126,18 +171,19 @@ De tre bølgene i planen kan nå tallfestes:
 
 | Bølge | Skjermer | Med fasit | Må designes underveis |
 |---|---:|---:|---:|
-| 7 — PlayerHQ | 151 | 6 | 145 |
+| 7 — PlayerHQ | 151 | 12 | 139 |
 | 8 — AgencyOS | 121 | 10 | 111 |
 | 9 — resten (marketing, booking, forelder, auth, system) | 71 | 3 | 68 |
 
-Den viktigste konsekvensen: **95 % av skjermene har ingen fasit å måle mot.** Planens
-arbeidsmåte — «skjermbilder side om side med Paper-fasiten i hver PR» — virker for 19 skjermer.
-For de 324 andre må porten hvile på noe annet: byggeklossene fra steg 5 og retningslinjene i
-`designsystem/paper/guidelines/`. Er de riktige, blir de fleste skjermene riktige uten at hver
-enkelt er tegnet først.
+Den viktigste konsekvensen står ved lag selv om tallet er bedre: **93 % av skjermene har
+ingen fasit å måle mot.** Planens arbeidsmåte — «skjermbilder side om side med Paper-fasiten
+i hver PR» — virker for 25 skjermer. For de 318 andre må porten hvile på noe annet:
+byggeklossene fra steg 5 og retningslinjene i `guidelines/` i Claude Design-prosjektet
+(`605a48cc`). Er de riktige, blir de fleste skjermene riktige uten at hver enkelt er tegnet
+først.
 
 Det taler for å legge mer vekt på steg 5 og 6 enn planen antyder, og for å behandle steg 7–9 som
-komposisjonsarbeid framfor 324 enkeltdesign.
+komposisjonsarbeid framfor 318 enkeltdesign.
 
 ---
 

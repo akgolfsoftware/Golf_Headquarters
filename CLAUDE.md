@@ -22,9 +22,10 @@ Sju filer, alle aktive: `arkitektur.md` (produkter, ruter, mappestruktur) · `go
 ikke kode).
 
 `beslutninger.md` dekker: invarianter-aldri-sperrer, AgencyOS-navnet, navne-kanon, Workbench-planlegging,
-analyse-samling, abonnement 299/gratis, FYS-avventing. **Design (LÅST 2026-07-31):** app/pilot = C, smalt
-(v2 + kun `--handling` `#D97757`); Claude Paper = designfasit i Open Design/speil; full port etter pilot
-(`docs/gjenstaaende-plan-2026-07-31.md` §1.1). Ved konflikt vinner `docs/platform/BUSINESS-RULES.md`.
+analyse-samling, abonnement 299/gratis, FYS-avventing. **Design (LÅST 2026-07-31, OVERSTYRT 2026-08-03
+— se invariant 2 under):** Claude Design-prosjektet **«AK Golf HQ — Claude Paper»** (`605a48cc`, hentet
+via `claude-design`-MCP-verktøyet) er designfasit; full port til `src/` kjører nå aktivt, se
+`docs/port/plan-designport-alle-skjermer.md`. Ved konflikt vinner `docs/platform/BUSINESS-RULES.md`.
 
 ## Harde invarianter (brytes aldri)
 1. **Anbefalinger sperrer aldri:** ingenting i appen blokkerer trening. Aldri «kan ikke brytes»-kode/tekst.

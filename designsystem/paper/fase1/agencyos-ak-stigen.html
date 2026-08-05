@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AK-stigen · AgencyOS · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+/* ═══ akhq-tokens.css v3.1 — KOPIERT VERBATIM. Eneste tokenkilde. ═══ */
+/* ─────────────────────────────────────────────────────────────
+   AK Golf HQ · Claude Paper tokens v3
+   Anthropic-justert (offentlige kilder) + AK produktregler
+
+   Én kilde. Kopier verbatim inn i hver HTML/skjerm, eller @import.
+   Se SCOPE.md for hva «offisiell» betyr (vi er JUSTERT, ikke Anthropic).
+
+   Kilder:
+   - Anthropic brand-guidelines: ink/paper/mid/light + clay/sky/olive
+   - anthropic.com DESIGN.md (shadcn reverse-eng): full 21-farge + 8 aksenter
+   - Fase 1 (2026-07/08): chat-først, radius 12 for tett app, Én ting nå
+
+   v3.1 · 2026-08-01 (Bølge 1)
+   - --rail-hover / --rail-active løftet inn (var lokale i Fase 1-filene)
+   - Ingen andre verdiendringer. --muted er #5e5d59 (vinner over Fase 1 #5F5B53)
+
+   v3 · 2026-08-01
+   - Full Anthropic surface + accent ladder
+   - Radius-stige: sm 8 · app 12 · md 16 · lg 24 · pill
+   - Type-tokens for marketing + produkt
+   - Motion, z-index, tap-targets, hairline
+   - Dark theme (produkt; marketing er primært lys)
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* ─── Surfaces (Anthropic cream ladder) ─── */
+  --bg: #faf9f5;                    /* canvas / ivory */
+  --surface: #ffffff;               /* elevated white (produkt-kort) */
+  --soft: #f0eee6;                  /* surface-secondary — kort uten skygge */
+  --soft-hover: #e8e6dc;            /* surface-secondary-hover */
+  --surface-warm: #e3dacc;          /* oat */
+  --surface-manilla: #ebdbbc;
+  --surface-kraft: #d4a27f;
+  --border: #e8e6dc;                /* light gray (brand skill) */
+  --hairline: #d1cfc5;              /* finere skille enn --border */
+  --inverse: #000000;               /* full-bleed marketing-bånd */
+
+  /* ─── Text (Anthropic slate ladder) ─── */
+  --fg: #141413;                    /* ink — primær tekst + CTA-fill */
+  --ink-soft: #3d3d3a;              /* hover på primærknapp */
+  --muted: #5e5d59;                 /* text-muted (brand skill ~ #5f5b53; Anthropic #5e5d59) */
+  --mid: #b0aea5;                   /* text-secondary / cloud medium — IKKE brødtekst i lys */
+  --text-tertiary: #87867f;
+
+  /* ─── Rail (produkt, alltid mørk) ─── */
+  --rail: #141413;
+  --rail-fg: #b0aea5;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.08);   /* v3.1 — løftet fra Fase 1 */
+  --rail-active: rgba(250, 249, 245, 0.14);  /* v3.1 — løftet fra Fase 1 */
+
+  /* ─── Actions ─── */
+  --cta: #141413;                   /* Anthropic: CTA er blekk, ikke farge */
+  --on-cta: #faf9f5;
+  --cta-hover: #3d3d3a;
+
+  /* Clay = sterkeste kromatiske aksent (Anthropic clay) */
+  --accent: #d97757;                /* kun «Én ting nå» + focus i app */
+  --accent-soft: rgba(217, 119, 87, 0.12);
+  --accent-fg: #b85c3d;             /* AA-tekst på paper */
+  --on-accent: #141413;             /* tekst på fylt clay — sparsomt */
+  --accent-deep: #c6613f;           /* burnt sienna */
+
+  /* ─── Dormant accent swatches (Anthropic research palette)
+       Brukes sparsomt: chart, kategori, badges — aldri som primær CTA ─── */
+  --accent-coral: #ebcece;
+  --accent-fig: #c46686;
+  --accent-cactus: #bcd1ca;
+  --accent-olive: #788c5d;
+  --accent-sky: #6a9bcc;
+  --accent-heather: #cbcadb;
+
+  /* ─── Datasemantikk (produkt — mørknede for AA-tekst) ─── */
+  --up: #63784a;                    /* olive mørknet for tekst */
+  --up-raw: #788c5d;                /* olive rå — fyll/sparkline */
+  --dn: #a85536;                    /* leire av clay — aldri ren rød */
+  --info: #46719f;                  /* sky mørknet for tekst */
+  --info-raw: #6a9bcc;
+
+  /* ─── Typography families
+       Anthropic proprietary (Serif/Sans/Mono) er IKKE offentlige.
+       Brand skill: Poppins + Lora. Mono: IBM Plex Mono (produkt-tall). ─── */
+  --font-sans: "Poppins", Arial, system-ui, sans-serif;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Aliases brukt i eksisterende skjermer */
+  --disp: var(--font-sans);
+  --ui: var(--font-sans);
+  --body: var(--font-serif);
+  --mono: var(--font-mono);
+
+  /* ─── Type scale · Produkt (tett) ─── */
+  --text-display: 32px;
+  --text-title: 22px;
+  --text-card: 16px;
+  --text-panel: 14.5px;
+  --text-body-agency: 13.5px;       /* AgencyOS desktop */
+  --text-body-player: 14px;         /* PlayerHQ mobil */
+  --text-label: 10px;               /* versaler + tracking */
+  --text-kpi: 40px;                 /* mono */
+
+  /* ─── Type scale · Marketing (editorial, Anthropic-rytme) ─── */
+  --text-hero: 56px;                /* nedskalert fra 88 — web-vennlig */
+  --text-section: 40px;             /* nedskalert fra 90 */
+  --text-prose: 18px;               /* serif body marketing */
+  --text-prose-lg: 22px;
+  --text-nav: 16px;
+  --text-eyebrow: 12px;
+
+  /* ─── Spacing · 4px base (Anthropic 4/8/12/16/24/32/48/96) ─── */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+  --s9: 96px;                       /* section padding marketing */
+
+  /* ─── Radius
+       Anthropic marketing: sm 8 · md 16 · lg 24
+       AK produkt (Fase 1 låst): app 12 for kort/composer ─── */
+  --r-none: 0px;
+  --r-sm: 8px;                      /* knapper, inputs, chips */
+  --r: 12px;                        /* app-default (Fase 1) */
+  --r-md: 16px;                     /* editorial cards / marketing */
+  --r-lg: 24px;                     /* store flater, pille-CTA unntak */
+  --r-pill: 999px;
+
+  /* ─── Elevation
+       Anthropic marketing: NULL shadow — flater via cream-steg
+       Produkt: én myk skygge tillatt (valgfri) ─── */
+  --shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
+  --shadow-none: none;
+  --scrim: rgba(20, 20, 19, 0.4);
+
+  /* ─── Interaction ─── */
+  --focus: #d97757;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 160ms;
+  --dur-slow: 280ms;
+
+  /* Tap targets */
+  --tap: 44px;
+  --tap-lg: 48px;
+  --tap-capture: 60px;              /* fangst-mikrofon mobil */
+
+  /* ─── Logo (AK Golf — ikke Anthropic) ─── */
+  --logo-mark: #141413;
+  --logo-dot: #b85c3d;
+
+  /* ─── Z-index ─── */
+  --z-sticky: 10;
+  --z-rail: 20;
+  --z-sheet: 40;
+  --z-modal: 50;
+  --z-toast: 100;
+  --z-command: 110;
+}
+
+/* ─── Dark (produkt) ─── */
+[data-theme="dark"] {
+  color: #faf9f5;
+  --bg: #141413;
+  --surface: #1d1c1a;
+  --soft: #26241f;
+  --soft-hover: #2e2c28;
+  --surface-warm: #2a2824;
+  --border: rgba(250, 249, 245, 0.10);
+  --hairline: rgba(250, 249, 245, 0.08);
+  --inverse: #000000;
+
+  --fg: #faf9f5;
+  --ink-soft: #e8e6dc;
+  --muted: #b0aea5;
+  --mid: #6b675e;
+  --text-tertiary: #87867f;
+
+  --rail: #0e0d0c;
+  --rail-fg: #97938a;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.06);
+  --rail-active: rgba(250, 249, 245, 0.12);
+
+  --cta: #faf9f5;
+  --on-cta: #141413;
+  --cta-hover: #e8e6dc;
+
+  --accent: #d97757;
+  --accent-soft: rgba(217, 119, 87, 0.18);
+  --accent-fg: #e5a184;
+  --on-accent: #141413;
+
+  --up: #9db284;
+  --up-raw: #788c5d;
+  --dn: #de9e82;
+  --info: #93b7dc;
+  --info-raw: #6a9bcc;
+
+  --shadow: none;
+  --focus: #d97757;
+
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+[data-theme="light"] {
+  color: #141413;
+}
+
+/* Rail always dark */
+.rail {
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+/* Aksentflate — marketing/innlogging sparsomt */
+.on-accent-surface {
+  --logo-mark: #141413;
+  --logo-dot: #141413;
+}
+
+/* Full-bleed inverse band (marketing) */
+.band-inverse {
+  background: var(--inverse);
+  color: var(--bg);
+}
+
+/* Skriftimport — lim i <head> på alle skjermer:
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+*/
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Gulvregel: min treffmål på touch */
+@media (pointer: coarse) {
+  :root {
+    --floor: var(--tap);
+  }
+}
+
+:root{ --softer:#f6f4ee; --border-soft:#efede4; }
+[data-theme="dark"]{ --softer:#1a1917; --border-soft:rgba(250,249,245,.06); }
+
+/* ═══ AK-stigen · juniorvisning ═══
+   Trinnene i AK-stigen lagt over de faktiske gruppene i GFGK.
+
+   HVORFOR FLATA HAR EN JOBB: AK-stigen er metodikk og bor i CANON. Gruppene
+   er drift og bor i basen. Ligger de hver for seg, ser stigen komplett ut
+   selv når et trinn ikke har noen gruppe — og en gruppe kan stå tom i
+   månedsvis uten at noen ser det mot trinnet den skal fylle.
+
+   Her ligger de over hverandre. Da blir hullene synlige. */
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; }
+body{ background:var(--bg); color:var(--fg); font-family:var(--ui);
+  font-size:var(--text-body-agency); line-height:1.5; -webkit-font-smoothing:antialiased; }
+[hidden]{ display:none !important; }
+button,input,select,textarea{ font:inherit; color:inherit; }
+.num{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.eyebrow{ font-family:var(--mono); font-size:var(--text-label); font-weight:500;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+.prose{ font-family:var(--body); }
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+:where(a,button,input,select,textarea,summary,[tabindex]):focus-visible{
+  outline:2px solid var(--focus); outline-offset:2px; border-radius:var(--r-sm); }
+
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
+  min-height:var(--tap); padding:0 var(--s4); font-size:13px; font-weight:500;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; white-space:nowrap; text-decoration:none; color:inherit; }
+.btn:hover{ background:var(--soft); border-color:var(--mid); }
+.btn:active{ transform:translateY(1px); }
+.btn.ink{ background:var(--cta); color:var(--on-cta); border-color:var(--cta); }
+.btn.now{ background:var(--accent); color:var(--on-accent); border-color:var(--accent);
+  min-height:var(--tap-lg); font-weight:600; padding:0 var(--s5); }
+.btn.sm{ min-height:var(--tap); padding:0 var(--s3); font-size:12.5px; }
+.btn.icon{ width:var(--tap); padding:0; }
+.btn.full{ width:100%; }
+.chip{ display:inline-flex; align-items:center; gap:var(--s2); min-height:var(--tap);
+  padding:0 var(--s4); font-size:12.5px; background:var(--surface); flex:none;
+  border:1px solid var(--border); border-radius:var(--r-pill); cursor:pointer;
+  text-decoration:none; color:inherit; }
+.chip[aria-pressed="true"],.chip[aria-current="page"]{ background:var(--fg); color:var(--bg);
+  border-color:var(--fg); }
+.tag{ display:inline-flex; align-items:center; padding:3px var(--s2); border-radius:var(--r-pill);
+  font-family:var(--mono); font-size:10px; letter-spacing:.04em; text-transform:uppercase;
+  background:var(--soft); color:var(--muted); border:1px solid var(--border); }
+.tag.up{ color:var(--up); } .tag.dn{ color:var(--dn); } .tag.info{ color:var(--info); }
+
+.app{ display:grid; grid-template-columns:64px minmax(0,1fr); height:100vh; }
+.rail{ background:var(--rail); display:flex; flex-direction:column; align-items:center;
+  gap:var(--s1); padding:var(--s3) 0; z-index:var(--z-rail); }
+.logo{ font-family:var(--disp); font-size:15px; font-weight:700; color:var(--rail-on);
+  margin-bottom:var(--s4); }
+.logo span{ color:var(--logo-dot); }
+.rbtn{ width:52px; min-height:52px; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:3px; background:transparent; border:0; border-radius:var(--r);
+  color:var(--rail-fg); font-size:9px; cursor:pointer; }
+.rbtn:hover{ background:var(--rail-hover); color:var(--rail-on); }
+.rbtn[aria-current="page"]{ background:var(--rail-active); color:var(--rail-on); }
+.rbtn svg{ width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.6;
+  stroke-linecap:round; stroke-linejoin:round; }
+
+.stage{ display:flex; flex-direction:column; min-width:0; min-height:0; overflow:hidden; }
+.top{ flex:none; display:flex; align-items:center; gap:var(--s3);
+  padding:calc(var(--s3) + env(safe-area-inset-top)) var(--s4) var(--s3);
+  border-bottom:1px solid var(--border); background:var(--surface); }
+.top h1{ margin:0; font-family:var(--disp); font-size:17px; font-weight:600; }
+.top .sub{ display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); }
+.faner{ flex:none; display:flex; gap:var(--s2); padding:var(--s3) var(--s4);
+  overflow-x:auto; scrollbar-width:none; border-bottom:1px solid var(--border-soft);
+  background:var(--softer); }
+.faner::-webkit-scrollbar{ display:none; }
+.kropp{ flex:1; min-height:0; overflow-y:auto; padding:var(--s4)
+  calc(var(--s4) + env(safe-area-inset-bottom)); }
+.kropp > *{ max-width:1080px; }
+
+.kort{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  padding:var(--s4); margin-bottom:var(--s3); }
+.kort > .eyebrow{ display:block; margin-bottom:var(--s1); }
+.kilde{ display:block; font-family:var(--mono); font-size:9px; color:var(--mid);
+  letter-spacing:.04em; margin-bottom:var(--s3); }
+.kort h2{ margin:0 0 var(--s2); font-family:var(--disp); font-size:15px; font-weight:600; }
+.kort p{ margin:0 0 var(--s3); font-family:var(--body); font-size:13px; color:var(--muted); }
+
+.nowblock{ background:var(--accent-soft); border:1px solid var(--border);
+  border-left:3px solid var(--accent); border-radius:var(--r); padding:var(--s4);
+  margin-bottom:var(--s3); }
+.nowblock .eyebrow{ color:var(--accent-fg); }
+.nowblock h2{ margin:var(--s1) 0 var(--s2); font-family:var(--disp); font-size:15px; font-weight:600; }
+.nowblock p{ margin:0 0 var(--s3); font-family:var(--body); font-size:13px; color:var(--muted); }
+
+/* Tidslinje: perioder som bånd, turneringer som merker oppå */
+.tidslinje{ position:relative; margin:var(--s4) 0 var(--s3); }
+.tlmnd{ display:grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:1px;
+  font-family:var(--mono); font-size:9.5px; color:var(--mid); text-transform:uppercase;
+  letter-spacing:.06em; margin-bottom:var(--s1); }
+.tlmnd span{ padding-left:2px; }
+.baand{ position:relative; height:34px; border-radius:var(--r-sm); overflow:hidden;
+  background:var(--soft); border:1px solid var(--border); margin-bottom:var(--s2); }
+.per{ position:absolute; top:0; bottom:0; display:flex; align-items:center;
+  padding:0 var(--s2); font-family:var(--mono); font-size:10px; letter-spacing:.04em;
+  text-transform:uppercase; white-space:nowrap; overflow:hidden;
+  border-right:1px solid var(--surface); }
+.per.grunn{ background:var(--soft-hover); color:var(--muted); }
+.per.spes{ background:var(--surface-warm); color:var(--muted); }
+.per.turn{ background:var(--accent-soft); color:var(--accent-fg); }
+.per.test{ background:var(--surface); color:var(--muted); }
+.merker{ position:relative; height:26px; }
+.merke{ position:absolute; top:0; width:12px; height:12px; margin-left:-6px;
+  border-radius:var(--r-pill); background:var(--info-raw); border:2px solid var(--surface); }
+.merke.kollisjon{ background:var(--dn); }
+.tlforklar{ display:flex; flex-wrap:wrap; gap:var(--s3); font-family:var(--mono);
+  font-size:10px; color:var(--muted); }
+.tlforklar i{ display:inline-block; width:9px; height:9px; border-radius:var(--r-pill);
+  margin-right:5px; vertical-align:-1px; }
+
+.liste{ border:1px solid var(--border); border-radius:var(--r); overflow:hidden; }
+.trad{ display:flex; align-items:flex-start; gap:var(--s3); padding:var(--s3) var(--s4);
+  border-bottom:1px solid var(--border-soft); background:var(--surface);
+  min-height:var(--tap); width:100%; text-align:left; font-size:13.5px; cursor:pointer;
+  border-left:0; border-right:0; border-top:0; }
+.trad:last-child{ border-bottom:0; }
+.trad:hover{ background:var(--soft); }
+.trad.kollisjon{ border-left:3px solid var(--dn); }
+.trad .dato{ font-family:var(--mono); font-size:12px; color:var(--muted); flex:none;
+  min-width:84px; }
+.trad .t{ display:block; font-weight:500; }
+.trad .s{ display:block; font-family:var(--body); font-size:12px; color:var(--muted); }
+.trad .h{ margin-left:auto; flex:none; display:flex; gap:var(--s2); align-items:center; }
+
+.rad{ display:flex; align-items:center; gap:var(--s3); padding:var(--s3) 0;
+  border-bottom:1px solid var(--border-soft); min-height:var(--tap); font-size:13.5px; }
+.rad:last-of-type{ border-bottom:0; }
+.rad .k small{ display:block; font-family:var(--body); font-size:11.5px; color:var(--muted); }
+.rad .v{ margin-left:auto; font-family:var(--mono); font-size:13px; text-align:right; }
+
+.merk{ display:flex; gap:var(--s3); padding:var(--s3) var(--s4); background:var(--soft);
+  border:1px solid var(--border); border-radius:var(--r); margin-bottom:var(--s3); }
+.merk.mangler{ border-color:var(--mid); }
+.merk svg{ width:16px; height:16px; flex:none; margin-top:2px; fill:none;
+  stroke:var(--muted); stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.merk p{ margin:0; font-family:var(--body); font-size:12.5px; color:var(--muted); }
+
+.tom{ display:flex; flex-direction:column; align-items:flex-start; gap:var(--s3);
+  padding:var(--s6) var(--s4); background:var(--soft); border:1px dashed var(--border);
+  border-radius:var(--r); }
+.tom h2{ margin:0; font-family:var(--disp); font-size:15px; font-weight:600; }
+.tom p{ margin:0; max-width:56ch; font-family:var(--body); font-size:13.5px; color:var(--muted); }
+
+.hull{ display:grid; grid-template-columns:repeat(auto-fill, minmax(52px,1fr));
+  gap:var(--s2); }
+.hullkort{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r-sm);
+  padding:var(--s2); text-align:center; }
+.hullkort .n{ font-family:var(--mono); font-size:11px; color:var(--muted); }
+.hullkort .p{ font-family:var(--mono); font-size:14px; font-weight:600; }
+.hullkort .strat{ font-family:var(--mono); font-size:9px; letter-spacing:.04em;
+  text-transform:uppercase; color:var(--info); }
+
+@media (max-width:640px){
+  .app{ grid-template-columns:1fr; grid-template-rows:minmax(0,1fr) auto; height:100dvh; }
+  .rail{ grid-row:2; flex-direction:row; justify-content:space-around; padding:0;
+    padding-bottom:env(safe-area-inset-bottom); }
+  .logo{ display:none; }
+  .rbtn{ flex:1; min-height:56px; border-radius:0; }
+  .trad{ flex-wrap:wrap; }
+  .trad .dato{ min-width:0; }
+}
+
+.scrim{ position:fixed; inset:0; background:var(--scrim); z-index:var(--z-sheet); display:none; }
+.scrim.on{ display:block; }
+.ark{ position:fixed; left:0; right:0; bottom:0; z-index:calc(var(--z-sheet) + 1);
+  max-height:88%; background:var(--surface); border-top:1px solid var(--border);
+  border-radius:var(--r-lg) var(--r-lg) 0 0; display:none; flex-direction:column;
+  padding-bottom:env(safe-area-inset-bottom); }
+.ark.on{ display:flex; }
+@media (min-width:1101px){
+  .ark{ left:auto; right:var(--s5); bottom:var(--s5); top:var(--s5); width:440px;
+    max-height:none; border-radius:var(--r-md); border:1px solid var(--border);
+    box-shadow:var(--shadow); }
+}
+.grab{ flex:none; width:36px; height:4px; border-radius:var(--r-pill);
+  background:var(--border); margin:var(--s3) auto var(--s2); }
+.ahead{ flex:none; display:flex; align-items:flex-start; gap:var(--s2);
+  padding:0 var(--s4) var(--s3); border-bottom:1px solid var(--border); }
+.ahead h2{ margin:0; font-family:var(--disp); font-size:16px; font-weight:600; }
+.ahead .sub{ display:block; font-family:var(--mono); font-size:11px; color:var(--muted); }
+.abody{ flex:1; min-height:0; overflow-y:auto; padding:var(--s4); }
+.afoot{ flex:none; display:flex; gap:var(--s2); padding:var(--s3) var(--s4);
+  border-top:1px solid var(--border); }
+.afoot .btn{ flex:1; }
+.ikon{ flex:none; width:var(--tap); height:var(--tap); display:grid; place-items:center;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r); cursor:pointer; }
+.ikon svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.7; }
+
+.toast{ position:fixed; left:50%; bottom:var(--s5); transform:translateX(-50%);
+  z-index:var(--z-toast); background:var(--fg); color:var(--bg);
+  padding:var(--s3) var(--s4); border-radius:var(--r); font-size:12.5px; }
+@media (max-width:640px){ .toast{ bottom:76px; } }
+button,.btn,.chip,summary,select,input,.trad{ min-height:var(--tap); }
+.tag,.num,.eyebrow,.kilde,.rad .v,.trad .dato,.per,.tlmnd span,.tlforklar,
+.hullkort .n,.hullkort .p,.hullkort .strat,.merke{ min-height:0; }
+
+/* Stigen — trinn som trapp, ikke som liste. Rekkefølgen er poenget. */
+.stige{ display:flex; flex-direction:column-reverse; gap:var(--s2); margin-bottom:var(--s3); }
+.trinn{ display:flex; align-items:stretch; gap:var(--s3); width:100%; text-align:left;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  padding:var(--s3) var(--s4); cursor:pointer; min-height:var(--tap); }
+.trinn:hover{ background:var(--soft); }
+.trinn.tomt{ border-style:dashed; background:var(--soft); }
+.trinn.mangler{ border-left:3px solid var(--dn); }
+.trinn .kode{ font-family:var(--mono); font-size:11px; color:var(--mid); flex:none;
+  min-width:26px; padding-top:2px; }
+.trinn .navn{ display:block; font-size:14px; font-weight:600; }
+.trinn .under{ display:block; font-family:var(--body); font-size:12.5px; color:var(--muted); }
+.trinn .h{ margin-left:auto; flex:none; display:flex; flex-direction:column;
+  align-items:flex-end; gap:var(--s1); justify-content:center; }
+.trinn .ant{ font-family:var(--mono); font-size:15px; font-weight:600; }
+.trinn .ant.null{ color:var(--mid); }
+
+.tider{ display:flex; flex-wrap:wrap; gap:var(--s2); margin-top:var(--s2); }
+.tid{ font-family:var(--mono); font-size:10.5px; padding:3px var(--s2);
+  background:var(--soft); border:1px solid var(--border); border-radius:var(--r-pill);
+  color:var(--muted); }
+
+</style>
+</head>
+<body>
+<div class="app">
+
+  <nav class="rail" aria-label="Hovednavigasjon">
+    <div class="logo">AK<span>.</span></div>
+    <button class="rbtn" data-od-id="rail-konsoll" onclick="location.href='agencyos-konsoll-desktop.html'">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Konsoll</button>
+    <button class="rbtn" data-od-id="rail-innboks" onclick="location.href='agencyos-innboks.html'">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Innboks</button>
+    <button class="rbtn" aria-current="page" data-od-id="rail-spillere">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Spillere</button>
+    <button class="rbtn" data-od-id="rail-workbench" onclick="location.href='workbench-desktop.html'">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v16"/></svg>Workbench</button>
+    <button class="rbtn" data-od-id="rail-kalender" onclick="location.href='agencyos-kalender.html'">
+      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Kalender</button>
+    <button class="rbtn" data-od-id="rail-agenticos" onclick="location.href='agencyos-agenticos.html'">
+      <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg>AgenticOS</button>
+    <button class="rbtn" data-od-id="rail-okonomi" onclick="location.href='agencyos-okonomi.html'">
+      <svg viewBox="0 0 24 24"><path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Økonomi</button>
+    <button class="rbtn" data-od-id="rail-innstillinger" onclick="location.href='agencyos-innstillinger.html'">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 3.6 15a1.7 1.7 0 0 0-1.56-1H2a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 3.6 9a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 8 4.6h.09A1.7 1.7 0 0 0 9 3.04V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9v.09a1.7 1.7 0 0 0 1.56 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z"/></svg>Innstillinger</button>
+  </nav>
+
+  <main class="stage">
+    <header class="top">
+      <div style="min-width:0">
+        <h1>AK-stigen</h1>
+        <span class="sub"><span class="num" id="antTrinn">—</span> trinn ·
+          <span class="num" id="antSpillere">—</span> spillere i gruppene</span>
+      </div>
+      <span style="flex:1"></span>
+      <button class="btn icon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="st-theme">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </header>
+
+    <div class="faner" id="faner" role="tablist" aria-label="Visning"></div>
+
+    <div class="kropp" id="kropp"></div>
+  </main>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<section class="ark" id="ark" role="dialog" aria-modal="true" aria-labelledby="arkTitle" hidden>
+  <div class="grab"></div>
+  <div class="ahead">
+    <div style="min-width:0">
+      <h2 id="arkTitle">—</h2>
+      <span class="sub" id="arkSub">—</span>
+    </div>
+    <span style="flex:1"></span>
+    <button class="ikon" data-lukk="1" aria-label="Lukk" data-od-id="st-ark-lukk">
+      <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="abody" id="arkBody"></div>
+  <div class="afoot" id="arkFoot"></div>
+</section>
+
+<div class="toast" id="toast" hidden role="status"></div>
+<div class="sr" id="live" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ═══ AK-stigen · juniorvisning ═══
+   Kilder: groups · group_members · group_schedules · users · season_plans
+
+   HENTET FRA SUPABASE 02.08.2026 (Golf_Headquarters).
+
+   TO KILDER SOM MÅ LIGGE OVER HVERANDRE:
+
+   AK-stigen er metodikk. Den bor i CANON og har fem trinn:
+   Mini → Knøtt → Basis → Utvikling → Elite.
+
+   Gruppene er drift. De bor i `groups` med `level` A1–A5, og der finnes
+   fire juniorgrupper pluss WANG.
+
+   Ligger de hver for seg, ser stigen komplett ut selv når et trinn ikke har
+   noen gruppe. Her ligger de oppå hverandre, og da ser du to ting med én
+   gang: Knøtt har ingen gruppe, og fire av fem grupper har null medlemmer. */
+
+/* Trinnene fra CANON. `gruppe` = null betyr at trinnet ikke har noen gruppe
+   i basen — ikke at trinnet ikke finnes. */
+var TRINN = [
+  { kode:'A1', n:'Mini',      alder:'til og med 10 år',
+    d:'Første møte med golf. Lek, grunnleggende grep og balanse.',
+    gruppe:'GFGK Junior Mini U10' },
+  { kode:'—',  n:'Knøtt',     alder:'11–12 år',
+    d:'Broen mellom lek og struktur. Første egne mål.',
+    gruppe:null },
+  { kode:'A2', n:'Basis',     alder:'til og med 13 år',
+    d:'Fast teknisk fundament. Ballkontroll og rutine.',
+    gruppe:'GFGK Junior Basis U13' },
+  { kode:'A3', n:'Utvikling', alder:'til og med 15 år',
+    d:'Egen plan, egne tester. Konkurranse begynner å telle.',
+    gruppe:'GFGK Junior Utvikling U15' },
+  { kode:'A4', n:'Elite',     alder:'til og med 19 år',
+    d:'Turneringsspill, periodisering og måling mot mål.',
+    gruppe:'GFGK Junior Elite U19' }
+];
+
+/* groups, med medlemstall og timeplan talt i basen 02.08.2026 */
+var GRUPPER = {
+  'GFGK Junior Mini U10':      { level:'A1', coach:'Markus Røinås Pedersen', medlemmer:0,
+    tider:['tir 16:00–17:00','tor 16:00–17:00'] },
+  'GFGK Junior Basis U13':     { level:'A2', coach:'Markus Røinås Pedersen', medlemmer:0,
+    tider:['tir 17:00–18:00','tor 17:00–18:00'] },
+  'GFGK Junior Utvikling U15': { level:'A3', coach:'Markus Røinås Pedersen', medlemmer:0,
+    tider:['tir 17:00–18:00','tor 17:00–18:00'] },
+  'GFGK Junior Elite U19':     { level:'A4', coach:'Anders Kristiansen', medlemmer:0,
+    tider:['tir 14:00–16:00','tor 14:00–16:00'] }
+};
+
+/* Over stigen: WANG er ikke et trinn i AK-stigen, men neste steg etter Elite. */
+var WANG = { navn:'WANG Toppidrett Fredrikstad', level:'A5',
+  coach:'Anders Kristiansen', medlemmer:9, timeplan:32 };
+
+/* Grupper i basen uten medlemmer OG uten timeplan. Ikke tomme trinn —
+   dubletter fra oppsettet, som ingen har ryddet. */
+var RESTER = [
+  { n:'GFGK Mini',            level:null, maks:30 },
+  { n:'GFGK Utvikling',       level:null, maks:30 },
+  { n:'GFGK Basis/Utvikling', level:null, maks:30 },
+  { n:'WANG-gruppen',         level:'S1', maks:null }
+];
+
+var FANER = [
+  { k:'stigen',  n:'Stigen' },
+  { k:'grupper', n:'Grupper' },
+  { k:'rester',  n:'Rydding' }
+];
+var fane = 'stigen';
+
+var live = document.getElementById('live');
+function si(t){ live.textContent = t; }
+var toastEl = document.getElementById('toast'), toastT;
+function toast(t){ toastEl.textContent = t; toastEl.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.hidden = true; }, 2800); }
+function el(tag, cls, txt){ var e = document.createElement(tag);
+  if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+
+function gr(t){ return t.gruppe ? GRUPPER[t.gruppe] : null; }
+function utenGruppe(){ return TRINN.filter(function(t){ return !t.gruppe; }); }
+function tomme(){ return TRINN.filter(function(t){ var g = gr(t); return g && !g.medlemmer; }); }
+function iGruppene(){
+  return TRINN.reduce(function(a,t){ var g = gr(t); return a + (g ? g.medlemmer : 0); }, 0)
+    + WANG.medlemmer;
+}
+
+function kort(tittel, kilde){
+  var k = el('section','kort');
+  k.appendChild(document.createComment(' kilde: ' + kilde + ' '));
+  if (tittel) k.appendChild(el('span','eyebrow', tittel));
+  k.appendChild(el('span','kilde','kilde: ' + kilde));
+  return k;
+}
+function rad(k, v, sub){
+  var r = el('div','rad');
+  var d = el('div','k'); d.appendChild(document.createTextNode(k));
+  if (sub) d.appendChild(el('small', null, sub));
+  r.appendChild(d);
+  if (v != null) r.appendChild(el('span','v num', v));
+  return r;
+}
+
+/* ── Faner ───────────────────────────────────────────────────── */
+function renderFaner(){
+  var w = document.getElementById('faner'); w.innerHTML = '';
+  FANER.forEach(function(f){
+    var c = el('button','chip'); c.type = 'button';
+    c.setAttribute('role','tab');
+    c.setAttribute('aria-pressed', String(f.k === fane));
+    c.dataset.odId = 'st-fane-' + f.k;
+    c.appendChild(el('span', null, f.n));
+    if (f.k === 'rester') c.appendChild(el('span','tag dn', String(RESTER.length)));
+    c.addEventListener('click', function(){ fane = f.k; render(); si(f.n + ' åpnet.'); });
+    w.appendChild(c);
+  });
+}
+
+/* ── Én ting nå ──────────────────────────────────────────────────
+   Fire grupper med timeplan og null medlemmer er verre enn et trinn uten
+   gruppe. Treningene står i kalenderen og starter 18. august. */
+function enTingNa(w){
+  if (!tomme().length) return;
+  var v = el('div','nowblock');
+  v.appendChild(document.createComment(' kilde: groups, group_members, group_schedules '));
+  v.appendChild(el('span','eyebrow','Én ting nå'));
+  v.appendChild(el('h2', null, tomme().length + ' juniorgrupper har null medlemmer'));
+  v.appendChild(el('p', null,
+    'Alle fire har fast timeplan i basen, og første trening er tirsdag ' +
+    '18. august. Treningene står altså i kalenderen uten at noen er meldt på. ' +
+    'Enten mangler påmeldingene, eller så er de registrert et annet sted enn ' +
+    'i group_members.'));
+  var b = el('button','btn now','Se de fire gruppene');
+  b.type = 'button'; b.dataset.odId = 'st-one-thing-now';
+  b.addEventListener('click', function(){
+    fane = 'grupper'; render();
+    si('Grupper åpnet. Alle fire står med null medlemmer.');
+  });
+  v.appendChild(b);
+  w.appendChild(v);
+}
+
+/* ── Visninger ───────────────────────────────────────────────── */
+var VIS = {
+
+stigen: function(w){
+  enTingNa(w);
+
+  var k = kort('AK-stigen', 'CANON + groups');
+  k.appendChild(el('p', null,
+    'Fem trinn fra CANON, lagt over gruppene i basen. Stiplet kant betyr ' +
+    'gruppe uten medlemmer. Rød kant betyr trinn uten gruppe i det hele tatt.'));
+
+  var st = el('div','stige');
+  TRINN.forEach(function(t){
+    var g = gr(t);
+    var b = el('button','trinn' + (!g ? ' mangler' : (!g.medlemmer ? ' tomt' : '')));
+    b.type = 'button'; b.dataset.odId = 'st-trinn-' + t.n.toLowerCase();
+    b.appendChild(el('span','kode', t.kode));
+    var d = el('div');
+    d.appendChild(el('span','navn', t.n));
+    d.appendChild(el('span','under', t.alder + ' · ' + (t.gruppe || 'ingen gruppe i basen')));
+    if (g){
+      var tid = el('div','tider');
+      g.tider.forEach(function(x){ tid.appendChild(el('span','tid', x)); });
+      d.appendChild(tid);
+    }
+    b.appendChild(d);
+    var h = el('span','h');
+    h.appendChild(el('span','ant' + (g && g.medlemmer ? '' : ' null'),
+      g ? String(g.medlemmer) : '—'));
+    h.appendChild(el('span','tag', g ? 'spillere' : 'mangler'));
+    b.appendChild(h);
+    b.addEventListener('click', function(){ apneTrinn(t); });
+    st.appendChild(b);
+  });
+  k.appendChild(st);
+  w.appendChild(k);
+
+  /* WANG står over stigen, ikke i den. */
+  var wk = kort('Over stigen', 'groups');
+  wk.appendChild(el('p', null,
+    'WANG Toppidrett er ikke et trinn i AK-stigen. Det er neste steg etter ' +
+    'Elite, på en annen kontrakt — og den eneste gruppa som faktisk har ' +
+    'spillere i dag.'));
+  wk.appendChild(rad(WANG.navn, String(WANG.medlemmer) + ' spillere',
+    WANG.level + ' · ' + WANG.coach + ' · ' + WANG.timeplan + ' timeplanoppføringer'));
+  w.appendChild(wk);
+
+  if (utenGruppe().length){
+    var m = el('div','merk');
+    m.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>';
+    m.appendChild(el('p', null,
+      utenGruppe().map(function(t){ return t.n; }).join(', ') + ' finnes i ' +
+      'AK-stigen, men har ingen gruppe i basen. Enten skal trinnet ha en ' +
+      'gruppe, eller så skal det ut av stigen — det er en beslutning, ikke ' +
+      'et hull som fyller seg selv.'));
+    w.appendChild(m);
+  }
+},
+
+grupper: function(w){
+  var k = kort('Juniorgrupper', 'groups, group_members, group_schedules');
+  var l = el('div','liste');
+  TRINN.filter(function(t){ return t.gruppe; }).forEach(function(t){
+    var g = gr(t);
+    var b = el('button','trad' + (!g.medlemmer ? ' kollisjon' : ''));
+    b.type = 'button'; b.dataset.odId = 'st-gruppe-' + t.n.toLowerCase();
+    b.appendChild(el('span','dato', g.level));
+    var d = el('div');
+    d.appendChild(el('span','t', t.gruppe));
+    d.appendChild(el('span','s', g.coach + ' · ' + g.tider.join(' · ')));
+    b.appendChild(d);
+    var h = el('span','h');
+    h.appendChild(el('span','tag' + (g.medlemmer ? ' up' : ' dn'),
+      g.medlemmer ? g.medlemmer + ' spillere' : 'tom'));
+    b.appendChild(h);
+    b.addEventListener('click', function(){ apneTrinn(t); });
+    l.appendChild(b);
+  });
+  k.appendChild(l);
+  w.appendChild(k);
+
+  var m = el('div','merk');
+  m.innerHTML = '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+  m.appendChild(el('p', null,
+    'Timeplanene er ukentlige og starter 18. august. Markus har tre av de ' +
+    'fire gruppene; Elite U19 er din.'));
+  w.appendChild(m);
+},
+
+rester: function(w){
+  var k = kort('Grupper som bør ryddes', 'groups');
+  k.appendChild(el('p', null,
+    'Fire grupper i basen har verken medlemmer eller timeplan. De ser ut som ' +
+    'juniorgruppene i en nedtrekksliste, og kan velges ved en feil.'));
+  var l = el('div','liste');
+  RESTER.forEach(function(r, i){
+    var b = el('button','trad'); b.type = 'button';
+    b.dataset.odId = 'st-rest-' + i;
+    b.appendChild(el('span','dato', r.level || '—'));
+    var d = el('div');
+    d.appendChild(el('span','t', r.n));
+    d.appendChild(el('span','s', '0 medlemmer · 0 timeplanoppføringer' +
+      (r.maks ? ' · maks ' + r.maks : '')));
+    b.appendChild(d);
+    var h = el('span','h');
+    h.appendChild(el('span','tag dn','rest'));
+    b.appendChild(h);
+    b.addEventListener('click', function(){
+      toast('Sletting gjøres i basen, ikke herfra.');
+      si(r.n + ': ingen medlemmer, ingen timeplan. Sletting gjøres i basen, ' +
+         'ikke fra denne flata.');
+    });
+    l.appendChild(b);
+  });
+  k.appendChild(l);
+  w.appendChild(k);
+
+  var m = el('div','merk mangler');
+  m.innerHTML = '<svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>';
+  m.appendChild(el('p', null,
+    'Jeg sletter dem ikke herfra. En gruppe kan ha historikk som ikke vises ' +
+    'i medlemstallet — økter, notater, planer. Sjekk det først, så tar vi ' +
+    'slettingen som en egen operasjon.'));
+  w.appendChild(m);
+}
+};
+
+/* ── Ark ─────────────────────────────────────────────────────── */
+var ark = document.getElementById('ark'), scrim = document.getElementById('scrim'),
+    arkBody = document.getElementById('arkBody'), arkFoot = document.getElementById('arkFoot'),
+    sisteFokus = null;
+function apne(){
+  sisteFokus = document.activeElement;
+  ark.hidden = false; scrim.hidden = false;
+  ark.classList.add('on'); scrim.classList.add('on');
+  var f = ark.querySelector('button'); if (f) f.focus();
+}
+function lukk(){
+  ark.classList.remove('on'); scrim.classList.remove('on');
+  ark.hidden = true; scrim.hidden = true;
+  if (sisteFokus && sisteFokus.isConnected) sisteFokus.focus();
+}
+scrim.addEventListener('click', lukk);
+ark.querySelector('[data-lukk]').addEventListener('click', lukk);
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape' && !ark.hidden){ e.preventDefault(); lukk(); }
+  if (e.key === 'Tab' && !ark.hidden){
+    var f = ark.querySelectorAll('button, [href], [tabindex]:not([tabindex="-1"])');
+    if (!f.length) return;
+    var a = f[0], b = f[f.length-1];
+    if (e.shiftKey && document.activeElement === a){ e.preventDefault(); b.focus(); }
+    else if (!e.shiftKey && document.activeElement === b){ e.preventDefault(); a.focus(); }
+  }
+});
+
+function apneTrinn(t){
+  var g = gr(t);
+  document.getElementById('arkTitle').textContent = t.n;
+  document.getElementById('arkSub').textContent = t.kode + ' · ' + t.alder;
+  arkBody.innerHTML = ''; arkFoot.innerHTML = '';
+
+  var k = el('div','kort');
+  k.appendChild(rad('Om trinnet', null, t.d));
+  k.appendChild(rad('Gruppe', g ? t.gruppe : 'ingen'));
+  if (g){
+    k.appendChild(rad('Coach', g.coach));
+    k.appendChild(rad('Spillere', String(g.medlemmer)));
+    k.appendChild(rad('Trening', null, g.tider.join(' · ')));
+    k.appendChild(rad('Første trening', '18.08.2026'));
+  }
+  arkBody.appendChild(k);
+
+  if (!g){
+    var m = el('div','merk');
+    m.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>';
+    m.appendChild(el('p', null,
+      t.n + ' står i AK-stigen, men har ingen gruppe i basen. Spillere i ' +
+      'denne aldersgruppen havner enten i Mini eller Basis — eller ingen ' +
+      'steder.'));
+    arkBody.appendChild(m);
+  } else if (!g.medlemmer){
+    var m2 = el('div','merk');
+    m2.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>';
+    m2.appendChild(el('p', null,
+      'Gruppa har timeplan, men ingen medlemmer. Treningene starter 18. august ' +
+      'uansett — timeplanen spør ikke om noen kommer.'));
+    arkBody.appendChild(m2);
+  }
+
+  var lukkB = el('button','btn','Lukk'); lukkB.type = 'button';
+  lukkB.dataset.odId = 'st-ark-lukk-2';
+  lukkB.addEventListener('click', lukk);
+  arkFoot.appendChild(lukkB);
+  if (g){
+    var sp = el('button','btn ink','Åpne i Spillere'); sp.type = 'button';
+    sp.dataset.odId = 'st-apne-spillere';
+    sp.addEventListener('click', function(){ location.href = 'agencyos-spillere.html'; });
+    arkFoot.appendChild(sp);
+  }
+  apne();
+}
+
+/* ── Tema ────────────────────────────────────────────────────── */
+var KEY = 'akhq-theme-agencyos';
+var saved = localStorage.getItem(KEY);
+if (saved) document.documentElement.dataset.theme = saved;
+document.getElementById('themeBtn').addEventListener('click', function(){
+  var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem(KEY, next);
+  this.setAttribute('aria-label', next === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
+});
+
+function render(){
+  renderFaner();
+  var w = document.getElementById('kropp'); w.innerHTML = '';
+  VIS[fane](w);
+  document.getElementById('antTrinn').textContent = TRINN.length;
+  document.getElementById('antSpillere').textContent = iGruppene();
+}
+render();
+})();
+
+</script>
+</body>
+</html>
