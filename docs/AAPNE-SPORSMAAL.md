@@ -36,7 +36,7 @@ Disse kan en agent IKKE løse selv — de er produkt-/metodikkvalg.
 | B2 | **Dublett-enums** (`PRPress`/`PressureLevel`, `PracticeType`/`DrillPracticeType`, `SessionStatus`/`SessionStatusV2`). | Teknisk gjeld. Rydd kun ved bevisst beslutning — risiko for migrasjoner. |
 | B3 | **Dødt `ELITE`-enum** i `Tier`. | Beholdes i Prisma, vises ALDRI i UI (se `BUSINESS-RULES.md`). Ikke fjern fra enum uoppfordret (migrasjon). |
 | B4 | ~~**Delvis mock-flater i AgencyOS**~~ + ~~**foreldreportal-datakvalitet**~~ | **LØST/oppdatert 2026-07-15.** Godkjenninger/økonomi/innboks/analytics var alt ekte data (verifisert 14. juli). Foreldreportal: 10 av 11 ruter ekte, siste mock (`/forelder/coach`) fikset 15. juli. Ingen gjenstående kjente mock-flater i disse to områdene. |
-| B5 | **`/kommando` kan ikke slettes ennå.** | Eneste gjenværende punkt fra den arkiverte legacy-porteringslisten (`docs/arkiv/2026-08-03-forenkling-bolge2/legacy-portering-prioritet.md`): `/admin/workspace` må databakkes med ekte KommandoTask/KommandoProject/KommandoAgentRun-data før `/kommando` kan slettes. Flyttet hit 2026-08-03. |
+| B5 | **`/kommando` kan ikke slettes ennå.** | Eneste gjenværende punkt fra den arkiverte legacy-porteringslisten (git-historikken): `/admin/workspace` må databakkes med ekte KommandoTask/KommandoProject/KommandoAgentRun-data før `/kommando` kan slettes. Flyttet hit 2026-08-03. |
 
 ## C. Avklart (LØST — ikke flagg på nytt)
 

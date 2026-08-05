@@ -113,6 +113,6 @@ Hub `/stats` → PGA-metrikker · Norske spillere/baner/turneringer · Verktøy 
 
 ## DEL 3 — Hvordan dette mater Claude Design
 
-DEL 1 (kanonisk fasit) er det Claude Design-prompten (`CLAUDE-DESIGN-PROMPT.md`) skal bruke som «knapp → skjerm». DEL 2-B/C er IA-beslutninger: når en foreldreløs skjerm får et hjem eller en dublett pensjoneres, oppdateres DEL 1 + prompten. Slik holder designet og koden samme navigasjon - og «feil skjerm på feil knapp» forsvinner ved kilden.
+DEL 1 (kanonisk fasit) er «knapp → skjerm». DEL 2-B/C er IA-beslutninger: når en foreldreløs skjerm får et hjem eller en dublett pensjoneres, oppdateres DEL 1. Slik holder designet og koden samme navigasjon - og «feil skjerm på feil knapp» forsvinner ved kilden.
 
-*Verifisert 2026-06-24 mot 406 page.tsx-ruter. Hold i sync med `CLAUDE-DESIGN-PROMPT.md` og appens nav-filer (`bottom-nav.tsx`, `portal/sidebar.tsx`, `admin-nav.ts`).*
+*Verifisert 2026-06-24 mot 406 page.tsx-ruter. Hold i sync med appens nav-filer (`src/components/v2/shell.tsx`).*

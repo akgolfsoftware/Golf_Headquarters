@@ -390,7 +390,7 @@
 > API-kreditt mangler (kjent — Anders fyller på for ekte AI-forslag).
 
 Skrevet 2026-07-12, rett etter full kartlegging av alle 141 skjermer
-(`docs/arkiv/2026-08-03-forenkling-bolge2/AGENCYOS-INVENTAR.md`). Dette er analysen av HVOR verdien lekker i dag
+(git-historikken). Dette er analysen av HVOR verdien lekker i dag
 og HVA som løfter AK Golf HQ fra «komplett app» til «verktøyet som driver
 akademiet av seg selv». Mål-anker: 500K USD/år fra apper og coachingsystemer.
 

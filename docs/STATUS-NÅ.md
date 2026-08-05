@@ -18,10 +18,10 @@ fortsatt ikke klar for betalende brukere før P0-aktivering.)
 | **Uavklart / parkert / løst** | `docs/AAPNE-SPORSMAAL.md` |
 | **Låste forretningsregler** (fasit) | `docs/platform/BUSINESS-RULES.md` |
 | **Full plattformkontekst** (5 min) | `docs/platform/AGENT-BRIEF.md` |
-| **Design-gap (produkt)** | `docs/arkiv/2026-08-03-forenkling-bolge2/designdekning-2026-07-29.md` + Claude Paper `kart/status-til-komplett-2026-07-31.md` |
+| **Design-gap (produkt)** | `docs/port/fasit-liste-paper.md` (25 av 343 ruter har Paper-fasit) + `docs/port/plan-designport-alle-skjermer.md` |
 | **Ferdigstillingsplan** | Cursor-plan «Ferdigstill AK Golf HQ» (Fase A lansering → Fase B loop) |
 
-Historiske bygg-spor (SKJERM-STATUS, SKJERM-BYGGEPLAN, BYGGELOGG-FLAGG, KONFLIKTER) er flyttet til `docs/arkiv/` — ikke bygg mot dem.
+Historiske bygg-spor (SKJERM-STATUS, SKJERM-BYGGEPLAN, BYGGELOGG-FLAGG, KONFLIKTER) er slettet 05.08.2026 — de lever i git-historikken, ikke bygg mot dem.
 
 ---
 

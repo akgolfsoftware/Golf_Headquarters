@@ -50,7 +50,7 @@ npm run build
 - **`CLAUDE.md`** — arbeidsregler, designsystem, gotchas
 - **`SECURITY.md`** — sikkerhetsprinsipper og RLS
 - **`docs/go-live-sjekkliste.md`** — go-live
-- Historikk og superseterte planer: **`docs/arkiv/`**
+- Historikk og superseterte planer: slettet 05.08.2026 — ligger i git-historikken
 
 ## Test
 

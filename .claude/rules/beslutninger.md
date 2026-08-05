@@ -9,7 +9,7 @@ Gjelder til Anders endrer dem.
 > (bl.a. Enkelhet/færrest trykk, Skjermtekst som copy-kilde, design-tidsplanen, skill-rensing)
 > — de står KUN her og har ingen motpart i BUSINESS-RULES. Ikke dupliser regler på tvers.
 
-> ⚠ **Oppdatert 2026-07-06** (historikk: `docs/REGLER-OPPLAST-2026-06-22.md`): av de 4 regel-klyngene
+> ⚠ **Oppdatert 2026-07-06** (historikken lever i git): av de 4 regel-klyngene
 > som ble låst opp 2026-06-22 er 3 nå **avklart og bygget** — tema-toggle (AgencyOS lys/mørk-bryter),
 > abonnement/pris (299 kr/mnd, ingen årlig) og cockpit stall-SG/plan-etterlevelse. Kun **FYS-formel +
 > A–K-nivåtall** har gjenstående deltråder (onboarding steg 6 + drill-retag) — ikke håndhev den som låst.
@@ -67,7 +67,7 @@ Gjelder til Anders endrer dem.
 
 - **Invarianter er anbefalinger, aldri sperrer:** ingenting i appen blokkerer trening. Avvik fra
   plan/regel vises i klarspråk til brukeren; sterkt avvik varsler coach. Aldri skriv «kan ikke
-  brytes»-kode eller -tekst — se `plans/skjermplan-master.md` prinsipp 3 for fasit.
+  brytes»-kode eller -tekst.
 - **App-navn:** Coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt — ikke bruk i ny UI-tekst.
 - **Tema/design (TØMT 2026-07-25, tidsplan LÅST 2026-07-31, OVERSTYRT 2026-08-03):** Gamle
   Presis/FASIT-låser er fortsatt avviklet. Tidsplanen fra 31.07 sa full Paper-port til `src/`

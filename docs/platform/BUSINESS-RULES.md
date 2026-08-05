@@ -5,7 +5,7 @@
 Dokumenterer forretningsregler som ikke kan utledes fra kode alene.
 Sist oppdatert: 2026-06-14.
 
-> ⚠ **Status per 2026-07-06** (fulgte opp 2026-06-22-opplåsingen, se `docs/REGLER-OPPLAST-2026-06-22.md`
+> ⚠ **Status per 2026-07-06** (fulgte opp 2026-06-22-opplåsingen — historikken lever i git
 > for full historikk): 3 av 4 daværende «låst opp»-regler er nå **avklart og bygget** — tema-toggle
 > (AgencyOS lys/mørk-bryter), abonnement/pris-modell (299 kr/mnd, ingen årlig — se under) og cockpit
 > stall-SG/plan-etterlevelse. Kun **FYS-formel + A–K-nivåtall** har én gjenstående deltråd: onboarding
