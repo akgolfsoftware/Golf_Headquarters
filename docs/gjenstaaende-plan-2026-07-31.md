@@ -23,6 +23,14 @@ uten full port til `src/` før pilot er evaluert.
 
 ### 1.1 Designsystem — LÅST 2026-07-31 (Anders)
 
+> ⚠ **OVERSTYRT 2026-08-03** — historisk fra nå av. Anders overstyrte eksplisitt «full Paper-port
+> først etter pilot»; full porten til `src/` kjører nå aktivt per
+> `docs/port/plan-designport-alle-skjermer.md`, se `.claude/rules/beslutninger.md` §Tema/design.
+> `chore/paper-speil-lokal` er ikke lenger den aktive speil-grenen — speilet ligger direkte i
+> repoet (`designsystem/paper/`, PR #254), og ekte kilde er Claude Design-prosjektet `605a48cc`
+> selv, hentet via `claude-design`-MCP. Beholdt under uendret for sporbarhet av hvorfor låsen
+> opprinnelig ble satt.
+
 **Beslutning: C, smalt i app + Claude Paper som designspor.** Konflikten er avgjort.
 
 | Spor | Status etter lås |

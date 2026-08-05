@@ -1,0 +1,952 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Live Session · AgencyOS · AK Golf HQ</title>
+<style>
+
+/* ═══ akhq-tokens.css v3.1 — KOPIERT VERBATIM. Eneste tokenkilde. ═══ */
+/* ─────────────────────────────────────────────────────────────
+   AK Golf HQ · Claude Paper tokens v3
+   Anthropic-justert (offentlige kilder) + AK produktregler
+
+   Én kilde. Kopier verbatim inn i hver HTML/skjerm, eller @import.
+   Se SCOPE.md for hva «offisiell» betyr (vi er JUSTERT, ikke Anthropic).
+
+   Kilder:
+   - Anthropic brand-guidelines: ink/paper/mid/light + clay/sky/olive
+   - anthropic.com DESIGN.md (shadcn reverse-eng): full 21-farge + 8 aksenter
+   - Fase 1 (2026-07/08): chat-først, radius 12 for tett app, Én ting nå
+
+   v3.1 · 2026-08-01 (Bølge 1)
+   - --rail-hover / --rail-active løftet inn (var lokale i Fase 1-filene)
+   - Ingen andre verdiendringer. --muted er #5e5d59 (vinner over Fase 1 #5F5B53)
+
+   v3 · 2026-08-01
+   - Full Anthropic surface + accent ladder
+   - Radius-stige: sm 8 · app 12 · md 16 · lg 24 · pill
+   - Type-tokens for marketing + produkt
+   - Motion, z-index, tap-targets, hairline
+   - Dark theme (produkt; marketing er primært lys)
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* ─── Surfaces (Anthropic cream ladder) ─── */
+  --bg: #faf9f5;                    /* canvas / ivory */
+  --surface: #ffffff;               /* elevated white (produkt-kort) */
+  --soft: #f0eee6;                  /* surface-secondary — kort uten skygge */
+  --soft-hover: #e8e6dc;            /* surface-secondary-hover */
+  --surface-warm: #e3dacc;          /* oat */
+  --surface-manilla: #ebdbbc;
+  --surface-kraft: #d4a27f;
+  --border: #e8e6dc;                /* light gray (brand skill) */
+  --hairline: #d1cfc5;              /* finere skille enn --border */
+  --inverse: #000000;               /* full-bleed marketing-bånd */
+
+  /* ─── Text (Anthropic slate ladder) ─── */
+  --fg: #141413;                    /* ink — primær tekst + CTA-fill */
+  --ink-soft: #3d3d3a;              /* hover på primærknapp */
+  --muted: #5e5d59;                 /* text-muted (brand skill ~ #5f5b53; Anthropic #5e5d59) */
+  --mid: #b0aea5;                   /* text-secondary / cloud medium — IKKE brødtekst i lys */
+  --text-tertiary: #87867f;
+
+  /* ─── Rail (produkt, alltid mørk) ─── */
+  --rail: #141413;
+  --rail-fg: #b0aea5;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.08);   /* v3.1 — løftet fra Fase 1 */
+  --rail-active: rgba(250, 249, 245, 0.14);  /* v3.1 — løftet fra Fase 1 */
+
+  /* ─── Actions ─── */
+  --cta: #141413;                   /* Anthropic: CTA er blekk, ikke farge */
+  --on-cta: #faf9f5;
+  --cta-hover: #3d3d3a;
+
+  /* Clay = sterkeste kromatiske aksent (Anthropic clay) */
+  --accent: #d97757;                /* kun «Én ting nå» + focus i app */
+  --accent-soft: rgba(217, 119, 87, 0.12);
+  --accent-fg: #b85c3d;             /* AA-tekst på paper */
+  --on-accent: #141413;             /* tekst på fylt clay — sparsomt */
+  --accent-deep: #c6613f;           /* burnt sienna */
+
+  /* ─── Dormant accent swatches (Anthropic research palette)
+       Brukes sparsomt: chart, kategori, badges — aldri som primær CTA ─── */
+  --accent-coral: #ebcece;
+  --accent-fig: #c46686;
+  --accent-cactus: #bcd1ca;
+  --accent-olive: #788c5d;
+  --accent-sky: #6a9bcc;
+  --accent-heather: #cbcadb;
+
+  /* ─── Datasemantikk (produkt — mørknede for AA-tekst) ─── */
+  --up: #63784a;                    /* olive mørknet for tekst */
+  --up-raw: #788c5d;                /* olive rå — fyll/sparkline */
+  --dn: #a85536;                    /* leire av clay — aldri ren rød */
+  --info: #46719f;                  /* sky mørknet for tekst */
+  --info-raw: #6a9bcc;
+
+  /* ─── Typography families
+       Anthropic proprietary (Serif/Sans/Mono) er IKKE offentlige.
+       Brand skill: Poppins + Lora. Mono: IBM Plex Mono (produkt-tall). ─── */
+  --font-sans: "Poppins", Arial, system-ui, sans-serif;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Aliases brukt i eksisterende skjermer */
+  --disp: var(--font-sans);
+  --ui: var(--font-sans);
+  --body: var(--font-serif);
+  --mono: var(--font-mono);
+
+  /* ─── Type scale · Produkt (tett) ─── */
+  --text-display: 32px;
+  --text-title: 22px;
+  --text-card: 16px;
+  --text-panel: 14.5px;
+  --text-body-agency: 13.5px;       /* AgencyOS desktop */
+  --text-body-player: 14px;         /* PlayerHQ mobil */
+  --text-label: 10px;               /* versaler + tracking */
+  --text-kpi: 40px;                 /* mono */
+
+  /* ─── Type scale · Marketing (editorial, Anthropic-rytme) ─── */
+  --text-hero: 56px;                /* nedskalert fra 88 — web-vennlig */
+  --text-section: 40px;             /* nedskalert fra 90 */
+  --text-prose: 18px;               /* serif body marketing */
+  --text-prose-lg: 22px;
+  --text-nav: 16px;
+  --text-eyebrow: 12px;
+
+  /* ─── Spacing · 4px base (Anthropic 4/8/12/16/24/32/48/96) ─── */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+  --s9: 96px;                       /* section padding marketing */
+
+  /* ─── Radius
+       Anthropic marketing: sm 8 · md 16 · lg 24
+       AK produkt (Fase 1 låst): app 12 for kort/composer ─── */
+  --r-none: 0px;
+  --r-sm: 8px;                      /* knapper, inputs, chips */
+  --r: 12px;                        /* app-default (Fase 1) */
+  --r-md: 16px;                     /* editorial cards / marketing */
+  --r-lg: 24px;                     /* store flater, pille-CTA unntak */
+  --r-pill: 999px;
+
+  /* ─── Elevation
+       Anthropic marketing: NULL shadow — flater via cream-steg
+       Produkt: én myk skygge tillatt (valgfri) ─── */
+  --shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
+  --shadow-none: none;
+  --scrim: rgba(20, 20, 19, 0.4);
+
+  /* ─── Interaction ─── */
+  --focus: #d97757;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 160ms;
+  --dur-slow: 280ms;
+
+  /* Tap targets */
+  --tap: 44px;
+  --tap-lg: 48px;
+  --tap-capture: 60px;              /* fangst-mikrofon mobil */
+
+  /* ─── Logo (AK Golf — ikke Anthropic) ─── */
+  --logo-mark: #141413;
+  --logo-dot: #b85c3d;
+
+  /* ─── Z-index ─── */
+  --z-sticky: 10;
+  --z-rail: 20;
+  --z-sheet: 40;
+  --z-modal: 50;
+  --z-toast: 100;
+  --z-command: 110;
+}
+
+/* ─── Dark (produkt) ─── */
+[data-theme="dark"] {
+  color: #faf9f5;
+  --bg: #141413;
+  --surface: #1d1c1a;
+  --soft: #26241f;
+  --soft-hover: #2e2c28;
+  --surface-warm: #2a2824;
+  --border: rgba(250, 249, 245, 0.10);
+  --hairline: rgba(250, 249, 245, 0.08);
+  --inverse: #000000;
+
+  --fg: #faf9f5;
+  --ink-soft: #e8e6dc;
+  --muted: #b0aea5;
+  --mid: #6b675e;
+  --text-tertiary: #87867f;
+
+  --rail: #0e0d0c;
+  --rail-fg: #97938a;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.06);
+  --rail-active: rgba(250, 249, 245, 0.12);
+
+  --cta: #faf9f5;
+  --on-cta: #141413;
+  --cta-hover: #e8e6dc;
+
+  --accent: #d97757;
+  --accent-soft: rgba(217, 119, 87, 0.18);
+  --accent-fg: #e5a184;
+  --on-accent: #141413;
+
+  --up: #9db284;
+  --up-raw: #788c5d;
+  --dn: #de9e82;
+  --info: #93b7dc;
+  --info-raw: #6a9bcc;
+
+  --shadow: none;
+  --focus: #d97757;
+
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+[data-theme="light"] {
+  color: #141413;
+}
+
+/* Rail always dark */
+.rail {
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+/* Aksentflate — marketing/innlogging sparsomt */
+.on-accent-surface {
+  --logo-mark: #141413;
+  --logo-dot: #141413;
+}
+
+/* Full-bleed inverse band (marketing) */
+.band-inverse {
+  background: var(--inverse);
+  color: var(--bg);
+}
+
+/* Skriftimport — lim i <head> på alle skjermer:
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+*/
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Gulvregel: min treffmål på touch */
+@media (pointer: coarse) {
+  :root {
+    --floor: var(--tap);
+  }
+}
+
+:root{ --softer:#f6f4ee; --border-soft:#efede4; }
+[data-theme="dark"]{ --softer:#1a1917; --border-soft:rgba(250,249,245,.06); }
+
+
+/* ═══ Live Session · AgencyOS ═══
+   UNDER-flata for coachen mens økta pågår. Søsterflate til FangstSheet:
+   FangstSheet fanger det som ble sagt etterpå, Live Session er det coachen
+   ser på mens det skjer. Derfor er den bygget for én hånd og ett blikk —
+   store treffområder, lite tekst, ingenting som krever lesing i farta.
+
+   Alle tall her leses fra basen. Der basen er tom sier flata det rett ut
+   i stedet for å tegne en tom liste som ser ferdig ut. */
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; }
+body{ background:var(--bg); color:var(--fg); font-family:var(--ui);
+  font-size:var(--text-body-agency); line-height:1.5; -webkit-font-smoothing:antialiased; }
+[hidden]{ display:none !important; }
+button,input,select,textarea{ font:inherit; color:inherit; }
+.num{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.eyebrow{ font-family:var(--mono); font-size:var(--text-label); font-weight:500;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+:where(a,button,input,select,textarea,summary,[tabindex]):focus-visible{
+  outline:2px solid var(--focus); outline-offset:2px; border-radius:var(--r-sm); }
+
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
+  min-height:var(--tap); padding:0 var(--s4); font-size:13px; font-weight:500;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; white-space:nowrap; text-decoration:none; color:inherit; }
+.btn:hover{ background:var(--soft); border-color:var(--mid); }
+.btn:active{ transform:translateY(1px); }
+.btn:disabled,.btn[aria-disabled="true"]{ opacity:.45; cursor:not-allowed; }
+.btn.ink{ background:var(--cta); color:var(--on-cta); border-color:var(--cta); }
+.btn.ink:hover{ background:var(--cta-hover); border-color:var(--cta-hover); }
+.btn.now{ background:var(--accent); color:var(--on-accent); border-color:var(--accent);
+  min-height:var(--tap-lg); font-weight:600; padding:0 var(--s5); }
+.btn.icon{ width:var(--tap); padding:0; }
+.btn.full{ width:100%; }
+.btn svg{ width:17px; height:17px; flex:none; fill:none; stroke:currentColor;
+  stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+
+.tag{ display:inline-flex; align-items:center; padding:3px var(--s2); border-radius:var(--r-pill);
+  font-family:var(--mono); font-size:10px; letter-spacing:.04em; text-transform:uppercase;
+  background:var(--soft); color:var(--muted); border:1px solid var(--border); }
+.tag.up{ color:var(--up); } .tag.dn{ color:var(--dn); } .tag.info{ color:var(--info); }
+
+/* ── Skall ───────────────────────────────────────────────────── */
+.app{ display:grid; grid-template-columns:64px minmax(0,1fr); height:100vh; }
+.rail{ background:var(--rail); display:flex; flex-direction:column; align-items:center;
+  gap:var(--s1); padding:var(--s3) 0; z-index:var(--z-rail); }
+.logo{ font-family:var(--disp); font-size:15px; font-weight:700; color:var(--rail-on);
+  min-height:var(--tap); display:grid; place-items:center; margin-bottom:var(--s3); }
+.logo span{ color:var(--logo-dot); }
+.rbtn{ width:52px; min-height:52px; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:3px; background:transparent; border:0; border-radius:var(--r);
+  color:var(--rail-fg); font-size:9px; cursor:pointer; position:relative; }
+.rbtn:hover{ background:var(--rail-hover); color:var(--rail-on); }
+.rbtn[aria-current="page"]{ background:var(--rail-active); color:var(--rail-on); }
+.rbtn svg{ width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.6;
+  stroke-linecap:round; stroke-linejoin:round; }
+
+.panel{ display:flex; flex-direction:column; min-width:0; min-height:0; background:var(--bg); }
+.phead{ flex:none; display:flex; align-items:center; gap:var(--s3);
+  padding:var(--s4); border-bottom:1px solid var(--border); background:var(--surface); }
+.phead h1{ margin:0; font-family:var(--disp); font-size:17px; font-weight:600; }
+.phead .sub{ display:block; font-family:var(--mono); font-size:11px; color:var(--muted);
+  margin-top:2px; }
+.kropp{ flex:1; min-height:0; overflow-y:auto; padding:var(--s5) var(--s4)
+  calc(var(--s6) + env(safe-area-inset-bottom)); }
+.spalter{ display:grid; grid-template-columns:minmax(0,1fr); gap:var(--s4);
+  max-width:1180px; margin:0 auto; }
+@media (min-width:1100px){ .spalter{ grid-template-columns:minmax(0,7fr) minmax(0,5fr);
+  align-items:start; } .spalter > .full{ grid-column:1 / -1; } }
+
+.kort{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  padding:var(--s4); margin-bottom:var(--s4); }
+.kort:last-child{ margin-bottom:0; }
+.kort > .eyebrow{ display:block; margin-bottom:var(--s1); }
+.kort h2{ margin:0 0 var(--s2); font-family:var(--disp); font-size:15px; font-weight:600; }
+.kort h3{ margin:0 0 var(--s1); font-family:var(--disp); font-size:13.5px; font-weight:600; }
+.kort p{ margin:0 0 var(--s3); font-family:var(--body); font-size:13px; color:var(--muted); }
+.kort p:last-child{ margin-bottom:0; }
+.kilde{ display:block; font-family:var(--mono); font-size:9px; color:var(--mid);
+  letter-spacing:.04em; margin-bottom:var(--s3); }
+
+/* ── Én ting nå ──────────────────────────────────────────────── */
+.nowblock{ background:var(--accent-soft); border:1px solid var(--border);
+  border-left:3px solid var(--accent); border-radius:var(--r);
+  padding:var(--s4); margin-bottom:var(--s4); }
+.nowblock .eyebrow{ color:var(--accent-fg); }
+.nowblock h2{ margin:var(--s1) 0 var(--s2); font-family:var(--disp); font-size:16px;
+  font-weight:600; }
+.nowblock p{ margin:0 0 var(--s3); font-family:var(--body); font-size:13px; color:var(--muted);
+  max-width:56ch; }
+
+/* ── Varsel (datasannhet, aldri leire) ───────────────────────── */
+.varsel{ background:var(--soft); border:1px solid var(--border); border-left:3px solid var(--dn);
+  border-radius:var(--r); padding:var(--s4); margin-bottom:var(--s4); }
+.varsel .eyebrow{ color:var(--dn); }
+.varsel h2{ margin:var(--s1) 0 var(--s2); font-family:var(--disp); font-size:14.5px;
+  font-weight:600; }
+.varsel p{ margin:0 0 var(--s2); font-family:var(--body); font-size:13px; color:var(--muted);
+  max-width:60ch; }
+.varsel p:last-child{ margin-bottom:0; }
+
+/* ── Øktvelger ───────────────────────────────────────────────── */
+.velger{ display:flex; gap:var(--s2); overflow-x:auto; padding-bottom:var(--s2);
+  margin-bottom:var(--s4); -webkit-overflow-scrolling:touch; }
+.oktknapp{ flex:none; min-height:var(--tap); display:flex; flex-direction:column;
+  align-items:flex-start; justify-content:center; gap:2px; padding:var(--s2) var(--s3);
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; text-align:left; max-width:230px; }
+.oktknapp:hover{ border-color:var(--mid); }
+.oktknapp[aria-pressed="true"]{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+.oktknapp b{ font-size:12.5px; font-weight:600; white-space:nowrap; overflow:hidden;
+  text-overflow:ellipsis; max-width:206px; }
+.oktknapp small{ font-family:var(--mono); font-size:10px; opacity:.72; }
+
+/* ── Fakta ───────────────────────────────────────────────────── */
+.fakta{ display:grid; grid-template-columns:repeat(auto-fit,minmax(132px,1fr));
+  gap:var(--s3); margin-bottom:var(--s3); }
+.fakta div{ min-width:0; }
+.fakta .flab{ display:block; font-family:var(--mono); font-size:9.5px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:2px; }
+.fakta .fval{ font-size:13.5px; font-weight:500; overflow-wrap:anywhere; }
+.fakta .fval.tom{ color:var(--mid); font-family:var(--mono); font-size:12px; font-weight:400; }
+
+/* ── Klokke ──────────────────────────────────────────────────── */
+.klokke{ display:flex; align-items:baseline; gap:var(--s3); margin-bottom:var(--s3); }
+.klokke .tid{ font-family:var(--mono); font-variant-numeric:tabular-nums;
+  font-size:var(--text-kpi); font-weight:600; letter-spacing:-.01em; }
+.klokke .av{ font-family:var(--mono); font-size:12px; color:var(--muted); }
+.stolpe{ height:6px; border-radius:var(--r-pill); background:var(--soft);
+  border:1px solid var(--border); overflow:hidden; margin-bottom:var(--s3); }
+.stolpe i{ display:block; height:100%; background:var(--fg); width:0; }
+
+/* ── Puls (opptak går) ───────────────────────────────────────── */
+.puls{ display:inline-flex; align-items:center; gap:7px; font-family:var(--mono);
+  font-size:11px; color:var(--muted); }
+.puls::before{ content:""; width:8px; height:8px; border-radius:var(--r-pill);
+  background:var(--mid); }
+.puls.gaar::before{ background:var(--dn); animation:blafre 1.6s var(--ease) infinite; }
+.puls.ferdig::before{ background:var(--up-raw); }
+@keyframes blafre{ 0%,100%{ opacity:1 } 50%{ opacity:.25 } }
+@media (prefers-reduced-motion:reduce){ .puls.gaar::before{ animation:none } }
+
+/* ── Lister ──────────────────────────────────────────────────── */
+.liste{ border:1px solid var(--border); border-radius:var(--r); overflow:hidden; }
+.lrad{ display:flex; align-items:center; gap:var(--s3); padding:var(--s3) var(--s4);
+  border-bottom:1px solid var(--border); min-height:var(--tap); font-size:13.5px;
+  background:var(--surface); }
+.lrad:last-child{ border-bottom:0; }
+.lrad .k{ min-width:0; }
+.lrad .k small{ display:block; font-family:var(--body); font-size:12px; color:var(--muted); }
+.lrad .v{ margin-left:auto; flex:none; text-align:right; }
+
+.tomflate{ display:flex; flex-direction:column; align-items:flex-start; gap:var(--s2);
+  padding:var(--s5) var(--s4); background:var(--soft); border:1px dashed var(--border);
+  border-radius:var(--r); }
+.tomflate h3{ margin:0; font-family:var(--disp); font-size:14px; font-weight:600; }
+.tomflate p{ margin:0; max-width:52ch; font-family:var(--body); font-size:13px;
+  color:var(--muted); }
+
+/* ── Transkript og analyse ───────────────────────────────────── */
+.transkript{ max-height:212px; overflow-y:auto; padding:var(--s3);
+  background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm);
+  font-family:var(--body); font-size:12.5px; color:var(--muted); white-space:pre-wrap; }
+.analyse{ margin:0; }
+.analyse > div{ padding:var(--s3) 0; border-bottom:1px solid var(--border); }
+.analyse > div:last-child{ border-bottom:0; padding-bottom:0; }
+.analyse dt{ font-family:var(--mono); font-size:9.5px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:var(--s1); }
+.analyse dd{ margin:0; font-family:var(--body); font-size:13px; }
+.analyse dd.tom{ color:var(--mid); font-family:var(--mono); font-size:12px; }
+
+.handlinger{ display:flex; flex-wrap:wrap; gap:var(--s2); margin-top:var(--s3); }
+
+/* ── Mobil ───────────────────────────────────────────────────── */
+@media (max-width:640px){
+  .app{ grid-template-columns:1fr; grid-template-rows:minmax(0,1fr) auto; height:100dvh; }
+  .rail{ grid-row:2; flex-direction:row; justify-content:space-around; padding:0;
+    padding-bottom:env(safe-area-inset-bottom); }
+  .logo{ display:none; }
+  .rbtn{ flex:1; min-height:56px; border-radius:0; }
+  .phead{ padding-top:calc(var(--s4) + env(safe-area-inset-top)); }
+  .kropp{ padding-left:var(--s3); padding-right:var(--s3); }
+}
+
+.toast{ position:fixed; left:50%; bottom:var(--s5); transform:translateX(-50%);
+  z-index:var(--z-toast); background:var(--fg); color:var(--bg);
+  padding:var(--s3) var(--s4); border-radius:var(--r); font-size:12.5px; }
+@media (max-width:640px){ .toast{ bottom:76px; } }
+button,.btn,summary,input,select,textarea,.oktknapp{ min-height:var(--tap); }
+.tag,.num,.eyebrow,.kilde,.puls,.fakta .flab{ min-height:0; }
+
+</style>
+</head>
+<body>
+<div class="app">
+
+  <nav class="rail" aria-label="Hovednavigasjon">
+    <div class="logo">AK<span>.</span></div>
+    <button class="rbtn" data-od-id="rail-konsoll" onclick="location.href='agencyos-konsoll-desktop.html'">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Konsoll</button>
+    <button class="rbtn" data-od-id="rail-innboks" onclick="location.href='agencyos-innboks.html'">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Innboks</button>
+    <button class="rbtn" aria-current="page" data-od-id="rail-okt">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Økt</button>
+    <button class="rbtn" data-od-id="rail-kalender" onclick="location.href='agencyos-kalender.html'">
+      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Kalender</button>
+    <button class="rbtn" data-od-id="rail-innstillinger" onclick="location.href='agencyos-innstillinger.html'">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M4 12h2M18 12h2M12 4v2M12 18v2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M17.7 6.3l-1.4 1.4M7.7 16.3l-1.4 1.4"/></svg>Innstillinger</button>
+  </nav>
+
+  <main class="panel">
+    <header class="phead">
+      <div style="min-width:0">
+        <h1>Live Session</h1>
+        <span class="sub" id="pSub">—</span>
+      </div>
+      <span style="flex:1"></span>
+      <button class="btn icon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="ls-theme">
+        <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </header>
+
+    <div class="kropp" id="kropp">
+      <div class="velger" id="velger" role="group" aria-label="Velg økt"></div>
+
+      <div class="nowblock" id="nowblock">
+        <span class="eyebrow">Én ting nå</span>
+        <h2 id="nowTittel">—</h2>
+        <p id="nowTekst">—</p>
+        <button class="btn now" id="nowKnapp" data-od-id="ls-now">—</button>
+      </div>
+
+      <div class="spalter">
+
+        <section aria-labelledby="hLopet">
+          <div class="kort">
+            <span class="eyebrow">Økta</span>
+            <span class="kilde">training_sessions_v2</span>
+            <h2 id="oktTittel">—</h2>
+            <div class="fakta" id="oktFakta"></div>
+            <div class="klokke">
+              <span class="tid num" id="klokkeTid">00:00</span>
+              <span class="av num" id="klokkeAv">—</span>
+            </div>
+            <div class="stolpe" aria-hidden="true"><i id="stolpe"></i></div>
+            <p id="oktMaal">—</p>
+          </div>
+
+          <div class="kort">
+            <h2 id="hLopet">Løpet</h2>
+            <span class="kilde">session_drills · drill_logs_v2</span>
+            <div id="lopet"></div>
+          </div>
+
+          <div class="kort">
+            <h2>Deltakere</h2>
+            <span class="kilde">session_participants</span>
+            <div id="deltakere"></div>
+          </div>
+        </section>
+
+        <section aria-labelledby="hOpptak">
+          <div class="kort">
+            <span class="eyebrow">Opptak</span>
+            <span class="kilde">session_recordings</span>
+            <h2 id="hOpptak">Lyd fra økta</h2>
+            <span class="puls" id="puls">Ikke startet</span>
+            <div class="handlinger" id="opptakHandlinger"></div>
+          </div>
+
+          <div class="kort" id="analyseKort">
+            <h2>Siste analyse</h2>
+            <span class="kilde">session_recordings.aiAnalysis</span>
+            <div id="analyse"></div>
+          </div>
+
+          <div class="kort">
+            <h2>Transkript</h2>
+            <span class="kilde">session_recordings.transcript</span>
+            <div id="transkriptBoks"></div>
+          </div>
+        </section>
+
+        <div class="full" id="loseOpptak"></div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast" hidden role="status"></div>
+<div class="sr" id="live" aria-live="polite"></div>
+
+<script>
+/* ═══ Live Session · logikk ═══
+   Alle fem øktene, alle fem opptakene, og alle nullene er hentet fra basen
+   2026-08-02. Ingenting her er oppdiktet. Der en tabell er tom står det at
+   den er tom — en tom liste som ser ferdig ut er verre enn ingen liste.
+
+   Den viktigste sannheten flata bærer: samtlige fem opptak har sessionId
+   NULL. Opptakene finnes, men ingen av dem henger på en økt. Derfor kan
+   ikke denne flata late som den viser «økta sitt opptak» — den må vise at
+   koblingen mangler, og gi coachen handlingen som lager den. */
+
+var OKTER = [
+  { id:'cms3iebop0005i6bp2ncivw4d', tittel:'Wedge 60–100 m',
+    start:'2026-08-03T16:00:00', slutt:'2026-08-03T17:30:00',
+    miljo:'M2', type:'RANDOM', status:'PLANNED', sted:'Gamle Fredrikstad GK',
+    maal:'Treffe 70 % innenfor 5 m fra 80 m',
+    coach:'Anders Skarpnord Kristiansen', spiller:null, gruppe:null,
+    drills:0, deltakere:0, opptak:0 },
+  { id:'05639be9-7076-46bc-a2b3-029a294c9437', tittel:'Nærspill – kombinasjon lag/putt',
+    start:'2026-07-19T16:00:00', slutt:'2026-07-19T17:00:00',
+    miljo:'M2', type:'BLOKK', status:'PLANNED', sted:null, maal:null,
+    coach:'Anders Skarpnord Kristiansen', spiller:'Aksel Lind', gruppe:null,
+    drills:0, deltakere:0, opptak:0 },
+  { id:'cms3xu1am00042ybp7ehwq45x', tittel:'Teknikk',
+    start:'2026-07-28T00:49:02', slutt:'2026-07-28T00:49:02',
+    miljo:'M2', type:'BLOKK', status:'COMPLETED', sted:null, maal:'Fikse slice',
+    coach:null, spiller:null, gruppe:null, drills:0, deltakere:0, opptak:0 },
+  { id:'cms3r41ac0001t6bprgf4bj2w', tittel:'Teknikk + spill',
+    start:'2026-07-25T21:40:51', slutt:'2026-07-25T21:40:51',
+    miljo:'M2', type:'BLOKK', status:'COMPLETED', sted:null, maal:null,
+    coach:null, spiller:null, gruppe:null, drills:0, deltakere:0, opptak:0 },
+  { id:'cms3r41hj0005t6bp0rujgcxt', tittel:'Ikke gjennomført',
+    start:'2026-07-26T21:40:51', slutt:'2026-07-26T21:40:51',
+    miljo:'M2', type:'BLOKK', status:'PLANNED', sted:null, maal:null,
+    coach:null, spiller:null, gruppe:null, drills:0, deltakere:0, opptak:0 }
+];
+
+/* Alle fem har sessionId = null og bookingId = null. Ingen har durationSec.
+   Ingen har notionPageId. Ingen har retentionUntil — selv om transkriptet
+   inneholder navn og en samtale om hvordan spilleren har hatt det. */
+var OPPTAK = [
+  { id:'cms985654000204jv3f73ckf7', spiller:'E2E Pilot Spiller', status:'DONE',
+    startet:'2026-07-31T17:36:29', fullfort:null, sessionId:null, notion:null,
+    sletting:null, analyse:true },
+  { id:'cms9fifao000104jlqo590cuo', spiller:'E2E Pilot Spiller', status:'DONE',
+    startet:'2026-07-31T21:02:44', fullfort:null, sessionId:null, notion:null,
+    sletting:null, analyse:true },
+  { id:'cms984xng000004jv6cydo53v', spiller:'E2E Pilot Spiller', status:'RECORDING',
+    startet:'2026-07-31T17:36:18', fullfort:null, sessionId:null, notion:null,
+    sletting:null, analyse:false },
+  { id:'cms98gepf000004ibl6xe16it', spiller:'E2E Pilot Spiller', status:'RECORDING',
+    startet:'2026-07-31T17:45:13', fullfort:null, sessionId:null, notion:null,
+    sletting:null, analyse:false },
+  { id:'cms98pudn000004laloknx2ka', spiller:'E2E Pilot Spiller', status:'ABORTED',
+    startet:'2026-07-31T17:52:33', fullfort:'2026-07-31T21:02:41', sessionId:null,
+    notion:null, sletting:null, analyse:false }
+];
+
+var TRANSKRIPT =
+'Øyvind, vi starter med basic-setup. Setup ser bra ut, men venstre håndledd er litt bøyd. '+
+'Prøv å rette det opp – tenk på at håndleddet skal være flatt med underarmen ved adressen.\n\n'+
+'OK, nå har du tatt et par swinger. Jeg ser at swing-pathen er litt over-the-top. Klubben '+
+'kommer for langt utenfor på veien ned, og det gir deg en fade som du ikke vil ha. La oss '+
+'jobbe med å slippe klubben mer fra innsiden.\n\n'+
+'Drill: legg en alignment-stick på bakken parallelt med target-linjen, og tenk på at du skal '+
+'slå «innenfor» sticken. Vi gjør 10 slag med 7-jern, ren teknikk uten ball.\n\n'+
+'OK, nå ser det bedre ut. Smash factor er på 1.42 – bra kompresjon. Ball-flighten er rettere. '+
+'Men jeg merker at du strammer skuldrene på toppen. Pust ut før du starter downswingen.\n\n'+
+'Mentalt – hvordan føltes det her i dag? Vi snakker om «process-goals» framfor '+
+'«outcome-goals». Fokuser på setup og rotasjonen – resultatet kommer.\n\n'+
+'Avslutning: jeg vil at du jobber 15 min hver dag denne uken med alignment-stick-drillen på '+
+'rangen, 5 sett med 8 slag. Skriv ned felt fairways på neste runde – jeg vil se tallene.';
+
+var ANALYSE = [
+  ['Oppsummering','Fokus denne økten var over-the-top swing path og bøyd venstre håndledd ved '+
+   'adresse; alignment-stick-drill ga raskere ball-flight og god kompresjon (smash factor 1.42). '+
+   'Til neste økt jobber spilleren daglig med drillen på rangen og registrerer fairways i regulasjon.'],
+  ['Teknisk','Økt startet med gjennomgang av setup. Venstre håndledd var litt bøyd ved adresse. '+
+   'Swing path var over-the-top og produserte en uønsket fade. Det ble jobbet med å slippe klubben '+
+   'fra innsiden via alignment-stick-drill (10 slag med 7-jern, uten ball). Smash factor 1.42. '+
+   'Gjenstående punkt: skuldrene strammes på toppen – cue: pust ut før downswingen starter.'],
+  ['Mental','Skifte fra outcome-goals til process-goals. Konkret cue for neste runde: hold fokus '+
+   'på setup-sjekkpunkter og rotasjon framfor score.'],
+  ['Taktisk',null],
+  ['Fysisk',null],
+  ['Hjemmelekse','1. Alignment-stick-drill på rangen: 5 sett à 8 slag med 7-jern, 15 minutter per '+
+   'dag hele denne uken. 2. Sjekk venstre håndledd ved adresse før hvert slag. 3. På neste runde: '+
+   'registrer antall fairways i regulasjon.'],
+  ['Neste økt','Start med rask evaluering av alignment-stick-drillen: er den gjennomført daglig, '+
+   'og sitter path-endringen etter egentrening? Deretter skulder-spenningen på toppen mer '+
+   'inngående – pusteøvelse, tempo-drill eller video.']
+];
+
+/* ── Verktøy ─────────────────────────────────────────────────── */
+function el(t,k,x){ var e=document.createElement(t); if(k) e.className=k;
+  if(x!=null) e.textContent=x; return e; }
+function to(n){ return (n<10?'0':'')+n; }
+function klokkeslett(s){ return s.slice(11,16); }
+function datoTekst(s){
+  var d=['søn','man','tir','ons','tor','fre','lør'];
+  var m=['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
+  var dt=new Date(s);
+  return d[dt.getDay()]+' '+dt.getDate()+'. '+m[dt.getMonth()];
+}
+function minutter(a,b){ return Math.round((new Date(b)-new Date(a))/60000); }
+
+var valgtOkt = OKTER[0];
+var knyttet = null;          // opptaket coachen har knyttet til denne økta
+var tilstand = 'ingen';      // ingen | gaar | ferdig
+var gaattSek = 0, ticker = null;
+
+/* ── Øktvelger ───────────────────────────────────────────────── */
+function tegnVelger(){
+  var v=document.getElementById('velger'); v.innerHTML='';
+  OKTER.forEach(function(o){
+    var b=el('button','oktknapp');
+    b.type='button';
+    b.setAttribute('aria-pressed', o.id===valgtOkt.id ? 'true' : 'false');
+    b.setAttribute('data-od-id','ls-okt-'+o.id.slice(0,8));
+    b.appendChild(el('b',null,o.tittel));
+    b.appendChild(el('small',null, datoTekst(o.start)+' · '+klokkeslett(o.start)));
+    b.onclick=function(){ velgOkt(o); };
+    v.appendChild(b);
+  });
+}
+
+function velgOkt(o){
+  valgtOkt=o; knyttet=null; tilstand='ingen'; gaattSek=0;
+  if(ticker){ clearInterval(ticker); ticker=null; }
+  tegnAlt();
+  meld('Viser ' + o.tittel);
+}
+
+/* ── Økta ────────────────────────────────────────────────────── */
+function tegnOkt(){
+  var o=valgtOkt;
+  document.getElementById('pSub').textContent =
+    datoTekst(o.start)+' · '+klokkeslett(o.start)+'–'+klokkeslett(o.slutt)+' · '+o.miljo;
+  document.getElementById('oktTittel').textContent=o.tittel;
+
+  var f=document.getElementById('oktFakta'); f.innerHTML='';
+  function fakta(lab,val){
+    var d=el('div'); d.appendChild(el('span','flab',lab));
+    var s=el('span','fval'+(val?'':' tom'), val || 'ikke satt');
+    d.appendChild(s); f.appendChild(d);
+  }
+  fakta('Spiller', o.spiller || o.gruppe);
+  fakta('Coach', o.coach);
+  fakta('Sted', o.sted);
+  fakta('Miljø', o.miljo);
+  fakta('Type', o.type);
+  fakta('Status', o.status);
+
+  var mp = minutter(o.start,o.slutt);
+  document.getElementById('klokkeAv').textContent =
+    mp>0 ? 'av ' + mp + ' min planlagt' : 'ingen varighet i basen';
+
+  var m=document.getElementById('oktMaal');
+  m.textContent = o.maal ? 'Målsetning: ' + o.maal
+    : 'Ingen målsetning er satt på denne økta. Uten et mål har analysen etterpå '+
+      'ingenting å måles mot.';
+  tegnKlokke();
+}
+
+function tegnKlokke(){
+  var mp = minutter(valgtOkt.start, valgtOkt.slutt);
+  document.getElementById('klokkeTid').textContent =
+    to(Math.floor(gaattSek/60))+':'+to(gaattSek%60);
+  var pst = mp>0 ? Math.min(100, (gaattSek/60) / mp * 100) : 0;
+  document.getElementById('stolpe').style.width = pst.toFixed(1)+'%';
+}
+
+/* ── Løpet og deltakere ──────────────────────────────────────── */
+function tomflate(tittel, tekst){
+  var d=el('div','tomflate');
+  d.appendChild(el('h3',null,tittel));
+  d.appendChild(el('p',null,tekst));
+  return d;
+}
+
+function tegnLopet(){
+  var b=document.getElementById('lopet'); b.innerHTML='';
+  b.appendChild(tomflate(
+    'Ingen driller på denne økta',
+    'session_drills er tom for alle fem øktene i basen, og drill_logs_v2 har null rader. '+
+    'Live Session kan ikke telle reps mot CS-nivå før øktene faktisk får driller lagt på seg. '+
+    'Det er planleggingen som mangler, ikke flata.'));
+}
+
+function tegnDeltakere(){
+  var b=document.getElementById('deltakere'); b.innerHTML='';
+  if(valgtOkt.spiller){
+    var l=el('div','liste'), r=el('div','lrad'), k=el('div','k');
+    k.appendChild(document.createTextNode(valgtOkt.spiller));
+    k.appendChild(el('small',null,'studentId på økta'));
+    r.appendChild(k);
+    var v=el('div','v'); v.appendChild(el('span','tag','1:1'));
+    r.appendChild(v); l.appendChild(r); b.appendChild(l);
+    var p=el('p',null,'Raden over kommer fra studentId, ikke fra session_participants — '+
+      'den tabellen er tom. Gruppeøkter får derfor ingen deltakerliste før noen skrives inn.');
+    b.appendChild(p);
+  } else {
+    b.appendChild(tomflate(
+      'Ingen deltakere registrert',
+      'session_participants er tom i hele basen. Denne økta har heller ingen studentId '+
+      'eller groupId, så det finnes ingen å føre oppmøte på.'));
+  }
+}
+
+/* ── Opptak ──────────────────────────────────────────────────── */
+function tegnOpptak(){
+  var p=document.getElementById('puls');
+  var h=document.getElementById('opptakHandlinger'); h.innerHTML='';
+
+  p.className='puls';
+  if(tilstand==='gaar'){
+    p.classList.add('gaar');
+    p.textContent='Tar opp · '+to(Math.floor(gaattSek/60))+':'+to(gaattSek%60);
+  } else if(tilstand==='ferdig'){
+    p.classList.add('ferdig');
+    p.textContent='Ferdig · '+to(Math.floor(gaattSek/60))+':'+to(gaattSek%60)+' tatt opp';
+  } else if(knyttet){
+    p.classList.add('ferdig');
+    p.textContent='Knyttet opptak · '+knyttet.status.toLowerCase();
+  } else {
+    p.textContent='Ingen opptak på denne økta';
+  }
+
+  if(tilstand==='ferdig' || knyttet){
+    var b1=el('button','btn ink','Send til Notion');
+    b1.type='button'; b1.setAttribute('data-od-id','ls-notion');
+    b1.onclick=function(){ meld('Ingen av de fem opptakene har notionPageId. '+
+      'Koblingen mot Notion må settes opp før knappen gjør noe.'); };
+    h.appendChild(b1);
+    var b2=el('button','btn','Sett slettedato');
+    b2.type='button'; b2.setAttribute('data-od-id','ls-retention');
+    b2.onclick=function(){ meld('retentionUntil er null på alle fem opptakene.'); };
+    h.appendChild(b2);
+  } else {
+    h.appendChild(el('p',null,'Opptaket startes fra Én ting nå øverst.'));
+  }
+}
+
+function tegnAnalyse(){
+  var b=document.getElementById('analyse'); b.innerHTML='';
+  if(!knyttet || !knyttet.analyse){
+    b.appendChild(tomflate(
+      'Ingen analyse for denne økta',
+      knyttet ? 'Opptaket du knyttet har status ' + knyttet.status + ' og ingen aiAnalysis.'
+        : 'Analysen lages av opptaket. Denne økta har ingen opptak knyttet til seg, '+
+          'og ingen av de fem opptakene i basen peker på en økt.'));
+    return;
+  }
+  var dl=el('dl','analyse');
+  ANALYSE.forEach(function(par){
+    var d=el('div');
+    d.appendChild(el('dt',null,par[0]));
+    d.appendChild(el('dd', par[1]?null:'tom', par[1] || 'Ikke spesielt fokus denne økten.'));
+    dl.appendChild(d);
+  });
+  b.appendChild(dl);
+}
+
+function tegnTranskript(){
+  var b=document.getElementById('transkriptBoks'); b.innerHTML='';
+  if(!knyttet || !knyttet.analyse){
+    b.appendChild(tomflate('Ingen tekst ennå',
+      'Transkriptet kommer fra Deepgram når opptaket er ferdig behandlet.'));
+    return;
+  }
+  var t=el('div','transkript', TRANSKRIPT);
+  t.tabIndex=0;
+  t.setAttribute('role','region');
+  t.setAttribute('aria-label','Transkript fra opptaket');
+  b.appendChild(t);
+  b.appendChild(el('p',null,'Transkriptet nevner spillerens navn og hvordan han har hatt det '+
+    'de siste rundene. Feltet retentionUntil er null, så ingenting sletter dette av seg selv.'));
+}
+
+/* ── De løse opptakene ───────────────────────────────────────── */
+function tegnLose(){
+  var b=document.getElementById('loseOpptak'); b.innerHTML='';
+  var k=el('div','varsel');
+  k.appendChild(el('span','eyebrow','Datasannhet'));
+  k.appendChild(el('h2',null,'Fem opptak ligger uten kobling til økt'));
+  k.appendChild(el('p',null,
+    'Samtlige rader i session_recordings har sessionId = null og bookingId = null. '+
+    'To av dem har stått i status RECORDING siden 31. juli uten å bli avsluttet, og ingen '+
+    'av de fem har durationSec, notionPageId eller retentionUntil. Alle fem tilhører '+
+    '«E2E Pilot Spiller» — testdata, ikke en ekte spiller.'));
+  k.appendChild(el('p',null,
+    'Knytt et opptak til den valgte økta for å se hva flata viser når koblingen finnes.'));
+
+  var l=el('div','liste');
+  OPPTAK.forEach(function(o){
+    var r=el('div','lrad');
+    var kd=el('div','k');
+    kd.appendChild(document.createTextNode(o.spiller));
+    kd.appendChild(el('small',null,
+      'startet ' + datoTekst(o.startet) + ' ' + klokkeslett(o.startet) +
+      ' · ' + (o.analyse ? 'har analyse' : 'ingen analyse') +
+      ' · ' + o.id.slice(0,10)));
+    r.appendChild(kd);
+    var v=el('div','v');
+    var tg=el('span','tag'+(o.status==='DONE'?' up':o.status==='ABORTED'?' dn':''), o.status);
+    v.appendChild(tg);
+    r.appendChild(v);
+    var kn=el('button','btn', knyttet && knyttet.id===o.id ? 'Knyttet' : 'Knytt hit');
+    kn.type='button';
+    kn.setAttribute('data-od-id','ls-knytt-'+o.id.slice(0,8));
+    kn.onclick=function(){
+      knyttet = (knyttet && knyttet.id===o.id) ? null : o;
+      tegnAlt();
+      meld(knyttet ? 'Opptaket er knyttet til ' + valgtOkt.tittel
+                   : 'Koblingen er fjernet.');
+    };
+    r.appendChild(kn);
+    l.appendChild(r);
+  });
+  k.appendChild(l);
+  b.appendChild(k);
+}
+
+/* ── Én ting nå ──────────────────────────────────────────────── */
+function tegnNow(){
+  var t=document.getElementById('nowTittel');
+  var p=document.getElementById('nowTekst');
+  var b=document.getElementById('nowKnapp');
+  b.onclick=null;
+
+  if(tilstand==='gaar'){
+    t.textContent='Opptaket går';
+    p.textContent='Alt som sies fra nå av havner i transkriptet. Stopp når økta er ferdig — '+
+      'to opptak i basen står fortsatt i RECORDING fordi ingen stoppet dem.';
+    b.textContent='Stopp opptak';
+    b.onclick=stopp;
+  } else if(tilstand==='ferdig' || knyttet){
+    t.textContent='Opptaket mangler slettedato';
+    p.textContent='Transkriptet inneholder navn og personlig samtale. retentionUntil er null '+
+      'på alle fem opptakene i basen, så ingenting sletter dem automatisk.';
+    b.textContent='Sett slettedato';
+    b.onclick=function(){ meld('retentionUntil må settes i kode før knappen kan gjøre noe.'); };
+  } else {
+    t.textContent='Start opptaket før du sier noe';
+    p.textContent='Alt du sier fra du trykker og til du stopper blir til transkript, analyse '+
+      'og hjemmelekse. Starter du sent, mister spilleren begynnelsen av det du forklarte.';
+    b.textContent='Start opptak';
+    b.onclick=start;
+  }
+}
+
+function start(){
+  tilstand='gaar'; gaattSek=0;
+  ticker=setInterval(function(){
+    gaattSek++; tegnKlokke();
+    var p=document.getElementById('puls');
+    if(tilstand==='gaar') p.textContent='Tar opp · '+to(Math.floor(gaattSek/60))+':'+to(gaattSek%60);
+  }, 1000);
+  tegnAlt(); meld('Opptaket går.');
+}
+
+function stopp(){
+  tilstand='ferdig';
+  if(ticker){ clearInterval(ticker); ticker=null; }
+  tegnAlt(); meld('Opptaket er stoppet.');
+}
+
+/* ── Toast ───────────────────────────────────────────────────── */
+var toastTid=null;
+function meld(tekst){
+  var t=document.getElementById('toast');
+  t.textContent=tekst; t.hidden=false;
+  document.getElementById('live').textContent=tekst;
+  if(toastTid) clearTimeout(toastTid);
+  toastTid=setTimeout(function(){ t.hidden=true; }, 4200);
+}
+
+/* ── Tegn alt ────────────────────────────────────────────────── */
+function tegnAlt(){
+  tegnVelger(); tegnOkt(); tegnLopet(); tegnDeltakere();
+  tegnOpptak(); tegnAnalyse(); tegnTranskript(); tegnLose(); tegnNow();
+}
+
+/* ── Tema ────────────────────────────────────────────────────── */
+document.getElementById('themeBtn').onclick=function(){
+  var m=document.documentElement.dataset.theme==='dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme=m;
+  this.setAttribute('aria-label', m==='dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
+};
+
+tegnAlt();
+
+</script>
+</body>
+</html>

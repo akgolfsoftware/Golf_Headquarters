@@ -1,5 +1,13 @@
 # Er Claude Paper-prosjektet komplett? — kontroll 03.08.2026
 
+> ⚠ **Frosset underlag (jf. `docs/port/README.md`) — tallene under er fra 03.08.2026 og er
+> utdaterte.** Designprosjektet har nå 33 fasitskjermer, ikke 25/27 (se
+> `docs/port/fasit-liste-paper.md`, oppdatert 05.08.2026). `kart/mangler-2026-08-01.md`, som
+> denne kontrollen siterer som avgjørende, er selv utdatert — alt den listet som manglende
+> (Innstillinger, AgenticOS, Innlogging, Foreldreportal, Booking, Økonomi, Live-session,
+> AK-stigen) er siden bygget i `fase1/`. Bruk `fasit-liste-paper.md` for gjeldende tall, ikke
+> denne fila.
+
 **Endrer ingen kode.** Kontroll av designprosjektet `605a48cc` mot repoets speil og mot
 prosjektets egne statusdokumenter.
 

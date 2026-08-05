@@ -54,7 +54,7 @@ Fra `docs/port/fase0`–`fase4`, alle merget til main 02.08.2026:
 | …av disse ekte nye farger uten token | 16 | fase 4 |
 | …gjennomsiktighetsvarianter (trenger én alpha-skala) | 102 av 118 umatchede | fase 4 |
 | Paper-komponenter som skal portes | 78 | fase 1 §6 |
-| Paper-fasitskjermer (HTML) | 19 | fase 1 §6 |
+| Paper-fasitskjermer (HTML) | 33 (05.08.2026, opp fra 19 ved skriving — se `fasit-liste-paper.md`) | fase 1 §6 |
 
 Fase 1 §5 anbefaler **vei (b)**: nytt tokensett ved siden av dagens, gradvis migrering, med
 avviklingsbetingelse. Denne planen følger den anbefalingen.
@@ -135,9 +135,11 @@ fordi skjermantallet ikke er kjent før steg 2.
    steg 7 PR1 (PR #275) allerede var merget til main på løpende «ja» per PR — denne bekreftelsen
    formaliserer det som i praksis allerede var i gang. `CLAUDE.md` invariant 2 og
    `.claude/rules/beslutninger.md` er oppdatert til å vise dette.
-2. **Kjøres steg 1 og 2?** Ja — begge gjort. Paper ligger i `designsystem/paper/` (25
-   fasitfiler i `fase1/`), fasit-listen er `docs/port/fasit-liste-paper.md` (19 av 343 skjermer
-   har fasit).
+2. **Kjøres steg 1 og 2?** Ja — begge gjort. Kilden er Claude Design-prosjektet `605a48cc`
+   (`fase1/`, hentet via `claude-design`-MCP — `designsystem/paper/` i repoet er kun et lokalt
+   speil og kan henge etter), fasit-listen er `docs/port/fasit-liste-paper.md`. Oppdatert
+   05.08.2026: **33 fasitfiler, 25 av 343 skjermer har fasit** (8 nye siden 02.08, se fasit-listen
+   §Endring siden 02.08.2026).
 
 ## Status per steg (oppdatert 2026-08-04 natt)
 
@@ -151,7 +153,7 @@ fordi skjermantallet ikke er kjent før steg 2.
 | 5B — Form: radius/avstand/typografi | Ferdig (PR #270–273) |
 | 6 — Fjern 419 hardkodede farger | Ferdig (PR #274) |
 | 7 — Bølge 1: PlayerHQ | I gang — se delstatus under |
-| 8 — Bølge 2: AgencyOS | Ikke startet — venter på 2 avklaringer (§ Åpne punkter i fasit-listen) |
+| 8 — Bølge 2: AgencyOS | Ikke startet — de 2 avklaringene som blokkerte er løst av Anders 2026-08-04 (se §Fase 1-planlegging «To rute-beslutninger» under); venter kun på tur i rekkefølgen |
 | 9 — Bølge 3: resten | Ikke startet — venter på at WANG/GFGK legges inn i MASTER-SKJERMPLAN |
 | 10 — Steng døra (lint-gate) | `scripts/check-token-gap.mjs` bygget og koblet inn i verify+CI — [PR #279](https://github.com/akgolfsoftware/Golf_Headquarters/pull/279), IKKE merget ennå |
 
@@ -207,7 +209,9 @@ En skjerm er ferdig når ALLE punktene under er vist og godkjent — ikke når C
    (Vercel-preview), innlogget testbruker med ekte data (Øyvind Rohjan / `demo@akgolf.test`).
 2. **Lys OG mørk modus** — begge fotograferes (kjent felle: primary=accent-kollisjonen som
    ga usynlig tekst 24 steder i steg 3).
-3. **Fasit ved siden av** — samme utsnitt fra `designsystem/paper/fase1/`-fila.
+3. **Fasit ved siden av** — samme utsnitt fra `fase1/`-fila i Claude Design-prosjektet `605a48cc`
+   (hent via `claude-design`-MCP; `designsystem/paper/fase1/` i repoet er kun et lokalt speil og
+   kan være utdatert — sjekk dato/filantall mot `fasit-liste-paper.md` før du stoler på det).
 4. **Alle fasit-tilstander finnes:** Suksess / Tom / Laster / Feil — fasitene har eksplisitt
    tilstandsbryter for alle fire; koden må ha ærlig tom tilstand med én vei videre (regel),
    ikke blank flate (det var Hjem-feilen).
@@ -231,16 +235,22 @@ En skjerm er ferdig når ALLE punktene under er vist og godkjent — ikke når C
 5. **PR-E — Testbatteriet i Workbench** (Anders 2026-08-04): tester planlegges som del av
    økter i Workbench — fasiten `workbench-mobil.html` har designet dette ferdig (`sheetTest`,
    `erTest`, Tester-seksjon per økt). Resultat fra gjennomført test
-   (`/portal/tren/tester/[testId]/gjennomfor` — én av de 8 uportede) skal synce direkte til
+   (`/portal/tren/tester/[testId]/gjennomfor` — **fasit levert 04.08.2026**,
+   `playerhq-test-gjennomfor.html`, se `fasit-liste-paper.md`) skal synce direkte til
    TalentHQ (`/portal/talent/*`, 5 skjermer, live men skjult fra meny siden D1 2026-07-15).
    Uavklart før bygging: hvilke av DBs 36 testprotokoller spilleren skal se (Anders: 21,
-   CANON: 20) + om TalentHQ skal tilbake i menyen.
+   CANON: 20) + om TalentHQ skal tilbake i menyen. **Fortsatt blokkert på dette**, selv om
+   fasiten nå finnes.
 6. **PR-F — DataGolf inn i PlayerHQ** (Anders 2026-08-04): `/stats/*`-skjermene ligger i dag
    kun under marketing; `/portal/stats` er en ren redirect UT av portalen. Omfang/plassering
    (egen flate vs. Analyse-faner) avklares med Anders før bygging.
-7. **Deretter:** de 8 uportede Gjennomføre/live-skjermene (må komponeres — ingen fasit
-   tegnet), så steg 8 (AgencyOS — konsollen er samme klasse ombygging som Hjem: chat-først
-   fasit vs. dashbord-kode) og steg 9.
+7. **Deretter:** de øvrige Gjennomføre/live-skjermene. **Oppdatert 05.08.2026: 6 av 8 fikk
+   fasit 04.08.2026** — `playerhq-live-brief.html` (FØR), `playerhq-live-okt.html` (UNDER),
+   `playerhq-live-summary.html` (ETTER), `playerhq-runde-live.html`, `playerhq-runde-logg.html`
+   og `playerhq-test-gjennomfor.html` (se PR-E over). Kun `live/[sessionId]/logger` og
+   `/tapper` mangler fortsatt fasit og må komponeres mot mønsterdokumentet. Deretter steg 8
+   (AgencyOS — konsollen er samme klasse ombygging som Hjem: chat-først fasit vs. dashbord-kode)
+   og steg 9.
 
 **De 145 skjermene uten fasit — kartlagt, tallet korrigert 2026-08-04 natt** ([PR #280](https://github.com/akgolfsoftware/Golf_Headquarters/pull/280), `scripts/paper-port-triage.mjs`, IKKE merget):
 
@@ -278,14 +288,18 @@ Anders godkjente Fase 1-planen 2026-08-04 med føring: **Fase 2 kjøres i NY øk
 token-effektivt (ingen irrelevante skills/plugins/gammel kontekst). Låst rekkefølge:
 
 1. PlayerHQ Hjem (PR-A) → 2. Planlegge (PR-B) → 3. Analysere (PR-C) → 4. Meg (PR-D)
-2. De 8 Gjennomføre/live-skjermene (mønsterdokument — ingen fasit finnes)
+2. De 8 Gjennomføre/live-skjermene. **Oppdatert 05.08.2026: 6 av 8 fikk fasit 04.08.2026**
+   (se §Revidert steg 7-plan punkt 7) — kun `logger`/`tapper` trenger mønsterdokumentet nå.
 3. AgencyOS-konsollen (`/admin/agencyos`) → de 9 øvrige fasit-skjermene (én PR hver)
 4. AgencyOS-bølgene (~111 uten fasit): Stall → Planlegge/Gjennomføre → Oversikt/Innsikt →
    Admin/Meg. De 28 reelt uportede (triage 2026-08-04: mest `(legacy)` — drills, kalender,
    live coach-side, spillerredigering, godkjenninger, talent-import) tas først i hver bølge.
 
 **Leveranser fra Fase 1 (denne grenen):**
-- `docs/port/monsterdokument-paper.md` — destillert fra alle 25 fasit-filer + guidelines.
+- `docs/port/monsterdokument-paper.md` — destillert fra fasit-filene + guidelines (25 filer på
+  destilleringstidspunktet 02.08.2026 — 8 nye fasitfiler er siden kommet til, se `fasit-liste-paper.md`;
+  vurder om mønsterdokumentet trenger et nytt destillat neste gang det brukes til en skjerm de nye
+  filene dekker).
   ENESTE designkilde for skjermer uten fasit. Dekker den ikke → stopp og spør Anders.
 - MASTER-SKJERMPLAN ryddet: 37 rader merket REDIRECT (30 portal + 7 admin, verifisert fil
   for fil). 12 stub-ruter uten rad skal ikke få rad.

@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Før økta · PlayerHQ · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══ akhq-tokens.css v3.1 — KOPIERT VERBATIM. Eneste tokenkilde. ═══ */
+:root {
+  --bg: #faf9f5;
+  --surface: #ffffff;
+  --soft: #f0eee6;
+  --soft-hover: #e8e6dc;
+  --surface-warm: #e3dacc;
+  --surface-manilla: #ebdbbc;
+  --surface-kraft: #d4a27f;
+  --border: #e8e6dc;
+  --hairline: #d1cfc5;
+  --inverse: #000000;
+
+  --fg: #141413;
+  --ink-soft: #3d3d3a;
+  --muted: #5e5d59;
+  --mid: #b0aea5;
+  --text-tertiary: #87867f;
+
+  --rail: #141413;
+  --rail-fg: #b0aea5;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.08);
+  --rail-active: rgba(250, 249, 245, 0.14);
+
+  --cta: #141413;
+  --on-cta: #faf9f5;
+  --cta-hover: #3d3d3a;
+
+  --accent: #d97757;
+  --accent-soft: rgba(217, 119, 87, 0.12);
+  --accent-fg: #b85c3d;
+  --on-accent: #141413;
+  --accent-deep: #c6613f;
+
+  --accent-coral: #ebcece;
+  --accent-fig: #c46686;
+  --accent-cactus: #bcd1ca;
+  --accent-olive: #788c5d;
+  --accent-sky: #6a9bcc;
+  --accent-heather: #cbcadb;
+
+  --up: #63784a;
+  --up-raw: #788c5d;
+  --dn: #a85536;
+  --info: #46719f;
+  --info-raw: #6a9bcc;
+
+  --font-sans: "Poppins", Arial, system-ui, sans-serif;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --disp: var(--font-sans);
+  --ui: var(--font-sans);
+  --body: var(--font-serif);
+  --mono: var(--font-mono);
+
+  --text-display: 32px;
+  --text-title: 22px;
+  --text-card: 16px;
+  --text-panel: 14.5px;
+  --text-body-agency: 13.5px;
+  --text-body-player: 14px;
+  --text-label: 10px;
+  --text-kpi: 40px;
+
+  --text-hero: 56px;
+  --text-section: 40px;
+  --text-prose: 18px;
+  --text-prose-lg: 22px;
+  --text-nav: 16px;
+  --text-eyebrow: 12px;
+
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+  --s9: 96px;
+
+  --r-none: 0px;
+  --r-sm: 8px;
+  --r: 12px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-pill: 999px;
+
+  --shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
+  --shadow-none: none;
+  --scrim: rgba(20, 20, 19, 0.4);
+
+  --focus: #d97757;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 160ms;
+  --dur-slow: 280ms;
+
+  --tap: 44px;
+  --tap-lg: 48px;
+  --tap-capture: 60px;
+
+  --logo-mark: #141413;
+  --logo-dot: #b85c3d;
+
+  --z-sticky: 10;
+  --z-rail: 20;
+  --z-sheet: 40;
+  --z-modal: 50;
+  --z-toast: 100;
+  --z-command: 110;
+}
+
+[data-theme="dark"] {
+  color: #faf9f5;
+  --bg: #141413;
+  --surface: #1d1c1a;
+  --soft: #26241f;
+  --soft-hover: #2e2c28;
+  --surface-warm: #2a2824;
+  --border: rgba(250, 249, 245, 0.10);
+  --hairline: rgba(250, 249, 245, 0.08);
+  --inverse: #000000;
+
+  --fg: #faf9f5;
+  --ink-soft: #e8e6dc;
+  --muted: #b0aea5;
+  --mid: #6b675e;
+  --text-tertiary: #87867f;
+
+  --rail: #0e0d0c;
+  --rail-fg: #97938a;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.06);
+  --rail-active: rgba(250, 249, 245, 0.12);
+
+  --cta: #faf9f5;
+  --on-cta: #141413;
+  --cta-hover: #e8e6dc;
+
+  --accent: #d97757;
+  --accent-soft: rgba(217, 119, 87, 0.18);
+  --accent-fg: #e5a184;
+  --on-accent: #141413;
+
+  --up: #9db284;
+  --up-raw: #788c5d;
+  --dn: #de9e82;
+  --info: #93b7dc;
+  --info-raw: #6a9bcc;
+
+  --shadow: none;
+  --focus: #d97757;
+
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+[data-theme="light"] {
+  color: #141413;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (pointer: coarse) {
+  :root {
+    --floor: var(--tap);
+  }
+}
+
+:root{ --softer:#f6f4ee; --border-soft:#efede4; }
+[data-theme="dark"]{ --softer:#1a1917; --border-soft:rgba(250,249,245,.06); }
+/* ═══ PlayerHQ · Før økta (FØR i sløyfa) ═══
+   Gjennomføre-flyten, skjerm 1 av 3: brief → live → oppsummering.
+   Mobil-først, 430-kolonne, lys default. Brukes rett før spilleren
+   står på treningsområdet.
+
+   Eierskapsmodellen (Anders 01.08.2026): Øyvind eier planen sin.
+   Ingenting her sperrer — han kan starte, flytte eller droppe økta
+   selv. Anders får varsling, ikke en forespørsel. */
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; }
+body{ background:var(--bg); color:var(--fg); font-family:var(--ui);
+  font-size:var(--text-body-player); line-height:1.55; -webkit-font-smoothing:antialiased; }
+[hidden]{ display:none !important; }
+button{ font:inherit; color:inherit; }
+.num{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.eyebrow{ font-family:var(--mono); font-size:var(--text-label); font-weight:500;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+.prose{ font-family:var(--body); }
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+:where(a,button,input,summary,[tabindex]):focus-visible{
+  outline:2px solid var(--focus); outline-offset:2px; border-radius:var(--r-sm); }
+
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
+  min-height:var(--tap-lg); padding:0 var(--s4); font-size:14px; font-weight:500;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; white-space:nowrap; text-decoration:none; color:inherit; }
+.btn:hover{ background:var(--soft); border-color:var(--mid); }
+.btn:active{ transform:translateY(1px); }
+.btn.ink{ background:var(--cta); color:var(--on-cta); border-color:var(--cta); }
+.btn.now{ background:var(--accent); color:var(--on-accent); border-color:var(--accent);
+  font-weight:600; min-height:56px; }
+.btn.sm{ min-height:var(--tap); font-size:13px; padding:0 var(--s3); }
+.btn.full{ width:100%; }
+.tag{ display:inline-flex; align-items:center; padding:3px var(--s2); border-radius:var(--r-pill);
+  font-family:var(--mono); font-size:10px; letter-spacing:.04em; text-transform:uppercase;
+  background:var(--soft); color:var(--muted); border:1px solid var(--border); }
+.tag.up{ color:var(--up); } .tag.dn{ color:var(--dn); } .tag.info{ color:var(--info); }
+
+.phone{ width:430px; max-width:100%; height:920px; margin:0 auto; position:relative;
+  overflow:hidden; background:var(--bg); border:1px solid var(--border);
+  border-radius:var(--r-lg); display:flex; flex-direction:column; }
+@media (max-width:640px){
+  .phone{ width:100%; height:100dvh; max-width:none; border:0; border-radius:0; }
+  .framehint{ display:none; }
+}
+/* Desktop: samme innhold, bredere lesekolonne. Ingen ny IA. */
+@media (min-width:1024px){
+  .phone{ width:100%; max-width:none; height:100vh; border:0; border-radius:0; }
+  .kropp > *{ max-width:720px; margin-left:auto; margin-right:auto; }
+}
+.framehint{ text-align:center; font-size:11px; color:var(--muted); padding:var(--s3); }
+
+.topp{ flex:none; display:flex; align-items:center; gap:var(--s2);
+  padding:calc(var(--s3) + env(safe-area-inset-top)) var(--s4) var(--s3);
+  border-bottom:1px solid var(--border); background:var(--surface); }
+.topp h1{ margin:0; font-family:var(--disp); font-size:17px; font-weight:600; }
+.topp .sub{ display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); }
+.ikon{ flex:none; width:var(--tap); height:var(--tap); display:grid; place-items:center;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; color:inherit; text-decoration:none; }
+.ikon svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.7;
+  stroke-linecap:round; stroke-linejoin:round; }
+
+/* Sløyfa FØR → UNDER → ETTER: ekte lenker, aktivt steg med aria-current. */
+.loop{ flex:none; display:flex; align-items:stretch; gap:var(--s1);
+  padding:var(--s2) var(--s4); border-bottom:1px solid var(--border);
+  background:var(--surface); overflow-x:auto; scrollbar-width:none; }
+.loop::-webkit-scrollbar{ display:none; }
+.loop a{ flex:1; min-height:var(--tap); display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:1px; text-decoration:none;
+  color:var(--muted); font-family:var(--mono); font-size:10px; letter-spacing:.08em;
+  text-transform:uppercase; border-radius:var(--r-sm); }
+.loop a small{ font-family:var(--ui); font-size:10px; letter-spacing:0;
+  text-transform:none; color:var(--mid); }
+.loop a[aria-current="step"]{ color:var(--fg); box-shadow:inset 0 -2px 0 0 var(--fg); }
+.loop .arw{ align-self:center; color:var(--mid); font-family:var(--mono); font-size:11px; }
+
+.kropp{ flex:1; min-height:0; overflow-y:auto;
+  padding:var(--s4) var(--s4) calc(var(--s8) + env(safe-area-inset-bottom)); }
+
+/* «Én ting nå»-blokk — eneste sted --accent-soft brukes som flate */
+.nowblock{ background:var(--accent-soft); border:1px solid var(--border);
+  border-radius:var(--r); padding:var(--s4); margin-bottom:var(--s4); }
+.nowblock h3{ margin:var(--s2) 0 var(--s2); font-family:var(--disp); font-size:15px; font-weight:600; }
+.nowblock p{ margin:0 0 var(--s4); font-family:var(--body); font-size:14px;
+  color:var(--muted); max-width:52ch; }
+.nowblock .rad2{ display:flex; gap:var(--s2); flex-wrap:wrap; }
+.nowblock .rad2 .btn{ flex:1; }
+
+.kort{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  padding:var(--s4); margin-bottom:var(--s4); }
+.kort .rad{ display:flex; align-items:baseline; gap:var(--s2); padding:var(--s2) 0;
+  border-bottom:1px solid var(--border-soft); font-size:13px; }
+.kort .rad:last-child{ border-bottom:0; }
+.kort .rad .v{ margin-left:auto; font-family:var(--mono); text-align:right; }
+
+.maal{ margin:0 0 var(--s2); font-family:var(--body); font-size:15px; }
+
+.drill{ border:1px solid var(--border); border-radius:var(--r); padding:var(--s3);
+  margin-bottom:var(--s2); background:var(--surface); }
+.drill .dn{ font-size:13.5px; font-weight:600; }
+.drill .dm{ font-family:var(--mono); font-size:10.5px; color:var(--muted); }
+.drill .df{ display:block; font-family:var(--mono); font-size:9.5px; color:var(--mid);
+  margin-top:var(--s1); word-break:break-all; }
+
+.eier{ display:flex; gap:var(--s3); padding:var(--s3) var(--s4); border-radius:var(--r);
+  background:var(--soft); border:1px solid var(--border); margin-bottom:var(--s4);
+  font-family:var(--body); font-size:12.5px; color:var(--muted); }
+.eier svg{ width:16px; height:16px; flex:none; margin-top:2px; fill:none;
+  stroke:var(--muted); stroke-width:1.7; }
+
+.tom{ padding:var(--s5) var(--s4); background:var(--soft); border:1px dashed var(--border);
+  border-radius:var(--r); }
+.tom h3{ margin:0 0 var(--s2); font-family:var(--disp); font-size:15px; font-weight:600; }
+.tom p{ margin:0 0 var(--s3); font-family:var(--body); font-size:13.5px; color:var(--muted); }
+.tom .valg{ display:flex; flex-direction:column; gap:var(--s2); }
+.skel{ height:16px; background:var(--soft); border-radius:var(--r-sm);
+  margin-bottom:var(--s2); animation:puls 1.6s var(--ease) infinite; }
+@keyframes puls{ 0%,100%{opacity:1} 50%{opacity:.55} }
+
+.why{ margin:var(--s3) 0 0; border:1px solid var(--border); border-radius:var(--r); }
+.why summary{ display:flex; align-items:center; min-height:var(--tap); padding:0 var(--s4);
+  cursor:pointer; list-style:none; font-size:12.5px; font-weight:500; color:var(--muted); }
+.why summary::-webkit-details-marker{ display:none; }
+.why[open] summary{ border-bottom:1px solid var(--border); color:var(--fg); }
+.why ul{ margin:0; padding:var(--s3) var(--s4) var(--s4) var(--s5);
+  font-family:var(--body); font-size:13px; color:var(--muted); }
+.why li{ margin-bottom:var(--s2); }
+
+.toast{ position:fixed; left:50%; bottom:96px; transform:translateX(-50%);
+  z-index:var(--z-toast); background:var(--fg); color:var(--bg);
+  padding:var(--s3) var(--s4); border-radius:var(--r); font-size:13px; }
+button,.btn,summary,a.btn{ min-height:var(--tap); }
+.tag,.num,.eyebrow,.drill .df{ min-height:0; }
+</style>
+</head>
+<body>
+<p class="framehint">PlayerHQ · Før økta · 430 px. Under 641 px fyller den skjermen.</p>
+<!-- Telefonramme = demo-chrome, skal bort ved integrasjon -->
+<div class="phone" data-demo-only="true">
+
+  <header class="topp">
+    <a class="ikon" href="playerhq-plan.html" aria-label="Til planen" data-od-id="brief-tilbake">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <div style="min-width:0">
+      <h1>Før økta</h1>
+      <span class="sub">Tirsdag 4.8 · uke 32</span>
+    </div>
+    <span style="flex:1"></span>
+    <!-- demo-bryter · fjernes før koding -->
+    <div data-demo-only="true" style="display:flex;gap:4px">
+      <button class="ikon" data-tilstand="fylt" aria-pressed="true" aria-label="Demo: suksess" data-od-id="brief-demo-fylt"><span class="num" style="font-size:10px">F</span></button>
+      <button class="ikon" data-tilstand="tom" aria-pressed="false" aria-label="Demo: tom" data-od-id="brief-demo-tom"><span class="num" style="font-size:10px">T</span></button>
+      <button class="ikon" data-tilstand="laster" aria-pressed="false" aria-label="Demo: laster" data-od-id="brief-demo-laster"><span class="num" style="font-size:10px">L</span></button>
+      <button class="ikon" data-tilstand="feil" aria-pressed="false" aria-label="Demo: feil" data-od-id="brief-demo-feil"><span class="num" style="font-size:10px">E</span></button>
+    </div>
+    <button class="ikon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="brief-theme">
+      <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </header>
+
+  <!-- Sløyfa: hvert steg er en ekte lenke -->
+  <nav class="loop" aria-label="Sløyfen før, under og etter økta">
+    <a href="playerhq-live-brief.html" aria-current="step" data-od-id="brief-loop-for">FØR<small>planlegg</small></a>
+    <span class="arw" aria-hidden="true">→</span>
+    <a href="playerhq-live-okt.html" data-od-id="brief-loop-under">UNDER<small>live-økt</small></a>
+    <span class="arw" aria-hidden="true">→</span>
+    <a href="playerhq-live-summary.html" data-od-id="brief-loop-etter">ETTER<small>oppsummer</small></a>
+  </nav>
+
+  <main class="kropp" id="kropp"></main>
+</div>
+
+<div class="toast" id="toast" hidden role="status"></div>
+<div class="sr" id="live" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ═══ PlayerHQ · Før økta · datamodell ═══
+   Kilder: TrainingPlanSession (dagens økt + drills) · TrainingLog
+   (sist-tallene i «Hvorfor dette tallet») · IUP (foreslått mål).
+   AK-formel v2: Pyramide_Område_Motorikk_Belastning_Press.
+   Ingen L-fase, ingen CS, ingen M0–M5/PR1–PR5.
+   Demo-kanon: Øyvind Rohjan (spiller), Anders Kristiansen (coach).
+   Økta er o2 fra workbench-mobil.html — samme data, samme formler. */
+
+var OKT = {
+  id:'o2', dagNavn:'Tirsdag 4.8', start:'15:00', slutt:'16:30',
+  navn:'Innspill · lengdekontroll', akse:'TEK', sted:'Gamle Fredrikstad GK',
+  maal:'Ni av tolv innenfor fire meter fra 50–100 m.', tidMin:90,
+  drills:[
+    { navn:'Halv sving · kalibrering', reps:15, tidMin:30,
+      f:'TEK_INNSPILL_50_UTEN_BALL_INNENDORS_ALENE' },
+    { navn:'Avstandsstige 50–100 m', reps:30, tidMin:35,
+      f:'TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_ALENE' },
+    { navn:'Én ball · én sjanse', reps:12, tidMin:25,
+      f:'SLAG_INNSPILL_100_AUTO_BANE_KONKURRANSE' }
+  ]
+};
+
+/* Neste økt i planen — vises i tom tilstand (fra TrainingPlanSession). */
+var NESTE = { dagNavn:'Torsdag 6.8', start:'16:00', navn:'Nærspill · landingspunkt' };
+
+var tilstand = 'fylt';
+
+var live = document.getElementById('live');
+function si(t){ live.textContent = t; }
+var toastEl = document.getElementById('toast'), toastT;
+function toast(t){ toastEl.textContent = t; toastEl.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.hidden = true; }, 2600); }
+function el(tag, cls, txt){ var e = document.createElement(tag);
+  if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+function tid(m){ var t = Math.floor(m/60), r = m%60;
+  return t ? (r ? t+' t '+r+' min' : t+' t') : r+' min'; }
+
+function render(){
+  var w = document.getElementById('kropp'); w.innerHTML = '';
+
+  if (tilstand === 'laster'){
+    for (var i = 0; i < 7; i++){ var s = el('div', 'skel'); s.style.width = (95 - i*7) + '%'; w.appendChild(s); }
+    return;
+  }
+  if (tilstand === 'tom'){
+    var t = el('div', 'tom');
+    t.appendChild(el('h3', null, 'Ingen økt planlagt i dag'));
+    t.appendChild(el('p', null,
+      'Neste økt i planen er ' + NESTE.navn.toLowerCase() + ' ' +
+      NESTE.dagNavn.toLowerCase() + ' kl. ' + NESTE.start + '. ' +
+      'Du trenger ikke vente på planen for å trene.'));
+    var v = el('div', 'valg');
+    /* Kontrakt §3: i tom tilstand er fri økt skjermens ene aksenthandling —
+       den endrer tilstand (starter en live-økt uten plan). */
+    var fri = el('button', 'btn now full', 'Start en fri økt');
+    fri.dataset.odId = 'brief-tom-fri-okt';
+    fri.addEventListener('click', function(){ location.href = 'playerhq-live-okt.html'; });
+    var pl = el('a', 'btn full', 'Åpne planen');
+    pl.href = 'playerhq-plan.html'; pl.dataset.odId = 'brief-tom-plan';
+    v.appendChild(fri); v.appendChild(pl);
+    t.appendChild(v); w.appendChild(t); return;
+  }
+  if (tilstand === 'feil'){
+    var f = el('div', 'tom');
+    f.appendChild(el('h3', null, 'Klarte ikke å hente økta'));
+    f.appendChild(el('p', null,
+      'Planen svarte ikke. Har du allerede startet økter, er de ikke berørt — ' +
+      'de ligger trygt i loggen.'));
+    /* Kontrakt §3: i feiltilstand er «Prøv igjen» skjermens ene aksenthandling. */
+    var fb = el('button', 'btn now full', 'Prøv igjen'); fb.dataset.odId = 'brief-retry';
+    fb.addEventListener('click', function(){ tilstand = 'fylt'; settDemo(); });
+    f.appendChild(fb); w.appendChild(f); return;
+  }
+
+  /* ── Suksess ── */
+
+  /* Én ting nå: starte dagens økt. Endrer tilstand — går til UNDER. */
+  var nb = el('div', 'nowblock');
+  nb.appendChild(el('div', 'eyebrow', 'Én ting nå'));
+  var h = el('h3');
+  h.appendChild(document.createTextNode('Økta starter kl. '));
+  h.appendChild(el('span', 'num', OKT.start));
+  h.appendChild(document.createTextNode(' · om '));
+  h.appendChild(el('span', 'num', '1 t 12 min'));
+  nb.appendChild(h);
+  nb.appendChild(el('p', null,
+    'Gamle Fredrikstad GK er booket ' + OKT.start + '–' + OKT.slutt + '. ' +
+    'Ta med wedgene og en flaske vann. Du trenger ikke gjøre noe før du står der.'));
+  var rad2 = el('div', 'rad2');
+  /* Kontrakt §3: dette er skjermens ene aksenthandling. Å starte før
+     klokka 15:00 er helt greit — nedtellingen er informasjon, ikke sperre. */
+  var start = el('button', 'btn now', 'Start økta');
+  start.dataset.odId = 'brief-start-okta';
+  start.addEventListener('click', function(){ location.href = 'playerhq-live-okt.html'; });
+  var flytt = el('a', 'btn', 'Flytt økta');
+  flytt.href = 'playerhq-plan.html'; flytt.dataset.odId = 'brief-flytt-okta';
+  rad2.appendChild(start); rad2.appendChild(flytt);
+  nb.appendChild(rad2);
+  w.appendChild(nb);
+
+  /* Metadata — kilde: TrainingPlanSession */
+  var m = el('div', 'kort');
+  m.appendChild(el('div', 'eyebrow', OKT.navn));
+  [['Når', OKT.dagNavn + ' ' + OKT.start + '–' + OKT.slutt],
+   ['Sted', OKT.sted],
+   ['Varighet', tid(OKT.tidMin)],
+   ['Pyramide', OKT.akse],
+   ['Publisert av', 'Anders Kristiansen · 30.07']].forEach(function(pr){
+    var r = el('div', 'rad');
+    r.appendChild(el('span', null, pr[0]));
+    r.appendChild(el('span', 'v num', pr[1]));
+    m.appendChild(r);
+  });
+  w.appendChild(m);
+
+  /* Målsetning + «Hvorfor dette tallet» (påkrevd på regnede tall) */
+  var mk = el('div', 'kort');
+  mk.appendChild(el('div', 'eyebrow', 'målsetning'));
+  mk.appendChild(el('p', 'maal prose', OKT.maal));
+  var wd = el('details', 'why'); wd.dataset.odId = 'brief-why-maal';
+  wd.appendChild(el('summary', null, 'Hvorfor dette tallet'));
+  var ul = document.createElement('ul');
+  ['Kilde: økta 30.07, innspill 50–100 m. 12 slag registrert, 7 innenfor 4 m.',
+   'Beregning: målet er sist gang pluss to — 7 av 12 ble 9 av 12.',
+   'Forbehold: foreslått fra IUP-en din. Veiledende, aldri låst — du kan endre det når du starter økta.']
+   .forEach(function(x){ ul.appendChild(el('li', null, x)); });
+  wd.appendChild(ul); mk.appendChild(wd);
+  w.appendChild(mk);
+
+  /* Drills — kilde: TrainingPlanSession → drills, AK-formel v2 per drill */
+  w.appendChild(el('div', 'eyebrow', 'drills · ' + OKT.drills.length + ' · ' + tid(OKT.tidMin)));
+  var dw = el('div'); dw.style.marginTop = 'var(--s2)';
+  OKT.drills.forEach(function(d){
+    var dd = el('div', 'drill');
+    dd.appendChild(el('span', 'dn', d.navn));
+    dd.appendChild(el('span', 'dm', ' ' + d.reps + ' reps · ' + tid(d.tidMin)));
+    dd.appendChild(el('span', 'df', d.f));
+    dw.appendChild(dd);
+  });
+  w.appendChild(dw);
+
+  /* Eierskapet skrevet ut, ikke antatt */
+  var e = el('div', 'eier'); e.style.marginTop = 'var(--s4)';
+  e.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 20h9"/>' +
+    '<path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>';
+  e.appendChild(el('span', null,
+    'Økta er din. Du kan endre målet, hoppe over drills eller droppe hele økta — ' +
+    'ingenting sperrer. Anders får beskjed, så han vet hva som skjedde.'));
+  w.appendChild(e);
+}
+
+function settDemo(){
+  document.querySelectorAll('[data-tilstand]').forEach(function(b){
+    b.setAttribute('aria-pressed', String(b.dataset.tilstand === tilstand)); });
+  render();
+}
+document.querySelectorAll('[data-tilstand]').forEach(function(b){
+  b.addEventListener('click', function(){ tilstand = b.dataset.tilstand; settDemo(); }); });
+
+var KEY = 'akhq-theme-playerhq';
+var saved = null;
+try { saved = localStorage.getItem(KEY); } catch(e){}
+if (saved) document.documentElement.dataset.theme = saved;
+document.getElementById('themeBtn').addEventListener('click', function(){
+  var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem(KEY, next); } catch(e){}
+  this.setAttribute('aria-label', next === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
+});
+
+render();
+})();
+</script>
+</body>
+</html>

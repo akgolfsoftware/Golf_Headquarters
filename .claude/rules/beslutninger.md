@@ -17,8 +17,12 @@ Gjelder til Anders endrer dem.
 ## Beslutningene (august 2026)
 
 - **Design-fasit er Claude Paper 1:1 (Anders 2026-08-04):** skjermene skal bli **slik de er
-  designet i Claude Design** (`designsystem/paper/fase1/`) — layout, informasjonsarkitektur og
-  interaksjonsmønster, ikke bare farger/tokens. Bakgrunn: steg 7 PR1–PR4 ble merget med riktige
+  designet i Claude Design-prosjektet «AK Golf HQ — Claude Paper»** (`605a48cc`, hentet via
+  `claude-design`-MCP-verktøyet — det er den levende kilden) — layout, informasjonsarkitektur og
+  interaksjonsmønster, ikke bare farger/tokens. `designsystem/paper/fase1/` i repoet er et lokalt
+  speil av samme mappe, brukt kun til rask lesing/diff; det er IKKE kilden og kan henge etter (var
+  25 av 33 skjermer 05.08.2026 — sjekk alltid mot Claude Design-prosjektet direkte før du stoler på
+  at speilet er ajour). Bakgrunn: steg 7 PR1–PR4 ble merget med riktige
   tokens men feil skall («Én ting nå» manglet på alle fire, Hjem manglet artefaktkolonne/tom
   tilstand, Planlegge hadde 5 konkurrerende CTA-er). Full avviksliste og ombyggingsplan:
   `docs/port/plan-designport-alle-skjermer.md` §Avvik.
@@ -39,7 +43,9 @@ Gjelder til Anders endrer dem.
   synces direkte til TalentHQ (`/portal/talent/*` — 5 skjermer, live men skjult fra meny siden
   D1 2026-07-15). Sync-koblingen TestResult → TalentHQ finnes ikke i kode i dag og må bygges.
   Uavklart: hvilke av de 36 testprotokollene i DB spilleren skal se (Anders nevner 21, CANON
-  sier 20) — spør før noe ryddes.
+  sier 20) — spør før noe ryddes. **Fasit for test-gjennomføringsskjermen finnes nå**
+  (`playerhq-test-gjennomfor.html`, levert 2026-08-04, viser TN Putt Gate) — men avklaringen over
+  blokkerer fortsatt PR-en, se `kart/status-gjennomfore-2026-08-04.md` i Claude Design-prosjektet.
 - **AI-laget samles på ÉN adresse (Anders 2026-08-04, Fase 1):** fasiten
   `agencyos-agenticos.html` bygges som ny samleflate som erstatter spredningen over
   `/admin/agent-team`, `/admin/agents`, `/admin/godkjenninger` og AI-panelet på konsollen —
@@ -68,9 +74,11 @@ Gjelder til Anders endrer dem.
   skulle vente til FØR/UNDER/ETTER-piloten var evaluert — **Anders overstyrte dette eksplisitt
   2026-08-03** etter at steg 1–6 + steg 7 PR1 allerede var merget på løpende «ja» per PR.
   Full skjermport kjører nå aktivt per `docs/port/plan-designport-alle-skjermer.md` (10 steg,
-  én PR per skjerm/steg, aldri merge til main uten Anders' «ja»). `designsystem/paper/` ligger
-  hentet ned i repoet (ikke lenger kun på `chore/paper-speil-lokal`). Se også
-  `docs/gjenstaaende-plan-2026-07-31.md` §1.1 og `docs/for-under-etter-spec.md` §2 for historikken.
+  én PR per skjerm/steg, aldri merge til main uten Anders' «ja»). `designsystem/paper/` er et
+  lokalt speil hentet ned i repoet 02.08.2026 (PR #254, ikke lenger kun på `chore/paper-speil-lokal`)
+  — men speilet er IKKE kilden og oppdateres ikke automatisk; Claude Design-prosjektet `605a48cc`
+  (via `claude-design`-MCP) er alltid fasiten. Se også `docs/gjenstaaende-plan-2026-07-31.md` §1.1
+  (historisk — skrevet før overstyringen) og `docs/for-under-etter-spec.md` §2 for historikken.
 - **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen** — alltid fulle
   navn, gamle demo-navn skal bort. Unntak: ekte coach **«Markus Røinås Pedersen»** på markedssidene,
   ikke bytt ham ut.
