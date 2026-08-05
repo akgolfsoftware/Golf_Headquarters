@@ -1,3 +1,20 @@
+> ⚠ **UTGÅTT PÅ FLERE PUNKTER 06.08.2026 — historisk leveranserapport, ikke gjeldende fasit.**
+> Skrevet 31.07.2026 for de sju første filene. Siden overstyrt av Anders' beslutninger 03.08–05.08:
+>
+> - **AK-formelen er v2**: `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS` — L-faser, CS-nivåer,
+>   M0–M5 og PR1–PR5 finnes ikke. Chip-tabellen under §FangstSheet viser utgåtte v1-formler.
+> - **Område-slotten** er de 17 områdene i `AkFormelVelger` (komponentbiblioteket), ikke
+>   «TEE · INNSPILL · NÆRSPILL · PUTT · BANE» som står under.
+> - **Demo-spilleren er Øyvind Rohjan** — «Emma»-referansene under er utgått navnekanon.
+> - **AgencyOS-railen** heter Konsoll · Innboks · Spillere · Kalender · Workbench (låst 05.08),
+>   ikke «Konsoll · Kø · Spillere · Kalender · Maskinrom».
+> - Filene `kalender-desktop.html`, `kalender-mobil.html` og `index.html` finnes ikke lenger —
+>   kalenderen ligger i `agencyos-kalender.html` / `agencyos-kalender-mobil.html`.
+>
+> Gjeldende regler: `KONTRAKT.md` i denne mappa. Beholdt uendret under for sporbarhet.
+
+---
+
 # Fase 1 · AK Golf HQ chat-først
 
 Dato: 31. juli 2026. Sju selvstendige HTML-filer + `index.html` + `_foundation.css` + `_KONTRAKT.md`.

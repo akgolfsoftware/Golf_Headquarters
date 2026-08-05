@@ -40,8 +40,9 @@ Hver skjerm må kunne vise **tom, laster, feil, suksess** — og de skal være d
 
 ## 7. Språk og domene
 - Norsk bokmål med æ ø å i all UI-tekst. Kode og id-er på engelsk kebab-case.
-- AK-terminologi presist: kategorier A–K, FYS/TEK/SLAG/SPILL/TURN, L-faser (L-KROPP/L-ARM/L-KØLLE/L-BALL/L-AUTO), CS0/CS20–CS100, M0–M5, PR1–PR5, P1.0–P10.0, GRUNN/SPESIALISERING/TURNERING, AK-stigen.
-- Øktformel: `TEK_TEE_L-BALL_CS60_M2_PR2`.
+- AK-terminologi presist — **AK-formel v2 (bekreftet av Anders 03.08.2026)**: kategorier A–K, pyramide FYS/TEK/SLAG/SPILL/TURN, 17 områder (fasit: `AkFormelVelger` i komponentbiblioteket), motorikk UTEN_BALL/LAV_HAST/AUTO, belastning INNENDORS/TRENINGSOMRADE/BANE/KONKURRANSE, press ALENE/OBSERVERT/KONKURRANSE/TURNERING, P1.0–P10.0, GRUNN/SPESIALISERING/TURNERING, AK-stigen.
+- **Utgått (v1) — skal ikke forekomme i noen fil:** L-faser (L-KROPP…L-AUTO), CS-nivåer (CS0/CS20–CS100), miljø M0–M5, press PR1–PR5.
+- Øktformel: `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS`, f.eks. `TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_OBSERVERT`.
 - Alle tall i `.num` med enhet OG retning: «2,1 m H», «+2,92 SG», «62 %». Norsk desimalkomma, mellomrom som tusenskille. Brutto score, aldri netto.
 - Deltaer med grunnlag: «+0,6 vs forrige 5 runder».
 
@@ -53,7 +54,7 @@ Bruk NØYAKTIG disse. Ikke finn på nye navn eller tall.
 | Coach | Anders Kristiansen |
 | Dato | fredag 31. juli 2026, uke 31 |
 | Klokke «nå» | 09:12 |
-| Spiller 1 | Emma Sæther · kat. D · SG total +2,92 · ukeplan venter godkjenning |
+| Spiller 1 | Øyvind Rohjan · kat. D · SG total +2,92 · ukeplan venter godkjenning |
 | Spiller 2 | Jonas Hveem · kat. C · SG total −0,93 · sjekkpunkt ulest, stille i 9 dager |
 | Spiller 3 | Filip Sandberg · kat. B · SG total +0,88 · trenger plan neste uke |
 | Spiller 4 | Mia Kolstad · kat. E · SG total +0,41 · følger planen |
@@ -62,15 +63,17 @@ Bruk NØYAKTIG disse. Ikke finn på nye navn eller tall.
 | Selskaper | AK Golf Academy · Junior Academy · WANG Toppidrett · GFGK (B2B) |
 | I kø | 7 saker |
 | Agentfeil | 1 (Faktura-vakten, kjøring 03:14) |
-| PlayerHQ-bruker | Emma Sæther |
-| Emmas økt i dag | 16:00–17:30 · Sim 2 · `TEK_INNSPILL_L-BALL_CS60_M2_PR2` · wedge 40–70 m |
+| PlayerHQ-bruker | Øyvind Rohjan |
+| Øyvinds økt i dag | 16:00–17:30 · Sim 2 · `TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_OBSERVERT` · wedge 40–70 m |
+
+(Demo-kanon: Øyvind Rohjan er spilleren — fulle navn, aldri «Emma»/gamle demo-navn. Jonas/Filip/Mia er stall-fyll og byttes mot reell stall før pilot.)
 
 ## 9. Sløyfen FØR → UNDER → ETTER
 Hver skjerm som nevner et steg i sløyfa må **lenke** til neste med ekte `href` til nabofila. Tekst uten lenke er underkjent.
-Filnavn å lenke mot: `agencyos-konsoll-desktop.html`, `agencyos-konsoll-mobil.html`, `playerhq-chat-desktop.html`, `playerhq-chat-mobil.html`, `fangstsheet.html`, `kalender-desktop.html`, `kalender-mobil.html`, `index.html`.
+Filnavn å lenke mot: `agencyos-konsoll-desktop.html`, `agencyos-konsoll-mobil.html`, `playerhq-chat-desktop.html`, `playerhq-chat-mobil.html`, `fangstsheet.html`, `agencyos-kalender.html`, `agencyos-kalender-mobil.html`.
 
 ## 10. Navigasjon
-- **Maks fem flater.** AgencyOS-rail (64px, alltid mørk): Konsoll · Kø · Spillere · Kalender · Maskinrom. Ikke flere. Alt annet via chat eller ⌘K.
+- **Maks fem flater.** AgencyOS-rail (64px, alltid mørk): Konsoll · Innboks · Spillere · Kalender · Workbench. Ikke flere. Alt annet via chat eller ⌘K. (Rail-navnene låst av Anders 05.08.2026.)
 - PlayerHQ bunnfaner (maks fire): I dag · Plan · Analyse · Meg.
 - Samme navnesett i desktop og mobil. `tabItems ⊆ railItems`.
 

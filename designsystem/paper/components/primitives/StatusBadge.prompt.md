@@ -6,12 +6,12 @@ StatusBadge er et ikke-klikkbart merke i mono-versaler, 20px høyt, `--r-pill`. 
 <StatusBadge tone="mut">Venter</StatusBadge>
 <StatusBadge tone="ny">Ny</StatusBadge>
 <StatusBadge kind="tag">SPESIALISERING</StatusBadge>
-<StatusBadge kind="tag">M3</StatusBadge>
+<StatusBadge kind="tag">LAV_HAST</StatusBadge>
 ```
 
 ## kind="tag" er permanent fargeløs — bindende
 
-AK-vokabularet fargekodes aldri: GRUNN / SPESIALISERING / TURNERING, FYS / TEK / SLAG / SPILL / TURN, CS, M0–M5, PR1–PR5, L-fasene, A–K. Ingen av dem får farge, verken nå eller per skjerm senere. To grunner, og de gjelder alle 81 skjermer:
+AK-vokabularet fargekodes aldri: GRUNN / SPESIALISERING / TURNERING, FYS / TEK / SLAG / SPILL / TURN, A–K, og AK-formel v2-verdiene — motorikk (UTEN_BALL / LAV_HAST / AUTO), belastning (INNENDORS / TRENINGSOMRADE / BANE / KONKURRANSE), press (ALENE / OBSERVERT / KONKURRANSE / TURNERING). Ingen av dem får farge, verken nå eller per skjerm senere. To grunner, og de gjelder alle 81 skjermer:
 
 1. Vokabularet har for mange verdier for paletten. Tre aksentfarger kan ikke bære 30+ koder uten å finne opp farger utenfor tokenbaselinen.
 2. Datasemantikken er allerede tatt: grønn (`--up`) betyr *bedre*, leire (`--dn`) betyr *attention*. En periodetype er ikke bedre eller verre enn en annen — farget ville den lyve.
