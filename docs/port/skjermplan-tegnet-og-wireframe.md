@@ -133,7 +133,30 @@ er at hver bølge krymper i steg 1.
 3. **Aktivt konsolideringsmandat** — design-øktene foreslår sammenslåinger/kutt per område;
    Anders sier ja/nei per område før tegning.
 
-### W1 — konkret skjermliste (verifisert mot kode 05.08.2026)
+### W1 — konsolideringsgate GJENNOMFØRT (Anders' ja 05.08.2026)
+
+Fire vedtak + tre stubbe-funn krympet W1 fra 18 til **11 skjermer som tegnes**:
+
+**Kuttet/konsolidert (Anders' ja per punkt):**
+- `/portal/gjennomfore` (Gjør-oversikten) **utgår** — Hjem (dagens økt + sløyfe) og Plan (uka)
+  dekker den. Ruten blir redirect til `/portal`.
+- `/portal/gjennomfore/[id]` + `/portal/tren/[sessionId]/planlagt` **slås sammen til ÉN
+  økt-detalj** — én fasit med planlagt/fullført-tilstand + inviter-kompis.
+- Tester-familien **4 → 2**: liste + detalj tegnes; «Ny test»-flytene flytter inn i Workbenchs
+  Testbatteri-ark (fasit finnes i `workbench-mobil.html`).
+- `/portal/planlegge/bygger` (5-stegs veiviser) **utgår** — chat («Lag en økt» → utkast-kort)
+  + Workbench dekker planbygging.
+
+**Stubber/redirects funnet i kartleggingen (ikke skjermer):** `tren/ovelser` + `/[id]`
+(redirects til `/portal/drills`), `live/[sessionId]/logger` (alias for `active`),
+`live/[sessionId]/page.tsx` (dispatcher), `(fullscreen)/tren` og `tren/kalender` (stubber).
+
+**De 11 som tegnes (`fase2/playerhq/` i Claude Design):**
+1. Økt-detalj (samlet) · 2. Live-tapper · 3. Plan-feiring · 4. FYS-plan-hub (plassholdertall)
+· 5. Teknisk plan · 6. Tester-hub · 7. Test-detalj · 8. Turneringsplanlegger · 9. Turnering-detalj
+· 10. Øvelsesbank (drills) · 11. Drill-detalj
+
+### W1 — opprinnelig skjermliste (verifisert mot kode 05.08.2026)
 
 Stubber og rutere er filtrert bort (`live/[sessionId]/page.tsx` er en dispatcher,
 `(fullscreen)/tren/page.tsx` og `tren/kalender/page.tsx` er redirect-stubber — ikke skjermer).
