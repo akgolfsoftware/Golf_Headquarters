@@ -4,6 +4,30 @@ Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekk
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
 Ingen låst designkanon per 2026-07-25 — nytt system utvikles i Open Design (CLAUDE.md invariant 2).
 
+### PRODUKSJONSINCIDENT 05.08.2026: `db.<ref>.supabase.co` er IPv6-only — Vercel når den aldri
+- **Symptom:** prod nede siden ca. 11.07 (394 brukere rammet), forverret til total sirkelbryter-
+  blokkering 05.08. Feilloggen viste `Authentication failed`/P1000 — så ut som feil passord.
+  Etter passordrotasjon (Supabase → Reset database password) fortsatte det å feile, nå som
+  `Can't reach database server`/P1001 — DET er signalet på dette gotcha-mønsteret, ikke passordet.
+- **Rotårsak:** `DATABASE_URL`/`DIRECT_URL` pekte til `db.dcnxoztjtdqoidaekxry.supabase.co` (port
+  5432 og 6543). Verifisert med `dns.resolve4`: denne hosten har **ingen A-record, kun AAAA**
+  (IPv6) — bekreftet i Supabase-docs («Direct connection … IPv6, eller IPv4 kun med betalt
+  IPv4-tillegg», og port 6543 på samme host er «Dedicated pooler», som arver samme IPv6-begrensning).
+  Vercel serverless (lhr1) har ikke IPv6-egress → alltid `P1001` uansett riktig passord.
+- **Fiks:** bruk **Shared pooler (Supavisor)**, en helt annen host: `aws-<N>-eu-west-2.pooler.
+  supabase.com` — IPv4 garantert på alle tier. `<N>` er en klyngeindeks (var `1` for dette
+  prosjektet, IKKE `0` — verifiser med `dns.resolve4` eller Supabase → «Connect»-knappen →
+  fane «Transaction pooler», ikke Database-innstillinger-siden som bare viser direct/dedicated).
+  Brukernavn endres også: `postgres.<project-ref>` (ikke bare `postgres`).
+  `DATABASE_URL` = transaction mode port 6543, `DIRECT_URL` = session mode port 5432, samme host.
+- **Verifiser FØR du setter noe i Vercel:** koble til med `pg.Client` fra terminalen din og kjør
+  `select 1` — spar en redeploy-runde. `vercel env rm <NAVN> <miljø> --yes` +
+  `printf '%s' "$URL" | vercel env add <NAVN> <miljø>` setter env uten å eksponere verdien i
+  shell-historikk. Env-endring krever en påfølgende `vercel redeploy <deployment-id> --target
+  production` for å tas i bruk (env leses ved cold start, ikke per request).
+- Utvider den eldre, mer generelle notisen lenger ned i denne fila («Ytelse: Vercel-region MÅ
+  matche Supabase-region») — samme region-prinsipp, men dette er spesifikt IPv4/IPv6-hullet.
+
 ### Aldri kopier `.env*` inn i en worktree — heller ikke for å kunne verifisere (oppdaget 2026-08-03)
 - En ny `git worktree` mangler `.env.local` (den er gitignored, worktrees deler ikke ugitte filer),
   og `npm run verify` feiler derfor på `prisma generate` («Cannot resolve environment variable:
