@@ -4,7 +4,7 @@ ListRow er én rad i én liste. Den rendres som `<li>` og **må** ligge i en `Li
 <ListGroup label="Trenger øye">
   <ListRow leading="avatar" avatar={{name:"Øyvind Rohjan"}} title="Øyvind Rohjan"
     meta="Wedge 40–70 m · avvik siste tre runder"
-    trailing="value" value="▲ +1,4" href="#emma" dataOdId="stall-emma" />
+    trailing="value" value="▲ +1,4" href="#oyvind" dataOdId="stall-oyvind" />
   <ListRow leading="status" status="done" title="Testprotokoll · Jonas" meta="Godkjent 08:14" />
 </ListGroup>
 ```
