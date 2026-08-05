@@ -1,7 +1,9 @@
 # Steg 2 — fasit-listen: Paper-skjerm ↔ ekte rute
 
-**Skrevet:** 02.08.2026 · **Oppdatert:** 05.08.2026 (re-kjørt mot Claude Design-prosjektet
-`605a48cc`, som nå er ENESTE kilde — ikke en lokal speil-mappe, se `README.md` i denne mappa).
+**Skrevet:** 02.08.2026 · **Oppdatert:** 05.08.2026 kveld (W1-wireframene batch-godkjent av
+Anders — 11 nye fasitskjermer i `fase2/playerhq/`, se §W1 under. Tidligere samme dag: re-kjørt
+mot Claude Design-prosjektet `605a48cc`, som nå er ENESTE kilde — ikke en lokal speil-mappe,
+se `README.md` i denne mappa).
 **Gjelder:** steg 2 i `docs/port/plan-designport-alle-skjermer.md`.
 **Endrer ingen skjerm.** Dette er kun en opptelling.
 
@@ -20,11 +22,15 @@ Designprosjektets `templates/`,
 | Ekte skjermer i appen (redirect og utgåtte rader trukket fra) | **343** |
 | Rader i skjermplanen totalt (opptelling 05.08.2026, før den ble slettet) | 375 |
 | …av disse ren redirect eller utgått | 32 |
-| Paper-fasitskjermer på disk | **33** (opp fra 25 — 8 nye siden 02.08, se under) |
-| Ekte ruter disse 32 dekker (mobil + desktop av samme rute teller én gang; 2 filer uten rute trukket fra) | **25** |
-| Skjermer som må designes uten fasit | **318** |
+| Paper-fasitskjermer på disk | **44** (33 i `fase1/` + 11 godkjente W1-wireframes i `fase2/playerhq/`) |
+| Ekte ruter disse dekker (mobil + desktop av samme rute teller én gang; 2 filer uten rute trukket fra) | **36** |
+| Skjermer som må designes uten fasit | **307** |
 
-**Dekningsgrad: 25 av 343 skjermer — 7,3 %.**
+**Dekningsgrad: 36 av 343 skjermer — 10,5 %.**
+
+Merk: 343-tallet er FØR W1-konsolideringen er kodet. Når vedtakene implementeres, utgår
+`/portal/gjennomfore` (redirect), `/portal/planlegge/bygger`, to av fire testflater og én av
+de to sammenslåtte økt-detalj-rutene — totalen synker da mot ~338. Re-telles per bølge.
 
 **Endring siden 02.08.2026:** 8 nye fasitskjermer levert av designeren — 6 i PlayerHQ
 Gjennomføre/live-økt-familien (som sto med **0 fasit** i tabellen under §Hva som IKKE har
@@ -109,7 +115,32 @@ PlayerHQ Planlegge og AgencyOS Planlegge.
 | `playerhq-runde-logg.html` | `/portal/(fullscreen)/runde/logg` |
 | `playerhq-test-gjennomfor.html` | `/portal/(fullscreen)/tren/tester/[testId]/gjennomfor` |
 
-`/portal/(fullscreen)/live/[sessionId]/logger` og `/tapper` har fortsatt ingen fasit.
+`/portal/(fullscreen)/live/[sessionId]/logger` er alias for `active` (stubbe-funn i W1) —
+`tapper` fikk fasit i W1, se neste seksjon.
+
+### W1-wireframes, batch-godkjent av Anders 05.08.2026 (11 filer → 11 ruter)
+
+Tegnet i `fase2/playerhq/` i Claude Design (605a48cc) etter konsolideringsgaten
+(18 → 11 skjermer, fire vedtak — se `docs/port/skjermplan-tegnet-og-wireframe.md` §W1).
+Godkjent wireframe = fasit, samme status som `fase1/`-filene.
+
+| Paper-fil (fase2/playerhq/) | Ekte rute | Merknad |
+|---|---|---|
+| `playerhq-okt-detalj.html` | `/portal/gjennomfore/[id]` | Slått sammen med `/portal/tren/[sessionId]/planlagt` — én økt-detalj med planlagt/gjennomført-tilstand |
+| `playerhq-live-tapper.html` | `/portal/(fullscreen)/live/[sessionId]/tapper` | |
+| `playerhq-feiring.html` | `/portal/tren/feiring/[planId]` | |
+| `playerhq-fys-plan.html` | `/portal/tren/fys-plan` | FYS-score er ærlig plassholder — formelen avventer |
+| `playerhq-teknisk-plan.html` | `/portal/tren/teknisk-plan/[planId]` | |
+| `playerhq-tester-hub.html` | `/portal/tren/tester` | Testantall (20/21/25) fortsatt uavklart — blokkerer PR-E-koding, ikke fasiten |
+| `playerhq-test-detalj.html` | `/portal/tren/tester/[testId]` | `/ny` og `/ny/egen` utgår — flyttet inn i Workbenchs Testbatteri-ark |
+| `playerhq-turneringer.html` | `/portal/tren/turneringer` | |
+| `playerhq-turnering-detalj.html` | `/portal/tren/turneringer/[id]` | |
+| `playerhq-drills.html` | `/portal/drills` | `tren/ovelser` (+ `/[id]`) er redirects hit |
+| `playerhq-drill-detalj.html` | `/portal/drills/[id]` | |
+
+**Konsolideringsvedtak (Anders' ja per punkt, 05.08):** `/portal/gjennomfore` utgår (Hjem +
+Plan dekker den, ruten blir redirect) · økt-detalj-rutene slått sammen · tester 4 → 2 ·
+`/portal/planlegge/bygger` utgår (chat + Workbench dekker planbygging).
 
 ### Ikke en skjerm (1 fil)
 
@@ -128,9 +159,13 @@ PlayerHQ Planlegge og AgencyOS Planlegge.
 
 ## Hva som IKKE har fasit — de 318
 
-Per seksjon, ekte skjermer uten en tegnet Paper-skjerm (oppdatert 05.08.2026 — kun
-PlayerHQ Gjennomføre-raden er endret, resten er ikke re-kartlagt mot kode og kan selv
-være noe stale):
+Per seksjon, ekte skjermer uten en tegnet Paper-skjerm. **NB: tabellen er opptellingen fra
+05.08 morgen — W1-godkjenningen samme kveld er IKKE regnet inn i radene.** For
+Gjennomføre- og Planlegge-radene er §W1 over fasit: W1 dekket 12 av de tilsammen 35
+skjermene i de to radene og vedtok at 4 utgår/slås sammen. Radene re-telles mot kode når
+W1-konsolideringen er kodet (per bølge-leveransen i skjermplanen), ikke her på forhånd —
+mobil/desktop-par, redirects og sammenslåinger gjør at fil→rad ikke er 1:1. Resten av
+tabellen er ikke re-kartlagt mot kode og kan selv være noe stale:
 
 | Område | Ekte skjermer | Har fasit | Uten fasit |
 |---|---:|---:|---:|
@@ -172,9 +207,12 @@ De tre bølgene i planen kan nå tallfestes:
 
 | Bølge | Skjermer | Med fasit | Må designes underveis |
 |---|---:|---:|---:|
-| 7 — PlayerHQ | 151 | 12 | 139 |
+| 7 — PlayerHQ | 151 | 23 (12 + 11 fra W1) | 128 |
 | 8 — AgencyOS | 121 | 10 | 111 |
 | 9 — resten (marketing, booking, forelder, auth, system) | 71 | 3 | 68 |
+
+Designes «underveis» gjelder ikke lenger: siden 05.08 tegnes alt i forkant i bølger W1–W6
+(`docs/port/skjermplan-tegnet-og-wireframe.md`) — ingen skjerm kodes uten tegnet fasit.
 
 Den viktigste konsekvensen står ved lag selv om tallet er bedre: **93 % av skjermene har
 ingen fasit å måle mot.** Planens arbeidsmåte — «skjermbilder side om side med Paper-fasiten
