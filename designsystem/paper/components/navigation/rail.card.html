@@ -8,14 +8,14 @@
 <body><div id="root"></div>
 <script type="text/babel">
 const { Rail, Topbar, Breadcrumbs, Button, Icon } = window.AKGolfHQClaudePaper_605a48;
-const items = ["hjem","stall","cockpit","ko","plan","ai"].map(id => ({ id, label: { hjem:"Hjem", stall:"Stall", cockpit:"Cockpit", ko:"Kø", plan:"Plan", ai:"AI" }[id], icon: <Icon name={id} /> }));
+const items = ["cockpit","ko","stall","plan","hjem"].map(id => ({ id, label: { cockpit:"Konsoll", ko:"Innboks", stall:"Spillere", plan:"Kalender", hjem:"Workbench" }[id], icon: <Icon name={id} /> }));
 function Demo({ theme }) {
-  const [cur, setCur] = React.useState("hjem");
+  const [cur, setCur] = React.useState("cockpit");
   return (
     <div className="shell" data-theme={theme === "dark" ? "dark" : undefined} style={{background:"var(--bg)"}}>
       <Rail items={items} current={cur} onNavigate={setCur} initials="AK" />
       <div className="body">
-        <Topbar theme={theme} left={<Breadcrumbs items={[{ label: "AgencyOS", href: "#" }, { label: "Stall", href: "#" }, { label: "Emma Berg" }]} />} actions={<Button size="sm" dataOdId="cta-ko">3 i kø</Button>} />
+        <Topbar theme={theme} left={<Breadcrumbs items={[{ label: "AgencyOS", href: "#" }, { label: "Spillere", href: "#" }, { label: "Øyvind Rohjan" }]} />} actions={<Button size="sm" dataOdId="cta-ko">3 i kø</Button>} />
         <div className="pad">Aktiv rad: <strong>{cur}</strong> · skinnen er alltid mørk, uansett tema</div>
       </div>
     </div>

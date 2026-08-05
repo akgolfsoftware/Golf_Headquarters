@@ -1,6 +1,6 @@
 export interface ComposerContext {
   id: string;
-  /** Kort mono-etikett: «Emma S.», «uke 31», «P3 SPES» */
+  /** Kort mono-etikett: «Øyvind R.», «uke 31», «P3 SPES» */
   label: string;
   active?: boolean;
 }

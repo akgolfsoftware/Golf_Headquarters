@@ -10,7 +10,7 @@ AgencyOS er samtale som standardflate: rundt 35 funksjoner starter som et spørs
 
 ```jsx
 <Composer
-  context={[{ id: "emma", label: "Emma S.", active: true }, { id: "u31", label: "uke 31" }]}
+  context={[{ id: "oyvind", label: "Øyvind R.", active: true }, { id: "u31", label: "uke 31" }]}
   onContextToggle={toggle}
   onSubmit={(t) => spør(t)} />
 ```

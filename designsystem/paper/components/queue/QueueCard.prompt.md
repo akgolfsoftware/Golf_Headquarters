@@ -4,13 +4,13 @@ Køens rad. Én sak: avsender, alder, hatt (coaching/drift), tittel, grunnlag, h
 
 ## Hvorfor den er produktets hjerte
 
-Køen er blandet med hensikt: *«Godkjenn ukeplan for Emma» og «WANG-fakturaen er 12 dager på overtid» hører i samme kø*, fordi det er samme menneske med samme begrensede oppmerksomhet. `QueueCard` er den ene komponenten ingen annen kan stå i stedet for — den er derfor bygget først av K1–K12.
+Køen er blandet med hensikt: *«Godkjenn ukeplan for Øyvind» og «WANG-fakturaen er 12 dager på overtid» hører i samme kø*, fordi det er samme menneske med samme begrensede oppmerksomhet. `QueueCard` er den ene komponenten ingen annen kan stå i stedet for — den er derfor bygget først av K1–K12.
 
 ## Bruk
 
 ```jsx
 <QueueCard first sender="Plan-vakten" kind="coaching" age="4 t"
-  title="Godkjenn ukeplan for Emma Sæther"
+  title="Godkjenn ukeplan for Øyvind Rohjan"
   primaryLabel="Godkjenn" onPrimary={godkjenn}
   secondaryLabel="Avvis" onSecondary={avvis}
   onSnooze={utsett}

@@ -33,9 +33,9 @@ function Kort() {
         <Cell label="selected"><Chip selected dataOdId="chip-s">Nærspill</Chip></Cell>
         <Cell label="hover"><Chip data-state="hover" dataOdId="chip-h">Driver</Chip></Cell>
         <Cell label="focus"><Chip data-state="focus" dataOdId="chip-f">Wedge</Chip></Cell>
-        <Cell label="static 22 (etikett)"><Chip static dataOdId="chip-st">M3</Chip></Cell>
+        <Cell label="static 22 (etikett)"><Chip static dataOdId="chip-st">AUTO</Chip></Cell>
         <Cell label="coarse-stand-in → 44"><span data-coarse-test><Chip dataOdId="chip-fl">Gulv</Chip></span></Cell>
-        <Cell label="static + coarse → 22"><span data-coarse-test><Chip static dataOdId="chip-st-fl">PR2</Chip></span></Cell>
+        <Cell label="static + coarse → 22"><span data-coarse-test><Chip static dataOdId="chip-st-fl">AUTO</Chip></span></Cell>
       </div>
       <p className="lead" style={{ marginTop: 12, marginBottom: 6, fontFamily: "var(--mono)", fontSize: 11.5 }} id="floor-assert">måler …</p>
       <p className="lead" style={{ marginTop: 0, marginBottom: 0 }}>Siste celle er poenget: <code style={{font:"500 12px var(--mono)"}}>--static</code> nuller gulvet bevisst og skal bli <strong>22 px</strong> selv med gulvet aktivt. Stand-in-en mates fra en regel i <code style={{font:"500 12px var(--mono)"}}>@layer akhq-container</code> med samme vekt som <code style={{font:"500 12px var(--mono)"}}>pointer: coarse</code> — ikke inline, som ville slått alle lag og målt inline-presedens i stedet for lagforholdet. Den er <code style={{font:"500 12px var(--mono)"}}>cursor: default</code> — en etikett, ikke et treffmål. Første tilfelle der tilgjengelighetsgulvet skal kunne slås av av en modifikator — og linjen over er assertionen som holder betingelsen: <strong>ethvert</strong> element med <code style={{font:"500 12px var(--mono)"}}>--floor: 0</code> må mangle alle interaktive kjennetegn (href, aktiverende rolle, tabindex ≥ 0, <code style={{font:"500 12px var(--mono)"}}>cursor: pointer</code>, interaktiv tag). Uten den er nullingen en fri variabel neste person griper for tettere rader.</p>

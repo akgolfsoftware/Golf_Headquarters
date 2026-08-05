@@ -11,8 +11,8 @@ const { ListRow, ListGroup, Panel, Icon, SectionLabel } = window.AKGolfHQClaudeP
 function Stall() {
   return (<Panel title="Stall · trenger øye" action={<a href="#" style={{font:"600 12.5px/1 var(--ui)",color:"var(--muted)",textDecoration:"none"}}>Alle →</a>} flush dataOdId="panel-stall">
     <ListGroup dataOdId="list-stall">
-      <ListRow leading="avatar" avatar={{name:"Emma Berg"}} title="Emma Berg" titleBadge={{kind:"tag",text:"SPESIALISERING"}} meta="Wedge 40–70 m · avvik siste tre runder" trailing="value" value="▲ +1,4" href="#emma" dataOdId="stall-emma" />
-      <ListRow leading="avatar" avatar={{name:"Jonas Hult"}} title="Jonas Hult" meta="Putting under krav to økter" trailing="badge" badge={{tone:"warn",text:"Avvik",dot:true}} href="#jonas" dataOdId="stall-jonas" />
+      <ListRow leading="avatar" avatar={{name:"Øyvind Rohjan"}} title="Øyvind Rohjan" titleBadge={{kind:"tag",text:"SPESIALISERING"}} meta="Wedge 40–70 m · avvik siste tre runder" trailing="value" value="▲ +1,4" href="#oyvind" dataOdId="stall-oyvind" />
+      <ListRow leading="avatar" avatar={{name:"Jonas Hveem"}} title="Jonas Hveem" meta="Putting under krav to økter" trailing="badge" badge={{tone:"warn",text:"Avvik",dot:true}} href="#jonas" dataOdId="stall-jonas" />
     </ListGroup>
   </Panel>);
 }
@@ -28,7 +28,7 @@ function Kontroll({ state, set }) {
 function Bleed() {
   return (<Panel title="flush + bleed" flush bleed dataOdId="panel-bleed">
     <ListGroup dataOdId="list-bleed">
-      <ListRow leading="avatar" avatar={{name:"Emma Berg"}} title="Emma Berg" meta="Gruppe ≈428 — over terskelen, bevisst" trailing="value" value="▲ +1,4" href="#b1" dataOdId="bleed-emma" />
+      <ListRow leading="avatar" avatar={{name:"Øyvind Rohjan"}} title="Øyvind Rohjan" meta="Gruppe ≈428 — over terskelen, bevisst" trailing="value" value="▲ +1,4" href="#b1" dataOdId="bleed-oyvind" />
       <ListRow leading="status" status="active" title="Wedge-stige 40–70 m" meta="Full spaltebredde, trenger ikke strammere polstring" trailing="value" value="60 %" />
     </ListGroup>
   </Panel>);

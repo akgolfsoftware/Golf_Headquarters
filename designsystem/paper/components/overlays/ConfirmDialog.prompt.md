@@ -9,7 +9,7 @@ const [åpen, setÅpen] = React.useState(false);
 <ConfirmDialog open={åpen} triggerRef={slettRef}
   kicker="Slett økt"
   title="Slette torsdagens økt?"
-  body="Økten fjernes fra kalenderen og fra Emmas ukeplan."
+  body="Økten fjernes fra kalenderen og fra Øyvinds ukeplan."
   consequence="3 loggede serier og 2 videoklipp slettes permanent"
   confirmLabel="Slett økten"
   onConfirm={slett} onCancel={() => setÅpen(false)} />
@@ -28,7 +28,7 @@ Alt kommer fra `useOverlayLayer` i `components/overlays/overlay-focus.jsx`, kalt
 
 - **`initialFocus: "layer"`, ikke første knapp.** Fokus lander på dialogen selv, så skjermleseren leser tittel og konsekvens før brukeren har en destruktiv knapp under fingeren. Tab velger deretter.
 - **`title` er påkrevd** og er dialogens tilgjengelige navn (`aria-labelledby`). Komponenten varsler i konsollen hvis den mangler — en dialog uten navn skal ikke forekomme.
-- **`confirmLabel` er et verb med objekt:** «Slett økten», «Fjern Emma», «Avpubliser planen». Aldri «OK», «Ja» eller «Bekreft» — brukeren skal kunne lese knappen alene og vite hva som skjer. `cancelLabel` er «Avbryt».
+- **`confirmLabel` er et verb med objekt:** «Slett økten», «Fjern Øyvind», «Avpubliser planen». Aldri «OK», «Ja» eller «Bekreft» — brukeren skal kunne lese knappen alene og vite hva som skjer. `cancelLabel` er «Avbryt».
 - **`consequence` er det uopprettelige, i mono på `--soft`:** hva som forsvinner, hvor mange. Er det ingenting uopprettelig, trenger handlingen sannsynligvis ikke en dialog i det hele tatt — da holder en `Toast` med angremulighet.
 - **Ingen fylt rød flate.** Destruktiv bekreftelse er `Button variant="danger"` — `--dn` som tekst og ramme på papir. Fyll er reservert primærhandling (blekk) og OneThingNow (oransje); en rød flate ville brutt paletten. Vekten kommer fra ordlyden, men fargen må være der: uten den er bekreft-knappen bit-identisk med «Avbryt», i en dialog hvis hele jobb er å stoppe et uopprettelig valg.
 - **`danger`-varianten hører i `Button.jsx`, ikke her.** Første forsøk la `.akhq-cdlg-danger>.akhq-btn` i ConfirmDialogs `@layer akhq-base`. Selektoren matchet seks elementer og anvendte ingenting: `Button.jsx` er ulagret inntil lagmigreringen, og **ulagret CSS vinner over lagret uansett spesifisitet**. Tredje forekomst av samme feilklasse. Skal du style en annen komponents element, gjør det i den komponentens egen fil.

@@ -29,10 +29,10 @@ function Matrise() {
     <Grp label="StatusBadge — alle seks toner">
       {[["up", "På vei"], ["warn", "Bak plan"], ["info", "Ny data"], ["mut", "Utsatt"], ["ny", "Ny"]].map(([t, tx]) => <Cell label={t} key={t}><StatusBadge tone={t} dot dataOdId={"badge-" + t}>{tx}</StatusBadge></Cell>)}
       <Cell label="tag (fargeløs)"><StatusBadge kind="tag" dataOdId="badge-tag">SPESIALISERING</StatusBadge></Cell>
-      <Cell label="tag"><StatusBadge kind="tag" dataOdId="badge-tag2">M3</StatusBadge></Cell>
+      <Cell label="tag"><StatusBadge kind="tag" dataOdId="badge-tag2">AUTO</StatusBadge></Cell>
     </Grp>
     <Grp label="Avatar — tre størrelser × tre toner">
-      {["sm", "md", "lg"].map((s) => <Cell label={s} key={s}><Avatar name="Markus Roinas Pedersen" size={s} dataOdId={"avatar-" + s} /></Cell>)}
+      {["sm", "md", "lg"].map((s) => <Cell label={s} key={s}><Avatar name="Markus Røinås Pedersen" size={s} dataOdId={"avatar-" + s} /></Cell>)}
       <Cell label="ink"><Avatar name="Anders Kristiansen" tone="ink" dataOdId="avatar-ink" /></Cell>
       <Cell label="outline"><Avatar name="Ida Sørgård" tone="outline" dataOdId="avatar-outline" /></Cell>
       <Cell label="æøå"><Avatar name="Øyvind Åsheim" dataOdId="avatar-aeoa" /></Cell>

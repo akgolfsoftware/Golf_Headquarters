@@ -17,7 +17,7 @@ Merket er `StatusBadge kind="tag"`, altså permanent fargeløst. Nivå er ikke s
 ```jsx
 <CommandPalette open={åpen} onClose={() => setÅpen(false)} triggerRef={knapp}
   items={[
-    { id: "emma-plan", label: "Emma Sæther · ukeplan", group: "artefakter", level: 2 },
+    { id: "oyvind-plan", label: "Øyvind Rohjan · ukeplan", group: "artefakter", level: 2 },
     { id: "wb", label: "Planlegg uke i Workbench", group: "flater", level: 3, keywords: "workbench ukeplan dra" },
     { id: "publiser", label: "Publiser ukeplan …", group: "handlinger", level: 1 }
   ]}

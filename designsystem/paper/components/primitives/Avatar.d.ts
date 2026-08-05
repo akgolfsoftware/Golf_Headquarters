@@ -6,7 +6,7 @@
  * tilstandsindikator med samme geometri, ikke en person.
  */
 export interface AvatarProps {
-  /** Fullt navn. Initialer utledes: «Emma Berg» → EB, ettordsnavn → to første. */
+  /** Fullt navn. Initialer utledes: «Øyvind Rohjan» → ØR, ettordsnavn → to første. */
   name?: string;
   /** Overstyr utledede initialer (klubb, lag, «G16») */
   initials?: string;
@@ -20,7 +20,7 @@ export interface AvatarProps {
   decorative?: boolean;
   dataOdId?: string;
 }
-/** Statisk hjelper: initialer uten sirkelen. Avatar.initials("Emma Berg") → "EB" */
+/** Statisk hjelper: initialer uten sirkelen. Avatar.initials("Øyvind Rohjan") → "ØR" */
 export namespace Avatar {
   function initials(name: string): string;
 }

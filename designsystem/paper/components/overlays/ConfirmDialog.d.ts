@@ -17,7 +17,7 @@ export interface ConfirmDialogProps {
   body?: React.ReactNode;
   /** Konsekvensen i mono på --soft: «3 loggede serier slettes permanent» */
   consequence?: React.ReactNode;
-  /** Verb, ikke «OK»: «Slett økten», «Fjern Emma» */
+  /** Verb, ikke «OK»: «Slett økten», «Fjern Øyvind» */
   confirmLabel?: string;
   cancelLabel?: string;
   /** true (standard) = --dn tekst og ramme på bekreft. false = vanlig primær. */
