@@ -1,5 +1,12 @@
 # Gjenstående — plan per 31.07.2026
 
+> **⚠ DESIGN-DELEN ER HISTORIKK (overstyrt 2026-08-03).** §1.1 «C, smalt» — behold
+> Inter/Familjen Grotesk/JetBrains Mono, vent med Paper-porten til etter piloten — er **ikke
+> gjeldende regel**. Anders overstyrte den 03.08: **Claude Paper vinner alltid**, og full port
+> til `src/` kjører nå. Gjeldende: `.claude/rules/beslutninger.md` §Tema/design +
+> `docs/port/plan-designport-alle-skjermer.md` + `docs/port/monsterdokument-paper.md`.
+> Resten av restansen i dette dokumentet står uendret.
+
 Samlet restanse på tvers av begge spor. Skrevet etter tre økter samme dag: designdekningsrevisjon
 (formiddag), bølge P3 i Claude Design (ettermiddag) og FØR/UNDER/ETTER-spesifikasjonen (kveld).
 

@@ -177,11 +177,12 @@ COACH  /admin/spillere/[id]/baneguide        (NY fase 2)
 
 ### 6.1 Designprinsipper
 
-**Designfasit er Claude Paper** (Open Design `be6bdcb8` / Claude Design `605a48cc`) — alt nytt
-design-arbeid skjer der. **Produksjonskoden i pilotperioden følger «C, smalt»** (låst 2026-07-31):
-v2-tokens (`src/lib/v2/tokens.ts`), Inter/Familjen Grotesk/JetBrains Mono, og `--handling` `#D97757`
-kun for skjermens ene primærhandling. Designeren tegner i Paper; utvikleren porter til v2-tokens til
-full Paper-port er besluttet etter pilot. PlayerHQ er alltid lys.
+**Designfasit er Claude Paper** (Claude Design `605a48cc`, skjermer i `fase1/`) — og den vinner
+alltid, også i produksjonskoden. Setningen som sto her frem til 05.08 («produksjonskoden i
+pilotperioden følger C, smalt … til full Paper-port er besluttet etter pilot») er **utgått**:
+Anders overstyrte tidsplanen 03.08, og full porten kjører nå. Mangler skjermen fasit:
+`docs/port/monsterdokument-paper.md`. Aksent `#D97757` kun for skjermens ene primærhandling.
+PlayerHQ er alltid lys.
 
 1. **Én ting nå.** Under runden finnes nøyaktig én primærhandling per øyeblikk: «Logg slag»
    (`--handling`-oransje). Alt annet er sekundært. ADHD-vennlig, hanske-vennlig, sol-vennlig.

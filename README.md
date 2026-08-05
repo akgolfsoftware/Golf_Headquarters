@@ -15,7 +15,7 @@ Hele plattformen for AK Golf Group — ett monorepo, ett Next.js-prosjekt, fire 
 - React 19
 - Prisma 7 + Supabase (Postgres)
 - Tailwind CSS v4 (CSS-first via `@theme` i `src/app/globals.css`)
-- Lucide React (eneste icon-bibliotek), Inter / Familjen Grotesk (display) / JetBrains Mono — Inter Tight er fjernet (design-beslutninger: `.claude/rules/beslutninger.md` §Tema/design)
+- Lucide React (eneste icon-bibliotek). Designfasit er **Claude Paper** (Poppins / Lora / IBM Plex Mono) — koden bruker fortsatt Inter / Familjen Grotesk / JetBrains Mono til fontbyttet i porten er gjort. Inter Tight er fjernet. Se `.claude/rules/beslutninger.md` §Tema/design
 - npm
 
 ## Kom i gang

@@ -5,7 +5,7 @@
 ## Allerede gjort i kode/DB
 - [x] Schema: LydSamtykke, TradApning, PlanAction.sjekkpunkt/fangstId, Group.kind
 - [x] Whisper AK-glossar
-- [x] `--handling` token (C smalt)
+- [x] `--handling` token (innført under «C, smalt» 31.07; lever videre som Paper-aksenten `#D97757`)
 - [x] Hard LydSamtykke-gate på `/api/recording/start` + UI
 - [x] Pilot: coach kan registrere GITT på `/admin/recording`
 - [x] IndexedDB-kø for lydchunks

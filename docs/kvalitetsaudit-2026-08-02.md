@@ -62,6 +62,7 @@ listen er verdiløst hvis produksjonen kan være ødelagt uten at noen merker de
 
 ## Bevisst utelatt (parkert, ikke glemt)
 
-Design-gate for hex/tokens (venter på Paper-porten etter pilot), baneguide/GPS,
+Design-gate for hex/tokens (følger Paper-porten, som kjører nå — «etter pilot» sto her
+frem til 05.08 og er utgått), baneguide/GPS,
 legacy-sidene og `useMobile`-konsolidering, pg_dump-baseline + RLS-gate (strukturelt
 viktig — hører til Stripe/GDPR-runden etter pilot), fasade-agentene og død AI-kode.

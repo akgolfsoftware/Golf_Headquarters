@@ -74,8 +74,17 @@ wireframe/               ARKIV — ikke les eller importer herfra
 - **Tokens:** `src/app/globals.css` — HSL-trippel uten `hsl()`-wrapper, shadcn-konvensjon.
 - **TS-speil for charts:** `src/lib/design-tokens.ts` — kun les herfra.
 - **Komponenter:** primitiver fra `src/components/ui/` + `v2/`-mønstre; `athletic/golfdata/` er overgangslag i vedlikeholdsmodus. Sjekk ALLTID hva som finnes FØR du lager noe nytt.
-- **Spacing/farger (LÅST 2026-07-31):** App = C, smalt (v2 + kun `--handling` `#D97757` for «Én ting nå»). Claude Paper = designfasit i Open Design/speil; full port etter pilot. Se `docs/gjenstaaende-plan-2026-07-31.md` §1.1. I app-kode: følg mønsteret i filen du redigerer.
-- **Fonter:** Inter (`font-sans`), Familjen Grotesk (`font-display`), JetBrains Mono (`font-mono`). Inter Tight er FJERNET (Fase 3, 2026-07-07) — ikke gjeninnfør.
+- **Designfasit (LÅST — Paper vinner alltid, Anders 2026-08-03):** Claude Design-prosjektet
+  «AK Golf HQ — Claude Paper» (`605a48cc`, skjermer i `fase1/`) er eneste designfasit. Full port
+  til `src/` kjører NÅ. Den gamle tidsplanen «C, smalt til etter piloten» (31.07) er **overstyrt**
+  og skal ikke følges. Mangler skjermen fasit: `docs/port/monsterdokument-paper.md` er eneste
+  designkilde. Plan + ferdig-definisjon: `docs/port/plan-designport-alle-skjermer.md`.
+  Ved konflikt mellom et dokument og Paper-fasiten **vinner Paper-fasiten**.
+- **Farger/flater:** Paper-tokens (`--p-*` i `src/styles/paper-tokens.css`), som `--v2-*` peker på
+  etter steg 5A. Aksent `#D97757` har monopol på «Én ting nå» — maks én per skjerm.
+- **Fonter:** Paper-fasiten er Poppins (UI/titler) · Lora (prosa/AI-svar) · IBM Plex Mono (tall).
+  Koden bruker fortsatt Inter / Familjen Grotesk / JetBrains Mono — fontbyttet er ikke gjennomført
+  ennå (åpent punkt i porten). Inter Tight er FJERNET — ikke gjeninnfør.
 
 **FORBUDT:** lage ny `tokens.css`, importere fra `wireframe/`, lage `tokens.ts` i komponent-mapper.
 
