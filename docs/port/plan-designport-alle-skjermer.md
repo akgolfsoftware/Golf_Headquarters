@@ -6,6 +6,11 @@
 Dette er planen for at appens skjermer faktisk skal se ut som Claude Design-prosjektet
 **«AK Golf HQ — Claude Paper»** (`claude.ai/design/p/605a48cc-81e8-44bd-94d2-07d50a97370a`).
 
+> **Tegne-sporet (Anders 2026-08-05):** se `docs/port/skjermplan-tegnet-og-wireframe.md` —
+> porteringsrekkefølge for de 33 tegnede fasitskjermene + wireframe-plan for de 318 uten fasit.
+> Prinsipp: ingen skjerm i steg 7–9 kodes uten tegnet fasit (fase1/ eller godkjent
+> fase2/-wireframe). Steg-/PR-strukturen under gjelder fortsatt for kodingen.
+
 Ingen kode er endret. Ingen token-fil er rørt. Planen er ikke godkjent.
 
 ---
