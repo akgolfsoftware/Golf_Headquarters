@@ -62,11 +62,15 @@ export interface V2Rom {
   pin?: boolean;
 }
 
-/** PlayerHQ-navigasjon (5 faste seksjoner). Rutene er dagens kanoniske adresser. */
+/**
+ * PlayerHQ-navigasjon — FIRE faner (Anders 2026-08-05, fase1/KONTRAKT.md §10).
+ * «Gjør» utgår som egen fane: gjennomføring (live-økt, runde, test) åpnes fra
+ * I dag (artefaktpanel/«Én ting nå») eller Plan (øktdetalj), ikke fra nav.
+ * Sider som fortsatt sender aktiv="gjor" får ingen markert fane — bevisst.
+ */
 export const PLAYERHQ_NAV: V2NavItem[] = [
-  { id: "hjem", label: "Hjem", icon: "home", href: "/portal" },
+  { id: "hjem", label: "I dag", icon: "home", href: "/portal" },
   { id: "plan", label: "Plan", icon: "calendar", href: "/portal/planlegge" },
-  { id: "gjor", label: "Gjør", icon: "play", href: "/portal/gjennomfore" },
   { id: "analyse", label: "Analyse", icon: "bar-chart", href: "/portal/analysere" },
   { id: "meg", label: "Meg", icon: "user", href: "/portal/meg" },
 ];
