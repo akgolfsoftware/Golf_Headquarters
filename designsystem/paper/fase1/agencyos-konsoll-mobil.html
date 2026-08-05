@@ -370,7 +370,7 @@ body{
    for desktop-vurdering; innholdet er ekte responsiv mobil-CSS.
    ═══════════════════════════════════════════════════════════════ */
 
-/* ── Papirbakgrunn + telefonramme ────────────────────────────── */
+/* ── Papirbakgrunn + telefonramme ────────────────────────── */
 body{ background:var(--soft); display:grid; place-items:center; min-height:100dvh; padding:var(--s5) var(--s4); }
 .phone{
   /* 430px = iPhone 16 Pro Max logisk bredde, 932px = høyden. Layoutmål. */
@@ -392,7 +392,7 @@ body{ background:var(--soft); display:grid; place-items:center; min-height:100dv
 /* Ark og scrim holdes inne i rammen */
 .phone .scrim, .phone .sheet{ position:absolute; }
 
-/* ── Toppbar ─────────────────────────────────────────────────── */
+/* ── Toppbar ───────────────────────────────────────────────── */
 .top{
   flex:none; display:flex; align-items:center; gap:var(--s2);
   padding:calc(var(--s2) + env(safe-area-inset-top)) var(--s4) var(--s2);
@@ -556,7 +556,7 @@ body:has(#sheet-capture.on) .btn.now.mic{
 .sendbtn:hover{ opacity:.88; }
 .sendbtn svg{ width:17px; height:17px; stroke:currentColor; stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round; }
 
-/* ── Bunnfaner — maks fem flater ─────────────────────────────── */
+/* ── Bunnfaner — maks fem flater ───────────────────────────── */
 .tabs{
   flex:none; display:grid; grid-template-columns:repeat(5,1fr);
   background:var(--rail); border-top:1px solid var(--border);
@@ -579,7 +579,7 @@ body:has(#sheet-capture.on) .btn.now.mic{
 }
 @container screen (max-width:360px){ .tabs a{ font-size:9px; } .tabs a svg{ width:18px; height:18px; } }
 
-/* ── Ark (bunn-ark) ──────────────────────────────────────────── */
+/* ── Ark (bunn-ark) ──────────────────────────────────────── */
 .scrim{ display:none; }
 .scrim.on{ display:block; }
 .sheet{ display:none; flex-direction:column; }
@@ -622,7 +622,7 @@ body:has(#sheet-capture.on) .btn.now.mic{
 .inv{ display:flex; align-items:flex-start; gap:var(--s2); font-family:var(--mono); font-size:10.5px; color:var(--up); padding:var(--s1) 0; }
 .inv svg{ width:12px; height:12px; margin-top:2px; stroke:currentColor; stroke-width:2.2; fill:none; flex:none; }
 
-/* ── FangstSheet ─────────────────────────────────────────────── */
+/* ── FangstSheet ───────────────────────────────────────────── */
 .capture{ display:flex; flex-direction:column; align-items:center; gap:var(--s3); padding:var(--s3) 0 var(--s4); }
 .micwrap{ position:relative; display:grid; place-items:center; width:104px; height:104px; }
 .micring{ position:absolute; inset:16px; border-radius:var(--r-pill); border:2px solid var(--accent); opacity:0; }
@@ -651,7 +651,7 @@ body:has(#sheet-capture.on) .btn.now.mic{
 .goalline{ display:flex; align-items:center; gap:var(--s2); font-size:12px; color:var(--muted); }
 .goalline .num{ font-size:13px; color:var(--fg); }
 
-/* ── Tilstander ──────────────────────────────────────────────── */
+/* ── Tilstander ────────────────────────────────────────────── */
 .skelrow{ display:grid; gap:var(--s2); margin-bottom:var(--s5); }
 .errbox{ padding:var(--s4); border:1px solid var(--dn); border-radius:var(--r); background:var(--surface); }
 .errbox h3{ margin:0 0 var(--s2); font-family:var(--disp); font-size:15px; font-weight:600; color:var(--dn); }
@@ -672,7 +672,7 @@ body:has(#sheet-capture.on) .btn.now.mic{
 }
 .toast.on{ display:flex; }
 
-/* ── Trykkflategulv ──────────────────────────────────────────────
+/* ── Trykkflategulv ──────────────────────────────────────────────────
    Denne skjermen er alltid touch, også når den vises i telefonrammen
    på en desktop med mus. Derfor heves alt til var(--tap) uavhengig
    av pointer-type — fundamentets coarse-overstyringer er ikke nok her. */
@@ -825,7 +825,7 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
               <li class="warn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>Maskinrom · 1 agentfeil, Faktura-vakten 03:14<span class="t num">2,4 s</span></li>
             </ul>
           </details>
-          <p class="say">Godkjenn Øyvinds ukeplan. Økta hennes starter <b>16:00 i Gamle Fredrikstad GK</b>, og formelen <span class="num">TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_OBSERVERT</span> er allerede lagt. Uten godkjenning ser hun ingenting i PlayerHQ når hun kommer.</p>
+          <p class="say">Godkjenn Øyvinds ukeplan. Økta starter <b>16:00 i Gamle Fredrikstad GK</b>, og formelen <span class="num">TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_OBSERVERT</span> er allerede lagt. Uten godkjenning ser Øyvind ingenting i PlayerHQ før økta.</p>
           <p class="say">De seks andre sakene i innboksenen tåler å vente til etter lunsj. Agentfeilen på Faktura-vakten er ikke tidskritisk.</p>
           <!-- Aksentmonopolet ligger på mikrofonen i composeren, ikke her.
                Derfor er godkjenn-handlingen .btn.ink — blekkfylt og bekreftende,
@@ -1300,8 +1300,8 @@ var cap=document.getElementById('capture'), capMic=document.getElementById('cap-
 var recTick=null, wordTick=null, secs=0, wordIx=0, recording=false;
 var WORDS=('Øyvind traff lengdekontrollen på sju av ti innspill fra seksti meter. '+
            'Tempoet var ustabilt de første femten slagene, så roet det seg. '+
-           'Hun ble for kort på de lange, cirka fire meter under flagget. '+
-           'Ingenting vondt. Vi kjører M2 videre neste økt.').split(' ');
+           'Ble for kort på de lange, cirka fire meter under flagget. '+
+           'Ingenting vondt. Vi kjører samme belastning videre neste økt.').split(' ');
 
 function fmt(s){ return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
 
@@ -1417,4 +1417,3 @@ setQueue(7);
 </script>
 </body>
 </html>
-

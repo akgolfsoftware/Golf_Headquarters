@@ -14,9 +14,10 @@ const css = `
    skal stoppe blikket. Hører i kind=status, ikke tag. */
 .akhq-badge--ny{color:var(--bg);background:var(--fg)}
 /* tag = fargeløs PERMANENT. AK-vokabularet (GRUNN/SPESIALISERING/TURNERING,
-   FYS/TEK/SLAG/SPILL/TURN, CS, M0–M5, PR1–PR5, L-faser, A–K) skal aldri
-   fargekodes — det sprenger paletten og kolliderer med datasemantikken der
-   grønn betyr bedre. Bindende; ikke ta det opp per skjerm. */
+   FYS/TEK/SLAG/SPILL/TURN, A–K, og AK-formel v2-verdiene — motorikk,
+   belastning, press) skal aldri fargekodes — det sprenger paletten og
+   kolliderer med datasemantikken der grønn betyr bedre. Bindende; ikke ta
+   det opp per skjerm. */
 .akhq-badge--tag{color:var(--muted);background:transparent;border-color:var(--border)}
 }`;
 if (typeof document !== "undefined" && !document.getElementById("akhq-css-badge")) { const s = document.createElement("style"); s.id = "akhq-css-badge"; s.textContent = css; document.head.appendChild(s); }

@@ -767,7 +767,7 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
                 <div class="eyebrow" style="margin-bottom:var(--s2)">systemet, uoppfordret · <span class="num">09:12</span></div>
                 <div class="nowblock" id="nowBlock">
                   <h3>Én ting nå</h3>
-                  <p class="prose">Øyvinds ukeplan for uke 32 har ventet på godkjenning i <span class="num">18 t</span>. Hun har økt i dag <span class="num">16:00–17:30</span> på Gamle Fredrikstad GK, og planen styrer den økta. Godkjenner du nå, ser hun den før hun drar hjemmefra.</p>
+                  <p class="prose">Øyvinds ukeplan for uke 32 har ventet på godkjenning i <span class="num">18 t</span>. Øyvind har økt i dag <span class="num">16:00–17:30</span> på Gamle Fredrikstad GK, og planen styrer den økta. Godkjenner du nå, er planen synlig i PlayerHQ før økta starter.</p>
                   <!-- Kontrakt §3: dette er skjermens ene aksenthandling. Alt annet i tråden er
                        lesing eller utforsking; bare denne har en frist i dag og blokkerer en spiller. -->
                   <button class="btn now" id="approveBtn" data-od-id="approve-oyvind-plan">Godkjenn ukeplan · Øyvind</button>
@@ -840,7 +840,7 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
             <li>Stallen: Øyvind Rohjan, Jonas Hveem, Filip Sandberg, Mia Kolstad</li>
             <li>Kalender uke 31 og 32 · Gamle Fredrikstad GK</li>
             <li>Øktlogg siste <span class="num">90 dager</span> · <span class="num">142</span> økter</li>
-            <li>CANON v3.5 · invarianter, kategorikrav A–K, L-faser</li>
+            <li>CANON v3.5 · invarianter, kategorikrav A–K, AK-formel v2</li>
             <li>Åpne punkter i tekniske tråder · <span class="num">6</span> stk.</li>
           </ul>
         </div>
@@ -1129,7 +1129,7 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
     var left = 10;
     nowBlock.innerHTML =
       '<h3>Godkjent <span class="num">09:12</span></h3>' +
-      '<p class="prose">Øyvinds ukeplan for uke 32 er godkjent og sendt. Hun har den i PlayerHQ f\u00f8r dagens \u00f8kt <span class="num">16:00\u201317:30</span>. Innboksen er nede i <span class="num">6</span> saker.</p>' +
+      '<p class="prose">Øyvinds ukeplan for uke 32 er godkjent og sendt. Den ligger i PlayerHQ før dagens økt <span class="num">16:00–17:30</span>. Innboksen er nede i <span class="num">6</span> saker.</p>' +
       '<div class="acts"><a class="btn" href="playerhq-chat-desktop.html" data-od-id="see-oyvind-playerhq">Se den slik Øyvind ser den</a></div>' +
       '<div class="undo"><button data-od-id="undo-approve">Angre</button><span>Angre virker i <span class="num" id="undoLeft">10</span> s</span></div>';
     announce('Ukeplanen for Øyvind er godkjent. Innboksen gikk fra 7 til 6. Angre virker i 10 sekunder.');
@@ -1144,7 +1144,7 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
   function finishUndo(){
     clearInterval(tickTimer); clearTimeout(undoTimer);
     var u = nowBlock.querySelector('.undo');
-    if (u) u.innerHTML = '<span>Angrefristen er ute. Endringen st\u00e5r.</span>';
+    if (u) u.innerHTML = '<span>Angrefristen er ute. Endringen står.</span>';
   }
   function undo(){
     clearInterval(tickTimer); clearTimeout(undoTimer);
@@ -1153,7 +1153,7 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
     nowBlock.innerHTML = nowBlockHTML;
     attachApprove();
     document.querySelector('[data-od-id="open-oyvind-plan"]').addEventListener('click', seeØyvindPlan);
-    announce('Godkjenningen er angret. Innboksen er tilbake p\u00e5 7 saker.');
+    announce('Godkjenningen er angret. Innboksen er tilbake på 7 saker.');
     var b = document.getElementById('approveBtn'); if (b) b.focus();
   }
   attachApprove();
@@ -1539,4 +1539,3 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
 </script>
 </body>
 </html>
-

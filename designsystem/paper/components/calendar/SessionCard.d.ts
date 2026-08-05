@@ -12,7 +12,7 @@ export interface SessionCardProps extends Omit<React.ButtonHTMLAttributes<HTMLBu
   /** Pyramideområde. Styrer venstrekantens farge. */
   area?: "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
   title: React.ReactNode;
-  /** AK-formelen, f.eks. TEK_TEE_L-BALL_CS60_M2_PR2. Mono, brytes aldri i to ord. */
+  /** AK-formelen (v2), f.eks. TEK_TEE_TOTAL_LAV_HAST_TRENINGSOMRADE_ALENE. Mono, brytes aldri i to ord. */
   formula?: string;
   /** "90 min" — vises i bunnlinjen. */
   duration?: string;

@@ -16,22 +16,22 @@ function Specimen({ narrow }) {
     <div className={"w " + W}>
 
       <div className="lab">øktkort · fem pyramideområder</div>
-      <SessionCard time="09:00–10:30" area="TEK" title="Teknikk tee — P5 til P7" formula="TEK_TEE_L-BALL_CS60_M2_PR2" duration="90 min" note="Mulligan 3" onClick={()=>{}} dataOdId="okt-tek" />
+      <SessionCard time="09:00–10:30" area="TEK" title="Teknikk tee — P5 til P7" formula="TEK_TEE_TOTAL_LAV_HAST_TRENINGSOMRADE_ALENE" duration="90 min" note="Mulligan 3" onClick={()=>{}} dataOdId="okt-tek" />
       <SessionCard time="07:00–07:45" area="FYS" title="Styrke underkropp" duration="45 min" note="WANG hall" onClick={()=>{}} dataOdId="okt-fys" />
-      <SessionCard time="11:00–12:00" area="SLAG" title="Wedge 40–90 m, hit-rate" formula="SLAG_WEDGE_CS70_M3_PR1" duration="60 min" onClick={()=>{}} dataOdId="okt-slag" />
+      <SessionCard time="11:00–12:00" area="SLAG" title="Wedge 40–90 m, hit-rate" formula="SLAG_INNSPILL_50_AUTO_TRENINGSOMRADE_KONKURRANSE" duration="60 min" onClick={()=>{}} dataOdId="okt-slag" />
       <SessionCard time="13:00–15:00" area="SPILL" title="Ni hull med scorekort" duration="120 min" onClick={()=>{}} dataOdId="okt-spill" />
       <SessionCard time="lør 08:00" area="TURN" title="Srixon Tour #4 — runde 1" duration="dagsøkt" onClick={()=>{}} dataOdId="okt-turn" />
 
       <div className="lab">tilstander · låst anker · gjentakende · delt økt · valgt · utkast · kompakt</div>
-      <SessionCard time="16:00–17:00" area="TEK" title="Fast ukesøkt — Emma" formula="TEK_TEE_L-BALL_CS60_M2_PR2" locked recurring duration="60 min" onClick={()=>{}} dataOdId="okt-laast" />
+      <SessionCard time="16:00–17:00" area="TEK" title="Fast ukesøkt — Øyvind" formula="TEK_TEE_TOTAL_LAV_HAST_TRENINGSOMRADE_ALENE" locked recurring duration="60 min" onClick={()=>{}} dataOdId="okt-laast" />
       <SessionCard time="17:00–18:30" area="SLAG" title="Gruppetime junior" participants={6} duration="90 min" note="Markus" onClick={()=>{}} dataOdId="okt-delt" />
-      <SessionCard time="10:00–11:00" area="TEK" title="Valgt økt (åpen i editoren)" formula="TEK_ARG_CS50_M1_PR3" selected duration="60 min" onClick={()=>{}} dataOdId="okt-valgt" />
+      <SessionCard time="10:00–11:00" area="TEK" title="Valgt økt (åpen i editoren)" formula="TEK_CHIP_LAV_HAST_TRENINGSOMRADE_OBSERVERT" selected duration="60 min" onClick={()=>{}} dataOdId="okt-valgt" />
       <SessionCard time="14:00–15:00" area="SPILL" title="Caddie-utkast: putting under press" draft duration="60 min" note="ikke lagt inn" onClick={()=>{}} dataOdId="okt-utkast" />
       <SessionCard time="08:00" area="FYS" title="Kompakt variant" compact duration="30 min" onClick={()=>{}} dataOdId="okt-kompakt" />
 
       <div className="lab">ukelerretets kolonnebredde · 132 px (formel faller bort) og 104 px (også område)</div>
-      <div className="kol"><SessionCard time="09:00" area="TEK" title="Teknikk tee — P5 til P7" formula="TEK_TEE_L-BALL_CS60_M2_PR2" duration="90 min" onClick={()=>{}} dataOdId="okt-smal" /></div>
-      <div className="kol2"><SessionCard time="09:00" area="TEK" title="Teknikk tee — P5 til P7" formula="TEK_TEE_L-BALL_CS60_M2_PR2" duration="90 min" onClick={()=>{}} dataOdId="okt-smalest" /></div>
+      <div className="kol"><SessionCard time="09:00" area="TEK" title="Teknikk tee — P5 til P7" formula="TEK_TEE_TOTAL_LAV_HAST_TRENINGSOMRADE_ALENE" duration="90 min" onClick={()=>{}} dataOdId="okt-smal" /></div>
+      <div className="kol2"><SessionCard time="09:00" area="TEK" title="Teknikk tee — P5 til P7" formula="TEK_TEE_TOTAL_LAV_HAST_TRENINGSOMRADE_ALENE" duration="90 min" onClick={()=>{}} dataOdId="okt-smalest" /></div>
 
       <div className="lab">budsjettlinje · innenfor vinduet, ingen brudd</div>
       <BudgetBar hours={6.5} min={5} max={8}
