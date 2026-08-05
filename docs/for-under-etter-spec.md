@@ -2,6 +2,13 @@
 
 Status: utkast til godkjenning · 2026-07-31 · gren `feature/for-under-etter-spec`
 
+> **⚠ §2 «Designsystem-beslutning: C, smalt» ER HISTORIKK (overstyrt 2026-08-03).**
+> Konklusjonen der — behold Inter/Familjen Grotesk/JetBrains Mono, «Poppins/Lora/IBM Plex gir
+> null verdi», ingen videre Paper-migrering før piloten — er **forkastet**. Anders overstyrte
+> den 03.08: **Claude Paper vinner alltid** (Claude Design `605a48cc`), full port kjører nå,
+> og Poppins/Lora/IBM Plex Mono er fasit-fontene. Flyt- og innholdsdelen av spesifikasjonen
+> (§3 og utover) står uendret. Gjeldende designregel: `.claude/rules/beslutninger.md` §Tema/design.
+
 Alt i dette dokumentet er verifisert mot kodebasen 2026-07-31. Der briefen og koden
 sier forskjellige ting, står koden. Avvikene er listet i §1.
 

@@ -16,7 +16,7 @@ AK Golf HQ er en helintegrert plattform som gir golfcoacher og spillere felles v
 | React | 19 |
 | Prisma | 7 + Supabase (Postgres) |
 | Tailwind CSS | v4, CSS-first via `@theme` i `globals.css` — INGEN `tailwind.config.ts` |
-| Fonts | Inter + Inter Tight + JetBrains Mono via `next/font/google` |
+| Fonts | Paper-fasit: Poppins + Lora + IBM Plex Mono. Koden bruker fortsatt Inter + Familjen Grotesk + JetBrains Mono til fontbyttet i porten er gjort. Inter Tight er fjernet |
 | Ikoner | Lucide React — eneste tillatte bibliotek |
 | Pakkebehandler | npm |
 

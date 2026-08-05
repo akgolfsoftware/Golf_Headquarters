@@ -60,7 +60,7 @@ akgolf-hq/
 │   │                         # marketing/v2) for pågående v2-porting, pluss
 │   │                         # frittstående planlegge-v2/ og test-modul-v2/.
 │   ├── lib/
-│   │   ├── design-tokens.ts  # TS-speil av globals.css
+│   │   ├── v2/tokens.ts      # TS-speil (T) av CSS-variablene — les herfra i TS
 │   │   ├── prisma.ts
 │   │   ├── utils.ts          # cn()
 │   │   └── supabase/

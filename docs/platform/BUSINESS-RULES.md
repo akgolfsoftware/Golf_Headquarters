@@ -239,14 +239,20 @@ AK Golf Academy bruker en 5-trinns trenings-pyramide:
 
 ## Tema per produkt
 
-> **Design (LÅST 2026-07-31):** App/pilot = C, smalt (v2-tokens + kun `--handling` `#D97757`
-> for «Én ting nå»). Claude Paper = designfasit i Open Design/speil; full port til `src/`
-> etter pilot. Se `docs/gjenstaaende-plan-2026-07-31.md` §1.1.
+> **Design (LÅST — Paper vinner alltid, Anders 2026-08-03):** Claude Design-prosjektet
+> «AK Golf HQ — Claude Paper» (`605a48cc`, skjermer i `fase1/`) er eneste designfasit, og
+> full port til `src/` kjører nå. Tidsplanen fra 31.07 («C, smalt» til etter FØR/UNDER/ETTER-piloten)
+> er **overstyrt** — `docs/gjenstaaende-plan-2026-07-31.md` §1.1 er historikk, ikke gjeldende regel.
+> Mangler en skjerm fasit: `docs/port/monsterdokument-paper.md` er eneste designkilde.
+> Ved konflikt mellom et dokument og Paper-fasiten vinner Paper-fasiten.
 >
 > **Token i kode:** `--v2-handling` / alias `--handling` i `src/app/globals.css`,
 > speilet som `T.handling` i `src/lib/v2/tokens.ts`. Bruk: `var(--handling)` eller
-> `T.handling`. Maks én primærhandling per skjerm. Lime/forest uendret for merkevare
-> og vanlige CTA-er.
+> `T.handling`. Maks én primærhandling per skjerm. Aldri aksent som dekorasjon.
+>
+> **Palett:** Paper-tokens (`--p-*` i `src/styles/paper-tokens.css`) er kilden — `--v2-*` peker
+> på dem etter porten steg 5A. Den gamle Presis-paletten (forest `#005840` / lime `#D1F843`)
+> er **ikke** lenger fasit; gjenværende forekomster er restarbeid i porten, ikke en regel å følge.
 >
 > Det under er beskrivelse av nåværende tema-oppførsel i kode (lys default + bryter),
 > ikke en konkurrerende designkanon.

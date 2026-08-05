@@ -3,9 +3,17 @@
 > **Hva dette er:** Hvordan hvert begrep VISES — enheter, tallformat, farger, chips, knapper,
 > eksempeldata. Lag 2 av terminologi-systemet: **lag 1** = `docs/ordbok-ak-golf-konsept.md`
 > (betydning + staving), **lag 3** = `docs/ordbok.json` (maskinlesbar, generert av
-> `scripts/ordbok-json.ts`). Ved konflikt om betydning/staving vinner ordboken; ved konflikt
-> om tokens/komponenter vinner `.claude/rules/designsystem.md` + `src/app/globals.css`.
-> Alle verdier her er verifisert mot koden 2026-07-03.
+> `scripts/ordbok-json.ts`). Ved konflikt om betydning/staving vinner ordboken.
+>
+> **⚠ FARGER OG FONTER HER ER UTGÅTT (05.08.2026).** §1 (palett) og §3 (typografi) beskriver den
+> avviklede Presis-paletten — forest `#005840`, lime `#D1F843`, Inter / Familjen Grotesk /
+> JetBrains Mono. **Claude Paper vinner alltid** (Claude Design `605a48cc`, skjermer i `fase1/`);
+> tokens: `src/styles/paper-tokens.css` (`--p-*`), mønstre: `docs/port/monsterdokument-paper.md`.
+> Ikke bruk verdiene under til nye skjermer.
+> (`.claude/rules/designsystem.md`, som denne fila tidligere pekte på, finnes ikke.)
+>
+> Resten — særlig **§2 tall, enheter og formatering** — er fortsatt gjeldende og
+> uavhengig av palett. Fargeverdiene ble verifisert mot koden 2026-07-03.
 
 ## 1. Farger per begrepsdomene
 
@@ -20,7 +28,7 @@
 | TURN | `#A32D2D` (rød) | `#F2908C` |
 
 Bruk utility-klassene `bg-pyr-fys`, `text-pyr-tek` osv. på lyse flater — aldri hex direkte.
-TS-speil for charts: `pyramidColors` i `src/lib/design-tokens.ts`. Track-varianter
+TS-speil for charts: `T` i `src/lib/v2/tokens.ts` (`src/lib/design-tokens.ts` er slettet). Track-varianter
 (`--color-pyr-*-track`) for lette bakgrunner. **NB lys-regel:** aldri lime-på-lys som
 tekst/ikon — lime er flate/aksent (jf. theme-light-dark-regelen).
 
@@ -38,7 +46,9 @@ rund badge øverst til høyre — hake på lime (`WB.lime`) = på plan · kryss 
 = avvik · minus på grå (`WB.muted`) = ikke gjennomført (kortet dempes til 72 % opacity).
 Fremtidige økter: INGEN badge. Kilde: `COMPLIANCE_COLORS` + UkeView.
 
-### Semantiske tokens (lys — fasit i globals.css / designsystem.md)
+### Semantiske tokens (lys) — UTGÅTT, historikk
+
+> Presis-verdier, ikke lenger fasit. Gjeldende: Paper-tokens `--p-*` i `src/styles/paper-tokens.css`.
 
 `background #FAFAF7 · foreground #0A1F17 · card #FFFFFF · primary #005840 ·
 primary-foreground #D1F843 · accent #D1F843 · accent-foreground #005840 ·
@@ -64,12 +74,15 @@ warning #B8852A · info #2563EB · border #E5E3DD`. Bruk alltid klassene (`bg-pr
 | Perioder/ranges | tankestrek (—), ikke bindestrek | `19—25 mai` |
 | KPI-/tabulære tall | JetBrains Mono (`font-mono`) | alle store tall og eyebrows |
 
-## 3. Typografi per begrepsbruk
+## 3. Typografi per begrepsbruk — UTGÅTT, historikk
 
-Inter (`font-sans`) = UI/brødtekst · Familjen Grotesk (`font-display`) = display/hero (editorial
-italic på nøkkelord) — Inter Tight er fjernet (design-beslutninger: `.claude/rules/beslutninger.md` §Tema/design) ·
-JetBrains Mono (`font-mono`) = KPI-tall, tabulære tall, eyebrows,
-koder (CS80, M2, PR3, P4.0). Ingen andre fonter.
+> **Gjeldende (Claude Paper):** Poppins = UI og titler · **Lora = prosa og AI-svar** ·
+> IBM Plex Mono = alle tall, koder og eyebrows (tabulære tall alltid).
+> Se `docs/port/monsterdokument-paper.md` §3.
+
+Presis-oppsettet under er avviklet: Inter (`font-sans`) = UI/brødtekst · Familjen Grotesk
+(`font-display`) = display/hero (editorial italic på nøkkelord) · JetBrains Mono (`font-mono`) =
+KPI-tall, tabulære tall, eyebrows, koder (CS80, M2, PR3, P4.0). Inter Tight er fjernet.
 
 ## 4. Chips, badges og statusvisning
 

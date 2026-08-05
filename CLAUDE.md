@@ -30,10 +30,13 @@ via `claude-design`-MCP-verktøyet) er designfasit; full port til `src/` kjører
 
 ## Harde invarianter (brytes aldri)
 1. **Anbefalinger sperrer aldri:** ingenting i appen blokkerer trening. Aldri «kan ikke brytes»-kode/tekst.
-2. **Design tidsplan (2026-07-31, OVERSTYRT 2026-08-03):** Anders overstyrte eksplisitt «full Paper-port
-   først etter pilot» — full porten kjører nå, skjerm for skjerm, per `docs/port/plan-designport-alle-skjermer.md`
-   (steg 1–6 + steg 7 PR1 i main, steg 7 PR2+ pågår). Hex-gaten for Presis forblir borte — ikke gjenopprett
-   uten ny beslutning.
+2. **Claude Paper vinner alltid (LÅST 2026-08-03/05).** Claude Design-prosjektet «AK Golf HQ — Claude
+   Paper» (`605a48cc`, skjermer i `fase1/`) er eneste designfasit — for design OG produksjonskode.
+   Full porten kjører nå, skjerm for skjerm, per `docs/port/plan-designport-alle-skjermer.md`.
+   Tidsplanen fra 31.07 («C, smalt» til etter piloten) er **overstyrt** og skal ikke følges.
+   Mangler skjermen fasit: `docs/port/monsterdokument-paper.md` er eneste designkilde.
+   **Sier et dokument, en skill eller en kodekommentar noe annet enn Paper-fasiten, vinner
+   Paper-fasiten — og dokumentet skal rettes, ikke følges.** Hex-gaten for Presis forblir borte.
 3. **Norsk bokmål i all UI-tekst.**
 4. **Lucide-ikoner** — aldri emoji i UI. Primitiver fra `components/ui/` + `v2/`-mønstre.
 5. **Domenelogikk kun i `src/lib/domain/`** — aldri i komponenter.
@@ -66,8 +69,10 @@ avviklet designprosjekt. Ligger i git-historikken.)
 - **Next.js 16.2.6** (App Router, Turbopack, TS strict) + **React 19.2.4** + Vercel. Node 24 i CI.
 - **Prisma 7.8** + `@prisma/adapter-pg` + **Supabase** Postgres (RLS) — Supabase Auth (Google + e-post/passord).
 - **Tailwind CSS v4** (CSS-first `@theme`, ingen config-fil) — uttrykk via `src/app/globals.css`.
-- **Fonter:** Inter (UI/brødtekst) + Familjen Grotesk (eneste display-font) + JetBrains Mono (KPI/tabulære tall),
-  alle via `next/font/google`. **Inter Tight er fjernet** (Fase 3, 2026-07-07) — ikke gjeninnfør.
+- **Fonter:** Paper-fasiten er **Poppins** (UI/titler) + **Lora** (prosa/AI-svar) + **IBM Plex Mono** (tall) —
+  alle lastet i `src/app/layout.tsx` og eksponert som `--p-font-*`. Koden bruker per nå fortsatt
+  Inter / Familjen Grotesk / JetBrains Mono: **fontbyttet er ikke gjennomført** og står som åpent punkt
+  i porten. Bygg nytt mot Paper-fasiten. **Inter Tight er fjernet** — ikke gjeninnfør.
 - **Lucide React** — eneste ikon-bibliotek. **npm** — pakkebehandler.
 - **Serwist 9** (`@serwist/next` + `@serwist/cli`) — PWA/offline. SW bygges av et eget `serwist build`-steg
   ETTER `next build` (se `serwist.config.mjs` + gotchas: Turbopack kjører aldri webpack-pluginen).

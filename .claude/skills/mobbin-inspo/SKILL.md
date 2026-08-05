@@ -11,7 +11,7 @@ description: >
 
 ## Hva
 Mobbin = 600k+ **ekte** skjermer. Bruk for struktur og flyt — **ikke** kopier farger.
-AK-fasit: `.claude/rules/beslutninger.md` §Tema/design (v2-tokens + C smalt; Claude Paper i Open Design). AgencyOS = mørk, lime kun på NÅ.
+AK-fasit: **Claude Paper** (Claude Design `605a48cc`, skjermer i `fase1/`) — se `.claude/rules/beslutninger.md` §Tema/design. Paper vinner alltid over Mobbin-referansen. Aksent `#D97757` kun på «Én ting nå», maks én per skjerm; lime/forest er avviklet.
 
 ## Auth (hvis MCP feiler)
 Claude: `/mcp` → mobbin → Authenticate → logg inn.  

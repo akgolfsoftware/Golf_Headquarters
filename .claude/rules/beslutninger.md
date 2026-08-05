@@ -118,10 +118,15 @@ Gjelder til Anders endrer dem.
   økter), IKKE app-nivåer. **ELITE finnes ikke** (dødt Prisma-enum — vis aldri i UI).
 - **FYS-resultatformel avventer:** Bygg testskjermer med plassholder-tall. Ikke hardkod
   referanseverdier før Anders gir grønt lys.
-- **Design-kilde (oppdatert 2026-07-31):** Presis/v2-kanonen er avviklet som *ny* designkilde.
-  **Claude Paper** (Open Design `be6bdcb8-…` / Claude Design `605a48cc`) er designfasit for
-  videre designarbeid. **Produksjonskode** følger fortsatt v2-tokens + C, smalt (`--handling`)
-  til post-pilot. `docs/design-system/` og `docs/redesign-v2/` er SLETTET 2026-07-31 (git-historikk);
+- **Design-kilde (oppdatert 2026-08-05 — PAPER VINNER ALLTID):** **Claude Paper** (Claude Design
+  `605a48cc`, skjermer i `fase1/`; Open Design `be6bdcb8-…`) er eneste designfasit — for både
+  designarbeid OG produksjonskode. Presis/v2-kanonen er avviklet. Setningen «produksjonskode
+  følger fortsatt v2-tokens + C, smalt til post-pilot» sto her frem til 05.08 og er **feil** —
+  Anders overstyrte den 03.08, se §Tema/design over. Mangler en skjerm fasit:
+  `docs/port/monsterdokument-paper.md` er eneste designkilde.
+  **Konfliktregel:** sier et dokument, en skill eller en kommentar noe annet enn Paper-fasiten,
+  vinner Paper-fasiten — og dokumentet skal rettes, ikke følges.
+  `docs/design-system/` og `docs/redesign-v2/` er SLETTET 2026-07-31 (git-historikk);
   kun `docs/design-system/TEMA-LYS-MORK.md` står som tema-beskrivelse av *kode*.
 - **Skjermtekst (copy-kilde):** `docs/skjermtekst/` — ekte norsk UI-tekst per hovedskjerm +
   design-brief. Kopier derfra, ikke dikt opp ny tekst.

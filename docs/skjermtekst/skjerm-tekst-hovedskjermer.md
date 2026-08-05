@@ -5,18 +5,27 @@ Den faktiske norske teksten som står PÅ skjermene, for **PlayerHQ** (spiller),
 (`docs/design-guide-terminologi.md` lag 2 + `docs/ordbok-ak-golf-konsept.md` lag 1).
 Skrevet 5. juli 2026. Kopier rett inn i design/implementasjon.
 
+> **⚠ Dette dokumentet eier TEKST, ikke utseende (presisert 05.08.2026).** Punktene om font,
+> knappeform og farge under er fra den avviklede Presis-æraen. **Claude Paper vinner alltid**
+> (Claude Design `605a48cc`) — utseende hentes fra fasit-skjermen, eller fra
+> `docs/port/monsterdokument-paper.md` når skjermen mangler fasit. Bruk denne fila kun til
+> ordlyd, tallformat og rolle-regler.
+
 **Rolle-regel (viktig):** Spiller ser KUN klarspråk (Innspill/Nærspill, «% av maksfart»).
 Coach ser kode + navn (`TEK · INN150 · L-BALL · CS70 · M2 · PR2`). Markedsflatene bruker
 ekte coach **Markus Røinås Pedersen** (aldri demo-spilleren), humanisert tekst uten em-strek.
 
 ## Fasit-regler brukt her (fra ordboken)
-- **Demo-spiller:** Øyvind Rohjan · HCP **+3,5** · **Kategori A** (A = beste, tour-nær — governing beslutning i `public/design-handover/CLAUDE.md`; ordbokens «A=nybegynner» er forkastet).
+- **Demo-spiller:** Øyvind Rohjan · HCP **+3,5** · **Kategori A** (A = beste, tour-nær — governing beslutning fra design-handoveren i juni 2026 — mappa `public/design-handover/` er siden
+slettet, beslutningen står ved lag; ordbokens «A=nybegynner» er forkastet).
 - **SG:** fortegn ALLTID (+/−), komma, ekte minus «−», klarspråk-label: Tee-slag · Innspill · Nærspill · Putting.
 - **Avstander:** innspill i **meter**, putting i **fot (ft)**.
 - **Tall:** komma-desimal, mellomrom-tusenskille, `73 %` (mellomrom før %), 24-t klokke, tankestrek i perioder.
 - **Tomtilstand:** verdi `—` + ærlig subtekst, aldri oppdiktet tall.
-- **Knapper:** rounded-full pill, mono 12px bold uppercase. Tekst per ordbok-tabell.
-- **Font:** Familjen Grotesk (display) — IKKE Inter Tight (stale i lag 2, overstyrt av handover-kanon).
+- **Knapper:** tekst per ordbok-tabell. Form og størrelse følger Paper-fasiten
+  (`--r-sm` 8px, 13px) — den gamle regelen «rounded-full pill, mono 12px bold uppercase» er utgått.
+- **Font:** Paper — Poppins (UI/titler), Lora (prosa), IBM Plex Mono (tall).
+  Familjen Grotesk og Inter Tight er begge utgått.
 - **Ingen emoji.** Lucide-ikoner.
 
 ---
