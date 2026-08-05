@@ -62,7 +62,7 @@ function LoopNav({ gjennomfore }: { gjennomfore: GjennomforeData }) {
   });
 
   return (
-    <nav aria-label="Sløyfen før, under og etter økta" style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 4 }}>
+    <nav aria-label="Sløyfen før, under og etter økta" style={{ display: "flex", alignItems: "center", gap: 4 }}>
       <span style={stegStil(true, true)}>FØR</span>
       <span style={{ color: T.border, fontSize: 12 }} aria-hidden>→</span>
       {under ? (
@@ -152,39 +152,45 @@ export function PortalChatHjem({
       <header
         style={{
           display: "flex",
+          flexWrap: "wrap",
           alignItems: "center",
-          gap: 16,
+          justifyContent: "space-between",
+          columnGap: 16,
+          rowGap: 8,
           padding: "12px 20px",
           borderBottom: `1px solid ${T.border}`,
           background: T.bg,
         }}
       >
-        <div>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>I dag</h1>
-          <div style={{ fontFamily: T.mono, fontSize: 10.5, letterSpacing: "0.04em", color: T.mut, marginTop: 2 }}>
+        <div style={{ minWidth: 0 }}>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>I dag</h1>
+          <div style={{ fontFamily: T.mono, fontSize: 10.5, letterSpacing: "0.04em", color: T.mut, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
             {data.greeting} · uke {data.weekNumber}
           </div>
         </div>
-        <LoopNav gjennomfore={gjennomfore} />
-        <button
-          type="button"
-          onClick={() => setArtefaktApen(true)}
-          className="v2-press v2-focus"
-          style={{
-            minHeight: 36,
-            padding: "0 12px",
-            borderRadius: 8,
-            border: `1px solid ${T.border}`,
-            background: "transparent",
-            color: T.fg,
-            fontFamily: T.ui,
-            fontSize: 12,
-            fontWeight: 500,
-            cursor: "pointer",
-          }}
-        >
-          Dagens økt
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <LoopNav gjennomfore={gjennomfore} />
+          <button
+            type="button"
+            onClick={() => setArtefaktApen(true)}
+            className="v2-press v2-focus"
+            style={{
+              minHeight: 36,
+              padding: "0 12px",
+              borderRadius: 8,
+              border: `1px solid ${T.border}`,
+              background: "transparent",
+              color: T.fg,
+              fontFamily: T.ui,
+              fontSize: 12,
+              fontWeight: 500,
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Dagens økt
+          </button>
+        </div>
       </header>
 
       {/* ── Tråd ── */}
