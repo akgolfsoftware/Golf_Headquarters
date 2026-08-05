@@ -133,6 +133,13 @@ er at hver bølge krymper i steg 1.
 3. **Aktivt konsolideringsmandat** — design-øktene foreslår sammenslåinger/kutt per område;
    Anders sier ja/nei per område før tegning.
 
+### W1 — TEGNET OG BATCH-GODKJENT (Anders' ja 05.08.2026 kveld)
+
+Alle 11 wireframes i `fase2/playerhq/` er batch-godkjent av Anders — de er nå fasit.
+Dekningsregnskapet i `fasit-liste-paper.md` er oppdatert (25 → 36 ruter), lokalt speil
+synket til `designsystem/paper/fase2/`. Neste bølge: **W2 (Analysere + Hjem-rest)** —
+konsolideringsgate før tegning.
+
 ### W1 — konsolideringsgate GJENNOMFØRT (Anders' ja 05.08.2026)
 
 Fire vedtak + tre stubbe-funn krympet W1 fra 18 til **11 skjermer som tegnes**:

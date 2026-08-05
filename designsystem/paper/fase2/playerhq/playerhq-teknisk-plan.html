@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Teknisk plan · PlayerHQ · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══ akhq-tokens.css v3.1 — KOPIERT VERBATIM. Eneste tokenkilde. ═══ */
+:root {
+  --bg: #faf9f5; --surface: #ffffff; --soft: #f0eee6; --soft-hover: #e8e6dc;
+  --surface-warm: #e3dacc; --surface-manilla: #ebdbbc; --surface-kraft: #d4a27f;
+  --border: #e8e6dc; --hairline: #d1cfc5; --inverse: #000000;
+  --fg: #141413; --ink-soft: #3d3d3a; --muted: #5e5d59; --mid: #b0aea5; --text-tertiary: #87867f;
+  --cta: #141413; --on-cta: #faf9f5; --cta-hover: #3d3d3a;
+  --accent: #d97757; --accent-soft: rgba(217, 119, 87, 0.12); --accent-fg: #b85c3d;
+  --on-accent: #141413; --accent-deep: #c6613f;
+  --up: #63784a; --up-raw: #788c5d; --dn: #a85536; --info: #46719f; --info-raw: #6a9bcc;
+  --font-sans: "Poppins", Arial, system-ui, sans-serif;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --disp: var(--font-sans); --ui: var(--font-sans); --body: var(--font-serif); --mono: var(--font-mono);
+  --text-label: 10px; --text-body-player: 14px;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
+  --r-sm: 8px; --r: 12px; --r-md: 16px; --r-lg: 24px; --r-pill: 999px;
+  --shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
+  --focus: #d97757; --ease: cubic-bezier(0.16, 1, 0.3, 1); --dur: 160ms;
+  --tap: 44px; --tap-lg: 48px; --z-toast: 100;
+}
+[data-theme="dark"] {
+  color: #faf9f5;
+  --bg: #141413; --surface: #1d1c1a; --soft: #26241f; --soft-hover: #2e2c28;
+  --border: rgba(250, 249, 245, 0.10); --hairline: rgba(250, 249, 245, 0.08);
+  --fg: #faf9f5; --ink-soft: #e8e6dc; --muted: #b0aea5; --mid: #6b675e;
+  --cta: #faf9f5; --on-cta: #141413; --cta-hover: #e8e6dc;
+  --accent: #d97757; --accent-soft: rgba(217, 119, 87, 0.18); --accent-fg: #e5a184; --on-accent: #141413;
+  --up: #9db284; --dn: #de9e82; --info: #93b7dc;
+  --shadow: none; --focus: #d97757;
+}
+[data-theme="light"] { color: #141413; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+@media (pointer: coarse) { :root { --floor: var(--tap); } }
+:root{ --softer:#f6f4ee; --border-soft:#efede4; }
+[data-theme="dark"]{ --softer:#1a1917; --border-soft:rgba(250,249,245,.06); }
+
+/* ═══ PlayerHQ · Teknisk plan (fase2/W1) ═══
+   Rute: /portal/tren/teknisk-plan/[planId] — spillerens tekniske
+   utviklingsplan. MORAD-kjernen: P-posisjonene P1.0–P10.0 er språket
+   (aldri GOBBS, aldri forenklet). Kilde: TekniskPlan → fokusområder. */
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; }
+body{ background:var(--bg); color:var(--fg); font-family:var(--ui);
+  font-size:var(--text-body-player); line-height:1.55; -webkit-font-smoothing:antialiased; }
+[hidden]{ display:none !important; }
+button{ font:inherit; color:inherit; }
+.num{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.eyebrow{ font-family:var(--mono); font-size:var(--text-label); font-weight:500;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+:where(a,button,summary,[tabindex]):focus-visible{
+  outline:2px solid var(--focus); outline-offset:2px; border-radius:var(--r-sm); }
+
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
+  min-height:var(--tap-lg); padding:0 var(--s4); font-size:14px; font-weight:500;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; white-space:nowrap; text-decoration:none; color:inherit; }
+.btn:hover{ background:var(--soft); border-color:var(--mid); }
+.btn.now{ background:var(--accent); color:var(--on-accent); border-color:var(--accent);
+  font-weight:600; min-height:56px; }
+.btn.full{ width:100%; }
+.tag{ display:inline-flex; align-items:center; padding:3px var(--s2); border-radius:var(--r-pill);
+  font-family:var(--mono); font-size:10px; letter-spacing:.04em; text-transform:uppercase;
+  background:var(--soft); color:var(--muted); border:1px solid var(--border); }
+.tag.up{ color:var(--up); } .tag.info{ color:var(--info); }
+
+.phone{ width:430px; max-width:100%; height:920px; margin:0 auto; position:relative;
+  overflow:hidden; background:var(--bg); border:1px solid var(--border);
+  border-radius:var(--r-lg); display:flex; flex-direction:column; }
+@media (max-width:640px){
+  .phone{ width:100%; height:100dvh; max-width:none; border:0; border-radius:0; }
+  .framehint{ display:none; }
+}
+@media (min-width:1024px){
+  .phone{ width:100%; max-width:none; height:100vh; border:0; border-radius:0; }
+  .kropp > *{ max-width:720px; margin-left:auto; margin-right:auto; }
+}
+.framehint{ text-align:center; font-size:11px; color:var(--muted); padding:var(--s3); }
+
+.topp{ flex:none; display:flex; align-items:center; gap:var(--s2);
+  padding:calc(var(--s3) + env(safe-area-inset-top)) var(--s4) var(--s3);
+  border-bottom:1px solid var(--border); background:var(--surface); }
+.topp h1{ margin:0; font-family:var(--disp); font-size:17px; font-weight:600; }
+.topp .sub{ display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); }
+.ikon{ flex:none; width:var(--tap); height:var(--tap); display:grid; place-items:center;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; color:inherit; text-decoration:none; }
+.ikon svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.7;
+  stroke-linecap:round; stroke-linejoin:round; }
+
+.kropp{ flex:1; min-height:0; overflow-y:auto;
+  padding:var(--s4) var(--s4) calc(var(--s8) + env(safe-area-inset-bottom)); }
+
+.nowblock{ background:var(--accent-soft); border:1px solid var(--border);
+  border-radius:var(--r); padding:var(--s4); margin-bottom:var(--s4); }
+.nowblock h3{ margin:var(--s2) 0 var(--s2); font-family:var(--disp); font-size:15px; font-weight:600; }
+.nowblock p{ margin:0 0 var(--s4); font-family:var(--body); font-size:14px;
+  color:var(--muted); max-width:52ch; }
+
+.kort{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  padding:var(--s4); margin-bottom:var(--s4); }
+.kort .rad{ display:flex; align-items:baseline; gap:var(--s2); padding:var(--s2) 0;
+  border-bottom:1px solid var(--border-soft); font-size:13px; }
+.kort .rad:last-child{ border-bottom:0; }
+.kort .rad .v{ margin-left:auto; font-family:var(--mono); text-align:right; }
+
+/* Fokusområder — P-posisjoner (MORAD) */
+.fokus{ border:1px solid var(--border); border-radius:var(--r); padding:var(--s3) var(--s4);
+  margin-bottom:var(--s2); background:var(--surface); }
+.fokus .fp{ font-family:var(--mono); font-size:11px; color:var(--accent-fg); font-weight:600; }
+.fokus .fn{ display:block; font-size:13.5px; font-weight:600; margin-top:2px; }
+.fokus .fb{ display:block; font-family:var(--body); font-size:12.5px; color:var(--muted);
+  margin-top:var(--s1); }
+.fokus .stolpe{ height:6px; background:var(--soft); border-radius:var(--r-pill);
+  overflow:hidden; margin-top:var(--s3); }
+.fokus .stolpe i{ display:block; height:100%; background:var(--mid); border-radius:var(--r-pill); }
+.fokus .fm{ display:block; font-family:var(--mono); font-size:10px; color:var(--muted);
+  margin-top:var(--s1); }
+
+.why{ margin:var(--s3) 0 0; border:1px solid var(--border); border-radius:var(--r); }
+.why summary{ display:flex; align-items:center; min-height:var(--tap); padding:0 var(--s4);
+  cursor:pointer; list-style:none; font-size:12.5px; font-weight:500; color:var(--muted); }
+.why summary::-webkit-details-marker{ display:none; }
+.why[open] summary{ border-bottom:1px solid var(--border); color:var(--fg); }
+.why ul{ margin:0; padding:var(--s3) var(--s4) var(--s4) var(--s5);
+  font-family:var(--body); font-size:13px; color:var(--muted); }
+.why li{ margin-bottom:var(--s2); }
+
+.tom{ padding:var(--s5) var(--s4); background:var(--soft); border:1px dashed var(--border);
+  border-radius:var(--r); }
+.tom h3{ margin:0 0 var(--s2); font-family:var(--disp); font-size:15px; font-weight:600; }
+.tom p{ margin:0 0 var(--s3); font-family:var(--body); font-size:13.5px; color:var(--muted); }
+.skel{ height:16px; background:var(--soft); border-radius:var(--r-sm);
+  margin-bottom:var(--s2); animation:puls 1.6s var(--ease) infinite; }
+@keyframes puls{ 0%,100%{opacity:1} 50%{opacity:.55} }
+button,.btn,summary,a.btn{ min-height:var(--tap); }
+.tag,.num,.eyebrow,.fokus .fm{ min-height:0; }
+</style>
+</head>
+<body>
+<p class="framehint">PlayerHQ · Teknisk plan · 430 px. Under 641 px fyller den skjermen.</p>
+<!-- Telefonramme = demo-chrome, skal bort ved integrasjon -->
+<div class="phone" data-demo-only="true">
+
+  <header class="topp">
+    <a class="ikon" href="../../fase1/playerhq-plan.html" aria-label="Til planen" data-od-id="tek-tilbake">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <div style="min-width:0">
+      <h1>Teknisk plan</h1>
+      <span class="sub">Høst 2026 · publisert av Anders</span>
+    </div>
+    <span style="flex:1"></span>
+    <!-- demo-bryter · fjernes før koding -->
+    <div data-demo-only="true" style="display:flex;gap:4px">
+      <button class="ikon" data-tilstand="fylt" aria-pressed="true" aria-label="Demo: suksess" data-od-id="tek-demo-fylt"><span class="num" style="font-size:10px">F</span></button>
+      <button class="ikon" data-tilstand="tom" aria-pressed="false" aria-label="Demo: tom" data-od-id="tek-demo-tom"><span class="num" style="font-size:10px">T</span></button>
+      <button class="ikon" data-tilstand="laster" aria-pressed="false" aria-label="Demo: laster" data-od-id="tek-demo-laster"><span class="num" style="font-size:10px">L</span></button>
+      <button class="ikon" data-tilstand="feil" aria-pressed="false" aria-label="Demo: feil" data-od-id="tek-demo-feil"><span class="num" style="font-size:10px">E</span></button>
+    </div>
+    <button class="ikon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="tek-theme">
+      <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </header>
+
+  <main class="kropp" id="kropp"></main>
+</div>
+
+<div class="sr" id="live" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ═══ Teknisk plan · datamodell ═══
+   Kilde: TekniskPlan → fokusområder. P-posisjoner = MORAD P1.0–P10.0
+   (coaching-DNA — aldri forenklet, aldri GOBBS). Fremdrift per fokus
+   telles fra økter merket med området. */
+
+var PLAN = { navn:'Høst 2026', periode:'uke 33–44', okterIgjen:14 };
+
+var FOKUS = [
+  { p:'P2.0', navn:'Skaftvinkel halvveis tilbake',
+    b:'Skaftet parallelt med tålinja når armen er horisontal. Filmes fra face-on hver økt.',
+    gjort:6, av:10 },
+  { p:'P4.0 → P5.0', navn:'Overgang · sekvens',
+    b:'Hofta leder før armene. Måles på TrackMan-sekvensen, ikke på følelsen.',
+    gjort:3, av:12 },
+  { p:'P7.0', navn:'Treffposisjon · shaft lean',
+    b:'Hendene foran ballen ved treff på innspill. Henger sammen med lengdekontrollen.',
+    gjort:8, av:8 }
+];
+
+var tilstand = 'fylt';
+
+function el(tag, cls, txt){ var e = document.createElement(tag);
+  if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+
+function render(){
+  var w = document.getElementById('kropp'); w.innerHTML = '';
+
+  if (tilstand === 'laster'){
+    for (var i = 0; i < 6; i++){ var s = el('div', 'skel'); s.style.width = (92 - i*9) + '%'; w.appendChild(s); }
+    return;
+  }
+  if (tilstand === 'tom'){
+    var t = el('div', 'tom');
+    t.appendChild(el('h3', null, 'Ingen teknisk plan ennå'));
+    t.appendChild(el('p', null,
+      'Anders har ikke publisert en teknisk plan for deg. Den bygges vanligvis ' +
+      'etter en svinganalyse — be om en, så starter dere der.'));
+    var b = el('button', 'btn now full', 'Be Anders om svinganalyse');
+    b.dataset.odId = 'tek-tom-be';
+    b.addEventListener('click', function(){
+      document.getElementById('live').textContent = 'Forespørsel sendt til Anders'; });
+    t.appendChild(b); w.appendChild(t); return;
+  }
+  if (tilstand === 'feil'){
+    var f = el('div', 'tom');
+    f.appendChild(el('h3', null, 'Klarte ikke å hente planen'));
+    f.appendChild(el('p', null,
+      'Planlageret svarte ikke innen 30 sekunder. Fremdriften din er lagret — ' +
+      'det er bare visningen som mangler.'));
+    var fb = el('button', 'btn now full', 'Prøv igjen'); fb.dataset.odId = 'tek-retry';
+    fb.addEventListener('click', function(){ tilstand = 'fylt'; settDemo(); });
+    f.appendChild(fb); w.appendChild(f); return;
+  }
+
+  /* ── Suksess ── */
+  var nb = el('div', 'nowblock');
+  nb.appendChild(el('div', 'eyebrow', 'Én ting nå'));
+  var h = el('h3', null, 'Neste tekniske økt: P4.0 → P5.0 · overgang');
+  nb.appendChild(h);
+  nb.appendChild(el('p', null,
+    'Overgangen er fokuset med størst gjenstående arbeid — 3 av 12 økter gjort. ' +
+    'Neste ledige økt i planen din er torsdag.'));
+  /* Kontrakt §3: skjermens ene aksenthandling. */
+  var b2 = el('a', 'btn now full', 'Åpne torsdagsøkta');
+  b2.href = 'playerhq-okt-detalj.html'; b2.dataset.odId = 'tek-neste-okt';
+  nb.appendChild(b2);
+  w.appendChild(nb);
+
+  var k = el('div', 'kort');
+  k.appendChild(el('div', 'eyebrow', 'planen'));
+  [['Periode', PLAN.navn + ' · ' + PLAN.periode],
+   ['Økter igjen', String(PLAN.okterIgjen)],
+   ['Fokusområder', String(FOKUS.length)],
+   ['Publisert av', 'Anders Kristiansen']].forEach(function(pr){
+    var r = el('div', 'rad');
+    r.appendChild(el('span', null, pr[0]));
+    r.appendChild(el('span', 'v num', pr[1]));
+    k.appendChild(r);
+  });
+  w.appendChild(k);
+
+  w.appendChild(el('div', 'eyebrow', 'fokusområder · P-posisjoner'));
+  var fw = el('div'); fw.style.marginTop = 'var(--s2)';
+  FOKUS.forEach(function(f2){
+    var d = el('div', 'fokus');
+    d.appendChild(el('span', 'fp num', f2.p));
+    d.appendChild(el('span', 'fn', f2.navn));
+    d.appendChild(el('span', 'fb', f2.b));
+    var st = el('span', 'stolpe'); var i2 = el('i');
+    i2.style.width = Math.round(f2.gjort / f2.av * 100) + '%';
+    st.appendChild(i2); d.appendChild(st);
+    d.appendChild(el('span', 'fm num', f2.gjort + ' av ' + f2.av + ' økter' +
+      (f2.gjort >= f2.av ? ' · fullført' : '')));
+    fw.appendChild(d);
+  });
+  w.appendChild(fw);
+
+  var wd = el('details', 'why'); wd.dataset.odId = 'tek-why';
+  wd.style.marginTop = 'var(--s4)';
+  wd.appendChild(el('summary', null, 'Hvorfor disse fremdriftstallene'));
+  var ul = document.createElement('ul');
+  ['Kilde: øktene i planen din merket med hvert fokusområde, telt fra loggen.',
+   'Beregning: en økt teller når den er logget fullført — ikke når den er planlagt.',
+   'Forbehold: fremdrift måler gjennomføring, ikke kvalitet. Om P2.0 faktisk sitter, avgjøres på film og TrackMan — sammen med Anders.']
+   .forEach(function(x){ ul.appendChild(el('li', null, x)); });
+  wd.appendChild(ul);
+  w.appendChild(wd);
+}
+
+function settDemo(){
+  document.querySelectorAll('[data-tilstand]').forEach(function(b){
+    b.setAttribute('aria-pressed', String(b.dataset.tilstand === tilstand)); });
+  render();
+}
+document.querySelectorAll('[data-tilstand]').forEach(function(b){
+  b.addEventListener('click', function(){ tilstand = b.dataset.tilstand; settDemo(); }); });
+
+var KEY = 'akhq-theme-playerhq';
+var saved = null;
+try { saved = localStorage.getItem(KEY); } catch(e){}
+if (saved) document.documentElement.dataset.theme = saved;
+document.getElementById('themeBtn').addEventListener('click', function(){
+  var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem(KEY, next); } catch(e){}
+  this.setAttribute('aria-label', next === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
+});
+
+render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Srixon Tour avd. 4 · PlayerHQ · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══ akhq-tokens.css v3.1 — KOPIERT VERBATIM. Eneste tokenkilde. ═══ */
+:root {
+  --bg: #faf9f5; --surface: #ffffff; --soft: #f0eee6; --soft-hover: #e8e6dc;
+  --surface-warm: #e3dacc; --surface-manilla: #ebdbbc; --surface-kraft: #d4a27f;
+  --border: #e8e6dc; --hairline: #d1cfc5; --inverse: #000000;
+  --fg: #141413; --ink-soft: #3d3d3a; --muted: #5e5d59; --mid: #b0aea5; --text-tertiary: #87867f;
+  --cta: #141413; --on-cta: #faf9f5; --cta-hover: #3d3d3a;
+  --accent: #d97757; --accent-soft: rgba(217, 119, 87, 0.12); --accent-fg: #b85c3d;
+  --on-accent: #141413; --accent-deep: #c6613f;
+  --up: #63784a; --up-raw: #788c5d; --dn: #a85536; --info: #46719f; --info-raw: #6a9bcc;
+  --font-sans: "Poppins", Arial, system-ui, sans-serif;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --disp: var(--font-sans); --ui: var(--font-sans); --body: var(--font-serif); --mono: var(--font-mono);
+  --text-label: 10px; --text-body-player: 14px;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
+  --r-sm: 8px; --r: 12px; --r-md: 16px; --r-lg: 24px; --r-pill: 999px;
+  --shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
+  --focus: #d97757; --ease: cubic-bezier(0.16, 1, 0.3, 1); --dur: 160ms;
+  --tap: 44px; --tap-lg: 48px; --z-toast: 100;
+}
+[data-theme="dark"] {
+  color: #faf9f5;
+  --bg: #141413; --surface: #1d1c1a; --soft: #26241f; --soft-hover: #2e2c28;
+  --border: rgba(250, 249, 245, 0.10); --hairline: rgba(250, 249, 245, 0.08);
+  --fg: #faf9f5; --ink-soft: #e8e6dc; --muted: #b0aea5; --mid: #6b675e;
+  --cta: #faf9f5; --on-cta: #141413; --cta-hover: #e8e6dc;
+  --accent: #d97757; --accent-soft: rgba(217, 119, 87, 0.18); --accent-fg: #e5a184; --on-accent: #141413;
+  --up: #9db284; --dn: #de9e82; --info: #93b7dc;
+  --shadow: none; --focus: #d97757;
+}
+[data-theme="light"] { color: #141413; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+@media (pointer: coarse) { :root { --floor: var(--tap); } }
+:root{ --softer:#f6f4ee; --border-soft:#efede4; }
+[data-theme="dark"]{ --softer:#1a1917; --border-soft:rgba(250,249,245,.06); }
+
+/* ═══ PlayerHQ · Turnering-detalj (fase2/W1) ═══
+   Rute: /portal/tren/turneringer/[id] — én turnering: fakta, frist og
+   påmelding med DOBBEL BEKREFTELSE (spilleransvar — to eksplisitte
+   trykk, aldri ett). Kilde: Tournament + påmeldingsstatus. */
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; }
+body{ background:var(--bg); color:var(--fg); font-family:var(--ui);
+  font-size:var(--text-body-player); line-height:1.55; -webkit-font-smoothing:antialiased; }
+[hidden]{ display:none !important; }
+button{ font:inherit; color:inherit; }
+.num{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.eyebrow{ font-family:var(--mono); font-size:var(--text-label); font-weight:500;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+:where(a,button,summary,[tabindex]):focus-visible{
+  outline:2px solid var(--focus); outline-offset:2px; border-radius:var(--r-sm); }
+
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
+  min-height:var(--tap-lg); padding:0 var(--s4); font-size:14px; font-weight:500;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; white-space:nowrap; text-decoration:none; color:inherit; }
+.btn:hover{ background:var(--soft); border-color:var(--mid); }
+.btn.now{ background:var(--accent); color:var(--on-accent); border-color:var(--accent);
+  font-weight:600; min-height:56px; }
+.btn.full{ width:100%; }
+.tag{ display:inline-flex; align-items:center; padding:3px var(--s2); border-radius:var(--r-pill);
+  font-family:var(--mono); font-size:10px; letter-spacing:.04em; text-transform:uppercase;
+  background:var(--soft); color:var(--muted); border:1px solid var(--border); }
+.tag.up{ color:var(--up); } .tag.info{ color:var(--info); }
+
+.phone{ width:430px; max-width:100%; height:920px; margin:0 auto; position:relative;
+  overflow:hidden; background:var(--bg); border:1px solid var(--border);
+  border-radius:var(--r-lg); display:flex; flex-direction:column; }
+@media (max-width:640px){
+  .phone{ width:100%; height:100dvh; max-width:none; border:0; border-radius:0; }
+  .framehint{ display:none; }
+}
+@media (min-width:1024px){
+  .phone{ width:100%; max-width:none; height:100vh; border:0; border-radius:0; }
+  .kropp > *{ max-width:720px; margin-left:auto; margin-right:auto; }
+}
+.framehint{ text-align:center; font-size:11px; color:var(--muted); padding:var(--s3); }
+
+.topp{ flex:none; display:flex; align-items:center; gap:var(--s2);
+  padding:calc(var(--s3) + env(safe-area-inset-top)) var(--s4) var(--s3);
+  border-bottom:1px solid var(--border); background:var(--surface); }
+.topp h1{ margin:0; font-family:var(--disp); font-size:17px; font-weight:600;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.topp .sub{ display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); }
+.ikon{ flex:none; width:var(--tap); height:var(--tap); display:grid; place-items:center;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; color:inherit; text-decoration:none; }
+.ikon svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.7;
+  stroke-linecap:round; stroke-linejoin:round; }
+
+.kropp{ flex:1; min-height:0; overflow-y:auto;
+  padding:var(--s4) var(--s4) calc(var(--s8) + env(safe-area-inset-bottom)); }
+
+.nowblock{ background:var(--accent-soft); border:1px solid var(--border);
+  border-radius:var(--r); padding:var(--s4); margin-bottom:var(--s4); }
+.nowblock h3{ margin:var(--s2) 0 var(--s2); font-family:var(--disp); font-size:15px; font-weight:600; }
+.nowblock p{ margin:0 0 var(--s4); font-family:var(--body); font-size:14px;
+  color:var(--muted); max-width:52ch; }
+
+.kort{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  padding:var(--s4); margin-bottom:var(--s4); }
+.kort .rad{ display:flex; align-items:baseline; gap:var(--s2); padding:var(--s2) 0;
+  border-bottom:1px solid var(--border-soft); font-size:13px; }
+.kort .rad:last-child{ border-bottom:0; }
+.kort .rad .v{ margin-left:auto; font-family:var(--mono); text-align:right; }
+
+.bekreft{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  padding:var(--s4); margin-bottom:var(--s4); }
+.bekreft p{ margin:0 0 var(--s3); font-family:var(--body); font-size:13.5px; color:var(--muted); }
+
+.eier{ display:flex; gap:var(--s3); padding:var(--s3) var(--s4); border-radius:var(--r);
+  background:var(--soft); border:1px solid var(--border); margin-top:var(--s4);
+  font-family:var(--body); font-size:12.5px; color:var(--muted); }
+.eier svg{ width:16px; height:16px; flex:none; margin-top:2px; fill:none;
+  stroke:var(--muted); stroke-width:1.7; }
+
+.tom{ padding:var(--s5) var(--s4); background:var(--soft); border:1px dashed var(--border);
+  border-radius:var(--r); }
+.tom h3{ margin:0 0 var(--s2); font-family:var(--disp); font-size:15px; font-weight:600; }
+.tom p{ margin:0 0 var(--s3); font-family:var(--body); font-size:13.5px; color:var(--muted); }
+.skel{ height:16px; background:var(--soft); border-radius:var(--r-sm);
+  margin-bottom:var(--s2); animation:puls 1.6s var(--ease) infinite; }
+@keyframes puls{ 0%,100%{opacity:1} 50%{opacity:.55} }
+
+.toast{ position:fixed; left:50%; bottom:96px; transform:translateX(-50%);
+  z-index:var(--z-toast); background:var(--fg); color:var(--bg);
+  padding:var(--s3) var(--s4); border-radius:var(--r); font-size:13px; }
+button,.btn,summary,a.btn{ min-height:var(--tap); }
+.tag,.num,.eyebrow{ min-height:0; }
+</style>
+</head>
+<body>
+<p class="framehint">PlayerHQ · Turnering-detalj · 430 px. Under 641 px fyller den skjermen.</p>
+<!-- Telefonramme = demo-chrome, skal bort ved integrasjon -->
+<div class="phone" data-demo-only="true">
+
+  <header class="topp">
+    <a class="ikon" href="playerhq-turneringer.html" aria-label="Til turneringene" data-od-id="turnd-tilbake">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <div style="min-width:0">
+      <h1>Srixon Tour · avd. 4</h1>
+      <span class="sub">Vestfold GK · 15.08 · plan A</span>
+    </div>
+    <span style="flex:1"></span>
+    <!-- demo-bryter · fjernes før koding -->
+    <div data-demo-only="true" style="display:flex;gap:4px">
+      <button class="ikon" data-tilstand="fylt" aria-pressed="true" aria-label="Demo: suksess" data-od-id="turnd-demo-fylt"><span class="num" style="font-size:10px">F</span></button>
+      <button class="ikon" data-tilstand="tom" aria-pressed="false" aria-label="Demo: tom" data-od-id="turnd-demo-tom"><span class="num" style="font-size:10px">T</span></button>
+      <button class="ikon" data-tilstand="laster" aria-pressed="false" aria-label="Demo: laster" data-od-id="turnd-demo-laster"><span class="num" style="font-size:10px">L</span></button>
+      <button class="ikon" data-tilstand="feil" aria-pressed="false" aria-label="Demo: feil" data-od-id="turnd-demo-feil"><span class="num" style="font-size:10px">E</span></button>
+    </div>
+    <button class="ikon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="turnd-theme">
+      <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </header>
+
+  <main class="kropp" id="kropp"></main>
+</div>
+
+<div class="toast" id="toast" hidden role="status"></div>
+<div class="sr" id="live" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ═══ Turnering-detalj · datamodell ═══
+   Kilde: Tournament (GolfBox) + påmeldingsstatus. Dobbel bekreftelse:
+   påmelding krever TO eksplisitte trykk (spilleransvar) — første trykk
+   åpner bekreftelsen, andre trykk melder på. Aldri ett-trykks påmelding. */
+
+var TURN = {
+  navn:'Srixon Tour · avd. 4', bane:'Vestfold GK', dato:'lørdag 15.08',
+  start:'08:00 · shotgun', frist:'i morgen 23:59', avgift:'450 kr',
+  reise:'ca. 1 t 40 min fra Fredrikstad', format:'36 hull slagspill · brutto', plan:'A'
+};
+
+var tilstand = 'fylt';
+var bekreftApen = false;
+var paameldt = false;
+
+var toastEl = document.getElementById('toast'), toastT;
+function toast(t){ toastEl.textContent = t; toastEl.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.hidden = true; }, 2600); }
+function el(tag, cls, txt){ var e = document.createElement(tag);
+  if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+
+function faktaKort(){
+  var k = el('div', 'kort');
+  k.appendChild(el('div', 'eyebrow', 'fakta'));
+  [['Når', TURN.dato + ' · ' + TURN.start],
+   ['Bane', TURN.bane],
+   ['Format', TURN.format],
+   ['Påmeldingsfrist', TURN.frist],
+   ['Startavgift', TURN.avgift],
+   ['Reise', TURN.reise],
+   ['I sesongplanen din', 'plan ' + TURN.plan]].forEach(function(pr){
+    var r = el('div', 'rad');
+    r.appendChild(el('span', null, pr[0]));
+    r.appendChild(el('span', 'v num', pr[1]));
+    k.appendChild(r);
+  });
+  return k;
+}
+
+function render(){
+  var w = document.getElementById('kropp'); w.innerHTML = '';
+
+  if (tilstand === 'laster'){
+    for (var i = 0; i < 6; i++){ var s = el('div', 'skel'); s.style.width = (92 - i*9) + '%'; w.appendChild(s); }
+    return;
+  }
+  if (tilstand === 'tom'){
+    var t = el('div', 'tom');
+    t.appendChild(el('h3', null, 'Fant ikke turneringen'));
+    t.appendChild(el('p', null,
+      'Den kan være avlyst eller flyttet i GolfBox. Katalogen har alltid ' +
+      'gjeldende liste.'));
+    var b = el('a', 'btn now full', 'Til turneringskatalogen');
+    b.href = 'playerhq-turneringer.html'; b.dataset.odId = 'turnd-tom-katalog';
+    t.appendChild(b); w.appendChild(t); return;
+  }
+  if (tilstand === 'feil'){
+    var f = el('div', 'tom');
+    f.appendChild(el('h3', null, 'Påmeldingen gikk ikke gjennom'));
+    f.appendChild(el('p', null,
+      'GolfBox svarte ikke. Ingen penger er trukket, og du står IKKE på startlisten — ' +
+      'prøv igjen, eller meld deg på direkte i GolfBox.'));
+    var fb = el('button', 'btn now full', 'Prøv igjen'); fb.dataset.odId = 'turnd-retry';
+    fb.addEventListener('click', function(){ tilstand = 'fylt'; settDemo(); });
+    f.appendChild(fb); w.appendChild(f); return;
+  }
+
+  /* ── Suksess ── */
+  if (paameldt){
+    var ok = el('div', 'kort');
+    ok.appendChild(el('div', 'eyebrow', 'status'));
+    var okr = el('div', 'rad');
+    okr.appendChild(el('span', null, 'Påmeldt'));
+    var okv = el('span', 'v'); okv.appendChild(el('span', 'tag up', 'Bekreftet i GolfBox'));
+    okr.appendChild(okv); ok.appendChild(okr);
+    w.appendChild(ok);
+  } else {
+    var nb = el('div', 'nowblock');
+    nb.appendChild(el('div', 'eyebrow', 'Én ting nå'));
+    nb.appendChild(el('h3', null, 'Fristen går ut ' + TURN.frist));
+    nb.appendChild(el('p', null,
+      'Du er ikke påmeldt. Påmeldingen er din — to trykk, så står du på startlisten.'));
+    if (!bekreftApen){
+      /* Kontrakt §3: skjermens ene aksenthandling. Første av to trykk. */
+      var b1 = el('button', 'btn now full', 'Meld deg på');
+      b1.dataset.odId = 'turnd-meld-paa';
+      b1.addEventListener('click', function(){ bekreftApen = true; render(); });
+      nb.appendChild(b1);
+    }
+    w.appendChild(nb);
+
+    if (bekreftApen){
+      /* Andre trykk — dobbel bekreftelse er spilleransvarets form. */
+      var bk = el('div', 'bekreft');
+      bk.appendChild(el('div', 'eyebrow', 'bekreft påmeldingen'));
+      var bp = el('p', null,
+        'Du melder deg på ' + TURN.navn + ' på ' + TURN.bane + ' ' + TURN.dato +
+        '. Startavgiften er ' + TURN.avgift + ' og trekkes av GolfBox. Dette er ditt andre og siste trykk.');
+      bk.appendChild(bp);
+      var rad = el('div'); rad.style.cssText = 'display:flex;gap:var(--s2)';
+      /* Aksenten flytter hit — fortsatt én på skjermen (nowblock-knappen er skjult nå). */
+      var b2 = el('button', 'btn now', 'Bekreft · meld meg på');
+      b2.style.flex = '1'; b2.dataset.odId = 'turnd-bekreft';
+      b2.addEventListener('click', function(){
+        paameldt = true; bekreftApen = false;
+        toast('Påmeldt · bekreftelse fra GolfBox kommer på e-post');
+        document.getElementById('live').textContent = 'Påmeldt ' + TURN.navn;
+        render();
+      });
+      var avb = el('button', 'btn', 'Avbryt');
+      avb.dataset.odId = 'turnd-avbryt';
+      avb.addEventListener('click', function(){ bekreftApen = false; render(); });
+      rad.appendChild(b2); rad.appendChild(avb);
+      bk.appendChild(rad);
+      w.appendChild(bk);
+    }
+  }
+
+  w.appendChild(faktaKort());
+
+  if (paameldt){
+    var av = el('button', 'btn full', 'Meld deg av');
+    av.dataset.odId = 'turnd-meld-av';
+    av.addEventListener('click', function(){
+      paameldt = false; bekreftApen = false;
+      toast('Avmeldt · plassen er frigitt');
+      render();
+    });
+    w.appendChild(av);
+  }
+
+  var e = el('div', 'eier');
+  e.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 20h9"/>' +
+    '<path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>';
+  e.appendChild(el('span', null,
+    'Påmeldingen er din, ikke appens. Anders ser at du er påmeldt og legger ' +
+    'uka til rette — mandag etter turnering er alltid FYS.'));
+  w.appendChild(e);
+}
+
+function settDemo(){
+  document.querySelectorAll('[data-tilstand]').forEach(function(b){
+    b.setAttribute('aria-pressed', String(b.dataset.tilstand === tilstand)); });
+  render();
+}
+document.querySelectorAll('[data-tilstand]').forEach(function(b){
+  b.addEventListener('click', function(){ tilstand = b.dataset.tilstand;
+    bekreftApen = false; settDemo(); }); });
+
+var KEY = 'akhq-theme-playerhq';
+var saved = null;
+try { saved = localStorage.getItem(KEY); } catch(e){}
+if (saved) document.documentElement.dataset.theme = saved;
+document.getElementById('themeBtn').addEventListener('click', function(){
+  var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem(KEY, next); } catch(e){}
+  this.setAttribute('aria-label', next === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
+});
+
+render();
+})();
+</script>
+</body>
+</html>
