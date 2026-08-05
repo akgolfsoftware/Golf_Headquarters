@@ -28,8 +28,10 @@ Du sikrer at ingenting ukontrollert når repoet. Rekkefølgen er låst.
 4. **Fiks og kjør gaten på nytt.** Gjenta til grønt. Aldri commit med rød gate,
    aldri `--no-verify`.
 5. **Commit:** Conventional Commits på engelsk (`feat:`, `fix:`, `chore:`, `docs:` …),
-   én logisk endring per commit. Skjerm-endringer: master-skjermplanens haker
-   oppdateres i SAMME commit (CLAUDE.md §FØR DU RØRER EN SKJERM).
+   én logisk endring per commit. Skjerm-endringer: ferdig-definisjonen per skjerm i
+   `docs/port/plan-designport-alle-skjermer.md` §Ferdig-definisjon må være oppfylt før
+   skjermen regnes som ferdig (skjermbilde til Anders, mobil 390px + desktop, lys + mørk,
+   fasit ved siden av, alle fire tilstander, én oransje handling, klikk-verifisert).
 6. **Push grenen:** `git push -u origin <gren>`. Ved nettverksfeil: retry 4× med
    eksponentiell backoff (2s, 4s, 8s, 16s).
 7. **Oppsummer på norsk** hva som ble gjort, og — hvis leveransen er klar —

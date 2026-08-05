@@ -4,12 +4,14 @@
 
 **Én inngang:** [`docs/platform/AGENT-BRIEF.md`](docs/platform/AGENT-BRIEF.md) — full kontekst
 (stack, prosjektkart, sannhets-hierarki) på 5 min. **Les den før du rører kode.** Deretter:
-`docs/STATUS-NÅ.md` (hvor vi er) og `docs/MASTER-SKJERMPLAN.md` (før skjermarbeid).
+`docs/STATUS-NÅ.md` (hvor vi er) og — før skjermarbeid — `docs/port/fasit-liste-paper.md`
+(designdekning) + `docs/port/plan-designport-alle-skjermer.md` (plan og ferdig-definisjon).
 
-Design: se `.claude/rules/beslutninger.md` §Tema/design — appen følger v2-tokens + C smalt;
-Claude Paper er designfasit i Open Design; full port etter pilot.
+Design: Claude Paper (Claude Design-prosjekt `605a48cc`, skjermer i `fase1/`) er designfasit.
+Full port til `src/` kjører nå — se `docs/port/plan-designport-alle-skjermer.md` og
+`.claude/rules/beslutninger.md` §Tema/design.
 
-**Ikke stol på** `docs/arkiv/` (historikk). Ved tvil vinner `AGENT-BRIEF.md`.
+`docs/arkiv/` er slettet 05.08.2026 (lå kun historikk der — den lever i git). Ved tvil vinner `AGENT-BRIEF.md`.
 
 ## Kjør lokalt
 

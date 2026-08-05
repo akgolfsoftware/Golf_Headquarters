@@ -59,7 +59,7 @@ forslag fra en agent. Spilleren har ingen vei inn.
 | 6 | **Varsel, ikke sperre:** avvik fra CANON (TEK under 15 % m.m.) vises som setning under baren. Lagring blokkeres aldri. | Test: fordeling med TEK 5 % lagres, og varselet vises |
 | 7 | **Coach-siden:** samme redigering i coachens spiller-Workbench (`admin`), setter kilde `COACH`. Coach ser hvem som satte gjeldende fordeling og når. | Klikk-test i AgencyOS |
 | 8 | **Periodiseringen blir et forslag:** `allocationForPeriod()` leverer forslag til skjermen i stedet for å skrive rett til planen. Agentenes `PYRAMID_ADJUST` går via godkjenning som i dag. | Enhetstest + gjennomgang av kallstedene |
-| 9 | **MASTER-SKJERMPLAN:** oppdater radene for Workbench (spiller + coach) med de 6 hakene i samme commit, og juster dashboard-tallene. | Radene har alle 6 grønne |
+| 9 | **Ferdig-definisjon:** mål Workbench-skjermene (spiller + coach) mot `docs/port/plan-designport-alle-skjermer.md` §Ferdig-definisjon per skjerm. | Skjermbilder (mobil 390px + desktop, lys og mørk) godkjent av Anders |
 | 10 | **Full gate + PR:** `npm run verify && npm test`, egen gren, PR, og Anders sier ja før hovedversjonen. | CI grønn på PR |
 
 ## Rekkefølge og risiko

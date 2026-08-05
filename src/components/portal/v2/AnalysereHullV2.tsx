@@ -99,7 +99,7 @@ function byggVarmeGrid(celler: HullVarmeCelle[]): {
 
 /* ── Sone-diagram — illustrativt, bane-uavhengig «vei mot green» ───────────
    (tee → innspill → nærspill → putt). IKKE et geografisk kart — aggregert på
-   tvers av spillerens runder, se docs/design-bestillinger/v2-sonekart-hull-
+   tvers av spillerens runder, se designbestillingen (slettet 05.08.2026, se git)
    analyse.md for hvorfor et ekte banekart (golfdata HoleAnalysis / Mapbox
    CourseMap) ble forkastet. Tap/hover-popover per sone er en 1:1-kopi av
    VarmeKartCelle-mønsteret i src/components/v2/datavis.tsx: ekte hover-enhet

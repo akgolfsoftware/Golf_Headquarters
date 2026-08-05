@@ -9,7 +9,8 @@ B2B SaaS (AgencyOS) + forbruker-app (PlayerHQ) med Supabase Postgres. Alt av for
 - **`docs/platform/NORDSTJERNE.md`** — produktets nordstjerne. Alltid gjeldende målbilde.
 - **`docs/platform/AGENT-BRIEF.md`** — agent-onboarding: stack, eksakte versjoner, prosjektkart. Les FØR arbeid.
 - **`docs/STATUS-NÅ.md`** — hva er levert/ikke levert akkurat nå. (Ligger i `docs/`, ikke `docs/platform/`.)
-- **`docs/MASTER-SKJERMPLAN.md`** — autoritativ liste over hver skjerm + 6 haker (Design · Mobil · Desktop · Koblet til ektedata · Test flyt · Verdi).
+- **`docs/port/fasit-liste-paper.md`** — designdekning: hvilke skjermer har Paper-fasit, hvilke mangler.
+- **`docs/port/plan-designport-alle-skjermer.md`** — porteringsplan, status per bølge og ferdig-definisjon per skjerm.
 - **`docs/platform/BUSINESS-RULES.md`** — forretningsregler som ikke kan utledes fra kode (abonnement, booking, GDPR, dual-track, demo-data, tema m.fl.).
 - **`docs/platform/DATA-MODEL.md`** — datamodell (tabeller, felter, relasjoner, server actions, API).
 - **`docs/testing.md`** — testinfrastruktur og plan.
@@ -43,13 +44,23 @@ via `claude-design`-MCP-verktøyet) er designfasit; full port til `src/` kjører
 8. **Enkelhet (2026-07-21):** behold alle funksjoner, men minst mulig trykk og super enkelt UI. Vanskelig å
    forstå = feil design. (Produktprinsipp — uavhengig av hvilket designsystem som gjelder.)
 
-## MASTER-SKJERMPLAN (produktplanen)
+## Skjermarbeid (gjeldende prosess)
 
-`docs/MASTER-SKJERMPLAN.md` er den autoritative listen over hver skjerm som skal bygges/kobles. Hver rad har
-6 haker: Design · Mobil · Desktop · Koblet til ektedata · Test flyt · Verdi.
+**Designfasit:** Claude Paper — Claude Design-prosjektet `605a48cc`, skjermene i `fase1/` (hentes via
+`claude-design`-MCP). `designsystem/paper/fase1/` i repoet er kun et lokalt speil og kan være utdatert.
 
-Før du bygger/endrer/kobler en skjerm: finn raden, jobb mot den, oppdater hakene i SAMME commit. En skjerm er
-ikke ferdig før alle 6 er grønne. Oppdater dashboard-tallene + endringsloggen når du fullfører/endrer skjermer.
+**Dekningsregnskap:** `docs/port/fasit-liste-paper.md` — hvilke skjermer har fasit, hvilke må designes uten.
+
+**Plan og rekkefølge:** `docs/port/plan-designport-alle-skjermer.md` — bølger, status per steg, og
+§«Ferdig-definisjon per skjerm» som er den gjeldende kvalitetsporten.
+
+**Skjermbilde-gaten:** ingen skjerm-PR merges uten at Anders har SETT skjermen. Skjermbilde i samtalen
+(synlig fra iPhone), mobil 390px alltid først, deretter desktop, lys OG mørk, fasit-utsnittet ved siden av,
+alle fire tilstander (Suksess/Tom/Laster/Feil), maks én oransje handling, og klikk-verifisert — ikke bare
+fotografert.
+
+(Den gamle `docs/MASTER-SKJERMPLAN.md` med 6 haker per skjerm er slettet 05.08.2026 — hakene var satt mot et
+avviklet designprosjekt. Ligger i git-historikken.)
 
 ## Stack
 - **Next.js 16.2.6** (App Router, Turbopack, TS strict) + **React 19.2.4** + Vercel. Node 24 i CI.

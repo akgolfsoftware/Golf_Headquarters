@@ -9,7 +9,7 @@
  *
  * Kun RETNING (opp/ned/lik) uttrykkes her, aldri prosenttall — faktiske prosenter
  * bor i `PlanTemplate.disciplinFordeling` og kalibreres uavhengig. Dette er en
- * ANBEFALING, aldri en sperre (låst prinsipp, `plans/skjermplan-master.md`).
+ * ANBEFALING, aldri en sperre (låst prinsipp, `.claude/rules/beslutninger.md`).
  */
 
 import type { LPhase, PyramidArea } from "@/generated/prisma/client";

@@ -3,7 +3,7 @@
 Revisjon utført av Claude (Fable 5) ca. kl. 22, som oppfølger til
 `~/Documents/Claude/akgolf-hq/lanseringsaudit-2026-08-02.md` (kl. ~19).
 Alt under er verifisert mot kode, prod eller GitHub i denne økta — ikke antatt.
-10/10 er definert av husets egne målestokker: MASTER-SKJERMPLAN (6 haker),
+10/10 er definert av husets egne målestokker: ferdig-definisjonen per skjerm,
 `npm run verify` + `npm test`, CLAUDE.md-invariantene, gotchas-listen og STATUS-NÅ.
 
 ## Endret siden auditen kl. 19 (verifisert)
@@ -35,8 +35,7 @@ Alt under er verifisert mot kode, prod eller GitHub i denne økta — ikke antat
 - **26 åpne PR-er**, inkl. sikkerhetssveipen #223, Oslo-tid-fiksen #176 (lukker en
   dokumentert gotcha), cutover-testene #177 og 7 AI-PR-er fra 27. juli.
 - **Dokument-desynk**: STATUS-NÅ sist oppdatert 24. juli (sier betaling 1. august —
-  koden sier 1. september), MASTER-SKJERMPLAN sist oppdatert 24. juli (30/341 skjermer
-  med alle 6 haker).
+  koden sier 1. september). (Skjermplanen med 6 haker er slettet 05.08.2026 — se git-historikken.)
 - Død, konkurrerende Caddie (`src/lib/ai/agents/caddie.ts`) ligger fortsatt.
 
 ## Tiltaksliste (sortert etter effekt/innsats, maks 10)

@@ -9,13 +9,36 @@ Gjelder til Anders endrer dem.
 > (bl.a. Enkelhet/færrest trykk, Skjermtekst som copy-kilde, design-tidsplanen, skill-rensing)
 > — de står KUN her og har ingen motpart i BUSINESS-RULES. Ikke dupliser regler på tvers.
 
-> ⚠ **Oppdatert 2026-07-06** (historikk: `docs/REGLER-OPPLAST-2026-06-22.md`): av de 4 regel-klyngene
+> ⚠ **Oppdatert 2026-07-06** (historikken lever i git): av de 4 regel-klyngene
 > som ble låst opp 2026-06-22 er 3 nå **avklart og bygget** — tema-toggle (AgencyOS lys/mørk-bryter),
 > abonnement/pris (299 kr/mnd, ingen årlig) og cockpit stall-SG/plan-etterlevelse. Kun **FYS-formel +
 > A–K-nivåtall** har gjenstående deltråder (onboarding steg 6 + drill-retag) — ikke håndhev den som låst.
 
 ## Beslutningene (august 2026)
 
+- **Navigasjon følger Paper: FIRE PlayerHQ-faner (Anders 2026-08-05).** «I dag · Plan ·
+  Analyse · Meg» — per `fase1/KONTRAKT.md` §10. Fanen **«Gjør» utgår som egen fane**;
+  gjennomføring (live-økt, runde, test) åpnes fra Hjem eller Plan, ikke fra bunn-navigasjonen.
+  Koden har i dag fem faner i `src/components/v2/shell.tsx` (`PORTAL_TABS`) og må bygges om.
+  Bakgrunn: navnene spriker i tre kilder (KONTRAKT §10 · fasit-HTML · `kodeordre-agencyos.md`),
+  og skallet ligger på hver eneste skjerm — spriket måtte lukkes før skjerm-PR-ene kunne kjøre.
+  AgencyOS-railen avklares tilsvarende når steg 8 starter (koden: Hjem/Stall/Kalender/Kø/Innsikt).
+- **Kort-ramme (K2): golfdata-kortene er rammeløse (Anders 2026-08-05).** `Panel` eier flaten;
+  kortene er innholdslag uten egen ramme. Dette er allerede byggets standard i alle 12
+  golfdata-komponenter, så beslutningen bekrefter tilstanden framfor å endre den. Aldri legg
+  ramme på et golfdata-kort som ligger i et Panel — det gir dobbel kant.
+- **LFaseBadge tas IKKE i bruk (Anders 2026-08-05).** Den viser de 5 L-fasene, som er
+  AK-formel v1. v2 (bekreftet 2026-08-03) har ikke L-faser. Appen har allerede riktig
+  erstatning: de tre motorikk-stegene i `src/lib/ak-formel-visning.ts` (Vei B). Komponenten
+  blir liggende ubrukt i Paper-biblioteket — ikke plasser den på noen flate.
+- **AK-formel v2 — press-navnene følger Paper (Anders 2026-08-05):** `ALENE · OBSERVERT ·
+  KONKURRANSE · TURNERING` (hvem som ser på), IKKE appens gamle `FRI · KRAV · UTFORDRING ·
+  KONKURRANSE`. Fire nivåer begge steder, så det er ren omdøping.
+  **Motorikk-stegene er allerede riktige:** Paper skriver `UTEN_BALL / LAV_HAST / AUTO`, appens
+  Vei B har `UTEN_BALL / LAV_HASTIGHET / AUTO` — samme tre steg, kun `LAV_HAST`-skrivemåten
+  skiller. Full v2-formel: `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS`, f.eks.
+  `TEK_CHIP_LAV_HAST_TRENINGSOMRADE_ALENE` (kilde: `fase1/workbench-mobil.html`).
+  Databasen beholder de finkornede enum-verdiene — `ak-formel-visning.ts` er fortsatt broen.
 - **Design-fasit er Claude Paper 1:1 (Anders 2026-08-04):** skjermene skal bli **slik de er
   designet i Claude Design-prosjektet «AK Golf HQ — Claude Paper»** (`605a48cc`, hentet via
   `claude-design`-MCP-verktøyet — det er den levende kilden) — layout, informasjonsarkitektur og
@@ -67,7 +90,7 @@ Gjelder til Anders endrer dem.
 
 - **Invarianter er anbefalinger, aldri sperrer:** ingenting i appen blokkerer trening. Avvik fra
   plan/regel vises i klarspråk til brukeren; sterkt avvik varsler coach. Aldri skriv «kan ikke
-  brytes»-kode eller -tekst — se `plans/skjermplan-master.md` prinsipp 3 for fasit.
+  brytes»-kode eller -tekst.
 - **App-navn:** Coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt — ikke bruk i ny UI-tekst.
 - **Tema/design (TØMT 2026-07-25, tidsplan LÅST 2026-07-31, OVERSTYRT 2026-08-03):** Gamle
   Presis/FASIT-låser er fortsatt avviklet. Tidsplanen fra 31.07 sa full Paper-port til `src/`

@@ -58,7 +58,9 @@ src/lib/
   domain/sg.ts     SG-beregning (Broadie + Team Norway IUP-kalibrert)
 
 docs/
-  MASTER-SKJERMPLAN.md   Autoritativ skjermstatus — LES FØR skjerm-arbeid
+  port/                  Designport: fasit-liste-paper.md (designdekning) +
+                         plan-designport-alle-skjermer.md (plan + ferdig-definisjon)
+                         — LES FØR skjerm-arbeid
   platform/              Agent-kontekst (denne filen)
 
 public/design-handover/  GJELDENDE design-fasit (4. juni 2026)
@@ -121,8 +123,9 @@ wireframe/               ARKIV — ikke les eller importer herfra
 Ingen låst design-kilde akkurat nå (se `CLAUDE.md`), så steg 1 kan ikke kjøres før neste zip-handover er
 mottatt. Når den kommer: pakk ut til `docs/design-handover-YYYY-MM-DD/`, bygg fra den (element-liste først),
 screenshot med Playwright (PlayerHQ 430px, AgencyOS ~1280px, full-page), spawn en adversarial diff-subagent
-som FINNER avvik (ikke bekrefter), fiks til 0 avvik, og merk ferdig i `docs/MASTER-SKJERMPLAN.md` — alle 6
-haker grønne: **Design · Mob/Desk/iPad · Adresse · Flyt · Data · Funker**.
+som FINNER avvik (ikke bekrefter), og fiks til 0 avvik. En skjerm regnes som ferdig først når
+ferdig-definisjonen i `docs/port/plan-designport-alle-skjermer.md` §Ferdig-definisjon er oppfylt og
+Anders har sett skjermbildet.
 
 ---
 

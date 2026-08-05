@@ -9,8 +9,8 @@
  * uendret). Måned-navigasjon via ?m=YYYY-MM. Synk-knappen er no-op som i
  * fasit-demoen.
  *
- * Kjent, uendret begrensning (ikke del av denne restylingen, se
- * MASTER-SKJERMPLAN.md Bolk 8): Uke-visningens drag-interaksjon er portet
+ * Kjent, uendret begrensning (ikke del av denne restylingen):
+ * Uke-visningens drag-interaksjon er portet
  * 1:1 (samme logikk, samme addSlot-action) — ingen ny funksjon lagt til.
  */
 

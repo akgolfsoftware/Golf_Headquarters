@@ -7,8 +7,8 @@
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
-# Master-skjermplan — les FØR skjerm-arbeid
-`docs/MASTER-SKJERMPLAN.md` er den autoritative lista over alle skjermer i appen + status (Design · Mobil/Desktop/iPad · Adresse · Flyt · Data · Funker). Før du bygger/endrer/kobler en skjerm: finn raden, jobb mot den, oppdater hakene i samme commit. Ingen skjerm er ferdig før alle 6 er grønne. Alt Claude Design har tegnet skal kobles — sjekk drop-off-lista.
+# Skjermarbeid — les FØR skjerm-arbeid
+Designfasit er Claude Paper (Claude Design-prosjekt `605a48cc`, skjermer i `fase1/`). Dekningsregnskap: `docs/port/fasit-liste-paper.md`. Plan, rekkefølge og §«Ferdig-definisjon per skjerm»: `docs/port/plan-designport-alle-skjermer.md`. En skjerm er ferdig når ferdig-definisjonen er oppfylt og Anders har SETT skjermbildet (mobil 390px + desktop, lys + mørk, fasit ved siden av) — ikke når CI er grønn.
 
 # Enkelhet (LÅST 2026-07-21)
 Behold alle funksjoner, men minst mulig trykk og super enkelt UI. Vanskelig å forstå = feil design. Se `docs/platform/BUSINESS-RULES.md`.

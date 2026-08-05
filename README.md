@@ -44,13 +44,13 @@ npm run build
 
 - **`docs/platform/BUSINESS-RULES.md`** — låste produktbeslutninger (eneste fasit)
 - **`docs/platform/PLATFORM-PRD.md`** + **`docs/platform/DATA-MODEL.md`** — produkt- og dataspec
-- **`docs/MASTER-SKJERMPLAN.md`** — autoritativ skjermstatus (les før skjerm-arbeid)
+- **`docs/port/fasit-liste-paper.md`** + **`docs/port/plan-designport-alle-skjermer.md`** — designdekning, porteringsplan og ferdig-definisjon (les før skjerm-arbeid)
 - **`docs/STATUS-NÅ.md`** — hvor vi er akkurat nå (oppdatert snapshot)
 - **`docs/AAPNE-SPORSMAAL.md`** — uavklarte beslutninger (ÅPEN / LØST / PARKERT)
 - **`CLAUDE.md`** — arbeidsregler, designsystem, gotchas
 - **`SECURITY.md`** — sikkerhetsprinsipper og RLS
 - **`docs/go-live-sjekkliste.md`** — go-live
-- Historikk og superseterte planer: **`docs/arkiv/`**
+- Historikk og superseterte planer: slettet 05.08.2026 — ligger i git-historikken
 
 ## Test
 
